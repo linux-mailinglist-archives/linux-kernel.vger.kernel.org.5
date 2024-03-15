@@ -1,186 +1,197 @@
-Return-Path: <linux-kernel+bounces-104615-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104616-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 502AB87D0FA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:12:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39F1B87D108
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:17:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4086F1C2277B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:12:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A2C791F23CAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:17:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F99344C76;
-	Fri, 15 Mar 2024 16:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C532D4594C;
+	Fri, 15 Mar 2024 16:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b="Za7B2LZo"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2109.outbound.protection.outlook.com [40.107.101.109])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IrvBXckd"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC7B540BED;
-	Fri, 15 Mar 2024 16:12:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.109
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710519146; cv=fail; b=bh9/b9IRkN6RL/HzFD6wd05xtw4TuaoeI757SOMFDPTArl3O2sfoTTxY19T0hlULblGUuMD9TIq0KTC/AnXph5fn1IeSvKUBo6rgG++LS0dFv8zP+A+Ysl6swrYpJQvnwJbKqD/dYpMALn6CTBS9fbR+DfFSjz+iU48eUBeeh/4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710519146; c=relaxed/simple;
-	bh=9RM58ykHVRPhGjXN+aymwn7WOs3IYMjkTq9hzi2QYxg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=od8M8+CalSi4zO7XIA2CkAwmrJzJdq3EQnrCdRS3bOQs8pBuIitLUjMiIvSnL4/ovqt3ykKUQiUeiVz2fGJk8xK3lt8t9pK8jXCSmFi6rRqotqG82L0CtO+hp1coV7BoX4HO1r5bYPS0+x2mssXhDsjt2nmXpewp4oGYeEPHrK8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com; spf=pass smtp.mailfrom=cornelisnetworks.com; dkim=pass (2048-bit key) header.d=cornelisnetworks.com header.i=@cornelisnetworks.com header.b=Za7B2LZo; arc=fail smtp.client-ip=40.107.101.109
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cornelisnetworks.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cornelisnetworks.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YGkt2GHIHCBBpV6jLMuWvoo8HeJm/78sf267kjGBBZPjeEiBW+hVBhUGMg75EaTG+0vfrMqQvUrkJUJJtQF7WSuWWwnNxOgJz0TYAnofWRJVKuSveqzdJXyAcMkxiUF8ukqpt4ZDhgrzS6QjBZaYhP9dg595L+1w3JRbXiXSbVtNNu7Hm/rtp/Ci3QpVxZkmFxCpOEYTB9HkbLkpYfs/u7O1AfYrbXJd61SUTGO9pfvTd8/Ufxm+Z039/UPB9wyqNXf/t7kxvamKY4iofhrp1EAg8sG+IMcOVzJMsWFwWHn9eqarmJDUS7W+ke18LTo8Jju5+v/QsA1yN/mnipokhw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hLMJP83Lde2N6V1/LiKnsHziB+lp7/oEMjiN8jekdno=;
- b=JlVBxXMvGTIgA1PYZ3/WIAYpdH6abzH5AJM1g3mt191wcCepV0mknuW8U/LyKUS+LOV3pqSDthVefwBXQNA57SRoaR+NkYVO8Pfe6UE0xcTN+xe4yLYcqVDI61FjVvO8EVpVRVa4tSDjRKkteEhPO7OkHm53yAIxc8SsBl/cB60YI1TJQ2hA7ihl8IKGsORSoVqTIeOepNsqUcGUq/jOI58ilBhB0x9RjU7JHhSkHcC7pQnsMnx6U/NsE+NYGcVowuzN0aI0irjj0XwCWETUf3amDL27V3nwoRUXlf6nsx2XmMBjXbEYmba2uNgnVV+A/Xq4DYT/lPKSom/Bxb4VgQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cornelisnetworks.com; dmarc=pass action=none
- header.from=cornelisnetworks.com; dkim=pass header.d=cornelisnetworks.com;
- arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cornelisnetworks.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hLMJP83Lde2N6V1/LiKnsHziB+lp7/oEMjiN8jekdno=;
- b=Za7B2LZohnVGCcgSojO7OEB8tWkCmz74xii5GfVqkvqsg1pFzU+q1TxoNsg2gJbmaKrL/AFeReyBQ5xoFnTPPpKABQN8SuNG9VP653P2s9QYvmKxfd9pWUUk/1XEOofZJSU0+dCVDtR9VZsK9GSW29QcPpWn4BUuyq4MYC0XW+r8H9m6trv+HOjYBr4aeBAWQ8dPkM2+hIK8pNBF/ndZ+b/5WFMFcNy3N87DJf/Ub+qqodA4Vff1Zlyz9b6+wevr6w4bKUqQ8r/eeTUhe+OC6l2jgToWWLShPmSJ1b6rirrpyKmgusjahsNyRIW2VNkijFbDVDtZzH0zpHzMt1y5bA==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=cornelisnetworks.com;
-Received: from BL0PR01MB4817.prod.exchangelabs.com (2603:10b6:208:7c::31) by
- CYYPR01MB8565.prod.exchangelabs.com (2603:10b6:930:c8::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.22; Fri, 15 Mar 2024 16:12:17 +0000
-Received: from BL0PR01MB4817.prod.exchangelabs.com
- ([fe80::b62f:89e4:967b:47ff]) by BL0PR01MB4817.prod.exchangelabs.com
- ([fe80::b62f:89e4:967b:47ff%6]) with mapi id 15.20.7316.039; Fri, 15 Mar 2024
- 16:12:17 +0000
-Message-ID: <b4cf355e-8310-422c-8ff8-9e96d7efc9e5@cornelisnetworks.com>
-Date: Fri, 15 Mar 2024 12:12:15 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] IB/hfi1: allocate dummy net_device dynamically
-Content-Language: en-US
-To: Breno Leitao <leitao@debian.org>, Jason Gunthorpe <jgg@ziepe.ca>,
- Leon Romanovsky <leon@kernel.org>
-Cc: kuba@kernel.org, keescook@chromium.org,
- "open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
- open list <linux-kernel@vger.kernel.org>
-References: <20240313103311.2926567-1-leitao@debian.org>
-From: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-In-Reply-To: <20240313103311.2926567-1-leitao@debian.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: BLAPR05CA0029.namprd05.prod.outlook.com
- (2603:10b6:208:335::10) To BL0PR01MB4817.prod.exchangelabs.com
- (2603:10b6:208:7c::31)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D834144C64;
+	Fri, 15 Mar 2024 16:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710519420; cv=none; b=TawXyb6lsdB2W/IhMJRU5a4q1Rn9vyaP0M1yUpTPkrCDmEqElEuQ2LvYAn/nPO2iG2emBXrOb8U+/3gFABJzFwD/+nfPrHxq7OpO9iPqfVZiMFfd4ulo2h6l39S2OnIQUbdUKacLXmwksGQ7/Sb7z2vAcnI/pN4jpEhHZx3tTxQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710519420; c=relaxed/simple;
+	bh=IyytQBo2KIJF54NrANAyUTvbiB6Rzt4f4opggr/aZgE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=BMT1MXcktiF3QztGfIYZtEdw+WFHBdwmV9+EWSQqwqUhXnhEAmS7CkbalnVveC4CMkyq4sC+2gnTJWZuzkP6/EgbuUonTa6ZPcLoxBM1du1l/i2T58Nqo9h+xa3mMD2JsJXFpz6gM9bfys6S7Quua7FJaEe3GXnTy8uOginRTOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IrvBXckd; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so5676788a12.1;
+        Fri, 15 Mar 2024 09:16:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710519415; x=1711124215; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=Hq26cNsD7jowb3hRFtXkhmvH+pk4/HkmfGFyk+22HD0=;
+        b=IrvBXckdY6A/y/wKd+r8x33eovdCcnR2Uu31fUAFthMt1oxhncLc86ykoEje2Q6U9R
+         j8Fnh6ro9+L0NyNRS2xOeTpaedeyYsFm9pzOzkR1GeeCbcFCo8kRDCk33wwDJc27Cu5e
+         jfd5Xs8fSxDzgww3rHaaQW7HSlZgDfjXlsaniG3JrVtp2+RPPIF17jFW9GFQ6FVR9WTW
+         cA2DqyqLhkNvAMC+cp/M0aL6JQRVZAfvkdU5SEgys/JVo8pvhHcLn/Nakpf8y7hz3zpC
+         HHuulgXFngj+dAA7qJ1PRx+7ZV676/Gzvm44BGJDtVXZ9sc7a8b3CdB680/+UcGC6ots
+         Yf/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710519415; x=1711124215;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Hq26cNsD7jowb3hRFtXkhmvH+pk4/HkmfGFyk+22HD0=;
+        b=Z6dDCr7zZ1t1eMUX8OMr6cIZVQ+TLb7fbVyhL1SKv0KfpBQW8hjBrydWLToc9P4Nnd
+         NIkU3lUEUQSlsJtSRQLTlU3m+pChS/oA9ognpcMAiD3Iwlt7gaYLSF/FITkY7RYoygtP
+         Wkcpm9ewB+XwZEO+DHM9jLrvSRG/Nx7AMr8zsJYB1Ywq0n1wdJlgtlITjfOtXJAkNJUF
+         XDqphcdIm9TcVE3SPdAIKDv9jAH9lVp6HnXwsCXPcaEn9xm/dGjISTZiQWKDxPQnqq6T
+         1XG0T+PRC12zIZga7Y4k6aU5u5T9oSBUWnt/N7zmnC1vfAjOxYLCzloRNBPySF0aEZ8m
+         QRXg==
+X-Forwarded-Encrypted: i=1; AJvYcCUET8097kafvap4O3cu7+QNTGbJMbq8Hc8x05kozcPxB43sWSptiuUmn5Tfn/mM11Hn6Lk4fAdl9Gp/cP93oEouBDZ3WwZrP+iQezqGLhrjrDC//0C9yMwAFZxdYJpeviGTyOLEcqGoeDc+0dYGX+pu+/D3r2qtP7ckzCYDy8LF
+X-Gm-Message-State: AOJu0YxtDxHIKHg98vvrxj7IemRixNWW3AQjg23ywdL8v+9BzyhRRHSO
+	eYGdAMHmJQpd9GfVVZ6cMU8x+mdSw17jQEC970Wvsv7byVm33khg
+X-Google-Smtp-Source: AGHT+IFv/E9MBLkyKgj7qZIVTGEgGlu0AGvsb77hVYdllp23GXPaquSMaDb/YqvQ3JdCNN4cWhrsMw==
+X-Received: by 2002:a17:906:5a95:b0:a46:74fe:9177 with SMTP id l21-20020a1709065a9500b00a4674fe9177mr4056795ejq.21.1710519414942;
+        Fri, 15 Mar 2024 09:16:54 -0700 (PDT)
+Received: from [192.168.20.102] (57657817.catv.pool.telekom.hu. [87.101.120.23])
+        by smtp.googlemail.com with ESMTPSA id me17-20020a170906aed100b00a4679ce191csm1330205ejb.121.2024.03.15.09.16.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 09:16:54 -0700 (PDT)
+From: Gabor Juhos <j4g8y7@gmail.com>
+Date: Fri, 15 Mar 2024 17:16:41 +0100
+Subject: [PATCH v2] clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to
+ fix boot failure
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL0PR01MB4817:EE_|CYYPR01MB8565:EE_
-X-MS-Office365-Filtering-Correlation-Id: 63a06105-ca50-42ba-0329-08dc450aaf0a
-X-MS-Exchange-AtpMessageProperties: SA
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	yHmBu1dGSmHrAeM1y8uY2EdmPwlnBocC9i1Af0sDd3ndh4GkpVOJ2x9BZNnE+fWtcJ7vH+PVBTOLHlJyUeUY41Kv9fiGKL85cOfHuc5ms/hpJkn+q2iz98YuoLIWlCOexec4N/A7T4J+LvM68ooW929FdqYMt7sRNptd/DnerOZ1IwA4g4tigWvKlhPib1fTGhaMoTfx1JLpycKBRDNrQqIO11KSvqrQz2qk2ZbkHTkgNBRTH5R9wFMvO4oAxINo7d3wtFOQSsAkFMKLInV3ID6us8MrwXtoywfAif80lU1faPg+WuYiJNdRgDxgYH6EibmOqic2T1Mwwr2+iSvtGk8D4Rgij41dCI5qf5kcp5fYxskeZNpuaExm+oeA2zIKoR+0AhnM3Im4idfF+4xRl+cElnGWyxSPS+AKKmhKxCGwHP7z3pPRQWbK0aGZIvf8yphPthXz0h26ONCtZ2DAJgjRrdZqInzGNiC7xflAuBwrXIEQt49oBFmvmMsYzNoQ3nbP5Olt16QfQVP/3W3dG3NlPzboPksOBn7oW/tkDCfUV1ZBr8YW1FL8VKZ3B/rtErWnN/LoEjoGJS4U6A3O0jO5twlPi2hgXdVEeIihtNzr1jiIsLLj5zUS2Nz1IUTeg5vMonm5BI3a+R7nInMq4a+ih332oVENiuiMQKSQb7Y=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL0PR01MB4817.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aGZlaTJ5bm9FWlN5QmFkNDdXYTZlUVg2NVMycEJ1OTRlWWU1TzVzTS82QzlE?=
- =?utf-8?B?QlEvNDFMRDdTcWVMVlVjeTlLdG9odDRiSE14TE43bUJKaXp3L0xjbHdSWUlv?=
- =?utf-8?B?emUrWEh6T2RzaWlxVDRuemI0S0JXdlpKQmpVdTdvTjJpaUR4K3k1alRPRWRP?=
- =?utf-8?B?Tlg5NDV3NlUvb2w0TzFHeXVlZHJDb1RWV1pzd2xPeDJaQkNtVkxNMGs0U2Vm?=
- =?utf-8?B?M3JqOS9HNjd5N08rTWh2ckh2dnErY04wNk1BdllTanJWSkI4Rm5CZC9WRDlh?=
- =?utf-8?B?YjloZHNVbVRxVVBTOW1kZUtCQ0h5WE5ZRzlPdUpKRTFYYjJ0SC84U1pZTmNx?=
- =?utf-8?B?L0RpVnRSWUJXOWp4Y1U0L1drU1JqSkdWNVdQSnF5Q3Q5Y1FBM2M5a3BiaVJB?=
- =?utf-8?B?TVJnb3I3N3BxSFVSaUFOYmZsckVSU3lIWUI4VzJNeHhYS3BXMHNmdXZKa3JB?=
- =?utf-8?B?SXlaOU1CRnFWTXkyY0xIUTNVREpZOFdCVmJvQ2IzREoyQkh0MU9NYzZlbk00?=
- =?utf-8?B?UVNwZHZxbTZEOWFVNDBreitTTU9RVEo4NUZYSXQ3ck5NWFIvelpYK2pEeXBF?=
- =?utf-8?B?Z0FFRU5tbVUyaDZVbnRwdXJQcWhiVENyK3VQNFpDdm5CeTgvTHNVbnBqSC93?=
- =?utf-8?B?STFPb1lsb0ExdXRBN0szMW94bzRCNkU3c081cU5BQit0TFZIWkc3SU1XdWdG?=
- =?utf-8?B?dDA3NFZBWXlKZjNQVTVhY0h1ZmlhVE5xbzdteXlBdE9EN2xwUFljYXhXRTFk?=
- =?utf-8?B?TjVzMEFWOWlRVnIyUlNmZ2ZsY2sxeGFsbmV6Ti8vVFE1RUxIL0JCUVFvY0FW?=
- =?utf-8?B?cktkWFVHb1NwenQ4OVM3TGQ3OTJOZW1hN09oZlhDNERJclBwSDV5aUFoQmlt?=
- =?utf-8?B?eklTaFh3RXJpbnNhM0xxZXJSd2VsUTRQSHVOVFBNTE94ZHVRMTRzYmZBK2FP?=
- =?utf-8?B?MHRkS3BDdmlGcmtVZkhHQTkyQ2cwbDc3VXlVQW80bEc1YVNub0oxUStYZGVN?=
- =?utf-8?B?RFMvbHVZNC8rYWNPUDBOYy8wU3pkcVhDRmJiblprdzIwV0FqQmpmZEh3VnR2?=
- =?utf-8?B?NitVUHVGUHpJeWhzKzhjSjBZbEsvODVOelB0RXJmR1VXMjVpUVpGakd0aTRB?=
- =?utf-8?B?Wk5rakZMQmdUUkNZRElHanNwSHp2NENNcjF0bE5zRUkxaHZJRzFvdEcwTDN5?=
- =?utf-8?B?K0V2REw2YVFYcDZqL0RXMlo1OGlYYVV6bUJRTkZmaDVHbnByeHh2TlVqdW11?=
- =?utf-8?B?QS9qU2owR25vc0YxV3l4b2l5UEJmdGlvaUFCeUtzNnZVRlpVQ0tTbkZFTjE0?=
- =?utf-8?B?cFhMcmNuTllkUmQ0cWw3WFpjbklWc2xFN2NYdk9DZndXUVIvSHRnckczRjFr?=
- =?utf-8?B?OUNZYkR0dHBmbVZSaUVkYmkxbVZlUlhMMkxrcHpiVXBaYzZTckliRm9adVlG?=
- =?utf-8?B?Y1JyREh0K0lzRzc4S2VzMzdRNlhSNmUvemFzOVZsemk5QjUxK3dkN2EvMHl4?=
- =?utf-8?B?SGlWNE9FeHU5NGdBTk0rSTdVTkZqc3RCaEl3anpVUW51TUVXdTgybjFXbTll?=
- =?utf-8?B?OUhUcit4c0NuelNDVjIvR3VQWHV6bitUbktaZjRRZDBmZnhHOFZCc1JsdjJ1?=
- =?utf-8?B?QWowL0NvMG16a0hLbWJ2M0F6anBxU0o5UGVoczNxUjhacGt0SVZNb0JXU3Nj?=
- =?utf-8?B?cmdkU2dHRU5OZjZiWHNTdzFwY0lqa1BWd09keDViT3FWemRrNjBLNktNUjNI?=
- =?utf-8?B?QkhobXZDNWxFY04vaXJIMTBtQ3UyNVoyY3VHMlBBc2VxN04vcU1rTmVrdGhh?=
- =?utf-8?B?cm1vNXBzOWtXZ0hjSkdsS2l3enlsTlBjVS9JdG82NXo0VjUxalBxUHYxbzRq?=
- =?utf-8?B?WXpJREpCVU5na1FlZDN3b0tuSTBIR3VCMjJLT2N6cDU0ZjQybDRBK05zd1pZ?=
- =?utf-8?B?cjNST1JleVpPM1VFME5iYk9RUUZXTXRtWVN1MDlwYlN0Ty9KUDFOcDhJSkZH?=
- =?utf-8?B?VmZpUU9MQkl2bTYyZkRIMGJlbDBsUUlrRVBJODRjcTU3LzlOU1kyeXFrMDZV?=
- =?utf-8?B?MzVWcW1aQzNBd2V0Z2hYRG1VVlcyNVl2b1hxOW5NNEdPU0VFTnlibS9qUkZO?=
- =?utf-8?B?VkJaS2NlK3grNnlYVGlsTXRUUDFWWUlVcWdFVENuZjVpS3RsZzNzQ0VlVHMw?=
- =?utf-8?Q?L8kb4sdItGPCGuhtWFGCRY0=3D?=
-X-OriginatorOrg: cornelisnetworks.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 63a06105-ca50-42ba-0329-08dc450aaf0a
-X-MS-Exchange-CrossTenant-AuthSource: BL0PR01MB4817.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 16:12:17.0449
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4dbdb7da-74ee-4b45-8747-ef5ce5ebe68a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 2Hc0TYWIcoBpuU14JaJl4dQFd7rvC5iMsqvkm/AvgMBbqPxqcYIuGmL01PRf3AIcItr8/bdzoQx3MmdXU3sUpLSPZCueUHkBWypD+fostAqubCWEXblphOBGEVvkmiiO
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYYPR01MB8565
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com>
+X-B4-Tracking: v=1; b=H4sIAGh09GUC/42NTQ6CMBCFr0Jm7ZhOqRZceQ/DotICk/BTW0M0h
+ LvbcgJXL9/L+9kgusAuwq3YILiVIy9zAnkqoB3M3DtkmxikkEqURGh8jMj+hX4cs14EVZiTqJW
+ tTdUpTeUVUt8H1/Hn2H40iQeO7yV8j6uVsvvP6kpIWDmr5FObWih77yfD47ldJmj2ff8Boz155
+ 8IAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, 
+ Michael Turquette <mturquette@baylibre.com>, 
+ Stephen Boyd <sboyd@kernel.org>, 
+ Sricharan Ramabadhran <quic_srichara@quicinc.com>, 
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+ Gokul Sriram Palanisamy <quic_gokulsri@quicinc.com>
+Cc: linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, stable@vger.kernel.org, 
+ Gabor Juhos <j4g8y7@gmail.com>
+X-Mailer: b4 0.12.3
 
-On 3/13/24 6:33 AM, Breno Leitao wrote:
-> struct net_device shouldn't be embedded into any structure, instead,
-> the owner should use the priv space to embed their state into net_device.
-> 
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
-> 
-> Un-embed the net_device from struct hfi1_netdev_rx by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at hfi1_alloc_rx().
-> 
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> 
-> ----
-> PS: this diff needs d160c66cda0ac8614 ("net: Do not return value from
-> init_dummy_netdev()") in order to apply and build cleanly.
-> ---
-> Changelog:
-> 
-> v2:
-> 	* Free struct hfi1_netdev_rx allocation if alloc_netdev() fails
-> 	* Pass zero as the private size for alloc_netdev().
-> 	* Remove wrong reference for iwl in the comments
-> ---
+Booting v6.8 results in a hang on various IPQ5018 based boards.
+Investigating the problem showed that the hang happens when the
+clk_alpha_pll_stromer_plus_set_rate() function tries to write
+into the PLL_MODE register of the APSS PLL.
 
-Very lightly tested, but interface came up and I could send traffic. Code seems
-OK too.
+Checking the downstream code revealed that it uses [1] stromer
+specific operations for IPQ5018, whereas in the current code
+the stromer plus specific operations are used.
 
-I'd prefer to at least remove the first sentence of the commit message. It makes
-it sound like hfi1 was doing something incorrectly when it was using the
-interface as it was designed. Instead it should read more like this is an
-enhancement.
+The ops in the 'ipq_pll_stromer_plus' clock definition can't be
+changed since that is needed for IPQ5332, so add a new alpha pll
+clock declaration which uses the correct stromer ops and use this
+new clock for IPQ5018 to avoid the boot failure.
 
+Also, change pll_type in 'ipq5018_pll_data' to
+CLK_ALPHA_PLL_TYPE_STROMER to better reflect that it is a Stromer
+PLL and change the apss_ipq_pll_probe() function accordingly.
 
-Regardless, we can call this one acked.
+1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4/drivers/clk/qcom/apss-ipq5018.c#L67
 
+Cc: stable@vger.kernel.org
+Fixes: 50492f929486 ("clk: qcom: apss-ipq-pll: add support for IPQ5018")
+Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+---
+Changes in v2:
+  - extend commit description due to the changes
+  - add a comment about why CLK_ALPHA_PLL_TYPE_STROMER_PLUS register offsets
+    are used
+  - constify hw clock init data (Stephen)
+  - change pll_type in ipq5018_pll_data to CLK_ALPHA_PLL_TYPE_STROMER (Konrad)
+  - Link to v1: https://lore.kernel.org/r/20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com
+---
+Based on v6.8.
+---
+ drivers/clk/qcom/apss-ipq-pll.c | 30 +++++++++++++++++++++++++++---
+ 1 file changed, 27 insertions(+), 3 deletions(-)
 
-Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
+diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
+index 678b805f13d45..dfffec2f06ae7 100644
+--- a/drivers/clk/qcom/apss-ipq-pll.c
++++ b/drivers/clk/qcom/apss-ipq-pll.c
+@@ -55,6 +55,29 @@ static struct clk_alpha_pll ipq_pll_huayra = {
+ 	},
+ };
+ 
++static struct clk_alpha_pll ipq_pll_stromer = {
++	.offset = 0x0,
++	/*
++	 * Reuse CLK_ALPHA_PLL_TYPE_STROMER_PLUS register offsets.
++	 * Although this is a bit confusing, but the offset values
++	 * are correct nevertheless.
++	 */
++	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
++	.flags = SUPPORTS_DYNAMIC_UPDATE,
++	.clkr = {
++		.enable_reg = 0x0,
++		.enable_mask = BIT(0),
++		.hw.init = &(const struct clk_init_data) {
++			.name = "a53pll",
++			.parent_data = &(const struct clk_parent_data) {
++				.fw_name = "xo",
++			},
++			.num_parents = 1,
++			.ops = &clk_alpha_pll_stromer_ops,
++		},
++	},
++};
++
+ static struct clk_alpha_pll ipq_pll_stromer_plus = {
+ 	.offset = 0x0,
+ 	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
+@@ -144,8 +167,8 @@ struct apss_pll_data {
+ };
+ 
+ static const struct apss_pll_data ipq5018_pll_data = {
+-	.pll_type = CLK_ALPHA_PLL_TYPE_STROMER_PLUS,
+-	.pll = &ipq_pll_stromer_plus,
++	.pll_type = CLK_ALPHA_PLL_TYPE_STROMER,
++	.pll = &ipq_pll_stromer,
+ 	.pll_config = &ipq5018_pll_config,
+ };
+ 
+@@ -203,7 +226,8 @@ static int apss_ipq_pll_probe(struct platform_device *pdev)
+ 
+ 	if (data->pll_type == CLK_ALPHA_PLL_TYPE_HUAYRA)
+ 		clk_alpha_pll_configure(data->pll, regmap, data->pll_config);
+-	else if (data->pll_type == CLK_ALPHA_PLL_TYPE_STROMER_PLUS)
++	else if (data->pll_type == CLK_ALPHA_PLL_TYPE_STROMER ||
++		 data->pll_type == CLK_ALPHA_PLL_TYPE_STROMER_PLUS)
+ 		clk_stromer_pll_configure(data->pll, regmap, data->pll_config);
+ 
+ 	ret = devm_clk_register_regmap(dev, &data->pll->clkr);
+
+---
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+change-id: 20240311-apss-ipq-pll-ipq5018-hang-74d9a8f47136
+
+Best regards,
+-- 
+Gabor Juhos <j4g8y7@gmail.com>
+
 
