@@ -1,482 +1,218 @@
-Return-Path: <linux-kernel+bounces-104135-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104255-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85FA687C994
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:05:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3DD9F87CB4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:24:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7E371C218A3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:05:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C7BF8281AA5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:24:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8F014F64;
-	Fri, 15 Mar 2024 08:05:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="KbJfA7lJ"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A905E1863C;
+	Fri, 15 Mar 2024 10:24:52 +0000 (UTC)
+Received: from CHN02-BJS-obe.outbound.protection.partner.outlook.cn (mail-bjschn02on2105.outbound.protection.partner.outlook.cn [139.219.17.105])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240236127;
-	Fri, 15 Mar 2024 08:05:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710489927; cv=none; b=oW4UmH07S5G/+jpn7YkBfCg/Ai57uj0cDYdk3Du6qELww2T5yXbsX0pYsUsSEWgr68nzRnNVyJxvWMSRxZ4+opDRYMfe66xuYoripcFfzMNdrZ6O9W2T0HveIwwhYV/5hXmtZcu4dcitW+C6SdNp128Mu1xg/P3TmvFA8RbTN3s=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710489927; c=relaxed/simple;
-	bh=TrRBinZzGLucal8rlgqc2RLz4DMh0sLsKis+qasbHo0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XsdacQefnen+TbAftUdGb6/ywjF3QmCD/TTtPbqY6EMPgW/h2Ut4LNkxa/mR7V7MVg1RCwcr8X+Y9tcdoGxi59zGudHPgBaYCe6Fz4JPlYwqZxjbh14mfmWIq3ooMbTGUDEjP+/RtzBFWX/u1dGMzOR7SnRblv7T1oZUUfSrwq4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=KbJfA7lJ; arc=none smtp.client-ip=198.175.65.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710489925; x=1742025925;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=TrRBinZzGLucal8rlgqc2RLz4DMh0sLsKis+qasbHo0=;
-  b=KbJfA7lJfxnmBdoFRXy9PP74cArhbvQewJpJ+HQgzO+Y6tUdBanGweCc
-   aBH/sI8DRVWgGN0jYiz9BQ7OtDwx1eEC5rHY6jkyadVif5ddyGEfoo7w2
-   CnE9TybK1nEX6iNIu1PbezZnBi2Yyvr7GgczTZ03c0Gr7rs1oiA4HPU9D
-   OQ+qo4d6H0Y0hAVoN0uMWJkf4jmkRSpwcGjANAzLw5G2ETw0BzLploZyp
-   qp9jPcTuyJtupZtV7mSa5FzNtDeSWTEslXHp8+OdS4FX4owGm5KExWlU7
-   uJLWUVumm4SWZN4pwXd7YTk7xLL+rhdm7jSdonDbNrjCVv0FfZvfZ1Kuc
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="5287405"
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="5287405"
-Received: from orsmga001.jf.intel.com ([10.7.209.18])
-  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 01:05:24 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="827780531"
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="827780531"
-Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
-  by orsmga001.jf.intel.com with SMTP; 15 Mar 2024 01:05:17 -0700
-Received: by stinkbox (sSMTP sendmail emulation); Fri, 15 Mar 2024 10:05:16 +0200
-Date: Fri, 15 Mar 2024 10:05:16 +0200
-From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
-	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
-	Chen-Yu Tsai <wens@csie.org>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Samuel Holland <samuel@sholland.org>,
-	Hans Verkuil <hverkuil@xs4all.nl>,
-	Sebastian Wick <sebastian.wick@redhat.com>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
-	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v9 14/27] drm/connector: hdmi: Compute bpc and format
- automatically
-Message-ID: <ZfQBPHoAvI1dquEY@intel.com>
-References: <20240311-kms-hdmi-connector-state-v9-0-d45890323344@kernel.org>
- <20240311-kms-hdmi-connector-state-v9-14-d45890323344@kernel.org>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C4218059
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:24:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=139.219.17.105
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710498292; cv=fail; b=LUDb/1+JFaaU81BJEYXWr3shfQcvbDP+G6tQ7h3XkiMxozvkKxYmHIUtQ1TEX6GlrjDFhp3IDNAgAUdnj/bzE+s1cVIreReXA6RFohuhIDo50HmRvwsR4L5fJEHGSFagcotpal6i3wuH2b1rsBA+e+zJhsKum/eCMFSZGGBu6F0=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710498292; c=relaxed/simple;
+	bh=8GLUygUeTYeGzFDVDz5tdZRuhYiic50+nAkYCLkEO0o=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=hDIhqmBGbkL5C2lN4lcY9LNuoVSqW+vG8LvMOWOsTY4HFFs8gK+XLutmmIEpwJfrqP6gt4wQsmKmYBxbgom5jPUYGKNH/baRCJOmNeIhX9UPN//hgxGlsL9mI1BYUGczN0O8BQxOCLgZXRin+Y8hj7bOBd4vEX1H/OuRukGTQGY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com; spf=pass smtp.mailfrom=starfivetech.com; arc=fail smtp.client-ip=139.219.17.105
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=starfivetech.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=starfivetech.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VAbStCcFrFMZyP+SrMWW23JGbc3yWTJOQ0DVAVfPJi2SVEqzESqvubODuddKAX+wGEdg6uph39hL/rUKhjY6wviwYxwWSn63TMjXJQ55gVSnkTRErCIMrysi75QIT9rOFpnuVkInWcGyGCzZRUiif1k1MryBlD2p1bdu++nZVBugtIL0xVdzHg+8seFdoqzKtHL3RSxViA4+KHmADuW8a6alZajzY4JqSi2fH0pRPGoUjlv8i9RfqfEzNnT+FwW9J4oc0dgMcc67it8CJwPreQittE59ELWJaWFliYQSILROaTkNLwoHGWER8SAgKFRqJMlp5mcRacq7pRUkvzjseA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=muRXkRjsYyKJcNcIW7cgyLFD22BgLYqO3kQFrknL8/E=;
+ b=jqOzUmo4d8SMArDyvHauPrguATG0gF2omsg0Xw61r92OBJBu3cu35E7PyMPZtvi8g8hek3YdPrgG82+BrPW7qxIc9C49twtBt0zh3YdZLSLckM+Cr5+UiP8XxFY7zyexMK8/V55AfL82mgpi6jM3tzVO1ZKZReQRtuXAvsDYo46mYZQx4XmZvjsh/3ND98Jn8PVSd96wowGwZY3CocXBMt7rpwfka7kysDk5vqDQ2MOZ6yxV5dgCxJAUbEPwUawz8xFuqTU8kdku7Mus+fAy7I65ntY9KxpK8Ksws3XALWmSieO3tBXXH9cspphlhApSw/n2TF8lVGzJZ9XQ2mOBnA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=starfivetech.com; dmarc=pass action=none
+ header.from=starfivetech.com; dkim=pass header.d=starfivetech.com; arc=none
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:20::14) by SH0PR01MB0459.CHNPR01.prod.partner.outlook.cn
+ (2406:e500:c311:7::14) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.21; Fri, 15 Mar
+ 2024 08:05:55 +0000
+Received: from SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c]) by SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+ ([fe80::e0a:f88a:cad1:dc1c%7]) with mapi id 15.20.7386.020; Fri, 15 Mar 2024
+ 08:05:55 +0000
+From: Joshua Yeong <joshua.yeong@starfivetech.com>
+To: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>,
+	"alexandre.belloni@bootlin.com" <alexandre.belloni@bootlin.com>,
+	"linux-i3c@lists.infradead.org" <linux-i3c@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: "andersson@kernel.org" <andersson@kernel.org>, "vkoul@kernel.org"
+	<vkoul@kernel.org>, "manivannan.sadhasivam@linaro.org"
+	<manivannan.sadhasivam@linaro.org>
+Subject: RE: [PATCH v1] i3c: master: Enable runtime PM for master controller
+Thread-Topic: [PATCH v1] i3c: master: Enable runtime PM for master controller
+Thread-Index: AQHabmvVHa0TJLr8CkqxZnQVcFD1ubExREqAgAc9zsA=
+Date: Fri, 15 Mar 2024 08:05:55 +0000
+Message-ID:
+ <SH0PR01MB08419B8683E8F2DD05A791BBF928A@SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn>
+References: <20240228093407.4038399-1-quic_msavaliy@quicinc.com>
+ <b61f5f4a-7931-411d-9519-bbff1b7fd6f9@quicinc.com>
+In-Reply-To: <b61f5f4a-7931-411d-9519-bbff1b7fd6f9@quicinc.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=starfivetech.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SH0PR01MB0841:EE_|SH0PR01MB0459:EE_
+x-ms-office365-filtering-correlation-id: ad174501-93bd-4792-6f17-08dc44c6bd6d
+x-ms-exchange-senderadcheck: 1
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 10aSS26U5MYPSe8mJqc9zxYY+zOTiYgjUzs0eOdNyBhQ73gj+/2HKs5GJcSBPAwAo9yejRpZZsPRNXegXn/ipMgjWdOf7seQteEVknpfQxC1KUm/oSVgtNv8YAUpPRd8x+f9tdC/aN1NQGPG4U54md4oPmZfMhEapXanB8ZVQszc7Dfr2yyVrPeDXmSgE9kk2IRl7svCYMuYEspGx9+26VJzl8cp2g56QtUAEz4FKmG9U66BDP6oSitU9h613puhqyHvrWyvs0r5FLLFhLAzsCA/+D9JDJUPXrHS6Hrt351AzIzAZ8qdy4gnSnK2NSt/9Q2xr1DJjutYu0GkwurBIYEAwWlZ6dHPKPo2em5sfklhdrcrL45hY9dz09uzWJHGcszwymSM8cUM/bX8yIswIo85XFS3M6pnWE93PLi5VA7DRSbCAWi9BVzSceHdiKJWFuTGZcvEl/X3GVVpq2QRFWDIaWaMmVdHjYu4UW5v9gTltlfQkcEBRw1aDQCsl1LkqBlOhQmIubusTxO28mzgm70QpLTlLijgl0pUE7NKP5yjOwkqy9jHq5/61KhDJSzVdnWHTvVHVnQNWwjj5LwZPZYOmotPWtk9AJpSuyP7kT3YgmbUTKDEDJFoi522obvt
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn;PTR:;CAT:NONE;SFS:(13230031)(41320700004)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?APJZdD4FUyd6kzdLBfQYqN4yuUhy9sUJMKBeLnAXRIUvFot+IrG/OWlPCNuS?=
+ =?us-ascii?Q?0qmanwFP2gk4i/SS0Oaf1rej1DUOLZpcpwPcswr2Iapinzh0QvqOAHuiblxq?=
+ =?us-ascii?Q?9g0EKtAXCnPOlpD6TbrLRubo8YsziCmqZ1aVjhyvDHv3kupvVQQqJ72Zp/0w?=
+ =?us-ascii?Q?Hm6TXnFVQMLhEtW/H7aT2Tr3BNMZp9ZI7wSBFn2cGfuxYJFTZPGEpoTGgKA9?=
+ =?us-ascii?Q?0sYNlBaK0FW4gUGhO1rC3f8DRcoFVyqlrzGmNidbxmA3c4ECkodRfi7eKyk1?=
+ =?us-ascii?Q?i54OznWNMQuzpTuzg7T4TpR04Qw8GNNBSzu0ZNzaY4rOC694pxEZ0rHhHZEQ?=
+ =?us-ascii?Q?Q4mh/wFpVPrOk3lGMFMMi6Ws3cVugF8Zc+U84t37nk5a/FmI2TJEyhMGeiem?=
+ =?us-ascii?Q?9F42qZ151TPRktEnQj/z9DaiTPyq+/KOiS3PGSTtvIdxEutJD7wLqe8emEQW?=
+ =?us-ascii?Q?bTbPY9VokD+aGZo6gkq8ehmTVmeO70BbdnvwptXK0M2kxuSLZOTJ56U4B8x+?=
+ =?us-ascii?Q?TgH3tg6T5H1xmYt8l2SNIQbQEIM8HaPY8ZmgVjqKLEmpqQGtrWjfC1B9ulQ0?=
+ =?us-ascii?Q?OCnoLvzx3MJvjjNaUn63OEV1vD/BVS6WcnpwUg0HXiWNXJsMQ6trNa8IHlhk?=
+ =?us-ascii?Q?nVmzP5OqghDwbYgK2tNdoX+vQGZq+Obs81Vgca2gSP2FxkLCz0BtM8LsAXZ4?=
+ =?us-ascii?Q?/jEvVS5uC0DVnjfJB2t+draKE1VZ3hU1wtkTCuVbsZ4OF+D9uNRbX3UAjiJx?=
+ =?us-ascii?Q?H9NIpIX8DvB8XL2ccbgSwP8zEPWnaC2aShw5iaOfQxOMiunlZ+frT1yBYUW5?=
+ =?us-ascii?Q?3i9aYgRSke8hHCaK78oWpKMPgXmsTq532q/LRhQ7PC4N7mXnC6eY3NoI7InH?=
+ =?us-ascii?Q?acBj1qYu893ujBHID5bGkVhzx6RsAGiNzUA0lB7UgCuKNveQu4i8qxpVQhOI?=
+ =?us-ascii?Q?hC7o6Ps8MXsrKwsTlIpTuY5bleNSsTh5gBBYacirxtskVw8AlMMeVsDioZxh?=
+ =?us-ascii?Q?ekGJBIvfNhlLH4dibcw8O0x1hLr5D2DbIa9ZRCxmhS87VG6lZL+r/MFVZXsk?=
+ =?us-ascii?Q?5NIWe5oVmaT/x/yOOu4ZFXQ4ADdgtfTYxnXDl84CusDzY20+aMOOSxWPaYoK?=
+ =?us-ascii?Q?yXtYcbDYCnL7gy2dPfKbkAP4XE3Q1R94q7RdcOK/PeEAUjpHQvA+9pZGrPDo?=
+ =?us-ascii?Q?t2BsFNo0cEW3JTOgbgKxFcJJyJpPvKshNIF6Ir63UtFDJisch1h+TExfVt5D?=
+ =?us-ascii?Q?WknUczdkqiD23/rXUDnC+36CJ6y5GccMruuouvJwReFWz/tVjBXjSyG9Tzbw?=
+ =?us-ascii?Q?uuYZ2mS9nKW48qrSfDhtb+xyi3GVTslwe8w4tEKgczCs0dtgIyFQcpl2I17K?=
+ =?us-ascii?Q?QqpiZTiDCAyDZGUZKE8CvRLB65shmgVCB/p1KN2L7wUpIMwnq+j96tbhycin?=
+ =?us-ascii?Q?EXjJOIZfz3tOV/aDfzqZCDQZDDEUa1aJH1J4XEo4W5kPwFt4W5iv1hhFr0Mn?=
+ =?us-ascii?Q?LK86pHnFIs6qfFO3G7bSz9PgCowGnazKtpy4AtBxvVyPgSS9l9+xgp1TstkI?=
+ =?us-ascii?Q?RTWUf23k8dnkKLNN7nGhAjhMO7d4r1/dDLqL5E3ie/QOxYiuZxVQUMEDTWt5?=
+ =?us-ascii?Q?4g=3D=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240311-kms-hdmi-connector-state-v9-14-d45890323344@kernel.org>
-X-Patchwork-Hint: comment
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SH0PR01MB0841.CHNPR01.prod.partner.outlook.cn
+X-MS-Exchange-CrossTenant-Network-Message-Id: ad174501-93bd-4792-6f17-08dc44c6bd6d
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 08:05:55.1465
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 06fe3fa3-1221-43d3-861b-5a4ee687a85c
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: CLTBTpcoCahpKjc1ztLO4PbQqnV4w+XthMla5v8RHU1qjzw9JuRnza/t4h/gLeIFQj9wXbGvhWxbCYjsNstsYSyYdzFGe4igPtzZtwDBPLo=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SH0PR01MB0459
+X-OriginatorOrg: starfivetech.com
 
-On Mon, Mar 11, 2024 at 03:49:42PM +0100, Maxime Ripard wrote:
-> Now that we have all the infrastructure needed, we can add some code
-> that will, for a given connector state and mode, compute the best output
-> format and bpc.
-> 
-> The algorithm is equivalent to the one already found in i915 and vc4.
-> 
-> Signed-off-by: Maxime Ripard <mripard@kernel.org>
-> ---
->  drivers/gpu/drm/drm_atomic_state_helper.c          | 184 ++++++++++++++++++++-
->  .../gpu/drm/tests/drm_atomic_state_helper_test.c   |  25 ++-
->  2 files changed, 197 insertions(+), 12 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
-> index 448b4a73d1c8..9f517599f117 100644
-> --- a/drivers/gpu/drm/drm_atomic_state_helper.c
-> +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
-> @@ -29,10 +29,11 @@
->  #include <drm/drm_blend.h>
->  #include <drm/drm_bridge.h>
->  #include <drm/drm_connector.h>
->  #include <drm/drm_crtc.h>
->  #include <drm/drm_device.h>
-> +#include <drm/drm_edid.h>
->  #include <drm/drm_framebuffer.h>
->  #include <drm/drm_plane.h>
->  #include <drm/drm_print.h>
->  #include <drm/drm_vblank.h>
->  #include <drm/drm_writeback.h>
-> @@ -660,10 +661,100 @@ connector_state_get_mode(const struct drm_connector_state *conn_state)
->  		return NULL;
->  
->  	return &crtc_state->mode;
->  }
->  
-> +static bool
-> +sink_supports_format_bpc(const struct drm_connector *connector,
-> +			 const struct drm_display_info *info,
-> +			 const struct drm_display_mode *mode,
-> +			 unsigned int format, unsigned int bpc)
-> +{
-> +	struct drm_device *dev = connector->dev;
-> +	u8 vic = drm_match_cea_mode(mode);
-> +
-> +	if (vic == 1 && bpc != 8) {
-> +		drm_dbg(dev, "VIC1 requires a bpc of 8, got %u\n", bpc);
 
-Use of drm_dbg() for kms stuff is surprising.
 
-> +		return false;
-> +	}
+> -----Original Message-----
+> From: linux-i3c <linux-i3c-bounces@lists.infradead.org> On Behalf Of Muke=
+sh
+> Kumar Savaliya
+> Sent: Monday, March 11, 2024 1:30 AM
+> To: alexandre.belloni@bootlin.com; linux-i3c@lists.infradead.org; linux-
+> kernel@vger.kernel.org
+> Cc: andersson@kernel.org; vkoul@kernel.org;
+> manivannan.sadhasivam@linaro.org
+> Subject: Re: [PATCH v1] i3c: master: Enable runtime PM for master control=
+ler
+>=20
+> A Gentle reminder ! As i was not part of the linux-i3c group before raisi=
+ng this
+> gerrit, might not went into right folder.
+>=20
+> On 2/28/2024 3:04 PM, Mukesh Kumar Savaliya wrote:
+> > Enable runtime PM for i3c master node during master registration time.
+> >
+> > Sometimes i3c client device driver may want to control the PM of the
+> > parent (master) to perform the transactions and save the power in an
+> > efficient way by controlling the session. Hence device can call PM
+> > APIs by passing the parent node.
+> >
+> > Here, I3C target device when calls pm_runtime_get_sync(dev->parent)
+> > couldn't invoke master drivers runtime PM callback registered by the
+> > master driver because parent's PM status was disabled in the Master
+> > node.
+> >
+> > Also call pm_runtime_no_callbacks() and pm_suspend_ignore_children()
+> > for the master node to not have any callback addition and ignore the
+> > children to have runtime PM work just locally in the driver. This
+> > should be generic and common change for all i3c devices and should not
+> > have any other impact.
+> >
+> > With these changes, I3C client device works and able to invoke master
+> > driver registered runtime PM callbacks.
+> >
+> > Signed-off-by: Mukesh Kumar Savaliya <quic_msavaliy@quicinc.com>
+> > ---
+> >   drivers/i3c/master.c | 6 ++++++
+> >   1 file changed, 6 insertions(+)
+> >
+> > diff --git a/drivers/i3c/master.c b/drivers/i3c/master.c index
+> > 3afa530c5e32..a3dc88974f92 100644
+> > --- a/drivers/i3c/master.c
+> > +++ b/drivers/i3c/master.c
+> > @@ -13,6 +13,7 @@
+> >   #include <linux/kernel.h>
+> >   #include <linux/list.h>
+> >   #include <linux/of.h>
+> > +#include <linux/pm_runtime.h>
+> >   #include <linux/slab.h>
+> >   #include <linux/spinlock.h>
+> >   #include <linux/workqueue.h>
+> > @@ -2812,6 +2813,10 @@ int i3c_master_register(struct
+> > i3c_master_controller *master,
+> >
+> >   	i3c_bus_notify(i3cbus, I3C_NOTIFY_BUS_ADD);
+> >
+> > +	pm_runtime_no_callbacks(&master->dev);
+> > +	pm_suspend_ignore_children(&master->dev, true);
+> > +	pm_runtime_enable(&master->dev);
+> > +
 
-I don't think we have this in i915. My original impression was that you
-can use higher color depth if you can determine the sink capabilities,
-but all sinks are required to accept 640x480@8bpc as a fallback.
+Will runtime pm impact on ibi request from target?
 
-but CTA-861-H says:
-"5.4 Color Coding & Quantization
- Component Depth: The coding shall be N-bit, where N = 8, 10, 12, or 16
- bits/component — except in the case of the default 640x480 Video Timing 1,
- where the value of N shall be 8."
-
-So that does seem to imply that you're supposed to use exactly 8bpc.
-Though the word "default" in there is confusing. Are they specifically
-using that to indicate that this is about the fallback behaviour, or
-is it just indicating that it is a "default mode that always has to
-be supported". Dunno. I guess no real harm in forcing 8bpc for 640x480
-since no one is likely to use that for any high fidelity stuff.
-
-> +
-> +	if (!info->is_hdmi &&
-> +	    (format != HDMI_COLORSPACE_RGB || bpc != 8)) {
-> +		drm_dbg(dev, "DVI Monitors require an RGB output at 8 bpc\n");
-> +		return false;
-> +	}
-> +
-> +	if (!(connector->hdmi.supported_formats & BIT(format))) {
-> +		drm_dbg(dev, "%s format unsupported by the connector.\n",
-> +			drm_hdmi_connector_get_output_format_name(format));
-> +		return false;
-> +	}
-> +
-> +	switch (format) {
-> +	case HDMI_COLORSPACE_RGB:
-> +		drm_dbg(dev, "RGB Format, checking the constraints.\n");
-> +
-> +		if (!(info->color_formats & DRM_COLOR_FORMAT_RGB444))
-> +			return false;
-> +
-> +		if (bpc == 10 && !(info->edid_hdmi_rgb444_dc_modes & DRM_EDID_HDMI_DC_30)) {
-> +			drm_dbg(dev, "10 BPC but sink doesn't support Deep Color 30.\n");
-> +			return false;
-> +		}
-> +
-> +		if (bpc == 12 && !(info->edid_hdmi_rgb444_dc_modes & DRM_EDID_HDMI_DC_36)) {
-> +			drm_dbg(dev, "12 BPC but sink doesn't support Deep Color 36.\n");
-> +			return false;
-> +		}
-> +
-> +		drm_dbg(dev, "RGB format supported in that configuration.\n");
-> +
-> +		return true;
-> +
-> +	case HDMI_COLORSPACE_YUV422:
-> +		drm_dbg(dev, "YUV422 format, checking the constraints.\n");
-> +
-> +		if (!(info->color_formats & DRM_COLOR_FORMAT_YCBCR422)) {
-> +			drm_dbg(dev, "Sink doesn't support YUV422.\n");
-> +			return false;
-> +		}
-> +
-> +		if (bpc != 12) {
-> +			drm_dbg(dev, "YUV422 only supports 12 bpc.\n");
-> +			return false;
-> +		}
-> +
-> +		drm_dbg(dev, "YUV422 format supported in that configuration.\n");
-> +
-> +		return true;
-> +
-> +	case HDMI_COLORSPACE_YUV444:
-> +		drm_dbg(dev, "YUV444 format, checking the constraints.\n");
-> +
-> +		if (!(info->color_formats & DRM_COLOR_FORMAT_YCBCR444)) {
-> +			drm_dbg(dev, "Sink doesn't support YUV444.\n");
-> +			return false;
-> +		}
-> +
-> +		if (bpc == 10 && !(info->edid_hdmi_ycbcr444_dc_modes & DRM_EDID_HDMI_DC_30)) {
-> +			drm_dbg(dev, "10 BPC but sink doesn't support Deep Color 30.\n");
-> +			return false;
-> +		}
-> +
-> +		if (bpc == 12 && !(info->edid_hdmi_ycbcr444_dc_modes & DRM_EDID_HDMI_DC_36)) {
-> +			drm_dbg(dev, "12 BPC but sink doesn't support Deep Color 36.\n");
-> +			return false;
-> +		}
-> +
-> +		drm_dbg(dev, "YUV444 format supported in that configuration.\n");
-> +
-> +		return true;
-> +	}
-> +
-> +	return false;
-> +}
-> +
->  static enum drm_mode_status
->  hdmi_clock_valid(const struct drm_connector *connector,
->  		 const struct drm_display_mode *mode,
->  		 unsigned long long clock)
->  {
-> @@ -704,10 +795,99 @@ hdmi_compute_clock(const struct drm_connector *connector,
->  	state->hdmi.tmds_char_rate = clock;
->  
->  	return 0;
->  }
->  
-> +static bool
-> +hdmi_try_format_bpc(const struct drm_connector *connector,
-> +		    struct drm_connector_state *state,
-
-"state" is IMO not a great naming choice. It forces you to go and
-look up the definition whenever you're not sure what 'state' actually
-is when reading the code. 
-
-Als at some point you may want to plumb different kinds of states
-into these, or just switch to passing in the whole drm_atomic_state.
-
-So I recommend using more specific names for the different kinds of
-states (eg. "crtc_state"/"conn_state"/etc.) everywhere.
-
-> +		    const struct drm_display_mode *mode,
-> +		    unsigned int bpc, enum hdmi_colorspace fmt)
-> +{
-> +	const struct drm_display_info *info = &connector->display_info;
-> +	struct drm_device *dev = connector->dev;
-> +	int ret;
-> +
-> +	drm_dbg(dev, "Trying %s output format\n",
-> +		drm_hdmi_connector_get_output_format_name(fmt));
-> +
-> +	if (!sink_supports_format_bpc(connector, info, mode, fmt, bpc)) {
-> +		drm_dbg(dev, "%s output format not supported with %u bpc\n",
-> +			drm_hdmi_connector_get_output_format_name(fmt), bpc);
-> +		return false;
-> +	}
-> +
-> +	ret = hdmi_compute_clock(connector, state, mode, bpc, fmt);
-> +	if (ret) {
-> +		drm_dbg(dev, "Couldn't compute clock for %s output format and %u bpc\n",
-> +			drm_hdmi_connector_get_output_format_name(fmt), bpc);
-> +		return false;
-> +	}
-> +
-> +	drm_dbg(dev, "%s output format supported with %u (TMDS char rate: %llu Hz)\n",
-> +		drm_hdmi_connector_get_output_format_name(fmt), bpc, state->hdmi.tmds_char_rate);
-> +
-> +	return true;
-> +}
-> +
-> +static int
-> +hdmi_compute_format(const struct drm_connector *connector,
-> +		    struct drm_connector_state *state,
-> +		    const struct drm_display_mode *mode,
-> +		    unsigned int bpc)
-> +{
-> +	struct drm_device *dev = connector->dev;
-> +
-> +	if (hdmi_try_format_bpc(connector, state, mode, bpc, HDMI_COLORSPACE_RGB)) {
-> +		state->hdmi.output_format = HDMI_COLORSPACE_RGB;
-> +		return 0;
-> +	}
-> +
-> +	if (hdmi_try_format_bpc(connector, state, mode, bpc, HDMI_COLORSPACE_YUV422)) {
-> +		state->hdmi.output_format = HDMI_COLORSPACE_YUV422;
-> +		return 0;
-> +	}
-
-Looks like you're preferring YCbCr 4:2:2 over RGB 8bpc. Not sure
-if that's a good tradeoff to make.
-
-In i915 we don't currently expose 4:2:2 at all because it doesn't
-help in getting a working display, and we have no uapi for the
-user to force it if they really want 4:2:2 over RGB.
-
-> +
-> +	drm_dbg(dev, "Failed. No Format Supported for that bpc count.\n");
-> +
-> +	return -EINVAL;
-> +}
-> +
-> +static int
-> +hdmi_compute_config(const struct drm_connector *connector,
-> +		    struct drm_connector_state *state,
-> +		    const struct drm_display_mode *mode)
-> +{
-> +	struct drm_device *dev = connector->dev;
-> +	unsigned int max_bpc = clamp_t(unsigned int,
-> +				       state->max_bpc,
-> +				       8, connector->max_bpc);
-> +	unsigned int bpc;
-> +	int ret;
-> +
-> +	for (bpc = max_bpc; bpc >= 8; bpc -= 2) {
-> +		drm_dbg(dev, "Trying with a %d bpc output\n", bpc);
-> +
-> +		ret = hdmi_compute_format(connector, state, mode, bpc);
-
-Hmm. Actually I'm not sure your 4:2:2 stuff even works since you 
-check for bpc==12 in there and only call this based on the max_bpc.
-I'm not convinced max_bpc would actually be 12 for a sink that
-supports YCbCr 4:2:2 but not 12bpc RGB.
-
-> +		if (ret)
-> +			continue;
-> +
-> +		state->hdmi.output_bpc = bpc;
-> +
-> +		drm_dbg(dev,
-> +			"Mode %ux%u @ %uHz: Found configuration: bpc: %u, fmt: %s, clock: %llu\n",
-> +			mode->hdisplay, mode->vdisplay, drm_mode_vrefresh(mode),
-> +			state->hdmi.output_bpc,
-> +			drm_hdmi_connector_get_output_format_name(state->hdmi.output_format),
-> +			state->hdmi.tmds_char_rate);
-> +
-> +		return 0;
-> +	}
-> +
-> +	return -EINVAL;
-> +}
-> +
->  /**
->   * drm_atomic_helper_connector_hdmi_check() - Helper to check HDMI connector atomic state
->   * @connector: DRM Connector
->   * @state: the DRM State object
->   *
-> @@ -727,13 +907,11 @@ int drm_atomic_helper_connector_hdmi_check(struct drm_connector *connector,
->  		drm_atomic_get_new_connector_state(state, connector);
->  	const struct drm_display_mode *mode =
->  		connector_state_get_mode(new_state);
->  	int ret;
->  
-> -	ret = hdmi_compute_clock(connector, new_state, mode,
-> -				 new_state->hdmi.output_bpc,
-> -				 new_state->hdmi.output_format);
-> +	ret = hdmi_compute_config(connector, new_state, mode);
->  	if (ret)
->  		return ret;
->  
->  	if (old_state->hdmi.output_bpc != new_state->hdmi.output_bpc ||
->  	    old_state->hdmi.output_format != new_state->hdmi.output_format) {
-> diff --git a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-> index 5a8750153510..f010fde0eb69 100644
-> --- a/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-> +++ b/drivers/gpu/drm/tests/drm_atomic_state_helper_test.c
-> @@ -68,13 +68,10 @@ static int light_up_connector(struct kunit *test,
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, state);
->  
->  	conn_state = drm_atomic_get_connector_state(state, connector);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, conn_state);
->  
-> -	conn_state->hdmi.output_bpc = connector->max_bpc;
-> -	conn_state->hdmi.output_format = HDMI_COLORSPACE_RGB;
-> -
->  	ret = drm_atomic_set_crtc_for_connector(conn_state, crtc);
->  	KUNIT_EXPECT_EQ(test, ret, 0);
->  
->  	crtc_state = drm_atomic_get_crtc_state(state, crtc);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, crtc_state);
-> @@ -249,14 +246,19 @@ static void drm_test_check_output_bpc_crtc_mode_changed(struct kunit *test)
->  	priv = drm_atomic_helper_connector_hdmi_init(test,
->  						     BIT(HDMI_COLORSPACE_RGB),
->  						     10);
->  	KUNIT_ASSERT_NOT_NULL(test, priv);
->  
-> +	conn = &priv->connector;
-> +	ret = set_connector_edid(test, conn,
-> +				 test_edid_hdmi_1080p_rgb_yuv_dc_max_200mhz,
-> +				 ARRAY_SIZE(test_edid_hdmi_1080p_rgb_yuv_dc_max_200mhz));
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
->  	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->  
-> -	conn = &priv->connector;
->  	preferred = find_preferred_mode(conn);
->  	KUNIT_ASSERT_NOT_NULL(test, preferred);
->  
->  	drm = &priv->drm;
->  	crtc = priv->crtc;
-> @@ -270,15 +272,15 @@ static void drm_test_check_output_bpc_crtc_mode_changed(struct kunit *test)
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, new_conn_state);
->  
->  	old_conn_state = drm_atomic_get_old_connector_state(state, conn);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, old_conn_state);
->  
-> -	new_conn_state->hdmi.output_bpc = 8;
-> +	new_conn_state->max_requested_bpc = 8;
->  
->  	KUNIT_ASSERT_NE(test,
-> -			old_conn_state->hdmi.output_bpc,
-> -			new_conn_state->hdmi.output_bpc);
-> +			old_conn_state->max_requested_bpc,
-> +			new_conn_state->max_requested_bpc);
->  
->  	ret = drm_atomic_check_only(state);
->  	KUNIT_ASSERT_EQ(test, ret, 0);
->  
->  	old_conn_state = drm_atomic_get_old_connector_state(state, conn);
-> @@ -318,14 +320,19 @@ static void drm_test_check_output_bpc_crtc_mode_not_changed(struct kunit *test)
->  	priv = drm_atomic_helper_connector_hdmi_init(test,
->  						     BIT(HDMI_COLORSPACE_RGB),
->  						     10);
->  	KUNIT_ASSERT_NOT_NULL(test, priv);
->  
-> +	conn = &priv->connector;
-> +	ret = set_connector_edid(test, conn,
-> +				 test_edid_hdmi_1080p_rgb_yuv_dc_max_200mhz,
-> +				 ARRAY_SIZE(test_edid_hdmi_1080p_rgb_yuv_dc_max_200mhz));
-> +	KUNIT_ASSERT_EQ(test, ret, 0);
-> +
->  	ctx = drm_kunit_helper_acquire_ctx_alloc(test);
->  	KUNIT_ASSERT_NOT_ERR_OR_NULL(test, ctx);
->  
-> -	conn = &priv->connector;
->  	preferred = find_preferred_mode(conn);
->  	KUNIT_ASSERT_NOT_NULL(test, preferred);
->  
->  	drm = &priv->drm;
->  	crtc = priv->crtc;
-> @@ -668,11 +675,11 @@ static void drm_test_check_format_value(struct kunit *test)
->  						     8);
->  	KUNIT_ASSERT_NOT_NULL(test, priv);
->  
->  	conn = &priv->connector;
->  	conn_state = conn->state;
-> -	KUNIT_EXPECT_EQ(test, conn_state->hdmi.output_format, HDMI_COLORSPACE_RGB);
-> +	KUNIT_EXPECT_EQ(test, conn_state->hdmi.output_format, 0);
->  }
->  
->  /*
->   * Test that the value of the output format property out of reset is set
->   * to 0, and will be computed at atomic_check time.
-> 
-> -- 
-> 2.43.2
-
--- 
-Ville Syrjälä
-Intel
+> >   	/*
+> >   	 * We're done initializing the bus and the controller, we can now
+> >   	 * register I3C devices discovered during the initial DAA.
+> > @@ -2849,6 +2854,7 @@ void i3c_master_unregister(struct
+> i3c_master_controller *master)
+> >   	i3c_master_i2c_adapter_cleanup(master);
+> >   	i3c_master_unregister_i3c_devs(master);
+> >   	i3c_master_bus_cleanup(master);
+> > +	pm_runtime_disable(&master->dev);
+> >   	device_unregister(&master->dev);
+> >   }
+> >   EXPORT_SYMBOL_GPL(i3c_master_unregister);
+>=20
+> --
+> linux-i3c mailing list
+> linux-i3c@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-i3c
 
