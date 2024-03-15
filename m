@@ -1,110 +1,268 @@
-Return-Path: <linux-kernel+bounces-104622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1232B87D11A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:20:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3BFEE87D123
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:23:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF06F1C22CFC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:20:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DC551C228F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:23:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1AA24595D;
-	Fri, 15 Mar 2024 16:20:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D94844596F;
+	Fri, 15 Mar 2024 16:22:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b="Y/J0M5H6"
-Received: from todd.t-8ch.de (todd.t-8ch.de [159.69.126.157])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EubmOCNM"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4708A3FE47;
-	Fri, 15 Mar 2024 16:20:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=159.69.126.157
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3AEA9446BA;
+	Fri, 15 Mar 2024 16:22:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710519640; cv=none; b=Msv6rNF992J1jOqsZuwQL6aYQ2IJXLpbmrj1mRU0AOOOZill+s1R7fnEDwgIBphy2ewskHRwgXltqkQWurtLD0tS4AGh2dHciTBtmkLthp78F/hAqhzY3ODLNFf8ECg90MwhfAq4Ew+MBj0Lux3LlAiQZ/ZYdaARw4+onIm78TY=
+	t=1710519778; cv=none; b=JAK5EOh2b2AamqtucG9qsnoTs+a6siTiPocw0G0z7Y3wnQ6XFIjgb5c1kz/eBGK5Q44hulE0PWig973kAWfiCcBkEG7fkZzotRZEbFrlz83rpJordDw1IqSYDkTvNelGRvgmkHYmm9RlGlNqdf1qotCWc3qc21OqE8gjYVjs9iY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710519640; c=relaxed/simple;
-	bh=1n+G9SuhNWG59T4LbSXCZQEFL6hz0CIwSYG1SoowdRA=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=Q6pkMw5n7gXeLR6k3sTIgutzKmOSN8xjcuE8LxCFmorcmqExCZlnWJQ92PXcyFq8SHutllkK8wR8FUpAelwP02indd/3HMbed1a3GBpnw1dRMJI+FgO2RY8JsUFBtEBHtDtSXWXfXbjMvW5gYvJ+xf2vUqWLx7f2YA7rTFcRP/w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net; spf=pass smtp.mailfrom=weissschuh.net; dkim=pass (1024-bit key) header.d=weissschuh.net header.i=@weissschuh.net header.b=Y/J0M5H6; arc=none smtp.client-ip=159.69.126.157
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=weissschuh.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=weissschuh.net
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=weissschuh.net;
-	s=mail; t=1710519634;
-	bh=1n+G9SuhNWG59T4LbSXCZQEFL6hz0CIwSYG1SoowdRA=;
-	h=From:Date:Subject:To:Cc:From;
-	b=Y/J0M5H6ecU85nrrQagfsKLxMsJ0OroPYVUzQcZSyfX5z3fLGAE2nKzL3QInaStF6
-	 EEiFP4+uTA6WWG1q6hG94/9yX7OFU8ojrfxQIfIno2cdXdmWfWvScaGqAmkv/TySNJ
-	 +nLFncdAK0VvdJAulLNO+KwHRBfg7nN+7L4QlpPs=
-From: =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-Date: Fri, 15 Mar 2024 17:20:31 +0100
-Subject: [PATCH] net: always initialize sysctl ownership
+	s=arc-20240116; t=1710519778; c=relaxed/simple;
+	bh=lngc63T678kArJFG5DVBRqDftjyrgzERehYJN68mKOM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=j5aSz1mJ+kmwsmalCrDXnU5+DqyYNTFAiZLNDbREqADjeC4R6WOCSETVjK7kg4QoOm//7ye5Prko1Hdgjkgp3EGabU/BkUfBxSw0xGnir0HNwh0pzPXYAZwjHmzcVLc6vSPXgmfR5n9pd9+IVKKoV700kQX6oryIZThU5Vzg2PQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EubmOCNM; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710519776; x=1742055776;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lngc63T678kArJFG5DVBRqDftjyrgzERehYJN68mKOM=;
+  b=EubmOCNMgzjOcoqS0FoLhv3siheocDs1VGbqA/ThyiaBJygYLWh41PZ/
+   7M6p4d8eLkS6FWb6rqLgdpKYtzGnYyFVAx3+ccEtzvQeGyJI47tCSBs83
+   +ZUNcxCt/UckKcwhKOmmZ2llOaPdWQCPyPgbnygJe3egldBVd1SICsvhX
+   GxVWDVAKrHuGUtJC1q4g0H4WWCjO8DhEvv5bGiQk/zWuU8jz+KCs5z/UF
+   r0oB7yGv/SLoWnrGyd8wUYV2Nm/GkAbdYe/IUgko5DKjlH1aF8NLR8jxw
+   v5NGgsTHPGRN1vHLW0Het2tFDEoFpss1VLGQkJ27zseZ77nCBnKLSDbXK
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5258725"
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="5258725"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 09:22:56 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="17186557"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 09:22:55 -0700
+Date: Fri, 15 Mar 2024 09:22:55 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Huang, Kai" <kai.huang@intel.com>
+Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, chen.bo@intel.com,
+	hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 034/130] KVM: TDX: Get system-wide info about TDX
+ module on initialization
+Message-ID: <20240315162255.GG1258280@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <eaa2c1e23971f058e5921681b0b84d7ea7d38dc1.1708933498.git.isaku.yamahata@intel.com>
+ <e88e5448-e354-4ec6-b7de-93dd8f7786b5@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240315-sysctl-net-ownership-v1-1-2b465555a292@weissschuh.net>
-X-B4-Tracking: v=1; b=H4sIAE519GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDY0NT3eLK4uSSHN281BLd/PK81KLijMwC3aRkk1RD89TE1NREMyWg1oK
- i1LTMCrCx0bG1tQD3JL/EZgAAAA==
-To: "David S. Miller" <davem@davemloft.net>, 
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
- Paolo Abeni <pabeni@redhat.com>, 
- Dmitry Torokhov <dmitry.torokhov@gmail.com>, 
- "Eric W. Biederman" <ebiederm@xmission.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Luis Chamberlain <mcgrof@kernel.org>, 
- Joel Granados <j.granados@samsung.com>, 
- =?utf-8?q?Thomas_Wei=C3=9Fschuh?= <linux@weissschuh.net>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710519633; l=1185;
- i=linux@weissschuh.net; s=20221212; h=from:subject:message-id;
- bh=1n+G9SuhNWG59T4LbSXCZQEFL6hz0CIwSYG1SoowdRA=;
- b=VzGqNPpGHmW5VNKHjSGPj9uzf63W/DwkC2jy0ZtqKMFt+QnGxgmQBhctYl3eEEqa1pC7oIAOl
- Oxalw9/JZLxCNMwz8VJnIhENKZrFJqdZPFYH2C3BCgE/a/c9yElrEit
-X-Developer-Key: i=linux@weissschuh.net; a=ed25519;
- pk=KcycQgFPX2wGR5azS7RhpBqedglOZVgRPfdFSPB1LNw=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <e88e5448-e354-4ec6-b7de-93dd8f7786b5@intel.com>
 
-The sysctl core does not initialize these fields when the set_ownership
-callback is present.
-So always do it in the callback.
+On Fri, Mar 15, 2024 at 12:09:29PM +1300,
+"Huang, Kai" <kai.huang@intel.com> wrote:
 
-Fixes: e79c6a4fc923 ("net: make net namespace sysctls belong to container's owner")
-Signed-off-by: Thomas Weißschuh <linux@weissschuh.net>
----
- net/sysctl_net.c | 6 ++----
- 1 file changed, 2 insertions(+), 4 deletions(-)
+> 
+> > +struct tdx_info {
+> > +	u64 features0;
+> > +	u64 attributes_fixed0;
+> > +	u64 attributes_fixed1;
+> > +	u64 xfam_fixed0;
+> > +	u64 xfam_fixed1;
+> > +
+> > +	u16 num_cpuid_config;
+> > +	/* This must the last member. */
+> > +	DECLARE_FLEX_ARRAY(struct kvm_tdx_cpuid_config, cpuid_configs);
+> > +};
+> > +
+> > +/* Info about the TDX module. */
+> > +static struct tdx_info *tdx_info;
+> > +
+> >   #define TDX_MD_MAP(_fid, _ptr)			\
+> >   	{ .fid = MD_FIELD_ID_##_fid,		\
+> >   	  .ptr = (_ptr), }
+> > @@ -66,7 +81,7 @@ static size_t tdx_md_element_size(u64 fid)
+> >   	}
+> >   }
+> > -static int __used tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+> > +static int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+> >   {
+> >   	struct tdx_md_map *m;
+> >   	int ret, i;
+> > @@ -84,9 +99,26 @@ static int __used tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+> >   	return 0;
+> >   }
+> > +#define TDX_INFO_MAP(_field_id, _member)			\
+> > +	TD_SYSINFO_MAP(_field_id, struct tdx_info, _member)
+> > +
+> >   static int __init tdx_module_setup(void)
+> >   {
+> > +	u16 num_cpuid_config;
+> >   	int ret;
+> > +	u32 i;
+> > +
+> > +	struct tdx_md_map mds[] = {
+> > +		TDX_MD_MAP(NUM_CPUID_CONFIG, &num_cpuid_config),
+> > +	};
+> > +
+> > +	struct tdx_metadata_field_mapping fields[] = {
+> > +		TDX_INFO_MAP(FEATURES0, features0),
+> > +		TDX_INFO_MAP(ATTRS_FIXED0, attributes_fixed0),
+> > +		TDX_INFO_MAP(ATTRS_FIXED1, attributes_fixed1),
+> > +		TDX_INFO_MAP(XFAM_FIXED0, xfam_fixed0),
+> > +		TDX_INFO_MAP(XFAM_FIXED1, xfam_fixed1),
+> > +	};
+> >   	ret = tdx_enable();
+> >   	if (ret) {
+> > @@ -94,7 +126,48 @@ static int __init tdx_module_setup(void)
+> >   		return ret;
+> >   	}
+> > +	ret = tdx_md_read(mds, ARRAY_SIZE(mds));
+> > +	if (ret)
+> > +		return ret;
+> > +
+> > +	tdx_info = kzalloc(sizeof(*tdx_info) +
+> > +			   sizeof(*tdx_info->cpuid_configs) * num_cpuid_config,
+> > +			   GFP_KERNEL);
+> > +	if (!tdx_info)
+> > +		return -ENOMEM;
+> > +	tdx_info->num_cpuid_config = num_cpuid_config;
+> > +
+> > +	ret = tdx_sys_metadata_read(fields, ARRAY_SIZE(fields), tdx_info);
+> > +	if (ret)
+> > +		goto error_out;
+> > +
+> > +	for (i = 0; i < num_cpuid_config; i++) {
+> > +		struct kvm_tdx_cpuid_config *c = &tdx_info->cpuid_configs[i];
+> > +		u64 leaf, eax_ebx, ecx_edx;
+> > +		struct tdx_md_map cpuids[] = {
+> > +			TDX_MD_MAP(CPUID_CONFIG_LEAVES + i, &leaf),
+> > +			TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2, &eax_ebx),
+> > +			TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2 + 1, &ecx_edx),
+> > +		};
+> > +
+> > +		ret = tdx_md_read(cpuids, ARRAY_SIZE(cpuids));
+> > +		if (ret)
+> > +			goto error_out;
+> > +
+> > +		c->leaf = (u32)leaf;
+> > +		c->sub_leaf = leaf >> 32;
+> > +		c->eax = (u32)eax_ebx;
+> > +		c->ebx = eax_ebx >> 32;
+> > +		c->ecx = (u32)ecx_edx;
+> > +		c->edx = ecx_edx >> 32;
+> 
+> OK I can see why you don't want to use ...
+> 
+> 	struct tdx_metadata_field_mapping fields[] = {
+> 		TDX_INFO_MAP(NUM_CPUID_CONFIG, num_cpuid_config),
+> 	};
+> 
+> ... to read num_cpuid_config first, because the memory to hold @tdx_info
+> hasn't been allocated, because its size depends on the num_cpuid_config.
+> 
+> And I confess it's because the tdx_sys_metadata_field_read() that got
+> exposed in patch ("x86/virt/tdx: Export global metadata read
+> infrastructure") only returns 'u64' for all metadata field, and you didn't
+> want to use something like this:
+> 
+> 	u64 num_cpuid_config;
+> 	
+> 	tdx_sys_metadata_field_read(..., &num_cpuid_config);
+> 
+> 	...
+> 
+> 	tdx_info->num_cpuid_config = num_cpuid_config;
+> 
+> Or you can explicitly cast:
+> 
+> 	tdx_info->num_cpuid_config = (u16)num_cpuid_config;
+> 
+> (I know people may don't like the assigning 'u64' to 'u16', but it seems
+> nothing wrong to me, because the way done in (1) below effectively has the
+> same result comparing to type case).
+> 
+> But there are other (better) ways to do:
+> 
+> 1) you can introduce a helper as suggested by Xiaoyao in [*]:
+> 
+> 
+> 	int tdx_sys_metadata_read_single(u64 field_id,
+> 					int bytes,  void *buf)
+> 	{
+> 		return stbuf_read_sys_metadata_field(field_id, 0,
+> 						bytes, buf);
+> 	}
+> 
+> And do:
+> 
+> 	tdx_sys_metadata_read_single(NUM_CPUID_CONFIG,
+> 		sizeof(num_cpuid_config), &num_cpuid_config);
+> 
+> That's _much_ cleaner than the 'struct tdx_md_map', which only confuses
+> people.
+> 
+> But I don't think we need to do this as mentioned above -- we just do type
+> cast.
+> 
+> 2) You can just preallocate enough memory.  It cannot be larger than 1024B,
+> right?  You can even just allocate one page.  It's just 4K, no one cares.
+> 
+> Then you can do:
+> 
+> 	struct tdx_metadata_field_mapping tdx_info_fields = {
+> 		...
+> 		TDX_INFO_MAP(NUM_CPUID_CONFIG, num_cpuid_config),
+> 	};
+> 
+> 	tdx_sys_metadata_read(tdx_info_fields,
+> 			ARRAY_SIZE(tdx_info_fields, tdx_info);
+> 
+> And then you read the CPUID_CONFIG array one by one using the same 'struct
+> tdx_metadata_field_mapping' and tdx_sys_metadata_read():
+> 
+> 
+> 	for (i = 0; i < tdx_info->num_cpuid_config; i++) {
+> 		struct tdx_metadata_field_mapping cpuid_fields = {
+> 			TDX_CPUID_CONFIG_MAP(CPUID_CONFIG_LEAVES + i,
+> 						leaf),
+> 			...
+> 		};
+> 		struct kvm_tdx_cpuid_config *c =
+> 				&tdx_info->cpuid_configs[i];
+> 
+> 		tdx_sys_metadata_read(cpuid_fields,
+> 				ARRAY_SIZE(cpuid_fields), c);
+> 
+> 		....
+> 	}
+> 
+> So stopping having the duplicated 'struct tdx_md_map' and related staff, as
+> they are absolutely unnecessary and only confuses people.
 
-diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-index 051ed5f6fc93..03e320ddacc9 100644
---- a/net/sysctl_net.c
-+++ b/net/sysctl_net.c
-@@ -62,12 +62,10 @@ static void net_ctl_set_ownership(struct ctl_table_header *head,
- 	kgid_t ns_root_gid;
- 
- 	ns_root_uid = make_kuid(net->user_ns, 0);
--	if (uid_valid(ns_root_uid))
--		*uid = ns_root_uid;
-+	*uid = uid_valid(ns_root_uid) ? ns_root_uid : GLOBAL_ROOT_UID;
- 
- 	ns_root_gid = make_kgid(net->user_ns, 0);
--	if (gid_valid(ns_root_gid))
--		*gid = ns_root_gid;
-+	*gid = gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
- }
- 
- static struct ctl_table_root net_sysctl_root = {
 
----
-base-commit: e5eb28f6d1afebed4bb7d740a797d0390bd3a357
-change-id: 20240315-sysctl-net-ownership-bc4e17eaeea6
-
-Best regards,
+Ok, I'll rewrite the code to use tdx_sys_metadata_read() by introducng
+tentative struct in a function scope.
 -- 
-Thomas Weißschuh <linux@weissschuh.net>
-
+Isaku Yamahata <isaku.yamahata@intel.com>
 
