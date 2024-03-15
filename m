@@ -1,263 +1,258 @@
-Return-Path: <linux-kernel+bounces-104721-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6B60F87D2C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:27:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 44DBA87D2B9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:26:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EFB5283D11
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:27:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C8BA81F25CFB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:26:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0046A4F20E;
-	Fri, 15 Mar 2024 17:26:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D201487AE;
+	Fri, 15 Mar 2024 17:26:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Y9SYMkth"
-Received: from mout.gmx.net (mout.gmx.net [212.227.15.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="eJLiuupd"
+Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E31DE4CB28;
-	Fri, 15 Mar 2024 17:26:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C70F645C1C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:26:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523604; cv=none; b=bwmEMjISyVTaoE5Yx6FEQjcQCLDtjbLx/QxHdPuNZJQn8QAtcTa8y6rsRZuLHABCAn+ZxR7zVkhgwotS5PeKHkAPEWT90Q1i8UOpPbZiIpRezwfFgnrp26f9kaC3hg1IoyvI94SI8cBj5/e9l9M8HvjKSR4rUmN3EBg+91Ne0H8=
+	t=1710523594; cv=none; b=iDiDUmiDonQzN+9ClwDhGptnHegJsbZVFjGnhxNQ/htq1jyYEy6Ga7+8XZfqRZoUv2p6X3CvyjzhbG4F6LvUX1GTmcmvIUCm7a+c8RuATat7OPSgMXlBErfTrciGlTRtexLnc05dBDzrCssbtJ8su8BxfFUAttpuoZxnMTvOX/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523604; c=relaxed/simple;
-	bh=ygRI23C6RBYWrQ/EPvkkuPXFb+etv39kxODn1idD9Zk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R6ha3+CqSF4ps+RLG9aJFCYH1qaEhtdquGYV5ykiXBeu7/tJmLaQsL+UlMWTB3OUNz243A90ckghBOVMQA0vRbO5S/q2VCAglNXeVr/pEBKmjOMmwYXJODlqxkrojgdXcvALQ7ncLgiiYUuoEwQbsAasxVak0EKMkUBub5r/qWw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Y9SYMkth; arc=none smtp.client-ip=212.227.15.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710523590; x=1711128390; i=w_armin@gmx.de;
-	bh=3sTic/dN2Y9HOneaJCdXm9WF6RW0UjLBsv+KEhE/fGw=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=Y9SYMkth4P+i9FgCSgSUU9yONP830s39QbQda3MQFgNs1btN0dim774cfKiclwrG
-	 T84sHL1h1n1T55Jcm3fX5oU/PtFT1xE7EA9HzKXHEOOmdM5APdLs4FlvwcgF0pxzQ
-	 SaEIPfHMpe+ahH80ledWN/0ZN20YLAA6iG6IQhZ3J/Zp7WwJ/iyABAlkCt/FqYYSJ
-	 NNJ5rW4nx4X58KgHFbLzSY/5IuXimD2M0CVyaZz0RTKMLoIbb4HXR1oXBG6XDVfW5
-	 TuyV2ZK9GWoMCCi7uHVwRT4mXRy3xyuDnjOIa9hG8ikkZooyayn3KY6OSpd5925BB
-	 Zkh9SiXOiNHLacVy0w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx005
- [212.227.17.190]) with ESMTPSA (Nemesis) id 1N3siA-1qlYCE1YMC-00zrVn; Fri, 15
- Mar 2024 18:26:30 +0100
-Message-ID: <a2db8f76-d0c3-402e-9fb0-13f36c848607@gmx.de>
-Date: Fri, 15 Mar 2024 18:26:23 +0100
+	s=arc-20240116; t=1710523594; c=relaxed/simple;
+	bh=8+iEamvYNnnhpAwMYtEnj73QOL5hzW4CCiMAPDnH9Yo=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=RkpdckMWSS6iT8ZvGivUMNAtfcDTCLKXHO9FRL3xbhSH9lXYVQkRkLHJZfGOmVAejgxNjAPUX7sJM+DmhKZNV3EZdvigePVxnUbsFclwMmcubQpHmC1yl5nlyxAqzDARxatdBG7J1FPUKTDan8t6mIUzjr5E7Ugyn3ZHQCf+iC0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=eJLiuupd; arc=none smtp.client-ip=209.85.210.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e6b6de7383so2033286b3a.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:26:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710523592; x=1711128392; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=SBPud4Qyt0c6+W4f+FotFxIkibCaGt2ovKebQi1WSxI=;
+        b=eJLiuupdk9NiAkiUN7nohpdfgxViM6iewe9RuyZJKHClUqWSBf6H2zON+DqJSB1oK2
+         sfRcH0DF9cze8sY/phWI+qZd9TBav5OvQukWtY8HLWqG+Dn/hDDPZO2TNMXADnw0D1+J
+         NBhBimJihPZNTpTOGOv/gT/AnoSkwbj8MTNlxXAyESiJpWD3f9GZUhi+BtF4f8AqnsaC
+         WfAa6+dH1VRjeQaVVc7OlQmtpbYRu/xK/CMqF0g9BPnSVZTkb40pdnGwVGdtSb2IH1Lv
+         A+V0KkiIbWB/+aAHjvLe2jSuVZ8W0Lxh2A4/ZvRs2RA1OXcQKPnnY0zp6JeJu+h5puIT
+         M8wg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710523592; x=1711128392;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=SBPud4Qyt0c6+W4f+FotFxIkibCaGt2ovKebQi1WSxI=;
+        b=pceTqKU0ipyvjiuGwlYh5XJcBWzO9CfFaxUXlDMUlpLoN6ZX33cRWQJGpgNlVntGLb
+         1XMCUczx/MkJTlyBxGFXW6fOMzmfnXn6pxwhkuyVOMA3TmahxdiqsnnKB6vzYjzVEDnA
+         ZxNe7nVhLpeeK6NYLcP8KTsHldQ6J5FykxtX66PXir6C2Qz28Xd5IPKyi8pnyYhjmgKL
+         PEXgI/2ccAhvDNPyVREeZ7yUsnO2xEHuiGmsNk1kH/AahqtDtzKLblFo5gI/40A7rVP4
+         3eGOekyhKi5HG1T/SeczP57DKmIYzpqi4OBrzbi760k2sMDtnbXIZRwd4vB86UqvJAQk
+         D8/w==
+X-Forwarded-Encrypted: i=1; AJvYcCXS3P23jhyGW29500qJ8n6+f0HT1Xch2VsqY6A8hmXWLxtNXR+k/S2wkczGBNq9FQPsk/PuWHgqy5Ppq+cvPVj8Ij0ICaxXvqt8tkz6
+X-Gm-Message-State: AOJu0Yz/1QOTnX+dNrrvqec2EgNdCcKQC1bfDG7hZIoWEFhYu+svDHga
+	5KJhTMkUS15J15AlkrYN2Pf8Ldm0C3fzbmxZd+vNHDDh4tNBWbBuXfDlAHn32MTcnbqO5yXGA/u
+	9ww==
+X-Google-Smtp-Source: AGHT+IGoF3GpjQW71lpjD5bgySALm0aszQEi6sZCjZGA77NimyDJoIgOSWabefxIH0uquY+9NJsNKNN47Xw=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:3d15:b0:6e6:97c8:4ea2 with SMTP id
+ lo21-20020a056a003d1500b006e697c84ea2mr205752pfb.0.1710523591938; Fri, 15 Mar
+ 2024 10:26:31 -0700 (PDT)
+Date: Fri, 15 Mar 2024 10:26:30 -0700
+In-Reply-To: <dbaa6b1a6c4ebb1400be5f7099b4b9e3b54431bb.1708933498.git.isaku.yamahata@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v8] platform/x86: add lenovo wmi camera button driver
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>,
- Ai Chao <aichao@kylinos.cn>
-Cc: Hans de Goede <hdegoede@redhat.com>, LKML <linux-kernel@vger.kernel.org>,
- platform-driver-x86@vger.kernel.org
-References: <20240314050319.171816-1-aichao@kylinos.cn>
- <d7c2de21-50f9-4602-abd0-b83ecbc3f42f@gmx.de>
- <62b54638-92eb-52e1-d4ad-074963771157@linux.intel.com>
-Content-Language: en-US
-From: Armin Wolf <W_Armin@gmx.de>
-In-Reply-To: <62b54638-92eb-52e1-d4ad-074963771157@linux.intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:BReRoI1r0SUu0SLWBo2NeaaQaUGdwd40G5tqaIleZJDUjghS5u1
- ftsMtTWZQ2EsUFgU3fvXgtxnibKnDcX8sxUrg3sxtkmAyRMhO/k18Bop/YvcI8/ZV1+eufy
- wql8ZI7/JdmNTSEPyT3Vnn1P4zG31KcmU132whpKqF7hRRgOC3Joc3T11ay+HNoAJ+ty/Zi
- Bp8JYRfaL3iJgGdOhM5XQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:87JozaQszNc=;p5OmE38unKw1/dDvL3/uB/XtT/c
- 2IZDMcaSww5LFPh67I8j/tSrIJdBXHZPRkCjLT76ltR5THwjf89zFmN1vb5fpHIwjUwKyrJJl
- K5fnjxu4Ay3ERpylmqnFRLjlgLyEawg78reOZszyLCYBJDL2wnGl602hrKd5u7/JuxxCmpzQC
- wEIu+VLJn9jOQZ9LJQkKUDyYI6Wb7jbhCRWnmnljJhGOQ5ZbsDxeTn8BIfBhx8yOxU5NJh13T
- m010Jgq2H1TRKJXB9Ws4+HxIZnvJoNlky8V6BHLSSue3fW+leFfOhZWDD+dsx9Gi/zbw5ovVx
- uAvs0SjuSiC7eF4GiAWQ9MEqLn1AhLGfWYa6pl2NLXFQ2nTEsNIExYBlgFWHCLd91jXYErnBH
- FHEQcvg2C/BFq+cmDrSfVH2XDXPYEuaVK/jpBNfKa3+D/IQ521sOf4zH1qhl+AOBA2dNjG7OU
- rmL/hU2+WQwBroeqeyaCSCRgjsx5eWwsSQeoJXMb/IM8drWkvl/sRw/wJbVd7KJed0GdAHK0o
- BfQYnGdiCCLsBnFbTBnpQce+rYOwfPPjzzupJdORlpD0I8RoYwKkhzX0ayAWrrF9XWi0C5Vpv
- BLwnTqX1S6fGOmLhz4KOBNuPj2nLCJZPZs1YyYVNha9mPlaVpZsx+wm8kb4z87vXVf1BYRTpL
- uzxB7WOVlp8sugHFwEUsXJFayIVCTZAzBtkTtRoVWeJdROYER4yAd7Y2baJCwnE7KgDxl2Jns
- znD74YrPJi2H8pFVUmuKNdsFyh5D4ab4EaKdpaeE2+48xS7Z8WbxE8BjsUq/RVv4CVbTmADAV
- +fukKamJVCaOrGqYlgfI73AUPio5cXooD29hb244olS38=
+Mime-Version: 1.0
+References: <cover.1708933498.git.isaku.yamahata@intel.com> <dbaa6b1a6c4ebb1400be5f7099b4b9e3b54431bb.1708933498.git.isaku.yamahata@intel.com>
+Message-ID: <ZfSExlemFMKjBtZb@google.com>
+Subject: Re: [PATCH v19 078/130] KVM: TDX: Implement TDX vcpu enter/exit path
+From: Sean Christopherson <seanjc@google.com>
+To: isaku.yamahata@intel.com
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com, 
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>, chen.bo@intel.com, 
+	hang.yuan@intel.com, tina.zhang@intel.com
+Content-Type: text/plain; charset="us-ascii"
 
-Am 15.03.24 um 12:51 schrieb Ilpo J=C3=A4rvinen:
+On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
+> +static noinstr void tdx_vcpu_enter_exit(struct vcpu_tdx *tdx)
+> +{
+> +	struct tdx_module_args args;
+> +
+> +	/*
+> +	 * Avoid section mismatch with to_tdx() with KVM_VM_BUG().  The caller
+> +	 * should call to_tdx().
 
-> On Thu, 14 Mar 2024, Armin Wolf wrote:
->
->> Am 14.03.24 um 06:03 schrieb Ai Chao:
->>
->>> Add lenovo generic wmi driver to support camera button.
->>> The Camera button is a GPIO device. This driver receives ACPI notifyi
->>> when the camera button is switched on/off. This driver is used in
->>> Lenovo A70, it is a Computer integrated machine.
->>>
->>> Signed-off-by: Ai Chao <aichao@kylinos.cn>
->>> ---
->>> v8: Dev_deb convert to dev_err.
->>> v7: Add dev_dbg and remove unused dev in struct.
->>> v6: Modify SW_CAMERA_LENS_COVER to
->>> KEY_CAMERA_ACCESS_ENABLE/KEY_CAMERA_ACCESS_DISABLE.
->>> v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_C=
-OVER.
->>> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct
->>> lenovo_wmi_priv.
->>> v3: Remove lenovo_wmi_remove function.
->>> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
->>>
->>>    drivers/platform/x86/Kconfig             |  12 +++
->>>    drivers/platform/x86/Makefile            |   1 +
->>>    drivers/platform/x86/lenovo-wmi-camera.c | 108 ++++++++++++++++++++=
-+++
->>>    3 files changed, 121 insertions(+)
->>>    create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
->>>
->>> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconf=
-ig
->>> index bdd302274b9a..9506a455b547 100644
->>> --- a/drivers/platform/x86/Kconfig
->>> +++ b/drivers/platform/x86/Kconfig
->>> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
->>>    	To compile this driver as a module, choose M here: the module
->>>    	will be called inspur-platform-profile.
->>>
->>> +config LENOVO_WMI_CAMERA
->>> +	tristate "Lenovo WMI Camera Button driver"
->>> +	depends on ACPI_WMI
->>> +	depends on INPUT
->>> +	help
->>> +	  This driver provides support for Lenovo camera button. The Camera
->>> +	  button is a GPIO device. This driver receives ACPI notify when the
->>> +	  camera button is switched on/off.
->>> +
->>> +	  To compile this driver as a module, choose M here: the module
->>> +	  will be called lenovo-wmi-camera.
->>> +
->>>    source "drivers/platform/x86/x86-android-tablets/Kconfig"
->>>
->>>    config FW_ATTR_CLASS
->>> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Make=
-file
->>> index 1de432e8861e..217e94d7c877 100644
->>> --- a/drivers/platform/x86/Makefile
->>> +++ b/drivers/platform/x86/Makefile
->>> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
->>>    obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
->>>    obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
->>>    obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
->>> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+=3D lenovo-wmi-camera.o
->>>
->>>    # Intel
->>>    obj-y				+=3D intel/
->>> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c
->>> b/drivers/platform/x86/lenovo-wmi-camera.c
->>> new file mode 100644
->>> index 000000000000..f83e3ccd9189
->>> --- /dev/null
->>> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
->>> @@ -0,0 +1,108 @@
->>> +// SPDX-License-Identifier: GPL-2.0
->>> +/*
->>> + * Lenovo WMI Camera Button Driver
->>> + *
->>> + * Author: Ai Chao <aichao@kylinos.cn>
->>> + * Copyright (C) 2024 KylinSoft Corporation.
->>> + */
->>> +
->>> +#include <linux/acpi.h>
->>> +#include <linux/device.h>
->>> +#include <linux/input.h>
->>> +#include <linux/module.h>
->>> +#include <linux/wmi.h>
->>> +
->>> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID
->>> "50C76F1F-D8E4-D895-0A3D-62F4EA400013"
->>> +
->>> +struct lenovo_wmi_priv {
->>> +	struct input_dev *idev;
->>> +};
->>> +
->>> +enum {
->>> +	SW_CAMERA_OFF	=3D 0,
->>> +	SW_CAMERA_ON	=3D 1,
->>> +};
->>> +
->>> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_obj=
-ect
->>> *obj)
->>> +{
->>> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
->>> +	u8 camera_mode;
->>> +
->>> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
->>> +		dev_err(&wdev->dev, "Bad response type %u\n", obj->type);
->>> +		return;
->>> +	}
->>> +
->>> +	if (obj->buffer.length !=3D 1) {
->>> +		dev_err(&wdev->dev, "Invalid buffer length %u\n",
->>> obj->buffer.length);
->>> +		return;
->>> +	}
->>> +
->>> +	/* obj->buffer.pointer[0] is camera mode:
->>> +	 *      0 camera close
->>> +	 *      1 camera open
->>> +	 */
->>> +	camera_mode =3D obj->buffer.pointer[0];
->>> +	if (camera_mode > SW_CAMERA_ON) {
->>> +		dev_err(&wdev->dev, "Unknown camera mode %u\n", camera_mode);
->>> +		return;
->>> +	}
->>> +
->>> +	if (camera_mode =3D=3D SW_CAMERA_ON) {
->>> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 1);
->>> +		input_sync(priv->idev);
->>> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_ENABLE, 0);
->>> +	} else {
->>> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 1);
->>> +		input_sync(priv->idev);
->>> +		input_report_key(priv->idev, KEY_CAMERA_ACCESS_DISABLE, 0);
->>> +	}
-> While not exactly wrong the if seems unnecessary, you could do:
->
-> 	unsigned int keycode;
->
-> 	...
->
-> 	keycode =3D camera_mode =3D=3D SW_CAMERA_ON ? KEY_CAMERA_ACCESS_ENABLE =
-:
-> 						KEY_CAMERA_ACCESS_DISABLE;
->
-> 	input_report_key(priv->idev, keycode, 1);
-> 	input_sync(priv->idev);
-> 	input_report_key(priv->idev, keycode, 0);
->>> +	input_sync(priv->idev);
->>> +}
-> Armin,
->
-> I tried to figure out the concurrency rules for the WMI notify handler b=
-ut
-> came up basically nothing. I suppose it boils down on ACPI notify handli=
-ng
-> and I couldn't find useful documentation about that either. :-/
->
-> Could you perhaps add this information into WMI documentation?
+C'mon.  I don't think it's unreasonable to expect that at least one of the many
+people working on TDX would figure out why to_vmx() is __always_inline.
 
-As far as i know, the ACPI notify handlers can be scheduled concurrently o=
-n all CPUs,
-see https://lore.kernel.org/all/7617703.EvYhyI6sBW@kreacher/ for details.
+> +	 */
+> +	struct kvm_vcpu *vcpu = &tdx->vcpu;
+> +
+> +	guest_state_enter_irqoff();
+> +
+> +	/*
+> +	 * TODO: optimization:
+> +	 * - Eliminate copy between args and vcpu->arch.regs.
+> +	 * - copyin/copyout registers only if (tdx->tdvmvall.regs_mask != 0)
+> +	 *   which means TDG.VP.VMCALL.
+> +	 */
+> +	args = (struct tdx_module_args) {
+> +		.rcx = tdx->tdvpr_pa,
+> +#define REG(reg, REG)	.reg = vcpu->arch.regs[VCPU_REGS_ ## REG]
 
-I will add a short note about this to the WMI driver guide which i plan to=
- upstream
-soon (after the EC handler stuff is finished).
+Organizing tdx_module_args's registers by volatile vs. non-volatile is asinine.
+This code should not need to exist.
 
-Thanks,
-Armin Wolf
+> +	WARN_ON_ONCE(!kvm_rebooting &&
+> +		     (tdx->exit_reason.full & TDX_SW_ERROR) == TDX_SW_ERROR);
+> +
+> +	guest_state_exit_irqoff();
+> +}
+> +
+> +fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
+> +{
+> +	struct vcpu_tdx *tdx = to_tdx(vcpu);
+> +
+> +	if (unlikely(!tdx->initialized))
+> +		return -EINVAL;
+> +	if (unlikely(vcpu->kvm->vm_bugged)) {
+> +		tdx->exit_reason.full = TDX_NON_RECOVERABLE_VCPU;
+> +		return EXIT_FASTPATH_NONE;
+> +	}
+> +
+> +	trace_kvm_entry(vcpu);
+> +
+> +	tdx_vcpu_enter_exit(tdx);
+> +
+> +	vcpu->arch.regs_avail &= ~VMX_REGS_LAZY_LOAD_SET;
+> +	trace_kvm_exit(vcpu, KVM_ISA_VMX);
+> +
+> +	return EXIT_FASTPATH_NONE;
+> +}
+> +
+>  void tdx_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa, int pgd_level)
+>  {
+>  	WARN_ON_ONCE(root_hpa & ~PAGE_MASK);
+> diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
+> index d822e790e3e5..81d301fbe638 100644
+> --- a/arch/x86/kvm/vmx/tdx.h
+> +++ b/arch/x86/kvm/vmx/tdx.h
+> @@ -27,6 +27,37 @@ struct kvm_tdx {
+>  	struct page *source_page;
+>  };
+>  
+> +union tdx_exit_reason {
+> +	struct {
+> +		/* 31:0 mirror the VMX Exit Reason format */
+
+Then use "union vmx_exit_reason", having to maintain duplicate copies of the same
+union is not something I want to do.
+
+I'm honestly not even convinced that "union tdx_exit_reason" needs to exist.  I
+added vmx_exit_reason because we kept having bugs where KVM would fail to strip
+bits 31:16, and because nested VMX needs to stuff failed_vmentry, but I don't
+see a similar need for TDX.
+
+I would even go so far as to say the vcpu_tdx field shouldn't be exit_reason,
+and instead should be "return_code" or something.  E.g. if the TDX module refuses
+to run the vCPU, there's no VM-Enter and thus no VM-Exit (unless you count the
+SEAMCALL itself, har har).  Ditto for #GP or #UD on the SEAMCALL (or any other
+reason that generates TDX_SW_ERROR).
+
+Ugh, I'm doubling down on that suggesting.  This:
+
+	WARN_ON_ONCE(!kvm_rebooting &&
+		     (tdx->vp_enter_ret & TDX_SW_ERROR) == TDX_SW_ERROR);
+
+	if ((u16)tdx->exit_reason.basic == EXIT_REASON_EXCEPTION_NMI &&
+	    is_nmi(tdexit_intr_info(vcpu))) {
+		kvm_before_interrupt(vcpu, KVM_HANDLING_NMI);
+		vmx_do_nmi_irqoff();
+		kvm_after_interrupt(vcpu);
+	}
+
+is heinous.  If there's an error that leaves bits 15:0 zero, KVM will synthesize
+a spurious NMI.  I don't know whether or not that can happen, but it's not
+something that should even be possible in KVM, i.e. the exit reason should be
+processed if and only if KVM *knows* there was a sane VM-Exit from non-root mode.
+
+tdx_vcpu_run() has a similar issue, though it's probably benign.  If there's an
+error in bits 15:0 that happens to collide with EXIT_REASON_TDCALL, weird things
+will happen.
+
+	if (tdx->exit_reason.basic == EXIT_REASON_TDCALL)
+		tdx->tdvmcall.rcx = vcpu->arch.regs[VCPU_REGS_RCX];
+	else
+		tdx->tdvmcall.rcx = 0;
+
+I vote for something like the below, with much more robust checking of vp_enter_ret
+before it's converted to a VMX exit reason.
+
+static __always_inline union vmx_exit_reason tdexit_exit_reason(struct kvm_vcpu *vcpu)
+{
+	return (u32)vcpu->vp_enter_ret;
+}
+
+diff --git a/arch/x86/kvm/vmx/tdx.h b/arch/x86/kvm/vmx/tdx.h
+index af3a2b8afee8..b9b40b2eaccb 100644
+--- a/arch/x86/kvm/vmx/tdx.h
++++ b/arch/x86/kvm/vmx/tdx.h
+@@ -43,37 +43,6 @@ struct kvm_tdx {
+        struct page *source_page;
+ };
+ 
+-union tdx_exit_reason {
+-       struct {
+-               /* 31:0 mirror the VMX Exit Reason format */
+-               u64 basic               : 16;
+-               u64 reserved16          : 1;
+-               u64 reserved17          : 1;
+-               u64 reserved18          : 1;
+-               u64 reserved19          : 1;
+-               u64 reserved20          : 1;
+-               u64 reserved21          : 1;
+-               u64 reserved22          : 1;
+-               u64 reserved23          : 1;
+-               u64 reserved24          : 1;
+-               u64 reserved25          : 1;
+-               u64 bus_lock_detected   : 1;
+-               u64 enclave_mode        : 1;
+-               u64 smi_pending_mtf     : 1;
+-               u64 smi_from_vmx_root   : 1;
+-               u64 reserved30          : 1;
+-               u64 failed_vmentry      : 1;
+-
+-               /* 63:32 are TDX specific */
+-               u64 details_l1          : 8;
+-               u64 class               : 8;
+-               u64 reserved61_48       : 14;
+-               u64 non_recoverable     : 1;
+-               u64 error               : 1;
+-       };
+-       u64 full;
+-};
+-
+ struct vcpu_tdx {
+        struct kvm_vcpu vcpu;
+ 
+@@ -103,7 +72,8 @@ struct vcpu_tdx {
+                };
+                u64 rcx;
+        } tdvmcall;
+-       union tdx_exit_reason exit_reason;
++
++       u64 vp_enter_ret;
+ 
+        bool initialized;
+ 
 
 
