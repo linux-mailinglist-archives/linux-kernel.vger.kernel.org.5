@@ -1,103 +1,119 @@
-Return-Path: <linux-kernel+bounces-104925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D88D87D5F2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:12:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8E37287D5F4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:13:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48A771F22AA9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:12:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C00121C20B85
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:13:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E023154901;
-	Fri, 15 Mar 2024 21:12:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2CCB5478B;
+	Fri, 15 Mar 2024 21:13:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="t4qE5XXz"
-Received: from out-184.mta1.migadu.com (out-184.mta1.migadu.com [95.215.58.184])
+	dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b="vAdRHLBF";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="QrmC1J83"
+Received: from fhigh7-smtp.messagingengine.com (fhigh7-smtp.messagingengine.com [103.168.172.158])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F834548F0
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 21:12:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E179E38F91;
+	Fri, 15 Mar 2024 21:13:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.158
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710537129; cv=none; b=LTQF6iFiKD80JkJwlnMps4rwHfDULtUL9D2+Hv0YZxeLUJ+sQHdiIBxNx1jjhC5VnjL+9734PH+0jN3aiE1im8HYsyWBQZGlCCF/4i5oeJdoUmNvx1IJcwF254phVpSVgT05ojnKbSGFbOJjo9kDMBRt+qto6YgNtdh795INVjA=
+	t=1710537197; cv=none; b=oEgNU/H3ni5CZDyNcHUZEHnW9l5Ktw+cVROXoD18N8UKtZybLSD95JxG5aephM+aNyB7jmP/4BLjdF7BPDi1YOdy220zBypW6GuRGdgY2n8TI1IeicVjYHktNy5hmS7Ywg1e5zPOdtehu8REXqxSva2Ue/tMTQOFTXQA4fZ4Kbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710537129; c=relaxed/simple;
-	bh=n/ul0ogx7iwzi5n9hjSGc4kclaFxVnfk7TjW0NiHHcU=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=Ve/d8XeVgWpgWmM/LLAAvJwNn+ZGWIT3a9blLRCxS8WPF0UYZbF5PXxf4hWv9/6G9TrszhkaXdJDyEsFpy1ij40igecBDf5cdeiFdT8dJlNGjJWSydt9Dp8dDRStgqutHxVYplBIh2N+Vfo3LXx5x6NIgmccAk3o0TewA0FpE4A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=t4qE5XXz; arc=none smtp.client-ip=95.215.58.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5f450439-3400-45cb-bb62-4559bd6e088e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710537124;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=xOAHpfzXDspbl58UkIknw9ZqxHAdHjN22/pRm7dUv/A=;
-	b=t4qE5XXzsRE50gGpMBjUHqk5Bu4EZG4MzUQBEyCuL5dXlhgz0ShnsZPiF6CtWiV+W1m7xj
-	M2yCNnU7rX1uVEIErJHuaNgglF/wVvku1w7OW6Ye7fMWu320FPJZjouURI7uFEu2Sbw/6T
-	qXnUkC8vJnpGnHHnnsupyN0I6GBMr1U=
-Date: Fri, 15 Mar 2024 14:11:51 -0700
+	s=arc-20240116; t=1710537197; c=relaxed/simple;
+	bh=Qe14ES57LnDJMzNgiulgnbt3HkhIrulW+OUOvIcqjlo=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=QkPWbxedxYPcOZOfDBc+HigzI43MZ9FN+epSbMnTRZ1BfyYGGsF47GZFPYLsrF1rhFrxRCWZo0x/YNJIiZxNyWFjFxaC8nHDv56KFh4ZZ2L5YasR6neGZorbj9NUO6TxKnxzXv6PCOflrDmHjVLm8S25Y1xNd0JDfKdCaHWouEo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca; spf=pass smtp.mailfrom=squebb.ca; dkim=pass (2048-bit key) header.d=squebb.ca header.i=@squebb.ca header.b=vAdRHLBF; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=QrmC1J83; arc=none smtp.client-ip=103.168.172.158
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=squebb.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=squebb.ca
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id B664511400BE;
+	Fri, 15 Mar 2024 17:13:12 -0400 (EDT)
+Received: from imap52 ([10.202.2.102])
+  by compute3.internal (MEProxy); Fri, 15 Mar 2024 17:13:12 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=squebb.ca; h=cc
+	:cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1710537192; x=1710623592; bh=oRGEn3mS1/
+	2ZP8orTOHuju7iTXXOg6ii/BcgsBUPnN8=; b=vAdRHLBFZEbpour7B+orQbBq+c
+	zhXjMcxUE7Svlzr72JxjIVGuQdgw2+1nWeUU9ALiIM58oNpO3SlpADw6DUgMKtEM
+	rhonNlpxlaZSEye1E9XqlMd6rGQN8xTuE6bWSrT1faXS0WoOrKXxFZmwHtwJcx/h
+	GNesBO7KoytzIcxmEBW02mMruk0PMWTszYp35zlDfWjkSVZRQ73wUBQJAQah1Fji
+	QVdZhRtKdfXzYdftwqrecWjNgLP2Y938/3zwqdu2Q8sqF+GDhdjX3Ngojb4j8lug
+	vIbu1jq2xbpj1Pseh75IXDhe+cWbZJTn0uqREK1oa178CvWufw4yf8b0jEEA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm1; t=1710537192; x=1710623592; bh=oRGEn3mS1/2ZP8orTOHuju7iTXXO
+	g6ii/BcgsBUPnN8=; b=QrmC1J83Grbsm1u2R276V/Ru+q8Dc1aC9NHkSzH3GFx1
+	3nkoil/fP2jEhmXHSgLlA5nkYcCrKYe2KQD5uH9QjQVjgOPawPJ+7rvUFbXD0lCK
+	L2SLAQww8pvXF9xtEf7nenLep33A3QZw8iGbxYTACgEwEqOOPsB7Z/Zrljse2t9+
+	jkNhzI3G7Md7TQgJHgydbpqrBI0fJEU3O7eRk2zT+bVFzS12H1JPVvbqmUEB1KsY
+	Nfl2FAapVx2ZCMMCteayZQKYYgwGvHiIdeJ0XOo/YhSSTQMGGK+8ES92u0UXxDQp
+	15/hVnaN2f8ShYFMZa/ikfs5YV4y6x6U7eTLj+JWjA==
+X-ME-Sender: <xms:57n0ZbWNg5dNsT58tJEuzh-4MWUVLW8d28E7gla6yVdoRyBfn0SmjA>
+    <xme:57n0ZTkQJpWToQUlkTMfNKnGKooiMqAMz0hpwqq0RC8jioizlHAlqEolu2zpd4tpe
+    3Qbq_JRfbQTeEdm0Kc>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrjeelgddugeehucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtsehttdertderredtnecuhfhrohhmpedfofgr
+    rhhkucfrvggrrhhsohhnfdcuoehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssg
+    drtggrqeenucggtffrrghtthgvrhhnpeeiueefjeeiveetuddvkeetfeeltdevffevudeh
+    ffefjedufedvieejgedugeekhfenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpehmphgvrghrshhonhdqlhgvnhhovhhosehsqhhuvggssgdrtggr
+X-ME-Proxy: <xmx:57n0ZXZ2tA3xjGm64dr5fl8n-DRAbb_UetAMp-R2iZwNPWF4ZupKWw>
+    <xmx:57n0ZWXg78WoYuHz4qb9FonKNuRf9QPl9qVqmNOMBkoTHIFM1GQF_g>
+    <xmx:57n0ZVkNHXpIlsfC8N6-RC0uExagNBzTaij--qEhRBefCZbYd1m8mA>
+    <xmx:57n0ZTdBTxVDwvhfEgLMWlD0iyMf4NnG897ropIc4htg_qqast97qQ>
+    <xmx:6Ln0ZYt06_DwUFEk_pLveVxgn9bpBFpVWizc0DBQ6jNoTZ_6VH11Lw>
+Feedback-ID: ibe194615:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id 745B9C60098; Fri, 15 Mar 2024 17:13:11 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-300-gdee1775a43-fm-20240315.001-gdee1775a
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH bpf-next v3 2/2] bpf: Check return from set_memory_rox()
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-To: Christophe Leroy <christophe.leroy@csgroup.eu>
-Cc: Alexei Starovoitov <ast@kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
- Yonghong Song <yonghong.song@linux.dev>,
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
- Jiri Olsa <jolsa@kernel.org>, Zi Shen Lim <zlim.lnx@gmail.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- "David S. Miller" <davem@davemloft.net>, David Ahern <dsahern@kernel.org>,
- Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
- Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@linux.intel.com>,
- x86@kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
- Kui-Feng Lee <thinker.li@gmail.com>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- bpf@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, netdev@vger.kernel.org,
- Kees Cook <keescook@chromium.org>
-References: <2b9fdb119ef73cfa4516572026ba4936e86aedca.1710522112.git.christophe.leroy@csgroup.eu>
- <4d7cc25e937403ac61ae61be06f998f27e631a65.1710522112.git.christophe.leroy@csgroup.eu>
- <55151dc9-8edf-4c75-b1d0-1cc0437816c3@linux.dev>
-In-Reply-To: <55151dc9-8edf-4c75-b1d0-1cc0437816c3@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Message-Id: <d8529238-8e3e-4d70-a1d4-40dc134f3d97@app.fastmail.com>
+In-Reply-To: <75b89923-f78b-4661-bc6a-fee6c15367da@roeck-us.net>
+References: <mpearson-lenovo@squebb.ca>
+ <20240315195227.91282-1-mpearson-lenovo@squebb.ca>
+ <75b89923-f78b-4661-bc6a-fee6c15367da@roeck-us.net>
+Date: Fri, 15 Mar 2024 17:12:51 -0400
+From: "Mark Pearson" <mpearson-lenovo@squebb.ca>
+To: "Guenter Roeck" <linux@roeck-us.net>
+Cc: wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
+ linux-kernel@vger.kernel.org, "David Ober" <dober@lenovo.com>
+Subject: Re: [PATCH] watchdog: lenovo_se10_wdt: Watchdog driver for Lenovo SE10
+ platform
+Content-Type: text/plain
 
-On 3/15/24 1:55 PM, Martin KaFai Lau wrote:
-> On 3/15/24 10:06 AM, Christophe Leroy wrote:
->> diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
->> index 43356faaa057..ca1d9b87c475 100644
->> --- a/kernel/bpf/bpf_struct_ops.c
->> +++ b/kernel/bpf/bpf_struct_ops.c
->> @@ -742,8 +742,11 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map 
->> *map, void *key,
->>           if (err)
->>               goto reset_unlock;
->>       }
->> -    for (i = 0; i < st_map->image_pages_cnt; i++)
->> -        arch_protect_bpf_trampoline(st_map->image_pages[i], PAGE_SIZE);
->> +    for (i = 0; i < st_map->image_pages_cnt && !err; i++)
->> +        err = arch_protect_bpf_trampoline(st_map->image_pages[i], PAGE_SIZE);
->> +
->> +    if (err)
->> +        goto reset_unlock;
-> 
-> This part does not look right. The "if (err)" check should be inside the for loop.
+On Fri, Mar 15, 2024, at 4:05 PM, Guenter Roeck wrote:
+> On 3/15/24 12:52, Mark Pearson wrote:
+>> Watchdog driver implementation for Lenovo SE10 platform.
+>> 
+>> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
+>> Signed-off-by: David Ober <dober@lenovo.com>
+>
+> I don't like the "Found Lenovo SE10" noise in the probe function,
+> but that isn't worth arguing about.
+>
+> Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+>
+If I get any other feedback, and need to do a v2, I will remove that.
 
-ah. Please ignore. missed the "!err" in the for loop.
+Many thanks for the review.
+
+Mark
 
