@@ -1,137 +1,124 @@
-Return-Path: <linux-kernel+bounces-104673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104659-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA85B87D218
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:02:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AF63987D1AC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:56:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE9DC282B05
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:02:51 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 444D228361B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:56:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 079B85E08E;
-	Fri, 15 Mar 2024 16:54:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BLPvsPtQ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 329D05DF3A;
-	Fri, 15 Mar 2024 16:54:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6881F54911;
+	Fri, 15 Mar 2024 16:53:23 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F5335478B;
+	Fri, 15 Mar 2024 16:53:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521645; cv=none; b=VCdWWhsRGdiGlaCE/BgUHejTjULhgHoLUF1cB3se7S3anzKjjeIXO5tQp/Erbg83sSsSfC79xsY4bJ4MyD+CTuKZbXw4pcv96lg5Gystmnf1ZqyYGZJugLrXrsI9e7+L1w6spSqdAmXMTkNfV/LWmQTQ6LKFjVRro5MIQJ97KDo=
+	t=1710521603; cv=none; b=sGdBu0jeIBcGyQXUjYvLLv8dBIilyA8BUwmUg4FwoTWwBahVP2bHnc6VZVbh4jVUJwHp89YicR5Wbj5gjlmy3Skca8OLhUXsas1vEKUwY02mzmKtWkJ05UBODUs4efW/NaeDQ0JtUk/+I5fEd8utakf+XtWqY4cyJeiH0ez7pYY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521645; c=relaxed/simple;
-	bh=XiLoCX5bhdIOKqVgg6TYQoclvr1Nu5zRdr/p/ktT9jI=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=qmvvTutwcBUWA0gyJ4705t5+nAgkef/EpR2X61nQgdBd+KwRHC3mJmqGpnmZQfgf4JI8O6264lKhU9c8a0i2GE2RaURmWuicofhxK6dZmB7ZY815EXND8UdZOP0VLtz8OttTEy9wER1IGBaU0LXWbPQ5ODrNnW3hn8Yj2P/CY0g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BLPvsPtQ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE688C43141;
-	Fri, 15 Mar 2024 16:54:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710521644;
-	bh=XiLoCX5bhdIOKqVgg6TYQoclvr1Nu5zRdr/p/ktT9jI=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=BLPvsPtQdNH5QPkGe5nrzfrhOhLNi2qwiwA2ylgWSBrlb8XTozNQ95eRiDkApXBll
-	 Eq/eMNeqMJxZDFAbeyaPJb8yLCrV1oTKxOV4sRgugj+PnBh8S6DZfOmNr4wSWICVab
-	 I5QqpFrWSpRjYP1+RlK5lZifRgcaXmY54Fm2zkhqTwoveWgpZXmf5R3c7Todz0zo81
-	 pI+rzNF1Jp0ez4zvsj7YUucHPhITnQWcxkyFNmAcDyfNWcSSIMqYF29mAECLJJOmvz
-	 SVdnJUW4+S1K8Mapl2DOyY4KX5QyBbkA/+cgzyLr6AqS/Jpro5R9JA+INPyQubZ3dF
-	 mxOhzh3d1u28g==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Fri, 15 Mar 2024 12:53:09 -0400
-Subject: [PATCH RFC 18/24] nfs: add a tracepoint to
- nfs_inode_detach_delegation_locked
+	s=arc-20240116; t=1710521603; c=relaxed/simple;
+	bh=quOxwG7GF78bsqXhXIFaqgiZCtCviVlc+c2l1XriIXE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=aaiHM/RDmKgPkTmpwu3iudvKYmt9ksqjmFobUVqKuyGHxbebKIPEQHa33GArUyXyKFt1CzQSFaG3wwudnoLnVQxGVW4d0BsAE5RL+zAyRvebIVH2BS2eL/j6nO+F1ePQxGHr2uWLtG/9HL39EK1E26Vds23sxgpIJQ0D/d42o+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 9BD90C15;
+	Fri, 15 Mar 2024 09:53:54 -0700 (PDT)
+Received: from pluto (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83CF33F762;
+	Fri, 15 Mar 2024 09:53:16 -0700 (PDT)
+Date: Fri, 15 Mar 2024 16:53:10 +0000
+From: Cristian Marussi <cristian.marussi@arm.com>
+To: Peng Fan <peng.fan@nxp.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>,
+	Linus Walleij <linus.walleij@linaro.org>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>,
+	dl-linux-imx <linux-imx@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Rob Herring <robh@kernel.org>
+Subject: Re: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Message-ID: <ZfR89rdzRymY1Ovx@pluto>
+References: <20240314-pinctrl-scmi-v5-0-b19576e557f2@nxp.com>
+ <ZfMqWP-t39SCvkA2@pluto>
+ <DU0PR04MB9417056FD84405898F1B007B88282@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240315-dir-deleg-v1-18-a1d6209a3654@kernel.org>
-References: <20240315-dir-deleg-v1-0-a1d6209a3654@kernel.org>
-In-Reply-To: <20240315-dir-deleg-v1-0-a1d6209a3654@kernel.org>
-To: Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, 
- Chuck Lever <chuck.lever@oracle.com>, 
- Alexander Aring <alex.aring@gmail.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>, Steve French <sfrench@samba.org>, 
- Paulo Alcantara <pc@manguebit.com>, 
- Ronnie Sahlberg <ronniesahlberg@gmail.com>, 
- Shyam Prasad N <sprasad@microsoft.com>, Tom Talpey <tom@talpey.com>, 
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>, 
- "Rafael J. Wysocki" <rafael@kernel.org>, 
- David Howells <dhowells@redhat.com>, Tyler Hicks <code@tyhicks.com>, 
- Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>, 
- Dai Ngo <Dai.Ngo@oracle.com>, Miklos Szeredi <miklos@szeredi.hu>, 
- Amir Goldstein <amir73il@gmail.com>, Namjae Jeon <linkinjeon@kernel.org>, 
- Sergey Senozhatsky <senozhatsky@chromium.org>, 
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-nfs@vger.kernel.org, linux-cifs@vger.kernel.org, 
- samba-technical@lists.samba.org, netfs@lists.linux.dev, 
- ecryptfs@vger.kernel.org, linux-unionfs@vger.kernel.org, 
- netdev@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1244; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=XiLoCX5bhdIOKqVgg6TYQoclvr1Nu5zRdr/p/ktT9jI=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl9HzuFU9/qcgtCrWHrKJL7PuqWD46v0PKpVFYD
- d0wkTeXPv2JAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZfR87gAKCRAADmhBGVaC
- Ff3SEACwqsjqTGfQkWOWe61DrYWuJK3UYZgCteOaTcV+W2NWpxdnkFRovxC3Se9EQLFO4XYdz9h
- sn0mFfChkDAvBCMdBVVXnmiUSbyibhezGotYkv/OvUgiXR7EBtFEkB+gHkwRKlMDjJ26di0puOO
- uSrdJuCp0u73L9RkjUAQldmInEzMQ0/BoGkzflTS6JtvfYM2lWk8Vl3zPA1d+PC4V5GbewJQ+EM
- V5H4uqj2ZMEpL9R8oGjTpMT7MANepirW1NOyv6fwvSqbNg9q9q8sbCSyDJ3SBvLOeNcvC9ftk2d
- aTdXJSePeMTuALlxkeoa+KdleIx7qwV5d0pYLnLp5Ln6LfRe0m3pybLzBcLyKgIZ2evFWpbm/KP
- EROuJMgNarMgNsejXdkODcuHcKrt77wRFe4HC93mAQQSJVCxzF8BexykjGwbkBmEM2Qy3HQy1QS
- PVEMszQUJhJ7Ljm4y97zwWZftIkSfahruJsqoRXJd16/qLTJHrb5p1dkZFAvGwsmaMozMu6EOaf
- 3EVaCPZVvYPu+Q5ovAeQuueGEkvAoZcV7dwrvlFmpWuFv4YfE38lxbNby4N+UNXQsL5H1GbLRJf
- PXVHfP5hiziscco0g7ByP2lUwWP2uvoj/h5wG1zJT9XgMaBX9nQ3pjZNb+f8BYuBV4j+0qxneoO
- 5NqX/6yGWQJ5Gsw==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <DU0PR04MB9417056FD84405898F1B007B88282@DU0PR04MB9417.eurprd04.prod.outlook.com>
 
-We have a tracepoint for setting a delegation and reclaiming them. Add a
-tracepoint for when the delegation is being detached from the inode.
+On Fri, Mar 15, 2024 at 12:31:51AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+> > protocol basic support
+> > 
+> > On Thu, Mar 14, 2024 at 09:35:17PM +0800, Peng Fan (OSS) wrote:
+> > > Since SCMI 3.2 Spec is released, and this patchset has got R-b/T-b, is
+> > > it ok to land this patchset?
+> > >
+> > 
+> > I'll have a look at this last version and a spin on my test setup.
+> > 
+> > ...but has this V5 change at all since the Reviewed-by tags due to the latest
+> > spec changes ?
+> 
+> The tags are same as V4. I only did a rebase, no more changes.
+> > 
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
- fs/nfs/delegation.c | 2 ++
- fs/nfs/nfs4trace.h  | 1 +
- 2 files changed, 3 insertions(+)
+Ok.
 
-diff --git a/fs/nfs/delegation.c b/fs/nfs/delegation.c
-index d4a42ce0c7e3..a331a2dbae12 100644
---- a/fs/nfs/delegation.c
-+++ b/fs/nfs/delegation.c
-@@ -342,6 +342,8 @@ nfs_detach_delegation_locked(struct nfs_inode *nfsi,
- 		rcu_dereference_protected(nfsi->delegation,
- 				lockdep_is_held(&clp->cl_lock));
- 
-+	trace_nfs4_detach_delegation(&nfsi->vfs_inode, delegation->type);
-+
- 	if (deleg_cur == NULL || delegation != deleg_cur)
- 		return NULL;
- 
-diff --git a/fs/nfs/nfs4trace.h b/fs/nfs/nfs4trace.h
-index fd7cb15b08b2..b4ebac1961cc 100644
---- a/fs/nfs/nfs4trace.h
-+++ b/fs/nfs/nfs4trace.h
-@@ -926,6 +926,7 @@ DECLARE_EVENT_CLASS(nfs4_set_delegation_event,
- 			TP_ARGS(inode, fmode))
- DEFINE_NFS4_SET_DELEGATION_EVENT(nfs4_set_delegation);
- DEFINE_NFS4_SET_DELEGATION_EVENT(nfs4_reclaim_delegation);
-+DEFINE_NFS4_SET_DELEGATION_EVENT(nfs4_detach_delegation);
- 
- TRACE_EVENT(nfs4_delegreturn_exit,
- 		TP_PROTO(
+> > ...IOW does this V5 include the latest small bits spec-changes or those latest
+> > gpio-related spec-changes are just not needed at the level of the Linux pinctrl
+> > support as of now and can be added later on when a Linux gpio driver will be
+> > built on top of this ?
+> 
+> In my current test, I no need the gpio related changes, so I would add that later
+> if you are ok.
+> 
 
--- 
-2.44.0
+I COULD have agreed with this, since AFAIK there is currently an effort to
+add support for GPIO on top of SCMI Pinctrl BUT not in Linux, so no reason to
+block this series for gpio-related missing features, that should only be additions
+not breaking backward compatibility...
+
+...BUT, I've just wrapped my head again around the latest public release
+of v3.2 spec (which has gone through so many changes and additions that
+I had lost track O_o) AND beside the above mentioned GPIO changes there
+are indeed also BREAKING changes around the commands PINCTRL_SETTINGS_GET and
+PINCTRL_SETTINGS_CONFIGURE (which were the old PINCTRL_CONFIG_GET/SET),
+that now also get/set the selected function: so that, at the end the payload
+itself of those commands/replies has also changed IN SIZE, so the driver needs
+definitely to be updated (and whatever you use to test on the backend server too,
+if you want to test this...)
+
+I think these changes (which I forgot being there) were in since last month, so
+already V4 was broken in these regards (which I have not looked at)
+
+I'll leave some comments along the series and test all of this again next week...
+..since too many things has changed and I want to re-verify all on my side.
+
+Thanks,
+Cristian
 
 
