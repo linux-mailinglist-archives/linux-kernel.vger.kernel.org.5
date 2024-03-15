@@ -1,39 +1,39 @@
-Return-Path: <linux-kernel+bounces-104760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104761-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3529187D32C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:00:34 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5DFC887D330
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:02:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF6AE1F242E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:00:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8E6A2B23599
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696534CB3D;
-	Fri, 15 Mar 2024 18:00:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A6954CDFB;
+	Fri, 15 Mar 2024 18:02:16 +0000 (UTC)
 Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BF63BB28
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:00:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 117B646548;
+	Fri, 15 Mar 2024 18:02:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710525626; cv=none; b=g3pBkGBnLeemk4XYyM0ij6nPE8JQKM8ormnH4gzSeyZiBC2kEChauDVkBsPZ3lQ6fFqrNUcHEwNOqiSAq53CPE0sHUAeyRC95DlLlbDJbTJD3d23uEH8BvdvjmRr9dmHJueQD02D+Nl5z9aTiTe46MSsnEhAOU2qjsGMcNmak3M=
+	t=1710525736; cv=none; b=o6YNFC1TWl+9nizk+ZoeuAvjCTki/Zi5lRYiLU55rakPvAItKPSuzM/qGXR6077PNDaxy6V4xL6pFnWTNe5bmxCC4oot+BdToJUx2WKJBtOEQmCgFsQm03zV/E1S3FyJfRRFTgy5+rou3J35KlbWGw0tfRh/0epToQTbaoRz9pk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710525626; c=relaxed/simple;
-	bh=cLd6t3Gr2U1sNEKiEYEZmeJRQTG1Jc2E5Ir5P7jwBcA=;
+	s=arc-20240116; t=1710525736; c=relaxed/simple;
+	bh=Tcuht5PH6shYhP4N68qoB2RRRoW6Kd4Ty8D7HYyBhM8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=jOOXg7DfUvV/BQl6QUCR88dcnPqbrp/cTg9payUfl1tu2650b26cyxDoQlNaArGKffYFvEtHVLCnJKz/TsZWUf2Ia4RiduX/qVCcfXeuv0F39MpmbxSwm/L3zDWYHAWJzdgkNQd6gDW3Y0hLrU2mcri8zXippr6tBN/pEAX4wyI=
+	 In-Reply-To:Content-Type; b=YCxZRRW7+p/66Wf67dAm6bkaeoov7sht+KpZUZ0dF/6Y/xYNoXMrya3x9LctRAP1LyiQBZq8s1tsnlr0LvgADkrTVhEjGiEzvmLh8oaD2p4uhUS2Zt4vufhKuy6ua4r3GR5d6h2fppPXKWAOTQI4YZLqeEqAZeheeSH3NmqtaAk=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
 Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A2EDC15;
-	Fri, 15 Mar 2024 11:00:56 -0700 (PDT)
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 48E31C15;
+	Fri, 15 Mar 2024 11:02:48 -0700 (PDT)
 Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 383403F762;
-	Fri, 15 Mar 2024 11:00:19 -0700 (PDT)
-Message-ID: <93b85205-add3-477f-aa8b-e647447d249b@arm.com>
-Date: Fri, 15 Mar 2024 18:00:17 +0000
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id B3C073F762;
+	Fri, 15 Mar 2024 11:02:11 -0700 (PDT)
+Message-ID: <88430722-67b3-4f7d-8db2-95ee52b6f0b0@arm.com>
+Date: Fri, 15 Mar 2024 18:02:10 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,79 +41,112 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: 32bit resctrl? (was Re: [PATCH v2] fs/resctrl: fix domid loss
- precision issue)
+Subject: Re: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
 Content-Language: en-GB
-To: Peter Newman <peternewman@google.com>, babu.moger@amd.com
+To: Tony Luck <tony.luck@intel.com>
 Cc: Reinette Chatre <reinette.chatre@intel.com>,
- Rex Nie <rex.nie@jaguarmicro.com>, "x86@kernel.org" <x86@kernel.org>,
- "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
- fenghua.yu@intel.com, ilpo.jarvinen@linux.intel.com,
- linux-kernel@vger.kernel.org
-References: <20240312075349.977-1-rex.nie@jaguarmicro.com>
- <fed6affb-c7f4-4992-8646-8f5a52c33966@intel.com>
- <162f5113-4eb6-dcea-f034-c81b9dc021b6@amd.com>
- <CALPaoCjorOe8FVOu6_sMrG_8jAgSNNsw8=KDwOrwtftovGiRXQ@mail.gmail.com>
+ "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>,
+ "Yu, Fenghua" <fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+ "ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
+ <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <159474e6-ef11-4769-a182-86483efcf2a6@intel.com>
+ <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
+ <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <55a55960-8bb1-4ce2-a2c7-68e167da8bcc@intel.com>
+ <ZepK4mtoV_J8-UbE@agluck-desk3>
+ <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com>
+ <ZetcM9GO2PH6SC0j@agluck-desk3>
 From: James Morse <james.morse@arm.com>
-In-Reply-To: <CALPaoCjorOe8FVOu6_sMrG_8jAgSNNsw8=KDwOrwtftovGiRXQ@mail.gmail.com>
+In-Reply-To: <ZetcM9GO2PH6SC0j@agluck-desk3>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
 
-Hi guys,
+Hi Tony,
 
-On 15/03/2024 16:56, Peter Newman wrote:
-> On Fri, Mar 15, 2024 at 9:17 AM Moger, Babu <bmoger@amd.com> wrote:
->> On 3/14/2024 10:25 AM, Reinette Chatre wrote:
->>> +x86 maintainers, Tony, Babu, Peter
->>>
->>> Hi Everybody,
->>>
->>> On 3/12/2024 12:53 AM, Rex Nie wrote:
->>>> diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
->>>> index 7a6f46b4edd0..096317610949 100644
->>>> --- a/fs/resctrl/internal.h
->>>> +++ b/fs/resctrl/internal.h
->>>> @@ -94,7 +94,7 @@ union mon_data_bits {
->>>>      struct {
->>>>              unsigned int rid                : 10;
->>>>              enum resctrl_event_id evtid     : 8;
->>>> -            unsigned int domid              : 14;
->>>> +            u32                             domid;
->>>>      } u;
->>>>   };
+On 08/03/2024 18:42, Tony Luck wrote:
+> On Fri, Mar 08, 2024 at 06:06:45PM +0000, James Morse wrote:
+>> Hi guys,
+>>
+>> On 07/03/2024 23:16, Tony Luck wrote:
+>>> On Thu, Mar 07, 2024 at 02:39:08PM -0800, Reinette Chatre wrote:
+>>>> Thank you for the example. I find that significantly easier to
+>>>> understand than a single number in a generic "nodes_per_l3_cache".
+>>>> Especially with potential confusion surrounding inconsistent "nodes"
+>>>> between allocation and monitoring. 
 >>>>
->>> resctrl currently supports 32bit builds. Fixing this issue* in this way
+>>>> How about domain_cpu_list and domain_cpu_map ?
 >>
->> I have never bothered about 32bit builds.   Is Intel still testing 32bit
->> builds?
-> 
-> I can confirm we don't have any 32-bit builds.
-> 
-> 
->> The structure pointer "union mon_data_bits priv;" is created in stack
->> and passed to create mondata directory. We are reading it later again in
->> rdtgroup_mondata_show.
+>>> Like this (my test system doesn't have SNC, so all domains are the same):
+>>>
+>>> $ cd /sys/fs/resctrl/info/
+>>> $ grep . */domain*
+>>> L3/domain_cpu_list:0: 0-35,72-107
+>>> L3/domain_cpu_list:1: 36-71,108-143
+>>> L3/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+>>> L3/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+>>> L3_MON/domain_cpu_list:0: 0-35,72-107
+>>> L3_MON/domain_cpu_list:1: 36-71,108-143
+>>> L3_MON/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+>>> L3_MON/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+>>> MB/domain_cpu_list:0: 0-35,72-107
+>>> MB/domain_cpu_list:1: 36-71,108-143
+>>> MB/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+>>> MB/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
 >>
->> How is this pointer valid again?  Shouldn't we use static pointer or
->> allocate memory for the pointer?
+>> This duplicates the information in /sys/devices/system/cpu/cpuX/cache/indexY ... is this
+>> really because that information is, er, wrong on SNC systems. Is it possible to fix that?
 > 
-> The union is copied by value into the pointer-sized field, hence the
-> need for pointers to be large enough to hold this value.
+> On an SNC system the resctrl domain for L3_MON becomes the SNC node
+> instead of the L3 cache instance. With 2, 3, or 4 SNC nodes per L3.
+> 
+> Even without the SNC issue this duplication may be a useful
+> convienience. On Intel to get from a resctrl domain is a multi-step
+> process to first find which of the indexY directories has level=3
+> and then look for the "id" that matches the domain.
+> 
+>> >From Tony's earlier description of how SNC changes things, the MB controls remain
+>> per-socket. To me it feels less invasive to fix the definition of L3 on these platforms to
+>> describe how it behaves (assuming that is possible), and define a new 'MB' that is NUMA
+>> scoped.
+>> This direction of redefining L3 means /sys/fs/resctrl and /sys/devices have different
+>> views of 'the' cache hierarchy.
+> 
+> I almost went partly in that direction when I started this epic voyage.
+> The "almost" part was to change the names of the monitoring directories
+> under mon_data from (legacy non-SNC system):
+> 
+> $ ls -l mon_data
+> total 0
+> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_L3_00
+> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_L3_01
+> 
+> to (2 socket, SNC=2 system):
+> 
+> $ ls -l mon_data
+> total 0
+> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_00
+> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_01
+> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_02
+> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_03
 
-Couldn't we allocate the memory for a structure to hold the values we want, then use the
-pointer as a pointer?
-
-I suspect whether 32bit builds are important depends on if anyone is using it, which we
-can't really know. Debian has 32bit builds, and while its unlikely anyone runs that on a
-server part, whatever an "Intel Celeron J3455" is supports RDT too. I'd be keen not to
-break it!
+This would be useful for MPAM. I've seen a couple of MPAM systems that have per-NUMA MPAM
+controls on the 'L3', but describe it as a single global L3. The MPAM driver currently
+hides this by summing the NUMA node counters and reporting it as the global L3's value.
 
 
-As for these eye-sore-ids ... I'm in two minds as to whether we should clean them up in
-the kernel. It would be fairly straightforward to scan the PPTT to find them all and map
-them to 0,1,2,. But this loses the values provided by the vendor.
-x86 and arm64:device-tree systems generate them, so its not clear that user-space needs a
-value provided by the vendor here.
+> While that is in some ways a more accurate view, it breaks a lot of
+> legacy monitoring applications that expect the "L3" names.
+
+True - but the behaviour is different from a non SNC system, if this software can read the
+file - but goes wrong because the contents of the file represent something different, its
+still broken.
+
+
 
 
 Thanks,
