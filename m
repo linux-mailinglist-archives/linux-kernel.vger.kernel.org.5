@@ -1,167 +1,109 @@
-Return-Path: <linux-kernel+bounces-104599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104583-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C2A5A87D0B3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:52:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56C9F87D06C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:38:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2198EB2269E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:52:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 12F47284AFF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:38:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE5BC40859;
-	Fri, 15 Mar 2024 15:50:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE4C93FB09;
+	Fri, 15 Mar 2024 15:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pvuPrbXT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Ru4fDqPw"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3B144D9FD;
-	Fri, 15 Mar 2024 15:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D7D03D97F;
+	Fri, 15 Mar 2024 15:38:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710517851; cv=none; b=H6Z29NroCGFFlNIjSsamegSrFaH4O3yE+M9eXxKPx0xf5Jm34Z+fUFb/tKwgqBUF2wAVAezsIvP56JcJN/4Uqd/rQuQQ3DWRLJx1WWk+LmEfWiq/qcRSIh3L+ewGpyyGFM8YCsexvqxYZMG3gvwp9DMiAvNheRJaEDjNRryn0/E=
+	t=1710517100; cv=none; b=K/PLCvZsnLdQ55SjtWxjbpnh4agNcOvOlhi6Kql9JEH/lu+Y9juj5WBVvHkXj51YVq48FtCINHpZuKwfF7Q8SIChCKkRk/no6XbyvayNB9YfZdPNemj5a1T41GPtdC/IgsXQVqGjZWhJRVlD9mykCu02U7b2LbPJQFj60y3TDbI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710517851; c=relaxed/simple;
-	bh=7a2Hm3pXFDdr5XBE0kbmXjURCAgqL5QaBK1DuRiWk9U=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=tIFEYHp5mj3PQEq9g66HqMBT6NBV5q1twuqSKtAvDdDGo6WHrRiltKdSZ9tgYjTDUehzjDd0lAbtGwCf6p0dleLX3X9yC/dCNE6FUi29NlbFxLQxicvkW7pHn/ZkA4mWVuRpkAXbx0UP5xSf/w8UxyoJ2HJIlvSW8jSZ3PGvvvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pvuPrbXT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 694C2C433C7;
-	Fri, 15 Mar 2024 15:50:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710517851;
-	bh=7a2Hm3pXFDdr5XBE0kbmXjURCAgqL5QaBK1DuRiWk9U=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=pvuPrbXTfOndaQEzFFp666MD+A1WudAqkzua//+PVFT8JbWkmfgXD3e0ekIusUTfQ
-	 xYz/WXmpd2AKN95kwGT89SomtK4TNbzF2xKC3F7N7ni5fNFbzgRSkOcjuLEz2ovl7h
-	 s+UwmwPq0Ol12u2CXGRAosLNGFZtJDD0XTBKL1JZlxfvgoLalAqKVlIeEYREbqKph3
-	 teLHiLDznyB1ndJTnbNrQCMKiBThklX6MbtC/Dsn2cfYte/JixzTKW3wk+jxx+diMY
-	 boW0gAxTsPNWvuSb1DnIOJB/2SNqT3TTfTuRotegToupeAZ1vHN6IIbkl355ol70Ii
-	 pXoMXMQOljVEA==
-Date: Fri, 15 Mar 2024 09:50:50 -0600
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1710517100; c=relaxed/simple;
+	bh=Yv7GWG66L6MKS+tklPfllW5x0ebZyHWQk2w657IjuTI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=GTUb/c5dZaVAtzuDuI9e9esX38HTY0SJ86QLbWzNEKUgjsp7mfYmMmQjjLfS86/GgBSBvsKDjd29zp2hV89lpwKaxTJHX/2R00sa96YZZN1hJkRrG4mTriyB2w2igA2C6jO9BV1Ey4eW5wsNUQkk4/dQm9jHDx0ypogXYDDeQ2k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Ru4fDqPw; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710517098; x=1742053098;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=Yv7GWG66L6MKS+tklPfllW5x0ebZyHWQk2w657IjuTI=;
+  b=Ru4fDqPw8Qu6EaQ6WXebbZ+6QQmgH3jndCIKOWSLc1c0+NaTHbQ3Y7rN
+   Ke+oU3IDkF3o6ygSWzDufdU1XggYMxjgoKyJZUTa4VNajrrREDtRFZgat
+   nWNTW4Xs6Np/Aq+xgkcmIpIsg1ZKK06WhZtUpqF3Eca/SfCJ3kjb8PDQc
+   5+6u6fosgNG3L5m/3xvI7BraEedrkO0VPwyQsDdRioakzpvle4n0AmkDS
+   vjhwjgqygQ0xY+CIK2qPtEZzya51NZKC/DGy3j/xGWKZ/tzK4CGTyUWto
+   3Eq7imZXrAkLfuzNCVQ4AToN/rMcq/sR9K1VCbbeG119FeCn+cSrMEU7b
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="9225829"
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="9225829"
+Received: from orviesa006.jf.intel.com ([10.64.159.146])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 08:38:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="13115050"
+Received: from liuzhao-optiplex-7080.sh.intel.com (HELO localhost) ([10.239.160.36])
+  by orviesa006.jf.intel.com with ESMTP; 15 Mar 2024 08:38:14 -0700
+Date: Fri, 15 Mar 2024 23:52:04 +0800
+From: Zhao Liu <zhao1.liu@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Shan Kang <shan.kang@intel.com>,
+	Kai Huang <kai.huang@intel.com>, Xin Li <xin3.li@intel.com>
+Subject: Re: [PATCH v6 9/9] KVM: nVMX: Use macros and #defines in
+ vmx_restore_vmx_misc()
+Message-ID: <ZfRupNB+eFNQC9l2@intel.com>
+References: <20240309012725.1409949-1-seanjc@google.com>
+ <20240309012725.1409949-10-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: kernel@collabora.com, krzysztof.kozlowski+dt@linaro.org, 
- conor+dt@kernel.org, linux-kernel@vger.kernel.org, wenst@chromium.org, 
- linux-mediatek@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
- jenneron@protonmail.com, devicetree@vger.kernel.org, matthias.bgg@gmail.com
-In-Reply-To: <20240314103500.93158-1-angelogioacchino.delregno@collabora.com>
-References: <20240314103500.93158-1-angelogioacchino.delregno@collabora.com>
-Message-Id: <171051663323.1379909.15085873286971472306.robh@kernel.org>
-Subject: Re: [PATCH 0/2] MediaTek: Add HP Chromebook x360 13b-ca0002sa
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240309012725.1409949-10-seanjc@google.com>
 
-
-On Thu, 14 Mar 2024 11:34:58 +0100, AngeloGioacchino Del Regno wrote:
-> This series adds support for the HP Chromebook x360 13b-ca0002sa,
-> Cherry platform, codename Dojo.
+On Fri, Mar 08, 2024 at 05:27:25PM -0800, Sean Christopherson wrote:
+> Date: Fri,  8 Mar 2024 17:27:25 -0800
+> From: Sean Christopherson <seanjc@google.com>
+> Subject: [PATCH v6 9/9] KVM: nVMX: Use macros and #defines in
+>  vmx_restore_vmx_misc()
+> X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
 > 
-> There are very few differences with Tomato, and specifically:
->  - Different touchscreen controller (still HID over I2C, different addr)
->  - Different (dual MAX98390) speaker amplifier
->  - Slightly different keyboard top row keymap
->  - NVMe storage over PCIe0
+> From: Xin Li <xin3.li@intel.com>
 > 
-> This series depends on [1] the ASoC MTK cleanup, and was tested working
-> by PostmarketOS community members.
+> Use macros in vmx_restore_vmx_misc() instead of open coding everything
+> using BIT_ULL() and GENMASK_ULL().  Opportunistically split feature bits
+> and reserved bits into separate variables, and add a comment explaining
+> the subset logic (it's not immediately obvious that the set of feature
+> bits is NOT the set of _supported_ feature bits).
 > 
-> As for the changes in mt8195-cherry.dtsi: personally tested on MT8195
-> Cherry Tomato, no issues.
-> 
-> [1]: https://lore.kernel.org/r/20240313110147.1267793-1-angelogioacchino.delregno@collabora.com
-> 
-> AngeloGioacchino Del Regno (2):
->   dt-bindings: arm: mediatek: Add MT8195 HP Chromebook x360 13b-ca0002sa
->   arm64: mediatek: mt8195-cherry: Introduce the MT8195 Dojo Chromebook
-> 
->  .../devicetree/bindings/arm/mediatek.yaml     |   8 ++
->  arch/arm64/boot/dts/mediatek/Makefile         |   1 +
->  .../dts/mediatek/mt8195-cherry-dojo-r1.dts    | 114 ++++++++++++++++++
->  .../boot/dts/mediatek/mt8195-cherry.dtsi      |   5 +
->  4 files changed, 128 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dts
-> 
-> --
-> 2.44.0
-> 
-> 
+> Cc: Shan Kang <shan.kang@intel.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> [sean: split to separate patch, write changelog, drop #defines]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 27 ++++++++++++++++++++-------
+>  1 file changed, 20 insertions(+), 7 deletions(-)
 > 
 
-
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
-
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
-
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
-
-  pip3 install dtschema --upgrade
-
-
-New warnings running 'make CHECK_DTBS=y mediatek/mt8195-cherry-dojo-r1.dtb' for 20240314103500.93158-1-angelogioacchino.delregno@collabora.com:
-
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: mt8195-sound: 'audio-routing', 'spk-playback-dai-link' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/sound/mt8195-mt6359.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: soc: jpgdec-master: {'compatible': ['mediatek,mt8195-jpgdec'], 'power-domains': [[51, 24]], 'iommus': [[142, 621], [142, 622], [142, 626], [142, 627], [142, 628], [142, 629]], '#address-cells': 2, '#size-cells': 2, 'ranges': True, 'jpgdec@1a040000': {'compatible': ['mediatek,mt8195-jpgdec-hw'], 'reg': [[0, 436469760, 0, 65536]], 'iommus': [[142, 621], [142, 622], [142, 626], [142, 627], [142, 628], [142, 629]], 'interrupts': [[0, 343, 4, 0]], 'clocks': [[41, 3]], 'clock-names': ['jpgdec'], 'power-domains': [[51, 23]]}, 'jpgdec@1a050000': {'compatible': ['mediatek,mt8195-jpgdec-hw'], 'reg': [[0, 436535296, 0, 65536]], 'iommus': [[142, 621], [142, 622], [142, 626], [142, 627], [142, 628], [142, 629]], 'interrupts': [[0, 344, 4, 0]], 'clocks': [[41, 4]], 'clock-names': ['jpgdec'], 'power-domains': [[51, 24]]}, 'jpgdec@1b040000': {'compatible': ['mediatek,mt8195-jpgdec-hw'], 'reg': [[0, 453246976, 0, 65536]], 'iommus': [[124, 653], 
- [124, 654], [124, 658], [124, 659], [124, 660], [124, 661]], 'interrupts': [[0, 348, 4, 0]], 'clocks': [[35, 3]], 'clock-names': ['jpgdec'], 'power-domains': [[51, 25]]}} should not be valid under {'type': 'object'}
-	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: soc: jpgenc-master: {'compatible': ['mediatek,mt8195-jpgenc'], 'power-domains': [[51, 27]], 'iommus': [[124, 647], [124, 648], [124, 649], [124, 652]], '#address-cells': 2, '#size-cells': 2, 'ranges': True, 'jpgenc@1a030000': {'compatible': ['mediatek,mt8195-jpgenc-hw'], 'reg': [[0, 436404224, 0, 65536]], 'iommus': [[142, 615], [142, 616], [142, 617], [142, 620]], 'interrupts': [[0, 342, 4, 0]], 'clocks': [[41, 2]], 'clock-names': ['jpgenc'], 'power-domains': [[51, 26]]}, 'jpgenc@1b030000': {'compatible': ['mediatek,mt8195-jpgenc-hw'], 'reg': [[0, 453181440, 0, 65536]], 'iommus': [[124, 647], [124, 648], [124, 649], [124, 652]], 'interrupts': [[0, 347, 4, 0]], 'clocks': [[35, 2]], 'clock-names': ['jpgenc'], 'power-domains': [[51, 27]]}} should not be valid under {'type': 'object'}
-	from schema $id: http://devicetree.org/schemas/simple-bus.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: syscon@10001000: compatible: ['mediatek,mt8195-infracfg_ao', 'syscon', 'simple-mfd'] is too long
-	from schema $id: http://devicetree.org/schemas/arm/mediatek/mediatek,mt8195-sys-clock.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: /soc/pwrap@10024000/pmic: failed to match any schema with compatible: ['mediatek,mt6359']
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: /soc/pwrap@10024000/pmic/mt6359rtc: failed to match any schema with compatible: ['mediatek,mt6358-rtc']
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: infra-iommu@10315000: interrupts: [[0, 795, 4, 0], [0, 796, 4, 0], [0, 797, 4, 0], [0, 798, 4, 0], [0, 799, 4, 0]] is too long
-	from schema $id: http://devicetree.org/schemas/iommu/mediatek,iommu.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: ec@0: 'keyboard-backlight' does not match any of the regexes: '^extcon[0-9]*$', '^i2c-tunnel[0-9]*$', '^regulator@[0-9]+$', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/mfd/google,cros-ec.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: pwm@1100e000: 'power-domains' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/pwm/mediatek,pwm-disp.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: pmic@34: #interrupt-cells: 1 was expected
-	from schema $id: http://devicetree.org/schemas/mfd/mediatek,mt6360.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: codec@1a: Unevaluated properties are not allowed ('VBAT-supply' was unexpected)
-	from schema $id: http://devicetree.org/schemas/sound/realtek,rt5682s.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: codec@1a: 'DBVDD-supply' is a required property
-	from schema $id: http://devicetree.org/schemas/sound/realtek,rt5682s.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: codec@1a: 'LDO1-IN-supply' is a required property
-	from schema $id: http://devicetree.org/schemas/sound/realtek,rt5682s.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: amplifier@38: '#sound-dai-cells', 'sound-name-prefix' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/sound/maxim,max98390.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: amplifier@39: '#sound-dai-cells', 'sound-name-prefix' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/sound/maxim,max98390.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: t-phy@11e30000: 'power-domains' does not match any of the regexes: '^(usb|pcie|sata)-phy@[0-9a-f]+$', 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/phy/mediatek,tphy.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: display@14f06000: clocks: [[37, 14], [37, 43], [37, 44]] is too long
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,split.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: dp-intf@1c015000: clock-names:0: 'pixel' was expected
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,dpi.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: dp-intf@1c015000: clock-names:1: 'engine' was expected
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,dpi.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: mutex@1c101000: 'clock-names', 'reg-names' do not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/soc/mediatek/mediatek,mutex.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: dp-intf@1c113000: clock-names:0: 'pixel' was expected
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,dpi.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: dp-intf@1c113000: clock-names:1: 'engine' was expected
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,dpi.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: dp-intf@1c113000: Additional properties are not allowed ('power-domains' was unexpected)
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,dpi.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: edp-tx@1c500000: 'aux-bus' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/display/mediatek/mediatek,dp.yaml#
-arch/arm64/boot/dts/mediatek/mt8195-cherry-dojo-r1.dtb: rt1019p: 'label' does not match any of the regexes: 'pinctrl-[0-9]+'
-	from schema $id: http://devicetree.org/schemas/sound/realtek,rt1015p.yaml#
-
+Reviewed-by: Zhao Liu <zhao1.liu@intel.com>
 
 
