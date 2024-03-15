@@ -1,150 +1,129 @@
-Return-Path: <linux-kernel+bounces-104204-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104205-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id A2DE687CAA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:26:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3ECEE87CAAA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:27:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5D35D283C79
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:26:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AFBAE2857D2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:27:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82B7F17BCF;
-	Fri, 15 Mar 2024 09:26:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 44D7917C70;
+	Fri, 15 Mar 2024 09:26:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="pzN2QS5O"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RPWe5/fg"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3D46175BF
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0218E17BB9;
+	Fri, 15 Mar 2024 09:26:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710494771; cv=none; b=omvqMgYxZQ03wnClotqtSyz44MZrIvQbSa+O8WNef4+uDGRu864LeRNXafcfX8PL5/kDibWoyQYUqHhJwTfIwA452ofc6Kwh3pDXU5g1Z6ofG5sVxt/Q+BoYNLo2W4INuNBGfCtpKFJYg2s6bgMuLy3jPMa/xBTngrQMPoCg9DQ=
+	t=1710494818; cv=none; b=YiK83fMoqpC04q9q/+NwYKQk3/SdLvnrOMoOpd1ElaO7Gva8+zVxog3xZk9pJJoWCbc9QcAkYbtQS9CfQ6DQGQOGnaMZnuNvJiOeOHXxQM1nnhfVvi8YFRV+bNbk1VV3GuPCx1hRyTlmDQOYACX5i4sSwf27QxsUxBcMAu0SUfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710494771; c=relaxed/simple;
-	bh=MReRIJrlX8O9MT/+6kJslqNYwHtGqTuoDN2PocAehRQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=syXChnwsEXFOs6XtQs+M7BtPXutKKH2H9jah+44b54ME16YQcJq5ttQ3GoIUd6jXFfL5Aa7C/P8YBNwIqIqP/ve3DMhbIVEdyrZtBCeynrmUqNbWNqIWyES9FOUF+zV/gPZ6ait6q/Pz1eJ74tBzk2WDgF4UvVOgxdUeJlyYDzA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=pzN2QS5O; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42F8tE0n008889;
-	Fri, 15 Mar 2024 09:26:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=KvLLWTMK+Jze46m0R5HmxFbZSHGWN2mqFJV6H+SLzAQ=;
- b=pzN2QS5OGKtasOskysZFdZ3WdeB6NFfep3yakeYGEBSf4t9LM8jqPFKIT6o5BNI2oRnU
- /IdxkUWtAPpjUS0uZpgXlg0UzODvYtJfNT+2aoComG/hQtvQ0PrIc5A7kgaKLS2sh0yc
- Af2LyYxCzH6DDenYeFwplx7ASam3Ha2J6IAKAH9XuMZBqPDlR/I9nHssx7i+psL4/o+3
- 5+JuGwGLv4ME8Ktu6iaotXKgHRIy7YXLd3l/RUQsR5iS+j+7Wt3gms05WeoH8qVMtKvz
- +U9CHDbEB6AOTkCXlPWcXhEg/jteVVdzG02bLedUqKvnOv6kte786zSDqagSUvr3kYkH Jw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wvhcj9qq9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 09:26:00 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42F9PAm4015856;
-	Fri, 15 Mar 2024 09:25:59 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wvhcj9qq4-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 09:25:59 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42F6MaZa018143;
-	Fri, 15 Mar 2024 09:25:59 GMT
-Received: from smtprelay04.wdc07v.mail.ibm.com ([172.16.1.71])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3ws23tu5hn-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 09:25:59 +0000
-Received: from smtpav05.wdc07v.mail.ibm.com (smtpav05.wdc07v.mail.ibm.com [10.39.53.232])
-	by smtprelay04.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42F9PuZ111076216
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Fri, 15 Mar 2024 09:25:58 GMT
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4E46F58068;
-	Fri, 15 Mar 2024 09:25:56 +0000 (GMT)
-Received: from smtpav05.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3E7FA5805F;
-	Fri, 15 Mar 2024 09:25:54 +0000 (GMT)
-Received: from [9.124.31.199] (unknown [9.124.31.199])
-	by smtpav05.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Fri, 15 Mar 2024 09:25:53 +0000 (GMT)
-Message-ID: <f1e78013-3664-4a37-982e-6aab44ead0e3@linux.ibm.com>
-Date: Fri, 15 Mar 2024 14:55:52 +0530
+	s=arc-20240116; t=1710494818; c=relaxed/simple;
+	bh=B189A+GOAXY/PxUfUcn9D1ygMGSqq+flupHGVm7EOrA=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=iH+W858tcMKDCkZ6Gcpr3vUS2OGN5GHYhMKB6ANDv/zRjLJBMkSJI8njtI8pIHD/TbYl9LXFKaNcAxvGgrpwDKxTOwe9WJjZkeIluRB+lRDYJy1tdNztwsQ5l7+Az+3XMA7iHtCE7RIpFlZAc4ZHuDTvZeSWLlhoaY5LvpwPCJ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RPWe5/fg; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-413ef770363so14481525e9.2;
+        Fri, 15 Mar 2024 02:26:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710494815; x=1711099615; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=7uoc1FhiOzy9zo6HbOlCBGlUHBMGiad+RyI7SAZIQAY=;
+        b=RPWe5/fgY7De3x4daPRcsDXP/12QcJnZc8+Nvuogbk8oifxvvqrHBA5zxd12C5eI3b
+         m3TK3sK1IUmR9viKP4/MJOfnucD8XvnbnTYLWtpaLycTf7ox+9lp9nJ/Kq6BEFEe3plB
+         NAihP1YZTN+LCEGDtm+VTg+cUHIPvYnrjQm7vjD8I8A0aX44kzt8NdzmpgC9Cd3x2kgo
+         UINcTPWzHx3VaspiEx+IHI1YnYpBoHAjc7yBi4TCeypHWnRnaO14YctRorbtQoyn9zAR
+         c1JS0sxRkOSx+raJksmYVkqHoBpQtqksGjx75BMPW0wLFkGS0ItBMmA8/Bmm4x+jk33/
+         FGww==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710494815; x=1711099615;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7uoc1FhiOzy9zo6HbOlCBGlUHBMGiad+RyI7SAZIQAY=;
+        b=CSFZrNJMHoddpU2+8LuHNAvbRWRB2PDIts6xFa1JpOskLvGEim7EzWTTYNwVZjCeiK
+         pjYvB/mCTcxKxjNbokn3SaN2OCgY/nunnm58OotuFwkSs2r36dZn8qAxjl3mzvJeTYPm
+         I9dBBVVkJBXk7xvbvOAuUL9kwOS/LZL2JKzcmKM8IeAZxfoiagRoi0A02XdVdWCvfTst
+         DR6X/okI4uROE0bCsytnzHlsyxw4rSgDv/nuiqcNeBkgaVSdMa53Y918/+XJobFlpkJs
+         x+6INWnY9z7eiKoB2DNHlKlEr/rz/3FGGaf7WgN1R6w9y8rH2j14Hrb/bVIsdVqcaqUF
+         RUNA==
+X-Forwarded-Encrypted: i=1; AJvYcCUoIUD8NPEwrpBfbWq4KpnZe36FRNoemJ1xrnQhrstcO4GSTU1yzYKN8FDsesF0k+cjt9ayVYTXlnQmkNkUpbo2R1/eK9gOCmgrUevzQnGlvZxjNdEN8kFquhsTPJFDeXQEI1FdExRgz0Gr1RYO2CvUwIdYdDjcsjIXpBZpBRFXGlP2
+X-Gm-Message-State: AOJu0Yw9mN6VFZQkFAfo8Y77ij5QSInoU+jOXbkT5DiJhkHaUGMwautt
+	plqTAlge3SITlBD5VDOeu4JSM4g0Iugff1adeMzoDsA9kNY9SxJn
+X-Google-Smtp-Source: AGHT+IFMeMBdmo97BMuwK0Izj+6Rxcz5sZu0QUBhehR7e6sd457BVotjbx7ooGfVpA6f6hjDlf4IYA==
+X-Received: by 2002:a05:600c:45c4:b0:414:24d:7f9 with SMTP id s4-20020a05600c45c400b00414024d07f9mr651665wmo.1.1710494815202;
+        Fri, 15 Mar 2024 02:26:55 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id jg5-20020a05600ca00500b00414024d078dsm944989wmb.17.2024.03.15.02.26.54
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 02:26:54 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: John Fastabend <john.fastabend@gmail.com>,
+	KP Singh <kpsingh@kernel.org>,
+	Stanislav Fomichev <sdf@google.com>,
+	Hao Luo <haoluo@google.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Shuah Khan <shuah@kernel.org>,
+	bpf@vger.kernel.org,
+	linux-kselftest@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] selftests/bpf: Remove second semicolon
+Date: Fri, 15 Mar 2024 09:26:54 +0000
+Message-Id: <20240315092654.2431062-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 01/10] sched/balancing: Switch the
- 'DEFINE_SPINLOCK(balancing)' spinlock into an 'atomic_t
- sched_balance_running' flag
-Content-Language: en-US
-To: Ingo Molnar <mingo@kernel.org>
-Cc: Dietmar Eggemann <dietmar.eggemann@arm.com>,
-        Peter Zijlstra <peterz@infradead.org>,
-        Valentin Schneider <vschneid@redhat.com>,
-        Vincent Guittot <vincent.guittot@linaro.org>,
-        LKML <linux-kernel@vger.kernel.org>
-References: <20240308105901.1096078-1-mingo@kernel.org>
- <20240308105901.1096078-2-mingo@kernel.org>
-From: Shrikanth Hegde <sshegde@linux.ibm.com>
-In-Reply-To: <20240308105901.1096078-2-mingo@kernel.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: Voe-nRTJtijgLpYjzGClX1GNpleG_j10
-X-Proofpoint-ORIG-GUID: TTF9Mi1eGrjybl0gwHTJwMV7sGkjQstF
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- mlxlogscore=999 clxscore=1015 impostorscore=0 adultscore=0 suspectscore=0
- malwarescore=0 spamscore=0 phishscore=0 lowpriorityscore=0 mlxscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2311290000 definitions=main-2403150076
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
+There are statements with two semicolons. Remove the second one, it
+is redundant.
 
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ tools/testing/selftests/bpf/benchs/bench_local_storage_create.c | 2 +-
+ tools/testing/selftests/bpf/progs/iters.c                       | 2 +-
+ 2 files changed, 2 insertions(+), 2 deletions(-)
 
-On 3/8/24 4:28 PM, Ingo Molnar wrote:
-> The 'balancing' spinlock added in:
-> 
-
-> Also document the flag a bit.
-> 
-> No change in functionality intended.
-> 
-
-> -static DEFINE_SPINLOCK(balancing);
-> +/*
-> + * This flag serializes load-balancing passes over large domains
-> + * (above the NODE topology level) - only one load-balancing instance
-> + * may run at a time, to reduce overhead on very large systems with
-> + * lots of CPUs and large NUMA distances.
-> + *
-> + * - Note that load-balancing passes triggered while another one
-> + *   is executing are skipped and not re-tried.
-> + *
-> + * - Also note that this does not serialize rebalance_domains()
-
-nit: please change rebalance_domains to sched_balance_domains. 
-
-> + *   execution, as non-SD_SERIALIZE domains will still be
-> + *   load-balanced in parallel.
-> + */
-> +static atomic_t sched_balance_running = ATOMIC_INIT(0);
->  
->  /*
->   * Scale the max load_balance interval with the number of CPUs in the system.
-> @@ -11711,7 +11724,7 @@ static void rebalance_domains(struct rq *rq, enum cpu_idle_type idle)
->  
->  		need_serialize = sd->flags & SD_SERIALIZE;
->  		if (need_serialize) {
+diff --git a/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c b/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+index b36de42ee4d9..e2ff8ea1cb79 100644
+--- a/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
++++ b/tools/testing/selftests/bpf/benchs/bench_local_storage_create.c
+@@ -186,7 +186,7 @@ static void *task_producer(void *input)
+ 
+ 		for (i = 0; i < batch_sz; i++) {
+ 			if (!pthd_results[i])
+-				pthread_join(pthds[i], NULL);;
++				pthread_join(pthds[i], NULL);
+ 		}
+ 	}
+ 
+diff --git a/tools/testing/selftests/bpf/progs/iters.c b/tools/testing/selftests/bpf/progs/iters.c
+index 3db416606f2f..fe65e0952a1e 100644
+--- a/tools/testing/selftests/bpf/progs/iters.c
++++ b/tools/testing/selftests/bpf/progs/iters.c
+@@ -673,7 +673,7 @@ static __noinline void fill(struct bpf_iter_num *it, int *arr, __u32 n, int mul)
+ 
+ static __noinline int sum(struct bpf_iter_num *it, int *arr, __u32 n)
+ {
+-	int *t, i, sum = 0;;
++	int *t, i, sum = 0;
+ 
+ 	while ((t = bpf_iter_num_next(it))) {
+ 		i = *t;
+-- 
+2.39.2
 
 
