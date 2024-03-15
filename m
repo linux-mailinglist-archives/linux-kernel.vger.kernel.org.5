@@ -1,167 +1,194 @@
-Return-Path: <linux-kernel+bounces-104441-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1012A87CDE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:13:53 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 49C5C87CDF1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 344751C20C12
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:13:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6D5911C20DCF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 953EC28DB5;
-	Fri, 15 Mar 2024 13:13:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A8A2575D;
+	Fri, 15 Mar 2024 13:15:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="P2HOXc57"
-Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2068.outbound.protection.outlook.com [40.107.20.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="caQbKsfo"
+Received: from mail-pj1-f44.google.com (mail-pj1-f44.google.com [209.85.216.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BB72562F;
-	Fri, 15 Mar 2024 13:13:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.68
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710508423; cv=fail; b=IwvDhH8AgPT4Fuy9IBWQwau9N8suPWwMVQQmynT2hIl7ry9T956OvtdTCxlQe+H2GIXBMayuRDF0kM+PXUFCoi6tRFHoD86uTYSVoTj+ahYJGH4mp0a3DDJC0d/fGJD8m65kjL/9+STYEXx5fYkAeWiBdYcBID93NHT4qkajEyA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710508423; c=relaxed/simple;
-	bh=dCDT9hFUrQK7vSMwHYHiwsr8a6b+f91Klm/rSmEN2Jk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=lOXpE8ZbWlaQmPujbx8bNO/28i6QuTYG/MwRn2/u+3cOfT+ou9kDHVlCjSqXRw3r13h6DSRc/BI5M8q9+0GSwTfPh6BPvrryQI2Y42B8Xj4G0dhz/2g6XhQcPmPXES6kdq6rdtd1RpG5+GbFz6CmPk06WUssJiHy7Ih+AZSvS4M=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=P2HOXc57; arc=fail smtp.client-ip=40.107.20.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=bM0SLeVgX1l+BOJQ5X4tC3AF2XkOAoitHihZ6X0LmUbBtR3KOs0IZYExJjuYqNzH/pXODoRLeXyjY693ymwhGkt7kBEVospgaXT98NNxAe2/EUZJC609CYlDCd+V9GwSlkOH0TCtBBtCPc7v+cRQqih+lB166sp3vYRxX7OvWPslHEferhsOJqzbP5xAC8H0AC5TXe0SfIdPg2apeXIw8F5OTsuIsGr97Ca8aglK/8tOv7psIuln7D3mCEascBi6FybWAis6qs6BqTi2A0HnerVxI9ba8TUSauZh/W1IuOUiD0O9XrPeWghnPtTDgL6Rs4nuDAFGL3sAtLc2OXEd0Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=dCDT9hFUrQK7vSMwHYHiwsr8a6b+f91Klm/rSmEN2Jk=;
- b=cnxloyGk/lgDHXzxVtmxjdXybJurgzUj6u+tu7Fo32pvLq21feWOr6ewPcTMgTmIWRNw1eD8csOnCGV/eO+oFJ5IN6IJG5S63XSqAkFhF1fKotC4+8LdUZxW5pxDrrabc0piAZQXfpQfVz05jhtiWb37vGWMpnY/YJYZ/nlkqLNDMsW0ymuL2vSlm9aTJhcPMfgHbpfkO80wBpOdeLkwv/A953ZwQeZaTjpcOP9JbLxjR8SXmzP0CBvi11uaNxTLSzGC1oj7VBvzdrUxMLUfUbShBHmWj/SFDcBBDGL0kYDtJgqJccYZ977W3CUe/zQ7HiOseAv5TTOa3HhsRgphYw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=dCDT9hFUrQK7vSMwHYHiwsr8a6b+f91Klm/rSmEN2Jk=;
- b=P2HOXc571M/gx2vUzD5JNqshueyPz00J/I7aln/Iyo1fPsUR84zcZEOMduc9MyZf1DIorcu+D1RoPPbDdgdt4e/mwF6cgI5u6+R7kbuITG2JaekQlQs3C/EKEJ0pjBd09FBcdchNw/YllPcG6yk6Wo4ilD5+7ALxxev4rks2AhA=
-Received: from PA4PR04MB9687.eurprd04.prod.outlook.com (2603:10a6:102:270::15)
- by VI1PR04MB10075.eurprd04.prod.outlook.com (2603:10a6:800:1d6::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.22; Fri, 15 Mar
- 2024 13:13:37 +0000
-Received: from PA4PR04MB9687.eurprd04.prod.outlook.com
- ([fe80::286f:8b1:d00d:4e0d]) by PA4PR04MB9687.eurprd04.prod.outlook.com
- ([fe80::286f:8b1:d00d:4e0d%3]) with mapi id 15.20.7386.020; Fri, 15 Mar 2024
- 13:13:36 +0000
-From: Neeraj Sanjay Kale <neeraj.sanjaykale@nxp.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-CC: "marcel@holtmann.org" <marcel@holtmann.org>, "johan.hedberg@gmail.com"
-	<johan.hedberg@gmail.com>, "luiz.dentz@gmail.com" <luiz.dentz@gmail.com>,
-	Amitkumar Karwar <amitkumar.karwar@nxp.com>, Rohit Fule <rohit.fule@nxp.com>,
-	Sherry Sun <sherry.sun@nxp.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-bluetooth@vger.kernel.org"
-	<linux-bluetooth@vger.kernel.org>, Geetu Naagar <geetu.kumari@nxp.com>
-Subject: Re: [PATCH v2] Bluetooth: btnxpuart: Enable Power Save feature on
- startup
-Thread-Topic: [PATCH v2] Bluetooth: btnxpuart: Enable Power Save feature on
- startup
-Thread-Index: AQHadtqWzE/qRAPwnECM2f3GC2+Jzw==
-Date: Fri, 15 Mar 2024 13:13:36 +0000
-Message-ID:
- <PA4PR04MB96874E4B23D6C225AE1367F4E7282@PA4PR04MB9687.eurprd04.prod.outlook.com>
-References: <20240304170753.500074-1-neeraj.sanjaykale@nxp.com>
- <20240304192952.GA17410@francesco-nb>
-In-Reply-To: <20240304192952.GA17410@francesco-nb>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PA4PR04MB9687:EE_|VI1PR04MB10075:EE_
-x-ms-office365-filtering-correlation-id: 8eefe2d8-9e6c-4be3-e01d-08dc44f1b940
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- cc5u7LZyiW3D6IsMZujyd4sUvCUF8PnEh9/KAyVIcizrCe4a4sSG9ow/HsmZTkdprrW7SnmTpM/LnxwGDR1eR/0SuIb3ov7jXV2bGooqDYBxcAzA5fhGNqHpvCd56cpCz9kjTBZLKz19QT0fOYTsFmf93pGuvhmNeBlWynIUw+wT5xtyZCBzXNdin9W6c/bDdiYvwqQEGinbvZaLlfIBM9uj8h8vKzJpOKysT72Ao0tUxzVHDd587tLqOrGoPi/vim7IO3on7P/NMS5x7GqFd+P070i5dv/KcXR7V8BLNrzF6HOBAj/dtOrsLHTEAq58Uv0tYt1OX3eV31oOlcZX+HAiuzScbf4u9m8NJiyxsixUKKv+zsTp453yv8AgHXFQ8ELwxlajh3ph7CRLZNYlgQWveEEXrSrnGFufDWOHLCHp4oL9hlebT/uZUVWcC8QiRpQeJbdnq9hqDKl0tjzPCmPlbV6QOXP8FxgL3tu9GAyD4GUuuDheaJyde7UYbIoOQRxv2h9iQaayJsmIkkAtMqLXs4a4Cytiua3/bHSuTxmp2MmA2d9KXOtj1X1t+0F7pq1PbD7GD9q5qQYc33ufl8wBtSlX3TAl/5RBiqa+Kn66rfS9nSAPAGwHG3moAy7SNatD+tpe0IlRhELYsfVyBrTE/uzbmQmf8XX3oeXaOSRHm8UtGuVn7lbwVf+0l8V7DjGuNBD57B1wFLrMnN5Vjr8A1cIidmiBl+uZe/eTXmU=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9687.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?+jtX/6BFKhemDtWiNtq7OmuQD6NqlavOGL6YRhbl0T/gPiMkfXOUJjIKZYgK?=
- =?us-ascii?Q?vzF+rgSiNvQ5SWF7vCi3Egytdg9sJpDlBNn7NBVAuxZUiqLA60F2CFMdMppb?=
- =?us-ascii?Q?SrSC8ipTWO5+lr1+r/VP2dp3mduZnEm6cYaEdTjPrkv4TBZO5wdNjheu0oMA?=
- =?us-ascii?Q?2g0i//vnWZRm6/+P0fFaKZlNpLVE6hIpAYyrMAQ4m0+apWvY7x9NIlMEpXho?=
- =?us-ascii?Q?op0xFUPqUbG/RxgICnu9uBdbjoBv7qbX/v8PGAfFKJ6ZMTRZ95BSPH+ybcBf?=
- =?us-ascii?Q?uvNevuWjY3S9g+Igny/QcqvCXPlQrbwu5J0sT545Xbo6afnVLg1HB6Z37Jtt?=
- =?us-ascii?Q?KIExzZ2qP+wCasjd0tAnvAjp6zlyoOLQoN2SJutl1EpKZN5/4e6seLA5JO7u?=
- =?us-ascii?Q?Pd1J6wxgDRtOpTFIY4Pmsp5wtcTTIzFRoVWDVRpksj6hMwwAlIJtgRmMiTS0?=
- =?us-ascii?Q?p/ClKIrKL7NJvSzN6UXMXuUx0DzV7pOmtCTC3wqclZMIwBEfr+S5lPZGlLKS?=
- =?us-ascii?Q?Pi1jh6TFsYSSk9Au60J6ectQHMDh6cWZEzUlCZ8rcdQpZAzec1L3zJaz0oG2?=
- =?us-ascii?Q?fkeGL3hAoyK/dKS7m5P98LR1i/ujSJZbFx7CdAIPR846o2Yiv8+8tZloCbCP?=
- =?us-ascii?Q?ZZOxq/hwccbtOgbIFR6MghI63mqotWt5NkMLK8/LYyd3+HjKX0ncxPsyg2XG?=
- =?us-ascii?Q?8jWCP6mASNA2GWf4/SEaZu4SeY3Y0LJaYkKktHrSjblQEkTg1PJxP/ZzGyoj?=
- =?us-ascii?Q?m40dBpHMLiRHpmmAtDWat8ZB++RtNZllge9uN2qALOwoeCPORJpxv5lDN4BZ?=
- =?us-ascii?Q?5X43Gb+lDbf//tpI6C7bopiINrY0iBA5xe6GFCrsawsjmLEwS0pzxmyKtk2C?=
- =?us-ascii?Q?zmor/y7vVWieRku913sx5aJraPS3vKkolYofnHeZrfzdMEqCSP/hffkp6VE4?=
- =?us-ascii?Q?o6uhsgfDYN58Pl91zg2JNKo3gGo2vkKInGSpAlAPmiTMOUZJHaaiL5ghCS29?=
- =?us-ascii?Q?ypdpT334KjWt8DOPPZOXE2mV4TYZA++UmPhmhrq0xFmz6S8JjfeMQS8krouv?=
- =?us-ascii?Q?3TTdGRdKqvG3HbtfAzaApmjkYwN37kyNXz1cxeExgAxUyn0Gw1gfZfZbQVKr?=
- =?us-ascii?Q?AJpPMQgxXfXTa0fSdDAJWSP+Qu6pyIODJPjGm1p5COyNU/mfMRwZ+Cy2hKZ1?=
- =?us-ascii?Q?KLRjVphLw9aSUXNVaK56P/sNWhE28/jRrNE17gQQI4q4JpJUwbRc5Te+rDPt?=
- =?us-ascii?Q?1WyNT/70fchnxQm+Gys2wdsQ83Zxhsu7PZav3BEuF4ZfLpuTus5mR9NUPG4g?=
- =?us-ascii?Q?ARrCmGMJ18JtPe9CwnyJQPCL0Ng5c8L61LLIlfLva/+QQaQcJVNOeLLs6JMQ?=
- =?us-ascii?Q?QC8l+cs0sDNYy/A6argUpO3r9bkoLQQtowCZoGAkDi+mteypykXwbuFV8O5n?=
- =?us-ascii?Q?24rZOiOLj9umSDDv1Iorhn0pvQaSt/2Ci5MQ0xYZpdCh1tiu3Nl544kC/6AT?=
- =?us-ascii?Q?jG6acFlJpqDKp+Nh+c/SxJxIjuEq4K3l0encpNcrOakPSwSWlidNsl/mCH9I?=
- =?us-ascii?Q?xFEjEhMwhUN6H3hJOX9c1uId0CuC2xfe9mJtV2Ca?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6689F241F9
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:15:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.44
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710508518; cv=none; b=O47Z6xwJTUHP7B0sJxYKMMdzfGYCFagHHONU+u/ASynV73/M9utjfzgZztYHtqKcD+rqEFQKiRw5QXJvgxixug9m7IoaQfceAzlFKKIBIMk5s/28p36yREEkPcEnovf68x6lCEEUlvtYbfyA4THlkKbD0EvPzgMpdubbh52cIkw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710508518; c=relaxed/simple;
+	bh=Pjj2ZWhSAAWWhwPZ9KE2hS5HpVXut161e8Zimba/FCI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=D/H59CjnzI+T6S3R8b7rLGD1ENPyCN/VEQedKjSL9+mwufdAsb+CvJeejkd7bwp97lwZ52/G83M1l2S7aUjXE5OrwRcFHMK3vXxeYbH44LfT+9YpOE1HwJNlwHlgA7xkDENLKh2af+gFOUcbTED6l+nO/wtLIMd5oq8Yc+bCVCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=caQbKsfo; arc=none smtp.client-ip=209.85.216.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pj1-f44.google.com with SMTP id 98e67ed59e1d1-29b7caa88c6so1692693a91.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 06:15:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710508517; x=1711113317; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=7xArLs+uRWKVcLaNLsdyx3ULVcbdPBPfj9m9G7izSGw=;
+        b=caQbKsfoHWYQhkuAXhs7KLh4iaxk7Bkhgx6gBj1HUzjw3aUnpRvJYOWs6Q7Ey+uNyy
+         msefHvY0i+9PPUf1ISIwo0+cTKeOidaR93GamYpUU5OIwTeniYHtoyyUW36YR7fuMWz4
+         E5nuW4ctLD90FRiA48FuVJVJ1wML+NrGUj+a5Xup6Q2CAiJhH/toBasNENxWKs1VMTf+
+         WIWTRK8ObwJ9ghNG6xTPEp43NgRo6S4ekXVdCR8iVqvAQFooyYsGGqF20y9Qk/qUdhtH
+         Suehm3Xkr7ii5CRKQFo/nrYzAi7vD9Zqi5YHZmGWGSz9esewbvFj2DD8hodCdmVrZcrn
+         kkeA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710508517; x=1711113317;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7xArLs+uRWKVcLaNLsdyx3ULVcbdPBPfj9m9G7izSGw=;
+        b=MzsBKjQN5g+Q5MuQDEYtWy7+OgN4uBt1WuZljsv9AXdc4PO3kT/xZhhcMu2cK8eYNI
+         zQOjf+3ux47eIjSYYe/acu0HyhUfYPvZCVhXfNlSlyF7YuNgY3+bYHGxtXn6PfwDh4pr
+         cd6B5LIBvJ7s2vwqyPNFHA5UkLwjk8QBam0xeVgIVT4rs5DoNJH+zAKnNOF/Tb3XMSmL
+         DOjhoSvUoUUXY2kGuZDvBJHNMfWIQImEd1xCsGmi4+wPvqmXIDnyyNt0Nc/GmyMz02+r
+         8uaj1UKHgQqnAzW1LpsBaSc6CISA818T9Via+YrwitszZNfSmc2M2j75rKEmHIbdPVHi
+         Rktw==
+X-Forwarded-Encrypted: i=1; AJvYcCViYm4pHMlTHuUjc/1S+m26wjh+ERtOYM3TYv8VrgeGhYTmfP25ke6Cx5pfez+DLCzkGJ+vV5XpnROsoJKpQGkUSpIEkcf6Tgg7LrUE
+X-Gm-Message-State: AOJu0YwQU9UmybKY3Qd1pgUcepqgbmF/wxoo6a3p0s/vdFZhjeBSxR6C
+	C35na/wJ6UtX57dsMlP6AxHyHSajHsUlhLZAW85ncsHaWFrok+q5Edf3rdWeTukvIuPbPndZkP9
+	R8MIpneAD1algNcwTRyFAjLafUNA=
+X-Google-Smtp-Source: AGHT+IFszOtqZsBrsCaeD8AagP6jTW2qGgUUxVKCWna95eZpFtJXyEtQc+YvHuRJlO1PeqRIIw6BgYeFAlMEpQI+mFg=
+X-Received: by 2002:a17:90a:ee93:b0:29b:22d2:9dd5 with SMTP id
+ i19-20020a17090aee9300b0029b22d29dd5mr4615017pjz.38.1710508516676; Fri, 15
+ Mar 2024 06:15:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9687.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 8eefe2d8-9e6c-4be3-e01d-08dc44f1b940
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 13:13:36.5396
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: olwbtCQwmajGuOQekZ3GHFtCT3qG9zbyMzhYmTEq8UTG6voDNoaPw+RNzVOoMs03jSeWnedYIH2C+ZezEEeHpFW4n62O5IYtpMGfPHWs3w4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB10075
+References: <20240315121315.406601-1-sunil.khatri@amd.com>
+In-Reply-To: <20240315121315.406601-1-sunil.khatri@amd.com>
+From: Alex Deucher <alexdeucher@gmail.com>
+Date: Fri, 15 Mar 2024 09:15:04 -0400
+Message-ID: <CADnq5_NsqSWknj5x0v22iF2_UPCEFO7gnj4BV5j22x-jitO1=g@mail.gmail.com>
+Subject: Re: [PATCH] drm/amdgpu: add the hw_ip version of all IP's
+To: Sunil Khatri <sunil.khatri@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>, 
+	=?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org, 
+	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Francesco,
+On Fri, Mar 15, 2024 at 8:13=E2=80=AFAM Sunil Khatri <sunil.khatri@amd.com>=
+ wrote:
+>
+> Add all the IP's version information on a SOC to the
+> devcoredump.
+>
+> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
 
->=20
-> On Mon, Mar 04, 2024 at 10:37:53PM +0530, Neeraj Sanjay Kale wrote:
-> > This sets the default power save mode setting to enabled.
-> >
-> > The power save feature is now stable and stress test issues, such as
-> > the TX timeout error, have been resolved.
->=20
-> I assume that the stability issue has been fixed in firmware, correct?
-> What's going to happen if running the updated driver with old firmware?
-> What about combo Wi-Fi/BT firmware files, were those updated? I'm
-> currently using this driver with this firmware [1]
+This looks great.
 
-There were some stability issues in the driver, that are fixed in previous =
-patches.
+Reviewed-by: Alex Deucher <alexander.deucher@amd.com>
 
-As for FW, I have checked internally and there were no power save related i=
-ssues reported for any combo FWs.
-
-I had requested our QA team to perform basic sanity tests for WLAN and BT u=
-sing the exact FW version you are using, and there were no power save issue=
-s reported.
-
-Thanks,
-Neeraj
-
+> ---
+>  drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 62 +++++++++++++++++++++++
+>  1 file changed, 62 insertions(+)
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/=
+amd/amdgpu/amdgpu_reset.c
+> index a0dbccad2f53..3d4bfe0a5a7c 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+> @@ -29,6 +29,43 @@
+>  #include "sienna_cichlid.h"
+>  #include "smu_v13_0_10.h"
+>
+> +const char *hw_ip_names[MAX_HWIP] =3D {
+> +       [GC_HWIP]               =3D "GC",
+> +       [HDP_HWIP]              =3D "HDP",
+> +       [SDMA0_HWIP]            =3D "SDMA0",
+> +       [SDMA1_HWIP]            =3D "SDMA1",
+> +       [SDMA2_HWIP]            =3D "SDMA2",
+> +       [SDMA3_HWIP]            =3D "SDMA3",
+> +       [SDMA4_HWIP]            =3D "SDMA4",
+> +       [SDMA5_HWIP]            =3D "SDMA5",
+> +       [SDMA6_HWIP]            =3D "SDMA6",
+> +       [SDMA7_HWIP]            =3D "SDMA7",
+> +       [LSDMA_HWIP]            =3D "LSDMA",
+> +       [MMHUB_HWIP]            =3D "MMHUB",
+> +       [ATHUB_HWIP]            =3D "ATHUB",
+> +       [NBIO_HWIP]             =3D "NBIO",
+> +       [MP0_HWIP]              =3D "MP0",
+> +       [MP1_HWIP]              =3D "MP1",
+> +       [UVD_HWIP]              =3D "UVD/JPEG/VCN",
+> +       [VCN1_HWIP]             =3D "VCN1",
+> +       [VCE_HWIP]              =3D "VCE",
+> +       [VPE_HWIP]              =3D "VPE",
+> +       [DF_HWIP]               =3D "DF",
+> +       [DCE_HWIP]              =3D "DCE",
+> +       [OSSSYS_HWIP]           =3D "OSSSYS",
+> +       [SMUIO_HWIP]            =3D "SMUIO",
+> +       [PWR_HWIP]              =3D "PWR",
+> +       [NBIF_HWIP]             =3D "NBIF",
+> +       [THM_HWIP]              =3D "THM",
+> +       [CLK_HWIP]              =3D "CLK",
+> +       [UMC_HWIP]              =3D "UMC",
+> +       [RSMU_HWIP]             =3D "RSMU",
+> +       [XGMI_HWIP]             =3D "XGMI",
+> +       [DCI_HWIP]              =3D "DCI",
+> +       [PCIE_HWIP]             =3D "PCIE",
+> +};
+> +
+> +
+>  int amdgpu_reset_init(struct amdgpu_device *adev)
+>  {
+>         int ret =3D 0;
+> @@ -196,6 +233,31 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset,=
+ size_t count,
+>                            coredump->reset_task_info.process_name,
+>                            coredump->reset_task_info.pid);
+>
+> +       /* GPU IP's information of the SOC */
+> +       if (coredump->adev) {
+> +
+> +               drm_printf(&p, "\nIP Information\n");
+> +               drm_printf(&p, "SOC Family: %d\n", coredump->adev->family=
+);
+> +               drm_printf(&p, "SOC Revision id: %d\n", coredump->adev->r=
+ev_id);
+> +               drm_printf(&p, "SOC External Revision id: %d\n",
+> +                          coredump->adev->external_rev_id);
+> +
+> +               for (int i =3D 1; i < MAX_HWIP; i++) {
+> +                       for (int j =3D 0; j < HWIP_MAX_INSTANCE; j++) {
+> +                               int ver =3D coredump->adev->ip_versions[i=
+][j];
+> +
+> +                               if (ver)
+> +                                       drm_printf(&p, "HWIP: %s[%d][%d]:=
+ v%d.%d.%d.%d.%d\n",
+> +                                                  hw_ip_names[i], i, j,
+> +                                                  IP_VERSION_MAJ(ver),
+> +                                                  IP_VERSION_MIN(ver),
+> +                                                  IP_VERSION_REV(ver),
+> +                                                  IP_VERSION_VARIANT(ver=
+),
+> +                                                  IP_VERSION_SUBREV(ver)=
+);
+> +                       }
+> +               }
+> +       }
+> +
+>         if (coredump->ring) {
+>                 drm_printf(&p, "\nRing timed out details\n");
+>                 drm_printf(&p, "IP Type: %d Ring Name: %s\n",
+> --
+> 2.34.1
+>
 
