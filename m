@@ -1,81 +1,99 @@
-Return-Path: <linux-kernel+bounces-104122-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104123-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14D5587C966
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:38:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 508A787C968
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 450F01C21105
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:38:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBBB6B21762
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:41:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4484514A81;
-	Fri, 15 Mar 2024 07:38:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACD221429A;
+	Fri, 15 Mar 2024 07:41:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="kU55tM8u"
-Received: from out30-118.freemail.mail.aliyun.com (out30-118.freemail.mail.aliyun.com [115.124.30.118])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="GVhT/5Bm";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="uBzm4NEk"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A257913FE0;
-	Fri, 15 Mar 2024 07:38:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.118
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7285112E71;
+	Fri, 15 Mar 2024 07:41:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710488293; cv=none; b=NSPS95z+GhB5D/eJ6u4A+IdNc3VV1DKB3z1Wk5GaXNF7OBbBTUj0A/sa2BtbhL90f4XowHsOWlEWWenHm2/J7oXHFXWDqm5H82A3JmlcgS9siken3WWnTf/tva447m9UnjDj86uapgjGe+WZuSA+3yunYcnXTkdhu7r9nSHFfuk=
+	t=1710488480; cv=none; b=CUhWPuNsiPKFEil51sbgkzLtHIkZkG+bsTLW03uAsaUUoePDWQWNp0vGhLHfihWcIYAKPi8RNIOeccff4coXqccHawS92RzHWNmh5/pXsyznZ09rHjFdOMfoRvJUtsyOIXkmzUbF/yoRz5Sk8jKD0UTONk195mdnZ4dvOCFcS0s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710488293; c=relaxed/simple;
-	bh=XWWRvsgk/0lGAj9U5B09PIVCpqzsHnTUgd04g+wpHSI=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Uj5GXswrsTR0aP4p5rkfyfKXoC9c+9z32Pj+41txzvtdKeV7HmSd3sS/2+Vuf/vQMzfVDoeXvwI5EUwALUr0qZqV+umsVkvOopKcsG1WXLzGlRXqAH/PTjp6nPqBfw9MOF4BvF/xqzGJnn5fXuHy14FxyRz9vBzqkJPFssloG3s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=kU55tM8u; arc=none smtp.client-ip=115.124.30.118
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1710488288; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=5g45Kk7mH0mIdrRQacSl6eYr0tbYPGHsSpK+SWXMIFg=;
-	b=kU55tM8udS+41uU6sB3rvgB4CPMcjO7bhsKYV5FQ6abFq2i92tLoe4bk2lmF3c0l8fF455vpKqzCf5PuZhEG7s1HBoWMAiNn0ZmdIX9QGD3SmFehsxUoX86m9hodAcwUQbIgw1wGInOBUAg1PfQT0dP6CV244f6Gmm4fzqvl/5s=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R191e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=4;SR=0;TI=SMTPD_---0W2VapzI_1710488287;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W2VapzI_1710488287)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Mar 2024 15:38:07 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: brauner@kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	linux-fsdevel@vger.kernel.org,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] fs: Add kernel-doc comments to proc_create_net_data_write()
-Date: Fri, 15 Mar 2024 15:38:05 +0800
-Message-Id: <20240315073805.77463-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+	s=arc-20240116; t=1710488480; c=relaxed/simple;
+	bh=CQ8sthM+ukAAJ+yhQdfaSjJZHn505UW1ZJOHTWsqQBQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XVwCBOlc2YQLS1tFBWKtoR3YGckoiyhNqmLdTg5R7zV6vG5IvR1hqgecICWlS+3N4Cueujnre2PmcujYpA0dBrxCAMX2Hb8l0CbGdNiQuCkUwjjHw2pzpwNbFpSotZv3sjZfA+FIGcMnGobc2RcVHE22HZqn+b07MFPDdBS6K+w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=GVhT/5Bm; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=uBzm4NEk; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Fri, 15 Mar 2024 08:41:14 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710488476;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9VDp1Ceo9uiNPto1QZnXHckVKvG4yvIiVDzP9krVh2w=;
+	b=GVhT/5BmPboBfXfrBdfMvV/KOSpjoHawAmDYKvFDbHx5/9opTgfSsjFJ3JhHBd312Pb/SS
+	b2RkTz1D3UJesQSqhCGxIbkSiBe5GWXifLzyzk1K11kfSyR4UpMGGUD5XF1V4PK7ofV4LH
+	nBiwDUJMpyy06QrsPxeZnPp3z7Pye6PbOjnDa99tQRgupbEowpr4r50IXp1WgZ87BysbiJ
+	I8B5OT/d73+czOKTv3C1jfzxk9vAnnaWUFhKZGAUE4OccYrkphNVgd39iN3mifZJCMOKxj
+	vs2TRoVjID5xS/tQBA0K0/Wla7Alf0Mr8KwQ4xl8wJhATb9QkbK3Bc9kpUPMyQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710488476;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9VDp1Ceo9uiNPto1QZnXHckVKvG4yvIiVDzP9krVh2w=;
+	b=uBzm4NEkle7ynXXoIeCeRHz7B8GbWEJK9cohpzRcJGjM5hwkuP166D0FnbrqZAm4y+0Mid
+	M9MDGCiKTCybrxAw==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Marco Elver <elver@google.com>, Vince Weaver <vincent.weaver@maine.edu>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Ian Rogers <irogers@google.com>, Ingo Molnar <mingo@redhat.com>,
+	Jiri Olsa <jolsa@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>
+Subject: Re: [PATCH v2 0/4] perf: Make SIGTRAP and __perf_pending_irq() work
+ on RT.
+Message-ID: <20240315074114.1wRuzXFO@linutronix.de>
+References: <CANpmjNMYGa46pRQUOfzTa_FRvftOGqg+UDeD_B-tbZgYw-MWww@mail.gmail.com>
+ <ZfHE9Ev5T3Lq7o34@x1>
+ <ZfHtBB5_-3RByE8p@x1>
+ <ZfHw3J5PY6qy4mXn@x1>
+ <ZfIIqcmRlrxwUFTn@x1>
+ <ZfIJIfqeI9tWnnS5@x1>
+ <20240314091033.woaK8h83@linutronix.de>
+ <ZfMK_yTzxTQCMGZ1@x1>
+ <ZfNqnjdR-0YEsSnb@x1>
+ <ZfNwLfdOLBytjF06@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZfNwLfdOLBytjF06@x1>
 
-This commit adds kernel-doc style comments with complete parameter
-descriptions for the function proc_create_net_data_write.
+On 2024-03-14 18:46:21 [-0300], Arnaldo Carvalho de Melo wrote:
+> So despite this mistake all is well, torvalds/master + your patchkit
+> seems ok.
+> 
+> Sorry for the noise :-\
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/proc/proc_net.c | 1 +
- 1 file changed, 1 insertion(+)
+No worries, thank you.
 
-diff --git a/fs/proc/proc_net.c b/fs/proc/proc_net.c
-index 2ba31b6d68c0..52f0b75cbce2 100644
---- a/fs/proc/proc_net.c
-+++ b/fs/proc/proc_net.c
-@@ -135,6 +135,7 @@ EXPORT_SYMBOL_GPL(proc_create_net_data);
-  * @parent: The parent directory in which to create.
-  * @ops: The seq_file ops with which to read the file.
-  * @write: The write method with which to 'modify' the file.
-+ * @state_size: The size of the per-file private state to allocate.
-  * @data: Data for retrieval by pde_data().
-  *
-  * Create a network namespaced proc file in the @parent directory with the
--- 
-2.20.1.7.g153144c
+> - Arnaldo
 
+Sebastian
 
