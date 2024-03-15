@@ -1,96 +1,135 @@
-Return-Path: <linux-kernel+bounces-104591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104578-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCDEF87D08C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:44:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 151DD87D05E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:32:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 758721F21B47
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:44:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E20C2831BE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DB27440C04;
-	Fri, 15 Mar 2024 15:44:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7A13DBBC;
+	Fri, 15 Mar 2024 15:32:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SmOcLE8V"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FV5dLuva"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BF01405F8;
-	Fri, 15 Mar 2024 15:44:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09FE3CF63;
+	Fri, 15 Mar 2024 15:32:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710517453; cv=none; b=o9MUsnPZR4r8Vl6k/4/592di4UCB3Zp87h+o7Hvw1j1S3Ec4gJUXSOl0/eqdp6u8BiaGUd+J+IpG6nH+GkldwYHN5CnlZtAIoMg2HZj4ClySSKRFpu0HS8OGq//fKPKGmHMmt5d48DrhiJXJ7F/ZD9GsIqZpEfUgL0+3O87VtIE=
+	t=1710516754; cv=none; b=d75yGiAM+EbsgHKhD38h8WBYRSp5PGcq6mi3G0wJxd+Lvt2W6XzHd/P5HFjf1lFwTkd9P75Lt4e9rgwk7N6P+LOlVop6qxx+TtjRmZmKdaKynWk6W6acFCcgRNGTHoa1/nhao4xaQK80QBTCrz8MyVYMZIwDBTQVMHUadrgw/tI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710517453; c=relaxed/simple;
-	bh=pSCHLCkTou2V/Ar4fp2rSjOt/S5Yq3PodT2wCnZIeBc=;
+	s=arc-20240116; t=1710516754; c=relaxed/simple;
+	bh=qIWHRg8+eu5c29VD4Zm6n7oQubxdYCjfi82fseL+o50=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=WqwM5WJdqIrTftqRBtAHmiviS0cRfrUI0i4AaXI658QBWPTrr/nbdMB7M+Pc8gv3pvKeJBVIsdJ4eG8PF5tn2dj8Sp8nUHQlFIfP+zsTgy29K3eZ+YQZuJ3RaEKUZuVdTnI29JoHR0phwJKouqbGj5woTpyKhv4JeZufjMpn5rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SmOcLE8V; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9B30EC433F1;
-	Fri, 15 Mar 2024 15:44:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710517452;
-	bh=pSCHLCkTou2V/Ar4fp2rSjOt/S5Yq3PodT2wCnZIeBc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=SmOcLE8VnVn6P/PkXwekjKEA4imIacESDQjcxJLuOKJQdubDFr/LkRW9c495hki9f
-	 417Lzkg1pbPwyPEJTQWyTpw8Geu/DUIZrHeSRC/zj009AWvyO54GzRwDid+4bf1LsA
-	 Q/w1LXhnFw/bJH2MjAEy9Kwu0fNj3Nr9k0PotiKT5oSPBswci44odMkf7ogRry1D4Z
-	 WT3TpWpZKy0jqUSgad7HA1aBpiTQpJRnFshWh6S3sMLRJKcaLoTd4nI0xWWBWHXL+d
-	 Iob/7NTINc2oHegUXhxPlxcBBRTeqH47lIRmJYmaZy0SvI0TKrIZv//U925ki2w06B
-	 Swm5ZfbV973Bg==
-Date: Fri, 15 Mar 2024 15:44:07 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Sasha Levin <sashal@kernel.org>
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	torvalds@linux-foundation.org, akpm@linux-foundation.org,
-	linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
-	lkft-triage@lists.linaro.org, pavel@denx.de
-Subject: Re: [PATCH 6.6 00/60] 6.6.22-rc1 review
-Message-ID: <59f3c45d-f875-4ab8-bb2b-e1125d566938@sirena.org.uk>
-References: <20240313163707.615000-1-sashal@kernel.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=b3f5BOYneF/P4fslT4UX7guwErE0shfGP1JVQpzYHfQRNVsumxP4egJop5xoXquG/lwFJSoXe9sicVZb/lca3GNqKDUfzNaithNVW0Cdd7VXXCbSyOCmIAofHSByDmRytecY3CgAbNE9ONRqIcIxldZb6P60wPrMfBTZbS98Uxo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FV5dLuva; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710516749; x=1742052749;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=qIWHRg8+eu5c29VD4Zm6n7oQubxdYCjfi82fseL+o50=;
+  b=FV5dLuva2oEybl9ytZX6JtmeGxh958I3i79qxGbF2uk5AnG0vLQvPKQt
+   xmVzG3Zj5ifas37wzJrxEVYfA8RCmObB4dcuQ/E8nVAy91/CklYJxmmXb
+   J0vCHl4sz9OTsGwZHYcNwG69DtAFRAakTEA5uFCQ/LWT6jKulRbB61/qy
+   qL1kllXHKPd3PZ51F0S7ek6aF2/pHBdEE59qYn315O8M/2tCZyIRuxfWt
+   XzZGuMFXoXckaGPP9vyXg9/9F4cQE1H1g5rKB2exonQ1ETXkVDMyHfr/m
+   uoybLkf4Qav5SouIl3wgZ4uwmoT72L+V0Y2x2YsxgyYeGW8bGrqRsDvOg
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5600794"
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="5600794"
+Received: from fmviesa006.fm.intel.com ([10.60.135.146])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 08:32:29 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="12783740"
+Received: from liuzhao-optiplex-7080.sh.intel.com (HELO localhost) ([10.239.160.36])
+  by fmviesa006.fm.intel.com with ESMTP; 15 Mar 2024 08:32:25 -0700
+Date: Fri, 15 Mar 2024 23:46:16 +0800
+From: Zhao Liu <zhao1.liu@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Shan Kang <shan.kang@intel.com>,
+	Kai Huang <kai.huang@intel.com>, Xin Li <xin3.li@intel.com>
+Subject: Re: [PATCH v6 8/9] KVM: VMX: Open code VMX preemption timer rate
+ mask in its accessor
+Message-ID: <ZfRtSKcXTI/lAQxE@intel.com>
+References: <20240309012725.1409949-1-seanjc@google.com>
+ <20240309012725.1409949-9-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="B7opea/pCWfKDE4h"
-Content-Disposition: inline
-In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
-X-Cookie: Yow!  Am I in Milwaukee?
-
-
---B7opea/pCWfKDE4h
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+In-Reply-To: <20240309012725.1409949-9-seanjc@google.com>
 
-On Wed, Mar 13, 2024 at 12:36:07PM -0400, Sasha Levin wrote:
->=20
-> This is the start of the stable review cycle for the 6.6.22 release.
-> There are 60 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
+On Fri, Mar 08, 2024 at 05:27:24PM -0800, Sean Christopherson wrote:
+> Date: Fri,  8 Mar 2024 17:27:24 -0800
+> From: Sean Christopherson <seanjc@google.com>
+> Subject: [PATCH v6 8/9] KVM: VMX: Open code VMX preemption timer rate mask
+>  in its accessor
+> X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+> 
+> From: Xin Li <xin3.li@intel.com>
+> 
+> Use vmx_misc_preemption_timer_rate() to get the rate in hardware_setup(),
+> and open code the rate's bitmask in vmx_misc_preemption_timer_rate() so
+> that the function looks like all the helpers that grab values from
+> VMX_BASIC and VMX_MISC MSR values.
+> 
+> No functional change intended.
+> 
+> Cc: Shan Kang <shan.kang@intel.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> [sean: split to separate patch, write changelog]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/include/asm/vmx.h | 3 +--
+>  arch/x86/kvm/vmx/vmx.c     | 2 +-
+>  2 files changed, 2 insertions(+), 3 deletions(-)
+> 
+> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
+> index 6ff179b11235..90ed559076d7 100644
+> --- a/arch/x86/include/asm/vmx.h
+> +++ b/arch/x86/include/asm/vmx.h
+> @@ -148,7 +148,6 @@ static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
+>  	return (vmx_basic & GENMASK_ULL(53, 50)) >> 50;
+>  }
+>  
+> -#define VMX_MISC_PREEMPTION_TIMER_RATE_MASK	GENMASK_ULL(4, 0)
+>  #define VMX_MISC_SAVE_EFER_LMA			BIT_ULL(5)
+>  #define VMX_MISC_ACTIVITY_HLT			BIT_ULL(6)
+>  #define VMX_MISC_ACTIVITY_SHUTDOWN		BIT_ULL(7)
+> @@ -162,7 +161,7 @@ static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
+>  
+>  static inline int vmx_misc_preemption_timer_rate(u64 vmx_misc)
+>  {
+> -	return vmx_misc & VMX_MISC_PREEMPTION_TIMER_RATE_MASK;
+> +	return vmx_misc & GENMASK_ULL(4, 0);
+>  }
 
-Tested-by: Mark Brown <broonie@kernel.org>
+I feel keeping VMX_MISC_PREEMPTION_TIMER_RATE_MASK is clearer than
+GENMASK_ULL(4, 0), and the former improves code readability.
 
---B7opea/pCWfKDE4h
-Content-Type: application/pgp-signature; name="signature.asc"
+May not need to drop VMX_MISC_PREEMPTION_TIMER_RATE_MASK?
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0bMcACgkQJNaLcl1U
-h9Dhzwf/YYEcbM1vO9lkFBbIbVobPBfoOXwuRUxTtlKQxJ0KSSfwC+JOR2hPKqXj
-1qMq1m3nCWYeeQlDloJSfRMVuEJ9cKBk35O59eLSXjRhtALkL25B27mutfFLzh9L
-cWDgMo2mqyjHHwx7U6YpISXXaD0BLkXhqfoAWCWaN39+lUBxw1ChpBXXHVXXFgBF
-PmZMpQMp8GlqxLMuphLP8WAHhwik1qm7CIVtqBq28meYkukruT8MrfTMVjIT3tWy
-XAatYw1DGAV4IwWH5faNXcAjTx5WHx/np6Tn2IFSdeOcX3K0bEp2KAJ/fbseMcvE
-DXBPi3LmvKNevrpXaXR5Ms0oFGzVCg==
-=Yat5
------END PGP SIGNATURE-----
-
---B7opea/pCWfKDE4h--
+Thanks,
+Zhao
 
