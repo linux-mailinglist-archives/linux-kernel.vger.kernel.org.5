@@ -1,89 +1,85 @@
-Return-Path: <linux-kernel+bounces-104130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104129-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D82C87C980
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:58:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8D5A687C97B
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:54:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD2CE1F22BA8
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:58:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BF4651C21FDD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:54:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D06D14A85;
-	Fri, 15 Mar 2024 07:58:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A7E3314AB0;
+	Fri, 15 Mar 2024 07:53:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="ACNKUY6E"
-Received: from out30-99.freemail.mail.aliyun.com (out30-99.freemail.mail.aliyun.com [115.124.30.99])
+	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="VzOAQfG4"
+Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B72514280
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 07:58:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3971168B1;
+	Fri, 15 Mar 2024 07:53:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710489486; cv=none; b=iLJIjOZnvc2j6o9VJiBrlxzJzpKVyt+eBUPBR/mO3FLttLh0DCM75BlQizxpiWkSTLKbn9k9wbl+Pp4Z3QIonZIf/UxkQwCwcEHrYzU5YWFe0AjWOnujz6/lmnAX8EMFRubxQ7loHJFZ6+vxH6UotUnFO9R5OdGJzEujUUFrMOg=
+	t=1710489235; cv=none; b=Coxyq5aTXf2DCdRbJgtGXQvmeP0X316eOu3WwsyxbcPw0Y36O+Ba9mtpkaTLhBxwPZlcTRt4A7uzbg1CMDM6qaU0U2g8MevYBV2KThhfEuD/TydRetdGaj4aNzKNl01BCn9UuJmiY8Mtxcwp2YA72mGtSeM0xM6Jmgm65KaON8Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710489486; c=relaxed/simple;
-	bh=81XSfEgLxlFeq8/X8aED3TZ7ruO0mOShtVUqNrx19kM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=E0rT/kKoIGQKWEXjc1ul9l4n7QGlppR9UbNjIOOWHicbsSgi6T8uWz953RKYXHgPuDdABH9fCxroOv4T0SDY2QdYAD074zPwSxwdPE7eBgb7MZMzEzCLBaBRK5FUMMcOkJ1cGGisDUal8PjKzL0iup7XBg9vfAnxQM++r0ep+Js=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=ACNKUY6E; arc=none smtp.client-ip=115.124.30.99
+	s=arc-20240116; t=1710489235; c=relaxed/simple;
+	bh=6FMRl6m8tBGLZaaAzsLem205PhnR/hBTd36NLkHi/Cw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=YfRap1HphXMzhw1wadsALLNYDdUyWTILr15+rGf9cclpyRg9SjU0j0Ux4ajwjhsGjqf2uCgJMxVnhpeDNFzq9yHUk2JJM8eRYE/v7R7ohDD1/Kv0SaNS3kBf+DVWIhAlT1Z6JWtIWuRaCG/SGsx10ulMUFLQtp3GMBV4lpVUH0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=VzOAQfG4; arc=none smtp.client-ip=115.124.30.111
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
 DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
 	d=linux.alibaba.com; s=default;
-	t=1710489482; h=From:To:Subject:Date:Message-Id:MIME-Version;
-	bh=GfzLZvVTB66l3CV8s0w+Yyt+PN5Qeom7/J1D8rdHZiU=;
-	b=ACNKUY6EX4eTP3nKhM+Z6ueIg9GORr7khnzgprSlI29lSbjEU+9JIB19/8fjN0q9vdg8tHHoxSneKvLyy31s46Ye/2IlyHcRsWfvqDxiZqaepKizwiLIPTiYM0m+yIcaBipjWEmEamoPFgVVqvBABfexeDPKbw1yoZxi/1gtHGg=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045176;MF=yang.lee@linux.alibaba.com;NM=1;PH=DS;RN=3;SR=0;TI=SMTPD_---0W2VavpW_1710489169;
-Received: from localhost(mailfrom:yang.lee@linux.alibaba.com fp:SMTPD_---0W2VavpW_1710489169)
+	t=1710489229; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
+	bh=taaP0Q9u2K5DH9xLuWgNdAcyQdJAZ4Px6dOvD4Tr4Bc=;
+	b=VzOAQfG4t0ynN0mr9D+RsuQLbRV1YKnO7NNvycyCEWHUN0x51I6QP6xNBf2W2znTe8TZ3tOGYV0hVvuwWmrrPNhCL+oog1dgrhUBgRPg10L01uj13W3ySlhgqDLwMHFEw+gq2pkYs0Tz3R6Le8jldCAYf+6uZNwwuOfrYP6NUTA=
+X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=xianting.tian@linux.alibaba.com;NM=1;PH=DS;RN=6;SR=0;TI=SMTPD_---0W2VZ4oX_1710489199;
+Received: from 30.221.98.145(mailfrom:xianting.tian@linux.alibaba.com fp:SMTPD_---0W2VZ4oX_1710489199)
           by smtp.aliyun-inc.com;
-          Fri, 15 Mar 2024 15:52:50 +0800
-From: Yang Li <yang.lee@linux.alibaba.com>
-To: hirofumi@mail.parknet.co.jp
-Cc: linux-kernel@vger.kernel.org,
-	Yang Li <yang.lee@linux.alibaba.com>
-Subject: [PATCH -next] fs: Add kernel-doc comments to fat_parse_long()
-Date: Fri, 15 Mar 2024 15:52:49 +0800
-Message-Id: <20240315075249.111059-1-yang.lee@linux.alibaba.com>
-X-Mailer: git-send-email 2.20.1.7.g153144c
+          Fri, 15 Mar 2024 15:53:48 +0800
+Message-ID: <e004b5d6-e74c-44a8-afaa-b6f4b993817d@linux.alibaba.com>
+Date: Fri, 15 Mar 2024 15:53:18 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] vhost: correct misleading printing information
+To: mst@redhat.com, jasowang@redhat.com
+Cc: kvm@vger.kernel.org, virtualization@lists.linux.dev,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <20240311082109.46773-1-xianting.tian@linux.alibaba.com>
+From: Xianting Tian <xianting.tian@linux.alibaba.com>
+In-Reply-To: <20240311082109.46773-1-xianting.tian@linux.alibaba.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-This commit adds kernel-doc style comments with complete parameter
-descriptions for the function fat_parse_long.
+it is a very minor fix, I think it can be applied
 
-Signed-off-by: Yang Li <yang.lee@linux.alibaba.com>
----
- fs/fat/dir.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
-
-diff --git a/fs/fat/dir.c b/fs/fat/dir.c
-index 00235b8a1823..8236807eb7f7 100644
---- a/fs/fat/dir.c
-+++ b/fs/fat/dir.c
-@@ -269,6 +269,16 @@ enum { PARSE_INVALID = 1, PARSE_NOT_LONGNAME, PARSE_EOF, };
- /**
-  * fat_parse_long - Parse extended directory entry.
-  *
-+ * @dir: Pointer to the inode that represents the directory.
-+ * @pos: On input, contains the starting position to read from.
-+ *       On output, updated with the new position.
-+ * @bh: Pointer to the buffer head that may be used for reading directory entries.
-+ *      May be updated.
-+ * @de: On input, points to the current directory entry.
-+ *      On output, points to the next directory entry.
-+ * @unicode: Pointer to a buffer where the parsed Unicode long filename will be stored.
-+ * @nr_slots: Pointer to a variable that will store the number of longname slots found.
-+ *
-  * This function returns zero on success, negative value on error, or one of
-  * the following:
-  *
--- 
-2.20.1.7.g153144c
-
+在 2024/3/11 下午4:21, Xianting Tian 写道:
+> Guest moved avail idx not used idx when we need to print log if
+> '(vq->avail_idx - last_avail_idx) > vq->num', so fix it.
+>
+> Signed-off-by: Xianting Tian <xianting.tian@linux.alibaba.com>
+> ---
+>   drivers/vhost/vhost.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+>
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 045f666b4f12..1f3604c79394 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -2515,7 +2515,7 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+>   		vq->avail_idx = vhost16_to_cpu(vq, avail_idx);
+>   
+>   		if (unlikely((u16)(vq->avail_idx - last_avail_idx) > vq->num)) {
+> -			vq_err(vq, "Guest moved used index from %u to %u",
+> +			vq_err(vq, "Guest moved avail index from %u to %u",
+>   				last_avail_idx, vq->avail_idx);
+>   			return -EFAULT;
+>   		}
 
