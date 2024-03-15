@@ -1,127 +1,168 @@
-Return-Path: <linux-kernel+bounces-104608-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104609-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67F3C87D0E0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:02:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72B8287D0E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:02:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB788B232CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:02:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A412F1C2169D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:02:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0AE9D40BE5;
-	Fri, 15 Mar 2024 16:02:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94A7C44C86;
+	Fri, 15 Mar 2024 16:02:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="LP6zeCjc"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SC6rGy6w";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=suse.com header.i=@suse.com header.b="SC6rGy6w"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 622A21773D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:01:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9FBD24086B;
+	Fri, 15 Mar 2024 16:02:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710518521; cv=none; b=eFm/ThKGBiDN8O1DEbLvNLas8e+jRZAwEYbVWgFT2j2ysk9oEegqfVDRNiXaTlJqNMCnKR62MzwZ+aQJKWosko9e0mQXKVWkLYQRNwe78IvOGFp3kEiBhoTc4DdvbYDAdhvXppGkuJhcMyWgf24gGUPHaIgQHdPBVJ8y1QgWAW8=
+	t=1710518539; cv=none; b=iMwLz/b5c/OxhvrsAwxc66t4n9oITjtongjj3jBmQVfj+YIwrqsKheyo+HzIdiUTX5UOqVLdlkbSHFm5x1BX0riMBA30B554+XUrS+jNyGIC00SdVTLzZHA4wpFWVjv9i/LLOOjUBzPaokGDzgVh1NPmQqLa3G7QYxrHI95HPZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710518521; c=relaxed/simple;
-	bh=N2TNj6SzVcm4tQs2+i96GqLhQOMd+qQHIk54pEso/0s=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=jCQpScoyJ09F8kZcxttEMigso/vKsXnxFQ/l2xGL8/AnyCER7ag70GyYhnzfEr57VhwOqzQIVklCY+ac69OHvfGq6sZjWdLLfiVk/cayNB+ktwwiO+C8gFrsARh+z5v46Alt9cFc56vu3D2I6UIpLHpqiicCJKrQ2Bh2uepauE8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=LP6zeCjc; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-6005a.ext.cloudfilter.net ([10.0.30.201])
-	by cmsmtp with ESMTPS
-	id l9bWrO2PBPM1hlA0FrrC8m; Fri, 15 Mar 2024 16:01:51 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id lA0ErT6dhmxLNlA0ErlW1x; Fri, 15 Mar 2024 16:01:50 +0000
-X-Authority-Analysis: v=2.4 cv=GaARnxXL c=1 sm=1 tr=0 ts=65f470ee
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=XineX5Z/IkLFuTEpgzr7Cw7iEBWcAoh1wS8sfk9tgtM=; b=LP6zeCjc5X1W2KfwOUDXdYpkbi
-	3yyo/tmSCx4QRUVOCqilXeg1u8OODg7gZvw6Cpa0N+Q576hagSlNRhltIZv00wNwoNJFZ5jGSTWUM
-	fQpdLDO/zvhTTg6U3MfOGKdO+4lurasIXF7sDWOwob6QlA2X2qr8LE7AIVjJoVpOMol6eMB1Tt0Uy
-	9XUtBwYMkeLTWGq4tZgP+oouI9BdSXCYo5q8fJT/gfINVxxBzR/h5INA9qMFU8hYV86oWB/7R48+Y
-	cpv0fHRRh9+Aw5ZnKcYXe0yx8HWvZ+FYIORccPv3AQ3A7EyFytZqJ4vYtgXuBaN1tAHbQHe2Ll1yN
-	28PfGiqw==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:51158 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rlA0D-001OIi-29;
-	Fri, 15 Mar 2024 10:01:49 -0600
-Subject: Re: [PATCH 6.6 00/60] 6.6.22-rc1 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20240313163707.615000-1-sashal@kernel.org>
-In-Reply-To: <20240313163707.615000-1-sashal@kernel.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <28ee915b-dc41-d8a3-594b-b269014cb6a3@w6rz.net>
-Date: Fri, 15 Mar 2024 09:01:47 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1710518539; c=relaxed/simple;
+	bh=6Ule3JN0U15LHh3rH6IkUT0Y0+A+gb7QON59wG/WH1k=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=cWD1ea0VU9WwzuMvOs576FasD6SE+z611Zc6CE9yu+gDMzoS8ITcKNGlwXM7FVsnfeFGvunN6KjHaFY3OkxN6ILeOkvlIJhPcYMM1PZkoJrgVJZV23RutG/wwR+fSfLP+a4AJZC6+SDLnwjnQ/im/SArHv67ND0+f5+NkgkrREs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SC6rGy6w; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=SC6rGy6w; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id D3EFF1FB6D;
+	Fri, 15 Mar 2024 16:02:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710518531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=faiaAnTe6lOY2CBUd6zMN/hZKSHWHcaRYL1tD6+DLRk=;
+	b=SC6rGy6wppVPzsUIuTEShsqR7wG141w9vLma94akKnEXqQjKdQriAhyq7O2BMymjvrDrpS
+	2BhAD3iMSJY9nukgfaShrFuXYUMhzjZRSzoEglx0RNBGmI50G0oUoPAGf40gWKybK44yRG
+	4KK5EQ7Wz+tlRN8ysUQ/9ndVDiADtOo=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710518531; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=faiaAnTe6lOY2CBUd6zMN/hZKSHWHcaRYL1tD6+DLRk=;
+	b=SC6rGy6wppVPzsUIuTEShsqR7wG141w9vLma94akKnEXqQjKdQriAhyq7O2BMymjvrDrpS
+	2BhAD3iMSJY9nukgfaShrFuXYUMhzjZRSzoEglx0RNBGmI50G0oUoPAGf40gWKybK44yRG
+	4KK5EQ7Wz+tlRN8ysUQ/9ndVDiADtOo=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C712513460;
+	Fri, 15 Mar 2024 16:02:11 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id 5mBtMANx9GVUXgAAD6G6ig
+	(envelope-from <mkoutny@suse.com>); Fri, 15 Mar 2024 16:02:11 +0000
+From: =?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+To: netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Jamal Hadi Salim <jhs@mojatatu.com>,
+	Cong Wang <xiyou.wangcong@gmail.com>,
+	Jiri Pirko <jiri@resnulli.us>,
+	"David S . Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Paolo Abeni <pabeni@redhat.com>,
+	=?UTF-8?q?Michal=20Koutn=C3=BD?= <mkoutny@suse.com>
+Subject: [PATCH] net/sched: Add module alias for sch_fq_pie
+Date: Fri, 15 Mar 2024 17:02:10 +0100
+Message-ID: <20240315160210.8379-1-mkoutny@suse.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rlA0D-001OIi-29
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:51158
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 2
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfOl4p4owzGUoKuXRtkB7SXAfhRV3zHmhl4roo9e52CCwtU7IABLY69tqFLPOO1cc+FG1R9xIrMQri8naZE7GtYh22ZC7fj/C4z1HZI3JWA/wkj6PKUS+
- SFLB5WLzFm13nxANN0EGIBiGuorU08Rksw6R2w8IY16QFTGps+r+HP85r+pzj9YIoYJWYOaexceYdQnIUTdGxHEU0dWIpEI2DRQ=
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-Spam-Score: 1.10
+X-Spamd-Result: default: False [1.10 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.10)[65.70%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[mojatatu.com,gmail.com,resnulli.us,davemloft.net,google.com,kernel.org,redhat.com,suse.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-On 3/13/24 9:36 AM, Sasha Levin wrote:
-> This is the start of the stable review cycle for the 6.6.22 release.
-> There are 60 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri Mar 15 04:36:58 PM UTC 2024.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.6.y&id2=v6.6.21
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.6.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+The commit 2c15a5aee2f3 ("net/sched: Load modules via their alias")
+starts loading modules via aliases and not canonical names. The new
+aliases were added in commit 241a94abcf46 ("net/sched: Add module
+aliases for cls_,sch_,act_ modules") via a Coccinele script.
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+sch_fq_pie.c is missing module.h header and thus Coccinele did not patch
+it. Add the include and module alias manually, so that autoloading works
+for sch_fq_pie too.
 
-Tested-by: Ron Economos <re@w6rz.net>
+(Note: commit message in commit 241a94abcf46 ("net/sched: Add module
+aliases for cls_,sch_,act_ modules") was mangled due to '#'
+misinterpretation. The predicate haskernel is:
+
+| @ haskernel @
+| @@
+|
+| #include <linux/module.h>
+|
+)
+
+Fixes: 241a94abcf46 ("net/sched: Add module aliases for cls_,sch_,act_ modules")
+Signed-off-by: Michal Koutný <mkoutny@suse.com>
+---
+ net/sched/sch_fq_pie.c | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/net/sched/sch_fq_pie.c b/net/sched/sch_fq_pie.c
+index 5b595773e59b..358cf304f4c9 100644
+--- a/net/sched/sch_fq_pie.c
++++ b/net/sched/sch_fq_pie.c
+@@ -10,6 +10,7 @@
+  */
+ 
+ #include <linux/jhash.h>
++#include <linux/module.h>
+ #include <linux/sizes.h>
+ #include <linux/vmalloc.h>
+ #include <net/pkt_cls.h>
+@@ -563,6 +564,7 @@ static struct Qdisc_ops fq_pie_qdisc_ops __read_mostly = {
+ 	.dump_stats	= fq_pie_dump_stats,
+ 	.owner		= THIS_MODULE,
+ };
++MODULE_ALIAS_NET_SCH("fq_pie");
+ 
+ static int __init fq_pie_module_init(void)
+ {
+
+base-commit: ea80e3ed09ab2c2b75724faf5484721753e92c31
+-- 
+2.44.0
 
 
