@@ -1,81 +1,189 @@
-Return-Path: <linux-kernel+bounces-104757-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104758-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE5BC87D326
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:58:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 061E087D327
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:58:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B3477285277
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:58:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A71CB23784
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:58:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 629614D9F5;
-	Fri, 15 Mar 2024 17:57:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 047A94CB41;
+	Fri, 15 Mar 2024 17:58:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="iybei6+S"
-Received: from out-171.mta1.migadu.com (out-171.mta1.migadu.com [95.215.58.171])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="J00Ac7js"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AB284B5A6
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:57:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 891413A287
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:58:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710525478; cv=none; b=FcA7AoCIM1IYGMUF6h7kie9/AF4HfpJBpLA4kMmWWQ6dSC3DKO5+W+EAf+MWtPrsMlJiatheSa8kDghZbaBoPEt5UlwIgVYX8Yxd0D2Evb4+ptFc4viMwkDeDM7xsLOx2m7hUp9/jSUEjPQLWqcGvYQ+nE5SBrci2XCFzf1T0t0=
+	t=1710525522; cv=none; b=geP/VnqJm5AIj7BjzHemdLPTcz6rwJEtS7VcUMCwt/FaqLr9t3AT+iZDtu3eIjUU/5tDYwChhNdQ70oBZ5tvFiLAd+yamwOAgbydsMW6fAfBZ3JK8NnYmmX3lUn1LMBGnyCzs+qyzMDMv5JFxbuul1R8FMEljNRNGbxRgLSVLTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710525478; c=relaxed/simple;
-	bh=Tde7wUhRpbBGuZM3oOiKyK1trez4oUmQs71Ex8H8z2M=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RCZ7HPUs1mvv9HZ9MEodmHAhDNh0kG2/Wc3wMt3PIsRRQPIgFj2F+41P76hfx8tjjbrdotjvr8yEUqXl5bt7IKukNb/YQzB9TnlZt8Mx0xOwWfa1oSDJFUqRpHI+az/17fR/IcNYQwrnKSRMn/UMRtXi5g5xKA0ThQdM8kjRZWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=iybei6+S; arc=none smtp.client-ip=95.215.58.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Fri, 15 Mar 2024 13:57:51 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710525474;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=CYt91xYMKuX7kjqLzNM222k1dBQGNYp7NSEMxGeVb7o=;
-	b=iybei6+SK+x3HIrbiJQ55HRFeb0Ur1xxY66+l0+W6d4duKgfDSoZbz3ewcHHZvjDDFOmv8
-	DjuYxPV80axbzmtgGvNqIh99rK49sAUT/MhLdvOZMc3vqXjYluSQqAw4Vwn63HeYnIAsGu
-	KBXmfmOgmouqitHnbJ/ZfLenG5euKzY=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Martin Steigerwald <martin@lichtvoll.de>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: bcachefs: do not run 6.7: upgrade to 6.8 immediately if you have
- a multi device fs
-Message-ID: <2c3smz5wnk5z2kaqyqbo6kr3bb6dtvanfvupsqdydggzmvkukc@xssb53m4lyey>
-References: <muwlfryvafsskt2l2hgv3szwzjfn7cswmmnoka6zlpz2bxj6lh@ugceww4kv3jr>
- <12416320.O9o76ZdvQC@lichtvoll.de>
+	s=arc-20240116; t=1710525522; c=relaxed/simple;
+	bh=JzSH2dCjHi+Yzzlnb4D7rkCOT9cAZwAm1yn2JymQHa0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Jy8DCAZPR1MWlbAWb1w///iQogmtYp16dnXrWCuuch+FBuznUzoOsvK2N0AOfdc2FfM8soiIYA8oGtNxCymMv4gbhf2bDoOiejrgjDidlNQJFi1LBHmxWx+mT5cOSKn5Lc4YKARKACUERwZA15w0ow6isXEkUO24DGnbD4ffFGw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=J00Ac7js; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710525521; x=1742061521;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=JzSH2dCjHi+Yzzlnb4D7rkCOT9cAZwAm1yn2JymQHa0=;
+  b=J00Ac7jsjby+IfWYhEGnYf6XalyHu94IyE19u4oIkS75x1ONdDiCVgES
+   Ow7APYc2eUYyWPm/L6qzKBNcLatCcdnSITmdC0iwr0hrm0lTN7/zL3dIz
+   m9PTLL6FNnwW4CMytjmxzDN3jXrUh0Czydtj1Qq6YB83MFUia04t5Uayr
+   4M98si1PpPapsnoiQQzo5BLb1m1DfK6Te3Tw/yj/vrGcEcet8MTkAny0v
+   zFsnisQ3oBBvcnJuOfyPvO3S8BT36FXsfAMmZ16F1yBN7loqyB/BDj7RB
+   K17IDfpvr340aFKaiMlvMRSMi7bWeFLC5hf2YqEzrZ7kCUIkrL94aHMfq
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5617103"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="5617103"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 10:58:39 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="13377639"
+Received: from uagu-mobl.amr.corp.intel.com (HELO [10.209.27.9]) ([10.209.27.9])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 10:58:39 -0700
+Message-ID: <ce02f1a8-870f-41bc-8650-4bd6103f9637@intel.com>
+Date: Fri, 15 Mar 2024 10:58:38 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <12416320.O9o76ZdvQC@lichtvoll.de>
-X-Migadu-Flow: FLOW_OUT
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] x86/tsc: Use topology_max_packages() to get package
+ number
+Content-Language: en-US
+To: Feng Tang <feng.tang@intel.com>, Thomas Gleixner <tglx@linutronix.de>,
+ Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>,
+ "H . Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+ x86@kernel.org, paulmck@kernel.org, rui.zhang@intel.com,
+ Waiman Long <longman@redhat.com>, linux-kernel@vger.kernel.org
+Cc: Dave Hansen <dave.hansen@linux.intel.com>
+References: <20240315112606.2248284-1-feng.tang@intel.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240315112606.2248284-1-feng.tang@intel.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 15, 2024 at 09:57:34AM +0100, Martin Steigerwald wrote:
-> Hi Kent, hi.
-> 
-> Kent Overstreet - 15.03.24, 05:41:09 CET:
-> > there's a bug in 6.7 with filesystems that are mid upgrade and then get
-> > downgraded not getting marked in the superblock as downgraded, and this
-> > translates to a really horrific bug in splitbrain detection when the old
-> > version isn't updating member sequence nmubers and you go back to the
-> > new version - this results in every device being kicked out of the fs.
-> 
-> I take it that single device BCacheFS filesystems can be upgraded just fine?
-> 
-> I can also recreate and repopulate once I upgraded to 6.8. Still waiting a 
-> bit.
+On 3/15/24 04:26, Feng Tang wrote:
+> Thomas' recent patchset of refactoring x86 topology code introduces
+> topology_max_package(), which works well in most of the above cases.
+> The only exceptions are 'nr_cpus=' and 'possible_cpus=' setup, which
+> sets up the 'nr_cpu_ids' and rejects the rest of the CPUs, and may
+> cause topology_max_package() less than the real package number, but
+> it's fine as it is rarely used debug option, and logical package
+> number really matters in this check. So use the more accurate
+> topology_max_package() to replace nr_online_nodes().
 
-No need to recreate and repopulate - you just don't want to be going
-back to 6.7 from a newer version.
+In the end, we have a bunch of hardware enumeration and then a bunch of
+processing on top of it taking CPU hotplug support and kernel command
+lines into account.
+
+The hardware enumeration is relatively simple.  The processing the
+kernel does on top of it is complicated.
+
+> diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+> index 5a69a49acc96..87e7c0e89db1 100644
+> --- a/arch/x86/kernel/tsc.c
+> +++ b/arch/x86/kernel/tsc.c
+> @@ -1252,15 +1252,12 @@ static void __init check_system_tsc_reliable(void)
+>  	 *  - TSC which does not stop in C-States
+>  	 *  - the TSC_ADJUST register which allows to detect even minimal
+>  	 *    modifications
+> -	 *  - not more than two sockets. As the number of sockets cannot be
+> -	 *    evaluated at the early boot stage where this has to be
+> -	 *    invoked, check the number of online memory nodes as a
+> -	 *    fallback solution which is an reasonable estimate.
+> +	 *  - not more than four sockets.
+>  	 */
+>  	if (boot_cpu_has(X86_FEATURE_CONSTANT_TSC) &&
+>  	    boot_cpu_has(X86_FEATURE_NONSTOP_TSC) &&
+>  	    boot_cpu_has(X86_FEATURE_TSC_ADJUST) &&
+> -	    nr_online_nodes <= 4)
+> +	    topology_max_packages() <= 4)
+>  		tsc_disable_clocksource_watchdog();
+>  }
+
+I know there's some history here, but the changelog itself is not clear
+about what the problem is or how the patch solves it.
+
+I also kinda dislike the comment talking about "sockets" and the code
+talking about "packages".  I also did a big *gulp* when I saw this:
+
+	#define topology_max_packages() (__max_logical_packages)
+
+and:
+
+>         /*
+>          * Today neither Intel nor AMD support heterogeneous systems so
+>          * extrapolate the boot cpu's data to all packages.
+>          */
+>         ncpus = cpu_data(0).booted_cores * topology_max_smt_threads();
+>         __max_logical_packages = DIV_ROUND_UP(total_cpus, ncpus);
+
+Because Intel obviously has heterogeneous systems today.
+
+So I'll buy that removing 'nr_online_nodes' takes NUMA out of the
+picture (which is good), but I want to hear more about why
+topology_max_packages() and '4' are the right things to be checking.
+
+I suspect the real reason '4' was picked was to give the calculation
+some wiggle room because it's not actually all that precise.
+
+
 
