@@ -1,211 +1,180 @@
-Return-Path: <linux-kernel+bounces-104234-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104235-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7437287CB02
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:00:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0550887CB04
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:00:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9B1CAB21CC6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:00:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5E21FB22CD9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:00:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47EE618036;
-	Fri, 15 Mar 2024 10:00:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C111218035;
+	Fri, 15 Mar 2024 10:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aHE/gDLL"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Laqcq9rz"
+Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8411317C7B;
-	Fri, 15 Mar 2024 10:00:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 22039182DD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:00:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710496812; cv=none; b=H10/X8ydz1FLfYXiLiJnBAoXzOCWBN+x2GCfwYTWxf5Ys53NGuz10fsoJTJK2zwr/nJkqO6b1Wkcbir25gA7Z5Ui56ROIn/O11rfsCI5oTIgZWuAxXM8J9qkUKr0Tf6ylQ48fZLQD8kJfwlcgN5ZDhCj4NRQMTOTi6Sy+We8I7E=
+	t=1710496819; cv=none; b=iYJEgdmkKoptBL4sJgQkxd/MtrIk0Owx143u6FVQh75RIDYFOP+YRY6qhCcEAyJPoNqFTzoqVi59e34tgVt42XYFD1SgYYJRPEcD+tYpoX2Qja1tWyWG93XcosKUz0IQqN1PE/Ez32/qRC++d7mJ6VBLgW4L1alrhrqPeShzw/4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710496812; c=relaxed/simple;
-	bh=TgsPBTRp6nSShb4vL2Mx+LcNmJuRLjnumD5YkOFdYI4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RotQDMrDeg4pVvB8f5BU1NAzHuTHpDVrJYlRh55+eV9hFnPqOblkoCQ5X+xRo+HpMwtBqLc4meSVWoaJndO5MAJemGwnKo7fCxijGStSvJJFQY4Q8qyolIl79QgNyHejVf4vSt+dTBlgYofwXGnOoZ3lmklc8Bdt7S8GtNwBTaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aHE/gDLL; arc=none smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710496810; x=1742032810;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=TgsPBTRp6nSShb4vL2Mx+LcNmJuRLjnumD5YkOFdYI4=;
-  b=aHE/gDLLvk6BwdJO4fxRh5EkU8dnCvZ+ijuPFikmmA0muHdhnaxeo7CV
-   LL1UhxSfAoH3wzzZ6G+H0LoHzQjipPw48Ju50z1xE2vTMq97NcxAnrRsQ
-   PB2ad/bo56jBFuXetAFDNKwN9fpT+oFLPUHSTW3ingSV4SvAvPpuYp0/9
-   0nJxhq71g1Rlb98edfVgxu2qGawXuhDXenlSdetQTkhgj0U8F0TaiulXE
-   dDafyfQiABOjbLIZmZIuCt7S3FTbdOYm6YWD6+UYyvLeXfOlZZfHJi6LT
-   f0hgxlIg2HJy9BwsWkFYHqAfoWFV7L4JhD2eqz50FNn4FKVKy1+O8vpZ+
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="16081058"
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="16081058"
-Received: from fmviesa002.fm.intel.com ([10.60.135.142])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 03:00:09 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="35749372"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa002.fm.intel.com with ESMTP; 15 Mar 2024 03:00:04 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rl4M6-000EJx-0R;
-	Fri, 15 Mar 2024 10:00:02 +0000
-Date: Fri, 15 Mar 2024 17:59:53 +0800
-From: kernel test robot <lkp@intel.com>
-To: Vignesh Balasubramanian <vigbalas@amd.com>,
-	linux-kernel@vger.kernel.org, linux-toolchains@vger.kernel.org
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev, mpe@ellerman.id.au,
-	npiggin@gmail.com, christophe.leroy@csgroup.eu,
-	aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com,
-	ebiederm@xmission.com, keescook@chromium.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, linux-mm@kvack.org, bpetkov@amd.com,
-	jinisusan.george@amd.com, matz@suse.de, binutils@sourceware.org,
-	jhb@freebsd.org, felix.willgerodt@intel.com,
-	Vignesh Balasubramanian <vigbalas@amd.com>
-Subject: Re: [PATCH 1/1] x86/elf: Add a new .note section containing
- Xfeatures information to x86 core files
-Message-ID: <202403151742.VEz04MqR-lkp@intel.com>
-References: <20240314112359.50713-2-vigbalas@amd.com>
+	s=arc-20240116; t=1710496819; c=relaxed/simple;
+	bh=MdPiINrYitdZDH2g/vvUhvEntL1U9Tr4A8teJzOp2iY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RCRF96LAo5/gXj+isoeTHI8e2vsW/9Rbf7YVuc//I0lkL6/Zm8reH9QWs3UimBV0Xs2KR+PXXF2xPa5fcWPg59bXOReV+6UxHhhfh34Qr/7Y0SzOyCBxVpnC63quabGP3CNaiLzEV2SVtBW9AUoAi0eqafPCSa8epmD+mIl9ywM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Laqcq9rz; arc=none smtp.client-ip=209.85.218.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a466a27d30aso251957466b.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:00:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710496816; x=1711101616; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=LpB1iaL8i/TMAgyiGjpKHex+3mHIdJteZ4k5b7bX7pQ=;
+        b=Laqcq9rzWzCdYxi2buioA+GIGSWA9v6O0crWcGDUf4/clGXa9bS+otS9DvzDXTSIaS
+         Jzg5yrUs2koUEW2s8RZ7NptglNgtnu0oTtbltMwMQz3SL6TXSSx5TRnrpCMpQLupI/Fr
+         NwNuezJ0vkk0eq2CRF4G0EuvDB2nyRRB/QCZW+wYbqfF9h96LYAAzH1CxiyzGVONOmVo
+         eABMqwqw+nzCjku+k2lZbcVIoVONEkhyGtEO1z8L/6EJPicedHMmX2nE0P2VZ0r7TFf7
+         ra5s4+JEx2ZFOUiE0J1OlSct+vHIAMl+w1Y1ElFFo19P67eq8SXKAs0hJXVcvTZ4uczV
+         GaNw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710496816; x=1711101616;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=LpB1iaL8i/TMAgyiGjpKHex+3mHIdJteZ4k5b7bX7pQ=;
+        b=DO4EMaOMK1iisvUOgNtf8q12V4wM6FX3UDZn8trsrcL9Ako3KcJD7AG1XIDJywGs7C
+         n2owgF0ZYHiVYM7KOyO0URGmg4a06FTNEMLRqIrenRbgrxXdqSVpPBqNfSEW+gQ+jiZ2
+         q7Caom14XQ90hsEIaaCKdrdgoJbjijLePK+GjoFVcM5dvU2lAHtlV8hYGipsbSkhRSrt
+         U6Jr36vojE3Eiq9WHggbN4i38W2pZ3GESgVXNZneLqYRMVxbq4buXqxPuPSSUQGteG5y
+         l60xqL1xGtAtcAQUnS2ULTgSgN1MHXwXypYgcoHZXNLNodOpM83WvWWnpJCFEcEEXA1P
+         nNAA==
+X-Forwarded-Encrypted: i=1; AJvYcCVFD4AzPIn4yv0G340DA+mLKcN1jONxShROdhfO29oTvh4O9Zj2AIteUBm3UEdfhkyb3svGVyuJ1Ka+2zcWK6cjALZSuNHSWFoz/3fE
+X-Gm-Message-State: AOJu0YwwSi/wrjwqg8DHLOSvB/bbTQbd9JxKQrQP0y+6rbrMxjj+9OwD
+	QdtNXJbLNl7IePfwNxfLcDQjfLv2kk8aQh+JCE+tYPtZLUpMEtoP4QVWbIUrLxg=
+X-Google-Smtp-Source: AGHT+IETRWxFpcKiWIwfwIe1BRvOlwqPlsFpdWcZAC6w358bOa1ndXYyZ3o2HSFBW1oGzkXMoym+Ow==
+X-Received: by 2002:a17:907:8dcc:b0:a46:7509:2425 with SMTP id tg12-20020a1709078dcc00b00a4675092425mr3299196ejc.63.1710496816404;
+        Fri, 15 Mar 2024 03:00:16 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id dv22-20020a170906b81600b00a4658d3e405sm1529599ejb.196.2024.03.15.03.00.14
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 03:00:15 -0700 (PDT)
+Message-ID: <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
+Date: Fri, 15 Mar 2024 11:00:14 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314112359.50713-2-vigbalas@amd.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document
+ 'sysrate' property
+Content-Language: en-US
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-amlogic@lists.infradead.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-gpio@vger.kernel.org
+Cc: kernel@salutedevices.com
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hi Vignesh,
+On 15/03/2024 00:21, Jan Dakinevich wrote:
+> This option allow to redefine the rate of DSP system clock.
 
-kernel test robot noticed the following build errors:
+And why is it suitable for bindings? Describe the hardware, not what you
+want to do in the driver.
 
-[auto build test ERROR on linus/master]
-[also build test ERROR on v6.8 next-20240315]
-[cannot apply to kees/for-next/execve tip/x86/core powerpc/next powerpc/fixes]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+> 
+> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+> ---
+>  Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml | 4 ++++
+>  1 file changed, 4 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+> index df21dd72fc65..d2f23a59a6b6 100644
+> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
+> @@ -40,6 +40,10 @@ properties:
+>    resets:
+>      maxItems: 1
+>  
+> +  sysrate:
+> +    $ref: /schemas/types.yaml#/definitions/uint32
+> +    description: redefine rate of DSP system clock
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Vignesh-Balasubramanian/x86-elf-Add-a-new-note-section-containing-Xfeatures-information-to-x86-core-files/20240314-192650
-base:   linus/master
-patch link:    https://lore.kernel.org/r/20240314112359.50713-2-vigbalas%40amd.com
-patch subject: [PATCH 1/1] x86/elf: Add a new .note section containing Xfeatures information to x86 core files
-config: i386-buildonly-randconfig-001-20240315 (https://download.01.org/0day-ci/archive/20240315/202403151742.VEz04MqR-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240315/202403151742.VEz04MqR-lkp@intel.com/reproduce)
+No vendor prefix, so is it a generic property? Also, missing unit
+suffix, but more importantly I don't understand why this is a property
+of hardware.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403151742.VEz04MqR-lkp@intel.com/
+Best regards,
+Krzysztof
 
-All errors (new ones prefixed by >>):
-
->> arch/x86/kernel/fpu/xstate.c:1858:8: error: call to undeclared function 'dump_emit'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1858 |                 if (!dump_emit(cprm, &xc, sizeof(struct xfeat_component)))
-         |                      ^
-   arch/x86/kernel/fpu/xstate.c:1869:8: error: call to undeclared function 'dump_emit'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1869 |                 if (!dump_emit(cprm, &xc, sizeof(struct xfeat_component)))
-         |                      ^
-   arch/x86/kernel/fpu/xstate.c:1899:7: error: call to undeclared function 'dump_emit'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1899 |         if (!dump_emit(cprm, &en, sizeof(en)))
-         |              ^
->> arch/x86/kernel/fpu/xstate.c:1903:7: error: call to undeclared function 'dump_align'; ISO C99 and later do not support implicit function declarations [-Wimplicit-function-declaration]
-    1903 |         if (!dump_align(cprm, 4))
-         |              ^
-   4 errors generated.
-
-
-vim +/dump_emit +1858 arch/x86/kernel/fpu/xstate.c
-
-  1846	
-  1847		struct xfeat_component xc;
-  1848		int num_records = 0;
-  1849		int i;
-  1850	
-  1851		/* XFEATURE_FPU and XFEATURE_SSE, both are fixed legacy states. */
-  1852		for (i = 0; i < FIRST_EXTENDED_XFEATURE; i++) {
-  1853			xc.xfeat_type = i;
-  1854			xc.xfeat_sz = xstate_sizes[i];
-  1855			xc.xfeat_off = xstate_offsets[i];
-  1856			xc.xfeat_flags = xstate_flags[i];
-  1857	
-> 1858			if (!dump_emit(cprm, &xc, sizeof(struct xfeat_component)))
-  1859				return 0;
-  1860			num_records++;
-  1861		}
-  1862	
-  1863		for_each_extended_xfeature(i, fpu_user_cfg.max_features) {
-  1864			xc.xfeat_type = i;
-  1865			xc.xfeat_sz = xstate_sizes[i];
-  1866			xc.xfeat_off = xstate_offsets[i];
-  1867			xc.xfeat_flags = xstate_flags[i];
-  1868	
-  1869			if (!dump_emit(cprm, &xc, sizeof(struct xfeat_component)))
-  1870				return 0;
-  1871			num_records++;
-  1872		}
-  1873	
-  1874		return num_records;
-  1875	}
-  1876	
-  1877	static int get_xsave_desc_size(void)
-  1878	{
-  1879		/* XFEATURE_FP and XFEATURE_SSE, both are fixed legacy states */
-  1880		int xfeatures_count = 2;
-  1881		int i;
-  1882	
-  1883		for_each_extended_xfeature(i, fpu_user_cfg.max_features)
-  1884			xfeatures_count++;
-  1885	
-  1886		return xfeatures_count * (sizeof(struct xfeat_component));
-  1887	}
-  1888	
-  1889	int elf_coredump_extra_notes_write(struct coredump_params *cprm)
-  1890	{
-  1891		const char *owner_name = "LINUX";
-  1892		int num_records = 0;
-  1893		struct elf_note en;
-  1894	
-  1895		en.n_namesz = strlen(owner_name) + 1;
-  1896		en.n_descsz = get_xsave_desc_size();
-  1897		en.n_type = NT_X86_XSAVE_LAYOUT;
-  1898	
-  1899		if (!dump_emit(cprm, &en, sizeof(en)))
-  1900			return 1;
-  1901		if (!dump_emit(cprm, owner_name, en.n_namesz))
-  1902			return 1;
-> 1903		if (!dump_align(cprm, 4))
-  1904			return 1;
-  1905	
-  1906		num_records = dump_xsave_layout_desc(cprm);
-  1907		if (!num_records) {
-  1908			pr_warn("Error adding XSTATE layout ELF note. XSTATE buffer in the core file will be unparseable.");
-  1909			return 1;
-  1910		}
-  1911	
-  1912		/* Total size should be equal to the number of records */
-  1913		if ((sizeof(struct xfeat_component) * num_records) != en.n_descsz) {
-  1914			pr_warn("Error adding XSTATE layout ELF note. The size of the .note section does not match with the total size of the records.");
-  1915			return 1;
-  1916		}
-  1917	
-  1918		if (!dump_align(cprm, 4))
-  1919			return 1;
-  1920	
-  1921		return 0;
-  1922	}
-  1923	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
