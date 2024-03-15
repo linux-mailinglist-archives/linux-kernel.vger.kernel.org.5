@@ -1,154 +1,144 @@
-Return-Path: <linux-kernel+bounces-104987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2140987D750
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:23:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6ECA787D752
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:26:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id CABF81F220F0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:23:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 22CB21F2282F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 23:26:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCED65A4C9;
-	Fri, 15 Mar 2024 23:23:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76BFE5A4DC;
+	Fri, 15 Mar 2024 23:26:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="PaPbdIQP"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="EYfTMfNb"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A0CBA54745
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 23:23:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8EF0159B67;
+	Fri, 15 Mar 2024 23:25:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710545011; cv=none; b=T7mpCwzF0z2vcdngtvPGxgnXjWgJ7tSTbJZRt0/s+Nf/r34JxnB5AoekX/Sk0QzWshviyjKw5q6thavgUSMvMALiTSjsVLK01RKcXP3EUwHKrZunMbBhV3WCeDezqlzvGGaarYNUp6wN3scF7mCu9gxQFs9DaCaLAfHmi3n1JIs=
+	t=1710545160; cv=none; b=UQ42PkV/c1I3Pmkie2G87jVpoGizuBuouZl2JpdJh6CEiHtBNZPNYJ6VmBED98rHgk2YeCbiAW3MBxAABNLnUDbgKaYqUrs2/QyDLNWWiMohz0znK095SJM7QE7Vj7JMQUvm6TrqRjJ3vJHgGgDy3qmZp4xiduHmletXyghZT5k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710545011; c=relaxed/simple;
-	bh=sytlPHzECdx/TQnD3Z0Odvtgw7GxrNRoLcw66cnO0n8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZD/ZV20QTcJcRLEh1WQWzCEqEHEphVbAsz9zXOkHUFkv3zlJn8DkQEk9F5TBD1bki6zvcKBmibrJNUycgoQ4wuU53KoXrxIx/rlhM1rWAqiAxJlgqh5P2ar6f2RCoa2R1yGz3HOh49P66Fwa7PM3kWJ2fAKASdwHS6tQi7dfuSI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=PaPbdIQP; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linuxfoundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513e134f73aso19220e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:23:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linuxfoundation.org; s=google; t=1710545006; x=1711149806; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=Md0NRsaNOOwAL+jub1moMYrNKunx652Xm1e//iAuX8U=;
-        b=PaPbdIQPRFOUY4nCtg40+NoIFL1U7vLk82l+a7I2sXjBINk2jd+pfILFeMtwehYcBj
-         mk+JeE5m3JpQBRZOEf2Pdx1W+wabAQ1WCPF++ygfS0M4YxMmdlqsqHuwzxXn311AgC5z
-         x40h1q0dFqd/VZgn79pjDwQkfic//HZqpUTYg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710545006; x=1711149806;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Md0NRsaNOOwAL+jub1moMYrNKunx652Xm1e//iAuX8U=;
-        b=m4/zoElLsf4tdHh4gEW8BLeTltlqLigjWm2VmP6P6XBESTs3oPoUglirCjBaflKIE4
-         zn18XxYrFk6foZ2Kq8guenRHjFP3pp1CF8aQ4qhi9kiMjjDEp0d4PHktb3Yz/KaNjtUQ
-         P+zW67vAVEfbDSLKmPiLZ/Rh8F1pdt73115+p2cg8ZqXEnoDJPluOxGO64qCsz89dvhb
-         ZZO73DLevNnX2em+udxbTfcUIl8Maz0EyQP9rqgjDshRbpZh9m2Yt/zBYYyCNKCcVe1K
-         BIJyfMgNxiEhKMF6SWm8VkrrEYmbZMqd9AFe9B+mq/Qh+vEknB136uVloQlMEIggTAz9
-         Hm7g==
-X-Forwarded-Encrypted: i=1; AJvYcCXPynFsiNKT4mcC8eCEOV4Yw7Yqhd0TVlP87tsMFCiC1aPHqmoeUUrVPnllJK4RX2dmkmn/T1bZhEX6ryyzyiYYnKWQK6+UA6pGLI9S
-X-Gm-Message-State: AOJu0YxXPMeD0QOnZ4pFJdlxqVPMKkFqK0aIHskl2cZ3nE8CGdK+kCIV
-	439wguLphJ4KIR3Bxdv79ROgA+E/3O+K5Ess4wlKCkhdGJxc5jS5m2gCp1rdJocQu9t2wYUg57U
-	IWhi8xw==
-X-Google-Smtp-Source: AGHT+IHw/dNmSy3gP5T6oVi1MBmgcYhlMeaGhoL8hQdUgz0WebMsrmZQgghFvixdab+rEmwNK2j/Zg==
-X-Received: by 2002:a05:6512:32b7:b0:513:c9d2:e1e1 with SMTP id q23-20020a05651232b700b00513c9d2e1e1mr4329014lfe.66.1710545006688;
-        Fri, 15 Mar 2024 16:23:26 -0700 (PDT)
-Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com. [209.85.167.49])
-        by smtp.gmail.com with ESMTPSA id 25-20020ac25f59000000b00513ca446cb4sm776860lfz.120.2024.03.15.16.23.25
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 16:23:25 -0700 (PDT)
-Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513e134f73aso19197e87.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:23:25 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCW4MW5H8Gz+GyIPoxTu8AtJQAzT1w83KMs0Fc2+qChSaviiqVY2S7X+0QN0abAHdIh7VunSrUNi5hZOq3vMiJawoYbITIx+0mcGYy+h
-X-Received: by 2002:a19:5f45:0:b0:512:ed8e:97ce with SMTP id
- a5-20020a195f45000000b00512ed8e97cemr3783714lfj.16.1710545005123; Fri, 15 Mar
- 2024 16:23:25 -0700 (PDT)
+	s=arc-20240116; t=1710545160; c=relaxed/simple;
+	bh=UPjNS2zHcJlODwjwgS6A76kmOvOv2fnO9gCuNkKThz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=XHZ6rWMaQl1lmRAoRxH09p+ZIr/DCt/BsUoQgT5gssLKWsqpxAoHJOoQlH1DkYdVrzsy2wcwowp9aaju3NMOuasih2mMjzWQu6rqlOOIBXwbqkGvXTESTKHzr0VOV96gNU1SdKyejSYDPtRNKoFcLQ8E/H5sbVadT7MThqgJq4M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=EYfTMfNb; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710545157; x=1742081157;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=UPjNS2zHcJlODwjwgS6A76kmOvOv2fnO9gCuNkKThz4=;
+  b=EYfTMfNbTM7d+sHplm621rn6AFt++bdkEbUYslq1OMsMsodhgl5r7OQ6
+   RWqF1LVl3TzuEa9qpFuUW5A/JY3+AMEiVYOSpWiA96XxFDEioZdmitRg9
+   qeCzgAGMxqiab//n/3xCTl4wEfTk0CwQjtjDNICPRcxju45oFUlZmzaQe
+   /bwvX3nP7vxoAkqBW98IuDMw3CKme3u1UrP6kb1T5dxeL8ua08wPsNJ3h
+   aa/Idr7hyZtOjDhckgG4oUP5oX3IURKjiCO8Fwt3TnAXV2H4Sax9ggfmU
+   2nU+dwzJaNGnvvzZDaOgK8iGHEgBFiZz24LbPo7obj96lFU7Xv59XzGQQ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5643720"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="5643720"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 16:25:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="17534882"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 16:25:56 -0700
+Date: Fri, 15 Mar 2024 16:25:55 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Binbin Wu <binbin.wu@linux.intel.com>
+Cc: Isaku Yamahata <isaku.yamahata@intel.com>, kvm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
+	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
+	Sean Christopherson <seanjc@google.com>,
+	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
+	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 023/130] KVM: TDX: Initialize the TDX module when
+ loading the KVM intel kernel module
+Message-ID: <20240315232555.GK1258280@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <f028d43abeadaa3134297d28fb99f283445c0333.1708933498.git.isaku.yamahata@intel.com>
+ <f5da22e3-55fd-4e8b-8112-ccf1468012c8@linux.intel.com>
+ <20240314162712.GO935089@ls.amr.corp.intel.com>
+ <5470a429-cbbd-4946-b11a-ab86380d9b68@linux.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240303235029.555787150@linutronix.de> <20240304005104.622511517@linutronix.de>
- <e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net> <CAHk-=whK=G1o6RtS9DS3wEGF1KU7WLgLL1+6Se86bj8m7wwqrQ@mail.gmail.com>
- <87y1ajjsv9.ffs@tglx> <87o7bfjeae.ffs@tglx>
-In-Reply-To: <87o7bfjeae.ffs@tglx>
-From: Linus Torvalds <torvalds@linuxfoundation.org>
-Date: Fri, 15 Mar 2024 16:23:08 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiP+XMGHr8NU13sSOG_oasNZN02O9_c1PzCJNG7+O-GPw@mail.gmail.com>
-Message-ID: <CAHk-=wiP+XMGHr8NU13sSOG_oasNZN02O9_c1PzCJNG7+O-GPw@mail.gmail.com>
-Subject: Re: [patch 5/9] x86: Cure per CPU madness on UP
-To: Thomas Gleixner <tglx@linutronix.de>
-Cc: Guenter Roeck <linux@roeck-us.net>, LKML <linux-kernel@vger.kernel.org>, x86@kernel.org, 
-	Uros Bizjak <ubizjak@gmail.com>, linux-sparse@vger.kernel.org, lkp@intel.com, 
-	oe-kbuild-all@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5470a429-cbbd-4946-b11a-ab86380d9b68@linux.intel.com>
 
-On Fri, 15 Mar 2024 at 15:55, Thomas Gleixner <tglx@linutronix.de> wrote:
->
-> Not really. The problem is that a SMP build can run on a UP machine w/o
-> APIC or command line disables the APIC and will run into the exactly
-> same problem. The only case where we know that it is impossible is when
-> APIC support is disabled, which is silly but topic for a different
-> discussion.
+On Fri, Mar 15, 2024 at 12:44:46PM +0800,
+Binbin Wu <binbin.wu@linux.intel.com> wrote:
 
-Oh, I agree - that was why I said that it shouldn't depend on a local
-APIC on machines that may not even have one.
+> On 3/15/2024 12:27 AM, Isaku Yamahata wrote:
+> > On Thu, Mar 14, 2024 at 10:05:35AM +0800,
+> > Binbin Wu <binbin.wu@linux.intel.com> wrote:
+> > 
+> > > > diff --git a/arch/x86/kvm/vmx/main.c b/arch/x86/kvm/vmx/main.c
+> > > > index 18cecf12c7c8..18aef6e23aab 100644
+> > > > --- a/arch/x86/kvm/vmx/main.c
+> > > > +++ b/arch/x86/kvm/vmx/main.c
+> > > > @@ -6,6 +6,22 @@
+> > > >    #include "nested.h"
+> > > >    #include "pmu.h"
+> > > > +static bool enable_tdx __ro_after_init;
+> > > > +module_param_named(tdx, enable_tdx, bool, 0444);
+> > > > +
+> > > > +static __init int vt_hardware_setup(void)
+> > > > +{
+> > > > +	int ret;
+> > > > +
+> > > > +	ret = vmx_hardware_setup();
+> > > > +	if (ret)
+> > > > +		return ret;
+> > > > +
+> > > > +	enable_tdx = enable_tdx && !tdx_hardware_setup(&vt_x86_ops);
+> > > > +
+> > > > +	return 0;
+> > > > +}
+> > > > +
+> > > >    #define VMX_REQUIRED_APICV_INHIBITS				\
+> > > >    	(BIT(APICV_INHIBIT_REASON_DISABLE)|			\
+> > > >    	 BIT(APICV_INHIBIT_REASON_ABSENT) |			\
+> > > > @@ -22,6 +38,7 @@ struct kvm_x86_ops vt_x86_ops __initdata = {
+> > > >    	.hardware_unsetup = vmx_hardware_unsetup,
+> > > > +	/* TDX cpu enablement is done by tdx_hardware_setup(). */
+> > > How about if there are some LPs that are offline.
+> > > In tdx_hardware_setup(), only online LPs are initialed for TDX, right?
+> > Correct.
+> > 
+> > 
+> > > Then when an offline LP becoming online, it doesn't have a chance to call
+> > > tdx_cpu_enable()?
+> > KVM registers kvm_online/offline_cpu() @ kvm_main.c as cpu hotplug callbacks.
+> > Eventually x86 kvm hardware_enable() is called on online/offline event.
+> 
+> Yes, hardware_enable() will be called when online,
+> but  hardware_enable() now is vmx_hardware_enable() right?
+> It doens't call tdx_cpu_enable() during the online path.
 
-That "may not even have one" can still be a static option - we
-technically allow 32-bit UP kernel to not enable X86_UP_APIC, although
-it might be time to drop that option.
+TDX module requires TDH.SYS.LP.INIT() on all logical processors(LPs).  If we
+successfully initialized TDX module, we don't need further action for TDX on cpu
+online/offline.
 
-> So the proper thing to do is to check for num_possible_cpus() == 1 in
-> that function.
-
-I think that's _one_ proper thing. I still think that the deeper
-problem is that it still looks at local apic rules even when those
-rules are completely nonsensical.
-
-For example, that MAX_LOCAL_APIC range test may not matter simply
-because it's testing a constant value, but it still smells entirely
-wrong to even check for that, when the system doesn't necessarily have
-one.
-
-So I think your patch may fix the immediate bug, but I think it's
-still just a band-aid.
-
-Either we should just make all machines look like they have the proper
-local apic mappings, or we shouldn't look at any local apic rules AT
-ALL.
-
-So I'd rather see those apic_maps[] just be properly filled in.
-
-> Sure you can argue that we could avoid it for SMP=n builds completely,
-> but I think the right thing to do is to aim for removing CONFIG_SMP and
-> make the UP build a subset of a generic SMP capable build which has
-> CONFIG_NR_CPUS=1, i.e. num_possible_cpus() = 1. Why?
-
-I wouldn't be entirely opposed to just doing that. UP has become
-fairly irrelevant.
-
-That said, UP is *not* entirely irrelevant on other architectures, and
-if we drop UP support on x86, we'll be effectively dropping a lot of
-coverage testing. The number of people who do cross-compilers is
-pretty small.
-
-End result: I'd *much* rather get rid of X86_UP_APIC and the "nolapic"
-kernel command line, and say "even UP has to have a local APIC".
-
-We already require a Pentium-class CPU, so in practice we already
-require that local APIC setup. And yes, machines existed where it
-could be turned off, but I don't think that is relevant any more.
-
-Put another way: I think "UP config for wider build testing" is a
-_lot_ more relevant than "no LAPIC support".
-
-             Linus
+If some of LPs are not online when loading kvm_intel.ko, KVM fails to initialize
+TDX module. TDX support is disabled.  We don't bother to attempt it.  Leave it
+to the admin of the machine.
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
