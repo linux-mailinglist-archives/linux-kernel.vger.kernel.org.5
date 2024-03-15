@@ -1,127 +1,176 @@
-Return-Path: <linux-kernel+bounces-103950-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103952-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 927B587C6ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:04:35 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id F2A3487C6F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:09:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4DEA8284543
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:04:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6052284D0E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:09:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 503E34C91;
-	Fri, 15 Mar 2024 01:04:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906544C6E;
+	Fri, 15 Mar 2024 01:09:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b="npWq4onb"
-Received: from omta40.uswest2.a.cloudfilter.net (omta40.uswest2.a.cloudfilter.net [35.89.44.39])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fGw9Ijn1"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E383320A
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 01:04:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.39
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A43D10E4;
+	Fri, 15 Mar 2024 01:09:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710464666; cv=none; b=M7bi0T9A05WXFZY8y7fGO1px/skCXvpKv1BB49fSaFuxWeoXmVGntWS+HS+JqelCno+srZiuPexTzkKQrSM02uasr0SwQmCwPKoqWBt2MvMkFQtCjHU+mKuj4LvwowPn8WmMbppPMCOhEksPLhrFecRBiub39UnEmLffJu7LmW0=
+	t=1710464984; cv=none; b=oh7T6t9a1UHyzha1BQgmwGzd5jlKOjYMlX0HBcOwrSNHHe8h3LXO3w1krLBSGtcm0VZeINM6BhKbFwWftRpEUYalbL+KQC5hSGMg1FE63d/YFfJhPdOigyezviySEdJ8DAygxUe8sqfs2jl2g5zJRLFXvo6o7Wd+L9cma3TMazY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710464666; c=relaxed/simple;
-	bh=X/ZyG0aTHgaF46xsq3TWe49VpLqiKQo0/7ojJDuiYbQ=;
-	h=Subject:To:Cc:References:In-Reply-To:From:Message-ID:Date:
-	 MIME-Version:Content-Type; b=C1rRu0JFkN1OqbcroAMmAq3goGjLzq5qvphjfQ7tXzI3tieRYX+XKNTcpuqAyrzraeoNbUjBF1xGAf8RqbiBxXsP6cNIKdtS97Ar80Pu2BWmYFXYsIu6JjbPSyniZAZeRRdySzWO0irBCYOfTpnhkCrJfly0zynjv5wf6LOg2e0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net; spf=pass smtp.mailfrom=w6rz.net; dkim=pass (2048-bit key) header.d=w6rz.net header.i=@w6rz.net header.b=npWq4onb; arc=none smtp.client-ip=35.89.44.39
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=w6rz.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=w6rz.net
-Received: from eig-obgw-5010a.ext.cloudfilter.net ([10.0.29.199])
-	by cmsmtp with ESMTPS
-	id kvgcrKBhDPM1hkvzirkOnm; Fri, 15 Mar 2024 01:04:23 +0000
-Received: from box5620.bluehost.com ([162.241.219.59])
-	by cmsmtp with ESMTPS
-	id kvzhrMH0Za5IrkvziriLhl; Fri, 15 Mar 2024 01:04:22 +0000
-X-Authority-Analysis: v=2.4 cv=HpZwGVTS c=1 sm=1 tr=0 ts=65f39e96
- a=30941lsx5skRcbJ0JMGu9A==:117 a=30941lsx5skRcbJ0JMGu9A==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=-Ou01B_BuAIA:10 a=VwQbUJbxAAAA:8
- a=HaFmDPmJAAAA:8 a=49j0FZ7RFL9ueZfULrUA:9 a=QEXdDO2ut3YA:10
- a=AjGcO6oz07-iQ99wixmX:22 a=nmWuMzfKamIsx3l42hEX:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=w6rz.net;
-	s=default; h=Content-Transfer-Encoding:Content-Type:MIME-Version:Date:
-	Message-ID:From:In-Reply-To:References:Cc:To:Subject:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=Fgzz3YHIOOb4mvquEeWZhyzOq+Bfy/+Qp273CxCSJKo=; b=npWq4onb17h3/jlXmSSSbF126P
-	gQRNXao1si/AoQUZUmrjs9iWVT1fzKIAAuICKxWMtH6qLARS63v6dXCszE9ZsTrqCHufG0YooAu0i
-	luM9Whmk3PAZQNcRfl1r/lh9GpKA5VPd5x8CSsyO+W5wYIQioc95PjhfoczYJtWh0zGYLnwAsivlc
-	VZFZs1HeEdkiGbyzXQ9lnBphvu4J2hMoHLTF7huhTHP4blULpJopD3YQYP1l5CIh/uftngfod313Q
-	4/1yGPHII7opsLnlG5gH/sd1a2FaTV0G9sZTNfFQ1Qy+hbMEp/66UWDbMTwZRTGOyXGW3akSJlCK+
-	cQmECvPQ==;
-Received: from c-98-207-139-8.hsd1.ca.comcast.net ([98.207.139.8]:51114 helo=[10.0.1.47])
-	by box5620.bluehost.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <re@w6rz.net>)
-	id 1rkvzh-003VVH-0O;
-	Thu, 14 Mar 2024 19:04:21 -0600
-Subject: Re: [PATCH 6.7 00/61] 6.7.10-rc1 review
-To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
- stable@vger.kernel.org
-Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
- linux@roeck-us.net, shuah@kernel.org, patches@kernelci.org,
- lkft-triage@lists.linaro.org, pavel@denx.de
-References: <20240313163236.613880-1-sashal@kernel.org>
-In-Reply-To: <20240313163236.613880-1-sashal@kernel.org>
-From: Ron Economos <re@w6rz.net>
-Message-ID: <db6e3a90-a4e8-5332-c1a2-7dbd869a8c79@w6rz.net>
-Date: Thu, 14 Mar 2024 18:04:19 -0700
-User-Agent: Mozilla/5.0 (X11; Linux armv7l; rv:78.0) Gecko/20100101
- Thunderbird/78.14.0
+	s=arc-20240116; t=1710464984; c=relaxed/simple;
+	bh=NGXrtRFb2eCniF9NsNPA6nZlg1KCam4uJIGqlAbZEUw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ew6YSE6l0KINFpnY1o6J9sO7x0azs30cczQZJ+fU1H65wRkptf0MCP+aMjlT/Z0UB6kzbTePZrv+C0E03iRWxutAYvmHyXQHQYohFmF1vdU+67YMVhCKnZZUj8ln/5ij915yxUhHoJBk0KI9ipApgdIUw0d2Q4O9u5dnIMeOu/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fGw9Ijn1; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710464982; x=1742000982;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=NGXrtRFb2eCniF9NsNPA6nZlg1KCam4uJIGqlAbZEUw=;
+  b=fGw9Ijn1CsVnSQbgaq7JO0kfEdvdGmOURoLwHgkr1uF6Yx9FdABp4ESc
+   G85+Q4ioiFbJNOVV2gMafiYtrvSkRCTe1nX5uxWGzF4Ul2/mBRQ1x4mZ2
+   4EOyik4KfP1hTMw9ndVDMrsanatb+oVJM6RMza08keju1gpFgLyPBFN5u
+   FMYTGGxBvSeptcn9wp6mNFwZLqYluozxW2qWof0f9W6dQE5X/yBI5m2in
+   1jpWMNsIEzNnaOVY2xEq95Srz42QTvCh0wE6e0AXz4c97w98hvKBitZGL
+   wFXzxFGFbPL6151k91kU2F7vWQPScvNYSK1q4nGPwDrMtGYixNGyltwnk
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="22839256"
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="22839256"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:09:41 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="13106051"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:09:40 -0700
+Date: Thu, 14 Mar 2024 18:09:40 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Huang, Kai" <kai.huang@intel.com>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"binbin.wu@linux.intel.com" <binbin.wu@linux.intel.com>,
+	"Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>
+Subject: Re: [PATCH v19 058/130] KVM: x86/mmu: Add a private pointer to
+ struct kvm_mmu_page
+Message-ID: <20240315010940.GE1258280@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <9d86b5a2787d20ffb5a58f86e43601a660521f16.1708933498.git.isaku.yamahata@intel.com>
+ <50dc7be78be29bbf412e1d6a330d97b29adadb76.camel@intel.com>
+ <20240314181000.GC1258280@ls.amr.corp.intel.com>
+ <bfde1328-2d1c-4b75-970f-69c74f3a74f9@intel.com>
+ <ada65e3e977c8cde0044b7fa9de5f918e3b1b638.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 7bit
-Content-Language: en-US
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - box5620.bluehost.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - w6rz.net
-X-BWhitelist: no
-X-Source-IP: 98.207.139.8
-X-Source-L: No
-X-Exim-ID: 1rkvzh-003VVH-0O
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: c-98-207-139-8.hsd1.ca.comcast.net ([10.0.1.47]) [98.207.139.8]:51114
-X-Source-Auth: re@w6rz.net
-X-Email-Count: 2
-X-Org: HG=bhshared;ORG=bluehost;
-X-Source-Cap: d3NpeHJ6bmU7d3NpeHJ6bmU7Ym94NTYyMC5ibHVlaG9zdC5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfDejpM79mGjI+wE4n6gQMbM+bw0rlXSZgQ7iXHpkd8hUtyR5rdLDjEGgWyG2OO0VuLDVCarqGzm+6y+QOdJammS1OmDuBuNHn8bElwiNkJMP4CfsA6BO
- UwG2dwLvUXGexYau5GJk98FqFEe+fHmOqlyu4FfN2O3zmtLSRvx/xvVl65kfv8At1oCUw6b8VF9jeHiAmEcy6KYCIYKyDG1m0y0=
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ada65e3e977c8cde0044b7fa9de5f918e3b1b638.camel@intel.com>
 
-On 3/13/24 9:31 AM, Sasha Levin wrote:
-> This is the start of the stable review cycle for the 6.7.10 release.
-> There are 61 patches in this series, all will be posted as a response
-> to this one.  If anyone has any issues with these being applied, please
-> let me know.
->
-> Responses should be made by Fri Mar 15 04:32:27 PM UTC 2024.
-> Anything received after that time might be too late.
->
-> The whole patch series can be found in one patch at:
->          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-6.7.y&id2=v6.7.9
-> or in the git tree and branch at:
->          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-6.7.y
-> and the diffstat can be found below.
->
-> Thanks,
-> Sasha
+On Thu, Mar 14, 2024 at 09:39:34PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-Built and booted successfully on RISC-V RV64 (HiFive Unmatched).
+> On Fri, 2024-03-15 at 10:23 +1300, Huang, Kai wrote:
+> > We have 3 page tables as you mentioned:
+> > 
+> > PT: page table
+> > - Shared PT is visible to KVM and it is used by CPU.
+> > - Private PT is used by CPU but it is invisible to KVM.
+> > - Dummy PT is visible to KVM but not used by CPU.  It is used to
+> >    propagate PT change to the actual private PT which is used by CPU.
+> > 
+> > If I recall correctly, we used to call the last one "mirrored
+> > (private) 
+> > page table".
+> > 
+> > I lost the tracking when we changed to use "dummy page table", but it
+> > seems to me "mirrored" is better than "dummy" because the latter
+> > means 
+> > it is useless but in fact it is used to propagate changes to the real
+> > private page table used by hardware.
+> 
+> Mirrored makes sense to me. So like:
+> 
+> Private - Table actually mapping private alias, in TDX module
+> Shared - Shared alias table, visible in KVM
+> Mirror - Mirroring private, visible in KVM
+> 
+> > 
+> > Btw, one nit, perhaps:
+> > 
+> > "Shared PT is visible to KVM and it is used by CPU." -> "Shared PT is
+> > visible to KVM and it is used by CPU for shared mappings".
+> > 
+> > To make it more clearer it is used for "shared mappings".
+> > 
+> > But this may be unnecessary to others, so up to you.
+> 
+> Yep, this seems clearer.
 
-Tested-by: Ron Economos <re@w6rz.net>
+Here is the updated one. Renamed dummy -> mirroed.
 
+When KVM resolves the KVM page fault, it walks the page tables.  To reuse
+the existing KVM MMU code and mitigate the heavy cost of directly walking
+the private page table, allocate one more page to copy the mirrored page
+table for the KVM MMU code to directly walk.  Resolve the KVM page fault
+with the existing code, and do additional operations necessary for the
+private page table.  To distinguish such cases, the existing KVM page table
+is called a shared page table (i.e., not associated with a private page
+table), and the page table with a private page table is called a mirrored
+page table.  The relationship is depicted below.
+
+
+              KVM page fault                     |
+                     |                           |
+                     V                           |
+        -------------+----------                 |
+        |                      |                 |
+        V                      V                 |
+     shared GPA           private GPA            |
+        |                      |                 |
+        V                      V                 |
+    shared PT root      mirrored PT root         |    private PT root
+        |                      |                 |           |
+        V                      V                 |           V
+     shared PT           mirrored PT ----propagate---->  private PT
+        |                      |                 |           |
+        |                      \-----------------+------\    |
+        |                                        |      |    |
+        V                                        |      V    V
+  shared guest page                              |    private guest page
+                                                 |
+                           non-encrypted memory  |    encrypted memory
+                                                 |
+PT: Page table
+Shared PT: visible to KVM, and the CPU uses it for shared mappings.
+Private PT: the CPU uses it, but it is invisible to KVM.  TDX module
+            updates this table to map private guest pages.
+Mirrored PT: It is visible to KVM, but the CPU doesn't use it.  KVM uses it
+             to propagate PT change to the actual private PT.
+
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
