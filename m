@@ -1,46 +1,80 @@
-Return-Path: <linux-kernel+bounces-104682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFB3187D24C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:06:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B39387D251
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:07:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2DBA81C21081
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:06:26 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C16311F21993
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:07:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B647D4F211;
-	Fri, 15 Mar 2024 16:56:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 752F253381;
+	Fri, 15 Mar 2024 16:57:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rSVsPH7E"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 905B34779D;
-	Fri, 15 Mar 2024 16:56:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="OJJWG1i4"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 63A6B524DC
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:57:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521786; cv=none; b=aDPC6G3iSfYofL9jA+mzqfI7jljOgTErZAjld7LW5U9ugZPmfkcn1W3Brx+OSCrTmd6BdDS1TkDsm0AmBSR8eh0NziPZz+WPW7RT0R+HSQeLiejMc2/iRplgMUhQ0FQFdZVYbhxu+a/Icf4xWgrEbxJbzJ1cnSpsAa87AWcIcP8=
+	t=1710521856; cv=none; b=XS068S+J09E5C0eIYMkUEAqKwRrobntpi9VwIL8FjfoRhAjbSElLza7vRa49WjFpFSdNXrfnDjYeTD68PTUIVg7MpevYm5ZfQ/weIu/TfCW/V7jZcZPp7vE08nw9MzeVKK/H4Is3z3WAV1/gStgD7br8lOE3SW+24zbURAwVOdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521786; c=relaxed/simple;
-	bh=WdvwjxQVySFmsU+ux3dQqefsmL5GQWcxrNM2Du895kc=;
+	s=arc-20240116; t=1710521856; c=relaxed/simple;
+	bh=WimFR7ITQrmkFcoFGh2AHJsZ9wmaC+CJskD91gLKrVc=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=a6IxaoSCqFOFu2m3zD8NZRsvorUhtNTc1R9bRksb62NrOifANd0GbHssTPElK6XSK09keYeRMQAN1vbRDN9MwckJjuuq+mTV/f4Y/9tMGgdfbAWayn463bYXDjVNsFQKodEV+e3MI0XELFzs1ASb25DFVgob3/73VZkHxoCTiJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rSVsPH7E; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [100.64.232.154] (unknown [20.29.225.195])
-	by linux.microsoft.com (Postfix) with ESMTPSA id BC5F720B74C0;
-	Fri, 15 Mar 2024 09:56:23 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BC5F720B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710521784;
-	bh=Q78OTWOsVRBCL80yDDNEfCI9drv9glFw8Ky35vj5BKY=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=rSVsPH7E852ccfLCYlhbYQV4XdBIIohLhdPGxy7GYa1OsmerTjMJ6iRldg68M1qGO
-	 ltnxyOb7WP0YoJpudcR8fzqrgqAn5uWI+D4MCOTe+3WsCOJ5sxU3WKymHt6nSsZGix
-	 FinTjVTBGNmicQoaWhzqdLggvo6NdU2UjcnyU7G0=
-Message-ID: <dd1b378d-6750-419f-8c46-a8f42c0ebe11@linux.microsoft.com>
-Date: Fri, 15 Mar 2024 09:56:22 -0700
+	 In-Reply-To:Content-Type; b=Ck3Yfx70fVdURgpu3nEKCwIQyAImGwgv2cFa0Wvv2vpOrBBuzayigUa6OfcXYDSIWUeb8ucgliClFnLp4/GBRIz8IgSUTHj5v2jmNEEHKDAmeZ6kEDCCFklcZreXu0PVl9efmfezIbqoJT19Gz4KqGg984isYw/orIkgO0zQ8TM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=OJJWG1i4; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356516.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42FGruHa009940;
+	Fri, 15 Mar 2024 16:57:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=NTDl56stJqPp+lYbN4nX8xK0uWErWe/2mnAm+XA8P+4=;
+ b=OJJWG1i4iMf4PFTD7c2vJL2CtAxUginsfkrEJdS6op8hXjtA2dvrRERPGe4kI+zPerkY
+ iqJbmEw3jDvpMnetuCeGMlai59Z+FC0rdJSQteyvudMY/2CVJP0ZhuWKRFrCOrwWu4ZK
+ FWtY2hG9nM6qtPYZdaAzwh0XDlTIc8SvN80MW7ES2KPvy5WnBehulfKYsvxrw3FFLqdh
+ NLM+84koM6SMx+bzN+s0T32/YijNscktjcEY+hzBpgXNVKbqGQeitWfJqD6YAuX3aApZ
+ 6U7k8ZJtzFY7GdKt6z4y5mKqhGCTrMPAINov+ATqDg5VPFoL68m9JysR6Y9TIeGyLgVR Aw== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wvt06g7px-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Mar 2024 16:56:57 +0000
+Received: from m0356516.ppops.net (m0356516.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42FGuuLF015276;
+	Fri, 15 Mar 2024 16:56:56 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wvt06g7pr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Mar 2024 16:56:56 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42FGYBhd028496;
+	Fri, 15 Mar 2024 16:56:55 GMT
+Received: from smtprelay02.dal12v.mail.ibm.com ([172.16.1.4])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wvsyd03tm-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Mar 2024 16:56:55 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay02.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42FGurjq23986866
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Mar 2024 16:56:55 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0F89D58058;
+	Fri, 15 Mar 2024 16:56:53 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id EAC8F58060;
+	Fri, 15 Mar 2024 16:56:48 +0000 (GMT)
+Received: from [9.79.180.58] (unknown [9.79.180.58])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Fri, 15 Mar 2024 16:56:48 +0000 (GMT)
+Message-ID: <839ae17e-3818-463d-9a5c-3c1eac927ae8@linux.ibm.com>
+Date: Fri, 15 Mar 2024 22:26:47 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -48,83 +82,77 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
- keyfile format
-To: Shradha Gupta <shradhagupta@linux.microsoft.com>
-Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
- "K. Y. Srinivasan" <kys@microsoft.com>,
- Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
- Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
- Michael Kelley <mikelley@microsoft.com>, Olaf Hering <olaf@aepfle.de>,
- Ani Sinha <anisinha@redhat.com>, Shradha Gupta <shradhagupta@microsoft.com>
-References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
- <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
- <20240313052212.GB22465@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
- <20240315140914.GA14685@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
-Content-Language: en-CA
-From: Easwar Hariharan <eahariha@linux.microsoft.com>
-In-Reply-To: <20240315140914.GA14685@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+Subject: Re: [PATCH v2 1/1] sched: Report the different kinds of imbalances in
+ /proc/schedstat
+Content-Language: en-US
+To: Swapnil Sapkal <swapnil.sapkal@amd.com>
+Cc: mingo@redhat.com, peterz@infradead.org, torvalds@linux-foundation.org,
+        juri.lelli@redhat.com, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
+        vincent.guittot@linaro.org, gautham.shenoy@amd.com,
+        kprateek.nayak@amd.com, linux-kernel@vger.kernel.org
+References: <20240315135501.1778620-1-swapnil.sapkal@amd.com>
+ <20240315135501.1778620-2-swapnil.sapkal@amd.com>
+From: Shrikanth Hegde <sshegde@linux.ibm.com>
+In-Reply-To: <20240315135501.1778620-2-swapnil.sapkal@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: cwG0tGTw4ZS7kwTGrdkjwlECaNSjSr2m
+X-Proofpoint-GUID: cWvzWzbDfWmpnQRyx8H8rrR-qYEd-VVj
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-15_04,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1015 suspectscore=0
+ bulkscore=0 malwarescore=0 adultscore=0 spamscore=0 lowpriorityscore=0
+ mlxscore=0 impostorscore=0 priorityscore=1501 phishscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403140000
+ definitions=main-2403150138
 
-On 3/15/2024 7:09 AM, Shradha Gupta wrote:
 
-<snip>
 
->>>>  }
->>>>  
->>>> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
->>>> +				  int ip_sec)
->>>> +{
->>>> +	char addr[INET6_ADDRSTRLEN], *output_str;
->>>> +	int ip_offset = 0, error = 0, ip_ver;
->>>> +	char *param_name;
->>>> +
->>>> +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
->>>> +				    sizeof(char));
->>>> +
->>>> +	if (!output_str)
->>>> +		return -ENOMEM;
->>>> +
->>>> +	memset(addr, 0, sizeof(addr));
->>>> +
->>>> +	if (type == DNS) {
->>>> +		param_name = "dns";
->>>> +	} else if (type == GATEWAY) {
->>>> +		param_name = "gateway";
->>>> +	} else {
->>>> +		error = -EINVAL;
->>>> +		goto cleanup;
->>>> +	}
->>>> +
->>>> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
->>>> +				   (MAX_IP_ADDR_SIZE * 2))) {
->>>> +		ip_ver = ip_version_check(addr);
->>>> +		if (ip_ver < 0)
->>>> +			continue;
->>>> +
->>>> +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
->>>> +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
->>>> +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
->>>> +			    (strlen(addr))) {
->>>> +				strcat(output_str, addr);
->>>> +				strcat(output_str, ",");
->>>
->>> Prefer strncat() here
-> Is this needed with the bound check above. I am trying to keep parity with the rest of the 
-> file.
->>>
-<snip>
+On 3/15/24 7:25 PM, Swapnil Sapkal wrote:
+> In /proc/schedstat, lb_imbalance reports the sum of imbalances
+> discovered in sched domains with each call to sched_balance_rq(), which is
+> not very useful because lb_imbalance does not mention whether the imbalance
+> is due to load, utilization, nr_tasks or misfit_tasks. Remove this field
+> from /proc/schedstat.
+> 
+> Currently there is no field in /proc/schedstat to report different types
+> of imbalances. Introduce new fields in /proc/schedstat to report the
+> total imbalances in load, utilization, nr_tasks or misfit_tasks.
+> 
+> Added fields to /proc/schedstat:
+>  	- lb_imbalance_load: Total imbalance due to load.
+> 	- lb_imbalance_util: Total imbalance due to utilization.
+> 	- lb_imbalance_task: Total imbalance due to number of tasks.
+> 	- lb_imbalance_misfit: Total imbalance due to misfit tasks.
+> 
+> Signed-off-by: Swapnil Sapkal <swapnil.sapkal@amd.com>
+> ---
+>  Documentation/scheduler/sched-stats.rst | 119 ++++++++++++++----------
+>  include/linux/sched/topology.h          |   5 +-
+>  kernel/sched/fair.c                     |  21 ++++-
+>  kernel/sched/stats.c                    |   7 +-
+>  4 files changed, 98 insertions(+), 54 deletions(-)
+> 
+> diff --git a/Documentation/scheduler/sched-stats.rst b/Documentation/scheduler/sched-stats.rst
+> index 7c2b16c4729d..e2a6b53a38ee 100644
+> --- a/Documentation/scheduler/sched-stats.rst
+> +++ b/Documentation/scheduler/sched-stats.rst
+> @@ -6,10 +6,15 @@ Version 16 of schedstats changed the order of definitions within
+>  'enum cpu_idle_type', which changed the order of [CPU_MAX_IDLE_TYPES]
+>  columns in show_schedstat(). In particular the position of CPU_IDLE
+>  and __CPU_NOT_IDLE changed places. The size of the array is unchanged.
 
-I missed this earlier because my comment was more of a general best practice comment.
+Size of the array would change after this patch. So this line can be updated. 
 
-Note that in the worst case where your bounds check (INET6_ADDRSTRLEN*MAX_IP_ENTRIES) - strlen(output_str) equals (strlen(addr) + 1),
-you will be adding strlen(addr)+1(","), and end up with no ASCII NUL '\0' delimiter.
 
-If you're going to rely on the bounds check to ensure correctness, you'll need to correct that. Generally speaking, strncat would still
-be helpful in case the bounds check changes in the future.
+> +Also stop reporting 'lb_imbalance' as it has no significance anymore
+> +and instead add more relevant fields namely 'lb_imbalance_load',
+> +'lb_imbalance_util', 'lb_imbalance_task' and 'lb_imbalance_misfit'.
+>  
 
-Thanks,
-Easwar
-
+Rest of the changes look good to me. 
+Reviewed-by: Shrikanth Hegde <sshegde@linux.ibm.com>
 
