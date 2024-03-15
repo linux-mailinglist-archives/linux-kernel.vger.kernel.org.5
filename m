@@ -1,196 +1,287 @@
-Return-Path: <linux-kernel+bounces-104387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B259487CD20
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:18:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 96B3587CD23
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:19:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6CF01C218ED
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:18:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 27C801F243B5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:19:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 019131C694;
-	Fri, 15 Mar 2024 12:18:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89861C29B;
+	Fri, 15 Mar 2024 12:19:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EIqwtruI"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="E1Hqm1SM"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2076.outbound.protection.outlook.com [40.107.92.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88C3A1C683
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:18:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710505111; cv=none; b=pD9Jl3dMes+JfmbW6vIudpodzGa7AyCUbfIsaTcznC7spb0MYmaFTdHwiQ+sd0Vmcosam7eIrOYZslSt73EJzRCxzSKd+Ew43+oqkWLzteOZ0/iZTFgctScbHQTy1tS+arS+eE+asyMsxwRljpT0vNn9ty6h2mAcMJ4c6rGFRY4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710505111; c=relaxed/simple;
-	bh=SQgqXlRnDyw92kAhwjNwDxeeaCrqlR2DKUqUs6S3GpA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=AlL+f5PwU7OxR640zJIxvnRtYYn+Z5lpYfne0l9sdpxjRXQBzDdmBJvnyXsYryBXtqxkGrWjoqUZQv7kGlE8JgmpXHYuiXMbqOPLFNf0QMMa39+b17ZRIu8nnv8BN0o6kAKaURTwu6V97EgazqnMiYUEniLed+0p7NxpAe4Pmb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EIqwtruI; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710505108;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=LT2POqbfgrZp4xIkCsgMst+ERqrnYOoLDyndXBBv0s0=;
-	b=EIqwtruI9XiN4esqiV/DkQ0tox4Mo/xK+o6Xt/9hrqJKpUAuEUm/TvOrBUSCLTOIGcP5dC
-	BEuJtoazp9ysQsxX+U5eIa9gPghOtebs9vSOlA/1Dj47ZS708dZg8QK7pUJY5UMid8kMfk
-	LoV8ZkmVTJGdzr5VAgn1hxId82YRF5I=
-Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
- [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-584-0X87yacEOp2y-1vaLWLDAA-1; Fri, 15 Mar 2024 08:18:27 -0400
-X-MC-Unique: 0X87yacEOp2y-1vaLWLDAA-1
-Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4131c96569dso9586985e9.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 05:18:26 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710505106; x=1711109906;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=LT2POqbfgrZp4xIkCsgMst+ERqrnYOoLDyndXBBv0s0=;
-        b=F3hiona4ZiFVkkT4uH+rGrBucDZcklbM7gj/x4GIvBbh4Uyxx2VCWeP/zkYMPKjJ52
-         cHx13Ea0oPazgkbKqfpWQxWG6amJOJ4nKbGgnqdDygwGdLNrMHV0ZhbV4E+crUjeq160
-         usEAmFHE2cDBTwIb88ZYMMqT5WDtXvSWBnCYptobJWYyrto7MZrPH7cEANerHx2wf35U
-         HA7yxhorvFTD6yVu2Avgcd7okvNF/eq2mZJShqB3RODGjDWWEwWqdLv02wBR806JJ5X+
-         4YqxA7PfmolvoTPUnLWQ8Yv9H9TGAduyzRO3+nIWIEBP3BbmM6PZuGrxybKfZkG+lO7e
-         5Dyw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+ZZWThJRFHRShT05NURnGEnZTpJ5uhFdvKvok5w03Zk1A/BeHoPenHp8bpDETVIeeOlSp95MrpJ67mBIFc1mRjFHgIXDsrDvNkN4e
-X-Gm-Message-State: AOJu0YyZTG4/DHhxzxSlxLS/2T+7Og6Dd/efjxs9BgZIAb8kiKzDc5ED
-	+XuigaP9yeZglFwCBNWKbYpCrFR+quARKXSL6nCjE7rHdUeu/cxTkBxuJupUfYJyVBIfco5eg3y
-	kQh+N45HzawdAOBPK/zrjpl0QE3RvfO0HmGK7uS1HnNeWViW3rE07kyceXwGvfw==
-X-Received: by 2002:a05:600c:358e:b0:414:24b:3387 with SMTP id p14-20020a05600c358e00b00414024b3387mr786598wmq.19.1710505105991;
-        Fri, 15 Mar 2024 05:18:25 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHsvTp/X1ZKGcmuKsmDWlyVlYbB27eraY/h/vb3UwagJfQUtz62OBIR5X/K+MSoZQjAznE58g==
-X-Received: by 2002:a05:600c:358e:b0:414:24b:3387 with SMTP id p14-20020a05600c358e00b00414024b3387mr786575wmq.19.1710505105601;
-        Fri, 15 Mar 2024 05:18:25 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c719:7700:ef08:112b:278d:7d90? (p200300cbc7197700ef08112b278d7d90.dip0.t-ipconnect.de. [2003:cb:c719:7700:ef08:112b:278d:7d90])
-        by smtp.gmail.com with ESMTPSA id m8-20020a05600c4f4800b00413ea26f942sm8380355wmq.14.2024.03.15.05.18.24
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 05:18:25 -0700 (PDT)
-Message-ID: <893fd7d3-6f11-45ee-8fe6-52f11dc42cc7@redhat.com>
-Date: Fri, 15 Mar 2024 13:18:24 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E4AB1CA9C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:19:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710505152; cv=fail; b=mMEkNSI9KcbEQ4ROBKa3fZ3xJijvDgPi8yQiPAov8pS1d5LmyIxJl9FG9MH6s6Iiz27FSCiG7QJyPtuLLFCEiL1ncShrBROmBgMeXEEADk0VQt8jHdqj+U0Mxh8M4Q4en/jA2hrSxtRSVsowlSWbcRXiK0sc9trnZGpQVHqO1zE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710505152; c=relaxed/simple;
+	bh=iVH5H3eGQlrN5VyQDhFoQDhUVVRttR5orRwpilv4ee8=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=r75La9T0+Dcvp+9LUr/y9VCrwQkMxxs08f3EJnYD3oS3jf/hfR1jPUmcBUhsBMGQOQPtAHeyHZGe+TSEaymjr37JMUugO0xriDp9lc5YzOka086NCVLquRRI35dOluFc/I5eIBWiox/BAnSslB5A6zQ9hXkZS8cvKTTVLyyP7ow=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=E1Hqm1SM; arc=fail smtp.client-ip=40.107.92.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=nqnLzInJoEwHQ9QTTndc/KyLhEdOzzCaN8MsbnOIoQMduvVRMBrKYROYsaz0gOJNnKnlaeavrXCgUmS+Y7s1YyoLMHe1f9sRbikCGhhKp/HM3LfH2MfsZvsGNtQl3o/L1FrCuc66pawHhKnb8IGXohy6GvWJoq1q/gJ8QPME13yHyYNOlnk5GzZgYENKik3+xp4eCPt9WA1GfckntS5G9LQ9qi7BCUSYsKHJPahRxNlgPfEa6ZGV3qL2lYjBysdBFzmDM0Kbr3AvOy3Z8ovKn/Bw52WrCZ+bIkQlMTHPQi0vCAQ/WC8XR5aW/Mv9aZRcUaPmgGZ/zw65Jf8i/NhPng==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+oSeLddBIoKzA2DVHW4I2H1li+8DOEEZqzrVIxqYA2g=;
+ b=NCOO2c71YiLKThJ+7SfUtqLUgOlGJkOJdUhC5Zy4TV5zIUbvfpTWZ4QanROwFsI1AxHXuCJpfK8I/ddanltc9w8myA7Yyi4UnRSzMCaj7u7g/putB79VBcxI2QxugO2bOVX7u00ClBSrMEz9YkuFxwbRDJ8pmKI8lGSf2tTA38fWEIt6sMkeS6aFGliJ/IEBDTRsJlshUpe8x1/y/IF25lfBBehMfRladNL4QEbC1BCZCcuBqHiCpDw1EU3iEtYQVdbz9mQAbyejLfqD62w+JAxCSD8PSlayTQ+c7gtYh6aMV/bx8NPQO++Z9yi0OOfzfh64BfVzbKVdajBBw7kzjg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+oSeLddBIoKzA2DVHW4I2H1li+8DOEEZqzrVIxqYA2g=;
+ b=E1Hqm1SMwFVK1eEIY6haC0pUCp+46wRCjKeAN8HAFJy0nhv+zCxBT33HEqMBnOP5pfVtiitVBUXd46vhoDvBZHHqYbgMSmsl1Sz6x5QzVli33p2F1PZ5II4/iOYwHrP94wXkdP9W0y2nsZp5qNkZUmXnSJJLdXzXzncRp1TXH1A=
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com (2603:10b6:510:136::13)
+ by SN7PR12MB7978.namprd12.prod.outlook.com (2603:10b6:806:34b::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.22; Fri, 15 Mar
+ 2024 12:19:06 +0000
+Received: from PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033]) by PH7PR12MB5596.namprd12.prod.outlook.com
+ ([fe80::6974:3875:ed0:7033%3]) with mapi id 15.20.7386.017; Fri, 15 Mar 2024
+ 12:19:06 +0000
+From: "Khatri, Sunil" <Sunil.Khatri@amd.com>
+To: "Khatri, Sunil" <Sunil.Khatri@amd.com>, "Deucher, Alexander"
+	<Alexander.Deucher@amd.com>, "Koenig, Christian" <Christian.Koenig@amd.com>,
+	"Sharma, Shashank" <Shashank.Sharma@amd.com>
+CC: "amd-gfx@lists.freedesktop.org" <amd-gfx@lists.freedesktop.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: RE: [PATCH] drm/amdgpu: add the hw_ip version of all IP's
+Thread-Topic: [PATCH] drm/amdgpu: add the hw_ip version of all IP's
+Thread-Index: AQHadtIuMm0zyRtrYUG6y9aQQf0c6rE4ttBw
+Date: Fri, 15 Mar 2024 12:19:06 +0000
+Message-ID:
+ <PH7PR12MB5596A1DD75348ECC68EBBEFE93282@PH7PR12MB5596.namprd12.prod.outlook.com>
+References: <20240315121315.406601-1-sunil.khatri@amd.com>
+In-Reply-To: <20240315121315.406601-1-sunil.khatri@amd.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+msip_labels:
+ MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ActionId=50ad0f7c-6b61-485f-9c12-0adebb3ba1ae;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_ContentBits=0;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Enabled=true;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Method=Standard;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_Name=General;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SetDate=2024-03-15T12:13:45Z;MSIP_Label_4342314e-0df4-4b58-84bf-38bed6170a0f_SiteId=3dd8961f-e488-4e60-8e11-a82d994e183d;
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: PH7PR12MB5596:EE_|SN7PR12MB7978:EE_
+x-ms-office365-filtering-correlation-id: eeb49984-3449-4278-9678-08dc44ea1c1f
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 6kvwopHamLb9NuVhxGM6qwnNvBlR399OOZwdDedyCmjK2ZwRQkmrzqlZw+E+5KXroHfvJu2G4oyBqzUu75DneQd1rS7CHUX+t6OfFTtbESVm7DJYtGcS31nh891UsDbuzNMndj3Fyk7ZzT9QbDdfDUzb09JovJlGsU8hSJvfSCa+OaROYNldbCsmHnAevPPAAknm+106OxNbKLwjfJBpxbFwcEJwCKsn05HO67s3JuaTY/p9CfoT6hqOsgh1b+NjeCn5XLgi/mbM/QImsIr+ogvDRnv6TLWMZ5KWCTFO2kxkZa8Ux4AhoZsKvIyv+QHbI2J5k4kJGob0wMmgrJbdwMC4PAePTIWL4ktzXNE4bUVpsCl3XWfHVnxXQauDDvmV/wxOVjRqfKLX+eGh+mO6QrkZMhSv50riIaTVqFCEFQxoaO4qo80la999cPpiQjOZj0cTFfPid+NcEPA8EYFf/8/iUQYNULhywUVxJ+Iar6OFWWEqrcEqiYOb1N0MIhvDfA9DB6VaeOnMdc+AxIXKi8ayR6URiUzG57ovIlFHCCloZiLKtSDsbsWoaruBrYm0sWTFWDHxgitNNxkSf/ny0Y5zbeFWZPJb3+0OlZBejcJnhgmTwGk/bUBDMWpVnV7eNQleSIf/wc2uX8pGyTRszAdp5yk7f+MPgsRLoX1fpyo4wNYY+hGTM+5ivJ4sppeZdT8rZ1NkxiltbI37n2TsLwe3Kveo1OpZZXmu6nxuHOI=
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR12MB5596.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?hrnbf57vaAGBr7YezbMhqv8XGmZMytlzi7juymKrQ57XpmgyGFcvG8CcFx6v?=
+ =?us-ascii?Q?B+FE539JRXmzzEENO2NGjmFvRvyhWiJA7ciIbHvlzYEai/bZdli1OiM6Yjus?=
+ =?us-ascii?Q?TDvDoMkh7/A232hEuYEAiqciqfd8jjCeHiAOFPIq+uEr9QBBEJ6qiW6ycUmn?=
+ =?us-ascii?Q?Eb6Xx84BnmAJoozkYKhcNMBRr8t4JyGKLXllaNL1UN815Kjr4dBOvl65xBbo?=
+ =?us-ascii?Q?BVgoxKG72ZiUoRZACwyy+uv7CY4+ug6/CogAOAQH93tP1BRspCgdObn6e7i4?=
+ =?us-ascii?Q?WfGZ4Ov60SZmXRk1YBs+yQt9gvS9NzoZn1lLTdbNArcIB8Ni+YoA2FWygrfC?=
+ =?us-ascii?Q?iyPBubcaD/7DYB4R+k1DBpWrwQcQiulVc9u5CYjpeapeE/MGyL4Oy11HALKq?=
+ =?us-ascii?Q?gTDWxdrsmfkbN+OX6eS9ZTA6MLCXVEaQXJP5YDIdBNDQ7nUVFp6yHckZNPWu?=
+ =?us-ascii?Q?HmAh/BrNgfJDmTQARaiIU/BqbxKDYPIvG2WtlsFQxnpgCxVWM/cASoCkpkTg?=
+ =?us-ascii?Q?td2d34bWjqJvGX/CEbXOYudR7/W49R8RYZeRfZpjZIhzJr0LtEsncb4kn0CJ?=
+ =?us-ascii?Q?b8kx06nVvVPG26qfSe1bUdKI9pei6hmxmbgun5Qbnv/B9dlg+J8b4xZFitjQ?=
+ =?us-ascii?Q?/t6g01Pg0BflyKMQ5X7K++K7a0l93h+p3CH6uWeiiqaAXjyZRWkBRjzppEW9?=
+ =?us-ascii?Q?zqOFdKSVM9jk4ochQ6Ox2Wambdvai3wkek0gymicqjl1RpEUrqsUjgcZ38VY?=
+ =?us-ascii?Q?NOr78yCpIv8w8VGtIbOldkrnBkJzhq1WkKQQe74JzpMwCTbpTLAZAtmq3jRe?=
+ =?us-ascii?Q?8H3B6yWnVq8gP/x1r4jxYvdDgAHPDuu2lCU4NAGX8ISGEAiQIFOgREbw0GDc?=
+ =?us-ascii?Q?T+c3hVCgvR2+dUPAT3BIoHfFfsy/lKnmd350AwzlZneV0ccXwPOB+OU/M3il?=
+ =?us-ascii?Q?KMcy6fOzWPPo23FSF0m+Ow660XkP5yJZxB5rqWwwadxpEontliyNUXvg3oT9?=
+ =?us-ascii?Q?TeVkzKzxuhjEctlHKy7dD2WvFy4by7ETbn+iP/5OKUTJvLtmiSOxF/Hb1giM?=
+ =?us-ascii?Q?0xftXv4lxWQUukuPH6IK0UvDfhIdFM+XC7u/HLAJVTMnRZO1NGlclaqVzzYL?=
+ =?us-ascii?Q?JVIGnufQM7JHlxcJDFXnSxdBZEQJYSGRnSx88LZx1ouyf9FIjbLKA4vjCDLJ?=
+ =?us-ascii?Q?U/1gReVY4AYxkTprGWFBow0ZC3zjUnFKIHsMIBwFzqeNfFjNQh+MdIxqpSXD?=
+ =?us-ascii?Q?NoLBsseBp/B4HnXsehdz6joiasoIaZ5L/SUQ0fZjA/gbW7RfD6QNH6LCBKUt?=
+ =?us-ascii?Q?AJ7wl+hiOe1wkIJ+EzvLaRQyavNJqD/uCVsLGWGMF/oamtB/uCwpav0zcRM8?=
+ =?us-ascii?Q?Hb1hpIRhNjwPPBUP2UUoh6mu/8EIb6Day7595ZTUaa9Xdu2qNsQ8Y6X0x4i+?=
+ =?us-ascii?Q?orpcPjjNJM7u2BRpwoCExBQjw9+mT8yG1VcJ9MLW6iErJSCE8Gd4QQ44kFJd?=
+ =?us-ascii?Q?pLBhqMJPfAGCG+Y9pxxTBwc5jAjmK0+mVLh7VduwpRkSjDqi7kYKaLpHtYJE?=
+ =?us-ascii?Q?ofhbglOIYwNd1YN/+NU=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] mm/khugepaged: reduce process visible downtime by
- pre-zeroing hugepage
-Content-Language: en-US
-To: Lance Yang <ioworker0@gmail.com>
-Cc: akpm@linux-foundation.org, mhocko@suse.com, zokeefe@google.com,
- shy828301@gmail.com, xiehuan09@gmail.com, songmuchun@bytedance.com,
- minchan@kernel.org, linux-mm@kvack.org, linux-kernel@vger.kernel.org,
- libang.li@antgroup.com
-References: <20240308074921.45752-1-ioworker0@gmail.com>
- <ef409d5e-5652-4fff-933c-49bda6d75018@redhat.com>
- <CAK1f24k_+qAqxKGMpKziouuds=PQ6kfKyQ8D3SYEyW7cQOAJWw@mail.gmail.com>
- <75630ba6-79b6-4105-b614-29cfb0331084@redhat.com>
- <CAK1f24=vU5kEuJC6x099JGFD7z6FK5q+o1to7QY8Q12jNQzr_g@mail.gmail.com>
- <CAK1f24ktQMYogUETyu04KahC1YAdrY1XwCNNrYUQXN4tSEPKsQ@mail.gmail.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <CAK1f24ktQMYogUETyu04KahC1YAdrY1XwCNNrYUQXN4tSEPKsQ@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: PH7PR12MB5596.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: eeb49984-3449-4278-9678-08dc44ea1c1f
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 12:19:06.4221
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: LT19ghsE22bkq8nCVQNL6Lg5e1PZrGjNggYgrCYpCNDOUxEmyxN4ZjSKWjTa+aBYizOyKii3Y5LXEzM6HjDrnw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB7978
 
-On 14.03.24 15:19, Lance Yang wrote:
-> Another thought suggested by Bang Li is that we record which pte is none
-> in hpage_collapse_scan_pmd. Then, before acquiring the mmap_lock (write mode),
-> we will pre-zero pages as needed.
+[AMD Official Use Only - General]
 
-Here is my point of view: we cannot optimize the common case where we 
-have mostly !pte_none() in a similar way.
+Hello Alex
 
-So why do we care about the less common case? Is the process visible 
-downtime reduction for that less common case really noticable?
+Added the information directly from the ip_version and also added names for=
+ each ip so the version information makes more sense to the user.
 
-Or is it rather something that looks good in a micro-benchmark, but 
-won't really make any difference in actual applications (again, where 
-the common case will still result the same downtime).
+Below is the output in devcoredump now:
+IP Information
+SOC Family: 143
+SOC Revision id: 0
+SOC External Revision id: 50
+HWIP: GC[1][0]: v10.3.2.0.0
+HWIP: HDP[2][0]: v5.0.3.0.0
+HWIP: SDMA0[3][0]: v5.2.2.0.0
+HWIP: SDMA1[4][0]: v5.2.2.0.0
+HWIP: MMHUB[12][0]: v2.1.0.0.0
+HWIP: ATHUB[13][0]: v2.1.0.0.0
+HWIP: NBIO[14][0]: v3.3.1.0.0
+HWIP: MP0[15][0]: v11.0.11.0.0
+HWIP: MP1[16][0]: v11.0.11.0.0
+HWIP: UVD/JPEG/VCN[17][0]: v3.0.0.0.0
+HWIP: UVD/JPEG/VCN[17][1]: v3.0.1.0.0
+HWIP: DF[21][0]: v3.7.3.0.0
+HWIP: DCE[22][0]: v3.0.0.0.0
+HWIP: OSSSYS[23][0]: v5.0.3.0.0
+HWIP: SMUIO[24][0]: v11.0.6.0.0
+HWIP: NBIF[26][0]: v3.3.1.0.0
+HWIP: THM[27][0]: v11.0.5.0.0
+HWIP: CLK[28][0]: v11.0.3.0.0
+HWIP: CLK[28][1]: v11.0.3.0.0
+HWIP: CLK[28][2]: v11.0.3.0.0
+HWIP: CLK[28][3]: v11.0.3.0.0
+HWIP: CLK[28][4]: v11.0.3.0.0
+HWIP: CLK[28][5]: v11.0.3.0.0
+HWIP: CLK[28][6]: v11.0.3.0.0
+HWIP: CLK[28][7]: v11.0.3.0.0
+HWIP: UMC[29][0]: v8.7.1.0.0
+HWIP: UMC[29][1]: v8.7.1.0.0
+HWIP: UMC[29][2]: v8.7.1.0.0
+HWIP: UMC[29][3]: v8.7.1.0.0
+HWIP: UMC[29][4]: v8.7.1.0.0
+HWIP: UMC[29][5]: v8.7.1.0.0
+HWIP: PCIE[33][0]: v6.5.0.0.0
 
-I'm not against this, I'm rather wonder "do we really care". I'd like to 
-hear other opinions.
 
->>>>>
->>>>> So my question is: do we really care about it that much that we care to
->>>>> optimize?
->>>>
->>>> IMO, although it may not be our main concern, reducing the impact of
->>>> khugepaged on the process remains crucial. I think that users also prefer
->>>> minimal interference from khugepaged.
->>>
->>> The problem I am having with this is that for the *common* case where we
->>> have a small number of pte_none(), we cannot really optimize because we
->>> have to perform the copy.
->>>
->>> So this feels like we're rather optimizing a corner case, and I am not
->>> so sure if that is really worth it.
->>>
->>> Other thoughts?
->>
->> Another thought is to introduce khugepaged/alloc_zeroed_hpage for THP
->> sysfs settings. This would enable users to decide whether to avoid unnecessary
->> copies when nr_ptes_none > 0.
+-----Original Message-----
+From: Sunil Khatri <sunil.khatri@amd.com>
+Sent: Friday, March 15, 2024 5:43 PM
+To: Deucher, Alexander <Alexander.Deucher@amd.com>; Koenig, Christian <Chri=
+stian.Koenig@amd.com>; Sharma, Shashank <Shashank.Sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org; dri-devel@lists.freedesktop.org; linux-k=
+ernel@vger.kernel.org; Khatri, Sunil <Sunil.Khatri@amd.com>
+Subject: [PATCH] drm/amdgpu: add the hw_ip version of all IP's
 
-Hm, new toggles for that, not sure ... I much rather prefer something 
-without any new toggles, especially for this case.
+Add all the IP's version information on a SOC to the devcoredump.
 
--- 
-Cheers,
+Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+---
+ drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c | 62 +++++++++++++++++++++++
+ 1 file changed, 62 insertions(+)
 
-David / dhildenb
+diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c b/drivers/gpu/drm/am=
+d/amdgpu/amdgpu_reset.c
+index a0dbccad2f53..3d4bfe0a5a7c 100644
+--- a/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
++++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_reset.c
+@@ -29,6 +29,43 @@
+ #include "sienna_cichlid.h"
+ #include "smu_v13_0_10.h"
+
++const char *hw_ip_names[MAX_HWIP] =3D {
++       [GC_HWIP]               =3D "GC",
++       [HDP_HWIP]              =3D "HDP",
++       [SDMA0_HWIP]            =3D "SDMA0",
++       [SDMA1_HWIP]            =3D "SDMA1",
++       [SDMA2_HWIP]            =3D "SDMA2",
++       [SDMA3_HWIP]            =3D "SDMA3",
++       [SDMA4_HWIP]            =3D "SDMA4",
++       [SDMA5_HWIP]            =3D "SDMA5",
++       [SDMA6_HWIP]            =3D "SDMA6",
++       [SDMA7_HWIP]            =3D "SDMA7",
++       [LSDMA_HWIP]            =3D "LSDMA",
++       [MMHUB_HWIP]            =3D "MMHUB",
++       [ATHUB_HWIP]            =3D "ATHUB",
++       [NBIO_HWIP]             =3D "NBIO",
++       [MP0_HWIP]              =3D "MP0",
++       [MP1_HWIP]              =3D "MP1",
++       [UVD_HWIP]              =3D "UVD/JPEG/VCN",
++       [VCN1_HWIP]             =3D "VCN1",
++       [VCE_HWIP]              =3D "VCE",
++       [VPE_HWIP]              =3D "VPE",
++       [DF_HWIP]               =3D "DF",
++       [DCE_HWIP]              =3D "DCE",
++       [OSSSYS_HWIP]           =3D "OSSSYS",
++       [SMUIO_HWIP]            =3D "SMUIO",
++       [PWR_HWIP]              =3D "PWR",
++       [NBIF_HWIP]             =3D "NBIF",
++       [THM_HWIP]              =3D "THM",
++       [CLK_HWIP]              =3D "CLK",
++       [UMC_HWIP]              =3D "UMC",
++       [RSMU_HWIP]             =3D "RSMU",
++       [XGMI_HWIP]             =3D "XGMI",
++       [DCI_HWIP]              =3D "DCI",
++       [PCIE_HWIP]             =3D "PCIE",
++};
++
++
+ int amdgpu_reset_init(struct amdgpu_device *adev)  {
+        int ret =3D 0;
+@@ -196,6 +233,31 @@ amdgpu_devcoredump_read(char *buffer, loff_t offset, s=
+ize_t count,
+                           coredump->reset_task_info.process_name,
+                           coredump->reset_task_info.pid);
+
++       /* GPU IP's information of the SOC */
++       if (coredump->adev) {
++
++               drm_printf(&p, "\nIP Information\n");
++               drm_printf(&p, "SOC Family: %d\n", coredump->adev->family);
++               drm_printf(&p, "SOC Revision id: %d\n", coredump->adev->rev=
+_id);
++               drm_printf(&p, "SOC External Revision id: %d\n",
++                          coredump->adev->external_rev_id);
++
++               for (int i =3D 1; i < MAX_HWIP; i++) {
++                       for (int j =3D 0; j < HWIP_MAX_INSTANCE; j++) {
++                               int ver =3D coredump->adev->ip_versions[i][=
+j];
++
++                               if (ver)
++                                       drm_printf(&p, "HWIP: %s[%d][%d]: v=
+%d.%d.%d.%d.%d\n",
++                                                  hw_ip_names[i], i, j,
++                                                  IP_VERSION_MAJ(ver),
++                                                  IP_VERSION_MIN(ver),
++                                                  IP_VERSION_REV(ver),
++                                                  IP_VERSION_VARIANT(ver),
++                                                  IP_VERSION_SUBREV(ver));
++                       }
++               }
++       }
++
+        if (coredump->ring) {
+                drm_printf(&p, "\nRing timed out details\n");
+                drm_printf(&p, "IP Type: %d Ring Name: %s\n",
+--
+2.34.1
 
 
