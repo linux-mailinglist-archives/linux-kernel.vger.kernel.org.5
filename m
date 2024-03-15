@@ -1,241 +1,181 @@
-Return-Path: <linux-kernel+bounces-103983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1D6D987C76F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:19:16 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D3C1687C770
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:21:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835091F217BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:19:15 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F27D51C20F1D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:21:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4494479D3;
-	Fri, 15 Mar 2024 02:19:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83C0C6FD9;
+	Fri, 15 Mar 2024 02:21:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gPcW2PxH"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TzS9hYmU"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D865612E;
-	Fri, 15 Mar 2024 02:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ED6A5323D;
+	Fri, 15 Mar 2024 02:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710469145; cv=none; b=UsGGVI7buqxdO8GuenB+aL3R9bF1cmWY2ygMFb5ObniyNYG2WJg5ujNXhEmo50FeJFhhxuBg8/xy9rV3U865jOEe4mX3FrNGN7/oCfHaHI4V2yRmR9O++Vhzg/j7/7Fa324g6RElusMaLikSSSFcMt3yJdv6O8ToSy/IdJ+f0Gc=
+	t=1710469259; cv=none; b=QthW/83icp6118QcYkCPMS2KFNpzbTV9oj6ck5l3iSAgD/DoeusPZQ6J4CPyOKhwx4CQ9fkNye7FfoqepBm51SiY66HbSuXW20LEfU6tqS8xj5YJ9zll1Ho6q1bCeBrkqCvZ+ZAKRjFYlzX0N/IjNucnncubWeoJW9KwXbN/lOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710469145; c=relaxed/simple;
-	bh=3yVcTPMCUb0I93YKr63zWkcjxC95tX4f7ziTHbEe/wQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZvT7RxUfJJSvWjhBiSjCVr9WfM0GlcEvkMWos21HpTpdXWVjMylkGrnFxJX5iIBmx4RoeIra/vGwk+ymFtvnD/aA7tZFAmR/xFsINRuwRQu8doDaxAeCDLpTRp3A4kLLpTGuka2BMnol/Un/kZYNoaAuivbLhPcZg8WFs9PAoHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gPcW2PxH; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710469140; x=1742005140;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=3yVcTPMCUb0I93YKr63zWkcjxC95tX4f7ziTHbEe/wQ=;
-  b=gPcW2PxHZIhVb3AND7idItUM5f+QDN5SNAmaI9VEmTHbKzArQYh+kxUD
-   C8v1xMngxvSJizfnkaOm7D25pLqxV1Ly/ZzNqfqL2tlOHKeSUDFZR/lt4
-   bznFpIDGJjM1BQ014QlLltnMeEjY6LYTQPMG4iXN3ggMRl20VemQmN/7W
-   mOkotU1om+gNaO3ClrStzp0a3I7my4i1Typ71o4ah/RbBvU+9XjIex+3M
-   M309XB2AnUsbTObPrrTTD5b3jNEoobnLyOLl0ez0HuFGDz5VhzGW1KpT6
-   vV2HbuD8jMMzfzIbbo42a3YeIGxcJ54n+dHVQlQed+g6GFEZcrOZm+C9F
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="22844058"
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="22844058"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 19:18:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="12961841"
-Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
-  by orviesa007-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 19:18:56 -0700
-Message-ID: <15a13c5d-df88-46cf-8d88-2c8b94ff41ff@intel.com>
-Date: Fri, 15 Mar 2024 10:18:52 +0800
+	s=arc-20240116; t=1710469259; c=relaxed/simple;
+	bh=fFwQIlb443EC36sVLwuFb4dzf0Dss+9EewZgyVbxvSY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=l8U3K2u4+Ll57/kirI+OyoHepAd7GBvQfahIB3ff8C5muhk+/SI1HouOQ5MDyHaURi5Yt6xg37Wxwc+u7V/6Mip6FV/5cFPJ83iTg7GSJ4ccWyCVZ5yyHLwOCLtucCDJrMLP29+pDw0vln2sZgYF+V7gVhZq4eHm8/sqFH+avn4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TzS9hYmU; arc=none smtp.client-ip=209.85.167.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513d3746950so1490803e87.1;
+        Thu, 14 Mar 2024 19:20:57 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710469256; x=1711074056; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IKd+qVzPekK4mMOT4fBjyBHRZnbYGLNCRm2s7GZrCu4=;
+        b=TzS9hYmUkGQFR25ZLGTHKG+0jEMtZi3o1NlKV1qqHElrw8KvCF5LO9ylXcsRsEuxkw
+         Llh6CURnLt2xX+KcvUnYpTzLsI06mEp42xRQjGULKPNU57PO8zmCgF+z3Kkc7O4luDOi
+         AaAOcbgo0bHPqaZSGAPp6BTdA7K3vEFauDXGaholbq/niAlUL2VsdxZk9fvFKn9V6/d+
+         RP4b99r5PN8wGVKbUrjp6GPTlDI3xBxsSuoDfsRobf4ie+GE3ZSDqYZ+57TrgCrIJlvY
+         /oTHD6anXeVkciSpE0ahIVfhu7wToQM5gtKtCiWcRtdKOzKVH23y52xwtn/oLrqwSr29
+         Lo/A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710469256; x=1711074056;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=IKd+qVzPekK4mMOT4fBjyBHRZnbYGLNCRm2s7GZrCu4=;
+        b=mlauxnKeSz1JqntztqOOM2Q7GTju4BeuxFIAzqV8tR/eXg8pCjZvbNhEDKXMuhlOGu
+         k2SRaN1yNFR/watSzSgJp1oxogd+Ijzp09wckQjfoEd3j22kyM4Rf2vxw4A0cD4z/1kJ
+         26a3iobgAS+b1DrZ4HuVeVRJ3m8aAvpLbLc57QKzeglvsGd0NS4tb4IbPWTgcQggn2PR
+         jEmH8xSU33tpiQm9SKgDgfBsxbbjauuwVCYrIqTzmhSlyqgRNq2frjdlmXWTKepf/5d8
+         enzcY5DMZIHpDcdKNAB49l9cB0ZCVoLNxtUD7Hzowe2g9pCy6UJcxuq/eIHJwbp37OlS
+         HKjg==
+X-Forwarded-Encrypted: i=1; AJvYcCWDJPgf0BqznOUeSbGCa0GgaFO4+9j9GwtTOPN1kyePJaNAMtrLqV0z0LDmQQDRakpvnMj2mBj04nValc7h7iMsX47xpwG3nesV6Ek3YfhpeajtBU3mrZDIqqE+8KC4GinPzOCZsZppUpatBS0Q
+X-Gm-Message-State: AOJu0YzUZQRXP0sMN+VUN2Ew7VCfeb6f3aFO65r1Rl4TnlKQWXDqWUiJ
+	VyzeSWh3/g6jwR4EWe72Zd0sONpS2vYw0gIkRwRgWRtODKW0c/YhlNXwhfgqol89OWnygNdGU5U
+	gLN+or4XJTXTtfL74aCzM+DFjFUQ=
+X-Google-Smtp-Source: AGHT+IFtyxEzPv4XBFuqTidRTiFrLDoGQgKUC0WvFlPYV7nBfRQoPiPOY4zHRJX+f1AdECUdrpVCSeXw7pciQ+z8C6s=
+X-Received: by 2002:ac2:5bcd:0:b0:513:b90f:f4dd with SMTP id
+ u13-20020ac25bcd000000b00513b90ff4ddmr1307617lfn.49.1710469255711; Thu, 14
+ Mar 2024 19:20:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v19 034/130] KVM: TDX: Get system-wide info about TDX
- module on initialization
-Content-Language: en-US
-To: "Huang, Kai" <kai.huang@intel.com>, isaku.yamahata@intel.com,
- kvm@vger.kernel.org, linux-kernel@vger.kernel.org
-Cc: isaku.yamahata@gmail.com, Paolo Bonzini <pbonzini@redhat.com>,
- erdemaktas@google.com, Sean Christopherson <seanjc@google.com>,
- Sagi Shahar <sagis@google.com>, chen.bo@intel.com, hang.yuan@intel.com,
- tina.zhang@intel.com
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <eaa2c1e23971f058e5921681b0b84d7ea7d38dc1.1708933498.git.isaku.yamahata@intel.com>
- <e88e5448-e354-4ec6-b7de-93dd8f7786b5@intel.com>
-From: Xiaoyao Li <xiaoyao.li@intel.com>
-In-Reply-To: <e88e5448-e354-4ec6-b7de-93dd8f7786b5@intel.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <TYSPR04MB7084FCAF74B4CFA30D386B698A2A2@TYSPR04MB7084.apcprd04.prod.outlook.com>
+ <87cyrxm7ua.ffs@tglx> <CAAfh-jOu0hG1hfWX9kL_gOXkSLXEVGNkddP-azO=pjNAKsRGhA@mail.gmail.com>
+ <877ci5m3c4.ffs@tglx> <CAAfh-jPvPhu6G6cp_NouhLAeHvLPeVj6JzPmzrL1VK+0BM78+g@mail.gmail.com>
+In-Reply-To: <CAAfh-jPvPhu6G6cp_NouhLAeHvLPeVj6JzPmzrL1VK+0BM78+g@mail.gmail.com>
+From: Enlin Mu <enlinmu@gmail.com>
+Date: Fri, 15 Mar 2024 10:20:29 +0800
+Message-ID: <CAAfh-jP7c1ythFCnLUZ4EO=prD+XHeASQWRv22XT1AS4rAxfgg@mail.gmail.com>
+Subject: Re: [PATCH] hrtimer:Add get_hrtimer_cpu_base()
+To: Thomas Gleixner <tglx@linutronix.de>
+Cc: Enlin Mu <enlin.mu@outlook.com>, linux-kernel@vger.kernel.org, enlin.mu@unisoc.com, 
+	linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/15/2024 7:09 AM, Huang, Kai wrote:
-> 
->> +struct tdx_info {
->> +    u64 features0;
->> +    u64 attributes_fixed0;
->> +    u64 attributes_fixed1;
->> +    u64 xfam_fixed0;
->> +    u64 xfam_fixed1;
->> +
->> +    u16 num_cpuid_config;
->> +    /* This must the last member. */
->> +    DECLARE_FLEX_ARRAY(struct kvm_tdx_cpuid_config, cpuid_configs);
->> +};
->> +
->> +/* Info about the TDX module. */
->> +static struct tdx_info *tdx_info;
->> +
->>   #define TDX_MD_MAP(_fid, _ptr)            \
->>       { .fid = MD_FIELD_ID_##_fid,        \
->>         .ptr = (_ptr), }
->> @@ -66,7 +81,7 @@ static size_t tdx_md_element_size(u64 fid)
->>       }
->>   }
->> -static int __used tdx_md_read(struct tdx_md_map *maps, int nr_maps)
->> +static int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
->>   {
->>       struct tdx_md_map *m;
->>       int ret, i;
->> @@ -84,9 +99,26 @@ static int __used tdx_md_read(struct tdx_md_map 
->> *maps, int nr_maps)
->>       return 0;
->>   }
->> +#define TDX_INFO_MAP(_field_id, _member)            \
->> +    TD_SYSINFO_MAP(_field_id, struct tdx_info, _member)
->> +
->>   static int __init tdx_module_setup(void)
->>   {
->> +    u16 num_cpuid_config;
->>       int ret;
->> +    u32 i;
->> +
->> +    struct tdx_md_map mds[] = {
->> +        TDX_MD_MAP(NUM_CPUID_CONFIG, &num_cpuid_config),
->> +    };
->> +
->> +    struct tdx_metadata_field_mapping fields[] = {
->> +        TDX_INFO_MAP(FEATURES0, features0),
->> +        TDX_INFO_MAP(ATTRS_FIXED0, attributes_fixed0),
->> +        TDX_INFO_MAP(ATTRS_FIXED1, attributes_fixed1),
->> +        TDX_INFO_MAP(XFAM_FIXED0, xfam_fixed0),
->> +        TDX_INFO_MAP(XFAM_FIXED1, xfam_fixed1),
->> +    };
->>       ret = tdx_enable();
->>       if (ret) {
->> @@ -94,7 +126,48 @@ static int __init tdx_module_setup(void)
->>           return ret;
->>       }
->> +    ret = tdx_md_read(mds, ARRAY_SIZE(mds));
->> +    if (ret)
->> +        return ret;
->> +
->> +    tdx_info = kzalloc(sizeof(*tdx_info) +
->> +               sizeof(*tdx_info->cpuid_configs) * num_cpuid_config,
->> +               GFP_KERNEL);
->> +    if (!tdx_info)
->> +        return -ENOMEM;
->> +    tdx_info->num_cpuid_config = num_cpuid_config;
->> +
->> +    ret = tdx_sys_metadata_read(fields, ARRAY_SIZE(fields), tdx_info);
->> +    if (ret)
->> +        goto error_out;
->> +
->> +    for (i = 0; i < num_cpuid_config; i++) {
->> +        struct kvm_tdx_cpuid_config *c = &tdx_info->cpuid_configs[i];
->> +        u64 leaf, eax_ebx, ecx_edx;
->> +        struct tdx_md_map cpuids[] = {
->> +            TDX_MD_MAP(CPUID_CONFIG_LEAVES + i, &leaf),
->> +            TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2, &eax_ebx),
->> +            TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2 + 1, &ecx_edx),
->> +        };
->> +
->> +        ret = tdx_md_read(cpuids, ARRAY_SIZE(cpuids));
->> +        if (ret)
->> +            goto error_out;
->> +
->> +        c->leaf = (u32)leaf;
->> +        c->sub_leaf = leaf >> 32;
->> +        c->eax = (u32)eax_ebx;
->> +        c->ebx = eax_ebx >> 32;
->> +        c->ecx = (u32)ecx_edx;
->> +        c->edx = ecx_edx >> 32;
-> 
-> OK I can see why you don't want to use ...
-> 
->      struct tdx_metadata_field_mapping fields[] = {
->          TDX_INFO_MAP(NUM_CPUID_CONFIG, num_cpuid_config),
->      };
-> 
-> ... to read num_cpuid_config first, because the memory to hold @tdx_info 
-> hasn't been allocated, because its size depends on the num_cpuid_config.
-> 
-> And I confess it's because the tdx_sys_metadata_field_read() that got 
-> exposed in patch ("x86/virt/tdx: Export global metadata read 
-> infrastructure") only returns 'u64' for all metadata field, and you 
-> didn't want to use something like this:
-> 
->      u64 num_cpuid_config;
-> 
->      tdx_sys_metadata_field_read(..., &num_cpuid_config);
-> 
->      ...
-> 
->      tdx_info->num_cpuid_config = num_cpuid_config;
-> 
-> Or you can explicitly cast:
-> 
->      tdx_info->num_cpuid_config = (u16)num_cpuid_config;
-> 
-> (I know people may don't like the assigning 'u64' to 'u16', but it seems 
-> nothing wrong to me, because the way done in (1) below effectively has 
-> the same result comparing to type case).
-> 
-> But there are other (better) ways to do:
-> 
-> 1) you can introduce a helper as suggested by Xiaoyao in [*]:
-> 
-> 
->      int tdx_sys_metadata_read_single(u64 field_id,
->                      int bytes,  void *buf)
->      {
->          return stbuf_read_sys_metadata_field(field_id, 0,
->                          bytes, buf);
->      }
-> 
-> And do:
-> 
->      tdx_sys_metadata_read_single(NUM_CPUID_CONFIG,
->          sizeof(num_cpuid_config), &num_cpuid_config);
-> 
-> That's _much_ cleaner than the 'struct tdx_md_map', which only confuses 
-> people.
-> 
-> But I don't think we need to do this as mentioned above -- we just do 
-> type cast.
+Enlin Mu <enlinmu@gmail.com> =E4=BA=8E2024=E5=B9=B43=E6=9C=8815=E6=97=A5=E5=
+=91=A8=E4=BA=94 10:07=E5=86=99=E9=81=93=EF=BC=9A
+>
+> Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2024=E5=B9=B43=E6=9C=8814=
+=E6=97=A5=E5=91=A8=E5=9B=9B 19:59=E5=86=99=E9=81=93=EF=BC=9A
+> >
+> > On Thu, Mar 14 2024 at 18:45, Enlin Mu wrote:
+> > > Thomas Gleixner <tglx@linutronix.de> =E4=BA=8E2024=E5=B9=B43=E6=9C=88=
+14=E6=97=A5=E5=91=A8=E5=9B=9B 18:22=E5=86=99=E9=81=93=EF=BC=9A
+> > >>
+> > >> On Wed, Mar 13 2024 at 05:30, Enlin Mu wrote:
+> > >> > From: Enlin Mu <enlin.mu@unisoc.com>
+> > >> >
+> > >> > On the Arm platform,arch_timer may occur irq strom,
+> > >> > By using the next_timer of hrtimer_cpu_base, it is
+> > >> > possible to quickly locate abnormal timers.
+> > >> > As it is an out of tree modules,the function needs
+> > >> > to be exproted.
+> > >>
+> > >> No. We are not exporting for out of tree code.
+> > > Can you explain it?
+> >
+> > Exporting functions or variables requires an in tree usecase.
+> >
+> Thands, I got it.
+>
+> If patch is following:
+> ---
+>  include/linux/hrtimer.h     | 1 +
+>  kernel/time/hrtimer.c       | 1 +
+>  kernel/time/tick-internal.h | 1 -
+>  kernel/time/timer_list.c    | 1 +
+>  4 files changed, 3 insertions(+), 1 deletion(-)
+>
+> diff --git a/include/linux/hrtimer.h b/include/linux/hrtimer.h
+> index 2a37d2a8e808..a0eaed4a3edc 100644
+> --- a/include/linux/hrtimer.h
+> +++ b/include/linux/hrtimer.h
+> @@ -278,6 +278,7 @@ static inline void hrtimer_start(struct hrtimer
+> *timer, ktime_t tim,
+>  extern int hrtimer_cancel(struct hrtimer *timer);
+>  extern int hrtimer_try_to_cancel(struct hrtimer *timer);
+>  extern struct hrtimer_cpu_base *get_hrtimer_cpu_base(int cpu);
+> +DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
+>
+>  static inline void hrtimer_start_expires(struct hrtimer *timer,
+>                                          enum hrtimer_mode mode)
+> diff --git a/kernel/time/hrtimer.c b/kernel/time/hrtimer.c
+> index f7cf7d48b91d..49024d07c61b 100644
+> --- a/kernel/time/hrtimer.c
+> +++ b/kernel/time/hrtimer.c
+> @@ -113,6 +113,7 @@ DEFINE_PER_CPU(struct hrtimer_cpu_base, hrtimer_bases=
+) =3D
+>                 },
+>         }
+>  };
+> +EXPORT_PER_CPU_SYMBOL(hrtimer_bases);
+>
+>  static const int hrtimer_clock_to_base_table[MAX_CLOCKS] =3D {
+>         /* Make sure we catch unsupported clockids */
+> diff --git a/kernel/time/tick-internal.h b/kernel/time/tick-internal.h
+> index 5f2105e637bd..96df7d21506c 100644
+> --- a/kernel/time/tick-internal.h
+> +++ b/kernel/time/tick-internal.h
+> @@ -18,7 +18,6 @@ struct timer_events {
+>  # define TICK_DO_TIMER_NONE    -1
+>  # define TICK_DO_TIMER_BOOT    -2
+>
+> -DECLARE_PER_CPU(struct tick_device, tick_cpu_device);
+>  extern ktime_t tick_next_period;
+>  extern int tick_do_timer_cpu __read_mostly;
+>
+> diff --git a/kernel/time/timer_list.c b/kernel/time/timer_list.c
+> index 1c311c46da50..b6fee42e3861 100644
+> --- a/kernel/time/timer_list.c
+> +++ b/kernel/time/timer_list.c
+> @@ -16,6 +16,7 @@
+>  #include <linux/uaccess.h>
+>
+>  #include "tick-internal.h"
+> +#include <linux/hrtimer.h>
+>
+>  struct timer_list_iter {
+>         int cpu;
+> --
+>
+> please review and comment.
+>
+> Thanks
 
-type cast needs another tmp variable to hold the output of u64.
+Hi  Thomas
 
-The reason I want to introduce tdx_sys_metadata_read_single() is to 
-provide a simple and unified interface for other codes to read one 
-metadata field, instead of letting the caller to use temporary u64 
-variable and handle the cast or memcpy itself.
-
-> [*] 
-> https://lore.kernel.org/lkml/bd61e29d-5842-4136-b30f-929b00bdf6f9@intel.com/T/#m2512e378c83bc44d3ca653f96f25c3fc85eb0e8a
-> 
-> 
-> 
-> 
-
+Sorry, I made a mistake
+Please ignore this comment
 
