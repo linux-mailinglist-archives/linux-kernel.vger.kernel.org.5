@@ -1,95 +1,425 @@
-Return-Path: <linux-kernel+bounces-104016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C4A8987C7EE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:23:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4769387C7F1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:23:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5EB031F21677
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:23:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9E1D282DC3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:23:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F1A87D517;
-	Fri, 15 Mar 2024 03:23:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F5C8D530;
+	Fri, 15 Mar 2024 03:23:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="S4U5o89N"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Q1xSM8s6"
+Received: from out-175.mta1.migadu.com (out-175.mta1.migadu.com [95.215.58.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 865F66119
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E8F7DDA1
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:23:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710472987; cv=none; b=bWmi/68xjUI6f98sx8J22cCNmtfsEDP2yc9BDvVw5Mph6intUarZyRs7gyY/BF84Uw266l7U9CiqbsKScY6zIvvJyvgx/b6A/HNyrCcxqyHGcAbrPaPmZSD/MPvfGUyjteISf7tdjR70sz1LPKz5Bma//VO6p9A5yV+ogVkYlxw=
+	t=1710473023; cv=none; b=dHsUlr1GMyJi1tEfBWKB5jPZRFk5yWnwcVfzERSdXxJwSOseIaqzmxTbLXGUS2sH/UgjNghbF1rhGj0N6TSOZjvkqtVIi4QYDDOFE0W1IsY5gIwylOBdYpvqXxht30MN81FE/k3LjT5z4FSf2ZxTNnaO9V1UgTKSUW/slIP31/Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710472987; c=relaxed/simple;
-	bh=RsDlM7XRmRWsJCRyi7nBTGErp8a6/KNRPan9fsKzZ7g=;
+	s=arc-20240116; t=1710473023; c=relaxed/simple;
+	bh=cT9naAb/a5ExESrabP+WTqXUaKl0dHFothS5uugl704=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=desVO4xHmYU65gqriat9HQsSnGdsPSs8nDkq91qZN4pqozaD0C7wfPT73NqI28vu/2XqPGko//oDdjE8n7R5Re5sWB7v1r8+LGV9j5dPuAl8Ld1Wsb35iApabtoaKYMlHIZVfrAhGD6lk0Tg4aa8qITMOs+OO2o7bpWP/v9sUh4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=S4U5o89N; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1710472975; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=9RApS/dgoDW2OO187PDIQGg8As0KtloDMqq9iA6UnB0=;
-	b=S4U5o89N5knlu3fUUofAHzqsziMfM9870PgxeJKFpVktWHisovp6y0iFUKZcPfGN8e2TvguJ17XjfflTOrRNWbrpTRgPGBPdVLUfo2dgZweQXsT7VMtjHsbzX2HguXKF7sJ0yfqUyMFnl7I+oc5XOgt1rHr/o4hIn1Y6mv7eluk=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R161e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018045170;MF=lulie@linux.alibaba.com;NM=1;PH=DS;RN=13;SR=0;TI=SMTPD_---0W2UXS.C_1710472974;
-Received: from 30.221.128.90(mailfrom:lulie@linux.alibaba.com fp:SMTPD_---0W2UXS.C_1710472974)
-          by smtp.aliyun-inc.com;
-          Fri, 15 Mar 2024 11:22:55 +0800
-Message-ID: <2f93789c-e931-452a-9b42-43c3254b626f@linux.alibaba.com>
-Date: Fri, 15 Mar 2024 11:22:53 +0800
+	 In-Reply-To:Content-Type; b=JNtdoLmGlXVBQAI0FxaKGRJ+H88Nmv7PNYaTth9oBE/iafZpUaM1NdTZWvtyU2teeD9YTHUIeWc+jThxuU3V1jeBlYGfZ8q6G/Hyd6SlOMrXUZdYxTGHcv3PXeLxlP3Wi4PtcbPZduCLmqv06PqwBoaWQoj3tOy8/Gx9MFlEI0M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Q1xSM8s6; arc=none smtp.client-ip=95.215.58.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <f88ef99d-f750-4de7-b2a6-13404f7a8d70@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710473018;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VkQbQY8gO1n/zcGyqG3az5xdUzKHY8QuSRlAwSNfA0k=;
+	b=Q1xSM8s6cQgopzwleA7VLHdjdHwI2YAtid4l9HskCoaZqSq2NuwRuIz7cX/21vuqOJ2s0Z
+	JiI2Q3E7IfxkN02JWoxNbq9ibEx6SnurNJyNY1QjQai5Z/e3JXsBPlOWCsWzpFTJ0koTtF
+	ot/bLk4HIVNBCOeAhotyaOOxkwhP9oQ=
+Date: Fri, 15 Mar 2024 11:23:29 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] relay: avoid relay_open_buf inproperly fails in
- buffer-only mode
-To: zhangzhengming <zhang.zhengming@h3c.com>
-Cc: akpm@linux-foundation.org, alibuda@linux.alibaba.com,
- dust.li@linux.alibaba.com, gregkh@linuxfoundation.org,
- guwen@linux.alibaba.com, hengqi@linux.alibaba.com, kunyu@nfschina.com,
- linux-kernel@vger.kernel.org, nabijaczleweli@nabijaczleweli.xyz,
- xuanzhuo@linux.alibaba.com, zhao_lei1@hoperun.com, zhou.kete@h3c.com
-References: <20240220105836.15815-1-lulie@linux.alibaba.com>
- <20240315023912.13390-1-zhang.zhengming@h3c.com>
-From: Philo Lu <lulie@linux.alibaba.com>
-In-Reply-To: <20240315023912.13390-1-zhang.zhengming@h3c.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH RFC 1/4] mm, slab: move memcg charging to post-alloc hook
+Content-Language: en-US
+To: Vlastimil Babka <vbabka@suse.cz>,
+ Linus Torvalds <torvalds@linux-foundation.org>,
+ Josh Poimboeuf <jpoimboe@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ Chuck Lever <chuck.lever@oracle.com>, Kees Cook <kees@kernel.org>,
+ Christoph Lameter <cl@linux.com>, Pekka Enberg <penberg@kernel.org>,
+ David Rientjes <rientjes@google.com>, Joonsoo Kim <iamjoonsoo.kim@lge.com>,
+ Andrew Morton <akpm@linux-foundation.org>,
+ Roman Gushchin <roman.gushchin@linux.dev>,
+ Hyeonggon Yoo <42.hyeyoo@gmail.com>, Johannes Weiner <hannes@cmpxchg.org>,
+ Michal Hocko <mhocko@kernel.org>, Shakeel Butt <shakeelb@google.com>,
+ Muchun Song <muchun.song@linux.dev>, Alexander Viro
+ <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>,
+ Jan Kara <jack@suse.cz>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org,
+ cgroups@vger.kernel.org, linux-fsdevel@vger.kernel.org
+References: <20240301-slab-memcg-v1-0-359328a46596@suse.cz>
+ <20240301-slab-memcg-v1-1-359328a46596@suse.cz>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Chengming Zhou <chengming.zhou@linux.dev>
+In-Reply-To: <20240301-slab-memcg-v1-1-359328a46596@suse.cz>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
+On 2024/3/2 01:07, Vlastimil Babka wrote:
+> The MEMCG_KMEM integration with slab currently relies on two hooks
+> during allocation. memcg_slab_pre_alloc_hook() determines the objcg and
+> charges it, and memcg_slab_post_alloc_hook() assigns the objcg pointer
+> to the allocated object(s).
+> 
+> As Linus pointed out, this is unnecessarily complex. Failing to charge
+> due to memcg limits should be rare, so we can optimistically allocate
+> the object(s) and do the charging together with assigning the objcg
+> pointer in a single post_alloc hook. In the rare case the charging
+> fails, we can free the object(s) back.
+> 
+> This simplifies the code (no need to pass around the objcg pointer) and
+> potentially allows to separate charging from allocation in cases where
+> it's common that the allocation would be immediately freed, and the
+> memcg handling overhead could be saved.
+> 
+> Suggested-by: Linus Torvalds <torvalds@linux-foundation.org>
+> Link: https://lore.kernel.org/all/CAHk-=whYOOdM7jWy5jdrAm8LxcgCMFyk2bt8fYYvZzM4U-zAQA@mail.gmail.com/
+> Signed-off-by: Vlastimil Babka <vbabka@suse.cz>
 
+Nice!
 
-On 2024/3/15 10:39, zhangzhengming wrote:
->> diff --git a/kernel/relay.c b/kernel/relay.c
->> index a8e90e98bf2c..0d8b8325530a 100644
->> --- a/kernel/relay.c
->> +++ b/kernel/relay.c
->> @@ -391,12 +391,13 @@ static struct rchan_buf *relay_open_buf(struct rchan *chan, unsigned int cpu)
->>   			goto free_buf;
->>   		relay_set_buf_dentry(buf, dentry);
->>   	} else {
->> -		/* Only retrieve global info, nothing more, nothing less */
->> +		/* In buffer-only mode, relay_open_buf is called with
->> +		 * filename=NULL, but create_buf_file is still needed to
->> +		 * retrieve is_global info. So dentry should be NULL here.
->> +		 */
->>   		dentry = chan->cb->create_buf_file(NULL, NULL,
->>   						   S_IRUSR, buf,
->>   						   &chan->is_global);
->> -		if (IS_ERR_OR_NULL(dentry))
->> -			goto free_buf;
->>   	}
->>   
->>    	buf->cpu = cpu;
-> I suggest replacing IS_ERR_OR_NULL with IS_ERR instead of removing it due to the possibility of create_buf_file callback returning an error.
+Reviewed-by: Chengming Zhou <chengming.zhou@linux.dev>
+
+Thanks.
+
+> ---
+>  mm/slub.c | 180 +++++++++++++++++++++++++++-----------------------------------
+>  1 file changed, 77 insertions(+), 103 deletions(-)
+> 
+> diff --git a/mm/slub.c b/mm/slub.c
+> index 2ef88bbf56a3..7022a1246bab 100644
+> --- a/mm/slub.c
+> +++ b/mm/slub.c
+> @@ -1897,23 +1897,36 @@ static inline size_t obj_full_size(struct kmem_cache *s)
+>  	return s->size + sizeof(struct obj_cgroup *);
+>  }
+>  
+> -/*
+> - * Returns false if the allocation should fail.
+> - */
+> -static bool __memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> -					struct list_lru *lru,
+> -					struct obj_cgroup **objcgp,
+> -					size_t objects, gfp_t flags)
+> +static bool __memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> +					 struct list_lru *lru,
+> +					 gfp_t flags, size_t size,
+> +					 void **p)
+>  {
+> +	struct obj_cgroup *objcg;
+> +	struct slab *slab;
+> +	unsigned long off;
+> +	size_t i;
+> +
+>  	/*
+>  	 * The obtained objcg pointer is safe to use within the current scope,
+>  	 * defined by current task or set_active_memcg() pair.
+>  	 * obj_cgroup_get() is used to get a permanent reference.
+>  	 */
+> -	struct obj_cgroup *objcg = current_obj_cgroup();
+> +	objcg = current_obj_cgroup();
+>  	if (!objcg)
+>  		return true;
+>  
+> +	/*
+> +	 * slab_alloc_node() avoids the NULL check, so we might be called with a
+> +	 * single NULL object. kmem_cache_alloc_bulk() aborts if it can't fill
+> +	 * the whole requested size.
+> +	 * return success as there's nothing to free back
+> +	 */
+> +	if (unlikely(*p == NULL))
+> +		return true;
+> +
+> +	flags &= gfp_allowed_mask;
+> +
+>  	if (lru) {
+>  		int ret;
+>  		struct mem_cgroup *memcg;
+> @@ -1926,71 +1939,51 @@ static bool __memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+>  			return false;
+>  	}
+>  
+> -	if (obj_cgroup_charge(objcg, flags, objects * obj_full_size(s)))
+> +	if (obj_cgroup_charge(objcg, flags, size * obj_full_size(s)))
+>  		return false;
+>  
+> -	*objcgp = objcg;
+> +	for (i = 0; i < size; i++) {
+> +		slab = virt_to_slab(p[i]);
+> +
+> +		if (!slab_objcgs(slab) &&
+> +		    memcg_alloc_slab_cgroups(slab, s, flags, false)) {
+> +			obj_cgroup_uncharge(objcg, obj_full_size(s));
+> +			continue;
+> +		}
+> +
+> +		off = obj_to_index(s, slab, p[i]);
+> +		obj_cgroup_get(objcg);
+> +		slab_objcgs(slab)[off] = objcg;
+> +		mod_objcg_state(objcg, slab_pgdat(slab),
+> +				cache_vmstat_idx(s), obj_full_size(s));
+> +	}
+> +
+>  	return true;
+>  }
+>  
+> -/*
+> - * Returns false if the allocation should fail.
+> - */
+> +static void memcg_alloc_abort_single(struct kmem_cache *s, void *object);
+> +
+>  static __fastpath_inline
+> -bool memcg_slab_pre_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+> -			       struct obj_cgroup **objcgp, size_t objects,
+> -			       gfp_t flags)
+> +bool memcg_slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+> +				gfp_t flags, size_t size, void **p)
+>  {
+> -	if (!memcg_kmem_online())
+> +	if (likely(!memcg_kmem_online()))
+>  		return true;
+>  
+>  	if (likely(!(flags & __GFP_ACCOUNT) && !(s->flags & SLAB_ACCOUNT)))
+>  		return true;
+>  
+> -	return likely(__memcg_slab_pre_alloc_hook(s, lru, objcgp, objects,
+> -						  flags));
+> -}
+> -
+> -static void __memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> -					 struct obj_cgroup *objcg,
+> -					 gfp_t flags, size_t size,
+> -					 void **p)
+> -{
+> -	struct slab *slab;
+> -	unsigned long off;
+> -	size_t i;
+> -
+> -	flags &= gfp_allowed_mask;
+> -
+> -	for (i = 0; i < size; i++) {
+> -		if (likely(p[i])) {
+> -			slab = virt_to_slab(p[i]);
+> -
+> -			if (!slab_objcgs(slab) &&
+> -			    memcg_alloc_slab_cgroups(slab, s, flags, false)) {
+> -				obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -				continue;
+> -			}
+> +	if (likely(__memcg_slab_post_alloc_hook(s, lru, flags, size, p)))
+> +		return true;
+>  
+> -			off = obj_to_index(s, slab, p[i]);
+> -			obj_cgroup_get(objcg);
+> -			slab_objcgs(slab)[off] = objcg;
+> -			mod_objcg_state(objcg, slab_pgdat(slab),
+> -					cache_vmstat_idx(s), obj_full_size(s));
+> -		} else {
+> -			obj_cgroup_uncharge(objcg, obj_full_size(s));
+> -		}
+> +	if (likely(size == 1)) {
+> +		memcg_alloc_abort_single(s, p);
+> +		*p = NULL;
+> +	} else {
+> +		kmem_cache_free_bulk(s, size, p);
+>  	}
+> -}
+> -
+> -static __fastpath_inline
+> -void memcg_slab_post_alloc_hook(struct kmem_cache *s, struct obj_cgroup *objcg,
+> -				gfp_t flags, size_t size, void **p)
+> -{
+> -	if (likely(!memcg_kmem_online() || !objcg))
+> -		return;
+>  
+> -	return __memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+> +	return false;
+>  }
+>  
+>  static void __memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+> @@ -2029,14 +2022,6 @@ void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab, void **p,
+>  
+>  	__memcg_slab_free_hook(s, slab, p, objects, objcgs);
+>  }
+> -
+> -static inline
+> -void memcg_slab_alloc_error_hook(struct kmem_cache *s, int objects,
+> -			   struct obj_cgroup *objcg)
+> -{
+> -	if (objcg)
+> -		obj_cgroup_uncharge(objcg, objects * obj_full_size(s));
+> -}
+>  #else /* CONFIG_MEMCG_KMEM */
+>  static inline struct mem_cgroup *memcg_from_slab_obj(void *ptr)
+>  {
+> @@ -2047,31 +2032,18 @@ static inline void memcg_free_slab_cgroups(struct slab *slab)
+>  {
+>  }
+>  
+> -static inline bool memcg_slab_pre_alloc_hook(struct kmem_cache *s,
+> -					     struct list_lru *lru,
+> -					     struct obj_cgroup **objcgp,
+> -					     size_t objects, gfp_t flags)
+> -{
+> -	return true;
+> -}
+> -
+> -static inline void memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> -					      struct obj_cgroup *objcg,
+> +static inline bool memcg_slab_post_alloc_hook(struct kmem_cache *s,
+> +					      struct list_lru *lru,
+>  					      gfp_t flags, size_t size,
+>  					      void **p)
+>  {
+> +	return true;
+>  }
+>  
+>  static inline void memcg_slab_free_hook(struct kmem_cache *s, struct slab *slab,
+>  					void **p, int objects)
+>  {
+>  }
+> -
+> -static inline
+> -void memcg_slab_alloc_error_hook(struct kmem_cache *s, int objects,
+> -				 struct obj_cgroup *objcg)
+> -{
+> -}
+>  #endif /* CONFIG_MEMCG_KMEM */
+>  
+>  /*
+> @@ -3751,10 +3723,7 @@ noinline int should_failslab(struct kmem_cache *s, gfp_t gfpflags)
+>  ALLOW_ERROR_INJECTION(should_failslab, ERRNO);
+>  
+>  static __fastpath_inline
+> -struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+> -				       struct list_lru *lru,
+> -				       struct obj_cgroup **objcgp,
+> -				       size_t size, gfp_t flags)
+> +struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s, gfp_t flags)
+>  {
+>  	flags &= gfp_allowed_mask;
+>  
+> @@ -3763,14 +3732,11 @@ struct kmem_cache *slab_pre_alloc_hook(struct kmem_cache *s,
+>  	if (unlikely(should_failslab(s, flags)))
+>  		return NULL;
+>  
+> -	if (unlikely(!memcg_slab_pre_alloc_hook(s, lru, objcgp, size, flags)))
+> -		return NULL;
+> -
+>  	return s;
+>  }
+>  
+>  static __fastpath_inline
+> -void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
+> +bool slab_post_alloc_hook(struct kmem_cache *s, struct list_lru *lru,
+>  			  gfp_t flags, size_t size, void **p, bool init,
+>  			  unsigned int orig_size)
+>  {
+> @@ -3819,7 +3785,7 @@ void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
+>  		kmsan_slab_alloc(s, p[i], init_flags);
+>  	}
+>  
+> -	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+> +	return memcg_slab_post_alloc_hook(s, lru, flags, size, p);
+>  }
+>  
+>  /*
+> @@ -3836,10 +3802,9 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+>  		gfp_t gfpflags, int node, unsigned long addr, size_t orig_size)
+>  {
+>  	void *object;
+> -	struct obj_cgroup *objcg = NULL;
+>  	bool init = false;
+>  
+> -	s = slab_pre_alloc_hook(s, lru, &objcg, 1, gfpflags);
+> +	s = slab_pre_alloc_hook(s, gfpflags);
+>  	if (unlikely(!s))
+>  		return NULL;
+>  
+> @@ -3856,8 +3821,10 @@ static __fastpath_inline void *slab_alloc_node(struct kmem_cache *s, struct list
+>  	/*
+>  	 * When init equals 'true', like for kzalloc() family, only
+>  	 * @orig_size bytes might be zeroed instead of s->object_size
+> +	 * In case this fails due to memcg_slab_post_alloc_hook(),
+> +	 * object is set to NULL
+>  	 */
+> -	slab_post_alloc_hook(s, objcg, gfpflags, 1, &object, init, orig_size);
+> +	slab_post_alloc_hook(s, lru, gfpflags, 1, &object, init, orig_size);
+>  
+>  	return object;
+>  }
+> @@ -4300,6 +4267,16 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
+>  		do_slab_free(s, slab, object, object, 1, addr);
+>  }
+>  
+> +#ifdef CONFIG_MEMCG_KMEM
+> +/* Do not inline the rare memcg charging failed path into the allocation path */
+> +static noinline
+> +void memcg_alloc_abort_single(struct kmem_cache *s, void *object)
+> +{
+> +	if (likely(slab_free_hook(s, object, slab_want_init_on_free(s))))
+> +		do_slab_free(s, virt_to_slab(object), object, object, 1, _RET_IP_);
+> +}
+> +#endif
+> +
+>  static __fastpath_inline
+>  void slab_free_bulk(struct kmem_cache *s, struct slab *slab, void *head,
+>  		    void *tail, void **p, int cnt, unsigned long addr)
+> @@ -4635,29 +4612,26 @@ int kmem_cache_alloc_bulk(struct kmem_cache *s, gfp_t flags, size_t size,
+>  			  void **p)
+>  {
+>  	int i;
+> -	struct obj_cgroup *objcg = NULL;
+>  
+>  	if (!size)
+>  		return 0;
+>  
+> -	/* memcg and kmem_cache debug support */
+> -	s = slab_pre_alloc_hook(s, NULL, &objcg, size, flags);
+> +	s = slab_pre_alloc_hook(s, flags);
+>  	if (unlikely(!s))
+>  		return 0;
+>  
+>  	i = __kmem_cache_alloc_bulk(s, flags, size, p);
+> +	if (unlikely(i == 0))
+> +		return 0;
+>  
+>  	/*
+>  	 * memcg and kmem_cache debug support and memory initialization.
+>  	 * Done outside of the IRQ disabled fastpath loop.
+>  	 */
+> -	if (likely(i != 0)) {
+> -		slab_post_alloc_hook(s, objcg, flags, size, p,
+> -			slab_want_init_on_alloc(flags, s), s->object_size);
+> -	} else {
+> -		memcg_slab_alloc_error_hook(s, size, objcg);
+> +	if (unlikely(!slab_post_alloc_hook(s, NULL, flags, size, p,
+> +		    slab_want_init_on_alloc(flags, s), s->object_size))) {
+> +		return 0;
+>  	}
+> -
+>  	return i;
+>  }
+>  EXPORT_SYMBOL(kmem_cache_alloc_bulk);
 > 
 
-This would be fine. AFAICT the return value here is un-important. So 
-reverting to `WARN_ON(dentry)` maybe another choice.
 
