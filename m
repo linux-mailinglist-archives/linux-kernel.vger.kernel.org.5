@@ -1,104 +1,112 @@
-Return-Path: <linux-kernel+bounces-104521-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104522-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AEA287CF22
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:39:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFBA387CF24
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:40:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CCA291C227B4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:39:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84814283F3C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:40:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA5239AEE;
-	Fri, 15 Mar 2024 14:39:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41A4A39FF0;
+	Fri, 15 Mar 2024 14:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="e1fOkATB"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xh9YWr5X"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CDF2037155;
-	Fri, 15 Mar 2024 14:39:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82F7018E06;
+	Fri, 15 Mar 2024 14:40:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710513580; cv=none; b=rzXbM0dZMDN3T0E1E2JyGLkvSmADEYgw3u66EYFwkxH7YHgsvPvM8ssG24gM/lY6UenYw24IysXCHIQRW77M5+78cVgyDWP/nfgZ1PFAIp1UtEjgpLVJR6OHR8SeiAhfIpZWjq9/ZqyUKRbYFH8k+3qjt2Z5/6SR2n4Fmh3MC1o=
+	t=1710513629; cv=none; b=RBn/ELVyAP8mV9nuc4TCoic07Ltq2zAPsIGD3KRqEHOYRqICobxtgsjECGJLxDO5RxmiS3/4jvECjwlSZUCZM8KH15dSH5QdcPa3nSWYHBTAwWYfcNiwEFGcyUr4D1RDZpaXCiaQ/3uj535f2LYZUunggpjuiNTz1qMKvdp/b1k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710513580; c=relaxed/simple;
-	bh=aiAi4ls92WaX60pEZcqvPwA308DhNMckx9sVb6cDSIg=;
+	s=arc-20240116; t=1710513629; c=relaxed/simple;
+	bh=/q5YpMd9flHlseDCFPbg8au4ag1109m5lTjQTwS5gjw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZKSpuAlxSDdl2DTWA5XI4TbNvGz46JL+ihWGbBl2o/ilbl51gGSSR4YfCTLJXiNz+Md8RZb7qrLwaPMindnl8yUC/U3wrqZYhRvT0KQkQvugisbTnMrFaR8/I/sHTnbup2yGtjhav1FvmNbM7Db1VtTzLfCGsjhNT0fzsffEWHM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=e1fOkATB; arc=none smtp.client-ip=192.198.163.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710513579; x=1742049579;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:content-transfer-encoding:in-reply-to;
-  bh=aiAi4ls92WaX60pEZcqvPwA308DhNMckx9sVb6cDSIg=;
-  b=e1fOkATBgvJWmBx6YU7fw+1lTivfNgRcYEkftv7dVRvYSJSZtq5xnvVh
-   /DmBL9Q9qku5wc62qzSgj/L0Yqp5WaJPFFJ+4cVnSoLgyC3XAOw+/LSIH
-   PZBSwSdBnOsSz3K+cWUUknwEUKmayTeGntaI7GiqDibHNZ32HNBmoshBU
-   7n3drwONECDwRC9mPdp54AoeQ4GB+v3IjvjDHDj832B7a7O51WEgzHWJx
-   vPa3Sf4JIh/Zpnh8UoMKs9zPA3Q0GY3z2KJTAePcCvWSNdwjLinf27+dN
-   7hSlcEUycNsSu5phr5Pt+PPgcKVBc077dlLXeO/FwbABwPqPFFWMS4u+M
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="16031210"
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="16031210"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 07:39:38 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="914498869"
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="914498869"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 07:39:35 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@intel.com>)
-	id 1rl8ia-0000000DBh3-3W43;
-	Fri, 15 Mar 2024 16:39:32 +0200
-Date: Fri, 15 Mar 2024 16:39:32 +0200
-From: Andy Shevchenko <andriy.shevchenko@intel.com>
-To: Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org,
-	Lorenzo Pieralisi <lorenzo.pieralisi@arm.com>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Igor Mammedov <imammedo@redhat.com>, Lukas Wunner <lukas@wunner.de>,
-	Mika Westerberg <mika.westerberg@linux.intel.com>,
-	"Rafael J . Wysocki" <rafael@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2 0/7] PCI: Solve two bridge window sizing issues
-Message-ID: <ZfRdpHMZjiTnpgGn@smile.fi.intel.com>
-References: <20231228165707.3447-1-ilpo.jarvinen@linux.intel.com>
- <453df04f-45ee-7619-1731-511b9cac26f4@linux.intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=lYfbMbKECd3DdK4Lml0NVF3GuEPKLHQL7I9A+iwyC00mghyV8eEZf8QR0Wod5QqPufgtPRENyXXOEVXgTprH7PVG4sADZzMvOCA/pZqlqTZ+JQ3A5W2XWiD8+rNz7r5cUXnt9OdwrVi3MqzccaxumPTKtzMfIA54G/+POxaBUck=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xh9YWr5X; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 277A7C43394;
+	Fri, 15 Mar 2024 14:40:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710513629;
+	bh=/q5YpMd9flHlseDCFPbg8au4ag1109m5lTjQTwS5gjw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Xh9YWr5X8ZC2LB5aTOiLwQb+ka5kfR3Rq3WSR2N14VU3k+/gBkTescbM5r8gxPImq
+	 PYMXqiXv+1R5zvYmVQRbOj6ISyIIs0Jg8SW9cu6tBsgV/NDNrsaCAXlUSFYZxqToWn
+	 l4Q6LURoBzapyHnLXCTKsDJVE8U0/mXF0vJu3TgISaWVou228FJcyNcrrXVWgFf61b
+	 /wkXznU5VRw4R7GUKnxZMu75XOzGg7FqW58iVcnSpE65Z/LJnJSZZlhEc0IwZgcdU4
+	 AXBntKqJoom6SKD0SvFQTZtZ0ljv+F6gieBnDhx3uW4Kl499/3lbwubH7ebT/R2iuF
+	 LFfM0sXO6WpOA==
+Date: Fri, 15 Mar 2024 14:40:23 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Bastien Curutchet <bastien.curutchet@bootlin.com>,
+	Liam Girdwood <lgirdwood@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	christophercordahi@nanometrics.ca
+Subject: Re: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
+ dev_err_probe
+Message-ID: <2f58922d-8964-4693-ab8a-612eb2f427e1@sirena.org.uk>
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-5-bastien.curutchet@bootlin.com>
+ <6102130b-b496-4e75-9b9f-f960484848fb@sirena.org.uk>
+ <20240315152332.57c8fdc4@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="15hPqMQpuEKqXq2/"
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <453df04f-45ee-7619-1731-511b9cac26f4@linux.intel.com>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-
-On Fri, Mar 15, 2024 at 12:33:43PM +0200, Ilpo Järvinen wrote:
-> On Thu, 28 Dec 2023, Ilpo Järvinen wrote:
-
-..
-
-> (If needed, I can send v3 with that tag).
-
-Dunno what's Bjorn's workflow, but `b4 am` has parameter to accept tags given
-against a cover letter and propagate them to all patches in the series. I.o.w.
-no need to send a new version in such cases.
-
--- 
-With Best Regards,
-Andy Shevchenko
+In-Reply-To: <20240315152332.57c8fdc4@bootlin.com>
+X-Cookie: A well-known friend is a treasure.
 
 
+--15hPqMQpuEKqXq2/
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+
+On Fri, Mar 15, 2024 at 03:23:32PM +0100, Herve Codina wrote:
+> Mark Brown <broonie@kernel.org> wrote:
+
+> > dev_err_probe() with a fixed error code doesn't seem to make much sense,
+> > the whole point is to handle deferral but for a straight lookup like
+> > this that can't happen.
+
+> The error code is uniformly formatted and the error path is more compact.
+>   https://elixir.bootlin.com/linux/latest/source/drivers/base/core.c#L4963
+
+> IMHO, to benefit of these feature, it makes sense to use it even with a fixed
+> error code.
+
+I'm not convinced TBH, the fixed error code smells pretty bad.
+
+--15hPqMQpuEKqXq2/
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0XdYACgkQJNaLcl1U
+h9BL+Qf/e/mT3mvVoCNVK90XX2T3vJXR/x4cDU6LIbiYli44yw2LIvQ6NEJdy1s2
+h2NuvcMj4KFqXuOmTHZFkLVj3bteWZpfEBCd9Yyp3k0S2v3lz6vKMo6WeI2JTMnZ
+Or+DSkLgGs8Rgn7aVqilsMBQRKQjnZ9JrYK0v02oMMWjm4Lg5Gk9AXwOOPvHAbWt
+m/SrXOnPfFeWn0XXywm3AjF1vWnFu1g+qbPq/MniiwA7kYF7CG2fZCm/p1itXQIc
+C+Phc9DjmvnJQwC+pSgTSoWx8nwKW6cDiV0ndVaJkudn90o4yxWj4DGJSxzCz8U+
+ytZAz8Q0eZ+iH6t2K2R+Mt/5eNGvrg==
+=GIiK
+-----END PGP SIGNATURE-----
+
+--15hPqMQpuEKqXq2/--
 
