@@ -1,244 +1,308 @@
-Return-Path: <linux-kernel+bounces-104624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7EE8687D125
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:23:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EA2C487D12C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:27:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 335B12837DA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:23:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 98F90283872
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:27:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069674595D;
-	Fri, 15 Mar 2024 16:23:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="N9BWLrQl"
-Received: from outgoing4.flk.host-h.net (outgoing4.flk.host-h.net [188.40.0.90])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B32745945;
+	Fri, 15 Mar 2024 16:27:24 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87EA66FD9;
-	Fri, 15 Mar 2024 16:23:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.90
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA3381773D
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:27:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710519812; cv=none; b=Gl4l08wG8jEgs0ZPYqdCERDOtXRzdu5jDKOwbeIrD3QeJTH4vsqpahWab/aaYrO3d+/D83R9ot9sPcNHGUaVuGDsNfJSi6ukVr3CQsAdLwKn3cZ6Dv0muuimPdDowHAEuYEB3/VUtw994OMekuq+V+l4bXLXpGrjHv60HvSzuSY=
+	t=1710520043; cv=none; b=fhITW1NhiX1ep5GqBU5yJ6f+5BUxIrNIxYqB5lPUg62OpP3np95PnPHYsCk4yFtD/C+We0ZYpfxtTH1d28bvdy0kZ1Ir8oHv127++R9IWz+EcvCdsGdZzBA+8gMDCMvWgn9ufmV60bdnDQvcw3VJnN+SNAcuTYEYRu1uYXbv+VU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710519812; c=relaxed/simple;
-	bh=s5DTkwIySF+m2pKi4KCWUK62WynJPM/KtVRLnLasy70=;
-	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
-	 References:Message-ID; b=MqcnbG4oHYgjQ2n4y05nQuBCuwhlcEff8Ivgk4/Epm0UjA46MtiQeZ1QbbWY7L0WPtCwuvwEmmgp5wW+xfToxGtHBPxOmSgtc/wWr367OmHJTlzoZTARyO8uNn9LTynVGI609f9uioZMmqHc2KAUGtpGE/RpSqWVd1YMmqn5fN0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=N9BWLrQl; arc=none smtp.client-ip=188.40.0.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
-	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
-	sender:bcc; bh=rDl8Gl63+W8qCVStnCQIWeYlrKOyDgpEfpCSq5O/cpY=; b=N9BWLrQll2uYbJ
-	G9g6kwsPGlK8wbxrgZxKhOzYjYjGUgpPaSZPeHOPSctI/jl/4UGxJ0umAdb2y/djtETwS9tpU9S3/
-	2rQeeHY1rLmwbVn1EKdreoOrt3FfC6siaVEGVZCuCCxjIlaV+skJfe2DQl8m9TbTrhl6JjbtlLPKT
-	9CYlKHN4VjJaLRcALXsp5AzuhXT6i8RZbFw9vEsCwSe7i50YZkHfVsG0lhMJ+0OMBvpc38F1lT3k3
-	7SD1g2ENS9WH83Fpg+5Oc3vA3vTSSdQ8RlsroGzbqkOgmVbxheK0cyLQv4JeUmv5F6H9muRqUlDaB
-	FSCjgLzcEO8yWOEep1dw==;
-Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam1-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rlAKv-006nU1-Ek; Fri, 15 Mar 2024 18:23:15 +0200
-Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
-	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
-	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rlAKr-0001JR-Rv; Fri, 15 Mar 2024 18:23:09 +0200
+	s=arc-20240116; t=1710520043; c=relaxed/simple;
+	bh=ftEfPZBQqYmruG8lnCPGQ1AE2O9QyJ/hNwO8Qq/LsdM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bMUeS4S3Q0ViqY8wxZ7mEUOT2lEe7URo+Z+C3fQY/77GvEkksn3awPXZWoOzJ1ClobARNRoslvmatehOaqOZmgSKPFjzNlmBQdlC+WYxQtk1wFcZpFCeFx+LEAwvLhkP1sOWPjviORQ7CTPQ9QYVz1Ecp2nThL7qCNOsM35OZ00=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B86C0C433F1;
+	Fri, 15 Mar 2024 16:27:21 +0000 (UTC)
+Date: Fri, 15 Mar 2024 12:29:34 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Beau Belgrave <beaub@linux.microsoft.com>, Chengming Zhou
+ <zhouchengming@bytedance.com>, Huang Yiwei <quic_hyiwei@quicinc.com>, John
+ Garry <john.g.garry@oracle.com>, Randy Dunlap <rdunlap@infradead.org>,
+ Thorsten Blum <thorsten.blum@toblux.com>, Vincent Donnefort
+ <vdonnefort@google.com>, linke li <lilinke99@qq.com>, Daniel Bristot de
+ Oliveira <bristot@redhat.com>
+Subject: [GIT PULL] tracing: Updates for v6.9
+Message-ID: <20240315122934.1d3231ce@gandalf.local.home>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
-Date: Fri, 15 Mar 2024 18:23:09 +0200
-From: Justin Swartz <justin.swartz@risingedge.co.za>
-To: Mark Brown <broonie@kernel.org>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
- <angelogioacchino.delregno@collabora.com>, linux-spi@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] spi: mt7621: allow GPIO chip select lines
-In-Reply-To: <d562be73-ad76-4450-8bff-38ed5d144714@sirena.org.uk>
-References: <20240315015708.13948-1-justin.swartz@risingedge.co.za>
- <d562be73-ad76-4450-8bff-38ed5d144714@sirena.org.uk>
-Message-ID: <2dbc59c9133542f6f8bc465113d9630b@risingedge.co.za>
-X-Sender: justin.swartz@risingedge.co.za
-User-Agent: Roundcube Webmail/1.3.17
-X-Authenticated-Sender: justin.swartz@risingedge.co.za
-X-Virus-Scanned: Clear
-X-SpamExperts-Domain: risingedge.co.za
-X-SpamExperts-Username: 
-Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
-X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.06)
-X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT894iPtvyNpNwimkSi+K1O+PUtbdvnXkggZ
- 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
- WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
- 3T+KSG//gbuP7hnUK8NQdLwsVWKIss2oH4Yjh6Q4paNNh70vrmKlRYN8+ZW0XX0AH/7tz8lOUWMR
- 3Oz/N19DDfqg//ykQCB4rUl3suKct8rEwEjtlBjGf82vsPPH4Z6bBeyJ2ioKLll7c1zqbZ0Shnfk
- f76m6WzjgyOQ30CX3jGye0AgO43dPg2t4siixN3H6ipUQpv7lGF6/YptqkgVvhGhnJzzWmuNA8WT
- ybi1JN85FSnfKaZl5e9CnNR0t//S8nh6vX9JR7tTkgtGxbJXMnaWeORi/IOL8hFK8UwSRsjj826v
- xIvoo9siXVea4yN8+JzC4p2qtoJeAaAIM5zNlwLSz7Wsk0gIc5BoXwuU0D0C60f5uvdXFZsEUcDk
- 8TfE1VxuxGc2M4JzCc//R6Wyn0xEa4/gbKRUuwP9TxU53J++//mag2wVXO50BuTihrUiUr+Ne0YD
- 3ddZG295JphtZpms9X0aBNANCxNWMmHXUTEMGGbKThOghFKJuzFdJ78lk25pCKnYrhUnk1aI/tYo
- PYfrgLItviC2z3vIzjh1mXBwO7cA3LYE//971/IPrjStHq+sLtv6f48W6vJ1YXzwg/yHdBoe6D9l
- C5HcnR5sMHCtNqaTmXQ4BkBE3IhMX1f/+suluw5k87r8vepAOoS2eUqUWS3rIOs6OFebJBWcGqKs
- Jc1xjt6Txl9yx/3BhqO3m5yd2tj74O4hBSz/kkmPgL+fgIguflsMx6vatUpjecZPSp26Cibz+c+6
- E9r+LeeFE0l/CXNPcZxhMMHC7u4wbACXQkws4q/WKvSWBPzknbkTJiNN9rwBJkpKiGGp8ai4iv7H
- Q04RFZ4oobg8BBg3Jq+ntzj0FowsI0DXck/yx+ZVYiqsOvAPPsA1Nn6T/CCq0ZTp7nFb0SrorDV4
- 8Y4UfMHtO/7HMnBN81oKcFIPKUNYVRCluVFfEoXm0/FPF8PR0w363llwyMFXKarlqLFqhfrB0GFR
- NCI72pnwdS+UMZgGNjw2gmyaDtrWPzIOQpV3d9KAZvFEy4yZs8FnQMzvojpIo6wEKULl9qYjJqeC
- CacQRjWWfmKrLjRFuOfsv9pIlKVsvXNK4117w0+Iu7iq/3ilwajFT6Qh9VybPYnXpWlnmHX0yg==
-X-Report-Abuse-To: spam@antispamquarantine.host-h.net
-
-On 2024-03-15 16:45, Mark Brown wrote:
-> On Fri, Mar 15, 2024 at 03:57:07AM +0200, Justin Swartz wrote:
-> 
->> Add the mt7621_spi_set_cs_gpio() function to control the
->> logical state of a GPIO chip select line, agnostic of the
->> electrical line state and activation polarity.
-> 
-> The core should handle GPIO chip selects for you?
-
-As far as I can tell, it doesn't - at least as far the state
-of spi-mt7621.c is concerned prior to the patch, plus kernel
-configuration choices, device tree definition, and other
-factors I might not be taking into account.
-
-But maybe I'm doing something wrong, or perhaps have a
-misconfiguration somewhere. So, if you're able to point out
-something I've done incorrectly, it would be appreciated.
-
-To attempt to confirm if the core will handle my desired
-GPIO chip select lines without explicit state toggling,
-I tried to set the value of use_gpio_descriptors to true,
-without any other modifications to spi-mt7621.c as of
-commit 90d35da658da8cff0d4ecbb5113f5fac9d00eb72:
-
-[... Sorry if my tabs decide to be spaces instead ...]
-
----%---
---- a/drivers/spi/spi-mt7621.c
-+++ b/drivers/spi/spi-mt7621.c
-@@ -357,6 +357,7 @@ static int mt7621_spi_probe(struct platform_device 
-*pdev)
-         host->bits_per_word_mask = SPI_BPW_MASK(8);
-         host->dev.of_node = pdev->dev.of_node;
-         host->num_chipselect = 2;
-+       host->use_gpio_descriptors = true;
-
-         dev_set_drvdata(&pdev->dev, host);
----%---
-
-I use a smallish program to write(2) a few bytes from
-stdin to an spidev node.
-
----%---
-#include <linux/spi/spidev.h>
-#include <sys/ioctl.h>
-#include <fcntl.h>
-#include <stdio.h>
-#include <stdint.h>
-#include <stdlib.h>
-#include <unistd.h>
-
-static int      Device      = -1;
-static uint32_t Mode        = 0;
-static uint32_t BitsPerWord = 8;
-static uint32_t MaxSpeed    = 100000;
-
-#define BUFFER_SIZE 4096
-static uint8_t  Buffer[BUFFER_SIZE];
-
-static int  openDevice(char *);
-static void closeDevice(void);
-static int  transmit(void);
-
-int main(int argc, char *argv[])
-{
-         if (argc != 2) {
-                 puts("usage: spiw SPI-DEVICE");
-                 return EXIT_FAILURE;
-         }
-
-         atexit(closeDevice);
-
-         if (openDevice(argv[1]) == -1)
-                 return EXIT_FAILURE;
-
-         while (!feof(stdin))
-                 if (transmit() == -1)
-                         return EXIT_FAILURE;
-
-         return EXIT_SUCCESS;
-}
-
-static int openDevice(char *filename)
-{
-         Device = open(filename, O_RDWR);
-
-         if (Device == -1)
-                 return -1;
-
-         if (ioctl(Device, SPI_IOC_WR_MODE32, &Mode) == -1)
-                 return -1;
-
-         if (ioctl(Device, SPI_IOC_WR_BITS_PER_WORD, &BitsPerWord) == -1)
-                 return -1;
-
-         if (ioctl(Device, SPI_IOC_WR_MAX_SPEED_HZ, &MaxSpeed) == -1)
-                 return -1;
-
-         return 0;
-}
-
-static void closeDevice(void)
-{
-         if (Device != -1)
-                 close(Device);
-}
-
-static int transmit(void)
-{
-         size_t length = fread(Buffer, 1, sizeof(Buffer), stdin);
-
-         if (ferror(stdin))
-                 return -1;
-
-         return write(Device, Buffer, length);
-}
----%---
-
-If I send write some data to a device associated with one
-of the GPIO chip selects while watching the signals on the
-SPI bus, I can see the expected transitions on SCLK and MOSI
-but there isn't any change on the expected CS line, nor any
-others:
-
-~ # printf "\x41" | /tmp/spiw /dev/spidev0.2
 
 
-A rough diagram, to show that although 'A' was sent, the
-chip select wasn't activated:
+Linus,
 
-       ______________________________________________________
-CS2
+[
+   Note, the last fixes you pulled from me needed to change the
+   ring_buffer_wait() function that added two new parameters to it.
+   This branch added a new instance of ring_buffer_wait() but does not have
+   the two new parameters. I merged my urgent branch to this one and added
+   the two parameters (both being NULL) in the merge commit (with the
+   proper change log) so that the merge commit will still compile.
 
-                __    __    __    __    __    __    __    __
-SCLK  ________|  |__|  |__|  |__|  |__|  |__|  |__|  |__|  |
+   I also found a better way to handle the new ring_buffer_wait() default
+   code (with the two NULL parameters) and added that change on top.
 
-       ________    _____                               ______
-MOSI          |__|     |_____________________________|
-                      :                                   :
-                :     :     :     :     :     :     :     :
-                0     1     0     0     0     0     0     1
+   This is the first time I'm requesting a pull request that contains a merge.
+   I'm hoping that my scripts created a proper diffstat for you.
 
+   I also have two commits that I'm not including in this pull request
+   because they add checks to the usage of __string() and __assign_str()
+   and will fail the build if they are not done properly. This found three
+   existing bugs. One fix is included in this pull request, but there's two
+   more. One fix has already been pulled by you. The other I'm waiting to
+   see if I can pull it because my checks will not compile without it.
+
+   Those two other fixes are:
+      https://lore.kernel.org/all/20240229143432.273b4871@gandalf.local.home/
+      https://lore.kernel.org/all/20240314201217.2112644-1-alison.schofield@intel.com/
+]
+
+Tracing updates for 6.9:
+
+Main user visible change:
+
+- Add ring_buffer memory mappings
+
+  The tracing ring buffer was created based on being mostly used with the
+  splice system call. It is broken up into page ordered sub-buffers and the
+  reader swaps a new sub-buffer with an existing sub-buffer that's part
+  of the write buffer. It then has total access to the swapped out
+  sub-buffer and can do copyless movements of the memory into other mediums
+  (file system, network, etc).
+
+  The buffer is great for passing around the ring buffer contents in the
+  kernel, but is not so good for when the consumer is the user space task
+  itself.
+
+  A new interface is added that allows user space to memory map the ring
+  buffer. It will get all the write sub-buffers as well as reader sub-buffer
+  (that is not written to). It can send an ioctl to change which sub-buffer
+  is the new reader sub-buffer.
+
+  The ring buffer is read only to user space. It only needs to call the
+  ioctl when it is finished with a sub-buffer and needs a new sub-buffer
+  that the writer will not write over.
+
+  A self test program was also created for testing and can be used as
+  an example for the interface to user space. The libtracefs (external
+  to the kernel) also has code that interacts with this, although it is
+  disabled until the interface is in a official release. It can be enabled
+  by compiling the library with a special flag. This was used for testing
+  applications that perform better with the buffer being mapped.
+
+  Memory mapped buffers have limitations. The main one is that it can not be
+  used with the snapshot logic. If the buffer is mapped, snapshots will be
+  disabled. If any logic is set to trigger snapshots on a buffer, that
+  buffer will not be allowed to be mapped.
+
+- User events can now have "multi formats"
+
+  The current user events have a single format. If another event is created
+  with a different format, it will fail to be created. That is, once an
+  event name is used, it cannot be used again with a different format. This
+  can cause issues if a library is using an event and updates its format.
+  An application using the older format will prevent an application using
+  the new library from registering its event.
+
+  A task could also DOS another application if it knows the event names, and
+  it creates events with different formats.
+
+  The multi-format event is in a different name space from the single
+  format. Both the event name and its format are the unique identifier.
+  This will allow two different applications to use the same user event name
+  but with different payloads.
+
+- Added support to have ftrace_dump_on_oops dump out instances and
+  not just the main top level tracing buffer.
+
+Other changes:
+
+- Add eventfs_root_inode
+
+  Only the root inode has a dentry that is static (never goes away) and
+  stores it upon creation. There's no reason that the thousands of other
+  eventfs inodes should have a pointer that never gets set in its
+  descriptor. Create a eventfs_root_inode desciptor that has a eventfs_inode
+  descriptor and a dentry pointer, and only the root inode will use this.
+
+- Added WARN_ON()s in eventfs
+
+  There's some conditionals remaining in eventfs that should never be hit,
+  but instead of removing them, add WARN_ON() around them to make sure that
+  they are never hit.
+
+- Have saved_cmdlines allocation also include the map_cmdline_to_pid array
+
+  The saved_cmdlines structure allocates a large amount of data to hold its
+  mappings. Within it, it has three arrays. Two are already apart of it:
+  map_pid_to_cmdline[] and saved_cmdlines[]. More memory can be saved by
+  also including the map_cmdline_to_pid[] array as well.
+
+- Restructure __string() and __assign_str() macros used in TRACE_EVENT().
+
+  Dynamic strings in TRACE_EVENT() are declared with:
+
+      __string(name, source)
+
+  And assigned with:
+
+     __assign_str(name, source)
+
+  In the tracepoint callback of the event, the __string() is used to get the
+  size needed to allocate on the ring buffer and __assign_str() is used to
+  copy the string into the ring buffer. There's a helper structure that is
+  created in the TRACE_EVENT() macro logic that will hold the string length
+  and its position in the ring buffer which is created by __string().
+
+  There are several trace events that have a function to create the string
+  to save. This function is executed twice. Once for __string() and again
+  for __assign_str(). There's no reason for this. The helper structure could
+  also save the string it used in __string() and simply copy that into
+  __assign_str() (it also already has its length).
+
+  By using the structure to store the source string for the assignment, it
+  means that the second argument to __assign_str() is no longer needed.
+
+  It will be removed in the next merge window, but for now add a warning if
+  the source string given to __string() is different than the source string
+  given to __assign_str(), as the source to __assign_str() isn't even used
+  and will be going away.
+
+- Other minor clean ups and fixes
+
+
+Please pull the latest trace-v6.9 tree, which can be found at:
+
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
+trace-v6.9
+
+Tag SHA1: 37235a011c5cae307bc758909eeb9deb09523b16
+Head SHA1: 2fd814ad5713b6069912c4f1662fbc74de2c4741
+
+
+Beau Belgrave (4):
+      tracing/user_events: Prepare find/delete for same name events
+      tracing/user_events: Introduce multi-format events
+      selftests/user_events: Test multi-format events
+      tracing/user_events: Document multi-format flag
+
+Chengming Zhou (1):
+      tracefs: Remove SLAB_MEM_SPREAD flag usage
+
+Huang Yiwei (1):
+      tracing: Support to dump instance traces by ftrace_dump_on_oops
+
+John Garry (1):
+      tracing: Use init_utsname()->release
+
+Randy Dunlap (1):
+      ftrace: Fix most kernel-doc warnings
+
+Steven Rostedt (Google) (22):
+      eventfs: Add WARN_ON_ONCE() to checks in eventfs_root_lookup()
+      eventfs: Create eventfs_root_inode to store dentry
+      tracing: Have saved_cmdlines arrays all in one allocation
+      tracing: Move open coded processing of tgid_map into helper function
+      tracing: Move saved_cmdline code into trace_sched_switch.c
+      NFSD: Fix nfsd_clid_class use of __string_len() macro
+      drm/i915: Add missing ; to __assign_str() macros in tracepoint code
+      tracing: Rework __assign_str() and __string() to not duplicate getting the string
+      tracing: Do not calculate strlen() twice for __string() fields
+      tracing: Use ? : shortcut in trace macros
+      tracing: Use EVENT_NULL_STR macro instead of open coding "(null)"
+      tracing: Fix snapshot counter going between two tracers that use it
+      tracing: Decrement the snapshot if the snapshot trigger fails to register
+      tracing: Remove __assign_str_len()
+      tracing: Add __string_len() example
+      tracing: Add warning if string in __assign_str() does not match __string()
+      tracing: Remove second parameter to __assign_rel_str()
+      tracepoints: Use WARN() and not WARN_ON() for warnings
+      ring-buffer: Have mmapped ring buffer keep track of missed events
+      net: hns3: tracing: fix hclgevf trace event strings
+      tracing: merge trace/urgent into trace/core
+      ring-buffer: Make wake once of ring_buffer_wait() more robust
+
+Thorsten Blum (1):
+      tracing: Use div64_u64() instead of do_div()
+
+Vincent Donnefort (6):
+      ring-buffer: Zero ring-buffer sub-buffers
+      ring-buffer: Introducing ring-buffer mapping functions
+      tracing: Add snapshot refcount
+      tracing: Allow user-space mapping of the ring-buffer
+      Documentation: tracing: Add ring-buffer mapping
+      ring-buffer/selftest: Add ring-buffer mapping test
+
+linke li (1):
+      ring-buffer: use READ_ONCE() to read cpu_buffer->commit_page in concurrent environment
+
+----
+ Documentation/admin-guide/kernel-parameters.txt    |  26 +-
+ Documentation/admin-guide/sysctl/kernel.rst        |  30 +-
+ Documentation/trace/index.rst                      |   1 +
+ Documentation/trace/ring-buffer-map.rst            | 106 +++
+ Documentation/trace/user_events.rst                |  27 +-
+ drivers/gpu/drm/i915/display/intel_display_trace.h |   6 +-
+ .../ethernet/hisilicon/hns3/hns3pf/hclge_trace.h   |   8 +-
+ .../ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h |   8 +-
+ fs/nfsd/trace.h                                    |  10 +-
+ fs/tracefs/event_inode.c                           |  70 +-
+ fs/tracefs/inode.c                                 |   1 -
+ fs/tracefs/internal.h                              |   2 -
+ include/linux/ftrace.h                             |   4 +-
+ include/linux/kernel.h                             |   1 +
+ include/linux/ring_buffer.h                        |   7 +
+ include/linux/trace_events.h                       |   3 +
+ include/linux/tracepoint.h                         |   6 +-
+ include/trace/events/sunrpc.h                      |  12 +-
+ include/trace/stages/stage2_data_offsets.h         |   4 +-
+ include/trace/stages/stage5_get_offsets.h          |  15 +-
+ include/trace/stages/stage6_event_callback.h       |  27 +-
+ include/uapi/linux/trace_mmap.h                    |  48 ++
+ include/uapi/linux/user_events.h                   |   6 +-
+ kernel/sysctl.c                                    |   4 +-
+ kernel/trace/ftrace.c                              |  90 +-
+ kernel/trace/ring_buffer.c                         | 472 ++++++++++-
+ kernel/trace/trace.c                               | 904 ++++++++-------------
+ kernel/trace/trace.h                               |  19 +-
+ kernel/trace/trace_benchmark.c                     |   5 +-
+ kernel/trace/trace_events_trigger.c                |  63 +-
+ kernel/trace/trace_events_user.c                   | 209 +++--
+ kernel/trace/trace_sched_switch.c                  | 515 ++++++++++++
+ kernel/trace/trace_selftest.c                      |   2 +-
+ samples/trace_events/trace-events-sample.h         |  18 +-
+ tools/testing/selftests/ring-buffer/Makefile       |   8 +
+ tools/testing/selftests/ring-buffer/config         |   2 +
+ tools/testing/selftests/ring-buffer/map_test.c     | 273 +++++++
+ tools/testing/selftests/user_events/abi_test.c     | 134 +++
+ 38 files changed, 2341 insertions(+), 805 deletions(-)
+ create mode 100644 Documentation/trace/ring-buffer-map.rst
+ create mode 100644 include/uapi/linux/trace_mmap.h
+ create mode 100644 tools/testing/selftests/ring-buffer/Makefile
+ create mode 100644 tools/testing/selftests/ring-buffer/config
+ create mode 100644 tools/testing/selftests/ring-buffer/map_test.c
+---------------------------
 
