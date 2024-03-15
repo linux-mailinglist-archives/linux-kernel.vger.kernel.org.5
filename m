@@ -1,153 +1,322 @@
-Return-Path: <linux-kernel+bounces-104326-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104328-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7384687CC33
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:20:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9C8D387CC36
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:21:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00C481F236B7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:20:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F15B21F21335
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:21:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350D01B941;
-	Fri, 15 Mar 2024 11:20:01 +0000 (UTC)
-Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 368DA1B297;
+	Fri, 15 Mar 2024 11:21:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="eqWbiQoH"
+Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A731B940
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80350199B0
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:21:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710501600; cv=none; b=GeZ1HWKBSt9fiBkQYQXSAbsdnTbM18P3gDklPkIWeF2ESMXBt5Vy9EUmYR5kJadS0VVS6m+kjQvDclPOlQuwTQ3d2H3qwcy4vF+FgAIbZ+ap4UuTQprGhviRP9lEtSbfuw7mKWKyHsMq+W46DITY0X6NJ4N6C1ty76+haZ7aa/w=
+	t=1710501701; cv=none; b=AbvcN7J0824HQnCitnB8sbmYtHdb+hRp8w0nTb7yrAMZu724t9IOQJ/IYcJbm9O+BmevTvKJxdACIAXBK3ns9M9kXSqDGDxh8tT4pi0bzHTH72RhPvx7XJ+dLDjWZtuDsgmP2687PDN4j5Q3bESArF5nn9CBawOg71x1QejsHxk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710501600; c=relaxed/simple;
-	bh=aqVxIr070yJOwa6Da2y023BMYz7Eirl61hZYYAZT2Uc=;
-	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
-	 In-Reply-To:Content-Type; b=GsqgF8iZarOdMABZr2UISaDeccB0qdqYhv+6YTfnunm3K5XVMK5lUKoyrDz1ts6NkGJvanhGDtb8Ftvp90JldluOUoPUm7N+OdHFKcVxIYpqw2ouNidr8KcXC3/Mt0+wCk8i7WhM52V7MOtuX9UBMVfWLu+evWc/iaJoLq3cd90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.174])
-	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tx1tT3VjvzwPFL;
-	Fri, 15 Mar 2024 19:17:21 +0800 (CST)
-Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
-	by mail.maildlp.com (Postfix) with ESMTPS id BE9941400CD;
-	Fri, 15 Mar 2024 19:19:33 +0800 (CST)
-Received: from [10.174.178.46] (10.174.178.46) by
- kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 15 Mar 2024 19:19:33 +0800
-Subject: Re: [RFC PATCH] jffs2: fix recursive fs_reclaim deadlock
-To: Qingfang Deng <dqfext@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
-	Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
-	<linux-kernel@vger.kernel.org>
-References: <20240315075946.587679-1-dqfext@gmail.com>
-From: Zhihao Cheng <chengzhihao1@huawei.com>
-Message-ID: <ff19df82-3fd4-9098-667c-0502b2452334@huawei.com>
-Date: Fri, 15 Mar 2024 19:19:32 +0800
-User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
- Thunderbird/68.5.0
+	s=arc-20240116; t=1710501701; c=relaxed/simple;
+	bh=zHqd9nQu1HERjNkI6/SrFdt3joTnR/2auqEriTOeqWQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=gVaseUltcjlb7j1a4sxH1Pxj8HMy0ueMHwTV6yJSY0FcgaDt+DNqkIQuZSvJemlhkM8Vpr9U00As/XIhnL0tynQwc+VcwwNay539b17eIwZU74clEEK3moPw0YbwJPprX4QyC3mEEewgVLmp3r6PPYYIhwxw1TclhCcQnrbA4CE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=eqWbiQoH; arc=none smtp.client-ip=217.70.183.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 7AE711BF204;
+	Fri, 15 Mar 2024 11:21:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710501691;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=NmJ4sTuuhjOkhzBsJyjZdxw4gBGBYMjlVzQZFVcZcX0=;
+	b=eqWbiQoHxIpA618gf7vkALp5lLEdTmAFl7IqiKsyHFwpj19Jc1bjod1CMYb7KGgO67ixRe
+	JPlsoCzR+TneKK8nfQr8N65/u28PyzaT82pO+2LTFE0SdAdVZzRSHzsAgYp3ahQrKGRGjl
+	5xVtGbVZihgjVRSeeSpola0axiI4JBEk8Kxq6P8dHe65wHfzS8HNaJRZ2gx0e+W4I92Jpb
+	72NYm6fBigU3IWHPkKL7Q25ygLrf0SPH1SFqqg5y7H/nxNHXNtu3AQnRN+R7Ec4QOyuWGq
+	0N2/qsMYu88eDVyZm9ghZ7gK8jK9zCFASGuy25CnJDFoghEr3QImMVHzD1JsOQ==
+Date: Fri, 15 Mar 2024 12:21:28 +0100
+From: Miquel Raynal <miquel.raynal@bootlin.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-mtd@lists.infradead.org, Richard Weinberger <richard@nod.at>,
+ Tudor Ambarus <Tudor.Ambarus@linaro.org>, Vignesh Raghavendra
+ <vigneshr@ti.com>, Frieder Schrempf <frieder.schrempf@kontron.de>, Michael
+ Walle <michael@walle.cc>, Pratyush Yadav <pratyush@kernel.org>,
+ linux-kernel@vger.kernel.org
+Subject: [GIT PULL] mtd: Changes for 6.9-rc1
+Message-ID: <20240315122128.42375f32@xps-13>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.1.1 (GTK 3.24.38; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-In-Reply-To: <20240315075946.587679-1-dqfext@gmail.com>
-Content-Type: text/plain; charset="gbk"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- kwepemm600013.china.huawei.com (7.193.23.68)
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-GND-Sasl: miquel.raynal@bootlin.com
 
-ÔÚ 2024/3/15 15:59, Qingfang Deng Ð´µÀ:
-> When testing jffs2 on a memory-constrained system, lockdep detected a
-> possible circular locking dependency.
-> 
-> kswapd0/266 is trying to acquire lock:
-> ffffff802865e508 (&f->sem){+.+.}-{3:3}, at: jffs2_do_clear_inode+0x44/0x200
-> 
-> but task is already holding lock:
-> ffffffd010e843c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x40
-> 
-> which lock already depends on the new lock.
-> 
-> the existing dependency chain (in reverse order) is:
-> 
-> -> #1 (fs_reclaim){+.+.}-{0:0}:
->         lock_acquire+0x6c/0x90
->         fs_reclaim_acquire+0x7c/0xa0
->         kmem_cache_alloc+0x5c/0x400
->         jffs2_alloc_inode_cache+0x18/0x20
->         jffs2_do_read_inode+0x1e0/0x310
->         jffs2_iget+0x154/0x540
->         jffs2_do_fill_super+0x214/0x3f0
->         jffs2_fill_super+0x138/0x180
->         mtd_get_sb+0xcc/0x120
->         get_tree_mtd+0x168/0x400
->         jffs2_get_tree+0x14/0x20
->         vfs_get_tree+0x48/0x130
->         path_mount+0xa64/0x12d0
->         __arm64_sys_mount+0x368/0x3e0
->         do_el0_svc+0xa0/0x140
->         el0_svc+0x1c/0x30
->         el0_sync_handler+0x9c/0x120
->         el0_sync+0x148/0x180
-> 
-> -> #0 (&f->sem){+.+.}-{3:3}:
->         __lock_acquire+0x18cc/0x2bb0
->         lock_acquire.part.0+0x170/0x2e0
->         lock_acquire+0x6c/0x90
->         __mutex_lock+0x10c/0xaa0
->         mutex_lock_nested+0x54/0x80
->         jffs2_do_clear_inode+0x44/0x200
->         jffs2_evict_inode+0x44/0x50
->         evict+0x120/0x290
->         dispose_list+0x88/0xd0
->         prune_icache_sb+0xa8/0xd0
->         super_cache_scan+0x1c4/0x240
->         shrink_slab.constprop.0+0x2a0/0x7f0
->         shrink_node+0x398/0x8e0
->         balance_pgdat+0x268/0x550
->         kswapd+0x154/0x7c0
->         kthread+0x1f0/0x200
->         ret_from_fork+0x10/0x20
-> 
-I think it's a false positive warning. Jffs2 is trying to get root inode 
-in process '#1', which means that the filesystem is not mounted 
-yet(Because d_make_root is after jffs2_iget(sb,1), there is no way to 
-access other inodes.), so it is impossible that jffs2 inode is being 
-evicted in '#0'.
-> other info that might help us debug this:
-> 
->   Possible unsafe locking scenario:
-> 
->         CPU0                    CPU1
->         ----                    ----
->    lock(fs_reclaim);
->                                 lock(&f->sem);
->                                 lock(fs_reclaim);
->    lock(&f->sem);
-> 
->   *** DEADLOCK ***
-> 
-> 3 locks held by kswapd0/266:
->   #0: ffffffd010e843c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x40
->   #1: ffffffd010e62eb0 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab.constprop.0+0x78/0x7f0
->   #2: ffffff80225340e0 (&type->s_umount_key#40){.+.+}-{3:3}, at: super_cache_scan+0x3c/0x240
-> 
-> It turns out jffs2 uses GFP_KERNEL as the memory allocation flags
-> throughout the code, and commonly, inside the critical section of
-> jffs2_inode_info::sem. When running low on memory, any allocation within
-> the critical section may trigger a direct reclaim, which recurses back
-> to jffs2_do_clear_inode().
-> 
-> Replace GFP_KERNEL with GFP_NOFS to avoid the recursion.
-> 
-> Signed-off-by: Qingfang Deng <dqfext@gmail.com>
-> ---
-> XXX: Posting this as RFC, as I don't know if all GFP_KERNEL occurrences
-> should be replaced, or if this is just a false positive.
+Hello Linus,
 
+This is the MTD PR for the opening v6.9-rc cycle.
 
+Thanks,
+Miqu=C3=A8l
+
+The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
+
+  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/mtd/linux.git tags/mtd/for-=
+6.9
+
+for you to fetch changes up to 09888e973cc9d3615dbab5d178eecb58d8a0b7ab:
+
+  Merge tag 'nand/for-6.9' into mtd/next (2024-03-15 12:00:45 +0100)
+
+----------------------------------------------------------------
+MTD
+
+The Carillo Ranch driver has been removed. Top level mtd bindings have
+received a couple of improvements (references, selects). The ssfdc
+driver received few minor adjustments. These changes come with the usual
+load of misc/small improvements and fixes.
+
+Raw NAND
+
+The main series brought is an update of the Broadcom support to support
+all BCMBCA SoCs and their specificity (ECC, write protection,
+configuration straps), plus a few misc fixes and changes in the main
+driver. Device tree updates are also part of this PR, initially because
+of a misunderstanding on my side.
+
+The STM32_FMC2 controller driver is also upgraded to properly support
+MP1 and MP25 SoCs.
+
+A new compatible is added for an Atmel flavor.
+
+Among all these feature changes, there is as well a load of continuous
+read related fixes, avoiding more corner conditions and clarifying the
+logic. Finally a few miscellaneous fixes are made to the core, the
+lpx32xx_mlc, fsl_lbc, Meson and Atmel controller driver, as well as
+final one in the Hynix vendor driver.
+
+SPI-NAND
+
+The ESMT support has been extended to match 5 bytes ID to avoid
+collisions. Winbond support on its side receives support for W25N04KV
+chips.
+
+SPI NOR
+
+SPI NOR gets the non uniform erase code cleaned. We stopped using
+bitmasks for erase types and flags, and instead introduced dedicated
+members. We then passed the SPI NOR erase map to MTD. Users can now
+determine the erase regions and make informed decisions on partitions
+size.
+
+An optional interrupt property is now described in the bindings.
+
+----------------------------------------------------------------
+Alexander Dahl (1):
+      mtd: nand: raw: atmel: Fix comment in timings preparation
+
+Arnd Bergmann (1):
+      mtd: rawnand: lpc32xx_mlc: fix irq handler prototype
+
+Arseniy Krasnov (1):
+      mtd: rawnand: meson: fix scrambling mode value in command macro
+
+Baruch Siach (1):
+      mtd: maps: physmap-core: fix flash size larger than 32-bit
+
+Christophe Kerello (3):
+      dt-bindings: mtd: st,stm32: add MP25 support
+      mtd: rawnand: stm32_fmc2: use dma_get_slave_caps to get DMA max burst
+      mtd: rawnand: stm32_fmc2: add MP25 support
+
+Colin Ian King (2):
+      mtd: chips: remove redundant assignment to variable timeo
+      mtd: rawnand: remove redundant assignment to variable bbtblocks
+
+David Regan (2):
+      mtd: rawnand: brcmnand: exec_op helper functions return type fixes
+      mtd: rawnand: brcmnand: update log level messages
+
+Erick Archer (1):
+      mtd: rawnand: Prefer struct_size over open coded arithmetic
+
+Ezra Buehler (2):
+      mtd: spinand: Add support for 5-byte IDs
+      mtd: spinand: esmt: Extend IDs to 5 bytes
+
+Josua Mayer (1):
+      dt-bindings: mtd: spi-nor: add optional interrupts property
+
+Krzysztof Kozlowski (1):
+      mtd: lpc32xx: use typedef for dma_filter_fn
+
+Marcel Hamer (1):
+      mtd: fix minor comment typo for struct mtd_master
+
+Markus Elfring (3):
+      mtd: ssfdc: One function call less in ssfdcr_add_mtd() after error de=
+tection
+      mtd: ssfdc: Fix indentation in ssfdcr_add_mtd()
+      mtd: ssfdc: Improve a size determination in ssfdcr_add_mtd()
+
+Matthew Wilcox (Oracle) (1):
+      mtd: Remove support for Carillo Ranch driver
+
+Miquel Raynal (7):
+      Merge tag 'spi-nor/for-6.9' into mtd/next
+      mtd: rawnand: Fix and simplify again the continuous read derivations
+      mtd: rawnand: Add a helper for calculating a page index
+      mtd: rawnand: Ensure all continuous terms are always in sync
+      mtd: rawnand: Constrain even more when continuous reads are enabled
+      mtd: rawnand: Ensure continuous reads are well disabled
+      Merge tag 'nand/for-6.9' into mtd/next
+
+Muhammad Usama Anjum (1):
+      mtd: spi-nor: core: correct type of i
+
+Nayab Sayed (1):
+      dt-bindings: mtd: update references from partition.txt to mtd.yaml
+
+Randy Dunlap (1):
+      mtd: rawnand: hynix: remove @nand_technology kernel-doc description
+
+Takahiro Kuwano (4):
+      mtd: spi-nor: core: rework struct spi_nor_erase_region
+      mtd: spi-nor: core: get rid of SNOR_LAST_REGION flag
+      mtd: spi-nor: core: get rid of SNOR_OVERLAID_REGION flag
+      mtd: spi-nor: core: set mtd->eraseregions for non-uniform erase map
+
+Tudor Ambarus (1):
+      mtd: flashchip: explicitly include <linux/wait.h>
+
+Uwe Kleine-K=C3=B6nig (1):
+      mtd: rawnand: fsl_elbc: Let .probe retry if local bus is missing
+
+Varshini Rajendran (1):
+      dt-bindings: atmel-nand: add microchip,sam9x7-pmecc
+
+William Zhang (12):
+      mtd: rawnand: brcmnand: fix style issues
+      dt-bindings: mtd: brcmnand: Updates for bcmbca SoCs
+      dt-bindings: mtd: brcmnand: Add WP pin connection property
+      dt-bindings: mtd: brcmnand: Add ecc strap property
+      ARM: dts: broadcom: bcmbca: Add NAND controller node
+      arm64: dts: broadcom: bcmbca: Add NAND controller node
+      arm64: dts: broadcom: bcmbca: Update router boards
+      mtd: rawnand: brcmnand: Rename bcm63138 nand driver
+      mtd: rawnand: brcmnand: Add BCMBCA read data bus interface
+      mtd: rawnand: brcmnand: Support write protection setting from dts
+      mtd: rawnand: brcmnand: fix sparse warnings
+      mtd: rawnand: brcmnand: Add support for getting ecc setting from strap
+
+Zhenhua Huang (1):
+      dt-bindings: mtd: avoid automatically select from mtd.yaml
+
+Zhi-Jun You (1):
+      mtd: spinand: winbond: add support for W25N04KV
+
+ Documentation/devicetree/bindings/mtd/atmel-nand.txt        |   1 +
+ Documentation/devicetree/bindings/mtd/brcm,brcmnand.yaml    |  44 ++++-
+ Documentation/devicetree/bindings/mtd/davinci-nand.txt      |   2 +-
+ Documentation/devicetree/bindings/mtd/flctl-nand.txt        |   2 +-
+ Documentation/devicetree/bindings/mtd/fsl-upm-nand.txt      |   2 +-
+ Documentation/devicetree/bindings/mtd/gpio-control-nand.txt |   2 +-
+ Documentation/devicetree/bindings/mtd/gpmi-nand.yaml        |   2 +-
+ Documentation/devicetree/bindings/mtd/hisi504-nand.txt      |   2 +-
+ Documentation/devicetree/bindings/mtd/jedec,spi-nor.yaml    |   3 +
+ Documentation/devicetree/bindings/mtd/mtd.yaml              |   2 +
+ .../devicetree/bindings/mtd/nvidia-tegra20-nand.txt         |   2 +-
+ Documentation/devicetree/bindings/mtd/orion-nand.txt        |   2 +-
+ Documentation/devicetree/bindings/mtd/samsung-s3c2410.txt   |   2 +-
+ .../devicetree/bindings/mtd/st,stm32-fmc2-nand.yaml         |  25 ++-
+ arch/arm/boot/dts/broadcom/bcm47622.dtsi                    |  14 ++
+ arch/arm/boot/dts/broadcom/bcm63138.dtsi                    |   7 +-
+ arch/arm/boot/dts/broadcom/bcm63148.dtsi                    |  14 ++
+ arch/arm/boot/dts/broadcom/bcm63178.dtsi                    |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6756.dtsi                     |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6846.dtsi                     |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6855.dtsi                     |  14 ++
+ arch/arm/boot/dts/broadcom/bcm6878.dtsi                     |  14 ++
+ arch/arm/boot/dts/broadcom/bcm947622.dts                    |  10 +
+ arch/arm/boot/dts/broadcom/bcm963138.dts                    |  10 +
+ arch/arm/boot/dts/broadcom/bcm963138dvt.dts                 |  14 +-
+ arch/arm/boot/dts/broadcom/bcm963148.dts                    |  10 +
+ arch/arm/boot/dts/broadcom/bcm963178.dts                    |  10 +
+ arch/arm/boot/dts/broadcom/bcm96756.dts                     |  10 +
+ arch/arm/boot/dts/broadcom/bcm96846.dts                     |  10 +
+ arch/arm/boot/dts/broadcom/bcm96855.dts                     |  10 +
+ arch/arm/boot/dts/broadcom/bcm96878.dts                     |  10 +
+ .../boot/dts/broadcom/bcmbca/bcm4906-netgear-r8000p.dts     |   5 +
+ .../dts/broadcom/bcmbca/bcm4906-tplink-archer-c2300-v1.dts  |   5 +
+ .../boot/dts/broadcom/bcmbca/bcm4908-asus-gt-ac5300.dts     |   6 +-
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm4908.dtsi            |   4 +-
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm4912.dtsi            |  14 ++
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm63146.dtsi           |  14 ++
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm63158.dtsi           |  14 ++
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm6813.dtsi            |  14 ++
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm6856.dtsi            |  14 ++
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm6858.dtsi            |  14 ++
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm94908.dts            |  10 +
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm94912.dts            |  10 +
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm963146.dts           |  10 +
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm963158.dts           |  10 +
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm96813.dts            |  10 +
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm96856.dts            |  10 +
+ arch/arm64/boot/dts/broadcom/bcmbca/bcm96858.dts            |  10 +
+ drivers/mtd/chips/cfi_cmdset_0002.c                         |   4 +-
+ drivers/mtd/maps/Kconfig                                    |   7 -
+ drivers/mtd/maps/Makefile                                   |   1 -
+ drivers/mtd/maps/intel_vr_nor.c                             | 265 --------=
+------------------
+ drivers/mtd/maps/physmap-core.c                             |   2 +-
+ drivers/mtd/nand/raw/atmel/nand-controller.c                |   2 +-
+ drivers/mtd/nand/raw/brcmnand/Makefile                      |   2 +-
+ drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c               |  99 --------=
+--
+ drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c                 | 126 ++++++++=
+++++
+ drivers/mtd/nand/raw/brcmnand/brcmnand.c                    | 148 ++++++++=
++++---
+ drivers/mtd/nand/raw/brcmnand/brcmnand.h                    |   2 +
+ drivers/mtd/nand/raw/fsl_elbc_nand.c                        |   3 +-
+ drivers/mtd/nand/raw/lpc32xx_mlc.c                          |   5 +-
+ drivers/mtd/nand/raw/meson_nand.c                           |   2 +-
+ drivers/mtd/nand/raw/mtk_nand.c                             |   2 +-
+ drivers/mtd/nand/raw/nand_base.c                            |  92 ++++++---
+ drivers/mtd/nand/raw/nand_bbt.c                             |   1 -
+ drivers/mtd/nand/raw/nand_hynix.c                           |   1 -
+ drivers/mtd/nand/raw/stm32_fmc2_nand.c                      |  83 ++++++--
+ drivers/mtd/nand/spi/esmt.c                                 |   9 +-
+ drivers/mtd/nand/spi/winbond.c                              |  12 ++
+ drivers/mtd/spi-nor/core.c                                  | 187 ++++++++=
++---------
+ drivers/mtd/spi-nor/core.h                                  |  30 +--
+ drivers/mtd/spi-nor/debugfs.c                               |  26 ++-
+ drivers/mtd/spi-nor/sfdp.c                                  |  47 ++---
+ drivers/mtd/ssfdc.c                                         |   7 +-
+ include/linux/mtd/flashchip.h                               |   1 +
+ include/linux/mtd/lpc32xx_mlc.h                             |   2 +-
+ include/linux/mtd/lpc32xx_slc.h                             |   2 +-
+ include/linux/mtd/mtd.h                                     |   2 +-
+ include/linux/mtd/spinand.h                                 |   2 +-
+ 79 files changed, 982 insertions(+), 658 deletions(-)
+ delete mode 100644 drivers/mtd/maps/intel_vr_nor.c
+ delete mode 100644 drivers/mtd/nand/raw/brcmnand/bcm63138_nand.c
+ create mode 100644 drivers/mtd/nand/raw/brcmnand/bcmbca_nand.c
 
