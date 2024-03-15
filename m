@@ -1,362 +1,326 @@
-Return-Path: <linux-kernel+bounces-104147-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0724987C9BD
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:12:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5EC5987C9BF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:13:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6D2131F21BDA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:12:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B3E3282175
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:13:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 429DE15E81;
-	Fri, 15 Mar 2024 08:12:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 738BC1643A;
+	Fri, 15 Mar 2024 08:13:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P01aSKbo"
-Received: from mail-qk1-f178.google.com (mail-qk1-f178.google.com [209.85.222.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="NH9Un/u6";
+	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="kkNGtqmh"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7783014A99;
-	Fri, 15 Mar 2024 08:12:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.178
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710490350; cv=none; b=jiokUjpouoo1hNQFjMDKkV5T/v1MEzTGNb9xSPGS5w4twOUDWQAw6XiDXrLwMGzPUnV7VuHI8G8v503JYIDJwsCysQW7afgjIN1zP0vCZR2h+HQQvNlwwMsyvbMENNruk6MLEV+dMdAFPee507qWkDoOYNjx9wtgJwV0Q2ABY5U=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710490350; c=relaxed/simple;
-	bh=d2Po614jWmI70mnvc/w9zgb2I/bK6oEyGZ/VPVHjWeE=;
-	h=From:Date:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=o24XVX++GLvpDal9McZduInG4XhK7kU/yDz1rWdH/ZlP0YDiYg2FG0XF8uK6MsyogccLnpSnrut1iMpXxHrrTBueNlwoJY9kzqxkRmE12pP8mm64d+B8vpubsroEKgU8i3fv+YrJZzyaLSlcPLa+2spiauo/eBgC/9jxzBBpnI8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P01aSKbo; arc=none smtp.client-ip=209.85.222.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f178.google.com with SMTP id af79cd13be357-789e2bf854dso41809685a.3;
-        Fri, 15 Mar 2024 01:12:28 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BADC817559;
+	Fri, 15 Mar 2024 08:12:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=60.244.123.138
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710490383; cv=fail; b=laayC40S4e98yJcdF7ldJl2TOmNYfy7L9HRUfaSqY+rLoQGLLFUNxFA2pFBz0otWVGxuJfB3/PP2bIBNF12nklNpkDfHPw6zKjriLJVTmY9SXsWqRVWhVir7zQP/9JW+rIHGqHRsp75petbtZDKkcwska8UCVTLc6YIugtsXL8Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710490383; c=relaxed/simple;
+	bh=ozbfC+AXU+fQubpUHXTXPGBZxvFR+StRaOmTYCNbiDw=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=NwLV0FzzqmjiOiDp9vkYqxTO7vh5/ihK4a4I135I0Hia+cn6ZlKytC8pr/DZbT1yBzOXtm/0n+PhxeBYNCw/Ze2aRTsWS9BC8JW140B7TnLJ2D2DPeeUHasAQ0qMnDeX2QfXRRQLexhhJ4lyLQ1uzCM6crnuz6u7vMQQN6eHzao=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=NH9Un/u6; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=kkNGtqmh; arc=fail smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: d28498dae2a311eeb8927bc1f75efef4-20240315
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=ozbfC+AXU+fQubpUHXTXPGBZxvFR+StRaOmTYCNbiDw=;
+	b=NH9Un/u6uyAjg55NK2olUUhISUYrfvmixmoC2Gg6zBdV4VN1qfyyX92/5fkhj93hW20XpffuA1b3B7L6nx8TEGV3CnTwDMt+N+8TjijZJj+VE3suyExDEmgO/W5LcxFBhTlCdHtbtRAv38kCNFhAhh4wVo6xv4mo39xQruXfwcg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:d278eda4-fc03-435d-9f9c-a9ccc174f1f7,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:308ceeff-c16b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
+	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0,NGT
+X-CID-BAS: 0,NGT,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
+X-UUID: d28498dae2a311eeb8927bc1f75efef4-20240315
+Received: from mtkmbs11n2.mediatek.inc [(172.21.101.187)] by mailgw01.mediatek.com
+	(envelope-from <lena.wang@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1889432486; Fri, 15 Mar 2024 16:12:53 +0800
+Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
+ mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Fri, 15 Mar 2024 16:12:51 +0800
+Received: from APC01-SG2-obe.outbound.protection.outlook.com (172.21.101.237)
+ by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Fri, 15 Mar 2024 16:12:51 +0800
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UjByOceTuP7LhZYr2plnitWJBkz4SPa1LUkGEPj4o9ASqTQBr500eu/iHgp8gH8tJoXLtFmi2W0mHGyHyUslfDYY+cSRtOn4eBWdHXtoVRNcTV8S8Pt923HpIDECTI4hJN5GtvUvrLysKXaaNkw4kK7rucU2yJiNYwSprwyDRqqU6oSpxi4bTnZ6zBFTKNwstCUy/U2jgaN+CjJ7PCQXVCQPS7z+UPCXNqAPrlRoA3hbikXUeJbpgc1MVz5U4GxhcL+gdu5ObzW631wsgH6MCgyXDlfNVPN8JeI7Ow8ZxbqLkQyzL0Koflnc7bmwaZoBp+U3hyKG5h6Bsnalpx05lA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=ozbfC+AXU+fQubpUHXTXPGBZxvFR+StRaOmTYCNbiDw=;
+ b=EbZYbuZo0oz4lIpThx8yYSd9E38vz9pwqmH7VkwbBHhgAVblpQKrqqDYD8zjB63XIfurN1T6maeIamzMaRMmvysulxhOqVGgVefWsS6GM1y0f3TbBvEmSZxqEm/LIlrGzGCZYXGiUSz2PNAyZgP1VYcL4rZG+k889r6oy36GbD3cDXSadY1EWNHQdUfnnQmqiitlB6eNrdxS4KNco7R2Qo1etvSI5jNOHMF9pJ2MA2hhXfTwLG8J9u9tiIzCWpHTSH6SCFC18DPDc93EupxcT940EfPIuSNQypq+2znYY/NDQ5qPEcrx/6S4UqmnJZhc7hKcRYNyvCSAhQV1WiI9rA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
+ dkim=pass header.d=mediatek.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710490347; x=1711095147; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=FT8G2QqYDoocZIhfjdACapItl0ZiuuSfi2pODZo6+74=;
-        b=P01aSKboghr3cypd31SYrjWJ9W3syr9PdS3ZK743W9HGr/I+wgpLB/Xpjc5m3c66bW
-         bhjwEW2XX4k+VtB4zAPZcQVlRWHvAD2PBWQS6NRLh6/gRBGwkDNlknqr55X7CRrG985M
-         vhCqKxwRkiUsOkDY+MZX/fPHJWQwcF/ErXT6sCOpmRlWD6e0OXNhqc9dBvp/Zq1134Om
-         1amT3H153OhV0T3nguWnJZfZOxu0jTOJg+0rKjr/IjbSuV/RUD9+CLXCoIIKWoXTJN8f
-         P77qCB7md0D/2pvLZF/xW1miZZHADgN533G4XU0KiGM9cpJKmemzdfBUi1qUkXKfoM0A
-         46jg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710490347; x=1711095147;
-        h=content-disposition:mime-version:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=FT8G2QqYDoocZIhfjdACapItl0ZiuuSfi2pODZo6+74=;
-        b=oOudaIcagxgupWXhk1UisKnHA2gIKPUb/gnEV8yJLr3Nc856LZuB4S/Qezg3Lvx4b1
-         Rs64KdnfvCkHDN5zKoO3Dw/r0CsMVdgx9pFtNxhvK6Z1/4j3IB+WsaROpMD2/KSWPhX5
-         AU28JuZ4zlgnbg5KOw7mF664jI1dTaY74q5vJbW447Y1YdC9qjl2KIfe1CkuV2ILyqfC
-         0I8Zu4/z/k3MI/SBQmTg/QkwcB7ANn7rwpHDFilaomjfieNz9Ef/O3I6VE/o171ZgxT9
-         siTEhbPIzhs8dP0zf/h4kE+jTixYQQ4y3Gwzpt/X35TehjLDPxUld3A2CRA4CsLo34hM
-         T+9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUaB3ABhZlySWEgla0V/9qewjwB7fVpTgnTVHWcRsDtMw1r7AO/+Uw0FMEPhS88sUoYIu4payM3GL6LNeOyksVGpxKSPqRXyZPq0oET+pKywJeg74FoRfIVgie95B95nb2EAsypnYxWmg==
-X-Gm-Message-State: AOJu0YwJQKaX/7K74Memm2j7Bgv5rzpUfdR+zhRVIqwGDhTLcsYFwXpO
-	lGhwC6yjO2jH+zuFhb6D/se+/FOjwfHCKnNKH7M67dqX6ApWRCE6
-X-Google-Smtp-Source: AGHT+IErOCiRZVSqymxrukWj9zNLPnl3x6nKn3fhlBWEBAni7jhVxxYEjsZZKNbWX45T9ziMScoq3w==
-X-Received: by 2002:a05:620a:31a0:b0:788:45c9:bc53 with SMTP id bi32-20020a05620a31a000b0078845c9bc53mr5369234qkb.15.1710490347295;
-        Fri, 15 Mar 2024 01:12:27 -0700 (PDT)
-Received: from rbudubuntu.daqjip3ntomehmqy3wvpaa3zyf.bx.internal.cloudapp.net ([40.71.76.248])
-        by smtp.gmail.com with ESMTPSA id bs42-20020a05620a472a00b0078820f053b0sm1311084qkb.109.2024.03.15.01.12.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 01:12:26 -0700 (PDT)
-From: Ritvik Budhiraja <budhirajaritviksmb@gmail.com>
-X-Google-Original-From: Ritvik Budhiraja <rbudhiraja@microsoft.com>
-Date: Fri, 15 Mar 2024 08:12:25 +0000
-To: sfrench@samba.org, pc@manguebit.com, ronniesahlberg@gmail.com,
-	sprasad@microsoft.com, tom@talpey.com, linux-cifs@vger.kernel.org,
-	samba-technical@lists.samba.org, linux-kernel@vger.kernel.org,
-	bharathsm.hsk@gmail.com
-Cc: rbudhiraja@microsoft.com
-Subject: [PATCH] Retrying on failed server close
-Message-ID: <ZfQC6Xk+E6HtCtsI@rbudubuntu.daqjip3ntomehmqy3wvpaa3zyf.bx.internal.cloudapp.net>
+ d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=ozbfC+AXU+fQubpUHXTXPGBZxvFR+StRaOmTYCNbiDw=;
+ b=kkNGtqmhDD5W7szf8M943WmVzttcj1K3qhGmT5ZZqcSqMWw0LM60mnMBCAGKsyLTJZScjHoUGhak9ZthBBesckLoYRco1LhRpBkIXZ4S3pR3jNEbDl4Oo8J2MS8CmajL706ufZYautpjoPL67kLKALpdrOWATyEogOVYLbxjmDo=
+Received: from SEZPR03MB6466.apcprd03.prod.outlook.com (2603:1096:101:4a::8)
+ by PUZPR03MB7062.apcprd03.prod.outlook.com (2603:1096:301:117::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Fri, 15 Mar
+ 2024 08:12:49 +0000
+Received: from SEZPR03MB6466.apcprd03.prod.outlook.com
+ ([fe80::3b7d:ad2c:b2cf:def7]) by SEZPR03MB6466.apcprd03.prod.outlook.com
+ ([fe80::3b7d:ad2c:b2cf:def7%6]) with mapi id 15.20.7386.017; Fri, 15 Mar 2024
+ 08:12:49 +0000
+From: =?utf-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>
+To: "davem@davemloft.net" <davem@davemloft.net>, "kuba@kernel.org"
+	<kuba@kernel.org>, =?utf-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?=
+	<Shiming.Cheng@mediatek.com>, "pabeni@redhat.com" <pabeni@redhat.com>,
+	"edumazet@google.com" <edumazet@google.com>
+CC: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net] udp: fix segmentation crash for untrusted source
+ packet
+Thread-Topic: [PATCH net] udp: fix segmentation crash for untrusted source
+ packet
+Thread-Index: AQHadU0V/KX9aGZU4EuMp/Fpo6HSuLE1zysAgAKnWgA=
+Date: Fri, 15 Mar 2024 08:12:49 +0000
+Message-ID: <ee5fb4ca84598f302f44ca9d4182d6f5b796232f.camel@mediatek.com>
+References: <20240313133402.9027-1-shiming.cheng@mediatek.com>
+	 <e826f337c3db612852c5f543d123ee53adc885bb.camel@redhat.com>
+In-Reply-To: <e826f337c3db612852c5f543d123ee53adc885bb.camel@redhat.com>
+Accept-Language: zh-CN, en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SEZPR03MB6466:EE_|PUZPR03MB7062:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: VMi3dG4M5m2xht0VfU9xU6r795G6liDaeow4im/Q7rmVUQINKyYqI770HyDLfhNzZGn/a83aQjVm9rJvZeg8HnFRzzmp3FwUex5MsohcvLS5O0BuDRjnyR1ix62Un8f1SKQhApQrkzvQeyD839i66RDu9koTJGki9ML9FF3oCswgARGbeKUuOGL61cRtnpOIx8HZvF841edk8uJvO/TZpBpwzVEl96kDuNyZVrqb3yqtnpTferaqMNIhUwGQGM8K2D8y+OrtC6SZ/GquHOhQgUfOcpA4XjLCNwQnndj+VdPHIsyRfodMxLDf57aDkKfeTU2RDL+nm7dlh5mePbdC0iIqZz5LF7DKMPUj1vw9HaixUPSXEjL9J1LulSJ/9Mn+hrNfHlXY+7hR9wmcJ6qAnUwqL4N6P/cl70vbyOXjMhMgl2KhTymu+lRZAYznR81RcB2/MzedZT83+j2iFkM6DZ+8WKmplS1Mndbd5NBqUcUdJb8Dqv3ZkCKfSJzcMUPDQT06IeIhkOwR38ELQCS/9UjJQUDBgT3HMEU/PHN/064Ebn5TyjUt/L6RMp68sEklIAnI+lmFJ0s/CogTUJKVzrNOB1WN3Bi1/mTlrrozzNI=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR03MB6466.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?RDBjc1kzMnNuOHA3b0JSMmVjbGZzZWY1VnB3VlFrbyt1ZU9say85dVI3cElS?=
+ =?utf-8?B?VG1jUG5GTUMxNW1XcUlMTnJOODFMM1o3dVQwN0ptcEZtTVcyejVubWJxSFQv?=
+ =?utf-8?B?K2FPY2JaU1dUczlaa0dpSXd1cW4yYUNDallWbUthaEh6bytzbDhmN2lQcC9F?=
+ =?utf-8?B?UWhIcFVqa21tbTRqUnA3ZlRXV3RBK2Z3U3owWnZPSWs1RzFUM1hFaE84U0Vx?=
+ =?utf-8?B?NFRIcnZvOWJpSFptV251cm5ocnI3ZlZuMVVmN3JMSDNPRitzbGhFSjJlZmZK?=
+ =?utf-8?B?OTk0T1B0bFF1aXUvY3poWGxLQTlPVmcxQ2ppU3d5ckhHZHNldEpFUWl6dk5q?=
+ =?utf-8?B?ZWE2OE5VU2U1WUNUa0d0Q2xuUEVEOVJha0VrZGcwZjNhanh5bXN6V1Y3UnJK?=
+ =?utf-8?B?Ly91S3dSY1dLLzZ1dGh0d091TTFyM0tQcjd4bXZCUndsU3UxQ3pCcXlLKzFD?=
+ =?utf-8?B?S0lkdE9ReE41clNiWFlpdytHZTdhMzNHbmFNYzVoNmZDaStZZWFVNTlNRHJj?=
+ =?utf-8?B?RURXSks1NFR6b0p1dk5RY21mUVBGWWdYVTBiclNxelBCK3JSWVdzZ0ZrK0FS?=
+ =?utf-8?B?VVEwL1M3dUFzOUUvMEJzaUpkNjJKQ1hTd3Y4c080UVdxZWNqMU05MzF2ajVm?=
+ =?utf-8?B?SlNXZUI3Y1RMcXBqNmJiMG1VZHFHL1Y0NlVHN1FEMzR0aTQyOGJQajhrM0oz?=
+ =?utf-8?B?QWVEeEhIdDlOQVBFRGZ4cnlPNENkVnhTejliYnJ3MjlIdSszdys1WVVMeWFE?=
+ =?utf-8?B?S1c3RDBzb0N5dVJST1FzbG40UitiaG5vL0lKMDhIWjhydlBvYTREQm8vZGhY?=
+ =?utf-8?B?UTdzeEhGM1lpalpUSUFXNStDeUoyZFFlTXpDUER2SjU5aWxac1V4aHllZU1V?=
+ =?utf-8?B?WHFoUWpZRU1yOFZWaW9LTGtPbks5UytlVjd4RnRpNE1NbEliTU1Ccmtxcm5m?=
+ =?utf-8?B?dFhjNVFpT1hvZmR3OCtaTGhkSzliUEhSL0dzMjdTK0dNOEVNVzFvS3BJSldo?=
+ =?utf-8?B?Y3cwTVVPSURnRlVOZUVPbC9FOUdsWmZIdTNnSDEyeWIveVQzRmlDNzkvSDIr?=
+ =?utf-8?B?MUMvKzNabzF0ellHdE50bDNvSWVjNjJxRmJvckg2bzBLSUtMMEZub2hIVlR0?=
+ =?utf-8?B?Z1FpMGRFeE1LU1crSUgzOGZiN25XR0VrZGNrUjU5RUVXWW9hK1phZmxGOTdi?=
+ =?utf-8?B?bFNjLzdBVjZWcE1CNTB2bkIvRkkxQkZ1Ymp2L0E4QW5mZHFRaEJPNWVDck9R?=
+ =?utf-8?B?d1ZFdGFZSUdnSUtXQTBGcjRqWUlLVWxtVHRMaUg2K0lOaWxRWXdQSzM1ckRH?=
+ =?utf-8?B?UzlUbzJqZG1ZRFF3WGd5WlAwTDNrWEFyMUFwVS9zSU9ueFM5aXNOQUtrRzBK?=
+ =?utf-8?B?ZnBOcEhWajdvUWc0eTBHSE5ocGdSMy9lNXBrZkhmRXhLTEJDSW15SU41N2sr?=
+ =?utf-8?B?Y3QwTVozdEpHcUtMenBsS1kvYTJZM0JwVU96TGpRN3drMkx2dTVNY0lydHVo?=
+ =?utf-8?B?cUY1K3hZVUpicVBjc3paNUdFRHFwUmRUSTUvRUxOUENDSi9EY3lObzdWTjZm?=
+ =?utf-8?B?emVORE9RbkJCZGdiNS9MMGdNRVpYTDdEd1hKS2VTNEVRTUZydFM2VFUxcU9t?=
+ =?utf-8?B?TmRtU2E2RXJ4Y2ZUb0JaYllsYW80Y2pYUXJidVlrMnJYRkZhUXV6a05nMjBO?=
+ =?utf-8?B?d3k3K3NrYVgxNzZUbzBpdzgveUxjbDNBUFJRenZ4MzlKcnB2Nk9Ndnh6elNv?=
+ =?utf-8?B?TXpvV1JNTnYybzZjZUdsUzM4NmJ5UnA5M3hMaE1oc1c3RmlZRWgrRFh5ekRD?=
+ =?utf-8?B?T01EdDllWk0xWUtqbStDSFlHQWtTSml2R04vSWo2dG5UVksyTVZ6dWpZWnhn?=
+ =?utf-8?B?M0RMVkhtQno2RmlNMDhxR3dqM0RrYkJVMG80OWJlelRYL00zZ0NXcGN6ZUdw?=
+ =?utf-8?B?YWsydUhsRW43enRsUFhHZitxcTc0eERZaHNjYUJYUnZsRmozbW9yZks4Uk9l?=
+ =?utf-8?B?VmR4bk5PMlpTVHUrZVpiSWgzbVIvZHpqK2J1ckZnK3BObHdaeG1MSjNJWmtL?=
+ =?utf-8?B?MTFybWZYMVM4Zmp4Qi9oWnV2ckpuZVhueTNCK1AzMFVSMTBlSlVxdFNxZ0Jy?=
+ =?utf-8?B?ZkZkc244Ky9ZV0MrRy9ubVFFYURGb2NHemNWQjFYN0R1akZJbUdmdTNDalJv?=
+ =?utf-8?B?NEE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <119B33B92F776043B1206D34566443E4@apcprd03.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SEZPR03MB6466.apcprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4e1b2a83-cfe9-4335-4629-08dc44c7b469
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 08:12:49.5221
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +/EEx4xR/+O0vnVpsEqW4qpwUdNLFPD+i1YbZ/QsQmvu/k/gvni9XTOZJtQzljNFOrSazbPPoJPF7ZipZR896g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PUZPR03MB7062
+X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-AS-Result: No-10--21.616800-8.000000
+X-TMASE-MatchedRID: cxtZ8fwm3r8OwH4pD14DsPHkpkyUphL9meN8m2FdGic3xO2R3boBWFbu
+	qIY+/skQkABPgKBt/0rbaVyalxbpdBXfDcvxC40QQpxiLlDD9FU1TzP60UkdHVNtD3nNFtZWPm4
+	XxTeJls+705JGvJx6sw4pUdPS3FmTBrxTgoet7EQXrP0cYcrA23607foZgOWyTTgHSJZ8pKGgrk
+	Hr6pdTsCfObjr0HEyfohYR4snA9r0h3Xy1KnQIRIv2/i8VNqeOmdrHMkUHHq9NShtWKzkFv78lb
+	9JC4t9LT/dBt9e2zw/ARnogfcREiYAX6fAgrrYeVP9jNEQH04qWesyrtKuK7Q2G3vz8l/IEsvaG
+	BzHRZBBabSJ+A9nXoEd8giSoxo2X27P9OYpZ3ppsG7r4Qh7N3Fg3VqSTJ7So6bzeusRDJJCHOAs
+	eoIzKqEyl9ggbAv9c+SkBKCjcMCAAzT8btdR146IBnfMCFBiCrxZQ031Z6FoKA2OoGAlTk6IUIq
+	EDy9fuuMvZ/57j5rCgGCY/msA9A8ZEoJx1HltlkPoFsM336M4ueblP18IaqfwISQQqRiIBo8WMk
+	QWv6iUVR7DQWX/WkQGLeSok4rrZbdTuPa9VRGvEQdG7H66TyOk/y0w7JiZo
+X-TM-AS-User-Approved-Sender: No
+X-TM-AS-User-Blocked-Sender: No
+X-TMASE-Result: 10--21.616800-8.000000
+X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
+X-TM-SNTS-SMTP:
+	A7C0CF8072BFCF364E89ED3ECED26594A96B8959D754DE5C6FC2BD973F533C9D2000:8
 
-In the current implementation, CIFS close sends a close to the server 
-and does not check for the success of the server close. This patch adds 
-functionality to check for server close return status and retries 
-in case of an EBUSY or EAGAIN error
-
-Signed-off-by: Ritvik Budhiraja <rbudhiraja@microsoft.com>
----
- fs/smb/client/cifsfs.c   | 11 +++++++
- fs/smb/client/cifsglob.h |  7 +++--
- fs/smb/client/file.c     | 63 ++++++++++++++++++++++++++++++++++++----
- fs/smb/client/smb1ops.c  |  4 +--
- fs/smb/client/smb2ops.c  |  9 +++---
- 5 files changed, 80 insertions(+), 14 deletions(-)
-
-diff --git a/fs/smb/client/cifsfs.c b/fs/smb/client/cifsfs.c
-index fb368b191eef..e4b2ded86fce 100644
---- a/fs/smb/client/cifsfs.c
-+++ b/fs/smb/client/cifsfs.c
-@@ -160,6 +160,7 @@ struct workqueue_struct	*decrypt_wq;
- struct workqueue_struct	*fileinfo_put_wq;
- struct workqueue_struct	*cifsoplockd_wq;
- struct workqueue_struct	*deferredclose_wq;
-+struct workqueue_struct	*serverclose_wq;
- __u32 cifs_lock_secret;
- 
- /*
-@@ -1890,6 +1891,13 @@ init_cifs(void)
- 		goto out_destroy_cifsoplockd_wq;
- 	}
- 
-+	serverclose_wq = alloc_workqueue("serverclose",
-+					   WQ_FREEZABLE|WQ_MEM_RECLAIM, 0);
-+	if (!serverclose_wq) {
-+		rc = -ENOMEM;
-+		goto out_destroy_serverclose_wq;
-+	}
-+
- 	rc = cifs_init_inodecache();
- 	if (rc)
- 		goto out_destroy_deferredclose_wq;
-@@ -1964,6 +1972,8 @@ init_cifs(void)
- 	destroy_workqueue(decrypt_wq);
- out_destroy_cifsiod_wq:
- 	destroy_workqueue(cifsiod_wq);
-+out_destroy_serverclose_wq:
-+	destroy_workqueue(serverclose_wq);
- out_clean_proc:
- 	cifs_proc_clean();
- 	return rc;
-@@ -1993,6 +2003,7 @@ exit_cifs(void)
- 	destroy_workqueue(cifsoplockd_wq);
- 	destroy_workqueue(decrypt_wq);
- 	destroy_workqueue(fileinfo_put_wq);
-+	destroy_workqueue(serverclose_wq);
- 	destroy_workqueue(cifsiod_wq);
- 	cifs_proc_clean();
- }
-diff --git a/fs/smb/client/cifsglob.h b/fs/smb/client/cifsglob.h
-index 53c75cfb33ab..c99bc3b3ff56 100644
---- a/fs/smb/client/cifsglob.h
-+++ b/fs/smb/client/cifsglob.h
-@@ -429,10 +429,10 @@ struct smb_version_operations {
- 	/* set fid protocol-specific info */
- 	void (*set_fid)(struct cifsFileInfo *, struct cifs_fid *, __u32);
- 	/* close a file */
--	void (*close)(const unsigned int, struct cifs_tcon *,
-+	int (*close)(const unsigned int, struct cifs_tcon *,
- 		      struct cifs_fid *);
- 	/* close a file, returning file attributes and timestamps */
--	void (*close_getattr)(const unsigned int xid, struct cifs_tcon *tcon,
-+	int (*close_getattr)(const unsigned int xid, struct cifs_tcon *tcon,
- 		      struct cifsFileInfo *pfile_info);
- 	/* send a flush request to the server */
- 	int (*flush)(const unsigned int, struct cifs_tcon *, struct cifs_fid *);
-@@ -1420,6 +1420,7 @@ struct cifsFileInfo {
- 	bool invalidHandle:1;	/* file closed via session abend */
- 	bool swapfile:1;
- 	bool oplock_break_cancelled:1;
-+	bool offload:1; /* offload final part of _put to a wq */
- 	unsigned int oplock_epoch; /* epoch from the lease break */
- 	__u32 oplock_level; /* oplock/lease level from the lease break */
- 	int count;
-@@ -1428,6 +1429,7 @@ struct cifsFileInfo {
- 	struct cifs_search_info srch_inf;
- 	struct work_struct oplock_break; /* work for oplock breaks */
- 	struct work_struct put; /* work for the final part of _put */
-+	struct work_struct serverclose; /* work for serverclose */
- 	struct delayed_work deferred;
- 	bool deferred_close_scheduled; /* Flag to indicate close is scheduled */
- 	char *symlink_target;
-@@ -2085,6 +2087,7 @@ extern struct workqueue_struct *decrypt_wq;
- extern struct workqueue_struct *fileinfo_put_wq;
- extern struct workqueue_struct *cifsoplockd_wq;
- extern struct workqueue_struct *deferredclose_wq;
-+extern struct workqueue_struct *serverclose_wq;
- extern __u32 cifs_lock_secret;
- 
- extern mempool_t *cifs_mid_poolp;
-diff --git a/fs/smb/client/file.c b/fs/smb/client/file.c
-index c3b8e7091a4d..c1379ec27dcd 100644
---- a/fs/smb/client/file.c
-+++ b/fs/smb/client/file.c
-@@ -445,6 +445,7 @@ cifs_down_write(struct rw_semaphore *sem)
- }
- 
- static void cifsFileInfo_put_work(struct work_struct *work);
-+void serverclose_work(struct work_struct *work);
- 
- struct cifsFileInfo *cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
- 				       struct tcon_link *tlink, __u32 oplock,
-@@ -491,6 +492,7 @@ struct cifsFileInfo *cifs_new_fileinfo(struct cifs_fid *fid, struct file *file,
- 	cfile->tlink = cifs_get_tlink(tlink);
- 	INIT_WORK(&cfile->oplock_break, cifs_oplock_break);
- 	INIT_WORK(&cfile->put, cifsFileInfo_put_work);
-+	INIT_WORK(&cfile->serverclose, serverclose_work);
- 	INIT_DELAYED_WORK(&cfile->deferred, smb2_deferred_work_close);
- 	mutex_init(&cfile->fh_mutex);
- 	spin_lock_init(&cfile->file_info_lock);
-@@ -582,6 +584,40 @@ static void cifsFileInfo_put_work(struct work_struct *work)
- 	cifsFileInfo_put_final(cifs_file);
- }
- 
-+void serverclose_work(struct work_struct *work)
-+{
-+	struct cifsFileInfo *cifs_file = container_of(work,
-+			struct cifsFileInfo, serverclose);
-+
-+	struct cifs_tcon *tcon = tlink_tcon(cifs_file->tlink);
-+
-+	struct TCP_Server_Info *server = tcon->ses->server;
-+	int rc;
-+	int retries = 0;
-+	int MAX_RETRIES = 4;
-+
-+	do {
-+		if (server->ops->close_getattr)
-+			rc = server->ops->close_getattr(0, tcon, cifs_file);
-+		else if (server->ops->close)
-+			rc = server->ops->close(0, tcon, &cifs_file->fid);
-+
-+		if (rc == -EBUSY || rc == -EAGAIN) {
-+			retries++;
-+			msleep(250);
-+		}
-+	} while ((rc == -EBUSY || rc == -EAGAIN) && (retries < MAX_RETRIES)
-+	);
-+
-+	if (retries == MAX_RETRIES)
-+		printk(KERN_WARNING "[CIFS_CLOSE] Serverclose failed %d times, giving up\n", MAX_RETRIES);
-+
-+	if (cifs_file->offload)
-+		queue_work(fileinfo_put_wq, &cifs_file->put);
-+	else
-+		cifsFileInfo_put_final(cifs_file);
-+}
-+
- /**
-  * cifsFileInfo_put - release a reference of file priv data
-  *
-@@ -622,10 +658,13 @@ void _cifsFileInfo_put(struct cifsFileInfo *cifs_file,
- 	struct cifs_fid fid = {};
- 	struct cifs_pending_open open;
- 	bool oplock_break_cancelled;
-+	bool serverclose_offloaded = false;
- 
- 	spin_lock(&tcon->open_file_lock);
- 	spin_lock(&cifsi->open_file_lock);
- 	spin_lock(&cifs_file->file_info_lock);
-+
-+	cifs_file->offload = offload;
- 	if (--cifs_file->count > 0) {
- 		spin_unlock(&cifs_file->file_info_lock);
- 		spin_unlock(&cifsi->open_file_lock);
-@@ -667,13 +706,20 @@ void _cifsFileInfo_put(struct cifsFileInfo *cifs_file,
- 	if (!tcon->need_reconnect && !cifs_file->invalidHandle) {
- 		struct TCP_Server_Info *server = tcon->ses->server;
- 		unsigned int xid;
-+		int rc;
- 
- 		xid = get_xid();
- 		if (server->ops->close_getattr)
--			server->ops->close_getattr(xid, tcon, cifs_file);
-+			rc = server->ops->close_getattr(xid, tcon, cifs_file);
- 		else if (server->ops->close)
--			server->ops->close(xid, tcon, &cifs_file->fid);
-+			rc = server->ops->close(xid, tcon, &cifs_file->fid);
- 		_free_xid(xid);
-+
-+		if (rc == -EBUSY || rc == -EAGAIN) {
-+			// Server close failed, hence offloading it as an async op
-+			queue_work(serverclose_wq, &cifs_file->serverclose);
-+			serverclose_offloaded = true;
-+		}
- 	}
- 
- 	if (oplock_break_cancelled)
-@@ -681,10 +727,15 @@ void _cifsFileInfo_put(struct cifsFileInfo *cifs_file,
- 
- 	cifs_del_pending_open(&open);
- 
--	if (offload)
--		queue_work(fileinfo_put_wq, &cifs_file->put);
--	else
--		cifsFileInfo_put_final(cifs_file);
-+	// if serverclose has been offloaded to wq (on failure), it will
-+	// handle offloading put as well. If serverclose not offloaded,
-+	// we need to handle offloading put here.
-+	if (!serverclose_offloaded) {
-+		if (offload)
-+			queue_work(fileinfo_put_wq, &cifs_file->put);
-+		else
-+			cifsFileInfo_put_final(cifs_file);
-+	}
- }
- 
- int cifs_open(struct inode *inode, struct file *file)
-diff --git a/fs/smb/client/smb1ops.c b/fs/smb/client/smb1ops.c
-index a9eaba8083b0..212ec6f66ec6 100644
---- a/fs/smb/client/smb1ops.c
-+++ b/fs/smb/client/smb1ops.c
-@@ -753,11 +753,11 @@ cifs_set_fid(struct cifsFileInfo *cfile, struct cifs_fid *fid, __u32 oplock)
- 	cinode->can_cache_brlcks = CIFS_CACHE_WRITE(cinode);
- }
- 
--static void
-+static int
- cifs_close_file(const unsigned int xid, struct cifs_tcon *tcon,
- 		struct cifs_fid *fid)
- {
--	CIFSSMBClose(xid, tcon, fid->netfid);
-+	return CIFSSMBClose(xid, tcon, fid->netfid);
- }
- 
- static int
-diff --git a/fs/smb/client/smb2ops.c b/fs/smb/client/smb2ops.c
-index 4695433fcf39..1dcd4944958f 100644
---- a/fs/smb/client/smb2ops.c
-+++ b/fs/smb/client/smb2ops.c
-@@ -1411,14 +1411,14 @@ smb2_set_fid(struct cifsFileInfo *cfile, struct cifs_fid *fid, __u32 oplock)
- 	memcpy(cfile->fid.create_guid, fid->create_guid, 16);
- }
- 
--static void
-+static int
- smb2_close_file(const unsigned int xid, struct cifs_tcon *tcon,
- 		struct cifs_fid *fid)
- {
--	SMB2_close(xid, tcon, fid->persistent_fid, fid->volatile_fid);
-+	return SMB2_close(xid, tcon, fid->persistent_fid, fid->volatile_fid);
- }
- 
--static void
-+static int
- smb2_close_getattr(const unsigned int xid, struct cifs_tcon *tcon,
- 		   struct cifsFileInfo *cfile)
- {
-@@ -1429,7 +1429,7 @@ smb2_close_getattr(const unsigned int xid, struct cifs_tcon *tcon,
- 	rc = __SMB2_close(xid, tcon, cfile->fid.persistent_fid,
- 		   cfile->fid.volatile_fid, &file_inf);
- 	if (rc)
--		return;
-+		return rc;
- 
- 	inode = d_inode(cfile->dentry);
- 
-@@ -1458,6 +1458,7 @@ smb2_close_getattr(const unsigned int xid, struct cifs_tcon *tcon,
- 
- 	/* End of file and Attributes should not have to be updated on close */
- 	spin_unlock(&inode->i_lock);
-+	return rc;
- }
- 
- static int
--- 
-2.34.1
-
+T24gV2VkLCAyMDI0LTAzLTEzIGF0IDE2OjQxICswMTAwLCBQYW9sbyBBYmVuaSB3cm90ZToNCj4g
+IAkgDQo+IEV4dGVybmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBjbGljayBsaW5rcyBvciBvcGVu
+IGF0dGFjaG1lbnRzIHVudGlsDQo+IHlvdSBoYXZlIHZlcmlmaWVkIHRoZSBzZW5kZXIgb3IgdGhl
+IGNvbnRlbnQuDQo+ICBPbiBXZWQsIDIwMjQtMDMtMTMgYXQgMjE6MzQgKzA4MDAsIFNoaW1pbmcg
+Q2hlbmcgd3JvdGU6DQo+ID4gS2VybmVsIGV4Y2VwdGlvbiBpcyByZXBvcnRlZCB3aGVuIG1ha2lu
+ZyB1ZHAgZnJhZyBsaXN0DQo+IHNlZ21lbnRhdGlvbi4NCj4gPiBCYWNrdHJhY2UgaXMgYXMgYmVs
+b3c6DQo+ID4gICAgIGF0IG91dC9hbmRyb2lkMTUtNi42L2tlcm5lbC02LjYva2VybmVsLQ0KPiA2
+LjYvbmV0L2lwdjQvdWRwX29mZmxvYWQuYzoyMjkNCj4gPiAgICAgYXQgb3V0L2FuZHJvaWQxNS02
+LjYva2VybmVsLTYuNi9rZXJuZWwtDQo+IDYuNi9uZXQvaXB2NC91ZHBfb2ZmbG9hZC5jOjI2Mg0K
+PiA+IGZlYXR1cmVzPWZlYXR1cmVzQGVudHJ5PTE5LCBpc19pcHY2PWZhbHNlKQ0KPiA+ICAgICBh
+dCBvdXQvYW5kcm9pZDE1LTYuNi9rZXJuZWwtNi42L2tlcm5lbC0NCj4gNi42L25ldC9pcHY0L3Vk
+cF9vZmZsb2FkLmM6Mjg5DQo+ID4gZmVhdHVyZXM9MTkpDQo+ID4gICAgIGF0IG91dC9hbmRyb2lk
+MTUtNi42L2tlcm5lbC02LjYva2VybmVsLQ0KPiA2LjYvbmV0L2lwdjQvdWRwX29mZmxvYWQuYzoz
+OTkNCj4gPiBmZWF0dXJlcz0xOSkNCj4gPiAgICAgYXQgb3V0L2FuZHJvaWQxNS02LjYva2VybmVs
+LTYuNi9rZXJuZWwtDQo+IDYuNi9uZXQvaXB2NC9hZl9pbmV0LmM6MTQxOA0KPiA+IHNrYkBlbnRy
+eT0weDAsIGZlYXR1cmVzPTE5LCBmZWF0dXJlc0BlbnRyeT0wKQ0KPiA+ICAgICBhdCBvdXQvYW5k
+cm9pZDE1LTYuNi9rZXJuZWwtNi42L2tlcm5lbC02LjYvbmV0L2NvcmUvZ3NvLmM6NTMNCj4gPiB0
+eF9wYXRoPTxvcHRpbWl6ZWQgb3V0PikNCj4gPiAgICAgYXQgb3V0L2FuZHJvaWQxNS02LjYva2Vy
+bmVsLTYuNi9rZXJuZWwtNi42L25ldC9jb3JlL2dzby5jOjEyNA0KPiANCj4gQSBmdWxsIGJhY2t0
+cmFjZSB3b3VsZCBoZWxwIGJldHRlciB1bmRlcnN0YW5kaW5nIHRoZSBpc3N1ZS4NCg0KQmVsb3cg
+aXMgZnVsbCBiYWNrdHJhY2U6DQogWyAxMTAwLjgxMjIwNV1bICAgIEMzXSBDUFU6IDMgUElEOiAw
+IENvbW06IHN3YXBwZXIvMyBUYWludGVkOg0KRyAgICAgICAgVyAgT0UgICAgICA2LjYuMTctYW5k
+cm9pZDE1LTAtZzM4MDM3MWVhOWJmMSAjMQ0KIFsgMTEwMC44MTIyMTFdWyAgICBDM10gSGFyZHdh
+cmUgbmFtZTogTVQ2OTkxKEVORykgKERUKQ0KIFsgMTEwMC44MTIyMTVdWyAgICBDM10gQ2FsbCB0
+cmFjZToNCiBbIDExMDAuODEyMjE4XVsgICAgQzNdICBkdW1wX2JhY2t0cmFjZSsweGVjLzB4MTM4
+DQogWyAxMTAwLjgxMjIyMl1bICAgIEMzXSAgc2hvd19zdGFjaysweDE4LzB4MjQNCiBbIDExMDAu
+ODEyMjI2XVsgICAgQzNdICBkdW1wX3N0YWNrX2x2bCsweDUwLzB4NmMNCiBbIDExMDAuODEyMjMy
+XVsgICAgQzNdICBkdW1wX3N0YWNrKzB4MTgvMHgyNA0KIFsgMTEwMC44MTIyMzddWyAgICBDM10g
+IG1yZHVtcF9jb21tb25fZGllKzB4MjRjLzB4Mzg4IFttcmR1bXBdDQogWyAxMTAwLjgxMjI1OV1b
+ICAgIEMzXSAgaXBhbmljX2RpZSsweDIwLzB4MzQgW21yZHVtcF0NCiBbIDExMDAuODEyMjY5XVsg
+ICAgQzNdICBub3RpZmllcl9jYWxsX2NoYWluKzB4OTAvMHgxNzQNCiBbIDExMDAuODEyMjc1XVsg
+ICAgQzNdICBub3RpZnlfZGllKzB4NTAvMHg4Yw0KIFsgMTEwMC44MTIyNzldWyAgICBDM10gIGRp
+ZSsweDk0LzB4MzA4DQogWyAxMTAwLjgxMjI4M11bICAgIEMzXSAgX19kb19rZXJuZWxfZmF1bHQr
+MHgyNDAvMHgyNmMNCiBbIDExMDAuODEyMjg4XVsgICAgQzNdICBkb19wYWdlX2ZhdWx0KzB4YTAv
+MHg0OGMNCiBbIDExMDAuODEyMjkzXVsgICAgQzNdICBkb190cmFuc2xhdGlvbl9mYXVsdCsweDM4
+LzB4NTQNCiBbIDExMDAuODEyMjk3XVsgICAgQzNdICBkb19tZW1fYWJvcnQrMHg1OC8weDEwNA0K
+IFsgMTEwMC44MTIzMDJdWyAgICBDM10gIGVsMV9hYm9ydCsweDNjLzB4NWMNCiBbIDExMDAuODEy
+MzA3XVsgICAgQzNdICBlbDFoXzY0X3N5bmNfaGFuZGxlcisweDU0LzB4OTANCiBbIDExMDAuODEy
+MzEzXVsgICAgQzNdICBlbDFoXzY0X3N5bmMrMHg2OC8weDZjDQogWyAxMTAwLjgxMjMxN11bICAg
+IEMzXSAgX191ZHBfZ3NvX3NlZ21lbnQrMHgyOTgvMHg0ZDQNCiBbIDExMDAuODEyMzIyXVsgICAg
+QzNdICB1ZHA0X3Vmb19mcmFnbWVudCsweDEzMC8weDE3NA0KIFsgMTEwMC44MTIzMjZdWyAgICBD
+M10gIGluZXRfZ3NvX3NlZ21lbnQrMHgxNjQvMHgzMzANCiBbIDExMDAuODEyMzMwXVsgICAgQzNd
+ICBza2JfbWFjX2dzb19zZWdtZW50KzB4YzQvMHgxM2MNCiBbIDExMDAuODEyMzM1XVsgICAgQzNd
+ICBfX3NrYl9nc29fc2VnbWVudCsweGM0LzB4MTIwDQogWyAxMTAwLjgxMjMzOV1bICAgIEMzXSAg
+dWRwX3Jjdl9zZWdtZW50KzB4NTAvMHgxMzQNCiBbIDExMDAuODEyMzQ0XVsgICAgQzNdICB1ZHBf
+cXVldWVfcmN2X3NrYisweDc0LzB4MTE0DQogWyAxMTAwLjgxMjM0OF1bICAgIEMzXSAgdWRwX3Vu
+aWNhc3RfcmN2X3NrYisweDk0LzB4YWMNCiBbIDExMDAuODEyMzUzXVsgICAgQzNdICBfX3VkcDRf
+bGliX3JjdisweDNlMC8weDgxOA0KIFsgMTEwMC44MTIzNThdWyAgICBDM10gIHVkcF9yY3YrMHgy
+MC8weDMwDQogWyAxMTAwLjgxMjM2Ml1bICAgIEMzXSAgaXBfcHJvdG9jb2xfZGVsaXZlcl9yY3Ur
+MHgxOTQvMHgzNjgNCiBbIDExMDAuODEyMzY4XVsgICAgQzNdICBpcF9sb2NhbF9kZWxpdmVyKzB4
+ZTQvMHgxODQNCiBbIDExMDAuODEyMzczXVsgICAgQzNdICBpcF9yY3YrMHg5MC8weDExOA0KIFsg
+MTEwMC44MTIzNzhdWyAgICBDM10gIF9fbmV0aWZfcmVjZWl2ZV9za2IrMHg3NC8weDEyNA0KIFsg
+MTEwMC44MTIzODNdWyAgICBDM10gIHByb2Nlc3NfYmFja2xvZysweGQ4LzB4MThjDQogWyAxMTAw
+LjgxMjM4OF1bICAgIEMzXSAgX19uYXBpX3BvbGwrMHg1Yy8weDFmYw0KIFsgMTEwMC44MTIzOTJd
+WyAgICBDM10gIG5ldF9yeF9hY3Rpb24rMHgxNTAvMHgzMzQNCiBbIDExMDAuODEyMzk3XVsgICAg
+QzNdICBfX2RvX3NvZnRpcnErMHgxMjAvMHgzZjQNCiBbIDExMDAuODEyNDAxXVsgICAgQzNdICBf
+X19fZG9fc29mdGlycSsweDEwLzB4MjANCiBbIDExMDAuODEyNDA1XVsgICAgQzNdICBjYWxsX29u
+X2lycV9zdGFjaysweDNjLzB4NzQNCiBbIDExMDAuODEyNDEwXVsgICAgQzNdICBkb19zb2Z0aXJx
+X293bl9zdGFjaysweDFjLzB4MmMNCiBbIDExMDAuODEyNDE0XVsgICAgQzNdICBfX2lycV9leGl0
+X3JjdSsweDVjLzB4ZDQNCiBbIDExMDAuODEyNDE4XVsgICAgQzNdICBpcnFfZXhpdF9yY3UrMHgx
+MC8weDFjDQogWyAxMTAwLjgxMjQyMl1bICAgIEMzXSAgZWwxX2ludGVycnVwdCsweDM4LzB4NTgN
+CiBbIDExMDAuODEyNDI4XVsgICAgQzNdICBlbDFoXzY0X2lycV9oYW5kbGVyKzB4MTgvMHgyNA0K
+IFsgMTEwMC44MTI0MzRdWyAgICBDM10gIGVsMWhfNjRfaXJxKzB4NjgvMHg2Yw0KIFsgMTEwMC44
+MTI0MzddWyAgICBDM10gIGFyY2hfbG9jYWxfaXJxX2VuYWJsZSsweDQvMHg4DQogWyAxMTAwLjgx
+MjQ0M11bICAgIEMzXSAgY3B1aWRsZV9lbnRlcisweDM4LzB4NTQNCiBbIDExMDAuODEyNDQ5XVsg
+ICAgQzNdICBkb19pZGxlKzB4MTk4LzB4Mjk0DQogWyAxMTAwLjgxMjQ1NF1bICAgIEMzXSAgY3B1
+X3N0YXJ0dXBfZW50cnkrMHgzNC8weDNjDQogWyAxMTAwLjgxMjQ1OV1bICAgIEMzXSAgc2Vjb25k
+YXJ5X3N0YXJ0X2tlcm5lbCsweDEzOC8weDE1OA0KIFsgMTEwMC44MTI0NjVdWyAgICBDM10gIF9f
+c2Vjb25kYXJ5X3N3aXRjaGVkKzB4YzAvMHhjNA0KDQo+ID4gVGhpcyBwYWNrZXQncyBmcmFnIGxp
+c3QgaXMgbnVsbCB3aGlsZSBnc29fdHlwZSBpcyBub3QgMC4gVGhlbiBpdCBpcw0KPiB0cmVhdGVk
+DQo+ID4gYXMgYSBHUk8tZWQgcGFja2V0IGFuZCBzZW50IHRvIHNlZ21lbnQgZnJhZyBsaXN0LiBG
+dW5jdGlvbiBjYWxsDQo+IHBhdGggaXMNCj4gPiB1ZHBfcmN2X3NlZ21lbnQgPT4gY29uZmlnIGZl
+YXR1cmVzIHZhbHVlDQo+ID4gICAgIF9fdWRwdjRfZ3NvX3NlZ21lbnQgID0+IHNrYl9nc29fb2sg
+cmV0dXJucyBmYWxzZS4gSGVyZSBpdA0KPiBzaG91bGQgYmUNCj4gPiAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICAgdHJ1ZS4gDQo+IA0KPiBXaHk/IElmIEkgcmVhZCBjb3JyZWN0bHkgdGhlIGFi
+b3ZlLCB0aGlzIGlzIEdTTyBwYWNrZXQgbGFuZGluZyBpbiBhbg0KPiBVRFAgc29ja2V0IHdpdGgg
+bm8gVURQX0dSTyBzb2Nrb3B0LiBUaGUgcGFja2V0IGlzIGV4cGVjdGVkIHRvIGJlDQo+IHNlZ21l
+bnRlZCBhZ2Fpbi4NCj4gDQpZZXMsIGl0IGlzIEdTTyBwYWNrZXQsIGhvd2V2ZXIgdGhlIGZyYWdt
+ZW50IGxpc3Qgb2YgdGhpcyBHU08gcGFja2V0DQpiZWNvbWVzIE5VTEwuIEFzIHRoZSBvY2N1cnJl
+bmNlIHJhdGUgaXMgdmVyeSBsb3csIHdlIHJlYWxseSBkb27igJl0IGtub3cNCndoeSBhbmQgd2hl
+biBpdCBiZWNvbWVzIHRvIGJlIE5VTEwuIEl0IGhhcHBlbnMgYm90aCBpbiBjZWxsdWxhciBhbmQN
+CndsYW4gbmV0d29yayBhbmQgc2VlbXMgYW4gdW5rbm93biBrZXJuZWwgaXNzdWUuDQoNClRvIGF2
+b2lkIGNyYXNoIHRoZSBwYWNrZXQgc2hvdWxkIHNraXAgdG8gYmUgc2VnbWVudGVkIHdoZW4gZnJh
+Z2xpc3QgaXMNCm51bGwuDQoNCj4gPkZhaWxlZCByZWFzb24gaXMgZmVhdHVyZXMgZG9lc24ndA0K
+PiBtYXRjaA0KPiA+ICAgICAgICAgICAgICAgICAgICAgICAgICAgICBnc29fdHlwZS4NCj4gPiAg
+ICAgICAgIF9fdWRwX2dzb19zZWdtZW50X2xpc3QNCj4gPiAgICAgICAgICAgICBza2Jfc2VnbWVu
+dF9saXN0ID0+IHBhY2tldCBpcyBsaW5lYXIgd2l0aCBza2ItPm5leHQgPQ0KPiBOVUxMDQo+ID4g
+ICAgICAgICAgICAgX191ZHB2NF9nc29fc2VnbWVudF9saXN0X2NzdW0gPT4gdXNlIHNrYi0+bmV4
+dCBkaXJlY3RseQ0KPiBhbmQNCj4gPiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg
+ICAgICAgICAgICBjcmFzaCBoYXBwZW5zDQo+ID4gDQo+ID4gSW4gcngtZ3JvLWxpc3QgR1JPLWVk
+IHBhY2tldCBpcyBzZXQgZ3NvIHR5cGUgYXMNCj4gPiBORVRJRl9GX0dTT19VRFBfTDQgfCBORVRJ
+Rl9GX0dTT19GUkFHTElTVCBpbiBuYXBpX2dyb19jb21wbGV0ZS4gSW4NCj4gZ3NvDQo+ID4gZmxv
+dyB0aGUgZmVhdHVyZXMgc2hvdWxkIGFsc28gc2V0IHRoZW0gdG8gbWF0Y2ggd2l0aCBnc29fdHlw
+ZS4gT3INCj4gZWxzZSBpdA0KPiA+IHdpbGwgYWx3YXlzIHJldHVybiBmYWxzZSBpbiBza2JfZ3Nv
+X29rLiBUaGVuIGl0IGNhbid0IGRpc2NvdmVyIHRoZQ0KPiA+IHVudHJ1c3RlZCBzb3VyY2UgcGFj
+a2V0IGFuZCByZXN1bHQgY3Jhc2ggaW4gZm9sbG93aW5nIGZ1bmN0aW9uLg0KPiANCj4gV2hhdCBp
+cyB0aGUgJ3VudHJ1c3RlZCBzb3VyY2UnIGhlcmU/IEkgcmVhZCB0aGUgYWJvdmUgYXMgdGhlIHBh
+Y2tldA0KPiBhZ2dyZWdhdGlvbiBoYXBwZW5lZCBpbiB0aGUgR1JPIGVuZ2luZT8/Pw0KPiANCj4g
+Q291bGQgeW91IHBsZWFzZSBnaXZlIGEgY29tcGxldGUgZGVzY3JpcHRpb24gb2YgdGhlIHJlbGV2
+YW50DQo+IHNjZW5hcmlvPw0KPiANCg0KQWNjb3JkaW5nIHRvIHRoZSBiYWNrdHJhY2UgaW5mbywg
+d2UgaW5mZXIgaXQgaXMgYSByeC1mcmFnX2xpc3QgR1JPDQpwYWNrZXQuIEJlZm9yZSBzZW5kaW5n
+IGludG8gdGhlIFVEUCBzb2NrZXQgd2l0aCBubyBVRFBfR1JPIHNvY2tvcHQsIGl0DQpzZWVtcyBl
+bnRlciAic2tiX2NvbmRlbnNlIiB0byB0cmltIGl0IGFuZCBsb29zZSBoaXMgZnJhZyBsaXN0LiBI
+b3dldmVyDQppdCBzdGlsbCBrZWVwcyBnc29fdHlwZSBhbmQgZ3NvX3NpemUuIFRoZW4gaXQgY29u
+dGludWVzIHRvIGRvDQpza2Jfc2VnbWVudF9saXN0Lg0KDQpGaXJzdCBjcmFzaCBoYXBwZW5zIGlu
+IHNrYl9zZWdtZW50X2xpc3QuIA0KVGhpcyBwYXRjaCByZXNvbHZlcyB0aGUgY3Jhc2ggYW5kIGxl
+dHMgdGhlIHBhY2tldCBiZWNvbWVzIGEgc2tiIHdpdGhvdXQNCnNrYi0+bmV4dDoNCmh0dHBzOi8v
+bG9yZS5rZXJuZWwub3JnL2FsbC9ZOWd0NUVVaXpLMVVJbUVQQGRlYmlhbi8NClRoZW4gY3Jhc2gg
+bW92ZXMgdG8gX191ZHBfZ3NvX3NlbWVudF9saXN0IC0+IHNrYl9zZWdtZW50X2xpc3QoZmluaXNo
+KQ0KLT4gX191ZHB2NF9nc29fc2VnbWVudF9saXN0X2NzdW0sIGl0IHVzZXMgc2tiLT5uZXh0IHdp
+dGhvdXQgY2hlY2sgdGhlbg0KY3Jhc2guDQoNCg0KV2hhdCB3ZSB3YW50IHRvIGRvIGlzIHRvIGRy
+b3AgdGhpcyBhYm5vcm1hbCBwYWNrZXQuIFNvIHdlIHNldCBmZWF0dXJlcw0KTkVUSUZfRl9HU09f
+VURQX0w0IHxORVRJRl9GX0dTT19GUkFHTElTVCB0byBtYXRjaCBmaXhlczogZjI2OTYwOTljNmM2
+DQpjb25kYXRpb24gdGhlbiBkcm9wIGl0LiANCg0KQW5vdGhlciBzb2x1dGlvbiBpcyB3ZSBjYW4g
+Y2hlY2sgdGhlIGZyYWdfbGlzdCBkaXJlY3RseSBpbg0Kc2tiX3NlZ21lbnRfbHNpdDoNCmRpZmYg
+LS1naXQgYS9uZXQvY29yZS9za2J1ZmYuYyBiL25ldC9jb3JlL3NrYnVmZi5jDQppbmRleCAwMTFk
+NjkwLi41YjA1NGYwIDEwMDY0NA0KLS0tIGEvbmV0L2NvcmUvc2tidWZmLmMNCisrKyBiL25ldC9j
+b3JlL3NrYnVmZi5jDQpAQCAtNDMzNiw2ICs0MzM2LDggQEANCiAgaW50IGxlbl9kaWZmLCBlcnI7
+DQoNCiAgc2tiX3B1c2goc2tiLCAtc2tiX25ldHdvcmtfb2Zmc2V0KHNrYikgKyBvZmZzZXQpOw0K
+KyAgICAgIGlmICghbGlzdF9za2IpDQorICAgICAgICAgICAgIGdvdG8gZXJyX2xpbmVhcml6ZTsN
+Cg0KICAvKiBFbnN1cmUgdGhlIGhlYWQgaXMgd3JpdGVhYmxlIGJlZm9yZSB0b3VjaGluZyB0aGUg
+c2hhcmVkIGluZm8gKi8NCiAgZXJyID0gc2tiX3VuY2xvbmUoc2tiLCBHRlBfQVRPTUlDKTsNCg0K
+PiA+IEZpeGVzOiBmMjY5NjA5OWM2YzYgKCJ1ZHA6IEF2b2lkIHBvc3QtR1JPIFVEUCBjaGVja3N1
+bQ0KPiByZWNhbGN1bGF0aW9uIikNCj4gPiBTaWduZWQtb2ZmLWJ5OiBTaGltaW5nIENoZW5nIDxz
+aGltaW5nLmNoZW5nQG1lZGlhdGVrLmNvbT4NCj4gPiBTaWduZWQtb2ZmLWJ5OiBMZW5hIFdhbmcg
+PGxlbmEud2FuZ0BtZWRpYXRlay5jb20+DQo+ID4gLS0tDQo+ID4gIGluY2x1ZGUvbmV0L3VkcC5o
+IHwgMiArLQ0KPiA+ICAxIGZpbGUgY2hhbmdlZCwgMSBpbnNlcnRpb24oKyksIDEgZGVsZXRpb24o
+LSkNCj4gPiANCj4gPiBkaWZmIC0tZ2l0IGEvaW5jbHVkZS9uZXQvdWRwLmggYi9pbmNsdWRlL25l
+dC91ZHAuaA0KPiA+IGluZGV4IDQ4OGE2ZDJiYWJjYy4uYzg3YmFhMjNiOWRhIDEwMDY0NA0KPiA+
+IC0tLSBhL2luY2x1ZGUvbmV0L3VkcC5oDQo+ID4gKysrIGIvaW5jbHVkZS9uZXQvdWRwLmgNCj4g
+PiBAQCAtNDY0LDcgKzQ2NCw3IEBAIHZvaWQgdWRwdjZfZW5jYXBfZW5hYmxlKHZvaWQpOw0KPiA+
+ICBzdGF0aWMgaW5saW5lIHN0cnVjdCBza19idWZmICp1ZHBfcmN2X3NlZ21lbnQoc3RydWN0IHNv
+Y2sgKnNrLA0KPiA+ICAgICAgICBzdHJ1Y3Qgc2tfYnVmZiAqc2tiLCBib29sIGlwdjQpDQo+ID4g
+IHsNCj4gPiAtbmV0ZGV2X2ZlYXR1cmVzX3QgZmVhdHVyZXMgPSBORVRJRl9GX1NHOw0KPiA+ICtu
+ZXRkZXZfZmVhdHVyZXNfdCBmZWF0dXJlcyA9IE5FVElGX0ZfU0cgfCBORVRJRl9GX0dTT19VRFBf
+TDQgfA0KPiBORVRJRl9GX0dTT19GUkFHTElTVDsNCj4gDQo+IFRoaXMgbG9va3Mgd3Jvbmc6IHJl
+YWwgVURQX0w0IEdTTyBwYWNrZXRzIHdpbGwgbm90IHNlZ21lbnRlZCBhbnltb3JlDQo+IGFuZCBz
+aG91bGQgYmUgZHJvcHBlZCAoPyE/KQ0KPiANCj4gDQo=
 
