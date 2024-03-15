@@ -1,138 +1,153 @@
-Return-Path: <linux-kernel+bounces-104324-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2BE2E87CC31
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:19:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7384687CC33
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D5A522810DE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:19:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 00C481F236B7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:20:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55D4D1B7F9;
-	Fri, 15 Mar 2024 11:19:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o+pLQ5aY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350D01B941;
+	Fri, 15 Mar 2024 11:20:01 +0000 (UTC)
+Received: from szxga01-in.huawei.com (szxga01-in.huawei.com [45.249.212.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 82D2D1B7E1
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:19:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8A731B940
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710501567; cv=none; b=KCR4VjBVdSP90R9fHObN5gTKcxDipE2NCiBWJjOiGF0ItNtLFpcofVfmE4bfiPOvTBI9tC3b+WjQ+9OsELFFIdYyi6ANjD73/Yj4p4DtWzFLx5B/7PrhGwU0YoAIuJznnpySurE1Oy4969DFtKwtne008+uhVei1Obp+sjqnr4s=
+	t=1710501600; cv=none; b=GeZ1HWKBSt9fiBkQYQXSAbsdnTbM18P3gDklPkIWeF2ESMXBt5Vy9EUmYR5kJadS0VVS6m+kjQvDclPOlQuwTQ3d2H3qwcy4vF+FgAIbZ+ap4UuTQprGhviRP9lEtSbfuw7mKWKyHsMq+W46DITY0X6NJ4N6C1ty76+haZ7aa/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710501567; c=relaxed/simple;
-	bh=Y/BQv7bz1TuPZ2XSnLradRyziOsAUzK0nrATY2jo7EY=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=lW1gwz0i1skOmeF02rulejURlWqixfdYXckZ6ukVc/RidlxNI58y+aEiThW+B48ZzFJVhvmrWEW8vwr0ZjQ13B62d1uQ3k4q19d90Q/YzyaqUdqO+oPRA5ttkJz10+tIPAt1ZAA6Nwqk8+ZlrRDoYDs704G+AYgKMBhsYpQN2R8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o+pLQ5aY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42BAAC433F1;
-	Fri, 15 Mar 2024 11:19:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710501567;
-	bh=Y/BQv7bz1TuPZ2XSnLradRyziOsAUzK0nrATY2jo7EY=;
-	h=Date:From:To:Cc:Subject:From;
-	b=o+pLQ5aYxZ0b9jyEeIAes48zOFg+N/UY+9nl6l71skWBNLViPm5iPoKqdGXoT1DJ8
-	 EML/CEWWMRygwJJEJ+KiRSwswf356H86FEHXfRTJEBcHx5LbNdMZiWY3rqNYVBqoz1
-	 JQsQLXGk9vi12h5ZuPTX6MU80gZ/xXsknpLA6in7C8AzA+aYInRqjj4a4HmqJKfLgW
-	 UwgnbSLKgqI00IulljqNLmgtz22ZrRimYdWI3vT/LRgfREoMbC1t2XJFnXhHtAXfxn
-	 nR3UaNkTl31i5WlPPivis4kE9Xe9s+HtfyGEneWcHlQq7XIM2NDCR1P2pJzjOpJD6K
-	 7zII9ZGb+hTZA==
-Date: Fri, 15 Mar 2024 16:49:20 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL]: Soundwire updates for v6.9
-Message-ID: <ZfQuuDU8DDxdU9y8@matsya>
+	s=arc-20240116; t=1710501600; c=relaxed/simple;
+	bh=aqVxIr070yJOwa6Da2y023BMYz7Eirl61hZYYAZT2Uc=;
+	h=Subject:To:References:From:Message-ID:Date:MIME-Version:
+	 In-Reply-To:Content-Type; b=GsqgF8iZarOdMABZr2UISaDeccB0qdqYhv+6YTfnunm3K5XVMK5lUKoyrDz1ts6NkGJvanhGDtb8Ftvp90JldluOUoPUm7N+OdHFKcVxIYpqw2ouNidr8KcXC3/Mt0+wCk8i7WhM52V7MOtuX9UBMVfWLu+evWc/iaJoLq3cd90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.174])
+	by szxga01-in.huawei.com (SkyGuard) with ESMTP id 4Tx1tT3VjvzwPFL;
+	Fri, 15 Mar 2024 19:17:21 +0800 (CST)
+Received: from kwepemm600013.china.huawei.com (unknown [7.193.23.68])
+	by mail.maildlp.com (Postfix) with ESMTPS id BE9941400CD;
+	Fri, 15 Mar 2024 19:19:33 +0800 (CST)
+Received: from [10.174.178.46] (10.174.178.46) by
+ kwepemm600013.china.huawei.com (7.193.23.68) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Fri, 15 Mar 2024 19:19:33 +0800
+Subject: Re: [RFC PATCH] jffs2: fix recursive fs_reclaim deadlock
+To: Qingfang Deng <dqfext@gmail.com>, David Woodhouse <dwmw2@infradead.org>,
+	Richard Weinberger <richard@nod.at>, <linux-mtd@lists.infradead.org>,
+	<linux-kernel@vger.kernel.org>
+References: <20240315075946.587679-1-dqfext@gmail.com>
+From: Zhihao Cheng <chengzhihao1@huawei.com>
+Message-ID: <ff19df82-3fd4-9098-667c-0502b2452334@huawei.com>
+Date: Fri, 15 Mar 2024 19:19:32 +0800
+User-Agent: Mozilla/5.0 (Windows NT 10.0; WOW64; rv:68.0) Gecko/20100101
+ Thunderbird/68.5.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="G97PEePqAOkNECFV"
-Content-Disposition: inline
+In-Reply-To: <20240315075946.587679-1-dqfext@gmail.com>
+Content-Type: text/plain; charset="gbk"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
+ kwepemm600013.china.huawei.com (7.193.23.68)
+
+ÔÚ 2024/3/15 15:59, Qingfang Deng Ð´µÀ:
+> When testing jffs2 on a memory-constrained system, lockdep detected a
+> possible circular locking dependency.
+> 
+> kswapd0/266 is trying to acquire lock:
+> ffffff802865e508 (&f->sem){+.+.}-{3:3}, at: jffs2_do_clear_inode+0x44/0x200
+> 
+> but task is already holding lock:
+> ffffffd010e843c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x40
+> 
+> which lock already depends on the new lock.
+> 
+> the existing dependency chain (in reverse order) is:
+> 
+> -> #1 (fs_reclaim){+.+.}-{0:0}:
+>         lock_acquire+0x6c/0x90
+>         fs_reclaim_acquire+0x7c/0xa0
+>         kmem_cache_alloc+0x5c/0x400
+>         jffs2_alloc_inode_cache+0x18/0x20
+>         jffs2_do_read_inode+0x1e0/0x310
+>         jffs2_iget+0x154/0x540
+>         jffs2_do_fill_super+0x214/0x3f0
+>         jffs2_fill_super+0x138/0x180
+>         mtd_get_sb+0xcc/0x120
+>         get_tree_mtd+0x168/0x400
+>         jffs2_get_tree+0x14/0x20
+>         vfs_get_tree+0x48/0x130
+>         path_mount+0xa64/0x12d0
+>         __arm64_sys_mount+0x368/0x3e0
+>         do_el0_svc+0xa0/0x140
+>         el0_svc+0x1c/0x30
+>         el0_sync_handler+0x9c/0x120
+>         el0_sync+0x148/0x180
+> 
+> -> #0 (&f->sem){+.+.}-{3:3}:
+>         __lock_acquire+0x18cc/0x2bb0
+>         lock_acquire.part.0+0x170/0x2e0
+>         lock_acquire+0x6c/0x90
+>         __mutex_lock+0x10c/0xaa0
+>         mutex_lock_nested+0x54/0x80
+>         jffs2_do_clear_inode+0x44/0x200
+>         jffs2_evict_inode+0x44/0x50
+>         evict+0x120/0x290
+>         dispose_list+0x88/0xd0
+>         prune_icache_sb+0xa8/0xd0
+>         super_cache_scan+0x1c4/0x240
+>         shrink_slab.constprop.0+0x2a0/0x7f0
+>         shrink_node+0x398/0x8e0
+>         balance_pgdat+0x268/0x550
+>         kswapd+0x154/0x7c0
+>         kthread+0x1f0/0x200
+>         ret_from_fork+0x10/0x20
+> 
+I think it's a false positive warning. Jffs2 is trying to get root inode 
+in process '#1', which means that the filesystem is not mounted 
+yet(Because d_make_root is after jffs2_iget(sb,1), there is no way to 
+access other inodes.), so it is impossible that jffs2 inode is being 
+evicted in '#0'.
+> other info that might help us debug this:
+> 
+>   Possible unsafe locking scenario:
+> 
+>         CPU0                    CPU1
+>         ----                    ----
+>    lock(fs_reclaim);
+>                                 lock(&f->sem);
+>                                 lock(fs_reclaim);
+>    lock(&f->sem);
+> 
+>   *** DEADLOCK ***
+> 
+> 3 locks held by kswapd0/266:
+>   #0: ffffffd010e843c0 (fs_reclaim){+.+.}-{0:0}, at: __fs_reclaim_acquire+0x0/0x40
+>   #1: ffffffd010e62eb0 (shrinker_rwsem){++++}-{3:3}, at: shrink_slab.constprop.0+0x78/0x7f0
+>   #2: ffffff80225340e0 (&type->s_umount_key#40){.+.+}-{3:3}, at: super_cache_scan+0x3c/0x240
+> 
+> It turns out jffs2 uses GFP_KERNEL as the memory allocation flags
+> throughout the code, and commonly, inside the critical section of
+> jffs2_inode_info::sem. When running low on memory, any allocation within
+> the critical section may trigger a direct reclaim, which recurses back
+> to jffs2_do_clear_inode().
+> 
+> Replace GFP_KERNEL with GFP_NOFS to avoid the recursion.
+> 
+> Signed-off-by: Qingfang Deng <dqfext@gmail.com>
+> ---
+> XXX: Posting this as RFC, as I don't know if all GFP_KERNEL occurrences
+> should be replaced, or if this is just a false positive.
 
 
---G97PEePqAOkNECFV
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-Hello Linus,
-
-Please pull to receive this quite small update for soundwire subsystem.
-
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/vkoul/soundwire.git tags/so=
-undwire-6.9-rc1
-
-for you to fetch changes up to e17aae16acf53938deb4b7702aa4f6cee2c4a073:
-
-  soundwire: Use snd_soc_substream_to_rtd() to obtain rtd (2024-03-03 19:29=
-:28 +0530)
-
-----------------------------------------------------------------
-soundwire updates for 6.9
-
- - Constify sdw_bus and sdw_master_type objects
- - use of rtd helper for better code
- - intel aux device remove redundant assignment
-
-----------------------------------------------------------------
-Cezary Rojewski (1):
-      soundwire: Use snd_soc_substream_to_rtd() to obtain rtd
-
-Colin Ian King (1):
-      soundwire: intel_auxdevice: remove redundant assignment to variable l=
-ink_flags
-
-Krzysztof Kozlowski (1):
-      soundwire: stream: add missing const to Documentation
-
-Ricardo B. Marliere (2):
-      soundwire: bus_type: make sdw_bus_type const
-      soundwire: constify the struct device_type usage
-
- Documentation/driver-api/soundwire/stream.rst | 4 ++--
- drivers/soundwire/bus_type.c                  | 2 +-
- drivers/soundwire/intel_auxdevice.c           | 2 --
- drivers/soundwire/master.c                    | 2 +-
- drivers/soundwire/slave.c                     | 2 +-
- drivers/soundwire/stream.c                    | 6 +++---
- include/linux/soundwire/sdw_type.h            | 6 +++---
- 7 files changed, 11 insertions(+), 13 deletions(-)
-
---=20
-~Vinod
-
---G97PEePqAOkNECFV
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmX0LrgACgkQfBQHDyUj
-g0e/eRAAxKxtlMyM1Do8CmR6QX4PAZr1t7Nz/+V5atIQq0LH2yKPYCBq6TbYJSyU
-2/PRuD3Or4UWsrmHm42Q8pqCnPB9LrDVAeJx8dqW3TFGs4x9nmF0bZwmb0oKghSW
-uwWXJ66/AhQ6jTV6Z46ysWB9/nQDkcPKroJRIYEHgFVpDCwCM4ZgVzlTnZteMzCx
-NPQVRm6s2kfHqCp75ltpTxrupVXPNtCP8jBcL0uS9LxRfkh+B/BA0XHqTKw3lYz2
-j1NmRTgzMVgN5YPy5e+71GSZakJaQ6+5r/jBrLjYjGJuMZK6hB2gweX+5pZvjMdY
-9fQnJS2eagOOfiFrVYQrbZvvf6Zf+2uw6dYKuJFa9UeJXsG7enxmkel9xP+WSq5S
-s4Emyh2lSSsd4QWfT8u+KOnlcfg9zGYdgJ1YNH74sVhSVW25cziQ8ddn1XA1yg8k
-dWMqCt24H6apNtDxG6QVBue/QYTtVx+A5IQPSfInVVRFhTgp0/+d74uyD+6V/oAb
-TkMrnSixG3TXmb4isHd1ewg5pbot1Ji8L2yLgjf03FjDMMWL3AQSUv6AuLopbQpx
-0r7VJf8hmZd86Sy5Ph3f7FbdpTvjNxnew3P+wi6MZMakaKpdNjKX095x/EI8HnuR
-0ZRx6SoVecsKJ1ZOZIERIcVtfo5hEbTik9aGwZgzAACAwptpKUM=
-=QzSU
------END PGP SIGNATURE-----
-
---G97PEePqAOkNECFV--
 
