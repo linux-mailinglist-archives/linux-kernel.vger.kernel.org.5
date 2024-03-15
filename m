@@ -1,54 +1,39 @@
-Return-Path: <linux-kernel+bounces-104377-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104378-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9125687CD01
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:02:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5374087CD03
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C282E1C2199B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:02:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 17F7D28391D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:07:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEEDB1C280;
-	Fri, 15 Mar 2024 12:02:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="myQxTOcD"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A5C7635
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:02:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E651C287;
+	Fri, 15 Mar 2024 12:07:05 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC5391862B
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:07:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710504131; cv=none; b=jPg8rr+jO1tup+HAFb0EpiaC/81ROrYiFs+/1qOA2hqoW5paMSVMegp8r0f5aYsXbxZ848MeaJbr7MP5/dpnLMkX/teJFYLzMgpvLhlJltiAQcS1+/QG8pFEU9PAHas1Me0lhTOQ/ag1tXqtIvFOyt8l7CxAeBsDRkXK56JPfbk=
+	t=1710504424; cv=none; b=ZDV0lxGICxFd1V6GG7LEbmAuO8GQR/1Btv7g3FUjRcONLoxhyHDej6AjJD9ypUTf3kLzCZoBw5YKUQeM7SBvosMaYsAN9xmV+gxQjaXwCbjxi3w4qawAxEFIwegIX3n/ZVaNLUrEIBBfBHltHJuOthQa9JceGLE0DG43Sv3NBDE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710504131; c=relaxed/simple;
-	bh=OtLFV54AJAjMDblqkVAwHk31mrIpvs9hCe+qbqa6st0=;
+	s=arc-20240116; t=1710504424; c=relaxed/simple;
+	bh=fDvkF6jTJliuGLyCOJH9oxGu1/dL9N3lMa65J0e/pOY=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bDpvCQCas4xGQ1zM2INcl9zRdkNN1RAoNbRyd/E0+jw77IRxE3zhHMKKfSoulgdCfQEueKz7/C8P0ugVP16Rex1AdjLe+zDcNTqOjJp2cU+OWTIRWzkm6BeT2IStZCJ8LLEAe2jtoBnVwsWvzTDNw3ENpOfHOfIs7O7D2mNE86E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=myQxTOcD; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710504128;
-	bh=OtLFV54AJAjMDblqkVAwHk31mrIpvs9hCe+qbqa6st0=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=myQxTOcD/FfQvyq0VJdG+KHbNtlK3TN0MTbM8M44bMsJlsgbinPJEXz/jCWDRL1PU
-	 focHWdjD9QDjGIRpQlNqFI4k/lVmGIBS+tRV5APngLHW82Pm9fhgbQMS2tOD6AE1pP
-	 seN2B4/Cjq8eBc1W+Tc2pyNrC1APKfg6fyc2T7DYFkszdbQ9ljIFzQ3HWz3nzkRRe+
-	 Oujf/PSTY0GzSDFXArl60Jk6NGqWm0KxhzG/aZ+Rv6ZEj8OaSu2ygJGpHgTqH17nBr
-	 qSsf9upQs/hcuTx8BR7SDwnR4Q0A1Wsq9pjKB2euYnAayAr4ueIxmQFsK0pnLm8XEa
-	 YbQtABFGH5NQQ==
-Received: from [100.95.196.25] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: koike)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id D34E2378105A;
-	Fri, 15 Mar 2024 12:02:02 +0000 (UTC)
-Message-ID: <aba60de7-63a2-4009-bdfd-4d86cec464be@collabora.com>
-Date: Fri, 15 Mar 2024 09:02:02 -0300
+	 In-Reply-To:Content-Type; b=KlDdar57lBpok6o41rtakIx9XVSPyIwOZh3TjyQlu6dv666jfzqLvLFKKd5R6s5buBzsGukvuLQ3PyZA+tYEKpXcPpmgGC4leBnlOt6nAcsxTdLHDHFsseVbA6O82q2BQ4AZwDeBwd7o6/s+1TYJ7foCgTGX5+FawmvHdiY6O/g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id E8D65C15;
+	Fri, 15 Mar 2024 05:07:32 -0700 (PDT)
+Received: from [10.57.69.160] (unknown [10.57.69.160])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 83D3F3F73F;
+	Fri, 15 Mar 2024 05:06:53 -0700 (PDT)
+Message-ID: <4fea8887-b3a1-4b32-8484-c3eeb74cf2e0@arm.com>
+Date: Fri, 15 Mar 2024 12:06:51 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,128 +41,100 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 09/11] drm/ci: rockchip: Refactor existing rockchip
- jobs
-Content-Language: en-US
-To: Vignesh Raman <vignesh.raman@collabora.com>,
- dri-devel@lists.freedesktop.org
-Cc: daniels@collabora.com, airlied@gmail.com, daniel@ffwll.ch,
- emma@anholt.net, robdclark@gmail.com, david.heidelberg@collabora.com,
- guilherme.gallo@collabora.com, sergi.blanch.torne@collabora.com,
- hamohammed.sa@gmail.com, rodrigosiqueiramelo@gmail.com,
- melissa.srw@gmail.com, mairacanal@riseup.net, mcanal@igalia.com,
- linux-mediatek@lists.infradead.org, linux-amlogic@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240306030649.60269-1-vignesh.raman@collabora.com>
- <20240306030649.60269-10-vignesh.raman@collabora.com>
- <098d2345-df99-4ad2-bc1c-9641662ed9bd@collabora.com>
- <f53c716d-6d11-13f6-0ecf-ec02f4debcfa@collabora.com>
-From: Helen Koike <helen.koike@collabora.com>
-In-Reply-To: <f53c716d-6d11-13f6-0ecf-ec02f4debcfa@collabora.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [RFC PATCH v3 5/5] mm: support large folios swapin as a whole
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, "Huang, Ying" <ying.huang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org,
+ david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ xiang@kernel.org, yosryahmed@google.com, yuzhao@google.com,
+ Chuanhua Han <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-6-21cnbao@gmail.com>
+ <87wmq3yji6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAGsJ_4x+t_X4Tn15=QPbH58e1S1FwOoM3t37T+cUE8-iKoENLw@mail.gmail.com>
+ <87sf0rx3d6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-
-
-On 15/03/2024 08:18, Vignesh Raman wrote:
-> Hi Helen,
+On 15/03/2024 10:01, Barry Song wrote:
+> On Fri, Mar 15, 2024 at 10:17 PM Huang, Ying <ying.huang@intel.com> wrote:
+>>
+>> Barry Song <21cnbao@gmail.com> writes:
+>>
+>>> On Fri, Mar 15, 2024 at 9:43 PM Huang, Ying <ying.huang@intel.com> wrote:
+>>>>
+>>>> Barry Song <21cnbao@gmail.com> writes:
+>>>>
+>>>>> From: Chuanhua Han <hanchuanhua@oppo.com>
+>>>>>
+>>>>> On an embedded system like Android, more than half of anon memory is
+>>>>> actually in swap devices such as zRAM. For example, while an app is
+>>>>> switched to background, its most memory might be swapped-out.
+>>>>>
+>>>>> Now we have mTHP features, unfortunately, if we don't support large folios
+>>>>> swap-in, once those large folios are swapped-out, we immediately lose the
+>>>>> performance gain we can get through large folios and hardware optimization
+>>>>> such as CONT-PTE.
+>>>>>
+>>>>> This patch brings up mTHP swap-in support. Right now, we limit mTHP swap-in
+>>>>> to those contiguous swaps which were likely swapped out from mTHP as a
+>>>>> whole.
+>>>>>
+>>>>> Meanwhile, the current implementation only covers the SWAP_SYCHRONOUS
+>>>>> case. It doesn't support swapin_readahead as large folios yet since this
+>>>>> kind of shared memory is much less than memory mapped by single process.
+>>>>
+>>>> In contrast, I still think that it's better to start with normal swap-in
+>>>> path, then expand to SWAP_SYCHRONOUS case.
+>>>
+>>> I'd rather try the reverse direction as non-sync anon memory is only around
+>>> 3% in a phone as my observation.
+>>
+>> Phone is not the only platform that Linux is running on.
 > 
-> On 07/03/24 19:32, Helen Koike wrote:
->>
->>
->> On 06/03/2024 00:06, Vignesh Raman wrote:
->>> For rockchip rk3288 and rk3399, the display driver is rockchip.
->>> Currently, in drm-ci for rockchip, only the display driver is
->>> tested. Refactor the existing rockchip jobs so that gpu driver
->>> testing jobs can be added later and update xfails accordingly.
->>>
->>> Signed-off-by: Vignesh Raman <vignesh.raman@collabora.com>
->>> ---
->>>
->>> v2:
->>>    - Refactor the patch to rename job to indicate display driver 
->>> testing,
->>>      rename the existing xfail files.
->>>
->>> v3:
->>>    - Add the job name in GPU_VERSION and use it for xfail file names
->>>      instead of using DRIVER_NAME. Also update xfails.
->>>
->>> v4:
->>>    - Remove the display suffix in job and rename xfails accordingly.
->>>      Remove the change adding job name in GPU_VERSION.
->>>
->>> ---
->>>   drivers/gpu/drm/ci/test.yml                   | 36 ++++++++----
->>>   .../drm/ci/xfails/rockchip-rk3288-fails.txt   | 58 ++++++-------------
->>>   .../drm/ci/xfails/rockchip-rk3288-flakes.txt  | 20 +++++++
->>>   .../drm/ci/xfails/rockchip-rk3288-skips.txt   | 54 ++---------------
->>>   .../drm/ci/xfails/rockchip-rk3399-fails.txt   | 38 ++++++------
->>>   .../drm/ci/xfails/rockchip-rk3399-flakes.txt  | 28 +++++++--
->>>   .../drm/ci/xfails/rockchip-rk3399-skips.txt   |  5 +-
->>>   7 files changed, 110 insertions(+), 129 deletions(-)
->>>   create mode 100644 
->>> drivers/gpu/drm/ci/xfails/rockchip-rk3288-flakes.txt
->>>
->>> diff --git a/drivers/gpu/drm/ci/test.yml b/drivers/gpu/drm/ci/test.yml
->>> index 6ae6398b3d88..831e580e6dfd 100644
->>> --- a/drivers/gpu/drm/ci/test.yml
->>> +++ b/drivers/gpu/drm/ci/test.yml
->>> @@ -153,33 +153,45 @@ msm:sdm845:
->>>     script:
->>>       - ./install/bare-metal/cros-servo.sh
->>> -rockchip:rk3288:
->>> -  extends:
->>> -    - .lava-igt:arm32
->>> +.rockchip:
->>>     stage: rockchip
->>>     variables:
->>> -    DRIVER_NAME: rockchip
->>
->> Looks like it make sense to keep DRIVER_NAME here, no?
->>
->>> -    DEVICE_TYPE: rk3288-veyron-jaq
->>>       DTB: ${DEVICE_TYPE}
->>>       BOOT_METHOD: depthcharge
->>> +
->>> +.rk3288:
->>> +  extends:
->>> +    - .lava-igt:arm32
->>> +    - .rockchip
->>
->> Maybe, instead of extending .rockchip here, make .rockchip tied to the 
->> DRIVER_NAME and .rk3288 tied to the GPU_VERSION, and on 
->> rockchip:rk3288 you can extend both .rockchip and .rk3288, what do you 
->> think?
->> So rockchip:rk3399 you can extend .rockchip and .rk3399.
->>
->> and in the panfrost one you can have a .panfrost (that can extend 
->> .rockchip if they are the same definition).
->>
->> I feel it becomes less confusing, what do you think?
->>
->> I would even add some prefix or suffix to make it less confusing, like 
->> .driver-rockchip and .gpu-rk3288 for instance, making it a bit more 
->> intuitive and helping our future selves :)
+> I suppose it's generally true that forked shared anonymous pages only
+> constitute a
+> small portion of all anonymous pages. The majority of anonymous pages are within
+> a single process.
 > 
-> Thanks for the suggestion. This can be done. Should we do it only
-> for rockchip jobs or others also (meson, mediatek) ?
+> I agree phones are not the only platform. But Rome wasn't built in a
+> day. I can only get
+> started on a hardware which I can easily reach and have enough hardware/test
+> resources on it. So we may take the first step which can be applied on
+> a real product
+> and improve its performance, and step by step, we broaden it and make it
+> widely useful to various areas  in which I can't reach :-)
+> 
+> so probably we can have a sysfs "enable" entry with default "n" or
+> have a maximum
+> swap-in order as Ryan's suggestion [1] at the beginning,
 
-I guess we could keep the same patter for all the make sense.
+I wasn't neccessarily suggesting that we should hard-code an upper limit. I was
+just pointing out that we likely need some policy somewhere because the right
+thing very likely depends on the folio size and workload. And there is likely
+similar policy needed for CoW.
 
-Helen
+We already have per-thp-size directories in sysfs, so there is a natural place
+to add new controls as you suggest - that would fit well. Of course if we can
+avoid exposing yet more controls that would be preferable.
 
 > 
->>
->>> +  variables:
->>> +    DEVICE_TYPE: rk3288-veyron-jaq
->>>       KERNEL_IMAGE_TYPE: "zimage"
->>> -    GPU_VERSION: rk3288
->>
->> Looks like it make sense to keep GPU_VERSION here, no? Same comment 
->> for .rk3399.
-> Yes, will fix this.
+> "
+> So in the common case, swap-in will pull in the same size of folio as was
+> swapped-out. Is that definitely the right policy for all folio sizes? Certainly
+> it makes sense for "small" large folios (e.g. up to 64K IMHO). But I'm not sure
+> it makes sense for 2M THP; As the size increases the chances of actually needing
+> all of the folio reduces so chances are we are wasting IO. There are similar
+> arguments for CoW, where we currently copy 1 page per fault - it probably makes
+> sense to copy the whole folio up to a certain size.
+> "
 > 
-> Regards,
-> Vignesh
+
 
