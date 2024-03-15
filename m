@@ -1,106 +1,156 @@
-Return-Path: <linux-kernel+bounces-104938-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104939-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03E6587D62E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:32:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FB9C87D637
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 22:34:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BEE9B2821DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:32:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AF5BE1F223AB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:34:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D3555491A;
-	Fri, 15 Mar 2024 21:32:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7179554F89;
+	Fri, 15 Mar 2024 21:33:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="dT+cBjul"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Dey5/bRV"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D8EF548FA;
-	Fri, 15 Mar 2024 21:32:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF7CD54907
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 21:33:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710538325; cv=none; b=MCOxaN3vNY2NIPE7hTMbxRRnDKsoM79vzxqQPN742kkcwA8GBcZu30OBdARYmBs3l2u3sfymwxnjIBFXTeCNfFMf8jGTVCYk5iOhoShIXpBSp6VPQpS2Qhp9csEPYYLb5T6eIx8SkbkFYzF3yS7yh4thnBZrCsqhamAQSnNtKQ0=
+	t=1710538437; cv=none; b=h6EgrD4zWHRRovjqB9EBu1sY+7QcHpgTtcpoSwIfiWJSzmN4bq5J9e/wb/plhBPl70yIvxKGYF7gEbFnpXFBjwyPbTCVrpa8n2kbYSrTGetg5ad2jHUXGByotMRC6Eraq//a5Kdic6UZRRb2JJ4srDWvwmGNMEv/MWr0LPxSkkA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710538325; c=relaxed/simple;
-	bh=kI3FpuAUIzIJ5YpNjrE1DZ6tCTgLd+HtXmRoONaXbJQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=tPHRP3yeoA6GvN2utaUIA3tTG9XlKaVxe9BOkpgXwTbFWs0hdekc8sJqixCaWKfbhJ2oPNZcNONovC98ckXmMmMvS/4bwvBpNjQB50HXelVvwSMthwa84hO7ON8dy7mZYvFkFseBjS1u6DM3z82PBX+ht/Zr9c3ddN3JKFqUoT0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=dT+cBjul; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dc29f1956cso18099245ad.0;
-        Fri, 15 Mar 2024 14:32:04 -0700 (PDT)
+	s=arc-20240116; t=1710538437; c=relaxed/simple;
+	bh=0F2XERw7B5j+mPxmlsSoCMnEowgGmNL23b1OGvmX7Uo=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=QrPaamPnNipQcjv5Kxp64NOPNbsZ3Lmfu2RObxP0I4DGZPgkY6Vb36jL9zCBCxMVM0/y3NHqmBAU5ytDC+UP7HvAU6g78CZUqERW2Vod1gdDN/DKoiQryCQH8lclKZlaCB/OvNSM3tlKORH361rwm6A9LFawAMPD7klD514Atdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Dey5/bRV; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dddd1a8732so39215ad.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:33:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710538324; x=1711143124; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=ql5/CZn2RtGTQlI61ALXwrW8731eNL3M0vcE3ykcjDQ=;
-        b=dT+cBjulfHBHkYtUnRAu1PodhY8MvJA281iqto+kH65pRuH5wFZZjerMjGQaid4mdw
-         fPJx0rXVbckN1P8mmK+qG7IXHg3Azrm0L8/vXO1sVJJY9MUGnkEdd9Kae41PY/ecM/Yn
-         X0mJYu5IFDc79P5qjwmtGIEVHjJuR8blUcY4yokJavPR9fbXlq24w6WEpzh3G84udxBc
-         azvLIBY2oGVVGyAqJj7Ysq557EDPuGoH/USPoDlwO0dZ9FFLxurAIhFI8mIR70y+4yGZ
-         WJc9Zpn3Q4VypeCQ33IIspz+doKk/0HuYQ3PcOxGFj4cl38VdmM+RqrWDHpv41e0dIHo
-         u7kA==
+        d=google.com; s=20230601; t=1710538435; x=1711143235; darn=vger.kernel.org;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=H0fR8S5zvFKWxYVHlf5dgazwtBnwp1HgnsQ4yUvybtw=;
+        b=Dey5/bRV4Gt9RFOuXhLoHy0gqSqEKPQyewEx4Dn/W+kUVC4N7FAylOoiLziWkfBOgX
+         kYMfocs2gCn70PeNsLH4nYPVCQh8uDpQKn9kqAWeonNAqUg8UhGrOCNA1afMERqyOj/w
+         oBou0YmgtKXMcRRGSUhNoCCtGiDUKidqERxPrU6VwxM4jRFoz3vIijT0eRW9WrYlltB1
+         OMHEpLUuTg/NmbCIi9UeaK2+QEhBJbWna9c9GOAJ7lTZfQClNCEqkotbJ9hHIl029c9V
+         /3Z5i7mW84IiOssiVxstsqNfH77Z3HsA27NiOIHfGIHQpCanuXxeNMxmfRVJwTFca935
+         XQtw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710538324; x=1711143124;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=ql5/CZn2RtGTQlI61ALXwrW8731eNL3M0vcE3ykcjDQ=;
-        b=wUglw7S9B3Suu8bMaEpAMPzvATvjGc1wX7MzVY3+5Yzro7FH/uxfzqtk0eQkHeRJBc
-         Q/whj6cW0WIm9Y9VEavL7ZyuZCYDxnBll34shdWfyBHgPI6IDIu3EyEhxtVz12zlin6m
-         tmwqmACOCe7vLZlk/O8BDpb14PhNsm4YlJ18NbUr/KCilWJCFZAJTzYoTbSL4OoX+1k+
-         rtefnjA3af6jqPVZ/4kJJGSnU0QyOWshaBEsqsVoUHzXp/3CmHEkI0hVqKeyZZeqURoB
-         Dr2vUlrDOCXb0I5Cwd01pNXIfhiPKnf55exMcq3dEg4FyTZh99IFbyCynFHOnhTx3gbz
-         ucPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUGyo+JEbns9bDuDxVbXw7GmnOXNBDoWVV7+Z+MCJatdt6+zN2PqtDQhbTaJtb+nP0kpdQO8ZI/m8kusNN0s0N/JT1mKW85xg/LN0I+++kpoS4OaNy5cj5E9BIuWa2bd06grdV0ZFZ+p+o=
-X-Gm-Message-State: AOJu0YxexrTo6TMywsqhAEZ7PqMx8Pe2JuMsbqSoJ9dFn9kF+X55U/9p
-	5w1awxHdoa4az+VrtOt4RsMNMXGZKdsHyAOqpfqFG9bqqMuG8ZE7
-X-Google-Smtp-Source: AGHT+IGq2m6m0XKukC+zMZPHwWnmwOFptJAIRQ/jUEi1zvutS2LuS4RGpVQGVxHy/NR/2poQBzBUQg==
-X-Received: by 2002:a17:903:22cb:b0:1dd:66d1:a62b with SMTP id y11-20020a17090322cb00b001dd66d1a62bmr5176084plg.5.1710538323770;
-        Fri, 15 Mar 2024 14:32:03 -0700 (PDT)
-Received: from tahera-OptiPlex-5000 ([136.159.49.124])
-        by smtp.gmail.com with ESMTPSA id a2-20020a170902ecc200b001dddc21866csm4364301plh.103.2024.03.15.14.32.03
+        d=1e100.net; s=20230601; t=1710538435; x=1711143235;
+        h=mime-version:references:message-id:in-reply-to:subject:cc:to:from
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=H0fR8S5zvFKWxYVHlf5dgazwtBnwp1HgnsQ4yUvybtw=;
+        b=Ittk7kOJVz4IgqniMIzxuYwKWs41KPdbVzVMKtbh0fGpj6iHW1+efvt9kMUOILsrSO
+         V5pVknKY63JxQgDLwiyVTRRk0PVlgc60/C6nN20vWr6Gd1NRqzERpsrerc0/6JhpP/z4
+         fz7kWdUF0g5BtEjhjGeqxPuDbo1rxmUJJgd7+ycoM/MulYdLSdhGHtVhrwixRbJXCZx8
+         2I96TK7b/F3ExlDZ/XQ6WcyNz1kQ3fiqVgvME5tKkYKxw+vF9oqCWs8/jotd1prrjsMw
+         Z/J7pbXbRDBOAickzgzrDgp7quYV9hbqkTvzjq2seuc71ghU4wdA14SOUbnGnGvjDNkW
+         hqhQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVmcz55Vp1nB+hIXNLT0JquugR20BJeOFEyQ4wOZruSOdpD2WrPymUJs1QQ7m3e5Q3LT9L0lwJ1jBTxVC3LNX5F6yV2ulf6LkNMQ5n/
+X-Gm-Message-State: AOJu0YyR6mDlnC/Hhk7L/DTATJ6xdK/q1oxRxsKe3fMWzwxuqGBqkEHm
+	gmfxjhyB8M2sQLRSbQZ1UrFiyw9VpdZTLJGEbt8PORpVpN4XTanPepFDBH6bDw==
+X-Google-Smtp-Source: AGHT+IGXgrCyapbX6lCjIYimjaGV/xGhnyUP0IGlJg+FRlRNpmX3AgagAydyQ+EpK396sF48foPkSw==
+X-Received: by 2002:a17:902:cec9:b0:1dd:e26f:1363 with SMTP id d9-20020a170902cec900b001dde26f1363mr534470plg.15.1710538434920;
+        Fri, 15 Mar 2024 14:33:54 -0700 (PDT)
+Received: from [2620:0:1008:15:59e5:b9a4:a826:c419] ([2620:0:1008:15:59e5:b9a4:a826:c419])
+        by smtp.gmail.com with ESMTPSA id hq16-20020a056a00681000b006e6c8ed17bdsm3829728pfb.100.2024.03.15.14.33.53
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 14:32:03 -0700 (PDT)
-Date: Fri, 15 Mar 2024 15:32:01 -0600
-From: TaheraFahimi <fahimitahera@gmail.com>
-To: Marc Dietrich <marvin24@gmx.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	ac100@lists.launchpad.net, linux-tegra@vger.kernel.org,
-	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH] staging: nvec: edit udelay comment
-Message-ID: <ZfS+UaVyob+lFmmS@tahera-OptiPlex-5000>
+        Fri, 15 Mar 2024 14:33:54 -0700 (PDT)
+Date: Fri, 15 Mar 2024 14:33:53 -0700 (PDT)
+From: David Rientjes <rientjes@google.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>, joro@8bytes.org
+cc: Andrew Morton <akpm@linux-foundation.org>, alim.akhtar@samsung.com, 
+    alyssa@rosenzweig.io, asahi@lists.linux.dev, baolu.lu@linux.intel.com, 
+    bhelgaas@google.com, cgroups@vger.kernel.org, corbet@lwn.net, 
+    david@redhat.com, dwmw2@infradead.org, hannes@cmpxchg.org, heiko@sntech.de, 
+    iommu@lists.linux.dev, jernej.skrabec@gmail.com, jonathanh@nvidia.com, 
+    krzysztof.kozlowski@linaro.org, linux-doc@vger.kernel.org, 
+    linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+    linux-mm@kvack.org, linux-rockchip@lists.infradead.org, 
+    linux-samsung-soc@vger.kernel.org, linux-sunxi@lists.linux.dev, 
+    linux-tegra@vger.kernel.org, lizefan.x@bytedance.com, marcan@marcan.st, 
+    mhiramat@kernel.org, m.szyprowski@samsung.com, paulmck@kernel.org, 
+    rdunlap@infradead.org, robin.murphy@arm.com, samuel@sholland.org, 
+    suravee.suthikulpanit@amd.com, sven@svenpeter.dev, 
+    thierry.reding@gmail.com, tj@kernel.org, tomas.mudrunka@gmail.com, 
+    vdumpa@nvidia.com, wens@csie.org, will@kernel.org, yu-cheng.yu@intel.com, 
+    bagasdotme@gmail.com, mkoutny@suse.com
+Subject: Re: [PATCH v5 00/11] IOMMU memory observability
+In-Reply-To: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
+Message-ID: <00555af4-8786-b772-7897-aef1e912b368@google.com>
+References: <20240222173942.1481394-1-pasha.tatashin@soleen.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Type: text/plain; charset=US-ASCII
 
-Signed-off-by: TaheraFahimi <fahimitahera@gmail.com>
----
- drivers/staging/nvec/nvec.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+On Thu, 22 Feb 2024, Pasha Tatashin wrote:
 
-diff --git a/drivers/staging/nvec/nvec.c b/drivers/staging/nvec/nvec.c
-index 282a664c9176..b4485b10beb8 100644
---- a/drivers/staging/nvec/nvec.c
-+++ b/drivers/staging/nvec/nvec.c
-@@ -712,7 +712,7 @@ static irqreturn_t nvec_interrupt(int irq, void *dev)
- 	 * TODO: replace the udelay with a read back after each writel above
- 	 * in order to work around a hardware issue, see i2c-tegra.c
- 	 *
--	 * Unfortunately, this change causes an intialisation issue with the
-+	 * Unfortunately, this change causes an initialisation issue with the
- 	 * touchpad, which needs to be fixed first.
- 	 */
- 	udelay(100);
--- 
-2.34.1
+> Pasha Tatashin (11):
+>   iommu/vt-d: add wrapper functions for page allocations
+>   iommu/dma: use iommu_put_pages_list() to releae freelist
+>   iommu/amd: use page allocation function provided by iommu-pages.h
+>   iommu/io-pgtable-arm: use page allocation function provided by
+>     iommu-pages.h
+>   iommu/io-pgtable-dart: use page allocation function provided by
+>     iommu-pages.h
+>   iommu/exynos: use page allocation function provided by iommu-pages.h
+>   iommu/rockchip: use page allocation function provided by iommu-pages.h
+>   iommu/sun50i: use page allocation function provided by iommu-pages.h
+>   iommu/tegra-smmu: use page allocation function provided by
+>     iommu-pages.h
+>   iommu: observability of the IOMMU allocations
+>   iommu: account IOMMU allocated memory
+> 
+>  Documentation/admin-guide/cgroup-v2.rst |   2 +-
+>  Documentation/filesystems/proc.rst      |   4 +-
+>  drivers/iommu/amd/amd_iommu.h           |   8 -
+>  drivers/iommu/amd/init.c                |  91 ++++++------
+>  drivers/iommu/amd/io_pgtable.c          |  13 +-
+>  drivers/iommu/amd/io_pgtable_v2.c       |  20 +--
+>  drivers/iommu/amd/iommu.c               |  13 +-
+>  drivers/iommu/dma-iommu.c               |   7 +-
+>  drivers/iommu/exynos-iommu.c            |  14 +-
+>  drivers/iommu/intel/dmar.c              |  16 +-
+>  drivers/iommu/intel/iommu.c             |  47 ++----
+>  drivers/iommu/intel/iommu.h             |   2 -
+>  drivers/iommu/intel/irq_remapping.c     |  16 +-
+>  drivers/iommu/intel/pasid.c             |  18 +--
+>  drivers/iommu/intel/svm.c               |  11 +-
+>  drivers/iommu/io-pgtable-arm.c          |  15 +-
+>  drivers/iommu/io-pgtable-dart.c         |  37 ++---
+>  drivers/iommu/iommu-pages.h             | 186 ++++++++++++++++++++++++
+>  drivers/iommu/rockchip-iommu.c          |  14 +-
+>  drivers/iommu/sun50i-iommu.c            |   7 +-
+>  drivers/iommu/tegra-smmu.c              |  18 ++-
+>  include/linux/mmzone.h                  |   5 +-
+>  mm/vmstat.c                             |   3 +
+>  23 files changed, 361 insertions(+), 206 deletions(-)
+>  create mode 100644 drivers/iommu/iommu-pages.h
+> 
 
+Joerg, is this series anticipated to be queued up in the core branch of 
+git.kernel.org/pub/scm/linux/kernel/git/joro/iommu.git so it gets into 
+linux-next?
+
+This observability seems particularly useful so that we can monitor and 
+alert on any unexpected increases (unbounded memory growth from this 
+subsystem has in the past caused us issues before the memory is otherwise 
+not observable by host software).
+
+Or are we still waiting on code reviews from some folks that we should 
+ping?
+
+Thanks!
 
