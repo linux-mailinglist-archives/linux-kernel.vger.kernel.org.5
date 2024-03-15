@@ -1,242 +1,313 @@
-Return-Path: <linux-kernel+bounces-104063-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39B3F87C86F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:09:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4200587C872
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:12:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2816B2201A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:09:22 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6545E1C21C05
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 05:12:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9A02FBEF;
-	Fri, 15 Mar 2024 05:09:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BA07101C3;
+	Fri, 15 Mar 2024 05:11:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="nG3iaqJ1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="R/jcyLfv"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03F16FBE8;
-	Fri, 15 Mar 2024 05:09:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710479354; cv=fail; b=BsfEDO4eUGasmeQlBH0rgEhXo9jLmZqXP1oZh7xmL9r2v2pCrHCnDDf9xzohz52AJpQbLOpi/DPwHaSPc3naFGE4UiHQlE4Z3Gfcrh+coGa1cMyx4pl/MFx3GlgPfPfxjbVj9BVydmbaQUoOQsUgH/743CnSPa7byTlma1/OihE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710479354; c=relaxed/simple;
-	bh=vdtNl7lMY7vRwqSGDTd+AMpWn02N8n8ura7lI5LMGvw=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=hC9OyyBQeY+s9HSbuuKiI7SLfrzYB/1FaJ848JKJuoKgmU+5zrtdA7SSW6PoUBmsg/6eH8q+v4mcE7itnJy8rNlzcju7HlH4euAL8RXWIqra4CiQhmoVUqjlNwKehX+uEDSjvCVJ9uEpcVufRHSEgb4nNUo1aykKVIquq8FIBzI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=nG3iaqJ1; arc=fail smtp.client-ip=198.175.65.9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EABBDF43;
+	Fri, 15 Mar 2024 05:11:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710479512; cv=none; b=u+ril06hdVn096Kokz86/xl24s2MnSOxiaGuMijV/wpVVyxWpCI0qvXHwdrwY59lVLih434FpLyU5aYf33pMgTqIBdFM9LpIuFbXIcfZqenWBoUymCTIz4SefxJB798wo7DyEF+Kxs98DMaexmncNkqyQuvAeP4y/THjZ748dlA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710479512; c=relaxed/simple;
+	bh=Gi3R+/Q1NJs+2Ed2bS6L4K9DFuU1AoRGE03dZhlfigs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Enk4MQmrWPWG9hq9++sgiJh91sZ4YV++GJoQjpnwNx4nAQvyveag+3l1HslWRaYdoTK+r9Zu0meDzsxdYwoadalVd8wEXnNZMCEhEMeLfiWPThThwkGhFfQljwkk1CUGi16sVxx+9Ac2woKpAHnVLhtqxmvEAoPiLdJR/3Wka7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=R/jcyLfv; arc=none smtp.client-ip=198.175.65.11
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710479353; x=1742015353;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=vdtNl7lMY7vRwqSGDTd+AMpWn02N8n8ura7lI5LMGvw=;
-  b=nG3iaqJ15JA68GskpEfTVcm2atq8qP0n81HX3cqbIP9Er0jf99k1v6qj
-   SLA0xkGIXAeYz6O9l1FeFQdva/XTL5GyBeK8WP/qtYcvD6ZKv9LdNYm+x
-   akfWphIZT7AvX2jjFi//Dag2i1Iyafsit0Th1U4kglWi6cHQuXA70nJwy
-   MUjmugAmjR8n+jtP9yXz3Vp34Yx+D0lynGLZolfXNeHos4gUtZkJ1hlcZ
-   JI7V3AUap/HQOGesJhculaxLqg8Pn7f+oh5P1ZiA4OuAGG+t6TIt+gSgX
-   OmWgE5W1jNJ7uVt940B/HW8hUJIAgVi43yA77oCxL0G/NEZNLwl8v9z9w
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="27806468"
+  t=1710479510; x=1742015510;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=Gi3R+/Q1NJs+2Ed2bS6L4K9DFuU1AoRGE03dZhlfigs=;
+  b=R/jcyLfvxejogBSFowWs7jnmdk29PQGEA/y+MzWUI6ypAB23mW4bBoew
+   LyJzv/uAcv6OpdLjtBv5kk3VpepaE39gu3bFanFZEYkg0ZQcD3bPw3fOf
+   i6jme2uEn6YA3HotnVsFV8Q5N6CFeq+YDpRl0Wjds6S5pUm5IcG0zpVSb
+   FFuoOQ5sEYInsa7e/QLHAD64T+Sm4aL+oxn07DefrU1RUUetCCDPDldnD
+   5totFo+Gx1v9a87+VNguHJsx6ShgVTkSLEej+q3fiZXilhTf3VfyNid/2
+   uqbVi7nusU0cSR3UeIm9wwQZTLMIUQwBJJ0TRO/PqXr2KE5vYTDj+HcGu
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="15884789"
 X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="27806468"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 22:09:11 -0700
+   d="scan'208";a="15884789"
+Received: from fmviesa002.fm.intel.com ([10.60.135.142])
+  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 22:11:44 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="17211453"
-Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 22:09:10 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 22:09:10 -0700
-Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 22:09:10 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Mar 2024 22:09:07 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PqWJw1KnP49JZ2fcx3rsz7ZaN5PG4g8c0dsCSBOO8LEptcIElEpchu7Pav0u9tM6yA14m4Awg5vIyyxgHrULkMDx4uLEi8MQF59o8qjLPmmGcwZ8VeVnxHHOTDRXFIJkH/efDj7I97+e56hAxJ31MQaKDq8BZ431oZm4jC8mDnGBNubihiB3K28yroY1CFVgWfkza3VlujPUGcnYR5Oy3xx7fHMtNtni1j0RPOsFWJb5I0dCiPaFL7vhNOjpAI1abGyO3b57ZQRuBjPngxiJb2qAB1i8Vkzz5is/vymbHkcs0k6bTgsltzZg18hJbM7QHwPJEWJbGDGsFvcCH4CoDg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=uVt+KIG3uQim4lkAJiU4xo7xgjQdvgeWKC+Uf9dyBfQ=;
- b=NkU1mvQQMNu+pEeldmMd1vNey4tq0xR1QllslLQxDX8oHfslgBKrb7EyQfFZrIPmC44kwJqISdJIwkXqYYwFKDdv5YyUyCBnscdB1BYxHlXz3U5tnwiGGddayjsG2h2/ROvx3VWwC77EHupC4PNAAhwei3KzRpXo3gmAZCEBblbo7PnAKV32YuVNv3bOa9bYDdfwljdRpFX5trePBPPOA1eUJpkb2sSKltsnhIjvqJuSubK+/2xMHqgyCAyMFyutn7D3k1qOpJlcMzFw3fhFy6fSLSU/hwVcQUHKSsLOg+m0T7I9GofZinjqlowpGAc7nA+LRZP4VUjy18ZMfbAiPg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from IA1PR11MB7200.namprd11.prod.outlook.com (2603:10b6:208:42f::11)
- by DS0PR11MB6373.namprd11.prod.outlook.com (2603:10b6:8:cb::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.23; Fri, 15 Mar
- 2024 05:09:06 +0000
-Received: from IA1PR11MB7200.namprd11.prod.outlook.com
- ([fe80::c990:5065:ed39:c165]) by IA1PR11MB7200.namprd11.prod.outlook.com
- ([fe80::c990:5065:ed39:c165%6]) with mapi id 15.20.7386.017; Fri, 15 Mar 2024
- 05:09:05 +0000
-Message-ID: <60689e0c-4e53-49c9-82a6-7c431008c177@intel.com>
-Date: Fri, 15 Mar 2024 13:08:58 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 4/6] PCI/AER: Extend RCH RAS error handling to support
- VH topology case
-To: Dan Williams <dan.j.williams@intel.com>, <rrichter@amd.com>,
-	<terry.bowman@amd.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240313083602.239201-1-ming4.li@intel.com>
- <20240313083602.239201-5-ming4.li@intel.com>
- <65f3b2b29cfe9_aa22294e8@dwillia2-mobl3.amr.corp.intel.com.notmuch>
- <f2dd9f36-5e69-4c6e-9640-7140a694086c@intel.com>
- <65f3c8fb458d0_aa2229435@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Language: en-US
-From: "Li, Ming" <ming4.li@intel.com>
-Organization: Intel
-In-Reply-To: <65f3c8fb458d0_aa2229435@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0041.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::18) To IA1PR11MB7200.namprd11.prod.outlook.com
- (2603:10b6:208:42f::11)
+   d="scan'208";a="35680318"
+Received: from xiaoyaol-hp-g830.ccr.corp.intel.com (HELO [10.125.243.127]) ([10.125.243.127])
+  by fmviesa002-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 22:11:40 -0700
+Message-ID: <10c41a88-d692-4ff5-a0c3-ae13a06a055c@intel.com>
+Date: Fri, 15 Mar 2024 13:11:37 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: IA1PR11MB7200:EE_|DS0PR11MB6373:EE_
-X-MS-Office365-Filtering-Correlation-Id: 33b1a15a-9cf3-48a5-9ed4-08dc44ae098a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: LsZMhqfOWgUxUTXq3SUDfE3iIjKh9MQRxpV+j4UALXxxuRbuVOT+GTUiNYS9Rv+x8JSVCbVWlDRK8LRsEPa1Ka4MFL9tM+px1LRVWrDzI1atqV68mHkYb26tZ1OCZd8P6cQR/VC6JWQGWwm8u35erWtlh/w82PRQ+xDn6w0LxbC2RfTOSLSFAf63W2330NjU4jkKR2wu/jJuPYTknZbkbcGzOnPZLfcf8KuKa+sI0fa37SlDuSZVYT5awlQIRhKQ8eLSEVKyJQJY9OjXLgj/2XBtjvUk/9GGCuz02aLimaPPy3zjLk23dkqv/B2Bq1QeBnMTflobnsRIDkFrjGIFU3xyYKuM8wewUKMEBZiOLJRG68Ms74bPcESK0qEeihdChlYKOq84ZIzN19vaYqbdv9dElLKuLLThfw0G419iCWh3/mQS2jgZkpTv5Sa6TsuNX6pzxLvkuygAXj+0tPO5K3ueTeCDHvjw2D5tqmT0UKlpuKZzzIYpuwpo/sBjrp3Zc5LFrQM1cV0MXjQqGcCaQR17lKKBd92NdQGw6dF9CUbZYeweHSwaoAxWw8ogsM8Baloud6k83gxPJ4kP+uCF89bKpCgK+AgUxIxSq+s1Z+NC4OPr3EeXQTSGHw3HxVdZ7VysVtukKufEJm0B8585/qZSeT9huyjGn7C1y5syoIM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:IA1PR11MB7200.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?VWZLUGsxVzY3R1pFelhKREl6SWQ4Rnp4K0poZ21PY3ZubVdWM2VGMXlwc0JO?=
- =?utf-8?B?UktyYWFLTXhudVlLVy9nUWRHMXhPaW5rOXBZR3FzMFM1S25YTTFVTnNpbXFU?=
- =?utf-8?B?Vkt5YSsvR3Qzb3c5Q0JoWktOSUVRdFpPZ3E3dkRXbzFxNll4L09OOGJhZmVX?=
- =?utf-8?B?UEwxZE1vNVAwYUYrZGYza1lKMXphL1pPczdvbmUzNXVVNHhPN3I0aGhMYTRm?=
- =?utf-8?B?dWh3c2ZwQjV2bFFxemhtYjNmYlRXOGtXUU1WNFhxa1ZyUWFMRTF3cFY1dEtS?=
- =?utf-8?B?TkZtckRKOVhRV0JRRnpMTERaYm5WTEE2RUY5UElBZ0Q1NWhIK2hpMjRtTzFE?=
- =?utf-8?B?bnlYV2R4YmRkOUJ6VHZHdldLY2JIaEhDMGMweXErWjBtOEROL0xmcVNDUHJG?=
- =?utf-8?B?dURrOWY5WjFZR3NDQktwa3lwSXJOaW5SNElNZnZtOXRvYk4vTFJhQjBlTzg1?=
- =?utf-8?B?SUQ1MDdxVUx0QXdqMUZ2UFlVVXJEM1VZY1l6ZzN2bWpFSXZJZXJlZGhEM2U5?=
- =?utf-8?B?SzdBa05mSnhQeWI4MUpjSU1XNG16U28xLzRZY1BadExOZmRYdHZSMzhldmww?=
- =?utf-8?B?UHo4REtyR2FEYm9Gc1o4ZVBqbkFZQkVPWmhsUElGTFcxZjRiTDRTZXV3VEw3?=
- =?utf-8?B?UENZR1ZSbHdzV0RsV0FCYTM4UVNLZmlBNG9EQlozRUVuQXN5WWRWT0ZVaVlG?=
- =?utf-8?B?L0R2ZFhsbzNTQVpyWUc3K1ltQnBrdTVuaUlvVUFjR01qS3g1NTE5V2MxRXVE?=
- =?utf-8?B?c3BGSFpYbzNNaklsVyt6V0lBSzdORFQvZmxJMjI4cmpJOFErNjY4YTZkc3Rz?=
- =?utf-8?B?YTlDWGo4UXcyaWFlUDVra1A4V1pldHNpcXBXNGxaQitjQmdYQlEvTDlHMy8y?=
- =?utf-8?B?Ukk4NWozTTN2TG5EaW5kNHJIczQvZkxHWXUzQzVnTEIwaG1NK1VvcHc5eFpr?=
- =?utf-8?B?ZnlJOHlybStqMkM3cXkyQlVVdkZVVzdnQ1ZjSDdsZWM0Z1l5RnhhdjFsSmd3?=
- =?utf-8?B?VGtmSTRYMEs2TzV6M05GcGl0ZEx1ZGtPTU12S2puSU0zNkNQc3FZUEwrWFdZ?=
- =?utf-8?B?cUV5bU41VjBzR1BPS0hzanVObWREZWNnMGVEU2psTjdhOHBZYmlPWXB5M3lx?=
- =?utf-8?B?cVBJd1MrT3MxTzFpRnpaRzErUTRGeHBpSitlYjFyRFRreEFFd25Cc0Z5OWZM?=
- =?utf-8?B?Z1U5anB6TXN6NTRyMkNYVWZXbUlSVzNxU1dCalhDSXdyeGZCUjk1Q25zUXYz?=
- =?utf-8?B?SHFKQTNHaVdQV2IxTWIzZXdnZXdGS05paFNYZzNmUVRkWFE1VTA2NW5ZQnV6?=
- =?utf-8?B?T1pvMWlnQ2ZOSjZydjU2cWdENDRtMDJmVHBidFg5WFBRRm5DdmZKNTN5dDcz?=
- =?utf-8?B?TVA0TzRldTVTVmhnd1RWL0svZGg3SUNEN2ZiYkhPTVI1SVRhOTRlV1BReGRz?=
- =?utf-8?B?TU83eUl3TTRBVnMrNk1hU1FieTNrOHdiQ0p6ZWIwd0gyR1VhdUpVWGdXeHBS?=
- =?utf-8?B?aTBqRExTbGxRakpOU3dBblhPTnFYa2owVlFTN0FhazZ3WDg4SWo3WjdvalpO?=
- =?utf-8?B?VzYrQnl4djNuS0oxVFNxVUlkbmFRbTRIa1RtZjNjSHozYXl1R0ZIV2JsblQ1?=
- =?utf-8?B?SVlwdHZZUlF3Mm9NQTVSelRWZE5OemxnbFQzNW1naDhKQWdzRWtuMHcvY3V2?=
- =?utf-8?B?MWRYNmdwVkhyQmpjQjZrTVhRWDhWcWFVVTJFbS9hOEdUMlhiOWRYWmFCaHMv?=
- =?utf-8?B?c1NFRGFQelhGaFVORkhXcTdqMEJTSUU3c3Qyejg1Wk5QZzhZTTFZaDhxc0xL?=
- =?utf-8?B?NkwxQnJpN1N2R0p1SVptbkg2WGtMdTZVZ0NPMHpobG91WXMvZjllNXp2Q05I?=
- =?utf-8?B?R01MQktSVjFxb084Q0VMRTUrRHlVUUpYSTdxSTRSUDdYUmpBVFJvWHJlK0pI?=
- =?utf-8?B?Y0hvSkVpNkR0K2ZjVFRMVEN5S2ZtNkgzd0xNeGk5ZWxzdE9tdjNRbDNCVjFu?=
- =?utf-8?B?aVVRREJVdGVpUmNjVXdzYS9SVXZvdEZUNU56Qit0Q0Z6bFZGVzdEVURETjZU?=
- =?utf-8?B?YWMwc3IyOEN3bVhFMFN5S3dyK3FPem9YSjh5TE5ONk54YitvWU5UTEZRVVNC?=
- =?utf-8?Q?tOHF47XpcvNeZit63itMq5wvx?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 33b1a15a-9cf3-48a5-9ed4-08dc44ae098a
-X-MS-Exchange-CrossTenant-AuthSource: IA1PR11MB7200.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 05:09:05.8096
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: B5DYe6/T5JE/RbuEvt6KFBkH6PCYyRFGOo8p1t457fsFQph3U9iEuC1tp8eMf2fqzrc9totWiUL1kUPrWUB8ow==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB6373
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v19 034/130] KVM: TDX: Get system-wide info about TDX
+ module on initialization
+Content-Language: en-US
+To: "Huang, Kai" <kai.huang@intel.com>,
+ "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "Yamahata, Isaku" <isaku.yamahata@intel.com>
+Cc: "Zhang, Tina" <tina.zhang@intel.com>,
+ "seanjc@google.com" <seanjc@google.com>, "Yuan, Hang" <hang.yuan@intel.com>,
+ "Chen, Bo2" <chen.bo@intel.com>, "sagis@google.com" <sagis@google.com>,
+ "isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+ "Aktas, Erdem" <erdemaktas@google.com>,
+ "pbonzini@redhat.com" <pbonzini@redhat.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <eaa2c1e23971f058e5921681b0b84d7ea7d38dc1.1708933498.git.isaku.yamahata@intel.com>
+ <e88e5448-e354-4ec6-b7de-93dd8f7786b5@intel.com>
+ <15a13c5d-df88-46cf-8d88-2c8b94ff41ff@intel.com>
+ <aa1ed4c118177e3e341eebccecac3b07bf75a47d.camel@intel.com>
+From: Xiaoyao Li <xiaoyao.li@intel.com>
+In-Reply-To: <aa1ed4c118177e3e341eebccecac3b07bf75a47d.camel@intel.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On 3/15/2024 12:05 PM, Dan Williams wrote:
-> Li, Ming wrote:
->> On 3/15/2024 10:30 AM, Dan Williams wrote:
->>> Li Ming wrote:
->>>> When RCEC captures CXL.cachemem protocol errors detected by CXL root
->>>> port, the recommendation from CXL r3.1 9.18.1.5 is :
->>>>
->>>> 	"Probe all CXL Downstream Ports and determine whether they have logged an
->>>> 	error in the CXL.io or CXL.cachemem status registers."
->>>>
->>>> The flow is similar with RCH RAS error handling, so reuse it to support
->>>> above case.
->>>>
->>>> Signed-off-by: Li Ming <ming4.li@intel.com>
->>>> ---
->>>>  drivers/pci/pcie/aer.c | 20 ++++++++++++--------
->>>>  1 file changed, 12 insertions(+), 8 deletions(-)
->>>>
->>>> diff --git a/drivers/pci/pcie/aer.c b/drivers/pci/pcie/aer.c
->>>> index 364c74e47273..79bfa5fb78f4 100644
->>>> --- a/drivers/pci/pcie/aer.c
->>>> +++ b/drivers/pci/pcie/aer.c
->>>> @@ -996,11 +996,15 @@ static bool is_internal_error(struct aer_err_info *info)
->>>>  	return info->status & PCI_ERR_UNC_INTN;
->>>>  }
->>>>  
->>>> -static int cxl_rch_handle_error_iter(struct pci_dev *dev, void *data)
->>>> +static int cxl_handle_error_iter(struct pci_dev *dev, void *data)
->>>>  {
->>>>  	struct aer_err_info *info = (struct aer_err_info *)data;
->>>>  	const struct pci_error_handlers *err_handler;
->>>>  
->>>> +	/* Skip the RCiEP devices not associating with RCEC */
->>>> +	if ((pci_pcie_type(dev) == PCI_EXP_TYPE_RC_END) &&
->>>> +	    !dev->rcec)
->>>> +		return 0;
->>>>  	if (!is_cxl_mem_dev(dev) || !cxl_error_is_native(dev))
->>>>  		return 0;
+On 3/15/2024 12:57 PM, Huang, Kai wrote:
+> On Fri, 2024-03-15 at 10:18 +0800, Li, Xiaoyao wrote:
+>> On 3/15/2024 7:09 AM, Huang, Kai wrote:
 >>>
->>> is_cxl_mem_dev(dev) will always be false in the VH case, so how does
->>> this change help the VH case?
+>>>> +struct tdx_info {
+>>>> +    u64 features0;
+>>>> +    u64 attributes_fixed0;
+>>>> +    u64 attributes_fixed1;
+>>>> +    u64 xfam_fixed0;
+>>>> +    u64 xfam_fixed1;
+>>>> +
+>>>> +    u16 num_cpuid_config;
+>>>> +    /* This must the last member. */
+>>>> +    DECLARE_FLEX_ARRAY(struct kvm_tdx_cpuid_config, cpuid_configs);
+>>>> +};
+>>>> +
+>>>> +/* Info about the TDX module. */
+>>>> +static struct tdx_info *tdx_info;
+>>>> +
+>>>>    #define TDX_MD_MAP(_fid, _ptr)            \
+>>>>        { .fid = MD_FIELD_ID_##_fid,        \
+>>>>          .ptr = (_ptr), }
+>>>> @@ -66,7 +81,7 @@ static size_t tdx_md_element_size(u64 fid)
+>>>>        }
+>>>>    }
+>>>> -static int __used tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+>>>> +static int tdx_md_read(struct tdx_md_map *maps, int nr_maps)
+>>>>    {
+>>>>        struct tdx_md_map *m;
+>>>>        int ret, i;
+>>>> @@ -84,9 +99,26 @@ static int __used tdx_md_read(struct tdx_md_map
+>>>> *maps, int nr_maps)
+>>>>        return 0;
+>>>>    }
+>>>> +#define TDX_INFO_MAP(_field_id, _member)            \
+>>>> +    TD_SYSINFO_MAP(_field_id, struct tdx_info, _member)
+>>>> +
+>>>>    static int __init tdx_module_setup(void)
+>>>>    {
+>>>> +    u16 num_cpuid_config;
+>>>>        int ret;
+>>>> +    u32 i;
+>>>> +
+>>>> +    struct tdx_md_map mds[] = {
+>>>> +        TDX_MD_MAP(NUM_CPUID_CONFIG, &num_cpuid_config),
+>>>> +    };
+>>>> +
+>>>> +    struct tdx_metadata_field_mapping fields[] = {
+>>>> +        TDX_INFO_MAP(FEATURES0, features0),
+>>>> +        TDX_INFO_MAP(ATTRS_FIXED0, attributes_fixed0),
+>>>> +        TDX_INFO_MAP(ATTRS_FIXED1, attributes_fixed1),
+>>>> +        TDX_INFO_MAP(XFAM_FIXED0, xfam_fixed0),
+>>>> +        TDX_INFO_MAP(XFAM_FIXED1, xfam_fixed1),
+>>>> +    };
+>>>>        ret = tdx_enable();
+>>>>        if (ret) {
+>>>> @@ -94,7 +126,48 @@ static int __init tdx_module_setup(void)
+>>>>            return ret;
+>>>>        }
+>>>> +    ret = tdx_md_read(mds, ARRAY_SIZE(mds));
+>>>> +    if (ret)
+>>>> +        return ret;
+>>>> +
+>>>> +    tdx_info = kzalloc(sizeof(*tdx_info) +
+>>>> +               sizeof(*tdx_info->cpuid_configs) * num_cpuid_config,
+>>>> +               GFP_KERNEL);
+>>>> +    if (!tdx_info)
+>>>> +        return -ENOMEM;
+>>>> +    tdx_info->num_cpuid_config = num_cpuid_config;
+>>>> +
+>>>> +    ret = tdx_sys_metadata_read(fields, ARRAY_SIZE(fields), tdx_info);
+>>>> +    if (ret)
+>>>> +        goto error_out;
+>>>> +
+>>>> +    for (i = 0; i < num_cpuid_config; i++) {
+>>>> +        struct kvm_tdx_cpuid_config *c = &tdx_info->cpuid_configs[i];
+>>>> +        u64 leaf, eax_ebx, ecx_edx;
+>>>> +        struct tdx_md_map cpuids[] = {
+>>>> +            TDX_MD_MAP(CPUID_CONFIG_LEAVES + i, &leaf),
+>>>> +            TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2, &eax_ebx),
+>>>> +            TDX_MD_MAP(CPUID_CONFIG_VALUES + i * 2 + 1, &ecx_edx),
+>>>> +        };
+>>>> +
+>>>> +        ret = tdx_md_read(cpuids, ARRAY_SIZE(cpuids));
+>>>> +        if (ret)
+>>>> +            goto error_out;
+>>>> +
+>>>> +        c->leaf = (u32)leaf;
+>>>> +        c->sub_leaf = leaf >> 32;
+>>>> +        c->eax = (u32)eax_ebx;
+>>>> +        c->ebx = eax_ebx >> 32;
+>>>> +        c->ecx = (u32)ecx_edx;
+>>>> +        c->edx = ecx_edx >> 32;
+>>>
+>>> OK I can see why you don't want to use ...
+>>>
+>>>       struct tdx_metadata_field_mapping fields[] = {
+>>>           TDX_INFO_MAP(NUM_CPUID_CONFIG, num_cpuid_config),
+>>>       };
+>>>
+>>> ... to read num_cpuid_config first, because the memory to hold @tdx_info
+>>> hasn't been allocated, because its size depends on the num_cpuid_config.
+>>>
+>>> And I confess it's because the tdx_sys_metadata_field_read() that got
+>>> exposed in patch ("x86/virt/tdx: Export global metadata read
+>>> infrastructure") only returns 'u64' for all metadata field, and you
+>>> didn't want to use something like this:
+>>>
+>>>       u64 num_cpuid_config;
+>>>
+>>>       tdx_sys_metadata_field_read(..., &num_cpuid_config);
+>>>
+>>>       ...
+>>>
+>>>       tdx_info->num_cpuid_config = num_cpuid_config;
+>>>
+>>> Or you can explicitly cast:
+>>>
+>>>       tdx_info->num_cpuid_config = (u16)num_cpuid_config;
+>>>
+>>> (I know people may don't like the assigning 'u64' to 'u16', but it seems
+>>> nothing wrong to me, because the way done in (1) below effectively has
+>>> the same result comparing to type case).
+>>>
+>>> But there are other (better) ways to do:
+>>>
+>>> 1) you can introduce a helper as suggested by Xiaoyao in [*]:
+>>>
+>>>
+>>>       int tdx_sys_metadata_read_single(u64 field_id,
+>>>                       int bytes,  void *buf)
+>>>       {
+>>>           return stbuf_read_sys_metadata_field(field_id, 0,
+>>>                           bytes, buf);
+>>>       }
+>>>
+>>> And do:
+>>>
+>>>       tdx_sys_metadata_read_single(NUM_CPUID_CONFIG,
+>>>           sizeof(num_cpuid_config), &num_cpuid_config);
+>>>
+>>> That's _much_ cleaner than the 'struct tdx_md_map', which only confuses
+>>> people.
+>>>
+>>> But I don't think we need to do this as mentioned above -- we just do
+>>> type cast.
 >>
->> Hi Dan,
+>> type cast needs another tmp variable to hold the output of u64.
 >>
->> I think it won't be false if the CXL memory device is an endpoint.
->> pcie_walk_rcec_all() will walk all pci_dev in RCEC assocaited bus ranges. So these two checkings can help us to filter:
->> 1. CXL memory device is an RCiEP associated with RCEC in the RCH case
->> 2. CXL memory device is not an RCiEP, so it should be an endpoint in the VH case.
+>> The reason I want to introduce tdx_sys_metadata_read_single() is to
+>> provide a simple and unified interface for other codes to read one
+>> metadata field, instead of letting the caller to use temporary u64
+>> variable and handle the cast or memcpy itself.
+>>
 > 
-> It will be an endpoint, but I though cxl_handle_error_iter() is only
-> called for RCIEPs and RPs that are share a bus range with the RCEC. The
-> endpoint in the VH case is downstream of the RP.
+> You can always use u64 to hold u16 metadata field AFAICT, so it doesn't have to
+> be temporary.
 > 
-> I had been assuming that pci_walk_bus() limits itself to buses within
-> the Root Complex however it descends the entire bus hierarchy so this
-> implementation will walk the entire topology on all root ports
-> associated with the RCEC looking for any CXL device. That feels wrong.
+> Here is what Isaku can do using the current API:
 > 
-> I would expect that this limits it self to only finding root ports and
-> then only proceeding if that root port has a directly attached CXL
-> device.
+> 	u64 num_cpuid_config;
+ >
 > 
-Got it, will change it in v2, thank you.
+> 	...
+> 
+> 	tdx_sys_metadata_field_read(NUM_CPUID_CONFIG, &num_cpuid_config);
+> 
+> 	tdx_info = kzalloc(calculate_tdx_info_size(num_cpuid_config), ...);
+> 
+> 	tdx_info->num_cpuid_config = num_cpuid_config;
 
-> Note, when you send a v2 of this RFC be sure to copy linux-pci for these
-> core changes to PCI error handling.
-Sure, I made a mistake here.
+Dosen't num_cpuid_config serve as temporary variable in some sense?
+
+For this case, it needs to be used for calculating the size of tdx_info. 
+So we have to have it. But it's not the common case.
+
+E.g., if we have another non-u64 field (e.g., field_x) in tdx_info, we 
+cannot to read it via
+
+	tdx_sys_metadata_field_read(FIELD_X_ID, &tdx_info->field_x);
+
+we have to use a temporary u64 variable.
+
+> 	...
+> 
+> (you can do explicit (u16)num_cpuid_config type cast above if you want.)
+> 
+> With your suggestion, here is what Isaku can do:
+> 
+> 	u16 num_cpuid_config;
+> 
+> 	...
+> 
+> 	tdx_sys_metadata_read_single(NUM_CPUID_CONFIG,
+> sizeof(num_cpuid_config),
+> 				&num_cpuid_config);
+> 
+> 	tdx_info = kzalloc(calculate_tdx_info_size(num_cpuid_config), ...);
+> 
+> 	tdx_info->num_cpuid_config = num_cpuid_config;
+> 
+> 	...
+> 
+> I don't see big difference?
+> 
+> One example that the current tdx_sys_metadata_field_read() doesn't quite fit is
+> you have something like this:
+> 
+> 	struct {
+> 		u16 whatever;
+> 		...
+> 	} st;
+> 
+> 	tdx_sys_metadata_field_read(FIELD_ID_WHATEVER, &st.whatever);
+> 
+> But for this use case you are not supposed to use tdx_sys_metadata_field_read(),
+> but use tdx_sys_metadata_read() which has a mapping provided anyway.
+> 
+> So, while I don't quite object your proposal, I don't see it being quite
+> necessary.
+> 
+> I'll let other people to have a say.
+> 
+> 
 
 
