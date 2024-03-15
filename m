@@ -1,227 +1,165 @@
-Return-Path: <linux-kernel+bounces-104269-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104270-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E04D587CB7D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:33:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3041B87CB7F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:33:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 102181C21064
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:33:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E08E3281D34
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:33:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3C448199BC;
-	Fri, 15 Mar 2024 10:32:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D17B1B597;
+	Fri, 15 Mar 2024 10:32:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mAFEdedN"
-Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IVxVNr2+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 806841C2AF;
-	Fri, 15 Mar 2024 10:31:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989D219BCA
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:32:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710498719; cv=none; b=THFr87eVoGoUAbEZLGXSdlJU1alFxCjza+laYuWRgWl96TUr/1Wwnv3Qj/gldcBAVkT4tO/nwMOa4+YXw6vE++pBgIXcnFr24MZAV5gLRpaNOkJC92xSpjV8N5RvqTUqv4VsAjlkrF7ci/FOZJ4sWvTzgfSUAXchV1hX48lQsSM=
+	t=1710498722; cv=none; b=Gx7Q3GFkbwEAlrJdZBXKHj9uwkvnDavdOUnmkDQ2E+ffY5EmO/HR0Ze8d22X+bSO0Yo/NxH5e5A+NdPf+kDu6rdoydPthtnfdiTVnUFQfvXI3LG71xV9kcEzL3s33fUvVmAGQaZM1AerCkzRISRmYJleQq+3ZyzBK97A0RusU2A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710498719; c=relaxed/simple;
-	bh=zfiUBLeK+PtZG4A+qL9jArSHbLnJbmxDpCXiIS0qrUQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p4jPWADaJJxPCP4McoW2P3BzsQjosSfLKcod/etbC+/J3xnNgZp8/GC7rNGNlPjjYiO1/C5AykIWRsFTyDa3ydAP6KUG+kjiP9c9nmMJxLk/+ElNwG0CJiqLS6sqFK8wt7xxFfPZeK78RKjdV9M0ZyeEN+IDEbbigukuerm9AHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mAFEdedN; arc=none smtp.client-ip=209.85.208.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d48ba4d5ecso3671741fa.1;
-        Fri, 15 Mar 2024 03:31:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710498716; x=1711103516; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NkgvVj4VQnM0U5OLYxoLZxYfZKzb6GHR+JPP7Dvj7ys=;
-        b=mAFEdedNPm2iIYUyQmSqU+j5sg5ops36pys5XuegzilsQ3BUawDfADBSfqWtWqTGcL
-         hYnhWHXQLVyLg76n6JhetfQaNGpNrS+1SsJtVs7eLNJ8BwNpk0YoUhjtlv1wYauL/v0z
-         KujjuSXnOw8V7ZzVZo34Hu5Ll7ueTGZ0Zz/Sj2B1b5lUzm2D2KCiHukNbqHSDtq0T4UK
-         xf/wSWVjGPpI0QEsuNCR+vN4cMwMpAQmhPNtE3qPsMHHKqdIgfsbviaqwbdEKLaRMWZi
-         UhMRpyrPDpc8p0f6hNgFjYY/3bOM7qgy5FCTrbMc6NYUTzJCYBhWbuchgghcrNd7cKB5
-         b0Jw==
+	s=arc-20240116; t=1710498722; c=relaxed/simple;
+	bh=CnKgpulySBPIstBIX+4GBHLu73MwceFKZjKwPr4Yj2Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=I+tMD6j1CbWvvlQVnGQn0TR1rnef1hk4+067D5fk55zm5/Z8ZCr/y+qe5l2wdiH6K6B/P5Fzd08P5T5pxl8zSphZD+jevBNXoJFaeDiNHr6QeyP5L2xxKYQeIb5PTXgeTO7ibUIHz4ODd4oB1WDg8KfMXhGl12aYs9CKIENRUMo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IVxVNr2+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710498719;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=MZnFLHEJZESpYeN3Ng7zY31MsrRVHON+Av+y9YSoKww=;
+	b=IVxVNr2+gKyK6sQEiKG4/VpDAIIbQEXTzlx3kyx35CcamLnrV+oK1mRJXcdniRqQazpEu8
+	zpQA35EamzvRAmHdHk+Wo5DEQlOIVvJ4FHsBpwY3EYFvUMH51axVzlv0xYlYLJeBIq3in/
+	HXCenwmv7E8U75TpDl+/naRSB5IeIuk=
+Received: from mail-lf1-f69.google.com (mail-lf1-f69.google.com
+ [209.85.167.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-630-M6DWbJV-Orm7cfzqTP2GWg-1; Fri, 15 Mar 2024 06:31:58 -0400
+X-MC-Unique: M6DWbJV-Orm7cfzqTP2GWg-1
+Received: by mail-lf1-f69.google.com with SMTP id 2adb3069b0e04-513c9f60af8so2545393e87.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:31:58 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
         d=1e100.net; s=20230601; t=1710498716; x=1711103516;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=NkgvVj4VQnM0U5OLYxoLZxYfZKzb6GHR+JPP7Dvj7ys=;
-        b=vIkX6eXQLkLryOrFspdLcAfjTXvDvfHapZJQFFWBdr96S8bzsgCAq5MnkrHU0Bb61m
-         0tpCicTpQobUI/WnmRbD00zrsPdogCQ2bGbCzg045uk37cAOP/jg4VsItcPfijFVjEVC
-         o2N3nrgGF8naLocRVLbAO8TOWbWzI/yBb97XklaxiABsA3l65dRxSn/Xkp0gIB9J3kPs
-         JPmUNvhXls/oI+c6J1iefI7xcmCsSdQPGeHP/dN3wbTIME9Itr4hZgncfpGwLGijcnPS
-         7fQGADGZc5Goe4Tfxh4MszIXDTqpnm7zewmBQQkY4bE04sU2CIjC3q1RhpXBdONugK/5
-         YU8g==
-X-Forwarded-Encrypted: i=1; AJvYcCU9HCDb43hhWwhOtvF/QZGLBpdZuGw4XOzXLhJvBLshgCqMryDN+mcwLsx9+JiF3aF9pAxWy/gErQKz4GFmbCsjG4dfeeiHocxPm0KZ+paGCV5hD3RJhwa9559Qlztbe0z3
-X-Gm-Message-State: AOJu0YyXsAMeuNF4nsLpYhJ7wfk4ou5hrFSDO9KEjMPDgiGAS1kjOHV1
-	zjHoxo9VhCTYHTo9G6/xoD/Vq9e3iS1BysgvybGuKE5XMoBjSJKuJo3gGlpHossGsnX7BqlLeAE
-	i+FTG5NztHtGwPsQeGSFEQOf1HuE=
-X-Google-Smtp-Source: AGHT+IFoe+KXjZBP9/D8N3JpUzEHl/Z5odV3mFyPV9Zy3sD3yWRo9tM+wc9McbZUNoKbgm7mMP8EYEvEMzIK16e3ZO4=
-X-Received: by 2002:a2e:8904:0:b0:2d4:8a62:bd4f with SMTP id
- d4-20020a2e8904000000b002d48a62bd4fmr491248lji.3.1710498715148; Fri, 15 Mar
- 2024 03:31:55 -0700 (PDT)
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=MZnFLHEJZESpYeN3Ng7zY31MsrRVHON+Av+y9YSoKww=;
+        b=ZWl1cIQVtHiIbjfQqI9ux0NLfsMTy9PEyNzxB4672D/5G83b0uyc1LnWn61DWRaYEm
+         SWcdIklMrAwXcb3YRARqtp3Bf+LQ3PcBhLngfubDNmuLfQlg8iU/q8Pzlta4f5Cvk/cq
+         qOwE7wRAbVUPzE6DGlnYMbhqAeAQFsLMVMR/c+lQviTsixPrZ+LhWNKc96NUsrWv5bWl
+         gE/Phi5JYwCb3tmFGsOkamh3YuDvw95bQt5LKXb+ui/wq0AZ/bqQkzla/yKMddGxiUC1
+         krCJl1drcRtGhZ6Xwt8GmtVKbbHMNllP9Afy76dQYT1cpdnMTxMnKOykBX08dEwR72R7
+         OKvg==
+X-Forwarded-Encrypted: i=1; AJvYcCVnopNYhTco+hF55hNVUfdgo12/JZdf/CSPbBYXjwUV3LgxUaU7ZYtR33IlXe7AxZe+J8ME6LAaXygZf6OvQzRkbOc11FyBaLvTHQC1
+X-Gm-Message-State: AOJu0YwvcY/iIv0PVkwvJs/suLbAava5FOlY9T+Ob46hkqtN2EgxF0ji
+	FoRuk03jLvND8u4SD8ZeSyzdlVv1ogakBKHK8p6ULHA/0ovZuW1Qh4RGOeYwpVKPs5DGT6uw7g/
+	GOVqqP8ICnl3P4bizddlG9mDWD6TOcYEqrTVsEZFnpAaCBJgyRhBAjM8W9mdbJQ==
+X-Received: by 2002:a19:8c01:0:b0:513:1a38:2406 with SMTP id o1-20020a198c01000000b005131a382406mr3166917lfd.13.1710498716501;
+        Fri, 15 Mar 2024 03:31:56 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGAM6kfVM3kaMJlGNo7Ajg4Diy8CaM0JJcB7qTAbD6/81jGCJ0Jyqc8MhtlygniOjlu3WPFjw==
+X-Received: by 2002:a19:8c01:0:b0:513:1a38:2406 with SMTP id o1-20020a198c01000000b005131a382406mr3166891lfd.13.1710498715942;
+        Fri, 15 Mar 2024 03:31:55 -0700 (PDT)
+Received: from redhat.com ([2a02:14f:176:3a04:e2ee:42e3:ba74:3b8e])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b00412e3717ae6sm8678154wmo.36.2024.03.15.03.31.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 03:31:55 -0700 (PDT)
+Date: Fri, 15 Mar 2024 06:31:51 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Tobias Huschle <huschle@linux.ibm.com>
+Cc: Luis Machado <luis.machado@arm.com>, Jason Wang <jasowang@redhat.com>,
+	Abel Wu <wuyun.abel@bytedance.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Linux Kernel <linux-kernel@vger.kernel.org>, kvm@vger.kernel.org,
+	virtualization@lists.linux.dev, netdev@vger.kernel.org,
+	nd <nd@arm.com>
+Subject: Re: EEVDF/vhost regression (bisected to 86bfbb7ce4f6 sched/fair: Add
+ lag based placement)
+Message-ID: <20240315062839-mutt-send-email-mst@kernel.org>
+References: <92916.124010808133201076@us-mta-622.us.mimecast.lan>
+ <20240121134311-mutt-send-email-mst@kernel.org>
+ <07974.124020102385100135@us-mta-501.us.mimecast.lan>
+ <20240201030341-mutt-send-email-mst@kernel.org>
+ <89460.124020106474400877@us-mta-475.us.mimecast.lan>
+ <20240311130446-mutt-send-email-mst@kernel.org>
+ <cf813f92-9806-4449-b099-1bb2bd492b3c@arm.com>
+ <73123.124031407552500165@us-mta-156.us.mimecast.lan>
+ <20240314110649-mutt-send-email-mst@kernel.org>
+ <84704.124031504335801509@us-mta-515.us.mimecast.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314150003.123020-1-puranjay12@gmail.com> <20240314150003.123020-2-puranjay12@gmail.com>
- <CAP01T75tG5tXqRJsMn6iU1xvmEqeuTg=ja=LUPqqXkrJiYL2XQ@mail.gmail.com>
- <mb61pfrwsohx5.fsf@gmail.com> <CAADnVQ+vAuP1UuFf6tY64AmHBqk4FjRY7DwEjKXwWUaczubDcg@mail.gmail.com>
-In-Reply-To: <CAADnVQ+vAuP1UuFf6tY64AmHBqk4FjRY7DwEjKXwWUaczubDcg@mail.gmail.com>
-From: Puranjay Mohan <puranjay12@gmail.com>
-Date: Fri, 15 Mar 2024 11:31:44 +0100
-Message-ID: <CANk7y0g0i=9U89kdpZARKgf5MnKy4dM1m5zDjo=3LSAwaDEcYg@mail.gmail.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: Add arm64 JIT support for PROBE_MEM32
- pseudo instructions.
-To: Alexei Starovoitov <alexei.starovoitov@gmail.com>
-Cc: Kumar Kartikeya Dwivedi <memxor@gmail.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Daniel Borkmann <daniel@iogearbox.net>, 
-	John Fastabend <john.fastabend@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, KP Singh <kpsingh@kernel.org>, 
-	Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf <bpf@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>, 
-	Zi Shen Lim <zlim.lnx@gmail.com>, Xu Kuohai <xukuohai@huawei.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <84704.124031504335801509@us-mta-515.us.mimecast.lan>
 
-On Thu, Mar 14, 2024 at 6:21=E2=80=AFPM Alexei Starovoitov
-<alexei.starovoitov@gmail.com> wrote:
->
-> On Thu, Mar 14, 2024 at 10:13=E2=80=AFAM Puranjay Mohan <puranjay12@gmail=
-com> wrote:
-> >
-> > Kumar Kartikeya Dwivedi <memxor@gmail.com> writes:
-> >
-> > > On Thu, 14 Mar 2024 at 16:00, Puranjay Mohan <puranjay12@gmail.com> w=
-rote:
-> > >>
-> > >> Add support for [LDX | STX | ST], PROBE_MEM32, [B | H | W | DW]
-> > >> instructions.  They are similar to PROBE_MEM instructions with the
-> > >> following differences:
-> > >> - PROBE_MEM32 supports store.
-> > >> - PROBE_MEM32 relies on the verifier to clear upper 32-bit of the
-> > >>   src/dst register
-> > >> - PROBE_MEM32 adds 64-bit kern_vm_start address (which is stored in =
-R28
-> > >>   in the prologue). Due to bpf_arena constructions such R28 + reg +
-> > >>   off16 access is guaranteed to be within arena virtual range, so no
-> > >>   address check at run-time.
-> > >> - PROBE_MEM32 allows STX and ST. If they fault the store is a nop. W=
-hen
-> > >>   LDX faults the destination register is zeroed.
-> > >>
-> > >> To support these on arm64, we do tmp2 =3D R28 + src/dst reg and then=
- use
-> > >> tmp2 as the new src/dst register. This allows us to reuse most of th=
-e
-> > >> code for normal [LDX | STX | ST].
-> > >>
-> > >> Signed-off-by: Puranjay Mohan <puranjay12@gmail.com>
-> > >> ---
-> > >
-> > > Hi Alexei,
-> > > Puranjay and I were discussing this stuff off list and noticed that
-> > > atomic instructions are not handled.
-> > > It turns out that will cause a kernel crash right now because the
-> > > 32-bit offset into arena will be dereferenced directly.
-> > >
-> > > e.g. something like this:
-> > >
-> > > @@ -55,6 +56,7 @@ int arena_list_add(void *ctx)
-> > >                 test_val++;
-> > >                 n->value =3D i;
-> > >                 arena_sum +=3D i;
-> > > +               __sync_fetch_and_add(&arena_sum, 0);
-> > >                 list_add_head(&n->node, list_head);
-> > >         }
-> > >  #else
-> > >
-> > > I will try to prepare a fix for the x86 JIT. Puranjay will do the sam=
-e
-> > > for his set.
-> >
-> > Yes, testing the change mentioned by Kumar on ARM64 causes a crashes as=
- well:
-> >
-> > bpf_testmod: loading out-of-tree module taints kernel.
-> >  bpf_testmod: module verification failed: signature and/or required key=
- missing - tainting kernel
-> >  Unable to handle kernel NULL pointer dereference at virtual address 00=
-00000000000010
-> >  Mem abort info:
-> >    ESR =3D 0x0000000096000006
-> >    EC =3D 0x25: DABT (current EL), IL =3D 32 bits
-> >    SET =3D 0, FnV =3D 0
-> >    EA =3D 0, S1PTW =3D 0
-> >    FSC =3D 0x06: level 2 translation fault
-> >  Data abort info:
-> >    ISV =3D 0, ISS =3D 0x00000006, ISS2 =3D 0x00000000
-> >    CM =3D 0, WnR =3D 0, TnD =3D 0, TagAccess =3D 0
-> >    GCS =3D 0, Overlay =3D 0, DirtyBit =3D 0, Xs =3D 0
-> >  user pgtable: 4k pages, 48-bit VAs, pgdp=3D00000004043cc000
-> >  [0000000000000010] pgd=3D0800000410d8f003, p4d=3D0800000410d8f003, pud=
-=3D0800000405972003, pmd=3D0000000000000000
-> >  Internal error: Oops: 0000000096000006 [#1] SMP
-> >  Modules linked in: bpf_testmod(OE) nls_ascii nls_cp437 sunrpc vfat fat=
- aes_ce_blk aes_ce_cipher ghash_ce sha1_ce button sch_fq_codel dm_mod dax c=
-onfigfs dmi_sysfs sha2_ce sha256_arm64 efivarfs
-> >  CPU: 8 PID: 5631 Comm: test_progs Tainted: G           OE      6.8.0+ =
-#2
-> >  Hardware name: Amazon EC2 c6g.16xlarge/, BIOS 1.0 11/1/2018
-> >  pstate: 20400005 (nzCv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=3D--)
-> >  pc : bpf_prog_8771c336cb6a18eb_arena_list_add+0x204/0x2b8
-> >  lr : bpf_prog_8771c336cb6a18eb_arena_list_add+0x144/0x2b8
-> >  sp : ffff80008b84bc30
-> >  x29: ffff80008b84bca0 x28: ffff8000a5008000 x27: ffff80008b84bc38
-> >  x26: 0000000000000000 x25: ffff80008b84bc60 x24: 0000000000000000
-> >  x23: 0000000000000000 x22: 0000000000000058 x21: 0000000000000838
-> >  x20: 0000000000000000 x19: 0000000100001fe0 x18: 0000000000000000
-> >  x17: 0000000000000000 x16: 0000000000000000 x15: 0000ffffcc66d2c8
-> >  x14: 0000000000000000 x13: 0000000000000000 x12: 000000000004058c
-> >  x11: ffff8000a5008010 x10: 00000000ffffffff x9 : 00000000000002cf
-> >  x8 : ffff800082ff4ab8 x7 : 0000000100001000 x6 : 0000000000000001
-> >  x5 : 0000000010e5e3fd x4 : 000000003619b978 x3 : 0000000000000010
-> >  x2 : 0000000000000000 x1 : 0000000000000000 x0 : 0000000000001fe0
-> >  Call trace:
-> >   bpf_prog_8771c336cb6a18eb_arena_list_add+0x204/0x2b8
-> >   bpf_prog_test_run_syscall+0x100/0x340
-> >   __sys_bpf+0x8e8/0xa20
-> >   __arm64_sys_bpf+0x2c/0x48
-> >   invoke_syscall+0x50/0x128
-> >   el0_svc_common.constprop.0+0x48/0xf8
-> >   do_el0_svc+0x28/0x40
-> >   el0_svc+0x58/0x190
-> >   el0t_64_sync_handler+0x13c/0x158
-> >   el0t_64_sync+0x1a8/0x1b0
-> >  Code: 8b010042 8b1c006b f9000162 d2800001 (f821307f)
-> >  ---[ end trace 0000000000000000 ]---
-> >  Kernel panic - not syncing: Oops: Fatal exception
-> >  SMP: stopping secondary CPUs
-> >  Kernel Offset: disabled
-> >  CPU features: 0x0,00000120,7002014a,21407a0b
-> >  Memory Limit: none
-> >  Rebooting in 5 seconds..
-> >
-> > I will send v2 with the arm64 JIT fix, but I guess verifier has to be m=
-odified
-> > as well to add BPF_PROBE_MEM32 to atomic instructions.
->
-> The JIT and the verifier changes for atomics might be too big.
-> Let's disable atomics in arena in the verifier for now.
-> Pls send a patch.
+On Fri, Mar 15, 2024 at 09:33:49AM +0100, Tobias Huschle wrote:
+> On Thu, Mar 14, 2024 at 11:09:25AM -0400, Michael S. Tsirkin wrote:
+> > 
+> > Thanks a lot! To clarify it is not that I am opposed to changing vhost.
+> > I would like however for some documentation to exist saying that if you
+> > do abc then call API xyz. Then I hope we can feel a bit safer that
+> > future scheduler changes will not break vhost (though as usual, nothing
+> > is for sure).  Right now we are going by the documentation and that says
+> > cond_resched so we do that.
+> > 
+> > -- 
+> > MST
+> > 
+> 
+> Here I'd like to add that we have two different problems:
+> 
+> 1. cond_resched not working as expected
+>    This appears to me to be a bug in the scheduler where it lets the cgroup, 
+>    which the vhost is running in, loop endlessly. In EEVDF terms, the cgroup
+>    is allowed to surpass its own deadline without consequences. One of my RFCs
+>    mentioned above adresses this issue (not happy yet with the implementation).
+>    This issue only appears in that specific scenario, so it's not a general 
+>    issue, rather a corner case.
+>    But, this fix will still allow the vhost to reach its deadline, which is
+>    one full time slice. This brings down the max delays from 300+ms to whatever
+>    the timeslice is. This is not enough to fix the regression.
+> 
+> 2. vhost relying on kworker being scheduled on wake up
+>    This is the bigger issue for the regression. There are rare cases, where
+>    the vhost runs only for a very short amount of time before it wakes up 
+>    the kworker. Simultaneously, the kworker takes longer than usual to 
+>    complete its work and takes longer than the vhost did before. We
+>    are talking 4digit to low 5digit nanosecond values.
+>    With those two being the only tasks on the CPU, the scheduler now assumes
+>    that the kworker wants to unfairly consume more than the vhost and denies
+>    it being scheduled on wakeup.
+>    In the regular cases, the kworker is faster than the vhost, so the 
+>    scheduler assumes that the kworker needs help, which benefits the
+>    scenario we are looking at.
+>    In the bad case, this means unfortunately, that cond_resched cannot work
+>    as good as before, for this particular case!
+>    So, let's assume that problem 1 from above is fixed. It will take one 
+>    full time slice to get the need_resched flag set by the scheduler
+>    because vhost surpasses its deadline. Before, the scheduler cannot know
+>    that the kworker should actually run. The kworker itself is unable
+>    to communicate that by itself since it's not getting scheduled and there 
+>    is no external entity that could intervene.
+>    Hence my argumentation that cond_resched still works as expected. The
+>    crucial part is that the wake up behavior has changed which is why I'm 
+>    a bit reluctant to propose a documentation change on cond_resched.
+>    I could see proposing a doc change, that cond_resched should not be
+>    used if a task heavily relies on a woken up task being scheduled.
 
-As atomics are disabled in the Arena now, this series will not require
-any changes.
-Looking forward to the reviews.
+Could you remind me pls, what is the kworker doing specifically that
+vhost is relying on?
 
-Thanks,
-Puranjay
+-- 
+MST
+
 
