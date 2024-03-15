@@ -1,100 +1,177 @@
-Return-Path: <linux-kernel+bounces-104648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5159A87D16F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:47:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 393F687D170
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:49:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FF6D28242C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:47:50 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1A37B2358D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:49:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0783C063;
-	Fri, 15 Mar 2024 16:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBB444C77;
+	Fri, 15 Mar 2024 16:49:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYMrTgRi"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="IPjBce2j"
+Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBD928F1;
-	Fri, 15 Mar 2024 16:47:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E732BD19;
+	Fri, 15 Mar 2024 16:49:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521264; cv=none; b=JntgiFsXtl7F824DeAECqn03nhkQWEmdwJGPjuRDRNhzvMm7+a25sADovINWZhA1Qk68cfgoa2mMfXkPmf/kyzC0e3fsBkIBMcJUlQB3BEVoMY9dVgbonZjaknDBXiO4OcDfoH9Qb1cQFwkDW6M3oyacP2suTNAB8YUR9x4legM=
+	t=1710521349; cv=none; b=FkV9EJTRXLI5DsXPSLPBfaSqyyfjvh7ergHDpsGtQ+pOINQ3V7VHKdqjyiH1SSPPhK3irliwEK18sGpBZntWXP4OEC5Ro6CCjRvkjScA6kRWm0p97SECvjMd9nd7h+IcVfSPT0XWgyM2XJvuQSOk6/2cgVw0BVJwNbDqEQOpv+E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521264; c=relaxed/simple;
-	bh=JL5eSL26L69YUqhQ5+zJQo9l0y8hKk3BZ+EnlZ3I0ew=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=mgX752XL4uINe/JMTIx/fTAia9Rmhmzv+1qLbDvVzIoOx0CQ3YAlt3JFlzjO+VuvVt/8IXIuQ3Qtf4rbQvrk2HnJgGPU7M8n+GoZFMAEX9bXXJSka5KWuDESQQ5wyxVdQEezJ+VcGZbK3RP1ql34dB40eOb72D6vd8HTKnjOj4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYMrTgRi; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAA8AC433C7;
-	Fri, 15 Mar 2024 16:47:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710521263;
-	bh=JL5eSL26L69YUqhQ5+zJQo9l0y8hKk3BZ+EnlZ3I0ew=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=bYMrTgRi1fAF0uJpaHYkRyXi7WMU9CRq/YAAwuGPJ96W4PBq+7ovToG4kCo/Wh9he
-	 0FQhO8q2MPRkIiOYC/kBvrSn17yLoSkOuf8FKSraqnI1nDrVkmSWd3b9HAIjxCrUcW
-	 GTxUZ399ds/6rak0w56+JGj/BG6zNMnfuW+UzYueaEGHBHoExb0TPtkcV3wbwpWsl6
-	 DC4p1cxQETsHR1wh8l06vm6qbgmR+PM1DhCRCJlViSSpd4bvVAPp7WSIZTZiNxLqdi
-	 +8v6sqK2++UPI8NRxHA+pHQBRnmAJnqj/speZyq2TwAD/ieIOKwMoDFbRCcM8YZN3A
-	 UWzjd3bXJuYZg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rlAim-000000000Nn-3x3C;
-	Fri, 15 Mar 2024 17:47:53 +0100
-Date: Fri, 15 Mar 2024 17:47:52 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Bjorn Helgaas <helgaas@kernel.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>
-Subject: Re: [PATCH v2 2/3] PCI: qcom: Read back PARF_LTSSM register
-Message-ID: <ZfR7uCcflCiFTvBh@hovoldconsulting.com>
-References: <20240215161114.GA1292081@bhelgaas>
- <bc7d9859-f7ec-41c5-8a9e-170ccdfff46a@linaro.org>
- <Zc8GHrgdF7jJBgyu@hovoldconsulting.com>
- <c1f85249-32b1-41e2-adc3-5aa4ad7609b9@linaro.org>
+	s=arc-20240116; t=1710521349; c=relaxed/simple;
+	bh=JVu7cAl5b1rC/i/YgVwh6jYnMUpMTHputymmAufHTpc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Oxos2QoEqPCXqBfxXheLcPKPSDv/bA38i+32nTFUbzvOz4jlwXjLeUWVhvGR2KMIi0po7RQKGQgHdDcG/iyo6kgYTqfagWziUEz2wj1neRGpDgYMwNTFfNyuHaYvtBZoT+KOdEJGXR5IaRXxCujOi8iI2OkuEvcwopcGRGkYB+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=IPjBce2j; arc=none smtp.client-ip=217.70.183.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 18A9A40004;
+	Fri, 15 Mar 2024 16:49:02 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
+	t=1710521343;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=/cMG+oSZ/w8c/DhsYM6dqVrXQGCtz99/u731U0CysXE=;
+	b=IPjBce2j7yd+BCxagRlgaiuNADB5TXImYfUpzg7xRdFq0U8io49R1p8QADIEBf1S0LODt2
+	/mW3uQQw9mQy0J6jsf2IiTeu0TnZEaquoxsUJcJtSapTHBtM37x6KYU9PfAL7kqsaflS90
+	zg4Eb9T1owUMitoNeF6/+0Q8ZVr5l2YB3BwTxh19fgye5DMnW+QOXgqrEMfSNAC1mU7tJY
+	tIywh+rOr3bUyfE7O3NdqPIMDLM/7YC1zHSFooGpsAPaxnZTvCsZN7f9NSc73ZP6fC3huP
+	iVXxlyzx/BNrq5CLLbgy3pxGr6GEGCEuhdA4cL/g3K0s2ia7MjF7zDKlbcn4VA==
+Date: Fri, 15 Mar 2024 17:49:00 +0100
+From: Luca Ceresoli <luca.ceresoli@bootlin.com>
+To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+Subject: TP_printk() bug with %c, and more?
+Message-ID: <20240315174900.14418f22@booty>
+Organization: Bootlin
+X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <c1f85249-32b1-41e2-adc3-5aa4ad7609b9@linaro.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+X-GND-Sasl: luca.ceresoli@bootlin.com
 
-On Fri, Mar 15, 2024 at 11:16:59AM +0100, Konrad Dybcio wrote:
-> On 2/16/24 07:52, Johan Hovold wrote:
+Hello Linux tracing maintainers,
 
-> > This makes no sense. As Bjorn already said, you're just polling for the
-> > link to come up (for a second). And unless you have something else that
-> > depends on the write to have reached the device, there is no need to
-> > read it back. It's not going to be cached indefinitely if that's what
-> > you fear.
-> 
-> The point is, if we know that the hardware is expected to return "done"
-> within the polling timeout value of receiving the request to do so, we
-> are actively taking away an unknown amount of time from that timeout.
+I've come across an unexpected behaviour in the kernel tracing
+infrastructure that looks like a bug, or maybe two.
 
-We're talking about microseconds, not milliseconds or seconds as you
-seem to believe.
+Cc-ing ASoC maintainers for as it appeared using ASoC traces, but it
+does not look ASoC-specific.
 
-> So, if the polling condition becomes true after 980ms, but due to write
-> buffering the value reached the PCIe hardware after 21 ms, we're gonna
-> hit a timeout. Or under truly extreme circumstances, the polling may
-> time out before the write has even arrived at the PCIe hw.
+It all started when using this trace-cmd sequence on an ARM64 board
+running a mainline 6.8.0-rc7 kernel:
 
-So the write latency is not an issue here.
+  trace-cmd record -e snd_soc_dapm_path ./my-play
+  trace-cmd report
 
-Johan
+While this produces perfectly valid traces for other asoc events,
+the snd_soc_dapm_path produces:
+
+  snd_soc_dapm_path:    >c<* MIC1_EN <- (direct) <-
+
+instead of the expected:
+
+  snd_soc_dapm_path:    *MIC1 <- (direct) <- MIC1_EN
+
+The originating macro is:
+
+	TP_printk("%c%s %s %s %s %s",
+		(int) __entry->path_node &&
+		(int) __entry->path_connect ? '*' : ' ',
+		__get_str(wname), DAPM_ARROW(__entry->path_dir),
+		__get_str(pname), DAPM_ARROW(__entry->path_dir),
+		__get_str(pnname))
+
+It appears as if the %c placeholder always produces the three ">c<"
+characters, the '*' or ' ' char is printed as the first %s, all the
+other strings are shifted right by one position and the last string is
+never printed.
+
+On my x86_64 laptop running the default Ubuntu kernel (6.5) I'm able to
+trace a few events having a '%c' in their TP_printk() macros and the
+result is:
+
+  intel_pipe_update_start: dev 0000:00:02.0, pipe >c<, frame=1,
+  scanline=107856, min=2208, max=2154
+
+originating from:
+
+  TP_printk("dev %s, pipe %c, frame=%u, scanline=%u, min=%u, max=%u",
+
+Here it looks like the %c produced ">c<" again, but apparently without
+any shifting.
+
+Back on the ARM64 board I found a couple interesting clues.
+
+First, using the <debugfs>/tracing/ interface instead of trace-cmd, I'm
+getting correctly formatted strings:
+
+trace-cmd: snd_soc_dapm_path: >c<* HPOUT_L -> (direct) ->
+debugfs:   snd_soc_dapm_path: *HPOUT_L <- (direct) <- HPOUT_POP_SOUND_L
+
+Notice the arrows pointing to the opposite direction though. The correct
+arrow is the one in the debugfs run.
+
+Second, I tried a simple test:
+
+  TP_printk("(%c,%c,%c,%c) [%s,%s,%s,%s]",                                                                                                                                             
+            'A',                                                                                                                                                                       
+            'B',                                                                                                                                                                       
+            'C',                                                                                                                                                                       
+            'D',                                                                                                                                                                       
+            "Just",                                                                                                                                                                     
+            "a",                                                                                                                                                                   
+            "stupid",                                                                                                                                                                
+            "test")                                                                                                                                                                 
+
+and this logs:
+
+  snd_soc_dapm_path:    (>c<,>c<,>c<,>c<) [A,B,C,D]
+
+so it looks like there really is something wrong with %c in
+TP_printk(), and the %c in the format string do not consume any
+parameters, de facto shifting them to the right.
+
+As one may expect, avoiding the %c fixes formatting:
+
+-       TP_printk("%c%s %s %s %s %s",
++       TP_printk("%s%s %s %s %s %s",
+                (int) __entry->path_node &&
+-               (int) __entry->path_connect ? '*' : ' ',
++               (int) __entry->path_connect ? "*" : " ",
+                __get_str(wname), DAPM_ARROW(__entry->path_dir),
+                __get_str(pname), DAPM_ARROW(__entry->path_dir),
+                __get_str(pnname))
+
+With this change, the string formatting is correct both with debugfs and
+trace-cmd, but the arrows are still wrong with trace-cmd.
+
+I have no idea how to further debug this and after a quick look at the
+macros I can honestly say I'm not feeling brave enough to dig into them
+in a late Friday afternoon.
+
+Any hints?
+Am I doing anything wrong?
+Is %c supposed to work in tracing macros?
+
+Best regards,
+Luca
+
+-- 
+Luca Ceresoli, Bootlin
+Embedded Linux and Kernel engineering
+https://bootlin.com
 
