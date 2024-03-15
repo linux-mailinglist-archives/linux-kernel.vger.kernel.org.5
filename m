@@ -1,192 +1,309 @@
-Return-Path: <linux-kernel+bounces-104281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104282-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CFDE87CB95
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:44:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA48B87CB98
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:45:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E7E141F2295A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:44:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE6E31C220D4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:45:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1995A1B951;
-	Fri, 15 Mar 2024 10:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57D5B19477;
+	Fri, 15 Mar 2024 10:45:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b="IwZbbJ5Z"
-Received: from HK3PR03CU002.outbound.protection.outlook.com (mail-eastasiaazon11021006.outbound.protection.outlook.com [52.101.128.6])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="cBqNzL4H"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 59B201B946
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:44:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.128.6
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710499444; cv=fail; b=khmywFp0j0ihouLQ7DPS+k5nbJN4Xhswilz1uAgiX8s9mwma7klxhHjJUNIH5L/ie4Rmnz/8UHUqI5bsNpx5eL3kvxctbp3WWMwnJrvD7hzf1Pxn0FkEzsHYwlDQK2J7AfqkVWkE+EiRAZ/6fPkxbsqceMcytf5cZ3fnxS1YvUE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710499444; c=relaxed/simple;
-	bh=FGkVKnnFlJTNIzC6xqZTuyle489VGna/h8cmMJzk6P8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bP6zweWJyoukU5/Ehff/wSogRlQJhF1Co9mcXhdo4J6t/6uQO7kKLuoyyWZSUlhq8M0r5HJdRD4CuYAMj0Kz7dpXX7iJ3iBM6KtvHFOn+AHjtOcXv5f6ErK3veXSsYFnLzS2PQ7r4GPdWyDvwC48JCS8E/KyxyCQwF7MC4eieK8=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com; spf=pass smtp.mailfrom=oppo.com; dkim=pass (1024-bit key) header.d=oppo.com header.i=@oppo.com header.b=IwZbbJ5Z; arc=fail smtp.client-ip=52.101.128.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=oppo.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oppo.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NYmZ46LfweeR7WRtk2Cci3S4KHHCKZRrHMgSMA/+zat1i72wiwrVDXGkRx/1VOAfHWJnbJ2oYH0oF0oXRkDwgG7TmkzmcSVtRqnmg/jcD7r1d8c1LsAg4O8ketx+IAuzUnb1Kz36OIfjuc4ai16xsxyRlyv25wHevO50Vo51OKJ8Xp6p6pRAMh09iTAd/ShcC+30bgegCJU5sh3AAi75vHuKA1Ft5bBDnGs3U/NFo8b7NzNDCVURrcV5Ok6Ne/nMSL34rbsu+Yf5eJneAKVc1clx/+do8bWlX888NRixqJKzY2b5YC5NX0/UbW+mKmAJRHVVEgyUKcXXt6ruORGlIQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=FGkVKnnFlJTNIzC6xqZTuyle489VGna/h8cmMJzk6P8=;
- b=FcyjMchYmO7UMoFOFv6qsassvZXfz9u1jZ2IEFXTuBnqTt9+2eonX/RXHkVNufZyLaRZ5n0+aC2bcycvzEb8qQ7uZ4+twgkFDue829sgpdBtJPm675fIw1v963phSBtg3qvrMNfpSPBHCWvnuhQH5dBocEU8Lgeho4Ec+huONHdFqZ+TPbXR/0mBzzwHxiyIiirmlf83EwSoFSyv4t257SvpS5+yUw7zlugZUYaSoru1RPo8txRsY0vLVvTU4+tnrqPRGo7zqgWiDxxsj4apydwxUF4ZFpRjLtxFQ6wrp0sGyUuAkEUyWUtIqidfpJ7Do4wHkKGF7swM/aoBmDrUCg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oppo.com; dmarc=pass action=none header.from=oppo.com;
- dkim=pass header.d=oppo.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oppo.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=FGkVKnnFlJTNIzC6xqZTuyle489VGna/h8cmMJzk6P8=;
- b=IwZbbJ5ZdGD8WYrpLjIE7N41jKUODXF0Jt0fN7t4Ckt+PPcCBlTKK6ougb8XqFXc/srC0+ACpUv7/VM9B/Sx2Ilpf/80bHZstvuk2iggWv86I6xsTzSWIukh+WEgjkm2MtzCCA68Lwi/HdWRnPhBjKjw7kYDtHgkDm9U0YIlVDg=
-Received: from SEZPR02MB7164.apcprd02.prod.outlook.com (2603:1096:101:194::8)
- by TYSPR02MB8038.apcprd02.prod.outlook.com (2603:1096:405:54::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Fri, 15 Mar
- 2024 10:43:59 +0000
-Received: from SEZPR02MB7164.apcprd02.prod.outlook.com
- ([fe80::bc02:302a:a551:9b07]) by SEZPR02MB7164.apcprd02.prod.outlook.com
- ([fe80::bc02:302a:a551:9b07%5]) with mapi id 15.20.7362.035; Fri, 15 Mar 2024
- 10:43:59 +0000
-From: =?utf-8?B?5YiY5rW36b6ZKExhb0xpdSk=?= <liuhailong@oppo.com>
-To: Barry Song <21cnbao@gmail.com>
-CC: "akpm@linux-foundation.org" <akpm@linux-foundation.org>,
-	"nathan@kernel.org" <nathan@kernel.org>, "ndesaulniers@google.com"
-	<ndesaulniers@google.com>, "trix@redhat.com" <trix@redhat.com>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "llvm@lists.linux.dev"
-	<llvm@lists.linux.dev>, "surenb@google.com" <surenb@google.com>,
-	"zhaoyang.huang@unisoc.com" <zhaoyang.huang@unisoc.com>,
-	"quic_charante@quicinc.com" <quic_charante@quicinc.com>, "yuzhao@google.com"
-	<yuzhao@google.com>
-Subject: Re: [PATCH v2] Revert "mm: skip CMA pages when they are not
- available"
-Thread-Topic: [PATCH v2] Revert "mm: skip CMA pages when they are not
- available"
-Thread-Index: AQHadrFVJJtVzEecOUS87iMUQEAAwLE4fR0AgAAg3gA=
-Date: Fri, 15 Mar 2024 10:43:59 +0000
-Message-ID: <ba894762-d3ea-4773-b54c-ce063e1065e5@oppo.com>
-References: <20240314141516.31747-1-liuhailong@oppo.com>
- <20240315081803.2223-1-liuhailong@oppo.com>
- <CAGsJ_4yMXE_4YuMTczF6u4YYp_TWksi+byszD09E2PT5pK8zfA@mail.gmail.com>
-In-Reply-To:
- <CAGsJ_4yMXE_4YuMTczF6u4YYp_TWksi+byszD09E2PT5pK8zfA@mail.gmail.com>
-Accept-Language: zh-CN, en-US
-Content-Language: zh-CN
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=oppo.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SEZPR02MB7164:EE_|TYSPR02MB8038:EE_
-x-ms-office365-filtering-correlation-id: 00ef1cdb-0f32-4d51-0635-08dc44dcd23e
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- /Gmj6ZCUKP4tVXHMVPzCCVFzkNq9CXEK6VuWTjZFBkw4/AV6neCu9DAP0QBRB4+YhtUu8butaxXh2kyVQ+RM9aIjc8gqDfYru2vNZHqUcRu7lceJzEiXEDr5GxISUkOFy6qSzTv8UF8dyhfJ3VAIfjoTPKs7/CsDDz7jASaB2usVjivwe/4pHFJNoxyfmgN6UY0GCU4Ub/Qtav88f+WHaCI9kS5rBF6ccvL1KINDjtvvbb/bduiY3fqtCO46fcznETJ/ql103oBiblBS4qQIBtQPFWnxpLBhI5yibLsqNtO1ASva4caMOBJbqpnwfXmnScUv35eyVkNtCDvfLhv4I8KRDwr3H+KK6Xqn7/ONWB7i8vDTWLqGba9DO7Bf6BzCRDMHLuSapUzZF4hvnT1bu8AjU6gj7GnFbM6J5Il2ocZO2heCDatNyUAlHuo7Mo86t0stkIvO+3b7X2RdQ/lVR7DW3JlAoYEOj13XqxHhB3sV0paYVd7kYN7be27TRXDk8+Le5FMb6Ps9an7OUmutEZfG37NcSAc0/pv0bbqFORZj+oUjK4aq0cDIdqwUUsc1vxxwxHmK7w6qHas5IX43kozZnEZYgAF83hv7gYM07KNfBOAzMPX5TYD/0Ax+7uZdCyaLkVibsYfU8EJHKsPVr5fVEkDTxIOLT70p0QwBxWYcSpZaYP82InJRCftBEDnEGnLvcEKsHNHrQW2N6qcR37y61OH6rhK5jJAHW0LOnIk=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:zh-cn;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SEZPR02MB7164.apcprd02.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005)(7416005)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?b1g2ZjVJZmQzTjZCL1psRWoyRkRleGlBcUlwcU9jcG9XTFIrMHA0eU4zUWtL?=
- =?utf-8?B?Ryt0Qi9XZngxL3E2cW4wbTE1ZWxiOEdxNThFaGxEelpic1hoN1NNZmZOMFNL?=
- =?utf-8?B?UVpDNG9uYzN0QjJIQWJ5Zk16Q05IYnVrWmlqck0xOXhhNzNjZ0trQy83Ykt2?=
- =?utf-8?B?d25jT2JQSXJ6bC9ob2tOTWJxTkdtR0luRkdzOVhUODk3d3UxTC9adHIwWEdH?=
- =?utf-8?B?Q3lvdGZsTmZVUnVMemdLd2tDcnFKdkdpL1J2TTRVRy8zcmUwRlc5V1BpMVZS?=
- =?utf-8?B?RGVYaVBkbXVGMHZhdmNXUm1QczhmcDI0Zk1qWVg4OWw1WWtYcnhtbmx1aUQy?=
- =?utf-8?B?UU1LMkErcWJyeTRPTDZJUUxlVXorYmMyL0YrbHdtYTBwbEVaTzBpYVNuYzhZ?=
- =?utf-8?B?bUJaZ20vRkJXcTllVENQcDVwUnExWFoyUEI4ZHJnZ1lQa2pYS2lqVitsOERI?=
- =?utf-8?B?VEdsNmhseDVaV2EyZGlVZitHbUkwRXVKbUtrSGpJWFRWdXJQMkdGdFRkTzhH?=
- =?utf-8?B?eWdpcG5QOThNNS80OWlGUlNXa2QxS0ltQjUwd002d1dUOGluc1JJV2x2cFNC?=
- =?utf-8?B?ZDJlcmtQbGFaeERQVi9iS1F6MTJOMEp1NGlyUzJyZEJPWVY3RzIwYm8ya3lo?=
- =?utf-8?B?TU43VlVCLy9LTFdyRTNFKzdUNUlCbEdkTkp0TVhmeWJTc21jaGpiblJjQTBH?=
- =?utf-8?B?MTY0WXN6OElKUnhFbjBvcGFKRFgwczFRemlNbGFOUGl1Ymg3L1puTmVUbHJD?=
- =?utf-8?B?MDBYN2s5MzZMdFU3VWw0NGpjdEw5dWZXUE01UkNXNy9uMmxyK1owMFBSa3Nv?=
- =?utf-8?B?bjErdXVaYXZDM1RrRlQrUXUvZVdvaXF1UzI1aWFWdlIzSjBxemozY0ZVTnNZ?=
- =?utf-8?B?Qnl4MEJQVTU2QmZWUG9GdzhJYkROMDhKVjZQUHVNQmthK3g5V2JsSkhtT0Za?=
- =?utf-8?B?Q1BpOWdWRVpFSVV1VGdDWmdXT0cyU3d4dG02VDVCRm9MeW04NTNPTFNBdmM4?=
- =?utf-8?B?MXMrU2NOZHRZUUZXM1I0RWtCc29vbHFwOFV3SlBrbVV6MDZNS1FPbS9pOUtV?=
- =?utf-8?B?R1dZZkt1L0V2NC85VU9ZNXR5Qm5RSnUxMXZBWGQ4MVpiUUN0VTNiaHdPTmVs?=
- =?utf-8?B?emJVWk01WFFrTkdrNmFaL1F4eWZTTTZ4QlJqU29wT3pVNTVPQjhmdnJyRU9u?=
- =?utf-8?B?UTZJcDdQOWFsWVN5bkgxWUJPU2QvSjJvbU9RZ3p5azB5QVBmVWZKZU5xb255?=
- =?utf-8?B?RWpveTE5UW9SWnRta3JaQ2o5TjV1b1RmcVVFZGdlZDVkWVRXT2x0Wm1rL0dr?=
- =?utf-8?B?Z0xEdkZwM05DQlZ5cUFYUXA2ZjVXNGhpdVBwN2xsdUlmenh0ZGxhVUJOTklo?=
- =?utf-8?B?L2tKVUhSMjNSM09NS05KOFRVUFdGTE05VCt3dDVyaDZXS1lGVG50RWVIWnZ0?=
- =?utf-8?B?UytYRWVJd2R3a3lpZXlhRDgvZWN2VHphSjZuQSs5Y3N1Zmc4Tlk2bERoMWY0?=
- =?utf-8?B?L3U3ekZkS3Vucnh0a0RnUTUzWXkvTHBjaEFtcWZSelFjMk5xSFhNOHU0dVNv?=
- =?utf-8?B?cTZHbDZJdkw4QllpSHg4TnYzQ2VXN1llYTYvRVgwajR4a0hOb1djUmM3SkJr?=
- =?utf-8?B?dUNhb3YzVkYzSUljcHowNEZZd01zV0xVenNxRTM0UnJ5cElDNGtLU2tUL3JD?=
- =?utf-8?B?SEg5eUkvNUl1dXZWeGdJZjE0M0ptNG45NUJ4dk0xUnVEd0RJSG5xV3RORnpP?=
- =?utf-8?B?MFNveHNPMWMzZDR3WEZnUCs2Tkg5S04vQ2ZHcGRJSC9TeTdnWTVVQ2FTOU9k?=
- =?utf-8?B?dDJLTlQ4QVFrL3VZMEtjU29IdXBVVGZqS3h6WURkYkpLZGpONlZwU1ZCLzVN?=
- =?utf-8?B?d3ZNS0RFY3N2RlBIN0FZQkpQWnRNa1Q1Q1BDRW16eVIzcXVyUHRQejZyak9Y?=
- =?utf-8?B?dVVnY3JUUnpoOXo3MitmT2VULytReElzbDRrcFVGZXVzcE1MajhzNUFxNnVI?=
- =?utf-8?B?QlJoMU81bmJjTk44VWk5WXV3WFZ5UStpaWhjS0lNK2V4cmxScitaWTExb3JR?=
- =?utf-8?B?dkFCcktmY09YU0k1bHk4Z3F1eWVsMCtKVjRpaktWYVlIb01CdGpMWTN3U3Fq?=
- =?utf-8?Q?Xq+MZvmfkqNp82bVRvwjsq4kT?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <0F662AED9D42314390A4AC0A0DDBBA4A@apcprd02.prod.outlook.com>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE0B1863E
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:45:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710499523; cv=none; b=tH6oqdywTQKEjiXTijpq2mqp76gUUWTvZ6FA4nnhdqcp1XqS1v/zUJDHduH68bP6TtwF1vMywxaw9v8NgGAaeiZOtXfMppk83sU2we6040b9p5diwk3aJf8YvkQjxnC7j5/2AfBUinf2oAyhjD4hpjnOCpVDvqh/zz76hY/m448=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710499523; c=relaxed/simple;
+	bh=bExp8w4yC2O1tjVcUf1kZYbRYugIDaUo473OxyfzMAA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UDFW5Rz7q6eN9tO5GsQSWiuwLnQV6js7ZFuAJSF9PFbuxlAibmNs42m26K3wVftKyv/FxTn43h1cL6IJNUpqHBeLH5WTHmWm418Rm4VJK2TYyWNskrux3ylbYk/sEMNSIwzn7tetw2hFxEIJZAQEf9QX+GEDxr5XRPQ0fT4jEX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=cBqNzL4H; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710499520;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/YC89ubOap0oGrzs+kFy37210zX0/90mg3/bLKoN+p0=;
+	b=cBqNzL4H3PWoDEk7NxFjQ+p0dv2Gu8Vr6ZsDPdtm/qHjTn/p8i3rqx2/QQde9sFV8iRV5w
+	qUuoUWx239yNjToRfV7HZ60vyx3xyOCha4yInvBbmw5tfqKxZRbthgbrVa0JxhOJhH5MMN
+	eFD8E0eTszhNqri+n+8NLW9Q8XBOU84=
+Received: from mail-oa1-f72.google.com (mail-oa1-f72.google.com
+ [209.85.160.72]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-54--vSbihRhMu6ZbDyxuJDJzg-1; Fri, 15 Mar 2024 06:45:18 -0400
+X-MC-Unique: -vSbihRhMu6ZbDyxuJDJzg-1
+Received: by mail-oa1-f72.google.com with SMTP id 586e51a60fabf-22188b2fc3bso2101439fac.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:45:18 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710499518; x=1711104318;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/YC89ubOap0oGrzs+kFy37210zX0/90mg3/bLKoN+p0=;
+        b=LpNUZlQg222kbZzDDqaQ6YqmSb1AlLRggcZ2LJipLdsefL9aJJaHnkrvwQWp6jDG9h
+         8mSbXyf7OSjcdCNqmT6uTynOFTisXfHvpoeA+mN7VZaPFngo4o0r9WcKiJyC9CnhrdbB
+         f48lwvXm0IjUb9ajhYo1TeZ8sPQhVG4eN+Ukw5+d8+352z/klRpjGk4v8I18J3d2hnQx
+         zkh804keq7UnGaoO2qEomcFCe7LH+D+o4HHVfZ9YfBztQz7Hcw+rSggW944MoufoCBiJ
+         SBOfoOhbI7un+nTJ2NHVkOgvro0DfRIbT1f+GugCNMxH1k4GD5hXzflxblwZoQAbUPij
+         5V4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUe4iwpmfPiDPnBFr0dX252JMjMtcsB3Ogr00HQ2LObK7u7cJrnB0+Pt4INZ5TkOHoOiuV7KWTMEYqd64OgPXbuZYwOW41ezVegDY7y
+X-Gm-Message-State: AOJu0YwcVOHubUhuhEwu37pLUS4LY2OYW4ZTIYQauoSJGryJVj55iPY9
+	+HfebvyJxO2PfjQ9xxMXXpp2CgJ1C2kJEXcu3CrtJWxoVodowMFmOBawg6vjN7ytbGM6PtfPdsD
+	PTwxN3U/2dcEtzvW/TLYKF9qmFM92p7l7u/GrIfJafMnOBH3exLog0VpgHsiRUQ==
+X-Received: by 2002:a05:6870:d14d:b0:221:a433:8a52 with SMTP id f13-20020a056870d14d00b00221a4338a52mr4804866oac.43.1710499517809;
+        Fri, 15 Mar 2024 03:45:17 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFE8YkXr1X/1EFB+cmMGi/VY50tMCHIXHSE5grcsDLLOizJidTHTyc/m1pqbHQqgDkGfzb8xA==
+X-Received: by 2002:a05:6870:d14d:b0:221:a433:8a52 with SMTP id f13-20020a056870d14d00b00221a4338a52mr4804846oac.43.1710499517437;
+        Fri, 15 Mar 2024 03:45:17 -0700 (PDT)
+Received: from [192.168.68.51] ([43.252.115.31])
+        by smtp.gmail.com with ESMTPSA id b19-20020aa78713000000b006e6c3753786sm3090677pfo.41.2024.03.15.03.45.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 03:45:16 -0700 (PDT)
+Message-ID: <63002c24-8117-458f-84c7-fa4f7acd8cc6@redhat.com>
+Date: Fri, 15 Mar 2024 20:45:10 +1000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: oppo.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SEZPR02MB7164.apcprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 00ef1cdb-0f32-4d51-0635-08dc44dcd23e
-X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 10:43:59.0241
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: f1905eb1-c353-41c5-9516-62b4a54b5ee6
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: +00gLJreLYnB0Ag3qbrYaCM0yuCYKX4ixI8X9aRO9ljNnSGSHFO0LoBOv667BnEIRjsOY93fy52YrYg/YwZ4zw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYSPR02MB8038
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
+Content-Language: en-US
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
+ jasowang@redhat.com, xuanzhuo@linux.alibaba.com, yihyu@redhat.com,
+ shan.gavin@gmail.com, Will Deacon <will@kernel.org>,
+ Catalin Marinas <catalin.marinas@arm.com>,
+ linux-arm-kernel@lists.infradead.org, mochs@nvidia.com
+References: <20240314074923.426688-1-gshan@redhat.com>
+ <20240314040443-mutt-send-email-mst@kernel.org>
+ <9b148de7-b687-4d10-b177-5608b8dc7046@redhat.com>
+ <20240314074216-mutt-send-email-mst@kernel.org>
+ <23dc6d00-6a57-4ddf-8611-f3c6f6a8e43c@redhat.com>
+ <20240314085630-mutt-send-email-mst@kernel.org>
+From: Gavin Shan <gshan@redhat.com>
+In-Reply-To: <20240314085630-mutt-send-email-mst@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-T24gMjAyNC8zLzE1IDE2OjQ2LCBCYXJyeSBTb25nIHdyb3RlOg0KPiBPbiBGcmksIE1hciAxNSwg
-MjAyNCBhdCA5OjE44oCvUE0gPGxpdWhhaWxvbmdAb3Bwby5jb20+IHdyb3RlOg0KPj4NCj4+IEZy
-b206ICJIYWlsb25nLkxpdSIgPGxpdWhhaWxvbmdAb3Bwby5jb20+DQo+Pg0KPj4gVGhpcyByZXZl
-cnRzDQo+PiBjb21taXQgYjcxMDhkNjYzMThhICgiTXVsdGktZ2VuIExSVTogc2tpcCBDTUEgcGFn
-ZXMgd2hlbiB0aGV5IGFyZSBub3QgZWxpZ2libGUiKQ0KPj4gY29tbWl0IDVkYTIyNmRiZmNlMyAo
-Im1tOiBza2lwIENNQSBwYWdlcyB3aGVuIHRoZXkgYXJlIG5vdCBhdmFpbGFibGUiKQ0KPiANCj4g
-UmV2ZXJ0aW5nIHRoZXNlIGNoYW5nZXMgc2VlbXMgaW5hcHByb3ByaWF0ZSBzaW5jZSB0aGUgb3Jp
-Z2luYWwgcGF0Y2hlcw0KPiBkaWQgaW1wcm92ZSBtb3N0IGNhc2VzLg0KPiBXaGlsZSBkb2luZyBk
-aXJlY3QgcmVjbGFtYXRpb24gd2l0aG91dCBNT1ZBQkxFIGZsYWdzLCBzY2FubmluZyBjbWENCj4g
-Zm9saW8gZG9lc24ndCBoZWxwIGF0IGFsbC4NCj4gDQoNCkFic29sdXRlbHksIGJ1dCB3aXRob3V0
-IHRoaXMgcGF0Y2ggIGl0IGdpdmUgY2hhbmNlIHRvIHJlY2xhaW0gY21hIHBhZ2VzIHRvIGZyZWVs
-aXN0LCANCm90aGVyIHRhc2tzIHdpdGhvdXQgdGhpcyBmbGFnIHdvdWxkIHdvcmsgbm9ybWFsbHkg
-d2l0aG91dCBob2xkaW5nIHRvbyBtdWNoIHRpbWUgDQpvbiBscnUgbG9jayBhbmQgbHJ1IHNpemUg
-ZGVjcmVhc2XjgIIgaXQgYWxzbyB0cmlnZ2VyIG1lbW9yeSBwc2kgZXZlbnQgdG8gYWxsb3cgDQph
-ZG1pbiBkbyBzb21ldGhpbmcgdG8gcmVsZWFzZSBtZW1vcnkuDQoNCj4+DQo+PiBza2lwX2NtYSBt
-YXkgY2F1c2Ugc3lzdGVtIG5vdCByZXNwb25kaW5nLiBpZiBjbWEgcGFnZXMgaXMgbGFyZ2UgaW4g
-bHJ1X2xpc3QNCj4+IGFuZCBzeXN0ZW0gaXMgaW4gbG93bWVtb3J5LCBtYW55IHRhc2tzIHdvdWxk
-IGRpcmVjdCByZWNsYWltIGFuZCB3YXN0ZQ0KPj4gY3B1IHRpbWUgdG8gaXNvbGF0ZV9scnVfcGFn
-ZXMgYW5kIHJldHVybi4NCj4+DQo+PiBUZXN0IHRoaXMgcGF0Y2ggb24gYW5kcm9pZC01LjE1IDhH
-IGRldmljZQ0KPj4gcmVwcm9kdWNlcjoNCj4+IC0gY21hX2RlY2xhcmVfY29udGlndW91cyAzRyBw
-YWdlcw0KPj4gLSBzZXQgL3Byb2Mvc3lzL3ZtL3N3YXBwaW5lc3MgMCB0byBlbmFibGUgZGlyZWN0
-X3JlY2xhaW0gcmVjbGFpbSBmaWxlDQo+PiAgIG9ubHkuDQo+PiAtIHJ1biBhIG1lbWxlYWsgcHJv
-Y2VzcyBpbiB1c2Vyc3BhY2UNCj4gDQo+IA0KPiBJIGFzc3VtZSB0aGF0IHNjYW5uaW5nIGNtYSBm
-b2xpbyBwcm92aWRlcyBhZGRpdGlvbmFsIG9wcG9ydHVuaXRpZXMgdG8gcmVjbGFpbQ0KPiBhbm9u
-eW1vdXMgbWVtb3J5LCBldmVuIHRob3VnaCBpdCBpcyBpbmVmZmVjdGl2ZSBmb3IgYWxsb2NhdGlu
-ZyBOT04tTU9WQUJMRQ0KPiBmb2xpb3MuIENvbnNlcXVlbnRseSwgd2UgYWxsZXZpYXRlIHByZXNz
-dXJlIGZvciBmdXR1cmUgYWxsb2NhdGlvbnMgb2YgYW5vbnltb3VzDQo+IGZvbGlvcy4gTW9yZW92
-ZXIsIHNldHRpbmcgc3dhcHBpbmVzcz0wIGlzIGEgcmFyZSBzY2VuYXJpby4gSW5zdGVhZCBvZiBl
-bnRpcmVseQ0KPiByZW1vdmluZyB0aGUgbWVjaGFuaXNtLCBjb3VsZCB3ZSBkZXRlY3Qgc3VjaCBj
-b3JuZXIgY2FzZXMgYW5kIGhhbmRsZSB0aGVtDQo+IGRpZmZlcmVudGx5Lg0KPiANCj4gT3RoZXJ3
-aXNlLCBJIGRvbid0IHNlZSBhbnkgY2hhbmNlIG9mIHRoaXMgYmVpbmcgYWNrbm93bGVkZ2VkLg0K
-DQpJdCBoYXBwZW5zIGluIGludGVybmFsIGFnaW5nIHRlc3QuIG9wZW4gY2FtZXJhIGFuZCByZWNv
-cmQgOEsgdmlkZW8gd2hpY2ggdXNlIA0KbW9yZSB0aGFuIDJHaWIgZG1hYnVmIHBhZ2VzLiB3aXRo
-b3V0IHRoaXMgcGF0Y2ggdGhlIGRldmljZXMgd291bGQga2lsbCBjYW1lcmEgcHJvY2VzcywNCmJ1
-dCB0aGUgc3lzdGVtIGhhbmcgd2l0aCBpdC4NCg0KSW4gZmFjdCwgaW4gbXkgb3BpbmlvbiB0aGUg
-aXNzdWUgb2YgdGhpcyBwYXRjaCBpbmNyZWFzZSB0aGUgc2Nhbm5pbmcgbHJ1IHRpbWUgDQphbmQg
-cmVjbGFpbSBub3RoaW5nLiBEbyB5b3UgaGF2ZSBhIGJldHRlciBzb2x1dGlvbiA/DQoNCkJycywN
-CkhhaWxvbmcuDQoNCg0K
+
++ Will, Catalin and Matt from Nvidia
+
+On 3/14/24 22:59, Michael S. Tsirkin wrote:
+> On Thu, Mar 14, 2024 at 10:50:15PM +1000, Gavin Shan wrote:
+>> On 3/14/24 21:50, Michael S. Tsirkin wrote:
+>>> On Thu, Mar 14, 2024 at 08:15:22PM +1000, Gavin Shan wrote:
+>>>> On 3/14/24 18:05, Michael S. Tsirkin wrote:
+>>>>> On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
+>>>>>> The issue is reported by Yihuang Yu who have 'netperf' test on
+>>>>>> NVidia's grace-grace and grace-hopper machines. The 'netperf'
+>>>>>> client is started in the VM hosted by grace-hopper machine,
+>>>>>> while the 'netperf' server is running on grace-grace machine.
+>>>>>>
+>>>>>> The VM is started with virtio-net and vhost has been enabled.
+>>>>>> We observe a error message spew from VM and then soft-lockup
+>>>>>> report. The error message indicates the data associated with
+>>>>>> the descriptor (index: 135) has been released, and the queue
+>>>>>> is marked as broken. It eventually leads to the endless effort
+>>>>>> to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
+>>>>>> and soft-lockup. The stale index 135 is fetched from the available
+>>>>>> ring and published to the used ring by vhost, meaning we have
+>>>>>> disordred write to the available ring element and available index.
+>>>>>>
+>>>>>>      /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
+>>>>>>      -accel kvm -machine virt,gic-version=host                            \
+>>>>>>         :                                                                 \
+>>>>>>      -netdev tap,id=vnet0,vhost=on                                        \
+>>>>>>      -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
+>>>>>>
+>>>>>>      [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
+>>>>>>
+>>>>>> Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
+>>>>>> virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
+>>>>>> ARM64. It should work for other architectures, but performance loss is
+>>>>>> expected.
+>>>>>>
+>>>>>> Cc: stable@vger.kernel.org
+>>>>>> Reported-by: Yihuang Yu <yihyu@redhat.com>
+>>>>>> Signed-off-by: Gavin Shan <gshan@redhat.com>
+>>>>>> ---
+>>>>>>     drivers/virtio/virtio_ring.c | 12 +++++++++---
+>>>>>>     1 file changed, 9 insertions(+), 3 deletions(-)
+>>>>>>
+>>>>>> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+>>>>>> index 49299b1f9ec7..7d852811c912 100644
+>>>>>> --- a/drivers/virtio/virtio_ring.c
+>>>>>> +++ b/drivers/virtio/virtio_ring.c
+>>>>>> @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+>>>>>>     	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+>>>>>>     	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+>>>>>> -	/* Descriptors and available array need to be set before we expose the
+>>>>>> -	 * new available array entries. */
+>>>>>> -	virtio_wmb(vq->weak_barriers);
+>>>>>> +	/*
+>>>>>> +	 * Descriptors and available array need to be set before we expose
+>>>>>> +	 * the new available array entries. virtio_wmb() should be enough
+>>>>>> +	 * to ensuere the order theoretically. However, a stronger barrier
+>>>>>> +	 * is needed by ARM64. Otherwise, the stale data can be observed
+>>>>>> +	 * by the host (vhost). A stronger barrier should work for other
+>>>>>> +	 * architectures, but performance loss is expected.
+>>>>>> +	 */
+>>>>>> +	virtio_mb(false);
+>>>>>
+>>>>>
+>>>>> I don't get what is going on here. Any explanation why virtio_wmb is not
+>>>>> enough besides "it does not work"?
+>>>>>
+>>>>
+>>>> The change is replacing instruction "dmb" with "dsb". "dsb" is stronger barrier
+>>>> than "dmb" because "dsb" ensures that all memory accesses raised before this
+>>>> instruction is completed when the 'dsb' instruction completes. However, "dmb"
+>>>> doesn't guarantee the order of completion of the memory accesses.
+>>>>
+>>>> So 'vq->split.vring.avail->idx = cpu_to_virtio(_vq->vdev, vq->split.avail_idx_shadow)'
+>>>> can be completed before 'vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head)'.
+>>>
+>>> Completed as observed by which CPU?
+>>> We have 2 writes that we want observed by another CPU in order.
+>>> So if CPU observes a new value of idx we want it to see
+>>> new value in ring.
+>>> This is standard use of smp_wmb()
+>>> How are these 2 writes different?
+>>>
+>>> What DMB does, is that is seems to ensure that effects
+>>> of 'vq->split.vring.avail->idx = cpu_to_virtio(_vq->vdev, vq->split.avail_idx_shadow)'
+>>> are observed after effects of
+>>> 'vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head)'.
+>>>
+>>>
+>>
+>> Completed as observed by the CPU where vhost worker is running. I don't think DMB
+>> does the work here. If I'm understanding correctly, DMB ensures the order of these
+>> two writes from the local CPU's standpoint.
+> 
+> No this makes no sense at all. All memory accesses are in order from
+> local CPU standpoint.
+> 
+
+It's true if compiler doesn't reorder the accesses, and light-weight barrier
+like 'dmb' and 'isb' is used. Otherwise, the accesses still can be disordered
+on the local CPU, correct?
+
+>> The written data can be stored in local
+>> CPU's cache, not flushed to DRAM and propogated to the cache of the far CPU where
+>> vhost worker is running. So DMB isn't ensuring the write data is observed from the
+>> far CPU.
+> 
+> No but it has to ensure *ordering*. So if index is oberved then ring
+> is observed too because there is a MB there when reading.
+> 
+
+Right. It should work like this way theoretically. I don't know the difference
+between 'dmb' and 'dsb' from the hardware level. The description in ARMv9 spec
+is also ambiguous. Lets see if Matt will have comments. Besides, this issue is
+only reproducible on NVidia's grace-hopper. We don't hit the issue on Ampere's
+CPUs.
+
+> 
+>> DSB ensures that the written data is observable from the far CPU immediately.
+>  
+>>>
+>>>
+>>>> The stronger barrier 'dsb' ensures the completion order as we expected.
+>>>>
+>>>>       virtio_wmb(true)         virt_mb(false)
+>>>>         virt_wmb                 mb
+>>>>           __smp_wmb               __mb
+>>>>             dmb(ishst)              dsb(sy)
+>>>
+>>> First, why would you want a non smp barrier when you are
+>>> synchronizing with another CPU? This is what smp_ means ...
+>>>
+>>>
+>>>> Extraced from ARMv9 specificaton
+>>>> ================================
+>>>> The DMB instruction is a memory barrier instruction that ensures the relative
+>>>> order of memory accesses before the barrier with memory accesses after the
+>>>> barrier. The DMB instruction _does not_ ensure the completion of any of the
+>>>> memory accesses for which it ensures relative order.
+>>>
+>>> Isn't this exactly what we need?
+>>>
+>>
+>> I don't think so. DMB gurantees the order of EXECUTION, but DSB gurantees the
+>> order of COMPLETION. After the data store is executed, the written data can
+>> be stored in local CPU's cache, far from completion. Only the instruction is
+>> completed, the written data is synchronized to the far CPU where vhost worker
+>> is running.
+>>
+>> Here is another paper talking about the difference between DMB and DSB. It's
+>> explaining the difference between DMB/DSB better than ARMv9 specification.
+>> However, it's hard for us to understand DMB/DSB work from the hardware level
+>> based on the specification and paper.
+>>
+>> https://ipads.se.sjtu.edu.cn/_media/publications/liuppopp20.pdf
+>> (section 2.2  Order-preserving Options)
+>> (I'm extracting the relevant part as below)
+>>
+>> Data Memory Barrier (DMB) prevents reordering of memory accesses across the barrier.
+>> Instead of waiting for previous accesses to become observable in the specified domain,
+>> DMB only maintains the relative order between memory accesses. Meanwhile, DMB does
+>> not block any non-memory access operations.
+>>
+>> Data Synchronization Barrier (DSB) prevents reordering of any instructions across
+>> the barrier. DSB will make sure that all masters in the specified domain can observe
+>> the previous operations before issuing any subsequent instructions.
+>>
+> 
+> What you are describing is that smp_wmb is buggy on this platform.
+> Poossible but are you sure?
+> Write a small test and check.
+> Leave virtio alone.
+> 
+
+Yes, I guess smp_wmb() ('dmb') is buggy on NVidia's grace-hopper platform. I tried
+to reproduce it with my own driver where one thread writes to the shared buffer
+and another thread reads from the buffer. I don't hit the out-of-order issue so
+far. My driver may be not correct somewhere and I will update if I can reproduce
+the issue with my driver in the future.
+
+> 
+>>>> A DSB instruction is a memory barrier that ensures that memory accesses that
+>>>> occur before the DSB instruction have __completed__ before the completion of
+>>>> the DSB instruction.
+>>>
+>>> This seems appropriate for when you want to order things more
+>>> strongly. I do not get why it's necessary here.
+>>>
+>>
+>> Please refer to above explanations.
+>>
+>>>> In doing this, it acts as a stronger barrier than a DMB
+>>>> and all ordering that is created by a DMB with specific options is also generated
+>>>> by a DSB with the same options.
+>>>>
+>>>>>>     	vq->split.avail_idx_shadow++;
+>>>>>>     	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+>>>>>>     						vq->split.avail_idx_shadow);
+>>>>>> -- 
+>>>>>> 2.44.0
+>>>>>
+
+Thanks,
+Gavin
+
 
