@@ -1,103 +1,98 @@
-Return-Path: <linux-kernel+bounces-104821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6BD3E87D42B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:54:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C4F387D42F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:55:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 234F21F21AA0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:54:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 04386B2432F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:55:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D2283B79E;
-	Fri, 15 Mar 2024 18:54:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59E94A9BF;
+	Fri, 15 Mar 2024 18:55:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="PpNcbE1A"
-Received: from mail-ej1-f50.google.com (mail-ej1-f50.google.com [209.85.218.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dLxUbvok"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5032A50A72
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:54:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 365EB376FB;
+	Fri, 15 Mar 2024 18:55:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710528878; cv=none; b=pPa3HYVYna7/4gzsg0CMc06pGqCgHiMw9Ke+Ry9k/W67sUe/TXMDkU21KS/EMgUjO0TlUQpSG25sd2ZUa5e99vjmuVDvuBCfjiBwLorVnTjmMDfVB7uAS6MtNG9iUbi1iU0MitDbVH3Kl/Lgp8RNKpM8to4/lsNkWT2bmvJ//Kk=
+	t=1710528937; cv=none; b=M2jJlutg3UHb54OIv/upHx1AGi7qK/M1Bllls5i1J9x5wAm9z+lHg+EswVjK9ULjBgVbZB4/h7BRd0coFBHIqNwI1TG0iCYkWHos8yipgpShLss7sqQMBJN/WD5YBApWI7SMAD1u+7d9lg8rl1GC4yKfPpfLPk9eMS8mm2C4c98=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710528878; c=relaxed/simple;
-	bh=KW4wakcjnuKbRSjOEgZl4lW2AZACO4wTscoGG/mpnXQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=egWkzcoTi4YVlwC1n9h+TtG+nEXxAaih1jNYTox2XlCox9G0Opkcgv5hYwf/3Vc/WTn2AXrgNqd/L1uakdnVX2AuzEKNA0gzkdC9nJdDkO+U4TvQHUhSsgLZgG9RaoXuplh0Q0hAPDdFC06qOWzBKMoJgsB/PgHrAUx4qOyNLtw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=PpNcbE1A; arc=none smtp.client-ip=209.85.218.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ej1-f50.google.com with SMTP id a640c23a62f3a-a45f257b81fso325068466b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:54:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710528874; x=1711133674; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ATHLM2mB7/uarmSrYlojtclecckho1jASanaFaAquaQ=;
-        b=PpNcbE1Aiyl69XPMUeKYYt+aAhNfFEuc2cThdqgIWeCmxN+rFfWfKu+Ia+/hwzdyy1
-         bNeAi+PsGnQexLigqE/43febV7WAA0l2PiW/juzBlJCMhCgUeDxNmNCv6DT+kqhEHSI8
-         Bpl0WTHuL9Tg9NJfrYFrHZsUDk7UmrR9xpB7k=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710528874; x=1711133674;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ATHLM2mB7/uarmSrYlojtclecckho1jASanaFaAquaQ=;
-        b=siGfIrCo1GeVph6+gj3OdJ7/guM66J1npUcewpdiHhYvoZNevfes0XqlCrNlR5q/U/
-         +ZotoQYY1OZsZ16AnTjqmGMjhwXVET9wzxEsvKcQW79kMhX6XOWBrkF0IJ42U6i235qR
-         NiV6nLLRaU+d1HAs7TRL7os7BDuDw/ZOWS1DSYW/mP/f3H7cPPwnHsga5lFYIHW4RlbV
-         7BYP0KC7ty4UXezWWJLCoFRkZABjIOJp5jarKMTWWTuFQPTt8+7aAdgSkUfqK21RaC/2
-         7a/QaBL5VfIodzEtv7HivW0bSQnKaS5NmeoU6NcdJ0i3xZ3+1x+Mkibhp+Gk0TeBbJsi
-         k/sg==
-X-Forwarded-Encrypted: i=1; AJvYcCUXVo2wrGIaEtXC60k9y6zpKsd3Jx13VOd2WgkguJZyNIrfn+N08FPzLRMDHy8/x2jfaPt4gsz+NRB3RSNJNbkzqAc+m6cow303hogQ
-X-Gm-Message-State: AOJu0YzKD1/RdC2+ttL0YCFKK+7zYxLy/8quZlI7oLYw+/M1MqOAlsdX
-	XDhF2iq6Fk8JWO4RFucFhjPXoV8wbLI4ofULZAYT7uhq4h4O/rQ39pGX2PCAeD1NJRu6Z9qp4yD
-	A+Raf0Q==
-X-Google-Smtp-Source: AGHT+IHVMjP20/jzusE7XhXDzdgnZkN9kSAfbKsLmcsEyALUZJVe/+mGfShv5rqegiGr/Hx5fiUZjg==
-X-Received: by 2002:a17:906:a413:b0:a45:5831:4f00 with SMTP id l19-20020a170906a41300b00a4558314f00mr4325474ejz.75.1710528874034;
-        Fri, 15 Mar 2024 11:54:34 -0700 (PDT)
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com. [209.85.218.45])
-        by smtp.gmail.com with ESMTPSA id k23-20020a1709063e1700b00a4661caeed7sm1943343eji.48.2024.03.15.11.54.33
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 11:54:33 -0700 (PDT)
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a45f257b81fso325065766b.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:54:33 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVGHFPv0u6R1nfqwjlPxKs5ts2ybVzY6nGCzuAP/eoy1sdFS/P9qIDrf8VqM2HMKk1eL0/m/QuRR5JdUu9FCsoMRwId9+FGgNx9sDLU
-X-Received: by 2002:a17:907:9709:b0:a46:7bd3:c7b2 with SMTP id
- jg9-20020a170907970900b00a467bd3c7b2mr3449508ejc.5.1710528872728; Fri, 15 Mar
- 2024 11:54:32 -0700 (PDT)
+	s=arc-20240116; t=1710528937; c=relaxed/simple;
+	bh=mkWwDHx49jdDkfkkTgs0NqewXdFo4R2FkQN+d1rrsxg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Z65S66VX5rmAzuDHt5ipn0Pw2OS71erhjert/w/OjoSLtn+6GP33DuXpwKhxsHj8bXM/M3nfu6pHLxm1sNLCRF67w1iz6rDgvkuY2sEnnYkSQqGRAC4QbwmalU+pZ8mT/IjCDs5A/zdl86auBJzH3ox+27XqY25PdLM0BX/R/JI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dLxUbvok; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 60BF9C433C7;
+	Fri, 15 Mar 2024 18:55:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710528936;
+	bh=mkWwDHx49jdDkfkkTgs0NqewXdFo4R2FkQN+d1rrsxg=;
+	h=From:To:Cc:Subject:Date:From;
+	b=dLxUbvoknc/NqagmL2Z4U1xjRsl2H5uk/WB6jdnIAvnkSS684Erw0Wpp+WIgSrybk
+	 EQaokH8SwEAfy95EBZK4/JctVZBR3Phz3vU5xMRm/WpXpUVCzG0WAy6rtzYAuO+nZT
+	 z6GupUdOeMKOlZdHsF5tXVqT4hxAUEWct1XuDB88vTeekJAld1AJOkcLDrao5ilFJm
+	 74UpBkNVXE72vJVtpEOYrlD/DiNM3SHfAVUzbS1ViSeOOyA+MtnWv+VJGeLSDm9PSV
+	 D0GHZXi/pj+/JlXAZtJnHih2biyxDo7HAjbWFb+wGCkaajcmU/QLJgEgCWEWqPfTeu
+	 tM1S9E4oTQWhg==
+From: Sasha Levin <sashal@kernel.org>
+To: linux-kernel@vger.kernel.org,
+	stable@vger.kernel.org,
+	akpm@linux-foundation.org,
+	torvalds@linux-foundation.org
+Cc: lwn@lwn.net,
+	jslaby@suse.cz,
+	gregkh@linuxfoundation.org
+Subject: Linux 6.6.22
+Date: Fri, 15 Mar 2024 14:55:33 -0400
+Message-ID: <20240315185534.1842040-1-sashal@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314194324.2487618-1-sboyd@kernel.org>
-In-Reply-To: <20240314194324.2487618-1-sboyd@kernel.org>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Fri, 15 Mar 2024 11:54:16 -0700
-X-Gmail-Original-Message-ID: <CAHk-=whyY_-NnDZ+GhZjJaLqORcuwp_Jj=D-Zjsk-cwZp7YTcA@mail.gmail.com>
-Message-ID: <CAHk-=whyY_-NnDZ+GhZjJaLqORcuwp_Jj=D-Zjsk-cwZp7YTcA@mail.gmail.com>
-Subject: Re: [GIT PULL] clk changes for the merge window
-To: Stephen Boyd <sboyd@kernel.org>
-Cc: Michael Turquette <mturquette@baylibre.com>, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Thu, 14 Mar 2024 at 12:43, Stephen Boyd <sboyd@kernel.org> wrote:
->
-> I'm hoping that we can make that into a genpd that drivers attach
-> instead, but this API should help drivers simplify in the meantime.
+-----BEGIN PGP SIGNED MESSAGE-----
+Hash: SHA512
 
-. and I'm hoping that name dies in the code too, not just in the
-directory structure.
+I'm announcing the release of the 6.6.22 kernel.
 
-'genpd' really makes absolutely zero sense as a name to anybody
-outside of that legacy clique.
+All users of the 6.6 kernel series must upgrade.
 
-               Linus
+The updated 6.6.y git tree can be found at:
+        git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable.git linux-6.6.y
+and can be browsed at the normal kernel.org git web browser:
+        https://git.kernel.org/?p=linux/kernel/git/stable/linux-stable.git;a=summary
+
+
+Thanks,
+Sasha
+
+- ------------
+
+
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAEBCgAdFiEE4n5dijQDou9mhzu83qZv95d3LNwFAmX0maQACgkQ3qZv95d3
+LNzbJxAAnP99q7lPOB0g0UMoAGOBqKYWI81DtW2Xey8i/Bf0yerJiIYIBqRRRHKU
+I4Sqq8C8iR7yrTkYcD7993J2Zey8rjMBIBws78vDeEKWdVxtGLuE1DivT2sBTk6N
+y6uQ7Nar7mDmQ0U2IB5KlA1MCy8/tFb2J2Ocvep0GfUMbxiloOcnRoa9SqZlUOzN
+BNeZoAqlAWIjgJ4rVo7En9cWdYjMtk4fPFDb53vfmSR2xu1Rak73w4LHA8MdtNzr
+AnKqQOqXLEutjb8tGnJ4mWe7ep/OMsrDGNXSkz04Sg/V7kSbjYzyTGiLeCxYmxip
+lavPNqBdgdiukexVkgWON8OA2AkvFBgKGHFrEaG4k+NAfLHzKAIC1AR8MQXjCbi8
+5vinLTp+u8qmoAZNMsbTYgA347fgMexM3/rk65Z33w/GWP2hOWX7fJ9TRHycbomt
+tiveGtaSMgMAdhN+RKlDTtsxF4JVRDVADe5w6LBzaWgv1drdcJzwNn2fTItWZm9p
+Vq9gjzWdPChNqS9QXK58C14GUmnzgVEbZz3my0BU7ROroEKONje/jfwdHb9fj61V
+8w/CYhAU9I/hlK/1ETxQkR3GdURZ/bzHNzmLsDXx2JBgxaelAXivQDuW2iR1PqtV
+YH4NtC6VlUN4tDPNrLse+wCUb5QUuSX4jb6qXDxUneaRegXfa9Q=
+=uPB5
+-----END PGP SIGNATURE-----
 
