@@ -1,177 +1,85 @@
-Return-Path: <linux-kernel+bounces-104649-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393F687D170
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:49:19 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EFB687D174
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A1A37B2358D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:49:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 30F901F2731A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:50:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFBB444C77;
-	Fri, 15 Mar 2024 16:49:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F54344C77;
+	Fri, 15 Mar 2024 16:50:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="IPjBce2j"
-Received: from relay2-d.mail.gandi.net (relay2-d.mail.gandi.net [217.70.183.194])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="MgqYNQWp"
+Received: from out-188.mta1.migadu.com (out-188.mta1.migadu.com [95.215.58.188])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80E732BD19;
-	Fri, 15 Mar 2024 16:49:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 369DE2BD19
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 16:50:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.188
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521349; cv=none; b=FkV9EJTRXLI5DsXPSLPBfaSqyyfjvh7ergHDpsGtQ+pOINQ3V7VHKdqjyiH1SSPPhK3irliwEK18sGpBZntWXP4OEC5Ro6CCjRvkjScA6kRWm0p97SECvjMd9nd7h+IcVfSPT0XWgyM2XJvuQSOk6/2cgVw0BVJwNbDqEQOpv+E=
+	t=1710521448; cv=none; b=iYGrDYI/c3yNfonvsH718o5YsBsb2BqLzZNeoFdlRE1rPmoLeLgFKJ4PtQpAxbwvttAfhugpjS43EQGDWXCNvgzdnlC4XFiVwFPHj7RzbYy4Gjiwnw/j3hyIyBOVmcBoZp2ZOxefS78e9TSMKPFI0mdkheQIaqQe48c7UY/Wbmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521349; c=relaxed/simple;
-	bh=JVu7cAl5b1rC/i/YgVwh6jYnMUpMTHputymmAufHTpc=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Oxos2QoEqPCXqBfxXheLcPKPSDv/bA38i+32nTFUbzvOz4jlwXjLeUWVhvGR2KMIi0po7RQKGQgHdDcG/iyo6kgYTqfagWziUEz2wj1neRGpDgYMwNTFfNyuHaYvtBZoT+KOdEJGXR5IaRXxCujOi8iI2OkuEvcwopcGRGkYB+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=IPjBce2j; arc=none smtp.client-ip=217.70.183.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 18A9A40004;
-	Fri, 15 Mar 2024 16:49:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710521343;
+	s=arc-20240116; t=1710521448; c=relaxed/simple;
+	bh=+1zM7cQOmjEK5zeishajGM7/9lDXdEAF+fHjVpsU/Fc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=tYfSa6TWFyIGf4IBwMjtnfivdkrtHqDxe5f5IV9Nv/83N1nhcmRKJIuJG/m72Vu8TYjTc9d2PGGg+07cTpvmvrJbh091ExLCUCoEPxQNTewltbmlY1WcKfFjfzKlt0HA/5FPZsE+vIqh4UvmpZt6d7pI3QEehTS8U+FyCYLytO4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=MgqYNQWp; arc=none smtp.client-ip=95.215.58.188
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Fri, 15 Mar 2024 12:50:39 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710521444;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=/cMG+oSZ/w8c/DhsYM6dqVrXQGCtz99/u731U0CysXE=;
-	b=IPjBce2j7yd+BCxagRlgaiuNADB5TXImYfUpzg7xRdFq0U8io49R1p8QADIEBf1S0LODt2
-	/mW3uQQw9mQy0J6jsf2IiTeu0TnZEaquoxsUJcJtSapTHBtM37x6KYU9PfAL7kqsaflS90
-	zg4Eb9T1owUMitoNeF6/+0Q8ZVr5l2YB3BwTxh19fgye5DMnW+QOXgqrEMfSNAC1mU7tJY
-	tIywh+rOr3bUyfE7O3NdqPIMDLM/7YC1zHSFooGpsAPaxnZTvCsZN7f9NSc73ZP6fC3huP
-	iVXxlyzx/BNrq5CLLbgy3pxGr6GEGCEuhdA4cL/g3K0s2ia7MjF7zDKlbcn4VA==
-Date: Fri, 15 Mar 2024 17:49:00 +0100
-From: Luca Ceresoli <luca.ceresoli@bootlin.com>
-To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- linux-kernel@vger.kernel.org, linux-trace-kernel@vger.kernel.org
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: TP_printk() bug with %c, and more?
-Message-ID: <20240315174900.14418f22@booty>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.0.0 (GTK+ 3.24.33; x86_64-pc-linux-gnu)
+	 in-reply-to:in-reply-to:references:references;
+	bh=zo40Qzdo/CwJ9JXAYKrTmNI4kAnF/70CKG12hoxZK9Q=;
+	b=MgqYNQWpAaz6mM9OZjN7rmNmF0vafWaVA8KED7+Ndu/K95ZiQrE2cVoEeiPFjucxxg9B0O
+	kHkPtxxI8ntiXVQcbV04nI979FbHGa3TjPLCSzVc/3CvMb32jpwnTJ214U84SExTcMMovV
+	jw+oi871WIej0aScuSii64lkDdON3JM=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Theodore Ts'o <tytso@mit.edu>
+Cc: torvalds@linux-foundation.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Christian Brauner <brauner@kernel.org>, 
+	Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org
+Subject: Re: [PATCH 3/3] ext4: Add support for FS_IOC_GETFSSYSFSPATH
+Message-ID: <l3dzlrzaekbxjryazwiqtdtckvl4aundfmwff2w4exuweg4hbc@2zsrlptoeufv>
+References: <20240315035308.3563511-1-kent.overstreet@linux.dev>
+ <20240315035308.3563511-4-kent.overstreet@linux.dev>
+ <20240315164550.GD324770@mit.edu>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: luca.ceresoli@bootlin.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315164550.GD324770@mit.edu>
+X-Migadu-Flow: FLOW_OUT
 
-Hello Linux tracing maintainers,
+On Fri, Mar 15, 2024 at 12:45:50PM -0400, Theodore Ts'o wrote:
+> On Thu, Mar 14, 2024 at 11:53:02PM -0400, Kent Overstreet wrote:
+> > the new sysfs path ioctl lets us get the /sys/fs/ path for a given
+> > filesystem in a fs agnostic way, potentially nudging us towards
+> > standarizing some of our reporting.
+> > 
+> > --- a/fs/ext4/super.c
+> > +++ b/fs/ext4/super.c
+> > @@ -5346,6 +5346,7 @@ static int __ext4_fill_super(struct fs_context *fc, struct super_block *sb)
+> >  	sb->s_quota_types = QTYPE_MASK_USR | QTYPE_MASK_GRP | QTYPE_MASK_PRJ;
+> >  #endif
+> >  	super_set_uuid(sb, es->s_uuid, sizeof(es->s_uuid));
+> > +	super_set_sysfs_name_bdev(sb);
+> 
+> Should we perhaps be hoisting this call up to the VFS layer, so that
+> all file systems would benefit?
 
-I've come across an unexpected behaviour in the kernel tracing
-infrastructure that looks like a bug, or maybe two.
-
-Cc-ing ASoC maintainers for as it appeared using ASoC traces, but it
-does not look ASoC-specific.
-
-It all started when using this trace-cmd sequence on an ARM64 board
-running a mainline 6.8.0-rc7 kernel:
-
-  trace-cmd record -e snd_soc_dapm_path ./my-play
-  trace-cmd report
-
-While this produces perfectly valid traces for other asoc events,
-the snd_soc_dapm_path produces:
-
-  snd_soc_dapm_path:    >c<* MIC1_EN <- (direct) <-
-
-instead of the expected:
-
-  snd_soc_dapm_path:    *MIC1 <- (direct) <- MIC1_EN
-
-The originating macro is:
-
-	TP_printk("%c%s %s %s %s %s",
-		(int) __entry->path_node &&
-		(int) __entry->path_connect ? '*' : ' ',
-		__get_str(wname), DAPM_ARROW(__entry->path_dir),
-		__get_str(pname), DAPM_ARROW(__entry->path_dir),
-		__get_str(pnname))
-
-It appears as if the %c placeholder always produces the three ">c<"
-characters, the '*' or ' ' char is printed as the first %s, all the
-other strings are shifted right by one position and the last string is
-never printed.
-
-On my x86_64 laptop running the default Ubuntu kernel (6.5) I'm able to
-trace a few events having a '%c' in their TP_printk() macros and the
-result is:
-
-  intel_pipe_update_start: dev 0000:00:02.0, pipe >c<, frame=1,
-  scanline=107856, min=2208, max=2154
-
-originating from:
-
-  TP_printk("dev %s, pipe %c, frame=%u, scanline=%u, min=%u, max=%u",
-
-Here it looks like the %c produced ">c<" again, but apparently without
-any shifting.
-
-Back on the ARM64 board I found a couple interesting clues.
-
-First, using the <debugfs>/tracing/ interface instead of trace-cmd, I'm
-getting correctly formatted strings:
-
-trace-cmd: snd_soc_dapm_path: >c<* HPOUT_L -> (direct) ->
-debugfs:   snd_soc_dapm_path: *HPOUT_L <- (direct) <- HPOUT_POP_SOUND_L
-
-Notice the arrows pointing to the opposite direction though. The correct
-arrow is the one in the debugfs run.
-
-Second, I tried a simple test:
-
-  TP_printk("(%c,%c,%c,%c) [%s,%s,%s,%s]",                                                                                                                                             
-            'A',                                                                                                                                                                       
-            'B',                                                                                                                                                                       
-            'C',                                                                                                                                                                       
-            'D',                                                                                                                                                                       
-            "Just",                                                                                                                                                                     
-            "a",                                                                                                                                                                   
-            "stupid",                                                                                                                                                                
-            "test")                                                                                                                                                                 
-
-and this logs:
-
-  snd_soc_dapm_path:    (>c<,>c<,>c<,>c<) [A,B,C,D]
-
-so it looks like there really is something wrong with %c in
-TP_printk(), and the %c in the format string do not consume any
-parameters, de facto shifting them to the right.
-
-As one may expect, avoiding the %c fixes formatting:
-
--       TP_printk("%c%s %s %s %s %s",
-+       TP_printk("%s%s %s %s %s %s",
-                (int) __entry->path_node &&
--               (int) __entry->path_connect ? '*' : ' ',
-+               (int) __entry->path_connect ? "*" : " ",
-                __get_str(wname), DAPM_ARROW(__entry->path_dir),
-                __get_str(pname), DAPM_ARROW(__entry->path_dir),
-                __get_str(pnname))
-
-With this change, the string formatting is correct both with debugfs and
-trace-cmd, but the arrows are still wrong with trace-cmd.
-
-I have no idea how to further debug this and after a quick look at the
-macros I can honestly say I'm not feeling brave enough to dig into them
-in a late Friday afternoon.
-
-Any hints?
-Am I doing anything wrong?
-Is %c supposed to work in tracing macros?
-
-Best regards,
-Luca
-
--- 
-Luca Ceresoli, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
+I did as much hoisting as I could. For some filesystems (single device
+filesystems) the sysfs name is the block device, for the multi device
+filesystems I've looked at it's the UUID.
 
