@@ -1,53 +1,74 @@
-Return-Path: <linux-kernel+bounces-104090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104089-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 27B2987C8DB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:46:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE92C87C8D5
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:43:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5437D1C20CD5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:46:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4072BB20C54
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 06:43:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5599014AAD;
-	Fri, 15 Mar 2024 06:37:33 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD04C13AD8;
+	Fri, 15 Mar 2024 06:34:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="RjtVRFvS"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 759C214A8D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 06:37:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 44E2412E63
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 06:34:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710484652; cv=none; b=aV+Yz9JWku37u1Je8bqs79q1bq8nva9fcOWR1KBGJDBZ51ZCvlN7BJeiLxeI+99VzHYACJ6ExCZlQIEvedwnvncooLcc12pdAnRtRZWD6QZS4ASguC7N2smHaRBsoIQ6XJ5v/uOj76EvBfAclV/cT48hi3aCDMgUtnHXqet3nJM=
+	t=1710484462; cv=none; b=VqAZcfoAvTFuqR+qr6GccFcZxevxem37bW51JgaTw2XTT1B4TQd3GqMISbKVTYYrRk82f9uS7nBrqrusaHfFuQ8mnnm9vv7LTT04HTHdDA6QdEiAlhTBl/TqGLbvSQ3cOqBsv0XSZsIAOYnTVEBRUMOiR8YCSpdN33pZqQyXakY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710484652; c=relaxed/simple;
-	bh=xOvhlxxUmai+CS/y6cZypDo7hDI7wihummxKufrRKXA=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZFS0B1n4FwXCeUjAWybO4FrdZWnat8NkZ1WciXh2QZXOkq2wsCbEt9QU2z0ydLYg2x1fLNXGEWz6+so+8aFGmL3zutQ/yDYTo0lrdpjUb85YlVGedCmzWnPPD1URKmxCWstCFCraxt810bWK5q2AguOQQLKtiuF6rXspTOffqb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.162.112])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TwvdR26Nwz1xrK3;
-	Fri, 15 Mar 2024 14:35:39 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8C77C1402C7;
-	Fri, 15 Mar 2024 14:37:26 +0800 (CST)
-Received: from huawei.com (10.67.174.76) by dggpemd100004.china.huawei.com
- (7.185.36.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Fri, 15 Mar
- 2024 14:37:26 +0800
-From: Yuntao Liu <liuyuntao12@huawei.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <arnd@arndb.de>, <ardb@kernel.org>, <geert@linux-m68k.org>,
-	<linux@armlinux.org.uk>, <afd@ti.com>, <akpm@linux-foundation.org>,
-	<kirill.shutemov@linux.intel.com>, <geert+renesas@glider.be>,
-	<corbet@lwn.net>, <rppt@kernel.org>, <robh@kernel.org>, <tglx@linutronix.de>,
-	<linus.walleij@linaro.org>, <maskray@google.com>, <liuyuntao12@huawei.com>
-Subject: [PATCH-next v3] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Date: Fri, 15 Mar 2024 06:31:54 +0000
-Message-ID: <20240315063154.696633-1-liuyuntao12@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710484462; c=relaxed/simple;
+	bh=8Mo+0UAAzOaVJnJdh/x65H+8vyq4kGYM8In2RBLfjqE=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=VZcDEx34mFcK064CrMc5AkxPx8+WMgEVb9qAb+XezgLL0QBhcDZ70rqJRGm+mGNjfv60sDjQOy+R0Jq3f2JdWzeV4LfitKRRsHCTVFMbFjRacZpQLzG3FRsmDnjdzlYlwd9B35N8ARfVqw2DyCcSAmoa+F4y80D7Ma+1jKk4uBE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=RjtVRFvS; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710484460; x=1742020460;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=8Mo+0UAAzOaVJnJdh/x65H+8vyq4kGYM8In2RBLfjqE=;
+  b=RjtVRFvSgZWoN6lSqgH3oWWey2XYbYFx5JtKD2jQAxsNh8lD8xQkoDhS
+   l8Fz4SBrOdwnlKpJ/kGuDxoW8Ad4qdtXkKpROyiATbKStH/AUFBScsHTi
+   cLx4co6Z8jepdH2BfelaZy4/kXTD61sX0VY4ThmJvpyx98+htBdG0x0fw
+   Sd1GnRR5Xyaai9mXiS3NXjapcEAtqZcy88fc6IwxiAj1wzHSoGWA+eYs/
+   qSMQXDxbxctoixHfSN0MmLn2Xx6oREequBBH/Q3WT8znGZKpsoUKe4Jk7
+   pRS5ndhyRewex4YsV2WOb/Yzbrrvng8sLZbsu9ewHt+Ok1DH0xG27XDbc
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="16795454"
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="16795454"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 23:34:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
+   d="scan'208";a="17177039"
+Received: from xiao-desktop.sh.intel.com ([10.239.46.158])
+  by fmviesa003.fm.intel.com with ESMTP; 14 Mar 2024 23:34:16 -0700
+From: Xiao Wang <xiao.w.wang@intel.com>
+To: paul.walmsley@sifive.com,
+	palmer@dabbelt.com,
+	aou@eecs.berkeley.edu
+Cc: ajones@ventanamicro.com,
+	conor.dooley@microchip.com,
+	heiko@sntech.de,
+	david.laight@aculab.com,
+	charlie@rivosinc.com,
+	haicheng.li@intel.com,
+	linux-riscv@lists.infradead.org,
+	linux-kernel@vger.kernel.org,
+	Xiao Wang <xiao.w.wang@intel.com>
+Subject: [PATCH v4] riscv: Optimize crc32 with Zbc extension
+Date: Fri, 15 Mar 2024 14:38:28 +0800
+Message-Id: <20240315063828.341306-1-xiao.w.wang@intel.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -55,195 +76,432 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpemd100004.china.huawei.com (7.185.36.20)
 
-The current arm32 architecture does not yet support the
-HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. arm32 is widely used in
-embedded scenarios, and enabling this feature would be beneficial for
-reducing the size of the kernel image.
+As suggested by the B-ext spec, the Zbc (carry-less multiplication)
+instructions can be used to accelerate CRC calculations. Currently, the
+crc32 is the most widely used crc function inside kernel, so this patch
+focuses on the optimization of just the crc32 APIs.
 
-In order to make this work, we keep the necessary tables by annotating
-them with KEEP, also it requires further changes to linker script to KEEP
-some tables and wildcard compiler generated sections into the right place.
-When using ld.lld for linking, the KEEP keyword is not recognized within
-the OVERLAY command, Ard proposed a concise method to solve this problem.
+Compared with the current table-lookup based optimization, Zbc based
+optimization can also achieve large stride during CRC calculation loop,
+meantime, it avoids the memory access latency of the table-lookup based
+implementation and it reduces memory footprint.
 
-It boots normally with defconfig, vexpress_defconfig and tinyconfig.
-The size comparison of zImage is as follows:
-defconfig       vexpress_defconfig      tinyconfig
-5137712         5138024                 424192          no dce
-5032560         4997824                 298384          dce
-2.0%            2.7%                    29.7%           shrink
+If Zbc feature is not supported in a runtime environment, then the
+table-lookup based implementation would serve as fallback via alternative
+mechanism.
 
-When using smaller config file, there is a significant reduction in the
-size of the zImage.
+By inspecting the vmlinux built by gcc v12.2.0 with default optimization
+level (-O2), we can see below instruction count change for each 8-byte
+stride in the CRC32 loop:
 
-We also tested this patch on a commercially available single-board
-computer, and the comparison is as follows:
-a15eb_config
-2161384         no dce
-2092240         dce
-3.2%            shrink
+rv64: crc32_be (54->31), crc32_le (54->13), __crc32c_le (54->13)
+rv32: crc32_be (50->32), crc32_le (50->16), __crc32c_le (50->16)
 
-The zImage size has been reduced by approximately 3.2%, which is 70KB on
-2.1M.
+The compile target CPU is little endian, extra effort is needed for byte
+swapping for the crc32_be API, thus, the instruction count change is not
+as significant as that in the *_le cases.
 
-Signed-off-by: Yuntao Liu <liuyuntao12@huawei.com>
-Tested-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
+This patch is tested on QEMU VM with the kernel CRC32 selftest for both
+rv64 and rv32.
+
+Signed-off-by: Xiao Wang <xiao.w.wang@intel.com>
+Reviewed-by: Charlie Jenkins <charlie@rivosinc.com>
 ---
+v4:
+- Use "asm goto" instead of "asm_volatile_goto". (Charlie)
+
 v3:
-   - A better way to KEEP .vectors section for ld.lld linking.
+- Use Zbc to handle also the data head and tail bytes, instead of calling
+  fallback function.
+- Misc changes due to the new design.
 
 v2:
-   - Support config XIP_KERNEL.
-   - Support LLVM compilation.
-   - https://lore.kernel.org/all/20240307151231.654025-1-liuyuntao12@huawei.com/
-
-v1: https://lore.kernel.org/all/20240220081527.23408-1-liuyuntao12@huawei.com/
+- Fix sparse warnings about type casting. (lkp)
+- Add info about instruction count change in commit log. (Andrew)
+- Use the min() helper from linux/minmax.h. (Andrew)
+- Use "#if __riscv_xlen == 64" macro check to differentiate rv64 and rv32. (Andrew)
+- Line up several macro values by tab. (Andrew)
+- Make poly_qt as "unsigned long" to unify the code for rv64 and rv32. (David)
+- Fix the style of comment wing. (Andrew)
+- Add function wrappers for the asm code for the *_le cases. (Andrew)
 ---
- arch/arm/Kconfig                       | 1 +
- arch/arm/boot/compressed/vmlinux.lds.S | 6 +++++-
- arch/arm/include/asm/vmlinux.lds.h     | 2 +-
- arch/arm/kernel/entry-armv.S           | 3 +++
- arch/arm/kernel/vmlinux-xip.lds.S      | 4 ++--
- arch/arm/kernel/vmlinux.lds.S          | 6 +++---
- 6 files changed, 15 insertions(+), 7 deletions(-)
+ arch/riscv/Kconfig      |  23 ++++
+ arch/riscv/lib/Makefile |   1 +
+ arch/riscv/lib/crc32.c  | 294 ++++++++++++++++++++++++++++++++++++++++
+ include/linux/crc32.h   |   3 +
+ 4 files changed, 321 insertions(+)
+ create mode 100644 arch/riscv/lib/crc32.c
 
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index b14aed3a17ab..45f25f6e7a62 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -114,6 +114,7 @@ config ARM
- 	select HAVE_KERNEL_XZ
- 	select HAVE_KPROBES if !XIP_KERNEL && !CPU_ENDIAN_BE32 && !CPU_V7M
- 	select HAVE_KRETPROBES if HAVE_KPROBES
-+	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_OPTPROBES if !THUMB2_KERNEL
-diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
-index 3fcb3e62dc56..affd30714f01 100644
---- a/arch/arm/boot/compressed/vmlinux.lds.S
-+++ b/arch/arm/boot/compressed/vmlinux.lds.S
-@@ -89,7 +89,11 @@ SECTIONS
-      * The EFI stub always executes from RAM, and runs strictly before the
-      * decompressor, so we can make an exception for its r/w data, and keep it
-      */
-+#ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-+    *(.data.* .bss.*)
+diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
+index 0bfcfec67ed5..68e1248bbee4 100644
+--- a/arch/riscv/Kconfig
++++ b/arch/riscv/Kconfig
+@@ -610,6 +610,29 @@ config RISCV_ISA_ZBB
+ 
+ 	   If you don't know what to do here, say Y.
+ 
++config TOOLCHAIN_HAS_ZBC
++	bool
++	default y
++	depends on !64BIT || $(cc-option,-mabi=lp64 -march=rv64ima_zbc)
++	depends on !32BIT || $(cc-option,-mabi=ilp32 -march=rv32ima_zbc)
++	depends on LLD_VERSION >= 150000 || LD_VERSION >= 23900
++	depends on AS_HAS_OPTION_ARCH
++
++config RISCV_ISA_ZBC
++	bool "Zbc extension support for carry-less multiplication instructions"
++	depends on TOOLCHAIN_HAS_ZBC
++	depends on MMU
++	depends on RISCV_ALTERNATIVE
++	default y
++	help
++	   Adds support to dynamically detect the presence of the Zbc
++	   extension (carry-less multiplication) and enable its usage.
++
++	   The Zbc extension could accelerate CRC (cyclic redundancy check)
++	   calculations.
++
++	   If you don't know what to do here, say Y.
++
+ config RISCV_ISA_ZICBOM
+ 	bool "Zicbom extension support for non-coherent DMA operation"
+ 	depends on MMU
+diff --git a/arch/riscv/lib/Makefile b/arch/riscv/lib/Makefile
+index bd6e6c1b0497..2b369f51b0a5 100644
+--- a/arch/riscv/lib/Makefile
++++ b/arch/riscv/lib/Makefile
+@@ -13,6 +13,7 @@ endif
+ lib-$(CONFIG_MMU)	+= uaccess.o
+ lib-$(CONFIG_64BIT)	+= tishift.o
+ lib-$(CONFIG_RISCV_ISA_ZICBOZ)	+= clear_page.o
++lib-$(CONFIG_RISCV_ISA_ZBC)	+= crc32.o
+ 
+ obj-$(CONFIG_FUNCTION_ERROR_INJECTION) += error-inject.o
+ lib-$(CONFIG_RISCV_ISA_V)	+= xor.o
+diff --git a/arch/riscv/lib/crc32.c b/arch/riscv/lib/crc32.c
+new file mode 100644
+index 000000000000..d7dc599af3ef
+--- /dev/null
++++ b/arch/riscv/lib/crc32.c
+@@ -0,0 +1,294 @@
++// SPDX-License-Identifier: GPL-2.0-only
++/*
++ * Accelerated CRC32 implementation with Zbc extension.
++ *
++ * Copyright (C) 2024 Intel Corporation
++ */
++
++#include <asm/hwcap.h>
++#include <asm/alternative-macros.h>
++#include <asm/byteorder.h>
++
++#include <linux/types.h>
++#include <linux/minmax.h>
++#include <linux/crc32poly.h>
++#include <linux/crc32.h>
++#include <linux/byteorder/generic.h>
++
++/*
++ * Refer to https://www.corsix.org/content/barrett-reduction-polynomials for
++ * better understanding of how this math works.
++ *
++ * let "+" denotes polynomial add (XOR)
++ * let "-" denotes polynomial sub (XOR)
++ * let "*" denotes polynomial multiplication
++ * let "/" denotes polynomial floor division
++ * let "S" denotes source data, XLEN bit wide
++ * let "P" denotes CRC32 polynomial
++ * let "T" denotes 2^(XLEN+32)
++ * let "QT" denotes quotient of T/P, with the bit for 2^XLEN being implicit
++ *
++ * crc32(S, P)
++ * => S * (2^32) - S * (2^32) / P * P
++ * => lowest 32 bits of: S * (2^32) / P * P
++ * => lowest 32 bits of: S * (2^32) * (T / P) / T * P
++ * => lowest 32 bits of: S * (2^32) * quotient / T * P
++ * => lowest 32 bits of: S * quotient / 2^XLEN * P
++ * => lowest 32 bits of: (clmul_high_part(S, QT) + S) * P
++ * => clmul_low_part(clmul_high_part(S, QT) + S, P)
++ *
++ * In terms of below implementations, the BE case is more intuitive, since the
++ * higher order bit sits at more significant position.
++ */
++
++#if __riscv_xlen == 64
++/* Slide by XLEN bits per iteration */
++# define STEP_ORDER 3
++
++/* Each below polynomial quotient has an implicit bit for 2^XLEN */
++
++/* Polynomial quotient of (2^(XLEN+32))/CRC32_POLY, in LE format */
++# define CRC32_POLY_QT_LE	0x5a72d812fb808b20
++
++/* Polynomial quotient of (2^(XLEN+32))/CRC32C_POLY, in LE format */
++# define CRC32C_POLY_QT_LE	0xa434f61c6f5389f8
++
++/* Polynomial quotient of (2^(XLEN+32))/CRC32_POLY, in BE format, it should be
++ * the same as the bit-reversed version of CRC32_POLY_QT_LE
++ */
++# define CRC32_POLY_QT_BE	0x04d101df481b4e5a
++
++static inline u64 crc32_le_prep(u32 crc, unsigned long const *ptr)
++{
++	return (u64)crc ^ (__force u64)__cpu_to_le64(*ptr);
++}
++
++static inline u32 crc32_le_zbc(unsigned long s, u32 poly, unsigned long poly_qt)
++{
++	u32 crc;
++
++	/* We don't have a "clmulrh" insn, so use clmul + slli instead. */
++	asm volatile (".option push\n"
++		      ".option arch,+zbc\n"
++		      "clmul	%0, %1, %2\n"
++		      "slli	%0, %0, 1\n"
++		      "xor	%0, %0, %1\n"
++		      "clmulr	%0, %0, %3\n"
++		      "srli	%0, %0, 32\n"
++		      ".option pop\n"
++		      : "=&r" (crc)
++		      : "r" (s),
++			"r" (poly_qt),
++			"r" ((u64)poly << 32)
++		      :);
++	return crc;
++}
++
++static inline u64 crc32_be_prep(u32 crc, unsigned long const *ptr)
++{
++	return ((u64)crc << 32) ^ (__force u64)__cpu_to_be64(*ptr);
++}
++
++#elif __riscv_xlen == 32
++# define STEP_ORDER 2
++/* Each quotient should match the upper half of its analog in RV64 */
++# define CRC32_POLY_QT_LE	0xfb808b20
++# define CRC32C_POLY_QT_LE	0x6f5389f8
++# define CRC32_POLY_QT_BE	0x04d101df
++
++static inline u32 crc32_le_prep(u32 crc, unsigned long const *ptr)
++{
++	return crc ^ (__force u32)__cpu_to_le32(*ptr);
++}
++
++static inline u32 crc32_le_zbc(unsigned long s, u32 poly, unsigned long poly_qt)
++{
++	u32 crc;
++
++	/* We don't have a "clmulrh" insn, so use clmul + slli instead. */
++	asm volatile (".option push\n"
++		      ".option arch,+zbc\n"
++		      "clmul	%0, %1, %2\n"
++		      "slli	%0, %0, 1\n"
++		      "xor	%0, %0, %1\n"
++		      "clmulr	%0, %0, %3\n"
++		      ".option pop\n"
++		      : "=&r" (crc)
++		      : "r" (s),
++			"r" (poly_qt),
++			"r" (poly)
++		      :);
++	return crc;
++}
++
++static inline u32 crc32_be_prep(u32 crc, unsigned long const *ptr)
++{
++	return crc ^ (__force u32)__cpu_to_be32(*ptr);
++}
++
 +#else
-     *(.data.efistub .bss.efistub)
++# error "Unexpected __riscv_xlen"
 +#endif
-     __pecoff_data_end = .;
++
++static inline u32 crc32_be_zbc(unsigned long s)
++{
++	u32 crc;
++
++	asm volatile (".option push\n"
++		      ".option arch,+zbc\n"
++		      "clmulh	%0, %1, %2\n"
++		      "xor	%0, %0, %1\n"
++		      "clmul	%0, %0, %3\n"
++		      ".option pop\n"
++		      : "=&r" (crc)
++		      : "r" (s),
++			"r" (CRC32_POLY_QT_BE),
++			"r" (CRC32_POLY_BE)
++		      :);
++	return crc;
++}
++
++#define STEP		(1 << STEP_ORDER)
++#define OFFSET_MASK	(STEP - 1)
++
++typedef u32 (*fallback)(u32 crc, unsigned char const *p, size_t len);
++
++static inline u32 crc32_le_unaligned(u32 crc, unsigned char const *p,
++				     size_t len, u32 poly,
++				     unsigned long poly_qt)
++{
++	size_t bits = len * 8;
++	unsigned long s = 0;
++	u32 crc_low = 0;
++
++	for (int i = 0; i < len; i++)
++		s = ((unsigned long)*p++ << (__riscv_xlen - 8)) | (s >> 8);
++
++	s ^= (unsigned long)crc << (__riscv_xlen - bits);
++	if (__riscv_xlen == 32 || len < sizeof(u32))
++		crc_low = crc >> bits;
++
++	crc = crc32_le_zbc(s, poly, poly_qt);
++	crc ^= crc_low;
++
++	return crc;
++}
++
++static inline u32 __pure crc32_le_generic(u32 crc, unsigned char const *p,
++					  size_t len, u32 poly,
++					  unsigned long poly_qt,
++					  fallback crc_fb)
++{
++	size_t offset, head_len, tail_len;
++	unsigned long const *p_ul;
++	unsigned long s;
++
++	asm goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
++			     RISCV_ISA_EXT_ZBC, 1)
++		 : : : : legacy);
++
++	/* Handle the unaligned head. */
++	offset = (unsigned long)p & OFFSET_MASK;
++	if (offset && len) {
++		head_len = min(STEP - offset, len);
++		crc = crc32_le_unaligned(crc, p, head_len, poly, poly_qt);
++		p += head_len;
++		len -= head_len;
++	}
++
++	tail_len = len & OFFSET_MASK;
++	len = len >> STEP_ORDER;
++	p_ul = (unsigned long const *)p;
++
++	for (int i = 0; i < len; i++) {
++		s = crc32_le_prep(crc, p_ul);
++		crc = crc32_le_zbc(s, poly, poly_qt);
++		p_ul++;
++	}
++
++	/* Handle the tail bytes. */
++	p = (unsigned char const *)p_ul;
++	if (tail_len)
++		crc = crc32_le_unaligned(crc, p, tail_len, poly, poly_qt);
++
++	return crc;
++
++legacy:
++	return crc_fb(crc, p, len);
++}
++
++u32 __pure crc32_le(u32 crc, unsigned char const *p, size_t len)
++{
++	return crc32_le_generic(crc, p, len, CRC32_POLY_LE, CRC32_POLY_QT_LE,
++				crc32_le_base);
++}
++
++u32 __pure __crc32c_le(u32 crc, unsigned char const *p, size_t len)
++{
++	return crc32_le_generic(crc, p, len, CRC32C_POLY_LE,
++				CRC32C_POLY_QT_LE, __crc32c_le_base);
++}
++
++static inline u32 crc32_be_unaligned(u32 crc, unsigned char const *p,
++				     size_t len)
++{
++	size_t bits = len * 8;
++	unsigned long s = 0;
++	u32 crc_low = 0;
++
++	s = 0;
++	for (int i = 0; i < len; i++)
++		s = *p++ | (s << 8);
++
++	if (__riscv_xlen == 32 || len < sizeof(u32)) {
++		s ^= crc >> (32 - bits);
++		crc_low = crc << bits;
++	} else {
++		s ^= (unsigned long)crc << (bits - 32);
++	}
++
++	crc = crc32_be_zbc(s);
++	crc ^= crc_low;
++
++	return crc;
++}
++
++u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len)
++{
++	size_t offset, head_len, tail_len;
++	unsigned long const *p_ul;
++	unsigned long s;
++
++	asm goto(ALTERNATIVE("j %l[legacy]", "nop", 0,
++			     RISCV_ISA_EXT_ZBC, 1)
++		 : : : : legacy);
++
++	/* Handle the unaligned head. */
++	offset = (unsigned long)p & OFFSET_MASK;
++	if (offset && len) {
++		head_len = min(STEP - offset, len);
++		crc = crc32_be_unaligned(crc, p, head_len);
++		p += head_len;
++		len -= head_len;
++	}
++
++	tail_len = len & OFFSET_MASK;
++	len = len >> STEP_ORDER;
++	p_ul = (unsigned long const *)p;
++
++	for (int i = 0; i < len; i++) {
++		s = crc32_be_prep(crc, p_ul);
++		crc = crc32_be_zbc(s);
++		p_ul++;
++	}
++
++	/* Handle the tail bytes. */
++	p = (unsigned char const *)p_ul;
++	if (tail_len)
++		crc = crc32_be_unaligned(crc, p, tail_len);
++
++	return crc;
++
++legacy:
++	return crc32_be_base(crc, p, len);
++}
+diff --git a/include/linux/crc32.h b/include/linux/crc32.h
+index 9e8a032c1788..87f788c0d607 100644
+--- a/include/linux/crc32.h
++++ b/include/linux/crc32.h
+@@ -9,7 +9,9 @@
+ #include <linux/bitrev.h>
  
-     /*
-@@ -125,7 +129,7 @@ SECTIONS
+ u32 __pure crc32_le(u32 crc, unsigned char const *p, size_t len);
++u32 __pure crc32_le_base(u32 crc, unsigned char const *p, size_t len);
+ u32 __pure crc32_be(u32 crc, unsigned char const *p, size_t len);
++u32 __pure crc32_be_base(u32 crc, unsigned char const *p, size_t len);
  
-   . = BSS_START;
-   __bss_start = .;
--  .bss			: { *(.bss) }
-+  .bss			: { *(.bss .bss.*) }
-   _end = .;
+ /**
+  * crc32_le_combine - Combine two crc32 check values into one. For two
+@@ -37,6 +39,7 @@ static inline u32 crc32_le_combine(u32 crc1, u32 crc2, size_t len2)
+ }
  
-   . = ALIGN(8);		/* the stack must be 64-bit aligned */
-diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index 4c8632d5c432..d60f6e83a9f7 100644
---- a/arch/arm/include/asm/vmlinux.lds.h
-+++ b/arch/arm/include/asm/vmlinux.lds.h
-@@ -42,7 +42,7 @@
- #define PROC_INFO							\
- 		. = ALIGN(4);						\
- 		__proc_info_begin = .;					\
--		*(.proc.info.init)					\
-+		KEEP(*(.proc.info.init))				\
- 		__proc_info_end = .;
+ u32 __pure __crc32c_le(u32 crc, unsigned char const *p, size_t len);
++u32 __pure __crc32c_le_base(u32 crc, unsigned char const *p, size_t len);
  
- #define IDMAP_TEXT							\
-diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index 6150a716828c..f01d23a220e6 100644
---- a/arch/arm/kernel/entry-armv.S
-+++ b/arch/arm/kernel/entry-armv.S
-@@ -1065,6 +1065,7 @@ vector_addrexcptn:
- 	.globl	vector_fiq
- 
- 	.section .vectors, "ax", %progbits
-+	.reloc  .text, R_ARM_NONE, .
- 	W(b)	vector_rst
- 	W(b)	vector_und
- ARM(	.reloc	., R_ARM_LDR_PC_G0, .L__vector_swi		)
-@@ -1078,6 +1079,7 @@ THUMB(	.reloc	., R_ARM_THM_PC12, .L__vector_swi		)
- 
- #ifdef CONFIG_HARDEN_BRANCH_HISTORY
- 	.section .vectors.bhb.loop8, "ax", %progbits
-+	.reloc  .text, R_ARM_NONE, .
- 	W(b)	vector_rst
- 	W(b)	vector_bhb_loop8_und
- ARM(	.reloc	., R_ARM_LDR_PC_G0, .L__vector_bhb_loop8_swi	)
-@@ -1090,6 +1092,7 @@ THUMB(	.reloc	., R_ARM_THM_PC12, .L__vector_bhb_loop8_swi	)
- 	W(b)	vector_bhb_loop8_fiq
- 
- 	.section .vectors.bhb.bpiall, "ax", %progbits
-+	.reloc  .text, R_ARM_NONE, .
- 	W(b)	vector_rst
- 	W(b)	vector_bhb_bpiall_und
- ARM(	.reloc	., R_ARM_LDR_PC_G0, .L__vector_bhb_bpiall_swi	)
-diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
-index c16d196b5aad..5eddb75a7174 100644
---- a/arch/arm/kernel/vmlinux-xip.lds.S
-+++ b/arch/arm/kernel/vmlinux-xip.lds.S
-@@ -63,7 +63,7 @@ SECTIONS
- 	. = ALIGN(4);
- 	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
- 		__start___ex_table = .;
--		ARM_MMU_KEEP(*(__ex_table))
-+		ARM_MMU_KEEP(KEEP(*(__ex_table)))
- 		__stop___ex_table = .;
- 	}
- 
-@@ -83,7 +83,7 @@ SECTIONS
- 	}
- 	.init.arch.info : {
- 		__arch_info_begin = .;
--		*(.arch.info.init)
-+		KEEP(*(.arch.info.init))
- 		__arch_info_end = .;
- 	}
- 	.init.tagtable : {
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index bd9127c4b451..de373c6c2ae8 100644
---- a/arch/arm/kernel/vmlinux.lds.S
-+++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -74,7 +74,7 @@ SECTIONS
- 	. = ALIGN(4);
- 	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
- 		__start___ex_table = .;
--		ARM_MMU_KEEP(*(__ex_table))
-+		ARM_MMU_KEEP(KEEP(*(__ex_table)))
- 		__stop___ex_table = .;
- 	}
- 
-@@ -99,7 +99,7 @@ SECTIONS
- 	}
- 	.init.arch.info : {
- 		__arch_info_begin = .;
--		*(.arch.info.init)
-+		KEEP(*(.arch.info.init))
- 		__arch_info_end = .;
- 	}
- 	.init.tagtable : {
-@@ -116,7 +116,7 @@ SECTIONS
- #endif
- 	.init.pv_table : {
- 		__pv_table_begin = .;
--		*(.pv_table)
-+		KEEP(*(.pv_table))
- 		__pv_table_end = .;
- 	}
- 
+ /**
+  * __crc32c_le_combine - Combine two crc32c check values into one. For two
 -- 
-2.34.1
+2.25.1
 
 
