@@ -1,136 +1,100 @@
-Return-Path: <linux-kernel+bounces-104647-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104648-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8EF0887D16C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:47:36 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5159A87D16F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:47:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 470B51F26932
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:47:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FF6D28242C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:47:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CBB945BF0;
-	Fri, 15 Mar 2024 16:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA0783C063;
+	Fri, 15 Mar 2024 16:47:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="esJ8xRYY"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bYMrTgRi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 89EF73BB28;
-	Fri, 15 Mar 2024 16:46:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0EBD928F1;
+	Fri, 15 Mar 2024 16:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710521207; cv=none; b=UbczALTBgVnkyBvssE5vZb3h9JvEoF8X73JGSpcmL+6Xu4yhFVETwjslaQtKSdH7h3YDwIm6cy4UBZlQKADyrZJ/jW/2ojdONTOsxpLkZjJ3KqQFnqyVClH7j9YGgmdo9IU/LccJsTCv6WTJdbHAperBwAJHdF/Kx+hcBZgyxSw=
+	t=1710521264; cv=none; b=JntgiFsXtl7F824DeAECqn03nhkQWEmdwJGPjuRDRNhzvMm7+a25sADovINWZhA1Qk68cfgoa2mMfXkPmf/kyzC0e3fsBkIBMcJUlQB3BEVoMY9dVgbonZjaknDBXiO4OcDfoH9Qb1cQFwkDW6M3oyacP2suTNAB8YUR9x4legM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710521207; c=relaxed/simple;
-	bh=3g09VzP14HL3LpuYq61SGTlbF9K14tVeVxGuc0vMR3M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=CqrMDNI2jWY31NFC4dFplyef22kchWyXtVd1tR1FBHHb3r0jlQ+1B+AQ/qO2c4vVhbT9+uTy3hM8ZsJyXS7OyjnIPGewTd5CqrpsyNQtbmEAwRO7zWLPtOduKjkYof+T6TTBzNXDbl33bFlc3FC9AsVRtsq1DcoP6BOE3zz/v3A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=esJ8xRYY; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dcab44747bso15856605ad.1;
-        Fri, 15 Mar 2024 09:46:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710521205; x=1711126005; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4++5UV9ZvHpUQeROXztwV98cFhFDCUy45AERunpkiTA=;
-        b=esJ8xRYY7fg2QzXf9sa5aqu9eUOptWD+MxjkA/tbdnwFQPVw2WEzNA/hTreyIFcQXZ
-         lSVXsQ7eNyBZAx+4kddCBK5YPl6Uzk9mL9LIAOUVHEOGrxBbzlDlpng6kt0j/8yNpiER
-         hb4Yms2VEvAC6/dvk+UNEzycoHKFUXRDDeT6G5g8D0UWDWZ+AtHW8bOBE/Ct3yfoevSm
-         KVYLIz3cDPWy13Awlv+Jh0fkqP0xlyOjzWPAlNg1X943PifX5NI5aHRAFs9BJFnQGZHR
-         20nIe0nqeycMTReJxLz7/QaWKVqBvrBWYEB0JO6L3Yg5AvPoBpasTfiHUW9Vt+5YILeq
-         IQsw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710521205; x=1711126005;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=4++5UV9ZvHpUQeROXztwV98cFhFDCUy45AERunpkiTA=;
-        b=Y1gRoBrZ4bjHZmLm0O8ohIz9wqPg7TuUz3aPvhOEO82Q/ZrCuU1LFazEOX1dMQdob3
-         Q7lnyDCjwG/srEnmopoQiNA4hl2JwUJQYTbKiVxV3uMfRv/P3Df3CJi8S2qi0C1PeVf1
-         rAGSklCxw8us1CqFOeqr5+lwBRHDrAW5XeXe5TZhr6Xdrz/PgR21BBJ1UJzIzJn4WEBH
-         h4mCAgMCs/35Cvs5S9KJqCPZm/swEP0gtbwSrT07rbQLN/1KYZSFlQGvhgTSH75YjfiQ
-         VPRi8cuGV3TesLuojF7yQ5E4HeoVCLlD8MjqZAAvEO9AUXETAe9uFwxdy3qz0HUNW8UM
-         tXsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWHYFFq4LdszCh/zOfNWG5QB7rMXULql3wavq8kPAvnB3RVXAP9kAF/I5QuVeCLpqfiaUuDIH2PUcsUffR7st4fY7MA8YHC/PmUQc6othTJSG4uwt5noGf4d22/QoCZhWE+
-X-Gm-Message-State: AOJu0YywFQXksLfBvFL8ck2xh/7RktZPnkHShw7H9xmwM1SD6cDlr5uQ
-	NHVpgWbX3Op/z4Jch44nFAk7fQbQ0Yt+IoRZC7lQRB67oScg6PXTmNWjZ70au0DZfj1ZcNah1iO
-	M79l6qJmC4EOGv2uXgfdY2A3TYSA=
-X-Google-Smtp-Source: AGHT+IGMoIsUO9ll4nNE0OZacMHWcN3oOBh4spXquRzu5/ktY6OjNKr3zWGrgrMK1aRQIm9atbHeM1iC4xdvcGsennE=
-X-Received: by 2002:a17:903:24e:b0:1dd:b728:b890 with SMTP id
- j14-20020a170903024e00b001ddb728b890mr6824453plh.18.1710521204777; Fri, 15
- Mar 2024 09:46:44 -0700 (PDT)
+	s=arc-20240116; t=1710521264; c=relaxed/simple;
+	bh=JL5eSL26L69YUqhQ5+zJQo9l0y8hKk3BZ+EnlZ3I0ew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mgX752XL4uINe/JMTIx/fTAia9Rmhmzv+1qLbDvVzIoOx0CQ3YAlt3JFlzjO+VuvVt/8IXIuQ3Qtf4rbQvrk2HnJgGPU7M8n+GoZFMAEX9bXXJSka5KWuDESQQ5wyxVdQEezJ+VcGZbK3RP1ql34dB40eOb72D6vd8HTKnjOj4c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bYMrTgRi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id DAA8AC433C7;
+	Fri, 15 Mar 2024 16:47:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710521263;
+	bh=JL5eSL26L69YUqhQ5+zJQo9l0y8hKk3BZ+EnlZ3I0ew=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bYMrTgRi1fAF0uJpaHYkRyXi7WMU9CRq/YAAwuGPJ96W4PBq+7ovToG4kCo/Wh9he
+	 0FQhO8q2MPRkIiOYC/kBvrSn17yLoSkOuf8FKSraqnI1nDrVkmSWd3b9HAIjxCrUcW
+	 GTxUZ399ds/6rak0w56+JGj/BG6zNMnfuW+UzYueaEGHBHoExb0TPtkcV3wbwpWsl6
+	 DC4p1cxQETsHR1wh8l06vm6qbgmR+PM1DhCRCJlViSSpd4bvVAPp7WSIZTZiNxLqdi
+	 +8v6sqK2++UPI8NRxHA+pHQBRnmAJnqj/speZyq2TwAD/ieIOKwMoDFbRCcM8YZN3A
+	 UWzjd3bXJuYZg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rlAim-000000000Nn-3x3C;
+	Fri, 15 Mar 2024 17:47:53 +0100
+Date: Fri, 15 Mar 2024 17:47:52 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Bjorn Helgaas <helgaas@kernel.org>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
+	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
+	Philipp Zabel <p.zabel@pengutronix.de>,
+	linux-arm-msm@vger.kernel.org, linux-pci@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Johan Hovold <johan+linaro@kernel.org>
+Subject: Re: [PATCH v2 2/3] PCI: qcom: Read back PARF_LTSSM register
+Message-ID: <ZfR7uCcflCiFTvBh@hovoldconsulting.com>
+References: <20240215161114.GA1292081@bhelgaas>
+ <bc7d9859-f7ec-41c5-8a9e-170ccdfff46a@linaro.org>
+ <Zc8GHrgdF7jJBgyu@hovoldconsulting.com>
+ <c1f85249-32b1-41e2-adc3-5aa4ad7609b9@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315113828.258005-1-cgzones@googlemail.com> <20240315113828.258005-3-cgzones@googlemail.com>
-In-Reply-To: <20240315113828.258005-3-cgzones@googlemail.com>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Fri, 15 Mar 2024 09:46:32 -0700
-Message-ID: <CAEf4BzZvaWeFZFzonh_0pmhnRtm0AJdQPi7DYU1LpNytD6zHpQ@mail.gmail.com>
-Subject: Re: [PATCH 03/10] capability: use new capable_any functionality
-To: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Cc: linux-security-module@vger.kernel.org, Serge Hallyn <serge@hallyn.com>, 
-	linux-kernel@vger.kernel.org, bpf@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <c1f85249-32b1-41e2-adc3-5aa4ad7609b9@linaro.org>
 
-On Fri, Mar 15, 2024 at 4:39=E2=80=AFAM Christian G=C3=B6ttsche
-<cgzones@googlemail.com> wrote:
->
-> Use the new added capable_any function in appropriate cases, where a
-> task is required to have any of two capabilities.
->
-> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> ---
-> v3:
->   - rename to capable_any()
->   - simplify checkpoint_restore_ns_capable()
-> ---
->  include/linux/capability.h | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
+On Fri, Mar 15, 2024 at 11:16:59AM +0100, Konrad Dybcio wrote:
+> On 2/16/24 07:52, Johan Hovold wrote:
 
-Acked-by: Andrii Nakryiko <andrii@kernel.org>
+> > This makes no sense. As Bjorn already said, you're just polling for the
+> > link to come up (for a second). And unless you have something else that
+> > depends on the write to have reached the device, there is no need to
+> > read it back. It's not going to be cached indefinitely if that's what
+> > you fear.
+> 
+> The point is, if we know that the hardware is expected to return "done"
+> within the polling timeout value of receiving the request to do so, we
+> are actively taking away an unknown amount of time from that timeout.
 
-> diff --git a/include/linux/capability.h b/include/linux/capability.h
-> index eeb958440656..4db0ffb47271 100644
-> --- a/include/linux/capability.h
-> +++ b/include/linux/capability.h
-> @@ -204,18 +204,17 @@ extern bool file_ns_capable(const struct file *file=
-, struct user_namespace *ns,
->  extern bool ptracer_capable(struct task_struct *tsk, struct user_namespa=
-ce *ns);
->  static inline bool perfmon_capable(void)
->  {
-> -       return capable(CAP_PERFMON) || capable(CAP_SYS_ADMIN);
-> +       return capable_any(CAP_PERFMON, CAP_SYS_ADMIN);
->  }
->
->  static inline bool bpf_capable(void)
->  {
-> -       return capable(CAP_BPF) || capable(CAP_SYS_ADMIN);
-> +       return capable_any(CAP_BPF, CAP_SYS_ADMIN);
->  }
->
->  static inline bool checkpoint_restore_ns_capable(struct user_namespace *=
-ns)
->  {
-> -       return ns_capable(ns, CAP_CHECKPOINT_RESTORE) ||
-> -               ns_capable(ns, CAP_SYS_ADMIN);
-> +       return ns_capable_any(ns, CAP_CHECKPOINT_RESTORE, CAP_SYS_ADMIN);
->  }
->
->  /* audit system wants to get cap info from files as well */
-> --
-> 2.43.0
->
->
+We're talking about microseconds, not milliseconds or seconds as you
+seem to believe.
+
+> So, if the polling condition becomes true after 980ms, but due to write
+> buffering the value reached the PCIe hardware after 21 ms, we're gonna
+> hit a timeout. Or under truly extreme circumstances, the polling may
+> time out before the write has even arrived at the PCIe hw.
+
+So the write latency is not an issue here.
+
+Johan
 
