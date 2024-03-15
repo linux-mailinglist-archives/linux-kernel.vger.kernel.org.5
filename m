@@ -1,120 +1,131 @@
-Return-Path: <linux-kernel+bounces-104380-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104381-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 332CF87CD0C
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:10:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 047A787CD0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:11:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DC8CD1F22F36
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:10:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 356161C217FA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:11:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AE7C1C28B;
-	Fri, 15 Mar 2024 12:10:13 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 01E7F1C29B;
+	Fri, 15 Mar 2024 12:11:27 +0000 (UTC)
+Received: from mail-ot1-f48.google.com (mail-ot1-f48.google.com [209.85.210.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D6F1AAD0
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B3F11AAD0;
+	Fri, 15 Mar 2024 12:11:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710504612; cv=none; b=nNWK62IMD2CoA14ScBCntbnWK8HUukIqRlixoM95kyPN8Fqnv8hO1BYQmY/+ssAcbDm2I++cgIkEchHVhsBowqKUdLXi5NsiPxfpjWUe1nn0MjBEc4qyPVTE2zD2pUP8QcxyxoxFLO6gVLWOG54AVKDK+/XoITJIt1MMRZ9Omxc=
+	t=1710504686; cv=none; b=kKWu0YNQ05XDGvRXFMg658h8ozR9nm0n9Kh3G5uo0cU+nEN07/vCi12kP9fStgTsZ+2Prh6OH38B7Fd0XSqlgEODjrRMhQsy+7odN/ZVSQ5ABONXf1SAZqZ64s8Q+nHyHuiSDBhusKbotrbMZgE6K1s5bTzwrWxKU+qCeOxpgCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710504612; c=relaxed/simple;
-	bh=q/8fKxBpy2WLKGEdc5597DHiRCg+9LU28fhtHRHJkRs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=QaNn8yg0N8wvBek3LGokbwIy8FP87GwmQ/IJCHsSb2efZAdi6WtwbXZDxQBxYzrVR8wfCj5O7+kg3BGSoQD3rbN2H3GyK84p7w5+OetpxeHGeL4/Os2k/31e6/ECeQvIRON6lgvJ2UGPf6ys0Xyi0JLKfVkeiPgHWbDEzU9IuDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Tx30S6j0zz1h2Q9;
-	Fri, 15 Mar 2024 20:07:36 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id CDD7B140124;
-	Fri, 15 Mar 2024 20:10:05 +0800 (CST)
-Received: from [10.67.109.211] (10.67.109.211) by
- dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 15 Mar 2024 20:10:05 +0800
-Message-ID: <baed1e49-d854-4517-8219-2a5bb0b3cd1b@huawei.com>
-Date: Fri, 15 Mar 2024 20:10:05 +0800
+	s=arc-20240116; t=1710504686; c=relaxed/simple;
+	bh=Wfc9oP0R64W5zCTmqNzrzXKvNhkgw76Rey6GJ7FbITw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Z+A/sMp41eRdl8utARqahH2opp0TA6vkcmYEQpltyQ2ND5J83d5LKqoaO4/STJlPdq9sYuBIwb7Q5Y+/DX4jtTuR4IzndlUHkJLCHLf3+VJkX+je96UNAgRnYwalzjajlPnTgjwx6BddenQ0/39k8bgszUZIUB9ITgm4V0sPdGE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f48.google.com with SMTP id 46e09a7af769-6e677ec9508so105979a34.1;
+        Fri, 15 Mar 2024 05:11:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710504684; x=1711109484;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Wfc9oP0R64W5zCTmqNzrzXKvNhkgw76Rey6GJ7FbITw=;
+        b=Ro/K4vJNUP9A9LcaioIl9wSHgdwSHq9Ma9vrLza1vQc1JDr4TLEa5IPdohwaQRYjCO
+         5ATqpu1tLXdMgLzbxIE8fLtmDEI4ZGLKG3stcDzQ8Ns9hmnggEMNW0Ksvzv+p8SnBrQu
+         SK0+Zg5LV8YWCUfEllWa4EYqw9iEBd2tz/RQcJPMPmzry7Iws7yFpJ31I3ohUPGvfmhs
+         l7IdIYvC2kRQTJXFjy10HCM9+rRN2sZcCL0kaFN/IzfY7WmdaZo7aW/6wGfkoT2IUvlR
+         e9zhUkFy2sHmSgHeB+giF2ZL4x3Hs0+/85BU+ROw+F06UvgejLbrzFPdhUWHeK8h0OSj
+         PgwQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWSHWTY8CbTEFyHqvu/KAAAOLewiNrXlfGtibOoeTkpXzex2PMq01/zWxbEHclTOyyjd+kp+5IUaGKy03K6mjr0ydQKtDkkvxOp3YHBQw5UazY5G9kkJi58ktoVHODdq931P6rzisE=
+X-Gm-Message-State: AOJu0Yxyl5rR9AkYZd+u+BP3HamnPEdYDL6PqA9CQ74sHMUAZr0JZ76s
+	VyV9sth+yP2n2r6r1ThhOweHoVCCvg3n7pZGPD2mmkOWz7AiwaOyjbnu7lWGef6/MNh/LReho+s
+	xG/ccQtRkzkOfvufOqWRDvd1P/9c=
+X-Google-Smtp-Source: AGHT+IHrL8H9SwN9jXgTuYfrExgOVrNcC3Bt0Zm4s+VN3I18sBdqrTjq+NUAfpZkvB8k2ddt4TZR9nTK++wk+D70UPg=
+X-Received: by 2002:a05:6871:b28:b0:222:8a9d:d935 with SMTP id
+ fq40-20020a0568710b2800b002228a9dd935mr1213647oab.3.1710504683918; Fri, 15
+ Mar 2024 05:11:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-next v3] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Content-Language: en-US
-To: Arnd Bergmann <arnd@arndb.de>, Ard Biesheuvel <ardb@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	Geert Uytterhoeven <geert@linux-m68k.org>, Russell King
-	<linux@armlinux.org.uk>, Andrew Davis <afd@ti.com>, Andrew Morton
-	<akpm@linux-foundation.org>, "Kirill A. Shutemov"
-	<kirill.shutemov@linux.intel.com>, Geert Uytterhoeven
-	<geert+renesas@glider.be>, Jonathan Corbet <corbet@lwn.net>, Mike Rapoport
-	<rppt@kernel.org>, Rob Herring <robh@kernel.org>, Thomas Gleixner
-	<tglx@linutronix.de>, Linus Walleij <linus.walleij@linaro.org>, Fangrui Song
-	<maskray@google.com>
-References: <20240315063154.696633-1-liuyuntao12@huawei.com>
- <CAMj1kXH+FaddHV5--kqB_wVgw_M682MvchPB1BoCuDuA6vVyvg@mail.gmail.com>
- <d7a1996f-f558-4cea-b8ca-eb071d02c6d4@huawei.com>
- <CAMj1kXHP-M7hTsCmorgzvDiPB1jRXHciJrXjJR82zmkxUTD-5Q@mail.gmail.com>
- <b3e3f664-f8ad-41d7-b8d5-3c83818ff489@huawei.com>
- <d91cf190-e583-422f-884d-79552b674f72@app.fastmail.com>
-From: "liuyuntao (F)" <liuyuntao12@huawei.com>
-In-Reply-To: <d91cf190-e583-422f-884d-79552b674f72@app.fastmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemd100004.china.huawei.com (7.185.36.20)
+References: <20240314075429.1164810-1-d-gole@ti.com> <CAJZ5v0iUt+tudMV-rJ80GR6iNQVv06+054h0UyNgpEOUF6QLRQ@mail.gmail.com>
+ <20240314151846.u3r3eaklrl3hf7pi@dhruva> <CAJZ5v0gwkKa+AYgOwydzsKjo=_M56t88PwVo7R+fe-53abAdVw@mail.gmail.com>
+ <20240315051828.su2qx57ecyhv3up3@dhruva>
+In-Reply-To: <20240315051828.su2qx57ecyhv3up3@dhruva>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Fri, 15 Mar 2024 13:11:11 +0100
+Message-ID: <CAJZ5v0jbHwiZemtNAoM-jmgB_58VqmKUkqv4P7qrPkxWzBzMyQ@mail.gmail.com>
+Subject: Re: [PATCH] PM: wakeup: Add a missing return case in init_wakeup
+To: Dhruva Gole <d-gole@ti.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, Tony Lindgren <tony@atomide.com>, theo.lebrun@bootlin.com, 
+	Sibi Sankar <quic_sibis@quicinc.com>, Viresh Kumar <viresh.kumar@linaro.org>, 
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Ulf Hansson <ulf.hansson@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Fri, Mar 15, 2024 at 6:18=E2=80=AFAM Dhruva Gole <d-gole@ti.com> wrote:
+>
+> On Mar 14, 2024 at 16:29:36 +0100, Rafael J. Wysocki wrote:
+> > On Thu, Mar 14, 2024 at 4:18=E2=80=AFPM Dhruva Gole <d-gole@ti.com> wro=
+te:
+> > >
+> > > Hi,
+> > >
+> > > On Mar 14, 2024 at 15:01:36 +0100, Rafael J. Wysocki wrote:
+> > > > On Thu, Mar 14, 2024 at 8:55=E2=80=AFAM Dhruva Gole <d-gole@ti.com>=
+ wrote:
+> > > > >
+> > > > > The device_wakeup_disable call can return an error if no dev exis=
+ts
+> > > > > however this was being ignored. Catch this return value and propa=
+gate it
+> > > > > onward in device_init_wakeup.
+> > > >
+> > > > Why does this matter to the callers of device_init_wakeup()?
+> > >
+> > > If atall !dev->power.can_wakeup then the caller should know something=
+ is
+> > > funny right?
+> >
+> > What would the caller do with this information?
+> >
+> > They attempted to disable wakeup on a device that doesn't exist or is
+> > not wake-capable, and so what?
+>
+> Using drivers/char/hw_random/xgene-rng.c as an example, we can atleast
+> print a warning or something to make the user aware of an unclean state.
+>
+> Is the argument here that if the caller can't do anything meaningful
+> then what's the point of returning any error?
+>
+> If so, then my preference would be just to propagate as much information
+> upward from the stack whether the caller can make use of that error and
+> in what way is upto the caller, if nothing else then even a warn or
+> error print is still useful piece of information.
 
+I'm not making a general argument, just talking about this particular case.
 
-On 2024/3/15 19:51, Arnd Bergmann wrote:
-> On Fri, Mar 15, 2024, at 12:48, liuyuntao (F) wrote:
->> On 2024/3/15 18:46, Ard Biesheuvel wrote:
->>> @@ -28,6 +28,7 @@
->>>                                      -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
->>>                                      -DEFI_HAVE_STRCMP -fno-builtin -fpic \
->>>                                      $(call cc-option,-mno-single-pic-base)
->>> +cflags-$(CONFIG_ARM)           := $(filter-out -fdata-sections, $(CFLAGS-y))
->>>    cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
->>>    cflags-$(CONFIG_LOONGARCH)     += -fpie
->>
->> Another error:
->> cannot initialize array of ‘short unsigned int’ from a string literal
->> with type array of ‘unsigned int’
->>    17 | static const efi_char16_t shim_MokSBState_name[] = L"MokSBStateRT";
-> 
-> The line sets cflags-y to an empty string.
-> 
-> It probably should have been
-> 
-> cflags-$(CONFIG_ARM)           := $(filter-out -fdata-sections, $(cflags-y))
-> 
-> (small cflags instead of CFLAGS).
-> 
->       Arnd
+The only error code returned by device_wakeup_disable() is -EINVAL and
+it is returned when nothing had to be done because it was not
+applicable to the argument passed by the caller.
 
-Oh, my mistake, after fixed this bug, still this error:
-> arm-linux-gnueabi-ld: warning: orphan section `.data.efi_loglevel' from `drivers/firmware/efi/libstub/printk.stub.o' being placed in section `.data.efi_loglevel'
-> arm-linux-gnueabi-ld: warning: orphan section `.data.screen_info_guid' from `drivers/firmware/efi/libstub/screen_info.stub.o' being placed in section `.data.screen_info_guid'
-> arm-linux-gnueabi-ld: warning: orphan section `.data.cpu_state_guid' from `drivers/firmware/efi/libstub/arm32-stub.stub.o' being placed in section `.data.cpu_state_guid'
-> arm-linux-gnueabi-ld: warning: orphan section `.data.efi_nokaslr' from `drivers/firmware/efi/libstub/efi-stub-helper.stub.o' being placed in section `.data.efi_nokaslr'
+Quite frankly, I don't see why any caller of device_init_wakeup()
+passing false as its second argument would be interested in handling
+that error.
 
-The -fdata-sections option is present in the KBUILD_CFLAGS_KERNEL 
-variable; altering cflags-y only affect the KBUILD_CFLAGS variable.
-It seems that the -fdata-sections option needs to be removed from the 
-KBUILD_CFLAGS_KERNEL variable.
-> ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
-> KBUILD_CFLAGS_KERNEL += -ffunction-sections -fdata-sections
-> KBUILD_RUSTFLAGS_KERNEL += -Zfunction-sections=y
-> LDFLAGS_vmlinux += --gc-sections
-> endif
+> However if it's useless to return anything from device_wakeup_disable
+> then we might as well make that function a void or something and avoid
+> any confusion as to if there's any point in returning error at that
+> point.
 
-
+That would work for me.
 
