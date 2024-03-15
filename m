@@ -1,176 +1,110 @@
-Return-Path: <linux-kernel+bounces-104173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id D63EA87CA27
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:44:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A19C587CA2A
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:44:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 610BA1F22E6F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:44:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CE6BB1C2245C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:44:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9031C17581;
-	Fri, 15 Mar 2024 08:44:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 543801799F;
+	Fri, 15 Mar 2024 08:44:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="P3u0epMx"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YCz9L90Y"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19DDB17559;
-	Fri, 15 Mar 2024 08:44:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F52B1758F;
+	Fri, 15 Mar 2024 08:44:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710492258; cv=none; b=V/Sm/uUMCbnB/994chPYfL1YDSbjUhf1Y2Eh4bZgA8LBN9u1YKFpqfYgmiAJP7p0JUxu+0MWmimh5wbhSHfeLL1ke7tN9EPbng42ouvtQFGgEUhP1Q4fOPYaHzfPsr3+Kb5xmw1D2G225PgS3LfVhL2xI/pP4ti7KxUWvdmkgeA=
+	t=1710492261; cv=none; b=oRayvup99Pg62KWcwaa+qYjCdV6X7qOWDN4w2CLrdQ/tDElEYmirawJhH/hKc85Jg16b4rmP0q8xBVEj2+0Py1tFFo2k0+CUJF+gIY5rFXaH9nsta/1tvBYro6KqgSfQlJaKcGCVEiF3HN8LD748YdUHca7aE/11xvt+hWw4ndk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710492258; c=relaxed/simple;
-	bh=87b2vqsW/gW7SOXRyOtq/VrkOM6YrZRFbDDN/uOdmtg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=n42qHT8jOyKnrdRr+8IZcpbcQV8JW8nDLujVC9yJC9PxwYIXC++OLaQSFnEJPOBajt9jckqpWAy3gYV/5c5/NBnH575j8sBPiRouei5rtkhlbBQe9W/UWr7Ymn9ST1a0E06inBN5edmOaeJ7rc4mSinLdGyCulFcsIfJ4xzw6Ho=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=P3u0epMx; arc=none smtp.client-ip=212.227.17.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710492249; x=1711097049; i=deller@gmx.de;
-	bh=z21ODUA1mNLuZNRTs2+1Da8p6DxdGZIZqzjsQxJQ2K4=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=P3u0epMxNLoBuVfxp/ZTGBzMgTvDNampVV/PtWEoYfhjgXUHjoxFqd7iKTpslkKw
-	 GhzfWrcge0PVLZ4hT3DlRRmM7kuBO4IYhh05ZacIEJ5P0CeoaR8pdkBuegoVSdZPl
-	 R6CMU99p9DwSpeqEdUn8en2Wh9p+oSVBaO7FIr0l6qr0+fEQqoPpfQwpy0e66I5og
-	 GDHfpCX4aP2sc7IjMJfXn55Zxxhcx9vgnzzNqrtXm/jdcQYJ0BM1Lobn2fXa4upw2
-	 p1E6vMApdsumhYftNQaZChqo0bcjYDNS2FAggoxQqDIIx6TD5WQX7zBhsDTlxBUV+
-	 tEKdnBa51Wukv3x37w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.155.107]) by mail.gmx.net (mrgmx105
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mr9G2-1qyIMJ2GhS-00oEZ3; Fri, 15
- Mar 2024 09:44:09 +0100
-Message-ID: <64bbc4dd-b617-4f3d-809e-763bedf37fb7@gmx.de>
-Date: Fri, 15 Mar 2024 09:44:08 +0100
+	s=arc-20240116; t=1710492261; c=relaxed/simple;
+	bh=eboxEemuoMBpfUMJuSUDq1+5op6MV/iDzeyXPzGFq1E=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=hq5sezauYII2FDlOysizTllbC3lCBoBWh58ExQI9YQaWGli/Gklp7dpUe2KNR8Vzy45OW6t460/06csusMQFKMqcPqtUXZkdlM9Fe8+45Szs31Sb99NAN/cATDxDNzZnINGDHV0JMpBMANi/Szv7RY5fqi+kc4DLPn1AMch3xfY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YCz9L90Y; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-413f4b5171dso9781095e9.1;
+        Fri, 15 Mar 2024 01:44:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710492258; x=1711097058; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FW3yCpbxBl23teCsezuEGVc6kArdNsNwxBzB8IiZkLY=;
+        b=YCz9L90Yo7aQnPImZsyHJh/o6/RNQCAigMu17FlmWDf8xBAXb4c6wXmju2by1INN+4
+         I3kQMXHO059zU62foIV+iaoBlzXvlUy2syF4GcwdXBWMX6dwXWJowlAPA185l7SOQGvP
+         zM5HfD7lHQ4G64bhcTRaqxX13j236lurwm6cvpLJ178dnibYthjID1fFRJXnGz5zj8ti
+         QffXSMylpiIXIQTQn9UWo11K5p1hClvRsQUqVZxO99WDxDDDG9JNMsHZppA4jGmxX/we
+         E11Gh/KcrW7e6QEgrlE2YDAy9zW9SWCgB0iJpunng6zoGFBf7V/W7WZwKdAIYe6v6cke
+         ltTg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710492258; x=1711097058;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=FW3yCpbxBl23teCsezuEGVc6kArdNsNwxBzB8IiZkLY=;
+        b=IiRi7a61YS1MYMBgXST0ve7AE5gEpJDztyyhG+ib8fsqWGORJLDPWFbfp9+3CbgKLY
+         T73pCNoVklZQavgbxqv9htQAh+lPgGxBihjxiQzq4FUi/E4MfxOE5vSbXAOKqHKCMHLS
+         6vnl5QJsHFOJ4oiztaIUTz52AFsSuhztd6GM6HpgDO1iYgGuNqk+5zJ0uvyTgwbAC+LJ
+         /z/Q6D0lanBOp1nDm5tbMg8IIEtDVKlDdtygvj9BeKQaUXA0vrZtGWaZaShKZkjtxGcV
+         R9no9Vqpjmh79nIFvi8N1mHIjyvK832nBKMbI9LwmFA0hKiglO3hKx+s9UAL5aVp/U6k
+         +V5g==
+X-Forwarded-Encrypted: i=1; AJvYcCUx4HtcxEst+0yzVHP9hdRNzeaTldl925sYYT987ZF4ja/bSr+7fvYwX7nq8lALhGQ3wJDaDm8QOn0cuAoESDhDguL0531MD7pY9qCH
+X-Gm-Message-State: AOJu0Yw+OLzQ+0WYKLPr9hpn4pbeXd48nEZSnM1OA8EjK6gL1IZLHVaF
+	tDDmql4UrReZfx6o/Er9SbsJSwEj2n21VCOgAoYhQtvym4RIi+N3
+X-Google-Smtp-Source: AGHT+IFs1KRXUdXWYknTj2c91AcDYkFaQ4sCY76SBCUMRsoLddPMfyaGad3L8TXdLREQJdFUuEKjBw==
+X-Received: by 2002:a05:600c:3152:b0:413:1ae3:8dd2 with SMTP id h18-20020a05600c315200b004131ae38dd2mr1758822wmo.37.1710492258179;
+        Fri, 15 Mar 2024 01:44:18 -0700 (PDT)
+Received: from localhost (cpc154979-craw9-2-0-cust193.16-3.cable.virginm.net. [80.193.200.194])
+        by smtp.gmail.com with ESMTPSA id m9-20020a05600c3b0900b00413ebaf0055sm5074927wms.7.2024.03.15.01.44.17
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 01:44:17 -0700 (PDT)
+From: Colin Ian King <colin.i.king@gmail.com>
+To: Mark Brown <broonie@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J . Wysocki" <rafael@kernel.org>
+Cc: kernel-janitors@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH][next] regmap: maple: Remove second semicolon
+Date: Fri, 15 Mar 2024 08:44:17 +0000
+Message-Id: <20240315084417.2427797-1-colin.i.king@gmail.com>
+X-Mailer: git-send-email 2.39.2
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fbmon: prevent division by zero in
- fb_videomode_from_videomode()
-Content-Language: en-US
-To: Roman Smirnov <r.smirnov@omp.ru>, Daniel Vetter <daniel@ffwll.ch>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Karina Yankevich <k.yankevich@omp.ru>,
- linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, lvc-project@linuxtesting.org
-References: <20240305135150.23240-1-r.smirnov@omp.ru>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <20240305135150.23240-1-r.smirnov@omp.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:yUkUDlTs45ggPXHdj7xIpPUfdry3SvhegN7JuxR+2kOrW1+Ys5Q
- YRH9/74b8L/ITmIGWrtjepoLsk86OuDgTphT2+/1eeaupotuVa9NxdNGsaJez/7d8jUyKGk
- T+3BRf7C8gixFX8jCPecj4WO8+4XyGYaruEAiyXuy6hVbatprSMBw+ON8FxWwsDpcQ636Qr
- IgEtvJ/MiX40efManxLQw==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:tJ4pLWTNd7M=;8atSOyHZrm7NCU3S6v9G3/d83N2
- TOzwFLNnP4ewNliW506wSzypHu10DCAkf3p5U7cXQJA5XJCAKt6jwvMbBexLpHlkJWki9UUYA
- woKYFVrfBXwU5Xl703/SMScP0ZXs+tklLjhewHQ0bzyx47tsWbfHktiDxCgLS8MF4UNfjwjMN
- i81BptkxkO45/HVU/48n33HM00lSleX83E4HKkM8YJSQp1QHLgxCOZOBtMc5hb21dT0n3T5/F
- EfrThsjTEFRgUP6waOsMLSxG7pG8DQ9XOmmmkLfI5i6yTC+1UJpF5Mw2dLAhfaS5Pz4wZe8qN
- ZiZ0Ot/t8n7lWCArSIFgeTPBgNYTgn+YzFW5DW6piCxzRTqr5vruhyrhcBYsLunUIMJojYAex
- ARbK19tPOBbJud+q/1Fo7BcqkL8bgpsISfxC+bgGLhAK/xM9dDRZ7vgI7GQO/xGPMQM4Svf//
- DLxpp1GjI0bZgvQVqHH2UAutcgwr1trq0pW9F4/y9xlTvUtQkqLH4MUc2KXqclNsZQORliJIn
- 0jsxV6LuclTHOmAawkVW85mA4ggq0alJehxBJwNVIevJpE1hoet/J0hhaw2hY4y8vw2wpaU4F
- XmHev1kO9gUXmHndYeOLt6h8WXvM7fY+Pg87SjdnY9EfCms4G5efF0B1M63sY+QH5Q8dJVdiE
- 0DR81p5EKxjm8aTshJCzlEacSN5RCn7ulT37OXYtrIWoNJiGegPNSfTxYD0RdJWj1QKRLPa8S
- IbRqLnyjLXyq7F3XlqyJSxJVrPjOZ6mNwaZ4k264WIzq21g34xL7TqAMu0vYo5sgRVuNTe+7M
- OtI94od5Cnn4rnHyPNpqzX/Cg5j3Wx4Q1iw4IIRnYpCco=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On 3/5/24 14:51, Roman Smirnov wrote:
-> The expression htotal * vtotal can have a zero value on
-> overflow.
+There is a statement with two semicolons. Remove the second one, it
+is redundant.
 
-I'm not sure if thos always results in zero in kernel on overflow.
-Might be architecture-depended too, but let's assume it
-can become zero, ....
+Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+---
+ drivers/base/regmap/regcache-maple.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-> It is necessary to prevent division by zero like in
-> fb_var_to_videomode().
->
-> Found by Linux Verification Center (linuxtesting.org) with Svace.
->
-> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> ---
->   V1 -> V2: Replaced the code of the first version with a check.
->
->   drivers/video/fbdev/core/fbmon.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/core=
-/fbmon.c
-> index 79e5bfbdd34c..b137590386da 100644
-> --- a/drivers/video/fbdev/core/fbmon.c
-> +++ b/drivers/video/fbdev/core/fbmon.c
-> @@ -1344,7 +1344,7 @@ int fb_videomode_from_videomode(const struct video=
-mode *vm,
->   	vtotal =3D vm->vactive + vm->vfront_porch + vm->vback_porch +
->   		 vm->vsync_len;
->   	/* prevent division by zero */
-> -	if (htotal && vtotal) {
-> +	if (htotal && vtotal && (vm->pixelclock / htotal >=3D vtotal)) {
-
-why don't you then simply check for
-	if .. ((htotal * vtotal) =3D=3D 0) ...
-instead?
-
-Helge
-
->   		fbmode->refresh =3D vm->pixelclock / (htotal * vtotal);
->   	/* a mode must have htotal and vtotal !=3D 0 or it is invalid */
->   	} else {
+diff --git a/drivers/base/regmap/regcache-maple.c b/drivers/base/regmap/regcache-maple.c
+index 41edd6a430eb..762eb2da70b5 100644
+--- a/drivers/base/regmap/regcache-maple.c
++++ b/drivers/base/regmap/regcache-maple.c
+@@ -294,7 +294,7 @@ static int regcache_maple_exit(struct regmap *map)
+ {
+ 	struct maple_tree *mt = map->cache;
+ 	MA_STATE(mas, mt, 0, UINT_MAX);
+-	unsigned int *entry;;
++	unsigned int *entry;
+ 
+ 	/* if we've already been called then just return */
+ 	if (!mt)
+-- 
+2.39.2
 
 
