@@ -1,309 +1,91 @@
-Return-Path: <linux-kernel+bounces-104151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB75187C9C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:17:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3045187C9E2
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:24:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C97E01C223E1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:17:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9149DB23569
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:24:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E337017579;
-	Fri, 15 Mar 2024 08:17:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86E4B171BB;
+	Fri, 15 Mar 2024 08:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b="BnLnF6jp"
-Received: from mail-pj1-f54.google.com (mail-pj1-f54.google.com [209.85.216.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="o+UikrMa"
+Received: from out203-205-251-60.mail.qq.com (out203-205-251-60.mail.qq.com [203.205.251.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E6C17592
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:17:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 583C317581;
+	Fri, 15 Mar 2024 08:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.60
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710490647; cv=none; b=WnHp8GpO4Q6Z7fuA3OCX3Ha30KVgKGF5iXyid8/0bWPoVrNPmuLRd02ZRNDfgKOFZuG2hM7hTE02rtFmiktl+1yuIjhh6FLHJnwb8u4GzkfRT+Hmlu9QTErPtwuufRKpNID/GMeOQmGnoLOv18JwAWyDTz0QWpnTsKAJSGiY9QM=
+	t=1710491054; cv=none; b=g5QzmcivQkp3usydCyzWzeMW6GkHfK9Q8bAvT0P8cAMiFf389bhH5F5MmqqFOBC+UUT9/nostny3DPggiENYUNNsZ6SIiBqMDyeqn0yH/dmllGBCqu3450OctFHhY09MZ4j/SYzb5LmEuTt1JyBtZ4OaABDemHIFgEMEOCvxn4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710490647; c=relaxed/simple;
-	bh=3Veip/OxCnGKCQ+Abe6TiS3hdoh9knWDIAqJQrDZQBc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Nt+jo6LcpTfnNlbQNfA7RD+RwB8UXDGub2XxoxxM2paXyXzywwsHuRtNe5PqSaJtQffJx0gPKNOI4wpWIk0xNnT1jmkc+TXqRThoVKKKYyOFBeiGpKfTNZY+bXZBQPxjXhBYOCIIvnGSPMRaS39CzVu/nmeZnKFr4fEhrEnIrUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com; spf=pass smtp.mailfrom=bytedance.com; dkim=pass (2048-bit key) header.d=bytedance.com header.i=@bytedance.com header.b=BnLnF6jp; arc=none smtp.client-ip=209.85.216.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=bytedance.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bytedance.com
-Received: by mail-pj1-f54.google.com with SMTP id 98e67ed59e1d1-29c52a90417so1337356a91.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 01:17:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=bytedance.com; s=google; t=1710490644; x=1711095444; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ux+mgvQeyHLipAJjQDCARUR07kgvWhujuDpfd9PKvNE=;
-        b=BnLnF6jpTf0M3GTFjcSWetvSvIQOQ369PIgwF3aG0VASfibFMiCxnhy8vtyqhOsjyx
-         4iCua5b7xLUAUwDsGjXK/pp/XgXWUnBG6c/CKGhyio9pC/GzFGLP2/VFJWSe+yw6/QC2
-         SLs4tMFzW1MrA6ts1TTFeTkDa7eHXNIoux2jcNUZcTWqGHBe6mTwr32HfYOFkkZcXOe2
-         z2RVX0Hq5om3SYzgJ9iR3RM98+/Fv0UMU7l6EP5buU4YPD8LDhyAIISras9vEeQp4wfc
-         3SPkE0rovMXGjiRmz7PzUbWxW1Z1HmnSlwKnklK6x/rX5v3TAVv47PoG9ldtlB1sAHTd
-         tnGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710490644; x=1711095444;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ux+mgvQeyHLipAJjQDCARUR07kgvWhujuDpfd9PKvNE=;
-        b=NDUCMhvAsydF7W3g60wQ21wO+V9gBbjWuI8l9QS21ALXqW3ChIcnfMkaZyX4wC+r46
-         ylwrOenBfnaDip4msbfPev9UIYmaaVwSTKs1bpIZSoEEtWjXSLpDPxUXiaG81nGTGKIJ
-         zjRMozO1X0LwYXweyPco8A/1z79v36ohrLcQZumUDAATsczS5RVnXFbDHnxKVDEC73Da
-         PdV3V3LeDUrAO216gKAEUpA9MTOBwDHplg/zZXdvDve+rGIPWeY96AYkg9VYevl+T+s4
-         sfSiOJEW4Ov0HsAr+Tqz7EgPH8tIr4NpWp0iJUUm7YMGOdyePqSLxzDbEKRy28vQvvhk
-         ULUQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXVq3M4tWbJXYiFKYTahxbI9PJsbExE0y7nc3h50aeeaTkifIrMS9xdPnRTgdg4qSGcXqp5kOmnjKkLnAL6gd0y+VZiArBA0Xy6ErFb
-X-Gm-Message-State: AOJu0YybAhDzOZ3CecZa3zxD8xAd12fGzrRv0AWLimJiD40lz82Mm5cD
-	CIBXMAnvLL+Fjf0ikg/X2JX75P1knX1YUyEhjM9aCmtJIGhqwxLwVXDAMquS/mlNaqk+X/Yt6j1
-	cCJUDA6hG66IZUt2PAHiZRSKEhLefUsEAur7wbw==
-X-Google-Smtp-Source: AGHT+IH6WVj2QW6HVMnPZetJyxE6GBO3ARfmDCsMA75RFQoJ7vWKBd9vtLcWlAX1Fz+oArSrbQ03zFV2IWXrG37YkmE=
-X-Received: by 2002:a17:90a:fa18:b0:29c:735:a758 with SMTP id
- cm24-20020a17090afa1800b0029c0735a758mr6401475pjb.19.1710490643623; Fri, 15
- Mar 2024 01:17:23 -0700 (PDT)
+	s=arc-20240116; t=1710491054; c=relaxed/simple;
+	bh=SJ1d6HM2ppo1Lagc/S/fy34kNmWoGtAn2E8xi+w2KLs=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References; b=KVHchaMpcy6e4iEtCtTf3AjOjQotxZW4Y9LL13qGdEuF9UL7NjZzLAyM8P3kj8ybMVP4raBGsLVxtmchFjS7MohdNaTxAAhFwB9NG2jflOawdnJfGFmzZSTLZwBg08mNFj71gRsPVIcQfa/USMhCp7DiJDLrTO3lXWCeny2PSVc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=o+UikrMa; arc=none smtp.client-ip=203.205.251.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710491044; bh=mvWpwO3HvK2uh5n8xsSS1KQWmAQgyr3MnTUg9RwoM/A=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=o+UikrMae0w11FQBZyI8BlFiNFnXQ+s4O9b9t3o6myVDXotwNWpUGT3aKWAtU8u4K
+	 NmzGNCRalBfbzYS1LsCj5risUQzH7XOTx+Lppn3X8ue0pYMPY1qNuBBD9WUzXMvwC/
+	 w9uBFh7oGvSPSGuyDTjdqRii8K9Dcgp5l1SJyw0s=
+Received: from ubuntu.vimicro.com ([121.225.188.5])
+	by newxmesmtplogicsvrsza10-0.qq.com (NewEsmtp) with SMTP
+	id 48035EBB; Fri, 15 Mar 2024 16:18:00 +0800
+X-QQ-mid: xmsmtpt1710490680tpmj0qha8
+Message-ID: <tencent_6920550C9D5A9AA1C4DC19D8ED24310DCB07@qq.com>
+X-QQ-XMAILINFO: MRw/zKT/0BpPL5R3YesptnnXUdCQxMxhl6IEFTU4EDf+TMH8jscK1hPRXlAGin
+	 IQHLgQZxh4UeDbYQEHfvyJWK9GIZTTJgTmWpbgtrzYNistqps1Zl9ypLGj5x5X/G+zen4ASijpAt
+	 hHMKfM/DeCx0VwHGlCmSuC5/gxuJgxJw3N8QklypBEC8OfpYsAZfxVWRq3nGiQf6x6TaeKzVHlKs
+	 RjYOUfUbstNyFe/wnmvu8RbUujlXMPl3aIEqqLJd706EmzvSrhkTqd5jGBzoVVa3teHUPeN6GMMT
+	 6XV+nYA280q/eZdkRC2GyJYOWcOZBysIVLc3Ks8ztV04ZJOT4OeNTGB1H9pXlEmkY97cFP12zQ7H
+	 w4LX3NKLmLiNKq8my+ZmaitAEVhNlPJix+1igUEa/WxIut5ceGgGuSz5mnuGTyxpfQfBygyx5Fk6
+	 NDH2L7JMHSwf9CZP3Glkrb2DPxFHXXkbUjLloiNKYKXCNCCdnOJ0/KFbKc+EeUbMfbirSlJ1I25b
+	 Ifezy7naHCoEeuALzvUeMAPd+X4mlOItJPf6IBbbjNwmxzyoEqhPT/7iu53hB6vaNJHuFsMc6mTu
+	 4zmLgNCZN8JrhH+Pxr+8VEOPOHAj5oBVnnRlxlECHJI/HWMzUPTd8BQFHSdcwkMnvecitB1nFp+P
+	 qQSIwb+jpUQZ9Xt8ZmRJSQKQXjO6Q6oD6puEkWW2MDXzWXT2ZY9PwN54M/i1f09s39aCsPhGId6E
+	 SzVuKCFI1UAWua/nIRNTojI7kmzaMG0IPqQkhU8fshinTr1fQ1Tu/+Jky6vZZYlnixCx7YQrcmSV
+	 VLB4ydUPofu/YONXDdamnsPEImkxw2NO8nd6i35MwPXj8p6dSCuL3OuA05C0spzTWvhCstREG+hj
+	 9QCev6NT/bh1H2i+E45xHHaMbd+sOGrdmKCGljcNka6QVtAnF29OCj9UJSEherJ0+NJ3RSip7G5X
+	 XQH30/NdmSo3d575lLlTOiY1W1ayaGpZ2HNhK6GpnMtaXirTZK7an/Asfw+xaQD43U42yr8/PTER
+	 e2K6S0YQ==
+X-QQ-XMRINFO: NI4Ajvh11aEj8Xl/2s1/T8w=
+From: xuhanwu <2433926602@qq.com>
+To: 2433926602@qq.com
+Cc: broonie@kernel.org,
+	lgirdwood@gmail.com,
+	linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	perex@perex.cz,
+	tiwai@suse.com,
+	xu.hanwu@zxelec.com
+Subject: [PATCH] ASoC: soc-pcm: add a check for unsupported commands to the soc_pcm_trigger
+Date: Fri, 15 Mar 2024 16:18:00 +0800
+X-OQ-MSGID: <20240315081800.4559-1-2433926602@qq.com>
+X-Mailer: git-send-email 2.17.1
+In-Reply-To: <tencent_8A7C0C985AE1A1975C25D8DE24010D8B2007@qq.com>
+References: <tencent_8A7C0C985AE1A1975C25D8DE24010D8B2007@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240311093526.1010158-1-dongmenglong.8@bytedance.com>
- <20240311093526.1010158-2-dongmenglong.8@bytedance.com> <CAADnVQKQPS5NcvEouH4JqZ2fKgQAC+LtcwhX9iXYoiEkF_M94Q@mail.gmail.com>
- <CALz3k9i5G5wWi+rtvHPwVLOUAXVMCiU_8QUZs87TEYgR_0wpPA@mail.gmail.com>
- <CAADnVQJ_ZCzMmT1aBsNXEBFfYNSVBdBXmLocjR0PPEWtYQrQFw@mail.gmail.com>
- <CALz3k9icPePb0c4FE67q=u1U0hrePorN9gDpQrKTR_sXbLMfDA@mail.gmail.com>
- <CAADnVQLwgw8bQ7OHBbqLhcPJ2QpxiGw3fkMFur+2cjZpM_78oA@mail.gmail.com>
- <CALz3k9g9k7fEwdTZVLhrmGoXp8CE47Q+83r-AZDXrzzuR+CjVA@mail.gmail.com>
- <CAADnVQLHpi3J6cBJ0QBgCQ2aY6fWGnVvNGdfi3W-jmoa9d1eVQ@mail.gmail.com> <ZfKY6E8xhSgzYL1I@krava>
-In-Reply-To: <ZfKY6E8xhSgzYL1I@krava>
-From: =?UTF-8?B?5qKm6b6Z6JGj?= <dongmenglong.8@bytedance.com>
-Date: Fri, 15 Mar 2024 16:17:12 +0800
-Message-ID: <CALz3k9jM0eqgw1=RKQPFpn8nk4MZRadEC3ge0kRutfvN2WVbwg@mail.gmail.com>
-Subject: Re: [External] Re: [PATCH bpf-next v2 1/9] bpf: tracing: add support
- to record and check the accessed args
-To: Jiri Olsa <olsajiri@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, Andrii Nakryiko <andrii@kernel.org>, 
-	Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Martin KaFai Lau <martin.lau@linux.dev>, Eddy Z <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
-	Alexander Gordeev <agordeev@linux.ibm.com>, Christian Borntraeger <borntraeger@linux.ibm.com>, 
-	Sven Schnelle <svens@linux.ibm.com>, "David S. Miller" <davem@davemloft.net>, 
-	David Ahern <dsahern@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, 
-	X86 ML <x86@kernel.org>, Steven Rostedt <rostedt@goodmis.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Quentin Monnet <quentin@isovalent.com>, 
-	bpf <bpf@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-riscv <linux-riscv@lists.infradead.org>, linux-s390 <linux-s390@vger.kernel.org>, 
-	Network Development <netdev@vger.kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, linux-stm32@st-md-mailman.stormreply.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024 at 2:29=E2=80=AFPM Jiri Olsa <olsajiri@gmail.com> wrot=
-e:
->
-> On Wed, Mar 13, 2024 at 05:25:35PM -0700, Alexei Starovoitov wrote:
-> > On Tue, Mar 12, 2024 at 6:53=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3 <do=
-ngmenglong.8@bytedance.com> wrote:
-> > >
-> > > On Wed, Mar 13, 2024 at 12:42=E2=80=AFAM Alexei Starovoitov
-> > > <alexei.starovoitov@gmail.com> wrote:
-> > > >
-> > > > On Mon, Mar 11, 2024 at 7:42=E2=80=AFPM =E6=A2=A6=E9=BE=99=E8=91=A3=
- <dongmenglong.8@bytedance.com> wrote:
-> > > > >
-> > > [......]
-> > > >
-> > > > I see.
-> > > > I thought you're sharing the trampoline across attachments.
-> > > > (since bpf prog is the same).
-> > >
-> > > That seems to be a good idea, which I hadn't thought before.
-> > >
-> > > > But above approach cannot possibly work with a shared trampoline.
-> > > > You need to create individual trampoline for all attachment
-> > > > and point them to single bpf prog.
-> > > >
-> > > > tbh I'm less excited about this feature now, since sharing
-> > > > the prog across different attachments is nice, but it won't scale
-> > > > to thousands of attachments.
-> > > > I assumed that there will be a single trampoline with max(argno)
-> > > > across attachments and attach/detach will scale to thousands.
-> > > >
-> > > > With individual trampoline this will work for up to a hundred
-> > > > attachments max.
-> > >
-> > > What does "a hundred attachments max" means? Can't I
-> > > trace thousands of kernel functions with a bpf program of
-> > > tracing multi-link?
-> >
-> > I mean what time does it take to attach one program
-> > to 100 fentry-s ?
-> > What is the time for 1k and for 10k ?
-> >
-> > The kprobe multi test attaches to pretty much all funcs in
-> > /sys/kernel/tracing/available_filter_functions
-> > and it's fast enough to run in test_progs on every commit in bpf CI.
-> > See get_syms() in prog_tests/kprobe_multi_test.c
-> >
-> > Can this new multi fentry do that?
-> > and at what speed?
-> > The answer will decide how applicable this api is going to be.
-> > Generating different trampolines for every attach point
-> > is an approach as well. Pls benchmark it too.
-> >
-> > > >
-> > > > Let's step back.
-> > > > What is the exact use case you're trying to solve?
-> > > > Not an artificial one as selftest in patch 9, but the real use case=
-?
-> > >
-> > > I have a tool, which is used to diagnose network problems,
-> > > and its name is "nettrace". It will trace many kernel functions, whos=
-e
-> > > function args contain "skb", like this:
-> > >
-> > > ./nettrace -p icmp
-> > > begin trace...
-> > > ***************** ffff889be8fbd500,ffff889be8fbcd00 ***************
-> > > [1272349.614564] [dev_gro_receive     ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614579] [__netif_receive_skb_core] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614585] [ip_rcv              ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614592] [ip_rcv_core         ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614599] [skb_clone           ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614616] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614629] [nft_do_chain        ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614635] [ip_rcv_finish       ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614643] [ip_route_input_slow ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614647] [fib_validate_source ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614652] [ip_local_deliver    ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614658] [nf_hook_slow        ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614663] [ip_local_deliver_finish] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614666] [icmp_rcv            ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614671] [icmp_echo           ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614675] [icmp_reply          ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614715] [consume_skb         ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614722] [packet_rcv          ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > > [1272349.614725] [consume_skb         ] ICMP: 169.254.128.15 ->
-> > > 172.27.0.6 ping request, seq: 48220
-> > >
-> > > For now, I have to create a bpf program for every kernel
-> > > function that I want to trace, which is up to 200.
-> > >
-> > > With this multi-link, I only need to create 5 bpf program,
-> > > like this:
-> > >
-> > > int BPF_PROG(trace_skb_1, struct *skb);
-> > > int BPF_PROG(trace_skb_2, u64 arg0, struct *skb);
-> > > int BPF_PROG(trace_skb_3, u64 arg0, u64 arg1, struct *skb);
-> > > int BPF_PROG(trace_skb_4, u64 arg0, u64 arg1, u64 arg2, struct *skb);
-> > > int BPF_PROG(trace_skb_5, u64 arg0, u64 arg1, u64 arg2, u64 arg3, str=
-uct *skb);
-> > >
-> > > Then, I can attach trace_skb_1 to all the kernel functions that
-> > > I want to trace and whose first arg is skb; attach trace_skb_2 to ker=
-nel
-> > > functions whose 2nd arg is skb, etc.
-> > >
-> > > Or, I can create only one bpf program and store the index
-> > > of skb to the attachment cookie, and attach this program to all
-> > > the kernel functions that I want to trace.
-> > >
-> > > This is my use case. With the multi-link, now I only have
-> > > 1 bpf program, 1 bpf link, 200 trampolines, instead of 200
-> > > bpf programs, 200 bpf link and 200 trampolines.
-> >
-> > I see. The use case makes sense to me.
-> > Andrii's retsnoop is used to do similar thing before kprobe multi was
-> > introduced.
-> >
-> > > The shared trampoline you mentioned seems to be a
-> > > wonderful idea, which can make the 200 trampolines
-> > > to one. Let me have a look, we create a trampoline and
-> > > record the max args count of all the target functions, let's
-> > > mark it as arg_count.
-> > >
-> > > During generating the trampoline, we assume that the
-> > > function args count is arg_count. During attaching, we
-> > > check the consistency of all the target functions, just like
-> > > what we do now.
-> >
-> > For one trampoline to handle all attach points we might
-> > need some arch support, but we can start simple.
-> > Make btf_func_model with MAX_BPF_FUNC_REG_ARGS
-> > by calling btf_distill_func_proto() with func=3D=3DNULL.
-> > And use that to build a trampoline.
-> >
-> > The challenge is how to use minimal number of trampolines
-> > when bpf_progA is attached for func1, func2, func3
-> > and bpf_progB is attached to func3, func4, func5.
-> > We'd still need 3 trampolines:
-> > for func[12] to call bpf_progA,
-> > for func3 to call bpf_progA and bpf_progB,
-> > for func[45] to call bpf_progB.
-> >
-> > Jiri was trying to solve it in the past. His slides from LPC:
-> > https://lpc.events/event/16/contributions/1350/attachments/1033/1983/pl=
-umbers.pdf
-> >
-> > Pls study them and his prior patchsets to avoid stepping on the same ra=
-kes.
->
-> yep, I refrained from commenting not to take you down the same path
-> I did, but if you insist.. ;-)
->
-> I managed to forgot almost all of it, but the IIRC the main pain point
-> was that at some point I had to split existing trampoline which caused
-> the whole trampolines management and error paths to become a mess
->
-> I tried to explain things in [1] changelog and the latest patchset is in =
-[0]
->
-> feel free to use/take anything, but I advice strongly against it ;-)
-> please let me know if I can help
+Dear broonie
 
-I have to say that I have not gone far enough to encounter
-this problem, and I didn't dig enough to be aware of the
-complexity.
+Issue: Before and after Linux version 6.2, when the cmd is 
+SNDRV_PCM_TRIGGER_DRAIN, calling the function soc_pcm_trigger results 
+in different return values.
+Through your guidance, I've realized that the code logic has been adjusted. 
+I will further deepen my study of the code. Thank you for your guidance.
 
-I suspect that I can't overcome this challenge. The only thing that
-I thought when I hear about the "shared trampoline" is to fallback
-and not use the shared trampoline for the kernel functions who
-already have a trampoline.
+Thank you for your help.
+xuhanwu
 
-Anyway, let's have a try on it, based on your research.
-
-Thanks!
-Menglong Dong
-
->
-> jirka
->
->
-> [0] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/log/?h=
-=3Dbpf/batch
-> [1] https://git.kernel.org/pub/scm/linux/kernel/git/jolsa/perf.git/commit=
-/?h=3Dbpf/batch&id=3D52a1d4acdf55df41e99ca2cea51865e6821036ce
 
