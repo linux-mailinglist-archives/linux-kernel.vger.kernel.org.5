@@ -1,221 +1,119 @@
-Return-Path: <linux-kernel+bounces-104370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50B0187CCEF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:49:04 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5B18587CCEB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:47:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF9B2282D73
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:49:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1323E1F21FA1
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:47:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A9D911BDEB;
-	Fri, 15 Mar 2024 11:48:57 +0000 (UTC)
-Received: from szxga06-in.huawei.com (szxga06-in.huawei.com [45.249.212.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD5C1BF5D;
+	Fri, 15 Mar 2024 11:47:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jpUHnxUF"
+Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 412851BC2C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:48:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.32
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FB819BCA;
+	Fri, 15 Mar 2024 11:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710503337; cv=none; b=LTeOxBHd8f4T+YuBm7vhPtevhq0L/u/DsXjVaNcM++AitB/R8O2+X7Z8f4jOSs2iw1FoyeQ6VTuXsF4fEosRyiDLXGkLp1Ug/bCOfw1zIjlvxmuTZyVOVRrKQBnhBQFAVQekSjTZiikRwkds1LM3TrUjFWYCJZdWw9bvpu50WkA=
+	t=1710503263; cv=none; b=rcIQ8YuL2gyeXTP+zDZSz5HMw6D/OAC5dnA+/0PQjH21I/sHdsUjQcOYy2IUKEA1HbNXkFbSVeFYdGsf+0+k4QKnGip5F1HnrxYQwAvofy6M62Yfg5nikseHgrI6jhqhTNZwME1brJkSdGrYVVTa86nHo1zLjLAmfD3cp9jAIsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710503337; c=relaxed/simple;
-	bh=7rNJOrm1QFjVhtTF12lZNiWHY0qmF8UDaoRfwz45z+o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=gEhG7l/S8j7y1pRwjKdEy/Ri/s5lytW5YGP8PWSI/ZLCdODRqiWHKGsKGSSyhYsJihGc+Ynz2JZhXjl/0iFHXSHRgkssCMBfMkN0tTMflrRwTufL9iW+BpmP1udU2cC+NChEasYBmhVef7BRPdJlH2DAJXz7fGuwaP2ZZawfVtQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga06-in.huawei.com (SkyGuard) with ESMTP id 4Tx2Yt4m8rz1vwMH;
-	Fri, 15 Mar 2024 19:48:02 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id C2F861A0172;
-	Fri, 15 Mar 2024 19:48:46 +0800 (CST)
-Received: from [10.67.109.211] (10.67.109.211) by
- dggpemd100004.china.huawei.com (7.185.36.20) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Fri, 15 Mar 2024 19:48:46 +0800
-Message-ID: <b3e3f664-f8ad-41d7-b8d5-3c83818ff489@huawei.com>
-Date: Fri, 15 Mar 2024 19:48:46 +0800
+	s=arc-20240116; t=1710503263; c=relaxed/simple;
+	bh=AswBXoqd1Nll3PUsMhni9UdwEee82Lmsp5/ibAz0M40=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AWHMILonN3mF0DZ7MS4gSLs3sAk+65Mku00s48wnJRQo/xhmtIYe6+zm3NYg9RZNdAsc5v9GGPJ/Mh3vhGHsVhrMxCkO04V8r/dAyz5d5UOcVBKrozTuZVCVOb7Br5eW0FofTmivFCllrgiqp//xtqL41pLIgs+AzTdaVIaGXro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jpUHnxUF; arc=none smtp.client-ip=209.85.221.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e76d653b5so1772916f8f.3;
+        Fri, 15 Mar 2024 04:47:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710503260; x=1711108060; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=QBlUH6VyFh2xDF9O9EaMafykW3lDWFVu4skyiusQ/sk=;
+        b=jpUHnxUFK12f0BTl5gAr1zZmhGUG/Av7drZXHs5RH8p3t9v/67k8+qL0tXJ2lCrVBB
+         nLqjZlU500dUBuNHpF48FMzBl0voW1kiRDJXZ3rEyiq3G2fJ+CA5Vdy8QO2HENLdRrfc
+         XF0F55OPVfHMg4BXK3RkQYTdXcb5rX6S7SIIWTkLaTanHPozaDiwEzFknXTldrAyrz+r
+         xgPk4cdCm+4u3ClPB811+iENXgDXA4nIvLAha4M4nbJ8N+5FPTUaL3F1KQLfmDtpq1xW
+         MkRxnl+VDu3mhaZL7wb7WguGORBsYpYzcmH4tN1yUTtNBxVpC5iXMWBvFLAYdpdAwqay
+         SJVA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710503260; x=1711108060;
+        h=mime-version:user-agent:content-transfer-encoding:references
+         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QBlUH6VyFh2xDF9O9EaMafykW3lDWFVu4skyiusQ/sk=;
+        b=m3HT0OVDFiJreUo+ji7NFXX8AvEg3nNzKDO3H+uzdME/T3v2OBS6jpRd1/QPFeaF34
+         OrblqLLN6EDXZs7BlVY2n+NtRG8f49vjj24xwCOQ7z8Gi6BHbUER9owHGPdRRSJ1TdgT
+         ITkWd/uE8pFM6pZYePB1sy+6zKaLfMdxgjD5pL2crs0Ubij2JfNDg9phXJd3J0NAlu88
+         ZkpS2unStGVrUtjVJwHf6dTdT6EH+fpX8JptCYYKC8ApCmzz0L/ewS/Y0uNecVhD9ye7
+         l0Qcv792wH/k3FkAifClgTO31G3OzK3/iPRGuHPAb/AixtXm7HAtSzy6f+3scZW0gcE7
+         Jr2A==
+X-Forwarded-Encrypted: i=1; AJvYcCUsCpaUdUfH/kGcq1ewXmNEDnbuvFVhxx5G/kLX62ytVcoFj89myuBcXAPYaVC+EzCY5hKAOQa6RnU3Bz+C5nh5pcgsLrzyXXs1zIs7T43HzpFATA5Mvea/gfdRnrJqbGeop7q32jr/
+X-Gm-Message-State: AOJu0YxuYT58NMX53r1Z60mg4Ps8I02ihyiB3f90CZXQm0vIXuflQz4b
+	+qn0NtywxS5Rc5+zkmjpfhgupPnK/PzFzmuRqwexbikSz6WiKGQ3
+X-Google-Smtp-Source: AGHT+IHi84fX2o6Jp6CHUeDay1Tto/v43V7AWtP3llWsnohmF+j5EzC//EqLEZbyWp1SgH73pk7jFg==
+X-Received: by 2002:adf:fe89:0:b0:33e:73e8:c1e1 with SMTP id l9-20020adffe89000000b0033e73e8c1e1mr3569085wrr.18.1710503260207;
+        Fri, 15 Mar 2024 04:47:40 -0700 (PDT)
+Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
+        by smtp.gmail.com with ESMTPSA id f22-20020a5d58f6000000b0033e7a204dc7sm3002446wrd.32.2024.03.15.04.47.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 04:47:39 -0700 (PDT)
+Message-ID: <717ad48efa7ffc6cc1960be05558e9cbf0b6c4c8.camel@gmail.com>
+Subject: Re: [PATCH][next] iio: accel: adxl367: Remove second semicolon
+From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
+To: Colin Ian King <colin.i.king@gmail.com>, Lars-Peter Clausen
+ <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, Cosmin
+ Tanislav <cosmin.tanislav@analog.com>, Jonathan Cameron <jic23@kernel.org>,
+  linux-iio@vger.kernel.org
+Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Fri, 15 Mar 2024 12:51:07 +0100
+In-Reply-To: <20240315091436.2430227-1-colin.i.king@gmail.com>
+References: <20240315091436.2430227-1-colin.i.king@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.4 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH-next v3] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Content-Language: en-US
-To: Ard Biesheuvel <ardb@kernel.org>
-CC: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<arnd@arndb.de>, <geert@linux-m68k.org>, <linux@armlinux.org.uk>,
-	<afd@ti.com>, <akpm@linux-foundation.org>, <kirill.shutemov@linux.intel.com>,
-	<geert+renesas@glider.be>, <corbet@lwn.net>, <rppt@kernel.org>,
-	<robh@kernel.org>, <tglx@linutronix.de>, <linus.walleij@linaro.org>,
-	<maskray@google.com>
-References: <20240315063154.696633-1-liuyuntao12@huawei.com>
- <CAMj1kXH+FaddHV5--kqB_wVgw_M682MvchPB1BoCuDuA6vVyvg@mail.gmail.com>
- <d7a1996f-f558-4cea-b8ca-eb071d02c6d4@huawei.com>
- <CAMj1kXHP-M7hTsCmorgzvDiPB1jRXHciJrXjJR82zmkxUTD-5Q@mail.gmail.com>
-From: "liuyuntao (F)" <liuyuntao12@huawei.com>
-In-Reply-To: <CAMj1kXHP-M7hTsCmorgzvDiPB1jRXHciJrXjJR82zmkxUTD-5Q@mail.gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- dggpemd100004.china.huawei.com (7.185.36.20)
 
+On Fri, 2024-03-15 at 09:14 +0000, Colin Ian King wrote:
+> There is a statement with two semicolons. Remove the second one, it
+> is redundant.
+>=20
+> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
+> ---
 
+Reviewed-by: Nuno Sa <nuno.sa@analog.com>
 
-On 2024/3/15 18:46, Ard Biesheuvel wrote:
-> On Fri, 15 Mar 2024 at 11:23, liuyuntao (F) <liuyuntao12@huawei.com> wrote:
->>
->>
->>
->> On 2024/3/15 16:06, Ard Biesheuvel wrote:
->>> On Fri, 15 Mar 2024 at 07:37, Yuntao Liu <liuyuntao12@huawei.com> wrote:
->>>>
->>>> The current arm32 architecture does not yet support the
->>>> HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. arm32 is widely used in
->>>> embedded scenarios, and enabling this feature would be beneficial for
->>>> reducing the size of the kernel image.
->>>>
->>>> In order to make this work, we keep the necessary tables by annotating
->>>> them with KEEP, also it requires further changes to linker script to KEEP
->>>> some tables and wildcard compiler generated sections into the right place.
->>>> When using ld.lld for linking, the KEEP keyword is not recognized within
->>>> the OVERLAY command, Ard proposed a concise method to solve this problem.
->>>>
->>>> It boots normally with defconfig, vexpress_defconfig and tinyconfig.
->>>> The size comparison of zImage is as follows:
->>>> defconfig       vexpress_defconfig      tinyconfig
->>>> 5137712         5138024                 424192          no dce
->>>> 5032560         4997824                 298384          dce
->>>> 2.0%            2.7%                    29.7%           shrink
->>>>
->>>> When using smaller config file, there is a significant reduction in the
->>>> size of the zImage.
->>>>
->>>> We also tested this patch on a commercially available single-board
->>>> computer, and the comparison is as follows:
->>>> a15eb_config
->>>> 2161384         no dce
->>>> 2092240         dce
->>>> 3.2%            shrink
->>>>
->>>> The zImage size has been reduced by approximately 3.2%, which is 70KB on
->>>> 2.1M.
->>>>
->>>> Signed-off-by: Yuntao Liu <liuyuntao12@huawei.com>
->>>> Tested-by: Arnd Bergmann <arnd@arndb.de>
->>>> Reviewed-by: Arnd Bergmann <arnd@arndb.de>
->>>> ---
->>>> v3:
->>>>      - A better way to KEEP .vectors section for ld.lld linking.
->>>>
->>>> v2:
->>>>      - Support config XIP_KERNEL.
->>>>      - Support LLVM compilation.
->>>>      - https://lore.kernel.org/all/20240307151231.654025-1-liuyuntao12@huawei.com/
->>>>
->>>> v1: https://lore.kernel.org/all/20240220081527.23408-1-liuyuntao12@huawei.com/
->>>> ---
->>>>    arch/arm/Kconfig                       | 1 +
->>>>    arch/arm/boot/compressed/vmlinux.lds.S | 6 +++++-
->>>>    arch/arm/include/asm/vmlinux.lds.h     | 2 +-
->>>>    arch/arm/kernel/entry-armv.S           | 3 +++
->>>>    arch/arm/kernel/vmlinux-xip.lds.S      | 4 ++--
->>>>    arch/arm/kernel/vmlinux.lds.S          | 6 +++---
->>>>    6 files changed, 15 insertions(+), 7 deletions(-)
->>>>
->>>> diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
->>>> index b14aed3a17ab..45f25f6e7a62 100644
->>>> --- a/arch/arm/Kconfig
->>>> +++ b/arch/arm/Kconfig
->>>> @@ -114,6 +114,7 @@ config ARM
->>>>           select HAVE_KERNEL_XZ
->>>>           select HAVE_KPROBES if !XIP_KERNEL && !CPU_ENDIAN_BE32 && !CPU_V7M
->>>>           select HAVE_KRETPROBES if HAVE_KPROBES
->>>> +       select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
->>>>           select HAVE_MOD_ARCH_SPECIFIC
->>>>           select HAVE_NMI
->>>>           select HAVE_OPTPROBES if !THUMB2_KERNEL
->>>> diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
->>>> index 3fcb3e62dc56..affd30714f01 100644
->>>> --- a/arch/arm/boot/compressed/vmlinux.lds.S
->>>> +++ b/arch/arm/boot/compressed/vmlinux.lds.S
->>>> @@ -89,7 +89,11 @@ SECTIONS
->>>>         * The EFI stub always executes from RAM, and runs strictly before the
->>>>         * decompressor, so we can make an exception for its r/w data, and keep it
->>>>         */
->>>> +#ifdef CONFIG_LD_DEAD_CODE_DATA_ELIMINATION
->>>> +    *(.data.* .bss.*)
->>>> +#else
->>>>        *(.data.efistub .bss.efistub)
->>>> +#endif
->>>>        __pecoff_data_end = .;
->>>>
->>>
->>> This is still not right.
->>>
->>> Can you just add -fno-data-sections to cflags-$(CONFIG_ARM) in
->>> drivers/firmware/efi/libstub/Makefile?
->>>
->>
->> I rebuild kernel in such way:
->> --- a/drivers/firmware/efi/libstub/Makefile
->> +++ b/drivers/firmware/efi/libstub/Makefile
->> @@ -28,6 +28,7 @@ cflags-$(CONFIG_ARM)          += -DEFI_HAVE_STRLEN
->> -DEFI_HAVE_STRNLEN \
->>                                      -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
->>                                      -DEFI_HAVE_STRCMP -fno-builtin -fpic \
->>                                      $(call cc-option,-mno-single-pic-base)
->> +cflags-$(CONFIG_ARM)           += -fno-data-sections
->>    cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
->>    cflags-$(CONFIG_LOONGARCH)     += -fpi
->> but I am still encountering this error:
->> arm-linux-gnueabi-ld: warning: orphan section `.data.efi_loglevel' from
->> `drivers/firmware/efi/libstub/printk.stub.o' being placed in section
->> `.data.efi_loglevel'
->> arm-linux-gnueabi-ld: warning: orphan section `.data.screen_info_guid'
->> from `drivers/firmware/efi/libstub/screen_info.stub.o' being placed in
->> section `.data.screen_info_guid'
->> arm-linux-gnueabi-ld: warning: orphan section `.data.cpu_state_guid'
->> from `drivers/firmware/efi/libstub/arm32-stub.stub.o' being placed in
->> section `.data.cpu_state_guid'
->> arm-linux-gnueabi-ld: warning: orphan section `.data.efi_nokaslr' from
->> `drivers/firmware/efi/libstub/efi-stub-helper.stub.o' being placed in
->> section `.data.efi_nokaslr'
->> arm-linux-gnueabi-ld: error: zImage file size is incorrect
->>
->> I am puzzled because I could not find any option named
->> -fno-data-sections for GCC.
->>
-> 
-> How about
-> 
-> --- a/drivers/firmware/efi/libstub/Makefile
-> +++ b/drivers/firmware/efi/libstub/Makefile
-> @@ -28,6 +28,7 @@
->                                     -DEFI_HAVE_MEMCHR -DEFI_HAVE_STRRCHR \
->                                     -DEFI_HAVE_STRCMP -fno-builtin -fpic \
->                                     $(call cc-option,-mno-single-pic-base)
-> +cflags-$(CONFIG_ARM)           := $(filter-out -fdata-sections, $(CFLAGS-y))
->   cflags-$(CONFIG_RISCV)         += -fpic -DNO_ALTERNATIVE -mno-relax
->   cflags-$(CONFIG_LOONGARCH)     += -fpie
-
-Another error:
-cannot initialize array of ‘short unsigned int’ from a string literal 
-with type array of ‘unsigned int’
-  17 | static const efi_char16_t shim_MokSBState_name[] = L"MokSBStateRT";
-
-I checked the cflags-y variable, and the -fshort-wchar option does 
-exist.cflags-y = -std=gnu11 -fshort-wchar -funsigned-char -fno-common 
-   -fno-PIE -fno-strict-aliasing ...
-
-
-
+> =C2=A0drivers/iio/accel/adxl367.c | 2 +-
+> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/iio/accel/adxl367.c b/drivers/iio/accel/adxl367.c
+> index 210228affb80..5cf4828a5eb5 100644
+> --- a/drivers/iio/accel/adxl367.c
+> +++ b/drivers/iio/accel/adxl367.c
+> @@ -621,7 +621,7 @@ static int _adxl367_set_odr(struct adxl367_state *st,=
+ enum
+> adxl367_odr odr)
+> =C2=A0static int adxl367_set_odr(struct iio_dev *indio_dev, enum adxl367_=
+odr odr)
+> =C2=A0{
+> =C2=A0	iio_device_claim_direct_scoped(return -EBUSY, indio_dev) {
+> -		struct adxl367_state *st =3D iio_priv(indio_dev);;
+> +		struct adxl367_state *st =3D iio_priv(indio_dev);
+> =C2=A0		int ret;
+> =C2=A0
+> =C2=A0		guard(mutex)(&st->lock);
 
 
