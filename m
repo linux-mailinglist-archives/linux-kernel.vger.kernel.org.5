@@ -1,87 +1,70 @@
-Return-Path: <linux-kernel+bounces-104449-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104450-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 44FFF87CE0A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:23:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E72E87CE0F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:25:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFBD61F21BF7
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:23:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3BECD281A9C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:25:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71942286A6;
-	Fri, 15 Mar 2024 13:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6D4528E05;
+	Fri, 15 Mar 2024 13:24:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b="PAw1XvAg"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="PG0ZuEFQ"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4A1825613
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:22:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 484082577C;
+	Fri, 15 Mar 2024 13:24:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710508977; cv=none; b=B1K3AfABo8FD0IMxnUMaVH4cDQbE/7RkYAVfzhghWXfwuQ4XE8XFha+c0v+dcqG1GnGLrVH6fD8WNXZceR3F1cZZuG6vUSNdjdJaXvSPT2OuU8QkxdGG81JgdRp9sF1oClz/HtQZQb8nopiymDTlfGoZeKs3tKtdPoJMwy4ABpw=
+	t=1710509096; cv=none; b=AXtqwJMX9RcVHS1xC5yFsdpNi5SNK28zvWaUovbcjd6hs6+lVRoyKFOQxqVkRpQESGV0Ffr1rPUXL/Licv6/LghCgOYe6vy7UPbeI5IHHkePI83Uvbt6NKn+tbSaeYXC8YaO2R0ymqnEWT1R0c7bHXsfcgGX88YxXmRWiTW8ta0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710508977; c=relaxed/simple;
-	bh=ncOu9PjHTBYZwOVfZ7jZrW41AsoJ6GPzUDAM7PL1k1Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=bT5xDy7ibU9TRky/8EuSD3KR++Ud/ZDFJ1ztaQl/gycl3oYqeTg4ojYLvg+2Y25okZ4R5BIgHTRRhynZV3uQpsKlAduZ5ILw/jpyYS80o/V11pFug8tcRYHecpoAYUz3lbWUC36x4eppIvucfZ5ZDhbcsTpJVKQayTQ35jpKWWM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us; spf=none smtp.mailfrom=resnulli.us; dkim=pass (2048-bit key) header.d=resnulli-us.20230601.gappssmtp.com header.i=@resnulli-us.20230601.gappssmtp.com header.b=PAw1XvAg; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=resnulli.us
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=resnulli.us
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33e8f906f3dso1683383f8f.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 06:22:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=resnulli-us.20230601.gappssmtp.com; s=20230601; t=1710508973; x=1711113773; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=ky6vAjI9f0v11GIeHx/FRiwL3E84H7dHD+VaFVnUoDc=;
-        b=PAw1XvAg3CcfAgMfyTBrcHIF/sADQLL/nuyiLv9KizengcNTCOaY/W+OS81b+/of71
-         5cU7o0HZt1+jnXSim70UGiG50yC8PlbGu+W0sA5cZ7FKEr61udWDJzzCfR2JhFf+FZ7Z
-         F2sisbpLkk/frVG8t4HMbDLrd1aJIUr5ehwuv19RFu4/lFr6tmZt3a4tIGVsJYz/AJf+
-         8ZXljbezT/NgV049T/mQ3llHLMNMr7xVbnxTQsOq3gYROLF84x9O4UDkQbfTqKMk10AA
-         FcJDWapFbWk4HZ3j+pbRzdmS1ISx4aBNgafK4Rcm++PfYRYITllvVr1lmMUEgDg98tPh
-         DDXw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710508973; x=1711113773;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ky6vAjI9f0v11GIeHx/FRiwL3E84H7dHD+VaFVnUoDc=;
-        b=OOoZReHDUO948zr0I5/jRLr3zy8ixWamfgWtbJwS/mUHVyNrG4mYYNuQLDVSAQE2xC
-         8I7MVqFHWlxLXg0IWKYPpjcR1twR0Dw2xgW4/R6H6FAYNRtnF5qTiTYEvO4pDmX2WA7q
-         fOa0bmi1YM1GNPNeFpiFzRq2czRMJ+Xz+2HraQq4TI4F25sSBI3qD3DrLSqD0DenskT9
-         pX5NorMIXrV70aD6D/O5vdvHLmhlqaEQ/ZzTb2NmXea6Qpjz3ZJiptDD30QanMmNCqyq
-         CucV8z2/qOfdDuFLJI3UkPnAmccQ9pY9X/iiaHPh3WVRChOf7HSzwvY0LtN0e7wThfjn
-         m4JQ==
-X-Gm-Message-State: AOJu0Yy+WkxK9zadFZkf13doxPB6K/Xc/MwmZxkzp3Nefm0RF9nNAslZ
-	vBuIbzFU5A5U6rdxmbFAUFWzfKkByEfBf+5PxCx6fP3qV9BF96JatzZhceSMD3g4krnatEKgFQs
-	2
-X-Google-Smtp-Source: AGHT+IFJIfDzLBZHYFFv5q+DtD8ZNb3FNmX0Ys0zfHXnAB38q/hnFQ4UzJJsGVGLhBIPMsCjUGT1kA==
-X-Received: by 2002:adf:f105:0:b0:33e:8aab:fde7 with SMTP id r5-20020adff105000000b0033e8aabfde7mr2174237wro.28.1710508972677;
-        Fri, 15 Mar 2024 06:22:52 -0700 (PDT)
-Received: from localhost ([193.47.165.251])
-        by smtp.gmail.com with ESMTPSA id p6-20020adfcc86000000b0033ec072a491sm3196443wrj.35.2024.03.15.06.22.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 06:22:52 -0700 (PDT)
-From: Jiri Pirko <jiri@resnulli.us>
-To: linux-kernel@vger.kernel.org
-Cc: linux-mm@kvack.org,
-	cl@linux.com,
-	penberg@kernel.org,
-	rientjes@google.com,
-	iamjoonsoo.kim@lge.com,
-	akpm@linux-foundation.org,
-	vbabka@suse.cz,
-	roman.gushchin@linux.dev,
-	42.hyeyoo@gmail.com,
-	peterz@infradead.org,
-	mingo@kernel.org,
-	danielj@nvidia.com
-Subject: [patch RFC] mm/slab: introduce KZALLOC_FREE() cleanup-ed allocation macro
-Date: Fri, 15 Mar 2024 14:22:49 +0100
-Message-ID: <20240315132249.2515468-1-jiri@resnulli.us>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710509096; c=relaxed/simple;
+	bh=3OvIJgX2Z3ssQlYadNpDLe9VAvQdGUrGfsyDarOqmng=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=L/4P/swi+NLQoci1bC1H8Msy7wLbvce/EokvTARhdAkv3iMlj5vOsd2Au7Cs9GyOnrAN0RONXlxNk6v2m6RqJkx1xsfq+dPjLaBUlim+AqDcE9vpexKtzfMe131wIP326cK2bBuuwpeWuI1BwmPh9MovVYJtRHzeryGz3hsDZG4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=PG0ZuEFQ; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42FCjHeJ017733;
+	Fri, 15 Mar 2024 13:24:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=tT8B/kd
+	UHkC46V7YhLl5lhQXDDvT9Jmv/Vgr4h24VN0=; b=PG0ZuEFQSlRUNOsMygaGEbG
+	31ibMrDsFBSz16LXP/ql2wFcS2upE6ZC+po89zAef6qXuOOXbEkXoDHNPIJxCpsA
+	/W2d/NOLxdbtw0NR1OJb6tg4xw0Ntr3SvpywW1ysf/Xk4fGF1W5U0/7U42eItQuG
+	xCT/OVwN4Pp/CTwwPg1ashjw+fnYoDnAS/Xxd2R/5igQzTGOV+KPAd8Y0jUzbFsQ
+	qzG/uqI8Axyzd3K0UyYP2dktkW7YOEIopEHie7w4XScyaIOyhGmyod7L9lGB+R99
+	n2jbVExPvJyhMYlk2jzz3b0BbOicftAdID7pBMRqSdKfPlX7Slvo/Ja0Vqdaheg=
+	=
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wv9yq987p-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Mar 2024 13:24:40 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42FDOdwT022423
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Fri, 15 Mar 2024 13:24:39 GMT
+Received: from hu-rjendra-blr.qualcomm.com (10.80.80.8) by
+ nalasex01a.na.qualcomm.com (10.47.209.196) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Fri, 15 Mar 2024 06:24:36 -0700
+From: Rajendra Nayak <quic_rjendra@quicinc.com>
+To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
+CC: <abel.vesa@linaro.org>, <quic_sibis@quicinc.com>,
+        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>,
+        Rajendra Nayak <quic_rjendra@quicinc.com>
+Subject: [PATCH] arm64: dts: qcom: Fix the compatible for cluster idle states
+Date: Fri, 15 Mar 2024 18:54:23 +0530
+Message-ID: <20240315132423.2422484-1-quic_rjendra@quicinc.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -89,53 +72,54 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: SehvGgjt0_tc9Hh5mjLgjGHbwB6eM-iw
+X-Proofpoint-GUID: SehvGgjt0_tc9Hh5mjLgjGHbwB6eM-iw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-14_13,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 adultscore=0 spamscore=0 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 impostorscore=0 mlxlogscore=695 clxscore=1011 phishscore=0
+ mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403150108
 
-From: Jiri Pirko <jiri@nvidia.com>
+The compatible's for the cluster/domain idle states of x1e80100
+are wrong, fix it.
 
-With introduction of __free() macro using cleanup infrastructure, it
-will very likely become quite common to see following pattern:
-	type *var __free(kfree) = kzalloc(sizeof(*var), GFP_KERNEL);
-
-To follow the CLASS() flow from cleanup.h, introduce a simple macro
-KZALLOC_FREE() to wrap this over and allow the same flow.
-
-Show an example usage in gpio-sim driver.
-
-Signed-off-by: Jiri Pirko <jiri@nvidia.com>
+Fixes: af16b00578a7 ("arm64: dts: qcom: Add base X1E80100 dtsi and the QCP dts")
+Signed-off-by: Rajendra Nayak <quic_rjendra@quicinc.com>
 ---
- drivers/gpio/gpio-sim.c | 3 +--
- include/linux/slab.h    | 3 +++
- 2 files changed, 4 insertions(+), 2 deletions(-)
+ arch/arm64/boot/dts/qcom/x1e80100.dtsi | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
-diff --git a/drivers/gpio/gpio-sim.c b/drivers/gpio/gpio-sim.c
-index c4106e37e6db..997237b3d80c 100644
---- a/drivers/gpio/gpio-sim.c
-+++ b/drivers/gpio/gpio-sim.c
-@@ -1496,8 +1496,7 @@ gpio_sim_config_make_device_group(struct config_group *group, const char *name)
- {
- 	int id;
+diff --git a/arch/arm64/boot/dts/qcom/x1e80100.dtsi b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+index 8e517f76189e..6b40082bac68 100644
+--- a/arch/arm64/boot/dts/qcom/x1e80100.dtsi
++++ b/arch/arm64/boot/dts/qcom/x1e80100.dtsi
+@@ -284,7 +284,7 @@ CLUSTER_C4: cpu-sleep-0 {
  
--	struct gpio_sim_device *dev __free(kfree) = kzalloc(sizeof(*dev),
--							    GFP_KERNEL);
-+	KZALLOC_FREE(struct gpio_sim_device *, dev, GFP_KERNEL);
- 	if (!dev)
- 		return ERR_PTR(-ENOMEM);
+ 		domain-idle-states {
+ 			CLUSTER_CL4: cluster-sleep-0 {
+-				compatible = "arm,idle-state";
++				compatible = "domain-idle-state";
+ 				idle-state-name = "l2-ret";
+ 				arm,psci-suspend-param = <0x01000044>;
+ 				entry-latency-us = <350>;
+@@ -293,7 +293,7 @@ CLUSTER_CL4: cluster-sleep-0 {
+ 			};
  
-diff --git a/include/linux/slab.h b/include/linux/slab.h
-index b5f5ee8308d0..baee6acd58d3 100644
---- a/include/linux/slab.h
-+++ b/include/linux/slab.h
-@@ -711,6 +711,9 @@ static inline __alloc_size(1) void *kzalloc(size_t size, gfp_t flags)
- 	return kmalloc(size, flags | __GFP_ZERO);
- }
- 
-+#define KZALLOC_FREE(_type, var, _gfp_t)				\
-+	_type var __free(kfree) = kzalloc(sizeof(*var), _gfp_t)
-+
- /**
-  * kzalloc_node - allocate zeroed memory from a particular memory node.
-  * @size: how many bytes of memory are required.
+ 			CLUSTER_CL5: cluster-sleep-1 {
+-				compatible = "arm,idle-state";
++				compatible = "domain-idle-state";
+ 				idle-state-name = "ret-pll-off";
+ 				arm,psci-suspend-param = <0x01000054>;
+ 				entry-latency-us = <2200>;
 -- 
-2.44.0
+2.34.1
 
 
