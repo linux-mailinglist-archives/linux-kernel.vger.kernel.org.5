@@ -1,216 +1,180 @@
-Return-Path: <linux-kernel+bounces-104557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B56CC87CFD3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:08:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EC9C87CFD8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E78441C228C3
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:08:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C030A1C22934
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 849F93D0AB;
-	Fri, 15 Mar 2024 15:08:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919BB3CF75;
+	Fri, 15 Mar 2024 15:09:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Zd0qOD8J"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="vO5BaKxl"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F08BA3CF4B
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:08:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB213BBCD
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710515298; cv=none; b=LTbihl3DLZbgF1dyAxgXtYBnWS9JD9I0FosKdRO1s/dlFUIa8WJ5q6E2faU5Ph+xnArP+sXT2A+3KzSPkz3lWLFgSz+21sDZwmu571ETqQzKegWhVZFcGAUmRc0CNbZYWWlDR03xjIkRPh3ceTaIzYGZjTKQpSQCZmdWmEado4A=
+	t=1710515381; cv=none; b=CMXmk3XRHKUP40wFsrATSTzv7CdS2jv+dkZjZUJbe75vyb/qC4cU1IsA3wEBq/0j32BqmW9HbBV9cxk0bm1RTTHn53fM2PZWuaqk50R2zUUrFBeGm2zTZga5C5ZnQBvXlucAJVISpp0BYiwyvpzVzuuO1Hj048ZYDEohEDYtAlo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710515298; c=relaxed/simple;
-	bh=1p+2qEhn/qrjk/VPCWJTzuUwNlO3E+p95QBrqAO/oNE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=mxwVY8Qr+1bDnPNIIO/0czab9//2UqVrtsnTAdHXxpJAsSnMqyBZFW3WeJ5v7i5cPN/16aFCHbvkm1y8DxVabEOcf1BToywce3aE58mDpwujF37Kj7OnOpAPiyUL5O7KKZLC4CqQ99IcVBeA8b/GKgELJcr/WrYAoNCyt6NRheQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Zd0qOD8J; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42f0df98361so10145901cf.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:08:16 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710515294; x=1711120094; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GSZdYN59DhOS8QyekeyWoGZ8e/VbiOIdQPzuTpNSPUk=;
-        b=Zd0qOD8J4wpSz9bHCqS+4f5svRDAaWKkvBxOT8InfDa92eoDMLCYQGW78MKyBm3Czp
-         pBX6uphgmFEFW7yRj17oQ+wqDqdt65HIfaELTgQMOmXNIfYy72w4v+qsEieDM1uq9yIY
-         ztPqDYNb1cBJuMOXc3mFwMnO7DhkWJSfZUF1I=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710515294; x=1711120094;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GSZdYN59DhOS8QyekeyWoGZ8e/VbiOIdQPzuTpNSPUk=;
-        b=TQss59dr4gr8yuDBOw+hhqnzkMbZTEICrEtOSkZT3Je4vuYzReeYv3BS4151qbLBcR
-         vPOBR3h/DhbIkoJm1McUChhzHaOBl4BnllaoICu8VQ/YeKIvfFCqfio7HTB+9enS6iUI
-         LYNeAelzVSjCsdse3TPuTPMCJsT4IvsEntIZBFDm5s+u0RQkQmXgHvJx5xdyV6wt43wN
-         yZQkaQMxJGipJbf+f8Jnx76YSCFZ2dheFgSAPFUZIjsGmLhvefyFPSL88y4F+t25s3xA
-         Bfc40f1ufPnOB7khTD+pzFRPQy1SGjUIVaSnNeP02DvnWDJUljsCGf4JFVWXc29wZ/6M
-         HL6w==
-X-Forwarded-Encrypted: i=1; AJvYcCVcSv81U33CVHEaEzGFgVA+auCydjrp35kbQ8atky58cZFpT0zQcmOLGc+z68GRFg+uQmHJmFeCP7wqlad12u5pFxBW9Np5yQOoOKtp
-X-Gm-Message-State: AOJu0YxE2a/4oUncFbV2a5ai/aOtpVPQG8xBAsWxwU5om+P7pTH7SJJv
-	ooZ96lSHt+OoLER0MNL/N8J21M48itBEWj54XnEoAmE5+Qb8BxOyoYPK1h4LyAcm8qXUkNxaz/E
-	=
-X-Google-Smtp-Source: AGHT+IEw5CRuoUb+V/g8jW30fdJXDmq81xlHhBvEddIj5rRd4ZIknqw74/rqD4DnPk3vV6H60fW5KQ==
-X-Received: by 2002:a05:622a:486:b0:42e:f580:39fa with SMTP id p6-20020a05622a048600b0042ef58039famr5885718qtx.56.1710515293964;
-        Fri, 15 Mar 2024 08:08:13 -0700 (PDT)
-Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com. [209.85.160.178])
-        by smtp.gmail.com with ESMTPSA id jt10-20020a05622aa00a00b0042dfa55a3d5sm2035540qtb.25.2024.03.15.08.08.12
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 08:08:12 -0700 (PDT)
-Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-428405a0205so333551cf.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:08:12 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWMH58qcmIDd0anMJLXV4Ul29pCXPaRAm9L04CFR0o24c5VBXBRQYtXKSJtGm7M0VEauNb9laIIoTVfjQJ2yFvjfoTLuRIdC6cl6mKU
-X-Received: by 2002:a05:622a:292:b0:430:b2ee:d6bf with SMTP id
- z18-20020a05622a029200b00430b2eed6bfmr193108qtw.25.1710515292052; Fri, 15 Mar
- 2024 08:08:12 -0700 (PDT)
+	s=arc-20240116; t=1710515381; c=relaxed/simple;
+	bh=uysj4L8dszCTthjgDSnBVbbbyoveIsByuEO6DJzqfWE=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=YT8hkpCurp35FrYn4kt8RRXM1B4hsXHv/SmYMF2kP3FsnAnAX/Zra9LJ6KuoKZv5z/++mzQnckiXJjGeTdt4uQ4l/fCVJXWDUzM1AYeDROoVwqIqVMX9PIcdoNTr7IEewV0FP19p7jhE3yhHdCouzk+VjeeSK2WL5RCfds/ZkOw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=vO5BaKxl; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 0AE88196E57;
+	Fri, 15 Mar 2024 16:09:33 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1710515373; bh=6T0BIzOuPE5LuqB1wHjUl+/fIgb/2kuGQnVeMY/YX2w=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=vO5BaKxl3e9SUXW4uSTkVJ11QsDMqP5wxHIeZ5KyjOkM5TxkPkgVN8VeO79q2Hkm1
+	 GToh2cK9Y420JuptkfHcSrQcnACwXCZGkFjEK21DH9GZzrfK9vyf1tg122+Iusj5T7
+	 qarBmwhEsb9gFrRNOlecDMXTCTO3kNQ9AeUuM/Y4G6rGX0Trr2bbq7jPdkKyPrlGFx
+	 B0u/f3KMD20HASGWHOtoZPcxknDMVDdVCbPKtDoQphH6zE3Ck4QZ7k5eCZkcwcgCPR
+	 LTuOYimvDog3ULTKdBMXnQM8wxblsXCLnZ/hjCFd1ElBwOAnqGzG1A8avc+C85Gw3b
+	 oLaXbdIwyEJ9g==
+Date: Fri, 15 Mar 2024 16:09:31 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Christoph Hellwig
+ <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
+ <robin.murphy@arm.com>, Will Deacon <will@kernel.org>, Nicolin Chen
+ <nicolinc@nvidia.com>, "open list:DMA MAPPING HELPERS"
+ <iommu@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>, Roberto
+ Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH 1/1] swiotlb: extend buffer pre-padding to
+ alloc_align_mask if necessary
+Message-ID: <20240315160931.48879f5c@meshulam.tesarici.cz>
+In-Reply-To: <SN6PR02MB41574FB8FF2FA08C26682EC1D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240312134149.497-1-petrtesarik@huaweicloud.com>
+	<SN6PR02MB4157FB27CD890E9F29408926D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+	<20240315132613.5a340a69@meshulam.tesarici.cz>
+	<SN6PR02MB41574FB8FF2FA08C26682EC1D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20230703085555.30285-1-quic_mkshah@quicinc.com>
- <20230703085555.30285-4-quic_mkshah@quicinc.com> <CAD=FV=XWH+Eoa9XjDns--NSDTZHeUwTdrX_r_QZhSPpbZNwz+w@mail.gmail.com>
- <f638e848-36c5-4cea-c2c8-841a003b1863@quicinc.com>
-In-Reply-To: <f638e848-36c5-4cea-c2c8-841a003b1863@quicinc.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Fri, 15 Mar 2024 08:07:56 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=XgwrFWZ7uQ1fQbykyipFmyZB6nyJnKmS1s=hdAANd-gg@mail.gmail.com>
-Message-ID: <CAD=FV=XgwrFWZ7uQ1fQbykyipFmyZB6nyJnKmS1s=hdAANd-gg@mail.gmail.com>
-Subject: Re: [RESEND v4 3/3] arm64: dts: qcom: sc7280: Add power-domains for
- cpuidle states
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Maulik Shah <quic_mkshah@quicinc.com>, andersson@kernel.org, ulf.hansson@linaro.org, 
-	swboyd@chromium.org, wingers@google.com, daniel.lezcano@linaro.org, 
-	rafael@kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-pm@vger.kernel.org, sudeep.holla@arm.com, 
-	jwerner@chromium.org, quic_lsrao@quicinc.com, quic_rjendra@quicinc.com, 
-	devicetree@vger.kernel.org, Jessica Zhang <quic_jesszhan@quicinc.com>, 
-	Rob Clark <robdclark@chromium.org>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Fri, 15 Mar 2024 14:59:08 +0000
+Michael Kelley <mhklinux@outlook.com> wrote:
 
-On Thu, Mar 14, 2024 at 4:39=E2=80=AFPM Abhinav Kumar <quic_abhinavk@quicin=
-c.com> wrote:
->
-> Hi Doug
->
-> On 3/14/2024 4:20 PM, Doug Anderson wrote:
-> > Hi,
-> >
-> > On Mon, Jul 3, 2023 at 1:56=E2=80=AFAM Maulik Shah <quic_mkshah@quicinc=
-com> wrote:
-> >>
-> >> Add power-domains for cpuidle states to use psci os-initiated idle sta=
-tes.
-> >>
-> >> Cc: devicetree@vger.kernel.org
-> >> Reviewed-by: Ulf Hansson <ulf.hansson@linaro.org>
-> >> Signed-off-by: Maulik Shah <quic_mkshah@quicinc.com>
-> >> ---
-> >>   arch/arm64/boot/dts/qcom/sc7280.dtsi | 98 +++++++++++++++++++++-----=
---
-> >>   1 file changed, 73 insertions(+), 25 deletions(-)
-> >
-> > FWIW, I dug up an old sc7280-herobrine board to test some other change
-> > and found it no longer booted. :( I bisected it and this is the change
-> > that breaks it. Specifically, I can make mainline boot with:
-> >
-> > git revert --no-edit db5d137e81bc # arm64: dts: qcom: sc7280: Update
-> > domain-idle-states for cluster sleep
-> > git revert --no-edit 7925ca85e956 # arm64: dts: qcom: sc7280: Add
-> > power-domains for cpuidle states
-> >
->
-> We noticed that some variants of sc7280 herobrine boards didnt boot but
-> some did atleast till linux 6.8 rc-6. I have not tested linux 6.9 rc-1 ye=
-t.
+> From: Petr Tesa=C5=99=C3=ADk <petr@tesarici.cz> Sent: Friday, March 15, 2=
+024 5:26 AM
+> >=20
+> > On Fri, 15 Mar 2024 02:53:10 +0000
+> > Michael Kelley <mhklinux@outlook.com> wrote:
+> >  =20
+> > > From: Petr Tesarik <petrtesarik@huaweicloud.com> Sent: Tuesday, March=
+ 12, 2024 6:42 AM =20
+> > > > =20
+>=20
+> [snip]
+>=20
+> > > > @@ -1349,6 +1353,15 @@ phys_addr_t swiotlb_tbl_map_single(struct de=
+vice *dev, phys_addr_t orig_addr,
+> > > >  		return (phys_addr_t)DMA_MAPPING_ERROR;
+> > > >  	}
+> > > >
+> > > > +	/*
+> > > > +	 * Calculate buffer pre-padding within the allocated space. Use i=
+t to
+> > > > +	 * preserve the low bits of the original address according to dev=
+ice's
+> > > > +	 * min_align_mask. Limit the padding to alloc_align_mask or slot =
+size
+> > > > +	 * (whichever is bigger); higher bits of the original address are
+> > > > +	 * preserved by selecting a suitable IO TLB slot.
+> > > > +	 */
+> > > > +	offset =3D orig_addr & dma_get_min_align_mask(dev) &
+> > > > +		(alloc_align_mask | (IO_TLB_SIZE - 1));
+> > > >  	index =3D swiotlb_find_slots(dev, orig_addr,
+> > > >  				   alloc_size + offset, alloc_align_mask, &pool);
+> > > >  	if (index =3D=3D -1) {
+> > > > @@ -1364,6 +1377,12 @@ phys_addr_t swiotlb_tbl_map_single(struct de=
+vice *dev, phys_addr_t orig_addr,
+> > > >  	 * This is needed when we sync the memory.  Then we sync the buff=
+er if
+> > > >  	 * needed.
+> > > >  	 */
+> > > > +	padding =3D 0;
+> > > > +	while (offset >=3D IO_TLB_SIZE) {
+> > > > +		pool->slots[index++].orig_addr =3D INVALID_PHYS_ADDR;
+> > > > +		pool->slots[index].padding =3D ++padding;
+> > > > +		offset -=3D IO_TLB_SIZE;
+> > > > +	} =20
+> > >
+> > > Looping to fill in the padding slots seems unnecessary.
+> > > The orig_addr field should already be initialized to
+> > > INVALID_PHYS_ADDR, and the padding field should already
+> > > be initialized to zero. =20
+> >=20
+> > Ack.
+> >  =20
+> > > The value of "padding" should be just
+> > > (offset / IO_TLB_SIZE), and it only needs to be stored in the
+> > > first non-padding slot where swiotlb_release_slots() will
+> > > find it. =20
+> >=20
+> > This is also right. I asked myself the question what should happen if
+> > somebody passes a padding slot's address to swiotlb_tbl_unmap_single().
+> > Of course, it's an invalid address, but as a proponent of defensive
+> > programming, I still asked what would be the best response? If I store
+> > padding in each slot, the whole block is released. If I store it only
+> > in the first non-padding slot, some slots may leak.
+> >=20
+> > On a second thought, the resulting SWIOTLB state is consistent either
+> > way, and we don't to care about leaking some slots if a driver is
+> > buggy. Maybe it's even better, because the leak will be noticed.
+> >=20
+> > In short, I agree, let's keep the code simple.
+> >  =20
+>=20
+> One other thought:  Fundamentally, fixing the core problem
+> requires swiotlb_tbl_unmap_single() to have some information
+> it doesn't have in the current code.  It needs to know the
+> number of padding slots, so that it can free them correctly.
+> Your solution is to store the # of padding slots in the
+> io_tlb_slot array.
+>=20
+> Another approach would be to have callers pass the
+> alloc_align_mask as an argument to swiotlb_tbl_unmap_single().
+> It can then calculate the offset and the number of padding
+> slots just like swiotlb_tbl_map_single() does.  Nothing
+> additional would need to be stored in the io_tlb_slot array.
+> The IOMMU code is the only caller than uses a non-zero
+> alloc_align_mask.  From a quick look at that code, the
+> unmap path has the iova_mask() available, so that would
+> work.  Other callers would pass zero, just like they do for
+> swiotlb_tbl_map_single().
+>=20
+> I don't immediately have a strong opinion either way, but
+> it's something to think about a bit more.
 
-Wow, really? This doesn't seem like it would be related to the
-variant. Maybe the firmware version? FWIW, the device I was having
-problems with was a "villager-rev2" with FW 15368.0.0.
+I believe it's slightly more robust to store how the buffer was
+actually allocated than to rely on the caller. It seems to me that this
+was also a design goal of the original author. For example, note that
+swiotlb_tbl_unmap_single() uses mapping_size only to do the final
+buffer sync, but not to determine how many slots should be released.
+This information is taken from struct io_tlb_slot.alloc_size.
 
-OK, so I just pulled out a `hoglin-rev5` with 15432.0.0 and v6.8-rc6
-boots and WiFi comes up. However, when I move to full mainline
-(b0546776ad3f (HEAD, linux/master) Merge tag 'printk-for-6.9' of
-git://git.kernel.org/pub/scm/linux/kernel/git/printk/linux) I get the
-ath11k crash.
-
-OK, so I updated my villager to 15432.0.0 and things work even without
-reverting ${SUBJECT} patch. I guess that's the answer: this patch
-broke things with some old firmwares but with the newer firmware it's
-fixed. Hopefully that doesn't happen again since I don't think there
-will ever be a newer firmware than 15432.0.0.
-
-
-> > (I get an ath11k crash after that, but that's easy to hack out since I
-> > don't need WiFi)
-> >
->
-> hmm, wifi worked alright on 6.8 rc-6 for us.
-
-I guess I'll leave it to you to track down / report as needed.
-
-
-> > I suppose the two options here are to either:
-> >
-> > 1. Track the problem down and figure out why the breaks boot and then
-> > fix it. I'm personally not going to track this down, but if someone
-> > wants me to test a patch I can do that.
-> >
->
-> Can Maulik help us do that?
-
-OK, sounds like we don't need to, as long as everyone updates their
-firmware. This should be OK.
-
-
-> > 2. Delete all the herobrine dts files.
-> >
-> > So far we've been keeping the herobrine dts files alive because I
-> > thought some graphics folks (Rob, Abhinav, Jessica, for instance) were
-> > still using it. ...but Rob says he hasn't booted his in a while. No
-> > idea if Abhinav and Jessica are using theirs. Any opinions? Is
-> > herobrine hardware support near and dear to anyone these days?
-> >
->
-> Yes, so we have been using sc7280 herobrine devices even till the last
-> cycle and quite a bit of feature development was actually done on that.
->
-> It was the only device having eDP other than sc8280xp till x1e80100
-> landed last cycle.
-
-OK, thanks for confirming that they're still useful to you. When I got
-the failures I feared that nobody was using them anymore.
-
-
-> I do want to start using sc8280xp as well because from the experience we
-> got, it has more visibility in terms of users. So that will address my
-> eDP concern.
->
-> But, the nice thing about chromebooks is we really like to use them for
-> IGT development / CI debug as CrOS provides a nice environment to
-> cros-deploy IGT.
->
-> We can continue to use sc7180 for IGT development but if we want to
-> debug issues with eDP + IGT, sc7280 is a really useful platform for that.
->
-> sc8280xp or x1e80100 is not a CrOS supported device. So we will have to
-> develop and test IGT directly on the device (which is a bit of a pain)
-> unless someone has a better way of "cross-compilation" for IGT on
-> non-CrOS images.
-
-I'd have to let others comment on IGT.
-
--Doug
+Petr T
 
