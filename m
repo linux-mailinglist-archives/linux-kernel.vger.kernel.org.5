@@ -1,147 +1,236 @@
-Return-Path: <linux-kernel+bounces-104815-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7390F87D417
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:52:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 97C0087D41D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:53:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCB622827E9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:52:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE2DCB250F6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:53:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBF6E4F201;
-	Fri, 15 Mar 2024 18:50:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322D0535B6;
+	Fri, 15 Mar 2024 18:51:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Me6YpGFg"
-Received: from mail-pg1-f202.google.com (mail-pg1-f202.google.com [209.85.215.202])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehhxCNXO"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C69155C33
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:50:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703AF50261;
+	Fri, 15 Mar 2024 18:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710528654; cv=none; b=fasXUAuE7+SKyWdGHYmN8+Mv8Jxqo8VV1cvMlNfbMoJm/nSbsujGNWhiyrtZtMBdafE7kfmWcPFbF+ScGtRDMY9A4r6DX6tK7xt+NSX+K8ZYsgf/Y7VCclhoQDthDN9X1MWuPDdPTd2mzS2R3g/WurXgHWaF8QWVzqRkGVhSQ6U=
+	t=1710528686; cv=none; b=DNndCWibEB31/CXZCi+4ANvTnFSDDDoGI/n7GvZID94L885GnrJiTQB/EEiXrK2WGqjEivXthgB/HssDrMBFjH86vmh7or65VlwKn4xPdoxxth3b+8rnmxPEaXS8PLQD6Rhyg6ASdkikgHvSs1k4HykTMBKwlcCUpdvHgZhjMOo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710528654; c=relaxed/simple;
-	bh=lmLbRKyghwboNWtEfGotXrpbpxUAQ3nWSRJz7Qjgis4=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iPtp5Wh7e54u4qjE57iCQorx2dv9o+InVbOh+FIUmLaC36NCm6m00MUNbf5UjLWjRV7yWlgKAib5injdw3INjOgOxOCRbI87QzUMjZQAp6r5Js2Ush8YooUN1QPa1J9Uhpg5Wq6b9qXlTRGkrIfx0m2aRLt2J3tM8GvyY4R6DRo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Me6YpGFg; arc=none smtp.client-ip=209.85.215.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--sdf.bounces.google.com
-Received: by mail-pg1-f202.google.com with SMTP id 41be03b00d2f7-5d8bcf739e5so1846504a12.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:50:51 -0700 (PDT)
+	s=arc-20240116; t=1710528686; c=relaxed/simple;
+	bh=16ql2HcY7iDcpglYmBvrsnrtWDpPdD0pISldjm33j3I=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=imXIGIQGWf/RQvPzv2QLds0h/nO8KbzdgQBIqfFxCVVNigj1vtq/iOgdX8KZEB4afvAZWXQt51BmmdE2dl6A0oJpYFMq3563WFvA7jipxkWP3Qu1kQ/GDdcWGxNHX2OCtSt1li/hQTvtiCdKezCKhrIMs2Q+rVq7fq53srsUUi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehhxCNXO; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1de0f92e649so16366425ad.0;
+        Fri, 15 Mar 2024 11:51:23 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710528651; x=1711133451; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DtYC38JTkqYWVAKyPrGYPSxbyTCY8qOTTr3Tw0hY0wc=;
-        b=Me6YpGFgLPzRDHruPgCnsdhJ68KCQZHfI2goX8dddUqMBoEla5jRvOdvp0wwKedQ4c
-         jCHjgxtcdXX580dtlrqnIEUQIe/E0axvVD5uR8iDREoLJ25c19SMgyeQHM/XmnNqgWMB
-         tWOGGL+IpxpdRvACN4b5G1h41TaBWMvP5ckTuhOZ7hfS8mpqdUk2HAeVeyw8aFWVFOwc
-         gt85LrJKG0527y1qwG5ifEsPyP4mA/HCFYHBGvHUi2NdLVQppvhYhBlg1QFEDxkG06g4
-         bGzJYZ5dPYmEdCXOfgd00WYcduQpU+adLCz4pzLyF+UgxvlHpdR8olqJbaE+/rYvHi4q
-         6ogg==
+        d=gmail.com; s=20230601; t=1710528683; x=1711133483; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=qQtwelcSgwGFeTnZLVof0pwhxwav0Nmdkno2Inz3sLw=;
+        b=ehhxCNXO21oQQ+adJSqL8uvxy5Mte2FDEoazFtFrGiWy7AP4L89C3JpIPgFt8r3Q67
+         ApZxKDxitQKOVbg4L+ZTIgpNv6f+eliyWlBNfI3FdnXV2bDcFmbEdURGTK2FazKuHEWx
+         AuGm5dpS8UqIuMTck3FmQ/UYURX6gO3m2Naq20jxD8jjUuUh5TvAqhRDd5RVei+3kfD6
+         nJ7jsHFy4dR4c22eWr1e5TZe9tAZMmsXmW9E1e8KNJXypVpMcJYbjP4hm+24cRW/p1UQ
+         aUXo5rc6ROjSLYfV+mzmQx/Afk64+cN7EuVbdsjWBO2jPZDdtd16w21an3whSlBXqEmQ
+         DGFA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710528651; x=1711133451;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DtYC38JTkqYWVAKyPrGYPSxbyTCY8qOTTr3Tw0hY0wc=;
-        b=qHKKqI915OnrcDXTRyKgvHfmgGXmM84MeOsXYAUXLw19arqHZ9dj/FGVYT5zBzQS4g
-         HLw8JjV6MxTOGOoI//uCJctVrYsf5hvfBCmvYRGbgJi83EhGRFl88QkTlniNrd2sGZg0
-         ImYSzhuy3SHuKObe9SGj1teXWowFA7SN2zE702dtTRHxzboqE6pZAli6kExfmOSCnFdz
-         lYwyVxaBGbQC6lSp/FzC1dW604WAJqczQWkazqJ/LNeFIxurqvgx51uj1o5FsqW98GaG
-         b8kSG0xMlXBL6p2poZtEETaEu9wiI2iBIZARulXj3wE/z/tZgF+1dYjh5u2LszX8ijwd
-         luMw==
-X-Forwarded-Encrypted: i=1; AJvYcCUB8Ok+0bwtuYroIRcTDXRejX/BiOxIxnQbCR8Pp9gjt51ZZ90wfv4jV6XpQSFkE2fY/CxmKJ6NQu0sm+McSPzgdwGmeehQqxASfLKJ
-X-Gm-Message-State: AOJu0YxZ/PKqWtlL3drJk5GzsRNQURWffB87COwyNaGUVGdarwTBl/e5
-	Bz+LpJkcVW6ssFzZ3NpXAw08gGg/EoXYdicTNMmMf/Q6/mO6liV/1TlOkJh61FE7OA==
-X-Google-Smtp-Source: AGHT+IEKRxCSilQm25fucau7ePyZf3G/pVMezpgUmF3LnBUAc1qSPoAA3mqkZJs+iIba2I9iYXMZ02Y=
-X-Received: from sdf.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5935])
- (user=sdf job=sendgmr) by 2002:a63:534f:0:b0:5dc:832e:d805 with SMTP id
- t15-20020a63534f000000b005dc832ed805mr13318pgl.11.1710528651355; Fri, 15 Mar
- 2024 11:50:51 -0700 (PDT)
-Date: Fri, 15 Mar 2024 11:50:49 -0700
-In-Reply-To: <20240315182804.216081-1-josef@netflix.com>
+        d=1e100.net; s=20230601; t=1710528683; x=1711133483;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=qQtwelcSgwGFeTnZLVof0pwhxwav0Nmdkno2Inz3sLw=;
+        b=sjVB5+novTOTNAMOWLQ3qYMtcfcwk+WD/p9MlFQ9tHLTcwhP2sCMUu72skE+rj0Tsb
+         t/ESvL2GvcXM2C4IR3x/TvfEZvFtGD1cZYQqdurKqeWU1nDhaE9C/3SliEtcq7KDBDs9
+         qg4h0NZCR4T5cO+d2ZONHm9O25nnfTMUNjxIUL70Y1DmjbqwoA2j6D1L/YyqPubc3fjX
+         4tQeGjw0YQIWSFf/lvOaMDiFAphW0F0i92JrRhcpKzXmqfwafKTqc1qws1dSrg+6iWIK
+         Fp9n7PShCdm8sbYMNl85rDEdQQffdGTaKx9PQTGdBBep4+p6FVfhvQeeLktKVIPuiNI5
+         P1zQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWmIUEa6/cPVqIZaSjcXRXQXPZZRv6XhSXoHGngCxbIrr3PFzhjz9HXunzuWZbMhwjT277fnupmwOMqP6LWGO1Orasu5C79stTgLPq14VWmYlo6036TBZ1lHkEbIaxkh7maxTfvSKfy9CR15JIIuWGSigPerv8GT3rn7PknSnHozo0ssSt8
+X-Gm-Message-State: AOJu0YyYKnlzfE1pV6YzIW+Pzny2U2mdJule5l3slN+5tLggVPi0Ds03
+	bBNHL0t17b30cF3YgZaMOcLQFNjU/3l4EHU0yC38LmDDV2tCmK70
+X-Google-Smtp-Source: AGHT+IF2HQskcpCyIR3dSZHfWz5hEStmH0IR/3eWOj+Efeu9g7w0OAdVU5R7xHfBDlK1SDx09ySDHA==
+X-Received: by 2002:a17:903:11c3:b0:1dd:7d6a:d6c8 with SMTP id q3-20020a17090311c300b001dd7d6ad6c8mr6727294plh.14.1710528682446;
+        Fri, 15 Mar 2024 11:51:22 -0700 (PDT)
+Received: from google.com ([2620:15c:9d:2:c446:74f0:5cd2:d078])
+        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001defbc29a05sm820862plg.40.2024.03.15.11.51.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 11:51:21 -0700 (PDT)
+Date: Fri, 15 Mar 2024 11:51:19 -0700
+From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
+To: Stefan Eichenberger <eichest@gmail.com>
+Cc: nick@shmanahar.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
+	claudiu.beznea@tuxon.dev, linus.walleij@linaro.org,
+	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	francesco.dolcini@toradex.com,
+	Stefan Eichenberger <stefan.eichenberger@toradex.com>
+Subject: Re: [PATCH RESEND v3 2/2] Input: atmel_mxt_ts - support poweroff in
+ suspend
+Message-ID: <ZfSYp6aV6bRhlPUJ@google.com>
+References: <20240209105012.22470-1-eichest@gmail.com>
+ <20240209105012.22470-3-eichest@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <20240315182804.216081-1-josef@netflix.com>
-Message-ID: <ZfSYiWcE0_au_ZPt@google.com>
-Subject: Re: [PATCH bpf-next 1/2] bpf: add btf_task_get_cgroup_id kfunc
-From: Stanislav Fomichev <sdf@google.com>
-To: Jose Fernandez <josef@netflix.com>
-Cc: Alexei Starovoitov <ast@kernel.org>, Daniel Borkmann <daniel@iogearbox.net>, 
-	Andrii Nakryiko <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>, 
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
-	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
-	KP Singh <kpsingh@kernel.org>, Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org, Tycho Andersen <tycho@tycho.pizza>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240209105012.22470-3-eichest@gmail.com>
 
-On 03/15, Jose Fernandez wrote:
-> This patch enhances the BPF helpers by adding a kfunc to retrieve the
-> cgroup v2 ID of a specific task, addressing a previous limitation where
-> only bpf_task_get_cgroup1 was available for cgroup v1. The new kfunc is
-> particularly useful for scenarios where obtaining the cgroup ID of a
-> task other than the "current" one is necessary, which the existing
-> bpf_get_current_cgroup_id helper cannot accommodate. A specific use case
-> at Netflix involved the sched_switch tracepoint, where we had to get
-> the cgroup IDs of both the previous and next tasks.
+Hi Stefan,
+
+On Fri, Feb 09, 2024 at 11:50:12AM +0100, Stefan Eichenberger wrote:
+> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 > 
-> The bpf_task_get_cgroup_id kfunc returns a task's cgroup ID, correctly
-> implementing RCU read locking and unlocking for safe data access, and
-> leverages existing cgroup.h helpers to fetch the cgroup and its ID.
+> Add a new device tree property to indicate that the device should be
+> powered off in suspend mode. We have a shared regulator that powers the
+> display, a USB hub and some other peripherals. The maXTouch controller
+> doesn't normally disable the regulator in suspend mode, so our extra
+> peripherals stay powered on. This is not desirable as it consumes more
+> power. With this patch we add the option to disable the regulator in
+> suspend mode for the maXTouch and accept the longer initialisation time.
 > 
-> Signed-off-by: Jose Fernandez <josef@netflix.com>
-> Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
+> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
 > ---
->  kernel/bpf/helpers.c | 22 ++++++++++++++++++++++
->  1 file changed, 22 insertions(+)
+>  drivers/input/touchscreen/atmel_mxt_ts.c | 72 ++++++++++++++++++------
+>  1 file changed, 55 insertions(+), 17 deletions(-)
 > 
-> diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-> index a89587859571..8038b2bd3488 100644
-> --- a/kernel/bpf/helpers.c
-> +++ b/kernel/bpf/helpers.c
-> @@ -2266,6 +2266,27 @@ bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
->  		return NULL;
->  	return cgrp;
->  }
-> +
-> +/**
-> + * bpf_task_get_cgroup_id - Get the cgroup ID of a task.
-> + * @task: The target task
-> + *
-> + * This function returns the ID of the task's default cgroup, primarily
-> + * designed for use with cgroup v2. In cgroup v1, the concept of default
-> + * cgroup varies by subsystem, and while this function will work with
-> + * cgroup v1, it's recommended to use bpf_task_get_cgroup1 instead.
-> + */
-> +__bpf_kfunc u64 bpf_task_get_cgroup_id(struct task_struct *task)
-> +{
-> +	struct cgroup *cgrp;
-> +	u64 cgrp_id;
-> +
-> +	rcu_read_lock();
-> +	cgrp = task_dfl_cgroup(task);
-> +	cgrp_id = cgroup_id(cgrp);
-> +	rcu_read_unlock();
-> +	return cgrp_id;
-> +}
->  #endif /* CONFIG_CGROUPS */
+> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
+> index 542a31448c8f..2d5655385702 100644
+> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
+> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
+> @@ -317,6 +317,7 @@ struct mxt_data {
+>  	struct gpio_desc *reset_gpio;
+>  	struct gpio_desc *wake_gpio;
+>  	bool use_retrigen_workaround;
+> +	bool poweroff_sleep;
 >  
->  /**
-> @@ -2573,6 +2594,7 @@ BTF_ID_FLAGS(func, bpf_cgroup_ancestor, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
->  BTF_ID_FLAGS(func, bpf_task_under_cgroup, KF_RCU)
->  BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
-> +BTF_ID_FLAGS(func, bpf_task_get_cgroup_id, KF_RCU)
+>  	/* Cached parameters from object table */
+>  	u16 T5_address;
+> @@ -2799,15 +2800,18 @@ static int mxt_configure_objects(struct mxt_data *data,
+>  			dev_warn(dev, "Error %d updating config\n", error);
+>  	}
+>  
+> -	if (data->multitouch) {
+> -		error = mxt_initialize_input_device(data);
+> -		if (error)
+> -			return error;
+> -	} else {
+> -		dev_warn(dev, "No touch object detected\n");
+> -	}
+> +	/* If input device is not already registered */
+> +	if (!data->input_dev) {
+> +		if (data->multitouch) {
+> +			error = mxt_initialize_input_device(data);
+> +			if (error)
+> +				return error;
+> +		} else {
+> +			dev_warn(dev, "No touch object detected\n");
+> +		}
+>  
+> -	mxt_debug_init(data);
+> +		mxt_debug_init(data);
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -3325,6 +3329,8 @@ static int mxt_probe(struct i2c_client *client)
+>  		msleep(MXT_RESET_INVALID_CHG);
+>  	}
+>  
+> +	data->poweroff_sleep = device_property_read_bool(&client->dev,
+> +							 "atmel,poweroff-sleep");
+>  	/*
+>  	 * Controllers like mXT1386 have a dedicated WAKE line that could be
+>  	 * connected to a GPIO or to I2C SCL pin, or permanently asserted low.
+> @@ -3387,12 +3393,21 @@ static int mxt_suspend(struct device *dev)
+>  	if (!input_dev)
+>  		return 0;
+>  
+> -	mutex_lock(&input_dev->mutex);
+> +	if (!device_may_wakeup(dev) && data->poweroff_sleep) {
+> +		if (data->reset_gpio)
+> +			gpiod_set_value(data->reset_gpio, 1);
+>  
+> -	if (input_device_enabled(input_dev))
+> -		mxt_stop(data);
+> +		regulator_bulk_disable(ARRAY_SIZE(data->regulators),
+> +				data->regulators);
+> +		data->T44_address = 0;
+> +	} else {
+> +		mutex_lock(&input_dev->mutex);
+> +
+> +		if (input_device_enabled(input_dev))
+> +			mxt_stop(data);
+>  
+> -	mutex_unlock(&input_dev->mutex);
+> +		mutex_unlock(&input_dev->mutex);
+> +	}
 
-Any reason we are not returning 'struct cgroup' pointer? That should
-allow using other kfuncs that are all 'struct cgrop' based as well.
+This all should go into mxt_stop(), so that if device is closed, or
+inhibited, you power it down as well (if you can).
+
+>  
+>  	disable_irq(data->irq);
+>  
+> @@ -3408,14 +3423,37 @@ static int mxt_resume(struct device *dev)
+>  	if (!input_dev)
+>  		return 0;
+>  
+> -	enable_irq(data->irq);
+> +	if (!device_may_wakeup(dev) && data->poweroff_sleep) {
+> +		int ret;
+>  
+> -	mutex_lock(&input_dev->mutex);
+> +		ret = regulator_bulk_enable(ARRAY_SIZE(data->regulators),
+> +				data->regulators);
+> +		if (ret) {
+> +			dev_err(dev, "failed to enable regulators: %d\n",
+> +					ret);
+> +			return ret;
+> +		}
+> +		msleep(MXT_BACKUP_TIME);
+>  
+> -	if (input_device_enabled(input_dev))
+> -		mxt_start(data);
+> +		if (data->reset_gpio) {
+> +			/* Wait a while and then de-assert the RESET GPIO line */
+> +			msleep(MXT_RESET_GPIO_TIME);
+> +			gpiod_set_value(data->reset_gpio, 0);
+> +			msleep(MXT_RESET_INVALID_CHG);
+> +		}
+>  
+> -	mutex_unlock(&input_dev->mutex);
+> +		/* This also enables the irq again */
+> +		mxt_initialize(data);
+
+And this needs to go into mxt_start(). Also, we should make sure that
+once resume operation completes the device is fully operational. That
+means you should not request the firmware asynchronously in
+mxt_initialize() in case you are in the resume path. I think you should
+also unwind mxt_initialize() and mxt_configure_objects() to make it
+clear what is the part of initial initialization and what is part of
+re-initializing during resume. The configuration that is exposed to
+userspace (resolution, number of objects, other properties) should stay
+the same, the configuration of the chip itself (power mode, etc) should
+be restored.
+
+Thanks.
+
+-- 
+Dmitry
 
