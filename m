@@ -1,186 +1,177 @@
-Return-Path: <linux-kernel+bounces-104011-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104012-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EA1987C7DF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:13:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18D6C87C7E0
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:14:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01D8B1F22CBA
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:13:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8398D1F22B84
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:14:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D5B3D51D;
-	Fri, 15 Mar 2024 03:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC837DF58;
+	Fri, 15 Mar 2024 03:14:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b="uIFbbWoV"
-Received: from APC01-TYZ-obe.outbound.protection.outlook.com (mail-tyzapc01on2135.outbound.protection.outlook.com [40.107.117.135])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="N0Afq1Uf"
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7C84FC02;
-	Fri, 15 Mar 2024 03:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.117.135
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710472409; cv=fail; b=NM6KURRl5xi063aOGGFqAZBmKXVmYDFifAxtNHUUu30fbSaMLgVoZdWvT8VejhGHw3p+Q6NcgcnkRzzmxwIrfXWaxaBlzUSKQ+f4cT1nQffHFI7Ok9rswmSoFquxBssCzi6lDUctUHFWJdIpWadKCjKVpxIb/wEg6PSwWxZXoOY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710472409; c=relaxed/simple;
-	bh=b2kCuWJlGp5XsqXNzPywhnMaWAUmrJG8NB2zey55nuk=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=DQ0JqDVYFAf6a8cP3hurCHVvPjylAQobOSqWFmLVLqW99vk1OucQeNsG9XKdCVLnkOSc5+0nXi1rUfTNEwMB84qYj0HV0XlCcbq4DdY/IzVsKZjK91J1uy+8KbqpnGctaUK+BZvCvVcq1pGLKajrDS3N3EKpRm7+sQltsj95M2c=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com; spf=pass smtp.mailfrom=amlogic.com; dkim=pass (2048-bit key) header.d=amlogic.com header.i=@amlogic.com header.b=uIFbbWoV; arc=fail smtp.client-ip=40.107.117.135
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=amlogic.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amlogic.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=f8YTRWukrZaaKZfoyBGl0iqrAP73fEhwAWCY4MZ6S15PZMKrUC6eFAq4MROTTFt8rghJ/+ppV8sE0FiLtAyxl0ur2gJGYlmEfWJPX4cyB/7+BmEveb/h9y5T0qlXPYP+ECjC6qsg28NxG5HHlAUFSmU1lYW4NCX0jokrJE/r6skIbGVhaMJoeJJps93IFIz0HZ/SVrne1hnZsnDpAZ+UaAx64Atni+npROckFc/FOYoqK6JtSYCkLckIwiVmUDNxwjuSedZKVchlasGUHVcox/YyaTHpamk23NiEXCGqJIQ/KaDrh1VTK33An8P0dPtIJC5IGt3/jYodvvDDLXN5eg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=QHMy+e92IDXppzU96t02OfW6rC8tZr/0CMlhClx0F68=;
- b=OfcEXDmyJXvqVGAzt36pOcckVLCJFHBd/HeSl0qaj3xiUi503hupFb4q36yWHtSedYt77kyeqKDLwhwCsz7qT9ihFK/yZWCVL2yUHxAKNvjGvw/DW+Vfu8OptmElORCxxqeFkCwlGhV1ScNkMRKGBFZijWRV0tN3DCHwYy1RJQM86XSfsJa6lnO6EfKcR38MZg7IxLO6gWajrvR+C2kqtVFtOQiO1h5Dx/q3Mve0g9vx9V8f1APtqrxsBzuWcqh4o0EoCnSpb7moHS4GbPx3T0FlzjnQrZyKgn+cyD9fsa1bvYBodfJ+WrBqc1OpcjOmWRQlgE5HbRblzXzVUcOsqw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amlogic.com; dmarc=pass action=none header.from=amlogic.com;
- dkim=pass header.d=amlogic.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amlogic.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=QHMy+e92IDXppzU96t02OfW6rC8tZr/0CMlhClx0F68=;
- b=uIFbbWoVAjpg0cFghXo6zeYgWYt2x1f0AzJ35WB/5BDHi7mw/zrbjjKLvUt02iIlLFa1uqtYCpgFLuUp/tJ5QhjXV6VZDnn4BjBcB7BTJzOu8LmcF/VKtxsQjK0TLkDxF63h6Iwh8bYy850d90ryIOvkrH0+llfzSbAkngUze9DR3/ZHmf1BZ/aZ9JfDG9331OR0aaoCDt4yHmhbRSX0jJUpxu2ou436EcrpiTZwIS14ELsbp7Ms8m5z0Phtu8+R5pO0BOIzORJT+Vps1krZvDqkZfd10PaD5h3w8NG8aYXijHAimRL1BjEjjzOp7XG9qXlCiXLk5Eqdh3wbB22yHg==
-Received: from TYZPR03MB6896.apcprd03.prod.outlook.com (2603:1096:400:289::14)
- by TYZPR03MB9049.apcprd03.prod.outlook.com (2603:1096:405:e1::14) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Fri, 15 Mar
- 2024 03:13:23 +0000
-Received: from TYZPR03MB6896.apcprd03.prod.outlook.com
- ([fe80::5198:1b2f:8889:17b]) by TYZPR03MB6896.apcprd03.prod.outlook.com
- ([fe80::5198:1b2f:8889:17b%4]) with mapi id 15.20.7362.035; Fri, 15 Mar 2024
- 03:13:22 +0000
-Message-ID: <b1d59c5e-26ae-45a8-8677-13d2bb5e9751@amlogic.com>
-Date: Fri, 15 Mar 2024 11:13:16 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [DMARC error][DKIM error] [PATCH 3/4] arm64: dts: add support for
- A4 based Amlogic BA400
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Dmitry Rokosov <ddrokosov@salutedevices.com>,
- Xianwei Zhao via B4 Relay <devnull+xianwei.zhao.amlogic.com@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Neil Armstrong <neil.armstrong@linaro.org>,
- Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
- Jerome Brunet <jbrunet@baylibre.com>, Kevin Hilman <khilman@baylibre.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org
-References: <20240312-basic_dt-v1-0-7f11df3a0896@amlogic.com>
- <20240312-basic_dt-v1-3-7f11df3a0896@amlogic.com>
- <20240313095311.dxrr7gvt4t3gwoho@CAB-WSD-L081021>
- <74f96887-572d-47eb-bce4-9d61ec51b88d@amlogic.com>
- <c0e564f1-bfd9-450f-8bce-835837719688@linaro.org>
-From: Xianwei Zhao <xianwei.zhao@amlogic.com>
-In-Reply-To: <c0e564f1-bfd9-450f-8bce-835837719688@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI2PR02CA0049.apcprd02.prod.outlook.com
- (2603:1096:4:196::7) To TYZPR03MB6896.apcprd03.prod.outlook.com
- (2603:1096:400:289::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A097DF42
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:14:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710472476; cv=none; b=ZGi7izQhCfFl+/xo4Ka4jsn1iGO6xlKd/xkMBr0NyDytDWgIKjp9UZ6+r5Hk1Ad90eFutcnef+kMBGkV5deNAdQC1fHGhsf7VfyaAzUZFmPbnS0n6qeWXvEufTSg14BbZ4RsKDKyPReq4SE0bpfIJYt7LFtmvv2AyICddRYX3mA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710472476; c=relaxed/simple;
+	bh=VobLpNMwR1j6KiM8Tjp5hnXMiVCDHRuZ75c/cHU52ts=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=bHCQb46h8fsnCsicpCzDno64RHVQioEZmOR71bFTqA5HSCev0cGauWoQV+xxty04DSC54N8nupVBbhuSeaM7wLcng+/4A9LPzXJXOrKeGR79g/0otgT1B2w9dLUEZ7zL28kYCuB7w5I6tpjJsORVKf19NOvySv/8X3on4JLTipg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=N0Afq1Uf; arc=none smtp.client-ip=209.85.128.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-60a5a11b59dso18375337b3.0
+        for <linux-kernel@vger.kernel.org>; Thu, 14 Mar 2024 20:14:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710472473; x=1711077273; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kltlRsU//wSb9eRIerjBP4RsEfMtLq7gwv46ptQ/oTs=;
+        b=N0Afq1Uf0Pws19q0KoB2HBAd6Iy/zu+XBJUkO6+p/H0J0pOIWrX6OMbxxemQthF6tN
+         w+lIjRRooozlbAjmqLtPsum2rSeqwIzrqVx00eEIa+E9aH9ZFtWB2GgMRhm81Hq+8n1p
+         BU0RaK0V/8QXA49xVqgZFg8xcOtJryiicCcZaNHaV41U5t6yi1eczp4SV4+RPOJdMHWM
+         EIi9DtvLqssPybkZT6P1Cnh7NupmA+PzA1yfDI/LzopF0YlDQVPpJSFBbAySSpOW17QC
+         Pyjc+2QS2inQaM+FncmuCLRY4ZHeV9ffExi+3yzhhZpweWDe8cJtDDOC3thSvZ4D6pLc
+         YJcw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710472473; x=1711077273;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kltlRsU//wSb9eRIerjBP4RsEfMtLq7gwv46ptQ/oTs=;
+        b=dwg1cZ3RYQsLaiHKxFsCPhE0/PgYlTfGeVdShEAIw8jEzOOz9upCxnKacVrUuAPkX1
+         LdmZwojvUopR758St1zNophydg4XRvc1H2SSa8dT07nO83rk9uZZtpaK+C4RNjXF+SZR
+         PNgCDN0NM7GECYwuJFvHHVfI1Kh7XASXFo3xqHOHBKdNYzzGnchT+oGkAgRr3D/nLXo6
+         n7hqdUu2N5DAiOg1yz4/PkXiDVxyt02LhQG8jkHXKu1XF9z2jlgl3GUXbPLt7KbAgfSH
+         pFHF3eQixX6SnFmRDpXmk8HYVnuNJlHWWRPGfR7ivw4PhSm+2OrgeUu6y2pXeaU607BF
+         gEMA==
+X-Forwarded-Encrypted: i=1; AJvYcCWNiQ8bcbVPkaE2MBPTeNNtut7HZyEFAm+UyiUdv9Fv06yadaOOpM2A9xX1UatN1U6g/SzdUU8WXIQvc6NfQiaLQdb901/MXOeZWInd
+X-Gm-Message-State: AOJu0Yxiy9r417+qGWKAOlnBZSyC4KoVv/kDAISyzV5Al9bb26tCem7w
+	k2xgoqTKCu7SkNtHnqGmGA9doemasKaGlizk5oj8+IlR74Ok3cY6ZV23CxBZZaMdMggLdEkj1OR
+	x7UrbC58qKOdzZHJSYjr0yGS9EcHZoAxuRPiE5g==
+X-Google-Smtp-Source: AGHT+IEZOzGrgTsuOx4rBel1EyOKlek8kFa0ONghcC5HsoRs52ve5zNEZFcAwjiKbm17kuVvOQfsjM1ZMaJeQJAWF+Y=
+X-Received: by 2002:a81:d244:0:b0:609:ef6d:9b30 with SMTP id
+ m4-20020a81d244000000b00609ef6d9b30mr3129892ywl.4.1710472473294; Thu, 14 Mar
+ 2024 20:14:33 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: TYZPR03MB6896:EE_|TYZPR03MB9049:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	pAMvUWoPeBdcnnjuxgXOod+qbulTqUVjnFztJR3GzuRQPEFuf4Pv/1Y2sXzsbvuo5FMsCluvdQy2SWowybuIbWLsuwVdRzMy22Zv3ybKdhXsIeOQYEXu7T70sIpjcM0NsEaG9YXovUXMMKvQ+mQ2y4kEagP898a7mMnuiuk2koa8oByqz04pAGtmz1jc0+ziqdap+5ljXTThiOhGsDKwcUkaZMKnWKwgSg1OAR86G48Et+mZyd9tINu8ZnKMn6gl4XGCs+J9JVcjkOP7E56kvn5rGD4Dajx2ohFZMhlaECfzB5eKgteuxJtli4MK7BJcycKnjXlp9mXrMXhXNE3+IW4FJ5dEpocny8rg6k+3uBNVogyp3aZS6zICyE7xbTKmltjMmKk+0lSasM6A7Jajd7KQw6mY08NHVhJQF7aPMAo1kMsJuPFMlgUhwtx5fjNkoeXyCS5Dh9Kjw3PoB7el0di7eKbG4Rifx4PCXGbufoby8PJ6PsiJsUcrGyGzl9rfzcQA5F4giI6JxD6UCBLZ5wNYgNyDPlWihU+J/gx0T0om32/mTuRAlmRnF7+YkG//cvM9kzrz+Izl24AyrvqB0bGbNQihJA4soEDSA7Gn1clpBcv/+XvMs4G9iDblyKJ9McbxDDyGOWC+5sCk1l6VAT5bkiFePZYhVmDMJwk1O7U=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB6896.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?QjlKVmJjUlZWNUUyeG1CQ1FxSWt0UHlLbytEczA4TGt5L2pGREdLUFIrVjBZ?=
- =?utf-8?B?a25zbkcwb1ZyekNQbmR6UmNnU2p5WS9BcnY3SUFTWkU3dGYzQUtzSjB0VUla?=
- =?utf-8?B?TGUrZWJoQTFYRmZnUGRTVk5OdkVWVEdhRHFJZm01eWsycW9CUTNLSGt3TDJj?=
- =?utf-8?B?R1dycDV0amtwUXhJK2dOS3E2MUdFcFl2bzNIV2lmazAyWm5jMUpUMFR3Y0Rl?=
- =?utf-8?B?c2EzNnZQYWpnOHV3ZVBXTjliVEtBMGN2YnF0cUhSM0loaVlWYUZaRDU0S3BF?=
- =?utf-8?B?cHFNbnRiVlFBMEhCZzFvWExTUGZ3QURrclNKSEc4aEJiRVAzcE5RNmM2QWFt?=
- =?utf-8?B?WU9XMVZROUxKY1hVQ0U4dktnWDVxZWJXcExuQ252Q2VINFFEZnFzMDZrREdq?=
- =?utf-8?B?RUh5TzVVdndtQzZBRlY3bUtNY0JJdG9Xc2FpNkYxM0NQenFzSWtoTml1OVBF?=
- =?utf-8?B?OUQ5UmFIVmowQTRpWk5GQythQWpvSzlZQnQ3ZFVYSlc0dDFNRll5QlRHc3pm?=
- =?utf-8?B?VXNEeWNVTlFzcXRuODhjdUFrMXBGMm9PdGxRZWFoL2JHK2pTSGJjMSs3OGRP?=
- =?utf-8?B?OVdoQkpkNk05OFFqbVdJNm9pQnZEcDdNVHJRRE82eVMvV09aaWcwVWIzdk9O?=
- =?utf-8?B?cVlVK3FUYjJCQStZZzJyRWY0OVk3ZDNYenh6NGQvVFBxQTUwc05Cd2l4RUs1?=
- =?utf-8?B?SUgrSkJkRzhKazQxbXdlUjJWa092YmpVTUVJTXBhTVlHaElKSUpLcm9OSXN3?=
- =?utf-8?B?RjkyVDdGQ1JrL3BFbTl3VThXQk9hM1llWWR4bW9OY3dqdmMzUjdQKytleEJn?=
- =?utf-8?B?ZHVBMEF4S3pRRGFSUG5TRTFkWFcwYVNOVjgvZUE5SW0vbVpUb01tL1VFOEdK?=
- =?utf-8?B?b3dJaFZHNlBKZzRDKzU4RSs2amY3Qlg3akIwSkJ6eUFNUnFrWWppMzJKMGRa?=
- =?utf-8?B?dHpxa3hiblUyUlpHeTFDL2cyRzdzQ2dYL1l4ZUh0b2pyMGVDeXdkZE0zeS9I?=
- =?utf-8?B?MkgwanV2NGtEVk1aaGRESW53Z0NvZmlCbjBLMkxkazNHUDNFS1V2MncybnBC?=
- =?utf-8?B?RmlMY0tNZG8wQWwycUlLbngySWxTQnpsa1RpY1JRZWFxREcwMmdKdDk3OFVI?=
- =?utf-8?B?dTJqcm9rYnZQQmlTVldoU29HOTRvbFhrdTNvck1ySTV4OU1BMnpQN28xNnF1?=
- =?utf-8?B?Q1UyL3lqcWNoS3NTZXphRkdUVzVPdjhmelVRVGVMdlNWN2VBTzJtYXVZejBi?=
- =?utf-8?B?cFZ4OUpTeW01YVJReVBrWVNMSTdnbmlnNERFVTcwUWtOM2lObCtTKzNUWjdI?=
- =?utf-8?B?SFErV3ZVN3loOEY3K2R5YXhQMWhtMk9lZ2dYWk1Uc0dJOEhYa214ZEdMeG9F?=
- =?utf-8?B?RlZMN25sN3NHK1REdHR4R3YyanoyTjBFV0lmeVRoM09reXplOUdyN01uQzh5?=
- =?utf-8?B?SElqN0Y1YlYxMzFTYWRrS3RVS29ialpuMUV5aGhrVmtmWHhxeWlqU3NDb1VS?=
- =?utf-8?B?TzNYcnBqcGpxTjk0bTNzci9lV1FBUUYrVnYyTEx1Vlp6VWFwdmJjakY5Y2Z5?=
- =?utf-8?B?SlhjWjZ2Q1c3eWt1WVRZb1paZXNsSmlSTTdXLzFDa3M1SjdOc2Vsb3BsV3NZ?=
- =?utf-8?B?UXVvalFvRGZ6NDZZR3hqbnN0S1F5VWVTUE5lUmdnY1kvNllnOHJDZFNtdkwz?=
- =?utf-8?B?UitzeTZsREtTckE4b2JXaG9lc3ArUmErc2JaSzlibWhJbExsLyszcUhZbW52?=
- =?utf-8?B?cTJCdWdmT2xqQ0xvWDhHSXdmK2lac1F5dldIdGttV1c4WDgwSVlNd2VwTldn?=
- =?utf-8?B?dnh4MWZCS1BGQVZJQkxoOXpKU0lRbGhDdVRvWndpMXk1SE5KM2lrM2JkRTRK?=
- =?utf-8?B?R2d0WnNEWXJnYTBaUENQTFJmZ0hmNDJScnFmcW9sY1pQSnIxL09XMFRlU05v?=
- =?utf-8?B?K3pBUFBXL0lXeFlBN3FCU3A2elMzTTVJcnk5c0dwZDFpaGhiTlJOTFc3UGNY?=
- =?utf-8?B?WXhtM0dyZDlnYjlHbEdpb2FHR1dDUWl2N002eE9ZR3dqeC90NXFvUnJZYTIr?=
- =?utf-8?B?VXRTUmFtUmkxMU1sQXZ0aXdwUXhUd3E1ekRhSmdjeHVHL3ZkclpMUm1DTUJY?=
- =?utf-8?B?anN1RW1BblZKR1kyQTFadm44NWZmL0JnUWNIL0tOK0d6QnBIZUdIWDAzMXBK?=
- =?utf-8?B?NXc9PQ==?=
-X-OriginatorOrg: amlogic.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 82c34e65-f177-4123-53d1-08dc449ddf2f
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB6896.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 03:13:22.6465
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 0df2add9-25ca-4b3a-acb4-c99ddf0b1114
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: SmAT9cBUPyaiHW0OJYn+/+A1wQCveCoKHb+UHgEY4EHm/QZTepqmYI0srUq1iUXzL6okqte/fu/rVDhkipi30QqKi21sx5JBUQM/h7avqN4=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB9049
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
+ <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42> <ZfNWojLB7qjjB0Zw@casper.infradead.org>
+In-Reply-To: <ZfNWojLB7qjjB0Zw@casper.infradead.org>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Thu, 14 Mar 2024 23:13:56 -0400
+Message-ID: <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Kent Overstreet <kent.overstreet@linux.dev>, "H. Peter Anvin" <hpa@zytor.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org, 
+	x86@kernel.org, bp@alien8.de, brauner@kernel.org, bristot@redhat.com, 
+	bsegall@google.com, dave.hansen@linux.intel.com, dianders@chromium.org, 
+	dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com, 
+	hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, 
+	jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com, 
+	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
+	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
+	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
+	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
+	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
+	tglx@linutronix.de, urezki@gmail.com, vincent.guittot@linaro.org, 
+	vschneid@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi Krzysztof,
-      Thanks for your reply.
+On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet wrote:
+> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox wrote:
+> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anvin wrote:
+> > > > Second, non-dynamic kernel memory is one of the core design decisio=
+ns in
+> > > > Linux from early on. This means there are lot of deeply embedded as=
+sumptions
+> > > > which would have to be untangled.
+> > >
+> > > I think there are other ways of getting the benefit that Pasha is see=
+king
+> > > without moving to dynamically allocated kernel memory.  One icky thin=
+g
+> > > that XFS does is punt work over to a kernel thread in order to use mo=
+re
+> > > stack!  That breaks a number of things including lockdep (because the
+> > > kernel thread doesn't own the lock, the thread waiting for the kernel
+> > > thread owns the lock).
+> > >
+> > > If we had segmented stacks, XFS could say "I need at least 6kB of sta=
+ck",
+> > > and if less than that was available, we could allocate a temporary
+> > > stack and switch to it.  I suspect Google would also be able to use t=
+his
+> > > API for their rare cases when they need more than 8kB of kernel stack=
+.
+> > > Who knows, we might all be able to use such a thing.
+> > >
+> > > I'd been thinking about this from the point of view of allocating mor=
+e
+> > > stack elsewhere in kernel space, but combining what Pasha has done he=
+re
+> > > with this idea might lead to a hybrid approach that works better; all=
+ocate
+> > > 32kB of vmap space per kernel thread, put 12kB of memory at the top o=
+f it,
+> > > rely on people using this "I need more stack" API correctly, and free=
+ the
+> > > excess pages on return to userspace.  No complicated "switch stacks" =
+API
+> > > needed, just an "ensure we have at least N bytes of stack remaining" =
+API.
 
-On 2024/3/14 14:58, Krzysztof Kozlowski wrote:
-> [ EXTERNAL EMAIL ]
-> 
-> On 14/03/2024 06:19, Xianwei Zhao wrote:
->>>> +
->>>> +             apb@fe000000 {
->>>> +                     compatible = "simple-bus";
->>>> +                     reg = <0x0 0xfe000000 0x0 0x480000>;
->>>> +                     #address-cells = <2>;
->>>> +                     #size-cells = <2>;
->>>> +                     ranges = <0x0 0x0 0x0 0xfe000000 0x0 0x480000>;
->>>> +
->>>> +                     uart_b: serial@7a000 {
->>>> +                             compatible = "amlogic,meson-s4-uart",
->>>
->>> If I'm not wrong, you need to create dt-binding alias for meson-a4-uart
->>> and use it as 3rd compatible string.
->>>
->> On UART module, A4 and A5 SoCs exactly the same as S4. There's no
->> difference.
-> 
-> That's not really the point. You are supposed to always provide SoC
-> specific compatible in front of the fallback. See writing bindings document.
-> 
-Will add bindings.
-If two chips use a common dtsi, and this module is in the common dtsi, 
-can I only add one to suit this two chips?
-> 
-> Best regards,
-> Krzysztof
-> 
+I like this approach! I think we could also consider having permanent
+big stacks for some kernel only threads like kvm-vcpu. A cooperative
+stack increase framework could work well and wouldn't negatively
+impact the performance of context switching. However, thorough
+analysis would be necessary to proactively identify potential stack
+overflow situations.
+
+> > Why would we need an "I need more stack" API? Pasha's approach seems
+> > like everything we need for what you're talking about.
+>
+> Because double faults are hard, possibly impossible, and the FRED approac=
+h
+> Peter described has extra overhead?  This was all described up-thread.
+
+Handling faults in #DF is possible. It requires code inspection to
+handle race conditions such as what was shown by tglx. However, as
+Andy pointed out, this is not supported by SDM as it is an abort
+context (yet we return from it because of ESPFIX64, so return is
+possible).
+
+My question, however, if we ignore memory savings and only consider
+reliability aspect of this feature.  What is better unconditionally
+crashing the machine because a guard page was reached, or printing a
+huge warning with a backtracing information about the offending stack,
+handling the fault, and survive? I know that historically Linus
+preferred WARN() to BUG() [1]. But, this is a somewhat different
+scenario compared to simple BUG vs WARN.
+
+Pasha
+
+[1] https://lore.kernel.org/all/Pine.LNX.4.44.0209091832160.1714-100000@hom=
+e.transmeta.com
 
