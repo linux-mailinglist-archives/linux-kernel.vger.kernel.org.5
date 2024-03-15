@@ -1,222 +1,175 @@
-Return-Path: <linux-kernel+bounces-104620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104621-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D21C87D113
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:19:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D944487D117
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:19:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D1791F23EE4
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:19:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 045F21C228B4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:19:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B0BE45BE2;
-	Fri, 15 Mar 2024 16:19:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 361EF45970;
+	Fri, 15 Mar 2024 16:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="Udwasl0b"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="AwkQfpIi"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2072.outbound.protection.outlook.com [40.107.244.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9224748CD4;
-	Fri, 15 Mar 2024 16:19:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710519552; cv=none; b=aanXnzUVMvHlLvW3gLvXxgMoByUgq5O6ZTwwePXVrWChxKEajRSrRZPtnA83TBWupg+TSzKMhY9egZI6Wlrld5nae3VzRlhCx/9+UezZlAkVwtKtwfinODZUETHVjK6XlgsHv4XL5mgmCmzjEWMH7Ta1Ey4rZ5Z+hgVxfy11fsY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710519552; c=relaxed/simple;
-	bh=QQsAjR+kGMVFuyXjJSPmujbn0DBRwHcrvDMQXYEigb8=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=vCehAtnaRZSns5ROVyE1lLpoxAYthbI5uPRC2bQ2EZv5M4OOuxRckLG7LdSYAI+r/ejscMR4cOaeI8da9mnOZwYdtgv0ASRHM8sDTSF1SxmmCKHWWHy8NqzruoElRXtzYgU7BVNKbN1IxM+LYcHo/PmV+hBVWnhbC4iEu3WeB1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=Udwasl0b; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240315161906euoutp023f51b8829ca9c0a161f04c8ee98e423e~8-Hb9e_AX2029320293euoutp02g;
-	Fri, 15 Mar 2024 16:19:06 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240315161906euoutp023f51b8829ca9c0a161f04c8ee98e423e~8-Hb9e_AX2029320293euoutp02g
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710519546;
-	bh=c/L7vmfRkaj9Artl8atZHp1ALKuj6yDCDcItezoA+SA=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=Udwasl0bR6s/7/RuUZ8YDtxFJewl+VHBclTOQTwpE+2pTPyFCSTfOYca4OJuecKYy
-	 slIFO66m8Y3UpteONCLuNpwf1PSDg2U9YShtprpysZmBPkkZklUw/cVqG+mS+p1HA9
-	 qvVe4eUUwIVFJ/aZnUju96ypopypkqWm1he89gyI=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240315161906eucas1p12620b84af9ba258c26234be29066b5b8~8-HbvB76x0476704767eucas1p1B;
-	Fri, 15 Mar 2024 16:19:06 +0000 (GMT)
-Received: from eucas1p1.samsung.com ( [182.198.249.206]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 2F.8C.09539.AF474F56; Fri, 15
-	Mar 2024 16:19:06 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTPA id
-	20240315161905eucas1p15f8ef9c2d676eb487db7ae13276d9e05~8-HbUZ6hT1838918389eucas1p1L;
-	Fri, 15 Mar 2024 16:19:05 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240315161905eusmtrp231bda70af5987a11d39b01f4d5398045~8-HbTmv-Z0988009880eusmtrp2U;
-	Fri, 15 Mar 2024 16:19:05 +0000 (GMT)
-X-AuditID: cbfec7f2-52bff70000002543-30-65f474faa253
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id A2.4E.10702.9F474F56; Fri, 15
-	Mar 2024 16:19:05 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240315161905eusmtip128d24675710f6d7055f6130ff148092e~8-HbETyh32377723777eusmtip1H;
-	Fri, 15 Mar 2024 16:19:05 +0000 (GMT)
-Received: from localhost (106.210.248.173) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Fri, 15 Mar 2024 16:19:04 +0000
-Date: Fri, 15 Mar 2024 17:19:03 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: Luis Chamberlain <mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>,
-	<netdev@vger.kernel.org>
-Subject: Re: [PATCH v2] sysctl: drop unused argument set_ownership()::table
-Message-ID: <20240315161903.cbz4jv5w23zh6yfx@joelS2.panther.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702B345BE7;
+	Fri, 15 Mar 2024 16:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.72
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710519575; cv=fail; b=SMyKCpjTMAcVsFGf9JTJ8L3aIVJD6p243DMC2lDarT0ctfIbacZ1VGn7eUN50s8NzsDpi8UOLHxBgwKs/9hOC/pnx3IAAc7g09TayqU5+jMt8Sj/avsXWQUB4DGXuZJQ+Q798bbv/LqyeMskaKSxLQi1YnB5ms08Y8dJtUcOC54=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710519575; c=relaxed/simple;
+	bh=AtH5Vdqs15mvfI/X5gRLuLGXtEdbzwtL1sz9zwgllbA=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=jZx+0dMNCyLlsiwAEuzEL5JWwuoGHiaKefCoF6AFXCmrJzjM447oBjPL2/lQSVrqATe/53ZbQfatUTEe1QLijyWSsgYT5XnwV2gj7bS51Xnc30YvX6h2IAbGByYrpN+7eMP1PJdMpK65Ex2/pvvbWevcnjKPCB4602PR4K2qevA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=AwkQfpIi; arc=fail smtp.client-ip=40.107.244.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=JQ+A/hKUVqM02aKCYt3YzK+7K/Ya5sOzutbEhSB0r/vDT6Lk6YFtTlWk8fOr+iw9uqcrgnKBsIVJH6Ou+V3TKnb6zMw8Yu1rTvntvdywgCojpCdepUFkQWOHKKMJg37NE1jlkwvV6zIZTjxvrz0feFwbSNsmZvArZXoPteHe0c2IR0PjPuSsnPC5WLQNFR5o0s6RIPinaIU3R0FNoP+oz40IGCberetMvN6Du79VE0sXHw29n+Kbdg8tuxGakBiPewNwFi3h5F+9pkpoMHa6sawiSxrNkZYEAdhrzfNh/wBW1TuMIthdBoYddSmzOsEZNof4FmxHzhKaInPiP5sfXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=t0ONWWbqSIvr0UJ118UiRTyVMmp5hWTD23bPXGikePE=;
+ b=X0eB4WB99+ji/lZzQAIe7DGq7KzT5WYIa3Xa8BsGcyxQOPjGcMKWA4z7tT1lOctGtgZlRzB4vs7azVeUp7TbJyrAycu2s3lClCopOwnBndLRCDzWE3w+W+tk8dIhjMYr/TljO9ZONwpsbu+YKRCjXR7MljgOzAkbIWb9PSGRc0/lDPAsa87clZeMtfi/wXODdC3Htbg2NIHW8d/GS5YB/rcWfkaTiNr41jyjkozoj7+zsPNQ1bSZ/Tl/b0XTYjzo+yNYCkYB4jpk1YYqrWnQtc27PwPE893ffJYwm317Zf1J282gzerMn+QVml2pBOWvJ0mamfdao+kyXlSevhxDwA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=t0ONWWbqSIvr0UJ118UiRTyVMmp5hWTD23bPXGikePE=;
+ b=AwkQfpIi+ps4Kk4DV/NqzGvtyMK91JhWmaK5PS7+DdjlvqM6O2O7tg0PDr7d/9qq2/EyqWzkuxOHY2ZJnxlj2dkcebZXyS2okFkjtDgOcpG0dBARG7WwIEKNNcw5NqVSzxkklfBhIdmWD5SQCrstFEDSi9ha4gaHvwOS8jGgylk=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amd.com;
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com (2603:10b6:510:28d::5)
+ by DM4PR12MB7693.namprd12.prod.outlook.com (2603:10b6:8:103::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Fri, 15 Mar
+ 2024 16:19:24 +0000
+Received: from PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::c325:df95:6683:b429]) by PH0PR12MB7982.namprd12.prod.outlook.com
+ ([fe80::c325:df95:6683:b429%6]) with mapi id 15.20.7362.035; Fri, 15 Mar 2024
+ 16:19:24 +0000
+Message-ID: <3802fb51-c419-4b8a-95a1-da605493505d@amd.com>
+Date: Fri, 15 Mar 2024 09:19:22 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 iwl-net] i40e: Prevent setting MTU if greater than MFS
+To: Erwan Velu <e.velu@criteo.com>, Tony Nguyen <anthony.l.nguyen@intel.com>,
+ Erwan Velu <erwanaliasr1@gmail.com>
+Cc: Jesse Brandeburg <jesse.brandeburg@intel.com>,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240313090719.33627-2-e.velu@criteo.com>
+ <4e203331-62f7-44e7-acd9-f684c30662de@amd.com>
+ <c0ccaef6-44eb-4851-b336-cdb06647e1d2@criteo.com>
+ <d16ff01c-4a01-4871-93de-a5c26a352301@amd.com>
+ <7b612db6-cec6-4873-8a38-fb4c97192aa2@criteo.com>
+ <8f4724f8-e831-12f6-d4e1-4700ea47b2a0@intel.com>
+ <4cd04119-8a93-4304-b1ce-88110788c8ef@criteo.com>
+Content-Language: en-US
+From: Brett Creeley <bcreeley@amd.com>
+In-Reply-To: <4cd04119-8a93-4304-b1ce-88110788c8ef@criteo.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SJ0PR03CA0133.namprd03.prod.outlook.com
+ (2603:10b6:a03:33c::18) To PH0PR12MB7982.namprd12.prod.outlook.com
+ (2603:10b6:510:28d::5)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="dcq2itrqq6m5yonn"
-Content-Disposition: inline
-In-Reply-To: <838812fc-d1ee-4088-a704-8b8f15caab13@t-8ch.de>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrMKsWRmVeSWpSXmKPExsWy7djPc7q/Sr6kGqzbymkx53wLi8XTY4/Y
-	Lc5051pc2NbHarFn70kWi8u75rBZ/P7xjMnixoSnjBbHFohZfDv9htGBy2N2w0UWjy0rbzJ5
-	LNhU6rFpVSebx/t9V9k8Pm+S8+jvPsYewB7FZZOSmpNZllqkb5fAlbHg9BeWgsnSFTvebGFr
-	YNwq0sXIySEhYCKx/uA1ti5GLg4hgRWMEsvftzFCOF8YJeZP62SGcD4zSvT2XGPpYuQAa9l/
-	KRQivpxRomXDeoSiDXsPsEA4Wxkllh1aygyyhEVAVeL7lGYWEJtNQEfi/Js7YHERARuJld8+
-	s4M0MAvsY5L4eLGNHSQhLOAt8XxjDyuIzSvgIPFhWguULShxcuYTsEHMAhUSJ860MIKcxCwg
-	LbH8HwdImBNo5pWnz1kgnlOW+DrpIxuEXStxasstJgh7N6fEgRZ5CNtF4uj8W+wQtrDEq+Nb
-	oGwZif875zOB3CYhMJlRYv+/D+wQzmqgzxq/Qk2ylmi58gSqw1Fi16sb7JAw4pO48VYQ4k4+
-	iUnbpjNDhHklOtqEIKrVJFbfe8MygVF5FpLPZiH5bBbCZxCmpsT6XfoooiDF2hLLFr5mhrBt
-	Jdate8+ygJF9FaN4amlxbnpqsWFearlecWJucWleul5yfu4mRmDaO/3v+KcdjHNffdQ7xMjE
-	wXiIUQWo+dGG1RcYpVjy8vNSlUR46xQ/pgrxpiRWVqUW5ccXleakFh9ilOZgURLnVU2RTxUS
-	SE8sSc1OTS1ILYLJMnFwSjUwze09qHlKeEZ9dK7J09cfvOQXnOB8tkTrrcDuaHEZvhalqkiH
-	khVPmG6Fa2dvv/zjYsw9zrmKG9+keVY/eSjz7k9X0NkdeTsPr3u/l+3Xfa0VRRt41m+ZOPeH
-	wEt/dVPf3XO+XtdPfLf61D6lPIOSJ8uNPOrm/rtdbOs+e/OR16afMt4rWp47+796MXPRSslF
-	N453zwo7y3/1bffVFSVGjwT7Lq27muTnnefqdX8bR9CM5fmVVcGrGB7qsZvOufQu3erWxJNv
-	zxx6npI2c5XqpdSpprryLYIdnkJyrxass9zyhsfhQX8lf/aKihnBoRU/HC+k3FY1rGJPs2XI
-	7WO/Lu8pcX6m/0WtOV/7dhoy3FViKc5INNRiLipOBAC6ohrC9gMAAA==
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFmpgleLIzCtJLcpLzFFi42I5/e/4Xd2fJV9SDV4+UrOYc76FxeLpsUfs
-	Fme6cy0ubOtjtdiz9ySLxeVdc9gsfv94xmRxY8JTRotjC8Qsvp1+w+jA5TG74SKLx5aVN5k8
-	Fmwq9di0qpPN4/2+q2wenzfJefR3H2MPYI/SsynKLy1JVcjILy6xVYo2tDDSM7S00DMysdQz
-	NDaPtTIyVdK3s0lJzcksSy3St0vQyzi+bA1rwUTpiiuHH7A0MG4W6WLk4JAQMJHYfym0i5GL
-	Q0hgKaPEhM4n7F2MnEBxGYmNX66yQtjCEn+udbFBFH1klFi+DiIhJLCVUWLDPRUQm0VAVeL7
-	lGYWEJtNQEfi/Js7zCC2iICNxMpvn9lBmpkF9jFJfLzYBrZBWMBb4vnGHrBBvAIOEh+mtbBC
-	bOhmktj+7AczREJQ4uTMJ2BTmQXKJK6dmcgOcjazgLTE8n8cIGFOoAVXnj5ngbhUWeLrpI9s
-	EHatxOe/zxgnMArPQjJpFpJJsxAmQYTVJf7Mu8SMIawtsWzha2YI21Zi3br3LAsY2VcxiqSW
-	Fuem5xYb6RUn5haX5qXrJefnbmIERv+2Yz+37GBc+eqj3iFGJg7GQ4wqQJ2PNqy+wCjFkpef
-	l6okwlun+DFViDclsbIqtSg/vqg0J7X4EKMpMBgnMkuJJucD01JeSbyhmYGpoYmZpYGppZmx
-	kjivZ0FHopBAemJJanZqakFqEUwfEwenVAOTnMj18pN71rUmXUgLc/w6Z1P/XkuhTmlxrs3K
-	1RZJKs8/eSow53zeseZM8Lx/FXNrKzTmb5/WKXCpIuh2dMdNb8dCo7Ifhulvwrc9aNWbfuCq
-	S/SZqbvOrzyYY6a4gE1i8v8e/p6NJyebtFlML+g29o1wipVtV7Y829B7tGDL4UTurg8Mcrb+
-	B8PvfJj3dG/R89OzrfTTtiw9evPdkYf59vHvHy55MkeO6Ua+gmme0g3NXw+yeYOvreR3v+Dm
-	t1MxxXZd5rqHtedXyzWvN90c8rRk7R3O5S47Tpqctr8qZ61v3ST7wiZUsl7u+qkDi1gnuFdz
-	/zzy4UDf/rN//J/+2KE0v/5P3vIPYecmZuwIV2Ipzkg01GIuKk4EAIzAD8+TAwAA
-X-CMS-MailID: 20240315161905eucas1p15f8ef9c2d676eb487db7ae13276d9e05
-X-Msg-Generator: CA
-X-RootMTR: 20240223155011eucas1p245e00a3dfd23f72997dac4952ebaeebf
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240223155011eucas1p245e00a3dfd23f72997dac4952ebaeebf
-References: <CGME20240223155011eucas1p245e00a3dfd23f72997dac4952ebaeebf@eucas1p2.samsung.com>
-	<20240223-sysctl-const-ownership-v2-1-f9ba1795aaf2@weissschuh.net>
-	<20240315154134.5qfq6wucxid5kfmc@joelS2.panther.com>
-	<838812fc-d1ee-4088-a704-8b8f15caab13@t-8ch.de>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR12MB7982:EE_|DM4PR12MB7693:EE_
+X-MS-Office365-Filtering-Correlation-Id: 8178cede-79a6-4dbb-eed9-08dc450bad69
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	JaxK3N7vM5wQahyp1lqXoIyYWzX9bN/+ic3MCYDLzLLD4sStEEv5GYS3EqsaF1ev6PlaPqy4YHZFqmwaJlyspthvZQo/IeP543D7wWj2xSO469dRQiulDPrCX1hIxsHxaOYnpfBX90634DO94z8i/G5sqsGI2BESXmkJ8DSep9t6ukh9vIeNsxyPXk2qxeX0gm0pIxixg+/6JL5/O9l7pnRxHry7/28QfMCC+fI4o2B7/DUDzA9ZrlqXtPGUSrcHytsfz+oWKuvWMFVYsmkyPwRVrSeAMKfVyAw2707L3o4vulYiO5LAMCuyBu5MRlnZ6G7DbrzFllFCwyOf2Kr+pu3Nd0EYh5wJoteOaGF7f3qGPIRLYgev2jm//QJldVbUtYYgibDoFH/zpUrPXj/PZ9aCy/4kq195sx8BTFkffIrG9ccnq1uUGolScfvzf1PSmEPv/IWDvJBXAEs09W1u+8lgGu1X2zJeeJ0k0fIRO9Xp2dZhquYqYebskWJAs/lGMsiNd7NkMaQGxhoqL5liXaxRZYlZKNhe8u7rMCq7H/4Xu2HnzB4kY0LX06ySurJU8eKlr7RxhU+X3KHoFnlEvyjWvMqRhmtk7MZ1Lg+b7s3sD1HgF7gJ6mw4gny68Az+WA71inVm+zGRzjy//TSL4gPXe3XrNFyrpSDUiA5nSL0=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR12MB7982.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?S2hlWWkyZkNzY0ZtaC9UV3o2ZFpNWkpCS3ZkOXNVTnd6eVRHTFkwdkkxZklP?=
+ =?utf-8?B?bVFXZ2I3UmU1cVBNbGtwakE3RVlrYzVacUxWQ1FSdmRjVDVXb0RJL2xKTFJr?=
+ =?utf-8?B?cms5NDc4QlVibElPVHZxQ2xHUzBYMmZEQTRzY3VBRURlZDZ0TWlLdU1NU0p4?=
+ =?utf-8?B?T1Y2a0RZaVpTYjVFK3hDV05MRHdWZWkyQWRxNi9ac3VkbTBBWjZXTFM0NjNK?=
+ =?utf-8?B?Ni9Qcmc2dUNUTS9TL2J2YmdPdStkdlVDbC9vWGtaeHlremhZQTFiVVdHVnBI?=
+ =?utf-8?B?WXQ1cUxscFV5dC9BSG4yZXN0M0pHbWJuQ3plaW9aM3JiZTAyckg5cWFRVStK?=
+ =?utf-8?B?c0wrK1BMN2NsVFlaTThyU2E0aWhQRXNJZjZLSm5WbFFTUXpFQXlld1RGcElH?=
+ =?utf-8?B?ZnpJZjljUldxdlhkZGhXY1BRTXdIKzVpQXNERGVIejc3Uy9mTXJDZVNJTGxn?=
+ =?utf-8?B?MTBpUXlZRE1ZM0Jib0FjODhxOENxZHdlVkF4U0ZiZk1IQzNsTTA3QUg2MnV3?=
+ =?utf-8?B?SlNZU0ZWUXhnV285UDZidzNGdFJGemV6d0ZPMTN6OEYyZEY2b1pSTXhvellO?=
+ =?utf-8?B?WTg1QWpOZEo2TjMrUm9RNkJBcU56N3JiY0VQcDcyekNqWFppMXhZRnBqSTJt?=
+ =?utf-8?B?ZlYycjBtTVFrMjE3Q054a0VDWk5aZ3JsRXZPY256MTFnOFlRNEFBcE9jYUlV?=
+ =?utf-8?B?dnpPL1BDdTJ5YWlBZTVCYm5aKy9LS0tqd0hwN2pqcnpMdm1qT3dnM0ZEd21n?=
+ =?utf-8?B?dnVqK2RNRFJvZnBaTCtIcGJqU0VJK1NVc1FqWUNKOWhRa0Z0Mnp0c2grK1JH?=
+ =?utf-8?B?U1B3dXlPZDM2Vm8rZEhFcDArOTgxSDBVN0VYblE5NG1wVy9vNDFHVTdydURt?=
+ =?utf-8?B?OUNUdVI5Z1FBelBTSHdRWTFEMzhiN3JNQ2xnUHNEWjVVWkUwNjg3eGlLcFMr?=
+ =?utf-8?B?dmhYQUw4Y3ZwUzBSRDAyb281dHdDOTFibUtkVFZFR1I5NW13WVl3Sk5FeXZk?=
+ =?utf-8?B?TTZhOXYxWXVkRDBVRlI3ZGg2NWt5VktRU25EQXdnKy9NQ2FuWFFOTXY5cUI2?=
+ =?utf-8?B?YnpjbHE3YXhmeXMwVkhoVXlqaEtLS1p4UHRSWHRPb1R1OUhkcWd1OHJ3TVNo?=
+ =?utf-8?B?c3ZoTHZ2SW95b0x5VmorTklZZVFxRnVTeURUL1IvZ1p1TUJMNHhpM0s2SFNr?=
+ =?utf-8?B?cE5YVWlCY2Jyd0gvMUlTaktzZml5V3Z5aSsrTWhhOXFPdFBTZXgyWi9UYW1U?=
+ =?utf-8?B?QldmU3Z5ZE5SRTF0eXNJUkROVU9DZHJJZ1N4cFJGWnFVVkNFVURER282dThX?=
+ =?utf-8?B?YUNsNllabHJYMUFNNVBWNjhmcUx3YndXcW5yemFDV2MxajE5TWEwSlFHUXo1?=
+ =?utf-8?B?akdTQWsyazlWaFpmMGJQQmtOOElKZThTTlpMa2lCd1JMdVVmZkhWM3RWamdo?=
+ =?utf-8?B?ZEpPSlBqY0YxZWphNVNpNUlNcUQzVm9yZU9WbmhIVFJybFVDcnd4ZzNEMyt5?=
+ =?utf-8?B?NVArMXB6Z1JnYTBmUE5EeTA1bmttRldReEhNdE9hMkR6REEyTHVxa3IxZnB6?=
+ =?utf-8?B?dkZXd1AyV0tRZEpOVWNqMzd6enQxbXFNRVp2a1ZMUGEzUkpMVXFPTk43Q3Ex?=
+ =?utf-8?B?bW1JdjdlUjJ4SXh1WkxVQ01yUUR3Q08zT1pDeUVzVWU4bEpoWHcwL0E2VVdn?=
+ =?utf-8?B?NmFRRktiTUxvbUxMMnFsYlpsT1FDSkNyYm5XTzIvTzZHMm84T0RyMWFscGZx?=
+ =?utf-8?B?K0l1U3VxdHRBNmpNbTA5LytJSEIyaDNVKzNwYnZSNGkya3dBZFo1Y2hlekhY?=
+ =?utf-8?B?MFU3V2xHekpYamVMOTlmbmo5Rm91SUZya1BQUER5L1lGbVNjcnBkT29qSFgw?=
+ =?utf-8?B?NWpOTE4yNnFwWHo2SnRIUk5PQ1hyQWtablJJZTM5VDZkeGhPWFAycXVucGlD?=
+ =?utf-8?B?aVdybk0zMlNIby8weGozZS9wUzhVSGpCNHVYNDFYSWczQlA1eTBzRFdlMnN3?=
+ =?utf-8?B?V0hodGZLeDY3dFFIUGMwQlhxK1d2QVlaaGZNek9kSGgyMkhZVjN2VmVCbFc2?=
+ =?utf-8?B?OStKZndXSmlGa3ltTjZsbXc2Mkk2dHhIaks5Ky93akhOOWhJaEVpRDFGSEhP?=
+ =?utf-8?Q?kk1ZR8sEQ1CGI3JXJ113Wv1/a?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8178cede-79a6-4dbb-eed9-08dc450bad69
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR12MB7982.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 16:19:23.7527
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: B6Ej2XsGgdzeUt8d9eSeDbnsAI8M9LRdnSjkWTlhiwfAly4tAg1ZHxtJQICQXQJjcGCtKfBVv+EKrjQmRrAqJg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB7693
 
---dcq2itrqq6m5yonn
-Content-Type: text/plain; charset="utf-8"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 15, 2024 at 04:56:54PM +0100, Thomas Wei=C3=9Fschuh wrote:
-> On 2024-03-15 16:41:34+0100, Joel Granados wrote:
-> > Hey Thomas
-> >=20
-> > Did you forget to compile? I'm seeing the following error when I
-> > compile:
->=20
-> Welp...
->=20
-> >   ...
-> >   ../fs/proc/proc_sysctl.c: In function =E2=80=98proc_sys_make_inode=E2=
-=80=99:
-> >   ../fs/proc/proc_sysctl.c:483:43: error: passing argument 2 of =E2=80=
-=98root->set_ownership=E2=80=99 from incompatible pointer type [-Werror=3Di=
-ncompatible-pointer-types]
-> >     483 |                 root->set_ownership(head, table, &inode->i_ui=
-d, &inode->i_gid);
-> >         |                                           ^~~~~
-> >         |                                           |
-> >         |                                           struct ctl_table *
-> >   ../fs/proc/proc_sysctl.c:483:43: note: expected =E2=80=98kuid_t *=E2=
-=80=99 but argument is of type =E2=80=98struct ctl_table *=E2=80=99
-> >   ../fs/proc/proc_sysctl.c:483:50: error: passing argument 3 of =E2=80=
-=98root->set_ownership=E2=80=99 from incompatible pointer type [-Werror=3Di=
-ncompatible-pointer-types]
-> >     483 |                 root->set_ownership(head, table, &inode->i_ui=
-d, &inode->i_gid);
-> >         |                                                  ^~~~~~~~~~~~~
-> >         |                                                  |
-> >         |                                                  kuid_t *
-> >   ../fs/proc/proc_sysctl.c:483:50: note: expected =E2=80=98kgid_t *=E2=
-=80=99 but argument is of type =E2=80=98kuid_t *=E2=80=99
-> >   ../fs/proc/proc_sysctl.c:483:17: error: too many arguments to functio=
-n =E2=80=98root->set_ownership=E2=80=99
-> >     483 |                 root->set_ownership(head, table, &inode->i_ui=
-d, &inode->i_gid);
-> >         |                 ^~~~
-> >   cc1: some warnings being treated as errors
-> >   make[5]: *** [../scripts/Makefile.build:243: fs/proc/proc_sysctl.o] E=
-rror 1
-> >     CC      fs/xfs/libxfs/xfs_dir2_node.o
-> >   make[5]: *** Waiting for unfinished jobs....
-> >   ...
-> >=20
-> > I'm guessing its just a matter of removing the table arg from
-> > proc_sys_make_inode?
->=20
-> Yes, for this error it's correct.
->=20
-> There are also new implementors of the set_ownership callback in ipc/
-> which need to be adapted.
->=20
-> I'll send a new revision.
-Thx. Not sure what your using as a base, but I suggest you use
-linux-next so you get al the stuff going into the rc.
 
-best
+On 3/15/2024 2:17 AM, Erwan Velu wrote:
+> Caution: This message originated from an External Source. Use proper 
+> caution when opening attachments, clicking links, or responding.
+> 
+> 
+> Le 14/03/2024 à 21:31, Tony Nguyen a écrit :
+>> [..]
+>> Setting the mfs size to max values during init and reset would better;
+>> this is what the ice driver does. However, this would take
+>> implementing new AdminQ calls. IMO this patch is ok to prevent the
+>> issue being reported and allow for ease of backport.
+>>
+> That was my first intention, ensure that no one else get stuck in the
+> same situation.
+> 
+> It would be nice to backport it to all stable releases once merged.
+> 
+> Erwan,
+> 
 
---=20
+I'm okay with this approach. Thanks.
 
-Joel Granados
-
---dcq2itrqq6m5yonn
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX0dPcACgkQupfNUreW
-QU81eQv/YATUMB0JjIPW8J4XRb/OFdpstOc0Yeqi/vJfhdfer0NWXpE86Bgfd4N6
-O2g7pfT829Uulvxa1eJM4kV1nxGxwverjTnM51+MhLsm4dgEkr7eKNQLQmqujiSD
-0fNWaKP2bApuYGS+KZxhU+cEJm7V40ytX3d+wFsAha4r7Ri2nqQZyAg4/7n7YLaK
-9mq7d49wJrBZD8mzccRRJ8nmzWgpILaSJz/wjh6afYY9d1saU6F4I7oyxYgZJIrE
-FCdliJTbAunj/EU32i3HHgEUFeIaGe3PQnnoFgXgbD2yRLhqwY0acLlo2gONDeVX
-RxfNxb2Im8S5XaWjZzD/slaXjYi/zifoLlDxkGKrEX72aIbkkaQcFLvcI5yi/Dod
-3mys2Ha1DWi9sjdpb5lmGILPKfG9hKW0ec381Ad1N6hXC9E/Jh8KfnQFJ9Z/v/qM
-+dnaahqgcDcR49MLl1QK0o/5ECoP6iineFLOtxlm2Dijag58PQ21x7i6HP7RAjyW
-bsR78PtN
-=IudT
------END PGP SIGNATURE-----
-
---dcq2itrqq6m5yonn--
+Brett
 
