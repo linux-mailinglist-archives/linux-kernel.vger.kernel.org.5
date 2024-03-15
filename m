@@ -1,149 +1,151 @@
-Return-Path: <linux-kernel+bounces-104868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4605F87D4CC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:05:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A31FE87D4CF
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 21:09:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 514FE1C22621
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:05:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 26E2328485F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 20:09:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 876E8535AC;
-	Fri, 15 Mar 2024 20:05:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44CB535D4;
+	Fri, 15 Mar 2024 20:09:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OfTIfm/d"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NbzuEcPO"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6A921EB2C;
-	Fri, 15 Mar 2024 20:05:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62DE1EB2C
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 20:09:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710533118; cv=none; b=U5u6jVxRIhe1hJzRBzndJ2ok7c/1haRWqz4cWH8qMjg9PpLufq83RP3vQ/UfxZANgEfTMeCoNYHn5oSm1KMrKpwfqbRRzRv2JNfhh6Wh+R4NA76bsrldQr9b5VBvNDxYiMKvP7F0NtW5nwgiPLRujd4BjEBvf9CHyhu1fITE4cI=
+	t=1710533356; cv=none; b=azLZybFQUQDaieISgp7HqWwYKDNpHUZdAGjJJtMvetLr0kloRclUGtHCPsXvk2mAWpbAq+eiJF/yI3l+FiDO2cKUFrLwSjipM8ZTjevWIDTPiduGzIGyMGtWKallAR9oN/wTz31KqR/vyt8r2vBiXlYPKVXqASvbXNeUDNpsyhE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710533118; c=relaxed/simple;
-	bh=JDikYGdvhgQ6ce6r8cfx1Umv0FK2QT3O6pY3JDKp72g=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PuHKp6kOxEsXVwm+dFVcgaPC5/ntZk6HRD9UxaFvPq+c8Lai6vgnZzE8ThE9lO54XA/UgLAqbPJmF5BxYATeMzLw1QIfvAiaNx0rwGXuFtlMdreWblJ2q5omFR+8eSYfPbYegvswZDD5M+Zp743hnDpW+q6/YmICuxz7Xq57qpA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OfTIfm/d; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1de0f92e649so16924135ad.0;
-        Fri, 15 Mar 2024 13:05:15 -0700 (PDT)
+	s=arc-20240116; t=1710533356; c=relaxed/simple;
+	bh=lAjciVBn7fEdF0vkatR5U3zbNKfVnP57tHInDU09ybk=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=UZSdwaIHsOgGKRKf9bZaEj6Tl+Ol9BzilWLTqYsqFI3P3N0Vc9w+YjVoLprkCbbPrEqVhLdL6Tx1lijIezQRFPx2Z5ssBZj+2NgY7mjo+TdrDym05D8cL/JMerZHtqExpS1RS07Vqd4SbdEXtVqDXCpto5uDIu76t1xxC/U/b+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NbzuEcPO; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a605154d0so30084837b3.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:09:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710533115; x=1711137915; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:from:to:cc:subject:date:message-id:reply-to;
-        bh=zNciN6yAfU6EO0nRalDFI22wSuWZGXtIWHjKTBGtV6w=;
-        b=OfTIfm/dZh6i+sNQgQ8cjEW4KZR4i8nQSuiIwwe7KswgGuFDSbYFd+MU0xPP4gkYjy
-         4C1wSeZFSLdY87QbdvTecLmIEdzwCGzz7q4yhCfRm6snt1OuW+7uFEwzYnvGsTjxGXWX
-         1Qt1UMVuoSF2WDAM2IdO3r7kBCibr1e13Uj3cSam7VZcabtAy8/rXWM4noaqVSMQcdrx
-         ehw5TMFHgVX8DmUeeS+9IC+HDoJTzvxdHZOxGhoF3CGq0JsbGrhBgMe/6Nz25TKsyjnp
-         pkx0UwedAAK3YwbP1Om10CaXAEV/QpI1IkPW97s5L3815pZhwguOQhxd9+HjZ9EYI6MU
-         F+Lg==
+        d=google.com; s=20230601; t=1710533352; x=1711138152; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=XbpSIycwsc2tWO8Q5CI8ZjMC/0xhm3/hIri+gWrvEyg=;
+        b=NbzuEcPOBY4VvI64L8EIzsAtCdos3OIYcEbxTucLU1d38+wML7Kgm2iOMJ0WEMSF0r
+         HRuela7Rn3ip05FLPyuU8xSQt+Z01H6JZshINoXwnCogpyJwc5Dx69U8ExZrD2vBV0D2
+         LZfY18Tsy6gu8WpLv/a7xBbp+qipLIpTLvE71wuXVGa6prSXUUu8fD5fqwf++Q4k3M8m
+         QmYhuCbErwM+FA7uH+1iDQ8dyv+chVSUJqrGSk3pfDpovRZ5HU9sImIrM0sOkO7oSXg0
+         VUtK0JEOn/6jHEzLc8ynwGjSsGJHFR6vY64sMNtm31B50EV9dk+ZpQwO/BKcdiklXPzH
+         B1HQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710533115; x=1711137915;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zNciN6yAfU6EO0nRalDFI22wSuWZGXtIWHjKTBGtV6w=;
-        b=KL5a0XYrfqW3nbcBWZ4CHBr1sJTKohoBKdjkEnprk3mxknJT1/ASOtZFsyhZPbo32A
-         eXJhiQsGMM7m2ACrHiCiLLOhW4krWJZN7ljpnlWc8BSukmQpYOK/A5Brj428+b4zwiWF
-         uFgxcduxmesFhTfAzfLjBZ78xF1uWNZKMeP2uIQOxXENl3kLvE9iezA5tvGLPq4WGj/Z
-         l5knWfmHEJW6UzWY5/jcTtqz+rtHR+hBRMCFzYKFeiO/V7oOfMFmoy2K1krlBUWspmif
-         5FReIQ6LDEc/9BVPqcsKG/6QSiJS2NrURYsYWGdDSVKeGlB968Sa4RAknDJonpdjNAsh
-         LAng==
-X-Forwarded-Encrypted: i=1; AJvYcCWC7v8nAKUG2l/kPqZZ2mvU6WhI1is++0SfCXNuq4jNJIedbdCmcEAS/r2fLTYdGs3mycud2eGjUvVAUGdaFb0G6c9LXveJPkDvx64my+7nMsbhmtkDMon+C0jtn7IKSBJUJGwU6V564vZdhQk=
-X-Gm-Message-State: AOJu0YxM28zyqREsHiu8UmUSEMogQqe4Z5pB8nDor6WjQgGKAkxt2pfv
-	bDPIJWx4zjczVUAJiMAlPT5wcCl2QbOtmI80rzMfL1sq+5V9C8aN
-X-Google-Smtp-Source: AGHT+IFDsHznpfjSrkKC30e32SUxLPzAFEXgiAYhhhxPbGyTfgGBJcXCy+p7JCZQNbFXuzg3tJo02Q==
-X-Received: by 2002:a17:902:e549:b0:1de:fdbd:9324 with SMTP id n9-20020a170902e54900b001defdbd9324mr1574180plf.10.1710533114949;
-        Fri, 15 Mar 2024 13:05:14 -0700 (PDT)
-Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id b12-20020a170902650c00b001dc96292774sm4342139plk.296.2024.03.15.13.05.13
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 13:05:13 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Message-ID: <75b89923-f78b-4661-bc6a-fee6c15367da@roeck-us.net>
-Date: Fri, 15 Mar 2024 13:05:12 -0700
+        d=1e100.net; s=20230601; t=1710533352; x=1711138152;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XbpSIycwsc2tWO8Q5CI8ZjMC/0xhm3/hIri+gWrvEyg=;
+        b=A4x2IT8XXdQZI69eRKcmlfu1Krl4DhCh3gVSPe4SdtUXH+qqqbbwcOSSlJANrvCcs6
+         cOPwEn35vs5GoEINz/mLAZAV3yMzCvs5E5Ep9lCgD0Kj2Bb05YbLuTzX3AMrOiaWdV61
+         K4rIAWr7aL3udfHAr9lsPXQb/tNXeAsQfQ+mJp6SzWeOFGJR7XO7N3HeOeNhxRil1lIn
+         Hd4R72Fj8PnSCzaqtc5OF8S9qYzrpdGFJs7f1jIUBm1sEMF7c0F+qNPMlHQLUt8PHCF5
+         sQXy5f4GeEpwE70hvpCc+cn4Bq3cC7mbspaMwNv+N3OBU1HfV4fcQYPDol1cFa8YBnXw
+         ACpQ==
+X-Gm-Message-State: AOJu0YwIGFkUjNh3SdG2lHef5xMXQCbNpjh8ExjTfQeqdwDsTvB9ruv6
+	pkDQNfBgYswAOa4WWPr/kDipkL5zK6rSP+3hy/Ry4BUzPLdByFRqH78gWYb3pRNlblRFkQFyyKn
+	5fxRDdQJ8k0GLH2d1ssj0Qw==
+X-Google-Smtp-Source: AGHT+IGv2B2BHSGgGnn03zVy0mQfCfkyTSQjukbCNgvH1W0pSmC4veeyN9vI+f495SthecQLixky26M+y4gOvBjVUQ==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:690c:3513:b0:60f:d74f:a5ba with
+ SMTP id fq19-20020a05690c351300b0060fd74fa5bamr454040ywb.2.1710533352687;
+ Fri, 15 Mar 2024 13:09:12 -0700 (PDT)
+Date: Fri, 15 Mar 2024 20:09:11 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] watchdog: lenovo_se10_wdt: Watchdog driver for Lenovo
- SE10 platform
-Content-Language: en-US
-To: Mark Pearson <mpearson-lenovo@squebb.ca>
-Cc: wim@linux-watchdog.org, linux-watchdog@vger.kernel.org,
- linux-kernel@vger.kernel.org, David Ober <dober@lenovo.com>
-References: <mpearson-lenovo@squebb.ca>
- <20240315195227.91282-1-mpearson-lenovo@squebb.ca>
-From: Guenter Roeck <linux@roeck-us.net>
-Autocrypt: addr=linux@roeck-us.net; keydata=
- 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
- mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
-In-Reply-To: <20240315195227.91282-1-mpearson-lenovo@squebb.ca>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0
+X-B4-Tracking: v=1; b=H4sIAOaq9GUC/43NTQ7CIBCG4as0sxYD9EfblfcwLihMy0SFBhqia
+ Xp3aXdujMv3S+aZBSIGwghdsUDARJG8y1EeCtBWuREZmdwguay4lIJFNwVy88C0RX2f1KwtU+e
+ mQtOcsDcc8uUUcKDXrl5vuS3F2Yf3/iSJbf3tJcEEK5Wuuaz7um3EZfR+fOBR+ydsYJJ/IDIjb a8wC0Zhyb+QdV0/Q4Zf7fwAAAA=
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710533351; l=2367;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=lAjciVBn7fEdF0vkatR5U3zbNKfVnP57tHInDU09ybk=; b=i4dhQ8hRHLCWukhlCP0iY3njxd/7+izprjcy6rYPHPAKA5+J+JsF2SwDFOHUnQaBn7m+z0px3
+ aw0OtHtVuojCRayqi83sDz3Y6oz2JQSt1/NMxR2iqAlg2vzIN7rU1x4
+X-Mailer: b4 0.12.3
+Message-ID: <20240315-snprintf-checkpatch-v3-1-a451e7664306@google.com>
+Subject: [PATCH v3] checkpatch: add check for snprintf to scnprintf
+From: Justin Stitt <justinstitt@google.com>
+To: Andy Whitcroft <apw@canonical.com>, Joe Perches <joe@perches.com>, 
+	Dwaipayan Ray <dwaipayanray1@gmail.com>, Lukas Bulwahn <lukas.bulwahn@gmail.com>
+Cc: linux-kernel@vger.kernel.org, Lee Jones <lee@kernel.org>, 
+	linux-hardening@vger.kernel.org, Kees Cook <keescook@chromium.org>, 
+	Finn Thain <fthain@linux-m68k.org>, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-On 3/15/24 12:52, Mark Pearson wrote:
-> Watchdog driver implementation for Lenovo SE10 platform.
-> 
-> Signed-off-by: Mark Pearson <mpearson-lenovo@squebb.ca>
-> Signed-off-by: David Ober <dober@lenovo.com>
+I am going to quote Lee Jones who has been doing some snprintf ->
+scnprintf refactorings:
 
-I don't like the "Found Lenovo SE10" noise in the probe function,
-but that isn't worth arguing about.
+"There is a general misunderstanding amongst engineers that
+{v}snprintf() returns the length of the data *actually* encoded into the
+destination array.  However, as per the C99 standard {v}snprintf()
+really returns the length of the data that *would have been* written if
+there were enough space for it.  This misunderstanding has led to
+buffer-overruns in the past.  It's generally considered safer to use the
+{v}scnprintf() variants in their place (or even sprintf() in simple
+cases).  So let's do that."
 
-Reviewed-by: Guenter Roeck <linux@roeck-us.net>
+To help prevent new instances of snprintf() from popping up, let's add a
+check to checkpatch.pl.
 
-Guenter
+Suggested-by: Finn Thain <fthain@linux-m68k.org>
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Changes in v3:
+- fix indentation
+- add reference link (https://github.com/KSPP/linux/issues/105) (thanks Joe)
+- Link to v2: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v2-1-9baeb59dae30@google.com
+
+Changes in v2:
+- Had a vim moment and deleted a character before sending the patch.
+- Replaced the character :)
+- Link to v1: https://lore.kernel.org/r/20240221-snprintf-checkpatch-v1-1-3ac5025b5961@google.com
+---
+From a discussion here [1].
+
+[1]: https://lore.kernel.org/all/0f9c95f9-2c14-eee6-7faf-635880edcea4@linux-m68k.org/
+---
+ scripts/checkpatch.pl | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/scripts/checkpatch.pl b/scripts/checkpatch.pl
+index 9c4c4a61bc83..69dfb7412014 100755
+--- a/scripts/checkpatch.pl
++++ b/scripts/checkpatch.pl
+@@ -7012,6 +7012,12 @@ sub process {
+ 			     "Prefer strscpy, strscpy_pad, or __nonstring over strncpy - see: https://github.com/KSPP/linux/issues/90\n" . $herecurr);
+ 		}
+ 
++# snprintf uses that should likely be {v}scnprintf
++		if ($line =~ /\bsnprintf\s*\(\s*/) {
++			WARN("SNPRINTF",
++			     "Prefer scnprintf over snprintf - see: https://github.com/KSPP/linux/issues/105\n" . $herecurr);
++		}
++
+ # ethtool_sprintf uses that should likely be ethtool_puts
+ 		if ($line =~ /\bethtool_sprintf\s*\(\s*$FuncArg\s*,\s*$FuncArg\s*\)/) {
+ 			if (WARN("PREFER_ETHTOOL_PUTS",
+
+---
+base-commit: b401b621758e46812da61fa58a67c3fd8d91de0d
+change-id: 20240221-snprintf-checkpatch-a864ed67ebd0
+
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
 
