@@ -1,202 +1,370 @@
-Return-Path: <linux-kernel+bounces-103971-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-103973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B93F87C74D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:45:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A32687C74F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 02:47:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 60845B20ED2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:45:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 40C0CB20EBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 01:47:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602B1613D;
-	Fri, 15 Mar 2024 01:45:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B2B054C96;
+	Fri, 15 Mar 2024 01:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AvR8DzNG"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QlBYgVYF"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE7154C8F;
-	Fri, 15 Mar 2024 01:45:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.12
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710467146; cv=fail; b=nnbZcb7McKMdbSREDkddPXf41UUpdWIvT67Uv3upla0NtXTbaiowyQJAqovbRQLhkGTCMeWfIO77DTQd3utvGwZH6a4hWP5AIZu6KgVDEXUyhECNZ0qaW72MnhO2LG7JtO5H5hNjRX5zGmEApwZrFcZIbTWcrtpHsqGgyfSlHI0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710467146; c=relaxed/simple;
-	bh=uNOsli3tnyistrfcmgUUWX6VFz6wQF0Y6Z6eU7cV0Ho=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=F2HpacydW95PrHFBI2ONn3iTUMkl9qDZM4ZhigQkJACgeSSqLeiPMKY2oQi0j+dP+bXXpejMCeNrshBV5IyaQlJkunJkmgi08+SouYQbnDdrzrxvub+p3h4zbd4C8AdzJT4bFfDzSV1nVVciIUKutnttcwDmyhOWssWnmKxvWQE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AvR8DzNG; arc=fail smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D1727476
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 01:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710467210; cv=none; b=nTjU+2K4Jmeb7LVfRgXbISHfKD/p/JSDP9BhpubBC1G9emur4/d2DJHPrDNMQpwHeDuSv/i8heCp4xbCfblotFrDnnc8oYUSkPjrkC5e2TkJT448G8JxydBkzb+d9UqA4Gu72iMnJjC/EeYTYCJT4LYq9swMWVQv9Kt38GFZQvI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710467210; c=relaxed/simple;
+	bh=l81d10+lHaftFL1YK7CpbPytTHQnfGv0yfai+oBbApQ=;
+	h=Message-ID:Date:MIME-Version:Cc:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=qVpny/22+Es1hlFRr3euKgDShTSSUrX9qqIQGUmd80fs4em/HAJDgqaPYGAXsmT9pieXD7eHYe8XG/XkPz7WXucZo+xOrDCcn0R/9iRIVncyRCndE2ZKB9ZI8Qe2bffj9b1rZYBRoTO4tybJcDsbpf5I+yq1i7gNqPQIajil1gc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QlBYgVYF; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710467145; x=1742003145;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=uNOsli3tnyistrfcmgUUWX6VFz6wQF0Y6Z6eU7cV0Ho=;
-  b=AvR8DzNGsRKxN6SCFSBEmUhQdftN5nWw23X88AdXBVGlWuQb0UaVjzsz
-   /Rnvmw7A+nzwCmmayV9lIuxZqnKtHw5UpUk9AMU4O20MG33ldR9NIhQio
-   rrpgRLQs7erI7d2JkpzIWB3iF6MbTOn37MQJsdkibBUtDKtry/RmuBXwI
-   T8Xl842JHPL2LVcEIbFHzvpt7b2uH04Xt0uvi0+bK1VEDZrH1/Vufv2DV
-   A4sQPnmQcUaE5WrfnV9n/SIoa6pL9wPzt5bK2hzA/lgzlFnzhxU2KuwYI
-   WdOogbib8GTESURSR89D0g995O8nS09pLjTNSGoG/FueZyKHxasTGVnuF
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="16773332"
+  t=1710467209; x=1742003209;
+  h=message-id:date:mime-version:cc:subject:to:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=l81d10+lHaftFL1YK7CpbPytTHQnfGv0yfai+oBbApQ=;
+  b=QlBYgVYFOmG1NHIPlnCM3emSqu1VD1h+WaoZlqXcpIwTCv3SyHjOImLd
+   Dul/BdaLYbZqdw4MfBXBpa224WvJ6z3zrUn9BRiTkzcxMcuS/PZpWEsrx
+   Dt2ePNTmQ8wqEmI+P8cskLVbPrK1Fgjd3Cg4Qa1fMbK0D6vnyu1xOhAWL
+   52PhSxvnLKzE7xvL2WtmqFPBptJNf/D2JVnlaeETXNcZsBUyawRG5as0B
+   vkRd7Zpie3e3PqLHuRWxuHc/fmAFSNPZDUNPiQyv933D4mYf0c1Gzljxe
+   lebkPwThBwsK1wvXNU/7h9m+WOKctnJp1Tuo6jay7m12iJ2Ere7HOVLU3
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="22780096"
 X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="16773332"
-Received: from orviesa003.jf.intel.com ([10.64.159.143])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:45:44 -0700
+   d="scan'208";a="22780096"
+Received: from orviesa010.jf.intel.com ([10.64.159.150])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 14 Mar 2024 18:46:48 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,127,1708416000"; 
-   d="scan'208";a="17206059"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa003.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 14 Mar 2024 18:45:44 -0700
-Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 18:45:43 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 18:45:43 -0700
-Received: from orsedg603.ED.cps.intel.com (10.7.248.4) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Thu, 14 Mar 2024 18:45:43 -0700
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
- by edgegateway.intel.com (134.134.137.100) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Thu, 14 Mar 2024 18:45:43 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Dx2Z6npd0pEgImcH3fqRsBpKtJqESk1qe1ANCP4a4rqNS7plSCjxbGmlqbB5OCHiG0jciYwwtGcd4O8hLmh6X3SgwYgX23mu/z9QTS1bJmspzjThzy6VhUskqt3z8GhG/b7YjbhgnIcfz+PA9y7gLqancJ27MegsLk0vL021U0h6xpB+8J/SjIy6D4DNeBFIMQao9HbzuGQqczlqUVP66VmHP44PozbamthPO3XTfEi7U/u8ebQk5+mOdXlzSR8vfBYNFkzTSzjVSViumxKWr4KbR+v8wAC+Jsqpiw/j6Q+p6z2DZPtbyEdKwg5GXNGdCp1EFhGT2zMLVAvPhwOiwA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Cnr70SRNYJTCVv7DQOoi11K4bRMyBTPFzY7jiEohtHI=;
- b=e/zBplh4+hsGHkJRaJmZ/RgYnfnt9TuHFRJUsMwKrQT8XMLBnf1ibBYGROwDndPxwLwgiS68bDb1zgRFnJ6L8sgW+GlbjeSxZy22D0WOQtBt7GnXoDmfq76JFB/3VXtrNXiy/yOb7n/zptZVNuoThXR6stMurjD5ZX1IPRW9Dw1QvXKjFwhVbD8XhUK5xosOJJhIOEHZSrLyrbFSG0PfAmR7VzpQWMd5yu7ZY1mXdbF8gdsEeMmY0IwTie7e3C5K+iVLf/0cAJ2bph7cJ9+x2Ng0YRubLQ8WcjrQivXpzfWq7IlxNnytaD/cUadY8y1YegRt3U+jbFhVOWoPa6GIog==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by DM6PR11MB4579.namprd11.prod.outlook.com (2603:10b6:5:2ab::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.18; Fri, 15 Mar
- 2024 01:45:41 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7386.015; Fri, 15 Mar 2024
- 01:45:41 +0000
-Date: Thu, 14 Mar 2024 18:45:38 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: Li Ming <ming4.li@intel.com>, <dan.j.williams@intel.com>,
-	<rrichter@amd.com>, <terry.bowman@amd.com>
-CC: <linux-cxl@vger.kernel.org>, <linux-kernel@vger.kernel.org>, Li Ming
-	<ming4.li@intel.com>
-Subject: Re: [RFC PATCH 0/6] Add support for root port RAS error handling
-Message-ID: <65f3a842988d6_a9b4294f7@dwillia2-mobl3.amr.corp.intel.com.notmuch>
-References: <20240313083602.239201-1-ming4.li@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240313083602.239201-1-ming4.li@intel.com>
-X-ClientProxiedBy: MW3PR06CA0011.namprd06.prod.outlook.com
- (2603:10b6:303:2a::16) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+   d="scan'208";a="12412987"
+Received: from allen-box.sh.intel.com (HELO [10.239.159.127]) ([10.239.159.127])
+  by orviesa010.jf.intel.com with ESMTP; 14 Mar 2024 18:46:45 -0700
+Message-ID: <e66064d7-c384-4f14-9459-ea21809b51b5@linux.intel.com>
+Date: Fri, 15 Mar 2024 09:46:06 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|DM6PR11MB4579:EE_
-X-MS-Office365-Filtering-Correlation-Id: 01d580d9-c36f-47ae-c3fd-08dc44919ee8
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Qfb9FYui7CjzqsywLggr2irtYX8XyE9hz+y0rNNAnEbNpDgbRjTnSKEGLq+E306PC29Txs5D3uPySNF6TiXmis51ytUuPpdGtFdAoEFMMTqslfop5ZS1QnYEFxczoxtJYXvn1jfUCVyHxX53R+n7ImBL+Xd+IWF0KApTtlX53Shzo0xv6J0OFZtulaKrWlAZQomuxAKXMVvCBDQoJ4GjCPWxGXaW4gjnPVl0V+mlHzHniVESupi7glgn25tFwSAs2MeXlNiXIo1koPm23aHP4q0ETahEaNULnf/A8g2PBXUz2sq0mUZARxIsHneTUBX8FeJ4rsjXWbRovirnO6elLukm0+07vHDVLh4y+y1lDdRaDvZHni4vCIQYRE3RlyvcG7tuZKSXYEu7EKt+oIAEQHAfZui3RAK0HBjfCtDFB27cVsIYY86fQga2Ka4tQ5RqTjqBga7xBoMaH29p+ZPc8RGJegfuI9NiE/pz/SXk3nrHcS1Gn/45fsvyY2jZ7sL2B6reO+Ka5UONDXZ6n7w2pOBGGAoJ0TL1/QR/a1pH4dWCYEn+8sxpiUAoH20OR/eMjw1/myZB3IqffQ/YsrFymOTb51I7CIiocirHo5+0LAiDKuoB3+wGlU6CTMDixXz/WEmRTYXDyoIktX07nKOZ3CdoSO3Q8URfgzU5HiGhDgA=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?n+BEDVCs/+wXvlr3SRQ1vlSrQPpywd8juvBJizhhsMCoy/IXyqXMjua+7F/o?=
- =?us-ascii?Q?Z1D8a6XVO8OIXRW/eLJvG7Kf3o7wWcFns6uH4JlyQCkLepMaCBbkd0bFZtZy?=
- =?us-ascii?Q?0TbX+WcjUqCGZ05ffdDHazeX4EhwfMa8U6ESKYg+5uXC0HH9GeJr+N7P8v5s?=
- =?us-ascii?Q?2hL7QKPGHJ7ryMgiNKmdsx1bBUsFoFDQ5MXRhibkTNFF/9it8qK51r/G3N10?=
- =?us-ascii?Q?mwcDvXmMKmscjLAeqgdelyZyXP2kSRuL8apc5KbKalC/OZY0eEGRz6QqHCHy?=
- =?us-ascii?Q?/B+zgXjxlEE/+uDAimLUnqAsr9ThI/lLYQFQk0roJQFDSAx0kbXOcp/qjivD?=
- =?us-ascii?Q?BFsUhqU3EmTDyFdba19d6JcCpsVN/3JNhqtT6Y7KdJZbXtW6WJmSyJFLYTr+?=
- =?us-ascii?Q?a5esHO1VwICgYvrEygJ8Yd4S7Rp1C1QiVPtHvG4ddh7KZERlSViJC4sq0OvE?=
- =?us-ascii?Q?OGI/g4HjnbfynlF0Ij5hVq7/FR+oPmcTqhUzfGSiiz3JDnDLKtMVPSSCP83m?=
- =?us-ascii?Q?IDF1wtmHOb2iz7m9bK8gDXpRFHNZGaVeMBBdVxI41YFydT2mPcAs5hE+3zMw?=
- =?us-ascii?Q?FDR5gpMp7yfxcwwHQI0Cpya6DHB4nZ9Jn+z4Ka6iVkFCenzBKJ7wkR3vKUj+?=
- =?us-ascii?Q?PHuicyf+U/lwbqi1pq1nIfmAuDfDlJ9Jn7DHJoVtYvwchR3L4coVGo+mUAfI?=
- =?us-ascii?Q?o8fPKW09fzr/CkoakDUJJ4OZd7IWGAnVOI9q2qEq7ILE+80afHtbvAkaCzkC?=
- =?us-ascii?Q?wECDyKZINS7cFuOCzZkS8Gn42OIK/MS1E2RAeSr/PghwQQNERjZiv9avGwMp?=
- =?us-ascii?Q?GlCBoNNekwyLJ0D2IUvQUeIgsdEvWYop7SBpFz3SzOHgTEkb0s48dxcm8DXW?=
- =?us-ascii?Q?tWmIR9dDjHba7QgZygsTkpSYGWqjj4IMoVkuHrDt683d3ZuQ+87ne7JWNZjF?=
- =?us-ascii?Q?kKgqJ8/BcsPl8/0zi+nku8gKM1RUMpAttZX+q04sUO8nYzXDbbhJJ3zOsvzx?=
- =?us-ascii?Q?EGE88pP0jHF/7EbXPXm0U//0+ZghVeoKvoy+pUpaKLDTYske3+GJ/5RjU64Z?=
- =?us-ascii?Q?UajvwXxCh0pCviwabr1Jpj4aBtJYdHj+vLk3ROaascTlmXepqUnyHZlGB/B8?=
- =?us-ascii?Q?XAtzhqawmqfGodxn256DcO6fOxHCwgDvbE9ewTtsoygwChC2moiaZj8h0KXs?=
- =?us-ascii?Q?ldBMIon5UaOIg8rArRHM1LKzEKEZWBy2lVA9EpVYFqq7zIMVqx61o4wNYwZB?=
- =?us-ascii?Q?saD7ZbXXZ9LmOJI+jd8IwPPWnOY17VygGbkQVfVU3pi/MjxRxcX6mVRPdLk8?=
- =?us-ascii?Q?Nu5VP/OFAcx5GQXaEeHlfK3oJWyd9zdpRY9O35Jlp34w6aW3/ayGsm8qH3Gh?=
- =?us-ascii?Q?ECtndWa8mx9F0MXOY/JSS0zRUjQG/kkLkSzeEvK1w3EkM2wWzlISf7k3a4pf?=
- =?us-ascii?Q?GMB+3Ul0wuR3RY8WOor71qdxZczg0GtsOA98JCMh3mcKSj6is3kUEnFkKiW+?=
- =?us-ascii?Q?HvCQtrOakoRYOL4I/mU8pBe9K5m+ZSMobLyywdJ/j4LsHK372pAbC2CmEtlR?=
- =?us-ascii?Q?vv3CEhMpbI920hXm3knLr0D1bw0EpQUC2naPmKRZvM6nqUYyn2BRPsBT9Fe4?=
- =?us-ascii?Q?MQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01d580d9-c36f-47ae-c3fd-08dc44919ee8
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 01:45:40.9136
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 06Cl3Sxs3uTBdqM0DWrFFl7VJ/d2PAePpXIxrFwKDGgl3cmE0Ks9AtJ7z75WjDrv0BR3oz3AvNUhEOyST9T2TpAYShxvNsDVWnAPXaybsNM=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4579
-X-OriginatorOrg: intel.com
+User-Agent: Mozilla Thunderbird
+Cc: baolu.lu@linux.intel.com, Kevin Tian <kevin.tian@intel.com>,
+ Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+ Robin Murphy <robin.murphy@arm.com>,
+ Jean-Philippe Brucker <jean-philippe@linaro.org>,
+ Nicolin Chen <nicolinc@nvidia.com>, Yi Liu <yi.l.liu@intel.com>,
+ Jacob Pan <jacob.jun.pan@linux.intel.com>,
+ Joel Granados <j.granados@samsung.com>, iommu@lists.linux.dev,
+ virtualization@lists.linux-foundation.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 4/8] iommufd: Add iommufd fault object
+Content-Language: en-US
+To: Jason Gunthorpe <jgg@ziepe.ca>
+References: <20240122073903.24406-1-baolu.lu@linux.intel.com>
+ <20240122073903.24406-5-baolu.lu@linux.intel.com>
+ <20240308180332.GX9225@ziepe.ca>
+From: Baolu Lu <baolu.lu@linux.intel.com>
+In-Reply-To: <20240308180332.GX9225@ziepe.ca>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Li Ming wrote:
-> Protocol errors signaled to a CXL root port may be captured by a Root
-> Complex Event Collector(RCEC). If those errors are not cleared and
-> reported the system owner loses forensic information for system failure
-> analysis.
+On 3/9/24 2:03 AM, Jason Gunthorpe wrote:
+> On Mon, Jan 22, 2024 at 03:38:59PM +0800, Lu Baolu wrote:
+>> --- /dev/null
+>> +++ b/drivers/iommu/iommufd/fault.c
+>> @@ -0,0 +1,255 @@
+>> +// SPDX-License-Identifier: GPL-2.0-only
+>> +/* Copyright (C) 2024 Intel Corporation
+>> + */
+>> +#define pr_fmt(fmt) "iommufd: " fmt
+>> +
+>> +#include <linux/file.h>
+>> +#include <linux/fs.h>
+>> +#include <linux/module.h>
+>> +#include <linux/mutex.h>
+>> +#include <linux/iommufd.h>
+>> +#include <linux/poll.h>
+>> +#include <linux/anon_inodes.h>
+>> +#include <uapi/linux/iommufd.h>
+>> +
+>> +#include "iommufd_private.h"
+>> +
+>> +static int device_add_fault(struct iopf_group *group)
+>> +{
+>> +	struct iommufd_device *idev = group->cookie->private;
+>> +	void *curr;
+>> +
+>> +	curr = xa_cmpxchg(&idev->faults, group->last_fault.fault.prm.grpid,
+>> +			  NULL, group, GFP_KERNEL);
+>> +
+>> +	return curr ? xa_err(curr) : 0;
+>> +}
+>> +
+>> +static void device_remove_fault(struct iopf_group *group)
+>> +{
+>> +	struct iommufd_device *idev = group->cookie->private;
+>> +
+>> +	xa_store(&idev->faults, group->last_fault.fault.prm.grpid,
+>> +		 NULL, GFP_KERNEL);
 > 
-> Per CXL r3.1 section 9.18.1.5, the recommendation for this case from CXL
-> specification is the 'Else' statement in 'IMPLEMENTATION NODE' under
-> 'Table 9-24 RDPAS Structure':
+> xa_erase ?
+
+Yes. Sure.
+
+> Is grpid OK to use this way? Doesn't it come from the originating
+> device?
+
+The group ID is generated by the hardware. Here, we use it as an index
+in the fault array to ensure it can be quickly retrieved in the page
+fault response path.
+
+>> +void iommufd_fault_destroy(struct iommufd_object *obj)
+>> +{
+>> +	struct iommufd_fault *fault = container_of(obj, struct iommufd_fault, obj);
+>> +	struct iopf_group *group, *next;
+>> +
+>> +	mutex_lock(&fault->mutex);
+>> +	list_for_each_entry_safe(group, next, &fault->deliver, node) {
+>> +		list_del(&group->node);
+>> +		iopf_group_response(group, IOMMU_PAGE_RESP_INVALID);
+>> +		iopf_free_group(group);
+>> +	}
+>> +	list_for_each_entry_safe(group, next, &fault->response, node) {
+>> +		list_del(&group->node);
+>> +		device_remove_fault(group);
+>> +		iopf_group_response(group, IOMMU_PAGE_RESP_INVALID);
+>> +		iopf_free_group(group);
+>> +	}
+>> +	mutex_unlock(&fault->mutex);
+>> +
+>> +	mutex_destroy(&fault->mutex);
 > 
-> 	"Probe all CXL Downstream Ports and determine whether they have logged an
-> 	error in the CXL.io or CXL.cachemem status registers."
+> It is really weird to lock a mutex we are about to destroy? At this
+> point the refcount on the iommufd_object is zero so there had better
+> not be any other threads with access to this pointer!
+
+You are right. I will remove the lock/unlock and add a comment instead.
+
 > 
-> The CXL subsystem already supports RCH RAS Error handling that has a
-> dependency on the RCEC. Reuse and extend that RCH topoogy support to
-> handle reported errors in the VH topology case. The implementation is
-> composed of:
-> * Provide a new interface from RCEC side to support walk all devices
->   under RCEC and RCEC associated bus range. PCIe AER core uses this
->   interface to walk all CXL endpoints and all CXL root ports under the
->   bus ranges.
-> * Update the PCIe AER core to enable Uncorrectable Internal Errors and
->   Correctable Internal Errors report for root ports.
+>> +static ssize_t iommufd_fault_fops_read(struct file *filep, char __user *buf,
+>> +				       size_t count, loff_t *ppos)
+>> +{
+>> +	size_t fault_size = sizeof(struct iommu_hwpt_pgfault);
+>> +	struct iommufd_fault *fault = filep->private_data;
+>> +	struct iommu_hwpt_pgfault data;
+>> +	struct iommufd_device *idev;
+>> +	struct iopf_group *group;
+>> +	struct iopf_fault *iopf;
+>> +	size_t done = 0;
+>> +	int rc;
+>> +
+>> +	if (*ppos || count % fault_size)
+>> +		return -ESPIPE;
+>> +
+>> +	mutex_lock(&fault->mutex);
+>> +	while (!list_empty(&fault->deliver) && count > done) {
+>> +		group = list_first_entry(&fault->deliver,
+>> +					 struct iopf_group, node);
+>> +
+>> +		if (list_count_nodes(&group->faults) * fault_size > count - done)
+>> +			break;
+>> +
+>> +		idev = (struct iommufd_device *)group->cookie->private;
+>> +		list_for_each_entry(iopf, &group->faults, list) {
+>> +			iommufd_compose_fault_message(&iopf->fault, &data, idev);
+>> +			rc = copy_to_user(buf + done, &data, fault_size);
+>> +			if (rc)
+>> +				goto err_unlock;
+>> +			done += fault_size;
+>> +		}
+>> +
+>> +		rc = device_add_fault(group);
+> 
+> See I wonder if this should be some xa_alloc or something instead of
+> trying to use the grpid?
 
-Thanks for the above background.
+So this magic number will be passed to user space in the fault message.
+And the user will then include this number in its response message. The
+response message is valid only when the magic number matches. Do I get
+you correctly?
 
-> * Invoke the cxl_pci error handler for RCEC reported errors.
+> 
+>> +	while (!list_empty(&fault->response) && count > done) {
+>> +		rc = copy_from_user(&response, buf + done, response_size);
+>> +		if (rc)
+>> +			break;
+>> +
+>> +		idev = container_of(iommufd_get_object(fault->ictx,
+>> +						       response.dev_id,
+>> +						       IOMMUFD_OBJ_DEVICE),
+>> +				    struct iommufd_device, obj);
+> 
+> It seems unfortunate we do this lookup for every iteration of the loop,
+> I would lift it up and cache it..
 
-So what do you expect happens when a switch is involved? In the RCH case
-it knows that the only thing that can fire RCEC is a root complex
-integrated endpoint implementation driven by cxl_pci. In the VH case it
-could be a switch.
+Okay.
 
-> * Handle root-port errors in the cxl_pci handler when the device is
->   direct attached.
+> 
+>> +		if (IS_ERR(idev))
+>> +			break;
+>> +
+>> +		group = device_get_fault(idev, response.grpid);
+> 
+> This looks locked wrong, it should hold the fault mutex here and we
+> should probably do xchng to zero it at the same time we fetch it.
 
-I do expect direct-attach to be a predominant use case, but I want to
-make sure that the implementation at least does not make the switch port
-error handling case more difficult to implement.
+Okay, will fix it.
+
+> 
+>> +		if (!group ||
+>> +		    response.addr != group->last_fault.fault.prm.addr ||
+>> +		    ((group->last_fault.fault.prm.flags & IOMMU_FAULT_PAGE_REQUEST_PASID_VALID) &&
+>> +		      response.pasid != group->last_fault.fault.prm.pasid)) {
+> 
+> Why? If grpid is unique then just trust it.
+
+I was just considering that we should add some sanity check here to
+ensure the response message is composed in the right way.
+
+> 
+>> +			iommufd_put_object(fault->ictx, &idev->obj);
+>> +			break;
+>> +		}
+>> +
+>> +		iopf_group_response(group, response.code);
+>> +
+>> +		mutex_lock(&fault->mutex);
+>> +		list_del(&group->node);
+>> +		mutex_unlock(&fault->mutex);
+>> +
+>> +		device_remove_fault(group);
+>> +		iopf_free_group(group);
+>> +		done += response_size;
+>> +
+>> +		iommufd_put_object(fault->ictx, &idev->obj);
+>> +	}
+>> +
+>> +	return done;
+>> +}
+>> +
+>> +static __poll_t iommufd_fault_fops_poll(struct file *filep,
+>> +					struct poll_table_struct *wait)
+>> +{
+>> +	struct iommufd_fault *fault = filep->private_data;
+>> +	__poll_t pollflags = 0;
+>> +
+>> +	poll_wait(filep, &fault->wait_queue, wait);
+>> +	mutex_lock(&fault->mutex);
+>> +	if (!list_empty(&fault->deliver))
+>> +		pollflags = EPOLLIN | EPOLLRDNORM;
+>> +	mutex_unlock(&fault->mutex);
+>> +
+>> +	return pollflags;
+>> +}
+>> +
+>> +static const struct file_operations iommufd_fault_fops = {
+>> +	.owner		= THIS_MODULE,
+>> +	.open		= nonseekable_open,
+>> +	.read		= iommufd_fault_fops_read,
+>> +	.write		= iommufd_fault_fops_write,
+>> +	.poll		= iommufd_fault_fops_poll,
+>> +	.llseek		= no_llseek,
+>> +};
+> 
+> No release? That seems wrong..
+
+Yes. Will fix it.
+
+> 
+>> +static int get_fault_fd(struct iommufd_fault *fault)
+>> +{
+>> +	struct file *filep;
+>> +	int fdno;
+>> +
+>> +	fdno = get_unused_fd_flags(O_CLOEXEC);
+>> +	if (fdno < 0)
+>> +		return fdno;
+>> +
+>> +	filep = anon_inode_getfile("[iommufd-pgfault]", &iommufd_fault_fops,
+>> +				   fault, O_RDWR);
+>                                     ^^^^^^
+> 
+> See here you stick the iommufd_object into the FD but we don't
+> refcount it...
+> 
+> And iommufd_fault_destroy() doesn't do anything about this, so it just
+> UAFs the fault memory in the FD.
+> 
+> You need to refcount the iommufd_object here and add a release
+> function for the fd to put it back
+> 
+> *and* this FD needs to take a reference on the base iommufd_ctx fd too
+> as we can't tolerate them being destroyed out of sequence.
+
+Good catch. I will fix it.
+
+> 
+>> +int iommufd_fault_alloc(struct iommufd_ucmd *ucmd)
+>> +{
+>> +	struct iommu_fault_alloc *cmd = ucmd->cmd;
+>> +	struct iommufd_fault *fault;
+>> +	int rc;
+>> +
+>> +	if (cmd->flags)
+>> +		return -EOPNOTSUPP;
+>> +
+>> +	fault = iommufd_object_alloc(ucmd->ictx, fault, IOMMUFD_OBJ_FAULT);
+>> +	if (IS_ERR(fault))
+>> +		return PTR_ERR(fault);
+>> +
+>> +	fault->ictx = ucmd->ictx;
+>> +	INIT_LIST_HEAD(&fault->deliver);
+>> +	INIT_LIST_HEAD(&fault->response);
+>> +	mutex_init(&fault->mutex);
+>> +	init_waitqueue_head(&fault->wait_queue);
+>> +
+>> +	rc = get_fault_fd(fault);
+>> +	if (rc < 0)
+>> +		goto out_abort;
+> 
+> And this is ordered wrong, fd_install has to happen after return to
+> user space is guarenteed as it cannot be undone.
+> 
+>> +	cmd->out_fault_id = fault->obj.id;
+>> +	cmd->out_fault_fd = rc;
+>> +
+>> +	rc = iommufd_ucmd_respond(ucmd, sizeof(*cmd));
+>> +	if (rc)
+>> +		goto out_abort;
+>> +	iommufd_object_finalize(ucmd->ictx, &fault->obj);
+> 
+> fd_install() goes here
+
+Yes. Sure.
+
+> 
+>> +	return 0;
+>> +out_abort:
+>> +	iommufd_object_abort_and_destroy(ucmd->ictx, &fault->obj);
+>> +
+>> +	return rc;
+>> +}
+> 
+> Jason
+
+Best regards,
+baolu
 
