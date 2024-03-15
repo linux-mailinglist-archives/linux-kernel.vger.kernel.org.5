@@ -1,139 +1,108 @@
-Return-Path: <linux-kernel+bounces-104576-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B1E187D042
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:28:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A98DF87D001
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:16:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BFFF3B20D45
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:28:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DADE31C203AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:16:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54AF03FB09;
-	Fri, 15 Mar 2024 15:28:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340C740BE7;
+	Fri, 15 Mar 2024 15:16:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="RDUH/F58"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="aCWcEKG7"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 64A233EA77
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:28:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 450463F9E1;
+	Fri, 15 Mar 2024 15:16:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710516505; cv=none; b=HLFcCBkMhLJd9hdJbz9c6AW4RKKbQRgDjsZoMWO4CZb2Os0X+31lXfCADnLeLekq8nO91CYoKajCcgcnwBbgfttdimhFuQFRnBIWoi7RoMdzvQ6/qpfqEJpWQE2AjiXWWSDen/r9YgS56TZYN2I0sOoYSK6Qo03BNS3GFXfHA7s=
+	t=1710515787; cv=none; b=hHzX/iTTRl6VU8S+L3naiAbO9AcAoNhShvh0hED/9F+BCQGrFCYcHhuuqWreD0RC56YBIdpkkEylRF3UrO86o/01xzi5+zPpdXSk9aoLjrrDN33DvPUE0n1z0QwZgbqbrLtuWlLE/qD4EXRvT4ncUjYnLsnw18qB9VQBDxPK3xc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710516505; c=relaxed/simple;
-	bh=nXV5CjRW8BJxdHttD1h3qTKVpNuVLPLzdexACQdeKv8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=dVO9ggQaYeFE+gH/9RX9jUhhJNtJwebLmhx1owhkqkjgQBKUBSHZgX366v1CmvymyI9BVQyOo8Z4gDpgCH0viqcYMVgVvczylHq4zAHuoMH1yS7pgio6kAjn2wSspks6l0piOkh+lUrB8i4SPYuStPnLIk4QHvZYJgzbC4ufrHo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=RDUH/F58; arc=none smtp.client-ip=209.85.208.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d23114b19dso26189511fa.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:28:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710516501; x=1711121301; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Vy8mkoyNdDIbEjZYoeFWO0a66QImPA2CQk2NlxXrdT8=;
-        b=RDUH/F58IzmZGR1XsoS9cCPO8DVtt7YCQurAjajcjlgtmBK5eTt0YvCt5lTcFxUkzY
-         XMdtGRmrRgb6aa3jMGFShWUwnUFYaWBHSzSpaS+BvOuCyFX0j6Rqr8bI0PDrWT9q4Q8z
-         1uW+GVMIoiO54fIz+qicUm4aeilZKeQOr0/qHC5Zabw0I6jKga4Je69l1jXzeIu5U9Ql
-         tN3NqVixoHv3Wr0kflgtKTDLtTgqCOG6wSzSfpv9uFadFNdtLzI1pC+FXggOL+uZDSaa
-         AqguPu454kElSVhcwURQe0jrbXcZ0Jc/+QOFgmrNXKdzAQSyXJSYVbHbbKsm0c4lEZeB
-         7r0A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710516501; x=1711121301;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Vy8mkoyNdDIbEjZYoeFWO0a66QImPA2CQk2NlxXrdT8=;
-        b=MEPJvsqo22CoCLnXGIn7ICcQPzuCS8CV1FYa06WzuAbgaEgzJtrPMzSWvTqTSl/8Pu
-         dq8IaVhcbPKgMELiYO+J+8dr802iaoOV7uv3lxQfZQ1Bd9qxOyHSvTTGI3/JyakOIbp1
-         6s87xjm4TLPWtyRqeiBnSV1WuCdMmoC+c9uMHq7WE3eDu8oRtuC+4mEsCDTZWEmyAiNi
-         dG71tWPb4KR/Y24DlrFVuPqVLX/3zR7dJEwuSrdvz61XrKjPk1RtiWViOUsKf7myGe88
-         zUD1MeprJfsmpRlLedrfv1wx9XSSkbmREFvZPAX6cfeiS3sennp5QZBKYcAyFCUBWcMd
-         EP9Q==
-X-Forwarded-Encrypted: i=1; AJvYcCUcPRjxR8oeD8WN6JgxhnNNUh9rK4kraepDumM6bb/9VYpzwLcp4gK8F+/H5yBjzGUlKHFlJEnNkqWOHCqVHRIaKn5ML/MZcLtzT8Bx
-X-Gm-Message-State: AOJu0YzgMq4Cx8mra42NwU5lWmG7/fPG24es4RLahos7ROSE+yzotVVt
-	ChUhx6PSMkq6vmZ9pNbdAJnZM9VXHuAkUYDB8ulCNotdA4AUturO5e2X0Rgcxw4=
-X-Google-Smtp-Source: AGHT+IEv4KiX0VUKEaEam0pND8+D1J+qGZNRSiefb3SsE1hMQAKXvSamp9kPr2MXTXqoHfBaWZW3RA==
-X-Received: by 2002:a2e:a68d:0:b0:2d4:57c5:886c with SMTP id q13-20020a2ea68d000000b002d457c5886cmr2953623lje.13.1710516501469;
-        Fri, 15 Mar 2024 08:28:21 -0700 (PDT)
-Received: from [192.168.1.172] ([93.5.22.158])
-        by smtp.gmail.com with ESMTPSA id c17-20020aa7c751000000b00568b43fffb0sm527149eds.96.2024.03.15.08.28.19
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 08:28:20 -0700 (PDT)
-Message-ID: <65cf39ab-6813-4412-9e45-30c26ab27cd6@baylibre.com>
-Date: Fri, 15 Mar 2024 16:28:19 +0100
+	s=arc-20240116; t=1710515787; c=relaxed/simple;
+	bh=o49BdiajFQ3aTd3PiqpKmFj0FHckAeUVjjEOj6vZCDw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OBJ5qzWzlOAVPyecRomfdWYIgLA/C1trePno8O7nVXEWhuekl3/I94AUAIJ+r0xyaYuuvZy2wXxAqlCr1KjB4GGssz+u1sonO5PMOuhwIVh8Ako6YGVqKOM/NXpCmepZYWjZY+bV7tE1UAdoL1pkhpsohZRGO+vvFbi/SD6C4MM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=aCWcEKG7; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710515785; x=1742051785;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=o49BdiajFQ3aTd3PiqpKmFj0FHckAeUVjjEOj6vZCDw=;
+  b=aCWcEKG7LbcPXFkoEvGz5X07Y/SSQYW/U4AQAJ8JMo7CnV2lour2DJQN
+   arOt6BMe/pIJI0ZhAOj5iXXE3a/vOiznEhzFqTHImRpriQZb22upwv5tb
+   9zlI+Bk8e1bbUy3t9AcejoEhEbPtum73hxircWKmQbTD91uK1biHnEBrr
+   IZyaHFO038L21pfaa+Bx6cPoF3vGRydNj6/J6Jt3vV/PzTWEzRFUUJBWY
+   2IARslxsNFYWo8Dzo3L78h/qABP1/ccFNWDHj49LJ6AIqwHhFGX7cOsIA
+   sp0nHi15U93lsTAKIqnmWHoE2z4CoAPtfD12hdo0BZMbZiZpnmQsCh5f0
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="16036380"
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="16036380"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 08:16:24 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
+   d="scan'208";a="17420892"
+Received: from liuzhao-optiplex-7080.sh.intel.com (HELO localhost) ([10.239.160.36])
+  by orviesa005.jf.intel.com with ESMTP; 15 Mar 2024 08:16:21 -0700
+Date: Fri, 15 Mar 2024 23:30:11 +0800
+From: Zhao Liu <zhao1.liu@intel.com>
+To: Sean Christopherson <seanjc@google.com>
+Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>,
+	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org, Shan Kang <shan.kang@intel.com>,
+	Kai Huang <kai.huang@intel.com>, Xin Li <xin3.li@intel.com>
+Subject: Re: [PATCH v6 6/9] KVM: nVMX: Use macros and #defines in
+ vmx_restore_vmx_basic()
+Message-ID: <ZfRpg/IyJOQf60Wf@intel.com>
+References: <20240309012725.1409949-1-seanjc@google.com>
+ <20240309012725.1409949-7-seanjc@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 00/18] Add audio support for the MediaTek Genio 350-evk
- board
-Content-Language: en-US
-To: Mark Brown <broonie@kernel.org>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- Lee Jones <lee@kernel.org>, Flora Fu <flora.fu@mediatek.com>,
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
- Sumit Semwal <sumit.semwal@linaro.org>,
- =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
- Catalin Marinas <catalin.marinas@arm.com>, Will Deacon <will@kernel.org>,
- linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, linux-media@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linaro-mm-sig@lists.linaro.org,
- Nicolas Belin <nbelin@baylibre.com>, Fabien Parent <fparent@baylibre.com>
-References: <20240226-audio-i350-v1-0-4fa1cea1667f@baylibre.com>
- <4ffde184-cf68-4b71-b81d-9b5894529926@sirena.org.uk>
- <7ddad394-e880-4ef8-8591-cb803a2086ae@baylibre.com>
- <bf418207-7f13-4ced-8c21-2824dd07fab5@sirena.org.uk>
-From: Alexandre Mergnat <amergnat@baylibre.com>
-In-Reply-To: <bf418207-7f13-4ced-8c21-2824dd07fab5@sirena.org.uk>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240309012725.1409949-7-seanjc@google.com>
 
+On Fri, Mar 08, 2024 at 05:27:22PM -0800, Sean Christopherson wrote:
+> Date: Fri,  8 Mar 2024 17:27:22 -0800
+> From: Sean Christopherson <seanjc@google.com>
+> Subject: [PATCH v6 6/9] KVM: nVMX: Use macros and #defines in
+>  vmx_restore_vmx_basic()
+> X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
+> 
+> From: Xin Li <xin3.li@intel.com>
+> 
+> Use macros in vmx_restore_vmx_basic() instead of open coding everything
+> using BIT_ULL() and GENMASK_ULL().  Opportunistically split feature bits
+> and reserved bits into separate variables, and add a comment explaining
+> the subset logic (it's not immediately obvious that the set of feature
+> bits is NOT the set of _supported_ feature bits).
+> 
+> Cc: Shan Kang <shan.kang@intel.com>
+> Cc: Kai Huang <kai.huang@intel.com>
+> Signed-off-by: Xin Li <xin3.li@intel.com>
+> [sean: split to separate patch, write changelog, drop #defines]
+> Signed-off-by: Sean Christopherson <seanjc@google.com>
+> ---
+>  arch/x86/kvm/vmx/nested.c | 25 ++++++++++++++++++-------
+>  1 file changed, 18 insertions(+), 7 deletions(-)
 
+Reviewed-by: Zhao Liu <zhao1.liu@intel.com>
 
-On 15/03/2024 15:38, Mark Brown wrote:
-> On Tue, Mar 12, 2024 at 09:58:05AM +0100, Alexandre Mergnat wrote:
-> 
->> I'm a bit lost for mixer-test and pcm-test.
->> Currently, I cross-compile the alsa lib project to be able to build the
->> tests and put it on my board.
-> 
->> I can execute it, but I still have 2 issues:
-> 
->> 1) I've a lot of missing module in my environment (Encode.so, Encode.pm,
->> Symbol.pm, IO/Handle.pm, ...). AFAII, I've to cross compile the missing perl
->> modules and install them in the rootfs
-> 
-> These tests are both simple C programs...
-> 
->> 2) I don't know how to configure pcm-test.conf &
->> Lenovo_ThinkPad_P1_Gen2.conf (or new file to match with my board).
-> 
-> The configuration is optional.
-> 
->> My test cmd:
->> ./run_kselftest.sh -c alsa
-> 
-> Just run the programs directly.  I'm only asking for the output from two
-> of them anyway.
-
-ok
-
--- 
-Regards,
-Alexandre
 
