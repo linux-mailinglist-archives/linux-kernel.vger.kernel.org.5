@@ -1,171 +1,122 @@
-Return-Path: <linux-kernel+bounces-104759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104760-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 65C1687D32A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:59:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3529187D32C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:00:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D0897B20D8F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:59:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF6AE1F242E9
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:00:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3D3B4DA1B;
-	Fri, 15 Mar 2024 17:59:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="xvntzci7"
-Received: from mail-yw1-f202.google.com (mail-yw1-f202.google.com [209.85.128.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C492F4CB3D
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:59:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 696534CB3D;
+	Fri, 15 Mar 2024 18:00:26 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10BF63BB28
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:00:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710525550; cv=none; b=urMpN0o2ZXijhSHsnRjaJEzVLVIXAm1J9dZzfnweDR2tFvXWI+1jhk3cD03VsubVFPVyRDD9noSaBDx0n8x17+rAprYBr4rR6cW6xT6MYhKVNrndKY0Ksrvi/Cgz4HwIxRWa/tXY9a5MY02G8y61/nuBF4+TENNN6g/hL2IwAgM=
+	t=1710525626; cv=none; b=g3pBkGBnLeemk4XYyM0ij6nPE8JQKM8ormnH4gzSeyZiBC2kEChauDVkBsPZ3lQ6fFqrNUcHEwNOqiSAq53CPE0sHUAeyRC95DlLlbDJbTJD3d23uEH8BvdvjmRr9dmHJueQD02D+Nl5z9aTiTe46MSsnEhAOU2qjsGMcNmak3M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710525550; c=relaxed/simple;
-	bh=pG2Up4LsCMZMTvJ9j9JbKLk64005Wj4y/kZ5JCQAjVQ=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=bcuOTtuYtQ7GkvCNql6cOhBFgnltppmAAOc1Nb1dJq5q271isPktf5hqA5jW1CsosfiiGuvoJM2aifx/b0T8C6JUrBnjz1JKAq2YJ/fSvU9h2pX7Ck+a3BWJaCoUF8K5ojZ2gIKqCIqlbPH2/6mLpooMtYCGBFd2+i65B24T4No=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=xvntzci7; arc=none smtp.client-ip=209.85.128.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-yw1-f202.google.com with SMTP id 00721157ae682-60ab69a9e6fso38107827b3.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:59:07 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710525547; x=1711130347; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=WM5C19X0S/o+ngFsIMGb5pAF5Gc9v2cbDsQ1+8QY85g=;
-        b=xvntzci7ESvuF9VUpPQsF1pgW0GgtI79qJFTZp3x+/sTYIlIRXlYXNbz+ZX1KFXDIr
-         bI+2WvG8tZcsPsNHkdnhYmp9ceEXPauBPUnZWx/cEkk0em2FCiu5DhAegDQZJZP+8Fhn
-         /IYrNqsabh9CCMc8rmKbF3RGE3br8kqoKQRyAPVq5IFxjnEdg/81TgjmU2n3fR+AAVeN
-         d+GfOoFZGDMMqfyWQJLBuQ+/pWLX2B+yMlNhfQfVTYAzGqa58KXkeTIXj/lI6HQILWZ/
-         BnMl+xVZQs3WDOcPmskCaQZRf5JTWXZ/zlRmF+NguMqMOWsh5DYYCMpa1ITmgNdMAQ2u
-         t93w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710525547; x=1711130347;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=WM5C19X0S/o+ngFsIMGb5pAF5Gc9v2cbDsQ1+8QY85g=;
-        b=n2DgedUxovJ2lBaT/ZvSRvdrExGGWoWMi6bYQKYxP9zR9YyTAYRi0qLRX6AjVbxDfG
-         +RX3XEKJ+hyw3OdukGJwdbbI/XVEEYnzCvbrH92N+evO69ToA3oYYdvneVUPHUe0n1pI
-         PsDowhG8pjofWGGREWI7kVQCqrslq5ZJFMg5Ikn+zackl9WSTNBdtkaRj/6aTqupthvD
-         GCU0yt74MQfk741XGYmK8p9nAWyaPaSO33J014hode+eV+C17EPXip6cNtA2t468UwGp
-         PnifOA7HNfgGGk1CgGhid0H42NfDZqpNF0z1ag+GKJTu2jrBdXIVxwqWyMq3ffVLkLeB
-         MbLw==
-X-Forwarded-Encrypted: i=1; AJvYcCVvU9mNtNO5snHzos736uVIgNbWtpjZW2i2ZVZL/Sxwki/8ymeU6+TZ9KRj6DFpsmjDnSvbukdzA6MZhS0/RVlQ0QzaQM3a872vhgT5
-X-Gm-Message-State: AOJu0YzaEHvqsJpkPDpnO12FzuCUswBhBaSuRh+dOZXwJ7ZiR1oEf6Lm
-	T1w/js/aa6CP5V7fPr/Ya2157qMNK2a4FP+0Mr5brYDVSkK3DlOv4VWe6G1Q6tQsi5ZMECHxYHh
-	guQ==
-X-Google-Smtp-Source: AGHT+IFrNP1a4RhZqmTFEnI/twUh+FNV1m9qG2wGhiSf7zVZ/ft11Vb4d2rpDA7L7NLX2CpmTT29Anbkikk=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a5b:388:0:b0:dcc:5463:49a8 with SMTP id
- k8-20020a5b0388000000b00dcc546349a8mr1729067ybp.6.1710525546895; Fri, 15 Mar
- 2024 10:59:06 -0700 (PDT)
-Date: Fri, 15 Mar 2024 10:59:05 -0700
-In-Reply-To: <ZfMxj_e7M_toVR3a@google.com>
+	s=arc-20240116; t=1710525626; c=relaxed/simple;
+	bh=cLd6t3Gr2U1sNEKiEYEZmeJRQTG1Jc2E5Ir5P7jwBcA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jOOXg7DfUvV/BQl6QUCR88dcnPqbrp/cTg9payUfl1tu2650b26cyxDoQlNaArGKffYFvEtHVLCnJKz/TsZWUf2Ia4RiduX/qVCcfXeuv0F39MpmbxSwm/L3zDWYHAWJzdgkNQd6gDW3Y0hLrU2mcri8zXippr6tBN/pEAX4wyI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 5A2EDC15;
+	Fri, 15 Mar 2024 11:00:56 -0700 (PDT)
+Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 383403F762;
+	Fri, 15 Mar 2024 11:00:19 -0700 (PDT)
+Message-ID: <93b85205-add3-477f-aa8b-e647447d249b@arm.com>
+Date: Fri, 15 Mar 2024 18:00:17 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <ZfG801lYHRxlhZGT@google.com> <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com>
- <ZfHKoxVMcBAMqcSC@google.com> <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com>
- <ZfHhqzKVZeOxXMnx@google.com> <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com>
- <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com> <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
- <ZfMjCXZWuUD76r_5@google.com> <ZfMxj_e7M_toVR3a@google.com>
-Message-ID: <ZfSMaUFa5hsPP-eR@google.com>
-Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
-From: Sean Christopherson <seanjc@google.com>
-To: David Stevens <stevensd@chromium.org>
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Yu Zhang <yu.c.zhang@linux.intel.com>, 
-	Isaku Yamahata <isaku.yamahata@gmail.com>, Zhi Wang <zhi.wang.linux@gmail.com>, 
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, linux-kernel@vger.kernel.org, 
-	kvm@vger.kernel.org, Axel Rasmussen <axelrasmussen@google.com>
-Content-Type: text/plain; charset="us-ascii"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: 32bit resctrl? (was Re: [PATCH v2] fs/resctrl: fix domid loss
+ precision issue)
+Content-Language: en-GB
+To: Peter Newman <peternewman@google.com>, babu.moger@amd.com
+Cc: Reinette Chatre <reinette.chatre@intel.com>,
+ Rex Nie <rex.nie@jaguarmicro.com>, "x86@kernel.org" <x86@kernel.org>,
+ "Luck, Tony" <tony.luck@intel.com>, Borislav Petkov <bp@alien8.de>,
+ fenghua.yu@intel.com, ilpo.jarvinen@linux.intel.com,
+ linux-kernel@vger.kernel.org
+References: <20240312075349.977-1-rex.nie@jaguarmicro.com>
+ <fed6affb-c7f4-4992-8646-8f5a52c33966@intel.com>
+ <162f5113-4eb6-dcea-f034-c81b9dc021b6@amd.com>
+ <CALPaoCjorOe8FVOu6_sMrG_8jAgSNNsw8=KDwOrwtftovGiRXQ@mail.gmail.com>
+From: James Morse <james.morse@arm.com>
+In-Reply-To: <CALPaoCjorOe8FVOu6_sMrG_8jAgSNNsw8=KDwOrwtftovGiRXQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024, Sean Christopherson wrote:
-> +Alex, who is looking at the huge-VM_PFNMAP angle in particular.
+Hi guys,
 
-Oof, *Axel*.  Sorry Axel.
+On 15/03/2024 16:56, Peter Newman wrote:
+> On Fri, Mar 15, 2024 at 9:17 AM Moger, Babu <bmoger@amd.com> wrote:
+>> On 3/14/2024 10:25 AM, Reinette Chatre wrote:
+>>> +x86 maintainers, Tony, Babu, Peter
+>>>
+>>> Hi Everybody,
+>>>
+>>> On 3/12/2024 12:53 AM, Rex Nie wrote:
+>>>> diff --git a/fs/resctrl/internal.h b/fs/resctrl/internal.h
+>>>> index 7a6f46b4edd0..096317610949 100644
+>>>> --- a/fs/resctrl/internal.h
+>>>> +++ b/fs/resctrl/internal.h
+>>>> @@ -94,7 +94,7 @@ union mon_data_bits {
+>>>>      struct {
+>>>>              unsigned int rid                : 10;
+>>>>              enum resctrl_event_id evtid     : 8;
+>>>> -            unsigned int domid              : 14;
+>>>> +            u32                             domid;
+>>>>      } u;
+>>>>   };
+>>>>
+>>> resctrl currently supports 32bit builds. Fixing this issue* in this way
+>>
+>> I have never bothered about 32bit builds.   Is Intel still testing 32bit
+>> builds?
+> 
+> I can confirm we don't have any 32-bit builds.
+> 
+> 
+>> The structure pointer "union mon_data_bits priv;" is created in stack
+>> and passed to create mondata directory. We are reading it later again in
+>> rdtgroup_mondata_show.
+>>
+>> How is this pointer valid again?  Shouldn't we use static pointer or
+>> allocate memory for the pointer?
+> 
+> The union is copied by value into the pointer-sized field, hence the
+> need for pointers to be large enough to hold this value.
 
-> On Thu, Mar 14, 2024, Sean Christopherson wrote:
-> > -Christ{oph,ian} to avoid creating more noise...
-> > 
-> > On Thu, Mar 14, 2024, David Stevens wrote:
-> > > Because of that, the specific type of pfns that don't work right now are
-> > > pfn_valid() && !PG_Reserved && !page_ref_count() - what I called the
-> > > non-refcounted pages in a bad choice of words. If that's correct, then
-> > > perhaps this series should go a little bit further in modifying
-> > > hva_to_pfn_remapped, but it isn't fundamentally wrong.
-> > 
-> > Loosely related to all of this, I have a mildly ambitious idea.  Well, one mildly
-> > ambitious idea, and one crazy ambitious idea.  Crazy ambitious idea first...
-> > 
-> > Something we (GCE side of Google) have been eyeballing is adding support for huge
-> > VM_PFNMAP memory, e.g. for mapping large amounts of device (a.k.a. GPU) memory
-> > into guests using hugepages.  One of the hiccups is that follow_pte() doesn't play
-> > nice with hugepages, at all, e.g. even has a "VM_BUG_ON(pmd_trans_huge(*pmd))".
-> > Teaching follow_pte() to play nice with hugepage probably is doing, but making
-> > sure all existing users are aware, maybe not so much.
-> > 
-> > My first (half baked, crazy ambitious) idea is to move away from follow_pte() and
-> > get_user_page_fast_only() for mmu_notifier-aware lookups, i.e. that don't need
-> > to grab references, and replace them with a new converged API that locklessly walks
-> > host userspace page tables, and grabs the hugepage size along the way, e.g. so that
-> > arch code wouldn't have to do a second walk of the page tables just to get the
-> > hugepage size.
-> > 
-> > In other words, for the common case (mmu_notifier integration, no reference needed),
-> > route hva_to_pfn_fast() into the new API and walk the userspace page tables (probably
-> > only for write faults, to avoid CoW compliciations) before doing anything else.
-> > 
-> > Uses of hva_to_pfn() that need to get a reference to the struct page couldn't be
-> > converted, e.g. when stuffing physical addresses into the VMCS for nested virtualization.
-> > But for everything else, grabbing a reference is a non-goal, i.e. actually "getting"
-> > a user page is wasted effort and actively gets in the way.
-> > 
-> > I was initially hoping we could go super simple and use something like x86's
-> > host_pfn_mapping_level(), but there are too many edge cases in gup() that need to
-> > be respected, e.g. to avoid mapping memfd_secret pages into KVM guests.  I.e. the
-> > API would need to be a formal mm-owned thing, not some homebrewed KVM implementation.
-> > 
-> > I can't tell if the payoff would be big enough to justify the effort involved, i.e.
-> > having a single unified API for grabbing PFNs from the primary MMU might just be a
-> > pie-in-the-sky type idea.
-> > 
-> > My second, less ambitious idea: the previously linked LWN[*] article about the
-> > writeback issues reminded me of something that has bugged me for a long time.  IIUC,
-> > getting a writable mapping from the primary MMU marks the page/folio dirty, and that
-> > page/folio stays dirty until the data is written back and the mapping is made read-only.
-> > And because KVM is tapped into the mmu_notifiers, KVM will be notified *before* the
-> > RW=>RO conversion completes, i.e. before the page/folio is marked clean.
-> > 
-> > I _think_ that means that calling kvm_set_page_dirty() when zapping a SPTE (or
-> > dropping any mmu_notifier-aware mapping) is completely unnecessary.  If that is the
-> > case, _and_ we can weasel our way out of calling kvm_set_page_accessed() too, then
-> > with FOLL_GET plumbed into hva_to_pfn(), we can:
-> > 
-> >   - Drop kvm_{set,release}_pfn_{accessed,dirty}(), because all callers of hva_to_pfn()
-> >     that aren't tied into mmu_notifiers, i.e. aren't guaranteed to drop mappings
-> >     before the page/folio is cleaned, will *know* that they hold a refcounted struct
-> >     page.
-> > 
-> >   - Skip "KVM: x86/mmu: Track if sptes refer to refcounted pages" entirely, because
-> >     KVM never needs to know if a SPTE points at a refcounted page.
-> > 
-> > In other words, double down on immediately doing put_page() after gup() if FOLL_GET
-> > isn't specified, and naturally make all KVM MMUs compatible with pfn_valid() PFNs
-> > that are acquired by follow_pte().
-> > 
-> > I suspect we can simply mark pages as access when a page is retrieved from the primary
-> > MMU, as marking a page accessed when its *removed* from the guest is rather nonsensical.
-> > E.g. if a page is mapped into the guest for a long time and it gets swapped out, marking
-> > the page accessed when KVM drops its SPTEs in response to the swap adds no value.  And
-> > through the mmu_notifiers, KVM already plays nice with setups that use idle page
-> > tracking to make reclaim decisions.
-> > 
-> > [*] https://lwn.net/Articles/930667
+Couldn't we allocate the memory for a structure to hold the values we want, then use the
+pointer as a pointer?
+
+I suspect whether 32bit builds are important depends on if anyone is using it, which we
+can't really know. Debian has 32bit builds, and while its unlikely anyone runs that on a
+server part, whatever an "Intel Celeron J3455" is supports RDT too. I'd be keen not to
+break it!
+
+
+As for these eye-sore-ids ... I'm in two minds as to whether we should clean them up in
+the kernel. It would be fairly straightforward to scan the PPTT to find them all and map
+them to 0,1,2,. But this loses the values provided by the vendor.
+x86 and arm64:device-tree systems generate them, so its not clear that user-space needs a
+value provided by the vendor here.
+
+
+Thanks,
+
+James
 
