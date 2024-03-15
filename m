@@ -1,135 +1,137 @@
-Return-Path: <linux-kernel+bounces-104578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104592-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 151DD87D05E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:32:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C57587D093
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 16:47:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E20C2831BE
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:32:42 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B23C5B20E5D
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:47:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B7A13DBBC;
-	Fri, 15 Mar 2024 15:32:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 73EFF3FB9B;
+	Fri, 15 Mar 2024 15:47:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="FV5dLuva"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="BK1grvRy"
+Received: from mail-yw1-f171.google.com (mail-yw1-f171.google.com [209.85.128.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09FE3CF63;
-	Fri, 15 Mar 2024 15:32:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 609713D575
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 15:47:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710516754; cv=none; b=d75yGiAM+EbsgHKhD38h8WBYRSp5PGcq6mi3G0wJxd+Lvt2W6XzHd/P5HFjf1lFwTkd9P75Lt4e9rgwk7N6P+LOlVop6qxx+TtjRmZmKdaKynWk6W6acFCcgRNGTHoa1/nhao4xaQK80QBTCrz8MyVYMZIwDBTQVMHUadrgw/tI=
+	t=1710517634; cv=none; b=tI94xL5LGiHgE/y51StRHDIeBoQ/LSRUph42toRGzU25uJL10yRGCOvI9ivuJg0GRfp1Hnd3p5rQL1UFWaPE3qK1ZZA6kHz5lkud1N6VtVi6fwidGlcHLFp/E97pHqZDFAvto+Y/B5ndHjYnJpnPnqgzoRf9LJstmdEU2Mw5sK0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710516754; c=relaxed/simple;
-	bh=qIWHRg8+eu5c29VD4Zm6n7oQubxdYCjfi82fseL+o50=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b3f5BOYneF/P4fslT4UX7guwErE0shfGP1JVQpzYHfQRNVsumxP4egJop5xoXquG/lwFJSoXe9sicVZb/lca3GNqKDUfzNaithNVW0Cdd7VXXCbSyOCmIAofHSByDmRytecY3CgAbNE9ONRqIcIxldZb6P60wPrMfBTZbS98Uxo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=FV5dLuva; arc=none smtp.client-ip=192.198.163.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710516749; x=1742052749;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=qIWHRg8+eu5c29VD4Zm6n7oQubxdYCjfi82fseL+o50=;
-  b=FV5dLuva2oEybl9ytZX6JtmeGxh958I3i79qxGbF2uk5AnG0vLQvPKQt
-   xmVzG3Zj5ifas37wzJrxEVYfA8RCmObB4dcuQ/E8nVAy91/CklYJxmmXb
-   J0vCHl4sz9OTsGwZHYcNwG69DtAFRAakTEA5uFCQ/LWT6jKulRbB61/qy
-   qL1kllXHKPd3PZ51F0S7ek6aF2/pHBdEE59qYn315O8M/2tCZyIRuxfWt
-   XzZGuMFXoXckaGPP9vyXg9/9F4cQE1H1g5rKB2exonQ1ETXkVDMyHfr/m
-   uoybLkf4Qav5SouIl3wgZ4uwmoT72L+V0Y2x2YsxgyYeGW8bGrqRsDvOg
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5600794"
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="5600794"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 08:32:29 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="12783740"
-Received: from liuzhao-optiplex-7080.sh.intel.com (HELO localhost) ([10.239.160.36])
-  by fmviesa006.fm.intel.com with ESMTP; 15 Mar 2024 08:32:25 -0700
-Date: Fri, 15 Mar 2024 23:46:16 +0800
-From: Zhao Liu <zhao1.liu@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Andy Lutomirski <luto@kernel.org>,
-	Peter Zijlstra <peterz@infradead.org>, linux-kernel@vger.kernel.org,
-	kvm@vger.kernel.org, Shan Kang <shan.kang@intel.com>,
-	Kai Huang <kai.huang@intel.com>, Xin Li <xin3.li@intel.com>
-Subject: Re: [PATCH v6 8/9] KVM: VMX: Open code VMX preemption timer rate
- mask in its accessor
-Message-ID: <ZfRtSKcXTI/lAQxE@intel.com>
-References: <20240309012725.1409949-1-seanjc@google.com>
- <20240309012725.1409949-9-seanjc@google.com>
+	s=arc-20240116; t=1710517634; c=relaxed/simple;
+	bh=wNtT6+0t+kGzkNhG5FyRgYZZ74DtQijFGV7l7mpb0Ww=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lqTGgCFLOZirYaJtdim4k+pdXDjiyxBIAnv/ca0vj8BHpGgrUxihrgBRQCfLRedWriL8jWPL1yl+JSlqKJYA1gitUi+MKLCPoWPDdvuYaVMlgggJT8eCYVkpccNYjSFvHMxZ4GXNtwblF0yamlYfL6Hu0/ONPGHRR71mEw+teuQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BK1grvRy; arc=none smtp.client-ip=209.85.128.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-yw1-f171.google.com with SMTP id 00721157ae682-609f3ca61e0so24125527b3.3
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 08:47:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710517631; x=1711122431; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5hTYJR/EPYVQveJbg5FctPr1PKFKWOQ5oCn+BSWzHW0=;
+        b=BK1grvRy0GHfMYHQ/RADrgIOOArUHGsc9V9yMuEKUvHDWqdM6klTeI+9Z7Oam/sMoo
+         Zs22/qsOuClHiTVqN7YvL/pFRDkWcsLJG3YdL0ZYBd17g4wf5f8aY51KGl26wOY17FH5
+         kSrgnTgXtBg1H+IERx/QKVpNEp2fNdolrXUDJAWoMQwo/VkMHNldV/x9SYE+lgYVloK7
+         TF2QoIVu4k8YJSGWZ/z/zvoyo2bHgLm2yOAps6MBjiHnpF9Xlkh/Aqo5kly72MY7s+Su
+         mtst0LviU8A/+0YeiJwKtd+oq6cUXloRNoOqWuAG+lOG+LVr066k02W5V0atYmHs0t7y
+         +S3Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710517631; x=1711122431;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=5hTYJR/EPYVQveJbg5FctPr1PKFKWOQ5oCn+BSWzHW0=;
+        b=T+oAEMAdY+K/IlgNiJMjZSAdIpl5NYB9HWTG88DA3sMQDlMIOJ19VlwkzpNM0d9vIy
+         xTKj8I8W25On0wsTuIkOTp/tMcU+cBfmKU6spULMLkdqKIThfUpuCwJ6Q5mH9vFCfDa9
+         3fK7Tc8tikQPLg7IaM6rq2oyr/Luk+zu1wmfQ0blfgZaF10KQzaIEFynVJNpq4hK2IiK
+         Rb6i7H1IKx53xcq3HODoRbb/Yzmhwnluo2DeJJCTLrdelfj7EAJSi0EdpAvag37d0xS3
+         7eMJtQFm1TkTiFuR25PS/munVoCNSUpKGwExEBsCiAXWruZaFddBx/oU50QQsoK7PSSS
+         a6Ww==
+X-Forwarded-Encrypted: i=1; AJvYcCVfRHebXEPnvfyY8D0FfVhX9gNMvej9Ttf0uqNWnkO0BYfOZ3/VWa7zdhWZ4a9eFoxbHr+hh4qwYygNfI8RnwoGfHGDfYC5efJii4dx
+X-Gm-Message-State: AOJu0YyYAEHacUEMBmWyhFudGRVQ/LL4HzvB+wwdg13R3XdGHYDqakJm
+	UgUmvewROst1G25RkeZ4qbqzZeuZUWAaoZliIP30qEr5NI2xYCAyImf7qXBGRR90Kv/6CjfB9dA
+	8oZQDwgdOfMWd+ZHD4JTey5T0PelTegru5BZ9
+X-Google-Smtp-Source: AGHT+IEwiyjib3jLb0fcW3RfIFy8PuKVxjXiqnQa/2aHEZk0YzBmdn1yExjQqvOF2tJR6SyIA+70XUnt7nI7TF8fE6Y=
+X-Received: by 2002:a25:ad5f:0:b0:dc7:4f61:5723 with SMTP id
+ l31-20020a25ad5f000000b00dc74f615723mr4966380ybe.39.1710517631010; Fri, 15
+ Mar 2024 08:47:11 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240309012725.1409949-9-seanjc@google.com>
+References: <20240306182440.2003814-1-surenb@google.com> <20240306182440.2003814-15-surenb@google.com>
+ <ZfRaBJ8nq57TAG6L@casper.infradead.org>
+In-Reply-To: <ZfRaBJ8nq57TAG6L@casper.infradead.org>
+From: Suren Baghdasaryan <surenb@google.com>
+Date: Fri, 15 Mar 2024 08:47:00 -0700
+Message-ID: <CAJuCfpEpMwfEgrsMALqpzH=3FL0WxrXY1bRkvezMdCw2BAtQRg@mail.gmail.com>
+Subject: Re: [PATCH v5 14/37] lib: introduce support for page allocation tagging
+To: Matthew Wilcox <willy@infradead.org>
+Cc: akpm@linux-foundation.org, kent.overstreet@linux.dev, mhocko@suse.com, 
+	vbabka@suse.cz, hannes@cmpxchg.org, roman.gushchin@linux.dev, mgorman@suse.de, 
+	dave@stgolabs.net, liam.howlett@oracle.com, 
+	penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com, 
+	will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com, 
+	dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com, 
+	david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org, 
+	nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org, 
+	muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org, 
+	pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com, 
+	dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com, 
+	keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com, 
+	gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com, 
+	vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org, 
+	bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com, 
+	penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com, 
+	glider@google.com, elver@google.com, dvyukov@google.com, shakeelb@google.com, 
+	songmuchun@bytedance.com, jbaron@akamai.com, aliceryhl@google.com, 
+	rientjes@google.com, minchan@google.com, kaleshsingh@google.com, 
+	kernel-team@android.com, linux-doc@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, iommu@lists.linux.dev, 
+	linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org, linux-mm@kvack.org, 
+	linux-modules@vger.kernel.org, kasan-dev@googlegroups.com, 
+	cgroups@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 08, 2024 at 05:27:24PM -0800, Sean Christopherson wrote:
-> Date: Fri,  8 Mar 2024 17:27:24 -0800
-> From: Sean Christopherson <seanjc@google.com>
-> Subject: [PATCH v6 8/9] KVM: VMX: Open code VMX preemption timer rate mask
->  in its accessor
-> X-Mailer: git-send-email 2.44.0.278.ge034bb2e1d-goog
-> 
-> From: Xin Li <xin3.li@intel.com>
-> 
-> Use vmx_misc_preemption_timer_rate() to get the rate in hardware_setup(),
-> and open code the rate's bitmask in vmx_misc_preemption_timer_rate() so
-> that the function looks like all the helpers that grab values from
-> VMX_BASIC and VMX_MISC MSR values.
-> 
-> No functional change intended.
-> 
-> Cc: Shan Kang <shan.kang@intel.com>
-> Cc: Kai Huang <kai.huang@intel.com>
-> Signed-off-by: Xin Li <xin3.li@intel.com>
-> [sean: split to separate patch, write changelog]
-> Signed-off-by: Sean Christopherson <seanjc@google.com>
-> ---
->  arch/x86/include/asm/vmx.h | 3 +--
->  arch/x86/kvm/vmx/vmx.c     | 2 +-
->  2 files changed, 2 insertions(+), 3 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/vmx.h b/arch/x86/include/asm/vmx.h
-> index 6ff179b11235..90ed559076d7 100644
-> --- a/arch/x86/include/asm/vmx.h
-> +++ b/arch/x86/include/asm/vmx.h
-> @@ -148,7 +148,6 @@ static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
->  	return (vmx_basic & GENMASK_ULL(53, 50)) >> 50;
->  }
->  
-> -#define VMX_MISC_PREEMPTION_TIMER_RATE_MASK	GENMASK_ULL(4, 0)
->  #define VMX_MISC_SAVE_EFER_LMA			BIT_ULL(5)
->  #define VMX_MISC_ACTIVITY_HLT			BIT_ULL(6)
->  #define VMX_MISC_ACTIVITY_SHUTDOWN		BIT_ULL(7)
-> @@ -162,7 +161,7 @@ static inline u32 vmx_basic_vmcs_mem_type(u64 vmx_basic)
->  
->  static inline int vmx_misc_preemption_timer_rate(u64 vmx_misc)
->  {
-> -	return vmx_misc & VMX_MISC_PREEMPTION_TIMER_RATE_MASK;
-> +	return vmx_misc & GENMASK_ULL(4, 0);
->  }
+On Fri, Mar 15, 2024 at 7:24=E2=80=AFAM Matthew Wilcox <willy@infradead.org=
+> wrote:
+>
+> On Wed, Mar 06, 2024 at 10:24:12AM -0800, Suren Baghdasaryan wrote:
+> > +static inline void pgalloc_tag_add(struct page *page, struct task_stru=
+ct *task,
+> > +                                unsigned int order)
+>
+> If you make this "unsigned int nr" instead of order, (a) it won't look
+> completely insane (what does adding an order even mean?) and (b) you
+> can reuse it from the __free_pages path.
 
-I feel keeping VMX_MISC_PREEMPTION_TIMER_RATE_MASK is clearer than
-GENMASK_ULL(4, 0), and the former improves code readability.
+Sounds good to me.
 
-May not need to drop VMX_MISC_PREEMPTION_TIMER_RATE_MASK?
+>
+> > @@ -1101,6 +1102,7 @@ __always_inline bool free_pages_prepare(struct pa=
+ge *page,
+> >               /* Do not let hwpoison pages hit pcplists/buddy */
+> >               reset_page_owner(page, order);
+> >               page_table_check_free(page, order);
+> > +             pgalloc_tag_sub(page, order);
+>
+> Obviously you'll need to make sure all the callers now pass in 1 <<
+> order instead of just order.
 
-Thanks,
-Zhao
+Ack.
+
+>
 
