@@ -1,278 +1,252 @@
-Return-Path: <linux-kernel+bounces-104212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D06FC87CAC2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:31:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D266E87CACC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:36:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0E6EC1C22204
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:31:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 023DD1C22203
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:36:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8398317C70;
-	Fri, 15 Mar 2024 09:31:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F289217C6C;
+	Fri, 15 Mar 2024 09:35:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cps2RsU+"
-Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="l6xpHM69"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D2617C6C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:31:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F84317C61;
+	Fri, 15 Mar 2024 09:35:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710495103; cv=none; b=awCeKkrj/u1s33CdGh7QbvONboRH2iXt8sH4l1oA5D8OM68Cqg6ohTVhPxVEXCAOGP3+uv4E2piglINXtzKPYUyQ+OXdp3L5wXR4RJvVYI8WgbrqJqTf9OAnzYla2wmSlIEDDh4OVnOvgq+yTgDK3eo2GVrSGYsR3cJ4X3ab49k=
+	t=1710495355; cv=none; b=JY41meN/Lh1RXt3SaKEfwXW++xfd+7rLkEJ4nWlBg4oTEsRjye0MXMdDgL2208Fgd/nKV+/khBVrnS8NioU3HJwH2FLNEq4UPbUfpMKwyK/43IiEb3K6LQw9lNKZLLhV5J4qeuKT1Bki5ZJv1BqMNNnZXv44t8r3bZT090K4KIg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710495103; c=relaxed/simple;
-	bh=wKEW1rXXeX+2+0FZCZcmMKdT8S2KJyJy6N936Rnnq1U=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Fnu0WOqxjnAyS1JqMh1cilrcbBjSJ8ncgtNONHU6QibzkPpfJwPp2M6Gaj4fCVZQYy/ij20iWiH7UkdHzeMvH6eX7HsuW0FE+3dtrmZmDbcRvaR+G2oz09ckbesTA9J16Z9XpFn5dGVrhrCd0tDUKdWVP9Y3Kr2cXRqNDZEXc38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cps2RsU+; arc=none smtp.client-ip=209.85.222.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7dfacd39b9eso88844241.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 02:31:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710495099; x=1711099899; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=4n3K5fB4Q6ZdxH2TmCXh/YokpYNn7Qm173oXHneXpP4=;
-        b=cps2RsU+8Y644Yq/wfZCe5+5+9MHEVQDcjCGPg85oD34DLgdMvgmwCvbzJTiZvEkLz
-         D4Ff3lNq6/wHX/8QsVXmHoFgjlyvzffcUg+yxpVW/STKr98f2YlOEdOLAVZUK5NHk4Cg
-         g7aJHiyFlByJUN67cP9akHX6SUyUgkSG/J0fvTwXb0sowLogNfdQb9isGGAKtno6FTpT
-         /9KWt0MnL5qLCSXYUbLVK5MOWzDB8UJqwlE2Gb0wRrUOIAK0tGZuMd2wIa8lGwydoGXF
-         CDFRrt+9HTzU3VWcGcol7j+2XzGHmwaoBbx9KeLGk1tHWl9lXDn0/Qx4BRGo4RybiDE1
-         /70w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710495099; x=1711099899;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=4n3K5fB4Q6ZdxH2TmCXh/YokpYNn7Qm173oXHneXpP4=;
-        b=JD+YGQynnIe2M621eWuv2VMjRrut5V3RIdmit+dR8kQUtd6QQxjkd1D00UsuMsqVKU
-         /BKgMdX6jBwhV4CLuvwnoUANHSxqOKkLVje3v9T0EiH0g/vGuLkisENkVGYTpDdzvySc
-         jmWCF2bWZYdabvsfOhpAMWhhQRM1Y6mo1cJzkNtFlXCeyxRY6AQGfXG7qIxTvVBqRLdw
-         nXB6KEF5TfQ3gzSh6JqSrBQ54VQtyvJBVO5UDANA4MbUIZ98LMxiYHFRJaoBL9ZauZjD
-         IoDj3VNbgLQkEU/ZehaJNBhvpPB1OUqhM/0k2gLjlhS4FRyPGzFI6TZyutujlQCwZtAj
-         PlOA==
-X-Forwarded-Encrypted: i=1; AJvYcCWOSnOP97K80hSmLsGpWBxwmKJT8GxphZLoIuhEHcDrnQ5pbIe48U+OoCQ8Yc12z4We7YUtZSykrCFIZ989qdND37fJN666P1R5784J
-X-Gm-Message-State: AOJu0YwNusVn94whFCm0QNjnMhC/3/bnmas7T/coBnni6p9Xq99PTvsP
-	Wk19rhVF7PWKVM/0Y/eNuT0urCTgjugwXDzehbQQBVaVWEA4gtjH8Wd+gjEwrxJUHI0m37Cruoq
-	lIvafQPKvTwaxJ43wmw67l95fPBAVgS89wcvKvw==
-X-Google-Smtp-Source: AGHT+IG0ULaZsxmFehQ06UxEqE9PR91qErbbaT9Qyaco2mCuBunM7DMFrIqLIA7KcR7d9umvhHrblyrGagFAhkgI/l8=
-X-Received: by 2002:a05:6102:2837:b0:473:34fc:d9c2 with SMTP id
- ba23-20020a056102283700b0047334fcd9c2mr4364954vsb.11.1710495099324; Fri, 15
- Mar 2024 02:31:39 -0700 (PDT)
+	s=arc-20240116; t=1710495355; c=relaxed/simple;
+	bh=IGZj8niLOUD7teMx4iptS+sQpMGkLSgrcwjHOtgFJi4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=terdfMjaoiBveQl/eJlAtTzQT5JIeNe4iLso4qurdKO2Z5nqNdao/c+fsR4H+cYHZzuDB+zw3roBPV5u5sloKuwCtKy9RUPlHU9me60LhSR/73TuB26/p/wQXue8l+4eVSIFIFQ/J00FVlQH83/Os0o0sPaTc9ZbwcBqvUvhUKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=l6xpHM69; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710495341; x=1711100141; i=deller@gmx.de;
+	bh=BSFsXVVkqiqnk4vcRljvGoO6ApkWxhy8vwfugbN2UFI=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=l6xpHM69sgOJ3NMGz+1AeZ6EDKi8VKkaLzcmWFu3bmeooMI3wPwGmUxUb/sKECfb
+	 bfzUyDGBmCMa4JwFJHH0Fa82oEEV9UKCXdoWC7xHxeFEP79GRdhiptPTkbcFLq+OT
+	 0K+eU3uuWCtKCU22NHmENBVqC7H0KVRRB0qvBnyQ5guc1YY/8XONeftz/LM6/pG/E
+	 TN7AWEAgiUWGEWNH6zTHkVdhGce0dQJp2CVoJFJFKhh1TlpPaK2F/igEo7GGAN2Wk
+	 JQSqfBdARbouansM/G1RUhh+/ID0tx5rTfI6UFMjARUBhVA7V6Txg/uTSRR8Zc0Vw
+	 /NnsKBLTJTFCMpZj+w==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.20.55] ([94.134.155.107]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MVeMG-1rJfBZ24pA-00RcVT; Fri, 15
+ Mar 2024 10:35:41 +0100
+Message-ID: <d7ca4ae3-4bcc-49f0-a819-4ad88907b93c@gmx.de>
+Date: Fri, 15 Mar 2024 10:35:40 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240313123017.362570-1-sumit.garg@linaro.org>
- <20240313123017.362570-4-sumit.garg@linaro.org> <c0e10cbf-c6f3-4b0c-8616-983da2a40236@linaro.org>
- <CAFA6WYNMjCaa0FKjNv6a8VFkco3=GBfgWNDuckGZdiZ9dGmHgg@mail.gmail.com>
- <d82ab1f8-e677-485f-9a6b-4115acfd7239@linaro.org> <CAFA6WYNSumyScax=GkN42GJOG56T3odF5Ed9A2i1nk_exCyGtA@mail.gmail.com>
- <ZfLUu6_Vq7MvG2G3@gerhold.net> <CAFA6WYPN2Bt7zvDyd+02jrsZJz0sFhkD_o4W+PvU=-VC4W5k=A@mail.gmail.com>
- <ZfL6hi0kfp9MXQ0H@gerhold.net> <CAFA6WYMa_0OMkjUdvhYtWZ9SvQx5bB8+YrBZN08BaDXXOtPPNQ@mail.gmail.com>
- <fb20d921-dabd-41dc-9f91-bde90e3b87be@linaro.org> <9b614c61-276d-45bf-8320-44b7358a3e19@linaro.org>
-In-Reply-To: <9b614c61-276d-45bf-8320-44b7358a3e19@linaro.org>
-From: Sumit Garg <sumit.garg@linaro.org>
-Date: Fri, 15 Mar 2024 15:01:27 +0530
-Message-ID: <CAFA6WYMHA2M1LLjaog17f83Cu_wH4MAvxhuwAQH0c7j4XTM3XA@mail.gmail.com>
-Subject: Re: [PATCH v2 3/3] arm64: dts: qcom: apq8016: Add Schneider HMIBSC
- board DTS
-To: Caleb Connolly <caleb.connolly@linaro.org>, Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Stephan Gerhold <stephan@gerhold.net>, linux-arm-msm@vger.kernel.org, 
-	devicetree@vger.kernel.org, andersson@kernel.org, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	neil.armstrong@linaro.org, laetitia.mariottini@se.com, pascal.eberhard@se.com, 
-	abdou.saker@se.com, jimmy.lalande@se.com, benjamin.missey@non.se.com, 
-	daniel.thompson@linaro.org, linux-kernel@vger.kernel.org, 
-	Jagdish Gediya <jagdish.gediya@linaro.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] fbcon: Increase maximum font width x height to 64 x 64
+Content-Language: en-US
+To: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+ linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
+ Alexey Gladkov <legion@kernel.org>, Jiry Slaby <jirislaby@kernel.org>
+Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org
+References: <20240313165934.557879-1-samuel.thibault@ens-lyon.org>
+From: Helge Deller <deller@gmx.de>
+Autocrypt: addr=deller@gmx.de; keydata=
+ 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
+In-Reply-To: <20240313165934.557879-1-samuel.thibault@ens-lyon.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:9UMPx34FgMJDlkPgsGQqOWFYUXv9F1RzGoD84LbFXOmKCsKvuyb
+ PeZLiSW13Fi5JJsSxr4c7t4DxwRJ6/QpMadAm6yNweRAqxQe4/FDh1QtN/Zqht1RTZmCc77
+ ud9Z7tkrxg3pttaYbqf7RzE55SpBJGu9ankVAgFHTKjQSf2bD+JLXV3hVCPoKMfqA03GNQO
+ whewmeZOOp6Yep/5TB7BQ==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:dTj5WPzDIcY=;rgvcHdFwjjFrSgt8O3IefyhYJZA
+ RqfQbdHr8o/Rc01HBCidMByK+xCJxUYn62E6C1wUxFD6BcELdwc4bCq2dXkKmvDdfqKPQ2gh6
+ bwVKiNcuHfAx7RY3Z9l13G9YgD05giyeESNM9msHO3JurypxiYyGPd46my7EMte+zAtt4lHk9
+ F4Bz5d7wGbH89lS961gYJ7MTMwHg7F44OmivKsLqMHBevMvruCEz/nToYHj4HhBjAlm4DaygF
+ Tb/1CIsBgmo9r6MOlXs4QH/kSHfqckP9dwadfdn3swciK8jrXHDRmpQCylChB7TREXG5kgcs0
+ 2oiR2g4IVeA4lb9chd4Gu9rq43j/8qtkW3r0VUT0sYq3NDxnYNDBJaZA3/XqEzqBcKwsXuD7S
+ lejLorf3eZqkXqBy3c7Ds2wLoOH9UEJ8GY4VWjf2fJ9wB77gusIbrESYEgLYNUutJdLKKIb5M
+ KZbxP4f3ax7cCOKw7fx0aCLVMr7yT9CasCr2ckMUoKyJL6s+Ek+Anr4Q01zMN4xIzzsR54aAf
+ UDGk/GiN38A+B4bF6d8m8Ibj4dpDoP7uPa16ADotszBVIHk3fk+BmoJOfxJPlB/PMbeGuwyIe
+ RU2CZj94f6FKfi41YTR4frpmLExQzk793Vu+HGISxF5UOa91UJ/2E/v6oouuCp8MwIYeUQjIc
+ 6lPBvpSPxm2Spf4bYsIk+BMRKHC5HAr5gzUnqG35AqApM44cyWTAgZEP58OerxOUwe+HbiIVV
+ DuB4Ya6WLcV6Bc7ym/qQvKPoM7zRuRzRuo1u1lZiLFFwz4RwXs0gT7XHIC5XXZvDtSSaynMLr
+ 4QRdZk++Q7f/FvplOQAraU5LPVQQOzkSVbMmNIRJerFOc=
 
-On Thu, 14 Mar 2024 at 21:07, Caleb Connolly <caleb.connolly@linaro.org> wrote:
+You should have marked this patch with "v2"...
+
+On 3/13/24 17:59, Samuel Thibault wrote:
+> This remains relatively simple by just enlarging integers.
+
+I like the patch, but I still see some u32...
+drivers/video/fbdev/vt8623fb.c:         info->pixmap.blit_x =3D (bpp =3D=
+=3D 4) ? (1 << (8 - 1)) : (~(u32)0);
+drivers/video/fbdev/arkfb.c:            info->pixmap.blit_x =3D (bpp =3D=
+=3D 4) ? (1 << (8 - 1)) : (~(u32)0);
+drivers/video/fbdev/core/fbmem.c:               fb_info->pixmap.blit_x =3D=
+ ~(u32)0;
+drivers/video/fbdev/s3fb.c:             info->pixmap.blit_x =3D (bpp =3D=
+=3D 4) ? (1 << (8 - 1)) : (~(u32)0);
+
+And please check blit_y too.
+
+> It wouldn't be that simple to get to the console's 64x128 maximum, as it=
+ would
+> require 128b integers.
+
+How realistic are fonts > 64x64 pixels ?
+If they are, using the bitmap_xx functions (include/linux/bitmap.h)
+now instead would be better.
+
+Helge
+
+> Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
+> ---
+>   drivers/video/fbdev/core/fbcon.c | 17 ++++++++++-------
+>   include/linux/fb.h               | 10 +++++-----
+>   2 files changed, 15 insertions(+), 12 deletions(-)
 >
+> diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core=
+/fbcon.c
+> index 46823c2e2ba1..849562f92bd5 100644
+> --- a/drivers/video/fbdev/core/fbcon.c
+> +++ b/drivers/video/fbdev/core/fbcon.c
+> @@ -101,6 +101,9 @@ enum {
+>   	FBCON_LOGO_DONTSHOW	=3D -3	/* do not show the logo */
+>   };
 >
+> +#define FBCON_MAX_FONT_WIDTH	(sizeof(((struct fb_pixmap *) 0)->blit_x) =
+* 8)
+> +#define FBCON_MAX_FONT_HEIGHT	(sizeof(((struct fb_pixmap *) 0)->blit_y)=
+ * 8)
+> +
+>   static struct fbcon_display fb_display[MAX_NR_CONSOLES];
 >
-> On 14/03/2024 15:20, Konrad Dybcio wrote:
-> >
-> >
-> > On 3/14/24 14:50, Sumit Garg wrote:
-> >> On Thu, 14 Mar 2024 at 18:54, Stephan Gerhold <stephan@gerhold.net>
-> >> wrote:
-> >>>
-> >>> On Thu, Mar 14, 2024 at 05:26:27PM +0530, Sumit Garg wrote:
-> >>>> On Thu, 14 Mar 2024 at 16:13, Stephan Gerhold <stephan@gerhold.net>
-> >>>> wrote:
-> >>>>> On Thu, Mar 14, 2024 at 03:02:31PM +0530, Sumit Garg wrote:
-> >>>>>> On Thu, 14 Mar 2024 at 14:48, Konrad Dybcio
-> >>>>>> <konrad.dybcio@linaro.org> wrote:
-> >>>>>>> On 3/14/24 10:04, Sumit Garg wrote:
-> >>>>>>>> On Wed, 13 Mar 2024 at 18:34, Konrad Dybcio
-> >>>>>>>> <konrad.dybcio@linaro.org> wrote:
-> >>>>>>>>> On 3/13/24 13:30, Sumit Garg wrote:
-> >>>>>>>>>> Add Schneider Electric HMIBSC board DTS. The HMIBSC board is
-> >>>>>>>>>> an IIoT Edge
-> >>>>>>>>>> Box Core board based on the Qualcomm APQ8016E SoC.
-> >>>>>>>>>>
-> >>>>>>>>>> Support for Schneider Electric HMIBSC. Features:
-> >>>>>>>>>> - Qualcomm Snapdragon 410C SoC - APQ8016 (4xCortex A53, Adreno
-> >>>>>>>>>> 306)
-> >>>>>>>>>> - 1GiB RAM
-> >>>>>>>>>> - 8GiB eMMC, SD slot
-> >>>>>>>>>> - WiFi and Bluetooth
-> >>>>>>>>>> - 2x Host, 1x Device USB port
-> >>>>>>>>>> - HDMI
-> >>>>>>>>>> - Discrete TPM2 chip over SPI
-> >>>>>>>>>> - USB ethernet adaptors (soldered)
-> >>>>>>>>>>
-> >>>>>>>>>> Co-developed-by: Jagdish Gediya <jagdish.gediya@linaro.org>
-> >>>>>>>>>> Signed-off-by: Jagdish Gediya <jagdish.gediya@linaro.org>
-> >>>>>>>>>> Signed-off-by: Sumit Garg <sumit.garg@linaro.org>
-> >>>>>>>>>> ---
-> >>>>>>>>>
-> >>>>>>>>> [...]
-> >>>>>>>>>
-> >>>>>>>>>> +     memory@80000000 {
-> >>>>>>>>>> +             reg = <0 0x80000000 0 0x40000000>;
-> >>>>>>>>>> +     };
-> >>>>>>>>>
-> >>>>>>>>> I'm not sure the entirety of DRAM is accessible..
-> >>>>>>>>>
-> >>>>>>>>> This override should be unnecessary, as bootloaders generally
-> >>>>>>>>> update
-> >>>>>>>>> the size field anyway.
-> >>>>>>>>
-> >>>>>>>> On this board, U-Boot is used as the first stage bootloader
-> >>>>>>>> (replacing
-> >>>>>>>> Little Kernel (LK), thanks to Stephan's work). And U-Boot consumes
-> >>>>>>>> memory range from DT as Linux does but doesn't require any
-> >>>>>>>> memory to
-> >>>>>>>> be reserved for U-Boot itself. So apart from reserved memory nodes
-> >>>>>>>> explicitly described in DT all the other DRAM regions are
-> >>>>>>>> accessible.
-> >>>>>>>
-> >>>>>>> Still, u-boot has code to fetch the size dynamically, no?
-> >>>>>>>
-> >>>>>>
-> >>>>>> No U-Boot being the first stage bootloader fetches size from DT which
-> >>>>>> is bundled into U-Boot binary.
-> >>>>>>
-> >>>>>
-> >>>>> Back when I added support for using U-Boot as first stage
-> >>>>> bootloader on
-> >>>>> DB410c the way it worked is that U-Boot used a fixed amount of DRAM
-> >>>>> (originally 968 MiB, later 1 GiB since I fixed this in commit
-> >>>>> 1d667227ea51 ("board: dragonboard410c: Fix PHYS_SDRAM_1_SIZE") [1]).
-> >>>>> When booting Linux, the Linux DT was dynamically patched with the
-> >>>>> right
-> >>>>> amount of DRAM (obtained from SMEM). So if you had e.g. a Geniatech
-> >>>>> DB4
-> >>>>> board with 2 GiB DRAM, U-Boot was only using 1 GiB of DRAM, but Linux
-> >>>>> later got the full 2 GiB patched into its DTB.
-> >>>>>
-> >>>>> I didn't have much time for testing U-Boot myself lately but a quick
-> >>>>> look at the recent changes suggest that Caleb accidentally removed
-> >>>>> that
-> >>>>> functionality in the recent cleanup. Specifically, the SMEM-based DRAM
-> >>>>> size detection was removed in commit 14868845db54 ("board:
-> >>>>> dragonboard410c: import board code from mach-snapdragon" [2]), the
-> >>>>> msm_fixup_memory() function does not seem to exist anymore now. :')
-> >>>>
-> >>>> Ah now I see the reasoning for that particular piece of code. Is SMEM
-> >>>> based approach the standardized way used by early stage boot-loaders
-> >>>> on other Qcom SoCs too?
-> >>>>
-> >>>
-> >>> It is definitely used on all the SoCs that were deployed with LK. I am
-> >>> not entirely sure about the newer ABL/UEFI-based ones. A quick look at
-> >>> the ABL source code suggests it is abstracted through an EFI protocol
-> >>> there (so we cannot see where the information comes from with just the
-> >>> open-source code). However, in my experience SMEM data structures are
-> >>> usually kept quite stable (or properly versioned), so it is quite likely
-> >>> that we could use this approach for all Qualcomm SoCs.
-> >>>
-> >>
-> >> If the SoCs which support this standardized way to dynamic discover
-> >> DRAM size via SMEM then why do we need to rely on DT at all for those
-> >> SoCs? Can't U-Boot and Linux have the same driver to fetch DRAM size
-> >> via SMEM? I am not sure if it's an appropriate way for U-Boot to fixup
-> >> DT when that information can be discovered dynamically.
+>   static struct fb_info *fbcon_registered_fb[FB_MAX];
+> @@ -2483,12 +2486,12 @@ static int fbcon_set_font(struct vc_data *vc, st=
+ruct console_font *font,
+>   	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
+>   		return -EINVAL;
 >
-> "standardized" I'm not so sure... But yes, smem does offer this. The
-> definition in DT here is for U-Boot,
-
-We should move away from that thinking that U-Boot has its own DT and
-Linux kernel has its own. IMO, that's just the opposite of the true DT
-definition.
-
-> ABL will always clobber it, and so
-> does U-Boot before handing over to the kernel. Linux should never see
-> this without a bootloader having looked at it.
-
-Where does U-Boot clobber SMEM? I would be interested to see if ABL
-clobbers it too?
-
+> -	if (font->width > 32 || font->height > 32)
+> +	if (font->width > FBCON_MAX_FONT_WIDTH || font->height > FBCON_MAX_FON=
+T_HEIGHT)
+>   		return -EINVAL;
 >
-> The reason I decided to hardcode this in DT for U-Boot is because SMEM
-> currently relies on the driver model and isn't available early enough.
+>   	/* Make sure drawing engine can handle the font */
+> -	if (!(info->pixmap.blit_x & BIT(font->width - 1)) ||
+> -	    !(info->pixmap.blit_y & BIT(font->height - 1)))
+> +	if (!(info->pixmap.blit_x & BIT_ULL(font->width - 1)) ||
+> +	    !(info->pixmap.blit_y & BIT_ULL(font->height - 1)))
+>   		return -EINVAL;
 >
-> Also admittedly I just wasn't that familiar with the U-Boot codebase. I
-> just wanted to avoid hardcoding this in C code, and given that this was
-> already supported for the "chainloading from ABL" usecase, just
-> hardcoding the values was the obvious solution.
+>   	/* Make sure driver can handle the font length */
+> @@ -3082,8 +3085,8 @@ void fbcon_get_requirement(struct fb_info *info,
+>   			vc =3D vc_cons[i].d;
+>   			if (vc && vc->vc_mode =3D=3D KD_TEXT &&
+>   			    info->node =3D=3D con2fb_map[i]) {
+> -				caps->x |=3D 1 << (vc->vc_font.width - 1);
+> -				caps->y |=3D 1 << (vc->vc_font.height - 1);
+> +				caps->x |=3D 1ULL << (vc->vc_font.width - 1);
+> +				caps->y |=3D 1ULL << (vc->vc_font.height - 1);
+>   				charcnt =3D vc->vc_font.charcount;
+>   				if (caps->len < charcnt)
+>   					caps->len =3D charcnt;
+> @@ -3094,8 +3097,8 @@ void fbcon_get_requirement(struct fb_info *info,
 >
-> I would definitely be open to revisiting this in U-Boot, having an SMEM
-> framework that we could use without the driver model which would just
-> take a base address and then let us interact with SMEM and populate the
-> dram bank data would be a good improvement, and would let us avoid
-> hardcoding the memory layout in DT. We'd just need to manually find the
-> SMEM base address in the FDT as part of "dram_init_banksize()" and
-> retrieve the data there.
-
-These are the similar problems Linux has to deal with too but on Qcom
-platforms it is rather offloaded to bootloaders to rather implement
-this. It leads to custom DT modification or board code in U-Boot which
-is hard to maintain. If we want to implement it properly then
-corresponding bindings should be upstreamed too regarding how DRAM
-range is to be discovered via SMEM.
-
+>   		if (vc && vc->vc_mode =3D=3D KD_TEXT &&
+>   		    info->node =3D=3D con2fb_map[fg_console]) {
+> -			caps->x =3D 1 << (vc->vc_font.width - 1);
+> -			caps->y =3D 1 << (vc->vc_font.height - 1);
+> +			caps->x =3D 1ULL << (vc->vc_font.width - 1);
+> +			caps->y =3D 1ULL << (vc->vc_font.height - 1);
+>   			caps->len =3D vc->vc_font.charcount;
+>   		}
+>   	}
+> diff --git a/include/linux/fb.h b/include/linux/fb.h
+> index 05dc9624897d..2bac166cd3f2 100644
+> --- a/include/linux/fb.h
+> +++ b/include/linux/fb.h
+> @@ -144,8 +144,8 @@ struct fb_event {
+>   };
 >
-> That all being said, I don't see any reason not to define the memory
-> layout in DT, it's a hardware feature, DT describes the hardware. The
-> whole "bootloader will fill this in" implies that the bootloader isn't
-> also using DT as the source of truth, but now with U-Boot it actually
-> is, so it's all the more important that DT be accurate ;P
+>   struct fb_blit_caps {
+> -	u32 x;
+> -	u32 y;
+> +	u64 x;
+> +	u64 y;
+>   	u32 len;
+>   	u32 flags;
+>   };
+> @@ -192,10 +192,10 @@ struct fb_pixmap {
+>   	u32 scan_align;		/* alignment per scanline		*/
+>   	u32 access_align;	/* alignment per read/write (bits)	*/
+>   	u32 flags;		/* see FB_PIXMAP_*			*/
+> -	u32 blit_x;             /* supported bit block dimensions (1-32)*/
+> -	u32 blit_y;             /* Format: blit_x =3D 1 << (width - 1)    */
+> +	u64 blit_x;             /* supported bit block dimensions (1-64)*/
+> +	u64 blit_y;             /* Format: blit_x =3D 1 << (width - 1)    */
+>   	                        /*         blit_y =3D 1 << (height - 1)   */
+> -	                        /* if 0, will be set to 0xffffffff (all)*/
+> +	                        /* if 0, will be set to ~0ull (all)     */
+>   	/* access methods */
+>   	void (*writeio)(struct fb_info *info, void __iomem *dst, void *src, u=
+nsigned int size);
+>   	void (*readio) (struct fb_info *info, void *dst, void __iomem *src, u=
+nsigned int size);
 
-I agree DT should be accurate and not a fan of DT fixups. However,
-when it comes to some hardware configuration being discoverable then
-IMHO DT isn't the appropriate place for that. For the time being I am
-fine with the DRAM range to be specified in DT.
-
-> >
-> > You're mixing two things. Linux expects a devicetree where
-> > /memory/reg[size]
-> > is valid. Such driver should indeed be (re)implemented in u-boot to provide
-> > this information.
-
-No, I don't think so. We should rather start thinking about the
-overall stack rather than just being Linux kernel centric. Do you have
-a generic solution for U-Boot regarding how this should be
-implemented?
-
--Sumit
-
-> >
-> > As for linux, I am working on making Linux aware of the DDR capabilities
-> > on Snapdragons, for other reasons, but it's on the back burner, as it
-> > still needs some broad thinking about integrating it with the interested
-> > consumers.. Bottom line is, Linux should be fed a devicetree with DRAM size
-> > filled.
-> >
-> > Konrad
->
-> --
-> // Caleb (they/them)
 
