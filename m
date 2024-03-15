@@ -1,84 +1,138 @@
-Return-Path: <linux-kernel+bounces-104433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B51C087CDB5
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:06:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDD4487CDBC
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:07:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C0521F220C2
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:06:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE79B1C20FA4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:07:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3565F250FE;
-	Fri, 15 Mar 2024 13:06:29 +0000 (UTC)
-Received: from mail115-95.sinamail.sina.com.cn (mail115-95.sinamail.sina.com.cn [218.30.115.95])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C6982577A;
+	Fri, 15 Mar 2024 13:07:17 +0000 (UTC)
+Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com [209.85.128.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B731E18624
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 13:06:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.95
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 57D992C188;
+	Fri, 15 Mar 2024 13:07:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710507988; cv=none; b=aCukTiBHy6Wt/idrCkOM2lM1shma0w3GAdKG6dvG3pOa0w1uMFe13AeCyc27Amyn0hvgGYyybiO9EsTk9FyzOvagZ/+U4qBnwjR5mPNmikMaVkwhyeG9ZgettVIipjnPheCDMZ+KMFowQON5bO0ulASCuz4Np9AI3Hii1OHVF/Y=
+	t=1710508037; cv=none; b=uq28esz8R6TGNL3UEZX3do2Q3szF6XV1XHFvml+jqpYOEYuvGpzQVnQX+5yQd2ChD05TI06NxILtjRn4LnWKRRutVB8AWqwLQDnqcBMZUaf/opB/UZlu6Q//QmD4DVQJbhofFk5XStKFIepdaIj5yL3IdX3FK7VXf5PxuEO4+Yc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710507988; c=relaxed/simple;
-	bh=yJudiLMA36Y3KxSoumkJPCVd40zRvl4KvkUR0jh4l5g=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=TcPJdxoZGhoE1wqgAQZs7IdUfczqjDNeNVqFbNSTB50FRdHqmsxN2mqfH4ltx2FQ3Bc72XBHORVQ8wjWMHSHFlXkz8VvC2Z7dur+I9t5Gv89TNnewGfwtRo1ppJG3R3T6xJ7eylUX6jExxiuu5SKVmqQclWeF26d7TQsrIIp+SE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
-X-SMAIL-HELO: localhost.localdomain
-Received: from unknown (HELO localhost.localdomain)([116.24.10.95])
-	by sina.com (172.16.235.24) with ESMTP
-	id 65F447BE00006E11; Fri, 15 Mar 2024 21:06:10 +0800 (CST)
-X-Sender: hdanton@sina.com
-X-Auth-ID: hdanton@sina.com
-Authentication-Results: sina.com;
-	 spf=none smtp.mailfrom=hdanton@sina.com;
-	 dkim=none header.i=none;
-	 dmarc=none action=none header.from=hdanton@sina.com
-X-SMAIL-MID: 42060945089131
-X-SMAIL-UIID: 1B503741C4CE417D9884D0A33183E19F-20240315-210610-1
-From: Hillf Danton <hdanton@sina.com>
-To: syzbot <syzbot+f3bc6f8108108010a03d@syzkaller.appspotmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com,
-	tiwai@suse.com
-Subject: Re: [syzbot] [sound?] possible deadlock in snd_timer_close_locked
-Date: Fri, 15 Mar 2024 21:05:58 +0800
-Message-Id: <20240315130558.2420-1-hdanton@sina.com>
-In-Reply-To: <00000000000099d9850613b12348@google.com>
-References: 
+	s=arc-20240116; t=1710508037; c=relaxed/simple;
+	bh=Qr9kR+Tt4+oAHDpJT35SdyDEr+xQzbZe41wY5knNfiI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rfHwSV9t+UtURBOaPxIA6V3WxJl6pPW5UUjkdR5kfR9Nd5NXPXn0GW2AI0tXUWmPZ03r72JlnE2h09QEzaSUDMIRz3J+O3CbNl33h7QaelWYH2q9PwbnjPwZrm5JcSWWIsFEemKxV0/PQkgXYX1f/BBbRNVzEgfcLiIC5FNw0jc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60a3c48e70fso22545027b3.1;
+        Fri, 15 Mar 2024 06:07:15 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710508033; x=1711112833;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9rOBEjwt94At0KX8hgZNX+vcy5XFgHmof560QYmcvh4=;
+        b=Hh6JbI3Uwdk+w81qSOWsVR8DcPEs2Hk+tXl8ZAlEDULNVsSB+tI/+AEoTr0MUnIkzF
+         sQ+KGAMQ0ZHUMqAq3etA3hPEmmQjsfpMJiTGqjE4wXrT49aJlPtTGMp7f4DxBZ1dt4Tm
+         bvT7TJY1pi/4Q52UE020brblra6BybFC5jQasCcmcaJD1KVMmmVp8wnAbmYvzTQbLGXb
+         f9QAIujaKniKJPj+d/BegW0Hihuo4QRjQt0FZoXzXOyMT2YMJY85SJT+abBgsGnKX44+
+         yMIU2nak0BJY9GAl1eMXkaooVRzEHuPCYHX27T3f+mMVjtE7nWsunwhFbku5cc9zlVSI
+         RNKA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+LktzYowSfgNv3uWHIGTk0RIHGXzz+cgUgIcbWchFwN5+N1pKA1Sti7V3GUpDB57yt8WEXj/ruCscYP+0oCeodr4a7rvxXnGc3ZiCGLJMVWYcIgdyV1M4I2PKbZT2YbJKR+4LoALcfMqVtX7a/wt21Wcf7LG3hGemYOD1hmsUYbxn6U43AdBKraeEvUdbPNyt9hDy/XJpm/83r/1sZshXfkYgc9XP
+X-Gm-Message-State: AOJu0YwaBkv8ZeAic3i1UvixA0eXHuIImjfEP+XsT9z+bP1YQH+ArLlf
+	K1PS2gKvg5nRhMzvlZi2p4mf1iZhwWL+RGn+Ct0HEunz/C/I4ZvIVHU6LFY+Agg=
+X-Google-Smtp-Source: AGHT+IHseiZ8JEXQOMz0qVOIe8N7n8O00B9o3p6fq2bgWAEUvsnsNCT3hieEku4PYcrTrBEgzdBOBQ==
+X-Received: by 2002:a25:be52:0:b0:dc6:c32f:6126 with SMTP id d18-20020a25be52000000b00dc6c32f6126mr4454505ybm.22.1710508033364;
+        Fri, 15 Mar 2024 06:07:13 -0700 (PDT)
+Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com. [209.85.128.181])
+        by smtp.gmail.com with ESMTPSA id g13-20020a25ef0d000000b00dc2310abe8bsm674914ybd.38.2024.03.15.06.07.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 06:07:13 -0700 (PDT)
+Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-609fb0450d8so21908067b3.0;
+        Fri, 15 Mar 2024 06:07:12 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXZwhsxCBi0FxtZ8KOy0RIIwWpLrFVz/+VOjRgo7siVFbb8lbZ9SrTFqGDzW+m6jijdNagMW2ta/jm6Q12qnPjmgH49VMJsyMUZ6/lRAZitOTFi12zHfc433uNc++xWDukF7FE3z4TB3p7OiBtji3UV90UQ9CzQEF2HaRcK95YyunC7po+IwsUoamRGoj7VCGoPt4jcve8pqLjIu5cSXKK6PX/EEwTm
+X-Received: by 2002:a5b:24c:0:b0:dcd:b034:b504 with SMTP id
+ g12-20020a5b024c000000b00dcdb034b504mr4405291ybp.27.1710508032362; Fri, 15
+ Mar 2024 06:07:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240315103033.141226-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240315103033.141226-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240315103033.141226-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Fri, 15 Mar 2024 14:07:00 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdXyiS0tPnoQdQML9EvZtzyELt8bMP07+-xV3E5BjaFWKQ@mail.gmail.com>
+Message-ID: <CAMuHMdXyiS0tPnoQdQML9EvZtzyELt8bMP07+-xV3E5BjaFWKQ@mail.gmail.com>
+Subject: Re: [PATCH v2 3/4] i2c: riic: Pass register offsets and chip details
+ as OF data
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Chris Brandt <chris.brandt@renesas.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Magnus Damm <magnus.damm@gmail.com>, Wolfram Sang <wsa+renesas@sang-engineering.com>, 
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Fri, 15 Mar 2024 04:16:27 -0700
-> syzbot found the following issue on:
-> 
-> HEAD commit:    fe46a7dd189e Merge tag 'sound-6.9-rc1' of git://git.kernel..
-> git tree:       upstream
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13a304a5180000
+On Fri, Mar 15, 2024 at 11:31=E2=80=AFAM Prabhakar <prabhakar.csengg@gmail.=
+com> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> With an increasing number of SoCs reusing this driver, each with slight
+> variations in the RIIC IP, it becomes necessary to support passing these
+> details as OF data. This approach simplifies the extension of the driver
+> for other SoCs.
+>
+> This patch lays the groundwork for adding support for the Renesas RZ/V2H
+> SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> ---
+> v1->v2
+> - Dropped family from struct riic_of_data
+> - Included RIIC_REG_END in enum list as flexible array member
+>   in a struct with no named members is not allowed
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git  master
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
---- x/sound/core/timer.c
-+++ y/sound/core/timer.c
-@@ -409,8 +409,9 @@ static void snd_timer_close_locked(struc
- 	struct snd_timer *timer = timeri->timer;
- 
- 	if (timer) {
--		guard(spinlock)(&timer->lock);
-+		spin_lock_irq(&timer->lock);
- 		timeri->flags |= SNDRV_TIMER_IFLG_DEAD;
-+		spin_unlock_irq(&timer->lock);
- 	}
- 
- 	if (!list_empty(&timeri->open_list)) {
---
+> --- a/drivers/i2c/busses/i2c-riic.c
+> +++ b/drivers/i2c/busses/i2c-riic.c
+> @@ -453,6 +461,8 @@ static int riic_i2c_probe(struct platform_device *pde=
+v)
+>                 }
+>         }
+>
+> +       riic->info =3D of_device_get_match_data(&pdev->dev);
+
+This is fine, as all in-tree users use DT (Linux does not support
+sh7752/sh7753, which seem to use the same RIIC variant as RZ/V2H).
+
+> +
+>         adap =3D &riic->adapter;
+>         i2c_set_adapdata(adap, riic);
+>         strscpy(adap->name, "Renesas RIIC adapter", sizeof(adap->name));
+
+Gr{oetje,eeting}s,
+
+                        Geert
+
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
+
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
