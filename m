@@ -1,138 +1,182 @@
-Return-Path: <linux-kernel+bounces-104233-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 23A5187CAFF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:59:02 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7187E87CAFD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:58:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 557661C21669
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:59:01 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A98BAB214AE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 09:58:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B03BD1862F;
-	Fri, 15 Mar 2024 09:58:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="TELJs5vG"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD4F18041;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D4A2618040;
 	Fri, 15 Mar 2024 09:58:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jSqXuiWa"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31D561802B
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 09:58:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710496723; cv=none; b=bPvWLk4vxJWhq8c6F7DEa8oUuyrs9hgQBLj2z5a/Yd9vVeBATYSF3tvESIE1ud+hLNnS5s1v7283kACTPHsFdeuQhgTrXLgU5KOHXXI4Sdm7ro//33MAxxkcGcKhYFvXQZ1Qzuqp+ldclbZkpvFIH9Z8ZiKTFn3uPec2l8o4/ME=
+	t=1710496720; cv=none; b=fQIGMAMwqW5us6J9iVOZp31n7r+phtpwtncuOky25VwV+z/jHfvv4HFPzLC/GjSFlm77ZLhBdHZa3zcxmAb1Tnz45acqZ4vFomb99+B/+0k19D6xYUqPHfdNYV3DlsaF9DErcgBpN/lpVRKySNtCUkTPq9cAzvpK646d0n30Lzw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710496723; c=relaxed/simple;
-	bh=UorXTGu+AcCu4hDCxmYjcKqMuP8YVTSZD/Jao3gQpVU=;
-	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
-	 MIME-Version:Content-Type; b=Ui8rl2MXGKl4Ok/QrC09yLCuzQZtnv2PF64g/uEOl0Rj7mkyDkbvvoF5rzYEmV4zv4CkGynyybth1qHq+iYfi5T7nUaEZ3IRLZZDEYeym9IrdWo5m1Sz7msEbvxhMXc6s32o1vj/s1PNGbg9q4VyGbPYjqPXKHMuA9X+8bGdgRU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=TELJs5vG; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710496721; x=1742032721;
-  h=from:date:to:cc:subject:in-reply-to:message-id:
-   references:mime-version;
-  bh=UorXTGu+AcCu4hDCxmYjcKqMuP8YVTSZD/Jao3gQpVU=;
-  b=TELJs5vGA51eQiripYBHr0ScNQm6t47JJPnA4ZLdZsFMcxX0jd0gXi9T
-   AGLDDDVMqpviztoWcO0hQV5T+mo6FUEhIR5zC48u8MA3AM//N438aOmn3
-   W7ta6XAoLUE5a4/W/at4lQ76ul+hqSdzd/oh8IS4BWXDCaGgnKFryMtcg
-   3GsuskFxlDrGdPM02NCpyHshZuZJ4ckC7Q9Ka3Za/eX6pKVMKhnYYuLud
-   knmYecjK3hMeWgDZW+R62cHtpVwhjXkUAsFUHHcDZ+XHFOHccw91sk8Of
-   SfIVLrKz0ErI5OohIO86qV82kpkYiesjqm3mYHKKEJIZLTGKhiwOe8BG8
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11013"; a="8296194"
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="8296194"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 02:58:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,128,1708416000"; 
-   d="scan'208";a="12523729"
-Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.9])
-  by orviesa010-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 02:58:38 -0700
-From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Date: Fri, 15 Mar 2024 11:58:31 +0200 (EET)
-To: "Maciej W. Rozycki" <macro@orcam.me.uk>
-cc: Bjorn Helgaas <bhelgaas@google.com>, linux-pci@vger.kernel.org, 
-    LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH 1/1] PCI: Use the correct bit in Link Training not active
- check
-In-Reply-To: <alpine.DEB.2.21.2403142145010.37739@angie.orcam.me.uk>
-Message-ID: <c81ecb2a-9365-dbb0-2207-ed692c8c7487@linux.intel.com>
-References: <20240301150641.4037-1-ilpo.jarvinen@linux.intel.com> <alpine.DEB.2.21.2403011622560.42226@angie.orcam.me.uk> <c740c6e4-ca1a-33ad-8437-4a1219c16eb1@linux.intel.com> <alpine.DEB.2.21.2403060951310.43702@angie.orcam.me.uk>
- <01666075-504d-a434-d039-2e25db931f23@linux.intel.com> <c4fe9080-245f-7089-84c1-bb47dcf2cd83@linux.intel.com> <alpine.DEB.2.21.2403142145010.37739@angie.orcam.me.uk>
+	s=arc-20240116; t=1710496720; c=relaxed/simple;
+	bh=Iu8k+oLwr4hqiYGmKQ/JGJ3jwWl99QjATtzgXxf4OXU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DsF6dROuyVREH+StHD9O2WAyWKJSb/NezzPUDzax6JwPmWkbigreNtrrcS9537IsXrFgSz890jW4+eQIPoKLZUEdqWyfcAJp2uz6Hey78Z5do9oFmGoXhtop4cKCnjNe4mfAQfMve8Yqfc+K8dpFaueC0LTcWBoCkNWwf4QtCjQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jSqXuiWa; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a466c85ae5fso21166066b.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 02:58:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710496716; x=1711101516; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=XCDp802c/vz00Jj0fM4zOQgn8Q59NL1j5+KpAzF7J7g=;
+        b=jSqXuiWayhwPsLCkyutVXWLtC1vGR7vkoSEbU8owomudfMu9cXg8m5bJu0nSn/kScz
+         BKVUTZYkxxfhFZN3rNG9gt6AQIieM/9B6f8g6BTXT2C0XSBf6wa1J8A76r/eYodS5dH5
+         tNy/WIxLp6n2OIU+0XjvFbD1aQLHuAP3KRso3ZcS1c3YJnedH7Wds7kmbL/HYufMvf1J
+         EU3J06g6JY9965FWIxJFsv0PEQc9127go1BflGkOFUzYS42GZV/kz1DCxeg1O4LRbjdW
+         uJY6kPOLDU4T3grbh4bnuzvOT/D9bbBv08gyDvKyLGlAWSLV9aPaymJ/HDyiqqM//FUx
+         +aOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710496716; x=1711101516;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=XCDp802c/vz00Jj0fM4zOQgn8Q59NL1j5+KpAzF7J7g=;
+        b=RCiduDpi2fwhZsPRIgAxsBzN8ciljvsnEUxXU1WIqCvYbZG2Do1+jIeVK9pHApJoWb
+         KE9Wj+EgawKfPt8dXNPJXs9Vgldi55Keo55tZ0i/c7A9dKvNPRChvl8rZ0r8WavrWPDu
+         HxRaBuSC8HyBucXzO4vc9YVzBM/lpmLfjKBDKy8iL6D8I11FYJCYnpD+7BcdxwKtU5t8
+         fxjKHQTzRDP9dRknIwa6vIla6A6eq3KH+fWB2qVgFAoGJmlfe0jslqDzy4dbrvc/5ExB
+         GczGwt/AJtAUIiK+JSBaa+4D6gTBYmdw5zmZ4hLzzDB8le2OgkfvO4HkJ+OUf6LvviJL
+         8C2g==
+X-Forwarded-Encrypted: i=1; AJvYcCUZiWQXcZx0KbenHv/n9QEootP4zfOYB2LugzxDRVayLoQbdcpmy4ne7IGkFNtUfdWhQ7k6TTKEvMLZqOhIFMrpLUFPgJSaXx9TU1YS
+X-Gm-Message-State: AOJu0Yz1STJCzIU5xk2GOUSdVOOgNNTGKdiGZCZQQC2wo0R4+DQG5Ohp
+	zRdDZABI5LtWLzZ/FYvaHteVtOW2EXc1HqGJYhXP6Q+VjWd2cCLitTXw4i0QQlU=
+X-Google-Smtp-Source: AGHT+IHIsIdUGhPXOM3BQx4/0p1MeZLlO90elMoxks/E8rq2q+6HU+t6JEfKjICz9pAzbqmmPNO/Hw==
+X-Received: by 2002:a17:907:c086:b0:a46:6dcf:3f39 with SMTP id st6-20020a170907c08600b00a466dcf3f39mr3347105ejc.57.1710496716475;
+        Fri, 15 Mar 2024 02:58:36 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id dv22-20020a170906b81600b00a4658d3e405sm1529599ejb.196.2024.03.15.02.58.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 02:58:36 -0700 (PDT)
+Message-ID: <f91ea77c-8170-4ae6-850f-3d5715d83855@linaro.org>
+Date: Fri, 15 Mar 2024 10:58:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/mixed; boundary="8323328-1935341792-1710496711=:1018"
-
-  This message is in MIME format.  The first part should be readable text,
-  while the remaining parts are likely unreadable without MIME-aware tools.
-
---8323328-1935341792-1710496711=:1018
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/25] ASoC: dt-bindings: meson: g12a-toacodec: add
+ support for A1 SoC family
+Content-Language: en-US
+To: Jan Dakinevich <jan.dakinevich@salutedevices.com>,
+ Neil Armstrong <neil.armstrong@linaro.org>,
+ Jerome Brunet <jbrunet@baylibre.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
+ Kevin Hilman <khilman@baylibre.com>,
+ Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Linus Walleij <linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>,
+ Takashi Iwai <tiwai@suse.com>, linux-amlogic@lists.infradead.org,
+ linux-clk@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ alsa-devel@alsa-project.org, linux-sound@vger.kernel.org,
+ linux-gpio@vger.kernel.org
+Cc: kernel@salutedevices.com
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-9-jan.dakinevich@salutedevices.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240314232201.2102178-9-jan.dakinevich@salutedevices.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: QUOTED-PRINTABLE
+Content-Transfer-Encoding: 7bit
 
-On Thu, 14 Mar 2024, Maciej W. Rozycki wrote:
+On 15/03/2024 00:21, Jan Dakinevich wrote:
+> Add "amlogic,t9015-a1" compatible string and new device tree phandle
+> options.
 
-> On Thu, 14 Mar 2024, Ilpo J=C3=A4rvinen wrote:
->=20
-> > One more point to add here, I started to wonder today why that use_lt=
-=20
-> > parameter is needed at all for pcie_retrain_link()?
-> >=20
-> > Once the Target Speed has been changed to 2.5GT/s which is what the qui=
-rk=20
-> > does before calling retraining, LT too should work "normally" after tha=
-t.
->=20
->  We don't know if the link is going to become stable with the TLS update=
-=20
-> to 2.5GT/s and we want to ensure that the link has reached the active=20
-> state before claiming victory; LT clear does not mean the link is active,=
-=20
-> it only means what it means, that is that the link isn't being trained at=
-=20
-> the moment.
+I don't understand the second part. You did not add any options, no
+phandles. You added some defines for something, so say what are these
+"something".
 
-LT clear means retraining has ended which is the condition=20
-pcie_retrain_link() should terminate at. It tried and finished retraining=
-=20
-as proven by LT clear.
+> 
+> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+> ---
+>  .../devicetree/bindings/sound/amlogic,g12a-toacodec.yaml     | 1 +
+>  include/dt-bindings/sound/meson-g12a-toacodec.h              | 5 +++++
+>  2 files changed, 6 insertions(+)
+> 
+> diff --git a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
+> index 23f82bb89750..c47604aa590f 100644
+> --- a/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
+> +++ b/Documentation/devicetree/bindings/sound/amlogic,g12a-toacodec.yaml
+> @@ -26,6 +26,7 @@ properties:
+>        - items:
+>            - enum:
+>                - amlogic,sm1-toacodec
+> +              - amlogic,a1-toacodec
 
->  Also we don't want to reset the TLS to the maximum before the link has=
-=20
-> become active.
+Keep alphabetical order. Don't stuff new entries to the end...
 
-I'm not suggesting to change the if DLLLA check that is within the quirk=20
-so it will remain the same even if pcie_retrain_link() would no longer=20
-have the use_lt parameter.
 
-If LT clear after retraining does not imply DLLLA set, then this again=20
-falls into the quirk territory and IMO the quirk itself should be what=20
-makes the additional call to wait for DLLLA, not pcie_retrain_link().
-I suspect though that DL clear does imply DLLLA set (after the target=20
-speed was lowered) so my expectation is that the extra wait wouldn't be=20
-necessary at that point.
 
->  Does this answer your question?
 
-What I'm trying to achieve is having pcie_retrain_link() focus on=20
-retraining and quirk on steps required by the quirk. Currently they're=20
-kind of mixed if we assume the assumption that LT clear doesn't imply=20
-active link is true. That tells quirk would need additional step,=20
-that is, wait for DLLLA after the retraining has completed which is=20
-currently hidden into pcie_retrain_link() rather than explicitly=20
-called by the quirk.
+Best regards,
+Krzysztof
 
---=20
- i.
-
---8323328-1935341792-1710496711=:1018--
 
