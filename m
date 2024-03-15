@@ -1,178 +1,244 @@
-Return-Path: <linux-kernel+bounces-104411-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104515-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA22A87CD6A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:47:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7C46B87CEFE
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:34:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6A785B21E29
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:47:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3D5F0284968
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:34:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04FAA3398B;
-	Fri, 15 Mar 2024 12:46:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9AC6D26AF2;
+	Fri, 15 Mar 2024 14:34:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b="tRJTmdfu"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="s+avylMu"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E05C28DB5
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:46:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE9F533D5;
+	Fri, 15 Mar 2024 14:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710506806; cv=none; b=NURRGop2HSymL+MR8VWojJHjXGNblv+hjRKVrZzTAj2NBLMLHR+ssu0iTeTv/BAfQ9uDwI99duVfSzd7dZsxTW8GFTl+uBr8Wg7BJBh5Kw2cPlWKvnjqPHjFCVPM8bWRsTEzpPzWQHJ4qEz29iBQc8qEpmqi0M40r24bHXB4aT4=
+	t=1710513253; cv=none; b=DjML3UHeljVvbZBJ0/Xwn6H6bonQhBDu1xw9muTJpg+8kDZ9PAd/06kn3zAbBjR3/xdCuuY1HydCKdJZ4uyRaOxn+FD7cNWnH8DISql/O5n+luSBqBJw199hjjhPHgQXyNfVsV8+rc7DErh4MtTlhZ4f6NqHQZUxDuDHqd6ugy0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710506806; c=relaxed/simple;
-	bh=hB8oK/5XlyqfQU8m5HzAPGAAkaEN7H/T9Hy28QbhaJ4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nDegnyCG01Q/n7DPM/8Yn1iigD2KW+qw437vTXOg9SfxRurYyAcqbT6mJazvRf7MHNb1BUkrziGE0mV3kdXevYi/CNO9AW2nw2gl1wKz5suFMHigGSEVBLdDEfSUlDrju1k04AfI3SPECTWzxZGuiuSW7zjLMt8HMr3qsj6PgBo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk; spf=none smtp.mailfrom=metaspace.dk; dkim=pass (2048-bit key) header.d=metaspace-dk.20230601.gappssmtp.com header.i=@metaspace-dk.20230601.gappssmtp.com header.b=tRJTmdfu; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=metaspace.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=metaspace.dk
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-413f8f5541eso8886695e9.0
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 05:46:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=metaspace-dk.20230601.gappssmtp.com; s=20230601; t=1710506802; x=1711111602; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Kx9d4AYyT6utH8rhaCIhMxw7irDgaTXcHKpwOBwjTHs=;
-        b=tRJTmdfuPmCivpM6dGfWpFo8WvOXjW3TdmZnACkB8EIJ1+GegSP2b3Bl525JgcOA4Z
-         xECGeYQAm9bcOniB0uwS6TQC+xYGd85hQyw7u73r8pEM6mzvoLPeiVNxWFbsmeyqz4ay
-         JV0K1UOwiEakhbUo+YL00SfhdeQrnhUariToxO+0r2K8NVLH4gg+JttaMEUeH7w+2dla
-         xXcEtnYQ5HQFl42ZuGo7Yo/uep42k3m25ixlan0LZK/Rx0pUkfQVK7m5Zf8ffMFAt79V
-         uU/jf86AyInIrahXFku5RgsnH4Uax51Je16NwYsSAktnlY5T+4uy1MHkt/2ubt33CdGQ
-         PNoA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710506802; x=1711111602;
-        h=content-transfer-encoding:mime-version:message-id:date:user-agent
-         :references:in-reply-to:subject:cc:to:from:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=Kx9d4AYyT6utH8rhaCIhMxw7irDgaTXcHKpwOBwjTHs=;
-        b=MLi8VxMVu6o5PHErj2YSKYPEYsiP1OlLNx4oTC6ScrgcjwYXFQjByirPyCMJm+DDTD
-         P9HZBwJftfbBJgbTVptXG+l54xmsrWrnvuY+xgE5EmmM5eNBZCM9J5PQCsZB+XuOSMoj
-         JC+qXJQQD2hBX9y0hlZQtaTJxEgjjzfIf2VHZA15dvZLt1jNBNRQHaiYS1ir4n1m7yil
-         SXXLglELkWKcr/IN/cSPyKuILi90JI5vpujWaoGrdP0XfDqy3Xh3Bekl1Gp4j8HkfDfR
-         TNBzTzBwdRKr+Le1ZPk/b3I36pGKxXjPk+hygOOYlOaUsTxIM5RIGgHj8X6MgDkYO0ST
-         OQpQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXS9qYizX5v39tDsae4FhqsACpIUPtiPear8WClPfFohX1VTHcG5UbgqqEDalgXq9eeRQEDc/fOgguzyEP6cR6IhNzoRxsVpmSOzcyT
-X-Gm-Message-State: AOJu0YzA7sNvhEQCxINIYurdNavdF5TKkzG90KAmN9OJRaxsKoTFc8JG
-	hKtjw9ltvYGEgJAgi+bzBzVn7iTewIqrX1QC+z1sG6LF4BHhnnpiLZUVG2tvZkM=
-X-Google-Smtp-Source: AGHT+IHzHryvy+XKoDE8f2x1YmS2YdHacbOh+fS/Wum7//zeltKmmmsFfRAAIsN0rqJ6s/WmkhYYYw==
-X-Received: by 2002:a05:600c:4ed4:b0:414:37f:276f with SMTP id g20-20020a05600c4ed400b00414037f276fmr718232wmq.22.1710506801605;
-        Fri, 15 Mar 2024 05:46:41 -0700 (PDT)
-Received: from localhost ([147.161.155.79])
-        by smtp.gmail.com with ESMTPSA id j3-20020a05600c1c0300b004131310a29fsm5815498wms.15.2024.03.15.05.46.41
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 05:46:41 -0700 (PDT)
-From: Andreas Hindborg <nmi@metaspace.dk>
-To: Ming Lei <ming.lei@redhat.com>
-Cc: Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,  Jens Axboe
- <axboe@kernel.dk>,  Keith Busch <kbusch@kernel.org>,  Boqun Feng
- <boqun.feng@gmail.com>,  Christoph Hellwig <hch@lst.de>,  Damien Le Moal
- <Damien.LeMoal@wdc.com>,  Bart Van Assche <bvanassche@acm.org>,  Hannes
- Reinecke <hare@suse.de>,  "linux-block@vger.kernel.org"
- <linux-block@vger.kernel.org>,  Andreas Hindborg <a.hindborg@samsung.com>,
-  Wedson Almeida Filho <wedsonaf@gmail.com>,  Niklas Cassel
- <Niklas.Cassel@wdc.com>,  Greg KH <gregkh@linuxfoundation.org>,  Matthew
- Wilcox <willy@infradead.org>,  Miguel Ojeda <ojeda@kernel.org>,  Alex
- Gaynor <alex.gaynor@gmail.com>,  Gary Guo <gary@garyguo.net>,
-  =?utf-8?Q?Bj=C3=B6rn?= Roy
- Baron <bjorn3_gh@protonmail.com>,  Benno Lossin <benno.lossin@proton.me>,
-  Alice Ryhl <aliceryhl@google.com>,  Chaitanya Kulkarni
- <chaitanyak@nvidia.com>,  Luis Chamberlain <mcgrof@kernel.org>,  Yexuan
- Yang <1182282462@bupt.edu.cn>,  Sergio =?utf-8?Q?Gonz=C3=A1lez?= Collado
- <sergio.collado@gmail.com>,  Joel Granados <j.granados@samsung.com>,
-  "Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,  Daniel Gomez
- <da.gomez@samsung.com>,  open list <linux-kernel@vger.kernel.org>,
-  "rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-  "lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
-  "gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 1/5] rust: block: introduce `kernel::block::mq` module
-In-Reply-To: <ZfQ8Wz9gMqsN02Mv@fedora> (Ming Lei's message of "Fri, 15 Mar
-	2024 20:17:31 +0800")
-References: <20240313110515.70088-1-nmi@metaspace.dk>
-	<20240313110515.70088-2-nmi@metaspace.dk> <ZfI8-14RUqGqoRd-@boqun-archlinux>
-	<87il1ptck0.fsf@metaspace.dk>
-	<CANiq72mzBe2npLo=CVR=ShyMuDmr0+TW4Gy0coPFQOBQZ_VnwQ@mail.gmail.com>
-	<87plvwsjn5.fsf@metaspace.dk>
-	<CANiq72neNUL1m0AbY78eXWJMov4fgjnNcQ_16SoT=ikJ3K7bZQ@mail.gmail.com>
-	<8734ssrkxd.fsf@metaspace.dk> <ZfQ8Wz9gMqsN02Mv@fedora>
-User-Agent: mu4e 1.12.0; emacs 29.2
-Date: Fri, 15 Mar 2024 13:46:30 +0100
-Message-ID: <87o7bfr7bt.fsf@metaspace.dk>
+	s=arc-20240116; t=1710513253; c=relaxed/simple;
+	bh=b4ef4loKkoGkQnjHEI12kleYlpIODdw0EgVztw+Td2I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=A6nU0Dx+Ug74gpQCWbzGa3hfU9aTtUqOHs2m5CgvHBJx2y2DV4paihJ5Z6mUv7mPQm+OZCpZ5oPgD8BzgzkV5V6yShKER9Y8YlpfhrS+UxZlpsQquwYsjGv9CCVeHS677mSJuuZg81I01c+JoIoQ3l5T0bnBp3zjVvrWO1w3sIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=s+avylMu; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42FClWBU060886;
+	Fri, 15 Mar 2024 07:47:32 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1710506852;
+	bh=rzz3OTX+vJ047AUZ3BRLJ/zXw0vnCNy5WlB27mli1Z0=;
+	h=From:To:CC:Subject:Date;
+	b=s+avylMutwBF381DW14LzMThV2+wKyqDruR2hjkFvHANHhFW5j0yxFQ4H0VJ+LiRA
+	 ULEGYDJbff4oZ4PeuiF3cuO5/GFCiBDSqsSRrNuwdpQrYox+A8OqdT6EGqrOsdJVHc
+	 EWvmWrPxTi9AtXHBNFd73CIvJRUKoVfV7C+/h6U4=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42FClWPE106434
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Fri, 15 Mar 2024 07:47:32 -0500
+Received: from DFLE102.ent.ti.com (10.64.6.23) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Fri, 15
+ Mar 2024 07:47:32 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE102.ent.ti.com
+ (10.64.6.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Fri, 15 Mar 2024 07:47:32 -0500
+Received: from uda0510294.dhcp.ti.com (uda0510294.dhcp.ti.com [10.24.69.66])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42FClSQ6049890;
+	Fri, 15 Mar 2024 07:47:29 -0500
+From: Beleswar Padhi <b-padhi@ti.com>
+To: <nm@ti.com>
+CC: <vigneshr@ti.com>, <kristo@kernel.org>, <robh@kernel.org>,
+        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <u-kumar1@ti.com>, <b-kapoor@ti.com>
+Subject: [PATCH] arm64: dts: ti: k3-j721e-sk: Add support for multiple CAN instances
+Date: Fri, 15 Mar 2024 18:17:28 +0530
+Message-ID: <20240315124728.490331-1-b-padhi@ti.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Ming Lei <ming.lei@redhat.com> writes:
-> On Fri, Mar 15, 2024 at 08:52:46AM +0100, Andreas Hindborg wrote:
->> Miguel Ojeda <miguel.ojeda.sandonis@gmail.com> writes:
->>=20
->> > On Thu, Mar 14, 2024 at 8:23=E2=80=AFPM Andreas Hindborg <nmi@metaspac=
-e.dk> wrote:
->> >>
->> >> The way the current code compiles, <kernel::block::mq::Request as
->> >> kernel::types::AlwaysRefCounted>::dec_ref` is inlined into the `rnull`
->> >> module. A relocation for `rust_helper_blk_mq_free_request_internal`
->> >> appears in `rnull_mod.ko`. I didn't test it yet, but if
->> >> `__blk_mq_free_request` (or the helper) is not exported, I don't think
->> >> this would be possible?
->> >
->> > Yeah, something needs to be exported since there is a generic
->> > involved, but even if you want to go the route of exporting only a
->> > different symbol, you would still want to put it in the C header so
->> > that you don't get the C missing declaration warning and so that we
->> > don't have to write the declaration manually in the helper.
->>=20
->> That is what I did:
->>=20
->> @@ -703,6 +703,7 @@ int blk_mq_alloc_sq_tag_set(struct blk_mq_tag_set *s=
-et,
->>  		unsigned int set_flags);
->>  void blk_mq_free_tag_set(struct blk_mq_tag_set *set);
->>=20=20
->> +void __blk_mq_free_request(struct request *rq);
->>  void blk_mq_free_request(struct request *rq);
->>  int blk_rq_poll(struct request *rq, struct io_comp_batch *iob,
->>  		unsigned int poll_flags);
->
-> Can you explain in detail why one block layer internal helper is
-> called into rnull driver directly? It never happens in C driver code.
+CAN instance 0 in the mcu domain is brought on the j721e-sk board
+through header J1. Thus, add its respective transceiver 1 dt node to add
+support for this CAN instance.
 
-It is not the rust null block driver that calls this symbol directly. It
-is called by the Rust block device driver API. But because of inlining,
-the symbol is referenced from the loadable object.
+CAN instances 0, 5 and 9 in the main domain are brought on the j721e-sk
+board through headers J5, J6 and J2 respectively. Thus, add their
+respective transceivers 2, 3 and 4 dt nodes to add support for these CAN
+instances.
 
-The reason we have to call this symbol directly is to ensure proper
-lifetime of the `struct request`. For example in C, when a driver
-converts a tag to a request, the developer makes sure to only ask for
-requests which are outstanding in the driver. In Rust, for the API to be
-sound, we must ensure that the developer cannot write safe code that
-obtains a reference to a request that is not owned by the driver.
+Signed-off-by: Beleswar Padhi <b-padhi@ti.com>
+---
+Test logs: https://gist.github.com/3V3RYONE/d60192fa2ccdf523f303e9904fbe8e17
 
-A similar issue exists in the null block driver when timer completions
-are enabled. If the request is cancelled and the timer fires after the
-request has been recycled, there is a problem because the timer holds a
-reference to the request private data area.
+ arch/arm64/boot/dts/ti/k3-j721e-sk.dts | 116 +++++++++++++++++++++++++
+ 1 file changed, 116 insertions(+)
 
-To that end, I use the `atomic_t ref` field of the C `struct request`
-and implement the `AlwaysRefCounted` Rust trait for the request type.
-This is a smart pointer that owns a reference to the pointee. In this
-way, the request is not freed and recycled until the smart pointer is
-dropped. But if the smart pointer holds the last reference when it is
-dropped, it must be able to free the request, and hence it has to call
-`__blk_mq_free_request`.
+diff --git a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+index 0c4575ad8d7c..9406d6f370fa 100644
+--- a/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
++++ b/arch/arm64/boot/dts/ti/k3-j721e-sk.dts
+@@ -210,6 +210,42 @@ vdd_sd_dv_alt: gpio-regulator-tps659411 {
+ 			 <3300000 0x1>;
+ 	};
+ 
++	transceiver1: can-phy0 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&mcu_mcan0_gpio_pins_default>;
++		standby-gpios = <&wkup_gpio0 3 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver2: can-phy1 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_mcan0_gpio_pins_default>;
++		standby-gpios = <&main_gpio0 65 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver3: can-phy2 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_mcan5_gpio_pins_default>;
++		standby-gpios = <&main_gpio0 66 GPIO_ACTIVE_HIGH>;
++	};
++
++	transceiver4: can-phy3 {
++		compatible = "ti,tcan1042";
++		#phy-cells = <0>;
++		max-bitrate = <5000000>;
++		pinctrl-names = "default";
++		pinctrl-0 = <&main_mcan9_gpio_pins_default>;
++		standby-gpios = <&main_gpio0 67 GPIO_ACTIVE_HIGH>;
++	};
++
+ 	dp_pwr_3v3: fixedregulator-dp-prw {
+ 		compatible = "regulator-fixed";
+ 		regulator-name = "dp-pwr";
+@@ -367,6 +403,45 @@ J721E_IOPAD(0x164, PIN_OUTPUT, 7) /* (V29) RGMII5_TD2 */
+ 		>;
+ 	};
+ 
++	main_mcan0_pins_default: main-mcan0-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x208, PIN_INPUT, 0) /* (W5) MCAN0_RX */
++			J721E_IOPAD(0x20c, PIN_OUTPUT, 0) /* (W6) MCAN0_TX */
++		>;
++	};
++
++	main_mcan0_gpio_pins_default: main-mcan0-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x108, PIN_INPUT, 7) /* (AD27) PRG0_PRU1_GPO2.GPIO0_65 */
++		>;
++	};
++
++	main_mcan5_pins_default: main-mcan5-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x050, PIN_INPUT, 6) /* (AE21) PRG1_PRU0_GPO18.MCAN5_RX */
++			J721E_IOPAD(0x04c, PIN_OUTPUT, 6) /* (AJ21) PRG1_PRU0_GPO17.MCAN5_TX */
++		>;
++	};
++
++	main_mcan5_gpio_pins_default: main-mcan5-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x10c, PIN_INPUT, 7) /* (AC25) PRG0_PRU1_GPO3.GPIO0_66 */
++		>;
++	};
++
++	main_mcan9_pins_default: main-mcan9-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x0d0, PIN_INPUT, 6) /* (AC27) PRG0_PRU0_GPO8.MCAN9_RX */
++			J721E_IOPAD(0x0cc, PIN_OUTPUT, 6) /* (AC28) PRG0_PRU0_GPO7.MCAN9_TX */
++		>;
++	};
++
++	main_mcan9_gpio_pins_default: main-mcan9-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_IOPAD(0x110, PIN_INPUT, 7) /* (AD29) PRG0_PRU1_GPO4.GPIO0_67 */
++		>;
++	};
++
+ 	dp0_pins_default: dp0-default-pins {
+ 		pinctrl-single,pins = <
+ 			J721E_IOPAD(0x1c4, PIN_INPUT, 5) /* SPI0_CS1.DP0_HPD */
+@@ -555,6 +630,19 @@ J721E_WKUP_IOPAD(0xfc, PIN_INPUT_PULLUP, 0) /* (H24) WKUP_I2C0_SDA */
+ 		>;
+ 	};
+ 
++	mcu_mcan0_pins_default: mcu-mcan0-default-pins {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x0ac, PIN_INPUT, 0) /* (C29) MCU_MCAN0_RX */
++			J721E_WKUP_IOPAD(0x0a8, PIN_OUTPUT, 0) /* (D29) MCU_MCAN0_TX */
++		>;
++	};
++
++	mcu_mcan0_gpio_pins_default: mcu-mcan0-gpio-default-pins {
++		pinctrl-single,pins = <
++			J721E_WKUP_IOPAD(0x0bc, PIN_INPUT, 7) /* (F27) WKUP_GPIO0_3 */
++		>;
++	};
++
+ 	/* Reset for M.2 M Key slot on PCIe1  */
+ 	mkey_reset_pins_default: mkey-reset-pns-default-pins {
+ 		pinctrl-single,pins = <
+@@ -1108,6 +1196,34 @@ &pcie1_rc {
+ 	num-lanes = <2>;
+ };
+ 
++&mcu_mcan0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&mcu_mcan0_pins_default>;
++	phys = <&transceiver1>;
++};
++
++&main_mcan0 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan0_pins_default>;
++	phys = <&transceiver2>;
++};
++
++&main_mcan5 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan5_pins_default>;
++	phys = <&transceiver3>;
++};
++
++&main_mcan9 {
++	status = "okay";
++	pinctrl-names = "default";
++	pinctrl-0 = <&main_mcan9_pins_default>;
++	phys = <&transceiver4>;
++};
++
+ &ufs_wrapper {
+ 	status = "disabled";
+ };
+-- 
+2.34.1
 
-We could tag the function with `#[inline(never)]`, but that would impact
-performance.
-
-Best regards,
-Andreas
 
