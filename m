@@ -1,155 +1,104 @@
-Return-Path: <linux-kernel+bounces-104479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C408A87CE7A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:05:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2EF0587CE80
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:07:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2A997282189
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:05:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C715A28317E
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B9EF36AF0;
-	Fri, 15 Mar 2024 14:04:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D641E374EC;
+	Fri, 15 Mar 2024 14:07:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PqJBuRNF"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VrE85+Fu"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A0328E3C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:04:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A37B36AF1;
+	Fri, 15 Mar 2024 14:07:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710511497; cv=none; b=H9IyYrmU/UP+Jt7RYSPrueUGFYImUXNn4XXxmXY3PQ8iJNxh97sA0sBFDCmCnCaEU6i90UgoqaV7AfE45NqeDNO7jx179ViwuuMGcO8p66fEprJmFCz/nuNzSrZIXCEjGpdfpV5qin+AeptVh/Z89gUcMxQp4gbhx43jRTYlYRo=
+	t=1710511640; cv=none; b=uK7/eC4Crrl68ueKKvaF1Oya/GeFF3MDIdHJbvtoSvjCKAh+xLbJKtLBOt0fOouxbM9guw4erusGbAqth0mJgVfE44cd8+qwXJTnwCqDr778Yspnbd5xiL4NEM6eGWn9nTX5hDWyBkFayHStleAdZbGckTF6DU+z0oxwGgrbzJA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710511497; c=relaxed/simple;
-	bh=xpVHja1Gl/vSjiNwdPui/lZWoKGYHGfBo8HaZ00hbso=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MWCbeokBqlfISTLXOtE5ySvysqdYwvc+9+qCuP+m6nhcIHqobn+tdkAHKpDBdjBcHOYa9PTW6Z2AdJgYBOOQ3Lsw9fladYTiyS1+HS/gy2+ngVlyt0sJFZk+PkgwB8p0Y6Rqu1WwQ0Wv7cnxN/RA/Sct9M2zFCNFEhz3CA16LUI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PqJBuRNF; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6cadfffdbso1865493b3a.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 07:04:56 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710511496; x=1711116296; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=hp8hpHq4FUWj9bHt9euKC/gRJiJ20RTqRC6iqHY4SXE=;
-        b=PqJBuRNFGybw6pRZpMduoGna99iqgRqFv4QJr8+j2GL2gar96ZOsNK268Q4/B/dtBf
-         M7QHNQHIMgxaL8bIYcyKcOMZTXjx+GklPCsapOC5aKzwZX2cknXylXiorgyD9I1zoZsJ
-         rlrmgEo7qVY1zWBrQi4OjGGaFo1Gq9Q6F7UXLclhcesGqpsmn1Qv8xZDwWCEm4wYZodA
-         s+FvZCBXEBcnHg5MjCvveBsD0RxyaNq07btuVu3/BIYyKhBIpAhizz2br4BptRP/RBBU
-         arLQy7j6+S3fe4vQq5LoylBXpoc3PKmilqKuwOkeaLNj5F/sVw72WZKjbctuJEQvn4hH
-         SKmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710511496; x=1711116296;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=hp8hpHq4FUWj9bHt9euKC/gRJiJ20RTqRC6iqHY4SXE=;
-        b=gf5ZyxhIdA0LPibOLP5woMhTvOwtsnhKyDqp6Q/ueA5ekFnfmrGNKEx/+kmgbE4Jrn
-         jaDS7FK9H2FRHuhxq2dgLFtbLGN6Q8SYgPX2OxQ2Mnx1J7V9UVL2EplyE6obDVHASNF0
-         JbfcxmvF74vePdwA3fEIrwzsRUWkOXSPjfKoH8U3GRxUUm4CA+GlMPvFRDdqPHOQentT
-         KpizwZMhPGZ0S9wVdB9yVlIrKOB89fZ+zy+r6KX9LtAncq/6c4NCniz2al91rtcIQmlp
-         2YKjNrh3lq0GbTSF4zjO4Dcw5xitSVsTxIitv1kuZ+/yV9s+TC2HClg90kr3sE5HHW3m
-         QYVQ==
-X-Gm-Message-State: AOJu0YxVhA0GCfOI0jlqQ8/0aFHNv5R3NM8ztxuRklbCSJftvoAvD8Mn
-	zHr21ThRT4nvkVwfQhL3bdhKQFquCJHTOganvE8I2O/Pa8XeUqanJxaYaV6/
-X-Google-Smtp-Source: AGHT+IFHOP4EmKlqaIrrsbvc+pT/fEV3RnkBQcfhUSrX7rPQE7LM0+h8+jSumKyH3rjxpR27Bcc6Hg==
-X-Received: by 2002:a05:6a20:7d8d:b0:1a3:539a:f532 with SMTP id v13-20020a056a207d8d00b001a3539af532mr177230pzj.14.1710511495674;
-        Fri, 15 Mar 2024 07:04:55 -0700 (PDT)
-Received: from gnu-cfl-3.localdomain ([172.58.89.72])
-        by smtp.gmail.com with ESMTPSA id lb8-20020a056a004f0800b006e5360f1cffsm3431042pfb.180.2024.03.15.07.04.55
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 07:04:55 -0700 (PDT)
-Received: from gnu-cfl-3.. (localhost [IPv6:::1])
-	by gnu-cfl-3.localdomain (Postfix) with ESMTP id A00AD7401F8;
-	Fri, 15 Mar 2024 07:04:53 -0700 (PDT)
-From: "H.J. Lu" <hjl.tools@gmail.com>
-To: linux-kernel@vger.kernel.org
-Cc: x86@kernel.org,
-	Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Subject: [PATCH] x86/shstk: Enable shadow stack for x32
-Date: Fri, 15 Mar 2024 07:04:33 -0700
-Message-ID: <20240315140433.1966543-1-hjl.tools@gmail.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710511640; c=relaxed/simple;
+	bh=WdUX4lu8bXJIZPkoiQQkUmr5EbLf/TIHgfd0F51z534=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=N5tKCjCRBCis0NJO77HBgb5SgQX9IjCc6ue7qmYWCWKgeri22pc6NbEU0DOVY52FsnNaW9d/pp1+07UuoKlb52oG6VQiokPh+x6qqDW4YaK8NQJTHYq61cDoXh0IgIdGIVH7nmgR3CWTR6phnE7+7ChimpdaZ2CXSIfXiQj2An4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VrE85+Fu; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9C524C433C7;
+	Fri, 15 Mar 2024 14:07:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710511639;
+	bh=WdUX4lu8bXJIZPkoiQQkUmr5EbLf/TIHgfd0F51z534=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VrE85+Fu6T6PEiwbvP4kB2o7DTAVBxOF0HfvAXbb73daAwwJd6neO5BO8FodeKgeb
+	 D23zAIUVn22HBgwLKWdIzRSSe+AXB+rqGooc/TX9fAk6kaD+H6I9qNXvAEORrl3InK
+	 Z2f3Ym8ISoMMzQUDaE+rlLe2NHijhxsQQOGpJdpbKSKDT4/w6AZOHZ8/QNEcPMuDZa
+	 i07Z5m3471yM7r4D4bYvowbotVgl0+13LY/MR49TyJd87cRB4vxFR41RyI4hBjh9oJ
+	 CRq4AdsRq2pHv/NLYr2JOSWbKcH7OZlVT7t60oMNPXIP8+zlDzPeM5ZuZE0MNNdh9B
+	 EqyQ2noi/G/Nw==
+Date: Fri, 15 Mar 2024 14:07:13 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Bastien Curutchet <bastien.curutchet@bootlin.com>
+Cc: Liam Girdwood <lgirdwood@gmail.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	herve.codina@bootlin.com, christophercordahi@nanometrics.ca
+Subject: Re: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
+ dev_err_probe
+Message-ID: <6102130b-b496-4e75-9b9f-f960484848fb@sirena.org.uk>
+References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-5-bastien.curutchet@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="3GytGuMeU5fQLL4f"
+Content-Disposition: inline
+In-Reply-To: <20240315112745.63230-5-bastien.curutchet@bootlin.com>
+X-Cookie: A well-known friend is a treasure.
 
-1. Add shadow stack support to x32 signal.
-2. Use the 64-bit map_shadow_stack syscall for x32.
-3. Set up shadow stack for x32.
 
-Tested with shadow stack enabled x32 glibc on Intel Tiger Lake.
+--3GytGuMeU5fQLL4f
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Cc: Rick P Edgecombe <rick.p.edgecombe@intel.com>
-Tested-by: H.J. Lu <hjl.tools@gmail.com>
-Signed-off-by: H.J. Lu <hjl.tools@gmail.com>
----
- arch/x86/entry/syscalls/syscall_64.tbl | 2 +-
- arch/x86/kernel/shstk.c                | 4 ++--
- arch/x86/kernel/signal_64.c            | 6 ++++++
- 3 files changed, 9 insertions(+), 3 deletions(-)
+On Fri, Mar 15, 2024 at 12:27:36PM +0100, Bastien Curutchet wrote:
 
-diff --git a/arch/x86/entry/syscalls/syscall_64.tbl b/arch/x86/entry/syscalls/syscall_64.tbl
-index 7e8d46f4147f..cc78226ffc35 100644
---- a/arch/x86/entry/syscalls/syscall_64.tbl
-+++ b/arch/x86/entry/syscalls/syscall_64.tbl
-@@ -374,7 +374,7 @@
- 450	common	set_mempolicy_home_node	sys_set_mempolicy_home_node
- 451	common	cachestat		sys_cachestat
- 452	common	fchmodat2		sys_fchmodat2
--453	64	map_shadow_stack	sys_map_shadow_stack
-+453	common	map_shadow_stack	sys_map_shadow_stack
- 454	common	futex_wake		sys_futex_wake
- 455	common	futex_wait		sys_futex_wait
- 456	common	futex_requeue		sys_futex_requeue
-diff --git a/arch/x86/kernel/shstk.c b/arch/x86/kernel/shstk.c
-index 59e15dd8d0f8..6f1e9883f074 100644
---- a/arch/x86/kernel/shstk.c
-+++ b/arch/x86/kernel/shstk.c
-@@ -163,8 +163,8 @@ static int shstk_setup(void)
- 	if (features_enabled(ARCH_SHSTK_SHSTK))
- 		return 0;
- 
--	/* Also not supported for 32 bit and x32 */
--	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) || in_32bit_syscall())
-+	/* Also not supported for 32 bit */
-+	if (!cpu_feature_enabled(X86_FEATURE_USER_SHSTK) || in_ia32_syscall())
- 		return -EOPNOTSUPP;
- 
- 	size = adjust_shstk_size(0);
-diff --git a/arch/x86/kernel/signal_64.c b/arch/x86/kernel/signal_64.c
-index 23d8aaf8d9fd..8a94053c5444 100644
---- a/arch/x86/kernel/signal_64.c
-+++ b/arch/x86/kernel/signal_64.c
-@@ -315,6 +315,9 @@ int x32_setup_rt_frame(struct ksignal *ksig, struct pt_regs *regs)
- 
- 	uc_flags = frame_uc_flags(regs);
- 
-+	if (setup_signal_shadow_stack(ksig))
-+		return -EFAULT;
-+
- 	if (!user_access_begin(frame, sizeof(*frame)))
- 		return -EFAULT;
- 
-@@ -377,6 +380,9 @@ COMPAT_SYSCALL_DEFINE0(x32_rt_sigreturn)
- 	if (!restore_sigcontext(regs, &frame->uc.uc_mcontext, uc_flags))
- 		goto badframe;
- 
-+	if (restore_signal_shadow_stack())
-+		goto badframe;
-+
- 	if (compat_restore_altstack(&frame->uc.uc_stack))
- 		goto badframe;
- 
--- 
-2.44.0
+> -			dev_err(&pdev->dev, "no mem resource?\n");
+> -			return -ENODEV;
+> +			return dev_err_probe(&pdev->dev, -ENODEV, "no mem resource?\n");
+>  		}
 
+dev_err_probe() with a fixed error code doesn't seem to make much sense,
+the whole point is to handle deferral but for a straight lookup like
+this that can't happen.
+
+--3GytGuMeU5fQLL4f
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX0VhEACgkQJNaLcl1U
+h9DoVQf6AqSdqdzoCg7bciF4ooMQTN5zUTk3BOK75rX557NTNOzssKXfOkq3P6IK
+UPIgAGVmjLPycIsFR4/8r0Cbnh+/2WCn+5PB8u165TR6JaHq9LdBNqYI74E93Bxa
+F1BYs3h1+OwhReXF7bVNlWX5vpkeM7GXuP4kqmgiVv1jKGCHOJhbBMCN5qB8kGov
+6SCNIqh10yRWnjD8L68EtFgTxbF/Cx6Ohfm8nQalK6QC9BKc1t2JgsQuhm3xZLZX
+A+OfFqvzRN1Ct0w5TjA8YrFfS3NYydlCuyO8mRdAycIi4gaoarJGRm9PGwpAS3E9
+F4ppJpwm/ht2TzJDmVckcCGGihyOdg==
+=IT+L
+-----END PGP SIGNATURE-----
+
+--3GytGuMeU5fQLL4f--
 
