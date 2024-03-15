@@ -1,142 +1,112 @@
-Return-Path: <linux-kernel+bounces-104797-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104798-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 080F887D3D1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:41:59 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DE1587D3D3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:43:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DA291F24A6B
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:41:58 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A92C028373F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:43:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E0038DD1;
-	Fri, 15 Mar 2024 18:41:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 363341DA26;
+	Fri, 15 Mar 2024 18:43:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="dSI1gJOR"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WyT4NJ7K"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B19F414A9F
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:41:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D2BE01773A
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 18:43:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710528105; cv=none; b=bIqAVHnfrntobBxogs4cnv2t/q2KfyepLWo2lruZPPSrNVnaOScOgTJoFikzKnemz6FgLV6Suq9LC647vLGKF2ccCklcHleBuwc01qc6+qZXQHa2Fh1crSZyOxHQ7fHh1ml72vaRGMjQI41uThPlwYc4hgJ8/noP5cd5rDLjKE8=
+	t=1710528187; cv=none; b=GRI1R5aJrnWcCWTNrvh240aeMj95hcla9NWxKxrXc42qHuH7AsLexJI0z9GriWhhJNER9o3JV8Eop7SCd4u5fqZ7saiq5KCwDmrZ1pQSyIaHxjdTJhMRML/w+4Yqyt72fOIbcp5syLPXP4b3zhR32XM3f74XM0hMxxrU6xEDbxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710528105; c=relaxed/simple;
-	bh=6sNODvKTQ/pBcJxGo+BJkhwoG4FuMEJkTeFd/S8dXhE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R+UNC2v51GW0OS3QmMfuiemZS5TkbMedFIJO21YQqF8rFWfP65hjuknP7lR5X5EUjHcePs6Z8Q5HlmjRnJumF70XOg8lzi9YLiam5ExhJb1qhi7M4mNB9hFxDoErDlBt5tIBLChW3JzpYRHYosRObyhuq/W4bmeyhCN3oKtRH/k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=dSI1gJOR; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e694337fffso563046b3a.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 11:41:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710528103; x=1711132903; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=0lOi8R60F8R8EFdifsjdi6HEQyuwBQcJc8tV69kgjLY=;
-        b=dSI1gJORgoMO+XscvAHQ6cwDHMuDlg73VPSZTJW66ksBYfmYH0teBMk5NxsUWCro+9
-         j+sQ/MGxJa650SImSQZF3JfDFt02jXyqvDJM69vxoUo5GhDZGnGSejtiOM6f7LeVAV11
-         I5zWeK0g3vkqk/A82jk3TRbx6co57PEhmHJMO3DvHtzebJGKPGZQIAPzkDLXziuUVe+i
-         Z2qf9a8EYjIFOJkwIs6l9h4GB2dtYWIpL3vNfW6pWNwPVl41r7at4QOSLwWIZGLjs+Aa
-         VRRHacbPyQWc12JHtzEvSG85wwtuo0W8AspXKR2YpPelEDGbp11jznaWKE7gd6HZsSEA
-         gqyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710528103; x=1711132903;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=0lOi8R60F8R8EFdifsjdi6HEQyuwBQcJc8tV69kgjLY=;
-        b=AM9FGeA10ipLfAl8Y4IjF9YssZkC3tFtTb14sfKBjsyTIEvSz6YlyBwxkWm+4QKdYF
-         y9v1KTeWVP1q4l8O3YvDCU3DAiK8Efu2KogYwYJgBSMX+/ALgNaYrXLMS3MAsUFBY9L9
-         V4paVf8jEC0DizLLaj+5RBGehWyZOBYQT/YE6M3faGm3QhgUCRuE0EC4mW1u2ZBQWDlh
-         63t9yRwry4VnxjKdElApp4lWftefkxwsUoLM7nakaEoFZ35n4nAcByfFP3RU+tUYv1uf
-         JfhW3bSdYFWKlwu4cbceVf+NkPGsoXlhOxL75VseQV0S5keQKIL4kbfmoufFJ+dbp2gL
-         HLBQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXQoUj4IN56CIIVzZGkCQB0De9vkplHjfHhqz1KWQK1PcEn+NbWUWfK8MHFbN5hz/1Br7eLxSlrQhgt1Y1b6GaE8cXSXvqlCalAdGXu
-X-Gm-Message-State: AOJu0Yy6fbRyxygcKOkySTmzPqtHKB+el2n1hoJUtvjgX6qocGORhOlk
-	KoeqkWrMjQSvr/GiT+2zRU1zGzE3c2Zj0dMrPZKYbHEJYZZgaawjWE6zJoa9MYM=
-X-Google-Smtp-Source: AGHT+IG8GdCcLOhcKWWAkwSZEstwFYROwikNbnsPoU9FWsxewrK456qV7e8Kku0y8FamKom6HOjqqQ==
-X-Received: by 2002:a05:6a00:2d07:b0:6e6:8954:b9a6 with SMTP id fa7-20020a056a002d0700b006e68954b9a6mr3383297pfb.1.1710528103048;
-        Fri, 15 Mar 2024 11:41:43 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id ln17-20020a056a003cd100b006e6bcbea9e0sm3716680pfb.88.2024.03.15.11.41.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 11:41:42 -0700 (PDT)
-Message-ID: <0f8291f7-48b1-4be1-8a57-dbad5d0ab28c@kernel.dk>
-Date: Fri, 15 Mar 2024 12:41:41 -0600
+	s=arc-20240116; t=1710528187; c=relaxed/simple;
+	bh=98MTCnh6TECtUmXxeS5Lwt+fSihK/4r/o1UN5fsD114=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QL3nr5+sGqvLV2A1SDW00qOgUTEJ6HZUfHoUJYrvib4b1dLxjPd/cLQnar0strrD05adB6zg93OdtRsWYdzlGXmGv6kO2Xc7DkYZRfLfud3ZU6OoDUDqiqmj7en4yFCuAJQPQSXtaJluRKKKA1nDK03fXu1cdwXRT54rExQnubI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WyT4NJ7K; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710528184;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=fZH9r4p0GtIqMoZLiNXBZTSG5yeJKfeoz7ghLeMWCPQ=;
+	b=WyT4NJ7K5gBM67jPyrg1FNQ5r4VjwPxU3ICNXv8NZlHcOKZNfDQznLOmQZ2hJFTcKVNoQN
+	OsMzOfE83PehlWuJvhN8s9Rbfo3rc9pWc3bknRA2NwJXWk/epuF45Jxu2oMnxiTpC3hCOa
+	34tWAxEAKrprX6UzvFYJvKHv/Ofz4Dc=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-396-ewXAzk3MOUq9i9D13ZZQyQ-1; Fri,
+ 15 Mar 2024 14:42:56 -0400
+X-MC-Unique: ewXAzk3MOUq9i9D13ZZQyQ-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id AED393CBDF76;
+	Fri, 15 Mar 2024 18:42:55 +0000 (UTC)
+Received: from redhat.com (unknown [10.22.34.28])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 72AD1111E406;
+	Fri, 15 Mar 2024 18:42:55 +0000 (UTC)
+Date: Fri, 15 Mar 2024 13:42:49 -0500
+From: David Teigland <teigland@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, gfs2@lists.linux.dev
+Subject: Re: [GIT PULL] dlm fixes for 6.9
+Message-ID: <ZfSWqXKWnalm9wE5@redhat.com>
+References: <ZfNFRg-KxTCTPf92@redhat.com>
+ <CAHk-=wh4qK+zHrrYehidKRp4Fi6e4qUD6Tv6Ed8USxUC+H+HrQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 02/10] capability: add any wrappers to test for multiple
- caps with exactly one audit message
-Content-Language: en-US
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>,
- =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>
-Cc: linux-security-module@vger.kernel.org, linux-block@vger.kernel.org,
- Serge Hallyn <serge@hallyn.com>, linux-kernel@vger.kernel.org,
- bpf@vger.kernel.org
-References: <20240315113828.258005-1-cgzones@googlemail.com>
- <20240315113828.258005-2-cgzones@googlemail.com>
- <CAEf4BzZF0A9qEzmRigHFLQ4vBQshGUQWZVG5L0q2_--kx4=AXA@mail.gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <CAEf4BzZF0A9qEzmRigHFLQ4vBQshGUQWZVG5L0q2_--kx4=AXA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wh4qK+zHrrYehidKRp4Fi6e4qUD6Tv6Ed8USxUC+H+HrQ@mail.gmail.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On 3/15/24 10:45 AM, Andrii Nakryiko wrote:
->> +/**
->> + * ns_capable_any - Determine if the current task has one of two superior capabilities in effect
->> + * @ns:  The usernamespace we want the capability in
->> + * @cap1: The capabilities to be tested for first
->> + * @cap2: The capabilities to be tested for secondly
->> + *
->> + * Return true if the current task has at least one of the two given superior
->> + * capabilities currently available for use, false if not.
->> + *
->> + * In contrast to or'ing capable() this call will create exactly one audit
->> + * message, either for @cap1, if it is granted or both are not permitted,
->> + * or @cap2, if it is granted while the other one is not.
->> + *
->> + * The capabilities should be ordered from least to most invasive, i.e. CAP_SYS_ADMIN last.
->> + *
->> + * This sets PF_SUPERPRIV on the task if the capability is available on the
->> + * assumption that it's about to be used.
->> + */
->> +bool ns_capable_any(struct user_namespace *ns, int cap1, int cap2)
->> +{
->> +       if (cap1 == cap2)
->> +               return ns_capable(ns, cap1);
->> +
->> +       if (ns_capable_noauditondeny(ns, cap1))
->> +               return true;
->> +
->> +       if (ns_capable_noauditondeny(ns, cap2))
->> +               return true;
->> +
->> +       return ns_capable(ns, cap1);
+On Fri, Mar 15, 2024 at 10:10:00AM -0700, Linus Torvalds wrote:
+> Now, if the issue is that you want to clean up something that is never
+> getting cleaned up by anybody else, and this is a fatal error, and
+> you're just trying to fix things up (badly), and you know that this is
+> all racy but the code is trying to kill a dead data structure, then
+> you should
 > 
-> this will incur an extra capable() check (with all the LSMs involved,
-> etc), and so for some cases where capability is expected to not be
-> present, this will be a regression. Is there some way to not redo the
-> check, but just audit the failure? At this point we do know that cap1
-> failed before, so might as well just log that.
+>  (a) need a damn big comment (bigger than the comment is already)
+> 
+>  (b) should *NOT* pretend to do some stupid "atomic decrement and test" loop
 
-Not sure why that's important - if it's a failure case, and any audit
-failure should be, then why would we care if that's now doing a bit of
-extra work?
+Yes, that looks pretty messed up, the counter should not be an atomic_t.  I was
+a bit wary of making that atomic when it wasn't necessary, but didn't push back
+enough on that change:
 
-I say this not knowing the full picture, as I unhelpfully was only CC'ed
-on two of the patches... Please don't do that when sending patchsets.
+    commit 75a7d60134ce84209f2c61ec4619ee543aa8f466
+    Author: Alexander Aring <aahringo@redhat.com>
+    Date:   Mon May 29 17:44:38 2023 -0400
 
--- 
-Jens Axboe
+    Currently the lkb_wait_count is locked by the rsb lock and it should be
+    fine to handle lkb_wait_count as non atomic_t value. However for the
+    overall process of reducing locking this patch converts it to an
+    atomic_t value.
+
+.. and the result is the primitives get abused, and the code becomes crazy.
+My initial plan is to go back to a non-atomic counter there.  It is indeed a
+recovery situation that involves a forced reset of state, but I'll need to go
+back and study that case further before I can say what it should finally look
+like.  Whatever that looks like, it'll have a very good comment :)  Dropping
+the pull is fine, there's a chance I may resend with the other patch and a new
+fix, we'll see.
+
+Thanks,
+Dave
+
+
 
 
