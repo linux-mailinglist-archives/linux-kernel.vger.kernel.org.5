@@ -1,236 +1,369 @@
-Return-Path: <linux-kernel+bounces-104816-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104817-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97C0087D41D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:53:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F7B287D421
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 19:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE2DCB250F6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:53:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AB533B251E6
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:53:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 322D0535B6;
-	Fri, 15 Mar 2024 18:51:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E5DEB5025A;
+	Fri, 15 Mar 2024 18:52:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ehhxCNXO"
-Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="1sBa83SU"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 703AF50261;
-	Fri, 15 Mar 2024 18:51:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B0E8BEC;
+	Fri, 15 Mar 2024 18:52:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710528686; cv=none; b=DNndCWibEB31/CXZCi+4ANvTnFSDDDoGI/n7GvZID94L885GnrJiTQB/EEiXrK2WGqjEivXthgB/HssDrMBFjH86vmh7or65VlwKn4xPdoxxth3b+8rnmxPEaXS8PLQD6Rhyg6ASdkikgHvSs1k4HykTMBKwlcCUpdvHgZhjMOo=
+	t=1710528745; cv=none; b=R77imHYS+gzg71riT9gZdt1sU8jP598h7maTFU2lkEPRIRWiJoB6blWjs2kyZ6glZCYIhsyXHAZ1pw/w7huSUtV2drZDFCvaxy2yfgz9v8Cb0D+TaqJP0N50Z6MBdW+grTH5q4KU1roD/8RVR2C/G2gubDDaR6X5i5NdfjwJtfU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710528686; c=relaxed/simple;
-	bh=16ql2HcY7iDcpglYmBvrsnrtWDpPdD0pISldjm33j3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=imXIGIQGWf/RQvPzv2QLds0h/nO8KbzdgQBIqfFxCVVNigj1vtq/iOgdX8KZEB4afvAZWXQt51BmmdE2dl6A0oJpYFMq3563WFvA7jipxkWP3Qu1kQ/GDdcWGxNHX2OCtSt1li/hQTvtiCdKezCKhrIMs2Q+rVq7fq53srsUUi8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ehhxCNXO; arc=none smtp.client-ip=209.85.214.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1de0f92e649so16366425ad.0;
-        Fri, 15 Mar 2024 11:51:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710528683; x=1711133483; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qQtwelcSgwGFeTnZLVof0pwhxwav0Nmdkno2Inz3sLw=;
-        b=ehhxCNXO21oQQ+adJSqL8uvxy5Mte2FDEoazFtFrGiWy7AP4L89C3JpIPgFt8r3Q67
-         ApZxKDxitQKOVbg4L+ZTIgpNv6f+eliyWlBNfI3FdnXV2bDcFmbEdURGTK2FazKuHEWx
-         AuGm5dpS8UqIuMTck3FmQ/UYURX6gO3m2Naq20jxD8jjUuUh5TvAqhRDd5RVei+3kfD6
-         nJ7jsHFy4dR4c22eWr1e5TZe9tAZMmsXmW9E1e8KNJXypVpMcJYbjP4hm+24cRW/p1UQ
-         aUXo5rc6ROjSLYfV+mzmQx/Afk64+cN7EuVbdsjWBO2jPZDdtd16w21an3whSlBXqEmQ
-         DGFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710528683; x=1711133483;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qQtwelcSgwGFeTnZLVof0pwhxwav0Nmdkno2Inz3sLw=;
-        b=sjVB5+novTOTNAMOWLQ3qYMtcfcwk+WD/p9MlFQ9tHLTcwhP2sCMUu72skE+rj0Tsb
-         t/ESvL2GvcXM2C4IR3x/TvfEZvFtGD1cZYQqdurKqeWU1nDhaE9C/3SliEtcq7KDBDs9
-         qg4h0NZCR4T5cO+d2ZONHm9O25nnfTMUNjxIUL70Y1DmjbqwoA2j6D1L/YyqPubc3fjX
-         4tQeGjw0YQIWSFf/lvOaMDiFAphW0F0i92JrRhcpKzXmqfwafKTqc1qws1dSrg+6iWIK
-         Fp9n7PShCdm8sbYMNl85rDEdQQffdGTaKx9PQTGdBBep4+p6FVfhvQeeLktKVIPuiNI5
-         P1zQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWmIUEa6/cPVqIZaSjcXRXQXPZZRv6XhSXoHGngCxbIrr3PFzhjz9HXunzuWZbMhwjT277fnupmwOMqP6LWGO1Orasu5C79stTgLPq14VWmYlo6036TBZ1lHkEbIaxkh7maxTfvSKfy9CR15JIIuWGSigPerv8GT3rn7PknSnHozo0ssSt8
-X-Gm-Message-State: AOJu0YyYKnlzfE1pV6YzIW+Pzny2U2mdJule5l3slN+5tLggVPi0Ds03
-	bBNHL0t17b30cF3YgZaMOcLQFNjU/3l4EHU0yC38LmDDV2tCmK70
-X-Google-Smtp-Source: AGHT+IF2HQskcpCyIR3dSZHfWz5hEStmH0IR/3eWOj+Efeu9g7w0OAdVU5R7xHfBDlK1SDx09ySDHA==
-X-Received: by 2002:a17:903:11c3:b0:1dd:7d6a:d6c8 with SMTP id q3-20020a17090311c300b001dd7d6ad6c8mr6727294plh.14.1710528682446;
-        Fri, 15 Mar 2024 11:51:22 -0700 (PDT)
-Received: from google.com ([2620:15c:9d:2:c446:74f0:5cd2:d078])
-        by smtp.gmail.com with ESMTPSA id u2-20020a170902e80200b001defbc29a05sm820862plg.40.2024.03.15.11.51.21
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 11:51:21 -0700 (PDT)
-Date: Fri, 15 Mar 2024 11:51:19 -0700
-From: Dmitry Torokhov <dmitry.torokhov@gmail.com>
-To: Stefan Eichenberger <eichest@gmail.com>
-Cc: nick@shmanahar.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	nicolas.ferre@microchip.com, alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev, linus.walleij@linaro.org,
-	linux-input@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	francesco.dolcini@toradex.com,
-	Stefan Eichenberger <stefan.eichenberger@toradex.com>
-Subject: Re: [PATCH RESEND v3 2/2] Input: atmel_mxt_ts - support poweroff in
- suspend
-Message-ID: <ZfSYp6aV6bRhlPUJ@google.com>
-References: <20240209105012.22470-1-eichest@gmail.com>
- <20240209105012.22470-3-eichest@gmail.com>
+	s=arc-20240116; t=1710528745; c=relaxed/simple;
+	bh=SMmJSZ8TCgP0UfFx6uzxM9a+eB5MYJgcY3kQQ1gi0O0=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=pmaQs0KXafJZaHPfIa8s3mbbBZHH8AxT2Rt5p3hDO4mmy3LgLtb1URduRFfMPmYw/OP83yr9Y72hb+SHOFKFALcbf6HwDFiZuhwDekQB2Atj4P0LUsoWj3H06C4+LBtDyf/Sm0b5pYd+iIim8r7UFvhG3tr0oz4pYIi+ndqbIzU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=1sBa83SU; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710528741;
+	bh=SMmJSZ8TCgP0UfFx6uzxM9a+eB5MYJgcY3kQQ1gi0O0=;
+	h=Subject:From:In-Reply-To:Date:Cc:References:To:From;
+	b=1sBa83SUB+7n6wiqDY/CAQCVUpFwnwLT7WyHRMGya0irmAzXk/Q2pBLbJ+/4q2ez2
+	 goCFiv1pyPtFTTBsx6zONKvFmfiLLGFj1CdZmD8RjXDU/LnfuU2Hti5wJR7deGtoNm
+	 ZoPQcB94jxHgu8GoThSa7D18c5qPdvWzbcbrXBgIBgHnKOW4KurHdonLQWHAvGvH/Z
+	 cEoPChilds7pno3j4tXXyV3tlXTDsBJHzlZ0/GYClC38p31j2Iw1ML4iAXbtDhsx+R
+	 IME8pnKvsELxUgEnI7OkoDZyefc1RhEhzS6PKKZ87Os83070DjRY+lpuCmC1v9BuL7
+	 e7kapDEUyRrsA==
+Received: from smtpclient.apple (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	(Authenticated sender: dwlsalmeida)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 4E2FF37820D8;
+	Fri, 15 Mar 2024 18:52:15 +0000 (UTC)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240209105012.22470-3-eichest@gmail.com>
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.400.31\))
+Subject: Re: [PATCH v2,4/4] media: mediatek: vcodec: replace
+ v4l2_m2m_next_src_buf with v4l2_m2m_src_buf_remove
+From: Daniel Almeida <daniel.almeida@collabora.com>
+In-Reply-To: <20240314114452.17532-5-yunfei.dong@mediatek.com>
+Date: Fri, 15 Mar 2024 15:52:01 -0300
+Cc: =?utf-8?B?Ik7DrWNvbGFzIEYgLiBSIC4gQSAuIFByYWRvIg==?= <nfraprado@collabora.com>,
+ Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+ Benjamin Gaignard <benjamin.gaignard@collabora.com>,
+ Nathan Hebert <nhebert@chromium.org>,
+ Sebastian Fricke <sebastian.fricke@collabora.com>,
+ Hsin-Yi Wang <hsinyi@chromium.org>,
+ Fritz Koenig <frkoenig@chromium.org>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Steve Cho <stevecho@chromium.org>,
+ linux-media@vger.kernel.org,
+ devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org,
+ Project_Global_Chrome_Upstream_Group@mediatek.com
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <69C5D24C-D33A-4F1E-B9A9-6C32AB1951BA@collabora.com>
+References: <20240314114452.17532-1-yunfei.dong@mediatek.com>
+ <20240314114452.17532-5-yunfei.dong@mediatek.com>
+To: Yunfei Dong <yunfei.dong@mediatek.com>
+X-Mailer: Apple Mail (2.3774.400.31)
 
-Hi Stefan,
 
-On Fri, Feb 09, 2024 at 11:50:12AM +0100, Stefan Eichenberger wrote:
-> From: Stefan Eichenberger <stefan.eichenberger@toradex.com>
-> 
-> Add a new device tree property to indicate that the device should be
-> powered off in suspend mode. We have a shared regulator that powers the
-> display, a USB hub and some other peripherals. The maXTouch controller
-> doesn't normally disable the regulator in suspend mode, so our extra
-> peripherals stay powered on. This is not desirable as it consumes more
-> power. With this patch we add the option to disable the regulator in
-> suspend mode for the maXTouch and accept the longer initialisation time.
-> 
-> Signed-off-by: Stefan Eichenberger <stefan.eichenberger@toradex.com>
+
+> On 14 Mar 2024, at 08:44, Yunfei Dong <yunfei.dong@mediatek.com> =
+wrote:
+>=20
+> There isn't lock to protect source buffer when get next src buffer, if
+> the source buffer is removed for some unknown reason before lat work =
+queue
+> execute done, will lead to remove source buffer or buffer done error.
+>=20
+> Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
 > ---
->  drivers/input/touchscreen/atmel_mxt_ts.c | 72 ++++++++++++++++++------
->  1 file changed, 55 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/input/touchscreen/atmel_mxt_ts.c b/drivers/input/touchscreen/atmel_mxt_ts.c
-> index 542a31448c8f..2d5655385702 100644
-> --- a/drivers/input/touchscreen/atmel_mxt_ts.c
-> +++ b/drivers/input/touchscreen/atmel_mxt_ts.c
-> @@ -317,6 +317,7 @@ struct mxt_data {
->  	struct gpio_desc *reset_gpio;
->  	struct gpio_desc *wake_gpio;
->  	bool use_retrigen_workaround;
-> +	bool poweroff_sleep;
->  
->  	/* Cached parameters from object table */
->  	u16 T5_address;
-> @@ -2799,15 +2800,18 @@ static int mxt_configure_objects(struct mxt_data *data,
->  			dev_warn(dev, "Error %d updating config\n", error);
->  	}
->  
-> -	if (data->multitouch) {
-> -		error = mxt_initialize_input_device(data);
-> -		if (error)
-> -			return error;
-> -	} else {
-> -		dev_warn(dev, "No touch object detected\n");
-> -	}
-> +	/* If input device is not already registered */
-> +	if (!data->input_dev) {
-> +		if (data->multitouch) {
-> +			error = mxt_initialize_input_device(data);
-> +			if (error)
-> +				return error;
-> +		} else {
-> +			dev_warn(dev, "No touch object detected\n");
-> +		}
->  
-> -	mxt_debug_init(data);
-> +		mxt_debug_init(data);
-> +	}
->  
->  	return 0;
->  }
-> @@ -3325,6 +3329,8 @@ static int mxt_probe(struct i2c_client *client)
->  		msleep(MXT_RESET_INVALID_CHG);
->  	}
->  
-> +	data->poweroff_sleep = device_property_read_bool(&client->dev,
-> +							 "atmel,poweroff-sleep");
->  	/*
->  	 * Controllers like mXT1386 have a dedicated WAKE line that could be
->  	 * connected to a GPIO or to I2C SCL pin, or permanently asserted low.
-> @@ -3387,12 +3393,21 @@ static int mxt_suspend(struct device *dev)
->  	if (!input_dev)
->  		return 0;
->  
-> -	mutex_lock(&input_dev->mutex);
-> +	if (!device_may_wakeup(dev) && data->poweroff_sleep) {
-> +		if (data->reset_gpio)
-> +			gpiod_set_value(data->reset_gpio, 1);
->  
-> -	if (input_device_enabled(input_dev))
-> -		mxt_stop(data);
-> +		regulator_bulk_disable(ARRAY_SIZE(data->regulators),
-> +				data->regulators);
-> +		data->T44_address = 0;
-> +	} else {
-> +		mutex_lock(&input_dev->mutex);
+> .../vcodec/decoder/mtk_vcodec_dec_stateless.c | 22 +++++++++----
+> .../vcodec/decoder/vdec/vdec_av1_req_lat_if.c | 25 ++++++--------
+> .../vcodec/decoder/vdec/vdec_vp9_req_lat_if.c | 33 ++++++++-----------
+> 3 files changed, 40 insertions(+), 40 deletions(-)
+>=20
+> diff --git =
+a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.=
+c =
+b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.=
+c
+> index 3060768e0ea9..bb2680f3ec5b 100644
+> --- =
+a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.=
+c
+> +++ =
+b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec_stateless.=
+c
+> @@ -328,7 +328,7 @@ static void mtk_vdec_worker(struct work_struct =
+*work)
+> bool res_chg =3D false;
+> int ret;
+>=20
+> - vb2_v4l2_src =3D v4l2_m2m_next_src_buf(ctx->m2m_ctx);
+> + vb2_v4l2_src =3D v4l2_m2m_src_buf_remove(ctx->m2m_ctx);
+> if (!vb2_v4l2_src) {
+> v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> mtk_v4l2_vdec_dbg(1, ctx, "[%d] no available source buffer", ctx->id);
+> @@ -363,7 +363,7 @@ static void mtk_vdec_worker(struct work_struct =
+*work)
+> mtk_v4l2_vdec_err(ctx, "vb2 buffer media request is NULL");
+>=20
+> ret =3D vdec_if_decode(ctx, bs_src, NULL, &res_chg);
+
+
+Can you leave a comment explaining why the !=3D -EAGAIN check was
+removed? Doesn=E2=80=99t seem obvious to me.
+
+
+> - if (ret && ret !=3D -EAGAIN) {
+> + if (ret) {
+> mtk_v4l2_vdec_err(ctx,
+>  "[%d] decode src_buf[%d] sz=3D0x%zx pts=3D%llu ret=3D%d res_chg=3D%d",
+>  ctx->id, vb2_src->index, bs_src->size,
+> @@ -380,11 +380,21 @@ static void mtk_vdec_worker(struct work_struct =
+*work)
+>    ctx->current_codec =3D=3D V4L2_PIX_FMT_VP8_FRAME) {
+> if (src_buf_req)
+> v4l2_ctrl_request_complete(src_buf_req, &ctx->ctrl_hdl);
+> - v4l2_m2m_buf_done_and_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx, =
+state);
+> - } else {
+> - if (ret !=3D -EAGAIN)
+> - v4l2_m2m_src_buf_remove(ctx->m2m_ctx);
+> + if (vb2_v4l2_src)
+> + v4l2_m2m_buf_done(vb2_v4l2_src, state);
 > +
-> +		if (input_device_enabled(input_dev))
-> +			mxt_stop(data);
->  
-> -	mutex_unlock(&input_dev->mutex);
-> +		mutex_unlock(&input_dev->mutex);
-> +	}
+> v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> + } else {
+> + if (!ret) {
+> + v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> + } else {
+> + if (src_buf_req)
+> + v4l2_ctrl_request_complete(src_buf_req, &ctx->ctrl_hdl);
 
-This all should go into mxt_stop(), so that if device is closed, or
-inhibited, you power it down as well (if you can).
+vb2_v4l2_src can=E2=80=99t really be NULL here due to this:
 
->  
->  	disable_irq(data->irq);
->  
-> @@ -3408,14 +3423,37 @@ static int mxt_resume(struct device *dev)
->  	if (!input_dev)
->  		return 0;
->  
-> -	enable_irq(data->irq);
-> +	if (!device_may_wakeup(dev) && data->poweroff_sleep) {
-> +		int ret;
->  
-> -	mutex_lock(&input_dev->mutex);
-> +		ret = regulator_bulk_enable(ARRAY_SIZE(data->regulators),
-> +				data->regulators);
-> +		if (ret) {
-> +			dev_err(dev, "failed to enable regulators: %d\n",
-> +					ret);
-> +			return ret;
-> +		}
-> +		msleep(MXT_BACKUP_TIME);
->  
-> -	if (input_device_enabled(input_dev))
-> -		mxt_start(data);
-> +		if (data->reset_gpio) {
-> +			/* Wait a while and then de-assert the RESET GPIO line */
-> +			msleep(MXT_RESET_GPIO_TIME);
-> +			gpiod_set_value(data->reset_gpio, 0);
-> +			msleep(MXT_RESET_INVALID_CHG);
-> +		}
->  
-> -	mutex_unlock(&input_dev->mutex);
-> +		/* This also enables the irq again */
-> +		mxt_initialize(data);
+```
+	vb2_v4l2_src =3D v4l2_m2m_src_buf_remove(ctx->m2m_ctx);
+	if (!vb2_v4l2_src) {
+		v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+		mtk_v4l2_vdec_dbg(1, ctx, "[%d] no available source =
+buffer", ctx->id);
+		return;
+	}
+```
 
-And this needs to go into mxt_start(). Also, we should make sure that
-once resume operation completes the device is fully operational. That
-means you should not request the firmware asynchronously in
-mxt_initialize() in case you are in the resume path. I think you should
-also unwind mxt_initialize() and mxt_configure_objects() to make it
-clear what is the part of initial initialization and what is part of
-re-initializing during resume. The configuration that is exposed to
-userspace (resolution, number of objects, other properties) should stay
-the same, the configuration of the chip itself (power mode, etc) should
-be restored.
+I must say I find the control flow here a bit confusing, so I wonder if =
+this block can=E2=80=99t go
+into an inline helper to clean up stuff a bit:
 
-Thanks.
+```
+			if (src_buf_req)
+				v4l2_ctrl_request_complete(src_buf_req, =
+&ctx->ctrl_hdl);
+			if (vb2_v4l2_src)
+				v4l2_m2m_buf_done(vb2_v4l2_src, state);
 
--- 
-Dmitry
+			v4l2_m2m_job_finish(dev->m2m_dev_dec, =
+ctx->m2m_ctx);
+```
+
+Also, I dislike that this apparently fails silently if the pointers are =
+NULL. It is
+not clear at a first glance if you=E2=80=99re just being careful or if =
+you legitimately expect
+`src_buf_req` to possibly be NULL at this point for whatever reason. The =
+lifecycle
+of request objects is not trivial, so it=E2=80=99s good to be explicit =
+here even if this means
+only leaving a comment or similar
+
+=E2=80=94 Daniel
+
+> + if (vb2_v4l2_src)
+> + v4l2_m2m_buf_done(vb2_v4l2_src, state);
+> +
+> + v4l2_m2m_job_finish(dev->m2m_dev_dec, ctx->m2m_ctx);
+> + }
+> }
+> }
+>=20
+> diff --git =
+a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_av1_req_lat_if.=
+c =
+b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_av1_req_lat_if.=
+c
+> index f277b907c345..339c5c88da1a 100644
+> --- =
+a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_av1_req_lat_if.=
+c
+> +++ =
+b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_av1_req_lat_if.=
+c
+> @@ -1052,23 +1052,18 @@ static inline void =
+vdec_av1_slice_vsi_to_remote(struct vdec_av1_slice_vsi *vsi,
+> memcpy(remote_vsi, vsi, sizeof(*vsi));
+> }
+>=20
+> -static int vdec_av1_slice_setup_lat_from_src_buf(struct =
+vdec_av1_slice_instance *instance,
+> - struct vdec_av1_slice_vsi *vsi,
+> - struct vdec_lat_buf *lat_buf)
+> +static int vdec_av1_slice_setup_lat_from_src_buf(struct =
+vdec_av1_slice_vsi *vsi,
+> + struct vdec_lat_buf *lat_buf,
+> + struct mtk_vcodec_mem *bs)
+> {
+> - struct vb2_v4l2_buffer *src;
+> - struct vb2_v4l2_buffer *dst;
+> -
+> - src =3D v4l2_m2m_next_src_buf(instance->ctx->m2m_ctx);
+> - if (!src)
+> - return -EINVAL;
+> + struct mtk_video_dec_buf *src_buf_info;
+>=20
+> - lat_buf->src_buf_req =3D src->vb2_buf.req_obj.req;
+> - lat_buf->vb2_v4l2_src =3D src;
+> + src_buf_info =3D container_of(bs, struct mtk_video_dec_buf, =
+bs_buffer);
+> + lat_buf->src_buf_req =3D =
+src_buf_info->m2m_buf.vb.vb2_buf.req_obj.req;
+> + lat_buf->vb2_v4l2_src =3D &src_buf_info->m2m_buf.vb;
+>=20
+> - dst =3D &lat_buf->ts_info;
+> - v4l2_m2m_buf_copy_metadata(src, dst, true);
+> - vsi->frame.cur_ts =3D dst->vb2_buf.timestamp;
+> + v4l2_m2m_buf_copy_metadata(&src_buf_info->m2m_buf.vb, =
+&lat_buf->ts_info, true);
+> + vsi->frame.cur_ts =3D lat_buf->ts_info.vb2_buf.timestamp;
+>=20
+> return 0;
+> }
+> @@ -1717,7 +1712,7 @@ static int vdec_av1_slice_setup_lat(struct =
+vdec_av1_slice_instance *instance,
+> struct vdec_av1_slice_vsi *vsi =3D &pfc->vsi;
+> int ret;
+>=20
+> - ret =3D vdec_av1_slice_setup_lat_from_src_buf(instance, vsi, =
+lat_buf);
+> + ret =3D vdec_av1_slice_setup_lat_from_src_buf(vsi, lat_buf, bs);
+> if (ret)
+> return ret;
+>=20
+> diff --git =
+a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.=
+c =
+b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.=
+c
+> index 0dedbc3680e8..2697e04f4313 100644
+> --- =
+a/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.=
+c
+> +++ =
+b/drivers/media/platform/mediatek/vcodec/decoder/vdec/vdec_vp9_req_lat_if.=
+c
+> @@ -693,39 +693,34 @@ static int vdec_vp9_slice_tile_offset(int idx, =
+int mi_num, int tile_log2)
+> }
+>=20
+> static
+> -int vdec_vp9_slice_setup_single_from_src_to_dst(struct =
+vdec_vp9_slice_instance *instance)
+> +int vdec_vp9_slice_setup_single_from_src_to_dst(struct =
+vdec_vp9_slice_instance *instance,
+> + struct mtk_vcodec_mem *bs)
+> {
+> - struct vb2_v4l2_buffer *src;
+> struct vb2_v4l2_buffer *dst;
+> + struct mtk_video_dec_buf *src_buf_info;
+>=20
+> - src =3D v4l2_m2m_next_src_buf(instance->ctx->m2m_ctx);
+> - if (!src)
+> - return -EINVAL;
+> + src_buf_info =3D container_of(bs, struct mtk_video_dec_buf, =
+bs_buffer);
+>=20
+> dst =3D v4l2_m2m_next_dst_buf(instance->ctx->m2m_ctx);
+> if (!dst)
+> return -EINVAL;
+>=20
+> - v4l2_m2m_buf_copy_metadata(src, dst, true);
+> + v4l2_m2m_buf_copy_metadata(&src_buf_info->m2m_buf.vb, dst, true);
+>=20
+> return 0;
+> }
+>=20
+> -static int vdec_vp9_slice_setup_lat_from_src_buf(struct =
+vdec_vp9_slice_instance *instance,
+> - struct vdec_lat_buf *lat_buf)
+> +static int vdec_vp9_slice_setup_lat_from_src_buf(struct vdec_lat_buf =
+*lat_buf,
+> + struct mtk_vcodec_mem *bs)
+> {
+> - struct vb2_v4l2_buffer *src;
+> - struct vb2_v4l2_buffer *dst;
+> + struct mtk_video_dec_buf *src_buf_info;
+>=20
+> - src =3D v4l2_m2m_next_src_buf(instance->ctx->m2m_ctx);
+> - if (!src)
+> - return -EINVAL;
+> + src_buf_info =3D container_of(bs, struct mtk_video_dec_buf, =
+bs_buffer);
+> + lat_buf->src_buf_req =3D =
+src_buf_info->m2m_buf.vb.vb2_buf.req_obj.req;
+> + lat_buf->vb2_v4l2_src =3D &src_buf_info->m2m_buf.vb;
+>=20
+> - lat_buf->src_buf_req =3D src->vb2_buf.req_obj.req;
+> - lat_buf->vb2_v4l2_src =3D src;
+> + v4l2_m2m_buf_copy_metadata(&src_buf_info->m2m_buf.vb, =
+&lat_buf->ts_info, true);
+>=20
+> - dst =3D &lat_buf->ts_info;
+> - v4l2_m2m_buf_copy_metadata(src, dst, true);
+> return 0;
+> }
+>=20
+> @@ -1155,7 +1150,7 @@ static int vdec_vp9_slice_setup_lat(struct =
+vdec_vp9_slice_instance *instance,
+> struct vdec_vp9_slice_vsi *vsi =3D &pfc->vsi;
+> int ret;
+>=20
+> - ret =3D vdec_vp9_slice_setup_lat_from_src_buf(instance, lat_buf);
+> + ret =3D vdec_vp9_slice_setup_lat_from_src_buf(lat_buf, bs);
+> if (ret)
+> goto err;
+>=20
+> @@ -1796,7 +1791,7 @@ static int vdec_vp9_slice_setup_single(struct =
+vdec_vp9_slice_instance *instance,
+> struct vdec_vp9_slice_vsi *vsi =3D &pfc->vsi;
+> int ret;
+>=20
+> - ret =3D vdec_vp9_slice_setup_single_from_src_to_dst(instance);
+> + ret =3D vdec_vp9_slice_setup_single_from_src_to_dst(instance, bs);
+> if (ret)
+> goto err;
+>=20
+> --=20
+> 2.18.0
+>=20
+>=20
+
 
