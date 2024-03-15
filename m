@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-104336-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2FAD87CC49
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:28:50 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1DD5A87CC4C
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:29:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90BA32827EC
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:28:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CA654282C18
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:29:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3A711C694;
-	Fri, 15 Mar 2024 11:28:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B389E1CAB1;
+	Fri, 15 Mar 2024 11:28:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="OAmeDyl1"
+	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="S/51PEpq"
 Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0007A1B974;
-	Fri, 15 Mar 2024 11:28:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 738921BDD0;
+	Fri, 15 Mar 2024 11:28:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710502084; cv=none; b=U+bNdV2zKj5SbxJR9hJEtzPjCTbI42F/DWMmjYoB71wcwJXgiIbejViFC1RVD6aI3q1hMGTurUaaJxI7ixbEggnNgAUBU8jQVWKnOyHkYYsXli+/iN37WHbTxZ3YDamkkccTRr3X+C9z8z4M+G9i1EX6FkNZRO9Xhf874/PxiZk=
+	t=1710502086; cv=none; b=BuHqAyotChp06Eyq5i6+JmiFP54JUEYXvYE6jmdZDxPcDw/4J0tJlL6BankpHIYC8gIFYVkd2EpUQpzoWQKQTxvKXvDILrYDue9nUCcCsfTeMfv9Ngo7oY4al4FDyO/u5iwoc+5TX1j6TfdHaZ6hVdSdsTdsB7rar8rm0probTs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710502084; c=relaxed/simple;
-	bh=PZctGisBviZ+mhYGc0hACek77ifie3PoPw9sdjq58Zk=;
+	s=arc-20240116; t=1710502086; c=relaxed/simple;
+	bh=/9MOC//4icL1mkYY+3/MDt3RrV6Xiz5zG1bPwSLg9DQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=u2CbCJs89Qsql6/DWZ+QUNOG0HCPmmVl233gTiIPH6KCJln7FT/9amzoiMm5ZeMYsGxYxjANEKAeg27SVV6UO2AmPX9bDYw5Cb7lbJ0sc4ilULmyLUuhX6SCW0PZ/vTRJQJRl/TbcdZvCFANpeLQKBa7FatCTUigStzT8+Xg1SY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=OAmeDyl1; arc=none smtp.client-ip=217.70.183.196
+	 MIME-Version; b=kaEhYKswT37ttY4E/UcAmVHKK3Sq4J3L1GrZXP7TGZG/U0Ff1BEdLwer6mKIj/Y2Fch6lqL2vmamdc0gHc4pq3sbpjTcyv236GbM385AVAYqXjyr6r8jKtRKWSXr5JPjejQZ9pg6C9RB65wScfN3K7ryuLXoQzTk5PNLN/puvlk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=S/51PEpq; arc=none smtp.client-ip=217.70.183.196
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPA id A5B21E0008;
-	Fri, 15 Mar 2024 11:27:59 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPA id ECB08E0003;
+	Fri, 15 Mar 2024 11:28:00 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710502080;
+	t=1710502081;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=GUQ51tONiYtM45o3XTZI6XR8a2iefLuxKfBONeCjMBU=;
-	b=OAmeDyl1URRkwdmnV9xjdSDYTqCPZq7Lo3uQP/qsirimdgj75LzvdooBBW64tSkVs7UBNK
-	Qr1Nj27ust8cyzZouNhKUw4IJWAOvjsRzEVi5jEG+nXP+8p0QhR6matgyotrrjUjGsqqkI
-	aKcXz/29Qf2HpLk8UZ7vR9bkykTtEHUnqfKFD0f/SRk2n5GzDG9NP09QOPrwi1iGNledPR
-	kSHRn5ukgDVX2jKd/cl2A0NWdRb5mmUFaKMLTLpOQTFLBZQicHu/3u39aO/3SOZZCTRL+I
-	Bwa9DnkmdK0iDXNHA1Xpe6dGJHgrmCx45p9101QFwX8Q8GmhiFDdFHga5TUQOw==
+	bh=D3k3C45wOf7UbcUd/6RBltZ20s6UElfnsHBgrHpSOQU=;
+	b=S/51PEpqCZN+wUtFuSRm8pBQFVPcY4BLnwaNB4mNSnKqSQuUVtYMmdPYCJpXnkOPN6YaQk
+	f+uQwYZFAFeNgP3Ov59dvGIeCvlLFlweA+YME59kcybf5I0ITaJPkz36wtf0d4hRz1Iond
+	ydvtUD4grsItd54pKEoW7m2XWLQwPzzNjdmFAmvUZEz16tF62QA6nKNZtaOeFuObpANwmw
+	P5ZsQ3vWWebLivXpCYsRzQqkbrVjl++5FtMhg5h4qMbsd8hQo2uFP//i7Ft3QSFE+ohqlG
+	ZrkNXm3I1wVPiZ5DXqzF6woHCP0+lWJnLcyRn9MY+lw6LAJJ3ERDnrup3Pj5jg==
 From: Bastien Curutchet <bastien.curutchet@bootlin.com>
 To: Liam Girdwood <lgirdwood@gmail.com>,
 	Mark Brown <broonie@kernel.org>,
@@ -61,9 +61,9 @@ Cc: linux-sound@vger.kernel.org,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
 	herve.codina@bootlin.com,
 	christophercordahi@nanometrics.ca
-Subject: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with dev_err_probe
-Date: Fri, 15 Mar 2024 12:27:36 +0100
-Message-ID: <20240315112745.63230-5-bastien.curutchet@bootlin.com>
+Subject: [PATCH 05/13] ASoC: ti: davinci-i2s: Use external clock to drive sample rate generator
+Date: Fri, 15 Mar 2024 12:27:37 +0100
+Message-ID: <20240315112745.63230-6-bastien.curutchet@bootlin.com>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
@@ -76,58 +76,141 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-GND-Sasl: bastien.curutchet@bootlin.com
 
-There are dev_err() in the probe() function.
+McBSP's internal sample rate generator can be programed to be driven by
+its internal clock or by an external clock source located on CLKS pin.
+The external clock source case is not handled by the driver.
 
-Replace them with dev_err_probe()
+Handle an optional clock related to this external clock source. If
+present, the driver uses the clock located on CLKS pin as input for the
+sample rate generator. Thus, the external clock rate is used to compute
+divisors. If this optional clock is not present, the sample rate
+generator is driven by the McBSP's functional clock.
 
 Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 ---
- sound/soc/ti/davinci-i2s.c | 11 ++++-------
- 1 file changed, 4 insertions(+), 7 deletions(-)
+ sound/soc/ti/davinci-i2s.c | 65 ++++++++++++++++++++++++++++----------
+ 1 file changed, 49 insertions(+), 16 deletions(-)
 
 diff --git a/sound/soc/ti/davinci-i2s.c b/sound/soc/ti/davinci-i2s.c
-index 5c906641640e..4cb3ef62db20 100644
+index 4cb3ef62db20..8ee22d79b0f4 100644
 --- a/sound/soc/ti/davinci-i2s.c
 +++ b/sound/soc/ti/davinci-i2s.c
-@@ -644,8 +644,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 			 "\"mpu\" mem resource not found, using index 0\n");
- 		mem = platform_get_resource(pdev, IORESOURCE_MEM, 0);
- 		if (!mem) {
--			dev_err(&pdev->dev, "no mem resource?\n");
--			return -ENODEV;
-+			return dev_err_probe(&pdev->dev, -ENODEV, "no mem resource?\n");
- 		}
+@@ -134,6 +134,7 @@ struct davinci_mcbsp_dev {
+ 	int				mode;
+ 	u32				pcr;
+ 	struct clk			*clk;
++	struct clk			*ext_clk;
+ 	/*
+ 	 * Combining both channels into 1 element will at least double the
+ 	 * amount of time between servicing the dma channel, increase
+@@ -364,7 +365,8 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 	struct davinci_mcbsp_dev *dev = snd_soc_dai_get_drvdata(dai);
+ 	struct snd_interval *i = NULL;
+ 	int mcbsp_word_length, master;
+-	unsigned int rcr, xcr, srgr, clk_div, freq, framesize;
++	unsigned int rcr, xcr, clk_div, freq, framesize;
++	unsigned int srgr = 0;
+ 	u32 spcr;
+ 	snd_pcm_format_t fmt;
+ 	unsigned element_cnt = 1;
+@@ -385,9 +387,13 @@ static int davinci_i2s_hw_params(struct snd_pcm_substream *substream,
+ 
+ 	switch (master) {
+ 	case SND_SOC_DAIFMT_BP_FP:
+-		freq = clk_get_rate(dev->clk);
+-		srgr = DAVINCI_MCBSP_SRGR_FSGM |
+-		       DAVINCI_MCBSP_SRGR_CLKSM;
++		if (dev->ext_clk) {
++			freq = clk_get_rate(dev->ext_clk);
++		} else {
++			freq = clk_get_rate(dev->clk);
++			srgr = DAVINCI_MCBSP_SRGR_CLKSM;
++		}
++		srgr |= DAVINCI_MCBSP_SRGR_FSGM;
+ 		srgr |= DAVINCI_MCBSP_SRGR_FWID(mcbsp_word_length *
+ 						8 - 1);
+ 		if (dev->i2s_accurate_sck) {
+@@ -688,12 +694,36 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA rx resource\n");
  	}
  
-@@ -672,8 +671,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
- 		dma_data->filter_data = "tx";
- 	} else {
--		dev_err(&pdev->dev, "Missing DMA tx resource\n");
+-	dev->clk = clk_get(&pdev->dev, NULL);
++	/*
++	 * The optional is there for backward compatibility.
++	 * If 'fck' is not present, the clk_get(dev, NULL) that follows may find something
++	 */
++	dev->clk = devm_clk_get_optional(&pdev->dev, "fck");
+ 	if (IS_ERR(dev->clk))
 -		return -ENODEV;
-+		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA tx resource\n");
- 	}
+-	ret = clk_enable(dev->clk);
++		return dev_err_probe(&pdev->dev, PTR_ERR(dev->clk), "Invalid functional clock\n");
++	if (!dev->clk) {
++		dev->clk = devm_clk_get(&pdev->dev, NULL);
++		if (IS_ERR(dev->clk))
++			return dev_err_probe(&pdev->dev, PTR_ERR(dev->clk),
++					     "Missing functional clock\n");
++	}
++
++	dev->ext_clk = devm_clk_get_optional(&pdev->dev, "clks");
++	if (IS_ERR(dev->ext_clk))
++		return dev_err_probe(&pdev->dev, PTR_ERR(dev->ext_clk), "Invalid external clock\n");
++
++	ret = clk_prepare_enable(dev->clk);
+ 	if (ret)
+-		goto err_put_clk;
++		return ret;
++
++	if (dev->ext_clk) {
++		dev_dbg(&pdev->dev, "External clock used for sample rate generator\n");
++		ret = clk_prepare_enable(dev->ext_clk);
++		if (ret) {
++			dev_err_probe(&pdev->dev, ret, "Failed to enable external clock\n");
++			goto err_disable_clk;
++		}
++	}
  
- 	dma_data = &dev->dma_data[SNDRV_PCM_STREAM_CAPTURE];
-@@ -687,8 +685,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
- 	} else if (IS_ENABLED(CONFIG_OF) && pdev->dev.of_node) {
- 		dma_data->filter_data = "rx";
- 	} else {
--		dev_err(&pdev->dev, "Missing DMA rx resource\n");
--		return -ENODEV;
-+		return dev_err_probe(&pdev->dev, -ENODEV, "Missing DMA rx resource\n");
- 	}
- 
- 	dev->clk = clk_get(&pdev->dev, NULL);
-@@ -708,7 +705,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	dev->dev = &pdev->dev;
+ 	dev_set_drvdata(&pdev->dev, dev);
+@@ -701,7 +731,7 @@ static int davinci_i2s_probe(struct platform_device *pdev)
+ 	ret = snd_soc_register_component(&pdev->dev, &davinci_i2s_component,
+ 					 &davinci_i2s_dai, 1);
+ 	if (ret != 0)
+-		goto err_release_clk;
++		goto err_disable_ext_clk;
  
  	ret = edma_pcm_platform_register(&pdev->dev);
  	if (ret) {
--		dev_err(&pdev->dev, "register PCM failed: %d\n", ret);
-+		dev_err_probe(&pdev->dev, ret, "register PCM failed\n");
- 		goto err_unregister_component;
- 	}
+@@ -713,10 +743,12 @@ static int davinci_i2s_probe(struct platform_device *pdev)
  
+ err_unregister_component:
+ 	snd_soc_unregister_component(&pdev->dev);
+-err_release_clk:
+-	clk_disable(dev->clk);
+-err_put_clk:
+-	clk_put(dev->clk);
++err_disable_ext_clk:
++	if (dev->ext_clk)
++		clk_disable_unprepare(dev->ext_clk);
++err_disable_clk:
++	clk_disable_unprepare(dev->clk);
++
+ 	return ret;
+ }
+ 
+@@ -726,9 +758,10 @@ static void davinci_i2s_remove(struct platform_device *pdev)
+ 
+ 	snd_soc_unregister_component(&pdev->dev);
+ 
+-	clk_disable(dev->clk);
+-	clk_put(dev->clk);
+-	dev->clk = NULL;
++	clk_disable_unprepare(dev->clk);
++
++	if (dev->ext_clk)
++		clk_disable_unprepare(dev->ext_clk);
+ }
+ 
+ static const struct of_device_id davinci_i2s_match[] __maybe_unused = {
 -- 
 2.43.2
 
