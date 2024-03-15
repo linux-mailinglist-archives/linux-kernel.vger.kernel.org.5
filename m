@@ -1,219 +1,225 @@
-Return-Path: <linux-kernel+bounces-104548-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104549-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id ABAB387CFA6
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:59:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D5DA87CFA7
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:59:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 66A9B283F1A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:59:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61F5EB21504
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:59:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49F993D39A;
-	Fri, 15 Mar 2024 14:58:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B85E93C470;
+	Fri, 15 Mar 2024 14:59:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="G2Tv4oet"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="cnvBNO/9"
+Received: from NAM04-BN8-obe.outbound.protection.outlook.com (mail-bn8nam04olkn2017.outbound.protection.outlook.com [40.92.47.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07ACB18EA8;
-	Fri, 15 Mar 2024 14:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710514725; cv=none; b=rgcvH+phdQupfxIAKNfIgZEVHfc+63ITbRNWTlDrW/h5XfPwbdGHfL++T2HGxf0cD3P9fqAAYNi4J+EZbmFR7ovV3TNdl/ZhdyruPBP2HrHdukINBDDDJetG5XcYNQIgdchMFDu2b5K3tGJGsloVd+y5Z2CtlzxG6Z9Hp/Hvfdk=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710514725; c=relaxed/simple;
-	bh=QkAlNJ9V9qppiro/zSbEdW694RBnZkoeHZrahCOadSs=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=BRh1Vfp16onm/9TCZHDqNmwVEhfnt9VjudysgjwtNsCDRxMG9yI1nUMwPGN8pMc+K645N1c+4/dusrbtuZlGheZUg7RZgvwD0DVkM6oqi3IlvcXnM3LtnOFsXqjgvEEP2XnqdDcVncaQsFAaYQtr0GZU5WDuU9rNL4cD6+Zw2CE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=G2Tv4oet; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p1.samsung.com (unknown [182.198.249.206])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240315145834euoutp0208e17bee17510a43114d2abc73c66d9e~8_BH9XOku2978829788euoutp02f;
-	Fri, 15 Mar 2024 14:58:34 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240315145834euoutp0208e17bee17510a43114d2abc73c66d9e~8_BH9XOku2978829788euoutp02f
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710514714;
-	bh=QkAlNJ9V9qppiro/zSbEdW694RBnZkoeHZrahCOadSs=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=G2Tv4oet03CghGKOrgieijfEl82FvjQVZBL+NfoG15HFyo9VIUHcvPRvsG82TfUwJ
-	 dX7pxAXAb9YPyNG2TKDc8iEY570oeA5ZpY68L1+/6ZETCD+YW+AwjxiTIrcFxIsFOl
-	 Mk2mYfgH8Xod4xWY0H6rRKtWJgy98o37Oog1PoZk=
-Received: from eusmges1new.samsung.com (unknown [203.254.199.242]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTP id
-	20240315145834eucas1p263d507b6e6b1b2347755a3b8a3d110c2~8_BHm31sC0659706597eucas1p2F;
-	Fri, 15 Mar 2024 14:58:34 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges1new.samsung.com (EUCPMTA) with SMTP id 62.5F.09539.A1264F56; Fri, 15
-	Mar 2024 14:58:34 +0000 (GMT)
-Received: from eusmtrp1.samsung.com (unknown [182.198.249.138]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240315145833eucas1p213fce847384eb45d99b496e63aeef842~8_BHARDUI1048010480eucas1p2_;
-	Fri, 15 Mar 2024 14:58:33 +0000 (GMT)
-Received: from eusmgms1.samsung.com (unknown [182.198.249.179]) by
-	eusmtrp1.samsung.com (KnoxPortal) with ESMTP id
-	20240315145833eusmtrp1d4283c4c3365474281127eb3980b7d32~8_BG_cMhB2583725837eusmtrp1-;
-	Fri, 15 Mar 2024 14:58:33 +0000 (GMT)
-X-AuditID: cbfec7f2-515ff70000002543-32-65f4621a921a
-Received: from eusmtip2.samsung.com ( [203.254.199.222]) by
-	eusmgms1.samsung.com (EUCPMTA) with SMTP id B2.BC.09146.91264F56; Fri, 15
-	Mar 2024 14:58:33 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip2.samsung.com (KnoxPortal) with ESMTPA id
-	20240315145833eusmtip25fac59b9345218f02603c4bc99e60c97~8_BGowIxW0792607926eusmtip2S;
-	Fri, 15 Mar 2024 14:58:33 +0000 (GMT)
-Received: from localhost (106.210.248.173) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Fri, 15 Mar 2024 14:58:32 +0000
-Date: Fri, 15 Mar 2024 15:58:30 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Jakub Kicinski <kuba@kernel.org>
-CC: Joel Granados via B4 Relay <devnull+j.granados.samsung.com@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
-	Paolo Abeni <pabeni@redhat.com>, Alexander Aring <alex.aring@gmail.com>,
-	Stefan Schmidt <stefan@datenfreihafen.org>, Miquel Raynal
-	<miquel.raynal@bootlin.com>, David Ahern <dsahern@kernel.org>, "Steffen
- Klassert" <steffen.klassert@secunet.com>, Herbert Xu
-	<herbert@gondor.apana.org.au>, Matthieu Baerts <matttbe@kernel.org>, "Mat
- Martineau" <martineau@kernel.org>, Geliang Tang <geliang@kernel.org>, "Ralf
- Baechle" <ralf@linux-mips.org>, Remi Denis-Courmont <courmisch@gmail.com>,
-	Allison Henderson <allison.henderson@oracle.com>, David Howells
-	<dhowells@redhat.com>, Marc Dionne <marc.dionne@auristor.com>, "Marcelo
- Ricardo Leitner" <marcelo.leitner@gmail.com>, Xin Long
-	<lucien.xin@gmail.com>, Wenjia Zhang <wenjia@linux.ibm.com>, Jan Karcher
-	<jaka@linux.ibm.com>, "D. Wythe" <alibuda@linux.alibaba.com>, Tony Lu
-	<tonylu@linux.alibaba.com>, "Wen Gu" <guwen@linux.alibaba.com>, Trond
-	Myklebust <trond.myklebust@hammerspace.com>, Anna Schumaker
-	<anna@kernel.org>, "Chuck Lever" <chuck.lever@oracle.com>, Jeff Layton
-	<jlayton@kernel.org>, Neil Brown <neilb@suse.de>, Olga Kornievskaia
-	<kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey
-	<tom@talpey.com>, Jon Maloy <jmaloy@redhat.com>, Ying Xue
-	<ying.xue@windriver.com>, Martin Schiller <ms@dev.tdt.de>, Pablo Neira Ayuso
-	<pablo@netfilter.org>, Jozsef Kadlecsik <kadlec@netfilter.org>, Florian
-	Westphal <fw@strlen.de>, Roopa Prabhu <roopa@nvidia.com>, Nikolay
-	Aleksandrov <razor@blackwall.org>, Simon Horman <horms@verge.net.au>, Julian
-	Anastasov <ja@ssi.bg>, Joerg Reuter <jreuter@yaina.de>, Luis Chamberlain
-	<mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<dccp@vger.kernel.org>, <linux-wpan@vger.kernel.org>,
-	<mptcp@lists.linux.dev>, <linux-hams@vger.kernel.org>,
-	<linux-rdma@vger.kernel.org>, <rds-devel@oss.oracle.com>,
-	<linux-afs@lists.infradead.org>, <linux-sctp@vger.kernel.org>,
-	<linux-s390@vger.kernel.org>, <linux-nfs@vger.kernel.org>,
-	<tipc-discussion@lists.sourceforge.net>, <linux-x25@vger.kernel.org>,
-	<netfilter-devel@vger.kernel.org>, <coreteam@netfilter.org>,
-	<bridge@lists.linux.dev>, <lvs-devel@vger.kernel.org>
-Subject: Re: [PATCH 0/4] sysctl: Remove sentinel elements from networking
-Message-ID: <20240315145830.e3sl57eytsosngeb@joelS2.panther.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FD1A288DB
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 14:59:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.47.17
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710514754; cv=fail; b=LfpddwaGHsg+Guy/2Bl1O+6Zp4abGg3fT0GwfjwPB2Cq/zUyOKKZeMwQfA6cCA9AR9ZTqYLb4DyQo6Mxx8BppkRgFb4FsMjmI1C2Xr7RsP9TSHwfQ/ZbnLeGZhVkN9C4dgyMJ4y7BTbiOOeL55QYYAgrtgiilfKn7AVTNrst/2o=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710514754; c=relaxed/simple;
+	bh=ZwpAm3Z6QXW4RHXdus5UgkDR+n6HhlHrFlHcHOFCFtY=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Jhi17WdiLSw4avwNMt4rDRhmjluTcGH5AyWAa+7IWaVlv3Aonf3la3VzmSRmB0p0+Rj8MqW5Zjdfts+Vit5yytqDic3epnYBUXkNm6W/wTaR386nbRcfswYvlyn5si09w7+L4resWpMzlwod5k0ml7sgQbDv9aEJmBNMGJ8SnKc=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=cnvBNO/9; arc=fail smtp.client-ip=40.92.47.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=RINHmQ2iSTB7jSHNqkBaGgRCT+Jd+tOOvjQEUs++4uqpZhNQUNpdhm7kBOSOGHAOEtH3HxbfyGwmcC++LOodI3fQT+6upZ+922L0pxd16xUSQ/y5JLzEw/c8DDM4xKZgestT2Yen28okyQPOTcuIbHCGbz6QChSPCQGQxaYuvfcdAdNW7VIeclTvDIwuCfU/12sN7+zBCWS1WZf7IJr4cIM2uQHb9EuzTJhOjOjvCHD8ifessZqgKSuFAiegexudI/HuYXrjc/qaP4U3fjws1H5Kn8g4rZ4uAehIFgGH8xolJBLYmS+twIkJUzZ7osu9V9LDUl675Xs2Iqn/UqMcdA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JE5I/MQbK+9Qb9Zx9DR90m++hmCCPyKNw83tZJA8NKs=;
+ b=Rzy9/gQZhc+o25yWCodvQ9jvfutWwKGTAh2Dp0+jj5sNEfCirBQArTEXC9dgWzLK4xV4gz0gBR/EE/hXYstM9seYYK8hqRulXZHknkotlxzo3LlFD6/Zrq36EB49pSGlnc0s7/GGUCiiaUcDDVPnFiAiaRX+u+0Xcwxxw441mAxcPC7wYUhV3/k2WX7mcndJiewKht3XwRi9az+E5XTjUTfCeAdjalCOnayTHG6jB0483HQzkiLpG+VxBPKA+2pMEVUArUrez3aJ533nObkV8Hn0Hngrb/iWaB2tqGJhLSkbzBdiX1vvMWRINH/INGd8jcKNdYM3nQMDu/cwYxi6tg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JE5I/MQbK+9Qb9Zx9DR90m++hmCCPyKNw83tZJA8NKs=;
+ b=cnvBNO/9tMuwLAS0qqX1uAZHkDJDLkjjno6+Mnq4LPV+SnrmPEkemHqtECqpERdxgeABH3XpzpE7YvHxZ6rl6Yus6urvAOkXa4I2FFHfKhePzBZkTlHblVg6UZu6IwISS6D9RaKRRAQt01aelmvPlLZlfOx+Dx1a/N+j0l1zkbyDnTW869FN7jPnVyifhYfs+eHAq958SN8+StTAc5dgJzfoW9ht4ff+CeBLOk38/ET9VLD82syI2XCVD8Tb7unwZMMBUIDf06xYtlV1X4S0sD3pR+4PCMFevC898XNeiw2/4UWZr7aZnQlPGTwi4dTHTdY3ZSIErus00n6GtcEmiQ==
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com (2603:10b6:805:33::23)
+ by PH0PR02MB7671.namprd02.prod.outlook.com (2603:10b6:510:5a::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Fri, 15 Mar
+ 2024 14:59:09 +0000
+Received: from SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd]) by SN6PR02MB4157.namprd02.prod.outlook.com
+ ([fe80::67a9:f3c0:f57b:86dd%5]) with mapi id 15.20.7386.020; Fri, 15 Mar 2024
+ 14:59:09 +0000
+From: Michael Kelley <mhklinux@outlook.com>
+To: =?iso-8859-2?Q?Petr_Tesa=F8=EDk?= <petr@tesarici.cz>
+CC: Petr Tesarik <petrtesarik@huaweicloud.com>, Christoph Hellwig
+	<hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
+	<robin.murphy@arm.com>, Will Deacon <will@kernel.org>, Nicolin Chen
+	<nicolinc@nvidia.com>, "open list:DMA MAPPING HELPERS"
+	<iommu@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>, Roberto
+ Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
+	<petr.tesarik1@huawei-partners.com>
+Subject: RE: [PATCH 1/1] swiotlb: extend buffer pre-padding to
+ alloc_align_mask if necessary
+Thread-Topic: [PATCH 1/1] swiotlb: extend buffer pre-padding to
+ alloc_align_mask if necessary
+Thread-Index: AQHadIMeoQfESfdw8E694i37J5NSp7E4FUDggACpqYCAACd/wA==
+Date: Fri, 15 Mar 2024 14:59:08 +0000
+Message-ID:
+ <SN6PR02MB41574FB8FF2FA08C26682EC1D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240312134149.497-1-petrtesarik@huaweicloud.com>
+	<SN6PR02MB4157FB27CD890E9F29408926D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+ <20240315132613.5a340a69@meshulam.tesarici.cz>
+In-Reply-To: <20240315132613.5a340a69@meshulam.tesarici.cz>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-tmn: [4flMFyVbFYAxnhvdm981hmelx82ocXxV]
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SN6PR02MB4157:EE_|PH0PR02MB7671:EE_
+x-ms-office365-filtering-correlation-id: 5d78e5df-9721-4db1-9699-08dc45007788
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ Ar2mHgoHRUf1I9I4W20sZm1gs+K7VkmGyKaj2HByZcPvKf/e/ul7cWnzaVzmeXlsYENFLKGa2XIaQyo/w/xcfjFXQCX9lMgsjy802gzgDqMhmKsA+wllAB+gJqPzGab0BVzdjQRfOCYZvRCQMIE/fZxPRWp3RmCxFiG/6/pMTuvOfw3v3lCvYzZH7eZIGC5+uc+mPT0CRIonhsYaFz7pk+1a1eCEs/6WfLmC7pw6wD5ovFSIVKI7XAGIn4J7HKjROBQZX9k8p658UNZr+CPcxEiixxe/n+TNVLq6LtQ7YlJN2z/JBESuZMZYjc0+qH9tzHIPa5HPIuU8MZ10frus19GSFO6nKxdSroOA/v5jSUPtAaxjBurOmxvr1hqy7e4Eq1PHcZutf7ayhxpR/6JNJ7E2rIH0iMoGtzSbRcCEWuQBE2E33uCW/K21HBKNnAWXNWYKR+bhIlv/YNLtaRU2JilTD1A7LD/yA2a0cVXcsZ/OHJdcI3+WVyEadncS1p5PEVg+JScjxT7w5y6SV6XuGcOV+wOHFXzUxPGKcwlj4bJrQVzLRQsSOl3c+Wc9gRZD
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?iso-8859-2?Q?HRfHFfmRDX8rSahOMFYHaN8cieFFa9OXfiCiu5lcpcTnhim+dout8G2ufI?=
+ =?iso-8859-2?Q?uIGqAxaLDXnkIb4OHsYW/ui2K6gSlmaOS8vPnQBsnlMe7X2j9Ro6jJT6ld?=
+ =?iso-8859-2?Q?9TkcH5zKKzirUkUR8A7ZKip8EYFiMQdrGxaQ/zlmowrhRD1yUdpM0ovFYC?=
+ =?iso-8859-2?Q?YKVIWVwTA2y6D1CQUKHmf7e/z9tbSDvBK4xbIDVW0YDpMm7o8RoKGbMqO7?=
+ =?iso-8859-2?Q?4AsmpY13kPud2VeFOTLOVQaX8fRFuPTCRzjVu8kaxSHC5oTEjHs/9pwOfK?=
+ =?iso-8859-2?Q?p9AE1SxoN9xHaLLuW9UIZCegr8rSIZflOKG+tPoJblD1fzpQ3DNx99cwQg?=
+ =?iso-8859-2?Q?S6OT0XomwJwCSgEQAm0baZuzIUr/H9Ra34XkH62PZPJaohlTABA8n7okfV?=
+ =?iso-8859-2?Q?3UpDw9nukdaM8EPGoNAEB/eQaXTNk5uVfKkhEGiS3ndLGkb7U7kEIFcZ9a?=
+ =?iso-8859-2?Q?QaOQ1BKdfOzfXHN3yuX6eaMCvnm37UhuAsFybukhY6Sp2X0NHtcXFl6XGG?=
+ =?iso-8859-2?Q?Xt0YYfQemAKvtptkUbNJK9XpycWPXImJtD6Po1/DtrwRludaqFLqnmD9FJ?=
+ =?iso-8859-2?Q?rn/eFIJjaqtnArtT4glBYgYF2PVNqJdqbP/uVmKQdQZvjL0EhqTITyo/v+?=
+ =?iso-8859-2?Q?7IzjV9VLViYTtb/eLuoOEDgzc8gngEq2mxoLGVanERb3jocAZNk72NX1VY?=
+ =?iso-8859-2?Q?Lqp+vvr6Aus7cEH7PbTiUrN15KV9uOgvcKr8Y7rO0nSKDE56jJ/cTgRJcv?=
+ =?iso-8859-2?Q?0EU+OiUl7SO5Pm32dZbM1cjeMyUA6S6PesAt2l2GoBAcXRbd6oJsZJeWFA?=
+ =?iso-8859-2?Q?SemQFPqnhyWcQC4etTMBrQX7PZXmTT73xFmaujN+rh7uHOsjZuOwoQfQQB?=
+ =?iso-8859-2?Q?IlYZXAvBT8KMrNFlDJgrJCjOW3e7MaM7JLqR8whKZjIY+d8/cE8UmE2XRv?=
+ =?iso-8859-2?Q?jV9spVi7y9171Xzlw2Z8n1objOPuUsDiEdAOlygpXejn/c0o7D1tDtnO2s?=
+ =?iso-8859-2?Q?phbZe/vscXstkt97XmtdBDULSkJxvBOKy41JEONQFQ260hzmUzPccc6vhO?=
+ =?iso-8859-2?Q?guBENBpXvdz+3JB2nYtWXxJ15MgdDbM00HHvAgV4qpu7OhT5BID0YezKgf?=
+ =?iso-8859-2?Q?NULj/LZaEj1PPVv8MXLQrrYLhzhOvM6NX1mnKPodM33+V3V/omeyD3RXVd?=
+ =?iso-8859-2?Q?3LvPoRgmXWDYqYZTd6GBNM+FUIMlhoLnL7LUXe0DMfoN9S5eMV9CXscTZP?=
+ =?iso-8859-2?Q?5exjV8YT/qUqoBU9qHKw=3D=3D?=
+Content-Type: text/plain; charset="iso-8859-2"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="onm3lc3zkynvura4"
-Content-Disposition: inline
-In-Reply-To: <20240314154248.155d96a4@kernel.org>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTfVBUZRTGe+/XLuA610XhDcwSgSE1Ck09fmBSUbeZmpTKcWq01riCCOjs
-	QlqMhoAu7opsMEUiCoryLSCsu6wCyyCisAQoauQsEAuEISLyIQICsV4cnem/33me87zznD9e
-	MSn9Rewk3hkaxstDZcEujC2lqx5teMtp+xD/TrWKgcrIVdBeqqIhMuYwAYcMUxTo0tUETLV0
-	EzBhUJIw2N5NQ+qZYgZSGmIomPhTzUDTyU4C+qLGKci/dIiArmqLCHRxuQhyo8wU6LtHGFD3
-	zIfoi8MIOuMtNNzK6GdgNCNHBG3DFgpGj9nBcVU0AXXqEChp6aSgUXeMBk2tF9zRtxDQdCmF
-	gcYKEw3/VMZRoDkdTUJX2n0azIkZFFSUpSKwFDwkIDp1gITowQ4SxrKu0VAfN0VCcn4OCc2a
-	LgRXlOU01BVEieDxqesklKVGUlCd5gCa/FoKHpt6EST13ibhZqkr1A5NEVBfPEjDYIoHJGZp
-	Cbh85IkItA1BUDtWS0DHSDcDU83vwcE6nWiDD3fXMkxyffU1iDuVF8GdiLxBcWOjizlt9l8E
-	p67qITlDcouI01W4cWlF4dzTygsirijnCMNdzT5PcIb21ZzmTAXiis/+vHHh17br/PngnT/w
-	8rfXf2cb2PFb0B69ZJ/+zjAZicx2KmQjxuy7OGXsJrKylM1CWHlsmm2neQjhkjuDImEYRPhJ
-	Xir1PFGgN9KCkYmwOcr0YqtmZHwmfxHhk6UnGGuEYt1wlVr5jBl2KW7oNZNWnsu64pji45Q1
-	QLLXpfipcpS2GvbsJzinoGvaEIsl7AZ8pmGrVZawc3DN8c5nNUh2H76elUBYV0jWGWdOiq2y
-	DeuF9UkdpNB0ER5OeMQIvB/Xau8SAv8xC/dVuQj8IW4tUM5cZo97rmlFAs/HpsSjz6phNhFh
-	42S/SBhyEc44ODzz0locc6tzJuGDRyz1jLUQZmfj5gdzhJ6zcYIuiRRkCY49LBW23XFuay+l
-	QYuSX7os+aXLkl9cJshLcdrlAeZ/8hKccfo+KbA3zs9/SKUhUQ5y5MMVIQG8wiuU3+upkIUo
-	wkMDPL/fHVKEpn+qafLaQAk62fPIsxIRYlSJXKfDlsLcRuREhe4O5V3mSg4sfMRLJf6yH3/i
-	5bu/lYcH84pK5CymXBwlbv6v81I2QBbG7+L5Pbz8uUuIbZwiCY/R5VrvV20vvPLF765VfY5G
-	JutXS+Z2P/mQIcCkjgr76k33BdnEra4VqfZfGjtKgnTpBuf0RCm9nJuQObLJxTFbBoyb/MK5
-	He3G97VNu25/tODzbZMyh+7YVt3mFtXHTSY3Ol5VXn109TJfDds+79PY9XV22yqilPqVtI/m
-	wKTveY95BtIvre1G9Gf96uA1Rvc5sRExCsk5Tp6+Kvvq+AdTbaqbCfjfwHubrhSeDYswP4hD
-	Ra+Jt3bcSxxY672hcMJ3zUPub5clzfGxbxw9VXGo1+ebQim3ZSSwxr3cqWrd7L0bz93bPMt/
-	hyzunOZ+0rK2B3n0yvay/Q4rxv3N9avFy33sXChFoMxrMSlXyP4Di5z3OyQFAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WTe0xTZxiH/c45Pa2XZmeU6bG6RDuYhmm1CPJ2Q4VM3XHZzJiJMTNGOz0r
-	OtqyXnTOzHETJhUsNhkBERC1AjoqLReroqRT1IqgUxlTGNLSEpHAEFAolw6oy0z235PfLV++
-	5OXhARe4Qt5upZZVK2VxInIGcWf85l9L5349wC5vuywEe0IEtF9J50BCSioGh2w+AqpO6THw
-	tXZiMGZLw6G/vZMDBUVWEvIaUwgY+0NPwoMTHRj0JI0QUHbpEAbuOicXqjLOITiX1EJAdecr
-	EvRd8yG5chBBx1EnBx6a/iZh2FTKhbZBJwHDmTMhJz0Zg3q9Ai62dhBwryqTAwaHBJqqWzF4
-	cCmPhHu1dzjgsWcQYDiZjIO78DkHWowmAmprChA4zb0YJBe8wCG534WDt/gmBxoyfDjklpXi
-	0GxwI/gt7SoH6s1JXHiZfwuHmoIEAuoKZ4OhzEHAyzvdCLK7H+Hw+5UgcAz4MGiw9nOgP28x
-	GIsrMLh8eIgLFY17wOF1YOB61UmCr3kNJNZXcaOimcfOQZzpabiNmPzzB5jjCfcJxjscwlSU
-	/Ikx+utdOGPLbeUyVbXBTKFFx4zay7mMpfQwydwo+RVjbO1SxlBUixjr6Z++WPiVOFKt0mnZ
-	BbEqjXaVaKsEQsUSKYhDw6RiyYqIbR+GhouWrY7cxcbt3suql63eIY496e7G4iv53xsfNuAJ
-	6PHMdDSdR1NhtLn6GicdzeAFUGcQ3Wsp4fiN+XT5wKPXLKBHm9JJf6gP0X2exNeNSkT/Ut42
-	lSKoYPq6Po2cZJJaQjd2t+CTHEgF0SnWHGKygFO3AuikorYpQ0BtoEvN7gmDx+NTUXRR4zb/
-	6A1Ej92yTY3yqbfp2zkdxCTj1F46c8AzlcepefTZcd6kPJ2S0NXZLtz/0vfowWN9pJ9/pPvH
-	PMiABLlvLOW+sZT735JfDqGbx59h/5M/oE0nn+N+XkWXlfUShYhbigJZnUYhV2gkYo1ModEp
-	5eKdKoUFTZxLVd2w9SLK7+oT2xHGQ3YUNNF0Xjh3DwkJpUrJigL5Bxf2sQH8XbL9P7Bq1Xa1
-	Lo7V2FH4xC9m4cJ3dqombk+p3S5ZuTxcErZSujxcunKFaA5/Q/zPsgBKLtOy37JsPKv+t4fx
-	pgsTMN3nnatEVv3GxIUPIuLyhmaHf5S7c9aWtft164zbhLOr4Um/iXc39eLwyPqz8/e8+hSP
-	NX4mtQW6qz01BwTyefsq2qcpVOKN9zcFyzN9YcINR7SVT2JuOt2K3hiyIvjMoHrt5vr3ZZuO
-	FC/xJZrKj+V1nWZjI87TcsGXxTrH5ewaQcEzeZbFK46qY08Y142hFTvmLJrxbNrTa963XKci
-	XUZXci05eiW6Ibrrquab7I+PtjszxvgxA0vnise1axK3Nm052BOWk53uZt5d01xuXhz2yQgz
-	EhgS+ij0Oxupbx2dtcw8tO9Gqq1t/wKLxjLPl695EbRpkTfr6fG7PM9mSjd+VURoYmWSEFyt
-	kf0DO6fsqMMEAAA=
-X-CMS-MailID: 20240315145833eucas1p213fce847384eb45d99b496e63aeef842
-X-Msg-Generator: CA
-X-RootMTR: 20240314224256eucas1p292b70c755674fe9311d190a8b50e1ce1
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240314224256eucas1p292b70c755674fe9311d190a8b50e1ce1
-References: <20240314-jag-sysctl_remset_net-v1-0-aa26b44d29d9@samsung.com>
-	<CGME20240314224256eucas1p292b70c755674fe9311d190a8b50e1ce1@eucas1p2.samsung.com>
-	<20240314154248.155d96a4@kernel.org>
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SN6PR02MB4157.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5d78e5df-9721-4db1-9699-08dc45007788
+X-MS-Exchange-CrossTenant-rms-persistedconsumerorg: 00000000-0000-0000-0000-000000000000
+X-MS-Exchange-CrossTenant-originalarrivaltime: 15 Mar 2024 14:59:08.7459
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR02MB7671
 
---onm3lc3zkynvura4
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-
-On Thu, Mar 14, 2024 at 03:42:48PM -0700, Jakub Kicinski wrote:
-> On Thu, 14 Mar 2024 20:20:40 +0100 Joel Granados via B4 Relay wrote:
-> > These commits remove the sentinel element (last empty element) from the
-> > sysctl arrays of all the files under the "net/" directory that register
-> > a sysctl array. The merging of the preparation patches [4] to mainline
-> > allows us to just remove sentinel elements without changing behavior.
-> > This is safe because the sysctl registration code (register_sysctl() and
-> > friends) use the array size in addition to checking for a sentinel [1].
+From: Petr Tesa=F8=EDk <petr@tesarici.cz> Sent: Friday, March 15, 2024 5:26=
+ AM
 >=20
-> Thanks, but please resend after the merge window, we don't apply
-> code to -next until -rc1 is cut.
-of course. I'll resend after -rc1 hits kernel.org.
+> On Fri, 15 Mar 2024 02:53:10 +0000
+> Michael Kelley <mhklinux@outlook.com> wrote:
+>=20
+> > From: Petr Tesarik <petrtesarik@huaweicloud.com> Sent: Tuesday, March 1=
+2, 2024 6:42 AM
+> > >
 
-Best
+[snip]
 
---=20
+> > > @@ -1349,6 +1353,15 @@ phys_addr_t swiotlb_tbl_map_single(struct devi=
+ce *dev, phys_addr_t orig_addr,
+> > >  		return (phys_addr_t)DMA_MAPPING_ERROR;
+> > >  	}
+> > >
+> > > +	/*
+> > > +	 * Calculate buffer pre-padding within the allocated space. Use it =
+to
+> > > +	 * preserve the low bits of the original address according to devic=
+e's
+> > > +	 * min_align_mask. Limit the padding to alloc_align_mask or slot si=
+ze
+> > > +	 * (whichever is bigger); higher bits of the original address are
+> > > +	 * preserved by selecting a suitable IO TLB slot.
+> > > +	 */
+> > > +	offset =3D orig_addr & dma_get_min_align_mask(dev) &
+> > > +		(alloc_align_mask | (IO_TLB_SIZE - 1));
+> > >  	index =3D swiotlb_find_slots(dev, orig_addr,
+> > >  				   alloc_size + offset, alloc_align_mask, &pool);
+> > >  	if (index =3D=3D -1) {
+> > > @@ -1364,6 +1377,12 @@ phys_addr_t swiotlb_tbl_map_single(struct devi=
+ce *dev, phys_addr_t orig_addr,
+> > >  	 * This is needed when we sync the memory.  Then we sync the buffer=
+ if
+> > >  	 * needed.
+> > >  	 */
+> > > +	padding =3D 0;
+> > > +	while (offset >=3D IO_TLB_SIZE) {
+> > > +		pool->slots[index++].orig_addr =3D INVALID_PHYS_ADDR;
+> > > +		pool->slots[index].padding =3D ++padding;
+> > > +		offset -=3D IO_TLB_SIZE;
+> > > +	}
+> >
+> > Looping to fill in the padding slots seems unnecessary.
+> > The orig_addr field should already be initialized to
+> > INVALID_PHYS_ADDR, and the padding field should already
+> > be initialized to zero.
+>=20
+> Ack.
+>=20
+> > The value of "padding" should be just
+> > (offset / IO_TLB_SIZE), and it only needs to be stored in the
+> > first non-padding slot where swiotlb_release_slots() will
+> > find it.
+>=20
+> This is also right. I asked myself the question what should happen if
+> somebody passes a padding slot's address to swiotlb_tbl_unmap_single().
+> Of course, it's an invalid address, but as a proponent of defensive
+> programming, I still asked what would be the best response? If I store
+> padding in each slot, the whole block is released. If I store it only
+> in the first non-padding slot, some slots may leak.
+>=20
+> On a second thought, the resulting SWIOTLB state is consistent either
+> way, and we don't to care about leaking some slots if a driver is
+> buggy. Maybe it's even better, because the leak will be noticed.
+>=20
+> In short, I agree, let's keep the code simple.
+>=20
 
-Joel Granados
+One other thought:  Fundamentally, fixing the core problem
+requires swiotlb_tbl_unmap_single() to have some information
+it doesn't have in the current code.  It needs to know the
+number of padding slots, so that it can free them correctly.
+Your solution is to store the # of padding slots in the
+io_tlb_slot array.
 
---onm3lc3zkynvura4
-Content-Type: application/pgp-signature; name="signature.asc"
+Another approach would be to have callers pass the
+alloc_align_mask as an argument to swiotlb_tbl_unmap_single().
+It can then calculate the offset and the number of padding
+slots just like swiotlb_tbl_map_single() does.  Nothing
+additional would need to be stored in the io_tlb_slot array.
+The IOMMU code is the only caller than uses a non-zero
+alloc_align_mask.  From a quick look at that code, the
+unmap path has the iova_mask() available, so that would
+work.  Other callers would pass zero, just like they do for
+swiotlb_tbl_map_single().
 
------BEGIN PGP SIGNATURE-----
+I don't immediately have a strong opinion either way, but
+it's something to think about a bit more.
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX0YhUACgkQupfNUreW
-QU8cEAv+M1Ewqt08SIopWKdreIIqD2kzMZ3Ql+7uN752tp2sVtVbFjjrO8sKICiz
-g6Oiqw0mocBQd7wjnGLc5+VxeYK+5VG4geP6jecNsNgGRdSaXdEqSzqf60Ri+nq5
-etfLQbWjO306ZcZGEitSwDxTJhoG00IwTZdu1zXhsypcNAW46xVEnSuT1tdx3wB9
-7CoVy5hYg+KrYrLGfAPbG2g9iOOTG4jNFL3SjiiqNb/1qhknf4D0CL8f0v/5yYM8
-J0ple4a3xlyODh5hiN7PBuOveQd7hLZMeK3/WhByQn9QSe3sc5J7Ue5I40jtQ+1p
-14ahVOh5+Dh9bxxKdVzjnx2FXbG7MF6ZdOw9LarYon3W2xx++UfLA9SF4X9f+Z+C
-WwPzCt7Yk/WmShpqM1KCOVAUwcNtdF2Jttyk2vKqWDB//02sqhtO+ndueWvLNgti
-3H427shFf9/ctykv2dQmthRviho30MSC9eB3BcjmUL8SE5G6WwMb/csBkkV+DG3d
-0widvqRM
-=vtM5
------END PGP SIGNATURE-----
-
---onm3lc3zkynvura4--
+Michael
 
