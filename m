@@ -1,367 +1,253 @@
-Return-Path: <linux-kernel+bounces-104512-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104510-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3637C87CEF0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:31:40 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75E2C87CEEA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 15:31:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8C0B41F2320A
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:31:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F90A1C226E3
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 14:31:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 985C31C2A6;
-	Fri, 15 Mar 2024 14:30:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A0873F9ED;
+	Fri, 15 Mar 2024 14:30:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="kso+9RAZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="l+kDmqa4";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="Zy2jOjp1"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FBB341740;
-	Fri, 15 Mar 2024 14:30:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710513002; cv=none; b=TL9UvH6cUGgK2C2DNtjI9V386cOJSuLVgyWqfWtLdMmWKzhcFsCt79NOlTV6CMHiFLLnFaBzodTEQszWTcggtvEUeEspvVuOHOAFxcBDrvV/5u1+61Dl2K5q40As+ayARFDlf7j2eTOPXrP8I4o8PkorOUbcNepE6EORDwcilJM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710513002; c=relaxed/simple;
-	bh=26Me8+u5TzyDpIxITOUYsHiBNwg5FLbt6q/Tou7u72Q=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=tog7/pFepVxv4j0gimfgsliN3zjkNZv92MJNmTvnAG46uBdi+cbAmUk2Ep3Mya41OwdFBVOMNxZsM7hHUwPcYX1eFFsJE36+7gzoKT578QrzRlmwRE0gWL9qofwqsbdVm2tfGVgmmdipa/0KcJR8wAcTIAuB3ksRGnaMPRIgNAM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=kso+9RAZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5FA4BC43330;
-	Fri, 15 Mar 2024 14:29:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710513002;
-	bh=26Me8+u5TzyDpIxITOUYsHiBNwg5FLbt6q/Tou7u72Q=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=kso+9RAZ5X5Z1AWvsIi4i99IuUUYJDenBgyzwBD5iR9xFu30mLzd0PYT62JprkepT
-	 pGvPe1OJ3IoGtedVvfX76VYaex3dhEgvngIyoAsJoVBW1rysVUDFtWnKL/WFHyuPo1
-	 aa9w8n97ViPGyLqTGRhTz4m8f8ThY2hjZPHjJ1Jifv81tr1cuqOS1VK1IsdOkckWpC
-	 bMg4CpbrmIqUvYmJNofqaziOcK92/r/hGhDTlXdfDKbSSFe5pKqSKhrNU7ZUpUmgDB
-	 QXAhouM5wFJtivBToQ27kfQojGhLrgTEO/pwgWIhMOWjDR/6uml72nyjm0t40Ddyoo
-	 m7MJu6t4SmyBg==
-From: Benjamin Tissoires <bentiss@kernel.org>
-Date: Fri, 15 Mar 2024 15:29:30 +0100
-Subject: [PATCH bpf-next v4 6/6] selftests/bpf: add sleepable timer tests
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A77463F9E9;
+	Fri, 15 Mar 2024 14:29:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710512999; cv=fail; b=dEilvTmZt0qx3dyGFuGtiPOsNUL09n6UxNIy6yBqotJ1RTivFfS5kRe8SKkqgj9OrYYqe2oj6cVPX0Flu3NbsXxMjgD9orxcNDKD+aYhb5+dAh1BRICZGlnuWnXWAJb5KfbMN0QA2mVeS1LVRNWlSq4z5LGjze2ygQbot60/Hy8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710512999; c=relaxed/simple;
+	bh=WLsiKgN72sP96JDFfj3nA20RDl6pRN/Z2QOzyK/EIcE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=M+YrMnXarueC2jDZy2yEnGNv8shR+68YylFL2nluyna8JtP3V2LhXvjfsy3QGrvp3jNXxn1v0jvtcReZa+UwrblWluMXRdCPxheaoA8kc7G1S8RtT0ntdSUBbwZK+Gm5rUCwNQvuPdzjgNFC00a90gdoampSeaB0yp90dARTJzI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=l+kDmqa4; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=Zy2jOjp1; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42FC9XmH026327;
+	Fri, 15 Mar 2024 14:29:54 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
+ : subject : message-id : references : content-type : in-reply-to :
+ mime-version; s=corp-2023-11-20;
+ bh=VoCfZRJC6MGQmdS3JwAFaQy676yulTzmCjt/6fwzqMY=;
+ b=l+kDmqa4ojkXa8nI4NOZAxP2PjywaeuCD9yFQJpah07Wcs4vYosi6XnKIE3hYw/UDjI/
+ wrxb1asyXO9P+xCNE7VzLHCyUFuyPnMcHMLi/djXvszLw41xS1GSVlRP3M/UwEM3zou5
+ j/7OM8xZQ1E1nr0qf8t8ZYihbkLOYq6wZWkM5bXs9yjyJ+nOReBOPo8q4q0nrJJ25/us
+ ixDvDhTnL6YdG2+8UlFw9gAxQ0etT0M2XoeZ0LD9sgVSRitPBEXpGgQ2pOqw2/RvbQkr
+ AK+TPamf05FNT2DP1FERK6AV3949DBUF9YsVMgCCuWCfSo00JKlvDbwKzqlL9uclGaNh 2g== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3wv0adasw7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Mar 2024 14:29:53 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42FDTi6D019743;
+	Fri, 15 Mar 2024 14:29:52 GMT
+Received: from nam12-bn8-obe.outbound.protection.outlook.com (mail-bn8nam12lp2169.outbound.protection.outlook.com [104.47.55.169])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3wre7bx7kt-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Fri, 15 Mar 2024 14:29:52 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=IwEoJppIQsysFcNtDJbn92VL1TzSOo9eD6rLcZTjxQPSSqGznUKxc73g54R7zW6Ba/UtCNthafGlcA3k5Uf2uKGuEdH+qS/KCE99ayFd4wGs3pV0lycppsFHsEPL5M434IlhbSNHGXE04qcttcl4Zc4psd0AvgZaSLDWBZTaPQRplzj0vRIER/jw38+R9kKPupGzmFYvS6slnfMBCUZftLQGeHhNAatq5wRoYjx6feY5IIrayKy5n19POHHnEa0Pf/q9UWf8kJycYOqKN5A0xUU8hLgF1yZakaoNwGmPz5ebwJVOrAKINpxo1p84zZsTH7ON5/ZbVNJlCcg1jAh0CA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VoCfZRJC6MGQmdS3JwAFaQy676yulTzmCjt/6fwzqMY=;
+ b=Desf2MTHZK87CEXQ68y8jIq5HPV76jJZ0Q0vOIGsGBUp4ibAAOrXD5yWgTgtwMON//oU94As+2Nsl978e8iWiKI2XH+2BwROqbw0xfdW6etiJGBPNZOa0MdPSP9Q/Lwq/pNPEuHCAEpC5P3IksR7SF4e1fOgexAL2W8XI/rlLkZa/9ew7T0w6egKA/x40w6b5KY8j3Al2vDnYCAMkndTXrgx8Ga0Lhmz9Gb8sRJjLDFriNHhvSEeT13JANQSdjUyY7zPdaJcBujX/iQXwqAt/aiUewQxrCjLrrA+zSeh8vKwOOYpQt3UkHzpcV0lgIB5HkQ2AdhIMfrxk6WqlDYZpA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VoCfZRJC6MGQmdS3JwAFaQy676yulTzmCjt/6fwzqMY=;
+ b=Zy2jOjp1WiBjU48FcrbJd4uy6iAT/1qFS2OSLq4AJ3I0EoQCwPqtRY788hWcJIxyTErF4EZnSprXwejsgKuGvU2dkqXNo+XKTsiZ7nG+cG0gbAuGHbffWR4+7LacdjvHg/B/qhTHvAcbs8xW4kCsgfIN9PtwOzDI6ShgJNj1lRg=
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
+ by IA1PR10MB6097.namprd10.prod.outlook.com (2603:10b6:208:3ae::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Fri, 15 Mar
+ 2024 14:29:50 +0000
+Received: from BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
+ ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7386.017; Fri, 15 Mar 2024
+ 14:29:50 +0000
+Date: Fri, 15 Mar 2024 10:29:47 -0400
+From: Chuck Lever <chuck.lever@oracle.com>
+To: Muhammad Asim Zahid <muhammad.zahid@nokia.com>
+Cc: "J. Bruce Fields" <bfields@fieldses.org>, linux-nfs@vger.kernel.org,
+        linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] nfsd: Make NFS client_id increment atomic to avoid race
+ condition
+Message-ID: <ZfRbWx8L9WJGKa_k@manet.1015granger.net>
+References: <20240315124053.24116-1-muhammad.zahid@nokia.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315124053.24116-1-muhammad.zahid@nokia.com>
+X-ClientProxiedBy: CH2PR02CA0024.namprd02.prod.outlook.com
+ (2603:10b6:610:4e::34) To BN0PR10MB5128.namprd10.prod.outlook.com
+ (2603:10b6:408:117::24)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240315-hid-bpf-sleepable-v4-6-5658f2540564@kernel.org>
-References: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
-In-Reply-To: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
-To: Alexei Starovoitov <ast@kernel.org>, 
- Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
- Martin KaFai Lau <martin.lau@linux.dev>, 
- Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
- Yonghong Song <yonghong.song@linux.dev>, 
- John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, 
- Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
- Jiri Olsa <jolsa@kernel.org>, Mykola Lysenko <mykolal@fb.com>, 
- Shuah Khan <shuah@kernel.org>
-Cc: Benjamin Tissoires <bentiss@kernel.org>, bpf@vger.kernel.org, 
- linux-kernel@vger.kernel.org, linux-kselftest@vger.kernel.org
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710512973; l=9214;
- i=bentiss@kernel.org; s=20230215; h=from:subject:message-id;
- bh=26Me8+u5TzyDpIxITOUYsHiBNwg5FLbt6q/Tou7u72Q=;
- b=E0/FlxTG5Yp8VKPH3kmITNMcIJl2imJb8feolcUlHhOM8Zvz4zXcdD5RWxS0q40lnRzCHZugH
- +WAZiBORCcYCynnR2MAlyTk/tHxKhfkngZp6HYlbhN2/lTC/gURqET4
-X-Developer-Key: i=bentiss@kernel.org; a=ed25519;
- pk=7D1DyAVh6ajCkuUTudt/chMuXWIJHlv2qCsRkIizvFw=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|IA1PR10MB6097:EE_
+X-MS-Office365-Filtering-Correlation-Id: f59a08b9-e47c-481e-a770-08dc44fc5f68
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	rmRFPCmQzYWwBISDkjmmC3G5tg3s1t7WkWOuqmv0bUgrLqdsjLHpS5OtDOdbCuP40gMeAxzhQrcbXsQ4PcXf85jYKyMFILhxBVf8hiHfD5gQkpAFsPlow5xBT4v2iQw07nUUBeT3fPZoQYnVuWys4YuQK6pj3FgvI+0ORf5ZgDvA/Trgbug8hZprjkEZ8oo+FFbMT53ALBREJbmztlBOvi3u8mUfea06ZsChw4ZaU0oVcZPbAF5Rlxwx8aBH/viQmZ+x1GHBohEWjjdjRKjJx78013PiYFb81QbHq4PPz9e9+yyFEokzbbmm+cduE001iqJVuMPSxQ2uCFotEDeR4UJhVXeSO3PU6oQnpQ1mJYuT7ZozwH4YCkelKNNOVJyu7sPuiF52fjvRVm9fLs9myOev5Aoj/DeiTR7Ofw9BzzJBpWY2hshkhDUkcEU6cZ7wFawAoTvGgJnF3I7Bso4rcN2YDVHcmLBYiSPI10TG7O4d9zvAXQtUvUZQlqvbTTFg+FW3OyK6vrXeqeabGTfC7mp9hDC/NoItOdWov1C9KVHz1Gz32NoYExoLZPK8ECXPvSQEIf1yBI1pIPsiNN1kGo0SfhqkbZbIQzCIjqiGFqg=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?us-ascii?Q?bV0YODpRHrJwXilhWIYNXXiQ4qtE8ps4IJ9V3dbekd0v5vmipsN9cMPxpJGr?=
+ =?us-ascii?Q?EQXcbogMq9RDutyajWum0N3v+K907u7T7rF1HRki5gpY/+VKH2BOWIhitZaW?=
+ =?us-ascii?Q?rkW4YaPv4eH9thzWjPJlL6w8WUc8h7VSeQMiqCCz68OUerhcJg2izWiA61sY?=
+ =?us-ascii?Q?0/yNfDjFzXJBS02Ens3EJJM5OFAYSYhtwX9UCTNMmw25Vci0o4rwpyfM0l6I?=
+ =?us-ascii?Q?Miei6e09aXBQygkMYPuE32eUYnWeBRWD5Gb+80d9k88+ODKpX0RFuGszfh42?=
+ =?us-ascii?Q?0nEiSUJD15MVoDHOa8cD2AJnBBLU4yyCHIe+OCmo0q9edfBaprSVjY7ATU8m?=
+ =?us-ascii?Q?NLLaVbQmucvmGtNiC1kLTWSgJnBxHpumQ/5tUK4z7YyGveUqjxCH5RJYUWUg?=
+ =?us-ascii?Q?JR8EXESASFhwa7Q98oxUlbCTu1k2cSaYAEp3tPvFPUUCnbKtqv7SONyl9eT5?=
+ =?us-ascii?Q?r6Q5WXBwTkToycoyWA8LodziOle+n+Y4coD4pNlrAEN0bjjC191Ne+RfmJRE?=
+ =?us-ascii?Q?E0aAf22vwj2mKuSk+VuoWcJ+b2Xy+nCceb+1yVNXAaGD7JA7bBGD+afG+p0C?=
+ =?us-ascii?Q?6ImYVc8RapUfrCse3SkIA65uHSrjh3FAynkGirQzrB6uf3x6WAxWrVJ+e7x1?=
+ =?us-ascii?Q?TYV3pOIhJ/2sBYUmXOBDoXSTJy6J4AVtTbGLnzHRpaM51J3My5QnDIyTWWOh?=
+ =?us-ascii?Q?uD4ZQovP+txkGSpjqz3rqFj5WKLsdy+Kn3LZKk2GA9ltrO/dnEveNbC8Ab13?=
+ =?us-ascii?Q?Z2lGDPrBC2uuqtWDomBAeOd/WmJkE5LCYAjXt9RsFkLUizVCGPkDI8X+PlGe?=
+ =?us-ascii?Q?tVgIWBjFUF7US0JfxXNCoK7kkhbNiypJcDVWw+1Et3zZAhB02G6k0B+X5Tqp?=
+ =?us-ascii?Q?embZGEqMSs3fMTjd9NLcOPr4XQbXFlG12vPyX+Y+TIyMo6Y+tQDyXWUZX9Qe?=
+ =?us-ascii?Q?8n+KulOkAuBHmutwc6E5z/VmOhCQk1DxpL4wChjcwItEqXQ/bTHLTZ3jtJvb?=
+ =?us-ascii?Q?cQ31Usn83M0rql3zKVC8w03E5R6OeDfMIFGOuKlW6FtHdKx3wOoVLew9o9E7?=
+ =?us-ascii?Q?keQ+gKmkgMrz4/hlvXOgQOZ21/d3aMjABv1Mt/tauoMbW6kVckd6eKL6KVBy?=
+ =?us-ascii?Q?h4NT3JmbKA987cYFtpG7V91qzuNCv++uc8ImJW5+KCgfj+Pj78YW6yW7krLD?=
+ =?us-ascii?Q?URjR50jdfUGJp/KV70GBhlPRR27BOaNwY14XOnFziBGgxbUSpuXuBe8oavcW?=
+ =?us-ascii?Q?LCRIIVW5euw2Mwx/58zIcy4dpQVSpLIfe6Y24R487N+JWYJ8z2YvVCcjyUVL?=
+ =?us-ascii?Q?DPF1+15psSLYVytOj1uhIVqsaLoVVFaqpvCD91TlY2mYHG+cLMSXkWWKW+zV?=
+ =?us-ascii?Q?MCsMalRGinEOB0GRDDAqWlv6cAITwGhkP1JDlDmCk61D1LfOsfKnpgpGJi/K?=
+ =?us-ascii?Q?Q0A6rKXw1PIgGzUzkQGd0jBYL0JMVgmG08OCbcZQtRxiQVviutrsyP5udKBt?=
+ =?us-ascii?Q?kSNUlT85B8fhCdBMHr+Vj7/0igpo1ll5qDz0aBf6nTOdnxn0XBbvFDjgasCk?=
+ =?us-ascii?Q?3aSfkL0mmtPUtTDUXvCMYl5Zdbav2OkGHWmBulcsn3c3hFv6nJnxjj17Qr+Y?=
+ =?us-ascii?Q?Bw=3D=3D?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	XLcOgzi1fgaEezlN1r18I7oqXjndlH18Eocysn1X6dScTJRlkNTP0kaSYhscX04klrlNyiJmR4C92x3+O3BWww81Ob9rxVEV6a24MphhDl0MozD9z8eb4y+UkUoHL6P+1X9gmJAwYttdlMs1nyBS8paX6vvh9pPmdN6+M+G2nfeVXbT68ll2FsBSHEEZ+JVQNd/SD+1q/MdbqHjxBmB2Pb1gC0Sxxb5rEv5/DE+w+WI1I/Q4bT4eThwM7eeeas/Dsfqbm0aJDhHFYnQ/4YAprrgeqAljw65Dh2Ax1Myed5ECQ+sbxwjVzgJW7vOvnn1Oe9NW5c7emu0dv5HmKPAUOz3OVu4ErXxo+l8s6NpJssBwPeV0krnV1A3fd61vlwwoWkOotO+XuEWTuaXViJJE3xcs6PiJBuShulzgH54GNLTmlksqkp/h2xcaCq342oIURahhUZ6qhmhp8STy8sOBKk5/Y81qb6+IpgHhJ2xPk5HAQS+bjsx8paFbLpQiSeaM7+3YR8xJ/1SWTU+zN5xseSvZWCekx6rLmmH9bM+N+5C8Tr9cQZkbaXcNSsu612CCs1Mrxtblb+tXlQk6VUIV87i0GFnqhVtARbb0I2dR+tI=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: f59a08b9-e47c-481e-a770-08dc44fc5f68
+X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 14:29:50.3597
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: tg6etQBLaCllO3C3X/eriHIiDgn+mjCQiEAPriqZJXJFzNUNsroCAgiQV+HnFrWnb8djiPdL5vpLicEtLoHl3A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR10MB6097
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-15_02,2024-03-13_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 mlxscore=0 spamscore=0
+ bulkscore=0 phishscore=0 malwarescore=0 suspectscore=0 mlxlogscore=999
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2311290000
+ definitions=main-2403150117
+X-Proofpoint-ORIG-GUID: 08T1DevPXfVGwpl6aw4OiuwDvzTqiXGf
+X-Proofpoint-GUID: 08T1DevPXfVGwpl6aw4OiuwDvzTqiXGf
 
-bpf_experimental.h and ../bpf_testmod/bpf_testmod_kfunc.h are both
-including vmlinux.h, which is not compatible with including time.h
-or bpf_tcp_helpers.h.
+On Fri, Mar 15, 2024 at 01:39:57PM +0100, Muhammad Asim Zahid wrote:
+> The following log messages show conflict in clientid
+>        [err] kernel: [   16.228090] NFS: Server fct reports our clientid is in use
+>        [warning] kernel: [   16.228102] NFS: state manager: lease expired failed on NFSv4 server fct with error 1
+>        [warning] kernel: [   16.228102] NFS: state manager: lease expired failed on NFSv4 server fct with error 1
+> 
+> The increment to client_verifier counter and client_id counter is
+> set to atomic so as to avoid race condition which causes the
+> aforementioned error.
 
-So prevent vmlinux.h to be included, and override the few missing
-types.
+These client messages are in response to NFS4ERR_CLID_INUSE. This
+condition is not because the server did not increment the client ID.
+It's because there actually is another client (possibly more than
+one) using the same clientid string and authentication principal.
 
-Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
+Refer to:
 
----
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/filesystems/nfs/client-identifier.rst
 
-new in v4
----
- tools/testing/selftests/bpf/bpf_experimental.h     |   4 +
- .../selftests/bpf/bpf_testmod/bpf_testmod.c        |   5 +
- .../selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h  |   1 +
- tools/testing/selftests/bpf/prog_tests/timer.c     |   1 +
- tools/testing/selftests/bpf/progs/timer.c          |  40 +++++++-
- tools/testing/selftests/bpf/progs/timer_failure.c  | 114 ++++++++++++++++++++-
- 6 files changed, 163 insertions(+), 2 deletions(-)
 
-diff --git a/tools/testing/selftests/bpf/bpf_experimental.h b/tools/testing/selftests/bpf/bpf_experimental.h
-index a5b9df38c162..79da06ca4136 100644
---- a/tools/testing/selftests/bpf/bpf_experimental.h
-+++ b/tools/testing/selftests/bpf/bpf_experimental.h
-@@ -459,4 +459,8 @@ extern int bpf_iter_css_new(struct bpf_iter_css *it,
- extern struct cgroup_subsys_state *bpf_iter_css_next(struct bpf_iter_css *it) __weak __ksym;
- extern void bpf_iter_css_destroy(struct bpf_iter_css *it) __weak __ksym;
- 
-+extern int bpf_timer_set_sleepable_cb_impl(struct bpf_timer *timer,
-+		int (callback_fn)(void *map, int *key, struct bpf_timer *timer), void *aux__ign) __ksym;
-+#define bpf_timer_set_sleepable_cb(timer, cb) \
-+	bpf_timer_set_sleepable_cb_impl(timer, cb, NULL)
- #endif
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-index 39ad96a18123..eb2b78552ca2 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod.c
-@@ -494,6 +494,10 @@ __bpf_kfunc static u32 bpf_kfunc_call_test_static_unused_arg(u32 arg, u32 unused
- 	return arg;
- }
- 
-+__bpf_kfunc void bpf_kfunc_call_test_sleepable(void)
-+{
-+}
-+
- BTF_KFUNCS_START(bpf_testmod_check_kfunc_ids)
- BTF_ID_FLAGS(func, bpf_testmod_test_mod_kfunc)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test1)
-@@ -520,6 +524,7 @@ BTF_ID_FLAGS(func, bpf_kfunc_call_test_ref, KF_TRUSTED_ARGS | KF_RCU)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_destructive, KF_DESTRUCTIVE)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_static_unused_arg)
- BTF_ID_FLAGS(func, bpf_kfunc_call_test_offset)
-+BTF_ID_FLAGS(func, bpf_kfunc_call_test_sleepable, KF_SLEEPABLE)
- BTF_KFUNCS_END(bpf_testmod_check_kfunc_ids)
- 
- static int bpf_testmod_ops_init(struct btf *btf)
-diff --git a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-index 7c664dd61059..ce5cd763561c 100644
---- a/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-+++ b/tools/testing/selftests/bpf/bpf_testmod/bpf_testmod_kfunc.h
-@@ -96,6 +96,7 @@ void bpf_kfunc_call_test_pass2(struct prog_test_pass2 *p) __ksym;
- void bpf_kfunc_call_test_mem_len_fail2(__u64 *mem, int len) __ksym;
- 
- void bpf_kfunc_call_test_destructive(void) __ksym;
-+void bpf_kfunc_call_test_sleepable(void) __ksym;
- 
- void bpf_kfunc_call_test_offset(struct prog_test_ref_kfunc *p);
- struct prog_test_member *bpf_kfunc_call_memb_acquire(void);
-diff --git a/tools/testing/selftests/bpf/prog_tests/timer.c b/tools/testing/selftests/bpf/prog_tests/timer.c
-index d66687f1ee6a..48973c2e28c7 100644
---- a/tools/testing/selftests/bpf/prog_tests/timer.c
-+++ b/tools/testing/selftests/bpf/prog_tests/timer.c
-@@ -61,6 +61,7 @@ static int timer(struct timer *timer_skel)
- 
- 	/* check that code paths completed */
- 	ASSERT_EQ(timer_skel->bss->ok, 1 | 2 | 4, "ok");
-+	ASSERT_EQ(timer_skel->bss->ok_sleepable, 1, "ok_sleepable");
- 
- 	prog_fd = bpf_program__fd(timer_skel->progs.race);
- 	for (i = 0; i < NUM_THR; i++) {
-diff --git a/tools/testing/selftests/bpf/progs/timer.c b/tools/testing/selftests/bpf/progs/timer.c
-index f615da97df26..6b19254c5b75 100644
---- a/tools/testing/selftests/bpf/progs/timer.c
-+++ b/tools/testing/selftests/bpf/progs/timer.c
-@@ -6,6 +6,14 @@
- #include <bpf/bpf_helpers.h>
- #include "bpf_tcp_helpers.h"
- 
-+#define __VMLINUX_H__
-+#define u32 __u32
-+#define u64 __u64
-+#include "bpf_experimental.h"
-+struct prog_test_member1;
-+#include "../bpf_testmod/bpf_testmod_kfunc.h"
-+#undef __VMLINUX_H__
-+
- char _license[] SEC("license") = "GPL";
- struct hmap_elem {
- 	int counter;
-@@ -34,7 +42,7 @@ struct elem {
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 2);
-+	__uint(max_entries, 3);
- 	__type(key, int);
- 	__type(value, struct elem);
- } array SEC(".maps");
-@@ -62,6 +70,7 @@ __u64 callback_check = 52;
- __u64 callback2_check = 52;
- __u64 pinned_callback_check;
- __s32 pinned_cpu;
-+__u32 ok_sleepable;
- 
- #define ARRAY 1
- #define HTAB 2
-@@ -422,3 +431,32 @@ int race(void *ctx)
- 
- 	return 0;
- }
-+
-+/* callback for sleepable timer */
-+static int timer_cb_sleepable(void *map, int *key, struct bpf_timer *timer)
-+{
-+	bpf_kfunc_call_test_sleepable();
-+	ok_sleepable |= 1;
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test6")
-+int BPF_PROG2(test6, int, a)
-+{
-+	int key = 2;
-+	struct bpf_timer *timer;
-+
-+	bpf_printk("test6");
-+
-+	timer = bpf_map_lookup_elem(&array, &key);
-+	if (timer) {
-+		if (bpf_timer_init(timer, &array, CLOCK_MONOTONIC) != 0)
-+			err |= 32768;
-+		bpf_timer_set_sleepable_cb(timer, timer_cb_sleepable);
-+		bpf_timer_start(timer, 0, BPF_F_TIMER_SLEEPABLE);
-+	} else {
-+		err |= 65536;
-+	}
-+
-+	return 0;
-+}
-diff --git a/tools/testing/selftests/bpf/progs/timer_failure.c b/tools/testing/selftests/bpf/progs/timer_failure.c
-index 0996c2486f05..72942a90189b 100644
---- a/tools/testing/selftests/bpf/progs/timer_failure.c
-+++ b/tools/testing/selftests/bpf/progs/timer_failure.c
-@@ -8,6 +8,14 @@
- #include "bpf_misc.h"
- #include "bpf_tcp_helpers.h"
- 
-+#define __VMLINUX_H__
-+#define u32 __u32
-+#define u64 __u64
-+#include "bpf_experimental.h"
-+struct prog_test_member1;
-+#include "../bpf_testmod/bpf_testmod_kfunc.h"
-+#undef __VMLINUX_H__
-+
- char _license[] SEC("license") = "GPL";
- 
- struct elem {
-@@ -16,7 +24,7 @@ struct elem {
- 
- struct {
- 	__uint(type, BPF_MAP_TYPE_ARRAY);
--	__uint(max_entries, 1);
-+	__uint(max_entries, 2);
- 	__type(key, int);
- 	__type(value, struct elem);
- } timer_map SEC(".maps");
-@@ -66,3 +74,107 @@ long BPF_PROG2(test_bad_ret, int, a)
- 
- 	return 0;
- }
-+
-+/* callback for sleepable timer */
-+static int timer_cb_sleepable(void *map, int *key, struct bpf_timer *timer)
-+{
-+	bpf_kfunc_call_test_sleepable();
-+	return 0;
-+}
-+
-+SEC("fentry/bpf_fentry_test1")
-+__log_level(2)
-+__failure
-+/* check that bpf_timer_set_callback() can not be called with a
-+ * sleepable callback
-+ */
-+__msg("mark_precise: frame0: regs=r0 stack= before")
-+__msg(": (85) call bpf_kfunc_call_test_sleepable#") /* anchor message */
-+__msg("program must be sleepable to call sleepable kfunc bpf_kfunc_call_test_sleepable")
-+int BPF_PROG2(test_non_sleepable_sleepable_callback, int, a)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (timer) {
-+		bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC);
-+		bpf_timer_set_callback(timer, timer_cb_sleepable);
-+		bpf_timer_start(timer, 0, BPF_F_TIMER_SLEEPABLE);
-+	}
-+
-+	return 0;
-+}
-+
-+SEC("tc")
-+/* check that calling bpf_timer_start() without BPF_F_TIMER_SLEEPABLE on a sleepable
-+ * callback is returning -EINVAL
-+ */
-+__retval(-22)
-+long test_call_sleepable_missing_flag(void *ctx)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb(timer, timer_cb_sleepable))
-+		return 3;
-+
-+	return bpf_timer_start(timer, 0, 0);
-+}
-+
-+SEC("tc")
-+/* check that calling bpf_timer_start() without BPF_F_TIMER_SLEEPABLE on a sleepable
-+ * callback is returning -EINVAL
-+ */
-+__retval(-22)
-+long test_call_sleepable_delay(void *ctx)
-+{
-+	int key = 1;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb(timer, timer_cb_sleepable))
-+		return 3;
-+
-+	return bpf_timer_start(timer, 1, BPF_F_TIMER_SLEEPABLE);
-+}
-+
-+SEC("tc")
-+__log_level(2)
-+__failure
-+/* check that the first argument of bpf_timer_set_callback()
-+ * is a correct bpf_timer pointer.
-+ */
-+__msg("mark_precise: frame0: regs=r1 stack= before")
-+__msg(": (85) call bpf_timer_set_sleepable_cb_impl#") /* anchor message */
-+__msg("arg#0 doesn't point to a map value")
-+long test_wrong_pointer(void *ctx)
-+{
-+	int key = 0;
-+	struct bpf_timer *timer;
-+
-+	timer = bpf_map_lookup_elem(&timer_map, &key);
-+	if (!timer)
-+		return 1;
-+
-+	if (bpf_timer_init(timer, &timer_map, CLOCK_MONOTONIC))
-+		return 2;
-+
-+	if (bpf_timer_set_sleepable_cb((void *)&timer, timer_cb_sleepable))
-+		return 3;
-+
-+	return -22;
-+}
+> Change-Id: Ic0fa8c14a8bba043ae8882f6750f512bb5f3aac1
+> ---
+>  fs/nfsd/netns.h     | 4 ++--
+>  fs/nfsd/nfs4state.c | 4 ++--
+>  fs/nfsd/nfsctl.c    | 6 +++---
+>  3 files changed, 7 insertions(+), 7 deletions(-)
+> 
+> diff --git a/fs/nfsd/netns.h b/fs/nfsd/netns.h
+> index 935c1028c217..67b5aa1516e2 100644
+> --- a/fs/nfsd/netns.h
+> +++ b/fs/nfsd/netns.h
+> @@ -119,8 +119,8 @@ struct nfsd_net {
+>  	unsigned int max_connections;
+>  
+>  	u32 clientid_base;
+> -	u32 clientid_counter;
+> -	u32 clverifier_counter;
+> +	atomic_t clientid_counter;
+> +	atomic_t clverifier_counter;
+>  
+>  	struct svc_serv *nfsd_serv;
+>  
+> diff --git a/fs/nfsd/nfs4state.c b/fs/nfsd/nfs4state.c
+> index 9b660491f393..d67a6a593f59 100644
+> --- a/fs/nfsd/nfs4state.c
+> +++ b/fs/nfsd/nfs4state.c
+> @@ -2321,14 +2321,14 @@ static void gen_confirm(struct nfs4_client *clp, struct nfsd_net *nn)
+>  	 * __force to keep sparse happy
+>  	 */
+>  	verf[0] = (__force __be32)(u32)ktime_get_real_seconds();
+> -	verf[1] = (__force __be32)nn->clverifier_counter++;
+> +	verf[1] = (__force __be32)atomic_inc_return(&(nn->clverifier_counter));
+>  	memcpy(clp->cl_confirm.data, verf, sizeof(clp->cl_confirm.data));
+>  }
+>  
+>  static void gen_clid(struct nfs4_client *clp, struct nfsd_net *nn)
+>  {
+>  	clp->cl_clientid.cl_boot = (u32)nn->boot_time;
+> -	clp->cl_clientid.cl_id = nn->clientid_counter++;
+> +	clp->cl_clientid.cl_id = atomic_inc_return(&(nn->clientid_counter));
+>  	gen_confirm(clp, nn);
+>  }
+>  
+> diff --git a/fs/nfsd/nfsctl.c b/fs/nfsd/nfsctl.c
+> index cb73c1292562..a9ef86ee7250 100644
+> --- a/fs/nfsd/nfsctl.c
+> +++ b/fs/nfsd/nfsctl.c
+> @@ -1481,10 +1481,10 @@ static __net_init int nfsd_init_net(struct net *net)
+>  	nn->nfsd4_grace = 90;
+>  	nn->somebody_reclaimed = false;
+>  	nn->track_reclaim_completes = false;
+> -	nn->clverifier_counter = prandom_u32();
+> +	atomic_set(&(nn->clverifier_counter), prandom_u32());
+>  	nn->clientid_base = prandom_u32();
+> -	nn->clientid_counter = nn->clientid_base + 1;
+> -	nn->s2s_cp_cl_id = nn->clientid_counter++;
+> +	atomic_set(&(nn->clientid_counter), nn->clientid_base + 1);
+> +	nn->s2s_cp_cl_id = atomic_inc_return(&(nn->clientid_counter));
+>  
+>  	atomic_set(&nn->ntf_refcnt, 0);
+>  	init_waitqueue_head(&nn->ntf_wq);
+> -- 
+> 2.42.0
+> 
 
 -- 
-2.44.0
-
+Chuck Lever
 
