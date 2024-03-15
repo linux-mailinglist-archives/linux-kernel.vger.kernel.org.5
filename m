@@ -1,39 +1,92 @@
-Return-Path: <linux-kernel+bounces-104293-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104294-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7F2887CBB0
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:58:00 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 60EE687CBB8
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:59:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0C7491C21F69
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:58:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CFACE1F225E4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 10:59:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2042619478;
-	Fri, 15 Mar 2024 10:57:54 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0332118E02
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 10:57:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64FDB1AADD;
+	Fri, 15 Mar 2024 10:58:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kIeV/N+n";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4muqVjs";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kIeV/N+n";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="N4muqVjs"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A04C19474;
+	Fri, 15 Mar 2024 10:58:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710500273; cv=none; b=W/dCYPGyGBUfLypoJEvzLibopwMieAOAsskG405EhE6cZZKN07/xrS6mTFmS4fnkJKvT4N949b1vqBss8gmLo5EPi5QwPRuDaxA50fJTYTO93Sj48Apa51hfrD6RLTMj/9jYT+t7z4q8BOJFZFvQ7jKT+hop+BlhO6p/Rk14mMg=
+	t=1710500337; cv=none; b=ADK6iyvmqlO0bpszkQnFd2HMJTJlOsKUi6jjo678k7pHmCX+Pb1E1DIdWbsZvGPNzyF+6ezOqzREz35fYxoauWHr6dNGiOgOgtP7l7K5wBjmz+NWjAJfbsymffAxbG+9GTxioTGXQWp8MPd7pgDFkMxiPe8fSuLI2uRB9p2dpL4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710500273; c=relaxed/simple;
-	bh=1aiyF0/x+T+SS07nzEDYgrQV2Q7jpEGhZTYThVJZ8Nc=;
+	s=arc-20240116; t=1710500337; c=relaxed/simple;
+	bh=bLXi0Kv2aTCp63cNUTwNkTolcU7Fdj7oossLerdiFcs=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uhucnYZlrsnm23XTYjn4kONwTvn/NaKP3v56mHGUqVvINarAfTB7j2vm89d3FLTf2s02OIEv66nmTx1ScwJ9jWEZKDbN7g5QabEb0n7BTpK7nQNr7uvi3zIjEQjjU/gMCxwADOLICfKgEPXh7cupknqYGH1HOHSyOneRcvddy8o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 80A23C15;
-	Fri, 15 Mar 2024 03:58:25 -0700 (PDT)
-Received: from [10.57.69.160] (unknown [10.57.69.160])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id C71683F762;
-	Fri, 15 Mar 2024 03:57:45 -0700 (PDT)
-Message-ID: <76c16222-78fd-4d96-b9f7-13264bb37747@arm.com>
-Date: Fri, 15 Mar 2024 10:57:44 +0000
+	 In-Reply-To:Content-Type; b=mokFSlsCyn/pc7u8J/SYlROAZjToEGytjMRd38KQYxDqX97/yYZSzfmCojICe1c0yKIb/+VvpKnW97Ra/y+Uyag66QqYLf7FJ1prXWqC42yUUPqZEU/7+GM+18hdlIv8sQSBxNVoMrHopWh1SKkTZpo0vfABWVoHo98W2hZtBdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kIeV/N+n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4muqVjs; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kIeV/N+n; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=N4muqVjs; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 50E4E21DD2;
+	Fri, 15 Mar 2024 10:58:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710500333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
+	b=kIeV/N+n1Qjn4RwdctLpBJA/ti5qrD6sZCC/MPiMggb17MFzRe5HBe0AQTNROQDaKSju7R
+	a0SLFUAt+MJiKmd9tkmDZZP0d8BIvQQaQcoE33BtEHz87wjWhVe0H/xpFhRF3pbknSydFH
+	TYmRZwi/PzREciTT3ulCpGUJ5who+rQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710500333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
+	b=N4muqVjs0s0Jytaoa8YUY3ruVKbKV/g3CLqo9GREsnONsvr9go6NQwryE9JTCFZbAjNLnA
+	uwWsA04tQTN0rHCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710500333; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
+	b=kIeV/N+n1Qjn4RwdctLpBJA/ti5qrD6sZCC/MPiMggb17MFzRe5HBe0AQTNROQDaKSju7R
+	a0SLFUAt+MJiKmd9tkmDZZP0d8BIvQQaQcoE33BtEHz87wjWhVe0H/xpFhRF3pbknSydFH
+	TYmRZwi/PzREciTT3ulCpGUJ5who+rQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710500333;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9muM8bo+rTj/3DcyAeA4j1Dljj8nhnMTXgWWpTVnpQM=;
+	b=N4muqVjs0s0Jytaoa8YUY3ruVKbKV/g3CLqo9GREsnONsvr9go6NQwryE9JTCFZbAjNLnA
+	uwWsA04tQTN0rHCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id B4DD81368C;
+	Fri, 15 Mar 2024 10:58:52 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id BxitK+wp9GU7dwAAD6G6ig
+	(envelope-from <vbabka@suse.cz>); Fri, 15 Mar 2024 10:58:52 +0000
+Message-ID: <1f51ffe8-e5b9-460f-815e-50e3a81c57bf@suse.cz>
+Date: Fri, 15 Mar 2024 11:58:52 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,194 +94,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v3 2/5] mm: swap: introduce swap_nr_free() for batched
- swap_free()
-Content-Language: en-GB
-To: Chuanhua Han <chuanhuahan@gmail.com>
-Cc: Barry Song <21cnbao@gmail.com>, akpm@linux-foundation.org,
- linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org,
- david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
- mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
- steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
- willy@infradead.org, xiang@kernel.org, ying.huang@intel.com,
- yosryahmed@google.com, yuzhao@google.com, Chuanhua Han
- <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
-References: <20240304081348.197341-1-21cnbao@gmail.com>
- <20240304081348.197341-3-21cnbao@gmail.com>
- <499a60c6-eeb8-4bbd-8563-9717c0d2e43d@arm.com>
- <CANzGp4+kSxc_JbOsOcvm6vXfu2KORaqqGyuKK_eJwCLTK5X__Q@mail.gmail.com>
- <716bb29c-d2a2-4eef-b300-b037f08f458f@arm.com>
- <CANzGp4KC4ucxJv_h2CZCgLUZ=x8J5sp4i46C02Gx9ddvF3sKrg@mail.gmail.com>
-From: Ryan Roberts <ryan.roberts@arm.com>
-In-Reply-To: <CANzGp4KC4ucxJv_h2CZCgLUZ=x8J5sp4i46C02Gx9ddvF3sKrg@mail.gmail.com>
+Subject: Re: [PATCH v5 23/37] mm/slab: add allocation accounting into slab
+ allocation and free paths
+Content-Language: en-US
+To: Suren Baghdasaryan <surenb@google.com>, akpm@linux-foundation.org
+Cc: kent.overstreet@linux.dev, mhocko@suse.com, hannes@cmpxchg.org,
+ roman.gushchin@linux.dev, mgorman@suse.de, dave@stgolabs.net,
+ willy@infradead.org, liam.howlett@oracle.com,
+ penguin-kernel@i-love.sakura.ne.jp, corbet@lwn.net, void@manifault.com,
+ peterz@infradead.org, juri.lelli@redhat.com, catalin.marinas@arm.com,
+ will@kernel.org, arnd@arndb.de, tglx@linutronix.de, mingo@redhat.com,
+ dave.hansen@linux.intel.com, x86@kernel.org, peterx@redhat.com,
+ david@redhat.com, axboe@kernel.dk, mcgrof@kernel.org, masahiroy@kernel.org,
+ nathan@kernel.org, dennis@kernel.org, jhubbard@nvidia.com, tj@kernel.org,
+ muchun.song@linux.dev, rppt@kernel.org, paulmck@kernel.org,
+ pasha.tatashin@soleen.com, yosryahmed@google.com, yuzhao@google.com,
+ dhowells@redhat.com, hughd@google.com, andreyknvl@gmail.com,
+ keescook@chromium.org, ndesaulniers@google.com, vvvvvv@google.com,
+ gregkh@linuxfoundation.org, ebiggers@google.com, ytcoode@gmail.com,
+ vincent.guittot@linaro.org, dietmar.eggemann@arm.com, rostedt@goodmis.org,
+ bsegall@google.com, bristot@redhat.com, vschneid@redhat.com, cl@linux.com,
+ penberg@kernel.org, iamjoonsoo.kim@lge.com, 42.hyeyoo@gmail.com,
+ glider@google.com, elver@google.com, dvyukov@google.com,
+ shakeelb@google.com, songmuchun@bytedance.com, jbaron@akamai.com,
+ aliceryhl@google.com, rientjes@google.com, minchan@google.com,
+ kaleshsingh@google.com, kernel-team@android.com, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, iommu@lists.linux.dev,
+ linux-arch@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+ linux-mm@kvack.org, linux-modules@vger.kernel.org,
+ kasan-dev@googlegroups.com, cgroups@vger.kernel.org
+References: <20240306182440.2003814-1-surenb@google.com>
+ <20240306182440.2003814-24-surenb@google.com>
+From: Vlastimil Babka <vbabka@suse.cz>
+In-Reply-To: <20240306182440.2003814-24-surenb@google.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Spam-Score: -3.00
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-3.00 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 XM_UA_NO_VERSION(0.01)[];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_GT_50(0.00)[76];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 TO_MATCH_ENVRCPT_SOME(0.00)[];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FREEMAIL_CC(0.00)[linux.dev,suse.com,cmpxchg.org,suse.de,stgolabs.net,infradead.org,oracle.com,i-love.sakura.ne.jp,lwn.net,manifault.com,redhat.com,arm.com,kernel.org,arndb.de,linutronix.de,linux.intel.com,kernel.dk,nvidia.com,soleen.com,google.com,gmail.com,chromium.org,linuxfoundation.org,linaro.org,goodmis.org,linux.com,lge.com,bytedance.com,akamai.com,android.com,vger.kernel.org,lists.linux.dev,kvack.org,googlegroups.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b="kIeV/N+n";
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=N4muqVjs
+X-Rspamd-Queue-Id: 50E4E21DD2
 
-On 15/03/2024 08:34, Chuanhua Han wrote:
-> Ryan Roberts <ryan.roberts@arm.com> 于2024年3月14日周四 21:43写道：
->>
->> On 14/03/2024 13:12, Chuanhua Han wrote:
->>> Ryan Roberts <ryan.roberts@arm.com> 于2024年3月12日周二 02:51写道：
->>>>
->>>> On 04/03/2024 08:13, Barry Song wrote:
->>>>> From: Chuanhua Han <hanchuanhua@oppo.com>
->>>>>
->>>>> While swapping in a large folio, we need to free swaps related to the whole
->>>>> folio. To avoid frequently acquiring and releasing swap locks, it is better
->>>>> to introduce an API for batched free.
->>>>>
->>>>> Signed-off-by: Chuanhua Han <hanchuanhua@oppo.com>
->>>>> Co-developed-by: Barry Song <v-songbaohua@oppo.com>
->>>>> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
->>>>> ---
->>>>>  include/linux/swap.h |  6 ++++++
->>>>>  mm/swapfile.c        | 35 +++++++++++++++++++++++++++++++++++
->>>>>  2 files changed, 41 insertions(+)
->>>>>
->>>>> diff --git a/include/linux/swap.h b/include/linux/swap.h
->>>>> index 2955f7a78d8d..d6ab27929458 100644
->>>>> --- a/include/linux/swap.h
->>>>> +++ b/include/linux/swap.h
->>>>> @@ -481,6 +481,7 @@ extern void swap_shmem_alloc(swp_entry_t);
->>>>>  extern int swap_duplicate(swp_entry_t);
->>>>>  extern int swapcache_prepare(swp_entry_t);
->>>>>  extern void swap_free(swp_entry_t);
->>>>> +extern void swap_nr_free(swp_entry_t entry, int nr_pages);
->>>>
->>>> nit: In my swap-out v4 series, I've created a batched version of
->>>> free_swap_and_cache() and called it free_swap_and_cache_nr(). Perhaps it is
->>>> preferable to align the naming schemes - i.e. call this swap_free_nr(). Your
->>>> scheme doesn't really work when applied to free_swap_and_cache().
->>> Thanks for your suggestions, and for the next version, we'll see which
->>> package is more appropriate!
->>>>
->>>>>  extern void swapcache_free_entries(swp_entry_t *entries, int n);
->>>>>  extern int free_swap_and_cache(swp_entry_t);
->>>>>  int swap_type_of(dev_t device, sector_t offset);
->>>>> @@ -561,6 +562,11 @@ static inline void swap_free(swp_entry_t swp)
->>>>>  {
->>>>>  }
->>>>>
->>>>> +void swap_nr_free(swp_entry_t entry, int nr_pages)
->>>>> +{
->>>>> +
->>>>> +}
->>>>> +
->>>>>  static inline void put_swap_folio(struct folio *folio, swp_entry_t swp)
->>>>>  {
->>>>>  }
->>>>> diff --git a/mm/swapfile.c b/mm/swapfile.c
->>>>> index 3f594be83b58..244106998a69 100644
->>>>> --- a/mm/swapfile.c
->>>>> +++ b/mm/swapfile.c
->>>>> @@ -1341,6 +1341,41 @@ void swap_free(swp_entry_t entry)
->>>>>               __swap_entry_free(p, entry);
->>>>>  }
->>>>>
->>>>> +/*
->>>>> + * Called after swapping in a large folio, batched free swap entries
->>>>> + * for this large folio, entry should be for the first subpage and
->>>>> + * its offset is aligned with nr_pages
->>>>> + */
->>>>> +void swap_nr_free(swp_entry_t entry, int nr_pages)
->>>>> +{
->>>>> +     int i;
->>>>> +     struct swap_cluster_info *ci;
->>>>> +     struct swap_info_struct *p;
->>>>> +     unsigned type = swp_type(entry);
->>>>
->>>> nit: checkpatch.py will complain about bare "unsigned", preferring "unsigned
->>>> int" or at least it did for me when I did something similar in my swap-out patch
->>>> set.
->>> Gee, thanks for pointing that out!
->>>>
->>>>> +     unsigned long offset = swp_offset(entry);
->>>>> +     DECLARE_BITMAP(usage, SWAPFILE_CLUSTER) = { 0 };
->>>>
->>>> I don't love this, as it could blow the stack if SWAPFILE_CLUSTER ever
->>>> increases. But the only other way I can think of is to explicitly loop over
->>>> fixed size chunks, and that's not much better.
->>> Is it possible to save kernel stack better by using bit_map here?  If
->>> SWAPFILE_CLUSTER=512, we consume only (512/64)*8= 64 bytes.
->>
->> I'm not sure I've understood what you are saying? You're already using
->> DECLARE_BITMAP(), so its already consuming 64 bytes if SWAPFILE_CLUSTER=512, no?
->>
->> I actually did a bad job of trying to express a couple of different points:
->>
->> - Are there any configurations today where SWAPFILE_CLUSTER > 512? I'm not sure.
->> Certainly not for arm64, but not sure about other architectures. For example if
->> an arch had 64K pages with 8192 entries per THP and supports SWAP_THP, that's 1K
->> for the bitmap, which is now looking pretty big for the stack.
-> I agree with you.The current bit_map grows linearly with the
-> SWAPFILE_CLUSTER, which may cause the kernel stack to swell.
-> I need to think of a way to save more memory .
->>
->> - Would it be better to decouple stack usage from SWAPFILE_CLUSTER and instead
->> define a fixed stack size (e.g. 64 bytes -> 512 entries). Then free the range of
->> entries in batches no bigger than this size. This approach could also allow
->> removing the constraint that the range has to be aligned and fit in a single
->> cluster. Personally I think an approach like this would be much more robust, in
->> return for a tiny bit more complexity.
-> Because we cannot determine how many swap entries a cluster has in an
-> architecture or a configuration, we do not know how large the variable
-> needs to be defined？
-
-My point is that we could define a fixed size, then loop through the passed in
-range, operating on batches of that fixed size. You could even take into
-consideration the cluster boundaries so that you take the correct lock for every
-batch and can drop the "must be naturally aligned, must be no bigger than
-cluster size" constraint.
-
-
->>
->>>>
->>>>> +
->>>>> +     /* all swap entries are within a cluster for mTHP */
->>>>> +     VM_BUG_ON(offset % SWAPFILE_CLUSTER + nr_pages > SWAPFILE_CLUSTER);
->>>>> +
->>>>> +     if (nr_pages == 1) {
->>>>> +             swap_free(entry);
->>>>> +             return;
->>>>> +     }
->>>>> +
->>>>> +     p = _swap_info_get(entry);
->>>>
->>>> You need to handle this returning NULL, like swap_free() does.
->>> Yes, you're right! We did forget to judge NULL here.
->>>>
->>>>> +
->>>>> +     ci = lock_cluster(p, offset);
->>>>
->>>> The existing swap_free() calls lock_cluster_or_swap_info(). So if swap is backed
->>>> by rotating media, and clusters are not in use, it will lock the whole swap
->>>> info. But your new version only calls lock_cluster() which won't lock anything
->>>> if clusters are not in use. So I think this is a locking bug.
->>> Again, you're right, it's bug!
->>>>
->>>>> +     for (i = 0; i < nr_pages; i++) {
->>>>> +             if (__swap_entry_free_locked(p, offset + i, 1))
->>>>> +                     __bitmap_set(usage, i, 1);
->>>>> +     }
->>>>> +     unlock_cluster(ci);
->>>>> +
->>>>> +     for_each_clear_bit(i, usage, nr_pages)
->>>>> +             free_swap_slot(swp_entry(type, offset + i));
->>>>> +}
->>>>> +
->>>>>  /*
->>>>>   * Called after dropping swapcache to decrease refcnt to swap entries.
->>>>>   */
->>>>
->>>> Thanks,
->>>> Ryan
->>>>
->>>>
->>>
->>>
->>
+On 3/6/24 19:24, Suren Baghdasaryan wrote:
+> Account slab allocations using codetag reference embedded into slabobj_ext.
 > 
-> 
+> Signed-off-by: Suren Baghdasaryan <surenb@google.com>
+> Co-developed-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Signed-off-by: Kent Overstreet <kent.overstreet@linux.dev>
+> Reviewed-by: Kees Cook <keescook@chromium.org>
+
+Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+
+Nit below:
+
+> @@ -3833,6 +3913,7 @@ void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
+>  			  unsigned int orig_size)
+>  {
+>  	unsigned int zero_size = s->object_size;
+> +	struct slabobj_ext *obj_exts;
+>  	bool kasan_init = init;
+>  	size_t i;
+>  	gfp_t init_flags = flags & gfp_allowed_mask;
+> @@ -3875,6 +3956,12 @@ void slab_post_alloc_hook(struct kmem_cache *s,	struct obj_cgroup *objcg,
+>  		kmemleak_alloc_recursive(p[i], s->object_size, 1,
+>  					 s->flags, init_flags);
+>  		kmsan_slab_alloc(s, p[i], init_flags);
+> +		obj_exts = prepare_slab_obj_exts_hook(s, flags, p[i]);
+> +#ifdef CONFIG_MEM_ALLOC_PROFILING
+> +		/* obj_exts can be allocated for other reasons */
+> +		if (likely(obj_exts) && mem_alloc_profiling_enabled())
+> +			alloc_tag_add(&obj_exts->ref, current->alloc_tag, s->size);
+> +#endif
+
+I think you could still do this a bit better:
+
+Check mem_alloc_profiling_enabled() once before the whole block calling
+prepare_slab_obj_exts_hook() and alloc_tag_add()
+Remove need_slab_obj_ext() check from prepare_slab_obj_exts_hook()
+
+>  	}
+>  
+>  	memcg_slab_post_alloc_hook(s, objcg, flags, size, p);
+> @@ -4353,6 +4440,7 @@ void slab_free(struct kmem_cache *s, struct slab *slab, void *object,
+>  	       unsigned long addr)
+>  {
+>  	memcg_slab_free_hook(s, slab, &object, 1);
+> +	alloc_tagging_slab_free_hook(s, slab, &object, 1);
+>  
+>  	if (likely(slab_free_hook(s, object, slab_want_init_on_free(s))))
+>  		do_slab_free(s, slab, object, object, 1, addr);
+> @@ -4363,6 +4451,7 @@ void slab_free_bulk(struct kmem_cache *s, struct slab *slab, void *head,
+>  		    void *tail, void **p, int cnt, unsigned long addr)
+>  {
+>  	memcg_slab_free_hook(s, slab, p, cnt);
+> +	alloc_tagging_slab_free_hook(s, slab, p, cnt);
+>  	/*
+>  	 * With KASAN enabled slab_free_freelist_hook modifies the freelist
+>  	 * to remove objects, whose reuse must be delayed.
 
 
