@@ -1,191 +1,137 @@
-Return-Path: <linux-kernel+bounces-104125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2311587C96E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:43:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E54C387C972
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 08:46:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4543C1F2265F
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:43:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C92A11C215AD
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 07:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5C0914A85;
-	Fri, 15 Mar 2024 07:43:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD22C14280;
+	Fri, 15 Mar 2024 07:46:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="a8V6EKs6"
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="IKUJHqKY"
+Received: from mail-pj1-f49.google.com (mail-pj1-f49.google.com [209.85.216.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98C5C8BEE;
-	Fri, 15 Mar 2024 07:43:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52B96134B6
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 07:45:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710488604; cv=none; b=a3gm1vAQP5BdN742WFBXZUgwlE76pxRrsTbG+5Z1Y+Q1c3NjCsy8HXbLyvdSnAywihHYdEc4JTXyYQFi2QKh9I0RPVkKOqKdr+4RVAKvw4jHJQmUx4vptuT9knQOSMDM90p/XtT03sDEvQFE25SbNeA4xf4SAouzhNySRgA2xMs=
+	t=1710488760; cv=none; b=rFEkgi2dxVpZX0iH280gHnjI9tFWVR9x4emBsl96fpr+XR32IzJTWcd7el0Q566KGH6xVlu2PzqFS4/A4HnQZyvPjuTMWi79VgqMRThUgt8KwCTycFSETGOeI7axmx2vtc4AzfUPoGN/1mOfBuy5LCFCTelpwJ6hOZnSSbYhkww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710488604; c=relaxed/simple;
-	bh=Zw9S6hRNBlDHNXOavKPS6AU9Ku+D+1bxIk/tgYyDWOE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iTEW7ksPyAF4BvmQmc0yCb5wlaLkK179LzbFt/ZHbhG1PfFSohKs6jSwccyXeCbHtmKx+Rv2DiW191ebb6ZQ8fVbRkYq+IXDS2NRxLkR0GKkO4qWhLBKAURqN51SG+QQa39ugIkyKzmHUUXybbZbEcIu0FLhW9slE5m7ioQrzLQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=a8V6EKs6; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a14d7f0e66so780482eaf.1;
-        Fri, 15 Mar 2024 00:43:22 -0700 (PDT)
+	s=arc-20240116; t=1710488760; c=relaxed/simple;
+	bh=yfAXTgwBso9H53pHEYoignG31JRruRhXqFHOsdtLxvE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZJATQZNE+WILDyTv5gpNFN8jge2I1Pi0IYKONSGE59xSdgwfjmQ+WNePmmyPronQmbJIOZvozcpwhQvVgUgdiRBsTAOI8/i7Np8vBppDFaog5ODZxOA2xEeQaTH2gAYvqNrr4Z7rnFrL0tDp7EMq0g6DEAw+zLRTMS4L8LowkEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=IKUJHqKY; arc=none smtp.client-ip=209.85.216.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pj1-f49.google.com with SMTP id 98e67ed59e1d1-29bd0669781so1380974a91.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 00:45:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710488601; x=1711093401; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=y+sKbEMgE5r6A8AgrakXmyb0PKCVFac2dOoteAq7k8o=;
-        b=a8V6EKs6lFykvoYwT2bHwa6SDxwUQ031xBOd9vrfwrbqtiXtEH3e9ZaY7sVgsOWe0E
-         0Y8LACcy0VHCArr2pnqZlCTJn0iAcLqEK4QWP3z1NzQ0ACP7kegCfZ8n4NBX25FpUgmQ
-         w1F70hh10s7J2uWDyTnlb2WBybJCUI1W9OQ56KTAQFy+6E3Ufnk8B1/Wj6ELjeYtgByZ
-         78PBgTZYS+l8IlmNfTTxJSzNoNa5pRFQPO+URsCso3EEe4JPpk0laGrc8bnp/u6giIbz
-         6RHzIGVeVYn5AKbWDo8dORbNfJtyn8Ex1nNUq+2Kgx4FsDbEgZ8EiB5FamkkZkpsEylu
-         bJDw==
+        d=linaro.org; s=google; t=1710488757; x=1711093557; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=WewxWuRgvW2sDqqMKjjymO745lHYBK7yKRlcJJ5RcHA=;
+        b=IKUJHqKYdPLfut3AiI2BMjBRhJw0FMa30azHbXEkUhnaVmT4NLNTTDBdZstkP+Tl4O
+         TTQshLgdGkrhHwCdfYwXPKOkc7YZpBbzU2ghclt/Y894Sh6qE+UikYqb1lNXXJpSbUb0
+         tGxnwkE/u/34jZZM8X2Y7jfDCwj8/1uOjcM1KkOy2KVXBJZTRjNFwPFmRiTe3eliBNVW
+         55QCFZNxzOmGeObotEX6ajjE+t5a9Epae2cy3bETsVa90SNmd3JdgOGfnTlsgNujRIjY
+         qSLca/+trN6JMmwbCH4w81Lztm8khZC2dlO5BgTlD3ukBl/bq2ci24x1VGFy/vRCryZp
+         jgzQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710488601; x=1711093401;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y+sKbEMgE5r6A8AgrakXmyb0PKCVFac2dOoteAq7k8o=;
-        b=ldJM2bMZlzH7evl2k3O8NaVwOkn3+I/nvQ8gy2PkWZQIoZKIFtflb8sPTJo+xgnsck
-         uLrOl3LKYwzHpCFUoAZ7/poN3uBecyvywn4h4ZghTBNzcWxK0F8WYa/82AcaYgtbEWXD
-         jsp6m0QRCQ5knTaipNWZ6XTimcV25SiZJBOjH2bdCQbJE2vVkdpjz781mHwVTB4gnc96
-         hkbDCN5hJvhJPKZAEasjnCHpIi+0xT3cKK8TBFUHsJ7ZBCfPGNzoQGRlQWpTMQ6dyeEq
-         RhFpfjMiApSEHTokgFIiqdVw4RjEXWuoRDb/S3FxiSJMo/LHVILCbiyjRlU1H2rPYErg
-         KSqg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1RzT84Vx3QnbmE8qVPihwC52dGUfMB4HQWRcvoN+HhDnuX9RIfPxf7urWH3DH8WS8oT0KvArhZ2VdbfQ745jy3p+ji2n9
-X-Gm-Message-State: AOJu0YwVN/1d+NJ1iLPdJynESlltQbtfSU9R9o61EWCcmgK6dPEYP6oS
-	ijVUCbbzg1nJqAUPQi2jEEtBUHWXwn5lCb8JBf9Wr7evfgoqaYxZ
-X-Google-Smtp-Source: AGHT+IGLOQadiQa1j4OnHkg6nggd2mD2/umSTkBhGKXKQ/0a+Rz3wiHLhaz65dtf7FsJ2mLWjao4Tw==
-X-Received: by 2002:a05:6870:f707:b0:221:ab60:da45 with SMTP id ej7-20020a056870f70700b00221ab60da45mr4510391oab.11.1710488601652;
-        Fri, 15 Mar 2024 00:43:21 -0700 (PDT)
-Received: from archie.me ([103.124.138.155])
-        by smtp.gmail.com with ESMTPSA id h4-20020aa786c4000000b006e6a3f52ee5sm2740197pfo.69.2024.03.15.00.43.20
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 00:43:20 -0700 (PDT)
-Received: by archie.me (Postfix, from userid 1000)
-	id B1BF0181043B9; Fri, 15 Mar 2024 14:43:18 +0700 (WIB)
-Date: Fri, 15 Mar 2024 14:43:18 +0700
-From: Bagas Sanjaya <bagasdotme@gmail.com>
-To: Herve Codina <herve.codina@bootlin.com>,
-	"David S. Miller" <davem@davemloft.net>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Yury Norov <yury.norov@gmail.com>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Rasmus Villemoes <linux@rasmusvillemoes.dk>,
-	Stephen Rothwell <sfr@canb.auug.org.au>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
-	Linux Networking <netdev@vger.kernel.org>,
-	Christophe Leroy <christophe.leroy@csgroup.eu>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2] lib/bitmap: Fix bitmap_scatter() and bitmap_gather()
- kernel doc
-Message-ID: <ZfP8FowhZ3ZtSq2T@archie.me>
-References: <20240314120006.458580-1-herve.codina@bootlin.com>
+        d=1e100.net; s=20230601; t=1710488757; x=1711093557;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=WewxWuRgvW2sDqqMKjjymO745lHYBK7yKRlcJJ5RcHA=;
+        b=vDRgCyDSc5RWBk6eQ8gRaU2KI0KOZNn64eViYdkhLzSaIgAWOs8yl4OP5nPibpOU8p
+         XJnd8/orfVEd/bVJSAvqOm4aS6XtF1n+xMMU+DOtbJJMi0xA+hxDEsa7Yz0vt1MLxOYk
+         Nx3+F/roP4QlVvdC3XglYI2T2xN4l8aoegusJDcNA2UmNVknIt39IWEe5E0WsB6+PzWp
+         CedpalvzNHjRrjd21EZKFPAsun7R1iY+shA6GQKFm2xbogzWSdA1FdtNGwiD+t4xOUwj
+         sRJTw0SRo9TEb9AUpnhp4PjnZJat5YkMC1fm/TmI5qev8Rs7y0/48hFfMtmNsEOzaCds
+         /aQQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXBPw7iYrPf/vZa+mpbtpsR5hiu1xDafqfgDVOSx6yLtRGyKbWw/OeR7pXJY3UR0L+YEeAmBWvNj939+h975nVAtyDAGlTeR0yvYd81
+X-Gm-Message-State: AOJu0YwSMCw0ZaPoscx8V+VWNidt00akJY5L8AxKzaFCdEr9fLYlrI7e
+	tUYdRNYKCqaNcOAhyv+35JuiKswUmqBo+biUUT38cm/dof/RtaAz99bfgKNDkc0RkOHeTTAM1xv
+	FJUqCdjE47/KiD5ArC30j9G65azjnsNwMV3YcUA==
+X-Google-Smtp-Source: AGHT+IE69195cVAAiKPcAhECjpD72moAgmpoV0yBgg731BqdbuiEhybSO3ZbMjwQBjYGMeyKIsA3Dtv18KpdJ3O2Bk4=
+X-Received: by 2002:a17:90b:196:b0:29c:7193:29c5 with SMTP id
+ t22-20020a17090b019600b0029c719329c5mr3720207pjs.30.1710488757651; Fri, 15
+ Mar 2024 00:45:57 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Vkpw4sfr+qcOP7vO"
-Content-Disposition: inline
-In-Reply-To: <20240314120006.458580-1-herve.codina@bootlin.com>
+References: <20240315015916.21545-1-daweilics@gmail.com>
+In-Reply-To: <20240315015916.21545-1-daweilics@gmail.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Fri, 15 Mar 2024 08:45:46 +0100
+Message-ID: <CAKfTPtAN3t46WGnqNV1VN1oer2C3Eu4k88O4bm-RDhdRaiGXXA@mail.gmail.com>
+Subject: Re: [PATCH v2] sched/fair: fix initial util_avg calculation
+To: Dawei Li <daweilics@gmail.com>
+Cc: Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Juri Lelli <juri.lelli@redhat.com>, Dietmar Eggemann <dietmar.eggemann@arm.com>, 
+	Steven Rostedt <rostedt@goodmis.org>, Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, 
+	Daniel Bristot de Oliveira <bristot@redhat.com>, Valentin Schneider <vschneid@redhat.com>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Fri, 15 Mar 2024 at 02:59, Dawei Li <daweilics@gmail.com> wrote:
+>
+> Change se->load.weight to se_weight(se) in the calculation for the
+> initial util_avg to avoid unnecessarily inflating the util_avg by 1024
+> times.
+>
+> The reason is that se->load.weight has the unit/scale as the scaled-up
+> load, while cfs_rg->avg.load_avg has the unit/scale as the true task
+> weight (as mapped directly from the task's nice/priority value). With
+> CONFIG_32BIT, the scaled-up load is equal to the true task weight. With
+> CONFIG_64BIT, the scaled-up load is 1024 times the true task weight.
+> Thus, the current code may inflate the util_avg by 1024 times. The
+> follow-up capping will not allow the util_avg value to go wild. But the
+> calculation should have the correct logic.
+>
+> Signed-off-by: Dawei Li <daweilics@gmail.com>
 
---Vkpw4sfr+qcOP7vO
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Reviewed-by: Vincent Guittot <vincent.guittot@linaro.org>
 
-On Thu, Mar 14, 2024 at 01:00:06PM +0100, Herve Codina wrote:
-> diff --git a/include/linux/bitmap.h b/include/linux/bitmap.h
-> index fb3a9c93ac86..aa4096126553 100644
-> --- a/include/linux/bitmap.h
-> +++ b/include/linux/bitmap.h
-> @@ -522,17 +522,18 @@ static inline void bitmap_replace(unsigned long *ds=
-t,
+> ---
+> Changes in v2:
+> - update the commit message
+> ---
+>  kernel/sched/fair.c | 5 +++--
+>  1 file changed, 3 insertions(+), 2 deletions(-)
+>
+> diff --git a/kernel/sched/fair.c b/kernel/sched/fair.c
+> index a19ea290b790..5f98f639bdb9 100644
+> --- a/kernel/sched/fair.c
+> +++ b/kernel/sched/fair.c
+> @@ -1031,7 +1031,8 @@ void init_entity_runnable_average(struct sched_entity *se)
+>   * With new tasks being created, their initial util_avgs are extrapolated
+>   * based on the cfs_rq's current util_avg:
 >   *
->   * (Bits 0, 1, 2, 3, 4, 5 are copied to the bits 0, 1, 4, 8, 9, 12)
+> - *   util_avg = cfs_rq->util_avg / (cfs_rq->load_avg + 1) * se.load.weight
+> + *   util_avg = cfs_rq->avg.util_avg / (cfs_rq->avg.load_avg + 1)
+> + *             * se_weight(se)
 >   *
-> - * A more 'visual' description of the operation:
-> - * src:  0000000001011010
-> - *                 ||||||
-> - *          +------+|||||
-> - *          |  +----+||||
-> - *          |  |+----+|||
-> - *          |  ||   +-+||
-> - *          |  ||   |  ||
-> - * mask: ...v..vv...v..vv
-> - *       ...0..11...0..10
-> - * dst:  0000001100000010
-> + * A more 'visual' description of the operation::
-> + *
-> + *	src:  0000000001011010
-> + *	                ||||||
-> + *	         +------+|||||
-> + *	         |  +----+||||
-> + *	         |  |+----+|||
-> + *	         |  ||   +-+||
-> + *	         |  ||   |  ||
-> + *	mask: ...v..vv...v..vv
-> + *	      ...0..11...0..10
-> + *	dst:  0000001100000010
->   *
->   * A relationship exists between bitmap_scatter() and bitmap_gather().
->   * bitmap_gather() can be seen as the 'reverse' bitmap_scatter() operati=
-on.
-> @@ -568,16 +569,17 @@ static inline void bitmap_scatter(unsigned long *ds=
-t, const unsigned long *src,
->   *
->   * (Bits 0, 1, 4, 8, 9, 12 are copied to the bits 0, 1, 2, 3, 4, 5)
->   *
-> - * A more 'visual' description of the operation:
-> - * mask: ...v..vv...v..vv
-> - * src:  0000001100000010
-> - *          ^  ^^   ^   0
-> - *          |  ||   |  10
-> - *          |  ||   > 010
-> - *          |  |+--> 1010
-> - *          |  +--> 11010
-> - *          +----> 011010
-> - * dst:  0000000000011010
-> + * A more 'visual' description of the operation::
-> + *
-> + *	mask: ...v..vv...v..vv
-> + *	src:  0000001100000010
-> + *	         ^  ^^   ^   0
-> + *	         |  ||   |  10
-> + *	         |  ||   > 010
-> + *	         |  |+--> 1010
-> + *	         |  +--> 11010
-> + *	         +----> 011010
-> + *	dst:  0000000000011010
->   *
->   * A relationship exists between bitmap_gather() and bitmap_scatter(). S=
-ee
->   * bitmap_scatter() for the bitmap scatter detailed operations.
-
-LGTM, thanks!
-
-Reviewed-by: Bagas Sanjaya <bagasdotme@gmail.com>
-
---=20
-An old man doll... just what I always wanted! - Clara
-
---Vkpw4sfr+qcOP7vO
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQSSYQ6Cy7oyFNCHrUH2uYlJVVFOowUCZfP8EwAKCRD2uYlJVVFO
-owRnAP9+A9A7YmJqbQ2uV2vnT+S7PoxF2bX1VkyDqbjfObqyFAEA2VkJEBlkBFez
-dVNRdRo6w3txtpn1mAv+fYEFEEItYgY=
-=2+Hm
------END PGP SIGNATURE-----
-
---Vkpw4sfr+qcOP7vO--
+>   * However, in many cases, the above util_avg does not give a desired
+>   * value. Moreover, the sum of the util_avgs may be divergent, such
+> @@ -1078,7 +1079,7 @@ void post_init_entity_util_avg(struct task_struct *p)
+>
+>         if (cap > 0) {
+>                 if (cfs_rq->avg.util_avg != 0) {
+> -                       sa->util_avg  = cfs_rq->avg.util_avg * se->load.weight;
+> +                       sa->util_avg  = cfs_rq->avg.util_avg * se_weight(se);
+>                         sa->util_avg /= (cfs_rq->avg.load_avg + 1);
+>
+>                         if (sa->util_avg > cap)
+> --
+> 2.40.1
+>
 
