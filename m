@@ -1,143 +1,169 @@
-Return-Path: <linux-kernel+bounces-104030-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104031-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D57987C80E
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:41:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id CC66C87C80F
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 04:42:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE458B22AC1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:41:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8224B283442
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 03:42:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37A0CDF71;
-	Fri, 15 Mar 2024 03:39:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 928CFDDA5;
+	Fri, 15 Mar 2024 03:41:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="xY7nkBbt"
-Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2048.outbound.protection.outlook.com [40.107.93.48])
+	dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b="Jb1Rt4Ce"
+Received: from mail.zytor.com (terminus.zytor.com [198.137.202.136])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E28311755A;
-	Fri, 15 Mar 2024 03:39:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.48
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710473991; cv=fail; b=ZY2BaLIb/j0J8by3rauhOB9fuUkdn5AiiY7uJyvTrBXlK9gMuBITQaOiBlqGid+ODuNDDIXtFjnnIeRRIhKuAOeKNqZidwHTEZscsKP6g0Y/ww6EQu6SEQEJYwh9eS7RnhklxyoHQWmeBMeFdetpgK5WOhxBtV5/VaVM9oEzZ+I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710473991; c=relaxed/simple;
-	bh=W+dCh9C8EntywcvXhSubkaBnZJJuzKjsF7idcfLgto4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=OQEDOuAyDTzOpcvGvmSHGoQSBs7l8/59OtJ5CoSkzT5oXzjrg3KzULQeUVT353nNetfgp+KZUjloZ/a1Zns3HZE3mbVB8nHWoooWlofqXqpkhWElnGtQVj5FFXQ/kEb6JFXNHDtnfgBylacrdp0eZnm/BoUHeqgUEphonWNj3yQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=xY7nkBbt; arc=fail smtp.client-ip=40.107.93.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=PjGqa68fjT+noMe9xV5mPbvkLjq+ib3cmtnSeaC+qS55H4ilGnYVwDfikV5YYHHbYGFwwEtjmfPa9Vrfv9QNG8dInA6iID6yt5Wp4EiUGc1z7sMVP/A2/v57PN08Habc+J8Z2oTmEnZ70f0tBJl58UkD5WNswvfuDkEeqvjlZKLtvaWNFwzrA9T4dRB3z3ArcbAzcmymKuPcXJDIiDNPDSUsxDvTIBDLNYFAVD+doCk6rDUBiFAcM09fJTsWlG2+qZDhD84lqkKPH08qMKuk+/a9+b5RO5XAB/kCLqhSOnAjGMFuuZyXof/CAGciT/hNYuqG55DmBqdfXuM5tDiuxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o8EDLYk3NSyioGPjxU+pIEAuL4I7f4cRvkuByN872I4=;
- b=JdtcCMhNvtXvr2gFYQefVLoeS+7KHIXJ/Su5mJ8ujP6z7+tdFEnjMlbL+rN92NUnLrexSKnriEWMuZNhhbFPz7+8frnplPMX8Hsc+MLk+OA/3d60QGyikWsMtSLP7pTR+swc+6l+eOl4FPn5VVwCbV791xEA5Vhk3rqT3OAh1l6O8KL0otbeWMnTi1pEUuvMhzxTNqOscnjauD20UnKW6Xtxi7pLTJZPTE9rd2lIsJDBeRmk/v9dNJZIr8vUyc7bfdVZi8HWJ7vh+RouaSVnlYk6xynCuO6UG+6RhfuxRNx3/Hy75SaLDp19w2j5gdrsjRwxPWFcuGz8jNketXkhQA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o8EDLYk3NSyioGPjxU+pIEAuL4I7f4cRvkuByN872I4=;
- b=xY7nkBbtbWOdw0N2Uxovag6/gdxUnN54kFpmh6fFl8VTuvaWRH3i+dVqK6XVXeCgXaPMq9Hmxqvd2jYYVBXUNCBhVOCwZvPG/LvL8HMxB6nTCx7nuSxqZJCBRZJIiRN5B7tJxZxrMX3Dm1mJDHtG3hT+F5qXQW6w+Y/7ym+ZNh0=
-Received: from CH0P220CA0028.NAMP220.PROD.OUTLOOK.COM (2603:10b6:610:ef::7) by
- PH7PR12MB5759.namprd12.prod.outlook.com (2603:10b6:510:1d2::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.20; Fri, 15 Mar
- 2024 03:39:45 +0000
-Received: from CH2PEPF0000013E.namprd02.prod.outlook.com
- (2603:10b6:610:ef:cafe::7f) by CH0P220CA0028.outlook.office365.com
- (2603:10b6:610:ef::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36 via Frontend
- Transport; Fri, 15 Mar 2024 03:39:45 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CH2PEPF0000013E.mail.protection.outlook.com (10.167.244.70) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7386.12 via Frontend Transport; Fri, 15 Mar 2024 03:39:45 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Thu, 14 Mar 2024 22:39:40 -0500
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>
-CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
-	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v5 8/8] cpufreq: amd-pstate-ut: support new cpb boost control interface
-Date: Fri, 15 Mar 2024 11:38:09 +0800
-Message-ID: <2ea6bff923bc440b63140388b1a9ec01417d1b40.1710473712.git.perry.yuan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1710473712.git.perry.yuan@amd.com>
-References: <cover.1710473712.git.perry.yuan@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE135D528
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 03:41:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.136
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710474095; cv=none; b=TbYmP85fdin3GJJrCw+StO6d7F9//tuoEk40KRbIuKuaKe3jdIU1GkN458YB23q5LrravlaDM4UtaBU7FaPRud9jBIRMV2P60o8Qi2pJXfb0tMESWSs/Nl/mRqVm7Sqp722WiWTWoO0x46sP056SwJY7eYshmJWxSvMgYe9gYSw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710474095; c=relaxed/simple;
+	bh=HWsGCEmO2AXE45l6AUH2mlElxf0ufvAwcsY57vC0FRM=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:Message-ID:
+	 MIME-Version:Content-Type; b=uaZIXkhmNvbrVGRP1x7rzUesBIkDDz5vyHrcO60zxeWhGgIVUOlUIHO1ZdfnC3qM1uKJr/mr1Zj1qV/LCDwCEVnScyr37iFbduskA4ELONqAlOwj1Yuxv6LKim7fNiWmHJutHDcnItnQevUHCQL3ACv52IrLZEmmt3Lx53uXjdk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com; spf=pass smtp.mailfrom=zytor.com; dkim=pass (2048-bit key) header.d=zytor.com header.i=@zytor.com header.b=Jb1Rt4Ce; arc=none smtp.client-ip=198.137.202.136
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zytor.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zytor.com
+Received: from [127.0.0.1] ([76.133.66.138])
+	(authenticated bits=0)
+	by mail.zytor.com (8.17.2/8.17.1) with ESMTPSA id 42F3de723195829
+	(version=TLSv1.3 cipher=TLS_AES_128_GCM_SHA256 bits=128 verify=NO);
+	Thu, 14 Mar 2024 20:39:40 -0700
+DKIM-Filter: OpenDKIM Filter v2.11.0 mail.zytor.com 42F3de723195829
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zytor.com;
+	s=2024021201; t=1710473984;
+	bh=d12bgbWcboIeLzPqweVBTKg7Wy5TnLglhiQB0KflxuE=;
+	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
+	b=Jb1Rt4Ce4pcqjp00IixnEU0v/Uu7UQkorVXSeDw6i/ntNT45vLWnbKCQj62J6guYk
+	 xu3rh4V9isDZu7pLQjh8crm8G0HhnbaB2zAmrZ/IspQFKExfW6MplY6U59A+iwzezy
+	 2HXq6D6FNxtYCB3MYJB8x+7EW3853RsC3ILRThV90Bh1qUdcmYfA8DWMU21JDFX6ja
+	 TGwvSIWJqPn8IdNhwdG5/sIxxkyTd3ga1+gaHwjZLloC6jBuPfOUzjJ81qVK7Li5uA
+	 KzI6iRovLwf11OwPSaLiK5k8HZPnz63SYnV9dzIfHZ0sxLxOOdOEO8rM0ysgaW9KTm
+	 TX2qdoW5Q2UDw==
+Date: Thu, 14 Mar 2024 20:39:36 -0700
+From: "H. Peter Anvin" <hpa@zytor.com>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>,
+        Matthew Wilcox <willy@infradead.org>
+CC: Kent Overstreet <kent.overstreet@linux.dev>, linux-kernel@vger.kernel.org,
+        linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org,
+        bp@alien8.de, brauner@kernel.org, bristot@redhat.com,
+        bsegall@google.com, dave.hansen@linux.intel.com, dianders@chromium.org,
+        dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com,
+        hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca,
+        jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com,
+        kinseyho@google.com, kirill.shutemov@linux.intel.com,
+        lstoakes@gmail.com, luto@kernel.org, mgorman@suse.de, mic@digikod.net,
+        michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com,
+        mst@redhat.com, npiggin@gmail.com, peterz@infradead.org,
+        pmladek@suse.com, rick.p.edgecombe@intel.com, rostedt@goodmis.org,
+        surenb@google.com, tglx@linutronix.de, urezki@gmail.com,
+        vincent.guittot@linaro.org, vschneid@redhat.com
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+User-Agent: K-9 Mail for Android
+In-Reply-To: <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com> <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org> <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42> <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
+Message-ID: <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CH2PEPF0000013E:EE_|PH7PR12MB5759:EE_
-X-MS-Office365-Filtering-Correlation-Id: dfb98b1c-2434-49ca-2078-08dc44a18e90
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	oKesXTYHR5czBXC4Joqd1NgYffy0/JJE55PUmXo3Hx1ycOdGEeBofTFhoivix66dU+u2Xv4m3UrltrSnUQFm6/7fVDh0n3RlrCQsg6B22DfGeMJsNa1TsqzNGmqhJ9tfq9TAQAgeHsb/4nPtyYVqMm+6z3KU/njg/gqCItGh0zcrldNcNbJdwL2IO50dNXP5zeKyb44GFge2DN3BANv70iOHyYUlUqq4ihio9OvHCn/FnhxUwe2oHoySMSeiToaJB18GIdzcv65ZsaX7ILuqhJsGc1mSzYBbD1QJq2byIuxjtzceZhNfmOponr9iIU0euzRCyoiQJkOBBjg2lBPOD9dkL5MGb5MCb2GRoiDFqGSf0AH8ObL1j+10/6xjG1ODNAZtGdkRO7/A40URC4+gCOQfj/VU/SyPuRgbr73deIhsScxU4Z5hHTdH4GGVrh4R+UmMzD/zSfKJLnxihuVRD+Z6SzhhFm+t7eIIjmsa9C+ZNmpeLYadGWo5vQjKFkwKNkfpz99VDuMoWs0GJT0Bjt67gZ8H7avWyrorOikGiFO67YRcUqIPBzxxusH+Ge8RdiAJcKndmkg9WO9tF7poT46bthdxqKjvXt5kpfkpIu9WR4ImG/nIauyPvqTpamHscw8uyeQQ48whUFJC55RCgnc/DC+XPR69J3JIA+Pp5CuK4V5Pjk4yRA/z6LQFhIeN94SXm4SZJMBxQJ+kWbC/iCNpzinZjftvsPh53SeFbvsUdFxuPo6nTTJz7TlV6fok
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(1800799015)(376005)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 15 Mar 2024 03:39:45.1532
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: dfb98b1c-2434-49ca-2078-08dc44a18e90
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CH2PEPF0000013E.namprd02.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5759
+Content-Type: text/plain;
+ charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-As the new CPB boost control is enabled, pstate unit test needs to remove
-legacy `boost_supported` check and start to use new CPB boost control
-interface `amd_pstate_global_params.cpb_boost`.
+On March 14, 2024 8:13:56 PM PDT, Pasha Tatashin <pasha=2Etatashin@soleen=
+=2Ecom> wrote:
+>On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <willy@infradead=
+=2Eorg> wrote:
+>>
+>> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet wrote:
+>> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox wrote:
+>> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H=2E Peter Anvin wrote:
+>> > > > Second, non-dynamic kernel memory is one of the core design decis=
+ions in
+>> > > > Linux from early on=2E This means there are lot of deeply embedde=
+d assumptions
+>> > > > which would have to be untangled=2E
+>> > >
+>> > > I think there are other ways of getting the benefit that Pasha is s=
+eeking
+>> > > without moving to dynamically allocated kernel memory=2E  One icky =
+thing
+>> > > that XFS does is punt work over to a kernel thread in order to use =
+more
+>> > > stack!  That breaks a number of things including lockdep (because t=
+he
+>> > > kernel thread doesn't own the lock, the thread waiting for the kern=
+el
+>> > > thread owns the lock)=2E
+>> > >
+>> > > If we had segmented stacks, XFS could say "I need at least 6kB of s=
+tack",
+>> > > and if less than that was available, we could allocate a temporary
+>> > > stack and switch to it=2E  I suspect Google would also be able to u=
+se this
+>> > > API for their rare cases when they need more than 8kB of kernel sta=
+ck=2E
+>> > > Who knows, we might all be able to use such a thing=2E
+>> > >
+>> > > I'd been thinking about this from the point of view of allocating m=
+ore
+>> > > stack elsewhere in kernel space, but combining what Pasha has done =
+here
+>> > > with this idea might lead to a hybrid approach that works better; a=
+llocate
+>> > > 32kB of vmap space per kernel thread, put 12kB of memory at the top=
+ of it,
+>> > > rely on people using this "I need more stack" API correctly, and fr=
+ee the
+>> > > excess pages on return to userspace=2E  No complicated "switch stac=
+ks" API
+>> > > needed, just an "ensure we have at least N bytes of stack remaining=
+" API=2E
+>
+>I like this approach! I think we could also consider having permanent
+>big stacks for some kernel only threads like kvm-vcpu=2E A cooperative
+>stack increase framework could work well and wouldn't negatively
+>impact the performance of context switching=2E However, thorough
+>analysis would be necessary to proactively identify potential stack
+>overflow situations=2E
+>
+>> > Why would we need an "I need more stack" API? Pasha's approach seems
+>> > like everything we need for what you're talking about=2E
+>>
+>> Because double faults are hard, possibly impossible, and the FRED appro=
+ach
+>> Peter described has extra overhead?  This was all described up-thread=
+=2E
+>
+>Handling faults in #DF is possible=2E It requires code inspection to
+>handle race conditions such as what was shown by tglx=2E However, as
+>Andy pointed out, this is not supported by SDM as it is an abort
+>context (yet we return from it because of ESPFIX64, so return is
+>possible)=2E
+>
+>My question, however, if we ignore memory savings and only consider
+>reliability aspect of this feature=2E  What is better unconditionally
+>crashing the machine because a guard page was reached, or printing a
+>huge warning with a backtracing information about the offending stack,
+>handling the fault, and survive? I know that historically Linus
+>preferred WARN() to BUG() [1]=2E But, this is a somewhat different
+>scenario compared to simple BUG vs WARN=2E
+>
+>Pasha
+>
+>[1] https://lore=2Ekernel=2Eorg/all/Pine=2ELNX=2E4=2E44=2E0209091832160=
+=2E1714-100000@home=2Etransmeta=2Ecom
+>
 
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
----
- drivers/cpufreq/amd-pstate-ut.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/cpufreq/amd-pstate-ut.c b/drivers/cpufreq/amd-pstate-ut.c
-index f04ae67dda37..b3601b0e6dd3 100644
---- a/drivers/cpufreq/amd-pstate-ut.c
-+++ b/drivers/cpufreq/amd-pstate-ut.c
-@@ -226,7 +226,7 @@ static void amd_pstate_ut_check_freq(u32 index)
- 			goto skip_test;
- 		}
- 
--		if (cpudata->boost_supported) {
-+		if (amd_pstate_global_params.cpb_boost) {
- 			if ((policy->max == cpudata->max_freq) ||
- 					(policy->max == cpudata->nominal_freq))
- 				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
--- 
-2.34.1
-
+The real issue with using #DF is that if the event that caused it was asyn=
+chronous, you could lose the event=2E
 
