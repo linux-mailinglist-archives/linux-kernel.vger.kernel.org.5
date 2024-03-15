@@ -1,119 +1,141 @@
-Return-Path: <linux-kernel+bounces-104367-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B18587CCEB
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:47:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D56587CCF4
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:51:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1323E1F21FA1
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:47:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E22F2830EA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 11:51:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6FD5C1BF5D;
-	Fri, 15 Mar 2024 11:47:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A40F71BF44;
+	Fri, 15 Mar 2024 11:51:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jpUHnxUF"
-Received: from mail-wr1-f53.google.com (mail-wr1-f53.google.com [209.85.221.53])
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NN0PobY/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HKf/3iGS";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="NN0PobY/";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="HKf/3iGS"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35FB819BCA;
-	Fri, 15 Mar 2024 11:47:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3EAB91B7EA;
+	Fri, 15 Mar 2024 11:51:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710503263; cv=none; b=rcIQ8YuL2gyeXTP+zDZSz5HMw6D/OAC5dnA+/0PQjH21I/sHdsUjQcOYy2IUKEA1HbNXkFbSVeFYdGsf+0+k4QKnGip5F1HnrxYQwAvofy6M62Yfg5nikseHgrI6jhqhTNZwME1brJkSdGrYVVTa86nHo1zLjLAmfD3cp9jAIsE=
+	t=1710503484; cv=none; b=F1B1QYxyt4z8uvFlCY5EjkygdUneFpoM4+qWVJFsFo0xJXedwH4DGAqpKrs7+hGdoJM6VW6YQUuV/GQWqV2iHKoOIWv18oixzhAOs4RoOpdzsqwuBTA4+18ny/IrBL7D1sMf+od4da3jrqUkpdppWCB5tjpglzxQ8Jkgq0oB+gw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710503263; c=relaxed/simple;
-	bh=AswBXoqd1Nll3PUsMhni9UdwEee82Lmsp5/ibAz0M40=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=AWHMILonN3mF0DZ7MS4gSLs3sAk+65Mku00s48wnJRQo/xhmtIYe6+zm3NYg9RZNdAsc5v9GGPJ/Mh3vhGHsVhrMxCkO04V8r/dAyz5d5UOcVBKrozTuZVCVOb7Br5eW0FofTmivFCllrgiqp//xtqL41pLIgs+AzTdaVIaGXro=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jpUHnxUF; arc=none smtp.client-ip=209.85.221.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f53.google.com with SMTP id ffacd0b85a97d-33e76d653b5so1772916f8f.3;
-        Fri, 15 Mar 2024 04:47:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710503260; x=1711108060; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=QBlUH6VyFh2xDF9O9EaMafykW3lDWFVu4skyiusQ/sk=;
-        b=jpUHnxUFK12f0BTl5gAr1zZmhGUG/Av7drZXHs5RH8p3t9v/67k8+qL0tXJ2lCrVBB
-         nLqjZlU500dUBuNHpF48FMzBl0voW1kiRDJXZ3rEyiq3G2fJ+CA5Vdy8QO2HENLdRrfc
-         XF0F55OPVfHMg4BXK3RkQYTdXcb5rX6S7SIIWTkLaTanHPozaDiwEzFknXTldrAyrz+r
-         xgPk4cdCm+4u3ClPB811+iENXgDXA4nIvLAha4M4nbJ8N+5FPTUaL3F1KQLfmDtpq1xW
-         MkRxnl+VDu3mhaZL7wb7WguGORBsYpYzcmH4tN1yUTtNBxVpC5iXMWBvFLAYdpdAwqay
-         SJVA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710503260; x=1711108060;
-        h=mime-version:user-agent:content-transfer-encoding:references
-         :in-reply-to:date:cc:to:from:subject:message-id:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QBlUH6VyFh2xDF9O9EaMafykW3lDWFVu4skyiusQ/sk=;
-        b=m3HT0OVDFiJreUo+ji7NFXX8AvEg3nNzKDO3H+uzdME/T3v2OBS6jpRd1/QPFeaF34
-         OrblqLLN6EDXZs7BlVY2n+NtRG8f49vjj24xwCOQ7z8Gi6BHbUER9owHGPdRRSJ1TdgT
-         ITkWd/uE8pFM6pZYePB1sy+6zKaLfMdxgjD5pL2crs0Ubij2JfNDg9phXJd3J0NAlu88
-         ZkpS2unStGVrUtjVJwHf6dTdT6EH+fpX8JptCYYKC8ApCmzz0L/ewS/Y0uNecVhD9ye7
-         l0Qcv792wH/k3FkAifClgTO31G3OzK3/iPRGuHPAb/AixtXm7HAtSzy6f+3scZW0gcE7
-         Jr2A==
-X-Forwarded-Encrypted: i=1; AJvYcCUsCpaUdUfH/kGcq1ewXmNEDnbuvFVhxx5G/kLX62ytVcoFj89myuBcXAPYaVC+EzCY5hKAOQa6RnU3Bz+C5nh5pcgsLrzyXXs1zIs7T43HzpFATA5Mvea/gfdRnrJqbGeop7q32jr/
-X-Gm-Message-State: AOJu0YxuYT58NMX53r1Z60mg4Ps8I02ihyiB3f90CZXQm0vIXuflQz4b
-	+qn0NtywxS5Rc5+zkmjpfhgupPnK/PzFzmuRqwexbikSz6WiKGQ3
-X-Google-Smtp-Source: AGHT+IHi84fX2o6Jp6CHUeDay1Tto/v43V7AWtP3llWsnohmF+j5EzC//EqLEZbyWp1SgH73pk7jFg==
-X-Received: by 2002:adf:fe89:0:b0:33e:73e8:c1e1 with SMTP id l9-20020adffe89000000b0033e73e8c1e1mr3569085wrr.18.1710503260207;
-        Fri, 15 Mar 2024 04:47:40 -0700 (PDT)
-Received: from ?IPv6:2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47? (p200300f6ef1b2000944ccbc71e1c2c47.dip0.t-ipconnect.de. [2003:f6:ef1b:2000:944c:cbc7:1e1c:2c47])
-        by smtp.gmail.com with ESMTPSA id f22-20020a5d58f6000000b0033e7a204dc7sm3002446wrd.32.2024.03.15.04.47.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 04:47:39 -0700 (PDT)
-Message-ID: <717ad48efa7ffc6cc1960be05558e9cbf0b6c4c8.camel@gmail.com>
-Subject: Re: [PATCH][next] iio: accel: adxl367: Remove second semicolon
-From: Nuno =?ISO-8859-1?Q?S=E1?= <noname.nuno@gmail.com>
-To: Colin Ian King <colin.i.king@gmail.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, Cosmin
- Tanislav <cosmin.tanislav@analog.com>, Jonathan Cameron <jic23@kernel.org>,
-  linux-iio@vger.kernel.org
-Cc: kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Date: Fri, 15 Mar 2024 12:51:07 +0100
-In-Reply-To: <20240315091436.2430227-1-colin.i.king@gmail.com>
-References: <20240315091436.2430227-1-colin.i.king@gmail.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 
+	s=arc-20240116; t=1710503484; c=relaxed/simple;
+	bh=xTFqm7IClFSwRbfHDriijIbisYv3wMCRVyg507cp8m8=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=HJffZpR4RGaR0xKmdWBRPHC0fqwHM/SgyFkG2AWbNqQJ/y1QrtvcUqGHt4FvQISs1a1Nk7ldOdBjMs7qJxdXOoqzXRDTsoYcuQD3x2rXODByv2x+g6dZcecFXkCnA7U+vf5Sdc/U3Mo+Czx3krd4MCnoC67dU6a+sKDIpXU3xdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NN0PobY/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HKf/3iGS; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=NN0PobY/; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=HKf/3iGS; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 7A63621DD1;
+	Fri, 15 Mar 2024 11:51:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710503479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xTFqm7IClFSwRbfHDriijIbisYv3wMCRVyg507cp8m8=;
+	b=NN0PobY/aemHh1hlNv2a161XAG4ha7M/D+MR2gCYyEZszbW1PFYtGpz9bpf7mkuIlFIKs5
+	/WJscXi7rRAw4agvO816FRnKYbKq4Lo7aQazO2SvEbi9Xd5oavZg0OMa0M/51uOUA0vGvD
+	PGPm4X42V/tGJFTQf045zkUCBdRbIAQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710503479;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xTFqm7IClFSwRbfHDriijIbisYv3wMCRVyg507cp8m8=;
+	b=HKf/3iGSCw5zTX2ENPKIaP92jcCqKOr0cLasTZxKvWZKkyKfuc1LwcBphbQtv2DWwGQLDP
+	P8EfhPKp0jKC8ABw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710503479; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xTFqm7IClFSwRbfHDriijIbisYv3wMCRVyg507cp8m8=;
+	b=NN0PobY/aemHh1hlNv2a161XAG4ha7M/D+MR2gCYyEZszbW1PFYtGpz9bpf7mkuIlFIKs5
+	/WJscXi7rRAw4agvO816FRnKYbKq4Lo7aQazO2SvEbi9Xd5oavZg0OMa0M/51uOUA0vGvD
+	PGPm4X42V/tGJFTQf045zkUCBdRbIAQ=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710503479;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xTFqm7IClFSwRbfHDriijIbisYv3wMCRVyg507cp8m8=;
+	b=HKf/3iGSCw5zTX2ENPKIaP92jcCqKOr0cLasTZxKvWZKkyKfuc1LwcBphbQtv2DWwGQLDP
+	P8EfhPKp0jKC8ABw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 311EB13460;
+	Fri, 15 Mar 2024 11:51:19 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id XqpyCjc29GXXCQAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Fri, 15 Mar 2024 11:51:19 +0000
+Date: Fri, 15 Mar 2024 12:51:18 +0100
+Message-ID: <87h6h7btmx.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: syzbot <syzbot+f3bc6f8108108010a03d@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	linux-sound@vger.kernel.org,
+	perex@perex.cz,
+	syzkaller-bugs@googlegroups.com,
+	tiwai@suse.com,
+	tiwai@suse.de
+Subject: Re: [syzbot] [sound?] possible deadlock in snd_timer_close_locked
+In-Reply-To: <00000000000099d9850613b12348@google.com>
+References: <00000000000099d9850613b12348@google.com>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Score: 0.88
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.de header.s=susede2_rsa header.b="NN0PobY/";
+	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b="HKf/3iGS"
+X-Spamd-Bar: /
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [0.88 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 BAYES_HAM(-0.11)[66.29%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 TAGGED_RCPT(0.00)[f3bc6f8108108010a03d];
+	 MIME_GOOD(-0.10)[text/plain];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.de:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 MID_CONTAINS_FROM(1.00)[];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[];
+	 SUBJECT_HAS_QUESTION(0.00)[]
+X-Spam-Level: 
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Rspamd-Queue-Id: 7A63621DD1
 
-On Fri, 2024-03-15 at 09:14 +0000, Colin Ian King wrote:
-> There is a statement with two semicolons. Remove the second one, it
-> is redundant.
->=20
-> Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> ---
-
-Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-
-> =C2=A0drivers/iio/accel/adxl367.c | 2 +-
-> =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
->=20
-> diff --git a/drivers/iio/accel/adxl367.c b/drivers/iio/accel/adxl367.c
-> index 210228affb80..5cf4828a5eb5 100644
-> --- a/drivers/iio/accel/adxl367.c
-> +++ b/drivers/iio/accel/adxl367.c
-> @@ -621,7 +621,7 @@ static int _adxl367_set_odr(struct adxl367_state *st,=
- enum
-> adxl367_odr odr)
-> =C2=A0static int adxl367_set_odr(struct iio_dev *indio_dev, enum adxl367_=
-odr odr)
-> =C2=A0{
-> =C2=A0	iio_device_claim_direct_scoped(return -EBUSY, indio_dev) {
-> -		struct adxl367_state *st =3D iio_priv(indio_dev);;
-> +		struct adxl367_state *st =3D iio_priv(indio_dev);
-> =C2=A0		int ret;
-> =C2=A0
-> =C2=A0		guard(mutex)(&st->lock);
-
+#syz dup: [syzbot] [sound?] possible deadlock in snd_pcm_period_elapsed (4)
 
