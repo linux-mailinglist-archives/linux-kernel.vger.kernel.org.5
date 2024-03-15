@@ -1,159 +1,134 @@
-Return-Path: <linux-kernel+bounces-104724-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104725-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CA8BD87D2C9
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:28:02 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3EFE487D2CB
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 18:29:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 823C41F26A2D
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:28:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 706D01C220CA
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 17:29:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 529014AEE3;
-	Fri, 15 Mar 2024 17:27:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ED7748CCC;
+	Fri, 15 Mar 2024 17:29:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xbgyxnis"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b="So4N/Q/6"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E65D487AE;
-	Fri, 15 Mar 2024 17:27:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC13B3B79E;
+	Fri, 15 Mar 2024 17:29:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710523675; cv=none; b=eNrW4C1on1l16UdKjGg6l+1tpFP0lvtuORmGZomGuGfCM9ez8pHfXzCM0nFrxTMvclXc4bqnkei/AwAMXrZlVcTw5CopyO4M0mH5FsXD6JX2qkDIgyzQQTLfws/WgZM4FTLN4B47xpO5eGJJzb7u23JUE/UEuo4uPkQUGTeVGbM=
+	t=1710523749; cv=none; b=PkQ2tIDms2RD25VUXJJRDNAZxDIwelkgL6rF+nme2x2OvdmRk0d+bluIRnC9d6hhJZvQ351MA1czxfKjM06h8GRxo1nShXhM++KZYSr8z8gmipvsPmalu7yq5bbrX+Kgpe5LXrBLMjYq0CIgqpkn5nJ/U6/B1pk7mIE8GW9e0/w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710523675; c=relaxed/simple;
-	bh=Kw+zYeSkcmJLO8XJO567cqAcyu+nQoYVc+rZOQHtzl0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YimVdj2bWAaAnT0EgbO3Hi1kuMjqAfvpjZNHN8DcIX6UMfyt+jWOG/W4KBLq0oAoL2rJzKdclBEhe2Wy4DhAZykJrL1fn1UDolZ/u4iqcpqt6L+sQDHa3QJXjs1hCCyz7lfnTkcYrkT95XK8f/BdWvC094EoqX7e5WVkFek8yug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xbgyxnis; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C110C433C7;
-	Fri, 15 Mar 2024 17:27:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710523675;
-	bh=Kw+zYeSkcmJLO8XJO567cqAcyu+nQoYVc+rZOQHtzl0=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XbgyxnisTGyE7pcHm4B33tk0Y2Tr90fMPcHltV1rX/2+bquaVLZ0IJtaUscTacGy/
-	 ah32JkrIxFTSLUJtypaccV+ewm5NyLtUh+oc/4CHGR1rbV6QnVC8CB4HeW9IjZBIKy
-	 NMJtYyYnO0XmKREbqPMIFqKbvr9XOKB3oG0y2/Is3TxF/jTcNctS7tlPybS7pX0/7e
-	 fsqEdG8IU4fDBCwTEnkKeHAhUvjmE9y6biJWXhp54rLKMen2ogO0fq2wxLf++B5EBP
-	 Y7W9XCI+c8nxsrRxYgeQQdzkOAiQ+VMx0FjpYFNpPeetHXLG2pyN1IaSSQTQae8J0B
-	 daDpG1sW6u1XQ==
-Date: Fri, 15 Mar 2024 11:27:52 -0600
-From: Rob Herring <robh@kernel.org>
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: Abel Vesa <abelvesa@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>, linux-clk@vger.kernel.org,
-	imx@lists.linux.dev, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	Peng Fan <peng.fan@nxp.com>
-Subject: Re: [PATCH v4 4/6] dt-bindindgs: clock: nxp: support i.MX95 LVDS CSR
- module
-Message-ID: <20240315172752.GC1506658-robh@kernel.org>
-References: <20240314-imx95-blk-ctl-v4-0-d23de23b6ff2@nxp.com>
- <20240314-imx95-blk-ctl-v4-4-d23de23b6ff2@nxp.com>
+	s=arc-20240116; t=1710523749; c=relaxed/simple;
+	bh=anpAHH2KuXL7ULU+QjpHeyggW4JdiKkCHD81lFQDPOc=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ksLX6rCFqa4BVPAnUYlhOHG7KHd6/aG51UJRmaJDG0uX1fwsqobh4D5tP/sszmn82zFal4rf+Kjb3XDIfU8Yt0maLcHov6ut3O+qPU/1AskooA6mC+7WcYpPXWnLIicrN5iq/HaDM3RZvfXf35LJdi6SCNieswtCJW1M7LFzg6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com; spf=pass smtp.mailfrom=googlemail.com; dkim=pass (2048-bit key) header.d=googlemail.com header.i=@googlemail.com header.b=So4N/Q/6; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=googlemail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=googlemail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5689b7e8387so3131472a12.2;
+        Fri, 15 Mar 2024 10:29:07 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=googlemail.com; s=20230601; t=1710523746; x=1711128546; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=TMhhVpAtizRznG8VJtuyPA2sK8UPTaoFMwou67Bt+5U=;
+        b=So4N/Q/6Rn5HNuCN3cDWiOnnltlv+wODeMYBEtskyFoBKWbJVGpOaWaYZYdBa+bGwk
+         2nHN6vE/sUS7PYqDnkNGJ6ojCGjtK8XmYzZer7LI/fffFRJTZ50ifSXOdZ9pTJEOuNkv
+         +TmJe9+1IA+Q7MfYGWvhCZoDiyG+7BQopSwNFYaXB18t/aQEr4w47Z9hYCr5mf+CaA0K
+         wm/lCdLcpg3AUHwZjV/a5AIFswlK/+hSzBkq804ikCqYu8g3SStN7+BlgpN7d1J6N11m
+         2EM9jK908kiXL7zOYAvTX5pFfS+Yh07/wcqoZAxKOZ48/p7kbIy3XZgcQzrTwetruNqf
+         uieQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710523746; x=1711128546;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TMhhVpAtizRznG8VJtuyPA2sK8UPTaoFMwou67Bt+5U=;
+        b=UBM14UAzD4Td+sYDHPKmvFpoRqcNzdyAihp0AGR9KSl0a/Kw0Mn+OtjNv6DHYEAUJJ
+         6l3f+2nMshQEh6VEEICE4mUO7Y00yzSHnOBSwBvHtUUCmnUDXupi+VCh+439Te5W6jpR
+         pMaoYyPi4JloGJP1FeLYSBEDPRglSDk8bMkQsr9DWoyv1Eu/hEhspzRZQDOb5L/SV0RD
+         W1nzUWT9x4+r/OUAf3LDeEFgJr93IZusnA+RzTCWPkunTqJxTv+4QCH8n2KvzW0m5w7a
+         j7NOKyk0yhjEvRJ/PY9iqJ4cGkAN29J0f8ogWduJkeEze74aQdqqT5BHVKjTnCPAKBYz
+         GuxQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWfm8umKci/FRl12B5h+JdZ6+60+Agb88A2q6C9zCp5lnPmvohVO8zrh37kbJhjwlgXfMjKitYiQA52wi++fiTdbaXpzw9mESjBrMs+
+X-Gm-Message-State: AOJu0YzLpZDx8iVvU3M0XqpvDWtumd73WEgRcrrPe40OFQkIzJX/h+5K
+	Y2Z97twX+rfUfIEw/AbCEXBK7+9k8XQ4QXCccu/dlArQNDzVFUi6+7/w4uxWWSAHOQ==
+X-Google-Smtp-Source: AGHT+IE5Ey+yve1/5Gmwz5QEou0DEEA+7EMC7QqO9RW6lYtUMidYpMcchRWJsAd1RzZMfb8ggEkOlg==
+X-Received: by 2002:a17:906:81d1:b0:a46:651a:724e with SMTP id e17-20020a17090681d100b00a46651a724emr2610342ejx.54.1710523746240;
+        Fri, 15 Mar 2024 10:29:06 -0700 (PDT)
+Received: from ddev.DebianHome (dynamic-095-119-217-226.95.119.pool.telefonica.de. [95.119.217.226])
+        by smtp.gmail.com with ESMTPSA id kq15-20020a170906abcf00b00a462520d561sm1888870ejb.54.2024.03.15.10.29.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Fri, 15 Mar 2024 10:29:05 -0700 (PDT)
+From: =?UTF-8?q?Christian=20G=C3=B6ttsche?= <cgzones@googlemail.com>
+To: selinux@vger.kernel.org
+Cc: Paul Moore <paul@paul-moore.com>,
+	Stephen Smalley <stephen.smalley.work@gmail.com>,
+	Ondrej Mosnacek <omosnace@redhat.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] selinux: reject invalid ebitmaps
+Date: Fri, 15 Mar 2024 18:28:44 +0100
+Message-ID: <20240315172859.634263-1-cgzones@googlemail.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314-imx95-blk-ctl-v4-4-d23de23b6ff2@nxp.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 09:25:13PM +0800, Peng Fan (OSS) wrote:
-> From: Peng Fan <peng.fan@nxp.com>
-> 
-> The i.MX95 LVDS_CSR provides clock gate controls for the LVDS units, LVDS
-> PHY and Pixel Mapper blocks. Add dt-binding for it.
-> 
-> Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  .../bindings/clock/nxp,imx95-lvds-csr.yaml         | 50 ++++++++++++++++++++++
->  include/dt-bindings/clock/nxp,imx95-clock.h        |  7 +++
->  2 files changed, 57 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/clock/nxp,imx95-lvds-csr.yaml b/Documentation/devicetree/bindings/clock/nxp,imx95-lvds-csr.yaml
-> new file mode 100644
-> index 000000000000..e04f0ca4f588
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/clock/nxp,imx95-lvds-csr.yaml
-> @@ -0,0 +1,50 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/clock/nxp,imx95-lvds-csr.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: NXP i.MX95 Display LVDS Block Control
-> +
-> +maintainers:
-> +  - Peng Fan <peng.fan@nxp.com>
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - const: nxp,imx95-lvds-csr
-> +      - const: syscon
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  power-domains:
-> +    maxItems: 1
-> +
-> +  clocks:
-> +    maxItems: 1
-> +
-> +  '#clock-cells':
-> +    const: 1
-> +    description:
-> +      The clock consumer should specify the desired clock by having the clock
-> +      ID in its "clocks" phandle cell. See
-> +      include/dt-bindings/clock/nxp,imx95-clock.h
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - '#clock-cells'
+Reject ebitmaps with a node containing an empty map or with an incorrect
+highbit.  Both checks are already performed by userspace, the former
+since 2008 (patch 13cd4c896068 ("initial import from svn trunk revision
+2950")), the latter since v2.7 in 2017 (patch 75b14a5de10a ("libsepol:
+ebitmap: reject loading bitmaps with incorrect high bit")).
 
-How are clocks and power-domains optional?
+Signed-off-by: Christian Göttsche <cgzones@googlemail.com>
+---
+v2:
+  update wording as suggested in [1]
 
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    syscon@4c410000 {
-> +      compatible = "nxp,imx95-lvds-csr", "syscon";
-> +      reg = <0x4c410000 0x10000>;
-> +      #clock-cells = <1>;
-> +      clocks = <&scmi_clk 75>;
-> +      power-domains = <&scmi_devpd 13>;
-> +    };
-> +...
-> diff --git a/include/dt-bindings/clock/nxp,imx95-clock.h b/include/dt-bindings/clock/nxp,imx95-clock.h
-> index c671c4dbb4d5..e642a54c81a0 100644
-> --- a/include/dt-bindings/clock/nxp,imx95-clock.h
-> +++ b/include/dt-bindings/clock/nxp,imx95-clock.h
-> @@ -18,4 +18,11 @@
->  #define IMX95_CLK_CAMBLK_ISP			4
->  #define IMX95_CLK_CAMBLK_END			5
->  
-> +#define IMX95_CLK_DISPMIX_LVDS_PHY_DIV		0
-> +#define IMX95_CLK_DISPMIX_LVDS_CH0_GATE		1
-> +#define IMX95_CLK_DISPMIX_LVDS_CH1_GATE		2
-> +#define IMX95_CLK_DISPMIX_PIX_DI0_GATE		3
-> +#define IMX95_CLK_DISPMIX_PIX_DI1_GATE		4
-> +#define IMX95_CLK_DISPMIX_LVDS_CSR_END		5
+[1]: https://lore.kernel.org/selinux/d476b21729cafb28c1b881113a563b1f.paul@paul-moore.com/
+---
+ security/selinux/ss/ebitmap.c | 11 +++++++++++
+ 1 file changed, 11 insertions(+)
 
-Same issue here.
+diff --git a/security/selinux/ss/ebitmap.c b/security/selinux/ss/ebitmap.c
+index 67c1a73cd5ee..f1ba333f127d 100644
+--- a/security/selinux/ss/ebitmap.c
++++ b/security/selinux/ss/ebitmap.c
+@@ -448,6 +448,10 @@ int ebitmap_read(struct ebitmap *e, void *fp)
+ 			goto bad;
+ 		}
+ 		map = le64_to_cpu(mapbits);
++		if (!map) {
++			pr_err("SELinux: ebitmap: empty map\n");
++			goto bad;
++		}
+ 
+ 		index = (startbit - n->startbit) / EBITMAP_UNIT_SIZE;
+ 		while (map) {
+@@ -455,6 +459,13 @@ int ebitmap_read(struct ebitmap *e, void *fp)
+ 			map = EBITMAP_SHIFT_UNIT_SIZE(map);
+ 		}
+ 	}
++
++	if (n && n->startbit + EBITMAP_SIZE != e->highbit) {
++		pr_err("SELinux: ebitmap: high bit %d is not equal to the expected value %ld\n",
++		       e->highbit, n->startbit + EBITMAP_SIZE);
++		goto bad;
++	}
++
+ ok:
+ 	rc = 0;
+ out:
+-- 
+2.43.0
+
 
