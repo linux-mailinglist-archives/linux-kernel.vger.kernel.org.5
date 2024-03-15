@@ -1,204 +1,299 @@
-Return-Path: <linux-kernel+bounces-104395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-104396-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97BB487CD37
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:26:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BEDF687CD39
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 13:26:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07E5E1F229FF
-	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:26:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7488D282456
+	for <lists+linux-kernel@lfdr.de>; Fri, 15 Mar 2024 12:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9AC71C680;
-	Fri, 15 Mar 2024 12:26:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E64141C68D;
+	Fri, 15 Mar 2024 12:26:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=klervi.com header.i=@klervi.com header.b="dMDohCt6"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="P1X2/M3w"
+Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9AC6D1BF3C
-	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:26:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915221C2A6
+	for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 12:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710505569; cv=none; b=OHnXJTU4KzWYW73O0/3o2ISYp2l++PNmKs3cinU4MAMSCRXqD9DWfvK3wGgkJIRsnWaQL3mgziwa+LePW9MhRGRkaPPCdbhfZu48ReloiXHNKEXASAoRATYssONli89u3n6u4AQeuntMbHrDs6w+Z2I8GsYWevRb+6h2GZ5hqrM=
+	t=1710505586; cv=none; b=bABv7ezFLdEuHp6cdHDbRv6r+sqy+NtQS5O9RM1knVf2RRz2/KrQKUyqrvtXyUX0Fm0heYZlsPUNxRr7whb4E8vJDxx0+Vo0ECp3t/nwJU3jRX2+ufT649YUrnnnYyiMh0XzXMbJ57Fk10RdoQWKZ/o4BuC6Nblb8cGPSgSHIpI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710505569; c=relaxed/simple;
-	bh=TD/KiH33sXM84mSoAKUU0jPwy3Um0JVk0ZAYWrgcUH4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LSeeQVCeTzn4BSVp+kxCl4gLHIzVErFwvhKZmLojmmvpfJMSNIYo9pR2py0u+LdG1+4GTfgA8bMsVfM382f9YYtgc/wwAbzwXYBipLKzJfmgzZEI1lG9PuQ4g4fxqMyQR/8h8ERvkYpCkH7jGjpaaWIGgGlHNQl3MgEKKse8x1k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=klervi.com; spf=pass smtp.mailfrom=klervi.com; dkim=pass (1024-bit key) header.d=klervi.com header.i=@klervi.com header.b=dMDohCt6; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=klervi.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=klervi.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513d4559fb4so1969021e87.3
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 05:26:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=klervi.com; s=google; t=1710505564; x=1711110364; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=nga3nQAHAM0wWDICgNAH+2ZxnIgnE0zj9q8FIG7Fvl4=;
-        b=dMDohCt6xspIbhELVuFpQ5KZnLDUzMnNftJw8p2wszUi/8CrgVKoaAqM9LFIPseGxx
-         mXawGqD1ALC/3DdRMIauIeyN1d+TYvD5ZDXp7XQeZ+4pf6kX+/pU+8xSKx9gGr+pJD6W
-         G/ABflnUyZbl0mQhFoSpDblqIQn9Xx9/6OTpY=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710505564; x=1711110364;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=nga3nQAHAM0wWDICgNAH+2ZxnIgnE0zj9q8FIG7Fvl4=;
-        b=YGIeGwOrkXFSN6hFxBovA96SoWVVTTAEkVAKqlhzUJAYZKLeC4MqRyKgIWMXjwJXqE
-         R+880VRSaD5HYhnemNGgwfHyT197cW1cG6GyKA5P1Lrs5z3A2+8Ds4H5AUzMGePkR1ja
-         H6gbXiQibj0ctrSvKBnqKVlF3U3tD4WnoC0XpfRAY1QN+gqbG8Et8UVif6LIJQ+htfcX
-         8Hr3+pu/9oQGwsOOAOJjvmWF1Vuda+jfQOlxhhQjno4YM4TUBEmMKDGLZAksZEvQQi0t
-         Pe80hIYddJyn1xDmRdwxGnyujO66uUQeVyTkOmax+/WMQ1JB3A3+e7NZ/54vZixEuuqZ
-         dNOw==
-X-Forwarded-Encrypted: i=1; AJvYcCU/DHxlFzYAhjnTkpxwaEfsfbvI5T2wDideaKRwsN9LEnephy0t5ztYeHGKjq3LfcX13dlX6fEjOxYwkgItgCnF2nx0GS8w2uefqf2J
-X-Gm-Message-State: AOJu0Ywljz1QFnfb2eFFANQU8IMcJw89fDemnwW95nAulg2nxkJh1+WO
-	2ToP3/oafNVfZgSzFo20uDRkUIAF7zBShLuyhl2h3g5B3XoLeIk22NU7K0lwzR3HFjwLbsLB5ZN
-	NUjByQ7CntuolUBq9mmCKS7PZU/uYZpbKgXSIvGL7+JuSYqUQJEVKSObBCv1t5ksrfPa8K0CPQm
-	VLF9roi7uOTX3Xq4SzrmnEzVoAS2XbufhruxsZRH0leUTNBaQ+mUY1uXoOCEvH+P0+XBxcuESuZ
-	hrqZ92SXxEW3UdwG5GrbMQ6bps=
-X-Google-Smtp-Source: AGHT+IHQ0ULPpRLOVvOoucXnx201JA8MEIAwBwVU86lPavzN57TwmGGyrkIP36R3zVv3bYFuQ7/1Nw==
-X-Received: by 2002:a05:6512:3447:b0:513:ca65:8c58 with SMTP id j7-20020a056512344700b00513ca658c58mr2993160lfr.43.1710505563415;
-        Fri, 15 Mar 2024 05:26:03 -0700 (PDT)
-Received: from cadmium.klervi.com (fourier.klervi.com. [91.90.98.42])
-        by smtp.gmail.com with ESMTPSA id h10-20020a05600c350a00b00412ee8e2f2asm8897028wmq.9.2024.03.15.05.26.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Fri, 15 Mar 2024 05:26:03 -0700 (PDT)
-From: Pierre-Louis Dourneau <pl.dourneau@klervi.com>
-To: Ludovic.Desroches@microchip.com
-Cc: Pierre-Louis Dourneau <pl.dourneau@klervi.com>,
-	sam@ravnborg.org,
-	bbrezillon@kernel.org,
-	maarten.lankhorst@linux.intel.com,
-	mripard@kernel.org,
-	tzimmermann@suse.de,
-	airlied@gmail.com,
-	daniel@ffwll.ch,
-	Nicolas.Ferre@microchip.com,
-	alexandre.belloni@bootlin.com,
-	claudiu.beznea@tuxon.dev,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	Manikandan.M@microchip.com,
-	b.alcaina@klervi.com,
-	a.lahache@klervi.com,
-	n.georges@klervi.com
-Subject: Re: [PATCH] drm/atmel-hlcdc: Release CRTC commit when destroying plane state
-Date: Fri, 15 Mar 2024 13:25:27 +0100
-Message-Id: <20240315122527.344534-1-pl.dourneau@klervi.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240312084016.36136-1-pl.dourneau@klervi.com>
-References: 
+	s=arc-20240116; t=1710505586; c=relaxed/simple;
+	bh=1fxlJ4/KRUqR2rfFCvZ/fuQqvMdOyXlK+0xVU09W/1g=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=jSulxPTpcmKXAgBbr+Jse/+UZY0CditqTtN8jondmAUrXEEg3TYvJ1TlE/+9gHRNuO8F1ZR83r6WgD9poM2z5TTJUL/S/+r9Wsj1km5HL9/kRUv7qWDf7+VnCeU/m9qdm/8Z6mPPzhljfRjme0g+ZfpC4wkBgsEs6Kuwp6CylKY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=P1X2/M3w; arc=none smtp.client-ip=37.205.15.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
+Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by bee.tesarici.cz (Postfix) with ESMTPSA id 4425C196C4E;
+	Fri, 15 Mar 2024 13:26:15 +0100 (CET)
+Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
+	t=1710505575; bh=nUQ+GlUQvTJOM20SXQiuZ/zMFi5PaDtLiTcb8MpIbKs=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=P1X2/M3w/cFa5ZWrYRWbi+AORGgfhywL1MiX1Ivqdrlrb6Albg/PqGmjN3rnEZ9eq
+	 WR5jizmeLzcbY4L8Ianlqv++SctAoQpksW7QNS6/B5IPHHpvK/xeIKx8VoSmpqExXn
+	 uWuBMcQjTDWMGQD4EdFDhEgeb/y4BkgWvGpWe9zdnbrHGL/lp5dhFZpJlNtNf8NVSK
+	 VbUOxNK90+qKdE3ptpGTLKEjcKuJHk3dgb7u7L+ZtGgTyuv9VGrJKeXWKv8grrYpj7
+	 GaV0Hpqsnr2qLYN91dZHaQhOll2AM4KIMVKN8nRtIH6Y9NrUnbcE0aERv1E5RwORU6
+	 nFOE0rVCioF5A==
+Date: Fri, 15 Mar 2024 13:26:13 +0100
+From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+To: Michael Kelley <mhklinux@outlook.com>
+Cc: Petr Tesarik <petrtesarik@huaweicloud.com>, Christoph Hellwig
+ <hch@lst.de>, Marek Szyprowski <m.szyprowski@samsung.com>, Robin Murphy
+ <robin.murphy@arm.com>, Will Deacon <will@kernel.org>, Nicolin Chen
+ <nicolinc@nvidia.com>, "open list:DMA MAPPING HELPERS"
+ <iommu@lists.linux.dev>, open list <linux-kernel@vger.kernel.org>, Roberto
+ Sassu <roberto.sassu@huaweicloud.com>, Petr Tesarik
+ <petr.tesarik1@huawei-partners.com>
+Subject: Re: [PATCH 1/1] swiotlb: extend buffer pre-padding to
+ alloc_align_mask if necessary
+Message-ID: <20240315132613.5a340a69@meshulam.tesarici.cz>
+In-Reply-To: <SN6PR02MB4157FB27CD890E9F29408926D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+References: <20240312134149.497-1-petrtesarik@huaweicloud.com>
+	<SN6PR02MB4157FB27CD890E9F29408926D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On 3/12/24, Pierre-Louis Dourneau <pl.dourneau@klervi.com> wrote:
-> On 3/8/24, Ludovic.Desroches@microchip.com <Ludovic.Desroches@microchip.com> wrote:
-> > This patch fixes the memory leak but introduces a crash on my side when
-> > exiting a graphics app using the Microchip graphics library.
+On Fri, 15 Mar 2024 02:53:10 +0000
+Michael Kelley <mhklinux@outlook.com> wrote:
+
+> From: Petr Tesarik <petrtesarik@huaweicloud.com> Sent: Tuesday, March 12, 2024 6:42 AM
+> > 
+> > Allow a buffer pre-padding of up to alloc_align_mask. If the allocation
+> > alignment is bigger than IO_TLB_SIZE and min_align_mask covers any non-zero
+> > bits in the original address between IO_TLB_SIZE and alloc_align_mask,
+> > these bits are not preserved in the swiotlb buffer address.
+> > 
+> > To fix this case, increase the allocation size and use a larger offset
+> > within the allocated buffer. As a result, extra padding slots may be
+> > allocated before the mapping start address.
+> > 
+> > Set the orig_addr in these padding slots to INVALID_PHYS_ADDR, because they
+> > do not correspond to any CPU buffer and the data must never be synced.
+> > 
+> > The padding slots should be automatically released when the buffer is
+> > unmapped. However, swiotlb_tbl_unmap_single() takes only the address of the
+> > DMA buffer slot, not the first padding slot. Save the number of padding
+> > slots in struct io_tlb_slot and use it to adjust the slot index in
+> > swiotlb_release_slots(), so all allocated slots are properly freed.
+> >   
 > 
-> We've tried to reproduce your crash with 6.1.22-linux4microchip-2023.04,
-> to no avail. We'll try to upgrade to 6.1.55-linux4microchip-2023.10 (your
-> version) and test again.
+> I've been staring at this the past two days, and have run tests with
+> various min_align_masks and alloc_masks against orig_addr's with
+> various alignments and mapping sizes.  I'm planning to run additional
+> tests over the weekend, but I think it's solid.  See a few comments
+> below.
+> 
+> > Fixes: 2fd4fa5d3fb5 ("swiotlb: Fix alignment checks when both allocation and DMA masks are present")
+> > Link: https://lore.kernel.org/linux-iommu/20240311210507.217daf8b@meshulam.tesarici.cz/
+> > Signed-off-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
+> > ---
+> >  kernel/dma/swiotlb.c | 34 +++++++++++++++++++++++++++++-----
+> >  1 file changed, 29 insertions(+), 5 deletions(-)
+> > 
+> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
+> > index 86fe172b5958..8ce11abc691f 100644
+> > --- a/kernel/dma/swiotlb.c
+> > +++ b/kernel/dma/swiotlb.c
+> > @@ -69,11 +69,13 @@
+> >   * @alloc_size:	Size of the allocated buffer.
+> >   * @list:	The free list describing the number of free entries available
+> >   *		from each index.
+> > + * @padding:    Number of preceding padding slots.
+> >   */
+> >  struct io_tlb_slot {
+> >  	phys_addr_t orig_addr;
+> >  	size_t alloc_size;
+> >  	unsigned int list;
+> > +	unsigned int padding;  
+> 
+> Even without the padding field, I presume that in
+> 64-bit builds this struct is already 24 bytes in size so as
+> to maintain 64-bit alignment for the orig_addr and
+> alloc_size fields. If that's the case, then adding the
+> padding field doesn't change the amount of memory
+> required for the slot array.  Is that correct? Both the
+> "list" and "padding" fields contain only small integers,
+> but presumably reducing their size from "int" to "short"
+> wouldn't help except in 32-bit builds.
 
-I was able to test a few more recent kernel versions[0] with the patch
-applied. None yielded any crash, be it running Microchip's EGT samples[1]
-or libdrm's modetest. Although, what I did manage to reproduce was a
-refcount underflow similar to the one you had:
+That's correct. In 64-bit builds, this is the layout before my patch:
 
-  # modetest -M atmel-hlcdc -s 32:#0 -P 33@47:800x400@XR24 -a
-  setting mode 1024x600-65.48Hz on connectors 32, crtc 47
-  testing 800x400@XR24 on plane 33, crtc 47
-  [   75.736699] ------------[ cut here ]------------
-  [   75.741353] WARNING: CPU: 0 PID: 200 at lib/refcount.c:28 refcount_warn_saturate+0xf0/0x15c
-  [   75.749731] refcount_t: underflow; use-after-free.
-  [   75.754574] CPU: 0 PID: 200 Comm: modetest Not tainted 6.1.55-linux4microchip-2023.10 #4
-  [   75.762915] Hardware name: Microchip SAM9X60
-  [   75.767198]  unwind_backtrace from show_stack+0x10/0x18
-  [   75.772423]  show_stack from dump_stack_lvl+0x28/0x34
-  [   75.777479]  dump_stack_lvl from __warn+0x8c/0xc0
-  [   75.782187]  __warn from warn_slowpath_fmt+0x74/0xa8
-  [   75.787158]  warn_slowpath_fmt from refcount_warn_saturate+0xf0/0x15c
-  [   75.793611]  refcount_warn_saturate from __drm_atomic_helper_plane_destroy_state+0xd0/0xd4
-  [   75.801894]  __drm_atomic_helper_plane_destroy_state from atmel_hlcdc_plane_atomic_destroy_state+0x38/0x48
-  [   75.811573]  atmel_hlcdc_plane_atomic_destroy_state from drm_atomic_state_default_clear+0x1c4/0x2fc
-  [   75.820642]  drm_atomic_state_default_clear from __drm_atomic_state_free+0x7c/0xb0
-  [   75.828228]  __drm_atomic_state_free from drm_mode_atomic_ioctl+0x868/0xb88
-  [   75.835204]  drm_mode_atomic_ioctl from drm_ioctl+0x200/0x3c4
-  [   75.840960]  drm_ioctl from sys_ioctl+0x240/0xb48
-  [   75.845669]  sys_ioctl from ret_fast_syscall+0x0/0x44
-  [   75.850725] Exception stack(0xc8c91fa8 to 0xc8c91ff0)
-  [   75.855794] 1fa0:                   004b0ec0 00000003 00000003 c03864bc becd7bc8 becd7b98
-  [   75.863992] 1fc0: 004b0ec0 00000003 becd7bc8 00000036 00000003 00000003 b6f22f80 00000400
-  [   75.872183] 1fe0: b6f21e74 becd7a68 b6f07494 b6f61cc8
-  [   75.877289] ---[ end trace 0000000000000000 ]---
-  Atomic Commit failed [1]
+/* offset      |    size */  type = struct io_tlb_slot {
+/*      0      |       8 */    phys_addr_t orig_addr;
+/*      8      |       8 */    size_t alloc_size;
+/*     16      |       4 */    unsigned int list;
+/* XXX  4-byte padding   */
 
-Same but without using the atomic uAPI (`-a` option removed):
+                               /* total size (bytes):   24 */
+                             }
 
-  # modetest -M atmel-hlcdc -s 32:#0 -P 33@47:800x400@XR24
-  setting mode 1024x600-65.48Hz on connectors 32, crtc 47
-  testing 800x400@XR24 overlay plane 33
-  failed to enable plane: Invalid argument
+And this is the layout after my patch:
 
-  [   98.542958] ------------[ cut here ]------------
-  [   98.547547] WARNING: CPU: 0 PID: 28 at lib/refcount.c:28 refcount_warn_saturate+0xf0/0x15c
-  [   98.555902] refcount_t: underflow; use-after-free.
-  [   98.560698] CPU: 0 PID: 28 Comm: kworker/0:7 Tainted: G        W          6.1.55-linux4microchip-2023.10 #6
-  [   98.570695] Hardware name: Microchip SAM9X60
-  [   98.574972] Workqueue: events drm_mode_rmfb_work_fn
-  [   98.579859] unwind_backtrace from show_stack+0x10/0x18
-  [   98.587615] show_stack from dump_stack_lvl+0x28/0x34
-  [   98.595201] dump_stack_lvl from __warn+0x8c/0xc0
-  [   98.602438] __warn from warn_slowpath_fmt+0x74/0xa8
-  [   98.609937] warn_slowpath_fmt from refcount_warn_saturate+0xf0/0x15c
-  [   98.618919] refcount_warn_saturate from __drm_atomic_helper_plane_destroy_state+0xd0/0xd4
-  [   98.629740] __drm_atomic_helper_plane_destroy_state from atmel_hlcdc_plane_atomic_destroy_state+0x38/0x48
-  [   98.641947] atmel_hlcdc_plane_atomic_destroy_state from drm_atomic_state_default_clear+0x1c4/0x2fc
-  [   98.653545] drm_atomic_state_default_clear from __drm_atomic_state_free+0x7c/0xb0
-  [   98.663660] __drm_atomic_state_free from drm_framebuffer_remove+0x48c/0x540
-  [   98.673252] drm_framebuffer_remove from drm_mode_rmfb_work_fn+0x68/0x84
-  [   98.682495] drm_mode_rmfb_work_fn from process_one_work+0x1b4/0x3f4
-  [   98.691390] process_one_work from worker_thread+0x214/0x4e8
-  [   98.699587] worker_thread from kthread+0xb4/0xd8
-  [   98.706824] kthread from ret_from_fork+0x14/0x28
-  [   98.714060] Exception stack(0xc88adfb0 to 0xc88adff8)
-  [   98.719125] dfa0:                                     00000000 00000000 00000000 00000000
-  [   98.727327] dfc0: 00000000 00000000 00000000 00000000 00000000 00000000 00000000 00000000
-  [   98.735520] dfe0: 00000000 00000000 00000000 00000000 00000013 00000000
-  [   98.742219] ---[ end trace 0000000000000000 ]---
+/* offset      |    size */  type = struct io_tlb_slot {
+/*      0      |       8 */    phys_addr_t orig_addr;
+/*      8      |       8 */    size_t alloc_size;
+/*     16      |       4 */    unsigned int list;
+/*     20      |       4 */    unsigned int padding;
 
-The first one is not deterministic, you have to try a few times to trigger
-it. The second one is a hit every time.
+                               /* total size (bytes):   24 */
+                             }
 
-Same commands on a kernel without the patch don't report any underflow.
-Note the commit in the first command also fails on a kernel without the
-patch, which I guess is expected as plane 33 is the primary plane and I'm
-trying set dimensions that do not match the size of the display. The commit
-succeeds when invoking with the correct dimensions, but then I can't make
-it produce an underflow. Same with the second command.
+Admittedly, I haven't really considered 32-bit builds. The layout
+depends on the size of phys_addr_t. For example, on 32-bit Arm with
+32-bit physical addresses, the struct grows from 12 bytes to 16 bytes. 
+With 32-bit physical addresses, it grows from 16 bytes to 24 bytes
+(with a 4-byte padding at the end, due to a stricter Arm ABI alignment
+requirements). On other platforms, it would be only 20 bytes.
 
-It seems to only trigger once per boot. Running the commands again does not
-yield another underflow.
+The default SWIOTLB size is 64M, divided into 32K slots of 2K each.
+If each slot grows by 8 bytes, runtime memory consumption increases by
+256K. That's not much, but I agree that it can be zero if the type is
+changed to unsigned short. And there is no downside AFAICS.
 
-Looking at the disassembly, this is an underflow of the drm_crtc_commit's
-refcount this time. In the warning you had, it was on a framebuffer object.
+FTR the maximum value that can be stored in these two fields is
+IO_TLB_SEGSIZE. This constant has never ever changed, but I can add a
+BUILD_BUG_ON() to swiotlb_init_io_tlb_pool(), just to make sure.
 
-Anyway, I'll go back to the drawing board, study more closely the resource
-release part of the driver. Thanks for having brought up the issues with
-the patch.
+> >  };
+> > 
+> >  static bool swiotlb_force_bounce;
+> > @@ -287,6 +289,7 @@ static void swiotlb_init_io_tlb_pool(struct io_tlb_pool *mem, phys_addr_t start,
+> >  					 mem->nslabs - i);
+> >  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+> >  		mem->slots[i].alloc_size = 0;
+> > +		mem->slots[i].padding = 0;
+> >  	}
+> > 
+> >  	memset(vaddr, 0, bytes);
+> > @@ -1328,11 +1331,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+> >  		unsigned long attrs)
+> >  {
+> >  	struct io_tlb_mem *mem = dev->dma_io_tlb_mem;
+> > -	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
+> > +	unsigned int offset;
+> >  	struct io_tlb_pool *pool;
+> >  	unsigned int i;
+> >  	int index;
+> >  	phys_addr_t tlb_addr;
+> > +	unsigned int padding;
+> > 
+> >  	if (!mem || !mem->nslabs) {
+> >  		dev_warn_ratelimited(dev,
+> > @@ -1349,6 +1353,15 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+> >  		return (phys_addr_t)DMA_MAPPING_ERROR;
+> >  	}
+> > 
+> > +	/*
+> > +	 * Calculate buffer pre-padding within the allocated space. Use it to
+> > +	 * preserve the low bits of the original address according to device's
+> > +	 * min_align_mask. Limit the padding to alloc_align_mask or slot size
+> > +	 * (whichever is bigger); higher bits of the original address are
+> > +	 * preserved by selecting a suitable IO TLB slot.
+> > +	 */
+> > +	offset = orig_addr & dma_get_min_align_mask(dev) &
+> > +		(alloc_align_mask | (IO_TLB_SIZE - 1));
+> >  	index = swiotlb_find_slots(dev, orig_addr,
+> >  				   alloc_size + offset, alloc_align_mask, &pool);
+> >  	if (index == -1) {
+> > @@ -1364,6 +1377,12 @@ phys_addr_t swiotlb_tbl_map_single(struct device *dev, phys_addr_t orig_addr,
+> >  	 * This is needed when we sync the memory.  Then we sync the buffer if
+> >  	 * needed.
+> >  	 */
+> > +	padding = 0;
+> > +	while (offset >= IO_TLB_SIZE) {
+> > +		pool->slots[index++].orig_addr = INVALID_PHYS_ADDR;
+> > +		pool->slots[index].padding = ++padding;
+> > +		offset -= IO_TLB_SIZE;
+> > +	}  
+> 
+> Looping to fill in the padding slots seems unnecessary.
+> The orig_addr field should already be initialized to
+> INVALID_PHYS_ADDR, and the padding field should already
+> be initialized to zero.
 
-[0]: Namely, linux4microchip-2023.10 (6.1.55), v6.8, and drm-next-2023-03-13
-[1]: https://github.com/linux4sam/egt/tree/master/examples
+Ack.
 
-Pierre-Louis
+> The value of "padding" should be just
+> (offset / IO_TLB_SIZE), and it only needs to be stored in the
+> first non-padding slot where swiotlb_release_slots() will
+> find it.
+
+This is also right. I asked myself the question what should happen if
+somebody passes a padding slot's address to swiotlb_tbl_unmap_single().
+Of course, it's an invalid address, but as a proponent of defensive
+programming, I still asked what would be the best response? If I store
+padding in each slot, the whole block is released. If I store it only
+in the first non-padding slot, some slots may leak.
+
+On a second thought, the resulting SWIOTLB state is consistent either
+way, and we don't to care about leaking some slots if a driver is
+buggy. Maybe it's even better, because the leak will be noticed.
+
+In short, I agree, let's keep the code simple.
+
+Thank you for your review!
+
+Petr T
+
+> FWIW, your while loop above feels a bit weird in that it
+> updates two different slots each time through the loop,
+> and the padding field of the first padding slot isn't
+> updated. It took me a little while to figure that out. :-)
+> 
+> >  	for (i = 0; i < nr_slots(alloc_size + offset); i++)
+> >  		pool->slots[index + i].orig_addr = slot_addr(orig_addr, i);
+> >  	tlb_addr = slot_addr(pool->start, index) + offset;
+> > @@ -1385,12 +1404,16 @@ static void swiotlb_release_slots(struct device *dev, phys_addr_t tlb_addr)
+> >  	struct io_tlb_pool *mem = swiotlb_find_pool(dev, tlb_addr);
+> >  	unsigned long flags;
+> >  	unsigned int offset = swiotlb_align_offset(dev, tlb_addr);
+> > -	int index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
+> > -	int nslots = nr_slots(mem->slots[index].alloc_size + offset);
+> > -	int aindex = index / mem->area_nslabs;
+> > -	struct io_tlb_area *area = &mem->areas[aindex];
+> > +	int index, nslots, aindex;
+> > +	struct io_tlb_area *area;
+> >  	int count, i;
+> > 
+> > +	index = (tlb_addr - offset - mem->start) >> IO_TLB_SHIFT;
+> > +	index -= mem->slots[index].padding;
+> > +	nslots = nr_slots(mem->slots[index].alloc_size + offset);
+> > +	aindex = index / mem->area_nslabs;
+> > +	area = &mem->areas[aindex];
+> > +
+> >  	/*
+> >  	 * Return the buffer to the free list by setting the corresponding
+> >  	 * entries to indicate the number of contiguous entries available.
+> > @@ -1413,6 +1436,7 @@ static void swiotlb_release_slots(struct device *dev, phys_addr_t tlb_addr)
+> >  		mem->slots[i].list = ++count;
+> >  		mem->slots[i].orig_addr = INVALID_PHYS_ADDR;
+> >  		mem->slots[i].alloc_size = 0;
+> > +		mem->slots[i].padding = 0;
+> >  	}
+> > 
+> >  	/*
+> > --
+> > 2.34.1  
+> 
+> 
+
 
