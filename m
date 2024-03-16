@@ -1,286 +1,345 @@
-Return-Path: <linux-kernel+bounces-105190-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105191-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7D74B87DA53
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:47:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E32F87DA55
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:51:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F3C3A1F219BB
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:47:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97A541F212B3
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:51:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC5E318EA2;
-	Sat, 16 Mar 2024 13:47:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6F7518E1F;
+	Sat, 16 Mar 2024 13:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IHgwBOao"
-Received: from mail-qv1-f44.google.com (mail-qv1-f44.google.com [209.85.219.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="sZEZECkZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0ADC128EA;
-	Sat, 16 Mar 2024 13:47:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AA68E17722;
+	Sat, 16 Mar 2024 13:51:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710596837; cv=none; b=F1JmaTtJ9Pr6KboG/FgK8IfJANN6dxT2VVZ/tUSx4c9mdHj6LTBMXQWPux1Bpgk4yLka7Km++w8hXDTp4c8FX6J01gJS3r/azbc3fSyIKIA0LX2DfQDYnakzDu3v4vEg+UjWtqP+6oPZdrDvTZiBo+ojW2IJI1ciPbccLpE73i8=
+	t=1710597105; cv=none; b=U8GBR4HSOBS5XvJfGGHkXZjSNAIz2DyM4GTD0dDnZsXE496N3FwKGbixB8XsIBlN933U7DulrT7eCA3RFjeOwN3958cxMpnE+dJ/rcOWTwPLot59JCv70gZ9eLbgWhEDEY6rc5SDQHkRJiaT2zy9pu2yQvMWOuu9gKmmDTr0UJE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710596837; c=relaxed/simple;
-	bh=napWyiTbWmBdWfPift5N3RnrVqOix92yBUw3KFQ4zVM=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 Mime-Version:Content-Type; b=e32reR7Y8+XZ+41z4P7ZCHu853CL+Ku0LKIji+O5F5XKPV3Uv5IKPE7j20SIbhY/Esdc0+455AGW/bhHgfa15bhBhJKn9weZ8/7Xb2VJdxiHbMIDMs+Xb+djHuPFLXl/J/i5njrN0bohIHWjEGKDN/l2XdhKRXZeXPfB6gqNxV0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IHgwBOao; arc=none smtp.client-ip=209.85.219.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qv1-f44.google.com with SMTP id 6a1803df08f44-690b100da62so20555526d6.1;
-        Sat, 16 Mar 2024 06:47:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710596835; x=1711201635; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=HD4PEZvlXMX0Q1WWJJMKYexZ239jcjIn+yqUTQFDVjw=;
-        b=IHgwBOao5L2apJKoEap+PSr/W9h5a7k+LcPWciUnsPp89jBLlZp8kmyDsvAtw1hdra
-         ZK35fxDoM7BWEAwxDwD2+Ubgr80uYOnH1qorg9PFREMP56xSjin9mau8b7lapaSckmRo
-         2qa6C7/CPEUpU8GK3UvkuGjrTG2BszEFHj7AEPQy0OfcM26LxFzSeyV1RR5XsJ8cNw52
-         NReNx8truQLQY/hBoma8K7Kz7rNmn6U1gelJ6TuQVG1GxNSbFkIBA6shIaUlqDwdvATa
-         W3IOIdpkAAGGBnuzcOCB1gA+LU/igpxK+o7MhNpRgY86R+8qiC3EDSH5a5rrP+IxxtqL
-         /wuQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710596835; x=1711201635;
-        h=content-transfer-encoding:mime-version:subject:references
-         :in-reply-to:message-id:cc:to:from:date:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=HD4PEZvlXMX0Q1WWJJMKYexZ239jcjIn+yqUTQFDVjw=;
-        b=jhh4ircR6ychrwbWSx4cjM6TaXp48MorxHYol5zDRWY3qWhtAEpLBJdkUc5B6dSOST
-         vyqIV5OT69ppSEOwSMDdXvbswiZVBlyenID56qGMh6nhNwro419X3wPojd/pHei8bxzs
-         pU8bYaReSc8ZoGZVhLJrGjmm3q/ACMWnFtyv58bIGrJJAtc3yV1U8rZI28YnLRqWoH+9
-         SQM7pKoF6n1lvGWkzRZNZPewZyUWxPJTMcTBmb+rKyV1YR0wABOC6VyRrTXV2/qkRkDA
-         VRdg+PtA7gqvmhDBjGI6dkqJOyAb3uyItqdduxoHNB1svjdNYn97lGjQMkafCwLd2/OV
-         2exA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAF6F5DiMpntk6DoWDhjtdM8TPCe6uPVGGWVc5+K+GqIUCkHGpj/SEV75fNCIRuAdQagncZrfEcJIBmimy2dOmtXfXUhdm4q7BV+lA
-X-Gm-Message-State: AOJu0YyjeiiKbgDCqpoPANzfMOV+/MYoqx2HxZ4EXR1sKiEZQEIGYhJE
-	Zdxacp8aAmKNxVmNm+I9i0k9VNGHIsdps6ukMwNsRs55NT3UVI9vFQX8KvEgjU4=
-X-Google-Smtp-Source: AGHT+IHXPaYt87KqnrNIb37eLSCouerHDzlp7ed2X7VWIRJA6eAIkdr/L71TP5BPF5kGXr1/Akt/nw==
-X-Received: by 2002:a05:622a:4e93:b0:430:a7c4:5e64 with SMTP id dj19-20020a05622a4e9300b00430a7c45e64mr6922950qtb.60.1710596834837;
-        Sat, 16 Mar 2024 06:47:14 -0700 (PDT)
-Received: from localhost (55.87.194.35.bc.googleusercontent.com. [35.194.87.55])
-        by smtp.gmail.com with ESMTPSA id bq27-20020a05622a1c1b00b0042f068d3d8asm741853qtb.43.2024.03.16.06.47.14
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Mar 2024 06:47:14 -0700 (PDT)
-Date: Sat, 16 Mar 2024 09:47:13 -0400
-From: Willem de Bruijn <willemdebruijn.kernel@gmail.com>
-To: =?UTF-8?B?TGVuYSBXYW5nICjnjovlqJwp?= <Lena.Wang@mediatek.com>, 
- "davem@davemloft.net" <davem@davemloft.net>, 
- "kuba@kernel.org" <kuba@kernel.org>, 
- =?UTF-8?B?U2hpbWluZyBDaGVuZyAo5oiQ6K+X5piOKQ==?= <Shiming.Cheng@mediatek.com>, 
- "pabeni@redhat.com" <pabeni@redhat.com>, 
- "edumazet@google.com" <edumazet@google.com>
-Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>, 
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Message-ID: <65f5a2e1ed02e_6ef3e29463@willemb.c.googlers.com.notmuch>
-In-Reply-To: <ee5fb4ca84598f302f44ca9d4182d6f5b796232f.camel@mediatek.com>
-References: <20240313133402.9027-1-shiming.cheng@mediatek.com>
- <e826f337c3db612852c5f543d123ee53adc885bb.camel@redhat.com>
- <ee5fb4ca84598f302f44ca9d4182d6f5b796232f.camel@mediatek.com>
-Subject: Re: [PATCH net] udp: fix segmentation crash for untrusted source
- packet
+	s=arc-20240116; t=1710597105; c=relaxed/simple;
+	bh=EiGD5J7ZKHTJsgR/kDe51wSpieV5dEnYLmedjLy2Ww8=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=f5ynpKj9dQB8Nay4N4pHv8yBbpEv6gouiiGNqocbwcOk6ekGTdVVu6yfHslA0p1IOuqcsvnZFEB2pakxzSJiKe78H5vhDWII/7CuNLS78BJfud8ppf8dG411IIBrr1jP7z1exEH6rvcvP5wo9sieYv6zq13cySivbtjuEW6Fw0g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=sZEZECkZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5ABC5C433F1;
+	Sat, 16 Mar 2024 13:51:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710597105;
+	bh=EiGD5J7ZKHTJsgR/kDe51wSpieV5dEnYLmedjLy2Ww8=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=sZEZECkZ9bFYSMSLxxYxNwTiA644I/p5IcLLli8zLE/lErF231LAyz2lDWMclag8C
+	 jY7oOls0EdlikDk/IIr+Y8yPEiYu6aNqWEvk/ap4nuv8dzmuAAsbFvCTDBLUaSLFfP
+	 GyYmo02nZLF4xpZISi+xczz4DYScPl4wJImGb7E+36YIx0U1SklxwU1BDLw9GfOnqT
+	 Ugbkp64g02epIJH5rav/VdGpNjcyQyQYNMlbxeJjd4iexpQnGMjT5bGoLZ11b7ms9h
+	 lIhnWxcHOt3Ujjt1jSZa5NUnLFP9M0Wvgth0NZ2UfGfUjcnxIzvA5/pb0CjGLycchh
+	 F9rPfp/NJIVqA==
+Date: Sat, 16 Mar 2024 13:51:28 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: Andy Shevchenko <andriy.shevchenko@linux.intel.com>, lars@metafoo.de,
+ ang.iglesiasg@gmail.com, mazziesaccount@gmail.com, ak@it-klinger.de,
+ petre.rodan@subdimension.ro, linus.walleij@linaro.org,
+ phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 3/6] iio: pressure: add SCALE and RAW values for
+ channels
+Message-ID: <20240316135128.28f01ed6@jic23-huawei>
+In-Reply-To: <ZfRI6oAxr6SXPLcf@vamoirid-EDL-PC>
+References: <20240313174007.1934983-1-vassilisamir@gmail.com>
+	<20240313174007.1934983-4-vassilisamir@gmail.com>
+	<ZfH4bET-HX0e3PO_@smile.fi.intel.com>
+	<20240313195110.GB1938985@vamoiridPC>
+	<ZfIGtUPZpyDBnWwz@smile.fi.intel.com>
+	<20240313212812.GE1938985@vamoiridPC>
+	<ZfLYGL/vXMHUGghz@vamoirid-EDL-PC>
+	<20240314144647.291a1100@jic23-huawei>
+	<ZfRI6oAxr6SXPLcf@vamoirid-EDL-PC>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Type: text/plain;
- charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-Lena Wang (=E7=8E=8B=E5=A8=9C) wrote:
-> On Wed, 2024-03-13 at 16:41 +0100, Paolo Abeni wrote:
-> >  	 =
+On Fri, 15 Mar 2024 14:11:06 +0100
+Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
 
-> > External email : Please do not click links or open attachments until
-> > you have verified the sender or the content.
-> >  On Wed, 2024-03-13 at 21:34 +0800, Shiming Cheng wrote:
-> > > Kernel exception is reported when making udp frag list
-> > segmentation.
-> > > Backtrace is as below:
-> > >     at out/android15-6.6/kernel-6.6/kernel-
-> > 6.6/net/ipv4/udp_offload.c:229
-> > >     at out/android15-6.6/kernel-6.6/kernel-
-> > 6.6/net/ipv4/udp_offload.c:262
-> > > features=3Dfeatures@entry=3D19, is_ipv6=3Dfalse)
-> > >     at out/android15-6.6/kernel-6.6/kernel-
-> > 6.6/net/ipv4/udp_offload.c:289
-> > > features=3D19)
-> > >     at out/android15-6.6/kernel-6.6/kernel-
-> > 6.6/net/ipv4/udp_offload.c:399
-> > > features=3D19)
-> > >     at out/android15-6.6/kernel-6.6/kernel-
-> > 6.6/net/ipv4/af_inet.c:1418
-> > > skb@entry=3D0x0, features=3D19, features@entry=3D0)
-> > >     at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:53
-> > > tx_path=3D<optimized out>)
-> > >     at out/android15-6.6/kernel-6.6/kernel-6.6/net/core/gso.c:124
-> > =
+> On Thu, Mar 14, 2024 at 02:46:47PM +0000, Jonathan Cameron wrote:
+> > On Thu, 14 Mar 2024 11:57:28 +0100
+> > vamoirid <vassilisamir@gmail.com> wrote:
+> >   
+> > > On Wed, Mar 13, 2024 at 10:28:12PM +0100, Vasileios Amoiridis wrote:  
+> > > > On Wed, Mar 13, 2024 at 10:04:05PM +0200, Andy Shevchenko wrote:    
+> > > > > On Wed, Mar 13, 2024 at 08:51:10PM +0100, Vasileios Amoiridis wrote:    
+> > > > > > On Wed, Mar 13, 2024 at 09:03:08PM +0200, Andy Shevchenko wrote:    
+> > > > > > > On Wed, Mar 13, 2024 at 06:40:04PM +0100, Vasileios Amoiridis wrote:    
+> > > > > > > > Add extra IIO_CHAN_INFO_SCALE and IIO_CHAN_INFO_RAW in order to be
+> > > > > > > > able to calculate the processed value with standard userspace IIO
+> > > > > > > > tools. Can be used for triggered buffers as well.    
+> > > > > 
+> > > > > ...
+> > > > >     
+> > > > > > > > +	case IIO_CHAN_INFO_RAW:
+> > > > > > > > +		switch (chan->type) {
+> > > > > > > > +		case IIO_HUMIDITYRELATIVE:
+> > > > > > > > +			*val = data->chip_info->read_humid(data);
+> > > > > > > > +			ret = IIO_VAL_INT;
+> > > > > > > > +			break;
+> > > > > > > > +		case IIO_PRESSURE:
+> > > > > > > > +			*val = data->chip_info->read_press(data);
+> > > > > > > > +			ret = IIO_VAL_INT;
+> > > > > > > > +			break;
+> > > > > > > > +		case IIO_TEMP:
+> > > > > > > > +			*val = data->chip_info->read_temp(data);
+> > > > > > > > +			ret = IIO_VAL_INT;
+> > > > > > > > +			break;
+> > > > > > > > +		default:
+> > > > > > > > +			ret = -EINVAL;
+> > > > > > > > +			break;    
+> > > > > > > 
+> > > > > > > Is it mutex that prevents us from returning here?
+> > > > > > > If so, perhaps switching to use cleanup.h first?    
+> > > > > > 
+> > > > > > I haven't seen cleanup.h used in any file and now that I searched,
+> > > > > > only 5-6 are including it.    
+> > > > > 
+> > > > > Hmm... Which repository you are checking with?
+> > > > > 
+> > > > > $ git grep -lw cleanup.h -- drivers/ | wc -l
+> > > > > 47
+> > > > > 
+> > > > > (Today's Linux Next)
+> > > > >    
+> > > > 
+> > > > I am checking the drivers/iio of 6.8 (on sunday) and I can only find 7
+> > > > drivers that use it.  
+> > 
+> > Yes - but that's because it's new - most of the stuff in 6.8 was the proof
+> > points for the patches originally introducing support for autocleanup (so typically
+> > one or two cases for each type of handling) That doesn't mean we don't want it
+> > in drivers that are being worked upon if it gives a significant advantage.
+> > Some features we need will merge shortly, and a great deal more usage
+> > of this autocleanup will occur.
+> >   
+> > > >     
+> > > > > > I am currently thinking if the mutex
+> > > > > > that already exists is really needed since most of the drivers
+> > > > > > don't have it + I feel like this is something that should be done
+> > > > > > by IIO, thus maybe it's not even needed here.    
+> > > > >    
+> > > 
+> > > After some researching today, I realized that all the                           
+> > > {read/write}_{raw/avail}_{multi/}() functions are in drivers/iio/inkern.c
+> > > for channel mapping in the kernel and it looks like they are guarded by
+> > > the mutex_{un}lock(&iio_dev_opaque->info_exist_lock).  
+> > 
+> > Why is that relevant to this patch which isn't using that interface at all?
+> > Those protections are to ensure that a consumer driver doesn't access a removed
+> > IIO device, not accesses directly from userspace.
+> >   
+> > >so I feel that the
+> > > mutexes in the aforementioned functions can be dropped. When you have the
+> > > time please have a look, maybe the could be dropped.  
+> > 
+> > Identify what your locks are protecting.  Those existence locks have
+> > very specific purpose and should not be relied on for anything else.
+> > 
+> > If this driver is protecting state known only to itself, then it must
+> > be responsible for appropriate locking.
+> >   
+> > > 
+> > > In general, there is quite some cleaning that can be done in this driver
+> > > but is it wise to include it in the triggered buffer support series???   
+> > 
+> > Generally if working on a driver and you see cleanup that you think should
+> > be done, it belongs before any series adding new features, precisely because
+> > that code can typically end up simpler as a result.  This sounds like one
+> > of those cases.  Normally that only includes things that are directly related
+> > to resulting code for new features (or applying the same cleanup across a driver)
+> > as we don't want to make people do a full scrub of a driver before adding
+> > anything as it will just create too much noise.
+> > 
+> > So for this case, it does look like a quick use of guard(mutex) in
+> > a precursor patch will simplify what you add here - hence that's a reasonable
+> > request for Andy to make.
+> > 
+> > Jonathan
+> >   
+> 
+> After looking into how to change the code to introduce the new guard(mutex)
+> I encountered the following situation
 
-> > A full backtrace would help better understanding the issue.
-> =
+No problem. We are all getting used to how to use this stuff. There
+have been a few 'comments' from Linus Torvalds on people doing it wrong.
+One of those (it was about cond_guard() proposal if you want to find it)
+is applicable here (note that Linus was rather abrupt in that thread and
+got called out for it, not in my view a good example of kernel process).
 
-> Below is full backtrace:
->  [ 1100.812205][    C3] CPU: 3 PID: 0 Comm: swapper/3 Tainted:
-> G        W  OE      6.6.17-android15-0-g380371ea9bf1 #1
->  [ 1100.812211][    C3] Hardware name: MT6991(ENG) (DT)
->  [ 1100.812215][    C3] Call trace:
->  [ 1100.812218][    C3]  dump_backtrace+0xec/0x138
->  [ 1100.812222][    C3]  show_stack+0x18/0x24
->  [ 1100.812226][    C3]  dump_stack_lvl+0x50/0x6c
->  [ 1100.812232][    C3]  dump_stack+0x18/0x24
->  [ 1100.812237][    C3]  mrdump_common_die+0x24c/0x388 [mrdump]
->  [ 1100.812259][    C3]  ipanic_die+0x20/0x34 [mrdump]
->  [ 1100.812269][    C3]  notifier_call_chain+0x90/0x174
->  [ 1100.812275][    C3]  notify_die+0x50/0x8c
->  [ 1100.812279][    C3]  die+0x94/0x308
->  [ 1100.812283][    C3]  __do_kernel_fault+0x240/0x26c
->  [ 1100.812288][    C3]  do_page_fault+0xa0/0x48c
->  [ 1100.812293][    C3]  do_translation_fault+0x38/0x54
->  [ 1100.812297][    C3]  do_mem_abort+0x58/0x104
->  [ 1100.812302][    C3]  el1_abort+0x3c/0x5c
->  [ 1100.812307][    C3]  el1h_64_sync_handler+0x54/0x90
->  [ 1100.812313][    C3]  el1h_64_sync+0x68/0x6c
->  [ 1100.812317][    C3]  __udp_gso_segment+0x298/0x4d4
->  [ 1100.812322][    C3]  udp4_ufo_fragment+0x130/0x174
->  [ 1100.812326][    C3]  inet_gso_segment+0x164/0x330
->  [ 1100.812330][    C3]  skb_mac_gso_segment+0xc4/0x13c
->  [ 1100.812335][    C3]  __skb_gso_segment+0xc4/0x120
->  [ 1100.812339][    C3]  udp_rcv_segment+0x50/0x134
->  [ 1100.812344][    C3]  udp_queue_rcv_skb+0x74/0x114
->  [ 1100.812348][    C3]  udp_unicast_rcv_skb+0x94/0xac
->  [ 1100.812353][    C3]  __udp4_lib_rcv+0x3e0/0x818
->  [ 1100.812358][    C3]  udp_rcv+0x20/0x30
->  [ 1100.812362][    C3]  ip_protocol_deliver_rcu+0x194/0x368
->  [ 1100.812368][    C3]  ip_local_deliver+0xe4/0x184
->  [ 1100.812373][    C3]  ip_rcv+0x90/0x118
->  [ 1100.812378][    C3]  __netif_receive_skb+0x74/0x124
->  [ 1100.812383][    C3]  process_backlog+0xd8/0x18c
->  [ 1100.812388][    C3]  __napi_poll+0x5c/0x1fc
->  [ 1100.812392][    C3]  net_rx_action+0x150/0x334
->  [ 1100.812397][    C3]  __do_softirq+0x120/0x3f4
->  [ 1100.812401][    C3]  ____do_softirq+0x10/0x20
->  [ 1100.812405][    C3]  call_on_irq_stack+0x3c/0x74
->  [ 1100.812410][    C3]  do_softirq_own_stack+0x1c/0x2c
->  [ 1100.812414][    C3]  __irq_exit_rcu+0x5c/0xd4
->  [ 1100.812418][    C3]  irq_exit_rcu+0x10/0x1c
->  [ 1100.812422][    C3]  el1_interrupt+0x38/0x58
->  [ 1100.812428][    C3]  el1h_64_irq_handler+0x18/0x24
->  [ 1100.812434][    C3]  el1h_64_irq+0x68/0x6c
->  [ 1100.812437][    C3]  arch_local_irq_enable+0x4/0x8
->  [ 1100.812443][    C3]  cpuidle_enter+0x38/0x54
->  [ 1100.812449][    C3]  do_idle+0x198/0x294
->  [ 1100.812454][    C3]  cpu_startup_entry+0x34/0x3c
->  [ 1100.812459][    C3]  secondary_start_kernel+0x138/0x158
->  [ 1100.812465][    C3]  __secondary_switched+0xc0/0xc4
-> =
+Make more use of helper functions to avoid gotos.
 
-> > > This packet's frag list is null while gso_type is not 0. Then it is=
-
-> > treated
-> > > as a GRO-ed packet and sent to segment frag list. Function call
-> > path is
-> > > udp_rcv_segment =3D> config features value
-> > >     __udpv4_gso_segment  =3D> skb_gso_ok returns false. Here it
-> > should be
-> > >                             true. =
-
-> > =
-
-> > Why? If I read correctly the above, this is GSO packet landing in an
-> > UDP socket with no UDP_GRO sockopt. The packet is expected to be
-> > segmented again.
-> > =
-
-> Yes, it is GSO packet, however the fragment list of this GSO packet
-> becomes NULL. As the occurrence rate is very low, we really don=E2=80=99=
-t know
-> why and when it becomes to be NULL. It happens both in cellular and
-> wlan network and seems an unknown kernel issue.
 >
-> To avoid crash the packet should skip to be segmented when fraglist is
-> null.
-> =
+> In general, with the new guard(mutex) functinality you can remove most of the
+> goto statements and return immediately without doing the cleanup yourself. 
+> In the case of this driver, in the read_raw() call, apart from the mutex, 
+> the power management functions are also used. This means that in each case, 
+> before returning, the pm functions will need to be called, which I don't
+> know if it will actually make the code cleaner. Have a look below with
+> an example.
+> 
+> ----- Current Implementation -----
+> 
+> static int bmp280_read_raw( ... )
+> {
+> 	...
+> 
+> 	pm_runtime_get_sync_data(data->dev);
 
-> > >Failed reason is features doesn't
-> > match
-> > >                             gso_type.
-> > >         __udp_gso_segment_list
-> > >             skb_segment_list =3D> packet is linear with skb->next =3D=
+Pull from here...
+> 	mutex_lock(&data->lock);
+> 
+> 	switch (mask) {
+> 	case 1:
+> 		switch (channel) {
+> 		case TEMP:
+> 			ret = read_temp();
+> 			break;
+> 		case PRESS:
+> 			ret = read_press();
+> 			break;
+> 		...
+> 	case 2:
+> 		switch (channel) {
+> 		...
+> 
+> 	case 3:
+> 		...
+> 	default:
+> 		ret = -EINVAL;
+> 		break;
+> 	}
+> 
+> 	mutex_unlock(&data->lock);
 
-> > NULL
-> > >             __udpv4_gso_segment_list_csum =3D> use skb->next direct=
-ly
-> > and
-> > >                                              crash happens
-> > > =
+.. to here out as a separate little function - somethimg like
+bmp280_read_raw_impl() which can use guard() and direct returns
+internally.
 
-> > > In rx-gro-list GRO-ed packet is set gso type as
-> > > NETIF_F_GSO_UDP_L4 | NETIF_F_GSO_FRAGLIST in napi_gro_complete. In
-> > gso
-> > > flow the features should also set them to match with gso_type. Or
-> > else it
-> > > will always return false in skb_gso_ok. Then it can't discover the
-> > > untrusted source packet and result crash in following function.
-> > =
+Then this block will be
 
-> > What is the 'untrusted source' here? I read the above as the packet
-> > aggregation happened in the GRO engine???
-> > =
+	pm_runtime_get_sync_data(data->dev);
+	ret = bmp280_read_raw_impl(...);
+	pm_runtime_mark_last_busy(data->dev);
+	pm_runtime_put_autosuspend(data->dev);
 
-> > Could you please give a complete description of the relevant
-> > scenario?
-> > =
+	return ret;
 
-> =
+> 	pm_runtime_mark_last_busy(data->dev);
+> 	pm_runtime_put_autosuspend(data->dev);
+> 
+> 	return ret;
+> }
+> 
+> ----- End of Current Implementation -----
+> 
+> With the use of the guard(mutex)(&data->lock) you could immediately
+> return without all the break statements. But we still need to call
+> the pm functions. So the code, as far as I can understand will look
+> like this:
+> 
+> ----- Guard Mutex Implementation -----
+> 
+> static int bmp280_read_raw( ... )
+> {
+> 	...
+> 
+> 	pm_runtime_get_sync_data(data->dev);
+> 	guard(mutex)(&data->lock);
+> 
+> 	switch (mask) {
+> 	case 1:
+> 		switch (channel {
+> 		case TEMP:
+> 			ret = read_temp();
 
-> According to the backtrace info, we infer it is a rx-frag_list GRO
+This inverts ordering of pm and the guard mutex, so not a good idea.
 
-It would be helpful to see an skb_dump. But if this happens rarely in
-production, understood if that is not feasible.
+> 			pm_runtime_mark_last_busy(data->dev);
+> 			pm_runtime_put_autosuspend(data->dev);
+> 			return ret;
+> 		case PRESS:
+> 			ret = read_press();
+> 			pm_runtime_mark_last_busy(data->dev);
+> 			pm_runtime_put_autosuspend(data->dev);
+> 			return ret;
+> 		...
+> 	case 2:
+> 		switch (channel) {
+> 		...
+> 	case 3:
+> 		...
+> 	default:
+> 		return -EINVAL;
+> 	}
+> 
+> 	return 0;
+> }
+> 
+> ----- End of Guard Mutex Implementation -----
+> 
+> Have I completely misunderstood something? If what I explain
+> above is correct, you think that this is a better implementation
+> and I should move forward becasue we want to use the guard(mutex)
+> functionality? 
+> 
+> Maybe it is necessary to create some new type of guard to call
+> also the pm functions before exiting?
 
-The packet arrives on process_backlog, so still not sure how it is
-produced.
+Don't try that approach - it's complexity that will get a response
+you don't want from Linus.  Helper functions solve this one
+for us nicely.
 
-> packet. Before sending into the UDP socket with no UDP_GRO sockopt, it
-> seems enter "skb_condense" to trim it and loose his frag list. However
-> it still keeps gso_type and gso_size. Then it continues to do
-> skb_segment_list.
-> =
+At somepoint maybe generic infrastructure for runtime pm handling
+will be added, but that stuff is complex enough already so I suspect
+not or not until people are in general much more confident with the
+cleanup.h infrastructure and where it is appropriate.
 
-> First crash happens in skb_segment_list. =
+What you are doing here should all be standard usage at the simpler
+end of the scale, so not a risky as a few things I'm trying to get in :)
 
-> This patch resolves the crash and lets the packet becomes a skb without=
+Jonathan
 
-> skb->next:
-> https://lore.kernel.org/all/Y9gt5EUizK1UImEP@debian/
-> Then crash moves to __udp_gso_sement_list -> skb_segment_list(finish)
-> -> __udpv4_gso_segment_list_csum, it uses skb->next without check then
-> crash.
-> =
+> 
+> Cheers,
+> Vasilis
+> 
+> >   
+> > > I
+> > > have noticed quite some things that could be improved but I am hesitating
+> > > to do it now in order to not "pollute" this series with many cleanups and
+> > > leave it for another cleanup series for example.
+> > > 
+> > > Best regards,
+> > > Vasilis Amoiridis
+> > >   
+> > > > > > > > +		}
+> > > > > > > > +		break;    
+> > > > > 
+> > > > > -- 
+> > > > > With Best Regards,
+> > > > > Andy Shevchenko
+> > > > > 
+> > > > >     
+> >   
+> 
 
-> =
-
-> What we want to do is to drop this abnormal packet.
-
-I think we want to deliver this packet if possible.
-
-Thanks for the added context. So this is assumed to be a GSO skb with
-SKB_GSO_FRAGLIST that somewhere lots its fraglist? That is the bug
-if true.
-
-You are suggesting that this happens in the skb_condense in
-__udp_enqueue_schedule_skb?
-
-If generated by GRO then on a device that has NETIF_F_GRO_FRAGLIST set.
-So one workaround (not fix) is to disable that.
-
-> So we set features
-> NETIF_F_GSO_UDP_L4 |NETIF_F_GSO_FRAGLIST to match fixes: f2696099c6c6
-> condation then drop it. =
 
