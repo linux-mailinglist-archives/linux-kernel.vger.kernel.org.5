@@ -1,86 +1,107 @@
-Return-Path: <linux-kernel+bounces-105235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 758F287DAE3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:50:09 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CDB087DAE8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:51:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7D261C20AC2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:50:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8FECD28212C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:51:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B437C1BF40;
-	Sat, 16 Mar 2024 16:49:58 +0000 (UTC)
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EEA71BDD5;
+	Sat, 16 Mar 2024 16:51:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RzAPz23f"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE9DB1BDCD;
-	Sat, 16 Mar 2024 16:49:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.150.191.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7777D1BC23;
+	Sat, 16 Mar 2024 16:51:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710607798; cv=none; b=edjb5SYyozj1VXc3CwlwXAmGSAeZYg/BdxeMg9kgpLy3V4CVO1zNCaNItABgL2IgwCBevXJnHMAsJGEsrWkLIcsoNMzfOeHAsBzIrUDDxf5DLA8L2OIGpBD3MZSJaR7WmiRESutSs/sGX/CIB9V7ItCaSpzr8zvwAmWIAGB2mrI=
+	t=1710607893; cv=none; b=kIYqyosbP1ZAuS/BohUvMLg+S9PL9f1EK2l17jiOEp7wy5om1bfOxzreV7Xau632FNMzljAEacgU/UxrQasXf7KKClC/Jk8dOCbkJ/HAz8u/4UHZv+ya+NyFZ1s8tIA9btsUnmMekU/V6+RoZmJU6hPYHvo8n62K4xU3hXU9vys=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710607798; c=relaxed/simple;
-	bh=yVxEpTE1C4x1uKjaL4iOmumcJXZB0hyN+asSRrnUtgI=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=uPW0YrWZ2I314lIVRUhS5wDVxyVkGuq5fczNTSKgQdpT0G+NMx4kVaY7P4kLIONcN6FLrwoZ7FsUo/Ode58uV6aondGZa07JOu7Ns9fMM91AgwZWxaHcoh/DY7ub1vsoY+UNZKKbLvN6GwDQfAmDLMgXIrsmy8gTM9u/YbLFs4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=194.150.191.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id 9AD6D8C2492;
-	Sat, 16 Mar 2024 17:49:52 +0100 (CET)
-Authentication-Results: mail.lichtvoll.de;
-	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From: Martin Steigerwald <martin@lichtvoll.de>
-To: Kent Overstreet <kent.overstreet@linux.dev>
-Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject:
- Re: bcachefs: do not run 6.7: upgrade to 6.8 immediately if you have a multi
- device fs
-Date: Sat, 16 Mar 2024 17:49:52 +0100
-Message-ID: <1962788.PYKUYFuaPT@lichtvoll.de>
-In-Reply-To: <foqeflqjf7h2rz4ijmqvfawqzinni3asqtofs3kmdmupv4smtk@7j7mmfve6bti>
-References:
- <muwlfryvafsskt2l2hgv3szwzjfn7cswmmnoka6zlpz2bxj6lh@ugceww4kv3jr>
- <4555054.LvFx2qVVIh@lichtvoll.de>
- <foqeflqjf7h2rz4ijmqvfawqzinni3asqtofs3kmdmupv4smtk@7j7mmfve6bti>
+	s=arc-20240116; t=1710607893; c=relaxed/simple;
+	bh=Blsu0CvqJo7HubrNrOKxFJlV86ZtgqCAQWTPcruNjzo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pcIRLed+wZydIDkU9iKclczRCcIQsr+hxDSxH7aap1KCXvAmzGYoEIRKjmmTX/J0rsBBL8lTN/ISkZ9Okdmbf77bLfBK+/3lYdLEw1TdDBpo6vOj3G38iNNSIU111IeCv1wM6fE200t95imeKKL2+W5ctIEDkIzScMSrY7DBWKA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RzAPz23f; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 40D2BC433C7;
+	Sat, 16 Mar 2024 16:51:29 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710607892;
+	bh=Blsu0CvqJo7HubrNrOKxFJlV86ZtgqCAQWTPcruNjzo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=RzAPz23fd/PxP33AOa4VhBirWHWPNkPf5erhBDr8Pb8F6/lbb/XUlhaCYPt35sB+B
+	 iWvAe1E6wVDt30ocj4xMFm3DfWqfdKlW4Dxo8KssXYoihPBeUlWL/SkQG56Amk7AST
+	 80OGqWxhIvaYNaqa2EQqNhGjJtEs4jNmJV6QKyef7YBbaJdaGkBgmzTiCoEjoqobD+
+	 xIWJoneRYLd1b5zUvtVOMwokPVV7DaX/MAFDiIWMkOxO6TlT61uDk8aB9UDCgblFxb
+	 skazrTAb9AuVFTsYJtnGpvBOCTnW0afT7HvuavOPLP1e2cSAu6RPzlp+v+xuTvwiVT
+	 AzP71kcxM3WAA==
+Date: Sat, 16 Mar 2024 16:51:27 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Caleb Connolly <caleb.connolly@linaro.org>
+Cc: Amrit Anand <quic_amrianan@quicinc.com>, robh@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-msm@vger.kernel.org, kernel@quicinc.com,
+	peter.griffin@linaro.org, linux-riscv@lists.infradead.org,
+	chrome-platform@lists.linux.dev, linux-mediatek@lists.infradead.org,
+	Simon Glass <sjg@chromium.org>, Chen-Yu Tsai <wenst@chromium.org>,
+	Douglas Anderson <dianders@chromium.org>
+Subject: Re: [PATCH v2 2/2] dt-bindings: qcom: Update DT bindings for
+ multiple DT
+Message-ID: <20240316-herring-skies-6ee1d4a9c0d2@spud>
+References: <1710418312-6559-1-git-send-email-quic_amrianan@quicinc.com>
+ <1710418312-6559-3-git-send-email-quic_amrianan@quicinc.com>
+ <f6f317d9-830d-4c38-998f-b229b3d9f95a@linaro.org>
+ <20240316-germinate-browsing-6865db3a44d7@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="PlXcNudSv6CjKVti"
+Content-Disposition: inline
+In-Reply-To: <20240316-germinate-browsing-6865db3a44d7@spud>
+
+
+--PlXcNudSv6CjKVti
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset="UTF-8"
 
-Kent Overstreet - 16.03.24, 17:41:08 CET:
-> > > No need to recreate and repopulate - you just don't want to be going
-> > > back to 6.7 from a newer version.
-> >=20
-> > Unfortunately I need to do exactly that, as 6.8.1 breaks hibernation
-> > on ThinkPad T14 AMD Gen 1:
-[=E2=80=A6]
-> run this tree then:
+On Sat, Mar 16, 2024 at 04:20:03PM +0000, Conor Dooley wrote:
+> On Thu, Mar 14, 2024 at 02:20:38PM +0000, Caleb Connolly wrote:
+> > On 14/03/2024 12:11, Amrit Anand wrote:
+> > 2. A top level board-id property that isn't namespaced implies that it
+> > isn't vendor specific, but the proposed implementation doesn't even
+> > pretend to be vendor agnostic.
 >=20
-> https://evilpiepirate.org/git/bcachefs.git/log/?h=3Dbcachefs-for-v6.7
+> I pointed out previously that the Chromebook guys had some similar
+> issues with dtb selection when the OEM varies parts but there does not
+> seem to be any of them on CC here.
 
-Wonderful. Thanks! Compiling this one instead. Shall I report something to=
-=20
-you once I booted into it? I read you had difficulties getting those patche=
-s=20
-into stable.
+That's maybe a bit harsh of me actually, I see that there's a
+chrome-platform address on CC, but I don't know if that's gonna reach
+the guys that work on these devices (Chen-Yu Tsai and Doug Anderson in
+particular).
 
-It's 6.7.9, but there is no use for the Intel Atom mitigation in 6.7.10=20
-for this laptop. So it will work perfectly.
+--PlXcNudSv6CjKVti
+Content-Type: application/pgp-signature; name="signature.asc"
 
-=2D-=20
-Martin
+-----BEGIN PGP SIGNATURE-----
 
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfXODwAKCRB4tDGHoIJi
+0k6+AQCM2tTMcQ+gQoITo10RiHQuEEKNYjhYn4Ta1ug4VwhP4gD/cA3EtavNpHi6
+nEj6wjurQTCD/TCcfUMUCuRqp9KHZQk=
+=KIKJ
+-----END PGP SIGNATURE-----
 
+--PlXcNudSv6CjKVti--
 
