@@ -1,322 +1,359 @@
-Return-Path: <linux-kernel+bounces-105263-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AC2D87DB2D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:05:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76EF687DB2F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:07:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A45F8281F60
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:05:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9F9B5B21166
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:07:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 181441BF27;
-	Sat, 16 Mar 2024 18:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61B6F1BF3B;
+	Sat, 16 Mar 2024 18:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NGK3tHie"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="k3DyflbR"
+Received: from mail-wm1-f50.google.com (mail-wm1-f50.google.com [209.85.128.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10CE51BC58
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 18:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B18CA1BC58;
+	Sat, 16 Mar 2024 18:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710612346; cv=none; b=pMzYi+l0juDGICJOdm3UjypVq1DLs4ICppL+Wi0XsWI8jV1blbBQit/pHtKRXmgz43Fqa3rC8mk+PPC7Qzs11ndbcZkZMI+PbGESGgDv6HYN/eA3QMWyHItqnP1tKVIHAb+CSSTu3x1XbnTNtJVyn+GDAxiomR9OYCuyNyFm83c=
+	t=1710612417; cv=none; b=fYBuNFNjWUHm9aZYq1Dff5ZrKgj9S7nYM6ln5eUbAMU3KQQKkmMtZrevTSDkEdUfVnuiR9KDhQIKOFp2r6YIyW1LDpp1FMIWa6fcIdafjlFlCpLeU/HD4I7N9oWp/Uz44TmlqkNXuNdkpPHuRHduYvdowycScpVmj7UEXAycmNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710612346; c=relaxed/simple;
-	bh=lfxoWzuW3H/P0O8kV29DkMA1WC2xIN3TTICbtOuGAVo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AQ+MXRZAzc63Z8/1MUOnOV5aA+kYZVfk/v3bMtlVarDExzIhgSxhy7ua3UFWJpAdSON1PszRR8r1Py+QE8cmKgSYQ8oG5YKuNBaime1l5sDrwcC4CU0ZQGV0O74g+My500z20qMNc/b42lHqJ9Wo4sfRWdkhAtI9e5B41KzGqzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NGK3tHie; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 07234C433F1;
-	Sat, 16 Mar 2024 18:05:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710612345;
-	bh=lfxoWzuW3H/P0O8kV29DkMA1WC2xIN3TTICbtOuGAVo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=NGK3tHie9O673vt6eyBEVHJcLTdclTQkptZeKkjFpdOlaYGt8FxYu0n9yLGz+svnm
-	 a5t4hLgDrRX55XA8c4nySX0AygZTTGxn8VWjiUfj47MmjmtMuUdJVZ1fvwIaCRVueg
-	 wxz/QaFFEytn9PhAnJXbxddyfqGedEFSXIy1hEu8ANqlLdqV6MnE3ps+fKWtuKZW3J
-	 JdmkNInETc3FQZLhDAFo0nZuUUhkM8C10ktyjh8NQzvQca0u8NgvieFofDRbE0z3ZT
-	 FnAGTuT/BhdxWE7qg6+gPXQNS9NqQNGXdSrVuDjaOZHksGK9AViXt3RvIHVQCjLsmN
-	 jnBa/Wz6prGuA==
-Date: Sat, 16 Mar 2024 23:35:41 +0530
-From: Vinod Koul <vkoul@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [GIT PULL]: Generic phy updates for v6.9
-Message-ID: <ZfXfdTFjbHEoIdXr@matsya>
-References: <ZfQrAdJodRKKXeBj@matsya>
- <CAHk-=wi1DTEQpOokQRXeKoAhSgyFJbs3jDKV9r0rc0M7aHDO0g@mail.gmail.com>
+	s=arc-20240116; t=1710612417; c=relaxed/simple;
+	bh=delWo0oqBSbnhRxxlbFP9+D2zHCWYl3h/XBpmVNOOtk=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=bUYTlXUFzSLNivrUK9SNKpTMmMVf0DTzqJlLTLvq/YJBAzI/LvQmCEz8i02ZvTJKGIGnWoIpWnRfNyijEVDxJ1mk69NwUqqNZt+2w8Ow9364Yw9PVCOcCHayXKp/VNwC+f6jKk08qlHM939/5+zK8tbyuKu6cqqEc9clhnJ3Yro=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=k3DyflbR; arc=none smtp.client-ip=209.85.128.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f50.google.com with SMTP id 5b1f17b1804b1-41409fa3dc5so1783175e9.2;
+        Sat, 16 Mar 2024 11:06:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710612414; x=1711217214; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=nkXOvUv3CSNMR4S1kVhCPDF0jvEWGHLqB/wYYzvRGeA=;
+        b=k3DyflbRZRQ6js+r6LBN5bFNkfUwT3tuMdIWaNAV4FYkwc85Dbf1o5Bo2NDnHPF9x0
+         6z+obVgpa/W9Mn9Ri5A5cwRa6zKZ/VVT4KnaeOWThIEMvWoIOajD6hegq/edPuJg5uft
+         6ZCiT8fNhWmpkjck7ZZyYjuzDlz0aJzbckcPkkGQ+R+uR/6KDdtIzW7bzw8mUXb1VRmB
+         HdvNx9aJjmYI3nOhG32op3gVMCgrdfu9BM6HyyMChwbRmq8YEPCaUnpmVGBYIoVZbM+D
+         Z5mMDNyBuHuwWaGwZ5poGVoeSRy5zWVer6OqqYAlaldIWDS8ekkw8bXMXFh27j4naoVJ
+         OCcQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710612414; x=1711217214;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=nkXOvUv3CSNMR4S1kVhCPDF0jvEWGHLqB/wYYzvRGeA=;
+        b=CW3qAT6muzEk754v+U/Pirr6dJPx8hXpwuAr12yK+FjDXtCIU12tvIAYnkcoK4PLyO
+         0n/JE7Tr26rTjM0/Tk7D0iP+B/oQjOuQyzp8b/LB/lpUoM4yfcW1rfv1t7nE52briU96
+         fFgrvTjMHYptkR5+yKPP44JgjAIC0K2n3IMGH2uDQ26Zx6g9iX9JihcyuieNEPYBuaoP
+         ovEGkGZosrUnf8oBfEThKw4/gyJ28/S0Dzd11f6RobfAhmWsvPrXZEHVlwEID/kpNtB9
+         SyMjGJwymGa8fUwMLBHe7lFlg3tjYHXJsnijtXllfISCZMfbcDbBc+G8Ka5i4AI+9mwY
+         tTvQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV7VczoBD6v7ExrVuGtIQhxK3+bVrJ1AcbPbwVUReMTZDuveC2bOqW9GXg+onUtBw0icb65lXQfwYIfCUGCdXIz4iOHuo+oUVFH/ma0FQHWCAhtta3iGhiQsWy60k3uhElJ7sxXU2dwNw==
+X-Gm-Message-State: AOJu0YzguFescODNT5sWW7SN9hjm8lrX6TVeFHy6o17TZGt+tfZZXLRl
+	g6jt9ZTpjxK8sSqGFVBYDJNK6lGlgXwv5IB6MwW3I28Rk251rY9s
+X-Google-Smtp-Source: AGHT+IGSc8+4gLqhuW2+RC7eeLKzM/1sXFmJ44RO3jrxC607yA6pvzIwN0uty2HMBlnpP8E4Y5aOXQ==
+X-Received: by 2002:a5d:5412:0:b0:33e:c539:977d with SMTP id g18-20020a5d5412000000b0033ec539977dmr4764352wrv.22.1710612413685;
+        Sat, 16 Mar 2024 11:06:53 -0700 (PDT)
+Received: from jernej-laptop.localnet ([188.159.248.16])
+        by smtp.gmail.com with ESMTPSA id r15-20020a5d694f000000b0033ec6a1b37esm5911643wrw.8.2024.03.16.11.06.52
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Mar 2024 11:06:53 -0700 (PDT)
+From: Jernej =?utf-8?B?xaBrcmFiZWM=?= <jernej.skrabec@gmail.com>
+To: Denis Burkov <hitechshell@mail.ru>
+Cc: Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>,
+ Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-sunxi@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Denis Burkov <hitechshell@mail.ru>
+Subject: Re: [PATCH v2] ARM: dts: sun5i: Add PocketBook 614 Plus support
+Date: Sat, 16 Mar 2024 19:06:51 +0100
+Message-ID: <4874817.GXAFRqVoOG@jernej-laptop>
+In-Reply-To: <20240316144429.12529-1-hitechshell@mail.ru>
+References:
+ <4203654.1IzOArtZ34@jernej-laptop>
+ <20240316144429.12529-1-hitechshell@mail.ru>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="Qk+C/g7cFjuLtKJ3"
-Content-Disposition: inline
-In-Reply-To: <CAHk-=wi1DTEQpOokQRXeKoAhSgyFJbs3jDKV9r0rc0M7aHDO0g@mail.gmail.com>
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="utf-8"
+
+Hi Denis!
+
+Before I review, please resend this series properly. It shouldn't be sent as
+response to old series, but as a new thread. Also, it has to be complete, in
+this case with first patch, with review/ack tags where applicable.
+
+Best regards,
+Jernej
+
+Dne sobota, 16. marec 2024 ob 15:39:18 CET je Denis Burkov napisal(a):
+> What works:
+> 
+> - Serial console
+> - mmc0, mmc2 (both microSD card slots on the board)
+> - All buttons (gpio and lradc based)
+> - Power LED
+> - PMIC
+> - RTC
+> - USB OTG/gadgets mode
+> 
+> Signed-off-by: Denis Burkov <hitechshell@mail.ru>
+> ---
+>  arch/arm/boot/dts/allwinner/Makefile          |   1 +
+>  .../sun5i-a13-pocketbook-614-plus.dts         | 215 ++++++++++++++++++
+>  2 files changed, 216 insertions(+)
+>  create mode 100644 arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
+> 
+> diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts/allwinner/Makefile
+> index 5fbb44ddacd0..6209243ad975 100644
+> --- a/arch/arm/boot/dts/allwinner/Makefile
+> +++ b/arch/arm/boot/dts/allwinner/Makefile
+> @@ -61,6 +61,7 @@ dtb-$(CONFIG_MACH_SUN5I) += \
+>  	sun5i-a13-olinuxino.dtb \
+>  	sun5i-a13-olinuxino-micro.dtb \
+>  	sun5i-a13-pocketbook-touch-lux-3.dtb \
+> +	sun5i-a13-pocketbook-614-plus.dtb \
+>  	sun5i-a13-q8-tablet.dtb \
+>  	sun5i-a13-utoo-p66.dtb \
+>  	sun5i-gr8-chip-pro.dtb \
+> diff --git a/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
+> new file mode 100644
+> index 000000000000..b5449301789a
+> --- /dev/null
+> +++ b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
+> @@ -0,0 +1,215 @@
+> +// SPDX-License-Identifier: GPL-2.0+
+> +/*
+> + * Copyright 2024 Denis Burkov <hitechshell@mail.ru>
+> + */
+> +
+> +/dts-v1/;
+> +#include "sun5i-a13.dtsi"
+> +#include "sunxi-common-regulators.dtsi"
+> +
+> +#include <dt-bindings/gpio/gpio.h>
+> +#include <dt-bindings/input/input.h>
+> +#include <dt-bindings/interrupt-controller/irq.h>
+> +
+> +/ {
+> +	model = "PocketBook 614 Plus";
+> +	compatible = "pocketbook,614-plus", "allwinner,sun5i-a13";
+> +
+> +	aliases {
+> +		serial0 = &uart1;
+> +	};
+> +
+> +	chosen {
+> +		stdout-path = "serial0:115200n8";
+> +	};
+> +
+> +	leds {
+> +		compatible = "gpio-leds";
+> +
+> +		led {
+> +			gpios = <&pio 4 8 GPIO_ACTIVE_LOW>; /* PE8 */
+> +			default-state = "on";
+> +		};
+> +	};
+> +
+> +	gpio-keys {
+> +		compatible = "gpio-keys";
+> +
+> +		key-right {
+> +			label = "Right";
+> +			linux,code = <KEY_NEXT>;
+> +			gpios = <&pio 6 9 GPIO_ACTIVE_LOW>; /* PG9 */
+> +		};
+> +
+> +		key-left {
+> +			label = "Left";
+> +			linux,code = <KEY_PREVIOUS>;
+> +			gpios = <&pio 6 10 GPIO_ACTIVE_LOW>; /* PG10 */
+> +		};
+> +	};
+> +
+> +	reg_3v3_mmc0: regulator-mmc0 {
+> +		compatible = "regulator-fixed";
+> +		regulator-name = "vdd-mmc0";
+> +		regulator-min-microvolt = <3300000>;
+> +		regulator-max-microvolt = <3300000>;
+> +		gpio = <&pio 4 4 GPIO_ACTIVE_LOW>; /* PE4 */
+> +		vin-supply = <&reg_vcc3v3>;
+> +	};
+> +};
+> +
+> +&cpu0 {
+> +	cpu-supply = <&reg_dcdc2>;
+> +};
+> +
+> +&ehci0 {
+> +	status = "okay";
+> +};
+> +
+> +&i2c0 {
+> +	status = "okay";
+> +
+> +	axp209: pmic@34 {
+> +		compatible = "x-powers,axp209";
+> +		reg = <0x34>;
+> +		interrupts = <0>;
+> +	};
+> +};
+> +
+> +#include "axp209.dtsi"
+> +
+> +&i2c1 {
+> +	status = "okay";
+> +
+> +	pcf8563: rtc@51 {
+> +		compatible = "nxp,pcf8563";
+> +		reg = <0x51>;
+> +		#clock-cells = <0>;
+> +	};
+> +};
+> +
+> +&lradc {
+> +	vref-supply = <&reg_ldo2>;
+> +	status = "okay";
+> +
+> +	button-300 {
+> +		label = "Down";
+> +		linux,code = <KEY_DOWN>;
+> +		channel = <0>;
+> +		voltage = <300000>;
+> +	};
+> +
+> +	button-700 {
+> +		label = "Up";
+> +		linux,code = <KEY_UP>;
+> +		channel = <0>;
+> +		voltage = <700000>;
+> +	};
+> +
+> +	button-1000 {
+> +		label = "Left";
+> +		linux,code = <KEY_LEFT>;
+> +		channel = <0>;
+> +		voltage = <1000000>;
+> +	};
+> +
+> +	button-1200 {
+> +		label = "Menu";
+> +		linux,code = <KEY_MENU>;
+> +		channel = <0>;
+> +		voltage = <1200000>;
+> +	};
+> +
+> +	button-1500 {
+> +		label = "Right";
+> +		linux,code = <KEY_RIGHT>;
+> +		channel = <0>;
+> +		voltage = <1500000>;
+> +	};
+> +};
+> +
+> +&mmc0 {
+> +	vmmc-supply = <&reg_3v3_mmc0>;
+> +	bus-width = <4>;
+> +	cd-gpios = <&pio 6 0 GPIO_ACTIVE_LOW>; /* PG0 */
+> +	status = "okay";
+> +};
+> +
+> +&mmc2 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&mmc2_4bit_pc_pins>;
+> +	vmmc-supply = <&reg_vcc3v3>;
+> +	bus-width = <4>;
+> +	non-removable;
+> +	status = "okay";
+> +};
+> +
+> +&ohci0 {
+> +	status = "okay";
+> +};
+> +
+> +&otg_sram {
+> +	status = "okay";
+> +};
+> +
+> +&reg_dcdc2 {
+> +	regulator-always-on;
+> +	regulator-min-microvolt = <1000000>;
+> +	regulator-max-microvolt = <1500000>;
+> +	regulator-name = "vdd-cpu";
+> +};
+> +
+> +&reg_dcdc3 {
+> +	regulator-always-on;
+> +	regulator-min-microvolt = <1000000>;
+> +	regulator-max-microvolt = <1400000>;
+> +	regulator-name = "vdd-int-dll";
+> +};
+> +
+> +&reg_ldo1 {
+> +	regulator-name = "vdd-rtc";
+> +};
+> +
+> +&reg_ldo2 {
+> +	regulator-always-on;
+> +	regulator-min-microvolt = <3000000>;
+> +	regulator-max-microvolt = <3000000>;
+> +	regulator-name = "avcc";
+> +};
+> +
+> +&reg_usb0_vbus {
+> +	status = "okay";
+> +	gpio = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
+> +};
+> +
+> +&reg_usb1_vbus {
+> +	gpio = <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
+> +	status = "okay";
+> +};
+> +
+> +&uart1 {
+> +	pinctrl-names = "default";
+> +	pinctrl-0 = <&uart1_pg_pins>;
+> +	status = "okay";
+> +};
+> +
+> +&usb_otg {
+> +	dr_mode = "otg";
+> +	status = "okay";
+> +};
+> +
+> +&usb_power_supply {
+> +	status = "okay";
+> +};
+> +
+> +&battery_power_supply {
+> +	status = "okay";
+> +};
+> +
+> +&usbphy {
+> +	usb0_id_det-gpios = <&pio 6 2 GPIO_ACTIVE_HIGH>; /* PG2 */
+> +	usb0_vbus_det-gpios = <&axp_gpio 1 GPIO_ACTIVE_HIGH>;
+> +	usb0_vbus-supply = <&reg_usb0_vbus>;
+> +	usb1_vbus-supply = <&reg_usb1_vbus>;
+> +	status = "okay";
+> +};
+> 
 
 
---Qk+C/g7cFjuLtKJ3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-Hi Linus,
 
-On 15-03-24, 12:22, Linus Torvalds wrote:
-> On Fri, 15 Mar 2024 at 04:03, Vinod Koul <vkoul@kernel.org> wrote:
-> >
-> >   git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git next
->=20
-> That is not a valid signed tag, and I can't find one in that repo.
-
-It was pushed: tags/phy-for-6.9, I erred in generating the request for
-sure
-
-> I know you know how to do this right, so please send me a proper pull
-> request with a signed tag like you usually do...
-
-Apologies for the error, here is the updated request:
-
-The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd33d:
-
-  Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git tags/phy-=
-for-6.9
-
-for you to fetch changes up to 00ca8a15dafa990d391abc37f2b8256ddf909b35:
-
-  phy: constify of_phandle_args in xlate (2024-02-23 17:43:14 +0530)
-
-----------------------------------------------------------------
-phy-for-6.9
-
-- New Support
-  - Qualcomm X1E80100 PCIe phy support, SM8550 PCIe1 PHY, SC7180 UFS PHY
-    and SDM630 USBC support
-  - Rockchip HDMI/eDP Combo PHY driver
-  - Mediatek MT8365 CSI phy driver
-
-- Updates
-  - Rework on Qualcomm phy PCS registers and type-c handling
-  - Cadence torrent phy updates for multilink configuration
-  - TI gmii resume support
-
-----------------------------------------------------------------
-Abel Vesa (3):
-      dt-bindings: phy: qcom,sc8280xp-qmp-pcie-phy: Document the X1E80100 Q=
-MP PCIe PHYs
-      phy: qcom: qmp-pcie: Add QMP v6 registers layout
-      phy: qcom-qmp-pcie: Add support for X1E80100 g3x2 and g4x2 PCIE
-
-Andy Shevchenko (2):
-      phy: ti: tusb1210: Use temporary variable for struct device
-      phy: ti: tusb1210: Define device IDs
-
-Can Guo (2):
-      phy: qualcomm: phy-qcom-qmp-ufs: Add High Speed Gear 5 support for SM=
-8550
-      phy: qcom: qmp-pcie: Update PCIe1 PHY settings for SM8550
-
-Cristian Ciocaltea (2):
-      dt-bindings: phy: Add Rockchip HDMI/eDP Combo PHY schema
-      phy: rockchip: Add Samsung HDMI/eDP Combo PHY driver
-
-David Wronek (2):
-      dt-bindings: phy: Add QMP UFS PHY compatible for SC7180
-      phy: qcom: qmp-ufs: Add SC7180 support
-
-Dmitry Baryshkov (17):
-      dt-bindings: phy: qcom,msm8998-qmp-usb3-phy: split from sc8280xp PHY =
-schema
-      dt-bindings: phy: qcom,msm8998-qmp-usb3-phy: support USB-C data
-      phy: qcom: qmp-usb: split USB-C PHY driver
-      phy: qcom: qmp-usb: drop dual-lane handling
-      phy: qcom: qmp-usbc: add support for the Type-C handling
-      dt-bindings: phy: qcom,msm8998-qmp-usb3-phy: add TCSR registers
-      phy: qcom: qmp-usbc: handle CLAMP register in a correct way
-      dt-bindings: phy: qcom,msm8998-qmp-usb3-phy: support SDM660
-      phy: qcom: qmp-usbc: enable SDM630 support
-      phy: qcom: qmp-usb-legacy: drop single-lane support
-      phy: qcom: qmp-usb-legacy: drop qmp_usb_legacy_iomap
-      phy: qcom: qmp: move common functions to common header
-      phy: qcom: qmp: split DP PHY registers to separate headers
-      phy: qcom: qmp: move common bits definitions to common header
-      phy: qcom: qmp-usbc: drop has_pwrdn_delay handling
-      phy: qcom: sgmii-eth: use existing register definitions
-      phy: qcom: sgmii-eth: move PCS registers to separate header
-
-Florian Sylvestre (1):
-      dt-bindings: phy: add mediatek MIPI CD-PHY module v0.5
-
-Josua Mayer (1):
-      phy: armada-38x: add mux value for gbe port 0 on serdes 0
-
-Krzysztof Kozlowski (1):
-      phy: constify of_phandle_args in xlate
-
-Manivannan Sadhasivam (2):
-      dt-bindings: phy: qmp-ufs: Fix PHY clocks
-      phy: qcom-qmp-ufs: Switch to devm_clk_bulk_get_all() API
-
-Phi-bang Nguyen (1):
-      phy: mtk-mipi-csi: add driver for CSI phy
-
-Qiang Yu (1):
-      phy: qcom: qmp-pcie: Update PCIe0 PHY settings for SM8550
-
-Swapnil Jakhade (5):
-      dt-bindings: phy: cadence-torrent: Add optional input reference clock=
- for PLL1
-      phy: cadence-torrent: Add PCIe(100MHz) + USXGMII(156.25MHz) multilink=
- configuration
-      phy: cadence-torrent: Add USXGMII(156.25MHz) + SGMII/QSGMII(100MHz) m=
-ultilink configuration
-      dt-bindings: phy: cadence-torrent: Add a separate compatible for TI J=
-7200
-      phy: cadence-torrent: Add USXGMII(156.25MHz) + SGMII/QSGMII(100MHz) m=
-ultilink config for TI J7200
-
-Thomas Richard (1):
-      phy: ti: gmii-sel: add resume support
-
- .../bindings/phy/mediatek,mt8365-csi-rx.yaml       |   79 ++
- .../bindings/phy/phy-cadence-torrent.yaml          |   11 +-
- .../bindings/phy/qcom,msm8998-qmp-usb3-phy.yaml    |  184 ++++
- .../bindings/phy/qcom,sc8280xp-qmp-pcie-phy.yaml   |    6 +
- .../bindings/phy/qcom,sc8280xp-qmp-ufs-phy.yaml    |   48 +-
- .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml        |   22 -
- .../bindings/phy/rockchip,rk3588-hdptx-phy.yaml    |   91 ++
- MAINTAINERS                                        |    7 +
- drivers/phy/allwinner/phy-sun4i-usb.c              |    2 +-
- drivers/phy/amlogic/phy-meson-g12a-usb3-pcie.c     |    2 +-
- drivers/phy/broadcom/phy-bcm-sr-pcie.c             |    2 +-
- drivers/phy/broadcom/phy-bcm-sr-usb.c              |    2 +-
- drivers/phy/broadcom/phy-bcm63xx-usbh.c            |    2 +-
- drivers/phy/broadcom/phy-brcm-usb.c                |    2 +-
- drivers/phy/cadence/phy-cadence-torrent.c          |  720 +++++++++++-
- drivers/phy/freescale/phy-fsl-imx8qm-lvds-phy.c    |    2 +-
- drivers/phy/freescale/phy-fsl-lynx-28g.c           |    2 +-
- drivers/phy/hisilicon/phy-histb-combphy.c          |    2 +-
- drivers/phy/intel/phy-intel-lgm-combo.c            |    2 +-
- drivers/phy/lantiq/phy-lantiq-vrx200-pcie.c        |    2 +-
- drivers/phy/marvell/phy-armada375-usb2.c           |    2 +-
- drivers/phy/marvell/phy-armada38x-comphy.c         |    9 +-
- drivers/phy/marvell/phy-berlin-sata.c              |    2 +-
- drivers/phy/marvell/phy-mvebu-a3700-comphy.c       |    2 +-
- drivers/phy/marvell/phy-mvebu-cp110-comphy.c       |    2 +-
- drivers/phy/mediatek/Kconfig                       |   12 +
- drivers/phy/mediatek/Makefile                      |    2 +
- drivers/phy/mediatek/phy-mtk-mipi-csi-0-5-rx-reg.h |   62 ++
- drivers/phy/mediatek/phy-mtk-mipi-csi-0-5.c        |  294 +++++
- drivers/phy/mediatek/phy-mtk-tphy.c                |    2 +-
- drivers/phy/mediatek/phy-mtk-xsphy.c               |    2 +-
- drivers/phy/microchip/lan966x_serdes.c             |    2 +-
- drivers/phy/microchip/sparx5_serdes.c              |    2 +-
- drivers/phy/mscc/phy-ocelot-serdes.c               |    2 +-
- drivers/phy/phy-core.c                             |    8 +-
- drivers/phy/phy-xgene.c                            |    2 +-
- drivers/phy/qualcomm/Makefile                      |    2 +-
- drivers/phy/qualcomm/phy-qcom-edp.c                |    3 +-
- drivers/phy/qualcomm/phy-qcom-qmp-combo.c          |  111 +-
- drivers/phy/qualcomm/phy-qcom-qmp-common.h         |   59 +
- drivers/phy/qualcomm/phy-qcom-qmp-dp-com-v3.h      |   18 +
- drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v3.h      |   21 +
- drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v4.h      |   19 +
- drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v5.h      |   13 +
- drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v6.h      |   13 +
- drivers/phy/qualcomm/phy-qcom-qmp-dp-phy.h         |   62 ++
- drivers/phy/qualcomm/phy-qcom-qmp-pcie-msm8996.c   |   70 +-
- drivers/phy/qualcomm/phy-qcom-qmp-pcie.c           |  288 +++--
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6.h    |    2 +
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-pcie-v6_20.h |    2 +
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-sgmii.h      |   20 +
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-ufs-v6.h     |    2 +
- drivers/phy/qualcomm/phy-qcom-qmp-pcs-v6_20.h      |    1 +
- drivers/phy/qualcomm/phy-qcom-qmp-qserdes-com-v6.h |    2 +
- .../qualcomm/phy-qcom-qmp-qserdes-txrx-ufs-v6.h    |    8 +
- .../phy/qualcomm/phy-qcom-qmp-qserdes-txrx-v6_20.h |    2 +
- drivers/phy/qualcomm/phy-qcom-qmp-ufs.c            |  305 +++---
- drivers/phy/qualcomm/phy-qcom-qmp-usb-legacy.c     |   76 +-
- drivers/phy/qualcomm/phy-qcom-qmp-usb.c            |  420 +------
- drivers/phy/qualcomm/phy-qcom-qmp-usbc.c           | 1149 ++++++++++++++++=
-++++
- drivers/phy/qualcomm/phy-qcom-qmp.h                |  101 +-
- drivers/phy/qualcomm/phy-qcom-sgmii-eth.c          |  417 +++----
- drivers/phy/ralink/phy-mt7621-pci.c                |    2 +-
- drivers/phy/renesas/phy-rcar-gen2.c                |    2 +-
- drivers/phy/renesas/phy-rcar-gen3-usb2.c           |    2 +-
- drivers/phy/renesas/r8a779f0-ether-serdes.c        |    2 +-
- drivers/phy/rockchip/Kconfig                       |    8 +
- drivers/phy/rockchip/Makefile                      |    1 +
- drivers/phy/rockchip/phy-rockchip-naneng-combphy.c |    2 +-
- drivers/phy/rockchip/phy-rockchip-pcie.c           |    2 +-
- drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c  | 1028 +++++++++++++++++
- drivers/phy/samsung/phy-exynos-mipi-video.c        |    2 +-
- drivers/phy/samsung/phy-exynos5-usbdrd.c           |    2 +-
- drivers/phy/samsung/phy-samsung-usb2.c             |    2 +-
- drivers/phy/socionext/phy-uniphier-usb2.c          |    2 +-
- drivers/phy/st/phy-miphy28lp.c                     |    2 +-
- drivers/phy/st/phy-spear1310-miphy.c               |    2 +-
- drivers/phy/st/phy-spear1340-miphy.c               |    2 +-
- drivers/phy/st/phy-stm32-usbphyc.c                 |    2 +-
- drivers/phy/tegra/xusb.c                           |    2 +-
- drivers/phy/ti/phy-am654-serdes.c                  |    2 +-
- drivers/phy/ti/phy-da8xx-usb.c                     |    2 +-
- drivers/phy/ti/phy-gmii-sel.c                      |   26 +-
- drivers/phy/ti/phy-tusb1210.c                      |   57 +-
- drivers/phy/xilinx/phy-zynqmp.c                    |    2 +-
- drivers/pinctrl/tegra/pinctrl-tegra-xusb.c         |    2 +-
- include/linux/phy/phy.h                            |   14 +-
- 87 files changed, 4636 insertions(+), 1319 deletions(-)
- create mode 100644 Documentation/devicetree/bindings/phy/mediatek,mt8365-c=
-si-rx.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/qcom,msm8998-qmp-=
-usb3-phy.yaml
- create mode 100644 Documentation/devicetree/bindings/phy/rockchip,rk3588-h=
-dptx-phy.yaml
- create mode 100644 drivers/phy/mediatek/phy-mtk-mipi-csi-0-5-rx-reg.h
- create mode 100644 drivers/phy/mediatek/phy-mtk-mipi-csi-0-5.c
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-common.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-dp-com-v3.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v3.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v4.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v5.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-dp-phy-v6.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-dp-phy.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-pcs-sgmii.h
- create mode 100644 drivers/phy/qualcomm/phy-qcom-qmp-usbc.c
- create mode 100644 drivers/phy/rockchip/phy-rockchip-samsung-hdptx.c
-
---=20
-~Vinod
-
---Qk+C/g7cFjuLtKJ3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIyBAEBCAAdFiEE+vs47OPLdNbVcHzyfBQHDyUjg0cFAmX133QACgkQfBQHDyUj
-g0di5Q/4sUn3hlbqWRC2ZomDiM7cDRL5I9ykLjGOrquRe0FT0nXXTo9vUZnS6w2U
-s/d/FDarJNYpV45YpV3S5UO4xiakl/b1kh3tBoF5VfPHluPW92X2qoAk9hSVzu7B
-QrQbK2UVk+PMVbtvnCypJunu4HzwmphExVCrwpoD1AV3uqat2gAQm8TLCzcOT++Q
-MclgT7gHiMJSl+AmDpRaP+DCTS7pU6t8tAYzEQCoW4EMgnqBeNLh5zZKiYxHk3g+
-mau2JNODINob7BAzxvrkf6waq1Gv4dQ/Dbte9+DdNRocrZNsvILL5fk4dVA/p+XO
-6qB2/qTsmnh9C6Lq5R5X8m/g3qLL8KZ8yJYUHz1NNGOY9ggBXSF/fWJRfWjFNl7Y
-x2/mOL0bA+Ynxhc3rbOB31kGtsZWrGIiH5WVixcAqdhv2lWqbYB7KvW95EVleEuo
-QepTv6KCZdz6pAIWJKXYdq19VThN1dZObE8OoIjEzupPa5LHvjBp/oJUa2XhInAW
-fI8W0bmdo7ROaAO/iJUTPOWArATgMIPYFGHGPVwDir2ATwPgKcMlKB6InHk0zqp2
-stZehegq+orLxiz+YrNWtz2S1UZ6fyaf6meNPAHJUQ2fM370wcHT+pgoRgd8GbaL
-R+kvKe0NP5FB4yYmLP5Ro4CFdlSfRA6blLbNH8fIDY1OsPZtNQ==
-=Mtvj
------END PGP SIGNATURE-----
-
---Qk+C/g7cFjuLtKJ3--
 
