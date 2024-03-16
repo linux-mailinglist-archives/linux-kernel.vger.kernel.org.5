@@ -1,136 +1,141 @@
-Return-Path: <linux-kernel+bounces-105272-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105273-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B2FC387DB40
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:43:09 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA2AA87DB41
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:45:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8A3191C211C5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:43:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439071F21870
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:45:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3CF1611E;
-	Sat, 16 Mar 2024 18:43:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5691BC4E;
+	Sat, 16 Mar 2024 18:45:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GmDWIlef"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PO2qqzlz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94D0468E
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 18:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA741B962
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 18:45:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710614583; cv=none; b=I96sPgSudohphNjWWALGcKhaM45NCohzz+60icITL20cTLejzK+rqtfrw4ktfkuQ5Fs3zAtWjX13Vm+6/nU0JCLzIgjHgGOTOHF5fwKWmxxtLYFZEQnwivkaUDnYoD+mVOuqjFjJAusjN3SnerfA+0Mf3UN97dVJOp1G3FkpLlU=
+	t=1710614727; cv=none; b=ECZUC6B01ONVd/8UgQknwoOxtoYTBFslIXnlWUyNfMzT+LC3+xoOhehXP13mN99mwOIfb+K+WF7TRYIpy6tmRxGlS3IH1IqVSRfQ2K+w9qJsijLoi/etzr/kQXb70GpxNB5tQicafPUbTmcbfMTShjNjgdhQzx4eE578Q2lAS/c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710614583; c=relaxed/simple;
-	bh=VKZjhJVzQP3LfEqci20olDgEm7Ujvftp5WdgHCIuD+I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=aoOty8PHn8LCzuqrHHGM3LpVSHWyFubHswSSGKSXYfizAQaqic7RbmKkk+2h9/Q08pTXK5yb2OO0ooE9wFFOO3Tefcb/ZUnQJ5wkC3NlHl5x313CLw7Tag9ZkrYpGHd5xEkSCrsIa0UFRVaSDzZ40EVTVDuCku8KYRMkxLF9YOc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GmDWIlef; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-563cb3ba9daso3524700a12.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 11:43:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710614580; x=1711219380; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=pVAMhQojoyaogORHm9lRJd5kjxn5GQZe8kMwS/E2slE=;
-        b=GmDWIlefMTwMPK1/g0Yxa7cWOaj/EM0Ta023WBAwhxNw7EdjCi4NLTWzwXjh/YPGmo
-         CxI/emV1fIbQrbjcVMQFJvAclpdJmrViD0jAidXq//HRkxtXnpq8YWmyfZia7nma1bBB
-         tUqO3u1fvsP2ZMe7BFY+5ELRzvFTv5qteMZOw=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710614580; x=1711219380;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=pVAMhQojoyaogORHm9lRJd5kjxn5GQZe8kMwS/E2slE=;
-        b=Na8Ynp3AGMtMvUHG7g91qxLYqscjCHCnuFOQV6NWZI9uwQDrF+ZCHMZwKrGukVus3D
-         wxD5UqMdD9jNKaP0Q1h+vzdisLJLJgO13J6UdsSku/C/J8N1RWY7zWBBCQlaC1thyGtp
-         IBZGN8kAMnAfDCb9ldonbXB+g98fXhV3zUKodyIcYBjVREUe0DPdNIGAhPcAv/PgUUNL
-         Do6T8Rh5wst3XFtJVM7Updeh5GFy6SLq04iVKVZ90kkw0QUmpdSbU5VnzBuZ6Pex34Qp
-         j9au+pa/11LZiU7BfU6MEU+4YDThiNLvVLxNXh/+G7hPMJsW9SIcm52IUhKuPY4VPMTW
-         f26A==
-X-Gm-Message-State: AOJu0YwmWTL04S/j7x7o3PMu2R0t/orWC5p8F7LGndDpgwyK/OWEa3WY
-	hGGTyzQZHEeNb26YDUoel5BfzLIP4nBTSh5yWBlJf4UlNs9VdN6hsqc/RP1qUhgH5LnQjaOnaj0
-	k3e1QzQ==
-X-Google-Smtp-Source: AGHT+IHIlCrR3RWD7ij/7a3tXvbY92SA8sP442gXdWDjqMUCpa/PlxusIu2JE7Q4MfwGbQ92fSh4yg==
-X-Received: by 2002:a05:6402:4348:b0:567:9fef:f7ee with SMTP id n8-20020a056402434800b005679feff7eemr4833861edc.16.1710614579974;
-        Sat, 16 Mar 2024 11:42:59 -0700 (PDT)
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com. [209.85.218.54])
-        by smtp.gmail.com with ESMTPSA id v21-20020aa7d655000000b00568a08a9aacsm2734719edr.22.2024.03.16.11.42.59
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Mar 2024 11:42:59 -0700 (PDT)
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a467d8efe78so272528766b.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 11:42:59 -0700 (PDT)
-X-Received: by 2002:a17:907:364:b0:a46:30f4:6321 with SMTP id
- rs4-20020a170907036400b00a4630f46321mr5330377ejb.58.1710614578695; Sat, 16
- Mar 2024 11:42:58 -0700 (PDT)
+	s=arc-20240116; t=1710614727; c=relaxed/simple;
+	bh=yKt1j5Qoe8fvsNK5gDIjZKaUMtwpWrjtQqKtpQLSZqY=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=AnU2NqGn62oWrQthCyKAgGP5Hm0MRgAyFyfhRMF+W/uCC5xX4qGU81tfqaW6FSYk8GzDYk+WPlD0FIvQozHgzzygcVSImk+QAeU6M4R3+be6rPLiWtUYKfGQP4yQJJmvH+DL0CIVlmvHFvDDL20oRelUTC++cW5kw+oaT24WUig=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PO2qqzlz; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710614726; x=1742150726;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=yKt1j5Qoe8fvsNK5gDIjZKaUMtwpWrjtQqKtpQLSZqY=;
+  b=PO2qqzlznKqTTop5Xr6XhJOMmNdGVGmn5vzh+qcHLbqyza7CEjTq/NP6
+   y1xu6o2+1GmHqTHBmAuKLUyEhA+XZMj0ge7xvsyxUpyMQro8QrVV8OR0M
+   7PO1HRRj6WWzts5gzpHNoPxc2QY1/tZqZLCgnO4oqUlghwnWzYPSHE/2P
+   vWsq6fiKWIywUp13q2HGXhBrmSDJZN/wMTCv7bdshdFMsUvloWuEjlmgZ
+   2gHnbXbMEiRYiUjz8haWXSCtsYZYWT+Lr358dDEJcoJAwwG3nPS0Po9Tv
+   vZxL6V9Thvd8AhCfyPle/lDd+SMNvUo5RfWunx8tBZU9sh5msg76HfWGi
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11015"; a="5327707"
+X-IronPort-AV: E=Sophos;i="6.07,131,1708416000"; 
+   d="scan'208";a="5327707"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2024 11:45:25 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,131,1708416000"; 
+   d="scan'208";a="17626735"
+Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.6.225])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2024 11:45:22 -0700
+From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+ gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+ linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v5] staging: greybus: Constify gb_audio_module_type
+Date: Sat, 16 Mar 2024 19:45:18 +0100
+Message-ID: <10634620.nUPlyArG6x@fdefranc-mobl3>
+Organization: intel
+In-Reply-To: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+References: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315122934.1d3231ce@gandalf.local.home> <CAHk-=wg24KPFfeNwYdsD0e79MP4QhO3VaWkh0buPSD0M=141xQ@mail.gmail.com>
- <CAHk-=wh5wWeib7+kVHpBVtUn7kx7GGadWqb5mW5FYTdewEfL=w@mail.gmail.com> <20240316142002.7480d74b@rorschach.local.home>
-In-Reply-To: <20240316142002.7480d74b@rorschach.local.home>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 16 Mar 2024 11:42:42 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wgKJti5WBi7VmA_ETDiXjmkEqvVW7De5ajwtkyJ=c==kA@mail.gmail.com>
-Message-ID: <CAHk-=wgKJti5WBi7VmA_ETDiXjmkEqvVW7De5ajwtkyJ=c==kA@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Updates for v6.9
-To: Steven Rostedt <rostedt@goodmis.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, Beau Belgrave <beaub@linux.microsoft.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>, Huang Yiwei <quic_hyiwei@quicinc.com>, 
-	John Garry <john.g.garry@oracle.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	Thorsten Blum <thorsten.blum@toblux.com>, Vincent Donnefort <vdonnefort@google.com>, 
-	linke li <lilinke99@qq.com>, Daniel Bristot de Oliveira <bristot@redhat.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
 
-On Sat, 16 Mar 2024 at 11:20, Steven Rostedt <rostedt@goodmis.org> wrote:
->
-> 1) Rebase without them (I know how much you love rebasing)
+On Saturday, 16 March 2024 19:24:21 CET Ayush Tiwari wrote:
+> Constify static struct kobj_type gb_audio_module_type to prevent
+> modification 
 
-This.
+I'm not yet convinced that being or not being const has much to do with 
+sharing data. 
 
-Except honestly, the pulls are getting to be so complicated for me
-because I have to check them, that I'd really like you to start doing
-topic branches for individual things.
+And next time please wait for other people to comment your versions. Wait a 
+day or two and then please delete everything from here...
 
-That's what we ended up doing with the security layers too, because
-there were too many cases of "that is broken, I can't pull it", and
-then having one single branch for everything meant that it was always
-a "all or nothing" thing.
+> of data shared across many instances(instances here
+> refer to multiple kobject instances being created, since this same
+> gb_audio_module_type structure is used as a template for all audio
+> manager module kobjs, it is effectively 'shared' across all these
+> instances), 
 
-The security layer issues have largely gone away, but I still pull
-things individually, and I think it actually ended up working out
-well. Yes, I see more pulls, but not only are they clearer for me, the
-code history ends up being much clearer too.
+to here.
 
-So topic branches tend to make for more actual pull requests, but when
-the individual pulls are smaller and have clear "this branch does XYZ
-and nothing more", it turns out that the actual effort per pull ends
-up being less, and it actually clarifies things a lot too.
+Thanks,
 
-In fact, the x86 -tip people ended up doing topic branches just to
-make things easier to review, rather than any "I can't pull that"
-issues, and I think it actually ended up being something that they
-preferred to do anyway.
+Fabio
+ 
+> ensuring that the structure's usage is consistent and
+> predictable throughout the driver and allowing the compiler to place
+> it in read-only memory. The gb_audio_module_type structure is used
+> when initializing and adding kobj instances to the kernel's object
+> hierarchy. After adding const, any attempt to alter
+> gb_audio_module_type in the code would raise a compile-time error.
+> This enforcement ensures that the sysfs interface and operations for
+> audio modules remain stable.
+> 
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+> 
+> ---
+> Changes in v5: added more details as per feedback.
+> 
+> Changes in v4: added more details verifying the change.
+> 
+> Changes in v3: added the message that verifies the change,
+> as suggested by Julia
+> 
+> Changes in v2: incorporated changes in commit message
+> as suggested by Alison
+> ---
+>  drivers/staging/greybus/audio_manager_module.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/drivers/staging/greybus/audio_manager_module.c
+> b/drivers/staging/greybus/audio_manager_module.c index
+> 5f9dcbdbc191..4a4dfb42f50f 100644
+> --- a/drivers/staging/greybus/audio_manager_module.c
+> +++ b/drivers/staging/greybus/audio_manager_module.c
+> @@ -144,7 +144,7 @@ static struct attribute
+> *gb_audio_module_default_attrs[] = { };
+>  ATTRIBUTE_GROUPS(gb_audio_module_default);
+> 
+> -static struct kobj_type gb_audio_module_type = {
+> +static const struct kobj_type gb_audio_module_type = {
+>  	.sysfs_ops = &gb_audio_module_sysfs_ops,
+>  	.release = gb_audio_module_release,
+>  	.default_groups = gb_audio_module_default_groups,
 
-Now, I'm not suggesting anything like the multiple topic branches from
--tip (from a quick check, there's been a total of 25 tip/tip topic
-branches merged just this merge window), but for clear new features
-definitely.
 
-And no cross-merges between those topic branches, because that defeats
-the whole purpose.
 
-Do you have to do it for the current situation where I just can't take
-the mmap stuff? No. But please look at it going forward.
 
-           Linus
 
