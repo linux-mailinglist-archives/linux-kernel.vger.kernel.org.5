@@ -1,298 +1,148 @@
-Return-Path: <linux-kernel+bounces-105107-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D4AB587D933
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:36:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2611487D934
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3112CB21729
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 07:36:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2E0B282003
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 07:37:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CC96171AB;
-	Sat, 16 Mar 2024 07:35:55 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7162FE560;
+	Sat, 16 Mar 2024 07:37:11 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A820D512;
-	Sat, 16 Mar 2024 07:35:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 208C8CA62
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 07:37:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710574554; cv=none; b=tgmGwXucV+RUDjoZLQG8UHbOqKX/6eCSsyqodFGH7wX7jiBZRzbr8AcvsgGggWy8D3cSxCiVRPPXBBZmZp+ifXvwpu/zxl/ZZ46GnS9OF7KjYo/12D014G7QUZBkGmJl415D8zkO8zNpmnEth13XIn7YrlD3t6pYtWaMir6rS0Q=
+	t=1710574631; cv=none; b=BSTEJ6QYzA8VczQBxMtW8Qmyc6WDXX7nDc6jxqpZVSld7/cCCbki6cLIpSnzjfp5pMt9Zqffv8YtSiDwX74wndCeMdQVT8Q9gSez4WHvQwxvD6f1ZVoHX/btVYWxhkRxTFNqchdK3K9/BCMxeQ1UlbvsTW5FPXlIBo2aXrzh29c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710574554; c=relaxed/simple;
-	bh=LlnTHvbnivj9imG0loJ96IHBV/H/wsdSxRFgJXN80Jk=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tQNnvfWhYqn+4GnLUgiMYEDHqk2KLrt6Nm4S9poTzy+VD9WtzOHHP+EvuLC91wtAefWpYOdmSaoNHyhoCAqqEWQdi0BLRym4yD+rdGkjKjclxlyTwwX+Udc/jSfEEukuPAZmeRZnd0IfDWBoe5uwX2gikoa1y854v7XXhtr0vso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4TxXwK4dHBz9sgR;
-	Sat, 16 Mar 2024 08:35:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id rjeu-kkETH2k; Sat, 16 Mar 2024 08:35:45 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4TxXwK3p1Fz9sfF;
-	Sat, 16 Mar 2024 08:35:45 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 790DD8B764;
-	Sat, 16 Mar 2024 08:35:45 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id KRZKZw9eqZpR; Sat, 16 Mar 2024 08:35:45 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (PO18731.IDSI0.si.c-s.fr [192.168.233.183])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 1EB608B768;
-	Sat, 16 Mar 2024 08:35:44 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>,
-	Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>,
-	Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Zi Shen Lim <zlim.lnx@gmail.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	David Ahern <dsahern@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	x86@kernel.org,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	Kui-Feng Lee <thinker.li@gmail.com>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	bpf@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	netdev@vger.kernel.org,
-	Kees Cook <keescook@chromium.org>
-Subject: [PATCH bpf-next v4 2/2] bpf: Check return from set_memory_rox()
-Date: Sat, 16 Mar 2024 08:35:41 +0100
-Message-ID: <fe1c163c83767fde5cab31d209a4a6be3ddb3a73.1710574353.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <42c635bb54d3af91db0f9b85d724c7c290069f67.1710574353.git.christophe.leroy@csgroup.eu>
-References: <42c635bb54d3af91db0f9b85d724c7c290069f67.1710574353.git.christophe.leroy@csgroup.eu>
+	s=arc-20240116; t=1710574631; c=relaxed/simple;
+	bh=rmv96hAwBEDMPnwHQGe/QeXUDxsP7VuFc2cWjgW2NFo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=C5Z5hn5BC26UxQixXBQLm+zvBbbMSZz5AZ/mRzF2KQaX0m/YnHqMhqFQhl7mW6lqyAyTI3s3r30m9GAHC3xM+lREzqUsLqORGd2vJkz8Yg5N6bjq4MlvyDDIJsA4CeCwZaRze95aQ6mthyRLJVY4jwIbhKoCoFM8AQs8Uytmm1M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rlObK-0008Fr-1P; Sat, 16 Mar 2024 08:37:06 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rlObJ-006eZo-AM; Sat, 16 Mar 2024 08:37:05 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rlObJ-0079jC-0m;
+	Sat, 16 Mar 2024 08:37:05 +0100
+Date: Sat, 16 Mar 2024 08:37:04 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Thorsten Scherer <t.scherer@eckelmann.de>, 
+	linux-kernel@vger.kernel.org, Pengutronix Kernel Team <kernel@pengutronix.de>, 
+	Linus Torvalds <torvalds@linux-foundation.org>
+Subject: Re: [PULL] siox changes for 6.9
+Message-ID: <k7pd3oar3e3mogaokjl7mykqy3w3cifl4dgbukmnsynyqgk5ze@ch5mn5xln2j7>
+References: <cover.1708328466.git.u.kleine-koenig@pengutronix.de>
+ <ad141dd22c7d95ad0bd347f257ce586e1afb22a4.1708328466.git.u.kleine-koenig@pengutronix.de>
+ <ftvih5huvc72a76s7fe4zisrqtaax5tcgoukqoi2bkz47zcrq2@4fixszonixgl>
+ <2024030732-ocean-handbook-161f@gregkh>
+ <nuchb5aaywc5vr6cof4gqbavq4rkte3hvzgs6au3lbg6s6wlq4@bvbjevbum7kc>
+ <o52ptgjxknpxhtyemb5xdjyobidejvzluicsoc5ceajy4pz4xy@6e3aecoiz7eh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710574540; l=6994; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=LlnTHvbnivj9imG0loJ96IHBV/H/wsdSxRFgJXN80Jk=; b=Vre5KJCrSLF5oxg2jfaUL6rENoe4tHDG+LhmF3UdAECmWUQhueGO434Raw6VWm6dZxWspghC7 iZxJjvU/bOtAOlTVSyACGuFThN/KYUXe47+s1bQwa/orCaXTFAeA5YA
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="bkoh2y6adlbtsnww"
+Content-Disposition: inline
+In-Reply-To: <o52ptgjxknpxhtyemb5xdjyobidejvzluicsoc5ceajy4pz4xy@6e3aecoiz7eh>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-arch_protect_bpf_trampoline() and alloc_new_pack() call
-set_memory_rox() which can fail, leading to unprotected memory.
 
-Take into account return from set_memory_rox() function and add
-__must_check flag to arch_protect_bpf_trampoline().
+--bkoh2y6adlbtsnww
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Reviewed-by: Kees Cook <keescook@chromium.org>
----
-v4:
-- In bpf_struct_ops_map_update_elem(), check return of arch_protect_bpf_trampoline() inside the loop.
-- Split the line as it was reported over 80 chars by BPF patchwork's checkpatch report.
+Hello Greg,
 
-v3:
-- Rebased and handled conflict in kernel/bpf/bpf_struct_ops.c
+[Cc +=3D Linus]
 
-v2:
-- Move list_add_tail(&pack->list, &pack_list) at the end of alloc_new_pack()
-- Split 2 lines that are reported longer than 80 chars by BPF patchwork's checkpatch report.
----
- arch/arm64/net/bpf_jit_comp.c  |  3 ++-
- arch/x86/net/bpf_jit_comp.c    |  3 ++-
- include/linux/bpf.h            |  2 +-
- kernel/bpf/bpf_struct_ops.c    |  8 ++++++--
- kernel/bpf/core.c              | 29 ++++++++++++++++++++++-------
- kernel/bpf/trampoline.c        |  8 +++++---
- net/bpf/bpf_dummy_struct_ops.c |  4 +++-
- 7 files changed, 41 insertions(+), 16 deletions(-)
+On Fri, Mar 08, 2024 at 10:20:05PM +0100, Uwe Kleine-K=F6nig wrote:
+> On Thu, Mar 07, 2024 at 09:38:07AM +0100, Uwe Kleine-K=F6nig wrote:
+> > On Thu, Mar 07, 2024 at 07:29:59AM +0000, Greg Kroah-Hartman wrote:
+> > > Can you send me a "real" git pull request so that I can verify it is
+> > > what you say it is (ideally with a signed tag)?
+> >=20
+> > Sure, can do. I will do that tomorrow when (and if) my branch is in next
+> > and so got a bit more exposure.
+>=20
+> That has worked so far. So here comes the requested pull request. I
+> dropped the two patches you collected in the meantime in your
+> char-misc-next branch. The two branches (i.e. your char-misc-next and
+> this PR's tag) merge without conflict.
+>=20
+> The following changes since commit 6613476e225e090cc9aad49be7fa504e290dd3=
+3d:
+>=20
+>   Linux 6.8-rc1 (2024-01-21 14:11:32 -0800)
+>=20
+> are available in the Git repository at:
+>=20
+>   https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git tags=
+/siox/for-greg-6.9-rc1
+>=20
+> for you to fetch changes up to db418d5f1ca5b7bafc8eaa9393ea18a7901bb0ed:
+>=20
+>   siox: bus-gpio: Simplify using devm_siox_* functions (2024-03-08 22:01:=
+10 +0100)
+>=20
+> Please pull this for the 6.9-rc1 merge window.
 
-diff --git a/arch/arm64/net/bpf_jit_comp.c b/arch/arm64/net/bpf_jit_comp.c
-index 132c8ffba109..bc16eb694657 100644
---- a/arch/arm64/net/bpf_jit_comp.c
-+++ b/arch/arm64/net/bpf_jit_comp.c
-@@ -2176,8 +2176,9 @@ void arch_free_bpf_trampoline(void *image, unsigned int size)
- 	bpf_prog_pack_free(image, size);
- }
- 
--void arch_protect_bpf_trampoline(void *image, unsigned int size)
-+int arch_protect_bpf_trampoline(void *image, unsigned int size)
- {
-+	return 0;
- }
- 
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *ro_image,
-diff --git a/arch/x86/net/bpf_jit_comp.c b/arch/x86/net/bpf_jit_comp.c
-index 7a56d2d84512..4900b1ee019f 100644
---- a/arch/x86/net/bpf_jit_comp.c
-+++ b/arch/x86/net/bpf_jit_comp.c
-@@ -3004,8 +3004,9 @@ void arch_free_bpf_trampoline(void *image, unsigned int size)
- 	bpf_prog_pack_free(image, size);
- }
- 
--void arch_protect_bpf_trampoline(void *image, unsigned int size)
-+int arch_protect_bpf_trampoline(void *image, unsigned int size)
- {
-+	return 0;
- }
- 
- int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *image_end,
-diff --git a/include/linux/bpf.h b/include/linux/bpf.h
-index d89bdefb42e2..17843e66a1d3 100644
---- a/include/linux/bpf.h
-+++ b/include/linux/bpf.h
-@@ -1116,7 +1116,7 @@ int arch_prepare_bpf_trampoline(struct bpf_tramp_image *im, void *image, void *i
- 				void *func_addr);
- void *arch_alloc_bpf_trampoline(unsigned int size);
- void arch_free_bpf_trampoline(void *image, unsigned int size);
--void arch_protect_bpf_trampoline(void *image, unsigned int size);
-+int __must_check arch_protect_bpf_trampoline(void *image, unsigned int size);
- int arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
- 			     struct bpf_tramp_links *tlinks, void *func_addr);
- 
-diff --git a/kernel/bpf/bpf_struct_ops.c b/kernel/bpf/bpf_struct_ops.c
-index 43356faaa057..2d4bfe6bfb5f 100644
---- a/kernel/bpf/bpf_struct_ops.c
-+++ b/kernel/bpf/bpf_struct_ops.c
-@@ -742,8 +742,12 @@ static long bpf_struct_ops_map_update_elem(struct bpf_map *map, void *key,
- 		if (err)
- 			goto reset_unlock;
- 	}
--	for (i = 0; i < st_map->image_pages_cnt; i++)
--		arch_protect_bpf_trampoline(st_map->image_pages[i], PAGE_SIZE);
-+	for (i = 0; i < st_map->image_pages_cnt; i++) {
-+		err = arch_protect_bpf_trampoline(st_map->image_pages[i],
-+						  PAGE_SIZE);
-+		if (err)
-+			goto reset_unlock;
-+	}
- 
- 	if (st_map->map.map_flags & BPF_F_LINK) {
- 		err = 0;
-diff --git a/kernel/bpf/core.c b/kernel/bpf/core.c
-index 63f100def31b..1e761c3c66db 100644
---- a/kernel/bpf/core.c
-+++ b/kernel/bpf/core.c
-@@ -908,23 +908,31 @@ static LIST_HEAD(pack_list);
- static struct bpf_prog_pack *alloc_new_pack(bpf_jit_fill_hole_t bpf_fill_ill_insns)
- {
- 	struct bpf_prog_pack *pack;
-+	int err;
- 
- 	pack = kzalloc(struct_size(pack, bitmap, BITS_TO_LONGS(BPF_PROG_CHUNK_COUNT)),
- 		       GFP_KERNEL);
- 	if (!pack)
- 		return NULL;
- 	pack->ptr = bpf_jit_alloc_exec(BPF_PROG_PACK_SIZE);
--	if (!pack->ptr) {
--		kfree(pack);
--		return NULL;
--	}
-+	if (!pack->ptr)
-+		goto out;
- 	bpf_fill_ill_insns(pack->ptr, BPF_PROG_PACK_SIZE);
- 	bitmap_zero(pack->bitmap, BPF_PROG_PACK_SIZE / BPF_PROG_CHUNK_SIZE);
--	list_add_tail(&pack->list, &pack_list);
- 
- 	set_vm_flush_reset_perms(pack->ptr);
--	set_memory_rox((unsigned long)pack->ptr, BPF_PROG_PACK_SIZE / PAGE_SIZE);
-+	err = set_memory_rox((unsigned long)pack->ptr,
-+			     BPF_PROG_PACK_SIZE / PAGE_SIZE);
-+	if (err)
-+		goto out_free;
-+	list_add_tail(&pack->list, &pack_list);
- 	return pack;
-+
-+out_free:
-+	bpf_jit_free_exec(pack->ptr);
-+out:
-+	kfree(pack);
-+	return NULL;
- }
- 
- void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
-@@ -939,9 +947,16 @@ void *bpf_prog_pack_alloc(u32 size, bpf_jit_fill_hole_t bpf_fill_ill_insns)
- 		size = round_up(size, PAGE_SIZE);
- 		ptr = bpf_jit_alloc_exec(size);
- 		if (ptr) {
-+			int err;
-+
- 			bpf_fill_ill_insns(ptr, size);
- 			set_vm_flush_reset_perms(ptr);
--			set_memory_rox((unsigned long)ptr, size / PAGE_SIZE);
-+			err = set_memory_rox((unsigned long)ptr,
-+					     size / PAGE_SIZE);
-+			if (err) {
-+				bpf_jit_free_exec(ptr);
-+				ptr = NULL;
-+			}
- 		}
- 		goto out;
- 	}
-diff --git a/kernel/bpf/trampoline.c b/kernel/bpf/trampoline.c
-index 04fd1abd3661..cc50607f8d8c 100644
---- a/kernel/bpf/trampoline.c
-+++ b/kernel/bpf/trampoline.c
-@@ -456,7 +456,9 @@ static int bpf_trampoline_update(struct bpf_trampoline *tr, bool lock_direct_mut
- 	if (err < 0)
- 		goto out_free;
- 
--	arch_protect_bpf_trampoline(im->image, im->size);
-+	err = arch_protect_bpf_trampoline(im->image, im->size);
-+	if (err)
-+		goto out_free;
- 
- 	WARN_ON(tr->cur_image && total == 0);
- 	if (tr->cur_image)
-@@ -1072,10 +1074,10 @@ void __weak arch_free_bpf_trampoline(void *image, unsigned int size)
- 	bpf_jit_free_exec(image);
- }
- 
--void __weak arch_protect_bpf_trampoline(void *image, unsigned int size)
-+int __weak arch_protect_bpf_trampoline(void *image, unsigned int size)
- {
- 	WARN_ON_ONCE(size > PAGE_SIZE);
--	set_memory_rox((long)image, 1);
-+	return set_memory_rox((long)image, 1);
- }
- 
- int __weak arch_bpf_trampoline_size(const struct btf_func_model *m, u32 flags,
-diff --git a/net/bpf/bpf_dummy_struct_ops.c b/net/bpf/bpf_dummy_struct_ops.c
-index de33dc1b0daa..25b75844891a 100644
---- a/net/bpf/bpf_dummy_struct_ops.c
-+++ b/net/bpf/bpf_dummy_struct_ops.c
-@@ -133,7 +133,9 @@ int bpf_struct_ops_test_run(struct bpf_prog *prog, const union bpf_attr *kattr,
- 	if (err < 0)
- 		goto out;
- 
--	arch_protect_bpf_trampoline(image, PAGE_SIZE);
-+	err = arch_protect_bpf_trampoline(image, PAGE_SIZE);
-+	if (err)
-+		goto out;
- 	prog_ret = dummy_ops_call_op(image, args);
- 
- 	err = dummy_ops_copy_args(args);
--- 
-2.43.0
+I didn't hear anything back from you and wonder if there is still a
+chance to get this in. I guess that's just you being busy with other
+(and more important) stuff. Would it help you if I sent a pull request
+to Linus directly?
 
+The changes are in next leading to db418d5f1ca5 since next-20240308. (As
+db418d5f1ca since next-20240312, I rebased as two of the six siox
+patches got into char-misc-next that were picked up directly from the
+mailing list. Before the rebase it was 4ab973203404.)
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--bkoh2y6adlbtsnww
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmX1TB8ACgkQj4D7WH0S
+/k6UmwgArdQWnLibF7drGcUxPzGwBs3eriG3Mm+7qvYdwmB2afWTrUJbpG7Jc7ES
+BN3opcMXWqv6gry1UXTzN/c9QGrQJcc7l00WJv/yHTCvvFI1BRZp0p0AeC9kGL1q
+L/m2EOieWlAiSYNSwMuS52JbS12zV/HO4gGlnKv4saQC4RvdREAgsMOGT3gm9Xum
+xPBUm1MEip00Yvf6W4EOsSLys9nw/9g4E0qbiW379wtNbko/0zXrj+EItYBtu7OA
+xnaQdNCVAV442aAJayyqecsBh+HetXe77JlSA7SyVpMNMqNnLwfwEeMkMW99Tj8e
+iqBQGjxdxu6FGHkN+omTw5C/AjLlhQ==
+=jRKH
+-----END PGP SIGNATURE-----
+
+--bkoh2y6adlbtsnww--
 
