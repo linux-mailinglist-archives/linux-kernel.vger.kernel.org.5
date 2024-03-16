@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-105244-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105245-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18BAB87DB04
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:20:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21BB187DB06
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:20:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF31A1F21A51
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:20:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CC8E1C20D2A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:20:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 252381BF5C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79CD21C29F;
 	Sat, 16 Mar 2024 17:20:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ebvg+W0U"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o7Lzh+T/"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 638C61BC58;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F9F1BDD3;
 	Sat, 16 Mar 2024 17:20:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710609629; cv=none; b=gsc1c3uIuogZTpv/kU1kDgPtAqCSCkZo0HU+btNrL+PNAOaBZOrKwd25qyEsdosuVEi7BqRXoJOf8biAK7ZdiesSxmng+42+jdgVjpVpSeD8sUYcclXEhSqMC17SjJEfwlg75JnaxPyR5TiMRzihqG1UePTWWzt/Lh03D221BRc=
+	t=1710609629; cv=none; b=H8DvV3GXxTgJWx3S3GJICc/nclGsVPnkk3hB4E09kPsXSbt6InicRuLBdedz8tFvvHdV0Hh2Bl8Mh9NlxrnPgcFYDk8IDAbfPuTiSc6s65bERbjfS/5mQEzHxZ1Py0TrY9vYGtj/8dCMhM21E0PrwIOmVgFckl86tAL2pgVQt0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710609629; c=relaxed/simple;
-	bh=14g6XW14/FQppYz6RFIEUed+PC+05r6isL19pE+03U0=;
+	bh=6In+/F5LAk300z+6Nl7Ldiqqsymq+aCtseBEiwn5L2g=;
 	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=paeO0a3ymT74L0CmXzZEapKMI5q/XYwUtv4fA+ZyJtlaBAT+ToHiFwCj1mdBNU3rOtNkWUGXTQ1swWv5zSylXbk1hDTQ/gyczwO2IrEFfqVzMEAb09Z85ddlTWIpw9xRXMiiiXtLybpdxbOuP9gbNC0pOEAf7x7O7EdJ9IMZp1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ebvg+W0U; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 32EA2C43394;
+	 In-Reply-To:To:Cc; b=HF+myaDYx30odLuakC1DjE5u7gz63zpvwXHz6OuSVqdRoNOROhzRv5P/Z9EAdOQ4So8O31WasNS64Y0PYzeOFxXzH4jwPQE/cD+vz6boXob2yQ3HdKO5aPYz+jrMY0bpZAx91qn70UUCk+jh1dsEXJRLqStM2VSyE4MocK52Vzo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o7Lzh+T/; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 2F9D1C433F1;
 	Sat, 16 Mar 2024 17:20:29 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710609629;
-	bh=14g6XW14/FQppYz6RFIEUed+PC+05r6isL19pE+03U0=;
+	bh=6In+/F5LAk300z+6Nl7Ldiqqsymq+aCtseBEiwn5L2g=;
 	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Ebvg+W0Uf+kFXwtsLiKtJIKz5ukMYB624TdlsHFJxa6xnIdgglXf+gjBIcxmoSJsy
-	 ehqDnSUHfpNgm+V4N/xBiTv18WeEe0I3s6GnROT579BV0YfoudN+htgLpHshQxKxoO
-	 tsK4Qw3UQP8FICXFctJWaxSHh60pTvyK//p0ZVDrBy/HnhIZb4TR3GfnnND/cgxAJQ
-	 k7J3szXkq9oE+mMmufQKZuQefJeWkf5O+im7RjPdtOVTAvzTMZfFBMV742drydhncc
-	 J3ZZKvXxI6YYVDB+w+Rf7yP6mo39eqLAYN15dK1xGu5XC2pzzOuisf/8mwxNyg4Xbg
-	 EGZVmvOnb5w0w==
+	b=o7Lzh+T/UVTOJ/tOcGJG8En9eYwh5Uof2c3zwpOIo0l2k8x2mYfMjOF2/jJAAMMHY
+	 zj04ZbG5ooNTUFmDudYcUrHEuZxFHH3ibhv5Y5eEvn1Sg5slrdme59q8c4RE2OQM2X
+	 NfkLCArHVMH5OXgIrla80UT2HAOsEHS2VA1OJXzsWO7PHAVB4aHKoJ37vgaq6XjyIl
+	 ZlYS/26ns124xM4gydOS+hp5ZVQDEjItcLbAGvEEcub1zA63bVKNOkEtKMwwsuJtcg
+	 NObDzWw6ikxs9ZChxGQqlrqXt9okmEvK9TMBg/M7UYlMo1iFvEZIlKj39+oWyYSMhm
+	 oFZSU/XPO2Hxw==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 24A0CD84BAF;
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 1D02CD95053;
 	Sat, 16 Mar 2024 17:20:29 +0000 (UTC)
 Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
@@ -51,13 +51,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH V2] Bluetooth: Add support for MediaTek MT7922 device
+Subject: Re: [PATCH] Add support for MediaTek MT7922 Bluetooth device
 From: patchwork-bot+bluetooth@kernel.org
 Message-Id: 
- <171060962914.7860.3606951937987322680.git-patchwork-notify@kernel.org>
+ <171060962911.7860.8197106959740941783.git-patchwork-notify@kernel.org>
 Date: Sat, 16 Mar 2024 17:20:29 +0000
-References: <SYYP282MB119734BDF1275B7453AE84C7AB282@SYYP282MB1197.AUSP282.PROD.OUTLOOK.COM>
-In-Reply-To: <SYYP282MB119734BDF1275B7453AE84C7AB282@SYYP282MB1197.AUSP282.PROD.OUTLOOK.COM>
+References: <SYYP282MB1197FB116B937D8CB0E57305AB282@SYYP282MB1197.AUSP282.PROD.OUTLOOK.COM>
+In-Reply-To: <SYYP282MB1197FB116B937D8CB0E57305AB282@SYYP282MB1197.AUSP282.PROD.OUTLOOK.COM>
 To: Ian W MORRISON <ianwmorrison@live.com>
 Cc: marcel@holtmann.org, luiz.dentz@gmail.com,
  linux-bluetooth@vger.kernel.org, linux-kernel@vger.kernel.org
@@ -67,7 +67,7 @@ Hello:
 This patch was applied to bluetooth/bluetooth-next.git (master)
 by Luiz Augusto von Dentz <luiz.von.dentz@intel.com>:
 
-On Fri, 15 Mar 2024 18:48:08 +1100 you wrote:
+On Fri, 15 Mar 2024 17:46:54 +1100 you wrote:
 > This patch adds support for the MediaTek MT7922 Bluetooth device.
 > 
 > The information in /sys/kernel/debug/usb/devices about the MT7922
@@ -116,7 +116,7 @@ On Fri, 15 Mar 2024 18:48:08 +1100 you wrote:
 > [...]
 
 Here is the summary with links:
-  - [V2] Bluetooth: Add support for MediaTek MT7922 device
+  - Add support for MediaTek MT7922 Bluetooth device
     https://git.kernel.org/bluetooth/bluetooth-next/c/f4a0fc6780c7
 
 You are awesome, thank you!
