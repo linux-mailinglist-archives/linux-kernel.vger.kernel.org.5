@@ -1,108 +1,143 @@
-Return-Path: <linux-kernel+bounces-105197-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105198-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D97F87DA6A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:06:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4980C87DA6C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:11:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF9081C20C72
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:06:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0DB51F2155E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:11:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4A1571B28D;
-	Sat, 16 Mar 2024 14:06:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCC419BA3;
+	Sat, 16 Mar 2024 14:11:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="jysqc5wx"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="FLN/sEIB"
+Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A8C218C36;
-	Sat, 16 Mar 2024 14:06:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F63114290
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 14:11:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710597991; cv=none; b=L6YuOe97uwvzpgED48Xk3GFNXkZ9V1Zo+GSc87+hcdU2VoibZsTxqhhk+49HFuXZzb5UqAVsnpjquD5ukHHhYDJPtbMR3sS6QzxE18I0u7xncbDATqHQiTKzQGYTtx25PX4lJ1ZdT3ubSeFFyCNPi16PHiDcKXd8zyo3L1G/A7w=
+	t=1710598279; cv=none; b=idLWDp7WVZYhtCL7KKksnjM53c+4CzPJR3jdjnOopIbokWEON5xPGG5Imlx7eDHOa22AEvwEzNK/CvE6sZOieDTZ0t3ipMY1JFgkaDF44NteNMLRPcHDzdDPxwdIpH90pcclPh3bNMvWrsr23ljIzxVQSRJ6XAQG4aPRV+7OOmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710597991; c=relaxed/simple;
-	bh=QKLuZWkkygYcB6WBv1qdecfbnnJIK9dRYC9Tpk4yfRQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ZGfXt7C7rvRgDrnipSNQaYKWlBLsVqqKvDEFbHk6dXtKwoOpwPnNS9CR265WiMlRm63+zGeJ5hcOS7vh/6/7QQVVVGFiw4SLO9sGWHIAKWoX/7jvxugIrtKAIbu+6AV+ktY+fRsMw7GHECqG7N4lwRKpf2cWt0kBnY1YQ2VnUbk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=jysqc5wx; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 29D24C433C7;
-	Sat, 16 Mar 2024 14:06:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710597991;
-	bh=QKLuZWkkygYcB6WBv1qdecfbnnJIK9dRYC9Tpk4yfRQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=jysqc5wxajcRPLEwBcjYSgMy0/WGvTlUCo1KvJm4lv+uZCbD593hbnXWZnn8TQs3X
-	 B54etI8pwPYhwD/QSfGL3gbo9l+pT6BIj2h+3Lwqxi5C5LyImhg01dUrkxMoO1ETwk
-	 wmdO9Qe0DceAfn4AOfIkj9rUF5/SR7f+LJy+npQkYEkAgCnoBkTkzAhnSnRut/4erV
-	 Na20PIq1YW4I9MZlLxSQAwtdWw9hgZ+YcUGQcro7pTkYrUnEDWmD0w8WMzLSdUvJ57
-	 dh1gsqWEivN9sIoCFn4gkc8lbpIxP5CxAOixjV3gL/Rz3V6cNE2Umq7KJwGtLF7EGo
-	 OL/zpkojGABYQ==
-Date: Sat, 16 Mar 2024 14:06:16 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Nuno =?UTF-8?B?U8Oh?= <noname.nuno@gmail.com>
-Cc: Colin Ian King <colin.i.king@gmail.com>, Lars-Peter Clausen
- <lars@metafoo.de>, Michael Hennerich <Michael.Hennerich@analog.com>, Cosmin
- Tanislav <cosmin.tanislav@analog.com>, linux-iio@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH][next] iio: accel: adxl367: Remove second semicolon
-Message-ID: <20240316140616.09301073@jic23-huawei>
-In-Reply-To: <717ad48efa7ffc6cc1960be05558e9cbf0b6c4c8.camel@gmail.com>
-References: <20240315091436.2430227-1-colin.i.king@gmail.com>
-	<717ad48efa7ffc6cc1960be05558e9cbf0b6c4c8.camel@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710598279; c=relaxed/simple;
+	bh=Wb9CHEmPPCeq2+LNqemXs1xf0viC8ZW+ktqvjLjwKeY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K2/n0Htrc+xYmhKoDmq8MWhBpa7rNEOjI8l4dFgP1Wul1DTE7U9jCmvgaebm4Rf0vMrjPldgzcaNeL9RNMJVwf7DCpHXrRn4666p2Lhl1Ab6VXHGCTfwJBMdMhmMFBXjI8+eNghIHc1oZ4oLWh8e/G0crMT2xjCmGWDDI29tiYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=FLN/sEIB; arc=none smtp.client-ip=213.97.179.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
+	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
+	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
+	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
+	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
+	List-Subscribe:List-Post:List-Owner:List-Archive;
+	bh=KdHqSaYihPn5FB720GQj2s6e6OT+vaWHkLMQ10Tlf5U=; b=FLN/sEIBe7DtAcqD80jbTa/MT+
+	2oM1hX2RwwJjw5gcYnjVhh5yIZDVgI11ghnTr7zL+JIhiXSNKoIr86u5BqKmhJcAcyKqq7+D9JU2D
+	7s5Ls3iebh+Qzz1v6OkepMpkONJeFzJwiRShTA2LeV3xbBeMJUMaZak5Kc6QMuEcVE1hGKMVUcZW2
+	JxHKBIk67H24X4zvSa3Wr60cl6Qj+HGDTEBks18y+zIoRBeTlVsqwDvrhV1Ue7VtNUbS8OMgzwaVv
+	8RBH8yON97dmuyvIu6H9fpqiNbL9XnkkKcCukMdnVocYMKwVq13XjSeQ8lJGP1SqikDeUjRucrFFM
+	YaWzYkug==;
+Received: from [189.6.17.125] (helo=[192.168.0.55])
+	by fanzine2.igalia.com with esmtpsa 
+	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
+	id 1rlUkH-00BGTR-2S; Sat, 16 Mar 2024 15:10:45 +0100
+Message-ID: <1950f7fb-d326-4074-ba7c-8c5622eebb2e@igalia.com>
+Date: Sat, 16 Mar 2024 11:10:34 -0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
+To: Arthur Grillo <arthurgrillo@riseup.net>
+Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
+ Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
+ <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
+ Daniel Vetter <daniel@ffwll.ch>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
+ pekka.paalanen@haloniitty.fi, Louis Chauvet <louis.chauvet@bootlin.com>,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
+ thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
+ nicolejadeyee@google.com, Pekka Paalanen <pekka.paalanen@collabora.com>
+References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
+ <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
+ <yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
+ <2aa81b6b-0eb1-46d6-8e36-3bd43b8961c4@riseup.net>
+Content-Language: en-US
+From: Melissa Wen <mwen@igalia.com>
+In-Reply-To: <2aa81b6b-0eb1-46d6-8e36-3bd43b8961c4@riseup.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Fri, 15 Mar 2024 12:51:07 +0100
-Nuno S=C3=A1 <noname.nuno@gmail.com> wrote:
-
-> On Fri, 2024-03-15 at 09:14 +0000, Colin Ian King wrote:
-> > There is a statement with two semicolons. Remove the second one, it
-> > is redundant.
-> >=20
-> > Signed-off-by: Colin Ian King <colin.i.king@gmail.com>
-> > --- =20
->=20
-> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
-Thanks Colin.
-
-oops.
-
-Applied to the togreg-normal branch of iio.git, but note I'll not rush
-this in, so will be the 6.10 merge window now.
-
-Jonathan
 
 
->=20
-> > =C2=A0drivers/iio/accel/adxl367.c | 2 +-
-> > =C2=A01 file changed, 1 insertion(+), 1 deletion(-)
-> >=20
-> > diff --git a/drivers/iio/accel/adxl367.c b/drivers/iio/accel/adxl367.c
-> > index 210228affb80..5cf4828a5eb5 100644
-> > --- a/drivers/iio/accel/adxl367.c
-> > +++ b/drivers/iio/accel/adxl367.c
-> > @@ -621,7 +621,7 @@ static int _adxl367_set_odr(struct adxl367_state *s=
-t, enum
-> > adxl367_odr odr)
-> > =C2=A0static int adxl367_set_odr(struct iio_dev *indio_dev, enum adxl36=
-7_odr odr)
-> > =C2=A0{
-> > =C2=A0	iio_device_claim_direct_scoped(return -EBUSY, indio_dev) {
-> > -		struct adxl367_state *st =3D iio_priv(indio_dev);;
-> > +		struct adxl367_state *st =3D iio_priv(indio_dev);
-> > =C2=A0		int ret;
-> > =C2=A0
-> > =C2=A0		guard(mutex)(&st->lock); =20
->=20
+On 16/03/2024 08:59, Arthur Grillo wrote:
+>
+> On 12/03/24 15:27, Melissa Wen wrote:
+>> On 03/06, Arthur Grillo wrote:
+>>> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wrong.
+>>> To round a number, you need to add 0.5 to the number and floor that,
+>>> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
+>>>
+>>> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paalanen@collabora.com/
+>>>
+>> Hi Arthur,
+>>
+>> thanks for addressing this issue.
+>>
+>> Please, add a fix tag to the commit that you are fixing, so we can
+>> easily backport. Might be this commit:
+>> https://cgit.freedesktop.org/drm/drm-misc/commit/drivers/gpu/drm/vkms?id=ab87f558dcfb2562c3497e89600dec798a446665
+> Wouldn't be this commit instead?
+> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8b25320887d7feac98875546ea0f521628b745bb
+Yes, you're right!
+
+Melissa
+>
+> Best Regards,
+> ~Arthur Grillo
+>
+>
+>>> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
+>>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
+>>> ---
+>>>   include/drm/drm_fixed.h | 2 +-
+>>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>>
+>>> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
+>>> index 0c9f917a4d4b..de3a79909ac9 100644
+>>> --- a/include/drm/drm_fixed.h
+>>> +++ b/include/drm/drm_fixed.h
+>>> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
+>>>   
+>>>   static inline int drm_fixp2int_round(s64 a)
+>>>   {
+>>> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1)));
+>> Also, this is the only usage of DRM_FIXED_POINT_HALF. Can you also
+>> remove it as it won't be used anymore?
+>>
+>>> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2);
+>> Would this division be equivalent to just shifting 1ULL by 31 instead of
+>> 32 as done in DRM_FIXED_ONE?
+>>
+>> Melissa
+>>
+>>>   }
+>>>   
+>>>   static inline int drm_fixp2int_ceil(s64 a)
+>>>
+>>> -- 
+>>> 2.43.0
+>>>
 
 
