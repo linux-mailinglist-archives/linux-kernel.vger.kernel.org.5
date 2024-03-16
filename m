@@ -1,334 +1,254 @@
-Return-Path: <linux-kernel+bounces-105102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105103-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B367A87D921
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:13:43 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EF08287D922
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:16:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D6B1E1C20C61
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 07:13:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 193FA1C20DCB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 07:16:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CF3FE576;
-	Sat, 16 Mar 2024 07:13:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97B53DDC9;
+	Sat, 16 Mar 2024 07:16:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gl4oPlzi"
-Received: from mail-ot1-f53.google.com (mail-ot1-f53.google.com [209.85.210.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="On5VTf91"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B9F86DDA0;
-	Sat, 16 Mar 2024 07:13:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1FC24DDA0
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 07:16:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710573215; cv=none; b=FodnOnRloUvB5NQs2OXVjR27DbFfOaRtuwKmCfdUpBIil25tG4jJ8miwdc/gjH45JbnIMB+EMCqoDGQui4Sxe07ilzPm76B5rcFeAjBaJqPebJCUR3uGH8o0gF7HAkt+ZN4Gz6xJCAcGu5jUonHYrXxR2ALl0pY72JVmyDHb6lo=
+	t=1710573402; cv=none; b=ZoQ24TB9LSnKIt7RfrHUdaTv8x7PGinYpD+0T+Am1IPiOHO2iKr6iUS2ydRxR8a6Zmz/J2rucejdXDXoeeKma+A2TVzYZZfWmS2cNnQoiva+If0j4WekcT0mWwBQJUWczInu0wp1r0sJWt+2LojRZsmoak/PRkx8wLcHv6uAlh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710573215; c=relaxed/simple;
-	bh=fRxJhlJU5nJuH3yGn/7/q+rm5xSlke51hiT+mYNAMUk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FnFq21wpmFQajb0AIMI6STcQnv0ZMQBe08vhSP1miyue4U016ZD06m2AGjglPesAL5CKTn6GSA79hQd8QAZpHc+vbgrtIo32VtwvJpGuM8cSoJX499hua3uYot4bEr/PlZMRCgpofYxXsdlTHdkAzsvR/U7727fFxXpMnX6CNKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gl4oPlzi; arc=none smtp.client-ip=209.85.210.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f53.google.com with SMTP id 46e09a7af769-6e4f874f958so1034893a34.3;
-        Sat, 16 Mar 2024 00:13:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710573213; x=1711178013; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kH1HjKXgqWamM9V7+gGjSorEBrJBtznwrDfjafJprJo=;
-        b=gl4oPlziAAbcQwfecxy5Uu2KfnjXN1P6/wb44w3BnnJBWZfjip/nFWw91YFsTNrsgN
-         5So+0sq0AvtVkszm8lwHoZD5Q/8DWpAQeXRxzR5zfxlbAtnAdH1a+dtkbTGvjgxfAEjP
-         RrD9/TejYYj5XMD6pGAIljhizw+Mbbjyy+5TNjuIAMQfe5OeIon7UdvajklDYbjaEw8b
-         A9kNkxmrIrc3LOaEKg4kKTWILdPBsToozI4cPHLB1lwCJsNoG68coWG4AQT2jaRIa00I
-         RoZQrp0MrMO/MwUELvI87sIDcfR+pynC3z26W23UFzej0DZItRaI9zdNq2gQq6NZ3YT1
-         EeYg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710573213; x=1711178013;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kH1HjKXgqWamM9V7+gGjSorEBrJBtznwrDfjafJprJo=;
-        b=EL0R6DKSLfl6z9rBA5zRTtRXv/dS2P6atlsFxWYWAc3du5CBHUjdIJbjNxr0g+Ru8s
-         b1yG9EfXvA2ePEgZqoXniy2tUSBMi25MMQ8E14YOuTx6R2ayhKfbBHhQnIUmZdGXQsnE
-         sZGRjcbazYPqcXvxNWPXpxowC3jk/SUkiMGgxyR8Boi5DZgU8si7fZ0r4rHOMSMFFsZv
-         EVKeMLowZEMTIlch/wN4ZSE96QwNmoDWKhwSTtW4gY62kL0NPr6pNHyRNpYMyaH9oz9h
-         bni0BHeaT13D90KVdCAjkBd9cFnT5YxdP8g56wB1fZfbMjaLiiRmsxqIq608N8wlq8gj
-         Dc/w==
-X-Forwarded-Encrypted: i=1; AJvYcCVuNEG2SMlwlHfau3llv1n5K895f1dluSrxp0QJa8YbH8qM/itqel8saEWgry48LTtS+bLaH2/i2LwXdtchKt8WlQ3dTL6+rmejINZq7k2KH6clfnWeQ/5iVch/X14+75yEHmkvRs6FMB2rNyAfW+bWIZtaVKuyB08FfQlW0CsJFhP3ww==
-X-Gm-Message-State: AOJu0YxM/xI9DsccO6N6AWTPblE/0hVH/C53KclWZXcOgMYZuRIJwTJr
-	9K+YuF69GHtqicRC8eMUEtjC5JNWYi4RwiqkJORiBjlUAu/uoT3WJ+TsWQ9Ub8h9jLuQ2LdyvhE
-	a7aZIiz1rD3ldMmybO/wpL0Nu+e8=
-X-Google-Smtp-Source: AGHT+IHFm1pk3MhaYLjKF5FvPa3megVs0xsRdtydd9ia8Rk4aY9IXlZA8suyd3aMqnOZx7VXpFjukxiRHQ001S2F/1w=
-X-Received: by 2002:a9d:7854:0:b0:6e4:da53:7e36 with SMTP id
- c20-20020a9d7854000000b006e4da537e36mr7297684otm.19.1710573212476; Sat, 16
- Mar 2024 00:13:32 -0700 (PDT)
+	s=arc-20240116; t=1710573402; c=relaxed/simple;
+	bh=H7rInrQrrR/VqYGdfL9V1bFcP0SpEDR65vCgBN7ekIk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=tS7vips8jxAU7r4dc4c8AzSr5I/kvnhDIYMva63nphEiXQXAllbsN8SBjMVAa0wLka/YLu7pBwqtcfTD8P6O47eBtm9bA6ogJjYyKnFiyDTO6zwEFHqa7fD+ldulxoIomK5b6bJfszI9oUWs3Zc1qtWFlZTryQvFk6c4AYimEsI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=On5VTf91; arc=none smtp.client-ip=198.175.65.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710573400; x=1742109400;
+  h=date:from:to:cc:subject:message-id:mime-version;
+  bh=H7rInrQrrR/VqYGdfL9V1bFcP0SpEDR65vCgBN7ekIk=;
+  b=On5VTf91JqVczGBqUe2op5tcbzz/uTIDRH931jRnyHUxYcn08Cv8h/2k
+   6n3h+nO1kIFeREYTh7ULJJiUMUlyZiFnIxWCGwWG1lDqxgUV1yfmtRukM
+   OZoRu/CzBjw3PMzgBaXRQQsVysScxbgIJIOXOV2iSDjhw0c6F/dPUhs12
+   Tzo+5JJlT4TQ5o+gnF6jUBT1XXHl3H7omuikTxGKjenPL7d28zzM7e1Gn
+   UmwnGkVDehzZRxDaEvvcwtwpsUEGWco3qvms8/3e0PhlEut7J/lETTgzN
+   EWQ4ptroLCbCXWjbniYZpQkeFDRI1nD7gyazS6dLXhpnsR+YZDOEjSrm9
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5582472"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="5582472"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2024 00:16:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="43961213"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by fmviesa001.fm.intel.com with ESMTP; 16 Mar 2024 00:16:38 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rlOHT-000FA1-2g;
+	Sat, 16 Mar 2024 07:16:35 +0000
+Date: Sat, 16 Mar 2024 15:16:01 +0800
+From: kernel test robot <lkp@intel.com>
+To: Ian Abbott <abbotti@mev.co.uk>
+Cc: oe-kbuild-all@lists.linux.dev, linux-kernel@vger.kernel.org
+Subject: WARNING: modpost: "__udelay" [drivers/comedi/drivers/rti800.ko] has
+ no CRC!
+Message-ID: <202403161556.fN71B0Ha-lkp@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314100131.323540-1-qiujingbao.dlmu@gmail.com>
- <20240314100131.323540-3-qiujingbao.dlmu@gmail.com> <ZfT42gzJhVd1NQzd@xhacker>
-In-Reply-To: <ZfT42gzJhVd1NQzd@xhacker>
-From: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-Date: Sat, 16 Mar 2024 15:13:21 +0800
-Message-ID: <CAJRtX8TRcBFKSrPm8C4-MxUrin6B0aNJ7KjCDkAdMWPw2W-2VQ@mail.gmail.com>
-Subject: Re: [PATCH v5 2/2] pwm: sophgo: add pwm support for Sophgo CV1800 SoC
-To: Jisheng Zhang <jszhang@kernel.org>
-Cc: u.kleine-koenig@pengutronix.de, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
-	paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu, 
-	linux-pwm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org, 
-	dlan@gentoo.org, inochiama@outlook.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Sat, Mar 16, 2024 at 9:55=E2=80=AFAM Jisheng Zhang <jszhang@kernel.org> =
-wrote:
->
-> On Thu, Mar 14, 2024 at 06:01:31PM +0800, Jingbao Qiu wrote:
-> > Implement the PWM driver for CV1800.
-> >
-> > Signed-off-by: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > ---
-> >  drivers/pwm/Kconfig      |  10 ++
-> >  drivers/pwm/Makefile     |   1 +
-> >  drivers/pwm/pwm-cv1800.c | 315 +++++++++++++++++++++++++++++++++++++++
-> >  3 files changed, 326 insertions(+)
-> >  create mode 100644 drivers/pwm/pwm-cv1800.c
-> >
-> > diff --git a/drivers/pwm/Kconfig b/drivers/pwm/Kconfig
-> > index 4b956d661755..455f07af94f7 100644
-> > --- a/drivers/pwm/Kconfig
-> > +++ b/drivers/pwm/Kconfig
-> > @@ -186,6 +186,16 @@ config PWM_CROS_EC
-> >         PWM driver for exposing a PWM attached to the ChromeOS Embedded
-> >         Controller.
-> >
-> > +config PWM_CV1800
-> > +     tristate "Sophgo CV1800 PWM driver"
-> > +     depends on ARCH_SOPHGO || COMPILE_TEST
-> > +     help
-> > +       Generic PWM framework driver for the Sophgo CV1800 series
-> > +       SoCs.
-> > +
-> > +       To compile this driver as a module, build the dependecies
-> > +       as modules, this will be called pwm-cv1800.
-> > +
-> >  config PWM_DWC_CORE
-> >       tristate
-> >       depends on HAS_IOMEM
-> > diff --git a/drivers/pwm/Makefile b/drivers/pwm/Makefile
-> > index c5ec9e168ee7..6c3c4a07a316 100644
-> > --- a/drivers/pwm/Makefile
-> > +++ b/drivers/pwm/Makefile
-> > @@ -15,6 +15,7 @@ obj-$(CONFIG_PWM_CLK)               +=3D pwm-clk.o
-> >  obj-$(CONFIG_PWM_CLPS711X)   +=3D pwm-clps711x.o
-> >  obj-$(CONFIG_PWM_CRC)                +=3D pwm-crc.o
-> >  obj-$(CONFIG_PWM_CROS_EC)    +=3D pwm-cros-ec.o
-> > +obj-$(CONFIG_PWM_CV1800)     +=3D pwm-cv1800.o
-> >  obj-$(CONFIG_PWM_DWC_CORE)   +=3D pwm-dwc-core.o
-> >  obj-$(CONFIG_PWM_DWC)                +=3D pwm-dwc.o
-> >  obj-$(CONFIG_PWM_EP93XX)     +=3D pwm-ep93xx.o
-> > diff --git a/drivers/pwm/pwm-cv1800.c b/drivers/pwm/pwm-cv1800.c
-> > new file mode 100644
-> > index 000000000000..8eca07c60942
-> > --- /dev/null
-> > +++ b/drivers/pwm/pwm-cv1800.c
-> > @@ -0,0 +1,315 @@
-> > +// SPDX-License-Identifier: GPL-2.0-only
-> > +/*
-> > + * Sophgo CV1800 PWM driver
-> > + * Author: Jingbao Qiu <qiujingbao.dlmu@gmail.com>
-> > + *
-> > + * Limitations:
-> > + * - It output low when PWM channel disabled.
-> > + * - This pwm device supports dynamic loading of PWM parameters. When =
-PWMSTART
-> > + *   is written from 0 to 1, the register value (HLPERIODn, PERIODn) w=
-ill be
-> > + *   temporarily stored inside the PWM. If you want to dynamically cha=
-nge the
-> > + *   waveform during PWM output, after writing the new value to HLPERI=
-ODn and
-> > + *   PERIODn, write 1 and then 0 to PWMUPDATE[n] to make the new value=
- effective.
-> > + * - Supports up to Rate/2 output, and the lowest is about Rate/(2^30-=
-1).
-> > + * - By setting HLPERIODn to 0, can produce 100% duty cycle.
-> > + * - This hardware could support inverted polarity. By default, the va=
-lue of the
-> > + *   POLARITY register is 0x0. This means that HLPERIOD represents the=
- number
-> > + *   of low level beats.
-> > + * - This hardware supports input mode and output mode, implemented th=
-rough the
-> > + *   Output-Enable/OE register. However, this driver has not yet imple=
-mented
-> > + *   capture callback.
-> > + */
-> > +
-> > +#include <linux/clk.h>
-> > +#include <linux/kernel.h>
-> > +#include <linux/module.h>
-> > +#include <linux/of.h>
-> > +#include <linux/platform_device.h>
-> > +#include <linux/pwm.h>
-> > +#include <linux/regmap.h>
-> > +
-> > +#define PWM_CV1800_HLPERIOD_BASE     0x00
-> > +#define PWM_CV1800_PERIOD_BASE       0x04
-> > +#define PWM_CV1800_POLARITY          0x40
-> > +#define PWM_CV1800_START             0x44
-> > +#define PWM_CV1800_DONE              0x48
-> > +#define PWM_CV1800_UPDATE            0x4c
-> > +#define PWM_CV1800_OE                0xd0
-> > +
-> > +#define PWM_CV1800_HLPERIOD(n)       (PWM_CV1800_HLPERIOD_BASE + ((n) =
-* 0x08))
-> > +#define PWM_CV1800_PERIOD(n)         (PWM_CV1800_PERIOD_BASE + ((n) * =
-0x08))
-> > +
-> > +#define PWM_CV1800_UPDATE_MASK(n)    (BIT(0) << (n))
-> > +#define PWM_CV1800_OE_MASK(n)        (BIT(0) << (n))
-> > +#define PWM_CV1800_START_MASK(n)     (BIT(0) << (n))
-> > +#define PWM_CV1800_POLARITY_MASK(n)  (BIT(0) << (n))
-> > +
-> > +#define PWM_CV1800_MAXPERIOD         0x3fffffff
-> > +#define PWM_CV1800_MINPERIOD         2
-> > +#define PWM_CV1800_CHANNELS          4
-> > +#define PWM_CV1800_PERIOD_RESET      BIT(1)
-> > +#define PWM_CV1800_HLPERIOD_RESET    BIT(0)
-> > +#define PWM_CV1800_REG_DISABLE       0x00U
-> > +#define PWM_CV1800_REG_ENABLE(n)     (BIT(0) << (n))
-> > +
-> > +struct cv1800_pwm {
-> > +     struct regmap *map;
-> > +     struct clk *clk;
-> > +     unsigned long clk_rate;
-> > +};
-> > +
-> > +static inline struct cv1800_pwm *to_cv1800_pwm_dev(struct pwm_chip *ch=
-ip)
-> > +{
-> > +     return pwmchip_get_drvdata(chip);
-> > +}
-> > +
-> > +static const struct regmap_config cv1800_pwm_regmap_config =3D {
-> > +     .reg_bits =3D 32,
-> > +     .val_bits =3D 32,
-> > +     .reg_stride =3D 4,
-> > +};
-> > +
-> > +static int cv1800_pwm_enable(struct pwm_chip *chip, struct pwm_device =
-*pwm,
-> > +                          bool enable)
-> > +{
-> > +     struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
-> > +     u32 pwm_enable;
-> > +
-> > +     regmap_read(priv->map, PWM_CV1800_START, &pwm_enable);
-> > +     pwm_enable &=3D PWM_CV1800_START_MASK(pwm->hwpwm);
-> > +
-> > +     /*
-> > +      * If the parameters are changed during runtime, Register needs
-> > +      * to be updated to take effect.
-> > +      */
-> > +     if (pwm_enable && enable) {
-> > +             regmap_update_bits(priv->map, PWM_CV1800_UPDATE,
-> > +                                PWM_CV1800_UPDATE_MASK(pwm->hwpwm),
-> > +                                PWM_CV1800_REG_ENABLE(pwm->hwpwm));
-> > +             regmap_update_bits(priv->map, PWM_CV1800_UPDATE,
-> > +                                PWM_CV1800_UPDATE_MASK(pwm->hwpwm),
-> > +                                PWM_CV1800_REG_DISABLE);
-> > +     } else if (!pwm_enable && enable) {
-> > +             regmap_update_bits(priv->map, PWM_CV1800_START,
-> > +                                PWM_CV1800_START_MASK(pwm->hwpwm),
-> > +                                PWM_CV1800_REG_ENABLE(pwm->hwpwm));
-> > +     } else if (pwm_enable && !enable) {
-> > +             regmap_update_bits(priv->map, PWM_CV1800_START,
-> > +                                PWM_CV1800_START_MASK(pwm->hwpwm),
-> > +                                PWM_CV1800_REG_DISABLE);
-> > +     }
-> > +
-> > +     return 0;
-> > +}
-> > +
-> > +static void cv1800_pwm_set_polarity(struct pwm_chip *chip,
-> > +                                 struct pwm_device *pwm,
-> > +                                 enum pwm_polarity polarity)
-> > +{
-> > +     struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
-> > +     u32 config_polarity =3D 0;
-> > +
-> > +     if (pwm->state.enabled)
-> > +             cv1800_pwm_enable(chip, pwm, !pwm->state.enabled);
-> > +
-> > +     if (polarity =3D=3D PWM_POLARITY_INVERSED)
-> > +             config_polarity =3D  PWM_CV1800_POLARITY_MASK(pwm->hwpwm)=
-;
-> > +
-> > +     regmap_update_bits(priv->map, PWM_CV1800_POLARITY,
-> > +                        PWM_CV1800_POLARITY_MASK(pwm->hwpwm),
-> > +                        config_polarity);
-> > +}
-> > +
-> > +/**
-> > + * cv1800_pwm_set_oe() - check and config nth channal output-enable/OE=
- mode
-> > + * @chip: PWM chip
-> > + * @pwm: PWM device
-> > + * @mode: The nth bit of the mode represents the output-enable/OE mode
-> > + *        of the nth channal. 1 represents output mode, 0 represents
-> > + *        input mode.
-> > + */
-> > +static void cv1800_pwm_set_oe(struct pwm_chip *chip, struct pwm_device=
- *pwm,
-> > +                           u32 mode)
->
-> Did you get any information about the capture support pwm controller?
->
-> > +{
-> > +     struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
-> > +     u32 state;
-> > +
-> > +     regmap_read(priv->map, PWM_CV1800_OE, &state);
-> > +     state &=3D PWM_CV1800_OE_MASK(pwm->hwpwm);
-> > +
-> > +     if (state =3D=3D mode)
-> > +             return;
-> > +
-> > +     /* disenable pwm output before changing output mode */
-> > +     cv1800_pwm_enable(chip, pwm, false);
-> > +
-> > +     regmap_update_bits(priv->map, PWM_CV1800_OE,
-> > +                        PWM_CV1800_OE_MASK(pwm->hwpwm), mode);
-> > +}
-> > +
-> > +static int cv1800_pwm_apply(struct pwm_chip *chip, struct pwm_device *=
-pwm,
-> > +                         const struct pwm_state *state)
-> > +{
-> > +     struct cv1800_pwm *priv =3D to_cv1800_pwm_dev(chip);
-> > +     u32 period_val, hlperiod_val;
-> > +     u64 ticks;
-> > +
-> > +     cv1800_pwm_set_oe(chip, pwm, PWM_CV1800_OE_MASK(pwm->hwpwm));
->
-> If no capture support, I don't think we need to take care OE, could it
-> be done during init?
->
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+head:   66a27abac311a30edbbb65fe8c41ff1b13876faa
+commit: 98a15816636044f25be4644db2a3e09fad68aaf7 Revert "comedi: add HAS_IOPORT dependencies"
+date:   6 months ago
+config: sparc-buildonly-randconfig-r006-20211222 (https://download.01.org/0day-ci/archive/20240316/202403161556.fN71B0Ha-lkp@intel.com/config)
+compiler: sparc-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240316/202403161556.fN71B0Ha-lkp@intel.com/reproduce)
 
-Currently, there is no support for capturing callbacks. you're right,
-by default, the
-channel is in the output state, it can be initialized as an output
-state in the probe.
-I will carefully consider your opinion.
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403161556.fN71B0Ha-lkp@intel.com/
 
-Best regards,
-Jingbao Qiu
+All warnings (new ones prefixed by >>, old ones prefixed by <<):
+
+Is "__ashrdi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "bzero_1page" [vmlinux] version generation failed, symbol will not be versioned.
+Is "bzero_1page" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__copy_1page" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__copy_1page" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__divdi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__divdi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_read_enter" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_read_enter" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_read_exit" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_read_exit" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_read_try" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_read_try" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "___rw_write_enter" [vmlinux] version generation failed, symbol will not be versioned.
+Is "___rw_write_enter" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__lshrdi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__lshrdi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: EXPORT symbol "__muldi3" [vmlinux] version generation failed, symbol will not be versioned.
+Is "__muldi3" prototyped in <asm/asm-prototypes.h>?
+WARNING: modpost: "__udelay" [kernel/rcu/rcutorture.ko] has no CRC!
+WARNING: modpost: "__udelay" [kernel/rcu/rcuscale.ko] has no CRC!
+WARNING: modpost: "___rw_read_exit" [fs/binfmt_misc.ko] has no CRC!
+WARNING: modpost: "empty_zero_page" [lib/crypto/libchacha20poly1305.ko] has no CRC!
+WARNING: modpost: "__lshrdi3" [lib/test_bitmap.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/bus/mhi/host/mhi.ko] has no CRC!
+WARNING: modpost: "___rw_read_exit" [drivers/bus/mhi/host/mhi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/amlogic/phy-meson-g12a-usb2.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/amlogic/phy-meson-axg-pcie.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/broadcom/phy-bcm-kona-usb2.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/broadcom/phy-brcm-sata.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/broadcom/phy-brcm-usb-dvr.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/broadcom/phy-bcm-sr-usb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/cadence/phy-cadence-salvo.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/hisilicon/phy-histb-combphy.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/lantiq/phy-lantiq-vrx200-pcie.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/mediatek/phy-mtk-ufs.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/ralink/phy-ralink-usb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/rockchip/phy-rockchip-inno-dsidphy.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/rockchip/phy-rockchip-pcie.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/rockchip/phy-rockchip-typec.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/phy/xilinx/phy-zynqmp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/backlight/l4f00242t03.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/video/backlight/ktd253-backlight.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/arcfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/broadsheetfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/video/fbdev/s1d13xxxfb.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/soc/qcom/qcom_rpmh.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/reset/reset-imx7.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/char/hw_random/omap-rng.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/char/hw_random/stm32-rng.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/char/hw_random/ks-sa-rng.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-loopback-test.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/spi/spi-cadence-quadspi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-fsl-qspi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-imx.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-lm70llp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-mt7621.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/spi/spi-pic32.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-pic32-sqi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-sh-hspi.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/spi/spi-sh-hspi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-tegra210-quad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/spi/spi-tegra20-slink.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/spi/spi-uniphier.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/auxdisplay/panel.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/imx_keypad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/keyboard/matrix_keypad.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/adi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/analog.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/db9.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/gamecon.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/joystick/sidewinder.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/touchscreen/cyttsp4_core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/misc/adxl34x.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/input/misc/cma3000_d0x.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-meson.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-msm6242.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-stm32.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/rtc/rtc-tegra.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/dvb-core/dvb-core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/radio/radio-cadet.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/media/radio/tea575x.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/power/supply/sc27xx_fuel_gauge.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/thermal/rockchip_thermal.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/thermal/ti-soc-thermal/ti-soc-thermal.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-bcm6358.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/leds-lt3593.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/flash/leds-aat1290.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/flash/leds-ktd2692.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/leds/flash/leds-rt8515.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/hwspinlock/u8500_hsem.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/nvmem/nvmem-imx-ocotp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/nvmem/nvmem-vf610-ocotp.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/fsi/fsi-master-hub.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/parport/parport.ko] has no CRC!
+WARNING: modpost: "___rw_read_exit" [drivers/parport/parport.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/comedi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl812.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl816.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/pcl818.ko] has no CRC!
+>> WARNING: modpost: "__udelay" [drivers/comedi/drivers/rti800.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/das800.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/mpc624.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/cb_das16_cs.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/comedi/drivers/ni_labpc_common.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/ad7476.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/iio/adc/ad7606.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/ad7949.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/ad9467.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/adi-axi-adc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/bcm_iproc_adc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/hi8435.ko] has no CRC!
+WARNING: modpost: "__ndelay" [drivers/iio/adc/hx711.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/imx8qxp-adc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/max1241.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/mt6577_auxadc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/rcar-gyroadc.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/adc/ti-ads124s08.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/dac/stm32-dac-core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/dac/stm32-dac.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/frequency/ad9523.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/proximity/as3935.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/proximity/ping.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/iio/proximity/srf04.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/fpga/xilinx-spi.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/fpga/altera-pr-ip-core.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/fpga/altera-freeze-bridge.ko] has no CRC!
+WARNING: modpost: "__udelay" [drivers/mux/mux-core.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/core/snd-timer.ko] has no CRC!
+WARNING: modpost: "___rw_read_exit" [sound/core/seq/snd-seq.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/ac97/snd-ac97-codec.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/pci/hda/snd-hda-codec.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/snd-soc-core.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-adau17x1.ko] has no CRC!
+WARNING: modpost: "__ndelay" [sound/soc/codecs/snd-soc-adau1977.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-aw8738.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-cpcap.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-cs35l41-lib.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-dmic.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-jz4740-codec.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-madera.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-max98357a.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/mt6359-accdet.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-peb2466.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-tlv320aic23.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-tlv320aic3x.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-wm8510.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-wm8711.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-wm8995.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/codecs/snd-soc-wm-hubs.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/amd/acp_audio_dma.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/fsl/snd-soc-fsl-asrc.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/fsl/snd-soc-fsl-sai.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/fsl/snd-soc-fsl-ssi.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/fsl/snd-soc-fsl-xcvr.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/kirkwood/snd-soc-kirkwood.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/sti/snd-soc-sti.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/soc/xilinx/snd-soc-xlnx-formatter-pcm.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/hda/snd-hda-core.ko] has no CRC!
+WARNING: modpost: "__udelay" [sound/hda/ext/snd-hda-ext-core.ko] has no CRC!
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
