@@ -1,78 +1,114 @@
-Return-Path: <linux-kernel+bounces-105247-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105248-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7289987DB0A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:23:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67CA887DB0C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:24:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 10EBE1F21A3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:23:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07184B217A4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:24:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C0051C69E;
-	Sat, 16 Mar 2024 17:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC491BF2B;
+	Sat, 16 Mar 2024 17:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tybvwkyy"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vallxqpk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2C4D1C68A
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 17:22:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEBC1BDCE;
+	Sat, 16 Mar 2024 17:24:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710609779; cv=none; b=oxyeh67Pew7EvCVxiYXR1EEAoMAuVul5y1QRkDjn/fmOWK2YrpOjUlTQlPCxCxVFlN1ngR6Yl+6Wp0gbNW3IISBTnVB2sRcp+pX0dnjDmBD9Q14m1wgx+9gFjfTwTsL5CP1T6rqTkie9cLnzaWSsBVF77VPTtb4O/4H2lJZ7qxc=
+	t=1710609880; cv=none; b=iSHn0yJZ1+2JhjdZML3RohdTSk4aWmntnZemAlEznVttMgewHo0uzOH/uHHTWoBXR7whBfMvfrDVzzxjTP71zb9mHgvts8QzlQXMhM4OzpoyfaA695gk1FYjAhDIQqE0/PCS5+QBrpl6zmFi1XwKvGUAb4N6fmxWRTMDbus626Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710609779; c=relaxed/simple;
-	bh=RHiCHySFwMLdaiN5efiUfydHTtZmEujXbTlhJH3krSU=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=mT2JzjsITgUzX8wtPkbkBGD0yLSTmEDCr7X5RkTk9s9m+iyjXPldX3PBH7/JTiEoSmkfZVC5rnNRLOjDRf4nJPtQ0cGSedkgtn4DnIBSPB73743l3pZIrAoPNaI9ASPYaikzgseVJnisV3YdGhjr1nqBIpuwk7zlXSi+5NsBuvo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tybvwkyy; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id 3EF51C433C7;
-	Sat, 16 Mar 2024 17:22:59 +0000 (UTC)
+	s=arc-20240116; t=1710609880; c=relaxed/simple;
+	bh=t2f9OCV2id9IXt90SjuS1wuibjrWOdvYSHURUhVXBCc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eWFFBOA0pxe0Fp0fZok10XlmJEf6F8oWeaj5AzBIxTPa+2FjPg8Bqpg1y4sYF7vzOsu7hUEiH6h3mJlUTD6OxoYjzb2DsXtSF0HKeecq5M32iOlOsxrbrHZFei6yDGkgPU1YVUOwkaBkJw1kJyxjMqnz9SMuBFqds3Qgxihqs+0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vallxqpk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E307C433F1;
+	Sat, 16 Mar 2024 17:24:38 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710609779;
-	bh=RHiCHySFwMLdaiN5efiUfydHTtZmEujXbTlhJH3krSU=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=Tybvwkyy8IpzWRWgN884+HPcg9uIC7wdrBVXzcE5Y2j7TD3dLgw7UI4clsffK7C1K
-	 NvHYE5iPXU4yzDRDC1rZUfDu06H6hfyS2120yd1Qq7WWED3/hBMTdha3u+86bdJzpP
-	 68BogptKgntIuf3zjA9ameDKwIcT5mBx6WX54g4Kb+gHmAasKpgRsP6Ej1e/ucs/C5
-	 qujNk79YRlpUksk8YL7D8zHGzR0iZahOrHyxmSLNldzlLFRTQB7W9xjj3/vR6qXdal
-	 61lw8j4e789TH2QX1RRfL0Up93MyIRDcPpST3pMbgpNNp6fqoP82o7srq1xhWRkHuH
-	 u0JYWeos0sjLA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 379D4D95055;
-	Sat, 16 Mar 2024 17:22:59 +0000 (UTC)
-Subject: Re: [GIT PULL] firewire updates for v6.9-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240316080544.GA395657@workstation.local>
-References: <20240316080544.GA395657@workstation.local>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240316080544.GA395657@workstation.local>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-updates-6.9
-X-PR-Tracked-Commit-Id: 04f082d39b99f0b7b4b1cada14280f41d99f1e1f
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 4438a810f3962a65d1d7259ee4195853a4d21a00
-Message-Id: <171060977922.10702.8063974855756052072.pr-tracker-bot@kernel.org>
-Date: Sat, 16 Mar 2024 17:22:59 +0000
-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+	s=k20201202; t=1710609879;
+	bh=t2f9OCV2id9IXt90SjuS1wuibjrWOdvYSHURUhVXBCc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Vallxqpk8xB2VeXjticMxlwQFQ+em2yaUhv4FF8f7i7m5oXFD2XPtOz2UXt/g0WUe
+	 E+5wMuOdRVJ4ZCVl37W3G3fI3RKhS6bhHatbPqRYeMhPhgLFeKZz/zXdAExgpxqMi0
+	 dsPtdKld/ezhDUxzDUrJfDf5Y4hFcN5qbLg7vyhGtzA4okLqTiiQ1IPmIKViE60d0F
+	 EzuNoYwYsI4Rz72rWcHiOdWduAiNAsZpwnC8yyU6oYyoMv+hUCVKvRJAEef0o3pYc/
+	 WFjFnONb3j2WXGa3UHKj/cYOrXEKN5LGEyuNMBzQmXJ54o4MRhvzW4H7dxFWWOLQIW
+	 v8RmQvBhVDxHg==
+Date: Sat, 16 Mar 2024 12:24:36 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Bartosz Golaszewski <brgl@bgdev.pl>
+Cc: Andy Gross <agross@kernel.org>, 
+	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Guru Das Srinagesh <quic_gurus@quicinc.com>, 
+	Andrew Halaney <ahalaney@redhat.com>, Maximilian Luz <luzmaximilian@gmail.com>, 
+	Alex Elder <elder@linaro.org>, Srini Kandagatla <srinivas.kandagatla@linaro.org>, 
+	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
+	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
+Subject: Re: [PATCH v7 08/12] firmware: qcom: qseecom: convert to using the
+ TZ allocator
+Message-ID: <vevlpit6xttrrpse6lxw43vnmf7hpoxsovoofrdvam7dmmvyyh@5bajhnotdr3y>
+References: <20240205182810.58382-1-brgl@bgdev.pl>
+ <20240205182810.58382-9-brgl@bgdev.pl>
+ <yu5uhamdlygti3jo73ipy3gxhcmgxrm5g6imgqg6ksleim4ton@npvzlex2j4xi>
+ <CAMRc=Mctm-cyYPpu-Vb+fr1cWJPUW49shaa9HEXYp+rkF_CHUw@mail.gmail.com>
+ <odnisr4flot3rgwwqpjob3qtw63jow7hcj4guy6ao6spdz6fm4@wtcm62o3hgxm>
+ <CAMRc=Mezj4BQ=-4SfgdE6OmKX0X8+xedvroBNeaDeyqey4=2DQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAMRc=Mezj4BQ=-4SfgdE6OmKX0X8+xedvroBNeaDeyqey4=2DQ@mail.gmail.com>
 
-The pull request you sent on Sat, 16 Mar 2024 17:05:44 +0900:
+On Sun, Mar 03, 2024 at 05:18:18PM +0100, Bartosz Golaszewski wrote:
+> On Tue, Feb 27, 2024 at 5:53 PM Bjorn Andersson <andersson@kernel.org> wrote:
+> >
+> > On Tue, Feb 20, 2024 at 10:54:02AM +0100, Bartosz Golaszewski wrote:
+> > >
+> > > I disagree. If we have a better interface in place, then let's use it
+> > > right away, otherwise it's just useless churn.
+> > >
+> >
+> > The functional change and the use of cleanup macros, could be done
+> > independently of each other, each one fully beneficial on their own.
+> >
+> > As such I don't find it hard to claim that they are two independent
+> > changes.
+> >
+> 
+> This series would be 50% bigger for no reason if we split every patch
+> using the new allocator into two.
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-updates-6.9
+I'm not asking you to split every patch into two, unless that makes
+sense.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/4438a810f3962a65d1d7259ee4195853a4d21a00
+> I absolutely don't see how this makes any sense.
 
-Thank you!
+I find it unnecessarily hard to determine which parts of _this_ patch is
+functional and which is cleanup.
 
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+> We're removing the calls to old interfaces and using
+> the new ones instead. The new ones happen to support cleanup so we use
+> it right away. If the old ones supported cleanup then maybeeee it
+> would make some sense to convert them first and then use tzmem. As it
+> is, there's really no point.
+> 
+
+The old interface is kzalloc(). I haven't used the cleanup mechanism
+myself yet, but are you saying that there's no cleanup support for
+kzalloc()?
+
+Regards,
+Bjorn
 
