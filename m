@@ -1,310 +1,93 @@
-Return-Path: <linux-kernel+bounces-105069-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 62B6087D8B3
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:45:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEF6187D8B4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:49:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D2454282ACE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:45:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83B4A282A45
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:49:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91CCD610D;
-	Sat, 16 Mar 2024 03:42:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00EE04C61;
+	Sat, 16 Mar 2024 03:49:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JUf6ylCw"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="CFEMzqj2"
+Received: from out162-62-57-49.mail.qq.com (out162-62-57-49.mail.qq.com [162.62.57.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D57D4C7C;
-	Sat, 16 Mar 2024 03:42:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 62E8728F5
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 03:49:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710560566; cv=none; b=N96mCbAw/T5DI+3ORMyEUAgBN504t50ssLozFu+KWl4AdSHNazZ0JSKOFzTfezW6usdb7Cbxxi2KPphN1xb5f108eoEfhTvOWRmPWcWqaEiDfGt/8PDb3RkNK3X/hiq7+//uMyx/A2Au8R3qnvs4Liv/LZnrz1HtscufsLiTM0Q=
+	t=1710560977; cv=none; b=T0uxQmmXnRb0Jy8O9C6zHCSeWfY8SbghJw5l5S0nAahTAMW+FVDk3j2H7OvumymvqjEZ/o8BIaB6yqwGX7PJ2/nI5s/T3dDzdEIY4yA+r8aB5u3UVvyCjBj84d5wNsXdtOl29ANZrVqYSefIhALves3qX4VB82v6UEXUoX9kPLc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710560566; c=relaxed/simple;
-	bh=pUF3+JmexwNFY74SyLf8EhNr3fsrFSXf8Rx7TcEMM3c=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=S4rnJAASFukT/vXgghXyXm2rWnq5zpLY0SvveYYU16u7pda/h2i9HBsiSecCxCKaw2w3soquwCfhHyZlyS0rR6lgQDj0jB2L/CawKVdsflp9DV1IQZvTJ0TXnUJWWXmiNzPI0iYKJIKV1l2NNwjsYTNluJXGDhtgupWlFGeWlmc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JUf6ylCw; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-513e134f73aso109979e87.2;
-        Fri, 15 Mar 2024 20:42:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710560562; x=1711165362; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=Cgf8DgxHUjitbx8VzHDjQyw83nPToBtCwrDSRoMwYHc=;
-        b=JUf6ylCwnr/LRxhV4NvjP0HSZG35Tpf4chdWuHChT5YQRgRHdQcqiL2BOluRiZ3jhm
-         nR1tGj/AvFIEbaB2FY8J5FxCSHOv7RgSr1G4sFnHuMYuwd8jjACbhmmtqUSte29LNCZn
-         cawX0NWzOH7pt5g3m1OLuHGPTyrDhzF/XjwoBfWtY/xu9kqy1dGNrVIdYpYDP972SjHM
-         y1iIbDUsFWueqSqNdvLYKbCLQwbg2ICi3PgIibeB4Bib0/oLBcCXtpRnJv58Du0fyGb1
-         iARkN1RDkD44rWCS6YrztDiYEEZEtAx87tXjb23nb9ivxuMXagtoWLEBiapkzxHLIFdl
-         VJKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710560562; x=1711165362;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=Cgf8DgxHUjitbx8VzHDjQyw83nPToBtCwrDSRoMwYHc=;
-        b=Km8rHSbI/7G9WUQqAEGHhPFulg/2Iwu58g7eWjuI6sDVp7Z8V7rIQoQyspZh3wpOmO
-         9LcofKj0lKb9eBgWClZ/j7+jd/eYBZsHc99N2XSLoE8O/SRHTwSCHcVCRKfsaOKpq9pV
-         cTOONFS7NxuQa6fRHYsdzmmp9WFePTUigAMvfcTrbgYwvEIIuymar7JKS+jd4cRlDxg/
-         /Y907pbIj8iXopC9Fuu+jXYaxvU3CdHHeflLv28GCFqBk6z70MaOYRH30RGLs4+UOupE
-         zavG+RgmGvNsii6LbpUJAZTzEndm8XechwXbc/T7blhw/qC07wzqVqi1EwwSTgzKAvL9
-         uSkg==
-X-Forwarded-Encrypted: i=1; AJvYcCWkZZOjNCO+Jf4/l3UaxpIBg/hUf5CXdMVxl/cxGJHeuxhtaxi6chs/BHO3uWo9EdbUxQ4QNaww1G1hUpyXhr8cUqegON7qClPI7NauQneVysaR0lmKU5PzUVBZNLI5Xh0puHlX
-X-Gm-Message-State: AOJu0Yxedoe1Mzr5ur9xKxagymJ8xwqMprEsVEXSbxL8kj1SMhknFRAu
-	QBU1g2Q5yiiMUrLEAkDQ9FgVsqFisfC+HVWR+/Ub8vomCTIOj+3HNo3u6BCtXGVEnZiTA7a4kyJ
-	w99unh5es3j8dvyKrEQQKTcG84Xk=
-X-Google-Smtp-Source: AGHT+IEjTxPgog4y7kx8jtZrkI/l2TrXT6vyaTeDllwh6ScXCC88X2vifwiIzAWLkjBrBmgu2X3jxvGz4GkKK+c4MNs=
-X-Received: by 2002:ac2:464c:0:b0:513:c4d9:a0d9 with SMTP id
- s12-20020ac2464c000000b00513c4d9a0d9mr4535557lfo.22.1710560562097; Fri, 15
- Mar 2024 20:42:42 -0700 (PDT)
+	s=arc-20240116; t=1710560977; c=relaxed/simple;
+	bh=t2oYv+oCgSwacmV5AWUE4JhutkB8uzyh3I3aHs10y2Y=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=H1FQ5WIgrpXnkGs9n3U1un0f+iykETW7zEKik6sKojC9MBT0qL30t2UVsyOCrjPZigq05EKjee7cJ2Cpt6Y8iQoNmdz5/7h+W1rYSvYpJAusIljO3hRrQ01/Z/Qh1n6ubzTd6zjbkCzmcv0/FAph7nF359KLXjqgcKhhHf9wgIQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=CFEMzqj2; arc=none smtp.client-ip=162.62.57.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710560964; bh=CQqx1wQOCzwZ9sY1873cLSDFPdJh8bQU3tuOq3O8IpA=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=CFEMzqj2KaM4Gjz7KudF8snxLtm0yZIjwSMOVCs70KRMbqcq4Wp/X4c3GsSWYxMtX
+	 32U7M0rLhI49KNIbolXgL/TmiDc2aMBSZtMN/xlifS1Z4FUmeY8R2ofLgnqRjadSes
+	 wMAo6FtOFs7RI1ZMIEaxFhSzXctnFgpjnk5PNTYo=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrszb9-0.qq.com (NewEsmtp) with SMTP
+	id C0AA54C6; Sat, 16 Mar 2024 11:48:10 +0800
+X-QQ-mid: xmsmtpt1710560890tcok4o5js
+Message-ID: <tencent_4DA6D5F366037E896283B2044DD771B76005@qq.com>
+X-QQ-XMAILINFO: NZzGjqyvvdMfnz+W66/DnI0HgOndyIHZC4WUAqJaO4b6wgR9rr87S/Xt1tjtuu
+	 HUYYDSa3k01hg40Qqrke+9Zle11VZuW4KlgYQHZmdx9PKcGiKnakhlTdjS4fDE0qAQFOaR4zsreR
+	 5OdQZehb3q4aKm/8jO5duAVM0R5nUuFfnT70vMlUg6t+bqtTYFhYI6NZY13pp8PHFmlh8EN/c1I3
+	 /zuG2gUmKk+s4NfsT46EtHpEsviQFNt/lv21Z/BH2JYRvc0wQ6iC6qmAWPacDxE2U/mnYfJZhMmt
+	 Js/eH5BzCGpBkpx+nfI9vXqHUlNmRNebUwMxX/yXDtXMEJWphpcNPPD0bbOFMuLK7K2osswO9TLu
+	 pWwhjEgScI93M8PMJTavw5L7MLFAS2aqVIfJ0C0Qy26rSf0v/O5u5rjOSJ0LlLkDoBT7MmKwp1P1
+	 h+IuIuhuHlRihttqb6UYZB44Bq86QyDsn5WsUKcTVaZB3+MmKUxFzU77gry5zfAqZ6t89qXC12FE
+	 sTJLLvznLT13ZIW5Jn6CiJlES1npEmqJDkHDcSOkNBRsJFtrV1Fbvz49Cckoeec+iMJ77Sgt2fC8
+	 c95hPKEXdnoArc4DNRSXByBt8bfbgtfEgc8Ickusf6Qh7347eRKknsuAMKOukVy7qXx95b8Jk81J
+	 FRWoPUzht/dAimRFfO/bovBnlSFByztiZrxxYczNO6BD48pjSEu5ULvGaBYg8gq8OufrIWSGXcDp
+	 KLOVnvLxjUUN2NPjaD2QjFaITZxVMoU8FLzy9u9UCorsQSZnjfh4Z9qBJub07VZ0LyYQSTqj1ahb
+	 Bf40iBSeJOnZJxr1XhN+7Yp47aLs+0xLf2poMLC6TBn6PIaeB1hyFR0dhHa6jv5Cxwj+z21YcQl+
+	 3V7SfHUC4yjLcSX5m5nVBM+HMJCmR23BUm9rIvnV0063FTWYoHfuTZFzMCArirnx40PX1yFGQi
+X-QQ-XMRINFO: NyFYKkN4Ny6FSmKK/uo/jdU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_sendrecv_fail
+Date: Sat, 16 Mar 2024 11:48:11 +0800
+X-OQ-MSGID: <20240316034810.1179521-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000024b0820613ba8647@google.com>
+References: <00000000000024b0820613ba8647@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: cheung wall <zzqq0103.hey@gmail.com>
-Date: Sat, 16 Mar 2024 11:42:30 +0800
-Message-ID: <CAKHoSAshN6b3sCkWDLsHJ42Wqa0R_82horK_Owvy0fjBq6seuQ@mail.gmail.com>
-Subject: INFO: rcu detected stall in gc_worker
-To: Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>
-Cc: "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, intel-wired-lan@lists.osuosl.org, 
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+please test uv in io_sendrecv_fail
 
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
 
-when using Healer to fuzz the latest Linux Kernel, the following crash
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index cd9a137ad6ce..3db59fd6f676 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -1066,6 +1066,7 @@ static void io_preinit_req(struct io_kiocb *req, struct io_ring_ctx *ctx)
+ 	/* not necessary, but safer to zero */
+ 	memset(&req->cqe, 0, sizeof(req->cqe));
+ 	memset(&req->big_cqe, 0, sizeof(req->big_cqe));
++	memset(&req->cmd, 0, sizeof(req->cmd));
+ }
+ 
+ static void io_flush_cached_locked_reqs(struct io_ring_ctx *ctx,
 
-was triggered on:
-
-
-HEAD commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a  (tag: v6.7)
-
-git tree: upstream
-
-console output: https://pastebin.com/raw/0bRkEgvF
-
-kernel config: https://pastebin.com/raw/VecrLrRN
-
-C reproducer: https://pastebin.com/raw/k6HDMmac
-
-Syzlang reproducer: https://pastebin.com/raw/uX82h1ks
-
-
-If you fix this issue, please add the following tag to the commit:
-
-Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
-
-----------------------------------------------------------
-
-rcu: INFO: rcu_preempt detected stalls on CPUs/tasks:
-systemd-journal (124) used greatest stack depth: 24160 bytes left
-systemd[1]: systemd-journald.service: Main process exited,
-code=killed, status=6/ABRT
-systemd[1]: systemd-journald.service: Failed with result 'watchdog'.
-systemd[1]: systemd-journald.service: Scheduled restart job, restart
-counter is at 1.
-rcu: 0-...0: (4 ticks this GP) idle=c6ec/1/0x4000000000000000
-softirq=1263/1265 fqs=4551
-rcu: 2-...0: (1 GPs behind) idle=4f1c/1/0x4000000000000000
-softirq=993/993 fqs=4551
-rcu: 3-....: (1 GPs behind) idle=8b4c/0/0x3 softirq=1112/1113 fqs=4551
-rcu: (detected by 5, t=355128 jiffies, g=2045, q=163 ncpus=8)
-Sending NMI from CPU 5 to CPUs 0:
-NMI backtrace for cpu 0
-CPU: 0 PID: 10 Comm: kworker/0:1 Not tainted 6.7.0 #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-Workqueue: events e1000_watchdog
-RIP: 0010:e1000_update_stats+0xb6f/0x1d70
-drivers/net/ethernet/intel/e1000/e1000_main.c:3660
-Code: df 48 89 f9 48 c1 e9 03 80 3c 01 00 0f 85 d8 11 00 00 45 89 ed
-48 8b 83 80 04 00 00 4c 01 ab 40 07 00 00 44 8b a8 e4 40 00 00 <48> 8d
-bb 48 07 00 00 48 b8 00 00 00 00 00 fc ff df 48 89 f9 48 c1
-RSP: 0018:ffff88810031fbd0 EFLAGS: 00000002
-RAX: ffffc90001040000 RBX: ffff888104964900 RCX: 1ffff1102092ca08
-RDX: ffff888100302200 RSI: 0000000000000004 RDI: ffff888104965040
-RBP: 1ffff11020063f89 R08: 0000000000000001 R09: ffffed1020063f6e
-R10: 0000000000000003 R11: dead000000000100 R12: ffff888104964b18
-R13: 0000000000000000 R14: ffff888104964000 R15: ffff888104964900
-FS:  0000000000000000(0000) GS:ffff8881f7000000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f348ff56328 CR3: 00000001b60a4002 CR4: 0000000000770ef0
-PKRU: 55555554
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- e1000_watchdog+0x2f1/0x1300 drivers/net/ethernet/intel/e1000/e1000_main.c:2499
- process_one_work+0x583/0xda0 kernel/workqueue.c:2627
- process_scheduled_works kernel/workqueue.c:2700 [inline]
- worker_thread+0x981/0x11e0 kernel/workqueue.c:2781
- kthread+0x263/0x330 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 2.146 msecs
-Sending NMI from CPU 5 to CPUs 2:
-NMI backtrace for cpu 2
-CPU: 2 PID: 89 Comm: kworker/2:1H Not tainted 6.7.0 #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-Workqueue: kblockd blk_mq_requeue_work
-RIP: 0010:bytes_is_nonzero mm/kasan/generic.c:85 [inline]
-RIP: 0010:memory_is_nonzero mm/kasan/generic.c:102 [inline]
-RIP: 0010:memory_is_poisoned_n mm/kasan/generic.c:127 [inline]
-RIP: 0010:memory_is_poisoned mm/kasan/generic.c:159 [inline]
-RIP: 0010:check_region_inline mm/kasan/generic.c:178 [inline]
-RIP: 0010:kasan_check_range+0x164/0x1c0 mm/kasan/generic.c:187
-Code: c2 48 85 c0 75 b0 48 89 da 4c 89 d8 4c 29 da e9 49 ff ff ff 48
-85 d2 74 b3 48 01 ea eb 09 48 83 c0 01 48 39 d0 74 a5 80 38 00 <74> f2
-e9 74 ff ff ff b8 01 00 00 00 e9 16 7c 85 02 48 29 c3 48 89
-RSP: 0018:ffff8881f7109df0 EFLAGS: 00000046
-RAX: fffffbfff7b84000 RBX: fffffbfff7b84001 RCX: ffffffffbcb6ec4a
-RDX: fffffbfff7b84001 RSI: 0000000000000004 RDI: ffffffffbdc20000
-RBP: fffffbfff7b84000 R08: 0000000000000000 R09: fffffbfff7b84000
-R10: ffffffffbdc20003 R11: ffff8881f7109ff8 R12: 0000000000000001
-R13: 0000000000000003 R14: fffffbfff7b84000 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8881f7100000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f70dae1ab40 CR3: 000000011209e003 CR4: 0000000000770ef0
-PKRU: 55555554
-Call Trace:
- <NMI>
- </NMI>
- <IRQ>
- instrument_atomic_read include/linux/instrumented.h:68 [inline]
- atomic_read include/linux/atomic/atomic-instrumented.h:32 [inline]
- virt_spin_lock arch/x86/include/asm/qspinlock.h:98 [inline]
- queued_spin_lock_slowpath+0xba/0xbe0 kernel/locking/qspinlock.c:327
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- do_raw_spin_lock include/linux/spinlock.h:187 [inline]
- __raw_spin_lock include/linux/spinlock_api_smp.h:134 [inline]
- _raw_spin_lock+0xe8/0xf0 kernel/locking/spinlock.c:154
- rcu_iw_handler+0x3c/0xe0 kernel/rcu/tree_stall.h:226
- irq_work_single+0xc8/0x160 kernel/irq_work.c:221
- __flush_smp_call_function_queue+0x4f0/0xa00 kernel/smp.c:545
- __sysvec_call_function_single+0x25/0x1d0 arch/x86/kernel/smp.c:267
- sysvec_call_function_single+0x8c/0xa0 arch/x86/kernel/smp.c:262
- </IRQ>
- <TASK>
- asm_sysvec_call_function_single+0x1a/0x20 arch/x86/include/asm/idtentry.h:656
-RIP: 0010:__sanitizer_cov_trace_pc+0x0/0x70 kernel/kcov.c:200
-Code: e9 c0 cf b1 02 48 89 f7 e9 8d fd ff ff 66 66 2e 0f 1f 84 00 00
-00 00 00 66 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <f3> 0f
-1e fa 48 8b 0c 24 65 48 8b 14 25 40 6f 03 00 65 8b 05 c0 fd
-RSP: 0018:ffff888105d87810 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: ffff888101785000 RCX: ffffffffbcb6d7b4
-RDX: ffff888105d61100 RSI: 0000000000000293 RDI: ffff888101785000
-RBP: 0000000000000293 R08: 0000000000000002 R09: 0000000000000475
-R10: ffffffffbf2d3787 R11: 000000000038d918 R12: 0000000000000000
-R13: ffff888104850000 R14: 0000000000000293 R15: ffff888104850010
- __raw_spin_unlock_irqrestore include/linux/spinlock_api_smp.h:152 [inline]
- _raw_spin_unlock_irqrestore+0x4a/0x80 kernel/locking/spinlock.c:194
- spin_unlock_irqrestore include/linux/spinlock.h:406 [inline]
- ata_scsi_queuecmd+0x19d/0x200 drivers/ata/libata-scsi.c:4204
- scsi_dispatch_cmd drivers/scsi/scsi_lib.c:1516 [inline]
- scsi_queue_rq+0xb84/0x2bf0 drivers/scsi/scsi_lib.c:1758
- blk_mq_dispatch_rq_list+0x3b6/0x1af0 block/blk-mq.c:2049
- __blk_mq_do_dispatch_sched block/blk-mq-sched.c:170 [inline]
- blk_mq_do_dispatch_sched block/blk-mq-sched.c:184 [inline]
- __blk_mq_sched_dispatch_requests+0xbf4/0x13c0 block/blk-mq-sched.c:309
- blk_mq_sched_dispatch_requests+0xeb/0x150 block/blk-mq-sched.c:333
- blk_mq_run_hw_queue+0x44f/0x530 block/blk-mq.c:2264
- blk_mq_run_hw_queues+0x105/0x270 block/blk-mq.c:2313
- blk_mq_requeue_work+0x525/0x850 block/blk-mq.c:1498
- process_one_work+0x583/0xda0 kernel/workqueue.c:2627
- process_scheduled_works kernel/workqueue.c:2700 [inline]
- worker_thread+0x981/0x11e0 kernel/workqueue.c:2781
- kthread+0x263/0x330 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
-INFO: NMI handler (nmi_cpu_backtrace_handler) took too long to run: 2.407 msecs
-Sending NMI from CPU 5 to CPUs 3:
-NMI backtrace for cpu 3
-CPU: 3 PID: 76 Comm: kworker/3:1 Not tainted 6.7.0 #2
-Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
-Workqueue: events_power_efficient gc_worker
-RIP: 0010:arch_atomic_read arch/x86/include/asm/atomic.h:23 [inline]
-RIP: 0010:raw_atomic_read
-include/linux/atomic/atomic-arch-fallback.h:457 [inline]
-RIP: 0010:atomic_read include/linux/atomic/atomic-instrumented.h:33 [inline]
-RIP: 0010:virt_spin_lock arch/x86/include/asm/qspinlock.h:98 [inline]
-RIP: 0010:queued_spin_lock_slowpath+0xba/0xbe0 kernel/locking/qspinlock.c:327
-Code: c1 ee 03 41 83 e5 07 48 b8 00 00 00 00 00 fc ff df 49 01 c6 41
-83 c5 03 e8 33 85 67 fd be 04 00 00 00 48 89 ef e8 c6 e5 93 fd <41> 0f
-b6 06 41 38 c5 7c 08 84 c0 0f 85 bb 09 00 00 44 8b 65 00 45
-RSP: 0018:ffff8881035c78e8 EFLAGS: 00000046
-RAX: 0000000000000001 RBX: 1ffff110206b8f1e RCX: ffffffffbcb6ec4a
-RDX: fffffbfff7b84001 RSI: 0000000000000004 RDI: ffffffffbdc20000
-RBP: ffffffffbdc20000 R08: 0000000000000000 R09: fffffbfff7b84000
-R10: ffffffffbdc20003 R11: ffffffffbda0b9c0 R12: 0000000000000001
-R13: 0000000000000003 R14: fffffbfff7b84000 R15: 0000000000000001
-FS:  0000000000000000(0000) GS:ffff8881f7180000(0000) knlGS:0000000000000000
-CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-CR2: 00007f7a857bcff0 CR3: 00000001121dc006 CR4: 0000000000770ef0
-PKRU: 55555554
-Call Trace:
- <NMI>
- </NMI>
- <TASK>
- queued_spin_lock include/asm-generic/qspinlock.h:114 [inline]
- do_raw_spin_lock include/linux/spinlock.h:187 [inline]
- __raw_spin_lock include/linux/spinlock_api_smp.h:134 [inline]
- _raw_spin_lock+0xe8/0xf0 kernel/locking/spinlock.c:154
- rcu_note_context_switch+0x2d0/0x1770 kernel/rcu/tree_plugin.h:326
- __schedule+0x16b/0x2230 kernel/sched/core.c:6587
- preempt_schedule_irq+0x59/0x90 kernel/sched/core.c:7008
- irqentry_exit+0x21/0x50 kernel/entry/common.c:432
- asm_sysvec_apic_timer_interrupt+0x1a/0x20 arch/x86/include/asm/idtentry.h:649
-RIP: 0010:__rcu_read_unlock+0x0/0x100 kernel/rcu/tree_plugin.h:419
-Code: e8 65 98 3e 00 e9 fc fe ff ff 48 89 ef e8 48 97 3e 00 e9 55 ff
-ff ff 0f 1f 00 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 90 <f3> 0f
-1e fa 41 54 55 65 48 8b 2c 25 40 6f 03 00 53 48 8d bd fc 03
-RSP: 0018:ffff8881035c7cb0 EFLAGS: 00000293
-RAX: 0000000000000000 RBX: dffffc0000000000 RCX: ffffffffbc220217
-RDX: ffff888101d8a200 RSI: 0000000000040000 RDI: ffff888101d8a5fc
-RBP: ffff88810610f190 R08: 0000000000000001 R09: fffffbfff7e66d44
-R10: ffffffffbf336a27 R11: ffff8881f71b8460 R12: 0000000000043c65
-R13: ffff8881f71b7100 R14: 000000000000ea60 R15: 0000000000040000
- rcu_read_unlock include/linux/rcupdate.h:779 [inline]
- gc_worker+0x7cc/0x1110 net/netfilter/nf_conntrack_core.c:1565
- process_one_work+0x583/0xda0 kernel/workqueue.c:2627
- process_scheduled_works kernel/workqueue.c:2700 [inline]
- worker_thread+0x981/0x11e0 kernel/workqueue.c:2781
- kthread+0x263/0x330 kernel/kthread.c:388
- ret_from_fork+0x48/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1b/0x30 arch/x86/entry/entry_64.S:242
- </TASK>
-rcu: rcu_preempt kthread timer wakeup didn't happen for 334296
-jiffies! g2045 f0x0 RCU_GP_WAIT_FQS(5) ->state=0x402
-rcu: Possible timer handling issue on cpu=5 timer-softirq=7633
-systemd[1]: Stopping Flush Journal to Persistent Storage...
-systemd[1]: systemd-journal-flush.service: Stopping timed out. Terminating.
-systemd[1]: systemd-journal-flush.service: Control process exited,
-code=killed, status=15/TERM
-systemd[1]: systemd-journal-flush.service: Failed with result 'timeout'.
-systemd[1]: Stopped Flush Journal to Persistent Storage.
-systemd[1]: Stopped Journal Service.
-systemd[1]: Starting Journal Service...
-systemd-journald[289]: File
-/var/log/journal/495cb7baaf694f459d942b793c107665/system.journal
-corrupted or uncleanly shut down, renaming and replacing.
-systemd[1]: Started Journal Service.
-systemd-journald[289]: Received client request to flush runtime journal.
-cgroup: Unknown subsys name 'net'
-cgroup: Unknown subsys name 'rlimit'
-cgroup: Unknown subsys name 'memory'
-Adding 124996k swap on ./swap-file.  Priority:0 extents:1 across:124996k
-audit: type=1400 audit(1710145844.746:6): avc:  denied  { execmem }
-for  pid=353 comm="syz-executor.1"
-scontext=system_u:system_r:kernel_t:s0
-tcontext=system_u:system_r:kernel_t:s0 tclass=process permissive=1
-modprobe (652) used greatest stack depth: 24064 bytes left
 
