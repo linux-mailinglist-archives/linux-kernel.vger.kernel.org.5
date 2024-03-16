@@ -1,215 +1,216 @@
-Return-Path: <linux-kernel+bounces-105042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id B33D287D81F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:14:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73DC787D821
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:16:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FB4F1F21A7A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:14:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 41C291C21066
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:16:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF18529A0;
-	Sat, 16 Mar 2024 03:14:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B89428E6;
+	Sat, 16 Mar 2024 03:16:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sempervictus-com.20230601.gappssmtp.com header.i=@sempervictus-com.20230601.gappssmtp.com header.b="xjP0N31B"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="E3GlvuUU"
+Received: from mail-lj1-f175.google.com (mail-lj1-f175.google.com [209.85.208.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4238B1FDD
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 03:14:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BF661C36
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 03:16:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710558863; cv=none; b=anq2Ts6B/sl8fB15G3i0fHSf9Gjzh85YvGJgeWRx7LLbFLfAvrA15yxoUJzDj6ScKsL5s8WfQy+GAqZXEvE4blU2qH7pmdYm5vW9cF2kM6vd3sZJnoEJEjOIZw42daq3fFoFBeP9Fgs7s1y+C+F8F/bALV3sTYYBbe+xXgm4rig=
+	t=1710558988; cv=none; b=ESNvgwuCFO4YKWixyEVRGOvGlkTYl56MWh8UKakxfQJJFcvIOZyScHDp5v8H/BxVsL6CdRM3r1OpU5oaTyp1Waz9Ct0fUqXKspW00p0UjY8BtLZ5OqAmKuBYd95FIz80AoUjdpFZfTqcjnqcD2XZ3dsqtIYlaq4Vsdn0Nm9r2R4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710558863; c=relaxed/simple;
-	bh=6eLdmh8za8M9SlO1/FdsHENEjex9kkHmDzLpfZLWkEI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=qUB4YHPCT6vi+9LqmJ057BsqELVkGB4vIA4oMc+Krr6g5z7GBDJYA1Y6fnbK+r8fu9lnrX5Stbq5jRsoYhhikRdHdYKSeK59qHGWyXGPdlUHBD5+9J2rTzIbwuRG7x/gckJoLKZcME+Zj43EruYvsrgStpQ+18B+SgLNLlznpaU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sempervictus.com; spf=pass smtp.mailfrom=sempervictus.com; dkim=pass (2048-bit key) header.d=sempervictus-com.20230601.gappssmtp.com header.i=@sempervictus-com.20230601.gappssmtp.com header.b=xjP0N31B; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sempervictus.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sempervictus.com
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso2521202276.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 20:14:21 -0700 (PDT)
+	s=arc-20240116; t=1710558988; c=relaxed/simple;
+	bh=EcbyuZdD1nKJUd0u4uWHAl075EWF2XXPTFBDLT9/Psc=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=pIXGe3sJSkA83OhVPn9T6HbWiDkh3QHDjxkytofCeRAaDucZitE0p9ljdEmNrS0Tus7nXLAgjRsIv5+jnPVJLbTZNsVVtZB5Q4A7D8cuahr77auDCNkQeb6KuCnxvxE5pOBsugU5+1sHD4x6HLN9LXw4Ey0u86fC6AWN7hGXEK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=E3GlvuUU; arc=none smtp.client-ip=209.85.208.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f175.google.com with SMTP id 38308e7fff4ca-2d28051376eso40322191fa.0
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 20:16:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sempervictus-com.20230601.gappssmtp.com; s=20230601; t=1710558860; x=1711163660; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=GE8ReMJXOBRMOJPX+O2xrNy0SwcxcCJ3CQ8iZfhs2B0=;
-        b=xjP0N31BkJwoKbJEJt0kWT/kayz9V6eWPX0oORv4CR3MVspQgOCP/n9FrRvXwO1QWI
-         MC2rZh9x8GWjdROgsozPc/dtajhrFCfW8XS1904C41whGnxljMwyIPs0m7PC3TrUkfSS
-         xcNx558/luvYipEuPvzdCdr6ZGBc9jpcrrY1M2vtuto8cc3Bm8htuqCLQbyie5Rhi5iW
-         noyeIKz2KJR1OZd/bjw++JXxGjTALnA753LvJrV09HDRWzLNVj1noFWkEjn83NgWfZaX
-         icw+mRck1J/Fqrnk4hsKW2A1ktjw50FuxhCVJLml2OP8cQzXfauUQNM5onLTxPWsxr3B
-         Q22A==
+        d=gmail.com; s=20230601; t=1710558984; x=1711163784; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=gbglWnCiLagr+SJDXaenwv4vm+LxOFUakQlWyJFJErU=;
+        b=E3GlvuUUThWAGA6EWLonwA5Ox1w/s1JZB9OPBWYJAW/14rVIgRTE0oT9PZfJbzPAP1
+         T4pWPI+Kaj3RP/I/TzpIycL7LDuDStJ+VZtukDtVgvWDDZMcXXur4sFt1O9lJ5HXrjPA
+         qlcXGqMvlQEoTpfdjP/nJl0l5zY/YtSF00q5VEr1SIfESFDcNWs+f1a1gDeqtzDFgtn4
+         P14j0Kavd5d/PyFQpfT02KANHkiusA5uhf4J/X5QL5cB5Z/RCKx+UsMu2wL78ogssDzi
+         qfCwW+pWpSpLVxdpKMVg1hCBOYd5AjTxjUD4MOHkpEnZ9R5Q37puwQs7HbwnztYLDdDa
+         VGHw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710558860; x=1711163660;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=GE8ReMJXOBRMOJPX+O2xrNy0SwcxcCJ3CQ8iZfhs2B0=;
-        b=Z70DSTmd6VS9RhPmsWU79ghy+6ujCfe1Ak18/HBm55bZ6eGJCIsKD+OCUcYytoKtln
-         a8oQEyw6v1//8oPIvDwWTHkcdEi5RNjhk/1MDljHTBE9BUKMS+4qgjgnOReC5aO6grmW
-         03XDvEzER7rjnuqFiFl+6v9gbd02Fyh8CgrIF2RppEpzIrF/8mgia2ReXigwXuAgdWcP
-         LojEwJgzPnDpu/OoiNu8chJ6unrF1gbCij19rGtrj1vXvN+/q8Fm795wboRvuBLKbfsI
-         jG1R6kL0JnqbmjyaW2tPPopSzrsphPVkPywb5GxQTCKYcx+tNjvz8RQvEeTzjrf+0IO6
-         WeWg==
-X-Forwarded-Encrypted: i=1; AJvYcCWR5I22K+HTfGgzMwo9yy1s6yNQ5cQs6FZ5KfmV+k9fTWUrQKEgU4CGY9v77zrXiVAzBBsxZYkG9igh8tl6K6l1IT8QKkPvbULhGFsN
-X-Gm-Message-State: AOJu0Yxgjd4GSFLjcoqEa6EQ+SEjJ2CKAHPMIdoy08TBAoBYmGqdF/De
-	QFVzrBB018klM6CuCVZ5mxt+a4GKhZELOaI12PZspKfIR9g35v6ydWwMoZuHzUfoQqHNbgl9Id8
-	Pixwns0v4YQBhhgvhT4YJUftI4FSG4J9XarKYdQ==
-X-Google-Smtp-Source: AGHT+IFyhoPSc7JGdV+oe6psqd2uVvvZN4Som/ELZ4Ld8+Wk1xchMqIF+Bg6WUGCWLR3cdz5i24uA4aJxYVCqEJ29MI=
-X-Received: by 2002:a5b:a90:0:b0:dcc:84ae:9469 with SMTP id
- h16-20020a5b0a90000000b00dcc84ae9469mr5780484ybq.64.1710558860175; Fri, 15
- Mar 2024 20:14:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710558984; x=1711163784;
+        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=gbglWnCiLagr+SJDXaenwv4vm+LxOFUakQlWyJFJErU=;
+        b=hTreIi/zyfUWJUQVP+omBulQ33FOh5GI9f90DHebVzY5iCEZS87BYCNcAAF/WLJuNZ
+         O1U8Q8BtTWE84hDvjDWoRnh6RhyQnm6/aUMCDUhpiLrnmC6ZLw5Pk8Xf5qXDCDJm+0em
+         b825PzM76F4Hb/m9uAsFjFrBcMYnGecsW+NOVz50A+iRy2dD3u/242QcNwAr+fEgJahS
+         C2++V+tzDm3BDzAzGODJc2VQJxYNVfCbEDB5T4/aw0DuhaVBJtaJowQ2Dc1jqhdWrIZz
+         FUzoccrZmBSiMx7PQvow07P9ubvHrPdXqDZ2nhTfOVHhjaR+6OvSP1b1ibwC/8AvBmp1
+         e7qw==
+X-Gm-Message-State: AOJu0YxP154PQhcue09NFQs2KiLFuf9luOoodndGp2wcjs/VxAciXl3i
+	dBW2OYOoKB+KrLW0CEPnk4Yy35itnpbJ6qE1N7TYG/bU6ABV5CkaulfE2p4QeNZgaS2zZywDrv6
+	OjY2Wh/3/LvjkgTWQNPSDrEV5g2A=
+X-Google-Smtp-Source: AGHT+IHzglg0TWx7IiOO3hkZ1aZhgBoGS2xinv/DTfI7MuaZizaFH1k42Rdu7dXfNM9zinc43HTL+JBsgcFDxJEUdBs=
+X-Received: by 2002:a2e:a9a8:0:b0:2d4:22b6:eee6 with SMTP id
+ x40-20020a2ea9a8000000b002d422b6eee6mr750735ljq.8.1710558984095; Fri, 15 Mar
+ 2024 20:16:24 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
-In-Reply-To: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
-From: Boris Lukashev <blukashev@sempervictus.com>
-Date: Fri, 15 Mar 2024 23:14:09 -0400
-Message-ID: <CAFUG7Cfy6nmWk9xmTD4rp80i4_RA12V7SA6851BvD=JaWRZeyA@mail.gmail.com>
-Subject: Re: [RFC PATCH v2 00/19] PKS write protected page tables
-To: Rick Edgecombe <rick.p.edgecombe@intel.com>
-Cc: dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org, 
-	x86@kernel.org, akpm@linux-foundation.org, keescook@chromium.org, 
-	shakeelb@google.com, vbabka@suse.cz, rppt@kernel.org, linux-mm@kvack.org, 
-	linux-hardening@vger.kernel.org, kernel-hardening@lists.openwall.com, 
-	ira.weiny@intel.com, dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+From: cheung wall <zzqq0103.hey@gmail.com>
+Date: Sat, 16 Mar 2024 11:16:08 +0800
+Message-ID: <CAKHoSAsF2iN1HSRxVs2W0CBi_PMKE3bYLgZE6siwARqV1f+Xng@mail.gmail.com>
+Subject: general protection fault in kernfs_dop_revalidate
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Tejun Heo <tj@kernel.org>
+Cc: linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-IIRC shoot-downs are one of the reasons for using per-cpu PGDs, which
-can in-turn enable/underpin other hardening functions... presuming the
-churn of recent years has softened attitudes toward such core MM
-changes.
-https://forum.osdev.org/viewtopic.php?f=3D15&t=3D29661
+Hello,
 
--Boris
+when using Healer to fuzz the latest Linux Kernel, the following crash
+
+was triggered on:
 
 
-On Mon, Aug 30, 2021 at 8:02=E2=80=AFPM Rick Edgecombe
-<rick.p.edgecombe@intel.com> wrote:
->
-> Hi,
->
-> This is a second RFC for the PKS write protected tables concept. I'm shar=
-ing to
-> show the progress to interested people. I'd also appreciate any comments,
-> especially on the direct map page table protection solution (patch 17).
->
-> Since v1[1], the improvements are:
->  - Fully handle direct map page tables, and handle hotplug/unplug path.
->  - Create a debug time checker that scans page tables and verifies
->    their protection.
->  - Fix odds-and-ends kernel page tables that showed up with debug
->    checker. At this point all of the typical normal page tables should be
->    protected.
->  - Fix toggling of writablility for odds-and-ends page table modification=
-s found
->    that don't use the normal helpers.
->  - Create atomic context grouped page allocator, after finding some page =
-table
->    allocations that are passing GFP_ATOMIC.
->  - Create "soft" mode that warns and disables protection on violation ins=
-tead
->    of oopsing.
->  - Boot parameters for disabling pks tables
->  - Change PageTable set clear to ctor/dtor (peterz)
->  - Remove VM_BUG_ON_PAGE in alloc_table() (Shakeel Butt)
->  - PeterZ/Vlastimil had suggested to also build a non-PKS mode for use in
->    debugging. I skipped it for now because the series was too big.
->  - Rebased to latest PKS core v7 [2]
->
-> Also, Mike Rapoport has been experimenting[3] with this usage to work on =
-how to
-> share caches of permissioned/broken pages between use cases. This RFCv2 s=
-till
-> uses the "grouped pages" concept, where each usage would maintain its own
-> cache, but should be able to integrate with a central solution if somethi=
-ng is
-> developed.
->
-> Next I was planning to look into characterizing/tuning the performance, a=
-lthough
-> what page allocation scheme is ultimately used will probably impact that.
->
-> This applies on top of the PKS core v7 series[2] and this patch[4]. Testi=
-ng is
-> still pretty light.
->
-> This RFC has been acked by Dave Hansen.
->
-> [1] https://lore.kernel.org/lkml/20210505003032.489164-1-rick.p.edgecombe=
-@intel.com/
-> [2] https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel=
-com/
-> [3] https://lore.kernel.org/lkml/20210823132513.15836-1-rppt@kernel.org/
-> [4] https://lore.kernel.org/lkml/20210818221026.10794-1-rick.p.edgecombe@=
-intel.com/
->
-> Rick Edgecombe (19):
->   list: Support getting most recent element in list_lru
->   list: Support list head not in object for list_lru
->   x86/mm/cpa: Add grouped page allocations
->   mm: Explicitly zero page table lock ptr
->   x86, mm: Use cache of page tables
->   x86/mm/cpa: Add perm callbacks to grouped pages
->   x86/cpufeatures: Add feature for pks tables
->   x86/mm/cpa: Add get_grouped_page_atomic()
->   x86/mm: Support GFP_ATOMIC in alloc_table_node()
->   x86/mm: Use alloc_table() for fill_pte(), etc
->   mm/sparsemem: Use alloc_table() for table allocations
->   x86/mm: Use free_table in unmap path
->   mm/debug_vm_page_table: Use setters instead of WRITE_ONCE
->   x86/efi: Toggle table protections when copying
->   x86/mm/cpa: Add set_memory_pks()
->   x86/mm: Protect page tables with PKS
->   x86/mm/cpa: PKS protect direct map page tables
->   x86/mm: Add PKS table soft mode
->   x86/mm: Add PKS table debug checking
->
->  .../admin-guide/kernel-parameters.txt         |   4 +
->  arch/x86/boot/compressed/ident_map_64.c       |   5 +
->  arch/x86/include/asm/cpufeatures.h            |   2 +-
->  arch/x86/include/asm/pgalloc.h                |   6 +-
->  arch/x86/include/asm/pgtable.h                |  31 +-
->  arch/x86/include/asm/pgtable_64.h             |  33 +-
->  arch/x86/include/asm/pkeys_common.h           |   1 -
->  arch/x86/include/asm/set_memory.h             |  24 +
->  arch/x86/mm/init.c                            |  90 +++
->  arch/x86/mm/init_64.c                         |  29 +-
->  arch/x86/mm/pat/set_memory.c                  | 527 +++++++++++++++++-
->  arch/x86/mm/pgtable.c                         | 183 +++++-
->  arch/x86/mm/pkeys.c                           |   4 +
->  arch/x86/platform/efi/efi_64.c                |   8 +
->  include/asm-generic/pgalloc.h                 |  46 +-
->  include/linux/list_lru.h                      |  26 +
->  include/linux/mm.h                            |  16 +-
->  include/linux/pkeys.h                         |   1 +
->  mm/Kconfig                                    |  23 +
->  mm/debug_vm_pgtable.c                         |  36 +-
->  mm/list_lru.c                                 |  38 +-
->  mm/memory.c                                   |   1 +
->  mm/sparse-vmemmap.c                           |  22 +-
->  mm/swap.c                                     |   6 +
->  mm/swap_state.c                               |   5 +
->  .../arch/x86/include/asm/disabled-features.h  |   8 +-
->  26 files changed, 1123 insertions(+), 52 deletions(-)
->
-> --
-> 2.17.1
->
+HEAD commit: 90d35da658da8cff0d4ecbb5113f5fac9d00eb72  (tag: v6.8-rc7)
+
+git tree: upstream
+
+console output: https://pastebin.com/raw/Hjn0vNFh
+
+kernel config: https://pastebin.com/raw/EjhKA6ij
+
+C reproducer: https://pastebin.com/raw/5nL8yLmu
+
+Syzlang reproducer: https://pastebin.com/raw/Gkqa66xp
+
+If you fix this issue, please add the following tag to the commit:
+
+Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
+
+----------------------------------------------------------
 
 
---=20
-Boris Lukashev
-Systems Architect
-Semper Victus
+BUG: unable to handle page fault for address: ffff888104849cf0
+RIP: 0010:kernfs_root fs/kernfs/kernfs-internal.h:70 [inline]
+RIP: 0010:kernfs_dop_revalidate+0xc7/0x580 fs/kernfs/dir.c:1149
+#PF: supervisor read access in kernel mode
+Code: 00 04 00 00 4c 8b 65 08 4d 85 e4 4c 0f 44 e5 e8 0f 28 b3 ff 48
+b8 00 00 00 00 00 fc ff df 49 8d 7c 24 50 48 89 fa 48 c1 ea 03 <80> 3c
+02 00 0f 85 e7 03 00 00 4d 8b 64 24 50 4c 8d 6d 04 49 83 c4
+#PF: error_code(0x0009) - reserved bit violation
+RSP: 0018:ffff888112557990 EFLAGS: 00010217
+PGD 1d0201067 P4D 1d0201067
+
+RAX: dffffc0000000000 RBX: ffff888108fbb000 RCX: ffffffffa42bb871
+PUD 100915063
+RDX: 0012476b20000009 RSI: 0000000000000000 RDI: 00923b590000004f
+PMD 10464f063
+RBP: ffff8881045dbc00 R08: 0000000000000000 R09: ffffed10211f7607
+PTE 484b16380000001
+R10: ffff888108fbb038 R11: 0000000000000000 R12: 00923b58ffffffff
+
+Oops: 0009 [#4] PREEMPT SMP KASAN NOPTI
+R13: ffff888108c1b800 R14: ffff8881045dbc08 R15: ffff888115091120
+CPU: 1 PID: 0 Comm: swapper/1 Tainted: G      D            6.8.0-rc7 #1
+FS:  00007ffa91fbc640(0000) GS:ffff8881f7180000(0000) knlGS:0000000000000000
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+RIP: 0010:find_stack lib/stackdepot.c:594 [inline]
+RIP: 0010:stack_depot_save_flags+0x136/0x710 lib/stackdepot.c:659
+CR2: ffff888104800000 CR3: 0000000105898003 CR4: 0000000000770ef0
+Code: 0d d7 84 75 04 65 ff 05 f0 90 63 5b 4d 8b 31 89 d6 83 e6 02 4d
+39 f1 75 11 e9 c9 01 00 00 4d 8b 36 4d 39 f1 0f 84 bd 01 00 00 <41> 39
+5e 10 75 ee 41 3b 6e 14 75 e8 31 c0 49 8b 7c c6 20 49 39 7c
+PKRU: 55555554
+RSP: 0018:ffff88810036f9b8 EFLAGS: 00010202
+note: syz-executor207[342] exited with irqs disabled
+
+RAX: 000000004b42e799 RBX: 000000001d41ecbb RCX: 00000000dbd2612a
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000001
+RBP: 000000000000000b R08: ffff88810036f918 R09: ffff8881f55ecbb0
+R10: ffff888112c3f083 R11: ffff8881f70b8a20 R12: 0000000000000000
+R13: ffff88810036fa18 R14: ffff888104849ce0 R15: 000000000000000b
+FS:  0000000000000000(0000) GS:ffff8881f7080000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff888104849cf0 CR3: 0000000105898003 CR4: 0000000000770ef0
+PKRU: 55555554
+Call Trace:
+ <TASK>
+ kasan_save_stack+0x34/0x50 mm/kasan/common.c:48
+ __kasan_record_aux_stack+0x8e/0xa0 mm/kasan/generic.c:551
+ __call_rcu_common.constprop.0+0x6a/0xab0 kernel/rcu/tree.c:2715
+ put_task_struct_rcu_user+0x69/0xb0 kernel/exit.c:235
+ finish_task_switch.isra.0+0x5f6/0x7d0 kernel/sched/core.c:5309
+ context_switch kernel/sched/core.c:5403 [inline]
+ __schedule+0xc26/0x22d0 kernel/sched/core.c:6727
+ schedule_idle+0x65/0xa0 kernel/sched/core.c:6843
+ do_idle+0x295/0x430 kernel/sched/idle.c:340
+ cpu_startup_entry+0x5a/0x70 kernel/sched/idle.c:410
+ start_secondary+0x1ba/0x210 arch/x86/kernel/smpboot.c:336
+ secondary_startup_64_no_verify+0x16d/0x17b
+ </TASK>
+Modules linked in:
+CR2: ffff888104849cf0
+---[ end trace 0000000000000000 ]---
+BUG: unable to handle page fault for address: ffff888104849cf0
+RIP: 0010:kernfs_root fs/kernfs/kernfs-internal.h:70 [inline]
+RIP: 0010:kernfs_dop_revalidate+0xc7/0x580 fs/kernfs/dir.c:1149
+#PF: supervisor read access in kernel mode
+Code: 00 04 00 00 4c 8b 65 08 4d 85 e4 4c 0f 44 e5 e8 0f 28 b3 ff 48
+b8 00 00 00 00 00 fc ff df 49 8d 7c 24 50 48 89 fa 48 c1 ea 03 <80> 3c
+02 00 0f 85 e7 03 00 00 4d 8b 64 24 50 4c 8d 6d 04 49 83 c4
+#PF: error_code(0x0009) - reserved bit violation
+RSP: 0018:ffff888112557990 EFLAGS: 00010217
+PGD 1d0201067 P4D 1d0201067
+RAX: dffffc0000000000 RBX: ffff888108fbb000 RCX: ffffffffa42bb871
+PUD 100915063
+RDX: 0012476b20000009 RSI: 0000000000000000 RDI: 00923b590000004f
+PMD 10464f063
+RBP: ffff8881045dbc00 R08: 0000000000000000 R09: ffffed10211f7607
+PTE 484b16380000001
+R10: ffff888108fbb038 R11: 0000000000000000 R12: 00923b58ffffffff
+
+R13: ffff888108c1b800 R14: ffff8881045dbc08 R15: ffff888115091120
+Oops: 0009 [#5] PREEMPT SMP KASAN NOPTI
+FS:  0000000000000000(0000) GS:ffff8881f7080000(0000) knlGS:0000000000000000
+CPU: 3 PID: 0 Comm: swapper/3 Tainted: G      D            6.8.0-rc7 #1
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1 04/01/2014
+CR2: ffff888104849cf0 CR3: 0000000105898003 CR4: 0000000000770ef0
+RIP: 0010:find_stack lib/stackdepot.c:594 [inline]
+RIP: 0010:stack_depot_save_flags+0x136/0x710 lib/stackdepot.c:659
+PKRU: 55555554
+Code: 0d d7 84 75 04 65 ff 05 f0 90 63 5b 4d 8b 31 89 d6 83 e6 02 4d
+39 f1 75 11 e9 c9 01 00 00 4d 8b 36 4d 39 f1 0f 84 bd 01 00 00 <41> 39
+5e 10 75 ee 41 3b 6e 14 75 e8 31 c0 49 8b 7c c6 20 49 39 7c
+----------------
+Code disassembly (best guess):
+   0: 00 04 00              add    %al,(%rax,%rax,1)
+   3: 00 4c 8b 65          add    %cl,0x65(%rbx,%rcx,4)
+   7: 08 4d 85              or     %cl,-0x7b(%rbp)
+   a: e4 4c                in     $0x4c,%al
+   c: 0f 44 e5              cmove  %ebp,%esp
+   f: e8 0f 28 b3 ff        call   0xffb32823
+  14: 48 b8 00 00 00 00 00 movabs $0xdffffc0000000000,%rax
+  1b: fc ff df
+  1e: 49 8d 7c 24 50        lea    0x50(%r12),%rdi
+  23: 48 89 fa              mov    %rdi,%rdx
+  26: 48 c1 ea 03          shr    $0x3,%rdx
+* 2a: 80 3c 02 00          cmpb   $0x0,(%rdx,%rax,1) <-- trapping instruction
+  2e: 0f 85 e7 03 00 00    jne    0x41b
+  34: 4d 8b 64 24 50        mov    0x50(%r12),%r12
+  39: 4c 8d 6d 04          lea    0x4(%rbp),%r13
+  3d: 49                    rex.WB
+  3e: 83                    .byte 0x83
+  3f: c4                    .byte 0xc4
 
