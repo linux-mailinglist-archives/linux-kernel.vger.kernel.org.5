@@ -1,143 +1,336 @@
-Return-Path: <linux-kernel+bounces-105198-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105199-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4980C87DA6C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:11:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1000487DA6E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:11:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D0DB51F2155E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:11:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92E701F21398
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:11:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CCC419BA3;
-	Sat, 16 Mar 2024 14:11:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D1CF18EB0;
+	Sat, 16 Mar 2024 14:11:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b="FLN/sEIB"
-Received: from fanzine2.igalia.com (fanzine2.igalia.com [213.97.179.56])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qLVZ/VE+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2F63114290
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 14:11:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.97.179.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9EAE71B95B;
+	Sat, 16 Mar 2024 14:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710598279; cv=none; b=idLWDp7WVZYhtCL7KKksnjM53c+4CzPJR3jdjnOopIbokWEON5xPGG5Imlx7eDHOa22AEvwEzNK/CvE6sZOieDTZ0t3ipMY1JFgkaDF44NteNMLRPcHDzdDPxwdIpH90pcclPh3bNMvWrsr23ljIzxVQSRJ6XAQG4aPRV+7OOmE=
+	t=1710598287; cv=none; b=QVBZmJv8Bncq2RfbknTRy+igX3sWBjyiyk91BhX3mO+1b2dUx9qzm/3K4bj1nnxAXlNJCM7wrZnFXpaGByiZujTa8U4fwX8R1j2ebkYqkOvZrn0LBGcJo1ydUBe7shbRF8S1pQwdtvefgtX4SFxQUV+PwdYTQQuTObPXjO+duTM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710598279; c=relaxed/simple;
-	bh=Wb9CHEmPPCeq2+LNqemXs1xf0viC8ZW+ktqvjLjwKeY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K2/n0Htrc+xYmhKoDmq8MWhBpa7rNEOjI8l4dFgP1Wul1DTE7U9jCmvgaebm4Rf0vMrjPldgzcaNeL9RNMJVwf7DCpHXrRn4666p2Lhl1Ab6VXHGCTfwJBMdMhmMFBXjI8+eNghIHc1oZ4oLWh8e/G0crMT2xjCmGWDDI29tiYM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com; spf=pass smtp.mailfrom=igalia.com; dkim=pass (2048-bit key) header.d=igalia.com header.i=@igalia.com header.b=FLN/sEIB; arc=none smtp.client-ip=213.97.179.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=igalia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=igalia.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=igalia.com;
-	s=20170329; h=Content-Transfer-Encoding:Content-Type:In-Reply-To:From:
-	References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender:Reply-To:
-	Content-ID:Content-Description:Resent-Date:Resent-From:Resent-Sender:
-	Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:
-	List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=KdHqSaYihPn5FB720GQj2s6e6OT+vaWHkLMQ10Tlf5U=; b=FLN/sEIBe7DtAcqD80jbTa/MT+
-	2oM1hX2RwwJjw5gcYnjVhh5yIZDVgI11ghnTr7zL+JIhiXSNKoIr86u5BqKmhJcAcyKqq7+D9JU2D
-	7s5Ls3iebh+Qzz1v6OkepMpkONJeFzJwiRShTA2LeV3xbBeMJUMaZak5Kc6QMuEcVE1hGKMVUcZW2
-	JxHKBIk67H24X4zvSa3Wr60cl6Qj+HGDTEBks18y+zIoRBeTlVsqwDvrhV1Ue7VtNUbS8OMgzwaVv
-	8RBH8yON97dmuyvIu6H9fpqiNbL9XnkkKcCukMdnVocYMKwVq13XjSeQ8lJGP1SqikDeUjRucrFFM
-	YaWzYkug==;
-Received: from [189.6.17.125] (helo=[192.168.0.55])
-	by fanzine2.igalia.com with esmtpsa 
-	(Cipher TLS1.3:ECDHE_X25519__RSA_PSS_RSAE_SHA256__AES_128_GCM:128) (Exim)
-	id 1rlUkH-00BGTR-2S; Sat, 16 Mar 2024 15:10:45 +0100
-Message-ID: <1950f7fb-d326-4074-ba7c-8c5622eebb2e@igalia.com>
-Date: Sat, 16 Mar 2024 11:10:34 -0300
+	s=arc-20240116; t=1710598287; c=relaxed/simple;
+	bh=+5ENZD7r6w05wvwG9BkuxwChT/g6U2GZ59uq76qSZyw=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oqMaSiYkx/Gj3x51VJfwO4xrtVlO9tAIyvseDPfHZRYHvRUfo3DiiNlDA5pcRz4CRk401J8nvDTpWvCxfpiaNe/zfIoYe0B2LAQENAJAOeBtEXwHYr00l0Bd/mOXbGRym9LwiRh3ejh94LvrofXsi2gY4TkuBvK6N+q0MACsYi8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qLVZ/VE+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86700C43390;
+	Sat, 16 Mar 2024 14:11:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710598287;
+	bh=+5ENZD7r6w05wvwG9BkuxwChT/g6U2GZ59uq76qSZyw=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=qLVZ/VE+HubmhlAiE+uKYDOoFwYbnaicIRqOHXOA/TbY1Nhx2WBJbQliF9QQOpSDD
+	 IbOc3l0tha+Kkn/2jWkYzmTtGkIDJuy8DeT7m4+M6l3vXUW2X90JYo+1Q6Xprtf3JB
+	 3RK4v+MEHmgSAzufRNmvu7meFDgkMRPAP9bTl0rODwUhyquLrqzKZV9KV2pzW6w9e/
+	 w/dj76EkESeYF/idPlRm9RsSAfTJAhl/WpQ/q9otev5UgKGHVKyASGnor0pZ9Y1H6O
+	 PZ70Q0TrdDsbV8JKnEfVWPe+iykv1heWbWGCIIUL+/E6+mVS+f+hKDZkD5zaAezqPh
+	 818kSK07NarVA==
+Date: Sat, 16 Mar 2024 14:11:14 +0000
+From: Jonathan Cameron <jic23@kernel.org>
+To: David Lechner <dlechner@baylibre.com>
+Cc: Michael Hennerich <michael.hennerich@analog.com>, Nuno =?UTF-8?B?U8Oh?=
+ <nuno.sa@analog.com>, linux-iio@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
+Message-ID: <20240316141114.1a1eea6b@jic23-huawei>
+In-Reply-To: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
-To: Arthur Grillo <arthurgrillo@riseup.net>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi, Louis Chauvet <louis.chauvet@bootlin.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com, Pekka Paalanen <pekka.paalanen@collabora.com>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
- <yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
- <2aa81b6b-0eb1-46d6-8e36-3bd43b8961c4@riseup.net>
-Content-Language: en-US
-From: Melissa Wen <mwen@igalia.com>
-In-Reply-To: <2aa81b6b-0eb1-46d6-8e36-3bd43b8961c4@riseup.net>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Thu, 14 Mar 2024 12:43:38 -0500
+David Lechner <dlechner@baylibre.com> wrote:
 
+> This adds support for AD7944 ADCs wired in "3-wire mode". (NOTE: 3-wire
+> is the datasheet name for this wiring configuration and has nothing to
+> do with SPI_3WIRE.)
+> 
+> In the 3-wire mode, the SPI controller CS line can be wired to the CNV
+> line on the ADC and used to trigger conversions rather that using a
+> separate GPIO line.
+> 
+> The turbo/chain mode compatibility check at the end of the probe
+> function is technically can't be triggered right now but adding it now
+> anyway so that we don't forget to add it later when support for
+> daisy-chaining is added.
+> 
+> Reviewed-by: Nuno Sa <nuno.sa@analog.com>
+> Signed-off-by: David Lechner <dlechner@baylibre.com>
+Applied to the togreg-normal branch of iio.git.
+I'll rebase that on rc1 once available before exposing it to linux-next.
 
-On 16/03/2024 08:59, Arthur Grillo wrote:
->
-> On 12/03/24 15:27, Melissa Wen wrote:
->> On 03/06, Arthur Grillo wrote:
->>> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wrong.
->>> To round a number, you need to add 0.5 to the number and floor that,
->>> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
->>>
->>> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paalanen@collabora.com/
->>>
->> Hi Arthur,
->>
->> thanks for addressing this issue.
->>
->> Please, add a fix tag to the commit that you are fixing, so we can
->> easily backport. Might be this commit:
->> https://cgit.freedesktop.org/drm/drm-misc/commit/drivers/gpu/drm/vkms?id=ab87f558dcfb2562c3497e89600dec798a446665
-> Wouldn't be this commit instead?
-> https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8b25320887d7feac98875546ea0f521628b745bb
-Yes, you're right!
+Thanks
 
-Melissa
->
-> Best Regards,
-> ~Arthur Grillo
->
->
->>> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
->>> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->>> ---
->>>   include/drm/drm_fixed.h | 2 +-
->>>   1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
->>> index 0c9f917a4d4b..de3a79909ac9 100644
->>> --- a/include/drm/drm_fixed.h
->>> +++ b/include/drm/drm_fixed.h
->>> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
->>>   
->>>   static inline int drm_fixp2int_round(s64 a)
->>>   {
->>> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1)));
->> Also, this is the only usage of DRM_FIXED_POINT_HALF. Can you also
->> remove it as it won't be used anymore?
->>
->>> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2);
->> Would this division be equivalent to just shifting 1ULL by 31 instead of
->> 32 as done in DRM_FIXED_ONE?
->>
->> Melissa
->>
->>>   }
->>>   
->>>   static inline int drm_fixp2int_ceil(s64 a)
->>>
->>> -- 
->>> 2.43.0
->>>
+Jonathan
+
+> ---
+> Changes in v2:
+> - Use default: in case statements.
+> - Remove redundant else.
+> - Explain turbo/chain mode check in commit message.
+> - Link to v1: https://lore.kernel.org/r/20240311-mainline-ad7944-3-wire-mode-v1-1-8e8199efa1f7@baylibre.com
+> ---
+>  drivers/iio/adc/ad7944.c | 157 +++++++++++++++++++++++++++++++++++++++++------
+>  1 file changed, 139 insertions(+), 18 deletions(-)
+> 
+> diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
+> index adb007cdd287..d5ec6b5a41c7 100644
+> --- a/drivers/iio/adc/ad7944.c
+> +++ b/drivers/iio/adc/ad7944.c
+> @@ -32,8 +32,25 @@ struct ad7944_timing_spec {
+>  	unsigned int turbo_conv_ns;
+>  };
+>  
+> +enum ad7944_spi_mode {
+> +	/* datasheet calls this "4-wire mode" */
+> +	AD7944_SPI_MODE_DEFAULT,
+> +	/* datasheet calls this "3-wire mode" (not related to SPI_3WIRE!) */
+> +	AD7944_SPI_MODE_SINGLE,
+> +	/* datasheet calls this "chain mode" */
+> +	AD7944_SPI_MODE_CHAIN,
+> +};
+> +
+> +/* maps adi,spi-mode property value to enum */
+> +static const char * const ad7944_spi_modes[] = {
+> +	[AD7944_SPI_MODE_DEFAULT] = "",
+> +	[AD7944_SPI_MODE_SINGLE] = "single",
+> +	[AD7944_SPI_MODE_CHAIN] = "chain",
+> +};
+> +
+>  struct ad7944_adc {
+>  	struct spi_device *spi;
+> +	enum ad7944_spi_mode spi_mode;
+>  	/* Chip-specific timing specifications. */
+>  	const struct ad7944_timing_spec *timing_spec;
+>  	/* GPIO connected to CNV pin. */
+> @@ -58,6 +75,9 @@ struct ad7944_adc {
+>  	 } sample __aligned(IIO_DMA_MINALIGN);
+>  };
+>  
+> +/* quite time before CNV rising edge */
+> +#define T_QUIET_NS	20
+> +
+>  static const struct ad7944_timing_spec ad7944_timing_spec = {
+>  	.conv_ns = 420,
+>  	.turbo_conv_ns = 320,
+> @@ -110,6 +130,65 @@ AD7944_DEFINE_CHIP_INFO(ad7985, ad7944, 16, 0);
+>  /* fully differential */
+>  AD7944_DEFINE_CHIP_INFO(ad7986, ad7986, 18, 1);
+>  
+> +/*
+> + * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conversion and
+> + *                                   acquisition
+> + * @adc: The ADC device structure
+> + * @chan: The channel specification
+> + * Return: 0 on success, a negative error code on failure
+> + *
+> + * This performs a conversion and reads data when the chip is wired in 3-wire
+> + * mode with the CNV line on the ADC tied to the CS line on the SPI controller.
+> + *
+> + * Upon successful return adc->sample.raw will contain the conversion result.
+> + */
+> +static int ad7944_3wire_cs_mode_conversion(struct ad7944_adc *adc,
+> +					   const struct iio_chan_spec *chan)
+> +{
+> +	unsigned int t_conv_ns = adc->always_turbo ? adc->timing_spec->turbo_conv_ns
+> +						   : adc->timing_spec->conv_ns;
+> +	struct spi_transfer xfers[] = {
+> +		{
+> +			/*
+> +			 * NB: can get better performance from some SPI
+> +			 * controllers if we use the same bits_per_word
+> +			 * in every transfer.
+> +			 */
+> +			.bits_per_word = chan->scan_type.realbits,
+> +			/*
+> +			 * CS is tied to CNV and we need a low to high
+> +			 * transition to start the conversion, so place CNV
+> +			 * low for t_QUIET to prepare for this.
+> +			 */
+> +			.delay = {
+> +				.value = T_QUIET_NS,
+> +				.unit = SPI_DELAY_UNIT_NSECS,
+> +			},
+> +
+> +		},
+> +		{
+> +			.bits_per_word = chan->scan_type.realbits,
+> +			/*
+> +			 * CS has to be high for full conversion time to avoid
+> +			 * triggering the busy indication.
+> +			 */
+> +			.cs_off = 1,
+> +			.delay = {
+> +				.value = t_conv_ns,
+> +				.unit = SPI_DELAY_UNIT_NSECS,
+> +			},
+> +		},
+> +		{
+> +			/* Then we can read the data during the acquisition phase */
+> +			.rx_buf = &adc->sample.raw,
+> +			.len = BITS_TO_BYTES(chan->scan_type.storagebits),
+> +			.bits_per_word = chan->scan_type.realbits,
+> +		},
+> +	};
+> +
+> +	return spi_sync_transfer(adc->spi, xfers, ARRAY_SIZE(xfers));
+> +}
+> +
+>  /*
+>   * ad7944_4wire_mode_conversion - Perform a 4-wire mode conversion and acquisition
+>   * @adc: The ADC device structure
+> @@ -167,9 +246,22 @@ static int ad7944_single_conversion(struct ad7944_adc *adc,
+>  {
+>  	int ret;
+>  
+> -	ret = ad7944_4wire_mode_conversion(adc, chan);
+> -	if (ret)
+> -		return ret;
+> +	switch (adc->spi_mode) {
+> +	case AD7944_SPI_MODE_DEFAULT:
+> +		ret = ad7944_4wire_mode_conversion(adc, chan);
+> +		if (ret)
+> +			return ret;
+> +
+> +		break;
+> +	case AD7944_SPI_MODE_SINGLE:
+> +		ret = ad7944_3wire_cs_mode_conversion(adc, chan);
+> +		if (ret)
+> +			return ret;
+> +
+> +		break;
+> +	default:
+> +		return -EOPNOTSUPP;
+> +	}
+>  
+>  	if (chan->scan_type.storagebits > 16)
+>  		*val = adc->sample.raw.u32;
+> @@ -230,9 +322,23 @@ static irqreturn_t ad7944_trigger_handler(int irq, void *p)
+>  	struct ad7944_adc *adc = iio_priv(indio_dev);
+>  	int ret;
+>  
+> -	ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
+> -	if (ret)
+> +	switch (adc->spi_mode) {
+> +	case AD7944_SPI_MODE_DEFAULT:
+> +		ret = ad7944_4wire_mode_conversion(adc, &indio_dev->channels[0]);
+> +		if (ret)
+> +			goto out;
+> +
+> +		break;
+> +	case AD7944_SPI_MODE_SINGLE:
+> +		ret = ad7944_3wire_cs_mode_conversion(adc, &indio_dev->channels[0]);
+> +		if (ret)
+> +			goto out;
+> +
+> +		break;
+> +	default:
+> +		/* not supported */
+>  		goto out;
+> +	}
+>  
+>  	iio_push_to_buffers_with_timestamp(indio_dev, &adc->sample.raw,
+>  					   pf->timestamp);
+> @@ -260,16 +366,9 @@ static int ad7944_probe(struct spi_device *spi)
+>  	struct ad7944_adc *adc;
+>  	bool have_refin = false;
+>  	struct regulator *ref;
+> +	const char *str_val;
+>  	int ret;
+>  
+> -	/*
+> -	 * driver currently only supports the conventional "4-wire" mode and
+> -	 * not other special wiring configurations.
+> -	 */
+> -	if (device_property_present(dev, "adi,spi-mode"))
+> -		return dev_err_probe(dev, -EINVAL,
+> -				     "adi,spi-mode is not currently supported\n");
+> -
+>  	indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
+>  	if (!indio_dev)
+>  		return -ENOMEM;
+> @@ -283,6 +382,22 @@ static int ad7944_probe(struct spi_device *spi)
+>  
+>  	adc->timing_spec = chip_info->timing_spec;
+>  
+> +	if (device_property_read_string(dev, "adi,spi-mode", &str_val) == 0) {
+> +		ret = sysfs_match_string(ad7944_spi_modes, str_val);
+> +		if (ret < 0)
+> +			return dev_err_probe(dev, -EINVAL,
+> +					     "unsupported adi,spi-mode\n");
+> +
+> +		adc->spi_mode = ret;
+> +	} else {
+> +		/* absence of adi,spi-mode property means default mode */
+> +		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
+> +	}
+> +
+> +	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
+> +		return dev_err_probe(dev, -EINVAL,
+> +				     "chain mode is not implemented\n");
+> +
+>  	/*
+>  	 * Some chips use unusual word sizes, so check now instead of waiting
+>  	 * for the first xfer.
+> @@ -349,15 +464,17 @@ static int ad7944_probe(struct spi_device *spi)
+>  		adc->ref_mv = AD7944_INTERNAL_REF_MV;
+>  	}
+>  
+> -	/*
+> -	 * CNV gpio is required in 4-wire mode which is the only currently
+> -	 * supported mode.
+> -	 */
+> -	adc->cnv = devm_gpiod_get(dev, "cnv", GPIOD_OUT_LOW);
+> +	adc->cnv = devm_gpiod_get_optional(dev, "cnv", GPIOD_OUT_LOW);
+>  	if (IS_ERR(adc->cnv))
+>  		return dev_err_probe(dev, PTR_ERR(adc->cnv),
+>  				     "failed to get CNV GPIO\n");
+>  
+> +	if (!adc->cnv && adc->spi_mode == AD7944_SPI_MODE_DEFAULT)
+> +		return dev_err_probe(&spi->dev, -EINVAL, "CNV GPIO is required\n");
+> +	if (adc->cnv && adc->spi_mode != AD7944_SPI_MODE_DEFAULT)
+> +		return dev_err_probe(&spi->dev, -EINVAL,
+> +				     "CNV GPIO in single and chain mode is not currently supported\n");
+> +
+>  	adc->turbo = devm_gpiod_get_optional(dev, "turbo", GPIOD_OUT_LOW);
+>  	if (IS_ERR(adc->turbo))
+>  		return dev_err_probe(dev, PTR_ERR(adc->turbo),
+> @@ -369,6 +486,10 @@ static int ad7944_probe(struct spi_device *spi)
+>  		return dev_err_probe(dev, -EINVAL,
+>  			"cannot have both turbo-gpios and adi,always-turbo\n");
+>  
+> +	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN && adc->always_turbo)
+> +		return dev_err_probe(dev, -EINVAL,
+> +			"cannot have both chain mode and always turbo\n");
+> +
+>  	indio_dev->name = chip_info->name;
+>  	indio_dev->modes = INDIO_DIRECT_MODE;
+>  	indio_dev->info = &ad7944_iio_info;
+> 
+> ---
+> base-commit: bbafdb305d6b00934cc09a90ec1bb659d43e5171
+> change-id: 20240311-mainline-ad7944-3-wire-mode-c240fe8af979
 
 
