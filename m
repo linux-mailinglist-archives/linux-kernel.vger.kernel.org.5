@@ -1,136 +1,171 @@
-Return-Path: <linux-kernel+bounces-105164-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105160-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF08487D9E5
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:16:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9050987D9DB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:15:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 506731F21B16
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 11:16:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43346281DA1
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 11:15:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A19D1B94F;
-	Sat, 16 Mar 2024 11:16:08 +0000 (UTC)
-Received: from szxga04-in.huawei.com (szxga04-in.huawei.com [45.249.212.190])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2068171BB;
+	Sat, 16 Mar 2024 11:15:35 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC499182B5;
-	Sat, 16 Mar 2024 11:16:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.190
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C7F125BA
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 11:15:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710587767; cv=none; b=OPucvEk/uNp0NIbBWKq0AI2HGCp2X0q731x/CDP+sPpGyFmU4WeE68UjDwdOgMU9KBgFaJUdmbUCIw8GF6QtZ0YNWtrz2wti5KsQdKsMy3sTP3J23Xd66suv4/ZXP+2BqK/jbAKwxI6XHBvKQFnNkQB5YeZv0R9XToVFs4Hwy0o=
+	t=1710587735; cv=none; b=qj4s/Q7o2jqv6U8PbysOUym1O73m/u4SAZOxz+jvPViYCv8fdjyJNV4DORY2zjacyxTfbrG6KCfVSRNkeWpRp5DDy5+jPJrMXRGfErFCcv+69++VDEJ9sB1bZyqNlADMCfq16eb4jAlzgytZb9kK2J4gijq4S3v+Og1oNy0ohbU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710587767; c=relaxed/simple;
-	bh=HQuG/dTUKUH3xhtdG0QeihBZTQ3pbDtmf87DVi7E7MQ=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=idVKxkzm0K0NS1kUzDdwx2UDB0XDSB6DIknzN5c9zZr2nKGUoC7VM1dOsMItd1j9cYTjyXRTkVDwRdvFz0pSiCAt0xlXY3xfc1CIT88spyM/G3GF4EA5q4xHGtULD2BIMSs4+O4dYSHHnwCy9wcmRDc6Dp/0lu7415EjXIkh6YM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.190
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.44])
-	by szxga04-in.huawei.com (SkyGuard) with ESMTP id 4TxdlW5MqFz2BgMP;
-	Sat, 16 Mar 2024 19:13:27 +0800 (CST)
-Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
-	by mail.maildlp.com (Postfix) with ESMTPS id A4BDA140384;
-	Sat, 16 Mar 2024 19:15:57 +0800 (CST)
-Received: from localhost.localdomain (10.67.165.2) by
- kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sat, 16 Mar 2024 19:15:56 +0800
-From: Jijie Shao <shaojijie@huawei.com>
-To: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>
-CC: <michal.kubiak@intel.com>, <shenjian15@huawei.com>,
-	<wangjie125@huawei.com>, <liuyonglong@huawei.com>, <shaojijie@huawei.com>,
-	<netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH V2 net 3/3] net: hns3: mark unexcuted loopback test result as UNEXECUTED
-Date: Sat, 16 Mar 2024 19:10:57 +0800
-Message-ID: <20240316111057.277591-4-shaojijie@huawei.com>
-X-Mailer: git-send-email 2.30.0
-In-Reply-To: <20240316111057.277591-1-shaojijie@huawei.com>
-References: <20240316111057.277591-1-shaojijie@huawei.com>
+	s=arc-20240116; t=1710587735; c=relaxed/simple;
+	bh=jLYr2i/eExX1w69iI+32GJyfadQtPjHg5todg3raew4=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HzMZ0DfZ6QgkMW2xcQZdZzEngH4F10PO8Ly8U+CSzOdQ/a0LlkdOBx5MW596yeeawLXd7MVFKNsK7XxHgKHkOMrdQj8QCkh77gb9qJwbmdkNGMe01n0whone0Z9daEa857rh8oWsQst4OZCZ8yPagGIwEFciVCPfGuJZX06fqoA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c75dee76c0so221249839f.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 04:15:33 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710587732; x=1711192532;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=+okNbJx3i3eNfoL5sGRziMMrPFCXMARCoCGd9KzLbvw=;
+        b=TZ0aZhXeHe5OdeNBHBC0HtUNHwAqtfV/TBwu2/srHCTDPvKrr/hhJNz6tqzloeB/n3
+         D7R83jYKu4y3ZHUL/kWmAu4hnuiIvU7i4RYlgnOzy197bsHDiq1nr76dSk2FMq6cVwOJ
+         LloXty6khf4JaKvGba4lfn3HZshKxNUSbFpMP6wAR+N2HExjcZBB44jZNiJIhisj2C6u
+         BueUCQ2FOR+iTJSL7dW3Ix320sXlTzeEBzKZdHmV5J33JI8fHUByYtCcDLj3XXPlJN72
+         LiUQ/yJcey0qKqeoEZGiIkHhuOFmQ9ti8bIDF6wi0RsF2ii6hv80O4YqeOvXLXkmrwkK
+         v2oA==
+X-Forwarded-Encrypted: i=1; AJvYcCWY50STFVchuZO2KU4E9uUJd59uvdlAdouqIKpobYD90wHQZyYEapm1P71TX1kKZhp7BfysJCZJb3Cl+x/KEr80udXfkFtntwgiz5F1
+X-Gm-Message-State: AOJu0YwywkDcrPj0qfX2xFL2f1bzhUY9MvFOX9Ok/hZlZY3Og45hqx84
+	eiuIQ4DHxrZUYeiIR3yz5fgVeJdukKatDPEC8SDeGZFproemJmWSrDXyzm2y71Ougp/E0ioVw1W
+	7koql97GyusKLlZW5hdAv5167ep/fVIu7DJq9cgM1lNeEusIHyLFp9uw=
+X-Google-Smtp-Source: AGHT+IH0itGz+OK/Aa92L6bdf0sRjCQzNSEcu32+MOf5o16HWxSx92ZxJGO8h6eS7Gn6Wd+opi2JpAXm87GeOUhl5SPzU4PkFKjO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems705-chm.china.huawei.com (10.3.19.182) To
- kwepemm600007.china.huawei.com (7.193.23.208)
+X-Received: by 2002:a5e:a90b:0:b0:7cc:b79:c5cb with SMTP id
+ c11-20020a5ea90b000000b007cc0b79c5cbmr9882iod.2.1710587732508; Sat, 16 Mar
+ 2024 04:15:32 -0700 (PDT)
+Date: Sat, 16 Mar 2024 04:15:32 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000002750950613c53e72@google.com>
+Subject: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
+From: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
+To: asmadeus@codewreck.org, ericvh@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux_oss@crudebyte.com, lucho@ionkov.net, 
+	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-From: Jian Shen <shenjian15@huawei.com>
+Hello,
 
-Currently, loopback test may be skipped when resetting, but the test
-result will still show as 'PASS', because the driver doesn't set
-ETH_TEST_FL_FAILED flag. Fix it by setting the flag and
-initializating the value to UNEXECUTED.
+syzbot found the following issue on:
 
-Fixes: 4c8dab1c709c ("net: hns3: reconstruct function hns3_self_test")
-Signed-off-by: Jian Shen <shenjian15@huawei.com>
-Signed-off-by: Jijie Shao <shaojijie@huawei.com>
+HEAD commit:    66a27abac311 Merge tag 'powerpc-6.9-1' of git://git.kernel..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=147b32a5180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb83fe1cce5833cd66a0
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12598006180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105d8aa5180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/37968fa0451e/disk-66a27aba.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/5b288c5c3088/vmlinux-66a27aba.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/792ddbf8146d/bzImage-66a27aba.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
+BUG: KMSAN: uninit-value in v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
+ fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
+ v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
+ evict+0x3ae/0xa60 fs/inode.c:667
+ iput_final fs/inode.c:1741 [inline]
+ iput+0x9ca/0xe10 fs/inode.c:1767
+ iget_failed+0x15e/0x180 fs/bad_inode.c:248
+ v9fs_fid_iget_dotl+0x375/0x570 fs/9p/vfs_inode_dotl.c:96
+ v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
+ v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+Uninit was created at:
+ __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2175 [inline]
+ allocate_slab mm/slub.c:2338 [inline]
+ new_slab+0x2de/0x1400 mm/slub.c:2391
+ ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
+ __slab_alloc mm/slub.c:3610 [inline]
+ __slab_alloc_node mm/slub.c:3663 [inline]
+ slab_alloc_node mm/slub.c:3835 [inline]
+ kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
+ alloc_inode_sb include/linux/fs.h:3089 [inline]
+ v9fs_alloc_inode+0x62/0x130 fs/9p/vfs_inode.c:228
+ alloc_inode+0x86/0x460 fs/inode.c:261
+ iget_locked+0x2bf/0xee0 fs/inode.c:1280
+ v9fs_fid_iget_dotl+0x7f/0x570 fs/9p/vfs_inode_dotl.c:62
+ v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
+ v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
+ legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+ vfs_get_tree+0xa7/0x570 fs/super.c:1779
+ do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+ path_mount+0x742/0x1f20 fs/namespace.c:3679
+ do_mount fs/namespace.c:3692 [inline]
+ __do_sys_mount fs/namespace.c:3898 [inline]
+ __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+ __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+ do_syscall_64+0xd5/0x1f0
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+CPU: 1 PID: 5014 Comm: syz-executor406 Not tainted 6.8.0-syzkaller-11136-g66a27abac311 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+=====================================================
+
+
 ---
- .../ethernet/hisilicon/hns3/hns3_ethtool.c    | 19 +++++++++++++++++--
- 1 file changed, 17 insertions(+), 2 deletions(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-index 999a0ee162a6..941cb529d671 100644
---- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-+++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-@@ -78,6 +78,9 @@ static const struct hns3_stats hns3_rxq_stats[] = {
- #define HNS3_NIC_LB_TEST_NO_MEM_ERR	1
- #define HNS3_NIC_LB_TEST_TX_CNT_ERR	2
- #define HNS3_NIC_LB_TEST_RX_CNT_ERR	3
-+#define HNS3_NIC_LB_TEST_UNEXECUTED	4
-+
-+static int hns3_get_sset_count(struct net_device *netdev, int stringset);
- 
- static int hns3_lp_setup(struct net_device *ndev, enum hnae3_loop loop, bool en)
- {
-@@ -418,18 +421,26 @@ static void hns3_do_external_lb(struct net_device *ndev,
- static void hns3_self_test(struct net_device *ndev,
- 			   struct ethtool_test *eth_test, u64 *data)
- {
-+	int cnt = hns3_get_sset_count(ndev, ETH_SS_TEST);
- 	struct hns3_nic_priv *priv = netdev_priv(ndev);
- 	struct hnae3_handle *h = priv->ae_handle;
- 	int st_param[HNAE3_LOOP_NONE][2];
- 	bool if_running = netif_running(ndev);
-+	int i;
-+
-+	/* initialize the loopback test result, avoid marking an unexcuted
-+	 * loopback test as PASS.
-+	 */
-+	for (i = 0; i < cnt; i++)
-+		data[i] = HNS3_NIC_LB_TEST_UNEXECUTED;
- 
- 	if (hns3_nic_resetting(ndev)) {
- 		netdev_err(ndev, "dev resetting!");
--		return;
-+		goto failure;
- 	}
- 
- 	if (!(eth_test->flags & ETH_TEST_FL_OFFLINE))
--		return;
-+		goto failure;
- 
- 	if (netif_msg_ifdown(h))
- 		netdev_info(ndev, "self test start\n");
-@@ -451,6 +462,10 @@ static void hns3_self_test(struct net_device *ndev,
- 
- 	if (netif_msg_ifdown(h))
- 		netdev_info(ndev, "self test end\n");
-+	return;
-+
-+failure:
-+	eth_test->flags |= ETH_TEST_FL_FAILED;
- }
- 
- static void hns3_update_limit_promisc_mode(struct net_device *netdev,
--- 
-2.30.0
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
