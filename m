@@ -1,190 +1,172 @@
-Return-Path: <linux-kernel+bounces-105192-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105193-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 72C6F87DA5A
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:00:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37D6487DA5E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9A8A6281F47
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:00:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19C61F2180A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8249618EA2;
-	Sat, 16 Mar 2024 14:00:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B57A18EB0;
+	Sat, 16 Mar 2024 14:03:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CwxaQ75s"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="Eb1yFjOR"
+Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B6B8F18AED;
-	Sat, 16 Mar 2024 14:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF20CEAEB;
+	Sat, 16 Mar 2024 14:03:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710597642; cv=none; b=LzXjh0AHnfzJ0PgpAypu5vSOWmZ6c7NUjQJS34FUf36Vnf0U3nR1AW1DdbZe5y23EbSFxQ46kCAiNUSU9LpD1UklQsSr865bHGYqcX+dfv0NBO3cRdDaymHLy4NEUBwE9reYn/VdogzkNwAySx3kZlGpbIq3AJs5OXNzOI0GDZM=
+	t=1710597800; cv=none; b=WRCs3lQLUXkT530uYWyq0HU6igcxmaCEvdSrf5QBfc+D7AL8x92ndkPdlpwcONAm2DvTaCSlB/gnqpIRLOzyTnEg+CQsI4JmsBpXOPhbnfnqZ1xC4F7y7903b46Msmq4Ecw8xqpAJJYtUEZ1ldOVr1cGAIN0CJzeS1Tuo+RpZDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710597642; c=relaxed/simple;
-	bh=OsANXNq+J2cqDLKb0p8kEa9kLFEZDomwY/SqKXI9w5k=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UugaHSBbHjxn4w6KKarS9Z5rjDAtajVBXxMUn6IIYcYQufiYvjIHTsFtT29QfMLzyVXIbVXSP5xsWPprSUd1NSNyVtvxm8XIMf7+T3bQNoCyc6wO4tMfMNY9JStWaUDOBzF5dEtJ2onViqblwZfj6JDbyHGZI2E9C2UP5xQ4pBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CwxaQ75s; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A2323C433F1;
-	Sat, 16 Mar 2024 14:00:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710597642;
-	bh=OsANXNq+J2cqDLKb0p8kEa9kLFEZDomwY/SqKXI9w5k=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=CwxaQ75sL/MY2rDZYUgNRX8An/nNeL45UcRhFGqDo2TPjK4TfTs6E0HqaTDyEpXFg
-	 4j5JyiOKfnuQDjm1YFEC5CnY4W73JX27Nrvpw4mpsm/Ug2dAgvi5EnGlxcGyqJWwlY
-	 /8LM7egri4URcmDyAz9aeI/BaVxMdEKH78ghp+v2xsaD+sQuQwRrvW1LwQdG1pwTfZ
-	 zsXRtGzztVSO0MHXQSJNDzQFvtrz8D0edy92hRg8QPbz6T07ofdMOIyoJNVcK8PWy9
-	 HhaJfIho7xRuORWiU4HUrQ8JvRjla+x9jPHaQUB572CjwS4QV1COLmU0FA13p8jPPY
-	 UNk2QTxlyGneg==
-Date: Sat, 16 Mar 2024 14:00:26 +0000
-From: Jonathan Cameron <jic23@kernel.org>
-To: Angel Iglesias <ang.iglesiasg@gmail.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, lars@metafoo.de,
- andriy.shevchenko@linux.intel.com, mazziesaccount@gmail.com,
- ak@it-klinger.de, petre.rodan@subdimension.ro, linus.walleij@linaro.org,
- phil@raspberrypi.com, 579lpy@gmail.com, linux-iio@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] iio: pressure: Simplify and make more clear
- temperature readings
-Message-ID: <20240316140026.4daa2480@jic23-huawei>
-In-Reply-To: <63d6a4b0cb2155d5c194b3b65fa60c985a6338ca.camel@gmail.com>
-References: <20240313174007.1934983-1-vassilisamir@gmail.com>
-	<20240313174007.1934983-5-vassilisamir@gmail.com>
-	<20240314150959.585367b5@jic23-huawei>
-	<20240314201718.GD1964894@vamoiridPC>
-	<46389801aeb20f18affed86d979aff7a62cf36d5.camel@gmail.com>
-	<ZfQPVlqv7A3zxExl@vamoirid-EDL-PC>
-	<63d6a4b0cb2155d5c194b3b65fa60c985a6338ca.camel@gmail.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710597800; c=relaxed/simple;
+	bh=BS1PK3qoqrGZE+ZA9VsKpv7aoKhXMXaTQxyTFJtX1BE=;
+	h=MIME-Version:Content-Type:Date:From:To:Cc:Subject:In-Reply-To:
+	 References:Message-ID; b=X9reCVYtAGbQR/bfu2TdLhuSOSjgQ/bBsZK4OaHKPg/IcAN9/PINS8dkqsaeUXx09scEU4Ugk5yDA0G5EQXpgdfMFbk8vt2/NgDWLd9rVRDEy1ZOClSvEIkxjizi9LBrjBMy4uwQVO5NR6RqkoyTtqHouYFqnP9roP9To8xREWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=Eb1yFjOR; arc=none smtp.client-ip=188.40.0.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=risingedge.co.za; s=xneelo; h=Message-ID:References:In-Reply-To:Subject:Cc:
+	To:From:Date:Content-Transfer-Encoding:Content-Type:MIME-Version:reply-to:
+	sender:bcc; bh=gmrczaOhlAucHh9+mNoIwUjFZ3eZSylCEeQeqB6Qn/4=; b=Eb1yFjOROSkwGC
+	lAyQ3yEs0n+Argh8f6bIBP19P4LQUksFRM1Nb1Eoo+dhXVoY2vKXhnWygt9EFwXZY45q7pLmg433d
+	LQbng8aMKrGbbiMpFiWzbSdpvn2IuiVzrhKxVOTB+dXe1fGl6o1RsgbWPxCkL5ujRb8i0TXxY0YTs
+	BY70wP+cY5G2oPDdeley6F3OGVhQ2hJPIrLUVKl+aaxGFi/FBiebuYYDpos08wX12tshqr+1I1YU9
+	PTRogQrm5TWW89/ldvXbtEZ3ljRJDlflg7p2wJebsJJP2U7ywdlAyxqTFqyPzV0MKCnAPuzOpwFGC
+	fUXp7px69M9DTbWuvTTA==;
+Received: from www31.flk1.host-h.net ([188.40.1.173])
+	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rlUco-001TB0-6N; Sat, 16 Mar 2024 16:03:05 +0200
+Received: from roundcubeweb1.flk1.host-h.net ([138.201.244.33] helo=webmail9.konsoleh.co.za)
+	by www31.flk1.host-h.net with esmtpa (Exim 4.92)
+	(envelope-from <justin.swartz@risingedge.co.za>)
+	id 1rlUcm-0001sp-OC; Sat, 16 Mar 2024 16:03:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8;
+ format=flowed
+Content-Transfer-Encoding: 8bit
+Date: Sat, 16 Mar 2024 16:03:00 +0200
+From: Justin Swartz <justin.swartz@risingedge.co.za>
+To: =?UTF-8?Q?Ar=C4=B1n=C3=A7_=C3=9CNAL?= <arinc.unal@arinc9.com>
+Cc: Sergio Paracuellos <sergio.paracuellos@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger
+ <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
+ <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Subject: Re: [PATCH 00/14] mips: dts: ralink: mt7621: improve DTS style
+In-Reply-To: <31b3d00f-6cf4-4bf8-ad78-a8354d57c518@arinc9.com>
+References: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
+ <31b3d00f-6cf4-4bf8-ad78-a8354d57c518@arinc9.com>
+Message-ID: <c7eb79ee77542db3a539d8bb7719dba9@risingedge.co.za>
+X-Sender: justin.swartz@risingedge.co.za
+User-Agent: Roundcube Webmail/1.3.17
+X-Authenticated-Sender: justin.swartz@risingedge.co.za
+X-Virus-Scanned: Clear
+X-SpamExperts-Domain: risingedge.co.za
+X-SpamExperts-Username: 
+Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
+X-SpamExperts-Outgoing-Class: ham
+X-SpamExperts-Outgoing-Evidence: Combined (0.01)
+X-Recommended-Action: accept
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT9i+OtSoA78SfwGCJVi3LtnPUtbdvnXkggZ
+ 3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
+ WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
+ 3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
+ Srgk2K3gr1VBfJbChkYH6fbrypLNrde+UooQVNLReLErukdelEOHUIpaBbp5GdnsN8+UvimwMinK
+ 0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
+ vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
+ nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
+ oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3FOty77OmI9XlaAJpX2qfax0
+ xYCHwzEoZpUBagq+YQPMLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
+ ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30/jNv+A51L2swh0gYW0eVWShle6
+ F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
+ PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
+ WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
+ fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
+ URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
+ AHYPcQ0eIL+UT9voGXmPy4gA6hyxsNfrkhMdzrtm39J4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
+ F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV9tc
+ xZF8I+FDjZqH3AmOvbgLx2C4ory8kLqkdy3XI1++Ibtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
+ Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
+ SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
+ qo05MS+4ayUpOtEhdxekWDmK9g==
+X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-On Fri, 15 Mar 2024 14:28:30 +0100
-Angel Iglesias <ang.iglesiasg@gmail.com> wrote:
+On 2024-03-16 11:24, Arınç ÜNAL wrote:
+> On 16.03.2024 07:54, Justin Swartz wrote:
+>> This set of patches was created with the intention of cleaning up
+>> arch/mips/boot/dts/ralink/mt7621.dtsi so that it is aligned with
+>> the Devicetree Sources (DTS) Coding Style [1] [2] guide.
+>> 
+>> [1] Documentation/devicetree/bindings/dts-coding-style.rst
+>> 
+>> [2] https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
+>> 
+>> Justin Swartz (14):
+>>    mips: dts: ralink: mt7621: reorder cpu node attributes
+>>    mips: dts: ralink: mt7621: reorder cpuintc node attributes
+>>    mips: dts: ralink: mt7621: reorder mmc regulator attributes
+>>    mips: dts: ralink: mt7621: reorder sysc node attributes
+>>    mips: dts: ralink: mt7621: reorder gpio node attributes
+>>    mips: dts: ralink: mt7621: reorder i2c node attributes
+>>    mips: dts: ralink: mt7621: reorder spi0 node attributes
+>>    mips: dts: ralink: mt7621: move pinctrl and sort its children
+>>    mips: dts: ralink: mt7621: reorder mmc node attributes
+>>    mips: dts: ralink: mt7621: reorder gic node attributes
+>>    mips: dts: ralink: mt7621: reorder ethernet node attributes and 
+>> kids
+>>    mips: dts: ralink: mt7621: reorder pcie node attributes and 
+>> children
+>>    mips: dts: ralink: mt7621: reorder pci?_phy attributes
+>>    mips: dts: ralink: mt7621: reorder the attributes of the root node
+>> 
+>>   arch/mips/boot/dts/ralink/mt7621.dtsi | 430 
+>> ++++++++++++++------------
+>>   1 file changed, 239 insertions(+), 191 deletions(-)
+> 
+> A well done patch series. Thank you very much for doing this!
+> 
+> Arınç
 
-> On Fri, 2024-03-15 at 10:05 +0100, Vasileios Amoiridis wrote:
-> > On Fri, Mar 15, 2024 at 12:22:50AM +0100, Angel Iglesias wrote: =20
-> > > On Thu, 2024-03-14 at 21:17 +0100, Vasileios Amoiridis wrote: =20
-> > > > On Thu, Mar 14, 2024 at 03:09:59PM +0000, Jonathan Cameron wrote: =
-=20
-> > > > > On Wed, 13 Mar 2024 18:40:05 +0100
-> > > > > Vasileios Amoiridis <vassilisamir@gmail.com> wrote:
-> > > > >  =20
-> > > > > > The read_press/read_humid functions need the updated t_fine val=
-ue
-> > > > > > in order to calculate the current pressure/humidity. Temperature
-> > > > > > reads should be removed from the read_press/read_humid functions
-> > > > > > and should be placed in the oneshot captures before the pressure
-> > > > > > and humidity reads. This makes the code more intuitive.
-> > > > > >=20
-> > > > > > Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com> =20
-> > > > >=20
-> > > > > To me this makes the use of these calls less obvious than they we=
-re
-> > > > > previously.=C2=A0 The calls are made close to where t_fine is use=
-d and
-> > > > > don't have to go via the indirection of chip_info.
-> > > > >=20
-> > > > > So I disagree. I think this change makes the code a lot less
-> > > > > clear.
-> > > > >  =20
-> > > >=20
-> > > > This was mainly driven by the fact that I wanted to avoid reading
-> > > > the temperature 3 times in case temp, press and humid are enabled
-> > > > and there are consecutive buffer readings. But thank you for the
-> > > > proposal I really appreciate it!
-> > > >  =20
-> > >=20
-> > > Hi, just a side note reflecting on this. Depending on your sampling
-> > > frequency
-> > > and registers data shadowing, to avoid compensating with different sa=
-mples
-> > > between readings, we should be doing burst readings to get a bundle o=
-f the
-> > > temperature+pressure and/or humidity.
-> > > On the bmp/bme280 and bmp380 this can be done as registers are contig=
-uous on
-> > > the
-> > > memory. On the bmp580 this is not a problem as the values are already
-> > > compensated, you`ll get always the latest reading.
-> > >=20
-> > > Kind regard,
-> > > Angel =20
-> >=20
-> > Hi Angel,
-> >=20
-> > Thank you for pointing this out! Indeed that's true but I noticed that =
-this is
-> > not
-> > the case for the BMP{085/180} devices. I just feel that some changes mi=
-ght
-> > make
-> > data acquisition/processing faster for a device (like the one you propo=
-sed)
-> > but
-> > it might make the code much more unreadable and unmaintanable. I will t=
-ry and
-> > see if something could be done in that sense but I feel that keeping it=
- simple
-> > will
-> > be good for everyone!
-> >=20
-> > Cheers,
-> > Vasilis =20
->=20
-> Yeah, data adquisition on bmp085/180 is already different as they don't s=
-upport
-> continuous mode as the newer models and you have to warm-up the sensor an=
-d do
-> one-shot readings. There's already a different code path in place for that
-> models. I guess that is the price to pay to support that wide range of
-> sensors...
-> Anyway, this patches are already big and you're doing quite a lot of heav=
-y-
-> lifting right now, so don't pay much attention to my ramblings! Regardles=
-s,
-> happy to help with tasks polishing and updating this driver :)
+++ for reviewing them all.
 
-If burst readings do make sense: We can reasonably assume anyone who is usi=
-ng
-this sensor and is using buffered mode probably wants to 'mostly' grab all =
-the
-channels, then a specific function that always grabs them all, plus use of
-available_scan_masks =3D { ALL BITS, 0 }; will let the IIO core deal with a=
-ny
-cases where only some channels are requested.  This is something we
-do in drivers where there is some interaction between the channels (like he=
-re)
-or where burst reads are much more efficient than single channels (possibly
-also true here) and complexity is significant for switching between burst
-and single channels reads.
+As you have at least one board that features an MT7621 SoC,
+please may you (and anyone else willing) take a look at a
+patch [1] that I've submitted for spi-mt7621.c which allows
+GPIO chip select lines to be used as well as the native chip
+selects.
 
-That covers a lot of devices and is part of why we have the core code
-do channel de-multiplexing rather than leaving it for the drivers. The other
-reason that drove that complexity was unrelated to this driver (SoC ADCs wi=
-th
-some channels used for touchscreens, and others for unrelated purposes).
+There's already been some back and forth with Mark Brown about
+the initial version of the patch (the linked patch is v2) and,
+of course I messed up how I send v2, as you'll read in the thread.
 
-You may just want to reduce how much code you are reusing from
-the oneshot single channel sysfs reads so that you can just do a single set
-of readings and use them as needed for compensation etc.
+It seems you weren't included because I rely on [2] to determine
+which people to address as maintainers when sending patches.
 
-Jonathan
+Is there a better approach for populating git send's --to argument?
 
-=20
->=20
-> Kind regards,
-> Angel
->=20
+Regards
+Justin
 
+
+[1] 
+https://lore.kernel.org/linux-mediatek/20240316010302.20776-1-justin.swartz@risingedge.co.za/
+
+[2] scripts/get_maintainer.pl --nogit --nogit-fallback --norolestats 
+--nol
 
