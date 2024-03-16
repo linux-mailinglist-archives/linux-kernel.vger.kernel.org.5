@@ -1,144 +1,112 @@
-Return-Path: <linux-kernel+bounces-105175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C6B287DA13
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:08:25 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F17B87DA15
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:09:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A045B212A8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:08:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A544CB21079
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:09:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A84217BB3;
-	Sat, 16 Mar 2024 12:08:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NcotFaW+"
-Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709C618036;
+	Sat, 16 Mar 2024 12:09:28 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5E5C18AEA
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:08:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8328517722
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:09:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710590894; cv=none; b=AbELnKZjbPkHOo2Acn+33HMCp6zUBIlZ5mb1dHZF6jYd4HCAcm610rJZrPvTrEbusFc2l04pDbHJTYV2OUBg2v50SeXzd6sZubPXiaxSikb893M6D/VyhCExwluvrE7k/QHI9H2v/e+Uj37NuuaJg0KGasHtJ6vVzFpJX/pBRPk=
+	t=1710590968; cv=none; b=n4rZxm02/HWRXfCV0fUqSFD3INkkFmVPTlIxsXonvoyMu25fwhsLckn4WAKR+CgSdlVd5sG3LF7gyQs9K4JfoDz92i28Ivpjd5Ed/d/uCdHfOWDShAO3ynK9I33/IM+yGlW5GI2FIAv9GOOru9+hk74mR/NyCcGTEDNZsL+WCyI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710590894; c=relaxed/simple;
-	bh=lOLo/MNfzxLJ6WfvIA5d9qx+T0I5n1LR8XctpmkR9ps=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ejdkeijP/+O09lDPlLzp8ShOrnGpocgL9fwoUJ00/47kUZdW8hJhYu0bOs+OZgcGDnSmAG4J8/U2eeM6fcayBSD7qrrReqlAsaxB4Sd+4eaPxWvBg5EyUG+zKEJIx1vQQXKjD+oz0JqDKrY3VIo1qnFWlJxUmB7jXjtICBnAo1Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NcotFaW+; arc=none smtp.client-ip=209.85.167.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513dc99b709so1536950e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 05:08:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710590890; x=1711195690; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=gBQn+4o33fa3usgQAoaNIQyP/sacMzy6onFIQRcXAHA=;
-        b=NcotFaW+G94GjGNVkaWkCZowO6sJj2gkN2YMVr9CeF41mGQosp9pUY+g4oVnecetz5
-         pJc3IxCVxTN15FUuTEb7Rcs0Lb83FD08R6zEiHpJ1JjgvuwuGzvI8fDuxtHMLst/jdOu
-         vRLOOddnYvCJUwgtfQ3Hj4Id1Ct2cfGwpMtqbZyMRC7ZDdz1dwQ32+dTtrG4nmABhRKu
-         kiSy/gR3hgGSm83kC9Fa/f31xU8zDOw6QKkzGbPPdJa4+sZcIt2CtyxWZujrmZvtNG5q
-         jAzAB4JZDoQHG7uU0oVwDzHJ5uhnIU78Z5ZSBj5BkahCgW0Cgf0O9Y8kW8Pn2YTqvONl
-         Wg7w==
+	s=arc-20240116; t=1710590968; c=relaxed/simple;
+	bh=OFqpG2u95CTHKj3kiWG8U0Pt/ngyH6TQPFJ5yqRP+yg=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fbzK4QzLlPnxH9ciwPzKVKjgXCpNwLFAaDaigd+HUioJFnjdcp8go3tms44q+pVlBBGs9oaf5Apax6ill/XO2EL9n6Pd0C6YkyqaWs6M3zEBI9W0AYu8kUiRPMTtojGpX4pOrcY9N9Myi/0DsinUgMbE044Uh+PS55onghBQ4yw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36660582003so42153625ab.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 05:09:26 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710590890; x=1711195690;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gBQn+4o33fa3usgQAoaNIQyP/sacMzy6onFIQRcXAHA=;
-        b=JJP+PIKczHJmhY4uLfc9FEuteu259PFGVgeWyZqUUASWDpFyjdgeFDslWf8x3X/Cqf
-         TRlEwRAG2tgLbTO8aS2oQ4uQ/flj1Uwo5vmxMzvR5wvX8zTzdEaZBB1NJHfg2blnIGui
-         d1l8UyXOHVj5uUM3fppjPmXV7+WDO+X5v3sTgpva+L5qEe0oaFE9Mbf9n5kin0CgMV0Y
-         aQvp7vp4fM0usGu371oo2Mqoflq0sOLYVdqawb88jXdPOpM58DQliej7rzboYCO+tJMO
-         EMNH0sJDnWsqgBG9z27fmrsFJg5xHybZwP1pGrsnLJ5qOnbBTYKEkhyTXhbS7bOktChB
-         73+w==
-X-Forwarded-Encrypted: i=1; AJvYcCUSZtPOZ/rwvTqN602GHEOZ3xXUKYTo6F+Fy1NNPZqsnIn+03yKkhcORqenD0rhbUYBkYxIdNffwsdZMjRSzqt4QTV7Hp+0IoUJOS7b
-X-Gm-Message-State: AOJu0YwcJuwkzTUTf282+DUoDqz3O/ZZs1YCA2IuMhlrBBSCXF2FK4ww
-	qGcoOn8cANbIrK+UmNLUZL4alUxFLU/cI/5llQOPkMXjwlA80PD/qaplyhmUdSc=
-X-Google-Smtp-Source: AGHT+IETHhE2krTe+L4sEOdBQlVRhR0BCKoPhwiB4W8KP8W6cMoFtA095QgnuHEnxphTSkhsDSmAAA==
-X-Received: by 2002:a19:9142:0:b0:513:d5b5:78e9 with SMTP id y2-20020a199142000000b00513d5b578e9mr3793878lfj.26.1710590889797;
-        Sat, 16 Mar 2024 05:08:09 -0700 (PDT)
-Received: from [192.168.223.169] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
-        by smtp.gmail.com with ESMTPSA id fb17-20020a056512125100b005135cdcf4a4sm950755lfb.32.2024.03.16.05.08.07
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Mar 2024 05:08:09 -0700 (PDT)
-Message-ID: <a201b559-473c-4020-88da-2ab0589723b0@linaro.org>
-Date: Sat, 16 Mar 2024 13:08:06 +0100
+        d=1e100.net; s=20230601; t=1710590965; x=1711195765;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=kBkvNjKAtbHEtQdfCVzshZvUM62vA91GLq3QAxf7k2g=;
+        b=gxoUMwdOsIVqkTWZKwZS6PHhchV2qZXlcYOWAYGjIIR5trdv3jYm5l79No2nVOkdSs
+         yNgkJHvSuRANZvuY2c51buOyEy0m/O2HVy5r2gaTpI8HoXK9FnJFC5cu6TqPpTBt1oI9
+         mEPBCQY99Zh3HVzOZA7MDHfIgR/9OI7vpwew0q3R8EvOmfCBX+YhzpRs0EjmcWzsil/2
+         CEMzCZ8aAVtWhI1CuU4dXmGEeK0wCwvxvdYPr40waxXgXBV1JPy7SCP4pIU9ewRIyn/8
+         VPHS6+8t6qEstO5V2GXoOYJjLif+WL98x+pTB3YUUSHepC46z7SdFg6wflvwmRzj94eJ
+         TcVA==
+X-Forwarded-Encrypted: i=1; AJvYcCW7a42B3X8JxsjfeiG2RLUd9WRTrcFo/AnVUekOGGk3e+FZj8Lh/Lc/fbJsPWBu1/3l0QZPmYPifGeZi9mGhDUYWYVO16OH0jVkDiOH
+X-Gm-Message-State: AOJu0Yynqnw8gyfD3+1/GQVLZffOqJ9NmlLZ9tptepDgS4J435KXypOO
+	ioPi03VOa6upA1naDmD8kYLdB6yaoNoSKfNZJOOhd4VjIqB9n2DaMxgrBdIBZ8+T34Lx/WI04Ea
+	6lf8zGnddX+SPFdDVBEbaB7cGhb+kV3evHAYxUMP1v2xHLH6hapIGEwI=
+X-Google-Smtp-Source: AGHT+IHBDSGm6qgrdNZtdCvk0lrhV5I+K23cilpOGSz1XR/vrUcw1YAMgWunfM+R4KQ0ES6QNjpdZngAyZtFZY3Eu9/0VvsVvmiu
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: msm8998-yoshino: fix volume-up key
-To: Sebastian Raase <linux@sraa.de>
-Cc: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@somainline.org>,
- Marijn Suijten <marijn.suijten@somainline.org>,
- linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240315225237.1616550-1-linux@sraa.de>
-Content-Language: en-US
-From: Konrad Dybcio <konrad.dybcio@linaro.org>
-Autocrypt: addr=konrad.dybcio@linaro.org; keydata=
- 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
- izWDgYvmBE8=
-In-Reply-To: <20240315225237.1616550-1-linux@sraa.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6e02:1d89:b0:365:5dbd:b956 with SMTP id
+ h9-20020a056e021d8900b003655dbdb956mr476433ila.3.1710590965746; Sat, 16 Mar
+ 2024 05:09:25 -0700 (PDT)
+Date: Sat, 16 Mar 2024 05:09:25 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000de9d170613c5fe46@google.com>
+Subject: [syzbot] Monthly fs report (Mar 2024)
+From: syzbot <syzbot+listc1ea4dfa31fea8381e9d@syzkaller.appspotmail.com>
+To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 15.03.2024 23:52, Sebastian Raase wrote:
-> The volume-up key is connected to gpio6 on yoshino.
-> Fix button node ordering while at it.
-> Disable pm8998_resin, since it is now unused.
-> 
-> Tested on maple and lilac.
-> 
-> Fixes: 390883af89d2e ("arm64: dts: qcom: msm8998: Introduce support for Sony Yoshino platform")
-> Signed-off-by: Sebastian Raase <linux@sraa.de>
-> ---
+Hello fs maintainers/developers,
 
-Reviewed-by: Konrad Dybcio <konrad.dybcio@linaro.org>
+This is a 31-day syzbot report for the fs subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/fs
 
-Konrad
+During the period, 1 new issues were detected and 1 were fixed.
+In total, 40 issues are still open and 341 have been fixed so far.
+
+Some of the still happening issues:
+
+Ref  Crashes Repro Title
+<1>  233     No    INFO: task hung in path_openat (7)
+                   https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
+<2>  210     Yes   INFO: task hung in user_get_super (2)
+                   https://syzkaller.appspot.com/bug?extid=ba09f4a317431df6cddf
+<3>  73      Yes   INFO: task hung in __fdget_pos (4)
+                   https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
+<4>  62      Yes   INFO: task hung in filename_create (4)
+                   https://syzkaller.appspot.com/bug?extid=72c5cf124089bc318016
+<5>  45      Yes   INFO: rcu detected stall in sys_clock_adjtime
+                   https://syzkaller.appspot.com/bug?extid=25b7addb06e92c482190
+<6>  36      Yes   INFO: task hung in synchronize_rcu (4)
+                   https://syzkaller.appspot.com/bug?extid=222aa26d0a5dbc2e84fe
+<7>  35      Yes   WARNING: proc registration bug in bcm_connect
+                   https://syzkaller.appspot.com/bug?extid=df49d48077305d17519a
+<8>  21      Yes   BUG: unable to handle kernel NULL pointer dereference in do_pagemap_scan
+                   https://syzkaller.appspot.com/bug?extid=f9238a0a31f9b5603fef
+<9>  13      Yes   KASAN: use-after-free Read in sysv_new_block
+                   https://syzkaller.appspot.com/bug?extid=eda782c229b243c648e9
+<10> 3       Yes   WARNING in pagemap_scan_pmd_entry (2)
+                   https://syzkaller.appspot.com/bug?extid=0748a3a1931714d970d0
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
