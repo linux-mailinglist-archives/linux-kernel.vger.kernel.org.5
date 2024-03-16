@@ -1,100 +1,200 @@
-Return-Path: <linux-kernel+bounces-105032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E3CC387D7ED
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:00:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58BD387D7F7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:21:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 241C01C21585
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:00:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94651F21D0F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:21:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85BD63D71;
-	Sat, 16 Mar 2024 02:00:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9341C36;
+	Sat, 16 Mar 2024 02:21:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b="UuPGao1x"
-Received: from outgoing.mit.edu (outgoing-auth-1.mit.edu [18.9.28.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZxjyeEMG"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 406D51C27
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=18.9.28.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1727E1879
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:21:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710554440; cv=none; b=sS2xPYXrxNfZyWqJm5CMwsUQrI+bIlXITzZPK3JNnebkKeLsJIsODTVRr6ctz0jWkGHjyUD2hR3pAy3ctZjj6QmTr8MuE7MHmCbks0CXpWvPhHWpjdfH9dWd+VrJgzpcs8mYn6KwJmh6EX+tf1QKSV760Pxku1+rpKLGaidqfwQ=
+	t=1710555704; cv=none; b=Pk9ebu/nOl+jJv/81yJVkRv3ZH2FxDnwZ4GQUKo8USmx7bI9+eP0VA7w7r/7bbj6pg+dwPLmT66srznfRAffdmdY4cdSjVBYoaezP/jYQZaIZwSzYBS+wp7TqB1B37Ijne93BP4QwLWUtCOkdT8wrLrTEk95ZAN+LIIkm0arero=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710554440; c=relaxed/simple;
-	bh=VG7OIJFW49Jwu6YetTg/UZGufYausVpptp7BRBu/EQs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OBRiprvqDbhOPSrjx0XaMuuLhBgoukQLFVCgn3rvyWHrKxW5WdD6Qhhth3haERuAc1FBrZtuRvrXT9I2aDdpsGgKOkT1iP3PQaDiNQ0ebkfT3xNE2N0Z+4bP3LWKXFuORVMHNtCVrHsLet6P5BSwzPdM24hWwCr5BV6Hm7oUXxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu; spf=pass smtp.mailfrom=mit.edu; dkim=pass (2048-bit key) header.d=mit.edu header.i=@mit.edu header.b=UuPGao1x; arc=none smtp.client-ip=18.9.28.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=mit.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mit.edu
-Received: from cwcc.thunk.org (pool-173-48-116-252.bstnma.fios.verizon.net [173.48.116.252])
-	(authenticated bits=0)
-        (User authenticated as tytso@ATHENA.MIT.EDU)
-	by outgoing.mit.edu (8.14.7/8.12.4) with ESMTP id 42G20L8D029621
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Fri, 15 Mar 2024 22:00:24 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=mit.edu; s=outgoing;
-	t=1710554424; bh=idgkghSz0sUzKRX7HAo4sytYQwnubKAL8qnjaAnVuC4=;
-	h=Date:From:Subject:Message-ID:MIME-Version:Content-Type;
-	b=UuPGao1x1pxd9H+l4lkyHQpIODVYWrLNc/aA7678KMHVrpt7vJ0oh/Lgb1bZpZS/E
-	 hGDG+CAm/kj8sLsC089DEwuqQhtSOM+DXGJq6oOw9v+fChtNmS1E6ebvu3D7fGNsQu
-	 VYI+fzyaQHl9WiklcW8/RbMefw3WqRx9mDMMTJnozuhUQXo2u29UpseHh3mLvAWBNX
-	 yI97PPiQxC0yOYmSo4JwOgVko2oP3+qjvPgIG4/tTz5tPdPxZffLXCFRqKI88JDHIu
-	 u1C4PEhvykXXM3EH3wfCCoxGkF1fFbaPcC3HIElJ8XoIqcriGhE+z9nVnRrkE56cK1
-	 7Azod1QT1BQpg==
-Received: by cwcc.thunk.org (Postfix, from userid 15806)
-	id 52AD415C0C93; Fri, 15 Mar 2024 22:00:21 -0400 (EDT)
-Date: Fri, 15 Mar 2024 22:00:21 -0400
-From: "Theodore Ts'o" <tytso@mit.edu>
-To: cheung wall <zzqq0103.hey@gmail.com>
-Cc: Andreas Dilger <adilger.kernel@dilger.ca>, linux-ext4@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: KASAN: slab-use-after-free Read in ext4_find_extent
-Message-ID: <20240316020021.GD143836@mit.edu>
-References: <CAKHoSAu2+dDCR9Dgd4PGYJg2qBqKO+kNThaoFdfVi-AheS3S7w@mail.gmail.com>
+	s=arc-20240116; t=1710555704; c=relaxed/simple;
+	bh=f5AsLN5dJJnjEpufB2wO5bFR3D2nwJumh7e1n6boCCE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=i1KgJDjeFBXzOMWTOGBih9G4ekZOV53j/4SFgGCrQ5i8Cy4it+H4a1603Dq8EOR4drvjgCKd0bzZaU/xGO4KevJb+LnbWAaynvH98NwO5TJSwiyrOHjdFhk5P4MnPRqogpCkuw1eO9oiRYOvvA2PQ6xWukaioQbE4tgjOMVDpao=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZxjyeEMG; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso35079891fa.2
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:21:41 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710555700; x=1711160500; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PJPbyhhd4spfaEVEn7atbFHsNQ7PWuy+P7v5H5IJWOw=;
+        b=ZxjyeEMGpMbRATrcaTLNEdO5+BXuqn37LUy+1znd7X0e+8Tn4jqlRJq4xnKr/mNUK2
+         cqUsY7Tiys3TNzc1JZPSFBlUAq7NHoVXqXnePyiS4onis5HOTjzo5TuvOR/wTW60cve2
+         jkB1nphkn5uXok3Qb07aXKU+AZ0qgAaWv3yapcsh5apDgKlEIXdbm44dRuEf+E/9tNb2
+         zPefA6v//ZliPxZ08bbLSkxrh9evKWZ2n48Xrfs3JcEzL1pMyYZQJ9q0kFnj0Dm2O7eV
+         GadKRBxVaC6Pk0u3PLENYsJiVdLZx4F0gRcRYbV2HPS+EzI/Y/C26EwEDYVTGyeSo9mw
+         3uHA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710555700; x=1711160500;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PJPbyhhd4spfaEVEn7atbFHsNQ7PWuy+P7v5H5IJWOw=;
+        b=ChNZrxXcLNzu9aPAn3A6hpKvp8RUoh5XUt92YcytRi1FuLzy57PTdSKzcZyQ8s5O+c
+         n+HXLW6LFkPPxn6A3YkxyZexWZq2dYLcxqOOUfJG/89Kx95z340hT2vwnH3cFwHNN9ws
+         SG4ceUh4ZN0g38js8qc7RPTiRUe0L6/dDY5aykdSdWUXygwqGMFqgiDojt6KiJPmnkKr
+         Ub9kzB4vg14bX5uGXoHVGfzeCdFETV57riIxyyGC/6f6g6Ud//fSXwzjfP/eNZZIMmyA
+         BALJIyYHaGjihcvkgKShhadU1kNCKp6kELxqM1I0i+9luHSXOIRjcuZUwKN2k57CJhx0
+         JIEw==
+X-Forwarded-Encrypted: i=1; AJvYcCXyNhSQaskgM3/ikWjdLB4yi1uqrKECvEBeOOIRcR9aEphZ2kXacEpkkGqKW1u8yOVIC5NgVI/lGOgNw9u/XhToC0UvcYMiNqiPEq6/
+X-Gm-Message-State: AOJu0YzDLp6LhY1hxaiMhjTYRKvwpK9TuoDPH59PiifpE3R7qiZ24wnq
+	FPFGfdHG26o740ZlcHgsltu/GRBPR6rLoBBHHj0SnSzdG+xPvie9KWQU/kZAT/I=
+X-Google-Smtp-Source: AGHT+IHHbkkeyZAOXwXLmDRKqVXt5cjt2jxWgX03Mg4kFWBOq93PSBVllMLcsvKbbMJFvLiuFpE9dg==
+X-Received: by 2002:a2e:7217:0:b0:2d4:4b13:3413 with SMTP id n23-20020a2e7217000000b002d44b133413mr2820808ljc.22.1710555700178;
+        Fri, 15 Mar 2024 19:21:40 -0700 (PDT)
+Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
+        by smtp.gmail.com with ESMTPSA id s68-20020a637747000000b005b458aa0541sm3088443pgc.15.2024.03.15.19.21.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Fri, 15 Mar 2024 19:21:39 -0700 (PDT)
+Message-ID: <1eaab597-5cd5-418e-b4b7-304a85dfa935@suse.com>
+Date: Sat, 16 Mar 2024 12:51:33 +1030
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CAKHoSAu2+dDCR9Dgd4PGYJg2qBqKO+kNThaoFdfVi-AheS3S7w@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] btrfs: Fix race in read_extent_buffer_pages()
+Content-Language: en-US
+To: Tavian Barnes <tavianator@tavianator.com>, linux-btrfs@vger.kernel.org
+Cc: Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
+ Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+ linux-kernel@vger.kernel.org
+References: <1ca6e688950ee82b1526bb3098852af99b75e6ba.1710551459.git.tavianator@tavianator.com>
+From: Qu Wenruo <wqu@suse.com>
+Autocrypt: addr=wqu@suse.com; keydata=
+ xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
+ 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
+ 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
+ 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
+ gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
+ AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
+ FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
+ Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
+ p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
+ ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
+ dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
+ RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
+ rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
+ Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
+ E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
+ vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
+ g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
+ AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
+ rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
+ 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
+ bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
+ AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
+ ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
+In-Reply-To: <1ca6e688950ee82b1526bb3098852af99b75e6ba.1710551459.git.tavianator@tavianator.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, Mar 14, 2024 at 02:58:04PM +0800, cheung wall wrote:
-> Hello,
-> 
-> when using Healer to fuzz the latest Linux Kernel, the following crash
-> 
-> was triggered on:
-> 
 
-> HEAD commit: e8f897f4afef0031fe618a8e94127a0934896aba  (tag: v6.8)
-> 
-> git tree: upstream
-> 
-> console output: https://pastebin.com/raw/YBKrQHxW
-> 
-> kernel config: https://pastebin.com/raw/SJFReJfc
-> 
-> C reproducer: https://pastebin.com/raw/GUVzwEmx
-> 
-> Syzlang reproducer: https://pastebin.com/raw/9KqQRP2e
-> 
-> If you fix this issue, please add the following tag to the commit:
-> 
-> Reported-by: Qiang Zhang <zzqq0103.hey@gmail.com>
 
-This is not reproducible using the above-specified kernel version,
-kernel config, and C reproducer using kvm-xfstests.
+在 2024/3/16 11:44, Tavian Barnes 写道:
+> To prevent concurrent reads for the same extent buffer,
+> read_extent_buffer_pages() performs these checks:
+> 
+>      /* (1) */
+>      if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
+>          return 0;
+> 
+>      /* (2) */
+>      if (test_and_set_bit(EXTENT_BUFFER_READING, &eb->bflags))
+>          goto done;
+> 
+> At this point, it seems safe to start the actual read operation. Once
+> that completes, end_bbio_meta_read() does
+> 
+>      /* (3) */
+>      set_extent_buffer_uptodate(eb);
+> 
+>      /* (4) */
+>      clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
+> 
+> Normally, this is enough to ensure only one read happens, and all other
+> callers wait for it to finish before returning.  Unfortunately, there is
+> a racey interleaving:
+> 
+>      Thread A | Thread B | Thread C
+>      ---------+----------+---------
+>         (1)   |          |
+>               |    (1)   |
+>         (2)   |          |
+>         (3)   |          |
+>         (4)   |          |
+>               |    (2)   |
+>               |          |    (1)
+> 
+> When this happens, thread B kicks of an unnecessary read. Worse, thread
+> C will see UPTODATE set and return immediately, while the read from
+> thread B is still in progress.  This race could result in tree-checker
+> errors like this as the extent buffer is concurrently modified:
+> 
+>      BTRFS critical (device dm-0): corrupted node, root=256
+>      block=8550954455682405139 owner mismatch, have 11858205567642294356
+>      expect [256, 18446744073709551360]
+> 
+> Fix it by testing UPTODATE again after setting the READING bit, and if
+> it's been set, skip the unnecessary read.
+> 
+> Fixes: d7172f52e993 ("btrfs: use per-buffer locking for extent_buffer reading")
+> Link: https://lore.kernel.org/linux-btrfs/CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com/
+> Link: https://lore.kernel.org/linux-btrfs/f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com/
+> Link: https://lore.kernel.org/linux-btrfs/c7241ea4-fcc6-48d2-98c8-b5ea790d6c89@gmx.com/
+> Signed-off-by: Tavian Barnes <tavianator@tavianator.com>
+Reviewed-by: Qu Wenruo <wqu@suse.com>
 
-In any case, looking at the C reproducer, it looks like the reproducer
-involves forcibly deactivating the loop device, which requires root
-privileges, and so this is not a terribly intereseting bug report.
-
-	    	   	       - Ted
+Thanks,
+Qu
+> ---
+>   fs/btrfs/extent_io.c | 13 +++++++++++++
+>   1 file changed, 13 insertions(+)
+> 
+> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
+> index 7441245b1ceb..61594eaf1f89 100644
+> --- a/fs/btrfs/extent_io.c
+> +++ b/fs/btrfs/extent_io.c
+> @@ -4333,6 +4333,19 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
+>   	if (test_and_set_bit(EXTENT_BUFFER_READING, &eb->bflags))
+>   		goto done;
+>   
+> +	/*
+> +	 * Between the initial test_bit(EXTENT_BUFFER_UPTODATE) and the above
+> +	 * test_and_set_bit(EXTENT_BUFFER_READING), someone else could have
+> +	 * started and finished reading the same eb.  In this case, UPTODATE
+> +	 * will now be set, and we shouldn't read it in again.
+> +	 */
+> +	if (unlikely(test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))) {
+> +		clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
+> +		smp_mb__after_atomic();
+> +		wake_up_bit(&eb->bflags, EXTENT_BUFFER_READING);
+> +		return 0;
+> +	}
+> +
+>   	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
+>   	eb->read_mirror = 0;
+>   	check_buffer_tree_ref(eb);
 
