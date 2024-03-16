@@ -1,59 +1,52 @@
-Return-Path: <linux-kernel+bounces-105206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66EFA87DA81
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:59:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A83C87DA84
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:00:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2CA4281EDE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:59:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 219752822BE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:00:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D43F81B299;
-	Sat, 16 Mar 2024 14:59:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFAD1B970;
+	Sat, 16 Mar 2024 15:00:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="ggrXv090"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b="PdW0ak0K"
+Received: from mail-4325.protonmail.ch (mail-4325.protonmail.ch [185.70.43.25])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7530917BAF
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 14:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0850D1B815;
+	Sat, 16 Mar 2024 14:59:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.70.43.25
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710601177; cv=none; b=ZvqMDCrVDAEubOyl8/0hdGQ7AZJ//oxpl3AiGN8ltlROwruombgGLAB4RNfHckcxyvcAdkMSrtv7X1i+FT6NmN9oM/Gm53CaAGc0Aau/PQ832ed5mon79fUEgaAmiSjeeD0RUM9BMmSJRIFZaYf70KCFSrEUmxKZkEHivv2yTuI=
+	t=1710601201; cv=none; b=uppS9f5x2cakXdh5f/gqLKMAVjQ67oBvqm9DnVVxHhUeQl1liiPKbUE2s620ukgnZAz6b/QnzLXC0G5/zM/3619Xgtbz+QfFYBe2zEAavq0/Z+/ukTAYjqwvnOvzXHoCtJ4DMYUy10dW17vuH79H2HwTlyVsqBlMrbgy4T1+9YY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710601177; c=relaxed/simple;
-	bh=DKs5vf95fwSrcVB7tav+pGIufXiuij6EFgK8cxV0ums=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=XACqNaAuOcRlq1lAHaTCc6Kr4DLzgWLTB9Y4p2sPm/OhCUq38mDpamQ3WtbVEneyOZabk7zWqPZ6f0jYqV4fg4VXGlIA5yA8fRSo1a1plGalgRSFc1L2iTnGPPmpeFKGhidx3XvUMASpTpzVcBxUeTHFJfVHijaf8OQIAfrD3z8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=ggrXv090; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=iKLiE9BwjTzP4t6SGnAORjeXAHz+HjoyGfvPRPIakTw=; b=ggrXv090/BWmzassxYCgEqKIZ8
-	ryZZsHN7L9tmEIqXwbeJMsqrCqH53fdw4cC56qJNZoauy00szde4QM/9nxhrMC1hMvYDRu+w19JeH
-	CuZxTAtrnsxCjobbmFBorfB/WQqbQrHivi/iHmLpuqKv3nZPwmuLzUQy3jUGFYD6vh8oREWn13rB3
-	GjlS/+qsqivToYGqXOnxFBgaRR9ZpMS1bWGPpVpY1ZewKBqJDbDDWiMEl9qQmnUi7TSgPQDsDN/jB
-	cE1LJyHJUreYH1Myfq4aZceqrXufrQ/r5M2QmqZu3XqOd2TsG4Q4ZGYuZmxLwSL2BKl3ypQcRp2Ss
-	20tZ4tcA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rlVVE-0000000CiuI-1XfW;
-	Sat, 16 Mar 2024 14:59:16 +0000
-Date: Sat, 16 Mar 2024 14:59:16 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Cc: "zhaoyang.huang" <zhaoyang.huang@unisoc.com>,
-	Andrew Morton <akpm@linux-foundation.org>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, steve.kang@unisoc.com
-Subject: Re: [PATCH] mm: fix a race scenario in folio_isolate_lru
-Message-ID: <ZfWzxOq7JupJtZtg@casper.infradead.org>
-References: <20240314083921.1146937-1-zhaoyang.huang@unisoc.com>
- <ZfRDJTrFJq3KSbIB@casper.infradead.org>
- <CAGWkznGiVrqMs9fX2WGG9QsfTm72ffFj-cWXSUo3azrgeBOgAg@mail.gmail.com>
+	s=arc-20240116; t=1710601201; c=relaxed/simple;
+	bh=6ThZgc5bF473g6yEtflfN91+NcQ9yyOlhjLf9QzysLI=;
+	h=Date:To:From:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=bsN3J8eOWdGVdjwX7gk4sbcO9CHoD2Q9m3R/AGj/hStZEB2tDNDG1ok/ddWdB5/FF1B70T0Ap/dyNSlOBFxrZ5mxyvepzwFVSPmzSR8Xfl21gEOtblCkqbfpnStxgsh1uKwMHJu80k6bMNPImtOV1rCt68OgxdIWv3vaGUxDZtI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com; spf=pass smtp.mailfrom=protonmail.com; dkim=pass (2048-bit key) header.d=protonmail.com header.i=@protonmail.com header.b=PdW0ak0K; arc=none smtp.client-ip=185.70.43.25
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=protonmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=protonmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=protonmail.com;
+	s=protonmail3; t=1710601192; x=1710860392;
+	bh=SriqUYtoFiKymMAfUU6MXviFeq8Af+j9dgH8WNG12F8=;
+	h=Date:To:From:Cc:Subject:Message-ID:Feedback-ID:From:To:Cc:Date:
+	 Subject:Reply-To:Feedback-ID:Message-ID:BIMI-Selector;
+	b=PdW0ak0KUwhpUR7dTEOlI7rLBCYqCc1WerPJICt5BqXzbSTalwiJ//Qw3gKTsaVxd
+	 tKwjODoK4G2VVrVzuG6xy9z2DXPFCDEvMQbVXfD/DNkNsUCIrxGoUf9uvNCSukJPUw
+	 pJNW4fk0rX+NEtlCq2N1FSbQaXlwgMcR6vHU5g9xUHnBtoeMctcFNyTDxa9YX1vyIX
+	 lUP38jiZUU/bqNwtP1jj5XOVu9t43iawropcPIB24KZMNg9ci9RVFbA4R+qHDAQmLJ
+	 kRp9YWL90XnBr7P/VRrtQHPCf7s/KZwsjKzI+fzS40jIZGlBVncdeClpGhOpoHLFWo
+	 0AuUN7Fx4q4pg==
+Date: Sat, 16 Mar 2024 14:59:42 +0000
+To: "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+From: Koakuma <koachan@protonmail.com>
+Cc: "davem@davemloft.net" <davem@davemloft.net>, "ndesaulniers@google.com" <ndesaulniers@google.com>, "arnd@arndb.de" <arnd@arndb.de>
+Subject: [sparc] Use of -fcall-used-* flags in Makefile?
+Message-ID: <JAYB7uS-EdLABTR4iWZdtFOVa5MvlKosIrD_cKTzgeozCOGRM7lhxeLigFB1g3exX445I_W5VKB-tAzl2_G1zCVJRQjp67ODfsSqiZWOZ9o=@protonmail.com>
+Feedback-ID: 6608610:user:proton
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,54 +54,18 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGWkznGiVrqMs9fX2WGG9QsfTm72ffFj-cWXSUo3azrgeBOgAg@mail.gmail.com>
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 16, 2024 at 04:53:09PM +0800, Zhaoyang Huang wrote:
-> On Fri, Mar 15, 2024 at 8:46 PM Matthew Wilcox <willy@infradead.org> wrote:
-> >
-> > On Thu, Mar 14, 2024 at 04:39:21PM +0800, zhaoyang.huang wrote:
-> > > From: Zhaoyang Huang <zhaoyang.huang@unisoc.com>
-> > >
-> > > Panic[1] reported which is caused by lruvec->list break. Fix the race
-> > > between folio_isolate_lru and release_pages.
-> > >
-> > > race condition:
-> > > release_pages could meet a non-refered folio which escaped from being
-> > > deleted from LRU but add to another list_head
-> >
-> > I don't think the bug is in folio_isolate_lru() but rather in its
-> > caller.
-> >
-> >  * Context:
-> >  *
-> >  * (1) Must be called with an elevated refcount on the folio. This is a
-> >  *     fundamental difference from isolate_lru_folios() (which is called
-> >  *     without a stable reference).
-> >
-> > So when release_pages() runs, it must not see a refcount decremented to
-> > zero, because the caller of folio_isolate_lru() is supposed to hold one.
-> >
-> > Your stack trace is for the thread which is calling release_pages(), not
-> > the one calling folio_isolate_lru(), so I can't help you debug further.
-> Thanks for the comments.  According to my understanding,
-> folio_put_testzero does the decrement before test which makes it
-> possible to have release_pages see refcnt equal zero and proceed
-> further(folio_get in folio_isolate_lru has not run yet).
+Hello, first time poster so apologies if I posted to the wrong list.
 
-No, that's not possible.
+Anyone knows why the SPARC makefiles (arch/sparc/Makefile and
+arch/sparc/vdso/Makefile) set `-fcall-used-g5` and  `-fcall-used-g7`
+in their CFLAGS?
+Would it be safe if the kernel is compiled without those flags?
 
-In the scenario below, at entry to folio_isolate_lru(), the folio has
-refcount 2.  It has one refcount from thread 0 (because it must own one
-before calling folio_isolate_lru()) and it has one refcount from thread 1
-(because it's about to call release_pages()).  If release_pages() were
-not running, the folio would have refcount 3 when folio_isolate_lru()
-returned.
-
->    #0 folio_isolate_lru          #1 release_pages
-> BUG_ON(!folio_refcnt)
->                                          if (folio_put_testzero())
->    folio_get(folio)
->    if (folio_test_clear_lru())
+The context is that there's an effort to make the sparc64 kernel build
+under LLVM/clang, and if possible we'd like to build the kernel without
+those flags, at least when building with clang, since it simplifies
+a lot of things on the LLVM side.
+(LLVM tracker: https://github.com/llvm/llvm-project/issues/40792)
 
