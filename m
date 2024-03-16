@@ -1,66 +1,68 @@
-Return-Path: <linux-kernel+bounces-105227-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105228-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 541E587DAC6
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:23:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id EDAAB87DAC9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:23:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F6C7282260
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:23:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7B7751F229AA
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90AA21BC56;
-	Sat, 16 Mar 2024 16:23:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A4471BF34;
+	Sat, 16 Mar 2024 16:23:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b="REEodlIJ"
-Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b="IeQ/wunu"
+Received: from mail-il1-f178.google.com (mail-il1-f178.google.com [209.85.166.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 01CE01B969
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 16:23:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A10CE1BC2A
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 16:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710606184; cv=none; b=nQCb/ShB4Hq+FxiVRqQWWh7s47tHSAQ2s08z+5KrBHE8yGeBjoKgqPfPladBLoWppi1+uIQ10VsLk5FHRIRdH20gqPV7nAHRSCmTSlP9s/c2voetYp/XkhrmAHRlbZjwawL6L/r07uXABxQJNgfafIrgRPaP2ma2pi5lmZa4Vl0=
+	t=1710606186; cv=none; b=tlJWS2fQCmD3de2qCOckMpkB6+wexd9p2NSsjwI/alNkhjVwIHyrhxf7m8u7s3xce0YKOFwAo8ByeAFnTA3i7vd2z2+iV10ULmBvszB9OtNAsTdqocmJXFCkXkXbXlJJF6KVSkHUweHjBg6kZY51toZYBRRZJJ4h1QFv9mKTAH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710606184; c=relaxed/simple;
-	bh=m32Ko5crU9F2s1OcBQcoiBz2kFB3BBOwrX7vUOXoXDA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=gZXcpO3CYnJyBIG0R50mZcBcJ5J6GDwqzs751n4nXNCCK7gpM5WZBKzw3C14pfcZx+DZ+9Rfy4+NygEjXLoP1HmoOizw0wckKgVL53i/yjWPbJ9jKKRZ9sVbMlptpCl0lb74t8gZLnXOUFtpbTwJ4eAx0NdncJeIMySLvkbcjdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com; spf=pass smtp.mailfrom=netflix.com; dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b=REEodlIJ; arc=none smtp.client-ip=209.85.166.41
+	s=arc-20240116; t=1710606186; c=relaxed/simple;
+	bh=3T/N87s1TiFY5CTbl7PLYpRpVqYPbSLIXW4VbrW9Qr4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=BIrS3ucVVdQ36RtvElQrjVoB32DaR5wnlmnOavMLE/RzcSae7QJweMj5m7eysPW1iDHnIiJyg1/0VEIsK208baVDUguc6M+3z1KHOAjrg9jQ8LJNXAgvZPMA10lyxYbFn8S8gKT8PxHHhCkkfFWQvhX4KBkJDNb2muGBKE6mM1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com; spf=pass smtp.mailfrom=netflix.com; dkim=pass (1024-bit key) header.d=netflix.com header.i=@netflix.com header.b=IeQ/wunu; arc=none smtp.client-ip=209.85.166.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=netflix.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netflix.com
-Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7cc0e0dba0fso8397339f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 09:23:02 -0700 (PDT)
+Received: by mail-il1-f178.google.com with SMTP id e9e14a558f8ab-366aee15850so3550725ab.2
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 09:23:04 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=netflix.com; s=google; t=1710606182; x=1711210982; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Foqi+aqcfZXTaDDszcOGG4bLdYmJsSqibIZG875f+rM=;
-        b=REEodlIJj2z7005lcKAisTo/7fZLGIN442kfRFN4rDg8XC6ExVRiHgvuwynJqGdlJC
-         UyCU9AQXum+AUE3XQNROfqblO9DXLD6RMk86AB/ziVku0in0hcdm9HEFzxRfp5SzkpCv
-         Aj6Cmy0UloC0GhW5PZI5Hwi9PeQymTS1HIk08=
+        d=netflix.com; s=google; t=1710606184; x=1711210984; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=FR+HdfxLkkzGogNavG10On9pl0CTmo3qowHlz+D4lik=;
+        b=IeQ/wunulIJh644LmVGaP4TsG2ufkdFJbSA92QJ9l3FCE3lD+75fMotwzn9EGVQa72
+         caqIWJ7qwAphbbJzwB/QdCv6kDiOOeQhbt8apQ0tsPK7vG5WZLg8soqVkd2DyKYVL0bZ
+         Z1z7sAXNdbIAaD4e/x8rriB6Ht4cMRBq5nocU=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710606182; x=1711210982;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Foqi+aqcfZXTaDDszcOGG4bLdYmJsSqibIZG875f+rM=;
-        b=Zb5ZFv4HuJ2v4sTO841T+6qwGMzlJtWahjL/RozmWBtMats0ECw3e8VLIEMqeN7I5z
-         d24uawGCNfFpClmF9B7Zotp2NN6A0XZQARTTGYdgaXXhJyoarLOeWoVW7EiGBewBFI0W
-         dXmmzCG3pwF0n0QOGMqCwtiKAl0pb4dfiAqFqB5PCq5ndx5lVWuvfuTHnxLDvvEadl5J
-         QyKzhqZYHaI3R1HaDAMPcr+L/f1+hg2UynkRfmH9MtCLGEIC1X6M7hRv62bvYZA+wh9+
-         XmjXXRDF9wmcawc8VG8CCcs7kFRnkSkF5Cr5OqppFYcJ+teunCZmcpswL45kwEaJalwR
-         Jnkg==
-X-Forwarded-Encrypted: i=1; AJvYcCVpoRB3owiFsvvihEJQA4HtunYhd5H68oACYRmK0y73J5CxDH7w5h/CpD9mZudvd9VIIzc4b22hPQphmlyP95cXUcc8I2ye9kTuM7+U
-X-Gm-Message-State: AOJu0Yy3Ry+xsZn644aDN1D4W03wYf7Sw3CAJiM3Rvk4qaQXi4ZxLXHL
-	/l5ugTfEFrnLZ4abDpkX96is/1BlxAId5blIGnNdl+WUWRL24yyjBsozmhJTP/E=
-X-Google-Smtp-Source: AGHT+IGciyhMjlL8JyLAEmBCajcsxu8m4W8uJrz5ahSzgBWI7hzEyJTgWw+UAO0pZH45ck6FSblYaQ==
-X-Received: by 2002:a6b:c801:0:b0:7cc:5d3:3c9 with SMTP id y1-20020a6bc801000000b007cc05d303c9mr2585462iof.8.1710606182114;
-        Sat, 16 Mar 2024 09:23:02 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710606184; x=1711210984;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=FR+HdfxLkkzGogNavG10On9pl0CTmo3qowHlz+D4lik=;
+        b=AV/pZE/WZI9x7olqwdmY/iW9JoWJjl/bz+QUfrdKzIUxNABuE5CFT2RuCBGu91vZSC
+         IERsi4zasAAY17DgKvjt8CgQMJKRHvybc4Ot9GIkfiEMiSrmZkjlL/CVNCSO3oeOXm9u
+         hMvg2GyCFS29eutVJflPsydiOAG02EamoBZWkLUjR87OzXkhdSnfTz7KS4tmKOI6zUat
+         zGm9wRXzEBSReGDNMjwBpcQuWe2QLcZ0o0weepYCSd6OpTPp9p8PImirNMnwtRED7kPC
+         VFgVTsH3/F5aYV2FtfteWFE1f3QhEwWOMxWPCONYFZnkPeyg6zXuk1rvDVh5Qv5qZRbc
+         dXGg==
+X-Forwarded-Encrypted: i=1; AJvYcCVNT4vL+lRFDsLVjT6d+SRgijW5mpp732xhLJR0jnUy/aS9BAqDUoKgJcDXWq8nU/ItNAuFDhUT+cLY4pzzlbJgCt0qCtQFwxxTWREo
+X-Gm-Message-State: AOJu0Yzq+JZ+3IgNgrReexJJUHR3DZbV3f/RTtLmO++2IyKg6m9zVDPg
+	LXnJ9OxLJsIhOi1E37ROMtRWlHV+XtOh2P1++nejY+tFAjNSnhTBquQZmMmB5YA=
+X-Google-Smtp-Source: AGHT+IGcQ3XP+3qarC5wBmrvkYQ3EjpLmKBi8RlI1pDwXP/BaiR7qNci2pcjPRzQ5wA6UbIVH8QunQ==
+X-Received: by 2002:a6b:7315:0:b0:7cb:f297:a94b with SMTP id e21-20020a6b7315000000b007cbf297a94bmr5599660ioh.15.1710606183865;
+        Sat, 16 Mar 2024 09:23:03 -0700 (PDT)
 Received: from localhost ([2601:285:8700:8f20:db82:ef0d:e122:37fc])
-        by smtp.gmail.com with UTF8SMTPSA id w14-20020a056638138e00b00474d1b1590dsm1353203jad.133.2024.03.16.09.23.01
+        by smtp.gmail.com with UTF8SMTPSA id o27-20020a02cc3b000000b00474f364aac9sm1362211jap.71.2024.03.16.09.23.02
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Mar 2024 09:23:01 -0700 (PDT)
+        Sat, 16 Mar 2024 09:23:03 -0700 (PDT)
 From: Jose Fernandez <josef@netflix.com>
 To: Alexei Starovoitov <ast@kernel.org>,
 	Daniel Borkmann <daniel@iogearbox.net>,
@@ -79,10 +81,12 @@ Cc: bpf@vger.kernel.org,
 	linux-kselftest@vger.kernel.org,
 	Jose Fernandez <josef@netflix.com>,
 	Tycho Andersen <tycho@tycho.pizza>
-Subject: [PATCH V2 bpf-next 1/2] bpf: add bpf_task_get_cgroup kfunc
-Date: Sat, 16 Mar 2024 10:22:40 -0600
-Message-Id: <20240316162241.628855-1-josef@netflix.com>
+Subject: [PATCH V2 bpf-next 2/2] selftests/bpf: add selftest for bpf_task_get_cgroup
+Date: Sat, 16 Mar 2024 10:22:41 -0600
+Message-Id: <20240316162241.628855-2-josef@netflix.com>
 X-Mailer: git-send-email 2.40.1
+In-Reply-To: <20240316162241.628855-1-josef@netflix.com>
+References: <20240316162241.628855-1-josef@netflix.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,74 +95,133 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This patch enhances the BPF helpers by adding a kfunc to retrieve the
-cgroup v2 of a task, addressing a previous limitation where only
-bpf_task_get_cgroup1 was available for cgroup v1. The new kfunc is
-particularly useful for scenarios where obtaining the cgroup ID of a
-task other than the "current" one is necessary, which the existing
-bpf_get_current_cgroup_id helper cannot accommodate. A specific use
-case at Netflix involved the sched_switch tracepoint, where we had to
-get the cgroup IDs of both the prev and next tasks.
+This patch adds a selftest for the `bpf_task_get_cgroup` kfunc. The test
+focuses on the use case of obtaining the cgroup ID of the previous task
+in a `sched_switch` tracepoint.
 
-The bpf_task_get_cgroup kfunc acquires and returns a reference to a
-task's default cgroup, ensuring thread-safe access by correctly
-implementing RCU read locking and unlocking. It leverages the existing
-cgroup.h helper, and cgroup_tryget to safely acquire a reference to it.
+The selftest involves creating a test cgroup, attaching a BPF program
+that utilizes the `bpf_task_get_cgroup` during a `sched_switch`
+tracepoint, and validating that the obtained cgroup ID for the previous
+task matches the expected cgroup ID.
 
 Signed-off-by: Jose Fernandez <josef@netflix.com>
 Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
 ---
-V1 -> V2: Return a pointer to the cgroup instead of the cgroup ID
+V1 -> V2: Refactor test to work with a cgroup pointer instead of the ID
 
- kernel/bpf/helpers.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
+ .../bpf/prog_tests/task_get_cgroup.c          | 58 +++++++++++++++++++
+ .../bpf/progs/test_task_get_cgroup.c          | 37 ++++++++++++
+ 2 files changed, 95 insertions(+)
+ create mode 100644 tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c
+ create mode 100644 tools/testing/selftests/bpf/progs/test_task_get_cgroup.c
 
-diff --git a/kernel/bpf/helpers.c b/kernel/bpf/helpers.c
-index a89587859571..bbd19d5eedb6 100644
---- a/kernel/bpf/helpers.c
-+++ b/kernel/bpf/helpers.c
-@@ -2266,6 +2266,31 @@ bpf_task_get_cgroup1(struct task_struct *task, int hierarchy_id)
- 		return NULL;
- 	return cgrp;
- }
+diff --git a/tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c b/tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c
+new file mode 100644
+index 000000000000..67ed65d0c461
+--- /dev/null
++++ b/tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c
+@@ -0,0 +1,58 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright 2024 Netflix, Inc.
 +
-+/**
-+ * bpf_task_get_cgroup - Acquire a reference to the default cgroup of a task.
-+ * @task: The target task
-+ *
-+ * This function returns the task's default cgroup, primarily
-+ * designed for use with cgroup v2. In cgroup v1, the concept of default
-+ * cgroup varies by subsystem, and while this function will work with
-+ * cgroup v1, it's recommended to use bpf_task_get_cgroup1 instead.
-+ * A cgroup returned by this kfunc which is not subsequently stored in a
-+ * map, must be released by calling bpf_cgroup_release().
-+ *
-+ * Return: On success, the cgroup is returned. On failure, NULL is returned.
-+ */
-+__bpf_kfunc struct cgroup *bpf_task_get_cgroup(struct task_struct *task)
++#include <test_progs.h>
++#include <cgroup_helpers.h>
++#include "test_task_get_cgroup.skel.h"
++#include <unistd.h>
++
++#define TEST_CGROUP "/test-task-get-cgroup/"
++
++void test_task_get_cgroup(void)
++{
++	struct test_task_get_cgroup *skel;
++	int err, fd;
++	pid_t pid;
++	__u64 cgroup_id, expected_cgroup_id;
++	const struct timespec req = {
++		.tv_sec = 1,
++		.tv_nsec = 0,
++	};
++
++	fd = test__join_cgroup(TEST_CGROUP);
++	if (!ASSERT_OK(fd < 0, "test_join_cgroup_TEST_CGROUP"))
++		return;
++
++	skel = test_task_get_cgroup__open();
++	if (!ASSERT_OK_PTR(skel, "test_task_get_cgroup__open"))
++		goto cleanup;
++
++	err = test_task_get_cgroup__load(skel);
++	if (!ASSERT_OK(err, "test_task_get_cgroup__load"))
++		goto cleanup;
++
++	err = test_task_get_cgroup__attach(skel);
++	if (!ASSERT_OK(err, "test_task_get_cgroup__attach"))
++		goto cleanup;
++
++	pid = getpid();
++	expected_cgroup_id = get_cgroup_id(TEST_CGROUP);
++	if (!ASSERT_GT(expected_cgroup_id, 0, "get_cgroup_id"))
++		goto cleanup;
++
++	/* Trigger nanosleep to enter the sched_switch tracepoint */
++	/* The previous task should be this process */
++	syscall(__NR_nanosleep, &req, NULL);
++
++	err = bpf_map_lookup_elem(bpf_map__fd(skel->maps.pid_to_cgid_map), &pid,
++				  &cgroup_id);
++
++	if (!ASSERT_OK(err, "bpf_map_lookup_elem"))
++		goto cleanup;
++
++	ASSERT_EQ(cgroup_id, expected_cgroup_id, "cgroup_id");
++
++cleanup:
++	test_task_get_cgroup__destroy(skel);
++	close(fd);
++}
+diff --git a/tools/testing/selftests/bpf/progs/test_task_get_cgroup.c b/tools/testing/selftests/bpf/progs/test_task_get_cgroup.c
+new file mode 100644
+index 000000000000..580f8f0657d5
+--- /dev/null
++++ b/tools/testing/selftests/bpf/progs/test_task_get_cgroup.c
+@@ -0,0 +1,37 @@
++// SPDX-License-Identifier: GPL-2.0
++// Copyright 2024 Netflix, Inc.
++
++#include "vmlinux.h"
++#include <bpf/bpf_helpers.h>
++#include <bpf/bpf_tracing.h>
++
++struct cgroup *bpf_task_get_cgroup(struct task_struct *task) __ksym;
++void bpf_cgroup_release(struct cgroup *cgrp) __ksym;
++
++struct {
++	__uint(type, BPF_MAP_TYPE_HASH);
++	__uint(max_entries, 4096);
++	__type(key, __u32);
++	__type(value, __u64);
++} pid_to_cgid_map SEC(".maps");
++
++SEC("tp_btf/sched_switch")
++int BPF_PROG(sched_switch, bool preempt, struct task_struct *prev,
++	     struct task_struct *next)
 +{
 +	struct cgroup *cgrp;
++	u64 cgroup_id;
++	u32 pid;
 +
-+	rcu_read_lock();
-+	cgrp = task_dfl_cgroup(task);
-+	if (!cgroup_tryget(cgrp))
-+		cgrp = NULL;
-+	rcu_read_unlock();
-+	return cgrp;
++	cgrp = bpf_task_get_cgroup(prev);
++	if (cgrp == NULL)
++		return 0;
++	cgroup_id = cgrp->kn->id;
++	pid = prev->pid;
++	bpf_map_update_elem(&pid_to_cgid_map, &pid, &cgroup_id, BPF_ANY);
++
++	bpf_cgroup_release(cgrp);
++	return 0;
 +}
- #endif /* CONFIG_CGROUPS */
- 
- /**
-@@ -2573,6 +2598,7 @@ BTF_ID_FLAGS(func, bpf_cgroup_ancestor, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_cgroup_from_id, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_task_under_cgroup, KF_RCU)
- BTF_ID_FLAGS(func, bpf_task_get_cgroup1, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
-+BTF_ID_FLAGS(func, bpf_task_get_cgroup, KF_ACQUIRE | KF_RCU | KF_RET_NULL)
- #endif
- BTF_ID_FLAGS(func, bpf_task_from_pid, KF_ACQUIRE | KF_RET_NULL)
- BTF_ID_FLAGS(func, bpf_throw)
-
-base-commit: 4c8644f86c854c214aaabbcc24a27fa4c7e6a951
++
++char _license[] SEC("license") = "GPL";
 -- 
 2.40.1
 
