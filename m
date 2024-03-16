@@ -1,170 +1,352 @@
-Return-Path: <linux-kernel+bounces-105202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3936087DA76
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:29:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id ECBF987DA9A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:45:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 86B0B281FC8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:29:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 490B11F21412
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:45:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 23BEA1B949;
-	Sat, 16 Mar 2024 14:29:24 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D7AD1B974;
+	Sat, 16 Mar 2024 15:45:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="FjOTgcZA";
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b="WvHvfakD"
+Received: from fallback22.i.mail.ru (fallback22.i.mail.ru [79.137.243.74])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 212D311CBA
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 14:29:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 864CB18E1E;
+	Sat, 16 Mar 2024 15:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=79.137.243.74
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710599363; cv=none; b=G+76dwXgf1/3fdS5ketmA7wOz6qdxo2OUdaN/RpyFU2cDAijBQwqy2vm65ktdvs28mg7jCP84LY2GRD01hvQ4q5v247ibD7vgbvSWeKfeI4FDNrzI2k9+mSLu4+NNOC5ZNxrVOibrwcmzap53xa1VjvDyMQhkUD1CwF7otyLa6E=
+	t=1710603935; cv=none; b=YklUT7QFXXT0S6udBHhLL0PG9hsxMoGzlwfJwXKIUW0LhTkhAPdqMZ7ZOaODydZpzyJygQ/jg5DCzOstCWEP/R54y0bIr1TJPZhT0a1/B3FypnM2TuW0XkOloqMGxtLikTL5y4jsR/+3IAAN5OeCzYzJeH/emHrmPiMvQxmB9Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710599363; c=relaxed/simple;
-	bh=QCwYqQjhjYC6Mtz9N2wL1v6V+ItwgozkQFWDvVwMSOI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=i2otlup1D3RnhRuzhnF9InFmypNNUDFyCrP7mBiR2HQK54wKYX+WmjZllHSa/SBkPwn41K+gxUIyAdHmsAQHACGjpxUuxzZ4cnWqFWrl3LN1s+8aAMlyyizGGPe++vq/0Hw4rLsML4Sr5myCTYSkMdyH+UBpZATvj4ZALJwIOBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c846da7ad2so240925639f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 07:29:21 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710599361; x=1711204161;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=JBlxUcE/g2KRsZ0ndZ7v/yllHATvI+L45HZeDhwmPt0=;
-        b=QeKOIs7T+fDvMUr8ZiU5wPSEpG3RR2HIxvpqpQ3wpEryV7JtmjMSn2/EyPzTYD23fR
-         3gr4c0+OstPexsu+cUZuZ+wLPu/neX326sJ3AJU5/RdqPMjPwuokQqypMqFxcjcsByBJ
-         QVoL5FDT3Bm1HLyhrenY3PUFaYBYbFNTa6w2pAemtnzv2gL4X5ryouifB7Dw1gj2QQ9n
-         1F8BpjsCfamx4kHhs9vmoPLcvHXb1dAL3u/yC1gdbfKHr64jA4mTb13rf5mmqvlPYt+7
-         C84wZ2Sp41wPuBWVXADQgjFosDf/jcsQwvsLQCn0mW2ti3wktFnGfNx1Y/O4ZcszBybT
-         /27A==
-X-Forwarded-Encrypted: i=1; AJvYcCX+1932XkeTgrNpulAJ8GJQvIt4aK+7xENnpudg9m010ZDwM0ujIu5gUjnsa2XOsZ5gVqx/qSZ92Z1mTJFF3l1nk4KpgdAro+CEvYgg
-X-Gm-Message-State: AOJu0Yz8wqdb73Lc7fOBvmYU7+UEWvRZ8uQnDXBQf8sBWb/BfNJPm3gx
-	yFSa2KD0cZ82+hgppJMi08GkUq/bGRnqBcF08PbzhPdBnpmjkHiMd4HEHk3WAocQcfKz+vG1Lp5
-	BWo0Y7UDU4s9nV43iRCeLDuq2TjR13z/A0cZnPLoHIhs301tQiZkX6no=
-X-Google-Smtp-Source: AGHT+IGrWyxEpLJVniT1wbHec5IzgHRGHg+9Q0HHpf/n9TytwpRZjKBgQTUcSnuNlUBopYejXE7drX9Z3MGcsWvgScOsmgQt0tkm
+	s=arc-20240116; t=1710603935; c=relaxed/simple;
+	bh=JZ0NPwk2wfO+lE+1VF6zcoc6+PI5PcjdCz8yyDrI3N4=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=qpsOqIeYRLWZAHs7NYAqKeK4vhLvIg6mXbEQ6q9S5GlGdVSNY3wKjqC54kflcL6NbNtXjeJR0vY1HVENu6UKA3hVOm1Ff6H5fIoc45q5pQHoQiVAnPMKDyoF80UDoEpjJD3R4yptnquZLSycdy6fCbmBfL5IEE5GIk7XTSW4ZX0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru; spf=pass smtp.mailfrom=mail.ru; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=FjOTgcZA; dkim=pass (2048-bit key) header.d=mail.ru header.i=@mail.ru header.b=WvHvfakD; arc=none smtp.client-ip=79.137.243.74
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=mail.ru
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mail.ru
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru; s=mail4;
+	h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:From:Subject:Content-Type:Content-Transfer-Encoding:To:Cc; bh=CN6JDfK7bX1I61jAYM86agulUbzQhbg+O95vc9JmBaw=;
+	t=1710603931;x=1710693931; 
+	b=FjOTgcZAI+Gj5bLpML0YgHZ4Wfe9e/3cRKQp+Y08LSNOQtMigm+H4dLtof4ToTDXzt7TddiyyvMbjrACO/CNVesa1Mpk8NH4rXrhaqmjTYV6qaexP6JzZyNrVvwnL59vcsHbO3S/c6/w2BmNyGYIrPbMeCRDdo7QmETBxen+uEbsL+63pVVP/29Pa3QcUXtcbK/1eXcA5utayhcRCaCOXUv2fj/s0QdJpy+XVRUCpe8bvu5jj7dhAKO9NOL0+fkW5rrhBmUdu16Lvm2jE0dV9hRAZJYSG2Qjf7Plyupphaiwf83yO2G+DdmaX+G2QGMWYoJa/iZV7NsSVeOXJgu9cA==;
+Received: from [10.12.4.18] (port=38180 helo=smtp45.i.mail.ru)
+	by fallback22.i.mail.ru with esmtp (envelope-from <hitechshell@mail.ru>)
+	id 1rlVHz-00BlcX-Je; Sat, 16 Mar 2024 17:45:35 +0300
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mail.ru;
+	s=mail4; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
+	Message-ID:Date:Subject:Cc:To:From:From:Sender:Reply-To:To:Cc:Content-Type:
+	Content-Transfer-Encoding:Content-ID:Content-Description:Resent-Date:
+	Resent-From:Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:
+	List-Help:List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive:
+	X-Cloud-Ids:Disposition-Notification-To;
+	bh=CN6JDfK7bX1I61jAYM86agulUbzQhbg+O95vc9JmBaw=; t=1710600335; x=1710690335; 
+	b=WvHvfakDy4t/qEzZ0cC1cHpiIneqowXOkNL5SRIXMGF9INZNhQt4NAmdtB8yt5MNJQbdRRfXTbi
+	9q42FsA8dHs4hgdRkLmi6fM6DBq9/BTkHvx0hSTWWsnbascGOfoWrhJhrgn09iEbUx7cPOwDFczO1
+	4qsGHR2QWQIZ+atbEkJOfNP8WoeZErtmmObcGv7WmxEBV97KU5kQmLQdjZbn6krOHhQcoa0n9iAAu
+	i3QYRI4Y+bkcuvDkG0PuPcl9Nidvc4S1+x8uzlMahP3iynZsZxB6hcMgL0OT29f/QX+RtGYT7gQ5O
+	Q9BKJucNQEBAJ++yyIyBA9/2wmHZN8xvng0w==;
+Received: by smtp45.i.mail.ru with esmtpa (envelope-from <hitechshell@mail.ru>)
+	id 1rlVHl-0000000FGH7-2BSG; Sat, 16 Mar 2024 17:45:22 +0300
+From: Denis Burkov <hitechshell@mail.ru>
+To: Jernej Skrabec <jernej.skrabec@gmail.com>
+Cc: Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Samuel Holland <samuel@sholland.org>,
+	Maxime Ripard <mripard@kernel.org>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-sunxi@lists.linux.dev,
+	linux-kernel@vger.kernel.org,
+	Denis Burkov <hitechshell@mail.ru>
+Subject: [PATCH v2] ARM: dts: sun5i: Add PocketBook 614 Plus support
+Date: Sat, 16 Mar 2024 19:39:18 +0500
+Message-ID: <20240316144429.12529-1-hitechshell@mail.ru>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <4203654.1IzOArtZ34@jernej-laptop>
+References: <4203654.1IzOArtZ34@jernej-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:349e:b0:476:fa0b:c9b9 with SMTP id
- t30-20020a056638349e00b00476fa0bc9b9mr490678jal.4.1710599361429; Sat, 16 Mar
- 2024 07:29:21 -0700 (PDT)
-Date: Sat, 16 Mar 2024 07:29:21 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000004a975c0613c7f382@google.com>
-Subject: [syzbot] [bluetooth?] possible deadlock in touch_wq_lockdep_map
-From: syzbot <syzbot+91dbdfecdd3287734d8e@syzkaller.appspotmail.com>
-To: johan.hedberg@gmail.com, linux-bluetooth@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, luiz.dentz@gmail.com, marcel@holtmann.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
+X-Mailru-Src: smtp
+X-4EC0790: 10
+X-7564579A: 646B95376F6C166E
+X-77F55803: 4F1203BC0FB41BD987C0EE6E7F0A597D173D0CE202DA28435F3B31DD656B8ACF182A05F538085040D162DA69BB17355E411046492FDDF806924206B0082DB7FE8CC87B0B1383B58CA68FD0FC62998116
+X-7FA49CB5: FF5795518A3D127A4AD6D5ED66289B5278DA827A17800CE774A7370C81A54524EA1F7E6F0F101C67BD4B6F7A4D31EC0BCC500DACC3FED6E28638F802B75D45FF8AA50765F7900637E149C29A36E092738638F802B75D45FF36EB9D2243A4F8B5A6FCA7DBDB1FC311F39EFFDF887939037866D6147AF826D8BB349F7AA733664318169FAD750E6BF82C9C5F42FA69006520879F7C8C5043D14489FFFB0AA5F4BF176DF2183F8FC7C07E7E81EEA8A9722B8941B15DA834481FA18204E546F3947C5FF72824B19451C6F6B57BC7E64490618DEB871D839B7333395957E7521B51C2DFABB839C843B9C08941B15DA834481F8AA50765F7900637BA939FD1B3BAB99B389733CBF5DBD5E9B5C8C57E37DE458BD9DD9810294C998ED8FC6C240DEA76428AA50765F7900637CCC8F09102F0E6F5D81D268191BDAD3DBD4B6F7A4D31EC0BE2F48590F00D11D6D81D268191BDAD3D78DA827A17800CE73256386ABDC76C25EC76A7562686271ED91E3A1F190DE8FD2E808ACE2090B5E14AD6D5ED66289B5278DA827A17800CE7A03E8F3C2D3812562EB15956EA79C166A417C69337E82CC275ECD9A6C639B01B78DA827A17800CE7E55904F49B65B757731C566533BA786AA5CC5B56E945C8DA
+X-C1DE0DAB: 0D63561A33F958A54286848837AFB73D5002B1117B3ED69607F1B93161B30208219207EC0A953D2C823CB91A9FED034534781492E4B8EEADC24E78AA85F86F6CC79554A2A72441328621D336A7BC284946AD531847A6065A17B107DEF921CE79BDAD6C7F3747799A
+X-C8649E89: 1C3962B70DF3F0ADE00A9FD3E00BEEDF3FED46C3ACD6F73ED3581295AF09D3DF87807E0823442EA2ED31085941D9CD0AF7F820E7B07EA4CFF6DFF5B2C10896D2926D612734AB7752A2E446071C564F2031C5C828B8DFAE3690383D67CF2F9DA86CD0533D1BDF67ED0E0DE018BEBCC37BDFF5B157DC72BAB7CC42D5113B75093142BF32D1DA1046D202C26D483E81D6BEAB6E9BFA52983102758FA77D78A604EFC3981EEBE9DB10F943082AE146A756F3
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojpAzVD49/gcMdy5uj4iKOtg==
+X-Mailru-Sender: 4504732FDC166E0E21A896EFB29DF0C959A9C5E3F1C34ADE411046492FDDF806924206B0082DB7FEA165F1893FAC5C757035CE191D947B125A92E71CC7C3152D68C1C4E17AB7C113897BD3F63E44C176075AE25EB8835B0E4F1F69ACE5C499A7A0577211E31DE16C327D77830F209D780D4ABDE8C577C2ED
+X-Mras: Ok
+X-7564579A: 646B95376F6C166E
+X-77F55803: 6242723A09DB00B485448333635D8AFAF2FD4A3C9FF394F5F15B183966BAD3FC049FFFDB7839CE9E3B76AC3706630B51A8931CB841D9E281CF68063B2387D6932F7EA26CFC00C420
+X-7FA49CB5: 0D63561A33F958A540D061EDEF697A5DD7F607F4CE713552DBE91C0D800243E4CACD7DF95DA8FC8BD5E8D9A59859A8B634143DAF28A1E3E7CC7F00164DA146DAFE8445B8C89999728AA50765F790063713EF0ED8E3D6D567389733CBF5DBD5E9C8A9BA7A39EFB766F5D81C698A659EA7CC7F00164DA146DA9985D098DBDEAEC808214CF94FAA95E0F6B57BC7E6449061A352F6E88A58FB86F5D81C698A659EA775ECD9A6C639B01B78DA827A17800CE7610223311226520F731C566533BA786AA5CC5B56E945C8DA
+X-D57D3AED: 3ZO7eAau8CL7WIMRKs4sN3D3tLDjz0dLbV79QFUyzQ2Ujvy7cMT6pYYqY16iZVKkSc3dCLJ7zSJH7+u4VD18S7Vl4ZUrpaVfd2+vE6kuoey4m4VkSEu530nj6fImhcD4MUrOEAnl0W826KZ9Q+tr5ycPtXkTV4k65bRjmOUUP8cvGozZ33TWg5HZplvhhXbhDGzqmQDTd6OAevLeAnq3Ra9uf7zvY2zzsIhlcp/Y7m53TZgf2aB4JOg4gkr2biojpAzVD49/gcP+1+cPCfwtkg==
+X-Mailru-MI: 8000000000000800
+X-Mras: Ok
 
-Hello,
+What works:
 
-syzbot found the following issue on:
+- Serial console
+- mmc0, mmc2 (both microSD card slots on the board)
+- All buttons (gpio and lradc based)
+- Power LED
+- PMIC
+- RTC
+- USB OTG/gadgets mode
 
-HEAD commit:    9187210eee7d Merge tag 'net-next-6.9' of git://git.kernel...
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=122856fa180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=222448ff79dba2ea
-dashboard link: https://syzkaller.appspot.com/bug?extid=91dbdfecdd3287734d8e
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-
-Unfortunately, I don't have any reproducer for this issue yet.
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/98c1ea7ddb95/disk-9187210e.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/343c5524f68f/vmlinux-9187210e.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/6c0c68b0ee90/bzImage-9187210e.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+91dbdfecdd3287734d8e@syzkaller.appspotmail.com
-
-Bluetooth: hci0: Opcode 0x0c03 failed: -110
-============================================
-WARNING: possible recursive locking detected
-6.8.0-syzkaller-05202-g9187210eee7d #0 Not tainted
---------------------------------------------
-kworker/u9:5/13642 is trying to acquire lock:
-ffff88803165d148 ((wq_completion)hci0){+.+.}-{0:0}, at: touch_wq_lockdep_map+0x6e/0x120 kernel/workqueue.c:3901
-
-but task is already holding lock:
-ffff88803165d148 ((wq_completion)hci0){+.+.}-{0:0}, at: process_one_work+0x1296/0x1a60 kernel/workqueue.c:3229
-
-other info that might help us debug this:
- Possible unsafe locking scenario:
-
-       CPU0
-       ----
-  lock((wq_completion)hci0);
-  lock((wq_completion)hci0);
-
- *** DEADLOCK ***
-
- May be due to missing lock nesting notation
-
-2 locks held by kworker/u9:5/13642:
- #0: ffff88803165d148 ((wq_completion)hci0){+.+.}-{0:0}, at: process_one_work+0x1296/0x1a60 kernel/workqueue.c:3229
- #1: ffffc90004d47d80 ((work_completion)(&hdev->error_reset)){+.+.}-{0:0}, at: process_one_work+0x906/0x1a60 kernel/workqueue.c:3230
-
-stack backtrace:
-CPU: 0 PID: 13642 Comm: kworker/u9:5 Not tainted 6.8.0-syzkaller-05202-g9187210eee7d #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Workqueue: hci0 hci_error_reset
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0xd9/0x1b0 lib/dump_stack.c:106
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain kernel/locking/lockdep.c:3856 [inline]
- __lock_acquire+0x20e6/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- touch_wq_lockdep_map+0x78/0x120 kernel/workqueue.c:3901
- __flush_workqueue+0x129/0x1200 kernel/workqueue.c:3943
- drain_workqueue+0x18f/0x3d0 kernel/workqueue.c:4107
- destroy_workqueue+0xc2/0xaa0 kernel/workqueue.c:5673
- hci_release_dev+0x14e/0x660 net/bluetooth/hci_core.c:2808
- bt_host_release+0x6a/0xb0 net/bluetooth/hci_sysfs.c:94
- device_release+0xa1/0x240 drivers/base/core.c:2499
- kobject_cleanup lib/kobject.c:689 [inline]
- kobject_release lib/kobject.c:720 [inline]
- kref_put include/linux/kref.h:65 [inline]
- kobject_put+0x1fa/0x5b0 lib/kobject.c:737
- put_device+0x1f/0x30 drivers/base/core.c:3747
- process_one_work+0x9a9/0x1a60 kernel/workqueue.c:3254
- process_scheduled_works kernel/workqueue.c:3335 [inline]
- worker_thread+0x6c8/0xf70 kernel/workqueue.c:3416
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
+Signed-off-by: Denis Burkov <hitechshell@mail.ru>
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+ arch/arm/boot/dts/allwinner/Makefile          |   1 +
+ .../sun5i-a13-pocketbook-614-plus.dts         | 215 ++++++++++++++++++
+ 2 files changed, 216 insertions(+)
+ create mode 100644 arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+diff --git a/arch/arm/boot/dts/allwinner/Makefile b/arch/arm/boot/dts/allwinner/Makefile
+index 5fbb44ddacd0..6209243ad975 100644
+--- a/arch/arm/boot/dts/allwinner/Makefile
++++ b/arch/arm/boot/dts/allwinner/Makefile
+@@ -61,6 +61,7 @@ dtb-$(CONFIG_MACH_SUN5I) += \
+ 	sun5i-a13-olinuxino.dtb \
+ 	sun5i-a13-olinuxino-micro.dtb \
+ 	sun5i-a13-pocketbook-touch-lux-3.dtb \
++	sun5i-a13-pocketbook-614-plus.dtb \
+ 	sun5i-a13-q8-tablet.dtb \
+ 	sun5i-a13-utoo-p66.dtb \
+ 	sun5i-gr8-chip-pro.dtb \
+diff --git a/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
+new file mode 100644
+index 000000000000..b5449301789a
+--- /dev/null
++++ b/arch/arm/boot/dts/allwinner/sun5i-a13-pocketbook-614-plus.dts
+@@ -0,0 +1,215 @@
++// SPDX-License-Identifier: GPL-2.0+
++/*
++ * Copyright 2024 Denis Burkov <hitechshell@mail.ru>
++ */
++
++/dts-v1/;
++#include "sun5i-a13.dtsi"
++#include "sunxi-common-regulators.dtsi"
++
++#include <dt-bindings/gpio/gpio.h>
++#include <dt-bindings/input/input.h>
++#include <dt-bindings/interrupt-controller/irq.h>
++
++/ {
++	model = "PocketBook 614 Plus";
++	compatible = "pocketbook,614-plus", "allwinner,sun5i-a13";
++
++	aliases {
++		serial0 = &uart1;
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		led {
++			gpios = <&pio 4 8 GPIO_ACTIVE_LOW>; /* PE8 */
++			default-state = "on";
++		};
++	};
++
++	gpio-keys {
++		compatible = "gpio-keys";
++
++		key-right {
++			label = "Right";
++			linux,code = <KEY_NEXT>;
++			gpios = <&pio 6 9 GPIO_ACTIVE_LOW>; /* PG9 */
++		};
++
++		key-left {
++			label = "Left";
++			linux,code = <KEY_PREVIOUS>;
++			gpios = <&pio 6 10 GPIO_ACTIVE_LOW>; /* PG10 */
++		};
++	};
++
++	reg_3v3_mmc0: regulator-mmc0 {
++		compatible = "regulator-fixed";
++		regulator-name = "vdd-mmc0";
++		regulator-min-microvolt = <3300000>;
++		regulator-max-microvolt = <3300000>;
++		gpio = <&pio 4 4 GPIO_ACTIVE_LOW>; /* PE4 */
++		vin-supply = <&reg_vcc3v3>;
++	};
++};
++
++&cpu0 {
++	cpu-supply = <&reg_dcdc2>;
++};
++
++&ehci0 {
++	status = "okay";
++};
++
++&i2c0 {
++	status = "okay";
++
++	axp209: pmic@34 {
++		compatible = "x-powers,axp209";
++		reg = <0x34>;
++		interrupts = <0>;
++	};
++};
++
++#include "axp209.dtsi"
++
++&i2c1 {
++	status = "okay";
++
++	pcf8563: rtc@51 {
++		compatible = "nxp,pcf8563";
++		reg = <0x51>;
++		#clock-cells = <0>;
++	};
++};
++
++&lradc {
++	vref-supply = <&reg_ldo2>;
++	status = "okay";
++
++	button-300 {
++		label = "Down";
++		linux,code = <KEY_DOWN>;
++		channel = <0>;
++		voltage = <300000>;
++	};
++
++	button-700 {
++		label = "Up";
++		linux,code = <KEY_UP>;
++		channel = <0>;
++		voltage = <700000>;
++	};
++
++	button-1000 {
++		label = "Left";
++		linux,code = <KEY_LEFT>;
++		channel = <0>;
++		voltage = <1000000>;
++	};
++
++	button-1200 {
++		label = "Menu";
++		linux,code = <KEY_MENU>;
++		channel = <0>;
++		voltage = <1200000>;
++	};
++
++	button-1500 {
++		label = "Right";
++		linux,code = <KEY_RIGHT>;
++		channel = <0>;
++		voltage = <1500000>;
++	};
++};
++
++&mmc0 {
++	vmmc-supply = <&reg_3v3_mmc0>;
++	bus-width = <4>;
++	cd-gpios = <&pio 6 0 GPIO_ACTIVE_LOW>; /* PG0 */
++	status = "okay";
++};
++
++&mmc2 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&mmc2_4bit_pc_pins>;
++	vmmc-supply = <&reg_vcc3v3>;
++	bus-width = <4>;
++	non-removable;
++	status = "okay";
++};
++
++&ohci0 {
++	status = "okay";
++};
++
++&otg_sram {
++	status = "okay";
++};
++
++&reg_dcdc2 {
++	regulator-always-on;
++	regulator-min-microvolt = <1000000>;
++	regulator-max-microvolt = <1500000>;
++	regulator-name = "vdd-cpu";
++};
++
++&reg_dcdc3 {
++	regulator-always-on;
++	regulator-min-microvolt = <1000000>;
++	regulator-max-microvolt = <1400000>;
++	regulator-name = "vdd-int-dll";
++};
++
++&reg_ldo1 {
++	regulator-name = "vdd-rtc";
++};
++
++&reg_ldo2 {
++	regulator-always-on;
++	regulator-min-microvolt = <3000000>;
++	regulator-max-microvolt = <3000000>;
++	regulator-name = "avcc";
++};
++
++&reg_usb0_vbus {
++	status = "okay";
++	gpio = <&pio 6 12 GPIO_ACTIVE_HIGH>; /* PG12 */
++};
++
++&reg_usb1_vbus {
++	gpio = <&pio 6 11 GPIO_ACTIVE_HIGH>; /* PG11 */
++	status = "okay";
++};
++
++&uart1 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&uart1_pg_pins>;
++	status = "okay";
++};
++
++&usb_otg {
++	dr_mode = "otg";
++	status = "okay";
++};
++
++&usb_power_supply {
++	status = "okay";
++};
++
++&battery_power_supply {
++	status = "okay";
++};
++
++&usbphy {
++	usb0_id_det-gpios = <&pio 6 2 GPIO_ACTIVE_HIGH>; /* PG2 */
++	usb0_vbus_det-gpios = <&axp_gpio 1 GPIO_ACTIVE_HIGH>;
++	usb0_vbus-supply = <&reg_usb0_vbus>;
++	usb1_vbus-supply = <&reg_usb1_vbus>;
++	status = "okay";
++};
+-- 
+2.43.0
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
