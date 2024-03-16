@@ -1,51 +1,51 @@
-Return-Path: <linux-kernel+bounces-105134-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105135-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34CD387D985
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 10:23:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7C6A87D988
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 10:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C9CCDB217DC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:23:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72DEC281BA9
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A999E17BA6;
-	Sat, 16 Mar 2024 09:23:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 556E914F70;
+	Sat, 16 Mar 2024 09:23:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="YqukWb12"
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="XgCKzDgT"
 Received: from relay1-d.mail.gandi.net (relay1-d.mail.gandi.net [217.70.183.193])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D85FA171BB;
-	Sat, 16 Mar 2024 09:22:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A18F18AF9;
+	Sat, 16 Mar 2024 09:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.193
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710580980; cv=none; b=NckiByXLCb9t0QT++MW/cmB0O5rgNS3K2wy8hBrJnRV55F4KEUYv8ZYx6RPUyVDHh2XFsNUynA2F0MuGJhb7FZXSVKpnppz0OABmjZJuci91ZpeXftE3eYfUqaYDbtszS4C9F/aIrW/GGmLBZuyeYWrnT1U94PCORi3lzNTIEt8=
+	t=1710580990; cv=none; b=GBXLBECsofvEovKdJBa1pUz44sJ9/j2zpIl0Y3TEQhZ6Sf1girTvOUi9nMzCOJaWhZo1wlEiAmFPDZny2ciEcSLFIVxlST9hZuPi738NCzC6wTPORLZvNl5Vhgh3D+mo/11SCYDoxXVFfb3UXrchiPbCYDSsOMkKD9un0pG3B0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710580980; c=relaxed/simple;
-	bh=ei1caCcQhpERFGQ3/s9uQAHI3siPZdxeDybAfzbw6rk=;
+	s=arc-20240116; t=1710580990; c=relaxed/simple;
+	bh=svs/n+cDzGY6oPLLVKCrZ0FhX5FThz2m40Ovsr4UHAk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EeHny3f6aAUHB2PF66MQYcKjHGAkahhxmyvnYuIa6H6mA2UprLVBqF2LQ8qA1aLiq09eNZ3nr0Jtl5jprEM+a8+xQMl01ExQNAbKvVGqlLCc45dtssOvNWwphIBlSFceDQMlBWp6ebzmoa5Z/1qykKDD1+y2O1UIWDhwoTWyi5k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=YqukWb12; arc=none smtp.client-ip=217.70.183.193
+	 In-Reply-To:Content-Type; b=DnGL1b47uX96G3BGJddSy2GwE9ipkPee3DMFzbMeqKm/9Hx8ffsyySqGEywz8vxURc6gN0Al3tQbxtQM4OL9aXifbT/A+hbX3q5lwUxnwmCRI/VNT4kElHyWPHA1bZTeV2dh/PRChDQZz8jhNt5yIANyo8URtHsVSNL57XTgY4Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=XgCKzDgT; arc=none smtp.client-ip=217.70.183.193
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id A2C73240004;
-	Sat, 16 Mar 2024 09:22:53 +0000 (UTC)
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 64886240003;
+	Sat, 16 Mar 2024 09:23:04 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710580976;
+	t=1710580986;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=Hv+UwewAEKLX3sRoKbyFtr4qE0xFXncm9vTyaUOdRzI=;
-	b=YqukWb12YnFeAGKUWMIudHEEZSYVNZI7THHp21YLt4YIg1c5WX0q0sqeyhtiy8yw61mzP4
-	CE4dVws9FLgR5Uj7CJiSaqEsQiCd3czJARh/25PsBlm5I4MLaemSsvUhG3EXnseQpwWTHB
-	+JX3YsfuW4gX+3XwZiYR3q2OuGJtIermSNgSQhlk+9ndCoAToW9VNlFM0KDC4C3dSb0RkY
-	n70VO7nVqVUZg+rqZnf5WcBl7+s3KUsluwZjknVuJYECYp9NQQk6QAu3yABln0Yq49w31d
-	PDEwy9UGQ4EBjY8+Mn4/q6KBT6Krgdjx7ukV2Irkzo9cE1Wkqrhvo4zWKK0A2Q==
-Message-ID: <484b0699-2be4-4e0c-a60a-73d15702b6df@arinc9.com>
-Date: Sat, 16 Mar 2024 12:22:38 +0300
+	bh=nSisC81XnyRtxg3gubWj67nRYu4zIsweXs6oT2yt8+c=;
+	b=XgCKzDgTlrDz22uKynZg3z/1vDUNSzOWgio+LTGtc15lUTWM7kVQ9f9aNe/81dme+BeDnE
+	ok8ZuJhXbxAlbBtCKwNkYoJvt/TdzWf/FhkXTZNwoLkjdNeIdCbPz6K8omckDkrcWcL2Xl
+	vGOEG8dePnDQxMsFdFUQpRyoC5VxKPzBexBEVLnHQDqVpue/sB23lPmaewUogzpPQbTk8d
+	2QofVJHjfmml9hvM5d8Q3jrY3VLgtT8nQemJ0EVJvbwk22oHI8BU00COsumOcW23Zn7yuk
+	v5Kg6hZ5Nkf2aTkS+2nEB+Fcoi3Mpl4FkBp00Hb6mCwlJUmKue53IcfD0goLtw==
+Message-ID: <5200c802-178a-420b-8dcc-c70e3bb2dbe0@arinc9.com>
+Date: Sat, 16 Mar 2024 12:22:49 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -53,8 +53,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 10/14] mips: dts: ralink: mt7621: reorder gic node
- attributes
+Subject: Re: [PATCH 11/14] mips: dts: ralink: mt7621: reorder ethernet node
+ attributes and kids
 Content-Language: en-US
 To: Justin Swartz <justin.swartz@risingedge.co.za>,
  Sergio Paracuellos <sergio.paracuellos@gmail.com>,
@@ -68,9 +68,9 @@ Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
  linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
  linux-mediatek@lists.infradead.org
 References: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
- <20240316045442.31469-11-justin.swartz@risingedge.co.za>
+ <20240316045442.31469-12-justin.swartz@risingedge.co.za>
 From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <20240316045442.31469-11-justin.swartz@risingedge.co.za>
+In-Reply-To: <20240316045442.31469-12-justin.swartz@risingedge.co.za>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 X-Spam-Flag: yes
@@ -80,8 +80,8 @@ X-GND-Status: SPAM
 X-GND-Sasl: arinc.unal@arinc9.com
 
 On 16.03.2024 07:54, Justin Swartz wrote:
-> Reorder the attributes of the Global Interrupt Controller
-> node to fit DTS style guidelines.
+> Rearrange attributes and descendents declared under the
+> ethernet node, recursively, to follow the DTS style guide.
 > 
 > Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
 
