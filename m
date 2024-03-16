@@ -1,172 +1,172 @@
-Return-Path: <linux-kernel+bounces-105288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105290-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F160E87DB71
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 21:42:38 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id AA31787DB75
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 21:57:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 64DF91F219AD
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:42:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E4B551F218CC
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:57:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F2681C280;
-	Sat, 16 Mar 2024 20:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B3D21C2A8;
+	Sat, 16 Mar 2024 20:57:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="F+AkfMcx"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BhLqncif"
+Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23582182B5
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 20:42:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4D24800;
+	Sat, 16 Mar 2024 20:57:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710621749; cv=none; b=P8YVKF1NF5BzwwEeuHOshhvaJrrzImw9uE5/YFFQAIE0ox8W9at+w/LVgbL2X8NBaleYnmCrkdGHfjVBhWC7OpukkGvf/TGMPkUN7PM3Xb0mgznscYmf31cft04D4+g5AYjXkYly6beGyeYUnXk3tc8ikQYrMju7dDKk0QTh0nc=
+	t=1710622627; cv=none; b=dSUKEMEgtNISIkXue5MuqNYR3h3wdIbQLHqB841BopmXeqFNzdj/WJgnVtjw11Ox7kzPmyvjGSWXq6TfxeYVM+t1kQ8IK/wCAyIy1xF5SjJLZ9PUhhbEXyQqVf7JI+csYsIvVbq13ClwZgBBY0N6C+o1EvjfiLaL9e/y3Y8nMJ0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710621749; c=relaxed/simple;
-	bh=4DVts3LaFddyaIZPhUKF9mCALyUNNJ1vzsXZqRWfQuA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=K/DTgzBtzw+hZq+VC3b2gHTQUHZ7VYOi63vUaOOKHg/J7Afn9fmXsEl+fvH9onF/Z0XpORw7lJvWkj00X5457X3qAOv4HYOp4wYY6NJ8zq4I1GR7GqgcY+1Za5dcXlCP+h81O8gX0XPvTcXGvZHDrmz9enAMS0rEXavmcnvBsOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=F+AkfMcx; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56845954ffeso4267446a12.2
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 13:42:26 -0700 (PDT)
+	s=arc-20240116; t=1710622627; c=relaxed/simple;
+	bh=zman/8ny0dfuBMpt4Zi7JuEeiYEW7uCjxC3Sh6l53LE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nfm7rJl5Fao87gSGf1aK8y2STBe28b/KqTar+wFo3kLusnKyXinxTuvLYANSSx0UZwKAM+K90YSAigEWISUrzwEEJKHBnmKR60J9dR4B31JbT6HXdpCPxyvqXXkjQ6D/kT+vO4GcpjRguc0HEv+qxYxFiOG6gCxOdczkPkTmvq0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BhLqncif; arc=none smtp.client-ip=209.85.215.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cedfc32250so2285926a12.0;
+        Sat, 16 Mar 2024 13:57:05 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710621745; x=1711226545; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=W/olCa5XhClUoif8xLGcO50EwYtFIWrYc5w3R35Tn0o=;
-        b=F+AkfMcxWqRcBKmqFM/oSeHUQ4GX22MCh4pp+keMdiZKCHAVhHy67nqsonwICxkZjx
-         cnxHUciaOhnbfRn5Qz9Qi/CHj5s6b8+l12CHfgQoA8Kw82WBAnTdBHt4d8iEAYuFj8A2
-         6Qn0lC3SqBL6yu2m9wDcO40qNEYtFEoAVhldo=
+        d=gmail.com; s=20230601; t=1710622625; x=1711227425; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=vl3ZPW0uTATliCSisPYEu19vxQEaF61ZgA2lT0IqKcA=;
+        b=BhLqncifCq00hRNFL8QTZQTF6FKbhr+c/OBmmT2yhuEV/kLnPsEVmMdG4hhze1y5kR
+         FBMHCcrtvfOhIys/XV5bFlFQ82ABku5uY/aVMOxZAdEuSzVmBoVv5InSRyRuGoYEVRpn
+         N8XlS4NTZvBT/d/FkB6zdlj3vYd+ml8Ow7hVnEZhh/ZU/tByr1RYrH9liUpOwJ5nX372
+         xvSwV72Tm7ToPSK+/OE7iTjXrV18Z4e/uzt3YQjlKyxLnV1x/KStwPBEErgygkhix6tB
+         9UBqjQZLVu6wYQHn6JsyQ8NmvJF39kfiChVQMvzdIaoRoGSv7Za0zF64D0g1sP4lYXrU
+         t3Vg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710621745; x=1711226545;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1710622625; x=1711227425;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=W/olCa5XhClUoif8xLGcO50EwYtFIWrYc5w3R35Tn0o=;
-        b=uh4tLZUc60OD1tPPlHH8iqWsgSfiCV7rW5YU1LNCMHeuTdD1xKh4JEO5l+mOtJjLWL
-         dvmaTDwD9+qAr0Y4yH/hnz+Q16wkFvcwojDvGorl7VQUEAa/+nY9heEi0+D78QOCcHa9
-         nA8fnG/8TL5Ou354X7UsxCF5di27YEBq3cQBVAMCOTfV0JD+VQW7bQgySViJ2p1ethtw
-         5oyBApX+1FR+YHaGcRg/RasQOAuyAC1UHHB5EmDbt4/H5x8g2pK6BRVvOYQoaQN6P1h7
-         2ThSpdzy44MLuPeoNzi2ZodlAUZDT6Gsi7WBALSJ5E7poZr3Mh3tvPVmmr3g9B2u4z5g
-         luWw==
-X-Forwarded-Encrypted: i=1; AJvYcCU76kVDRdTCtXJHOpy7pRcvOXZntEl7tnDAxZbmhmRjH+5EmMs6Gjh8EtkcKGx/BKpOThio2ffnlb6uPpVl5KC9eFeMRMhH+g4hxXyI
-X-Gm-Message-State: AOJu0YywrOxDv32QTmDE2EIP+UW1t6/b304kJ9toWTRPnodLBkybAACr
-	OFoaHhHBdMoQnF1a/cxqjaxT5eMB8Iu92UxcP7CJSQHu1c8I5hrmC8BB8EEy3iH0xq8ytv6a4rL
-	yRtcZag==
-X-Google-Smtp-Source: AGHT+IFxLDYtCFPenHnHN2FmQ14n8CU9YXcRjte4JEKqOpoJ00nOefhG2GvKKiXRoP1xKlhtMs/eQw==
-X-Received: by 2002:a17:906:6d3:b0:a46:b454:47d9 with SMTP id v19-20020a17090606d300b00a46b45447d9mr106734ejb.15.1710621745342;
-        Sat, 16 Mar 2024 13:42:25 -0700 (PDT)
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com. [209.85.218.44])
-        by smtp.gmail.com with ESMTPSA id jx11-20020a170906ca4b00b00a46937bc44esm1675871ejb.135.2024.03.16.13.42.23
-        for <linux-kernel@vger.kernel.org>
+        bh=vl3ZPW0uTATliCSisPYEu19vxQEaF61ZgA2lT0IqKcA=;
+        b=J6EfPmh5arbxbuxMmFbu05KtElRGpM2AGCWw7swG4GBNBwAwRP4HJlq1MyDeTSoAlV
+         p4Hm8TysPZQPPBBDqT9ssu9GisNLJwNUku4Eh3IPRdJnYsit7W3cyOqRblrGKFlV6exu
+         afoS2hFZ6XIj/KDJFBKGpjrtPfswGrQE/1kHlZYakec+VJolYjwjwq7cPeXBo3h1GddV
+         tIZ2od4rGfXlcFYFpeva+EzBSCtvPtQ2Q3WxjeZbvww7x2mFZ4H7JuFAM/naN7jb3DUc
+         m4ngwdvx0bGBP+NRsVWI3kxE3ByNpgt08zEBwJMEZdI4cqouzxlWk0/M8lZMxlsI1Ugf
+         uKqA==
+X-Forwarded-Encrypted: i=1; AJvYcCUq4ygHcFXR2Tqh+gAtwoimklm+ERlrnK8Yx55HJ05QPJGYw5zWAul8qOUrQegNiF89/ZNZTNicATu2Y6OTfWgPJG8eaT4JgIqh6V/+AZDicO8GXhDDgTfn1eknxryUW81zuhZ0
+X-Gm-Message-State: AOJu0YxaEB9gPL1RdM41PuuSIe3F8+OnjMjhIYbDj5MFHmssheTAMFq3
+	hcKU1QRCoplwoG+FDKpQLzmtUJdRswksj+nZA3rGD8oTxm7bIb/9dBSVvGg9
+X-Google-Smtp-Source: AGHT+IEeR2QN02FwalGHMlNU4LsKGtoGOdswflSBY6KBVpBlMgSDVoa1Ovu+fVtz14YCfrBBHrCfEA==
+X-Received: by 2002:a17:902:efce:b0:1dd:693c:4178 with SMTP id ja14-20020a170902efce00b001dd693c4178mr5586510plb.25.1710622624976;
+        Sat, 16 Mar 2024 13:57:04 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id h2-20020a170902f54200b001dd6f305a81sm6198448plf.293.2024.03.16.13.57.03
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Mar 2024 13:42:24 -0700 (PDT)
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a2f22bfb4e6so428949866b.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 13:42:23 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCV8dxQhLWmQtDhWSHCULPntTNN5H8BUHLv5tzSv7JN7xguTl24n03+XbkRJKUp7NvpVMVVyTyNo7hori89XPR03UtdkfXGdDvjtNNb6
-X-Received: by 2002:a17:907:a4c3:b0:a44:4c7e:fc07 with SMTP id
- vq3-20020a170907a4c300b00a444c7efc07mr5242267ejc.0.1710621743606; Sat, 16 Mar
- 2024 13:42:23 -0700 (PDT)
+        Sat, 16 Mar 2024 13:57:04 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <305ed269-b7f0-4ba2-9f63-ea15480fefc0@roeck-us.net>
+Date: Sat, 16 Mar 2024 13:57:02 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315122934.1d3231ce@gandalf.local.home> <CAHk-=wg24KPFfeNwYdsD0e79MP4QhO3VaWkh0buPSD0M=141xQ@mail.gmail.com>
- <CAHk-=wh5wWeib7+kVHpBVtUn7kx7GGadWqb5mW5FYTdewEfL=w@mail.gmail.com>
- <20240316142002.7480d74b@rorschach.local.home> <CAHk-=wgKJti5WBi7VmA_ETDiXjmkEqvVW7De5ajwtkyJ=c==kA@mail.gmail.com>
- <20240316200015.GAZfX6T9ftKSv0-Zs5@fat_crate.local>
-In-Reply-To: <20240316200015.GAZfX6T9ftKSv0-Zs5@fat_crate.local>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Sat, 16 Mar 2024 13:42:06 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wiGymybvnQu2=+nzc18HkRudoeJODci13RBDr5afyDjfg@mail.gmail.com>
-Message-ID: <CAHk-=wiGymybvnQu2=+nzc18HkRudoeJODci13RBDr5afyDjfg@mail.gmail.com>
-Subject: Re: [GIT PULL] tracing: Updates for v6.9
-To: Borislav Petkov <bp@alien8.de>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Beau Belgrave <beaub@linux.microsoft.com>, Chengming Zhou <zhouchengming@bytedance.com>, 
-	Huang Yiwei <quic_hyiwei@quicinc.com>, John Garry <john.g.garry@oracle.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, Thorsten Blum <thorsten.blum@toblux.com>, 
-	Vincent Donnefort <vdonnefort@google.com>, linke li <lilinke99@qq.com>, 
-	Daniel Bristot de Oliveira <bristot@redhat.com>, x86-ml <x86@kernel.org>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4.19 00/41] 4.19.310-rc1 review
+Content-Language: en-US
+To: Sasha Levin <sashal@kernel.org>, linux-kernel@vger.kernel.org,
+ stable@vger.kernel.org
+Cc: torvalds@linux-foundation.org, akpm@linux-foundation.org,
+ shuah@kernel.org, patches@kernelci.org, lkft-triage@lists.linaro.org,
+ pavel@denx.de
+References: <20240313170435.616724-1-sashal@kernel.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240313170435.616724-1-sashal@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, 16 Mar 2024 at 13:00, Borislav Petkov <bp@alien8.de> wrote:
->
-> On Sat, Mar 16, 2024 at 11:42:42AM -0700, Linus Torvalds wrote:
-> > Now, I'm not suggesting anything like the multiple topic branches from
-> > -tip (from a quick check, there's been a total of 25 tip/tip topic
-> > branches merged just this merge window), but for clear new features
-> > definitely.
->
-> So some of those branches are really tiny (1-2 patches) during some
-> cycles so I have often wondered whether I should merge those small
-> branches into a single pull...
->
-> So as not to have too many tiny pull requests.
->
-> Any preference?
+On 3/13/24 10:03, Sasha Levin wrote:
+> 
+> This is the start of the stable review cycle for the 4.19.310 release.
+> There are 41 patches in this series, all will be posted as a response
+> to this one.  If anyone has any issues with these being applied, please
+> let me know.
+> 
+> Responses should be made by Fri Mar 15 05:04:34 PM UTC 2024.
+> Anything received after that time might be too late.
+> 
+> The whole patch series can be found in one patch at:
+>          https://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git/patch/?id=linux-4.19.y&id2=v4.19.309
+> or in the git tree and branch at:
+>          git://git.kernel.org/pub/scm/linux/kernel/git/stable/linux-stable-rc.git linux-4.19.y
+> and the diffstat can be found below.
+> 
+> Thanks,
+> Sasha
+> 
+> -------------
+> Pseudo-Shortlog of commits:
+> 
+> Arnd Bergmann (1):
+>    y2038: rusage: use __kernel_old_timeval
+> 
 
-Not really any strong preferences.
+Guess this wasn't build tested on alpha, making it unbuildable on v4.19.y.
 
-The really tiny ones are so easy to pull that pulling a few random
-ones just isn't an issue.
+Building alpha:defconfig ... failed
+--------------
+Error log:
+arch/alpha/kernel/osf_sys.c: In function '__do_sys_old_adjtimex':
+arch/alpha/kernel/osf_sys.c:1274:43: error: passing argument 2 of 'put_tv_to_tv32' from incompatible pointer type
 
-I've been known to occasionally end up doing an octopus merge if I
-decide that I might as well just merge multiple small branches in one
-go, but honestly, I stopped doing that because it's just simpler to do
-two really trivial merges than to even bother thinking about "should I
-just merge these all together".
+Guenter
 
-So I don't mind getting three or more random small pulls if they all
-still make sense (ie they are clearly separate things).
-
-Now, if you send me three separate pulls for basically the same
-conceptual thing, that might annoy me just because it would be so
-pointless.
-
-But if it's a "one pull to fix a single-line issue in resource
-control, and another pull to fix a single-line issue in objtool", then
-those make perfect sense to keep separate, even if they are both
-trivial and small.
-
-And on the other hand, if you have a couple of trivial branches with
-no real pattern, and decide to just merge them into one that fixes
-"misc x86 problems", and the end result is still completely trivial
-and there are no surprises or gotchas, that's not wrong either.
-
-And sometimes, merging and sending me just one pull request is
-absolutely the right thing.
-
-For example, the ARM SoC trees tend to just merge "umbrella" updates
-into one single pull request, and I prefer that - because I see no
-point in getting ten different "this is the drivers for SoC xyz"
-thing.
-
-So then it's still a clear topic branch ("ARM SoC drivers"), but they
-kept multiple branches for different SoC's and sent me just one pull
-request.
-
-End result: there's no one right thing.  Make it make sense. Probably
-the only real rule is
-
- - try to keep conceptually different things separate just for cleanliness
-
- - definitely keep fundamental new features or anything that _might_
-be questionable in a branch of its own
-
-but there aren't some kind of black-and-white rules for "this is so
-small that it's not worth sending on its own".
-
-This merge window, I think I currently have something like ~15 merges
-that ended up being literally just a couple of lines (maybe spread
-over two or three files). I don't mind at all. If that's all that
-happened, that's fine.
-
-               Linus
 
