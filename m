@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-105053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 843F787D89D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:40:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3130987D89F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:40:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 11687282D49
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:40:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DADD71F226E4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:40:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AE64206F;
-	Sat, 16 Mar 2024 03:36:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF03A54BF7;
+	Sat, 16 Mar 2024 03:36:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="iHigayoL"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="AbGw6VfF"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C6865223;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CF21E6FDC;
 	Sat, 16 Mar 2024 03:35:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710560158; cv=none; b=j3bD+IXQH8kk/H1GhUTg2RNhUMgRyozqeSNDNJp5WFCnuKzulGnUrsd8CN9tnZaCZAK5MiMd7FRGDd3pRCGhmmgqON9labthJ3l4CtO+XySxv9npIKUokFtR1MbrBPwxgkLZ471wtvm7G5W/eIfWDhE7sX8tXKdwU+le2x6j2uI=
+	t=1710560159; cv=none; b=OeHIHNC0PFDLFlN4cA/uJPLW1n7K20oZX7tceFuTU0DSRFCo96vDDYAZMxeo66rpu+JLmJDQCFeP67UVGDtNkGGtoPLX9C1/c56mIAVx35dzDXJauG5IZXpZzgJuSVQx2R2SM+OSOx9mOQp9VEHcTTCB+QlBe5K0BYwo7Qr8SZw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710560158; c=relaxed/simple;
-	bh=jYIQxxeHmb0oz2PeOQdSFHEleWFHfWSfrAjxXl83UFc=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=hCWAKO6hPFpNGf9iUH+VNSHMefuX60W5Hs5JfFQ3dGNvbQOTNHCZkm3OhQRXhMkX5u9FBFvwv77LviwgHLGIPFPYIhznwh6wyA54HaoDUVNIfwB1r/Oo/4ilgAIB4pkFYZuB20XzEzcSw2WXndXfJwy2rb8WxUKDW1BfmPvV6rs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=iHigayoL; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1710560159; c=relaxed/simple;
+	bh=h2TsFDtKUmvVYqz3LZafSvm9/uITgSQXr06rA0VNW2g=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=hdEmLu4DtGEkbwfngvehz3kYnKf3MHV59kRaJxtCeyA1okWgk/H1sPSs2vkhfMM/DwFixuEyPrHA9b0PUIiUXIC4M3VQoP6V/2cpLgHf3v+HAIL4FSrKYjO+hn/ZQ6WqBGGD3wjre8B0+MPNwfoZhCtvpfATr62FY4PQar7A5hg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=AbGw6VfF; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-	id 8420420B74CB; Fri, 15 Mar 2024 20:35:53 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 8420420B74CB
+	id 9319A20B74CD; Fri, 15 Mar 2024 20:35:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9319A20B74CD
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1710560153;
-	bh=flUbnGeIhJSlxKTzFOzpoLlghyHzI8WHRHRwG9dSs9s=;
+	bh=KoMFZSyeRwf0zohBKcDt7DanemgxhgRO3TjK5eTmxY4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=iHigayoLJAr3VYAhgcym2PnLraYWNwvCMl5+IDFpeMr7WzYueLM05qr4xG+ibrza7
-	 ado1PDGzUmBwDIQUpChXCVVFkjshHZegJlsxowrE7pR+RtC0OInAVXNT90bNcK41EO
-	 bn84WB3/n5ilhlKFAoMKksgmA2BFpOTehfYBeyJ8=
+	b=AbGw6VfFzmFXZ6tJljnNn7HCZ8MbSv/D7t/E8D6H90fOw5C53a5N8zkhDPTECZcqa
+	 OEDkumKnDOHDIY0H1lSd2bFT3NATMCYzMPxFas9pA1y5UuQX/ZIq6KYMFt2RHWPDYf
+	 WjiTsp0m8c9E1R9jOYr6G4BgBukQw/CVwAVnJm00=
 From: Fan Wu <wufan@linux.microsoft.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -57,11 +57,10 @@ Cc: linux-doc@vger.kernel.org,
 	dm-devel@lists.linux.dev,
 	audit@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Fan Wu <wufan@linux.microsoft.com>,
-	Deven Bowers <deven.desai@linux.microsoft.com>
-Subject: [RFC PATCH v15 06/21] ipe: introduce 'boot_verified' as a trust provider
-Date: Fri, 15 Mar 2024 20:35:36 -0700
-Message-Id: <1710560151-28904-7-git-send-email-wufan@linux.microsoft.com>
+	Fan Wu <wufan@linux.microsoft.com>
+Subject: [RFC PATCH v15 07/21] security: add new securityfs delete function
+Date: Fri, 15 Mar 2024 20:35:37 -0700
+Message-Id: <1710560151-28904-8-git-send-email-wufan@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
 References: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
@@ -71,77 +70,36 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-IPE is designed to provide system level trust guarantees, this usually
-implies that trust starts from bootup with a hardware root of trust,
-which validates the bootloader. After this, the bootloader verifies
-the kernel and the initramfs.
+When deleting a directory in the security file system, the existing
+securityfs_remove requires the directory to be empty, otherwise
+it will do nothing. This leads to a potential risk that the security
+file system might be in an unclean state when the intended deletion
+did not happen.
 
-As there's no currently supported integrity method for initramfs, and
-it's typically already verified by the bootloader. This patch introduces
-a new IPE property `boot_verified` which allows author of IPE policy to
-indicate trust for files from initramfs.
+This commit introduces a new function securityfs_recursive_remove
+to recursively delete a directory without leaving an unclean state.
 
-The implementation of this feature utilizes the newly added
-`initramfs_populated` hook. This hook marks the superblock of the rootfs
-after the initramfs has been unpacked into it.
-
-Before mounting the real rootfs on top of the initramfs, initramfs
-script will recursively remove all files and directories on the
-initramfs. This is typically implemented by using switch_root(8)
-(https://man7.org/linux/man-pages/man8/switch_root.8.html).
-Therefore the initramfs will be empty and not accessible after the real
-rootfs takes over. It is advised to switch to a different policy
-that doesn't rely on the `boot_verified` property after this point.
-This ensures that the trust policies remain relevant and effective
-throughout the system's operation.
-
-Signed-off-by: Deven Bowers <deven.desai@linux.microsoft.com>
+Co-developed-by: Christian Brauner (Microsoft) <brauner@kernel.org>
 Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 
 ---
-v2:
-  +No Changes
-
-v3:
-  + Remove useless caching system
-  + Move ipe_load_properties to this match
-  + Minor changes from checkpatch --strict warnings
-
-v4:
-  + Remove comments from headers that was missed previously.
-  + Grammatical corrections.
-
-v5:
-  + No significant changes
-
-v6:
-  + No changes
-
-v7:
-  + Reword and refactor patch 04/12 to [09/16], based on changes in
-the underlying system.
-  + Add common audit function for boolean values
-  + Use common audit function as implementation.
-
-v8:
-  + No changes
+v1-v8:
+  + Not present
 
 v9:
-  + No changes
+  + Introduced
 
 v10:
-  + Replace struct file with struct super_block
+  + No changes
 
 v11:
   + Fix code style issues
 
 v12:
-  + Switch to use unpack_initramfs hook and security blob
+  + No changes
 
 v13:
-  + Update the hook name
-  + Rename the security blob field to initramfs
-  + Remove the dependency on CONFIG_BLK_DEV_INITRD
+  + No changes
 
 v14:
   + No changes
@@ -149,242 +107,58 @@ v14:
 v15:
   + No changes
 ---
- security/ipe/eval.c          | 37 +++++++++++++++++++++++++++++++++++-
- security/ipe/eval.h          |  5 +++++
- security/ipe/hooks.c         |  6 ++++++
- security/ipe/hooks.h         |  2 ++
- security/ipe/ipe.c           |  8 ++++++++
- security/ipe/ipe.h           |  1 +
- security/ipe/policy.h        |  2 ++
- security/ipe/policy_parser.c | 35 +++++++++++++++++++++++++++++++++-
- 8 files changed, 94 insertions(+), 2 deletions(-)
+ include/linux/security.h |  1 +
+ security/inode.c         | 25 +++++++++++++++++++++++++
+ 2 files changed, 26 insertions(+)
 
-diff --git a/security/ipe/eval.c b/security/ipe/eval.c
-index 4f425afffcad..bef204decbbf 100644
---- a/security/ipe/eval.c
-+++ b/security/ipe/eval.c
-@@ -16,6 +16,18 @@
+diff --git a/include/linux/security.h b/include/linux/security.h
+index 14fff542f2e3..f35af7b6cfba 100644
+--- a/include/linux/security.h
++++ b/include/linux/security.h
+@@ -2089,6 +2089,7 @@ struct dentry *securityfs_create_symlink(const char *name,
+ 					 const char *target,
+ 					 const struct inode_operations *iops);
+ extern void securityfs_remove(struct dentry *dentry);
++extern void securityfs_recursive_remove(struct dentry *dentry);
  
- struct ipe_policy __rcu *ipe_active_policy;
+ #else /* CONFIG_SECURITYFS */
  
-+#define FILE_SUPERBLOCK(f) ((f)->f_path.mnt->mnt_sb)
-+
-+/**
-+ * build_ipe_sb_ctx - Build initramfs field of an evaluation context.
-+ * @ctx: Supplies a pointer to the context to be populated.
-+ * @file: Supplies the file struct of the file triggered IPE event.
-+ */
-+static void build_ipe_sb_ctx(struct ipe_eval_ctx *ctx, const struct file *const file)
+diff --git a/security/inode.c b/security/inode.c
+index 9e7cde913667..f21847badb7d 100644
+--- a/security/inode.c
++++ b/security/inode.c
+@@ -313,6 +313,31 @@ void securityfs_remove(struct dentry *dentry)
+ }
+ EXPORT_SYMBOL_GPL(securityfs_remove);
+ 
++static void remove_one(struct dentry *victim)
 +{
-+	ctx->initramfs = ipe_sb(FILE_SUPERBLOCK(file))->initramfs;
-+}
-+
- /**
-  * build_eval_ctx - Build an evaluation context.
-  * @ctx: Supplies a pointer to the context to be populated.
-@@ -28,6 +40,22 @@ void build_eval_ctx(struct ipe_eval_ctx *ctx,
- {
- 	ctx->file = file;
- 	ctx->op = op;
-+
-+	if (file)
-+		build_ipe_sb_ctx(ctx, file);
++	simple_release_fs(&mount, &mount_count);
 +}
 +
 +/**
-+ * evaluate_boot_verified - Evaluate @ctx for the boot verified property.
-+ * @ctx: Supplies a pointer to the context being evaluated.
++ * securityfs_recursive_remove - recursively removes a file or directory
 + *
-+ * Return:
-+ * * true	- The current @ctx match the @p
-+ * * false	- The current @ctx doesn't match the @p
++ * @dentry: a pointer to a the dentry of the file or directory to be removed.
++ *
++ * This function recursively removes a file or directory in securityfs that was
++ * previously created with a call to another securityfs function (like
++ * securityfs_create_file() or variants thereof.)
 + */
-+static bool evaluate_boot_verified(const struct ipe_eval_ctx *const ctx)
++void securityfs_recursive_remove(struct dentry *dentry)
 +{
-+	return ctx->initramfs;
- }
- 
- /**
-@@ -42,7 +70,14 @@ void build_eval_ctx(struct ipe_eval_ctx *ctx,
- static bool evaluate_property(const struct ipe_eval_ctx *const ctx,
- 			      struct ipe_prop *p)
- {
--	return false;
-+	switch (p->type) {
-+	case IPE_PROP_BOOT_VERIFIED_FALSE:
-+		return !evaluate_boot_verified(ctx);
-+	case IPE_PROP_BOOT_VERIFIED_TRUE:
-+		return evaluate_boot_verified(ctx);
-+	default:
-+		return false;
-+	}
- }
- 
- /**
-diff --git a/security/ipe/eval.h b/security/ipe/eval.h
-index cfdf3c8dfe8a..884821494525 100644
---- a/security/ipe/eval.h
-+++ b/security/ipe/eval.h
-@@ -15,10 +15,15 @@
- 
- extern struct ipe_policy __rcu *ipe_active_policy;
- 
-+struct ipe_superblock {
-+	bool initramfs;
-+};
++	if (IS_ERR_OR_NULL(dentry))
++		return;
 +
- struct ipe_eval_ctx {
- 	enum ipe_op_type op;
- 
- 	const struct file *file;
-+	bool initramfs;
- };
- 
- void build_eval_ctx(struct ipe_eval_ctx *ctx, const struct file *file, enum ipe_op_type op);
-diff --git a/security/ipe/hooks.c b/security/ipe/hooks.c
-index 3aec88c074e1..23cf070438fa 100644
---- a/security/ipe/hooks.c
-+++ b/security/ipe/hooks.c
-@@ -4,6 +4,7 @@
-  */
- 
- #include <linux/fs.h>
-+#include <linux/fs_struct.h>
- #include <linux/types.h>
- #include <linux/binfmts.h>
- #include <linux/mman.h>
-@@ -181,3 +182,8 @@ int ipe_kernel_load_data(enum kernel_load_data_id id, bool contents)
- 	build_eval_ctx(&ctx, NULL, op);
- 	return ipe_evaluate_event(&ctx);
- }
-+
-+void ipe_unpack_initramfs(void)
-+{
-+	ipe_sb(current->fs->root.mnt->mnt_sb)->initramfs = true;
++	simple_pin_fs(&fs_type, &mount, &mount_count);
++	simple_recursive_removal(dentry, remove_one);
++	simple_release_fs(&mount, &mount_count);
 +}
-diff --git a/security/ipe/hooks.h b/security/ipe/hooks.h
-index 23205452f758..21f49cdc2fcd 100644
---- a/security/ipe/hooks.h
-+++ b/security/ipe/hooks.h
-@@ -22,4 +22,6 @@ int ipe_kernel_read_file(struct file *file, enum kernel_read_file_id id,
- 
- int ipe_kernel_load_data(enum kernel_load_data_id id, bool contents);
- 
-+void ipe_unpack_initramfs(void);
++EXPORT_SYMBOL_GPL(securityfs_recursive_remove);
 +
- #endif /* _IPE_HOOKS_H */
-diff --git a/security/ipe/ipe.c b/security/ipe/ipe.c
-index 22bd95116087..3bf7c1331d5e 100644
---- a/security/ipe/ipe.c
-+++ b/security/ipe/ipe.c
-@@ -5,9 +5,11 @@
- #include <uapi/linux/lsm.h>
- 
- #include "ipe.h"
-+#include "eval.h"
- #include "hooks.h"
- 
- static struct lsm_blob_sizes ipe_blobs __ro_after_init = {
-+	.lbs_superblock = sizeof(struct ipe_superblock),
- };
- 
- static const struct lsm_id ipe_lsmid = {
-@@ -15,12 +17,18 @@ static const struct lsm_id ipe_lsmid = {
- 	.id = LSM_ID_IPE,
- };
- 
-+struct ipe_superblock *ipe_sb(const struct super_block *sb)
-+{
-+	return sb->s_security + ipe_blobs.lbs_superblock;
-+}
-+
- static struct security_hook_list ipe_hooks[] __ro_after_init = {
- 	LSM_HOOK_INIT(bprm_check_security, ipe_bprm_check_security),
- 	LSM_HOOK_INIT(mmap_file, ipe_mmap_file),
- 	LSM_HOOK_INIT(file_mprotect, ipe_file_mprotect),
- 	LSM_HOOK_INIT(kernel_read_file, ipe_kernel_read_file),
- 	LSM_HOOK_INIT(kernel_load_data, ipe_kernel_load_data),
-+	LSM_HOOK_INIT(initramfs_populated, ipe_unpack_initramfs),
- };
- 
- /**
-diff --git a/security/ipe/ipe.h b/security/ipe/ipe.h
-index a1c68d0fc2e0..fb8f0ad168b3 100644
---- a/security/ipe/ipe.h
-+++ b/security/ipe/ipe.h
-@@ -12,5 +12,6 @@
- #define pr_fmt(fmt) "IPE: " fmt
- 
- #include <linux/lsm_hooks.h>
-+struct ipe_superblock *ipe_sb(const struct super_block *sb);
- 
- #endif /* _IPE_H */
-diff --git a/security/ipe/policy.h b/security/ipe/policy.h
-index fb906f41522b..fb48024bb63e 100644
---- a/security/ipe/policy.h
-+++ b/security/ipe/policy.h
-@@ -30,6 +30,8 @@ enum ipe_action_type {
- #define IPE_ACTION_INVALID __IPE_ACTION_MAX
- 
- enum ipe_prop_type {
-+	IPE_PROP_BOOT_VERIFIED_FALSE,
-+	IPE_PROP_BOOT_VERIFIED_TRUE,
- 	__IPE_PROP_MAX
- };
- 
-diff --git a/security/ipe/policy_parser.c b/security/ipe/policy_parser.c
-index 612839b405f4..3fc8fea55b95 100644
---- a/security/ipe/policy_parser.c
-+++ b/security/ipe/policy_parser.c
-@@ -265,6 +265,12 @@ static enum ipe_action_type parse_action(char *t)
- 	return match_token(t, action_tokens, args);
- }
- 
-+static const match_table_t property_tokens = {
-+	{IPE_PROP_BOOT_VERIFIED_FALSE,	"boot_verified=FALSE"},
-+	{IPE_PROP_BOOT_VERIFIED_TRUE,	"boot_verified=TRUE"},
-+	{IPE_PROP_INVALID,		NULL}
-+};
-+
- /**
-  * parse_property - Parse the property type given a token string.
-  * @t: Supplies the token string to be parsed.
-@@ -277,7 +283,34 @@ static enum ipe_action_type parse_action(char *t)
-  */
- static int parse_property(char *t, struct ipe_rule *r)
- {
--	return -EBADMSG;
-+	substring_t args[MAX_OPT_ARGS];
-+	struct ipe_prop *p = NULL;
-+	int rc = 0;
-+	int token;
-+
-+	p = kzalloc(sizeof(*p), GFP_KERNEL);
-+	if (!p)
-+		return -ENOMEM;
-+
-+	token = match_token(t, property_tokens, args);
-+
-+	switch (token) {
-+	case IPE_PROP_BOOT_VERIFIED_FALSE:
-+	case IPE_PROP_BOOT_VERIFIED_TRUE:
-+		p->type = token;
-+		break;
-+	default:
-+		rc = -EBADMSG;
-+		break;
-+	}
-+	if (rc)
-+		goto err;
-+	list_add_tail(&p->next, &r->props);
-+
-+	return rc;
-+err:
-+	kfree(p);
-+	return rc;
- }
- 
- /**
+ #ifdef CONFIG_SECURITY
+ static struct dentry *lsm_dentry;
+ static ssize_t lsm_read(struct file *filp, char __user *buf, size_t count,
 -- 
 2.44.0
 
