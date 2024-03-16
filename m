@@ -1,108 +1,139 @@
-Return-Path: <linux-kernel+bounces-105111-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105112-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B75C787D93B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:44:11 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7437487D93F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:06:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C10D71C210D1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 07:44:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13A09B21577
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:06:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 17E38EAE4;
-	Sat, 16 Mar 2024 07:44:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53878EAE5;
+	Sat, 16 Mar 2024 08:05:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="dltSEBiz"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="AE5WUaq5";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Jy4Ifg/l"
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B31B1FBB;
-	Sat, 16 Mar 2024 07:44:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6291B748A
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 08:05:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710575044; cv=none; b=KnBT9AzR/aTPb26Lr6LO0cCNMEPT+UTznUT5dBIVIPS1q504bq5WLsoYAJdbGhzK6ood/MVzV5e6xq6716YetFurfQ2agJT+Z4/EnBklZYSI9Bx65rTJfdXRK97+uL0nxw4o5kXkW3wiGWPx3gvfNLf+voBUp7+kqsbcD7OWqmE=
+	t=1710576352; cv=none; b=DAom2p47cojBW1ueIxwT5O8Sc7cUW5qerN5R4uZiIr7FpxTiUrQOH7ckDQTjJaOs8qidCtnwOl76Y9W/gdxsO4Yj2lBEsSJDx+FX2K9q5ZPgIKkA+wfaAgJ0ZRRVI9s2MXGY7gy7n+ySbOxcdm8ZZNXIVmYOuYPzSXQoRO8s8ok=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710575044; c=relaxed/simple;
-	bh=SifCYBjprJRgThxFtpLvOKz2DSDgwa+1PQlpfweXXOo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ktFdyDRXmh71x3uutLuCwGv3mSPTaU26eBYSNRhCs5gjZ5oFze0OnWU4Q0YCVltOZlE19WdeDx1JvNbAtHcAYkMjguR9ZOHdGmzNwPoD7jy31EyHHXzBhxTuRI+CfwsqjRrcJsmJC8yn1DdAM1cyhuZ4mu+uzG8g0ZA81cbuIQI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=dltSEBiz; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C10871BF205;
-	Sat, 16 Mar 2024 07:43:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710575039;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TaudTAjS9OrEf75WKlKVQeii/UQ8YYZCZtk03/a+WxE=;
-	b=dltSEBizU1EpLVCl+E4/7gIDVn4aC38LqlKKoOfbKy4KSCUbSZvOiLfWaS6Upo8L8LPUv5
-	A+n49OslfLhrEaS8wYrWEpPq88iV5rfvEVFFmB7XgXghHlJYlxfk3MpoXjCbieBiJGqOwM
-	Sb6zS/xAcjc2hETJmsU4ulGGCBhaLMCdl47QUJtAmtD5Ee/uWS9fpxfmPZZHzb20YVLgY1
-	VYR1Lrh+kXPWvDKL9R0evcy9z2eMdCRnXqBnx8aMx4uiLgcFwDNPdyNvuAcYq/NA39dwnA
-	7sBoFpoLaSiGwSRhrtZvqTJNeWPb8lZeFhQsIa2reWZPocEDimQnAte2EzFJvA==
-Message-ID: <62d128f1-11ac-4669-90ff-e9cdd0ec5bd9@arinc9.com>
-Date: Sat, 16 Mar 2024 10:43:40 +0300
+	s=arc-20240116; t=1710576352; c=relaxed/simple;
+	bh=374UJRRmeGjqgUzJk+9TzaS2eYl4CrUTUJH3GxVBc2Q=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=aLfS77LiBokq5Nl6cdim/ePxh5JO99VvveLDnt6O3IxwWeOOGx/B13wtjrikwxUeJ/VtaQKhNIhU8yqYHP56EMx8WH2SCJcKMo0uLu1cDS7NNoIWpb5dG36VIsP3qLDdoHy0KmdXW8arPcAIN+55pF90cINEREStXZbdFo3RGqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=AE5WUaq5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Jy4Ifg/l; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
+	by mailfout.west.internal (Postfix) with ESMTP id 335E31C000D3;
+	Sat, 16 Mar 2024 04:05:49 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute2.internal (MEProxy); Sat, 16 Mar 2024 04:05:49 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
+	:to; s=fm1; t=1710576348; x=1710662748; bh=wfzrm6EZwEM/kGhsdInSZ
+	rfFgroXMcRCq9vfUyY+h3s=; b=AE5WUaq55AKc2oaiSlE3VQjznJyL16nh44oj4
+	Rw41kWSYRGGayjnMfWxCyGrzdzdUshzSPyVg8nb1oB4h5nMXflcQeGD79UsD14tj
+	QkFGfywYTuvMbQLgwLyNOcTrcyyqcYZdFYyfRWVlR5/V4e/VmbeJSib91DgA9B6P
+	zpW1AwuxP0GYpE3V5rTFX1HjQy1Ddwqp9CtSTmL6TeBoBGYJOgayrR0+b5eDkghE
+	NposPwxDQUamkJIx/684Jf1MHkzcrmmWFa2oRUNWJk4QojgcI+JesFnv3wWxRGKm
+	a1rIIhisQGhK0RKN2irZq53V5kHVm/xoiaafAL3bmRjP7K6ew==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:message-id
+	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
+	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
+	1710576348; x=1710662748; bh=wfzrm6EZwEM/kGhsdInSZrfFgroXMcRCq9v
+	fUyY+h3s=; b=Jy4Ifg/lywQPzBxD+UA6p4jTAeKN2qiVsbVshBDJjju0uElJqXx
+	ez+nND/VULHAj6qKNxHY2wIa+ydrxP9Plk1xY3SgAuAJtSVaqNxP/irVIU1u5ySj
+	BKYZ9AMbgFeebsdRWRZPesg08j0RuH06xcJfqJsZb7APWIZsJO05nXykjMSu1+xS
+	CtRb2+AHzt14Vw0ANxf2pc07tpXaqZB99TcYzHEuCZtW+wesfg6PBzK3IsZrjaNv
+	lAv7e6zsxlILftLSUYivvV7zOHkrIg/xEcaEchVIJhmthOblK11kXqvy2mriiWvG
+	2H+2Guwmyq+iebaqvH/sJmaZl9w4OT31N0Q==
+X-ME-Sender: <xms:3FL1ZaDp5loOG4TaG_-XQ5E4A5GbW-L1a6ApVPNfCpvSVX2W-9ZAWg>
+    <xme:3FL1ZUhVrZGtDamMVr1hBaP0v9yZ2Z01_3U0G5ywiApXgQOglyRxsvzPrQfRtCiW7
+    mp7B0VbUKdKZKOUkvY>
+X-ME-Received: <xmr:3FL1ZdlXLMdJU1brCb_H5M7UelIzugm5bGISKdXZNrC04TYJV8z_dDBqpazDeh4I0d4mjIx5LntZDuaAby3CWrfM4c87KPmzrL8l>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkedtgdduudeiucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
+    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
+    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetfeeiteefve
+    egvdfggeffheetleejkeekleeugeffffdtgfdtteetkeevvddvgfenucffohhmrghinhep
+    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:3FL1ZYzJvRO41JzChOY69hFK_rqApJrYyc2JPDK1orWoe59gD0h-Pg>
+    <xmx:3FL1ZfRcNlzGYRrmnlXkmUEYMoPR91K5AAn1G_OEzzRHVYAZ2kVAkg>
+    <xmx:3FL1ZTZof-QxbRYn8qMm29EqZCOXZprD7mNJJsPuZPaCIOFm_g17jw>
+    <xmx:3FL1ZYR0RRrRgS__g-EGRxXeyR19nMH43N7pK6c4MvbJnWADYEFX0w>
+    <xmx:3FL1ZZdenBWY23mVqa8ktRSTmGD0QkozXV2lvLlCxBkiYVj3XAzsk8VKgyc>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
+ 16 Mar 2024 04:05:47 -0400 (EDT)
+Date: Sat, 16 Mar 2024 17:05:44 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: torvalds@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [GIT PULL] firewire updates for v6.9-rc1
+Message-ID: <20240316080544.GA395657@workstation.local>
+Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
+	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: mediatek: mt7622: set PHY address of
- MT7531 switch to 0x1f
-To: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring
- <robh+dt@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
- <20240314-for-mediatek-mt7531-phy-address-v1-1-52f58db01acd@arinc9.com>
- <94e3d09a-e6a4-4808-bc29-3f494b65e170@gmail.com>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <94e3d09a-e6a4-4808-bc29-3f494b65e170@gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 15.03.2024 20:26, Florian Fainelli wrote:
-> On 3/14/24 05:20, Arınç ÜNAL via B4 Relay wrote:
->> From: Arınç ÜNAL <arinc.unal@arinc9.com>
->>
->> The MT7531 switch listens on PHY address 0x1f on an MDIO bus. I've got two
->> findings that support this. There's no bootstrapping option to change the
->> PHY address of the switch. The Linux driver hardcodes 0x1f as the PHY
->> address of the switch. So the reg property on the device tree is currently
->> ignored by the Linux driver.
->>
->> Therefore, describe the correct PHY address on boards that have this
->> switch.
-> 
-> Can we call it a pseudo PHY to use a similar terminology as what is done through drivers/net/dsa/{bcm_sf2,b53}*?
-> 
-> This is not a real PHY as in it has no actual transceiver/digital signal processing logic, this is a piece of logic that snoops for MDIO transactions at that specific address and lets you access the switch's internal register as if it was a MDIO device.
+Hi Linus,
 
-I can get behind calling the switch a psuedo-PHY in the context of MDIO.
-However, as described on "22.2.4.5.5 PHYAD (PHY Address)" of "22.2.4.5
-Management frame structure" of the active standard IEEE Std 802.3™‐2022,
-the field is called "PHY Address". The patch log doesn't give an identifier
-as to what a switch is in the context of MDIO. Only that it listens on a
-certain PHY address which the term complies with IEEE Std 802.3™‐2022.
+Please pull firewire updates for v6.9.
 
-So I don't see an improvement to be made on the patch log. Feel free to
-elaborate further.
+At the previous version we have some work to support legacy devices, while
+for the next version we have just a small changes to string processing,
+as it closely resembles the subsystem for the old technology.
 
-Arınç
+The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
+
+  Linux 6.8 (2024-03-10 13:38:09 -0700)
+
+are available in the Git repository at:
+
+  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-updates-6.9
+
+for you to fetch changes up to 04f082d39b99f0b7b4b1cada14280f41d99f1e1f:
+
+  firewire: core: fix build failure due to the caller of fw_csr_string() (2024-03-11 10:38:13 +0900)
+
+----------------------------------------------------------------
+firewire updates for 6.9
+
+This update includes small changes about page-aligned buffer for string
+processing in device attribute.
+
+----------------------------------------------------------------
+Li Zhijian (2):
+      firewire: Kill unnecessary buf check in device_attribute.show
+      firewire: Convert snprintf/sprintf to sysfs_emit
+
+Takashi Sakamoto (1):
+      firewire: core: fix build failure due to the caller of fw_csr_string()
+
+ drivers/firewire/core-device.c | 18 +++++-------------
+ 1 file changed, 5 insertions(+), 13 deletions(-)
+
+
+Regards
+
+Takashi Sakamoto
 
