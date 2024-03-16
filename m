@@ -1,139 +1,201 @@
-Return-Path: <linux-kernel+bounces-105112-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105113-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7437487D93F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:06:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0F08F87D942
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:14:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 13A09B21577
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:06:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D5D11F216F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 08:14:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 53878EAE5;
-	Sat, 16 Mar 2024 08:05:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015F0FC12;
+	Sat, 16 Mar 2024 08:13:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="AE5WUaq5";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="Jy4Ifg/l"
-Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="k/LSJ+5C"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6291B748A
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 08:05:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53692E574;
+	Sat, 16 Mar 2024 08:13:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710576352; cv=none; b=DAom2p47cojBW1ueIxwT5O8Sc7cUW5qerN5R4uZiIr7FpxTiUrQOH7ckDQTjJaOs8qidCtnwOl76Y9W/gdxsO4Yj2lBEsSJDx+FX2K9q5ZPgIKkA+wfaAgJ0ZRRVI9s2MXGY7gy7n+ySbOxcdm8ZZNXIVmYOuYPzSXQoRO8s8ok=
+	t=1710576835; cv=none; b=PzKavr6oIsiw2d6gudGBe77ciukafKjEy/c/ob9sxC3cB5+nfjzCCGUsWfdiYGuAqBwkyolq2vjUdJyhb5eq+xLoh9G/b/IpBw0ONKEC0G1usYVV0IxyuJNhv8J3XYbvI7O2uIbeph5NJ0Q8xrM7n1eeZcR1M/pOBHMUywR+xZI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710576352; c=relaxed/simple;
-	bh=374UJRRmeGjqgUzJk+9TzaS2eYl4CrUTUJH3GxVBc2Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=aLfS77LiBokq5Nl6cdim/ePxh5JO99VvveLDnt6O3IxwWeOOGx/B13wtjrikwxUeJ/VtaQKhNIhU8yqYHP56EMx8WH2SCJcKMo0uLu1cDS7NNoIWpb5dG36VIsP3qLDdoHy0KmdXW8arPcAIN+55pF90cINEREStXZbdFo3RGqg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=AE5WUaq5; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=Jy4Ifg/l; arc=none smtp.client-ip=64.147.123.145
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfout.west.internal (Postfix) with ESMTP id 335E31C000D3;
-	Sat, 16 Mar 2024 04:05:49 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Sat, 16 Mar 2024 04:05:49 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:cc:content-type:content-type:date:date:from:from
-	:in-reply-to:message-id:mime-version:reply-to:subject:subject:to
-	:to; s=fm1; t=1710576348; x=1710662748; bh=wfzrm6EZwEM/kGhsdInSZ
-	rfFgroXMcRCq9vfUyY+h3s=; b=AE5WUaq55AKc2oaiSlE3VQjznJyL16nh44oj4
-	Rw41kWSYRGGayjnMfWxCyGrzdzdUshzSPyVg8nb1oB4h5nMXflcQeGD79UsD14tj
-	QkFGfywYTuvMbQLgwLyNOcTrcyyqcYZdFYyfRWVlR5/V4e/VmbeJSib91DgA9B6P
-	zpW1AwuxP0GYpE3V5rTFX1HjQy1Ddwqp9CtSTmL6TeBoBGYJOgayrR0+b5eDkghE
-	NposPwxDQUamkJIx/684Jf1MHkzcrmmWFa2oRUNWJk4QojgcI+JesFnv3wWxRGKm
-	a1rIIhisQGhK0RKN2irZq53V5kHVm/xoiaafAL3bmRjP7K6ew==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:message-id
-	:mime-version:reply-to:subject:subject:to:to:x-me-proxy
-	:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=fm1; t=
-	1710576348; x=1710662748; bh=wfzrm6EZwEM/kGhsdInSZrfFgroXMcRCq9v
-	fUyY+h3s=; b=Jy4Ifg/lywQPzBxD+UA6p4jTAeKN2qiVsbVshBDJjju0uElJqXx
-	ez+nND/VULHAj6qKNxHY2wIa+ydrxP9Plk1xY3SgAuAJtSVaqNxP/irVIU1u5ySj
-	BKYZ9AMbgFeebsdRWRZPesg08j0RuH06xcJfqJsZb7APWIZsJO05nXykjMSu1+xS
-	CtRb2+AHzt14Vw0ANxf2pc07tpXaqZB99TcYzHEuCZtW+wesfg6PBzK3IsZrjaNv
-	lAv7e6zsxlILftLSUYivvV7zOHkrIg/xEcaEchVIJhmthOblK11kXqvy2mriiWvG
-	2H+2Guwmyq+iebaqvH/sJmaZl9w4OT31N0Q==
-X-ME-Sender: <xms:3FL1ZaDp5loOG4TaG_-XQ5E4A5GbW-L1a6ApVPNfCpvSVX2W-9ZAWg>
-    <xme:3FL1ZUhVrZGtDamMVr1hBaP0v9yZ2Z01_3U0G5ywiApXgQOglyRxsvzPrQfRtCiW7
-    mp7B0VbUKdKZKOUkvY>
-X-ME-Received: <xmr:3FL1ZdlXLMdJU1brCb_H5M7UelIzugm5bGISKdXZNrC04TYJV8z_dDBqpazDeh4I0d4mjIx5LntZDuaAby3CWrfM4c87KPmzrL8l>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkedtgdduudeiucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucenucfjughrpeffhffvvefukfggtggusehttdertd
-    dttddvnecuhfhrohhmpefvrghkrghshhhiucfurghkrghmohhtohcuoehoqdhtrghkrghs
-    hhhisehsrghkrghmohgttghhihdrjhhpqeenucggtffrrghtthgvrhhnpeetfeeiteefve
-    egvdfggeffheetleejkeekleeugeffffdtgfdtteetkeevvddvgfenucffohhmrghinhep
-    khgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:3FL1ZYzJvRO41JzChOY69hFK_rqApJrYyc2JPDK1orWoe59gD0h-Pg>
-    <xmx:3FL1ZfRcNlzGYRrmnlXkmUEYMoPR91K5AAn1G_OEzzRHVYAZ2kVAkg>
-    <xmx:3FL1ZTZof-QxbRYn8qMm29EqZCOXZprD7mNJJsPuZPaCIOFm_g17jw>
-    <xmx:3FL1ZYR0RRrRgS__g-EGRxXeyR19nMH43N7pK6c4MvbJnWADYEFX0w>
-    <xmx:3FL1ZZdenBWY23mVqa8ktRSTmGD0QkozXV2lvLlCxBkiYVj3XAzsk8VKgyc>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Sat,
- 16 Mar 2024 04:05:47 -0400 (EDT)
-Date: Sat, 16 Mar 2024 17:05:44 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: torvalds@linux-foundation.org
-Cc: linux-kernel@vger.kernel.org
-Subject: [GIT PULL] firewire updates for v6.9-rc1
-Message-ID: <20240316080544.GA395657@workstation.local>
-Mail-Followup-To: Takashi Sakamoto <o-takashi@sakamocchi.jp>,
-	torvalds@linux-foundation.org, linux-kernel@vger.kernel.org
+	s=arc-20240116; t=1710576835; c=relaxed/simple;
+	bh=MG0yFGZd8NGqG68fXGVPGoIIF4RPiMFDjImRupyiJQQ=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=UaML/KbE0Y1S27rmVypnTb75bqpovRIdeawKYPk68MKhtZACFZX2gwzL7zKPUUq9KX99giAmCdWNXBrnr7iz9e1A+yiCuhCQ/OkHz4QboFUQKoGIyG1Mb2BIN+0kvDYVSuPMKMd9rp+/QMg/3P8wtk77wsTUuWj4+NPlxVUjRFQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=k/LSJ+5C; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: 1d52b13ee36d11eeb8927bc1f75efef4-20240316
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:Content-Transfer-Encoding:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=ymrk5mBiwUCU/ytZC04QGRDtL4o+ZcHTqKjjTVEao+s=;
+	b=k/LSJ+5CwS6xKfszSqocImu22Twza7pP2Rxvi28l9T/LbZ3BrEc8FkCR8er8PK6kcLuH14q2M1cTL6zxeoYP6gHn9E/5xwxO+hdCb6Hn5KQzaqiUrB/SCd8zwJDfFoiow6YzNDeaGwVb6qXe1ITp49L+wg6NBU27qm938xHTpoM=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:ce905900-684c-4264-b148-b9df08d4c87e,IP:0,U
+	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
+	N:release,TS:-25
+X-CID-META: VersionHash:6f543d0,CLOUDID:931df6ff-c16b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: 1d52b13ee36d11eeb8927bc1f75efef4-20240316
+Received: from mtkmbs13n1.mediatek.inc [(172.21.101.193)] by mailgw01.mediatek.com
+	(envelope-from <yunfei.dong@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 1081411707; Sat, 16 Mar 2024 16:13:47 +0800
+Received: from mtkmbs11n2.mediatek.inc (172.21.101.187) by
+ mtkmbs11n2.mediatek.inc (172.21.101.187) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Sat, 16 Mar 2024 16:13:46 +0800
+Received: from mhfsdcap04.gcn.mediatek.inc (10.17.3.154) by
+ mtkmbs11n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Sat, 16 Mar 2024 16:13:45 +0800
+From: Yunfei Dong <yunfei.dong@mediatek.com>
+To: =?UTF-8?q?N=C3=ADcolas=20F=20=2E=20R=20=2E=20A=20=2E=20Prado?=
+	<nfraprado@collabora.com>, Nicolas Dufresne <nicolas.dufresne@collabora.com>,
+	Hans Verkuil <hverkuil-cisco@xs4all.nl>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>, Benjamin Gaignard
+	<benjamin.gaignard@collabora.com>, Nathan Hebert <nhebert@chromium.org>,
+	Sebastian Fricke <sebastian.fricke@collabora.com>
+CC: Hsin-Yi Wang <hsinyi@chromium.org>, Fritz Koenig <frkoenig@chromium.org>,
+	Daniel Vetter <daniel@ffwll.ch>, Steve Cho <stevecho@chromium.org>, Yunfei
+ Dong <yunfei.dong@mediatek.com>, <linux-media@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-mediatek@lists.infradead.org>,
+	<Project_Global_Chrome_Upstream_Group@mediatek.com>
+Subject: [PATCH v2] media: mediatek: vcodec: add decoder command to support stateless decoder
+Date: Sat, 16 Mar 2024 16:13:44 +0800
+Message-ID: <20240316081344.4262-1-yunfei.dong@mediatek.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-MTK: N
 
-Hi Linus,
+The supported decoder commands are different for stateless and
+stateful architecture. Add stateless decoder commands to fix
+the v4l2-compliance test error below.
 
-Please pull firewire updates for v6.9.
+Codec ioctls:
+    VIDIOC_ENCODER_CMD returned -1 (Inappropriate ioctl for device)
+    VIDIOC_TRY_ENCODER_CMD returned -1 (Inappropriate ioctl for device)
+ test VIDIOC_(TRY_)ENCODER_CMD: OK (Not Supported)
+    VIDIOC_G_ENC_INDEX returned -1 (Inappropriate ioctl for device)
+ test VIDIOC_G_ENC_INDEX: OK (Not Supported)
+    VIDIOC_DECODER_CMD returned -1 (Invalid argument)
+    VIDIOC_TRY_DECODER_CMD returned -1 (Invalid argument)
+    VIDIOC_TRY_DECODER_CMD returned -1 (Invalid argument)
+    fail: v4l2-test-codecs.cpp(126): ret
+ test VIDIOC_(TRY_)DECODER_CMD: FAIL
 
-At the previous version we have some work to support legacy devices, while
-for the next version we have just a small changes to string processing,
-as it closely resembles the subsystem for the old technology.
+Signed-off-by: Yunfei Dong <yunfei.dong@mediatek.com>
+---
+changed with v1:
+- remove the static function prefix.
+- fix some messages not reasonable.
+---
+ .../mediatek/vcodec/decoder/mtk_vcodec_dec.c  | 60 +++++++++++++++++--
+ 1 file changed, 54 insertions(+), 6 deletions(-)
 
-The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
+diff --git a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+index ba742f0e391d..c2b64a528028 100644
+--- a/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
++++ b/drivers/media/platform/mediatek/vcodec/decoder/mtk_vcodec_dec.c
+@@ -80,21 +80,18 @@ static struct mtk_q_data *mtk_vdec_get_q_data(struct mtk_vcodec_dec_ctx *ctx,
+ 	return &ctx->q_data[MTK_Q_DATA_DST];
+ }
+ 
+-static int vidioc_try_decoder_cmd(struct file *file, void *priv,
+-				struct v4l2_decoder_cmd *cmd)
++static int stateful_try_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
+ {
+ 	return v4l2_m2m_ioctl_try_decoder_cmd(file, priv, cmd);
+ }
+ 
+-
+-static int vidioc_decoder_cmd(struct file *file, void *priv,
+-				struct v4l2_decoder_cmd *cmd)
++static int stateful_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
+ {
+ 	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
+ 	struct vb2_queue *src_vq, *dst_vq;
+ 	int ret;
+ 
+-	ret = vidioc_try_decoder_cmd(file, priv, cmd);
++	ret = stateful_try_decoder_cmd(file, priv, cmd);
+ 	if (ret)
+ 		return ret;
+ 
+@@ -128,6 +125,57 @@ static int vidioc_decoder_cmd(struct file *file, void *priv,
+ 	return 0;
+ }
+ 
++static int stateless_try_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
++{
++	return v4l2_m2m_ioctl_stateless_try_decoder_cmd(file, priv, cmd);
++}
++
++static int stateless_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
++{
++	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
++	int ret;
++
++	ret = v4l2_m2m_ioctl_stateless_try_decoder_cmd(file, priv, cmd);
++	if (ret)
++		return ret;
++
++	mtk_v4l2_vdec_dbg(3, ctx, "decoder cmd=%u", cmd->cmd);
++	switch (cmd->cmd) {
++	case V4L2_DEC_CMD_FLUSH:
++		/*
++		 * If the flag of the output buffer is equals V4L2_BUF_FLAG_M2M_HOLD_CAPTURE_BUF,
++		 * this command will prevent dequeueing the capture buffer containing the last
++		 * decoded frame. Or do nothing
++		 */
++		break;
++	default:
++		mtk_v4l2_vdec_err(ctx, "invalid stateless decoder cmd=%u", cmd->cmd);
++		return -EINVAL;
++	}
++
++	return 0;
++}
++
++static int vidioc_try_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
++{
++	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
++
++	if (ctx->dev->vdec_pdata->uses_stateless_api)
++		return stateless_try_decoder_cmd(file, priv, cmd);
++
++	return stateful_try_decoder_cmd(file, priv, cmd);
++}
++
++static int vidioc_decoder_cmd(struct file *file, void *priv, struct v4l2_decoder_cmd *cmd)
++{
++	struct mtk_vcodec_dec_ctx *ctx = fh_to_dec_ctx(priv);
++
++	if (ctx->dev->vdec_pdata->uses_stateless_api)
++		return stateless_decoder_cmd(file, priv, cmd);
++
++	return stateful_decoder_cmd(file, priv, cmd);
++}
++
+ void mtk_vdec_unlock(struct mtk_vcodec_dec_ctx *ctx)
+ {
+ 	mutex_unlock(&ctx->dev->dec_mutex[ctx->hw_id]);
+-- 
+2.18.0
 
-  Linux 6.8 (2024-03-10 13:38:09 -0700)
-
-are available in the Git repository at:
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/ieee1394/linux1394.git tags/firewire-updates-6.9
-
-for you to fetch changes up to 04f082d39b99f0b7b4b1cada14280f41d99f1e1f:
-
-  firewire: core: fix build failure due to the caller of fw_csr_string() (2024-03-11 10:38:13 +0900)
-
-----------------------------------------------------------------
-firewire updates for 6.9
-
-This update includes small changes about page-aligned buffer for string
-processing in device attribute.
-
-----------------------------------------------------------------
-Li Zhijian (2):
-      firewire: Kill unnecessary buf check in device_attribute.show
-      firewire: Convert snprintf/sprintf to sysfs_emit
-
-Takashi Sakamoto (1):
-      firewire: core: fix build failure due to the caller of fw_csr_string()
-
- drivers/firewire/core-device.c | 18 +++++-------------
- 1 file changed, 5 insertions(+), 13 deletions(-)
-
-
-Regards
-
-Takashi Sakamoto
 
