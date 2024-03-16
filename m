@@ -1,221 +1,215 @@
-Return-Path: <linux-kernel+bounces-105044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5423F87D825
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:19:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B33D287D81F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:14:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BE02B1F21BE8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:19:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0FB4F1F21A7A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CFA14C6D;
-	Sat, 16 Mar 2024 03:19:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF18529A0;
+	Sat, 16 Mar 2024 03:14:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="UznDPQxq";
-	dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b="TPAuKNOs"
-Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=sempervictus-com.20230601.gappssmtp.com header.i=@sempervictus-com.20230601.gappssmtp.com header.b="xjP0N31B"
+Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5695E2F2D;
-	Sat, 16 Mar 2024 03:19:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=60.244.123.138
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710559147; cv=fail; b=HOYfC7C7Az2L/DWc2Ydep22zN+JZSb/yJ0hQJjql4mqA96UABSADUWMkRBLMV2sKT5Qg0FGUcnqWkOjG+4DLfsBwCUttkLe82XkK7fxd8+dvDdTt4nXVbGj8/XFhkRCWwrT+wPWyWCk9+GTdwo0of+TKJ1hMNLmLiAGS8H9hlrA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710559147; c=relaxed/simple;
-	bh=ndc2i3inLbYfYB9QHMmOiBYoVKLxmLo+VnpwbBLcu9Q=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=dxm1rhccz0v2fGC26CCCENqowTZOhF78yIkiORd0IHjO8eAtKV9lRzA/+3nkZuhLznx3NEatcyvDq7Jf8Ztu9mksxP3EQByRD9CvyAcVT3fGWWfslOLDcBcLD3bzdPYbhfFX/9i6qZkJ9nP0gX1vwVx0tTudZ+/wcb5uwVDNXiI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=UznDPQxq; dkim=pass (1024-bit key) header.d=mediateko365.onmicrosoft.com header.i=@mediateko365.onmicrosoft.com header.b=TPAuKNOs; arc=fail smtp.client-ip=60.244.123.138
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: d39f39b6e34111eeb8927bc1f75efef4-20240316
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=MIME-Version:Content-Transfer-Encoding:Content-ID:Content-Type:In-Reply-To:References:Message-ID:Date:Subject:CC:To:From; bh=ndc2i3inLbYfYB9QHMmOiBYoVKLxmLo+VnpwbBLcu9Q=;
-	b=UznDPQxqDwyoq6tQmIAZMbJI+vdS79cVkxPdTNsU37oGAp5zYzdh+iEgeHRP2lKFus/ez0Puw4p2b6Z/Vd645bl/mUi1PVW0VJ/z0/RdKgJur/LUB9m/IAiHBxTzHy7f/a4iQuLzUzps9NZse4JVEvE64n9O89Z57lGOlnTXLVQ=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:59d28c2b-5adc-46ed-a5ae-bba670aab613,IP:0,U
-	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
-	release,TS:0
-X-CID-META: VersionHash:6f543d0,CLOUDID:ec401085-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULS
-X-UUID: d39f39b6e34111eeb8927bc1f75efef4-20240316
-Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
-	(envelope-from <zhi.mao@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 732655418; Sat, 16 Mar 2024 11:03:55 +0800
-Received: from mtkmbs10n2.mediatek.inc (172.21.101.183) by
- mtkmbs11n1.mediatek.inc (172.21.101.185) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Sat, 16 Mar 2024 11:03:54 +0800
-Received: from APC01-PSA-obe.outbound.protection.outlook.com (172.21.101.237)
- by mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Sat, 16 Mar 2024 11:03:54 +0800
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ULes5L7BuutPi8SVsCQ9H96cgtpDAcg7FaEBfO+yNXP9e4rwZs3ADRhcHi8kxybuW0i4qqW/jY8p2RPjK8v84yGkC4EIih4xkqA4VUcdsNTCALd5mVFmtRfgRghnFmlaIzEQcIB1MwMrhqYY66rrEvNGdqCcOSqd8fSqHac/tKR23I8SHIpuqHxhFzxS15KoZ1jIKmKQhNA44kL72zYiux2f2YVGruDIgXGPo/1LWTk/BXymWiigmkwUcyF/D6+UVIBMTJdTKM8qJw+yLJWKEk0SsXQ873EOnKNls6q/JRvWZzqrESV3nw1YmV9/PHV9oDwSgH4ydiu/DHaa6ohXdw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=ndc2i3inLbYfYB9QHMmOiBYoVKLxmLo+VnpwbBLcu9Q=;
- b=Jg+T3+wyE2OaMu3t0ngvqv/09DxdowLxSWkTF2xQU5j1jBd3u7ZS0MgLconvqP00XSLuZTIZx6iHCtLkXiIdRt3OZO93zCsR6dRVTeOagGE9o/h3naStJGzYBJOgEJ8L8sfs2sejtLsLDyXhsSPRCwiHVRvEITx07KPBRrcjhVsBdnomvajdn0w2XTUZGJeddlZHQhTD+Ki6a99xdnFC0RFX7km0tfedbao20cHkPB4L49HAanL9b7VSfFH5W81XsbQjrJlSq2qcrN/jsoMsRRSlwQ783iS1SxI17gFneKcOfgpSf2FQZWlmzKPg1lnGMe2/8legdd6jySZMEH3aRw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=mediatek.com; dmarc=pass action=none header.from=mediatek.com;
- dkim=pass header.d=mediatek.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4238B1FDD
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 03:14:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710558863; cv=none; b=anq2Ts6B/sl8fB15G3i0fHSf9Gjzh85YvGJgeWRx7LLbFLfAvrA15yxoUJzDj6ScKsL5s8WfQy+GAqZXEvE4blU2qH7pmdYm5vW9cF2kM6vd3sZJnoEJEjOIZw42daq3fFoFBeP9Fgs7s1y+C+F8F/bALV3sTYYBbe+xXgm4rig=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710558863; c=relaxed/simple;
+	bh=6eLdmh8za8M9SlO1/FdsHENEjex9kkHmDzLpfZLWkEI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=qUB4YHPCT6vi+9LqmJ057BsqELVkGB4vIA4oMc+Krr6g5z7GBDJYA1Y6fnbK+r8fu9lnrX5Stbq5jRsoYhhikRdHdYKSeK59qHGWyXGPdlUHBD5+9J2rTzIbwuRG7x/gckJoLKZcME+Zj43EruYvsrgStpQ+18B+SgLNLlznpaU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sempervictus.com; spf=pass smtp.mailfrom=sempervictus.com; dkim=pass (2048-bit key) header.d=sempervictus-com.20230601.gappssmtp.com header.i=@sempervictus-com.20230601.gappssmtp.com header.b=xjP0N31B; arc=none smtp.client-ip=209.85.219.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sempervictus.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sempervictus.com
+Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-dccb1421bdeso2521202276.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 20:14:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=mediateko365.onmicrosoft.com; s=selector2-mediateko365-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=ndc2i3inLbYfYB9QHMmOiBYoVKLxmLo+VnpwbBLcu9Q=;
- b=TPAuKNOsKBmoNu0eyuAcYIgdCkyXH+4/6Vp4qaey9Dei3KstsA5TtWkCx1djW791aw3IfHXPRJOYCntB6tv0qIETzYPEUpBo2CA9FW+/RyOb+hgGw6EqoeZkyQeucri6dm1qzi1DJ9xfbGRgkoPxt4PU5mtv10EYkDNzVX8wiWI=
-Received: from TYZPR03MB5566.apcprd03.prod.outlook.com (2603:1096:400:53::7)
- by TYZPR03MB6645.apcprd03.prod.outlook.com (2603:1096:400:1ff::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.23; Sat, 16 Mar
- 2024 03:03:51 +0000
-Received: from TYZPR03MB5566.apcprd03.prod.outlook.com
- ([fe80::b39a:4ac4:5bf8:88d]) by TYZPR03MB5566.apcprd03.prod.outlook.com
- ([fe80::b39a:4ac4:5bf8:88d%5]) with mapi id 15.20.7386.022; Sat, 16 Mar 2024
- 03:03:51 +0000
-From: =?utf-8?B?WmhpIE1hbyAo5q+b5pm6KQ==?= <zhi.mao@mediatek.com>
-To: "andy.shevchenko@gmail.com" <andy.shevchenko@gmail.com>
-CC: "heiko@sntech.de" <heiko@sntech.de>, "tomi.valkeinen@ideasonboard.com"
-	<tomi.valkeinen@ideasonboard.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>,
-	"yunkec@chromium.org" <yunkec@chromium.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "dan.scally@ideasonboard.com"
-	<dan.scally@ideasonboard.com>, "gerald.loacker@wolfvision.net"
-	<gerald.loacker@wolfvision.net>,
-	=?utf-8?B?U2hlbmduYW4gV2FuZyAo546L5Zyj55S3KQ==?=
-	<shengnan.wang@mediatek.com>, "hdegoede@redhat.com" <hdegoede@redhat.com>,
-	"linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
-	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>,
-	=?utf-8?B?WWF5YSBDaGFuZyAo5by16ZuF5riFKQ==?= <Yaya.Chang@mediatek.com>,
-	"mchehab@kernel.org" <mchehab@kernel.org>, "jacopo.mondi@ideasonboard.com"
-	<jacopo.mondi@ideasonboard.com>, "jernej.skrabec@gmail.com"
-	<jernej.skrabec@gmail.com>, "linux-mediatek@lists.infradead.org"
-	<linux-mediatek@lists.infradead.org>, "bingbu.cao@intel.com"
-	<bingbu.cao@intel.com>, Project_Global_Chrome_Upstream_Group
-	<Project_Global_Chrome_Upstream_Group@mediatek.com>,
-	"sakari.ailus@linux.intel.com" <sakari.ailus@linux.intel.com>,
-	"10572168@qq.com" <10572168@qq.com>, "conor+dt@kernel.org"
-	<conor+dt@kernel.org>, "hverkuil-cisco@xs4all.nl" <hverkuil-cisco@xs4all.nl>,
-	"krzysztof.kozlowski+dt@linaro.org" <krzysztof.kozlowski+dt@linaro.org>,
-	"matthias.bgg@gmail.com" <matthias.bgg@gmail.com>,
-	"laurent.pinchart@ideasonboard.com" <laurent.pinchart@ideasonboard.com>,
-	"devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
-	"angelogioacchino.delregno@collabora.com"
-	<angelogioacchino.delregno@collabora.com>, "macromorgan@hotmail.com"
-	<macromorgan@hotmail.com>
-Subject: Re: [PATCH 0/2] media: i2c: Add support for GC05A2 sensor
-Thread-Topic: [PATCH 0/2] media: i2c: Add support for GC05A2 sensor
-Thread-Index: AQHadQmvsApuHB1Ko0+9GPY4QtPLxLE1XYeAgARViQA=
-Date: Sat, 16 Mar 2024 03:03:51 +0000
-Message-ID: <f4512301c8514bd758eebb166bbed44f2ac65e5f.camel@mediatek.com>
-References: <20240313054409.8073-1-zhi.mao@mediatek.com>
-	 <CAHp75VeHVJpiaCTdQHWQocE9PFLsGhu+a2TP7VSV34i02v-ksA@mail.gmail.com>
-In-Reply-To: <CAHp75VeHVJpiaCTdQHWQocE9PFLsGhu+a2TP7VSV34i02v-ksA@mail.gmail.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: TYZPR03MB5566:EE_|TYZPR03MB6645:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: xBk567gmN3XelV1nSw7NsZc+3jbASpj/+KG8djYy9Y60NJD8XpnkXx9Jl9Hg4JI/CVpSm4ukHfMUJU1fc769kFUqgZFqDT/3/oZidMMMI+FV49Mlnu1LC5kuTwMiWrXFYGGhCk7yG/jyhoLhqGinULRwo6lIvPRRHDHVQ4EodW+E0KszAe1xf56e3Iv9gM/Zc2vKEhCsefjnjLQVYDl5CMuhHt2S+GLdkqjDHk7B25JLGM0erksl6W2BIlgquaBIauyUtsd8jSfwBfThdHmGaLHhUUQlqux0vqhp/fL1s3hB+xJSvpp/vz30kHR55Nj5qR4rg8Ii3hfSxuQl0qilybzom80POzuYmiH4TqJVmpM+7UJ2TKUibr6vChqeTizGXZXtvIiDcJPRWkBYL3wlMgtxg28rqAMOjfvs7cOy1WZEfLkNkP8lZEJ5+rTyzcyHr8rXKhQFArfIRX0/8ut1ZNS4IVNht30kiGnMKte2RJ7zHMrYxtyVNVCSClgy0qNSznTn5HNmkex9N+mSb0CBAW64lx5YzjEaOGh+NpswATJrMaDZeW4QCs57/qZ6l8v6DZVk639tNT+9odAAtpmcybFshAM9ZniVMGvNchgft4s=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYZPR03MB5566.apcprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Y0JuRFZRSGN5am9qQnk1L1NUdXJ2YlRtdHQ5NmU2UHlZMEVSd1ZRL0Z1WWF0?=
- =?utf-8?B?MFNXLzlwaUxzNVk0QmsvN3FZT1JkYmUvQnJNTk1wNGc4R3V4OU92dXZuYjdu?=
- =?utf-8?B?djMwaGxpbXBFT3VnbEtPM25UczVWWXZ3QUd2T0VyYWxYQ2t1THF3emx5Z1l6?=
- =?utf-8?B?ZnZ5SDlKZStPSlBxSXMzWWFoMzVXK3F3ZC9GQzRhWFF2YmUrcTFwWmZxbjhT?=
- =?utf-8?B?My9TL3VNdHRYSGM2eFJLd0pzS04wQnlyeEtnaGFyODR0UnZheGROd3V6V0RH?=
- =?utf-8?B?SGZHd3VteG1lZWk0L0t2aE1EOXlTQ3lZU2J1UGlncGo5eHdiWjNCQjdIT2Zv?=
- =?utf-8?B?MGxscEFjUmE0RnQwTTJGM1c4ZzQxUlVlZ2cvNlp1TlptMm4rOVRFVStUazdB?=
- =?utf-8?B?Mkc3a1hTT2FzUld5MUlIcjBFeWx3NjBKUmFzMWE4ZmJ1eEtielZTaHZxU3l5?=
- =?utf-8?B?ZjFzZzRoYlIzUTBNZFVrZTBtZHUxMksyb1VOMWxmU0N0bFRDR3k2Nzg0MjlJ?=
- =?utf-8?B?SldBaUdZOTJ2UE1oZHNLQU1BWlFtOVRnWUpEZ2drY3dwTzkzYVZkV1lPaHda?=
- =?utf-8?B?dDgrNGhBQUpXVnRpd0FzZG8zVXN3NFZnb0VzQnlCRHdGWTJTL0J5a2VBVW9P?=
- =?utf-8?B?amljandZbnVxaWNzMHdYZmN6YTdSVGVHK1NMbUhibGpkQVNmY2pKeW9EQzhV?=
- =?utf-8?B?R0hma2dJVW5NcitiRGtWeFV1ZW9UT29rU1NSekRIWEpnUWFnSzlVUXBwNzNI?=
- =?utf-8?B?a29FNFlXRll0WElmV0RxazNneE96WU1SLzBwY2NRZlhjbEorM3JSUkg3TGhq?=
- =?utf-8?B?VFdKdXJkNEpPSVpKL1ZOa2pHNWZKY2FWUnYySGFPWlZ5OUh0SENrcU9aV1Vm?=
- =?utf-8?B?SlBVSzF2OGpJWkNHSlg2Mjl1Zk42RlhIcFFwTzAvTmp3ZERuQ2hNWk4yeDVW?=
- =?utf-8?B?a2ZWM1UzTkhieG5CVFN5QkRIWVBZak8vQjB1dFdoRnhNY3gxb1MyL2pZelFp?=
- =?utf-8?B?MXloWkRzblp4NCtEZkZOVjFGS1FjMEhraVI1bFh3WTg4OXJEc0EwSUtTTG4x?=
- =?utf-8?B?bmlWVG5NUmNMU005c0RDSmc2YStlMTV4bXZyK056MnZLUTVnUFFuZitRMGdq?=
- =?utf-8?B?ZGl5SXo1L3pLSHhFalZuRUFjMjVNNERtWVdSbFJHMXhacTJkYjZJMjhITGFj?=
- =?utf-8?B?K0QzNkRybFhJQVN4T1FRNkVVVGh2a1ZkMlZwQnlLVzlXOUZNSVNCVWxneE9M?=
- =?utf-8?B?NjZEcGFrcHdnQkJ2Q3dVcUJtOXJ4SmtoVmZiOWF5Zml2MkFIOTFxMVhrTHlo?=
- =?utf-8?B?N20wUmc1M2dmQzZ3UDhLZWlwNkZCWkFRVGRLTFZJc2ZFRWcrQ0EzNDZiN1hF?=
- =?utf-8?B?TnNVcGpaK21kUjdqdjErQVNXQzV2OHBIWjhrb20vSG1BQ2VTaFJpdnpuUitW?=
- =?utf-8?B?Snl2bzlBUjQvY1E5OW9CSzBrR3FPUlZjTXFJZENvd0lIMVQ1QVRwUnh1VEtY?=
- =?utf-8?B?V0w4YytIM1lmRUZsM1k5ZWF5aFlWclVodWxoNGVRU0pMZExlMm5vZVpyNHNU?=
- =?utf-8?B?R0ZOOWVaRG9XQ1BaZGJIOFQxaUN3QjUzMlkwdDBZV0lDMm5QZlBPRXRDQjI3?=
- =?utf-8?B?ci9nQ1c4bTU5cnY3K1JSU2pubU9VYTVXSTdzRmUwK1RJMEI1TTRBWGtRcnlJ?=
- =?utf-8?B?cmJLclZsSmRDSFkxMDBWNlVLU0FlRS9XYk1KaTkyNVhNUVg0OW55djhNdDMr?=
- =?utf-8?B?bUszNWllS29ITDUvMWZkbFdod2VMZnhuTjUzN3JKcXJMVldkVzhGVk02TWhv?=
- =?utf-8?B?QUlJeEZ2Z09TLzhDMnd0TEE2cythN0JaYlR5Ym01VWNHdXVLUG9pOEw4NWVT?=
- =?utf-8?B?eHRRNy9ZTFZ4RFR1d0IrNXMzRTZSWE5xMUdvUEE1UzRiSmlPMytPdlJiN2dz?=
- =?utf-8?B?UnRhV0dTSGY0VWZESlNsdFFjOXhnY3g3eEYvNWhBSEwrYmd0ZW0vd2p4dTNR?=
- =?utf-8?B?a1NLekVFeTlIWjBDaVVRSEkwTWZHYWZua083eksxT0svUjh2RXpSZzUzLy9S?=
- =?utf-8?B?NVFyTjNOT0RoNk9RcWlPcXYvT0p6amoybDJxVDZFUEY3akR2Z2VtZVBUQVRL?=
- =?utf-8?B?UmFmd2ZVR0pmMEtKOXN4aHNzbEljU3J2Tk5OTDUrMncvNU1GMHNHOFY2NTJh?=
- =?utf-8?B?b0E9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <CD4D6194CE89694B80457A77436090B0@apcprd03.prod.outlook.com>
-Content-Transfer-Encoding: base64
+        d=sempervictus-com.20230601.gappssmtp.com; s=20230601; t=1710558860; x=1711163660; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=GE8ReMJXOBRMOJPX+O2xrNy0SwcxcCJ3CQ8iZfhs2B0=;
+        b=xjP0N31BkJwoKbJEJt0kWT/kayz9V6eWPX0oORv4CR3MVspQgOCP/n9FrRvXwO1QWI
+         MC2rZh9x8GWjdROgsozPc/dtajhrFCfW8XS1904C41whGnxljMwyIPs0m7PC3TrUkfSS
+         xcNx558/luvYipEuPvzdCdr6ZGBc9jpcrrY1M2vtuto8cc3Bm8htuqCLQbyie5Rhi5iW
+         noyeIKz2KJR1OZd/bjw++JXxGjTALnA753LvJrV09HDRWzLNVj1noFWkEjn83NgWfZaX
+         icw+mRck1J/Fqrnk4hsKW2A1ktjw50FuxhCVJLml2OP8cQzXfauUQNM5onLTxPWsxr3B
+         Q22A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710558860; x=1711163660;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=GE8ReMJXOBRMOJPX+O2xrNy0SwcxcCJ3CQ8iZfhs2B0=;
+        b=Z70DSTmd6VS9RhPmsWU79ghy+6ujCfe1Ak18/HBm55bZ6eGJCIsKD+OCUcYytoKtln
+         a8oQEyw6v1//8oPIvDwWTHkcdEi5RNjhk/1MDljHTBE9BUKMS+4qgjgnOReC5aO6grmW
+         03XDvEzER7rjnuqFiFl+6v9gbd02Fyh8CgrIF2RppEpzIrF/8mgia2ReXigwXuAgdWcP
+         LojEwJgzPnDpu/OoiNu8chJ6unrF1gbCij19rGtrj1vXvN+/q8Fm795wboRvuBLKbfsI
+         jG1R6kL0JnqbmjyaW2tPPopSzrsphPVkPywb5GxQTCKYcx+tNjvz8RQvEeTzjrf+0IO6
+         WeWg==
+X-Forwarded-Encrypted: i=1; AJvYcCWR5I22K+HTfGgzMwo9yy1s6yNQ5cQs6FZ5KfmV+k9fTWUrQKEgU4CGY9v77zrXiVAzBBsxZYkG9igh8tl6K6l1IT8QKkPvbULhGFsN
+X-Gm-Message-State: AOJu0Yxgjd4GSFLjcoqEa6EQ+SEjJ2CKAHPMIdoy08TBAoBYmGqdF/De
+	QFVzrBB018klM6CuCVZ5mxt+a4GKhZELOaI12PZspKfIR9g35v6ydWwMoZuHzUfoQqHNbgl9Id8
+	Pixwns0v4YQBhhgvhT4YJUftI4FSG4J9XarKYdQ==
+X-Google-Smtp-Source: AGHT+IFyhoPSc7JGdV+oe6psqd2uVvvZN4Som/ELZ4Ld8+Wk1xchMqIF+Bg6WUGCWLR3cdz5i24uA4aJxYVCqEJ29MI=
+X-Received: by 2002:a5b:a90:0:b0:dcc:84ae:9469 with SMTP id
+ h16-20020a5b0a90000000b00dcc84ae9469mr5780484ybq.64.1710558860175; Fri, 15
+ Mar 2024 20:14:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: TYZPR03MB5566.apcprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 01e9be2c-abc5-4241-2db3-08dc4565b542
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2024 03:03:51.4366
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: a7687ede-7a6b-4ef6-bace-642f677fbe31
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: iDoZ9u44+k0eLWbsDwUSr4mVkxFpCce4HcQ4OQ+ri5DOSTbtFPbVn8PYQ8/iF6ryPlsu/+6smfUouwWPv1sJTg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYZPR03MB6645
+References: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+In-Reply-To: <20210830235927.6443-1-rick.p.edgecombe@intel.com>
+From: Boris Lukashev <blukashev@sempervictus.com>
+Date: Fri, 15 Mar 2024 23:14:09 -0400
+Message-ID: <CAFUG7Cfy6nmWk9xmTD4rp80i4_RA12V7SA6851BvD=JaWRZeyA@mail.gmail.com>
+Subject: Re: [RFC PATCH v2 00/19] PKS write protected page tables
+To: Rick Edgecombe <rick.p.edgecombe@intel.com>
+Cc: dave.hansen@intel.com, luto@kernel.org, peterz@infradead.org, 
+	x86@kernel.org, akpm@linux-foundation.org, keescook@chromium.org, 
+	shakeelb@google.com, vbabka@suse.cz, rppt@kernel.org, linux-mm@kvack.org, 
+	linux-hardening@vger.kernel.org, kernel-hardening@lists.openwall.com, 
+	ira.weiny@intel.com, dan.j.williams@intel.com, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-SGkgQW5keSwNCg0KVGhhbmtzIGZvciB5b3VyIHJldmlldy4NCg0KDQpPbiBXZWQsIDIwMjQtMDMt
-MTMgYXQgMTA6NTIgKzAyMDAsIEFuZHkgU2hldmNoZW5rbyB3cm90ZToNCj4gIAkgDQo+IEV4dGVy
-bmFsIGVtYWlsIDogUGxlYXNlIGRvIG5vdCBjbGljayBsaW5rcyBvciBvcGVuIGF0dGFjaG1lbnRz
-IHVudGlsDQo+IHlvdSBoYXZlIHZlcmlmaWVkIHRoZSBzZW5kZXIgb3IgdGhlIGNvbnRlbnQuDQo+
-ICBPbiBXZWQsIE1hciAxMywgMjAyNCBhdCA3OjU04oCvQU0gWmhpIE1hbyA8emhpLm1hb0BtZWRp
-YXRlay5jb20+DQo+IHdyb3RlOg0KPiA+DQo+ID4gVGhpcyBzZXJpZXMgYWRkcyBZQU1MIERUIGJp
-bmRpbmcgYW5kIFY0TDIgc3ViLWRldmljZSBkcml2ZXIgZm9yDQo+IEdhbGF4eWNvcmUncw0KPiA+
-IEdDMDVBMiA1LW1lZ2FwaXhlbCAxMC1iaXQgUkFXIENNT1MgMS81IiBzZW5zb3IsIHdpdGggYW4g
-TUlQSSBDU0ktMg0KPiBpbWFnZSBkYXRhDQo+ID4gaW50ZXJmYWNlIGFuZCB0aGUgSTJDIGNvbnRy
-b2wgYnVzLg0KPiA+DQo+ID4gVGhlIGRyaXZlciBpcyBpbXBsZW1lbnRlZCB3aXRoIFY0TDIgZnJh
-bWV3b3JrLg0KPiA+ICAtIEFzeW5jIHJlZ2lzdGVyZWQgYXMgYSBWNEwyIHN1Yi1kZXZpY2UuDQo+
-ID4gIC0gQXMgdGhlIGZpcnN0IGNvbXBvbmVudCBvZiBjYW1lcmEgc3lzdGVtIGluY2x1ZGluZyBT
-ZW5pbmYsIElTUA0KPiBwaXBlbGluZS4NCj4gPiAgLSBBIG1lZGlhIGVudGl0eSB0aGF0IHByb3Zp
-ZGVzIG9uZSBzb3VyY2UgcGFkIGluIGNvbW1vbi4NCj4gPiAgLSBVc2VkIGluIGNhbWVyYSBmZWF0
-dXJlcyBvbiBDaHJvbWVPUyBhcHBsaWNhdGlvbi4NCj4gPg0KPiA+IEFsc28gdGhpcyBkcml2ZXIg
-c3VwcG9ydHMgZm9sbG93aW5nIGZlYXR1cmVzOg0KPiA+ICAtIG1hbnVhbCBleHBvc3VyZSBhbmQg
-YW5hbG9nIGdhaW4gY29udHJvbCBzdXBwb3J0DQo+ID4gIC0gdmVydGljYWwgYmxhbmtpbmcgY29u
-dHJvbCBzdXBwb3J0DQo+ID4gIC0gdGVzdCBwYXR0ZXJuIHN1cHBvcnQNCj4gPiAgLSBtZWRpYSBj
-b250cm9sbGVyIHN1cHBvcnQNCj4gPiAgLSBydW50aW1lIFBNIHN1cHBvcnQNCj4gPiAgLSBzdXBw
-b3J0IHJlc29sdXRpb246IDI1OTJ4MTk0NEAzMGZwcywgMTI4MHg3MjBANjBmcHMNCj4gDQo+IE5v
-dCBldmVuIGdvaW5nIHRvIGRvIGEgdGhvcm91Z2ggcmV2aWV3IGFzIG9uZSBzaG91bGQgbGVhcm4g
-b24gdGhlDQo+IHByZXZpb3VzIHJldmlld3MuIE1vc3Qgb2YgdGhlIGNvbW1lbnRzIHRoYXQgSSBo
-YWQgZ2l2ZW4gdG8gYW5vdGhlcg0KPiBkcml2ZXIgc3VibWlzc2lvbiBhcmUgYXBwbGljYWJsZSBo
-ZXJlLiBTbywgd2FpdGluZyBmb3IgdjIgd2l0aCBhbGwNCj4gYXBwbGljYWJsZSBiZWluZyBhZGRy
-ZXNzZWQuDQo+IA0KDQpUaGUgY29tbWVudHMgYXJlIGZpeGVkIGluIHBhdGNoOnYxDQoNCmh0dHBz
-Oi8vbG9yZS5rZXJuZWwub3JnL2xpbnV4LW1lZGlhLzIwMjQwMzE2MDI1MjUzLjIzMDAtMS16aGku
-bWFvQG1lZGlhdGVrLmNvbS8NCj4gLS0gDQo+IFdpdGggQmVzdCBSZWdhcmRzLA0KPiBBbmR5IFNo
-ZXZjaGVua28NCg==
+IIRC shoot-downs are one of the reasons for using per-cpu PGDs, which
+can in-turn enable/underpin other hardening functions... presuming the
+churn of recent years has softened attitudes toward such core MM
+changes.
+https://forum.osdev.org/viewtopic.php?f=3D15&t=3D29661
+
+-Boris
+
+
+On Mon, Aug 30, 2021 at 8:02=E2=80=AFPM Rick Edgecombe
+<rick.p.edgecombe@intel.com> wrote:
+>
+> Hi,
+>
+> This is a second RFC for the PKS write protected tables concept. I'm shar=
+ing to
+> show the progress to interested people. I'd also appreciate any comments,
+> especially on the direct map page table protection solution (patch 17).
+>
+> Since v1[1], the improvements are:
+>  - Fully handle direct map page tables, and handle hotplug/unplug path.
+>  - Create a debug time checker that scans page tables and verifies
+>    their protection.
+>  - Fix odds-and-ends kernel page tables that showed up with debug
+>    checker. At this point all of the typical normal page tables should be
+>    protected.
+>  - Fix toggling of writablility for odds-and-ends page table modification=
+s found
+>    that don't use the normal helpers.
+>  - Create atomic context grouped page allocator, after finding some page =
+table
+>    allocations that are passing GFP_ATOMIC.
+>  - Create "soft" mode that warns and disables protection on violation ins=
+tead
+>    of oopsing.
+>  - Boot parameters for disabling pks tables
+>  - Change PageTable set clear to ctor/dtor (peterz)
+>  - Remove VM_BUG_ON_PAGE in alloc_table() (Shakeel Butt)
+>  - PeterZ/Vlastimil had suggested to also build a non-PKS mode for use in
+>    debugging. I skipped it for now because the series was too big.
+>  - Rebased to latest PKS core v7 [2]
+>
+> Also, Mike Rapoport has been experimenting[3] with this usage to work on =
+how to
+> share caches of permissioned/broken pages between use cases. This RFCv2 s=
+till
+> uses the "grouped pages" concept, where each usage would maintain its own
+> cache, but should be able to integrate with a central solution if somethi=
+ng is
+> developed.
+>
+> Next I was planning to look into characterizing/tuning the performance, a=
+lthough
+> what page allocation scheme is ultimately used will probably impact that.
+>
+> This applies on top of the PKS core v7 series[2] and this patch[4]. Testi=
+ng is
+> still pretty light.
+>
+> This RFC has been acked by Dave Hansen.
+>
+> [1] https://lore.kernel.org/lkml/20210505003032.489164-1-rick.p.edgecombe=
+@intel.com/
+> [2] https://lore.kernel.org/lkml/20210804043231.2655537-1-ira.weiny@intel=
+com/
+> [3] https://lore.kernel.org/lkml/20210823132513.15836-1-rppt@kernel.org/
+> [4] https://lore.kernel.org/lkml/20210818221026.10794-1-rick.p.edgecombe@=
+intel.com/
+>
+> Rick Edgecombe (19):
+>   list: Support getting most recent element in list_lru
+>   list: Support list head not in object for list_lru
+>   x86/mm/cpa: Add grouped page allocations
+>   mm: Explicitly zero page table lock ptr
+>   x86, mm: Use cache of page tables
+>   x86/mm/cpa: Add perm callbacks to grouped pages
+>   x86/cpufeatures: Add feature for pks tables
+>   x86/mm/cpa: Add get_grouped_page_atomic()
+>   x86/mm: Support GFP_ATOMIC in alloc_table_node()
+>   x86/mm: Use alloc_table() for fill_pte(), etc
+>   mm/sparsemem: Use alloc_table() for table allocations
+>   x86/mm: Use free_table in unmap path
+>   mm/debug_vm_page_table: Use setters instead of WRITE_ONCE
+>   x86/efi: Toggle table protections when copying
+>   x86/mm/cpa: Add set_memory_pks()
+>   x86/mm: Protect page tables with PKS
+>   x86/mm/cpa: PKS protect direct map page tables
+>   x86/mm: Add PKS table soft mode
+>   x86/mm: Add PKS table debug checking
+>
+>  .../admin-guide/kernel-parameters.txt         |   4 +
+>  arch/x86/boot/compressed/ident_map_64.c       |   5 +
+>  arch/x86/include/asm/cpufeatures.h            |   2 +-
+>  arch/x86/include/asm/pgalloc.h                |   6 +-
+>  arch/x86/include/asm/pgtable.h                |  31 +-
+>  arch/x86/include/asm/pgtable_64.h             |  33 +-
+>  arch/x86/include/asm/pkeys_common.h           |   1 -
+>  arch/x86/include/asm/set_memory.h             |  24 +
+>  arch/x86/mm/init.c                            |  90 +++
+>  arch/x86/mm/init_64.c                         |  29 +-
+>  arch/x86/mm/pat/set_memory.c                  | 527 +++++++++++++++++-
+>  arch/x86/mm/pgtable.c                         | 183 +++++-
+>  arch/x86/mm/pkeys.c                           |   4 +
+>  arch/x86/platform/efi/efi_64.c                |   8 +
+>  include/asm-generic/pgalloc.h                 |  46 +-
+>  include/linux/list_lru.h                      |  26 +
+>  include/linux/mm.h                            |  16 +-
+>  include/linux/pkeys.h                         |   1 +
+>  mm/Kconfig                                    |  23 +
+>  mm/debug_vm_pgtable.c                         |  36 +-
+>  mm/list_lru.c                                 |  38 +-
+>  mm/memory.c                                   |   1 +
+>  mm/sparse-vmemmap.c                           |  22 +-
+>  mm/swap.c                                     |   6 +
+>  mm/swap_state.c                               |   5 +
+>  .../arch/x86/include/asm/disabled-features.h  |   8 +-
+>  26 files changed, 1123 insertions(+), 52 deletions(-)
+>
+> --
+> 2.17.1
+>
+
+
+--=20
+Boris Lukashev
+Systems Architect
+Semper Victus
 
