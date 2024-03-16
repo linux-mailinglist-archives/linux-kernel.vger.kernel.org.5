@@ -1,200 +1,164 @@
-Return-Path: <linux-kernel+bounces-105033-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105034-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58BD387D7F7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:21:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB1C687D7FD
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:36:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A94651F21D0F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:21:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6688282D9F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:35:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE9341C36;
-	Sat, 16 Mar 2024 02:21:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="ZxjyeEMG"
-Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08B8D1FBB;
+	Sat, 16 Mar 2024 02:35:53 +0000 (UTC)
+Received: from h3cspam02-ex.h3c.com (smtp.h3c.com [60.191.123.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1727E1879
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:21:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CA6636C;
+	Sat, 16 Mar 2024 02:35:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.191.123.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710555704; cv=none; b=Pk9ebu/nOl+jJv/81yJVkRv3ZH2FxDnwZ4GQUKo8USmx7bI9+eP0VA7w7r/7bbj6pg+dwPLmT66srznfRAffdmdY4cdSjVBYoaezP/jYQZaIZwSzYBS+wp7TqB1B37Ijne93BP4QwLWUtCOkdT8wrLrTEk95ZAN+LIIkm0arero=
+	t=1710556552; cv=none; b=TFyGgEWm0ZiOhl1yNQWj9JV/JykgmJMFCIbDsKsx51nacWThdwh+0O+N0mOynOepocpwhfp5jwO/8QFMfx6xTQnCrK9vp+oM+GtyWJFsFGNSWxLVwCBhLaK4lLuoubXCHBRiOXtVUplFwdinccrAb2YHfTEIK2jMBsSiuZzmxX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710555704; c=relaxed/simple;
-	bh=f5AsLN5dJJnjEpufB2wO5bFR3D2nwJumh7e1n6boCCE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=i1KgJDjeFBXzOMWTOGBih9G4ekZOV53j/4SFgGCrQ5i8Cy4it+H4a1603Dq8EOR4drvjgCKd0bzZaU/xGO4KevJb+LnbWAaynvH98NwO5TJSwiyrOHjdFhk5P4MnPRqogpCkuw1eO9oiRYOvvA2PQ6xWukaioQbE4tgjOMVDpao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=ZxjyeEMG; arc=none smtp.client-ip=209.85.208.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d21cdbc85bso35079891fa.2
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:21:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1710555700; x=1711160500; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=PJPbyhhd4spfaEVEn7atbFHsNQ7PWuy+P7v5H5IJWOw=;
-        b=ZxjyeEMGpMbRATrcaTLNEdO5+BXuqn37LUy+1znd7X0e+8Tn4jqlRJq4xnKr/mNUK2
-         cqUsY7Tiys3TNzc1JZPSFBlUAq7NHoVXqXnePyiS4onis5HOTjzo5TuvOR/wTW60cve2
-         jkB1nphkn5uXok3Qb07aXKU+AZ0qgAaWv3yapcsh5apDgKlEIXdbm44dRuEf+E/9tNb2
-         zPefA6v//ZliPxZ08bbLSkxrh9evKWZ2n48Xrfs3JcEzL1pMyYZQJ9q0kFnj0Dm2O7eV
-         GadKRBxVaC6Pk0u3PLENYsJiVdLZx4F0gRcRYbV2HPS+EzI/Y/C26EwEDYVTGyeSo9mw
-         3uHA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710555700; x=1711160500;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=PJPbyhhd4spfaEVEn7atbFHsNQ7PWuy+P7v5H5IJWOw=;
-        b=ChNZrxXcLNzu9aPAn3A6hpKvp8RUoh5XUt92YcytRi1FuLzy57PTdSKzcZyQ8s5O+c
-         n+HXLW6LFkPPxn6A3YkxyZexWZq2dYLcxqOOUfJG/89Kx95z340hT2vwnH3cFwHNN9ws
-         SG4ceUh4ZN0g38js8qc7RPTiRUe0L6/dDY5aykdSdWUXygwqGMFqgiDojt6KiJPmnkKr
-         Ub9kzB4vg14bX5uGXoHVGfzeCdFETV57riIxyyGC/6f6g6Ud//fSXwzjfP/eNZZIMmyA
-         BALJIyYHaGjihcvkgKShhadU1kNCKp6kELxqM1I0i+9luHSXOIRjcuZUwKN2k57CJhx0
-         JIEw==
-X-Forwarded-Encrypted: i=1; AJvYcCXyNhSQaskgM3/ikWjdLB4yi1uqrKECvEBeOOIRcR9aEphZ2kXacEpkkGqKW1u8yOVIC5NgVI/lGOgNw9u/XhToC0UvcYMiNqiPEq6/
-X-Gm-Message-State: AOJu0YzDLp6LhY1hxaiMhjTYRKvwpK9TuoDPH59PiifpE3R7qiZ24wnq
-	FPFGfdHG26o740ZlcHgsltu/GRBPR6rLoBBHHj0SnSzdG+xPvie9KWQU/kZAT/I=
-X-Google-Smtp-Source: AGHT+IHHbkkeyZAOXwXLmDRKqVXt5cjt2jxWgX03Mg4kFWBOq93PSBVllMLcsvKbbMJFvLiuFpE9dg==
-X-Received: by 2002:a2e:7217:0:b0:2d4:4b13:3413 with SMTP id n23-20020a2e7217000000b002d44b133413mr2820808ljc.22.1710555700178;
-        Fri, 15 Mar 2024 19:21:40 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id s68-20020a637747000000b005b458aa0541sm3088443pgc.15.2024.03.15.19.21.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 19:21:39 -0700 (PDT)
-Message-ID: <1eaab597-5cd5-418e-b4b7-304a85dfa935@suse.com>
-Date: Sat, 16 Mar 2024 12:51:33 +1030
+	s=arc-20240116; t=1710556552; c=relaxed/simple;
+	bh=5UKXr0LrJ+AvmgLX9sd0roltdUUfyJdTU6vBDngQ5wk=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=Aih6BAb4VemZsGNGD6I/01KkGesau/1QxQcaMREC1cCcZUu+xan640NA+ATzhd4dCZxtj9m/SzqxsDIrPkW+gxwYhSs/+xuOykSmeVVFX1On+6hrw5YbmJQ55SmmZqWJ/X0CudumOyYLBl4TJadyxw0CEdvEqCTimHJYcbmvPK8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com; spf=pass smtp.mailfrom=h3c.com; arc=none smtp.client-ip=60.191.123.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=h3c.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=h3c.com
+Received: from mail.maildlp.com ([172.25.15.154])
+	by h3cspam02-ex.h3c.com with ESMTP id 42G2YsDx090365;
+	Sat, 16 Mar 2024 10:34:54 +0800 (GMT-8)
+	(envelope-from liu.yeC@h3c.com)
+Received: from DAG6EX02-IMDC.srv.huawei-3com.com (unknown [10.62.14.11])
+	by mail.maildlp.com (Postfix) with ESMTP id F19132004BB2;
+	Sat, 16 Mar 2024 10:36:27 +0800 (CST)
+Received: from localhost.localdomain (10.114.186.34) by
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.2.1258.27; Sat, 16 Mar 2024 10:34:54 +0800
+From: <liu.yec@h3c.com>
+To: <daniel.thompson@linaro.org>
+CC: <dianders@chromium.org>, <gregkh@linuxfoundation.org>,
+        <jason.wessel@windriver.com>, <jirislaby@kernel.org>,
+        <kgdb-bugreport@lists.sourceforge.net>, <linux-kernel@vger.kernel.org>,
+        <linux-serial@vger.kernel.org>, <liu.yeC@h3c.com>
+Subject: [PATCH v1] kdb: Fix the deadlock issue in KDB debugging.
+Date: Sat, 16 Mar 2024 10:34:43 +0800
+Message-ID: <20240316023443.101169-1-liu.yec@h3c.com>
+X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240314130916.GE202685@aspen.lan>
+References: <20240314130916.GE202685@aspen.lan>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] btrfs: Fix race in read_extent_buffer_pages()
-Content-Language: en-US
-To: Tavian Barnes <tavianator@tavianator.com>, linux-btrfs@vger.kernel.org
-Cc: Christoph Hellwig <hch@lst.de>, Chris Mason <clm@fb.com>,
- Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
- linux-kernel@vger.kernel.org
-References: <1ca6e688950ee82b1526bb3098852af99b75e6ba.1710551459.git.tavianator@tavianator.com>
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <1ca6e688950ee82b1526bb3098852af99b75e6ba.1710551459.git.tavianator@tavianator.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: BJSMTP02-EX.srv.huawei-3com.com (10.63.20.133) To
+ DAG6EX02-IMDC.srv.huawei-3com.com (10.62.14.11)
+X-DNSRBL: 
+X-SPAM-SOURCE-CHECK: pass
+X-MAIL:h3cspam02-ex.h3c.com 42G2YsDx090365
 
+From: LiuYe <liu.yeC@h3c.com>
 
+Currently, if CONFIG_KDB_KEYBOARD is enabled, then kgdboc will
+  attempt to use schedule_work() to provoke a keyboard reset when transitioning out
+of the debugger and back to normal operation. This can cause
+deadlock because schedule_work() is not NMI-safe.
 
-在 2024/3/16 11:44, Tavian Barnes 写道:
-> To prevent concurrent reads for the same extent buffer,
-> read_extent_buffer_pages() performs these checks:
-> 
->      /* (1) */
->      if (test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))
->          return 0;
-> 
->      /* (2) */
->      if (test_and_set_bit(EXTENT_BUFFER_READING, &eb->bflags))
->          goto done;
-> 
-> At this point, it seems safe to start the actual read operation. Once
-> that completes, end_bbio_meta_read() does
-> 
->      /* (3) */
->      set_extent_buffer_uptodate(eb);
-> 
->      /* (4) */
->      clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
-> 
-> Normally, this is enough to ensure only one read happens, and all other
-> callers wait for it to finish before returning.  Unfortunately, there is
-> a racey interleaving:
-> 
->      Thread A | Thread B | Thread C
->      ---------+----------+---------
->         (1)   |          |
->               |    (1)   |
->         (2)   |          |
->         (3)   |          |
->         (4)   |          |
->               |    (2)   |
->               |          |    (1)
-> 
-> When this happens, thread B kicks of an unnecessary read. Worse, thread
-> C will see UPTODATE set and return immediately, while the read from
-> thread B is still in progress.  This race could result in tree-checker
-> errors like this as the extent buffer is concurrently modified:
-> 
->      BTRFS critical (device dm-0): corrupted node, root=256
->      block=8550954455682405139 owner mismatch, have 11858205567642294356
->      expect [256, 18446744073709551360]
-> 
-> Fix it by testing UPTODATE again after setting the READING bit, and if
-> it's been set, skip the unnecessary read.
-> 
-> Fixes: d7172f52e993 ("btrfs: use per-buffer locking for extent_buffer reading")
-> Link: https://lore.kernel.org/linux-btrfs/CAHk-=whNdMaN9ntZ47XRKP6DBes2E5w7fi-0U3H2+PS18p+Pzw@mail.gmail.com/
-> Link: https://lore.kernel.org/linux-btrfs/f51a6d5d7432455a6a858d51b49ecac183e0bbc9.1706312914.git.wqu@suse.com/
-> Link: https://lore.kernel.org/linux-btrfs/c7241ea4-fcc6-48d2-98c8-b5ea790d6c89@gmx.com/
-> Signed-off-by: Tavian Barnes <tavianator@tavianator.com>
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+example:
+ BUG: spinlock lockup suspected on CPU#0, namex/10450
+ lock: 0xffff881ffe823980, .magic: dead4ead, .owner: namexx/21888, .owner_cpu: 1
+ ffff881741d00000 ffff881741c01000 0000000000000000 0000000000000000
+ ffff881740f58e78 ffff881741cffdd0 ffffffff8147a7fc ffff881740f58f20
+Call Trace:
+ [<ffffffff81479e6d>] ? __schedule+0x16d/0xac0
+ [<ffffffff8147a7fc>] ? schedule+0x3c/0x90
+ [<ffffffff8147e71a>] ? schedule_hrtimeout_range_clock+0x10a/0x120
+ [<ffffffff8147d22e>] ? mutex_unlock+0xe/0x10
+ [<ffffffff811c839b>] ? ep_scan_ready_list+0x1db/0x1e0
+ [<ffffffff8147e743>] ? schedule_hrtimeout_range+0x13/0x20
+ [<ffffffff811c864a>] ? ep_poll+0x27a/0x3b0
+ [<ffffffff8108c540>] ? wake_up_q+0x70/0x70
+ [<ffffffff811c99a8>] ? SyS_epoll_wait+0xb8/0xd0
+ [<ffffffff8147f296>] ? entry_SYSCALL_64_fastpath+0x12/0x75
+ CPU: 0 PID: 10450 Comm: namex Tainted: G           O    4.4.65 #1
+ Hardware name: Insyde Purley/Type2 - Board Product Name1, BIOS 05.21.51.0036 07/19/2019
+  0000000000000000 ffff881ffe813c10 ffffffff8124e883 ffff881741c01000
+  ffff881ffe823980 ffff881ffe813c38 ffffffff810a7f7f ffff881ffe823980
+  000000007d2b7cd0 0000000000000001 ffff881ffe813c68 ffffffff810a80e0
+  Call Trace:
+  <#DB>  [<ffffffff8124e883>] dump_stack+0x85/0xc2
+  [<ffffffff810a7f7f>] spin_dump+0x7f/0x100
+  [<ffffffff810a80e0>] do_raw_spin_lock+0xa0/0x150
+  [<ffffffff8147eb55>] _raw_spin_lock+0x15/0x20
+  [<ffffffff8108c256>] try_to_wake_up+0x176/0x3d0
+  [<ffffffff8108c4c5>] wake_up_process+0x15/0x20
+  [<ffffffff8107b371>] insert_work+0x81/0xc0
+  [<ffffffff8107b4e5>] __queue_work+0x135/0x390
+  [<ffffffff8107b786>] queue_work_on+0x46/0x90
+  [<ffffffff81313d28>] kgdboc_post_exp_handler+0x48/0x70
+  [<ffffffff810ed488>] kgdb_cpu_enter+0x598/0x610
+  [<ffffffff810ed6e2>] kgdb_handle_exception+0xf2/0x1f0
+  [<ffffffff81054e21>] __kgdb_notify+0x71/0xd0
+  [<ffffffff81054eb5>] kgdb_notify+0x35/0x70
+  [<ffffffff81082e6a>] notifier_call_chain+0x4a/0x70
+  [<ffffffff8108304d>] notify_die+0x3d/0x50
+  [<ffffffff81017219>] do_int3+0x89/0x120
+  [<ffffffff81480fb4>] int3+0x44/0x80
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/extent_io.c | 13 +++++++++++++
->   1 file changed, 13 insertions(+)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 7441245b1ceb..61594eaf1f89 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4333,6 +4333,19 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
->   	if (test_and_set_bit(EXTENT_BUFFER_READING, &eb->bflags))
->   		goto done;
->   
-> +	/*
-> +	 * Between the initial test_bit(EXTENT_BUFFER_UPTODATE) and the above
-> +	 * test_and_set_bit(EXTENT_BUFFER_READING), someone else could have
-> +	 * started and finished reading the same eb.  In this case, UPTODATE
-> +	 * will now be set, and we shouldn't read it in again.
-> +	 */
-> +	if (unlikely(test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))) {
-> +		clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
-> +		smp_mb__after_atomic();
-> +		wake_up_bit(&eb->bflags, EXTENT_BUFFER_READING);
-> +		return 0;
-> +	}
-> +
->   	clear_bit(EXTENT_BUFFER_READ_ERR, &eb->bflags);
->   	eb->read_mirror = 0;
->   	check_buffer_tree_ref(eb);
+Suggested-by: daniel.thompson@linaro.org
+Signed-off-by: LiuYe <liu.yeC@h3c.com>
+---
+ drivers/tty/serial/kgdboc.c | 11 ++++++++++-
+ 1 file changed, 10 insertions(+), 1 deletion(-)
+
+diff --git a/drivers/tty/serial/kgdboc.c b/drivers/tty/serial/kgdboc.c
+index 7ce7bb164..161b25ecc 100644
+--- a/drivers/tty/serial/kgdboc.c
++++ b/drivers/tty/serial/kgdboc.c
+@@ -22,6 +22,7 @@
+ #include <linux/module.h>
+ #include <linux/platform_device.h>
+ #include <linux/serial_core.h>
++#include <linux/irq_work.h>
+ 
+ #define MAX_CONFIG_LEN		40
+ 
+@@ -99,10 +100,17 @@ static void kgdboc_restore_input_helper(struct work_struct *dummy)
+ 
+ static DECLARE_WORK(kgdboc_restore_input_work, kgdboc_restore_input_helper);
+ 
++static void kgdboc_queue_restore_input_helper(struct irq_work *unused)
++{
++	schedule_work(&kgdboc_restore_input_work);
++}
++
++static DEFINE_IRQ_WORK(kgdboc_restore_input_irq_work, kgdboc_queue_restore_input_helper);
++
+ static void kgdboc_restore_input(void)
+ {
+ 	if (likely(system_state == SYSTEM_RUNNING))
+-		schedule_work(&kgdboc_restore_input_work);
++		irq_work_queue(&kgdboc_restore_input_irq_work);
+ }
+ 
+ static int kgdboc_register_kbd(char **cptr)
+@@ -133,6 +141,7 @@ static void kgdboc_unregister_kbd(void)
+ 			i--;
+ 		}
+ 	}
++	irq_work_sync(&kgdboc_restore_input_irq_work);
+ 	flush_work(&kgdboc_restore_input_work);
+ }
+ #else /* ! CONFIG_KDB_KEYBOARD */
+-- 
+2.25.1
+
 
