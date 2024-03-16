@@ -1,258 +1,167 @@
-Return-Path: <linux-kernel+bounces-105037-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105036-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A57B087D800
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:44:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 37EFD87D7FF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:41:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C34301C21242
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:44:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1836282D05
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:41:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC87D4C7C;
-	Sat, 16 Mar 2024 02:44:48 +0000 (UTC)
-Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D0B81FBB;
+	Sat, 16 Mar 2024 02:41:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="D209z5es"
+Received: from mail-qv1-f50.google.com (mail-qv1-f50.google.com [209.85.219.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D40494C61
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:44:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07736639
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710557088; cv=none; b=PaMX98xpJ7u1ZikA+rgA3B2WJBJuvIGkOO13HHQikpsJhQDOibq4CeHwvgpe2wdpvwzcYl4kymf2F2WYE2pOPInpN+v8Ua5epigI4mrbS5zqUcK5g+OqecA+Ddz/I5dFzXAr+8FpM9coZSkNYCvr039H/FBpPBtI7v0B+RPVmuc=
+	t=1710556878; cv=none; b=RPB86ouwOOpQ5f424s1A5HJiX4CVoqP8OV1PSb6p3Ug5wJYzDYufq7qZZ36VlsCB0POAVYTYaKuXaqSjMiWBzBtQYreWF15renRkMwSDQCstYItDX4JsFdjO31f7JBIMqrRyCrryxegcAZXQ819bABiWrO+YhAr8sGK7kSDwcSc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710557088; c=relaxed/simple;
-	bh=Jm4aKAWDjE+q969G/2wwzwl4NboEBX2wKFJi6ZuKQGU=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=qITuyVKw2kDBaKCgeCVqwkR0cBW6L2OHS9AIu2uMSTV+t7MeFEIMeQsOpKsRl7XXNhIMqZAHL1ZochWGUVMIRegU7siMxDD0CVDnJL80Fv2u2tzSN6sDmIO1weKQJQuyza5tKNEdL/16F6loYZVBZC2VGkC/0YBlckDfLKOYrDQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.88.214])
-	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4TxQPc1529z1h2NK;
-	Sat, 16 Mar 2024 10:42:12 +0800 (CST)
-Received: from dggpemd100004.china.huawei.com (unknown [7.185.36.20])
-	by mail.maildlp.com (Postfix) with ESMTPS id 8F1DA1A016C;
-	Sat, 16 Mar 2024 10:44:41 +0800 (CST)
-Received: from huawei.com (10.67.174.76) by dggpemd100004.china.huawei.com
- (7.185.36.20) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.28; Sat, 16 Mar
- 2024 10:44:41 +0800
-From: Yuntao Liu <liuyuntao12@huawei.com>
-To: <linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>
-CC: <arnd@arndb.de>, <ardb@kernel.org>, <geert@linux-m68k.org>,
-	<linux@armlinux.org.uk>, <afd@ti.com>, <akpm@linux-foundation.org>,
-	<kirill.shutemov@linux.intel.com>, <geert+renesas@glider.be>,
-	<corbet@lwn.net>, <rppt@kernel.org>, <robh@kernel.org>, <tglx@linutronix.de>,
-	<linus.walleij@linaro.org>, <maskray@google.com>, <liuyuntao12@huawei.com>
-Subject: [PATCH-next v4] arm32: enable HAVE_LD_DEAD_CODE_DATA_ELIMINATION
-Date: Sat, 16 Mar 2024 02:39:32 +0000
-Message-ID: <20240316023932.700685-1-liuyuntao12@huawei.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710556878; c=relaxed/simple;
+	bh=gcTe6wh4B5zmy1bx9LBFzVIfXnt5DDXUYS3DhCe+5ms=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=tkG2H6m1GfsQlBZpS5pYuQ6/FwUYl7w1eWJlrD2new71P+QhRElJoY+cBnJwcdDbQ3mqL7usmle+dh0R5BEFmNfyNb/QLpiR3k4Y4/FTuFSIDWs9omA8575sae/WwjxJ2nK8kYmsrMFUNp5Kq78ddr4tLvAid3iYb15u6lfD6SM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=D209z5es; arc=none smtp.client-ip=209.85.219.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qv1-f50.google.com with SMTP id 6a1803df08f44-690fed6816fso16785346d6.1
+        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 19:41:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710556876; x=1711161676; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Xs/qHkwiAn1LVXTsqARJfQt1+fMTbCUVX2OKxRrwDh0=;
+        b=D209z5esCYy1o9y9CV8qk4DqLYmAiXAV90B/TintCIrDPYrb5+ps4aeZS9JRTQvJb8
+         xKdWkWtBspFw80Xa3Cq9jG4i3FWmPhC773+jHWgNyHe3QbzFkgKy6a4ukeBbpzgJzSOT
+         sOhlJpLA97XRc3jWpzibZSx56l0Tnbn6bpRs/x++hvfWakoAvcHAjKNzPirRJ4ludR/s
+         QxpKI/H7iGgKVODndC/dxo9wmRxsh31j5RDwnFs09LNVtcmoagYmzNfhg+0YnsiIN3iz
+         8tm8eyteFmBLtboM+/EedagpqWNf8MsqK8z6u5O/IrgsphCFZP2VdqB9f+LOAoZM+VCg
+         8c4w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710556876; x=1711161676;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Xs/qHkwiAn1LVXTsqARJfQt1+fMTbCUVX2OKxRrwDh0=;
+        b=ELcM54tmLBbGm3NoIt2LjdhrQYO8Oh0fFlCN41MC4ez8h8WWiwDFi+8/1KmhhtLJq7
+         vFroCOIwga2aGe6tFXPpRPrEfHgNHtgnsgfTypYiYAtpwP+0NevBOCzjFMl5fuvaa4Xi
+         5PYcmJ6R5oo/bNlhPlChnbnfJsn19DaPNKb/wOsDRtKjcOoryO4ecn64g0E8b3nuq+5B
+         InuMhEFszuN7J7P5Inl1M4JcMrL75IpW3E2UzeOAv3eEoCHoWSN1lzSwrjsvuTQn18md
+         X5y3CAiyb6SwBWtkzD8jmwuAGRcQRqgy1RI9rYuxdRktxUAy5CWPluFBfyciCVPCbMvl
+         kHVg==
+X-Forwarded-Encrypted: i=1; AJvYcCWv+G+9pGL4+Lp06/zDD6L5lVtOlpiHXNKqWjw/pcIU9j2Y+MpLqaYIfNtqDKqvwc6B0meqScGBN4Aeeb1djJtr/3mi6J2dmk6wLCbd
+X-Gm-Message-State: AOJu0YzqkPu9omqxxfjrfhvk9jBKmvuJcBv7xnqu1LQD26ILYR6l7IE9
+	d50yZHkMIixKLiuRknVOGWKFfAN25KRzqqcbcg1nRIxcieNfWWrgd+te/cJ0sg46mv+NELF8wSA
+	3XyyUrehPOWbu41utzZCgWhNm5cc=
+X-Google-Smtp-Source: AGHT+IF5tONZB4WFghFyRw0b/5i6NrX1pN/BkvK3odjKYKS+CpaF/PdomnXTS4SOt7YODWcXGP/woySosc89VsvPe/c=
+X-Received: by 2002:a05:6214:947:b0:691:6122:68b2 with SMTP id
+ dn7-20020a056214094700b00691612268b2mr4987586qvb.27.1710556875878; Fri, 15
+ Mar 2024 19:41:15 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: dggems706-chm.china.huawei.com (10.3.19.183) To
- dggpemd100004.china.huawei.com (7.185.36.20)
+References: <20240314164941.580454-1-hannes@cmpxchg.org> <1551fa14-2a95-49fd-ab1a-11c38ae29486@linux.dev>
+ <20240315093010.GB581298@cmpxchg.org> <ae197190-6a15-49c5-ab3c-3eaac6dd4c5c@linux.dev>
+ <20240315095556.GC581298@cmpxchg.org>
+In-Reply-To: <20240315095556.GC581298@cmpxchg.org>
+From: Nhat Pham <nphamcs@gmail.com>
+Date: Sat, 16 Mar 2024 09:41:04 +0700
+Message-ID: <CAKEwX=OH=057RRGS0wv9tMKJK6+w8RMQa8neTPW1wfhpEmuZLw@mail.gmail.com>
+Subject: Re: [PATCH] mm: cachestat: fix two shmem bugs
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Chengming Zhou <chengming.zhou@linux.dev>, Andrew Morton <akpm@linux-foundation.org>, 
+	linux-mm@kvack.org, linux-kernel@vger.kernel.org, 
+	Jann Horn <jannh@google.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-The current arm32 architecture does not yet support the
-HAVE_LD_DEAD_CODE_DATA_ELIMINATION feature. arm32 is widely used in
-embedded scenarios, and enabling this feature would be beneficial for
-reducing the size of the kernel image.
+On Fri, Mar 15, 2024 at 4:55=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> When cachestat on shmem races with swapping and invalidation, there
+> are two possible bugs:
+>
+> 1) A swapin error can have resulted in a poisoned swap entry in the
+>    shmem inode's xarray. Calling get_shadow_from_swap_cache() on it
+>    will result in an out-of-bounds access to swapper_spaces[].
+>
+>    Validate the entry with non_swap_entry() before going further.
+>
+> 2) When we find a valid swap entry in the shmem's inode, the shadow
+>    entry in the swapcache might not exist yet: swap IO is still in
+>    progress and we're before __remove_mapping; swapin, invalidation,
+>    or swapoff have removed the shadow from swapcache after we saw the
+>    shmem swap entry.
+>
+>    This will send a NULL to workingset_test_recent(). The latter
+>    purely operates on pointer bits, so it won't crash - node 0, memcg
+>    ID 0, eviction timestamp 0, etc. are all valid inputs - but it's a
+>    bogus test. In theory that could result in a false "recently
+>    evicted" count.
+>
+>    Such a false positive wouldn't be the end of the world. But for
+>    code clarity and (future) robustness, be explicit about this case.
+>
+>    Bail on get_shadow_from_swap_cache() returning NULL.
+>
+> Fixes: cf264e1329fb ("cachestat: implement cachestat syscall")
+> Cc: stable@vger.kernel.org                              [v6.5+]
+> Reported-by: Chengming Zhou <chengming.zhou@linux.dev>  [Bug #1]
+> Reported-by: Jann Horn <jannh@google.com>               [Bug #2]
+> Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 
-In order to make this work, we keep the necessary tables by annotating
-them with KEEP, also it requires further changes to linker script to KEEP
-some tables and wildcard compiler generated sections into the right place.
-When using ld.lld for linking, KEEP is not recognized within the OVERLAY
-command, and Ard proposed a concise method to solve this problem.
+Nice catch! Thanks for the report, Chengming and Jann, and thanks for
+the fix, Johannes!
+Reviewed-by: Nhat Pham <nphamcs@gmail.com>
 
-It boots normally with defconfig, vexpress_defconfig and tinyconfig.
-
-The size comparison of zImage is as follows:
-defconfig       vexpress_defconfig      tinyconfig
-5137712         5138024                 424192          no dce
-5032560         4997824                 298384          dce
-2.0%            2.7%                    29.7%           shrink
-
-When using smaller config file, there is a significant reduction in the
-size of the zImage.
-
-We also tested this patch on a commercially available single-board
-computer, and the comparison is as follows:
-a15eb_config
-2161384         no dce
-2092240         dce
-3.2%            shrink
-
-The zImage size has been reduced by approximately 3.2%, which is 70KB on
-2.1M.
-
-Signed-off-by: Yuntao Liu <liuyuntao12@huawei.com>
-Tested-by: Arnd Bergmann <arnd@arndb.de>
-Reviewed-by: Arnd Bergmann <arnd@arndb.de>
----
-v4:
-   - remove -fdata-sections flag from KBUILD_CFLAGS_KERNEL in drivers/firmware/efi/libstub/Makefile
-
-v3:
-   - A better way to KEEP .vectors section for ld.lld linking.
-   - https://lore.kernel.org/all/20240315063154.696633-1-liuyuntao12@huawei.com/
-
-v2:
-   - Support config XIP_KERNEL.
-   - Support LLVM compilation.
-   - https://lore.kernel.org/all/20240307151231.654025-1-liuyuntao12@huawei.com/
-
-v1: https://lore.kernel.org/all/20240220081527.23408-1-liuyuntao12@huawei.com/
----
- arch/arm/Kconfig                       | 1 +
- arch/arm/boot/compressed/vmlinux.lds.S | 2 +-
- arch/arm/include/asm/vmlinux.lds.h     | 2 +-
- arch/arm/kernel/entry-armv.S           | 3 +++
- arch/arm/kernel/vmlinux-xip.lds.S      | 4 ++--
- arch/arm/kernel/vmlinux.lds.S          | 6 +++---
- drivers/firmware/efi/libstub/Makefile  | 4 ++++
- 7 files changed, 15 insertions(+), 7 deletions(-)
-
-diff --git a/arch/arm/Kconfig b/arch/arm/Kconfig
-index b14aed3a17ab..45f25f6e7a62 100644
---- a/arch/arm/Kconfig
-+++ b/arch/arm/Kconfig
-@@ -114,6 +114,7 @@ config ARM
- 	select HAVE_KERNEL_XZ
- 	select HAVE_KPROBES if !XIP_KERNEL && !CPU_ENDIAN_BE32 && !CPU_V7M
- 	select HAVE_KRETPROBES if HAVE_KPROBES
-+	select HAVE_LD_DEAD_CODE_DATA_ELIMINATION
- 	select HAVE_MOD_ARCH_SPECIFIC
- 	select HAVE_NMI
- 	select HAVE_OPTPROBES if !THUMB2_KERNEL
-diff --git a/arch/arm/boot/compressed/vmlinux.lds.S b/arch/arm/boot/compressed/vmlinux.lds.S
-index 3fcb3e62dc56..d411abd4310e 100644
---- a/arch/arm/boot/compressed/vmlinux.lds.S
-+++ b/arch/arm/boot/compressed/vmlinux.lds.S
-@@ -125,7 +125,7 @@ SECTIONS
- 
-   . = BSS_START;
-   __bss_start = .;
--  .bss			: { *(.bss) }
-+  .bss			: { *(.bss .bss.*) }
-   _end = .;
- 
-   . = ALIGN(8);		/* the stack must be 64-bit aligned */
-diff --git a/arch/arm/include/asm/vmlinux.lds.h b/arch/arm/include/asm/vmlinux.lds.h
-index 4c8632d5c432..d60f6e83a9f7 100644
---- a/arch/arm/include/asm/vmlinux.lds.h
-+++ b/arch/arm/include/asm/vmlinux.lds.h
-@@ -42,7 +42,7 @@
- #define PROC_INFO							\
- 		. = ALIGN(4);						\
- 		__proc_info_begin = .;					\
--		*(.proc.info.init)					\
-+		KEEP(*(.proc.info.init))				\
- 		__proc_info_end = .;
- 
- #define IDMAP_TEXT							\
-diff --git a/arch/arm/kernel/entry-armv.S b/arch/arm/kernel/entry-armv.S
-index 6150a716828c..f01d23a220e6 100644
---- a/arch/arm/kernel/entry-armv.S
-+++ b/arch/arm/kernel/entry-armv.S
-@@ -1065,6 +1065,7 @@ vector_addrexcptn:
- 	.globl	vector_fiq
- 
- 	.section .vectors, "ax", %progbits
-+	.reloc  .text, R_ARM_NONE, .
- 	W(b)	vector_rst
- 	W(b)	vector_und
- ARM(	.reloc	., R_ARM_LDR_PC_G0, .L__vector_swi		)
-@@ -1078,6 +1079,7 @@ THUMB(	.reloc	., R_ARM_THM_PC12, .L__vector_swi		)
- 
- #ifdef CONFIG_HARDEN_BRANCH_HISTORY
- 	.section .vectors.bhb.loop8, "ax", %progbits
-+	.reloc  .text, R_ARM_NONE, .
- 	W(b)	vector_rst
- 	W(b)	vector_bhb_loop8_und
- ARM(	.reloc	., R_ARM_LDR_PC_G0, .L__vector_bhb_loop8_swi	)
-@@ -1090,6 +1092,7 @@ THUMB(	.reloc	., R_ARM_THM_PC12, .L__vector_bhb_loop8_swi	)
- 	W(b)	vector_bhb_loop8_fiq
- 
- 	.section .vectors.bhb.bpiall, "ax", %progbits
-+	.reloc  .text, R_ARM_NONE, .
- 	W(b)	vector_rst
- 	W(b)	vector_bhb_bpiall_und
- ARM(	.reloc	., R_ARM_LDR_PC_G0, .L__vector_bhb_bpiall_swi	)
-diff --git a/arch/arm/kernel/vmlinux-xip.lds.S b/arch/arm/kernel/vmlinux-xip.lds.S
-index c16d196b5aad..5eddb75a7174 100644
---- a/arch/arm/kernel/vmlinux-xip.lds.S
-+++ b/arch/arm/kernel/vmlinux-xip.lds.S
-@@ -63,7 +63,7 @@ SECTIONS
- 	. = ALIGN(4);
- 	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
- 		__start___ex_table = .;
--		ARM_MMU_KEEP(*(__ex_table))
-+		ARM_MMU_KEEP(KEEP(*(__ex_table)))
- 		__stop___ex_table = .;
- 	}
- 
-@@ -83,7 +83,7 @@ SECTIONS
- 	}
- 	.init.arch.info : {
- 		__arch_info_begin = .;
--		*(.arch.info.init)
-+		KEEP(*(.arch.info.init))
- 		__arch_info_end = .;
- 	}
- 	.init.tagtable : {
-diff --git a/arch/arm/kernel/vmlinux.lds.S b/arch/arm/kernel/vmlinux.lds.S
-index bd9127c4b451..de373c6c2ae8 100644
---- a/arch/arm/kernel/vmlinux.lds.S
-+++ b/arch/arm/kernel/vmlinux.lds.S
-@@ -74,7 +74,7 @@ SECTIONS
- 	. = ALIGN(4);
- 	__ex_table : AT(ADDR(__ex_table) - LOAD_OFFSET) {
- 		__start___ex_table = .;
--		ARM_MMU_KEEP(*(__ex_table))
-+		ARM_MMU_KEEP(KEEP(*(__ex_table)))
- 		__stop___ex_table = .;
- 	}
- 
-@@ -99,7 +99,7 @@ SECTIONS
- 	}
- 	.init.arch.info : {
- 		__arch_info_begin = .;
--		*(.arch.info.init)
-+		KEEP(*(.arch.info.init))
- 		__arch_info_end = .;
- 	}
- 	.init.tagtable : {
-@@ -116,7 +116,7 @@ SECTIONS
- #endif
- 	.init.pv_table : {
- 		__pv_table_begin = .;
--		*(.pv_table)
-+		KEEP(*(.pv_table))
- 		__pv_table_end = .;
- 	}
- 
-diff --git a/drivers/firmware/efi/libstub/Makefile b/drivers/firmware/efi/libstub/Makefile
-index 31eb1e287ce1..619f1f9d9ba9 100644
---- a/drivers/firmware/efi/libstub/Makefile
-+++ b/drivers/firmware/efi/libstub/Makefile
-@@ -56,6 +56,10 @@ KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_CFI), $(KBUILD_CFLAGS))
- # disable LTO
- KBUILD_CFLAGS := $(filter-out $(CC_FLAGS_LTO), $(KBUILD_CFLAGS))
- 
-+# The .data section would be renamed to .data.efistub, therefore, remove
-+# `-fdata-sections` flag from KBUILD_CFLAGS_KERNEL
-+KBUILD_CFLAGS_KERNEL := $(filter-out -fdata-sections, $(KBUILD_CFLAGS_KERNEL))
-+
- GCOV_PROFILE			:= n
- # Sanitizer runtimes are unavailable and cannot be linked here.
- KASAN_SANITIZE			:= n
--- 
-2.34.1
-
+> ---
+>  mm/filemap.c | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+>
+> diff --git a/mm/filemap.c b/mm/filemap.c
+> index 222adac7c9c5..0aa91bf6c1f7 100644
+> --- a/mm/filemap.c
+> +++ b/mm/filemap.c
+> @@ -4198,7 +4198,23 @@ static void filemap_cachestat(struct address_space=
+ *mapping,
+>                                 /* shmem file - in swap cache */
+>                                 swp_entry_t swp =3D radix_to_swp_entry(fo=
+lio);
+>
+> +                               /* swapin error results in poisoned entry=
+ */
+> +                               if (non_swap_entry(swp))
+> +                                       goto resched;
+> +
+> +                               /*
+> +                                * Getting a swap entry from the shmem
+> +                                * inode means we beat
+> +                                * shmem_unuse(). rcu_read_lock()
+> +                                * ensures swapoff waits for us before
+> +                                * freeing the swapper space. However,
+> +                                * we can race with swapping and
+> +                                * invalidation, so there might not be
+> +                                * a shadow in the swapcache (yet).
+> +                                */
+>                                 shadow =3D get_shadow_from_swap_cache(swp=
+);
+> +                               if (!shadow)
+> +                                       goto resched;
+>                         }
+>  #endif
+>                         if (workingset_test_recent(shadow, true, &working=
+set))
+> --
+> 2.44.0
+>
 
