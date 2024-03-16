@@ -1,136 +1,110 @@
-Return-Path: <linux-kernel+bounces-105279-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105280-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF7F087DB50
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:33:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0265E87DB5A
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:52:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 071C828176F
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:33:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5933DB20F3F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:52:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED811BDD0;
-	Sat, 16 Mar 2024 19:33:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70CD41BF3B;
+	Sat, 16 Mar 2024 19:52:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXy1ljqs"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49F91843;
-	Sat, 16 Mar 2024 19:33:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="D9DxHyYr"
+Received: from smtp.smtpout.orange.fr (smtp-23.smtpout.orange.fr [80.12.242.23])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 391C818039
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 19:52:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710617619; cv=none; b=gi1Hu8uWx/aaTbKPxH9cTA8A8kPxAzdAklzo+LnMaAZuTW9e3mwetbs5a2rotHxo/JHZfz7m+6TWwP9SMVOJXzQ7QwwW+ouhpebRaJtTG/8veEb+bCo9zOOHuTHWgmj8HpB5h/J0+hs2YcG8T2tAracSf9VNhKLiwGWSCV0Qz0k=
+	t=1710618758; cv=none; b=Jlvns876fZLTM6ML4ib2Vf+Mve8aW9KqzLGJ9CQIGyWAqW6/wfHSLbbD5NEtVXeP8TzQ+DwgbmrPiTMamCy+6GRaLDftHiDXdXXQq5EFtphtUD6SRPtWukjs9xmr7oeTPpP8YEVpvsxDkpMoJ4Y+Df1RNxr/ge7HFXGNKP/lX20=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710617619; c=relaxed/simple;
-	bh=+a6ZtiXkLjE2iSQzJIUrXlMm0H0+j0NMZDv9NxvUOIw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OrYrIuZfBh3Iz00QIQZl+QC1V7Pl5xN1OReaFGXAx8/oMk23kbdqHuT6RlPFDGdIGhL2owtZsSKe35hCc2secfaR+KsRSXT54oQfs+b4Q5vHj6dnoB2UT2ZXuW4rj6Ug7t/pFDpQ9Ii21XY2fpzeDuVcXPzTvF1V1v+7IKEs0Os=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXy1ljqs; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E47DC433C7;
-	Sat, 16 Mar 2024 19:33:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710617619;
-	bh=+a6ZtiXkLjE2iSQzJIUrXlMm0H0+j0NMZDv9NxvUOIw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MXy1ljqs56Ki+WHS2FrQdgSbVY/uvOlP0g88yFlYx4vW/iB/U2vf6ravxAvhTrsum
-	 j1r9nEEL6Ku9hYcPJ+9lau7jo7o9tUBlsYF+fto37itA59+PZQ7gic4Mmg3OVg1pKo
-	 /mQvqHZ4PNz+D0M/LirRdcM1a5QusmBUv2epOXi5NG1jPSxpC77KX2BtCXYz1VMn/o
-	 CDWKehnjNUvPReTtWCl8yHpjYsRxVZl15QAfqug7JagdFwJ6bB7Lu4BFpqJaCwq7RP
-	 x5zx7U5+WAFF1i7050grIl155fTo7BJXc//rsz7dyqgtg4D1g/n6FkA8BCoXtZuwB2
-	 xugDvt+0xaApA==
-Date: Sat, 16 Mar 2024 20:33:36 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
-Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
-Message-ID: <ZfX0EBsVl4a5FQ_L@debian>
-References: <hxiq3upwxs3j5mc5arwlx4jriqm7fq5z54wroc4h4kqcq4gq7m@uwnoq2vnkhup>
- <ZeXzuWVmC9AnsECt@debian>
- <7ubz52rfdl2i76sotvd3s4thv6jvbfao6zct3sywqus2owlvkx@wpbeqqdvipo4>
- <ZehMWQ0LkemsTHAC@debian>
- <CAK1VsR0XZMgUW8qMQMcDPohD8-+OZsgW68sZegLbVy6cdoWucQ@mail.gmail.com>
- <ZehrtwSDQV-X7BXV@debian>
- <CAK1VsR3MsyphK+=rA7XcEigiSd6J_-QsVW+8hH1fU9xmRY3nGQ@mail.gmail.com>
- <CAK1VsR2zaCT3Bs1cwCEfLhAPXjwNk1byzNq5y32C736=hxqjoA@mail.gmail.com>
+	s=arc-20240116; t=1710618758; c=relaxed/simple;
+	bh=Kz6AxoyXS0ite1d+zI9BgQ9XZyg/PeBhDTilw9ktBHk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=RMKc3Tt0IbqIB694JvG4SQeI+MVUYain475dIoFvdRpZGEpyBMGk8xxd+Yr+1EGrDhYaILWK4M8KxP2kj60ImHE4F7eM8e5eNacADrC27oDD1p9Lnx1Pom0QuTBbNOxvS28jGPCllAnu/+0XtdmdhX0NUaastS5bQFggNUJT+g0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=D9DxHyYr; arc=none smtp.client-ip=80.12.242.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from fedora.home ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id la3vrEPOXk8gIla3vrpUVD; Sat, 16 Mar 2024 20:51:27 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1710618687;
+	bh=SjbNtOBQ+cS5fJj7smJylRnTlii80ZoATXXlQUbJZNQ=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version;
+	b=D9DxHyYrkaOm5kE1mLlkXYRjXycXxsTBWVhnZ8Z9aVjjq+D6t1RBVaxow3EeogIP5
+	 IM8Xv/gAhp/8W0xITHPIPKeeeMDDP1e2QqRPDB90yamocgV2NaU+1sN+IooU3WZJv/
+	 5OjbTL/v2Y9NagH5qxNgBXRLe0a5NPm+eb8SyBwWD+YvsW2IR9Dh2pz4BmvkBixD+/
+	 G8a4e+q30hS8hVo+0UJJ4APTF0fifdeurMlzzvjpN87gJzeWJBFvwZASjlRzKyC1Wk
+	 uOj5Aufzu3x9taZdnIWltPU9E9HRp5PihX25hIsMzVEWvPGp2L/4MSHZGgsplBKvci
+	 t72o/8I9nifHw==
+X-ME-Helo: fedora.home
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Sat, 16 Mar 2024 20:51:27 +0100
+X-ME-IP: 92.140.202.140
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+To: Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Sam Ravnborg <sam@ravnborg.org>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-kernel@vger.kernel.org,
+	kernel-janitors@vger.kernel.org,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCH] drm/bridge: lt9611uxc: Fix an error handling path in lt9611uxc_probe()
+Date: Sat, 16 Mar 2024 20:51:21 +0100
+Message-ID: <e09122722190d052cee792a9246c274510f3b928.1710618660.git.christophe.jaillet@wanadoo.fr>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="Z0iRHz2zH4EOqck3"
-Content-Disposition: inline
-In-Reply-To: <CAK1VsR2zaCT3Bs1cwCEfLhAPXjwNk1byzNq5y32C736=hxqjoA@mail.gmail.com>
+Content-Transfer-Encoding: 8bit
 
+If lt9611uxc_audio_init() fails, some resources still need to be released
+before returning the error code.
 
---Z0iRHz2zH4EOqck3
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Sat, 16 Mar 2024 20:33:36 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: Oliver Crumrine <ozlinuxc@gmail.com>
-Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
-Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
+Use the existing error handling path.
 
-Hi Oliver,
+Fixes: 0cbbd5b1a012 ("drm: bridge: add support for lontium LT9611UXC bridge")
+Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+---
+Compile tested only.
+---
+ drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 6 +++++-
+ 1 file changed, 5 insertions(+), 1 deletion(-)
 
-On Wed, Mar 13, 2024 at 02:27:17PM -0400, Oliver Crumrine wrote:
-> > Hi Alex,
-> > I apologize for your repeated troubles with my test program.
-> > I have attached a video of myself using it in the method that I
-> > described to you. (I emailed you off-list as to avoid sending a 12
-> > MB video to the whole list)
-> >
-> > If you are using it in the same way that works for me, I don't know
-> > what the problem is. If I could've been clearer in my instructions, let
-> > me know for the future.
-> >
-> > Thanks,
-> > Oliver
->=20
-> Hi Alex,
-> Were you able to make any progress whatsoever with this test program?
+diff --git a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+index f4f593ad8f79..d0c77630a2f9 100644
+--- a/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
++++ b/drivers/gpu/drm/bridge/lontium-lt9611uxc.c
+@@ -965,7 +965,11 @@ static int lt9611uxc_probe(struct i2c_client *client)
+ 		}
+ 	}
+ 
+-	return lt9611uxc_audio_init(dev, lt9611uxc);
++	ret = lt9611uxc_audio_init(dev, lt9611uxc);
++	if (ret)
++		goto err_remove_bridge;
++
++	return 0;
+ 
+ err_remove_bridge:
+ 	free_irq(client->irq, lt9611uxc);
+-- 
+2.44.0
 
-I'm sorry, but I haven't been able to reproduce the behavior.  The test
-programs have several problems which I reported in previous mails.
-Maybe there's something that makes it unstable and in your system
-behaves differently?  Please clean up those examples, and try to run
-them in a different system, and maybe then I can reproduce it.
-
-Have a lovely day!
-Alex
-
-
-$ uname -a
-Linux debian 6.8.0-rc7-alx-dirty #3 SMP PREEMPT_DYNAMIC Mon Mar  4 15:24:33=
- CET 2024 x86_64 GNU/Linux
-
---=20
-<https://www.alejandro-colomar.es/>
-
---Z0iRHz2zH4EOqck3
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmX19BAACgkQnowa+77/
-2zJsYxAAirFbK0lul+k7Z17yej4u7Wuwk9hdugxBaxS9iesoRQndvaFZxo+HIBZZ
-Ix1hX3zG74ugffHQoQJLCq8kNaiMD8BtWIjmDFDyOT2vZWb/odUzkK6QnYeKZPUq
-JvGrvJQ6D6hVwFAWbHjwXY5FYYRpk2p8yOoguyHm/0RWAP3Gb6Qru9bM5xFvwtX7
-F9joYKptFR1/lIlLqTMo53GjQpvmsbLHZIV6nzyHGjfUTdggzrhvYeA4xAGtz0/q
-1gmklRadCPUQSspPIw+o/1z34GjDRyDZ8veidtEMdN3GSKYe0zx8i6VVP2HTaHjC
-y3VMbWKxY2fN6T59X51uQG4rupLRrD2HKgyrxgOY9aV0mZwJGj2nEkWyCbZLNIz2
-J7KToiutW/rfa8qY7k+0j/wOlKzHTnbAwowJbR5LPeKSpfcqXbwbNNkgRllV7rCe
-LWuNS1aWbJe9b5hXGGV4F0as4agDdVkLntTMomHiUCPbgntgOhbsCmaJhkXeM4UY
-f7TQLQTuqmbeaDMdNkbDzQEVcBl/1VG6qNBIRkQ9sC8C6YjkwkMNQhvgCss+IM4+
-k1BCGNrtnwumNPS/zewo5n13XrwE2ODG+jQ1+aw4njO+6S8mb6vUUtQEmf50+p1W
-kPZFxTRf73MDQc3ZGmrFtSN0U6rKSwBIu9JpCtO9F0Trbmcsong=
-=U/eC
------END PGP SIGNATURE-----
-
---Z0iRHz2zH4EOqck3--
 
