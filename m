@@ -1,127 +1,138 @@
-Return-Path: <linux-kernel+bounces-105179-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105180-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AC7B87DA2C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:22:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2A6A187DA32
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:47:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AA4841C20C3E
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:22:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 855B4281C86
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:47:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AF59118AF8;
-	Sat, 16 Mar 2024 12:22:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8379182DB;
+	Sat, 16 Mar 2024 12:47:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="l2MVLw3N"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="wBihuBHb"
+Received: from out203-205-251-66.mail.qq.com (out203-205-251-66.mail.qq.com [203.205.251.66])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 527C517BAF;
-	Sat, 16 Mar 2024 12:22:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E6A50DDC3;
+	Sat, 16 Mar 2024 12:47:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.251.66
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710591726; cv=none; b=qENxKKprhmujOW1hrfMIUMqnWK9LMvbZls34tzRDMj/ZV3S2mvLuWmVxoU0LW1Wau7yk5RZbKus70uK2QuAKrv93/nJwrj5A0ZuBk4CrKlAdgGKlQ986EGj+MLZnZ5No89WncpQK3T6BY5jKYz6yE7jCiuetX0YkAjAH/+GumdQ=
+	t=1710593266; cv=none; b=aQNEVnJpBUs/J0cZrH50g7WetZGInecOtgEBath63l2Of7jVbuNmh82gerqgvlYoQ3Rgk6UHYto4NAW1iqFMS9/PwrngALTvzlFv3LApj1VUsai4FlTevzFxPwQ0vz7+ZTT0b2u44j59OpbHmE9aSeB6+qB+PuRMpAzGnxMnIXw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710591726; c=relaxed/simple;
-	bh=XxGy920P9DR0EZIW7+Yb4OcOzn4dQ1bS2DyY+nDGDIQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Yv4HNYmF6VG173Pawvguc04uzb8bSNik+oauAq4sEM8wSxuDxeW07tTIrvQ/MypOSLFa0mT1uZxmo7//x5MmIlT6MCUq+bADk0E3ExoObxNayDfzjpD8TUQe3LOQOrcp8yC88md7qB6K1KzWBSzUlDemIsDsoljndkAZSEnZRbc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=l2MVLw3N; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1710591699; x=1711196499; i=markus.elfring@web.de;
-	bh=/QEqgj+Ltvb5OtOACFmXDcDy9+HrKk324HPLGGfFo/0=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=l2MVLw3NsJrTFcF3Yy3k+a3aQzrwT0E160jWyKi9qpmd3akGxhV4YYElzHRJV225
-	 96irb6BJc6lfHaUObWetKgUsqUGK0ejZglw8HV/tMS2vlKSGwiJQ28TUt2NJGZDV+
-	 zW6o5WopqgFzOwy6lWyb6n6y9E2iuEYprpfB9VSNFHBnbz7KjOPjN/BQKHXkTHfO9
-	 EexQ3Ax72k3D8ggTaJ/+pIpQcNnYOk/VOYVyaJCcT2q7KlsZT8q6H+LzeiSQulPWl
-	 V6Jbflimsg+dltdy77kCgQj9etUzVeuojDy/2Oyyh7gHozzCBBTJCqlB6h8SgBsDw
-	 0bj+iPIit2VqLpb3sg==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.89.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MJFhJ-1rWP0411x5-00KlSo; Sat, 16
- Mar 2024 13:21:39 +0100
-Message-ID: <aa212ffb-1786-4b86-95cc-f2ee0cd455bf@web.de>
-Date: Sat, 16 Mar 2024 13:21:37 +0100
+	s=arc-20240116; t=1710593266; c=relaxed/simple;
+	bh=tQaFUnIdO5CKC9alDHRa2C/PIBbjIjrg2ogPsbneuBE=;
+	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
+	 MIME-Version; b=jChVbeWQOec3eF4NBFNJi/qSPqa6mUtd1TIY7xqAVW7Za/HxcvZIzpBGIXepwriHAd/6IpANAYefxX1R+EIBpSY7T19yjGUlVVEq3y5rDGM4q5V+nqYtHJuy8ebuZjMEsT7sQUHXBe2iS//SEF0U7azM9B7OkWy8fUX2DKFISZQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=wBihuBHb; arc=none smtp.client-ip=203.205.251.66
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
+	t=1710592952; bh=Rqkwy9I2RaGd2cVOFtNOTpk39pneScI8duXDDLL7M0E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References;
+	b=wBihuBHbrVnF5yV51XV4IIv5dlHyf2LKsApoaIEdCcrSCET1kF9ciMvYePOdBkiCT
+	 NLfekhelLBEyQ43Ky8YsEWgSlOd5tPi+uIlNV+0gvDNzZApI8qHHjIx0meLrnJX9EL
+	 F7dRVZA9hLKRcsuSKP9ruhgUVLyemioxrS/bN4H0=
+Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
+	by newxmesmtplogicsvrszb6-0.qq.com (NewEsmtp) with SMTP
+	id A9E26826; Sat, 16 Mar 2024 20:42:30 +0800
+X-QQ-mid: xmsmtpt1710592950t1wiwff13
+Message-ID: <tencent_6C22CC2079326CC82FB96CD89458E9F6EF0A@qq.com>
+X-QQ-XMAILINFO: OQhZ3T0tjf0aNQ6/zQrKjDc/YllEgtBlreFWaRhZfg/aSkV5nGAPvsPRdf4KZZ
+	 ZgkTYJWollvQbPmCeThbRmkjpFB8Qqg0KrM5fumSrwrg9ydWM1EbLqHx90qnKmWPgdqbSaRQ+hhj
+	 n9qjZxGHQMs7oLiePEQ9Fh3gIXzjxXx93UDVausznAVtcMe9UI80fMJ4AP7N1L+mKhMTxMhDHyjl
+	 On4RoqoV0O1I7I3yPZ0RhSH0aIazm6bRZqSIl9TisKhz56ChGHkH1kwkXmunfQ6lqu8JIG8J3Lqm
+	 quK1PfLj/dIpLKypc3LUg5OXgmeJKMYwt7JoUQN+24qPkSsugmipznU0rwxLJO8SIdfAIWtiBwYS
+	 92akOSRzPFHcnH5nSWyExPwDk6kZJAE5Fi9IKELIeJ0aVE+8CRuHsR39GzlACZzomy8g3bGHRSi4
+	 SXvDOX4csu7533SViGSEPs3VYk20u2ufC2Tt8wq/2nNlA2kBLe3LOaEJnRvOwOcbm3F9mBj1egz7
+	 +vqvG1RvrhePCRVF/B0tR3adr3pHxJMAnnIa+MoB7sFyBiJuvM7BZPjErTBOlralwRpTpd3gvcsV
+	 3Ovq0lBhv9W9Piri0aANnucgdOJHhxyrktmWXglDM4XbPZo0LgpA+bbaAe7pPZRdaImqqWn8UZ1+
+	 ZDJhMIQMhZSIrFvbdg0lImEhxVGETwgCiERRVwbiiR4hSwtQfLM4rL7/wo90dmylQWuSdgJYhMZq
+	 M7ALVuWunbSLykBwvPJ+tEwM59VIQSU+yQOuvsKPc5ej2FPJINSJwpJdJMsEI6+pF6WQTHXeMQaz
+	 Hk1i7umGsk1kf9+j+Q0zWYruJXSjYf5NEhC7O1BrOwDrk/teT8A7qr+d/o+irNvBYmmqmqL+wxR7
+	 Wz9ej3P7DzluVNVvxpt30Z9sOurEI/iTOCGE0SFNjaEKZRw76jA4Fc5IkxxTxiHSJa0iodYfE+KM
+	 Vfkvusp4Q7rh+0JJf8Ow==
+X-QQ-XMRINFO: OD9hHCdaPRBwq3WW+NvGbIU=
+From: Edward Adam Davis <eadavis@qq.com>
+To: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
+Cc: asml.silence@gmail.com,
+	axboe@kernel.dk,
+	io-uring@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: [PATCH] io_uring: fix uninit-value in io_sendrecv_fail
+Date: Sat, 16 Mar 2024 20:42:30 +0800
+X-OQ-MSGID: <20240316124229.1745430-2-eadavis@qq.com>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <00000000000024b0820613ba8647@google.com>
+References: <00000000000024b0820613ba8647@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: media: rcar-csi2: Use common error handling code in
- rcsi2_parse_dt()
-Content-Language: en-GB
-To: Dan Carpenter <dan.carpenter@linaro.org>,
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- linux-renesas-soc@vger.kernel.org, linux-media@vger.kernel.org,
- kernel-janitors@vger.kernel.org
-Cc: Sakari Ailus <sakari.ailus@linux.intel.com>,
- Geert Uytterhoeven <geert@linux-m68k.org>,
- Mauro Carvalho Chehab <mchehab@kernel.org>,
- LKML <linux-kernel@vger.kernel.org>
-References: <8b4203dc-bc0a-4c00-8862-e2d0ed6e346b@web.de>
- <CAMuHMdWwegdks3eEviEsBJE3AvUVKbZqHduYdhuwz=8xTMDs5g@mail.gmail.com>
- <260d82b6-e7fc-40c3-b414-50a883709fd7@moroto.mountain>
- <ZeWnD9YrXLWJYmhT@kekkonen.localdomain>
- <cc121bef-8bca-44e6-81aa-bf8e682bdaf5@moroto.mountain>
- <20240316094652.GC2092253@ragnatech.se>
- <0b77e146-df2f-4fe1-a4e8-206a62a5ac59@moroto.mountain>
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <0b77e146-df2f-4fe1-a4e8-206a62a5ac59@moroto.mountain>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Provags-ID: V03:K1:CYSazAyFcqwG1K8ccAxElR2MFdI5csaNRfKL+ujpwkyo75gM003
- sMdgTgvdVoJrXQqCpIJj8HopF1R1OxI9nPHiSzk7esSS/5NYTTfIlgcVjVkkgwZEbs7216C
- EmoXtU4prJmU/9IoNYgX3mpnRvbl5gb+CtrmeoTjC2mz0nI1in6INRD7iQygE7G9GbfJqI4
- hkJTtovI1y/iB5bGh0omQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:vkl82kTfK7s=;dI3oT/euE+q6zJprge2r7OksWoN
- y+lxnkJvAhGefLtmu4hbfogcGfAA5IK3XcSyWPTCm6pBxqb3ENZhR7YQ15RTd0ycw8fRjuNJ2
- 8hip2ZKvg/3cdQxL3fbNdynx4kk2mSv9PI56RDP6PTjl4FPZ/QQMGrwo01R+FMBN+VZVMBlA0
- fcQBJrxNrdQVk0Gge534xgeLY5MZWIwZCdern3as+xezRNoRKLCo7KJYuNnmMLp8GLZhlbsJX
- p5WZZo/3MSWAHrifuqusg9QTdalqtiYQwZtLfRNBmhnS1OZhreoiiXJBxcqjsNNFgEjQ7sxqK
- OoDhHzNDmKO6ydMziKB/TVB/HYiViICXeRmnUym8DoTDFeQ8BNFKhzfM1ugpQBMETa36BNdv+
- UfUb3npTGPcTQnjENWrXFhblDUC2oTqgp9YEK6PRh/TD5AD43eN704VlyalWMXY3CymQO5oeO
- DM93HPfmqQE9XSwQFny/gMwvU0plaUwh2UKUiATd1DYutEd0SX5lL+39MWPyt+mMtFiWEWp+Z
- KDBHP7dJ/07uVclbXQaJ+LuGm/m0ZR7HN1MzywA9oDYZUMoGZXmcj27/GMiScFgX/Xzc2r05o
- eZLtGxx/YH9qXy9oK3JWJPSjpU8V/IkbXym6pZ6RP/Xpd24gwTOk3XsWxHyawQwxjNFOOsYZs
- M3xygpKuYZPdWF9rBa2Za65h6XDDW1ccdAda+Xg/plMjnRsGA2jn1MiV/vhJSSFLhBQcgdfzA
- SEBs4paGpOwy7+QAFHgkJq5125wLhiuNua1Czq3tNywIB/eKuBZNiAf5IbiLit1oN33DEE+60
- mKtP++GiXuLFsR3YsPeJnUlOs4HhEGdUJGNLSK/o81GfM=
+Content-Transfer-Encoding: 8bit
 
-> I said I would send a couple of these but then Markus went ahead and
-> sent the patches that I was going to write...
+[Syzbot reported]
+BUG: KMSAN: uninit-value in io_sendrecv_fail+0x91/0x1e0 io_uring/net.c:1334
+ io_sendrecv_fail+0x91/0x1e0 io_uring/net.c:1334
+ io_req_defer_failed+0x3bd/0x610 io_uring/io_uring.c:1050
+ io_queue_sqe_fallback+0x1e3/0x280 io_uring/io_uring.c:2126
+ io_submit_fail_init+0x4e1/0x790 io_uring/io_uring.c:2304
+ io_submit_sqes+0x19cd/0x2fb0 io_uring/io_uring.c:2480
+ __do_sys_io_uring_enter io_uring/io_uring.c:3656 [inline]
+ __se_sys_io_uring_enter+0x409/0x43e0 io_uring/io_uring.c:3591
+ __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3591
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
-I dared also to touch some software components.
+Uninit was created at:
+ __alloc_pages+0x9a6/0xe00 mm/page_alloc.c:4592
+ __alloc_pages_node include/linux/gfp.h:238 [inline]
+ alloc_pages_node include/linux/gfp.h:261 [inline]
+ alloc_slab_page mm/slub.c:2190 [inline]
+ allocate_slab mm/slub.c:2354 [inline]
+ new_slab+0x2d7/0x1400 mm/slub.c:2407
+ ___slab_alloc+0x16b5/0x3970 mm/slub.c:3540
+ __kmem_cache_alloc_bulk mm/slub.c:4574 [inline]
+ kmem_cache_alloc_bulk+0x52a/0x1440 mm/slub.c:4648
+ __io_alloc_req_refill+0x248/0x780 io_uring/io_uring.c:1101
+ io_alloc_req io_uring/io_uring.h:405 [inline]
+ io_submit_sqes+0xaa1/0x2fb0 io_uring/io_uring.c:2469
+ __do_sys_io_uring_enter io_uring/io_uring.c:3656 [inline]
+ __se_sys_io_uring_enter+0x409/0x43e0 io_uring/io_uring.c:3591
+ __x64_sys_io_uring_enter+0x11b/0x1a0 io_uring/io_uring.c:3591
+ do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+ do_syscall_64+0xcf/0x1e0 arch/x86/entry/common.c:83
+ entry_SYSCALL_64_after_hwframe+0x63/0x6b
 
+[Fix] 
+When initializing the req object, increase its member cmd initialization.
 
->                                                And then it was like,
-> "Oh, these have some questionable style issues"
+Reported-and-tested-by: syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com
+Signed-off-by: Edward Adam Davis <eadavis@qq.com>
+---
+ io_uring/io_uring.c | 1 +
+ 1 file changed, 1 insertion(+)
 
-The patch review is still evolving, isn't it?
+diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
+index cd9a137ad6ce..3db59fd6f676 100644
+--- a/io_uring/io_uring.c
++++ b/io_uring/io_uring.c
+@@ -1066,6 +1066,7 @@ static void io_preinit_req(struct io_kiocb *req, struct io_ring_ctx *ctx)
+ 	/* not necessary, but safer to zero */
+ 	memset(&req->cqe, 0, sizeof(req->cqe));
+ 	memset(&req->big_cqe, 0, sizeof(req->big_cqe));
++	memset(&req->cmd, 0, sizeof(req->cmd));
+ }
+ 
+ static void io_flush_cached_locked_reqs(struct io_ring_ctx *ctx,
+-- 
+2.43.0
 
-
-> so it wasn't clear what was happening and I lost track.
-
-I find such information surprising.
-
-
-There are various source code places left over which could be adjusted somehow.
-
-Some contributors would appreciate further clarifications according to
-desirable collateral evolution.
-
-See also:
-question about kernel cocci and cleanup.h
-2024-03-07
-https://lore.kernel.org/cocci/CO1PR11MB49149F1167679926A2917E0997202@CO1PR11MB4914.namprd11.prod.outlook.com/
-
-Regards,
-Markus
 
