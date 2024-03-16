@@ -1,98 +1,116 @@
-Return-Path: <linux-kernel+bounces-105220-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105221-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D1B587DAAC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:02:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0E0B87DAAE
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:06:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 07AF51F229FC
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:02:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 741D41F21217
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:06:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CD1751BC2F;
-	Sat, 16 Mar 2024 16:02:49 +0000 (UTC)
-Received: from mail.lichtvoll.de (luna.lichtvoll.de [194.150.191.11])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 661E41BC26;
+	Sat, 16 Mar 2024 16:05:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="PQAfczqn"
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E1A31BF2B;
-	Sat, 16 Mar 2024 16:02:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.150.191.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BF6C1B95B
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 16:05:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710604969; cv=none; b=IjOyqjyPI+QOi8dH5emADdMZQmvO+PlkL6od9wD9kvAyVHQXdI2478J9OQwESH3RBhfApvGvhQ6JmZZmiUeU2AkkB36zsD5rp07U2Vn4SQilGOtZcmrrQcIxgSF2UZ6G3f/V6CeIG3QQv/wqwVwka6DU+ZjsqrAFrZV/AdlYHx0=
+	t=1710605155; cv=none; b=q2DJZxPs8tcDGnTeZtg0CXhRUvLgrjbnFD2Emn43hv/Zyxv+BIBfTw8dDvhcbYrcOxIYevtF56pb7QGqfOHmMpaCHA6dCMRIQCZ/wFxzUifQa2zWU9iHwZmu1MtX4Z4s6KXmcFTyZmZcTvaEzH6qWTL7G/rXts7GoUM/o5rH0bk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710604969; c=relaxed/simple;
-	bh=psWNJLyeG2dJDUOJLnxmct4u0lVIvH8kn+tzl248vrI=;
-	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=LnXcbr4oVtSc3p4FzYSAhR51ALeHaSsFrVoHMHdjQSRtG8NJhD10//svnHLisltkBPBBFK1TWeTutBvZwsamWS7REdeMybo0eAN2mgVwxv0ELrdlE/6o6U+HiuV607Wma4vkwbIeLlEZujHfvzBcRAcION+u7s4df0mHSP0teo4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de; spf=pass smtp.mailfrom=lichtvoll.de; arc=none smtp.client-ip=194.150.191.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=lichtvoll.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lichtvoll.de
-Received: from 127.0.0.1 (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature ECDSA (secp384r1) server-digest SHA384)
-	(No client certificate requested)
-	by mail.lichtvoll.de (Postfix) with ESMTPSA id 420E78C2375;
-	Sat, 16 Mar 2024 17:02:45 +0100 (CET)
-Authentication-Results: mail.lichtvoll.de;
-	auth=pass smtp.auth=martin smtp.mailfrom=martin@lichtvoll.de
-From: Martin Steigerwald <martin@lichtvoll.de>
-To: linux-pm@vger.kernel.org, regressions@lists.linux.dev,
- linux-kernel@vger.kernel.org
-Subject:
- [regression] 6.8.1: fails to hibernate with
- pm_runtime_force_suspend+0x0/0x120 returns -16
-Date: Sat, 16 Mar 2024 17:02:44 +0100
-Message-ID: <2325246.ElGaqSPkdT@lichtvoll.de>
+	s=arc-20240116; t=1710605155; c=relaxed/simple;
+	bh=/svi0NJ7KD08TdC4uzCf3af98Bb0v1OrST7PIaxoQ0g=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=QXAdGCtBcR0lZc0Ym0zqPkQTCAB4lMnUFbNTlGACPw384Qgx3spZdHsjsvshzeKXiEg/w/0QBFF3GYM9qBYaOmoWIvGJ9y33qSSh/cU11P3GDXgWrd9cOztJEmfvqeQcHe7hCygKEq8fTe+5vNUOHGBPNnl5QlOZUTFoFb8wzCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=PQAfczqn; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710605151;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=+Mq/6HxdR67XTNnr1mfKX0S56ljquTrLxh/6FJkkRZY=;
+	b=PQAfczqnBDSKaqj6dXm4XielO0qFiCvfWtyR/Mz4cEKzUA9ou5mIouLXmoJXG5GcukQgU3
+	/SUE7e5CAo6H4NYazTk/e90kUKva0CttZke1+fh9MSX0kHBZ5ZilWnKwStzD9ckXjCeXTw
+	vg7Br6bwub5vXAhREs1k7YtDBDGbkSA=
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: Phong LE <ple@baylibre.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+	Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject: [PATCH] drm/bridge: ite66121: Register HPD interrupt handler only when 'client->irq > 0'
+Date: Sun, 17 Mar 2024 00:05:36 +0800
+Message-Id: <20240316160536.1051513-1-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-Hi!
+If a specific design doesn't wire IT66121's interrupt signal output pin up
+to the display controller side, then we should not register the interrupt
+handler. Such a decision is valid usage, as we can fall back to polling
+mode. So, don't make the assumption that a specific board always supports
+HPD. Carry out a sanity check on 'client->irq' before using it, fall back
+to polling mode if client->irq < 0 is true. Such a design increases the
+overall flexibility.
 
-ThinkPad T14 AMD Gen 1 fails to hibernate with self-compiled 6.8.1.
-Hibernation works correctly with self-compiled 6.7.9.
+Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+---
+ drivers/gpu/drm/bridge/ite-it66121.c | 19 ++++++++++++-------
+ 1 file changed, 12 insertions(+), 7 deletions(-)
 
-Trying to use "no_console_suspend" to debug next. Will not do bisect
-between major kernel releases on a production machine.
-
-[  409.847217] PM: hibernation: hibernation entry
-[  409.874672] Filesystems sync: 0.027 seconds
-[  409.875204] Freezing user space processes
-[  409.877765] Freezing user space processes completed (elapsed 0.002 seconds)
-[  409.877770] OOM killer disabled.
-[  409.878027] PM: hibernation: Marking nosave pages: [mem 0x00000000-0x00000fff]
-[  409.878031] PM: hibernation: Marking nosave pages: [mem 0x0009f000-0x000fffff]
-[  409.878034] PM: hibernation: Marking nosave pages: [mem 0x09c00000-0x09d00fff]
-[  409.878039] PM: hibernation: Marking nosave pages: [mem 0x09f00000-0x09f0ffff]
-[  409.878041] PM: hibernation: Marking nosave pages: [mem 0xa2356000-0xa2356fff]
-[  409.878042] PM: hibernation: Marking nosave pages: [mem 0xa2363000-0xa2364fff]
-[  409.878043] PM: hibernation: Marking nosave pages: [mem 0xa2372000-0xa2373fff]
-[  409.878045] PM: hibernation: Marking nosave pages: [mem 0xa2384000-0xa2384fff]
-[  409.878046] PM: hibernation: Marking nosave pages: [mem 0xb9c57000-0xb9ce7fff]
-[  409.878049] PM: hibernation: Marking nosave pages: [mem 0xbd9de000-0xcc3fdfff]
-[  409.878530] PM: hibernation: Marking nosave pages: [mem 0xce000000-0xffffffff]
-[  409.879306] PM: hibernation: Basic memory bitmaps created
-[  409.884500] PM: hibernation: Preallocating image memory
-[  412.146014] PM: hibernation: Allocated 2800864 pages for snapshot
-[  412.146022] PM: hibernation: Allocated 11203456 kbytes in 2.26 seconds (4957.28 MB/s)
-[  412.146025] Freezing remaining freezable tasks
-[  412.147610] Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
-[  412.147829] printk: Suspending console(s) (use no_console_suspend to debug)
-[  412.158400] port 0000:02:00.1:0.0: PM: dpm_run_callback(): pm_runtime_force_suspend+0x0/0x120 returns -16
-[  412.158418] port 0000:02:00.1:0.0: PM: failed to freeze: error -16
-[  413.879379] PM: hibernation: Basic memory bitmaps freed
-[  413.879847] OOM killer enabled.
-[  413.879852] Restarting tasks ... done.
-[  413.882304] PM: hibernation: hibernation exit
-
-Best,
+diff --git a/drivers/gpu/drm/bridge/ite-it66121.c b/drivers/gpu/drm/bridge/ite-it66121.c
+index 1c3433b5e366..052884058644 100644
+--- a/drivers/gpu/drm/bridge/ite-it66121.c
++++ b/drivers/gpu/drm/bridge/ite-it66121.c
+@@ -1586,13 +1586,18 @@ static int it66121_probe(struct i2c_client *client)
+ 	ctx->bridge.funcs = &it66121_bridge_funcs;
+ 	ctx->bridge.of_node = dev->of_node;
+ 	ctx->bridge.type = DRM_MODE_CONNECTOR_HDMIA;
+-	ctx->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID | DRM_BRIDGE_OP_HPD;
+-
+-	ret = devm_request_threaded_irq(dev, client->irq, NULL,	it66121_irq_threaded_handler,
+-					IRQF_ONESHOT, dev_name(dev), ctx);
+-	if (ret < 0) {
+-		dev_err(dev, "Failed to request irq %d:%d\n", client->irq, ret);
+-		return ret;
++	ctx->bridge.ops = DRM_BRIDGE_OP_DETECT | DRM_BRIDGE_OP_EDID;
++	if (client->irq > 0) {
++		ctx->bridge.ops |= DRM_BRIDGE_OP_HPD;
++
++		ret = devm_request_threaded_irq(dev, client->irq, NULL,
++						it66121_irq_threaded_handler,
++						IRQF_ONESHOT, dev_name(dev),
++						ctx);
++		if (ret < 0) {
++			dev_err(dev, "Failed to request irq %d:%d\n", client->irq, ret);
++			return ret;
++		}
+ 	}
+ 
+ 	it66121_audio_codec_init(ctx, dev);
 -- 
-Martin
-
+2.34.1
 
 
