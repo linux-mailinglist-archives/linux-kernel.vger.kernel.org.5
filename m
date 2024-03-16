@@ -1,136 +1,128 @@
-Return-Path: <linux-kernel+bounces-105173-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105174-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B66887DA0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:00:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A1B0587DA10
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:07:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 30D9B28220B
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:00:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 61E191F2189B
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:07:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8E3E17997;
-	Sat, 16 Mar 2024 12:00:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D191E18036;
+	Sat, 16 Mar 2024 12:07:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b="f64dPdfa"
-Received: from mx0.riseup.net (mx0.riseup.net [198.252.153.6])
+	dkim=fail reason="signature verification failed" (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="ckFJmsEz"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7844217722
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 11:59:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.252.153.6
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50ACE17BA9
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:07:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710590400; cv=none; b=SZoiYKB30e5wVNkdliBuz0bY41nF1bgVMPWU1ExE7OerVpWWAXVh6bJAmAX6AzI0SykmqCywih24SO/jNwWfPiGpn/xBRd/k4RSLTNmWOmK4NwVW6PDNLlL8Ma1F+whW3HRQ8fQbG5uI2IQfyNSPBzIUaHcFlPgrXyT8zt4SgsM=
+	t=1710590847; cv=none; b=bxZJel6dU3K8lIGFxn+qr+4k9Tcy+Bmkt4J7wSAtq0AZ1/hZsJ5UQ+aqE4FC9G2HwnbYK1BT78caVlMXQr2wn2aMiYRYTiPg8Hmb0Hd+/g5kYTGOWcq/FEnRhieYbIiIVM1sM8JIZ5MJlDZVFeEKpp/Im60s/6kwdlBAvApuPE4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710590400; c=relaxed/simple;
-	bh=WQmxlTwntkNSsllxZyg/C1a/cT0ISfU7jYv4Gvy4DNg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=P5qZKKWMJtj/LvPzFxlTfDI0ZFZJjGZEg5+SHT4FHLOUcdT8x7+cjQPKF9/zlxw3pB5P7tCu4k5KQr5SSShP10XKiICAYHNrivyyEUltQyYuuQCCFnrC37rL2oyhE5R7Bc615NsAw0Z5hSic2xTy5wdCXPSUGKe9Z+9NIcvLXqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net; spf=pass smtp.mailfrom=riseup.net; dkim=pass (1024-bit key) header.d=riseup.net header.i=@riseup.net header.b=f64dPdfa; arc=none smtp.client-ip=198.252.153.6
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=riseup.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=riseup.net
-Received: from fews02-sea.riseup.net (fews02-sea-pn.riseup.net [10.0.1.112])
+	s=arc-20240116; t=1710590847; c=relaxed/simple;
+	bh=jKro2/gRgX6heE2Jq0/ZJ4FoBarMH3/aFLbsxgQ6JDg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=AXdH4+S96+LMN+DVdltA2FMOzV2FrlgcJgNSH3hN6FkofqzKwdYxCu2GxXjylfyfXuIbJ/MBPHU9GaQTV4oUvjcfQdi6mRISRfts9PctdSTWPd5Gsq00mHIGGrbdQte2LNSE1QzqGKf63XBs5m3Mfc7ez0e6YwLnihSSGUsCQYM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=fail (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=ckFJmsEz reason="signature verification failed"; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DCD3440E0196;
+	Sat, 16 Mar 2024 12:07:21 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=fail (4096-bit key)
+	reason="fail (body has been altered)" header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id VJkoq3PToC3h; Sat, 16 Mar 2024 12:07:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1710590836; bh=Sib9tg+0McX6SOT0e+44wERQmlUitSpPWoz5I1BPfG0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=ckFJmsEzH33EAjt7M+HhynOpIEJW2a5zLfwywQ3vcLQgu8Ju1VoxU9435Ku6mqtHQ
+	 ywMxfCTye939gU068QCPE4Dg/yJlhyB5KFSB5vRS/yUsgXj9/cpDEzf6wrNaBTFki7
+	 6RIJZdAMiqDe3u5w4/Df67SU8RmxHK5UVOj3AToCgN1VRssw28ob1ffW6hiuGDg7Js
+	 b1ryk+ONFpvyXxXPXfAnm0k7iObB/TZSnyxuIloXFpJjvkqsYLoRA2bG2+Kz26bX3s
+	 tsm2UHcZfH4XD4uMpYQWAZYXjjCBYYq3aqqECjjhU+xFF9ZTMxRCvA1Yy/JyWUe+QI
+	 QLCep+E3pxhsXKCqNIJqVL7dbh7CL18DfqcGB7l538C4oDn+Oc0d9NkBVJH2s4nHUp
+	 KHBO0BIQVBQPfH12/s5cAFsPNTAauHpF+qKqubUcnZ/vQrzLpJia5TfC77jB2dr1UB
+	 kQlQ3S0vMYXRrzOKxRi1EC4/BWgr0U4DUp0g5rMrYhiksHHA/VSENXUBurbpHlFT1O
+	 pFi+jLQ4wPqQF43xBQA4y8gq6bRy/Q2fLydTpcmOehI/FtIGP0fIfMmNW49s2REjxC
+	 dba4qjQawfhvL8Fw2WR1NyEcwiAawaIsP0dh6x7oascbngPLGA2uNQMTZcEIfElVlj
+	 6CV13hEaxSXEuqqZOJ5UGGzE=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
 	(No client certificate requested)
-	by mx0.riseup.net (Postfix) with ESMTPS id 4Txfn31qT3z9vDX;
-	Sat, 16 Mar 2024 11:59:51 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=riseup.net; s=squak;
-	t=1710590391; bh=WQmxlTwntkNSsllxZyg/C1a/cT0ISfU7jYv4Gvy4DNg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=f64dPdfaX8zGoyN4b9rG4CEgoLbOj3lPAZkAPG7E0t67dZoFJkjm5J3cT6tgbIKQ9
-	 gXM+AK3QTLvRv6WAx5a3Q/93n/+uH7tp9c+yzfyIka6lfkSJoYEN31v/szESXHoMK6
-	 10LDCYhAvPFNsFVqv9VzzRgzlbfZrPlt4MDgyymI=
-X-Riseup-User-ID: 6C74F281042F65B51CCBE0B3DA10EC412235F4C595D00882D3E048DA1DED345E
-Received: from [127.0.0.1] (localhost [127.0.0.1])
-	 by fews02-sea.riseup.net (Postfix) with ESMTPSA id 4Txfmv1rZqzFtSW;
-	Sat, 16 Mar 2024 11:59:42 +0000 (UTC)
-Message-ID: <2aa81b6b-0eb1-46d6-8e36-3bd43b8961c4@riseup.net>
-Date: Sat, 16 Mar 2024 08:59:40 -0300
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 93DF740E0174;
+	Sat, 16 Mar 2024 12:07:14 +0000 (UTC)
+From: Borislav Petkov <bp@alien8.de>
+To: X86 ML <x86@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject: [PATCH] x86/cpu: Get rid of a local var in get_cpu_address_sizes()
+Date: Sat, 16 Mar 2024 13:07:06 +0100
+Message-ID: <20240316120706.4352-1-bp@alien8.de>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 1/7] drm: Fix drm_fixp2int_round() making it add 0.5
-Content-Language: en-US
-To: Melissa Wen <mwen@igalia.com>
-Cc: Rodrigo Siqueira <rodrigosiqueiramelo@gmail.com>,
- Melissa Wen <melissa.srw@gmail.com>, =?UTF-8?Q?Ma=C3=ADra_Canal?=
- <mairacanal@riseup.net>, Haneen Mohammed <hamohammed.sa@gmail.com>,
- Daniel Vetter <daniel@ffwll.ch>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Jonathan Corbet <corbet@lwn.net>,
- pekka.paalanen@haloniitty.fi, Louis Chauvet <louis.chauvet@bootlin.com>,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
- jeremie.dautheribes@bootlin.com, miquel.raynal@bootlin.com,
- thomas.petazzoni@bootlin.com, seanpaul@google.com, marcheu@google.com,
- nicolejadeyee@google.com, Pekka Paalanen <pekka.paalanen@collabora.com>
-References: <20240306-louis-vkms-conv-v1-0-5bfe7d129fdd@riseup.net>
- <20240306-louis-vkms-conv-v1-1-5bfe7d129fdd@riseup.net>
- <yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
-From: Arthur Grillo <arthurgrillo@riseup.net>
-In-Reply-To: <yyrvbqpmqplwtqfdsjkhzmx7wrk4h67kn5443bdou7c7uciouy@hac7zfxiff7t>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: quoted-printable
 
+From: "Borislav Petkov (AMD)" <bp@alien8.de>
 
+Drop vp_bits_from_cpuid as it is not really needed.
 
-On 12/03/24 15:27, Melissa Wen wrote:
-> On 03/06, Arthur Grillo wrote:
->> As well noted by Pekka[1], the rounding of drm_fixp2int_round is wrong.
->> To round a number, you need to add 0.5 to the number and floor that,
->> drm_fixp2int_round() is adding 0.0000076. Make it add 0.5.
->>
->> [1]: https://lore.kernel.org/all/20240301135327.22efe0dd.pekka.paalanen@collabora.com/
->>
-> Hi Arthur,
-> 
-> thanks for addressing this issue.
-> 
-> Please, add a fix tag to the commit that you are fixing, so we can
-> easily backport. Might be this commit:
-> https://cgit.freedesktop.org/drm/drm-misc/commit/drivers/gpu/drm/vkms?id=ab87f558dcfb2562c3497e89600dec798a446665
+No functional changes.
 
-Wouldn't be this commit instead?
-https://cgit.freedesktop.org/drm/drm-misc/commit/?id=8b25320887d7feac98875546ea0f521628b745bb
+Signed-off-by: Borislav Petkov (AMD) <bp@alien8.de>
+---
+ arch/x86/kernel/cpu/common.c | 17 +++++++----------
+ 1 file changed, 7 insertions(+), 10 deletions(-)
 
-Best Regards,
-~Arthur Grillo
+diff --git a/arch/x86/kernel/cpu/common.c b/arch/x86/kernel/cpu/common.c
+index ba8cf5e9ce56..9a34651d24e7 100644
+--- a/arch/x86/kernel/cpu/common.c
++++ b/arch/x86/kernel/cpu/common.c
+@@ -1053,18 +1053,9 @@ void get_cpu_cap(struct cpuinfo_x86 *c)
+ void get_cpu_address_sizes(struct cpuinfo_x86 *c)
+ {
+ 	u32 eax, ebx, ecx, edx;
+-	bool vp_bits_from_cpuid =3D true;
+=20
+ 	if (!cpu_has(c, X86_FEATURE_CPUID) ||
+-	    (c->extended_cpuid_level < 0x80000008))
+-		vp_bits_from_cpuid =3D false;
+-
+-	if (vp_bits_from_cpuid) {
+-		cpuid(0x80000008, &eax, &ebx, &ecx, &edx);
+-
+-		c->x86_virt_bits =3D (eax >> 8) & 0xff;
+-		c->x86_phys_bits =3D eax & 0xff;
+-	} else {
++	    (c->extended_cpuid_level < 0x80000008)) {
+ 		if (IS_ENABLED(CONFIG_X86_64)) {
+ 			c->x86_clflush_size =3D 64;
+ 			c->x86_phys_bits =3D 36;
+@@ -1078,7 +1069,13 @@ void get_cpu_address_sizes(struct cpuinfo_x86 *c)
+ 			    cpu_has(c, X86_FEATURE_PSE36))
+ 				c->x86_phys_bits =3D 36;
+ 		}
++	} else {
++		cpuid(0x80000008, &eax, &ebx, &ecx, &edx);
++
++		c->x86_virt_bits =3D (eax >> 8) & 0xff;
++		c->x86_phys_bits =3D eax & 0xff;
+ 	}
++
+ 	c->x86_cache_bits =3D c->x86_phys_bits;
+ 	c->x86_cache_alignment =3D c->x86_clflush_size;
+ }
+--=20
+2.43.0
 
-
->> Suggested-by: Pekka Paalanen <pekka.paalanen@collabora.com>
->> Signed-off-by: Arthur Grillo <arthurgrillo@riseup.net>
->> ---
->>  include/drm/drm_fixed.h | 2 +-
->>  1 file changed, 1 insertion(+), 1 deletion(-)
->>
->> diff --git a/include/drm/drm_fixed.h b/include/drm/drm_fixed.h
->> index 0c9f917a4d4b..de3a79909ac9 100644
->> --- a/include/drm/drm_fixed.h
->> +++ b/include/drm/drm_fixed.h
->> @@ -90,7 +90,7 @@ static inline int drm_fixp2int(s64 a)
->>  
->>  static inline int drm_fixp2int_round(s64 a)
->>  {
->> -	return drm_fixp2int(a + (1 << (DRM_FIXED_POINT_HALF - 1)));
-> Also, this is the only usage of DRM_FIXED_POINT_HALF. Can you also
-> remove it as it won't be used anymore?
-> 
->> +	return drm_fixp2int(a + DRM_FIXED_ONE / 2);
-> Would this division be equivalent to just shifting 1ULL by 31 instead of
-> 32 as done in DRM_FIXED_ONE?
-> 
-> Melissa
-> 
->>  }
->>  
->>  static inline int drm_fixp2int_ceil(s64 a)
->>
->> -- 
->> 2.43.0
->>
 
