@@ -1,100 +1,78 @@
-Return-Path: <linux-kernel+bounces-105023-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105024-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 50A9187D7BE
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:11:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E7A87D7BF
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 02:13:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 827F01C21144
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 01:11:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8EAC11F2231C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 01:13:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21E74431;
-	Sat, 16 Mar 2024 01:11:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 373001879;
+	Sat, 16 Mar 2024 01:12:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VyOJbXVj"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="h84tYYEe"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7B7723B1;
-	Sat, 16 Mar 2024 01:11:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 78A3717F0
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 01:12:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710551474; cv=none; b=g1nOESycgzL4HBGzN9NPQjlUiL3XdoBYYn/8ZaWKDjbaWvLeTqCyx+gT1I4GmgpLf5VE2hZDTuW9b2jl1X9ogzbSJMyk8brMaXqLWMLHjYmJYv85khuYaONgfZ0vquuC8ZhTk+v5zbNFu2AgjTpjQs9/NPIPfCAN1/X69uP+ykM=
+	t=1710551577; cv=none; b=eWveS00JrCnqVI+EFLyHXguGOsKxlJ6MeBQ2+BenM+vH4POmGd7yWl9Zd4mpwPOAyJqX9fQBNHPkXQxTOwIi5uXhDEqzLxyk30ltCtxGXQz5+fERY/Laggz2YUfFaK8pCLMydbmqnpmou7BVcH4ZthXeMP5fDZZ2LZF+IWN4lMY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710551474; c=relaxed/simple;
-	bh=/2mV4x22F/QVgIh76C3BMbNB2KLcrxBXoWVMuW7h7mg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YKAsHydytImYg8w0siKNtQkkKoT5EUN4s+utUKuP6IlCLwxzfHY6AGHvjdH7ams6eL4jr5PT5fP2jTH0sgmdXtsQVCWT77aY+tPergy0wov+rwStyVBRnFKsxkFongl8JQzwjrJvGZvix0IHOAbP5R+QYRQ5pj8ioQuukk6IFqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VyOJbXVj; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8F49CC43390;
-	Sat, 16 Mar 2024 01:11:12 +0000 (UTC)
+	s=arc-20240116; t=1710551577; c=relaxed/simple;
+	bh=AYCpYaUfYmtFgIobyEWOgpa5ZUdwm5RXbFeSBnlEDwk=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=WvW0NFnktc+f6nudoLjDbb1KCWdu+UaMHTouG5p+SzeNCRlnQ1XhxRrg/1KcfWRLhsn+ssi/1fuhQs9LOltwIgBc68Ty5i13Y+VMbGWHTsIkwyr+aYZi//p/Z7pnXpzfx6ycX/+wvStqS9BO/b6IW2UXxa/9Ce46acdOuMlBjgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=h84tYYEe; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 4D6C1C433C7;
+	Sat, 16 Mar 2024 01:12:57 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710551474;
-	bh=/2mV4x22F/QVgIh76C3BMbNB2KLcrxBXoWVMuW7h7mg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=VyOJbXVj8BQowIBfk7EMLO87izqo47PBgcN7S2u76zsD+gwyLmpIOEQHH8p/LCtub
-	 w4mS7gFbhyVIJEh+i4eV2kqfFm93ipbOPmzBqCNjDCWFw9GES06tF4HrO6lkOgwcDz
-	 OJiCDHJEoD0U/No4D1VlSZ7y4bf2/Hj9YjgDYAlTWsTlMvlcWba/H4hNGDeAW67FYR
-	 7IaufWPMPM6gdP2flaw3iSA9sx5xvRTxaawqXWoENgXVvYis3gnB5wObVV5J/QqLHH
-	 2ISa5M0hntATc02lNQ+05IjfhOX/9HJ1x0vz3NT/nkUuR41WKCKGqsRUeR3m6uqxhu
-	 UdWcb+baTEpbw==
-Date: Sat, 16 Mar 2024 01:11:09 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Justin Swartz <justin.swartz@risingedge.co.za>
-Cc: Matthias Brugger <matthias.bgg@gmail.com>,
-	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
-	linux-spi@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-mediatek@lists.infradead.org
-Subject: Re: [PATCH] spi: mt7621: allow GPIO chip select lines
-Message-ID: <81c2c997-52f8-48a6-ace5-1bf503462f25@sirena.org.uk>
-References: <20240316005917.20526-1-justin.swartz@risingedge.co.za>
- <182aa3a1fcd05a2e25b55442f58ced5b@risingedge.co.za>
+	s=k20201202; t=1710551577;
+	bh=AYCpYaUfYmtFgIobyEWOgpa5ZUdwm5RXbFeSBnlEDwk=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=h84tYYEeo4qYwUjyz8OYNbeEn9VgoRxng/MbOCQsWKKR6GFYmf0O0yeuQs5J/iWTH
+	 F5Tb2i75RGoC4bi1Zsk7T3rMddB0CUpmHMr3pd1gsMKk2L1brB0uqZ2ifljd1hf+DP
+	 mo8enxXBH+8mvhHJhBkWXiW32zcYT0GwPF/Xmoe948vE3RHZny9N4i3DIE3o4qaBrA
+	 WtmrXnajqxzOv/M/X4OliZSdetOVYprzKeVlmVg+vbgOUeXYcSFrWQ+6gX82cLJLc+
+	 shzWC9CxNdm0zmU5nPYVC3q1iQ2M9Nz+E45HIqXFQjVb8lWkcYtykBGdQXkriuFUx6
+	 P+tSL0MJs6Rsw==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41AB0D95060;
+	Sat, 16 Mar 2024 01:12:57 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull powerpc/linux.git powerpc-6.9-1 tag
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <87h6h72h38.fsf@mail.lhotse>
+References: <87h6h72h38.fsf@mail.lhotse>
+X-PR-Tracked-List-Id: Linux on PowerPC Developers Mail List <linuxppc-dev.lists.ozlabs.org>
+X-PR-Tracked-Message-Id: <87h6h72h38.fsf@mail.lhotse>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.9-1
+X-PR-Tracked-Commit-Id: 9db2235326c4b868b6e065dfa3a69011ee570848
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: 66a27abac311a30edbbb65fe8c41ff1b13876faa
+Message-Id: <171055157726.25988.1346643204579685627.pr-tracker-bot@kernel.org>
+Date: Sat, 16 Mar 2024 01:12:57 +0000
+To: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, chentao@kylinos.cn, szabolcs.nagy@arm.com, set_pte_at@outlook.com, ricardo@marliere.net, maddy@linux.ibm.com, damien.lemoal@opensource.wdc.com, u.kleine-koenig@pengutronix.de, kuba@kernel.org, zeming@nfschina.com, arnd@arndb.de, kjain@linux.ibm.com, sshegde@linux.ibm.com, npiggin@gmail.com, nathan@kernel.org, sv@linux.ibm.com, geoff@infradead.org, linqiheng@huawei.com, linux-kernel@vger.kernel.org, adhemerval.zanella@linaro.org, brking@linux.ibm.com, linuxppc-dev@lists.ozlabs.org, masahiroy@kernel.org
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="0+AF4gs/20AJKM5f"
-Content-Disposition: inline
-In-Reply-To: <182aa3a1fcd05a2e25b55442f58ced5b@risingedge.co.za>
-X-Cookie: A well-known friend is a treasure.
 
+The pull request you sent on Sat, 16 Mar 2024 10:47:07 +1100:
 
---0+AF4gs/20AJKM5f
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+> https://git.kernel.org/pub/scm/linux/kernel/git/powerpc/linux.git tags/powerpc-6.9-1
 
-On Sat, Mar 16, 2024 at 03:01:02AM +0200, Justin Swartz wrote:
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/66a27abac311a30edbbb65fe8c41ff1b13876faa
 
-> Please ignore this patch. It was accidentally sent without
-> "v2" nor --in-reply-to=...
+Thank you!
 
-The --in-reply-to should be avoided:
-
-Please don't send new patches in reply to old patches or serieses, this
-makes it harder for both people and tools to understand what is going
-on - it can bury things in mailboxes and make it difficult to keep track
-of what current patches are, both for the new patches and the old ones.
-
---0+AF4gs/20AJKM5f
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX08awACgkQJNaLcl1U
-h9CI0wf7BetQ9uuB98Mxk6JweW8nndlgvuseO/vOtdWIr+mUTeIaAAVdgh4NgVs/
-sDcjKdJAs3FFmRqfXcaS7DT2Ycg8S+NPw1NBJ9fEpPcirFUwP5kao4QZXziSBEdv
-nvhZKZWWjWN9Y3iJF0zBDrd6V36xOaZdl3eOXRwgFKOOOpffVeb1sHVDHs2832jw
-CNvukno+dvaW5q9zNfp6l+oLPsPgzuhZnDfcytvdpm2SqGw2ACqK2w+eFfKyOJfu
-e8T+wKmdM84+PKWu/Fxp4IEj21RBxCb+AF4HJqeLYek7KkBAjg4ibhDwBBHSExpf
-VjbAOlXUKXULbiOShjlGEWrigaeQ+A==
-=0jKr
------END PGP SIGNATURE-----
-
---0+AF4gs/20AJKM5f--
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
