@@ -1,49 +1,49 @@
-Return-Path: <linux-kernel+bounces-105248-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105249-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67CA887DB0C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:24:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7929587DB0E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:27:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 07184B217A4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:24:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1AC8282526
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 17:27:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFC491BF2B;
-	Sat, 16 Mar 2024 17:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668461BF40;
+	Sat, 16 Mar 2024 17:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Vallxqpk"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="elkKsbaf"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DEBC1BDCE;
-	Sat, 16 Mar 2024 17:24:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A615D1BDE2;
+	Sat, 16 Mar 2024 17:27:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710609880; cv=none; b=iSHn0yJZ1+2JhjdZML3RohdTSk4aWmntnZemAlEznVttMgewHo0uzOH/uHHTWoBXR7whBfMvfrDVzzxjTP71zb9mHgvts8QzlQXMhM4OzpoyfaA695gk1FYjAhDIQqE0/PCS5+QBrpl6zmFi1XwKvGUAb4N6fmxWRTMDbus626Q=
+	t=1710610024; cv=none; b=biyPOeNt/s/ihJ2V1J2Qq++9Je2n3fMhzF24IWGR8kbxZL9UgfeudEw1WJpbX8eEwwCJgdU8nJKqVYXmRAFFlNrh8B+jbAps/DcJkHp8fI2K5kSldGm7xEihqZqrJW2GlExb1QyMsozuXdDSS67Yd7ihstu/zsBPBVy3LMm+cfo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710609880; c=relaxed/simple;
-	bh=t2f9OCV2id9IXt90SjuS1wuibjrWOdvYSHURUhVXBCc=;
+	s=arc-20240116; t=1710610024; c=relaxed/simple;
+	bh=zYt14r8nDdOX+ZfrAQslKLIlUylEWdawHHVHKwxd1LI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eWFFBOA0pxe0Fp0fZok10XlmJEf6F8oWeaj5AzBIxTPa+2FjPg8Bqpg1y4sYF7vzOsu7hUEiH6h3mJlUTD6OxoYjzb2DsXtSF0HKeecq5M32iOlOsxrbrHZFei6yDGkgPU1YVUOwkaBkJw1kJyxjMqnz9SMuBFqds3Qgxihqs+0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Vallxqpk; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9E307C433F1;
-	Sat, 16 Mar 2024 17:24:38 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=Jid0bD/hx4cBLFGJA3EGhH/aMZFyXiyP18PMbxnhSU2Uzr88J9fsJcnwvHTUBWZmqPIxHe8uVFVWOY2BPOMyS7S0d2wFGXuq1O7RtINTNFZDW6IyrTM0gwLKlCHLXmLSUAR5uxq8n2hiXbpuucQzjPHfp5jOXICcO2X3BA19ijw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=elkKsbaf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8BB9C433C7;
+	Sat, 16 Mar 2024 17:27:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710609879;
-	bh=t2f9OCV2id9IXt90SjuS1wuibjrWOdvYSHURUhVXBCc=;
+	s=k20201202; t=1710610024;
+	bh=zYt14r8nDdOX+ZfrAQslKLIlUylEWdawHHVHKwxd1LI=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Vallxqpk8xB2VeXjticMxlwQFQ+em2yaUhv4FF8f7i7m5oXFD2XPtOz2UXt/g0WUe
-	 E+5wMuOdRVJ4ZCVl37W3G3fI3RKhS6bhHatbPqRYeMhPhgLFeKZz/zXdAExgpxqMi0
-	 dsPtdKld/ezhDUxzDUrJfDf5Y4hFcN5qbLg7vyhGtzA4okLqTiiQ1IPmIKViE60d0F
-	 EzuNoYwYsI4Rz72rWcHiOdWduAiNAsZpwnC8yyU6oYyoMv+hUCVKvRJAEef0o3pYc/
-	 WFjFnONb3j2WXGa3UHKj/cYOrXEKN5LGEyuNMBzQmXJ54o4MRhvzW4H7dxFWWOLQIW
-	 v8RmQvBhVDxHg==
-Date: Sat, 16 Mar 2024 12:24:36 -0500
+	b=elkKsbafdZ4m/gSiQ08z+s2biv9jHP9xk/EX8VZQUbzPa4Su8y8C0R3ECe0/bIwKS
+	 az0vBPCf+QGyFLTePrORh1gBJqqpMIydWmeAKHNaSeqlGS+SnkLwMt2N5l0txH7gOQ
+	 YWEfzhVkoUISX/irR4UDLUbs34VwUh4bs/UoMmBdOp57g/a/cdM9v335fvTBUIoE2C
+	 LeaL1gwftzTlNz7FOqt8ZblN7leRkoMYks5dNRYhhu+DR5ydVM+xpaPrXcOO3xO4Te
+	 bnrMUWWxcdnL5oymCKby2hv7a0a+hYlsURUObqNkdeOIh+PZ3plhF/ahnMztSIMSTr
+	 JmnzMCG2KtShw==
+Date: Sat, 16 Mar 2024 12:27:00 -0500
 From: Bjorn Andersson <andersson@kernel.org>
-To: Bartosz Golaszewski <brgl@bgdev.pl>
-Cc: Andy Gross <agross@kernel.org>, 
+To: Prasad Sodagudi <quic_psodagud@quicinc.com>
+Cc: Bartosz Golaszewski <brgl@bgdev.pl>, Andy Gross <agross@kernel.org>, 
 	Konrad Dybcio <konrad.dybcio@linaro.org>, Elliot Berman <quic_eberman@quicinc.com>, 
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Guru Das Srinagesh <quic_gurus@quicinc.com>, 
 	Andrew Halaney <ahalaney@redhat.com>, Maximilian Luz <luzmaximilian@gmail.com>, 
@@ -51,63 +51,38 @@ Cc: Andy Gross <agross@kernel.org>,
 	Arnd Bergmann <arnd@arndb.de>, linux-arm-msm@vger.kernel.org, linux-kernel@vger.kernel.org, 
 	linux-arm-kernel@lists.infradead.org, kernel@quicinc.com, 
 	Bartosz Golaszewski <bartosz.golaszewski@linaro.org>, Deepti Jaggi <quic_djaggi@quicinc.com>
-Subject: Re: [PATCH v7 08/12] firmware: qcom: qseecom: convert to using the
- TZ allocator
-Message-ID: <vevlpit6xttrrpse6lxw43vnmf7hpoxsovoofrdvam7dmmvyyh@5bajhnotdr3y>
+Subject: Re: [PATCH v7 11/12] firmware: qcom: scm: clarify the comment in
+ qcom_scm_pas_init_image()
+Message-ID: <qwzpjymdu7svm2ojehnbyztcnbgvpqakj3rmhfzjwf2mld6w6u@zj3qrcza5hf6>
 References: <20240205182810.58382-1-brgl@bgdev.pl>
- <20240205182810.58382-9-brgl@bgdev.pl>
- <yu5uhamdlygti3jo73ipy3gxhcmgxrm5g6imgqg6ksleim4ton@npvzlex2j4xi>
- <CAMRc=Mctm-cyYPpu-Vb+fr1cWJPUW49shaa9HEXYp+rkF_CHUw@mail.gmail.com>
- <odnisr4flot3rgwwqpjob3qtw63jow7hcj4guy6ao6spdz6fm4@wtcm62o3hgxm>
- <CAMRc=Mezj4BQ=-4SfgdE6OmKX0X8+xedvroBNeaDeyqey4=2DQ@mail.gmail.com>
+ <20240205182810.58382-12-brgl@bgdev.pl>
+ <ihz4jczbhn3gdcs6nkgnzpyv3577ebd73qbkynw6jz7ciy4fu3@kxqu7olrrely>
+ <6a3e3071-f8cd-66b4-99a0-427f7e11177a@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=iso-8859-1
 Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAMRc=Mezj4BQ=-4SfgdE6OmKX0X8+xedvroBNeaDeyqey4=2DQ@mail.gmail.com>
+In-Reply-To: <6a3e3071-f8cd-66b4-99a0-427f7e11177a@quicinc.com>
 
-On Sun, Mar 03, 2024 at 05:18:18PM +0100, Bartosz Golaszewski wrote:
-> On Tue, Feb 27, 2024 at 5:53â€¯PM Bjorn Andersson <andersson@kernel.org> wrote:
-> >
-> > On Tue, Feb 20, 2024 at 10:54:02AM +0100, Bartosz Golaszewski wrote:
-> > >
-> > > I disagree. If we have a better interface in place, then let's use it
-> > > right away, otherwise it's just useless churn.
-> > >
-> >
-> > The functional change and the use of cleanup macros, could be done
-> > independently of each other, each one fully beneficial on their own.
-> >
-> > As such I don't find it hard to claim that they are two independent
-> > changes.
-> >
-> 
-> This series would be 50% bigger for no reason if we split every patch
-> using the new allocator into two.
+On Fri, Mar 01, 2024 at 10:49:57AM -0800, Prasad Sodagudi wrote:
+> On 2/17/2024 7:50 PM, Bjorn Andersson wrote:
+> > On Mon, Feb 05, 2024 at 07:28:09PM +0100, Bartosz Golaszewski wrote:
+> > > From: Bartosz Golaszewski <bartosz.golaszewski@linaro.org>
+[..]
+> > > +	 * If we pass a buffer that is already part of an SHM Bridge to this
+> > > +	 * call, it will fail.
+> > Could this be because the consumer of this buffer operates in EL2, and
+> > not TZ?
+> These buffers are consumed by TZ only and not by EL2.  hyp creating the
+> required bridges for pil buffers.
 
-I'm not asking you to split every patch into two, unless that makes
-sense.
-
-> I absolutely don't see how this makes any sense.
-
-I find it unnecessarily hard to determine which parts of _this_ patch is
-functional and which is cleanup.
-
-> We're removing the calls to old interfaces and using
-> the new ones instead. The new ones happen to support cleanup so we use
-> it right away. If the old ones supported cleanup then maybeeee it
-> would make some sense to convert them first and then use tzmem. As it
-> is, there's really no point.
-> 
-
-The old interface is kzalloc(). I haven't used the cleanup mechanism
-myself yet, but are you saying that there's no cleanup support for
-kzalloc()?
+Please help Bartosz document what is actually going on here and why
+these buffers should be handled differently.
 
 Regards,
 Bjorn
