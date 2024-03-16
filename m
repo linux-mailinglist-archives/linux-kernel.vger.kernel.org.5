@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-105274-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8814887DB43
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:51:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14D3387DB44
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:51:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 327021F21D19
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:51:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 72E2A282C4E
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:51:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906971C29C;
-	Sat, 16 Mar 2024 18:50:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A9211C68A;
+	Sat, 16 Mar 2024 18:51:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="meNYMILc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DoYQuyFo"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21634C9A;
-	Sat, 16 Mar 2024 18:50:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A048D1C684
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 18:51:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710615057; cv=none; b=nkHmJ7Z6oQU9ab8/nj22ondcqGe6/Jeq+NaxY+RqqNBZqXmXhVtQfX9P864BWNC1Q7QxWGSGoM4BewhGo8y9Z1Z9HcAUMTFZYNmoIM9gSXG52kpjhtcm6e1YMlm93D4DzWn89NsGL2cCGqnl0FGkfSJzBHAq40YWZUr8KEJG1kQ=
+	t=1710615070; cv=none; b=dey1YEBW6b163kxpeu4qJR0sLSQPwbej9aylfc2UBz/ZWBR3IBcDvUnISMde2z+qzQaA6vdIBKBQvTjK9ZT+9ji5sDEg9fvaihxh3WkzCfwJZsK21eqg5B8gx+0vf4ZiXln7MrHelMi5sIudrpMDO0XzLnufcjXUHUZnPULGFZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710615057; c=relaxed/simple;
-	bh=83py2/xNNq7D0IX8F4E2R1O+OXAt5TZio6y2c1uomO4=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=EFn4rYA5ZRUGA88WrvVmSKIzDO1SC/vYt/R5Aw8T+mJ6/oQisT4BGe7RoOhgckC2k1Dt57v8FrkRGMWXuvbLx30ewbq3KKI/yfrl+rjyBRHRL16nUtRBQ+M3PNGux3M25qIZjJfiDfIKI2XJ0grPMm0k9DQKFY7a6RRpRujRgQM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=meNYMILc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B5D74C433C7;
-	Sat, 16 Mar 2024 18:50:57 +0000 (UTC)
+	s=arc-20240116; t=1710615070; c=relaxed/simple;
+	bh=v+DF0GhCYikvVe0E8I4YpE3f52qizMkbEmDz5kWZTgc=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=S6Lb0DXmEjQ/KHGyQ2cgy7QrQ3kV4m5QGNHp5twMuZHu/uP2LDMH+XR1TnX46DIBtwJQbAxDu+hHAh1qS33MzQ/vBt+sFrwMq5TFpmOka9uTU6aIzY225wOwkHuCbHuWw+b2bqrv3ZvH6kkgmOZ6ehOWpfLSIBVzuoDDtAuUNwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DoYQuyFo; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 8454BC433C7;
+	Sat, 16 Mar 2024 18:51:10 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710615057;
-	bh=83py2/xNNq7D0IX8F4E2R1O+OXAt5TZio6y2c1uomO4=;
+	s=k20201202; t=1710615070;
+	bh=v+DF0GhCYikvVe0E8I4YpE3f52qizMkbEmDz5kWZTgc=;
 	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=meNYMILcnk6xRBMP6D0YUIDv3KgBx/W/nrdkgfnl1iRHfh4TCouSdruyAXQYSz5dP
-	 My7sn0lOIvf1WE5cZhkhnVgd3MZwPCUZkl7Y6s7udosrLaDCqiVULc++m2oJQ+ddJy
-	 +W6OVoSXHoeAb5GjKWCQxLUkbfwtspKjB0+RW043vtGBItBIc8kszQbUfpwEulxwql
-	 SKfhqbEN3v6fSwtcIIVPT1kaIyKctLgOYxQpoGCGAOx0WPrZYSzcaUqvkEnTWHW2gI
-	 3OdfFdaUyxdIEr1rN5nOczJa8OycDpN93BKW+s1V+c0Sap5PPi6CUfkAByHYBb3oIn
-	 08P0+kf25sQUg==
+	b=DoYQuyFomNUVIK/JZvJREm5AGo1sybs6egPirCwTSEcFuwIpLH1phdald4vOpG46c
+	 XIXAHyxF0XTNGm9ju0tK9AvdNpANWvO11dZZuP8hb5xlkdPc87ZnVlbieZO8wdIGdQ
+	 tF5/W5awWRkHG1ASyQXVZfNXB5vwlm+MGnxiSgP4jbMF2UZaeYC/qmcuh10uZFAHnj
+	 1D6qJMzr+aNF9Gj7bHwcPlw+CPkoKlZdY9wuVwDNZSkjwKRS78ZKBtWBPgJbBG6t8d
+	 mVDB7gqMNuZr7q3qOO0bMjqOBTj5T1DbvcqCvp2RIHo/RXXnh8URYuamaJKSmTNp7q
+	 nso1FQtA3rFWA==
 Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AC466D95053;
-	Sat, 16 Mar 2024 18:50:57 +0000 (UTC)
-Subject: Re: [GIT PULL] Please pull NFS client updates for Linux 6.9
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 72C05D95055;
+	Sat, 16 Mar 2024 18:51:10 +0000 (UTC)
+Subject: Re: [GIT PULL]: Generic phy updates for v6.9
 From: pr-tracker-bot@kernel.org
-In-Reply-To: <4623cb545316bfdb45b8d294861ad7eb508ec1b8.camel@hammerspace.com>
-References: <4623cb545316bfdb45b8d294861ad7eb508ec1b8.camel@hammerspace.com>
-X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
-X-PR-Tracked-Message-Id: <4623cb545316bfdb45b8d294861ad7eb508ec1b8.camel@hammerspace.com>
-X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.9-1
-X-PR-Tracked-Commit-Id: 719fcafe07c12646691bd62d7f8d94d657fa0766
+In-Reply-To: <ZfQrAdJodRKKXeBj@matsya>
+References: <ZfQrAdJodRKKXeBj@matsya>
+X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
+X-PR-Tracked-Message-Id: <ZfQrAdJodRKKXeBj@matsya>
+X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git next
+X-PR-Tracked-Commit-Id: 00ca8a15dafa990d391abc37f2b8256ddf909b35
 X-PR-Merge-Tree: torvalds/linux.git
 X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: c1f10ac840caced7a9f717d4170dcc14b3fac076
-Message-Id: <171061505769.24411.4773695359951231947.pr-tracker-bot@kernel.org>
-Date: Sat, 16 Mar 2024 18:50:57 +0000
-To: Trond Myklebust <trondmy@hammerspace.com>
-Cc: "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+X-PR-Merge-Commit-Id: 90a498f294c2766f05ba72dbc0ecafb2af521a4c
+Message-Id: <171061507046.24411.17718654050929914250.pr-tracker-bot@kernel.org>
+Date: Sat, 16 Mar 2024 18:51:10 +0000
+To: Vinod Koul <vkoul@kernel.org>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, LKML <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-The pull request you sent on Sat, 16 Mar 2024 18:17:31 +0000:
+The pull request you sent on Fri, 15 Mar 2024 16:33:29 +0530:
 
-> git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.9-1
+> git://git.kernel.org/pub/scm/linux/kernel/git/phy/linux-phy.git next
 
 has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/c1f10ac840caced7a9f717d4170dcc14b3fac076
+https://git.kernel.org/torvalds/c/90a498f294c2766f05ba72dbc0ecafb2af521a4c
 
 Thank you!
 
