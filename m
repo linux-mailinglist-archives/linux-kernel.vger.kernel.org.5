@@ -1,187 +1,418 @@
-Return-Path: <linux-kernel+bounces-105003-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105004-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B894887D781
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 01:08:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 121DF87D783
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 01:10:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30197B21122
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:08:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F0DBC1C21291
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:10:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B037B1109;
-	Sat, 16 Mar 2024 00:08:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="egEbyGtx"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EB45641;
+	Sat, 16 Mar 2024 00:10:47 +0000 (UTC)
+Received: from sonata.ens-lyon.org (sonata.ens-lyon.org [140.77.166.138])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DAD267F6
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 00:08:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710547702; cv=fail; b=G1eUi3MJeGm9KEKnOLYpiS8JRfqtcK5fjN1kH4JDn7QMnV36rLj/gQvxIVWoINBxzTEbq+9zSawWSsE3pMPOj9y37jhiScwCnFp5zltaPhd4YNTjDhrJpU5AA8p+mu1qszLNUHobJlRo6guvLsVHHi3iTSCBpp1nUCdYLV51Tfk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710547702; c=relaxed/simple;
-	bh=XE2W9kz7NZWfsqo1xyGGCuG/VeME2Pv0uEdRb9PNWXs=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=bnh8Zf0bnc9+mDh/ygY7Vg6e8rQDg5slYdudOVx2UhnTcyK+dT5H6eIR5OT5ILDFVM0wxoe04zqT+zF7dppZzIA1xDipUzpQpUbQiUbiByhyd+xBS7jLy6qDPUUiDc8XbP5q7uDhcGjE8BUAx11x/rymP1gvIYQMJSh/kvGeu+A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=egEbyGtx; arc=fail smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710547701; x=1742083701;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=XE2W9kz7NZWfsqo1xyGGCuG/VeME2Pv0uEdRb9PNWXs=;
-  b=egEbyGtxoHhlY0OvPaPQrHAaeOoVI6QJhIPEY1QyWhgwQtNfE/IUdjYD
-   jP7MAYSQ7gGPzJiwVmYkgOB7szcjmPvQsf8whq/ePvQ4GXzP2T6jgQ+x0
-   L6Wmd13RtPjHMVT91khz2u1VEYDUcn5FeqxCs8ygL0NC07H6OseXnUvB5
-   6VCpx9wRhFooNNk/D6GicUYEg4lMWlhgB75T+brah1r0OdMviPb88ptBn
-   K91bsH4pnUtq1akPcOzUi17KumDhS9k494K614hRxeXMfrcRRcJ0ZhC1b
-   G8ZS5MAiy9G1xOCNCGKtpp3QpU3UMYlUsO5Tm/pSzd2gz2nVsWtUVnfxe
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="5304469"
-X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
-   d="scan'208";a="5304469"
-Received: from orviesa004.jf.intel.com ([10.64.159.144])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 17:08:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
-   d="scan'208";a="17522560"
-Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
-  by orviesa004.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 15 Mar 2024 17:08:20 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 15 Mar 2024 17:08:19 -0700
-Received: from fmsmsx601.amr.corp.intel.com (10.18.126.81) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Fri, 15 Mar 2024 17:08:19 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Fri, 15 Mar 2024 17:08:19 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.100)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Fri, 15 Mar 2024 17:08:18 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ABdWE/7J3NJKPjltRqulDIfJCEKp+PM8omNRB2wGKKdn8mD6MkoWfguz+a1pylSE7lWCV8wv/uu3nA9PTAsdRgV8q5V7zlcJl8DPVLRwzUHts3hST/5gdHk+fYkQshIcf7WAcLUSEg1KoTTIORXQjbozEjTPxvJCuYCu+PPAh5nUCPop8vuS3MAgAvrFm2XrzZsxTRGjt9HrjszJp0Plv1ITA2uW63KwHAjgRF5DMZSKTAPbE2hGScr3jklZb6HxXZhJx3VcCDhBlIK6eawNe2mgXvSZYKs019F5hkFPJPmpHys5se/SL6pFIZTTUQqjXVkkGmWlOPVtn83DK9Ef8A==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Kf9SR3PksHV2uGaaZxzn9hMpYGiF7JHKJVq9y27gc1I=;
- b=Tv6AWuetYdCEnfJgzMIiAbA/IrVVQ8RZpiiaZFJu/K4M7eyK3Ek1iNV5oxoQ7aXytWqZDVv8rvEmfqEo09XInk3Bch2GxtGrC1Uu4qy9vV9YjYAnXPtmNnrqDTUmMtTWMsgyYACs0Gk2EON4czxzzWMgFnvuHGDPvbKjkwWtO7M+dX4/XmyOTNyiE2n5NxxAg02Gi5BwQ0f2UWLac6ZMCWJNHB74GtK08LMKhQeKsDSE2wX9rBCWUZKRr/CJMwcJPHH8RjKXWSRIAD6dxU8r+6Om+xt3keNwToYpmKh7TefXTtXVtQs8LdJSqVilky8l6G8dHlreuWXx/eUuIxW9nA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
- by BL3PR11MB6506.namprd11.prod.outlook.com (2603:10b6:208:38d::7) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.17; Sat, 16 Mar
- 2024 00:08:12 +0000
-Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62]) by SJ1PR11MB6083.namprd11.prod.outlook.com
- ([fe80::fca9:7c00:b6d0:1d62%4]) with mapi id 15.20.7386.017; Sat, 16 Mar 2024
- 00:08:12 +0000
-From: "Luck, Tony" <tony.luck@intel.com>
-To: Thomas Gleixner <tglx@linutronix.de>, "Chatre, Reinette"
-	<reinette.chatre@intel.com>, Rex Nie <rex.nie@jaguarmicro.com>,
-	"james.morse@arm.com" <james.morse@arm.com>, "x86@kernel.org"
-	<x86@kernel.org>, Babu Moger <babu.moger@amd.com>, Peter Newman
-	<peternewman@google.com>, Borislav Petkov <bp@alien8.de>
-CC: "Yu, Fenghua" <fenghua.yu@intel.com>, "ilpo.jarvinen@linux.intel.com"
-	<ilpo.jarvinen@linux.intel.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: 32bit resctrl? (was Re: [PATCH v2] fs/resctrl: fix domid loss
- precision issue)
-Thread-Topic: 32bit resctrl? (was Re: [PATCH v2] fs/resctrl: fix domid loss
- precision issue)
-Thread-Index: AQHadiPNgVSWe3T980i4MYFdFsC7abE5ddGAgAAIGXA=
-Date: Sat, 16 Mar 2024 00:08:12 +0000
-Message-ID: <SJ1PR11MB6083B9EC479B6B20684FC1C1FC2F2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-References: <20240312075349.977-1-rex.nie@jaguarmicro.com>
- <fed6affb-c7f4-4992-8646-8f5a52c33966@intel.com> <87jzm3jckw.ffs@tglx>
-In-Reply-To: <87jzm3jckw.ffs@tglx>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|BL3PR11MB6506:EE_
-x-ms-office365-filtering-correlation-id: e890375f-5f44-472a-3e64-08dc454d2b4a
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info: tJIXXkXp63sN1mJ8bUTdPYChrd0+KBj33Yu8HzYCqgz4WcQL6P4grVHUgxc+3f5SRoJwsdvOb5w4NEHBkh0BT4T4AieBKbkBjF+12tL9452JXqXfI/BwIAASSVk4WgjFWeYn0G6q9HQ9t34ksB3Tg55zcKd8iMPC8HaKOrSKzsCK98ze2nWI0cAR9XIL2UjuThtPeDXKFq+Uq6dlRSLDHWK/zhaf3l9K3sc2ij3hpKTVZQ+C8daJ0Vf9bxtbhEe+2AW+XIr0K9ElC646ssYUWxQ4azdaG9vp5FZAc9lt62zlz+8a9rK6cQPHgLQVvjeGETE7/oVZyW6FtphCD1dQurKjdjyoxgWlbG9kuRALZoIzLRwALCuLsWJauLrmdAoR25h4JkkG4F+T5GaBrUb49vfnlTw8/wL4AdXfesMBLLJikgtnfTf6shv5LB8WbXo7K7l20gFjNDOAfOU4nvDlN9AzO+1n2T+0UfLgZOhrbZGK/yV6XyhNX70AeQUF+DqF8ptIrtvwYqTwD9FokqtExdUJm6CEsBjaTDbd0KfBY4241JzXwnlT03DzAzIalAq3wOyzf22a051sxONmeVyMcPq2VRfhqeh90wqgBL+f8O4oXm+u2v+g76auKCcBRneHhtHoCHPi+FiJMcN0KQUtzEqebpRVZqNIB0evGfIOI9VXx4hXBA/o07K9xngovnfb+Y9CvCVRYwo/JQkanc7UEhxa96K+E5zJgCyzsI8pBu8=
-x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?VAXZo64VRt+/Ezn2TPprrfhjBxPf2Hd1/Pf9TtevYCJpgkgisuggFhCZBCBy?=
- =?us-ascii?Q?9OiHhIpExK5UOGGu1m+5IBRyouEST/NRN6hhwzzUrzGNkAOwzNtV90bb/q/T?=
- =?us-ascii?Q?5ZYZHyQsMyTTz4wofP3t/O2LLl3Q4au9qREnZeliSjd1bgwC9MABWYtCjs+p?=
- =?us-ascii?Q?2hTDcwtS5ibedoohfxSNf/GOi89IntZQ2+S5TpvGFfLHyk5iPwVZQBvnRUwv?=
- =?us-ascii?Q?D504ca3cgT55UIDiXfIA0YTBB1OHstqjvT2N4qsCBbtxu3TdDTZF4BSDaSm5?=
- =?us-ascii?Q?lJPBVIrhmr3sylCJxKyzSMAFx2C2UWYowH90dXO1+iFV63y0q4pT6SYRrVB5?=
- =?us-ascii?Q?IzStvsaZONUoMsEZYKTnjZn4en0t7I2m0MNuTCXCL1T54R/TXKvOghnC+93q?=
- =?us-ascii?Q?kt1c/wzohZo2t3HuhBi5txsL7IzWHdrQiWUtv6S6UflWfAwTXeDUa0LrYLX5?=
- =?us-ascii?Q?ILuxFrakICd1DhTjiLP94jDTg/AxQrxsxZxnN6a3P+rOZ8gk5CMY9O9Gvx1o?=
- =?us-ascii?Q?QSZvuwUS1CqX6nwjy/TYyKbvBOhaDz3jgAJxfJtptXmzZOfA5ETAVlyXSnEZ?=
- =?us-ascii?Q?7L9Qoxe30QBa21Nur8glauG6cgULhvrLYRxs2FEyuZaqi8d3EEivdTdsEj3N?=
- =?us-ascii?Q?WFItmM3VA12TbaOQqKjereIftvgZDArpQHsX5VUidYc2hIpEKms6HaTBI9gv?=
- =?us-ascii?Q?8jO62dRmj3z7M0o4L21BAaFIHixdNB5KD5fxytdCmUErg4pyfYDlezCZapD+?=
- =?us-ascii?Q?eOyt80DKbzpU/qT+dj5B9VEfXqoG9Co7EHttklCKeHyHGklD4sWadOW0e9HW?=
- =?us-ascii?Q?54/yogEO0SHHFUTxjvrOAfmvDsGCY7Ejp+1SpNjVjwvXQKuLF9s8s5OeF60v?=
- =?us-ascii?Q?BZA79w9eCqRNVScx+LD48xAhz7siXM3mNdFD/UVsUia5MGqTwv7M0vouynf5?=
- =?us-ascii?Q?CssHTbc1eNZD6iXItEwalTaiiw4jqn2Rvf5GHtikZoQ00en2ci5Kkr5907kR?=
- =?us-ascii?Q?ng73J72bObFWYAoVSrNHbUmBMpebnd9CQgs86vtV0Vk04KbA4/FjgejOqi+i?=
- =?us-ascii?Q?sjhv4E4qTXjEQMhjLALqLbnggpqUP+WrMEX4KPTUPG2+yZMN5/5S3CW/EpcW?=
- =?us-ascii?Q?NDkuNsdJ4g2oXWBJIj2CKNP9PCRCuoYAFSm6KKD6sWqGXjJphimlQefPTXey?=
- =?us-ascii?Q?yhZxXN3Ve843VREPlN3DCVphKB7Iy/4K8B/7yt+NbPZlG4ivowdAWirJA5/z?=
- =?us-ascii?Q?+izqVVC0A6egc5turiaRFUXM2unQgZPgVUx4HZ8f1FdWRhl1xpOPwXRWut4u?=
- =?us-ascii?Q?Ou2r6YtiwVqjGEmjmwq4js12lRnkTVsR72IQUXxoKIBEPKjg7R1UczpcLx4F?=
- =?us-ascii?Q?iYxSlQvtqzKsnYJx24E3mhTkavLedVbS85AMeude5Q06/Obj4KGSicF+jxHT?=
- =?us-ascii?Q?gdTOER4iO5YRMtzLzv9tpSB/0txPhVlpJRmYVX6MP2D/N4jDQ0YcFp8Mt2YB?=
- =?us-ascii?Q?o2jn6+wWxrVtZRGXLSG3gPGGZRR+yf3jqYySeeB1SF6os4lfG116876UBfc3?=
- =?us-ascii?Q?MbaXOcNnxCxpJfihUsrk4E4NOHrnkWhXIRR0HOn4?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D403C195;
+	Sat, 16 Mar 2024 00:10:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=140.77.166.138
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710547846; cv=none; b=JAOgciFvwBh1y6idZPFJVbW2Zgbs8YQIqU2TBR1UAzind4VSBTB9KeygMjN26A3Xc35iSqrppx0qlrPS+gmHqvYmzcf9cvWq0Yy+y7YCIXtk24STpWU4l62fVGHkkxG8iL+CorbV9We69Fx1j3Oeu7z43SHq0S081PblHmviHWM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710547846; c=relaxed/simple;
+	bh=qzgsAiikcEkc9rwoxou66DjDr6cBu5k+iXagYzLE/EQ=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Rt28jrdy5/1QS/LnwqrIX8V8wxsijr8WmHRm+G4ILrsGqz8gZLUAE05YHttzsD3ums245V+Bt9AQ4C3T4X8VS9bjT9sl1stZJJi7xN6rLi20V9vCV3PCugKnqvJD7D5bx1JFgONmxPB02S4o7fpk4OBDFjOdgoGxyce1aVNQO6I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org; arc=none smtp.client-ip=140.77.166.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ens-lyon.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bounce.ens-lyon.org
+Received: from localhost (localhost [127.0.0.1])
+	by sonata.ens-lyon.org (Postfix) with ESMTP id 91965A02A7;
+	Sat, 16 Mar 2024 01:10:34 +0100 (CET)
+Received: from sonata.ens-lyon.org ([127.0.0.1])
+	by localhost (sonata.ens-lyon.org [127.0.0.1]) (amavisd-new, port 10024)
+	with ESMTP id aE3BA_vSyRyl; Sat, 16 Mar 2024 01:10:34 +0100 (CET)
+Received: from begin.home (aamiens-653-1-111-57.w83-192.abo.wanadoo.fr [83.192.234.57])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by sonata.ens-lyon.org (Postfix) with ESMTPSA id 54A51A029A;
+	Sat, 16 Mar 2024 01:10:34 +0100 (CET)
+Received: from samy by begin.home with local (Exim 4.97)
+	(envelope-from <samuel.thibault@ens-lyon.org>)
+	id 1rlHdB-0000000CQpc-3eDj;
+	Sat, 16 Mar 2024 01:10:33 +0100
+From: Samuel Thibault <samuel.thibault@ens-lyon.org>
+To: linux-kernel@vger.kernel.org,
+	Daniel Vetter <daniel@ffwll.ch>,
+	Helge Deller <deller@gmx.de>,
+	Alexey Gladkov <legion@kernel.org>,
+	Jiry Slaby <jirislaby@kernel.org>
+Cc: Samuel Thibault <samuel.thibault@ens-lyon.org>,
+	linux-fbdev@vger.kernel.org,
+	dri-devel@lists.freedesktop.org
+Subject: [PATCHv2] fbcon: Increase maximum font width x height to 64 x 128
+Date: Sat, 16 Mar 2024 01:10:21 +0100
+Message-ID: <20240316001022.2963072-1-samuel.thibault@ens-lyon.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e890375f-5f44-472a-3e64-08dc454d2b4a
-X-MS-Exchange-CrossTenant-originalarrivaltime: 16 Mar 2024 00:08:12.0738
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: za/QgiBf+LY961QCbOGhsrSeQADDqg9Bdl2RVxC9spJiBb/nNt0zYuzeTwERpyQZmA6lT5XHDscrHoUHz8PTIQ==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR11MB6506
-X-OriginatorOrg: intel.com
+Content-Transfer-Encoding: 8bit
 
-> Why? Making mon_data_bits::u larger in the way it has been done does not
-> have any dependency on 32 or 64 builds unless I'm missing something.
+By using bitmaps we actually support whatever size we would want, but the
+console currently limits fonts to 64x128 (which gives 60x16 text on 4k
+screens), so we don't need more for now, and we can easily increase later.
 
-That union is copied into the kernfs_node "priv" pointer field. So it has
-to fit into whatever size the system is using as a pointer:
+Signed-off-by: Samuel Thibault <samuel.thibault@ens-lyon.org>
 
-See:
-	mkdir_mondata_subdir()
-		->mon_addfile()
+---
+Difference from v1:
+- use a bitmap rather than just extending the integer size
+- add missing updates in drivers
+---
+ drivers/firmware/efi/earlycon.c    |  2 +-
+ drivers/video/fbdev/arkfb.c        | 15 +++++++++++----
+ drivers/video/fbdev/core/fbcon.c   | 16 +++++++++-------
+ drivers/video/fbdev/core/fbmem.c   | 12 ++++++------
+ drivers/video/fbdev/core/svgalib.c | 15 +++++++++++----
+ drivers/video/fbdev/s3fb.c         | 15 +++++++++++----
+ drivers/video/fbdev/vga16fb.c      |  6 +++++-
+ drivers/video/fbdev/vt8623fb.c     | 15 +++++++++++----
+ include/linux/fb.h                 | 18 ++++++++++++------
+ include/linux/font.h               |  3 ++-
+ lib/fonts/fonts.c                  | 15 +++++++++------
+ 11 files changed, 88 insertions(+), 44 deletions(-)
 
-> Caring about 32biit resctrl on x86 is a pointless exercise.
+diff --git a/drivers/firmware/efi/earlycon.c b/drivers/firmware/efi/earlycon.c
+index f80a9af3d16e..d18a1a5de144 100644
+--- a/drivers/firmware/efi/earlycon.c
++++ b/drivers/firmware/efi/earlycon.c
+@@ -252,7 +252,7 @@ static int __init efi_earlycon_setup(struct earlycon_device *device,
+ 	if (si->lfb_depth != 32)
+ 		return -ENODEV;
+ 
+-	font = get_default_font(xres, yres, -1, -1);
++	font = get_default_font(xres, yres, NULL, NULL);
+ 	if (!font)
+ 		return -ENODEV;
+ 
+diff --git a/drivers/video/fbdev/arkfb.c b/drivers/video/fbdev/arkfb.c
+index dca9c0325b3f..082501feceb9 100644
+--- a/drivers/video/fbdev/arkfb.c
++++ b/drivers/video/fbdev/arkfb.c
+@@ -622,8 +622,13 @@ static int arkfb_set_par(struct fb_info *info)
+ 		info->tileops = NULL;
+ 
+ 		/* in 4bpp supports 8p wide tiles only, any tiles otherwise */
+-		info->pixmap.blit_x = (bpp == 4) ? (1 << (8 - 1)) : (~(u32)0);
+-		info->pixmap.blit_y = ~(u32)0;
++		if (bpp == 4) {
++			bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++			set_bit(8 - 1, info->pixmap.blit_x);
++		} else {
++			bitmap_fill(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++		}
++		bitmap_fill(info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
+ 
+ 		offset_value = (info->var.xres_virtual * bpp) / 64;
+ 		screen_size = info->var.yres_virtual * info->fix.line_length;
+@@ -635,8 +640,10 @@ static int arkfb_set_par(struct fb_info *info)
+ 		info->tileops = &arkfb_tile_ops;
+ 
+ 		/* supports 8x16 tiles only */
+-		info->pixmap.blit_x = 1 << (8 - 1);
+-		info->pixmap.blit_y = 1 << (16 - 1);
++		bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++		set_bit(8 - 1, info->pixmap.blit_x);
++		bitmap_zero(info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
++		set_bit(16 - 1, info->pixmap.blit_y);
+ 
+ 		offset_value = info->var.xres_virtual / 16;
+ 		screen_size = (info->var.xres_virtual * info->var.yres_virtual) / 64;
+diff --git a/drivers/video/fbdev/core/fbcon.c b/drivers/video/fbdev/core/fbcon.c
+index 46823c2e2ba1..72ff3147a3bf 100644
+--- a/drivers/video/fbdev/core/fbcon.c
++++ b/drivers/video/fbdev/core/fbcon.c
+@@ -2483,12 +2483,12 @@ static int fbcon_set_font(struct vc_data *vc, struct console_font *font,
+ 	    h > FBCON_SWAP(info->var.rotate, info->var.yres, info->var.xres))
+ 		return -EINVAL;
+ 
+-	if (font->width > 32 || font->height > 32)
++	if (font->width > FB_MAX_BLIT_WIDTH || font->height > FB_MAX_BLIT_HEIGHT)
+ 		return -EINVAL;
+ 
+ 	/* Make sure drawing engine can handle the font */
+-	if (!(info->pixmap.blit_x & BIT(font->width - 1)) ||
+-	    !(info->pixmap.blit_y & BIT(font->height - 1)))
++	if (!test_bit(font->width - 1, info->pixmap.blit_x) ||
++	    !test_bit(font->height - 1, info->pixmap.blit_y))
+ 		return -EINVAL;
+ 
+ 	/* Make sure driver can handle the font length */
+@@ -3082,8 +3082,8 @@ void fbcon_get_requirement(struct fb_info *info,
+ 			vc = vc_cons[i].d;
+ 			if (vc && vc->vc_mode == KD_TEXT &&
+ 			    info->node == con2fb_map[i]) {
+-				caps->x |= 1 << (vc->vc_font.width - 1);
+-				caps->y |= 1 << (vc->vc_font.height - 1);
++				set_bit(vc->vc_font.width - 1, caps->x);
++				set_bit(vc->vc_font.height - 1, caps->y);
+ 				charcnt = vc->vc_font.charcount;
+ 				if (caps->len < charcnt)
+ 					caps->len = charcnt;
+@@ -3094,8 +3094,10 @@ void fbcon_get_requirement(struct fb_info *info,
+ 
+ 		if (vc && vc->vc_mode == KD_TEXT &&
+ 		    info->node == con2fb_map[fg_console]) {
+-			caps->x = 1 << (vc->vc_font.width - 1);
+-			caps->y = 1 << (vc->vc_font.height - 1);
++			bitmap_zero(caps->x, FB_MAX_BLIT_WIDTH);
++			set_bit(vc->vc_font.width - 1, caps->x);
++			bitmap_zero(caps->y, FB_MAX_BLIT_HEIGHT);
++			set_bit(vc->vc_font.height - 1, caps->y);
+ 			caps->len = vc->vc_font.charcount;
+ 		}
+ 	}
+diff --git a/drivers/video/fbdev/core/fbmem.c b/drivers/video/fbdev/core/fbmem.c
+index fc206755f5f6..5ca18bfe11f6 100644
+--- a/drivers/video/fbdev/core/fbmem.c
++++ b/drivers/video/fbdev/core/fbmem.c
+@@ -212,8 +212,8 @@ static int fb_check_caps(struct fb_info *info, struct fb_var_screeninfo *var,
+ 	fbcon_get_requirement(info, &caps);
+ 	info->fbops->fb_get_caps(info, &fbcaps, var);
+ 
+-	if (((fbcaps.x ^ caps.x) & caps.x) ||
+-	    ((fbcaps.y ^ caps.y) & caps.y) ||
++	if (!bitmap_subset(caps.x, fbcaps.x, FB_MAX_BLIT_WIDTH) ||
++	    !bitmap_subset(caps.y, fbcaps.y, FB_MAX_BLIT_HEIGHT) ||
+ 	    (fbcaps.len < caps.len))
+ 		err = -EINVAL;
+ 
+@@ -420,11 +420,11 @@ static int do_register_framebuffer(struct fb_info *fb_info)
+ 	}
+ 	fb_info->pixmap.offset = 0;
+ 
+-	if (!fb_info->pixmap.blit_x)
+-		fb_info->pixmap.blit_x = ~(u32)0;
++	if (bitmap_empty(fb_info->pixmap.blit_x, FB_MAX_BLIT_WIDTH))
++		bitmap_fill(fb_info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
+ 
+-	if (!fb_info->pixmap.blit_y)
+-		fb_info->pixmap.blit_y = ~(u32)0;
++	if (bitmap_empty(fb_info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT))
++		bitmap_fill(fb_info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
+ 
+ 	if (!fb_info->modelist.prev || !fb_info->modelist.next)
+ 		INIT_LIST_HEAD(&fb_info->modelist);
+diff --git a/drivers/video/fbdev/core/svgalib.c b/drivers/video/fbdev/core/svgalib.c
+index 2cba158888ea..821b89a0a645 100644
+--- a/drivers/video/fbdev/core/svgalib.c
++++ b/drivers/video/fbdev/core/svgalib.c
+@@ -354,12 +354,19 @@ void svga_get_caps(struct fb_info *info, struct fb_blit_caps *caps,
+ {
+ 	if (var->bits_per_pixel == 0) {
+ 		/* can only support 256 8x16 bitmap */
+-		caps->x = 1 << (8 - 1);
+-		caps->y = 1 << (16 - 1);
++		bitmap_zero(caps->x, FB_MAX_BLIT_WIDTH);
++		set_bit(8 - 1, caps->x);
++		bitmap_zero(caps->y, FB_MAX_BLIT_HEIGHT);
++		set_bit(16 - 1, caps->y);
+ 		caps->len = 256;
+ 	} else {
+-		caps->x = (var->bits_per_pixel == 4) ? 1 << (8 - 1) : ~(u32)0;
+-		caps->y = ~(u32)0;
++		if (var->bits_per_pixel == 4) {
++			bitmap_zero(caps->x, FB_MAX_BLIT_WIDTH);
++			set_bit(8 - 1, caps->x);
++		} else {
++			bitmap_fill(caps->x, FB_MAX_BLIT_WIDTH);
++		}
++		bitmap_fill(caps->y, FB_MAX_BLIT_HEIGHT);
+ 		caps->len = ~(u32)0;
+ 	}
+ }
+diff --git a/drivers/video/fbdev/s3fb.c b/drivers/video/fbdev/s3fb.c
+index 07722a5ea8ef..ff84106ecf1c 100644
+--- a/drivers/video/fbdev/s3fb.c
++++ b/drivers/video/fbdev/s3fb.c
+@@ -617,8 +617,13 @@ static int s3fb_set_par(struct fb_info *info)
+ 		info->tileops = NULL;
+ 
+ 		/* in 4bpp supports 8p wide tiles only, any tiles otherwise */
+-		info->pixmap.blit_x = (bpp == 4) ? (1 << (8 - 1)) : (~(u32)0);
+-		info->pixmap.blit_y = ~(u32)0;
++		if (bpp == 4) {
++			bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++			set_bit(8 - 1, info->pixmap.blit_x);
++		} else {
++			bitmap_fill(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++		}
++		bitmap_fill(info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
+ 
+ 		offset_value = (info->var.xres_virtual * bpp) / 64;
+ 		screen_size = info->var.yres_virtual * info->fix.line_length;
+@@ -630,8 +635,10 @@ static int s3fb_set_par(struct fb_info *info)
+ 		info->tileops = fasttext ? &s3fb_fast_tile_ops : &s3fb_tile_ops;
+ 
+ 		/* supports 8x16 tiles only */
+-		info->pixmap.blit_x = 1 << (8 - 1);
+-		info->pixmap.blit_y = 1 << (16 - 1);
++		bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++		set_bit(8 - 1, info->pixmap.blit_x);
++		bitmap_zero(info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
++		set_bit(16 - 1, info->pixmap.blit_y);
+ 
+ 		offset_value = info->var.xres_virtual / 16;
+ 		screen_size = (info->var.xres_virtual * info->var.yres_virtual) / 64;
+diff --git a/drivers/video/fbdev/vga16fb.c b/drivers/video/fbdev/vga16fb.c
+index b485e9198201..a87bafbb119c 100644
+--- a/drivers/video/fbdev/vga16fb.c
++++ b/drivers/video/fbdev/vga16fb.c
+@@ -1353,7 +1353,11 @@ static int vga16fb_probe(struct platform_device *dev)
+ 	info->var = vga16fb_defined;
+ 	info->fix = vga16fb_fix;
+ 	/* supports rectangles with widths of multiples of 8 */
+-	info->pixmap.blit_x = 1 << 7 | 1 << 15 | 1 << 23 | 1 << 31;
++	bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++	set_bit(8 - 1, info->pixmap.blit_x);
++	set_bit(16 - 1, info->pixmap.blit_x);
++	set_bit(24 - 1, info->pixmap.blit_x);
++	set_bit(32 - 1, info->pixmap.blit_x);
+ 	info->flags = FBINFO_HWACCEL_YPAN;
+ 
+ 	i = (info->var.bits_per_pixel == 8) ? 256 : 16;
+diff --git a/drivers/video/fbdev/vt8623fb.c b/drivers/video/fbdev/vt8623fb.c
+index f8d022cb61e8..df984f3a7ff6 100644
+--- a/drivers/video/fbdev/vt8623fb.c
++++ b/drivers/video/fbdev/vt8623fb.c
+@@ -390,8 +390,13 @@ static int vt8623fb_set_par(struct fb_info *info)
+ 		info->tileops = NULL;
+ 
+ 		/* in 4bpp supports 8p wide tiles only, any tiles otherwise */
+-		info->pixmap.blit_x = (bpp == 4) ? (1 << (8 - 1)) : (~(u32)0);
+-		info->pixmap.blit_y = ~(u32)0;
++		if (bpp == 4) {
++			bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++			set_bit(8 - 1, info->pixmap.blit_x);
++		} else {
++			bitmap_fill(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++		}
++		bitmap_fill(info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
+ 
+ 		offset_value = (info->var.xres_virtual * bpp) / 64;
+ 		fetch_value  = ((info->var.xres * bpp) / 128) + 4;
+@@ -408,8 +413,10 @@ static int vt8623fb_set_par(struct fb_info *info)
+ 		info->tileops = &vt8623fb_tile_ops;
+ 
+ 		/* supports 8x16 tiles only */
+-		info->pixmap.blit_x = 1 << (8 - 1);
+-		info->pixmap.blit_y = 1 << (16 - 1);
++		bitmap_zero(info->pixmap.blit_x, FB_MAX_BLIT_WIDTH);
++		set_bit(8 - 1, info->pixmap.blit_x);
++		bitmap_zero(info->pixmap.blit_y, FB_MAX_BLIT_HEIGHT);
++		set_bit(16 - 1, info->pixmap.blit_y);
+ 
+ 		offset_value = info->var.xres_virtual / 16;
+ 		fetch_value  = (info->var.xres / 8) + 8;
+diff --git a/include/linux/fb.h b/include/linux/fb.h
+index 05dc9624897d..3003436d1e3b 100644
+--- a/include/linux/fb.h
++++ b/include/linux/fb.h
+@@ -143,9 +143,13 @@ struct fb_event {
+ 	void *data;
+ };
+ 
++/*	Enough for the VT console needs, see its max_font_width/height */
++#define FB_MAX_BLIT_WIDTH	64
++#define FB_MAX_BLIT_HEIGHT	128
++
+ struct fb_blit_caps {
+-	u32 x;
+-	u32 y;
++	DECLARE_BITMAP(x, FB_MAX_BLIT_WIDTH);
++	DECLARE_BITMAP(y, FB_MAX_BLIT_HEIGHT);
+ 	u32 len;
+ 	u32 flags;
+ };
+@@ -192,10 +196,12 @@ struct fb_pixmap {
+ 	u32 scan_align;		/* alignment per scanline		*/
+ 	u32 access_align;	/* alignment per read/write (bits)	*/
+ 	u32 flags;		/* see FB_PIXMAP_*			*/
+-	u32 blit_x;             /* supported bit block dimensions (1-32)*/
+-	u32 blit_y;             /* Format: blit_x = 1 << (width - 1)    */
+-	                        /*         blit_y = 1 << (height - 1)   */
+-	                        /* if 0, will be set to 0xffffffff (all)*/
++	                        /* supported bit block dimensions       */
++	                        /* Format: test_bit(width - 1, blit_x)  */
++	                        /*         test_bit(height - 1, blit_y) */
++	                        /* if zero, will be set to full (all)   */
++	DECLARE_BITMAP(blit_x, FB_MAX_BLIT_WIDTH);
++	DECLARE_BITMAP(blit_y, FB_MAX_BLIT_HEIGHT);
+ 	/* access methods */
+ 	void (*writeio)(struct fb_info *info, void __iomem *dst, void *src, unsigned int size);
+ 	void (*readio) (struct fb_info *info, void *dst, void __iomem *src, unsigned int size);
+diff --git a/include/linux/font.h b/include/linux/font.h
+index abf1442ce719..81caffd51bb4 100644
+--- a/include/linux/font.h
++++ b/include/linux/font.h
+@@ -57,7 +57,8 @@ extern const struct font_desc *find_font(const char *name);
+ /* Get the default font for a specific screen size */
+ 
+ extern const struct font_desc *get_default_font(int xres, int yres,
+-						u32 font_w, u32 font_h);
++						unsigned long *font_w,
++						unsigned long *font_h);
+ 
+ /* Max. length for the name of a predefined font */
+ #define MAX_FONT_NAME	32
+diff --git a/lib/fonts/fonts.c b/lib/fonts/fonts.c
+index 973866438608..409f3e4103a2 100644
+--- a/lib/fonts/fonts.c
++++ b/lib/fonts/fonts.c
+@@ -96,18 +96,21 @@ EXPORT_SYMBOL(find_font);
+  *	get_default_font - get default font
+  *	@xres: screen size of X
+  *	@yres: screen size of Y
+- *      @font_w: bit array of supported widths (1 - 32)
+- *      @font_h: bit array of supported heights (1 - 32)
++ *	@font_w: bit array of supported widths (1 - FB_MAX_BLIT_WIDTH)
++ *	@font_h: bit array of supported heights (1 - FB_MAX_BLIT_HEIGHT)
+  *
+  *	Get the default font for a specified screen size.
+  *	Dimensions are in pixels.
+  *
++ *	font_w or font_h being NULL means all values are supported.
++ *
+  *	Returns %NULL if no font is found, or a pointer to the
+  *	chosen font.
+  *
+  */
+-const struct font_desc *get_default_font(int xres, int yres, u32 font_w,
+-					 u32 font_h)
++const struct font_desc *get_default_font(int xres, int yres,
++                                         unsigned long *font_w,
++                                         unsigned long *font_h)
+ {
+ 	int i, c, cc, res;
+ 	const struct font_desc *f, *g;
+@@ -135,8 +138,8 @@ const struct font_desc *get_default_font(int xres, int yres, u32 font_w,
+ 		if (res > 20)
+ 			c += 20 - res;
+ 
+-		if ((font_w & (1U << (f->width - 1))) &&
+-		    (font_h & (1U << (f->height - 1))))
++		if ((!font_w || test_bit(f->width - 1, font_w)) &&
++		    (!font_h || test_bit(f->height - 1, font_h)))
+ 			c += 1000;
+ 
+ 		if (c > cc) {
+-- 
+2.39.2
 
-Agree 100%
-
--Tony
 
