@@ -1,42 +1,42 @@
-Return-Path: <linux-kernel+bounces-105057-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105064-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CC36B87D8A1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:40:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id EFF8187D8AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:42:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87A03282E50
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:40:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 57F9B282FCD
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 03:42:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3E7BC5A0E8;
-	Sat, 16 Mar 2024 03:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F4475C5FE;
+	Sat, 16 Mar 2024 03:36:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rusoHeoy"
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="rStFbe//"
 Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6C23EADA;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF784FBE1;
 	Sat, 16 Mar 2024 03:35:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710560161; cv=none; b=bF2SvgiulMco8wKR+T+d3XomZCiyOPmVbDUKh4+i8W0c4hkH9mg/NoCcii0HVvfhat+EtBJ2SKYLMiDcv7fCSKXSaVAMdKOYAldmImyP75mQwFp/cMMA7f18fm+aI+cG4ntnjai8KIkd2ERK7RM2tLK20EqRNSK/7HRTmBPX3Lo=
+	t=1710560163; cv=none; b=dhef+qFzyQlWrxBdDr3GOb6I2Dx0PKW0BZ4z/Q8n6fbUEhvzuf/pHxCL8oi1BLwuLapgb98PjEl+sMaxVc5hI9KiOFDhmHXZCU2zli+XUjlx920Qk7hhB6RRRS02xewjPdoPDdQ2CvvneGImc3qHkjcRKYF5XrntDEG+Q9A4Es8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710560161; c=relaxed/simple;
-	bh=S/LH7AxyfK2fyOusOR2YRktF/5mKHe/1aFVmYHWd2o4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=b8fuVud9jksxbjg2Lk0pY7HccRoszTgpTzTnzrydnBuQhKEeDoxm0/WQ6cTq3PMS4TA03Bm8YF3uQwbw8+sIIq8pS3GW/oP7tw/WB6gYUhLoS8vnNKPGTCFLG5XREHXzkRIVnLoMkx+tqlyOPHg8/mmR2gPJfGwhqiyuYj7ahWY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rusoHeoy; arc=none smtp.client-ip=13.77.154.182
+	s=arc-20240116; t=1710560163; c=relaxed/simple;
+	bh=CGol9Yg+mvv8j3MuU5adB+S5Zfdm08E6CNdkO4Pw3e8=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References; b=gaRo9B1kVfUfA1q1+etj7unIvQoKKMCAB+kO3ffYCOpJrc7OGnBDdfz15Zc1NHTN00GDmqZURNF4ZzCGzT11hNawhPFlyPfWsfMryXW7R/1Km00ABG/CIz3uTUehcPXd2cbAJk1s/d5RO2Pe9mM74Z0RsUiNcWUtmiRIE7rcRcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=rStFbe//; arc=none smtp.client-ip=13.77.154.182
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
 Received: by linux.microsoft.com (Postfix, from userid 1052)
-	id DC1CD20B74D7; Fri, 15 Mar 2024 20:35:53 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com DC1CD20B74D7
+	id EA20C20B74D9; Fri, 15 Mar 2024 20:35:53 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com EA20C20B74D9
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
 	s=default; t=1710560153;
-	bh=v4lY4mSJnrtZv0A6Uq6/sTuYoGyoZIJN7egWmAQun+w=;
+	bh=8UZ8yI1Nl9AJ1CZqfQSY4oqd8EWd1HPQnAJhULnqHQE=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rusoHeoy9abWEvfXakxtms4v6DUlN+mJyWjE+AdBnyZkcB3xcvlGcb0fUfoE39Swn
-	 7BMAH8f13yGQXi1s3yZ6Sdx+dUn7uEXm9qdxF9EmtBM5DaZiIUPJ+vCryUF4c7Fz4+
-	 vlQhGylZN0WoLzscY4uKJkC7XnYSyYxewULX6NWs=
+	b=rStFbe//MNm5gFrEZHDxMrnniZaF/nrd+lZGVoPB6SgZNcOwriBy4iZqOSp/eUZMU
+	 FUp2lIddC1EVOobiCvX4vdDaCfFwRPXOk6lG0sQQy2pI+9wyTzvA72Y8o4bpzbg3CY
+	 oAl0XjZH9oxHgPIAkynddNJOkKsTdBdUrW6CRKyA=
 From: Fan Wu <wufan@linux.microsoft.com>
 To: corbet@lwn.net,
 	zohar@linux.ibm.com,
@@ -58,9 +58,9 @@ Cc: linux-doc@vger.kernel.org,
 	audit@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Fan Wu <wufan@linux.microsoft.com>
-Subject: [RFC PATCH v15 12/21] security: add security_bdev_setintegrity() hook
-Date: Fri, 15 Mar 2024 20:35:42 -0700
-Message-Id: <1710560151-28904-13-git-send-email-wufan@linux.microsoft.com>
+Subject: [RFC PATCH v15 13/21] dm: add finalize hook to target_type
+Date: Fri, 15 Mar 2024 20:35:43 -0700
+Message-Id: <1710560151-28904-14-git-send-email-wufan@linux.microsoft.com>
 X-Mailer: git-send-email 1.8.3.1
 In-Reply-To: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
 References: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
@@ -70,115 +70,89 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 
-This patch introduces a new hook to save block device's integrity
-data. For example, for dm-verity, LSMs can use this hook to save
-the roothash signature of a dm-verity into the security blob,
-and LSMs can make access decisions based on the data inside
-the signature, like the signer certificate.
+This patch adds a target finalize hook.
+
+The hook is triggered just before activating an inactive table of a
+mapped device. If it returns an error the __bind get cancelled.
+
+The dm-verity target will use this hook to attach the dm-verity's
+roothash metadata to the block_device struct of the mapped device.
 
 Signed-off-by: Fan Wu <wufan@linux.microsoft.com>
 
---
-v1-v14:
+---
+v1-v10:
   + Not present
 
-v15:
+v11:
   + Introduced
----
- include/linux/lsm_hook_defs.h |  2 ++
- include/linux/security.h      | 14 ++++++++++++++
- security/security.c           | 28 ++++++++++++++++++++++++++++
- 3 files changed, 44 insertions(+)
 
-diff --git a/include/linux/lsm_hook_defs.h b/include/linux/lsm_hook_defs.h
-index c335404470dc..6808ae763913 100644
---- a/include/linux/lsm_hook_defs.h
-+++ b/include/linux/lsm_hook_defs.h
-@@ -455,4 +455,6 @@ LSM_HOOK(void, LSM_RET_VOID, initramfs_populated, void)
+v12:
+  + No changes
+
+v13:
+  + No changes
+
+v14:
+  + Add documentation
+
+v15:
+  + No changes
+---
+ drivers/md/dm.c               | 12 ++++++++++++
+ include/linux/device-mapper.h |  9 +++++++++
+ 2 files changed, 21 insertions(+)
+
+diff --git a/drivers/md/dm.c b/drivers/md/dm.c
+index 56aa2a8b9d71..16d3fd644176 100644
+--- a/drivers/md/dm.c
++++ b/drivers/md/dm.c
+@@ -2270,6 +2270,18 @@ static struct dm_table *__bind(struct mapped_device *md, struct dm_table *t,
+ 		goto out;
+ 	}
  
- LSM_HOOK(int, 0, bdev_alloc_security, struct block_device *bdev)
- LSM_HOOK(void, LSM_RET_VOID, bdev_free_security, struct block_device *bdev)
-+LSM_HOOK(int, 0, bdev_setintegrity, struct block_device *bdev,
-+	 enum lsm_intgr_type type, const void *value, size_t size)
- 
-diff --git a/include/linux/security.h b/include/linux/security.h
-index 9965b5c50df4..eaff8868766a 100644
---- a/include/linux/security.h
-+++ b/include/linux/security.h
-@@ -83,6 +83,10 @@ enum lsm_event {
- 	LSM_POLICY_CHANGE,
- };
- 
-+enum lsm_intgr_type {
-+	__LSM_INTGR_MAX
-+};
++	for (unsigned int i = 0; i < t->num_targets; i++) {
++		struct dm_target *ti = dm_table_get_target(t, i);
 +
- /*
-  * These are reasons that can be passed to the security_locked_down()
-  * LSM hook. Lockdown reasons that protect kernel integrity (ie, the
-@@ -511,6 +515,9 @@ int lsm_fill_user_ctx(struct lsm_ctx __user *uctx, u32 *uctx_len,
- 		      void *val, size_t val_len, u64 id, u64 flags);
- int security_bdev_alloc(struct block_device *bdev);
- void security_bdev_free(struct block_device *bdev);
-+int security_bdev_setintegrity(struct block_device *bdev,
-+			       enum lsm_intgr_type type, const void *value,
-+			       size_t size);
- #else /* CONFIG_SECURITY */
- 
- static inline int call_blocking_lsm_notifier(enum lsm_event event, void *data)
-@@ -1495,6 +1502,13 @@ static inline void security_bdev_free(struct block_device *bdev)
- {
- }
- 
-+static inline int security_bdev_setintegrity(struct block_device *bdev,
-+					     enum lsm_intgr_type, type,
-+					     const void *value, size_t size)
-+{
-+	return 0;
-+}
-+
- #endif	/* CONFIG_SECURITY */
- 
- #if defined(CONFIG_SECURITY) && defined(CONFIG_WATCH_QUEUE)
-diff --git a/security/security.c b/security/security.c
-index 4274bbee40d0..8d88529ac904 100644
---- a/security/security.c
-+++ b/security/security.c
-@@ -5637,6 +5637,34 @@ void security_bdev_free(struct block_device *bdev)
- }
- EXPORT_SYMBOL(security_bdev_free);
- 
-+/**
-+ * security_bdev_setintegrity() - Set the bdev's integrity data
-+ * @bdev: block device
-+ * @type: type of integrity, e.g. hash digest, signature, etc
-+ * @value: the integrity value
-+ * @size: size of the integrity value
-+ *
-+ * Register a verified integrity measurement of a bdev with the LSM.
-+ *
-+ * Return: Returns 0 on success, negative values on failure.
-+ */
-+int security_bdev_setintegrity(struct block_device *bdev,
-+			       enum lsm_intgr_type type, const void *value,
-+			       size_t size)
-+{
-+	int rc = 0;
-+	struct security_hook_list *p;
-+
-+	hlist_for_each_entry(p, &security_hook_heads.bdev_setintegrity, list) {
-+		rc = p->hook.bdev_setintegrity(bdev, type, value, size);
-+		if (rc)
-+			return rc;
++		if (ti->type->finalize) {
++			ret = ti->type->finalize(ti);
++			if (ret) {
++				old_map = ERR_PTR(ret);
++				goto out;
++			}
++		}
 +	}
 +
-+	return LSM_RET_DEFAULT(bdev_setintegrity);
-+}
-+EXPORT_SYMBOL(security_bdev_setintegrity);
-+
- #ifdef CONFIG_PERF_EVENTS
- /**
-  * security_perf_event_open() - Check if a perf event open is allowed
+ 	old_map = rcu_dereference_protected(md->map, lockdep_is_held(&md->suspend_lock));
+ 	rcu_assign_pointer(md->map, (void *)t);
+ 	md->immutable_target_type = dm_table_get_immutable_target_type(t);
+diff --git a/include/linux/device-mapper.h b/include/linux/device-mapper.h
+index 82b2195efaca..ad368904b1d5 100644
+--- a/include/linux/device-mapper.h
++++ b/include/linux/device-mapper.h
+@@ -160,6 +160,14 @@ typedef int (*dm_dax_zero_page_range_fn)(struct dm_target *ti, pgoff_t pgoff,
+  */
+ typedef size_t (*dm_dax_recovery_write_fn)(struct dm_target *ti, pgoff_t pgoff,
+ 		void *addr, size_t bytes, struct iov_iter *i);
++/*
++ * This hook allows DM targets in an inactive table to complete their setup
++ * before the table is made active.
++ * Returns:
++ *  < 0 : error
++ *  = 0 : success
++ */
++typedef int (*dm_finalize_fn) (struct dm_target *target);
+ 
+ void dm_error(const char *message);
+ 
+@@ -210,6 +218,7 @@ struct target_type {
+ 	dm_dax_direct_access_fn direct_access;
+ 	dm_dax_zero_page_range_fn dax_zero_page_range;
+ 	dm_dax_recovery_write_fn dax_recovery_write;
++	dm_finalize_fn finalize;
+ 
+ 	/* For internal device-mapper use. */
+ 	struct list_head list;
 -- 
 2.44.0
 
