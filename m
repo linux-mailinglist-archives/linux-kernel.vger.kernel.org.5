@@ -1,86 +1,90 @@
-Return-Path: <linux-kernel+bounces-105124-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 768FF87D963
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 10:11:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 508C287D968
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 10:20:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0664A282237
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:11:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 04EEA1F21669
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E3AC10A2B;
-	Sat, 16 Mar 2024 09:11:05 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C3D0125BA;
+	Sat, 16 Mar 2024 09:20:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="DnBrpbD4"
+Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C5F26AA1
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 09:11:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F17456AA1;
+	Sat, 16 Mar 2024 09:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710580264; cv=none; b=Su3qU/7tUxkPLAOZb0mWWk0qQCKWMgCNmbs08b6MKGI0oEWbmzv8tCsNe0DtNA6T6EbGk+hWdUPOPWKuQE+T5323opPGUzGHUcm8FGerW7XDAW28FV5l5HA5EBT/XTg93wVya8eJA7t3E5Qy1eALEP1omBVrONUXRLMtdx45rCQ=
+	t=1710580844; cv=none; b=dA4cpx+DFmTL4/PuZgWWiJDLLhcf4kzl0IJRWgrqDMe2fa7GEIkHgvaGVwO4F3GvuBV95625wd+xzq96uJnb4beJAoBNGyE5F9o0gkJiPjPGxh2lXS/dligj7vnaHvtTsb96/rIZiMuO6EJagSDHo9rfx6VCPqMDkkLzI6uFId4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710580264; c=relaxed/simple;
-	bh=EI5sJYLaI2i813yl9Pox+03jUM0aSna9cHlcYTaryfk=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=CyVxRCPOi2MxZZQ2JRt5FRagleI2ShnP0Wt0Hrw8AZuAm561eGaXeFN+A+Lza920slIW4Rh8UBKeYmwwfiXVbYWQyd2Ak/zjFAhne1r76HhLzat8Dqdr+MLgJ6clKu9UiWADMYs3tz7aUGfFXBVNxhfkXRihhKBJ76Q2e0nf1Xc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c85f86e4c7so240641539f.3
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:11:03 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710580262; x=1711185062;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XIc8SsIakUlkr+pIaFx6nnyRp4QtafguxXfQ1iO5ahc=;
-        b=eZx5UXIr0vqKYXLivtJH0SRsa2p5uaZHBYOLIL1vHYvCTvhZj/ijUls35M/mdHDARt
-         cPkonhAHs/rSCbDOHcVTupWzS5PML8CZhpwQB7uV4fvWf18PzDCPwDI9plMHBrfZ/Nr4
-         ixW8u6EifpwlKcZyW5Pptb6F8DBxcG61HdkrigmcCsVJQIvn60Cy5jAA33eN57439EMK
-         9PrWC1fSbKZy9Dxn3GGYx4xJoUFMUnFbS918AQdftIJqNNLRUAhSysKyH16RqVLTUKyG
-         WqcOaBVmY1pTBkxle40KGykJSrYiT4/duE+ptGl5eN+D2W0qYVDpizrubozY0/JxfbIq
-         ikIQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUSR36zPKvC+YGqeazbJEXY1R+i9OO90jZXevc5296KEmcBa2ZUfiT6XUrEY/3Q31VMduKoAmcxr1ZH/rdNwaHxqH+r8LjB6JfqaTN2
-X-Gm-Message-State: AOJu0Ywks34XWsjR0SP6wVAIGqYDq1h/KUOJ0y7PpPuqb6jB7RTpeKYb
-	yQs7Yn2oUglmtc2BTMG+B3+LnlIvpy6gxtUHhPqsSpAWbfigQlE6/RALpylGkqiF6MLC9gYODu/
-	FRIWizHcnjCLsAt2DWq3w49mSXOO0tzsk5ryaOMmSRu1rWn6iDZ572G0=
-X-Google-Smtp-Source: AGHT+IFRla4H4ajzvVAELcsA7cR0v8Bb5uBSXfpW9cfqsum+wpJugZPMKvB0Bkp/icv2QKSy+Mc+NBVns6VXEw4xm66qLKZ8MWfv
+	s=arc-20240116; t=1710580844; c=relaxed/simple;
+	bh=ST98Mhz1DlDnjzofsIuQLnDH8pxs3yPtBgzLPJzYcNU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TIdKiAWe/3IrBs8m6by6lM2VvphrIfyxa92BfQrXjifz/4qUQH8IUmrN8mByVxm37BdJrub2YP2pwJ5KCyAlwnYx9hokPU3GcF3twEvSvkrv7PzHGY5MMWh5ZVbrAVMaYH0Ziz9bD3Tsd3tbx8QxRwavjx8GhN0xOfQyQQEFO10=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=DnBrpbD4; arc=none smtp.client-ip=217.70.183.200
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 4807B20005;
+	Sat, 16 Mar 2024 09:20:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1710580834;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PBPA4EVa/HJzRpygIlTKSRICJil351AjIuBMiSIsloY=;
+	b=DnBrpbD4qlmsmkkcGjPzBuPKmsmsS5vgoaOP1pUvkdYBqlpqTnHiodEQrsxfR9l3adwelP
+	xsFr8QLuB89V1Zk2/Mv0kuN4Q1N7+VImT50/iolPSrHW/nFtmhUrhf4LGawl91+fZTIrcl
+	e/058UILPk73WCcikKgtCbA65UwmGyMNaKFCyBMG6E8TD6KFpMIGwsGNrD7e2UoU0SElh5
+	yXd+rStnTVXJgFVW+Wor5CviJX4APqfr9kcbtIvK05Tq6pKA3njhLMzgtLUC/92yO/bQwL
+	WBosVquxmmwBx7TIEQbRgAQ9blm2vCwKaDJzykXoWFJjZD77ZRgJRg04EhMjKQ==
+Message-ID: <b30700dd-25d3-4815-8a3d-dd78810fdaa4@arinc9.com>
+Date: Sat, 16 Mar 2024 12:20:15 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:1413:b0:476:f2d0:7722 with SMTP id
- k19-20020a056638141300b00476f2d07722mr235175jad.6.1710580262592; Sat, 16 Mar
- 2024 02:11:02 -0700 (PDT)
-Date: Sat, 16 Mar 2024 02:11:02 -0700
-In-Reply-To: <20240316085211.1816-1-hdanton@sina.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e993950613c380eb@google.com>
-Subject: Re: [syzbot] [sound?] possible deadlock in snd_timer_close_locked
-From: syzbot <syzbot+f3bc6f8108108010a03d@syzkaller.appspotmail.com>
-To: hdanton@sina.com, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 01/14] mips: dts: ralink: mt7621: reorder cpu node
+ attributes
+To: Justin Swartz <justin.swartz@risingedge.co.za>,
+ Sergio Paracuellos <sergio.paracuellos@gmail.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: linux-mips@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-mediatek@lists.infradead.org
+References: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
+ <20240316045442.31469-2-justin.swartz@risingedge.co.za>
+Content-Language: en-US
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <20240316045442.31469-2-justin.swartz@risingedge.co.za>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Hello,
+On 16.03.2024 07:54, Justin Swartz wrote:
+> Reorder cpu node attributes to fit the DTS Coding Style.
+> 
+> Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
 
-syzbot has tested the proposed patch and the reproducer did not trigger any issue:
+Reviewed-by: Arınç ÜNAL <arinc.unal@arinc9.com>
 
-Reported-and-tested-by: syzbot+f3bc6f8108108010a03d@syzkaller.appspotmail.com
-
-Tested on:
-
-commit:         fe46a7dd Merge tag 'sound-6.9-rc1' of git://git.kernel..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git
-console output: https://syzkaller.appspot.com/x/log.txt?x=142f5185180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4d90a36f0cab495a
-dashboard link: https://syzkaller.appspot.com/bug?extid=f3bc6f8108108010a03d
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=17ff06be180000
-
-Note: testing is done by a robot and is best-effort only.
+Arınç
 
