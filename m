@@ -1,112 +1,159 @@
-Return-Path: <linux-kernel+bounces-105176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2F17B87DA15
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:09:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B38C887DA18
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:11:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A544CB21079
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:09:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 670912816E7
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:11:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 709C618036;
-	Sat, 16 Mar 2024 12:09:28 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1797C17BB9;
+	Sat, 16 Mar 2024 12:10:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yT6QNQ2b"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8328517722
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:09:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93E0617722
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:10:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710590968; cv=none; b=n4rZxm02/HWRXfCV0fUqSFD3INkkFmVPTlIxsXonvoyMu25fwhsLckn4WAKR+CgSdlVd5sG3LF7gyQs9K4JfoDz92i28Ivpjd5Ed/d/uCdHfOWDShAO3ynK9I33/IM+yGlW5GI2FIAv9GOOru9+hk74mR/NyCcGTEDNZsL+WCyI=
+	t=1710591053; cv=none; b=WyG8ta9OwGsFoPbbstFcVHmsH2oB4Lfn3qbpM1e8oD8jD+Vme4qwwHQsDd7M/G1AdcWlByuEHiD9ds5H2f9Xr9Tx7OSvbMBpNgmkr4ZWbm4IdDP82XBex7Kc7HOuEzSTccjP7r+CG8AVbaefi5DJfnj8HntKT5LIjN8YrHNMI6I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710590968; c=relaxed/simple;
-	bh=OFqpG2u95CTHKj3kiWG8U0Pt/ngyH6TQPFJ5yqRP+yg=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=fbzK4QzLlPnxH9ciwPzKVKjgXCpNwLFAaDaigd+HUioJFnjdcp8go3tms44q+pVlBBGs9oaf5Apax6ill/XO2EL9n6Pd0C6YkyqaWs6M3zEBI9W0AYu8kUiRPMTtojGpX4pOrcY9N9Myi/0DsinUgMbE044Uh+PS55onghBQ4yw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-36660582003so42153625ab.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 05:09:26 -0700 (PDT)
+	s=arc-20240116; t=1710591053; c=relaxed/simple;
+	bh=fktCCbDv/VIuSyXY3tYWs4IVqhS8SDqxMK0qvxnzbNI=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=eqOAHUy5ss4pbinlQgHPRp+lZvL29y5E3QN6ljoE2RMhyQNpYWWjswM+SDzKuJjXQ2tSob5cOXQ/1ZUBS3NZOXJSPc3SShr1gNbultd209aEPqNouegb6zp21UoBes28jbVS/7X2fzx6dQGQsvb733t8Y7gOtTx3d5e6cQ3s8I4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yT6QNQ2b; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d46c2e8dd7so37525971fa.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 05:10:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710591050; x=1711195850; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hDpnnflX/d44C9t+bbp3CWw+BJoJUiJIyi0Tnl0vMkI=;
+        b=yT6QNQ2b2ReX/W79tosz/REgxreL28Ozk3eRP9wmX0kjwJB1a0WuXGDvbDktnsQ1gn
+         v+NDeVCa0pm1R1wQLVQmQDrO0bRWBbqML4eztgaLgE444fRPpJxuSpgdNv6hS71Z3bRj
+         r84XlW5wlhQdZuFtrKo/oDzHTWfSQLd/OUtY9jfZefTKQeqERz9bV04TLq81fWpwTaBM
+         WafnAwcbRO7wasNwi+nCDDQmbS17R1jtd1WaDn4bRzZQjkZt/Trzkey+ZTTNC+LJHA3O
+         zNfqu7I23dVwrD4O7Nw6Q9uM5LR1BDB0snLUX+5gS43zKXyI7tgzE3m7HGwj3fvVG/cZ
+         cDZw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710590965; x=1711195765;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=kBkvNjKAtbHEtQdfCVzshZvUM62vA91GLq3QAxf7k2g=;
-        b=gxoUMwdOsIVqkTWZKwZS6PHhchV2qZXlcYOWAYGjIIR5trdv3jYm5l79No2nVOkdSs
-         yNgkJHvSuRANZvuY2c51buOyEy0m/O2HVy5r2gaTpI8HoXK9FnJFC5cu6TqPpTBt1oI9
-         mEPBCQY99Zh3HVzOZA7MDHfIgR/9OI7vpwew0q3R8EvOmfCBX+YhzpRs0EjmcWzsil/2
-         CEMzCZ8aAVtWhI1CuU4dXmGEeK0wCwvxvdYPr40waxXgXBV1JPy7SCP4pIU9ewRIyn/8
-         VPHS6+8t6qEstO5V2GXoOYJjLif+WL98x+pTB3YUUSHepC46z7SdFg6wflvwmRzj94eJ
-         TcVA==
-X-Forwarded-Encrypted: i=1; AJvYcCW7a42B3X8JxsjfeiG2RLUd9WRTrcFo/AnVUekOGGk3e+FZj8Lh/Lc/fbJsPWBu1/3l0QZPmYPifGeZi9mGhDUYWYVO16OH0jVkDiOH
-X-Gm-Message-State: AOJu0Yynqnw8gyfD3+1/GQVLZffOqJ9NmlLZ9tptepDgS4J435KXypOO
-	ioPi03VOa6upA1naDmD8kYLdB6yaoNoSKfNZJOOhd4VjIqB9n2DaMxgrBdIBZ8+T34Lx/WI04Ea
-	6lf8zGnddX+SPFdDVBEbaB7cGhb+kV3evHAYxUMP1v2xHLH6hapIGEwI=
-X-Google-Smtp-Source: AGHT+IHBDSGm6qgrdNZtdCvk0lrhV5I+K23cilpOGSz1XR/vrUcw1YAMgWunfM+R4KQ0ES6QNjpdZngAyZtFZY3Eu9/0VvsVvmiu
+        d=1e100.net; s=20230601; t=1710591050; x=1711195850;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hDpnnflX/d44C9t+bbp3CWw+BJoJUiJIyi0Tnl0vMkI=;
+        b=mPzP3SZYaIrpR/OhPJIp+0YHob5xgA9P/zkOMDkfBv8JIfZmFHFKCYh4jzI+GUsUJ3
+         DFNd6NPEhFKRpBIcDr9I/MZpSo0W/1Hmgt1akKlgiH8S+GjpNq+6EvXbUktZaYFIXv84
+         0SPNf3YRm8Q3iqNp3tDVvFdIhtTGD027VGBdZ+AJiHocTxYpkGsaxXPFm7vevVFKhOy/
+         cPtiAZowj5ZjpDaNFqE9KpiwemJ7xzudIL1BP/FHRc7Kcuby9NCou8RnTv0pP0JQNltw
+         tWMMjmcsUvhkEq5hTcn2zOhPJtiXLrl5/lxnNi31IFa4LQqEuXhnJbEqGRcmcpuqcUNN
+         uIDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXNyMZI2QmMdXc71Y1hOlSRI2Hl2DGlpM6FKOHtRvTmBiptjHluXxDEPI6k1vbJBUJFMp+8aO7mHdrSsEFJ9splJK84E4Xd4I6LgvC7
+X-Gm-Message-State: AOJu0YwovdAFES/1pUqa9UzF/vBPx7TqPU4gBHJsmG+rK5ZeKd++G7tB
+	SFeVAzZ/DIs/+GUDNyTFeGUh8E9qGcJc3NRcB6+D82Dxu+Kdck2Wu15DyfOHRsE=
+X-Google-Smtp-Source: AGHT+IEcAO04rh698adudsqeA0OCLfkC2mSxbb70R3fbi4/BAOaySoscZl/ZJMdaztL3d23VKxoD6g==
+X-Received: by 2002:ac2:5e24:0:b0:513:c658:799b with SMTP id o4-20020ac25e24000000b00513c658799bmr3497844lfg.55.1710591049663;
+        Sat, 16 Mar 2024 05:10:49 -0700 (PDT)
+Received: from [10.167.154.1] (078088045141.garwolin.vectranet.pl. [78.88.45.141])
+        by smtp.gmail.com with ESMTPSA id q13-20020ac246ed000000b005134263d56bsm945284lfo.224.2024.03.16.05.10.48
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Mar 2024 05:10:49 -0700 (PDT)
+From: Konrad Dybcio <konrad.dybcio@linaro.org>
+Date: Sat, 16 Mar 2024 13:10:46 +0100
+Subject: [PATCH] arm64: dts: qcom: msm8998-yoshino: Enable RGB led
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d89:b0:365:5dbd:b956 with SMTP id
- h9-20020a056e021d8900b003655dbdb956mr476433ila.3.1710590965746; Sat, 16 Mar
- 2024 05:09:25 -0700 (PDT)
-Date: Sat, 16 Mar 2024 05:09:25 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000de9d170613c5fe46@google.com>
-Subject: [syzbot] Monthly fs report (Mar 2024)
-From: syzbot <syzbot+listc1ea4dfa31fea8381e9d@syzkaller.appspotmail.com>
-To: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240316-topic-maple_led-v1-1-ca3430fd9dc5@linaro.org>
+X-B4-Tracking: v=1; b=H4sIAEWM9WUC/x2NWwqDMBAAryL73YUkPsBepZSyJqsuxBiStgji3
+ bv0cwaGOaFyEa5wb04o/JUqe1Kwtwb8SmlhlKAMzrjOtHbA957F40Y58itywLnvyNnBmRBG0Gq
+ iyjgVSn7VLn1iVJkLz3L8N4/ndf0AVcPOQHYAAAA=
+To: Bjorn Andersson <andersson@kernel.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: Marijn Suijten <marijn.suijten@somainline.org>, 
+ linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Sebastian Raase <linux@sraa.de>, 
+ Konrad Dybcio <konradybcio@kernel.org>
+X-Mailer: b4 0.12.2
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710591048; l=1354;
+ i=konrad.dybcio@linaro.org; s=20230215; h=from:subject:message-id;
+ bh=7POCFrK25iWDlgWo1fz1erE33bL/FqB3Pzbou7z2qXg=;
+ b=1y3D449unX2u/4yzer9iQnPZsjeGGuEasxQxa95dyYh2Jbc37yqg4ImMS4imagsy+2Xf1LDKp
+ Tk/+TI8L2thDKJgi7oB+hH9r88T6H6xoHas5AUIPj/2hb5XxJkuw/wk
+X-Developer-Key: i=konrad.dybcio@linaro.org; a=ed25519;
+ pk=iclgkYvtl2w05SSXO5EjjSYlhFKsJ+5OSZBjOkQuEms=
 
-Hello fs maintainers/developers,
+From: Konrad Dybcio <konradybcio@kernel.org>
 
-This is a 31-day syzbot report for the fs subsystem.
-All related reports/information can be found at:
-https://syzkaller.appspot.com/upstream/s/fs
+Add the multicolor description and enable the PMI8998 LPG to expose the
+RGB notification LED.
 
-During the period, 1 new issues were detected and 1 were fixed.
-In total, 40 issues are still open and 341 have been fixed so far.
+Signed-off-by: Konrad Dybcio <konradybcio@kernel.org>
+---
+Depends on: <20240315225237.1616550-1-linux@sraa.de>
+---
+ .../boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi | 29 ++++++++++++++++++++++
+ 1 file changed, 29 insertions(+)
 
-Some of the still happening issues:
-
-Ref  Crashes Repro Title
-<1>  233     No    INFO: task hung in path_openat (7)
-                   https://syzkaller.appspot.com/bug?extid=950a0cdaa2fdd14f5bdc
-<2>  210     Yes   INFO: task hung in user_get_super (2)
-                   https://syzkaller.appspot.com/bug?extid=ba09f4a317431df6cddf
-<3>  73      Yes   INFO: task hung in __fdget_pos (4)
-                   https://syzkaller.appspot.com/bug?extid=e245f0516ee625aaa412
-<4>  62      Yes   INFO: task hung in filename_create (4)
-                   https://syzkaller.appspot.com/bug?extid=72c5cf124089bc318016
-<5>  45      Yes   INFO: rcu detected stall in sys_clock_adjtime
-                   https://syzkaller.appspot.com/bug?extid=25b7addb06e92c482190
-<6>  36      Yes   INFO: task hung in synchronize_rcu (4)
-                   https://syzkaller.appspot.com/bug?extid=222aa26d0a5dbc2e84fe
-<7>  35      Yes   WARNING: proc registration bug in bcm_connect
-                   https://syzkaller.appspot.com/bug?extid=df49d48077305d17519a
-<8>  21      Yes   BUG: unable to handle kernel NULL pointer dereference in do_pagemap_scan
-                   https://syzkaller.appspot.com/bug?extid=f9238a0a31f9b5603fef
-<9>  13      Yes   KASAN: use-after-free Read in sysv_new_block
-                   https://syzkaller.appspot.com/bug?extid=eda782c229b243c648e9
-<10> 3       Yes   WARNING in pagemap_scan_pmd_entry (2)
-                   https://syzkaller.appspot.com/bug?extid=0748a3a1931714d970d0
+diff --git a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+index fdd3953938d9..d8cc0d729e99 100644
+--- a/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
++++ b/arch/arm64/boot/dts/qcom/msm8998-sony-xperia-yoshino.dtsi
+@@ -418,6 +418,35 @@ vib_ldo_en: vib-ldo-en-state {
+ 	};
+ };
+ 
++&pmi8998_lpg {
++	qcom,power-source = <1>;
++
++	status = "okay";
++
++	multi-led {
++		color = <LED_COLOR_ID_RGB>;
++		function = LED_FUNCTION_STATUS;
++
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		led@3 {
++			reg = <3>;
++			color = <LED_COLOR_ID_BLUE>;
++		};
++
++		led@4 {
++			reg = <4>;
++			color = <LED_COLOR_ID_GREEN>;
++		};
++
++		led@5 {
++			reg = <5>;
++			color = <LED_COLOR_ID_RED>;
++		};
++	};
++};
++
+ &qusb2phy {
+ 	status = "okay";
+ 
 
 ---
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+base-commit: 6a2bcf40b85ff77e3f32a2fbced3faaf3f59b43c
+change-id: 20240316-topic-maple_led-f54a21620dd9
 
-To disable reminders for individual bugs, reply with the following command:
-#syz set <Ref> no-reminders
+Best regards,
+-- 
+Konrad Dybcio <konrad.dybcio@linaro.org>
 
-To change bug's subsystems, reply with:
-#syz set <Ref> subsystems: new-subsystem
-
-You may send multiple commands in a single email message.
 
