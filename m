@@ -1,151 +1,100 @@
-Return-Path: <linux-kernel+bounces-105181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA94D87DA34
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:56:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D44F87DA36
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:00:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85956281F3C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:56:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 130611F21750
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:00:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9FA618059;
-	Sat, 16 Mar 2024 12:56:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC63318AED;
+	Sat, 16 Mar 2024 13:00:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Ft05WTNh"
-Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="BZVbZMGd"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 382B8101C4
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:56:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8E6517BAB
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 13:00:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710593775; cv=none; b=m2pP+gSge2GAU4n99bTSXylR0JXrOCqOyORR7D7Dwu0KjDMIOydZjENz1UJTjyqKWKE1yXUFh5PCGpGpgVLfjStakb/Ab/fU1k3H/Br0AvWGMA1fPkvDRNpCjOQ5IeMa0U4lmF7kF0AuteRZAQjXIzyk0YeHnHeUohJbT7se6f4=
+	t=1710594004; cv=none; b=HjWLubwLl1EhudkjwNnJENAU4twrQZMvPTC5NgoDgrca8QbD+uveIkpfiRY8BQHVcz+TaasIIiGXXJJPpSUqS028+NmTz18zRUY6fZnilirTml8ytG9f9wwzJvDGi8z3c36JbGYduaFbacDtFgjIlctgAXgVpbww1P+2vZWr/7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710593775; c=relaxed/simple;
-	bh=i195H24fG+78UvSYeAPFY5EsjUrvxJ1ellunMAQjzNE=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=BxegtU7DB79LohjjhBctdrBk1tkMDpyElzW9tfHi2TeK0eKLmgS2FfB+jLgYGfKI8GeQg5bt4rvkiCpsxVYx0ilwZ2PcZm/zmm+gOC6zYJ0QOH2kYITVdOjQ2Pw/3dDNqI/iv7gYsTZF61PKSbsIfcrcoJ3m6YkeEbCaj15kUAw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Ft05WTNh; arc=none smtp.client-ip=198.47.23.249
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42GCifxS025491;
-	Sat, 16 Mar 2024 07:44:41 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710593081;
-	bh=i195H24fG+78UvSYeAPFY5EsjUrvxJ1ellunMAQjzNE=;
-	h=From:To:CC:Subject:Date:References:In-Reply-To;
-	b=Ft05WTNhl601z0q9NMlAdUu6cDXLS8lyFLKzpFa1nx/r0BPVRJlGZ/qXb/UlFhFEg
-	 WO8zMF0ObHYvSH1X9mfs0erp5y+0LTsnHV/0EXgA361r0cPdnB/uu4inLNJ7wqOa1k
-	 MV6chWlb0gExAPnnOS4NEYzde34eoxpNHd/PYiiU=
-Received: from DLEE104.ent.ti.com (dlee104.ent.ti.com [157.170.170.34])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42GCifst108336
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Sat, 16 Mar 2024 07:44:41 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE104.ent.ti.com
- (157.170.170.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Sat, 16
- Mar 2024 07:44:41 -0500
-Received: from DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c]) by
- DLEE101.ent.ti.com ([fe80::91ee:60bc:bfb7:851c%18]) with mapi id
- 15.01.2507.023; Sat, 16 Mar 2024 07:44:40 -0500
-From: "Ding, Shenghao" <shenghao-ding@ti.com>
-To: Amadeusz Slawinski <amadeuszx.slawinski@linux.intel.com>
-CC: "andriy.shevchenko@linux.intel.com" <andriy.shevchenko@linux.intel.com>,
-        "lgirdwood@gmail.com" <lgirdwood@gmail.com>,
-        "perex@perex.cz"
-	<perex@perex.cz>,
-        "pierre-louis.bossart@linux.intel.com"
-	<pierre-louis.bossart@linux.intel.com>,
-        "13916275206@139.com"
-	<13916275206@139.com>,
-        "alsa-devel@alsa-project.org"
-	<alsa-devel@alsa-project.org>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>,
-        "liam.r.girdwood@intel.com"
-	<liam.r.girdwood@intel.com>,
-        "bard.liao@intel.com" <bard.liao@intel.com>,
-        "mengdong.lin@intel.com" <mengdong.lin@intel.com>,
-        "yung-chuan.liao@linux.intel.com" <yung-chuan.liao@linux.intel.com>,
-        "Lu,
- Kevin" <kevin-lu@ti.com>, "tiwai@suse.de" <tiwai@suse.de>,
-        "soyer@irl.hu"
-	<soyer@irl.hu>,
-        "Baojun.Xu@fpt.com" <Baojun.Xu@fpt.com>,
-        "Navada Kanyana,
- Mukund" <navada@ti.com>,
-        "broonie@kernel.org" <broonie@kernel.org>
-Subject: RE: [EXTERNAL] Re: [PATCH v11] ASoc: tas2783: Add tas2783 codec
- driver
-Thread-Topic: [EXTERNAL] Re: [PATCH v11] ASoc: tas2783: Add tas2783 codec
- driver
-Thread-Index: AQHabwDKl9LUvPfYxEefCqERSA/bELEptFCAgBCsLuA=
-Date: Sat, 16 Mar 2024 12:44:40 +0000
-Message-ID: <4e2006ff96a446978dd1996eeaa42099@ti.com>
-References: <20240305132646.638-1-shenghao-ding@ti.com>
- <2efb5250-25f3-465e-81fc-cb885027b481@linux.intel.com>
-In-Reply-To: <2efb5250-25f3-465e-81fc-cb885027b481@linux.intel.com>
-Accept-Language: en-US, zh-CN
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-exclaimer-md-config: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	s=arc-20240116; t=1710594004; c=relaxed/simple;
+	bh=v8Rox1ogxmz7Ft/ssmsIOWeO1jLLouxlki+YyqgVA3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=EqXMb+/y6xp3Dm58Avbb6s2Ug4YUZWBqMhKog8KotUCtK/6B7rnC9FAVzSrRDH/kE9YKE8paro3f/M6LeddB8AwkpSEOvAjdfwjlDLDgdT6vMLxA5EHrjxl0fa0LNd0H8oYk8od/SdsvyBU4H6Gsibvl147CGY8bc8Ze00rw7Ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=BZVbZMGd; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42a9c21f9ecso14619911cf.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 06:00:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710593999; x=1711198799; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=M6JBV1o4tFTfWcpNa8PqFJZZHeTUvsNQYMGRSklUsd4=;
+        b=BZVbZMGded68IIZRuhI9Xd0ThgYOn7CD7uotrKBX6mOtWfyD77r+Um5VMIArakDnxF
+         OOF4VxQwL637Jfi3wZ4ePpt9bceMMoP2MHXlN9IixtkInf+OSUNzBXA80xIyBXHx2Lf3
+         StigB6H7KdgV/av0qUaQ1Vvn1sWsC8d3oMT63kFmud6CxDQUti6QCL97EAlAYNFMW61h
+         LmJBmp0jKBbX6ZpaHR3kse10wLqsEisiLhkDZaIWjUsLXa+giXGWqaYtaH2o05GgIIQT
+         O8vECkNH8B9tTx2QKzfVzSF1pVkJsxXg7dI+kDR544yl9PbIA54ifll3/lc/ON7lNdkc
+         bjYQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710593999; x=1711198799;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=M6JBV1o4tFTfWcpNa8PqFJZZHeTUvsNQYMGRSklUsd4=;
+        b=j7n7AHOpi41Qt9/8XYXj9+bGo9DaiVT5i6MIr2iKFMgplrIhfhAcoApJfW7gTUrVLm
+         roOv5snAHjkE/iacbJVEv6YKC7JQoQke5KXjGURy6pcMoySUTsjjuIYdAIBcHt0lTtQy
+         F4PRyuqBFhQBw4mgmUBzJGHTZimW4n1pAP7cSNakuK1G9f5knxe+3I08Xc/3pEpIDRxv
+         mrAbTZkFtOCEGEEn4ZvIRjtT2d1g6uWNJWGeVJ2mI0pfHFnei1amkpFO7KToH0YkprFL
+         vWaKBUTvfqW7FFwDJ4URADNnaenfbR3HnIwREb0H+bnT0lhPnzSWRY5ndaCf547AN8+M
+         lnOA==
+X-Forwarded-Encrypted: i=1; AJvYcCUwNdPGqWGSxAlrw9MPck8xG/KO86WVrYYTTpz1vi779iCfEdmGsr5IQxSBKOochnsv3cVonQchaN/mvv6Kh82Z/RmPev7tOz0A4oUm
+X-Gm-Message-State: AOJu0YzrZFXck1gdtm9bnU9B8/HoNPpHWPZq8iWKUO/91YDfP1O196xB
+	ihCPT79Q4GruQtFr2p327pBlxeNVvS7J4MiUJRNVNDujSxuCQaC0BfRVLwVgI0g=
+X-Google-Smtp-Source: AGHT+IHpbFzgEKXjojU4Ggg7u9Z9cA1BJvuMtFASRZGmdq/PZOEzx9uD7HWVPRTzb2D1RTSJhIHPPQ==
+X-Received: by 2002:a05:622a:1b1d:b0:430:ad8b:6138 with SMTP id bb29-20020a05622a1b1d00b00430ad8b6138mr6934246qtb.29.1710593999390;
+        Sat, 16 Mar 2024 05:59:59 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id k20-20020ac86054000000b0042f43a486c9sm2661625qtm.77.2024.03.16.05.59.58
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Mar 2024 05:59:58 -0700 (PDT)
+Date: Sat, 16 Mar 2024 08:59:57 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	Michal Hocko <mhocko@kernel.org>,
+	Roman Gushchin <roman.gushchin@linux.dev>,
+	Shakeel Butt <shakeel.butt@linux.dev>,
+	Muchun Song <muchun.song@linux.dev>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] mm: memcg: add NULL check to obj_cgroup_put()
+Message-ID: <20240316125957.GA372017@cmpxchg.org>
+References: <20240316015803.2777252-1-yosryahmed@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240316015803.2777252-1-yosryahmed@google.com>
 
-VGhhbmtzIGZvciB5b3VyIGNvbW1lbnRzLiBLaW5kbHkgc2VlIHRoZSBmZWVkYmFjaw0KDQo+IC0t
-LS0tT3JpZ2luYWwgTWVzc2FnZS0tLS0tDQo+IEZyb206IEFtYWRldXN6IFPFgmF3acWEc2tpIDxh
-bWFkZXVzenguc2xhd2luc2tpQGxpbnV4LmludGVsLmNvbT4NCj4gU2VudDogV2VkbmVzZGF5LCBN
-YXJjaCA2LCAyMDI0IDEyOjA1IEFNDQo+IFRvOiBEaW5nLCBTaGVuZ2hhbyA8c2hlbmdoYW8tZGlu
-Z0B0aS5jb20+OyBicm9vbmllQGtlcm5lbC5vcmcNCj4gQ2M6IGFuZHJpeS5zaGV2Y2hlbmtvQGxp
-bnV4LmludGVsLmNvbTsgbGdpcmR3b29kQGdtYWlsLmNvbTsNCj4gcGVyZXhAcGVyZXguY3o7IHBp
-ZXJyZS1sb3Vpcy5ib3NzYXJ0QGxpbnV4LmludGVsLmNvbTsNCj4gMTM5MTYyNzUyMDZAMTM5LmNv
-bTsgYWxzYS1kZXZlbEBhbHNhLXByb2plY3Qub3JnOyBsaW51eC0NCj4ga2VybmVsQHZnZXIua2Vy
-bmVsLm9yZzsgbGlhbS5yLmdpcmR3b29kQGludGVsLmNvbTsgYmFyZC5saWFvQGludGVsLmNvbTsN
-Cj4gbWVuZ2RvbmcubGluQGludGVsLmNvbTsgeXVuZy1jaHVhbi5saWFvQGxpbnV4LmludGVsLmNv
-bTsgTHUsIEtldmluDQo+IDxrZXZpbi1sdUB0aS5jb20+OyB0aXdhaUBzdXNlLmRlOyBzb3llckBp
-cmwuaHU7IEJhb2p1bi5YdUBmcHQuY29tOw0KPiBOYXZhZGEgS2FueWFuYSwgTXVrdW5kIDxuYXZh
-ZGFAdGkuY29tPg0KPiBTdWJqZWN0OiBbRVhURVJOQUxdIFJlOiBbUEFUQ0ggdjExXSBBU29jOiB0
-YXMyNzgzOiBBZGQgdGFzMjc4MyBjb2RlYw0KPiBkcml2ZXINCj4gDQo+IE9uIDMvNS8yMDI0IDI6
-MjYgUE0sIFNoZW5naGFvIERpbmcgd3JvdGU6DQo+ID4gVGhlIHRhczI3ODMgaXMgYSBzbWFydCBh
-dWRpbyBhbXBsaWZpZXIgd2l0aCBpbnRlZ3JhdGVkIE1JUEkgU291bmRXaXJlDQo+ID4gaW50ZXJm
-YWNlIChWZXJzaW9uIDEuMi4xIGNvbXBsaWFudCksIEkyQywgYW5kIEkyUy9URE0gaW50ZXJmYWNl
-cw0KPiA+IGRlc2lnbmVkIGZvciBwb3J0YWJsZSBhcHBsaWNhdGlvbnMuIEFuIG9uLWNoaXAgRFNQ
-IHN1cHBvcnRzIFRleGFzDQo+ID4gSW5zdHJ1bWVudHMgU21hcnRBbXAgc3BlYWtlciBwcm90ZWN0
-aW9uIGFsZ29yaXRobS4gVGhlIGludGVncmF0ZWQNCj4gPiBzcGVha2VyIHZvbHRhZ2UgYW5kIGN1
-cnJlbnQgc2Vuc2UgcHJvdmlkZXMgZm9yIHJlYWwtdGltZSBtb25pdG9yaW5nIG9mDQo+IGxvdWRz
-cGVha2Vycy4NCj4gPg0KPiA+IFRoZSBBU29DIGNvbXBvbmVudCBwcm92aWRlcyB0aGUgbWFqb3Jp
-dHkgb2YgdGhlIGZ1bmN0aW9uYWxpdHkgb2YgdGhlDQo+ID4gZGV2aWNlLCBhbGwgdGhlIGF1ZGlv
-IGZ1bmN0aW9ucy4NCj4gPg0KPiA+IFNpZ25lZC1vZmYtYnk6IFNoZW5naGFvIERpbmcgPHNoZW5n
-aGFvLWRpbmdAdGkuY29tPg0KPiA+DQo+ID4gLS0tDQo+IA0KPiAuLi4NCi4uLg0KPiA+ICtzdHJ1
-Y3QgdGFzZGV2aWNlX3ByaXYgew0KPiA+ICsJc3RydWN0IHNuZF9zb2NfY29tcG9uZW50ICpjb21w
-b25lbnQ7DQo+IA0KPiBBcGFydCBmcm9tIGJlaW5nIGFzc2lnbmVkIHRoaXMgZmllbGQgc2VlbXMg
-dG8gYmUgdW51c2VkLg0KVGhpcyBmaWVsZCBjYW4gaGVscCB0byBnZXQgdGhlIHBvaW50IHRvICJz
-dHJ1Y3QgdGFzZGV2aWNlX3ByaXYiIGluIHRhc2RldmljZV9zZHdfcGNtX2h3X2ZyZWUsIA0KdGFz
-ZGV2aWNlX3Nkd19od19wYXJhbXMsIHRhc2RldmljZV9tdXRlDQoNCj4gDQo+ID4gKwlzdHJ1Y3Qg
-c2R3X3NsYXZlICpzZHdfcGVyaXBoZXJhbDsNCj4gPiArCWVudW0gc2R3X3NsYXZlX3N0YXR1cyBz
-dGF0dXM7DQo+IA0KPiBUaGlzIG9uZSBzZWVtcyB0byBiZSBvbmx5IHVzZWQgaW4gdGFzZGV2aWNl
-X3VwZGF0ZV9zdGF0dXMoKT8gRG9lcyBpdCByZWFsbHkNCj4gbmVlZCB0byBiZSBrZXB0IGluIHN0
-cnVjdD8NCj4gDQo+ID4gKwlzdHJ1Y3Qgc2R3X2J1c19wYXJhbXMgcGFyYW1zOw0KPiANCj4gVW51
-c2VkPw0KPiANCj4gPiArCXN0cnVjdCByZWdtYXAgKnJlZ21hcDsNCj4gPiArCXN0cnVjdCBkZXZp
-Y2UgKmRldjsNCj4gPiArCXVuc2lnbmVkIGNoYXIgZHNwZndfYmluYXJ5bmFtZVtUQVMyNzgzX0RT
-UEZXX0ZJTEVOQU1FX0xFTl07DQo+IA0KPiBUaGlzIG9uZSBhbHNvIHNlZW1zIHdlaXJkLCBpdCBp
-cyBtYWlubHkgbmVlZGVkIHdoZW4gbG9hZGluZyBGVyBhbmQgY291bGQgYmUNCj4gbG9jYWwgdG8g
-dGFzZGV2aWNlX2NvbXBfcHJvYmUoKSwgYWx0aG91Z2ggdGhlcmUgaXMgb25lIGRldl93YXJuIHdo
-aWNoIHVzZXMNCj4gaXQgb3V0c2lkZSBvZiBpdCwgYnV0IHByZXR0eSBzdXJlIGl0IGNvdWxkIGJl
-IGRyb3BwZWQuDQo+IA0KPiA+ICsJdW5zaWduZWQgY2hhciBkZXZfbmFtZVszMl07DQo+IA0KPiBB
-bm90aGVyIHVudXNlZCBmaWVsZC4NCj4gDQo+ID4gKwl1bnNpZ25lZCBpbnQgY2hpcF9pZDsNCj4g
-DQo+IEFub3RoZXIgb25lIHRoYXQgb25seSBzZWVtcyB0byBiZSBhc3NpZ25lZC4NCj4gDQo+ID4g
-Kwlib29sIHBzdHJlYW07DQo+ID4gKwlib29sIGh3X2luaXQ7DQo+ID4gKwlib29sIGZpcnN0X2h3
-X2luaXQ7DQo+ID4gK307DQo+ID4gKw0KPiA+ICsjZW5kaWYgLypfX1RBUzI3ODNfSF9fICovDQoN
-Cg==
+On Sat, Mar 16, 2024 at 01:58:03AM +0000, Yosry Ahmed wrote:
+> 9 out of 16 callers perform a NULL check before calling
+> obj_cgroup_put(). Move the NULL check in the function, similar to
+> mem_cgroup_put(). The unlikely() NULL check in current_objcg_update()
+> was left alone to avoid dropping the unlikey() annotation as this a fast
+> path.
+> 
+> Signed-off-by: Yosry Ahmed <yosryahmed@google.com>
+
+Acked-by: Johannes Weiner <hannes@cmpxchg.org>
 
