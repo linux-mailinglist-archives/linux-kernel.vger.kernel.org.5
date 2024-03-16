@@ -1,124 +1,127 @@
-Return-Path: <linux-kernel+bounces-105215-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105216-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDA4187DA9C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:46:37 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 037BF87DAA0
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 16:50:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1EDBBB21C0D
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:46:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AF466282876
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 15:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D66661B96E;
-	Sat, 16 Mar 2024 15:46:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D2D41B977;
+	Sat, 16 Mar 2024 15:50:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="UaMF2i1O"
-Received: from mail-pj1-f53.google.com (mail-pj1-f53.google.com [209.85.216.53])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CK26k/yY"
+Received: from mail-oa1-f54.google.com (mail-oa1-f54.google.com [209.85.160.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3877E4C9F
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 15:46:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BDD4C9F;
+	Sat, 16 Mar 2024 15:49:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710603986; cv=none; b=DjkGTwukiTPs3wa0VH6N469pDFBT1/S/CL8xattlyqy5sKK1p7dMhD6rHcXs3HSs5rQq3FntxH5eO5FVTL3852iFa0r/sNzZUrM/i45+Z7vVz2S2sNn5OAdzp140KACfWG06PDyU/baycIkmAUPbDh9FneaCW14BKmwxWMik+oY=
+	t=1710604201; cv=none; b=ZlZMrx5wbUJ6uHFNBjmMt3Dzq4FirA/CQCkOOJbRW74Wlve1piRd6DMl3lZu9CAKEgjpOhr2xAdJ/WauMh28BJnDzfSwXXV2St/PZzf221lLnpVnKF9nA9HSoaHzzCtFXBD10on3d7UyKvzBEM+CHVHxFN5stHHQUp/e2nwvPmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710603986; c=relaxed/simple;
-	bh=2ByWo2corbpanCdZc6olc6MTEjRFTonpZg23vADVL84=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=ZRt35balOSHUT5LYhRM/rs4p6Mvx07RRzp7rdqgUY0GrnLgNe0FuHXZkRW0BVGHJQkjFOxVs1QQRxkWNz5Pkx3ylkeMIooyyUW13QjFQlamVNiP1mKN1uVOtSUmaBTsrJQvg/g0tKXrWLQSOQ/YJH/A619yb96mWrkn9pmcZEfY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=UaMF2i1O; arc=none smtp.client-ip=209.85.216.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f53.google.com with SMTP id 98e67ed59e1d1-29f66c9ffa5so104486a91.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 08:46:23 -0700 (PDT)
+	s=arc-20240116; t=1710604201; c=relaxed/simple;
+	bh=NUPIU7o9/2aqlselg3L51xw7oS8oy1AVYT1rykyPKdY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YJICIujMjw4Az/ENKeTb9K7HTSa6G4VEGbAqlq9sKnAbo6o+wBNGR8jKsMrk8Mh44Yvvr7alvwn3J+U4nnfZTnoZJfTGvzs7XoCWMMi6WXwxU8/AJlMZTraFTOES91plGIrJ4jYvpAKlUNdznlAousENL9IAnrAQIeRJiIl2c8M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CK26k/yY; arc=none smtp.client-ip=209.85.160.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f54.google.com with SMTP id 586e51a60fabf-221ce6cac3aso1761746fac.2;
+        Sat, 16 Mar 2024 08:49:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710603982; x=1711208782; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=l1GX3XIfnZMHp3GXaXprqRG733TAKKEo6zwMZIVGMWI=;
-        b=UaMF2i1OogRmHaxO/GIIBpNqd2e9LwgNRC/rZSYg/9f97htIdjvd4qMQ2JKLgYcAJd
-         fQ6OmotpU47dnbOnhWdsJPScDLl4pghSj3UVSpfNSx22FtWYL3Q2eHx5bLIBx4s7jYIA
-         /mkdFFPXKzgSgUv4lT6hFrc69kdrFvH6vo/dvvJJCz3N8T+NhDMYUaCXtHM7vmwHvyTI
-         hRQO7BE/QwDKVG0J+eyeY+oGB8p5GpmuAOan3pio0njmhjYkoYQN7ARssjfDuEsYj/kq
-         mX0xUZFUN7pwrKmtyQgDOCb2+JTPDLbAD5qqEPOmcBpTl71Pj6se+gXr9vet1yiw2t/W
-         T9lA==
+        d=gmail.com; s=20230601; t=1710604199; x=1711208999; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Cck3p2bHkYZmQVnYplpxpScYPbxksZ8gwr6LYvSKs4g=;
+        b=CK26k/yYR5rVp5oBxC4QDE4EMOpa6uEH80JFe3YZ/HZk3IFt+Wj2tAk/40iaUFllRt
+         V57ZLZ6iOsQwLqbz0CSbdzDCj39fMbjMFHFa8C4BnUOiYAVuZVZlf+49REhnxk8rPfm0
+         b7TYsnFlcG7+5lIZcdb5Bz1siPb2Eri5oSPr/tHkIcBgHlLhQRccuiXaNAAzxGSyWWtC
+         Ls1aFsLHOoX4YjRSfOFbU4URmXQBwWKXpm2pEONEyT3a9no9UuvjKIwXxfnInmiNVKIK
+         GgALD7I9c6uuvcKpLgegw0cYSt4VX4U1e+1NxfTnAT2vyiLvB5gq6uDTFfBOOXCck7BA
+         htFQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710603982; x=1711208782;
-        h=content-transfer-encoding:in-reply-to:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=l1GX3XIfnZMHp3GXaXprqRG733TAKKEo6zwMZIVGMWI=;
-        b=E5G7vb4u8IpwPTRiD+mUKz+Mhksf3bKUBShpv0DE8NFsGdenKjT8j4YLKPqXO3Trbh
-         o5IGlNoDbzqyziJKhHtC38OyzZP9HI+4l/G4qrT3mUUy3TDPDbpQgDWgi8qoPbxMM/Zf
-         Fe7QZpERf4Eqrv3JdFSqbuYSCN9GyqyN46JXIcPeuuk6h6jI8MNxjCpHQAgYO7Wm24Hb
-         GPA34C5pRDzue6634kUJB07c0rKqIpIzVkNEddsKWF0HZHiIpdEerzpm7wat/zLy0PT0
-         sGksnLYioujMVCIZ+BqGiHwnipJo2JDy/hs00JKTzqIEQH3EC/JkRqW/rr+0pBMw6sNJ
-         fpdQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUQP3ujZ+TiOcZC8j32sPAe2NhSkX14CL85QgOwIF8W93wRW3MVoHue/5U/KfCZBA55oiFQF98gqa1xcZPl9Q+3XDFXIP7RkTRb14rg
-X-Gm-Message-State: AOJu0YwQY3FjA9l/yQZtnODqyGdiqYqFwTs7gwbd4VB9bN+dTlsgUwzB
-	FzlPS9Wz7ri/aHe5oUlMvGXbR9cr1XfaGsvTmErlWgToX50QM2XBmEFHbYuj8Qs=
-X-Google-Smtp-Source: AGHT+IGBgfJzKl16vn3WodT4a3V5+e4fWUcA5KI0QVDIB4IitGGDkgQJEOeInxPG2sNQXaCnMHgpxw==
-X-Received: by 2002:a17:90a:9f87:b0:29b:ff24:4426 with SMTP id o7-20020a17090a9f8700b0029bff244426mr7024721pjp.2.1710603982514;
-        Sat, 16 Mar 2024 08:46:22 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id x1-20020a631701000000b005e83b64021fsm652474pgl.25.2024.03.16.08.46.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Mar 2024 08:46:21 -0700 (PDT)
-Message-ID: <4febd8ae-8d25-41b1-81cd-da79002b09d5@kernel.dk>
-Date: Sat, 16 Mar 2024 09:46:20 -0600
+        d=1e100.net; s=20230601; t=1710604199; x=1711208999;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Cck3p2bHkYZmQVnYplpxpScYPbxksZ8gwr6LYvSKs4g=;
+        b=GXyES0BD9J3w2C7RfvxeY1+5t52jOoMaNcnAjzG/XLII9xukcHrVImCPILcksHkeyG
+         /L6iUYYcCrKi73Ko33AdfNUjD1kaFQKxbfaFap6QauL63AZJw+3RBMyXUIokmGi4uOer
+         H6GMLJcpTeRNcwOuzV6ZbaoyBuX3+CGtzDSycnFzW2Ccpno0herXu8rOmY6LPdBT4PGn
+         A1rnshhkXraqNzmaUe6QsWLFR246kF1TJxI+a8yv18IJdAfItWP15Ts8VEo/BI4UwIIe
+         /D1c5nhVsAnCXQx2n3K24pd3OtpwGb958gsWRzfllHdVj/ALp2C5YHRepyemn/stt9OR
+         Rm4w==
+X-Forwarded-Encrypted: i=1; AJvYcCXhFg4IxeAQcQfEH7pOHESewQ4IJexLISvLp6LRe3N90CmRIxZv5kENjTvtlwBy+U0k6FskCuYwUw8xlvaCX4rcYaQHlIEKPpiAd1AW/ZdkJNMn8iRkY7Isgp99dE4uHmpgb+l2sWXDsFaTDCFenTaqnJ8sYgMhCvlTpmCCZaYxAaTI9To=
+X-Gm-Message-State: AOJu0YymtYwvY7+eu9iyZ7l4TgoNR2eYJAv7sBT0Ky+HvW6pyatQt4sR
+	dpdUNEuOdv1xXEY8GdQyyMYakc8spTSDEpEiSGcqWAyo1O32ESe3Ybj3/1VdMCyrKYRTUXxjyDh
+	jgDh00Ng4iTn1B07riQSJm0u3nmadh0qb
+X-Google-Smtp-Source: AGHT+IGpuhlnnJG0YoQhTHmJ9vL6fGs8Zhjj2Yr1tRmgqae2WvFGnduJnmBncXhg+nKSqKXwsiveXkjy4WkuRSKmNuo=
+X-Received: by 2002:a05:6870:e0c6:b0:220:8b6c:80a5 with SMTP id
+ a6-20020a056870e0c600b002208b6c80a5mr9500717oab.24.1710604199037; Sat, 16 Mar
+ 2024 08:49:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_sendrecv_fail
-Content-Language: en-US
-To: Pavel Begunkov <asml.silence@gmail.com>,
- syzbot <syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com>,
- io-uring@vger.kernel.org, linux-kernel@vger.kernel.org,
- syzkaller-bugs@googlegroups.com
-References: <0000000000003e6b710613c738d4@google.com>
- <fab71bfa-7657-4379-8c79-1f92766a7b17@gmail.com>
-From: Jens Axboe <axboe@kernel.dk>
-In-Reply-To: <fab71bfa-7657-4379-8c79-1f92766a7b17@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
+In-Reply-To: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
+From: Sergio Paracuellos <sergio.paracuellos@gmail.com>
+Date: Sat, 16 Mar 2024 16:49:48 +0100
+Message-ID: <CAMhs-H9ZO-sitsrASuvsEd+ddwVyHH35gj7yAABTqFNfOCGYYw@mail.gmail.com>
+Subject: Re: [PATCH 00/14] mips: dts: ralink: mt7621: improve DTS style
+To: Justin Swartz <justin.swartz@risingedge.co.za>
+Cc: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Matthias Brugger <matthias.bgg@gmail.com>, 
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>, linux-mips@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/16/24 9:28 AM, Pavel Begunkov wrote:
-> On 3/16/24 13:37, syzbot wrote:
->> Hello,
->>
->> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
->> KMSAN: uninit-value in io_sendrecv_fail
-> 
-> diff --git a/io_uring/io_uring.c b/io_uring/io_uring.c
-> index 3ae4bb988906..826989e2f601 100644
-> --- a/io_uring/io_uring.c
-> +++ b/io_uring/io_uring.c
-> @@ -1063,6 +1063,7 @@ static void io_preinit_req(struct io_kiocb *req, struct io_ring_ctx *ctx)
->      /* not necessary, but safer to zero */
->      memset(&req->cqe, 0, sizeof(req->cqe));
->      memset(&req->big_cqe, 0, sizeof(req->big_cqe));
-> +    memset(&req->cmd, 0, sizeof(req->cmd));
->  }
-> 
-> What's the point of testing it? You said it yourself, it hides the
-> problem under the carpet but doesn't solve it. Do some valid IO first,
-> then send that failed request. If done_io is aliased with with some
-> interesting field of a previously completed request you're royally
-> screwed, but syz would be just happy about it.
+On Sat, Mar 16, 2024 at 5:54=E2=80=AFAM Justin Swartz
+<justin.swartz@risingedge.co.za> wrote:
+>
+> This set of patches was created with the intention of cleaning up
+> arch/mips/boot/dts/ralink/mt7621.dtsi so that it is aligned with
+> the Devicetree Sources (DTS) Coding Style [1] [2] guide.
+>
+> [1] Documentation/devicetree/bindings/dts-coding-style.rst
+>
+> [2] https://docs.kernel.org/devicetree/bindings/dts-coding-style.html
+>
+> Justin Swartz (14):
+>   mips: dts: ralink: mt7621: reorder cpu node attributes
+>   mips: dts: ralink: mt7621: reorder cpuintc node attributes
+>   mips: dts: ralink: mt7621: reorder mmc regulator attributes
+>   mips: dts: ralink: mt7621: reorder sysc node attributes
+>   mips: dts: ralink: mt7621: reorder gpio node attributes
+>   mips: dts: ralink: mt7621: reorder i2c node attributes
+>   mips: dts: ralink: mt7621: reorder spi0 node attributes
+>   mips: dts: ralink: mt7621: move pinctrl and sort its children
+>   mips: dts: ralink: mt7621: reorder mmc node attributes
+>   mips: dts: ralink: mt7621: reorder gic node attributes
+>   mips: dts: ralink: mt7621: reorder ethernet node attributes and kids
+>   mips: dts: ralink: mt7621: reorder pcie node attributes and children
+>   mips: dts: ralink: mt7621: reorder pci?_phy attributes
+>   mips: dts: ralink: mt7621: reorder the attributes of the root node
+>
+>  arch/mips/boot/dts/ralink/mt7621.dtsi | 430 ++++++++++++++------------
+>  1 file changed, 239 insertions(+), 191 deletions(-)
 
-Yeah I agree, as per my email. I think we're better off just doing the
-EARLY_FAIL in general, and forget about the specific case. I just wanted
-to make sure I wasn't off in the weeds, since I can't trigger this.
-Could probably write a specific test case for it, but the syzbot
-reproducer didn't for me.
+For the whole series:
+     Reviewed-by: Sergio Paracuellos <sergio.paracuellos@gmail.com>
 
--- 
-Jens Axboe
+Thanks for doing this.
 
+Best regards,
+    Sergio Paracuellos
 
