@@ -1,215 +1,136 @@
-Return-Path: <linux-kernel+bounces-105278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C725887DB4C
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:18:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF7F087DB50
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:33:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9A87FB21672
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:18:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 071C828176F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:33:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BEEA11BC43;
-	Sat, 16 Mar 2024 19:18:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ED811BDD0;
+	Sat, 16 Mar 2024 19:33:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="PznjpXGb"
-Received: from mail-qk1-f176.google.com (mail-qk1-f176.google.com [209.85.222.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MXy1ljqs"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08D8B168BE
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 19:18:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D49F91843;
+	Sat, 16 Mar 2024 19:33:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710616717; cv=none; b=LHi4mdnd5vYdC3mKZu7vyKnde2HUBdw5mOHROZy6/4D5gpMSk0MHR49MJouwM48ZuhyYM1HAHd2mvZ4OTPQoLlULT9MZepJJm5mXSA5zsVvhlgVzrJ2Jvfl2n1BM+5peF3XHplL6kexuU2t5L51CYpsS4U78xXjownxcE/+Vo2s=
+	t=1710617619; cv=none; b=gi1Hu8uWx/aaTbKPxH9cTA8A8kPxAzdAklzo+LnMaAZuTW9e3mwetbs5a2rotHxo/JHZfz7m+6TWwP9SMVOJXzQ7QwwW+ouhpebRaJtTG/8veEb+bCo9zOOHuTHWgmj8HpB5h/J0+hs2YcG8T2tAracSf9VNhKLiwGWSCV0Qz0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710616717; c=relaxed/simple;
-	bh=0/HEkRLMF8PQalDt3Ea2N38GuL3TFIgweg+xWLCZBW8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=DApqiq6XodI2s9wuSPYkprSTDpVk9VEnoUxReRaFws5CRnM2nrxZmhw6WPto8ImSHO/oT4kQvjKrUbyz0MpIwvtGFkYtZz0nzHwr+dwrxUwUShRnR5E50qW+KJtJQhHUlFfJ0F6v6qoEYhg3RpPVy/UE5o/SoFSVXaa2GwF3FzM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=PznjpXGb; arc=none smtp.client-ip=209.85.222.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qk1-f176.google.com with SMTP id af79cd13be357-783045e88a6so227545285a.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 12:18:35 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710616715; x=1711221515; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OHULfTfAKa7+vagdsuVNuBp2O5vjXv7Mii+l4GG9MeA=;
-        b=PznjpXGbi56uPMMnFw/AMZ6KB0QMKFsmhimL4SAnlLORb6LBr6WRbpnfi0p11Hvz2V
-         5BpIZ0kqYTliyl2UuGpddZGsnQYEb8uvejuCIcGIUWRK+y9k2EGGgmbxqcEFyONBIJob
-         oIMPGf0bj0Wx9KFxMXHpCp8dS9a5RJMd4+DoQXDsJqYHZ1oqiUjibZVxXd54VHwwM0HJ
-         V5WchMLGrlLi7/OhiUqJVHug0zb04h1k+knjzW3dn84kuNK1z21+thMtGs4pKRhOE8rq
-         7gDwdUPq/xzO48ncpbWD1/tKSKVFU+1i7w5+zsUoCkH+UaScrv4QHOir/ApX9GUnIjC3
-         c7bA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710616715; x=1711221515;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OHULfTfAKa7+vagdsuVNuBp2O5vjXv7Mii+l4GG9MeA=;
-        b=RWJXntj3zoizwtIDkVmfmzuuKPrshuW1BSrLj+W+BPTv1E4SBQ7ASlqNXM0h/BmveM
-         WlalxJV+Hb2iOzRN7NKzmSRuGXDU2KbdxD3E0owDQ6/dhPgXyxB3aDBgV5+1kT3Eb8Q+
-         50jZuubquSRIgqyGbsQsJQlUqqv4tymW3+b3YsrmuH+ct6r9vdfsrBH6BiHbwOQu+WBC
-         znPku4YayervkzrXo2eGod/+fGa4aGstfZaYQr8/0dGIbDdd7JyjxexVYh6rtH4UYq1O
-         hkHUcWsLvfCqSkpJvWTWYvJqSZddrSu2lptSa1hWffh66F0tVgogU08noWp/cwhFm1SM
-         ogOA==
-X-Forwarded-Encrypted: i=1; AJvYcCXZWSSoSC4k6wC+0ST0rTTkhfooeiSHYASZAL5Hv7mNpNQW5rizns54TkkIMUJdgTLSyOfqgmdk0p6G8wKuUdM0jhFIDazQ33dRUFhs
-X-Gm-Message-State: AOJu0YydDlOQUgLl0O43ckLlMEKiY7xV2xF6z7T0Fa/ZgA7QariDlthG
-	thR8QCMYLW7WCBXCeZRMXOIoTXUCJs1sAtEm3ujjkU64uWcld3KFI5JJMykbQIbmd/YEUal04ji
-	JkKrdGGKRqIdQTJIUtkFQzSiB/u5Q5HT/CPAvsg==
-X-Google-Smtp-Source: AGHT+IGlePJmBiz3YZoHmDuLZOXVxdtk19dG95lfRudzm9Y3ulwqFfldVvMJd4H1NSzuACxuC68Uzuh/qPUxNqxmbqM=
-X-Received: by 2002:a05:622a:344:b0:42e:fa7c:291c with SMTP id
- r4-20020a05622a034400b0042efa7c291cmr8844027qtw.13.1710616714891; Sat, 16 Mar
- 2024 12:18:34 -0700 (PDT)
+	s=arc-20240116; t=1710617619; c=relaxed/simple;
+	bh=+a6ZtiXkLjE2iSQzJIUrXlMm0H0+j0NMZDv9NxvUOIw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OrYrIuZfBh3Iz00QIQZl+QC1V7Pl5xN1OReaFGXAx8/oMk23kbdqHuT6RlPFDGdIGhL2owtZsSKe35hCc2secfaR+KsRSXT54oQfs+b4Q5vHj6dnoB2UT2ZXuW4rj6Ug7t/pFDpQ9Ii21XY2fpzeDuVcXPzTvF1V1v+7IKEs0Os=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MXy1ljqs; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7E47DC433C7;
+	Sat, 16 Mar 2024 19:33:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710617619;
+	bh=+a6ZtiXkLjE2iSQzJIUrXlMm0H0+j0NMZDv9NxvUOIw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=MXy1ljqs56Ki+WHS2FrQdgSbVY/uvOlP0g88yFlYx4vW/iB/U2vf6ravxAvhTrsum
+	 j1r9nEEL6Ku9hYcPJ+9lau7jo7o9tUBlsYF+fto37itA59+PZQ7gic4Mmg3OVg1pKo
+	 /mQvqHZ4PNz+D0M/LirRdcM1a5QusmBUv2epOXi5NG1jPSxpC77KX2BtCXYz1VMn/o
+	 CDWKehnjNUvPReTtWCl8yHpjYsRxVZl15QAfqug7JagdFwJ6bB7Lu4BFpqJaCwq7RP
+	 x5zx7U5+WAFF1i7050grIl155fTo7BJXc//rsz7dyqgtg4D1g/n6FkA8BCoXtZuwB2
+	 xugDvt+0xaApA==
+Date: Sat, 16 Mar 2024 20:33:36 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Oliver Crumrine <ozlinuxc@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
+Message-ID: <ZfX0EBsVl4a5FQ_L@debian>
+References: <hxiq3upwxs3j5mc5arwlx4jriqm7fq5z54wroc4h4kqcq4gq7m@uwnoq2vnkhup>
+ <ZeXzuWVmC9AnsECt@debian>
+ <7ubz52rfdl2i76sotvd3s4thv6jvbfao6zct3sywqus2owlvkx@wpbeqqdvipo4>
+ <ZehMWQ0LkemsTHAC@debian>
+ <CAK1VsR0XZMgUW8qMQMcDPohD8-+OZsgW68sZegLbVy6cdoWucQ@mail.gmail.com>
+ <ZehrtwSDQV-X7BXV@debian>
+ <CAK1VsR3MsyphK+=rA7XcEigiSd6J_-QsVW+8hH1fU9xmRY3nGQ@mail.gmail.com>
+ <CAK1VsR2zaCT3Bs1cwCEfLhAPXjwNk1byzNq5y32C736=hxqjoA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
- <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
- <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
- <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com>
-In-Reply-To: <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Sat, 16 Mar 2024 15:17:57 -0400
-Message-ID: <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: "H. Peter Anvin" <hpa@zytor.com>
-Cc: Matthew Wilcox <willy@infradead.org>, Kent Overstreet <kent.overstreet@linux.dev>, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, akpm@linux-foundation.org, 
-	x86@kernel.org, bp@alien8.de, brauner@kernel.org, bristot@redhat.com, 
-	bsegall@google.com, dave.hansen@linux.intel.com, dianders@chromium.org, 
-	dietmar.eggemann@arm.com, eric.devolder@oracle.com, hca@linux.ibm.com, 
-	hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, 
-	jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com, 
-	kinseyho@google.com, kirill.shutemov@linux.intel.com, lstoakes@gmail.com, 
-	luto@kernel.org, mgorman@suse.de, mic@digikod.net, 
-	michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
-	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, 
-	tglx@linutronix.de, urezki@gmail.com, vincent.guittot@linaro.org, 
-	vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="Z0iRHz2zH4EOqck3"
+Content-Disposition: inline
+In-Reply-To: <CAK1VsR2zaCT3Bs1cwCEfLhAPXjwNk1byzNq5y32C736=hxqjoA@mail.gmail.com>
+
+
+--Z0iRHz2zH4EOqck3
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
+Date: Sat, 16 Mar 2024 20:33:36 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Oliver Crumrine <ozlinuxc@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
 
-On Thu, Mar 14, 2024 at 11:40=E2=80=AFPM H. Peter Anvin <hpa@zytor.com> wro=
-te:
->
-> On March 14, 2024 8:13:56 PM PDT, Pasha Tatashin <pasha.tatashin@soleen.c=
-om> wrote:
-> >On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <willy@infradead.=
-org> wrote:
-> >>
-> >> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet wrote:
-> >> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox wrote:
-> >> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anvin wrote:
-> >> > > > Second, non-dynamic kernel memory is one of the core design deci=
-sions in
-> >> > > > Linux from early on. This means there are lot of deeply embedded=
- assumptions
-> >> > > > which would have to be untangled.
-> >> > >
-> >> > > I think there are other ways of getting the benefit that Pasha is =
-seeking
-> >> > > without moving to dynamically allocated kernel memory.  One icky t=
-hing
-> >> > > that XFS does is punt work over to a kernel thread in order to use=
- more
-> >> > > stack!  That breaks a number of things including lockdep (because =
-the
-> >> > > kernel thread doesn't own the lock, the thread waiting for the ker=
-nel
-> >> > > thread owns the lock).
-> >> > >
-> >> > > If we had segmented stacks, XFS could say "I need at least 6kB of =
-stack",
-> >> > > and if less than that was available, we could allocate a temporary
-> >> > > stack and switch to it.  I suspect Google would also be able to us=
-e this
-> >> > > API for their rare cases when they need more than 8kB of kernel st=
-ack.
-> >> > > Who knows, we might all be able to use such a thing.
-> >> > >
-> >> > > I'd been thinking about this from the point of view of allocating =
-more
-> >> > > stack elsewhere in kernel space, but combining what Pasha has done=
- here
-> >> > > with this idea might lead to a hybrid approach that works better; =
-allocate
-> >> > > 32kB of vmap space per kernel thread, put 12kB of memory at the to=
-p of it,
-> >> > > rely on people using this "I need more stack" API correctly, and f=
-ree the
-> >> > > excess pages on return to userspace.  No complicated "switch stack=
-s" API
-> >> > > needed, just an "ensure we have at least N bytes of stack remainin=
-g" API.
-> >
-> >I like this approach! I think we could also consider having permanent
-> >big stacks for some kernel only threads like kvm-vcpu. A cooperative
-> >stack increase framework could work well and wouldn't negatively
-> >impact the performance of context switching. However, thorough
-> >analysis would be necessary to proactively identify potential stack
-> >overflow situations.
-> >
-> >> > Why would we need an "I need more stack" API? Pasha's approach seems
-> >> > like everything we need for what you're talking about.
-> >>
-> >> Because double faults are hard, possibly impossible, and the FRED appr=
-oach
-> >> Peter described has extra overhead?  This was all described up-thread.
-> >
-> >Handling faults in #DF is possible. It requires code inspection to
-> >handle race conditions such as what was shown by tglx. However, as
-> >Andy pointed out, this is not supported by SDM as it is an abort
-> >context (yet we return from it because of ESPFIX64, so return is
-> >possible).
-> >
-> >My question, however, if we ignore memory savings and only consider
-> >reliability aspect of this feature.  What is better unconditionally
-> >crashing the machine because a guard page was reached, or printing a
-> >huge warning with a backtracing information about the offending stack,
-> >handling the fault, and survive? I know that historically Linus
-> >preferred WARN() to BUG() [1]. But, this is a somewhat different
-> >scenario compared to simple BUG vs WARN.
-> >
-> >Pasha
-> >
-> >[1] https://lore.kernel.org/all/Pine.LNX.4.44.0209091832160.1714-100000@=
-home.transmeta.com
-> >
->
-> The real issue with using #DF is that if the event that caused it was asy=
-nchronous, you could lose the event.
+Hi Oliver,
 
-Got it. So, using a #DF handler for stack page faults isn't feasible.
-I suppose the only way for this to work would be to use a dedicated
-Interrupt Stack Table (IST) entry for page faults (#PF), but I suspect
-that might introduce other complications.
+On Wed, Mar 13, 2024 at 02:27:17PM -0400, Oliver Crumrine wrote:
+> > Hi Alex,
+> > I apologize for your repeated troubles with my test program.
+> > I have attached a video of myself using it in the method that I
+> > described to you. (I emailed you off-list as to avoid sending a 12
+> > MB video to the whole list)
+> >
+> > If you are using it in the same way that works for me, I don't know
+> > what the problem is. If I could've been clearer in my instructions, let
+> > me know for the future.
+> >
+> > Thanks,
+> > Oliver
+>=20
+> Hi Alex,
+> Were you able to make any progress whatsoever with this test program?
 
-Expanding on Mathew's idea of an interface for dynamic kernel stack
-sizes, here's what I'm thinking:
+I'm sorry, but I haven't been able to reproduce the behavior.  The test
+programs have several problems which I reported in previous mails.
+Maybe there's something that makes it unstable and in your system
+behaves differently?  Please clean up those examples, and try to run
+them in a different system, and maybe then I can reproduce it.
 
-- Kernel Threads: Create all kernel threads with a fully populated
-THREAD_SIZE stack.  (i.e. 16K)
-- User Threads: Create all user threads with THREAD_SIZE kernel stack
-but only the top page mapped. (i.e. 4K)
-- In enter_from_user_mode(): Expand the thread stack to 16K by mapping
-three additional pages from the per-CPU stack cache. This function is
-called early in kernel entry points.
-- exit_to_user_mode(): Unmap the extra three pages and return them to
-the per-CPU cache. This function is called late in the kernel exit
-path.
+Have a lovely day!
+Alex
 
-Both of the above hooks are called with IRQ disabled on all kernel
-entries whether through interrupts and syscalls, and they are called
-early/late enough that 4K is enough to handle the rest of entry/exit.
 
-Pasha
+$ uname -a
+Linux debian 6.8.0-rc7-alx-dirty #3 SMP PREEMPT_DYNAMIC Mon Mar  4 15:24:33=
+ CET 2024 x86_64 GNU/Linux
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--Z0iRHz2zH4EOqck3
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmX19BAACgkQnowa+77/
+2zJsYxAAirFbK0lul+k7Z17yej4u7Wuwk9hdugxBaxS9iesoRQndvaFZxo+HIBZZ
+Ix1hX3zG74ugffHQoQJLCq8kNaiMD8BtWIjmDFDyOT2vZWb/odUzkK6QnYeKZPUq
+JvGrvJQ6D6hVwFAWbHjwXY5FYYRpk2p8yOoguyHm/0RWAP3Gb6Qru9bM5xFvwtX7
+F9joYKptFR1/lIlLqTMo53GjQpvmsbLHZIV6nzyHGjfUTdggzrhvYeA4xAGtz0/q
+1gmklRadCPUQSspPIw+o/1z34GjDRyDZ8veidtEMdN3GSKYe0zx8i6VVP2HTaHjC
+y3VMbWKxY2fN6T59X51uQG4rupLRrD2HKgyrxgOY9aV0mZwJGj2nEkWyCbZLNIz2
+J7KToiutW/rfa8qY7k+0j/wOlKzHTnbAwowJbR5LPeKSpfcqXbwbNNkgRllV7rCe
+LWuNS1aWbJe9b5hXGGV4F0as4agDdVkLntTMomHiUCPbgntgOhbsCmaJhkXeM4UY
+f7TQLQTuqmbeaDMdNkbDzQEVcBl/1VG6qNBIRkQ9sC8C6YjkwkMNQhvgCss+IM4+
+k1BCGNrtnwumNPS/zewo5n13XrwE2ODG+jQ1+aw4njO+6S8mb6vUUtQEmf50+p1W
+kPZFxTRf73MDQc3ZGmrFtSN0U6rKSwBIu9JpCtO9F0Trbmcsong=
+=U/eC
+-----END PGP SIGNATURE-----
+
+--Z0iRHz2zH4EOqck3--
 
