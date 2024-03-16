@@ -1,174 +1,234 @@
-Return-Path: <linux-kernel+bounces-105276-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105277-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA34087DB47
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:01:11 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D6C887DB49
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 20:06:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7389BB21799
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:01:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BCC1B217F8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:06:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E9FB1BF2B;
-	Sat, 16 Mar 2024 19:00:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488921BC4E;
+	Sat, 16 Mar 2024 19:06:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b="wevPgso2"
-Received: from omta34.uswest2.a.cloudfilter.net (omta34.uswest2.a.cloudfilter.net [35.89.44.33])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="L5e0WuKc";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="OLenZOQ8"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D48414F7F
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 19:00:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=35.89.44.33
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07CDB1B969;
+	Sat, 16 Mar 2024 19:06:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710615657; cv=none; b=FirGBN0PqJ9i7pKxg9ITOBjcIv0RH6/sWNowtb9mJWinYb5mBe0aMyL1PYnmXs4gMPJQsiSzPIW3PdZ1itFxemXqhIOPZdVXe419PKo5EuGH8bipSdsJQ7QMeFQxCrORBHbB9W2EbOFVY9LyLC0B9C12XgTSoeKavfeDrRSPYJ8=
+	t=1710615982; cv=none; b=BGjsH3JwLQRkxy6+df6n/teJXwtl5GX8Jk5N5SeSb5+iYHgTswPyONHnaPc38dZj+5AkhVHBlCFLyQwVabdmnQo/Bg6s3S0vFzk4y0VT6cvnYoMN2BfJQudjbfVVcP2FMxwv5Q5Cymzt1Pv83Eou3EKGuagOGh4WXBVRpka7m4c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710615657; c=relaxed/simple;
-	bh=UaBIRXmICBdYqq7e7oTf77ZP4e7SfSf7lVmL7cq9gOM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C5eNe9kFFTVtxAdfGk/TVjoPMnB8nG/2IeeMK397FWLhkYqYnylIPX1/2DUnFyPBQo5khJidUZ9RPIGXLaxxO/bhZ1KJCFQ+NtcHVSXDD29G0M8ZIQppATCc9OqmHjsfrpXu5YCpEq/b1MCQfNm3hFnlU/2oyAQwiGfwFUPV5GA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com; spf=pass smtp.mailfrom=embeddedor.com; dkim=pass (2048-bit key) header.d=embeddedor.com header.i=@embeddedor.com header.b=wevPgso2; arc=none smtp.client-ip=35.89.44.33
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=embeddedor.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=embeddedor.com
-Received: from eig-obgw-5005a.ext.cloudfilter.net ([10.0.29.234])
-	by cmsmtp with ESMTPS
-	id lXQLrbUBPHXmAlZFXr2vjy; Sat, 16 Mar 2024 18:59:19 +0000
-Received: from gator4166.hostgator.com ([108.167.133.22])
-	by cmsmtp with ESMTPS
-	id lZFWrZKSFc1LslZFWrPzKs; Sat, 16 Mar 2024 18:59:18 +0000
-X-Authority-Analysis: v=2.4 cv=IbKBW3qa c=1 sm=1 tr=0 ts=65f5ec06
- a=1YbLdUo/zbTtOZ3uB5T3HA==:117 a=UtBFqMlDG83dypD0sxEoAQ==:17
- a=IkcTkHD0fZMA:10 a=K6JAEmCyrfEA:10 a=wYkD_t78qR0A:10 a=NEAV23lmAAAA:8
- a=7YfXLusrAAAA:8 a=GHxNDdVd_46DcYOc0x4A:9 a=QEXdDO2ut3YA:10
- a=SLz71HocmBbuEhFRYD3r:22
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=embeddedor.com; s=default; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:Message-ID:Sender
-	:Reply-To:Content-ID:Content-Description:Resent-Date:Resent-From:
-	Resent-Sender:Resent-To:Resent-Cc:Resent-Message-ID:List-Id:List-Help:
-	List-Unsubscribe:List-Subscribe:List-Post:List-Owner:List-Archive;
-	bh=eI2igFSMoMgGwV+GQ0CiFXFR47TjD/v6V+k+ICTNe+0=; b=wevPgso2IGgJVqRnHCsH+jTtht
-	/fvVibwPPB5J/OH88rwhaoNKg33NtVSE8ox40WAypeiCafMWiIyhS1rx7J8Ei0hvkzVMyXv5DeyOR
-	REN45azO0qHulKDe4hZo/UPzdWYMBj4cGYZ+5T4GyOe+qIpIrw5bqyfnBLznToKXaeN0D5XZQhwx8
-	sUqVn0YmekN09fFLK+jzjnsHhtX8Sm2QFhnLMeUfoZJyPyUZsmkj9BjOFs7MXNGiVvpRhWLd+4vGR
-	m2NalmLLO7oMdTt/TOccHpMQAEH8GQqDjK52HOKmZ/y/Lr6kgbQ7zk46G4lwN+KPHIi6U48GywcYD
-	M+8tc3Cg==;
-Received: from [201.172.174.229] (port=41890 helo=[192.168.15.10])
-	by gator4166.hostgator.com with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <gustavo@embeddedor.com>)
-	id 1rlZFV-001MV9-1q;
-	Sat, 16 Mar 2024 13:59:17 -0500
-Message-ID: <cfc4c4c0-83f8-437c-8146-6b86968db67b@embeddedor.com>
-Date: Sat, 16 Mar 2024 12:59:11 -0600
+	s=arc-20240116; t=1710615982; c=relaxed/simple;
+	bh=vYoif7D7tW4p44WK7JGFYi/bUu4bBFFr+Bml9bEqrrw=;
+	h=Date:From:To:Subject:Cc:In-Reply-To:References:MIME-Version:
+	 Message-ID:Content-Type; b=SzgYSyhtOtFn9+hOMcOhi1z3jegDyVi9e8g54F4aumth4pIij+RYXCMCBjI4yBsPa9alEjD/ZPDm4fcmg5ufFNbwyovD1NtAd8o9cZTZfg4xavIWgKrwLVj+zIX2dWYRhJRglA8GPC+8HeI+ca3F1qS3/8JCbZUVDgowQYlzJ3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=L5e0WuKc; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=OLenZOQ8; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Sat, 16 Mar 2024 19:06:10 -0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710615971;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GLIcmw+77NtXr4Q8+Dld04V2Bc1sH1f9ppBBK+5aiwM=;
+	b=L5e0WuKcYM+pHN6dnszS24yK5aE0RT152OQ3OJRg5av3/M0+vBMznjh1L7Z+j9tzRZj94h
+	fIxy+GX6dLrmcD9hBGSguKBJUl2IO2jL1tsOpJboYylPUOqCeN8M7V9n1HMNmZZFD6m2hh
+	Zz0eAzMtqZRjQzwKTtynv+Od2KC5w2gLDzU5xa6GdoVYfSAd8C3IIc8M9r8BQnoOjKzjHY
+	PPuTpNwNaYgfcoVmyEdi6QuOzPwDEO0LUvSOMBGzG4Tgd3G11PDX2Lm1qn8MkoH+eux7jK
+	56t2uwV1WGCA8E1xVz/ijXyIAqTHfkPi778V7XxAMUN9DZejw/MsVWZ6Wke6/w==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710615971;
+	h=from:from:sender:sender:reply-to:reply-to:subject:subject:date:date:
+	 message-id:message-id:to:to:cc:cc:mime-version:mime-version:
+	 content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=GLIcmw+77NtXr4Q8+Dld04V2Bc1sH1f9ppBBK+5aiwM=;
+	b=OLenZOQ8/twB/IC90wqbTgZHQP8LMbNywOtFdUs32SUxQ6KL2v59RsHxaSsmFr6NYJCN1Q
+	K22ffg2mYvHBxiDQ==
+From: "tip-bot2 for Frederic Weisbecker" <tip-bot2@linutronix.de>
+Sender: tip-bot2@linutronix.de
+Reply-to: linux-kernel@vger.kernel.org
+To: linux-tip-commits@vger.kernel.org
+Subject: [tip: timers/urgent] timer/migration: Remove buggy early return on
+ deactivation
+Cc: Boqun Feng <boqun.feng@gmail.com>, Florian Fainelli <f.fainelli@gmail.com>,
+ Thomas Gleixner <tglx@linutronix.de>,
+ Frederic Weisbecker <frederic@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, x86@kernel.org,
+ linux-kernel@vger.kernel.org
+In-Reply-To: <ZfOhB9ZByTZcBy4u@lothringen>
+References: <ZfOhB9ZByTZcBy4u@lothringen>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mwl8k: Avoid overlapping composite structs that contain
- flex-arrays
-To: Erick Archer <erick.archer@gmx.com>, Kalle Valo <kvalo@kernel.org>,
- Johannes Berg <johannes.berg@intel.com>,
- "Gustavo A. R. Silva" <gustavoars@kernel.org>,
- Kees Cook <keescook@chromium.org>
-Cc: linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-hardening@vger.kernel.org
-References: <20240316150712.4633-1-erick.archer@gmx.com>
-Content-Language: en-US
-From: "Gustavo A. R. Silva" <gustavo@embeddedor.com>
-In-Reply-To: <20240316150712.4633-1-erick.archer@gmx.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Message-ID: <171061597028.12214.14191592989389643571.tip-bot2@tip-bot2>
+Robot-ID: <tip-bot2@linutronix.de>
+Robot-Unsubscribe:
+ Contact <mailto:tglx@linutronix.de> to get blacklisted from these emails
+Precedence: bulk
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - gator4166.hostgator.com
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - embeddedor.com
-X-BWhitelist: no
-X-Source-IP: 201.172.174.229
-X-Source-L: No
-X-Exim-ID: 1rlZFV-001MV9-1q
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
-X-Source-Sender: ([192.168.15.10]) [201.172.174.229]:41890
-X-Source-Auth: gustavo@embeddedor.com
-X-Email-Count: 2
-X-Org: HG=hgshared;ORG=hostgator;
-X-Source-Cap: Z3V6aWRpbmU7Z3V6aWRpbmU7Z2F0b3I0MTY2Lmhvc3RnYXRvci5jb20=
-X-Local-Domain: yes
-X-CMAE-Envelope: MS4xfAIqLavpHE10KXIH776uS8fWT4TCw8tyXfugAuoB3bY0P/TaXlqmmehHystDCnOGjESQhJ2egQqvNsdfpiqRTznF2VfQHKX1aUlzZbXUXBbBnR063vp6
- c66Ye0SBgnP2hqMtG6pUq6hcWXgKzPQK1PcSeaJG8oHYsYfVLuKmfBYyNiAVbfF4e/bcVQuTnOIcTtTQ+o/w/+PX0H9hJWr3RSnuqWMp6nKK7ntBdKzZCwq+
 
+The following commit has been merged into the timers/urgent branch of tip:
 
-[..]
+Commit-ID:     4b6f4c5a67c07417bf29d896c76f513a4be07516
+Gitweb:        https://git.kernel.org/tip/4b6f4c5a67c07417bf29d896c76f513a4be07516
+Author:        Frederic Weisbecker <frederic@kernel.org>
+AuthorDate:    Fri, 15 Mar 2024 02:14:47 +01:00
+Committer:     Thomas Gleixner <tglx@linutronix.de>
+CommitterDate: Sat, 16 Mar 2024 19:55:46 +01:00
 
-> 
-> Link: https://github.com/KSPP/linux/issues/202 [1]
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
-> ---
-> Hi everyone,
-> 
-> This patch is based on my understanding of the code. Any comments would
-> be greatly appreciated.
+timer/migration: Remove buggy early return on deactivation
 
-Thanks for looking into this. :)
+When a CPU enters into idle and deactivates itself from the timer
+migration hierarchy without any global timer of its own to propagate,
+the group event of that CPU is set to "ignore" and tmigr_update_events()
+accordingly performs an early return without considering timers queued
+by other CPUs.
 
-I'm currently in the process of trying a general solution for all these
-composite structures without having to use two separate structs, avoid too
-much code churn, and continue allowing for __counted_by() annotations at
-the same time.
+If the hierarchy has a single level, and the CPU is the last one to
+enter idle, it will ignore others' global timers, as in the following
+layout:
 
-I'll be sending a bunch of patches once the merge window closes. So, for
-now, I think it's wise to wait for those patches.
+           [GRP0:0]
+         migrator = 0
+         active   = 0
+         nextevt  = T0i
+          /         \
+         0           1
+      active (T0i)  idle (T1)
 
-More comments below.
+0) CPU 0 is active thus its event is ignored (the letter 'i') and so are
+upper levels' events. CPU 1 is idle and has the timer T1 enqueued.
 
-[..]
+           [GRP0:0]
+         migrator = NONE
+         active   = NONE
+         nextevt  = T0i
+          /         \
+         0           1
+      idle (T0i)  idle (T1)
 
-> diff --git a/drivers/net/wireless/marvell/mwl8k.c b/drivers/net/wireless/marvell/mwl8k.c
-> index ce8fea76dbb2..57de32ba4efc 100644
-> --- a/drivers/net/wireless/marvell/mwl8k.c
-> +++ b/drivers/net/wireless/marvell/mwl8k.c
-> @@ -586,13 +586,17 @@ static int mwl8k_request_firmware(struct mwl8k_priv *priv, char *fw_image,
->   	return 0;
->   }
-> 
-> -struct mwl8k_cmd_pkt {
-> +struct mwl8k_cmd_pkt_hdr {
->   	__le16	code;
->   	__le16	length;
->   	__u8	seq_num;
->   	__u8	macid;
->   	__le16	result;
-> -	char	payload[];
-> +} __packed;
-> +
-> +struct mwl8k_cmd_pkt {
-> +	struct mwl8k_cmd_pkt_hdr header;
-> +	char payload[];
->   } __packed;
+1) CPU 0 goes idle without global event queued. Therefore KTIME_MAX is
+pushed as its next expiry and its own event kept as "ignore". As a result
+tmigr_update_events() ignores T1 and CPU 0 goes to idle with T1
+unhandled.
 
-One of the problems with this is that `struct mwl8k_cmd_pkt` is candidate for a
-`__counted_by()` annotation:
+This isn't proper to single level hierarchy though. A similar issue,
+although slightly different, may arise on multi-level:
 
-@@ -592,7 +592,7 @@ struct mwl8k_cmd_pkt {
-         __u8    seq_num;
-         __u8    macid;
-         __le16  result;
--       char    payload[];
-+       char    payload[] __counted_by(length);
-  } __packed;
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = 0              migrator = NONE
+           active   = 0              active   = NONE
+           nextevt  = T0i            nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+      active         idle            idle       idle
 
-and with the changes you propose, that is not possible anymore because the counter
-member must be at the same level or in an anonymous struct also at the same level
-as `payload`.
+0) CPU 0 is active thus its event is ignored (the letter 'i') and so are
+upper levels' events. CPU 1 is idle and has the timer T1 enqueued.
+CPU 2 also has a timer. The expiry order is T0 (ignored) < T1 < T2
 
-Thanks
---
-Gustavo
+                            [GRP1:0]
+                         migrator = GRP0:0
+                         active   = GRP0:0
+                         nextevt  = T0:0i, T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T0i            nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
 
+1) CPU 0 goes idle without global event queued. Therefore KTIME_MAX is
+pushed as its next expiry and its own event kept as "ignore". As a result
+tmigr_update_events() ignores T1. The change only propagated up to 1st
+level so far.
+
+                            [GRP1:0]
+                         migrator = NONE
+                         active   = NONE
+                         nextevt  = T0:1
+                         /              \
+              [GRP0:0]                  [GRP0:1]
+           migrator = NONE           migrator = NONE
+           active   = NONE           active   = NONE
+           nextevt  = T0i            nextevt  = T2
+           /         \                /         \
+          0 (T0i)     1 (T1)         2 (T2)      3
+        idle         idle            idle         idle
+
+2) The change now propagates up to the top. tmigr_update_events() finds
+that the child event is ignored and thus removes it. The top level next
+event is now T2 which is returned to CPU 0 as its next effective expiry
+to take account for as the global idle migrator. However T1 has been
+ignored along the way, leaving it unhandled.
+
+Fix those issues with removing the buggy related early return. Ignored
+child events must not prevent from evaluating the other events within
+the same group.
+
+Reported-by: Boqun Feng <boqun.feng@gmail.com>
+Reported-by: Florian Fainelli <f.fainelli@gmail.com>
+Reported-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Tested-by: Florian Fainelli <florian.fainelli@broadcom.com>
+Link: https://lore.kernel.org/r/ZfOhB9ZByTZcBy4u@lothringen
+
+---
+ kernel/time/timer_migration.c | 20 --------------------
+ 1 file changed, 20 deletions(-)
+
+diff --git a/kernel/time/timer_migration.c b/kernel/time/timer_migration.c
+index 8f49b6b..611cd90 100644
+--- a/kernel/time/timer_migration.c
++++ b/kernel/time/timer_migration.c
+@@ -751,26 +751,6 @@ bool tmigr_update_events(struct tmigr_group *group, struct tmigr_group *child,
+ 
+ 		first_childevt = evt = data->evt;
+ 
+-		/*
+-		 * Walking the hierarchy is required in any case when a
+-		 * remote expiry was done before. This ensures to not lose
+-		 * already queued events in non active groups (see section
+-		 * "Required event and timerqueue update after a remote
+-		 * expiry" in the documentation at the top).
+-		 *
+-		 * The two call sites which are executed without a remote expiry
+-		 * before, are not prevented from propagating changes through
+-		 * the hierarchy by the return:
+-		 *  - When entering this path by tmigr_new_timer(), @evt->ignore
+-		 *    is never set.
+-		 *  - tmigr_inactive_up() takes care of the propagation by
+-		 *    itself and ignores the return value. But an immediate
+-		 *    return is required because nothing has to be done in this
+-		 *    level as the event could be ignored.
+-		 */
+-		if (evt->ignore && !remote)
+-			return true;
+-
+ 		raw_spin_lock(&group->lock);
+ 
+ 		childstate.state = 0;
 
