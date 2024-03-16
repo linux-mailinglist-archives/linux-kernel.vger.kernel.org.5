@@ -1,171 +1,91 @@
-Return-Path: <linux-kernel+bounces-105160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105165-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9050987D9DB
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:15:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D907987D9E8
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:18:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43346281DA1
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 11:15:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 785C11F21A2C
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 11:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2068171BB;
-	Sat, 16 Mar 2024 11:15:35 +0000 (UTC)
-Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4C2817543;
+	Sat, 16 Mar 2024 11:18:01 +0000 (UTC)
+Received: from szxga05-in.huawei.com (szxga05-in.huawei.com [45.249.212.191])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51C7F125BA
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 11:15:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 822E51798C;
+	Sat, 16 Mar 2024 11:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710587735; cv=none; b=qj4s/Q7o2jqv6U8PbysOUym1O73m/u4SAZOxz+jvPViYCv8fdjyJNV4DORY2zjacyxTfbrG6KCfVSRNkeWpRp5DDy5+jPJrMXRGfErFCcv+69++VDEJ9sB1bZyqNlADMCfq16eb4jAlzgytZb9kK2J4gijq4S3v+Og1oNy0ohbU=
+	t=1710587881; cv=none; b=AWeUFzNGiiyAUxBCzTUfz+MXwsYu8mkOJHHKw7j1sRkeRaPpQLFp+Bo7wwz5gZGliAHrxgPazyoKQeX/qzmlw9iC76fpdpr+TdcgoBRBbmPlymN231RFqrSEUZILoFIPkDSSR8qBWQ737I4b3JZEEZ+w5tAHgjw7Peq4UrvB6Ic=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710587735; c=relaxed/simple;
-	bh=jLYr2i/eExX1w69iI+32GJyfadQtPjHg5todg3raew4=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=HzMZ0DfZ6QgkMW2xcQZdZzEngH4F10PO8Ly8U+CSzOdQ/a0LlkdOBx5MW596yeeawLXd7MVFKNsK7XxHgKHkOMrdQj8QCkh77gb9qJwbmdkNGMe01n0whone0Z9daEa857rh8oWsQst4OZCZ8yPagGIwEFciVCPfGuJZX06fqoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c75dee76c0so221249839f.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 04:15:33 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710587732; x=1711192532;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+okNbJx3i3eNfoL5sGRziMMrPFCXMARCoCGd9KzLbvw=;
-        b=TZ0aZhXeHe5OdeNBHBC0HtUNHwAqtfV/TBwu2/srHCTDPvKrr/hhJNz6tqzloeB/n3
-         D7R83jYKu4y3ZHUL/kWmAu4hnuiIvU7i4RYlgnOzy197bsHDiq1nr76dSk2FMq6cVwOJ
-         LloXty6khf4JaKvGba4lfn3HZshKxNUSbFpMP6wAR+N2HExjcZBB44jZNiJIhisj2C6u
-         BueUCQ2FOR+iTJSL7dW3Ix320sXlTzeEBzKZdHmV5J33JI8fHUByYtCcDLj3XXPlJN72
-         LiUQ/yJcey0qKqeoEZGiIkHhuOFmQ9ti8bIDF6wi0RsF2ii6hv80O4YqeOvXLXkmrwkK
-         v2oA==
-X-Forwarded-Encrypted: i=1; AJvYcCWY50STFVchuZO2KU4E9uUJd59uvdlAdouqIKpobYD90wHQZyYEapm1P71TX1kKZhp7BfysJCZJb3Cl+x/KEr80udXfkFtntwgiz5F1
-X-Gm-Message-State: AOJu0YwywkDcrPj0qfX2xFL2f1bzhUY9MvFOX9Ok/hZlZY3Og45hqx84
-	eiuIQ4DHxrZUYeiIR3yz5fgVeJdukKatDPEC8SDeGZFproemJmWSrDXyzm2y71Ougp/E0ioVw1W
-	7koql97GyusKLlZW5hdAv5167ep/fVIu7DJq9cgM1lNeEusIHyLFp9uw=
-X-Google-Smtp-Source: AGHT+IH0itGz+OK/Aa92L6bdf0sRjCQzNSEcu32+MOf5o16HWxSx92ZxJGO8h6eS7Gn6Wd+opi2JpAXm87GeOUhl5SPzU4PkFKjO
+	s=arc-20240116; t=1710587881; c=relaxed/simple;
+	bh=iZsF+Z/oasKLf5xwtQCPgUvMR4ytrQBTDLN0o2cO25g=;
+	h=Message-ID:Date:MIME-Version:CC:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QeUOATdQqIVXXnXcSlaV2J0V1oSfefdbC3nC/ilqLotq9CBp7ebU9lY7h/loPPrrRuTOANjltJ0tNvKCApWkGsPHP5T4MciYRu8bwvz9Iy9MUwNCYRAxleuG5Fo+V5p22r2iT130sX7CV0UJREXm/CmYTVNU5rj5EUIJKXVU20o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.19.163.17])
+	by szxga05-in.huawei.com (SkyGuard) with ESMTP id 4Txdnq2gQMz1h1v6;
+	Sat, 16 Mar 2024 19:15:27 +0800 (CST)
+Received: from kwepemm600007.china.huawei.com (unknown [7.193.23.208])
+	by mail.maildlp.com (Postfix) with ESMTPS id 19BC41A0172;
+	Sat, 16 Mar 2024 19:17:57 +0800 (CST)
+Received: from [10.67.120.192] (10.67.120.192) by
+ kwepemm600007.china.huawei.com (7.193.23.208) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sat, 16 Mar 2024 19:17:56 +0800
+Message-ID: <5178c9fa-711a-4a91-ba1c-4b10da7592b3@huawei.com>
+Date: Sat, 16 Mar 2024 19:17:55 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a5e:a90b:0:b0:7cc:b79:c5cb with SMTP id
- c11-20020a5ea90b000000b007cc0b79c5cbmr9882iod.2.1710587732508; Sat, 16 Mar
- 2024 04:15:32 -0700 (PDT)
-Date: Sat, 16 Mar 2024 04:15:32 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000002750950613c53e72@google.com>
-Subject: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
-From: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
-To: asmadeus@codewreck.org, ericvh@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux_oss@crudebyte.com, lucho@ionkov.net, 
-	syzkaller-bugs@googlegroups.com, v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
-
-Hello,
-
-syzbot found the following issue on:
-
-HEAD commit:    66a27abac311 Merge tag 'powerpc-6.9-1' of git://git.kernel..
-git tree:       upstream
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=147b32a5180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
-dashboard link: https://syzkaller.appspot.com/bug?extid=eb83fe1cce5833cd66a0
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=12598006180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=105d8aa5180000
-
-Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/37968fa0451e/disk-66a27aba.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/5b288c5c3088/vmlinux-66a27aba.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/792ddbf8146d/bzImage-66a27aba.xz
-
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com
-
-=====================================================
-BUG: KMSAN: uninit-value in fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
-BUG: KMSAN: uninit-value in v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
- fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
- v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
- evict+0x3ae/0xa60 fs/inode.c:667
- iput_final fs/inode.c:1741 [inline]
- iput+0x9ca/0xe10 fs/inode.c:1767
- iget_failed+0x15e/0x180 fs/bad_inode.c:248
- v9fs_fid_iget_dotl+0x375/0x570 fs/9p/vfs_inode_dotl.c:96
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1779
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2175 [inline]
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x2de/0x1400 mm/slub.c:2391
- ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
- alloc_inode_sb include/linux/fs.h:3089 [inline]
- v9fs_alloc_inode+0x62/0x130 fs/9p/vfs_inode.c:228
- alloc_inode+0x86/0x460 fs/inode.c:261
- iget_locked+0x2bf/0xee0 fs/inode.c:1280
- v9fs_fid_iget_dotl+0x7f/0x570 fs/9p/vfs_inode_dotl.c:62
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1779
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
-CPU: 1 PID: 5014 Comm: syz-executor406 Not tainted 6.8.0-syzkaller-11136-g66a27abac311 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-=====================================================
+User-Agent: Mozilla Thunderbird
+CC: <shaojijie@huawei.com>, <yisen.zhuang@huawei.com>,
+	<salil.mehta@huawei.com>, <davem@davemloft.net>, <edumazet@google.com>,
+	<kuba@kernel.org>, <pabeni@redhat.com>, <shenjian15@huawei.com>,
+	<wangjie125@huawei.com>, <liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH net 3/3] net: hns3: mark unexcuted loopback test result as
+ UNEXECUTED
+To: Michal Kubiak <michal.kubiak@intel.com>
+References: <20240315100748.2913882-1-shaojijie@huawei.com>
+ <20240315100748.2913882-4-shaojijie@huawei.com>
+ <ZfSOZG5vHbIY3IFU@localhost.localdomain>
+From: Jijie Shao <shaojijie@huawei.com>
+In-Reply-To: <ZfSOZG5vHbIY3IFU@localhost.localdomain>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: dggems703-chm.china.huawei.com (10.3.19.180) To
+ kwepemm600007.china.huawei.com (7.193.23.208)
 
 
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
+on 2024/3/16 2:07, Michal Kubiak wrote:
+> On Fri, Mar 15, 2024 at 06:07:48PM +0800, Jijie Shao wrote:
+>> From: Jian Shen <shenjian15@huawei.com>
+>>
+>> Currently, loopback test maybe skipped when resetting, but the test
+> typo: maybe skipped -> may be skipped
+>
+>> result will still show as 'PASS', because the driver doesn't set
+>> ETH_TEST_FL_FAILED flag. Fixes it by set the flag and initialize the
+>> value to be UNEXECUTED.
+> Fix it by setting the flag and initializating the value to UNEXECUTED.
+>
+>
+>> Fixes: 4c8dab1c709c ("net: hns3: reconstruct function hns3_self_test")
+>> Signed-off-by: Jian Shen <shenjian15@huawei.com>
 
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+Thanks，
 
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
+I have sent V2 to fix them.
 
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
+Jijie
 
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
