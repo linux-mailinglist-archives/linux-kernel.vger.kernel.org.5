@@ -1,95 +1,129 @@
-Return-Path: <linux-kernel+bounces-105185-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105186-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4001687DA41
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:13:26 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 611FE87DA49
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 14:33:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63E2F1C20D71
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:13:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8978C1C20B62
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 13:33:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77C9A18AF8;
-	Sat, 16 Mar 2024 13:13:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30FF018C1A;
+	Sat, 16 Mar 2024 13:33:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="SYsqsXQn"
-Received: from mail-pj1-f42.google.com (mail-pj1-f42.google.com [209.85.216.42])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="IN5x/Cb3"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272FF17BAF
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 13:13:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B352C18AED
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 13:33:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710594800; cv=none; b=Sg3wuXZ9ch6pzDWX4TBaYUTjL7r9+HfTZ7EYnPUsrMDopkfiDrP9lb5M4odmxoGZVzeFePgtXpdDLPjsQL8QPsD1QLjHgAj72FvgrT35IfXsGL7DkPJJvay3hVNqUHa/S+yM7xvq7tlURXAJnfbzksW2n6uaE942x47ThxuU1wo=
+	t=1710595993; cv=none; b=SGfK4lM7y/Z8HiETb8kxGB1L468QDV6hLQQwOlHZbWGM20+Lr201oimqhB5uXtggWZ9MEYqljW1vF2hziIe+pvSnM2ytVrGVPiE5ipd1sHKx0wyRRumaY9pjuhQB7v4FZkPyrQSZEKtuKwtDIH/0Xg6t4R9rF4sjT9yWCVJjt+I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710594800; c=relaxed/simple;
-	bh=9IKAL9O5Kzhj2bWwcxxcLVVHc+FpAsBJbr8QW4g4aUo=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:References:
-	 In-Reply-To:Content-Type; b=h+XXnYiSWRoySa7ajghksGtphlfen8Yf6hyo80MgGBHcNj8vzQdcIyA1nrMMDJ3O02v/y/D9ixC/zAbSQUbLfUfQ6dTjjCKkH6U81StiHmVwJhkXRTEiP+7MK3hY+6zAXQ9eefObZnrneQf6toxOTNUT8qXahbAqvGEHH1slLZ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=SYsqsXQn; arc=none smtp.client-ip=209.85.216.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f42.google.com with SMTP id 98e67ed59e1d1-29f66c9ffa5so61615a91.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 06:13:17 -0700 (PDT)
+	s=arc-20240116; t=1710595993; c=relaxed/simple;
+	bh=jWasRBS7uYYZTIESYrGdx2CCsrKtFL2TJGC/9IMUElI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cPqUS7eQYkWqD3CrYMBuWIn/6/NTh1sXv9wl4mufeM/O0EGEtR1un52O+8C4jWd2WCDvBF/5IEvYErBwapOEImqIwjK9YbNIucRxbHvLe107v4kpr2zMKUobsjp253Ejl6Rq0rV7XbD6lpv2Y6MGd50KXZSOHVUsNh0UJ1b3Rqg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=IN5x/Cb3; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e622b46f45so2314093b3a.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 06:33:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710594797; x=1711199597; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=021yMPdarsacqdEo/8CW8u8ZNpKM/XY65JYdTMbED3E=;
-        b=SYsqsXQnyxjI5FaI3H4Ei4p6f2DHpFTCq5uuHn5HoBMxAcHa1Ne/EGuJ1XCJ4+vd3N
-         fAklUSYbVg35/Fu/BBAmwHljfq8ZmkfGsWafhadRsKAI49w+ZFhICHsu9wCQerJjjUel
-         NgCWeZvGoqiSCULURemeyQWNxMu0j92CAf69y9Iz8IeLKyYySp8uDwgwY6Frj3CQmiic
-         8B24sngWY5HHIDVOhRX9h+BbS7LlOjkP6WtSIYUsxsZIA9JJpGu1y8qMzqI2bV7jraSe
-         XwVRLJCKdlV5jnzCXWJlK3vj6+cW/Oj69NG92cn6S2Ojtnk+sFmOK8aMnA04ACAuF17G
-         +83w==
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710595989; x=1711200789; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=A0atnVohOpgRx9cMpkzV7i4jL/M6ojDIx6wxbLSFf78=;
+        b=IN5x/Cb38qIEkaORaVgfXmVtFG6oSSC/92c4Jdvf1MRy15rgokGAG39LsWHy9u9w4m
+         0i1mBOeoGOn+IZ/xOR/jo0NjXeuM+Peq+tU5oHcRiTZgDl/rxlaryrjTpGMcrtd9iuI1
+         FbjnFx74DYY+jOY7WQuG/hGS1AdEVhn97u/uGkKmZJzGEYKNQK6cLiWB5EGmvEKjs6Ud
+         MFY2kE1EaxkHuCy0xsE8Il/ap/LZb48QV1tWGAFgbX7di9Q5ctusWmERwExth9rw+2VZ
+         Hc4mGfzqkLPUbP0R6avYQSdnFgbj7ffG5UdNO+j9v28NmgDbHUWivndvDm/Ut5sa9avE
+         sKAg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710594797; x=1711199597;
-        h=content-transfer-encoding:in-reply-to:references:to:from
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=021yMPdarsacqdEo/8CW8u8ZNpKM/XY65JYdTMbED3E=;
-        b=dIVfr27WciF68SpvdjmxJblo4FnrXIhlii9HKUq+fm2rLcTbBaYtd6uQnXUGuvGgsQ
-         rJqXok92ME7ANLIo8mhLafj7A0wYVp/jGwA9iDWIz165uyps9HERPzajEaeIRZk+e2He
-         kHyGMh3bXBWp9TLFMnPz51bPWY9il6200vCAWE1L390Fqf8dT3QHXVioHZs564e8vlSd
-         vYXmQAsEk58KRiSkLQ8wkvnlDigF4tPoQtIlfJQM/q8HAG6E95ShgooW6eD2GTcTSp3N
-         XLxOhkTkxeJ0u7n7En0frlJqhi5/Kw3lbtH0+RGhzXyOM1AfHVO/KCR88ak3ryIMrHdK
-         KTsQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUgChvB+HObbKXkZMadO1yPIjoHU7yqqssfH4SBA0VfwnKQ3tp2x95xFEj9cukuOlhByiWfiCEflrTzlI8Fx2Bgw9feM/xMdyjDjW8z
-X-Gm-Message-State: AOJu0YxKFGT5tWRWAR7vs5OBwXChaoaG0XCRXUH8Z7YCjwOs8l0WNKMr
-	i21uQ9DrM7sqBjE338MGjAga2CkPvkQXo5Y3KrV/aUtscz8vA8ePQEa81zU6Jtw=
-X-Google-Smtp-Source: AGHT+IGEB06ioccjFGEijllB1TxsKceBi0Cg4zSrV2NbWYgWBhNn0T9hLjMGz7iRHDJPhTfSg7DauA==
-X-Received: by 2002:a17:902:e810:b0:1dd:667f:bf1b with SMTP id u16-20020a170902e81000b001dd667fbf1bmr8749305plg.0.1710594797320;
-        Sat, 16 Mar 2024 06:13:17 -0700 (PDT)
-Received: from [192.168.1.150] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id i17-20020a170902c95100b001dd59b54f9fsm77566pla.136.2024.03.16.06.13.16
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sat, 16 Mar 2024 06:13:16 -0700 (PDT)
-Message-ID: <dc93c896-19f9-4b6b-aabd-742cc8afae84@kernel.dk>
-Date: Sat, 16 Mar 2024 07:13:15 -0600
+        d=1e100.net; s=20230601; t=1710595989; x=1711200789;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=A0atnVohOpgRx9cMpkzV7i4jL/M6ojDIx6wxbLSFf78=;
+        b=Aa+TPOQ01kx82vFamXL1KLWwGuZZVmJ1HSfxi08YEIkY1oCD19+hPEw7eyXF1V+eAQ
+         JmMlZDJ6RiyTfdCJfnlFuZHk/2RoCK89IdD1QsebyroEf0EOP5h/VaFL6zuICOiz9c9V
+         BAehYGeWgv3SvIoDM2ZmcUHd07oRObJOqTx5rkhyQxKcCoxPRcis/pr4XHxgqDcQoO5E
+         m8H+xDmPct0W6tlgTPZJaPwvaPaOBpdemBX/f19KL/ZFguV9yJy3houSbO6yRdR/CO9s
+         LFU/I+Oj+avlpgp/CEocwpq0dlW8gab/fuuXzrwsD+2eewVOkDVi4iADeanXC9A0luZ8
+         ALXw==
+X-Forwarded-Encrypted: i=1; AJvYcCWLURhWuB7pebX9tfg5bvCFaIhejHOJ6LKj6iYQ0f9KWvXOKmAKuqlTb6NomYc0WKrrPQzPRUZSVhIEgy/iscAQQBLLTJwfGQmRt2nm
+X-Gm-Message-State: AOJu0YxLhP3kh7t5Rix6GZ3OB6xBskdkyRSiNnsNds6f6nKyERYGZ1vj
+	zQ83FDZf2l9MjgNkNi1H1RED3/rmMWCvhkQej5/ZHLc7BNtCNjCH0iTOQ+T0E44=
+X-Google-Smtp-Source: AGHT+IFDED0rPeVrrktx5cE7FyttQSxpxrMVZIivfj60Ggu2ysrt+2qHIrQn5CUkM8a6O4ihBsOgEA==
+X-Received: by 2002:a05:6a21:3995:b0:1a3:5c60:112a with SMTP id ad21-20020a056a21399500b001a35c60112amr188068pzc.36.1710595988767;
+        Sat, 16 Mar 2024 06:33:08 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id sg3-20020a17090b520300b0029f746c8789sm996009pjb.1.2024.03.16.06.33.07
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Mar 2024 06:33:08 -0700 (PDT)
+Date: Sat, 16 Mar 2024 09:33:02 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Chris Li <chrisl@kernel.org>, Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	Nhat Pham <nphamcs@gmail.com>,
+	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
+	Chengming Zhou <zhouchengming@bytedance.com>,
+	Barry Song <v-songbaohua@oppo.com>, Barry Song <baohua@kernel.org>,
+	Chengming Zhou <chengming.zhou@linux.dev>
+Subject: Re: [PATCH v6] zswap: replace RB tree with xarray
+Message-ID: <20240316133302.GB372017@cmpxchg.org>
+References: <20240312-zswap-xarray-v6-1-1b82027d7082@kernel.org>
+ <CAJD7tkZH-mU_7NMMBAS4nyfyWKKK3tSdQisVQ5iRqckqHouoJQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [syzbot] [io-uring?] KMSAN: uninit-value in io_sendrecv_fail
-Content-Language: en-US
-From: Jens Axboe <axboe@kernel.dk>
-To: syzbot <syzbot+f8e9a371388aa62ecab4@syzkaller.appspotmail.com>,
- asml.silence@gmail.com, io-uring@vger.kernel.org,
- linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-References: <00000000000024b0820613ba8647@google.com>
- <b090c928-6c42-4735-9758-e8a137832607@kernel.dk>
-In-Reply-To: <b090c928-6c42-4735-9758-e8a137832607@kernel.dk>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAJD7tkZH-mU_7NMMBAS4nyfyWKKK3tSdQisVQ5iRqckqHouoJQ@mail.gmail.com>
 
-#syz test: git://git.kernel.dk/linux.git io_uring-6.9
+On Fri, Mar 15, 2024 at 06:30:37PM -0700, Yosry Ahmed wrote:
+> [..]
+> >
+> > @@ -1555,28 +1473,35 @@ bool zswap_store(struct folio *folio)
+> >  insert_entry:
+> >         entry->swpentry = swp;
+> >         entry->objcg = objcg;
+> > -       if (objcg) {
+> > -               obj_cgroup_charge_zswap(objcg, entry->length);
+> > -               /* Account before objcg ref is moved to tree */
+> 
+> 
+> I do not understand this comment, but it seems to care about the
+> charging happening before the entry is added to the tree. This patch
+> will move it after the tree insertion.
+> 
+> Johannes, do you mind elaborating what this comment is referring to?
+> It should be clarified, updated, or removed as part of this movement.
 
--- 
-Jens Axboe
+Wait, I wrote that? ^_^
 
+The thinking was this: the objcg reference acquired in this context is
+passed on to the tree. Once the entry is in the tree and the
+tree->lock released, the entry is public and the current context
+doesn't have its own pin on objcg anymore. Ergo, objcg is no longer
+safe to access from this context.
+
+This is a conservative take, though, considering the wider context:
+the swapcache itself, through folio lock, prevents invalidation; and
+reclaim/writeback cannot happen before the entry is on the LRU.
+
+After Chris's patch, the tree is no longer a serialization point for
+stores. The swapcache and the LRU are. I had asked Chris upthread to
+add an explicit comment about that. I think once he does that, the
+objcg situation should be self-evident as well.
+
+So in the next version, please just remove this now stale one-liner.
 
