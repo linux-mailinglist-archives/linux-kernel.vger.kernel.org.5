@@ -1,326 +1,148 @@
-Return-Path: <linux-kernel+bounces-105166-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105167-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B73E187D9E9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:18:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5452287D9F6
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 12:34:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 8A1B2B213F2
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 11:18:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D929E1F21AFB
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 11:34:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC9A317BAF;
-	Sat, 16 Mar 2024 11:18:29 +0000 (UTC)
-Received: from pegase1.c-s.fr (pegase1.c-s.fr [93.17.236.30])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20BA718AEA;
+	Sat, 16 Mar 2024 11:34:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IuGhTzzP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DB3961798C
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 11:18:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.17.236.30
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52FAD14A9D;
+	Sat, 16 Mar 2024 11:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710587909; cv=none; b=tInTvoUJmaa24anZ4d2/zze/zWM2LL7qEePTaQXlufvNwdXNm3lbnxJ/YkoSubrW1ryzZoPcHpBi+Di7BRMbr6zPNxDWwlcTD3N1TzZP9bRSY7kw5qSyt3/hh9DQNpUlbE2FtjekUYWEGAGhKpDozD+qaw7jvGX7wZtvZNe3d+k=
+	t=1710588852; cv=none; b=Ez5LttSoS4mJSH7u8Q/D1waLuAWUNwM8y3VSLA4LcSeZprDXiuTXqnGuVhFH2agns8VeGDgSfgfD/bgc8fC856KoiUOrWBjWqBn5VtP/RXVRWZVOBaYKfxNqnJVjZz6FMEv2r2dwbfoodXfQBYavBKch6GLm56R9lFXZphCppWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710587909; c=relaxed/simple;
-	bh=YZudm0mc7oieHhIoGo6jmZA09xujHbMs3Vj+6U3O8yY=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=tk6K1zuPetDuTMnyAQyqetYCHDm4lRW03eigfcBVc8kv6YqONwozmkV9C/o41Pm5CwyWlpt/G3qknhAyqg01HaEPBqrVOQo21dwOhsmnhw75mnJoJ6YpB1of6VwEuhQ2cq2bIJoeFxDyu85Dl7/uO4q0Qbhf8uHnSGhu/KGYEbA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; arc=none smtp.client-ip=93.17.236.30
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-Received: from localhost (mailhub3.si.c-s.fr [192.168.12.233])
-	by localhost (Postfix) with ESMTP id 4TxdsF1HmZz9sgJ;
-	Sat, 16 Mar 2024 12:18:25 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from pegase1.c-s.fr ([192.168.12.234])
-	by localhost (pegase1.c-s.fr [127.0.0.1]) (amavisd-new, port 10024)
-	with ESMTP id AmImxgpwDZLg; Sat, 16 Mar 2024 12:18:25 +0100 (CET)
-Received: from messagerie.si.c-s.fr (messagerie.si.c-s.fr [192.168.25.192])
-	by pegase1.c-s.fr (Postfix) with ESMTP id 4TxdsF07B0z9s2l;
-	Sat, 16 Mar 2024 12:18:25 +0100 (CET)
-Received: from localhost (localhost [127.0.0.1])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id EB7708B768;
-	Sat, 16 Mar 2024 12:18:24 +0100 (CET)
-X-Virus-Scanned: amavisd-new at c-s.fr
-Received: from messagerie.si.c-s.fr ([127.0.0.1])
-	by localhost (messagerie.si.c-s.fr [127.0.0.1]) (amavisd-new, port 10023)
-	with ESMTP id 0q9Spab6pB2M; Sat, 16 Mar 2024 12:18:24 +0100 (CET)
-Received: from PO20335.idsi0.si.c-s.fr (PO18731.IDSI0.si.c-s.fr [192.168.233.183])
-	by messagerie.si.c-s.fr (Postfix) with ESMTP id 8638E8B764;
-	Sat, 16 Mar 2024 12:18:24 +0100 (CET)
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Michael Ellerman <mpe@ellerman.id.au>,
-	Nicholas Piggin <npiggin@gmail.com>
-Cc: Christophe Leroy <christophe.leroy@csgroup.eu>,
-	linux-kernel@vger.kernel.org,
-	linuxppc-dev@lists.ozlabs.org
-Subject: [PATCH v2] powerpc: Handle error in mark_rodata_ro() and mark_initmem_nx()
-Date: Sat, 16 Mar 2024 12:18:21 +0100
-Message-ID: <b16329611deb89e1af505d43f0e2a91310584d26.1710587887.git.christophe.leroy@csgroup.eu>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710588852; c=relaxed/simple;
+	bh=4L4tGD1DKV+mZjgPQTvkjdRdWNUjXgMgRTBy+sDZ4xg=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=SA5k6jgrME+lEtJiqnOoqPwA4ywTLqKbTOO9FkEDTJl3gaL+p//UW3Q8/RA4fhqPbwteRPdP3iFYUSqE3+YEijt6JDDFIw1BbU8W7nXzPdYz85lQRScPvUB0S4gU83gN61T72mSaBNZ4WG+nX8xnOuLpfVb+bG11p+DGeUvGdHU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IuGhTzzP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id D2FDEC433C7;
+	Sat, 16 Mar 2024 11:34:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710588851;
+	bh=4L4tGD1DKV+mZjgPQTvkjdRdWNUjXgMgRTBy+sDZ4xg=;
+	h=From:Subject:Date:To:Cc:Reply-To:From;
+	b=IuGhTzzPUp/V7LrkG+np+N2ddC+ZfIanfodbb3o9EqLnyaP1jOVvLDTPtL8/36iRG
+	 cM6BW8prCN24tZmY/jEeoBLiB1GUHQB7OapG7emqSsTMk+SDnSWAX33jim3LbqV0Ns
+	 OwsQ7u1mL61Dt8ZSKJPB/nDlJm3yok5a+stvVEbn2Qn3BEtLf1SduKSNaL0eH9c9HV
+	 hm6SKE6T+YyqbltME8iKFo4z1IeAelAD0hBs8rlA+vdT0rXmo4O3RS3PFCjitAlBgT
+	 UPkfZhn1Swx2xBmmfmhnTO3F4Shg1cOB2GszBIynL+dT6TMg5TPDnjGYr7ZNbPQXId
+	 c61Ooyy+T+NVw==
+Received: from aws-us-west-2-korg-lkml-1.web.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by smtp.lore.kernel.org (Postfix) with ESMTP id BE655C54E5D;
+	Sat, 16 Mar 2024 11:34:11 +0000 (UTC)
+From: Keguang Zhang via B4 Relay <devnull+keguang.zhang.gmail.com@kernel.org>
+Subject: [PATCH v6 0/2] Add support for Loongson1 DMA
+Date: Sat, 16 Mar 2024 19:33:52 +0800
+Message-Id: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710587902; l=8098; i=christophe.leroy@csgroup.eu; s=20211009; h=from:subject:message-id; bh=YZudm0mc7oieHhIoGo6jmZA09xujHbMs3Vj+6U3O8yY=; b=8AixODopzd1V5xuUB+A8j1/mGniaweXfE/AdYMEt140Qd/QjIR/kpvwP+/GGbrvsSYTRbKUGp AvO+WkahkqjCPuqQI7tMM52QWSXPRvqUwE/seWehdsdIr5LbPEyMwbu
-X-Developer-Key: i=christophe.leroy@csgroup.eu; a=ed25519; pk=HIzTzUj91asvincQGOFx6+ZF5AoUuP9GdOtQChs7Mm0=
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAKCD9WUC/z2NQQ6CMBAAv0L27JJukQqc/IfxUGFbGmlrWjVGw
+ t+tHjzOYWZWyJwcZxiqFRI/XXYxFFC7CsZZB8vopsIghWyIpMAlxmBzDIST10iq0Ybbg+guPRT
+ nlti41693Ohc2KXq8z4n1vyJ62ZGkvm3qVu6V6JDwyvZRZvX7uzxar91Sj9HDtn0AHlUeF6EAA
+ AA=
+To: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Mailer: b4 0.12.3
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710588849; l=2457;
+ i=keguang.zhang@gmail.com; s=20231129; h=from:subject:message-id;
+ bh=4L4tGD1DKV+mZjgPQTvkjdRdWNUjXgMgRTBy+sDZ4xg=;
+ b=p93Izz5hHhY6H2wDb31zXn4GqlnZAT04fm48vFU46D5x+W2hAJuZ7arhkDP9w1U14HnAr8S+d
+ jxo/7SN/W01D1vWzFQJVw/LAcnoytJr8L3ue7qsMRIWH0kgx1a2WZdx
+X-Developer-Key: i=keguang.zhang@gmail.com; a=ed25519;
+ pk=FMKGj/JgKll/MgClpNZ3frIIogsh5e5r8CeW2mr+WLs=
+X-Endpoint-Received:
+ by B4 Relay for keguang.zhang@gmail.com/20231129 with auth_id=102
+X-Original-From: Keguang Zhang <keguang.zhang@gmail.com>
+Reply-To: <keguang.zhang@gmail.com>
 
-mark_rodata_ro() and mark_initmem_nx() use functions that can
-fail like set_memory_nx() and set_memory_ro(), leading to a not
-protected kernel.
+Add the driver and dt-binding document for Loongson1 DMA.
 
-In case of failure, panic.
+Changelog
+V5 -> V6:
+   Change the compatible to the fallback
+   Implement .device_prep_dma_cyclic for Loongson1 sound driver,
+   as well as .device_pause and .device_resume.
+   Set the limitation LS1X_DMA_MAX_DESC and put all descriptors
+   into one page to save memory
+   Move dma_pool_zalloc() into ls1x_dma_alloc_desc()
+   Drop dma_slave_config structure
+   Use .remove_new instead of .remove
+   Use KBUILD_MODNAME for the driver name
+   Improve the debug information
+   Some minor fixes
+V4 -> V5:
+   Add the dt-binding document
+   Add DT support
+   Use DT information instead of platform data
+   Use chan_id of struct dma_chan instead of own id
+   Use of_dma_xlate_by_chan_id() instead of ls1x_dma_filter()
+   Update the author information to my official name
+V3 -> V4:
+   Use dma_slave_map to find the proper channel.
+   Explicitly call devm_request_irq() and tasklet_kill().
+   Fix namespace issue.
+   Some minor fixes and cleanups.
+V2 -> V3:
+   Rename ls1x_dma_filter_fn to ls1x_dma_filter.
+V1 -> V2:
+   Change the config from 'DMA_LOONGSON1' to 'LOONGSON1_DMA',
+   and rearrange it in alphabetical order in Kconfig and Makefile.
+   Fix comment style.
 
-Link: https://github.com/KSPP/linux/issues/7
-Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-Signed-off-by: Michael Ellerman <mpe@ellerman.id.au>
-Link: https://msgid.link/836f75710daef12dfea55f8fb6055d7fdaf716e3.1708078577.git.christophe.leroy@csgroup.eu
+Keguang Zhang (2):
+  dt-bindings: dma: Add Loongson-1 DMA
+  dmaengine: Loongson1: Add Loongson1 dmaengine driver
+
+ .../bindings/dma/loongson,ls1x-dma.yaml       |  64 +++
+ drivers/dma/Kconfig                           |   9 +
+ drivers/dma/Makefile                          |   1 +
+ drivers/dma/loongson1-dma.c                   | 492 ++++++++++++++++++
+ 4 files changed, 566 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
+ create mode 100644 drivers/dma/loongson1-dma.c
+
+--
+2.39.2
+
+base-commit: 719136e5c24768ebdf80b9daa53facebbdd377c3
 ---
-v2: Rebased on top of 6388eaa7f116 ("Automatic merge of 'master' into merge (2024-03-16 10:18)")
----
- arch/powerpc/mm/book3s32/mmu.c |  7 +++++--
- arch/powerpc/mm/mmu_decl.h     |  8 +++----
- arch/powerpc/mm/nohash/8xx.c   | 33 ++++++++++++++++++-----------
- arch/powerpc/mm/nohash/e500.c  | 10 ++++++---
- arch/powerpc/mm/pgtable_32.c   | 38 +++++++++++++++++++++++++---------
- 5 files changed, 65 insertions(+), 31 deletions(-)
+Keguang Zhang (2):
+      dt-bindings: dma: Add Loongson-1 DMA
+      dmaengine: Loongson1: Add Loongson1 dmaengine driver
 
-diff --git a/arch/powerpc/mm/book3s32/mmu.c b/arch/powerpc/mm/book3s32/mmu.c
-index 5445587bfe84..100f999871bc 100644
---- a/arch/powerpc/mm/book3s32/mmu.c
-+++ b/arch/powerpc/mm/book3s32/mmu.c
-@@ -193,7 +193,7 @@ static bool is_module_segment(unsigned long addr)
- 	return true;
- }
- 
--void mmu_mark_initmem_nx(void)
-+int mmu_mark_initmem_nx(void)
- {
- 	int nb = mmu_has_feature(MMU_FTR_USE_HIGH_BATS) ? 8 : 4;
- 	int i;
-@@ -230,9 +230,10 @@ void mmu_mark_initmem_nx(void)
- 
- 		mtsr(mfsr(i << 28) | 0x10000000, i << 28);
- 	}
-+	return 0;
- }
- 
--void mmu_mark_rodata_ro(void)
-+int mmu_mark_rodata_ro(void)
- {
- 	int nb = mmu_has_feature(MMU_FTR_USE_HIGH_BATS) ? 8 : 4;
- 	int i;
-@@ -245,6 +246,8 @@ void mmu_mark_rodata_ro(void)
- 	}
- 
- 	update_bats();
-+
-+	return 0;
- }
- 
- /*
-diff --git a/arch/powerpc/mm/mmu_decl.h b/arch/powerpc/mm/mmu_decl.h
-index 8e84bc214d13..6949c2c937e7 100644
---- a/arch/powerpc/mm/mmu_decl.h
-+++ b/arch/powerpc/mm/mmu_decl.h
-@@ -160,11 +160,11 @@ static inline unsigned long p_block_mapped(phys_addr_t pa) { return 0; }
- #endif
- 
- #if defined(CONFIG_PPC_BOOK3S_32) || defined(CONFIG_PPC_8xx) || defined(CONFIG_PPC_E500)
--void mmu_mark_initmem_nx(void);
--void mmu_mark_rodata_ro(void);
-+int mmu_mark_initmem_nx(void);
-+int mmu_mark_rodata_ro(void);
- #else
--static inline void mmu_mark_initmem_nx(void) { }
--static inline void mmu_mark_rodata_ro(void) { }
-+static inline int mmu_mark_initmem_nx(void) { return 0; }
-+static inline int mmu_mark_rodata_ro(void) { return 0; }
- #endif
- 
- #ifdef CONFIG_PPC_8xx
-diff --git a/arch/powerpc/mm/nohash/8xx.c b/arch/powerpc/mm/nohash/8xx.c
-index 6be6421086ed..43d4842bb1c7 100644
---- a/arch/powerpc/mm/nohash/8xx.c
-+++ b/arch/powerpc/mm/nohash/8xx.c
-@@ -119,23 +119,26 @@ void __init mmu_mapin_immr(void)
- 				    PAGE_KERNEL_NCG, MMU_PAGE_512K, true);
- }
- 
--static void mmu_mapin_ram_chunk(unsigned long offset, unsigned long top,
--				pgprot_t prot, bool new)
-+static int mmu_mapin_ram_chunk(unsigned long offset, unsigned long top,
-+			       pgprot_t prot, bool new)
- {
- 	unsigned long v = PAGE_OFFSET + offset;
- 	unsigned long p = offset;
-+	int err = 0;
- 
- 	WARN_ON(!IS_ALIGNED(offset, SZ_512K) || !IS_ALIGNED(top, SZ_512K));
- 
--	for (; p < ALIGN(p, SZ_8M) && p < top; p += SZ_512K, v += SZ_512K)
--		__early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
--	for (; p < ALIGN_DOWN(top, SZ_8M) && p < top; p += SZ_8M, v += SZ_8M)
--		__early_map_kernel_hugepage(v, p, prot, MMU_PAGE_8M, new);
--	for (; p < ALIGN_DOWN(top, SZ_512K) && p < top; p += SZ_512K, v += SZ_512K)
--		__early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
-+	for (; p < ALIGN(p, SZ_8M) && p < top && !err; p += SZ_512K, v += SZ_512K)
-+		err = __early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
-+	for (; p < ALIGN_DOWN(top, SZ_8M) && p < top && !err; p += SZ_8M, v += SZ_8M)
-+		err = __early_map_kernel_hugepage(v, p, prot, MMU_PAGE_8M, new);
-+	for (; p < ALIGN_DOWN(top, SZ_512K) && p < top && !err; p += SZ_512K, v += SZ_512K)
-+		err = __early_map_kernel_hugepage(v, p, prot, MMU_PAGE_512K, new);
- 
- 	if (!new)
- 		flush_tlb_kernel_range(PAGE_OFFSET + v, PAGE_OFFSET + top);
-+
-+	return err;
- }
- 
- unsigned long __init mmu_mapin_ram(unsigned long base, unsigned long top)
-@@ -166,27 +169,33 @@ unsigned long __init mmu_mapin_ram(unsigned long base, unsigned long top)
- 	return top;
- }
- 
--void mmu_mark_initmem_nx(void)
-+int mmu_mark_initmem_nx(void)
- {
- 	unsigned long etext8 = ALIGN(__pa(_etext), SZ_8M);
- 	unsigned long sinittext = __pa(_sinittext);
- 	unsigned long boundary = strict_kernel_rwx_enabled() ? sinittext : etext8;
- 	unsigned long einittext8 = ALIGN(__pa(_einittext), SZ_8M);
-+	int err = 0;
- 
- 	if (!debug_pagealloc_enabled_or_kfence())
--		mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
-+		err = mmu_mapin_ram_chunk(boundary, einittext8, PAGE_KERNEL, false);
- 
- 	mmu_pin_tlb(block_mapped_ram, false);
-+
-+	return err;
- }
- 
- #ifdef CONFIG_STRICT_KERNEL_RWX
--void mmu_mark_rodata_ro(void)
-+int mmu_mark_rodata_ro(void)
- {
- 	unsigned long sinittext = __pa(_sinittext);
-+	int err;
- 
--	mmu_mapin_ram_chunk(0, sinittext, PAGE_KERNEL_ROX, false);
-+	err = mmu_mapin_ram_chunk(0, sinittext, PAGE_KERNEL_ROX, false);
- 	if (IS_ENABLED(CONFIG_PIN_TLB_DATA))
- 		mmu_pin_tlb(block_mapped_ram, true);
-+
-+	return err;
- }
- #endif
- 
-diff --git a/arch/powerpc/mm/nohash/e500.c b/arch/powerpc/mm/nohash/e500.c
-index 921c3521ec11..266fb22131fc 100644
---- a/arch/powerpc/mm/nohash/e500.c
-+++ b/arch/powerpc/mm/nohash/e500.c
-@@ -285,19 +285,23 @@ void __init adjust_total_lowmem(void)
- }
- 
- #ifdef CONFIG_STRICT_KERNEL_RWX
--void mmu_mark_rodata_ro(void)
-+int mmu_mark_rodata_ro(void)
- {
- 	unsigned long remapped;
- 
- 	remapped = map_mem_in_cams(__max_low_memory, CONFIG_LOWMEM_CAM_NUM, false, false);
- 
--	WARN_ON(__max_low_memory != remapped);
-+	if (WARN_ON(__max_low_memory != remapped))
-+		return -EINVAL;
-+
-+	return 0;
- }
- #endif
- 
--void mmu_mark_initmem_nx(void)
-+int mmu_mark_initmem_nx(void)
- {
- 	/* Everything is done in mmu_mark_rodata_ro() */
-+	return 0;
- }
- 
- void setup_initial_memory_limit(phys_addr_t first_memblock_base,
-diff --git a/arch/powerpc/mm/pgtable_32.c b/arch/powerpc/mm/pgtable_32.c
-index face94977cb2..cfd622ebf774 100644
---- a/arch/powerpc/mm/pgtable_32.c
-+++ b/arch/powerpc/mm/pgtable_32.c
-@@ -130,31 +130,41 @@ void __init mapin_ram(void)
- 	}
- }
- 
--void mark_initmem_nx(void)
-+static int __mark_initmem_nx(void)
- {
- 	unsigned long numpages = PFN_UP((unsigned long)_einittext) -
- 				 PFN_DOWN((unsigned long)_sinittext);
-+	int err;
- 
--	mmu_mark_initmem_nx();
-+	err = mmu_mark_initmem_nx();
- 
- 	if (!v_block_mapped((unsigned long)_sinittext)) {
--		set_memory_nx((unsigned long)_sinittext, numpages);
--		set_memory_rw((unsigned long)_sinittext, numpages);
-+		err = set_memory_nx((unsigned long)_sinittext, numpages);
-+		if (err)
-+			return err;
-+		err = set_memory_rw((unsigned long)_sinittext, numpages);
- 	}
-+	return err;
-+}
-+
-+void mark_initmem_nx(void)
-+{
-+	int err = __mark_initmem_nx();
-+
-+	if (err)
-+		panic("%s() failed, err = %d\n", __func__, err);
- }
- 
- #ifdef CONFIG_STRICT_KERNEL_RWX
--void mark_rodata_ro(void)
-+static int __mark_rodata_ro(void)
- {
- 	unsigned long numpages;
- 
- 	if (IS_ENABLED(CONFIG_STRICT_MODULE_RWX) && mmu_has_feature(MMU_FTR_HPTE_TABLE))
- 		pr_warn("This platform has HASH MMU, STRICT_MODULE_RWX won't work\n");
- 
--	if (v_block_mapped((unsigned long)_stext + 1)) {
--		mmu_mark_rodata_ro();
--		return;
--	}
-+	if (v_block_mapped((unsigned long)_stext + 1))
-+		return mmu_mark_rodata_ro();
- 
- 	/*
- 	 * mark text and rodata as read only. __end_rodata is set by
-@@ -164,6 +174,14 @@ void mark_rodata_ro(void)
- 	numpages = PFN_UP((unsigned long)__end_rodata) -
- 		   PFN_DOWN((unsigned long)_stext);
- 
--	set_memory_ro((unsigned long)_stext, numpages);
-+	return set_memory_ro((unsigned long)_stext, numpages);
-+}
-+
-+void mark_rodata_ro(void)
-+{
-+	int err = __mark_rodata_ro();
-+
-+	if (err)
-+		panic("%s() failed, err = %d\n", __func__, err);
- }
- #endif
+ .../devicetree/bindings/dma/loongson,ls1x-dma.yaml |  66 ++
+ drivers/dma/Kconfig                                |   9 +
+ drivers/dma/Makefile                               |   1 +
+ drivers/dma/loongson1-dma.c                        | 665 +++++++++++++++++++++
+ 4 files changed, 741 insertions(+)
+---
+base-commit: a1e7655b77e3391b58ac28256789ea45b1685abb
+change-id: 20231120-loongson1-dma-163afe5708b9
+
+Best regards,
 -- 
-2.43.0
+Keguang Zhang <keguang.zhang@gmail.com>
 
 
