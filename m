@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-105081-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105080-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BC28787D8D9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 05:55:29 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D17587D8D5
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 05:55:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBA881C210E7
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:55:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C03B91F23311
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 04:55:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1465912B75;
-	Sat, 16 Mar 2024 04:54:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CDF3EAE5;
+	Sat, 16 Mar 2024 04:54:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="tGdo3kY6"
-Received: from outgoing6.flk.host-h.net (outgoing6.flk.host-h.net [188.40.0.77])
+	dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b="h/qp5HXX"
+Received: from outgoing4.flk.host-h.net (outgoing4.flk.host-h.net [188.40.0.90])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93B73947E;
-	Sat, 16 Mar 2024 04:54:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CAE57492;
+	Sat, 16 Mar 2024 04:54:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=188.40.0.90
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710564895; cv=none; b=TUUC7zA2CGp8zCdJarEm0kSSftlXxBwMLxLEFMhqg0aG2J7N6caHMQYma+WWiznN64k4b2C1xr68NzHY+xK1GtHUjRBizPv49bx0vYqlwVJyOB/wETPG3DUYlSW4klk2uCjclmq5iE53KDwjWTNhMuxpJZMa50B+6kNJbP/J8nI=
+	t=1710564894; cv=none; b=djxXEMOYZa6e5Uh7yxWL97scPt7XOhR22DHoMXWnxAVCo9G/u9zTizQngwgyAzongIXo90ADnNu8DPDpeEkPTnrNMYrabGhaXcJgE67Ez5B8nOkKScvQPdN+jIITj8G5OBasif3NEl0RPw6YFbUPK+dtTOf4rX+bTIpw8gDL3uk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710564895; c=relaxed/simple;
-	bh=7rp0Pu9NxnJumh8kJOikd3FpoQ/JJj8p6U/ZumE2o1A=;
+	s=arc-20240116; t=1710564894; c=relaxed/simple;
+	bh=fyo2KgHvIs9UiG5+MnG3f7lwxFXpsIDRxLkVv9qZxVI=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Fo/d4XoVhB3yBfeph4pGLv9tWgRITIUJEXcagBFPX52ymX/pmwM8JG4SpBA1QdRAieVQ+QvdR5QZ6qeD6qeJ3ojDtCEu+Z+3a+u2KWOPa30XemgKVHAVmH2OZk+TAJRYVMUbenVKyS8gmvCUJXpM6Ebb9wWSKHdxtcbFQQwjZdk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=tGdo3kY6; arc=none smtp.client-ip=188.40.0.77
+	 MIME-Version; b=Ho/X4xdRoh01f7Hmfy/id6jezMA56r2D35bvmoImxYDa2pUG0m9SUxNSbOTTvWV+J5nZaltWoBVt/2K6gevLdy/oAPAWBTWJG5g8J5RCYYj39mjl1oVKE/HTbRV7lyDSRO/pxTJGvCHmyHTUMfbpHvVMbiY6kWvPvdQVAHNiAhQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za; spf=pass smtp.mailfrom=risingedge.co.za; dkim=pass (2048-bit key) header.d=risingedge.co.za header.i=@risingedge.co.za header.b=h/qp5HXX; arc=none smtp.client-ip=188.40.0.90
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=risingedge.co.za
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=risingedge.co.za
 DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
 	d=risingedge.co.za; s=xneelo; h=Content-Transfer-Encoding:MIME-Version:
 	References:In-Reply-To:Message-Id:Date:Subject:Cc:To:From:reply-to:sender:bcc
-	:content-type; bh=lnVL8IDMIOZz0JFbQHp6O6sCyQ8wUH4ojKu3qTFfjAI=; b=tGdo3kY69Qc
-	BeajyNk11OLZ2r+rfD4w2UdS3yakrrRys4VZp/TJjotY0RvEolddx5rWVapxxTdCKx3A/tg1VDqNq
-	Z6iUr2M/MRr9s8B7Dz/tz1yoHB3f0UZxHPK0okCVcg4XkEu3zRwgDouyQLb1X+STIXnF39zF/NJeX
-	fu7/G/OHHpiJY86EHZexjOH5Vdx6wWW/iOSctWwB6ECFFyzmdQ8PzGv2LKDo8NyOGXZr9EAkrnzrx
-	d8u5oZxFajXy9MUYWBYsF+GFBOHmF2k+0xt+A+UWzDwKdi1BeozfBtx64Czsrszo4VXHENPLr+xQN
-	6sPXjZB6hvQzvwd6XVpfjsg==;
+	:content-type; bh=dDv0pbR5CPqChqplXNbirpSOvOZDBkPUmjOZEtlNwDA=; b=h/qp5HXXtlH
+	uHqBGH7sQxkFwb+Q3cXsdKJhWnSaNCq0AWVanPXnGE5Serv3Gb4lktW/GVqDj+pKDPxT52dlclKtJ
+	gI5LrAzmjkSNQVEO5LkkkPqLGH2OPOxomNDGBPJPxBDDQ/O5uTDfvP7j6+PaZw5dh86Gi5LLZE7m9
+	vqmoT/Bdwi0+Dlev0Eipr8j/OB2m8YMIsT14fbljHM0unpOKSQa1IpOWGMnf759Bu93+BgNOVQWW8
+	pNAE4oUmbr76paka6XaxgxYLehw44xCKaFsrWagSkiV6I/091wrckhxFSCI/AYJTZZBPMOowIMafg
+	yhbi6T3Kz6RSFG7KLTOoxBQ==;
 Received: from www31.flk1.host-h.net ([188.40.1.173])
-	by antispam2-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
+	by antispam1-flk1.host-h.net with esmtpsa (TLSv1.3:TLS_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rlM4B-00F6Vf-At; Sat, 16 Mar 2024 06:54:44 +0200
+	id 1rlM4F-00Bxxs-QY; Sat, 16 Mar 2024 06:54:48 +0200
 Received: from [41.144.0.193] (helo=localhost.localdomain)
 	by www31.flk1.host-h.net with esmtpsa (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
 	(Exim 4.92)
 	(envelope-from <justin.swartz@risingedge.co.za>)
-	id 1rlM4A-00048C-Es; Sat, 16 Mar 2024 06:54:42 +0200
+	id 1rlM4E-00048C-Nv; Sat, 16 Mar 2024 06:54:47 +0200
 From: Justin Swartz <justin.swartz@risingedge.co.za>
 To: =?UTF-8?q?Ar=C4=B1n=C3=A7=20=C3=9CNAL?= <arinc.unal@arinc9.com>,
 	Sergio Paracuellos <sergio.paracuellos@gmail.com>,
@@ -64,9 +64,9 @@ Cc: linux-mips@vger.kernel.org,
 	linux-arm-kernel@lists.infradead.org,
 	linux-mediatek@lists.infradead.org,
 	Justin Swartz <justin.swartz@risingedge.co.za>
-Subject: [PATCH 03/14] mips: dts: ralink: mt7621: reorder mmc regulator attributes
-Date: Sat, 16 Mar 2024 06:54:31 +0200
-Message-Id: <20240316045442.31469-4-justin.swartz@risingedge.co.za>
+Subject: [PATCH 04/14] mips: dts: ralink: mt7621: reorder sysc node attributes
+Date: Sat, 16 Mar 2024 06:54:32 +0200
+Message-Id: <20240316045442.31469-5-justin.swartz@risingedge.co.za>
 In-Reply-To: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
 References: <20240316045442.31469-1-justin.swartz@risingedge.co.za>
 Precedence: bulk
@@ -82,9 +82,9 @@ X-SpamExperts-Domain: risingedge.co.za
 X-SpamExperts-Username: 
 Authentication-Results: host-h.net; auth=pass (login) smtp.auth=@risingedge.co.za
 X-SpamExperts-Outgoing-Class: ham
-X-SpamExperts-Outgoing-Evidence: Combined (0.02)
+X-SpamExperts-Outgoing-Evidence: SB/global_tokens (0.00601258593501)
 X-Recommended-Action: accept
-X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8htZ8gGswXf61EOVBjPgdtPUtbdvnXkggZ
+X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT+7GmcY6SH6rLHD+aDNrVlXPUtbdvnXkggZ
  3YnVId/Y5jcf0yeVQAvfjHznO7+bT5wCPRB8bAzJcv2cv+UqiTTc2+CpNcmBnO4XM3Sck4bwNogU
  WCl1nkLBzZX0KuJ9bXiS85Z42w/+2OBolTNFbPomXFWCX8oNdggW7HE9XDTdSejrkEpbuUvwMvHx
  3T+KSG//gbuP7hnUK8NQdLwsVWKIFDZRrTGv3rxiw9tFrqFSCFNiLZt/QXQnOBRD+jq1HsKsDh/6
@@ -92,65 +92,52 @@ X-Filter-ID: Pt3MvcO5N4iKaDQ5O6lkdGlMVN6RH8bjRMzItlySaT8htZ8gGswXf61EOVBjPgdtPUt
  0+Txhz2u9qvrL2PODYgMZQApJXOjDLkqunZ9NcY2bHZn7CfFscMZZf3sCkN20I5vMh4akiObI7Kj
  vK7X04QEin24qbfMFd8eGjnYW8aSH5qj4ujh/13psIvqSqJFa1CcANErDW/w69saM9prk3jNnHtn
  nuEt/J9wDZeQfiNOYsLDFBdwYt2XtlLzy7G7T4kla0JNnAWQx3FS11bhwUa9HCIwKB+TroNcRY33
- oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3F9lX/MnL0e1Dw3PzS4XbumC
- n3oZFShGuGVczvnnMQuyLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
- ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz30/jNv+A51L2swh0gYW0eVWShle6
+ oNmH4nRQzHQazgY7lmveanvOdQzf6IMJ3345q/s6ySNrGnXycmhg3IPNahsAt1cu9tZ5w1P5nT6o
+ naNQbqJUPRwZtKOTN8gOLtBcNrQxKZYuPe8bdCyw79zlPbqLQkZr26Lcxdvj8cqI+CogZdOhX7v3
+ ClXzrmMENhJLl6MBfhzHVBR0wHQZxzIUka7Uq615Mik1qzcz308HFwsY4DWIzjhTYXUG8GBZhle6
  F/kpBdN+oWjoATjEFDwcaiz0R34rhTN+GTbl4uS+pZovX9cex7Ac4fawcerGI7TrGXpM/B/M0BZd
  PfIU1BX7pZc1sE3vsz58auH/srM2fgZ9JmgLbj7sqoEiwv7LCxIiAE5ODMnmwjvj2589zjbyZCiM
- WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVAT1rE1/vP68Bb4z3v3h3gCdXrv2+9GnNX30LKqXb
- fwFKgm/rnYBl+Mj5KqOl6Jzub/f3QhLRbOgisvi5VU9eNBtgo6zjiatjNO/pnMCjuIvXs/AyV/Ns
- URB/R+FlEHyAzksgfaRvdgw0WK34QWnzHHMcN6qoXPjenLhIOF1oeRYbjF1Hp647mOWoQlc3hL3c
- AHYPcQ0eIL+UT9voGXmPy7AY8kGPMNk6zziadXYGQAd4u/m4iBmYb1/LCV4/EuVHup06w3Vwxf9C
- F7D6LKKRTfdjzQ6YC7Heg3Xf7O1TOd6RcY/MXB8eEq3bCN2QohZvyS03iBmgsz450Kmjd3fGV1Cz
- lxtu/r3bKvHBX/IaJ5ru5N8XgNKu7xfVBtyhaz8SIbtf63VNbf0lrvssY+k7AHGi1NevGWTo2+h8
- Lhk4HCeZR7ymlGVRtthBJ2y8A5arx6JItKpFaUNPGMMlvbMX0nyK1NiAJ0y2Qvvn6ds6mor35w4f
- SfHzQbABJfgy21HclcZkPRq7NhoxyMwqi8Q23Rgadfh5T5n5D4OHHpbEIgsllZKWnzc5M5WlNtVJ
- qo05MS+4ayUpOtEhdxekWDmK9g==
+ WpBpW8YvoIIqmZcWhL/r/eFjMjJnMHeiAPOVK0T+c9pM0FteOLwuqFxkZtxbXpCgbiKBsA+Ddi6m
+ awd1jemntr2PrMOTF1fDnHo5A9JQxMw0XtBqT5kbx7zuprmKeJENT1oiQUtfU17WEZPRHu1+r6ov
+ Q/IKaojN7gdb+Glhdb8DP7Iz3Z0Qa+VGiF/lfNRtaK1t4SnssY938wKgOC3c9GkW+OmRHU05XGuW
+ g+VcQ3bZb7F7k2CvWvw8dRRAAGTtpIcCl6rs3DrWsyxMZxAFMe5h6KhUAmQrT5srb5qgpERsDkCX
+ BgcGBwKlYailDNhe7w2QIanZ/NegoJ79AXUnIiEEoyCaZXMG8LAkbJoO2tY/Mg5ClXd30oBm8U++
+ JlmpaolH3tK93iPfP9+mLIREJ/NOdtI62oaf3zKhaq+8PLJNYfhYj6c2beNT9nLYM3A6BXfvel8O
+ EFDbU51Q2S43vcWL3lM20b9wQESc+PquLiZOpxiedGbqX4nzL9MgCv99rrli2UQdOGeuQqV2IVXB
+ o/3R5VqqcOmERbjE+D5FzT0EaduWMjGSdmMR5Ch1HY0a4RW7JP9zvdSGB9tIDxuFtg36jUhUk8/b
+ P2/Mw1j9lmNQqiIAMR1SEszVdPY4ocfmWv3Fe9Iziczdq+A=
 X-Report-Abuse-To: spam@antispamquarantine.host-h.net
 
-Reorder the attributes of MMC fixed voltage regulator nodes
-for the sake of compliance with the DTS style guide.
+Reorder the attributes of the sysc node so that the
+ralink prefixed attribute is placed after those which lack
+prefixes.
 
 Signed-off-by: Justin Swartz <justin.swartz@risingedge.co.za>
 ---
- arch/mips/boot/dts/ralink/mt7621.dtsi | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+ arch/mips/boot/dts/ralink/mt7621.dtsi | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
 
 diff --git a/arch/mips/boot/dts/ralink/mt7621.dtsi b/arch/mips/boot/dts/ralink/mt7621.dtsi
-index ec87e46ba..696460b2d 100644
+index 696460b2d..d1d4399d7 100644
 --- a/arch/mips/boot/dts/ralink/mt7621.dtsi
 +++ b/arch/mips/boot/dts/ralink/mt7621.dtsi
-@@ -37,20 +37,24 @@ cpuintc: cpuintc {
+@@ -68,12 +68,15 @@ palmbus: palmbus@1e000000 {
+ 		sysc: syscon@0 {
+ 			compatible = "mediatek,mt7621-sysc", "syscon";
+ 			reg = <0x0 0x100>;
++
+ 			#clock-cells = <1>;
+ 			#reset-cells = <1>;
+-			ralink,memctl = <&memc>;
++
+ 			clock-output-names = "xtal", "cpu", "bus",
+ 					     "50m", "125m", "150m",
+ 					     "250m", "270m";
++
++			ralink,memctl = <&memc>;
+ 		};
  
- 	mmc_fixed_3v3: regulator-3v3 {
- 		compatible = "regulator-fixed";
--		regulator-name = "mmc_power";
--		regulator-min-microvolt = <3300000>;
--		regulator-max-microvolt = <3300000>;
-+
- 		enable-active-high;
-+
- 		regulator-always-on;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-min-microvolt = <3300000>;
-+		regulator-name = "mmc_power";
- 	};
- 
- 	mmc_fixed_1v8_io: regulator-1v8 {
- 		compatible = "regulator-fixed";
--		regulator-name = "mmc_io";
--		regulator-min-microvolt = <1800000>;
--		regulator-max-microvolt = <1800000>;
-+
- 		enable-active-high;
-+
- 		regulator-always-on;
-+		regulator-max-microvolt = <1800000>;
-+		regulator-min-microvolt = <1800000>;
-+		regulator-name = "mmc_io";
- 	};
- 
- 	palmbus: palmbus@1e000000 {
+ 		wdt: watchdog@100 {
 -- 
 
 
