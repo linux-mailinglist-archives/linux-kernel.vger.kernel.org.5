@@ -1,88 +1,82 @@
-Return-Path: <linux-kernel+bounces-105140-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105141-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 10EA987D997
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 10:28:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A099287D998
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 10:30:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB4831F217E8
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAD221C20EB4
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 09:30:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 180FB171AD;
-	Sat, 16 Mar 2024 09:28:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A74E914F70;
+	Sat, 16 Mar 2024 09:30:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vDu55L3S"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hQ9d3b//"
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A571171C4
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 09:28:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B01012B79
+	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 09:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710581296; cv=none; b=rI7eAl0tCZ7/AT9hOi/6qsxCCEaxqDqw0l6OvYJxthXCNOqChOM65umuPj9xRRfp91L035i2AzZV5o3kmAciuPamzr0nQ5LhDqzt+9j8+ZoadgrXV7rvqTZky+wIgdGMRvljbTg5OxOhx99I70WAfAuqXepYO2+ZRhiZTH8xDn0=
+	t=1710581417; cv=none; b=XiCBe8ch5rnPyDWQ1rqJzWQD1E8SkkLvFla4GMGdlfNyMW9xeS4oE4oTjRkF9dUOH0kJhEyJ8+tkmO3vWTv4kxivozABQZLTpsHsEv4QL5Xuq31Cc6leX+AhTCE9ophmVurBAMil5N5yOEfq3amh6ZibzLdNDI4z1i/7so0fOkY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710581296; c=relaxed/simple;
-	bh=Sk3IUMq+ynWrhub4+s7U0qctho1XK9mVRiKtEWsFTG8=;
+	s=arc-20240116; t=1710581417; c=relaxed/simple;
+	bh=3a6ZkGbC6qnjXSvnaDZPukV97lFmXpUpFjamuzvR7e4=;
 	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=hwOS9L/A8XsR9XAwlS/ustE8dc2MP5VZmByLGgOJn518koXiqyy9YSNgmyGiz6l28hXYHwjpwyL0zMVW8EnMZJpEi/Hhb067PcTlwAVh5fItkVe3iJ1hlVe8nJtXKpkXEFmRfwEuOUnBkrMMJ8wzEoxSdr7jDbyYwirBslU0gbg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vDu55L3S; arc=none smtp.client-ip=209.85.167.51
+	 Content-Disposition; b=LPpRDc4KEn/Ejtie/08AKsZ6GaYgEmMjBdJDrunL0gOIEMVCr7Ut5na8KW0zMIqBkivrXG4EEAJlWxhz3McOg6ULFFayJdTt89wDnRel9AYhHrG5sJXEeWPt+/7772vJSWJXJItUj2XCuByVSvPNAOS3R/f5DhNuVtQ0P/PbFG0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hQ9d3b//; arc=none smtp.client-ip=209.85.167.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513a6416058so4057905e87.1
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:28:12 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-51381021af1so4098704e87.0
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 02:30:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710581291; x=1711186091; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710581413; x=1711186213; darn=vger.kernel.org;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=aohr4d7BClKxelEDFFKHCRuY2eGHwzyMDzY2KtCl00o=;
-        b=vDu55L3SUpAwQhATy9P+ivNW+VyK+Gn7qM01kDVzqJ4lYauDbTmO5zsQraO76vRu7/
-         2j4OQIdFeUIbkIOTbQkj2asMQN0Ihm2c5Sg4ar9ljBUt8P3Ddf4CpEY34qgI2gQExDRe
-         TashIZkLVa3YS2Q7QCRkWDsf746UFfcNxs0MYFaSF8wXBFa2OutzdbMxxoCB0ToOLv9c
-         F2FYt4QIks5S4BZT8LsL4AgUpWadrLSlawF6okpu9X6PgzyUrzP55iw56QXw1J86Cfym
-         oJ7CPZ3C9eAcmEgSLIUpg3p7iCLVOD7hO9ZKzkFzbmzVpShVmPupgRGDLY5UnETdoAwG
-         9Wlg==
+        bh=dGUAB3UIw3E7EFrzYS72iNT6shEEycV/Wx4kFX1KU/c=;
+        b=hQ9d3b//VyzUIh/rdiLQt7Jdf7l7DRhbvVjrM2jerO3K8r8lcPflktsdqZzAKdG2Gb
+         r0uX1uPuTE3P2HGfIwI7PD91N/oo7N6LHth+E2FAfx0TBhaMusUhBjG/3l/T6T/BCqxU
+         Gh3nHg0mX4Xl9KA6Bb89tgU90Lft241uyOtVmOzasW9D45XD/A+gHDGP0mnPPZWR7Yrg
+         0wmrtvTwbmm63bHBWh9A4PbsXvGjEFiIegt82bZERiZRP0NGH6z7CKVHX+0BeS07NUDu
+         hauV/Z7OpE/xAr+hnxaOkt27TWlLhBQ5iFR3rnY4oYKN7ivCOGGu0Vpz75gqWMA9diQ7
+         2R9w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710581291; x=1711186091;
+        d=1e100.net; s=20230601; t=1710581413; x=1711186213;
         h=content-disposition:mime-version:message-id:subject:cc:to:from:date
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=aohr4d7BClKxelEDFFKHCRuY2eGHwzyMDzY2KtCl00o=;
-        b=PgiIlhLa/dAolrHQ1KkdkPbZp/DRvumUygbyV4TIdmEYtViwEmlPvev/4S0QO+/LFd
-         YTujeSsX2u07WsqnsCzaDCJlO1PZg7DizfEoSUZqoslUZS+FU/cLskTzSf1YS/lLxf+X
-         Os5F/zb2Hx2UQIDcYXSmGpG7Jo8rw+5+DGBUzFgF8hj3pB13eG4wf69SEQNTwVqJdeMb
-         mi1VVPpAcdcJctmg/Gm+6GefN4Y2gWOMQaFuKk7E6xumiASmOGnQWuybkx6AFzOlh93x
-         i2nPctAgwxfBBmnb8mc/TwVi8a+Q0J3oJ+vdufX0eaFA22cfx1l0Shre1g07M/0ydu0c
-         wt9A==
-X-Forwarded-Encrypted: i=1; AJvYcCU+cDqbuHb/aFXkKc8958/ofhU38CBqjIGDUhzueS7zvXebozY9z3nCk3HTsoHc2fW8aN2+jFBgPWwvsGZVII6YVQdkvhwi/NJ06+Y2
-X-Gm-Message-State: AOJu0YzQCp1U1mu9/cgiNUIjVFKaPQ0lfFBR+ks+zMR6iPjme2u8HiSB
-	yEjTGqF5NeFOTJE5HjFBtxnnW4gy4kqkDm31tgfQ1cpv0ImKRZA5z4QISoMljWE=
-X-Google-Smtp-Source: AGHT+IEcnp7qiM6IXTp0ox63XBBssfGbXKm5O93H133J9J0QTjrgFwKlcFwMjSWaSlH8P9wUdPdZJQ==
-X-Received: by 2002:a19:4353:0:b0:513:cc34:342a with SMTP id m19-20020a194353000000b00513cc34342amr4706454lfj.14.1710581290898;
-        Sat, 16 Mar 2024 02:28:10 -0700 (PDT)
+        bh=dGUAB3UIw3E7EFrzYS72iNT6shEEycV/Wx4kFX1KU/c=;
+        b=qU7Anp/8Ofz2oMXRbAw0AZYWMS4ooBE7bprskwVvaspTrvR4Cam6Wl84TjqRYyasYJ
+         NE9XlXa2ptX5Rz0eZIE/gzCIhuaIEiICtRf8inT0F2g3wwuCTVIGmqaZXd7dVnTpF+JA
+         H3JlsATgE++U/AGI3CQbr3MbIGal/x1ZPLFHiiETtWWuoONOVoDnmWFhlwO0pxfnVJb3
+         r053p8apVklxzcT3igNo/aw3GZsX+cgV/HSCxjHSxyYEPjdFlI0023FpCIA/nivrxjaK
+         MKse+oa1Gm92UOScXLWQd71syptTusaFxIOwGp6vZK6fdAFZ4QJJXoFE36uo+K2jexbY
+         hrSg==
+X-Forwarded-Encrypted: i=1; AJvYcCWOzoQmtvHCGfl4ViDmVr/6hT/0U5Ey242WmddiwPQIxTfPCk9RV60fkC5wdWB8WKcLkRUtC71GZNZRFUBxu26ZVHxJfbeqsMwRQNAn
+X-Gm-Message-State: AOJu0Yz6OvnYMqJ+d0T5Fjgcd6fmqE5l8lW6HIJ1T2EwTFeNkJJlfD+E
+	DGCsqrCt+WOGJczyDZoW0i4gbmfgXHFkAhea9d6bHY9JoMqBXLCdAa/TdkYG4cY=
+X-Google-Smtp-Source: AGHT+IHaVTRcQ6GSzZTIOX7uqn97na0aCbldg2yl3L19ISK8nvKzKRYsmj4GCGkP1PGTK3RRw+8UUw==
+X-Received: by 2002:a19:914c:0:b0:513:c223:f0e4 with SMTP id y12-20020a19914c000000b00513c223f0e4mr1128678lfj.10.1710581413374;
+        Sat, 16 Mar 2024 02:30:13 -0700 (PDT)
 Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id n20-20020a05600c4f9400b00412f8bf2d82sm11391125wmq.28.2024.03.16.02.28.09
+        by smtp.gmail.com with ESMTPSA id fb4-20020a05600c520400b004132901d73asm8228520wmb.46.2024.03.16.02.30.12
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Mar 2024 02:28:10 -0700 (PDT)
-Date: Sat, 16 Mar 2024 12:28:06 +0300
+        Sat, 16 Mar 2024 02:30:13 -0700 (PDT)
+Date: Sat, 16 Mar 2024 12:30:09 +0300
 From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Harry Wentland <harry.wentland@amd.com>
-Cc: Leo Li <sunpeng.li@amd.com>,
-	Rodrigo Siqueira <Rodrigo.Siqueira@amd.com>,
-	Alex Deucher <alexander.deucher@amd.com>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	"Pan, Xinhui" <Xinhui.Pan@amd.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Nicholas Kazlauskas <nicholas.kazlauskas@amd.com>,
-	Charlene Liu <charlene.liu@amd.com>, Jun Lei <jun.lei@amd.com>,
-	Alex Hung <alex.hung@amd.com>, Daniel Miess <daniel.miess@amd.com>,
-	Sung Joon Kim <sungkim@amd.com>,
-	Yang Li <yang.lee@linux.alibaba.com>, amd-gfx@lists.freedesktop.org,
-	dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Florian Fainelli <florian.fainelli@broadcom.com>,
+	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
+	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
 	kernel-janitors@vger.kernel.org
-Subject: [PATCH] drm/amd/display: delete unnecessary check in
- dcn35_set_long_vblank()
-Message-ID: <56712ad5-ed41-4d64-a317-10cc1275137a@moroto.mountain>
+Subject: [PATCH] serial: 8250_lpc18xx: disable clks on error in probe()
+Message-ID: <92646c10-e0b5-4117-a9ac-ce9987d33ce3@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -93,31 +87,28 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 X-Mailer: git-send-email haha only kidding
 
-"timing" is "&pipe_ctx[i]->stream->timing" where ->timing is not the
-first struct member of ->stream.  So it's the address which points into
-the middle of a struct.  It can't be NULL so delete the NULL check.
+Goto the clean up path to clean up a couple clocks before returning
+on this error path.
 
+Fixes: 0087b9e694ee ("serial: 8250_lpc18xx: Switch to use uart_read_port_properties()")
 Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
 ---
- drivers/gpu/drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c | 5 +----
- 1 file changed, 1 insertion(+), 4 deletions(-)
+ drivers/tty/serial/8250/8250_lpc18xx.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c b/drivers/gpu/drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c
-index 2e8ec58a16eb..87cfd9f1cec9 100644
---- a/drivers/gpu/drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c
-+++ b/drivers/gpu/drm/amd/display/dc/hwss/dcn35/dcn35_hwseq.c
-@@ -1411,10 +1411,7 @@ void dcn35_set_long_vblank(struct pipe_ctx **pipe_ctx,
- 		if (pipe_ctx[i]->stream) {
- 			struct dc_crtc_timing *timing = &pipe_ctx[i]->stream->timing;
+diff --git a/drivers/tty/serial/8250/8250_lpc18xx.c b/drivers/tty/serial/8250/8250_lpc18xx.c
+index 7984ee05af1d..47e1a056a60c 100644
+--- a/drivers/tty/serial/8250/8250_lpc18xx.c
++++ b/drivers/tty/serial/8250/8250_lpc18xx.c
+@@ -151,7 +151,7 @@ static int lpc18xx_serial_probe(struct platform_device *pdev)
  
--			if (timing)
--				params.vertical_blank_start = timing->v_total - timing->v_front_porch;
--			else
--				params.vertical_blank_start = 0;
-+			params.vertical_blank_start = timing->v_total - timing->v_front_porch;
+ 	ret = uart_read_port_properties(&uart.port);
+ 	if (ret)
+-		return ret;
++		goto dis_uart_clk;
  
- 			if ((pipe_ctx[i]->stream_res.tg != NULL) && pipe_ctx[i]->stream_res.tg->funcs &&
- 				pipe_ctx[i]->stream_res.tg->funcs->set_long_vtotal)
+ 	uart.port.iotype = UPIO_MEM32;
+ 	uart.port.regshift = 2;
 -- 
 2.43.0
 
