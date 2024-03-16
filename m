@@ -1,141 +1,78 @@
-Return-Path: <linux-kernel+bounces-105273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA2AA87DB41
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:45:33 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8814887DB43
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 19:51:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 439071F21870
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:45:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 327021F21D19
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 18:51:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A5691BC4E;
-	Sat, 16 Mar 2024 18:45:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 906971C29C;
+	Sat, 16 Mar 2024 18:50:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="PO2qqzlz"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="meNYMILc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCA741B962
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 18:45:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D21634C9A;
+	Sat, 16 Mar 2024 18:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710614727; cv=none; b=ECZUC6B01ONVd/8UgQknwoOxtoYTBFslIXnlWUyNfMzT+LC3+xoOhehXP13mN99mwOIfb+K+WF7TRYIpy6tmRxGlS3IH1IqVSRfQ2K+w9qJsijLoi/etzr/kQXb70GpxNB5tQicafPUbTmcbfMTShjNjgdhQzx4eE578Q2lAS/c=
+	t=1710615057; cv=none; b=nkHmJ7Z6oQU9ab8/nj22ondcqGe6/Jeq+NaxY+RqqNBZqXmXhVtQfX9P864BWNC1Q7QxWGSGoM4BewhGo8y9Z1Z9HcAUMTFZYNmoIM9gSXG52kpjhtcm6e1YMlm93D4DzWn89NsGL2cCGqnl0FGkfSJzBHAq40YWZUr8KEJG1kQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710614727; c=relaxed/simple;
-	bh=yKt1j5Qoe8fvsNK5gDIjZKaUMtwpWrjtQqKtpQLSZqY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=AnU2NqGn62oWrQthCyKAgGP5Hm0MRgAyFyfhRMF+W/uCC5xX4qGU81tfqaW6FSYk8GzDYk+WPlD0FIvQozHgzzygcVSImk+QAeU6M4R3+be6rPLiWtUYKfGQP4yQJJmvH+DL0CIVlmvHFvDDL20oRelUTC++cW5kw+oaT24WUig=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=PO2qqzlz; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710614726; x=1742150726;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=yKt1j5Qoe8fvsNK5gDIjZKaUMtwpWrjtQqKtpQLSZqY=;
-  b=PO2qqzlznKqTTop5Xr6XhJOMmNdGVGmn5vzh+qcHLbqyza7CEjTq/NP6
-   y1xu6o2+1GmHqTHBmAuKLUyEhA+XZMj0ge7xvsyxUpyMQro8QrVV8OR0M
-   7PO1HRRj6WWzts5gzpHNoPxc2QY1/tZqZLCgnO4oqUlghwnWzYPSHE/2P
-   vWsq6fiKWIywUp13q2HGXhBrmSDJZN/wMTCv7bdshdFMsUvloWuEjlmgZ
-   2gHnbXbMEiRYiUjz8haWXSCtsYZYWT+Lr358dDEJcoJAwwG3nPS0Po9Tv
-   vZxL6V9Thvd8AhCfyPle/lDd+SMNvUo5RfWunx8tBZU9sh5msg76HfWGi
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11015"; a="5327707"
-X-IronPort-AV: E=Sophos;i="6.07,131,1708416000"; 
-   d="scan'208";a="5327707"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2024 11:45:25 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,131,1708416000"; 
-   d="scan'208";a="17626735"
-Received: from fdefranc-mobl3.ger.corp.intel.com (HELO fdefranc-mobl3.localnet) ([10.213.6.225])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 16 Mar 2024 11:45:22 -0700
-From: "Fabio M. De Francesco" <fabio.maria.de.francesco@linux.intel.com>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
- gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
- linux-staging@lists.linux.dev, outreachy@lists.linux.dev
-Subject: Re: [PATCH v5] staging: greybus: Constify gb_audio_module_type
-Date: Sat, 16 Mar 2024 19:45:18 +0100
-Message-ID: <10634620.nUPlyArG6x@fdefranc-mobl3>
-Organization: intel
-In-Reply-To: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
-References: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710615057; c=relaxed/simple;
+	bh=83py2/xNNq7D0IX8F4E2R1O+OXAt5TZio6y2c1uomO4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=EFn4rYA5ZRUGA88WrvVmSKIzDO1SC/vYt/R5Aw8T+mJ6/oQisT4BGe7RoOhgckC2k1Dt57v8FrkRGMWXuvbLx30ewbq3KKI/yfrl+rjyBRHRL16nUtRBQ+M3PNGux3M25qIZjJfiDfIKI2XJ0grPMm0k9DQKFY7a6RRpRujRgQM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=meNYMILc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id B5D74C433C7;
+	Sat, 16 Mar 2024 18:50:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710615057;
+	bh=83py2/xNNq7D0IX8F4E2R1O+OXAt5TZio6y2c1uomO4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=meNYMILcnk6xRBMP6D0YUIDv3KgBx/W/nrdkgfnl1iRHfh4TCouSdruyAXQYSz5dP
+	 My7sn0lOIvf1WE5cZhkhnVgd3MZwPCUZkl7Y6s7udosrLaDCqiVULc++m2oJQ+ddJy
+	 +W6OVoSXHoeAb5GjKWCQxLUkbfwtspKjB0+RW043vtGBItBIc8kszQbUfpwEulxwql
+	 SKfhqbEN3v6fSwtcIIVPT1kaIyKctLgOYxQpoGCGAOx0WPrZYSzcaUqvkEnTWHW2gI
+	 3OdfFdaUyxdIEr1rN5nOczJa8OycDpN93BKW+s1V+c0Sap5PPi6CUfkAByHYBb3oIn
+	 08P0+kf25sQUg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AC466D95053;
+	Sat, 16 Mar 2024 18:50:57 +0000 (UTC)
+Subject: Re: [GIT PULL] Please pull NFS client updates for Linux 6.9
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <4623cb545316bfdb45b8d294861ad7eb508ec1b8.camel@hammerspace.com>
+References: <4623cb545316bfdb45b8d294861ad7eb508ec1b8.camel@hammerspace.com>
+X-PR-Tracked-List-Id: <linux-nfs.vger.kernel.org>
+X-PR-Tracked-Message-Id: <4623cb545316bfdb45b8d294861ad7eb508ec1b8.camel@hammerspace.com>
+X-PR-Tracked-Remote: git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.9-1
+X-PR-Tracked-Commit-Id: 719fcafe07c12646691bd62d7f8d94d657fa0766
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: c1f10ac840caced7a9f717d4170dcc14b3fac076
+Message-Id: <171061505769.24411.4773695359951231947.pr-tracker-bot@kernel.org>
+Date: Sat, 16 Mar 2024 18:50:57 +0000
+To: Trond Myklebust <trondmy@hammerspace.com>
+Cc: "torvalds@linux-foundation.org" <torvalds@linux-foundation.org>, "linux-nfs@vger.kernel.org" <linux-nfs@vger.kernel.org>, "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
 
-On Saturday, 16 March 2024 19:24:21 CET Ayush Tiwari wrote:
-> Constify static struct kobj_type gb_audio_module_type to prevent
-> modification 
+The pull request you sent on Sat, 16 Mar 2024 18:17:31 +0000:
 
-I'm not yet convinced that being or not being const has much to do with 
-sharing data. 
+> git://git.linux-nfs.org/projects/trondmy/linux-nfs.git tags/nfs-for-6.9-1
 
-And next time please wait for other people to comment your versions. Wait a 
-day or two and then please delete everything from here...
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/c1f10ac840caced7a9f717d4170dcc14b3fac076
 
-> of data shared across many instances(instances here
-> refer to multiple kobject instances being created, since this same
-> gb_audio_module_type structure is used as a template for all audio
-> manager module kobjs, it is effectively 'shared' across all these
-> instances), 
+Thank you!
 
-to here.
-
-Thanks,
-
-Fabio
- 
-> ensuring that the structure's usage is consistent and
-> predictable throughout the driver and allowing the compiler to place
-> it in read-only memory. The gb_audio_module_type structure is used
-> when initializing and adding kobj instances to the kernel's object
-> hierarchy. After adding const, any attempt to alter
-> gb_audio_module_type in the code would raise a compile-time error.
-> This enforcement ensures that the sysfs interface and operations for
-> audio modules remain stable.
-> 
-> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> 
-> ---
-> Changes in v5: added more details as per feedback.
-> 
-> Changes in v4: added more details verifying the change.
-> 
-> Changes in v3: added the message that verifies the change,
-> as suggested by Julia
-> 
-> Changes in v2: incorporated changes in commit message
-> as suggested by Alison
-> ---
->  drivers/staging/greybus/audio_manager_module.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/staging/greybus/audio_manager_module.c
-> b/drivers/staging/greybus/audio_manager_module.c index
-> 5f9dcbdbc191..4a4dfb42f50f 100644
-> --- a/drivers/staging/greybus/audio_manager_module.c
-> +++ b/drivers/staging/greybus/audio_manager_module.c
-> @@ -144,7 +144,7 @@ static struct attribute
-> *gb_audio_module_default_attrs[] = { };
->  ATTRIBUTE_GROUPS(gb_audio_module_default);
-> 
-> -static struct kobj_type gb_audio_module_type = {
-> +static const struct kobj_type gb_audio_module_type = {
->  	.sysfs_ops = &gb_audio_module_sysfs_ops,
->  	.release = gb_audio_module_release,
->  	.default_groups = gb_audio_module_default_groups,
-
-
-
-
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
