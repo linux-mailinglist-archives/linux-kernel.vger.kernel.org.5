@@ -1,107 +1,178 @@
-Return-Path: <linux-kernel+bounces-105014-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105015-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D0AE87D7A9
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 01:49:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 189E587D7AC
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 01:50:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 900DF1C215D4
-	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:49:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 95770B21A7F
+	for <lists+linux-kernel@lfdr.de>; Sat, 16 Mar 2024 00:50:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 179CD1859;
-	Sat, 16 Mar 2024 00:49:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04E7D4C7D;
+	Sat, 16 Mar 2024 00:49:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="Q/XqFVJZ"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IjM5n/xp"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F8A410FD
-	for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 00:49:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 347BF10FD;
+	Sat, 16 Mar 2024 00:49:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710550184; cv=none; b=ooQJLQgs85TEfPF+y4lQKQl4ebawuHmcGu3CzVpv1flEtdlIK74oJ2X6SQg+rEulomNCXD6dYHScUBXM0Gm6sQprnqe2XDZEZsH7PBGUvdnIc4u6nSrK9I9AzNrovAPu3ePHQBH9N5T5k1Nv8o4IA+E4L9eOD3fZOTbc1tAxjXk=
+	t=1710550192; cv=none; b=kdkk5CSCIh7MA6d0bRDjbyej+jJouDYeNj6E1M74cNPCbca7PfLAb4CXy48v8HhmC2YO5c6r8Dd67OEcKgPeJmJjLjkqut5Q6XSI20tLS7WkgB5fBVbz2AejNA1waPu11F7PzsSZoTK93PndSHxBmqgQ4Jhe3RI3vg1O1VI7RF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710550184; c=relaxed/simple;
-	bh=G85EgciO0r4nmSjbRTtD8XIjqE1Rp5YnqXQx5v9ClDg=;
+	s=arc-20240116; t=1710550192; c=relaxed/simple;
+	bh=sQQiicBhSeNqbbamPsWA7WiPkkdzlPRuFofio/wpKFk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Y5r1+yAC4htTlNLD4C1rk0i3ujBoRRgBBBwqMFO43LNhE0HEsjiSvkkaWWnBYGfLuXWZY6o4jNNPdM0HPuODCmYXiJf3lJErh9yNMLtNxdJokZjCCngU0JNqQ+oOYQLDwg4lZbHRsQ9c0kWQD+6NdD41/xFQuYhu0taS+rdELec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=Q/XqFVJZ; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dd955753edso23493045ad.1
-        for <linux-kernel@vger.kernel.org>; Fri, 15 Mar 2024 17:49:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710550182; x=1711154982; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=NLLMWAavvENcilhjepbChj236Q1l/3BRdqQF+Z6+ICc=;
-        b=Q/XqFVJZkdHQC+WqbPGNwSCqviPSx4wrNfJHL4AH59VCPXaLxZLYoj8PP7DxH0bOot
-         DiE4kiB3VCoJj/Pp9UFscau1fdxJ2iYrqma8rMaM4YAbhBiHeUIDFg3U9gFBia2oW0Z5
-         NOjTAzO+TjRveQ17+dDWCODOryal/jMajHjSo=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710550182; x=1711154982;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=NLLMWAavvENcilhjepbChj236Q1l/3BRdqQF+Z6+ICc=;
-        b=Zwjk4PwqMYQmzZYRsGrnKG0Mgf//kWjND+sfFg7W05HDMsZ62+Mn9RpesjH7YrnIyv
-         iwpkYoL0LQHbMs1MwJIqkt0X9lPpXZyffOnOxVdTVq7yfCQSWclcRKGlxVndAVgbFp6A
-         zUEWQTXLjGpngcp+Tpasa1uYZp0vOkOb1rT6MYIbJFbXwUHjQfAsDJY2JjRRgUo6j1UR
-         wVvZYhB38scG+BvodRgRi7oQ86MJBUD78DDvOnZqjrIqEJQ0TrNfxWesxqLYB+hcu+m9
-         oH9r0yKMZSvAIKQBgHLG5d400XbDPVmiMIZS2Um2Kzuep/nClaoOAy6w3HZ062HloUSz
-         z6Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCU9sxemTE5B102o+yFUpgjwj+7xd2+0POtNRlNFOiIU8uEWd/h2FeSzCvIL9XR6R71hsVVmWKvOxXuoO68gr1n0Xaxh/emkD+Tdwoop
-X-Gm-Message-State: AOJu0YxmLp6+8raiWM/IxuUrkGX6rTpKmvjrTm6eogvO0CqTpB10B7Ab
-	4UVnBnHL+kFQdU9h+BfK7PXL/daiwRZyMCn+UyxTuoAN+L+kf8sHCxME/FbsyA==
-X-Google-Smtp-Source: AGHT+IF49s3BVLjwTtIqW/ZinzEWsq+sR3dtAHnTmciy4asa47AzJHmA7FbMbWEg7vNUNVjSKMkz1w==
-X-Received: by 2002:a17:902:efce:b0:1de:e4bd:73fc with SMTP id ja14-20020a170902efce00b001dee4bd73fcmr3808885plb.24.1710550182376;
-        Fri, 15 Mar 2024 17:49:42 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:39af:f807:ea8f:1b15])
-        by smtp.gmail.com with UTF8SMTPSA id ky6-20020a170902f98600b001dcfbbb1ddesm4521261plb.7.2024.03.15.17.49.41
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Fri, 15 Mar 2024 17:49:42 -0700 (PDT)
-Date: Fri, 15 Mar 2024 17:49:41 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: Francesco Dolcini <francesco@dolcini.it>
-Cc: kvalo@kernel.org, linux-wireless@vger.kernel.org,
-	linux-kernel@vger.kernel.org, David Lin <yu-hao.lin@nxp.com>,
-	tsung-hsien.hsieh@nxp.com, rafael.beims@toradex.com,
-	Francesco Dolcini <francesco.dolcini@toradex.com>,
-	Johannes Berg <johannes@sipsolutions.net>
-Subject: Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host mlme
-Message-ID: <ZfTspRKFgrO9xCTH@google.com>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
- <20240315094927.GA6624@francesco-nb>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mZa3MnVCffYvg2WIk/zkeCzYb3gAUbmBv/ZXiqSoVM4hRAZZ5ct72xVzRyO8Q4IGYP4eqA7e2aT29Xjlsbdr1WI9mOwI5Y0bVXOuFHcs/LcflNjZX7fxvHU8FFHFYuYBzTHIs4GoBq00Ophr1cqbAmtyFY4BoIFMVNC9Jcn+57g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IjM5n/xp; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710550189; x=1742086189;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=sQQiicBhSeNqbbamPsWA7WiPkkdzlPRuFofio/wpKFk=;
+  b=IjM5n/xpi5ksKwq6ZZe/oOHvCxyqAXKGHJ+e71KlAHyzCUOH+D/pvliM
+   Ve6uK1FNd0guTJd+gQP/Zv5T4lLDNlaTOOG0udgn7YhlfnJxYf6JadKl+
+   jdoqodAxmxysswEk2zvR5Tr7CjfhOjVJg+lIgfTD09Pu6gXN4iyU1JMDe
+   j/MZLfUPJZXJjXIksmdT+S7lXFwkoOwrd+Jia5gAr3F4hR+AMx1yr6umj
+   VkxCDyn3qJ6ErqF6+S0SUrPOoM1p0lmq3bf/pxB3hLx6+zrNjgHMCsEN2
+   KmbAqvNaHOdYbXm3zJgYrPI/N0c4R6ICNAIs257dISSXTJT//9FQfKf3V
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11014"; a="16087892"
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="16087892"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 17:49:48 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,129,1708416000"; 
+   d="scan'208";a="17449597"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa003-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 15 Mar 2024 17:49:46 -0700
+Date: Fri, 15 Mar 2024 17:49:45 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: Kai Huang <kai.huang@intel.com>
+Cc: linux-kernel@vger.kernel.org, kvm@vger.kernel.org, x86@kernel.org,
+	dave.hansen@intel.com, kirill.shutemov@linux.intel.com,
+	peterz@infradead.org, tglx@linutronix.de, bp@alien8.de,
+	mingo@redhat.com, hpa@zytor.com, seanjc@google.com,
+	pbonzini@redhat.com, isaku.yamahata@intel.com, jgross@suse.com,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH 4/5] x86/virt/tdx: Support global metadata read for all
+ element sizes
+Message-ID: <20240316004945.GL1258280@ls.amr.corp.intel.com>
+References: <cover.1709288433.git.kai.huang@intel.com>
+ <17f1c66ae6360b14f175c45aa486f4bdcf6e0a20.1709288433.git.kai.huang@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240315094927.GA6624@francesco-nb>
+In-Reply-To: <17f1c66ae6360b14f175c45aa486f4bdcf6e0a20.1709288433.git.kai.huang@intel.com>
 
-+ Johannes
+On Sat, Mar 02, 2024 at 12:20:36AM +1300,
+Kai Huang <kai.huang@intel.com> wrote:
 
-On Fri, Mar 15, 2024 at 10:49:27AM +0100, Francesco Dolcini wrote:
-> Hello Brian (and Kalle),
+> For now the kernel only reads TDMR related global metadata fields for
+> module initialization.  All these fields are 16-bits, and the kernel
+> only supports reading 16-bits fields.
 > 
-> On Wed, Mar 06, 2024 at 10:00:51AM +0800, David Lin wrote:
-> > This series add host based MLME support to the mwifiex driver, this
-> > enables WPA3 support in both client and AP mode.
+> KVM will need to read a bunch of non-TDMR related metadata to create and
+> run TDX guests.  It's essential to provide a generic metadata read
+> infrastructure which supports reading all 8/16/32/64 bits element sizes.
 > 
-> What's your plan for this series? I know you raised some concern when
-> this started months ago and I'd love to know if there is something that
-> would need to be addressed to move forward here.
+> Extend the metadata read to support reading all these element sizes.
+> 
+> Signed-off-by: Kai Huang <kai.huang@intel.com>
+> Reviewed-by: Kirill A. Shutemov <kirill.shutemov@linux.intel.com>
+> ---
+>  arch/x86/virt/vmx/tdx/tdx.c | 59 +++++++++++++++++++++++++------------
+>  arch/x86/virt/vmx/tdx/tdx.h |  2 --
+>  2 files changed, 40 insertions(+), 21 deletions(-)
+> 
+> diff --git a/arch/x86/virt/vmx/tdx/tdx.c b/arch/x86/virt/vmx/tdx/tdx.c
+> index eb208da4ff63..4ee4b8cf377c 100644
+> --- a/arch/x86/virt/vmx/tdx/tdx.c
+> +++ b/arch/x86/virt/vmx/tdx/tdx.c
+> @@ -271,23 +271,35 @@ static int read_sys_metadata_field(u64 field_id, u64 *data)
+>  	return 0;
+>  }
+>  
+> -static int read_sys_metadata_field16(u64 field_id,
+> -				     int offset,
+> -				     void *stbuf)
+> +/* Return the metadata field element size in bytes */
+> +static int get_metadata_field_bytes(u64 field_id)
+>  {
+> -	u16 *st_member = stbuf + offset;
+> +	/*
+> +	 * TDX supports 8/16/32/64 bits metadata field element sizes.
+> +	 * TDX module determines the metadata element size based on the
+> +	 * "element size code" encoded in the field ID (see the comment
+> +	 * of MD_FIELD_ID_ELE_SIZE_CODE macro for specific encodings).
+> +	 */
+> +	return 1 << MD_FIELD_ID_ELE_SIZE_CODE(field_id);
+> +}
+> +
+> +static int stbuf_read_sys_metadata_field(u64 field_id,
+> +					 int offset,
+> +					 int bytes,
+> +					 void *stbuf)
+> +{
+> +	void *st_member = stbuf + offset;
+>  	u64 tmp;
+>  	int ret;
+>  
+> -	if (WARN_ON_ONCE(MD_FIELD_ID_ELE_SIZE_CODE(field_id) !=
+> -			MD_FIELD_ID_ELE_SIZE_16BIT))
+> +	if (WARN_ON_ONCE(get_metadata_field_bytes(field_id) != bytes))
+>  		return -EINVAL;
+>  
+>  	ret = read_sys_metadata_field(field_id, &tmp);
+>  	if (ret)
+>  		return ret;
+>  
+> -	*st_member = tmp;
+> +	memcpy(st_member, &tmp, bytes);
+>  
+>  	return 0;
+>  }
+> @@ -295,11 +307,30 @@ static int read_sys_metadata_field16(u64 field_id,
+>  struct field_mapping {
+>  	u64 field_id;
+>  	int offset;
+> +	int size;
+>  };
+>  
+>  #define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
+>  	{ .field_id = MD_FIELD_ID_##_field_id,		\
+> -	  .offset   = offsetof(_struct, _member) }
+> +	  .offset   = offsetof(_struct, _member),	\
+> +	  .size     = sizeof(typeof(((_struct *)0)->_member)) }
 
-Now that I've looked a bit closer today: I'm realizing this may(?) be
-one of the first "full MAC" drivers trying to implement its own MLME --
-or at least, the auth/assoc bits. I wouldn't really consider myself an
-expert on the core wireless APIs here, so this might be an area that
-could warrant some extra look from Kalle and/or Johannes too.
+Because we use compile time constant for _field_id mostly, can we add build
+time check? Something like this.
 
-Brian
+static inline metadata_size_check(u64 field_id, size_t size)
+{
+        BUILD_BUG_ON(get_metadata_field_bytes(field_id) != size);
+}
+
+#define TD_SYSINFO_MAP(_field_id, _struct, _member)	\
+	{ .field_id = MD_FIELD_ID_##_field_id,		\
+	  .offset   = offsetof(_struct, _member),	\
+	  .size     = \
+		({ size_t s = sizeof(typeof(((_struct *)0)->_member)); \
+                metadata_size_check(MD_FIELD_ID_##_field_id, s); \
+                s; }) }
+
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
