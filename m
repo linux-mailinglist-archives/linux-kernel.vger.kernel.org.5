@@ -1,331 +1,484 @@
-Return-Path: <linux-kernel+bounces-105320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 19AA087DC35
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 02:36:50 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0059187DC38
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 03:03:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9A8901F212B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 01:36:49 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 94582B2194C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 02:03:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C51A14F98;
-	Sun, 17 Mar 2024 01:36:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C477A3C30;
+	Sun, 17 Mar 2024 02:02:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NYOtCgZY"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="LIOwEAeE"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B90BE4C61;
-	Sun, 17 Mar 2024 01:36:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 87A151852;
+	Sun, 17 Mar 2024 02:02:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710639371; cv=none; b=EXChAmq43Bks9pK4kqWPg9hGy97kSHvjwYT+hizgc+6k9Tkz6QJQNvOuWfoO/Lo+EGr+ekbzhE3bgHhwL//ppf+hSYoP7zIAdEJ2h/ytUAjfsv0RAJUZI1M4lTugAv/DLGh4TWTSxrzK18T7xXruX28diWsCP2CXLUvDkpOFh10=
+	t=1710640977; cv=none; b=M3CSP2iwGUcsXA4oBJYR98PTppUqC8h0rsVR8utMupic2G9kIzh9PFShn6sZDHf9xyuzkf4KFurj02cX2AOiyfsmkdv9Pz8lXmpOBwlKXGko/CSZcZbrYp+9WTp81jyvG6yBtyDhVXlWwqC1+jW2+VoO340f84l8aZzs5fEtaKE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710639371; c=relaxed/simple;
-	bh=rVxcods5ZDyrWaNLRIPVF8mu6TfbQA0SDuybPSHzyCU=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=Ik91AX9oyDOwWDzCadla7pvvP7uoQsx5L8DMwk9rP2rFODbTCI2HLHc/c+KjYFNsv10wFKhKg+QviaPAeTANfJebhVjdn71IT7ruf3gYU2UrDj9iL4a0D6vUbos1mV0Bo8YGvxxbzB164zf4ouvpVlmqIf8jK53Hvb4PJd6QTj8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NYOtCgZY; arc=none smtp.client-ip=209.85.167.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso5634901e87.1;
-        Sat, 16 Mar 2024 18:36:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710639368; x=1711244168; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/XzytzZXUjo7YH6VehAfoVb/MA7UtVN4BCKXxPtpIPA=;
-        b=NYOtCgZYUAky/5AJ52H59SJL9OGuaHRf5FjSyHpbydDhgwikx9lgPD/hbLvozdSXJt
-         HE3ciJosBOwTJ7KUGY31fcafUG3gMhUmAm8lH3wLvNflpMLyzX/9sjoQUTb3lR1zoq6E
-         9uSD3/Kt+Bq59Xt5iGbyH+Gr+0upx80gCEbp5r9snQHQQj8SQG5mqHQbB6Dwiq5gARtA
-         0O26oqjkHxK+WqhY+2DkBVG8Iz3PdqkrtiazzGpn6jWkgoP5f1iF0gQ2akNa0r+l9UbM
-         rx4yEoHKPEUEXpS2HPEEH7qkQl6+ZrBjI5Bcusv3i59UNVm6PjyLMG+CMXXSuBoLINXf
-         oC2A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710639368; x=1711244168;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/XzytzZXUjo7YH6VehAfoVb/MA7UtVN4BCKXxPtpIPA=;
-        b=HpW365bV/Yd8oROZpLDESG6Hi6XUGJS7lWLhUD9Hs7trM8tSxDeclYJY/OnaLi837e
-         67+uHbwlUPe78WdB7eQhqQG3L+y1sAnDyFmI19/ddXt8hJdhqhgxEZskh0cvHpPAavLI
-         hRsLlfEijZZ0Muk+/1iOMORy/qgCJ0Vp9c0kC5txgzd8Htbk0+JjzZBsGsuTs8NT4RQ1
-         7u8wP/DU5bB6tsbCEXD9Mi8bbiqCNMuRMiEJYd0Xuifxlj3/QbvV6W/Qjgt5qIKscQHA
-         8nDJHspXYOAQOz0+CF5jylMTZnlWH0i0Tynzc/GDRstfRVFgzvn/81AndGGj5aIKweTb
-         zkNA==
-X-Forwarded-Encrypted: i=1; AJvYcCWygh4p9StRbzlHFHtfDmLdzUZuDmEfj3dC/36KkV8LwVZCuEkuzRVKimz+Gkky+aUViuCCgG/JgPhqtYuF7t5wAiMxzMEBz/sbRr2i
-X-Gm-Message-State: AOJu0YxPOzKM5evkXZ3/l9T7VcnWTdiwHK72dlbLLrEpOHlGbuZu9n4w
-	atHz+e60L4nssJRS0Qw6+HiK4NMb/883MFz+ReN40xKbOGe9+QVM
-X-Google-Smtp-Source: AGHT+IFyrKxW6qlFPCt+/ADVwRcABp8+lfhmA0g2SVUrbYaOKGC8b2vb2cWTu/b82B2sQpnwYdjEvQ==
-X-Received: by 2002:ac2:5330:0:b0:513:c488:5b5d with SMTP id f16-20020ac25330000000b00513c4885b5dmr2319287lfh.44.1710639367787;
-        Sat, 16 Mar 2024 18:36:07 -0700 (PDT)
-Received: from ALDERLEJK. (89-76-44-138.dynamic.chello.pl. [89.76.44.138])
-        by smtp.gmail.com with ESMTPSA id p7-20020a17090635c700b00a465b6c9a67sm3273109ejb.6.2024.03.16.18.36.06
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sat, 16 Mar 2024 18:36:07 -0700 (PDT)
-From: Kamil Kasperski <ressetkk@gmail.com>
-Date: Sun, 17 Mar 2024 02:34:01 +0100
-Subject: [PATCH v2 3/3] arm64: dts: allwinner: h616: add support for T95 tv
- boxes
+	s=arc-20240116; t=1710640977; c=relaxed/simple;
+	bh=aGNL0ORK5Yg7KGt1wFML6LVxENOk0w67An6EMwdAaLI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cI4F5gX989YnbttGCwrEtfL+ijQ+vw6Q1BJRer3uTJjWyI4T5lNYecuEjJSpzUCYB8T45g1gVLv6LNBGmSNHQmuuntSnhWQBgcWjX6XGjLMGoNDXyghweGYSo/tgI1ZMhxo/PyikELLr82iWiLUesYXVAcTaRDFnJLIXJBpTy8k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=LIOwEAeE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 44B2FC433C7;
+	Sun, 17 Mar 2024 02:02:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710640977;
+	bh=aGNL0ORK5Yg7KGt1wFML6LVxENOk0w67An6EMwdAaLI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=LIOwEAeEptr5OzmP9XQd/Y6mNmrfbkAfovJi9DZ1jJq4EazKaNWuV0vOJEPkHW9W0
+	 h76APTB00wICXhVgGuWcny/TlbEGOPy0TZC9Py1ZQd926tUc83Kf0EZH56y506gISA
+	 tcAyC5PqlE/BS5d5GQmn/gFf7rJHyjfmhhqnYFKpdhpp859+8thUGIzd7LICG2lgjj
+	 PnOZxeuNhteS4Zk0fIfIxLJihVG95sF1mSK9QIS2kyGlU3O1UKF2rvwiv9eWJny4lB
+	 AdUvkkXSxQIn0842msx1Vi5Eei/ONpUB3gKDObDL3hn8AJ3w1giPIOelCeuvz9jeo0
+	 T8ZI0c9C+ZIog==
+Date: Sun, 17 Mar 2024 03:02:53 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Oliver Crumrine <ozlinuxc@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
+Message-ID: <ZfZPTsdxElzcqtpe@debian>
+References: <hxiq3upwxs3j5mc5arwlx4jriqm7fq5z54wroc4h4kqcq4gq7m@uwnoq2vnkhup>
+ <ZeXzuWVmC9AnsECt@debian>
+ <7ubz52rfdl2i76sotvd3s4thv6jvbfao6zct3sywqus2owlvkx@wpbeqqdvipo4>
+ <ZehMWQ0LkemsTHAC@debian>
+ <CAK1VsR0XZMgUW8qMQMcDPohD8-+OZsgW68sZegLbVy6cdoWucQ@mail.gmail.com>
+ <ZehrtwSDQV-X7BXV@debian>
+ <CAK1VsR3MsyphK+=rA7XcEigiSd6J_-QsVW+8hH1fU9xmRY3nGQ@mail.gmail.com>
+ <CAK1VsR2zaCT3Bs1cwCEfLhAPXjwNk1byzNq5y32C736=hxqjoA@mail.gmail.com>
+ <ZfX0EBsVl4a5FQ_L@debian>
+ <f7pbphvm5cqgdblxyhbz6xucfu3fvfmvhidl2hftqirr6bn2bh@sfz26be5ss5e>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240317-add-t95-axp313-support-v2-3-e38032811758@gmail.com>
-References: <20240317-add-t95-axp313-support-v2-0-e38032811758@gmail.com>
-In-Reply-To: <20240317-add-t95-axp313-support-v2-0-e38032811758@gmail.com>
-To: Rob Herring <robh@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
- Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>
-Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
- Kamil Kasperski <ressetkk@gmail.com>
-X-Mailer: b4 0.13.0
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="DerL+hS3gSxsbeQl"
+Content-Disposition: inline
+In-Reply-To: <f7pbphvm5cqgdblxyhbz6xucfu3fvfmvhidl2hftqirr6bn2bh@sfz26be5ss5e>
 
-Add dtsi file for T95 tv boxes and add initial
-support for T95 5G AXP313A variant with a board name
-H616-T95MAX-AXP313A-v3.0
 
-internal NAND chip is connected to NAND controller
-I can't see any nand in sun50i-h616.dtsi, so access to
-internal memory is not implemented.
+--DerL+hS3gSxsbeQl
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Sun, 17 Mar 2024 03:02:53 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: Oliver Crumrine <ozlinuxc@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-man@vger.kernel.org
+Subject: Re: [PATCH] ip.7: Add not supported by SOCK_STREAM to socket options
 
-Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
----
- arch/arm64/boot/dts/allwinner/Makefile             |   1 +
- arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi | 109 +++++++++++++++++++++
- .../dts/allwinner/sun50i-h616-t95max-axp313.dts    |  85 ++++++++++++++++
- 3 files changed, 195 insertions(+)
+Hi Oliver,
 
-diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-index 21149b346a60..294921f12b73 100644
---- a/arch/arm64/boot/dts/allwinner/Makefile
-+++ b/arch/arm64/boot/dts/allwinner/Makefile
-@@ -42,6 +42,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
-+dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-t95max-axp313.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-longanpi-3h.dtb
- dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero2w.dtb
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi
-new file mode 100644
-index 000000000000..2af17439ba86
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi
-@@ -0,0 +1,109 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2024 Kamil Kasperski <ressetkk@gmail.com>
-+ *
-+ * Common DT nodes for H616-based T95 TV boxes
-+ * There are two versions reported with different PMIC variants.
-+ */
-+
-+#include "sun50i-h616.dtsi"
-+
-+#include <dt-bindings/gpio/gpio.h>
-+#include <dt-bindings/interrupt-controller/arm-gic.h>
-+
-+/ {
-+	aliases {
-+		ethernet1 = &sdio_wifi;
-+		serial0 = &uart0;
-+	};
-+
-+	chosen {
-+		stdout-path = "serial0:115200n8";
-+	};
-+
-+	reg_vcc5v: vcc5v {
-+		/* board wide 5V supply directly from the DC input */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-5v";
-+		regulator-min-microvolt = <5000000>;
-+		regulator-max-microvolt = <5000000>;
-+		regulator-always-on;
-+	};
-+
-+	reg_vcc3v3: vcc3v3 {
-+		/* discrete 3.3V regulator */
-+		compatible = "regulator-fixed";
-+		regulator-name = "vcc-3v3";
-+		regulator-min-microvolt = <3300000>;
-+		regulator-max-microvolt = <3300000>;
-+		regulator-always-on;
-+	};
-+
-+	wifi_pwrseq: wifi_pwrseq {
-+		compatible = "mmc-pwrseq-simple";
-+		clocks = <&rtc CLK_OSC32K_FANOUT>;
-+		clock-names = "ext_clock";
-+		pinctrl-0 = <&x32clk_fanout_pin>;
-+		pinctrl-names = "default";
-+		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
-+	};
-+};
-+
-+&ehci0 {
-+	status = "okay";
-+};
-+
-+&ehci2 {
-+	status = "okay";
-+};
-+
-+&ir {
-+	status = "okay";
-+};
-+
-+&mmc0 {
-+	cd-gpios = <&pio 8 16 GPIO_ACTIVE_LOW>;	/* PI16 */
-+	bus-width = <4>;
-+	status = "okay";
-+};
-+
-+&mmc1 {
-+	mmc-pwrseq = <&wifi_pwrseq>;
-+	bus-width = <4>;
-+	non-removable;
-+	status = "okay";
-+
-+	sdio_wifi: wifi@1 {
-+		reg = <1>;
-+	};
-+};
-+
-+&ohci0 {
-+	status = "okay";
-+};
-+
-+&ohci2 {
-+	status = "okay";
-+};
-+
-+&uart0 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart0_ph_pins>;
-+	status = "okay";
-+};
-+
-+&uart1 {
-+	pinctrl-names = "default";
-+	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
-+	uart-has-rtscts;
-+	status = "okay";
-+};
-+
-+&usbotg {
-+	dr_mode = "host";	/* USB A type receptable */
-+	status = "okay";
-+};
-+
-+&usbphy {
-+	status = "okay";
-+};
-diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts
-new file mode 100644
-index 000000000000..c8650aca2407
---- /dev/null
-+++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts
-@@ -0,0 +1,85 @@
-+// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-+/*
-+ * Copyright (C) 2024 Kamil Kasperski <ressetkk@gmail.com>
-+ *
-+ * Configuration for T95 TV box with board label H616-T95MAX-AXP313A-v3.0
-+ */
-+
-+/dts-v1/;
-+
-+#include "sun50i-h616-t95.dtsi"
-+
-+/ {
-+	model = "T95 5G (AXP313)";
-+	compatible = "t95,t95max-axp313", "allwinner,sun50i-h616";
-+};
-+
-+&mmc0 {
-+	vmmc-supply = <&reg_dldo1>;
-+};
-+
-+&mmc1 {
-+	vmmc-supply = <&reg_dldo1>;
-+	vqmmc-supply = <&reg_aldo1>;
-+};
-+
-+&r_i2c {
-+	status = "okay";
-+
-+	axp313: pmic@36 {
-+		compatible = "x-powers,axp313a";
-+		reg = <0x36>;
-+		#interrupt-cells = <1>;
-+		interrupt-controller;
-+		interrupt-parent = <&pio>;
-+
-+		vin1-supply = <&reg_vcc5v>;
-+		vin2-supply = <&reg_vcc5v>;
-+		vin3-supply = <&reg_vcc5v>;
-+
-+		regulators {
-+			reg_aldo1: aldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1800000>;
-+				regulator-max-microvolt = <1800000>;
-+				regulator-name = "vcc1v8";
-+			};
-+
-+			reg_dldo1: dldo1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <3300000>;
-+				regulator-max-microvolt = <3300000>;
-+				regulator-name = "vcc3v3";
-+			};
-+
-+			reg_dcdc1: dcdc1 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <990000>;
-+				regulator-name = "vdd-gpu-sys";
-+			};
-+
-+			reg_dcdc2: dcdc2 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <810000>;
-+				regulator-max-microvolt = <1100000>;
-+				regulator-name = "vdd-cpu";
-+			};
-+
-+			reg_dcdc3: dcdc3 {
-+				regulator-always-on;
-+				regulator-min-microvolt = <1500000>;
-+				regulator-max-microvolt = <1500000>;
-+				regulator-name = "vdd-dram";
-+			};
-+		};
-+	};
-+};
-+
-+&pio {
-+	vcc-pc-supply = <&reg_aldo1>;
-+	vcc-pf-supply = <&reg_dldo1>;
-+	vcc-pg-supply = <&reg_dldo1>;
-+	vcc-ph-supply = <&reg_dldo1>;
-+	vcc-pi-supply = <&reg_dldo1>;
-+};
+On Sat, Mar 16, 2024 at 02:41:13PM -0400, Oliver Crumrine wrote:
+> On Sat, Mar 16, 2024 at 08:33:36PM +0100, Alejandro Colomar wrote:
+> > Hi Oliver,
+> >=20
+> > On Wed, Mar 13, 2024 at 02:27:17PM -0400, Oliver Crumrine wrote:
+> > > > Hi Alex,
+> > > > I apologize for your repeated troubles with my test program.
+> > > > I have attached a video of myself using it in the method that I
+> > > > described to you. (I emailed you off-list as to avoid sending a 12
+> > > > MB video to the whole list)
+> > > >
+> > > > If you are using it in the same way that works for me, I don't know
+> > > > what the problem is. If I could've been clearer in my instructions,=
+ let
+> > > > me know for the future.
+> > > >
+> > > > Thanks,
+> > > > Oliver
+> > >=20
+> > > Hi Alex,
+> > > Were you able to make any progress whatsoever with this test program?
+> >=20
+> > I'm sorry, but I haven't been able to reproduce the behavior.  The test
+> > programs have several problems which I reported in previous mails.
+> > Maybe there's something that makes it unstable and in your system
+> > behaves differently?  Please clean up those examples, and try to run
+> > them in a different system, and maybe then I can reproduce it.
+> >=20
+> > Have a lovely day!
+> > Alex
+> >=20
+> >=20
+> > $ uname -a
+> > Linux debian 6.8.0-rc7-alx-dirty #3 SMP PREEMPT_DYNAMIC Mon Mar  4 15:2=
+4:33 CET 2024 x86_64 GNU/Linux
+> >=20
+> > --=20
+> > <https://www.alejandro-colomar.es/>
+> Hi Alex,
+> I have cleaned up my test programs. I have also tested them on other
+> systems (including on systems which I had installed the rc7 kernel
+> onto). In the very slight chance that your netcat isn't working, (very=20
+> narrow chances, but still there), I have attached client programs to go=
+=20
+> along with the servers.
+> Thanks,
+> Oliver
 
--- 
-2.34.1
+I still get warnings when compiling them.  There's clearly dead code in
+them.
 
+alx@debian:~/tmp$ cc -Wall -Wextra ds.c -o ds
+ds.c: In function =E2=80=98main=E2=80=99:
+ds.c:26:14: warning: unused variable =E2=80=98buf=E2=80=99 [-Wunused-variab=
+le]
+   26 |         char buf[BUFSIZ];
+      |              ^~~
+alx@debian:~/tmp$ cc -Wall -Wextra dc.c -o dc
+dc.c: In function =E2=80=98main=E2=80=99:
+dc.c:16:13: warning: unused variable =E2=80=98send_len=E2=80=99 [-Wunused-v=
+ariable]
+   16 |         int send_len;
+      |             ^~~~~~~~
+
+
+> #include <stdio.h>
+> #include <err.h>
+> #include <string.h>
+> #include <stdlib.h>
+> #include <arpa/inet.h>
+> #include <sys/socket.h>
+> #include <unistd.h>
+>=20
+> #define PORT 8888 //The port on which to send data
+> #define ADDR "127.0.0.1" //The internet address to send packets to
+>=20
+> int main(void){
+> 	int s;
+> 	struct sockaddr_in server_addr;
+>=20
+> 	int send_len;
+> 	char buf[] =3D "testing 1 2 3\n";
+>=20
+> 	s =3D socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+> 	if(s =3D=3D -1){
+> 		err(1, "error creating socket");
+> 	}
+>=20
+> 	memset((char*)&server_addr, 0, sizeof(server_addr));
+
+You shouldn't be casting pointers that you pass to memset(3).  It
+accepts almost anything.  That cast defeats the little type safety that
+it has.
+
+> =09
+> 	server_addr.sin_family =3D AF_INET;
+> 	server_addr.sin_port =3D htons(PORT);
+> 	if(inet_pton(AF_INET, ADDR, &server_addr.sin_addr) !=3D 1){ //I realize =
+I'm checking the return value differently here. If you read the man page fo=
+r inet_pton, it'll make sense.
+> 		err(1, "error converting network address");
+> 	}
+>=20
+> 	if(sendto(s, buf, strlen(buf), 0, (struct sockaddr*)&server_addr, sizeof=
+(server_addr)) =3D=3D -1){
+> 		err(1, "error sending data");
+> 	}
+> =09
+> 	close(s);
+>=20
+>=20
+
+Why two blanks here?
+
+> }
+
+> #include<stdio.h>
+> #include<err.h>
+> #include<string.h>
+> #include<stdlib.h>
+> #include<arpa/inet.h>
+> #include<sys/socket.h>
+> #include<unistd.h>
+>=20
+> #define PORT 8888	//The port on which to listen for incoming data
+>=20
+>=20
+> //Hi Alex,
+> //These are the two lines that allow you to switch between the three sock=
+et options outlined in my patch
+> //The socket options tell the kernel to add a control message (cmsg), all=
+owing the program
+> //to recieve the data it is requesting. The three options are: IP_RECVTOS=
+ for the type of service byte,
+> //IP_RECVORIGDSTADDR for the orignial dst address, and IP_PKTINFO for som=
+e random packet info.
+> #define SOCKOPT IP_RECVORIGDSTADDR
+> //This field is synonymous with the above one. Valid options are: IP_TOS,=
+ IP_ORIGDSTADDR, and IP_PKTINFO
+> #define RECIVEOPTION IP_ORIGDSTADDR
+>=20
+> int main(void){
+> 	struct sockaddr_in local_addr;
+> =09
+> 	int s;
+> 	int recv_len;
+> 	char buf[BUFSIZ];
+> =09
+> 	s =3D socket(AF_INET, SOCK_DGRAM, IPPROTO_UDP);
+> 	if (s =3D=3D -1){
+> 		err(1, "error creating socket");
+> 	}
+> =09
+> 	memset((char *) &local_addr, 0, sizeof(local_addr));
+> =09
+> 	local_addr.sin_family =3D AF_INET;
+> 	local_addr.sin_port =3D htons(PORT);
+> 	local_addr.sin_addr.s_addr =3D htonl(INADDR_ANY);
+>=20
+> 	int yes =3D 1;
+> 	if(setsockopt(s, IPPROTO_IP, SOCKOPT, &yes, sizeof(yes)) =3D=3D -1){
+> 		err(1, "error setting socket option");
+> 	}
+>=20
+>=20
+> 	if(bind(s, (struct sockaddr*)&local_addr, sizeof(local_addr) ) =3D=3D -1=
+){
+> 		err(1, "error binding to port. try changing it or running as root");
+> 	}
+>=20
+> 	while(1){
+> 		struct msghdr mhdr;
+> 		struct iovec iov[1];
+> 		struct cmsghdr *cmhdr;
+> 		char control[1000];
+> 		char databuf[1500];
+> 		unsigned char tos =3D 0;
+> 	=09
+> 		mhdr.msg_name =3D &local_addr;
+> 		mhdr.msg_namelen =3D sizeof(local_addr);
+> 		mhdr.msg_iov =3D iov;
+> 		mhdr.msg_iovlen =3D 1;
+> 		mhdr.msg_control =3D &control;
+> 		mhdr.msg_controllen =3D sizeof(control);
+> 		iov[0].iov_base =3D databuf;
+> 		iov[0].iov_len =3D sizeof(databuf);
+> 		memset(databuf, 0, sizeof(databuf));=09
+> 	=09
+> 		//this is blocking
+> 		if ((recv_len =3D recvmsg(s, &mhdr, 0)) =3D=3D -1){
+> 			err(1, "recvmsg");
+> 		}
+> 		cmhdr =3D CMSG_FIRSTHDR(&mhdr);
+> 		while (cmhdr) {
+> 			printf("cmsg recieved\n");
+>     		    if (cmhdr->cmsg_level =3D=3D IPPROTO_IP && cmhdr->cmsg_type =3D=
+=3D RECIVEOPTION) {
+
+Don't mix spaces and tabs.
+
+
+Have a lovely night!
+Alex
+
+>     		        //read the byte recieved
+> 			    tos =3D ((unsigned char *)CMSG_DATA(cmhdr))[0];
+>     		    }
+>     		    cmhdr =3D CMSG_NXTHDR(&mhdr, cmhdr);
+>     		}
+> 		//print out the first byte of data recieved in hex. You can verify this=
+ in wireshark if you like.
+>     		printf("data read: %sbyte =3D %02X\n", databuf, tos); =09
+> 	=09
+> 	}
+>=20
+> 	close(s);
+> 	return 0;
+> }
+
+> #include <stdio.h>
+> #include <err.h>
+> #include <string.h>
+> #include <stdlib.h>
+> #include <arpa/inet.h>
+> #include <sys/socket.h>
+> #include <unistd.h>
+>=20
+> #define PORT 8888 //The port on which to send data
+> #define ADDR "127.0.0.1" //The internet address to send packets to
+>=20
+> int main(void){
+> 	int s;
+> 	struct sockaddr_in server_addr;
+>=20
+> 	int send_len;
+> 	char buf[] =3D "testing 1 2 3\n";
+>=20
+> 	s =3D socket(AF_INET, SOCK_STREAM, 0);
+> 	if(s =3D=3D -1){
+> 		err(1, "error creating socket");
+> 	}
+>=20
+> 	memset((char*)&server_addr, 0, sizeof(server_addr));
+> =09
+> 	server_addr.sin_family =3D AF_INET;
+> 	server_addr.sin_port =3D htons(PORT);
+> 	if(inet_pton(AF_INET, ADDR, &server_addr.sin_addr) !=3D 1){ // I realize=
+ I'm checking the return value differently here. If you read the man page f=
+or inet_pton, it'll make sense.
+> 		err(1, "error converting network address");
+> 	}
+>=20
+> 	if(connect(s, (struct sockaddr*)&server_addr, sizeof(server_addr)) =3D=
+=3D -1){
+> 		err(1, "error connecting");
+> 	}
+> 	if(send(s, buf, strlen(buf), 0) =3D=3D -1){
+> 		err(1, "error sending data");
+> 	}
+> =09
+> 	close(s);
+>=20
+>=20
+> }
+
+> #include<stdio.h>
+> #include<err.h>
+> #include<string.h>
+> #include<stdlib.h>
+> #include<arpa/inet.h>
+> #include<sys/socket.h>
+> #include<unistd.h>
+>=20
+> #define PORT 8888	//The port on which to listen for incoming data
+>=20
+>=20
+> //Hi Alex,
+> //These are the two lines that allow you to switch between the three sock=
+et options outlined in my patch
+> //The socket options tell the kernel to add a control message (cmsg), all=
+owing the program
+> //to recieve the data it is requesting. The three options are: IP_RECVTOS=
+ for the type of service byte,
+> //IP_RECVORIGDSTADDR for the orignial dst address, and IP_PKTINFO for som=
+e random packet info.
+> #define SOCKOPT IP_RECVORIGDSTADDR
+> //This field is synonymous with the above one. Valid options are: IP_TOS,=
+ IP_ORIGDSTADDR, and IP_PKTINFO
+> #define RECIVEOPTION IP_ORIGDSTADDR
+>=20
+> int main(void){
+> 	struct sockaddr_in local_addr;
+> =09
+> 	int s;
+> 	int recv_len;
+> 	char buf[BUFSIZ];
+> =09
+> 	s =3D socket(AF_INET, SOCK_STREAM, 0);
+> 	if (s =3D=3D -1){
+> 		err(1, "error creating socket");
+> 	}
+> =09
+> 	memset((char *) &local_addr, 0, sizeof(local_addr));
+> =09
+> 	local_addr.sin_family =3D AF_INET;
+> 	local_addr.sin_port =3D htons(PORT);
+> 	local_addr.sin_addr.s_addr =3D htonl(INADDR_ANY);
+>=20
+> 	int yes =3D 1;
+> 	if(setsockopt(s, IPPROTO_IP, SOCKOPT, &yes, sizeof(yes)) =3D=3D -1){
+> 		err(1, "error setting socket option");
+> 	}
+>=20
+>=20
+> 	if(bind(s, (struct sockaddr*)&local_addr, sizeof(local_addr) ) =3D=3D -1=
+){
+> 		err(1, "error binding to port. try changing it or running as root");
+> 	}
+> =09
+> 	if(listen(s, 10) =3D=3D -1){ //10 is the backlog of un-accepted connecti=
+ons. its just an arbitrary number
+> 		err(1, "error listening on port");
+> 	}
+>=20
+> 	while(1){
+> 		int connfd =3D accept(s, (struct sockaddr*)NULL, NULL);
+> 		if(connfd =3D=3D -1){
+> 			err(1, "error accepting connection");
+> 		}
+> 		if(setsockopt(s, IPPROTO_IP, SOCKOPT, &yes, sizeof(yes)) =3D=3D -1){ //=
+stream sockets should have this set on the connected socket as well. I left=
+ it above for uniformity between the two programs.
+> 			err(1, "error setting socket option");
+> 		}
+> =09
+> 		struct msghdr mhdr;
+> 		struct iovec iov[1];
+> 		struct cmsghdr *cmhdr;
+> 		char control[1000];
+> 		char databuf[1500];
+> 		unsigned char tos =3D 0;
+> 	=09
+> 		mhdr.msg_name =3D &local_addr;
+> 		mhdr.msg_namelen =3D sizeof(local_addr);
+> 		mhdr.msg_iov =3D iov;
+> 		mhdr.msg_iovlen =3D 1;
+> 		mhdr.msg_control =3D &control;
+> 		mhdr.msg_controllen =3D sizeof(control);
+> 		iov[0].iov_base =3D databuf;
+> 		iov[0].iov_len =3D sizeof(databuf);
+> 		memset(databuf, 0, sizeof(databuf));=09
+> 	=09
+> 		//this is blocking
+> 		if ((recv_len =3D recvmsg(connfd, &mhdr, 0)) =3D=3D -1){
+> 			err(1, "recvmsg\n");
+> 		}
+> 		cmhdr =3D CMSG_FIRSTHDR(&mhdr);
+> 		while (cmhdr) {
+> 			printf("cmsg recieved\n");
+>     		    if (cmhdr->cmsg_level =3D=3D IPPROTO_IP && cmhdr->cmsg_type =3D=
+=3D RECIVEOPTION) {
+>     		        //read the byte recieved
+> 			    tos =3D ((unsigned char *)CMSG_DATA(cmhdr))[0];
+>     		    }
+>     		    cmhdr =3D CMSG_NXTHDR(&mhdr, cmhdr);
+>     		}
+> 		//print out the first byte of data recieved in hex. You can verify this=
+ in wireshark if you like.
+>     		printf("data read: %sbyte =3D %02X\n", databuf, tos); =09
+> 		close(connfd);
+> 	}
+>=20
+> 	close(s);
+> 	return 0;
+> }
+
+
+--=20
+<https://www.alejandro-colomar.es/>
+
+--DerL+hS3gSxsbeQl
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmX2T00ACgkQnowa+77/
+2zIgIQ/8De8if4ixwezxA7Iebs6XD9XXNDVT8gY/Va3xrqWOWPgmw8JIRmYjEZTL
+BTyD5V1N0LWZ1BDidIpMfgO6rTSYJ0ThhWNe5G4yGBUsk+CVe2V5xahwo4dfVc6t
+HcZOiQvZ1/qV9UOTL2MiHxSHTtowGh/ws4pPtS2+Zz95kcoWuXXQYr//sOS7jkvI
+qhPmZgsd0rKFNRefNcgdSGugqCgQkcYhE5mQE1/icKtxCDa0pqtRCOUfSMwGtKbg
+jY5g53M6VpcZQMoFiBWpPibbdSkMh0TMoROEisWdMV5FzCmEhdEYl0YhOm+9bIF/
+7elwwNLAzSSXirhWe18t9GL/XGKIRYoNMfJYji7oFhgYeWHL6fKWORwrzKm2urtX
+ntEVmrawK0i2q5N0mnSa434E/8WlXi5wIxMMSV5/UOiPdGHWmbVcLlcgaqBdMNS9
+42Dx5OmSk1k0sSlzjQVWJi/ylr1UkJB631Ihf8drJpOQjBAgsPDcHjEZlSFiYi2f
+Axji8wZQ3L5JhZq9bvWDafkKKw4F0XrbArTxVDKLhG4DjMbuvE9nvPVNDWDtcbYH
+pM7SPBuqkkH20sCDikfoToocmWxns7yPHZRe5zi6EuaUktLMYBhigucM/1nhMYVh
+BT3zA79WSF35KPzzfgXXke/XJBFUQYmWE+DT07//JrxAh4EY31c=
+=PNHx
+-----END PGP SIGNATURE-----
+
+--DerL+hS3gSxsbeQl--
 
