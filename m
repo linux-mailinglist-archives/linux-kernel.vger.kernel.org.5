@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-105578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EE1887E0B1
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 23:32:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A74CB87E0B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 23:32:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CEC041C20B88
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:32:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 45DA11F214F6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:32:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61AC121A0B;
-	Sun, 17 Mar 2024 22:32:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DE1422626;
+	Sun, 17 Mar 2024 22:32:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fnEjYgW2"
-Received: from mail-lj1-f179.google.com (mail-lj1-f179.google.com [209.85.208.179])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="f+OkOHl4"
+Received: from mail-lf1-f46.google.com (mail-lf1-f46.google.com [209.85.167.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0AC191CD20;
-	Sun, 17 Mar 2024 22:32:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B63472135B;
+	Sun, 17 Mar 2024 22:32:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710714739; cv=none; b=csVrcwHMf5ChHE0nvz6P8/6Pg7u/LmNtcbDu9HYO55wgLVOdp74E/vkIB9/2ATgunR4Q2b8JPRG3GfeEWim7Z5M7SJpSIHWuq1mkSTnm4Ro5cwnhNzFQNZoTSPgH35cSOEoc5IR6zecXSRK3yqpuvV87Snyq95tgQvD4PBkbh4s=
+	t=1710714741; cv=none; b=T08J5FXmTtiwUN0mQtOHoFhYyDqGFTNxn/++91vD4PMTdXTCBtTlKZnz9LFx2bfAwW4JBt0/SP3pnICINqIQ/j9ErbEElcRpI6GmBdgXSIkKiZeQD75cumz14irKa44hTr/YxFNjWD189CcMA+GRZAvvrRxFIoqGxZIVs/q4CMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710714739; c=relaxed/simple;
-	bh=YwyXzBsCn0m01mKM2HJvWuLmwm5cQ57o0KjKSzpgtzk=;
+	s=arc-20240116; t=1710714741; c=relaxed/simple;
+	bh=dHr9Q6AK8e1ReScKhI+4HGEeOhl5Ub1OKxN596mIEOU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ggllz7eHZNyVZoWNA5EXkI+Af38GcnX73ZnQCrzP7x99/Hustj0CUl7vsoDTD1jljk943gjdMRulPz3JoV28bKsZRAdb+KmLobSPSGAR/PGuNorXecj7rfmUstIEwOsSB9jFinIH0y30aeRvOOeUd+OBgVLABAqe/rBwMNwnQWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fnEjYgW2; arc=none smtp.client-ip=209.85.208.179
+	 MIME-Version:Content-Type; b=u/JVSYOrP4FMnQHW1PgGdjOlHxMItxIi6YTGpwc9BvoazXXEa6OR08003zZKrs+7GpuVE6mD6+YrDbqL1xBGbU58K6n3ckReJKTu7Uj+S6Xn+dt+mbmcGGZaSgHhAyCNApv3wHqjY4A4T3DNoRLJBSGjOndLyf7mMIShLLfBs/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=f+OkOHl4; arc=none smtp.client-ip=209.85.167.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d46dd5f222so41545301fa.1;
-        Sun, 17 Mar 2024 15:32:17 -0700 (PDT)
+Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513d247e3c4so3000995e87.0;
+        Sun, 17 Mar 2024 15:32:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710714736; x=1711319536; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710714738; x=1711319538; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=dmdm3dIttaltfYgNn91n9oleuQB7czhKG4DCjwg6DSs=;
-        b=fnEjYgW2I5lG10xeHMIKViX80wrNufCBuGWjyhrWzCi71okE2y8IF1Pot2THhg/RWC
-         9peAy9tGC2dxZcXyXHueemPqmUp1mz3Vz9f5S6uN8C5Bl6GMwF6GHjAa7VX+7VF4z8gC
-         j/+2tGa/hHuEZ5TI+1Ez806CHdHLEUlOfopZVmmRttdpgKLPedn113s5YXj+jREJcHor
-         ZcYzYbLyl4F/Q3sk4WTpWDi0KTGQLrN8areoeFCNzg4JFhKt4h1UFRkU0e2XsA7yCudk
-         bUl0ryZ4GL6nceRSPzy31Aq8ZKOayafMIVZHKv2gSlq071HsW5N9M2X1Ua/Eh+QFK3sv
-         9pOA==
+        bh=DcJb7bj0vF5Nl8yAX54/kA3qijtSrrqL2OLIzgs28DQ=;
+        b=f+OkOHl43SEfzSQGz6wQcTIjZBK+mnH0ZIR5NzLTDKdRnerFhUa2LBmQSnyMNqYVaa
+         nfpO/AxSdSeV9QV1Fds5Ioiq9gFATmRXs9wX5oD7/V6vw3Hw9IcwbSQRNuibe64tpN0w
+         Nyta3NdLRi4NOJRm0qqmfOcHkLof5t5lHcts01SF4bhcgy0g2DqoHJxCesZWXE3CdH9j
+         wTFgh/ohS5ipNSEP5WvVX9iqXUK11lKMxeYAGeq3vb15HV+G2V4ULZREIrEOWLwUA/eS
+         wWNDima+6o+cUD5snpk2MvUjdtS5MIUCFtFrnXpfdFDgrtcxVk3KoyMiOdgR0LNbcSyn
+         jQdQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710714736; x=1711319536;
+        d=1e100.net; s=20230601; t=1710714738; x=1711319538;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=dmdm3dIttaltfYgNn91n9oleuQB7czhKG4DCjwg6DSs=;
-        b=ojQKV2s3MSaue8icbR1JBSget/3P85Ac16MVKpgstJZB/Afkk6ke12J1sJmllvx/wy
-         n5sFBQEqa+AArpqFq865mrET6vpUjC7BcuvRv2JFjzeX4kDtECFai8Gt9iKNaPPL+KHb
-         jZ8StyFoNHTkQTsFmMwQgy+L0VcXws92Jgc/L3FpzMZykjI+07tV6k6xqdHPLApI6ubU
-         SdlDz6S8i2K7P6mOjdTT/Kw8OOgWgqUvFLTny08CIqJ2cwVq6383MdMdjf6o0w9nY65y
-         YxVAvzMrW03In/92Y3l/2NLocvwwS3R9JEbUpdn5spcbFrz6UDzY8qdtu1v1LzFWLvBO
-         gyYQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXviYsIfvsbY1hoLnFqy973UUFFQkWp/lRuLzCl0Z3XrP/84jyaOjqk4Qdhnq/WViKKH6fc7uCf+yBBici+jKu5j0UZ45PrdaH8Y4SCJmSB7afELTYk8PbQHnjylH9qAPStnurvkM8Z4Q==
-X-Gm-Message-State: AOJu0YyQjaY5u0ZcSAr/0s8MCWrdXpzJq+kdkH+EcUPkpaWxwPdws7+P
-	/qEuom/J7OunjZlIYelad1cZZ9PUwKS7FwxCLqLkASSQKeLQv4PP
-X-Google-Smtp-Source: AGHT+IFMwanalas0xcU0GCo7+jbgNY41telHFIVcpw8xKYTtxzTPzgyobaq1C/yYMMQnklPjIHsVBw==
-X-Received: by 2002:a19:3850:0:b0:513:bea3:7f60 with SMTP id d16-20020a193850000000b00513bea37f60mr6493783lfj.44.1710714736199;
-        Sun, 17 Mar 2024 15:32:16 -0700 (PDT)
+        bh=DcJb7bj0vF5Nl8yAX54/kA3qijtSrrqL2OLIzgs28DQ=;
+        b=k25eifyyfgcohuDJ6/rqikqWTfLfx4v52nU6toj94GmZuyIVhUwP88MpgOh8JwNGx7
+         vbWqYYV6Uj2bjmw3Ry4qBbIxFHKFy55CChaGH73bbV6wxMmDbln26YhvcHp3y+ZHjjNG
+         I0esYGg3UQ5XMDz9IlUGn8ATxZp4I2ud/lLn62NEXBu4i6d5/nUYGO/BxqwKlNHd6Kn+
+         cnVwrAdlO7xLNHTKSC7WWrtjx5LpSnqOgNgh2s7KB/tBXraXuec2v4dIxSfqe6O6r5Wt
+         DtTQdxKCuaOxVJ+q5/cbSku7yaSnBpmXMm/NPlmltLPSlZb2abajNRHZLZmC/KfITLGf
+         hB2Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXDpN3eb5P+XEDpW5ZqvWlUTUAQPGBovZHyiFvowokHSRGWl3d5bo5ZBAfLTa/pQbhAnH/71nO3HiqDu9WtRMLyoE/QbATbsPJZSYPI8kdnFralBB8Xt1SqPOKNd0ulVKgYatbFpIpyZw==
+X-Gm-Message-State: AOJu0Yz+5WAu2EeLcKNVzPrYYSFgF0eTlXugfaFg6TEJmNMncJVDJQJa
+	VOLLBBG7CDS27rHRctjOoiNO73FvviSpvv2Q0aYVeqtK4t06PzO9
+X-Google-Smtp-Source: AGHT+IEEH1HCri2jgaEj2lmkHvpY4OJN9Rt4WUseuSkpkZzIe0tbV3kDqycBsohBoHJp9rcz/JDoMA==
+X-Received: by 2002:a05:6512:3134:b0:513:d1d9:9eda with SMTP id p20-20020a056512313400b00513d1d99edamr3571987lfd.27.1710714737896;
+        Sun, 17 Mar 2024 15:32:17 -0700 (PDT)
 Received: from localhost.lan (031011218106.poznan.vectranet.pl. [31.11.218.106])
-        by smtp.gmail.com with ESMTPSA id x5-20020ac259c5000000b0051322c11100sm1366981lfn.221.2024.03.17.15.32.15
+        by smtp.gmail.com with ESMTPSA id x5-20020ac259c5000000b0051322c11100sm1366981lfn.221.2024.03.17.15.32.16
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 15:32:15 -0700 (PDT)
+        Sun, 17 Mar 2024 15:32:17 -0700 (PDT)
 From: =?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <zajec5@gmail.com>
 To: Matthias Brugger <matthias.bgg@gmail.com>,
 	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
@@ -86,9 +86,9 @@ Cc: Chen-Yu Tsai <wenst@chromium.org>,
 	linux-kernel@vger.kernel.org,
 	=?UTF-8?q?Rafa=C5=82=20Mi=C5=82ecki?= <rafal@milecki.pl>,
 	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH V3 1/4] dt-bindings: vendor-prefixes: add Cudy
-Date: Sun, 17 Mar 2024 23:32:03 +0100
-Message-Id: <20240317223206.22033-2-zajec5@gmail.com>
+Subject: [PATCH V3 2/4] dt-bindings: arm64: dts: mediatek: Add Cudy WR3000 V1 router
+Date: Sun, 17 Mar 2024 23:32:04 +0100
+Message-Id: <20240317223206.22033-3-zajec5@gmail.com>
 X-Mailer: git-send-email 2.35.3
 In-Reply-To: <20240317223206.22033-1-zajec5@gmail.com>
 References: <20240317223206.22033-1-zajec5@gmail.com>
@@ -103,28 +103,27 @@ Content-Transfer-Encoding: 8bit
 
 From: Rafał Miłecki <rafal@milecki.pl>
 
-Cudy is a Chinese company providing networking products.
+Cudy WR3000 V1 is an MT7981B (AKA Filogic 820) based wireless router.
 
 Signed-off-by: Rafał Miłecki <rafal@milecki.pl>
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Reviewed-by: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
 ---
- Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
- 1 file changed, 2 insertions(+)
+ Documentation/devicetree/bindings/arm/mediatek.yaml | 1 +
+ 1 file changed, 1 insertion(+)
 
-diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-index b97d298b3eb6..8e0dc4a138b1 100644
---- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-+++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-@@ -334,6 +334,8 @@ patternProperties:
-     description: Czech Technical University in Prague
-   "^cubietech,.*":
-     description: Cubietech, Ltd.
-+  "^cudy,.*":
-+    description: Shenzhen Cudy Technology Co., Ltd.
-   "^cui,.*":
-     description: CUI Devices
-   "^cypress,.*":
+diff --git a/Documentation/devicetree/bindings/arm/mediatek.yaml b/Documentation/devicetree/bindings/arm/mediatek.yaml
+index 09f9ffd3ff7b..1cf47db94c57 100644
+--- a/Documentation/devicetree/bindings/arm/mediatek.yaml
++++ b/Documentation/devicetree/bindings/arm/mediatek.yaml
+@@ -85,6 +85,7 @@ properties:
+           - const: mediatek,mt7629
+       - items:
+           - enum:
++              - cudy,wr3000-v1
+               - xiaomi,ax3000t
+           - const: mediatek,mt7981b
+       - items:
 -- 
 2.35.3
 
