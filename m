@@ -1,280 +1,155 @@
-Return-Path: <linux-kernel+bounces-105529-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105532-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D9A487DFC4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:39:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D80C587DFCD
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:48:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E6C11C2097F
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 19:39:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9319B28165B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 19:48:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82C3921344;
-	Sun, 17 Mar 2024 19:38:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56F8C1F61C;
+	Sun, 17 Mar 2024 19:47:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="NizJg7cn"
-Received: from mail-oi1-f178.google.com (mail-oi1-f178.google.com [209.85.167.178])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Cypa7KjC"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0102420323;
-	Sun, 17 Mar 2024 19:38:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA0431CD3F;
+	Sun, 17 Mar 2024 19:47:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710704326; cv=none; b=Ub8RAI8PGC6m/RyBbJ07f7BwgWYnCDWypVmGSV1uXLv34RBEZTJxUdR+FJfesrTjvbA6FErfJ9wA+Y0i2JPCm7US5badHQar+o8WptqAo3dBEUM6sirmB5zqbwk8/o4ApnJdO/EgCQfg2EVMMjj6AvpWIm24hPq8adP0SGQToEo=
+	t=1710704876; cv=none; b=OH0poYIbZXO6xcnAaUo1YrwTgkU7k/aEGxzfQW54tKuxEnb94xz0mOFQVJyZLeuu9kuUP6aXK7KsvBrFWiQM/WmcTCapf3zOFf/SYhJTXM532cUjC3fy5no0jZdOQDTT31iHOJigu0B+La0mJd6M6pU2n0IT4imMmlU9miIQUDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710704326; c=relaxed/simple;
-	bh=zde3M6Y1JOzRO5e3g2eBRl5mSIHaobfX2LHthOYLsEg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=gW83p42zpTRAczTj/OqzVG/af+R82Hcc9VZ8Z+WsTfGlx0sA4HQGC83hYdjjpNn2qbCstbt7Ny9wDn2vCn20xJdPHL3DTgDloZ75D65WD9P84MfnuIz4OMw4vXF+nn6dedWi/v62lW43b7W8yt/kMi0+1Kh7oMBMLNs7YL0mUBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=NizJg7cn; arc=none smtp.client-ip=209.85.167.178
+	s=arc-20240116; t=1710704876; c=relaxed/simple;
+	bh=EOE2bo0zJ9hf89Q0Q5I8PD2WdBZOnIxrXxn41GaOEo0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=MfXE6m+2tAud5DHyZIm9+dJAZ7Nn3w2tNXrd+djVFMb2Av5joygaTCiZiGDYQ0UdXF21QDtMLLO7ykHiSZ5WPgPabdFh8Ptr3G66JhhwIB8QZldNvj6gPbcGpQvjratq+yEZfEV0TD5JQ6/BSebmGJSEXgiol0ZGOQXYz1JqgdE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Cypa7KjC; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f178.google.com with SMTP id 5614622812f47-3c37e87756dso1047542b6e.3;
-        Sun, 17 Mar 2024 12:38:44 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a466a1f9ea0so275244966b.1;
+        Sun, 17 Mar 2024 12:47:54 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710704324; x=1711309124; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=OT6hmngmg7LhsdhWQVbZrDuHFIRfbTgzLQihr9TF8as=;
-        b=NizJg7cnyVai5S0GO+K4gBjYFqL620u6LKUW6bE6P1pGH0kvWObrYMqiL4RKudKO9s
-         XTfEwkCpsFGHeoeFWusAdpuLHJje9pGMq9dC1tQzdN1u19mVSCBLwqkVSYEn1bekVbf5
-         f4zKqIrZdYXgomlXcfhODq7EOCsOtCxjGredJScpRwhm6gWbsHyHqOGPix/TKu9/cXea
-         ijXfbHfVQXMmBspnfE/ZGBV3vzr9H4nOwMaPX11nH/G1GLwn1AUo7Wm5UsqEgvyoWc7L
-         bXtNDUWewDizE1OeicXWjRV69ncqKgmiQB/HEEXDfHx4zGRRKjcwD9q5Awn0nCrYaf3L
-         uSWQ==
+        d=gmail.com; s=20230601; t=1710704873; x=1711309673; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HxxAZWybaK0nfNhYMPJ2x8WOCyodnruQ7jiYPVCHHZo=;
+        b=Cypa7KjCgDxlrBt33+RHGw1dCbWfpWjxXXphQTcon8Yfc/N52Sk3dhgy5NB1TAKsP/
+         xgJa3AQh5mqTuYMG1lIEMlM8ET+sOcn9JcaixtiSOaxjLXe4M8j+XvI5ONpnMIOy4PeZ
+         9Drqel3RyuRQg24duro9ECp6/9icUCE7/PfvFb8BFa2hSuC7DGehPIVSmUDROz7Ikeea
+         XCOnGois4az07eT7vJxMlF1q4ob3K7FqC/l5xkOBYAqZqM0fxPFXLfV0QQLoZlDQn6et
+         TgrZEE/CBnjFmGq3n6rDwqgkumzUNF2VhLJi8ScA2qXfjRlp3iZ+Rm+GFtSL3cJ01fXQ
+         NerA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710704324; x=1711309124;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=OT6hmngmg7LhsdhWQVbZrDuHFIRfbTgzLQihr9TF8as=;
-        b=Jwiz8sbezvjoMMFafieh1Pm+qjn1Wj4hnQdDuPEhCB5oUGfUcbK++4RE3vgiGw61rS
-         OkEsGMR7NOBz6e73BoYSO6moH6kgulpuIrMt/+9KcKB4I+Gk9BHAppVw/buT5AA+V9iA
-         95BG6byhkPZj3DsYPiqv3uKWZNfNsnscCS7UndV8EDMmbrG3Ot1njFAfVPAKmjSRUSX/
-         +VScJtS+c0TWkxO2WZX96bPMMUVdD7e36Z50ZelLygwHSGFHEjRgmkso6GohTJRLGW2g
-         UXvh+CTQO05d1HQFJXXaFj4knrCujgTbUfXZJDVEwQs////lzMe8V7rTMTxGVbey8/hV
-         hHHA==
-X-Forwarded-Encrypted: i=1; AJvYcCUgz48OcM8HaIEgT+Jf8CLz55NH8WfsEh29LohkTfGxRDqzEa8xFd/3IiqhaB426axdZLVPA70uIe96r7tF++1mQQN390XiGzQUtbGyEBJAobCrS7UEzsoxNbn04nyON8VBdGNvIg==
-X-Gm-Message-State: AOJu0YzyaoKtOXmLWaTpXihZUDS6WqBzCJg9F01daZnpQ+y6J2jMY/Ey
-	+HuCB1RbXpNgu4GPGySXxDxK8AFoxIqsyQtFfWNV4qC19Kwh58oupitaxOBylJk=
-X-Google-Smtp-Source: AGHT+IFUpPTaU6PvOX+AKPaPFj4Fu6IdLBC3LDsxuIWxs0yZJKnWwhoTrKzOxe3YGH55CzjEL+bang==
-X-Received: by 2002:a05:6358:7e92:b0:17c:1e63:d02e with SMTP id o18-20020a0563587e9200b0017c1e63d02emr13107142rwn.2.1710704323604;
-        Sun, 17 Mar 2024 12:38:43 -0700 (PDT)
-Received: from toolbox.iitism.net ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id st6-20020a17090b1fc600b0029bbdc920besm6125995pjb.44.2024.03.17.12.38.35
+        d=1e100.net; s=20230601; t=1710704873; x=1711309673;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HxxAZWybaK0nfNhYMPJ2x8WOCyodnruQ7jiYPVCHHZo=;
+        b=JxDxCe6NV7eArzaGhqbsp0H601XyPGwfPQJkotLLwPyWRtB78Rli8t9dmcgzZO429q
+         tKfmXWFMlTw7YXid+uK07VHEFbSh2gzhEDtagrKsnFW4WMVZay66MaiHPq19abvLlTcz
+         y+/r8qOwP7ma2+T9oKpU8PsvaR+blprpYT3a0lNW/XbtFDchDNX5P7jweJ6Y1KGdUpsx
+         G54GrZmKM/81FbgnyAhiJKEgeIRXFIaFJ+PpztJ5Dbq6S9hRvndhYRWC6eSXp4/ZPWls
+         3n8o1t4RG9wPsTaei2cdl2qLSlI04/oZpAjm7CdoRzRUE77EJ6w13nqVBykEwcpOGTGR
+         OZMQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVg96/EEWPsk+/x9SDZN9C3xn0TDekC6932JHy49leIno1rc812+v0a1uVM0Favt2VLBm0qWi758fl4r4rHyzhbWvPrQA3FBxAcGKKt
+X-Gm-Message-State: AOJu0YxXQU+o1ebGbDcm5QbvRHkIQorABELcQzVKKV0ZRbZ8px0l8czx
+	iDjprRs7u3ZcrTRpfl43xw/keh3bg0LHr8D8Cc1ZIJ+dRtj7Fdyx
+X-Google-Smtp-Source: AGHT+IHjw5wdNqqRL84aIea6Y6j91etevio8AN75lq5QpKtW8Dns821V1ojkFQvjPK+sDFAgkX8Ikg==
+X-Received: by 2002:a05:6402:2079:b0:567:6bf:e92d with SMTP id bd25-20020a056402207900b0056706bfe92dmr3367835edb.29.1710704873001;
+        Sun, 17 Mar 2024 12:47:53 -0700 (PDT)
+Received: from ALDERLEJK. (89-76-44-138.dynamic.chello.pl. [89.76.44.138])
+        by smtp.gmail.com with ESMTPSA id i24-20020aa7dd18000000b0056ac092a7fasm8234edv.87.2024.03.17.12.47.51
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 12:38:43 -0700 (PDT)
-From: Ayush Singh <ayushdevel1325@gmail.com>
-To: linux-kernel@vger.kernel.org (open list)
-Cc: Ayush Singh <ayushdevel1325@gmail.com>,
-	jkridner@beagleboard.org,
-	robertcnelson@beagleboard.org,
-	lorforlinux@beagleboard.org,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Nishanth Menon <nm@ti.com>,
-	Vignesh Raghavendra <vigneshr@ti.com>,
-	Tero Kristo <kristo@kernel.org>,
-	Derek Kiernan <derek.kiernan@amd.com>,
-	Dragan Cvetic <dragan.cvetic@amd.com>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Vaishnav M A <vaishnav.a@ti.com>,
-	Mark Brown <broonie@kernel.org>,
-	Johan Hovold <johan@kernel.org>,
-	Alex Elder <elder@kernel.org>,
-	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
-	linux-arm-kernel@lists.infradead.org (moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE),
-	linux-spi@vger.kernel.org (open list:SPI SUBSYSTEM),
-	greybus-dev@lists.linaro.org (moderated list:GREYBUS SUBSYSTEM),
-	Vaishnav M A <vaishnav@beagleboard.org>
-Subject: [PATCH v4 5/5] dts: ti: k3-am625-beagleplay: Add mikroBUS
-Date: Mon, 18 Mar 2024 01:07:13 +0530
-Message-ID: <20240317193714.403132-6-ayushdevel1325@gmail.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240317193714.403132-1-ayushdevel1325@gmail.com>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+        Sun, 17 Mar 2024 12:47:52 -0700 (PDT)
+From: Kamil Kasperski <ressetkk@gmail.com>
+Subject: [PATCH v3 0/3] Add initial support for T95 TV boxes
+Date: Sun, 17 Mar 2024 20:44:48 +0100
+Message-Id: <20240317-add-t95-axp313-support-v3-0-0d63f7c23d37@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADBI92UC/3WNwQqDMBBEf0X23C1JttbYU/+jeAgm6kI1IbFiE
+ f+9qdBjT8MbmDcbJBfZJbgVG0S3cGI/ZaBTAe1gpt4h28yghLoIkiUaa3Guc66BJGF6heDjjGV
+ H1ui6vjprIY9DdB2vh/jRZB44zT6+j59FfdufsvqnXBQKdKQFKS1lVep7Pxp+nls/QrPv+wfWR
+ 6vCvAAAAA==
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+ Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+ Kamil Kasperski <ressetkk@gmail.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+X-Mailer: b4 0.13.0
 
-DONOTMERGE
+Changes in v3:
+- remove underscore from wifi_pwrseq node name in sun50i-h616-t95.dtsi
+- fix line wrap in commit message
+- Link to v2: https://lore.kernel.org/r/20240317-add-t95-axp313-support-v2-0-e38032811758@gmail.com
 
-this patch depends on patch 1
+T95 is a most commonly known for being a box with a pre-installed 
+malware. It uses Allwinner H616 and comes with NAND, and DDR3 
+memory.
 
-Add mikroBUS connector support for Beagleplay.
+Those TV boxes usually come with common hardware:
+- Allwinner H616 SoC
+- 2/4 GB DDR3 SDRAM (Hynix H5TQ2G43BFR)
+- 16/32/64 GB NAND flash
+- microSD slot
+- AXP305 or AXP313 PMIC depending on board revision
+- 3.5mm A/V output
+- HDMI port
+- 2x USB 2.0 ports
+- 100M ETH using Internal PHY
+- LG642 Wi-Fi and BT chip (rebranded BCM43342)
+- 7-segment display
+- DC 5V barrel jack port
 
-Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
-Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
-Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+The board contains holes hor UART header wired to &uart0.
+&uart1 is used by bluetooth module
+
+From the DRAM specification its operation voltage is 1.5V.
+
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Chen-Yu Tsai <wens@csie.org>
+To: Jernej Skrabec <jernej.skrabec@gmail.com>
+To: Samuel Holland <samuel@sholland.org>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-sunxi@lists.linux.dev
+
+Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
 ---
- .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 80 +++++++++++++++++--
- 1 file changed, 72 insertions(+), 8 deletions(-)
+Kamil Kasperski (3):
+      dt-bindings: vendor-prefixes: add t95 string
+      dt-bindings: arm: sunxi: add T95 AXP313
+      arm64: dts: allwinner: h616: add support for T95 tv boxes
 
-diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-index a34e0df2ab86..e1dce1b80153 100644
---- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-+++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
-@@ -29,6 +29,7 @@ aliases {
- 		i2c3 = &main_i2c3;
- 		i2c4 = &wkup_i2c0;
- 		i2c5 = &mcu_i2c0;
-+		mikrobus0 = &mikrobus0;
- 		mmc0 = &sdhci0;
- 		mmc1 = &sdhci1;
- 		mmc2 = &sdhci2;
-@@ -230,6 +231,38 @@ simple-audio-card,codec {
- 		};
- 	};
- 
-+	mikrobus0: mikrobus-connector {
-+		compatible = "mikrobus-connector";
-+		pinctrl-names = "default", "pwm_default", "pwm_gpio",
-+				"uart_default", "uart_gpio", "i2c_default",
-+				"i2c_gpio", "spi_default", "spi_gpio";
-+		pinctrl-0 = <&mikrobus_gpio_pins_default>;
-+		pinctrl-1 = <&mikrobus_pwm_pins_default>;
-+		pinctrl-2 = <&mikrobus_pwm_pins_gpio>;
-+		pinctrl-3 = <&mikrobus_uart_pins_default>;
-+		pinctrl-4 = <&mikrobus_uart_pins_gpio>;
-+		pinctrl-5 = <&mikrobus_i2c_pins_default>;
-+		pinctrl-6 = <&mikrobus_i2c_pins_gpio>;
-+		pinctrl-7 = <&mikrobus_spi_pins_default>;
-+		pinctrl-8 = <&mikrobus_spi_pins_gpio>;
-+		pwms = <&ecap2 0 500000 0>;
-+		i2c-adapter = <&main_i2c3>;
-+		spi-controller = <&main_spi2>;
-+		uart = <&main_uart5>;
-+		spi-cs = <0 1>;
-+		mikrobus-gpios = <&main_gpio1 11 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 9 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 24 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 25 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 22 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 23 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 7 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 8 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 14 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 13 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 12 GPIO_ACTIVE_HIGH>,
-+				 <&main_gpio1 10 GPIO_ACTIVE_HIGH>;
-+	};
- };
- 
- &main_pmx0 {
-@@ -389,6 +422,18 @@ AM62X_IOPAD(0x01f0, PIN_OUTPUT, 5) /* (A18) EXT_REFCLK1.CLKOUT0 */
- 		>;
- 	};
- 
-+	mikrobus_pwm_pins_default: mikrobus-pwm-default-pins {
-+		pinctrl-single,pins = <
-+			AM62X_IOPAD(0x01a4, PIN_INPUT, 2) /* (B20) MCASP0_ACLKX.ECAP2_IN_APWM_OUT */
-+		>;
-+	};
-+
-+	mikrobus_pwm_pins_gpio: mikrobus-pwm-gpio-pins {
-+		pinctrl-single,pins = <
-+			AM62X_IOPAD(0x01a4, PIN_INPUT, 7) /* (B20) MCASP0_ACLKX.GPIO1_11 */
-+		>;
-+	};
-+
- 	mikrobus_i2c_pins_default: mikrobus-i2c-default-pins {
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x01d0, PIN_INPUT_PULLUP, 2) /* (A15) UART0_CTSn.I2C3_SCL */
-@@ -396,6 +441,13 @@ AM62X_IOPAD(0x01d4, PIN_INPUT_PULLUP, 2) /* (B15) UART0_RTSn.I2C3_SDA */
- 		>;
- 	};
- 
-+	mikrobus_i2c_pins_gpio: mikrobus-i2c-gpio-pins {
-+		pinctrl-single,pins = <
-+			AM62X_IOPAD(0x01d0, PIN_INPUT, 7) /* (A15) UART0_CTSn.GPIO1_22 */
-+			AM62X_IOPAD(0x01d4, PIN_INPUT, 7) /* (B15) UART0_RTSn.GPIO1_23 */
-+		>;
-+	};
-+
- 	mikrobus_uart_pins_default: mikrobus-uart-default-pins {
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x01d8, PIN_INPUT, 1) /* (C15) MCAN0_TX.UART5_RXD */
-@@ -403,6 +455,13 @@ AM62X_IOPAD(0x01dc, PIN_OUTPUT, 1) /* (E15) MCAN0_RX.UART5_TXD */
- 		>;
- 	};
- 
-+	mikrobus_uart_pins_gpio: mikrobus-uart-gpio-pins {
-+		pinctrl-single,pins = <
-+			AM62X_IOPAD(0x01d8, PIN_INPUT, 7) /* (C15) MCAN0_TX.GPIO1_24 */
-+			AM62X_IOPAD(0x01dc, PIN_INPUT, 7) /* (E15) MCAN0_RX.GPIO1_25 */
-+		>;
-+	};
-+
- 	mikrobus_spi_pins_default: mikrobus-spi-default-pins {
- 		pinctrl-single,pins = <
- 			AM62X_IOPAD(0x01b0, PIN_INPUT, 1) /* (A20) MCASP0_ACLKR.SPI2_CLK */
-@@ -412,6 +471,15 @@ AM62X_IOPAD(0x0198, PIN_INPUT, 1) /* (A19) MCASP0_AXR2.SPI2_D1 */
- 		>;
- 	};
- 
-+	mikrobus_spi_pins_gpio: mikrobus-spi-gpio-pins {
-+		pinctrl-single,pins = <
-+			AM62X_IOPAD(0x0194, PIN_INPUT, 7) /* (B19) MCASP0_AXR3.GPIO1_7 */
-+			AM62X_IOPAD(0x0198, PIN_INPUT, 7) /* (A19) MCASP0_AXR2.GPIO1_8 */
-+			AM62X_IOPAD(0x01ac, PIN_INPUT, 7) /* (E19) MCASP0_AFSR.GPIO1_13 */
-+			AM62X_IOPAD(0x01b0, PIN_INPUT, 7) /* (A20) MCASP0_ACLKR.GPIO1_14 */
-+		>;
-+	};
-+
- 	mikrobus_gpio_pins_default: mikrobus-gpio-default-pins {
- 		bootph-all;
- 		pinctrl-single,pins = <
-@@ -629,8 +697,6 @@ &main_gpio0 {
- 
- &main_gpio1 {
- 	bootph-all;
--	pinctrl-names = "default";
--	pinctrl-0 = <&mikrobus_gpio_pins_default>;
- 	gpio-line-names = "", "", "", "", "",			/* 0-4 */
- 		"SPE_RSTN", "SPE_INTN", "MIKROBUS_GPIO1_7",	/* 5-7 */
- 		"MIKROBUS_GPIO1_8", "MIKROBUS_GPIO1_9",		/* 8-9 */
-@@ -803,15 +869,11 @@ it66121_out: endpoint {
- };
- 
- &main_i2c3 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&mikrobus_i2c_pins_default>;
- 	clock-frequency = <400000>;
- 	status = "okay";
- };
- 
- &main_spi2 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&mikrobus_spi_pins_default>;
- 	status = "okay";
- };
- 
-@@ -875,8 +937,6 @@ &main_uart1 {
- };
- 
- &main_uart5 {
--	pinctrl-names = "default";
--	pinctrl-0 = <&mikrobus_uart_pins_default>;
- 	status = "okay";
- };
- 
-@@ -926,3 +986,7 @@ &mcasp1 {
- 	tx-num-evt = <32>;
- 	rx-num-evt = <32>;
- };
-+
-+&ecap2 {
-+	status = "okay";
-+};
+ Documentation/devicetree/bindings/arm/sunxi.yaml   |   5 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm64/boot/dts/allwinner/Makefile             |   1 +
+ arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi | 109 +++++++++++++++++++++
+ .../dts/allwinner/sun50i-h616-t95max-axp313.dts    |  85 ++++++++++++++++
+ 5 files changed, 202 insertions(+)
+---
+base-commit: 4138f02288333cb596885e9af03dd3ea2de845cb
+change-id: 20240315-add-t95-axp313-support-5f3da8996edd
+
+Best regards,
 -- 
-2.44.0
+Kamil Kasperski <ressetkk@gmail.com>
 
 
