@@ -1,119 +1,112 @@
-Return-Path: <linux-kernel+bounces-105565-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105566-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E06E087E064
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:34:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7959D87E067
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:35:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7D01C20DF3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:34:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A9482821D7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:35:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE762134A;
-	Sun, 17 Mar 2024 21:34:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D1A20B04;
+	Sun, 17 Mar 2024 21:35:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GTvPGMUA"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="R/SiLy4A"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D47320B35;
-	Sun, 17 Mar 2024 21:34:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28FC51C6BC;
+	Sun, 17 Mar 2024 21:35:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710711257; cv=none; b=tzgTcYuqIdEU+ZsAk4WywFkErjKLYdngzHabjY6FSmeQRWdLNoo1SvwNsNogaGL7F/WyMAbhJWC/uJZz+P1DLw90ydVbSMZAj+a1SZ6wp8vU0Hr5zyxGBPltHbMSCRklh862tQie8wXW8r8y9h/bG8ASggy0/rvqBaft087OYYw=
+	t=1710711349; cv=none; b=NxlByMVAWAfzkrUaL7IQvxUsb90Zm0TBQlgt48jYSwULQiVNbsIl7X60plTun0Vd5Kb7PUaAg0+quHG1ZGnvpbDi5GLi4f12+jZaKmkhl6yYV0pBj27bkj2yayhGH2bndNhRU5sORpVWVHh2rmtP0A0tyhrIReWIt4cbpzv/U8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710711257; c=relaxed/simple;
-	bh=JL4f9CkTc1PhMvDJqtVSNWVDRsuHiAIaDHnKNLauDrw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=enX4jrTDhiLUdXmBu31tU2xPCdq8CIUP7g/MzLyVJ+SKJmreUv3MZUV9qazuoh58inKRl21pLalVYw0lwzrYFmu/cANC1Ei6m7xMnp1wcgUy77weHdf+jFTh+9+f6nIQOBHiAvhR1qQZvbApby7cRh+IyYNP4hlI1ABLXQ/NfQ8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GTvPGMUA; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=mhmd4DQYdANeIXg1gAXPMMRysX1z3GDQw6kVU6mRTr0=; b=GTvPGMUANvAVfkSRGVTb9VOlGV
-	LRmBd/rJHeORLF/hpnwFvVXYQ8IzeOFBmhW6ipeXMalh2qVUJeeX2HcLXblOxP+Zvi9TUF2CqvxBZ
-	HX1Jf/9BLDdHOWcTuqdXXVSuuda74pmfKU/VDdbsKnMvh9+kIOU3JTUyV06ozqohwWWgxbMEDymBD
-	x8E1j5UeBFZlyU0ojq437+xL0u+c3r9NOYgxZccJvEoB/iHdQntQoQ792/XOVEH7Sq9390GzPo44W
-	cBZYUgdhveX0D3ffJEf1fp/tbI2zm7Id7MxH0Hto9FWfr5zQSFCym8nL7HYi2kBMagTPvnWZLA7Gt
-	avc6qhtA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rly8n-0000000Fe5u-2tqR;
-	Sun, 17 Mar 2024 21:34:01 +0000
-Date: Sun, 17 Mar 2024 21:34:01 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Andreas Hindborg <nmi@metaspace.dk>
-Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
-	Keith Busch <kbusch@kernel.org>,
-	Damien Le Moal <Damien.LeMoal@wdc.com>,
-	Bart Van Assche <bvanassche@acm.org>,
-	Hannes Reinecke <hare@suse.de>,
-	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Niklas Cassel <Niklas.Cassel@wdc.com>,
-	Greg KH <gregkh@linuxfoundation.org>,
-	Miguel Ojeda <ojeda@kernel.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Alice Ryhl <aliceryhl@google.com>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	Yexuan Yang <1182282462@bupt.edu.cn>,
-	Sergio =?iso-8859-1?Q?Gonz=E1lez?= Collado <sergio.collado@gmail.com>,
-	Joel Granados <j.granados@samsung.com>,
-	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
-	Daniel Gomez <da.gomez@samsung.com>,
-	open list <linux-kernel@vger.kernel.org>,
-	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
-	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
-	"gost.dev@samsung.com" <gost.dev@samsung.com>
-Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block
- driver
-Message-ID: <ZfdhyfLWBIFtKO81@casper.infradead.org>
-References: <20240313110515.70088-1-nmi@metaspace.dk>
- <ZfZajb_vcRwLacfH@casper.infradead.org>
- <874jd5qqpq.fsf@metaspace.dk>
+	s=arc-20240116; t=1710711349; c=relaxed/simple;
+	bh=yKbGbCXrBypOQAQC733roffe4K1OUMu/cmQ7H/CvZss=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=sJMnjkI/fsOOI3eYLH5+qh42TaokebS8P17AXLdh2xUsmcVbMZbsXWGDkHS3L+99/gIFMxhQzI2lgghsB7rH7jIE6JPy6AyBU5Qfnps5rV/0rqWSq7J23m7tJPtaUPixZ1tZE0ZTAkS14tgqafDwaDXxf2escYMlAuJpyQUaOdI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=R/SiLy4A; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710711338;
+	bh=85a9ZhBFDqVSEG2SAI6nYfwOUOl0VEagD6vUcfzQ8SE=;
+	h=Date:From:To:Cc:Subject:From;
+	b=R/SiLy4ACUS8E1HgnyqDaT4miHr3kJwOdyy+E7wSc/MLRNDkfC2dj2YgNNyc+ZAo9
+	 hbiM9bZvRtvfeFABwZJXs+Q6pWV6wC3gFlt9/LK6i7yuJsRmycHC4NKHk22U9g4kwB
+	 cy5YPJkXwH8PLk0ftz9L7i04/azTxPogIDnv2PiIRXiXoj80D5tJ9dhVUJ7KMimlLZ
+	 +FiR0uZzt8VxXPVthHkExvM3mB+DFhpoT6wo1xMm6s46ZOLfR4nUt3jgeQB7cMLmDn
+	 jcHfug+EuCR0mMfooVnwT8YmbRC6cOziAeJoryMHbymXQT2WKtkhoGFkl1HoKeXT8e
+	 CAnBJ4qP1y9pg==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TyWVy3Cz7z4wcD;
+	Mon, 18 Mar 2024 08:35:37 +1100 (AEDT)
+Date: Mon, 18 Mar 2024 08:35:35 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>
+Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>
+Subject: linux-next: Fixes tag needs some work in the ftrace tree
+Message-ID: <20240318083535.79501c6e@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <874jd5qqpq.fsf@metaspace.dk>
+Content-Type: multipart/signed; boundary="Sig_/=i8Z1V_P+43qAAyF517Z+hN";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-On Sun, Mar 17, 2024 at 08:09:53AM +0100, Andreas Hindborg wrote:
-> I was under the impression that using folios also give the advantage
-> that handles are always head pages. No need to worry about head/tail
-> pages. If the driver moves to use higher order pages for larger block
-> sizes, would it then make sense with folios, or are page still
-> preferred?
+--Sig_/=i8Z1V_P+43qAAyF517Z+hN
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-This is a good question.
+Hi all,
 
-If you do enhance this driver to support larger block sizes, I would
-recommend indexing the xarray by sector number instead of page number.
-You would allocate a compound page, but at no point would you need to
-ask the page what order it is (you already know), you don't need to
-change the page flags, etc, etc.
+In commit
 
-The page cache is in a bit of a different spot.  It has to support
-multiple folio sizes for the same file; it has to support folios being
-split, it has to support lookup from users who don't know what the folio
-size is, etc, etc.
+  2fd814ad5713 ("ring-buffer: Make wake once of ring_buffer_wait() more rob=
+ust")
 
-I don't think there's ever a point at which you'd need to call
-compound_head() because you'd always look up the head page.  You'd still
-want an iterator of some kind to copy to a compound page (because you
-can only map one at a time).  And that might look a lot like the folio
-copying code.  Probably the right way to handle this is for the folio
-copying code to call the page copying code since a folio is always
-composed of pages.
+Fixes tag
+
+  Fixes: 5b37b7eb98a19 ("ring-buffer: Make wake once of ring_buffer_wait() =
+more robust")
+
+has these problem(s):
+
+  - Target SHA1 does not exist
+
+The Fixes tag seems to be referring to the commit that contains the
+Fixes tag :-(
+
+Also, pleas keep all the commit message tags together at the end of the
+commit message.
+
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/=i8Z1V_P+43qAAyF517Z+hN
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX3YicACgkQAVBC80lX
+0Gxi2wf/Xs2cl5UB4O8lw507tU53iHX+JzstKihzv+iI3QVTKymR60yikrBBfFOR
+JwyR4jr8kFnZFuAf3TfB17J/JKcpiwGRMplWNlKYir6DtybbstPnH0eWWhwBGvG1
+5ik57zyNnFRicvbMKkKszfK5a2hOk1gLzii/d/y6PB2jlIech/mhYM22unt4yzem
+F52mRfJpqHQvfwV26nvR8BHQUevjPXYKEDuAmlOzNOLSB7FfQvyNhk5OkBlaJr4x
+c/mtHnDGRnl/A3C1ZygRA5XBg4s6PGKHu4gWLJghoQ0+t2NKEYfzyGrc9rHu1Qox
+XUp1NVvzqPXF74W4Ujj5jPT0WXImow==
+=hYsH
+-----END PGP SIGNATURE-----
+
+--Sig_/=i8Z1V_P+43qAAyF517Z+hN--
 
