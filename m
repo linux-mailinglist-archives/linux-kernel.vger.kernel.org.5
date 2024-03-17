@@ -1,108 +1,124 @@
-Return-Path: <linux-kernel+bounces-105455-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105456-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3003D87DE16
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:48:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C7F487DE1B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:49:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B1561C20F7A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:48:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 81608281AD9
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:49:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 105F01CAA6;
-	Sun, 17 Mar 2024 15:48:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 438F01CA9E;
+	Sun, 17 Mar 2024 15:49:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="STbt3N21"
-Received: from mail-wr1-f46.google.com (mail-wr1-f46.google.com [209.85.221.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YM5e5iqM"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D67B1CA84
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 15:48:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71C171367;
+	Sun, 17 Mar 2024 15:49:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710690488; cv=none; b=tC1Kk0g2L3mm/VpIZ13cVBDLqCC3l49q6xPALEdV52KS0MZ9A49fAjCD9y/N6TDvocpaYJtswrnA+J7XDaHR90Nak7DOHNz2nk7xLO9hOLD5rgDvfcaOvF2tmDrhbOCEifNdZkI8WEt1JY4PrvSaVr4ZEdsIvt5TypjwUGsXHiE=
+	t=1710690556; cv=none; b=rYGK8X7aI5txe26rs+/+jPXjsiQ21V4l71ECaz3bmQEa5UZ8xkLOeYTj+pIz4JV10t27ixNkiDR9mHkD3x03Qj0KrScbbGsqWwolptfiIYhJ1zQEIhNZFWyA+WKQfll42vYH1cOz6XO1n69OTz5L33Gvp6NUCLVB3e37QoLOEn0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710690488; c=relaxed/simple;
-	bh=qXxDEQtn/XB5MDmUD/l0idw+x9pNLWoaaLD6V9lFy4g=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ARrHYIo5ilv2CE1pYdB5BwnT3qG91cmZVH8Dtdt2XtlePHBSLoM7OUYd9G1bqnfQ3q804YuAigH5Ht4yK2w8QuFr9QpzikrDxsKAfS0NhapIPKnYx5PBRFW2HjAItdo7kOC4GiNyxCwgpahnNHBnAq8z+ZMAT6aXRO6tk6W4N0E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=STbt3N21; arc=none smtp.client-ip=209.85.221.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wr1-f46.google.com with SMTP id ffacd0b85a97d-33e162b1b71so3274929f8f.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 08:48:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1710690484; x=1711295284; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=I1/ILuYKRTR9hc7wiDsKsn9WptuOvIHMyzKs0l5GSkc=;
-        b=STbt3N21GXRmOTglnRDapcV/wxbkNSvBToaLlBrxtAoMKnxEa1yg97KyA7L0kIL7uo
-         34xxt1DA532/lJNbDaSEWj5RxM69zfSGNzGFzoyxAEaa3gdgN4yCrmnK1BztHhy4jddR
-         l+oCs0uJFbMTFpAGjLpoUvJ74mFxe4sngU+F3i6uTnOJMwC33vwEhbhyouwI1/dbq5Gp
-         gMzkIYj52WOGnZvKMUmAo3t4oJ5usbO1rLpxt4QFd0nWUZowrw3f1gZEs7IeZzoZylpz
-         FlQx+4IBfFzR7hgrtzmGC96WP0zLOrcFNoc1hV+jIx9IPNf0Phzlo+FvaOJIff01hKeK
-         E00w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710690484; x=1711295284;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=I1/ILuYKRTR9hc7wiDsKsn9WptuOvIHMyzKs0l5GSkc=;
-        b=uo7SEyWM12CKCDgPdJW8X+mML6mPndMiEwDo47O/SIp22danXKY07dR6EciRzddpio
-         W6iMbf9zzL/mWvNLa8GnWu8pt/BBDldj7EApoCzb49bK+D27XNcTNM3IGKVu2qJsSWuA
-         JnX/gMfl825W+EabgOAaoYxMt/aqOtiZ1F1d7ZcJD1Vdm3eS/a2KyPrYGbgyWrcxgXXN
-         NAIq0LdOkVoejv090LFDPmY594kuUqA33xj4bUP0p8mlU9ILzJ4lY8m9gFpKAufqGJcD
-         D0L3J22a11uP3Hx2lvmlVL7BcTT09kdqFXzeThOMb8HNQYZvk22o3XfZ3cRw6jLIudFB
-         EWYw==
-X-Forwarded-Encrypted: i=1; AJvYcCW859PlhTunhd1rwz4nzDyAghpgEmUJ1AplYbT2miwLRZaAzp5mLfWbBfWDxQrGS5awZAN2knES3WTPs52614cXropPxdHOfKhciL9q
-X-Gm-Message-State: AOJu0YzzIz/x+B0LVSKhtha8x5fGN4SlK2RUu2wlEX5zxWLhF4EnFli3
-	gxIY+VpX7iDJvF/xciEk4XzgEK8hQjPqCIGC2/Tf066ian3PqWPWImqENemmUzU=
-X-Google-Smtp-Source: AGHT+IGAVGv55SM4obM+qSDvbMP4XmlQQ6CPIEt7Tum/LfPyMtRYmGIXVXbJFrvc1kpyB7U6CSeEsg==
-X-Received: by 2002:a5d:61c2:0:b0:33e:7750:781d with SMTP id q2-20020a5d61c2000000b0033e7750781dmr6929837wrv.56.1710690483754;
-        Sun, 17 Mar 2024 08:48:03 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id bv17-20020a0560001f1100b0033dd9b050f9sm7731246wrb.14.2024.03.17.08.48.03
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 08:48:03 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: Chandan Babu R <chandan.babu@oracle.com>
-Cc: "Darrick J. Wong" <djwong@kernel.org>,
-	linux-xfs@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Thorsten Blum <thorsten.blum@toblux.com>
-Subject: [PATCH] xfs: Fix typo in comment
-Date: Sun, 17 Mar 2024 16:47:32 +0100
-Message-ID: <20240317154731.2801-2-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710690556; c=relaxed/simple;
+	bh=LdpyYbYNuF+OR1AOEmZnwLSBboDczWS8oE9fk1CQDW4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BFOzA6ZMjJv2EJjl+QJE7e3Od0oOWpz8gkLN182qJ73cMtUfEW89xqSLzgHVB1m3AyPcytVylTYiBXumly/iyoi6nAz0uV6ptZDQ+C1a+d6gVGav+1SL9LFBwFHhrCjGEdbRyzQrGTUESaOpIB6B3wRfhQ2TG8aeh4mG8X0ZGRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YM5e5iqM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 526C8C433C7;
+	Sun, 17 Mar 2024 15:49:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710690555;
+	bh=LdpyYbYNuF+OR1AOEmZnwLSBboDczWS8oE9fk1CQDW4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YM5e5iqMYeGrO8qd2LMXW8BhqELysmFBchVgtsfMhj2NE8pVuMHqqEO9m7aKxRr7C
+	 OCbrDamxynIRmGjtM/D2N/nmC/lozcrdJpFwQ5JZ22liB0JFyNwvypjyGVT6PpeZJv
+	 5Mr31Tm4M41Bop/EtYgd2YWmxjHBQ37qz5+TgVQhblTu22xfmbbzKqEK51Olct7itg
+	 UUL9djWjS4WPb19OLVup7vX5qNBPrKAhcEtQkNYzw1nSvO9lyTKpOqXrJQCG8SrUXD
+	 Ds2GIIogOIJzvACwLekK+XzT6Tmn/zj2WBQr6s7vPY51q+IZsapauvZyxHNKSQW4eU
+	 Q+xJir/xsO0Kw==
+Date: Sun, 17 Mar 2024 15:49:11 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Sylwester Nawrocki <s.nawrocki@samsung.com>,
+	Chanwoo Choi <cw00.choi@samsung.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-samsung-soc@vger.kernel.org, linux-clk@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] dt-bindings: clock: samsung,s3c6400-clock: convert to DT
+ Schema
+Message-ID: <20240317-jersey-trolling-d4678546e87d@spud>
+References: <20240312185035.720491-1-krzysztof.kozlowski@linaro.org>
+ <20240317-curator-smoky-99568f9308bc@spud>
+ <60039f49-a20d-49b9-8a3d-2ded499435a4@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Kk6uFwGcxqpNcnbw"
+Content-Disposition: inline
+In-Reply-To: <60039f49-a20d-49b9-8a3d-2ded499435a4@linaro.org>
 
-s/somethign/something/
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
- fs/xfs/xfs_log_priv.h | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+--Kk6uFwGcxqpNcnbw
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/fs/xfs/xfs_log_priv.h b/fs/xfs/xfs_log_priv.h
-index e30c06ec20e3..25b6d6cdd545 100644
---- a/fs/xfs/xfs_log_priv.h
-+++ b/fs/xfs/xfs_log_priv.h
-@@ -683,7 +683,7 @@ xlog_valid_lsn(
-  * flags to control the kmalloc() behaviour within kvmalloc(). Hence kmalloc()
-  * will do direct reclaim and compaction in the slow path, both of which are
-  * horrendously expensive. We just want kmalloc to fail fast and fall back to
-- * vmalloc if it can't get somethign straight away from the free lists or
-+ * vmalloc if it can't get something straight away from the free lists or
-  * buddy allocator. Hence we have to open code kvmalloc outselves here.
-  *
-  * This assumes that the caller uses memalloc_nofs_save task context here, so
--- 
-2.44.0
+On Sun, Mar 17, 2024 at 04:26:55PM +0100, Krzysztof Kozlowski wrote:
+> On 17/03/2024 16:23, Conor Dooley wrote:
+> > On Tue, Mar 12, 2024 at 07:50:35PM +0100, Krzysztof Kozlowski wrote:
+> >> Convert Samsung S3C6400/S3C6410 SoC clock controller bindings to DT
+> >> schema.
+> >=20
+> >> +description: |
+> >> +  There are several clocks that are generated outside the SoC. It is =
+expected
+> >> +  that they are defined using standard clock bindings with following
+> >> +  clock-output-names:
+> >> +   - "fin_pll" - PLL input clock (xtal/extclk) - required,
+> >> +   - "xusbxti" - USB xtal - required,
+> >> +   - "iiscdclk0" - I2S0 codec clock - optional,
+> >> +   - "iiscdclk1" - I2S1 codec clock - optional,
+> >> +   - "iiscdclk2" - I2S2 codec clock - optional,
+> >> +   - "pcmcdclk0" - PCM0 codec clock - optional,
+> >> +   - "pcmcdclk1" - PCM1 codec clock - optional, only S3C6410.
+> >=20
+> > I know you've only transfered this from the text binding, but what is
+> > the relevance of this to the binding for this clock controller? This
+> > seems to be describing some ?fixed? clocks that must be provided in
+> > addition to this controller. I guess there's probably no other suitable
+> > place to mention these?
+>=20
+> To make it correct, these should be made clock inputs to the clock
+> controller, even if the driver does not take them, however that's
+> obsolete platform which might be removed from kernel this or next year,
+> so I don't want to spend time on it.
 
+I think the comment should probably mention that these are the expected
+inputs, part of me thought that that was what you were getting at but I
+wasn't sure if instead they were inputs to some other IP on the SoC.
+
+--Kk6uFwGcxqpNcnbw
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfcQ9wAKCRB4tDGHoIJi
+0jbjAP0el+zfqXU/1GH/ci5i68AFLqupDHz+2uX0i/EiXkqgwgD9FSPzzbqPkxlg
+rMx2MTgf2+caqhXEviVOR/fol7xARgk=
+=QuI7
+-----END PGP SIGNATURE-----
+
+--Kk6uFwGcxqpNcnbw--
 
