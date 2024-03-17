@@ -1,200 +1,137 @@
-Return-Path: <linux-kernel+bounces-105431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105433-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C68AD87DDC8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:11:03 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 583C687DDD3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:12:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 663941F21375
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:11:03 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DC7D2B20B87
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:12:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C73721C698;
-	Sun, 17 Mar 2024 15:10:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A3AC1C6A8;
+	Sun, 17 Mar 2024 15:12:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hWg/4XMJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="i3G//zfv"
+Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 13151179B1;
-	Sun, 17 Mar 2024 15:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6506B1BC3E;
+	Sun, 17 Mar 2024 15:12:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710688255; cv=none; b=T7ZOLdXoNT/uMnViD0EEjwG2a6JyCAOzkpiugIb/fSHWObNbPBBCPArxHLysIgMWJJi7sRwWF+dMhXPde4DipnxeteAQ4Ntz8Fcx4QoTkHqT1QfznrUz3p7KHPKm/xifC57ru39YqOgivmfoJXmzWMMQdl+B1MYBUd9jrIPpJJA=
+	t=1710688351; cv=none; b=W/6zoCGGw6GO0s7KOEgWt1M9ursHudw3QPv5mqbj++E6eBUumXd4JL/AidZQxG85EBkSrd4yTOzi6ufV1f0jsca+C23c3PTOOOSuCW+8RFEC2BbGiML8j/0QdTSSbCr+7/UehwCFZpY93H79j9/lW/+MR7GzWfMCztx6FW7F0mQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710688255; c=relaxed/simple;
-	bh=z1ClYt8EUFyrksAqbU/+xgzstdH+GsoxmA2t05ngUuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sM7/cT3Goc/EH82JoqSYWBEWQuxQEZ8NX4nGw6g9RT9byD+1RIrYNPPrgMz1qccANgJylsUu4aU/ZpbhU6Nx5/nTQiWE4wRfJcFl5Ymtrn5vT68VFV8Nef18yX69kEnOpV9UIq03h0yvtBpR/F6BkjPARmh9wHp/Beo5DPl7LnE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hWg/4XMJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A9869C433C7;
-	Sun, 17 Mar 2024 15:10:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710688254;
-	bh=z1ClYt8EUFyrksAqbU/+xgzstdH+GsoxmA2t05ngUuw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=hWg/4XMJ771mEhsDvVPEpo3UcCsALpk8y6YLcMufT+lgeaUrEsxxIibYFIorN5+y6
-	 7Jr5WjeFSyoqLwhF9axqJKGOItZJpTUOPPvC2z6ooI2pGi8dPEmcj+sg1W+Erk/ta7
-	 WMLB3r06ZV22TJGd+ywC03USWb6kpZdj3TWoaFt4IS8Mbnu+dt8Ha7VFkVe++N6wt4
-	 1tIJIzKjQCnVBLY6l4E76mllsAuppSgxCpsUlZjDtz/eikmPBspF+4VbvbiFxj1DEc
-	 KwWDM3zQQUMJ8l5nfVqJnhzLmSw4+BypFJnwhMQquyvu7Ki9tFPCbyr+ioPV5U+YTm
-	 GwEAhMMaW4FhA==
-Date: Sun, 17 Mar 2024 15:10:50 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
-	Richard Alpe <richard@bit42.se>, linux-kernel@vger.kernel.org,
-	Niklas =?iso-8859-1?Q?S=F6derlund?= <niklas.soderlund@ragnatech.se>,
-	Michael Walle <michael@walle.cc>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-Subject: Re: [PATCH 1/2] dt-bindings: nvmem: Remove fsl,t1023-sfp in favor of
- fsl,layerscape-sfp
-Message-ID: <20240317-starved-pager-7a81c5045cfc@spud>
-References: <20240316002026.1808336-1-sean.anderson@linux.dev>
+	s=arc-20240116; t=1710688351; c=relaxed/simple;
+	bh=7D6rUs7oxFVkKkNiFleJBun4VT034Uea7yEgWMsWmlw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=Mq4FYHKQTqVPGlAi5FNwfSua9Gjer3QQFrgSrrRV8uIpIAfnAMdpno3ZgPOMXaj/fttWyED8+D7GGAqirz8zAlLMdi2Cdh0SSeRB4nn4TWZQY77XGZ4b3nTObxPbM1UJs0WKpFjit6e9xIQcezlKiKEu1zMhphFa3cAZ2pdkGjM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=i3G//zfv; arc=none smtp.client-ip=45.89.224.132
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id CD12E120006;
+	Sun, 17 Mar 2024 18:12:23 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru CD12E120006
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1710688343;
+	bh=vuhFTgRx08IRoav35YN/UioWYf2u92NjCnQaH1ojeG8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=i3G//zfvC8D25R7CeiPqgfTYLeC1qWFZb4cP+lom1aRx85YIxRzgmxU3gi1fDQbCC
+	 FEWDKcilb3Q85z+4Mw5WaWRNsztDe1af8+3dhhpqnBxsTVOSPymdOH6yq1g5Zxjy6a
+	 GN33MnDQpD9srrr1P5ZmWs+zVitGL0ZLyVh684TnWlOs0Ml7K0lcAsPNBm5SGB5tH5
+	 rRYc7EssYUt+6JUSq5ei4AZWv9iJ1eoGkzqUc7cpgI2IfJZUk4Y7Drr/yIMc4fDtiH
+	 8+ONekataCh0QleERya7UP7hwSWekqrJFjvMUWJkyF9yOrxgLvLfDs8WAyXZciHY4U
+	 GHsupLqGtGiMw==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Sun, 17 Mar 2024 18:12:23 +0300 (MSK)
+Received: from [172.28.160.49] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Sun, 17 Mar 2024 18:12:23 +0300
+Message-ID: <5ca8e65f-9e65-45d2-9bb5-10be3eea2e0b@salutedevices.com>
+Date: Sun, 17 Mar 2024 18:11:40 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="qdcgMcn0a8NU6Sgl"
-Content-Disposition: inline
-In-Reply-To: <20240316002026.1808336-1-sean.anderson@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 08/25] ASoC: dt-bindings: meson: g12a-toacodec: add
+ support for A1 SoC family
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Neil Armstrong
+	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
+ Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob
+ Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman <khilman@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liam Girdwood
+	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linus Walleij
+	<linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
+	<tiwai@suse.com>, <linux-amlogic@lists.infradead.org>,
+	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
+	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
+	<linux-gpio@vger.kernel.org>
+CC: <kernel@salutedevices.com>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-9-jan.dakinevich@salutedevices.com>
+ <f91ea77c-8170-4ae6-850f-3d5715d83855@linaro.org>
+ <5a541ea3-ac4b-4606-9b6a-b103084b30b5@salutedevices.com>
+ <83c5f475-6cc5-4084-a54e-1ed7c71735a0@linaro.org>
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <83c5f475-6cc5-4084-a54e-1ed7c71735a0@linaro.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 183875 [Feb 29 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.3
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_smtp_not_equal_from}, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
+X-KSMG-AntiVirus-Status: Clean, skipped
 
 
---qdcgMcn0a8NU6Sgl
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 15, 2024 at 08:20:25PM -0400, Sean Anderson wrote:
-> These bindings document the same hardware (just different minor
-> revisions). Remove the newer fsl,t1023-sfp.
->=20
-> Fixes: aa1ed6047107 ("dt-bindings: nvmem: Add t1023-sfp efuse support")
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> ---
->=20
->  .../bindings/nvmem/fsl,layerscape-sfp.yaml    | 21 ++++++++++-
->  .../bindings/nvmem/fsl,t1023-sfp.yaml         | 37 -------------------
->  2 files changed, 19 insertions(+), 39 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp=
-=2Eyaml
->=20
-> diff --git a/Documentation/devicetree/bindings/nvmem/fsl,layerscape-sfp.y=
-aml b/Documentation/devicetree/bindings/nvmem/fsl,layerscape-sfp.yaml
-> index 70fb2ad25103..8a54dd1328ea 100644
-> --- a/Documentation/devicetree/bindings/nvmem/fsl,layerscape-sfp.yaml
-> +++ b/Documentation/devicetree/bindings/nvmem/fsl,layerscape-sfp.yaml
-> @@ -19,6 +19,13 @@ allOf:
->  properties:
->    compatible:
->      oneOf:
-> +      - description: Trust architecture 2.0 SFP
-> +        items:
-> +          enum:
-> +            - fsl,t1023-sfp
+On 3/17/24 17:46, Krzysztof Kozlowski wrote:
+> On 17/03/2024 15:29, Jan Dakinevich wrote:
+>> I mean the following... This commit adds new defines to
+>> meson-g12a-toacodec.h header. These defines are used in the following way:
+>>
+>> sound-dai = <&toacodec TOACODEC_IN_A>;
+>> sound-dai = <&toacodec TOACODEC_CAPTURE_OUT_A>;
+>>
+>> So, can you make an advise how to call something like "&toacodec" to
+>> which I declare new parameters.
+> 
+> &toacodec is phandle but it is not really relevant here. You should
+> explain what these defines are. DAI ids?
+> 
 
-> +            - fsl,t1040-sfp
-> +            - fsl,t2080-sfp
-> +            - fsl,t4240-sfp
+Yes, these are DAI ids. Ok, I'll write it in next version.
 
-You should at least mention where these three compatibles came from,
-given they were not documented in t1023-sfp.yaml. Additionally, should
-they fall back to t1023-sfp? I see that there's already some dts files
-with these compatibles in them but seemingly no driver support as there
-is for the t1023-sfp.
+> Best regards,
+> Krzysztof
+> 
 
-Cheers,
-Conor.
-
->        - description: Trust architecture 2.1 SFP
->          items:
->            - const: fsl,ls1021a-sfp
-> @@ -45,8 +52,18 @@ properties:
->  required:
->    - compatible
->    - reg
-> -  - clock-names
-> -  - clocks
-> +
-> +if:
-> +  properties:
-> +    compatible:
-> +      contains:
-> +        enum:
-> +          - fsl,ls1021a-sfp
-> +          - fsl,ls1028a-sfp
-> +then:
-> +  required:
-> +    - clocks
-> +    - clock-names
-> =20
->  unevaluatedProperties: false
-> =20
-> diff --git a/Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml b=
-/Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml
-> deleted file mode 100644
-> index df826b40d8ca..000000000000
-> --- a/Documentation/devicetree/bindings/nvmem/fsl,t1023-sfp.yaml
-> +++ /dev/null
-> @@ -1,37 +0,0 @@
-> -# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> -%YAML 1.2
-> ----
-> -$id: http://devicetree.org/schemas/nvmem/fsl,t1023-sfp.yaml#
-> -$schema: http://devicetree.org/meta-schemas/core.yaml#
-> -
-> -title: NXP QorIQ eFuse support
-> -
-> -maintainers:
-> -  - Richard Alpe <richard@bit42.se>
-> -
-> -description:
-> -  Read support for the eFuses (SFP) on NXP QorIQ series SoC's.
-> -
-> -allOf:
-> -  - $ref: nvmem.yaml#
-> -
-> -properties:
-> -  compatible:
-> -    const: fsl,t1023-sfp
-> -
-> -  reg:
-> -    maxItems: 1
-> -
-> -required:
-> -  - compatible
-> -  - reg
-> -
-> -unevaluatedProperties: false
-> -
-> -examples:
-> -  - |
-> -    efuse@e8000 {
-> -        compatible =3D "fsl,t1023-sfp";
-> -        reg =3D <0xe8000 0x1000>;
-> -    };
-> -...
-> --=20
-> 2.35.1.1320.gc452695387.dirty
->=20
-
---qdcgMcn0a8NU6Sgl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfcH+gAKCRB4tDGHoIJi
-0pFuAQDqrCOmUxYfA1oAhhnaZfgL9V6w5ZzssuGIgEpmygC4AgEA2zieUzo695X6
-3fiDYut3t9RQWwS2y36mLX+mAVEKaQs=
-=/Tm2
------END PGP SIGNATURE-----
-
---qdcgMcn0a8NU6Sgl--
+-- 
+Best regards
+Jan Dakinevich
 
