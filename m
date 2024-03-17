@@ -1,112 +1,79 @@
-Return-Path: <linux-kernel+bounces-105566-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105567-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7959D87E067
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:35:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 094D887E075
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:44:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A9482821D7
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:35:56 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 39BAF1C2160F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:43:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 76D1A20B04;
-	Sun, 17 Mar 2024 21:35:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="R/SiLy4A"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF5E220B0E;
+	Sun, 17 Mar 2024 21:43:52 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 28FC51C6BC;
-	Sun, 17 Mar 2024 21:35:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 741B3208B0;
+	Sun, 17 Mar 2024 21:43:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710711349; cv=none; b=NxlByMVAWAfzkrUaL7IQvxUsb90Zm0TBQlgt48jYSwULQiVNbsIl7X60plTun0Vd5Kb7PUaAg0+quHG1ZGnvpbDi5GLi4f12+jZaKmkhl6yYV0pBj27bkj2yayhGH2bndNhRU5sORpVWVHh2rmtP0A0tyhrIReWIt4cbpzv/U8E=
+	t=1710711832; cv=none; b=p6QAwUtho/uTnvQEDPm0hJGfhEm9/w8tyWr1NfbjLFT/nFKE2TXL+DO+/slzwdvmbWt1Qy4GgYGoey6hrY406mvrYTzF2qDduLvHCchEtnhmksmQmxKKV4rxpX/lPEARZ+ugOp8stYjpaSyY+Zxl0EayqHZGjjciLUTMjChPY18=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710711349; c=relaxed/simple;
-	bh=yKbGbCXrBypOQAQC733roffe4K1OUMu/cmQ7H/CvZss=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=sJMnjkI/fsOOI3eYLH5+qh42TaokebS8P17AXLdh2xUsmcVbMZbsXWGDkHS3L+99/gIFMxhQzI2lgghsB7rH7jIE6JPy6AyBU5Qfnps5rV/0rqWSq7J23m7tJPtaUPixZ1tZE0ZTAkS14tgqafDwaDXxf2escYMlAuJpyQUaOdI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=R/SiLy4A; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710711338;
-	bh=85a9ZhBFDqVSEG2SAI6nYfwOUOl0VEagD6vUcfzQ8SE=;
-	h=Date:From:To:Cc:Subject:From;
-	b=R/SiLy4ACUS8E1HgnyqDaT4miHr3kJwOdyy+E7wSc/MLRNDkfC2dj2YgNNyc+ZAo9
-	 hbiM9bZvRtvfeFABwZJXs+Q6pWV6wC3gFlt9/LK6i7yuJsRmycHC4NKHk22U9g4kwB
-	 cy5YPJkXwH8PLk0ftz9L7i04/azTxPogIDnv2PiIRXiXoj80D5tJ9dhVUJ7KMimlLZ
-	 +FiR0uZzt8VxXPVthHkExvM3mB+DFhpoT6wo1xMm6s46ZOLfR4nUt3jgeQB7cMLmDn
-	 jcHfug+EuCR0mMfooVnwT8YmbRC6cOziAeJoryMHbymXQT2WKtkhoGFkl1HoKeXT8e
-	 CAnBJ4qP1y9pg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TyWVy3Cz7z4wcD;
-	Mon, 18 Mar 2024 08:35:37 +1100 (AEDT)
-Date: Mon, 18 Mar 2024 08:35:35 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
- <mhiramat@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: Fixes tag needs some work in the ftrace tree
-Message-ID: <20240318083535.79501c6e@canb.auug.org.au>
+	s=arc-20240116; t=1710711832; c=relaxed/simple;
+	bh=7Jwl9nHvhm8HIB5irkCQPgz2F16uv8z96D2pMKbVPB4=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=dZmttClrCYabtkHoU/2leujjIFqPvlu5Zc5cKmYExQp9hEK8qalK+yzKCmwAKyinVbbSoyA3rCfudSj6p0y+wyH0q4gk493hDr6RklpIhVjA2YqZM26BjnkBVauktkbBMUfWHSnnMm2mKOWHZrWXAjCmHIUtlAyEBLXEvx1ysvw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 63347C433F1;
+	Sun, 17 Mar 2024 21:43:51 +0000 (UTC)
+Date: Sun, 17 Mar 2024 17:46:09 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: Stephen Rothwell <sfr@canb.auug.org.au>
+Cc: Masami Hiramatsu <mhiramat@kernel.org>, Linux Kernel Mailing List
+ <linux-kernel@vger.kernel.org>, Linux Next Mailing List
+ <linux-next@vger.kernel.org>
+Subject: Re: linux-next: Fixes tag needs some work in the ftrace tree
+Message-ID: <20240317174609.7740c777@gandalf.local.home>
+In-Reply-To: <20240318083535.79501c6e@canb.auug.org.au>
+References: <20240318083535.79501c6e@canb.auug.org.au>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/=i8Z1V_P+43qAAyF517Z+hN";
- protocol="application/pgp-signature"; micalg=pgp-sha256
-
---Sig_/=i8Z1V_P+43qAAyF517Z+hN
 Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
 
-Hi all,
+On Mon, 18 Mar 2024 08:35:35 +1100
+Stephen Rothwell <sfr@canb.auug.org.au> wrote:
 
-In commit
+> Hi all,
+> 
+> In commit
+> 
+>   2fd814ad5713 ("ring-buffer: Make wake once of ring_buffer_wait() more robust")
+> 
+> Fixes tag
+> 
+>   Fixes: 5b37b7eb98a19 ("ring-buffer: Make wake once of ring_buffer_wait() more robust")
+> 
+> has these problem(s):
+> 
+>   - Target SHA1 does not exist
+> 
+> The Fixes tag seems to be referring to the commit that contains the
+> Fixes tag :-(
+> 
+> Also, pleas keep all the commit message tags together at the end of the
+> commit message.
+> 
 
-  2fd814ad5713 ("ring-buffer: Make wake once of ring_buffer_wait() more rob=
-ust")
+Bah, that looks to me to be a cut and paste error. Anyway, I'm rebasing all
+of it as one of the commits was nacked by Linus. :-(
 
-Fixes tag
-
-  Fixes: 5b37b7eb98a19 ("ring-buffer: Make wake once of ring_buffer_wait() =
-more robust")
-
-has these problem(s):
-
-  - Target SHA1 does not exist
-
-The Fixes tag seems to be referring to the commit that contains the
-Fixes tag :-(
-
-Also, pleas keep all the commit message tags together at the end of the
-commit message.
-
---=20
-Cheers,
-Stephen Rothwell
-
---Sig_/=i8Z1V_P+43qAAyF517Z+hN
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX3YicACgkQAVBC80lX
-0Gxi2wf/Xs2cl5UB4O8lw507tU53iHX+JzstKihzv+iI3QVTKymR60yikrBBfFOR
-JwyR4jr8kFnZFuAf3TfB17J/JKcpiwGRMplWNlKYir6DtybbstPnH0eWWhwBGvG1
-5ik57zyNnFRicvbMKkKszfK5a2hOk1gLzii/d/y6PB2jlIech/mhYM22unt4yzem
-F52mRfJpqHQvfwV26nvR8BHQUevjPXYKEDuAmlOzNOLSB7FfQvyNhk5OkBlaJr4x
-c/mtHnDGRnl/A3C1ZygRA5XBg4s6PGKHu4gWLJghoQ0+t2NKEYfzyGrc9rHu1Qox
-XUp1NVvzqPXF74W4Ujj5jPT0WXImow==
-=hYsH
------END PGP SIGNATURE-----
-
---Sig_/=i8Z1V_P+43qAAyF517Z+hN--
+-- Steve
 
