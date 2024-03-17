@@ -1,154 +1,306 @@
-Return-Path: <linux-kernel+bounces-105460-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B950387DE2A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:56:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA8E387DE33
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:58:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EB3D82811B6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:56:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 800A91C210C1
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:58:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E88F91CAB3;
-	Sun, 17 Mar 2024 15:56:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 47F221CAB9;
+	Sun, 17 Mar 2024 15:58:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="Zn4i5CUG"
-Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UwghZ5oG"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0438D1C68F;
-	Sun, 17 Mar 2024 15:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8F131CA89;
+	Sun, 17 Mar 2024 15:58:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710691006; cv=none; b=tijDRold05HFw2+wUwCiNXM2xzqu3+pzOABoTweebDs7XlLDZrXXIe0C7w7TlQHxbq+SRphfzAbCFt4HF97VHX1ERIUpEyr+W4O6opj2HkULqCg55ffX48rccSW48wLuqstv1DiwzIhlovZc7Wh5LOXd5N5JFjamUUVwfh9TIx8=
+	t=1710691092; cv=none; b=EK4eMpf70l7F5yPccHolal8v06QCXd+sBJgxxmaazD+PG5EsqVjcMtYp0s2zUan3EialilSZrFil0woB5vEpJNge0EXWX9HY52Nyc9OZyuckOBdsFHWbJO4PXbhYFZ1OIrIMakN2zUDzhhXNdxt2taDq5d1+qqt8YSJ9ELKDyPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710691006; c=relaxed/simple;
-	bh=LOpDTryQU9TB276fSdpuc7hzwIz6lRjRgZpEEbygp3A=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=RCIhiT20W4MyJd4XQ+hBLnq2GSpkdJr4UwYdE2y6C4BNysJzopJorjavJuQqJYUzpDchcDW9radxR+fm1Z/j7WWSaMKodTFmLqtn2JNCCKstTtt1C1AN0obTqPCOim+eT7MEENYp6uyIZd3n2MhJr8qe8L3OVTOzP5B0XqpCkCs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=Zn4i5CUG; arc=none smtp.client-ip=37.18.73.165
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id DF8FA100004;
-	Sun, 17 Mar 2024 18:56:40 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru DF8FA100004
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710691000;
-	bh=Cfmvtd8+RWjDHdplGc7y/19DFlRbIEeWUqLQYoQINEc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=Zn4i5CUG1rPcaaBktZp5q4tiGyqYkTpX9uyN9C9GryTrFOVtH+MG1VhRCoV+rEOEs
-	 fAg+L62GHJ977FjWkckAtdno5kHjtFyisRNEuYQPFdjwon/kdkrBKmsKlth+3NNUN/
-	 MRV89kKCp3EtotqGmP98txRu/b12yEjgZX7ZVq3hNx28eHWiRF/AyQqd+a2dETp9NP
-	 IKdwbVCZGRtzgXQvm9Phx5fHovnL2QBjoblSNtuKMvyneuR77JOvhgysMrQHBV+Orb
-	 y5GVgzZPqE9IeS/sVC+9E1aw2jlfaB8pHxfuTdGtU81C/7WHpIp+jY86YpImq9xgx3
-	 sZHQAgm4ifuPQ==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Sun, 17 Mar 2024 18:56:40 +0300 (MSK)
-Received: from [172.28.160.49] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Sun, 17 Mar 2024 18:56:40 +0300
-Message-ID: <827c4f17-043e-4e09-aea6-0fee22d1b234@salutedevices.com>
-Date: Sun, 17 Mar 2024 18:55:57 +0300
+	s=arc-20240116; t=1710691092; c=relaxed/simple;
+	bh=vZeuYhAh2tVxnc+5ynDwh9Mr5IWsLK3cAo6lXHx8A7A=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Q+yEQhIpmeG2E9XoOlmtP1M7jHc+G8bwuUkyRk03fqFN5qToeqttutSvOcjkiMngcJsvm+7b1c9vbwXG6jvmry4+DTsH/U7esdKhl4u+Mz+0rFL2kTH8OI512yGcN3zF3+6MmMj+4Kh4T/gmj6XZX6DZfZwQtbBljyncSWjdDWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UwghZ5oG; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e01c38f98cso341015ad.3;
+        Sun, 17 Mar 2024 08:58:10 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710691090; x=1711295890; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=80/MbfT86UuveNqoUzU/+aC14au60excBnK19OYBXQI=;
+        b=UwghZ5oGDJxqPypU/UF2fKg8XpBW8T6knA3NIVi7VJqmtePLC5PG4ORiszcD0YTEhJ
+         RnH6ie1vYaFOz153N7lU21VjIkt7ODIJjUND5GGWlIoQncNmgek4DCtO4UQGwMN/+Tx+
+         yfQz5Oef59vu2G8JuoygOnfM+u/fzK3EkocdnUw7N9LYS4/bAwpZZnq/3K8z/ArlvNyk
+         9oT02Zf4SgLzEOSTcglaaPsR/7VeQ3fJqxkFUuuYZJXjxa/1uJ8dUgjPq89sJELERkr8
+         RmO0KDrXxPUZZpDHgaDAi1zpXkZEl8tgpLGK70ky3yJ7RTkSJKRJoyQPv16zorwLijuM
+         23Ug==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710691090; x=1711295890;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=80/MbfT86UuveNqoUzU/+aC14au60excBnK19OYBXQI=;
+        b=acFjYfLi7fBUUP4Wt/SS8kxCKY9a0juke3TRWZRMb/nzvi4Tb6vMuX2xrV4J6sME1E
+         x1ufUwZLGNnzEN96g9hlGz2LDsn2+je1G9aT6ih98UUCFHKz12xNSsaO7xo3RiBXS9+4
+         6tEsDwwyrjrXBV72eUu+6aaOKARIeNcYe4v05FKqaENuOzATW2rnVtLdrSvoCTv7T04N
+         vv/OOmKJjNdnLdBHznlmlwZx+TTZCwZl3o/lpcyiw6NlK98QoLHjG17X0R/cPBe2P47l
+         6ib+jKOJx8dSqXMLHjgAzKwI9ddK5uvv1kgmjrAnbRcK1E4W+ugsmeNvrpa7s2SAKQW4
+         9NCQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUC+c7pmtj/KORr52Vq01Yj6PAAB3CbaF1GnDgRTpL11jU2JYiWW7vbAz5UxMCNCfUQ4Q/N2QAZgAB9zvyczQO/O1bzLGa3AzDdNfGFc5pq333I7bJApkOPsCUWFXsQqUtRaKeoQLZG
+X-Gm-Message-State: AOJu0Yxb9r9nOkfcaT1t61zn3Tai0OeDFaqPjOoQjbk+J/iIYV5EAbfU
+	TntFcLmMHLSzRxV4VaoZQlXSluzARG4Vj91Vpr4K77MMxjHijY6CLEJ/9uH9oh3xBhYiINdq3pG
+	osFfVJVRvegfoOxfXzw1D9wAhI1k=
+X-Google-Smtp-Source: AGHT+IFMNUvqGLw7LosLD4a24do3gZIDj3G8fNWvnl2elB7tiI0tAusgkJ/15k13HQ7isk5L2PzBCcsfJg2mNzsJLNA=
+X-Received: by 2002:a17:90b:3595:b0:29b:b1f3:c4ab with SMTP id
+ mm21-20020a17090b359500b0029bb1f3c4abmr5530953pjb.46.1710691089899; Sun, 17
+ Mar 2024 08:58:09 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document
- 'sysrate' property
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Jerome Brunet <jbrunet@baylibre.com>, Michael
- Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob
- Herring <robh@kernel.org>, Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
-	Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman <khilman@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liam Girdwood
-	<lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, Linus Walleij
-	<linus.walleij@linaro.org>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai
-	<tiwai@suse.com>, <linux-amlogic@lists.infradead.org>,
-	<linux-clk@vger.kernel.org>, <devicetree@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<alsa-devel@alsa-project.org>, <linux-sound@vger.kernel.org>,
-	<linux-gpio@vger.kernel.org>
-CC: <kernel@salutedevices.com>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
- <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
-From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
+References: <CABOYnLw8=VM4LxgBsrwTi3HzdvGV7cYJU=4t7MMYTnrDCaDKAQ@mail.gmail.com>
+ <cc7eb13f-b61d-4a4c-8c35-394a833d5917@rowland.harvard.edu>
+In-Reply-To: <cc7eb13f-b61d-4a4c-8c35-394a833d5917@rowland.harvard.edu>
+From: xingwei lee <xrivendell7@gmail.com>
+Date: Sun, 17 Mar 2024 23:57:58 +0800
+Message-ID: <CABOYnLx1pyG3qjoB9yuRPtDcb3TRbSqTktngXhkPq9UNVd4jLg@mail.gmail.com>
+Subject: Re: divide error in alauda_transport
+To: Alan Stern <stern@rowland.harvard.edu>
+Cc: gregkh@linuxfoundation.org, usb-storage@lists.one-eyed-alien.net, 
+	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	samsun1006219@gmail.com, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 183875 [Feb 29 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.3
-X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 7 0.3.7 6d6bf5bd8eea7373134f756a2fd73e9456bb7d1a, {Tracking_smtp_not_equal_from}, {Tracking_from_domain_doesnt_match_to}, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/02/29 19:21:00 #23899999
-X-KSMG-AntiVirus-Status: Clean, skipped
+
+On Mar 17, 2024, at 23:04, Alan Stern <stern@rowland.harvard.edu> wrote:
+
+On Sun, Mar 17, 2024 at 04:31:01PM +0800, xingwei lee wrote:
+
+Hello I found a bug in latest upstream titled "divide error in
+alauda_transport", and maybe is realted with usb.
+I comfired in the latest upstream the poc tree can trigger the issue.
+
+If you fix this issue, please add the following tag to the commit:
+Reported-by: xingwei lee <xrivendell7@gmail.com>
+Reported-by: yue sun <samsun1006219@gmail.com>
+
+kernel: upstream 9187210eee7d87eea37b45ea93454a88681894a4
+config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=1c6662240382da2
+with KASAN enabled
+compiler: gcc (Debian 12.2.0-14) 12.2.0
+
+divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+CPU: 2 PID: 8229 Comm: usb-storage Not tainted 6.8.0-05202-g9187210eee7d #20
+Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+1.16.2-1.fc38 04/01/2014
+RIP: 0010:alauda_read_data drivers/usb/storage/alauda.c:954 [inline]
+RIP: 0010:alauda_transport+0xcaf/0x3830 drivers/usb/storage/alauda.c:1184
+
+
+Can you please test the patch below?
+
+Alan Stern
 
 
 
-On 3/15/24 13:00, Krzysztof Kozlowski wrote:
-> On 15/03/2024 00:21, Jan Dakinevich wrote:
->> This option allow to redefine the rate of DSP system clock.
-> 
-> And why is it suitable for bindings? Describe the hardware, not what you
-> want to do in the driver.
-> 
 
-What do you mean? I am adding some new property and should describe it
-in dt-bindinds. Isn't it?
+Index: usb-devel/drivers/usb/storage/alauda.c
+===================================================================
+--- usb-devel.orig/drivers/usb/storage/alauda.c
++++ usb-devel/drivers/usb/storage/alauda.c
+@@ -951,7 +951,6 @@ static int alauda_read_data(struct us_da
+unsigned int lba_offset = lba - (zone * uzonesize);
+unsigned int pages;
+u16 pba;
+- alauda_ensure_map_for_zone(us, zone);
 
->>
->> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->> ---
->>  Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml | 4 ++++
->>  1 file changed, 4 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->> index df21dd72fc65..d2f23a59a6b6 100644
->> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->> @@ -40,6 +40,10 @@ properties:
->>    resets:
->>      maxItems: 1
->>  
->> +  sysrate:
->> +    $ref: /schemas/types.yaml#/definitions/uint32
->> +    description: redefine rate of DSP system clock
-> 
-> No vendor prefix, so is it a generic property? Also, missing unit
-> suffix, but more importantly I don't understand why this is a property
-> of hardware.
-> 
+/* Not overflowing capacity? */
+if (lba >= max_lba) {
+@@ -961,6 +960,8 @@ static int alauda_read_data(struct us_da
+break;
+}
 
-Answered in next message.
++ alauda_ensure_map_for_zone(us, zone);
++
+/* Find number of pages we can read in this block */
+pages = min(sectors, blocksize - page);
+len = pages << pageshift;
 
-> Best regards,
-> Krzysztof
-> 
 
--- 
+Hi Alan
+
+I apply your patch in my upstream commit
+9187210eee7d87eea37b45ea93454a88681894a4
+
+diff --git a/drivers/usb/storage/alauda.c b/drivers/usb/storage/alauda.c
+index 115f05a6201a..6eccbadcea78 100644
+--- a/drivers/usb/storage/alauda.c
++++ b/drivers/usb/storage/alauda.c
+@@ -951,7 +951,6 @@ static int alauda_read_data(struct us_data *us,
+unsigned long address,
+                unsigned int lba_offset = lba - (zone * uzonesize);
+                unsigned int pages;
+                u16 pba;
+-               alauda_ensure_map_for_zone(us, zone);
+
+                /* Not overflowing capacity? */
+                if (lba >= max_lba) {
+@@ -961,6 +960,8 @@ static int alauda_read_data(struct us_data *us,
+unsigned long address,
+                        break;
+                }
+
++               alauda_ensure_map_for_zone(us, zone);
++
+                /* Find number of pages we can read in this block */
+                pages = min(sectors, blocksize - page);
+                len = pages << pageshift;
+
+However, the poc still trigger the bug like below:
+
+root@syzkaller:~# ./55a
+[  143.702248][   T29] usb 1-1: new high-speed USB device number 2
+using dummy_hcd
+[  143.941971][   T29] usb 1-1: Using ep0 maxpacket: 8
+[  144.062985][   T29] usb 1-1: config 0 interface 0 altsetting 0
+endpoint 0xE has invalid maxpacket 6912, setting to 1024
+[  144.066725][   T29] usb 1-1: config 0 interface 0 altsetting 0 bulk
+endpoint 0xE has invalid maxpacket 1024
+[  144.069851][   T29] usb 1-1: config 0 interface 0 altsetting 0
+endpoint 0x82 has invalid wMaxPacketSize 0
+[  144.073033][   T29] usb 1-1: config 0 interface 0 altsetting 0 bulk
+endpoint 0x82 has invalid maxpacket 0
+[  144.076132][   T29] usb 1-1: New USB device found, idVendor=07b4,
+idProduct=010a, bcdDevice= 1.02
+[  144.079142][   T29] usb 1-1: New USB device strings: Mfr=0,
+Product=0, SerialNumber=0
+[  144.082673][ T4526] systemd-journald[4526]: sd-device: Failed to
+chase symlinks in "/sys/dev/char/189:1".
+[  144.086529][   T29] usb 1-1: config 0 descriptor??
+[  144.103215][ T8204] raw-gadget.0 gadget.0: fail, usb_ep_enable returned -22
+[  144.124706][   T29] ums-alauda 1-1:0.0: USB Mass Storage device detected
+[  144.153028][   T29] scsi host2: usb-storage 1-1:0.0
+[  145.216626][ T1020] scsi 2:0:0:0: Direct-Access     Olympus
+MAUSB-10 (Alauda 0102 PQ: 0 ANSI: 0 CCS
+[  145.219706][ T1020] scsi 2:0:0:1: Direct-Access     Olympus
+MAUSB-10 (Alauda 0102 PQ: 0 ANSI: 0 CCS
+[  145.234829][ T1020] sd 2:0:0:0: Attached scsi generic sg2 type 0
+[  145.251393][ T1020] sd 2:0:0:1: Attached scsi generic sg3 type 0
+[  145.492274][   T73] sd 2:0:0:0: [sdb] Very big device. Trying to
+use READ CAPACITY(16).
+[  145.932043][   T12] sd 2:0:0:1: [sdc] Very big device. Trying to
+use READ CAPACITY(16).
+[  145.932844][   T73] sd 2:0:0:0: [sdb] Using 0xffffffff as device size
+[  145.935914][   T12] sd 2:0:0:1: [sdc] Using 0xffffffff as device size
+[  146.141945][ T8215] divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+[  146.143565][ T8215] CPU: 1 PID: 8215 Comm: usb-storage Not tainted
+6.8.0-05202-g9187210eee7d-dirty #21
+[  146.145319][ T8215] Hardware name: QEMU Standard PC (i440FX + PIIX,
+1996), BIOS 1.16.2-1.fc38 04/01/2014
+[  146.146720][ T8215] RIP: 0010:alauda_transport+0xc65/0x38b0
+[  146.147977][ T8215] Code: 84 24 08 01 00 00 00 00 00 00 48 c7 84 24
+18 01 00 00 00 00 00 00 48 d3 eb 48 89 d9 85 f6 0f 84 5b 12 00 00 31
+d2 41 0f b7 c4 <f7> 74 24 40 66 41 39 dc 41 89 c6 0f 83 08 02 00 00 41
+81
+[  146.150664][ T8215] RSP: 0018:ffffc9001005fa60 EFLAGS: 00010246
+[  146.151539][ T8215] RAX: 0000000000000000 RBX: 0000000000000000
+RCX: 0000000000000000
+[  146.152672][ T8215] RDX: 0000000000000000 RSI: 0000000000000001
+RDI: ffff88802d3d5a00
+[  146.153819][ T8215] RBP: 1ffff9200200bf69 R08: 0000000000000001
+R09: ffffed1005ed15ad
+[  146.154982][ T8215] R10: ffff88802f68b088 R11: ffff88802f68acb8
+R12: 0000000000000000
+[  146.156122][ T8215] R13: 0000000000000000 R14: 0000000000000000
+R15: ffff88802d3d5a00
+[  146.157275][ T8215] FS:  0000000000000000(0000)
+GS:ffff88823bc00000(0000) knlGS:0000000000000000
+[  146.158578][ T8215] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  146.159536][ T8215] CR2: 000055e7fa9c4770 CR3: 000000000c774000
+CR4: 0000000000750ef0
+[  146.160699][ T8215] PKRU: 55555554
+[  146.161232][ T8215] Call Trace:
+[  146.161730][ T8215]  <TASK>
+[  146.162173][ T8215]  ? die+0x31/0x80
+[  146.162718][ T8215]  ? do_trap+0x1b4/0x3c0
+[  146.163355][ T8215]  ? alauda_transport+0xc65/0x38b0
+[  146.164115][ T8215]  ? do_error_trap+0x9e/0x160
+[  146.164788][ T8215]  ? alauda_transport+0xc65/0x38b0
+[  146.165542][ T8215]  ? exc_divide_error+0x38/0x50
+[  146.166259][ T8215]  ? alauda_transport+0xc65/0x38b0
+[  146.167008][ T8215]  ? asm_exc_divide_error+0x1a/0x20
+[  146.167782][ T8215]  ? alauda_transport+0xc65/0x38b0
+[  146.168546][ T8215]  ? __pfx___lock_acquire+0x10/0x10
+[  146.169309][ T8215]  ? __pfx_alauda_transport+0x10/0x10
+[  146.170098][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.170909][ T8215]  ? __lock_acquire+0x193f/0x5c00
+[  146.171639][ T8215]  usb_stor_invoke_transport+0xea/0x13d0
+[  146.172465][ T8215]  ? __pfx_mark_lock+0x10/0x10
+[  146.173179][ T8215]  ? __mutex_lock+0x25a/0x1330
+[  146.173893][ T8215]  ? __pfx_usb_stor_invoke_transport+0x10/0x10
+[  146.174796][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.175640][ T8215]  ? find_held_lock+0x2d/0x110
+[  146.176357][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.177172][ T8215]  ? usb_stor_control_thread+0x304/0x980
+[  146.178002][ T8215]  ? __pfx_lock_release+0x10/0x10
+[  146.178745][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.179581][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.180406][ T8215]  ? mark_held_locks+0x9f/0xe0
+[  146.181114][ T8215]  usb_stor_control_thread+0x5d6/0x980
+[  146.181928][ T8215]  ? __pfx_usb_stor_control_thread+0x10/0x10
+[  146.182784][ T8215]  ? _raw_spin_unlock_irqrestore+0x52/0x80
+[  146.183620][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.184438][ T8215]  ? lockdep_hardirqs_on+0x7c/0x100
+[  146.185196][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.186007][ T8215]  ? srso_alias_return_thunk+0x5/0xfbef5
+[  146.186808][ T8215]  ? __kthread_parkme+0xb5/0x1f0
+[  146.187545][ T8215]  ? __pfx_usb_stor_control_thread+0x10/0x10
+[  146.188418][ T8215]  kthread+0x2eb/0x3d0
+[  146.189202][ T8215]  ? _raw_spin_unlock_irq+0x23/0x50
+[  146.189981][ T8215]  ? __pfx_kthread+0x10/0x10
+[  146.190712][ T8215]  ret_from_fork+0x2f/0x70
+[  146.191387][ T8215]  ? __pfx_kthread+0x10/0x10
+[  146.192065][ T8215]  ret_from_fork_asm+0x1a/0x30
+[  146.192765][ T8215]  </TASK>
+[  146.193222][ T8215] Modules linked in:
+[  146.193986][ T8215] ---[ end trace 0000000000000000 ]---
+[  146.194815][ T8215] RIP: 0010:alauda_transport+0xc65/0x38b0
+[  146.195724][ T8215] Code: 84 24 08 01 00 00 00 00 00 00 48 c7 84 24
+18 01 00 00 00 00 00 00 48 d3 eb 48 89 d9 85 f6 0f 84 5b 12 00 00 31
+d2 41 0f b7 c4 <f7> 74 24 40 66 41 39 dc 41 89 c6 0f 83 08 02 00 00 41
+81
+[  146.198822][ T8215] RSP: 0018:ffffc9001005fa60 EFLAGS: 00010246
+[  146.199783][ T8215] RAX: 0000000000000000 RBX: 0000000000000000
+RCX: 0000000000000000
+[  146.200998][ T8215] RDX: 0000000000000000 RSI: 0000000000000001
+RDI: ffff88802d3d5a00
+[  146.202239][ T8215] RBP: 1ffff9200200bf69 R08: 0000000000000001
+R09: ffffed1005ed15ad
+[  146.203581][ T8215] R10: ffff88802f68b088 R11: ffff88802f68acb8
+R12: 0000000000000000
+[  146.204813][ T8215] R13: 0000000000000000 R14: 0000000000000000
+R15: ffff88802d3d5a00
+[  146.206034][ T8215] FS:  0000000000000000(0000)
+GS:ffff88823bd00000(0000) knlGS:0000000000000000
+[  146.207351][ T8215] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  146.208325][ T8215] CR2: 000055e7fa9cf2c8 CR3: 0000000027014000
+CR4: 0000000000750ef0
+[  146.209490][ T8215] PKRU: 55555554
+[  146.210032][ T8215] Kernel panic - not syncing: Fatal exception
+[  146.211335][ T8215] Kernel Offset: disabled
+[  146.212003][ T8215] Rebooting in 86400 seconds..
+
+
 Best regards
-Jan Dakinevich
+xingwei Lee
 
