@@ -1,110 +1,120 @@
-Return-Path: <linux-kernel+bounces-105322-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105323-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B70A87DC3A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 03:03:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D60A87DC3C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 03:05:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 535B5B21925
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 02:03:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 374AE1C20B76
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 02:04:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86AAE441F;
-	Sun, 17 Mar 2024 02:03:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1EA7E8C05;
+	Sun, 17 Mar 2024 02:04:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="fqvWrr++"
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com [209.85.219.174])
+	dkim=pass (2048-bit key) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com header.b="m4W0rfQY"
+Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 238DB1852
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 02:03:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 154D879C4
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 02:04:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710641015; cv=none; b=P+JMsSScGeNXUHub7RaF82a8i1C3gw8LdgYOA7iuGMZ9FNOIiQTqqrmFR/tR/yEVqfd6gs1D11tFYteFlIjfjtjiYh3Q4ZzyRvkAKM28rTQWyrgl0hQUw3o50TRzFneeZIyQD8+3yFkCMgSLaCTcWtYW/hcIrVMT2auD7dn0tvc=
+	t=1710641093; cv=none; b=aWFXJ6TynxWqdF7EeflL3sepVq2nhK/W/rVJYWB2XaCHqc25un001cTsGCwJW2wqJjJMcdx6VBJWcOLk3Dcp/CHT8kBrPdVjKwfxgk04gzfNY0jjD4glkZPxQr2P7WC715cSYX12eE5D4xegXsuxF3bqDVuj2jbHbJ/PtH2HxEs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710641015; c=relaxed/simple;
-	bh=Kv0QSCq59fEtM1NO8t+yR1R5EVeHyVOYWIDdxnJijZ4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=odTTG7vU1w6dMJq0rOzpAapDDPx2V2OmjKogHvILA81gUjjXm1ZRbAzJPZgxHxujnoTac/BdH3VqygFFxnAQRErfEu61pyb3Ih4TLQG4pr4Iz1DPypL8wrpT8oWIakxoIVW5X4gngtV7riEq4yBnvYx2WK51gkUXouLgyfBCPc0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=fqvWrr++; arc=none smtp.client-ip=209.85.219.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dc25e12cc63so4012346276.0
-        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 19:03:33 -0700 (PDT)
+	s=arc-20240116; t=1710641093; c=relaxed/simple;
+	bh=aCT0vUa9iGG4jg2bvIm4ZCdWt/b43G+VBuROresZ9VA=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=KCoBdb6Hst5gsq7Q2kLpyfHG9eRGgE1x2gA5LVmK+HEVyYa63PtNtSviIWeAh/PDj2Qg3ZKY5fgwfhiAFaVsxk5dzm20MUSnAnDR5/fADUap0K1x45snrI9gq0IhrZ643N03jb3i4qWiH8t8hS/Ojv2on5c3y9T9T4TrVlL9LyQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cpp.in; spf=none smtp.mailfrom=cpp.in; dkim=pass (2048-bit key) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com header.b=m4W0rfQY; arc=none smtp.client-ip=209.85.214.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cpp.in
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cpp.in
+Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dc3b4b9b62so22238945ad.1
+        for <linux-kernel@vger.kernel.org>; Sat, 16 Mar 2024 19:04:50 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710641013; x=1711245813; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=fDawv7n/Hl1MA12W63Wi04iWswIJUMGvTr6PyC7EIoE=;
-        b=fqvWrr++tWaecfls5HihSXzGdXm8jrmk1XlhUUxG9nF3vjRb9vqNrSFUfFfLfpJv6b
-         A32zhjjFHzpbquAGn/3JnW/zU4+TA7aX0e7VyOrH/HfNak5wHz1lvmU/I+YBfEnbIfKa
-         8tscClynaME8rUu6b1EdJ23u1KGTapRYKvbPEl+azUMvS+sO1KagyQiB6lqJZix74ZS5
-         OCy/RAURpZn7zUXjCUTQrnJK5Qvw/AeAkoUS9HvF5vjboJ1TS/Fgk1j8krkJnN4QChJS
-         dNKN3mGQlL19qG1ekJCwPWTf7Bpiff+P1wBE/z5UfSHb0J8YyacRLHBKq47u/IutQeup
-         rhdg==
+        d=cpp-in.20230601.gappssmtp.com; s=20230601; t=1710641090; x=1711245890; darn=vger.kernel.org;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IWtXa4epYbJQbXxdWpC2jiOsOGSFUbjYRhlCuBfpHew=;
+        b=m4W0rfQY9orveLLiPnFycdorxiTPY/5TLey1SEPo68ocpSSIasMVoFfbq5qT9DZH3L
+         pISO1ebjO/rvPF/z7MU+riD3+2qdbfsoZNZ612ttCcZl09zlK/d14ZIQIyySBFNr5dkt
+         ipjpidONNzKO8xw39jG0Vh2pjxttuIFkhSKJmUT3annGg+otQEnZNyuP9Pzeur32V0Fw
+         ptQj3DcbNWnkefdzfb+5AavE4z63l2CaBhHs8dWTKSHMBRoMO796tiuCm7lagVhxt81V
+         GIX8ips2rZiJ7ZOarBPCfjFp9MJgeYVbBx5L6AAw3SlIZ8tQymi8N7AtegS061PFHBxz
+         vDNA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710641013; x=1711245813;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=fDawv7n/Hl1MA12W63Wi04iWswIJUMGvTr6PyC7EIoE=;
-        b=GJhRAg199J4JLYzaf/wGHoU8OzgQkrBPXZykhscBAKzNRlvaccFdATiLT8qEGU8kPX
-         PsrjrX9sCLI1J3zjgY4MLiIyPBKt43J34k6b8eavjYrz6hIB4ONwjTi9zlOj8DmHlPSv
-         PwlSnxR/B2qVMH7601OzeSp4n+/EDDjY/InJm6hEP59vkJJeho0lm6GE2Jvj64sqosvB
-         kQzGB2O+uKMq7EyyN+/yjJKCkiri8NBCN1p75pbhQPAPyIFg0EZSsMz1YxNUPnXVJZ+8
-         zrsWIF+sh7VSJfzA5TrvexYHqIqZaCZs5ynCieQOCZjkdZSI9C1CwvYI9mFt0XoSoZ5g
-         e4aw==
-X-Forwarded-Encrypted: i=1; AJvYcCXp6gb8J2lplV7ft9Sxq0DdRv1NZpd7Q1R/PBb26cwFCa6pMp4qrPT+fI2LnYaBIS0hSQY3qKYq9Io8jwiz2dfQ7+0eA3TJ2+GIJRWO
-X-Gm-Message-State: AOJu0YyZJEnw8lBLEVZ7bkKSmXJqWTafJGxKW7bO1JjKlC7i+gtuo22l
-	g94BR0UXmvpeSta0zaANiPzm1OWgPFIAQN2zVSxuAbtZMsIqDGin6ncOcCo/kbeTiMdp4HI4ppq
-	vgFC8ZpVNyaAMn327ME3Ol+PPuC6ELvzk8Dd6Kw==
-X-Google-Smtp-Source: AGHT+IGKP5/QVTFeKJWp0LE2bmqx8+bXO7FoyJVOXlQK9kdHfeZzWq2GYg6yprxmFWn55gcVROku92p+nT0HUkQ0/Ik=
-X-Received: by 2002:a05:6902:1348:b0:dcf:ecce:b2da with SMTP id
- g8-20020a056902134800b00dcfecceb2damr6226829ybu.19.1710641013131; Sat, 16 Mar
- 2024 19:03:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710641090; x=1711245890;
+        h=content-transfer-encoding:content-language:cc:to:subject:from
+         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=IWtXa4epYbJQbXxdWpC2jiOsOGSFUbjYRhlCuBfpHew=;
+        b=ZR397onqc7kP2V4LPRa3jIDh7DUbbCaY85DCQgK/phPPAdpj218U+wzAAbhpoSCyD4
+         llTKQQ+CyB8499bPCQvo+GdpG63ax5MjAOCP7rBk+cqoR99jpggdMUFvvpCNeiL4LHKR
+         EzaipfbuWAlrZ4O5TL51wyKXNBtgRLI2Q/3Er536cWC/AQ5OD9Q2Q0EjD4QonwHfh9mH
+         fcRvl2edn4UVzxIgtp7hJe7lQPaDVBX2HGXGD0JfcyO/PNNOOAp0tb8T0YupZjPF1A4q
+         G/cl8DJqRRTyOtl3xZp7LQR/TFZHjx5aX20Q8MyvMABBfaR3ek7k4ihdGmxGEmK12wMy
+         UiXA==
+X-Forwarded-Encrypted: i=1; AJvYcCWKIHa2FuunoYQPwqYIbRJgep9fTL1MzWyB9Lrez4mDTabDdCwxa2i1eDAFZXupcY5QmdB3v5RTzRl5GEFuZBTO+sVSybgBiJFHK85v
+X-Gm-Message-State: AOJu0Yzy4hRj2jHmUMivdkgYKLbYehy99JlcO2enRFpuiAhyvxg0AgWb
+	MbdM5xGEeeolblLib7AHKLWVVHM1yKZhle4TEUvS4GXtQ+QQTxiMkK+/T12Rrw==
+X-Google-Smtp-Source: AGHT+IGJfXs2YCoHgkgwujxBkyiSGmRp8KbhcbDvqGktBTuf7mgurovld+JrdIomojDkTkRDlF31Vw==
+X-Received: by 2002:a17:902:da8d:b0:1e0:16e0:b28e with SMTP id j13-20020a170902da8d00b001e016e0b28emr210988plx.34.1710641090085;
+        Sat, 16 Mar 2024 19:04:50 -0700 (PDT)
+Received: from [192.168.3.16] (mx-ll-183.89.30-58.dynamic.3bb.co.th. [183.89.30.58])
+        by smtp.gmail.com with ESMTPSA id v11-20020a170902d68b00b001defd3e64d5sm2881143ply.263.2024.03.16.19.04.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sat, 16 Mar 2024 19:04:49 -0700 (PDT)
+Message-ID: <570989e3-299f-4617-adde-b6b8d1e06277@cpp.in>
+Date: Sun, 17 Mar 2024 05:04:44 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <e09122722190d052cee792a9246c274510f3b928.1710618660.git.christophe.jaillet@wanadoo.fr>
-In-Reply-To: <e09122722190d052cee792a9246c274510f3b928.1710618660.git.christophe.jaillet@wanadoo.fr>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Sun, 17 Mar 2024 04:03:21 +0200
-Message-ID: <CAA8EJppcODOQPaP1=0hfb72egS=Nca82OZV1SH1gw9XDubYaSg@mail.gmail.com>
-Subject: Re: [PATCH] drm/bridge: lt9611uxc: Fix an error handling path in lt9611uxc_probe()
-To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Neil Armstrong <neil.armstrong@linaro.org>, 
-	Robert Foss <rfoss@kernel.org>, Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
-	Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard <mripard@kernel.org>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	Sam Ravnborg <sam@ravnborg.org>, linux-kernel@vger.kernel.org, 
-	kernel-janitors@vger.kernel.org, dri-devel@lists.freedesktop.org
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+From: Anthony I Gilea <i@cpp.in>
+Subject: [PATCH] ALSA: hda: cs35l41: Support HP Spectre x360 14 eu0000
+To: James Schulman <james.schulman@cirrus.com>,
+ David Rhodes <david.rhodes@cirrus.com>,
+ Richard Fitzgerald <rf@opensource.cirrus.com>,
+ Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
+Cc: alsa-devel@alsa-project.org, patches@opensource.cirrus.com,
+ linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Language: en-US
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Sat, 16 Mar 2024 at 21:51, Christophe JAILLET
-<christophe.jaillet@wanadoo.fr> wrote:
->
-> If lt9611uxc_audio_init() fails, some resources still need to be released
-> before returning the error code.
->
-> Use the existing error handling path.
->
-> Fixes: 0cbbd5b1a012 ("drm: bridge: add support for lontium LT9611UXC bridge")
-> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
-> ---
-> Compile tested only.
-> ---
->  drivers/gpu/drm/bridge/lontium-lt9611uxc.c | 6 +++++-
->  1 file changed, 5 insertions(+), 1 deletion(-)
+The new HP Spectre x360 has _DSD for CS35L41 amps in ACPI but
+reset-gpios and spk-id-gpios are merged into single Package of size 4 so
+_DSD parser fails to parse it.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Overwrite broken _DSD with the correct configuration.
 
+Signed-off-by: Anthony I Gilea <i@cpp.in>
+---
+  sound/pci/hda/cs35l41_hda_property.c | 2 ++
+  1 file changed, 2 insertions(+)
 
--- 
-With best wishes
-Dmitry
+diff --ruNp a/sound/pci/hda/cs35l41_hda_property.c b/sound/pci/hda/cs35l41_hda_property.c
+
+--- a/sound/pci/hda/cs35l41_hda_property.c	2024-03-10 23:38:09.000000000 +0300
++++ b/sound/pci/hda/cs35l41_hda_property.c	2024-03-14 18:22:01.887566917 +0300
+@@ -64,6 +64,7 @@ static const struct cs35l41_config cs35l
+  	{ "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+  	{ "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+  	{ "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
++	{ "103C8C15", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4100, 24 },
+  	{ "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 1, 2, 0, 1000, 4500, 24 },
+  	{ "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+  	{ "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0 }, 0, 1, -1, 1000, 4500, 24 },
+@@ -405,6 +406,7 @@ static const struct cs35l41_prop_model c
+  	{ "CSC3551", "103C8BE5", generic_dsd_config },
+  	{ "CSC3551", "103C8BE6", generic_dsd_config },
+  	{ "CSC3551", "103C8B3A", generic_dsd_config },
++	{ "CSC3551", "103C8C15", generic_dsd_config },
+  	{ "CSC3551", "104312AF", generic_dsd_config },
+  	{ "CSC3551", "10431433", generic_dsd_config },
+  	{ "CSC3551", "10431463", generic_dsd_config },
 
