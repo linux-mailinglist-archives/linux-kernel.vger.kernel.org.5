@@ -1,98 +1,97 @@
-Return-Path: <linux-kernel+bounces-105425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0430C87DDB4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:01:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CD3687DDBA
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:04:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 98F0C1F213B5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:01:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 90E49281373
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:04:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F2301C680;
-	Sun, 17 Mar 2024 15:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UFlbMl1t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56F8F1BF33;
-	Sun, 17 Mar 2024 15:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4959D1C696;
+	Sun, 17 Mar 2024 15:04:37 +0000 (UTC)
+Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
+	by smtp.subspace.kernel.org (Postfix) with SMTP id A44821BF35
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 15:04:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710687672; cv=none; b=WAHN5XwzF5At+yqjSUimyLQ5Yde4+a2CJ0RcwJKEgifdlMxH5MVmK/eByps4QMzh6YjE0R7nfu1vlvlv6tMhw09mqTIQhp8n1r4LJDo17KGrWuSBWhiEBYa+o8/nMHDWVEFMY0B1Qmt58sXw0eoSodCjht0J0+bHZdzsFhdBq14=
+	t=1710687876; cv=none; b=D5wOUqp+gI2cNEOn3YOg2rsVaQs7nfojOOEyPQr/oKsXxpeLJaZQ9zw7yNghmw4d5ybey3zKiDTTjhLIdE5dW/yzHMkL3hGJWsuk/5rv/lYXV1JD/+VooKYyHfitmm3+tzlXC6iWajcbTmHY+iwEdnIONzGjRw4dLlEpswAIaXI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710687672; c=relaxed/simple;
-	bh=j7oxe8BD+mVFzgrsY6JafuiQy9oGRRV5ZitHBwsWITs=;
+	s=arc-20240116; t=1710687876; c=relaxed/simple;
+	bh=cEBWygA37gsqfLBFhtl6suQR4GExIWOd2AcEt4hWdlk=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PTVQXCTj1Ji+AN99lVvogp272cbTnnES2vT7WYvjTd0ELROLhzpLmQwDfP/CbZvzcnhBFh6fhZjYAiUWOGe6vcgBW3EpiBCNBzeqrzF0+bN7HI0KNzEb/zTiRzQKnnqS1d4zmpX2nOkZCRZM65AAOo03qUQQFPduxzE1h16eg8c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UFlbMl1t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B6A81C433C7;
-	Sun, 17 Mar 2024 15:01:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710687672;
-	bh=j7oxe8BD+mVFzgrsY6JafuiQy9oGRRV5ZitHBwsWITs=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=UFlbMl1tlfTfjCd9+pkxYpxlH5lOdt81iI7gKF6qORgShqzS3QzddQ3IosuKMXCZK
-	 hJ/jYKZyEBOi/WONqsV4EswpVnEfSaM/bg3YvvQSwFdWUvKuJkgQaw0T9vb9IcYw7x
-	 Uk2QxK4ss5jT9T8RatnMPUupjgglURpWSNR3q5/Id7jhnZ6oBoYmi/ceStU6C3Tics
-	 5807V7kuwXgf6yPli2elDOdg2ueJcNeAfq0sM2RzZ+D9F1E4MMz3UamLIeyKOKcfJ1
-	 2c7RH+UvUt4vx3n9Vrt23DA0oaEROlNlc3SeOKo6mdFCm2DfG8tbVWEC/41KtgZ+t8
-	 1/Mn0r7lbHC2A==
-Date: Sun, 17 Mar 2024 15:01:05 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Joshua Yeong <joshua.yeong@starfivetech.com>
-Cc: paul.walmsley@sifive.com, palmer@dabbelt.com, aou@eecs.berkeley.edu,
-	geert+renesas@glider.be, prabhakar.mahadev-lad.rj@bp.renesas.com,
-	conor.dooley@microchip.com, alexghiti@rivosinc.com,
-	evan@rivosinc.com, ajones@ventanamicro.com, heiko@sntech.de,
-	guoren@kernel.org, uwu@icenowy.me, jszhang@kernel.org,
-	robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org, leyfoon.tan@starfivetech.com,
-	jeeheng.sia@starfivetech.com, linux-riscv@lists.infradead.org,
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-Subject: Re: [PATCH 0/4] Add StarFive's StarLink-500 Cache Controller
-Message-ID: <20240317-viral-handcraft-12b2519ff1be@spud>
-References: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=mEtjWSGQgi3Eh3J/2/dA8376HUGBbFDUMfWhmSrEbcLvvlLixQupyBxsogpwZm348ZlidfEJw4dxU9AjpwU3YTAKm4qMrBNd12pAvrs5AQhQNX/nZSZ1w9aSNQfb9u08OxAKUrrh3AANvE0g6x8bWyRgExC6Gz9r/KOBRcaaqQY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
+Received: (qmail 548205 invoked by uid 1000); 17 Mar 2024 11:04:33 -0400
+Date: Sun, 17 Mar 2024 11:04:33 -0400
+From: Alan Stern <stern@rowland.harvard.edu>
+To: xingwei lee <xrivendell7@gmail.com>
+Cc: gregkh@linuxfoundation.org, usb-storage@lists.one-eyed-alien.net,
+  linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
+  samsun1006219@gmail.com, syzkaller-bugs@googlegroups.com
+Subject: Re: divide error in alauda_transport
+Message-ID: <cc7eb13f-b61d-4a4c-8c35-394a833d5917@rowland.harvard.edu>
+References: <CABOYnLw8=VM4LxgBsrwTi3HzdvGV7cYJU=4t7MMYTnrDCaDKAQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="rsMLDVhBuM3yu4xb"
-Content-Disposition: inline
-In-Reply-To: <20240314061205.26143-1-joshua.yeong@starfivetech.com>
-
-
---rsMLDVhBuM3yu4xb
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <CABOYnLw8=VM4LxgBsrwTi3HzdvGV7cYJU=4t7MMYTnrDCaDKAQ@mail.gmail.com>
 
-On Thu, Mar 14, 2024 at 02:12:01PM +0800, Joshua Yeong wrote:
-> StarFive's StarLink-500 Cache Controller flush/invalidates cache using non-
-> conventional CMO method. This driver provides the cache handling on StarFive
-> RISC-V SoC.
+On Sun, Mar 17, 2024 at 04:31:01PM +0800, xingwei lee wrote:
+> Hello I found a bug in latest upstream titled "divide error in
+> alauda_transport", and maybe is realted with usb.
+> I comfired in the latest upstream the poc tree can trigger the issue.
+> 
+> If you fix this issue, please add the following tag to the commit:
+> Reported-by: xingwei lee <xrivendell7@gmail.com>
+> Reported-by: yue sun <samsun1006219@gmail.com>
+> 
+> kernel: upstream 9187210eee7d87eea37b45ea93454a88681894a4
+> config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=1c6662240382da2
+> with KASAN enabled
+> compiler: gcc (Debian 12.2.0-14) 12.2.0
+> 
+> divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
+> CPU: 2 PID: 8229 Comm: usb-storage Not tainted 6.8.0-05202-g9187210eee7d #20
+> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
+> 1.16.2-1.fc38 04/01/2014
+> RIP: 0010:alauda_read_data drivers/usb/storage/alauda.c:954 [inline]
+> RIP: 0010:alauda_transport+0xcaf/0x3830 drivers/usb/storage/alauda.c:1184
 
-Unlike the other "non-conventional" CMO methods, the jh8100 does not
-pre-date the Zicbom extension. Why has that not been implemented?
-How many peripherals on the jh8100 rely on non-coherent DMA?
+Can you please test the patch below?
 
-Cheers,
-Conor.
+Alan Stern
 
---rsMLDVhBuM3yu4xb
-Content-Type: application/pgp-signature; name="signature.asc"
 
------BEGIN PGP SIGNATURE-----
 
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfcFsQAKCRB4tDGHoIJi
-0t+UAP0Rd8gYpX+LqpilA/FjT0qP/H3kHE7pBMNt8b8513mNewD/W/chQLnb9a1Q
-8T5MbISfMDawti8Fb7AVnmgEL4o8zQo=
-=cPlm
------END PGP SIGNATURE-----
-
---rsMLDVhBuM3yu4xb--
+Index: usb-devel/drivers/usb/storage/alauda.c
+===================================================================
+--- usb-devel.orig/drivers/usb/storage/alauda.c
++++ usb-devel/drivers/usb/storage/alauda.c
+@@ -951,7 +951,6 @@ static int alauda_read_data(struct us_da
+ 		unsigned int lba_offset = lba - (zone * uzonesize);
+ 		unsigned int pages;
+ 		u16 pba;
+-		alauda_ensure_map_for_zone(us, zone);
+ 
+ 		/* Not overflowing capacity? */
+ 		if (lba >= max_lba) {
+@@ -961,6 +960,8 @@ static int alauda_read_data(struct us_da
+ 			break;
+ 		}
+ 
++		alauda_ensure_map_for_zone(us, zone);
++
+ 		/* Find number of pages we can read in this block */
+ 		pages = min(sectors, blocksize - page);
+ 		len = pages << pageshift;
 
