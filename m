@@ -1,178 +1,157 @@
-Return-Path: <linux-kernel+bounces-105484-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105485-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A49587DF09
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 18:39:25 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A377A87DF0C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 18:48:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 271931C209D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 17:39:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 598A81F21822
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 17:48:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B551CF9A;
-	Sun, 17 Mar 2024 17:39:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5C581CF9A;
+	Sun, 17 Mar 2024 17:48:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b="rpBOhuMP"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CErTCt+h"
+Received: from mail-oi1-f181.google.com (mail-oi1-f181.google.com [209.85.167.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944FD23B0
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 17:39:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3B551CD3C;
+	Sun, 17 Mar 2024 17:47:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710697156; cv=none; b=UxGt1Fcx5CeYv0BrvNi1rLgm61Xtx6K2HThLmrW9J/Qo2WGdYkA1mBpgksFhtxCqXEGIRNx1uZdTGxv5OiJv++VXGZp6xblUr7zt098UA8e0/C+Ey85w9e4HkEkbj2tpYFWnm4A2aH8EMMgT6YEd6zFqqLjNKKKbHf7lSaaIogk=
+	t=1710697681; cv=none; b=mUBl/GrCLWCQTcm/tPRaoKY8GW9a5/v9Ua/Z3PD4tlJsuewGuKiJjhoMwhqF9fe6bzY4tuzD5PHfariBFIU84opiW9MuvkPit+RB4ChH7o53hicXgzMmnke9dh6AtKcKA/v04MghYGB2U45I7jjh2SSpjUtkF+oezuhUeMXvahU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710697156; c=relaxed/simple;
-	bh=G3RQiO+3acfdPJN427qElDOQ/2GOwoTUN+RHF6OxiZw=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ln8dDOlmJ+wXN/FPSPsnnKp5h2zB9ts6ITZMkS6EaAHBfDk/X258//j5E344wihs3ieqbCAeYRkKwI43YOD3QQICliESILLCpd0b2iDE2ic9Wjz8lIxNGzp79cc/hk3ixcEYOlICDRRvZJxG5gI+vtyxo/YTSDrUq3CUWlNtuw8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org; spf=pass smtp.mailfrom=cknow.org; dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b=rpBOhuMP; arc=none smtp.client-ip=91.218.175.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cknow.org
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
-	t=1710697150;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=bfpAH3dklB+8yPR+B88b6qSEO7NSAg2AetVksH+Hr1o=;
-	b=rpBOhuMPvNanpr3MzxZnyPkkxQyR9yi8wG1sGM3arC39qVmQbl1hiOM66YW8o4kWnpAK07
-	FoqLz2LQIB4NqrEgo+2Gw/kdaGWGsvYl/KT2qNSUgYaVjRD/WscNDo2Uuykb1hBQUyY06b
-	EX3TITJcthRKdf9+iOMTy6r3xmi3jwVIbsgQOVbPdYS71iaGKQdwIpAf6La67c9YeezD2n
-	6RCRATMNmP2dXT0mPWSYU7us6BW5X7Fce3seirt+LEf9kK3UNofwq9JBLHL2oj1DQSfIc1
-	8BbhYbD2T4bBcpdt++9af+bQXOX1qw3h6P4dwsCJcm/rexf3bdFUsJoeSP7pJw==
-From: Diederik de Haas <didi.debian@cknow.org>
-To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, Adam Borowski <kilobyte@angband.pl>,
- Nicholas D Steeves <sten@debian.org>,
- Debian kernel ML <debian-kernel@lists.debian.org>
-Subject: btrfs: Kernel warning when using/mount RAID 5/6
-Date: Sun, 17 Mar 2024 18:38:55 +0100
-Message-ID: <4105665.mVaztBssJx@bagend>
-Organization: Connecting Knowledge
+	s=arc-20240116; t=1710697681; c=relaxed/simple;
+	bh=iFgr+b97KAvPfCR6ghGNye2kCkDZc+J9IWrRuv7n9io=;
+	h=From:Content-Type:Mime-Version:Subject:Message-Id:Date:To; b=Vh/R2Ki3QE9JVabIEWPEUayZ1Vu58t3/Nms0AxSkSZu307++WB2Q4IyG9A9Ndz96ZO10lfoBi1it/44R/8WgqZHyVbtpxuKllCw7cED8Orus9gh7LmzPNWZ1mKR6lZ8iHvG5y4niFe5D136N8S/nc9POcti7Pno6iHHVNwHNE1E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CErTCt+h; arc=none smtp.client-ip=209.85.167.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f181.google.com with SMTP id 5614622812f47-3c37970b52aso1472491b6e.0;
+        Sun, 17 Mar 2024 10:47:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710697678; x=1711302478; darn=vger.kernel.org;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/nUQ6ib1+zRvwxKYZbx2Zz20+PnydyUeEfxBg3tXRtk=;
+        b=CErTCt+hFtHB4HKizyA9CHMXN6cONeSohumsxv8EumhoK24/jESl1f2u15CMZcckn+
+         S0NUePM9tGz3kgAJlFPBtUpNuPjqGGwRb1HP//C4j1gLze5V5jRk80RXPFb1ZhGr637f
+         lpL6WNwfUGbeOczo4zXFnkpXKPc78Gjqs/TK/K5Hq66xhmFSCcgQ/JTKhB/OyXk3s3cN
+         2dncy84c7fbILGSLNXNETPGEkx9fWbK6ef28Er2yBGvK75BxcWsrmLvu3O89Gk+6vpIa
+         4Wf6Bj03HPXWcg4kpmgfiRzyt63VGw9F6qWUJoNVi/aQI6Ybbubyfeuw/UbhDglz4DDU
+         EYZQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710697678; x=1711302478;
+        h=to:date:message-id:subject:mime-version:content-transfer-encoding
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/nUQ6ib1+zRvwxKYZbx2Zz20+PnydyUeEfxBg3tXRtk=;
+        b=LO11AQlWJh4+wZ1lEdjWxW1GRez1UWDgz9RrGWSlFfJPDTt0wJGJKRjrgbAt9Wm7so
+         SCgjaqLTmJ2tqA/m+kasiUQ2cnL4XcSZDSpDoZ3cwv+WumF3mztXFObgvROc3w94XSQO
+         GXYVL/b88s4bhSCHOn5jaMIx0GwejGKyPq/+oB0yn+/wJoBQnvnPqCr8dw+btGZewI0i
+         Fn4HZ+2kTkZYpVSVWp5UbVeJjZMTvw0rxsJUd7Ujmt/51KJozVd1iGwHGPgWK+BjGmqM
+         D/aO6XGuVmbCI6zmWBoo8JGzJlHKcG5i5TCl9rhXGe8pek4qhQfqE6KdBHlIJ9M9peJc
+         xZ2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXRBTJ4rzJqdssCthT/cUby4k14kt9DZaTakjPqa2MxadJJSgMzmwDXYQOkZ3avnjn8vJA0bUOqXmGl0i07W1W/rUSRbZRJhp7WOeJ160v8jCUXw2sOrSwTxSjO9W4/qA==
+X-Gm-Message-State: AOJu0YwJYCwMkZxfuDrdcQOKS7GUVWiFEl2dzfFsPNx+pxyoFP4QV0o3
+	q8krcDHz+Ng5PWjV4pvZzIU3Owsbvh4BBjPQsU4+87zL1PqVfxOyShbPbbgeMNQ=
+X-Google-Smtp-Source: AGHT+IETYmdnuS52fXG2/Dt89v96pDkvRPSM6OlcsJ60BUTDT3kxBHZ0IX7t3LA+Shx4xVHhF0jpJg==
+X-Received: by 2002:a05:6871:60e:b0:220:be2c:6083 with SMTP id w14-20020a056871060e00b00220be2c6083mr12261987oan.49.1710697678171;
+        Sun, 17 Mar 2024 10:47:58 -0700 (PDT)
+Received: from smtpclient.apple ([2402:d0c0:11:86::1])
+        by smtp.gmail.com with ESMTPSA id u22-20020a62d456000000b006e6c10fc87fsm6730122pfl.46.2024.03.17.10.47.56
+        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
+        Sun, 17 Mar 2024 10:47:57 -0700 (PDT)
+From: Alan Huang <mmpgouride@gmail.com>
+Content-Type: text/plain;
+	charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart7345321.1qzUUeqQFO";
- micalg="pgp-sha256"; protocol="application/pgp-signature"
-X-Migadu-Flow: FLOW_OUT
-
---nextPart7345321.1qzUUeqQFO
-Content-Type: multipart/mixed; boundary="nextPart131595361.pUuz4S08WX";
- protected-headers="v1"
-Content-Transfer-Encoding: 7Bit
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Diederik de Haas <didi.debian@cknow.org>
-Subject: btrfs: Kernel warning when using/mount RAID 5/6
-Date: Sun, 17 Mar 2024 18:38:55 +0100
-Message-ID: <4105665.mVaztBssJx@bagend>
-Organization: Connecting Knowledge
-MIME-Version: 1.0
-
-This is a multi-part message in MIME format.
-
---nextPart131595361.pUuz4S08WX
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Question about ISA2+pooncelock+pooncelock+pombonce litmus
+Message-Id: <12E5C279-ADB1-463E-83E2-0A4F5D193754@gmail.com>
+Date: Mon, 18 Mar 2024 01:47:43 +0800
+To: linux-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org,
+ rcu@vger.kernel.org
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
 Hi,
 
-Since https://bugs.debian.org/863290 (2017) the Debian kernel has had a
-patch to warn about the use of RAID 5/6 with BTRFS.
-That bug mentions "It looks like there's a consensus that such a warning
-should live in the kernel rather than userland"
+I=E2=80=99m playing with the LKMM, then I saw the =
+ISA2+pooncelock+pooncelock+pombonce.
 
-Via [1] and [2] it seems userland did get a warning. It is mentioned in
-the kernel documentation (``Documentation/btrfs-man5.rst``) (and [3]
-and [4]), but AFAICT users are still not warned by the kernel when
-using RAID 5/6.
+The original litmus is as follows:
+------------------------------------------------------
+P0(int *x, int *y, spinlock_t *mylock)
+{
+	spin_lock(mylock);
+	WRITE_ONCE(*x, 1);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(mylock);
+}
 
-I stumbled upon this issue when I was (locally) rebasing the Debian kernel
-patch for kernel 6.8. I attached my rebased version of the original patch.
-(I may have done it completely wrong as I know very little about BTRFS.)
+P1(int *y, int *z, spinlock_t *mylock)
+{
+	int r0;
 
-But more importantly, IMO such a warning shouldn't be in a downstream
-kernel (Debian), but in the upstream kernel source?
+	spin_lock(mylock);
+	r0 =3D READ_ONCE(*y);
+	WRITE_ONCE(*z, 1);
+	spin_unlock(mylock);
+}
 
-Cheers,
-  Diederik
+P2(int *x, int *z)
+{
+	int r1;
+	int r2;
 
-[1] https://lore.kernel.org/linux-btrfs/20161208153004.GA31795@angband.pl/
-[2] https://lore.kernel.org/linux-btrfs/bf9594ea55ce40af80548888070427ad97daf78a.1598374255.git.josef@toxicpanda.com/
-[3] https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#raid56-status-and-recommended-practices
-[4] https://lore.kernel.org/linux-btrfs/dbf47c42-932c-9cf0-0e50-75f1d779d024@cryptearth.de/
---nextPart131595361.pUuz4S08WX
-Content-Disposition: attachment;
- filename="btrfs-warn-about-raid5-6-being-experimental-at-mount.patch"
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/x-patch; charset="x-UTF_8J";
- name="btrfs-warn-about-raid5-6-being-experimental-at-mount.patch"
+	r2 =3D READ_ONCE(*z);
+	smp_mb();
+	r1 =3D READ_ONCE(*x);
+}
 
-From: Adam Borowski <kilobyte@angband.pl>
-Date: Tue, 28 Mar 2017 16:55:05 +0200
-Subject: btrfs: warn about RAID5/6 being experimental at mount time
-Bug-Debian: https://bugs.debian.org/863290
-Origin: https://bugs.debian.org/863290#5
+exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+------------------------------------------------------
+Of course, the result is Never.=20
 
-Too many people come complaining about losing their data -- and indeed,
-there's no warning outside a wiki and the mailing list tribal knowledge.
-Message severity chosen for consistency with XFS -- "alert" makes dmesg
-produce nice red background which should get the point across.
+But when I delete P0=E2=80=99s spin_lock and P1=E2=80=99s spin_unlock:
+-------------------------------------------------------
+P0(int *x, int *y, spinlock_t *mylock)
+{
+	WRITE_ONCE(*x, 1);
+	WRITE_ONCE(*y, 1);
+	spin_unlock(mylock);
+}
 
-Signed-off-by: Adam Borowski <kilobyte@angband.pl>
-[bwh: Also add_taint() so this is flagged in bug reports]
-[2023-01-10: still accurate according to btrfs-progs own manpage:
-https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git/commit/?id=922797e15590b836e377d6dc47b828356cafc2a9]
-[2024-03-17: still accurate; manpage is now in Documentation/btrfs-man5.rst
-implementation went from disk-io.c to super.c]
----
- fs/btrfs/super.c | 12 ++++++++++++
- 1 file changed, 12 insertions(+)
+P1(int *y, int *z, spinlock_t *mylock)
+{
+	int r0;
 
-diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
-index 101f786963d4..2c409bce1bf5 100644
---- a/fs/btrfs/super.c
-+++ b/fs/btrfs/super.c
-@@ -731,6 +731,18 @@ static void set_device_specific_options(struct btrfs_fs_info *fs_info)
- 	    !fs_info->fs_devices->rotating)
- 		btrfs_set_opt(fs_info->mount_opt, SSD);
- 
-+	/*
-+	 * Warn about RAID5/6 being experimental at mount time
-+	 */
-+	if ((fs_info->avail_data_alloc_bits |
-+	     fs_info->avail_metadata_alloc_bits |
-+	     fs_info->avail_system_alloc_bits) &
-+	    BTRFS_BLOCK_GROUP_RAID56_MASK) {
-+		btrfs_alert(fs_info,
-+		"btrfs RAID5/6 is EXPERIMENTAL and has known data-loss bugs");
-+		add_taint(TAINT_AUX, LOCKDEP_STILL_OK);
-+	}
-+
- 	/*
- 	 * For devices supporting discard turn on discard=async automatically,
- 	 * unless it's already set or disabled. This could be turned off by
+	spin_lock(mylock);
+	r0 =3D READ_ONCE(*y);
+	WRITE_ONCE(*z, 1);
+}
 
---nextPart131595361.pUuz4S08WX--
+P2(int *x, int *z)
+{
+	int r1;
+	int r2;
 
---nextPart7345321.1qzUUeqQFO
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
+	r2 =3D READ_ONCE(*z);
+	smp_mb();
+	r1 =3D READ_ONCE(*x);
+}
 
------BEGIN PGP SIGNATURE-----
+exists (1:r0=3D1 /\ 2:r2=3D1 /\ 2:r1=3D0)
+------------------------------------------------------
+Then herd told me the result is Sometimes.
 
-iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZfcqsAAKCRDXblvOeH7b
-bkXSAQC5e1VkqkVqrArlMCn14mAB/XeEFtjygQWGJFHAB8JfTAEAs8ZGJ8Z/ACLP
-xyja5YrfwpHM6LY9gbae7CiscNUNfwE=
-=Mjbm
------END PGP SIGNATURE-----
-
---nextPart7345321.1qzUUeqQFO--
-
-
+Is this expected?=20
 
 
