@@ -1,108 +1,268 @@
-Return-Path: <linux-kernel+bounces-105555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DD62587E01E
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:59:54 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ABB587E023
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:00:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 189101C20F5D
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:59:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA9F31C20F76
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:00:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDB3208AF;
-	Sun, 17 Mar 2024 20:59:42 +0000 (UTC)
-Received: from netrider.rowland.org (netrider.rowland.org [192.131.102.5])
-	by smtp.subspace.kernel.org (Postfix) with SMTP id 8115C21103
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 20:59:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.131.102.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19605208A3;
+	Sun, 17 Mar 2024 21:00:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="fiywsojv"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9817B1F61C
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 21:00:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710709181; cv=none; b=b1dByBXkY64cjADsPZ5AKJtEdIZqR2M9LbmzfRGTCc5FRS4dfkGbSIO37CIyOXLrta6tdRg9HvNjb/YLVsUCWHiobRDrsZ05zeEzuR6aFBUjWLZjHJdPZTKYlXSut9UC75DlmTfAx0ceJsFPXFNbP8qb3pq5Rh6avGwHY+0WDXo=
+	t=1710709242; cv=none; b=dosQVjuLTop2JGfM4K23r/C5rk8e4W6MBB7GV4oG9GLuoPu0XEpnkvWVGPQsZL6G/F8S0uuYjaGlAJKIP/vnXx02SC2FXr2hQpoW9kWC7HDYkHi/Vc751C4OBMcmkw9xNISILKxm0g64gu+Xt4VZcYRfO+7xusHx7MtmnuNv96Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710709181; c=relaxed/simple;
-	bh=E46WGYTxVpxINiD796UEBciVP7zBrNW3GFOo+iEKT3A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qHj29RV2QR49QQmI44JvouLwHP8tcxRThOrl60xvFFezpotb9d/F8ZKE2gbq5zlLvBLUTwJ+UYvPKH1OIFLdoPHQPgn/5/NR4zegS4n5bFim6jRr9mEeBKtYC+PQ8vugI0Zxwau0nBcVvJc7dpvp6Uw0JLUM/0LuyBM0f78xa7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu; spf=pass smtp.mailfrom=netrider.rowland.org; arc=none smtp.client-ip=192.131.102.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=rowland.harvard.edu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=netrider.rowland.org
-Received: (qmail 555635 invoked by uid 1000); 17 Mar 2024 16:59:32 -0400
-Date: Sun, 17 Mar 2024 16:59:32 -0400
-From: Alan Stern <stern@rowland.harvard.edu>
-To: xingwei lee <xrivendell7@gmail.com>
-Cc: gregkh@linuxfoundation.org, usb-storage@lists.one-eyed-alien.net,
-  linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org,
-  samsun1006219@gmail.com, syzkaller-bugs@googlegroups.com
-Subject: Re: divide error in alauda_transport
-Message-ID: <6fa0a6e9-7123-4538-8a98-660a594e72d7@rowland.harvard.edu>
-References: <CABOYnLw8=VM4LxgBsrwTi3HzdvGV7cYJU=4t7MMYTnrDCaDKAQ@mail.gmail.com>
- <cc7eb13f-b61d-4a4c-8c35-394a833d5917@rowland.harvard.edu>
- <CABOYnLx1pyG3qjoB9yuRPtDcb3TRbSqTktngXhkPq9UNVd4jLg@mail.gmail.com>
+	s=arc-20240116; t=1710709242; c=relaxed/simple;
+	bh=dfy5U7w0fD5RevOyoSb1zyZM9hlxawAxs24sk/IPgRE=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=eKRGRX7jTgNWLm9GFc/5dmcVmFtW5sMXXHDNAKNn5i5TPcuZT/L8nDKJk6dkAgcBwndgCWqjauDPKTnzsCaQILky6cdQk1o9S3pzZgDRgdECnVOIi80SQ8NNUqhzYlLmI30E1mq8wE6eTX7Uu4weMoD9k38ztddgTp4yQiBvksQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=fiywsojv; arc=none smtp.client-ip=192.198.163.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710709240; x=1742245240;
+  h=date:from:to:cc:subject:message-id;
+  bh=dfy5U7w0fD5RevOyoSb1zyZM9hlxawAxs24sk/IPgRE=;
+  b=fiywsojv5YfasGZIL518EYL5RaDgD+Nd9s/uTh5XJiDtIT0GzZdg9ajm
+   F8UWHVS5LizjStrUP9S3NRFP7Xbs1IB5klZmfpNOkAevJvnPXEVBffTtq
+   5qmZflcp8lDmEfSDLJ3hFI98l3KceVMKRrUAxsLCQ5btAgClEjtdh49UX
+   GrhMrMXk9bEKJfv0CNYOlsisGxYCSkQ9/SPWKOxiX5ZALCR8YVDa4JqFx
+   ZOpGg8vYf+mCRfG3SAE6mIF7FQNCD4fGXlld++vKM4g1eNCoSdjdGagtn
+   Lhv6T0v4E4UYFUag37izqFks2ixylJGWTCC+WDlXjpnyxpiWSyNUQaX9e
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="6116397"
+X-IronPort-AV: E=Sophos;i="6.07,133,1708416000"; 
+   d="scan'208";a="6116397"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by fmvoesa110.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 14:00:38 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,133,1708416000"; 
+   d="scan'208";a="13906015"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 17 Mar 2024 14:00:36 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rlxcP-000GT9-2q;
+	Sun, 17 Mar 2024 21:00:33 +0000
+Date: Mon, 18 Mar 2024 05:00:16 +0800
+From: kernel test robot <lkp@intel.com>
+To: "x86-ml" <x86@kernel.org>
+Cc: linux-kernel@vger.kernel.org
+Subject: [tip:master] BUILD SUCCESS
+ 7e19a79344df2ed5e106091c29338962261b0290
+Message-ID: <202403180512.vcCJpDpg-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CABOYnLx1pyG3qjoB9yuRPtDcb3TRbSqTktngXhkPq9UNVd4jLg@mail.gmail.com>
 
-On Sun, Mar 17, 2024 at 11:57:58PM +0800, xingwei lee wrote:
-> On Mar 17, 2024, at 23:04, Alan Stern <stern@rowland.harvard.edu> wrote:
-> 
-> On Sun, Mar 17, 2024 at 04:31:01PM +0800, xingwei lee wrote:
-> 
-> Hello I found a bug in latest upstream titled "divide error in
-> alauda_transport", and maybe is realted with usb.
-> I comfired in the latest upstream the poc tree can trigger the issue.
-> 
-> If you fix this issue, please add the following tag to the commit:
-> Reported-by: xingwei lee <xrivendell7@gmail.com>
-> Reported-by: yue sun <samsun1006219@gmail.com>
-> 
-> kernel: upstream 9187210eee7d87eea37b45ea93454a88681894a4
-> config: https://syzkaller.appspot.com/text?tag=KernelConfig&x=1c6662240382da2
-> with KASAN enabled
-> compiler: gcc (Debian 12.2.0-14) 12.2.0
-> 
-> divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> CPU: 2 PID: 8229 Comm: usb-storage Not tainted 6.8.0-05202-g9187210eee7d #20
-> Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS
-> 1.16.2-1.fc38 04/01/2014
-> RIP: 0010:alauda_read_data drivers/usb/storage/alauda.c:954 [inline]
-> RIP: 0010:alauda_transport+0xcaf/0x3830 drivers/usb/storage/alauda.c:1184
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git master
+branch HEAD: 7e19a79344df2ed5e106091c29338962261b0290  Merge branch into tip/master: 'x86/build'
 
-> Hi Alan
-> 
-> I apply your patch in my upstream commit
-> 9187210eee7d87eea37b45ea93454a88681894a4
+elapsed time: 726m
 
-> However, the poc still trigger the bug like below:
+configs tested: 180
+configs skipped: 3
 
-> [  146.141945][ T8215] divide error: 0000 [#1] PREEMPT SMP KASAN NOPTI
-> [  146.143565][ T8215] CPU: 1 PID: 8215 Comm: usb-storage Not tainted
-> 6.8.0-05202-g9187210eee7d-dirty #21
-> [  146.145319][ T8215] Hardware name: QEMU Standard PC (i440FX + PIIX,
-> 1996), BIOS 1.16.2-1.fc38 04/01/2014
-> [  146.146720][ T8215] RIP: 0010:alauda_transport+0xc65/0x38b0
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
-The line in your original bug report, alauda.c:954, was a call to 
-alauda_ensure_map_for_zone(), which my patch moves to a different 
-location so that a test for overflow can run first.  It's hard to tell 
-whether the divide error occurs before the function call, within the 
-function, or after.
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                 nsimosci_hs_smp_defconfig   gcc  
+arc                   randconfig-001-20240317   gcc  
+arc                   randconfig-002-20240317   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                         axm55xx_defconfig   clang
+arm                          collie_defconfig   gcc  
+arm                                 defconfig   clang
+arm                   randconfig-001-20240317   clang
+arm                   randconfig-002-20240317   clang
+arm                   randconfig-003-20240317   gcc  
+arm                   randconfig-004-20240317   clang
+arm                           u8500_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240317   clang
+arm64                 randconfig-002-20240317   gcc  
+arm64                 randconfig-003-20240317   gcc  
+arm64                 randconfig-004-20240317   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240317   gcc  
+csky                  randconfig-002-20240317   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240317   clang
+hexagon               randconfig-002-20240317   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240317   gcc  
+i386         buildonly-randconfig-002-20240317   clang
+i386         buildonly-randconfig-003-20240317   gcc  
+i386         buildonly-randconfig-004-20240317   clang
+i386         buildonly-randconfig-005-20240317   clang
+i386         buildonly-randconfig-006-20240317   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240317   clang
+i386                  randconfig-002-20240317   clang
+i386                  randconfig-003-20240317   clang
+i386                  randconfig-004-20240317   clang
+i386                  randconfig-005-20240317   gcc  
+i386                  randconfig-006-20240317   gcc  
+i386                  randconfig-011-20240317   clang
+i386                  randconfig-012-20240317   clang
+i386                  randconfig-013-20240317   clang
+i386                  randconfig-014-20240317   gcc  
+i386                  randconfig-015-20240317   gcc  
+i386                  randconfig-016-20240317   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch                 loongson3_defconfig   gcc  
+loongarch             randconfig-001-20240317   gcc  
+loongarch             randconfig-002-20240317   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                        mvme147_defconfig   gcc  
+m68k                            q40_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                           ci20_defconfig   clang
+mips                     loongson1c_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240317   gcc  
+nios2                 randconfig-002-20240317   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240317   gcc  
+parisc                randconfig-002-20240317   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc               randconfig-001-20240317   clang
+powerpc               randconfig-002-20240317   gcc  
+powerpc               randconfig-003-20240317   clang
+powerpc                     tqm5200_defconfig   gcc  
+powerpc                     tqm8560_defconfig   gcc  
+powerpc64             randconfig-001-20240317   gcc  
+powerpc64             randconfig-002-20240317   clang
+powerpc64             randconfig-003-20240317   clang
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240317   clang
+riscv                 randconfig-002-20240317   clang
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240317   clang
+s390                  randconfig-002-20240317   gcc  
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                        apsh4ad0a_defconfig   gcc  
+sh                                  defconfig   gcc  
+sh                    randconfig-001-20240317   gcc  
+sh                    randconfig-002-20240317   gcc  
+sh                           se7724_defconfig   gcc  
+sh                           sh2007_defconfig   gcc  
+sh                   sh7724_generic_defconfig   gcc  
+sh                        sh7785lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240317   gcc  
+sparc64               randconfig-002-20240317   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240317   gcc  
+um                    randconfig-002-20240317   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240317   gcc  
+x86_64       buildonly-randconfig-002-20240317   gcc  
+x86_64       buildonly-randconfig-003-20240317   gcc  
+x86_64       buildonly-randconfig-004-20240317   clang
+x86_64       buildonly-randconfig-005-20240317   gcc  
+x86_64       buildonly-randconfig-006-20240317   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240317   gcc  
+x86_64                randconfig-002-20240317   gcc  
+x86_64                randconfig-003-20240317   gcc  
+x86_64                randconfig-004-20240317   gcc  
+x86_64                randconfig-005-20240317   gcc  
+x86_64                randconfig-006-20240317   clang
+x86_64                randconfig-011-20240317   clang
+x86_64                randconfig-012-20240317   gcc  
+x86_64                randconfig-013-20240317   clang
+x86_64                randconfig-014-20240317   clang
+x86_64                randconfig-015-20240317   gcc  
+x86_64                randconfig-016-20240317   clang
+x86_64                randconfig-071-20240317   gcc  
+x86_64                randconfig-072-20240317   clang
+x86_64                randconfig-073-20240317   clang
+x86_64                randconfig-074-20240317   gcc  
+x86_64                randconfig-075-20240317   gcc  
+x86_64                randconfig-076-20240317   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                          iss_defconfig   gcc  
+xtensa                randconfig-001-20240317   gcc  
+xtensa                randconfig-002-20240317   gcc  
 
-Furthermore, alauda_ensure_map_for_zone() calls alauda_read_map(), and 
-it's hard to tell if the divide error occurs before that function call 
-or within the function.
-
-Can you try adding some pr_info() statements to those places so we can 
-determine exactly where the error occurs?  The only divisions that I see 
-are by 2 or by uzonesize, which should always be nonzero.  Maybe you can 
-print out the value of uzonesize so we can verify this.
-
-Thanks,
-
-Alan Stern
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
