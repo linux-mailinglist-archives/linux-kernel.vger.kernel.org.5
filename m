@@ -1,68 +1,68 @@
-Return-Path: <linux-kernel+bounces-105434-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105435-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D94C87DDD4
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:13:47 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4E4487DDD5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:15:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E021281461
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:13:45 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E9D41C208F8
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 412691C69D;
-	Sun, 17 Mar 2024 15:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8BE3F1C69D;
+	Sun, 17 Mar 2024 15:15:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="DQgoxYa5"
-Received: from mail-oi1-f174.google.com (mail-oi1-f174.google.com [209.85.167.174])
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="E7CpAeJk"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ECF051BDC3
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 15:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 40F3A1BC3E
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 15:15:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710688420; cv=none; b=G+KU6vpnunhQ55887YoIDLcSOrf+FZBK+GFervsBnchaf81aStrobOdXrxrVeOh9EJ9IiT+wZyF/XCsR5AdJuqNhsjN0YYZvRkxTU5gysZctqEAeIavmt58sIONcC3hn5ZZZ15g/sAG4AcAsirpc40EybEZTXGC1fFbVB7PbRS8=
+	t=1710688519; cv=none; b=L73srDQaCjv+O2tQeHUSEe5uOIFzgmaJW+THzf0pY5Ig951GvzjlU7kZ2zCeT7K89tdWooa3OnlHw1bOGg5pl9p3Ak9UQym/0uUSpDtT39j2DIPmuhIeDktJMkFIcyntPpt2s/YlTQha4DCbuc7i1w8A+IW9nUWpGux0JymhAnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710688420; c=relaxed/simple;
-	bh=Gt+lY6pRptMm8ZA9CBoKi2ooYjBkp6ity5JEs+orlZo=;
+	s=arc-20240116; t=1710688519; c=relaxed/simple;
+	bh=kaYuKya9UBwriBUHa6o1pYqZcxX4fV9WUX+UUTj66MY=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KIjO218A5Dho0POqhXGhRw+5Q1VeuVW2KEni3eqBp3ah9DXPGStwcLnE65wq8hZyMISPPqbDfhABM1yhYABL2N6QLwTqFreeb5QuqI+YbPED9YMFM35PT0aY2NrCljJljIYVlIeR6DVdrcIZRcmbYFezft+Y6xfl7eR6ohWQ/14=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=DQgoxYa5; arc=none smtp.client-ip=209.85.167.174
+	 To:Cc:Content-Type; b=U1GHErp8V1Yxp9oCPpwDEnJADPYKRPHGiKeoBHD8rR9r9+EkH5blLuMPT/e25UJJV/AENqnzIGJOQLPpeoYNPsfDG9UKK69Y6vLG7o8Proq/J6AHfvfchEgR/virWhVflqhDpgY63SxmlUiHofgi8rSo0uSZo/3VDfqaN8zbIqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=E7CpAeJk; arc=none smtp.client-ip=209.85.160.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-oi1-f174.google.com with SMTP id 5614622812f47-3c37e87756dso939583b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 08:13:38 -0700 (PDT)
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430c45ab240so5769801cf.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 08:15:17 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710688418; x=1711293218; darn=vger.kernel.org;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710688517; x=1711293317; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=kqyE8AYR7o1woUyJ2yyfRAKD+c3p9xsKcLbZwatY2CU=;
-        b=DQgoxYa5LlQPfECAqyNJ40fsP7g4xkcm26j5u53Pt4JWKRx/nqZZs3iYfJMuw5JF39
-         tAqBOBB08qBgOBMVQ2X8qiT/mVIE9lTdNNTH07EDrZsc/76aMeiAmPOORRy4wV99zfji
-         tbjW4sIczcdIWyRK6vk40u7z1fmB3QYrYJ3WWEgJ+1Kdu59ayJFYalqqYszMvl6Gl7Wu
-         CwpvmSudTLqvRXRS1EO5Smh67SZHjVJxM8iHLXhpQtV3UoYMELNEMgD0p+z0m+0mHGfx
-         A/4mp1SigRCb6rTw0wtbgr1bazBfWa/ovsQN0aD/4d0G9avO45F24dleIrnLZonQmevs
-         BivQ==
+        bh=x8Bq8ricK7SpfnlrwZMSGXpOWpIDbDpoqdg8e9TW9uQ=;
+        b=E7CpAeJkmtbme8jISPd22wjBt0+y+vul46MqIqDxZTDEUgH4/Aa8kJ+P7+M6OfGOEP
+         7x5K7HqPUZyjpHphiPQN7ZpWIvs0Ii1sy/VQNNKVMWgECD0OAvobIqbfrPG7HjhKkV/4
+         an8ILbMbb4n4yJAnXPrN1zQj0744Mwj1J6ktlRqGT8Jtg/g5wUTXGJMCofFLfINVLqMn
+         599UH3F0ddU1ODbF18skzOWtqTtiy6iVSq0sdyoIRcJun0cZPyBoTvvKx7bMePSrvWS9
+         HrQWwtz5jWoMCGE8LUJq7lT3BalyXDYW+rxV6I8+sikk3ojGyJjrA9lEW68fIPZb7Nnd
+         l6yg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710688418; x=1711293218;
+        d=1e100.net; s=20230601; t=1710688517; x=1711293317;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=kqyE8AYR7o1woUyJ2yyfRAKD+c3p9xsKcLbZwatY2CU=;
-        b=bZhrbLNFYGMWWVF5N5kI6diNTwFnXLXCORxE+vk72r2ZXLtAoCNCiX73SE6HflPruZ
-         AmMjNCP0SabWj/nwugYiUabW3/CWdCz31kyI8qrQ2rnv3x6vm2Jg7+aoEbtNIX9bEHHK
-         PdLM68pPJk9GdzduL+yR6yjaZV12gNl5iloJ7LbfGUmlf3iE9tj1CNmiDVL45tHF+Rvn
-         6Ddr4ITOZ50c5xLxI6LrqNP8wlbOuhN8EWhHn+PnU4Mde2ic/Ud65Q+3H+TuMpfC7tvR
-         kVZzHDmH1pV0y3WreZUhMa+asd5l1XI0dURGlqqPbjRp/bHcTZKWGlLq8wQTlnEw9wYM
-         eohQ==
-X-Gm-Message-State: AOJu0YzpNp47qhXg2HQtf0jAmQjDQcTtGj/6yI6QzHUKR8FJtPuwBeZ7
-	IecohVT97pn49klBgmjyBrSHav/7z9ICfTrmKiWcYGQhmvbwWHwBEyY+8jtYHwhZLp7uAmN0+dR
-	pCzV3kg2fhv8YQUevFUfk9h6VO4e5SgX32+yBuw==
-X-Google-Smtp-Source: AGHT+IGPHUCSTYlygmB6Ndfwdbw+GQseFpU34XAmr2qjd0eHmEGVN94ChCuTVyrHJIcNOVhJn8z7u3sCYCj42d23wgs=
-X-Received: by 2002:a05:6808:e85:b0:3c2:590e:4635 with SMTP id
- k5-20020a0568080e8500b003c2590e4635mr12160371oil.34.1710688418020; Sun, 17
- Mar 2024 08:13:38 -0700 (PDT)
+        bh=x8Bq8ricK7SpfnlrwZMSGXpOWpIDbDpoqdg8e9TW9uQ=;
+        b=crA4lIh1eAWhNt3znMN1HVq1OV+jZwrN6Nicg7+5GOqP7qlgqWExZV+xobbBBsM+8k
+         kXypwbit2huEmCvFrZkzfWizQwZq3To8iYgOYBuyoheWSNcWfbPA4oFuXCpP3ce7T9jj
+         Bsv7RQSUxqq1PxwY0KFVl8LF98fpZOWvfaSeXbX72UvFEh19aWAa3pMF48cjocNTSQMr
+         QdXMDMLM5T4nh1cDY+MYatEAfu9kbIxkFmuTRUSgJFAB2iXm8wDUGfCx4+OPqa8BI09N
+         OM8w4iYzi8fBOtHNqolexbzlMch6m309sNjRkHEmvaKYIK4eaQHY9jGXVIHHc+zMQxMl
+         fUag==
+X-Gm-Message-State: AOJu0Yzcm7EUwK9odp1mEaPFikVgWlEwM4irJKFeGbeDfcX+q6HMJYbV
+	wu6koSPzEvr1p3PF5T2u3nihVOKCaWnVPgJhk2mbQZvnnCG98Vd7Yp12kbbicbM4X1iuRMK0s08
+	tlDX9QFWt5GaqQaCir8+E2cw8pSjIz/KWxv0HkQ==
+X-Google-Smtp-Source: AGHT+IHRAPcydBRpMUFgj5XZjiHwDEp09zHAlmm3AVMyNFl3KpX/jkVv43SatvVAp1AB+6jpq5N7cgzHOWpDQKo/lD0=
+X-Received: by 2002:a05:622a:47cd:b0:430:c139:ba12 with SMTP id
+ dp13-20020a05622a47cd00b00430c139ba12mr5702897qtb.1.1710688517145; Sun, 17
+ Mar 2024 08:15:17 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,12 +70,13 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <20240311164638.2015063-2-pasha.tatashin@soleen.com> <07e3705f-68be-40bc-80fb-ef81460f1674@wanadoo.fr>
-In-Reply-To: <07e3705f-68be-40bc-80fb-ef81460f1674@wanadoo.fr>
+ <20240311164638.2015063-5-pasha.tatashin@soleen.com> <0c6974b4-ba1f-474c-aed4-6c06d26ddb0a@wanadoo.fr>
+In-Reply-To: <0c6974b4-ba1f-474c-aed4-6c06d26ddb0a@wanadoo.fr>
 From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Sun, 17 Mar 2024 11:13:01 -0400
-Message-ID: <CA+CK2bDdF-V-uXkwwAuwRv7Yhd5Z5xK0nA7=HdpPwcBk+U_8JQ@mail.gmail.com>
-Subject: Re: [RFC 01/14] task_stack.h: remove obsolete __HAVE_ARCH_KSTACK_END check
+Date: Sun, 17 Mar 2024 11:14:41 -0400
+Message-ID: <CA+CK2bANnehyxC4qqgG3Qsj7UwM81PMQRkX_XrkZb=RoK7re5A@mail.gmail.com>
+Subject: Re: [RFC 04/14] fork: Remove assumption that vm_area->nr_pages equals
+ to THREAD_SIZE
 To: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
 	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
@@ -93,47 +94,86 @@ Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 17, 2024 at 10:36=E2=80=AFAM Christophe JAILLET
+On Sun, Mar 17, 2024 at 10:45=E2=80=AFAM Christophe JAILLET
 <christophe.jaillet@wanadoo.fr> wrote:
 >
 > Le 11/03/2024 =C3=A0 17:46, Pasha Tatashin a =C3=A9crit :
-> > Remove __HAVE_ARCH_KSTACK_END as it has been osolete since removal of
-> > metag architecture in v4.17.
->
-> Nit: obsolete
-
-Thank you, I will fix it.
-
-Pasha
-
->
+> > In many places number of pages in the stack is detremined via
+> > (THREAD_SIZE / PAGE_SIZE). There is also a BUG_ON() that ensures that
+> > (THREAD_SIZE / PAGE_SIZE) is indeed equals to vm_area->nr_pages.
+> >
+> > However, with dynamic stacks, the number of pages in vm_area will grow
+> > with stack, therefore, use vm_area->nr_pages to determine the actual
+> > number of pages allocated in stack.
 > >
 > > Signed-off-by: Pasha Tatashin <pasha.tatashin@soleen.com>
 > > ---
-> >   include/linux/sched/task_stack.h | 2 --
-> >   1 file changed, 2 deletions(-)
+> >   kernel/fork.c | 18 +++++++++---------
+> >   1 file changed, 9 insertions(+), 9 deletions(-)
 > >
-> > diff --git a/include/linux/sched/task_stack.h b/include/linux/sched/tas=
-k_stack.h
-> > index ccd72b978e1f..860faea06883 100644
-> > --- a/include/linux/sched/task_stack.h
-> > +++ b/include/linux/sched/task_stack.h
-> > @@ -116,7 +116,6 @@ static inline unsigned long stack_not_used(struct t=
-ask_struct *p)
-> >   #endif
-> >   extern void set_task_stack_end_magic(struct task_struct *tsk);
+> > diff --git a/kernel/fork.c b/kernel/fork.c
+> > index 60e812825a7a..a35f4008afa0 100644
+> > --- a/kernel/fork.c
+> > +++ b/kernel/fork.c
+> > @@ -243,13 +243,11 @@ static int free_vm_stack_cache(unsigned int cpu)
 > >
-> > -#ifndef __HAVE_ARCH_KSTACK_END
-> >   static inline int kstack_end(void *addr)
+> >   static int memcg_charge_kernel_stack(struct vm_struct *vm)
+>
+> Maybe s/vm/vm_area/ as done in 03/14?
+
+Yes, I will add it to 03/14.
+
+Thank you,
+Pasha
+
+>
+> CJ
+>
 > >   {
-> >       /* Reliable end of stack detection:
-> > @@ -124,6 +123,5 @@ static inline int kstack_end(void *addr)
-> >        */
-> >       return !(((unsigned long)addr+sizeof(void*)-1) & (THREAD_SIZE-siz=
-eof(void*)));
-> >   }
-> > -#endif
+> > -     int i;
+> > -     int ret;
+> > +     int i, ret, nr_pages;
+> >       int nr_charged =3D 0;
 > >
-> >   #endif /* _LINUX_SCHED_TASK_STACK_H */
+> > -     BUG_ON(vm->nr_pages !=3D THREAD_SIZE / PAGE_SIZE);
+> > -
+> > -     for (i =3D 0; i < THREAD_SIZE / PAGE_SIZE; i++) {
+> > +     nr_pages =3D vm->nr_pages;
+> > +     for (i =3D 0; i < nr_pages; i++) {
+> >               ret =3D memcg_kmem_charge_page(vm->pages[i], GFP_KERNEL, =
+0);
+> >               if (ret)
+> >                       goto err;
+> > @@ -531,9 +529,10 @@ static void account_kernel_stack(struct task_struc=
+t *tsk, int account)
+> >   {
+> >       if (IS_ENABLED(CONFIG_VMAP_STACK)) {
+> >               struct vm_struct *vm =3D task_stack_vm_area(tsk);
+> > -             int i;
+> > +             int i, nr_pages;
+> >
+> > -             for (i =3D 0; i < THREAD_SIZE / PAGE_SIZE; i++)
+> > +             nr_pages =3D vm->nr_pages;
+> > +             for (i =3D 0; i < nr_pages; i++)
+> >                       mod_lruvec_page_state(vm->pages[i], NR_KERNEL_STA=
+CK_KB,
+> >                                             account * (PAGE_SIZE / 1024=
+));
+> >       } else {
+> > @@ -551,10 +550,11 @@ void exit_task_stack_account(struct task_struct *=
+tsk)
+> >
+> >       if (IS_ENABLED(CONFIG_VMAP_STACK)) {
+> >               struct vm_struct *vm;
+> > -             int i;
+> > +             int i, nr_pages;
+> >
+> >               vm =3D task_stack_vm_area(tsk);
+> > -             for (i =3D 0; i < THREAD_SIZE / PAGE_SIZE; i++)
+> > +             nr_pages =3D vm->nr_pages;
+> > +             for (i =3D 0; i < nr_pages; i++)
+> >                       memcg_kmem_uncharge_page(vm->pages[i], 0);
+> >       }
+> >   }
 >
 
