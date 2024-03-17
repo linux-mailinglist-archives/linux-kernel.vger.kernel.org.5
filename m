@@ -1,105 +1,116 @@
-Return-Path: <linux-kernel+bounces-105575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93A0B87E09C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 23:15:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D0ACC87E0A7
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 23:18:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 16CC0B217CA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:15:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5F2181F210B3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:18:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 681C521101;
-	Sun, 17 Mar 2024 22:15:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2967D21105;
+	Sun, 17 Mar 2024 22:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="hJTeERWS"
-Received: from mail-pf1-f201.google.com (mail-pf1-f201.google.com [209.85.210.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="HwJd6V29"
+Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67EAF208C3
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 22:15:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1B60208C3;
+	Sun, 17 Mar 2024 22:17:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710713744; cv=none; b=Ry9bQJumJbJXuvw0l64l6Z0oqMECfVOsiIXX1L4rV0jCfVoFkEu/dY9fXOa5IvYTR0KybFeDnDg3QoZMPFiQIRJM5PT9D3plXR02l3LuRZyYseey4kOGb8xaplSo16zKtpxRHsa0nu0iOuRTcVjp74ggpHb2KHT6v23810WUWFs=
+	t=1710713883; cv=none; b=MyxvsL7sGfG/8HOYCuQsi7AgWwCUzZ+Se2lVLhRls7gYJC1mC8ZFXX+hEWoaCbSwyxDyAXTqQ5/GHggNANDjSQURPJppCCN8Klh23f/nAk2hoTBODEMifC1iotOILtvIsh2z1rQWeR6fRNS13EawhL0xZtGY2mfiVFA/BJcQ6bI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710713744; c=relaxed/simple;
-	bh=fCtYvy28FaAej3ITUauy8DKmshf/fP8+we1BlTQCf1w=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=cYyjfV+9mVJSVGHvt1t5yinQ01kboLQpw411kOq+6hZWN3MEFx2+7yaWrkC1IQ/WWh9O53wV6MSU74OghqRHvF+23wgktVOR6Z3C78M7s7vs6kHsHrFtxpvEtx4DO3pjxB7vkLbD+8BYKXtNz0hni477+biOcPFkpyD6tA4XSbY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--jsperbeck.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=hJTeERWS; arc=none smtp.client-ip=209.85.210.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--jsperbeck.bounces.google.com
-Received: by mail-pf1-f201.google.com with SMTP id d2e1a72fcca58-6e6bf91a8dfso4092082b3a.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 15:15:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710713743; x=1711318543; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=X2JEuG0AZF0MAOLSKLcKLKNaQIvFupZs8LUprgw+gE4=;
-        b=hJTeERWS7EajtqBqi48gcqOee3UxsCteETIv57erATm8SeTB3/a+IXlLLRhQWV/Ivh
-         FRNXnzz1Dwi0B/HXFU6V9JN2mADZ3riHrGgYfccTQK0jh5YjY12BPtkJl/ZY4k0JSyZy
-         jxj1Q1jdcMT7jC3TtBya38H9hfUFN7RO34FnBqEM+OBINTpLHhjWlMcLGzXm3HLbDnqA
-         2O3pmlYOEE0XgKqYwUVnZG/0ufyYE2FdD0dKS5gTwcPIJycA3RKFB+BZHBSzTqCSpfPX
-         wfxnlT6OxxJ/s3eXqEE4VbLCxGVhLucR0BpRlo/bycBP+FTj1zhmuoAEIEI3RVD9Yihj
-         hrVw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710713743; x=1711318543;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=X2JEuG0AZF0MAOLSKLcKLKNaQIvFupZs8LUprgw+gE4=;
-        b=qgyjz16S1D+IU/kzEzvVbhmqFtP7RLxgNJNh180hUbFQ9pxoLhHi5YThPse0lSKcs3
-         hRc1sM4tujd6epN92iryvUieohCaYK28R+CTZvjzhS5HaYeTtgcbU+xaX+nmiUAUbuUZ
-         2G+4xlsK+idz/kiHvTpoJ0uxiF9+VSrGvGFzHiQQdmQNSkTEo2xacuVXszQG1V+9OrRf
-         PICV9OUetNjdzDGqhIBQzagYBxLI/iPwDxm/uoH5c3TiYct1QkwNIN8310hBXliiJvrh
-         z2B7BCX+Z5yBUk2kVoMGG8nHxP+JN2iVrBxyxljlpT8O6i5NZwLPwZpjIYEBB663hjDW
-         yjWQ==
-X-Gm-Message-State: AOJu0YwW6Mm1qzmhwwJm0wcPGUBjBz1ZeAeFqmrAT763JP972Ly4zvW0
-	/81ZO1I7ENR/RAs52nzm9kbUx4ZVBYA8yB4RjwYFolldZEyb8yK8755qqBfLB1k74DYT8xas87L
-	dxL6632jB2Stt9g==
-X-Google-Smtp-Source: AGHT+IFm+Bfmaj1ntoYGQWqKBf58zU56NDscckwskdM7Yn2Z0C39AIjn+BDhQg157vht4TN/CyPltnlSwYYtuCI=
-X-Received: from jsperbeck7.c.googlers.com ([fda3:e722:ac3:cc00:20:ed76:c0a8:26dc])
- (user=jsperbeck job=sendgmr) by 2002:a05:6a00:399f:b0:6e5:3e08:cbeb with SMTP
- id fi31-20020a056a00399f00b006e53e08cbebmr226316pfb.2.1710713742502; Sun, 17
- Mar 2024 15:15:42 -0700 (PDT)
-Date: Sun, 17 Mar 2024 15:15:22 -0700
+	s=arc-20240116; t=1710713883; c=relaxed/simple;
+	bh=nWdR6SqADhA51kuEkeK0ctmtF/15R2BgpkZTF1ggYlk=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=Ar4EPLucB+ffWBjGCx9CP5lhn7XG4C7kT+NukeT6esdNUcOdY+HTImN4xc+0jyj0Ru6v1vRVX/WSv/tYZBlHlGNtrNRFHZuKwnW+liQi8BA968jst79OJNCYLvDcoZJRds5vh8eUNAgzOmHckEAs/Li4TWlEqpFPq8JT0bBNx/E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=HwJd6V29; arc=none smtp.client-ip=150.107.74.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
+	s=201702; t=1710713877;
+	bh=axKNvvyMK/UlmUL98w4a1tTPpghQtaaNyqLWtMBk7VI=;
+	h=Date:From:To:Cc:Subject:From;
+	b=HwJd6V29ZE+ZoTXsNH81WmLuQRrXk3yU5h3wqMDeUjDfWFBAJBDAohltwKQqcn7D/
+	 oz1Vq3T7FuPWSl9cq7mu2xQ9FCvk+X1i1gCMlXURqtNb48QI7CybIbRsmpqZSXxIhZ
+	 4PMVZA1xcWpSOVbVfwTPI2GVvm89/s3MskeCVn/fYkRECRghb36i8YkYk/+Fj3PBGg
+	 +4BKK/uPAm7Kicb+8eSKZx2/cWwXaBs7Ti7y+kLZZFFNR7dvxs12EdtHkZqR0/hCJH
+	 qs10B5EEw8J1tHMYjrgBd8uxCLtc3WE/LXEZryV4KgXirXSQBBtOMUZoVePxZJV1zH
+	 Mlv24CiTr3EmQ==
+Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TyXRm5zWpz4wcQ;
+	Mon, 18 Mar 2024 09:17:56 +1100 (AEDT)
+Date: Mon, 18 Mar 2024 09:17:55 +1100
+From: Stephen Rothwell <sfr@canb.auug.org.au>
+To: David Sterba <dsterba@suse.cz>
+Cc: Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
+ Mailing List <linux-next@vger.kernel.org>, Christian Brauner
+ <brauner@kernel.org>
+Subject: linux-next: build failure after merge of the btrfs-fixes tree
+Message-ID: <20240318091755.1d0f696f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240317221522.896040-1-jsperbeck@google.com>
-Subject: [PATCH] init: open /initrd.image with O_LARGEFILE
-From: John Sperbeck <jsperbeck@google.com>
-To: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	"ndesaulniers@google.com" <ndesaulniers@google.com>
-Cc: linux-kernel@vger.kernel.org, John Sperbeck <jsperbeck@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: multipart/signed; boundary="Sig_/ekYdt.4IWTaM6d9VF5WnO2d";
+ protocol="application/pgp-signature"; micalg=pgp-sha256
 
-If initrd data is larger than 2Gb, we'll eventually fail to write to
-the /initrd.image file when we hit that limit, unless O_LARGEFILE is set.
+--Sig_/ekYdt.4IWTaM6d9VF5WnO2d
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: quoted-printable
 
-Signed-off-by: John Sperbeck <jsperbeck@google.com>
----
- init/initramfs.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Hi all,
 
-diff --git a/init/initramfs.c b/init/initramfs.c
-index 76deb48c38cb..b607d3463b47 100644
---- a/init/initramfs.c
-+++ b/init/initramfs.c
-@@ -683,7 +683,7 @@ static void __init populate_initrd_image(char *err)
- 
- 	printk(KERN_INFO "rootfs image is not initramfs (%s); looks like an initrd\n",
- 			err);
--	file = filp_open("/initrd.image", O_WRONLY | O_CREAT, 0700);
-+	file = filp_open("/initrd.image", O_WRONLY|O_CREAT|O_LARGEFILE, 0700);
- 	if (IS_ERR(file))
- 		return;
- 
--- 
-2.44.0.291.gc1ea87d7ee-goog
+After merging the btrfs-fixes tree, today's linux-next build (powerpc
+ppc64_defconfig) failed like this:
 
+fs/btrfs/volumes.c: In function 'btrfs_scan_one_device':
+fs/btrfs/volumes.c:1413:55: error: 'bdev_handle' undeclared (first use in t=
+his function)
+ 1413 |         if (btrfs_skip_registration(disk_super, path, bdev_handle->=
+bdev->bd_dev,
+      |                                                       ^~~~~~~~~~~
+fs/btrfs/volumes.c:1413:55: note: each undeclared identifier is reported on=
+ly once for each function it appears in
+
+Caused by commit
+
+  cc019bc0d55b ("btrfs: do not skip re-registration for the mounted device")
+
+I have used the btrfs-fixes tree from next-20240315 for today.
+
+This is actually caused by an interaction with commit
+
+  9ae061cf2a46 ("btrfs: port device access to file")
+
+which has been in Linus' tree since March 12 (and linux-next since Feb 26).
+--=20
+Cheers,
+Stephen Rothwell
+
+--Sig_/ekYdt.4IWTaM6d9VF5WnO2d
+Content-Type: application/pgp-signature
+Content-Description: OpenPGP digital signature
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX3bBMACgkQAVBC80lX
+0Gya0wf/Rw9aRRRX0gEmPwpmD5rZ/f0GcOhHksY531T87P1KduQBP62VnkSYDwdv
+qYjg3FqWBy3rNYL9wri8CPT4aYxTabCEIo5IVKbTThOajAXy+UhnnKPm7ooBB6e0
+XmRoxQTFvkL6O4I7DL746GSBy+X5m8wI7ymHq8+6BZcav++gKFqPx0KO32Jlu9Yf
+JwIXS/HAducVVSHMiO2oSNyZM46DISOWgxTsm+/jfesAwnkfO9vAe3ha7RRSwFI+
+Lemwx/LHreZUMuRsmX17lOHR17TvL9uR9l3XblouEeydn921fjtw5vwvQ62AJyyF
+8NieG2KsEt3wnVJFhc9U+mIUvJChdw==
+=3LA5
+-----END PGP SIGNATURE-----
+
+--Sig_/ekYdt.4IWTaM6d9VF5WnO2d--
 
