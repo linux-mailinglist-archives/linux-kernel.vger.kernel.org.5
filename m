@@ -1,62 +1,63 @@
-Return-Path: <linux-kernel+bounces-105540-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105541-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7897287DFE8
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:04:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id A761087DFEB
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:06:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A92E21C20D4C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:04:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5CB8D1F2124E
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF7091F94D;
-	Sun, 17 Mar 2024 20:04:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FB8C200A0;
+	Sun, 17 Mar 2024 20:06:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="qNz/dLcX"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GmO55PF+"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25A311EB2D;
-	Sun, 17 Mar 2024 20:04:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6CB279E3;
+	Sun, 17 Mar 2024 20:06:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710705848; cv=none; b=KoRfc45tylACsUBfkfareGXmfmFqQ3Y1Usq9enqzbqS72VshGMiXMlkC9mduScQGCSkNv+Vgh1u33N/Nu1aQ3bzgqNbO3sCEEsyHm0VZY0nZzpeqKDIv21FJ/DW4f6G0Y1tFBavrb9RPMYd7kAgEaza/PL0Dbfmk3Gw7MkBJ94s=
+	t=1710705990; cv=none; b=gZepKX1TzKGzGo1AAgk0G0aYSjejq1omIcKrc4ZJJPx4VunNosnk7r1k6oMQmb7nah1dNGqPOCoRw3NmIhPqTzZVpEVFoxZ2FTpKWoB3s+9k39qgt69uBL2dxhstkjNuhZacr7fWa3RVpCKe+e/onBPj5wktlQKeLVY0tJSe+JE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710705848; c=relaxed/simple;
-	bh=5REz72U9EXohcBm4t1ISQL1fVcumFebJbP7464UzW58=;
+	s=arc-20240116; t=1710705990; c=relaxed/simple;
+	bh=sFEHSjac8D3PtwCoVIQIp9ed7NUBbJyBtQx8DW7CYHw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lvrHT/Sf+WPXEgf01GHjoZgfcRJfkEYAKSRrlxWE9Iife79OmuXlfJ8WeUMD/eB91p3hZBgPF+vvKhill64ktS8OEBTVStz1YkJvWejLV64/yW0eK9ltcw5CezZ0a31W0VlOoVGNzS8vRC+TCK8ygDhtTE17Qy8tssK54aU+cJM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=qNz/dLcX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62B2DC433C7;
-	Sun, 17 Mar 2024 20:04:07 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=LKzUl++yTyBePF8DGtD3hyNKMrB6cwuvwMcR2XzbRuDilwty90HR1Zp1NGRQDx64YKiM7G1Uz3SEzdU4o103lwiomTrE/RwhrVhFFHmOOQH36eKUSEuS9Qq5yR/JYmQAdVhexEhPSIHEcnyMJUlreqcNhXwoXyL1p+h+yW2v7FQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GmO55PF+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 088AFC433C7;
+	Sun, 17 Mar 2024 20:06:28 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710705847;
-	bh=5REz72U9EXohcBm4t1ISQL1fVcumFebJbP7464UzW58=;
+	s=k20201202; t=1710705989;
+	bh=sFEHSjac8D3PtwCoVIQIp9ed7NUBbJyBtQx8DW7CYHw=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=qNz/dLcXv0wcHjcVrtYves10JWPaWLj69D66ZAG/JP5m0DvbluCEPotJjYIH0oKor
-	 KoXt4ogga/oB/Xzh9sV5rZ3t42s1XTWwRre+zYqp2K1plAv+P++eS0X5y3qmmJr1R4
-	 DsMb5rC9pyEU8XGCPrwkRiaoaq1x6K7I1fCJe7RuQBEz2Fi3/hW4/Ph5vbVkWPXXUU
-	 dwX99GJz0vgQSXX5eLSwF2/QWvkjEPLHqEXjePj0m8uhSb5wjGYk4mYuYY+F4HDaSN
-	 aD8a1lBmc6lQzqLk6EjHGwf/pcw+1bRfXF02k1PDkxuys5DfN4FCh7Tl4dCEy88XR5
-	 2HPCQeIFjGm+g==
-Date: Sun, 17 Mar 2024 14:04:04 -0600
+	b=GmO55PF+27CYXtYz0jkopdHUjYs9RksuwoQcqWTdNPRY3OcaqcLkh+pZ+RLVhlpNo
+	 jq9am4kudwG9uDvzQjVIlw9RzjLf5HfUAanHe2GwNrFqeKhqbWzVeUzqYbkK1/lta3
+	 qBKGqLzx0+h9H+t9hia/j06U/pkAyIHeTvlIfyV83BDI//q84HTPGoI6zuVet1WZ1R
+	 ZIKwq/YFAZzMR7wXQBxVn9katyHo9ZCgB3Ys25cj/+yw6GbeiyKYZVoPdy//t0NeKv
+	 wVNOjAclCDO603/b/uv3iezx1Ui/mBcALUlTmiUIqnnMItIQfex2kjTE4RRjipQYB+
+	 lY+fLrhLuRUIQ==
+Date: Sun, 17 Mar 2024 14:06:25 -0600
 From: Rob Herring <robh@kernel.org>
 To: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
+Cc: linux-kernel@vger.kernel.org, christophercordahi@nanometrics.ca,
+	Mark Brown <broonie@kernel.org>, Jaroslav Kysela <perex@perex.cz>,
 	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Liam Girdwood <lgirdwood@gmail.com>, alsa-devel@alsa-project.org,
+	linux-sound@vger.kernel.org, herve.codina@bootlin.com,
 	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	herve.codina@bootlin.com, christophercordahi@nanometrics.ca
-Subject: Re: [PATCH 01/13] ASoC: dt-bindings: davinci-mcbsp: convert McBSP
- bindings to yaml schema
-Message-ID: <20240317200404.GA2123402-robh@kernel.org>
+	devicetree@vger.kernel.org, Conor Dooley <conor+dt@kernel.org>,
+	Takashi Iwai <tiwai@suse.com>
+Subject: Re: [PATCH 02/13] ASoC: dt-bindings: davinci-mcbsp: Add new
+ properties
+Message-ID: <171070598512.2141016.568175668659767924.robh@kernel.org>
 References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
- <20240315112745.63230-2-bastien.curutchet@bootlin.com>
+ <20240315112745.63230-3-bastien.curutchet@bootlin.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,142 +66,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240315112745.63230-2-bastien.curutchet@bootlin.com>
+In-Reply-To: <20240315112745.63230-3-bastien.curutchet@bootlin.com>
 
-On Fri, Mar 15, 2024 at 12:27:33PM +0100, Bastien Curutchet wrote:
-> Convert the binding for McBSP controllers for TI SoCs from txt
-> to YAML schema.
+
+On Fri, 15 Mar 2024 12:27:34 +0100, Bastien Curutchet wrote:
+> Following features are not described in the bindings:
+>  - The McBSP uses an internal sample rate generator to provide bit clock
+>    or frame clock. This sample rate generator can be programmed to be
+>    driven by McBSP's internal clock source or by an external clock source
+>    (located on CLKS pin).
+>  - McBSP can be configured in 'free-running' mode so that its serial
+>    clocks will continue to run during emulation halt.
+>  - McBSP can generate a SYNCERR when unexpected frame pulses are detected
 > 
-> Add properties 'clocks', 'clock-names', 'power-domains' and
-> '#sound-dai-cells' which were missing from the txt file.
-> Add '#sound-dai-cells' and 'clocks' in the example which were missing
-> from the txt file.
+> Add an optional clock item that allows to select an external clock as
+> sample rate generator's input.
+> 
+> Add a 'ti,disable-free-run' flag to disable the free-running mode. This
+> mode is selected by default by the driver that's why I add a disabling
+> flag instead of an enabling one.
+> 
+> Add a 'ti,enable-sync-err' flag to enable SYNCERR generation when
+> unexpected frame pulses are detected.
 > 
 > Signed-off-by: Bastien Curutchet <bastien.curutchet@bootlin.com>
 > ---
->  .../bindings/sound/davinci-mcbsp.txt          | 50 ----------
->  .../bindings/sound/davinci-mcbsp.yaml         | 96 +++++++++++++++++++
->  2 files changed, 96 insertions(+), 50 deletions(-)
->  delete mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.txt
->  create mode 100644 Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-
-> diff --git a/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-> new file mode 100644
-> index 000000000000..8b0e9b5da08f
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/sound/davinci-mcbsp.yaml
-> @@ -0,0 +1,96 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/sound/davinci-mcbsp.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: McBSP Controller for TI SoCs
-> +
-> +maintainers:
-> +  - Bastien Curutchet <bastien.curutchet@bootlin.com>
-> +
-> +allOf:
-> +  - $ref: dai-common.yaml#
-> +
-> +properties:
-> +  compatible:
-> +    enum:
-> +      - ti,da850-mcbsp
-> +
-> +  reg:
-> +    minItems: 1
-> +    items:
-> +      - description: CFG registers
-> +      - description: data registers
-> +
-> +  reg-names:
-> +    minItems: 1
-> +    items:
-> +      - const: mpu
-> +      - const: dat
-> +
-> +  dmas:
-> +    items:
-> +      - description: transmission DMA channel
-> +      - description: reception DMA channel
-> +
-> +  dma-names:
-> +    items:
-> +      - const: tx
-> +      - const: rx
-> +
-> +  interrupts:
-> +    items:
-> +      - description: RX interrupt
-> +      - description: TX interrupt
-> +
-> +  interrupt-names:
-> +    items:
-> +      - const: rx
-> +      - const: tx
-> +
-> +  clocks:
-> +    items:
-> +      - description: functional clock
-> +
-> +  clock-names:
-> +    items:
-> +      - const: fck
-> +
-> +  power-domains:
-> +    description: phandle to the corresponding power-domain
-
-Drop
-
-> +    maxItems: 1
-> +
-> +  "#sound-dai-cells":
-> +    const: 0
-> +
-> +required:
-> +  - "#sound-dai-cells"
-> +  - compatible
-> +  - reg
-> +  - reg-names
-> +  - dmas
-> +  - dma-names
-> +  - clocks
-> +
-> +unevaluatedProperties: false
-> +
-> +examples:
-> +  - |
-> +    mcbsp0: mcbsp0@1d10000 {
-
-Drop unused label.
-
-
-> +      #sound-dai-cells = <0>;
-> +      compatible = "ti,da850-mcbsp";
-> +      pinctrl-names = "default";
-> +      pinctrl-0 = <&mcbsp0_pins>;
-> +
-> +      reg = <0x111000 0x1000>,
-> +            <0x311000 0x1000>;
-> +      reg-names = "mpu", "dat";
-> +      interrupts = <97>, <98>;
-> +      interrupt-names = "rx", "tx";
-> +      dmas = <&edma0 3 1
-> +              &edma0 2 1>;
-
-<> around each entry.
-
-Otherwise,
+>  .../devicetree/bindings/sound/davinci-mcbsp.yaml | 16 ++++++++++++++++
+>  1 file changed, 16 insertions(+)
+> 
 
 Reviewed-by: Rob Herring <robh@kernel.org>
 
-> +      dma-names = "tx", "rx";
-> +
-> +      clocks = <&psc1 14>;
-> +    };
-> -- 
-> 2.43.2
-> 
 
