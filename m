@@ -1,159 +1,162 @@
-Return-Path: <linux-kernel+bounces-105387-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105388-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4522287DD34
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 13:46:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A254C87DD3A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 13:56:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 927AA281569
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 12:46:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 01EB41F2123C
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 12:56:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1A28E1B28D;
-	Sun, 17 Mar 2024 12:46:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100891BC31;
+	Sun, 17 Mar 2024 12:55:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Og3cQA1N"
-Received: from mail-lf1-f68.google.com (mail-lf1-f68.google.com [209.85.167.68])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b="PN0199Zw"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2DDF171A4
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 12:46:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.68
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B67C136A;
+	Sun, 17 Mar 2024 12:55:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710679573; cv=none; b=h+elQH8tcBlf+hAJI/KfOKLXnKLDkTSvK7rOYeX5S5YpJtaCXX9p4VEpE9TwggdCcqUOe9ZzZ1D6w0koqChEIR5fxphn7FNWa2wLqXEX4ZU2IVpo1j0P2wPtsD55hc5SSt/0TgvcEpXxmrzc+COMYFjVYBFWfIYrRI/wpo0FTws=
+	t=1710680156; cv=none; b=pwRlXr06Kiq+rcaOdc8H4f9QQONA6Sc1x1kV9Dd/nQdygftcQYFCo9GCKezB18cho4YhyrTfL26wltQzCYIULbi5GdjRZ53o6Zwaq3ACnOFf3JQWSplrv9IAsohdfJYS5X3H8lCofzQ+5q51P+5DrB3lDpuu0ZD0D7tas3R33Mo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710679573; c=relaxed/simple;
-	bh=CxhjitrigcZMPkY5tR2pEokND8L8gkUCBYr16EYhEdI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=QEXAkRNzwwqnw8xmT+opMS0Yu7hotGnJ08TOrF2KWIKl/PCSnONOZMWJmkNYEFrvyPMmxVrNDvB+D7CRXfu6WLnS0yn9FKrSBca/qRLFixZVn3izN9sEkgCsdTRWKT5NbZCW/eIiz3RgVWuCeh8pYFhEfPSWnhlvTlRZZl38eCM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Og3cQA1N; arc=none smtp.client-ip=209.85.167.68
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f68.google.com with SMTP id 2adb3069b0e04-513e4dd6ca4so497573e87.0
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 05:46:11 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710679569; x=1711284369; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=/6wpTwlyyoDwkhztnd9V7WxL2PhOEJDNpVAABQDTTwo=;
-        b=Og3cQA1NQ6J/KCIuq+jlvDE6pk8uYqLXBOkxHFkNQJq1fqL5ShYbKk4+mCbjlldb9r
-         8YIUsTX8UN+QMOyXR/V4lg8MonC56ekgSBQGDk/cY8K/au4Wai7OUvowbBGqoOOWdO/j
-         TkypV2vKA1ph8dhNt51xG0OeBuT3I2jzU7lwExZOqSrBvWF6cQNG/8DndWBdKTFFahy0
-         adaSM1rEZxM1NIVHIOvGUn8A/nUcYhqhJqF1IixoBK/h4k7IV/SlaL/CQF+DX86rCMGl
-         +Om+7fwxvQrVwcV7ARGbgESvJUuM5uyQAJVbzp4bvyRpm0erZPtZxi4S6JTyusLrKD+8
-         XEBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710679569; x=1711284369;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/6wpTwlyyoDwkhztnd9V7WxL2PhOEJDNpVAABQDTTwo=;
-        b=aAO87ZxIFkTeo9wzhS99BN6Psbe4oUexh1oJ5xn1kWre6jNgENTVGYGFBUnsjnYM7K
-         YpXIif/aHi+NkNOFwoLPYBmoz16Wm+wSDpvMchCnD/Xz2UwO8XwYN1bsaplyYpu62wwv
-         zdet00biLZsONUfYwGewJPKJreAkeWhw0BgcCRa+r/EsYefoGf5Om00TPiW/CgXyFrGW
-         JhPshN/8EnOkJwicQNjRQsx7DivxdvRoyTbZKMegKVJkNnqw6VerLZGaKtVbDfKUk8qt
-         eWhgGyrWi4ZbiWUUwCacXXP2hESdvhTBsz82JwuSTDyfkv/flQ36/eiYsvsCkugJrZKT
-         cL8g==
-X-Forwarded-Encrypted: i=1; AJvYcCV78iKcb0/5vmtBKKLUZ9MKHurK+BWn4DHRZfVpTEwTAcedheHLj/QYWzGMem3tgSVvKRWuUeITNIsY6SWL0PiJyaQs5zK+wmt0ezsp
-X-Gm-Message-State: AOJu0Yy1VtThBIKXI+QeVRjVsoyEXytdTmBytKK3qyVCBzRhFXnywdy4
-	hdpcSPTTe1q98q0KF2CrUDheGMMZP4YRP/fJYi1VNEcJ40CvWKXh
-X-Google-Smtp-Source: AGHT+IGYZgGVG8seASnrFtCqZDZUPnzsE4DBU9StDxk91y9Yt90ULIw52akDJU1hgsmSzwFQPVZkyw==
-X-Received: by 2002:a19:e004:0:b0:513:d3ba:8da1 with SMTP id x4-20020a19e004000000b00513d3ba8da1mr3154810lfg.13.1710679569378;
-        Sun, 17 Mar 2024 05:46:09 -0700 (PDT)
-Received: from localhost.localdomain ([217.107.126.141])
-        by smtp.gmail.com with ESMTPSA id q8-20020a056512210800b00513bd949eb1sm1234824lfr.17.2024.03.17.05.46.08
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 05:46:09 -0700 (PDT)
-From: yorha.op@gmail.com
-To: linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org
-Cc: Alex Rusuf <yorha.op@gmail.com>
-Subject: [PATCH 1/1] mm/gup: pass flags by value in faultin_page
-Date: Sun, 17 Mar 2024 15:46:11 +0300
-Message-ID: <20240317124611.81280-1-yorha.op@gmail.com>
-X-Mailer: git-send-email 2.42.0
+	s=arc-20240116; t=1710680156; c=relaxed/simple;
+	bh=xwrmrE8IcvQB6scD2/O+jg7MyJ4j0/Sl++hhinClxKw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=IKNXMsRdfLGuRwoUCum+sSMQ2UjKuLfP8nTqsDiYgnP5CRCpYQWKfStS0e2YlG2t820mCYWvasRv6x+RUfQMttRvLBInhkLzxZE/h8Q9ZLgsDqBd05VlvPzelsqC1wiC3A+BQszaLQUhLdeXP7tPog2NSZkgmGWSdgzP+jDJCeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net; spf=pass smtp.mailfrom=gmx.net; dkim=pass (2048-bit key) header.d=gmx.net header.i=wahrenst@gmx.net header.b=PN0199Zw; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.net
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.net;
+	s=s31663417; t=1710680134; x=1711284934; i=wahrenst@gmx.net;
+	bh=3eOlEoN6SfpTcqL+Nb/fFWrFrYcV/qmikqb4ystGr/4=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=PN0199ZwKmpeUW8FGzs8yhLcUD3TeOi1qkkqcuo4Bc28tWp+qPI28ajvp0H5+qv/
+	 rlb37+dP6JTcV1aAeZKu/uFSBPeVmXhIRm5mHqNlaOagFtsb515NdHN52Mx9om+S9
+	 GMnhn3pOd/cKu1mHtQdddIBBReGvAsD7yZIwvVn/SgB4KP8ps43pc4dYAYCGnhXPF
+	 AQ5fTuxPJ7uv++s4P+6ODf+2r/8YcPqiRB6DpWoGtVBMlgsJa3Jr3+4pjd9f164el
+	 6GGEclAVW8JwmSiMYUzeWyDkL4EwomOTCoq45tTaaJemyKLXhHAUf8lCWTNo+HXSq
+	 9AQTsIUxX1rvmxYo9A==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [192.168.1.167] ([37.4.248.43]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1MEV3C-1raGXk1cNO-00Fycb; Sun, 17
+ Mar 2024 13:55:34 +0100
+Message-ID: <dd29bcb5-f737-4e89-b296-db54e13df9ee@gmx.net>
+Date: Sun, 17 Mar 2024 13:55:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 7bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 02/15] dmaengine: bcm2835: Add support for per-channel
+ flags
+Content-Language: en-US
+To: Andrea della Porta <andrea.porta@suse.com>, Vinod Koul
+ <vkoul@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>, Ray Jui
+ <rjui@broadcom.com>, Scott Branden <sbranden@broadcom.com>,
+ Broadcom internal kernel review list
+ <bcm-kernel-feedback-list@broadcom.com>, Saenz Julienne <nsaenz@kernel.org>,
+ dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, dave.stevenson@raspberrypi.com
+Cc: Phil Elwell <phil@raspberrypi.org>, Maxime Ripard <maxime@cerno.tech>,
+ Dom Cobley <popcornmix@gmail.com>
+References: <cover.1710226514.git.andrea.porta@suse.com>
+ <da598378f733a8d45a35ed77f9626cc082262b1a.1710226514.git.andrea.porta@suse.com>
+From: Stefan Wahren <wahrenst@gmx.net>
+In-Reply-To: <da598378f733a8d45a35ed77f9626cc082262b1a.1710226514.git.andrea.porta@suse.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:jub8QDgSnZ8AbSgBVMW8uke/xMwe9dhFq6FVCojQ8aQHsYD5xYe
+ 57cmu43IYbWzOV29/Z70p0cFAl1m0UJhGxktZFocGeazwdn5/qoXVRNxT/gMA3YYJMBbutd
+ Yiz68XaOVZACJ1WA216mIwJDnGJXJAF7j0OEVYLlooR1Iioj3GLQolceZ4jPPIN6qx7zcol
+ QDgqRuRxVGBgwpCQQcf0w==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:TIF9uqa/PxY=;6PRj0Lq0EZp9bJwDP99uvSFDlZM
+ SV13KTGpVXH7plqQz1K1PxEhcvGYUk9dFFaA9rhtE8ThE2BL21RrBB9eGHlhaF1ufG5h7SuIb
+ A73Bkhg8wBm+OkBbu8kTy2gY5op83w8KOuyO9pRjEN+FWHj28GLzFoLzUe71Y57knzfwd+ziN
+ De32tMBj5/liKY4VJZhYQHnUsp7RFKc6E5lQJRxYNH0hXIeq4SbmwllAnHQWW3vbCK7VoxWMt
+ bhSttjcB+cHB+871Ka3U1HVl5GDEsenHxWHnkej69mWS5RcpuCIDoIhdn/pGntlZvpr0lantT
+ z6/No3yXtXZZDVF0B/iWMRfnybdzglpjNhaLimHYkWxeY45uLhPJxWcpj8vhC7BfCn7EY9paL
+ EMb42osDcjDa6bT96UwBgnB55jun21yDt8WXGhNYUFuFWJ+Ekx39D823PdpC9AIURdzKRtS4D
+ Dg60kkGrvGcmQYS3zLqH9ocU3DXRw6Gk0F/ei99rA4QxVYWI0qVT6qqpwTF0hR3Hy6kOpHafS
+ 7bigysWVk7iC8WsjP5eANJxtFNJgi1jZfCLsXlJqLEVoeeRU8YObYTZsMcYbmLgMnVpVSZnFh
+ 54gfdUD4U7RHtXtGZsyYrnCnpl6bWXVy2OC5pQuNhZMnaxC9zOw3c4DmR8QHMOsa3zmdVets8
+ JKGyFpU3u0D5MKBpIjImOGGTuLeY7dXGWNqr5PVaQue8hvceObdLCdWY/s5TAeIdgEOQ6lfkU
+ yPAjiGOCIuoOvPKPSoK99RUfv1kqCUEPHwelDv35Ha5SS4WJ5iDj+Nesn+3gO+2QKQyOOc9CL
+ 1qYxP0gw4PzhpbQSfoq/SJ+umz3zkmvnwMqUNWaiXVbFE=
 
-From: Alex Rusuf <yorha.op@gmail.com>
+Hi Andrea,
 
-There's no need to pass flags as a pointer,
-because it's not expected to be changed now.
+Am 13.03.24 um 15:08 schrieb Andrea della Porta:
+> From: Phil Elwell <phil@raspberrypi.org>
+>
+> Add the ability to interpret the high bits of the dreq specifier as
+> flags to be included in the DMA_CS register. The motivation for this
+> change is the ability to set the DISDEBUG flag for SD card transfers
+> to avoid corruption when using the VPU debugger.
 
-Signed-off-by: Alex Rusuf <yorha.op@gmail.com>
----
- mm/gup.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+AFAIK this and the following 2 patches also requires modification on the
+DT side. So either they must be included in the series or we better
+leave them out completely. I'm not sure which one are really necessary
+for 40 bit support.
 
-diff --git a/mm/gup.c b/mm/gup.c
-index 231711efa390..f308785fa530 100644
---- a/mm/gup.c
-+++ b/mm/gup.c
-@@ -915,19 +915,19 @@ static int get_gate_page(struct mm_struct *mm, unsigned long address,
-  * to 0 and -EBUSY returned.
-  */
- static int faultin_page(struct vm_area_struct *vma,
--		unsigned long address, unsigned int *flags, bool unshare,
-+		unsigned long address, unsigned int flags, bool unshare,
- 		int *locked)
- {
- 	unsigned int fault_flags = 0;
- 	vm_fault_t ret;
- 
--	if (*flags & FOLL_NOFAULT)
-+	if (flags & FOLL_NOFAULT)
- 		return -EFAULT;
--	if (*flags & FOLL_WRITE)
-+	if (flags & FOLL_WRITE)
- 		fault_flags |= FAULT_FLAG_WRITE;
--	if (*flags & FOLL_REMOTE)
-+	if (flags & FOLL_REMOTE)
- 		fault_flags |= FAULT_FLAG_REMOTE;
--	if (*flags & FOLL_UNLOCKABLE) {
-+	if (flags & FOLL_UNLOCKABLE) {
- 		fault_flags |= FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_KILLABLE;
- 		/*
- 		 * FAULT_FLAG_INTERRUPTIBLE is opt-in. GUP callers must set
-@@ -935,12 +935,12 @@ static int faultin_page(struct vm_area_struct *vma,
- 		 * That's because some callers may not be prepared to
- 		 * handle early exits caused by non-fatal signals.
- 		 */
--		if (*flags & FOLL_INTERRUPTIBLE)
-+		if (flags & FOLL_INTERRUPTIBLE)
- 			fault_flags |= FAULT_FLAG_INTERRUPTIBLE;
- 	}
--	if (*flags & FOLL_NOWAIT)
-+	if (flags & FOLL_NOWAIT)
- 		fault_flags |= FAULT_FLAG_ALLOW_RETRY | FAULT_FLAG_RETRY_NOWAIT;
--	if (*flags & FOLL_TRIED) {
-+	if (flags & FOLL_TRIED) {
- 		/*
- 		 * Note: FAULT_FLAG_ALLOW_RETRY and FAULT_FLAG_TRIED
- 		 * can co-exist
-@@ -974,7 +974,7 @@ static int faultin_page(struct vm_area_struct *vma,
- 	}
- 
- 	if (ret & VM_FAULT_ERROR) {
--		int err = vm_fault_to_errno(ret, *flags);
-+		int err = vm_fault_to_errno(ret, flags);
- 
- 		if (err)
- 			return err;
-@@ -1236,7 +1236,7 @@ static long __get_user_pages(struct mm_struct *mm,
- 
- 		page = follow_page_mask(vma, start, foll_flags, &ctx);
- 		if (!page || PTR_ERR(page) == -EMLINK) {
--			ret = faultin_page(vma, start, &foll_flags,
-+			ret = faultin_page(vma, start, foll_flags,
- 					   PTR_ERR(page) == -EMLINK, locked);
- 			switch (ret) {
- 			case 0:
--- 
-2.42.0
+Regards
 
+>
+> Signed-off-by: Phil Elwell <phil@raspberrypi.org>
+> Signed-off-by: Andrea della Porta <andrea.porta@suse.com>
+> ---
+>   drivers/dma/bcm2835-dma.c | 10 ++++++++--
+>   1 file changed, 8 insertions(+), 2 deletions(-)
+>
+> diff --git a/drivers/dma/bcm2835-dma.c b/drivers/dma/bcm2835-dma.c
+> index 428253b468ac..3d9973dd041d 100644
+> --- a/drivers/dma/bcm2835-dma.c
+> +++ b/drivers/dma/bcm2835-dma.c
+> @@ -137,6 +137,10 @@ struct bcm2835_desc {
+>   #define BCM2835_DMA_S_DREQ	BIT(10) /* enable SREQ for source */
+>   #define BCM2835_DMA_S_IGNORE	BIT(11) /* ignore source reads - read 0 *=
+/
+>   #define BCM2835_DMA_BURST_LENGTH(x) (((x) & 15) << 12)
+> +#define BCM2835_DMA_CS_FLAGS(x) ((x) & (BCM2835_DMA_PRIORITY(15) | \
+> +				      BCM2835_DMA_PANIC_PRIORITY(15) | \
+> +				      BCM2835_DMA_WAIT_FOR_WRITES | \
+> +				      BCM2835_DMA_DIS_DEBUG))
+>   #define BCM2835_DMA_PER_MAP(x)	(((x) & 31) << 16) /* REQ source */
+>   #define BCM2835_DMA_WAIT(x)	(((x) & 31) << 21) /* add DMA-wait cycles =
+*/
+>   #define BCM2835_DMA_NO_WIDE_BURSTS BIT(26) /* no 2 beat write bursts *=
+/
+> @@ -449,7 +453,8 @@ static void bcm2835_dma_start_desc(struct bcm2835_ch=
+an *c)
+>   	c->desc =3D to_bcm2835_dma_desc(&vd->tx);
+>
+>   	writel(c->desc->cb_list[0].paddr, c->chan_base + BCM2835_DMA_ADDR);
+> -	writel(BCM2835_DMA_ACTIVE, c->chan_base + BCM2835_DMA_CS);
+> +	writel(BCM2835_DMA_ACTIVE | BCM2835_DMA_CS_FLAGS(c->dreq),
+> +	       c->chan_base + BCM2835_DMA_CS);
+>   }
+>
+>   static irqreturn_t bcm2835_dma_callback(int irq, void *data)
+> @@ -476,7 +481,8 @@ static irqreturn_t bcm2835_dma_callback(int irq, voi=
+d *data)
+>   	 * if this IRQ handler is threaded.) If the channel is finished, it
+>   	 * will remain idle despite the ACTIVE flag being set.
+>   	 */
+> -	writel(BCM2835_DMA_INT | BCM2835_DMA_ACTIVE,
+> +	writel(BCM2835_DMA_INT | BCM2835_DMA_ACTIVE |
+> +	       BCM2835_DMA_CS_FLAGS(c->dreq),
+>   	       c->chan_base + BCM2835_DMA_CS);
+>
+>   	d =3D c->desc;
 
