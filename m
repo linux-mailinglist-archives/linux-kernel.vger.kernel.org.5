@@ -1,319 +1,119 @@
-Return-Path: <linux-kernel+bounces-105564-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105565-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A80E87E05C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:30:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E06E087E064
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 22:34:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2D0DB212AA
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:30:53 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B7D01C20DF3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:34:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10D95208BA;
-	Sun, 17 Mar 2024 21:30:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BE762134A;
+	Sun, 17 Mar 2024 21:34:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AUBkIZq6"
-Received: from mail-lj1-f170.google.com (mail-lj1-f170.google.com [209.85.208.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="GTvPGMUA"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 04B531C6BC
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 21:30:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D47320B35;
+	Sun, 17 Mar 2024 21:34:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710711046; cv=none; b=jurVU74+F41uosOn/vUX23a1T2CBcO/NNK7/ZusmyLBFsyosXZRtydrcr1HRAy6w2WpBdz/PRgcIrUbHNKiZZXRXB4BcitvStShTRmOjuHT1B52zRIntpP6eqHkXOwwEFPrKFocLv4TePUuC76KS+Eos/xPdvIm9SIvOpSXK+cw=
+	t=1710711257; cv=none; b=tzgTcYuqIdEU+ZsAk4WywFkErjKLYdngzHabjY6FSmeQRWdLNoo1SvwNsNogaGL7F/WyMAbhJWC/uJZz+P1DLw90ydVbSMZAj+a1SZ6wp8vU0Hr5zyxGBPltHbMSCRklh862tQie8wXW8r8y9h/bG8ASggy0/rvqBaft087OYYw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710711046; c=relaxed/simple;
-	bh=sKNNDSxdVmmDDOalB0MDyvcQol4tPjD3reKOMjvbmuk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=t8fo5ODGVWW+MsCDfu/WT8Wb0Noi7enmcqdeL0MAwB1ZTDogFhs0qW0BlNVTKfCGt8mQqbKFX5ngZCA02UFeMUPH/QIeeUsW+YEM4d3J8/wtmBwhVZNOPbWALwUxaRPwosegTyEjw+qAtQHSJ4aqRms707X4A7Uk3Deeccu5RmM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AUBkIZq6; arc=none smtp.client-ip=209.85.208.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f170.google.com with SMTP id 38308e7fff4ca-2d46dd5f222so41287861fa.1
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 14:30:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710711042; x=1711315842; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RB9Yx9eY5jYX8PX6GpKT4tDKSK1Ladoxrcta15yab4Q=;
-        b=AUBkIZq6uCKVK+GdbhA0GD/ChOq1ZLTlXLTKJ1Fx9D5ed6aVgxG0g8s4cQGKZIFwdF
-         deosXWbltQPhkM3g0vveLdU8zGXv1OYuiLgxIThna8S0TfJz6XhEr3aIWGZQaGDCsfmn
-         ZpIvKq8PGGKHofsGkyO+lMJA22J8H0QXeJZ1cHgB3aJfHgq4B7uOnE3lVFIHxReZyyc7
-         rD9nNcrGPcdvmfGez8oerOqZW8PuVCRL7JHQqalADckD8QdoS9TjBWO8WmmHJ4adKke9
-         +hyZ1ZNc9MahKFuHKyoNfZp4FDe3I6k+qXMJTAbAjRrjBsDTBa/zPfFFzAYIIqeooYe4
-         ihkA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710711042; x=1711315842;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RB9Yx9eY5jYX8PX6GpKT4tDKSK1Ladoxrcta15yab4Q=;
-        b=AWFGm1avf3VLMUb4Y0V0OEVWqEvgZ/qsEVWIE0i0s3c+s0arMBzSB0n/iLm0aXrk3t
-         UqcWuuoal0AIfIX18P1tl3f6x3bBgsYVJfmJQg8gz1BVU49hP3NBwxUf1YwaaxTWspPj
-         UfhQQuG/ovPuU7gO4TdwT7vcPKM7pBs3ihGi+RAcr4Nst9ip+2Yjsx8jwYUE9d2FQtXz
-         6h3LlbsTXo0PX24zVp25wwXUONXhdbjJKBBvVT5PDVf5tuEEvlpzdQ1MzYM8QFzs4nAG
-         ED7j9F2J3YDKk1ZVa2EGC6GUm14qfAUhci3IQ41F4TNRxgw5c4+OIL4hXMWsnIIfWWzB
-         7IOg==
-X-Forwarded-Encrypted: i=1; AJvYcCVDwHemLnv2usQS/z4L6L3qI+3o+BNd3z1AWcI1dTO8FFi/4NOkoo9utXVT1HRt9bBZl4dDRhAjSBsbM61uWiboDnCFJewK6cHv2UpY
-X-Gm-Message-State: AOJu0YzsLskMR/5MsdTE5o1dCYqFmj/RBpgWMKd0FYaTXYqL+pmEyG+7
-	a+R25xpAn2crhAa2x0pPIxkanBA4EAvZ+WGh0h6WAGw7Vyp7L5zQy+CHBMgApQrbq7wMbChf2H8
-	ccP8w8VUM15pkexHZmJYaTmletQ==
-X-Google-Smtp-Source: AGHT+IHl1h1I3nVn2sdWL3YEaMVKQSVeUwKtpWFndlr9o+JYWm04ptb1L9Hz+JDpxv6wdhtcmOUFrmLieiV/4lWl324=
-X-Received: by 2002:a2e:b8d2:0:b0:2d4:375e:9e43 with SMTP id
- s18-20020a2eb8d2000000b002d4375e9e43mr7496720ljp.27.1710711041777; Sun, 17
- Mar 2024 14:30:41 -0700 (PDT)
+	s=arc-20240116; t=1710711257; c=relaxed/simple;
+	bh=JL4f9CkTc1PhMvDJqtVSNWVDRsuHiAIaDHnKNLauDrw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=enX4jrTDhiLUdXmBu31tU2xPCdq8CIUP7g/MzLyVJ+SKJmreUv3MZUV9qazuoh58inKRl21pLalVYw0lwzrYFmu/cANC1Ei6m7xMnp1wcgUy77weHdf+jFTh+9+f6nIQOBHiAvhR1qQZvbApby7cRh+IyYNP4hlI1ABLXQ/NfQ8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=GTvPGMUA; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=mhmd4DQYdANeIXg1gAXPMMRysX1z3GDQw6kVU6mRTr0=; b=GTvPGMUANvAVfkSRGVTb9VOlGV
+	LRmBd/rJHeORLF/hpnwFvVXYQ8IzeOFBmhW6ipeXMalh2qVUJeeX2HcLXblOxP+Zvi9TUF2CqvxBZ
+	HX1Jf/9BLDdHOWcTuqdXXVSuuda74pmfKU/VDdbsKnMvh9+kIOU3JTUyV06ozqohwWWgxbMEDymBD
+	x8E1j5UeBFZlyU0ojq437+xL0u+c3r9NOYgxZccJvEoB/iHdQntQoQ792/XOVEH7Sq9390GzPo44W
+	cBZYUgdhveX0D3ffJEf1fp/tbI2zm7Id7MxH0Hto9FWfr5zQSFCym8nL7HYi2kBMagTPvnWZLA7Gt
+	avc6qhtA==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rly8n-0000000Fe5u-2tqR;
+	Sun, 17 Mar 2024 21:34:01 +0000
+Date: Sun, 17 Mar 2024 21:34:01 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Andreas Hindborg <nmi@metaspace.dk>
+Cc: Jens Axboe <axboe@kernel.dk>, Christoph Hellwig <hch@lst.de>,
+	Keith Busch <kbusch@kernel.org>,
+	Damien Le Moal <Damien.LeMoal@wdc.com>,
+	Bart Van Assche <bvanassche@acm.org>,
+	Hannes Reinecke <hare@suse.de>,
+	"linux-block@vger.kernel.org" <linux-block@vger.kernel.org>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Niklas Cassel <Niklas.Cassel@wdc.com>,
+	Greg KH <gregkh@linuxfoundation.org>,
+	Miguel Ojeda <ojeda@kernel.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Boqun Feng <boqun.feng@gmail.com>, Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Alice Ryhl <aliceryhl@google.com>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Yexuan Yang <1182282462@bupt.edu.cn>,
+	Sergio =?iso-8859-1?Q?Gonz=E1lez?= Collado <sergio.collado@gmail.com>,
+	Joel Granados <j.granados@samsung.com>,
+	"Pankaj Raghav (Samsung)" <kernel@pankajraghav.com>,
+	Daniel Gomez <da.gomez@samsung.com>,
+	open list <linux-kernel@vger.kernel.org>,
+	"rust-for-linux@vger.kernel.org" <rust-for-linux@vger.kernel.org>,
+	"lsf-pc@lists.linux-foundation.org" <lsf-pc@lists.linux-foundation.org>,
+	"gost.dev@samsung.com" <gost.dev@samsung.com>
+Subject: Re: [RFC PATCH 0/5] Rust block device driver API and null block
+ driver
+Message-ID: <ZfdhyfLWBIFtKO81@casper.infradead.org>
+References: <20240313110515.70088-1-nmi@metaspace.dk>
+ <ZfZajb_vcRwLacfH@casper.infradead.org>
+ <874jd5qqpq.fsf@metaspace.dk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
- <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
- <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
- <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com> <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
- <CAMzpN2hZgEpJcyLqPhEqKSHy33j1G=FjzrOvnLPqiDeijanM=w@mail.gmail.com> <CA+CK2bBTrrJerZMdJrKhg683H4VmnqbgkGu2VG2UuirWNm1TnA@mail.gmail.com>
-In-Reply-To: <CA+CK2bBTrrJerZMdJrKhg683H4VmnqbgkGu2VG2UuirWNm1TnA@mail.gmail.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Sun, 17 Mar 2024 17:30:30 -0400
-Message-ID: <CAMzpN2jmQoG9Cw56JOh7t_Y21Fax3bA9iAEA2B7TLnYs5ycdJQ@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, 
-	brauner@kernel.org, bristot@redhat.com, bsegall@google.com, 
-	dave.hansen@linux.intel.com, dianders@chromium.org, dietmar.eggemann@arm.com, 
-	eric.devolder@oracle.com, hca@linux.ibm.com, hch@infradead.org, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
-	jroedel@suse.de, juri.lelli@redhat.com, kinseyho@google.com, 
-	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, 
-	mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com, 
-	mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com, 
-	peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com, 
-	rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, urezki@gmail.com, 
-	vincent.guittot@linaro.org, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <874jd5qqpq.fsf@metaspace.dk>
 
-On Sun, Mar 17, 2024 at 12:15=E2=80=AFPM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
->
-> On Sun, Mar 17, 2024 at 10:43=E2=80=AFAM Brian Gerst <brgerst@gmail.com> =
-wrote:
-> >
-> > On Sat, Mar 16, 2024 at 3:18=E2=80=AFPM Pasha Tatashin
-> > <pasha.tatashin@soleen.com> wrote:
-> > >
-> > > On Thu, Mar 14, 2024 at 11:40=E2=80=AFPM H. Peter Anvin <hpa@zytor.co=
-m> wrote:
-> > > >
-> > > > On March 14, 2024 8:13:56 PM PDT, Pasha Tatashin <pasha.tatashin@so=
-leen.com> wrote:
-> > > > >On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <willy@infr=
-adead.org> wrote:
-> > > > >>
-> > > > >> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet wrote:
-> > > > >> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox wrote=
-:
-> > > > >> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anvin wro=
-te:
-> > > > >> > > > Second, non-dynamic kernel memory is one of the core desig=
-n decisions in
-> > > > >> > > > Linux from early on. This means there are lot of deeply em=
-bedded assumptions
-> > > > >> > > > which would have to be untangled.
-> > > > >> > >
-> > > > >> > > I think there are other ways of getting the benefit that Pas=
-ha is seeking
-> > > > >> > > without moving to dynamically allocated kernel memory.  One =
-icky thing
-> > > > >> > > that XFS does is punt work over to a kernel thread in order =
-to use more
-> > > > >> > > stack!  That breaks a number of things including lockdep (be=
-cause the
-> > > > >> > > kernel thread doesn't own the lock, the thread waiting for t=
-he kernel
-> > > > >> > > thread owns the lock).
-> > > > >> > >
-> > > > >> > > If we had segmented stacks, XFS could say "I need at least 6=
-kB of stack",
-> > > > >> > > and if less than that was available, we could allocate a tem=
-porary
-> > > > >> > > stack and switch to it.  I suspect Google would also be able=
- to use this
-> > > > >> > > API for their rare cases when they need more than 8kB of ker=
-nel stack.
-> > > > >> > > Who knows, we might all be able to use such a thing.
-> > > > >> > >
-> > > > >> > > I'd been thinking about this from the point of view of alloc=
-ating more
-> > > > >> > > stack elsewhere in kernel space, but combining what Pasha ha=
-s done here
-> > > > >> > > with this idea might lead to a hybrid approach that works be=
-tter; allocate
-> > > > >> > > 32kB of vmap space per kernel thread, put 12kB of memory at =
-the top of it,
-> > > > >> > > rely on people using this "I need more stack" API correctly,=
- and free the
-> > > > >> > > excess pages on return to userspace.  No complicated "switch=
- stacks" API
-> > > > >> > > needed, just an "ensure we have at least N bytes of stack re=
-maining" API.
-> > > > >
-> > > > >I like this approach! I think we could also consider having perman=
-ent
-> > > > >big stacks for some kernel only threads like kvm-vcpu. A cooperati=
-ve
-> > > > >stack increase framework could work well and wouldn't negatively
-> > > > >impact the performance of context switching. However, thorough
-> > > > >analysis would be necessary to proactively identify potential stac=
-k
-> > > > >overflow situations.
-> > > > >
-> > > > >> > Why would we need an "I need more stack" API? Pasha's approach=
- seems
-> > > > >> > like everything we need for what you're talking about.
-> > > > >>
-> > > > >> Because double faults are hard, possibly impossible, and the FRE=
-D approach
-> > > > >> Peter described has extra overhead?  This was all described up-t=
-hread.
-> > > > >
-> > > > >Handling faults in #DF is possible. It requires code inspection to
-> > > > >handle race conditions such as what was shown by tglx. However, as
-> > > > >Andy pointed out, this is not supported by SDM as it is an abort
-> > > > >context (yet we return from it because of ESPFIX64, so return is
-> > > > >possible).
-> > > > >
-> > > > >My question, however, if we ignore memory savings and only conside=
-r
-> > > > >reliability aspect of this feature.  What is better unconditionall=
-y
-> > > > >crashing the machine because a guard page was reached, or printing=
- a
-> > > > >huge warning with a backtracing information about the offending st=
-ack,
-> > > > >handling the fault, and survive? I know that historically Linus
-> > > > >preferred WARN() to BUG() [1]. But, this is a somewhat different
-> > > > >scenario compared to simple BUG vs WARN.
-> > > > >
-> > > > >Pasha
-> > > > >
-> > > > >[1] https://lore.kernel.org/all/Pine.LNX.4.44.0209091832160.1714-1=
-00000@home.transmeta.com
-> > > > >
-> > > >
-> > > > The real issue with using #DF is that if the event that caused it w=
-as asynchronous, you could lose the event.
-> > >
-> > > Got it. So, using a #DF handler for stack page faults isn't feasible.
-> > > I suppose the only way for this to work would be to use a dedicated
-> > > Interrupt Stack Table (IST) entry for page faults (#PF), but I suspec=
-t
-> > > that might introduce other complications.
-> > >
-> > > Expanding on Mathew's idea of an interface for dynamic kernel stack
-> > > sizes, here's what I'm thinking:
-> > >
-> > > - Kernel Threads: Create all kernel threads with a fully populated
-> > > THREAD_SIZE stack.  (i.e. 16K)
-> > > - User Threads: Create all user threads with THREAD_SIZE kernel stack
-> > > but only the top page mapped. (i.e. 4K)
-> > > - In enter_from_user_mode(): Expand the thread stack to 16K by mappin=
-g
-> > > three additional pages from the per-CPU stack cache. This function is
-> > > called early in kernel entry points.
-> > > - exit_to_user_mode(): Unmap the extra three pages and return them to
-> > > the per-CPU cache. This function is called late in the kernel exit
-> > > path.
-> > >
-> > > Both of the above hooks are called with IRQ disabled on all kernel
-> > > entries whether through interrupts and syscalls, and they are called
-> > > early/late enough that 4K is enough to handle the rest of entry/exit.
->
-> Hi Brian,
->
-> > This proposal will not have the memory savings that you are looking
-> > for, since sleeping tasks would still have a fully allocated stack.
->
-> The tasks that were descheduled while running in user mode should not
-> increase their stack. The potential saving is greater than the
-> origianl proposal, because in the origianl proposal we never shrink
-> stacks after faults.
+On Sun, Mar 17, 2024 at 08:09:53AM +0100, Andreas Hindborg wrote:
+> I was under the impression that using folios also give the advantage
+> that handles are always head pages. No need to worry about head/tail
+> pages. If the driver moves to use higher order pages for larger block
+> sizes, would it then make sense with folios, or are page still
+> preferred?
 
-A task has to enter kernel mode in order to be rescheduled.  If it
-doesn't make a syscall or hit an exception, then the timer interrupt
-will eventually kick it out of user mode.  At some point schedule() is
-called, the task is put to sleep and context is switched to the next
-task.  A sleeping task will always be using some amount of kernel
-stack.  How much depends a lot on what caused the task to sleep.  If
-the timeslice expired it could switch right before the return to user
-mode.  A page fault could go deep into filesystem and device code
-waiting on an I/O operation.
+This is a good question.
 
-> > This also would add extra overhead to each entry and exit (including
-> > syscalls) that can happen multiple times before a context switch.  It
-> > also doesn't make much sense because a task running in user mode will
-> > quickly need those stack pages back when it returns to kernel mode.
-> > Even if it doesn't make a syscall, the timer interrupt will kick it
-> > out of user mode.
-> >
-> > What should happen is that the unused stack is reclaimed when a task
-> > goes to sleep.  The kernel does not use a red zone, so any stack pages
-> > below the saved stack pointer of a sleeping task (task->thread.sp) can
-> > be safely discarded.  Before context switching to a task, fully
->
-> Excellent observation, this makes Andy Lutomirski per-map proposal [1]
-> usable without tracking dirty/accessed bits. More reliable, and also
-> platform independent.
+If you do enhance this driver to support larger block sizes, I would
+recommend indexing the xarray by sector number instead of page number.
+You would allocate a compound page, but at no point would you need to
+ask the page what order it is (you already know), you don't need to
+change the page flags, etc, etc.
 
-This is x86-specific.  Other architectures will likely have differences.
+The page cache is in a bit of a different spot.  It has to support
+multiple folio sizes for the same file; it has to support folios being
+split, it has to support lookup from users who don't know what the folio
+size is, etc, etc.
 
-> > populate its task stack.  After context switching from a task, reclaim
-> > its unused stack.  This way, the task stack in use is always fully
-> > allocated and we don't have to deal with page faults.
-> >
-> > To make this happen, __switch_to() would have to be split into two
-> > parts, to cleanly separate what happens before and after the stack
-> > switch.  The first part saves processor context for the previous task,
-> > and prepares the next task.
->
-> By knowing the stack requirements of __switch_to(), can't we actually
-> do all that in the common code in context_switch() right before
-> __switch_to()? We would do an arch specific call to get the
-> __switch_to() stack requirement, and use that to change the value of
-> task->thread.sp to know where the stack is going to be while sleeping.
-> At this time we can do the unmapping of the stack pages from the
-> previous task, and mapping the pages to the next task.
-
-task->thread.sp is set in __switch_to_asm(), and is pretty much the
-last thing done in the context of the previous task.  Trying to
-predict that value ahead of time is way too fragile.  Also, the key
-point I was trying to make is that you cannot safely shrink the active
-stack.  It can only be done after the stack switch to the new task.
-
-> > Populating the next task's stack would
-> > happen here.  Then it would return to the assembly code to do the
-> > stack switch.  The second part then loads the context of the next
-> > task, and finalizes any work for the previous task.  Reclaiming the
-> > unused stack pages of the previous task would happen here.
->
-> The problem with this (and the origianl Andy's approach), is that we
-> cannot sleep here. What happens if we get per-cpu stack cache
-> exhausted because several threads sleep while having deep stacks? How
-> can we schedule the next task? This is probably a corner case, but it
-> needs to have a proper handling solution. One solution is while in
-> schedule() and while interrupts are still enabled before going to
-> switch_to() we must pre-allocate 3-page in the per-cpu. However, what
-> if the pre-allocation itself calls cond_resched() because it enters
-> page allocator slowpath?
-
-You would have to keep extra pages in reserve for allocation failures.
-mempool could probably help with that.
-
-Brian Gerst
+I don't think there's ever a point at which you'd need to call
+compound_head() because you'd always look up the head page.  You'd still
+want an iterator of some kind to copy to a compound page (because you
+can only map one at a time).  And that might look a lot like the folio
+copying code.  Probably the right way to handle this is for the folio
+copying code to call the page copying code since a folio is always
+composed of pages.
 
