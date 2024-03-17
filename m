@@ -1,144 +1,212 @@
-Return-Path: <linux-kernel+bounces-105353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105354-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 071D587DC88
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 08:56:46 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BCA887DC92
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 09:24:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1359281A98
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 07:56:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 674AF1C20AD6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 08:24:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C097F12B8B;
-	Sun, 17 Mar 2024 07:56:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 377DD11184;
+	Sun, 17 Mar 2024 08:23:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="cniOK1Do"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2052.outbound.protection.outlook.com [40.107.223.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Uh307Yvt"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CDD1E574;
-	Sun, 17 Mar 2024 07:56:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.52
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710662190; cv=fail; b=HNYYvJE3WY5zHqYDLPhcoXPzLhh27QFV8kS7PRMShl4fyifYgvjweKsuyBZ3nkvFTd/S1hKIO1wuO1ux/KTrBIem8NDoMJeElthY5CtMXoGVTIWGXnfjIU5hPUQCsbxvnNTGzY0tLyfTM1b01EpQH4fYvGTJqFxqd2uVLkABndU=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710662190; c=relaxed/simple;
-	bh=qwHdg0LVMpIM5riRQGsn3v7kBoYTxkt5Ed47X2R9Bb0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=EWcToPunyz1ufukfaCCBAqmbFr9WPEzSfUCqHRL+xeJiDYdUcbQLEXcd4te4EamBbt79N83sHx0xS8nBxtf17Azg62yFxaKbcVMsJ5fxYqDYRMdk2Gyx/bo5POK9J20XhyEikuVkqYBxakkA4rlE1P4mmFg6H/j+whevXbb80ko=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=cniOK1Do; arc=fail smtp.client-ip=40.107.223.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XoKDVBxsPhhzOcgVuWQ66yncJFUb7tDjL3+y8Kt35VYTLy5QbQu7jZ/86XlnO6akflN9ePig7+RFQ35ntM7iYWezXwyuYmiw0ySxCC3SIwbWftQb+qOCi9VdpJtcZOb2SNVhQRN6CWpS785aN+m42ryC0fIhcm80CJFcGZTlyvSsXYiHi/6vpg/SBCjxx4JnbsNYoBeuvF2Fz/0e94vAO8wBA29b6bq2io7oO+XiTI2mX5w0mrZirHOW9N9NGoP2MyQHtm5Drt9qi/CktZ01CLf/Vb9R30TmpMauSfM5gsAC4hdkOMOSXKKkQpJqIVavHQKhTKxNtiGsEBuXBWLYvA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=UAIuK0gTt8I+xBeZWc3Gpleq9uX2wPjIWRS8ccCMa6E=;
- b=XZ8zLl79P+t48CQyJklbul/2B+BrEhgB4ihdXzHn9Nrm6FiPgYlvOyztNp9AiVl54IEmI1yN3M6dVlZl0XA1cfDkVXeqwi1a4M41M0rrrNyp89mdvj4zHNZpfNoR0V0k0VJMR8KWeUfM7xTeDoIVFydUlQwTquTV/4rTgdunczPWD1EFjjv13rs95R/GdLsbvc3fxGGZ6bG/d1zOpxtjbUoL+00aUUo4KIXT7e7yTgx+fwT/fakBsUygK+wXLmUq4QF8b2twaWkSZIChOoRO5Ixcwv8KuYXEVyoizAsaVPuF0yT3MqFxHrQHVSTU/9opaO6IhR4jy+27F8ci9Ysx4g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=UAIuK0gTt8I+xBeZWc3Gpleq9uX2wPjIWRS8ccCMa6E=;
- b=cniOK1DoWB+wXS3cLybU4Pii2Lph+HZOfC8iQlHI1m+0j31ggUKgKXdqbNi1LdefY9fxYfPZm+4TWWpfWhecId2AJV/x2id/GfYnjUTGsYIGC1gdNdx50Q7mtiLwB+XKp+t9RfX0qFgieGmfm+gEyC6O7Q68cLb+bdte5e1f/2Qa+7lqoUp6p6U1/QmPXTtginQQw73XgpSZMJX238QmN1HPWENhXoQx5pgo4/+QDXs1LvANyg3xXTNIzxQj9BkjTQSTm7/MSJ+FLfcwHuKubvmTbdcIX7LWARWbhnZzQ5Vdq146zK3WxZAbm7VmaXmyq1WhAcTGqSIoT0a9vPx47A==
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nvidia.com;
-Received: from CY5PR12MB6179.namprd12.prod.outlook.com (2603:10b6:930:24::22)
- by DM6PR12MB4297.namprd12.prod.outlook.com (2603:10b6:5:211::20) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.25; Sun, 17 Mar
- 2024 07:56:24 +0000
-Received: from CY5PR12MB6179.namprd12.prod.outlook.com
- ([fe80::b93d:10a3:632:c543]) by CY5PR12MB6179.namprd12.prod.outlook.com
- ([fe80::b93d:10a3:632:c543%4]) with mapi id 15.20.7386.023; Sun, 17 Mar 2024
- 07:56:24 +0000
-Date: Sun, 17 Mar 2024 09:56:20 +0200
-From: Ido Schimmel <idosch@nvidia.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: David Ahern <dsahern@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Petr Machata <petrm@nvidia.com>, Kees Cook <keescook@chromium.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH net] nexthop: fix uninitialized variable in
- nla_put_nh_group_stats()
-Message-ID: <ZfaiJC3ORw3xdNo9@shredder>
-References: <b2578acd-9838-45b6-a50d-96a86171b20e@moroto.mountain>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <b2578acd-9838-45b6-a50d-96a86171b20e@moroto.mountain>
-X-ClientProxiedBy: LO4P123CA0281.GBRP123.PROD.OUTLOOK.COM
- (2603:10a6:600:195::16) To CY5PR12MB6179.namprd12.prod.outlook.com
- (2603:10b6:930:24::22)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7D2FBEA;
+	Sun, 17 Mar 2024 08:23:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710663838; cv=none; b=OzJKbZshRVMX6GgBgd2Wdk5EjcoxxK0VG+Uu3nh7kpI0yVedhyfqYmt8g+elT3RHztS/nGlC8+V86E5KmJ+xp/Gb36/RMmjR3/x4xxXhSbDnstjuLHFCeEd0oYaUoPuZNzXUQ4KRVmw/ztAPNs3zovYIwh8TLgruabyjoLbQ3o8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710663838; c=relaxed/simple;
+	bh=5efYS0Mz1r4k8/xBfdeZ5uezDz3yfNPpDBbLm2tF4do=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=nx+n9atFSskY9Rsm78kJycbshUATZUgi1KiOjuIiz3luXoitsPHXnji7CTtxgcQ18tWr3ah73wvWtndFO6EaODYd4i5rDXCN1UZy2WND6nQXDpkQpkzP0QYZmPRnebE+/I5SCBVUgNS06z1iKzDvAl99vSQqJrkWO/N54VLFT4o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Uh307Yvt; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-568c6c391d8so623689a12.3;
+        Sun, 17 Mar 2024 01:23:56 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710663835; x=1711268635; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ymcnCfzxIXJPRJZKuRvTXsxDMCvEERb4Lu1UACKCvMM=;
+        b=Uh307Yvt2YknydGVHpitElt3hPT9l0q8TGzrWk/7lnDpvd4k/qPT2Eb3WAqGZSv3by
+         7CsyQZsv3k1qxxVii1+gUlSSGMPlMUKSHUnl/rcjOfoeqJlROCI5jvnc790cliAZ99OL
+         bfX6qv1Ek5jD1G/wS/YtTgf55coN7ShUptEZfw1HZRjmCldtZUQ83Kzir3ix9rmhVhmr
+         sM1e0kdy80bLYNiHj+W/Hxlbfel0V0kHczsAfkEBhQ/+K37rg7AvmsPQUIke3G0/At8R
+         0Syo/5Q38XBZxhS20sDX4KXI54q+h35Fa1QoyaHiKEt7dsaQAvnp9Ym5CKxmvNgXomXy
+         RBDQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710663835; x=1711268635;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ymcnCfzxIXJPRJZKuRvTXsxDMCvEERb4Lu1UACKCvMM=;
+        b=Li6C/uVLnycfh+k7vECYCLNWnA07SKHrwL19ZGfS4mSgeMFB36yGhd1bFfOgYG8hf+
+         pCFq14W7SMxV93YiMm/3FpxSdFUZBVTLykzwPCOa57nWVSquVOlN1H3W2OfudNikTRt6
+         6bVN2UwPULKIVRoFv90oAmBxM6F8d5Jb6buHGSs5sBqdls0GHyHI3nei2IEbDGPL7WWD
+         BcPcLWfPrBf2iWBFjD6OVtuwBk7qBSaAykdZOFgnoXRIGO58JhXFicLkcctYWoYO5s8q
+         CtKtxRCVAIFAd1RfbOgTTe2pRFbJLo93ensZ1ua+pWymKuWDSk0FtH08N87i9wTCB6tA
+         vZMg==
+X-Forwarded-Encrypted: i=1; AJvYcCXSYvGNzE3kgor1vQlHKjbNh/hGlk0/C/hlHjttqFS+aM0uIDNJFmpsO6Krd68l6qQFmJgH6K6Lyw4KGAUd2uBs02kaiagiEAJNwO2ESDFMjRGX7AGB+h74uluClUm6tUNwUIeHj2VJ
+X-Gm-Message-State: AOJu0YxWp181+NodPh98Savp8d9k3WHTKR7JMFtvLAeTHe0BhOXpijLi
+	0cl8vtcRFtQyg58PAr7w0/NKm4q3NhafdG3fwVyzDTHxEayBAob6EcPJOXnafC+ipZk5wOU2Ss+
+	vQQoMIVejDa+vkgL7G3TePWnbn5A=
+X-Google-Smtp-Source: AGHT+IEG/45MPPL42t7BqEeTOXPjDgozwk0UVr8x9PA5b+mVpjqnodS3p2OvFWi4swSx/5X/1sbGF7hhq1NnkICWlAo=
+X-Received: by 2002:a17:907:c783:b0:a45:a7f8:1b6b with SMTP id
+ tz3-20020a170907c78300b00a45a7f81b6bmr7644169ejc.46.1710663834825; Sun, 17
+ Mar 2024 01:23:54 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY5PR12MB6179:EE_|DM6PR12MB4297:EE_
-X-MS-Office365-Filtering-Correlation-Id: 4d0cc3f2-1030-49ab-57a5-08dc4657bdb5
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	0i8vOQz8flcQ64bduvM8fjWsVFZMsRg3TX8hq6K6EvPEXX7sKbGIalQAifIArZSsury8OJ2vgV4XX+WlvbpBL9y/WTDvYe8bH5Km89gg57CjQ5KaaVZ1G2wvJO2BX754vbUTWiy9a6kxKk/gSOVTCediSkAhkNAxMcWFu1SmBT6AStRvTih/4JIBCYApLXT6Kwq6HOLSBrUHE8xoEkWFOO6qmYmAlUOwRBw2ypn0OYJJGF/u3LQUuD0AV1Kl0efLd71xwS7z26N82WLE8o9a6W1hbbmAyaHExlaXPVpuhm7FaQRWop0GJjZQYzUCXFRd3tzC3Ue0Owktw1eHbpgKAASvo6J4PdF1hBiF6b+rKcqguFcuOQJO+3LXAUrw30LuD+Oq8ZATHVEP8sjlCCVlrop24QdYXHg/qPeLMLWKnzbu3m/jWgiq5EwlCVDZUYKn15WbYmrPEn7kMsJeLzWENMnJJLF2q2wV7uTfcv7IqB1QnLBZc7PUo5RfxAQzcG6k6zMCENFUoxoMVOW5157S3Rhwb7+LRWccwNNsTz9JHqq49aztlEjJjAm+dbGJSnnHj79WTy/dOoMcWhf6WL93MweKDzS39cIk+dDc/X4ROdREvBnqY/Rmelh1XbYull+AkfrfDT8w7iMPtprpRtDSC9VFwnB/BFKRcD037RCd5wk=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(366007)(1800799015);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?lIc6bWGVM+NI3DSNxjjqP1euWzP9J7ypF6Mssry79gbNoer26z+UKGVHD76v?=
- =?us-ascii?Q?2sJ4/QqH+GuXCpw5NPSp5ru1SIlBfyzIwDoYgtt5F6IOlioCCKxfkA3rAhb4?=
- =?us-ascii?Q?Ppfh38T+Q7tQf9uG1DA9xcQgVFUFdf7/T+Zln1oyvkS/awRM8FdiWV7B94E+?=
- =?us-ascii?Q?Fhe/Mpz8tkJZo3P4YezO28EAInQvCJhTliUm6+aOMQ8qaeSUztM/3ewJ2vPh?=
- =?us-ascii?Q?DcKcZkEpI2Pht48aTwsLTb+ynML6qfQnWT/tmkxesS00NoYKDWQ3jLQ/oxXK?=
- =?us-ascii?Q?TQMDBJsZk6a6O0u9aPtk74LMw7HwHEuC3+6XiE3Muwpk/vYrUZ6BL5GQIGzd?=
- =?us-ascii?Q?e+jaM/n04qpDvfWzVfQEzErbH+kIFt/Uq7oSOPF+2tMCsigU9tH8OIpfTXGX?=
- =?us-ascii?Q?45CnwR9Up0HXq2D7q2sFWBf2RDm0ca0Ziaua2ik7KkLkCITXFCA19qmeSRi6?=
- =?us-ascii?Q?WAfFU2x99NC8h1oGJfxPa6r/CVJP7PAfM3CWvOdL/ev3eiiVjP7yqAa4DzxS?=
- =?us-ascii?Q?+cp+2VMKltUROJhwyTjt18wl5Jn0jqkjiZPMDmTR7QYkH9hP8n3XxBI6czH0?=
- =?us-ascii?Q?eIYMqFsEidJ43Ln1DEx+0HYbTfjUqN/ycoeyh1VlspIg5qX5MD8iVe0p9F8O?=
- =?us-ascii?Q?QLNSB3YaSeLrWn3IIcPz0loK7f01wG90+oDkdG1BckDIc1+yZfFet6+DROJq?=
- =?us-ascii?Q?6MBvuo3ONlNAv7Jv0rJWvEoBB/GA1PRfU0TVowP9JL3yVDp1yPJCN8cUJItK?=
- =?us-ascii?Q?ItsFtxCTM+TmvM8qGTj+9qGKmGcf8B0O8k1lxrzYCDTO41K8iVwa7nFAOF1N?=
- =?us-ascii?Q?invamFEVtCM3/kBr8hotVQr8f+qiOnTbaWIl7XsQQ6JwwOrkslBjRNdvEeby?=
- =?us-ascii?Q?O3e3VN44OK8EveCbQ1lGtiK9p/yIJM2mTOFuuzAaVf/OIFpvR38g3PajkhkD?=
- =?us-ascii?Q?hwTXDKVgM18/sk7yV1ee0PsaAdzcaCDysK2pAH88+oTIXRkBX/ez5uFDevVI?=
- =?us-ascii?Q?4cuNTo+ZWd8GsPohzDpUDPZcFvWETIicALGAn/75oOmjiRTx7yECdLdRMJiO?=
- =?us-ascii?Q?SS9QlQj49K0Q6O9msamm9YTxLyrIReu9L8zxhuArAMCFO5ETvkZr2lmW+4fY?=
- =?us-ascii?Q?Gw3DkMlwEAzbDLWEpUv+/M6Wr62CTf7AnXsxVnmOOYxySRGQG1gCuI4xoHtG?=
- =?us-ascii?Q?xebk6B3x423OFEZEf0SI/BTJDu4gMsPxLgnFxNiM0jvRRqBHf7/DZhsyKX+j?=
- =?us-ascii?Q?QqEIqpPPE9CJcUoTrFecgovYZpR6zrhsFK2WtZo1gXlc04JLjfpyLNMUYptx?=
- =?us-ascii?Q?MGYcdVMBo/mE5O/CBRaZnjIWJgYRRLR/yeuKx2NG+kCPJ2H+7BYDjxPetJPd?=
- =?us-ascii?Q?9Q00F3R33qU4XX8Xb29xlI3CQ7pzfabPB/9kbm3KW4sSC3Wu58+eDbtzk7hx?=
- =?us-ascii?Q?wIwYtUXPYW0ZcwPsGCc4afiiX8l9Ua8MW0K9JcoqLNvZCqsaMU5RP3UzZUr/?=
- =?us-ascii?Q?NqysH9Zh8XkIulmAn5Too1QonWx4mSiGqMYN3PJBr5gslT6RdU11pX1OhVl4?=
- =?us-ascii?Q?Mkt/qY411K18oxe0U33dupUa3AAeqy6MC1y2PmE5?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 4d0cc3f2-1030-49ab-57a5-08dc4657bdb5
-X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6179.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 17 Mar 2024 07:56:23.9813
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TIBIiBCR5C2/7LYnB1TwIoT6HiPGMis+lJx0R8Yo3t+r9cyHX5omF2CRR07raoTjvui4nQz1KQbevZEELi+YPg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR12MB4297
+References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+ <ZfX5jynjW4M9pvw1@surfacebook.localdomain> <CAMknhBGMUQFoQ9TxTTgy0dxHoyXkt+5tS93tpwz5Wo=h1UQD3Q@mail.gmail.com>
+In-Reply-To: <CAMknhBGMUQFoQ9TxTTgy0dxHoyXkt+5tS93tpwz5Wo=h1UQD3Q@mail.gmail.com>
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+Date: Sun, 17 Mar 2024 10:23:18 +0200
+Message-ID: <CAHp75VcP7sZKgoXzgTihf96rc5rz=U0Amoardj1Sy9uTMDHknA@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
+To: David Lechner <dlechner@baylibre.com>
+Cc: Jonathan Cameron <jic23@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>, 
+	=?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, linux-iio@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 16, 2024 at 12:46:03PM +0300, Dan Carpenter wrote:
-> The nh_grp_hw_stats_update() function doesn't always set "hw_stats_used"
-> so it could be used without being initialized.  Set it to false.
-> 
-> Fixes: 5072ae00aea4 ("net: nexthop: Expose nexthop group HW stats to user space")
-> Signed-off-by: Dan Carpenter <dan.carpenter@linaro.org>
+On Sun, Mar 17, 2024 at 1:10=E2=80=AFAM David Lechner <dlechner@baylibre.co=
+m> wrote:
+> On Sat, Mar 16, 2024 at 2:57=E2=80=AFPM Andy Shevchenko
+> <andy.shevchenko@gmail.com> wrote:
+> > Thu, Mar 14, 2024 at 12:43:38PM -0500, David Lechner kirjoitti:
 
-Reviewed-by: Ido Schimmel <idosch@nvidia.com>
+..
+
+> > > +enum ad7944_spi_mode {
+> > > +     /* datasheet calls this "4-wire mode" */
+> > > +     AD7944_SPI_MODE_DEFAULT,
+> > > +     /* datasheet calls this "3-wire mode" (not related to SPI_3WIRE=
+!) */
+> > > +     AD7944_SPI_MODE_SINGLE,
+> > > +     /* datasheet calls this "chain mode" */
+> > > +     AD7944_SPI_MODE_CHAIN,
+> >
+> > Why not kernel doc?
+>
+> This isn't a public/shared enum so it doesn't seem like it needs it.
+
+It doesn't matter.
+
+> It would just add redundant enum member names.
+
+These comments make it harder to follow in my opinion.
+
+..
+
+> > > +/*
+> >
+> > The below is mimicking the kernel doc, but there is no marker for this.
+> > Why?
+>
+> I received feedback on another patch in a different subsystem that
+> static functions shouldn't use /** since they aren't used outside of
+> the file where they are.
+
+Was it the IIO subsystem? (I believe not).
+Again, that feedback is bogus as we control what to share and what not
+in the documentation (when importing we may say internal or external
+or even on the function granularity), however, even for static
+functions it's good to have documentation in the approved format as it
+makes it easier to render.
+
+> > > + * ad7944_3wire_cs_mode_conversion - Perform a 3-wire CS mode conver=
+sion and
+> > > + *                                   acquisition
+> > > + * @adc: The ADC device structure
+> > > + * @chan: The channel specification
+> > > + * Return: 0 on success, a negative error code on failure
+> > > + *
+> > > + * This performs a conversion and reads data when the chip is wired =
+in 3-wire
+> > > + * mode with the CNV line on the ADC tied to the CS line on the SPI =
+controller.
+> > > + *
+> > > + * Upon successful return adc->sample.raw will contain the conversio=
+n result.
+> > > + */
+
+..
+
+> > > +     case AD7944_SPI_MODE_SINGLE:
+> > > +             ret =3D ad7944_3wire_cs_mode_conversion(adc, &indio_dev=
+->channels[0]);
+> > > +             if (ret)
+> > > +                     goto out;
+> > > +
+> > > +             break;
+> > > +     default:
+> > > +             /* not supported */
+> >
+> > No error code set?
+>
+> This is in an interrupt handler, so I didn't think there was anything
+> we can do with an error.
+
+return IRQ_NONE?
+
+> > >               goto out;
+> > > +     }
+
+..
+
+> > > +     if (device_property_read_string(dev, "adi,spi-mode", &str_val) =
+=3D=3D 0) {
+> > > +             ret =3D sysfs_match_string(ad7944_spi_modes, str_val);
+> >
+> > Don't you want use new fwnode/device property API for making these two =
+in
+> > one go?
+>
+> I didn't know there was one. I assume you mean
+> fwnode_property_match_property_string().
+
+Yes, but here is the device_ variant of it.
+
+> > > +             if (ret < 0)
+> > > +                     return dev_err_probe(dev, -EINVAL,
+> >
+> > Why shadowing the error code?
+>
+> Cargo culted from one of a few of users of sysfs_match_string() that does=
+ this.
+>
+> Jonathan already picked this patch up so I can follow up with a patch
+> to clean up these two items.
+
+As far as I remember he was planning to rebase, so I believe he can
+easily fold fixups.
+
+> > > +                                          "unsupported adi,spi-mode\=
+n");
+> > > +
+> > > +             adc->spi_mode =3D ret;
+> > > +     } else {
+> > > +             /* absence of adi,spi-mode property means default mode =
+*/
+> > > +             adc->spi_mode =3D AD7944_SPI_MODE_DEFAULT;
+> > > +     }
+
+--=20
+With Best Regards,
+Andy Shevchenko
 
