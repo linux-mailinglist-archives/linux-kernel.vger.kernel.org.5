@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-105422-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105423-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EB5287DDAC
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:59:00 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id EAD1A87DDAE
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 15:59:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7EA961C209A3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 14:58:59 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 56F30B20DC5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 14:59:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DC4E1CD15;
-	Sun, 17 Mar 2024 14:58:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C21B11C691;
+	Sun, 17 Mar 2024 14:58:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UqngBifK"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="BTo7dsV5"
+Received: from mail-lf1-f49.google.com (mail-lf1-f49.google.com [209.85.167.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9A6AC1CD13
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 14:58:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 46F6A1CD3B
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 14:58:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710687492; cv=none; b=MFntHWeFIFGUhRKvVBAmEeD5hbcuAkN3D7jjUVQlOZQdIFG0++vTe/qSD6HUnLPrjKLFO/NpHb+ga9ZzEKT7ZaoZNUjt6uaE3cmGlgqtCwMmXX/jQdonkAXNZMiEJkY3A1Fz2obw9ujaIfqcUmew7gGFQt4vNll5z4VkL6jhfyM=
+	t=1710687497; cv=none; b=sQ5IVgEsOiFlVtLw+bdfpiFVBAdjCAzLS4h0kK15MS8ZflYPlUSDtVnehMAIwVW0xiOwxTgMZwiEEpobbTymY8TCSLrUYgCwnNGlWUEXS402BaBFmEnj23rg9BBRLTVLj9SjPoQkQA0MiYSBgWA91/y6c4SWVu4QK9NOUukOy2g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710687492; c=relaxed/simple;
-	bh=Wgpgj/tsil/UEo00DCAcIzFZfPpa1PyAZraQdXIMIQw=;
+	s=arc-20240116; t=1710687497; c=relaxed/simple;
+	bh=UgGhzEZu4Xgd68c2IKB35yAhOh2c/UdIWt3MJyHBz3E=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=R9uJ/GSs8taEvhYeXRDVQa/Ka5BwIocQxQdWHr8zP9nuoF4YhDNX8mGgIIR7GLlnE/P73t9kl+w4X2OqFubhCbkd88VAeiIbUuFO1+RcOb2iKhbhGhtocbv8NF2lAxLEcUABsgOIXrNdSAnzheHQ4AablqAXtY0S2h6DZfkWLeQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UqngBifK; arc=none smtp.client-ip=209.85.167.50
+	 In-Reply-To:Content-Type; b=fVNCNxYET4QQrPTvXpvPVWfp8jZGjt1odGwivTDIeTk0dtLg3I3zIFkfZOvc3erFX5tCoaxF9IHp4XetCMb5uwt0c70XOQmx99QFH3WEi2SXC2bcGlOMZfG9qmrsKYQpKZ59jFWWotZ84o7U9flt2uY8LN14A5H7wBqxx+fC1iA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=BTo7dsV5; arc=none smtp.client-ip=209.85.167.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513d212f818so4091931e87.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 07:58:10 -0700 (PDT)
+Received: by mail-lf1-f49.google.com with SMTP id 2adb3069b0e04-513e10a4083so1168149e87.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 07:58:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710687489; x=1711292289; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710687493; x=1711292293; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=cnUoC0020r5bTr+lNRD8L5bTNjN/10QirJDrNPphTas=;
-        b=UqngBifKbrUtbBfiZtOw07+X8o3XC2NNxkRPDLNipswGSJ5aWQ2a425hw1qFC+b1G7
-         0ytj31fpIqFw+ealG3q4KNfzRZchWlJ2xDz3tWIOnrNf0wnHcDcw1GnM1mVxhLulQ0Wr
-         yUqr78S6dMo6wXWQGWUKLhyaDdH89RVeU4e/rKjZsDzCEXQs90xxBI3ndFcdViN/yGnS
-         WVAZiN0LlXTEsTcW+CAx2lJU+PD0phlAmYLqOVycaW2K8ZDdzFqjzccZMqcXxts4qX+O
-         Vcp7iReorxOUJDYEIW3+xJXW7JV2iZ3Tc8RQfuOAHMmk+9E61UB/1J9yfEfazmbqlf3k
-         8zJw==
+        bh=mhg05blnTAWhLeJk88QGMzjv8XZZX7WOA0pJtI0X8GM=;
+        b=BTo7dsV5quykH4mcgf8iof38h4X3JYl5TdrhGeJvWLY3ZUlEMiJLb5XV1PBi7dPimh
+         O82we3QHWW3SpzucJptgDNPwlrXv+FpV1IwWcPKPJKVqbieSSRaYjrIhBKTB9MgMHZ4B
+         gMTzqwg/YiofVtblRGixXYkPbitfy3ZndhkoojekwlfxwghEw9a7nFFY26JGBAOcD5Ak
+         tipJ8Of9flnYyn9EL+4AAnhlv0ZJul9rZ6tKE9a0ODuv0gsadjiAePwyCn8U8gEe+hiu
+         PNpyLVi7txp/a5KHhhsjmXzWPSY3WLGREvQJgAQSSWIRx8JiG1zqYjDQG/O/knbiTk5k
+         mkWQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710687489; x=1711292289;
+        d=1e100.net; s=20230601; t=1710687493; x=1711292293;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cnUoC0020r5bTr+lNRD8L5bTNjN/10QirJDrNPphTas=;
-        b=CwHGPTXW8XVqD9jZFlGH6ywAzKkaThqPGbHD1V60vTfqQajN3TXE03huhK7kWdaKlK
-         kb8uWOVVhPkhD7vX1M39rNQ9zwFMjAMw9zS9Pdxt+O4FHi9K1UJetiv+1KWOYp4EBEjx
-         G+LShpca9pDmG0Rm/h/v18BxtSz4Bk7RVGMiMvdNvzgBlSuVdQFhk/xuvCaj+q7u5bId
-         5ok6id+v6kW2hrgbtmYm+YATcpzhc6S9gydgN7qrh7mTb8ypQtpdpNk5YS5c5IPZ293r
-         YNXh3AkiIag7/8D/NQx6QLGibxaFNTI3WfXcXCtme6kmUxtQXd1NALtErOtBls9dsZ+W
-         3dlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVWecsIZd3oyTUx0MO1SaxrL19N9pWVIFY/1KAd8G4r7sfqnlme/dAr58hmspSw+XGMS3oVhW+ay0y3dYWpdmGaeBcB9+KF+orqrC6N
-X-Gm-Message-State: AOJu0Yy1R8G6CT575qxLIXbwkuBPTJAfqah1mEYwazInMVISdJWG0Edw
-	2h5OAb6kxJO//9w+EyR6pP9cyNVTFljb3eJk6h8NTAwy5L9GT9fTj31gO5wjs2o=
-X-Google-Smtp-Source: AGHT+IGoWE1zMcsFeN7st2xArCMtRMgybvaGhpAtg1sH7D/CPkbkHOMfOdL8KeyqujPeir7UCsFPhw==
-X-Received: by 2002:a19:5f56:0:b0:513:ce5f:2a2a with SMTP id a22-20020a195f56000000b00513ce5f2a2amr5733420lfj.21.1710687488926;
-        Sun, 17 Mar 2024 07:58:08 -0700 (PDT)
+        bh=mhg05blnTAWhLeJk88QGMzjv8XZZX7WOA0pJtI0X8GM=;
+        b=Kd5U8cGP4sGj+MdI9FZvOxxGiTOzZC/DdSnRskZBpqXfoVdoshb/feA2kehSnPCfZG
+         dhRObJE0l9HM2DTs7PrRzcrRgrSFIMYcGMXofdVUeayXCbg8YHowYdPxIDW8kM7KIW7b
+         934o9AXkshusD5gzSoW+0R7SWalq7aQii++pmfWRKU6OLCX/hDWfn50fDT0peuzKAjwm
+         ybL1FnwYXcBrLSZoL+EU3TzHGlUjVsT+iOqIHireRAcaNhARpcgSkJUs0YlB4X6OiZN4
+         fc+r9UwsRKqHdl0DuTjEHEy7Cwb60lqpZzyC2YXckg8ToaS4xupxVPn7RaNhajjJCalW
+         Ww3A==
+X-Forwarded-Encrypted: i=1; AJvYcCWGxQXLvG8dw5rBZpVUAyv5MOE8icWUWCcb/cgggfp7Mo1PWWR380TM+gPnMQGSe7biiu70W1lJyLVW6tHXz4mF8pFuerheStgvk5ee
+X-Gm-Message-State: AOJu0YwJ/gFF9lrN+cB8d3Jv7AgrhzuG4kdIGqG6TfaL+LJvr1vowBYC
+	8tbE4EvMKfPvj1o2zDj/nvZfjaeLGY1eQgAbFKt0EocK3CLXF+84Fz2Esp5UTXA=
+X-Google-Smtp-Source: AGHT+IFtAznvhJdMCr6xNsbWBrPThEzQn3YacvBzzvhrGYIBupi1q7yy+e9Fxc3MjIz4QZ2kZexpWQ==
+X-Received: by 2002:a05:6512:538:b0:513:a920:aa77 with SMTP id o24-20020a056512053800b00513a920aa77mr6390665lfc.16.1710687493577;
+        Sun, 17 Mar 2024 07:58:13 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id h13-20020a19ca4d000000b00513b324cc32sm1302471lfj.268.2024.03.17.07.58.07
+        by smtp.gmail.com with ESMTPSA id h13-20020a19ca4d000000b00513b324cc32sm1302471lfj.268.2024.03.17.07.58.11
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Sun, 17 Mar 2024 07:58:08 -0700 (PDT)
-Message-ID: <dce98ddb-01ab-422f-a665-20f084e26434@linaro.org>
-Date: Sun, 17 Mar 2024 15:58:07 +0100
+        Sun, 17 Mar 2024 07:58:13 -0700 (PDT)
+Message-ID: <9adc9f37-150e-41bd-a327-ee3ec820c451@linaro.org>
+Date: Sun, 17 Mar 2024 15:58:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,7 +75,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/3] dt-bindings: vendor-prefixes: add t95 string
+Subject: Re: [PATCH v2 2/3] dt-bindings: arm: sunxi: add T95 AXP313
 Content-Language: en-US
 To: Kamil Kasperski <ressetkk@gmail.com>, Rob Herring <robh@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
@@ -85,7 +85,7 @@ To: Kamil Kasperski <ressetkk@gmail.com>, Rob Herring <robh@kernel.org>,
 Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
  linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
 References: <20240317-add-t95-axp313-support-v2-0-e38032811758@gmail.com>
- <20240317-add-t95-axp313-support-v2-1-e38032811758@gmail.com>
+ <20240317-add-t95-axp313-support-v2-2-e38032811758@gmail.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -131,36 +131,20 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240317-add-t95-axp313-support-v2-1-e38032811758@gmail.com>
+In-Reply-To: <20240317-add-t95-axp313-support-v2-2-e38032811758@gmail.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 17/03/2024 02:33, Kamil Kasperski wrote:
-> Add vendor prefix for T95 tv boxes of unnamed brand. It's hard to
-> determine the actual vendor, so let's assume t95 as default vendor for
-> all t95-branded tv boxes.
+On 17/03/2024 02:34, Kamil Kasperski wrote:
+> Add T95 AXP313 TV Box variant to dt-bindings.
 > 
 > Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
 > ---
+>  Documentation/devicetree/bindings/arm/sunxi.yaml | 5 +++++
+>  1 file changed, 5 insertions(+)
+> 
 
 Acked-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-
-
----
-
-This is an automated instruction, just in case, because many review tags
-are being ignored. If you know the process, you can skip it (please do
-not feel offended by me posting it here - no bad intentions intended).
-If you do not know the process, here is a short explanation:
-
-Please add Acked-by/Reviewed-by/Tested-by tags when posting new
-versions, under or above your Signed-off-by tag. Tag is "received", when
-provided in a message replied to you on the mailing list. Tools like b4
-can help here. However, there's no need to repost patches *only* to add
-the tags. The upstream maintainer will do that for tags received on the
-version they apply.
-
-https://elixir.bootlin.com/linux/v6.5-rc3/source/Documentation/process/submitting-patches.rst#L577
 
 Best regards,
 Krzysztof
