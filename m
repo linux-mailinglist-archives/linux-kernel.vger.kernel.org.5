@@ -1,157 +1,178 @@
-Return-Path: <linux-kernel+bounces-105482-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105484-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF16787DF00
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 17:53:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A49587DF09
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 18:39:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7149528107A
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:53:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 271931C209D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 17:39:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B641CD3C;
-	Sun, 17 Mar 2024 16:53:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 54B551CF9A;
+	Sun, 17 Mar 2024 17:39:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4qyS3vM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b="rpBOhuMP"
+Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9551CD1F;
-	Sun, 17 Mar 2024 16:53:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 944FD23B0
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 17:39:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710694414; cv=none; b=ANtsQXQ02g34phGyyeRLuxML3UA9U2c+G2nUa6sHldGT1uiSpp97NLcTZNSGxOONqjDJAGwRqejZ+4vVPiA7LkIwXlGLuP0VneqMDagW6JatXxRo17o8ms+oVX7NUONQf+dlhcGv8XDg1iMO6C9/yPedbAvNhvNIJvrHN6m/O1w=
+	t=1710697156; cv=none; b=UxGt1Fcx5CeYv0BrvNi1rLgm61Xtx6K2HThLmrW9J/Qo2WGdYkA1mBpgksFhtxCqXEGIRNx1uZdTGxv5OiJv++VXGZp6xblUr7zt098UA8e0/C+Ey85w9e4HkEkbj2tpYFWnm4A2aH8EMMgT6YEd6zFqqLjNKKKbHf7lSaaIogk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710694414; c=relaxed/simple;
-	bh=NvVEy+UL4F7Ica1lAxSJkcql2WZ1Sh8WJGokKutUW/U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=GipNgCZ4EyaisDn5iL8Z/4TFf+Q76SgznoU9riMOHc4kfQ0qpoJNy1XX238kUXOffhCUHrkvf9UZeEDPAluWfWcEK/8Waqaf7glQp68mOyemgHqCIJLlSNr36Gc18br83d7zcfU8yyHGBYYGSSt7/H2zgUFOkzRJatxyf03SEO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o4qyS3vM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075D5C433F1;
-	Sun, 17 Mar 2024 16:53:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710694414;
-	bh=NvVEy+UL4F7Ica1lAxSJkcql2WZ1Sh8WJGokKutUW/U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=o4qyS3vMpopBBgAys30XOgNamkiF8DmvS+Igfqh+n75uqSWxq6jYjhm0fVYHgOlAm
-	 zMWTbzL4VXeZ9YQ7W34I20Bmd2VdPsXGQYpJPaFXwKltDT7c9EwTHpCzIPzeDNVQY0
-	 2mVHADRFWsQUYK9QdwqD+plT6ld6uRkkxkc3ag3W/v8ZDHN9K1U2pE4uoBiyU6EdyW
-	 vYnqeFdVnNS21KO/WvJ2KUr7HQGeIS1oOtpSQaO7wUOWo671QLAxJTcISaySy7wKXj
-	 4RiCwdvBXAIAD8bfDMymQQUKUKaB+Z4E3nBhhsbfo9+CNqWXzf5WJvV/S+hb6PlYMj
-	 D8O4fYjeWq98Q==
-Date: Sun, 17 Mar 2024 09:53:33 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: David Hildenbrand <david@redhat.com>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	fstests <fstests@vger.kernel.org>, xfs <linux-xfs@vger.kernel.org>
-Subject: [RFC PATCH] fstests: test MADV_POPULATE_READ with IO errors
-Message-ID: <20240317165333.GF1927156@frogsfrogsfrogs>
-References: <20240314161300.382526-1-david@redhat.com>
- <20240317165157.GE1927156@frogsfrogsfrogs>
+	s=arc-20240116; t=1710697156; c=relaxed/simple;
+	bh=G3RQiO+3acfdPJN427qElDOQ/2GOwoTUN+RHF6OxiZw=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ln8dDOlmJ+wXN/FPSPsnnKp5h2zB9ts6ITZMkS6EaAHBfDk/X258//j5E344wihs3ieqbCAeYRkKwI43YOD3QQICliESILLCpd0b2iDE2ic9Wjz8lIxNGzp79cc/hk3ixcEYOlICDRRvZJxG5gI+vtyxo/YTSDrUq3CUWlNtuw8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org; spf=pass smtp.mailfrom=cknow.org; dkim=pass (2048-bit key) header.d=cknow.org header.i=@cknow.org header.b=rpBOhuMP; arc=none smtp.client-ip=91.218.175.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=cknow.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cknow.org
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cknow.org; s=key1;
+	t=1710697150;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=bfpAH3dklB+8yPR+B88b6qSEO7NSAg2AetVksH+Hr1o=;
+	b=rpBOhuMPvNanpr3MzxZnyPkkxQyR9yi8wG1sGM3arC39qVmQbl1hiOM66YW8o4kWnpAK07
+	FoqLz2LQIB4NqrEgo+2Gw/kdaGWGsvYl/KT2qNSUgYaVjRD/WscNDo2Uuykb1hBQUyY06b
+	EX3TITJcthRKdf9+iOMTy6r3xmi3jwVIbsgQOVbPdYS71iaGKQdwIpAf6La67c9YeezD2n
+	6RCRATMNmP2dXT0mPWSYU7us6BW5X7Fce3seirt+LEf9kK3UNofwq9JBLHL2oj1DQSfIc1
+	8BbhYbD2T4bBcpdt++9af+bQXOX1qw3h6P4dwsCJcm/rexf3bdFUsJoeSP7pJw==
+From: Diederik de Haas <didi.debian@cknow.org>
+To: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
+ David Sterba <dsterba@suse.com>, linux-btrfs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Adam Borowski <kilobyte@angband.pl>,
+ Nicholas D Steeves <sten@debian.org>,
+ Debian kernel ML <debian-kernel@lists.debian.org>
+Subject: btrfs: Kernel warning when using/mount RAID 5/6
+Date: Sun, 17 Mar 2024 18:38:55 +0100
+Message-ID: <4105665.mVaztBssJx@bagend>
+Organization: Connecting Knowledge
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240317165157.GE1927156@frogsfrogsfrogs>
+Content-Type: multipart/signed; boundary="nextPart7345321.1qzUUeqQFO";
+ micalg="pgp-sha256"; protocol="application/pgp-signature"
+X-Migadu-Flow: FLOW_OUT
 
-From: Darrick J. Wong <djwong@kernel.org>
+--nextPart7345321.1qzUUeqQFO
+Content-Type: multipart/mixed; boundary="nextPart131595361.pUuz4S08WX";
+ protected-headers="v1"
+Content-Transfer-Encoding: 7Bit
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Diederik de Haas <didi.debian@cknow.org>
+Subject: btrfs: Kernel warning when using/mount RAID 5/6
+Date: Sun, 17 Mar 2024 18:38:55 +0100
+Message-ID: <4105665.mVaztBssJx@bagend>
+Organization: Connecting Knowledge
+MIME-Version: 1.0
 
-This is a regression test for "mm/madvise: make
-MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly".
+This is a multi-part message in MIME format.
 
-Cc: David Hildenbrand <david@redhat.com>
-Signed-off-by: Darrick J. Wong <djwong@kernel.org>
+--nextPart131595361.pUuz4S08WX
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/plain; charset="us-ascii"
+
+Hi,
+
+Since https://bugs.debian.org/863290 (2017) the Debian kernel has had a
+patch to warn about the use of RAID 5/6 with BTRFS.
+That bug mentions "It looks like there's a consensus that such a warning
+should live in the kernel rather than userland"
+
+Via [1] and [2] it seems userland did get a warning. It is mentioned in
+the kernel documentation (``Documentation/btrfs-man5.rst``) (and [3]
+and [4]), but AFAICT users are still not warned by the kernel when
+using RAID 5/6.
+
+I stumbled upon this issue when I was (locally) rebasing the Debian kernel
+patch for kernel 6.8. I attached my rebased version of the original patch.
+(I may have done it completely wrong as I know very little about BTRFS.)
+
+But more importantly, IMO such a warning shouldn't be in a downstream
+kernel (Debian), but in the upstream kernel source?
+
+Cheers,
+  Diederik
+
+[1] https://lore.kernel.org/linux-btrfs/20161208153004.GA31795@angband.pl/
+[2] https://lore.kernel.org/linux-btrfs/bf9594ea55ce40af80548888070427ad97daf78a.1598374255.git.josef@toxicpanda.com/
+[3] https://btrfs.readthedocs.io/en/latest/btrfs-man5.html#raid56-status-and-recommended-practices
+[4] https://lore.kernel.org/linux-btrfs/dbf47c42-932c-9cf0-0e50-75f1d779d024@cryptearth.de/
+--nextPart131595361.pUuz4S08WX
+Content-Disposition: attachment;
+ filename="btrfs-warn-about-raid5-6-being-experimental-at-mount.patch"
+Content-Transfer-Encoding: 7Bit
+Content-Type: text/x-patch; charset="x-UTF_8J";
+ name="btrfs-warn-about-raid5-6-being-experimental-at-mount.patch"
+
+From: Adam Borowski <kilobyte@angband.pl>
+Date: Tue, 28 Mar 2017 16:55:05 +0200
+Subject: btrfs: warn about RAID5/6 being experimental at mount time
+Bug-Debian: https://bugs.debian.org/863290
+Origin: https://bugs.debian.org/863290#5
+
+Too many people come complaining about losing their data -- and indeed,
+there's no warning outside a wiki and the mailing list tribal knowledge.
+Message severity chosen for consistency with XFS -- "alert" makes dmesg
+produce nice red background which should get the point across.
+
+Signed-off-by: Adam Borowski <kilobyte@angband.pl>
+[bwh: Also add_taint() so this is flagged in bug reports]
+[2023-01-10: still accurate according to btrfs-progs own manpage:
+https://git.kernel.org/pub/scm/linux/kernel/git/kdave/btrfs-progs.git/commit/?id=922797e15590b836e377d6dc47b828356cafc2a9]
+[2024-03-17: still accurate; manpage is now in Documentation/btrfs-man5.rst
+implementation went from disk-io.c to super.c]
 ---
- tests/generic/1835     |   65 ++++++++++++++++++++++++++++++++++++++++++++++++
- tests/generic/1835.out |    4 +++
- 2 files changed, 69 insertions(+)
- create mode 100755 tests/generic/1835
- create mode 100644 tests/generic/1835.out
+ fs/btrfs/super.c | 12 ++++++++++++
+ 1 file changed, 12 insertions(+)
 
-diff --git a/tests/generic/1835 b/tests/generic/1835
-new file mode 100755
-index 0000000000..07479ab712
---- /dev/null
-+++ b/tests/generic/1835
-@@ -0,0 +1,65 @@
-+#! /bin/bash
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Oracle.  All Rights Reserved.
-+#
-+# FS QA Test 1835
-+#
-+# This is a regression test for a kernel hang that I saw when creating a memory
-+# mapping, injecting EIO errors on the block device, and invoking
-+# MADV_POPULATE_READ on the mapping to fault in the pages.
-+#
-+. ./common/preamble
-+_begin_fstest auto rw
+diff --git a/fs/btrfs/super.c b/fs/btrfs/super.c
+index 101f786963d4..2c409bce1bf5 100644
+--- a/fs/btrfs/super.c
++++ b/fs/btrfs/super.c
+@@ -731,6 +731,18 @@ static void set_device_specific_options(struct btrfs_fs_info *fs_info)
+ 	    !fs_info->fs_devices->rotating)
+ 		btrfs_set_opt(fs_info->mount_opt, SSD);
+ 
++	/*
++	 * Warn about RAID5/6 being experimental at mount time
++	 */
++	if ((fs_info->avail_data_alloc_bits |
++	     fs_info->avail_metadata_alloc_bits |
++	     fs_info->avail_system_alloc_bits) &
++	    BTRFS_BLOCK_GROUP_RAID56_MASK) {
++		btrfs_alert(fs_info,
++		"btrfs RAID5/6 is EXPERIMENTAL and has known data-loss bugs");
++		add_taint(TAINT_AUX, LOCKDEP_STILL_OK);
++	}
 +
-+# Override the default cleanup function.
-+_cleanup()
-+{
-+	cd /
-+	rm -f $tmp.*
-+	_dmerror_unmount
-+	_dmerror_cleanup
-+}
-+
-+# Import common functions.
-+. ./common/dmerror
-+
-+_fixed_by_kernel_commit XXXXXXXXXXXX \
-+	"mm/madvise: make MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly"
-+
-+# real QA test starts here
-+
-+# Modify as appropriate.
-+_supported_fs generic
-+_require_xfs_io_command madvise -R
-+_require_scratch
-+_require_dm_target error
-+_require_command "$TIMEOUT_PROG" "timeout"
-+
-+_scratch_mkfs >> $seqres.full 2>&1
-+_dmerror_init
-+
-+filesz=2m
-+
-+# Create a file that we'll read, then cycle mount to zap pagecache
-+_dmerror_mount
-+$XFS_IO_PROG -f -c "pwrite -S 0x58 0 $filesz" "$SCRATCH_MNT/a" >> $seqres.full
-+_dmerror_unmount
-+_dmerror_mount
-+
-+# Try to read the file data in a regular fashion just to prove that it works.
-+echo read with no errors
-+timeout -s KILL 10s $XFS_IO_PROG -c "mmap -r 0 $filesz" -c "madvise -R 0 $filesz" "$SCRATCH_MNT/a"
-+_dmerror_unmount
-+_dmerror_mount
-+
-+# Load file metadata and induce EIO errors on read.  Try to provoke the kernel;
-+# kill the process after 10s so we can clean up.
-+stat "$SCRATCH_MNT/a" >> $seqres.full
-+echo read with IO errors
-+_dmerror_load_error_table
-+timeout -s KILL 10s $XFS_IO_PROG -c "mmap -r 0 $filesz" -c "madvise -R 0 $filesz" "$SCRATCH_MNT/a"
-+_dmerror_load_working_table
-+
-+# success, all done
-+status=0
-+exit
-diff --git a/tests/generic/1835.out b/tests/generic/1835.out
-new file mode 100644
-index 0000000000..1b03586e8c
---- /dev/null
-+++ b/tests/generic/1835.out
-@@ -0,0 +1,4 @@
-+QA output created by 1835
-+read with no errors
-+read with IO errors
-+madvise: Bad address
+ 	/*
+ 	 * For devices supporting discard turn on discard=async automatically,
+ 	 * unless it's already set or disabled. This could be turned off by
+
+--nextPart131595361.pUuz4S08WX--
+
+--nextPart7345321.1qzUUeqQFO
+Content-Type: application/pgp-signature; name="signature.asc"
+Content-Description: This is a digitally signed message part.
+Content-Transfer-Encoding: 7Bit
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQT1sUPBYsyGmi4usy/XblvOeH7bbgUCZfcqsAAKCRDXblvOeH7b
+bkXSAQC5e1VkqkVqrArlMCn14mAB/XeEFtjygQWGJFHAB8JfTAEAs8ZGJ8Z/ACLP
+xyja5YrfwpHM6LY9gbae7CiscNUNfwE=
+=Mjbm
+-----END PGP SIGNATURE-----
+
+--nextPart7345321.1qzUUeqQFO--
+
+
+
 
