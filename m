@@ -1,415 +1,151 @@
-Return-Path: <linux-kernel+bounces-105546-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105547-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4119887DFF5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:17:09 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4EAAC87DFF6
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 21:21:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1F0611C20DF6
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:17:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 601B91C20D0B
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:21:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 78D54200CB;
-	Sun, 17 Mar 2024 20:17:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12D84200A0;
+	Sun, 17 Mar 2024 20:21:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ewR33L3O"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b="C/uVcQgP";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="hV0P8wI+"
+Received: from wfout8-smtp.messagingengine.com (wfout8-smtp.messagingengine.com [64.147.123.151])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 642C11B7F7;
-	Sun, 17 Mar 2024 20:16:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310761EB2D
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 20:20:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.151
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710706619; cv=none; b=huVZtFLfJ868nTp7shbYW3ZLT62CpNnBCd8DvyJ0ApX33hu5mPIBFFGlYIYxzLdIl6Qwhp/Y7PlsoFxayizVKGzjucoxGtqdMIp9KD8JTr1SiKdVIKiPvoPWtACVsW5UrN8FAG90Eu7D+6jb9ZdrpCxPxHolZmY5LpOy88S04OY=
+	t=1710706860; cv=none; b=E+IA4TR477/7BAD7wpt2tmnyk4rhIP7aInJPVl4YOlk6peiLt5cVVXZiUFmCeDnHrayiuu7HB6Nblf6c0DVBe8pkEKW7fFpXbtHcz+6We3I+wsG4lfznCdWGkX3Z2hnhg5HrhoYDUNvgn+a4KM1K/G1rFq5Fy/BUxn4le3+ZrJU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710706619; c=relaxed/simple;
-	bh=rUeDT3g2G3Zes6odbwmEp4W4imUsRd9AjrTvCm+svXU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=KDl9PyhulRLmqDnyxTRhPR2AmsIMQIGzD2CbZ3i4oRJq+iWPeRK6hlzaZ5QRH/yJcy+oxZ0y/TrSJtPI54LNvETvRP68urQ6CNAaY81AqCkm0/SkxxYHrjXK0dWylhi8iBT0qDaFHGvbSVylTjgQutsLLJsxtFhFALR60EwwH0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ewR33L3O; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7A71FC433C7;
-	Sun, 17 Mar 2024 20:16:58 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710706618;
-	bh=rUeDT3g2G3Zes6odbwmEp4W4imUsRd9AjrTvCm+svXU=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=ewR33L3OrAwrKGvq0Gxkm2zeFzZCxFRWdPDiQBRYi7m7eSCGyWezsG9rtdTY4Y1br
-	 v0MykQIAnFpKPhVxegm6FqA6gP1luQTd2ZLhxT5AwB5glG9AADSuccbJcr6tt6ptHL
-	 gB0rBS6xyXBKAqsc04cLbZBtMd4f1XDkKrISEZVuU42jftBCV/4Vgwn1ovikAl1jTw
-	 HvuWC42KE8u3NUAbxNnClsw3i/Jchb0tsN/Ew0VywBv+NzGbM9uv7qmWLBtpYNFkzD
-	 1hjbOHFDyw1GRbW+Gq0UF9oDYWamIhOp/gSMxXh4W6vDVwBoQVkfZyuGQvq2a1JEmt
-	 WrhH/fiSvshIg==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 641CECE0D83; Sun, 17 Mar 2024 13:16:55 -0700 (PDT)
-Date: Sun, 17 Mar 2024 13:16:55 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Zqiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] rcutorture: Make rcutorture support print rcu-tasks
- gp state
-Message-ID: <4ffbaa69-0d36-4a16-abc5-8aa4b37e68b8@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240317113811.8085-1-qiang.zhang1211@gmail.com>
+	s=arc-20240116; t=1710706860; c=relaxed/simple;
+	bh=/1v7Vj6mpZndRJ2eX6+FUyOOJ7RtQ+j9vPkLALQZgAM=;
+	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
+	 Subject:Content-Type; b=j49fovNFbcBSX9QC7OoxENQ2EXr//mXcWfhEpFtWkFPQpDMkmrr/COvOrbTCnn/WkZEqOJGc2rZKb4Oqpk7bdgdFgDuPHzBetsdrF3gQmbNLdU68Daygupnp2xYhL4GtxwYvI5Q08WYJyx6P3A2VnLbQf2FVeDpdn6RbPp5MWVY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de; spf=pass smtp.mailfrom=arndb.de; dkim=pass (2048-bit key) header.d=arndb.de header.i=@arndb.de header.b=C/uVcQgP; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=hV0P8wI+; arc=none smtp.client-ip=64.147.123.151
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arndb.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arndb.de
+Received: from compute5.internal (compute5.nyi.internal [10.202.2.45])
+	by mailfout.west.internal (Postfix) with ESMTP id 9B93F1C000BF;
+	Sun, 17 Mar 2024 16:20:56 -0400 (EDT)
+Received: from imap51 ([10.202.2.101])
+  by compute5.internal (MEProxy); Sun, 17 Mar 2024 16:20:57 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arndb.de; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1710706856;
+	 x=1710793256; bh=6HrRUHpYXtmNtwn+NXIkI2LhSUVC7t5pMaTnPTvJqzA=; b=
+	C/uVcQgPeNZzFNajaT9i48G1eVpZV83W8eXFp4qaMkEN0pU+66bys2zs3JAtoPDa
+	ulKWcUxR4UD2LkXXeeSgoCqeJng2Mf1hqh3uKDDh0uwDjJHsP7WO3FFpF4hNOGaj
+	/cpcjVahuc63MWtMeqdJCzNLvb9STt7tzly29kE2H8ePu0VWyhZlg3Ef5ziv37aS
+	EbVNiPfxjl3Xk7cKCRkaE8Fhxs2x0OQ9yfhsL97D1NzN47nzhsphok5vA62mTDk3
+	KSh+JjYUN+BTlCjNjXLx0b7UmmvfUINbSg2uAGq2Rgt2Q4IhSL67elkrUlPnBT6F
+	BXSezF6ymmuxtAsMJuCHOg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710706856; x=
+	1710793256; bh=6HrRUHpYXtmNtwn+NXIkI2LhSUVC7t5pMaTnPTvJqzA=; b=h
+	V0P8wI+qYNmmHPjirwWAC/ncxDmy1f6OGNfjSfg/8K/JPM2qOI2ru/t/pPcglaGc
+	lOiWamZTrKoOsliVFgoTMmvx5jRpIf3NclgRy/P5K7ODamjaUqkP2ikv6NCUMuVl
+	SAw31wIY1ojr9XTkcdJAgDiyhWKojeAIupdTZmz0ekSORKBZddHn2vrrFswlumfB
+	i3cxcod71/VW+oJrGdE8MigzdyiBG+rEKFKsuBpkHS4/AsEoqGKJ6vpIa3Rb4Clt
+	TrYaKx35+BdZH9TXs9/McfT2IufFWlZe0U/7uU8wEKowVLMjrF5ZkZaq6jcFF0hw
+	sVkVtS7oh6fKVNfLEENjw==
+X-ME-Sender: <xms:p1D3ZUmGH881RIK0Ub0P1mq0znlj8UQCIInElo1rReMFVwxMcj-uxQ>
+    <xme:p1D3ZT3fU-TPUvpWVMRa99PAZpo0GcRHy9YL8CltdMSYebAvy1Z1wJ9zilwFKLyFs
+    YbKS_onqiprHegiZgg>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeehgdduudefucetufdoteggodetrfdotf
+    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
+    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
+    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdet
+    rhhnugcuuegvrhhgmhgrnhhnfdcuoegrrhhnugesrghrnhgusgdruggvqeenucggtffrrg
+    htthgvrhhnpeegfeejhedvledvffeijeeijeeivddvhfeliedvleevheejleetgedukedt
+    gfejveenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
+    grrhhnugesrghrnhgusgdruggv
+X-ME-Proxy: <xmx:p1D3ZSoz4zum-TXcoZnOs1rVdgFC7H7aIQwrCDXaID4q-PXFHcCaGA>
+    <xmx:p1D3ZQnxT3ujtJu_25NPrt7q5HPD8x2lGuijhoNQRnjTVQAGkXucmA>
+    <xmx:p1D3ZS17J5I1r7Z-vOLTWiG06ErZolGZMbiGSxCezXU92pg8HCdSrQ>
+    <xmx:p1D3ZXt83MdvDQCwwf0pcTFjupfpgBsA2zNwgk_J6AqwOnSJVWBR2w>
+    <xmx:qFD3ZQxmV6TGwpvtkusWi-ZbGV7mJ0Ehha0p1AQHolqBACnnR3u41UX-myw>
+Feedback-ID: i56a14606:Fastmail
+Received: by mailuser.nyi.internal (Postfix, from userid 501)
+	id C1B81B6008D; Sun, 17 Mar 2024 16:20:55 -0400 (EDT)
+X-Mailer: MessagingEngine.com Webmail Interface
+User-Agent: Cyrus-JMAP/3.11.0-alpha0-300-gdee1775a43-fm-20240315.001-gdee1775a
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240317113811.8085-1-qiang.zhang1211@gmail.com>
+Message-Id: <5716d138-ace0-4621-ab34-118610255207@app.fastmail.com>
+In-Reply-To: <6c772d15-d249-4175-93f4-ca523006129b@gmail.com>
+References: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
+ <fba3951f-00b7-41af-8ef4-1e7c86e0cb48@moroto.mountain>
+ <6c772d15-d249-4175-93f4-ca523006129b@gmail.com>
+Date: Sun, 17 Mar 2024 21:20:34 +0100
+From: "Arnd Bergmann" <arnd@arndb.de>
+To: "Philipp Hortmann" <philipp.g.hortmann@gmail.com>,
+ "Dan Carpenter" <dan.carpenter@linaro.org>, "Lee Jones" <lee@kernel.org>
+Cc: "Greg Kroah-Hartman" <gregkh@linuxfoundation.org>,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+ "Larry Finger" <Larry.Finger@lwfinger.net>,
+ "Johannes Berg" <johannes@sipsolutions.net>, "Kalle Valo" <kvalo@kernel.org>
+Subject: Re: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
+Content-Type: text/plain;charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, Mar 17, 2024 at 07:38:11PM +0800, Zqiang wrote:
-> This commit make rcu-tasks related rcutorture test support rcu-tasks
-> gp state printing when the writer stall occurs or the at the end of
-> rcutorture test, and generate rcu_ops->get_gp_data() operation to
-> simplify the acquisition of gp state for different types of rcutorture
-> tests.
-> 
-> Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
+On Sun, Mar 17, 2024, at 21:07, Philipp Hortmann wrote:
+> On 3/11/24 08:04, Dan Carpenter wrote:
+>> On Sat, Mar 09, 2024 at 11:09:24PM +0100, Philipp Hortmann wrote:
+> You are right with the statement that it is this commit.
+> commit ea82ff749587807fa48e3277c977ff3cec266f25 (HEAD)
+> Author: Lee Jones <lee.jones@linaro.org>
+> Date:   Wed Apr 14 19:10:39 2021 +0100
+>
+>      staging: wlan-ng: cfg80211: Move large struct onto the heap
+>
+>      Fixes the following W=3D1 kernel build warning(s):
+>
+>       drivers/staging/wlan-ng/cfg80211.c: In function =E2=80=98prism2_=
+scan=E2=80=99:
+>       drivers/staging/wlan-ng/cfg80211.c:388:1: warning: the frame siz=
+e=20
+> of 1296 bytes is larger than 1024 bytes [-Wframe-larger-than=3D]
+>
+> But It is not depending on the line you pointed to.
 
-Much better!!!
+Right, the kzalloc() already clears the data, so the memset
+is not needed.
 
-A few questions below.  One small change left, a question on testing,
-and the possibility of a few cleanup patches if you are interested.
+> I need another week to look into this.
 
-							Thanx, Paul
+I'm fairly sure this fixes the bug, the problem here was that
+the cast to (u8 *) hides the incorrect conversion:
 
-> ---
->  
-> [   47.582683] rcu:  Start-test grace-period state: g4313 f0x0
-> [   73.780444] rcu:  End-test grace-period state: g15728 f0x0 total-gps=2854
-> 
-> [   99.013921] srcu:  Start-test grace-period state: g0 f0x0
-> [  126.596727] srcu:  End-test grace-period state: g10292 f0x0 total-gps=10292
-> 
-> [  175.664991] srcud:  Start-test grace-period state: g0 f0x0
-> [  195.012774] srcud:  End-test grace-period state: g7628 f0x0 total-gps=7628
-> 
-> [  216.943521] tasks:  Start-test grace-period state: g8 f0x0
-> [  234.245093] tasks:  End-test grace-period state: g300 f0x0 total-gps=292
-> 
-> [  267.139368] tasks-rude:  Start-test grace-period state: g8 f0x0
-> [  296.132748] tasks-rude:  End-test grace-period state: g684 f0x0 total-gps=676
-> 
-> [  316.044241] tasks-tracing:  Start-test grace-period state: g8 f0x0
-> [  342.020447] tasks-tracing:  End-test grace-period state: g348 f0x0 total-gps=340
-> 
->  kernel/rcu/rcu.h        | 20 ++++++++++----------
->  kernel/rcu/rcutorture.c | 29 +++++++++++++++++++++--------
->  kernel/rcu/srcutree.c   |  5 +----
->  kernel/rcu/tasks.h      | 21 +++++++++++++++++++++
->  kernel/rcu/tree.c       | 13 +++----------
->  5 files changed, 56 insertions(+), 32 deletions(-)
-> 
-> diff --git a/kernel/rcu/rcu.h b/kernel/rcu/rcu.h
-> index 86fce206560e..38238e595a61 100644
-> --- a/kernel/rcu/rcu.h
-> +++ b/kernel/rcu/rcu.h
-> @@ -522,12 +522,18 @@ static inline void show_rcu_tasks_gp_kthreads(void) {}
->  
->  #ifdef CONFIG_TASKS_RCU
->  struct task_struct *get_rcu_tasks_gp_kthread(void);
-> +void rcu_tasks_get_gp_data(int *flags, unsigned long *gp_seq);
->  #endif // # ifdef CONFIG_TASKS_RCU
->  
->  #ifdef CONFIG_TASKS_RUDE_RCU
->  struct task_struct *get_rcu_tasks_rude_gp_kthread(void);
-> +void rcu_tasks_rude_get_gp_data(int *flags, unsigned long *gp_seq);
->  #endif // # ifdef CONFIG_TASKS_RUDE_RCU
->  
-> +#ifdef CONFIG_TASKS_TRACE_RCU
-> +void rcu_tasks_trace_get_gp_data(int *flags, unsigned long *gp_seq);
-> +#endif
-> +
+diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-n=
+g/cfg80211.c
+index 471bb310176f..9d6a2dd35ba9 100644
+--- a/drivers/staging/wlan-ng/cfg80211.c
++++ b/drivers/staging/wlan-ng/cfg80211.c
+@@ -350,7 +350,7 @@ static int prism2_scan(struct wiphy *wiphy,
+ 		msg2->msgcode =3D DIDMSG_DOT11REQ_SCAN_RESULTS;
+ 		msg2->bssindex.data =3D i;
+=20
+-		result =3D p80211req_dorequest(wlandev, (u8 *)&msg2);
++		result =3D p80211req_dorequest(wlandev, (u8 *)msg2);
+ 		if ((result !=3D 0) ||
+ 		    (msg2->resultcode.data !=3D P80211ENUM_resultcode_success)) {
+ 			break;
 
-If you have not already done so, could you please test with the rcutorture
-scenarios, while artificially forcing that warning to trigger?
-
-For example, CONFIG_TASKS_TRACE_RCU can be tested using this command
-line:
-
-tools/testing/selftests/rcutorture/bin/kvm.sh --allcpus --duration 5m --configs "TRACE01 TRACE02" --trust-make
-
-You can add more scenarios to the --configs argument, and the rest of
-them can be found in tools/testing/selftests/rcutorture/configs/rcu.
-
->  #ifdef CONFIG_TASKS_RCU_GENERIC
->  void tasks_cblist_init_generic(void);
->  #else /* #ifdef CONFIG_TASKS_RCU_GENERIC */
-> @@ -557,8 +563,7 @@ static inline void rcu_set_jiffies_lazy_flush(unsigned long j) { }
->  #endif
->  
->  #if defined(CONFIG_TREE_RCU)
-> -void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
-> -			    unsigned long *gp_seq);
-> +void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq);
->  void do_trace_rcu_torture_read(const char *rcutorturename,
->  			       struct rcu_head *rhp,
->  			       unsigned long secs,
-> @@ -566,8 +571,7 @@ void do_trace_rcu_torture_read(const char *rcutorturename,
->  			       unsigned long c);
->  void rcu_gp_set_torture_wait(int duration);
->  #else
-> -static inline void rcutorture_get_gp_data(enum rcutorture_type test_type,
-> -					  int *flags, unsigned long *gp_seq)
-> +static inline void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
->  {
->  	*flags = 0;
->  	*gp_seq = 0;
-> @@ -587,20 +591,16 @@ static inline void rcu_gp_set_torture_wait(int duration) { }
->  
->  #ifdef CONFIG_TINY_SRCU
->  
-> -static inline void srcutorture_get_gp_data(enum rcutorture_type test_type,
-> -					   struct srcu_struct *sp, int *flags,
-> +static inline void srcutorture_get_gp_data(struct srcu_struct *sp, int *flags,
->  					   unsigned long *gp_seq)
->  {
-> -	if (test_type != SRCU_FLAVOR)
-> -		return;
->  	*flags = 0;
->  	*gp_seq = sp->srcu_idx;
->  }
->  
->  #elif defined(CONFIG_TREE_SRCU)
->  
-> -void srcutorture_get_gp_data(enum rcutorture_type test_type,
-> -			     struct srcu_struct *sp, int *flags,
-> +void srcutorture_get_gp_data(struct srcu_struct *sp, int *flags,
->  			     unsigned long *gp_seq);
->  
->  #endif
-> diff --git a/kernel/rcu/rcutorture.c b/kernel/rcu/rcutorture.c
-> index 2f43d31fb7a5..2e8a037072eb 100644
-> --- a/kernel/rcu/rcutorture.c
-> +++ b/kernel/rcu/rcutorture.c
-> @@ -381,6 +381,7 @@ struct rcu_torture_ops {
->  	void (*gp_kthread_dbg)(void);
->  	bool (*check_boost_failed)(unsigned long gp_state, int *cpup);
->  	int (*stall_dur)(void);
-> +	void (*get_gp_data)(int *flags, unsigned long *gp_seq);
->  	long cbflood_max;
->  	int irq_capable;
->  	int can_boost;
-> @@ -569,6 +570,7 @@ static struct rcu_torture_ops rcu_ops = {
->  	.gp_kthread_dbg		= show_rcu_gp_kthreads,
->  	.check_boost_failed	= rcu_check_boost_fail,
->  	.stall_dur		= rcu_jiffies_till_stall_check,
-> +	.get_gp_data		= rcutorture_get_gp_data,
->  	.irq_capable		= 1,
->  	.can_boost		= IS_ENABLED(CONFIG_RCU_BOOST),
->  	.extendables		= RCUTORTURE_MAX_EXTEND,
-> @@ -612,6 +614,7 @@ static struct rcu_torture_ops rcu_busted_ops = {
->  	.sync		= synchronize_rcu_busted,
->  	.exp_sync	= synchronize_rcu_busted,
->  	.call		= call_rcu_busted,
-> +	.get_gp_data	= NULL,
-
-When this is NULL, please just leave it out.
-
-If you wish, you can also send separate patches removing the pre-existing
-initialization of function pointers to NULL, one per function pointer.
-
->  	.cb_barrier	= NULL,
->  	.fqs		= NULL,
->  	.stats		= NULL,
-> @@ -628,6 +631,11 @@ static struct srcu_struct srcu_ctld;
->  static struct srcu_struct *srcu_ctlp = &srcu_ctl;
->  static struct rcu_torture_ops srcud_ops;
->  
-> +static void srcu_get_gp_data(int *flags, unsigned long *gp_seq)
-> +{
-> +	srcutorture_get_gp_data(srcu_ctlp, flags, gp_seq);
-> +}
-> +
->  static int srcu_torture_read_lock(void)
->  {
->  	if (cur_ops == &srcud_ops)
-> @@ -736,6 +744,7 @@ static struct rcu_torture_ops srcu_ops = {
->  	.call		= srcu_torture_call,
->  	.cb_barrier	= srcu_torture_barrier,
->  	.stats		= srcu_torture_stats,
-> +	.get_gp_data	= srcu_get_gp_data,
->  	.cbflood_max	= 50000,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-> @@ -774,6 +783,7 @@ static struct rcu_torture_ops srcud_ops = {
->  	.call		= srcu_torture_call,
->  	.cb_barrier	= srcu_torture_barrier,
->  	.stats		= srcu_torture_stats,
-> +	.get_gp_data	= srcu_get_gp_data,
->  	.cbflood_max	= 50000,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
-> @@ -796,6 +806,7 @@ static struct rcu_torture_ops busted_srcud_ops = {
->  	.call		= srcu_torture_call,
->  	.cb_barrier	= srcu_torture_barrier,
->  	.stats		= srcu_torture_stats,
-> +	.get_gp_data	= NULL,
->  	.irq_capable	= 1,
->  	.no_pi_lock	= IS_ENABLED(CONFIG_TINY_SRCU),
->  	.extendables	= RCUTORTURE_MAX_EXTEND,
-> @@ -838,6 +849,7 @@ static struct rcu_torture_ops trivial_ops = {
->  	.get_gp_seq	= rcu_no_completed,
->  	.sync		= synchronize_rcu_trivial,
->  	.exp_sync	= synchronize_rcu_trivial,
-> +	.get_gp_data	= NULL,
->  	.fqs		= NULL,
->  	.stats		= NULL,
->  	.irq_capable	= 1,
-> @@ -882,6 +894,7 @@ static struct rcu_torture_ops tasks_ops = {
->  	.call		= call_rcu_tasks,
->  	.cb_barrier	= rcu_barrier_tasks,
->  	.gp_kthread_dbg	= show_rcu_tasks_classic_gp_kthread,
-> +	.get_gp_data	= rcu_tasks_get_gp_data,
->  	.fqs		= NULL,
->  	.stats		= NULL,
->  	.irq_capable	= 1,
-> @@ -922,6 +935,7 @@ static struct rcu_torture_ops tasks_rude_ops = {
->  	.call		= call_rcu_tasks_rude,
->  	.cb_barrier	= rcu_barrier_tasks_rude,
->  	.gp_kthread_dbg	= show_rcu_tasks_rude_gp_kthread,
-> +	.get_gp_data	= rcu_tasks_rude_get_gp_data,
->  	.cbflood_max	= 50000,
->  	.fqs		= NULL,
->  	.stats		= NULL,
-> @@ -974,6 +988,7 @@ static struct rcu_torture_ops tasks_tracing_ops = {
->  	.call		= call_rcu_tasks_trace,
->  	.cb_barrier	= rcu_barrier_tasks_trace,
->  	.gp_kthread_dbg	= show_rcu_tasks_trace_gp_kthread,
-> +	.get_gp_data    = rcu_tasks_trace_get_gp_data,
->  	.cbflood_max	= 50000,
->  	.fqs		= NULL,
->  	.stats		= NULL,
-> @@ -2264,10 +2279,8 @@ rcu_torture_stats_print(void)
->  		int __maybe_unused flags = 0;
->  		unsigned long __maybe_unused gp_seq = 0;
->  
-> -		rcutorture_get_gp_data(cur_ops->ttype,
-> -				       &flags, &gp_seq);
-> -		srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp,
-> -					&flags, &gp_seq);
-> +		if (cur_ops->get_gp_data)
-> +			cur_ops->get_gp_data(&flags, &gp_seq);
->  		wtp = READ_ONCE(writer_task);
->  		pr_alert("??? Writer stall state %s(%d) g%lu f%#x ->state %#x cpu %d\n",
->  			 rcu_torture_writer_state_getname(),
-> @@ -3390,8 +3403,8 @@ rcu_torture_cleanup(void)
->  		fakewriter_tasks = NULL;
->  	}
->  
-> -	rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
-> -	srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
-> +	if (cur_ops->get_gp_data)
-> +		cur_ops->get_gp_data(&flags, &gp_seq);
->  	pr_alert("%s:  End-test grace-period state: g%ld f%#x total-gps=%ld\n",
->  		 cur_ops->name, (long)gp_seq, flags,
->  		 rcutorture_seq_diff(gp_seq, start_gp_seq));
-> @@ -3762,8 +3775,8 @@ rcu_torture_init(void)
->  			nrealreaders = 1;
->  	}
->  	rcu_torture_print_module_parms(cur_ops, "Start of test");
-> -	rcutorture_get_gp_data(cur_ops->ttype, &flags, &gp_seq);
-> -	srcutorture_get_gp_data(cur_ops->ttype, srcu_ctlp, &flags, &gp_seq);
-> +	if (cur_ops->get_gp_data)
-> +		cur_ops->get_gp_data(&flags, &gp_seq);
->  	start_gp_seq = gp_seq;
->  	pr_alert("%s:  Start-test grace-period state: g%ld f%#x\n",
->  		 cur_ops->name, (long)gp_seq, flags);
-> diff --git a/kernel/rcu/srcutree.c b/kernel/rcu/srcutree.c
-> index d19326486edd..98f79ba01b0a 100644
-> --- a/kernel/rcu/srcutree.c
-> +++ b/kernel/rcu/srcutree.c
-> @@ -1828,12 +1828,9 @@ static void process_srcu(struct work_struct *work)
->  	srcu_reschedule(ssp, curdelay);
->  }
->  
-> -void srcutorture_get_gp_data(enum rcutorture_type test_type,
-> -			     struct srcu_struct *ssp, int *flags,
-> +void srcutorture_get_gp_data(struct srcu_struct *ssp, int *flags,
->  			     unsigned long *gp_seq)
->  {
-> -	if (test_type != SRCU_FLAVOR)
-> -		return;
->  	*flags = 0;
->  	*gp_seq = rcu_seq_current(&ssp->srcu_sup->srcu_gp_seq);
->  }
-> diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> index e83adcdb49b5..e7ac9138a4fd 100644
-> --- a/kernel/rcu/tasks.h
-> +++ b/kernel/rcu/tasks.h
-> @@ -1182,6 +1182,13 @@ struct task_struct *get_rcu_tasks_gp_kthread(void)
->  }
->  EXPORT_SYMBOL_GPL(get_rcu_tasks_gp_kthread);
->  
-> +void rcu_tasks_get_gp_data(int *flags, unsigned long *gp_seq)
-> +{
-> +	*flags = 0;
-> +	*gp_seq = rcu_seq_current(&rcu_tasks.tasks_gp_seq);
-> +}
-> +EXPORT_SYMBOL_GPL(rcu_tasks_get_gp_data);
-> +
->  /*
->   * Protect against tasklist scan blind spot while the task is exiting and
->   * may be removed from the tasklist.  Do this by adding the task to yet
-> @@ -1361,6 +1368,13 @@ struct task_struct *get_rcu_tasks_rude_gp_kthread(void)
->  }
->  EXPORT_SYMBOL_GPL(get_rcu_tasks_rude_gp_kthread);
->  
-> +void rcu_tasks_rude_get_gp_data(int *flags, unsigned long *gp_seq)
-> +{
-> +	*flags = 0;
-> +	*gp_seq = rcu_seq_current(&rcu_tasks_rude.tasks_gp_seq);
-> +}
-> +EXPORT_SYMBOL_GPL(rcu_tasks_rude_get_gp_data);
-> +
->  #endif /* #ifdef CONFIG_TASKS_RUDE_RCU */
->  
->  ////////////////////////////////////////////////////////////////////////
-> @@ -2020,6 +2034,13 @@ struct task_struct *get_rcu_tasks_trace_gp_kthread(void)
->  }
->  EXPORT_SYMBOL_GPL(get_rcu_tasks_trace_gp_kthread);
->  
-> +void rcu_tasks_trace_get_gp_data(int *flags, unsigned long *gp_seq)
-> +{
-> +	*flags = 0;
-> +	*gp_seq = rcu_seq_current(&rcu_tasks_trace.tasks_gp_seq);
-> +}
-> +EXPORT_SYMBOL_GPL(rcu_tasks_trace_get_gp_data);
-> +
->  #else /* #ifdef CONFIG_TASKS_TRACE_RCU */
->  static void exit_tasks_rcu_finish_trace(struct task_struct *t) { }
->  #endif /* #else #ifdef CONFIG_TASKS_TRACE_RCU */
-> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> index 9fbb5ab57c84..e229a12afe31 100644
-> --- a/kernel/rcu/tree.c
-> +++ b/kernel/rcu/tree.c
-> @@ -539,17 +539,10 @@ static struct rcu_node *rcu_get_root(void)
->  /*
->   * Send along grace-period-related data for rcutorture diagnostics.
->   */
-> -void rcutorture_get_gp_data(enum rcutorture_type test_type, int *flags,
-> -			    unsigned long *gp_seq)
-> +void rcutorture_get_gp_data(int *flags, unsigned long *gp_seq)
->  {
-> -	switch (test_type) {
-> -	case RCU_FLAVOR:
-> -		*flags = READ_ONCE(rcu_state.gp_flags);
-> -		*gp_seq = rcu_seq_current(&rcu_state.gp_seq);
-> -		break;
-> -	default:
-> -		break;
-> -	}
-> +	*flags = READ_ONCE(rcu_state.gp_flags);
-> +	*gp_seq = rcu_seq_current(&rcu_state.gp_seq);
->  }
->  EXPORT_SYMBOL_GPL(rcutorture_get_gp_data);
->  
-> -- 
-> 2.17.1
-> 
+     Arnd
 
