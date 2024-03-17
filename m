@@ -1,107 +1,156 @@
-Return-Path: <linux-kernel+bounces-105316-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 828C987DC2C
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 02:33:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 033CB87DC2F
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 02:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 38A8E1F219C9
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 01:33:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5B0DC2823C5
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 01:36:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34ADE7F6;
-	Sun, 17 Mar 2024 01:33:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B5873FC2;
+	Sun, 17 Mar 2024 01:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="fTnOSCXa"
-Received: from out-189.mta0.migadu.com (out-189.mta0.migadu.com [91.218.175.189])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P2+WFbno"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 521791852
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 01:32:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.189
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C32D37F6;
+	Sun, 17 Mar 2024 01:36:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710639182; cv=none; b=Tnt2krFuVkMbHzu4mkQ1vPF53d7S/DiyXD57umR1QnQ3uQugsUe5OznbzGDhBd4PIRJyQOLVW/cjpCN4fvWKuSXTROiNdHGiPSzphkMFzhx+rtknUkzE/ZWVn4CJ90oZg60LCb87DAGLgPZgcNWuxafG1D9eue9AepYpCpaPv8o=
+	t=1710639368; cv=none; b=nxf0PleQimQjiSurjjPXoa6jiJfH9Oocn76Tpe5SHCvwOYiBnhvspqSP4CkQ9V/omjahz+T6pgTBWjEPIwGke4xALncOdBzKK80Z3HzRj3jMzsiJu3YemCHAllI8n5jP6tVifMO7qkAL3cbQBUhZUN8XIUT41p8917IGx5wn30U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710639182; c=relaxed/simple;
-	bh=ztvZQB2SUsNN94SIigkB3GyLNdK/4B2aC2dVRh4M3F4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X5vnEsa7PSy+WITPPPSPBHT/IZdJyMogtYoaWEIcl4zjjI30X+iyk0eMPG0W8/u61gIy/kRAR+IVmuUMjgEzK+Qk7oiSkR//sP9s4f/sUQ9xneYoWGQ53ATCw+k8Mefkoy1vlbqC+Rg4vf644NcSouMcm1YDGChi5ICl/ZluHz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=fTnOSCXa; arc=none smtp.client-ip=91.218.175.189
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Date: Sat, 16 Mar 2024 21:32:48 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710639176;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9RlAJsRV/7U7lgZ5geJYDyxKFcsxulrG2wQ1uwCXd3A=;
-	b=fTnOSCXa0vNTItXRaHzGWsogIux8/TRMBoUZeZ77MCC5BxT+nJLCCwj+Kkzle0qZXb1TGN
-	vUEd2QnaqB49FXQSikVQAibEBp6/pRjivXEs2ocIX8gXUM92lY0ncF0270mJ+Dq+vCZYn0
-	A1lRaThqY9ve3acajFkNUVC/hDbv0es=
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Kent Overstreet <kent.overstreet@linux.dev>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Pasha Tatashin <pasha.tatashin@soleen.com>, 
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, brauner@kernel.org, 
-	bristot@redhat.com, bsegall@google.com, dave.hansen@linux.intel.com, 
-	dianders@chromium.org, dietmar.eggemann@arm.com, eric.devolder@oracle.com, 
-	hca@linux.ibm.com, hch@infradead.org, jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, 
-	jpoimboe@kernel.org, jroedel@suse.de, juri.lelli@redhat.com, kinseyho@google.com, 
-	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, mgorman@suse.de, 
-	mic@digikod.net, michael.christie@oracle.com, mingo@redhat.com, mjguzik@gmail.com, 
-	mst@redhat.com, npiggin@gmail.com, peterz@infradead.org, pmladek@suse.com, 
-	rick.p.edgecombe@intel.com, rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, 
-	urezki@gmail.com, vincent.guittot@linaro.org, vschneid@redhat.com
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-Message-ID: <fsergr6i66i7tagtqj3m7yz4tkjv5z75uslsqpfzmtzdpv3yiv@znauhs7rd4f3>
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com>
- <ZfNTSjfE_w50Otnz@casper.infradead.org>
- <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
- <ZfNWojLB7qjjB0Zw@casper.infradead.org>
- <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
- <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com>
- <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
- <ZfY8PSnsLtkHBBZF@casper.infradead.org>
+	s=arc-20240116; t=1710639368; c=relaxed/simple;
+	bh=wT90xc5MN9pWYiCuET6gJiyUQOhBicpNzpjQPVvsBE0=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=B0hXPf823jVfcA4ewmZMxkKTGiNLFnclW7HQGFrx5hPHuAi3gt5GjHYHVOYZxn6GBeFQUAlyZbVDKg7CoWy9FkiVmhxaOMSOfAdlOFn7Rhux2T1YntabLRcHk7B4xoYmM2D7JDbWnlW5gr6+9Als+K87sYEysDoJG8eFmY2jhyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P2+WFbno; arc=none smtp.client-ip=209.85.218.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46aaf6081fso71780566b.2;
+        Sat, 16 Mar 2024 18:36:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710639365; x=1711244165; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=XJOPQTPZIdoYGlOmY3Fy/8dzV0uwF8EKc4H6FIgjX5I=;
+        b=P2+WFbnoWsBlGIrnRkW9PnYzIG5rriB55ab61XpahvjJR/LMlRabRjdgUp49jzxd7k
+         V09sd45UWzjrLW6gXs/WUpCxbKue2qOrxqdo+feCQ3xAorS475Vxw0dbaNuZpxHBrfIb
+         sB7C+F19/WlYYIHkTVwaq79kfQaEqu7QVuXt5ZmSU6aVvmiAevDm3yRFhvToVUSYLAHZ
+         mmLRkmdMNzLi6atLu8wrOV8WsKLcIAePEm74LJMD7mIhSHElclLO5yMenjS8ENFDxtdB
+         wFYIox5YLfvB7RJgoEie4HTcJ/zNiHmAaLI7zkGXGGkiu46bFdEzTFwbQhqeuw8TGRRw
+         4cBg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710639365; x=1711244165;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=XJOPQTPZIdoYGlOmY3Fy/8dzV0uwF8EKc4H6FIgjX5I=;
+        b=SxshFwIqHgbT13pm4mzm58VJylBhdjNOBHWWDi6pRyKnZMpAMDN4PVygifVYHZa1yD
+         O7V6l/WNziuio6U3PE5DGRur7B+q7CSYVgw2Zd5EJq8hBT7vr9rg+CHPMXoTFbVaAHoP
+         EuwLq5NkF2G0fikhxe93Tebf+aBxDFlrOU9qDYg2b0ROUh4zUfuX04n1da9upCuPC46s
+         18NL5MtFYF0ZyvU/91fhURxO9xOI3ltvROe6aWXSHY3b+z2Y78hyA/eLAHB7D4JDtInX
+         LK2B94ItewUdZhGKj6WKhmfmdlyuwAiNlrVJQpvz0EVqKZupN/epIK9+C90kA9U6Zghn
+         S2Bw==
+X-Forwarded-Encrypted: i=1; AJvYcCXU7rkjUZcUdEiTp6jsDzumzKwySvBr4P24jM/G7c3/q15g+sO1C7uAvuoptDZp1bZhwQXOZNdEvURY00pFLh6muwWpT4NDoImq4pTu
+X-Gm-Message-State: AOJu0YwEs7FwRB1c9M1NT/SnqM3ejN/x5THzh/PkHSM0Xt5oA0QGkTUf
+	pgU0Tx/smUO9fJ2RiUACaVTa4i7Qn2X95P9hyRO3Le2ueXMtAMPu
+X-Google-Smtp-Source: AGHT+IFoKk63r+2w89jQKSp8O06gxrMvN6aVFZ3hTGDXG5DWJLum92uJwZd39+ipO+It2noY/ika0g==
+X-Received: by 2002:a17:907:77da:b0:a46:5de0:6efa with SMTP id kz26-20020a17090777da00b00a465de06efamr5369324ejc.66.1710639364819;
+        Sat, 16 Mar 2024 18:36:04 -0700 (PDT)
+Received: from ALDERLEJK. (89-76-44-138.dynamic.chello.pl. [89.76.44.138])
+        by smtp.gmail.com with ESMTPSA id p7-20020a17090635c700b00a465b6c9a67sm3273109ejb.6.2024.03.16.18.36.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sat, 16 Mar 2024 18:36:04 -0700 (PDT)
+From: Kamil Kasperski <ressetkk@gmail.com>
+Subject: [PATCH v2 0/3] Add initial support for T95 TV boxes
+Date: Sun, 17 Mar 2024 02:33:58 +0100
+Message-Id: <20240317-add-t95-axp313-support-v2-0-e38032811758@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfY8PSnsLtkHBBZF@casper.infradead.org>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAIZI9mUC/x2MQQqAIBAAvxJ7bqE0I/tKdJB2rb2UaIUQ/T3pN
+ Mxh5oHEUTjBWD0Q+ZYkx15E1RUsm9tXRqHioBrVNbo16IjwtIU56FZjukI44onGa3KDtT0TQYl
+ DZC/5H0/z+34i/XIUaAAAAA==
+To: Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Chen-Yu Tsai <wens@csie.org>, 
+ Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>
+Cc: devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev, 
+ Kamil Kasperski <ressetkk@gmail.com>
+X-Mailer: b4 0.13.0
 
-On Sun, Mar 17, 2024 at 12:41:33AM +0000, Matthew Wilcox wrote:
-> On Sat, Mar 16, 2024 at 03:17:57PM -0400, Pasha Tatashin wrote:
-> > Expanding on Mathew's idea of an interface for dynamic kernel stack
-> > sizes, here's what I'm thinking:
-> > 
-> > - Kernel Threads: Create all kernel threads with a fully populated
-> > THREAD_SIZE stack.  (i.e. 16K)
-> > - User Threads: Create all user threads with THREAD_SIZE kernel stack
-> > but only the top page mapped. (i.e. 4K)
-> > - In enter_from_user_mode(): Expand the thread stack to 16K by mapping
-> > three additional pages from the per-CPU stack cache. This function is
-> > called early in kernel entry points.
-> > - exit_to_user_mode(): Unmap the extra three pages and return them to
-> > the per-CPU cache. This function is called late in the kernel exit
-> > path.
-> > 
-> > Both of the above hooks are called with IRQ disabled on all kernel
-> > entries whether through interrupts and syscalls, and they are called
-> > early/late enough that 4K is enough to handle the rest of entry/exit.
-> 
-> At what point do we replenish the per-CPU stash of pages?  If we're
-> 12kB deep in the stack and call mutex_lock(), we can be scheduled out,
-> and then the new thread can make a syscall.  Do we just assume that
-> get_free_page() can sleep at kernel entry (seems reasonable)?  I don't
-> think this is an infeasible problem, I'd just like it to be described.
+changes since v1:
+- introduce sun50i-h616-t95.dtsi for common nodes in t95 boxes
+- validate and add cd-gpios for microsd card detect
+- add wi-fi node
+- remove mmc2 node - it's not used
+- add uart1 for bluetooth device
+- update copyright
 
-schedule() or return to userspace, I believe was mentioned
+T95 is a most commonly known for being a box with a pre-installed 
+malware. It uses Allwinner H616 and comes with NAND, and DDR3 
+memory.
+
+Those TV boxes usually come with common hardware:
+- Allwinner H616 SoC
+- 2/4 GB DDR3 SDRAM (Hynix H5TQ2G43BFR)
+- 16/32/64 GB NAND flash
+- microSD slot
+- AXP305 or AXP313 PMIC depending on board revision
+- 3.5mm A/V output
+- HDMI port
+- 2x USB 2.0 ports
+- 100M ETH using Internal PHY
+- LG642 Wi-Fi and BT chip (rebranded BCM43342)
+- 7-segment display
+- DC 5V barrel jack port
+
+The board contains holes hor UART header wired to &uart0.
+&uart1 is used by bluetooth module
+
+From the DRAM specification its operation voltage is 1.5V.
+
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Chen-Yu Tsai <wens@csie.org>
+To: Jernej Skrabec <jernej.skrabec@gmail.com>
+To: Samuel Holland <samuel@sholland.org>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: devicetree@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-sunxi@lists.linux.dev
+
+Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
+---
+Kamil Kasperski (3):
+      dt-bindings: vendor-prefixes: add t95 string
+      dt-bindings: arm: sunxi: add T95 AXP313
+      arm64: dts: allwinner: h616: add support for T95 tv boxes
+
+ Documentation/devicetree/bindings/arm/sunxi.yaml   |   5 +
+ .../devicetree/bindings/vendor-prefixes.yaml       |   2 +
+ arch/arm64/boot/dts/allwinner/Makefile             |   1 +
+ arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi | 109 +++++++++++++++++++++
+ .../dts/allwinner/sun50i-h616-t95max-axp313.dts    |  85 ++++++++++++++++
+ 5 files changed, 202 insertions(+)
+---
+base-commit: 4138f02288333cb596885e9af03dd3ea2de845cb
+change-id: 20240315-add-t95-axp313-support-5f3da8996edd
+
+Best regards,
+-- 
+Kamil Kasperski <ressetkk@gmail.com>
+
 
