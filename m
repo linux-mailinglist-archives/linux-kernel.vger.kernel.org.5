@@ -1,104 +1,140 @@
-Return-Path: <linux-kernel+bounces-105594-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105595-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A64287E126
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 00:47:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A28CC87E129
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 00:48:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A22881C210D0
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 23:47:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 365401F22081
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 23:48:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E7B821A04;
-	Sun, 17 Mar 2024 23:47:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9DA892206B;
+	Sun, 17 Mar 2024 23:48:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="sp4C0qsu"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OjSOhwpj"
+Received: from mail-vs1-f54.google.com (mail-vs1-f54.google.com [209.85.217.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 240ED1D530
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 23:47:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72A951D530;
+	Sun, 17 Mar 2024 23:48:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710719268; cv=none; b=d23Q1JapIZcOah6iqhSCu4jWCKZWt71/phPIGmFqIPmlM9dpnolSLcg7s5iP1xhe4ys322N2e646+EHeZq4Yul0Flw6Cd9fDMO3dlSXTO+Eh/6S9vqEpQmzFWFpoRZN+szbYG7Z6Oz+ZdHXocN2FYpei/fdH6NPk6HCxVgelpqY=
+	t=1710719315; cv=none; b=tZJEB771uIvMwGN6b9tERTIGl9r9zjlUsOTChqcKdW5PLyTVZyRXLT5DhL912t+ZAABqYObRGLbEFaSelUQEPTGWC7t6U02iA78eT2Pu3smracUa5UMDj9OosjdVb8cDjXw06SNZfnhN7HqKdRVQ5veOnhF8w9XzI7BQhYhFdgQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710719268; c=relaxed/simple;
-	bh=1t5THr41G20eGcgPBEBTTLvNWvw/QIvdXIoz3LkmfgM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=C88t8yYWTvffiu6AVLSGjBWVm2PmnWpKb+cRPruPWHdM5ScXF53e1VOIB7RIzJVmD8WGjPCQDLUcwEnuzjv9MiTPDothZL9tYWJIOWUZ62i6Jj/10RiE6Ex2CfzF/udluev47ybP/sYhKhW6ObmODaHPydiBD0i6+AqETjgzsco=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=sp4C0qsu; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=Content-Transfer-Encoding:
-	Content-Type:In-Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:Sender:Reply-To:Content-ID:Content-Description;
-	bh=Cv73hQVexyl29yDPslEqVrExNAO6VzVtfMqzi6E38Gk=; b=sp4C0qsudZMIXrDjSMy0ENeZxP
-	fMw5hfgtycU33pow6CVoBqQJvtTjhsyQTXBoyTmbF4srzfR5QOZQhsrfBQKpjsfebRnLwgFr0eTeN
-	3gGzcDzmZZwEMLzi4rCxlEYsxJbCt8+svrpF0L78p0eOfjt6IHzWw9rJjrdFhoCmSkbQTOnrOVku0
-	P3iMFvMleAEqxPm88qz7q5+hA0DAJdgKbOaa2HtXOLpnWrUZt7lnSUuxTLtQRLbe5ThqPc1DmPk8X
-	XftydgA3Z1QD89HNcNu3A4a5Fzi0tv48lXUTkrjRON5VCq2H70u77SH79oOV0n3pFGpbloTY6eb7d
-	YbSk8XMA==;
-Received: from [50.53.2.121] (helo=[192.168.254.15])
-	by bombadil.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rm0EC-00000006m3N-44FA;
-	Sun, 17 Mar 2024 23:47:45 +0000
-Message-ID: <252d1ba7-0ae0-4616-9ee7-f7c204531eaa@infradead.org>
-Date: Sun, 17 Mar 2024 16:47:44 -0700
+	s=arc-20240116; t=1710719315; c=relaxed/simple;
+	bh=ha4B0JyJqZfkmKdYnAOTVN8AviIgf2IXn+5u7lPWhck=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=DM65czAQ34ToBeFHtZohaT64t0fF1+bnuLUmD7J+vjNaITaGnBPZmr/CTEV8wAiA8rhOIVp3ozVZr3BIw7xKi57BTygFGfYnhQK13y8wITumhgnpgNmLXH0jRme/9EI7mlMxvqPNq+nNn6nNtQdPk1XeTzMTFkgaHyxQdPvrMj4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OjSOhwpj; arc=none smtp.client-ip=209.85.217.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f54.google.com with SMTP id ada2fe7eead31-4767bf3e2a2so473072137.2;
+        Sun, 17 Mar 2024 16:48:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710719312; x=1711324112; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vQpp+74tvU0a57ZrnFOzkp0hvnhi1SaTowYXx4QiuKQ=;
+        b=OjSOhwpjqTSYbgY8yBHfhAMPUuLKc5jZJlEodNRFOaKFf1spFH04tGS0ytFHxNUYIq
+         Y0CgJE6uTnDRTMMPX6r81pXVtHt3XXF7s7TZI4MCGDJAbkXOkPuLDmOHdMo4hpAV7UOl
+         ECPjU1DtoPefG9+Vnnv+hyES9ILQhSn+vRd9b0fhzfLYT63g2v9/rOH32LWIVGZU3TuA
+         gJncYGHkR2UDvd/o7kAgaU6No1enQyDHRBTbvaptxhC5KrlZzdDWAhAfoPdwZdkHjLm5
+         iMcp/y/MIicQOiUBSGmM8mnym/4TZ9vpaQADzvlauFsY3sxdsKiaWJV83+giaxxuyear
+         VTRA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710719312; x=1711324112;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=vQpp+74tvU0a57ZrnFOzkp0hvnhi1SaTowYXx4QiuKQ=;
+        b=wCCjINA7q5Tqaz+INIJdU/6ZFXHdAFGGP6rBJrTuE1N/nKUK+EBU8qxaAS0i1nWXLE
+         2BkZwMTcaeArXhg3uqPsXpcidoVJnfSXAUAI5LF4K9YlKQ9aAmxmEwMGZ7cZ9CBaq0kz
+         GtwesUKo9xXjeTkuOLehNpktkYhjEwF51TVykXbRLxj0LUIZwJVTWVCvQizE+hFCFZ7m
+         7Yul4K1hwOtMa+hrYswaftsu6u/e/P6A/PfPWxTQ+vYWmeJUdSV2ikr0W7FXOJUau+fv
+         8LNWrN1RizueXVEzeNrdRiJFJDChH5ewoE0K0cF82RML/UXxfqwHVySF9wlkDBnZw3nP
+         aWnQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXTMcaJ8iaN/TVi+y911lEKxkg8o9oq7jZGB4bb8zWCUSZcPWI7ibx5GTNTtGHmTfVtWyb6UDfMJvOsgRJ74wla0jIndCHiP8PV9ddTAZGVH9dSMChbrtXnRDNYPgLz/eLEFG+WKIqi3d6G
+X-Gm-Message-State: AOJu0YzanAWVjjEp3xgfSV7OAkE5ulCmU8GLfaKAgG3yNC82KZI0BAIS
+	FN6yCKzARV1WdpmWQ2BgsOwvIrzkhi2XhEQb7GZNmWcmCcrKOAKFgPU03vOdaxNLGvU9pZFqybJ
+	v1paAqZXkg01hYBLCK3/Z2unULHs=
+X-Google-Smtp-Source: AGHT+IFolsIKODEOLB5X/UdeXPTrBXkJY64Kf3qmdjcfxvYGfkAW29/5iyHh1nL3tKt1Toka9slu9L3Y3wcKrAWHO+U=
+X-Received: by 2002:a67:f415:0:b0:474:c475:6cf3 with SMTP id
+ p21-20020a67f415000000b00474c4756cf3mr9130062vsn.6.1710719312280; Sun, 17 Mar
+ 2024 16:48:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] init: open /initrd.image with O_LARGEFILE
-Content-Language: en-US
-To: John Sperbeck <jsperbeck@google.com>,
- Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>,
- "Peter Zijlstra (Intel)" <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>,
- "ndesaulniers@google.com" <ndesaulniers@google.com>
-Cc: linux-kernel@vger.kernel.org, Nazerke Turtayeva <nturtayeva@ucsb.edu>
-References: <20240317221522.896040-1-jsperbeck@google.com>
-From: Randy Dunlap <rdunlap@infradead.org>
-In-Reply-To: <20240317221522.896040-1-jsperbeck@google.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240301192745.14987-1-21cnbao@gmail.com> <aaa8b7d7-5abe-47bf-93f6-407942436472@roeck-us.net>
+In-Reply-To: <aaa8b7d7-5abe-47bf-93f6-407942436472@roeck-us.net>
+From: Barry Song <21cnbao@gmail.com>
+Date: Mon, 18 Mar 2024 07:48:19 +0800
+Message-ID: <CAGsJ_4wWEdxk0qNV89bL0zeGaXUBb7h92mdNeRCgcUCY5C84ww@mail.gmail.com>
+Subject: Re: [PATCH v7] crypto: scompress: remove memcpy if sg_nents is 1 and
+ pages are lowmem
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: herbert@gondor.apana.org.au, davem@davemloft.net, 
+	linux-crypto@vger.kernel.org, akpm@linux-foundation.org, chrisl@kernel.org, 
+	sjenning@redhat.com, vitaly.wool@konsulko.com, linux-kernel@vger.kernel.org, 
+	Barry Song <v-songbaohua@oppo.com>, Johannes Weiner <hannes@cmpxchg.org>, 
+	Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, 
+	Chengming Zhou <zhouchengming@bytedance.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Hi,
+On Mon, Mar 18, 2024 at 7:13=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+>
+> Hi,
+>
+> On Sat, Mar 02, 2024 at 08:27:45AM +1300, Barry Song wrote:
+> [ ... ]
+> > @@ -152,8 +165,17 @@ static int scomp_acomp_comp_decomp(struct acomp_re=
+q *req, int dir)
+> >                       ret =3D -ENOSPC;
+> >                       goto out;
+> >               }
+> > -             scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req->=
+dlen,
+> > -                                      1);
+> > +             if (dst =3D=3D scratch->dst) {
+> > +                     scatterwalk_map_and_copy(scratch->dst, req->dst, =
+0,
+> > +                                              req->dlen, 1);
+> > +             } else {
+> > +                     int nr_pages =3D DIV_ROUND_UP(req->dst->offset + =
+req->dlen, PAGE_SIZE);
+> > +                     int i;
+> > +                     struct page *dst_page =3D sg_page(req->dst);
+> > +
+> > +                     for (i =3D 0; i < nr_pages; i++)
+> > +                             flush_dcache_page(dst_page + i);
+>
+> flush_dcache_page() is an empty macro on some architectures
+> such as xtensa. This results in
 
-On 3/17/24 15:15, John Sperbeck wrote:
-> If initrd data is larger than 2Gb, we'll eventually fail to write to
-> the /initrd.image file when we hit that limit, unless O_LARGEFILE is set.
-> 
+Hi Guenter,
 
-Could this be related to
-https://lore.kernel.org/lkml/CAHY78BqCpMQptPN0SMaXuRqHOhYi+wnMEUSTYt7OHDZih4e7yQ@mail.gmail.com/
-?
+this is a bug of xtensa, could you test the patch:
+https://lore.kernel.org/all/20240313045036.51065-1-21cnbao@gmail.com/
 
-Thanks.
 
-> Signed-off-by: John Sperbeck <jsperbeck@google.com>
-> ---
->  init/initramfs.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/init/initramfs.c b/init/initramfs.c
-> index 76deb48c38cb..b607d3463b47 100644
-> --- a/init/initramfs.c
-> +++ b/init/initramfs.c
-> @@ -683,7 +683,7 @@ static void __init populate_initrd_image(char *err)
->  
->  	printk(KERN_INFO "rootfs image is not initramfs (%s); looks like an initrd\n",
->  			err);
-> -	file = filp_open("/initrd.image", O_WRONLY | O_CREAT, 0700);
-> +	file = filp_open("/initrd.image", O_WRONLY|O_CREAT|O_LARGEFILE, 0700);
->  	if (IS_ERR(file))
->  		return;
->  
+>
+> Building xtensa:allmodconfig ... failed
+> --------------
+> Error log:
+> crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> crypto/scompress.c:174:38: error: unused variable 'dst_page'
+>
+> on the affected architectures.
+>
+> Guenter
 
--- 
-#Randy
+Thanks
+Barry
 
