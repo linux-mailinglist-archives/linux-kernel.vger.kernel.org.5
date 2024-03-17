@@ -1,79 +1,79 @@
-Return-Path: <linux-kernel+bounces-105517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 966D487DFA2
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:26:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 073EE87DFA3
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 20:27:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 43C752815A5
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 19:26:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B158A1F211D0
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 19:27:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 02FC71F94D;
-	Sun, 17 Mar 2024 19:26:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D54C1208B4;
+	Sun, 17 Mar 2024 19:27:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="h8pFpO5B"
-Received: from mail-oi1-f169.google.com (mail-oi1-f169.google.com [209.85.167.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GaMfrvBO"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DADF91F932
-	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 19:26:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA34C208A0
+	for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 19:27:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710703607; cv=none; b=R6hs4aAkQW+2Jvd9kJKt6Hflz3IdnUWz3mK0ytujPUKmGQOHicJQbI6g1hXuA5PbnAAqRgcQa4rODfN8e4dAnT5+65lMKsSW/aHYr9Ty1C4n+Mg0QgEurLbmd+PB9BVEu/ng6mKKw5e6clMBX55xjkBdv82EXzJjdyTQVR7aatE=
+	t=1710703647; cv=none; b=Ld0jyU5Hue0x6rWKeqV83Rh+kxSv+pW5qYMD1TYBrM4gkpD50GL7P6iQZdRNPvPZGKWl+2KBaIAHeT8tlpeVNj5h91usY1BxgPW44wFPeYM4qXKnYIDUHj35FBqp8iijxhgcRNflLmAzbGRN4aXpe7oidowlvIeYHYasS7qwC8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710703607; c=relaxed/simple;
-	bh=5iUakWHZ2xIUZce/GJzvI7SGPPKCVQXi7v6lz97ehJE=;
+	s=arc-20240116; t=1710703647; c=relaxed/simple;
+	bh=xPWoQOs4TfwooFLDZo4ETTOlpvvvuG+yA+6t3NeCCH0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=irUTbIKRU9ummAfQsLQJGVHc2mS8MmfdGsLjmdFMDYN2p0j86SEtNz5eBcqX4xaNc+k5DO8dh49bOSilqwifGrXPUi2S6HkNKxLmlH+eyquicqOFKq1Po4mYqT3UXVuRMX8PHGG+NSYxNl6T3e95eXnWA06FLbDGYu6Fwqu+Nq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=h8pFpO5B; arc=none smtp.client-ip=209.85.167.169
+	 Content-Type:Content-Disposition:In-Reply-To; b=Qb4cNLissEQ7eCbSzWviR1crtCD7wChENWSF7IW1jTGSIwzgJRTJlirisUBpJZGpAYq4Lp//gf5BOXL4Nb+a+z3BV94GrnKO9cK0QhoDJR52WqDBmqi801QcrZLOL/FrH7OqA4zFWSmUXIBWK1CFxzn523RMhjr9ZTIp2tAPcDM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GaMfrvBO; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f169.google.com with SMTP id 5614622812f47-3c37e87756dso1042452b6e.3
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 12:26:45 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1def2a1aafaso11906295ad.3
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 12:27:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710703605; x=1711308405; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710703645; x=1711308445; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=VjzizuacV1B0CmkeG2qTNIJqlqeCPwMo2mxSMnDyLWA=;
-        b=h8pFpO5BO8OEzU/9yfgDGZDH/1r7In/AS4JPVPKyh9pG8/CjPofBu0cgfzkKaZYEjs
-         FSr58PPgI9foC1Kx/5w9T90/MJyqz80Bf8W8ACwWHF9CroicM/HZDxNILC49QABBRoQT
-         GFNaeSUU1+158X/SM4K/ijej820674W+rhfcH+7tnVdasSssvYVvZElVuRVJLPD2bGjD
-         UCvs+O79aQr26uRI171XfFTdWsQXxxdgoInvDSZVDSWr6u2d6eK8z4U0ABQQ58BQpTZF
-         gRHBUIR/VDH8lYX7RCo2+JkS1xAIXge9AFQAPyU4V/LR21blgkvyXav8YqbJXkH8cBhC
-         dXnw==
+        bh=zO2QsTVjpffWTan4vJBt4m5gR695Y2a63wY9pQvTlEg=;
+        b=GaMfrvBOW5bVaZOzM5rya2XL92wNaXTT9Bek8UtufWERHfn7he2DbLXD5mQv4qYaNC
+         Tn82iE6MdslV75AK87zA2UehBTGpViVyqG0CDmqFANnkLaQuZV7314Q7QV8wKXCqHTMy
+         /CLw1qwsvNf25KvZVBYyEhHat3T5h8uPeKc88fcYcsbVq+xpn7s/aKU8Cwh6JHpC8GRK
+         gPeV5Yff69QsNVTj5Jb01Kwi3uH1uWLdlk1GoHSjm2ABLyIeifJ0aTnEz/1qcp9pFeq+
+         cq6VV9pUcTIiNjlCrfR3wikIZQPnyJWd3tzSiknSwKXqZukJjfTacweF+umXCtqaSxfc
+         NS3g==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710703605; x=1711308405;
+        d=1e100.net; s=20230601; t=1710703645; x=1711308445;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=VjzizuacV1B0CmkeG2qTNIJqlqeCPwMo2mxSMnDyLWA=;
-        b=B8uybur8jUpFXma+JiibJVVKvgSBdAg/kt+afz40Dzpr7rAuxlG9T+ZaFrBc8EvQ/5
-         Zb81gfIh5N5A79AWSK98XS3fNFteINQWvitBZKppiHN9yOIMqeisrIGw9stk2enKhO/M
-         TsfoueLOLHHuUv/q54aiTv7CWNIBY2BitQLIrDWgIUC2S+ThGEbnNrUo0pWKRjNFq4Rw
-         9C6wxO5gKhKRVPPwkjWe2pU5AYv7YaXf+n/6RMYsvVDj8fi+xuMSMf8UiiVO8NT2lXrh
-         Qw5iTcmEEw+agkR+vMTcTvBIjRBOLnpst6dDl5alXkbrs2xHNbSrkUvzPsaVFT3IXvY4
-         zQNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXaqbDzeIaF54A+g43+sUXM7GPEnQlQFv1PMwCGOqVH8FdRlRRVMRzPmT3vYOmTxGeLBpCGPQwLSosNzm20j8BUY00wkjsfwv4JGFus
-X-Gm-Message-State: AOJu0YwFX+fYna/0lqucAICSOHLaCvpoiK+LMtmmSvB19nSzuGeOZD67
-	E9gAGJJuDdtfzd6B//KgBQ8wGwCmZDFZNRbddYkor02cEKPHaFDG
-X-Google-Smtp-Source: AGHT+IGda7+ZYL5afSY/gJ9PcukxWWU9Y7XSgHzAQLDMspffQybuCpOLss4QAqvbuIJV3GYkoxefug==
-X-Received: by 2002:a05:6358:284:b0:17b:5e32:6009 with SMTP id w4-20020a056358028400b0017b5e326009mr13708650rwj.11.1710703604795;
-        Sun, 17 Mar 2024 12:26:44 -0700 (PDT)
+        bh=zO2QsTVjpffWTan4vJBt4m5gR695Y2a63wY9pQvTlEg=;
+        b=DSRJy4tRjpT0qz1X+xb2Rr19Xtzbk4uyiSPCQKsNRUZ09m+nJYu4e0YSJRFtqPfr9S
+         qFSSwD9BaZYM1V5BzHZHACDWIhbIoTfCuDhp83a1UpPDJPzxd7CcyR9KYF9XNdZlZ0sK
+         QCYov9c4vhCNJYX/pAnWDM5hXKbwPPVb/tKOkaz8P1t4SUe09tTWgvfj6n3fN5agenpP
+         OF4A9OPCg7UCNuiK1IxZn+D22UKm0e/ToVpvtDSYFBuUvlHBPreE9yDK2DE1lYvMrkH4
+         XMngdd7+jnB6b/CfzcrNhGpa3rsoHlsbZavXsrWXlG7JCHiZiGuboIY70S5KGGfOuY6H
+         2WVw==
+X-Forwarded-Encrypted: i=1; AJvYcCW0yJppyT+FkTX7qd8M/120KW5mQopYTc0Btik5jyRirtKlaz2jONoS7YT8tca7F82LteemmfxUPXUJlRG5wa/UmoMGt+dNj77I/LHf
+X-Gm-Message-State: AOJu0YxK+aJ31Nj3N4cxRbzAQGHiUKl3rqXco62EZXm6Y3TH1Cb4XYI1
+	hnCh2IaAg26thB2f2pG3xCEI4qqHLrbgpkJT129eNosyBjXsqeygf7Os5r7bCIg=
+X-Google-Smtp-Source: AGHT+IHHowoa/TnHLcot1PK4Nlzd5a5XlR0ctEt+JQFctj+YKf2JoqRVB7F7XsmQAmm+Ojyv7SqIGg==
+X-Received: by 2002:a17:902:ea08:b0:1db:55cc:d226 with SMTP id s8-20020a170902ea0800b001db55ccd226mr8526738plg.66.1710703645010;
+        Sun, 17 Mar 2024 12:27:25 -0700 (PDT)
 Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.65])
-        by smtp.gmail.com with ESMTPSA id r19-20020a63fc53000000b005e83b3ce8d9sm2110917pgk.8.2024.03.17.12.26.44
+        by smtp.gmail.com with ESMTPSA id i17-20020a170902c95100b001dd59b54f9fsm1928417pla.136.2024.03.17.12.27.24
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 12:26:44 -0700 (PDT)
-Date: Mon, 18 Mar 2024 00:56:42 +0530
+        Sun, 17 Mar 2024 12:27:24 -0700 (PDT)
+Date: Mon, 18 Mar 2024 00:57:22 +0530
 From: Ayush Tiwari <ayushtiw0110@gmail.com>
 To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
 	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
 	linux-staging@lists.linux.dev
 Cc: outreachy@lists.linux.dev
-Subject: [PATCH 2/3] staging: rtl8712: rename backupPMKIDIndex to
- backup_PMKID_index
-Message-ID: <279456b8fb09414316e626663d70650f4a3c1d98.1710703217.git.ayushtiw0110@gmail.com>
+Subject: [PATCH 3/3] staging: rtl8712: rename backupTKIPCountermeasure to
+ backup_TKIP_countermeasure
+Message-ID: <21c20db8d4ffdf914a3d91daa7860d1edec9f9e7.1710703217.git.ayushtiw0110@gmail.com>
 References: <cover.1710703217.git.ayushtiw0110@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
@@ -85,53 +85,46 @@ Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 In-Reply-To: <cover.1710703217.git.ayushtiw0110@gmail.com>
 
-Rename variable backupPMKIDIndex to backup_PMKID_index to address
-checkpatch warning 'Avoid Camelcase' and to ensure adherence to
-coding style guidelines.
+Rename variable backupTKIPCountermeasure to backup_TKIP_countermeasure
+to address checkpatch warning 'Avoid Camelcase' and to ensure
+adherence to coding style guidelines.
 
 Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 ---
- drivers/staging/rtl8712/mlme_linux.c | 10 +++++-----
- 1 file changed, 5 insertions(+), 5 deletions(-)
+ drivers/staging/rtl8712/mlme_linux.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
 diff --git a/drivers/staging/rtl8712/mlme_linux.c b/drivers/staging/rtl8712/mlme_linux.c
-index a8cda81f4240..ac8196d24ce0 100644
+index ac8196d24ce0..436816d14cdf 100644
 --- a/drivers/staging/rtl8712/mlme_linux.c
 +++ b/drivers/staging/rtl8712/mlme_linux.c
-@@ -87,7 +87,7 @@ void r8712_os_indicate_connect(struct _adapter *adapter)
- static struct RT_PMKID_LIST backup_PMKID_list[NUM_PMKID_CACHE];
+@@ -88,7 +88,7 @@ static struct RT_PMKID_LIST backup_PMKID_list[NUM_PMKID_CACHE];
  void r8712_os_indicate_disconnect(struct _adapter *adapter)
  {
--	u8 backupPMKIDIndex = 0;
-+	u8 backup_PMKID_index = 0;
- 	u8 backupTKIPCountermeasure = 0x00;
+ 	u8 backup_PMKID_index = 0;
+-	u8 backupTKIPCountermeasure = 0x00;
++	u8 backup_TKIP_countermeasure = 0x00;
  
  	r8712_indicate_wx_disassoc_event(adapter);
-@@ -99,10 +99,10 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
- 		 * disconnect with AP for 60 seconds.
- 		 */
- 
--		memcpy(&backupPMKIDList[0],
-+		memcpy(&backup_PMKID_list[0],
+ 	netif_carrier_off(adapter->pnetdev);
+@@ -103,7 +103,7 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
  		       &adapter->securitypriv.PMKIDList[0],
  		       sizeof(struct RT_PMKID_LIST) * NUM_PMKID_CACHE);
--		backupPMKIDIndex = adapter->securitypriv.PMKIDIndex;
-+		backup_PMKID_index = adapter->securitypriv.PMKIDIndex;
- 		backupTKIPCountermeasure =
+ 		backup_PMKID_index = adapter->securitypriv.PMKIDIndex;
+-		backupTKIPCountermeasure =
++		backup_TKIP_countermeasure =
  			adapter->securitypriv.btkip_countermeasure;
  		memset((unsigned char *)&adapter->securitypriv, 0,
-@@ -113,9 +113,9 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
- 		 * for the following connection.
- 		 */
- 		memcpy(&adapter->securitypriv.PMKIDList[0],
--		       &backupPMKIDList[0],
-+		       &backup_PMKID_list[0],
+ 		       sizeof(struct security_priv));
+@@ -117,7 +117,7 @@ void r8712_os_indicate_disconnect(struct _adapter *adapter)
  		       sizeof(struct RT_PMKID_LIST) * NUM_PMKID_CACHE);
--		adapter->securitypriv.PMKIDIndex = backupPMKIDIndex;
-+		adapter->securitypriv.PMKIDIndex = backup_PMKID_index;
+ 		adapter->securitypriv.PMKIDIndex = backup_PMKID_index;
  		adapter->securitypriv.btkip_countermeasure =
- 					 backupTKIPCountermeasure;
+-					 backupTKIPCountermeasure;
++					 backup_TKIP_countermeasure;
  	} else { /*reset values in securitypriv*/
+ 		struct security_priv *sec_priv = &adapter->securitypriv;
+ 
 -- 
 2.40.1
 
