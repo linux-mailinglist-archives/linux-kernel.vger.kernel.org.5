@@ -1,53 +1,54 @@
-Return-Path: <linux-kernel+bounces-105481-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105482-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A81C87DEFE
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 17:52:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF16787DF00
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 17:53:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B7F061F214F3
-	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:52:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7149528107A
+	for <lists+linux-kernel@lfdr.de>; Sun, 17 Mar 2024 16:53:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2FFD1CF8F;
-	Sun, 17 Mar 2024 16:51:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0B641CD3C;
+	Sun, 17 Mar 2024 16:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="naAqZ7eV"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="o4qyS3vM"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1450A1CD26;
-	Sun, 17 Mar 2024 16:51:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B9551CD1F;
+	Sun, 17 Mar 2024 16:53:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710694318; cv=none; b=HMTu1sjvMRLDeq5nE+GPIZebzVj0xDmbWRWwn2v11KJL9Ie4BklysDwgMDqYdFvykyB5knu3+QR6yuDNad3BVust6C/M0lEtWnJqycZ79VvAi8Hm21Gc2mPey+X4ZwWxPDGvZ4nQVVBuL2e9zPbaaqRNjm007Jr3DyuzBvAPyB4=
+	t=1710694414; cv=none; b=ANtsQXQ02g34phGyyeRLuxML3UA9U2c+G2nUa6sHldGT1uiSpp97NLcTZNSGxOONqjDJAGwRqejZ+4vVPiA7LkIwXlGLuP0VneqMDagW6JatXxRo17o8ms+oVX7NUONQf+dlhcGv8XDg1iMO6C9/yPedbAvNhvNIJvrHN6m/O1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710694318; c=relaxed/simple;
-	bh=HxWfd1Znm4cUZamAM6TQvmubUOO81Xy3fg/jRpSm4BI=;
+	s=arc-20240116; t=1710694414; c=relaxed/simple;
+	bh=NvVEy+UL4F7Ica1lAxSJkcql2WZ1Sh8WJGokKutUW/U=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cd0sJBzft20zdOT3KYoJ0iCrLlJn8+yM5A/4kJIs6B/vOGQN3URRXfiXux2uNznFYWl3buWGvH4zUdXfz+NzCyUZV4PFiBYFauZWHzUUpxhDbUSfGsIDrEbzE/kzkXIWPfhG2qFyDyp7IiHKdnlG674UaVGpqSLmlsgLUyxyke4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=naAqZ7eV; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9858EC433C7;
-	Sun, 17 Mar 2024 16:51:57 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=GipNgCZ4EyaisDn5iL8Z/4TFf+Q76SgznoU9riMOHc4kfQ0qpoJNy1XX238kUXOffhCUHrkvf9UZeEDPAluWfWcEK/8Waqaf7glQp68mOyemgHqCIJLlSNr36Gc18br83d7zcfU8yyHGBYYGSSt7/H2zgUFOkzRJatxyf03SEO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=o4qyS3vM; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 075D5C433F1;
+	Sun, 17 Mar 2024 16:53:34 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710694317;
-	bh=HxWfd1Znm4cUZamAM6TQvmubUOO81Xy3fg/jRpSm4BI=;
+	s=k20201202; t=1710694414;
+	bh=NvVEy+UL4F7Ica1lAxSJkcql2WZ1Sh8WJGokKutUW/U=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=naAqZ7eVFLhdBU/5dsNz+CCBzniVgBCPwpb/vhB4+sKkEMaIHcuYIIouHufDX7wLl
-	 qovkE+LrJgC/RmilV5mhExNDlSqFAHNEBC81/Y7zZ6SPOjYHU9uPTyN4qj0eWLsNru
-	 YVO7K7RHFgu3WF4w4Jl2nrcsRnyPYAvj7vf/EosSsTRArVe+IoKo0O4NHFpFjs2lJW
-	 OUhnOvvKy4rQd9op8CWgC8yyQeYmgIqRysmIMcV2wyVevAwEzUgEEjMrQ+zdsb/FQP
-	 G3pvf2VlekezVJlwgKWTAFHz8gGvHzfQW1x7x5JTSHy1iOfNPK2Kg+d6K3B0DpQAtT
-	 yQJaQhcY3KtOw==
-Date: Sun, 17 Mar 2024 09:51:57 -0700
+	b=o4qyS3vMpopBBgAys30XOgNamkiF8DmvS+Igfqh+n75uqSWxq6jYjhm0fVYHgOlAm
+	 zMWTbzL4VXeZ9YQ7W34I20Bmd2VdPsXGQYpJPaFXwKltDT7c9EwTHpCzIPzeDNVQY0
+	 2mVHADRFWsQUYK9QdwqD+plT6ld6uRkkxkc3ag3W/v8ZDHN9K1U2pE4uoBiyU6EdyW
+	 vYnqeFdVnNS21KO/WvJ2KUr7HQGeIS1oOtpSQaO7wUOWo671QLAxJTcISaySy7wKXj
+	 4RiCwdvBXAIAD8bfDMymQQUKUKaB+Z4E3nBhhsbfo9+CNqWXzf5WJvV/S+hb6PlYMj
+	 D8O4fYjeWq98Q==
+Date: Sun, 17 Mar 2024 09:53:33 -0700
 From: "Darrick J. Wong" <djwong@kernel.org>
-To: David Hildenbrand <david@redhat.com>, djwong@kernel.org
+To: David Hildenbrand <david@redhat.com>
 Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
 	fstests <fstests@vger.kernel.org>, xfs <linux-xfs@vger.kernel.org>
-Subject: [RFC PATCH] xfs_io: add linux madvise advice codes
-Message-ID: <20240317165157.GE1927156@frogsfrogsfrogs>
+Subject: [RFC PATCH] fstests: test MADV_POPULATE_READ with IO errors
+Message-ID: <20240317165333.GF1927156@frogsfrogsfrogs>
 References: <20240314161300.382526-1-david@redhat.com>
+ <20240317165157.GE1927156@frogsfrogsfrogs>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,233 +57,101 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314161300.382526-1-david@redhat.com>
+In-Reply-To: <20240317165157.GE1927156@frogsfrogsfrogs>
 
 From: Darrick J. Wong <djwong@kernel.org>
 
-Add all the Linux-specific madvise codes.  We're going to need
-MADV_POPULATE_READ for a regression test.
+This is a regression test for "mm/madvise: make
+MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly".
 
+Cc: David Hildenbrand <david@redhat.com>
 Signed-off-by: Darrick J. Wong <djwong@kernel.org>
 ---
- configure.ac          |    1 
- include/builddefs.in  |    1 
- io/Makefile           |    4 ++
- io/madvise.c          |  111 +++++++++++++++++++++++++++++++++++++++++++++++++
- m4/package_libcdev.m4 |   17 ++++++++
- 5 files changed, 133 insertions(+), 1 deletion(-)
+ tests/generic/1835     |   65 ++++++++++++++++++++++++++++++++++++++++++++++++
+ tests/generic/1835.out |    4 +++
+ 2 files changed, 69 insertions(+)
+ create mode 100755 tests/generic/1835
+ create mode 100644 tests/generic/1835.out
 
-diff --git a/configure.ac b/configure.ac
-index 3786e44db6fd..723bdca506d1 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -187,6 +187,7 @@ AC_CONFIG_SYSTEMD_SYSTEM_UNIT_DIR
- AC_CONFIG_CROND_DIR
- AC_CONFIG_UDEV_DIR
- AC_HAVE_BLKID_TOPO
-+AC_HAVE_KERNEL_MADVISE_FLAGS
- 
- if test "$enable_ubsan" = "yes" || test "$enable_ubsan" = "probe"; then
-         AC_PACKAGE_CHECK_UBSAN
-diff --git a/include/builddefs.in b/include/builddefs.in
-index 07428206da45..a04f3e70f19d 100644
---- a/include/builddefs.in
-+++ b/include/builddefs.in
-@@ -193,6 +193,7 @@ HAVE_O_TMPFILE = @have_o_tmpfile@
- HAVE_MKOSTEMP_CLOEXEC = @have_mkostemp_cloexec@
- USE_RADIX_TREE_FOR_INUMS = @use_radix_tree_for_inums@
- HAVE_FSVERITY_DESCR = @have_fsverity_descr@
-+HAVE_KERNEL_MADVISE = @have_kernel_madvise@
- 
- GCCFLAGS = -funsigned-char -fno-strict-aliasing -Wall -Werror -Wextra -Wno-unused-parameter
- #	   -Wbitwise -Wno-transparent-union -Wno-old-initializer -Wno-decl
-diff --git a/io/Makefile b/io/Makefile
-index 6f903e3df9a7..ce39fda0e82a 100644
---- a/io/Makefile
-+++ b/io/Makefile
-@@ -84,6 +84,10 @@ ifeq ($(HAVE_GETFSMAP),yes)
- CFILES += fsmap.c
- endif
- 
-+ifeq ($(HAVE_KERNEL_MADVISE),yes)
-+LCFLAGS += -DHAVE_KERNEL_MADVISE
-+endif
-+
- default: depend $(LTCOMMAND)
- 
- include $(BUILDRULES)
-diff --git a/io/madvise.c b/io/madvise.c
-index 6e9c5b121d72..081666f403bb 100644
---- a/io/madvise.c
-+++ b/io/madvise.c
-@@ -9,6 +9,9 @@
- #include <sys/mman.h>
- #include "init.h"
- #include "io.h"
-+#ifdef HAVE_KERNEL_MADVISE
-+# include <asm/mman.h>
-+#endif
- 
- static cmdinfo_t madvise_cmd;
- 
-@@ -26,6 +29,47 @@ madvise_help(void)
- " -r -- expect random page references (POSIX_MADV_RANDOM)\n"
- " -s -- expect sequential page references (POSIX_MADV_SEQUENTIAL)\n"
- " -w -- will need these pages (POSIX_MADV_WILLNEED) [*]\n"
-+"\n"
-+"The following Linux-specific advise values are available:\n"
-+#ifdef MADV_COLLAPSE
-+" -c -- try to collapse range into transparent hugepages (MADV_COLLAPSE)\n"
-+#endif
-+#ifdef MADV_COLD
-+" -D -- deactivate the range (MADV_COLD)\n"
-+#endif
-+#ifdef MADV_FREE
-+" -f -- free the range (MADV_FREE)\n"
-+#endif
-+#ifdef MADV_NOHUGEPAGE
-+" -h -- disable transparent hugepages (MADV_NOHUGEPAGE)\n"
-+#endif
-+#ifdef MADV_HUGEPAGE
-+" -H -- enable transparent hugepages (MADV_HUGEPAGE)\n"
-+#endif
-+#ifdef MADV_MERGEABLE
-+" -m -- mark the range mergeable (MADV_MERGEABLE)\n"
-+#endif
-+#ifdef MADV_UNMERGEABLE
-+" -M -- mark the range unmergeable (MADV_UNMERGEABLE)\n"
-+#endif
-+#ifdef MADV_SOFT_OFFLINE
-+" -o -- mark the range offline (MADV_SOFT_OFFLINE)\n"
-+#endif
-+#ifdef MADV_REMOVE
-+" -p -- punch a hole in the file (MADV_REMOVE)\n"
-+#endif
-+#ifdef MADV_HWPOISON
-+" -P -- poison the page cache (MADV_HWPOISON)\n"
-+#endif
-+#ifdef MADV_POPULATE_READ
-+" -R -- prefault in the range for read (MADV_POPULATE_READ)\n"
-+#endif
-+#ifdef MADV_POPULATE_WRITE
-+" -W -- prefault in the range for write (MADV_POPULATE_WRITE)\n"
-+#endif
-+#ifdef MADV_PAGEOUT
-+" -X -- reclaim the range (MADV_PAGEOUT)\n"
-+#endif
- " Notes:\n"
- "   NORMAL sets the default readahead setting on the file.\n"
- "   RANDOM sets the readahead setting on the file to zero.\n"
-@@ -45,20 +89,85 @@ madvise_f(
- 	int		advise = MADV_NORMAL, c;
- 	size_t		blocksize, sectsize;
- 
--	while ((c = getopt(argc, argv, "drsw")) != EOF) {
-+	while ((c = getopt(argc, argv, "cdDfhHmMopPrRswWX")) != EOF) {
- 		switch (c) {
-+#ifdef MADV_COLLAPSE
-+		case 'c':	/* collapse to thp */
-+			advise = MADV_COLLAPSE;
-+			break;
-+#endif
- 		case 'd':	/* Don't need these pages */
- 			advise = MADV_DONTNEED;
- 			break;
-+#ifdef MADV_COLD
-+		case 'D':	/* make more likely to be reclaimed */
-+			advise = MADV_COLD;
-+			break;
-+#endif
-+#ifdef MADV_FREE
-+		case 'f':	/* page range out of memory */
-+			advise = MADV_FREE;
-+			break;
-+#endif
-+#ifdef MADV_HUGEPAGE
-+		case 'h':	/* enable thp memory */
-+			advise = MADV_HUGEPAGE;
-+			break;
-+#endif
-+#ifdef MADV_NOHUGEPAGE
-+		case 'H':	/* disable thp memory */
-+			advise = MADV_NOHUGEPAGE;
-+			break;
-+#endif
-+#ifdef MADV_MERGEABLE
-+		case 'm':	/* enable merging */
-+			advise = MADV_MERGEABLE;
-+			break;
-+#endif
-+#ifdef MADV_UNMERGEABLE
-+		case 'M':	/* disable merging */
-+			advise = MADV_UNMERGEABLE;
-+			break;
-+#endif
-+#ifdef MADV_SOFT_OFFLINE
-+		case 'o':	/* offline */
-+			advise = MADV_SOFT_OFFLINE;
-+			break;
-+#endif
-+#ifdef MADV_REMOVE
-+		case 'p':	/* punch hole */
-+			advise = MADV_REMOVE;
-+			break;
-+#endif
-+#ifdef MADV_HWPOISON
-+		case 'P':	/* poison */
-+			advise = MADV_HWPOISON;
-+			break;
-+#endif
- 		case 'r':	/* Expect random page references */
- 			advise = MADV_RANDOM;
- 			break;
-+#ifdef MADV_POPULATE_READ
-+		case 'R':	/* fault in pages for read */
-+			advise = MADV_POPULATE_READ;
-+			break;
-+#endif
- 		case 's':	/* Expect sequential page references */
- 			advise = MADV_SEQUENTIAL;
- 			break;
- 		case 'w':	/* Will need these pages */
- 			advise = MADV_WILLNEED;
- 			break;
-+#ifdef MADV_POPULATE_WRITE
-+		case 'W':	/* fault in pages for write */
-+			advise = MADV_POPULATE_WRITE;
-+			break;
-+#endif
-+#ifdef MADV_PAGEOUT
-+		case 'X':	/* reclaim memory */
-+			advise = MADV_PAGEOUT;
-+			break;
-+#endif
- 		default:
- 			exitcode = 1;
- 			return command_usage(&madvise_cmd);
-diff --git a/m4/package_libcdev.m4 b/m4/package_libcdev.m4
-index 84f288dfcfdb..064d050b2b55 100644
---- a/m4/package_libcdev.m4
-+++ b/m4/package_libcdev.m4
-@@ -322,3 +322,20 @@ struct fsverity_descriptor m = { };
-     AC_SUBST(have_fsverity_descr)
-   ])
- 
+diff --git a/tests/generic/1835 b/tests/generic/1835
+new file mode 100755
+index 0000000000..07479ab712
+--- /dev/null
++++ b/tests/generic/1835
+@@ -0,0 +1,65 @@
++#! /bin/bash
++# SPDX-License-Identifier: GPL-2.0
++# Copyright (c) 2024 Oracle.  All Rights Reserved.
 +#
-+# Check if asm/mman.h can be included
++# FS QA Test 1835
 +#
-+AC_DEFUN([AC_HAVE_KERNEL_MADVISE_FLAGS],
-+  [ AC_MSG_CHECKING([for kernel madvise flags in asm/mman.h ])
-+    AC_COMPILE_IFELSE(
-+    [	AC_LANG_PROGRAM([[
-+#include <asm/mman.h>
-+	]], [[
-+int moo = MADV_COLLAPSE;
-+	]])
-+    ], have_kernel_madvise=yes
-+       AC_MSG_RESULT(yes),
-+       AC_MSG_RESULT(no))
-+    AC_SUBST(have_kernel_madvise)
-+  ])
++# This is a regression test for a kernel hang that I saw when creating a memory
++# mapping, injecting EIO errors on the block device, and invoking
++# MADV_POPULATE_READ on the mapping to fault in the pages.
++#
++. ./common/preamble
++_begin_fstest auto rw
 +
++# Override the default cleanup function.
++_cleanup()
++{
++	cd /
++	rm -f $tmp.*
++	_dmerror_unmount
++	_dmerror_cleanup
++}
++
++# Import common functions.
++. ./common/dmerror
++
++_fixed_by_kernel_commit XXXXXXXXXXXX \
++	"mm/madvise: make MADV_POPULATE_(READ|WRITE) handle VM_FAULT_RETRY properly"
++
++# real QA test starts here
++
++# Modify as appropriate.
++_supported_fs generic
++_require_xfs_io_command madvise -R
++_require_scratch
++_require_dm_target error
++_require_command "$TIMEOUT_PROG" "timeout"
++
++_scratch_mkfs >> $seqres.full 2>&1
++_dmerror_init
++
++filesz=2m
++
++# Create a file that we'll read, then cycle mount to zap pagecache
++_dmerror_mount
++$XFS_IO_PROG -f -c "pwrite -S 0x58 0 $filesz" "$SCRATCH_MNT/a" >> $seqres.full
++_dmerror_unmount
++_dmerror_mount
++
++# Try to read the file data in a regular fashion just to prove that it works.
++echo read with no errors
++timeout -s KILL 10s $XFS_IO_PROG -c "mmap -r 0 $filesz" -c "madvise -R 0 $filesz" "$SCRATCH_MNT/a"
++_dmerror_unmount
++_dmerror_mount
++
++# Load file metadata and induce EIO errors on read.  Try to provoke the kernel;
++# kill the process after 10s so we can clean up.
++stat "$SCRATCH_MNT/a" >> $seqres.full
++echo read with IO errors
++_dmerror_load_error_table
++timeout -s KILL 10s $XFS_IO_PROG -c "mmap -r 0 $filesz" -c "madvise -R 0 $filesz" "$SCRATCH_MNT/a"
++_dmerror_load_working_table
++
++# success, all done
++status=0
++exit
+diff --git a/tests/generic/1835.out b/tests/generic/1835.out
+new file mode 100644
+index 0000000000..1b03586e8c
+--- /dev/null
++++ b/tests/generic/1835.out
+@@ -0,0 +1,4 @@
++QA output created by 1835
++read with no errors
++read with IO errors
++madvise: Bad address
 
