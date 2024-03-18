@@ -1,74 +1,56 @@
-Return-Path: <linux-kernel+bounces-106626-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106627-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A181687F11E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:28:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67EF287F125
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:32:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5569B284424
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:28:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9855C1C214C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:32:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F0C857879;
-	Mon, 18 Mar 2024 20:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="N0CcR4Sh"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13DE8250EC;
+	Mon, 18 Mar 2024 20:32:15 +0000 (UTC)
+Received: from bmailout3.hostsharing.net (bmailout3.hostsharing.net [176.9.242.62])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 25F525733F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:28:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A9F8E1862C;
+	Mon, 18 Mar 2024 20:32:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=176.9.242.62
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710793699; cv=none; b=BrXkOj/URYi+84YXk+LjCVi1zg/tCfXZwgNvTlfwGYpOPVcZvlFSvGsuEqTNekitkdfbefp0pDL2t+AKLsYaK94kg0EAjq60xu0kZCSsyrS/Vu9P9jT3AfLmPw+SXlLfBltm8XiH4LX+07qC0uLv4trJrqW3MlUu9f4hlgVe6KE=
+	t=1710793934; cv=none; b=PsST1OMaReDSp3M8jPksWwRkXn/LhGNT3iAUKZ4EfBOVxi6/8FUDJX1KQ0J6+dTmS75pkDFOeHUEE8yfZxC4vql4fwC9BJaE1ynLAkSViFCTKhzx5hy0Bk2ZNwbf0OQl5T2xx0ZRDR0+Hzh8l3R/5a+hDcR0dJqlmU2ZAn5Q0P0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710793699; c=relaxed/simple;
-	bh=jrxJE9RgRvLO3n7cWCIWdQ9Ydu8jF/meN9NbonVPOBg=;
+	s=arc-20240116; t=1710793934; c=relaxed/simple;
+	bh=vceyYmbAy7tWecXsdFzfdfLb/afM7QOoYmaWc8dBrHg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rQ/HICYyZ+fKzsJTGwmUPt2o3y/Ksqn/tINuC9uom20iAk7SpAM9uwyhPKYxq3Azm79AoL207jexi8qZXymjqLuvYYiBClg25I4bp2O9mhlr7oP9ZTWfNXdWEyZP7XMGlB9rappHP3iESrJiHabkvL8HMRg+tS7fwKsEh/U2AMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=N0CcR4Sh; arc=none smtp.client-ip=192.198.163.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710793698; x=1742329698;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=jrxJE9RgRvLO3n7cWCIWdQ9Ydu8jF/meN9NbonVPOBg=;
-  b=N0CcR4ShYu9W1mJ1IiEdQpo1rKvCDajd+0Q6weRZ/bPMnw0TpNL0fLTB
-   IAZvNSK/HnlDDlzBzMyfRF/Cmr0abPBJd64XybWIgk7gfDky3iOgKAW8v
-   +3cfCSO+W5j4f3X+3sGfoy/lGiKcUcHwclf5M22DphfpzY2vRI/wTNTST
-   oLzbINDhooIdZBM+QB0WUrk5bBgvrtnwJyS/EmEviIyjkfZAvv21KHgdf
-   hSBm+8W1MXhlWowIpTaZaeTbf/c6yNynfG9sAVhBY1xrhxeG1bzVSiEbR
-   l69L00gO4HK5Jm1gfnInA0tJkSRMGr93OnD/JJpHmAlifubYiYvp/Fa5s
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5813062"
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="5813062"
-Received: from fmviesa010.fm.intel.com ([10.60.135.150])
-  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 13:28:17 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="13469429"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa010.fm.intel.com with ESMTP; 18 Mar 2024 13:28:14 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rmJad-000HET-1Y;
-	Mon, 18 Mar 2024 20:28:11 +0000
-Date: Tue, 19 Mar 2024 04:27:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Aravinda Prasad <aravinda.prasad@intel.com>, damon@lists.linux.dev,
-	linux-mm@kvack.org, sj@kernel.org, linux-kernel@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev, aravinda.prasad@intel.com,
-	s2322819@ed.ac.uk, sandeep4.kumar@intel.com, ying.huang@intel.com,
-	dave.hansen@intel.com, dan.j.williams@intel.com,
-	sreenivas.subramoney@intel.com, antti.kervinen@intel.com,
-	alexander.kanevskiy@intel.com
-Subject: Re: [PATCH v2 1/3] mm/damon: mm infrastructure support
-Message-ID: <202403190418.tsSXHwGu-lkp@intel.com>
-References: <20240318132848.82686-2-aravinda.prasad@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=f4Bo2fo+0YBNcOPAeHFSHXHpgG45G5+EEazbh60vRJU8DOE2VDBLo03i848ILQRkw7Wye4/+/Zs/eojkxRIrz2QHTIrvU89fz2zbXTVuHyrVOL22kZOOGgtNAu/X+xcRIMHY91h75IOZp6fK439Xt8m1pnYaEkmnEEbq/bpJNn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=176.9.242.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [IPv6:2a01:37:1000::53df:5f1c:0])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout3.hostsharing.net (Postfix) with ESMTPS id D6E12100DCEFE;
+	Mon, 18 Mar 2024 21:32:02 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 9687F3A1A1A; Mon, 18 Mar 2024 21:32:02 +0100 (CET)
+Date: Mon, 18 Mar 2024 21:32:02 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Stefan Berger <stefanb@linux.vnet.ibm.com>, keyrings@vger.kernel.org,
+	linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+	davem@davemloft.net, linux-kernel@vger.kernel.org,
+	saulo.alessandre@tse.jus.br, bbhushan2@marvell.com,
+	Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v6 03/13] crypto: ecdsa - Adjust tests on length of key
+ parameters
+Message-ID: <Zfikwi0v0_R58uNT@wunner.de>
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <20240312183618.1211745-4-stefanb@linux.vnet.ibm.com>
+ <CZX5OW9RVXGQ.2MBG8AQKHRKSE@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,80 +59,36 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240318132848.82686-2-aravinda.prasad@intel.com>
+In-Reply-To: <CZX5OW9RVXGQ.2MBG8AQKHRKSE@kernel.org>
 
-Hi Aravinda,
+On Mon, Mar 18, 2024 at 10:25:26PM +0200, Jarkko Sakkinen wrote:
+> On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
+> > From: Stefan Berger <stefanb@linux.ibm.com>
+> >
+> > In preparation for support of NIST P521, adjust the basic tests on the
+> > length of the provided key parameters to only ensure that the length of the
+> > x plus y coordinates parameter array is not an odd number and that each
+> > coordinate fits into an array of 'ndigits' digits. Mathematical tests on
+> > the key's parameters are then done in ecc_is_pubkey_valid_full rejecting
+> > invalid keys.
+> >
+> > The change is necessary since NIST P521 keys do not have keys with
+> > coordinates that each fully require 'full' digits (= u64), unlike
+> > NIST P192/256/384 that all require multiple 'full' digits.
+> 
+> This sentence is not really comprehendable English sentence. Can you
+> just write the rationale in understandable form?
+> 
+> "fully require full digits (= u64)" is something totally alien to me
+> tbh.
 
-kernel test robot noticed the following build errors:
+It is proper English, but requires an understanding of how large integers
+are handled by crypto/ecdsa.c:  They're a sequence of u64.  For P192, P256
+and P384 all u64 in the sequence are used to their full extent because the
+key size is divisable by 64.  That's not the case for P521, where the most
+significant u64 is not fully used (only 2 out of 8 bytes are used).
 
-[auto build test ERROR on akpm-mm/mm-everything]
+Thanks,
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Aravinda-Prasad/mm-damon-mm-infrastructure-support/20240318-212723
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240318132848.82686-2-aravinda.prasad%40intel.com
-patch subject: [PATCH v2 1/3] mm/damon: mm infrastructure support
-config: powerpc-allmodconfig (https://download.01.org/0day-ci/archive/20240319/202403190418.tsSXHwGu-lkp@intel.com/config)
-compiler: powerpc64-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240319/202403190418.tsSXHwGu-lkp@intel.com/reproduce)
-
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403190418.tsSXHwGu-lkp@intel.com/
-
-All errors (new ones prefixed by >>):
-
-   In file included from arch/powerpc/include/asm/kup.h:43,
-                    from arch/powerpc/include/asm/uaccess.h:8,
-                    from include/linux/uaccess.h:11,
-                    from include/linux/sched/task.h:13,
-                    from include/linux/sched/signal.h:9,
-                    from include/linux/rcuwait.h:6,
-                    from include/linux/percpu-rwsem.h:7,
-                    from include/linux/fs.h:33,
-                    from include/linux/compat.h:17,
-                    from arch/powerpc/kernel/asm-offsets.c:12:
->> include/linux/pgtable.h:411:19: error: static declaration of 'pudp_test_and_clear_young' follows non-static declaration
-     411 | static inline int pudp_test_and_clear_young(struct vm_area_struct *vma,
-         |                   ^~~~~~~~~~~~~~~~~~~~~~~~~
-   In file included from arch/powerpc/include/asm/book3s/64/mmu-hash.h:20,
-                    from arch/powerpc/include/asm/book3s/64/mmu.h:32,
-                    from arch/powerpc/include/asm/mmu.h:391,
-                    from arch/powerpc/include/asm/paca.h:18,
-                    from arch/powerpc/include/asm/current.h:13,
-                    from include/linux/mutex.h:14,
-                    from include/linux/rhashtable-types.h:14,
-                    from include/linux/ipc.h:7,
-                    from include/uapi/linux/sem.h:5,
-                    from include/linux/sem.h:5,
-                    from include/linux/compat.h:14:
-   arch/powerpc/include/asm/book3s/64/pgtable.h:1306:12: note: previous declaration of 'pudp_test_and_clear_young' with type 'int(struct vm_area_struct *, long unsigned int,  pud_t *)'
-    1306 | extern int pudp_test_and_clear_young(struct vm_area_struct *vma,
-         |            ^~~~~~~~~~~~~~~~~~~~~~~~~
-   make[3]: *** [scripts/Makefile.build:116: arch/powerpc/kernel/asm-offsets.s] Error 1
-   make[3]: Target 'prepare' not remade because of errors.
-   make[2]: *** [Makefile:1191: prepare0] Error 2
-   make[2]: Target 'prepare' not remade because of errors.
-   make[1]: *** [Makefile:240: __sub-make] Error 2
-   make[1]: Target 'prepare' not remade because of errors.
-   make: *** [Makefile:240: __sub-make] Error 2
-   make: Target 'prepare' not remade because of errors.
-
-
-vim +/pudp_test_and_clear_young +411 include/linux/pgtable.h
-
-   409	
-   410	#ifndef pudp_test_and_clear_young
- > 411	static inline int pudp_test_and_clear_young(struct vm_area_struct *vma,
-   412						    unsigned long address,
-   413						    pud_t *pudp)
-   414	{
-   415		return 0;
-   416	}
-   417	#endif
-   418	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Lukas
 
