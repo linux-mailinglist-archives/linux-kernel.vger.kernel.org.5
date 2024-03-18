@@ -1,105 +1,101 @@
-Return-Path: <linux-kernel+bounces-106447-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106448-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id DA3CE87EEC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:27:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A423C87EEC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9E8A428208B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:27:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DAAF01C220A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2157255789;
-	Mon, 18 Mar 2024 17:27:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B23855789;
+	Mon, 18 Mar 2024 17:27:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PVCsEdPU"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="vmoJpG9m";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="d6Ln3qGn"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 612A146549;
-	Mon, 18 Mar 2024 17:27:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5ED595577A;
+	Mon, 18 Mar 2024 17:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710782869; cv=none; b=cLjlmuq4grOn+bwnAACVgWPQ/Y8SFACebJFEo4XM7w74DJc+TNCt/Y4MOC/XF1jzL1E3vj3C8Q7n8u/fRacu9HKTsXukSnB1d2cVyX+g/yE7o9mj0pOCBfcEPYKTJJi9jVWbnpw/wXuwJy/lgf7l1821RN8z/rU9VXENAR2LjN8=
+	t=1710782878; cv=none; b=TWYBn4Wo8TnMe73qB7FDIdyZq6ZhCSbMqFLArVMksZJSj5pC6yeWexMggrRRshPNCck8g1BJPZbAn4kt6nFdCLNVAGiTNFRfbcqcnArBAwTcYCu7Ay2C+FusmxFhJqXyB/USsqd/GbqhMEzPB05K58IbguXGp4ri29F9trx8+e0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710782869; c=relaxed/simple;
-	bh=cp00rm8kBV3GrMvifU8ZwZskEZ3mcADfirWEWCIPek8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=g4qVizQ9Wl2ALBBzsa1kKiEKR51eptoZ8w/jgFpz2knc2CrawIopsEGDFo5ux1ptGI9+FKwyxuNiUCy//xPcWFBxHiLU7KcLKHObBqFDXbT9cCq6xKsaq7zoEsEriPx+Ob4K+MmGZWr8sjFtTcb7AdPCkP5ZlttHmI72p1lq0qc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PVCsEdPU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 62717C43394;
-	Mon, 18 Mar 2024 17:27:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710782868;
-	bh=cp00rm8kBV3GrMvifU8ZwZskEZ3mcADfirWEWCIPek8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=PVCsEdPUGxPEfgC6LyLWF4C2+WLSvC4sntI9xipractRmaVCj1TgUfVwrEC5NNeWu
-	 l5Gn4KtzrdSv2poR13/K8hgNHbhC7eo514JStJLFnwR1DUypKsxNfL7hcOGQ2tnMDm
-	 tTG07ilkwZGAUOqaMKqg5UoIrT1IiUbGGsBvq99WNym/d+kWp7yOIJ4djbZGgglI5V
-	 giWcllxgVQHmS8X1wsD3QAMMUf8FLZST1ZbJF6eBujRGjSKMuaFplLLFQs5hKozgiM
-	 OZtes0MCH89ajFGSgeG1OfsYzqjye78GzCspENYXMFLCj5CX//eiQR+YnqN5KlKK7N
-	 8GQauJpV89BzQ==
-From: Mark Brown <broonie@kernel.org>
-To: linux-kernel@vger.kernel.org, 
- Kousik Sanagavarapu <five231003@gmail.com>
-Cc: linux-spi@vger.kernel.org, linux-hwmon@vger.kernel.org, 
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>, 
- Shuah Khan <skhan@linuxfoundation.org>, 
- Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <20240318154540.90613-1-five231003@gmail.com>
-References: <20240318130840.74589-1-five231003@gmail.com>
- <20240318154540.90613-1-five231003@gmail.com>
-Subject: Re: (subset) [PATCH v2 0/2] lm70 and lm70llp doc link fixes
-Message-Id: <171078286713.91354.1940130554038787719.b4-ty@kernel.org>
-Date: Mon, 18 Mar 2024 17:27:47 +0000
+	s=arc-20240116; t=1710782878; c=relaxed/simple;
+	bh=UN23v0BZ2VfVus/rrnJ8TYGw2JtEYehk578g66wEgzw=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Fbd2VM8ERY8iuB/A0uTXylKTKAM9Ii0QTlF7K1BVTv4O+JdzB64u4pjGs6/LtqD9B34/qFR1t6gBF5eYv0DKUBjTQ9OLxzMiVy2zCW2yelSMatH0d0ulzrBhuImIj39emM6gqFst5L6/e3JyWb1OV+LjRs7cGaqeJDF5CYmXc+Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=vmoJpG9m; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=d6Ln3qGn; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710782875;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+tMsuxvlJH22JA6DrPUeQjaSBT/j9Gn1+cJU6UVla34=;
+	b=vmoJpG9mCLFrTTR+qEyUewJQFa5E3yXC0uWs70LIjdCfxvJpC+rqGFHCBWyCoOMwJ6qHbL
+	/b5wi+gSMHA3/wbr0ki8hAeDK0NsKNPOF1vIyupudW/iGSLeuK+S+uDkySTkEnwQotLOvT
+	BFBK06ARHvSBS2IPpnCrSay8m4wT0FpGBvDt7ucT2TRiEMu+gK9rgQCY3zWfl3OuU5r4/w
+	0E7k5BVtmigXrjZqTT5uLmOSbCiGD9U0j3FHwYBuiz+Ulc6H72LN2PHRMJ37um5mvruqAx
+	43disVF5eAD5ITyD4QO93qQtgGQGZ+X5FDjd3KQCvNLM28lhOfhcAlhYLkUhCg==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710782875;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+tMsuxvlJH22JA6DrPUeQjaSBT/j9Gn1+cJU6UVla34=;
+	b=d6Ln3qGn6X1/GCxMeZB/182iIN5DU9cXjm+4+paBZgykXjYS3T1ClKTts0QVqJGrkLNgkL
+	rfTi+FP+zCfgGFBw==
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, LKML <linux-kernel@vger.kernel.org>,
+ x86@kernel.org, Uros Bizjak <ubizjak@gmail.com>,
+ linux-sparse@vger.kernel.org, lkp@intel.com,
+ oe-kbuild-all@lists.linux.dev, Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [patch 5/9] x86: Cure per CPU madness on UP
+In-Reply-To: <877ci3j80k.ffs@tglx>
+References: <20240303235029.555787150@linutronix.de>
+ <20240304005104.622511517@linutronix.de>
+ <e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net>
+ <CAHk-=whK=G1o6RtS9DS3wEGF1KU7WLgLL1+6Se86bj8m7wwqrQ@mail.gmail.com>
+ <87y1ajjsv9.ffs@tglx> <87o7bfjeae.ffs@tglx>
+ <CAHk-=wiP+XMGHr8NU13sSOG_oasNZN02O9_c1PzCJNG7+O-GPw@mail.gmail.com>
+ <877ci3j80k.ffs@tglx>
+Date: Mon, 18 Mar 2024 18:27:55 +0100
+Message-ID: <87le6fih5w.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Type: text/plain
 
-On Mon, 18 Mar 2024 21:08:33 +0530, Kousik Sanagavarapu wrote:
-> Fix links from the documentation and in-code comments pointing to
-> datasheets.
-> 
-> Changes since v1:
-> - I forgot to fix the links in in-code comments in spi, so do that.
-> - New commit to address the same issues in hwmon/lm70 since the spi eval board
->   is based on that.
-> 
-> [...]
+On Sat, Mar 16 2024 at 02:11, Thomas Gleixner wrote:
+> On Fri, Mar 15 2024 at 16:23, Linus Torvalds wrote:
+> The amount of subtle SMP=n fallout has been kinda exponentially
+> increasing over the years and it's just putting burden on the wrong
+> people. TBH, I'm tired of this nonsense.
 
-Applied to
+And for the fun of it I hacked Kconfig to allow a SMP=y NR_CPUS=1 build
+and checked the size of vmlinux:
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git for-next
+                64-bit          32-bit
+SMP, NCPUS=1    38438400        22110177
+UP              38393703        21682041
+Delta              44697          428076
+                     0.1%              2%              
 
-Thanks!
+The UP savings are not really impressive...
 
-[1/2] spi: lm70llp: fix links in doc and comments
-      commit: 7397175cb7b48f7a3fc699083aa46f1234904c7e
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
+Let me look what it actually takes to do that.
 
 Thanks,
-Mark
+
+        tglx
 
 
