@@ -1,81 +1,117 @@
-Return-Path: <linux-kernel+bounces-106457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106461-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 383F787EEDE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:33:37 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 861B187EEE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:35:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 67AE61C220C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:33:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 076231F21D03
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:35:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DF6D56749;
-	Mon, 18 Mar 2024 17:32:45 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B33C855E62
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2F255E54;
+	Mon, 18 Mar 2024 17:33:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KM2Ecen0"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4049D52F8C;
+	Mon, 18 Mar 2024 17:33:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783165; cv=none; b=Z7y3d/hu6QotnQxa1gf/vuEdpKBcVVp8ngIkNI8RAIrP8NPd4jftkS3vJvOgNoDXZQX23ZRamTOTzaF06AZqFJe1Fqr1RNDUgNFnInXVcrhpxhOSNA28OQhsZf9qIzOoztHBZm1Qs19g56c/uAgbAKAREJd+7Z85Wphm0IIEg84=
+	t=1710783185; cv=none; b=D+EslKEnzlue0ax4hhjlD1k4IowJ17s+WRZuCXkbyT80B3LrUh+cgkuKxNVaIZGnW1mja3AI39OSdKO/nOgu94XpssdT7ofwYmeDJpROBI7xLMOIcyI8tYFzPiDIlhfxyIVmCa+oDvtb02KzaaOrAW3pcYZAHBfNkL0/JexBGOA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783165; c=relaxed/simple;
-	bh=UdEL9U6GTSy9xNGEw1Rs9fM2hw+a4kvjnV4O1seSU1c=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=mobRq2631gGU2KCyZqfUoO0JMKhwY2P5MMamAZ7jiN5wyp/pMYffFGgT2q+Oah9/X8zeNO/285Hh3AenJV+F2Ok2QHLqtUEkKpIX5hB+TJAVLq1LoDFVLjmeoua4kSash99cGULQ3+sBMmwdRxxJ9Z3HCRbB+nfNdD/QovtLeF4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id CE8B61FB;
-	Mon, 18 Mar 2024 10:33:15 -0700 (PDT)
-Received: from [10.1.197.60] (eglon.cambridge.arm.com [10.1.197.60])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0B5B83F67D;
-	Mon, 18 Mar 2024 10:32:39 -0700 (PDT)
-Message-ID: <d0277225-199a-4175-a43b-a09c1445138a@arm.com>
-Date: Mon, 18 Mar 2024 17:32:38 +0000
+	s=arc-20240116; t=1710783185; c=relaxed/simple;
+	bh=ENRY4RVP0h54nhmVNDQhGHTYt8HGJlRWH34eD47ylM0=;
+	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
+	 Message-Id:Subject; b=fLS/0JowjFfJ/EK6v/Dk1NC536A2pDbWLxaFl07/Pt1S9DRnVjIrFsr3qZskhkTRZC5aL4KUybO9RObV5om625DiMKWNbfI06gJQfw3YNmB1ht07hsy6sLb8tvIKeEw1TpzVSfs0FY8l05QH6j8D8jMxCGiYeZzTGR/bAi6lIog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KM2Ecen0; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93517C433C7;
+	Mon, 18 Mar 2024 17:33:04 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710783184;
+	bh=ENRY4RVP0h54nhmVNDQhGHTYt8HGJlRWH34eD47ylM0=;
+	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
+	b=KM2Ecen0KMGLaB7wkuNqD7lgDCgEniJcA1B1VjgHVUXbnB/M39nKgoS8Hp2+BaUg3
+	 /82P1e4FwmtyfxCm5laIuGpxtwkj3cZKpPn4ZSBqgHbyyxOmv+dg+gZs3RDYK9zpqk
+	 Ds1NPT7X1X/qozRslRav+C1tpQkUnAZHSsRD4apQipLxfNcTYdRfpwWUbZOHHmNjPU
+	 bZ+iHzoo7ONWYMG381TULtoGTz6zYXAMS9COdKCcOPECQB8N8yDaSwHuUMiMKzGIlc
+	 zbmt0ES7v467/unObcqnC4A3YlsKvY0v4pQYapqom9ZuDrX2eaiogLmk5QfWx86PeL
+	 ztfJRIKfl6cLw==
+Date: Mon, 18 Mar 2024 12:33:03 -0500
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: =?UTF-8?B?UmU6IOetlOWkjTogW1BBVENIXSBmcy9yZXNjdHJsOiBVbmlmb3JtIGRh?=
- =?UTF-8?Q?ta_type_of_component=5Fid/domid/id/cache=5Fid?=
-Content-Language: en-GB
-To: Rex Nie <rex.nie@jaguarmicro.com>
-Cc: "fenghua.yu@intel.com" <fenghua.yu@intel.com>,
- "reinette.chatre@intel.com" <reinette.chatre@intel.com>,
- "rohit.mathew@arm.com" <rohit.mathew@arm.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240311081839.937-1-rex.nie@jaguarmicro.com>
- <e731b262-c201-4294-9b1e-abfa0c6ac817@arm.com>
- <KL1PR0601MB577382D132A25E055856C543E62B2@KL1PR0601MB5773.apcprd06.prod.outlook.com>
-From: James Morse <james.morse@arm.com>
-In-Reply-To: <KL1PR0601MB577382D132A25E055856C543E62B2@KL1PR0601MB5773.apcprd06.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-
-Hi Rex,
-
-On 12/03/2024 02:52, Rex Nie wrote:
-> 	Thanks for your reply. Please check my inline reply.
-> BTW, can I know the progress/roadmap of mpam driver upstream?
-
-The series to change the monitor code in a way that allows MPAM to work, and split the
-locks has been merged for rc1. I plan to post the next series shortly. Once that is
-reviewed and merged the refactoring of resctrl will be finished and I can start posting
-the MPAM driver. (it has a few small dependencies on cacheinfo and PPTT parsing code).
-I anticipate the MPAM driver will be merged fairly quickly as it won't regress existing
-systems.
-
-Any help reviewing the x86 changes would be appreciated - these are the changes that can
-affect existing systems. (Shall I CC you on the series?)
+From: Rob Herring <robh@kernel.org>
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Rob Herring <robh+dt@kernel.org>, 
+ Naushir Patuck <naush@raspberrypi.com>, 
+ Florian Fainelli <florian.fainelli@broadcom.com>, 
+ linux-media@vger.kernel.org, Sakari Ailus <sakari.ailus@linux.intel.com>, 
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>, 
+ linux-rpi-kernel@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>, 
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>, 
+ Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
+ Kieran Bingham <kieran.bingham@ideasonboard.com>, 
+ linux-arm-kernel@lists.infradead.org, 
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+In-Reply-To: <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
+References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
+ <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
+Message-Id: <171078318246.167654.12048961258592577365.robh@kernel.org>
+Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for
+ raspberrypi,rp1-cfe
 
 
+On Mon, 18 Mar 2024 17:49:57 +0200, Tomi Valkeinen wrote:
+> Add DT bindings for raspberrypi,rp1-cfe.
+> 
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> ---
+>  .../bindings/media/raspberrypi,rp1-cfe.yaml        | 103 +++++++++++++++++++++
+>  1 file changed, 103 insertions(+)
+> 
 
-Thanks,
+My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
+on your patch (DT_CHECKER_FLAGS is new in v5.13):
 
-James
+yamllint warnings/errors:
+
+dtschema/dtc warnings/errors:
+Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.example.dts:24:18: fatal error: dt-bindings/clock/rp1.h: No such file or directory
+   24 |         #include <dt-bindings/clock/rp1.h>
+      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
+compilation terminated.
+make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.example.dtb] Error 1
+make[2]: *** Waiting for unfinished jobs....
+make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
+make: *** [Makefile:240: __sub-make] Error 2
+
+doc reference errors (make refcheckdocs):
+
+See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com
+
+The base for the series is generally the latest rc1. A different dependency
+should be noted in *this* patch.
+
+If you already ran 'make dt_binding_check' and didn't see the above
+error(s), then make sure 'yamllint' is installed and dt-schema is up to
+date:
+
+pip3 install dtschema --upgrade
+
+Please check and re-submit after running the above command yourself. Note
+that DT_SCHEMA_FILES can be set to your schema file to speed up checking
+your schema. However, it must be unset to test all examples with your schema.
+
 
