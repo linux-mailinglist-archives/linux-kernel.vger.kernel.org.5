@@ -1,114 +1,204 @@
-Return-Path: <linux-kernel+bounces-106663-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 338C287F1B1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:03:37 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 66E0E87F1B4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:04:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E6C4B1F2254B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:03:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E88E21F224E0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:04:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 602045822C;
-	Mon, 18 Mar 2024 21:03:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B326058201;
+	Mon, 18 Mar 2024 21:04:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="D1Aevv10"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="T2OVScU3"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A38058131;
-	Mon, 18 Mar 2024 21:03:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710795808; cv=none; b=oXIBmbXpvKm5xEEoL4OatqQhd6tCBHNY2mzQk/Re4P+csrBW689GlmQA7Hq/R5DRLNb/Zawe9ZR/iVJEIhYInVKThUi4DuBhxHEl6/I5ytzLp/GHehRljT/J7Ys1eLyrH7Y4shEFX0NVSwBOLWEFyFpFnStuCYGa1b1ymKlSyeg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710795808; c=relaxed/simple;
-	bh=KNXL8yB39oiiaWyS+GffR+XGWq4A3cnUOIdO5iI9gsE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=sC3u27OmxqfH86RH5YsjwypJQPbgP+s5fKXhJG1bgvDOTG7tq4H7aI77lP+arcBSNVp4ipN7tuoSyAzeNdQnORyjomI8kgfwyJ8KGgv9JZ4R1MzLncaoROZVHdyEjkWZ0j/r9uTrPd92gj+23BsRydQAMRP3BiCXnLcAP/NGb4s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=D1Aevv10; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 32CA0C433C7;
-	Mon, 18 Mar 2024 21:03:26 +0000 (UTC)
-Authentication-Results: smtp.kernel.org;
-	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="D1Aevv10"
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
-	t=1710795802;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UmPCZS+23vmAnJgCoa+okS36dhoUEjEhsL1XUB+hRz0=;
-	b=D1Aevv10LyR+ZL5FYo9+nIGr2xbCDWF52PSQ99g8mSEHCkqWZ3lgC7uyyJqeV8W6W71iGq
-	T3wk0PBhGBIF6SJLXTdR6Ck3bXpibLdx9fr/lTRX4QB7VmeqLEHsRiGTKkKuhtgEQv7rol
-	0fhrn/Q86e/X3d7mhkfROjXe9ITzNsg=
-Received: 
-	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id 79ecf448 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
-	Mon, 18 Mar 2024 21:03:22 +0000 (UTC)
-Date: Mon, 18 Mar 2024 22:03:21 +0100
-From: "Jason A. Donenfeld" <Jason@zx2c4.com>
-To: mhklinux@outlook.com
-Cc: haiyangz@microsoft.com, wei.liu@kernel.org, decui@microsoft.com,
-	catalin.marinas@arm.com, will@kernel.org, tglx@linutronix.de,
-	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
-	hpa@zytor.com, arnd@arndb.de, tytso@mit.edu, x86@kernel.org,
-	linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
-	linux-arch@vger.kernel.org
-Subject: Re: [PATCH v3 1/1] x86/hyperv: Use Hyper-V entropy to seed guest
- random number generator
-Message-ID: <ZfisGSPX9et2hGzx@zx2c4.com>
-References: <20240318155408.216851-1-mhklinux@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB990250EC;
+	Mon, 18 Mar 2024 21:04:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.19
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710795859; cv=fail; b=cqQ0A4xU/11FbExBmT4tKGt53y1+621C1EvCnZt9Bi3sLj7CxPiRUsbKfZjeQ+EbapR+OAy68xQ7cWxbdOqYzsb5Nguxdb4zbkYDVk7tqLYaEC0ubm7hQDGzX/9KIrnatgE7wH2o+cFE3PnZXSYVfPuGJ96oKYFpBFcMnr1OdaE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710795859; c=relaxed/simple;
+	bh=6DuIiMZ54mkhyq4lnF5qVviEnhDMyMRPlRcEBk57r6s=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=oXeCQFJpONAS0i8CnTLp77zvzNyVGieWhGCXOCAoJ0k15y1cg9YLPOzzg3qLCYfReWf1cDcmXR6KWia1AwAwlZjxE0jAIn9nf/SGojz7bXCRYLoNvflGp8g+uh3Is18i2ssuWrkXdkzZ/ry6wmENOe99MNhuXEM698PhHwCUyMg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=T2OVScU3; arc=fail smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710795858; x=1742331858;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=6DuIiMZ54mkhyq4lnF5qVviEnhDMyMRPlRcEBk57r6s=;
+  b=T2OVScU30uzBCZ3sUatRGWOBqBEibihvjZyAQGyJOiTeuRauUIuZNfPO
+   BcuIFfnSMPlhuYxO/BbhC8NRBjOpycBtSGYAmgBtpMdyfKQ8bvG7Akcyg
+   dLI1swHXbDR1pbY1qFHaoSuO7knaV8/7Wap7jb9bNhNK5uv6GvRZQH8Pa
+   KGWJb9KFoVBMyPgRj2bqkyPZxXKyoMP7JM2bGAy1lFVC9zoTiiFhDsR6+
+   jRxGFs8TNaBKnBjtIiBaYY5BASuM2AGFpoTynJrPCjDNghwjI+Ng9bGLj
+   gS/y+CedvslhlHvP7Q+gxsbT0VHhnszKR+Kfu2CHu/rcPbXa/ZEeMfkky
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5500570"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="5500570"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 14:04:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="14054742"
+Received: from fmsmsx603.amr.corp.intel.com ([10.18.126.83])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Mar 2024 14:04:18 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx603.amr.corp.intel.com (10.18.126.83) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 18 Mar 2024 14:04:16 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 18 Mar 2024 14:04:16 -0700
+Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.41) by
+ edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 18 Mar 2024 14:04:16 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=MOT5iJ0ugRBtIVrdXGLO8IOqqcj7EH3ODqJX83UQUHBTQ59V4BpjO7U2XUbbzDkvvZkyBskpZG6mt9meakQK6UPN84hNmwgSj+ZXiaoakTvhXsoXtwzWecmVYrL5u2Jf+9M1LdjymGCdBvbPdOl3bZYcyLo9Xtcs1o0o0jzsxj2Nn6iMG7Y3PI15nvSAminFrarfypT2jCL7P04ANltuH8A3zXYqWiTy6hqnMbkOttLME4uZcHOh+fl9WSzKCFC/Et5HpmLrrueXJhI07T+8cM3CllOEUDQ7excVGpujUcqKOGjhA8ETsvR7MgKm9G4x9/boFXqRZHPKsTof37ENCg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=6DuIiMZ54mkhyq4lnF5qVviEnhDMyMRPlRcEBk57r6s=;
+ b=YZiD6OgnsfPqiK4U8jIVh5uw2/hklkwoRXAzrbEB/iYQPNxbCxQBjeDfbulWxFDs5bvCac8H9SGWA3xG3wHUfozVon1AIxjpSkizoVuv9hThsPiTwz3cwZKeVJpCVUfHm/dKaJfhYl7cBc8/XWyGdEBVWhVSJ+c4smJ1MV2TB5Uxu87UBqyis7NCi63DXWk8Zumihae/5ZlnEPAX4yHohSUPSsTzByDFTsKJuYLEk8dQluc/0G8DL6IfmwgDiyZd2uN/997DLMu6ux+gkrVpJljVVaB64iPHQ4u+fWQS51eqXS66n8pJMXJUMj/TNQ3zSN+dW4UvlGX3hE/i+weePA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com (2603:10b6:a03:48a::9)
+ by MW4PR11MB7104.namprd11.prod.outlook.com (2603:10b6:303:22e::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Mon, 18 Mar
+ 2024 21:04:14 +0000
+Received: from SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::fca9:7c00:b6d0:1d62]) by SJ1PR11MB6083.namprd11.prod.outlook.com
+ ([fe80::fca9:7c00:b6d0:1d62%5]) with mapi id 15.20.7409.010; Mon, 18 Mar 2024
+ 21:04:14 +0000
+From: "Luck, Tony" <tony.luck@intel.com>
+To: "Chatre, Reinette" <reinette.chatre@intel.com>, James Morse
+	<james.morse@arm.com>
+CC: "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>, "Yu, Fenghua"
+	<fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+Subject: RE: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
+Thread-Topic: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
+Thread-Index: AQHab7KwshA04b3b7kGAda4tCZ9C1LErPGXQgADHEoCAAIKhUIAAB+aAgAABPhCAACNlgIAAEarAgAAc2ACAAUZZboAK/v/LgATLiICAAAEvkIAAFESAgAADgICAAAPVcA==
+Date: Mon, 18 Mar 2024 21:04:14 +0000
+Message-ID: <SJ1PR11MB6083FAA69AF7F712B34CA292FC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+References: <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
+ <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <159474e6-ef11-4769-a182-86483efcf2a6@intel.com>
+ <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
+ <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <55a55960-8bb1-4ce2-a2c7-68e167da8bcc@intel.com>
+ <ZepK4mtoV_J8-UbE@agluck-desk3>
+ <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com>
+ <ZetcM9GO2PH6SC0j@agluck-desk3>
+ <88430722-67b3-4f7d-8db2-95ee52b6f0b0@arm.com>
+ <47c28b3d-3b90-4b33-ba71-1e359d43238e@intel.com>
+ <SJ1PR11MB60832422CBDCCDA580010769FC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <6948784d-6a20-435a-8781-30f324bed472@intel.com>
+ <SJ1PR11MB608303C5E0BEB42CAC5B02BAFC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+In-Reply-To: <SJ1PR11MB608303C5E0BEB42CAC5B02BAFC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SJ1PR11MB6083:EE_|MW4PR11MB7104:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: tu+tyH1hUUNgYgum+Z0ohnMcNcFO2liw/hVBomL0cxBJXb3OHBKML8AsFJs/YunQWopbTc+qwwt7JJruYG4+H+Z2iA2BOGmJiExmrb24DMY14u/Y4uBAzODGfj6qcua6845scaxoUL8QKf0nHFdyY4V8E2JONwyCaNVnWyGYzuNG9JY+QTB84SwT0uVwHnZZp3ktNAzyQ0QorW9S9E2KxNuH2yjJ1+eDOJF0IfF6EEvQlhITBSfWF93QdS7WWjCFIQCAM5pBYTLvftcjoh1u2p89GdWzZoF239oSqrpV6u+IAGiueU8AdCxUxyv6gP0sNyBd2GcUu3p6zQhy4ZawTauSN9pl70BAQCK3hfvoDP118v510A4hGtOVruVLWYijYqow3iEV3CsSMsFhlMIwKnNXOOtSHqC+degKUFx0kHQYvov9rBT9qF6jWjScox99GJbsvOxZYok41AoM2GKRKWfz28soqzGZVh5Wt9tjLRLVzF8kcAMoE0CnCuHKlOcfFJdUdVrltjK/d9nJf9V2+2A820LL+g81lOcIyVvnEx35v2f2Ek6vLyQcDinfvl8gTA4FG50J1lzoWLIz50iTIVwg0wG9OeMzZRgEmF00ndvWs3VJPYJGGAqf25/ui4/t/N8i3PVBiOU/A76qll+d/tyokZSklWWykxCbHrpTv0g=
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ1PR11MB6083.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: =?utf-8?B?Q3o0MUdWS0NuWHE3KzYxQmVOWWV1SEtWcmo0Ky9nbm54dmZ2OU9pcjNLV2hG?=
+ =?utf-8?B?SmRReitmaDF3bGZZWTFGMTgzanRYRXo4ZElac3V2N0UybzNnU2p2WDBRYUtO?=
+ =?utf-8?B?QmYzM3FneXRZNStLSEZDejZxRUdJOTNHUW5LZmF4dDQyRjNiRDBIU0Y0U0Zr?=
+ =?utf-8?B?cTlGTVhXeG9IRjBSVXkrSkNBWm4xQXVUd0pRY2hsL3hpKzJFVWZLYnVvekFL?=
+ =?utf-8?B?N1lreDRFTWpKeGRoQmVsUDBHNWUxcjhicTZyT29ZVUlndEh4TG9DNWRhcG5D?=
+ =?utf-8?B?a2dFdlZjNzErWGU3WWZ4UVNpZDc5RnpmRjZhNVRiS2hhUzFUdDNqMHkrYlds?=
+ =?utf-8?B?WlQxdE1DMXZWT1FVam9ISFd3YlNRRVpxRG5yN0ZGL2QrOXZheEJSRGhxVi81?=
+ =?utf-8?B?dE0xdHVicTBYc3d2UFI3RFhwTWEvaDZJZGFNVkl5azg4aHd2NHVESkJLdU9i?=
+ =?utf-8?B?cGd1VGc1ZHVvak93ZnNhZlZCUFdVRWd0T1p4cW5yTEQxNkl0WTYwc1IvNmVi?=
+ =?utf-8?B?ZmRLYUpNYm56cE1JZWhXV3VPVnpNTmpmS0NWMjd4Zy8wWVlOZlFYSS9GTjRO?=
+ =?utf-8?B?YWg1bEFjTFZRcmZLS1prQkdudWlIVi94UzVNbGZFMVE2Vmg5eTNCNE1UeWpU?=
+ =?utf-8?B?bitSZFZ6b1B2R3Z2Qml6S05rdWVFbWRLVjVpYXJibkdDc0V5SmthV0Y5Nmln?=
+ =?utf-8?B?MWFURG1lM0V0V1I1TFlqbCtxT3I2TnZkaVlacFhpN0RTV281ZEZhQ2JtWTcx?=
+ =?utf-8?B?RGY2QXVnUkR2c2VHZHcrSDRjakVDdU1SSEJ2Q0wzTUs3S2ZyaHB5ejhEVG8x?=
+ =?utf-8?B?Wk9WUWlOY3ZGblZkeWVqRWtxTEFWTjNSKy9ya3doVzg1VEdkQ2F3Um9oTWI4?=
+ =?utf-8?B?NG1DMGJXMWt4NDhTMTNSTmwzYkVyYUYxbTRmUnZBRndGcjhUZHZCbTN0djlW?=
+ =?utf-8?B?cmpEdXAvMkdxekVJVzJVekdqeXkxNUpsZ1dTVW90RE9nMlBtVzIxdThPYk1z?=
+ =?utf-8?B?Yi9ZWWU0UFpzT21pZ2t6QnFiUW5JOG94V3FjU0lJVmpxelNDdWlCRklTTHFR?=
+ =?utf-8?B?TGowbTdhQnhwN29zTytjMnpWelltOEIyd0J1bXlBOEVPYzhJWTNQSWpPWTF3?=
+ =?utf-8?B?ZS9nUVN1bkZjU3I4WEFldVhYSmkrck8rU2dxWmpMVXFXYkFCZ09qNnUwa1VL?=
+ =?utf-8?B?ZTFnSSsyblZMOFVCeXpwQ0thbFlxKzgwNWVHdjRNYmcza01Zam4rb0pjaU9H?=
+ =?utf-8?B?TUdpYTZ4Z01JTWlWVFYwcFgxQXBLQllmYXlrazBWVXA3V3MyeFUyK0dlN3dp?=
+ =?utf-8?B?SXNCeVBRUW05WDlJVGZXczBDR0xQaEo2OWFUZUhGa1RHcFdIKzFheXcydGJD?=
+ =?utf-8?B?UnFldnV2NmRMazNTck1WbUlGeDkrY2ZtSjBocEQvM29ycy9HSk92VkdZZCtD?=
+ =?utf-8?B?S0NFMWxSam9TMTRmd2VKUitOTzkwLzg3bGJVS3NHSjIwUnBJRjJuMDNZMUFu?=
+ =?utf-8?B?dFByTXBtNll1OWsybHpGc0lNdlJWMTBIQ0xvN0pVcXpadmgraUxqN1dMVTNS?=
+ =?utf-8?B?KzRpakZTSG1TR2RVbXh6UFI4Nlp4bW5yNzJZSDdwbllUK3ozck1WaGJaVmVC?=
+ =?utf-8?B?SzkyL1Z2emlRQWk3REJXNTk2ZVkwL1Zuc3VHdnNjOFU2cDdBUkxmQkQ5N3ZD?=
+ =?utf-8?B?Vk1GN3MzTDJMdk93cThnaURBRVNOTnFUUy9YMFQ0UjVORDVoeWVvc29lOENP?=
+ =?utf-8?B?ZlphWEtETU54TGxSWUorTTd0eXV2Q0ptRlVBWEkzWStlL3lFQ1Jvblo2NVBB?=
+ =?utf-8?B?MmpuNFI1dS9aY1hFZlpyMStvRERQaUoxL1FQa1lhbW9JQlFaRmhFQXNJVDhu?=
+ =?utf-8?B?UUYrUmgvOWpya3p5K2ZLTlBLRG5qUnk4S25scHZlajNJNmc2UmdybnM3aHhY?=
+ =?utf-8?B?ajl6WG4xeTByMDZKWjZxS1lxUDlrYmpROGg4ZjZ4WG9BMmRDellLZndCYUdt?=
+ =?utf-8?B?VWJodUg1czdkVjBNRnYxeUs1UWZtK3VaamxMNnNBQVVoa2RNaWI3ZzM0Y3R0?=
+ =?utf-8?B?S2JEdG03UnZxcXNJTFdsZTFIQThjQjd6ZVh6Vm5GazBob25nc1BWSk9QTFFG?=
+ =?utf-8?Q?WO88sp9PtweLyljimCZKzf9yp?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240318155408.216851-1-mhklinux@outlook.com>
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SJ1PR11MB6083.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9e77249f-0b61-4f34-d3a5-08dc478ef76e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2024 21:04:14.1546
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: ovU9kr/EgNpevyEBgmryNk45Nc7+NeRMNXPGj2pxm2THVNWTCCB7mZChAgfm9HYhchFaPU5ZfePvUSPXjsJjxw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7104
+X-OriginatorOrg: intel.com
 
-Hi Michael,
-
-On Mon, Mar 18, 2024 at 08:54:08AM -0700, mhkelley58@gmail.com wrote:
-> From: Michael Kelley <mhklinux@outlook.com>
-> 
-> A Hyper-V host provides its guest VMs with entropy in a custom ACPI
-> table named "OEM0".  The entropy bits are updated each time Hyper-V
-> boots the VM, and are suitable for seeding the Linux guest random
-> number generator (rng). See a brief description of OEM0 in [1].
-> 
-> Generation 2 VMs on Hyper-V use UEFI to boot. Existing EFI code in
-> Linux seeds the rng with entropy bits from the EFI_RNG_PROTOCOL.
-> Via this path, the rng is seeded very early during boot with good
-> entropy. The ACPI OEM0 table provided in such VMs is an additional
-> source of entropy.
-> 
-> Generation 1 VMs on Hyper-V boot from BIOS. For these VMs, Linux
-> doesn't currently get any entropy from the Hyper-V host. While this
-> is not fundamentally broken because Linux can generate its own entropy,
-> using the Hyper-V host provided entropy would get the rng off to a
-> better start and would do so earlier in the boot process.
-> 
-> Improve the rng seeding for Generation 1 VMs by having Hyper-V specific
-> code in Linux take advantage of the OEM0 table to seed the rng. For
-> Generation 2 VMs, use the OEM0 table to provide additional entropy
-> beyond the EFI_RNG_PROTOCOL. Because the OEM0 table is custom to
-> Hyper-V, parse it directly in the Hyper-V code in the Linux kernel
-> and use add_bootloader_randomness() to add it to the rng. Once the
-> entropy bits are read from OEM0, zero them out in the table so
-> they don't appear in /sys/firmware/acpi/tables/OEM0 in the running
-> VM. The zero'ing is done out of an abundance of caution to avoid
-> potential security risks to the rng. Also set the OEM0 data length
-> to zero so a kexec or other subsequent use of the table won't try
-> to use the zero'ed bits.
-> 
-> [1] https://download.microsoft.com/download/1/c/9/1c9813b8-089c-4fef-b2ad-ad80e79403ba/Whitepaper%20-%20The%20Windows%2010%20random%20number%20generation%20infrastructure.pdf
-
-Looks good to me. Assuming you've tested this and it works,
-
- Reviewed-by: Jason A. Donenfeld <Jason@zx2c4.com>
-
-Thanks for the v3.
-
-Jason
+PiA+IFdoYXQgaXMgdGhlIHVzZSBjYXNlIGZvciBuZWVkaW5nIHRvIGV4cG9zZSB0aGUgaW5kaXZp
+ZHVhbCBjbHVzdGVyIGNvdW50cz8gV2hhdCBpZg0KPiA+IHJlc2N0cmwganVzdCBzdW1tZWQgdGhl
+IGNsdXN0ZXIgY291bnRzIGFuZCBwcmVzZW50ZWQgdGhlIGRhdGEgYXMgYmVmb3JlIC0gcGVyIEwz
+DQo+ID4gY2FjaGUgaW5zdGFuY2U/IEkgZG91YnQgdGhhdCByZXNjdHJsIHdvdWxkIGJlIHdoYXQg
+YXBwbGljYXRpb25zIHdvdWxkIHVzZSB0byB2ZXJpZnkNCj4gPiB3aGV0aGVyIHRoZXkgYXJlICJ3
+ZWxsIGJlaGF2ZWQiIHdydCBOVU1BLg0KPg0KPiBSZWluZXR0ZSwNCj4NCj4gTXkgKHBlcmhhcHMg
+bmHDr3ZlKSBiZWxpZWYgaXMgdGhhdCBpbiBhIGNsb3VkIHNlcnZlciBlbnZpcm9ubWVudCB0aGVy
+ZSBhcmUgbWFueQ0KPiB3ZWxsIGJlaGF2ZWQgTlVNQSBhcHBsaWNhdGlvbnMuIE9ubHkgcHJlc2Vu
+dGluZyB0aGUgc3VtIHdvdWxkIGxvc2UgdGhlIGRldGFpbGVkDQo+IGluZm9ybWF0aW9uIGZyb20g
+ZWFjaCBTTkMgbm9kZS4NCg0KSXMgdGhlIGFuc3dlciB0byAiQSIgb3IgIkIiIC4uLiB3aHkgbm90
+IHByb3ZpZGUgYm90aDoNCg0KJCBscyAtbCAvc3lzL2ZzL3Jlc2N0cmwvbW9uX2RhdGENCnRvdGFs
+IDANCmRyLXhyLXhyLXguIDIgcm9vdCByb290IDAgTWFyIDE4IDE0OjAxIG1vbl9MM18wMA0KZHIt
+eHIteHIteC4gMiByb290IHJvb3QgMCBNYXIgMTggMTQ6MDEgbW9uX0wzXzAxDQpkci14ci14ci14
+LiAyIHJvb3Qgcm9vdCAwIE1hciAxOCAxNDowMSBtb25fTk9ERV8wMA0KZHIteHIteHIteC4gMiBy
+b290IHJvb3QgMCBNYXIgMTggMTQ6MDEgbW9uX05PREVfMDENCmRyLXhyLXhyLXguIDIgcm9vdCBy
+b290IDAgTWFyIDE4IDE0OjAxIG1vbl9OT0RFXzAyDQpkci14ci14ci14LiAyIHJvb3Qgcm9vdCAw
+IE1hciAxOCAxNDowMSBtb25fTk9ERV8wMw0KDQpUaGUgIkwzIiBlbnRyaWVzIHByb3ZpZGUgdGhl
+IHN1bSBhY3Jvc3MgYWxsIFNOQyBub2RlcyBzaGFyaW5nIHRoZSBjYWNoZS4gVGhlIE5PREUgb25l
+cw0KZ2l2ZSB0aGUgYnJva2VuIG91dCBjb3VudHMuDQoNCi1Ub255DQo=
 
