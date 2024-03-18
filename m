@@ -1,158 +1,180 @@
-Return-Path: <linux-kernel+bounces-106451-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106469-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 18E2887EED2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:30:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id F177A87EF0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:38:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C42E61F21B04
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:30:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 686FAB21537
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:38:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49CC75577B;
-	Mon, 18 Mar 2024 17:29:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 440355579D;
+	Mon, 18 Mar 2024 17:38:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="p1gZduWK"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="r5acfYKb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pzb5Dzut";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="r5acfYKb";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="Pzb5Dzut"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 68C0655E44;
-	Mon, 18 Mar 2024 17:29:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC27C374CB;
+	Mon, 18 Mar 2024 17:38:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710782987; cv=none; b=N/m1B0GQPgXd7k9w7e/Ae3GW0ypTGOb0hrcZZPMkH8OeUY/M6vwLv4xS4vuUMbaiuZjAfqQ9332g6+CbVoPaoYMxbHRUkKQZ68vkMvEVRSpDZiUNJCcuZdyjZSgKp2fv486elLs5xlI5PaEbCnVn8VADjAu0GKjI4Uwwvb4UJHQ=
+	t=1710783499; cv=none; b=ph0KET8jHG659+raJGszuvtDGOLVRn+liDS8uc3g8fA7B4OgqTPgCsDGyEBj/O5p3uhbpKIk0iXsxmJyA2UufxNGswbw+itpAC5YkiqyBvBSXE8Samu7tzuEfM+wOie9molkM12V2SlBNREyEfGRFHbmjz80nlqUJYN62yi7bnA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710782987; c=relaxed/simple;
-	bh=jal3puy6u47/+391s6XpWyiWuhu3q01nkmau37uIYME=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=bzdhR3S+Q/PG1im1aulwCSu7TLj9gEH597lg5dQA5LShKaA9ycimpuDvNpHeGKYAJduoljxL4wqNRHeotIe5jU1ESnIcdumpdOmswI2BsOPSK0Ex/iSkCL3YhRpV+auvorqMsezLouqvu5X37hmJ9rnbaFWh74NNh7p5XPTw0Pg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=p1gZduWK; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DD220C433C7;
-	Mon, 18 Mar 2024 17:29:45 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710782985;
-	bh=jal3puy6u47/+391s6XpWyiWuhu3q01nkmau37uIYME=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=p1gZduWKJ+OsB7PpUBOfl31508AK96L5FBrCL0H/XXWtGumxroNXK4fUdOw8kC0q1
-	 uju6AV9Agrt6SO4hDDdE2eQhlPMpPEKV6WE6bPz7EJiwJGX6yOpHj0cRswTrJBH4K+
-	 b/yvojgx6wA1rUUbAjMb7YxGPs0Y2XcmUJhY7sp6JfxGDXDGPjdfCoINlOPvIKOXG6
-	 iAWaAg+VAqMonfhucZTfckXPo6z7JlMKc80Tx0ipNh4w9OQSy06rkFHSxh6qixCr06
-	 1mHToYqVMkuQBjNYsXLUjmgBrw3PJtNjgxapyMFMTu2vdjMVtpeClk3d5Oq2X68HiT
-	 +ZJH2U+5Vnncw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rmGnv-00DKyB-EO;
-	Mon, 18 Mar 2024 17:29:43 +0000
-Date: Mon, 18 Mar 2024 17:29:43 +0000
-Message-ID: <86v85jzbw8.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/4] KVM: arm64: Add PSCI SYSTEM_OFF2 function for hibernation
-In-Reply-To: <20240318164646.1010092-3-dwmw2@infradead.org>
-References: <20240318164646.1010092-1-dwmw2@infradead.org>
-	<20240318164646.1010092-3-dwmw2@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1710783499; c=relaxed/simple;
+	bh=brMabtGVAVPTn4BOLl5qxz9oAua4OXqtQFzWar13NBE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=VbVvzWQFHpFXnVzY38ivJyMbRCsIabmJ/8lvZuqIvldmkXWcEeV5lrZ9YnYH9g+T5C55Vx+wUdG0UctNg2XCLerYyknf6K72UjI2etlq6O5z22GAsZ6Ta/8Da/4cP4Cywy5zRhF7QC4s+CUn7Akx9F7uf9rP+7LWroq4n3QK8BQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=r5acfYKb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pzb5Dzut; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=r5acfYKb; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=Pzb5Dzut; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id E0A9D5C80D;
+	Mon, 18 Mar 2024 17:38:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710783493;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i9KtxmJe4u+gXhi6vxQQsvto+Xk9+LnXPNm2ix/8clI=;
+	b=r5acfYKb4IWgXoOnLqtBmnj+akX3lExnpM5JVeWN2Yn+eC2qcM8hhL+rI3iE40oTB9HV07
+	UDFETcVfEvij7DR0FtsHciCeIRhUJxBG0pgFLSrG+cTmU54azQj1gLs9/KWmZIBKtIa0fX
+	DHNMHsUcbxkb2rdp7V4Uwkxd/C2PEbw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710783493;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i9KtxmJe4u+gXhi6vxQQsvto+Xk9+LnXPNm2ix/8clI=;
+	b=Pzb5DzutVR/j+TIQ+roiNWGp1acJT8IGhDssUNb9pEF+z8fvDQRw6VjIA7gy/rIDeTQC/n
+	SRp90gNK7Vii41Cg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710783493;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i9KtxmJe4u+gXhi6vxQQsvto+Xk9+LnXPNm2ix/8clI=;
+	b=r5acfYKb4IWgXoOnLqtBmnj+akX3lExnpM5JVeWN2Yn+eC2qcM8hhL+rI3iE40oTB9HV07
+	UDFETcVfEvij7DR0FtsHciCeIRhUJxBG0pgFLSrG+cTmU54azQj1gLs9/KWmZIBKtIa0fX
+	DHNMHsUcbxkb2rdp7V4Uwkxd/C2PEbw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710783493;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=i9KtxmJe4u+gXhi6vxQQsvto+Xk9+LnXPNm2ix/8clI=;
+	b=Pzb5DzutVR/j+TIQ+roiNWGp1acJT8IGhDssUNb9pEF+z8fvDQRw6VjIA7gy/rIDeTQC/n
+	SRp90gNK7Vii41Cg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C382E1349D;
+	Mon, 18 Mar 2024 17:38:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id aWKULwV8+GUGfgAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Mon, 18 Mar 2024 17:38:13 +0000
+Date: Mon, 18 Mar 2024 18:31:00 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Stephen Rothwell <sfr@canb.auug.org.au>,
+	Christian Brauner <brauner@kernel.org>
+Cc: Anand Jain <anand.jain@oracle.com>, David Sterba <dsterba@suse.com>,
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+	Linux Next Mailing List <linux-next@vger.kernel.org>,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: linux-next: build failure after merge of the btrfs-fixes tree
+Message-ID: <20240318173100.GD16737@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240318091755.1d0f696f@canb.auug.org.au>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318091755.1d0f696f@canb.auug.org.au>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=r5acfYKb;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=Pzb5Dzut
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.21 / 50.00];
+	 ARC_NA(0.00)[];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 BAYES_HAM(-0.00)[37.35%];
+	 MIME_GOOD(-0.10)[text/plain];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 TO_DN_ALL(0.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 RCVD_TLS_ALL(0.00)[];
+	 MID_RHS_MATCH_FROM(0.00)[]
+X-Spam-Score: -1.21
+X-Rspamd-Queue-Id: E0A9D5C80D
+X-Spam-Flag: NO
 
-On Mon, 18 Mar 2024 16:14:24 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
+On Mon, Mar 18, 2024 at 09:17:55AM +1100, Stephen Rothwell wrote:
+> Hi all,
 > 
-> From: David Woodhouse <dwmw@amazon.co.uk>
+> After merging the btrfs-fixes tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2 function
-> which is analogous to ACPI S4 state. This will allow hosting environments
-> to determine that a guest is hibernated rather than just powered off, and
-> ensure that they preserve the virtual environment appropriately to allow
-> the guest to resume safely (or bump the hardware_signature in the FACS to
-> trigger a clean reboot instead).
+> fs/btrfs/volumes.c: In function 'btrfs_scan_one_device':
+> fs/btrfs/volumes.c:1413:55: error: 'bdev_handle' undeclared (first use in this function)
+>  1413 |         if (btrfs_skip_registration(disk_super, path, bdev_handle->bdev->bd_dev,
+>       |                                                       ^~~~~~~~~~~
+> fs/btrfs/volumes.c:1413:55: note: each undeclared identifier is reported only once for each function it appears in
 > 
-> The beta version will be changed to say that PSCI_FEATURES returns a bit
-> mask of the supported hibernate types, which is implemented here.
+> Caused by commit
 > 
-> Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
-> ---
->  Documentation/virt/kvm/api.rst    | 11 +++++++++
->  arch/arm64/include/asm/kvm_host.h |  2 ++
->  arch/arm64/include/uapi/asm/kvm.h |  6 +++++
->  arch/arm64/kvm/arm.c              |  5 +++++
->  arch/arm64/kvm/psci.c             | 37 +++++++++++++++++++++++++++++++
->  include/uapi/linux/kvm.h          |  1 +
->  6 files changed, 62 insertions(+)
+>   cc019bc0d55b ("btrfs: do not skip re-registration for the mounted device")
 > 
-> diff --git a/Documentation/virt/kvm/api.rst b/Documentation/virt/kvm/api.rst
-> index 0b5a33ee71ee..ff061b6a2393 100644
-> --- a/Documentation/virt/kvm/api.rst
-> +++ b/Documentation/virt/kvm/api.rst
-> @@ -6761,6 +6761,10 @@ the first `ndata` items (possibly zero) of the data array are valid.
->     the guest issued a SYSTEM_RESET2 call according to v1.1 of the PSCI
->     specification.
->  
-> + - for arm64, data[0] is set to KVM_SYSTEM_EVENT_SHUTDOWN_FLAG_PSCI_OFF2
-> +   if the guest issued a SYSTEM_OFF2 call according to v1.3 of the PSCI
-> +   specification.
-> +
->   - for RISC-V, data[0] is set to the value of the second argument of the
->     ``sbi_system_reset`` call.
->  
-> @@ -6794,6 +6798,13 @@ either:
->   - Deny the guest request to suspend the VM. See ARM DEN0022D.b 5.19.2
->     "Caller responsibilities" for possible return values.
->  
-> +Hibernation using the PSCI SYSTEM_OFF2 call is enabled with the
-> +KVM_CAP_ARM_SYSTEM_OFF2 VM capability. If a guest invokes the PSCI
-> +SYSTEM_OFF2 function, KVM will exit to userspace with the
-> +KVM_SYSTEM_EVENT_SHUTDOWN event type and with data[0] set to
-> +KVM_SYSTEM_EVENT_SHUTDOWN_FLAG_PSCI_OFF2. The only supported hibernate
-> +type for the SYSTEM_OFF2 function is HIBERNATE_OFF (0x0).
+> I have used the btrfs-fixes tree from next-20240315 for today.
+> 
+> This is actually caused by an interaction with commit
+> 
+>   9ae061cf2a46 ("btrfs: port device access to file")
+> 
+> which has been in Linus' tree since March 12 (and linux-next since Feb 26).
 
-Again, I really oppose this way of doing things. We already have an
-infrastructure for selecting PSCI levels. You may not like it, but it
-exists, and I'm not going entertain supporting yet another bike-shed
-model. Adding an orthogonal cap for a feature that is specific to a
-new PSCI version is just awful.
+I would really appreciate if all infrastructure changes to btrfs code
+have CC:linux-btrfs@, the whole series "Open block devices as files" has
+never been CCed so the build breakage is noticed only by accident. Also
+I wonder why I have to repeatedly ask for that and why people think that
+doing broad changes to code maintained by somebody else is ok.
 
-Please make PSCI 1.3 the only version of PSCI supporting suspend in a
-non-optional way, and be done with it.
+There are 26 patches in linux-next intersecting fs/btrfs most of which I
+see for the first time now. I don't have time to read fsdevel@ regularly
+and act rather on events (i.e. CC or mails).
 
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+VFS is in the center of many other subsystems I understand that adding
+the CC: manually is not feasible but scripting "if $path add CC:$subsys"
+should be doable, namely when it's not just one-time job. Please try to
+find some middle ground between efforts and patch workflow sanity.
+Thanks for understanding.
 
