@@ -1,153 +1,141 @@
-Return-Path: <linux-kernel+bounces-106350-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106349-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3AAD87ECDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:59:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 9DBB087ECDA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:58:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2F7FA1F21C26
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:59:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3DFEC1F21897
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:58:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4106D52F8D;
-	Mon, 18 Mar 2024 15:59:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5B97152F86;
+	Mon, 18 Mar 2024 15:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="MaPli6sV"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="SLvwGWdq"
+Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D54BF52F7B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E399374CB;
+	Mon, 18 Mar 2024 15:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710777539; cv=none; b=q2aDod6zLAvsjtbZJVb/40x/p7kEvKs2uukVB4EDtRiF4QHBDumuZNhH0h7WOZOrPpflpJAgC4PyNBYwK7/IYARQYzY1L/GuLvPDQR0+s3tIgl3Bcljc0oPt5FCj/iJM6EnTmmL+dU3wFyZPJopHFCZd6P39DdUrsnjxXgG73Os=
+	t=1710777530; cv=none; b=JPVCFHLryA+fr4O/BDHhXiYAPOQQgrtqjY7+Oh15y5BiXMSjnDMLdIUiwrGPGH+w9BSV4muSIyBWZBQkcCCA4n9LBkjiBkCdPHYyULfNQBpPhWXDx1w169A7yh6sMM+F6XFd20+ouJFDO0tzB+r6KbjcPZvJzLZI5ayNVonh/7c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710777539; c=relaxed/simple;
-	bh=y76vbDJtHiugWfxpYYz3MtbHcW1T0fosoyhaoQiAPyg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=YQAmuQK/xrC7TFRoHRGd7r2UcczYItfQ6dTGIXYONfBz9o9BkvMVTzJX9/lA15f5SNwq+qrTdQ9F7hl8aWkxECf64619kuDZWQORmsa1CmDB6/vhLOrB4cN/zlChMsj2jHNicZeVfVGbXPQhoZ0bsSevuRoDXqDgwZ6Xot+6xI0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=MaPli6sV; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430d3fcc511so204861cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:58:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710777537; x=1711382337; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=y76vbDJtHiugWfxpYYz3MtbHcW1T0fosoyhaoQiAPyg=;
-        b=MaPli6sVqN+8Cm7B5NV9Om9HW/T8V6dNT5F6FPfDNotqbgJCYO0U7b5BZsjlKnVxMg
-         NYPBOb9s3EM4t14mk+1qwZAkOJbadc0npRXGziT5BrggBDpziU0lvP2wvPLwmYSBiQI9
-         4dwzSAeNwzY4kw1+9Fg90ojx8Db5NFbbYRDHhy6P1+jhPnbBJ3AMrwcL83hpYzOlL0Kx
-         pyxFG5hUG0+R2szvYc/sFRC5Kji9fz/QlvhkDnXAvLaBHLQDitOAchvXBeSQhvI2hyid
-         FGzNbrKDPX1ilf9NI5Bo/AZ9GOvBFFaCTcCH4ZiGIEBl1Waut3FF6tIQQbUd+8y3FmjZ
-         I1lw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710777537; x=1711382337;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=y76vbDJtHiugWfxpYYz3MtbHcW1T0fosoyhaoQiAPyg=;
-        b=ROsVESTEox7BV8tBygzp4F1M4NOQ49kPBTiglfr2fa1+QkrY8Y0wgT5nNev5G1N+tG
-         +wB2OaZRggV3by72KYoJ7CorBsIgRA3FlEQUXUm3kUfkUc11HsiC13TVtDL7o7rZuo9l
-         CxE8SVRrnPutWXkLCpV/bL7VIqsM7RsVKwiTS0P2BQTJyxZZci0gUB2Ww8QP5QwpFrYS
-         Mp81XO90DJypNL7bJi9mG9GuPZAT3/7aX1JCRCYz1GS+zKBuoxks8sMFIIF2pVQyPHBM
-         oi9q+qdGqvsd8cUz2Najeai8gPva+txLxLfjBWlLdE8+ryax6PmX1shHkRHixC/n5sbK
-         z00g==
-X-Forwarded-Encrypted: i=1; AJvYcCUjYuSIdnsi0XQDZxWQDR+cPNlhHC8gbGh9zt8hx7N+ESxSObwJ99OW7vzHY2WOmEWGq5rIRqtY8gnQkdBbH/X+8QaLeW/w0trmhCoq
-X-Gm-Message-State: AOJu0YwFsR0gNbUeXpCDINs5PpIjdtn2SEhqEGrv/E8/yD/ZaZwTXnBo
-	QGnXQqK4xpJzVpKkHZKUgVs6lOmAKCo0dZyGKkGM9711KQHitL+Bsc7aXNM6EgsEZTtcdV1sN9A
-	v1hGB9J+jsoEde2oG/yvqbmX+MDy8hzfmAdxo
-X-Google-Smtp-Source: AGHT+IH92AsmA5CM5H9OlqSW5u+VIWFsgIEXK3B7zURDpjKRR7WOyWwIVJ3xPPtoNsV8rmrwp6HXl2P+4MhvjwRMUkY=
-X-Received: by 2002:ac8:5e4b:0:b0:430:a74f:b45e with SMTP id
- i11-20020ac85e4b000000b00430a74fb45emr377484qtx.17.1710777536483; Mon, 18 Mar
- 2024 08:58:56 -0700 (PDT)
+	s=arc-20240116; t=1710777530; c=relaxed/simple;
+	bh=02hLa+502nthqIpJ3Rj+S+Vi3TlZ9i7evQxRTLzmvl8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=RPHKHjFKJ0FgvfUVC5DIs3lXszdFiJFnGaEQSFJ+zpP90F0bLb7C7qE5i8TDDIs/fs2YGkL6ydEHwZwGFk6GPMHH/XRTzsdk20W12RiD9j9rMOqcXToXdQIi4q+9brE4DYIhQnyQV5zCfY+QF+fMt03ixewm4oqQ3UUI24NzBUo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=SLvwGWdq; arc=none smtp.client-ip=80.237.130.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
+	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
+	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
+	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
+	In-Reply-To:References; bh=4dpC3v9e7yNk/nqbEoKg8rGA46wzi6nH/HPa6PvvuGI=;
+	t=1710777528; x=1711209528; b=SLvwGWdqhFHvB/9eQojjGJ9lIEPWvnzD1b8HtpH+zTS8BDZ
+	sUSKPCXl3+6Bm/IqyA8NFQxyHjDqof5lMZyMOOTYppjtApLE3I6b8TOqew6ptPnXZsULOEN/Id+Em
+	ZumpAM++iFg+uJg2hrgWH1Qxh75ipjXZVJrSpSljz9k9UEnRgtMreeDihYLyoXenv0nSj0YK+Skde
+	yD3lWCH1NdvuZBMl9e5bOXU7DbEXNGixWLCHMnyTBGxb88ZYrx3sdQpjm9ezgIMVRKY5JnzmUfXL9
+	m9yqEFQB4mBRJ9RJP7aL1G3nlbCNPPlCjfXvE/I5tD6fiAIrBEl3h4P7pMGynTwA==;
+Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
+	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
+	id 1rmFNt-0004i8-8b; Mon, 18 Mar 2024 16:58:45 +0100
+Message-ID: <dfabddd0-7284-480f-8c6c-135fb169a11c@leemhuis.info>
+Date: Mon, 18 Mar 2024 16:58:44 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318110855.31954-1-johan+linaro@kernel.org>
- <20240318110855.31954-2-johan+linaro@kernel.org> <CAA8EJprywWbdoyfAbys=0WzEdAkp0UK1fzzCPzxKRjyk9DrC6Q@mail.gmail.com>
- <Zfg--2_NMPSPTxK-@hovoldconsulting.com> <20240318144806.GA3963554-robh@kernel.org>
- <ZfhZffrZXwtKgZ13@hovoldconsulting.com> <CAD=FV=UpuD7Lq0DxSZAGpL4Mi2uxy9HNt3V3FZq7Y3p--gbMrg@mail.gmail.com>
- <CAD=FV=WCzrh926mkiyBnKRG_+KGuOkGN6v0DgPiXhQCD3PSQ9w@mail.gmail.com> <Zfhh-4wEg4O4Xqeu@hovoldconsulting.com>
-In-Reply-To: <Zfhh-4wEg4O4Xqeu@hovoldconsulting.com>
-From: Doug Anderson <dianders@google.com>
-Date: Mon, 18 Mar 2024 08:58:40 -0700
-Message-ID: <CAD=FV=XpOf8ZcqROgwFX9bs7B1gNGDDVOYezBztLJEy6U3AOnA@mail.gmail.com>
-Subject: Re: [PATCH v2 1/4] dt-bindings: bluetooth: add new wcn3991 compatible
- to fix bd_addr
-To: Johan Hovold <johan@kernel.org>
-Cc: Rob Herring <robh@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
-	Johan Hovold <johan+linaro@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Johan Hedberg <johan.hedberg@gmail.com>, Matthias Kaehlcke <mka@chromium.org>, 
-	Bjorn Andersson <quic_bjorande@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: Problems with csum_partial with misaligned buffers on sh4
+ platform
+Content-Language: en-US, de-DE
+To: Guenter Roeck <linux@roeck-us.net>,
+ Linux regressions mailing list <regressions@lists.linux.dev>,
+ Yoshinori Sato <ysato@users.sourceforge.jp>
+Cc: Rich Felker <dalias@libc.org>,
+ John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>,
+ linux-sh@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <65ed7c95-712c-410b-84f3-58496b0c9649@roeck-us.net>
+ <351dfebd-c09f-470e-8b03-cc904753b136@roeck-us.net>
+ <2b54a5d8-b317-4df7-ab2e-d63a352dd77d@leemhuis.info>
+ <93ad802f-c152-4461-9f9f-c338f58a000d@roeck-us.net>
+From: "Linux regression tracking (Thorsten Leemhuis)"
+ <regressions@leemhuis.info>
+Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
+In-Reply-To: <93ad802f-c152-4461-9f9f-c338f58a000d@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710777528;418c2201;
+X-HE-SMSGID: 1rmFNt-0004i8-8b
 
-Hi,
+On 18.03.24 16:32, Guenter Roeck wrote:
+> On 3/18/24 08:04, Linux regression tracking (Thorsten Leemhuis) wrote:
+>> On 11.03.24 18:04, Guenter Roeck wrote:
+>>> On Sat, Feb 10, 2024 at 07:12:39AM -0800, Guenter Roeck wrote:
+>>>>
+>>>> when running checksum unit tests on sh4 qemu emulations, I get the
+>>>> following
+>>>> errors.
+>>>
+>>> Adding to regression tracker.
+>>>
+>>> #regzbot ^introduced cadc4e1a2b4d2
+>>
+>> Hmmm, thx for that, but well, I'm a bit taken back and forth here. That
+>> commit afaics is from v3.0-rc1 and Linus iirc at least once said
+>> something along the lines of "a regression only reported after a long
+>> time at some point becomes just a bug". I'd say that applies there,
+>> which is why I'm wondering if tracking this really is worth it.
+> 
+> Not my call to make. I'll keep in mind to not add "bugs" to the regression
+> tracker in the future.
 
-On Mon, Mar 18, 2024 at 8:47=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
-te:
->
-> On Mon, Mar 18, 2024 at 08:31:09AM -0700, Doug Anderson wrote:
-> > On Mon, Mar 18, 2024 at 8:26=E2=80=AFAM Doug Anderson <dianders@google.=
-com> wrote:
->
-> > > > A new compatible string (or one-off property) would allow them do m=
-ake a
-> > > > change when they are ready (e.g. by only updating the devicetrees a=
-fter
-> > > > all boot firmware has been patched and pushed out).
-> > >
-> > > I have no real opinion about the exact way this is solved so happy to
-> > > let DT folks decide on how they want this. I will note, however, that
-> > > device trees are never shipped separately and thus we have no
-> > > intrinsic need for DT backward compatbility here. It would be OK from
-> > > a ChromeOS perspective to add a property or compatible string for the
-> > > broken case.
-> >
-> > Actually, I should probably say more about this to make it clear how it=
- works.
-> >
-> > Chromebooks ship the kernel as a FIT image which bundles the kernel
-> > and device trees together. The firmware looks at all the bundled
-> > device trees and picks the proper one based on the board name,
-> > revision, and SKU ID. The firmware then looks for the bluetooth node
-> > (I believe it finds it from the "aliases" section) and adds the MAC
-> > address there.
-> >
-> > ...so we could update the DT to add a property (if that's desired)
-> > even if we don't update the firmware.
->
-> Thanks for the details. Sounds like we could get away with adding a new
-> property for the broken firmware in this case, which should resolve this
-> nicely without having to deprecate anything.
->
-> Could you carry such a devicetree patch out-of-tree until the firmware
-> has been fixed?
+From my side there is no need for you to keep that in mind, as "somewhat
+added this regression to the tracking" might be something that will
+occasionally make a developer finally fix the problem -- which is why I
+waited a few days with today's reply. :-D
 
-IMO we shouldn't try to fix the firmware at all. Given the fact that
-it took me a year to get a firmware uprev completed for one trogdor
-variant for fixes that actually had functional impact, it's possible
-we'll never actually get an uprev completed that includes this fix or
-it will happen years from now when nobody remembers about it. I'm also
-certain this whole issue will also cause a bunch of debugging over the
-years if we try to fix it in firmware like that. There are cases where
-people end up running with old firmware since the developer workflow
-doesn't automatically update it.
+> Feel free to drop.
 
-The handling should be added upstream and we should just accept that
-the trogdor firmware gets it backward.
+Let me do that:
 
--Doug
+#regzbot inconclusive: really old regression
+
+> For my understanding, what is "a long time" ?
+
+That is a good question and I guess the answer like so often in kernel
+land depends on the regression in question. :-/ Also note that that
+"iirc" really was meant like it, as I might misremember. I just checked
+and found two related quotes, but the situations are somewhat different:
+
+https://lore.kernel.org/all/CAHk-=wis_qQy4oDNynNKi5b7Qhosmxtoj1jxo5wmB6SRUwQUBQ@mail.gmail.com/
+"""
+And yes, I do consider "regression in an earlier release" to be a
+regression that needs fixing.
+
+There's obviously a time limit: if that "regression in an earlier
+release" was a year or more ago, and just took forever for people to
+notice, and it had semantic changes that now mean that fixing the
+regression could cause a _new_ regression, then that can cause me to
+go "Oh, now the new semantics are what we have to live with".
+"""
+
+And also:
+https://lore.kernel.org/all/CAHk-=wiVi7mSrsMP=fLXQrXK_UimybW=ziLOwSzFTtoXUacWVQ@mail.gmail.com/
+"""
+And obviously, if users take years to even notice that something
+broke, or if we have sane ways to work around the breakage that
+doesn't make for too much trouble for users (ie "ok, there are a
+handful of users, and they can use a kernel command line to work
+around it" kind of things) we've also been a bit less strict.
+"""
+
+Ciao, Thorsten
 
