@@ -1,120 +1,94 @@
-Return-Path: <linux-kernel+bounces-106329-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106330-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B93F087EC79
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:47:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 704EA87EC83
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:48:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E46D91C20CAA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:47:28 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B6C61C20C4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:48:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89B125339A;
-	Mon, 18 Mar 2024 15:47:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B2E52F62;
+	Mon, 18 Mar 2024 15:48:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MV/uCDEP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HDIOWmN9"
+Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA778524CA;
-	Mon, 18 Mar 2024 15:47:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7ACA4F5FE
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:48:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710776822; cv=none; b=cHayKSONJcWB1EfUWfQ/JOfQcN1j23/4t8RZJ2NBuNIeCRLVxwPheEmMjv4AwAe7h2MvFnBEU+inP6iSSWdHF3bnhO/8C18dYzpysMnsHV6C5uHoFqWiodjCKgbX+97IF2SPS5ndYoDWdC4pBjB8gQWB+i2MF9TFQnToGkRZWQw=
+	t=1710776894; cv=none; b=tIumFLenTGYyaToU1r1bTGw88Q94EQQmzUS0vypB6Gi+pWz5UQX8EZ4RELeUv55/aGpJmEGA0VP0e0VrW+3TerCAsiiTYvQmrBZDKunGhY7D5ZL2pzqUe0u3Wx3xSPpQ4gEPpunKU9EFk/Wedk3hzVNIXx8eAQ97MtPys8E0/aM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710776822; c=relaxed/simple;
-	bh=REkax58sXTPomHSh67uxOzD64atEhWrNncC5hHCfKnM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X+hwHNYKM1TRnjHWKn3rcPrHkraRkgCaT9aCd1DAEd8lMo+Rq2A9r0ZcMjYSKZH3YZjkJOhZ9cB8iELIFXRQZ8kDFMsVpwqvdI+jyVt5URnooDs7DInY0ctwcK6yIhFCWxeDVEUb8tERV2k/3dYssZeFgtEW3Q1Q3FhbKMp44J0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MV/uCDEP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 30171C433F1;
-	Mon, 18 Mar 2024 15:47:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710776822;
-	bh=REkax58sXTPomHSh67uxOzD64atEhWrNncC5hHCfKnM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MV/uCDEP+jETJPzX9aWGhs5GSFEaUIiwLg+aftvin+D/DwpaPiPTL6971ScZk2bOn
-	 nIq2MlJbs0Wt1JrpSZDj+0stN/8CLJigWO4n9vSxQhMSy2bAL0Sky9KuAp1XcBvV8C
-	 rCnx6phKWy0UQTLCVhL3KE3ncvMuGnANX22YSeijVk6mcBu79L9gzfWTENzjjgizOW
-	 d27sTdgnC0uzPGlC4RlwM/OpiREWKt7WnLrA2hfGp5lEhrFPjr4lfEV5guiHkRJPSB
-	 Lvh7Gow/9Qktjz+WVfDUZY5U4lV0ExHo9M6iI00rn0X34HxVv6p9uJWX1+teP4TRHC
-	 505t+VjwdA+iA==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rmFCd-000000003Bk-3Xhk;
-	Mon, 18 Mar 2024 16:47:07 +0100
-Date: Mon, 18 Mar 2024 16:47:07 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Doug Anderson <dianders@google.com>
-Cc: Rob Herring <robh@kernel.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Matthias Kaehlcke <mka@chromium.org>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/4] dt-bindings: bluetooth: add new wcn3991
- compatible to fix bd_addr
-Message-ID: <Zfhh-4wEg4O4Xqeu@hovoldconsulting.com>
-References: <20240318110855.31954-1-johan+linaro@kernel.org>
- <20240318110855.31954-2-johan+linaro@kernel.org>
- <CAA8EJprywWbdoyfAbys=0WzEdAkp0UK1fzzCPzxKRjyk9DrC6Q@mail.gmail.com>
- <Zfg--2_NMPSPTxK-@hovoldconsulting.com>
- <20240318144806.GA3963554-robh@kernel.org>
- <ZfhZffrZXwtKgZ13@hovoldconsulting.com>
- <CAD=FV=UpuD7Lq0DxSZAGpL4Mi2uxy9HNt3V3FZq7Y3p--gbMrg@mail.gmail.com>
- <CAD=FV=WCzrh926mkiyBnKRG_+KGuOkGN6v0DgPiXhQCD3PSQ9w@mail.gmail.com>
+	s=arc-20240116; t=1710776894; c=relaxed/simple;
+	bh=DpYz0hySlKxEHAOQmWqMeZkwyJg+LhqeQY2mrmV/0cc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=rdSpJIzH1kFdAAtl5v8aueqRxy4QFsz91Bt/KW0zfOF/f8R5ljsB6euDjaxF9aHAzqPs15U+6WIqCjc83HBQXIFaVoQ1TwgCQgsrFxH2i9cyOnrVUkKGNL2I1ihE4/O1N52xIGQ75xW1nNK1a+Pr6K4SV6+1UM2rrVf/BnFI2R4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HDIOWmN9; arc=none smtp.client-ip=91.218.175.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <fa047914-da03-4234-b48f-eebdf350795e@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710776891;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Bad6F74F9fm5QOGUdbjG96YKjkLK+JYj8KXYElcQaw8=;
+	b=HDIOWmN98GCxTIBHZkDR4L2R1YYSH4ojjz6vVh2nYaXg5czvF/hU6MMYVwYzuEdzCEefgT
+	hbe14o3GOvFshvKX08m5PbF20mU2qQqAOIn/bWXSApW8P9pxU0QBhzlGxh9c26pxqfhCg3
+	0L6+8ygQ/QC+NUOb+IuM7ZbCFHJmFho=
+Date: Mon, 18 Mar 2024 11:48:06 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=WCzrh926mkiyBnKRG_+KGuOkGN6v0DgPiXhQCD3PSQ9w@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: nvmem: Remove fsl,t1023-sfp in favor of
+ fsl,layerscape-sfp
+Content-Language: en-US
+To: Conor Dooley <conor@kernel.org>
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ Richard Alpe <richard@bit42.se>, linux-kernel@vger.kernel.org,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ Michael Walle <michael@walle.cc>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
+References: <20240316002026.1808336-1-sean.anderson@linux.dev>
+ <20240317-starved-pager-7a81c5045cfc@spud>
+ <9daf9c8f-6606-4ff6-8065-6a32fa0d152c@linux.dev>
+ <20240318-scarf-startup-64088b1d8d35@spud>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <20240318-scarf-startup-64088b1d8d35@spud>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 18, 2024 at 08:31:09AM -0700, Doug Anderson wrote:
-> On Mon, Mar 18, 2024 at 8:26 AM Doug Anderson <dianders@google.com> wrote:
-
-> > > A new compatible string (or one-off property) would allow them do make a
-> > > change when they are ready (e.g. by only updating the devicetrees after
-> > > all boot firmware has been patched and pushed out).
-> >
-> > I have no real opinion about the exact way this is solved so happy to
-> > let DT folks decide on how they want this. I will note, however, that
-> > device trees are never shipped separately and thus we have no
-> > intrinsic need for DT backward compatbility here. It would be OK from
-> > a ChromeOS perspective to add a property or compatible string for the
-> > broken case.
+On 3/18/24 11:40, Conor Dooley wrote:
+> On Mon, Mar 18, 2024 at 11:08:00AM -0400, Sean Anderson wrote:
+>> On 3/17/24 11:10, Conor Dooley wrote:
 > 
-> Actually, I should probably say more about this to make it clear how it works.
+>> > Additionally, should
+>> > they fall back to t1023-sfp? I see that there's already some dts files
+>> > with these compatibles in them but seemingly no driver support as there
+>> > is for the t1023-sfp.
+>> 
+>> I checked the reference manuals for these processors, and all of them use TA 2.0.
 > 
-> Chromebooks ship the kernel as a FIT image which bundles the kernel
-> and device trees together. The firmware looks at all the bundled
-> device trees and picks the proper one based on the board name,
-> revision, and SKU ID. The firmware then looks for the bluetooth node
-> (I believe it finds it from the "aliases" section) and adds the MAC
-> address there.
-> 
-> ...so we could update the DT to add a property (if that's desired)
-> even if we don't update the firmware.
+> Sounds like a fallback is suitable then, although that will require
+> updating the various dts files.
 
-Thanks for the details. Sounds like we could get away with adding a new
-property for the broken firmware in this case, which should resolve this
-nicely without having to deprecate anything.
+Yes, a fallback (like what is done for the T-series) would be suitable,
+but given that these devicetrees have been in-tree for eight years I
+think it would be preferable to support the existing bindings for
+compatibility purposes.
 
-Could you carry such a devicetree patch out-of-tree until the firmware
-has been fixed?
-
-Johan
+--Sean
 
