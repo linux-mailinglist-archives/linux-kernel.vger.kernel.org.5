@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-105905-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105907-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 554D087E640
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:49:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0189187E644
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:50:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A6D09B20A6C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:49:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2168A1C216E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:50:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 287E52E642;
-	Mon, 18 Mar 2024 09:49:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8635358A5;
+	Mon, 18 Mar 2024 09:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="WwFFUJmj"
-Received: from EUR01-HE1-obe.outbound.protection.outlook.com (mail-he1eur01on2077.outbound.protection.outlook.com [40.107.13.77])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="sFdlv2os"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2052.outbound.protection.outlook.com [40.107.21.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 60F932C84C;
-	Mon, 18 Mar 2024 09:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.13.77
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D150E2E85D;
+	Mon, 18 Mar 2024 09:49:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.52
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755338; cv=fail; b=hTpEd1tYK1n0y3+E/wmHYuDn3nZdtRLvKh3hc/+l2L+Wc4XSxoW8PWoIjeisUT2729oWyysal8BXYCaZAaibVdMrfczPEett+gaMmmqDX7t/t6SLPCn6/ZGW2p9EGm7RMk47tbLBW/5d4sqqhebpb1Cig7z8TP271nV8xxEZmuU=
+	t=1710755343; cv=fail; b=OIjhaPxi0WrDppjOBtSiWRhu/PATRmJfvxhHc+JUKAVy1Vr8t0k+5vGf53Wv+wGqQi8lxRo0D5+ES+1bzs2XiMyR9niglfLFT34MwaM9KLRVLFEhXqtI0nRGtUzizVoIh90DF6SeZwudrmcqxx/WWTjoF0wvzmUP6tCTOikWT3w=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755338; c=relaxed/simple;
-	bh=s2nH3UqW9kYFNerETvcHX0g2q8Amp7yRFNfV9rBx5kc=;
+	s=arc-20240116; t=1710755343; c=relaxed/simple;
+	bh=N8z57Dl5gheCpgM/X0woyO5vQavBrbt4clMFKAkqHqg=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=MnThDhyACv3tMrq+ziXz2jTGdfkJwf+5+w4qaW3sR6CkI5XrYd6hL1tPT/wjO31pZGi7z/4ZLIYbJZwDpFIsxgHvmYQZyqq+bdYoWwh3FFBKZS9mBuYdPPYL2uyr0iBB6/yE1zU68Y/uTJH2yFpJgKFSkzynarD3OdU4MK3xYRE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=WwFFUJmj; arc=fail smtp.client-ip=40.107.13.77
+	 Content-Type:MIME-Version; b=CCI2TIaXBUqPcsJWYp4YACnoYIM66s2b9nd0fk/7ADkcLo35T3iksxXJ5Sfm8yvSPQwE8BWizOFQvTpstnMnIOv/mMD9JQ0R8CVAVZ7Fm1Xd67OSoR75FbqP8uMJNjqDCluiUnWNSrRLoRMKPT+JyEj5lnBKdqzwG1MlFdjgnqg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=sFdlv2os; arc=fail smtp.client-ip=40.107.21.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=QjjgLXrkLS7IE/ENlXCwMIU3CuoR+vAUuWGM43zdmzrUO/2rXYRmil02HU/0CSJo4Lk85SOYl+EHolcRs30VMqLJzaDYsq6momO6DXYbcCmyxQDp2CL7VU2H21bmW0lW1j7Q1HgyUFYJ6KRW6kAbq1f8iU2dEcpbiLgXlsZRozKabnZPRgWU7au9EaMusqUsrginrdUXq4ZN8wsWVfki+3gxAcXIc5oup9y7mCtkGwrYarfORBu5aembDrCsAwq8SPZFFQA0ta/mPUifdG1duB+atFy8DAk5UXTfdigjRyCZLH7gfjjcKZRWfEi6JPrREYYwngPSVXxuft4Bj+VJvg==
+ b=UvakmKRA9tw1pjupiB65Ejd21q1JwrbYYmmTUa0e+9jayDk5Wc+6ZJOJuTyKaDOgi8AVcXgnGTfwUw5eRbuu2sNtC7A9IJEr0+GLTJuj2F0Vn8PMqwmWw51ywvD7KjekHe35EkAUTAyLmLyKrJmx1BNWI16KSZkRXV3MfLg7S+RhfVNZ4TTGU6nunNCMlsiL1dlRXsLL3UmrEAQz/SiFferHHxsgbgimFmQVGptV8LGXXZeHuoD/hAD8sMND4HnoLqtAN7K8FJszksw0UrhGiey5Ns55CZ/DCrag0OrlyZfPLqS1Tjp+MJ8ovynSDx2HC5RWfI+UqplHuYJHszx6zg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=hmAVGc5sVLAp2q+kXlRMubSP+Jhbn1vzo3R9teb5aoc=;
- b=QQTM7/4XwwDGpX3AULH669IrGTYrl7gzrzX9Jw9BoOUjvuDT1mDm/uSNXLPJBOElz/qPpj9jfzqMH/WSngm6Dd1ZW6NXvpe5EKg1Q2DBoXdaeKcVk7D61NOrKRH/EPAH8nxVo1E3yCINVLX/lw7p4k5feHyeLaww+C9DmSgq/N2Qy/B6Z7ZxCShn38qLONYvg2VMaZXSs4kHF4SbsVFyAPaXYyy1kDW8H8iu84sREI4+SA3LAernmpX6ZFy0JUc2HYAIP+d2B23IyNj1/dNVIjyMWaKHhbgnSHXx7Wpmjb2q0s62IGI1CsfpLL0AQ7NHaV5l6yhXeSCL9RTxkmyXUw==
+ bh=Egm0GF7MlITBOeFYJDhBZ782GpWxW5Bdw7LL2IoieLY=;
+ b=YmD5Z27YGDvkwZ/9cvQcEh3VW9359Notke2OdYRqvmx8bj8N0NFUEp1dQqCr8NkMayVxWrtQvpoDodqiTXDqAsVEReXEjiJ/ajp/7Ozq45Oy9JDxB8boHS4VzXqjYFm895DQa1+rKn1CIm9eKNelyc40AUljoD9+iLkiBYbt5sj2v6Q4kDgzJFmUNb5tE7llw2BhzuAjLa/6Qqmf/6cppqCnTTX9LrFAXhQhE0R8HNiCNBkB8CZOo6deutweJprX/GXBdQC2GxhAPClkihG81cXJLajVCracJ2St9eCd19rGdWN7a5x34CqIkqsCNeynls3au5CrzKG6CJZPmEVrwA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
  smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
  header.d=nxp.com; arc=none
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=hmAVGc5sVLAp2q+kXlRMubSP+Jhbn1vzo3R9teb5aoc=;
- b=WwFFUJmjND0xxRYEif9ImQXeRbIQPsbOkf1cDEmEJxBaEW5wU5cFckKpr9T/478yaror9KIwruEryxQeyQvq0X05PkpCrEHtMzd71nOxvRwR4ZMTXgWeiCgcR+ZuvAZx2CuvwMtmdAH5dNyqSx6l76pHFppnKtgbfVIBkVJsCKg=
+ bh=Egm0GF7MlITBOeFYJDhBZ782GpWxW5Bdw7LL2IoieLY=;
+ b=sFdlv2os3MbDIWu4p1QFcWy/7Sj/ObO0o3/xjBMZSap7Q7QqPewq+P6mgnQ1X/7E7YJ9RgETtHniBicembm5s3jJXH4NlJYWGJLzBXkdiFHkSmIhfG5xAdhCpCRKKNkrMCYqGSyvzB27WAMusKTGR7RPogKMDPg5kxLZMMxLe2k=
 Authentication-Results: dkim=none (message not signed)
  header.d=none;dmarc=none action=none header.from=nxp.com;
 Received: from PA4PR04MB9367.eurprd04.prod.outlook.com (2603:10a6:102:2aa::7)
  by AM9PR04MB8938.eurprd04.prod.outlook.com (2603:10a6:20b:409::20) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.25; Mon, 18 Mar
- 2024 09:48:52 +0000
+ 2024 09:48:58 +0000
 Received: from PA4PR04MB9367.eurprd04.prod.outlook.com
  ([fe80::688c:22a3:9638:9ded]) by PA4PR04MB9367.eurprd04.prod.outlook.com
  ([fe80::688c:22a3:9638:9ded%5]) with mapi id 15.20.7386.023; Mon, 18 Mar 2024
- 09:48:52 +0000
+ 09:48:58 +0000
 From: Joy Zou <joy.zou@nxp.com>
 To: frank.li@nxp.com,
 	ping.bai@nxp.com,
@@ -72,9 +72,9 @@ Cc: kernel@pengutronix.de,
 	linux-arm-kernel@lists.infradead.org,
 	linux-kernel@vger.kernel.org,
 	imx@lists.linux.dev
-Subject: [PATCH v5 2/3] regulator: pca9450: add pca9451a support
-Date: Mon, 18 Mar 2024 17:56:32 +0800
-Message-Id: <20240318095633.4079027-3-joy.zou@nxp.com>
+Subject: [PATCH v5 3/3] arm64: dts: imx93-11x11-evk: add pca9451a support
+Date: Mon, 18 Mar 2024 17:56:33 +0800
+Message-Id: <20240318095633.4079027-4-joy.zou@nxp.com>
 X-Mailer: git-send-email 2.37.1
 In-Reply-To: <20240318095633.4079027-1-joy.zou@nxp.com>
 References: <20240318095633.4079027-1-joy.zou@nxp.com>
@@ -91,325 +91,200 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 X-MS-PublicTrafficType: Email
 X-MS-TrafficTypeDiagnostic: PA4PR04MB9367:EE_|AM9PR04MB8938:EE_
-X-MS-Office365-Filtering-Correlation-Id: 686d1b49-7b14-4e99-1ad6-08dc47309e58
+X-MS-Office365-Filtering-Correlation-Id: 51f8e011-2ad4-4c6c-4ccc-08dc4730a23a
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	ABv7QdgvO9VsgllmcVuc1NLfZlfxch5rJDuYQIfit9TN+Y4bG6GsHCjJ5rQg6M+7qNc8UWd7mC9nELfakNvnxfXHfZVFpIooEVellfGFzN2U9pjXuq7BWGKugpcZfhXY9IUwH2GPq/berEoBu2gMsqFuV6rEwuE5t5DDIHB7ThMFloC4auh8RU0DW0MRKLkhy4M4qqNt2ovbPLvvFC9av2iEindouICAzt2+JAb+70zBIq/7qtcs5C92DSwhYYmC7XHEjGLzVkAp90Th0Jpfe5885I46NmxR9es0QFD5ZwkDS9EwWpXHjGiKSSIodrp/rcOidfnocVfhYLJtJw0AI9+ZNAkWaRR27hxj2dD2oAvZwqvHLnq1rJzpNEpuqP7irf5y4lJp2nGv9rYGi3jM7IpXWVYmDoq2LZz+dmRzClf/mL++VmsML+zhA76j/mPQUYjxI249VIkjRL1NT4SQkGmbMsRuUcIlU4wRmvONs/ytIlt4gfvtmxfHLw+kw/1DM1N1TY6W+mmXlpSn6bAH+AENglhkdOsjWR5iC5IR3vL+8Wy40Fm9+cvIa97tTcNKYvXSwYE9pLVrK67NxkfBXi1T4Kk/8soCd5bzsLWSeKf3HkstrHgZi7v0Z7l+/p1kJQ+i/aFx4mEhby4ACmpcOC4xaFg5097CHMiF3dgpF6FpUy/mN4fDhepM/Z8TbmgZeQRgz4XnwogLnKN9HSrLMV5yCHqtQPO9avbKe3GiVxc=
+	FRItNZK9jC2+8OyPxUOQoS1vRNvOMQ5BcNahwL4pr1gyDq95Z9vjFANz/5VUhDKs7g25HqFsIYXBuKb9HBySFaRKRMjG8f8Yvpm3Ci8h1IrkZPhu1ZW/HrLtmmm9vP1QIAN79qJHzLEzd8ne0kNCRJFXiJIbMkp2M7rhdQSK7DI77vcrNKkN7HwxPq7dBasaNtAjURM64yWmsayg4fFPzrORkpVajZZ+Qb8n+aNbsjOVJnyiFY4rV8x67LnyslwxIxuBkO9g+JqiG1ATwLB7Nm1kL8ep0JY+D4er29Msv+iRsYWiGN+SGTVdT2QLBvfEoktsYvg/KIC5f1pH8CR5QzUH5HjLZwc61wnAA17s5iPVzBB5zgmSlBUfgwZzwXlTJmE/OnSkpL+dJ37e5YbLH1E5jXkW27ARLQP796U9X3L7ivtpnGifwSrl0KOBwTIkavz/uDsu/Jp46bBedQe+j6VpjoCIYEn2wYJpz0HFcHyesoHebUzXZ4iysjFA7P/MToxL9UAA6JwOyZJp3MiGFwZebGyGjEW4yFCVeVuCf0yFPJtvwCI+5TZFJjAyKU66tlme5QsYPgIddha9uXU8CpDYdjHLIAIFKqYbFOSvcO23C74cInxMCWcXJWLbXb7+fXRSHCLtr9J8gFOicN3DDS0pmh6OwiIFE5FZq9TvPwofgS0oI1jS8JSh1MH2ovBfzQxXVGCmJnvF3fmd2zcr8w==
 X-Forefront-Antispam-Report:
 	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PA4PR04MB9367.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(52116005)(366007)(1800799015)(38350700005);DIR:OUT;SFP:1101;
 X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
 X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?Uu7Rzsx8iXsCJpjavf4mCQ4q2gXngOlR38Afdp/iatFR+4DzLffOOnX/csz/?=
- =?us-ascii?Q?RdjW3rHVaNsw9VjEAM77KVURilRN6QNc4y0p99AnweVWqaIKwPnufWoH1fpe?=
- =?us-ascii?Q?zmlLCAExJE015BEzdGIuwCugn7anB4ct7CuvqIoAFmAbqnoTnMZj6UhRhoWG?=
- =?us-ascii?Q?Tpu3aakuTod8GP8nzApps4abvLwXYaLloXreefB1mN892Ks5R0sFiGNRvh2l?=
- =?us-ascii?Q?PRIzViaoznII7AQXaIqzA0+wvg0rUGxhlvKWk8y1jRYBxnga3n3jL5re0JRI?=
- =?us-ascii?Q?069gBW7DPVlc2S34RqywJViZfG51Tvr4uFtc1a/dG+76GQqbA/oBBzpubrLa?=
- =?us-ascii?Q?WkiqlKxtTh79xSxaKicfm//RdSx3hQdDpgLpWUcv2k7Z2N912+aB6xgwzAuX?=
- =?us-ascii?Q?hYOgDKVmYWiXqsJCKQcdvDl57/ywgrjUCt3VVGCciaK2aKonTvsRvPxBSmA3?=
- =?us-ascii?Q?K3xWpG3IlW74WKIWD/P58Mo1mrJ1+X8rLxQ1hTS11eYj9vPaN6n1f3oKB5TC?=
- =?us-ascii?Q?65rTuyXFuUGwEIJkraumc7NktrqRFX9TZOFHDWaImu63GSuDUJZxq5bblZPG?=
- =?us-ascii?Q?IJSMk8M6Tp7N8SVM2LHN8RvED5PwQrDFvz7AKWQUD+mAU116DkgfgKMrunj9?=
- =?us-ascii?Q?nhTTGgo6NU8duO8UOU2m/gKGYdn7aeOEKYecKxCX1L2hFpoV7IAsIEfpTP7F?=
- =?us-ascii?Q?EZ3x5f1JdIqleNobfhPLdz8UA93jq00HxyDP0tjZ9NL29pJv8s+DGsf3b89y?=
- =?us-ascii?Q?03dqkOQLVx8O4UdYjVTdB9yt6pDP0z0tm41dYGUz/0CqCjtEizvYjCvdkgfW?=
- =?us-ascii?Q?0Z0pQXCY30kH+SfXR4RtUkayIiHetSOYem7oblF1lryahL+kDi2Nh+mpK/Vx?=
- =?us-ascii?Q?OxSG5/B7JKh63fhAf1op2dT0f0DCOQiv2rBEmo03l1ZegV04JmsocaPLBBc/?=
- =?us-ascii?Q?h6x3Od1f8PKWP18bnewQIQQJBwFzqVnidgfPB9wfzshPWZ9LK7zPSvLvA35x?=
- =?us-ascii?Q?+bzxljl/a2ovoCSHziSR3GnWayvrGv/X+956oHKo3Kwo7N9W0qr25tTk6nkO?=
- =?us-ascii?Q?AUHk+SplAKJ4IrlkUZSdFw6UeH2IS/Qk7SuPjoSX3z+wgni9YxqKBv4w2oG9?=
- =?us-ascii?Q?TQ2NsJiWf2Xn7AB2gPI+P1EaEJts3rXv8s/XmS77iZ5Tqd5vV+qhAVLArxXQ?=
- =?us-ascii?Q?CiSvcKyFyuyInx2MW4K1mlKU4MWp2/bBuyepuffApwTmrYP/+XnfHTfJepV+?=
- =?us-ascii?Q?JqwjWiDQOahMjokKJYZ9LAKykZbJU6lnljXlW+O237fCaMT1kGHx5dQqf5YT?=
- =?us-ascii?Q?/aFL5XP8tbKqdwKGid6pqNJurlYT44FEir8drfhuu6VPmyhsp4KL7UOULXBq?=
- =?us-ascii?Q?ed9kZtBgasNxYK5BigT6bXW01WGzciowfv26m+kuqGSJqSYZeXSkU91D/VHl?=
- =?us-ascii?Q?CRsyFm2/2uPl1Txm8xU/85LtRE4hsMzJ/u0MshI2s09UlMZFnVEQlDAZI26R?=
- =?us-ascii?Q?WYyaIRZHcysvDFy0kuwkT+x2bWY7TEXsBpNifhqEn3wPomcqC9PWNYyN+aYi?=
- =?us-ascii?Q?QJ1GeD6f6wKdfg59D8Kgp/iML3TCo9r2rAitXQfs?=
+	=?us-ascii?Q?L2Q7SydOSTMrH6DoFiJaMkjiHOSQURd+iZfJs8Jo+dhIzMN1W7NiC/1+STzk?=
+ =?us-ascii?Q?c4mzowwjHdt7zwuW+EIXiPSwBC0jVpTQg7K7z71DeBrpshZTK50nzbxV0ndV?=
+ =?us-ascii?Q?xWMfkuG3Y+T+e8u9Wk47DiiP7LtLh264plc/vIG3sdKWqt0xHAK9xG+1SJyZ?=
+ =?us-ascii?Q?2HgMi9ZajbYWBbSFhhEGtRc32jVj06nYSlfZMly+aDXwiKUQDhq30mVKvYFZ?=
+ =?us-ascii?Q?jw12e6STmzRKewWg/XlgNqwPDfr5hgwufQmd2uMalBtDO8QSy6hREhZ8JMKE?=
+ =?us-ascii?Q?yWKovT31lIDNz2rgfw9ujHdXTNoC23+qyw0sts2IZIUYwVQnFHWrm9/8mVHh?=
+ =?us-ascii?Q?BvLYr1qQkk/w2GooTwmE5DpFXZHSdfyZIte7MvM0Fe94BAuuwNh3wL5A/So3?=
+ =?us-ascii?Q?AZuIdNcuM7SY9X9V/Ii/NhIXRQ0dEiHrQQPZyedgDWGu+o+bj/SrLTVnFswh?=
+ =?us-ascii?Q?JXZJ4EqoSSsPmde0c1fTNVIvt2zxSoyRr2uLVCVoDgbvA7SNtksLZ59TqCpp?=
+ =?us-ascii?Q?Powu5xAMXOE+ozWytEu4y9uXXGtya6cmALzRAEE8MdQ2yrPdLWrkDTjBUB6f?=
+ =?us-ascii?Q?ncfMX8qNez06GjzGUv4pZnniVQjDv9wjw/8uEVMhVUJ9+vmOuCDuNzYOErfS?=
+ =?us-ascii?Q?Fcj4+2gbmZRXhAAjUQU78X0EwSPwasya+Jtav2wSYCr7kbEeZIUFVVaD45I7?=
+ =?us-ascii?Q?oD7NwgMJ85rLwt6lOX5jEuvuj5IALaTwUaK4j5nusmSf27WwQafDfBlzF/Ne?=
+ =?us-ascii?Q?J24d/1MAQmq7hEuOebPxrIy9ggNv/rKe6dME1Lk23wgCSh9WcxlkidPHeCi8?=
+ =?us-ascii?Q?pvbBThzslxfxoIKhibsoP9ln+3NNGhNvE5tohlpk7cn6ivPfECV9AixmIlrC?=
+ =?us-ascii?Q?9zwtdQPX4AYywbADvO5UxOkYx8vjgHcuzXEQc1Q2TjnqiR84GtMb6pbTwGgN?=
+ =?us-ascii?Q?wDYPFvTeBxT9SA4WGZhlaV0BPMpuppaOda2OQfP+fla3Q5tHHzYddtdsUOc4?=
+ =?us-ascii?Q?qPgOC7af62cM9fSl0qBiNBBchjLgxb1XcWFTS8WzS9Ymi0sejqWV7I1qe0uL?=
+ =?us-ascii?Q?59mGhuk/7Aeonx/UnNQ+LZgffT7bbLF1zch/RL38NSbYY2p74ANl1/tyuHck?=
+ =?us-ascii?Q?2f0cJSx9pGRS2Ucf+O0b5L3uRXaWCMf8hOB3cGjJZaW9Ut6Qi1XZkUwmHkIk?=
+ =?us-ascii?Q?AtC0R2dZzNUkn7OPPGPRCp1+W/vvzFCgkcZTbBJK81Fq9w47aHHDUbQiaAHU?=
+ =?us-ascii?Q?4JJhule7OyZZX0HleOFP/DvIUkf9hXR319sPs6PDwHfOLt855MRzQkLeVDjN?=
+ =?us-ascii?Q?JSPuc34njZUXb8Gh13MK4hD38YU+SQrhQnXkZrIhLEa4Y3gsumVKYLcp2iVL?=
+ =?us-ascii?Q?OfWzmvyWFt3pzNQy6oHWVG7Tj47dkm90R6uDpxdPcP+GKyC/cT1J+Mv4ptzp?=
+ =?us-ascii?Q?BdZOzMZ8iJMO4l6S84WLVkvKdif0wq1TZTmdki4cretEGSititxwhNM/Hxxg?=
+ =?us-ascii?Q?PKS/hfcp5/dpsGLz1CRBotOkt5UhUY4zJlASWajIUcVEwnoOZcGyYR3WaoVN?=
+ =?us-ascii?Q?3shhNJP2Xy4QurBJ5KACGuDWlosz9codGXmyNex9?=
 X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 686d1b49-7b14-4e99-1ad6-08dc47309e58
+X-MS-Exchange-CrossTenant-Network-Message-Id: 51f8e011-2ad4-4c6c-4ccc-08dc4730a23a
 X-MS-Exchange-CrossTenant-AuthSource: PA4PR04MB9367.eurprd04.prod.outlook.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:48:52.4410
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:48:58.7533
  (UTC)
 X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
 X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
 X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AmIVb3EGcxAbHgKdwR38hjQC7pdJGckyL+Cy8lUEJ4btWvAfnVLqLkEEKE1SEO/m
+X-MS-Exchange-CrossTenant-UserPrincipalName: jQPZSIVEFJcyJvnuKe9uddo1gJzCs5n2guHzgib5iZSFFkayk5qNiKqf1dZvTt27
 X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8938
 
-Adding support for new pmic pca9451a.
+Support pca9451a on imx93-11x11-evk.
 
 Signed-off-by: Joy Zou <joy.zou@nxp.com>
 ---
+Changes in v5:
+1.adjust gpio@22 to the front of pmic@25.
+
+Changes in v4:
+1. modify the comment for uSDHC but not i2c.
+
 Changes in v3:
-1. remove not related change.
-2. delete unnecessary empty line.
-3. modify commit message.
-
-Changes in v2:
-1. remove the old part support because the old part only is used for sample
-and is diffcult to distinguish old and new part. so drop old part.
-2. remove the unnecessary marco definition in the file pca9450.h.
+1. modify the voltages constraints according to the imx93 datasheet.
 ---
- drivers/regulator/pca9450-regulator.c | 194 +++++++++++++++++++++++++-
- include/linux/regulator/pca9450.h     |   1 +
- 2 files changed, 193 insertions(+), 2 deletions(-)
+ .../boot/dts/freescale/imx93-11x11-evk.dts    | 111 ++++++++++++++++++
+ 1 file changed, 111 insertions(+)
 
-diff --git a/drivers/regulator/pca9450-regulator.c b/drivers/regulator/pca9450-regulator.c
-index 2ab365d2749f..242ff25f5b83 100644
---- a/drivers/regulator/pca9450-regulator.c
-+++ b/drivers/regulator/pca9450-regulator.c
-@@ -106,6 +106,14 @@ static const struct linear_range pca9450_dvs_buck_volts[] = {
- 	REGULATOR_LINEAR_RANGE(600000,  0x00, 0x7F, 12500),
+diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+index 9921ea13ab48..478a134d4416 100644
+--- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
++++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
+@@ -183,6 +183,104 @@ &wdog3 {
+ 	status = "okay";
  };
  
-+/*
-+ * BUCK1/3
-+ * 0.65 to 2.2375V (12.5mV step)
-+ */
-+static const struct linear_range pca9451a_dvs_buck_volts[] = {
-+	REGULATOR_LINEAR_RANGE(650000, 0x00, 0x7F, 12500),
++&lpi2c2 {
++	#address-cells = <1>;
++	#size-cells = <0>;
++	clock-frequency = <400000>;
++	pinctrl-names = "default", "sleep";
++	pinctrl-0 = <&pinctrl_lpi2c2>;
++	pinctrl-1 = <&pinctrl_lpi2c2>;
++	status = "okay";
++
++	pcal6524: gpio@22 {
++		compatible = "nxp,pcal6524";
++		pinctrl-names = "default";
++		pinctrl-0 = <&pinctrl_pcal6524>;
++		reg = <0x22>;
++		gpio-controller;
++		#gpio-cells = <2>;
++		interrupt-controller;
++		#interrupt-cells = <2>;
++		interrupt-parent = <&gpio3>;
++		interrupts = <27 IRQ_TYPE_LEVEL_LOW>;
++	};
++
++	pmic@25 {
++		compatible = "nxp,pca9451a";
++		reg = <0x25>;
++		interrupt-parent = <&pcal6524>;
++		interrupts = <11 IRQ_TYPE_EDGE_FALLING>;
++
++		regulators {
++			buck1: BUCK1 {
++				regulator-name = "BUCK1";
++				regulator-min-microvolt = <610000>;
++				regulator-max-microvolt = <950000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck2: BUCK2 {
++				regulator-name = "BUCK2";
++				regulator-min-microvolt = <600000>;
++				regulator-max-microvolt = <670000>;
++				regulator-boot-on;
++				regulator-always-on;
++				regulator-ramp-delay = <3125>;
++			};
++
++			buck4: BUCK4{
++				regulator-name = "BUCK4";
++				regulator-min-microvolt = <1620000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck5: BUCK5{
++				regulator-name = "BUCK5";
++				regulator-min-microvolt = <1620000>;
++				regulator-max-microvolt = <3400000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			buck6: BUCK6 {
++				regulator-name = "BUCK6";
++				regulator-min-microvolt = <1060000>;
++				regulator-max-microvolt = <1140000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo1: LDO1 {
++				regulator-name = "LDO1";
++				regulator-min-microvolt = <1620000>;
++				regulator-max-microvolt = <1980000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo4: LDO4 {
++				regulator-name = "LDO4";
++				regulator-min-microvolt = <800000>;
++				regulator-max-microvolt = <840000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++
++			ldo5: LDO5 {
++				regulator-name = "LDO5";
++				regulator-min-microvolt = <1800000>;
++				regulator-max-microvolt = <3300000>;
++				regulator-boot-on;
++				regulator-always-on;
++			};
++		};
++	};
 +};
 +
- /*
-  * BUCK4/5/6
-  * 0.6V to 3.4V (25mV step)
-@@ -662,6 +670,178 @@ static const struct pca9450_regulator_desc pca9450bc_regulators[] = {
- 	},
- };
+ &iomuxc {
+ 	pinctrl_eqos: eqosgrp {
+ 		fsl,pins = <
+@@ -238,6 +336,19 @@ MX93_PAD_DAP_TCLK_SWCLK__LPUART5_CTS_B		0x31e
+ 		>;
+ 	};
  
-+static const struct pca9450_regulator_desc pca9451a_regulators[] = {
-+	{
-+		.desc = {
-+			.name = "buck1",
-+			.of_match = of_match_ptr("BUCK1"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_BUCK1,
-+			.ops = &pca9450_dvs_buck_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_BUCK1_VOLTAGE_NUM,
-+			.linear_ranges = pca9451a_dvs_buck_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9451a_dvs_buck_volts),
-+			.vsel_reg = PCA9450_REG_BUCK1OUT_DVS0,
-+			.vsel_mask = BUCK1OUT_DVS0_MASK,
-+			.enable_reg = PCA9450_REG_BUCK1CTRL,
-+			.enable_mask = BUCK1_ENMODE_MASK,
-+			.enable_val = BUCK_ENMODE_ONREQ,
-+			.ramp_mask = BUCK1_RAMP_MASK,
-+			.ramp_delay_table = pca9450_dvs_buck_ramp_table,
-+			.n_ramp_values = ARRAY_SIZE(pca9450_dvs_buck_ramp_table),
-+			.owner = THIS_MODULE,
-+			.of_parse_cb = pca9450_set_dvs_levels,
-+		},
-+		.dvs = {
-+			.run_reg = PCA9450_REG_BUCK1OUT_DVS0,
-+			.run_mask = BUCK1OUT_DVS0_MASK,
-+			.standby_reg = PCA9450_REG_BUCK1OUT_DVS1,
-+			.standby_mask = BUCK1OUT_DVS1_MASK,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "buck2",
-+			.of_match = of_match_ptr("BUCK2"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_BUCK2,
-+			.ops = &pca9450_dvs_buck_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_BUCK2_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_dvs_buck_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_dvs_buck_volts),
-+			.vsel_reg = PCA9450_REG_BUCK2OUT_DVS0,
-+			.vsel_mask = BUCK2OUT_DVS0_MASK,
-+			.enable_reg = PCA9450_REG_BUCK2CTRL,
-+			.enable_mask = BUCK2_ENMODE_MASK,
-+			.enable_val = BUCK_ENMODE_ONREQ_STBYREQ,
-+			.ramp_mask = BUCK2_RAMP_MASK,
-+			.ramp_delay_table = pca9450_dvs_buck_ramp_table,
-+			.n_ramp_values = ARRAY_SIZE(pca9450_dvs_buck_ramp_table),
-+			.owner = THIS_MODULE,
-+			.of_parse_cb = pca9450_set_dvs_levels,
-+		},
-+		.dvs = {
-+			.run_reg = PCA9450_REG_BUCK2OUT_DVS0,
-+			.run_mask = BUCK2OUT_DVS0_MASK,
-+			.standby_reg = PCA9450_REG_BUCK2OUT_DVS1,
-+			.standby_mask = BUCK2OUT_DVS1_MASK,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "buck4",
-+			.of_match = of_match_ptr("BUCK4"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_BUCK4,
-+			.ops = &pca9450_buck_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_BUCK4_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_buck_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_buck_volts),
-+			.vsel_reg = PCA9450_REG_BUCK4OUT,
-+			.vsel_mask = BUCK4OUT_MASK,
-+			.enable_reg = PCA9450_REG_BUCK4CTRL,
-+			.enable_mask = BUCK4_ENMODE_MASK,
-+			.enable_val = BUCK_ENMODE_ONREQ,
-+			.owner = THIS_MODULE,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "buck5",
-+			.of_match = of_match_ptr("BUCK5"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_BUCK5,
-+			.ops = &pca9450_buck_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_BUCK5_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_buck_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_buck_volts),
-+			.vsel_reg = PCA9450_REG_BUCK5OUT,
-+			.vsel_mask = BUCK5OUT_MASK,
-+			.enable_reg = PCA9450_REG_BUCK5CTRL,
-+			.enable_mask = BUCK5_ENMODE_MASK,
-+			.enable_val = BUCK_ENMODE_ONREQ,
-+			.owner = THIS_MODULE,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "buck6",
-+			.of_match = of_match_ptr("BUCK6"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_BUCK6,
-+			.ops = &pca9450_buck_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_BUCK6_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_buck_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_buck_volts),
-+			.vsel_reg = PCA9450_REG_BUCK6OUT,
-+			.vsel_mask = BUCK6OUT_MASK,
-+			.enable_reg = PCA9450_REG_BUCK6CTRL,
-+			.enable_mask = BUCK6_ENMODE_MASK,
-+			.enable_val = BUCK_ENMODE_ONREQ,
-+			.owner = THIS_MODULE,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "ldo1",
-+			.of_match = of_match_ptr("LDO1"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_LDO1,
-+			.ops = &pca9450_ldo_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_LDO1_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_ldo1_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_ldo1_volts),
-+			.vsel_reg = PCA9450_REG_LDO1CTRL,
-+			.vsel_mask = LDO1OUT_MASK,
-+			.enable_reg = PCA9450_REG_LDO1CTRL,
-+			.enable_mask = LDO1_EN_MASK,
-+			.owner = THIS_MODULE,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "ldo4",
-+			.of_match = of_match_ptr("LDO4"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_LDO4,
-+			.ops = &pca9450_ldo_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_LDO4_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_ldo34_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_ldo34_volts),
-+			.vsel_reg = PCA9450_REG_LDO4CTRL,
-+			.vsel_mask = LDO4OUT_MASK,
-+			.enable_reg = PCA9450_REG_LDO4CTRL,
-+			.enable_mask = LDO4_EN_MASK,
-+			.owner = THIS_MODULE,
-+		},
-+	},
-+	{
-+		.desc = {
-+			.name = "ldo5",
-+			.of_match = of_match_ptr("LDO5"),
-+			.regulators_node = of_match_ptr("regulators"),
-+			.id = PCA9450_LDO5,
-+			.ops = &pca9450_ldo_regulator_ops,
-+			.type = REGULATOR_VOLTAGE,
-+			.n_voltages = PCA9450_LDO5_VOLTAGE_NUM,
-+			.linear_ranges = pca9450_ldo5_volts,
-+			.n_linear_ranges = ARRAY_SIZE(pca9450_ldo5_volts),
-+			.vsel_reg = PCA9450_REG_LDO5CTRL_H,
-+			.vsel_mask = LDO5HOUT_MASK,
-+			.enable_reg = PCA9450_REG_LDO5CTRL_H,
-+			.enable_mask = LDO5H_EN_MASK,
-+			.owner = THIS_MODULE,
-+		},
-+	},
-+};
++	pinctrl_lpi2c2: lpi2c2grp {
++		fsl,pins = <
++			MX93_PAD_I2C2_SCL__LPI2C2_SCL			0x40000b9e
++			MX93_PAD_I2C2_SDA__LPI2C2_SDA			0x40000b9e
++		>;
++	};
 +
- static irqreturn_t pca9450_irq_handler(int irq, void *data)
- {
- 	struct pca9450 *pca9450 = data;
-@@ -729,6 +909,10 @@ static int pca9450_i2c_probe(struct i2c_client *i2c)
- 		regulator_desc = pca9450bc_regulators;
- 		pca9450->rcnt = ARRAY_SIZE(pca9450bc_regulators);
- 		break;
-+	case PCA9450_TYPE_PCA9451A:
-+		regulator_desc = pca9451a_regulators;
-+		pca9450->rcnt = ARRAY_SIZE(pca9451a_regulators);
-+		break;
- 	default:
- 		dev_err(&i2c->dev, "Unknown device type");
- 		return -EINVAL;
-@@ -755,7 +939,8 @@ static int pca9450_i2c_probe(struct i2c_client *i2c)
- 
- 	/* Check your board and dts for match the right pmic */
- 	if (((device_id >> 4) != 0x1 && type == PCA9450_TYPE_PCA9450A) ||
--	    ((device_id >> 4) != 0x3 && type == PCA9450_TYPE_PCA9450BC)) {
-+	    ((device_id >> 4) != 0x3 && type == PCA9450_TYPE_PCA9450BC) ||
-+	    ((device_id >> 4) != 0x9 && type == PCA9450_TYPE_PCA9451A)) {
- 		dev_err(&i2c->dev, "Device id(%x) mismatched\n",
- 			device_id >> 4);
- 		return -EINVAL;
-@@ -846,7 +1031,8 @@ static int pca9450_i2c_probe(struct i2c_client *i2c)
- 	}
- 
- 	dev_info(&i2c->dev, "%s probed.\n",
--		type == PCA9450_TYPE_PCA9450A ? "pca9450a" : "pca9450bc");
-+		type == PCA9450_TYPE_PCA9450A ? "pca9450a" :
-+		(type == PCA9450_TYPE_PCA9451A ? "pca9451a" : "pca9450bc"));
- 
- 	return 0;
- }
-@@ -864,6 +1050,10 @@ static const struct of_device_id pca9450_of_match[] = {
- 		.compatible = "nxp,pca9450c",
- 		.data = (void *)PCA9450_TYPE_PCA9450BC,
- 	},
-+	{
-+		.compatible = "nxp,pca9451a",
-+		.data = (void *)PCA9450_TYPE_PCA9451A,
-+	},
- 	{ }
- };
- MODULE_DEVICE_TABLE(of, pca9450_of_match);
-diff --git a/include/linux/regulator/pca9450.h b/include/linux/regulator/pca9450.h
-index 505c908dbb81..243633c8dceb 100644
---- a/include/linux/regulator/pca9450.h
-+++ b/include/linux/regulator/pca9450.h
-@@ -9,6 +9,7 @@
- enum pca9450_chip_type {
- 	PCA9450_TYPE_PCA9450A = 0,
- 	PCA9450_TYPE_PCA9450BC,
-+	PCA9450_TYPE_PCA9451A,
- 	PCA9450_TYPE_AMOUNT,
- };
- 
++	pinctrl_pcal6524: pcal6524grp {
++		fsl,pins = <
++			MX93_PAD_CCM_CLKO2__GPIO3_IO27			0x31e
++		>;
++	};
++
+ 	/* need to config the SION for data and cmd pad, refer to ERR052021 */
+ 	pinctrl_usdhc1: usdhc1grp {
+ 		fsl,pins = <
 -- 
 2.37.1
 
