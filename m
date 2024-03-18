@@ -1,337 +1,221 @@
-Return-Path: <linux-kernel+bounces-105662-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105664-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66CD987E23D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:46:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 763B787E244
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:47:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D11BC1F21305
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:46:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2C2FF2830AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:47:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8314E1DDF4;
-	Mon, 18 Mar 2024 02:45:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 229461DFE8;
+	Mon, 18 Mar 2024 02:47:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aGHg4Ibm"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CC28814;
-	Mon, 18 Mar 2024 02:45:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710729954; cv=none; b=kayX09RcNUd9MVFSjgmvtBsCEsOQLxyUXr89kYPfPOScCNOqqNV3laRs5U+myiIqk15w5JwhsV75Nw9Bgz46BYqUfBqVANJ3OSPYbGmBYQVBaVKYjENzaP4gEI99BlhfgoOgx/pqCIyhVtibR6tvLZc7xtYqNTAyAB5f87Le9G8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710729954; c=relaxed/simple;
-	bh=CxnsZd7rbZMrQtDk4mHIEY+JTsHd4K0H9jn4yBsFhgA=;
-	h=From:To:Cc:Subject:Date:Message-Id; b=UfQvNfKaijpS66YtNx18nJn1SuxnbXfY+FB3w5L8PQxa4Jfw0J4wf+UH3MIFioeQb0N0TjExh55tYkhwPafL0NnFO4z4mUbkH8trO3QGb4L0shn9qcM9z6gn6QWvhVDivsOisBNFPyh2I2qVx4xoDe9ZKH6kbB/xCdiaHItwXc4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aGHg4Ibm; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: by linux.microsoft.com (Postfix, from userid 1134)
-	id 9520020B74C0; Sun, 17 Mar 2024 19:45:52 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9520020B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710729952;
-	bh=rvVWLQiGsfQNZCfj9wc8a/tjixWzO4wJ12FE9seR5i0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=aGHg4Ibmiv0G8KbRHkwOe0IIbzq898ovzRbPS+o53r7SRV+7evZfzenjmQWK8BgvU
-	 fB8gbpfq2EYvEs9hd7dxsBzAg4KehjuEd9+g9E5YgVvobpyu2pOwkmYsAFKHRcujbz
-	 TW8rkQfgzmIcsZLiDD8yf7NrUkcE+GOqJ7mbhuR8=
-From: Shradha Gupta <shradhagupta@linux.microsoft.com>
-To: linux-kernel@vger.kernel.org,
-	linux-hyperv@vger.kernel.org
-Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
-	"K. Y. Srinivasan" <kys@microsoft.com>,
-	Haiyang Zhang <haiyangz@microsoft.com>,
-	Wei Liu <wei.liu@kernel.org>,
-	Dexuan Cui <decui@microsoft.com>,
-	Long Li <longli@microsoft.com>,
-	Olaf Hering <olaf@aepfle.de>,
-	Ani Sinha <anisinha@redhat.com>,
-	Shradha Gupta <shradhagupta@microsoft.com>
-Subject: [PATCH v3] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for keyfile format
-Date: Sun, 17 Mar 2024 19:45:51 -0700
-Message-Id: <1710729951-2695-1-git-send-email-shradhagupta@linux.microsoft.com>
-X-Mailer: git-send-email 1.8.3.1
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="a8vzg9mn"
+Received: from EUR05-AM6-obe.outbound.protection.outlook.com (mail-am6eur05on2084.outbound.protection.outlook.com [40.107.22.84])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E10F61C10;
+	Mon, 18 Mar 2024 02:47:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.22.84
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710730033; cv=fail; b=CXwQ4H+YsXDX8vJ6t96R81j5aD0PRsp/CwnMmUCwXRmYY8mK7aVtwAsV+vpGo7DanM7/bMuB9ZxbChLpYHGB+vrHq2F9yRK3WurKei7fXz4HXBCWKIYl24ipr9JtH/Tmtxsrq58SPMhFBihPnxmsd6/7NHjXDkwUIrP3Zai0YWQ=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710730033; c=relaxed/simple;
+	bh=sDtglPoaFEw22QeN6AUMzWOHVCLVXTxqMGal0ezbY1g=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=MSXTGv1jk+7tTfWMFCnPjyIC8KuXa+LS6s/256gW7UipOnZlqFlMjV3MajDbujZG/bvxbFsjyb3YJZjgzW7LQbfeuLcLSekjVeXH3/dQhxVIMa+4y0my0To9ybZKY4/lJXrEKCWJbhbDI5S+yNBAhhfNgZ/CCHqV+Ev2WI15yDE=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=a8vzg9mn; arc=fail smtp.client-ip=40.107.22.84
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=X51YIvENz08vk9uhF/NLq9kdnbHcgGh64MqJn9+3c9+5jNHvMNEmwQxw7bkJizpLk7vACjt6ru3DEPd9ULih9N7EbC1Z2USO0AvNZMojV/AsKQ9mrWEHYTdx6PfTxydZzLoV7dclWKRa4n3aDj/PIJXLnWrkMsW2LFPJMHtvO1t0wci7FtORHxLmk6QilB5jq5tZZm7Ygq3oIyTLRyZeATo8L5I/ZJKD2CI8JVudBQg1jYyf2UbqVfZNSGSFfXy0PFP18PylK+hqHkQfLAuPksBW5NB1bh4vE+ZzVTfBZb6EnQcD7Ea0I1kPikR54WmJm+oFDZEYBHFxN4oQNiPYJw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=sDtglPoaFEw22QeN6AUMzWOHVCLVXTxqMGal0ezbY1g=;
+ b=FozA9TAv2tOamxOb/XyNxor7aiQKuboiD+OYsWNeh6WLI3f1lvW15eIdNvaq+3WZyLiTjKCMBHyBgHhc5kzErxoIGoUK9YVcAplr6fdaXoaEaEHVsgH6JeNRQTFGF39ovzY4B7Utg5ORuWvq+SzRX+aCK222mBHoNghVEBcFrtEDmjKZV8kW0zWVrpNTamM/VzDw99IHzdlw0PEmaw1GI7ydfuaJFycv9neVnFKKX63HT571SnkPZv6b8mGxJXAeAHmR+ogFcx4aUM7QGkzO/k0mendOO75CLFr0R8xEsPj3sI2t08i+TGmncSEQn4JQPRtOwfSG4L/+1ONkcpPXqA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=sDtglPoaFEw22QeN6AUMzWOHVCLVXTxqMGal0ezbY1g=;
+ b=a8vzg9mnb/7rOvrI2AFYP2+aNAmwRiQkkvUje9i2J8VdI4a3l7JUfoiYB0zcxxm6mYJD6/OTwYrJQmuiCBw+pzxm6+c318LtHNo2nTTLuDTNegqV6fzuhas2abrPrn9liIuNCTU9twUTXK2cNFdqsjf3NHkpqO78G8ikupn30Xw=
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
+ by VI1PR04MB7088.eurprd04.prod.outlook.com (2603:10a6:800:11d::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
+ 2024 02:47:06 +0000
+Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
+ ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.017; Mon, 18 Mar 2024
+ 02:47:06 +0000
+From: Peng Fan <peng.fan@nxp.com>
+To: Cristian Marussi <cristian.marussi@arm.com>
+CC: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>, Sudeep Holla
+	<sudeep.holla@arm.com>, Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Oleksii Moisieiev <oleksii_moisieiev@epam.com>, Linus Walleij
+	<linus.walleij@linaro.org>, Shawn Guo <shawnguo@kernel.org>, Sascha Hauer
+	<s.hauer@pengutronix.de>, Pengutronix Kernel Team <kernel@pengutronix.de>,
+	Fabio Estevam <festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
+	"linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>, "linux-gpio@vger.kernel.org"
+	<linux-gpio@vger.kernel.org>, AKASHI Takahiro <takahiro.akashi@linaro.org>,
+	Rob Herring <robh@kernel.org>
+Subject: RE: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Topic: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+ protocol basic support
+Thread-Index: AQHadhNQAq3ztPnC+06ZIaeZ1qof0rE3crUAgACA3vCAARLLAIADylFg
+Date: Mon, 18 Mar 2024 02:47:06 +0000
+Message-ID:
+ <DU0PR04MB94176621F225DA0316E2734B882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+References: <20240314-pinctrl-scmi-v5-0-b19576e557f2@nxp.com>
+ <ZfMqWP-t39SCvkA2@pluto>
+ <DU0PR04MB9417056FD84405898F1B007B88282@DU0PR04MB9417.eurprd04.prod.outlook.com>
+ <ZfR89rdzRymY1Ovx@pluto>
+In-Reply-To: <ZfR89rdzRymY1Ovx@pluto>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+authentication-results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|VI1PR04MB7088:EE_
+x-ms-office365-filtering-correlation-id: 94f92e92-9533-4631-209b-08dc46f5b30e
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ 3Q/kuJAGVO51Kp4SWp0N3E3tKiahce3QM4sZLtFVl4RbKF1MxWdSvtvOwl7p4k5rh3vA4qvHrabCYVJLa1huD8gZiraHQ0Aw5l804vMSaqAKPBo/k6AypouLCTNMMu8TpB2v0TDrGLYg/nPYAe6vW6XaHNfH9xAqbuh4+E0ZxTgUCubFJ88bCTH+aIiGIoJHSHO/h9yFv2nMyPXXMDpHMME/iWv+bCbCQbUobjtvix6iB3xL6BK+hOzMhQaNOwnpLKb0qrO3IFcJMiwWhWQVjtNF1PKkee178O/y+s5tlvDZSsbMSO4YK7OxiK9BoGL9Nga4hWhwMQxMceGa+GUH3rqQqTGrkaU1vYCjvmZkkYK0L4SndE/bAvPzmhaEAFAJss2rDskBVVTiCfVkMgDpwfdz/a0hlhobE3kLNZoIiPhYWISJM5KecGpto6w2hOLTs/lmLSoHgIIe8KIfrOGsqRRMLcWpvqfyGs8zQyv0DS4u6/t2hCDm7gdu4SqGmU50jsYDLW142LSBPIzIg8AxvcnQXbJRh6C3ZEaL4rQOo1QyVCLgqJh9of9EFMdesDXojvAwOtj+7dJpkLRDbzVyr4HURnnB/GlIiiXWTUzDAlm1i1jNUMBB9dDZHOFfacTFFjr6vYCIuoGr0u19uY7PRB1dBdpV/9SMdm3Yd4KhxUBj+MXev7PCnZACPJjuk4lwcA0YSwgA+V3CrgBeBMeogQ==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(366007)(1800799015)(38070700009);DIR:OUT;SFP:1101;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?us-ascii?Q?PNUKpYaTTyWEQzHufsmIay6ouM/BktSNzmXOkrMabVfZ9A/fSORAJTw229Al?=
+ =?us-ascii?Q?yzSbU25TBOnlzfkbaiTkMEe2bL0Y85tVa7YyZSzv2ewcBmlI5He08Sucx2T0?=
+ =?us-ascii?Q?701Z0bNdFOAOELLaYBJ4cqDWmkWTbaoJmoPllSS8RAW8GVmL4KbLm1SM3nwU?=
+ =?us-ascii?Q?PdWEf1LQAK1tMngJLC60tJU+kdvv2fNvTKpHzMMB1c6LmnVZRrkmQhrk6LXg?=
+ =?us-ascii?Q?SOhUIYtghoZFQFbAjluelXnmVepcAniyshGB4rjkD/MOJRqb1cm712S0MKOE?=
+ =?us-ascii?Q?sO9I7SXWPXUqN+CIovWOiIhv1MuWw+JoAN5q0S6+PPyWBSYdTLGFT7lK3Kfc?=
+ =?us-ascii?Q?o/uuLVSv8q3tK/FL4Ur0gK0qaj57rx37ejrwAqZN5BOkNMuL+PAazCr6yHOw?=
+ =?us-ascii?Q?29p6e3IL089iD/CWRVgqCax2HWtR0OxvupDZeEfH+dq/Bc1gGmI3Lp+I2g7g?=
+ =?us-ascii?Q?hin/tw1gJXLMkOwgOtdSsGvFVCSonu24dVJu5OHqOiwfxRC53QUXi9N2ZFLT?=
+ =?us-ascii?Q?th3vNanrCIwD+tIc30m1h7kF8V489H/aynY/Pkvn+vTK0Rrd7Qzs9vhTS0Er?=
+ =?us-ascii?Q?9c1oTje2L08rv72qr/9PYwObbHBaPptan/tdbfhS6Nyok4SSFDdprpzZBr8a?=
+ =?us-ascii?Q?YFnd261KQ/66Kif1Kfr0dLJ/Z9plZ0BBW54l2P2zN72ZWq4nakw1F3Dwj4G3?=
+ =?us-ascii?Q?QiyuiOLEa/nEf+CID0uqWRu42CCXcGp3DjsQ/2+Di++oxQCX7B77BrOoC0Oz?=
+ =?us-ascii?Q?y1HDKM2zDngNp2V9T+G+IVl5VVdUt3zBJls1HlP0iPFUkG5vCL386MleP8rq?=
+ =?us-ascii?Q?cUIDvP50GcAM/AlldTeDiry5MhivIHloUEp8yMRkZXhvo496TPXJ7cLsqfS0?=
+ =?us-ascii?Q?TSWAIksdPtU75kwoN9liNiEY2r4jUFRaXZMHNd0jNSAKJes78TrTVjsqyqJp?=
+ =?us-ascii?Q?X3cZA9dZ5sVBBIL8Ylt6kszRBuFu7qTvcgV+9AYy3a7fi4fy8gmVv7ALEs/O?=
+ =?us-ascii?Q?hQZTAAaiDfSUbakh9ZNi9dSl0ZlejNMyV/1BbeH6MjzLwmEiLjCdQCHwg7Fg?=
+ =?us-ascii?Q?mzOOisFIUZUh4KGwPXyyzU/jZooTEZ15nMGv1r9lWdhKtCyDKoqqTtEVkAO6?=
+ =?us-ascii?Q?yLV1bqDQhWWW7dxKlYnf7MnheUDT8mQrZi8KzxpKsML0i4YgTxDbJvqDzBRu?=
+ =?us-ascii?Q?J9bXT8Ou44lbqy8IMgALuO0Z+7Be8r0ovqg6io8nzD0QadRcFSFlGYsgQinI?=
+ =?us-ascii?Q?qnHTMPy2OjKuw4Gke0OWZU/BKKxoe9i1Q9uJ457f/qxVXxl6W1wk7vyWWjcH?=
+ =?us-ascii?Q?Fr/Ch3ILcELl9Hiejq5FBgubzjztIdY2a+gDa+Qa6ClKYd/3yNxYKp+O4h3/?=
+ =?us-ascii?Q?NTWV/e5gRyMmBgJt7ad+T5nB2S/556fXjIo/91hIhBaHhAfQhpatI3WUuxqn?=
+ =?us-ascii?Q?9PYcjfkUmfT/38VOwi0emGuUb3Fn7iYWO+rdSRLbx4S3M5LDmFYggX7+TRLO?=
+ =?us-ascii?Q?0J9HbiaMVeK/WwC4e5oFeXaMaSfMoCBgktLFUAaiB09rShxasv+5QLzSapEu?=
+ =?us-ascii?Q?bQ3KqtSu0w4KHcOqI1o=3D?=
+Content-Type: text/plain; charset="us-ascii"
+Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 94f92e92-9533-4631-209b-08dc46f5b30e
+X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2024 02:47:06.4259
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: orwncCbPk70BI+qWM3bQxxw+HzVHP/ZEKCnyU3MPaZNfuFU+9ypM+/0aBYcadjgL7sI/jjvDrVZYWdX7PZVtqw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7088
 
-If the network configuration strings are passed as a combination of IPv and
-IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
-configuration format.
-With these changes, the keyfile config generation logic scans through the
-list twice to generate IPv4 and IPv6 sections for the configuration files
-to handle this support.
+> Subject: Re: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2 pincontrol
+> protocol basic support
+>=20
+> On Fri, Mar 15, 2024 at 12:31:51AM +0000, Peng Fan wrote:
+> > > Subject: Re: [PATCH v5 0/4] firmware: arm_scmi: Add SCMI v3.2
+> > > pincontrol protocol basic support
+> > >
+> > > On Thu, Mar 14, 2024 at 09:35:17PM +0800, Peng Fan (OSS) wrote:
+> > > > Since SCMI 3.2 Spec is released, and this patchset has got
+> > > > R-b/T-b, is it ok to land this patchset?
+> > > >
+> > >
+> > > I'll have a look at this last version and a spin on my test setup.
+> > >
+> > > ...but has this V5 change at all since the Reviewed-by tags due to
+> > > the latest spec changes ?
+> >
+> > The tags are same as V4. I only did a rebase, no more changes.
+> > >
+>=20
+> Ok.
+>=20
+> > > ...IOW does this V5 include the latest small bits spec-changes or
+> > > those latest gpio-related spec-changes are just not needed at the
+> > > level of the Linux pinctrl support as of now and can be added later
+> > > on when a Linux gpio driver will be built on top of this ?
+> >
+> > In my current test, I no need the gpio related changes, so I would add
+> > that later if you are ok.
+> >
+>=20
+> I COULD have agreed with this, since AFAIK there is currently an effort t=
+o add
+> support for GPIO on top of SCMI Pinctrl BUT not in Linux, so no reason to
+> block this series for gpio-related missing features, that should only be
+> additions not breaking backward compatibility...
+>=20
+> ....BUT, I've just wrapped my head again around the latest public release=
+ of
+> v3.2 spec (which has gone through so many changes and additions that I ha=
+d
+> lost track O_o) AND beside the above mentioned GPIO changes there are
+> indeed also BREAKING changes around the commands
+> PINCTRL_SETTINGS_GET and PINCTRL_SETTINGS_CONFIGURE (which were
+> the old PINCTRL_CONFIG_GET/SET), that now also get/set the selected
+> function: so that, at the end the payload itself of those commands/replie=
+s has
+> also changed IN SIZE, so the driver needs definitely to be updated (and
+> whatever you use to test on the backend server too, if you want to test t=
+his...)
 
-Testcases ran:Rhel 9, Hyper-V VMs
-              (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
-Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
----
- Changes in v3
- * Introduced a macro for the output string size
- * Added cound checks and used strncpy instead of strncpy
- * Rearranged code to reduce total lines of code
----
- tools/hv/hv_kvp_daemon.c | 177 ++++++++++++++++++++++++++++++---------
- 1 file changed, 136 insertions(+), 41 deletions(-)
+Ok, I see, there are indeed some changes, I will update the driver.
 
-diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
-index 318e2dad27e0..156cef99d361 100644
---- a/tools/hv/hv_kvp_daemon.c
-+++ b/tools/hv/hv_kvp_daemon.c
-@@ -76,6 +76,12 @@ enum {
- 	DNS
- };
- 
-+enum {
-+	IPV4 = 1,
-+	IPV6,
-+	IP_TYPE_MAX
-+};
-+
- static int in_hand_shake;
- 
- static char *os_name = "";
-@@ -102,6 +108,11 @@ static struct utsname uts_buf;
- 
- #define MAX_FILE_NAME 100
- #define ENTRIES_PER_BLOCK 50
-+/*
-+ * Change this entry if the number of addresses increases in future
-+ */
-+#define MAX_IP_ENTRIES 64
-+#define OUTSTR_BUF_SIZE ((INET6_ADDRSTRLEN + 1) * MAX_IP_ENTRIES)
- 
- struct kvp_record {
- 	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
-@@ -1171,6 +1182,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
- 	return 0;
- }
- 
-+int ip_version_check(const char *input_addr)
-+{
-+	struct in6_addr addr;
-+
-+	if (inet_pton(AF_INET, input_addr, &addr))
-+		return IPV4;
-+	else if (inet_pton(AF_INET6, input_addr, &addr))
-+		return IPV6;
-+
-+	return -EINVAL;
-+}
-+
- /*
-  * Only IPv4 subnet strings needs to be converted to plen
-  * For IPv6 the subnet is already privided in plen format
-@@ -1197,14 +1220,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
- 	return plen;
- }
- 
-+static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
-+				  int ip_sec)
-+{
-+	char addr[INET6_ADDRSTRLEN], *output_str;
-+	int ip_offset = 0, error = 0, ip_ver;
-+	char *param_name;
-+
-+	memset(addr, 0, sizeof(addr));
-+
-+	if (type == DNS)
-+		param_name = "dns";
-+	else if (type == GATEWAY)
-+		param_name = "gateway";
-+	else
-+		return -EINVAL;
-+
-+	output_str = (char *)calloc(OUTSTR_BUF_SIZE, sizeof(char));
-+	if (!output_str)
-+		return -ENOMEM;
-+
-+	while (1) {
-+		memset(addr, 0, sizeof(addr));
-+
-+		if (!parse_ip_val_buffer(ip_string, &ip_offset, addr,
-+					 (MAX_IP_ADDR_SIZE * 2)))
-+			break;
-+
-+		ip_ver = ip_version_check(addr);
-+		if (ip_ver < 0)
-+			continue;
-+
-+		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
-+		    (ip_ver == IPV6 && ip_sec == IPV6)) {
-+			/*
-+			 * do a bound check to avoid out-of bound writes
-+			 */
-+			if ((OUTSTR_BUF_SIZE - strlen(output_str)) >
-+			    (strlen(addr) + 1)) {
-+				strncat(output_str, addr,
-+					OUTSTR_BUF_SIZE - strlen(output_str));
-+				strncat(output_str, ",",
-+					OUTSTR_BUF_SIZE - strlen(output_str));
-+			}
-+		} else {
-+			continue;
-+		}
-+	}
-+
-+	if (strlen(output_str)) {
-+		output_str[strlen(output_str) - 1] = '\0';
-+		error = fprintf(f, "%s=%s\n", param_name, output_str);
-+	}
-+
-+	free(output_str);
-+	return error;
-+}
-+
- static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
--				int is_ipv6)
-+				int ip_sec)
- {
- 	char addr[INET6_ADDRSTRLEN];
- 	char subnet_addr[INET6_ADDRSTRLEN];
- 	int error, i = 0;
- 	int ip_offset = 0, subnet_offset = 0;
--	int plen;
-+	int plen, ip_ver;
- 
- 	memset(addr, 0, sizeof(addr));
- 	memset(subnet_addr, 0, sizeof(subnet_addr));
-@@ -1216,10 +1296,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
- 						       subnet_addr,
- 						       (MAX_IP_ADDR_SIZE *
- 							2))) {
--		if (!is_ipv6)
-+		ip_ver = ip_version_check(addr);
-+		if (ip_ver < 0)
-+			continue;
-+
-+		if (ip_ver == IPV4 && ip_sec == IPV4)
- 			plen = kvp_subnet_to_plen((char *)subnet_addr);
--		else
-+		else if (ip_ver == IPV6 && ip_sec == IPV6)
- 			plen = atoi(subnet_addr);
-+		else
-+			continue;
- 
- 		if (plen < 0)
- 			return plen;
-@@ -1238,12 +1324,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
- 
- static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- {
--	int error = 0;
-+	int error = 0, ip_ver;
- 	char if_filename[PATH_MAX];
- 	char nm_filename[PATH_MAX];
- 	FILE *ifcfg_file, *nmfile;
- 	char cmd[PATH_MAX];
--	int is_ipv6 = 0;
- 	char *mac_addr;
- 	int str_len;
- 
-@@ -1421,52 +1506,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
- 	if (error)
- 		goto setval_error;
- 
--	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
--		error = fprintf(nmfile, "\n[ipv6]\n");
--		if (error < 0)
--			goto setval_error;
--		is_ipv6 = 1;
--	} else {
--		error = fprintf(nmfile, "\n[ipv4]\n");
--		if (error < 0)
--			goto setval_error;
--	}
--
- 	/*
--	 * Now we populate the keyfile format
-+	 * The keyfile format expects the IPv6 and IPv4 configuration in
-+	 * different sections. Therefore we iterate through the list twice,
-+	 * once to populate the IPv4 section and the next time for IPv6
- 	 */
-+	ip_ver = IPV4;
-+	do {
-+		if (ip_ver == IPV4) {
-+			error = fprintf(nmfile, "\n[ipv4]\n");
-+			if (error < 0)
-+				goto setval_error;
-+		} else {
-+			error = fprintf(nmfile, "\n[ipv6]\n");
-+			if (error < 0)
-+				goto setval_error;
-+		}
- 
--	if (new_val->dhcp_enabled) {
--		error = kvp_write_file(nmfile, "method", "", "auto");
--		if (error < 0)
--			goto setval_error;
--	} else {
--		error = kvp_write_file(nmfile, "method", "", "manual");
-+		/*
-+		 * Now we populate the keyfile format
-+		 */
-+
-+		if (new_val->dhcp_enabled) {
-+			error = kvp_write_file(nmfile, "method", "", "auto");
-+			if (error < 0)
-+				goto setval_error;
-+		} else {
-+			error = kvp_write_file(nmfile, "method", "", "manual");
-+			if (error < 0)
-+				goto setval_error;
-+		}
-+
-+		/*
-+		 * Write the configuration for ipaddress, netmask, gateway and
-+		 * name services
-+		 */
-+		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
-+					     (char *)new_val->sub_net,
-+					     ip_ver);
- 		if (error < 0)
- 			goto setval_error;
--	}
- 
--	/*
--	 * Write the configuration for ipaddress, netmask, gateway and
--	 * name services
--	 */
--	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
--				     (char *)new_val->sub_net, is_ipv6);
--	if (error < 0)
--		goto setval_error;
--
--	/* we do not want ipv4 addresses in ipv6 section and vice versa */
--	if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
--		error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
-+		error = process_dns_gateway_nm(nmfile,
-+					       (char *)new_val->gate_way,
-+					       GATEWAY, ip_ver);
- 		if (error < 0)
- 			goto setval_error;
--	}
- 
--	if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
--		error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
-+		error = process_dns_gateway_nm(nmfile,
-+					       (char *)new_val->dns_addr, DNS,
-+					       ip_ver);
- 		if (error < 0)
- 			goto setval_error;
--	}
-+
-+		ip_ver++;
-+	} while (ip_ver < IP_TYPE_MAX);
-+
- 	fclose(nmfile);
- 	fclose(ifcfg_file);
- 
--- 
-2.34.1
+>=20
+> I think these changes (which I forgot being there) were in since last mon=
+th, so
+> already V4 was broken in these regards (which I have not looked at)
+
+I may need to drop the R-b/T-b?
+
+>=20
+> I'll leave some comments along the series and test all of this again next=
+ week...
+> ...since too many things has changed and I want to re-verify all on my si=
+de.
+
+Thanks,
+Peng.
+>=20
+> Thanks,
+> Cristian
 
 
