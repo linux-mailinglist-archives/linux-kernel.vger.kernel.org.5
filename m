@@ -1,119 +1,158 @@
-Return-Path: <linux-kernel+bounces-106150-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106151-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5B19F87E9E0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:10:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A04E787E9E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:11:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D776EB21523
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:10:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 56D1B282369
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:11:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64DC838DEF;
-	Mon, 18 Mar 2024 13:10:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2011B38F99;
+	Mon, 18 Mar 2024 13:11:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YBG2Zh7c"
-Received: from mail-lf1-f50.google.com (mail-lf1-f50.google.com [209.85.167.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="jRTR+Fdo"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2040C33CF1;
-	Mon, 18 Mar 2024 13:10:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B998A2A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:11:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710767412; cv=none; b=kbU0HsvHrEmFEUiGJUHK0kL8oaRgHh6Tz3EYgbQUAgcoLwBNxOPWhPEK5XlXHTUcNfulsLTHnqLa6ZUzn1LZS1D0iijZCc72N4O3kTsdXF8tVyDbUPfc7DebeFQiXFuv31I6cTiWDkWZcGod05q8LZctUBGArK5vwQi7MgatLa4=
+	t=1710767473; cv=none; b=j9lBcnhdJ0+cbMwZhls6s7R5Z99MxL8q+g/ablpeZg5DHyLcW6XsI9X0TL1LO9KU65UHu6Xdp3pVmvf6c57vcR//EmRsBhIcV4Yw3hQeb57aumJGnRFpnolj6a4HoLFKfvdVM6N+7oTgSFwV5ryiUwzmceZjFjK+lYxQ8yaHKuc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710767412; c=relaxed/simple;
-	bh=mE7jqQ5jElAIH2bMnT6FZSF2mEu0TvZtFmmRGoCQkIk=;
+	s=arc-20240116; t=1710767473; c=relaxed/simple;
+	bh=6+niSvsrlTdoebUFvZkR5TjyZ5KAxqQlNjvmrnyAdUU=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=sYRFW7k8iY7NBrUAFy4PbJMWELVg1RgdIZ3VZOCV1kbG3ExGb0yCPfg0apRNLrOgTrYIResBGAs0WB0jEn0gnuWnuIxXZJOLtcrs4f3AbImKZo0CAf/7nE2D6sTbqlk2BReBV5zwpSVJxujfepTV6Lar2ert4TYmunwMz64THfo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YBG2Zh7c; arc=none smtp.client-ip=209.85.167.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f50.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso7382559e87.1;
-        Mon, 18 Mar 2024 06:10:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710767409; x=1711372209; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=BBZLCMh0SA3DZ15OEaT+twgEPYQm8UQNknXIM0mZma4=;
-        b=YBG2Zh7cY4mWWeDrAxplk7Z5+X8KpgJsLEbwyv4xuNYUhl81b1Uk9kA58IsZGQrmd9
-         /JTJ1hJYML+4Yj23I62Xrt+IBWP+r7nQUX4Pwi+tXSkX8Bhwj7dax3bwcFo/awsyVnZu
-         lbPrsPs2N/CO/qHQRNgL46uR8O5h9e827WeTavw5Y3lZjkENnNzH7TM+HQ7wmu1MvGfF
-         flznr7EZLHdZoPB0ZgqD+VdQ56WnqOgYj7gQd+NKUSbxxQ/z9WvJ6klk+U/Apz+Ehm75
-         cCspk3fcNzdn5LcbdVdOeBdnKJtZlDBZIn5+/fkJcxnEnfVB+FwYmP6XGrOH0AV8ZHQb
-         OhmQ==
+	 To:Cc:Content-Type; b=uWibMpNaJ5bD85Aei2Iy6owL1mJlEO5K8WcTad8BRYMxBOGsOg1UOkiUn8VPpgpjc/rAERrCoW4jbAMWIHFxZBw6EDJ9tnFJSSa6tUh/xHCuzyUw28Hv9oHZ543i7wG6NHIrpT7PG/FIozJruwsjH2tpeUSAJI9Xf/uXZzeMtQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=jRTR+Fdo; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710767470;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9neb2kg1Bn3mmLQBIkZNqW8zmI6QIZ7MrEWOD5a8wx4=;
+	b=jRTR+Fdo6kD947iFo1P9h3gAUq28BtHva9YEe1d7yv9af4o+6wjjX5VKeqYhyOq1iUCu40
+	WfXyQaVH7ckLYsrl/uAF8BfiitK9HNMBInbgrZ8+EJFamvBiMiqg3mTtQm0kwET+SPCjWa
+	kW+PPubLsl2Q86HbRIuzmp7FQJF2N6k=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-439-xiGdaQMPM9SXZhLYrbgOUQ-1; Mon, 18 Mar 2024 09:11:09 -0400
+X-MC-Unique: xiGdaQMPM9SXZhLYrbgOUQ-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ec0700091so2865450f8f.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 06:11:08 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710767409; x=1711372209;
+        d=1e100.net; s=20230601; t=1710767468; x=1711372268;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=BBZLCMh0SA3DZ15OEaT+twgEPYQm8UQNknXIM0mZma4=;
-        b=kX30hqWaDojMXPKePIl8I0IFlg+zGVeLg1Qx8zNciAjf7sTUsioh5dbq39v+1IwXTC
-         UTawTTY8eIyYOgemvxo9ESRZk9L+p8InRWzXAXPSHAkaEZ7JwV/S2hqtEKIASzFmF1NC
-         EoiChpcc6RsY/jMLlgBpUUjelGLzlLO7wbsGVvim06vF2MO/u8n7ZVV65bllemkyVt8m
-         shIE45CWugIl/pJ3pHS0hHW9CjHi4ISkpwxiWMx2RzNMiDGBAFYPQTdpbEDfa7waW9YK
-         D1hqiS7oG0v5XASRSEfdaYqnOybpd5N/RGZE0RWHrAGfA3zQgIa6gePHN0c7YElakMr0
-         +ZEA==
-X-Forwarded-Encrypted: i=1; AJvYcCW2//QYT16ab5PpQ3SzXSagT3Q/dMZbkFfei6BaqS9/Ebx3sA4iXAOzdPyzgrhLxHu6hCvy0+IUZptPOATtAkvAMbLU5BCuEGZ3kEkvWSMP8ASYyq+y9DYplXqanWws8MoCby7mEoMN
-X-Gm-Message-State: AOJu0Yz+7LK1t/+3CsEv0DoCSM1+b++M99lZkszJdca6ee7blr78v+0r
-	BXtyAqAyejnaTk5AKpCJ74CiUyMjE5n4Yly++dlGPuoWS8W+9jwTXQJ4Fysl8pr4u9untGF5z6e
-	3NXx5hqoi/5iIWbR78vyTyLppZO8=
-X-Google-Smtp-Source: AGHT+IGLMWALI01ckCqs4+f3ML0k0Gp83dbLOhxzM6RvJU2rs4Ord/rFMnwPmqWS9EGUNEOIM2sADJZaDFAzykB43hY=
-X-Received: by 2002:a05:6512:2394:b0:513:e348:fbc0 with SMTP id
- c20-20020a056512239400b00513e348fbc0mr5826916lfv.20.1710767409038; Mon, 18
- Mar 2024 06:10:09 -0700 (PDT)
+        bh=9neb2kg1Bn3mmLQBIkZNqW8zmI6QIZ7MrEWOD5a8wx4=;
+        b=WBJWXCHzqHg5xwqgmfjTDLM0gosdWVo2t+8vxIKlRfiPimXE+2lHEnWyMYDe3mU7jX
+         /5YCKmMUgg1ugL7ec+WerUxCWmKInH1/jpzkp8UHU56rB2brm8SImxvK5ZxmhYpaBh1E
+         KDSLPlY7obYoeNFMAFUIszoMRQDwtOPSBteBkxznhlJqmziewhJIInJBQAnLbVWNwy71
+         Ocf52BjyqNe3M/YGaFJxziGUzyWjIW+kDmuPsNYN/q5fJaFkl3uQDTvXiAJhk8WbnfQl
+         tjZW97jNY0Hxnqb52b5m1HHgnp3tPWYEjvYQsRUcviNIsEmGCoJzgLam9ZhXDk+HtKGP
+         ERIg==
+X-Forwarded-Encrypted: i=1; AJvYcCWsu2/wrnYt18TXXz/OTkavTcpdTC416pMl4yddqi6fEZZ4/O7mNNL21cuumTD+emU8H8pzrs3fzTPhHTBO2sHe40yyCxEH8g/SYpoO
+X-Gm-Message-State: AOJu0YzKGYHJi//P12TElcHN3YriXiBg3wa+cYbGRte5/ji7BTyu2rPY
+	SMs1e8EB6rFmcksSAE+O439blYtNb3wjhennzUmDypZGn/8D/Dang51MYKwZGdakKQtVHafEZYY
+	hmBOcF2NXVgMtaHdiIPl5ueoklb+R+PhG+OWL/Yo5Ky1uM91cOyxrbxlUe53XfsrRArkodQWlOd
+	a3oW3HPVhfm+6POmVk4SuuMPjg8POP1eBeRCCf
+X-Received: by 2002:adf:e745:0:b0:33e:7621:e15f with SMTP id c5-20020adfe745000000b0033e7621e15fmr8170830wrn.39.1710767468018;
+        Mon, 18 Mar 2024 06:11:08 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGyQ6S+WKFdZAsvaIMGYmlFh0x17pkrdrAjmpMvBAmA8hhGJBijSIHID0mFmSY2uazi/xgXq4p4w28uS6bhFxU=
+X-Received: by 2002:adf:e745:0:b0:33e:7621:e15f with SMTP id
+ c5-20020adfe745000000b0033e7621e15fmr8170817wrn.39.1710767467700; Mon, 18 Mar
+ 2024 06:11:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
- <ZfX5jynjW4M9pvw1@surfacebook.localdomain> <20240318124041.0000032d@Huawei.com>
-In-Reply-To: <20240318124041.0000032d@Huawei.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Mon, 18 Mar 2024 15:09:32 +0200
-Message-ID: <CAHp75VeQcvuEy4V6-+3PeWTZJ9=Qae0AiiNB93OOw3wuc-uh3A@mail.gmail.com>
-Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
-To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
-Cc: David Lechner <dlechner@baylibre.com>, Jonathan Cameron <jic23@kernel.org>, 
-	Michael Hennerich <michael.hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
-	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <0b109bc4-ee4c-4f13-996f-b89fbee09c0b@amd.com> <ZfG801lYHRxlhZGT@google.com>
+ <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com> <ZfHKoxVMcBAMqcSC@google.com>
+ <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com> <ZfHhqzKVZeOxXMnx@google.com>
+ <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com> <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com>
+ <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
+ <985fd7f8-f8dd-4ce4-aa07-7e47728e3ebd@amd.com> <ZfeYU6hqlVF7y9YO@infradead.org>
+In-Reply-To: <ZfeYU6hqlVF7y9YO@infradead.org>
+From: Paolo Bonzini <pbonzini@redhat.com>
+Date: Mon, 18 Mar 2024 14:10:55 +0100
+Message-ID: <CABgObfZCay5-zaZd9mCYGMeS106L055CxsdOWWvRTUk2TPYycg@mail.gmail.com>
+Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
+To: Christoph Hellwig <hch@infradead.org>
+Cc: =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>, 
+	David Stevens <stevensd@chromium.org>, Sean Christopherson <seanjc@google.com>, 
+	Yu Zhang <yu.c.zhang@linux.intel.com>, Isaku Yamahata <isaku.yamahata@gmail.com>, 
+	Zhi Wang <zhi.wang.linux@gmail.com>, Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev, 
+	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 2:41=E2=80=AFPM Jonathan Cameron
-<Jonathan.Cameron@huawei.com> wrote:
-> > >  struct ad7944_adc {
-> > >     struct spi_device *spi;
-> > > +   enum ad7944_spi_mode spi_mode;
-> > >     /* Chip-specific timing specifications. */
-> > >     const struct ad7944_timing_spec *timing_spec;
-> > >     /* GPIO connected to CNV pin. */
-> > > @@ -58,6 +75,9 @@ struct ad7944_adc {
-> > >      } sample __aligned(IIO_DMA_MINALIGN);
-> > >  };
+On Mon, Mar 18, 2024 at 3:07=E2=80=AFAM Christoph Hellwig <hch@infradead.or=
+g> wrote:
+> > > Fundamentally, what this series is doing is
+> > > allowing pfns returned by follow_pte to be mapped into KVM's shadow
+> > > MMU without inadvertently translating them into struct pages.
 > >
-> > Have you run `pahole` to see if there is a better place for a new membe=
-r?
+> > As far as I can tell that is really the right thing to do. Yes.
 >
-> I know this matters for structures where we see lots of them, but do we a=
-ctually
-> care for one offs?  Whilst it doesn't matter here I'd focus much more
-> on readability and like parameter grouping for cases like this than wasti=
-ng
-> a few bytes.
+> IFF your callers don't need pages and you just want to track the
+> mapping in the shadow mmu and never take a refcount that is a good
+> thing.
 
-This is _also_ true, but think more about cache line contamination.
-Even not-so-important bytes may decrease the performance. In some
-cases it's tolerable, in some it is not (high-speed ADC). In general I
-assume that the developer has to understand many aspects of the
-software and cache line contamination may be last but definitely not
-least.
+Yes, that's the case and for everything else we can use a function
+that goes from guest physical address to struct page with a reference
+taken, similar to the current gfn_to_page family of functions.
 
---=20
-With Best Regards,
-Andy Shevchenko
+> But unless I completely misunderstood the series that doesn't seem
+> to be the case - it builds a new kvm_follow_pfn API which is another
+> of these weird multiplexers like get_user_pages that can to tons of
+> different things depending on the flags.  And some of that still
+> grabs the refcount, right?
+
+Yes, for a couple reasons. First, a lot of the lookup logic is shared
+by the two cases; second, it's easier for both developers and
+reviewers if you first convert to the new API, and remove the refcount
+in a separate commit. Also, you have to do this for every architecture
+since we agree that this is the direction that all of them should move
+to.
+
+So what we could do, would be to start with something like David's
+patches, and move towards forbidding the FOLL_GET flag (the case that
+returns the page with elevated refcount) in the new kvm_follow_pfn()
+API.
+
+Another possibility is to have a double-underscore version that allows
+FOLL_GET, and have the "clean" kvm_follow_pfn() forbid it. So you
+would still have the possibility to convert to __kvm_follow_pfn() with
+FOLL_GET first, and then when you remove the refcount you switch to
+kvm_follow_pfn().
+
+
+Paolo
+
+> > Completely agree. In my thinking when you go a step further and offload
+> > grabbing the page reference to get_user_pages() then you are always on =
+the
+> > save side.
+>
+> Agreed.
+>
+> > Because then it is no longer the responsibility of the KVM code to get =
+all
+> > the rules around that right, instead you are relying on a core function=
+ality
+> > which should (at least in theory) do the correct thing.
+>
+> Exactly.
+>
+
 
