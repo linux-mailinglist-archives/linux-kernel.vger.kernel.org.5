@@ -1,94 +1,116 @@
-Return-Path: <linux-kernel+bounces-106637-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BBE287F156
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:40:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6B94687F157
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:41:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B16131F244F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:40:56 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 271E9284B3A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:41:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAB45788C;
-	Mon, 18 Mar 2024 20:40:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57CC32747F;
+	Mon, 18 Mar 2024 20:40:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="P+T8Utrr"
-Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BFE58206;
-	Mon, 18 Mar 2024 20:40:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="NNy5AYxq"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 98FF72561D
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:40:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710794444; cv=none; b=Zyjkk89tCKJcoj6nF/8So9VWvrozeeWzUHqUJykDhIjmTB931ylTH2XqaSguHJkNb4LqjjxwFXSmBfeSydFeG5ux61nhxPaiSdP07MwVGouxVmthgGdK3jSqcXF5g9WPmSuSGN0JDub/qiDhzSJqZ9uWTGrtlqYMlXK/gioP/6Y=
+	t=1710794456; cv=none; b=cBwsZOjCXBmIG9ttjH3TNIkBiqDAAkMMd/8aksFxIMme+JxKQ/7ZZMIjmjqot1JHkjvkRIpmw2CDMPCThBtyk6bx2uj1nQbC/049xwLobDghhxikuLFEMnGT8FaHjVRiQ4NnchzWASflrzZBOgqOtUyL6zyrveEFKyWnM6r4WO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710794444; c=relaxed/simple;
-	bh=mn4Xz1ZtJYWIfNb4PThhTYu0EooQbh05dxo1V6xh/po=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oYpt81zeEM15RaerQEqJuaN/T2AQNJ4Ern3gRByteAbf9Om13hiWoVQWtVISyyEp+bIwJkBBdmI8yDICFZ2tfODldWKsv3i2HO7xEv105bhAmUmpGfUC7w36qtMbWDmR3KA2tGYQSYHFQR5nqqtIxvBBPTsTGUp8mGaQ8Bjk0Qs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=P+T8Utrr; arc=none smtp.client-ip=13.77.154.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
-Received: from [10.137.106.151] (unknown [167.220.2.23])
-	by linux.microsoft.com (Postfix) with ESMTPSA id 1B38B20B74C0;
-	Mon, 18 Mar 2024 13:40:42 -0700 (PDT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1B38B20B74C0
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
-	s=default; t=1710794442;
-	bh=k0/I7p41f3QocEgsxb/Pps2tOnOrvwXWMYTG9ZCpr8M=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=P+T8UtrrP2wCtmdJ07oc3BDruPa8P5MIkG92h75fdRPvWL8DDBKRFVNqqr5+UyeQD
-	 ooCeQJRHYKzrv7CB7fiaFoTGzm5swxy4FXiUU5m7RejK1zt0qWh+Yvh3Y/Q7OgT8bn
-	 MuD2Vel7eb5QgWibwRXsNWgrHkiyiUoe4ynUfMu4=
-Message-ID: <59357d13-c980-4f5a-a9e1-6ad6e480d46e@linux.microsoft.com>
-Date: Mon, 18 Mar 2024 13:40:41 -0700
+	s=arc-20240116; t=1710794456; c=relaxed/simple;
+	bh=ASewAmN/H3/b9cAvyrgmlDE+vLv+687YtUvC+KDcgsM=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=toN5285I5JU9w4bu366HJzL1yV+6iiZ36r6ZoYjoak6qC4Ezq4VseGWzGdPqvfuFgisL/zkJLyvX9FY0jNkQqj9LgvazD6IULsIFwEEb8jYGR0mYB8VDSJM/fRUTdqJ75mBXYaWk9y6cbXbwMAOb7pl+nP+j8WjvsKH5w2/38GY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=NNy5AYxq; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D26EC433C7;
+	Mon, 18 Mar 2024 20:40:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1710794456;
+	bh=ASewAmN/H3/b9cAvyrgmlDE+vLv+687YtUvC+KDcgsM=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NNy5AYxq/SzYhGRPZyu0aqo8MrkgSqSKjawZ7u1Y9b8P22xkCOwm8RZkp5uIypwYu
+	 VLInFOpKPrGufAMPzfM1EbHECYq0dA5bmLQIvf29FGr0XEJC5xN7rykybzwRNEDswR
+	 B/2EqWIyLAXsRCaJIZkywTzpvjVcDYRdgqjZey8I=
+Date: Mon, 18 Mar 2024 13:40:55 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: jpoimboe@kernel.org, kent.overstreet@linux.dev, peterz@infradead.org,
+ nphamcs@gmail.com, cerasuolodomenico@gmail.com, surenb@google.com,
+ lizhijian@fujitsu.com, willy@infradead.org, shakeel.butt@linux.dev,
+ vbabka@suse.cz, ziy@nvidia.com, linux-kernel@vger.kernel.org,
+ linux-mm@kvack.org
+Subject: Re: [PATCH v2] vmstat: Keep count of the maximum page reached by
+ the kernel stack
+Message-Id: <20240318134055.c2f6b29bb6eb73ec93bf7079@linux-foundation.org>
+In-Reply-To: <20240314145457.1106299-1-pasha.tatashin@soleen.com>
+References: <20240314145457.1106299-1-pasha.tatashin@soleen.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v15 18/21] ipe: enable support for fs-verity as a
- trust provider
-To: Eric Biggers <ebiggers@kernel.org>
-Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
- tytso@mit.edu, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
- eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
- linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
- fsverity@lists.linux.dev, linux-block@vger.kernel.org,
- dm-devel@lists.linux.dev, audit@vger.kernel.org,
- linux-kernel@vger.kernel.org, Deven Bowers <deven.desai@linux.microsoft.com>
-References: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
- <1710560151-28904-19-git-send-email-wufan@linux.microsoft.com>
- <20240318051703.GB63337@sol.localdomain>
-Content-Language: en-CA
-From: Fan Wu <wufan@linux.microsoft.com>
-In-Reply-To: <20240318051703.GB63337@sol.localdomain>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 Content-Transfer-Encoding: 7bit
 
+On Thu, 14 Mar 2024 14:54:57 +0000 Pasha Tatashin <pasha.tatashin@soleen.com> wrote:
 
-
-On 3/17/2024 10:17 PM, Eric Biggers wrote:
-> On Fri, Mar 15, 2024 at 08:35:48PM -0700, Fan Wu wrote:
->> +config IPE_PROP_FS_VERITY
->> +	bool "Enable property for fs-verity files"
->> +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
->> +	help
->> +	  This option enables the usage of properties "fsverity_signature"
->> +	  and "fsverity_digest". These properties evaluate to TRUE when
->> +	  a file is fsverity enabled and with a signed digest
+> CONFIG_DEBUG_STACK_USAGE provides a mechanism to determine the minimum
+> amount of memory left in a stack. Every time a new low-memory record is
+> reached, a message is printed to the console.
 > 
-> Again: why would anyone care if there is a signature, if that signature is not
-> checked.
+> However, this doesn't reveal how many pages within each stack were
+> actually used. Introduce a mechanism that keeps count the number of
+> times each of the stack's pages were reached:
 > 
-> I think you meant to write something like: "when a file is fsverity enabled and
-> has a valid builtin signature whose signing cert is in the .fs-verity keyring".
+> 	$ grep kstack /proc/vmstat
+> 	kstack_page_1 19974
+> 	kstack_page_2 94
+> 	kstack_page_3 0
+> 	kstack_page_4 0
 > 
-> - Eric
+> In the above example, out of 20,068 threads that exited on this
+> machine, only 94 reached the second page of their stack, and none
+> touched pages three or four.
+> 
+> In fleet environments with millions of machines, this data can help
+> optimize kernel stack sizes.
 
-Thanks for the suggestion. I agree this is a more accurate description. 
-I'll update the description to include these details.
+We really should have somewhere to document vmstat things.
 
--Fan
+> --- a/include/linux/vm_event_item.h
+> +++ b/include/linux/vm_event_item.h
+> @@ -153,10 +153,39 @@ enum vm_event_item { PGPGIN, PGPGOUT, PSWPIN, PSWPOUT,
+>  		VMA_LOCK_ABORT,
+>  		VMA_LOCK_RETRY,
+>  		VMA_LOCK_MISS,
+> +#endif
+> +#ifdef CONFIG_DEBUG_STACK_USAGE
+> +		KSTACK_PAGE_1,
+> +		KSTACK_PAGE_2,
+> +#if THREAD_SIZE >= (4 * PAGE_SIZE)
+> +		KSTACK_PAGE_3,
+> +		KSTACK_PAGE_4,
+> +#endif
+> +#if THREAD_SIZE > (4 * PAGE_SIZE)
+> +		KSTACK_PAGE_REST,
+> +#endif
+>  #endif
+>  		NR_VM_EVENT_ITEMS
+>  };
+
+This seems a rather cumbersome way to produce a kind of histogram.  I
+wonder if there should be a separate pseudo file for this.
+
+And there may be a call for extending this.  For example I can forsee
+people wanting to know "hey, which process did that", in which case
+we'll want to record additional info.  
+
 
