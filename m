@@ -1,217 +1,151 @@
-Return-Path: <linux-kernel+bounces-106472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106471-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 39DD887EF1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:41:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A7C287EF18
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:41:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42CF1B21227
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:41:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED4741F2197A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:41:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AB355E62;
-	Mon, 18 Mar 2024 17:41:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7611655E40;
+	Mon, 18 Mar 2024 17:41:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KA0YjSiy"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NBp3bQEc"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CDD3A28B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:41:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BC23B18D;
+	Mon, 18 Mar 2024 17:41:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783677; cv=none; b=TSxHex47R08HtoMGVkKx3hsFlwKqNKBQRsYpzLH5VFIYrrAPRu7UBMdYTYG1cFnmlWw80p10SzfhQSy6puo9AoW0VipqwrO6YOKYY2u1yxGHmoVeFuiAsjshwLJqXIc+u6fL/vIIE5OfBUONtksq9ouUiw3DnfFfAaxeOIEMD7U=
+	t=1710783676; cv=none; b=L7ZFPgEiV/xeZKDSN5rwcHK92JPRDW7jAY5P5T5BMNP4dYhF6see4lNbBTiS2ym8Cw5nH5crf+dDNdvY3PuvTmeDucQpG3a+KHtobsus85gLb59TA9QXYToN8f5NPCP2yxUWHEOahleRMg/jYRCe8iZqDZYoRNebs72M8InpTEo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783677; c=relaxed/simple;
-	bh=05oiR2lU2TsDEcoK5/SsgXTOvq07hiupNFthPxkAt/Q=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=A9aancjDocL7pG4moo3/TSEMBdXcJSR/48++G401YemNL4qTfdes35VyIGk4vmwKb3IrzKm40bD+qEYD/f/oLqkpe+NqvGOH3JZSb5OnqfNQhgUu93LL7XtRE4Z4/zFd/6qYDujmAn0tE49NyddsScFczCzfLemIFBQy+9831sc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=KA0YjSiy; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 788FC7E9;
-	Mon, 18 Mar 2024 18:40:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710783646;
-	bh=05oiR2lU2TsDEcoK5/SsgXTOvq07hiupNFthPxkAt/Q=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KA0YjSiy3NPZm8PF5+ZqDwPxUQoNwb6o57uy+1iXHwqDvaZkCN8B/ws0rHpxjXV45
-	 3Lg8PBe7MyNVRd1BsDXfwAIVCwgVKZ+jVOrnL2zZwaycmt6lLcHmpW8fU1dBx5P1gQ
-	 GKZBVIQmf8aFinvN1H4uvUeT+gmcEXKq2ZKHywc8=
-Date: Mon, 18 Mar 2024 19:41:10 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
-	linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 4/6] drm: zynqmp_dp: Split off several helper functions
-Message-ID: <20240318174110.GK13682@pendragon.ideasonboard.com>
-References: <20240315230916.1759060-1-sean.anderson@linux.dev>
- <20240315230916.1759060-5-sean.anderson@linux.dev>
+	s=arc-20240116; t=1710783676; c=relaxed/simple;
+	bh=E9X/vXcE+KfbqUnxxDsQCnC6isDz8nMc3x3A5fhOaPY=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=pv24dSbeacilhaYZ/XK7bQo8iCWh2uIQCmW/YiaKXGDpB7Es+kDPcP8hkRaqAflaVAsoexjhVKNmVtoky84Ta++gQ/4QR7ZTjWfBC211xYurw57J38A3QqXzOH6rgSkhBDCBN0ojEjEZsZWbHvdJaBB3Ln637FOGp24ASbRN4KY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NBp3bQEc; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 208E6C43390;
+	Mon, 18 Mar 2024 17:41:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710783676;
+	bh=E9X/vXcE+KfbqUnxxDsQCnC6isDz8nMc3x3A5fhOaPY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=NBp3bQEcp/MJFUxlDZZdTRT+zxsK1KhrVvtNTwiqett4hZDhYBEgYGIHpc6UHCEvS
+	 EkesHyPTiPyQPuHPBWc3avUjHOjXPt3NkwrF0DsetSTiEtkfzualAki1E+D3pBjcm8
+	 eXdQUP8pYq03mJEPUXChGIOxc2mqGZQroTdoXoB933rxnvhuy6Sw4ne2cIJjdr1+1G
+	 4Aq4xVgsM7VpfafU7r33mRbSswMvvvE27KRCQUQY9WPyk9SO9NyAeeCn8w94lHJ5yi
+	 ZRzmAq6ACJNrSOAJlD88wxRiVFOYzqLKEysA6vU9bbD+DKbNkSiUwyXvK+RVEZ4igi
+	 H7zgOUD6oUWNw==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rmGz2-00DLD7-Q3;
+	Mon, 18 Mar 2024 17:41:12 +0000
+Date: Mon, 18 Mar 2024 17:41:12 +0000
+Message-ID: <86ttl3zbd3.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini
+ <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton
+ <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K
+ Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi
+ <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown
+ <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Mostafa Saleh
+ <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/4] arm64: Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
+In-Reply-To: <eb9215850e8231ab8ef75f523925be671cc6f5a0.camel@infradead.org>
+References: <20240318164646.1010092-1-dwmw2@infradead.org>
+	<86wmpzzdep.wl-maz@kernel.org>
+	<eb9215850e8231ab8ef75f523925be671cc6f5a0.camel@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240315230916.1759060-5-sean.anderson@linux.dev>
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hi Sean,
-
-Thank you for the patch.
-
-On Fri, Mar 15, 2024 at 07:09:14PM -0400, Sean Anderson wrote:
-> In preparation for supporting compliance testing, split off several
-> helper functions. No functional change intended.
+On Mon, 18 Mar 2024 17:26:07 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> ---
+> [1  <text/plain; UTF-8 (quoted-printable)>]
+> On Mon, 2024-03-18 at 16:57 +0000, Marc Zyngier wrote:
+> > 
+> > > 
+> > > There *is* a way for a VMM to opt *out* of newer PSCI versions... by 
+> > > setting a per-vCPU "special" register that actually ends up setting the 
+> > > PSCI version KVM-wide. Quite why this isn't just a simple KVM_CAP, I 
+> > > have no idea.
+> > 
+> > Because the expectations are that the VMM can blindly save/restore the
+> > guest's state, including the PSCI version, and restore that blindly.
+> > KVM CAPs are just a really bad design pattern for this sort of things.
 > 
->  drivers/gpu/drm/xlnx/zynqmp_dp.c | 49 +++++++++++++++++++++-----------
->  1 file changed, 33 insertions(+), 16 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index d2dee58e7bf2..24043847dab4 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -627,6 +627,7 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
->  /**
->   * zynqmp_dp_update_vs_emph - Update the training values
->   * @dp: DisplayPort IP core structure
-> + * @train_set: A set of training values
->   *
->   * Update the training values based on the request from sink. The mapped values
->   * are predefined, and values(vs, pe, pc) are from the device manual.
-> @@ -634,12 +635,12 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
->   * Return: 0 if vs and emph are updated successfully, or the error code returned
->   * by drm_dp_dpcd_write().
->   */
-> -static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp)
-> +static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp, u8 *train_set)
->  {
->  	unsigned int i;
->  	int ret;
->  
-> -	ret = drm_dp_dpcd_write(&dp->aux, DP_TRAINING_LANE0_SET, dp->train_set,
-> +	ret = drm_dp_dpcd_write(&dp->aux, DP_TRAINING_LANE0_SET, train_set,
->  				dp->mode.lane_cnt);
->  	if (ret < 0)
->  		return ret;
-> @@ -647,7 +648,7 @@ static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp)
->  	for (i = 0; i < dp->mode.lane_cnt; i++) {
->  		u32 reg = ZYNQMP_DP_SUB_TX_PHY_PRECURSOR_LANE_0 + i * 4;
->  		union phy_configure_opts opts = { 0 };
-> -		u8 train = dp->train_set[i];
-> +		u8 train = train_set[i];
->  
->  		opts.dp.voltage[0] = (train & DP_TRAIN_VOLTAGE_SWING_MASK)
->  				   >> DP_TRAIN_VOLTAGE_SWING_SHIFT;
-> @@ -691,7 +692,7 @@ static int zynqmp_dp_link_train_cr(struct zynqmp_dp *dp)
->  	 * So, This loop should exit before 512 iterations
->  	 */
->  	for (max_tries = 0; max_tries < 512; max_tries++) {
-> -		ret = zynqmp_dp_update_vs_emph(dp);
-> +		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set);
->  		if (ret)
->  			return ret;
->  
-> @@ -756,7 +757,7 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
->  		return ret;
->  
->  	for (tries = 0; tries < DP_MAX_TRAINING_TRIES; tries++) {
-> -		ret = zynqmp_dp_update_vs_emph(dp);
-> +		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set);
->  		if (ret)
->  			return ret;
->  
-> @@ -779,28 +780,28 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
->  }
->  
->  /**
-> - * zynqmp_dp_train - Train the link
-> - * @dp: DisplayPort IP core structure
-> + * zynqmp_dp_setup() - Set up major link parameters
-> + * @bw_code: The link bandwidth as a multiple of 270 MHz
-> + * @lane_cnt: The number of lanes to use
-> + * @enhanced: Use enhanced framing
-> + * @downspread: Enable spread-spectrum clocking
->   *
-> - * Return: 0 if all trains are done successfully, or corresponding error code.
-> + * Return: 0 on success, or -errno on failure
->   */
-> -static int zynqmp_dp_train(struct zynqmp_dp *dp)
-> +static int zynqmp_dp_setup(struct zynqmp_dp *dp, u8 bw_code, u8 lane_cnt,
-> +			   bool enhanced, bool downspread)
->  {
->  	u32 reg;
-> -	u8 bw_code = dp->mode.bw_code;
-> -	u8 lane_cnt = dp->mode.lane_cnt;
->  	u8 aux_lane_cnt = lane_cnt;
-> -	bool enhanced;
->  	int ret;
->  
->  	zynqmp_dp_write(dp, ZYNQMP_DP_LANE_COUNT_SET, lane_cnt);
-> -	enhanced = drm_dp_enhanced_frame_cap(dp->dpcd);
->  	if (enhanced) {
->  		zynqmp_dp_write(dp, ZYNQMP_DP_ENHANCED_FRAME_EN, 1);
->  		aux_lane_cnt |= DP_LANE_COUNT_ENHANCED_FRAME_EN;
->  	}
->  
-> -	if (dp->dpcd[3] & 0x1) {
-> +	if (downspread) {
->  		zynqmp_dp_write(dp, ZYNQMP_DP_DOWNSPREAD_CTL, 1);
->  		drm_dp_dpcd_writeb(&dp->aux, DP_DOWNSPREAD_CTRL,
->  				   DP_SPREAD_AMP_0_5);
-> @@ -843,8 +844,24 @@ static int zynqmp_dp_train(struct zynqmp_dp *dp)
->  	}
->  
->  	zynqmp_dp_write(dp, ZYNQMP_DP_PHY_CLOCK_SELECT, reg);
-> -	ret = zynqmp_dp_phy_ready(dp);
-> -	if (ret < 0)
-> +	return zynqmp_dp_phy_ready(dp);
-> +}
-> +
-> +
-> +/**
-> + * zynqmp_dp_train - Train the link
-> + * @dp: DisplayPort IP core structure
-> + *
-> + * Return: 0 if all trains are done successfully, or corresponding error code.
-> + */
-> +static int zynqmp_dp_train(struct zynqmp_dp *dp)
-> +{
-> +	int ret;
-> +
-> +	ret = zynqmp_dp_setup(dp, dp->mode.bw_code, dp->mode.lane_cnt,
-> +			      drm_dp_enhanced_frame_cap(dp->dpcd),
-> +			      dp->dpcd[3] & 0x1);
+> Hm, am I missing something here? Does the *guest* get to set the PSCI
+> version somehow, and opt into the latest version that it understands
+> regardless of what the firmware/host can support?
 
-This patch looks OK. Assuming you make correct use of the new functions
-in the next patches,
+No. The *VMM* sets the PSCI version by writing to a pseudo register.
+It means that when the guest migrates, the VMM saves and restores that
+version, and the guest doesn't see any change.
 
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+The host firmware has nothing to do with it, obviously. This is all
+about KVM's own implementation of the "firmware", as seen by the guest.
 
-On a side note, I think the above could be written
+> Because if not, surely it's just part of the basic shape of the
+> machine, like "how many vCPUs does it have". You don't need to be able
+> to query it back again.
 
-	ret = zynqmp_dp_setup(dp, dp->mode.bw_code, dp->mode.lane_cnt,
-			      drm_dp_enhanced_frame_cap(dp->dpcd),
-			      dp->dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5);
+Nobody needs to do this.
 
-> +	if (ret)
->  		return ret;
->  
->  	zynqmp_dp_write(dp, ZYNQMP_DP_SCRAMBLING_DISABLE, 1);
+> I don't think we ever aspired to be able to hand an arbitrary KVM fd to
+> a userspace VMM and have the VMM be able to drive that VM without
+> having any a priori context, did we?
+
+Arbitrary? No. This is actually very specific and pretty well
+documented.
+
+Also, to answer your question about why we treat 0.1 differently from
+0.2+: 0.1 didn't specify the PSCI SMC/HCR encoding, meaning that KVM
+implemented something that was never fully specified. The VMM has to
+provide firmware tables that describe that. With 0.2+, there is a
+standard encoding for all functions, and the VMM doesn't have to
+provide the encoding to the guest.
+
+	M.
 
 -- 
-Regards,
-
-Laurent Pinchart
+Without deviation from the norm, progress is not possible.
 
