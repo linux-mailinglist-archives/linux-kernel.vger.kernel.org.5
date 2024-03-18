@@ -1,259 +1,226 @@
-Return-Path: <linux-kernel+bounces-106524-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106525-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 995B387EFD9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:37:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5931687EFDD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:39:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE6C4B22C9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:37:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E83781F2181E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:39:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1636538DD3;
-	Mon, 18 Mar 2024 18:37:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40639535B2;
+	Mon, 18 Mar 2024 18:38:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b="G9MnHFNA";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="vWHDqHgm"
-Received: from wout5-smtp.messagingengine.com (wout5-smtp.messagingengine.com [64.147.123.21])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MYpmvMOU"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC39B2032C;
-	Mon, 18 Mar 2024 18:37:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.21
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E126638DD6;
+	Mon, 18 Mar 2024 18:38:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710787030; cv=none; b=m8CkzgG/oSHE6+xqiHsc34YCZf1w91gumVBrW0YOeFxyIq5V9U2lw33yk9NX7WYQJDTR0HIx0HvFezVN1KXwfa1UTufSzkmn6icR0kyrN6sceoDe5NutMZUbNvwY5TGx3xlD/pOqfYXBvY2SQ8O/0N+qirue1VJQcrcXqgturkQ=
+	t=1710787133; cv=none; b=Iq7LhxG5aOK6amgZYZb7OxptWa3UMU/vq4pHiYh3txa9R7Vmtl88Q4s/SLaC+qnoPc5p9HG7N+qqF2L6P24LDwELYpzscFxEUnOoGvhe3NQdzftBJ0e/cChZlzaiVqcCJShvyNIwscbv5V/annJsiPv6nzi8gCdfyCGXLnruHes=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710787030; c=relaxed/simple;
-	bh=xxE50xPMPYB11vGzAhAyE+tFfO87yBa51aO6I/ChkXE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eAKylIyZfhev4wFAWhLYkH/A5UD6nHGNhRd5A5wR04fa4NGprQ5Z7J3JGcjRs7a5DFZlxKOUI/s2XvxiTbjmrs/xn1IleKEDEIqGhJJQ5I/G3OBONAiemKWhS1G0JFoXNP8oZgsBo/FI4dE+eZ2Fn7necT/xVeR80y0lrTN7x7M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz; spf=pass smtp.mailfrom=dxuuu.xyz; dkim=pass (2048-bit key) header.d=dxuuu.xyz header.i=@dxuuu.xyz header.b=G9MnHFNA; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=vWHDqHgm; arc=none smtp.client-ip=64.147.123.21
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=dxuuu.xyz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dxuuu.xyz
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailout.west.internal (Postfix) with ESMTP id 85AE7320015C;
-	Mon, 18 Mar 2024 14:37:05 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Mon, 18 Mar 2024 14:37:07 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dxuuu.xyz; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1710787025;
-	 x=1710873425; bh=o6YQkt2TIA7njQXTlYbqx7Op1KWTM9KAfdSpYmpRw/k=; b=
-	G9MnHFNA6P1U+CKmLtgPSjOtDSXCHaUH1P/+EhaBDz9x/JwG15m2oWNYUe+Naw/7
-	++y4FSBd3BtXQemHGH6O4mWdj1MMXRNKZQsX6MeCsv4nPzvOHRYdKApSFqJH+c3G
-	U+0/NxjwY7QQ8DvsyBHeZY3dOBLabx1OhilFAXODExq4KZZjobt+3Q4rxn6rhbqW
-	fzZa/gturj6BPDjza5JRPcBX43wg2xEBJEl+fHjRBXCvStH63hwErgeSlzLx/GRh
-	Zbj2lgI1ErZhriP1yhFeFNzoEezyfW9jAEn9ix2gEy9iPIHHaSUx7eMK21UeXfkX
-	0c9Fjca81fEnzW0XdIzEjA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710787025; x=
-	1710873425; bh=o6YQkt2TIA7njQXTlYbqx7Op1KWTM9KAfdSpYmpRw/k=; b=v
-	WHDqHgmffn21rCfa5HAk9mqKWwPPYAx2oogV1QozmTz4d5VvzaRgIlOmZx7rhFZx
-	vuYknEbZldnpXyNyKpxTqQsRUWcih7Cw35nFO/0eBIvtIKazbFxxsXhwpO/7k3a3
-	P7EiLJ/nWJMe4Rm4oCRnBecWy20RI4NgxeE3vcU5srbqxH2dKSK345oNhMl+fd+g
-	SO6A7V1/ZaOUzGYJ7uofR5YCR8iAjyVuXiGY5s1ZqQS6WG6gcoTQRVhgGgqbTqm0
-	a5kQxRaKw3mFKdGrrr307sbudrifyGY/1FVJIYlWumT4LgYOzZ4l3ws9iirPG9YH
-	ois+4gdU9eZhO5z/mbRgQ==
-X-ME-Sender: <xms:0In4ZSjRE5r6mHiQd2rCNYYxHi8zVymVI3kttcxy0rGrpaEB_efbAw>
-    <xme:0In4ZTAaMDHC4M3gf0A9rBRYaKpMQ8WodX3dd1eK9-8MvIKYp0HqQleM_GXgVxqZN
-    ZM4rFVgUDJf8PMFAQ>
-X-ME-Received: <xmr:0In4ZaGeouQB_asArTyHMheETxU9NLkNFDNhbIIpgOTQtqJKyKVRdgOsK1h5_NNNV09Dyrg3pC9SxCS9HsMhqiCwxuzQNDr0f_p5ucw>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeejgdduudehucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    gfrhhlucfvnfffucdlfeehmdenucfjughrpeffhffvvefukfhfgggtugfgjgestheksfdt
-    tddtjeenucfhrhhomhepffgrnhhivghlucgiuhcuoegugihusegugihuuhhurdighiiiqe
-    enucggtffrrghtthgvrhhnpedvuddvudeiteefjeegheeuudfhgefhkeekteeulefggeev
-    heevieekffffiedvtdenucffohhmrghinhepkhgvrhhnvghlrdhorhhgnecuvehluhhsth
-    gvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepugiguhesugiguhhuuhdr
-    giihii
-X-ME-Proxy: <xmx:0In4ZbScEZMVxYb1AdrQYuclh4SGfZzY_PiLlq44pj8ny5GcMeDs9g>
-    <xmx:0In4Zfw0fTtOW7S2S1c5-IZRMHyoV7EypZDQ-P56jD33HUXQ5s3ENw>
-    <xmx:0In4ZZ6TILMJe1rp1OdZ5TDSChWtmSCpObLFu8rf5rNA3gW5M1uIYQ>
-    <xmx:0In4ZcxfxBUFjJlHiqTogRRH0dq9O4TgG3EnmK3Qe7f8qT8ThBK95A>
-    <xmx:0Yn4ZfnlvnA7lwAc3ONLg6T_ZjnxkekDwBlYgG3N8-LvJ-rhkzJYhw>
-Feedback-ID: i6a694271:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Mar 2024 14:37:03 -0400 (EDT)
-Date: Mon, 18 Mar 2024 12:37:01 -0600
-From: Daniel Xu <dxu@dxuuu.xyz>
-To: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Cc: quentin@isovalent.com, daniel@iogearbox.net, ast@kernel.org, 
-	andrii@kernel.org, olsajiri@gmail.com, alan.maguire@oracle.com, 
-	martin.lau@linux.dev, eddyz87@gmail.com, song@kernel.org, yonghong.song@linux.dev, 
-	john.fastabend@gmail.com, kpsingh@kernel.org, sdf@google.com, haoluo@google.com, 
-	jolsa@kernel.org, bpf@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH bpf-next v2 2/2] bpftool: Support dumping kfunc
- prototypes from BTF
-Message-ID: <rbivyqu3i57xdtetdjsvwxp4fdstvgmnhmhh2py4jqgzror4az@z3mwj5xvrymc>
-References: <cover.1707080349.git.dxu@dxuuu.xyz>
- <9b8ebd13300e28bd92a2e6de4fb04f85c1b6ce7c.1707080349.git.dxu@dxuuu.xyz>
- <CAEf4BzaSSTY0KTBYACvvVUeKVWd9wO+FM91E-9ES4dHwY-wX+w@mail.gmail.com>
+	s=arc-20240116; t=1710787133; c=relaxed/simple;
+	bh=lNojrL3UxXWw3wWblZQzw2mMNG0wfpdAKKG4HmbwfwM=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
+	 Content-Type:Subject; b=NKw4W7l0I36iMnhZgGbbDI6I99jdzDi5HwlJFtGG8R5XhiqMlxvQY9edvfy3HzywnLEk1FlMfeZerUc65Zb8EV++BxjsFqSLvOd3xapiF8XYaTe4L+dbyLDvkP01ZtamRab3+y5R2j6TTJ/O4KnVcA1r8V22iggArMJfT02NDzs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MYpmvMOU; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42IHfZmQ012582;
+	Mon, 18 Mar 2024 18:38:37 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : subject; s=pp1;
+ bh=EGAUIEI6SbQpYfub6BCl42LM7sTqQsBWk3dKyRUTVVg=;
+ b=MYpmvMOUvlqTEsxfsilQx0IzaVbCpFRdHGBe2dr6Su7EZH7laM45FPFi9CaGZ7b9K3tM
+ 8Vt7qUbMNzwuyVKbfozucYyPMtRb68C0CTd/moOGvG5UnMMOZ/yWovcVD8zLM3gyIwmA
+ ysVI3xRx8c6IzxHq2gxLM1wkq6BdyReP7R4BzatvLsA4Gqws/NJz7xu3lSDgSmcCzOLx
+ 3HTk9OqX8XIe58vRHMhxG6rcEJ+lqi4886f0aUQvj/A/soQ2ASfXBIfYDoy7iciS0paz
+ eWRBQX/ZtHbbrsZMcuttYIQ1vQ/F22mnvRKoXspQJFhABIDwWQiQCwqPAQ58TBwbhgox 8A== 
+Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wxt3r0b70-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 18:38:37 +0000
+Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42IH0uOU002780;
+	Mon, 18 Mar 2024 18:38:36 GMT
+Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
+	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2a55y-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 18:38:36 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42IIcY0G45351360
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Mar 2024 18:38:36 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 0F83358055;
+	Mon, 18 Mar 2024 18:38:34 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id F20D85805B;
+	Mon, 18 Mar 2024 18:38:32 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 18 Mar 2024 18:38:32 +0000 (GMT)
+Message-ID: <4151f2f0-aa92-480d-aad5-2bf4333b4265@linux.ibm.com>
+Date: Mon, 18 Mar 2024 14:38:32 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAEf4BzaSSTY0KTBYACvvVUeKVWd9wO+FM91E-9ES4dHwY-wX+w@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Content-Language: en-US
+To: Bharat Bhushan <bbhushan2@marvell.com>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>,
+        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
+        "davem@davemloft.net" <davem@davemloft.net>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "saulo.alessandre@tse.jus.br" <saulo.alessandre@tse.jus.br>,
+        "lukas@wunner.de" <lukas@wunner.de>,
+        "jarkko@kernel.org" <jarkko@kernel.org>
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <20240312183618.1211745-7-stefanb@linux.vnet.ibm.com>
+ <SN7PR18MB5314CB6B4CF9678BDDF0D012E32D2@SN7PR18MB5314.namprd18.prod.outlook.com>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <SN7PR18MB5314CB6B4CF9678BDDF0D012E32D2@SN7PR18MB5314.namprd18.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: wSNjPDBhFanHNTjf9WxtXUObvZZKBVbJ
+X-Proofpoint-ORIG-GUID: wSNjPDBhFanHNTjf9WxtXUObvZZKBVbJ
+Subject: Re:  [PATCH v6 06/13] crypto: ecc - Implement vli_mmod_fast_521 for NIST
+ p521
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ suspectscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0
+ phishscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 spamscore=0
+ bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403180141
 
-Hi Andrii,
 
-On Wed, Feb 07, 2024 at 04:50:15PM -0800, Andrii Nakryiko wrote:
-> On Sun, Feb 4, 2024 at 1:07 PM Daniel Xu <dxu@dxuuu.xyz> wrote:
-> >
-> > This patch enables dumping kfunc prototypes from bpftool. This is useful
-> > b/c with this patch, end users will no longer have to manually define
-> > kfunc prototypes. For the kernel tree, this also means we can drop
-> > kfunc prototypes from:
-> >
-> >         tools/testing/selftests/bpf/bpf_kfuncs.h
-> >         tools/testing/selftests/bpf/bpf_experimental.h
-> >
-> > Example usage:
-> >
-> >         $ make PAHOLE=/home/dxu/dev/pahole/build/pahole -j30 vmlinux
-> >
-> >         $ ./tools/bpf/bpftool/bpftool btf dump file ./vmlinux format c | rg "__ksym;" | head -3
-> >         extern void cgroup_rstat_updated(struct cgroup *cgrp, int cpu) __weak __ksym;
-> >         extern void cgroup_rstat_flush(struct cgroup *cgrp) __weak __ksym;
-> >         extern struct bpf_key *bpf_lookup_user_key(u32 serial, u64 flags) __weak __ksym;
-> >
-> > Note that this patch is only effective after the enabling pahole [0]
-> > change is merged and the resulting feature enabled with
-> > --btf_features=decl_tag_kfuncs.
-> >
-> > [0]: https://lore.kernel.org/bpf/cover.1707071969.git.dxu@dxuuu.xyz/
-> >
-> > Signed-off-by: Daniel Xu <dxu@dxuuu.xyz>
-> > ---
-> >  tools/bpf/bpftool/btf.c | 45 +++++++++++++++++++++++++++++++++++++++++
-> >  1 file changed, 45 insertions(+)
-> >
-> > diff --git a/tools/bpf/bpftool/btf.c b/tools/bpf/bpftool/btf.c
-> > index 91fcb75babe3..0fd78a476286 100644
-> > --- a/tools/bpf/bpftool/btf.c
-> > +++ b/tools/bpf/bpftool/btf.c
-> > @@ -20,6 +20,8 @@
-> >  #include "json_writer.h"
-> >  #include "main.h"
-> >
-> > +#define KFUNC_DECL_TAG         "bpf_kfunc"
-> > +
-> >  static const char * const btf_kind_str[NR_BTF_KINDS] = {
-> >         [BTF_KIND_UNKN]         = "UNKNOWN",
-> >         [BTF_KIND_INT]          = "INT",
-> > @@ -454,6 +456,39 @@ static int dump_btf_raw(const struct btf *btf,
-> >         return 0;
-> >  }
-> >
-> > +static int dump_btf_kfuncs(struct btf_dump *d, const struct btf *btf)
-> > +{
-> > +       DECLARE_LIBBPF_OPTS(btf_dump_emit_type_decl_opts, opts);
+
+On 3/18/24 01:47, Bharat Bhushan wrote:
 > 
-> nit: use shorter LIBBPF_OPTS, DECLARE_LIBBPF_OPTS is a "deprecated"
-> macro name I hid, but didn't remove
+> 
+>> -----Original Message-----
+>> From: Stefan Berger <stefanb@linux.vnet.ibm.com>
+>> Sent: Wednesday, March 13, 2024 12:06 AM
+>> To: keyrings@vger.kernel.org; linux-crypto@vger.kernel.org;
+>> herbert@gondor.apana.org.au; davem@davemloft.net
+>> Cc: linux-kernel@vger.kernel.org; saulo.alessandre@tse.jus.br;
+>> lukas@wunner.de; Bharat Bhushan <bbhushan2@marvell.com>;
+>> jarkko@kernel.org; Stefan Berger <stefanb@linux.ibm.com>
+>> Subject: [EXTERNAL] [PATCH v6 06/13] crypto: ecc - Implement
+>> vli_mmod_fast_521 for NIST p521
+>>
+>> Prioritize security for external emails: Confirm sender and content safety
+>> before clicking links or opening attachments
+>>
+>> ----------------------------------------------------------------------
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> Implement vli_mmod_fast_521 following the description for how to calculate
+>> the modulus for NIST P521 in the NIST publication "Recommendations for
+>> Discrete Logarithm-Based Cryptography: Elliptic Curve Domain Parameters"
+>> section G.1.4.
+>>
+>> NIST p521 requires 9 64bit digits, so increase the ECC_MAX_DIGITS so that
+>> arrays fit the larger numbers.
+>>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> ---
+>>   crypto/ecc.c                  | 25 +++++++++++++++++++++++++
+>>   include/crypto/internal/ecc.h |  3 ++-
+>>   2 files changed, 27 insertions(+), 1 deletion(-)
+>>
+>> diff --git a/crypto/ecc.c b/crypto/ecc.c index 415a2f4e7291..99d41887c005
+>> 100644
+>> --- a/crypto/ecc.c
+>> +++ b/crypto/ecc.c
+>> @@ -902,6 +902,28 @@ static void vli_mmod_fast_384(u64 *result, const
+>> u64 *product,  #undef AND64H  #undef AND64L
+>>
+>> +/*
+>> + * Computes result = product % curve_prime
+>> + * from "Recommendations for Discrete Logarithm-Based Cryptography:
+>> + *       Elliptic Curve Domain Parameters" section G.1.4
+>> + */
+>> +static void vli_mmod_fast_521(u64 *result, const u64 *product,
+>> +			      const u64 *curve_prime, u64 *tmp) {
+>> +	const unsigned int ndigits = ECC_CURVE_NIST_P521_DIGITS;
+>> +	size_t i;
+>> +
+>> +	/* Initialize result with lowest 521 bits from product */
+>> +	vli_set(result, product, ndigits);
+>> +	result[8] &= 0x1ff;
+>> +
+>> +	for (i = 0; i < ndigits; i++)
+>> +		tmp[i] = (product[8 + i] >> 9) | (product[9 + i] << 55);
+>> +	tmp[8] &= 0x1ff;
+> 
+> Can we get away from this hardcoding, like 9, 55, 0x1ff etc.
+> Or at least add comment about these.
+> 
+>> +
+>> +	vli_mod_add(result, result, tmp, curve_prime, ndigits); }
+>> +
+>>   /* Computes result = product % curve_prime for different curve_primes.
+>>    *
+>>    * Note that curve_primes are distinguished just by heuristic check and @@ -
+>> 941,6 +963,9 @@ static bool vli_mmod_fast(u64 *result, u64 *product,
+>>   	case ECC_CURVE_NIST_P384_DIGITS:
+>>   		vli_mmod_fast_384(result, product, curve_prime, tmp);
+>>   		break;
+>> +	case ECC_CURVE_NIST_P521_DIGITS:
+>> +		vli_mmod_fast_521(result, product, curve_prime, tmp);
+>> +		break;
+>>   	default:
+>>   		pr_err_ratelimited("ecc: unsupported digits size!\n");
+>>   		return false;
+>> diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h index
+>> ab722a8986b7..4e2f5f938e91 100644
+>> --- a/include/crypto/internal/ecc.h
+>> +++ b/include/crypto/internal/ecc.h
+>> @@ -33,7 +33,8 @@
+>>   #define ECC_CURVE_NIST_P192_DIGITS  3
+>>   #define ECC_CURVE_NIST_P256_DIGITS  4
+>>   #define ECC_CURVE_NIST_P384_DIGITS  6
+>> -#define ECC_MAX_DIGITS              (512 / 64) /* due to ecrdsa */
+>> +#define ECC_CURVE_NIST_P521_DIGITS  9
+> 
+> Maybe these can be defined as:
+> #define ECC_CURVE_NIST_P521_DIGITS  (DIV_ROUND_UP(521, 64) /* NIST P521 */)
 
-Ack.
+I think for NIST P521 9 can be pre-calculated. It will not change 
+anymore in the future.
 
 > 
-> > +       int cnt = btf__type_cnt(btf);
-> > +       int i;
-> > +
-> > +       for (i = 1; i < cnt; i++) {
-> > +               const struct btf_type *t = btf__type_by_id(btf, i);
-> > +               const struct btf_type *kft;
-> > +               const char *name;
-> > +               int err;
-> > +
-> > +               if (!btf_is_decl_tag(t))
-> > +                       continue;
-> > +
-> > +               name = btf__name_by_offset(btf, t->name_off);
-> > +               if (strncmp(name, KFUNC_DECL_TAG, sizeof(KFUNC_DECL_TAG)))
-> > +                       continue;
+>> +#define ECC_MAX_DIGITS              DIV_ROUND_UP(521, 64) /* NIST P521 */
 > 
-> should we do a bit more sanity checking here? Check that component_idx
-> = -1 (entire func) and pointee type is FUNC?
+> /* NIST_P521 is max digits */
+> #define ECC_MAX_DIGITS              ECC_CURVE_ _DIGITS
 
-Makes sense. Will add.
+In this case I think the DIV_ROUND_UP() along with the comment shows 
+that it needs to be updated if ever a larger curve comes along.
 
 > 
-> > +
-> > +               printf("extern ");
-> > +
-> > +               kft = btf__type_by_id(btf, t->type);
+> Thanks
+> -Bharat
 > 
-> nit: reuse t?
+>>
+>>   #define ECC_DIGITS_TO_BYTES_SHIFT 3
+>>
+>> --
+>> 2.43.0
 > 
-> > +               opts.field_name = btf__name_by_offset(btf, kft->name_off);
-> > +               err = btf_dump__emit_type_decl(d, kft->type, &opts);
-> > +               if (err)
-> > +                       return err;
-> > +
-> > +               printf(" __weak __ksym;\n\n");
-> 
-> why extra endline?
-
-Was thinking b/c other entities (structs) are double newline separated
-that we should keep it up for kfunc prototypes. No opinion -- I'll
-change it.
-
-> 
-> though I'd ensure two empty lines before the first kfunc declaration
-> to visually separate it from other type. Maybe even add a comment like
-> `/* BPF kfuncs */` or something like that?
-
-Ack.
-
-> 
-> > +       }
-> > +
-> > +       return 0;
-> > +}
-> > +
-> >  static void __printf(2, 0) btf_dump_printf(void *ctx,
-> >                                            const char *fmt, va_list args)
-> >  {
-> > @@ -476,6 +511,12 @@ static int dump_btf_c(const struct btf *btf,
-> >         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
-> >         printf("#pragma clang attribute push (__attribute__((preserve_access_index)), apply_to = record)\n");
-> >         printf("#endif\n\n");
-> > +       printf("#ifndef __ksym\n");
-> > +       printf("#define __ksym __attribute__((section(\".ksyms\")))\n");
-> > +       printf("#endif\n\n");
-> > +       printf("#ifndef __weak\n");
-> > +       printf("#define __weak __attribute__((weak))\n");
-> > +       printf("#endif\n\n");
-> >
-> >         if (root_type_cnt) {
-> >                 for (i = 0; i < root_type_cnt; i++) {
-> > @@ -491,6 +532,10 @@ static int dump_btf_c(const struct btf *btf,
-> >                         if (err)
-> >                                 goto done;
-> >                 }
-> > +
-> > +               err = dump_btf_kfuncs(d, btf);
-> > +               if (err)
-> > +                       goto done;
-> >         }
-> >
-> >         printf("#ifndef BPF_NO_PRESERVE_ACCESS_INDEX\n");
-> > --
-> > 2.42.1
-> >
-
-I'll send the next rev after the pahole changes get merged.
-
-Thanks,
-Daniel
 
