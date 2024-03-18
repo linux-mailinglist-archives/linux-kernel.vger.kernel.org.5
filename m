@@ -1,135 +1,196 @@
-Return-Path: <linux-kernel+bounces-106042-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106043-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C075087E83E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:10:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43DD987E849
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:11:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 79CF62822D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:10:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EC21C2169C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A143639AF2;
-	Mon, 18 Mar 2024 11:09:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F3A364B8;
+	Mon, 18 Mar 2024 11:11:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cR/ElfzX"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XPng3DZO"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2026364BF;
-	Mon, 18 Mar 2024 11:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8397E31A66;
+	Mon, 18 Mar 2024 11:11:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710760139; cv=none; b=nlSiremQ48t3lxbKb1+lkEB/V+hWuE9iLIMInBiQP4CPtCx4CrE76OxFf+aJy1kSKNtIx8fHCTepNMzyPSGrxWoeu23wHww/obCtWZV0qKOyd1JaSWC7ogr2qfm+e37ZuuF0TXAwkyLnPwmfVJCmdZ/rQmHvnfUoRfbiYdoALsc=
+	t=1710760298; cv=none; b=I88lFzlK77gZY1y+2LzpDKB1y6Gn0VxBvYKw+kTRE19ARUZ5An42gTSgYjH3z1Yj+K7Oc+O21VAVhqlt3s/MlUddCiTftNnYyu1yzgS51uHFFSIGcWku/YiwstjDIKT8tN69Id0HOtLa1/hUX4J/hhKPbMr5fCjkLBXWS4uEU9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710760139; c=relaxed/simple;
-	bh=vFYxI/evLVZ5xnjJcv/HxjQrEpYkbG+SjslgqJGSw9Q=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=XmMfZGRdFYBrGaUndz0SUDzQCfOj2wjqlsl/VMFVEkPWemKAiHZ3BUwaa4tWgyZHeyb4loJ3ZjWhsnedLGD06wARgO/e0JZtMp/+c6W+Crpu3wSd93fdTTzq0oAENMe1DKu0WmRi/bm0msK6c99sT/ANhLs7T9f/SmxOQF/Ln/A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cR/ElfzX; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D12BC433B1;
-	Mon, 18 Mar 2024 11:08:59 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710760139;
-	bh=vFYxI/evLVZ5xnjJcv/HxjQrEpYkbG+SjslgqJGSw9Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=cR/ElfzXeQ5RfhRBRufwn/QdOag6NRNsRSMmdvp4OsBMEkQg194NAMaR2m0mPHUDs
-	 wJkU0TxY95DRJ+IY7QKwzqchYsoXp5vVatMtvmOJfXw4VH7nB7V0z9RQv1RPPTmrQO
-	 ftPgFbYGUIqzOVD6oIO0E8d4wdB0eyc59HM4pnhU5dqlfk9ZXpJ8Mw0luUmOHTJhLa
-	 51ht3JXKgZXCEbsNTmtwBpR6Bq/eOILukrNVKEZe154dBlA5YwxpLHyzIhICsoHFq+
-	 G0cPna4EHmvl6BcJbCn7fZUUzdzNdlMuIdJvgMrjDldD4BCb41QICj9y2yO2jhEuWc
-	 fRqVfXQYGD68w==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rmArY-000000008Jr-45VI;
-	Mon, 18 Mar 2024 12:09:05 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Matthias Kaehlcke <mka@chromium.org>,
-	Doug Anderson <dianders@google.com>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	linux-bluetooth@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-Subject: [PATCH v2 4/4] Bluetooth: qca: fix wcn3991 'local-bd-address' endianness
-Date: Mon, 18 Mar 2024 12:08:55 +0100
-Message-ID: <20240318110855.31954-5-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240318110855.31954-1-johan+linaro@kernel.org>
-References: <20240318110855.31954-1-johan+linaro@kernel.org>
+	s=arc-20240116; t=1710760298; c=relaxed/simple;
+	bh=/eNWMsh0F9jXQBWzGgZPQU2dDcVV4ugepMs2kdOvIcA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HBBQ1BJN52U5KlnXHDhuJXiV0nYcert4oq6jQXpd55IthNeSDeURJLJqZ3vUs8OPRAjScOjsVIYAT5OmH5yaedgEOkDqfRr1HbA4Ok4iAUjMKHX5519bzoPSfKlyqlYHqC+CvPRg1Ip0a74zIw8YlDoLLdw94dJlfq8agBbfoz0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XPng3DZO; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710760297; x=1742296297;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=/eNWMsh0F9jXQBWzGgZPQU2dDcVV4ugepMs2kdOvIcA=;
+  b=XPng3DZO7w8UttmABkFa5gYOR6zZjTF607GFjPr/Dh+Kv9MzObjrCBvu
+   vDWah2AuBd9mAYyTKSEctz3/N1CKtEM/sipcpHuBJtWHuVhwawym/lUBd
+   sZ/UJagKIAS3PP/zAZmhFtlaVaTXxzAAzXqCpqOIwpUfKUNyrqmM+4z9V
+   KfW11KpQQixkUWi2u9hf5SbmAVAjZ0RVJABsKo/rRCGbTNZ3jAIbkupl5
+   SvYIxIp6JXBga5amdq7GqbWikfmrEdeCSKWcem6qXbbyRuxElDUuK2qvc
+   4prcXmfwh6RRbEpzOqFq/PBLtbzzONCVcARwl8j9xeFKcU2wViFCkEV6Z
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="17012273"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="17012273"
+Received: from fmsmga001.fm.intel.com ([10.253.24.23])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 04:11:36 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="937060155"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="937060155"
+Received: from kuha.fi.intel.com ([10.237.72.185])
+  by fmsmga001.fm.intel.com with SMTP; 18 Mar 2024 04:11:30 -0700
+Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Mar 2024 13:11:30 +0200
+Date: Mon, 18 Mar 2024 13:11:30 +0200
+From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+To: Jameson Thies <jthies@google.com>
+Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com,
+	abhishekpandit@chromium.org, andersson@kernel.org,
+	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
+	gregkh@linuxfoundation.org, hdegoede@redhat.com,
+	neil.armstrong@linaro.org, rajaram.regupathy@intel.com,
+	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/1] usb: typec: ucsi: Check capabilities before cable
+ and identity discovery
+Message-ID: <ZfghYnmiFBMdDp3/@kuha.fi.intel.com>
+References: <20240315171836.343830-1-jthies@google.com>
+ <20240315171836.343830-2-jthies@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315171836.343830-2-jthies@google.com>
 
-Due to a long-standing bug in the Qualcomm Bluetooth driver, the device
-address has so far been reversed when configuring the controller.
+On Fri, Mar 15, 2024 at 05:18:35PM +0000, Jameson Thies wrote:
+> Check the UCSI_CAP_GET_PD_MESSAGE bit before sending GET_PD_MESSAGE to
+> discover partner and cable identity, check UCSI_CAP_CABLE_DETAILS before
+> sending GET_CABLE_PROPERTY to discover the cable and check
+> UCSI_CAP_ALT_MODE_DETAILS before registering the a cable plug. Additionally,
+> move 8 bits from reserved_1 to features in the ucsi_capability struct. This
+> makes the field 16 bits, still 8 short of the 24 bits allocated for it in
+> UCSI v3.0, but it will not overflow because UCSI only defines 14 bits in
+> bmOptionalFeatures.
+> 
+> Fixes: 38ca416597b0 ("usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY")
+> Link: https://lore.kernel.org/linux-usb/44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org
+> Suggested-by: Neil Armstrong <neil.armstrong@linaro.org>
+> Signed-off-by: Jameson Thies <jthies@google.com>
 
-This has led to one vendor reversing the address provided by the
-boot firmware using the 'local-bd-address' devicetree property.
+Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
 
-The only device affected by this should be the WCN3991 used in some
-Chromebooks. The corresponding compatible string has now been deprecated
-so that the underlying driver bug can be fixed without breaking
-backwards compatibility.
+> ---
+> Confirmed a device which supports GET_PD_MESSAGE, GET_CABLE_PROPERTY and
+> GET_ALTERNATE_MODES still requested identity and cable information.
+> 
+>  drivers/usb/typec/ucsi/ucsi.c | 34 +++++++++++++++++++++-------------
+>  drivers/usb/typec/ucsi/ucsi.h |  5 +++--
+>  2 files changed, 24 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+> index cf52cb34d2859..958dc82989b60 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.c
+> +++ b/drivers/usb/typec/ucsi/ucsi.c
+> @@ -1133,17 +1133,21 @@ static int ucsi_check_cable(struct ucsi_connector *con)
+>  	if (ret < 0)
+>  		return ret;
+>  
+> -	ret = ucsi_get_cable_identity(con);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE) {
+> +		ret = ucsi_get_cable_identity(con);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>  
+> -	ret = ucsi_register_plug(con);
+> -	if (ret < 0)
+> -		return ret;
+> +	if (con->ucsi->cap.features & UCSI_CAP_ALT_MODE_DETAILS) {
+> +		ret = ucsi_register_plug(con);
+> +		if (ret < 0)
+> +			return ret;
+>  
+> -	ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
+> -	if (ret < 0)
+> -		return ret;
+> +		ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
+> +		if (ret < 0)
+> +			return ret;
+> +	}
+>  
+>  	return 0;
+>  }
+> @@ -1189,8 +1193,10 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+>  			ucsi_register_partner(con);
+>  			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
+>  			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
+> -			ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
+> -			ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
+> +			if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
+> +				ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
+> +			if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
+> +				ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
+>  
+>  			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
+>  			    UCSI_CONSTAT_PWR_OPMODE_PD)
+> @@ -1589,8 +1595,10 @@ static int ucsi_register_port(struct ucsi *ucsi, struct ucsi_connector *con)
+>  		ucsi_register_partner(con);
+>  		ucsi_pwr_opmode_change(con);
+>  		ucsi_port_psy_changed(con);
+> -		ucsi_get_partner_identity(con);
+> -		ucsi_check_cable(con);
+> +		if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
+> +			ucsi_get_partner_identity(con);
+> +		if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
+> +			ucsi_check_cable(con);
+>  	}
+>  
+>  	/* Only notify USB controller if partner supports USB data */
+> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
+> index 32daf5f586505..0e7c92eb1b227 100644
+> --- a/drivers/usb/typec/ucsi/ucsi.h
+> +++ b/drivers/usb/typec/ucsi/ucsi.h
+> @@ -206,7 +206,7 @@ struct ucsi_capability {
+>  #define UCSI_CAP_ATTR_POWER_OTHER		BIT(10)
+>  #define UCSI_CAP_ATTR_POWER_VBUS		BIT(14)
+>  	u8 num_connectors;
+> -	u8 features;
+> +	u16 features;
+>  #define UCSI_CAP_SET_UOM			BIT(0)
+>  #define UCSI_CAP_SET_PDM			BIT(1)
+>  #define UCSI_CAP_ALT_MODE_DETAILS		BIT(2)
+> @@ -215,7 +215,8 @@ struct ucsi_capability {
+>  #define UCSI_CAP_CABLE_DETAILS			BIT(5)
+>  #define UCSI_CAP_EXT_SUPPLY_NOTIFICATIONS	BIT(6)
+>  #define UCSI_CAP_PD_RESET			BIT(7)
+> -	u16 reserved_1;
+> +#define UCSI_CAP_GET_PD_MESSAGE		BIT(8)
+> +	u8 reserved_1;
+>  	u8 num_alt_modes;
+>  	u8 reserved_2;
+>  	u16 bc_version;
+> -- 
+> 2.44.0.291.gc1ea87d7ee-goog
 
-Set the HCI_QUIRK_BDADDR_PROPERTY_BROKEN quirk for the deprecated
-compatible string and add the new 'qcom,wcn3991-bt-bdaddr-le' string to
-the match table for boot firmware that conforms with the binding.
-
-Fixes: 7d250a062f75 ("Bluetooth: hci_qca: Add support for Qualcomm Bluetooth SoC WCN3991")
-Cc: stable@vger.kernel.org      # 5.10
-Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/bluetooth/hci_qca.c | 11 +++++++++++
- 1 file changed, 11 insertions(+)
-
-diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index f989c05f8177..346274fe66d8 100644
---- a/drivers/bluetooth/hci_qca.c
-+++ b/drivers/bluetooth/hci_qca.c
-@@ -1904,6 +1904,16 @@ static int qca_setup(struct hci_uart *hu)
- 	case QCA_WCN6855:
- 	case QCA_WCN7850:
- 		set_bit(HCI_QUIRK_USE_BDADDR_PROPERTY, &hdev->quirks);
-+
-+		if (soc_type == QCA_WCN3991) {
-+			struct device *dev = GET_HCIDEV_DEV(hdev);
-+
-+			if (device_is_compatible(dev, "qcom,wcn3991-bt")) {
-+				set_bit(HCI_QUIRK_BDADDR_PROPERTY_BROKEN,
-+						&hdev->quirks);
-+			}
-+		}
-+
- 		hci_set_aosp_capable(hdev);
- 
- 		ret = qca_read_soc_version(hdev, &ver, soc_type);
-@@ -2597,6 +2607,7 @@ static const struct of_device_id qca_bluetooth_of_match[] = {
- 	{ .compatible = "qcom,wcn3988-bt", .data = &qca_soc_data_wcn3988},
- 	{ .compatible = "qcom,wcn3990-bt", .data = &qca_soc_data_wcn3990},
- 	{ .compatible = "qcom,wcn3991-bt", .data = &qca_soc_data_wcn3991},
-+	{ .compatible = "qcom,wcn3991-bt-bdaddr-le", .data = &qca_soc_data_wcn3991},
- 	{ .compatible = "qcom,wcn3998-bt", .data = &qca_soc_data_wcn3998},
- 	{ .compatible = "qcom,wcn6750-bt", .data = &qca_soc_data_wcn6750},
- 	{ .compatible = "qcom,wcn6855-bt", .data = &qca_soc_data_wcn6855},
 -- 
-2.43.2
-
+heikki
 
