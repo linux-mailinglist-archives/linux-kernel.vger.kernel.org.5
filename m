@@ -1,155 +1,337 @@
-Return-Path: <linux-kernel+bounces-105661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9EF3387E238
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:43:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 66CD987E23D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:46:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9F5211C21026
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:43:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D11BC1F21305
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:46:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F05471DFC7;
-	Mon, 18 Mar 2024 02:43:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8314E1DDF4;
+	Mon, 18 Mar 2024 02:45:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="XGPD4UwM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36BCF1E864;
-	Mon, 18 Mar 2024 02:43:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="aGHg4Ibm"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21CC28814;
+	Mon, 18 Mar 2024 02:45:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710729810; cv=none; b=HOWRZwGsCmR6jVBT9KLX1Jkm+Za9HMsGCnz4FLEWg//Jg6ldFONBop+rlpoDFWKTboIkzrlWwE4Er5I2FepAOqpCYjeSb1WefzIGkD9P5115Cyhs8HOKpEZ1dled9jO6jZBB6lbqD7FYaMP7hxsKaauO+q6RQ/+ExC5lRZbmxoc=
+	t=1710729954; cv=none; b=kayX09RcNUd9MVFSjgmvtBsCEsOQLxyUXr89kYPfPOScCNOqqNV3laRs5U+myiIqk15w5JwhsV75Nw9Bgz46BYqUfBqVANJ3OSPYbGmBYQVBaVKYjENzaP4gEI99BlhfgoOgx/pqCIyhVtibR6tvLZc7xtYqNTAyAB5f87Le9G8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710729810; c=relaxed/simple;
-	bh=xuHFwmysitBPRtnk/N2gUnHljyju/ctC2IDtugOQZ/U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=IPh6t1AdqXUvcpR44d6P8AKJM1fpeH0xNtJI2bt2Ceu1SjDVFYGQs65em0zX7anzxCZ5CiMJonnWn2/QY5NAOa+38Fc+lxT15toQWfn+/agQdKJtL+TrRLitVAIOnywreNQR9PB/ciTh3euFmNpvO+A/R1xjcbNUfCE8VvIwzBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=XGPD4UwM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1351AC433C7;
-	Mon, 18 Mar 2024 02:43:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710729809;
-	bh=xuHFwmysitBPRtnk/N2gUnHljyju/ctC2IDtugOQZ/U=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XGPD4UwMiwPDNsVIniys+T0NTKxPpNIlhguRaLSthnvfyLi3vqpUFLyW/1/8uRzIM
-	 XYlJNVP50V9QmHk1dUzGYbLzkCGWk8V+Hz8/ahUZUtw9RhiCwpTt5IK9T0geD/pI2r
-	 5pTOV5PfbMs9/T2H+BOT3GAoiG8ZkXboA/HtHwRjo8qtCXjr6ONgD+B37/YkzKsW4Q
-	 3injwpcLD4ez3WGV4pxUNynitKgahTQk6zjLHCX4zKkLZ/B7vfuuy5XUujOGgFOwhU
-	 OVjm/+tzqqvgpJFAKhkn1OJhA9nViwKq7BjjhxTu0BJ4zH4BbOVpROq23hFFMfPZfn
-	 oMQ6vNRB3DRhw==
-Date: Sun, 17 Mar 2024 21:43:27 -0500
-From: Bjorn Andersson <andersson@kernel.org>
-To: Anton Bambura <jenneron@postmarketos.org>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] arm64: dts: qcom: sc8180x-lenovo-flex-5g: enable
- touchscreen
-Message-ID: <2tq6m75m3skcu5wlvrwpwnn53kay3pzo2aeecofxpfnll7mwqn@whtnrabrrivw>
-References: <20240203191200.99185-1-jenneron@postmarketos.org>
- <20240203191200.99185-5-jenneron@postmarketos.org>
+	s=arc-20240116; t=1710729954; c=relaxed/simple;
+	bh=CxnsZd7rbZMrQtDk4mHIEY+JTsHd4K0H9jn4yBsFhgA=;
+	h=From:To:Cc:Subject:Date:Message-Id; b=UfQvNfKaijpS66YtNx18nJn1SuxnbXfY+FB3w5L8PQxa4Jfw0J4wf+UH3MIFioeQb0N0TjExh55tYkhwPafL0NnFO4z4mUbkH8trO3QGb4L0shn9qcM9z6gn6QWvhVDivsOisBNFPyh2I2qVx4xoDe9ZKH6kbB/xCdiaHItwXc4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=aGHg4Ibm; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id 9520020B74C0; Sun, 17 Mar 2024 19:45:52 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 9520020B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710729952;
+	bh=rvVWLQiGsfQNZCfj9wc8a/tjixWzO4wJ12FE9seR5i0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=aGHg4Ibmiv0G8KbRHkwOe0IIbzq898ovzRbPS+o53r7SRV+7evZfzenjmQWK8BgvU
+	 fB8gbpfq2EYvEs9hd7dxsBzAg4KehjuEd9+g9E5YgVvobpyu2pOwkmYsAFKHRcujbz
+	 TW8rkQfgzmIcsZLiDD8yf7NrUkcE+GOqJ7mbhuR8=
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: linux-kernel@vger.kernel.org,
+	linux-hyperv@vger.kernel.org
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>,
+	Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Olaf Hering <olaf@aepfle.de>,
+	Ani Sinha <anisinha@redhat.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: [PATCH v3] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for keyfile format
+Date: Sun, 17 Mar 2024 19:45:51 -0700
+Message-Id: <1710729951-2695-1-git-send-email-shradhagupta@linux.microsoft.com>
+X-Mailer: git-send-email 1.8.3.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240203191200.99185-5-jenneron@postmarketos.org>
 
-On Sat, Feb 03, 2024 at 09:11:58PM +0200, Anton Bambura wrote:
-> Set regulators, reset gpio and delays according to ACPI tables.
-> 
-> Signed-off-by: Anton Bambura <jenneron@postmarketos.org>
-> ---
->  .../boot/dts/qcom/sc8180x-lenovo-flex-5g.dts  | 30 ++++++++++++++++++-
->  1 file changed, 29 insertions(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts b/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts
-> index 6ae6cb030b70..5bf6285f905f 100644
-> --- a/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts
-> +++ b/arch/arm64/boot/dts/qcom/sc8180x-lenovo-flex-5g.dts
-> @@ -271,6 +271,12 @@ vreg_l3c_1p2: ldo3 {
->  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->  		};
->  
-> +		vreg_l4c_3p3: ldo4 {
-> +			regulator-min-microvolt = <3296000>;
-> +			regulator-max-microvolt = <3304000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
->  		vreg_l10c_3p3: ldo10 {
->  			regulator-min-microvolt = <3000000>;
->  			regulator-max-microvolt = <3312000>;
-> @@ -337,6 +343,12 @@ vreg_l10e_2p9: ldo10 {
->  			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
->  		};
->  
-> +		vreg_l12e_1p8: ldo12 {
-> +			regulator-min-microvolt = <1800000>;
-> +			regulator-max-microvolt = <1800000>;
-> +			regulator-initial-mode = <RPMH_REGULATOR_MODE_HPM>;
-> +		};
-> +
->  		vreg_l16e_3p0: ldo16 {
->  			regulator-min-microvolt = <3072000>;
->  			regulator-max-microvolt = <3072000>;
-> @@ -365,11 +377,19 @@ &i2c1 {
->  	touchscreen@10 {
->  		compatible = "hid-over-i2c";
->  		reg = <0x10>;
-> +
->  		hid-descr-addr = <0x1>;
-> +		reset-gpios = <&tlmm 54 GPIO_ACTIVE_LOW>;
-> +
-> +		vdd-supply = <&vreg_l4c_3p3>;
-> +		vddl-supply = <&vreg_l12e_1p8>;
-> +
-> +		post-power-on-delay-ms = <3>;
-> +		post-reset-deassert-delay-ms = <200>;
+If the network configuration strings are passed as a combination of IPv and
+IPv6 addresses, the current KVP daemon doesnot handle it for the keyfile
+configuration format.
+With these changes, the keyfile config generation logic scans through the
+list twice to generate IPv4 and IPv6 sections for the configuration files
+to handle this support.
 
-As I ran into with the X13s, post-reset-deassert-delay-ms is not an
-accepted property for hid-over-i2c. I think the desired path forward is
-to extend elan,ekth6915.yaml and i2c-hid-of-elan.c and hard code these
-values there instead.
+Testcases ran:Rhel 9, Hyper-V VMs
+              (IPv4 only, IPv6 only, IPv4 and IPv6 combination)
+Signed-off-by: Shradha Gupta <shradhagupta@linux.microsoft.com>
+---
+ Changes in v3
+ * Introduced a macro for the output string size
+ * Added cound checks and used strncpy instead of strncpy
+ * Rearranged code to reduce total lines of code
+---
+ tools/hv/hv_kvp_daemon.c | 177 ++++++++++++++++++++++++++++++---------
+ 1 file changed, 136 insertions(+), 41 deletions(-)
 
-But I suspect you, like me, are unaware of the actual name of the
-device? Perhaps it's acceptable to make something up based on the
-reported product id?
+diff --git a/tools/hv/hv_kvp_daemon.c b/tools/hv/hv_kvp_daemon.c
+index 318e2dad27e0..156cef99d361 100644
+--- a/tools/hv/hv_kvp_daemon.c
++++ b/tools/hv/hv_kvp_daemon.c
+@@ -76,6 +76,12 @@ enum {
+ 	DNS
+ };
+ 
++enum {
++	IPV4 = 1,
++	IPV6,
++	IP_TYPE_MAX
++};
++
+ static int in_hand_shake;
+ 
+ static char *os_name = "";
+@@ -102,6 +108,11 @@ static struct utsname uts_buf;
+ 
+ #define MAX_FILE_NAME 100
+ #define ENTRIES_PER_BLOCK 50
++/*
++ * Change this entry if the number of addresses increases in future
++ */
++#define MAX_IP_ENTRIES 64
++#define OUTSTR_BUF_SIZE ((INET6_ADDRSTRLEN + 1) * MAX_IP_ENTRIES)
+ 
+ struct kvp_record {
+ 	char key[HV_KVP_EXCHANGE_MAX_KEY_SIZE];
+@@ -1171,6 +1182,18 @@ static int process_ip_string(FILE *f, char *ip_string, int type)
+ 	return 0;
+ }
+ 
++int ip_version_check(const char *input_addr)
++{
++	struct in6_addr addr;
++
++	if (inet_pton(AF_INET, input_addr, &addr))
++		return IPV4;
++	else if (inet_pton(AF_INET6, input_addr, &addr))
++		return IPV6;
++
++	return -EINVAL;
++}
++
+ /*
+  * Only IPv4 subnet strings needs to be converted to plen
+  * For IPv6 the subnet is already privided in plen format
+@@ -1197,14 +1220,71 @@ static int kvp_subnet_to_plen(char *subnet_addr_str)
+ 	return plen;
+ }
+ 
++static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
++				  int ip_sec)
++{
++	char addr[INET6_ADDRSTRLEN], *output_str;
++	int ip_offset = 0, error = 0, ip_ver;
++	char *param_name;
++
++	memset(addr, 0, sizeof(addr));
++
++	if (type == DNS)
++		param_name = "dns";
++	else if (type == GATEWAY)
++		param_name = "gateway";
++	else
++		return -EINVAL;
++
++	output_str = (char *)calloc(OUTSTR_BUF_SIZE, sizeof(char));
++	if (!output_str)
++		return -ENOMEM;
++
++	while (1) {
++		memset(addr, 0, sizeof(addr));
++
++		if (!parse_ip_val_buffer(ip_string, &ip_offset, addr,
++					 (MAX_IP_ADDR_SIZE * 2)))
++			break;
++
++		ip_ver = ip_version_check(addr);
++		if (ip_ver < 0)
++			continue;
++
++		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
++		    (ip_ver == IPV6 && ip_sec == IPV6)) {
++			/*
++			 * do a bound check to avoid out-of bound writes
++			 */
++			if ((OUTSTR_BUF_SIZE - strlen(output_str)) >
++			    (strlen(addr) + 1)) {
++				strncat(output_str, addr,
++					OUTSTR_BUF_SIZE - strlen(output_str));
++				strncat(output_str, ",",
++					OUTSTR_BUF_SIZE - strlen(output_str));
++			}
++		} else {
++			continue;
++		}
++	}
++
++	if (strlen(output_str)) {
++		output_str[strlen(output_str) - 1] = '\0';
++		error = fprintf(f, "%s=%s\n", param_name, output_str);
++	}
++
++	free(output_str);
++	return error;
++}
++
+ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+-				int is_ipv6)
++				int ip_sec)
+ {
+ 	char addr[INET6_ADDRSTRLEN];
+ 	char subnet_addr[INET6_ADDRSTRLEN];
+ 	int error, i = 0;
+ 	int ip_offset = 0, subnet_offset = 0;
+-	int plen;
++	int plen, ip_ver;
+ 
+ 	memset(addr, 0, sizeof(addr));
+ 	memset(subnet_addr, 0, sizeof(subnet_addr));
+@@ -1216,10 +1296,16 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+ 						       subnet_addr,
+ 						       (MAX_IP_ADDR_SIZE *
+ 							2))) {
+-		if (!is_ipv6)
++		ip_ver = ip_version_check(addr);
++		if (ip_ver < 0)
++			continue;
++
++		if (ip_ver == IPV4 && ip_sec == IPV4)
+ 			plen = kvp_subnet_to_plen((char *)subnet_addr);
+-		else
++		else if (ip_ver == IPV6 && ip_sec == IPV6)
+ 			plen = atoi(subnet_addr);
++		else
++			continue;
+ 
+ 		if (plen < 0)
+ 			return plen;
+@@ -1238,12 +1324,11 @@ static int process_ip_string_nm(FILE *f, char *ip_string, char *subnet,
+ 
+ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ {
+-	int error = 0;
++	int error = 0, ip_ver;
+ 	char if_filename[PATH_MAX];
+ 	char nm_filename[PATH_MAX];
+ 	FILE *ifcfg_file, *nmfile;
+ 	char cmd[PATH_MAX];
+-	int is_ipv6 = 0;
+ 	char *mac_addr;
+ 	int str_len;
+ 
+@@ -1421,52 +1506,62 @@ static int kvp_set_ip_info(char *if_name, struct hv_kvp_ipaddr_value *new_val)
+ 	if (error)
+ 		goto setval_error;
+ 
+-	if (new_val->addr_family & ADDR_FAMILY_IPV6) {
+-		error = fprintf(nmfile, "\n[ipv6]\n");
+-		if (error < 0)
+-			goto setval_error;
+-		is_ipv6 = 1;
+-	} else {
+-		error = fprintf(nmfile, "\n[ipv4]\n");
+-		if (error < 0)
+-			goto setval_error;
+-	}
+-
+ 	/*
+-	 * Now we populate the keyfile format
++	 * The keyfile format expects the IPv6 and IPv4 configuration in
++	 * different sections. Therefore we iterate through the list twice,
++	 * once to populate the IPv4 section and the next time for IPv6
+ 	 */
++	ip_ver = IPV4;
++	do {
++		if (ip_ver == IPV4) {
++			error = fprintf(nmfile, "\n[ipv4]\n");
++			if (error < 0)
++				goto setval_error;
++		} else {
++			error = fprintf(nmfile, "\n[ipv6]\n");
++			if (error < 0)
++				goto setval_error;
++		}
+ 
+-	if (new_val->dhcp_enabled) {
+-		error = kvp_write_file(nmfile, "method", "", "auto");
+-		if (error < 0)
+-			goto setval_error;
+-	} else {
+-		error = kvp_write_file(nmfile, "method", "", "manual");
++		/*
++		 * Now we populate the keyfile format
++		 */
++
++		if (new_val->dhcp_enabled) {
++			error = kvp_write_file(nmfile, "method", "", "auto");
++			if (error < 0)
++				goto setval_error;
++		} else {
++			error = kvp_write_file(nmfile, "method", "", "manual");
++			if (error < 0)
++				goto setval_error;
++		}
++
++		/*
++		 * Write the configuration for ipaddress, netmask, gateway and
++		 * name services
++		 */
++		error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
++					     (char *)new_val->sub_net,
++					     ip_ver);
+ 		if (error < 0)
+ 			goto setval_error;
+-	}
+ 
+-	/*
+-	 * Write the configuration for ipaddress, netmask, gateway and
+-	 * name services
+-	 */
+-	error = process_ip_string_nm(nmfile, (char *)new_val->ip_addr,
+-				     (char *)new_val->sub_net, is_ipv6);
+-	if (error < 0)
+-		goto setval_error;
+-
+-	/* we do not want ipv4 addresses in ipv6 section and vice versa */
+-	if (is_ipv6 != is_ipv4((char *)new_val->gate_way)) {
+-		error = fprintf(nmfile, "gateway=%s\n", (char *)new_val->gate_way);
++		error = process_dns_gateway_nm(nmfile,
++					       (char *)new_val->gate_way,
++					       GATEWAY, ip_ver);
+ 		if (error < 0)
+ 			goto setval_error;
+-	}
+ 
+-	if (is_ipv6 != is_ipv4((char *)new_val->dns_addr)) {
+-		error = fprintf(nmfile, "dns=%s\n", (char *)new_val->dns_addr);
++		error = process_dns_gateway_nm(nmfile,
++					       (char *)new_val->dns_addr, DNS,
++					       ip_ver);
+ 		if (error < 0)
+ 			goto setval_error;
+-	}
++
++		ip_ver++;
++	} while (ip_ver < IP_TYPE_MAX);
++
+ 	fclose(nmfile);
+ 	fclose(ifcfg_file);
+ 
+-- 
+2.34.1
 
-Regards,
-Bjorn
-
->  
->  		interrupts-extended = <&tlmm 122 IRQ_TYPE_LEVEL_LOW>;
->  
-> -		pinctrl-0 = <&ts_int_default>;
-> +		pinctrl-0 = <&ts_int_default>, <&ts_reset_default>;
->  		pinctrl-names = "default";
->  	};
->  };
-> @@ -735,6 +755,14 @@ ts_int_default: ts-int-default-state {
->  		drive-strength = <2>;
->  	};
->  
-> +	ts_reset_default: ts-reset-default-state {
-> +		pins = "gpio54";
-> +		function = "gpio";
-> +
-> +		bias-disable;
-> +		drive-strength = <16>;
-> +	};
-> +
->  	usbprim_sbu_default: usbprim-sbu-state {
->  		oe-n-pins {
->  			pins = "gpio152";
-> -- 
-> 2.42.0
-> 
 
