@@ -1,116 +1,217 @@
-Return-Path: <linux-kernel+bounces-106499-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106498-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E1E087EF81
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:12:58 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7E6D87EF7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:12:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B70351F22F6B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:12:57 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0B5B5B22233
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:12:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A840855E7A;
-	Mon, 18 Mar 2024 18:12:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2E6155E40;
+	Mon, 18 Mar 2024 18:12:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="DtiAJ4mL"
-Received: from mout.web.de (mout.web.de [212.227.17.11])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="SuphmOWZ"
+Received: from out-187.mta1.migadu.com (out-187.mta1.migadu.com [95.215.58.187])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C0DC55C14;
-	Mon, 18 Mar 2024 18:12:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A8FB55C14
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:12:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.187
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710785568; cv=none; b=A+iqydobbMD5cA3i3Cn1I3zYXgomo1EkDM9ZpLo3CBSIWYWCdEA8llhm9wMiQwAiFk/w3AgFTgzKHGU6mdG7+JloF3Pxp3utvMTMPmUN4V50qUKXzuxHWgU4yY6S10ctIpV5klJNhgg2uolVIwWhUeeawXYU9EcwBmNinuIVV5w=
+	t=1710785550; cv=none; b=oFzAuFO3JQdlGASKfViFR2+DIopKe8R/frWSohny9mOlNYAcRgldsSqEn8bOcDgg+pCFHTwCkD4xOZRTykTzbr+/+1omdO07FcttRGHF4170YE3ndLembHXRJQS8BcmGG++ybLNLx0X+hChZ9xc7HJ8pM72g3oK2A7RFX1eU/xk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710785568; c=relaxed/simple;
-	bh=Lac3YRJkU4gFApnJTCBqCe0z/9YKT7CxPuYov4fasoY=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=cPKskl7HAkYWRR0OJdJcfNH+UsXHj958GpqsQx9l6zGILeZwi9/pYoO9rNcQpk7uiar7NoUnDwaxyh7DpuC3DkN1tz6WerLRM9ryMtuiFhXID0z//Nwm/tvorPuvyVPJxR53Rl1CGWmYVN04dpYOFnHqOUzBffssAwMFxcroygY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=DtiAJ4mL; arc=none smtp.client-ip=212.227.17.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1710785542; x=1711390342; i=markus.elfring@web.de;
-	bh=Lac3YRJkU4gFApnJTCBqCe0z/9YKT7CxPuYov4fasoY=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=DtiAJ4mL+fiMEmlLYNE+iHg/3zZ03m+na+DnFX9rNp0X8vC3m1YzzzfbqIbNUz4M
-	 Dt/DoYRZ0bTHZMXQhjGQI5H+aW5q/a5zWyI2OiPdDqCrEIY13lTnnTv64UmgOhJlP
-	 AdP1de9DaQxLPmVPhHjOMruAxmUu8IjvBxqgt1t6o6/JqA2aLA8ttQPPqZgEPNpVd
-	 nnPPPOBzYznZLns/h1E7VD70fWADr5hWWCz4+RfWiMZaxts+7fOHzhLOJi0dCa8xQ
-	 1WhA2QoKteLDviVFmPYk2hYl3ekUd1OQ3YXoY7bsM5TWPGLkVHKXgzMZZteTc6bIV
-	 SZWCtywFzYFN47nToA==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MqIFF-1r0cvV1ZHH-00nKIM; Mon, 18
- Mar 2024 19:12:22 +0100
-Message-ID: <d5efc400-8dbc-4aee-9fb5-2993e6830e2c@web.de>
-Date: Mon, 18 Mar 2024 19:12:21 +0100
+	s=arc-20240116; t=1710785550; c=relaxed/simple;
+	bh=q0sZurVySS4J85bcn1Qd/r3D0KSYIDLkRWzpFrhP7wU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gMEohUBhVUL+rQgVXMQIKB4mz2A4OTiY7hUiuQBB0lQxlq9KQGm47DsIIVms6VeKyyDNI7ah9rDt/G/U3I36KF/ApuWwkF02cDikQTyANcw5jEEDBC2vqVc1l8bi5wZiuzziazDRNkF+XW+CgKcoOVP+a7irkoF8bOa98mx74/I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=SuphmOWZ; arc=none smtp.client-ip=95.215.58.187
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <66a7d0c1-b5c0-4789-82ef-0f72b68bec44@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710785546;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=PdqzyKI2koakcy8YsZ2jjX7q7e8S3iio9zSn4TLLUgE=;
+	b=SuphmOWZaFROvQhwZIlGghHV0KPq2y3Pl672PwMULOJaIdI8Sv2nd2uVHWuiqGYkhn44MC
+	eOBhR57lphO9vqYRiRZQQmyk5nm6u1dRMV54pyKP1EfOXm4b2hfyfQt+lP70Mu83H5PRiV
+	Y6obgMQFF50IgPKs/CsuqKjG4/6JhoY=
+Date: Mon, 18 Mar 2024 14:12:22 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Ayush Singh <ayushdevel1325@gmail.com>,
- Vaishnav M A <vaishnav@beagleboard.org>, devicetree@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, lorforlinux@beagleboard.org,
- greybus-dev@lists.linaro.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Alex Elder <elder@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Conor Dooley <conor+dt@kernel.org>,
- Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
- <dragan.cvetic@amd.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jason Kridner <jkridner@beagleboard.org>, Johan Hovold <johan@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
- Rob Herring <robh@kernel.org>, Robert Nelson
- <robertcnelson@beagleboard.org>, Tero Kristo <kristo@kernel.org>,
- Vaishnav M A <vaishnav.a@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
-References: <20240317193714.403132-5-ayushdevel1325@gmail.com>
-Subject: Re: [PATCH v4 4/5] mikrobus: Add mikroBUS driver
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240317193714.403132-5-ayushdevel1325@gmail.com>
+Subject: Re: [PATCH 5/6] drm: zynqmp_dp: Optionally ignore DPCD errors
+Content-Language: en-US
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
+ linux-arm-kernel@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>
+References: <20240315230916.1759060-1-sean.anderson@linux.dev>
+ <20240315230916.1759060-6-sean.anderson@linux.dev>
+ <20240318174757.GL13682@pendragon.ideasonboard.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <20240318174757.GL13682@pendragon.ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:d3rsWjua/euVmCusMEdf9EWPGyz5EyJVackRp6jiopEEya/axKM
- 7KtTisuDqOjT7g+BpfBqQUwvkJdzBesfLFecqA+eroXI5usXRM1yMhefzveu38JXth+ok/K
- 9memp43OQwwmFTM+1S32xqzmjH/zYdRag8frGqdD+AMSRfF6t28WhqRCmDHj5Qt7AtzUka7
- 533VbMOvhlXUEbK3I4QyQ==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:FOAv7gLOqbk=;LIFw7TE+o2L/aes12HD1LR9Y1I0
- VDIjhJs70jys6vXqjVzsgrWtqrEk9pchL9A+mGrUuU99U2rzuYEvJe3Tp0/WZpfS7FCgkZt6n
- wf4MuB3QnaDd3jyAg6wfQFcWpPpzY2mJUXIsFtteJWmXX8LxUf84i6opANHArV6uPrTgW1Bt8
- ye49vSH5h8mLrS5Egj+E7vN+eTIpzd3pr0XqiOjpEvUeXtGjj/AD53pnNayTJy8s8PsfW9/+Q
- 8amXd2uh1sYJX6GK1MqiJHlaRy33xCM69nyFSCNOqHzFCbrR1BqGddY7yKRALti7PUmdUTe7p
- 5Q5I2FcCXUoI6HQburx4jGu1ftlbnqcpp/0FdKovJI95vXuxYf7RIuDad8S5vz0Yyt84Rb8Wr
- G/tGX7Qvs6dgatLzJlUQLjfJ3jd/wzjfB1j3QFpAiIuef8TUmvokOgPESnwR96E7H2c/Ul6j+
- q7BB1qJD1+B+GF4520sj1KEIsePWDJrlvGb/DRgyYkHBxAFHmIfEPfxR8YVHQMw+U3FvWMLcv
- mnxV4xtKtb/7cklHsq3MY09j55UNMdKEhngLtNn8Ua1Ion3GAWEqv4tA1+bL07hm6nCfinpeU
- tIA/Z3AFQMJ/LM+kKDJZQd8PmaZCY52VMv5YnxybipwTuwOK3E3DuJHYQH9btP8v7746qxjuH
- 2C/xWUSp6SGrPueZ+BvTReM5nrolHLfNQUl9cMU9gCl9buwICLJYiuQtu+jDn6QKiBDkyrife
- Lj0OzKfxvNPeK8h2fp+zxep8H/B417sLSJpY4Fy1zJIr+jNxaiAsSgLeoOjgpFRQZHylw4n6o
- e1HDP836GHMfIfjaEKUq9QklADBV+IztnZKY+buyRd+Bs=
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-=E2=80=A6
-> +++ b/drivers/misc/mikrobus/mikrobus_core.h
-=E2=80=A6
-> +#ifndef __MIKROBUS_H
-> +#define __MIKROBUS_H
-=E2=80=A6
+On 3/18/24 13:47, Laurent Pinchart wrote:
+> Hi Sean,
+> 
+> Thank you for the patch.
+> 
+> On Fri, Mar 15, 2024 at 07:09:15PM -0400, Sean Anderson wrote:
+>> When testing, it's convenient to be able to ignore DPCD errors if there
+>> is test equipment which can't emulate a DPRX connected to the output.
+>> Add some (currently-unused) options to ignore these errors and just
+>> reconfigure our internal registers as we usually would.
+> 
+> This seems to be a problem that is not limited to the ZynqMP DP.
+> Wouldn't it be better to solve it in the DRM DP DPCD helpers instead ?
+> You could expose a parameter on the AUX bus in debugfs to ignore errors,
+> and cause the drm_dp_dpcd_write*() functions to return 0.
 
-I suggest to avoid the specification of leading underscores for include gu=
-ards.
+I think this is probably the easiest thing. I'll add this for v2.
 
-See also:
-https://wiki.sei.cmu.edu/confluence/display/c/DCL37-C.+Do+not+declare+or+d=
-efine+a+reserved+identifier#DCL37C.Donotdeclareordefineareservedidentifier=
--NoncompliantCodeExample%28IncludeGuard%29
+I think something similar might be nice for HPD events (instead of always
+ignoring them in test mode). This would make it easier to add DPRX-driven
+testing in the future.
 
+--Sean
 
-Regards,
-Markus
+>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+>> ---
+>> 
+>>  drivers/gpu/drm/xlnx/zynqmp_dp.c | 37 ++++++++++++++++++++------------
+>>  1 file changed, 23 insertions(+), 14 deletions(-)
+>> 
+>> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+>> index 24043847dab4..040f7b88ee51 100644
+>> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+>> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+>> @@ -628,6 +628,7 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
+>>   * zynqmp_dp_update_vs_emph - Update the training values
+>>   * @dp: DisplayPort IP core structure
+>>   * @train_set: A set of training values
+>> + * @ignore_dpcd: Ignore DPCD errors
+>>   *
+>>   * Update the training values based on the request from sink. The mapped values
+>>   * are predefined, and values(vs, pe, pc) are from the device manual.
+>> @@ -635,15 +636,19 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
+>>   * Return: 0 if vs and emph are updated successfully, or the error code returned
+>>   * by drm_dp_dpcd_write().
+>>   */
+>> -static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp, u8 *train_set)
+>> +static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp, u8 *train_set,
+>> +				    bool ignore_dpcd)
+>>  {
+>>  	unsigned int i;
+>>  	int ret;
+>>  
+>>  	ret = drm_dp_dpcd_write(&dp->aux, DP_TRAINING_LANE0_SET, train_set,
+>>  				dp->mode.lane_cnt);
+>> -	if (ret < 0)
+>> -		return ret;
+>> +	if (ret < 0) {
+>> +		if (!ignore_dpcd)
+>> +			return ret;
+>> +		dev_warn(dp->dev, "failed to update vs/emph\n");
+>> +	}
+>>  
+>>  	for (i = 0; i < dp->mode.lane_cnt; i++) {
+>>  		u32 reg = ZYNQMP_DP_SUB_TX_PHY_PRECURSOR_LANE_0 + i * 4;
+>> @@ -692,7 +697,7 @@ static int zynqmp_dp_link_train_cr(struct zynqmp_dp *dp)
+>>  	 * So, This loop should exit before 512 iterations
+>>  	 */
+>>  	for (max_tries = 0; max_tries < 512; max_tries++) {
+>> -		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set);
+>> +		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set, false);
+>>  		if (ret)
+>>  			return ret;
+>>  
+>> @@ -757,7 +762,7 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
+>>  		return ret;
+>>  
+>>  	for (tries = 0; tries < DP_MAX_TRAINING_TRIES; tries++) {
+>> -		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set);
+>> +		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set, false);
+>>  		if (ret)
+>>  			return ret;
+>>  
+>> @@ -785,11 +790,12 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
+>>   * @lane_cnt: The number of lanes to use
+>>   * @enhanced: Use enhanced framing
+>>   * @downspread: Enable spread-spectrum clocking
+>> + * @ignore_dpcd: Ignore DPCD errors; useful for testing
+>>   *
+>>   * Return: 0 on success, or -errno on failure
+>>   */
+>>  static int zynqmp_dp_setup(struct zynqmp_dp *dp, u8 bw_code, u8 lane_cnt,
+>> -			   bool enhanced, bool downspread)
+>> +			   bool enhanced, bool downspread, bool ignore_dpcd)
+>>  {
+>>  	u32 reg;
+>>  	u8 aux_lane_cnt = lane_cnt;
+>> @@ -812,21 +818,24 @@ static int zynqmp_dp_setup(struct zynqmp_dp *dp, u8 bw_code, u8 lane_cnt,
+>>  
+>>  	ret = drm_dp_dpcd_writeb(&dp->aux, DP_LANE_COUNT_SET, aux_lane_cnt);
+>>  	if (ret < 0) {
+>> -		dev_err(dp->dev, "failed to set lane count\n");
+>> -		return ret;
+>> +		dev_warn(dp->dev, "failed to set lane count\n");
+>> +		if (!ignore_dpcd)
+>> +			return ret;
+>>  	}
+>>  
+>>  	ret = drm_dp_dpcd_writeb(&dp->aux, DP_MAIN_LINK_CHANNEL_CODING_SET,
+>>  				 DP_SET_ANSI_8B10B);
+>>  	if (ret < 0) {
+>> -		dev_err(dp->dev, "failed to set ANSI 8B/10B encoding\n");
+>> -		return ret;
+>> +		dev_warn(dp->dev, "failed to set ANSI 8B/10B encoding\n");
+>> +		if (!ignore_dpcd)
+>> +			return ret;
+>>  	}
+>>  
+>>  	ret = drm_dp_dpcd_writeb(&dp->aux, DP_LINK_BW_SET, bw_code);
+>>  	if (ret < 0) {
+>> -		dev_err(dp->dev, "failed to set DP bandwidth\n");
+>> -		return ret;
+>> +		dev_warn(dp->dev, "failed to set DP bandwidth\n");
+>> +		if (!ignore_dpcd)
+>> +			return ret;
+>>  	}
+>>  
+>>  	zynqmp_dp_write(dp, ZYNQMP_DP_LINK_BW_SET, bw_code);
+>> @@ -860,7 +869,7 @@ static int zynqmp_dp_train(struct zynqmp_dp *dp)
+>>  
+>>  	ret = zynqmp_dp_setup(dp, dp->mode.bw_code, dp->mode.lane_cnt,
+>>  			      drm_dp_enhanced_frame_cap(dp->dpcd),
+>> -			      dp->dpcd[3] & 0x1);
+>> +			      dp->dpcd[3] & 0x1, false);
+>>  	if (ret)
+>>  		return ret;
+>>  
+>> @@ -877,7 +886,7 @@ static int zynqmp_dp_train(struct zynqmp_dp *dp)
+>>  	ret = drm_dp_dpcd_writeb(&dp->aux, DP_TRAINING_PATTERN_SET,
+>>  				 DP_TRAINING_PATTERN_DISABLE);
+>>  	if (ret < 0) {
+>> -		dev_err(dp->dev, "failed to disable training pattern\n");
+>> +		dev_warn(dp->dev, "failed to disable training pattern\n");
+>>  		return ret;
+>>  	}
+>>  	zynqmp_dp_write(dp, ZYNQMP_DP_TRAINING_PATTERN_SET,
+> 
+
 
