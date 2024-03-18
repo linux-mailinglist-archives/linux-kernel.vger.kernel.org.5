@@ -1,129 +1,116 @@
-Return-Path: <linux-kernel+bounces-106222-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106223-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2D76D87EAF2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:29:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B208187EAF7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:31:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0CDC28131A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:29:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 57A931F21E11
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:31:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA2114CDEB;
-	Mon, 18 Mar 2024 14:29:31 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19A5D4D5A3;
+	Mon, 18 Mar 2024 14:31:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="KHAQf3L6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A432F25740;
-	Mon, 18 Mar 2024 14:29:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E62D58BEF
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:31:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710772171; cv=none; b=KhRKeAMO8iDSSxaeUHggp5OepRrOdv7OaHzHiqokXy/s9rtbyFKpEr960nY4YxvH091mxgmqhfwKVz9SXvFiknjxZvNZ9yprrq6nu2Ew11mpuNqry60sAa4YKYUhihWAbVyrjuBGdr4WGZo1uPamp8LETW8lKIvCwjbfJshb0dw=
+	t=1710772272; cv=none; b=mVwztNCjNOnxdAaWpXaV0PFJHPkcxJz6RPMlmspltxCCQukvX8t0TYgCk49K1vif+qdT4PyY9TqpU1d4VQCjoVz0RtugiCgIq1K8r7wjdqnSi7IlYtPtuuwgmMVqySkVk5WkwNX1TFdbobu1cRcODz7WKICgMRRCZQCO5dhPXKk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710772171; c=relaxed/simple;
-	bh=+GIqwxv5fTwkaqVfplcuJmTziIweZkhHUrQQkNTEUJY=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=r6cMW9uocObeglBQfJ0JRy8XSLPZD7zxNQYwvD9uJNe37c2AebiLm/8IjXf3OQlm06F25ADobanG+6tq7ft6oKBDrOLEtn62SbpwdbnJqjXAVJyT2ePvQyziL2DKlkTOYefRZsacktC0yqv0608lmVzEt3UPsukzwVfd+lcEuo0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4Tyxvp1kf0z6K9Y5;
-	Mon, 18 Mar 2024 22:25:10 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 25C971408FF;
-	Mon, 18 Mar 2024 22:29:25 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 18 Mar
- 2024 14:29:24 +0000
-Date: Mon, 18 Mar 2024 14:29:23 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Andy Shevchenko <andy.shevchenko@gmail.com>
-CC: David Lechner <dlechner@baylibre.com>, Jonathan Cameron
-	<jic23@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>, Nuno
- =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, <linux-iio@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
-Message-ID: <20240318142923.000042f4@Huawei.com>
-In-Reply-To: <CAHp75VeQcvuEy4V6-+3PeWTZJ9=Qae0AiiNB93OOw3wuc-uh3A@mail.gmail.com>
-References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
-	<ZfX5jynjW4M9pvw1@surfacebook.localdomain>
-	<20240318124041.0000032d@Huawei.com>
-	<CAHp75VeQcvuEy4V6-+3PeWTZJ9=Qae0AiiNB93OOw3wuc-uh3A@mail.gmail.com>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1710772272; c=relaxed/simple;
+	bh=9mWrQ09vJol1VCq4keVjqbPF1eVlXAbWd6Y0tZ/nWAY=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XYLRkfYPHYVx6LPxRiGVuFNZhawxo6VgXavCIgS1LSQLWx5BmybqN8LeO7CGMfxzWXKdL7hjeemsFFkedtyzKfxXhrCFR86flDkmADt7BudJrqPUXCgC9coe7JC2ZlxABLwYBwZgX5pbs1EBCYm5iEY+ZA382bJ9ccqRZh/ySdg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=KHAQf3L6; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710772270;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=wMCscNMvoCJEBqT1qx48y7ZP+gNtu/wO9dEvpTchfrE=;
+	b=KHAQf3L6j6bXaT57bH0z4Dhh/EYV0CvNyK+TCihm3FtRYF6NrmDrqH6Vv9BiBmQgooAvWU
+	5HIZt4JG2aBiGZpTt9HS7/3BKO1OGHu9yVDiz+QVgHR37q7Fz5gxmh1FCMec2xFOnnfytt
+	PWKalCDdRZQPZ0IRuWvBroy+b83JdMo=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-644-PBDka7Q1NqK3FaIdCdvZag-1; Mon, 18 Mar 2024 10:31:05 -0400
+X-MC-Unique: PBDka7Q1NqK3FaIdCdvZag-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id CE5E885CE41;
+	Mon, 18 Mar 2024 14:31:04 +0000 (UTC)
+Received: from p1.luc.cera.cz (unknown [10.45.224.33])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4DCAB111E406;
+	Mon, 18 Mar 2024 14:31:03 +0000 (UTC)
+From: Ivan Vecera <ivecera@redhat.com>
+To: intel-wired-lan@lists.osuosl.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	linux-kernel@vger.kernel.org (open list),
+	netdev@vger.kernel.org (open list:NETWORKING DRIVERS),
+	Paolo Abeni <pabeni@redhat.com>,
+	Richard Cochran <richardcochran@gmail.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>
+Subject: [PATCH iwl-next 0/7] i40e: cleanups & refactors
+Date: Mon, 18 Mar 2024 15:30:44 +0100
+Message-ID: <20240318143058.287014-1-ivecera@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500005.china.huawei.com (7.191.163.240) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Mon, 18 Mar 2024 15:09:32 +0200
-Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+This series do following:
+Patch 1 - Removes write-only flags field from i40e_veb structure and
+          from i40e_veb_setup() parameters
+Patch 2 - Changes parameter of i40e_notify_client_of_l2_param_changes()
+          and i40e_notify_client_of_netdev_close()
+Patch 3 - Changes parameter of i40e_detect_recover_hung()
+Patch 4 - Adds helper i40e_pf_get_main_vsi() to get main VSI and uses it
+          in existing code
+Patch 5 - Consolidates checks whether given VSI is the main one
+Patch 6 - Adds helper i40e_pf_get_main_veb() to get main VEB and uses it
+          in existing code
+Patch 7 - Adds helper i40e_vsi_reconfig_tc() to reconfigure TC for
+          particular and uses it to replace existing open-coded pieces
 
-> On Mon, Mar 18, 2024 at 2:41=E2=80=AFPM Jonathan Cameron
-> <Jonathan.Cameron@huawei.com> wrote:
-> > > >  struct ad7944_adc {
-> > > >     struct spi_device *spi;
-> > > > +   enum ad7944_spi_mode spi_mode;
-> > > >     /* Chip-specific timing specifications. */
-> > > >     const struct ad7944_timing_spec *timing_spec;
-> > > >     /* GPIO connected to CNV pin. */
-> > > > @@ -58,6 +75,9 @@ struct ad7944_adc {
-> > > >      } sample __aligned(IIO_DMA_MINALIGN);
-> > > >  }; =20
-> > >
-> > > Have you run `pahole` to see if there is a better place for a new mem=
-ber? =20
-> >
-> > I know this matters for structures where we see lots of them, but do we=
- actually
-> > care for one offs?  Whilst it doesn't matter here I'd focus much more
-> > on readability and like parameter grouping for cases like this than was=
-ting
-> > a few bytes. =20
->=20
-> This is _also_ true, but think more about cache line contamination.
-> Even not-so-important bytes may decrease the performance. In some
-> cases it's tolerable, in some it is not (high-speed ADC). In general I
-> assume that the developer has to understand many aspects of the
-> software and cache line contamination may be last but definitely not
-> least.
->=20
+Ivan Vecera (7):
+  i40e: Remove flags field from i40e_veb
+  i40e: Change argument of several client notification functions
+  i40e: Change argument of i40e_detect_recover_hung()
+  i40e: Add helper to access main VSI
+  i40e: Consolidate checks whether given VSI is main
+  i40e: Add helper to access main VEB
+  i40e: Add and use helper to reconfigure TC for given VSI
 
-Not totally sure what you are covering with contamination as many aspects
-around caches and that's not really a standard term for any of them (as
-far as I know).
+ drivers/net/ethernet/intel/i40e/i40e.h        |  29 ++-
+ drivers/net/ethernet/intel/i40e/i40e_client.c |  28 +--
+ drivers/net/ethernet/intel/i40e/i40e_ddp.c    |   3 +-
+ .../net/ethernet/intel/i40e/i40e_debugfs.c    |  36 ++--
+ .../net/ethernet/intel/i40e/i40e_ethtool.c    |  29 ++-
+ drivers/net/ethernet/intel/i40e/i40e_main.c   | 199 ++++++++++--------
+ drivers/net/ethernet/intel/i40e/i40e_ptp.c    |   6 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  16 +-
+ drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   2 +-
+ .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  14 +-
+ 10 files changed, 210 insertions(+), 152 deletions(-)
 
-It's part of a multi cacheline allocation anyway (because it's tacked on the
-end of the iio device struct, so fairly unlikely to share with other alloca=
-tions
-and definitely not on ARM because of the trailing __aligned(IIO_DMA_MINALIG=
-N)
-elements.
-
-If it matters more locally, then pahole is more likely to push you to pack
-things together in a fashion that makes false sharing and similar perf issu=
-es
-more likely if you are grouping things for packing purposes rather than
-logical groups.
-
-If you just mean cache pressure then fair enough if we squeeze everything i=
-nto
-one cacheline and that doesn't cause false sharing.
-'Maybe' this will fit on x86. On Arm64 it's not going to
-make any difference, just moving the padding around a bit within the line.
-
-So I'd argue premature optimization for a small, one off, structure.
-
-Jonathan
-
+-- 
+2.43.0
 
 
