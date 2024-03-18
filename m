@@ -1,133 +1,203 @@
-Return-Path: <linux-kernel+bounces-106315-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106317-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D85D287EC4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:39:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EF9A87EC4F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:40:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1406C1C213B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:39:08 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4339B281CB2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:40:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 57EF7524BC;
-	Mon, 18 Mar 2024 15:39:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D657524CA;
+	Mon, 18 Mar 2024 15:40:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RUjMLaty"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SO59E6n0"
+Received: from mail-ot1-f49.google.com (mail-ot1-f49.google.com [209.85.210.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B2814EB50;
-	Mon, 18 Mar 2024 15:39:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 42CB14EB50;
+	Mon, 18 Mar 2024 15:40:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710776341; cv=none; b=gQVpSA/XxB6kmmJPNMXUm6QBkVZC3NWpd4V8BwZc68awfmfzEB501g6q+evSjEK/oN0v4zvxygOiiI85ioXU8Ukaiiff9sjs6K4ACifg+nqC8Q5iF0wWdZrDAjyEKQBOgq0MLHZPynkW+bHVkgbqoDV8MP/plndcC/NUGBI0h8g=
+	t=1710776428; cv=none; b=s3hVzNgCRBw+QypXuuo3Qd6cT7n5JrdMUuumaMrgLXO+5c9iRCK8H1Sy8zmXQejT/czEm6VXCIF8HRRoxgFe0uQ4zTS8x7HdqrD1bgrcD3LSZdyI4FGRI1jbEePDP1JWrfVjBpcp42f4bzCcSOkoZ3bPIZW+W3arYs8UifmCgvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710776341; c=relaxed/simple;
-	bh=L9H8t7HnEPj3Hdh09oZeSwbBId8Zl9XEQCxkOP7thxk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=sZzwap6f/wiYk4wqXCATMzPr08QrPiLwlEjuYqjUr48ZgNbCGCmaa74pdnRpuE0MapP7vR8C8socsFPlX6OYABwd0A0ObRwxy45PG0J8zIFnbtOpB5K9wvqdDnaPrMdRBrwdQ1zDJ/uHW5mwzMfyKwcelFhDHCcupMBZoAZoVIk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RUjMLaty; arc=none smtp.client-ip=209.85.216.50
+	s=arc-20240116; t=1710776428; c=relaxed/simple;
+	bh=/eRpQJuG4LsRNwLBbm0QTXnmISrSwsU6in96ypWB5ZU=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=CWDXkQBtS+xkgBGn7f6XkQ04R5MwLQCmCorUMOv/V9+B/F0uBTTWgqNvUqPuvPya3tss6ap6tsZy/UJ8pnXtxvDdEDHx2pdz4f8E6UK13FWHiu2gG+jmFW7OoXf5wpkjhCPuILUUTBJ4fnJD5n4aSRnBmeg8QJE+qFBrq/X7HKg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SO59E6n0; arc=none smtp.client-ip=209.85.210.49
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29de4e12d12so3100108a91.3;
-        Mon, 18 Mar 2024 08:39:00 -0700 (PDT)
+Received: by mail-ot1-f49.google.com with SMTP id 46e09a7af769-6e677008501so2195140a34.1;
+        Mon, 18 Mar 2024 08:40:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710776339; x=1711381139; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=R0wJSLY+Uv+yhR8IopuqKPTo2o4yVaHIVNr68XVgUWs=;
-        b=RUjMLatyURRVThPbi5nXe09ujDCROHTGCKcGucX/x+qmupP9yJxLl5Ai064V/PEw1J
-         iBqlZyzhhhWkRT6L3rDN+DG3ytlKtQYGohhnVoJOLQBZgc3TzY+OeuZkrxgie4YlMSHU
-         J2vTOXup51D8Ztl2mevXkG9aRbBodhrtxKn7dovoPdlWU6GKqfnQkXaxN6n1MPqpVJG9
-         YuP6LXGiqr5p3msaaZFJT+bZNhhEFBwMFGJP+/riwCyFMQXjT11Sw3SvlKsJRS0J/C47
-         PVtsAhpLdseb60KwU4mwMmASYADrYqG1ZmUqfCe4YTJC9dKVd7suoppEkUnETiDSCMrO
-         36fA==
+        d=gmail.com; s=20230601; t=1710776426; x=1711381226; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=zQ7MzVtD5gszzcPFq8VPRHELTS+8uClWAmYrbElEuaw=;
+        b=SO59E6n00CI6v72pB8D+hX4HYf1UQLqVG1HCKtJnvomW+Yr5gKnqC6YSjc/MlUFIWk
+         hEbxod7RrniB27WOyPNsNs+BSurKAsMJkWJmLeXg3MoTQXzNEdTKBJ4bjI8zKqQhxHCe
+         2EPGf3sjr0Zv8MR1/yHQSVDSZgAyX3h8Kd+/ahUFekasj4K93WGNw0LdYgEaIdo3yp6R
+         5LHhjam3avVyhmJRimnHnGFb8Tc3Ypls+Nc8Uc4fujkMWXhnOdsFNT3PnFViS6XT9Dpx
+         hHXDwY/nfv4zszxCynLXVEiO/wWJFI89jUlscWDWqrPfmjB8GqZJOjQeSTLzh3mPZa8h
+         QM/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710776339; x=1711381139;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=R0wJSLY+Uv+yhR8IopuqKPTo2o4yVaHIVNr68XVgUWs=;
-        b=IYFnpe07iDknWNGiWjr8wBi8v9UeUzXTPvN26DfenWfoC73haolMMbH6yDFxrxWhv9
-         6cfFdjfdnfItahDwbNOF27uV3txkFmb1nQPYT50liVNjJyNlOH8IcAxtXSX2iy72F8Ab
-         5ejSrJqnqjRiCE9mF4d2K/zdQlVVyRmol9AHLgTsZP/B8W9migibl8W937+2FvprW2x7
-         w3yvCcONUlRHnvPKs3fVfpWG/kXnhusex9rP9/lp2gR3956E+aRLKm7mkpOt4B2YfMr/
-         Ac2vRKWh7gFyXqJPxvcEOzc1QMu4JnGW5yx4rNLcJzN4ANjMkXGYeSKATJg/vqCAHGy4
-         uQqQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW1GYfP0ZRP8PY1jiKv0yDXjQIy0P33D/cleT25TnejHTcG1Z3zPQL7VSt/dUXNAt7n+zMaDvve45nrcPqPUM1MMxsUDkd9+xsUWAQbOaYaWz1GuHCgOHYwQPR37+yyEMBo9SZQSuxuWw==
-X-Gm-Message-State: AOJu0YxRcy9lwAhh0Bt4djSe2OTC8/QgNqA1dSOml6s3NmDSgc3buzwV
-	tIoUiQZA655AZRvVIjldatJpZIAMRRnoCzk7QxGUNSQLpSJ9Km09
-X-Google-Smtp-Source: AGHT+IFwwuU1jLlDgfi84MjIw2c0Tg2DpHNv23NVq4KsqnYYpEH/YjvrfH11kVR4gY7v9ExA1ahxjA==
-X-Received: by 2002:a17:90a:1fc4:b0:29b:c17c:5fa6 with SMTP id z4-20020a17090a1fc400b0029bc17c5fa6mr7890253pjz.33.1710776339539;
-        Mon, 18 Mar 2024 08:38:59 -0700 (PDT)
-Received: from [10.67.48.245] ([192.19.223.252])
-        by smtp.googlemail.com with ESMTPSA id q98-20020a17090a17eb00b0029e077a9fe6sm5870067pja.27.2024.03.18.08.38.58
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 08:38:58 -0700 (PDT)
-Message-ID: <23f4c9b1-5c6b-4f3c-9290-41d195650368@gmail.com>
-Date: Mon, 18 Mar 2024 08:38:57 -0700
+        d=1e100.net; s=20230601; t=1710776426; x=1711381226;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=zQ7MzVtD5gszzcPFq8VPRHELTS+8uClWAmYrbElEuaw=;
+        b=n7j7rZCx1yMChET7xypoFtzOUB7sVl1EHSU/aYHXBuDLQW+r7WuoJBSaHYd0uNwh6I
+         WSeZyJS6dd2o+l51PJ80vJe7YBJeRRC97/jJM3Gu5uVNhDm6rfD1Hj6+Iyzo14bZYv5h
+         Y4VavyXaHS1QdVQgSj4kQSDQJoBZM1kThQImi7EOur20nXgJW1IeMiE42uKboYzk3OOc
+         +5eSYgv7FCyceXPI5e7rC4cTJPIROl6C9U6ndu+7hTPx1/12vpMBZBFYq0SLN+fbSc/e
+         +Mf0HH/WV9GNiRxgPNwXMAWL4onO8v9YjnoNIYjiYLQ7wFYcCTjRrXJ3RNBx2MBHs+1l
+         QMTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWx1VWAsibtcZzG+k2k3lUuSgugKVw0u4pFWf+CUpoqNibuy6TUB9qSqWYxOamQFNZjyk6ZHarvzTGs5gmmIXCGz3s2GDtZNMAIyzUFeE1cqE/t/563Wq9/i+KjbVLQKgyaapv9TenGOvO5ufZrJB6qQ1uG2RRtiKb5xi+bMsJJdhGyZw==
+X-Gm-Message-State: AOJu0YwH5+ZJw3T3sehrSLFR8xVwZbVEdYGHneQaMquUsYi12NJ97uq/
+	99XM8ZFRKCwKcSk7NsIlYpiWENUWaTHWXShdSkaRodRlFYaJuAzA
+X-Google-Smtp-Source: AGHT+IGypVRU7c1Y3fdttezh6tHIOCu0ntSwcDNrBefkzdlwCpoddPWfn8R8gdF7uR+na/H3UcQPUw==
+X-Received: by 2002:a05:6870:9108:b0:221:e082:228a with SMTP id o8-20020a056870910800b00221e082228amr15354064oae.57.1710776425557;
+        Mon, 18 Mar 2024 08:40:25 -0700 (PDT)
+Received: from localhost.localdomain ([122.187.117.179])
+        by smtp.gmail.com with ESMTPSA id t23-20020a63b257000000b005dcbb699abfsm7374105pgo.34.2024.03.18.08.40.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 08:40:25 -0700 (PDT)
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+To: 
+Cc: animeshagarwal28@gmail.com,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] dt-bindings: nxp,pnx-i2c: Convert to dtschema
+Date: Mon, 18 Mar 2024 21:09:53 +0530
+Message-ID: <20240318153959.30755-1-animeshagarwal28@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] arm64: dts: mediatek: mt7622: set PHY address of
- MT7531 switch to 0x1f
-Content-Language: en-US
-To: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Matthias Brugger
- <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
-Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
-References: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
- <20240314-for-mediatek-mt7531-phy-address-v1-1-52f58db01acd@arinc9.com>
- <94e3d09a-e6a4-4808-bc29-3f494b65e170@gmail.com>
- <62d128f1-11ac-4669-90ff-e9cdd0ec5bd9@arinc9.com>
- <71dd200a-0306-4baa-abab-6e6906aeef2a@gmail.com>
- <7d1ad037-d8ac-4b9a-b6d2-ab683e52a898@arinc9.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-In-Reply-To: <7d1ad037-d8ac-4b9a-b6d2-ab683e52a898@arinc9.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-On 3/18/24 08:26, Arınç ÜNAL wrote:
-> On 18.03.2024 16:02, Florian Fainelli wrote:
->>>> Can we call it a pseudo PHY to use a similar terminology as what is 
->>>> done through drivers/net/dsa/{bcm_sf2,b53}*?
->>>>
->>>> This is not a real PHY as in it has no actual transceiver/digital 
->>>> signal processing logic, this is a piece of logic that snoops for 
->>>> MDIO transactions at that specific address and lets you access the 
->>>> switch's internal register as if it was a MDIO device.
->>>
->>> I can get behind calling the switch a psuedo-PHY in the context of MDIO.
->>> However, as described on "22.2.4.5.5 PHYAD (PHY Address)" of "22.2.4.5
->>> Management frame structure" of the active standard IEEE Std 802.3™‐2022,
->>> the field is called "PHY Address". The patch log doesn't give an 
->>> identifier
->>> as to what a switch is in the context of MDIO. Only that it listens on a
->>> certain PHY address which the term complies with IEEE Std 802.3™‐2022.
->>>
->>> So I don't see an improvement to be made on the patch log. Feel free to
->>> elaborate further.
->>
->> I would just s/PHY/MDIO bus address/ since that is simply more 
->> generic, but if it is not written as-is in the spec, then I won't 
->> fight it much more than I already did.
-> 
-> I'm not sure what you're referring to by spec. Are you asking how specific
-> the name of the PHYAD field is described on the standard?
+Convert the NXP PNX I2C Controller bindings to DT schema.
+Keep only one example in DT schema to remove redundancy.
 
-Spec = IEEE Std 802.3-2022 standard, aka the document you are quoting.
+Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
+
+---
+Changes in v2:
+- Changed the file name from nxp,i2c-pnx.yaml to nxp,pnx-i2c.yaml.
+- Dropped properties which were already defined in the top level $ref.
+- Dropped unused labels in example.
+---
+ .../devicetree/bindings/i2c/i2c-pnx.txt       | 34 --------------
+ .../devicetree/bindings/i2c/nxp,pnx-i2c.yaml  | 46 +++++++++++++++++++
+ 2 files changed, 46 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-pnx.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
+
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-pnx.txt b/Documentation/devicetree/bindings/i2c/i2c-pnx.txt
+deleted file mode 100644
+index 2a59006cf79e..000000000000
+--- a/Documentation/devicetree/bindings/i2c/i2c-pnx.txt
++++ /dev/null
+@@ -1,34 +0,0 @@
+-* NXP PNX I2C Controller
+-
+-Required properties:
+-
+- - reg: Offset and length of the register set for the device
+- - compatible: should be "nxp,pnx-i2c"
+- - interrupts: configure one interrupt line
+- - #address-cells: always 1 (for i2c addresses)
+- - #size-cells: always 0
+-
+-Optional properties:
+-
+- - clock-frequency: desired I2C bus clock frequency in Hz, Default: 100000 Hz
+-
+-Examples:
+-
+-	i2c1: i2c@400a0000 {
+-		compatible = "nxp,pnx-i2c";
+-		reg = <0x400a0000 0x100>;
+-		interrupt-parent = <&mic>;
+-		interrupts = <51 0>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-	};
+-
+-	i2c2: i2c@400a8000 {
+-		compatible = "nxp,pnx-i2c";
+-		reg = <0x400a8000 0x100>;
+-		interrupt-parent = <&mic>;
+-		interrupts = <50 0>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		clock-frequency = <100000>;
+-	};
+diff --git a/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml b/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
+new file mode 100644
+index 000000000000..3125b2f5891e
+--- /dev/null
++++ b/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/i2c/nxp,pnx-i2c.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PNX I2C Controller
++
++maintainers:
++  - Animesh Agarwal<animeshagarwal28@gmail.com>
++
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
++properties:
++  compatible:
++    const: nxp,pnx-i2c
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clock-frequency:
++    default: 100000
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#address-cells"
++  - "#size-cells"
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c@400a0000 {
++        compatible = "nxp,pnx-i2c";
++        reg = <0x400a0000 0x100>;
++        interrupt-parent = <&mic>;
++        interrupts = <51 0>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++    };
 -- 
-Florian
+2.44.0
 
 
