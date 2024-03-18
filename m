@@ -1,149 +1,161 @@
-Return-Path: <linux-kernel+bounces-106708-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106709-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3806B87F237
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:34:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 798D687F246
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:36:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCEFBB20E15
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:34:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 99AA51C2137D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350E85916D;
-	Mon, 18 Mar 2024 21:34:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C186B5917C;
+	Mon, 18 Mar 2024 21:36:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3Mq2qY+u"
-Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="ndoDeqAA"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2659C58ABE
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:34:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EE53535B9
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:36:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710797671; cv=none; b=e5Ig1G/uQiOv8otMoCFsAnir+P69gpxOsz3EC3SbZVybBPH7q21APS3z4+arGYwmIgEn5hdrRY/T/kz4KdLSEPh67ylT68tIIqtTPyZAPDcfFbgVkmQRJwMVoSMPRTriUecTG1nltvdQ2BK3Hj6TKXP3e80JV0V9E02PJXH+Dsk=
+	t=1710797789; cv=none; b=shoYnNwE6fpNkkIhT3q5HzlT0xmpdpHxejPXJY/EbAtASKlbTLZyiSYXBtHsx+z1GXen5hi82H3mplsDh53oL396x1KglzRfJOitTBlZ2SB+nVPo8VWQpA7/Ab6CTFe9W1W1HgxIw3PWtT7msgPWuCJsKtMkIa8McxqpWu/+fRE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710797671; c=relaxed/simple;
-	bh=tDMM25GFM35ln5xFJFl8/1m4EvWiz90qb7o7MPzbLoI=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=ehNHMVNorP2wv3pFODa7LYIb5yPeYu1xct1lDypH/rpRvsY2uV3ALI2DjdPpwTNSYyw5RcNGmZYYzEecCz7zlQ5kB5E03Bhblb+tnBuRcZi/E/EvsbFuqRMiuB3zG7R+TMyKPLsB5R1IyrswOd0GA81gAx+tNCHNkfiJFDiRvIg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Mq2qY+u; arc=none smtp.client-ip=209.85.214.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
-Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e0310bb981so9541255ad.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:34:29 -0700 (PDT)
+	s=arc-20240116; t=1710797789; c=relaxed/simple;
+	bh=oN3ajsjXsAF9HfH4yepxydlxom6CmZW2+KuqWPApvOc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ClM2Uxmbi2ZeD8nKTCKSjjN0f6KfTSwoRhKbcmMWjPoyn/Eke3Nzd56JRhUrWQWa9O/uijMnRP6dfEeoKNmIcGOte4CLvgo9hdkyUGtUQK7Qcor1RULwIVTi8fjpxWnnlQWJQv5RuaQM+7kpM4YV7M5W2f0ZMOOkfNq/6OrqPZ0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=ndoDeqAA; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430c41f3f89so16588361cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:36:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710797669; x=1711402469; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=TeKReu/YtEZ4HGj+nixBj489LFLFbiNCXrSvK0Sz0P8=;
-        b=3Mq2qY+uJzGr/KI8Fmbt5z0x+j2fzDvkAD9hxmeiTIJonYOjGezSMxWlorQRoUbMEv
-         ihQCQTwN9cjcpEiLaXF6vqfmqoNsUNxq4EBhOp2YCjVlf1l2f7qIPougq+v5ojktixFE
-         sKob58cbM/eSMvkYySgJ4KodcfndxFhex98JKhEQ5YBl52Yt2/soYepCcVHdlFFY9mrV
-         Sb0nRbR0vUxUGBbtRkexPTSAzuPIwILddhsm/z2c3arqh/ABwdaC7X+cqraw46UhDqks
-         55t+MmQFLPUnpGjmvVL2vrp9tKBrSRw9UZ1MsaBnsN4G/L2J7bwXQu+ENvY+8BGLxEtA
-         OKbg==
+        d=chromium.org; s=google; t=1710797784; x=1711402584; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=oN3ajsjXsAF9HfH4yepxydlxom6CmZW2+KuqWPApvOc=;
+        b=ndoDeqAAmWPfhfHCOjHbkDqMkYVpmkIoIfIiqDXm2dhHyMpWpRWM2yASK3kJZ8msrt
+         Zd9pguj0VC/4WwyyPpK7h5ix2klg2rzxRM3EME0LTSXyh2rh+3VX0CMJtIYnE4cj57TN
+         ceOV/tSJo0Hh28sibMwZrpR7BQKs9XVGK4bVw=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710797669; x=1711402469;
-        h=content-transfer-encoding:cc:to:from:subject:message-id:references
-         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=TeKReu/YtEZ4HGj+nixBj489LFLFbiNCXrSvK0Sz0P8=;
-        b=uvq7bNube9EKPCacwCnQ6lMnzucTRm31MmYzdBoKcU7MLmTrEVtIJUB+gFUp2AZpVQ
-         Pd9DQU248QYZrKoHvlVN9vaYjpbSUs4GZ/2RXpix/d8x81/RxI5+NvabJ7I8RRFTHRJs
-         W5y9XNhYL3stv7qr6fGgKFkEE7YcO1VM5rNrc0FH94klgpoi/ahwN7mHkoQwtXlWNe/w
-         BAA5FEoZg2ekz6n75KjY13u/GYV7kBManRfYuLJRy/6Sl7VR7U6TwbYy+xlHKibOv/ox
-         tc0HuqGBbWIHAAXGndsOw0m7DskJhZ8732GDZvNroWH+IjzGnp8pmv99S2QkKqbDNXgA
-         uVqw==
-X-Forwarded-Encrypted: i=1; AJvYcCWG17WBNMYb2+qHtvgjxxA1/fMlif1Dpj3gN4eNpQKH7fNfXWFkjAf2vBk8fDsQ9wL3IUxrXfYVVsqL0GTekD77hqsCo/yPOP6tfZWN
-X-Gm-Message-State: AOJu0YxoxnQkmpob9RjOY6qG+YHQExQS5U2EI6INFsfQITTXt/CDolQP
-	ejX2R8AyHrm3Gt0EHwaGzQQ8sot4h2jpQH+YajIqB/5Hqa8OdqAmPD6aPygCSpzGKJSfLzexamd
-	omw==
-X-Google-Smtp-Source: AGHT+IHHFfh8bUUrLY2QtXWlRmbDtHa4OYjClyEvG8anTXs7Tp/AWB9SI9q73Zu0u18+D/q5oVz2ixwSpW8=
-X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
- (user=seanjc job=sendgmr) by 2002:a17:903:1207:b0:1dd:761d:6c6e with SMTP id
- l7-20020a170903120700b001dd761d6c6emr824423plh.5.1710797669325; Mon, 18 Mar
- 2024 14:34:29 -0700 (PDT)
-Date: Mon, 18 Mar 2024 14:34:27 -0700
-In-Reply-To: <b7561e6d6d357fcd8ec1a1257aaf2f97d971061c.camel@infradead.org>
+        d=1e100.net; s=20230601; t=1710797784; x=1711402584;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=oN3ajsjXsAF9HfH4yepxydlxom6CmZW2+KuqWPApvOc=;
+        b=kSubg0w238ISZs07YSGqEjLznaeQZz9z95dJSbu0p2jz87GZ/L/oRF6KcWs/RPEitk
+         dkOc/ZmyADPZUUKPdK2FOXtPaOoz56M6LUACRXDUjkDQnSXgEZ++GlZF+SD1kc2GOgcu
+         IKKShSIkhCToOYg0cDxccBwlB+RkRp9Xw/mvkzT70MJ9jptQlYXUS20g1vXfV8xVWcNE
+         ZJdSERIcDlA7CN4eB1wOJaW5kWyxtYVVcmGAJnaA1pt5DRILZPxwXhnRAD25xB4FOzm1
+         zdvDR2C+WbDvedSkIVh5/PZ5LhakwLkMk5Eql35CtHqN9BZLx3+8S+kfYWK8KBIXH4/n
+         nMyA==
+X-Forwarded-Encrypted: i=1; AJvYcCWnxYuyajOJS2M67x5PbPJCFR/VtqdZt9baAF08mcnwYDlevJm+IvmG83RFdAasyRw+IZfBTTfYi3alt0SBe1ys8p5jwQ0mcLLK4Q/W
+X-Gm-Message-State: AOJu0YxtIN1N1kdVZ8bYBkPR9qV3JYpvQP0Rf2utWTA8w958DdR4onbV
+	Jxf5mJPOKjWAqpEHACVN+3oY7d22O3vl69SXxw9q/5FWYVpRap8phl5Ay92RqITiuXW32X8Atro
+	=
+X-Google-Smtp-Source: AGHT+IEDDfanvTRQu1eXdvr51wXXrfR20KeMQW+0mSttUqaNe6feJ+0WAmYfv3rKT+4UUcuSY/nhbA==
+X-Received: by 2002:a05:622a:120e:b0:430:c9b5:ef8d with SMTP id y14-20020a05622a120e00b00430c9b5ef8dmr1438486qtx.30.1710797784376;
+        Mon, 18 Mar 2024 14:36:24 -0700 (PDT)
+Received: from mail-qt1-f172.google.com (mail-qt1-f172.google.com. [209.85.160.172])
+        by smtp.gmail.com with ESMTPSA id z18-20020ac81012000000b0042e703a8d74sm5428512qti.56.2024.03.18.14.36.22
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 14:36:23 -0700 (PDT)
+Received: by mail-qt1-f172.google.com with SMTP id d75a77b69052e-428405a0205so38481cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:36:22 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCUhFxfqV09tEDsM9aDNE6eviYTjIUqpmEhXMjVFDRVW0bSJ//IlLYULXQttR+beihWZjVd8mZFlN5YjzfVL8SNrb6sCc7Pc93PYFZT+
+X-Received: by 2002:a05:622a:50e:b0:430:b590:e88c with SMTP id
+ l14-20020a05622a050e00b00430b590e88cmr111577qtx.6.1710797782513; Mon, 18 Mar
+ 2024 14:36:22 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <0000000000005fa5cc0613f1cebd@google.com> <b7561e6d6d357fcd8ec1a1257aaf2f97d971061c.camel@infradead.org>
-Message-ID: <ZfizYzC9-9Qo47tE@google.com>
-Subject: Re: [syzbot] [kvm?] WARNING in __kvm_gpc_refresh
-From: Sean Christopherson <seanjc@google.com>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: syzbot <syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com>, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, 
-	syzkaller-bugs@googlegroups.com, paul <paul@xen.org>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+References: <1710418312-6559-1-git-send-email-quic_amrianan@quicinc.com>
+ <1710418312-6559-3-git-send-email-quic_amrianan@quicinc.com>
+ <f6f317d9-830d-4c38-998f-b229b3d9f95a@linaro.org> <20240316-germinate-browsing-6865db3a44d7@spud>
+ <20240316-herring-skies-6ee1d4a9c0d2@spud>
+In-Reply-To: <20240316-herring-skies-6ee1d4a9c0d2@spud>
+From: Doug Anderson <dianders@chromium.org>
+Date: Mon, 18 Mar 2024 14:36:06 -0700
+X-Gmail-Original-Message-ID: <CAD=FV=VZB9Dqsw6+2WBdWxaQVA9NgK_W2n0okBOU0haDMSogPw@mail.gmail.com>
+Message-ID: <CAD=FV=VZB9Dqsw6+2WBdWxaQVA9NgK_W2n0okBOU0haDMSogPw@mail.gmail.com>
+Subject: Re: [PATCH v2 2/2] dt-bindings: qcom: Update DT bindings for multiple DT
+To: Conor Dooley <conor@kernel.org>
+Cc: Caleb Connolly <caleb.connolly@linaro.org>, Amrit Anand <quic_amrianan@quicinc.com>, 
+	robh@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
+	agross@kernel.org, andersson@kernel.org, konrad.dybcio@linaro.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, kernel@quicinc.com, peter.griffin@linaro.org, 
+	linux-riscv@lists.infradead.org, chrome-platform@lists.linux.dev, 
+	linux-mediatek@lists.infradead.org, Simon Glass <sjg@chromium.org>, 
+	Chen-Yu Tsai <wenst@chromium.org>, Julius Werner <jwerner@chromium.org>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024, David Woodhouse wrote:
-> On Mon, 2024-03-18 at 09:25 -0700, syzbot wrote:
-> > Hello,
-> >=20
-> > syzbot found the following issue on:
-> >=20
-> > HEAD commit:=C2=A0=C2=A0=C2=A0 277100b3d5fe Merge tag 'block-6.9-202403=
-15' of git://git.k..
-> > git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 upstream
-> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D17c96aa5180=
-000
-> > kernel config:=C2=A0 https://syzkaller.appspot.com/x/.config?x=3D1c6662=
-240382da2
-> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D106a4f72b0474=
-e1d1b33
-> > compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gcc (Debian 12.2.0-14) 12=
-2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > syz repro:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://syzkaller.appspot.com/=
-x/repro.syz?x=3D14358231180000
-> > C reproducer:=C2=A0=C2=A0 https://syzkaller.appspot.com/x/repro.c?x=3D1=
-10ed231180000
-> >=20
-> > Downloadable assets:
-> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
-/7bc7510fe41f/non_bootable_disk-277100b3.raw.xz
-> > vmlinux: https://storage.googleapis.com/syzbot-assets/6872e049b27c/vmli=
-nux-277100b3.xz
-> > kernel image: https://storage.googleapis.com/syzbot-assets/68ec7230df0f=
-/bzImage-277100b3.xz
->=20
-> static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa, uns=
-igned long uhva,
->                              unsigned long len)
-> {
->         unsigned long page_offset;
->         bool unmap_old =3D false;
->         unsigned long old_uhva;
->         kvm_pfn_t old_pfn;
->         bool hva_change =3D false;
->         void *old_khva;
->         int ret;
->=20
->         /* Either gpa or uhva must be valid, but not both */
->         if (WARN_ON_ONCE(kvm_is_error_gpa(gpa) =3D=3D kvm_is_error_hva(uh=
-va)))
->                 return -EINVAL;
->=20
-> Hm, that comment doesn't match the code. It says "not both", but the
-> code also catches the "neither" case. I think the gpa is in %rbx and
-> uhva is in %r12, so this is indeed the 'neither' case.
->=20
-> Is it expected that we can end up with a cache marked active, but with
-> the address not valid? Maybe through a race condition with deactive? or
-> more likely than that?
+Hi,
 
-It's the darn PV system time MSR, which allows the guest to triggering acti=
-vation
-with any GPA value.  That results in the cache being marked active without =
-KVM
-ever setting the GPA (or any other fields).  The fix I'm testing is to move=
- the
-offset+len check up into activate() and refresh().
+On Sat, Mar 16, 2024 at 9:51=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
+te:
+>
+> On Sat, Mar 16, 2024 at 04:20:03PM +0000, Conor Dooley wrote:
+> > On Thu, Mar 14, 2024 at 02:20:38PM +0000, Caleb Connolly wrote:
+> > > On 14/03/2024 12:11, Amrit Anand wrote:
+> > > 2. A top level board-id property that isn't namespaced implies that i=
+t
+> > > isn't vendor specific, but the proposed implementation doesn't even
+> > > pretend to be vendor agnostic.
+> >
+> > I pointed out previously that the Chromebook guys had some similar
+> > issues with dtb selection when the OEM varies parts but there does not
+> > seem to be any of them on CC here.
+>
+> That's maybe a bit harsh of me actually, I see that there's a
+> chrome-platform address on CC, but I don't know if that's gonna reach
+> the guys that work on these devices (Chen-Yu Tsai and Doug Anderson in
+> particular).
+
+Thanks for the CC. Yeah, I don't watch the "chrome-platform" list
+myself, though maybe I should...
+
+The Chromebook boot flow and how we've handled this so far is
+documented in the kernel [1]. This method is what we've been using
+(with slight modifications over the years) since the earlier ARM
+Chromebooks and is, I believe, supported in both the depthcharge
+loader (used in Chromebooks) and also in U-Boot, though it's possible
+(?) that the U-Boot rules might vary ever so slightly. I haven't tried
+using U-Boot to boot a Chromebook in years.
+
+The current way things work for Chromebooks involves a heavy amount of
+duplication. We bundle an entire "DTB" for every relevant
+board/rev/sku combination even though many of those DTBs are 99% the
+same as the other ones. The DTBs have been relatively small and we
+compress them so this hasn't been a massive deal, but it's always been
+on the TODO list to come up with a scheme to use DT overlays. We've
+also talked about bundling a device tree that has the superset of
+components and then using an in-kernel driver to set the status of
+some components to okay and there is some overlap there in the
+possible way to represent board variants. I think Chen-Yu is going to
+talk about a few of these topics next month at EOSS [2].
+
+In terms of looking at your specific proposal, it's definitely trying
+to factor in a lot more things than the current one that Chromebooks
+use. The Chromebook model was "simple" enough that we could just
+leverage the compatible string, though the way we leverage it has
+ended up controversial over the years. Yours is definitely too
+complicated to work the same way. It seems like device tree overlays
+would be a better fit? I'm not an expert so maybe this is already
+solved somewhere, but I'd imagine the hard part is getting everyone to
+agree on how to specify stuff in the DT overlay that allows the
+bootloader to know whether to overlay it or not...
+
+[1] https://docs.kernel.org/arch/arm/google/chromebook-boot-flow.html
+[2] https://eoss24.sched.com/event/1aBGe/second-source-component-probing-on=
+-device-tree-platforms-chen-yu-tsai-google-llc
 
