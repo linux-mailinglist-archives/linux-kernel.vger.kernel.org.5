@@ -1,226 +1,117 @@
-Return-Path: <linux-kernel+bounces-106525-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106526-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5931687EFDD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:39:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E2C87EFE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:40:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E83781F2181E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:39:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1B351C2116F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:40:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 40639535B2;
-	Mon, 18 Mar 2024 18:38:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F18D38DD9;
+	Mon, 18 Mar 2024 18:40:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MYpmvMOU"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b="lAbX+Bkb"
+Received: from mail-pl1-f177.google.com (mail-pl1-f177.google.com [209.85.214.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E126638DD6;
-	Mon, 18 Mar 2024 18:38:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 204A022065
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:40:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710787133; cv=none; b=Iq7LhxG5aOK6amgZYZb7OxptWa3UMU/vq4pHiYh3txa9R7Vmtl88Q4s/SLaC+qnoPc5p9HG7N+qqF2L6P24LDwELYpzscFxEUnOoGvhe3NQdzftBJ0e/cChZlzaiVqcCJShvyNIwscbv5V/annJsiPv6nzi8gCdfyCGXLnruHes=
+	t=1710787239; cv=none; b=SS1F/ZxKDsDrUxoL6mlwEYkBHfTBfaoYDoT9tDPs+RGC8s/6hELiqWTFcgC4ylPnVEaFNDqDuHlSsrT1/NrIito9Us4+VYQAwBvy2mLPrfvwhgj6bc6IMhUYuzgICYyVhLHltI3TtZf52nhNm5HA4xMmgPYlJfmBjIyfvVHarSw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710787133; c=relaxed/simple;
-	bh=lNojrL3UxXWw3wWblZQzw2mMNG0wfpdAKKG4HmbwfwM=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:From:In-Reply-To:
-	 Content-Type:Subject; b=NKw4W7l0I36iMnhZgGbbDI6I99jdzDi5HwlJFtGG8R5XhiqMlxvQY9edvfy3HzywnLEk1FlMfeZerUc65Zb8EV++BxjsFqSLvOd3xapiF8XYaTe4L+dbyLDvkP01ZtamRab3+y5R2j6TTJ/O4KnVcA1r8V22iggArMJfT02NDzs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MYpmvMOU; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42IHfZmQ012582;
-	Mon, 18 Mar 2024 18:38:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : subject; s=pp1;
- bh=EGAUIEI6SbQpYfub6BCl42LM7sTqQsBWk3dKyRUTVVg=;
- b=MYpmvMOUvlqTEsxfsilQx0IzaVbCpFRdHGBe2dr6Su7EZH7laM45FPFi9CaGZ7b9K3tM
- 8Vt7qUbMNzwuyVKbfozucYyPMtRb68C0CTd/moOGvG5UnMMOZ/yWovcVD8zLM3gyIwmA
- ysVI3xRx8c6IzxHq2gxLM1wkq6BdyReP7R4BzatvLsA4Gqws/NJz7xu3lSDgSmcCzOLx
- 3HTk9OqX8XIe58vRHMhxG6rcEJ+lqi4886f0aUQvj/A/soQ2ASfXBIfYDoy7iciS0paz
- eWRBQX/ZtHbbrsZMcuttYIQ1vQ/F22mnvRKoXspQJFhABIDwWQiQCwqPAQ58TBwbhgox 8A== 
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wxt3r0b70-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 18:38:37 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42IH0uOU002780;
-	Mon, 18 Mar 2024 18:38:36 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2a55y-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 18:38:36 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42IIcY0G45351360
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Mar 2024 18:38:36 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 0F83358055;
-	Mon, 18 Mar 2024 18:38:34 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id F20D85805B;
-	Mon, 18 Mar 2024 18:38:32 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 18 Mar 2024 18:38:32 +0000 (GMT)
-Message-ID: <4151f2f0-aa92-480d-aad5-2bf4333b4265@linux.ibm.com>
-Date: Mon, 18 Mar 2024 14:38:32 -0400
+	s=arc-20240116; t=1710787239; c=relaxed/simple;
+	bh=GA4Jp0MiIXNyFhTaq6Llqwf9LKvDBtkeMPnxmBySnEY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oDmJPKUZumxwUzE8fAOCkRbRADEDnNCFTP2EviWnxIZBoTQNruC/VSXMbzCzQgWZc9/64vap5dJ5/TdFvViNHYLfrl0PvKTRV0cizW1/cXkPOyWUdYKVa5QHMbG3YaDRMsOVRQRqd11791ce32XuGy5yvBGthT2lwWYFw1waQ3I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com; spf=none smtp.mailfrom=pdp7.com; dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b=lAbX+Bkb; arc=none smtp.client-ip=209.85.214.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=pdp7.com
+Received: by mail-pl1-f177.google.com with SMTP id d9443c01a7336-1df01161b39so21310845ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:40:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=pdp7-com.20230601.gappssmtp.com; s=20230601; t=1710787237; x=1711392037; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=kPJT1cBm0JZhHbRAeyC7k94UmgVH4lXjFoSAOzz9Bn0=;
+        b=lAbX+Bkbfmp9vNzuEaIsDbiK7mJBMmS32FnyBSb8g8ixAYDFKRaGJSPnNy69eoWdnd
+         I3/h10gkBIswcXO0YquG/Sl8/sROqqbeFamX7uzTZ4qXo5gSeNGUlGtArGJVwmiv8e7s
+         +6OoD5JCgcMOFptkBis6qwnyLEvDYVMuASVXYoAZRk2FscWGzrTkJq47yLZt4QCjJJCV
+         Vv3bK1qNZWMUWfG9pVekf89BnHJxj7ICoAa/QDfsT0hD/lTJIp0ch3bkDxNoih3jO9pj
+         EZlKSFX/frsVFW2OBe6Ymb4jfIf7fNoSJV1SizIo8vwPq1f6LL07EDuZvtctuud8Hmn9
+         QACQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710787237; x=1711392037;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kPJT1cBm0JZhHbRAeyC7k94UmgVH4lXjFoSAOzz9Bn0=;
+        b=IGhr4m3ANWoebgDh8uX/cD2ow+MfGtBMU8ZsanmsYGMqV75BEqXcm6bVSS+meqVnaT
+         5J9PRMY0i+bh5Y7v5Bvj7o13rzMPvct2ThYr9PYp7jeepy4X3tUOmfBL0ZLlkIRoD/eP
+         xlGKwlSyl0mP4MutYhauy+1xJRRdKu+TAyeLSZWflPgM8s0XGLd5a6AgrbCESh6W+pqu
+         nykpN1WSFkRdgmnBL5KcNoV3mKaFERlzmuz54H7K/TU1AMg+etM7eyIEw/fZU3LnR6pw
+         KhZmophHtRkfC/dyrxPxoDCJRyh5lpK2ac9FUQg2OITQ57jubyMsaYUvBzSBMv+ZcMSs
+         sNTA==
+X-Forwarded-Encrypted: i=1; AJvYcCWmeu5oclj9cUBrP3vFi4S19vLLN0sDCthFsaUx087Ubc8oQdqf1G7zIPRoxdYAJaugtCnDhFsRKeSa5Vc0VXsBnlOwdefFDPeTb4R/
+X-Gm-Message-State: AOJu0Ywy8M4ySOwbgVYqtmhaNdnQJuahw4BxcokXZCRIGnmpSVuba9P1
+	6YHCDNM5eIH07lab8sFVoMcSkCQbLV0WcqKA0fN6W4td8SIMNMxx4NMWl1NqqhA=
+X-Google-Smtp-Source: AGHT+IERZprP8bJw5Kg2m3rUqK4BSa2GGG3UrN27m7sqm1+N3azIFVcxsfEMVD/M+9yg6cN0tL/g/g==
+X-Received: by 2002:a17:902:e744:b0:1e0:ae6:3a6 with SMTP id p4-20020a170902e74400b001e00ae603a6mr8131789plf.20.1710787237315;
+        Mon, 18 Mar 2024 11:40:37 -0700 (PDT)
+Received: from x1 ([2601:1c2:1800:a790:ca87:56ba:58b7:a676])
+        by smtp.gmail.com with ESMTPSA id ku12-20020a170903288c00b001dd3bc79142sm9609313plb.264.2024.03.18.11.40.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 11:40:36 -0700 (PDT)
+Date: Mon, 18 Mar 2024 11:40:34 -0700
+From: Drew Fustini <drew@pdp7.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [PATCH v1 -next 0/3] RISC-V: ACPI: Enable CPPC based cpufreq
+ support
+Message-ID: <ZfiKooxO88h1nj35@x1>
+References: <20240208034414.22579-1-sunilvl@ventanamicro.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Content-Language: en-US
-To: Bharat Bhushan <bbhushan2@marvell.com>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>,
-        "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
-        "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
-        "herbert@gondor.apana.org.au" <herbert@gondor.apana.org.au>,
-        "davem@davemloft.net" <davem@davemloft.net>
-Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-        "saulo.alessandre@tse.jus.br" <saulo.alessandre@tse.jus.br>,
-        "lukas@wunner.de" <lukas@wunner.de>,
-        "jarkko@kernel.org" <jarkko@kernel.org>
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
- <20240312183618.1211745-7-stefanb@linux.vnet.ibm.com>
- <SN7PR18MB5314CB6B4CF9678BDDF0D012E32D2@SN7PR18MB5314.namprd18.prod.outlook.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <SN7PR18MB5314CB6B4CF9678BDDF0D012E32D2@SN7PR18MB5314.namprd18.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: wSNjPDBhFanHNTjf9WxtXUObvZZKBVbJ
-X-Proofpoint-ORIG-GUID: wSNjPDBhFanHNTjf9WxtXUObvZZKBVbJ
-Subject: Re:  [PATCH v6 06/13] crypto: ecc - Implement vli_mmod_fast_521 for NIST
- p521
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- suspectscore=0 malwarescore=0 adultscore=0 mlxlogscore=999 mlxscore=0
- phishscore=0 clxscore=1015 impostorscore=0 lowpriorityscore=0 spamscore=0
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403180141
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240208034414.22579-1-sunilvl@ventanamicro.com>
 
+On Thu, Feb 08, 2024 at 09:14:11AM +0530, Sunil V L wrote:
+> This series enables the support for "Collaborative Processor Performance
+> Control (CPPC) on ACPI based RISC-V platforms. It depends on the
+> encoding of CPPC registers as defined in RISC-V FFH spec [2].
+> 
+> CPPC is described in the ACPI spec [1]. RISC-V FFH spec required to
+> enable this, is available at [2].
+> 
+> [1] - https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#collaborative-processor-performance-control
+> [2] - https://github.com/riscv-non-isa/riscv-acpi-ffh/releases/download/v1.0.0/riscv-ffh.pdf
+> 
+> The series is based on the LPI support series.
+> Based-on: 20240118062930.245937-1-sunilvl@ventanamicro.com
+> (https://lore.kernel.org/lkml/20240118062930.245937-1-sunilvl@ventanamicro.com/)
 
+Should the https://github.com/vlsunil/qemu/tree/lpi_exp branch also be
+used for this CPPC series too?
 
-On 3/18/24 01:47, Bharat Bhushan wrote:
-> 
-> 
->> -----Original Message-----
->> From: Stefan Berger <stefanb@linux.vnet.ibm.com>
->> Sent: Wednesday, March 13, 2024 12:06 AM
->> To: keyrings@vger.kernel.org; linux-crypto@vger.kernel.org;
->> herbert@gondor.apana.org.au; davem@davemloft.net
->> Cc: linux-kernel@vger.kernel.org; saulo.alessandre@tse.jus.br;
->> lukas@wunner.de; Bharat Bhushan <bbhushan2@marvell.com>;
->> jarkko@kernel.org; Stefan Berger <stefanb@linux.ibm.com>
->> Subject: [EXTERNAL] [PATCH v6 06/13] crypto: ecc - Implement
->> vli_mmod_fast_521 for NIST p521
->>
->> Prioritize security for external emails: Confirm sender and content safety
->> before clicking links or opening attachments
->>
->> ----------------------------------------------------------------------
->> From: Stefan Berger <stefanb@linux.ibm.com>
->>
->> Implement vli_mmod_fast_521 following the description for how to calculate
->> the modulus for NIST P521 in the NIST publication "Recommendations for
->> Discrete Logarithm-Based Cryptography: Elliptic Curve Domain Parameters"
->> section G.1.4.
->>
->> NIST p521 requires 9 64bit digits, so increase the ECC_MAX_DIGITS so that
->> arrays fit the larger numbers.
->>
->> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
->> ---
->>   crypto/ecc.c                  | 25 +++++++++++++++++++++++++
->>   include/crypto/internal/ecc.h |  3 ++-
->>   2 files changed, 27 insertions(+), 1 deletion(-)
->>
->> diff --git a/crypto/ecc.c b/crypto/ecc.c index 415a2f4e7291..99d41887c005
->> 100644
->> --- a/crypto/ecc.c
->> +++ b/crypto/ecc.c
->> @@ -902,6 +902,28 @@ static void vli_mmod_fast_384(u64 *result, const
->> u64 *product,  #undef AND64H  #undef AND64L
->>
->> +/*
->> + * Computes result = product % curve_prime
->> + * from "Recommendations for Discrete Logarithm-Based Cryptography:
->> + *       Elliptic Curve Domain Parameters" section G.1.4
->> + */
->> +static void vli_mmod_fast_521(u64 *result, const u64 *product,
->> +			      const u64 *curve_prime, u64 *tmp) {
->> +	const unsigned int ndigits = ECC_CURVE_NIST_P521_DIGITS;
->> +	size_t i;
->> +
->> +	/* Initialize result with lowest 521 bits from product */
->> +	vli_set(result, product, ndigits);
->> +	result[8] &= 0x1ff;
->> +
->> +	for (i = 0; i < ndigits; i++)
->> +		tmp[i] = (product[8 + i] >> 9) | (product[9 + i] << 55);
->> +	tmp[8] &= 0x1ff;
-> 
-> Can we get away from this hardcoding, like 9, 55, 0x1ff etc.
-> Or at least add comment about these.
-> 
->> +
->> +	vli_mod_add(result, result, tmp, curve_prime, ndigits); }
->> +
->>   /* Computes result = product % curve_prime for different curve_primes.
->>    *
->>    * Note that curve_primes are distinguished just by heuristic check and @@ -
->> 941,6 +963,9 @@ static bool vli_mmod_fast(u64 *result, u64 *product,
->>   	case ECC_CURVE_NIST_P384_DIGITS:
->>   		vli_mmod_fast_384(result, product, curve_prime, tmp);
->>   		break;
->> +	case ECC_CURVE_NIST_P521_DIGITS:
->> +		vli_mmod_fast_521(result, product, curve_prime, tmp);
->> +		break;
->>   	default:
->>   		pr_err_ratelimited("ecc: unsupported digits size!\n");
->>   		return false;
->> diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.h index
->> ab722a8986b7..4e2f5f938e91 100644
->> --- a/include/crypto/internal/ecc.h
->> +++ b/include/crypto/internal/ecc.h
->> @@ -33,7 +33,8 @@
->>   #define ECC_CURVE_NIST_P192_DIGITS  3
->>   #define ECC_CURVE_NIST_P256_DIGITS  4
->>   #define ECC_CURVE_NIST_P384_DIGITS  6
->> -#define ECC_MAX_DIGITS              (512 / 64) /* due to ecrdsa */
->> +#define ECC_CURVE_NIST_P521_DIGITS  9
-> 
-> Maybe these can be defined as:
-> #define ECC_CURVE_NIST_P521_DIGITS  (DIV_ROUND_UP(521, 64) /* NIST P521 */)
-
-I think for NIST P521 9 can be pre-calculated. It will not change 
-anymore in the future.
-
-> 
->> +#define ECC_MAX_DIGITS              DIV_ROUND_UP(521, 64) /* NIST P521 */
-> 
-> /* NIST_P521 is max digits */
-> #define ECC_MAX_DIGITS              ECC_CURVE_ _DIGITS
-
-In this case I think the DIV_ROUND_UP() along with the comment shows 
-that it needs to be updated if ever a larger curve comes along.
-
-> 
-> Thanks
-> -Bharat
-> 
->>
->>   #define ECC_DIGITS_TO_BYTES_SHIFT 3
->>
->> --
->> 2.43.0
-> 
+Thanks,
+Drew
 
