@@ -1,115 +1,198 @@
-Return-Path: <linux-kernel+bounces-106178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7C7EF87EA59
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:49:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0A0C87EA5B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:49:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC6551C2183F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:49:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1814328368F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:49:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C82B04AECD;
-	Mon, 18 Mar 2024 13:48:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 575A84AECD;
+	Mon, 18 Mar 2024 13:49:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="cZQKAkzU"
-Received: from mail-yb1-f175.google.com (mail-yb1-f175.google.com [209.85.219.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="abOwOHg1"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A61D2487A5
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:48:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAC2E4CB20;
+	Mon, 18 Mar 2024 13:49:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710769738; cv=none; b=FU/KoFYfErPUVYM88gRfYV/4Dz0G+zxM8fFBkMUSxj0p6rl1QmkBehT8Mb2x1bDrfow7ukUqafazm7EV2ZSpJQgo4z6AmrBifZ9pk6tVPdsKr+zntkLo0oAypFFrim0IK2CcLbb5ONab0sC5pEGthQdbIKtZE0/IONIeVUeGWJo=
+	t=1710769750; cv=none; b=DnVJtgyOA7o1PoQGxZiV2q2fQ4CLQ1Nh6eKsyi75XFHMG8b0TFlxwMGNiItIIard5uHI1qQ+lorXr1klZg+aNfW1SpTn67GJnBduchNErLJUNeT52REG7oPD27fCzMfXWxCZRRPYZLeaFgDMzvCXH7IWHR7hEqlSRMDsNbgFQgk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710769738; c=relaxed/simple;
-	bh=R2UaOpKnY97aWVhZ/hgFlH9poNa+7COfnT3VW02GUGE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=s5u250QVX/i8oOQcBL/7oJEGT98iFx7oAF7XxOpotsMdzk7M+Wa9LWoTACqeS1MX537OzaTMBLP+dqhUyVE3jWznUVTBSSDuAvhV3sEex7n0xUFD2y8wFgb7SYvONhDzPHmvkC20AU6M01zG/lDwxvfirZQotnHSmbPHeWENwTc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=cZQKAkzU; arc=none smtp.client-ip=209.85.219.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f175.google.com with SMTP id 3f1490d57ef6-d9b9adaf291so3565475276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 06:48:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710769734; x=1711374534; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=V3FYhI19+7mXvMPKmKsCyQbdJxb3cWwyAzFHyh7qwU8=;
-        b=cZQKAkzUxWZ3DiR2+CMXuDmMSWC1MZpfCZmvrHvdd3Lz6yu4xL0TUE6I8U2qJoQuqp
-         gR1C3iF8TrOC8gOKApo2HaV/oaE8gr2z/qe6U4B5A1hPrD5PoGxta9VsAwR2T8DI5wWv
-         l/Y7ve+R7fE9UWq/LljsR6glDc5e6FYQNLu1WRvETPB/eE+Z533dEnsZrdDC79oHAaFj
-         ascsj6lIhV5shoOLJXIAEcOjPpHQKFZskuv7QeLR0x1o/xH1BHMwqA4I2SWUD2UB4SBs
-         TzAFfOB9FyAHUNV7B1xyK/7WBPHcv4g4SIXNoEIyUaxo0ZC0r+KxoxE9M0PEcK0wyvUa
-         TWGA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710769734; x=1711374534;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=V3FYhI19+7mXvMPKmKsCyQbdJxb3cWwyAzFHyh7qwU8=;
-        b=J3DU6/ZtV8UPZdS31oi8I8+Z8Leer9AQl5ruyxXnu6FxhOEM00QuI3eqX9Dnnai4tZ
-         XsxbIqP0EeV26NitMB+Awt8bJmbmnRBedh03xweEgJ1iiwoWtT6+C8WiAgbcs35hWmzo
-         GAzAQqfazTyr2qQfxBO11uC3yYpp1IjkZfO3BAs/8LIaemN8VKeycnwi934r5ZoRZXDQ
-         B05SATcSQfNOdj40BAEFSpbGs3t/9ZgvUml1d7B14D3+gxZPlr4wwHWQ6HUNrUuMNeUi
-         aFTeAdfSIst4DRes6p3QmBfqp8frqlqIUFCboAGMiVDXOlMVc47BII/ygD/YuXNGaW5o
-         g1kg==
-X-Forwarded-Encrypted: i=1; AJvYcCVqMeVlLV0xttY3RjT7o/qMHP3q+7eIRW227RU7OKM6CRtO6uCvJegQPD27tcYU2ZMBpC2HnhbAnaHWmjjfPqyiAv/9SIVunmGgzWZP
-X-Gm-Message-State: AOJu0YxaJ946eM7sml0/KTSHpSAQWo79BXccE7lJbvvJXE/VnqHT5NQZ
-	FXzYdMAH6yQb7WTC9JFWn3cp6RHPsgraEt9OBe8jGZLJiTQXs/5XZCmAtITp98zeqOAQieWjr+v
-	98CsN2iaqdaPuZOimaWPg84xNkYjhGMyCxZhKEw==
-X-Google-Smtp-Source: AGHT+IHIKdJh6Ea44QB/HJYggMw6MDwULWny87xsrwu5PR/MnhdaDTL0l9BRYsgBrUOoIuoSQyIdEFoMdSPlHuMn2yY=
-X-Received: by 2002:a25:db08:0:b0:dc7:4460:878a with SMTP id
- g8-20020a25db08000000b00dc74460878amr8986047ybf.3.1710769734613; Mon, 18 Mar
- 2024 06:48:54 -0700 (PDT)
+	s=arc-20240116; t=1710769750; c=relaxed/simple;
+	bh=JLG8sukgDM2O23Tr0HIpeWmUSEr+XlkIyVAeaAqkV9w=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=FkzqLCBK1SkgS16NBWKfFRFd1zisDZOvHXt3efFdiLiiw4LJrF2JhzcJZZ3qaMN4nD9C0MNVyc8lHWWcKhrwp/NmZWgut1yVj12VN8CV+2RITxujiGBuJcWID++4RF5m7Od9mw/ZgEL9wON4CmTvnZgIPGEFCa1EsajSPG9W4L4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=abOwOHg1; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710769746;
+	bh=JLG8sukgDM2O23Tr0HIpeWmUSEr+XlkIyVAeaAqkV9w=;
+	h=From:To:Cc:Subject:Date:From;
+	b=abOwOHg1MxXA9XUrHhafmXL36GzADANXBqlafBo90/SEwYHmogN5aclvdhIWQ/FE7
+	 ZM2Hi5vA0vCJv+XQaYLWaGhmF/SsLXHZ5k3uNf2KPLTdnZKWM76LHu6w1AQCyvMC5v
+	 NHszyuYNY5oQkwZXBPzbujX6NPX5A6DpS2wr6p6KAi3xpZLv94/TOlakQFbGhc+enj
+	 ldebTtMNhSTnbQe1Qz3NQOWGV9Uv+uGwCgJbGTv0oIMe+Lnb7VwF5onbeTrFd8UptC
+	 rHL0GU6aOSPH27LUwjaAYQa5B7v1qwEqgt/LIHOGmBkrHfMXUKMCqKLjs2iZb38ix9
+	 KXScahMujO8wQ==
+Received: from benjamin-XPS-13-9310.. (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: benjamin.gaignard)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 2A6EB3781183;
+	Mon, 18 Mar 2024 13:49:06 +0000 (UTC)
+From: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+To: mchehab@kernel.org,
+	tfiga@chromium.org,
+	m.szyprowski@samsung.com,
+	ezequiel@vanguardiasur.com.ar,
+	p.zabel@pengutronix.de,
+	hverkuil-cisco@xs4all.nl,
+	nicolas@ndufresne.ca
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	linux-rockchip@lists.infradead.org,
+	kernel@collabora.com,
+	Benjamin Gaignard <benjamin.gaignard@collabora.com>
+Subject: [PATCH v21.1 3/9] media: test-drivers: Set REQBUFS minimum number of buffers
+Date: Mon, 18 Mar 2024 14:48:56 +0100
+Message-Id: <20240318134856.110687-1-benjamin.gaignard@collabora.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318-apss-ipq-pll-cleanup-v1-0-52f795429d5d@gmail.com> <20240318-apss-ipq-pll-cleanup-v1-1-52f795429d5d@gmail.com>
-In-Reply-To: <20240318-apss-ipq-pll-cleanup-v1-1-52f795429d5d@gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 18 Mar 2024 15:48:43 +0200
-Message-ID: <CAA8EJppE8Pt8XX-e9=b5g-4+GGbw8pEgg6Jyj--HDCmC1n5N1w@mail.gmail.com>
-Subject: Re: [PATCH 1/5] clk: qcom: apss-ipq-pll: reuse Stromer reg offsets
- from 'clk_alpha_pll_regs'
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 18 Mar 2024 at 13:20, Gabor Juhos <j4g8y7@gmail.com> wrote:
->
-> The register offset array defined locally for the
-> CLK_ALPHA_PLL_TYPE_STROMER_PLUS is the same as the
-> entry defined for CLK_ALPHA_PLL_TYPE_STROMER in the
-> 'clk_alpha_pll_regs' array.
->
-> To avoid code duplication, remove the local definition
-> and use the global one instead.
->
-> No functional changes.
->
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
-> Depends on the following patches:
->  - "clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018 to fix boot failure"
->    Link: https://lore.kernel.org/r/20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com
->  - "clk: qcom: clk-alpha-pll: Stromer register cleanup"
->    Link: https://lore.kernel.org/r/20240311-alpha-pll-stromer-cleanup-v1-0-f7c0c5607cca@gmail.com
-> ---
->  drivers/clk/qcom/apss-ipq-pll.c | 24 ++++++------------------
->  1 file changed, 6 insertions(+), 18 deletions(-)
+Instead of using 'min_queued_buffers' field to specify the
+minimum number of buffers to be allocated when calling REQBUF
+use 'min_reqbufs_allocation' field which is dedicated to this
+purpose.
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Change the minimum requested buffers to 2 for vivid-meta-out
+and vivid-touch-cap drivers when creating the queues.
+That allows to remove code which prohibe to allocate only
+one buffer in their respective queue setup functions.
 
+While at it rename vivid_create_queue() parameter.
 
+Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+---
+version 21.1:
+- Change min requested buffers for vivid-meta-out and vivid-touch-cap.
+- Remove useless call in their queue setup functions.
+
+ drivers/media/test-drivers/vimc/vimc-capture.c     | 2 +-
+ drivers/media/test-drivers/vivid/vivid-core.c      | 8 ++++----
+ drivers/media/test-drivers/vivid/vivid-meta-out.c  | 4 ----
+ drivers/media/test-drivers/vivid/vivid-touch-cap.c | 4 ----
+ 4 files changed, 5 insertions(+), 13 deletions(-)
+
+diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
+index 2a2d19d23bab..97693561f1e4 100644
+--- a/drivers/media/test-drivers/vimc/vimc-capture.c
++++ b/drivers/media/test-drivers/vimc/vimc-capture.c
+@@ -432,7 +432,7 @@ static struct vimc_ent_device *vimc_capture_add(struct vimc_device *vimc,
+ 	q->mem_ops = vimc_allocator == VIMC_ALLOCATOR_DMA_CONTIG
+ 		   ? &vb2_dma_contig_memops : &vb2_vmalloc_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+-	q->min_queued_buffers = 2;
++	q->min_reqbufs_allocation = 2;
+ 	q->lock = &vcapture->lock;
+ 	q->dev = v4l2_dev->dev;
+ 
+diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+index 159c72cbb5bf..e2d4f10003f3 100644
+--- a/drivers/media/test-drivers/vivid/vivid-core.c
++++ b/drivers/media/test-drivers/vivid/vivid-core.c
+@@ -861,7 +861,7 @@ static const struct media_device_ops vivid_media_ops = {
+ static int vivid_create_queue(struct vivid_dev *dev,
+ 			      struct vb2_queue *q,
+ 			      u32 buf_type,
+-			      unsigned int min_queued_buffers,
++			      unsigned int min_reqbufs_allocation,
+ 			      const struct vb2_ops *ops)
+ {
+ 	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE && dev->multiplanar)
+@@ -898,7 +898,7 @@ static int vivid_create_queue(struct vivid_dev *dev,
+ 	q->mem_ops = allocators[dev->inst] == 1 ? &vb2_dma_contig_memops :
+ 						  &vb2_vmalloc_memops;
+ 	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+-	q->min_queued_buffers = supports_requests[dev->inst] ? 0 : min_queued_buffers;
++	q->min_reqbufs_allocation = min_reqbufs_allocation;
+ 	q->lock = &dev->mutex;
+ 	q->dev = dev->v4l2_dev.dev;
+ 	q->supports_requests = supports_requests[dev->inst];
+@@ -1364,7 +1364,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
+ 	if (dev->has_meta_out) {
+ 		/* initialize meta_out queue */
+ 		ret = vivid_create_queue(dev, &dev->vb_meta_out_q,
+-					 V4L2_BUF_TYPE_META_OUTPUT, 1,
++					 V4L2_BUF_TYPE_META_OUTPUT, 2,
+ 					 &vivid_meta_out_qops);
+ 		if (ret)
+ 			return ret;
+@@ -1373,7 +1373,7 @@ static int vivid_create_queues(struct vivid_dev *dev)
+ 	if (dev->has_touch_cap) {
+ 		/* initialize touch_cap queue */
+ 		ret = vivid_create_queue(dev, &dev->vb_touch_cap_q,
+-					 V4L2_BUF_TYPE_VIDEO_CAPTURE, 1,
++					 V4L2_BUF_TYPE_VIDEO_CAPTURE, 2,
+ 					 &vivid_touch_cap_qops);
+ 		if (ret)
+ 			return ret;
+diff --git a/drivers/media/test-drivers/vivid/vivid-meta-out.c b/drivers/media/test-drivers/vivid/vivid-meta-out.c
+index 4a569a6e58be..82ab3b26914e 100644
+--- a/drivers/media/test-drivers/vivid/vivid-meta-out.c
++++ b/drivers/media/test-drivers/vivid/vivid-meta-out.c
+@@ -18,7 +18,6 @@ static int meta_out_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
+ 				struct device *alloc_devs[])
+ {
+ 	struct vivid_dev *dev = vb2_get_drv_priv(vq);
+-	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+ 	unsigned int size =  sizeof(struct vivid_meta_out_buf);
+ 
+ 	if (!vivid_is_webcam(dev))
+@@ -31,9 +30,6 @@ static int meta_out_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
+ 		sizes[0] = size;
+ 	}
+ 
+-	if (q_num_bufs + *nbuffers < 2)
+-		*nbuffers = 2 - q_num_bufs;
+-
+ 	*nplanes = 1;
+ 	return 0;
+ }
+diff --git a/drivers/media/test-drivers/vivid/vivid-touch-cap.c b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
+index 4b3c6ea0afde..3888c21b4d0c 100644
+--- a/drivers/media/test-drivers/vivid/vivid-touch-cap.c
++++ b/drivers/media/test-drivers/vivid/vivid-touch-cap.c
+@@ -13,7 +13,6 @@ static int touch_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
+ 				 struct device *alloc_devs[])
+ {
+ 	struct vivid_dev *dev = vb2_get_drv_priv(vq);
+-	unsigned int q_num_bufs = vb2_get_num_buffers(vq);
+ 	struct v4l2_pix_format *f = &dev->tch_format;
+ 	unsigned int size = f->sizeimage;
+ 
+@@ -24,9 +23,6 @@ static int touch_cap_queue_setup(struct vb2_queue *vq, unsigned int *nbuffers,
+ 		sizes[0] = size;
+ 	}
+ 
+-	if (q_num_bufs + *nbuffers < 2)
+-		*nbuffers = 2 - q_num_bufs;
+-
+ 	*nplanes = 1;
+ 	return 0;
+ }
 -- 
-With best wishes
-Dmitry
+2.40.1
+
 
