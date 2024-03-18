@@ -1,117 +1,94 @@
-Return-Path: <linux-kernel+bounces-106461-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106463-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 861B187EEE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:35:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCA0187EEED
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 076231F21D03
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:35:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 091911C220BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:35:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C2F255E54;
-	Mon, 18 Mar 2024 17:33:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A5E5A11B;
+	Mon, 18 Mar 2024 17:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KM2Ecen0"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AIq0amxb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4049D52F8C;
-	Mon, 18 Mar 2024 17:33:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB6485A113;
+	Mon, 18 Mar 2024 17:33:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783185; cv=none; b=D+EslKEnzlue0ax4hhjlD1k4IowJ17s+WRZuCXkbyT80B3LrUh+cgkuKxNVaIZGnW1mja3AI39OSdKO/nOgu94XpssdT7ofwYmeDJpROBI7xLMOIcyI8tYFzPiDIlhfxyIVmCa+oDvtb02KzaaOrAW3pcYZAHBfNkL0/JexBGOA=
+	t=1710783201; cv=none; b=hbMLMMibo6e/RfZG4fAp7rIpNEjPfg1zrH/7yK2xUzl7So/mErgV5z3PbFLhyDZTAs5mBWeoHr21KdfVny9HpChuApb4Bg05bfaB4MgpmF39iYNqzVVDqVHwza3J6YTjkx1TcHZXIbgZDZCq5xJPHVMVyAhzFopg+hmRPdA149U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783185; c=relaxed/simple;
-	bh=ENRY4RVP0h54nhmVNDQhGHTYt8HGJlRWH34eD47ylM0=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=fLS/0JowjFfJ/EK6v/Dk1NC536A2pDbWLxaFl07/Pt1S9DRnVjIrFsr3qZskhkTRZC5aL4KUybO9RObV5om625DiMKWNbfI06gJQfw3YNmB1ht07hsy6sLb8tvIKeEw1TpzVSfs0FY8l05QH6j8D8jMxCGiYeZzTGR/bAi6lIog=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KM2Ecen0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 93517C433C7;
-	Mon, 18 Mar 2024 17:33:04 +0000 (UTC)
+	s=arc-20240116; t=1710783201; c=relaxed/simple;
+	bh=iVPc2rWGJo1VZzkACemtyOrNMiczPeweEtn/WAY7rh4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=qjXzCFd0hr+F6fnpziV2ZIRGv58xCbfLV+qq1I6V96DvCE6d62Yw3Q6h+KOrFDTxwgKSVeWBAbZ07ijks1PzJL3Rw5Cio6o+k8FWkZ7wi32Apd3Tg9ITPxDWqO4TE267yfLShdQ4jYV8+Cp43kFLn/cPQkSqyYFCGO9f/KcX0yk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AIq0amxb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 56FFDC433C7;
+	Mon, 18 Mar 2024 17:33:19 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710783184;
-	bh=ENRY4RVP0h54nhmVNDQhGHTYt8HGJlRWH34eD47ylM0=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=KM2Ecen0KMGLaB7wkuNqD7lgDCgEniJcA1B1VjgHVUXbnB/M39nKgoS8Hp2+BaUg3
-	 /82P1e4FwmtyfxCm5laIuGpxtwkj3cZKpPn4ZSBqgHbyyxOmv+dg+gZs3RDYK9zpqk
-	 Ds1NPT7X1X/qozRslRav+C1tpQkUnAZHSsRD4apQipLxfNcTYdRfpwWUbZOHHmNjPU
-	 bZ+iHzoo7ONWYMG381TULtoGTz6zYXAMS9COdKCcOPECQB8N8yDaSwHuUMiMKzGIlc
-	 zbmt0ES7v467/unObcqnC4A3YlsKvY0v4pQYapqom9ZuDrX2eaiogLmk5QfWx86PeL
-	 ztfJRIKfl6cLw==
-Date: Mon, 18 Mar 2024 12:33:03 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=k20201202; t=1710783201;
+	bh=iVPc2rWGJo1VZzkACemtyOrNMiczPeweEtn/WAY7rh4=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=AIq0amxbpun2fG6L3swkc7LZelqRqkwUnEZ2lI/3ETAMcMHdltgoLnZMBbwau9uCq
+	 VeZ7oApwDmgD9unfXuJsKohK/iCCCmzJwLYJpvBWT6wXy/XTzD9IJWo+Zi5yQmipKS
+	 Vwlz+OVMGite8ESLx1nkAdBMVl5+ryvaB8XXL1NcYl1thdYZhgCwGwc62c5Iwm/0Nf
+	 dmbVk2vGsQIYK6T6umIgsqRNC6Af3FjUAVWfHqDLBPvsyu7h3dacTPi4H8vTHoSPPq
+	 UyZ5l06xgnqiq2ICuCOd9xlfp81YcEvE41wcro45enHxUToO0Ao96xErt4OQCjyT8i
+	 mxcczin1rbsdA==
+Date: Mon, 18 Mar 2024 17:33:16 +0000
+From: Mark Brown <broonie@kernel.org>
+To: Adam Butcher <adam@jessamine.co.uk>
+Cc: benjamin@bigler.one, carlos.song@nxp.com, kernel@pengutronix.de,
+	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org, s.hauer@pengutronix.de,
+	shawnguo@kernel.org, stefanmoring@gmail.com
+Subject: Re: [PATCH v2] spi: spi-imx: fix off-by-one in mx51 CPU mode burst
+ length
+Message-ID: <a9882abe-d137-4c3c-bad0-212e9d0e5ea5@sirena.org.uk>
+References: <98914a36-e5dc-4f44-bf3e-c237d803a7e8@sirena.org.uk>
+ <20240318172415.1588-1-adam@jessamine.co.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
- Naushir Patuck <naush@raspberrypi.com>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- linux-media@vger.kernel.org, Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>, 
- linux-rpi-kernel@lists.infradead.org, Conor Dooley <conor+dt@kernel.org>, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
- Kieran Bingham <kieran.bingham@ideasonboard.com>, 
- linux-arm-kernel@lists.infradead.org, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-In-Reply-To: <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
-References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
- <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
-Message-Id: <171078318246.167654.12048961258592577365.robh@kernel.org>
-Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for
- raspberrypi,rp1-cfe
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="AQblbqaHfFSPYaMe"
+Content-Disposition: inline
+In-Reply-To: <20240318172415.1588-1-adam@jessamine.co.uk>
+X-Cookie: Alaska:
 
 
-On Mon, 18 Mar 2024 17:49:57 +0200, Tomi Valkeinen wrote:
-> Add DT bindings for raspberrypi,rp1-cfe.
-> 
-> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> ---
->  .../bindings/media/raspberrypi,rp1-cfe.yaml        | 103 +++++++++++++++++++++
->  1 file changed, 103 insertions(+)
-> 
+--AQblbqaHfFSPYaMe
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-My bot found errors running 'make DT_CHECKER_FLAGS=-m dt_binding_check'
-on your patch (DT_CHECKER_FLAGS is new in v5.13):
+On Mon, Mar 18, 2024 at 05:21:48PM +0000, Adam Butcher wrote:
 
-yamllint warnings/errors:
+> Shall I send a v3 correcting the hash mentioned in the commit message?
 
-dtschema/dtc warnings/errors:
-Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.example.dts:24:18: fatal error: dt-bindings/clock/rp1.h: No such file or directory
-   24 |         #include <dt-bindings/clock/rp1.h>
-      |                  ^~~~~~~~~~~~~~~~~~~~~~~~~
-compilation terminated.
-make[2]: *** [scripts/Makefile.lib:419: Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.example.dtb] Error 1
-make[2]: *** Waiting for unfinished jobs....
-make[1]: *** [/builds/robherring/dt-review-ci/linux/Makefile:1428: dt_binding_check] Error 2
-make: *** [Makefile:240: __sub-make] Error 2
+Yes, please.
 
-doc reference errors (make refcheckdocs):
+--AQblbqaHfFSPYaMe
+Content-Type: application/pgp-signature; name="signature.asc"
 
-See https://patchwork.ozlabs.org/project/devicetree-bindings/patch/20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com
+-----BEGIN PGP SIGNATURE-----
 
-The base for the series is generally the latest rc1. A different dependency
-should be noted in *this* patch.
+iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX4etsACgkQJNaLcl1U
+h9DPcgf/YJ822vnVEC0fRIYXMf45uoqUYzs/KH7cJcEqzwHBElKuJHLL0b3P/SGd
+hX1QRt12HdyOhUayUq2G4Y6Ol0MvRyKYPLBBUgVe3Rglt7xpiwEqttEqaW0Z/1JF
+L8K9R/Lq2MQztsjB7BmcZdMucfBtfFAYXr+Smo4uygRkK0fY53GPb+CaervMp0Ct
+19ozLzrfJ7qWnN/ui0wG8vJAswjFjp+jh+bQBSwi9bmed21gx5OODjsk/P6NqftK
+04CxqnxMNJReUzea3xKxoYUsg0e4/u1yVdmX4RfWaDuoY3Ynq0aEdkJBIR6sj5fI
+FhcNDd7csZVI7VU3bqeL+ITDlXBlFw==
+=pTov
+-----END PGP SIGNATURE-----
 
-If you already ran 'make dt_binding_check' and didn't see the above
-error(s), then make sure 'yamllint' is installed and dt-schema is up to
-date:
-
-pip3 install dtschema --upgrade
-
-Please check and re-submit after running the above command yourself. Note
-that DT_SCHEMA_FILES can be set to your schema file to speed up checking
-your schema. However, it must be unset to test all examples with your schema.
-
+--AQblbqaHfFSPYaMe--
 
