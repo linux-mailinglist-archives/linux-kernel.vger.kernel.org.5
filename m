@@ -1,136 +1,154 @@
-Return-Path: <linux-kernel+bounces-106785-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106786-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5AD4D87F3BF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:02:23 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id E80F187F3C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:04:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D7C0C282DC5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:02:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13D2A1C215A9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:04:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D36545B687;
-	Mon, 18 Mar 2024 23:02:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D09A55BAF1;
+	Mon, 18 Mar 2024 23:04:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="UMisAxXH"
-Received: from mail-io1-f74.google.com (mail-io1-f74.google.com [209.85.166.74])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RQbOEn/j"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9BBF55A7B6
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:02:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.74
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7419A5A7B6;
+	Mon, 18 Mar 2024 23:04:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710802936; cv=none; b=moVjxd00sB5VVJl4M7zKCvSvMXJxsxn2o60AYP6JVIJvDM2psTWIs3LbcRElbOgAUOtxCgjRayqBoCdC3PN/5aFyPHIDL6JI5iCXsRMwYV4sewy4Eh3bQfC7wv04oRrpk/Yd8sBRjjqVAvqvFNKhom/WkyuuT2EjX9mBlDU37So=
+	t=1710803057; cv=none; b=l1mhmEuCJ+LtcW+hFMGoeGFWmi8/iTW0mai2OYwW115SWmbOGDdZ2mqOrEvwZabgCYYjdaHh+RnIwINayB/Ll1B6IK0xydUyP/o7iwLQN0ysj9KaTZe/uNpECnEpiTnRK+cZbM/WGAUP+m68XmIozIW6cegx+HsPYycNLj4KAdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710802936; c=relaxed/simple;
-	bh=PLBNaeGU4NGKgH+5UYKS87ZNpd4Ohvlws0rrQwvjxCs=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Ol8IWJ16Y6Jf6gd/oHcVeIQzQkn0Ss6LCPEyZMyCx6F+Lqj7EPmUxrIU464z315p1h0HTUddUN8bY+zwgGbl4ULpZBZeunq2H33gft1YzmMQ3X0vDyNCV3vIB72/ffSUiXVLStJCXnTiOzeE9VVZkN9JFKPNyst1MdNxdXLFM2c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=UMisAxXH; arc=none smtp.client-ip=209.85.166.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-io1-f74.google.com with SMTP id ca18e2360f4ac-7cc7a930922so129950339f.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:02:14 -0700 (PDT)
+	s=arc-20240116; t=1710803057; c=relaxed/simple;
+	bh=eGsUvslhaYw+yM+ZZ/EMxm+K11SBPq7cbdAEVqB6o88=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=b40mJleYhWqaxM7Y+IGwSIKWGLj2BhSFeufJwVzhxWfwERtKYS5aQhoyq/9dbO9F4NjVCBbTsIkM1JL7dmPgoOKDyl+KeRiLcXtV7oiEcG7kmCQlbXevfhMTcUc3pDXSxSegzVCjAiCnGMO7KxoeRZ68pUdyFpNR7YDAvM4iO0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RQbOEn/j; arc=none smtp.client-ip=209.85.214.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dd10a37d68so39929835ad.2;
+        Mon, 18 Mar 2024 16:04:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710802934; x=1711407734; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=RuRw5x2krmOTvpAyjZbMZbMO9GBeCXlz1oxN1a8wl6I=;
-        b=UMisAxXH96OIu1uQ2lJuAXEkkS6Iqh3MbHamKlgTCrWILnYmz9sFpAwuvuaklH7Mqi
-         qWy4C8ZbQT/NTBNhYHbXo8RyYvoMYoSetiiiqGyROsRouGTGqS28p9Vb2MBgwvP4FuoA
-         WvvIp2epZFPKrW/CNMnDfovM9Q0f1EixlARPbfhpSm9wbcj1hXJBAOihwBUygvaK3i25
-         Q4bIXUWfKraOF8T9yCqL5uLveboWs+9/ehW/eLAYtM8N/4sc/wxpRqoI0liDtslBGOaI
-         aDY/YvgTIyiQG6tiD31RUJbP4kAetZ1eo4JdBIxNmISPw7Y1lQ7zTNvGXF1YAZvemshP
-         5tGQ==
+        d=gmail.com; s=20230601; t=1710803055; x=1711407855; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=VMG8bK9JHszRqVjcG6xG0bVfN3vKXTlzIQNbDmTiu+U=;
+        b=RQbOEn/jr4dnrTQUc+mjkE0CBSGCk0oiGAz9bBZznderJXob0BPfyne5DsdkJhiT0p
+         PbOO6fSn6amyma1Pcs4HgBQd0oxklOLyKaFZN3JKJJkKyZx8qIGK7IYFO4Rvh4vDOjiG
+         3ihMW6RJhhM6MJfgL/8qLofJWpywfLZ6tlVpB8dOY9Q59lgtNOe6iMSd9Fb08TIBtnTg
+         usw1/co9rYc3XENb353h9UWLmF2Rt/AGQKHGakGwZo5uqRiGkqPqbNcPEWog2bSJdvFq
+         BKfnW5c//NL7B6NQBGCDGJxBUAG5edTD3aHXGazC6bZyXYhntG+/qfC7UxvIwUU7S/VW
+         PCxA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710802934; x=1711407734;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=RuRw5x2krmOTvpAyjZbMZbMO9GBeCXlz1oxN1a8wl6I=;
-        b=d7vVFzZHo1VYkEVR0a6+mbGdN8HKM13vu64qpEpYZ4oy7q+M0ibOye0SMiLK/WLO/b
-         F6SWSItc3iBd5/EpxevYVtTxXW1fOWxITnX3CL9OvecYiQT246wtAwL8H7oVVH+QZpDb
-         3P2gzSwlWRsudgiV5dRFsOl05LNNvZ6B/T5HHhPQbk+LAnv04QztIXIlbah/o/xoOJ8S
-         tNRdEHFFPhaIfy/AaT3eYkPXJ/iA5asPySV6kY1iLZkygJVu02M9GYGwHr5nbwfFMu/a
-         yD4mA9Xws+qfhS9+4x8+gaIb15ZjhvbZuhnvIjTfzuywglYaYXanx78QrI5Qi47AvcXW
-         ik4A==
-X-Gm-Message-State: AOJu0Yx+IdRGp6UGY+ML1JfxfERhK5ogTndgzeUXCEbjLr1MdtosbZm/
-	DkJIc8sHQtGm7v6+VhrD6HQWOseoTDPzaqsTbaO3bX0MqBGEQfGoNBgB/kqf0WS++y1HgOzRJMl
-	NC9h0blMuRTuw8PnFsoNa8Q==
-X-Google-Smtp-Source: AGHT+IGigwPG3lswWUAwHTHW//LsWC2Z+0kkjdFTnuXg/Py0AAp24wxbDb4trJJAijtKAdS9ElBjrJTq+3LBUasfOg==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6638:1501:b0:474:f25a:6fb with
- SMTP id b1-20020a056638150100b00474f25a06fbmr18381jat.3.1710802933921; Mon,
- 18 Mar 2024 16:02:13 -0700 (PDT)
-Date: Mon, 18 Mar 2024 23:02:12 +0000
+        d=1e100.net; s=20230601; t=1710803055; x=1711407855;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VMG8bK9JHszRqVjcG6xG0bVfN3vKXTlzIQNbDmTiu+U=;
+        b=M7yps60mb/B43r7zb7QCicNBQ/AhxyMUz4Wb838znenUAxMprc9+XND2XvAr1pAhYO
+         BWt+jJTqYPe1sXISew9Kjwg1VaMjD7TjVt7ta+glD5yzRvhtA+L0BfpCI/IcUnUDligw
+         nLJTmoDq2K88jfPT9b/sOQGADhocmDpVzh/7PUDWrJkFB9d3WNY0TxJ+ewLK+g/aG6gP
+         PuC3GJSDUuZRD9N+YG0EW5Z/FomqcQogPJZIPOx+Lta1vF00WU4Vjo6zuHzkc94JFv1S
+         Mr1XAIuExqStDrmwOBJczQ1I5BWyRu+IfA1YJsMCzmKWTX+81guhbIFOVS9Rc0dJTlTU
+         dK6A==
+X-Forwarded-Encrypted: i=1; AJvYcCXhVPbUjPPOijibzPP4qAJGRtXWsxN8K2sG/eaUz3QoDglQFLkavKbyxsWynIx9ffYbVDPd6zpwDrWepXdPhEbt3RUGYslxBwiPTTAM6mnqiRmBE4x88TixseVOCPqiXH41eAfIAgFw1S4=
+X-Gm-Message-State: AOJu0YwU31uTPAlQ6cYhCqdk6FOqwYQaab607A9WZ4rcp5T3n8VZV/g6
+	NK7YJyNAO6Cz9UOsVyQh/HZJTOXMt8u3noWcuDgKXaHeygbntzxCqzHlqgNS
+X-Google-Smtp-Source: AGHT+IG08iV06qo8R9/du0gQps+Yfe86bbBjDluM8aHwRtNVPP7KVLmyWm5NhAe3SBVeJfXxmdFvGA==
+X-Received: by 2002:a17:902:6803:b0:1e0:3df2:cc3 with SMTP id h3-20020a170902680300b001e03df20cc3mr1088116plk.55.1710803054719;
+        Mon, 18 Mar 2024 16:04:14 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id s20-20020a62e714000000b006e4d8687f44sm8464256pfh.102.2024.03.18.16.04.13
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 16:04:13 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <d167915c-e55e-4c2b-b7dc-6f4bda2f3a34@roeck-us.net>
+Date: Mon, 18 Mar 2024 16:04:12 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAPPH+GUC/x3MSwqDMBAA0KvIrDuQj0jrVaSIxqmdhVFmgiiSu
- xtcvs27QEmYFNrqAqGdlddYYF8VhP8QZ0KeisEZVxtv36hJYthOnIR3EsWUToz9rAsGHEbrfUO G7KeBMmxCPz6evfvmfAO2nZ2DbQAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710802933; l=1720;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=PLBNaeGU4NGKgH+5UYKS87ZNpd4Ohvlws0rrQwvjxCs=; b=fmH1GAtSbSXvWJQhDzqi9ECrH9lrSt1Xh3vgXrt6mIBppacRRR69jUkAWUkkscz5SfVvIypNY
- 6lWcTQXikENDBdVs8XK2spG8HvT3aLgM+9oP+uAW70dWhbZzew5Ck/7
-X-Mailer: b4 0.12.3
-Message-ID: <20240318-strncpy-drivers-tty-n_gsm-c-v1-1-da37a07c642e@google.com>
-Subject: [PATCH] tty: n_gsm: replace deprecated strncpy with strscpy
-From: Justin Stitt <justinstitt@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>
-Cc: linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/1] hwmon: (hp-wmi-sensors) Support autoloading
+Content-Language: en-US
+To: Armin Wolf <W_Armin@gmx.de>, james@equiv.tech
+Cc: jdelvare@suse.com, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318215732.322798-1-W_Armin@gmx.de>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240318215732.322798-1-W_Armin@gmx.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
+On 3/18/24 14:57, Armin Wolf wrote:
+> Currently, the hp-wmi-sensors driver needs to be loaded manually
+> on supported machines. This however is unnecessary since the WMI
+> id table can be used to support autoloading.
+> 
+> However the driver might conflict with the hp-wmi driver since both
+> seem to use the same WMI GUID for registering notify handler.
+> 
 
-We expect nc->if_name to be NUL-terminated based on existing manual
-NUL-byte assignments and checks:
-|	nc.if_name[IFNAMSIZ-1] = '\0';
-..
-| 	if (nc->if_name[0] != '\0')
+I have no idea how this is supposed to be handled.
+wmi_install_notify_handler() is marked as deprecated,
+suggesting that the entire driver structure may be outdated.
 
-Let's use the new 2-argument strscpy() since it guarantees
-NUL-termination on the destination buffer while correctly using the
-destination buffers size to bound the operation.
+> I am thus submitting this patch as an RFC for now.
+> 
 
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
+... and, given the above, I have no idea what to do with it, sorry.
 
-Found with: $ rg "strncpy\("
----
- drivers/tty/n_gsm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
-
-diff --git a/drivers/tty/n_gsm.c b/drivers/tty/n_gsm.c
-index 4036566febcb..f5b0d91d32a7 100644
---- a/drivers/tty/n_gsm.c
-+++ b/drivers/tty/n_gsm.c
-@@ -4010,7 +4010,7 @@ static int gsm_create_network(struct gsm_dlci *dlci, struct gsm_netconfig *nc)
- 	mux_net = netdev_priv(net);
- 	mux_net->dlci = dlci;
- 	kref_init(&mux_net->ref);
--	strncpy(nc->if_name, net->name, IFNAMSIZ); /* return net name */
-+	strscpy(nc->if_name, net->name); /* return net name */
- 
- 	/* reconfigure dlci for network */
- 	dlci->prev_adaption = dlci->adaption;
-
----
-base-commit: bf3a69c6861ff4dc7892d895c87074af7bc1c400
-change-id: 20240318-strncpy-drivers-tty-n_gsm-c-ab1336e0e196
-
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+Guenter
 
 
