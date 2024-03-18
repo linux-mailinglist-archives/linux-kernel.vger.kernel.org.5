@@ -1,129 +1,127 @@
-Return-Path: <linux-kernel+bounces-106750-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4296387F317
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:25:39 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BFAEE87F318
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:27:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2DDDB22416
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:25:36 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 260E1B210BD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:27:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5C2D15A11C;
-	Mon, 18 Mar 2024 22:25:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E59C05A11C;
+	Mon, 18 Mar 2024 22:27:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="eZgEJQB3"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ngg+ryjw"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 93AD758AC7;
-	Mon, 18 Mar 2024 22:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2ACA5A0E5
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:27:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710800726; cv=none; b=rNqh0ailXuNPHZhMWh4joloVf5aEJwXhy8iU0uztwSoIGhJshnCFjHPqcydK/hKaqavh0a1+Uuy6OoizGBSAR9u68V9UIx25qNRgV5XAjugxhY84/59+QR4t7kN/1RbvlkrybdPOCUi9KtBpBZGznwW3wqNrUTJoFcfBicdU/EE=
+	t=1710800856; cv=none; b=S2guQyYTDeQqafG0NKdGiaNAfmXWHtd7OpxjNTFmZ9t6ZuGd1Dt0BtW5FRuCVPu/kpHwz0tgGveXDaRp4fTRAC4Sl8Es03ZPMeCm54yXf4c1+u5Wo+WZw4YQl9mKdzP6HUx63TjS4rPA0de06dzrVJVwMPqxI2tbQyjCQr6lAWY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710800726; c=relaxed/simple;
-	bh=itttylFttcbiCbzFFglP/gxOduvNaaoCGRLHiPfLiJg=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=VstuSM5o/boek1rBVAwGyqFH0pATuTP5xO/kW2qftlbk+Y02VbERH3tVlqriqJIn80Ak42brMmWH1VgnORhTXDutDHKOYfPkm7pBq8JRb8etxNgV+CFhudoJccBtlBRqQK6VnsYlbaMCq9MdCrfJ8gETPUELDPasn/kT+Y3W+1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=eZgEJQB3; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 19360C433C7;
-	Mon, 18 Mar 2024 22:25:23 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710800726;
-	bh=itttylFttcbiCbzFFglP/gxOduvNaaoCGRLHiPfLiJg=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=eZgEJQB3Me3KvgDGLbPzkNSX7QZd7wuYGp/4rkVev4ls2tTomPc0MUNgWZwAVMuzT
-	 xASDqm32pOIVx8gVOTtYpWIyeukaNOM3MjOGwSrCJtxXrc80828Abuur7sbL5jTfLn
-	 PtFQPK3Ot46N0CrSKOFlWcyW4g+yJzhqDyR5fyBIO2iQrstrCNWkOK1+88Ym+e34hi
-	 aGzdRljQhZJgp3eMhH7ClWpjcphictD4T6eU0tldas0tEOIwuyJRv2K1Mh/rOmFVYS
-	 XjuV720pI8JA2maLIgV5GlbNPlw70zNulpOMF78BpIAUQ8WNMfu+0GXNUl1XXS+304
-	 08sYaJ00kt7Hg==
+	s=arc-20240116; t=1710800856; c=relaxed/simple;
+	bh=94LsfgbN1Sfy3yGmkskJgCjkYV5jSwAENV2gNr7Lzwc=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=upOf0Ycg8N+eOtB0ONAVvvrHkDog7b8IA4JfzIBqSjh0NbQofek4oNoeXOGweboZTHhBDtWtmnfDEHySMia7sscypoLkDVZNRGPstZcLlQFwyum2oLZrkLHGEgN8sq8vja8OgQhs0MBeZfgKJqgL8PbRBhv0xJKyHTR4Nh/E6HQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ngg+ryjw; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1def59b537cso21780705ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:27:34 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710800854; x=1711405654; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DwWkU8lgVBm7GfNdi57Ea5vfTMMbO/0kw3dtIaZC8Is=;
+        b=Ngg+ryjwmgGi30z9X13c1aPIQWG+lLtwdrreqCXuN0V0o5Cx74Bq1GrvJe7Kz7sCvc
+         QRT9dhP7ruk9kSwXoyr5hy9MxIZo9bLUEMG0aQaw3mmMcFr3e8899Lwd88DHzLmeFqM2
+         tU8bo4N4Hfpwph3/TcobekvWBs/spwVrPVxKniA6tOAUSXXUGyWESv8XpR69Yltx08Lk
+         7Q8izR7ePgSg6Yl+/7KRDyECvm7I0CFCNNU15eGsvI8sRehuIh6h5EM9hUcIWbOvDtu1
+         umzayWB8p8cZ/VyguPG6OgVTLt86iQfd0/j+dHDoJBnHy0xsHs0F6+m03s0Zjg48HRub
+         qdyg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710800854; x=1711405654;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=DwWkU8lgVBm7GfNdi57Ea5vfTMMbO/0kw3dtIaZC8Is=;
+        b=oF5nvEqM7tQ4Pv1xn8Hx1lLoURcercXysGUcA5IclvM4rqEIcKDyR1ywtioGJgCACf
+         6dDNGwzbx3h9YzV76bgdCshuqY1+auMHUfKPqld2KVku08TtZqi6EpQlKntMHs/EjL6R
+         M57kVY5BdI2UBHfZkyGPN4T9YSYXZhP5G1evYqHBxPKtoGSRL5r7tCwxFS2NJ4KBOnbV
+         wNWM0GvrpzCutV5bch/ND4ZCBkOKNYonMrqq/hOpoemBbiy6KeU80SIl0YrWVM2xIeEb
+         CpbUW7lETnuJGf2UyIOmGJBpwSlLVdJc6ilQAMvifC6VUdo6N3xgsEFYmdcB2kgP4OcY
+         j6yg==
+X-Forwarded-Encrypted: i=1; AJvYcCWVEpXaiISvBUNxOAh+s1+8EeTvc0c4qxyg+ery693iuO9JmRx0PxGdMJ0BK/0OZ9/ufEu4HlEBgfpnogbmbO7qbSxZ3eFbzwRxDupQ
+X-Gm-Message-State: AOJu0YzyGR7Nkvb+LS7f14nctnX5G3y2aLRWxaWQOOaFGO65QYZ2eTjs
+	rKWy0QOvlCIrSdGb7GxFfLSXJNziwxopYt6kr8n9TkX+ZZBRzr0p
+X-Google-Smtp-Source: AGHT+IG6hhx5i/qrmjLWaWWDMuYJHbPbaHZ0eKWQm0hdxSqcnjN/F78ReNMMizTbAWTH9kp3nP/aUA==
+X-Received: by 2002:a17:902:ecc7:b0:1de:faa3:755 with SMTP id a7-20020a170902ecc700b001defaa30755mr13364190plh.37.1710800854078;
+        Mon, 18 Mar 2024 15:27:34 -0700 (PDT)
+Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
+        by smtp.gmail.com with ESMTPSA id n18-20020a170902d2d200b001dee0e175c1sm9124586plc.118.2024.03.18.15.27.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 15:27:33 -0700 (PDT)
+From: Barry Song <21cnbao@gmail.com>
+To: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
+Cc: 21cnbao@gmail.com,
+	akpm@linux-foundation.org,
+	chengming.zhou@linux.dev,
+	hannes@cmpxchg.org,
+	linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org,
+	nphamcs@gmail.com,
+	syzkaller-bugs@googlegroups.com,
+	yosryahmed@google.com
+Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
+Date: Tue, 19 Mar 2024 11:27:15 +1300
+Message-Id: <20240318222715.86329-1-21cnbao@gmail.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <0000000000009221d60613f58726@google.com>
+References: <0000000000009221d60613f58726@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 19 Mar 2024 00:25:22 +0200
-Message-Id: <CZX88PUGBT4Q.992VYE0L8TS0@kernel.org>
-Cc: "Stefan Berger" <stefanb@linux.vnet.ibm.com>,
- <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
- <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <bbhushan2@marvell.com>, "Stefan Berger" <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v6 03/13] crypto: ecdsa - Adjust tests on length of key
- parameters
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Lukas Wunner" <lukas@wunner.de>
-X-Mailer: aerc 0.15.2
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
- <20240312183618.1211745-4-stefanb@linux.vnet.ibm.com>
- <CZX5OW9RVXGQ.2MBG8AQKHRKSE@kernel.org> <Zfikwi0v0_R58uNT@wunner.de>
-In-Reply-To: <Zfikwi0v0_R58uNT@wunner.de>
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon Mar 18, 2024 at 10:32 PM EET, Lukas Wunner wrote:
-> On Mon, Mar 18, 2024 at 10:25:26PM +0200, Jarkko Sakkinen wrote:
-> > On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
-> > > From: Stefan Berger <stefanb@linux.ibm.com>
-> > >
-> > > In preparation for support of NIST P521, adjust the basic tests on th=
-e
-> > > length of the provided key parameters to only ensure that the length =
-of the
-> > > x plus y coordinates parameter array is not an odd number and that ea=
-ch
-> > > coordinate fits into an array of 'ndigits' digits. Mathematical tests=
- on
-> > > the key's parameters are then done in ecc_is_pubkey_valid_full reject=
-ing
-> > > invalid keys.
-> > >
-> > > The change is necessary since NIST P521 keys do not have keys with
-> > > coordinates that each fully require 'full' digits (=3D u64), unlike
-> > > NIST P192/256/384 that all require multiple 'full' digits.
-> >=20
-> > This sentence is not really comprehendable English sentence. Can you
-> > just write the rationale in understandable form?
-> >=20
-> > "fully require full digits (=3D u64)" is something totally alien to me
-> > tbh.
->
-> It is proper English, but requires an understanding of how large integers
-> are handled by crypto/ecdsa.c:  They're a sequence of u64.  For P192, P25=
-6
-> and P384 all u64 in the sequence are used to their full extent because th=
-e
-> key size is divisable by 64.  That's not the case for P521, where the mos=
-t
-> significant u64 is not fully used (only 2 out of 8 bytes are used).
+> syzbot has tested the proposed patch but the reproducer is still triggering an issue:
+> WARNING in __kmap_to_page
+> 
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 3529 at mm/highmem.c:167 __kmap_to_page+0x100/0x194 mm/highmem.c:167
+> Modules linked in:
+> Kernel panic - not syncing: kernel: panic_on_warn set ...
+> 
 
-This would be a great extension to the current commit message.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e5eb28f6d1afebed4bb7d740a797d0390bd3a357
 
-My point here is that:
-
-1. I obviously acknowledge that not all math etc. related to a crypto
-   standard can be explained in a commit message.
-2. That said, they should be more verbose than usualy commit messages
-   to be as easy to follow as possible, given the complexity of topic.
-
-Here the topic is fairly complex but most of commit messages are written
-without much focus on the background story. In this type of patch set
-even having some redundancy in the commit messages is favorable so that
-they are as easy to understand as possible.
-
-Actually just as code changes they are quite simple but why they are
-made is the complex topic, which means that commit messages are even
-more important. This motivation comes from e.g. when these need to be
-backtracked at some point when bisecting a bug and whatnot.
-
-> Thanks,
->
-> Lukas
-
-
-BR, Jarkko
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 9dec853647c8..17bf6d87b274 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1080,7 +1080,8 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
+ 	mutex_lock(&acomp_ctx->mutex);
+ 
+ 	src = zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+-	if (acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) {
++	if ((acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) ||
++	    !virt_addr_valid(src)) {
+ 		memcpy(acomp_ctx->buffer, src, entry->length);
+ 		src = acomp_ctx->buffer;
+ 		zpool_unmap_handle(zpool, entry->handle);
+@@ -1094,7 +1095,7 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
+ 	BUG_ON(acomp_ctx->req->dlen != PAGE_SIZE);
+ 	mutex_unlock(&acomp_ctx->mutex);
+ 
+-	if (!acomp_ctx->is_sleepable || zpool_can_sleep_mapped(zpool))
++	if (src != acomp_ctx->buffer)
+ 		zpool_unmap_handle(zpool, entry->handle);
+ }
 
