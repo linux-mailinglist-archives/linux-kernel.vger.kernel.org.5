@@ -1,156 +1,178 @@
-Return-Path: <linux-kernel+bounces-106273-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106275-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ABAC87EBB7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:09:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F19E87EBBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:10:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA6C21C2152F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:09:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1F192811C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:10:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93AAE4F5F2;
-	Mon, 18 Mar 2024 15:09:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7CA9F4F200;
+	Mon, 18 Mar 2024 15:10:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="QBaKobQO"
-Received: from out-170.mta0.migadu.com (out-170.mta0.migadu.com [91.218.175.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="Hlm4MGv7"
+Received: from mail-qt1-f181.google.com (mail-qt1-f181.google.com [209.85.160.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 809624EB46
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:09:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E305D4E1D3
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:10:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710774580; cv=none; b=Ma4vzAn2eC1xrPWi7Buw0W6yY+V8vH/Vfc44mnZ1wt1oY83AEy7FqmePESN/pbbRwXagvMNRSw/Sgr5d2DMssrBD3VtGByQLL7Ot/PsoPv0a9ZaYsH7D915R+YBgkOKR+K36WBWQ4k/GN9VzGZ/ZxW1NOzHrOZ/B36G7HxSA9Pk=
+	t=1710774626; cv=none; b=sQUcSXnHK4RY0rfdqPMRIMQ0ootR8T2zdpsh4nBCAwsgs4rngOrosCCGJ/CfLHWP70sleir5vOn7kfmon1SOZM6Zj4DwBzeL4pB0AOqpbdkaIxQzA11wrz3VzcH7Ar5+PtzM+QleEsE1Um/cttk6wAhkFVL7047pGFbM9rSKWcw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710774580; c=relaxed/simple;
-	bh=H7IGWMeRnaWxip9sjSRYjAeZUfDmhc3HZDLokWYk0Zc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=o9l5uiOsuM/WiEpis7Nta1cLroyi3bMZiYvD5VM+dNLsci0JuK1l4yO8/ny1H0R9yrd6JYROdKagj4rN++6HvasOYHinp26iovYE9Hlk14odihzUJxd9zIL5hC5IvyhK7XP5cIUSH9g3+kOcieF3YIeYSCAeQIaU7nkPKB6vLlw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=QBaKobQO; arc=none smtp.client-ip=91.218.175.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <0774c0a7-8ef7-47cb-8c1c-695c67e10182@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710774575;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=UgBmXSoNNR4Olx/VcT0P5tBKTjoGvpwZV2EEX4qJmuU=;
-	b=QBaKobQOGhE/aRia0yChrm9MJwbvcW4bh3X6p+7CXYuktwFUSFpgGcmzSuffJXN0Sg94b9
-	0S7pplov2RTetNOzZ9UPiw2N5mjTTYpVuXhSxHmavXC4RCJwoA+ycyqvpRdXcz1Yrk4yf0
-	zGf88ltQKdotcxNHvKNBlVjq1UJUfwk=
-Date: Mon, 18 Mar 2024 11:09:33 -0400
+	s=arc-20240116; t=1710774626; c=relaxed/simple;
+	bh=73vfzaGUrkL8OR4EpKhuTHYiz7zUQJHz8EOvbTyVe8U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=Nk7argkfrdfhsX5aPQ2ASXDpHrySeACLD3Ig04XOwIIEwSS+w3x81GEWWnTm7sifrTIwMwy8AuUT1qIGYMmGHfnkP+EEwmkmaWT0+Ju+XNUKuDebmc2VOMZ7EyeCGQ92G+YtRbo1MjUAajrY2q2R8neIVEJLJ3hvwE/e49hiSog=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=Hlm4MGv7; arc=none smtp.client-ip=209.85.160.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f181.google.com with SMTP id d75a77b69052e-430c4d0408eso10002381cf.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:10:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710774624; x=1711379424; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9KVpr3mWHXuGxJ7EXrWZlpaYerSnna04C7a1q/1FFdM=;
+        b=Hlm4MGv7QOpozYhUXKj+XpKx84GfcBbSjFyhHfhQRkbzn/ZXfy+LO4T3PLC+klsEhx
+         jHqLEiemd1U6gAIlepSu8ISvSvmMYmvU7JPzR5DtnxoQszpO06xmns/wTxiR9jp0qRt3
+         YwlZImcRBMk4jZXf3BZyd1o+icYzVSWwDkYm9m/5QdS4LTj7/HXs+YBLeAJ5EvPqzO0N
+         HJrhQAN+XWJrsH7KjkVcEWRdtLY69u6KZVkYU0VxV7mJYda8ggoiMzyBZRoWck4QZAem
+         p5U7RmaYtbkbncJ3soY/6VZhQmwNjhEdPd13WEGSozPYE3k571cfdevVuFPW16kieoXI
+         Ul4g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710774624; x=1711379424;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9KVpr3mWHXuGxJ7EXrWZlpaYerSnna04C7a1q/1FFdM=;
+        b=pH+k7OKaobf7+jWZEhyDRkVebKVBeVLgnAaRxmYddDA2xW6ToqcRJEJYlP8rZ/idqs
+         tkN9uyMROnWG3Q6B2UdYGRMFpwsR5eSBwZiyf3UyaoLhRh+MWjtI3TSAv93gdtfQHDY6
+         hgorkCPw0r/KG9oPfWGYeZ4nwb7AF6seYKBdkxacK9WyM/PnRpPtKWOwWMrhE8WeQbgT
+         854Rcgh7UVdIKKJvy+UoDuotWMfDB8aTD0WHuL7wCiSjM95iQEHbtlT0UfFOD1+BQNyK
+         F9omowOUUgL+oX3g8LFJLYX9C3+sVX0FTgj2GlBciOdZNbxOlC/9f8Aq9wb1RXy4LLka
+         3roA==
+X-Forwarded-Encrypted: i=1; AJvYcCWeBZWBQ92zWeknSFCgtT/a9P990LMUsXHEJCAPeYjrwU9jJgGdYSBeP5ap+O9WFEgE3E156Ml85Bu/2sReNrNQlQCI/94jjtiMlb8m
+X-Gm-Message-State: AOJu0Yy5Fqgvb+7P26Enre12C3WKlT+R8YRrOgzkSw4cu6AiCj1qT0P1
+	NNCVbmTopXdN9LuckL7mbVdZp9oSBB3oOt9A6FTQvCYaiyHzUHrD+estT4gDL0vWrIDvP+jfykH
+	c6mPnpXS8q4ui1xFJG5mCo6lXuf5EtnBkS2DSDQ==
+X-Google-Smtp-Source: AGHT+IHFN0fU8r0syuFMehIeN1NFAZzvX59LJVNDd/w7DnmgPi3+6kWifl8gfb5LM7luoZkAmDyKUfv3vsiwBPByVnk=
+X-Received: by 2002:a05:622a:d4:b0:430:d2ed:3bbe with SMTP id
+ p20-20020a05622a00d400b00430d2ed3bbemr3376760qtw.59.1710774623709; Mon, 18
+ Mar 2024 08:10:23 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 3/6] drm: zynqmp_dp: Add locking
-Content-Language: en-US
-To: kernel test robot <lkp@intel.com>,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-Cc: oe-kbuild-all@lists.linux.dev, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Michal Simek <monstr@monstr.eu>,
- linux-arm-kernel@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>
-References: <20240315230916.1759060-4-sean.anderson@linux.dev>
- <202403161747.TRmfawhM-lkp@intel.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <202403161747.TRmfawhM-lkp@intel.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
+ <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
+ <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
+ <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com> <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
+ <bb203717ab644362a8eafe78aff23947@AcuMS.aculab.com>
+In-Reply-To: <bb203717ab644362a8eafe78aff23947@AcuMS.aculab.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Mon, 18 Mar 2024 11:09:47 -0400
+Message-ID: <CA+CK2bAuNLXq4p8pjwAatuw2KuadhKjD6JRwJN8ZvSEd1d7ntA@mail.gmail.com>
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+To: David Laight <David.Laight@aculab.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, 
+	"bp@alien8.de" <bp@alien8.de>, "brauner@kernel.org" <brauner@kernel.org>, 
+	"bristot@redhat.com" <bristot@redhat.com>, "bsegall@google.com" <bsegall@google.com>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
+	"dianders@chromium.org" <dianders@chromium.org>, 
+	"dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>, 
+	"eric.devolder@oracle.com" <eric.devolder@oracle.com>, "hca@linux.ibm.com" <hca@linux.ibm.com>, 
+	"hch@infradead.org" <hch@infradead.org>, 
+	"jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "jroedel@suse.de" <jroedel@suse.de>, 
+	"juri.lelli@redhat.com" <juri.lelli@redhat.com>, "kinseyho@google.com" <kinseyho@google.com>, 
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>, "lstoakes@gmail.com" <lstoakes@gmail.com>, 
+	"luto@kernel.org" <luto@kernel.org>, "mgorman@suse.de" <mgorman@suse.de>, "mic@digikod.net" <mic@digikod.net>, 
+	"michael.christie@oracle.com" <michael.christie@oracle.com>, "mingo@redhat.com" <mingo@redhat.com>, 
+	"mjguzik@gmail.com" <mjguzik@gmail.com>, "mst@redhat.com" <mst@redhat.com>, 
+	"npiggin@gmail.com" <npiggin@gmail.com>, "peterz@infradead.org" <peterz@infradead.org>, 
+	"pmladek@suse.com" <pmladek@suse.com>, 
+	"rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>, 
+	"surenb@google.com" <surenb@google.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"urezki@gmail.com" <urezki@gmail.com>, 
+	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>, "vschneid@redhat.com" <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/16/24 05:52, kernel test robot wrote:
-> Hi Sean,
-> 
-> kernel test robot noticed the following build warnings:
-> 
-> [auto build test WARNING on v6.8]
-> [also build test WARNING on linus/master next-20240315]
-> [cannot apply to drm-misc/drm-misc-next]
-> [If your patch is applied to the wrong git tree, kindly drop us a note.
-> And when submitting patch, we suggest to use '--base' as documented in
-> https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> 
-> url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Anderson/drm-zynqmp_dp-Downgrade-log-level-for-aux-retries-message/20240316-071208
-> base:   v6.8
-> patch link:    https://lore.kernel.org/r/20240315230916.1759060-4-sean.anderson%40linux.dev
-> patch subject: [PATCH 3/6] drm: zynqmp_dp: Add locking
-> config: alpha-allyesconfig (https://download.01.org/0day-ci/archive/20240316/202403161747.TRmfawhM-lkp@intel.com/config)
-> compiler: alpha-linux-gcc (GCC) 13.2.0
-> reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240316/202403161747.TRmfawhM-lkp@intel.com/reproduce)
-> 
-> If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> the same patch/commit), kindly add following tags
-> | Reported-by: kernel test robot <lkp@intel.com>
-> | Closes: https://lore.kernel.org/oe-kbuild-all/202403161747.TRmfawhM-lkp@intel.com/
-> 
-> All warnings (new ones prefixed by >>):
-> 
->>> drivers/gpu/drm/xlnx/zynqmp_dp.c:321: warning: Function parameter or struct member 'hpd_irq_work' not described in 'zynqmp_dp'
+On Sun, Mar 17, 2024 at 2:58=E2=80=AFPM David Laight <David.Laight@aculab.c=
+om> wrote:
+>
+> From: Pasha Tatashin
+> > Sent: 16 March 2024 19:18
+> ...
+> > Expanding on Mathew's idea of an interface for dynamic kernel stack
+> > sizes, here's what I'm thinking:
+> >
+> > - Kernel Threads: Create all kernel threads with a fully populated
+> > THREAD_SIZE stack.  (i.e. 16K)
+> > - User Threads: Create all user threads with THREAD_SIZE kernel stack
+> > but only the top page mapped. (i.e. 4K)
+> > - In enter_from_user_mode(): Expand the thread stack to 16K by mapping
+> > three additional pages from the per-CPU stack cache. This function is
+> > called early in kernel entry points.
+> > - exit_to_user_mode(): Unmap the extra three pages and return them to
+> > the per-CPU cache. This function is called late in the kernel exit
+> > path.
+>
+> Isn't that entirely horrid for TLB use and so will require a lot of IPI?
 
-Will document.
+The TLB load is going to be exactly the same as today, we already use
+small pages for VMA mapped stacks. We won't need to have extra
+flushing either, the mappings are in the kernel space, and once pages
+are removed from the page table, no one is going to access that VA
+space until that thread enters the kernel again. We will need to
+invalidate the VA range only when the pages are mapped, and only on
+the local cpu.
 
---Sean
+> Remember, if a thread sleeps in 'extra stack' and is then resheduled
+> on a different cpu the extra pages get 'pumped' from one cpu to
+> another.
 
-> 
-> vim +321 drivers/gpu/drm/xlnx/zynqmp_dp.c
-> 
-> d76271d22694e8 Hyun Kwon        2018-07-07  275  
-> d76271d22694e8 Hyun Kwon        2018-07-07  276  /**
-> d76271d22694e8 Hyun Kwon        2018-07-07  277   * struct zynqmp_dp - Xilinx DisplayPort core
-> d76271d22694e8 Hyun Kwon        2018-07-07  278   * @dev: device structure
-> d76271d22694e8 Hyun Kwon        2018-07-07  279   * @dpsub: Display subsystem
-> d76271d22694e8 Hyun Kwon        2018-07-07  280   * @iomem: device I/O memory for register access
-> d76271d22694e8 Hyun Kwon        2018-07-07  281   * @reset: reset controller
-> 8ce380e6568015 Sean Anderson    2024-03-15  282   * @lock: Mutex protecting this struct and register access (but not AUX)
-> d76271d22694e8 Hyun Kwon        2018-07-07  283   * @irq: irq
-> 47e801bd0749f0 Laurent Pinchart 2021-08-04  284   * @bridge: DRM bridge for the DP encoder
-> bd68b9b3cb2e0d Laurent Pinchart 2021-08-04  285   * @next_bridge: The downstream bridge
-> d76271d22694e8 Hyun Kwon        2018-07-07  286   * @config: IP core configuration from DTS
-> d76271d22694e8 Hyun Kwon        2018-07-07  287   * @aux: aux channel
-> d76271d22694e8 Hyun Kwon        2018-07-07  288   * @phy: PHY handles for DP lanes
-> d76271d22694e8 Hyun Kwon        2018-07-07  289   * @num_lanes: number of enabled phy lanes
-> d76271d22694e8 Hyun Kwon        2018-07-07  290   * @hpd_work: hot plug detection worker
-> d76271d22694e8 Hyun Kwon        2018-07-07  291   * @status: connection status
-> d76271d22694e8 Hyun Kwon        2018-07-07  292   * @enabled: flag to indicate if the device is enabled
-> d76271d22694e8 Hyun Kwon        2018-07-07  293   * @dpcd: DP configuration data from currently connected sink device
-> d76271d22694e8 Hyun Kwon        2018-07-07  294   * @link_config: common link configuration between IP core and sink device
-> d76271d22694e8 Hyun Kwon        2018-07-07  295   * @mode: current mode between IP core and sink device
-> d76271d22694e8 Hyun Kwon        2018-07-07  296   * @train_set: set of training data
-> d76271d22694e8 Hyun Kwon        2018-07-07  297   */
-> d76271d22694e8 Hyun Kwon        2018-07-07  298  struct zynqmp_dp {
-> d76271d22694e8 Hyun Kwon        2018-07-07  299  	struct device *dev;
-> d76271d22694e8 Hyun Kwon        2018-07-07  300  	struct zynqmp_dpsub *dpsub;
-> d76271d22694e8 Hyun Kwon        2018-07-07  301  	void __iomem *iomem;
-> d76271d22694e8 Hyun Kwon        2018-07-07  302  	struct reset_control *reset;
-> 8ce380e6568015 Sean Anderson    2024-03-15  303  	struct mutex lock;
-> d76271d22694e8 Hyun Kwon        2018-07-07  304  	int irq;
-> d76271d22694e8 Hyun Kwon        2018-07-07  305  
-> 47e801bd0749f0 Laurent Pinchart 2021-08-04  306  	struct drm_bridge bridge;
-> bd68b9b3cb2e0d Laurent Pinchart 2021-08-04  307  	struct drm_bridge *next_bridge;
-> 47e801bd0749f0 Laurent Pinchart 2021-08-04  308  
-> d76271d22694e8 Hyun Kwon        2018-07-07  309  	struct zynqmp_dp_config config;
-> d76271d22694e8 Hyun Kwon        2018-07-07  310  	struct drm_dp_aux aux;
-> d76271d22694e8 Hyun Kwon        2018-07-07  311  	struct phy *phy[ZYNQMP_DP_MAX_LANES];
-> d76271d22694e8 Hyun Kwon        2018-07-07  312  	u8 num_lanes;
-> 8ce380e6568015 Sean Anderson    2024-03-15  313  	struct delayed_work hpd_work, hpd_irq_work;
-> d76271d22694e8 Hyun Kwon        2018-07-07  314  	enum drm_connector_status status;
-> d76271d22694e8 Hyun Kwon        2018-07-07  315  	bool enabled;
-> d76271d22694e8 Hyun Kwon        2018-07-07  316  
-> d76271d22694e8 Hyun Kwon        2018-07-07  317  	u8 dpcd[DP_RECEIVER_CAP_SIZE];
-> d76271d22694e8 Hyun Kwon        2018-07-07  318  	struct zynqmp_dp_link_config link_config;
-> d76271d22694e8 Hyun Kwon        2018-07-07  319  	struct zynqmp_dp_mode mode;
-> d76271d22694e8 Hyun Kwon        2018-07-07  320  	u8 train_set[ZYNQMP_DP_MAX_LANES];
-> d76271d22694e8 Hyun Kwon        2018-07-07 @321  };
-> d76271d22694e8 Hyun Kwon        2018-07-07  322  
-> 
+Yes, the per-cpu cache can get unbalanced this way, we can remember
+the original CPU where we acquired the pages to return to the same
+place.
 
+> I also suspect a stack_probe() is likely to end up being a cache miss
+> and also slow???
+
+Can you please elaborate on this point. I am not aware of
+stack_probe() and how it is used.
+
+> So you wouldn't want one on all calls.
+> I'm not sure you'd want a conditional branch either.
+>
+> The explicit request for 'more stack' can be required to be allowed
+> to sleep - removing a lot of issues.
+> It would also be portable to all architectures.
+> I'd also suspect that any thread that needs extra stack is likely
+> to need to again.
+> So while the memory could be recovered, I'd bet is isn't worth
+> doing except under memory pressure.
+> The call could also return 'no' - perhaps useful for (broken) code
+> that insists on being recursive.
+
+The current approach discussed is somewhat different from explicit
+more stack requests API. I am investigating how feasible it is to use
+kernel stack multiplexing, so the same pages can be re-used by many
+threads when they are actually used. If the multiplexing approach
+won't work, I will come back to the explicit more stack API.
+
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
 
