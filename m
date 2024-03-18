@@ -1,135 +1,93 @@
-Return-Path: <linux-kernel+bounces-106000-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106001-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E9C7487E74F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:25:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8269C87E751
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:26:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DCB61F22CBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:25:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B20A11C21D6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:26:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD68531A81;
-	Mon, 18 Mar 2024 10:24:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lmoK1sgR"
-Received: from mail-lf1-f52.google.com (mail-lf1-f52.google.com [209.85.167.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D41FE2E630;
+	Mon, 18 Mar 2024 10:25:45 +0000 (UTC)
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C1432E827;
-	Mon, 18 Mar 2024 10:24:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 060152D05E;
+	Mon, 18 Mar 2024 10:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710757474; cv=none; b=DUbZrNTswbCtNLFuadx3efJNIOWaDzf4EpDe2FFXGVuQfnWeytpNRF70sb0JTLL1eRNXzO9pnp3bjUDWKFQBfUgKOZrzqYGpAejHzLtd0W16CHi762AtO+DDEE64fXAu83we8YeDq3fj48N73Vm7676Ae7FHuWFHci8mJsl8n1c=
+	t=1710757545; cv=none; b=Fu6W9sFtk1m9UNTjgqHat7XVm6CHOH/RiQobEGAI6Kdivypj+tLJunprEDqV+X0UHDVhOD6U3sVnZ7ojhpcqnj3qowHGmiqxqRwVc1u7i+ACRk5v1LjEC4cmBoZAj6wHCvoT9C6Zj4mKtxgq7KZ9L8bLqUHjRwre/JCRQ/V61AM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710757474; c=relaxed/simple;
-	bh=ery6NRFC2rTlrIrfvpDvhH0oInDvwM5WelThauRvuDo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=bMaaLUC7abaD5Pi90jL7zhncqhrRxSVFrcLAktqESJ64p7p94sAejoFtdpvEiaA34W3hsMoVfMlUGMnFDVN14/8b0GdJm440veBYdx0beii1s2yoGCzfMtvp9XhFczCBG7qSLcBRVhaFsH1TY+r0XLnTFL82qx0RvueQfB588wk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lmoK1sgR; arc=none smtp.client-ip=209.85.167.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f52.google.com with SMTP id 2adb3069b0e04-514a8259ec1so199335e87.1;
-        Mon, 18 Mar 2024 03:24:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710757471; x=1711362271; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kntj7D+3C8Siu9Mte/gOo4b2BDgoQlvmaeXCzlwHfd0=;
-        b=lmoK1sgRotMr6NFD81+Fuxb7w39vRuu3qzIlp5/t81ZYSPIrB+nEXjSPSXA9ToVdRP
-         Mp8QTJNDSfCEdf0hy9c11DxO4gdb1rNEhW+DM9FWJP97zaafW+2d3XaeS9YrefzBMZVt
-         56rUxk3on4qAtXt/7oW27ezG5I1B61LHeyEIsZoSZyQ9eCpxb2s5wx6nWE/gv+xqT+e4
-         RPixKY/E5KSRst8RPeKYf6hzFy0RXhg9ZIAHdGIKmUfmbzulMy6yhSxNNSlnv5uwAoqs
-         VdkP7CsyGN84cy3IFrYldmq4Btp+OJdM2z4O7G/vqSHXNuUTZbvF5+t8mKjVPY3bMI5+
-         u6kQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710757471; x=1711362271;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=kntj7D+3C8Siu9Mte/gOo4b2BDgoQlvmaeXCzlwHfd0=;
-        b=QUwCpQ+2LXHBHkKcLQP/seKKZDiHJGoblUMyRpKlpganhdi6XGV0lTvhkXhtl3vHRy
-         qWkgSe8UCCBmjJUE2EeYcta1cPmEhY/ogBg/a8OgmCjMHV82aroi0JHmrI46DWJfIjwW
-         8I59bGhQoBr9RI/6qpwkhLCqpVeJe3rcwHuziHNYpcFv1frJg6ruHSAuYnMu/84Fip7l
-         Zp/ImQdjVeFN1pM/TQOIKTANjhNvg6HbOaQGA/WrbKJfsg74nCp2fIQB+ntra5/mM8hx
-         HlfcC8fIHnJp9Yb2EUclTRlj6nTCcUZc78D6sHg1HPIyv726BQEtkVmNfQeTS/q8tBxw
-         Dx9g==
-X-Forwarded-Encrypted: i=1; AJvYcCUC23pS2NdAqIiNXT7aANnvfWkPolTn/inVKxfbbkU0xGXJNytORUpXyEAbM2DE4T7V3E8Q6OQd7HRJvFpQtgqTyRm+mV7281Gz+WFWuH2YQQikLCjnSsW1RQ0yhvHDWIJB5Qm73LOh2O/s6MOASI4eXMWG9HZY545KO3CT1sUzuXyTZ/4=
-X-Gm-Message-State: AOJu0Yx5GWurtCdzu3awWEpozeeRcrU54ezuT6BUy5tRXmO9wiWyypZY
-	j7zzdigmBvP5AwFfJUNlSGshMaP+6w9ssCn7H+sg6nxQQajL4wXgpblX2OehT68P3tyZndiSpiw
-	GbOLRgMMNL+e9NzAf9B72uHXkfE8=
-X-Google-Smtp-Source: AGHT+IHkUAoaQCQVB1qIDuqXpEBKlFEHkJrtN5qFI394gASFx2wCpRpaQSzqetL2Hg5oBfbO6L7QeYXCho3lGQksddk=
-X-Received: by 2002:a05:6512:485c:b0:513:ca84:3a0e with SMTP id
- ep28-20020a056512485c00b00513ca843a0emr6709998lfb.58.1710757470631; Mon, 18
- Mar 2024 03:24:30 -0700 (PDT)
+	s=arc-20240116; t=1710757545; c=relaxed/simple;
+	bh=D3i4B1/kUtjh2CpcNv1sVfMNLfGhvfY5mN0F46ju5IA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fMxlnVcmkVeEnheHgvGYojELVZCnGNMPhfL26sqgNx0qtQxZxbOcaaOimniSHs2wxOx3+bSfwJoKFEe44hoGRcd5qiVW8VSK4skpjqBfYniEg2c+vO6Efgqf+OFhlgAFr5AzcjfQJ05Dp2ai7p5ArI3gxMIvL6yeSPw0uc+x8xo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com; spf=fail smtp.mailfrom=gmail.com; arc=none smtp.client-ip=198.175.65.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=gmail.com
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="17008645"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="17008645"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:25:44 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="914587837"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="914587837"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:25:41 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andy.shevchenko@gmail.com>)
+	id 1rmABX-0000000DufE-0yl7;
+	Mon, 18 Mar 2024 12:25:39 +0200
+Date: Mon, 18 Mar 2024 12:25:39 +0200
+From: Andy Shevchenko <andy.shevchenko@gmail.com>
+To: Peng Fan <peng.fan@nxp.com>
+Cc: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>,
+	"linus.walleij@linaro.org" <linus.walleij@linaro.org>,
+	"brgl@bgdev.pl" <brgl@bgdev.pl>,
+	"linux-gpio@vger.kernel.org" <linux-gpio@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] gpiolib: use dev_err when gpiod_configure_flags failed
+Message-ID: <ZfgWo3ZTHAAhWZ_D@smile.fi.intel.com>
+References: <20240315011015.3106272-1-peng.fan@oss.nxp.com>
+ <CAHp75Vf42b8uo+7c+WEQj5Kj8LRf3PxXeEpwEJScyw-PMeYn9A@mail.gmail.com>
+ <DU0PR04MB94177BC9D193116C9B4435D0882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <CA+eeCSPUDpUg76ZO8dszSbAGn+UHjcyv8F1J-CUPVARAzEtW9w@mail.gmail.com>
- <20240317222718.3e03edb1@namcao> <CA+eeCSMiqcvzrQcgRr7AZWJQTv-c9-uSX5jbPZPzmsDjy08z=A@mail.gmail.com>
- <20240318100108.4fafd72b@namcao>
-In-Reply-To: <20240318100108.4fafd72b@namcao>
-From: Eva Kurchatova <nyandarknessgirl@gmail.com>
-Date: Mon, 18 Mar 2024 12:24:18 +0200
-Message-ID: <CA+eeCSN+tsyL0OdR2owrFHiSj_dWNyw0Z46mUMND41O5xxTWKg@mail.gmail.com>
-Subject: Re: Boot hang with SiFive PLIC when routing I2C-HID level-triggered interrupts
-To: Nam Cao <namcao@linutronix.de>
-Cc: linux-riscv <linux-riscv@lists.infradead.org>, bugs@lists.linux.dev, 
-	linux-i2c@vger.kernel.org, jikos@kernel.org, benjamin.tissoires@redhat.com, 
-	dianders@chromium.org, mripard@kernel.org, johan+linaro@kernel.org, 
-	linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <DU0PR04MB94177BC9D193116C9B4435D0882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-On Mon, Mar 18, 2024 at 11:01=E2=80=AFAM Nam Cao <namcao@linutronix.de> wro=
-te:
-> Nice! I assume I can add
->     Reported-and-tested-by: Eva Kurchatova <nyandarknessgirl@gmail.com>
-> to the patch?
->
+On Mon, Mar 18, 2024 at 02:03:12AM +0000, Peng Fan wrote:
+> > Subject: Re: [PATCH] gpiolib: use dev_err when gpiod_configure_flags failed
+> > On Fri, Mar 15, 2024 at 3:02 AM Peng Fan (OSS) <peng.fan@oss.nxp.com>
+> > wrote:
 
-Yes.
-You can also add link to upstream RVVM repo if anyone is interested in
-reproduction. This RVVM patch applied to 0.6 makes a keystroke storm:
-(window_update() is called on each display redraw and has access to hid_kb)
+..
 
-diff --git a/src/devices/fb_window.c b/src/devices/fb_window.c
-index f170e2d..17e2519 100644
---- a/src/devices/fb_window.c
-+++ b/src/devices/fb_window.c
-@@ -77,6 +77,11 @@ static const uint8_t rvvm_logo_pix[] =3D {
+> > It's unclear what the use case is and how this does make life easier.
+> > We need to know more!
+> 
+> I forgot to add gpio-ranges in gpio node, then it always fail in my driver
+> probe to configure pinctrl. So if using dev_err(), it will be easier for
+> me to locate the error point.
 
-static void window_update(rvvm_mmio_dev_t* device)
-{
-+    fb_window_t* win =3D device->data;
-+    for (size_t i=3D0; i<100000; ++i) {
-+        hid_keyboard_press(win->keyboard, HID_KEY_LEFTCTRL);
-+        hid_keyboard_release(win->keyboard, HID_KEY_LEFTCTRL);
-+    }
-    fb_window_update((fb_window_t*)device->data);
-}
+At least make sure something like the above is in the commit message of the
+next version.
 
-> I am still confused why RT throttling doesn't unstuck the kernel in this
-> case. I will consult some people and investigate more on this. But I thin=
-k
-> this patch is good on its own, so I will send a proper patch shortly.
->
-> Best regards,
-> Nam
+-- 
+With Best Regards,
+Andy Shevchenko
 
-RT throttling kicked in *very* rarely, in most cases where the unpatched
-kernel was actually stuck RT throttling wasn't reported at all.
 
-It didn't hang every time either, so it's possible that RT throttling
-helped sometimes, but not enough to always recover from such a loop:
-[incoming IRQ]->[IRQ claimed]->[no handling]->[IRQ completion (which
-immediately triggers phase 1 again)]
-
-Best regards,
-Eva
 
