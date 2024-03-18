@@ -1,93 +1,181 @@
-Return-Path: <linux-kernel+bounces-106072-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 91E6387E89B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:29:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BCC3287E89F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:29:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1D171C20CE7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:29:07 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 939A1B23431
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:29:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88416374E9;
-	Mon, 18 Mar 2024 11:28:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9043336AF9;
+	Mon, 18 Mar 2024 11:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="h7AYbJfg"
-Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EwUSOlJQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4551364A5;
-	Mon, 18 Mar 2024 11:28:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5A4F38382;
+	Mon, 18 Mar 2024 11:29:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710761326; cv=none; b=Kufb/uTtwRw3SawVAL/aHJ80osMht6TWotrn1k6kpSW2+4Zny67rf46Sp4ygFcloTL3bl29AyurJ8/3fvPc43AYJiYPnoSrMOXFrRjKEHGjvEbSdHewdleasHBP9NYtsTTw9x6UitZEa/AM28BtuNj00iF3/SLoOUjnQHcR4+2o=
+	t=1710761375; cv=none; b=K6umvjPZ6jk5DvOpBrDuSAHTH9qZC9Z0NnE76SJT4rGhpJrBWtB2+vWtjnSGf7wUiKInQxXVr115Krc8/12zxf77ImYwANwvp2kUAMLYC5MIikQJJEgALHil3zt/8INHySEaAVBpwGKpRoILumBStnUicznPvN1ejRPyFLowg94=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710761326; c=relaxed/simple;
-	bh=XP3eK5HcPs5i97lomC6HdBMoGbV9duL2dKQZymBXmsc=;
+	s=arc-20240116; t=1710761375; c=relaxed/simple;
+	bh=CXvlbrCMPnb9yef1bDHrNzW1AMGOSDWEgQsKsUa5qHc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ooWkhNn+FMn6Sn5Kv0KBK2wvqPQcBli1NaybQCFfOTkWknP0dnDUc0yxFYxphsPYef2iK9YMnQ8nvEe3R2xLQpojGlzHBQcJOxLHidWnQIizsq7WEhLyamwORHEti2gj1tyEPDyTRSgXEY43nBRArAzhX2tBkEWpQNBeRKrf7dQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=h7AYbJfg; arc=none smtp.client-ip=217.194.8.81
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
-Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
-	by mail11.truemail.it (Postfix) with ESMTPA id 71A92206BF;
-	Mon, 18 Mar 2024 12:28:34 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
-	s=default; t=1710761314;
-	bh=FkOHD0pnGkKqXtObJnUFQNgDIavF2Al3e0sMsXfSMsI=; h=From:To:Subject;
-	b=h7AYbJfg/BYwKxCY9VAvAKKHRSOZGVoO5Tqd3cE3ywBHvMNpVbyXrVNG9ZhpixfUT
-	 xjkE8E8+mHiULVeunSO7Ev596qy7n0XevxJckGkqVI3ySmAioAZRfvmTs3NPoa0PlV
-	 C6g4r4XTDOUkbEyeYYzaFSSy3y0IWlkP0pX2PFjFe0yIrskHgLkotzsVS2pMvRGjRW
-	 NgetGz9VQMFusVVe/0UKgyUQOjed00aumaRWZBqvaFiwA1fuPJR9LjiZwa40AeOTGZ
-	 qyhvesfjAzexl04vDnGwwyZTn2WJxvu5MVIMUKHDKEzCoiirhIaBkIZ07FJJHHI1rk
-	 SjRg/jXOBumzA==
-Date: Mon, 18 Mar 2024 12:28:30 +0100
-From: Francesco Dolcini <francesco@dolcini.it>
-To: Brian Norris <briannorris@chromium.org>
-Cc: Francesco Dolcini <francesco@dolcini.it>, kvalo@kernel.org,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Lin <yu-hao.lin@nxp.com>, tsung-hsien.hsieh@nxp.com,
-	rafael.beims@toradex.com,
-	Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host mlme
-Message-ID: <20240318112830.GA9565@francesco-nb>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
- <20240315094927.GA6624@francesco-nb>
- <ZfTg1xKT-Mxmpf9w@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=LZTFKPng8sel/b8ksCyi7cIM/hb4BSzgVtcA1c2bworRKA3WFXMo1L0FfA6AqT9l0zSuBVw1gvIP0ll/oIV7aVFSVrY3r+BgibP7JDqIjHVtRlLs4c0ilH0YDOEftU4tcoQB0FG3lJ3jKEIt+5bDHIKrahT1N51e3etG9tlpUWc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EwUSOlJQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 823B5C433F1;
+	Mon, 18 Mar 2024 11:29:33 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710761375;
+	bh=CXvlbrCMPnb9yef1bDHrNzW1AMGOSDWEgQsKsUa5qHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=EwUSOlJQToeinOU4wVaJ8RsNNPCwNRTr5UbDj/stk9hf2On2TMRZYI+wZYWkAtAU2
+	 iCPiS9vB21HLx1IfjtzL3AJi18eTelDa2vZ07SCm+28NfsyCRB9xSIH/CIAtoTs8Ni
+	 LeiIbNbkUwB0eyvK8cbSi5KyL9adJb4XuNDEW2mAmeqX39Czpn9+iqPILYS9ktvpwk
+	 98/hEUiYRCrcpuVIWA7KH6Of7Nq9+FXCXHuXpjOqOJuUuSmSqEF3kB1m+AgciRV9Rm
+	 /l71F4THAw/n7iaqjj4zXKFRnS8yZxoh9uLPcvCAoBuTVo144iu5P7Va85AEHImcQj
+	 01Zh/sQtUkgZQ==
+Date: Mon, 18 Mar 2024 11:29:31 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Keguang Zhang <keguang.zhang@gmail.com>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
+	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 1/2] dt-bindings: dma: Add Loongson-1 DMA
+Message-ID: <20240318-value-snide-8733098b9e76@spud>
+References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
+ <20240316-loongson1-dma-v6-1-90de2c3cc928@gmail.com>
+ <20240317-exorcist-spectator-90f5acb3fe2a@spud>
+ <CAJhJPsWOUZsWFvreRrPqQHAjYW7uRT31THHi7CRDN46+nHpL9g@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="RdFJ9jAojuY1Z+9n"
 Content-Disposition: inline
-In-Reply-To: <ZfTg1xKT-Mxmpf9w@google.com>
+In-Reply-To: <CAJhJPsWOUZsWFvreRrPqQHAjYW7uRT31THHi7CRDN46+nHpL9g@mail.gmail.com>
 
-On Fri, Mar 15, 2024 at 04:59:19PM -0700, Brian Norris wrote:
-> On Fri, Mar 15, 2024 at 10:49:27AM +0100, Francesco Dolcini wrote:
-> > On Wed, Mar 06, 2024 at 10:00:51AM +0800, David Lin wrote:
-> > > This series add host based MLME support to the mwifiex driver, this
-> > > enables WPA3 support in both client and AP mode.
-> > 
-> > What's your plan for this series? I know you raised some concern when
-> > this started months ago and I'd love to know if there is something that
-> > would need to be addressed to move forward here.
-> 
-> My plan was (especially given the "Odd Fixes" status in MAINTAINERS) to
-> wait until a 2nd party was happy with things here. From my cursory
-> following of things, that has now occurred -- thanks for all the review
-> Francesco.
 
-Brian/Kalle, would be ok for you to add myself as reviewer for mwifiex?
-The patch flow on the driver is pretty limited, but I care about it
-and I am happy to help out if needed (and I have some hardware available
-for testing).
+--RdFJ9jAojuY1Z+9n
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-If you agree I'll send a patch to the MAINTAINERS file.
+On Mon, Mar 18, 2024 at 02:18:27PM +0800, Keguang Zhang wrote:
+> On Sun, Mar 17, 2024 at 10:40=E2=80=AFPM Conor Dooley <conor@kernel.org> =
+wrote:
+> >
+> > On Sat, Mar 16, 2024 at 07:33:53PM +0800, Keguang Zhang via B4 Relay wr=
+ote:
+> > > From: Keguang Zhang <keguang.zhang@gmail.com>
+> > >
+> > > Add devicetree binding document for Loongson-1 DMA.
+> > >
+> > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > > ---
+> > > V5 -> V6:
+> > >    Change the compatible to the fallback
+> > >    Some minor fixes
+> > > V4 -> V5:
+> > >    A newly added patch
+> > > ---
+> > >  .../devicetree/bindings/dma/loongson,ls1x-dma.yaml | 66 ++++++++++++=
+++++++++++
+> > >  1 file changed, 66 insertions(+)
+> > >
+> > > diff --git a/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.=
+yaml b/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
+> > > new file mode 100644
+> > > index 000000000000..06358df725c6
+> > > --- /dev/null
+> > > +++ b/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
+> > > @@ -0,0 +1,66 @@
+> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > > +%YAML 1.2
+> > > +---
+> > > +$id: http://devicetree.org/schemas/dma/loongson,ls1x-dma.yaml#
+> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > > +
+> > > +title: Loongson-1 DMA Controller
+> > > +
+> > > +maintainers:
+> > > +  - Keguang Zhang <keguang.zhang@gmail.com>
+> > > +
+> > > +description:
+> > > +  Loongson-1 DMA controller provides 3 independent channels for
+> > > +  peripherals such as NAND and AC97.
+> > > +
+> > > +properties:
+> > > +  compatible:
+> > > +    oneOf:
+> > > +      - const: loongson,ls1b-dma
+> > > +      - items:
+> > > +          - enum:
+> > > +              - loongson,ls1c-dma
+> > > +          - const: loongson,ls1b-dma
+> >
+> > Aren't there several more devices in this family? Do they not have DMA
+> > controllers?
+> >
+> You are right. Loongson1 is a SoC family.
+> However, only 1A/1B/1C have DMA controller.
 
-Francesco
+You're missing the 1A then.
 
- 
+>=20
+> > > +
+> > > +  reg:
+> > > +    maxItems: 1
+> > > +
+> > > +  interrupts:
+> > > +    description: Each channel has a dedicated interrupt line.
+> > > +    minItems: 1
+> > > +    maxItems: 3
+> >
+> > Is this number not fixed for each SoC?
+> >
+> Yes. Actually, it's fixed for the whole family.
+
+Then why do you have minItems: 1? Are there multiple DMA controllers
+on each SoC that only make use of a subset of the possible channels?
+
+> > > +  interrupt-names:
+> > > +    minItems: 1
+> > > +    items:
+> > > +      - pattern: ch0
+> > > +      - pattern: ch1
+> > > +      - pattern: ch2
+> >
+> > Why have you made these a pattern? There's no regex being used here at
+> > all.
+> >
+> Will change items to the following regex.
+>   interrupt-names:
+>     minItems: 1
+>     items:
+>       - pattern: "^ch[0-2]$"
+
+
+--RdFJ9jAojuY1Z+9n
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfglmwAKCRB4tDGHoIJi
+0myiAP9gqCVAPtwBo6/5Xq10Pb546e9hiXfet6M/dCcQh2nfTAD/ZGnnWlZC69Vs
+HL/FoR4cgDmA6m1mCAf54NbieojKPwc=
+=gd7t
+-----END PGP SIGNATURE-----
+
+--RdFJ9jAojuY1Z+9n--
 
