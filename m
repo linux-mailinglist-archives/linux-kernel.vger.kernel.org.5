@@ -1,131 +1,216 @@
-Return-Path: <linux-kernel+bounces-106366-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106367-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 977D487ED2A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:15:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6F9B387ED2C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:15:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B083C1C21979
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:15:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1F61B217E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:15:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6928E5338C;
-	Mon, 18 Mar 2024 16:15:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8A4A53388;
+	Mon, 18 Mar 2024 16:15:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="Rj8MVJL1"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="QzZuBY7h"
+Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2088.outbound.protection.outlook.com [40.107.101.88])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9787A53391
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:15:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710778506; cv=none; b=KrZvWSZsTVLNZPS99E+LZw6vdH+LQRgEeID4C5Y5MFA3y38tU2g1zSFJDl/Wg/bCRPB1oTc1uKQBmuAhA+7HyebC6cwCr5r1Yom0kAcN+lYOhVzTTmmO/rBVHGM7h6aAA7dBDsHfLdjZQ42veeCE/J0sy4dS7pOYlEwcIaNfgVQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710778506; c=relaxed/simple;
-	bh=fgbBJX2XFrA4ko2jgUsyKZTlP69l4E6nEpoEHcOA0oo=;
-	h=Date:Subject:In-Reply-To:CC:From:To:Message-ID:Mime-Version:
-	 Content-Type; b=sMLZ/rcaU/CpS/yiuyZmPQLXXik3pJKHKeGNBoUOQbIfWR01ULv5GH8FquQaA+59VcZ7lUtJ8LQWtmTAyqC/7vJTRsnosuvX960eSp629kbRAsttJCXBhPTGrNdHrriAxeuXiHEHZ4lb1bCw8Q++j7RjlB07k+i7Be1wirSoN2g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=Rj8MVJL1; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6ca2ac094so4144746b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:15:04 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710778504; x=1711383304; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=gjx92w828ciIAkc1HsEl6Axd7/QMgJ7aIhxMeT09mMA=;
-        b=Rj8MVJL1iE/oBiXcQHTSV1EfWAKOSHHFXd9F/rulwN/z4GTO+joP3/Kt/SCqAE89B1
-         R8m9sQtLf4fmBwrXwte37QpLaWXZI3KzJrQj9dVENKVW9AUDvyHPKlSbi4XXE214g+pf
-         YPzpwZJzRyCcWrgx4097T8OsNo5/R3aPxBeb7zupryjCRAULkU0Z5klnDTM7kN+ijRCt
-         rMP15LR0sZX/L2VGypKmLhj+rARXR6dKT7PhAb3FfD6/Xzev8tKvj9Aq6X2ZuGtxyFjk
-         z0Qzd+MhVWihJnC1mMz6BhkxN6WnNoHFhS90JFmdGH9R7mxUrO9lpTCcyk2WH9jHvUFH
-         n4Lg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710778504; x=1711383304;
-        h=content-transfer-encoding:mime-version:message-id:to:from:cc
-         :in-reply-to:subject:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=gjx92w828ciIAkc1HsEl6Axd7/QMgJ7aIhxMeT09mMA=;
-        b=q3fy6YmkwzwMji1reygxvL763co9U0JdLYUZypCQARzLc8u0WuFMwGOjeZ5S2xPhhD
-         quJPg57ecf7rSppY2tY6XgxrdCrNFDXG0TvOLIV1WjYaz0ffDJgWdtTSoDXL84Tc6vSP
-         5uQyOIuFOMGo8bzUfbN42iRlxSPQYC1IjfD7P2nDfLu4oQ0gZy17JkUpK8ThymnriM7m
-         r9TzsHBrTW5oQnDzx7O7weLKxWDta3ozKpKtYGnG8PaSOAntbCttcGWkfIyWpWLOO+mi
-         iXfNcb57g8eNItt00O+hH3jfB4BjHz8lbYZDqykYL/8QuT9vCb7RVbSv5JL6sthv27vP
-         AwuQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUNJKJ8RXt6aSQBeMk7eimx+rHwpra50RI2uobuNDFyXfxCDdeturhRUgzhpgCTGC+DUAX0vVKtzr/6LrAwR6n/TNO94LC8ovga4mmn
-X-Gm-Message-State: AOJu0YxiL4C93bkJSBxi0nZ5dNWRHOORpNTA8TpV8i5cwKxHMeQNKaGE
-	qj5DN42Fuu/cw32wiUmerrHF0rz8aLibaNfPsedjmeGD9IyNMgkr5JIRodxea+O+7z47EM29U/Z
-	e
-X-Google-Smtp-Source: AGHT+IGJGAECTPixBKSWVeI9OcdeXsk7x3qyIB4yxWwMTXhJumLXo6PR85kzQz7cucHvKAj9TYWShg==
-X-Received: by 2002:a17:902:c20c:b0:1de:fc12:ee5b with SMTP id 12-20020a170902c20c00b001defc12ee5bmr175875pll.33.1710778503434;
-        Mon, 18 Mar 2024 09:15:03 -0700 (PDT)
-Received: from localhost ([192.184.165.199])
-        by smtp.gmail.com with ESMTPSA id li8-20020a170903294800b001dc944299acsm9528985plb.217.2024.03.18.09.15.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 09:15:03 -0700 (PDT)
-Date: Mon, 18 Mar 2024 09:15:03 -0700 (PDT)
-X-Google-Original-Date: Mon, 18 Mar 2024 09:13:28 PDT (-0700)
-Subject:     Re: [PATCH v1] perf: starfive: fix 64-bit only COMPILE_TEST condition
-In-Reply-To: <20240318-emphatic-rally-f177a4fe1bdc@spud>
-CC: linux-riscv@lists.infradead.org, Conor Dooley <conor@kernel.org>,
-  Conor Dooley <conor.dooley@microchip.com>, Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>,
-  jisheng.teoh@starfivetech.com, linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-From: Palmer Dabbelt <palmer@rivosinc.com>
-To: Conor Dooley <conor@kernel.org>
-Message-ID: <mhng-abf741db-9f86-4803-b143-2948e9a099af@palmer-ri-x1c9>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E0911381AB;
+	Mon, 18 Mar 2024 16:15:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.88
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710778525; cv=fail; b=pcNG8sc/b0QkX3szTvzGAMDqaxeFAnrSWx1AnuAQUrR3SifXBuWo3EJ9QrcidDWxz9Lr/tYtcZSjthVvSbaVft2uSgUhDggNMjo+mxtIzwWYDJaWUI6ZRPhwFwjZJt+NxlJA8d72GwKlKM/3NFlQ0LvtNn2IG+XWaNDI6A6y9qo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710778525; c=relaxed/simple;
+	bh=PJtS7zI0u2qOVABnmf7JxLmekBIS12Spk/QjUoD8sT0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=uSFVzVx4ZbwtiiuvjbY2w47cJ92eoT6bPqoFgZTUE+Fnei/sD06BYXu+71GPPYqgu71QTrvLptN+g+tr6KVh4yVBRe05+R7TNBtKLi9BE1S4MCXo7lWMg3yk09ZNSnid+SPZBu22IZYhT7sPWUbUz1h5dkltslX3Zojb2ku0k+g=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=QzZuBY7h; arc=fail smtp.client-ip=40.107.101.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=e+CcdGzsnTq72yJAOE+f8Me64HjGti6A26PWbOMrP9LABVfDZd5KReGe/kTpZ1XR/0AtN1nfXox3rlh3cvZtbrYpfKLKPBrgjSKAM/jb+9n/wZazTNXs9m4dpfGNRIX0TEkmVsmY6fz/dFd0n8IvSrWz9q363qOXaqq0VhOPqVG+3nRmTn9WzIe3gQPBiY/IOP7O/oCgsf7wGKzw1xvFPpGRgKCaT97ei1AIjBH3W7ktfh7pign0vjWX0xYLmWwYBT5W49GMgE74PaSNoC+4UuQJzZFKUulPc8NaryvfBTi7QHw+UmZZgNji6vjjz4XyVkh9WNahxGnju+n3uQStUA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dlv9s2X6IUZXoWRPusJ/nMrZ6cYw3m45dbmZorYVX7Y=;
+ b=dEsp+C/289gGr6movhZhmTpf5fAFa3IVXYDdL7+OGeCNrSY62JV3JmuJv7AQT33mzSikZgaDEYgX6HYzMsn9MRHhGJnqlgX4sVbaQBASZUjVUABBHA+dwKJLwCUEhrIK2jxXJl69bqoFMG5+btyksOkKCi4SR8R1SgNRUpkdFhcPEDBXyxYwfs+6K8jLwzqz5PWJh9DY+1sgeoQbfeKceUMHMrDydmUdlXEPqVu5gX5iz9NQUWAnU4p+jKJpWGXz/o2ANXNBv8DXd9S6NLpJRRTiz+qb9RXcax9RupgqaRvtzQ1mY+r85mKUfUNnJb3h8mef/S8zMAGMxrME35OuVA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dlv9s2X6IUZXoWRPusJ/nMrZ6cYw3m45dbmZorYVX7Y=;
+ b=QzZuBY7hXHCOR8706MkWbH1fDoSq2MN/Ob7GM/NjS74eXtzpITp3CC9bmX3IGr9mNw93+0Tyi8JlwgkOwCiwsDiSyMl0P5M1J4u5gAR0QAz6xdw74EFoUP13hFo7j6Fm5DEw4DtsMTIW+qTU3sQWTzzR3vDmXqzx5O1beJAkwl1GQS8Afujp1LXSzeo92aXztc8WxD0Uo3CfPZcGB6YIjVaRUSDm27pPZJRO7LJkUJCIJZY07leuZ2RiJcnpFQPZ+rAEgq81xxYP8Ksu6AGDir/sAZPBuFtCXyJoB1lZIaRruUU6ksq0rhtN8vHJ9VqO5s+iXPTHZyF9qC0QvJwIIA==
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nvidia.com;
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
+ by CH3PR12MB8331.namprd12.prod.outlook.com (2603:10b6:610:12f::10) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
+ 2024 16:15:21 +0000
+Received: from DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
+ ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 16:15:21 +0000
+Date: Mon, 18 Mar 2024 13:15:19 -0300
+From: Jason Gunthorpe <jgg@nvidia.com>
+To: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Peter Xu <peterx@redhat.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"x86@kernel.org" <x86@kernel.org>, Mike Rapoport <rppt@kernel.org>,
+	Muchun Song <muchun.song@linux.dev>,
+	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
+Message-ID: <20240318161519.GA5825@nvidia.com>
+References: <20240313214719.253873-1-peterx@redhat.com>
+ <20240313214719.253873-10-peterx@redhat.com>
+ <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu>
+ <ZfLzZekFBp3J6JUy@x1n>
+ <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
+X-ClientProxiedBy: SA9PR13CA0141.namprd13.prod.outlook.com
+ (2603:10b6:806:27::26) To DM6PR12MB3849.namprd12.prod.outlook.com
+ (2603:10b6:5:1c7::26)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (MHng)
-Content-Type: text/plain; charset=utf-8; format=flowed
-Content-Transfer-Encoding: 8bit
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CH3PR12MB8331:EE_
+X-MS-Office365-Filtering-Correlation-Id: 21eacb3b-8bd6-4b62-a007-08dc47669c17
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	VeKXYvAoK6iWXmAcXLaQEH4lPt94aqq5ovoSX7V3j15TdBEc7W4CWTVb4GuQrIsYtcEn2mr8Y031SJcq0lDu6/8ciSsxpyRcnYGNyPe5HuoXyea7ddZlen3EnoV+xkxHAMeLbZc+sUFV3X7YIAxpv8yNywKaXKDpucWj49i3yGvn4Rmc8QOenBXgMulnvoxda/8Q4rX+V+eliOpyIVoqKF5jeWwIev8VxDgxNPW/XPEDS9xAvC28QBdb5gImHjBjbRSm3MSq7FymDuEGdc51Hrsczy7FTDrQ8s77Tm2DUvQ5YrhEyQ7Q5LZpH1K2cM6u1XxEWmoQJRjtflJFMogrMDAiq+h43g+TovnTPRxVBpKQ7JwmUpYgRZSYeVhkBN4zHpJAmqZsqooTuupFc2zfdLi93rV+EuQUa8v2xBK0s7CuE/OdNz1eUNWYySCi3HcTOQWy8lrJut1qCU8cssJS9DfHGiSfbvnNriv6rgZr+RFKplNXdC+NaK/C+TdoLPgn/kEG1pJ4dmCRkDpd26wwyjPvbX1jihoLvtNQ7nu1pAdnRY79lgcpPsZShhzWjVoY35wbGf6xDeJTwrYYNppqvAHARxi7+r4GitMqw8oQ3d6aNDXWWCQF6uUekUvbnNzT7d7t0IzW2KOQstVWUVwyEXm/qADHXC1ekb/Uk6/oM6Q=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bHhHUWZoQllXU0VoeTFmTE9SZkdIbU96VFpLSHdrSFJJd0s1blBzMFZ5NExp?=
+ =?utf-8?B?dG01RGwzOEN3Y1Ztck9ScjZnaUpKYXJkSjFjcFlBdkhCUzNwc2MwTXRGcWcr?=
+ =?utf-8?B?MmhzdWNQcUp6WFd6Wi82MWZRV3V4YjBERUJqdHdvWUlRNlpwYVJZOGcrREFL?=
+ =?utf-8?B?Skl4U1RFUUlZbWVvYnJGSVNncWZIWjlDQmNOSXJhb0VMUWhSSHJhMVlpb2hP?=
+ =?utf-8?B?NS80N2drWXpYQ21HVnAzS2hnTnZOblBVb1BtOE9vVENDSERLNkJGcU9RZHkx?=
+ =?utf-8?B?WDk5MnZQUXRJdHcvT1Z2TmNxRENHVGtzMGNiU1htUUkrTEJxblh6QXpJS2Mx?=
+ =?utf-8?B?THhEek0zM2xVWVJESDRhNDFXTUtrajhqQWwwaGVucldqWmdLMkxYUEN1ZUhI?=
+ =?utf-8?B?cVZObFBFRjdUcUhablVkOElYMXkyTFd4NVMvS3NBN2EyVjR2WUthOFdCVzJr?=
+ =?utf-8?B?Z2ZUOVBmTyt3RStOSlJhclkyRVFjREtjTkpzR0xMY0ZGU0VraWNSKzJtUzNS?=
+ =?utf-8?B?RTVsN1dRYnFMMnlsYUNpd2hsMGhaTTNxQVlEV0Z3RmM1OTJJbzJPRmR0Mm9R?=
+ =?utf-8?B?aUtFOFVJVjZPZElkRk4yWGcrWjZuNGtUdnhjOFpJZ04yNWQxaGdsamN0M1Rw?=
+ =?utf-8?B?TGc5YWExdElLb0tsTnlRdGxHM1BhSjB5ZW5id0lwLzlLSGNHMVBaZjk0bXJN?=
+ =?utf-8?B?a1JFbDlkemR6S3ppcSttT2dYOFlselJWZ1RLVGZkeEZlVWp3bG5KSnFtbWkw?=
+ =?utf-8?B?aS9nV2VQd3dqcUxodzF1ekJBbTlDQXU0SXcvL25WUnBSMDhaNm8xanV4Nlcr?=
+ =?utf-8?B?Q0FlZ0hOYm1yTFhwSVF1dHhiZXJ1NHNXRlliOWNlZjM1VUhrWlI3Wm5qRHpD?=
+ =?utf-8?B?ZjU5dW84UWNUZXJXUWVQWmZEbXlJYllHbWVWL2tjdlN1MGt0ekwyMnVyZWxV?=
+ =?utf-8?B?VjM4VzJmc2NxUy9NTWdINDIrL0RyVVI2ZHpndGJWWW5PaDdkSmhTUTBzbDJZ?=
+ =?utf-8?B?MFJFUndqVEhrTDhjUUFiVDUwbkpIM3cvMXBhWWRNNzRXWXJJODc0Slc4eFVq?=
+ =?utf-8?B?bDF2TXk2Z1hsQ1BsaUxRT1A4OFJJWlo2TG1OanBJaC8yeU1NelFCOU1SK2VT?=
+ =?utf-8?B?RXE4THp0bGx0YVZTQmtPYy9BZFEzSWowWnhpbFgxMHFyU29odE1pd1BOTmMy?=
+ =?utf-8?B?S3UwZWxyN0FzblNIdHp5SnpjaER2N3o0eXVQR2F0WTRpRWx6N0QyMVRUVVVv?=
+ =?utf-8?B?QUd2M01DcUs5N29OZ3hjWmY1aWN5b21tQzJwZjZkekliU01WUDFBTjQyMzNS?=
+ =?utf-8?B?cmZLcUtoenBWUWY2a0QxVGpweVp3MWY2WExmcnd1K01UWmxPOUZmeTZzQ1Ey?=
+ =?utf-8?B?ZnBPdDhDNWcyTFlBV3dCTzhCOVB6MCszeVdIejJlY2xCUkk1V2szZTRHdXJl?=
+ =?utf-8?B?NFpCTjBzY0k3N0xOSVI4eTV2OXNhTDhqZ2RzUGp6NWR1VHhlQVBWMlo1SWZF?=
+ =?utf-8?B?ckpXOVVsN2diK0w0OHY2MlRTVlp0cW9DQllSTEZTTFBjMEpBRi83bFN1LzQ2?=
+ =?utf-8?B?TTJJZ3E3bGw0ajZwSkhwdGN5YTdzcVRmYXV4MlFydFpha3YrMnpKa3hxYkdE?=
+ =?utf-8?B?VlBXbitWb3lqUnVTUzdTRzRGNG1oZCtPRVg5Mkg1SERpTkRFUFhEZFk5U0lK?=
+ =?utf-8?B?OS9tL1NsdHZwTkg5bDhPdE5HUUJSWlFNOWxSTUhDK0ZRQ0JrQWQvS0Y1eFZu?=
+ =?utf-8?B?QWxWVWNBVGVzNzdwcFozQThiY2M0RnlndlBzVnNvRXpvYmFJS3djRTd3eGp2?=
+ =?utf-8?B?b3Bja0JHdUppSGJjSTRNQllGTmlzTThaMkJHbnJSaFNsVUFacno4STlHRUU5?=
+ =?utf-8?B?OGxxckZhZkhZVUl3MElRNFlCZGpQTmJveWtxc2F4aE52SVRTYmVLYUNoQ3Jt?=
+ =?utf-8?B?WldzQzBFS2djaG5YVnRSRk81bWZqVmI3UXRKc0dzc1A3QXRGdmtnQ3R5Z1Iv?=
+ =?utf-8?B?RkxwY01pT21NcVF1bnRPRG5OR0UvSzdwL3ZNVkUwRTliYnRLdDMyUXFacURW?=
+ =?utf-8?B?UG5ZTVFOQ04wbXk5enFjd2s3NDZSSndrMklKQW1CTEdkM1RIRGNuUm0yZU1V?=
+ =?utf-8?Q?fYwU=3D?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 21eacb3b-8bd6-4b62-a007-08dc47669c17
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 16:15:21.2007
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: ptvgPTtAQp9uxgSCr5rnubGdY/jszhNphhnpNM1hGNKovsx6qNC1ywe+pYvIhi6b
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR12MB8331
 
-On Mon, 18 Mar 2024 08:35:04 PDT (-0700), Conor Dooley wrote:
-> From: Conor Dooley <conor.dooley@microchip.com>
->
-> ARCH_STARFIVE is not restricted to 64-bit platforms, so while Will's
-> addition of a 64-bit only condition satisfied the build robots doing
-> COMPILE_TEST builds, Palmer ran into the same problems with writeq()
-> being undefined during regular rv32 builds.
->
-> Promote the dependency on 64-bit to its own `depends on` so that the
-> driver can never be included in 32-bit builds.
->
-> Reported-by: Palmer Dabbelt <palmer@rivosinc.com>
-> Fixes: c2b24812f7bc ("perf: starfive: Add StarLink PMU support")
-> Fixes: f0dbc6d0de38 ("perf: starfive: Only allow COMPILE_TEST for 64-bit architectures")
-> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
-> ---
-> CC: Will Deacon <will@kernel.org>
-> CC: Mark Rutland <mark.rutland@arm.com>
-> CC: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
-> CC: linux-arm-kernel@lists.infradead.org
-> CC: linux-kernel@vger.kernel.org
-> ---
->  drivers/perf/Kconfig | 3 ++-
->  1 file changed, 2 insertions(+), 1 deletion(-)
->
-> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
-> index 5060e1f1ea10..7526a9e714fa 100644
-> --- a/drivers/perf/Kconfig
-> +++ b/drivers/perf/Kconfig
-> @@ -87,7 +87,8 @@ config RISCV_PMU_SBI
->  	  filtering, counter configuration.
->
->  config STARFIVE_STARLINK_PMU
-> -	depends on ARCH_STARFIVE || (COMPILE_TEST && 64BIT)
-> +	depends on ARCH_STARFIVE || COMPILE_TEST
-> +	depends on 64BIT
->  	bool "StarFive StarLink PMU"
->  	help
->  	   Provide support for StarLink Performance Monitor Unit.
+On Thu, Mar 14, 2024 at 01:11:59PM +0000, Christophe Leroy wrote:
+> 
+> 
+> Le 14/03/2024 à 13:53, Peter Xu a écrit :
+> > On Thu, Mar 14, 2024 at 08:45:34AM +0000, Christophe Leroy wrote:
+> >>
+> >>
+> >> Le 13/03/2024 à 22:47, peterx@redhat.com a écrit :
+> >>> From: Peter Xu <peterx@redhat.com>
+> >>>
+> >>> PowerPC book3s 4K mostly has the same definition on both, except pXd_huge()
+> >>> constantly returns 0 for hash MMUs.  As Michael Ellerman pointed out [1],
+> >>> it is safe to check _PAGE_PTE on hash MMUs, as the bit will never be set so
+> >>> it will keep returning false.
+> >>>
+> >>> As a reference, __p[mu]d_mkhuge() will trigger a BUG_ON trying to create
+> >>> such huge mappings for 4K hash MMUs.  Meanwhile, the major powerpc hugetlb
+> >>> pgtable walker __find_linux_pte() already used pXd_leaf() to check hugetlb
+> >>> mappings.
+> >>>
+> >>> The goal should be that we will have one API pXd_leaf() to detect all kinds
+> >>> of huge mappings.  AFAICT we need to use the pXd_leaf() impl (rather than
+> >>> pXd_huge() ones) to make sure ie. THPs on hash MMU will also return true.
+> >>
+> >> All kinds of huge mappings ?
+> >>
+> >> pXd_leaf() will detect only leaf mappings (like pXd_huge() ). There are
+> >> also huge mappings through hugepd. On powerpc 8xx we have 8M huge pages
+> >> and 512k huge pages. A PGD entry covers 4M so pgd_leaf() won't report
+> >> those huge pages.
+> > 
+> > Ah yes, I should always mention this is in the context of leaf huge pages
+> > only.  Are the examples you provided all fall into hugepd category?  If so
+> > I can reword the commit message, as:
+> 
+> On powerpc 8xx, only the 8M huge pages fall into the hugepd case.
+> 
+> The 512k hugepages are at PTE level, they are handled more or less like 
+> CONT_PTE on ARM. see function set_huge_pte_at() for more context.
+> 
+> You can also look at pte_leaf_size() and pgd_leaf_size().
 
-Reviewed-by: Palmer Dabbelt <palmer@rivosinc.com>
-Acked-by: Palmer Dabbelt <palmer@rivosinc.com>
+IMHO leaf should return false if the thing is pointing to a next level
+page table, even if that next level is fully populated with contiguous
+pages.
+
+This seems more aligned with the contig page direction that hugepd
+should be moved over to..
+
+> By the way pgd_leaf_size() looks odd because it is called only when 
+> pgd_leaf_size() returns true, which never happens for 8M pages.
+
+Like this, you should reach the actual final leaf that the HW will
+load and leaf_size() should say it is greater size than the current
+table level. Other levels should return 0.
+
+If necessary the core MM code should deal with this by iterating over
+adjacent tables.
+
+Jason
 
