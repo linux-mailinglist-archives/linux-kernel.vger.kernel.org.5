@@ -1,137 +1,183 @@
-Return-Path: <linux-kernel+bounces-106257-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106258-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 74F5987EB8D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:00:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4215F87EB90
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:01:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A4A8A1C21245
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:00:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AD6681F21F84
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:01:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 540FB4F1FE;
-	Mon, 18 Mar 2024 15:00:34 +0000 (UTC)
-Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A6E74EB30;
-	Mon, 18 Mar 2024 15:00:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDBB74EB4F;
+	Mon, 18 Mar 2024 15:01:45 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 914E34EB42
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:01:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710774033; cv=none; b=cXHwezUdp+qHDJlMwk6wTF1CMTOQOfrWOLaXUndvMQYj0lZWWgnKnqB3jpPsx73Bqkz60Sq4w3Llp0Ar5PNFKS8DAyTi/umV0r1A4MhKw4NZyFJJ/5rPlKLnH2F687i7N8DB/m9SjRaniEFAxuZ4MQyWhrB72hZ3bR79RCz1wBw=
+	t=1710774105; cv=none; b=dOaVBCmRfSnGaTbH9xxC1YA94aos3iQ8BJgGCcZDMydL3b4SX02iGnE08ShGfK5EUjuVZ6wqZ51hwPnX0GlF9nfDXODeCmgjSmBeqFNo0cJ45cInJA7DxS025SdOME7tMpyttM4K5ieLNn+pwAXRpHxWMIklP+PmkSeiT1CZsZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710774033; c=relaxed/simple;
-	bh=XDxXBRDjarTtKROiMq/2wlgwNHkBLP7nSY+Gzs5Go28=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VNmqSHPuKr/7LdhaFXnr4wRG6wttJFM0/ldmVBa04S7ICbEhBjrJllSO6s4IDOmgSIcmqTF8D6XNRpU8+dpHi0bY4uyM+RdjkU8iRBpgqyXohl21mj7FogusmbQ8PdD/cj/DyPIUbtXJViYdDVIXmy4Xk3qvYjEH9nCrPYkQ5Bc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-609ff069a40so52247937b3.1;
-        Mon, 18 Mar 2024 08:00:32 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710774031; x=1711378831;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :reply-to:in-reply-to:references:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hXPz6+0togvKFnM43qr9sOSa8N0BWel3JsRydDrzDrc=;
-        b=O34M3QeH9TFBpo/TjX3MS+ie6SBsI9c4uSAR8lLd70ju0GJ5fVL8velkeFbkI2umbo
-         DvHEKjE8QNKm2hi0PVLxzkKdimXhKTWtQBw67eTY0lkGL32/qdO7tOi0QqsGvMi8gFCB
-         FSwitXBDseyN1s5voKoKNAHE9IIoM9ntcZgZDGsmBE6vRXrNFQWEb7EpXsy8S/Q5h7Cv
-         YKLbV8Rg/HGOIaaOa0nduy9twSm4HXGqn9rWGwDuzvhvwy/5myOQWbLoWNJCdVl2y41P
-         B2Yj/51i9A3d+01dK140TMitmtcg+RTlDfVpddUAaO4QE51ef5SLBKyJ9npFjGOR8Kfm
-         VeBA==
-X-Forwarded-Encrypted: i=1; AJvYcCUH/2fwGL5EnVDbsxkHtaJh0CyUU5ZT5zNkwLHa2UfCqz2Pc5EBvA2Yp0ez3bwuuv4OCgm5QwCJu17kdXuiLbJ2UZoQsOH85xdfxK3MuHdy2lo89liX4IIoGrPVNHJb5S9skBEfBcqZcw3IJwDXLH2pIxTiyDta8ZrmL2KnWhAJk1yntw==
-X-Gm-Message-State: AOJu0YwjbwKYiJuXzBWwMVwvggm55KIa3vFdGuDCX/7iw9xdb25so9xg
-	OFVdCq/sS9ii4y3GThgY0RqYHWvE7Ex/DQevOAvEPe4v+M8C1IQM4QPcJ6o5i95oyg==
-X-Google-Smtp-Source: AGHT+IHnJGFNqw3PdslviMvot3zB8cExfLW0Ine1evxhnZTs4rkG/kG+ucQCciHkDgPMgBaHTpBRjw==
-X-Received: by 2002:a05:6902:82:b0:dc2:2041:fc49 with SMTP id h2-20020a056902008200b00dc22041fc49mr7165193ybs.5.1710774031052;
-        Mon, 18 Mar 2024 08:00:31 -0700 (PDT)
-Received: from mail-yb1-f174.google.com (mail-yb1-f174.google.com. [209.85.219.174])
-        by smtp.gmail.com with ESMTPSA id b11-20020a252e4b000000b00dc7622402b9sm1773830ybn.43.2024.03.18.08.00.30
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 08:00:30 -0700 (PDT)
-Received: by mail-yb1-f174.google.com with SMTP id 3f1490d57ef6-dcc71031680so3878237276.2;
-        Mon, 18 Mar 2024 08:00:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWY1WP4nlk5BPBQVxtjsQcu9T+CnrqCY5HV53PlA7gs/s9x/rdc5qxF14nQQRVoasBmjMiyJgWrK1Gs7fGhCSLLi/lyxeujLBUhzj3LJxORFZ5bKJAsdv3E3e3gA4oesxudl1MRzMb3LphCYxCctGHYHsRPOe5VdiAv/IsSBh1U1oaOtg==
-X-Received: by 2002:a05:6902:389:b0:dc7:4b43:db3f with SMTP id
- f9-20020a056902038900b00dc74b43db3fmr7205706ybs.21.1710774029683; Mon, 18 Mar
- 2024 08:00:29 -0700 (PDT)
+	s=arc-20240116; t=1710774105; c=relaxed/simple;
+	bh=B01v2BmorpeoWlyvMbnBYeRTbh0s/FTEcVKUm1BkdEs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UL/fGe659T/n3RAS8BDuLxDmooEllVeA235ol3zsFqZu5rZNYLaMs2fniMbFDaiDyHQhgkNos3tfK1KstYXF0EgPpt5lhdqUeBbNPSPI2CJvsNJSpEE5zgHjygJBmWu3ad72A001CKBHWYZRrPnAAvQVVNuotv7MnM9BxeUKyQs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6F51FDA7;
+	Mon, 18 Mar 2024 08:02:15 -0700 (PDT)
+Received: from localhost (ionvoi01-desktop.cambridge.arm.com [10.2.78.69])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 0CAE13F67D;
+	Mon, 18 Mar 2024 08:01:39 -0700 (PDT)
+Date: Mon, 18 Mar 2024 15:01:38 +0000
+From: Ionela Voinescu <ionela.voinescu@arm.com>
+To: Beata Michalska <beata.michalska@arm.com>
+Cc: linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	vanshikonda@os.amperecomputing.com, sudeep.holla@arm.com,
+	will@kernel.org, catalin.marinas@arm.com,
+	vincent.guittot@linaro.org, sumitg@nvidia.com,
+	yang@os.amperecomputing.com, lihuisong@huawei.com
+Subject: Re: [PATCH v3 2/3] arm64: Provide an AMU-based version of
+ arch_freq_get_on_cpu
+Message-ID: <ZfhXUuwcEC148cdx@arm.com>
+References: <20240312083431.3239989-1-beata.michalska@arm.com>
+ <20240312083431.3239989-3-beata.michalska@arm.com>
+ <ZfGaAGr9Ej6i2EpJ@arm.com>
+ <ZfI6y-YScbNzyWDC@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318114346.112935-1-tanure@linux.com> <20240318114346.112935-2-tanure@linux.com>
- <20240318145423.GA3993342-robh@kernel.org>
-In-Reply-To: <20240318145423.GA3993342-robh@kernel.org>
-Reply-To: tanure@linux.com
-From: Lucas Tanure <tanure@linux.com>
-Date: Mon, 18 Mar 2024 15:00:17 +0000
-X-Gmail-Original-Message-ID: <CAJX_Q+26Of3uwKMufDrngj5ciioqt0ne8gXD-jdmEdWTs4Ag+g@mail.gmail.com>
-Message-ID: <CAJX_Q+26Of3uwKMufDrngj5ciioqt0ne8gXD-jdmEdWTs4Ag+g@mail.gmail.com>
-Subject: Re: [RFC][PATCH 1/2] clk: meson: T7: add support for Amlogic T7 SoC
- PLL clock driver
-To: Rob Herring <robh@kernel.org>
-Cc: Xianwei Zhao <xianwei.zhao@amlogic.com>, Yu Tu <yu.tu@amlogic.com>, 
-	Neil Armstrong <neil.armstrong@linaro.org>, Kevin Hilman <khilman@baylibre.com>, 
-	Jerome Brunet <jbrunet@baylibre.com>, 
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Stephen Boyd <sboyd@kernel.org>, Michael Turquette <mturquette@baylibre.com>, 
-	linux-arm-kernel@lists.infradead.org, linux-amlogic@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-clk@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfI6y-YScbNzyWDC@arm.com>
 
-On Mon, Mar 18, 2024 at 2:54=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
-:
->
-> On Mon, Mar 18, 2024 at 11:43:45AM +0000, Lucas Tanure wrote:
-> > Add the T7 PLL clock controller driver in the T7 SoC family.
-> >
-> > This is RFC patch that enables SDCard, Ethernet and Clocking
-> > for Amlogic T7 soc.
-> > In this current state the patch doesn't work and gives a kernel
-> > panic when probing the meson-axg-mmc for the SDCard.
-> > DO NOT MERGE.
-> >
-> > Signed-off-by: Lucas Tanure <tanure@linux.com>
-> > ---
-> >  drivers/clk/meson/Kconfig                     |   25 +
-> >  drivers/clk/meson/Makefile                    |    2 +
-> >  drivers/clk/meson/t7-peripherals.c            | 6368 +++++++++++++++++
-> >  drivers/clk/meson/t7-peripherals.h            |  131 +
-> >  drivers/clk/meson/t7-pll.c                    | 1543 ++++
-> >  drivers/clk/meson/t7-pll.h                    |   83 +
-> >  .../clock/amlogic,t7-peripherals-clkc.h       |  410 ++
-> >  .../dt-bindings/clock/amlogic,t7-pll-clkc.h   |   69 +
-> >  8 files changed, 8631 insertions(+)
-> >  create mode 100644 drivers/clk/meson/t7-peripherals.c
-> >  create mode 100644 drivers/clk/meson/t7-peripherals.h
-> >  create mode 100644 drivers/clk/meson/t7-pll.c
-> >  create mode 100644 drivers/clk/meson/t7-pll.h
->
-> >  create mode 100644 include/dt-bindings/clock/amlogic,t7-peripherals-cl=
-kc.h
-> >  create mode 100644 include/dt-bindings/clock/amlogic,t7-pll-clkc.h
->
-> I'm assuming since this is an RFC you know these go in a separate patch
-> with the DT binding schema which is missing.
->
-> Rob
+Hey,
 
-Yes, This would be a few patches at least. The thing right now is to
-get it to work.
-I think some obscure thing is missing when setting up these clocks,
-and only Amlogic knows.
+On Thursday 14 Mar 2024 at 00:46:19 (+0100), Beata Michalska wrote:
+[..]
+> > >  static void amu_scale_freq_tick(void)
+> > >  {
+> > > +	struct amu_cntr_sample *amu_sample = this_cpu_ptr(&cpu_amu_samples);
+> > >  	u64 prev_core_cnt, prev_const_cnt;
+> > >  	u64 core_cnt, const_cnt, scale;
+> > >  
+> > > -	prev_const_cnt = this_cpu_read(arch_const_cycles_prev);
+> > > -	prev_core_cnt = this_cpu_read(arch_core_cycles_prev);
+> > > +	prev_const_cnt = amu_sample->arch_const_cycles_prev;
+> > > +	prev_core_cnt = amu_sample->arch_core_cycles_prev;
+> > > +
+> > > +	write_seqcount_begin(&amu_sample->seq);
+> > 
+> > The critical section here does not need to be this extensive, right?
+> > 
+> > The arch_freq_get_on_cpu() function only uses the frequency scale factor
+> > and the last_update value, so this need only be placed above
+> > "this_cpu_write(arch_freq_scale,..", if I'm not missing anything.
+> 
+> You're not missing anything. The write side critical section could span only
+> those two, but having it extended gives a chance for the readers to get in on
+> the update and as those are not really performance sensitive I though it might
+> be a good option, especially if we can save the cycles on not needing to poke
+> the cpufeq driver. Furthermore, if the critical section is to span only the two,
+> then it does not really change much and can be dropped.
+> 
+> > 
+> > >  
+> > >  	update_freq_counters_refs();
+> > >  
+> > > -	const_cnt = this_cpu_read(arch_const_cycles_prev);
+> > > -	core_cnt = this_cpu_read(arch_core_cycles_prev);
+> > > +	const_cnt = amu_sample->arch_const_cycles_prev;
+> > > +	core_cnt = amu_sample->arch_core_cycles_prev;
+> > >  
+> > > +	/*
+> > > +	 * This should not happen unless the AMUs have been reset and the
+> > > +	 * counter values have not been resroted - unlikely
+> > > +	 */
+> > >  	if (unlikely(core_cnt <= prev_core_cnt ||
+> > >  		     const_cnt <= prev_const_cnt))
+> > > -		return;
+> > > +		goto leave;
+> > >  
+> > >  	/*
+> > >  	 *	    /\core    arch_max_freq_scale
+> > > @@ -182,6 +204,10 @@ static void amu_scale_freq_tick(void)
+> > >  
+> > >  	scale = min_t(unsigned long, scale, SCHED_CAPACITY_SCALE);
+> > >  	this_cpu_write(arch_freq_scale, (unsigned long)scale);
+> > > +
+> > > +	amu_sample->last_update = jiffies;
+> > > +leave:
+> > > +	write_seqcount_end(&amu_sample->seq);
+> > >  }
+> > >  
+> > >  static struct scale_freq_data amu_sfd = {
+> > > @@ -189,6 +215,61 @@ static struct scale_freq_data amu_sfd = {
+> > >  	.set_freq_scale = amu_scale_freq_tick,
+> > >  };
+> > >  
+> > > +#define AMU_SAMPLE_EXP_MS	20
+> > > +
+> > > +unsigned int arch_freq_get_on_cpu(int cpu)
+> > > +{
+> > > +	struct amu_cntr_sample *amu_sample;
+> > > +	unsigned long last_update;
+> > > +	unsigned int seq;
+> > > +	unsigned int freq;
+> > > +	u64 scale;
+> > > +
+> > > +	if (!cpumask_test_cpu(cpu, amu_fie_cpus) || !arch_scale_freq_ref(cpu))
+> > > +		return 0;
+> > > +
+> > > +retry:
+> > > +	amu_sample = per_cpu_ptr(&cpu_amu_samples, cpu);
+> > > +
+> > > +	do {
+> > > +		seq = raw_read_seqcount_begin(&amu_sample->seq);
+> > > +		last_update = amu_sample->last_update;
+> > > +	} while (read_seqcount_retry(&amu_sample->seq, seq));
+> > 
+> > Related to the point above, this retry loop should also contain
+> > "scale = arch_scale_freq_capacity(cpu)", otherwise there's no much point
+> > for synchronisation, as far as I can tell.
+> I'm not entirely sure why we would need to include the scale factor within
+> the read critical section. The aim here is to make sure we see the update if
+> one is ongoing and that the update to the timestamp is observed along with
+> one to the scale factor, which is what the write_seqcount_end will guarantee
+> (although the latter is not a hard sell as the update happens under interrupts
+> being disabled). If later on we fetch newer scale factor that's perfectly fine,
+> we do not want to see the stale one. Again, I can drop the seqcount (which is
+> slightly abused in this case I must admit) at a cost of potentially missing some
+> updates.
 
-After I have a working driver, I will submit a proper patch series
-with documentation for the drivers and device trees.
+Replying here for both comments, as they are related.
 
-Thanks
-Lucas Tanure
+I fully agree, but I would be more inclined to drop the seqcount. It
+would be a game of chance if there was an update in the last few ns of
+the 20ms deadline which we might hit or miss due to the presence of an
+extended write critical section or the lack of one.
+
+> > 
+> > For x86, arch_freq_get_on_cpu() uses the counter deltas and it would be
+> > bad if values from different ticks would be used. But here the only
+> > benefit of synchronisation is to make sure that we're using the scale
+> > factor computed at the last update time. For us, even skipping on the
+> > synchronisation logic would still be acceptable, as we'd be ensuring that
+> > there was a tick in the past 20ms and we'd always use the most recent
+> > value of the frequency scale factor.
+> How would we ensure there was a tick in last 20ms ?
+
+I just meant that we'd observe the presence of a tick in the last 20ms
+(if there was one) and we don't necessarily need to guarantee that we'd
+use the scale factor obtained at that time. We could use the latest, as
+you mentioned above as well.
+
+Thanks,
+Ionela.
 
