@@ -1,200 +1,224 @@
-Return-Path: <linux-kernel+bounces-105706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E299A87E312
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:29:25 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFCD487E318
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:29:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54179B20EF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:29:23 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74E942823C6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:29:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64F7421360;
-	Mon, 18 Mar 2024 05:29:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70D9D22087;
+	Mon, 18 Mar 2024 05:29:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Yk+WhDVg"
-Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mt+mVyBY"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB7B20DD0
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 05:29:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65F73210FF;
+	Mon, 18 Mar 2024 05:29:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710739751; cv=none; b=n/4F0ZVR8Ds0Dhey3+Vh7hRAAYnYV13kdx4MiGTD7XOHh22Itv+NiedNzNAAXff27cA1sKCLYHE0K27Zc0eSgLtQZI0M8U4vULexYe6tIMv6xc8dlFk8W6I+1eMSJl6ZKepKWIvQgDSM3qXbj3QMi9CgbZKigxrRhWwU5FKRg9g=
+	t=1710739780; cv=none; b=OET7ifovzCmw8JhwUfF9MH1i6goPsl/S5iRc5eOr9VX4l/gu9cSwwGzN+gy+XToqaKbsiZGmAJMbX7qGn+2C+7MeNzX7PqNpWqyXN4SYbtNTU9sW2DzcqbD8o7Z7TNpLwlhjL5sChhWV1v3e5eU5fm79BmKYHcazNuhU214jfrw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710739751; c=relaxed/simple;
-	bh=mUtQaRoB5w1JR5t4g2/fqWtSD3Yp9K7/afA+Kz/dF9s=;
+	s=arc-20240116; t=1710739780; c=relaxed/simple;
+	bh=UZEMiHuuRl4T/rlwId3DD2KlUw8pZnpS6f+pHVJWvHc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=op/b24uUWCBMB3ihTvw3n72TNghmM7jwN0zG5l7St1Ukzhe5RMOJ0mnmsv4L//kZXHwp2Gd+k4ZWSqj36jHikQHV3QBrXrjk3agPpSNbhtRcW5OQiexVCkXxIqmsKXaJg7+QB2+JHge86wChLsLusmtYMnv3clQ7R875dkPGfzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Yk+WhDVg; arc=none smtp.client-ip=209.85.167.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c38b719ab5so49157b6e.2
-        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 22:29:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710739748; x=1711344548; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=XwgA0qRybu1Pipes5bSoqBwD+flXuGSyS+IfuKrdceQ=;
-        b=Yk+WhDVgHjuNa/7/F+FxLP3vexT6K4A5bldtLyUetALTvJpAeMQ6xyFcYSmIgmeF3w
-         bU5yXV8CgZ11P2b5FJMqQHFwwFdbxK6+kdiQDRPM5YN4XOoTkSFIYOfGTtCI6SVCC65N
-         MM+PfYCqRAcpisU0khhqFlO3NIBT9UHeWOizmR2KjM9/jn5wP8SuP03gwxX2EyYediGO
-         7/xh/fXr0oU1t4cQi9dYHVFoXcaC5YPXrz5Sz4aPqhRqvxkwQuP9P4RoZXgX10nsbXaZ
-         KqhLX0s4Dm8YIx3cF8CspIA1gEK/jVQRcq0RHgUVKM+OJ2K4ZoQE5ObumSOaRVK4B7aR
-         YROA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710739748; x=1711344548;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=XwgA0qRybu1Pipes5bSoqBwD+flXuGSyS+IfuKrdceQ=;
-        b=rBaQSsSg9/hZBJija/70NdDZEV2LWXzSprt8UBwjHLiVvtdhqNb315E0pLYvcqNXfx
-         0H/Jhi/eQ/uBlfInSSAYNFD8gKDnlRq32/4FA9azBrXgl9LO79Q3unZdJPXrW22iIybJ
-         ovtv/6hyqwgk3+Fa5ARy2VV7LFSRyXYA0cPbg+hVW+4A7XmLrsJkPcSACLc+UvTO3G0D
-         uIhmx0a1qnAK7r+PwkOsnW2ob+MQVk/ZHb9AuoQ8WyRFWecD60pVv13YGCGduwjygLpU
-         5fcmy7szlI4oVWl6CFz0vIfvVWmoXi5Rsln74mhQxJj7VdJQp5s2OkK2gcEfE+drOF88
-         +hug==
-X-Forwarded-Encrypted: i=1; AJvYcCUI3tMjz88RDnv0daU/c6BHtladTDJbcEABVTX1EQPk3MnbEgv9J+s09MY2pSAY27F8I/RGx8+cnKDMk1pn8gvcYISXpcugH5Tq4ekf
-X-Gm-Message-State: AOJu0YwiSW342B+CnUihmJCJj290ZNeSombJrEq87/DzNZyKxCyhluIa
-	k/xXH1d3SvtuRN7rQe9H5ytXP9c6DI9xu9sDhMNeoAR6gBCrcknFelQUIzTy7w==
-X-Google-Smtp-Source: AGHT+IFXBqlwSWe79lImxbdZTCooxa6XPg74HV6RDustVdZBTvf62IKKJQGcctaUNpUMj4DgIr/wPw==
-X-Received: by 2002:a05:6808:228b:b0:3c3:814a:fc6f with SMTP id bo11-20020a056808228b00b003c3814afc6fmr5300500oib.38.1710739748303;
-        Sun, 17 Mar 2024 22:29:08 -0700 (PDT)
-Received: from thinkpad ([103.246.195.160])
-        by smtp.gmail.com with ESMTPSA id fe11-20020a056a002f0b00b006e537f3c487sm7019018pfb.127.2024.03.17.22.29.04
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 22:29:07 -0700 (PDT)
-Date: Mon, 18 Mar 2024 10:59:02 +0530
-From: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-To: Serge Semin <fancer.lancer@gmail.com>
-Cc: Jingoo Han <jingoohan1@gmail.com>,
-	Gustavo Pimentel <gustavo.pimentel@synopsys.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Marek Vasut <marek.vasut+renesas@gmail.com>,
-	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>,
-	Kishon Vijay Abraham I <kishon@kernel.org>,
-	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-renesas-soc@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	mhi@lists.linux.dev, Siddharth Vadapalli <s-vadapalli@ti.com>,
-	Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v4 1/5] PCI: dwc: Refactor dw_pcie_edma_find_chip() API
-Message-ID: <20240318052902.GD2748@thinkpad>
-References: <20240306-dw-hdma-v4-0-9fed506e95be@linaro.org>
- <20240306-dw-hdma-v4-1-9fed506e95be@linaro.org>
- <flwmqlr3irjuwfqpjn227qnrkyyayym57d5v3ksr4xqmfxshaj@ibdi3dyetkou>
+	 Content-Type:Content-Disposition:In-Reply-To; b=PSnVDelKXF2VFe6KAlqIWhv5rax1gdDNUe82JkuUtTWCaVjby7e3vCg4VxDoSDY/dI8pCZ3Tn1nmTs5ppEJoaWyLPOnQEWtTfYZC3Dryc3wTDUt9RgGZWuP0SyYJQ/l7BA73w3394F6dYMRJHulgpPB5j+Nw1hCYYgdzBJJtgTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mt+mVyBY; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 59902C433F1;
+	Mon, 18 Mar 2024 05:29:39 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710739780;
+	bh=UZEMiHuuRl4T/rlwId3DD2KlUw8pZnpS6f+pHVJWvHc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mt+mVyBY9VqzmlnYsbQgoqE1L0lhjQt0giYtNGO0La4C4M9+OIWYuqaTBo+FTBCI1
+	 KCcBqLyogKBXTVhc8ksvAmWKIRMvSdWW9iBWnV6f04TJxsGLh1FogbBRVOrO/KTj6d
+	 t0DyEpGehodliT+3nl6N8hUMzDMgk8RjbpLD/NomODDNyQw4TjorJK8E2rNYMNNFCZ
+	 VAPWOjpymIdlXqRJwtkhFd5jBEGMc3HTGNO1JH35Yx0r1aV91Tq2hU8o2/ZsMVTbPe
+	 nNoh+nyAswN3FzN3hyLPJWLkAnYshErkLaqHJbj43Sj/MApyDV8fH/cQs7cUeRxkzp
+	 dtLNFVpkT3eDQ==
+Date: Sun, 17 Mar 2024 22:29:37 -0700
+From: Eric Biggers <ebiggers@kernel.org>
+To: Fan Wu <wufan@linux.microsoft.com>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org,
+	serge@hallyn.com, tytso@mit.edu, axboe@kernel.dk, agk@redhat.com,
+	snitzer@kernel.org, eparis@redhat.com, paul@paul-moore.com,
+	linux-doc@vger.kernel.org, linux-integrity@vger.kernel.org,
+	linux-security-module@vger.kernel.org, fsverity@lists.linux.dev,
+	linux-block@vger.kernel.org, dm-devel@lists.linux.dev,
+	audit@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Deven Bowers <deven.desai@linux.microsoft.com>
+Subject: Re: [RFC PATCH v15 17/21] fsverity: consume builtin signature via
+ LSM hook
+Message-ID: <20240318052937.GC63337@sol.localdomain>
+References: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
+ <1710560151-28904-18-git-send-email-wufan@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <flwmqlr3irjuwfqpjn227qnrkyyayym57d5v3ksr4xqmfxshaj@ibdi3dyetkou>
+In-Reply-To: <1710560151-28904-18-git-send-email-wufan@linux.microsoft.com>
 
-On Tue, Mar 12, 2024 at 12:04:17PM +0300, Serge Semin wrote:
-> Hi Mani
+On Fri, Mar 15, 2024 at 08:35:47PM -0700, Fan Wu wrote:
+> fsverity represents a mechanism to support both integrity and
+> authenticity protection of a file, supporting both signed and unsigned
+> digests.
 > 
-> On Wed, Mar 06, 2024 at 03:51:57PM +0530, Manivannan Sadhasivam wrote:
-> > In order to add support for Hyper DMA (HDMA), let's refactor the existing
-> > dw_pcie_edma_find_chip() API by moving the common code to separate
-> > functions.
-> > 
-> > No functional change.
-> > 
-> > Suggested-by: Serge Semin <fancer.lancer@gmail.com>
-> > Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
-> > Reviewed-by: Frank Li <Frank.Li@nxp.com>
-> > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
-> > ---
-> >  drivers/pci/controller/dwc/pcie-designware.c | 40 +++++++++++++++++++++++-----
-> >  1 file changed, 33 insertions(+), 7 deletions(-)
-> > 
-> > diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
-> > index 250cf7f40b85..3a26dfc5368f 100644
-> > --- a/drivers/pci/controller/dwc/pcie-designware.c
-> > +++ b/drivers/pci/controller/dwc/pcie-designware.c
-> > @@ -880,7 +880,17 @@ static struct dw_edma_plat_ops dw_pcie_edma_ops = {
-> >  	.irq_vector = dw_pcie_edma_irq_vector,
-> >  };
-> >  
-> > -static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> > +static void dw_pcie_edma_init_data(struct dw_pcie *pci)
-> > +{
-> > +	pci->edma.dev = pci->dev;
-> > +
-> > +	if (!pci->edma.ops)
-> > +		pci->edma.ops = &dw_pcie_edma_ops;
-> > +
-> > +	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
-> > +}
-> > +
-> > +static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
-> >  {
-> >  	u32 val;
-> >  
-> > @@ -902,8 +912,6 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> >  
-> >  	if (val == 0xFFFFFFFF && pci->edma.reg_base) {
-> >  		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
-> > -
-> > -		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
-> >  	} else if (val != 0xFFFFFFFF) {
-> >  		pci->edma.mf = EDMA_MF_EDMA_LEGACY;
-> >  
-> > @@ -912,12 +920,17 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
-> >  		return -ENODEV;
-> >  	}
-> >  
-> > -	pci->edma.dev = pci->dev;
-> > +	return 0;
-> > +}
-> >  
-> > -	if (!pci->edma.ops)
-> > -		pci->edma.ops = &dw_pcie_edma_ops;
-> > +static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
-> > +{
-> > +	u32 val;
-> >  
+> An LSM which controls access to a resource based on authenticity and
+> integrity of said resource, can then use this data to make an informed
+> decision on the authorization (provided by the LSM's policy) of said
+> claim.
 > 
-> > -	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
-> > +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
-> > +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> > +	else
-> > +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+> This effectively allows the extension of a policy enforcement layer in
+> LSM for fsverity, allowing for more granular control of how a
+> particular authenticity claim can be used. For example, "all (built-in)
+> signed fsverity files should be allowed to execute, but only these
+> hashes are allowed to be loaded as kernel modules".
 > 
-> Once again:
+> This enforcement must be done in kernel space, as a userspace only
+> solution would fail a simple litmus test: Download a self-contained
+> malicious binary that never touches the userspace stack. This
+> binary would still be able to execute.
 > 
-> On Tue, Feb 27, 2024 at 01:04:55PM +0530, Manivannan Sadhasivam wrote:
-> > On Tue, Feb 27, 2024 at 12:00:41AM +0300, Serge Semin wrote:
-> > > The entire
-> > > 
-> > > +	if (pci->edma.mf == EDMA_MF_EDMA_LEGACY)
-> > > +		val = dw_pcie_readl_dbi(pci, PCIE_DMA_VIEWPORT_BASE + PCIE_DMA_CTRL);
-> > > +	else
-> > > +		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
-> > > 
-> > > can be replaced with a single line
-> > > 
-> > > +	val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
-> > > 
-> > > since in the legacy case (reg_base = PCIE_DMA_VIEWPORT_BASE) the
-> > > pci->edma.reg_base has been initialized by now.
-> > > 
-> > 
-> > Ah okay, got it!
+> This patch introduces a new security_inode_setintegrity() hook call in
+> fsverity to store the verified fsverity signature in the inode's LSM blobs.
+> The hook call is executed after fsverity_verify_signature(), ensuring that
+> the signature is verified against fsverity's keyring.
 > 
+> The last commit in this patch set will add a link to the IPE documentation in
+> fsverity.rst.
 
-Sorry, I had this change but looks like it got lost during rebase somehow. Will
-bring it back.
+There are multiple types of fsverity signatures.  Please make it clear which one
+you're talking about ("fsverity builtin signatures").
 
-- Mani
+> diff --git a/Documentation/filesystems/fsverity.rst b/Documentation/filesystems/fsverity.rst
+> index 13e4b18e5dbb..708c79631f32 100644
+> --- a/Documentation/filesystems/fsverity.rst
+> +++ b/Documentation/filesystems/fsverity.rst
+> @@ -461,7 +461,10 @@ Enabling this option adds the following:
+>  
+>  3. A new sysctl "fs.verity.require_signatures" is made available.
+>     When set to 1, the kernel requires that all verity files have a
+> -   correctly signed digest as described in (2).
+> +   correctly signed digest as described in (2). Note that verification
+> +   happens as long as the file's signature exists regardless of the state of
+> +   "fs.verity.require_signatures", and the IPE LSM relies on this behavior
+> +   to save verified signature into LSM blobs.
 
--- 
-மணிவண்ணன் சதாசிவம்
+This probably should go in item (2) instead, as that already mentions the
+behavior when opening a file.
+
+>  The data that the signature as described in (2) must be a signature of
+>  is the fs-verity file digest in the following format::
+> @@ -481,7 +484,7 @@ be carefully considered before using them:
+>  
+>  - Builtin signature verification does *not* make the kernel enforce
+>    that any files actually have fs-verity enabled.  Thus, it is not a
+> -  complete authentication policy.  Currently, if it is used, the only
+> +  complete authentication policy.  Currently, if it is used, one
+>    way to complete the authentication policy is for trusted userspace
+>    code to explicitly check whether files have fs-verity enabled with a
+>    signature before they are accessed.  (With
+> @@ -489,6 +492,11 @@ be carefully considered before using them:
+>    enabled suffices.)  But, in this case the trusted userspace code
+>    could just store the signature alongside the file and verify it
+>    itself using a cryptographic library, instead of using this feature.
+> +  Another approach is to utilize built-in signature verification in
+> +  conjunction with the IPE LSM, which supports defining
+> +  a kernel-enforced, system-wide authentication policy that allows only
+> +  files with an fs-verity signature enabled to perform certain operations,
+> +  such as execution. Note that IPE doesn't require fs.verity.require_signatures=1.
+
+Make this a new paragraph.
+
+Also, the acronym "IPE" should be spelled out somewhere.
+
+IPE should be mentioned in the list in the "Use cases" section next to IMA, and
+it can be spelled out there.
+
+> +#ifdef CONFIG_FS_VERITY_BUILTIN_SIGNATURES
+> +static int fsverity_inode_setintegrity(struct inode *inode,
+> +				       const struct fsverity_descriptor *desc)
+> +{
+> +	return security_inode_setintegrity(inode, LSM_INTGR_FSV_SIG,
+> +					   desc->signature,
+> +					   le32_to_cpu(desc->sig_size));
+> +}
+> +#else
+> +static inline int fsverity_inode_setintegrity(struct inode *inode,
+> +					      const struct fsverity_descriptor *desc)
+> +{
+> +	return 0;
+> +}
+> +#endif /* CONFIG_FS_VERITY_BUILTIN_SIGNATURES */
+> +
+>  /*
+>   * Create a new fsverity_info from the given fsverity_descriptor (with optional
+>   * appended builtin signature), and check the signature if present.  The
+>   * fsverity_descriptor must have already undergone basic validation.
+>   */
+> -struct fsverity_info *fsverity_create_info(const struct inode *inode,
+> +struct fsverity_info *fsverity_create_info(struct inode *inode,
+>  					   struct fsverity_descriptor *desc)
+>  {
+>  	struct fsverity_info *vi;
+> @@ -241,6 +258,11 @@ struct fsverity_info *fsverity_create_info(const struct inode *inode,
+>  		}
+>  	}
+>  
+> +	err = fsverity_inode_setintegrity(inode, desc);
+> +
+> +	if (err)
+> +		goto fail;
+
+Delete the blank line before 'if (err)'
+
+> diff --git a/fs/verity/signature.c b/fs/verity/signature.c
+> index 90c07573dd77..d4ed03a114e9 100644
+> --- a/fs/verity/signature.c
+> +++ b/fs/verity/signature.c
+> @@ -41,7 +41,10 @@ static struct key *fsverity_keyring;
+>   * @sig_size: size of signature in bytes, or 0 if no signature
+>   *
+>   * If the file includes a signature of its fs-verity file digest, verify it
+> - * against the certificates in the fs-verity keyring.
+> + * against the certificates in the fs-verity keyring. Note that verification
+> + * happens as long as the file's signature exists regardless of the state of
+> + * fsverity_require_signatures, and the IPE LSM relies on this behavior
+> + * to save the verified file signature of the file into security blobs.
+
+"save the verified file signature of the file into security blobs" isn't what
+IPE actually does, though.  And even if it was, it would not explain why IPE
+expects the signature to be verified.
+
+> diff --git a/include/linux/security.h b/include/linux/security.h
+> index 0885866b261e..edd12c0a673a 100644
+> --- a/include/linux/security.h
+> +++ b/include/linux/security.h
+> @@ -86,6 +86,7 @@ enum lsm_event {
+>  enum lsm_intgr_type {
+>  	LSM_INTGR_DMV_SIG,
+>  	LSM_INTGR_DMV_ROOTHASH,
+> +	LSM_INTGR_FSV_SIG,
+>  	__LSM_INTGR_MAX
+>  };
+
+These are hard to understand because they are abbreviated too much.  And again,
+there are multiple type of fsverity signatures.  How about:
+
+enum lsm_integrity_type {
+	LSM_INTEGRITY_DM_VERITY_SIG,
+	LSM_INTEGRITY_DM_VERITY_ROOT_HASH,
+	LSM_INTEGRITY_FS_VERITY_BUILTIN_SIG,
+	__LSM_INTEGRITY_MAX
+};
+
+- Eric
 
