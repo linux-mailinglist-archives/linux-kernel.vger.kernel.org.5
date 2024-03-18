@@ -1,203 +1,188 @@
-Return-Path: <linux-kernel+bounces-106119-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106120-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D1087E961
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:36:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C7E387E963
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:37:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B4D77283A32
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:36:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 120F01C213EB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:37:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86F5A381B8;
-	Mon, 18 Mar 2024 12:36:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b="mRC9Q33Y"
-Received: from bee.tesarici.cz (bee.tesarici.cz [37.205.15.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A820B2FE0F;
+	Mon, 18 Mar 2024 12:37:07 +0000 (UTC)
+Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96F4E33CF1
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:36:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.15.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6C9381A4;
+	Mon, 18 Mar 2024 12:37:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710765390; cv=none; b=ifpQTl/cJ+8KAMzxdqQL48HpraUnqGfpPsOrC44afuWIT5qWpBxqdGBt5sfom5/CtGTWhzp+7JhprCTpIwn6ZTHT1f2OZEaTWu34HmM4UDaNtECCDAujRqxJLFk77/p7gmjtOzxfi+nLnGcDSd2OowopMM0oi7OXjH1M9qZj5xs=
+	t=1710765427; cv=none; b=S8Z5UG2DOzDDBhNw6B0Vk3w7no8V0Evg9wac0zsgAJk/AlRGQpoZIvC3kiOGqoyNXWrUhylnIFhZOwpz4QG+DRqThg4Fa4o8S7R6DmuAFm8pO90nZygiQY9DBTvELxd5yGOmU7n+6JuLPfrXy1RcBgmSR4ue56Df6aN30hCWQPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710765390; c=relaxed/simple;
-	bh=w6v+8z+YhOwW3f6JS0gPrb++ZcNRF8i4d5DT7bIRorI=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=UpaQcdIbCq2TlLK/yj6BT28GO/NBCzI+56ymjDSqLvrmaN1rTXwhHMUfbQRMhczSVb+LvYTfrvayYK4lCEg3ZRu+W9ZrMHawXjsT/YDWf2o3Q0TK6iCb7iRI8tBA1ejodY++pJiNpNt4h2e63fK/zOrWYHn5E0oLcsiYJ+8IrJs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz; spf=pass smtp.mailfrom=tesarici.cz; dkim=pass (2048-bit key) header.d=tesarici.cz header.i=@tesarici.cz header.b=mRC9Q33Y; arc=none smtp.client-ip=37.205.15.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tesarici.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tesarici.cz
-Received: from meshulam.tesarici.cz (dynamic-2a00-1028-83b8-1e7a-4427-cc85-6706-c595.ipv6.o2.cz [IPv6:2a00:1028:83b8:1e7a:4427:cc85:6706:c595])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by bee.tesarici.cz (Postfix) with ESMTPSA id E2D3619B6DC;
-	Mon, 18 Mar 2024 13:36:17 +0100 (CET)
-Authentication-Results: mail.tesarici.cz; dmarc=fail (p=quarantine dis=none) header.from=tesarici.cz
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tesarici.cz; s=mail;
-	t=1710765378; bh=uevz9Ld0ob550XOVVlPWlxDGkxF8wBH+ABeMrkoqJgQ=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=mRC9Q33YkyeEmz7e5nDJkCWpWCKJ0sCZlHTRRhBh8CPDzz9sCbsz668wY9Cb0liir
-	 TxwI9Z0P/8RTh5GJodg010TOHpWrhssZk5tcUzen61w6K7GDGHmGI8t4unVRH0/5BV
-	 6qISg4lxfyiF/+nWU6L0aIYk4u2zPcdJEJ4LfXoz8DmqVhFvppQSQv5BIdo3udq9o0
-	 Oth1BNGR0XoLV3WsE5Y25GfjMGnotN/R9ioN7ldYTfJAI41bad9QPz2gbokCSkWdXO
-	 AvzDtyLuxrj95zQh/zUke88J0WoneTWRxD4FnFVH3GvDFovpju8ISh8Csv90p4foYD
-	 wsWpjdQA5vAjQ==
-Date: Mon, 18 Mar 2024 13:36:16 +0100
-From: Petr =?UTF-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
-To: Michael Kelley <mhklinux@outlook.com>
-Cc: Will Deacon <will@kernel.org>, "linux-kernel@vger.kernel.org"
- <linux-kernel@vger.kernel.org>, "kernel-team@android.com"
- <kernel-team@android.com>, "iommu@lists.linux.dev" <iommu@lists.linux.dev>,
- Christoph Hellwig <hch@lst.de>, Marek Szyprowski
- <m.szyprowski@samsung.com>, Robin Murphy <robin.murphy@arm.com>, Petr
- Tesarik <petr.tesarik1@huawei-partners.com>, Dexuan Cui
- <decui@microsoft.com>, Nicolin Chen <nicolinc@nvidia.com>
-Subject: Re: [PATCH v6 1/6] swiotlb: Fix double-allocation of slots due to
- broken alignment handling
-Message-ID: <20240318133616.18ec5e6e@meshulam.tesarici.cz>
-In-Reply-To: <BN7PR02MB41483F5D16B655F5764D14EBD42D2@BN7PR02MB4148.namprd02.prod.outlook.com>
-References: <20240308152829.25754-1-will@kernel.org>
-	<20240308152829.25754-2-will@kernel.org>
-	<BN7PR02MB41483F5D16B655F5764D14EBD42D2@BN7PR02MB4148.namprd02.prod.outlook.com>
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.39; x86_64-suse-linux-gnu)
+	s=arc-20240116; t=1710765427; c=relaxed/simple;
+	bh=cIGQbqXwEkpHmSUSGwv0CkWp+CTN18AGAOKkRrvubDk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=jrsKckGc9N/YMn9uEO5D4GLG4EDHIn7HBrNWWDKKX2GcTsKAWX4/DABSVgEQxiIdwQJkqIek2ri+/1ByR5mAaVBQJL2q0DsnQNGCVYdZRRcpGG7d0d49sz+1ZbR45C0Vex67FAQor3wEoqljt9xjCaNL04PjlmHeYVh6aRaG3y4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e67ad4c2e3so69649a34.1;
+        Mon, 18 Mar 2024 05:37:05 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710765425; x=1711370225;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=7qjbJ8yR4itgbNq8Q11dnfj4BFgBdhtIsr7EAZiZBAk=;
+        b=VChGQlUtT7ueHW4E+7jBJjtAfQPQtSy8DHaEBSN+UOcNQf+63/95lBZjDAxW6mXAcc
+         BG93bsurnjlqBvL2XdGBuPIB2VnQjRFkamiwoKWanH0+G2jIrZ6ZikfwqtM5mwUwxa4L
+         bESpAvovxQoaPCvqbkBDwOo9tTwRl0g3JxX8Z17xb1OMj1184epGDaYJNQqVxNQ4UAUj
+         psG5NiNy/DlRxiUOzmaE0l9CHwzbFjbV0sGSK9o//qKY8O8kQenVCOhBS7fuS1W//xUQ
+         y+93cVRFYhSru8Gr/nrpL3ZWYVaL+2apySHg/GWYujA76Fp9FJvJFUSbDk5uZRJiUHpP
+         UV4g==
+X-Forwarded-Encrypted: i=1; AJvYcCUPyf9ov53mLbOSuPBIQw4gLoZPsb5I3jpoft8jgyER/0TYQOYYX8UjHSEbaRLnLGiKXCKuNbEE8fU/Z91rMK6U39rvGMmE9jLxRABMNYR/ZxOwB9FWMSpk6IDgLP7mhzoG189e6s4=
+X-Gm-Message-State: AOJu0YzfV+6rA7JMcHeAIfhGfTBwwvxrBYkKsDlEk8TIGyFPMeRIYobi
+	xF1YqsZ3wNX57DBK8h6L9LYv9xyiLeBvhC4cOQVP0XA4zwicZ/sSc59ObSDtKP90he+l4VskSfL
+	ZzSW86TYc385SAAJUvRk4B+wyUR8=
+X-Google-Smtp-Source: AGHT+IFAzXsV1FntoE35q7hpj2BcpxEpjp5RM1YnJQza6EzBR3vaHweTUIT9Fuc4N7kiUujvpMGNZfMBCclG9gksKA0=
+X-Received: by 2002:a05:6820:2c10:b0:5a4:7790:61b4 with SMTP id
+ dw16-20020a0568202c1000b005a4779061b4mr6980768oob.0.1710765424769; Mon, 18
+ Mar 2024 05:37:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <cover.1710754409.git.perry.yuan@amd.com> <d9fe75ae9ba3893061c01fcaccd93f2915b09a35.1710754409.git.perry.yuan@amd.com>
+In-Reply-To: <d9fe75ae9ba3893061c01fcaccd93f2915b09a35.1710754409.git.perry.yuan@amd.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Mon, 18 Mar 2024 13:36:49 +0100
+Message-ID: <CAJZ5v0hJjkUoEGC2wVXs3_TZpc99HFPfi7yX7rO16ykwRxk+DA@mail.gmail.com>
+Subject: Re: [PATCH v8 4/8] cpufreq: amd-pstate: Remove amd_get_{min,max,nominal,lowest_nonlinear}_freq()
+To: Perry Yuan <perry.yuan@amd.com>
+Cc: rafael.j.wysocki@intel.com, Mario.Limonciello@amd.com, 
+	viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com, 
+	Borislav.Petkov@amd.com, Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, 
+	Xiaojian.Du@amd.com, Li.Meng@amd.com, linux-pm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 18 Mar 2024 03:39:07 +0000
-Michael Kelley <mhklinux@outlook.com> wrote:
+On Mon, Mar 18, 2024 at 10:49=E2=80=AFAM Perry Yuan <perry.yuan@amd.com> wr=
+ote:
+>
+> From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+>
+> amd_get_{min,max,nominal,lowest_nonlinear}_freq() functions merely
+> return cpudata->{min,max,nominal,lowest_nonlinear}_freq values.
+>
+> There is no loss in readability in replacing their invocations by
+> accesses to the corresponding members of cpudata.
+>
+> Do so and remove these helper functions.
+>
+> Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
 
-> From: Will Deacon <will@kernel.org> Sent: Friday, March 8, 2024 7:28 AM
-> > 
-> > 
-> > Fix the problem by treating the allocation alignment separately to any
-> > additional alignment requirements from the device, using the maximum
-> > of the two as the stride to search the buffer slots and taking care
-> > to ensure a minimum of page-alignment for buffers larger than a page.
-> > 
-> > This also resolves swiotlb allocation failures occuring due to the
-> > inclusion of ~PAGE_MASK in 'iotlb_align_mask' for large allocations and
-> > resulting in alignment requirements exceeding swiotlb_max_mapping_size().
-> > 
-> > Fixes: bbb73a103fbb ("swiotlb: fix a braino in the alignment check fix")
-> > Fixes: 0eee5ae10256 ("swiotlb: fix slot alignment checks")
-> > Cc: Christoph Hellwig <hch@lst.de>
-> > Cc: Marek Szyprowski <m.szyprowski@samsung.com>
-> > Cc: Robin Murphy <robin.murphy@arm.com>
-> > Cc: Dexuan Cui <decui@microsoft.com>
-> > Reviewed-by: Michael Kelley <mhklinux@outlook.com>
-> > Reviewed-by: Petr Tesarik <petr.tesarik1@huawei-partners.com>
-> > Tested-by: Nicolin Chen <nicolinc@nvidia.com>
-> > Signed-off-by: Will Deacon <will@kernel.org>
-> > ---
-> >  kernel/dma/swiotlb.c | 28 +++++++++++++++-------------
-> >  1 file changed, 15 insertions(+), 13 deletions(-)
-> > 
-> > diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
-> > index b079a9a8e087..2ec2cc81f1a2 100644
-> > --- a/kernel/dma/swiotlb.c
-> > +++ b/kernel/dma/swiotlb.c
-> > @@ -982,7 +982,7 @@ static int swiotlb_search_pool_area(struct device
-> > *dev, struct io_tlb_pool *pool
-> >  		phys_to_dma_unencrypted(dev, pool->start) & boundary_mask;
-> >  	unsigned long max_slots = get_max_slots(boundary_mask);
-> >  	unsigned int iotlb_align_mask =
-> > -		dma_get_min_align_mask(dev) | alloc_align_mask;
-> > +		dma_get_min_align_mask(dev) & ~(IO_TLB_SIZE - 1);
-> >  	unsigned int nslots = nr_slots(alloc_size), stride;
-> >  	unsigned int offset = swiotlb_align_offset(dev, orig_addr);
-> >  	unsigned int index, slots_checked, count = 0, i;
-> > @@ -993,19 +993,18 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-> >  	BUG_ON(!nslots);
-> >  	BUG_ON(area_index >= pool->nareas);
-> > 
-> > +	/*
-> > +	 * For mappings with an alignment requirement don't bother looping to
-> > +	 * unaligned slots once we found an aligned one.
-> > +	 */
-> > +	stride = get_max_slots(max(alloc_align_mask, iotlb_align_mask));
-> > +
-> >  	/*
-> >  	 * For allocations of PAGE_SIZE or larger only look for page aligned
-> >  	 * allocations.
-> >  	 */
-> >  	if (alloc_size >= PAGE_SIZE)
-> > -		iotlb_align_mask |= ~PAGE_MASK;
-> > -	iotlb_align_mask &= ~(IO_TLB_SIZE - 1);
-> > -
-> > -	/*
-> > -	 * For mappings with an alignment requirement don't bother looping to
-> > -	 * unaligned slots once we found an aligned one.
-> > -	 */
-> > -	stride = (iotlb_align_mask >> IO_TLB_SHIFT) + 1;
-> > +		stride = umax(stride, PAGE_SHIFT - IO_TLB_SHIFT + 1);
-> > 
-> >  	spin_lock_irqsave(&area->lock, flags);
-> >  	if (unlikely(nslots > pool->area_nslabs - area->used))
-> > @@ -1015,11 +1014,14 @@ static int swiotlb_search_pool_area(struct device *dev, struct io_tlb_pool *pool
-> >  	index = area->index;
-> > 
-> >  	for (slots_checked = 0; slots_checked < pool->area_nslabs; ) {
-> > -		slot_index = slot_base + index;
-> > +		phys_addr_t tlb_addr;
-> > 
-> > -		if (orig_addr &&
-> > -		    (slot_addr(tbl_dma_addr, slot_index) &
-> > -		     iotlb_align_mask) != (orig_addr & iotlb_align_mask)) {
-> > +		slot_index = slot_base + index;
-> > +		tlb_addr = slot_addr(tbl_dma_addr, slot_index);
-> > +
-> > +		if ((tlb_addr & alloc_align_mask) ||
-> > +		    (orig_addr && (tlb_addr & iotlb_align_mask) !=
-> > +				  (orig_addr & iotlb_align_mask))) {
-> >  			index = wrap_area_index(pool, index + 1);
-> >  			slots_checked++;
-> >  			continue;
-> > --  
-> 
-> Question for IOMMU folks:  alloc_align_mask is set only in
-> iommu_dma_map_page(), using the IOMMU granule size.
-> Can the granule ever be larger than PAGE_SIZE?
+Sender sign-off missing (when sending somebody else's patch, you need
+to add your S-o-b tag to it).
 
-I don't feel as part of the IOMMU folks, but since I have spent one and
-a half aeons looking around DMA-related code, let me answer anyway.
-
-No, this is not possible, see here:
-
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/iommu/iova.c?h=v6.8#n61
-
-HTH
-Petr T
-
->  If so,
-> swiotlb_search_pool_area() can fail to find slots even when
-> the swiotlb is empty.
-> 
-> The failure happens when alloc_align_mask is larger than
-> PAGE_SIZE and the alloc_size is the swiotlb max of 256 Kbytes
-> (or even a bit smaller in some cases). The swiotlb memory
-> pool is allocated in swiotlb_memblock_alloc() with PAGE_SIZE
-> alignment.  On x86/x64, if alloc_align_mask is 8191 and the
-> pool start address is something like XXXX1000, slot 0 won't
-> satisfy alloc_align_mask.  Slot 1 satisfies alloc_align_mask,
-> but has a size of 127 slots and can't fulfill a 256 Kbyte request.
-> The problem repeats through the entire swiotlb and the
-> allocation fails.
-> 
-> Updating swiotlb_memblock_alloc() to use an alignment of
-> IO_TLB_SIZE * IO_TLB_SEGSIZE (i.e., 256 Kbytes) solves the
-> problem for all viable configurations.
-> 
-> Michael
-> 
-
+> ---
+>  drivers/cpufreq/amd-pstate.c | 40 +++++++++---------------------------
+>  1 file changed, 10 insertions(+), 30 deletions(-)
+>
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index ba1baa6733e6..132330b4942f 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -604,26 +604,6 @@ static void amd_pstate_adjust_perf(unsigned int cpu,
+>         cpufreq_cpu_put(policy);
+>  }
+>
+> -static int amd_get_min_freq(struct amd_cpudata *cpudata)
+> -{
+> -       return READ_ONCE(cpudata->min_freq);
+> -}
+> -
+> -static int amd_get_max_freq(struct amd_cpudata *cpudata)
+> -{
+> -       return READ_ONCE(cpudata->max_freq);
+> -}
+> -
+> -static int amd_get_nominal_freq(struct amd_cpudata *cpudata)
+> -{
+> -       return READ_ONCE(cpudata->nominal_freq);
+> -}
+> -
+> -static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
+> -{
+> -       return READ_ONCE(cpudata->lowest_nonlinear_freq);
+> -}
+> -
+>  static int amd_pstate_set_boost(struct cpufreq_policy *policy, int state=
+)
+>  {
+>         struct amd_cpudata *cpudata =3D policy->driver_data;
+> @@ -854,10 +834,10 @@ static int amd_pstate_cpu_init(struct cpufreq_polic=
+y *policy)
+>         if (ret)
+>                 goto free_cpudata1;
+>
+> -       min_freq =3D amd_get_min_freq(cpudata);
+> -       max_freq =3D amd_get_max_freq(cpudata);
+> -       nominal_freq =3D amd_get_nominal_freq(cpudata);
+> -       lowest_nonlinear_freq =3D amd_get_lowest_nonlinear_freq(cpudata);
+> +       min_freq =3D READ_ONCE(cpudata->min_freq);
+> +       max_freq =3D READ_ONCE(cpudata->max_freq);
+> +       nominal_freq =3D READ_ONCE(cpudata->nominal_freq);
+> +       lowest_nonlinear_freq =3D READ_ONCE(cpudata->lowest_nonlinear_fre=
+q);
+>
+>         if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
+>                 dev_err(dev, "min_freq(%d) or max_freq(%d) value is incor=
+rect\n",
+> @@ -960,7 +940,7 @@ static ssize_t show_amd_pstate_max_freq(struct cpufre=
+q_policy *policy,
+>         int max_freq;
+>         struct amd_cpudata *cpudata =3D policy->driver_data;
+>
+> -       max_freq =3D amd_get_max_freq(cpudata);
+> +       max_freq =3D READ_ONCE(cpudata->max_freq);
+>         if (max_freq < 0)
+>                 return max_freq;
+>
+> @@ -973,7 +953,7 @@ static ssize_t show_amd_pstate_lowest_nonlinear_freq(=
+struct cpufreq_policy *poli
+>         int freq;
+>         struct amd_cpudata *cpudata =3D policy->driver_data;
+>
+> -       freq =3D amd_get_lowest_nonlinear_freq(cpudata);
+> +       freq =3D READ_ONCE(cpudata->lowest_nonlinear_freq);
+>         if (freq < 0)
+>                 return freq;
+>
+> @@ -1315,10 +1295,10 @@ static int amd_pstate_epp_cpu_init(struct cpufreq=
+_policy *policy)
+>         if (ret)
+>                 goto free_cpudata1;
+>
+> -       min_freq =3D amd_get_min_freq(cpudata);
+> -       max_freq =3D amd_get_max_freq(cpudata);
+> -       nominal_freq =3D amd_get_nominal_freq(cpudata);
+> -       lowest_nonlinear_freq =3D amd_get_lowest_nonlinear_freq(cpudata);
+> +       min_freq =3D READ_ONCE(cpudata->min_freq);
+> +       max_freq =3D READ_ONCE(cpudata->max_freq);
+> +       nominal_freq =3D READ_ONCE(cpudata->nominal_freq);
+> +       lowest_nonlinear_freq =3D READ_ONCE(cpudata->lowest_nonlinear_fre=
+q);
+>         if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
+>                 dev_err(dev, "min_freq(%d) or max_freq(%d) value is incor=
+rect\n",
+>                                 min_freq, max_freq);
+> --
+> 2.34.1
+>
+>
 
