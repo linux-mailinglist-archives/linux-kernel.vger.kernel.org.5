@@ -1,188 +1,134 @@
-Return-Path: <linux-kernel+bounces-105973-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105974-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9D8C387E701
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:15:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5173C87E703
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:15:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0280AB21C77
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:15:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E57A41F2236A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:15:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77A02DF9F;
-	Mon, 18 Mar 2024 10:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7FA6C2E657;
+	Mon, 18 Mar 2024 10:13:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2dw1UmQt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3z0xrg9c";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2dw1UmQt";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3z0xrg9c"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="j2LACVw0"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4911C2C87A;
-	Mon, 18 Mar 2024 10:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9CBF52E645;
+	Mon, 18 Mar 2024 10:13:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710756746; cv=none; b=SA1AGNsuVXfDPErOhRUb7lKnR80vfZFydoLebAKofCGKrrRCNR2CSaGw2QOuKlHGmO5KHReE4fgNsmOMvxDwpyCpxULZEMyUa32FmvKTHeaUZzq7FeMhYZKDZ3Y69wzxXwiO+bfY8tkr+6p2FG5tqLTucrtIW6b5QPP0FrN4qT0=
+	t=1710756810; cv=none; b=on6lHRbSH/qYsuW7nSex42wgScwX2ou8+kK94IfVWYWpVIZqQ0UH1Bt7DJMF0GPaQv/fX0yQNP8s+7/dNvmcquCGfDIAYQagFTt0z+Q2DEN2ZraUrnmi6Z0Rih45HYByss3r6ntarK6IbhcX0goQ3o+1Igh9v1iqSjav3VUOmpc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710756746; c=relaxed/simple;
-	bh=bErza8r5vX4TMpVnLgnjWknUlsjPH6b+8522Wz2lM54=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=q3dXTk1abGbsMqIhBP27rFTNnI1cZIMQB9t+RiIugt+6JNlZrw2R+hjSCmSvWmNMasnb17T/R2QmhSZydPLKSYuUNi54KHMg9t3fKDZdwXGiIjDoCFQGwAQbLQnpDdFwgYEOu297xSf2eW/RCW3Vgri2zgaHeXdUSJvZOR+2qiU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2dw1UmQt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3z0xrg9c; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2dw1UmQt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3z0xrg9c; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 880CF348C3;
-	Mon, 18 Mar 2024 10:12:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710756742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
-	b=2dw1UmQtc7AIvk4NmyXmy1gMrw9H9l9ObhFnI29e+XZf2iJ1LNr31QYMlOjjLYr2rvJQog
-	hQDALrZKeXlSgW+Ppj1yVUnpeu49nv5xqQiKyIpbFo/ZlyDfTie+PU9R4aXQNXhYDEd9T9
-	Bhif0CoMg7CxytzI/n/+H2WaULS4Wjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710756742;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
-	b=3z0xrg9c5b0ltCbZEyJT3buHnc54X0K8YJjSdemSfbP4dr6iISxl8z2aR0atSZuDvo8JbP
-	Uw2aoGrpk1cUTuCg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710756742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
-	b=2dw1UmQtc7AIvk4NmyXmy1gMrw9H9l9ObhFnI29e+XZf2iJ1LNr31QYMlOjjLYr2rvJQog
-	hQDALrZKeXlSgW+Ppj1yVUnpeu49nv5xqQiKyIpbFo/ZlyDfTie+PU9R4aXQNXhYDEd9T9
-	Bhif0CoMg7CxytzI/n/+H2WaULS4Wjs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710756742;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
-	b=3z0xrg9c5b0ltCbZEyJT3buHnc54X0K8YJjSdemSfbP4dr6iISxl8z2aR0atSZuDvo8JbP
-	Uw2aoGrpk1cUTuCg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D8C61389C;
-	Mon, 18 Mar 2024 10:12:22 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id uACdHoYT+GXkWwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 10:12:22 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 2043CA07D9; Mon, 18 Mar 2024 11:12:22 +0100 (CET)
-Date: Mon, 18 Mar 2024 11:12:22 +0100
-From: Jan Kara <jack@suse.cz>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: cheung wall <zzqq0103.hey@gmail.com>,
-	Alexander Viro <viro@zeniv.linux.org.uk>,
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: WARNING in mark_buffer_dirty
-Message-ID: <20240318101222.sbh52pa4mmwidzyw@quack3>
-References: <CAKHoSAuCUF8kNFdv5Chb2Fnup2vwDb0W+UPOxHzgCg_O=KJA0A@mail.gmail.com>
- <ZfUl8pGp_JMWMaVI@casper.infradead.org>
+	s=arc-20240116; t=1710756810; c=relaxed/simple;
+	bh=YuBokLpt2t+vNks6qSZcV6BYmfskihW1wCZc6NHW73I=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=hTgPrQRLgVtlsgS62rhUlb2xw370tlmD765GLMAalMcGj25RJi0oXY5t+V6TaOnjXrQ1xbxQuAKJ8MRi7Qw7lrleJUJDfwwHUR92akGGx35TWBtqhqKJiKuXpPptiUjbkgUJFQgJa3Jcfbh51HxPObUeHxgor2YL8eFMiZEhTMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=j2LACVw0; arc=none smtp.client-ip=192.198.163.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710756808; x=1742292808;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=YuBokLpt2t+vNks6qSZcV6BYmfskihW1wCZc6NHW73I=;
+  b=j2LACVw0e52EsPQvtFKCQ0gp6uckxtX81CuV+mqAI55Nm+tyhhKOiK0e
+   98S7fViVG6DfHMQMmQEtUlj+Vp/pIeYv+++C9lvDbCG8BTd+zOvEMkTC2
+   1gPHEL3FOOFDOnP2aqPsH9UhwHHHm9frUjePAm1aKX7WNnEMiWz+sdtNS
+   K0lqXh+gA/tKKqnyq5E29Rk9UEw2+q6S+f/fChdQmzlj7tQCGDa37aotN
+   EW9kdYyme4z9Rfl7yrokHdP/ie5yVa0bj7vQ2LyXolZL6FwXPZjP1kllz
+   nA+QQ6mBvuWqdd640VrCNM4vnum2rntfOKsLELS3ZRD1/XrOgUO98cBa+
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="16281768"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="16281768"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:13:28 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="17911351"
+Received: from ahmedess-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.133])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:13:25 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Jonathon Hall <jonathon.hall@puri.sm>, linux-kernel@vger.kernel.org,
+ intel-gfx@lists.freedesktop.org, joonas.lahtinen@linux.intel.com,
+ rodrigo.vivi@intel.com, tursulin@ursulin.net
+Cc: Jonathon Hall <jonathon.hall@puri.sm>, stable@vger.kernel.org
+Subject: Re: [PATCH] drm/i915: Do not match JSL in
+ ehl_combo_pll_div_frac_wa_needed()
+In-Reply-To: <8734surppt.fsf@intel.com>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240313135424.3731410-1-jonathon.hall@puri.sm>
+ <8734surppt.fsf@intel.com>
+Date: Mon, 18 Mar 2024 12:13:22 +0200
+Message-ID: <87zfuvq24d.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfUl8pGp_JMWMaVI@casper.infradead.org>
-X-Spam-Score: 7.91
-X-Spamd-Result: default: False [7.91 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-0.48)[79.55%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_SPAM_SHORT(3.00)[0.999];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: *******
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-On Sat 16-03-24 04:54:10, Matthew Wilcox wrote:
-> 
-> This might be an iomap bug, so adding Christoph & Darrick.
-> 
-> On Sat, Mar 16, 2024 at 12:29:36PM +0800, cheung wall wrote:
-> > HEAD commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a  (tag: v6.7)
-> > WARNING: CPU: 0 PID: 2920 at fs/buffer.c:1176
-> > mark_buffer_dirty+0x232/0x290
-> 
-> This is WARN_ON_ONCE(!buffer_uptodate(bh)), so we're trying to mark a
-> buffer dirty when that buffer is not uptodate.
-> 
-> > RIP: 0010:mark_buffer_dirty+0x232/0x290
-> > fs/buffer.c:1176
-> > Call Trace:
-> >  <TASK>
-> >  __block_commit_write+0xe9/0x200
-> > fs/buffer.c:2191
-> 
-> ... but line 2190 and 91 are:
-> 
->                         set_buffer_uptodate(bh);
->                         mark_buffer_dirty(bh);
-> 
-> and the folio is locked.  So how do we clear the uptodate flag on the
-> buffer without the folio locked?
+On Wed, 13 Mar 2024, Jani Nikula <jani.nikula@linux.intel.com> wrote:
+> On Wed, 13 Mar 2024, Jonathon Hall <jonathon.hall@puri.sm> wrote:
+>> Since commit 0c65dc062611 ("drm/i915/jsl: s/JSL/JASPERLAKE for
+>> platform/subplatform defines"), boot freezes on a Jasper Lake tablet
+>> (Librem 11), usually with graphical corruption on the eDP display,
+>> but sometimes just a black screen.  This commit was included in 6.6 and
+>> later.
+>>
+>> That commit was intended to refactor EHL and JSL macros, but the change
+>> to ehl_combo_pll_div_frac_wa_needed() started matching JSL incorrectly
+>> when it was only intended to match EHL.
+>>
+>> It replaced:
+>> 	return ((IS_PLATFORM(i915, INTEL_ELKHARTLAKE) &&
+>> 		 IS_JSL_EHL_DISPLAY_STEP(i915, STEP_B0, STEP_FOREVER)) ||
+>> with:
+>> 	return (((IS_ELKHARTLAKE(i915) || IS_JASPERLAKE(i915)) &&
+>> 		 IS_DISPLAY_STEP(i915, STEP_B0, STEP_FOREVER)) ||
+>>
+>> Remove IS_JASPERLAKE() to fix the regression.
+>>
+>> Signed-off-by: Jonathon Hall <jonathon.hall@puri.sm>
+>> Cc: stable@vger.kernel.org
+>
+> Thanks for the patch!
+>
+> Fixes: 0c65dc062611 ("drm/i915/jsl: s/JSL/JASPERLAKE for platform/subplatform defines")
+> Cc: <stable@vger.kernel.org> # v6.6+
+> Reviewed-by: Jani Nikula <jani.nikula@intel.com>
 
-Given this happens on block device page cache, I can imagine there's
-someone operating on the cache directly using buffer heads without locking
-the page. Filesystems do this all the time. I don't see the reproducer doing
-anything like that but who knows...
+And pushed to drm-intel-next.
 
-								Honza
+BR,
+Jani.
 
-> >  block_write_end+0xb1/0x1f0
-> > fs/buffer.c:2267
-> >  iomap_write_end+0x461/0x8c0
-> > fs/iomap/buffered-io.c:857
-> >  iomap_write_iter
-> > fs/iomap/buffered-io.c:938
-> > [inline]
-> >  iomap_file_buffered_write+0x4eb/0x800
-> > fs/iomap/buffered-io.c:987
-> >  blkdev_buffered_write
-> > block/fops.c:646
-> > [inline]
-> >  blkdev_write_iter+0x4ae/0xa40
-> > block/fops.c:696
-> >  call_write_iter
-> 
+
+>
+>> ---
+>>  drivers/gpu/drm/i915/display/intel_dpll_mgr.c | 2 +-
+>>  1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+>> index ef57dad1a9cb..57a97880dcb3 100644
+>> --- a/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+>> +++ b/drivers/gpu/drm/i915/display/intel_dpll_mgr.c
+>> @@ -2509,7 +2509,7 @@ static void icl_wrpll_params_populate(struct skl_wrpll_params *params,
+>>  static bool
+>>  ehl_combo_pll_div_frac_wa_needed(struct drm_i915_private *i915)
+>>  {
+>> -	return (((IS_ELKHARTLAKE(i915) || IS_JASPERLAKE(i915)) &&
+>> +	return ((IS_ELKHARTLAKE(i915) &&
+>>  		 IS_DISPLAY_STEP(i915, STEP_B0, STEP_FOREVER)) ||
+>>  		 IS_TIGERLAKE(i915) || IS_ALDERLAKE_S(i915) || IS_ALDERLAKE_P(i915)) &&
+>>  		 i915->display.dpll.ref_clks.nssc == 38400;
+
 -- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+Jani Nikula, Intel
 
