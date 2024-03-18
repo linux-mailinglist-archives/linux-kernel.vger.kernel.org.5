@@ -1,99 +1,114 @@
-Return-Path: <linux-kernel+bounces-105937-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105938-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0627A87E6A5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:04:00 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4797E87E6A8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:05:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B10891F22652
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:03:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F29631F2289C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:05:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0392D610;
-	Mon, 18 Mar 2024 10:03:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36C7A2D057;
+	Mon, 18 Mar 2024 10:05:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WactNBc7"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.17])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OOuH3EBG"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DF8E2D03D;
-	Mon, 18 Mar 2024 10:03:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.17
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 776A7200C1;
+	Mon, 18 Mar 2024 10:05:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710756226; cv=none; b=H8DgBmBjcmGPMZPy0ihmGl5OLkMjkRVtAdu1XjcY36nkHmLZ3feYsaxq1Va7QQexV7IcfWerPh+i5sr9N4Lsco22Qqbr67QpyfpnfNG/aZolKwXDm/hKPQF57dWP63rKjAyiImz518EHv+fviY+yAI8SpqP48I+DENFEqQJ8YPw=
+	t=1710756307; cv=none; b=NBYHqZXJmCeveuIEJz+WBSsY9/HFZ6JAHDkoP1/5xXeY7b8brFKp/n4bOrMgt1q0EwPSPvnxoO3wIXFz6nSOhFHiN/pJixYsoR+VyuxB+Ka0T8oP8YR6Rp72kBzCQtCkkDejM65WRhclTAYS7C1RGUwhqnIyu21ln6SFFWJHZSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710756226; c=relaxed/simple;
-	bh=xDlNMWqUTXTBM8em3VlJSfREj2/BL9qrToesVMEcMoI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=qGjoh0PLhbiUcHTRKp9gQ6kLeKcwx8oZckhwmukXOGVR545fFFXcLzuO+IOMROm3PG+VTru663N7FXJHD+WugMoVYgyfJdCiLcO3Xmrcv2p6Rkdi4TUJ7ojdgH0mGWEoSJ7qo9/4NXukfpwYfKHMuiaZ8MO0zyDsYxh+yDObqp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WactNBc7; arc=none smtp.client-ip=198.175.65.17
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710756225; x=1742292225;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=xDlNMWqUTXTBM8em3VlJSfREj2/BL9qrToesVMEcMoI=;
-  b=WactNBc723FWsyDwt6b5yZLza4dAx5hV7XKPcoGw1SbMQp3HGgRHblGX
-   EaJEPZVgmoezgpzLS440qpXlvboeS/3V0DbCTwjd22yJ2YdgpF/rBtm7u
-   qChIqlqSTUk3jfJ6kuRLhhe2QK1Ly/Hm6iqFnPMvtd54CWmSlnKwEB+fj
-   6DEfNA36GZOp7QqyjWN8DGUPJ9MqTe/1ppi2m69OwGgF04ZgCEBRGUnKg
-   9n0Vht+f5oBiHNSIJryD23OAtFBUmsZJnLfYK+TY9QeuQwJYxpE9XmfCN
-   B5Jd7KBHLy+ORoI0XDeX9SdmUFc5a84mVytqy/Ei8kpR3UWuMl11D/IlV
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="5685231"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="5685231"
-Received: from fmsmga002.fm.intel.com ([10.253.24.26])
-  by orvoesa109.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:03:44 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="914587235"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="914587235"
-Received: from smile.fi.intel.com ([10.237.72.54])
-  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:03:41 -0700
-Received: from andy by smile.fi.intel.com with local (Exim 4.97)
-	(envelope-from <andriy.shevchenko@linux.intel.com>)
-	id 1rm9qE-0000000DuN5-1Kpj;
-	Mon, 18 Mar 2024 12:03:38 +0200
-Date: Mon, 18 Mar 2024 12:03:37 +0200
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Dan Carpenter <dan.carpenter@linaro.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Vladimir Zapolskiy <vz@mleia.com>,
-	Geert Uytterhoeven <geert+renesas@glider.be>,
-	Florian Fainelli <florian.fainelli@broadcom.com>,
-	Uwe =?iso-8859-1?Q?Kleine-K=F6nig?= <u.kleine-koenig@pengutronix.de>,
-	linux-kernel@vger.kernel.org, linux-serial@vger.kernel.org,
-	kernel-janitors@vger.kernel.org
-Subject: Re: [PATCH] serial: 8250_lpc18xx: disable clks on error in probe()
-Message-ID: <ZfgReWkDIFnoUiCZ@smile.fi.intel.com>
-References: <92646c10-e0b5-4117-a9ac-ce9987d33ce3@moroto.mountain>
+	s=arc-20240116; t=1710756307; c=relaxed/simple;
+	bh=XfYiU7AOdE2wj+QEuPu+XH/cd9oLr/E7XIUhk8cPF/s=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:Message-ID:
+	 MIME-Version:Content-Type; b=DANCqmI4Nqy39CQW7fOdiQ9Phh9uVCFMi/t7spVbFHqkhaSNf2MjhPmMxCPIkUzqYCzISbi1n6mMi6lyB1KVuD1bMxvMVdk5H6H8hRydAl80NZweeKu5Y7W3Jvc0hVcfbhGTXaCzmqmmdTG9wQvTTRmQzlPBuJPBhcAsuGH1rr8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OOuH3EBG; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3DA92C433F1;
+	Mon, 18 Mar 2024 10:05:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710756307;
+	bh=XfYiU7AOdE2wj+QEuPu+XH/cd9oLr/E7XIUhk8cPF/s=;
+	h=From:To:Cc:Subject:References:Date:In-Reply-To:From;
+	b=OOuH3EBG8xPeS2ygRCn9L2UEPhrZss4I8fW5oLvL8Z2xrvWT9vu40DfaLw/I9kNt1
+	 JPUyuCX+645mTXq5wIQ/EHeJjU2YCKvqm/OdWUNaOJ6+h+isxma4M/o5/Rt20CeW/z
+	 FoJrvH918A45K7SeiujtEnb/zdciKbz8318lBmsBGaezee5W1STaOhoTUzwYGeBQst
+	 xAw1BgtWW2hT2bFk/D2Ac7f7qzh4f2MJeucb0HbWeBiT45HyNIGLSmaLpvKHjnD+Vw
+	 Zr12HtTJ0VoCNVTTCKWa6FPssJigodBhGwMrn2eF6r0vHWxxJI7tq/cl5+brkiZm7E
+	 i1imzL2w6Pibg==
+From: Kalle Valo <kvalo@kernel.org>
+To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+  "linux-wireless@vger.kernel.org" <linux-wireless@vger.kernel.org>
+Subject: Re: [PATCH v2 3/3] wifi: ti: Convert sprintf/snprintf to sysfs_emit
+References: <20240315055211.1347548-1-lizhijian@fujitsu.com>
+	<20240315055211.1347548-3-lizhijian@fujitsu.com>
+	<87cyrrew7f.fsf@kernel.org>
+	<115f3f2f-310f-4474-bdf6-070d5c30876c@fujitsu.com>
+Date: Mon, 18 Mar 2024 12:05:04 +0200
+In-Reply-To: <115f3f2f-310f-4474-bdf6-070d5c30876c@fujitsu.com> (Zhijian Li's
+	message of "Mon, 18 Mar 2024 09:42:51 +0000")
+Message-ID: <874jd3etyn.fsf@kernel.org>
+User-Agent: Gnus/5.13 (Gnus v5.13) Emacs/28.2 (gnu/linux)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <92646c10-e0b5-4117-a9ac-ce9987d33ce3@moroto.mountain>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+Content-Type: text/plain
 
-On Sat, Mar 16, 2024 at 12:30:09PM +0300, Dan Carpenter wrote:
-> Goto the clean up path to clean up a couple clocks before returning
-> on this error path.
+"Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com> writes:
 
-Reviewed-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+> Kalle,
+>
+>
+> On 18/03/2024 17:16, Kalle Valo wrote:
+>> Li Zhijian <lizhijian@fujitsu.com> writes:
+>> 
+>>> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+>>> or sysfs_emit_at() when formatting the value to be returned to user space.
+>>>
+>>> coccinelle complains that there are still a couple of functions that use
+>>> snprintf(). Convert them to sysfs_emit().
+>>>
+>>> sprintf() will be converted as weel if they have.
+>>>
+>>> Generally, this patch is generated by
+>>> make coccicheck M=<path/to/file> MODE=patch \
+>>> COCCI=scripts/coccinelle/api/device_attr_show.cocci
+>>>
+>>> No functional change intended
+>>>
+>>> CC: Kalle Valo <kvalo@kernel.org>
+>>> CC: linux-wireless@vger.kernel.org
+>>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>>> ---
+>>> V2: subject updated
+>>>
+>>> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+>>> Split them per subsystem so that the maintainer can review it easily
+>>> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+>>> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+>> 
+>> Please resubmit the whole patchset as v3.
+>
+>
+> May I know what's wrong with this V2? or what update should I do in V3
 
-Thank you for fixing this!
+Sorry, my mistake. I didn't see patch 1 and I assumed it was not sent.
+But I checked patchwork now and I do see all three patches:
+
+https://patchwork.kernel.org/project/linux-wireless/list/?series=835497
+
+So no need to resend anything because of this.
 
 -- 
-With Best Regards,
-Andy Shevchenko
+https://patchwork.kernel.org/project/linux-wireless/list/
 
-
+https://wireless.wiki.kernel.org/en/developers/documentation/submittingpatches
 
