@@ -1,161 +1,101 @@
-Return-Path: <linux-kernel+bounces-105898-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105899-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880B787E62B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:43:43 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A39A87E62E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:44:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 126AE280A21
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:43:42 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1B22B1F22459
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:44:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446292C6AC;
-	Mon, 18 Mar 2024 09:43:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5890A2C6B1;
+	Mon, 18 Mar 2024 09:44:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="EXFHnES/"
-Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b="L5cgQpGN"
+Received: from ms.lwn.net (ms.lwn.net [45.79.88.28])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07AF72DF87
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:43:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 485FE2C690;
+	Mon, 18 Mar 2024 09:44:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.79.88.28
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755014; cv=none; b=FHtQ+jV48DQFR6lCS/GVraU1AFcZdfiiwyLUD9DxigIkZJvLS6d44qBewwcZNF7sK6Rf6fv4rKrqHqW0QGA6mAEf1ppWUQRpxJZPbDby0c8Y/3RENRQz+j9M6goIjyN00Dx9j5MvNRnGp+YGdSM/V/aMNThCPPmW/v/UqKnqzrM=
+	t=1710755081; cv=none; b=Rwm9sMhXMVBKYgfxbAksl4iIejBThEAoAUGm1OZ59YRxWzvqeQ+8AL3Yk/wFd/Rlhhcy/wCTftrw72u6PY+k5bi9QfuvOcigMkCOfvHpacX/yIedniJulekP7hzT9ba+VfX7hU0SzMmswk905NrUW6YrieR92gavW5ONUDwz6Z0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755014; c=relaxed/simple;
-	bh=Vu5TeQIbNnNOvZh5Nl0JoowV+Y2laxCeaTaC2/xQXzY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iSHvAuYYQU6kFzcLc1cwMK0tIliVJnNbr+I0g7uhhOAhbyVijI0PTR5Bk+svtfqUK9M9utqwZ7jodlHD1nyy6KKu3Hs3sNec8GZ/YIzyPEri6tbyaYj6OsAn6d3+iBk1urcltK2N24P7eZ6N2PnaVp1LSrWVsnqZm+aksLIbbaM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=EXFHnES/; arc=none smtp.client-ip=209.85.222.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-7884a9a404fso221937985a.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:43:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710755011; x=1711359811; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=BpMuKFoBUfb/TkstgZdaP/sds2EB+DxUhvcvriLXYFo=;
-        b=EXFHnES/ZhNv/0Z/naJBhTSHcbEgNf0cz+yRtY/Bs4tmgyU3+dTd/ktHtphZElrrMN
-         ptSWUXqvzYeRDz4x0Kc9ABq2CXJrp3DgF7HYY2RudAhwbZrcTPYNhpc8ebfH2xhBkHHw
-         4eiNnZ2PIFk12vEIrDGX3Y8vkOU4eYd1bxiaA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710755011; x=1711359811;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=BpMuKFoBUfb/TkstgZdaP/sds2EB+DxUhvcvriLXYFo=;
-        b=KmEUU8EXTFx/auD2rwAfy/yPjdHImLcxQQViwjrVlrYBxlORvwiMDMpLrAhklwABKe
-         RglcrL1P19esCV81hiomEUyzohz83AzMK+dqkbDkmz9DC8JLiYAQLGCiQ5uweU9lXBPz
-         OHPkjmfJJQijaBdZbsEMUJinZotVamK65Ipyv9abE5tAkZIlsf9n98FZG36lWreVSw7N
-         47wJi2uBGQf4l83LHtEA0xE6W8AVzrvEKZv5WWUsRsUldxwB1yHfx2UXF2ZZJrCmlak8
-         A3fvqKLez7Yvp8DmkW07uj8wg12zvR3UAfGxoFLXBegbSHgpcHZTIl7X0H/DjsrNEOan
-         zLhA==
-X-Forwarded-Encrypted: i=1; AJvYcCUuvs4on/Xz669QOsuHXTTv6TSJyFT24PIdaMdcsqtqdRLIC6lja60V6uErcX+fUbylrbJdUMcGKB7wZbtFeyf3SU1XXRoAzPKBJwHf
-X-Gm-Message-State: AOJu0YyYRUgw0lu13WA4Zd0PDv9MnFPjt3sGq3eDAYGJFmh5IgKj14rw
-	1Gc/8ldCeHaC5R/MrJ8AX4y72kjIt5vlOYTsqbExEaysAS4LvMmjw0s/mnwph8Mmy6JhjWAxsXg
-	=
-X-Google-Smtp-Source: AGHT+IH78X9SUCPhB+I3AIdG3SqTWaFLki9G60CCbbFe6feeN46+2U8IV8RjHe//3aBBaS5EhT7NWQ==
-X-Received: by 2002:a05:6214:5156:b0:696:289c:e06f with SMTP id kh22-20020a056214515600b00696289ce06fmr389537qvb.16.1710755011541;
-        Mon, 18 Mar 2024 02:43:31 -0700 (PDT)
-Received: from mail-qv1-f51.google.com (mail-qv1-f51.google.com. [209.85.219.51])
-        by smtp.gmail.com with ESMTPSA id gf15-20020a056214250f00b006912014b98dsm5153787qvb.129.2024.03.18.02.43.30
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 02:43:30 -0700 (PDT)
-Received: by mail-qv1-f51.google.com with SMTP id 6a1803df08f44-6918a0edcfaso20235266d6.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:43:30 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUKCy2NAxSVJr/Jml6KtHvFOO2AQ3TC71OBjloCYU94qoTJ7kStnWIzowylIrLukTHS66fwpeFrFrV2mOiYYwuTBySOP6Ml6VfToCQX
-X-Received: by 2002:a05:6214:2f0d:b0:695:7939:165c with SMTP id
- od13-20020a0562142f0d00b006957939165cmr9069229qvb.52.1710755010398; Mon, 18
- Mar 2024 02:43:30 -0700 (PDT)
+	s=arc-20240116; t=1710755081; c=relaxed/simple;
+	bh=clpK5/hgFVQ6y90q1invbFi5wfYWxiwpju2/zLJ8Y54=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=I3ZwTI+pjrSrUc1mLNW28E0RAKAWBc7aFBf1WuQEds5Had33WlKUE4S53OzIFaRsK3H8yaQoE9mEAQGBA0iEpDj/AV68CbYjQBf6EqJGnwatYPWHW1O5aSjyXVhX78ro7lERTAKN8IcmxADMJgQIFNxNfNBQh32nNkwYwS1pBRA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net; spf=pass smtp.mailfrom=lwn.net; dkim=pass (2048-bit key) header.d=lwn.net header.i=@lwn.net header.b=L5cgQpGN; arc=none smtp.client-ip=45.79.88.28
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lwn.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lwn.net
+DKIM-Filter: OpenDKIM Filter v2.11.0 ms.lwn.net EB435418C4
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=lwn.net; s=20201203;
+	t=1710755079; bh=hY9sbxkA5b6oOGMua/46fI6ru6HCKNfDB3qjt/oFvo4=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
+	b=L5cgQpGNOm5JQBBcDMO4RiLWnpGAb5uEm+VzSHXa5pmsXvBG319mqekWL+FTeRMQL
+	 37MM+oW3ffLH1Xj6apOtRu/+ejQV72Bpt6t4aVE11GaGUkTMqkLRRZhWA/UqpnVUSX
+	 oC5SO+SqP0Q+3hmdQaEaoActH8NnpIh8o0wkZPXyBSK9XVWO7aOVk2HyLXuZu7yBnk
+	 JrAq8GukSMuNtpcVpEJOkQICmenDbo9VZWECDO8KxEWOBva4tgP29yxh9qYOc8oAKM
+	 Lai9Scdh29v1+vFX7STlmT3KOuB7mX83qbIG58ovt+9+Kk6Of/YFC92qMt/2goFTyp
+	 14+cB1idlmM1g==
+Received: from localhost (mdns.lwn.net [45.79.72.68])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by ms.lwn.net (Postfix) with ESMTPSA id EB435418C4;
+	Mon, 18 Mar 2024 09:44:38 +0000 (UTC)
+From: Jonathan Corbet <corbet@lwn.net>
+To: Thorsten Leemhuis <linux@leemhuis.info>
+Cc: regressions@lists.linux.dev, linux-doc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Bagas Sanjaya <bagasdotme@gmail.com>, Petr
+ =?utf-8?B?VGVzYcWZw61r?= <petr@tesarici.cz>
+Subject: Re: [PATCH v1 0/4] docs: verify/bisect: install, tainting, and
+ finetuning
+In-Reply-To: <cover.1710750972.git.linux@leemhuis.info>
+References: <cover.1710750972.git.linux@leemhuis.info>
+Date: Mon, 18 Mar 2024 03:44:35 -0600
+Message-ID: <87a5mvan7g.fsf@meer.lwn.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240221-uvc-host-video-decode-start-v3-1-40e9b9ced97b@pengutronix.de>
-In-Reply-To: <20240221-uvc-host-video-decode-start-v3-1-40e9b9ced97b@pengutronix.de>
-From: Ricardo Ribalda <ribalda@chromium.org>
-Date: Mon, 18 Mar 2024 10:43:16 +0100
-X-Gmail-Original-Message-ID: <CANiDSCv13TmKFNKP6khYh7cCv=mOrhVKGJ79H9knYuB6iJKqDA@mail.gmail.com>
-Message-ID: <CANiDSCv13TmKFNKP6khYh7cCv=mOrhVKGJ79H9knYuB6iJKqDA@mail.gmail.com>
-Subject: Re: [PATCH v3] uvc_video: move clock_decode and stats_decode to the
- end of decode_start
-To: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, kernel@pengutronix.de
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-Hi Michael
+Thorsten Leemhuis <linux@leemhuis.info> writes:
 
-On Mon, 18 Mar 2024 at 10:28, Michael Grzeschik
-<m.grzeschik@pengutronix.de> wrote:
+> Here are a few small improvements for Documentation/admin-guide/
+> verify-bugs-and-bisect-regressions.rst.
 >
-> When the uvc request will get parsed by uvc_video_decode_start it will
-> leave the function with -EAGAIN to be restarted on the next frame. While
-> the first wrong parse the statistics will already be updated with
-> uvc_video_stats_decode.
+> * The "improve install instructions" aspects (link to distro docs, Arch
+>   support) were brought up on the list and in a chat.
 >
-> One value e.g. is the error_count, which therefor will be incremented
-> twice in case the fid has changed on the way. This patch fixes the
-> unnecessary extra parsing by moving the decode functions to the
-> end of decode_start, when it is save to really parse the data.
-nit: safe
+> * The "check tainted status" thing was something I had forgotten; I
+>   noticed this aspect should likely be covered while doing some early
+>   work to better align Documentation/admin-guide/reporting-issues.rst
+>   with this text.
 >
-> Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
-> ---
-> Changes in v3:
-> - Moved the clock_decode and stat_decode to end of function as suggested by Ricardo Ribalda
-> - Link to v2: https://lore.kernel.org/r/20240221-uvc-host-video-decode-start-v2-1-88c6e17e487a@pengutronix.de
+> * The rest are minor fixes for things. Many are things I noticed while
+>   working on the above changes. Quite a few are also things Petr Tesa=C5=
+=99=C3=ADk
+>   brought to my attention (many thx!).
 >
-> Changes in v2:
-> - Moved the EAGAIN bailout after the sequence handling as mentioned by Ricardo Ribalda
-> - Link to v1: https://lore.kernel.org/r/20240221-uvc-host-video-decode-start-v1-1-228995925c70@pengutronix.de
-> ---
->  drivers/media/usb/uvc/uvc_video.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
+> Ciao, Thorsten
 >
-> diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-> index 7cbf4692bd875..7471bff0ca894 100644
-> --- a/drivers/media/usb/uvc/uvc_video.c
-> +++ b/drivers/media/usb/uvc/uvc_video.c
-> @@ -1078,9 +1078,6 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
->                         uvc_video_stats_update(stream);
->         }
+> Thorsten Leemhuis (4):
+>   docs: verify/bisect: improve install instructions
+>   docs: verify/bisect: check taint flag
+>   docs: verify/bisect: drop 'v' prefix, EOL aspect, and assorted fixes
+>   docs: verify/bisect: remove a level of indenting
 >
-> -       uvc_video_clock_decode(stream, buf, data, len);
-> -       uvc_video_stats_decode(stream, data, len);
-> -
->         /*
->          * Store the payload FID bit and return immediately when the buffer is
->          * NULL.
-> @@ -1147,6 +1144,9 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
->                 return -EAGAIN;
->         }
->
-> +       uvc_video_clock_decode(stream, buf, data, len);
-> +       uvc_video_stats_decode(stream, data, len);
-> +
->         stream->last_fid = fid;
->
->         return data[0];
->
-> ---
-> base-commit: d99e42ce6b8341d3f09e22c6706461ec900fe172
-> change-id: 20240221-uvc-host-video-decode-start-af53df5924cd
->
-> Best regards,
-> --
-> Michael Grzeschik <m.grzeschik@pengutronix.de>
->
->
+>  .../verify-bugs-and-bisect-regressions.rst    | 389 ++++++++++--------
+>  1 file changed, 211 insertions(+), 178 deletions(-)
 
+I've gone ahead and applied these, thanks.
 
--- 
-Ricardo Ribalda
+jon
 
