@@ -1,248 +1,92 @@
-Return-Path: <linux-kernel+bounces-105836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE1D287E535
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:49:23 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E22AD87E538
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:49:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C86701C20FBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:49:22 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4DFF0B209EC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:49:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 599E02C690;
-	Mon, 18 Mar 2024 08:48:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFBC828DD3;
+	Mon, 18 Mar 2024 08:48:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oTwkafZ8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="j2hftKGP";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="oTwkafZ8";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="j2hftKGP"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mn4Dn00K"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 74FB22C1B9
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:48:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F037428DAE;
+	Mon, 18 Mar 2024 08:48:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710751716; cv=none; b=ERbd9N9sGnM6WKg00EqPmRbPpfaU1hA8wFoBqa8hU/2KYOAeV5gYFuhF5O8uo0HiX9GK9HEeGDtRv4PWMk6XIIIxOAqh+06isSDYa7xS66j4cJYlM5z75tCzb1C9eItKn/ht7qhkICRQlTbI+DN7PC/42HPU/gH2OnkgqJqDSms=
+	t=1710751738; cv=none; b=gtrWnbsBkpYglaPN9bfHwg0/bsN0Tf9AGV+6Te1x6DUfnKshqzOLDpMD/kwaT14aftLYB0odvd1qAhrX5VCTBba7Qn3AudvUqpFNJL3Wy1xUD+WVB7Q7DhECSr5gshvCOe/HLDqUqq2boyWb0L5j3CAlIbEGL7kU2+Dg0I0qLWs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710751716; c=relaxed/simple;
-	bh=8Fymkj2RAhgYwoOMAv5HH2psFdB5h6gX6JwERO/pMSQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Mu+i8TkOUspn0mYIoTTOQkvzEJZE8Eq0Smfa2nZboHHkY7rp+F4NW5hfICIbpEIhLo5y3G44CE2XotPwydHVqcdQEeT17fEBG2EJa9aQ6CKtkaqTyJzyckHLe3OhRh0Zr/w5rYH7WF0Vs3juL47/wLXCWN5FmAJP7CR9tvMrmR4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oTwkafZ8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=j2hftKGP; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=oTwkafZ8; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=j2hftKGP; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 245475C2C7;
-	Mon, 18 Mar 2024 08:48:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710751707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GdkzrNaPtEVEtt2kiY3Zyg869C8fmWrE5dcBL0lwOP4=;
-	b=oTwkafZ84BJTO46pVmS9oqb2R7XDmou1TmfuBg9BHAxU4iQ2f8x49pfMaj6bePQyfIFRVI
-	cr9E2u4XaMkyf5A+75jl2XVeYZLHIFIe5U4bnlYGH+Hsaxw7XdfuY0RSPeWZvKrF853x8i
-	meD0qmOtUaLU1fi1ZUoiahuphhyc31U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710751707;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GdkzrNaPtEVEtt2kiY3Zyg869C8fmWrE5dcBL0lwOP4=;
-	b=j2hftKGPhYlRIJw9w1AV5NOppSVeqap+7QJcDIBFYYgIg5PwitsCeDO0Zn7OqJGN1JTyLa
-	Ae/rqmeIS/FVrPDg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710751707; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GdkzrNaPtEVEtt2kiY3Zyg869C8fmWrE5dcBL0lwOP4=;
-	b=oTwkafZ84BJTO46pVmS9oqb2R7XDmou1TmfuBg9BHAxU4iQ2f8x49pfMaj6bePQyfIFRVI
-	cr9E2u4XaMkyf5A+75jl2XVeYZLHIFIe5U4bnlYGH+Hsaxw7XdfuY0RSPeWZvKrF853x8i
-	meD0qmOtUaLU1fi1ZUoiahuphhyc31U=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710751707;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=GdkzrNaPtEVEtt2kiY3Zyg869C8fmWrE5dcBL0lwOP4=;
-	b=j2hftKGPhYlRIJw9w1AV5NOppSVeqap+7QJcDIBFYYgIg5PwitsCeDO0Zn7OqJGN1JTyLa
-	Ae/rqmeIS/FVrPDg==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0B9E81349D;
-	Mon, 18 Mar 2024 08:48:27 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id q6hAAtv/92UGPgAAD6G6ig
-	(envelope-from <vbabka@suse.cz>); Mon, 18 Mar 2024 08:48:27 +0000
-Message-ID: <dd16e7cf-fd37-44a3-89de-ebb92acdad74@suse.cz>
-Date: Mon, 18 Mar 2024 09:48:26 +0100
+	s=arc-20240116; t=1710751738; c=relaxed/simple;
+	bh=zr+WT/cxm5GWLn0il6aBrpvjRoQPdhKSPnO50VXsi9E=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=tFeBFKbKP1r/OuLJbQQFViRQwS3saO/MFFcZBJEU8J+Nk9GlZ8PB387DHoBdpPqU5yHrfNwlWCDdmuIDwm+9Jd3L4ZKIUMHxShBNG8m4xJekVaItt+RVY2Iw6ob7trK1VrRnMhuh+O+1VlZt1Ym6JRaXcS48LRq1EUPOUtOxV98=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mn4Dn00K; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 78021C433C7;
+	Mon, 18 Mar 2024 08:48:55 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710751737;
+	bh=zr+WT/cxm5GWLn0il6aBrpvjRoQPdhKSPnO50VXsi9E=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=mn4Dn00KlXtFXHmQRfyzLRGZWoOvE9KofFoxfx8tvqqlFABwWiQHHQJ1P0UMEwjnY
+	 jSplxwo8MgxDtYrsovBTOn0Kn8J7BSu2Lp3kbAELXbBnyUuoYI0ZrBDjtlVxpe1Vry
+	 JP3Ikh/blRLspuQVcPXHNbMZsYj8JCPxgRjSl71+BwyWUsgNt91CQJckfr+fSv5ucE
+	 MSUd9a5KKBojL45c/i9APrcjRo6VhgwnyN8Uj5Ugm9Xong5ntnztw+ZHX356pZtlkx
+	 KomX9Wo1NfIrEI7GWKoU6Mm0dokdZ8IbN6O0gOF88k7gvtNcC0NWZ4yPdVepeIfBZT
+	 mwBxA7hksGpMQ==
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>,
+	David Howells <dhowells@redhat.com>
+Cc: Christian Brauner <brauner@kernel.org>,
+	Marc Dionne <marc.dionne@auristor.com>,
+	netfs@lists.linux.dev,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] fscache: Fix error handling in fscache_begin_operation()
+Date: Mon, 18 Mar 2024 09:48:49 +0100
+Message-ID: <20240318-pfund-hitzig-d677830c953a@brauner>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <3933237.1710514106@warthog.procyon.org.uk>
+References: <3933237.1710514106@warthog.procyon.org.uk>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] mm,page_owner: Fix recursion
-To: Oscar Salvador <osalvador@suse.de>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- Michal Hocko <mhocko@suse.com>, Marco Elver <elver@google.com>,
- Andrey Konovalov <andreyknvl@gmail.com>,
- Alexander Potapenko <glider@google.com>
-References: <20240315222610.6870-1-osalvador@suse.de>
-Content-Language: en-US
-From: Vlastimil Babka <vbabka@suse.cz>
-In-Reply-To: <20240315222610.6870-1-osalvador@suse.de>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Spam-Score: -3.50
-X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
-X-Spam-Flag: NO
-X-Spamd-Result: default: False [-3.50 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[8];
-	 NEURAL_HAM_SHORT(-0.20)[-0.998];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-3.00)[100.00%];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DWL_DNSWL_HI(-3.50)[suse.cz:dkim];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_SPAM_LONG(3.50)[1.000];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:email,suse.cz:dkim,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,google.com,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=oTwkafZ8;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=j2hftKGP
-X-Rspamd-Queue-Id: 245475C2C7
+Content-Type: text/plain; charset="utf-8"
+X-Developer-Signature: v=1; a=openpgp-sha256; l=980; i=brauner@kernel.org; h=from:subject:message-id; bh=zr+WT/cxm5GWLn0il6aBrpvjRoQPdhKSPnO50VXsi9E=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaR+///JecHqV85pn6VmzX5bbzo7TocntiFCWfzVvofrm uOWJd4/1FHKwiDGxSArpsji0G4SLrecp2KzUaYGzBxWJpAhDFycAjAR5QhGhmUSMiwne5XulERu Z7g2+5/FU47ws3+nbNv90vf5m5Yp7McY/qnp5H1flaaZ4GxSszHwln1xq/QywQiHz5u/m7905DP 8wA8A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On 3/15/24 23:26, Oscar Salvador wrote:
-> Prior to 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
-> the only place where page_owner could potentially go into recursion due to
-> its need of allocating more memory was in save_stack(), which ends up calling
-> into stackdepot code with the possibility of allocating memory.
+On Fri, 15 Mar 2024 14:48:26 +0000, David Howells wrote:
 > 
-> We made sure to guard against that by signaling that the current task was
-> already in page_owner code, so in case a recursion attempt was made, we
-> could catch that and return dummy_handle.
+> Fix fscache_begin_operation() to clear cres->cache_priv on error, otherwise
+> fscache_resources_valid() will report it as being valid.
 > 
-> After above commit, a new place in page_owner code was introduced where we
-> could allocate memory, meaning we could go into recursion would we take that
-> path.
 > 
-> Make sure to signal that we are in page_owner in that codepath as well.
-> Move the guard code into two helpers {un}set_current_in_page_owner()
-> and use them prior to calling in the two functions that might allocate
-> memory.
-> 
-> Signed-off-by: Oscar Salvador <osalvador@suse.de>
-> Fixes: 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
 
-Reviewed-by: Vlastimil Babka <vbabka@suse.cz>
+Applied to the vfs.fixes branch of the vfs/vfs.git tree.
+Patches in the vfs.fixes branch should appear in linux-next soon.
 
-> ---
-> Changes from v1 -> v2:
->  Wrap {un}set_current_in_page_owner directly around kmalloc call
->  (Vlastimil feedback)
-> ---
->  mm/page_owner.c | 33 +++++++++++++++++++++++----------
->  1 file changed, 23 insertions(+), 10 deletions(-)
-> 
-> diff --git a/mm/page_owner.c b/mm/page_owner.c
-> index e96dd9092658..cde1ee0f9005 100644
-> --- a/mm/page_owner.c
-> +++ b/mm/page_owner.c
-> @@ -54,6 +54,22 @@ static depot_stack_handle_t early_handle;
->  
->  static void init_early_allocated_pages(void);
->  
-> +static inline void set_current_in_page_owner(void)
-> +{
-> +	/*
-> +	 * Avoid recursion.
-> +	 *
-> +	 * We might need to allocate more memory from page_owner code, so make
-> +	 * sure to signal it in order to avoid recursion.
-> +	 */
-> +	current->in_page_owner = 1;
-> +}
-> +
-> +static inline void unset_current_in_page_owner(void)
-> +{
-> +	current->in_page_owner = 0;
-> +}
-> +
->  static int __init early_page_owner_param(char *buf)
->  {
->  	int ret = kstrtobool(buf, &page_owner_enabled);
-> @@ -133,23 +149,16 @@ static noinline depot_stack_handle_t save_stack(gfp_t flags)
->  	depot_stack_handle_t handle;
->  	unsigned int nr_entries;
->  
-> -	/*
-> -	 * Avoid recursion.
-> -	 *
-> -	 * Sometimes page metadata allocation tracking requires more
-> -	 * memory to be allocated:
-> -	 * - when new stack trace is saved to stack depot
-> -	 */
->  	if (current->in_page_owner)
->  		return dummy_handle;
-> -	current->in_page_owner = 1;
->  
-> +	set_current_in_page_owner();
->  	nr_entries = stack_trace_save(entries, ARRAY_SIZE(entries), 2);
->  	handle = stack_depot_save(entries, nr_entries, flags);
->  	if (!handle)
->  		handle = failure_handle;
-> +	unset_current_in_page_owner();
->  
-> -	current->in_page_owner = 0;
->  	return handle;
->  }
->  
-> @@ -164,9 +173,13 @@ static void add_stack_record_to_list(struct stack_record *stack_record,
->  	gfp_mask &= (GFP_ATOMIC | GFP_KERNEL);
->  	gfp_mask |= __GFP_NOWARN;
->  
-> +	set_current_in_page_owner();
->  	stack = kmalloc(sizeof(*stack), gfp_mask);
-> -	if (!stack)
-> +	if (!stack) {
-> +		unset_current_in_page_owner();
->  		return;
-> +	}
-> +	unset_current_in_page_owner();
->  
->  	stack->stack_record = stack_record;
->  	stack->next = NULL;
+Please report any outstanding bugs that were missed during review in a
+new review to the original patch series allowing us to drop it.
 
+It's encouraged to provide Acked-bys and Reviewed-bys even though the
+patch has now been applied. If possible patch trailers will be updated.
+
+Note that commit hashes shown below are subject to change due to rebase,
+trailer updates or similar. If in doubt, please check the listed branch.
+
+tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
+branch: vfs.fixes
+
+[1/1] fscache: Fix error handling in fscache_begin_operation()
+      https://git.kernel.org/vfs/vfs/c/d86f1160d819
 
