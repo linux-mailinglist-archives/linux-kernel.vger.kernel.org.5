@@ -1,147 +1,98 @@
-Return-Path: <linux-kernel+bounces-106105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CF7B87E93B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:20:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1C6687E93D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:21:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC88B282E16
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:20:35 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DF90B2167F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:21:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75EAE381BB;
-	Mon, 18 Mar 2024 12:20:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RLD8w+AY"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B733438385;
-	Mon, 18 Mar 2024 12:20:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14D2381B0;
+	Mon, 18 Mar 2024 12:21:40 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013DFA2A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:21:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710764420; cv=none; b=p2sGUj2XUHrhc+ydSuLEFzxxyUk06rXo93px9eYRqzzCk43uCbXK+QOsnYwKV5UK9HdXhTnDAn0cPlvooLAQifAc1fkglHtB4eesxcJ+qJlemqCGO36ZXJeiOMIIPnmlXd9GPOaIk+sqXGVBbWqYFWkPtAlpSDY0xfuXYpKfZtk=
+	t=1710764500; cv=none; b=qgpuDkCDRQZG0/OuyZd97M7Pd/pPaSOnzdLFtco6Br+wAvsWczN+fmwIHQLgrv1uBtjzTlBvXIiqcsdlVje23a7/0Z9ZSF89YPxNpSSAtptWOKW15IkOe3MTi+t7eXDIFkq6VqtiLq5inb8EbCRQd+ZnIFsTLAAD02NIhWR/gRo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710764420; c=relaxed/simple;
-	bh=dTwJg1UGqWh+77kQ3HiGt4CvIU6WqC055dKN/Mu7uKg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YOVO9Rg+Bc08iYNhbv9NzyVXbfmggt85uZ0gJ6D2aiiwO+mzM9sBUZmaSDEAbzk2Dcz9mSL1larV4D3Vb7s7I9JLdk3kih4Lma+bbfKPTDvV5xidkuehS8bVx9WS5Ps35h5HV73lgh9hI15paCH7AV89EDJeeogJUjjemhzt49o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RLD8w+AY; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D7059C433F1;
-	Mon, 18 Mar 2024 12:20:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710764420;
-	bh=dTwJg1UGqWh+77kQ3HiGt4CvIU6WqC055dKN/Mu7uKg=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=RLD8w+AY7j9y1TNGzT3oF5CpiUu5Z81E/VX1E2uVP5cOqDq/m8h8jFSLNYZ+kVAmN
-	 0JSIPM7B5dpGr/KKMUlrLJdfOQjrI6ZRJYae3hCPoYuvLBrT+cFGa32ysvGFjKPiKt
-	 ds0550JFsGq5VEGor5Pe387SEIx2etrxdG3MG08KJvJuTpwfBMHsTYWy3oZPfG0kMr
-	 5tgQxKxmehF6G0eNNRM1smTm3ZhdV1hq4vEp0SMUFPT6WUNfsaa5asNHJm2oeq9QxJ
-	 cARHMo1aJhabfSx6uhDhBzNNKRtCFzRDP6+oVBHiKnH0MeHQQbLfB5BSkNiaLYC7lL
-	 wD9Y9nG0pXDPQ==
-Date: Mon, 18 Mar 2024 14:20:16 +0200
-From: Leon Romanovsky <leon@kernel.org>
-To: Breno Leitao <leitao@debian.org>
-Cc: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
-	Jason Gunthorpe <jgg@ziepe.ca>, kuba@kernel.org,
-	keescook@chromium.org,
-	"open list:HFI1 DRIVER" <linux-rdma@vger.kernel.org>,
-	open list <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3] IB/hfi1: allocate dummy net_device dynamically
-Message-ID: <20240318122016.GA4341@unreal>
-References: <20240318100858.3696961-1-leitao@debian.org>
+	s=arc-20240116; t=1710764500; c=relaxed/simple;
+	bh=QJgUMhgnGoBqLU3vlvcKVDzr6lGw90lJFubuJOd9aNQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qTA6j2h4ZR3/NB0Q3IbTkoQ19vsPG5PdB7wQQUdm62f4YHGnhcWE4OeHVoUagkN37lwFV2fk/qKDQ+UiGcmHyyoPeFNBs9PoIZ0Z5gNWYgEA6SIiLjqzleLKIb3cJx2vTGUtDGdSYg7geLtBeR+cgqYiO5HIre5NlnsPJ0KKgmA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CAD0DA7;
+	Mon, 18 Mar 2024 05:22:12 -0700 (PDT)
+Received: from [10.57.12.69] (unknown [10.57.12.69])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 073553F762;
+	Mon, 18 Mar 2024 05:21:34 -0700 (PDT)
+Message-ID: <794bff85-4b59-42e5-ad6c-2a39609fe74f@arm.com>
+Date: Mon, 18 Mar 2024 12:21:35 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318100858.3696961-1-leitao@debian.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/panfrost: Only display fdinfo's engine and cycle tags
+ when profiling is on
+Content-Language: en-GB
+To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
+ Boris Brezillon <boris.brezillon@collabora.com>,
+ Rob Herring <robh@kernel.org>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
+Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org
+References: <20240316231306.293817-1-adrian.larumbe@collabora.com>
+From: Steven Price <steven.price@arm.com>
+In-Reply-To: <20240316231306.293817-1-adrian.larumbe@collabora.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 03:08:57AM -0700, Breno Leitao wrote:
-> Embedding net_device into structures prohibits the usage of flexible
-> arrays in the net_device structure. For more details, see the discussion
-> at [1].
+On 16/03/2024 23:13, Adrián Larumbe wrote:
+> If job accounting is disabled, then both fdinfo's drm-engine and drm-cycle
+> key values will remain immutable. In that case, it makes more sense not to
+> display them at all to avoid confusing user space profiling tools.
 > 
-> Un-embed the net_device from struct hfi1_netdev_rx by converting it
-> into a pointer. Then use the leverage alloc_netdev() to allocate the
-> net_device object at hfi1_alloc_rx().
-> 
-> [1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
-> 
-> Signed-off-by: Breno Leitao <leitao@debian.org>
-> Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
-> 
-> v2:
-> 	* Free struct hfi1_netdev_rx allocation if alloc_netdev() fails
-> 	* Pass zero as the private size for alloc_netdev().
-> 	* Remove wrong reference for iwl in the comments
-> 
-> v3:
-> 	* Re-worded the comment, by removing the first paragraph.
+> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
 
-Please put changelog below "---" marker.
-It doesn't belong to commit message.
-
-Thanks
+Reviewed-by: Steven Price <steven.price@arm.com>
 
 > ---
->  drivers/infiniband/hw/hfi1/netdev.h    |  2 +-
->  drivers/infiniband/hw/hfi1/netdev_rx.c | 10 ++++++++--
->  2 files changed, 9 insertions(+), 3 deletions(-)
+>  drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++----
+>  1 file changed, 6 insertions(+), 4 deletions(-)
 > 
-> diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
-> index 8aa074670a9c..07c8f77c9181 100644
-> --- a/drivers/infiniband/hw/hfi1/netdev.h
-> +++ b/drivers/infiniband/hw/hfi1/netdev.h
-> @@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
->   *		When 0 receive queues will be freed.
->   */
->  struct hfi1_netdev_rx {
-> -	struct net_device rx_napi;
-> +	struct net_device *rx_napi;
->  	struct hfi1_devdata *dd;
->  	struct hfi1_netdev_rxq *rxq;
->  	int num_rx_q;
-> diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> index 720d4c85c9c9..cd6e78e257ef 100644
-> --- a/drivers/infiniband/hw/hfi1/netdev_rx.c
-> +++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
-> @@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
->  	int i;
->  	int rc;
->  	struct hfi1_devdata *dd = rx->dd;
-> -	struct net_device *dev = &rx->rx_napi;
-> +	struct net_device *dev = rx->rx_napi;
+> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> index eec250114114..ef9f6c0716d5 100644
+> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
+> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
+> @@ -550,10 +550,12 @@ static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
+>  	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
 >  
->  	rx->num_rx_q = dd->num_netdev_contexts;
->  	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
-> @@ -360,7 +360,12 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
->  	if (!rx)
->  		return -ENOMEM;
->  	rx->dd = dd;
-> -	init_dummy_netdev(&rx->rx_napi);
-> +	rx->rx_napi = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-> +				   init_dummy_netdev);
-> +	if (!rx->rx_napi) {
-> +		kfree(rx);
-> +		return -ENOMEM;
-> +	}
->  
->  	xa_init(&rx->dev_tbl);
->  	atomic_set(&rx->enabled, 0);
-> @@ -374,6 +379,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
->  {
->  	if (dd->netdev_rx) {
->  		dd_dev_info(dd, "hfi1 rx freed\n");
-> +		free_netdev(dd->netdev_rx->rx_napi);
->  		kfree(dd->netdev_rx);
->  		dd->netdev_rx = NULL;
->  	}
-> -- 
-> 2.43.0
+>  	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
+> -		drm_printf(p, "drm-engine-%s:\t%llu ns\n",
+> -			   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
+> -		drm_printf(p, "drm-cycles-%s:\t%llu\n",
+> -			   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
+> +		if (pfdev->profile_mode) {
+> +			drm_printf(p, "drm-engine-%s:\t%llu ns\n",
+> +				   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
+> +			drm_printf(p, "drm-cycles-%s:\t%llu\n",
+> +				   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
+> +		}
+>  		drm_printf(p, "drm-maxfreq-%s:\t%lu Hz\n",
+>  			   engine_names[i], pfdev->pfdevfreq.fast_rate);
+>  		drm_printf(p, "drm-curfreq-%s:\t%lu Hz\n",
 > 
+> base-commit: 97252d0a4bfbb07079503d059f7522d305fe0f7a
+
 
