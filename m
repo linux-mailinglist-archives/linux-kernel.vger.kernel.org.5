@@ -1,148 +1,105 @@
-Return-Path: <linux-kernel+bounces-106496-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106497-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8FF1E87EF75
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:07:27 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 995D787EF7B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:11:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F02B1F22A9D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:07:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1AB3B21DA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:11:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A9955E6B;
-	Mon, 18 Mar 2024 18:07:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2482F55E5F;
+	Mon, 18 Mar 2024 18:11:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aFIXnKwl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ns2botfh"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FFC52F62;
-	Mon, 18 Mar 2024 18:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E597855C0E;
+	Mon, 18 Mar 2024 18:11:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710785234; cv=none; b=CSFzHLAuAzn5Jh+Nh4ANE4WqBO+0NPxv/j364sbgce5d8TNQogSowbPKXY3UyBhvryGQjdF8m6gYi8ex6iwQvnIiSADwCktuc0jtws4MmvdwrW+BWaIrOt5Hym1pEsQb3IB2MZpSROXHxOQWGSe/MLG2CBtWpMzydIqjABUPVgE=
+	t=1710785493; cv=none; b=FEo0jfxvXI/TyNJg11hlL9vOB7Plb2OMMcEnHbqIPtEeGzxDUghVFCTblkYIEVxUE/bAxQ329d6c7TEY3Et8397npv3zeLgpJIuhEDiAsc/X8XFXqxvNWVqIAB0pNJlPAKWlWCCDgSUJEx50iTtlYDw3NXmoOyirGTQ8U3v3EmY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710785234; c=relaxed/simple;
-	bh=uFTDIwgPe+HRP1kBbmqy1DdKe8I3YJWXH7EL3qi+Uac=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=euCS5gxtyX9lcJbCVVuiNBUXZozLOAOSdVkWpZgWliqbGZS9mhQ2hveTU57jDqAIJGxGMTwABeFR5sF9pCIEppz1hJJlN0vCqkpWJkT+Qe5Prm7Y1aVcP13waBmCxR9kk9LI3cXILoLtDoKV5pEV6ZUMFMhOWx7tbuQzYp+JWkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aFIXnKwl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39864C433F1;
-	Mon, 18 Mar 2024 18:07:14 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710785234;
-	bh=uFTDIwgPe+HRP1kBbmqy1DdKe8I3YJWXH7EL3qi+Uac=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=aFIXnKwlETENqQtQwVlftkKQrg2YFGR9DtlST0lBXmTOzWhVputjq/zoBTDs1uymk
-	 FE1wNfyXdG5m1FDxOvMMqqgi1RmUsPXMnc56rOaNYAdzd3CKVyAWUGCrMJCE/hDC3E
-	 dW0mza7sbdPb6RD/6XNCd+9zrfjB3GKHw/hV1Xe/qbrC8Qx16eTcPBAQ8Q1T6rz7cB
-	 b68G3sLcWvwCvrzrmqkmmOJaAIj4bEBYxslQ1YmQeHGLDPKQAjndEAsb/h18bVU+tF
-	 MJgvVrBKToFBT5qAxVK979GIyphgqBjl8LNksPfPEPniG5d/opr1e7izJm5bhhreDA
-	 Z+NntFzp88CCA==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rmHOB-00DLe3-Nq;
-	Mon, 18 Mar 2024 18:07:11 +0000
-Date: Mon, 18 Mar 2024 18:07:11 +0000
-Message-ID: <86r0g7za5s.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini
- <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton
- <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K
- Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi
- <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown
- <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Mostafa Saleh
- <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v2 2/4] KVM: arm64: Add PSCI SYSTEM_OFF2 function for hibernation
-In-Reply-To: <6a2107864d45bd6ac403c218d68bf97025eca971.camel@infradead.org>
-References: <20240318164646.1010092-1-dwmw2@infradead.org>
-	<20240318164646.1010092-3-dwmw2@infradead.org>
-	<86v85jzbw8.wl-maz@kernel.org>
-	<6a2107864d45bd6ac403c218d68bf97025eca971.camel@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	s=arc-20240116; t=1710785493; c=relaxed/simple;
+	bh=tSZn6Ejd47KXYnMy/z4XjMIbJu1/NOUxNOUSsd7bn6w=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mxRJMYt7qM01zIMN4ox/GAm58e+c1BqNmtRA4CEWhWtDVkh2i+QSn4k0iUWBk3UbQyVXzX57sNazINxB/XqaXHTt6dEU0JJ8PMjA0AoZrcVmgATktXAmnJB6EVGgj3uiZEqGGJgTW1VbwjsbGCs3CxDbK2rwPHI2in7iY9ervhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ns2botfh; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a49261093cso1455257eaf.3;
+        Mon, 18 Mar 2024 11:11:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710785491; x=1711390291; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=X0VKqCIpVP/BtUvyp9zPnBwFIX1VHIioMo2d+w9H9LA=;
+        b=ns2botfhXbTfzwgFKzE/H1HfdzFk1n/dhCD7pOXLMDhJyuuzxYfm4C43rzfAOB6tuw
+         R9veQQD9Z2YmDA/5o6dMtU6XWLECTRJjhPUc0vE06vC530jsGCRhKAl7pZk1zhC8/3i9
+         qqrOZbwIYB3KWDXkg6tyiav3jtE5AL7cKBi8OHjyQQjKqR42IIr0hEjck5D/+jrGfqUe
+         dY+bxC+zd16LtN/XJGI6TGlLklpcNezMBrpfG6jaS29J0YrW+XiQUI5abH1VmG7eAE/b
+         cWt4FrhiozvHcYI+i6kC+t84q324g4Ya03vkT4vMXMBwHjiYFNJ+GDMBUr3Vgn5XLPQn
+         rhuw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710785491; x=1711390291;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=X0VKqCIpVP/BtUvyp9zPnBwFIX1VHIioMo2d+w9H9LA=;
+        b=izYxnqz/dGwfKLrd+Srhw1y7hlZ815khXOTvoE3cPBhex9+fwHe2EdmrtJxLj6vJXc
+         03sgM78ErjDfTTkdD+nHQ/RzB86u47TlHdrGIEpZX0yldpYwT1a5VWYt9kce9aKudW4t
+         P5Pavtkw1+NHB9856VL2U+EMCLNyCpKGNATrlkgiVBxbe5dwIftufGCPfptTODtLkBKM
+         Rm/ioIOAYSUHsXrLJYEpXCHQtULj8wNIhPoIcAKTdcIIvAJMkTqWHXHv+riNWe/5zMrI
+         G4PJ1YWk6/wwPelC+SuTt00kUNDV7/T845rIKpjo0ypKq7xcV3Pa3q+Kk13UzSEzX/k6
+         jzQA==
+X-Forwarded-Encrypted: i=1; AJvYcCUPwr4RRycnExa3BQr5Iv8c3F7iE5/jYyzki3WucnPBgbBUCAzTmJfGECmQb158Cjaq7mNoZe2YmN9mfpjgVjvT5ThN42gEFawwdqN2X4gPTsVQlzOrkuEGLxp6z66WHzgVLXZTJE4=
+X-Gm-Message-State: AOJu0Yxe2JyWTpztQKV9msbHSlKiM1QmfArrhj2a62qT+juAD7M34/8f
+	ptszoauTa8IyfcoLM3ACm6tX//dtZ/NlBUWOoV7YnYKIOfG0wdr4qELdLL/b
+X-Google-Smtp-Source: AGHT+IEPU0++5brWJmarVPFjxJR6uw46576Yky3MEE1nT2iKYYnOieBZvcEfIWsDtDRBYexZlfip2g==
+X-Received: by 2002:a05:6359:7c20:b0:17e:76a1:4dd3 with SMTP id xm32-20020a0563597c2000b0017e76a14dd3mr17527901rwb.4.1710785490915;
+        Mon, 18 Mar 2024 11:11:30 -0700 (PDT)
+Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f5-20020a056a000b0500b006e64baac744sm8255377pfu.120.2024.03.18.11.11.30
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 11:11:30 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Date: Mon, 18 Mar 2024 11:11:29 -0700
+From: Guenter Roeck <linux@roeck-us.net>
+To: Kousik Sanagavarapu <five231003@gmail.com>
+Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: Re: [PATCH v2 2/2] hwmon: lm70: fix links in doc and comments
+Message-ID: <6c8b2699-5488-4ae0-8d78-59bcb2030a2e@roeck-us.net>
+References: <20240318130840.74589-1-five231003@gmail.com>
+ <20240318154540.90613-1-five231003@gmail.com>
+ <20240318154540.90613-3-five231003@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318154540.90613-3-five231003@gmail.com>
 
-On Mon, 18 Mar 2024 17:54:06 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
+On Mon, Mar 18, 2024 at 09:08:35PM +0530, Kousik Sanagavarapu wrote:
+> Update links in the documentation and in-code comments which point to
+> the datasheet.
 > 
-> [1  <text/plain; UTF-8 (quoted-printable)>]
-> On Mon, 2024-03-18 at 17:29 +0000, Marc Zyngier wrote:
-> > 
-> > Again, I really oppose this way of doing things. We already have an
-> > infrastructure for selecting PSCI levels. You may not like it, but it
-> > exists, and I'm not going entertain supporting yet another bike-shed
-> > model. Adding an orthogonal cap for a feature that is specific to a
-> > new PSCI version is just awful.
-> 
-> Huh? This isn't a "new bike-shed model". This is a straight copy of
-> what we *already* have for SYSTEM_RESET2.
+> The current links don't work because National Semiconductor (which is
+> the manufacturer of this board and lm70) has been a part of Texas
+                      ^^^^^^^^^^
 
-There is no KVM capability for SYSTEM_RESET2. It is directly
-advertised to the guest when PSCI 1.1 is supported.
+Is this a leftover from the other patch ? The lm70 driver supports
+the LM70 chip, not a specific board.
 
-> If I were bike-shedding, I wouldn't do separate caps for them; I'd have
-> done it as a *bitmask* of the optional PSCI calls that should be
-> enabled.
->
-> The *mandatory* ones should obviously come from the PSCI version alone,
-> but I can't see how that makes sense for the optional ones...
-
-The guest is in a position to probe for what is supported or not with
-the PSCI_FEATURES call.  Why would you add anything else?
-
-> 
-> > Please make PSCI 1.3 the only version of PSCI supporting suspend in a
-> > non-optional way, and be done with it.
-> 
-> SYSTEM_OFF2 is an *optional* feature in PSCI v1.3. As are
-> CLEAR_INV_MEMREGION and CLEAR_INV_MEMREGION_ATTRIBUTES.
-> 
-> Are you suggesting that enabling v1.3 should automatically enable *all*
-> of the optional features that were defined in that version (and
-> previous versions) of the spec?
-
-No. We have everything we need to incrementally *add* features. So you
-can perfectly implement PSCI 1.3 with only SYSTEM_OFF2, and only later
-on add the rest, if ever.
-
-	M.
-
--- 
-Without deviation from the norm, progress is not possible.
+Guenter
 
