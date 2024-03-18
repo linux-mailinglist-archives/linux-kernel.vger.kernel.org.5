@@ -1,216 +1,186 @@
-Return-Path: <linux-kernel+bounces-105735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105737-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6D22787E3A3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:19:08 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 7866E87E3AA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:19:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAE901F20F75
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:19:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2D2FF1F21704
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C0D3F22325;
-	Mon, 18 Mar 2024 06:18:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 014CE23749;
+	Mon, 18 Mar 2024 06:19:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lF4EyoHd"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YWRVEGTe"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 735AB21101
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 06:18:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.11
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E38322F0E;
+	Mon, 18 Mar 2024 06:19:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710742739; cv=none; b=TX68yA3FgQ8aFofQfN05ZTNrm607HAZ+gjIjoJ8UeQqIr8rE6eqQ/iNCsgENKfVvoTtM9QOeDyBbUTdmGmPHEod7m1M/oftyrxnE7s0yGthOngWffKTM+aDpRz9S0js5vFj5+dgRAK3bF5tOJawyHvBt9Uf4e+YVc/uxAUa3zso=
+	t=1710742748; cv=none; b=qRFDMblqd73d16YKQ2AmlWAjYY9YJtkLCigrIA5V3XfTqi8qB3UUi4lTYi4xvrGIQ8QdnsTS8Ana+u83sK+oh8N179EmqOnoQQeaQB2GOzjC+YE+XFgz13gqKzn3Iw6mbKKeJi5ZaSJ6xg2xipMj+j7k7fPcvpQtj5EXAmtxflY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710742739; c=relaxed/simple;
-	bh=/uxO/1t0VF+da2zFcsIPhImm0cli6tNt05gP60hyl1k=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=hGOqFeESJEy2IXkGr2i6tMHmbCtuSptWR9qRNo8l+dwPzDFP4sYO9sfCXeML42enEp/Ri4z4rREIlRV7kH/cyDSCUB+gGWjUz0xkLpuHOrta9H+BL5gUdzaQ4RLva8Kmr/LMFwL1Rkoag35vvqTBei0TL73gByVvqRDr+9BRIGQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lF4EyoHd; arc=none smtp.client-ip=198.175.65.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710742737; x=1742278737;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=/uxO/1t0VF+da2zFcsIPhImm0cli6tNt05gP60hyl1k=;
-  b=lF4EyoHde5pvqd0Fj5M74OkvFzHdoYSoPs7GRFFTqlfptppNIO835HL9
-   FcVyNplf05h0Mat4pDdjkkj363gQ/r2CMtt5ZtqshxpHX0wIdl/GPiwAh
-   c1dpon0VlA8AxLgTCcHDhA1k68WU98S6ebfXH+IkzMW+DZjBoaYWL+fRP
-   bQcjAX7/dyxqTsah8yyWjPMFLCymlRfT7Q6SWl2vLBCPBiioIwEl7o/Td
-   i85Bv3cNYAsJwg0bxM3g3o3eWTk6wS4Ms/lyx506sT956GcchBw6USCFe
-   VQVTGj69brtcJoaKvW5SP5KRYnvIO6746D4zn7otpSkhh85N/bkoKr0Q4
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="16087119"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="16087119"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa103.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 23:18:56 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="13754252"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 23:18:53 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Baolin Wang <baolin.wang@linux.alibaba.com>
-Cc: akpm@linux-foundation.org,  <david@redhat.com>,
-  <mgorman@techsingularity.net>,  <wangkefeng.wang@huawei.com>,
-  <jhubbard@nvidia.com>,  <21cnbao@gmail.com>,  <ryan.roberts@arm.com>,
-  <linux-mm@kvack.org>,  <linux-kernel@vger.kernel.org>
-Subject: Re: [RFC PATCH v2] mm: support multi-size THP numa balancing
-In-Reply-To: <903bf13fc3e68b8dc1f256570d78b55b2dd9c96f.1710493587.git.baolin.wang@linux.alibaba.com>
-	(Baolin Wang's message of "Fri, 15 Mar 2024 17:18:14 +0800")
-References: <903bf13fc3e68b8dc1f256570d78b55b2dd9c96f.1710493587.git.baolin.wang@linux.alibaba.com>
-Date: Mon, 18 Mar 2024 14:16:59 +0800
-Message-ID: <871q88vzc4.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710742748; c=relaxed/simple;
+	bh=3UOolR8JHoqKDwxkh3gJR0lNhSxsx84z8zqGpiIaiuo=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=pxd9UzASns0T3RPFAodAGs2n+dngATTmUohmUONXzXxj/nvO3CCoEwiXJp0FPo1uTaHJObpoy3Ih+TxEGureEYZ7cVx4FVccrAB4i0/Lwy2B8jVngLsskmh3q7TpOWZxY5/HjZ/N7QV+henOQGiJnGfKq0XJ2OlBo+Gh3KiQgP8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YWRVEGTe; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56a9f5694dcso338162a12.1;
+        Sun, 17 Mar 2024 23:19:06 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710742745; x=1711347545; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1ucpTK5ikX0YK4SSOnWQlhYk2l25hLLVmLN0L3ZgMDk=;
+        b=YWRVEGTeBuRaRas8cWKaokjXBPLecmqD7D2ORlzfoLew9qo209NHq30BGII4JH4tGg
+         dWAOG0r8an90AkIfLImccY94cBUnFduLh9AypbB85Hl7rSSWd8ZVV8+yUH5axJNDSSRO
+         BniLy13CuXrDpynhv9EQ1Fa9CKNklyiAY8QMbzvXzNpeGnhCLuaQdm8bmsL4CQmIZEu8
+         Vz8oLqReOAX7SmM0w+OCSJLHtn4ST8AXXMgmOQ7NPMhYDJakZOfTBuRSjVAj9XI/PyRg
+         P/QOjN7yPWEA3PaD7/cpFAYAgCENXUP1aZwS9mBaN5/xdCbNv9OMkUwEroHVcH0+7D+F
+         8jyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710742745; x=1711347545;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1ucpTK5ikX0YK4SSOnWQlhYk2l25hLLVmLN0L3ZgMDk=;
+        b=GIgJAAFnhNLGXe1JzZ0N+9dHVB9S3WKyPR1DS1EO4cEfy7HwpfyxBr47xjWqY3TjW0
+         m0pDUrcam1Tyf1WUSpVq6JeMAfl7/qgUlS6KPx/AaEsSN27NNRcgjkOeF3YGjCAhyX4b
+         DfJER2a64JI3p/gE3hmS+h6xGRRAXGgvQSeU1WICp+BTX4OuJx7S2+1Qr+Z6yPaxXjJg
+         MIRcebpdmIF126drNstYdQNB/t/95WsXdwMfYuM5/FgC/CY/mfZFkcAo+nLkD63kUUr0
+         YWG3eH2pBZnRfQ34kT1f7yb220K5B4pn5ZXMwPAHVG47RfKJqKvFQWpVfhf7w+RiBTgF
+         TB0A==
+X-Forwarded-Encrypted: i=1; AJvYcCVs2Yrr7KchQCKLoko/Eo8eRsUwACPQC+iPnPbpJAMvG9kDZLLMHBZBRq9Ioe5MZ1n+tlmqVZARiZ/+2qALSIj5S1eOkp3khWXYHpDUvw78ikgHeOKc/3MwLK1RM5k4tRvb6LkFABpveHp+02tZAtu2h4rUXc1W3Y3xJDIvKVLYBHIvQ7FhV1pK13qJZtTCqgJFb15qSlnSSz9Xp9XUMq4=
+X-Gm-Message-State: AOJu0YwBASIg5p/N0KJ99hcPXJj4B1o1IDcIfGYSL3skjJAL3GF8Fmv9
+	pq1J6Oec0VFsQGS5F25zYDJuuf47htGb1FO1KlZXmcM8TPm4rl6hTnNKUVXRRuyDheCAbiCkagA
+	jlbYdJxJVqIEDo7RuKAi5GtgTqvc=
+X-Google-Smtp-Source: AGHT+IGFZlEfND0/QEzYxEFBqsH8cbQPNzEwsHVBGJzBi3UPQPHMyjSKJX6kHW5eCvCzP4I8Ci/M3MkVq0y3iCfhWW4=
+X-Received: by 2002:a05:6402:528a:b0:569:a0e9:3409 with SMTP id
+ en10-20020a056402528a00b00569a0e93409mr981538edb.41.1710742744931; Sun, 17
+ Mar 2024 23:19:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=ascii
+References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
+ <20240316-loongson1-dma-v6-1-90de2c3cc928@gmail.com> <20240317-exorcist-spectator-90f5acb3fe2a@spud>
+In-Reply-To: <20240317-exorcist-spectator-90f5acb3fe2a@spud>
+From: Keguang Zhang <keguang.zhang@gmail.com>
+Date: Mon, 18 Mar 2024 14:18:27 +0800
+Message-ID: <CAJhJPsWOUZsWFvreRrPqQHAjYW7uRT31THHi7CRDN46+nHpL9g@mail.gmail.com>
+Subject: Re: [PATCH v6 1/2] dt-bindings: dma: Add Loongson-1 DMA
+To: Conor Dooley <conor@kernel.org>
+Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Baolin Wang <baolin.wang@linux.alibaba.com> writes:
-
-> Now the anonymous page allocation already supports multi-size THP (mTHP),
-> but the numa balancing still prohibits mTHP migration even though it is an
-> exclusive mapping, which is unreasonable. Thus let's support the exclusive
-> mTHP numa balancing firstly.
+On Sun, Mar 17, 2024 at 10:40=E2=80=AFPM Conor Dooley <conor@kernel.org> wr=
+ote:
 >
-> Allow scanning mTHP:
-> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data section
-> pages") skips shared CoW pages' NUMA page migration to avoid shared data
-> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't try to
-> NUMA-migrate COW pages that have other uses") change to use page_count()
-> to avoid GUP pages migration, that will also skip the mTHP numa scaning.
-> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
-> issue, although there is still a GUP race, the issue seems to have been
-> resolved by commit 80d47f5de5e3. Meanwhile, use the folio_estimated_sharers()
-> to skip shared CoW pages though this is not a precise sharers count. To
-> check if the folio is shared, ideally we want to make sure every page is
-> mapped to the same process, but doing that seems expensive and using
-> the estimated mapcount seems can work when running autonuma benchmark.
+> On Sat, Mar 16, 2024 at 07:33:53PM +0800, Keguang Zhang via B4 Relay wrot=
+e:
+> > From: Keguang Zhang <keguang.zhang@gmail.com>
+> >
+> > Add devicetree binding document for Loongson-1 DMA.
+> >
+> > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
+> > ---
+> > V5 -> V6:
+> >    Change the compatible to the fallback
+> >    Some minor fixes
+> > V4 -> V5:
+> >    A newly added patch
+> > ---
+> >  .../devicetree/bindings/dma/loongson,ls1x-dma.yaml | 66 ++++++++++++++=
+++++++++
+> >  1 file changed, 66 insertions(+)
+> >
+> > diff --git a/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.ya=
+ml b/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
+> > new file mode 100644
+> > index 000000000000..06358df725c6
+> > --- /dev/null
+> > +++ b/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
+> > @@ -0,0 +1,66 @@
+> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> > +%YAML 1.2
+> > +---
+> > +$id: http://devicetree.org/schemas/dma/loongson,ls1x-dma.yaml#
+> > +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> > +
+> > +title: Loongson-1 DMA Controller
+> > +
+> > +maintainers:
+> > +  - Keguang Zhang <keguang.zhang@gmail.com>
+> > +
+> > +description:
+> > +  Loongson-1 DMA controller provides 3 independent channels for
+> > +  peripherals such as NAND and AC97.
+> > +
+> > +properties:
+> > +  compatible:
+> > +    oneOf:
+> > +      - const: loongson,ls1b-dma
+> > +      - items:
+> > +          - enum:
+> > +              - loongson,ls1c-dma
+> > +          - const: loongson,ls1b-dma
 >
-> Allow migrating mTHP:
-> As mentioned in the previous thread[1], large folios are more susceptible
-> to false sharing issues, leading to pages ping-pong back and forth during
-> numa balancing, which is currently hard to resolve. Therefore, as a start to
-> support mTHP numa balancing, only exclusive mappings are allowed to perform
-> numa migration to avoid the false sharing issues with large folios. Similarly,
-> use the estimated mapcount to skip shared mappings, which seems can work
-> in most cases (?), and we've used folio_estimated_sharers() to skip shared
-> mappings in migrate_misplaced_folio() for numa balancing, seems no real
-> complaints.
-
-IIUC, folio_estimated_sharers() cannot identify multi-thread
-applications.  If some mTHP is shared by multiple threads in one
-process, how to deal with that?
-
-For example, I think that we should avoid to migrate on the first fault
-for mTHP in should_numa_migrate_memory().
-
-More thoughts?  Can we add a field in struct folio for mTHP to count
-hint page faults from the same node?
-
---
-Best Regards,
-Huang, Ying
-
-> Performance data:
-> Machine environment: 2 nodes, 128 cores Intel(R) Xeon(R) Platinum
-> Base: 2024-3-15 mm-unstable branch
-> Enable mTHP=64K to run autonuma-benchmark
+> Aren't there several more devices in this family? Do they not have DMA
+> controllers?
 >
-> Base without the patch:
-> numa01
-> 222.97
-> numa01_THREAD_ALLOC
-> 115.78
-> numa02
-> 13.04
-> numa02_SMT
-> 14.69
+You are right. Loongson1 is a SoC family.
+However, only 1A/1B/1C have DMA controller.
+
+> > +
+> > +  reg:
+> > +    maxItems: 1
+> > +
+> > +  interrupts:
+> > +    description: Each channel has a dedicated interrupt line.
+> > +    minItems: 1
+> > +    maxItems: 3
 >
-> Base with the patch:
-> numa01
-> 125.36
-> numa01_THREAD_ALLOC
-> 44.58
-> numa02
-> 9.22
-> numa02_SMT
-> 7.46
+> Is this number not fixed for each SoC?
 >
-> [1] https://lore.kernel.org/all/20231117100745.fnpijbk4xgmals3k@techsingularity.net/
-> Signed-off-by: Baolin Wang <baolin.wang@linux.alibaba.com>
-> ---
-> Changes from RFC v1:
->  - Add some preformance data per Huang, Ying.
->  - Allow mTHP scanning per David Hildenbrand.
->  - Avoid sharing mapping for numa balancing to avoid false sharing.
->  - Add more commit message.
-> ---
->  mm/memory.c   | 9 +++++----
->  mm/mprotect.c | 3 ++-
->  2 files changed, 7 insertions(+), 5 deletions(-)
+Yes. Actually, it's fixed for the whole family.
+
+> > +  interrupt-names:
+> > +    minItems: 1
+> > +    items:
+> > +      - pattern: ch0
+> > +      - pattern: ch1
+> > +      - pattern: ch2
 >
-> diff --git a/mm/memory.c b/mm/memory.c
-> index f2bc6dd15eb8..b9d5d88c5a76 100644
-> --- a/mm/memory.c
-> +++ b/mm/memory.c
-> @@ -5059,7 +5059,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  	int last_cpupid;
->  	int target_nid;
->  	pte_t pte, old_pte;
-> -	int flags = 0;
-> +	int flags = 0, nr_pages = 0;
->  
->  	/*
->  	 * The pte cannot be used safely until we verify, while holding the page
-> @@ -5089,8 +5089,8 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  	if (!folio || folio_is_zone_device(folio))
->  		goto out_map;
->  
-> -	/* TODO: handle PTE-mapped THP */
-> -	if (folio_test_large(folio))
-> +	/* Avoid large folio false sharing */
-> +	if (folio_test_large(folio) && folio_estimated_sharers(folio) > 1)
->  		goto out_map;
->  
->  	/*
-> @@ -5112,6 +5112,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  		flags |= TNF_SHARED;
->  
->  	nid = folio_nid(folio);
-> +	nr_pages = folio_nr_pages(folio);
->  	/*
->  	 * For memory tiering mode, cpupid of slow memory page is used
->  	 * to record page access time.  So use default value.
-> @@ -5148,7 +5149,7 @@ static vm_fault_t do_numa_page(struct vm_fault *vmf)
->  
->  out:
->  	if (nid != NUMA_NO_NODE)
-> -		task_numa_fault(last_cpupid, nid, 1, flags);
-> +		task_numa_fault(last_cpupid, nid, nr_pages, flags);
->  	return 0;
->  out_map:
->  	/*
-> diff --git a/mm/mprotect.c b/mm/mprotect.c
-> index f8a4544b4601..f0b9c974aaae 100644
-> --- a/mm/mprotect.c
-> +++ b/mm/mprotect.c
-> @@ -129,7 +129,8 @@ static long change_pte_range(struct mmu_gather *tlb,
->  
->  				/* Also skip shared copy-on-write pages */
->  				if (is_cow_mapping(vma->vm_flags) &&
-> -				    folio_ref_count(folio) != 1)
-> +				    (folio_maybe_dma_pinned(folio) ||
-> +				     folio_estimated_sharers(folio) > 1))
->  					continue;
->  
->  				/*
+> Why have you made these a pattern? There's no regex being used here at
+> all.
+>
+Will change items to the following regex.
+  interrupt-names:
+    minItems: 1
+    items:
+      - pattern: "^ch[0-2]$"
+
+Thanks!
+
+> Cheers,
+> Cono4.
+
+
+
+--=20
+Best regards,
+
+Keguang Zhang
 
