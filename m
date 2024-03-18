@@ -1,128 +1,130 @@
-Return-Path: <linux-kernel+bounces-106405-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106406-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 443A187EE2B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:56:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB23A87EE35
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:57:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D727D28161E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:56:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 47EABB229FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:57:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAB4354BDE;
-	Mon, 18 Mar 2024 16:56:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58C9B54F8E;
+	Mon, 18 Mar 2024 16:57:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P9yINx+z"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="K2K3MjRQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2EA524CE
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:56:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88CED38F96;
+	Mon, 18 Mar 2024 16:57:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710780971; cv=none; b=gG9Mzz8DSpq+wQwUME5ivFiNlsqOTO+hyNGbrJNkbkhAtfcxqM6Q4EYN0niSEVkg944+5m7xvKr1vL2tNIDWuNG3tDwluZjS26eovBLlLdJuRnaHkUndEexeqR3QT2xNmcXtHeCsgBTvbctNEdW6/v/9yvn4l+aZZ6FzqL/R7PE=
+	t=1710781026; cv=none; b=DjQjDFMouAiTH5YkLGP1kjm7KDmk5svEcmyH5eZi3+B7KbmEioSByAGXXYp1ALGWt+O/d1vi+Al/HkqO0Y7bgaAJU0V5SxECMnGfVyNkztRuucDOI1CxSmCI2FKPUxBUzzIQqPxC3D+CXtv+d/dWtINy5/J+/XrZ3NvpjN+Wc8c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710780971; c=relaxed/simple;
-	bh=93T3v7zdQM8LwuRZeaBuS6bF9LV3COVtnygXdjEHoF0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=WQfKAvwQbD3Ic5Db9bUaMW/OnzT0UYIua2TiiymhlECbhjITWUqTOA8VJNB1ADmamRoWY8ltbezxj1Go+85B9cDri/ne1A0C7fLutr1sjRnsGndkgBxSZl1yABZIiivV/dZ/X8wUh+eXDt937g7FOgXGCzK69eqsLtSj5nwhMBs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P9yINx+z; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-430c41f3f89so14184271cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:56:09 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710780968; x=1711385768; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=xo3Mf28h0hvfULFUHkEEElY4QAOQtb2yRCXqjQBuiPc=;
-        b=P9yINx+z7d9BWSRPC54mGfprqYXWW2tjgH+MpxojYce7BCWI0FTVLsDggyJPAt25gS
-         XbUAK+qYjyjMFCDG9oP80PlFJv8LkfMmzWy3azgJGRkTDSRImdEwjvR+PVMW8tCcolSH
-         yMS760Th24f1ywfJC62zxccSkUP0iKigshvLA=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710780968; x=1711385768;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=xo3Mf28h0hvfULFUHkEEElY4QAOQtb2yRCXqjQBuiPc=;
-        b=BsemXUdDotwryHIzfdJaBFCdzm/nJryzBHBB8j29bG3VHozvYHrpenCvswqA1jhOET
-         LuyTqov9L0T/YS/zR2IhFAXJTluSPQeJ+KQQkqi0KivAP+5P760GjjNd2TG8v8IvOf7v
-         IAdDqufuGuwADajgOPcNRWeL2IpHWzHXNA+TKNVAi8HzdaOhESl6ODE2Q3uizx78iGH5
-         GY3BaZy3nxrfcEOXZKxWBbjtytyb/8bUcmH60PfWlovqQFREbXztm2tPHvX5HKdIJQw5
-         Xh7OySjjC5+pI00UFxSY0PgxFfK3UJOVCD6trCOa5up9UdBkcUGllOFd11Z7/qNINfnQ
-         JU9A==
-X-Forwarded-Encrypted: i=1; AJvYcCXNm5SfuvW7ax+EgXmlWmAQgZuJQbWyg2lfPIpUxyqQIVRa8oL+Lj0rYoQm8vyzKBQr1Fa0913LenfL3c5ud6neaYFOddkEOj8r21kj
-X-Gm-Message-State: AOJu0Yy+j0UbOKecrvGlPpafhFQcd3e9USonXFRbgdeoTJN14E1ajMeQ
-	YH+QoZa7oD6Gh8+OdfyivR+eNAHtMS2zpr4yrdP2w6JxHLCfkbBPxOtkonKsyGzpJ1/WUGcFiPI
-	=
-X-Google-Smtp-Source: AGHT+IESni4IVMfOiL5tegk4cZ1r9WfSGUFOmHNHVJXASmUnF7E3nnjjQ9gtSXsDT1qv8TvA7acBEw==
-X-Received: by 2002:ac8:424c:0:b0:430:c2dc:a5e2 with SMTP id r12-20020ac8424c000000b00430c2dca5e2mr259859qtm.25.1710780968440;
-        Mon, 18 Mar 2024 09:56:08 -0700 (PDT)
-Received: from mail-qt1-f171.google.com (mail-qt1-f171.google.com. [209.85.160.171])
-        by smtp.gmail.com with ESMTPSA id fb19-20020a05622a481300b004309cf16815sm1431556qtb.39.2024.03.18.09.56.03
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 09:56:05 -0700 (PDT)
-Received: by mail-qt1-f171.google.com with SMTP id d75a77b69052e-428405a0205so546491cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:56:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCUpWKoOSc7QZuPG8RNPTrbQ2hTUIIugcz97L79rriXlBRTS3QpaQ8H1lXHxtheD+dglK9fWay1nTXvsPfoWEmALHrlPvW6oyAaskz5g
-X-Received: by 2002:ac8:570a:0:b0:430:a827:cdef with SMTP id
- 10-20020ac8570a000000b00430a827cdefmr117qtw.23.1710780962829; Mon, 18 Mar
- 2024 09:56:02 -0700 (PDT)
+	s=arc-20240116; t=1710781026; c=relaxed/simple;
+	bh=ACEAxDulSpAl5CvzyquQ2Fyq+IxD/YQAwg/steyISSE=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ndzObaCQDTaGSwPNhdmGGW7AQREhcx3ArjXPx5tZhzc8oi9/e9cnacNRLfAOr/xTDuHte69TpcjQepyt5ozludsSmt8luFW7rb7e2b6MMsAz0By2ZevxRY7tRser+rNUhNRGoaKQf2sccEy48NaeUYEGSjLBCHpzqSQ0wXRfCLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=K2K3MjRQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0C825C433C7;
+	Mon, 18 Mar 2024 16:57:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710781026;
+	bh=ACEAxDulSpAl5CvzyquQ2Fyq+IxD/YQAwg/steyISSE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=K2K3MjRQsAxYRhiuVZoKeQjCmOY3DKwAf4XgxYpHVel83SYbS2T62gKVc2Le5iM5e
+	 vzNYzG+D+wdAX9lcqB1Os8yYkAg6QRNy4BPiaERel+qoX1rIkfIM9+1wyQrQjo0FR5
+	 UsRR/NNu/nUH/5v35Jufm5pFujLDlifp81HZ6Ny6MTJMhMAUJohyYQBj4efIFtL+AW
+	 am6l1hguWkRREYax8xvMGBKa8/osdsd1RKWMSueeJvVWMoFpXyEZDkIAhSFIMSg5fU
+	 xiSyDl0TPyBGJ7km8VX82BcORYsMu2xYP3SybVda+fYHDj1w040bUxp1ckQ8Qocr7D
+	 8xmowg1ahZkig==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rmGII-00DKXR-L6;
+	Mon, 18 Mar 2024 16:57:02 +0000
+Date: Mon, 18 Mar 2024 16:57:02 +0000
+Message-ID: <86wmpzzdep.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH v2 0/4] arm64: Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
+In-Reply-To: <20240318164646.1010092-1-dwmw2@infradead.org>
+References: <20240318164646.1010092-1-dwmw2@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240315091434.10622-1-dmitrii.bundin.a@gmail.com>
- <CAADnVQ+o9WQNdY2iApYMN=KnKSxnKGb6NcYzYkDD9V36Di6bCw@mail.gmail.com> <CANXV_XwaPOOYuAsveVbfNU4tFbw30rkX3AKrBdKzrNNsUxer+Q@mail.gmail.com>
-In-Reply-To: <CANXV_XwaPOOYuAsveVbfNU4tFbw30rkX3AKrBdKzrNNsUxer+Q@mail.gmail.com>
-From: Khazhy Kumykov <khazhy@chromium.org>
-Date: Mon, 18 Mar 2024 09:55:49 -0700
-X-Gmail-Original-Message-ID: <CACGdZYLn5pokOQN-uqeaVPSOtVUHy+CGmuBduhgtV+Vft8WxbQ@mail.gmail.com>
-Message-ID: <CACGdZYLn5pokOQN-uqeaVPSOtVUHy+CGmuBduhgtV+Vft8WxbQ@mail.gmail.com>
-Subject: Re: [PATCH] tools/resolve_btfids: Include linux/types.h
-To: Dmitrii Bundin <dmitrii.bundin.a@gmail.com>
-Cc: Alexei Starovoitov <alexei.starovoitov@gmail.com>, LKML <linux-kernel@vger.kernel.org>, 
-	Daniel Xu <dxu@dxuuu.xyz>, Viktor Malik <vmalik@redhat.com>, Alexei Starovoitov <ast@kernel.org>, 
-	Andrii Nakryiko <andrii@kernel.org>, Nick Desaulniers <ndesaulniers@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, dwmw@amazon.co.uk, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-On Fri, Mar 15, 2024 at 10:09=E2=80=AFAM Dmitrii Bundin
-<dmitrii.bundin.a@gmail.com> wrote:
->
-> On Fri, Mar 15, 2024 at 6:41=E2=80=AFPM Alexei Starovoitov
-> <alexei.starovoitov@gmail.com> wrote:
-> > No one reported this, though lots of people
-I'm also seeing this, on clang.
+On Mon, 18 Mar 2024 16:14:22 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> The PSCI v1.3 spec (https://developer.arm.com/documentation/den0022, 
+> currently in Alpha state, hence 'RFC') adds support for a SYSTEM_OFF2 
+> function enabling a HIBERNATE_OFF state which is analogous to ACPI S4. 
+> This will allow hosting environments to determine that a guest is 
+> hibernated rather than just powered off, and ensure that they preserve 
+> the virtual environment appropriately to allow the guest to resume 
+> safely (or bump the hardware_signature in the FACS to trigger a clean 
+> reboot instead).
+> 
+> This adds support for it to KVM, exactly the same way as the existing 
+> support for SYSTEM_RESET2 as added in commits d43583b890e7 ("KVM: arm64: 
+> Expose PSCI SYSTEM_RESET2 call to the guest") and 34739fd95fab ("KVM: 
+> arm64: Indicate SYSTEM_RESET2 in kvm_run::system_event flags field").
+> 
+> Back then, KVM was unconditionally bumped to expose PSCI v1.1. This 
+> means that a kernel upgrade causes guest visible behaviour changes 
+> without any explicit opt-in from the VMM, which is... unconventional. In 
+> some cases, a PSCI update isn't just about new optional calls; PSCI v1.2 
+> for example adds a new permitted error return from the existing CPU_ON 
+> function.
+> 
+> There *is* a way for a VMM to opt *out* of newer PSCI versions... by 
+> setting a per-vCPU "special" register that actually ends up setting the 
+> PSCI version KVM-wide. Quite why this isn't just a simple KVM_CAP, I 
+> have no idea.
 
-> > are building resolve_btfids that uses this header
-> > as part of the kernel build.
->
-> GCC version 7.5.0, GNU Make 4.1
-> Steps to reproduce:
-> 1. Check out the commit e5eb28f6d1afebed4bb7d740a797d0390bd3a357
-> 2. cd tools/bpf/resolve_btfids/
-> 3. make
->
-> The steps above produces the following error messages (similar error
-> output truncated for clarity):
->
-> In file included from main.c:73:0:
-> /linux/tools/include/linux/btf_ids.h:7:2: error: unknown type name =E2=80=
-=98u32=E2=80=99
->   u32 cnt;
-yup, that's the error I'm seeing.
->   ^~~
->
-> The other sources including <linux/btf_ids.h> usually includes
-> (directly or indirectly) <linux/types.h> before which is not the case
-> for tools/bpf/resolve_btfids/main.c. So that looks reasonable to me to
-> bring all the required type definitions into scope explicitly in
-> linux/btf_ids.h. Any thoughts on this?
->
+Because the expectations are that the VMM can blindly save/restore the
+guest's state, including the PSCI version, and restore that blindly.
+KVM CAPs are just a really bad design pattern for this sort of things.
+
+	M.
+
+-- 
+Without deviation from the norm, progress is not possible.
 
