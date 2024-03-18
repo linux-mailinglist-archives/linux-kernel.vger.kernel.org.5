@@ -1,243 +1,153 @@
-Return-Path: <linux-kernel+bounces-106201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106200-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D053F87EAA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:16:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 99BFF87EAA7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:16:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AFAB28466D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:16:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399B71F21A37
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:16:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1604B4C62E;
-	Mon, 18 Mar 2024 14:16:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="MW89WZ7n"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7AE604AEF5;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A830D4AEFB;
 	Mon, 18 Mar 2024 14:16:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771395; cv=fail; b=i7isxMeQIR1IO7OGuTJzxBSz3OqTvoVctq4USwU/MqZAEzvrI9jVm60rdYInqsMPeaZhnIz5AViUJV/J2I5LT8mPzLI9CL83/vB7TNAqMlWtkMdcs5NbFF6wiuFQY7qcZKVnCY7hKgNF0Tr495+VpY1+UxAW4F4RhMi7FHPNMyM=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771395; c=relaxed/simple;
-	bh=QnO/hyN7eCdwb/GXCwqezkRy7P8pfy54oQYTNfn2obE=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=BcQPjuGdeqgAcQIzYk3RBPd6wHpIfH5365Wt4IY8d3AuNIrRfjL+rfBYAfBTyrLbeHXDgpfzxdGZGKyA1NLfhf6+8B//pHi0BjIDg2ETEpthy8Ij+KEGeYLSUa5tNcBQ+wHwy2zHvMnrWI9NWDv86hs32mSWvgK+Eixgm0RlVPg=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=MW89WZ7n; arc=fail smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710771393; x=1742307393;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=QnO/hyN7eCdwb/GXCwqezkRy7P8pfy54oQYTNfn2obE=;
-  b=MW89WZ7ncT3ZGuIRcg7bssqwp54cCamfEbQ1Ytp3HlVkW7zaRd6aXYZz
-   M5hUpsOOUWAjSOtRsxZD9yPflve64VNlCnmXRmrfiLBNPSE9DrZEdRSUJ
-   5U6OvV8yoQfOW56pWqRapGf4UYLmsdMSCcpp25zxsKLHX3VaJbCskQH/R
-   NzVuVvrAW+ufX9HDHlUpIWf5lc2J98zUyDnyanRSPylA/3FJKR+kxZk6J
-   JWgnKJO1EhboNo+fIxYiszWRfV70sjfidX713PL7DF/JuDkl7DG5kmvNl
-   YE1Cvud5cBnjD7j/C6N0q22N9ITLVe8+Gw0G+hLyt+faLcaU1kWbu1wtb
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="5715883"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="5715883"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 07:16:32 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="13870978"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa006.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Mar 2024 07:16:31 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Mar 2024 07:16:30 -0700
-Received: from fmsmsx602.amr.corp.intel.com (10.18.126.82) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Mar 2024 07:16:30 -0700
-Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Mon, 18 Mar 2024 07:16:30 -0700
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (104.47.57.168)
- by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Mon, 18 Mar 2024 07:16:30 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=ltTPHCsPAnQ6xIC1porCAr97zEr/V+HdxK7T7+Fyw4NtITWstCdlusbpFKEuz9TNB8U70c+YcnLjP6X2l/rIvxnvweDIqLEA2yftv8/KggJLDE9AJlIMYFztEkCrV7MFVEiinJYArbcNEXi2RqqXxRHJKCz80zVTJQd9QxLB8vhDBoDsf0ZlPaOZvv0ZYtxL+Q8HuI/BE3boTLQc9ERPc1lp3BOgeh7BdQJ/gedKMSVNR5Nmhs2OjwxYpqBBBu4xykJ3SK8fXf3h3eD/v7qI7bsxlfiSXn/ai9qtjGvl64sqWrH15L8TMwDv8kgVKbpOX288NLvahnWT9CLNVcRMyA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=j+fwb/4kzERYMlGWAyV0loIwrLBRA/FhpG9z/0RRe/A=;
- b=gCc6W1mgmMx3ciKc/55s0bslJ9p37kiwNhkestuT/QznZhQjRPE3zTh1uie62LGkvP6ewywWwY65+WJAv9kgiQG4shrGdK9YWFEqcfVaG3jU3uYJBaWKA2nAUfVVd6XBVg57XO5+lO/3pHvP9rVGnKgPCcb9Xy7Bj7JlOMZzo6x8PsAuq5phk6U0uyu6eKl7x5ihxPET9KeIsVtwTV05KoCbL2cGB+2VJIcUa4tzfcOdHi5fFmPCj/okkn7DpBORNpghrHXOscc5o222/dOO95Rm0hyYhDE3M9HavGCG6OEPeAi8uunAi/WgcT8g37Lqka2luey5o71gCHQlLMNgHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH0PR11MB5782.namprd11.prod.outlook.com (2603:10b6:510:147::11)
- by DS0PR11MB7768.namprd11.prod.outlook.com (2603:10b6:8:138::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Mon, 18 Mar
- 2024 14:16:28 +0000
-Received: from PH0PR11MB5782.namprd11.prod.outlook.com
- ([fe80::d48a:df79:97ac:9630]) by PH0PR11MB5782.namprd11.prod.outlook.com
- ([fe80::d48a:df79:97ac:9630%4]) with mapi id 15.20.7409.010; Mon, 18 Mar 2024
- 14:16:28 +0000
-Date: Mon, 18 Mar 2024 15:16:15 +0100
-From: Michal Kubiak <michal.kubiak@intel.com>
-To: Jijie Shao <shaojijie@huawei.com>
-CC: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>,
-	<davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-	<pabeni@redhat.com>, <rkannoth@marvell.com>, <shenjian15@huawei.com>,
-	<wangjie125@huawei.com>, <liuyonglong@huawei.com>, <netdev@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V3 net 3/3] net: hns3: mark unexcuted loopback test
- result as UNEXECUTED
-Message-ID: <ZfhMr6t0pQG+Dp63@localhost.localdomain>
-References: <20240318132948.3624333-1-shaojijie@huawei.com>
- <20240318132948.3624333-4-shaojijie@huawei.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240318132948.3624333-4-shaojijie@huawei.com>
-X-ClientProxiedBy: WA2P291CA0048.POLP291.PROD.OUTLOOK.COM
- (2603:10a6:1d0:1f::10) To PH0PR11MB5782.namprd11.prod.outlook.com
- (2603:10b6:510:147::11)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lmBkPmGZ"
+Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD714AECD
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:16:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710771391; cv=none; b=RqtKSJsO2yvKX/0mJ/HIa/6MosxlKVId/tVk3d26OdKFyScrdWKDrc9Nxj95QeZeQUThAT/Lv2a8IpHsrMyzmzw/ehKYMXZ7Qmu9QEZAwfV5Ys2nshb6rSU2Y5G0KpnD015PRfjMptf6KEOx1hS4Ec6xwuYnJVhGXKD4/AvswCo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710771391; c=relaxed/simple;
+	bh=AVO0CRv0JE94l/fO/dv5SVK7xIoOeyHJggaKr7jbwXQ=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=K6et6TM/lWVntmX0gS9pRzw0FKBq53Im5bwrnZU9+iSVNEVboIOf7GBNg20im5S7vHoF6ktNASruvtVzh9c1+x5odvC3HHtAC3YtzfmcKxsCNG94hh8YL9g9N5LvmYaf/9zri5O8JFkRI3cBi+LYV13r+8l6kPDt8vEsw+XO12M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lmBkPmGZ; arc=none smtp.client-ip=209.85.128.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41460512c25so2080595e9.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:16:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710771388; x=1711376188; darn=vger.kernel.org;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=6hoHJPzKivMW1yEjOBGD1bftC6F87yAj85WAtXr98Do=;
+        b=lmBkPmGZKFbvIh7bcsTWXu33xARq6OYyKS0e3zW/Is8IF1ny/sVbjXqd2EFtJFAdVV
+         R34HxHenYOUihdposUQAUpMfT7OAGGJGRGR1OGYbgAiAD1fvU8X5NMgMyWevLPtin11Q
+         Zcs9kkOIUeupi+02EcCa1AibEeErWcRL9FR4LqhRIFgiaAAJ6ZTkij941/R17NeE67pw
+         1yzFq2/LJyyCIzxSwZNR1JETN7OHCMWsOrFp93IrE14dTq5G6YHYRou91GnvQBnb/rEV
+         k/yKBmH4HKvJbvO3jdI8AQH+w76+4i+WNws1AdWzqwEw022lvviHjq0GOeszbUURiAkM
+         BRqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710771388; x=1711376188;
+        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
+         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6hoHJPzKivMW1yEjOBGD1bftC6F87yAj85WAtXr98Do=;
+        b=q5fCZJKhVtwxlONCE0Ej8b5wYjZymGoOLQ9t+ejSw4L5kKCMJe3N8OsPhP/VseX04f
+         UtOhtrGw0jhOBmvbWuEYFVrEVrfXSElmWibpkIXmkgfilvuTsohCdbpW0eKfmD1RMGrL
+         xAhEhK5p973puN3yiOOXjxMPWcJSuzHhhtijQraMXUkoyYRyWxxGvHuikbotPnPoybp9
+         nUtQXnbQPfitomQKtkEIqwKvYEYp/dAm3cUHYhMW1kBMgDrT92YzWkcZ6qMuGnTWheyF
+         354Il0qaIGe9+dyRU3sZCWuTTgbnwFu4uM9QgeI+RlN8lthG9WtwXzq72r2upZIdLBqE
+         L1Ng==
+X-Forwarded-Encrypted: i=1; AJvYcCUgj3QFrB+Sdtuxul8dmpTB3KNH/v6LTgs4YTdZNkGk9GyaHVRertUmpGzBKWlckGRLri0BOXFE2230vn+pVuH/PWcl6m3riJISTtqm
+X-Gm-Message-State: AOJu0YxRQO3M/aqu3It0PekzRH8X6XYPvLyq2dYYNlh3qHLplN2yabSt
+	h+ewvdpki7Axi2TYtQEWckyXTUwB36c0/0vrmP9wCE90PFbaYTw9RbpBdFu2VCA=
+X-Google-Smtp-Source: AGHT+IEqzbstFUamf1dr3ZQZI+3TDFusQzNphV5aLQUHgxcZhBUC+9G9ERQlw3BfIaiybAdjAODiyA==
+X-Received: by 2002:a05:600c:314b:b0:413:7f3:8d5 with SMTP id h11-20020a05600c314b00b0041307f308d5mr6541011wmo.0.1710771388257;
+        Mon, 18 Mar 2024 07:16:28 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
+        by smtp.gmail.com with ESMTPSA id a18-20020a05600c349200b0041413d11838sm1642584wmq.26.2024.03.18.07.16.27
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 07:16:27 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Date: Mon, 18 Mar 2024 15:16:21 +0100
+Subject: [PATCH] Revert "drm/bridge: Select DRM_KMS_HELPER for
+ DRM_PANEL_BRIDGE"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH0PR11MB5782:EE_|DS0PR11MB7768:EE_
-X-MS-Office365-Filtering-Correlation-Id: a9895ab3-59c9-4016-eeff-08dc47560087
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: Iu22neqfuCa2vHFDZC7tuX6jRVCdu8736g85+9C/WislxYTMdBW+Qd1lOtGeDSEySPYo6wz7yVr2jWMLR9vgYKFX89O/TprPz8+iGXeJBcXENUWhNp2v6wYMPC9Sx9ViXJ1NelbVnOFES5tJA0DKr9EzId+UFrXy/ysWBTUb21hZcgztfQrcSRqLwiIXXH/TEdHDfwoqeQiX5YPVzXaF9TyilQ5It5bbLjcRj7L9HLUZyjrl3IgeUXBYvoqoIi5F6Ln7CeCC2DdOWnWH/aUmFqgJtwsIPFyGq9TesIV3/QCEBYg1QxUsOrYqdQIcbKL45KC5wV9jJSHJorA7tBiaDFfJBb2857OJ2y2daQ9i1844N5N7pZrVPdkqenqWtrrcOp1FVdIIkBFt9yQ9v+4awVZ+Uzzx+TSY0WZ8TE3xmm1PlJWbWLlgLdU5anOdkMG2ARuP5GPAuvdzueKXhLxY/WW0AlCwmM9WAgLHfuuKqFLk2a2P96ntQ+KqOtC0jbz1nGPzdBe5gU89iruvaM/bRNa2uJXvpjXEb3GgohJOQmRnrR/hqFthhsGMZ721I6JR4Up1+zvekr2ybIzy8H4L7b0ebPLYTF9AgE7CSH5Vb6QGZwrI+gW/WcMBRKqsaoteAp5N6lc1Tuiv+6bMnrO+/xqaXrrfU9J/cO1VgzeP6FE=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR11MB5782.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?/XH/3sfHzoGm+ITWECqBHA9O82rcG/k/VuUc+rYeUohxdEJwOmV2LlGsgkoN?=
- =?us-ascii?Q?GL/Vh+yI2iqawTJMZS+On2IFaeTiFl3ym0BWwZd3ziscqJNYZUbEPkoYeEYp?=
- =?us-ascii?Q?4oKnSVs7LEduiUQGfI+oHFLvi6HEYrly0NyFdopuS+IJAdk9w8OCLXwOGU2c?=
- =?us-ascii?Q?vWu5VHLfTQgIicH2u4c6J+xJm4Pfk36JaV2MDmdVw9LPuPUqUOJl5X0xya1g?=
- =?us-ascii?Q?Cm17h/1SE8iSbikis2M4yDxkhFl/fDz0DGTW52B8R6n1hb8I1aOgb/xqO/Zp?=
- =?us-ascii?Q?dBBl/NmHq0ky2/CbLYAnvqTcUxgZQCLVdX2AZRvwFri/Wm38Ne0uwCxYfBla?=
- =?us-ascii?Q?pWa9tttgBs9cE06/JQd0DX63xx/sjbmI83BFvm5OZ7DFLKYCCtQIP8bJitA7?=
- =?us-ascii?Q?xVBFjp9FD2Zgd+paa50ZR8gFHkOLTHeaEYKMyU+jYpeauMQq8O6ZBpWShQe3?=
- =?us-ascii?Q?cLFZdaRqLoEoLXGFbRpgXbir1rvAXmmPstUyXSbIYCjGDmRAGL76pBRyxhwy?=
- =?us-ascii?Q?L4jDtBchXSAIdu2GS9eQ9FH5svZQ51g+EcfZltMJpHqMP2DVn/teKa0+wZig?=
- =?us-ascii?Q?eY+sPRZtJoVgU8S2umZ5o37sniiLqonsLo841JjQLlKavpOW6v2i2XYyGmUL?=
- =?us-ascii?Q?JqEKRvl8bFviOO3XGSY60uBcWIYLdP/V3eMM+o1v49DSn8Ia1Num0jR79nKX?=
- =?us-ascii?Q?/TIQMb8UuKU6DvAvsE29EEqAt8BIoGhuLSBVPVbLroLkcxawNK2LTLQenw/l?=
- =?us-ascii?Q?Kr7rvqKHfx83RV0BhvdliEILP5PmQV7FhvycgCtzQrld3ru18Vi2CFJrnr98?=
- =?us-ascii?Q?2WMzn52zXdm5f1JbDNONJMOchl13pqbJXjlm8qLs9Xa6PjvENgEGntX2Vi4n?=
- =?us-ascii?Q?OXW/vrE+rfsLOuRfXZ2LyPUM2trfk+Kn/DjA+j0MEH055La84TtDa5Sz7PmA?=
- =?us-ascii?Q?7Iubp4mhOpkZau5cFhezzQWOSOnahNGnxW7fwXrOtkph6SRifcYaP/e9p1u9?=
- =?us-ascii?Q?sIAqrpFy89l858FLFqTwzRrQxInvzwMisa0JIt+PLoKauW6+NKRX30NtpkTH?=
- =?us-ascii?Q?tsBuL06wxagMEukmd7yla1/ko94XB0EBvQ/FjrFvf8ZIbMMbAgUvXRec9i8w?=
- =?us-ascii?Q?ol8XB0ldkyBIxnjFjhMs7oti7U795EXemXo6Z4xlfXo/kDRpfdnTqjNsYl/l?=
- =?us-ascii?Q?AFn3DecFgxRgHHb1UvJvCEoXuGmRZ3LFMk2cmv0iZNsJxNl5uQW2DoYKGgYT?=
- =?us-ascii?Q?d/V6fpSaX69dsOYBSIUPebpHDhVN1dHdLE9sK+S6OZGVeKG4NWoPbFJ7CvAg?=
- =?us-ascii?Q?H3bbo+3dwP4hc8WglJUx0kTm30IXKG6eHbBg4hynEbIK0L4RfbDJjrBYKnAs?=
- =?us-ascii?Q?L9yrOo4A9Irn6VkdwNwaD3ng7bXhQiJom7Uzj20VBPvCcNUp1s4rqOiT5spv?=
- =?us-ascii?Q?aeR1H23xIggkZKzujm9NN9k6d7GpRLilWf/saxzCgurFHJJetPaclr61nvur?=
- =?us-ascii?Q?TXKImJ7O22A1pUiPKjKov85j4a5q5p89kz+JE3KRUaNCBS4zU4Wb9SlX7K5J?=
- =?us-ascii?Q?Uh7+uVluD7pzX6tm9LuGOfh76uIRZr0NIVt2R/GQu9MLKwsXPLTJm0VXUujZ?=
- =?us-ascii?Q?EQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: a9895ab3-59c9-4016-eeff-08dc47560087
-X-MS-Exchange-CrossTenant-AuthSource: PH0PR11MB5782.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 14:16:28.2583
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: qteVdxyXepuFPVTY7tVGpAflToyTmDw0yxcpGNoGxZvdmXVCrvEtb4ksfjyrzBwYBE2AYW1fiL7DgcizoskTZA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS0PR11MB7768
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-v1-1-52a42a116286@linaro.org>
+X-B4-Tracking: v=1; b=H4sIALRM+GUC/x2NUQqDMBAFryL73UDUUNtepUhIk2ddGmPYSCmId
+ 2/wc4bHvJ0KhFHo0ewk+HLhNVVoLw352aU3FIfK1OnO6L69qTqCbKogwm8qyGI/S7EzYoaoaZV
+ TZZcQ7Us41ICGcWHwQ2/uV6rdLJj4d34+x+P4A5vjllqDAAAA
+To: Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
+ Luca Weiss <luca.weiss@fairphone.com>
+Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
+ Imre Deak <imre.deak@intel.com>, 
+ =?utf-8?q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, 
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
+ Neil Armstrong <neil.armstrong@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=1324;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=AVO0CRv0JE94l/fO/dv5SVK7xIoOeyHJggaKr7jbwXQ=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl+Ey6S6ifjkU3YMO3rgKK5FOvKjMM3uGWoM5xG2o7
+ N201Wu+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZfhMugAKCRB33NvayMhJ0e9SEA
+ CcbN4WdLH4CEADtmqIVE2Xtq5X2X7rEhhGy6VcD2y4DKdXTRz53ijDHOVdnkeo0/hos94YeCl4qufj
+ AFN2UxsLFgB3NHZVzY9L0Y5B0vvDUcIZEaYDReC286ANi4fgXvDJOjL4FvyKQCvMjqPpvmaiDNYcXM
+ pynfskGc4LNdzgxcjnYOzO7tx9j/h4XS0D5ogPJUd8NYl0lE6tPfG9fYkLg+X4JiNZQzX3+GO2zJD/
+ kryghoe9ixPlOQM6QwdH0U3CStqM52jLURE6DgBooJX7HJ8sWiKlIFVhW4S+EG/8px030HS6ltIuwX
+ xNkFLQh3ZJ0woCwRdWJM1m8pH3zOenMvAGqPS1dK4IyhJCXd4VpiVNiM1M866FIaNnowS/aEh/AFlE
+ dPCuWeeSery+dIe6I+JLZtS9xee3eGEQyuKJrw3PtrfTWzvozMfDE7LXz24uvR2Bf16WkVTeN8QVrV
+ 8JF+qUfBIAt/Rq24jpZez7sHq93f0RQcKuhRXO8kq7erV2f5Qu2AYG3avsbvhDdkG6dBExIyz9CUXu
+ jei7sjB7c6UUJiCIrhzGvY/X8crqRNh380If+QzxuwlQurGXCSZAO9ZhZ00MJdQm7yrmtwcq6M/D3k
+ BEw4+Qtzzo1LTnkF1Z/kN/wjS1TtA38o77pfiX58P7Hz970ttecQw8vRweWA==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
-On Mon, Mar 18, 2024 at 09:29:48PM +0800, Jijie Shao wrote:
-> From: Jian Shen <shenjian15@huawei.com>
-> 
-> Currently, loopback test may be skipped when resetting, but the test
-> result will still show as 'PASS', because the driver doesn't set
-> ETH_TEST_FL_FAILED flag. Fix it by setting the flag and
-> initializating the value to UNEXECUTED.
-> 
-> Fixes: 4c8dab1c709c ("net: hns3: reconstruct function hns3_self_test")
-> Signed-off-by: Jian Shen <shenjian15@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  .../ethernet/hisilicon/hns3/hns3_ethtool.c    | 19 +++++++++++++++++--
->  1 file changed, 17 insertions(+), 2 deletions(-)
-> 
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-> index 999a0ee162a6..941cb529d671 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_ethtool.c
-> @@ -78,6 +78,9 @@ static const struct hns3_stats hns3_rxq_stats[] = {
->  #define HNS3_NIC_LB_TEST_NO_MEM_ERR	1
->  #define HNS3_NIC_LB_TEST_TX_CNT_ERR	2
->  #define HNS3_NIC_LB_TEST_RX_CNT_ERR	3
-> +#define HNS3_NIC_LB_TEST_UNEXECUTED	4
-> +
-> +static int hns3_get_sset_count(struct net_device *netdev, int stringset);
->  
->  static int hns3_lp_setup(struct net_device *ndev, enum hnae3_loop loop, bool en)
->  {
-> @@ -418,18 +421,26 @@ static void hns3_do_external_lb(struct net_device *ndev,
->  static void hns3_self_test(struct net_device *ndev,
->  			   struct ethtool_test *eth_test, u64 *data)
->  {
-> +	int cnt = hns3_get_sset_count(ndev, ETH_SS_TEST);
->  	struct hns3_nic_priv *priv = netdev_priv(ndev);
->  	struct hnae3_handle *h = priv->ae_handle;
->  	int st_param[HNAE3_LOOP_NONE][2];
->  	bool if_running = netif_running(ndev);
-> +	int i;
-> +
-> +	/* initialize the loopback test result, avoid marking an unexcuted
-> +	 * loopback test as PASS.
-> +	 */
-> +	for (i = 0; i < cnt; i++)
-> +		data[i] = HNS3_NIC_LB_TEST_UNEXECUTED;
->  
->  	if (hns3_nic_resetting(ndev)) {
->  		netdev_err(ndev, "dev resetting!");
-> -		return;
-> +		goto failure;
->  	}
->  
->  	if (!(eth_test->flags & ETH_TEST_FL_OFFLINE))
-> -		return;
-> +		goto failure;
->  
->  	if (netif_msg_ifdown(h))
->  		netdev_info(ndev, "self test start\n");
-> @@ -451,6 +462,10 @@ static void hns3_self_test(struct net_device *ndev,
->  
->  	if (netif_msg_ifdown(h))
->  		netdev_info(ndev, "self test end\n");
-> +	return;
-> +
-> +failure:
-> +	eth_test->flags |= ETH_TEST_FL_FAILED;
->  }
->  
->  static void hns3_update_limit_promisc_mode(struct net_device *netdev,
-> -- 
-> 2.30.0
-> 
+This reverts commit e3f18b0dd1db242791afbc3bd173026163ce0ccc.
 
+Selecting DRM_KMS_HELPER for DRM_PANEL_BRIDGE leads to:
+WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
+  Depends on [m]: HAS_IOMEM [=y] && DRM [=m]
+  ...
 
-Thanks!
-Reviewed-by: Michal Kubiak <michal.kubiak@intel.com>
+and builds with CONFIG_DRM=m will fail with the above kconfig
+warns and then multiple linker error.
+
+Reported-by: Imre Deak <imre.deak@intel.com>
+Reported-by: Jani Nikula <jani.nikula@linux.intel.com>
+Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+Fixes: e3f18b0dd1db ("drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE")
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+ drivers/gpu/drm/bridge/Kconfig | 1 -
+ 1 file changed, 1 deletion(-)
+
+diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+index 1d4f010af97b..efd996f6c138 100644
+--- a/drivers/gpu/drm/bridge/Kconfig
++++ b/drivers/gpu/drm/bridge/Kconfig
+@@ -8,7 +8,6 @@ config DRM_BRIDGE
+ config DRM_PANEL_BRIDGE
+ 	def_bool y
+ 	depends on DRM_BRIDGE
+-	select DRM_KMS_HELPER
+ 	select DRM_PANEL
+ 	help
+ 	  DRM bridge wrapper of DRM panels
+
+---
+base-commit: e3f18b0dd1db242791afbc3bd173026163ce0ccc
+change-id: 20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-0e4ad7c73496
+
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
+
 
