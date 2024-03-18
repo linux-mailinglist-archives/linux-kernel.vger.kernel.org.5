@@ -1,239 +1,157 @@
-Return-Path: <linux-kernel+bounces-106385-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106386-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 341E087EDC6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:45:15 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CD0387EDC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:45:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DDB81281D91
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:45:13 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B7570281CAC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:45:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F87E54BC8;
-	Mon, 18 Mar 2024 16:45:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="l2OuYJ57"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5A944CE00;
-	Mon, 18 Mar 2024 16:45:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6A0B54BDA;
+	Mon, 18 Mar 2024 16:45:33 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F25DA54BC1
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:45:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710780307; cv=none; b=nM3yBQVZaaldDSkNmcYUhIuBP1EUmDogUJoP1dhsJ0BhQe59Mb420dr9jMV3jhB1mQ0NNSUGrVQc4gZL5wlKJtDXVtBkjCkikZgrgDhNeogYguGJcR1SivuqixNVLheQb3tyxlV29CQbCFw/NO4kl+Tfgz1ekH3H1LkGkCu2Mls=
+	t=1710780333; cv=none; b=Gi3xmINPVmLTag9QbDDj+kEC5UVcuGZ/l5YV3LsId6fmDR/77RB39s/G901ikgdEocRLAx94YasUmyIXNq0YW8c0FxIOClRg1oNfnG2TyiKLfrUeLGd+ZtBQkpK44rIYuE7lD7gTOh9gjOjxhEcpc+5kLJ+s3jiEIbDZP4GRLbs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710780307; c=relaxed/simple;
-	bh=plzgAUqT7eAW3vGS3lxtB9u8E2al/2uQqCBttbfLjko=;
-	h=From:To:Cc:Subject:In-Reply-To:Date:Message-ID:References:
-	 MIME-Version:Content-Type; b=Y3EWZyqO8vRrjNzi1H8MV72rJKIbKSM/5UdCWz/E+Xm6PLCIdEYOMnPuGd35ZAeeQ8RdOtIsUnG39Ttoj58KR+N5nRcL9h5/UJlB0Y5pSl/uRvub5oxTcbIE7pQjGv4vql3vrQfvopUraqClyk/R4HtjCxMSf2vO7IeWn1DQS/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=l2OuYJ57; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-4146178270dso1714005e9.1;
-        Mon, 18 Mar 2024 09:45:05 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710780303; x=1711385103; darn=vger.kernel.org;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=cwtdj3Qe42//0Pq+EWWaVdxyC3bpLbgB0QXN4bV84So=;
-        b=l2OuYJ575K4vuZI7pj+jww0TtvjAEMhjfrqyKNiL8DsW1Qrx5Slqub9ZUFuwWQKiwY
-         4p9bZV2I2iPq7xvKrRCSDFnnjHfDem1eNtsp4VRlHAiopuIGGs5aCdD+/DCq53u38imR
-         FuL91zTqpkllPqZwtncQqKuIcGyz1wn/bNjH30Ygv8rPPuzmtytJb4Ll9pTYGrhTmFgh
-         va9I3CjQaoGogrnTf9pYdW7wcqinN43EylihMvbwgH4sCOLZRC9PkShr3RBzU+n/UsO7
-         w4iPVP23e/3e4aasRPZiT5TS+KTu8JyleKnpODOdtN57AEg8LDraCrCluhKrwtFZjbGi
-         Fy1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710780303; x=1711385103;
-        h=mime-version:user-agent:references:message-id:date:in-reply-to
-         :subject:cc:to:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=cwtdj3Qe42//0Pq+EWWaVdxyC3bpLbgB0QXN4bV84So=;
-        b=H6FxPQSrYGQBoJzH1gYpoobHqWn4UJFj4+wKKPGi4qGXFsMj2ODsD5/t/Cz/HOjwjn
-         aZGxgr/1sribVYFRWf5FkEJp5sFdcrxZ8eIV2BYXL/YWyaRNb/n1eP4Q+e+NHGPKgOH5
-         +4f/I6cf6R4r/Hp381MTcKE7usgAgsS2usXO4hLs1IFegIvws6iRdPMUyVZmZIP9Orin
-         nvxMauaihoy3jSPLShACRxako6C++/1g9ieUCvaJaUWAXXbk73ptYnxf/sg/UAicsLCT
-         m0hqg4zC4K2A5nQcWlmbvKAb91AvefPZmE8AD8211to5FnGeoCgLq+Pyk6Qo6uEmULJi
-         BJBg==
-X-Forwarded-Encrypted: i=1; AJvYcCW+EOqVVygyIQtm+msFdMiXzJRgRzIdDs8LtlpKJaly2vQpDx+7vcgyNRHIeIMge0o5aYLTbs3ZCKdX8GK4rifjBzsOtuo9W9tgDVFyyQXuVlL9xTMQCiESOYRudJXiSQUHsrQzBaet
-X-Gm-Message-State: AOJu0Ywv1HGOaqCT4uvABknktmig9stP2YC2g2SGnwvxG7JYfXVni9Rc
-	qFVNgG5wqyO/QAc3ZWE2zzLXCG5IGCRoYVq+xngBim5/QG2x3vxXvGLc+1Bm
-X-Google-Smtp-Source: AGHT+IFXhxGmjOSZhXns45Tyfc+M5D405RpzjIABTO/N6+xt4efNHgG2E140V0YoocmejLhApQ8WDA==
-X-Received: by 2002:a05:600c:1c27:b0:414:f4:c6c0 with SMTP id j39-20020a05600c1c2700b0041400f4c6c0mr109496wms.20.1710780303234;
-        Mon, 18 Mar 2024 09:45:03 -0700 (PDT)
-Received: from imac ([2a02:8010:60a0:0:9e5:841d:7d8:c2e2])
-        by smtp.gmail.com with ESMTPSA id fb4-20020a05600c520400b004132901d73asm15210684wmb.46.2024.03.18.09.45.01
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 09:45:02 -0700 (PDT)
-From: Donald Hunter <donald.hunter@gmail.com>
-To: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-Cc: Jonathan Corbet <corbet@lwn.net>,  Mauro Carvalho Chehab
- <mchehab@kernel.org>,  Vegard Nossum <vegard.nossum@oracle.com>,  Akira
- Yokosawa <akiyks@gmail.com>,  Jani Nikula <jani.nikula@linux.intel.com>,
-  Randy Dunlap <rdunlap@infradead.org>,  linux-doc@vger.kernel.org,
-  linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] docs: drop the version constraints for sphinx and
- dependencies
-In-Reply-To: <20240301141800.30218-1-lukas.bulwahn@gmail.com> (Lukas Bulwahn's
-	message of "Fri, 1 Mar 2024 15:18:00 +0100")
-Date: Mon, 18 Mar 2024 16:44:55 +0000
-Message-ID: <m21q8732wo.fsf@gmail.com>
-References: <20240301141800.30218-1-lukas.bulwahn@gmail.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+	s=arc-20240116; t=1710780333; c=relaxed/simple;
+	bh=CNQkh8pEl1Kc9VhW0IsTjWYvyFVNMzpjdm/foQVsSJ0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=H6HeuBEIpFfU+oQwUJniOOEruQpD+NauALasBg7hCPX+zLLOlKlrGLCiA4rPYu0A5YnH95hr3wqXh3T0lIGDEAp5I09Es1SphXrA3aphUiNUvm9x+3LrhymBb42xvr1KVxcCw6mpfCs9ljgHYpHxMYfkwgFCMrBTrpnm2lbWjxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 47A5F1FB;
+	Mon, 18 Mar 2024 09:46:05 -0700 (PDT)
+Received: from [10.57.68.51] (unknown [10.57.68.51])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 305C83F67D;
+	Mon, 18 Mar 2024 09:45:26 -0700 (PDT)
+Message-ID: <9ec62266-26f1-46b6-8bb7-9917d04ed04e@arm.com>
+Date: Mon, 18 Mar 2024 16:45:24 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v3 5/5] mm: support large folios swapin as a whole
+Content-Language: en-GB
+To: Barry Song <21cnbao@gmail.com>, "Huang, Ying" <ying.huang@intel.com>
+Cc: Matthew Wilcox <willy@infradead.org>, akpm@linux-foundation.org,
+ linux-mm@kvack.org, chengming.zhou@linux.dev, chrisl@kernel.org,
+ david@redhat.com, hannes@cmpxchg.org, kasong@tencent.com,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ mhocko@suse.com, nphamcs@gmail.com, shy828301@gmail.com,
+ steven.price@arm.com, surenb@google.com, wangkefeng.wang@huawei.com,
+ xiang@kernel.org, yosryahmed@google.com, yuzhao@google.com,
+ Chuanhua Han <hanchuanhua@oppo.com>, Barry Song <v-songbaohua@oppo.com>
+References: <20240304081348.197341-1-21cnbao@gmail.com>
+ <20240304081348.197341-6-21cnbao@gmail.com>
+ <87wmq3yji6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAGsJ_4x+t_X4Tn15=QPbH58e1S1FwOoM3t37T+cUE8-iKoENLw@mail.gmail.com>
+ <87sf0rx3d6.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
+ <87jzm0wblq.fsf@yhuang6-desk2.ccr.corp.intel.com>
+ <CAGsJ_4wTU3cmzXMCu+yQRMnEiCEUA8rO5=QQUopgG0RMnHYd5g@mail.gmail.com>
+From: Ryan Roberts <ryan.roberts@arm.com>
+In-Reply-To: <CAGsJ_4wTU3cmzXMCu+yQRMnEiCEUA8rO5=QQUopgG0RMnHYd5g@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Lukas Bulwahn <lukas.bulwahn@gmail.com> writes:
+>>> I agree phones are not the only platform. But Rome wasn't built in a
+>>> day. I can only get
+>>> started on a hardware which I can easily reach and have enough hardware/test
+>>> resources on it. So we may take the first step which can be applied on
+>>> a real product
+>>> and improve its performance, and step by step, we broaden it and make it
+>>> widely useful to various areas  in which I can't reach :-)
+>>
+>> We must guarantee the normal swap path runs correctly and has no
+>> performance regression when developing SWP_SYNCHRONOUS_IO optimization.
+>> So we have to put some effort on the normal path test anyway.
+>>
+>>> so probably we can have a sysfs "enable" entry with default "n" or
+>>> have a maximum
+>>> swap-in order as Ryan's suggestion [1] at the beginning,
+>>>
+>>> "
+>>> So in the common case, swap-in will pull in the same size of folio as was
+>>> swapped-out. Is that definitely the right policy for all folio sizes? Certainly
+>>> it makes sense for "small" large folios (e.g. up to 64K IMHO). But I'm not sure
+>>> it makes sense for 2M THP; As the size increases the chances of actually needing
+>>> all of the folio reduces so chances are we are wasting IO. There are similar
+>>> arguments for CoW, where we currently copy 1 page per fault - it probably makes
+>>> sense to copy the whole folio up to a certain size.
+>>> "
 
-> As discussed (see Links), there is some inertia to move to the recent
-> Sphinx versions for the doc build environment.
->
-> [...]
->
-> Link: https://lore.kernel.org/linux-doc/874jf4m384.fsf@meer.lwn.net/
-> Link: https://lore.kernel.org/linux-doc/20240226093854.47830-1-lukas.bulwahn@gmail.com/
-> Reviewed-by: Akira Yokosawa <akiyks@gmail.com>
-> Tested-by: Vegard Nossum <vegard.nossum@oracle.com>
-> Signed-off-by: Lukas Bulwahn <lukas.bulwahn@gmail.com>
-> ---
-> v1 -> v2:
->   drop jinja2 as suggested by Vegard.
->   add tags from v1 review
->
->  Documentation/doc-guide/sphinx.rst    | 11 ++++++-----
->  Documentation/sphinx/requirements.txt |  7 ++-----
->  scripts/sphinx-pre-install            | 19 +++----------------
->  3 files changed, 11 insertions(+), 26 deletions(-)
+I thought about this a bit more. No clear conclusions, but hoped this might help
+the discussion around policy:
 
-Apologies if I am a little late to the party here - I am just catching
-up with the changes on docs-next.
+The decision about the size of the THP is made at first fault, with some help
+from user space and in future we might make decisions to split based on
+munmap/mremap/etc hints. In an ideal world, the fact that we have had to swap
+the THP out at some point in its lifetime should not impact on its size. It's
+just being moved around in the system and the reason for our original decision
+should still hold.
 
-I went to install Sphinx 2.4.4 using requirements.txt for some doc work
-and hit the upstream Sphinx dependency breakage. So I pulled docs-next
-with the intention of sending a patch to requirements.txt with pinned
-dependences. When I noticed that things have already moved on in
-docs-next, I decided to spend some time investigating the performance
-regression that has been present in Sphinx from 3.0.0 until now.
+So from that PoV, it would be good to swap-in to the same size that was
+swapped-out. But we only kind-of keep that information around, via the swap
+entry contiguity and alignment. With that scheme it is possible that multiple
+virtually adjacent but not physically contiguous folios get swapped-out to
+adjacent swap slot ranges and then they would be swapped-in to a single, larger
+folio. This is not ideal, and I think it would be valuable to try to maintain
+the original folio size information with the swap slot. One way to do this would
+be to store the original order for which the cluster was allocated in the
+cluster. Then we at least know that a given swap slot is either for a folio of
+that order or an order-0 folio (due to cluster exhaustion/scanning). Can we
+steal a bit from swap_map to determine which case it is? Or are there better
+approaches?
 
-With Sphinx 2.4.4 I always get timings in this ballpark:
+Next we (I?) have concerns about wasting IO by swapping-in folios that are too
+large (e.g. 2M). I'm not sure if this is a real problem or not - intuitively I'd
+say yes but I have no data. But on the other hand, memory is aged and
+swapped-out per-folio, so why shouldn't it be swapped-in per folio? If the
+original allocation size policy is good (it currently isn't) then a folio should
+be sized to cover temporally close memory and if we need to access some of it,
+chances are we need all of it.
 
-% time make htmldocs
-..
-real	4m5.417s
-user	17m0.379s
-sys	1m11.889s
+If we think the IO concern is legitimate then we could define a threshold size
+(sysfs?) for when we start swapping-in the folio in chunks. And how big should
+those chunks be - one page, or the threshold size itself? Probably the latter?
+And perhaps that threshold could also be used by zRAM to decide its upper limit
+for compression chunk.
 
-With Sphinx 7.2.6 it's typically over 9 minutes:
+Perhaps we can learn from khugepaged here? I think it has programmable
+thresholds for how many swapped-out pages can be swapped-in to aid collapse to a
+THP? I guess that exists for the same concerns about increased IO pressure?
 
-% time make htmldocs
-..
-real	9m0.533s
-user	15m38.397s
-sys	1m0.907s
 
-I collected profiling data using cProfile:
+If we think we will ever be swapping-in folios in chunks less than their
+original size, then we need a separate mechanism to re-foliate them. We have
+discussed a khugepaged-like approach for doing this asynchronously in the
+background. I know that scares the Android folks, but David has suggested that
+this could well be very cheap compared with khugepaged, because it would be
+entirely limited to a single pgtable, so we only need the PTL. If we need this
+mechanism anyway, perhaps we should develop it and see how it performs if
+swap-in remains order-0? Although I guess that would imply not being able to
+benefit from compressing THPs for the zRAM case.
 
-export srctree=`pwd`
-export BUILDDIR=`pwd`/Documentation/output
-python3 -m cProfile -o profile.dat ./sphinx_latest/bin/sphinx-build \
-    -b html \
-    -c ./Documentation \
-    -d ./Documentation/output/.doctrees \
-    -D version=6.8.0 -D release= \
-    -D kerneldoc_srctree=. -D kerneldoc_bin=./scripts/kernel-doc \
-    ./Documentation \
-    ./Documentation/output
+I see all this as orthogonal to synchronous vs asynchronous swap devices. I
+think the latter just implies that you might want to do some readahead to try to
+cover up the latency? If swap is moving towards being folio-orientated, then
+readahead also surely needs to be folio-orientated, but I think that should be
+the only major difference.
 
-Here's some of the profiling output:
+Anyway, just some thoughts!
 
-$ python3 -m pstats profile.dat
-Welcome to the profile statistics browser.
-profile.dat% sort tottime
-profile.dat% stats 10
-Fri Mar 15 17:09:39 2024    profile.dat
+Thanks,
+Ryan
 
-         3960680702 function calls (3696376639 primitive calls) in 1394.384 seconds
-
-   Ordered by: internal time
-   List reduced from 6733 to 10 due to restriction <10>
-
-   ncalls  tottime  percall  cumtime  percall filename:lineno(function)
-770364892  165.102    0.000  165.102    0.000 sphinx/domains/c.py:153(__eq__)
-   104124  163.968    0.002  544.788    0.005 sphinx/domains/c.py:1731(_find_named_symbols)
-543888397  123.767    0.000  176.685    0.000 sphinx/domains/c.py:1679(children_recurse_anon)
-     4292   74.081    0.017   74.081    0.017 {method 'poll' of 'select.poll' objects}
-631233096   69.389    0.000  246.017    0.000 sphinx/domains/c.py:1746(candidates)
-121406721/3359598   65.689    0.000   76.762    0.000 docutils/nodes.py:202(_fast_findall)
-  3477076   64.387    0.000   65.758    0.000 sphinx/util/nodes.py:633(_copy_except__document)
-544032973   52.950    0.000   52.950    0.000 sphinx/domains/c.py:156(is_anon)
-79012597/3430   36.395    0.000   36.395    0.011 sphinx/domains/c.py:1656(clear_doc)
-286882978   31.271    0.000   31.279    0.000 {built-in method builtins.isinstance}
-
-profile.dat% callers c.py:153
-   Ordered by: internal time
-   List reduced from 6733 to 4 due to restriction <'c.py:153'>
-
-Function                            was called by...
-                                       ncalls  tottime  cumtime
-sphinx/domains/c.py:153(__eq__)  <- 631153346  134.803  134.803  sphinx/domains/c.py:1731(_find_named_symbols)
-                                       154878    0.041    0.041  sphinx/domains/c.py:2085(find_identifier)
-                                    139056533   30.259   30.259  sphinx/domains/c.py:2116(direct_lookup)
-                                          135    0.000    0.000  sphinx/util/cfamily.py:89(__eq__)
-
-From that you can see there is a significant call amplification from
-_find_named_symbols (100k calls) to __eq__ (630 million calls), plus
-several other expensive functions. Looking at the code [1], you can see
-why. It's doing a list walk to find matching symbols. When adding new
-symbols it does an exhaustive walk to check for duplicates, so you get
-worst-case performance, with ~13k symbols in a list during the doc
-build.
-
-I have an experimental fix that uses a dict for lookups. With the fix, I
-consistently get times in the sub 5 minute range:
-
-% time make htmldocs
-..
-real	4m27.085s
-user	10m56.985s
-sys	0m56.385s
-
-I expect there are other speedups to be found. I will clean up my Sphinx
-changes and share them on a GitHub branch (as well as push them
-upstream) so that others can try them out.
-
-For some reason, if I run sphinx-build manually with -j 12 (I have a 12
-core machine) I get better performance than make htmldocs:
-
-% sphinx-build -j 12 ...
-..
-real	3m56.074s
-user	9m52.775s
-sys	0m52.905s
-
-I haven't had a chance to look at what makes the difference here, but
-will investigate when I have time.
-
-Cheers,
-Donald.
-
-[1] https://github.com/sphinx-doc/sphinx/blob/ff252861a7b295e8dd8085ea9f6ed85e085273fc/sphinx/domains/c/_symbol.py#L235-L283
-
-> diff --git a/Documentation/sphinx/requirements.txt b/Documentation/sphinx/requirements.txt
-> index 5d47ed443949..5017f307c8a4 100644
-> --- a/Documentation/sphinx/requirements.txt
-> +++ b/Documentation/sphinx/requirements.txt
-> @@ -1,6 +1,3 @@
-> -# jinja2>=3.1 is not compatible with Sphinx<4.0
-> -jinja2<3.1
-> -# alabaster>=0.7.14 is not compatible with Sphinx<=3.3
-> -alabaster<0.7.14
-> -Sphinx==2.4.4
-> +alabaster
-> +Sphinx
->  pyyaml
 
