@@ -1,213 +1,156 @@
-Return-Path: <linux-kernel+bounces-106475-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106477-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id C797287EF1E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:44:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 450F387EF25
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:45:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E2841F2143E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:44:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 753E81C22021
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:45:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A38CD5579C;
-	Mon, 18 Mar 2024 17:44:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9C5155C34;
+	Mon, 18 Mar 2024 17:45:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b="S3lliHu3"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="WWaNDbWT"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BEB7955E41
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:44:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2270D55C14;
+	Mon, 18 Mar 2024 17:45:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783860; cv=none; b=f8ItgHd9DkZMzn9leK/SZNM+KI2nFJUuM+aOcQ4/zT86yhQH7AUAlZrnenRlFq6He1l9rsCz7MZkZXhbx59ryLd94fmvuGVL2L4lgCdFc2mA7tqOE+K8fB27F7Wv5FhKyIpK8FhL6tMLaOWD4EIwTXFsRlYwAP42nyVzFMaVhT8=
+	t=1710783909; cv=none; b=PXAUB3C5X5uxHSdK7qWU8uaIsLu2ZZjrsih98upGw21BPAzfDngPsgtYSvdjWmSNva43tfvExIfMTWv/m6uV4ilTt/SejXQJznWYIar+WWhYXaQfsYu1u9f6eBjPNmbaDhV1w5w3/hp/FmFB4YlrZ1q96PeJuZHWTX63WQvzsU8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783860; c=relaxed/simple;
-	bh=E7XSj0pyzwRnbhEItgfs1Biw2IzEoXA27lamXCSeXf8=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=NpVwwW4Oy36q/fHhWMxlhlVUsZEmq7JbovfjajVuwrAG3Q7RtaHwEicikFmYR94eEUDphB4wOSfPbb2kJcE9rbubBl6ZNw/Cs9yNHv2W5NLuHL/54BGCKOhGt2ywI6Fxz3Ezy1qhHQXz5KBgU3zWraNzxXgQfdIwKdvPr65YBWs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com; spf=pass smtp.mailfrom=9elements.com; dkim=pass (2048-bit key) header.d=9elements.com header.i=@9elements.com header.b=S3lliHu3; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=9elements.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=9elements.com
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a468226e135so387802866b.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:44:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=9elements.com; s=google; t=1710783857; x=1711388657; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=aWgXcsCIwNB8quceeSPfUi0wO64rrOVtbtRuUW+5aHM=;
-        b=S3lliHu3RHcvylU2lSBY393/7ZQfLdQjhDdLyT13hZJNwZRMbVUeZkHOCrq2RPpDQ7
-         EsW7sZ2pa65767Va438QsN5gMJxlDC9mFvQ7ub/PeBc47yn5mqUT9jubvgDMxyWmvKnv
-         sHJvVSMTsc/h4VkBetxBPicEAC45KGNODAruF1DtEUP1pa9EcES/GBLOoIAm1aYfpAYA
-         aMilxdhzAfobZXMzKHgKIv87nHUV0sBFrPj1dxFSXu3XbfHcDwag1j0PwR2q6YvEBP+a
-         rFZQtBTOHSld2pO4898nRVbuunNoUwY61W1PeIfGCcr6ZlbhiTua8XzhO+ptGqucqnWW
-         MCmA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710783857; x=1711388657;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=aWgXcsCIwNB8quceeSPfUi0wO64rrOVtbtRuUW+5aHM=;
-        b=Z/nDhJmRUK5Y8e9c3sX8nTqL7BtHZOUQxEZWdsf8VdHuXoEEQ0NbSGW4ILpjox/oWE
-         Hb6iizlrEX39fAa/Rm/FFee39oJFDXcwJBzFOTsvLhW0avYIPzimhD4qCUU0Aw1OqmQ5
-         HAGp4cbPD39R6VDuzN0upUueIDYwcZW7PJC0wJUAFxb82fCRk0ooc7z9toRPIQFIxci1
-         neImVDpAA8vvEFr5MtJ8+DT+L7RSvHNv7dSfp107sC5nRrvYMXVgVmfkGsw0W6P9NW33
-         3dkBOaz6z53ILjbaJx5nO7cWe6bJsX5tYk6/tBEOWWEXeZZscygSLygUMadYgrLbxuaY
-         DFNQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWX4WCDU2IUFEE1FYHzOYi2c8DYgMKQyS8vlwLe1w1HQGqj/r3dw8cvvmKBTAwceeSpvLWVzgT9+J2MkXi+it8Vp5Lo4irR2eROKU1I
-X-Gm-Message-State: AOJu0YwdLw8ekXoVaeRhXM9Qq4MZgnL05MXyv7x+xu78IsabHr4BynSw
-	i7zI5Z/8Lag6atu+PvxLmKApvVnSh/A7Ai54DhCsXSbjwA+c9lg/tyFYcIVN1j8=
-X-Google-Smtp-Source: AGHT+IG3vx0ReTieIcSydRi9DPhGpG/POg/ztkcVuM9Rj9eSQTrM0AO5OSat4zJ59NE7k4evhHwDaQ==
-X-Received: by 2002:a17:906:f6c6:b0:a46:caa1:3e5b with SMTP id jo6-20020a170906f6c600b00a46caa13e5bmr1772572ejb.41.1710783856917;
-        Mon, 18 Mar 2024 10:44:16 -0700 (PDT)
-Received: from stroh80.sec.9e.network (ip-078-094-000-051.um19.pools.vodafone-ip.de. [78.94.0.51])
-        by smtp.gmail.com with ESMTPSA id h21-20020a17090619d500b00a46447348e8sm5071598ejd.191.2024.03.18.10.44.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 10:44:16 -0700 (PDT)
-From: Naresh Solanki <naresh.solanki@9elements.com>
-To: Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>
-Cc: mazziesaccount@gmail.com,
-	Patrick Rudolph <patrick.rudolph@9elements.com>,
-	Naresh Solanki <naresh.solanki@9elements.com>,
-	linux-hwmon@vger.kernel.org,
+	s=arc-20240116; t=1710783909; c=relaxed/simple;
+	bh=Rv/2CA5wPLokC7VCqSey3DSFL6DXzXxuAMNj1og1Kh8=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=htG0RGqTwPjeT1VPB8uWvApYDKrkj47FD134YOuHyH/6DJAQ9PJwhKITacf/ZVXI6VHKIlw4NupePjbPVFPNcLKucN5Z90xx0Pbp4UEE30uK3lTrLIHpgl9smWNVXxDf4m+tiTyodHZsLnswJ9pXfcfMKmKHpZuMCfrpS9nsJjY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=WWaNDbWT; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5570FC433C7;
+	Mon, 18 Mar 2024 17:45:06 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710783908;
+	bh=Rv/2CA5wPLokC7VCqSey3DSFL6DXzXxuAMNj1og1Kh8=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=WWaNDbWTEAAmKf9IeOXu65Mq96lSZxdoIzl57Yufwp7sGduxsN9HEXIrYzX7xVFRB
+	 Hy1mtA1Are4jKEG2IACOEirgKrPxv9Zs1dp7fdnMC0bfOtcyEQQneb+Sq2IR+LNeuJ
+	 Qm4PaSYyJSYzEW1PyUQ3GA1oW4uCUo9cP2Kl9ZFUVbePgoZjMoBtm4yIL6lG3iI5Y6
+	 Ap2yMBGMzoB+Ep1+VDrr0mYHjUf9hszzwqUb9eC2syA33HpPQrMK2u0+nfb9oVk6BT
+	 M0dwO4pTylvIrS88SdlZVkZ9B3ZjCplzmiIWt/w24KRM8YTMndNRvb32gsfsIG37Lt
+	 rRb95s82iaBfg==
+Date: Mon, 18 Mar 2024 17:45:03 +0000
+From: Simon Horman <horms@kernel.org>
+To: Erwan Velu <erwanaliasr1@gmail.com>
+Cc: Erwan Velu <e.velu@criteo.com>,
+	Jesse Brandeburg <jesse.brandeburg@intel.com>,
+	Tony Nguyen <anthony.l.nguyen@intel.com>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	intel-wired-lan@lists.osuosl.org, netdev@vger.kernel.org,
 	linux-kernel@vger.kernel.org
-Subject: [RESEND PATCH v3] hwmon: (pmbus/mp2975) Fix IRQ masking
-Date: Mon, 18 Mar 2024 23:14:05 +0530
-Message-ID: <20240318174406.3782306-1-naresh.solanki@9elements.com>
-X-Mailer: git-send-email 2.42.0
+Subject: Re: [PATCH v4 iwl-net] i40e: Prevent setting MTU if greater than MFS
+Message-ID: <20240318174503.GE1623@kernel.org>
+References: <20240313090719.33627-2-e.velu@criteo.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313090719.33627-2-e.velu@criteo.com>
 
-From: Patrick Rudolph <patrick.rudolph@9elements.com>
+On Wed, Mar 13, 2024 at 10:07:16AM +0100, Erwan Velu wrote:
+> Commit 6871a7de705 ("[intelxl] Use admin queue to set port MAC address
+> and maximum frame size") from iPXE project set the MFS to 0x600 = 1536.
+> See https://github.com/ipxe/ipxe/commit/6871a7de705
+> 
+> At boot time the i40e driver complains about it with
+> the following message but continues.
+> 
+> 	MFS for port 1 has been set below the default: 600
+> 
+> If the MTU size is increased, the driver accepts it but large packets will
+> not be processed by the firmware generating tx_errors. The issue is pretty
+> silent for users. i.e doing TCP in such context will generates lots of
+> retransmissions until the proper window size (below 1500) will be used.
+> 
+> To fix this case, it would have been ideal to increase the MFS,
+> via i40e_aqc_opc_set_mac_config, incoming patch will take care of it.
+> 
+> At least, commit prevents setting up an MTU greater than the current MFS.
+> It will avoid being in the position of having an MTU set to 9000 on the
+> netdev with a firmware refusing packets larger than 1536.
+> 
+> A typical trace looks like:
+> [  377.548696] i40e 0000:5d:00.0 eno5: Error changing mtu to 9000, Max is 1500. MFS is too small.
+> 
 
-The MP2971/MP2973 use a custom 16bit register format for
-SMBALERT_MASK which doesn't follow the PMBUS specification.
+Hi Erwan, all,
 
-Map the PMBUS defined bits used by the common code onto the custom
-format used by MPS and since the SMBALERT_MASK is currently never read
-by common code only implement the mapping for write transactions.
+As a fix, I think this patch warrants a fixes tag.
+Perhaps this one is appropriate?
 
-Signed-off-by: Patrick Rudolph <patrick.rudolph@9elements.com>
-Signed-off-by: Naresh Solanki <naresh.solanki@9elements.com>
+Fixes: 41c445ff0f48 ("i40e: main driver core")
 
----
+> Signed-off-by: Erwan Velu <e.velu@criteo.com>
+> ---
+>  drivers/net/ethernet/intel/i40e/i40e_main.c | 10 +++++++++-
+>  1 file changed, 9 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/net/ethernet/intel/i40e/i40e_main.c b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> index f86578857e8a..85ecf2f3de18 100644
+> --- a/drivers/net/ethernet/intel/i40e/i40e_main.c
+> +++ b/drivers/net/ethernet/intel/i40e/i40e_main.c
+> @@ -2946,7 +2946,7 @@ static int i40e_change_mtu(struct net_device *netdev, int new_mtu)
+>  	struct i40e_netdev_priv *np = netdev_priv(netdev);
+>  	struct i40e_vsi *vsi = np->vsi;
+>  	struct i40e_pf *pf = vsi->back;
+> -	int frame_size;
+> +	int frame_size, mfs, max_mtu;
+>  
+>  	frame_size = i40e_max_vsi_frame_size(vsi, vsi->xdp_prog);
+>  	if (new_mtu > frame_size - I40E_PACKET_HDR_PAD) {
 
-Changes in V3:
-1. Avoid precedence issues in Macro
-2. Optimise macro.
+I am fine with this patch, so please take what follows as a suggestion
+for improvement, possibly as a follow-up. Not as a hard requirement from
+my side.
 
-Changes in V2:
-1. Add/Update comment
-2. Update SWAP define to include both variable.
-3. Add defines for each bits of SMBALERT mask.
----
- drivers/hwmon/pmbus/mp2975.c | 77 ++++++++++++++++++++++++++++++++++++
- 1 file changed, 77 insertions(+)
+The part of this function between the two hunks of this patch is:
 
-diff --git a/drivers/hwmon/pmbus/mp2975.c b/drivers/hwmon/pmbus/mp2975.c
-index e5fa10b3b8bc..953c02a2aeb5 100644
---- a/drivers/hwmon/pmbus/mp2975.c
-+++ b/drivers/hwmon/pmbus/mp2975.c
-@@ -392,6 +392,82 @@ static int mp2973_read_word_data(struct i2c_client *client, int page,
- 	return ret;
- }
- 
-+static int mp2973_write_word_data(struct i2c_client *client, int page,
-+				  int reg, u16 word)
-+{
-+	u8 target, mask;
-+	int ret;
-+
-+	if (reg != PMBUS_SMBALERT_MASK)
-+		return -ENODATA;
-+
-+	/*
-+	 * Vendor-specific SMBALERT_MASK register with 16 maskable bits.
-+	 */
-+	ret = pmbus_read_word_data(client, 0, 0, PMBUS_SMBALERT_MASK);
-+	if (ret < 0)
-+		return ret;
-+
-+	target = word & 0xff;
-+	mask = word >> 8;
-+
-+/*
-+ * Set/Clear 'bit' in 'ret' based on condition followed by define for each bit in SMBALERT_MASK.
-+ * Also bit 2 & 15 are reserved.
-+ */
-+#define SWAP(val, mask, cond, bit) (((mask) & (cond)) ? ((val) & ~BIT(bit)) : ((val) | BIT(bit)))
-+
-+#define MP2973_TEMP_OT		0
-+#define MP2973_VIN_UVLO		1
-+#define MP2973_VIN_OVP		3
-+#define MP2973_MTP_FAULT	4
-+#define MP2973_OTHER_COMM	5
-+#define MP2973_MTP_BLK_TRIG	6
-+#define MP2973_PACKET_ERROR	7
-+#define MP2973_INVALID_DATA	8
-+#define MP2973_INVALID_COMMAND	9
-+#define MP2973_IOUT_OC_LV	10
-+#define MP2973_IOUT_OC		11
-+#define MP2973_VOUT_MAX_MIN_WARNING 12
-+#define MP2973_VOLTAGE_UV	13
-+#define MP2973_VOLTAGE_OV	14
-+
-+	switch (target) {
-+	case PMBUS_STATUS_CML:
-+		ret = SWAP(ret, mask, PB_CML_FAULT_INVALID_DATA, MP2973_INVALID_DATA);
-+		ret = SWAP(ret, mask, PB_CML_FAULT_INVALID_COMMAND,  MP2973_INVALID_COMMAND);
-+		ret = SWAP(ret, mask, PB_CML_FAULT_OTHER_COMM, MP2973_OTHER_COMM);
-+		ret = SWAP(ret, mask, PB_CML_FAULT_PACKET_ERROR, MP2973_PACKET_ERROR);
-+		break;
-+	case PMBUS_STATUS_VOUT:
-+		ret = SWAP(ret, mask, PB_VOLTAGE_UV_FAULT, MP2973_VOLTAGE_UV);
-+		ret = SWAP(ret, mask, PB_VOLTAGE_OV_FAULT, MP2973_VOLTAGE_OV);
-+		break;
-+	case PMBUS_STATUS_IOUT:
-+		ret = SWAP(ret, mask, PB_IOUT_OC_FAULT, MP2973_IOUT_OC);
-+		ret = SWAP(ret, mask, PB_IOUT_OC_LV_FAULT, MP2973_IOUT_OC_LV);
-+		break;
-+	case PMBUS_STATUS_TEMPERATURE:
-+		ret = SWAP(ret, mask, PB_TEMP_OT_FAULT, MP2973_TEMP_OT);
-+		break;
-+	/*
-+	 * Map remaining bits to MFR specific to let the PMBUS core mask
-+	 * those bits by default.
-+	 */
-+	case PMBUS_STATUS_MFR_SPECIFIC:
-+		ret = SWAP(ret, mask, BIT(1), MP2973_VIN_UVLO);
-+		ret = SWAP(ret, mask, BIT(3), MP2973_VIN_OVP);
-+		ret = SWAP(ret, mask, BIT(4), MP2973_MTP_FAULT);
-+		ret = SWAP(ret, mask, BIT(6), MP2973_MTP_BLK_TRIG);
-+		break;
-+	default:
-+		return 0;
-+	}
-+#undef SWAP
-+
-+	return pmbus_write_word_data(client, 0, PMBUS_SMBALERT_MASK, ret);
-+}
-+
- static int mp2975_read_word_data(struct i2c_client *client, int page,
- 				 int phase, int reg)
- {
-@@ -907,6 +983,7 @@ static struct pmbus_driver_info mp2973_info = {
- 		PMBUS_HAVE_TEMP | PMBUS_HAVE_STATUS_TEMP | PMBUS_HAVE_POUT |
- 		PMBUS_HAVE_PIN | PMBUS_HAVE_STATUS_INPUT,
- 	.read_word_data = mp2973_read_word_data,
-+	.write_word_data = mp2973_write_word_data,
- #if IS_ENABLED(CONFIG_SENSORS_MP2975_REGULATOR)
- 	.num_regulators = 1,
- 	.reg_desc = mp2975_reg_desc,
+		netdev_err(netdev, "Error changing mtu to %d, Max is %d\n",
+			   new_mtu, frame_size - I40E_PACKET_HDR_PAD);
 
-base-commit: 8debe3c1295ef36958dae77487eed9cf6584c008
--- 
-2.42.0
+My reading is that with this patch two different limits are
+checked wrt maximum MTU size:
 
+1. A VSI level limit, which relates to RX buffer size
+2. A PHY level limit that relates to the MFS
+
+That seems fine to me. But the log message for 1 (above) does
+not seem particularly informative wrt which limit has been exceeded.
+
+> @@ -2955,6 +2955,14 @@ static int i40e_change_mtu(struct net_device *netdev, int new_mtu)
+>  		return -EINVAL;
+>  	}
+>  
+> +	mfs = pf->hw.phy.link_info.max_frame_size;
+> +	max_mtu = mfs - I40E_PACKET_HDR_PAD;
+> +	if (new_mtu > max_mtu) {
+> +		netdev_err(netdev, "Error changing mtu to %d, Max is %d. MFS is too small.\n",
+> +			   new_mtu, max_mtu);
+> +		return -EINVAL;
+> +	}
+> +
+>  	netdev_dbg(netdev, "changing MTU from %d to %d\n",
+>  		   netdev->mtu, new_mtu);
+>  	netdev->mtu = new_mtu;
+> -- 
+> 2.44.0
+> 
+> 
 
