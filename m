@@ -1,146 +1,365 @@
-Return-Path: <linux-kernel+bounces-105681-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105683-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1EC8587E28F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:28:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 68C5987E295
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495C31C20F4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:28:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1CB71F2314D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:33:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1F51EB21;
-	Mon, 18 Mar 2024 03:28:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JAE4AHGL"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4CF8D20328;
+	Mon, 18 Mar 2024 03:33:28 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B981DDF4
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:28:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8DC841E86A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:33:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710732507; cv=none; b=XUjCgeCiD3mmmKNvWN+raoOtRAqrkW3uhmS23+Gr+KzddbJHHI5q0F1PqyRQ660X09gvvGsogREjeHAeJN4o07vj+iL7Ujfrx+rhOgEfZkEsMGicVrwDlb8ZUQgGAdbrT3gqw/NJZWhACl58/PE9ILp0c9dX5zzjUwST4FEjKD4=
+	t=1710732807; cv=none; b=MmPqLV92EOpL7bsBzC2R9wOMK0fRf+mBaTPd1dHWKNzwpRktZ3PkUSizQy7iSoALZIFEuWLIiRlYkTigMvJIxkszZaZNhuG2dmY7ui2w3nFFP7y28hp4YOTcu7panu+bpP2SnQCNWF8J5ZAbn3HjDZlSJfsKtD83Nci81WHyRSg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710732507; c=relaxed/simple;
-	bh=n+IvaFg5pDR8fyHm+L0s6tr64Pxcm4bGuDa/VfNWVXY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Q2PRp8G6lfpAiVHy7g+tqOFFzOdtauohVrpGOoqzmTSuEQMyA6irEvCsp1COlJ1vyhOOeeoAriCHrzzDTZHE6TRjwSL32uz9D4i9LZMEz4EcaCpDdFHF3hynDUSzXU4eWpXoYs9mD2zUMb9LinHPa6Q2H1VMqGUICTC0jb9FDxk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JAE4AHGL; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
-	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=Mywcfnh5NNAq/uHuTcHdgmDU+e61uebZtDEUql6Qjmw=; b=JAE4AHGLLAA2zK2ofDzl5hLk36
-	/+4V+3CniMhm7baMAv5R3LEgDXySCbFUc8wFAhzff4ybeXNCp+1u/D7iy9sF+zDr/5W9lHtHB3RSC
-	cjrL9rNzpQuabd26vq4jFlTPKXQVR0G9U9b1Umfj+oEMDXjYsFEzGdFngM7HEN2AKklbpYfkofe28
-	wYfVIVcLeKDE45So9YsTtH9LhnxC/gyTxiE0HUV0QHxd4/Za0rTExc5Gl9n+lQrI14SXT+DPjUkl3
-	lT1dNIk5fsx5BUoXW3NnI0QtHavIVC5Q51QGk3BrUA/jj+NMdtTk6I+V5OoNcqSuGDopwL04KM7q/
-	po/8tNzw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rm3fW-0000000GDq7-21up;
-	Mon, 18 Mar 2024 03:28:10 +0000
-Date: Mon, 18 Mar 2024 03:28:10 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>
-Cc: Zhaoyang Huang <huangzhaoyang@gmail.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Subject: Re: reply: [PATCH] mm: fix a race scenario in folio_isolate_lru
-Message-ID: <Zfe0yl2QTV1zSS1n@casper.infradead.org>
-References: <b88ce9ecad0d456d8adbc78e42ec713a@BJMBX01.spreadtrum.com>
+	s=arc-20240116; t=1710732807; c=relaxed/simple;
+	bh=EKX/BoqH2xh7vLFoFuFbTNxN4uqm7h9FUn62+QaYMWc=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=WunziS9CI/mB2aYPffaE8db2aRKsmqq2Fg/ZiUGPGZaVvWCCDwBWXauProAIRfniduVK9AWkB+BcdJnH+R/wX7ZYJIvB591CByLZROQiQcH8uvR/P4AxZBTzeGj/R/Y5XDg6qIdisEPbb4ID8RcXVkNcG4hVvw1+cFRd96VWAT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-36660582091so48174965ab.0
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 20:33:25 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710732805; x=1711337605;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3ZQRlhpQy04eICqIiJFN4t+eSrK3itKipVK5z5y5BB4=;
+        b=t0X1E3NJLhK9sdLBcBEUJL7ohL0Llq+/kYB2nnu+F37ugWFg+h0yqxjzNSut/s7j9N
+         4AHZ8uSkJ+5IJOT53cLbe9FvsU2Lxkv0OWBNHVMN0iVE0eBzUHDkwJr1oWdHM/5Rmv24
+         lYPYHfktQL/grvX84j9ytcv6pIMpvcNq/ut7cfq65s49fWBjic/rR+4IAcewxfVoeY77
+         diVAKoYWhoOBTqQxqYSS3HTn3/Wo80Mtr2RbQvKudWY4ISKB3Hd1Xlodh6earbwfX/Cr
+         Em/TYWjFO69d6z2ul8RoYoqfYTWaOjbuKL9vn3zPgPQuh6HWQVZDDjlZzKxIsE4iDPhn
+         n+TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWo+qh9meJNE6LFZJzmXKoNPQubS4uAOP2MHAxOVRzYVsYhKsDom2EShKBVjqB+q2oBn0gYB4cZBRLIhZcYH12h+pkuoBCJU6AslJHO
+X-Gm-Message-State: AOJu0YycnZ8fYhm6KSBLo5dRExzmk6X0l9E8VYZd3Bv1WBS+pEAnwqSd
+	ltPLYwejXN7Zn0B2V66LEBrrMjYBmnrrmcPj89ybHw+ZczgrM96bgk5xk5nRa4McyLj8G3FMOrl
+	1o0vYYQxxQ3SwHRJLnq8Ofyl0rtaQ3EL7dNEFJP4xqBhj8WB38/yWMkc=
+X-Google-Smtp-Source: AGHT+IElnSkGRoPKItnwHRYH64SRbKNnM/ZRhN1t08+4bYkpeWbvsSssn989Ds6UrO7W+WZ7ITnEuRpYcAYJ2q+a2GB+Isvf1uur
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <b88ce9ecad0d456d8adbc78e42ec713a@BJMBX01.spreadtrum.com>
+X-Received: by 2002:a05:6e02:1529:b0:366:3766:6c2d with SMTP id
+ i9-20020a056e02152900b0036637666c2dmr493125ilu.1.1710732804866; Sun, 17 Mar
+ 2024 20:33:24 -0700 (PDT)
+Date: Sun, 17 Mar 2024 20:33:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000023d51d0613e70545@google.com>
+Subject: [syzbot] [ext4?] possible deadlock in __ext4_mark_inode_dirty (3)
+From: syzbot <syzbot+72c7e5a0d9f5901e864e@syzkaller.appspotmail.com>
+To: adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com, tytso@mit.edu
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 18, 2024 at 01:37:04AM +0000, 黄朝阳 (Zhaoyang Huang) wrote:
-> >On Sun, Mar 17, 2024 at 12:07:40PM +0800, Zhaoyang Huang wrote:
-> >> Could it be this scenario, where folio comes from pte(thread 0), local
-> >> fbatch(thread 1) and page cache(thread 2) concurrently and proceed
-> >> intermixed without lock's protection? Actually, IMO, thread 1 also
-> >> could see the folio with refcnt==1 since it doesn't care if the page
-> >> is on the page cache or not.
-> >>
-> >> madivise_cold_and_pageout does no explicit folio_get thing since the
-> >> folio comes from pte which implies it has one refcnt from pagecache
-> >
-> >Mmm, no.  It's implicit, but madvise_cold_or_pageout_pte_range()
-> >does guarantee that the folio has at least one refcount.
-> >
-> >Since we get the folio from vm_normal_folio(vma, addr, ptent); we know that
-> >there is at least one mapcount on the folio.  refcount is always >= mapcount.
-> >Since we hold pte_offset_map_lock(), we know that mapcount (and therefore
-> >refcount) cannot be decremented until we call pte_unmap_unlock(), which we
-> >don't do until we have called folio_isolate_lru().
-> >
-> >Good try though, took me a few minutes of looking at it to convince myself that
-> >it was safe.
-> >
-> >Something to bear in mind is that if the race you outline is real, failing to hold a
-> >refcount on the folio leaves the caller susceptible to the
-> >VM_BUG_ON_FOLIO(!folio_ref_count(folio), folio); if the other thread calls
-> >folio_put().
-> Resend the chart via outlook.
-> I think the problem rely on an special timing which is rare, I would like to list them below in timing sequence.
-> 
-> 1. thread 0 calls folio_isolate_lru with refcnt == 1
+Hello,
 
-(i assume you mean refcnt == 2 here, otherwise none of this makes sense)
+syzbot found the following issue on:
 
-> 2. thread 1 calls release_pages with refcnt == 2.(IMO, it could be 1 as release_pages doesn't care if the folio is used by page cache or fs)
-> 3. thread 2 decrease refcnt to 1 by calling filemap_free_folio.(as I mentioned in 2, thread 2 is not mandatary here)
-> 4. thread 1 calls folio_put_testzero and pass.(lruvec->lock has not been take here)
+HEAD commit:    e5e038b7ae9d Merge tag 'fs_for_v6.9-rc1' of git://git.kern..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=14dbc646180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6ce8d253b68e67fe
+dashboard link: https://syzkaller.appspot.com/bug?extid=72c7e5a0d9f5901e864e
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
-But there's already a bug here.
+Unfortunately, I don't have any reproducer for this issue yet.
 
-Rearrange the order of this:
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e5e038b7.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/82ab7eda09bc/vmlinux-e5e038b7.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bda17336e65d/bzImage-e5e038b7.xz
 
-2. thread 1 calls release_pages with refcount == 2 (decreasing refcount to 1)
-3. thread 2 decrease refcount to 0 by calling filemap_free_folio
-1. thread 0 calls folio_isolate_lru() and hits the BUG().
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+72c7e5a0d9f5901e864e@syzkaller.appspotmail.com
 
-> 5. thread 0 clear folio's PG_lru by calling folio_test_clear_lru. The folio_get behind has no meaning there.
-> 6. thread 1 failed in folio_test_lru and leave the folio on the LRU.
-> 7. thread 1 add folio to pages_to_free wrongly which could break the LRU's->list and will have next folio experience list_del_invalid
-> 
-> #thread 0(madivise_cold_and_pageout)        #1(lru_add_drain->fbatch_release_pages)       #2(read_pages->filemap_remove_folios)
-> refcnt == 1(represent page cache)             refcnt==2(another one represent LRU)          folio comes from page cache
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-06619-ge5e038b7ae9d #0 Not tainted
+------------------------------------------------------
+syz-executor.1/20321 is trying to acquire lock:
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: might_alloc include/linux/sched/mm.h:303 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: slab_pre_alloc_hook mm/slub.c:3746 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: slab_alloc_node mm/slub.c:3827 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: __do_kmalloc_node mm/slub.c:3965 [inline]
+ffffffff8d92fb40 (fs_reclaim){+.+.}-{0:0}, at: __kmalloc_node+0xbb/0x480 mm/slub.c:3973
 
-This is still illegible.  Try it this way:
+but task is already holding lock:
+ffff88802023b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
+ffff88802023b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5829 [inline]
+ffff88802023b2c8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4cf/0x860 fs/ext4/inode.c:5910
 
-Thread 0	Thread 1	Thread 2
-madvise_cold_or_pageout_pte_range
-		lru_add_drain
-		fbatch_release_pages
-				read_pages
-				filemap_remove_folio
+which lock already depends on the new lock.
 
-Some accuracy in your report would also be appreciated.  There's no
-function called madivise_cold_and_pageout, nor is there a function called
-filemap_remove_folios().  It's a little detail, but it's annoying for
-me to try to find which function you're actually referring to.  I have
-to guess, and it puts me in a bad mood.
 
-At any rate, these three functions cannot do what you're proposing.
-In read_page(), when we call filemap_remove_folio(), the folio in
-question will not have the uptodate flag set, so can never have been
-put in the page tables, so cannot be found by madvise().
+the existing dependency chain (in reverse order) is:
 
-Also, as I said in my earlier email, madvise_cold_or_pageout_pte_range()
-does guarantee that the refcount on the folio is held and can never
-decrease to zero while folio_isolate_lru() is running.  So that's two
-ways this scenario cannot happen.
+-> #3 (&ei->xattr_sem){++++}-{3:3}:
+       down_write+0x3a/0x50 kernel/locking/rwsem.c:1579
+       ext4_write_lock_xattr fs/ext4/xattr.h:155 [inline]
+       ext4_xattr_set_handle+0x159/0x1660 fs/ext4/xattr.c:2371
+       __ext4_set_acl+0x366/0x5d0 fs/ext4/acl.c:217
+       ext4_set_acl+0x2a0/0x5a0 fs/ext4/acl.c:259
+       set_posix_acl+0x25c/0x320 fs/posix_acl.c:955
+       vfs_remove_acl+0x2d1/0x630 fs/posix_acl.c:1242
+       ovl_do_remove_acl fs/overlayfs/overlayfs.h:349 [inline]
+       ovl_workdir_create+0x4a5/0x820 fs/overlayfs/super.c:340
+       ovl_make_workdir fs/overlayfs/super.c:656 [inline]
+       ovl_get_workdir fs/overlayfs/super.c:814 [inline]
+       ovl_fill_super+0xe60/0x6960 fs/overlayfs/super.c:1382
+       vfs_get_super fs/super.c:1268 [inline]
+       get_tree_nodev+0xda/0x190 fs/super.c:1287
+       vfs_get_tree+0x8f/0x380 fs/super.c:1779
+       do_new_mount fs/namespace.c:3352 [inline]
+       path_mount+0x6e1/0x1f10 fs/namespace.c:3679
+       do_mount fs/namespace.c:3692 [inline]
+       __do_sys_mount fs/namespace.c:3898 [inline]
+       __se_sys_mount fs/namespace.c:3875 [inline]
+       __ia32_sys_mount+0x295/0x320 fs/namespace.c:3875
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+       entry_SYSENTER_compat_after_hwframe+0x7a/0x84
 
+-> #2 (jbd2_handle){++++}-{0:0}:
+       start_this_handle+0x114b/0x1620 fs/jbd2/transaction.c:463
+       jbd2__journal_start+0x2a6/0x8f0 fs/jbd2/transaction.c:520
+       __ext4_journal_start_sb+0x358/0x600 fs/ext4/ext4_jbd2.c:112
+       ext4_sample_last_mounted fs/ext4/file.c:837 [inline]
+       ext4_file_open+0x636/0xc80 fs/ext4/file.c:866
+       do_dentry_open+0x8da/0x18c0 fs/open.c:955
+       do_open fs/namei.c:3642 [inline]
+       path_openat+0x1dfb/0x2990 fs/namei.c:3799
+       do_filp_open+0x1dc/0x430 fs/namei.c:3826
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+       do_sys_open fs/open.c:1421 [inline]
+       __do_sys_openat fs/open.c:1437 [inline]
+       __se_sys_openat fs/open.c:1432 [inline]
+       __x64_sys_openat+0x175/0x210 fs/open.c:1432
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #1 (sb_internal){.+.+}-{0:0}:
+       percpu_down_read include/linux/percpu-rwsem.h:51 [inline]
+       __sb_start_write include/linux/fs.h:1662 [inline]
+       sb_start_intwrite include/linux/fs.h:1845 [inline]
+       ext4_evict_inode+0xe3a/0x1a30 fs/ext4/inode.c:212
+       evict+0x2ed/0x6c0 fs/inode.c:667
+       iput_final fs/inode.c:1741 [inline]
+       iput.part.0+0x573/0x7c0 fs/inode.c:1767
+       iput+0x5c/0x80 fs/inode.c:1757
+       dentry_unlink_inode+0x295/0x440 fs/dcache.c:400
+       __dentry_kill+0x1d0/0x600 fs/dcache.c:603
+       shrink_kill fs/dcache.c:1048 [inline]
+       shrink_dentry_list+0x140/0x5d0 fs/dcache.c:1075
+       prune_dcache_sb+0xeb/0x150 fs/dcache.c:1156
+       super_cache_scan+0x32a/0x550 fs/super.c:221
+       do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
+       shrink_slab_memcg mm/shrinker.c:548 [inline]
+       shrink_slab+0xa87/0x1310 mm/shrinker.c:626
+       shrink_one+0x493/0x7b0 mm/vmscan.c:4767
+       shrink_many mm/vmscan.c:4828 [inline]
+       lru_gen_shrink_node mm/vmscan.c:4929 [inline]
+       shrink_node+0x2191/0x3770 mm/vmscan.c:5888
+       kswapd_shrink_node mm/vmscan.c:6696 [inline]
+       balance_pgdat+0x9d0/0x1a90 mm/vmscan.c:6886
+       kswapd+0x5c1/0xc10 mm/vmscan.c:7146
+       kthread+0x2c1/0x3a0 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+-> #0 (fs_reclaim){+.+.}-{0:0}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+       __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
+       fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
+       might_alloc include/linux/sched/mm.h:303 [inline]
+       slab_pre_alloc_hook mm/slub.c:3746 [inline]
+       slab_alloc_node mm/slub.c:3827 [inline]
+       __do_kmalloc_node mm/slub.c:3965 [inline]
+       __kmalloc_node+0xbb/0x480 mm/slub.c:3973
+       kmalloc_node include/linux/slab.h:648 [inline]
+       kvmalloc_node+0x9d/0x1a0 mm/util.c:634
+       kvmalloc include/linux/slab.h:766 [inline]
+       ext4_xattr_inode_cache_find fs/ext4/xattr.c:1535 [inline]
+       ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
+       ext4_xattr_set_entry+0x193c/0x3b20 fs/ext4/xattr.c:1719
+       ext4_xattr_block_set+0x69c/0x3110 fs/ext4/xattr.c:1970
+       ext4_xattr_move_to_block fs/ext4/xattr.c:2667 [inline]
+       ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+       ext4_expand_extra_isize_ea+0xf57/0x1990 fs/ext4/xattr.c:2834
+       __ext4_expand_extra_isize+0x322/0x450 fs/ext4/inode.c:5789
+       ext4_try_to_expand_extra_isize fs/ext4/inode.c:5832 [inline]
+       __ext4_mark_inode_dirty+0x55a/0x860 fs/ext4/inode.c:5910
+       ext4_inline_data_truncate+0x602/0xc80 fs/ext4/inline.c:1994
+       ext4_truncate+0x990/0x13a0 fs/ext4/inode.c:4102
+       ext4_setattr+0x1a3a/0x29d0 fs/ext4/inode.c:5454
+       notify_change+0x742/0x11c0 fs/attr.c:497
+       do_truncate+0x15c/0x220 fs/open.c:65
+       handle_truncate fs/namei.c:3300 [inline]
+       do_open fs/namei.c:3646 [inline]
+       path_openat+0x24b9/0x2990 fs/namei.c:3799
+       do_filp_open+0x1dc/0x430 fs/namei.c:3826
+       do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+       do_sys_open fs/open.c:1421 [inline]
+       __do_sys_creat fs/open.c:1497 [inline]
+       __se_sys_creat fs/open.c:1491 [inline]
+       __ia32_sys_creat+0xcc/0x120 fs/open.c:1491
+       do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+       __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
+       do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+       entry_SYSENTER_compat_after_hwframe+0x7a/0x84
+
+other info that might help us debug this:
+
+Chain exists of:
+  fs_reclaim --> jbd2_handle --> &ei->xattr_sem
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(&ei->xattr_sem);
+                               lock(jbd2_handle);
+                               lock(&ei->xattr_sem);
+  lock(fs_reclaim);
+
+ *** DEADLOCK ***
+
+4 locks held by syz-executor.1/20321:
+ #0: ffff888047dd0420 (sb_writers#4){.+.+}-{0:0}, at: do_open fs/namei.c:3635 [inline]
+ #0: ffff888047dd0420 (sb_writers#4){.+.+}-{0:0}, at: path_openat+0x1fba/0x2990 fs/namei.c:3799
+ #1: ffff88802023b600 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: inode_lock include/linux/fs.h:793 [inline]
+ #1: ffff88802023b600 (&sb->s_type->i_mutex_key#8){++++}-{3:3}, at: do_truncate+0x14b/0x220 fs/open.c:63
+ #2: ffff88802023b7a0 (mapping.invalidate_lock){++++}-{3:3}, at: filemap_invalidate_lock include/linux/fs.h:838 [inline]
+ #2: ffff88802023b7a0 (mapping.invalidate_lock){++++}-{3:3}, at: ext4_setattr+0xdfd/0x29d0 fs/ext4/inode.c:5378
+ #3: ffff88802023b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_write_trylock_xattr fs/ext4/xattr.h:162 [inline]
+ #3: ffff88802023b2c8 (&ei->xattr_sem){++++}-{3:3}, at: ext4_try_to_expand_extra_isize fs/ext4/inode.c:5829 [inline]
+ #3: ffff88802023b2c8 (&ei->xattr_sem){++++}-{3:3}, at: __ext4_mark_inode_dirty+0x4cf/0x860 fs/ext4/inode.c:5910
+
+stack backtrace:
+CPU: 1 PID: 20321 Comm: syz-executor.1 Not tainted 6.8.0-syzkaller-06619-ge5e038b7ae9d #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+ __fs_reclaim_acquire mm/page_alloc.c:3692 [inline]
+ fs_reclaim_acquire+0x102/0x150 mm/page_alloc.c:3706
+ might_alloc include/linux/sched/mm.h:303 [inline]
+ slab_pre_alloc_hook mm/slub.c:3746 [inline]
+ slab_alloc_node mm/slub.c:3827 [inline]
+ __do_kmalloc_node mm/slub.c:3965 [inline]
+ __kmalloc_node+0xbb/0x480 mm/slub.c:3973
+ kmalloc_node include/linux/slab.h:648 [inline]
+ kvmalloc_node+0x9d/0x1a0 mm/util.c:634
+ kvmalloc include/linux/slab.h:766 [inline]
+ ext4_xattr_inode_cache_find fs/ext4/xattr.c:1535 [inline]
+ ext4_xattr_inode_lookup_create fs/ext4/xattr.c:1577 [inline]
+ ext4_xattr_set_entry+0x193c/0x3b20 fs/ext4/xattr.c:1719
+ ext4_xattr_block_set+0x69c/0x3110 fs/ext4/xattr.c:1970
+ ext4_xattr_move_to_block fs/ext4/xattr.c:2667 [inline]
+ ext4_xattr_make_inode_space fs/ext4/xattr.c:2742 [inline]
+ ext4_expand_extra_isize_ea+0xf57/0x1990 fs/ext4/xattr.c:2834
+ __ext4_expand_extra_isize+0x322/0x450 fs/ext4/inode.c:5789
+ ext4_try_to_expand_extra_isize fs/ext4/inode.c:5832 [inline]
+ __ext4_mark_inode_dirty+0x55a/0x860 fs/ext4/inode.c:5910
+ ext4_inline_data_truncate+0x602/0xc80 fs/ext4/inline.c:1994
+ ext4_truncate+0x990/0x13a0 fs/ext4/inode.c:4102
+ ext4_setattr+0x1a3a/0x29d0 fs/ext4/inode.c:5454
+ notify_change+0x742/0x11c0 fs/attr.c:497
+ do_truncate+0x15c/0x220 fs/open.c:65
+ handle_truncate fs/namei.c:3300 [inline]
+ do_open fs/namei.c:3646 [inline]
+ path_openat+0x24b9/0x2990 fs/namei.c:3799
+ do_filp_open+0x1dc/0x430 fs/namei.c:3826
+ do_sys_openat2+0x17a/0x1e0 fs/open.c:1406
+ do_sys_open fs/open.c:1421 [inline]
+ __do_sys_creat fs/open.c:1497 [inline]
+ __se_sys_creat fs/open.c:1491 [inline]
+ __ia32_sys_creat+0xcc/0x120 fs/open.c:1491
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0x7a/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x32/0x80 arch/x86/entry/common.c:346
+ entry_SYSENTER_compat_after_hwframe+0x7a/0x84
+RIP: 0023:0xf734e579
+Code: b8 01 10 06 03 74 b4 01 10 07 03 74 b0 01 10 08 03 74 d8 01 00 00 00 00 00 00 00 00 00 00 00 00 00 51 52 55 89 e5 0f 34 cd 80 <5d> 5a 59 c3 90 90 90 90 8d b4 26 00 00 00 00 8d b4 26 00 00 00 00
+RSP: 002b:00000000f5f485ac EFLAGS: 00000292 ORIG_RAX: 0000000000000008
+RAX: ffffffffffffffda RBX: 0000000020000100 RCX: 0000000000000000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000000 R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000292 R12: 0000000000000000
+R13: 0000000000000000 R14: 0000000000000000 R15: 0000000000000000
+ </TASK>
+----------------
+Code disassembly (best guess), 2 bytes skipped:
+   0:	10 06                	adc    %al,(%rsi)
+   2:	03 74 b4 01          	add    0x1(%rsp,%rsi,4),%esi
+   6:	10 07                	adc    %al,(%rdi)
+   8:	03 74 b0 01          	add    0x1(%rax,%rsi,4),%esi
+   c:	10 08                	adc    %cl,(%rax)
+   e:	03 74 d8 01          	add    0x1(%rax,%rbx,8),%esi
+  1e:	00 51 52             	add    %dl,0x52(%rcx)
+  21:	55                   	push   %rbp
+  22:	89 e5                	mov    %esp,%ebp
+  24:	0f 34                	sysenter
+  26:	cd 80                	int    $0x80
+* 28:	5d                   	pop    %rbp <-- trapping instruction
+  29:	5a                   	pop    %rdx
+  2a:	59                   	pop    %rcx
+  2b:	c3                   	ret
+  2c:	90                   	nop
+  2d:	90                   	nop
+  2e:	90                   	nop
+  2f:	90                   	nop
+  30:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+  37:	8d b4 26 00 00 00 00 	lea    0x0(%rsi,%riz,1),%esi
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
