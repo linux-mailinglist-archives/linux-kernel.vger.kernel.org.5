@@ -1,162 +1,135 @@
-Return-Path: <linux-kernel+bounces-106480-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106481-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5711787EF30
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:50:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 43A9D87EF33
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:51:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0B9DE2869A2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:50:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF06DB20D74
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:51:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D92A655E50;
-	Mon, 18 Mar 2024 17:50:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F60C55E40;
+	Mon, 18 Mar 2024 17:51:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="XlZWs+Jf"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="bReYpJVT"
+Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B1BF55C3C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:50:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C6D755C04;
+	Mon, 18 Mar 2024 17:51:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710784238; cv=none; b=nNJ+wXQ7dV/aXsZyK0PHOspmxCXurSlR3em0mPpwNniGeAN0UdeVx+JbTIZ2hTmYwYCzgQYh0/0NM0J8GTpvHszJFNpsLqhY/VHVG+pkxCW0jmJ3lGoT0/7mxjX25ba33XXOxrNKQAnb0jQfAPrJ10b8P7nqVQMfABvltktXCTs=
+	t=1710784298; cv=none; b=B3zbCKYba+P2/b5ay/53j2iUqCOd0hsDTJgfwaDQM+BUHAQz2K004fBOrqpHLUPTPyuVcN2gKc/w/Hxbe780JwROnaMKoWVHeId2UD6M/vOTOlsrNwvkn/twV03FQgSr9wOFcrctWAAh3MKLjBJxgbPNLanSid3ng1WrwgkvN+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710784238; c=relaxed/simple;
-	bh=pQUEXLiwsG9pj5PVCtfU0JO6LrCsUmWuFBjSmI5msyE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QpBuibfFOZCCiNGP0DtLy5AdbHSyXzGT+HWoINqmRyu5Ah/Vr2CTlhY83JnFIJ0kU1yFJsTIqNX3HbT1GCrRwoewaM/VT/v5g20jJH5TK7ya0c8LqoIKU7saSIKo8BSE0/qLE/8FRXiXbSJ+Al5I3SMfHE4AtP97S4d437qKE6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=XlZWs+Jf; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 94D937E9;
-	Mon, 18 Mar 2024 18:50:08 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710784208;
-	bh=pQUEXLiwsG9pj5PVCtfU0JO6LrCsUmWuFBjSmI5msyE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=XlZWs+Jf10VPkSIZExabneHvJ8lPq37tytooEGy4gXnTQOUn+SBX64FjyPPL5IiiN
-	 92deGuT2P4WZHtLhdkYdvo6BzTg7FIN57y0JL/vEG/n61IUsahuTfD9wmQLYjST/81
-	 pETs6/R8TlJ4l5MEDjO7d2427SLRIfRFb4Q1I0X4=
-Date: Mon, 18 Mar 2024 19:50:32 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: kernel test robot <lkp@intel.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, oe-kbuild-all@lists.linux.dev,
-	David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
-	Michal Simek <monstr@monstr.eu>,
-	linux-arm-kernel@lists.infradead.org,
-	Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 6/6] drm: zynqmp_dp: Add debugfs interface for compliance
- testing
-Message-ID: <20240318175032.GM13682@pendragon.ideasonboard.com>
-References: <20240315230916.1759060-7-sean.anderson@linux.dev>
- <202403161704.ACHJdSJG-lkp@intel.com>
- <ce1190ad-27c2-4a16-b36f-442c0c419dcc@linux.dev>
+	s=arc-20240116; t=1710784298; c=relaxed/simple;
+	bh=8BWXMGXPrhSjM7hndIIPhTy7ngPeOpfjajBLn5mFHCk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=LSJ2hkFEzJKlbqh4X+fI9QguJ/TmI9l1e5y9A1HtxymAS9nFTWxYutMvNOiV6YWgsvwA586nKhIEE5oyWX1Z3cB+cY42RV/0MlrDUKDrjnN9t57ICv1woavePYX5xqw3JfZG9ZQhb9DvW/4JtA0kv8SfMB7Tb7Q0xmbKvkUA1ng=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=bReYpJVT; arc=none smtp.client-ip=209.85.128.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-4142296d8aaso5401985e9.3;
+        Mon, 18 Mar 2024 10:51:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710784295; x=1711389095; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=G32Lvb6DaT3Z5N2JWzRdtUsZLrSIo1Qe2OqdOhc2VvU=;
+        b=bReYpJVTW3Y45xVaJyOoc7fFFMiP1SLlkCBPdyi+W9EWyybRmDOYHAeGOJwpdsnOmh
+         6ciALYg/x7PKUWiIz6/GKM39KTUfgXhpK8h3Gsqu/LHP5lKRkOdMYfNy77k+p5pAPsnW
+         0cgtS7VmbglGYOz9TThJXdCwWNNuuqThrykc1ryOUj52dYwdQTNqkZm0POQuta7QVJIu
+         1AGcCre6R+7NZ4I5NtxT6atVkbpiVZCGXaCnUId+TLLd9rZ0cEfxIhdxiawgkmy0MhGL
+         4atdxsiOAivTKhRD55QalQ3GxzkgAEdslFTWrx/tsrDeDoGcxfY1xv5NpCUCf1R6khYm
+         gtRg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710784295; x=1711389095;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=G32Lvb6DaT3Z5N2JWzRdtUsZLrSIo1Qe2OqdOhc2VvU=;
+        b=Q1SMBoMPZhVzFFsb9IGyOd68O/CspF8nJd76/2/kNnG4YL2+kPWOkJCxhM2+8ThVM3
+         BttFaPmKfPzosKWDVBhiPBEjVFqlsVuZqGaeF0BPnPNRil/Z8qxhYil1LfoZHI9MZmv3
+         y5Ck9n3xz7WsblxJUItXH1t2iJWn31Zgi6MKDLq9o1Rnjv7WJEqiKbEgJPZyh26zFlQQ
+         OxHQKx/nY67MFr1MB8Y8zrx5oP9XGUN3g0j+uHIspDa8QsrbsWr2LSs3Ig9NnZ9i27MC
+         c7WNOr92limA1YFsiUw2PGC2bsWAjWzuHtOyoqN3/2vdfdCA9Fz74U4GFhbaA3LLRal8
+         Zb8A==
+X-Forwarded-Encrypted: i=1; AJvYcCUEwotBgZaxvCVJTGV9MlVNCVR/QJ3/0MICOc7xfglVH7Fbs4WW7+kq3SVR/v75ITPxKbzwWkufriL5J62XriNil7ldjQ+eCfWT1pg8mvrY0eFiNJHQCEFlCkzMAbfbox8e9jzNFuzw
+X-Gm-Message-State: AOJu0YzIQycv8CKNV2YCYDcgMOL2gv9kQ6bb2mGfLF+7o1rNMzQxguJI
+	/te2SdFEGZWFN+li2Q7VRPRwC12f/GobH3ZztEKqkax36C6SDTB/
+X-Google-Smtp-Source: AGHT+IGmrpe4rMtrnwz4paciaxKw9R4UIyEVRfiWaf7mvEQqFIOAxd74g/y/KTdzA48sbGltNcPXkg==
+X-Received: by 2002:a05:600c:3503:b0:414:4d82:e610 with SMTP id h3-20020a05600c350300b004144d82e610mr210320wmq.7.1710784294555;
+        Mon, 18 Mar 2024 10:51:34 -0700 (PDT)
+Received: from localhost.localdomain (munkyhouse.force9.co.uk. [84.92.42.80])
+        by smtp.gmail.com with ESMTPSA id m2-20020a05600c3b0200b004142894df64sm1890789wms.5.2024.03.18.10.51.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 10:51:34 -0700 (PDT)
+Sender: Adam Butcher <adam.jessaminenet@gmail.com>
+From: Adam Butcher <adam@jessamine.co.uk>
+To: broonie@kernel.org,
+	benjamin@bigler.one,
+	carlos.song@nxp.com,
+	s.hauer@pengutronix.de,
+	shawnguo@kernel.org,
+	stefanmoring@gmail.com
+Cc: adam@jessamine.co.uk,
+	kernel@pengutronix.de,
+	linux-imx@nxp.com,
+	linux-kernel@vger.kernel.org,
+	linux-spi@vger.kernel.org
+Subject: [PATCH v3] spi: spi-imx: fix off-by-one in mx51 CPU mode burst length
+Date: Mon, 18 Mar 2024 17:50:52 +0000
+Message-ID: <20240318175119.3334-1-adam@jessamine.co.uk>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ce1190ad-27c2-4a16-b36f-442c0c419dcc@linux.dev>
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 11:06:40AM -0400, Sean Anderson wrote:
-> On 3/16/24 06:14, kernel test robot wrote:
-> > Hi Sean,
-> > 
-> > kernel test robot noticed the following build warnings:
-> > 
-> > [auto build test WARNING on v6.8]
-> > [cannot apply to drm-misc/drm-misc-next linus/master next-20240315]
-> > [If your patch is applied to the wrong git tree, kindly drop us a note.
-> > And when submitting patch, we suggest to use '--base' as documented in
-> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
-> > 
-> > url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Anderson/drm-zynqmp_dp-Downgrade-log-level-for-aux-retries-message/20240316-071208
-> > base:   v6.8
-> > patch link:    https://lore.kernel.org/r/20240315230916.1759060-7-sean.anderson%40linux.dev
-> > patch subject: [PATCH 6/6] drm: zynqmp_dp: Add debugfs interface for compliance testing
-> > config: microblaze-allmodconfig (https://download.01.org/0day-ci/archive/20240316/202403161704.ACHJdSJG-lkp@intel.com/config)
-> > compiler: microblaze-linux-gcc (GCC) 13.2.0
-> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240316/202403161704.ACHJdSJG-lkp@intel.com/reproduce)
-> > 
-> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
-> > the same patch/commit), kindly add following tags
-> > | Reported-by: kernel test robot <lkp@intel.com>
-> > | Closes: https://lore.kernel.org/oe-kbuild-all/202403161704.ACHJdSJG-lkp@intel.com/
-> > 
-> > All warnings (new ones prefixed by >>):
-> > 
-> >    drivers/gpu/drm/xlnx/zynqmp_dp.c: In function 'zynqmp_dp_bridge_debugfs_init':
-> >>> drivers/gpu/drm/xlnx/zynqmp_dp.c:2168:31: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
-> >     2168 |                 sprintf(name, fmt, i);
-> >          |                               ^~~
-> >    drivers/gpu/drm/xlnx/zynqmp_dp.c:2168:17: note: 'sprintf' output between 18 and 20 bytes into a destination of size 19
-> >     2168 |                 sprintf(name, fmt, i);
-> >          |                 ^~~~~~~~~~~~~~~~~~~~~
-> 
-> Not a bug, as i will be at most 4, which uses 1 digit.
+From: Adam Butcher <adam@jessamine.co.uk>
 
-The compiler can't know that. Please fix this, there's a zero warning
-policy.
+c712c05e46c8 ("spi: imx: fix the burst length at DMA mode and CPU mode")
+corrects three cases of setting the ECSPI burst length but erroneously
+leaves the in-range CPU case one bit to big (in that field a value of
+0 means 1 bit).  The effect was that transmissions that should have been
+8-bit bytes appeared as 9-bit causing failed communication with SPI
+devices.
 
-> > vim +/sprintf +2168 drivers/gpu/drm/xlnx/zynqmp_dp.c
-> > 
-> >   2136	
-> >   2137	DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_rate, zynqmp_dp_rate_get,
-> >   2138				 zynqmp_dp_rate_set, "%llu\n");
-> >   2139	
-> >   2140	static void zynqmp_dp_bridge_debugfs_init(struct drm_bridge *bridge,
-> >   2141						  struct dentry *root)
-> >   2142	{
-> >   2143		struct zynqmp_dp *dp = bridge_to_dp(bridge);
-> >   2144		struct dentry *test;
-> >   2145		int i;
-> >   2146	
-> >   2147		dp->test.bw_code = DP_LINK_BW_5_4;
-> >   2148		dp->test.link_cnt = dp->num_lanes;
-> >   2149	
-> >   2150		test = debugfs_create_dir("test", root);
-> >   2151	#define CREATE_FILE(name) \
-> >   2152		debugfs_create_file(#name, 0600, test, dp, &fops_zynqmp_dp_##name)
-> >   2153		CREATE_FILE(pattern);
-> >   2154		CREATE_FILE(enhanced);
-> >   2155		CREATE_FILE(downspread);
-> >   2156		CREATE_FILE(active);
-> >   2157		CREATE_FILE(custom);
-> >   2158		CREATE_FILE(rate);
-> >   2159		CREATE_FILE(lanes);
-> >   2160	
-> >   2161		for (i = 0; i < dp->num_lanes; i++) {
-> >   2162			static const char fmt[] = "lane%d_preemphasis";
-> >   2163			char name[sizeof(fmt)];
-> >   2164	
-> >   2165			dp->debugfs_train_set[i].dp = dp;
-> >   2166			dp->debugfs_train_set[i].lane = i;
-> >   2167	
-> >> 2168			sprintf(name, fmt, i);
-> >   2169			debugfs_create_file(name, 0600, test,
-> >   2170					    &dp->debugfs_train_set[i],
-> >   2171					    &fops_zynqmp_dp_preemphasis);
-> >   2172	
-> >   2173			sprintf(name, "lane%d_swing", i);
-> >   2174			debugfs_create_file(name, 0600, test,
-> >   2175					    &dp->debugfs_train_set[i],
-> >   2176					    &fops_zynqmp_dp_swing);
-> >   2177		}
-> >   2178	}
-> >   2179	
+Link: https://lore.kernel.org/all/20240201105451.507005-1-carlos.song@nxp.com/
+Link: https://lore.kernel.org/all/20240204091912.36488-1-carlos.song@nxp.com/
+Fixes: c712c05e46c8 ("spi: imx: fix the burst length at DMA mode and CPU mode")
+Signed-off-by: Adam Butcher <adam@jessamine.co.uk>
+---
 
+v2. Cleaned up body text.  No diff change.
+v3. Corrected log message ref to upstream commit being fixed.  No diff change.
+
+The original patch submission up to v4 (first link above) did not contain
+the bug that this patch fixes.  It was introduced in the v5 update (second
+link).
+
+---
+ drivers/spi/spi-imx.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/spi/spi-imx.c b/drivers/spi/spi-imx.c
+index 7c1fcd5ed52f7..100552e6c56bc 100644
+--- a/drivers/spi/spi-imx.c
++++ b/drivers/spi/spi-imx.c
+@@ -743,8 +743,8 @@ static int mx51_ecspi_prepare_transfer(struct spi_imx_data *spi_imx,
+ 				ctrl |= (MX51_ECSPI_CTRL_MAX_BURST * BITS_PER_BYTE - 1)
+ 						<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 			else
+-				ctrl |= spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
+-						BITS_PER_BYTE) * spi_imx->bits_per_word
++				ctrl |= (spi_imx->count / DIV_ROUND_UP(spi_imx->bits_per_word,
++						BITS_PER_BYTE) * spi_imx->bits_per_word - 1)
+ 						<< MX51_ECSPI_CTRL_BL_OFFSET;
+ 		}
+ 	}
 -- 
-Regards,
-
-Laurent Pinchart
+2.43.0
 
