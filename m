@@ -1,141 +1,127 @@
-Return-Path: <linux-kernel+bounces-106049-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106050-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8646887E855
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:16:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 283B187E859
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:18:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8C431C213AE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:16:51 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 13DEB1C213B5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:18:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100DC364A7;
-	Mon, 18 Mar 2024 11:16:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F2DC6364B1;
+	Mon, 18 Mar 2024 11:18:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K2d95yni"
-Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Y9JCD/S6"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A59D36114
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:16:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A423D3611E
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710760605; cv=none; b=Q8davwhHDh14wiieDuL0Xxj4zRqgjbs7hUWo5cZwV+cWEW6LG3s1B78wU0P3EPuryr+yxwEOSWDO+5EsAWkMJ/5/bD4N5pTyx0TWsAtOTyRqNCFfgG21Mow69t/KFCmTnvpIkxCrknHG+aXkYthSv5Gjo2vet9fQzYIVxAZx7tY=
+	t=1710760692; cv=none; b=iHH0PoIBB2fLXWw33yvlOAqHpaQ96r1OIKYAmWhFb1OyucKMs8MjrGV6zF3s+HLTmsl637qKEST2Z2WCn+6CxTJxpxBgBOxTg9cVRkBFNNO1RImZqhP30uS+dcH2vhW3sZRJxcUFmwiWKM5qq+a5xC5r1VskbmIa/RibdVBOg9I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710760605; c=relaxed/simple;
-	bh=K/B9jshhQTO4EDidb9xFu7jg5/YHjfatld4X7iyOsJE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kgcZd23KFEW1RC6dcYmTCIVfq9hLxD40OvEwDhS6IjTQRcUr5RVfZ7npI+NBL4Sf2x2zAAIjCwHr0vcVn8N5pOfboDbxQJaGy8gj4yqY4pRnugvek6uebR5JP9YWLTUlCwiulwTKa3jdzaIei4SzQLNC0Bz7r4/spSuHzyZeUHA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K2d95yni; arc=none smtp.client-ip=209.85.208.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5687e7662a5so5672222a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 04:16:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710760602; x=1711365402; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=KnHhyb7uDpQBPnfr4V2y5wGYxknsht7Nq/KOV466kCg=;
-        b=K2d95yniZgrEVp/MnijD4bieQxXizdmrePBdLfGdqUOH5HDeQHduf/gLR67hQUqsfF
-         H066RbZMyqWubbfxL2toHNaEZcokEvDzh1lrHmz+giLZByIl2Rz4i2rHO31ZXlByOREC
-         arQXIh7J8A84ZYeF5V0F8OWJluw5YZDnFOw1NUSXNPuMwLVIUXkSYyrW5gevlL6krk1b
-         TiaISAPzJ91K6gf8TSA05j57RqZmZDevVDcDM32Yp92CLZEJdZ3Qb0QgsHgAjH/WEXoL
-         E5+jkedRRPuZL7FkzxGrIzCBM1PrCPTq/DLGXRYPvwA5oNdPqp23egxIaGcGU06LEL2h
-         qU/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710760602; x=1711365402;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=KnHhyb7uDpQBPnfr4V2y5wGYxknsht7Nq/KOV466kCg=;
-        b=QQbyZYLWpj8blId6M1b73dVt2JyMQgjf0FCgHLnnDK2ph76s3cGaBMHwr61jVSOZsT
-         aeC8Mfvklv4t+OMod5oGDJ2LN3qdIJ3rD4ZJuPm9Gt+sTcm8xwMLSBgW2Bt3KfVp4vaG
-         0L1BWfKUlUFU0mhpfWCiYIOtZEZ9UDX9nXjWyBF39D6jbYWLcfOwYCkBJ79ENgLJP0xc
-         qKoryRAoI9PYefkSgQmp9d9Aj0bmimHqTym8vv44bULPN4ZTAgul3KJLct7EKmwYigXu
-         z61H6EiKHEbFXxh1U65SKcCbwKhmIzi4fQNW29hBOXld9V7q2jJYWvFOrLWJagAhossF
-         Kcpw==
-X-Forwarded-Encrypted: i=1; AJvYcCWMy39q3WeKD9qUWDvO9Xgmpdcre2Y+fDBVIvQ3rOhp9pEA9HYpHykq9L8Ho39Hu0k/3Fm7UioJszvbcaKRNsf9TU4FakmfMIXNpJ0x
-X-Gm-Message-State: AOJu0YyXIE28MyD5hdX5UB9+wgHyMnBUUFQUj4whe7dhj32SFnIEKSKp
-	e2Ij8Eud35+YqIa4eNWCUwrTdaWQyhJOPYJoT4W/2W+THB/ZEv0p5GhAKps2q4ypXdqBEE6RMBm
-	5
-X-Google-Smtp-Source: AGHT+IFLgonsgY/3PtzQAbuX1V/tusa6WXagx6nFGjo08BezauKdmdlJY/CD9Qb58XVaazG7ruBA0Q==
-X-Received: by 2002:a17:907:60ca:b0:a44:5477:bb46 with SMTP id hv10-20020a17090760ca00b00a445477bb46mr10100474ejc.61.1710760601717;
-        Mon, 18 Mar 2024 04:16:41 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id w17-20020a1709064a1100b00a466e772597sm4798756eju.177.2024.03.18.04.16.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 04:16:41 -0700 (PDT)
-Date: Mon, 18 Mar 2024 14:16:36 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
-Subject: Re: [PATCH v5] staging: greybus: Constify gb_audio_module_type
-Message-ID: <ea44d965-e727-4fc4-86cd-b727e1e0d2be@moroto.mountain>
-References: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710760692; c=relaxed/simple;
+	bh=O8orsh4fpL1MSr02xvuqLOzLtF3YhhKLmLgVXGjAEP4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=jtSM7nOIWloUW08sSmQ/R+7KrLimB/782PNYam7D8gPQZCnuwldCHabHuvB5b0ys32CHVu86HNEZGrjeGQ71TGAHEe2fLl0VA8H5W2v/T9dzPP2t7C/xUIio/3vt/2lLFOofwVg1eSlrbgANmJqkp1BTVzBbaxQXGTK90c93ek0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Y9JCD/S6; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710760689;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=8Xrq8vJ1NagCe+cTWlPAdrkNTdkW7Dtp8mrb26EB1sQ=;
+	b=Y9JCD/S6pUU2VNUvtaEoumt2fdzWniUYhyDnuHMRFzxwyRpSiZTh6ZhSqlO9n3RmV3K05v
+	lHAYNxYPXcQVeOELJFKTRBQA9N//QPtBKfzA138IobnMMYbsRvDWc/hOnNg4ZnuZEyu56L
+	zZa+g2/uwmxSIzvtXgc9VJfXQKTxKf4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-107-AXyhhxoHONWn_NAucC7XSQ-1; Mon, 18 Mar 2024 07:18:04 -0400
+X-MC-Unique: AXyhhxoHONWn_NAucC7XSQ-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BFBA1101A5B3;
+	Mon, 18 Mar 2024 11:18:03 +0000 (UTC)
+Received: from metal.redhat.com (unknown [10.45.225.13])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 8C333492BD0;
+	Mon, 18 Mar 2024 11:18:00 +0000 (UTC)
+From: Daniel Vacek <neelx@redhat.com>
+To: Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Juri Lelli <juri.lelli@redhat.com>,
+	Vincent Guittot <vincent.guittot@linaro.org>,
+	Dietmar Eggemann <dietmar.eggemann@arm.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Ben Segall <bsegall@google.com>,
+	Mel Gorman <mgorman@suse.de>,
+	Daniel Bristot de Oliveira <bristot@redhat.com>,
+	Valentin Schneider <vschneid@redhat.com>
+Cc: Daniel Vacek <neelx@redhat.com>,
+	stable@vger.kernel.org,
+	Bill Peters <wpeters@atpco.net>,
+	Ingo Molnar <mingo@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] sched/core: fix affine_move_task failure case
+Date: Mon, 18 Mar 2024 12:17:48 +0100
+Message-ID: <20240318111750.3097906-1-neelx@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-On Sat, Mar 16, 2024 at 11:54:21PM +0530, Ayush Tiwari wrote:
-> Constify static struct kobj_type gb_audio_module_type to prevent
-> modification of data shared across many instances(instances here
-> refer to multiple kobject instances being created, since this same
-> gb_audio_module_type structure is used as a template for all audio
-> manager module kobjs, it is effectively 'shared' across all these
-> instances), ensuring that the structure's usage is consistent and
-> predictable throughout the driver and allowing the compiler to place
-> it in read-only memory. The gb_audio_module_type structure is used
-> when initializing and adding kobj instances to the kernel's object
-> hierarchy. After adding const, any attempt to alter
-> gb_audio_module_type in the code would raise a compile-time error.
-> This enforcement ensures that the sysfs interface and operations for
-> audio modules remain stable.
-> 
+Bill Peters reported CPU hangs while offlining/onlining CPUs on s390.
 
-Basically the patch is fine.  The only comments have been around the
-commit message.  And all the reviewers have said correct things...  But
-I'm still going to chime in as well.
+Analyzing the vmcore data shows `stop_one_cpu_nowait()` in `affine_move_task()`
+can fail when racing with off-/on-lining resulting in a deadlock waiting for
+the pending migration stop work completion which is never done.
 
-The commit message is too long for something very simple.
+Fix this by correctly handling such a condition.
 
-Basically all kernel maintainers understand about constness.  There is
-sometimes trickiness around constness but in this specific case there
-isn't anything subtle or interesting.  You don't need to explain about
-constness.  Maybe you can say the word "hardenning" as an explanation.
+Fixes: 9e81889c7648 ("sched: Fix affine_move_task() self-concurrency")
+Cc: stable@vger.kernel.org
+Reported-by: Bill Peters <wpeters@atpco.net>
+Tested-by: Bill Peters <wpeters@atpco.net>
+Signed-off-by: Daniel Vacek <neelx@redhat.com>
+---
+ kernel/sched/core.c | 13 +++++++++++--
+ 1 file changed, 11 insertions(+), 2 deletions(-)
 
-Julia asked you to write what steps you had done to ensure that the
-patch doesn't break anything.  And I was curious what she meant by that
-because I had forgotten that it would be bad if there were a cast that
-removed the const.  So the bit about "any attempt to alter
-gb_audio_module_type in the code would raise a compile-time error." is
-not true.
-
-Also we assume that you have compile tested everything so you never need
-to write that.
-
-The information which is missing from this commit message is the
-checkpatch warning.  I'm more familiar with checkpatch than a lot of
-kernel maintainers and I had forgotten that this was a checkpatch
-warning.  Please copy and paste the warning.
-
-Basically what I want in a commit message is this:
-
-"Checkpatch complains that "gb_audio_module_type" should be const as
-part of kernel hardenning.  <Copy and paste relevant bits from
-checkpatch>.  I have reviewed how this struct is used and it's never
-modified anywhere so checkpatch is correct that it can safely be
-declared as const.  Constify it."
-
-regards,
-dan carpenter
+diff --git a/kernel/sched/core.c b/kernel/sched/core.c
+index 9116bcc903467..d0ff5c611a1c8 100644
+--- a/kernel/sched/core.c
++++ b/kernel/sched/core.c
+@@ -3069,8 +3069,17 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
+ 		preempt_disable();
+ 		task_rq_unlock(rq, p, rf);
+ 		if (!stop_pending) {
+-			stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
+-					    &pending->arg, &pending->stop_work);
++			stop_pending =
++				stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
++						    &pending->arg, &pending->stop_work);
++
++			if (!stop_pending) {
++				rq = task_rq_lock(p, rf);
++				pending->stop_pending = false;
++				p->migration_pending = NULL;
++				task_rq_unlock(rq, p, rf);
++				complete_all(&pending->done);
++			}
+ 		}
+ 		preempt_enable();
+ 
+-- 
+2.43.0
 
 
