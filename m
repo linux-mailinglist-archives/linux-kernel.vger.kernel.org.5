@@ -1,271 +1,259 @@
-Return-Path: <linux-kernel+bounces-106536-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106537-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7890287F00E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:59:46 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE44387F013
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:01:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EFFE01F21BF0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:59:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42BEC2838A5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:01:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 080A456455;
-	Mon, 18 Mar 2024 18:59:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75E9056463;
+	Mon, 18 Mar 2024 19:00:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="chjhjM+X"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="nM/m9bo4"
+Received: from EUR02-VI1-obe.outbound.protection.outlook.com (mail-vi1eur02on2082.outbound.protection.outlook.com [40.107.241.82])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C6FF4779F;
-	Mon, 18 Mar 2024 18:59:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710788375; cv=none; b=hQikiAwMy5ZkTM0jlq/ADyQSk007WwGgxKfIypx5pWOmGHnp+8TUbc/Jq3KN1Zlvf+o4Sw8wP+6cB1VmemnwVH3REvIf785NRQtxqHSwtmto8Sz9XPczIwnLmX4IC7+wjWfgEjzWUFW0JvZ6oyCKrl5FaxHpezWcXL99l0Otaq0=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710788375; c=relaxed/simple;
-	bh=l5t8MphKyGtWNovhRr2a0wnmyVUSJcwUE4jX+Oab91Y=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=X/aJHV69sZsxF2+ydq9Hohm33mlxUQa20Mhg8dRj9a/Hhr5wUhHWhSh6CCqw9ctaz1zJXm+OhzQKLaL0Vg5VHrDn4lS5P46NrCdHZBz4vDylaei9fqqOVHLzG7IS54ksHdZeuolCtwEKbUHxmZ1m5kgfFqs3llKZGlzWwjYmQvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=chjhjM+X; arc=none smtp.client-ip=209.85.222.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-789e3f17a6eso239464085a.0;
-        Mon, 18 Mar 2024 11:59:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710788372; x=1711393172; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7h7+2OWF6v/Pkb4i25rctRGD7lK8C3lTs+tkkbaSwa4=;
-        b=chjhjM+XTeKOB1/GWnoklznxLEMHWIvzz0YDBSqcSXiVqP/w7G+7OKQ6oTfumrlnJp
-         kAbeLIKrSdKzROfoa/1SirZUgIOKEjahW/aHGcOw3UawPA/CsLFpiMJGtVlWam82hrbA
-         9wjtBKEzeCa/I4G0r48MKLta09uyRR7Fh090J45FTEPHD0ATaESHuiUcEj6wGoeIgFE6
-         TOuAbcHNUl8fHk1twFR/VdKL3t7lPZMgUlqyubDTX+lkX3GhCZO7SDR36m652udw6CD2
-         aS4Tea4H1iUe3Bm1ND5fEmB+hBLdQXj2/C0AQNHz4VlJwIxEwGlyGh5yuJxyzwtdJL5G
-         05+g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710788372; x=1711393172;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7h7+2OWF6v/Pkb4i25rctRGD7lK8C3lTs+tkkbaSwa4=;
-        b=O6c9vH1xV+XghHBAawrbyTAppWSL8YGPcAvxpEHY/V36yLME9T1R/fKk6sKVaAv8wv
-         Es0FU6dx1CFx4fhFd+cgcs7aGJ/EQPWmcdWdjfbU0KunvVg64goYgn5+7QI7HhvYY8wX
-         JLeIalQBC8k/j15eHSby2Jo3yikbM0+zA8abg6/4aZQNu663/2SfvTJMOlx6MlG2/51A
-         lj3PIN6SEIUN7ThBdXp/BmgQYL7Vbo27xpiDBYe25qwvbdK+4LaKgBAR275Yq158HZ4m
-         jF23/JONJJxjcVQwMQcbVLedRni8D910VP+kf5Q19XL7PRsiJ2L3l+DWvPwcSnmTLEjA
-         /1wA==
-X-Forwarded-Encrypted: i=1; AJvYcCWguJ2OZDOomEXL1EfKA5xkGoD9u+p+Ba4xEAGlwQVg2HjNkZhjpMtWNWuPPDjZAlRrcVO+d304XcliMIzkxmYpUYsz8xBC9h1Rc3NmzJGMt1KBEwAUqpS4ROFlLaSmmEogG7Pvmq4hRl3HohY=
-X-Gm-Message-State: AOJu0YyOXVPPcwpaZhijhpj+c1ORqoMHskheL/JVxjyOt7egFngTJLnU
-	gYNVgEwr+YH+Q0kkzvbjcOZT+4ZsLBQyRZlCPqthjA0C9cTO6Mpi
-X-Google-Smtp-Source: AGHT+IFJ+deQPfORoCfSt7LaRwTfKef28eErqe6B6pNphIrPzybCAUbOKyybda1jxKsb8KNqouAViA==
-X-Received: by 2002:a05:6214:8e7:b0:690:a862:9444 with SMTP id dr7-20020a05621408e700b00690a8629444mr263495qvb.47.1710788372450;
-        Mon, 18 Mar 2024 11:59:32 -0700 (PDT)
-Received: from fauth2-smtp.messagingengine.com (fauth2-smtp.messagingengine.com. [103.168.172.201])
-        by smtp.gmail.com with ESMTPSA id pn4-20020a056214130400b006961c1d2b6fsm1521540qvb.80.2024.03.18.11.59.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 11:59:31 -0700 (PDT)
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 4A78B1200032;
-	Mon, 18 Mar 2024 14:59:30 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute7.internal (MEProxy); Mon, 18 Mar 2024 14:59:30 -0400
-X-ME-Sender: <xms:EY_4ZfbMJgQAsXxE2Jv7isWpXdPqTEJHw6ZSzvJwsvB_uPPz0Phb9w>
-    <xme:EY_4ZeZkaC_ASxLSx71HR3kjT8JdSO39gOaiG3TEUgEyLokAYVIm2GJCqcZdGkxSl
-    UtSQsvoRzCy2UPkaQ>
-X-ME-Received: <xmr:EY_4ZR_ygWl-jUBCc_o4hWdI5ERmzU6ggkwyM_Vr7m3TkGLvkQPHyWUCRvc>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeejgdduudelucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpedvhedtgfefgfffvdffgfetheehtdfhfeekveelieeiudegheehleelteef
-    gfefffenucffohhmrghinhepshhprghrvggptggrphgrtghithihpghmuhhtrdgrshenuc
-    evlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpegsohhquhhn
-    odhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdeigedqudejje
-    ekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfihigmhgvrdhn
-    rghmvg
-X-ME-Proxy: <xmx:EY_4ZVpdUwcQp8X3O-f2iUKoMTzgb2MayMuMuCmcz2PkVVryxtClOQ>
-    <xmx:EY_4ZapfmVs3sCQHD8zdOkypyQipM4EX8nhAfomqwzh-nKKXSlHSmg>
-    <xmx:EY_4ZbQT3-lR9DpFpi91Q5w2de0QgxEM1K1a5SpOFGKmipSyN32vog>
-    <xmx:EY_4ZSqtPLSuEuJAu3XL5ldzGAFI_j359hrlIvZzg6leKhq7LYW70g>
-    <xmx:Eo_4ZUiY_tLYYrF788VoX5Mob2DslNV9W4y7EjHgnGBksNNvCNUi8Itfn8Q>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Mar 2024 14:59:29 -0400 (EDT)
-Date: Mon, 18 Mar 2024 11:59:19 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v3 1/4] rust: uaccess: add userspace pointers
-Message-ID: <ZfiPB_iavHr8hNbm@boqun-archlinux>
-References: <20240311-alice-mm-v3-0-cdf7b3a2049c@google.com>
- <20240311-alice-mm-v3-1-cdf7b3a2049c@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C46555E67;
+	Mon, 18 Mar 2024 19:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.241.82
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710788450; cv=fail; b=pqQoma9gaM8kilS3tDhjgtHhi1zLpiwCkyJVquR5yBTgtMB5+DoYQQrTBBJHZO4KPzhR+jRt1XEg3D/LRaVat95zEPj4yR4qL9GFvQj3nF9bOkEaiB92s0w8TUkFnXc2U77gHQmLdTO4Z/+tLwDK+BUG5jLLY3yBxF6DWbmjrqo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710788450; c=relaxed/simple;
+	bh=XYdtpAnSNxogxk7ryRvzs1Js+leFWFpq6OxZDn3E1Gc=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=FTkkmvVLNJYTOB9ENUxhgG7g4GaWyjdvEpdF8Ukrqf9LMW8szd0DK4lD6D8PGcGz7m6UZ7t6W8BZ+zmsVfKl40WBI7hBqfbjpvGB4mSlrg46JyYpDprfONB0QSN2zm7QED20IcLmskuAa6mZDaAtNEQnw69OQfX8mqyAfj0SO1A=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=nM/m9bo4; arc=fail smtp.client-ip=40.107.241.82
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=DYTMiiM6CAWin0NKbcBVPP5GqAyMw5nmusCUQGBSGetXwS39gT8KEUElRA1JoQhWi/0xheJM3gDrgs2zLa/ZAZ8CtNKbnwPUtCFabqoEp3nEeM5bk7MIR2u6VYrkqAo5sW+eKzAXBfiUxB3yTDqO79zOLz3rDM0GZQtBX8AMLGQ/RgPe+mgkoLPLseKE3B/6xxXq9rwHkz2KRjHXFUGfX+aSb7W1uyCIGRiH23ryKlOHDykkgsERGAZU0Tow+h8D6FZzdeZuibC171NTgNtU5PSm81t69ZrkamocsZ7+nw55bTVeHJe8z/XqUwRbcXGvLtFe2izuWTBLQEktiZIFJA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=3ht2/VEvIrk+CRg1thc/MWTNbbLcaMaSvWp0NsFnEn4=;
+ b=ngxGMBUt5lZw+/JvGjNF4QZi6bF6m7TerWw/XhYnpi5px6NA1PT4dhhOqiv4wwI5hzJqYmYhWKTmH92NOBcwMTgvtbyKPIrGWsKV49xAaljCB5IxhmWV8vOBsdneHA71JfXyIYZqgNJs+GO1Hqas0yG9Tssl+qimXsFRFkOQZKOZvCXCf2pE5Wci7vVfIJ3vrekMPW1PT7TfpI+V1iVEnhaW7Bh/ubU/qrrNDdK8+stcHsL2u/JUr0G94DAlIfqM64hw25FQceievMG5Bu4j5m0VN++5DkCqxMrOCtwS+v0/bZq+i2r2aR7ta+CHg6+cBrkXJXeREAutVaW7Qt5qGg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=3ht2/VEvIrk+CRg1thc/MWTNbbLcaMaSvWp0NsFnEn4=;
+ b=nM/m9bo4gASFr4XkduC69s7Kw7biCzy9zrL84IxA8ZVqwGNtZq0jrNKGqJPR2IJZ+p7n1kowfHf3HgwqHXvzH+kiQCyIsoNGe09j1ufpT3dboKXg4bvO3ZbSI8/Giod/a2YX4siwVDoBi4i4nR+NDascJipxFkRmU2ldSSsdyU0=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by VI1PR04MB7119.eurprd04.prod.outlook.com (2603:10a6:800:12e::24) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
+ 2024 19:00:45 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 19:00:45 +0000
+From: Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v7 0/4] arm64: dts: imx8qxp add asrc and sai
+Date: Mon, 18 Mar 2024 15:00:06 -0400
+Message-Id: <20240318-asrc_8qxp-v7-0-01ce5264a761@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIADaP+GUC/23Oza7CIBAF4FcxrMVM+a8r3+Pm5oYCVRa2FUzTm
+ 6bv7tSNkLg8zHyHWUkOKYZMzoeVpDDHHMcBgz4eiLvZ4Rpo9JgJAyaAMU1tTu7PPJaJMmmt0oY
+ bAT3B/SmFPi7vrp9fzLeYn2P6f1fPbH/91jIzClSypnNOh65xcBmW6eTGO9k7Zl46UzqOzgsvW
+ y57z62tnfg4DrJ0Ap1TTdcaEEq2Te1k6ao75f5fxxXXOFLG106VrrpToQtgeuVxEqD9uG3bXmy
+ iPbOAAQAA
+To: Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, Shengjiu Wang <shengjiu.wang@nxp.com>
+Cc: linux-sound@vger.kernel.org, devicetree@vger.kernel.org, 
+ imx@lists.linux.dev, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, Frank Li <Frank.Li@nxp.com>, 
+ Conor Dooley <conor.dooley@microchip.com>
+X-Mailer: b4 0.13-dev-c87ef
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710788440; l=4174;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=XYdtpAnSNxogxk7ryRvzs1Js+leFWFpq6OxZDn3E1Gc=;
+ b=unQgkwXYhGvIWMLm8TjVsqzS7YnVwkmnUTDUbnjbXa5OhUZAhSKjEmUKg/XW7ezrgLUsjYQEl
+ YbaikQqGEWDArPTLkpyLZUfXCK5lnAj0dgdF2JStqbBj0x/a8zxEw0P
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-ClientProxiedBy: BYAPR02CA0018.namprd02.prod.outlook.com
+ (2603:10b6:a02:ee::31) To DB9PR04MB9626.eurprd04.prod.outlook.com
+ (2603:10a6:10:309::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311-alice-mm-v3-1-cdf7b3a2049c@google.com>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|VI1PR04MB7119:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2c5f5f25-0c6b-4c97-5d9d-08dc477db707
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	DiFW+m/lMPUpZ8pTsauTKgSHSQvGVdgvzWRyohgY/GrZECpwHXWI8iBEkAt/UyaKS/VPKXltx7lU/zlsSFYnlqjySQCkIWbia738s4ZnfrOMAU4aotoZtASCkfScokusnaiGUMRedga+PKpgRDbBaROkIMD61shYJNMStyJtNZH+t2zntE6HD3ggeUnYYIdWT7zpBA9hRXw/w+uOSHtezkvmnSaqpmYmjE4u4rgx85c64DD4XBujJIz9chfI2jexuSu/2vohXMHYA3WWUvFwJnPY4bpop735DUzBtrcY5PrxA7ziC4zCoI8IwjPhZyYXIXlQa5eoyXerJ4qAA0M+r0zvRzquQq4Q0sfcpHbRF9pVu8ima1k0arP0WABHe0dFxRh2NJm43jucafN5QJJlv8Ha3NXTnm2Nqrkim1uhGLp0zFEVLeWLpokP29reBXLpQyXK7JBLCtFHOlmjuzjaCjM+hOZ5EhTZcFyS5nKQOgGD4omx8jkdiiefbteKOw82QkoajU2Rc8WdfF7+7TDo9919C4vruSe25YOASh0lZFHqKdKwWRaFyK1JpHa2DrEvCbKnqwnH7Dl3HLGD8TfymVwC4sL8V1nT4ER/ZB2EvqbDkOo5awuXk9W6AhjUlmfl6vyrst/HRI5nnbpnGwM+8xznlslevIhUKVyZ6kyYITb+CCEF1eeTfBl/1I/MtDts
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(366007)(376005)(38350700005)(921011);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?WG93S01rMFdKTXRLNHpoUGk1Q2FtdzVGbHBBQ2NiZUFaYTlMczlwbWMrNmpw?=
+ =?utf-8?B?emY5aW16c2xpZzdpWGpvbFJMc3BNYk93TUhlZjBTY0JtRy9NaEJCUy94WFU0?=
+ =?utf-8?B?dUxsZjFRcFZiUVBuZnNtbStodTZYSkNwalFDVnE1R2JUemRxcWFOYXJQeWRL?=
+ =?utf-8?B?NktNaGVaZmpLM3p0T3VHb3NLNmFQVVJ6bjVtWndXSXlvME8xanZpS1ZmK1Fl?=
+ =?utf-8?B?K0NnODI5Tm9aQXQzOG01WTJRSWJ0RWNhWEtheVd0ZVhDbkJpcjBVSzZMeEds?=
+ =?utf-8?B?MWUrNDZZRzJMRnoweFlIZXZ4alpVUTYxV0FncWhhUWF5U1NQeTE3a3IvbEJ0?=
+ =?utf-8?B?NHNYQUdmY3pva3FkUDJ0L1NGejFwTW9ORGxsdE12dnVobThvYmZhVjlSd0NR?=
+ =?utf-8?B?VHJaVUU0a3U5cFd1RG9NWDRJeG1WaklYZzZkQVR5Y2NPWVNveXpLZnR2bGtS?=
+ =?utf-8?B?VldoYXo0VVhhdTVDM1dEeTZaTHlGeVI0c1JyZmUvSFhLeTBQdHJtR0NtWDBv?=
+ =?utf-8?B?Q05VSE05RGJ2TlVOOUZ5dXpGZXB4RlZsUSsrZVF0eE9XWGNjWEVLVlhWZnZa?=
+ =?utf-8?B?VDNtazkvWXFlQUxqangrUEFtRm1yNFNGQzJEOU1XM1lPVUFjVy9rRmp2YW9q?=
+ =?utf-8?B?a0JaT1R3TVcrZjVJN2ZXN1dyV3kzM2tTSDJ4Y0JzMEh2aW1VS3VCWUVScDYw?=
+ =?utf-8?B?SDN5MVBCdWJ0TGtURlVjS0I5TDhWZ3lSdnViZjN5aGpaM2hYRG1PQkpPTE90?=
+ =?utf-8?B?MzJramxKWHV4RU5kd2UvWk44YitNcHdrclA0Y0ZLbnUwTTFIL3hIQ1pTMFgw?=
+ =?utf-8?B?eXBKVHk5VmpPemlUYTMyTTZlYUhienl1WFVNbCtHenNhMEVvUU1xV3VhaFZ3?=
+ =?utf-8?B?ZHFDTHFraG9GZ094aStpUHE4L1RDNVA3ZU14dDQ2ZDhadTYwMmVtMjhiN0d1?=
+ =?utf-8?B?OVd6ZGlnNW1nd2ZlNG43K291Z044Z0gyeTVSM0NXdUZRSElRb2xYamhEYUwy?=
+ =?utf-8?B?bXFLSElzOTkrRzRYOE9uU2RzbkJSSXFrdzlwUlE2WUlPc0ZSQzdwM2w4WlJI?=
+ =?utf-8?B?WGRSOUE2WTk5WnIzK3VzaG1FdjhPdll0TGpxZ0RWMnNYNHlhNkVOc1cwWk81?=
+ =?utf-8?B?andadGRCbTlpUmEvdUEwOHRqL1huRjV4MURrRVBDMHZubE5aZ0paK0RnTThI?=
+ =?utf-8?B?SURWbUV3cEVuTUJiMjBFM3Qxd0w3L1FZR0VlRmw2N2NVYmpwWHQwNmt2Ykww?=
+ =?utf-8?B?dTNSeCs3T1BkRmVQQ09zSG5hYTU0eEhKa0w1THN3Y1JhRiszL1lsM1NTR2Ex?=
+ =?utf-8?B?ajZkWXhhcXZYMzZwVzUyZEJDT3dZdU41Z2F2SklCZWtiR2FtL1hUYjc0TlNR?=
+ =?utf-8?B?THo4Nml1UEl4SXRKSURTbUVoSk4xSm9JY1l4SGhJQXF6NVVjbDJxSXdwSFQ5?=
+ =?utf-8?B?bXB3dHV2WDBBWUs4ZndSbVZJQmNKRGl4c1B5bXZsb0xnVUJwZTVHVFl2dEE2?=
+ =?utf-8?B?cksxRElTYlhidGpkVnhDeG5NUTdEa2RtWFlINjk4T2wzSGpoZmE0UGNEQ1VU?=
+ =?utf-8?B?RE9CUEtWVFliVlJ0REJ6SVBUNnZGeEw0b3pUYnUwUjFtSzh1VkIvMWRxcWhY?=
+ =?utf-8?B?U0VEMWM2MzhzZkpmcDA2SGk1Mk9aS0p5VG51OUdPNG02V3F4SmkrbE44SGFs?=
+ =?utf-8?B?OWRnQ1R2NlRTTnJveWpnZlZmZXZma0xPR2xDdVNnQ2lHbHlvR01JRW12RmJJ?=
+ =?utf-8?B?QXk4WHlYSlBWWkhNNmF1U3pFNHFBaXhjMGwxbUg2N2hmMHZpblQ1WWFzRnNz?=
+ =?utf-8?B?WjYxSTNUTWd4andoYTZzSjdCSWRrR25VQ3BJVmtFaEdyeStydUZadHNZb0N5?=
+ =?utf-8?B?V1E0RXc2cVNZRmNiL1VnMkljZ0ptVEhNdDdvOWFVdkx3a2ZhamN3Y0hGSjhW?=
+ =?utf-8?B?bm1Wd3ZMWG1ERHZVNFFRZUo0aXlDWjBhOUdscm9ubHR2REJiajZ4aHNJVDNG?=
+ =?utf-8?B?aUo4SUxQVDFRRnk5NlpmWDJaUTc0bUpjNWRBZ0ZIOVp5N0JnM3h4RWo1c0lI?=
+ =?utf-8?B?czVZRlkzaGNHNkFjS3BsT1FjRHRSYUhUR0gwUHZnakdCVXZGbElsRXhCWEsx?=
+ =?utf-8?Q?9KeU=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2c5f5f25-0c6b-4c97-5d9d-08dc477db707
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9626.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 19:00:45.1840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: 9CuRyPncJimNzrSoBAFBgllBAkjWxabbnhxFnHrRt6OV5dR1d44G684A2sMcK/gKOKOgbWAwtqgdFv4Gi6JLcg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: VI1PR04MB7119
 
-On Mon, Mar 11, 2024 at 10:47:13AM +0000, Alice Ryhl wrote:
-> From: Wedson Almeida Filho <wedsonaf@gmail.com>
-> 
-[...]
-> +
-> +/// A reader for [`UserSlice`].
-> +///
-> +/// Used to incrementally read from the user slice.
-> +pub struct UserSliceReader {
-> +    ptr: *mut c_void,
-> +    length: usize,
-> +}
-> +
-> +impl UserSliceReader {
-[...]
-> +
-> +    /// Reads raw data from the user slice into a raw kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read encounters a page fault.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The `out` pointer must be valid for writing `len` bytes.
-> +    pub unsafe fn read_raw(&mut self, out: *mut u8, len: usize) -> Result {
+Update binding doc to avoid warning.
+Change from v1 to v2
+- Fixed dts DTB_CHECK warning
 
-I don't think we want to promote the pub usage of this unsafe function,
-right? We can provide a safe version:
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
+Changes in v7:
+- Using rob method for dma-names
+- Drop conor acked tag form dma-names and interrupt patches
+- Fixed warning for interrupts
+- Pass dt_bindng check
 
-	pub fn read_slice(&mut self, to: &[u8]) -> Result
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,sai.yaml
+  LINT    Documentation/devicetree/bindings
+  DTEX    Documentation/devicetree/bindings/sound/fsl,sai.example.dts
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+  DTC_CHK Documentation/devicetree/bindings/sound/fsl,sai.example.dtb
 
-and all users can just use the safe version (with the help of
-slice::from_raw_parts_mut() if necessary).
+ make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,spdif.yaml
+  LINT    Documentation/devicetree/bindings
+  DTEX    Documentation/devicetree/bindings/sound/fsl,spdif.example.dts
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+  DTC_CHK Documentation/devicetree/bindings/sound/fsl,spdif.example.dtb
 
-> +        if len > self.length {
-> +            return Err(EFAULT);
-> +        }
-> +        let Ok(len_ulong) = c_ulong::try_from(len) else {
-> +            return Err(EFAULT);
-> +        };
-> +        // SAFETY: The caller promises that `out` is valid for writing `len` bytes.
-> +        let res = unsafe { bindings::copy_from_user(out.cast::<c_void>(), self.ptr, len_ulong) };
-> +        if res != 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        // Userspace pointers are not directly dereferencable by the kernel, so
-> +        // we cannot use `add`, which has C-style rules for defined behavior.
-> +        self.ptr = self.ptr.wrapping_byte_add(len);
-> +        self.length -= len;
-> +        Ok(())
-> +    }
-> +
-> +    /// Reads the entirety of the user slice, appending it to the end of the
-> +    /// provided buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the read encounters a page fault.
-> +    pub fn read_all(mut self, buf: &mut Vec<u8>) -> Result {
-> +        let len = self.length;
-> +        buf.try_reserve(len)?;
-> +
-> +        // SAFETY: The call to `try_reserve` was successful, so the spare
-> +        // capacity is at least `len` bytes long.
-> +        unsafe { self.read_raw(buf.spare_capacity_mut().as_mut_ptr().cast(), len)? };
-> +
-> +        // SAFETY: Since the call to `read_raw` was successful, so the next
-> +        // `len` bytes of the vector have been initialized.
-> +        unsafe { buf.set_len(buf.len() + len) };
-> +        Ok(())
-> +    }
-> +}
-> +
-> +/// A writer for [`UserSlice`].
-> +///
-> +/// Used to incrementally write into the user slice.
-> +pub struct UserSliceWriter {
-> +    ptr: *mut c_void,
-> +    length: usize,
-> +}
-> +
-> +impl UserSliceWriter {
-> +    /// Returns the amount of space remaining in this buffer.
-> +    ///
-> +    /// Note that even writing less than this number of bytes may fail.
-> +    pub fn len(&self) -> usize {
-> +        self.length
-> +    }
-> +
-> +    /// Returns `true` if no more data can be written to this buffer.
-> +    pub fn is_empty(&self) -> bool {
-> +        self.length == 0
-> +    }
-> +
-> +    /// Writes raw data to this user pointer from a raw kernel buffer.
-> +    ///
-> +    /// Fails with `EFAULT` if the write encounters a page fault.
-> +    ///
-> +    /// # Safety
-> +    ///
-> +    /// The `data` pointer must be valid for reading `len` bytes.
-> +    pub unsafe fn write_raw(&mut self, data: *const u8, len: usize) -> Result {
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,imx-asrc.yaml
+  LINT    Documentation/devicetree/bindings
+  DTEX    Documentation/devicetree/bindings/sound/fsl,imx-asrc.example.dts
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+  DTC_CHK Documentation/devicetree/bindings/sound/fsl,imx-asrc.example.dtb
 
-Same here, just remove the `pub`, and users should use write_slice()
-(with the help of slice::from_raw_parts() if necessary).
+- Pass DTB_CHECK, below warning exist because binding doc still be txt.
 
-Regards,
-Boqun
+from schema $id: http://devicetree.org/schemas/dma/fsl,edma.yaml#
+arch/arm64/boot/dts/freescale/imx8dxl-evk.dtb: /bus@59000000/amix@59840000: failed to match any schema with compatible: ['fsl,imx8qm-audmix']
 
-> +        if len > self.length {
-> +            return Err(EFAULT);
-> +        }
-> +        let Ok(len_ulong) = c_ulong::try_from(len) else {
-> +            return Err(EFAULT);
-> +        };
-> +        let res = unsafe { bindings::copy_to_user(self.ptr, data.cast::<c_void>(), len_ulong) };
-> +        if res != 0 {
-> +            return Err(EFAULT);
-> +        }
-> +        // Userspace pointers are not directly dereferencable by the kernel, so
-> +        // we cannot use `add`, which has C-style rules for defined behavior.
-> +        self.ptr = self.ptr.wrapping_byte_add(len);
-> +        self.length -= len;
-> +        Ok(())
-> +    }
-> +
-> +    /// Writes the provided slice to this user pointer.
-> +    ///
-> +    /// Fails with `EFAULT` if the write encounters a page fault.
-> +    pub fn write_slice(&mut self, data: &[u8]) -> Result {
-> +        let len = data.len();
-> +        let ptr = data.as_ptr();
-> +        // SAFETY: The pointer originates from a reference to a slice of length
-> +        // `len`, so the pointer is valid for reading `len` bytes.
-> +        unsafe { self.write_raw(ptr, len) }
-> +    }
-> +}
-> 
-> -- 
-> 2.44.0.278.ge034bb2e1d-goog
-> 
+- Link to v6: https://lore.kernel.org/r/20240308-asrc_8qxp-v6-0-e08f6d030e09@nxp.com
+
+Changes in v6:
+- Add interrupt description in binding doc according to rob suggestion
+- Link to v5: https://lore.kernel.org/r/20240307-asrc_8qxp-v5-0-db363740368d@nxp.com
+
+Changes in v5:
+- using rob's suggest logic after fix maxItems.
+- sort dts nodes.
+- remove spdif1. Add later when do 8qm upstream
+- Link to v4: https://lore.kernel.org/r/20240305-asrc_8qxp-v4-0-c61b98046591@nxp.com
+
+Changes in v4:
+Combine comments' from v2 and v3. I hope I address everythings.
+
+- Krzysztof's comments
+  - add reson about why change
+
+- rob's comments
+  using rob's suggest logic to restrict interrupt number
+  but for dma-names, still need use oneOf to cover 3 case
+  - [rx, tx]
+  - [rx]
+  - [tx]
+
+  oneOf
+    - items:
+        - tx
+        - rx
+    - enums: [rx, tx]
+
+- Conor's comments
+  - add power-domains required for imx8qxp and imx8qm
+  - remove dmas descript, not allow use index to get dma-channel. Current
+no user using this method.
+
+- Link to v3: https://lore.kernel.org/r/20240228-asrc_8qxp-v3-0-d4d5935fd3aa@nxp.com
+
+Changes in v3:
+- Fixed dtschema/dtc warnings/errors:
+/builds/robherring/dt-review-ci/linux/Documentation/devicetree/bindings/sound/fsl,spdif.example.dtb: spdif@2004000: interrupts: [[0, 52, 4]] is too short
+	from schema $id: http://devicetree.org/schemas/sound/fsl,spdif.yaml#
+
+- Link to v2: https://lore.kernel.org/r/20240227-asrc_8qxp-v2-0-521bcc7eb1c0@nxp.com
+
+---
+Frank Li (4):
+      ASoC: dt-bindings: fsl,imx-asrc/spdif: Add power-domains property
+      ASoC: dt-bindings: fsl,imx-asrc: update max interrupt numbers
+      ASoC: dt-bindings: fsl-sai: allow only one dma-names
+      arm64: dts: imx8qxp: add asrc[0,1], esai0, spdif0 and sai[4,5]
+
+ .../devicetree/bindings/sound/fsl,imx-asrc.yaml    |  14 ++
+ .../devicetree/bindings/sound/fsl,sai.yaml         |   6 +-
+ .../devicetree/bindings/sound/fsl,spdif.yaml       |  35 ++-
+ arch/arm64/boot/dts/freescale/imx8-ss-audio.dtsi   | 267 +++++++++++++++++++++
+ 4 files changed, 317 insertions(+), 5 deletions(-)
+---
+base-commit: 8552c902efe7ef670b6961fb8885b67961aeb629
+change-id: 20240227-asrc_8qxp-25aa6783840f
+
+Best regards,
+-- 
+Frank Li <Frank.Li@nxp.com>
+
 
