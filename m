@@ -1,106 +1,131 @@
-Return-Path: <linux-kernel+bounces-106416-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C148087EE5E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:06:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 777B087EE60
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:06:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7DAA9281DDB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:06:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 170E91F222FA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:06:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E601454FA4;
-	Mon, 18 Mar 2024 17:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD14054FAF;
+	Mon, 18 Mar 2024 17:06:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="I3vdb6NI"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="i3kvDuWk"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2DC4954BFA;
-	Mon, 18 Mar 2024 17:05:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86ED554BFA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:06:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710781559; cv=none; b=tNWQoz45MM+1+V3oFjAM4TVtEPMrP+P3cen+JQhPtb5JM/jJye3SLr6tDBy3VQn3+YWqlJm5C6kxzuAJ5hCF7Jfm6cwY6v7gZE7L5Lh5RccdsaubGuf2CVO8Cb1QrE3wGXKookX8JDDcm+z4QfUJHZcMzDB5lzo1J2TErFoxYAI=
+	t=1710781576; cv=none; b=Cr5eK5asd5udx2n2bABHrB0DTaC8ctItZ+GD6A2fgM2gNXy/almisBorcWzL6zsUKteRzear8myJUd2dFseoq5L3ES+jtwrjXDFsTvgJ88D2HnGk2jmFC47jjFvSi4V4pyqYRGvwZvdj3nmNK9Z4+DpzRU8mOYFhflxpR1uRRMc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710781559; c=relaxed/simple;
-	bh=RMu+UgtWOoWOd40qpPWbxTK8o8oT/Dhw5wdWdscpVC8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=b6j34+MRfDt8uLBlW4GIEE3cRnFVgnJnRQO5LtK/UKDla+4iouNTOqiJHsT+pkMBVJ73dQ+eRmqazJuReLlNb54iq/qCuWs5gVsWS8hVvB2uGz1ntry+ipyjA5/oOl/A0jkmzfRtauXNgWqB8uXYTn1xBY/4SRCljEx/EuTR9GU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=I3vdb6NI; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id AF234C433F1;
-	Mon, 18 Mar 2024 17:05:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710781558;
-	bh=RMu+UgtWOoWOd40qpPWbxTK8o8oT/Dhw5wdWdscpVC8=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Date:From;
-	b=I3vdb6NIMZ5k+EUETXe6wgll2bT6s8O/DyFEwdaUsYB6Tvi7eEra8o3xggZUqaPXR
-	 M3fVj4aLzWkJ4l2/hILhc+deIAZspqYnePzG6WhsWLxszVZhJHbJT0IEURAFJcX6xM
-	 2IRUFPgTwYaojNdxc1j7Eg3zQTXbtxGA/5u8K71ynodT8qiYClwJLMecygIDAi7xNT
-	 PZF+iusEQBUUxkUB3UahjC6F/Um1NhsKWWcoTZRCK1f7AJI0+XsvnUnUA3hkkbTz/N
-	 ryjgHqSaxFGvLIda7/nai9BM/FQnaVYBTdMOqxzUxQ/nZ9I6dR2XCsgiPj9DrWDO8L
-	 HPEeFAmSsdFrA==
-From: Mark Brown <broonie@kernel.org>
-To: Vinod Koul <vkoul@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
- Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
- Raghu Bankapur <quic_rbankapu@quicinc.com>, alsa-devel@alsa-project.org, 
- linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Shalini Manjunatha <quic_c_shalma@quicinc.com>
-Cc: Krishna Jha <quic_kkishorj@quicinc.com>
-In-Reply-To: <cover.1709720380.git.quic_c_shalma@quicinc.com>
-References: <cover.1709720380.git.quic_c_shalma@quicinc.com>
-Subject: Re: [PATCH V0 0/1] ASoC: soc-compress: Fix and add missing DPCM
- locking
-Message-Id: <171078155643.88150.1151704190402668326.b4-ty@kernel.org>
-Date: Mon, 18 Mar 2024 17:05:56 +0000
+	s=arc-20240116; t=1710781576; c=relaxed/simple;
+	bh=eKN5dVb6S67RCse9OvAtbGcBmvx7pJXmDkiVK8Z0e+c=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=fnGH/8rfX0A2nerr9Pi1FlSPDlT/qlrPr5Rx+Gy6ETars554TuyT/8EKzJSTlp4KH2fFxNJR7Vym74U7Iu4bjtdVXaF5NEYcljGQWggNH5uX4zEBR4+Z+bbqqhlckzzz5pcBX2kxDQxRnZ77wfzx81zum/N8ukkLm8N+Kd0l1lc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=i3kvDuWk; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 559FC7E9;
+	Mon, 18 Mar 2024 18:05:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710781546;
+	bh=eKN5dVb6S67RCse9OvAtbGcBmvx7pJXmDkiVK8Z0e+c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=i3kvDuWkLq/GiBhR3QIPVDrAbeGf2rohEQFoFP1kp3E1QlJMGQVq8dCZ/1/LqZaTq
+	 s7O6fu5qm2u4JCv8LYulyvpFUdqx/eBygmA+76O2MKUFbGbdcJPhFJ0gtvb3r4PqIG
+	 y5gEEKwAIOGStoEixXkaiqURFWsFiXWwoXy1dG4E=
+Date: Mon, 18 Mar 2024 19:06:09 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
+	linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 2/6] drm: zynqmp_dp: Adjust training values per-lane
+Message-ID: <20240318170609.GI13682@pendragon.ideasonboard.com>
+References: <20240315230916.1759060-1-sean.anderson@linux.dev>
+ <20240315230916.1759060-3-sean.anderson@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.13-dev-a684c
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240315230916.1759060-3-sean.anderson@linux.dev>
 
-On Wed, 06 Mar 2024 16:23:19 +0530, Shalini Manjunatha wrote:
-> We find mising DPCM locking inside soc_compr_set_params_fe()
-> before calling dpcm_be_dai_hw_params() and dpcm_be_dai_prepare()
-> which cause lockdep assert for DPCM lock not held in
-> __soc_pcm_hw_params() and __soc_pcm_prepare() in above flow
-> when ever we play compress offload audio playback use case.
+Hi Sean,
+
+Thank you for the patch.
+
+On Fri, Mar 15, 2024 at 07:09:12PM -0400, Sean Anderson wrote:
+> The feedback we get from the DPRX is per-lane. Make changes using this
+> information, instead of picking the maximum values from all lanes. This
+> results in more-consistent training on marginal links.
 > 
-> To fix this issue added DPCM lock and unlock in both places of
-> above code flow mentioned.
+> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> ---
 > 
-> [...]
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c | 23 ++++++++---------------
+>  1 file changed, 8 insertions(+), 15 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index 98a32e6a0459..8635b5673386 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -605,28 +605,21 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
+>  				   u8 link_status[DP_LINK_STATUS_SIZE])
+>  {
+>  	u8 *train_set = dp->train_set;
+> -	u8 voltage = 0, preemphasis = 0;
+>  	u8 i;
+>  
+>  	for (i = 0; i < dp->mode.lane_cnt; i++) {
+> -		u8 v = drm_dp_get_adjust_request_voltage(link_status, i);
+> -		u8 p = drm_dp_get_adjust_request_pre_emphasis(link_status, i);
+> +		u8 voltage = drm_dp_get_adjust_request_voltage(link_status, i);
+> +		u8 preemphasis =
+> +			drm_dp_get_adjust_request_pre_emphasis(link_status, i);
+>  
+> -		if (v > voltage)
+> -			voltage = v;
+> +		if (voltage >= DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
+> +			voltage |= DP_TRAIN_MAX_SWING_REACHED;
+>  
+> -		if (p > preemphasis)
+> -			preemphasis = p;
+> -	}
+> +		if (preemphasis >= DP_TRAIN_PRE_EMPH_LEVEL_2)
+> +			preemphasis |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
+>  
+> -	if (voltage >= DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
+> -		voltage |= DP_TRAIN_MAX_SWING_REACHED;
+> -
+> -	if (preemphasis >= DP_TRAIN_PRE_EMPH_LEVEL_2)
+> -		preemphasis |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
+> -
+> -	for (i = 0; i < dp->mode.lane_cnt; i++)
+>  		train_set[i] = voltage | preemphasis;
+> +	}
 
-Applied to
+I don't have enough DP knowledge to review this :-(
 
-   https://git.kernel.org/pub/scm/linux/kernel/git/broonie/sound.git for-next
+>  }
+>  
+>  /**
 
-Thanks!
+-- 
+Regards,
 
-[1/1] ASoC: soc-compress: Fix and add DPCM locking
-      commit: 9a8b202f8cb7ebebc71f1f2a353a21c76d3063a8
-
-All being well this means that it will be integrated into the linux-next
-tree (usually sometime in the next 24 hours) and sent to Linus during
-the next merge window (or sooner if it is a bug fix), however if
-problems are discovered then the patch may be dropped or reverted.
-
-You may get further e-mails resulting from automated or manual testing
-and review of the tree, please engage with people reporting problems and
-send followup patches addressing any issues that are reported if needed.
-
-If any updates are required or you are submitting further changes they
-should be sent as incremental updates against current git, existing
-patches will not be replaced.
-
-Please add any relevant lists and maintainers to the CCs when replying
-to this mail.
-
-Thanks,
-Mark
-
+Laurent Pinchart
 
