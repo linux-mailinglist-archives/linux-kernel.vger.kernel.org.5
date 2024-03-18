@@ -1,202 +1,234 @@
-Return-Path: <linux-kernel+bounces-105910-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105916-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64D5987E64A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:50:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D04D787E659
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:52:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19AC7281A72
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:50:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 12E3BB2211C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:52:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF8B364D2;
-	Mon, 18 Mar 2024 09:49:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A49A92D602;
+	Mon, 18 Mar 2024 09:51:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="enolJEeJ"
-Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DA9dHlB5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0BC33CF1;
-	Mon, 18 Mar 2024 09:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755345; cv=fail; b=fzuGa3fqe83mfw1tmplu2WHToo7G+CIHihJg2xEbEfGtLpeIjGWV58fmHncgE8POrK74zdDo+w6tIIEHNEq57IJkV82XPlYbm3C0u7giok/TqgP7cw2bhhcAEyrmyWB1/E5VxxNQjVWBVi7vmLQx5w+OBbI3h3RJEZwCNFnQU20=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755345; c=relaxed/simple;
-	bh=BEii7rs/hFdOmv1bHDkx4YKg9Ap1bBoAkk07Ilv9swg=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=CQfYMujZYZbTeI4mADWOY8tJfih9XQEG8D4RxnWU2RWOeD/T7qZikC3kkWdxmZUdFZolEt8G4+JSiUzVBv+x45Gw9T9/xmbuenaB2v3am+zgCrcdhMdWMsLSx6Zyu81+mjXWgtd5hB9SHlJyWuCRemoX8KRmmn3krvLOy7u88po=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=enolJEeJ reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.236.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SeKCnQSphmP3j04LH0Ogs+EM58morR3VJ3W8g3WwF+T3JQXlsFmzW+84dCLuo0z15AJU7t/XkBWphBNquAALVDa+25wuitEkV3leL9r8x1B6y1dWB5TQC/MSYOjF4FI34Xq2/JI/75/3aMwEnK+GF9NYUjiblz/Reu6JbsRrL1wL3Gh2S0xb3yiMg8jbUeHU2jyVfpofdmuHogxa/4VFeTtRh1YmffoYdFUTBdtXz32aWqljOPgGSgdwhQ3wrWXCRdvlPVfcktRkh0FudzFJEv0pxPOPxqVrJWs0ZguTCGN/twmCr3Hs8AeLdrzJIB2QuhHXedufQPC4RsR7IBxQvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=q3/ycp74okAofij7yXh03gofzuR0e/9TCUsnpW8gfwk=;
- b=NmMg3sO3Ify2op9QjAmcTf+Uv/liiQqlINj4ChcCWrxnlHk3t6DVNjA+igQZXos3bUqqHT8S9bFAmDl80vIk2Xc7BclFSOGnk11sXPBoAnXrr4/QjvivFEcKf4hHtb1o1wUSAuaVFv/Mp3i6Wc+1Yy/unQ67+ryCXQyKeavK0MdrAy+PooQWGSlHbpMGS3iYNSdXHzoQ3emnfxT2Bm9VexrmORaqsc3l/F/1E57axn0YqOAp0acGbulLIt5Yh8lBKj94n6Zja7INRGrk110MHZQeLyYX25BLRpauV5NZqA8l74cD/hwKcvzgg2ICspc4rSEO0J3gXrtUK63UhwOwRg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=q3/ycp74okAofij7yXh03gofzuR0e/9TCUsnpW8gfwk=;
- b=enolJEeJo5l6AM4S/rGbQIDcqp30g6shhPMqRA5nBcAYOluq2bWrrDUn348A2qmTMhBnIVE7TXIkzN4jEHOMElXQ4xgVeROSrFvV4A9b36d7Lm72FD0wzRX9Byv4PTim0PgqBrAvY/IIi+DH1viwkUvSDlWQVAo3DGmuPvoATNA=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
-Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
- SN4PR01MB7407.prod.exchangelabs.com (2603:10b6:806:1ea::8) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.26; Mon, 18 Mar 2024 09:48:59 +0000
-Received: from DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
- 09:48:59 +0000
-Message-ID: <f281d2b1-54ff-4e5a-83b9-5b05f18c40fb@amperemail.onmicrosoft.com>
-Date: Mon, 18 Mar 2024 16:48:46 +0700
-User-Agent: Mozilla Thunderbird
-From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
-Subject: Re: [PATCH 3/3] dt-bindings: hwmon: max31790: Add
- pwmout-pin-as-tach-input property
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chanh Nguyen <chanh@os.amperecomputing.com>, Jean Delvare
- <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Justin Ledford
- <justinledford@google.com>, devicetree@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Open Source Submission <patches@amperecomputing.com>
-Cc: Phong Vo <phong@os.amperecomputing.com>,
- Thang Nguyen <thang@os.amperecomputing.com>,
- Quan Nguyen <quan@os.amperecomputing.com>
-References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
- <20240311111347.23067-4-chanh@os.amperecomputing.com>
- <9d1207f1-4941-4f2a-99d6-371f5b4709f5@linaro.org>
-Content-Language: en-US
-In-Reply-To: <9d1207f1-4941-4f2a-99d6-371f5b4709f5@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SG2PR02CA0117.apcprd02.prod.outlook.com
- (2603:1096:4:92::33) To DM6PR01MB5947.prod.exchangelabs.com
- (2603:10b6:5:1dd::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C05342D029;
+	Mon, 18 Mar 2024 09:50:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710755459; cv=none; b=NnUS4vbaou9b4HLYbDpG2DgYhsXnzyn0uydd3XoSdj2nVFPmL+UbEhnzmMkiEsdxaq6VCzmLC58xjIwuFIw6rBz2VAZ5Kf97bk63P+aVWG4bE4nYx0J+QZNjvZRDmwueb8myirxfNm1u4Awq0T/QWJ27GFj140+gDWegTUNmalE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710755459; c=relaxed/simple;
+	bh=GtiAsryJiIMLKj1emvBm1jrA0Ny409Z6CRr5ZugckOk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gKqGibSF0WuV4iAjZBe/IOw0OifWRVrtzeQMWM8xcSB0W0tucolz8Dj/gQRE9fz1Heb2BIrl8eDaaRGVwQ3gV4hBoLHmRP8YBCaSyJ0bVOZSpd1WseeoIGmbBV4tisbspdczUAtu0sGAXchali89Vg4M68H/YrJM0y1dpPg7XF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DA9dHlB5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2A03DC433F1;
+	Mon, 18 Mar 2024 09:50:56 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710755459;
+	bh=GtiAsryJiIMLKj1emvBm1jrA0Ny409Z6CRr5ZugckOk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=DA9dHlB5p7ohUneVhqHFIENoif6fuYu7DFC1HDuAjN7aPmSlAd0eV0a28SDFA4NAt
+	 HqR+UiYy3HGL5LJXGIn4oOVNxrDq/DHQUKoLn2k61aJ0fkoUzKNcXcMHpu+9WKxKjp
+	 y+c15lq/8gxstTVx9ckmPTDI/znWLJfB1/r1gL2M1qrwY5nI0bLoiy4+AybuQCCnNI
+	 muLqkWk5MsiyysDSYsfolRQ+aaFHUyoLc+QlvxlTUTANxwYFbXr1/ZyX+1Qd1Rf2m4
+	 AHryrQU71AL+B+h6XK1If5k8odLHWDMtnFJJjQcc7usTvqAuzXFxXY8O2oLa0xXUpH
+	 DkEfIZn5h+OIg==
+Date: Mon, 18 Mar 2024 10:50:42 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+	Paul Moore <paul@paul-moore.com>,
+	"Serge E . Hallyn" <serge@hallyn.com>,
+	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+	Shervin Oloumi <enlightened@chromium.org>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2 1/2] landlock: Extend documentation for kernel support
+Message-ID: <ZfgOf2dHBVT4WUcp@debian>
+References: <20240227110550.3702236-1-mic@digikod.net>
+ <Zd4OlL1G3t1D3TgC@google.com>
+ <20240307.oxQuab5tho0u@digikod.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|SN4PR01MB7407:EE_
-X-MS-Office365-Filtering-Correlation-Id: 99582fba-3ef5-44ac-a003-08dc4730a225
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	UWSjllHDCtwzXRXyFxSxoCLT6DRVI9Rm7ikjENfq5yhE5lCYaCHbkb5/A0UIqK9GRgLQOMpv5S38XQ+TsSGw9ysyerX8Aq9nWYfON4QKVe8i3EVh4ZVKewTQU29K7aVdaQUMFHSeuauw1K81bxLI6NNC+CHHXZ3+uvq6hY48TIbUSYb0PHHQsm0rbAB2gIoZCJWO08hQomm2m5GhOWEGYXzAuPhUF76Lek+/bytpkLiY99wCDpsAjy1NSREcuGLZe936sk2AX/80ncW8FuTC1yx5uFg0/PdFgF6rLjvntxxo0tue69ZjcuoeRS+GTK0JCup/Lbj8ykPCQ6e9bK28XXkYFtZLcExo+rn9dOz08CbZ0YSIWd8AwznDc4nInqLbHsAW3fEH3+p8Pl2FxathY1s/BPIJ7cL9IJx+cv1CgGVy3G59UVn08hWWT7tnQUqqdw2w73+nMS1/wzqvnNjs38vHi0HDbcHY8Nlph66rPN/YrPVqLKoba81zTulZVX/DldgiT+TAv1VPMg3KmJt57obo375dDo4iPh12n0QSthY1AcMt2zzigQXAxcX9y0qDT9vZt46RRoUeUcJGUs6c/WY0BlTvH8880O//aXRBce1NrQBWuVo07ZcWrEB0Cg4+/xVWBcRKmHqnwwI8OHmgczcNKny9hnDsiHvAfbj05Iex6h/UxejIFirC6PYA5MYXJvnimxyKvWDax7EM+ur4iQ==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bHVOSThKeDh0bVk5dWM3RGtNM0x4Sk9XbmgrdWg2V2o5WmU2a2dIZ0kzdFRL?=
- =?utf-8?B?aW5MZmczZU85ZHlFSktIOXA1ckRHcWhrYm1rMW5kd0dmUnVnRGdQb1V4cjNo?=
- =?utf-8?B?QS91c2ViWUVQMzdVem9QamZnU05BVi9yWW45TlQxR3dCbGJFblp4VCtROW1R?=
- =?utf-8?B?NVIyMHF5NXZwWnI2amV6RExYRUFZM29neW1DRTZrNTlyZGlrUHY1b2o3elQ3?=
- =?utf-8?B?WWlXdU02Y1BTRTNDb0luWWZUUEI0QmNmcVE5aUtvZE11VzA5a0ZHajJRa0pW?=
- =?utf-8?B?WDZiZlY5d0l4SjE5alYybjdwckhaZDFSak5qVkpKRGdtckY4NWU5V0owNlNM?=
- =?utf-8?B?VjJuK1RJTDdRL0hPbXhsY1lSRVpvSFIvODJDSzVyeEpoblJsdENHT2RJdlNO?=
- =?utf-8?B?Nk1weFhwQ2cxa0VZWVFnQ0VlR1plUU0zOWl4VUZSUS8xR0pyRjJpK21XZDRF?=
- =?utf-8?B?dWRiSDBBNlFlYnNyekhEbzJnM3VtaWJTQTBqSFRWWVh5a1ZuOVZJWFJKT1Ba?=
- =?utf-8?B?YTJqd2U2SmdML0Z2Tmh5Q0oxUk9NbEZuVEN4bzZ6TUNLbk5KaFNaRTRFWGtz?=
- =?utf-8?B?THZ1bEpwdHJUTlovM21zSHVTMFk0RU9ONHhYU1gyRVJzWmM1cVp6azJ4MHBo?=
- =?utf-8?B?cDBxOExteDdsWElOQlZKOUc5d1dySk05OTJkWWZTbHBWSDRXYmkzenBiV0E1?=
- =?utf-8?B?MTY4dFVyN3h2MkR6c3plVGwxVWFZNngvSWtMTE5GaVRydnZNM1hqVHd0cTBz?=
- =?utf-8?B?WDROWXFSZTNVMWpYdFExZFRaT0pFTnllTmFWU3BxQnpYWGhxQ2RwTVNiYllY?=
- =?utf-8?B?bU9OL0RHRlJwWTdaRFRCbXVaNiszY0FteWgrUXZPZFpDZ2VFK2VVR0EvdWUr?=
- =?utf-8?B?NysvM0t5NnduNndsMnRaY1ZUV0tWYlFoWXNDYWxkWGttc0l1NnBYdEFOK1RN?=
- =?utf-8?B?dG85S0RKZXltS09SYWFLWkpjb1hnYlVsOTRzZXh6RlJhdDBKS3JLZmJrRXZz?=
- =?utf-8?B?djN3Q2hsdG5seW02ME8vWmM5dHcrOUY2NThLME43SjZJcmtMa1pscnZFL015?=
- =?utf-8?B?U0daM1YwUDgrNE9IVlBRWDdFTWVhK0dTa2pJVHJBK3FZTFpGaWtqSm00czhz?=
- =?utf-8?B?Mk5uVG9HUVlISjhiZ3ZBU05UOUV1bGpCdnFWUG5FdVMxbURFeGZaWWVGOUdT?=
- =?utf-8?B?dG8wcE5nZFFPdUVicHl3WWt2YmFXSDlTUXd3V2NoUGVDYjRESWlvOHdiMXla?=
- =?utf-8?B?NEo4UWNFUHBjcjJHb2FBS2hzN0pYc2JxblZEMGhCclUxeHV1cHM0SVhIQU9J?=
- =?utf-8?B?YXBMS1pEN01kT0hHVHVjTW1wUmZCbmhMb2ZmSGRRa3JVTUJUYkJHMFhlekdj?=
- =?utf-8?B?VnFEeG5uRTFRcG9hSmRwT21JU0xGT1dJVEVWK1E1MS96bW15R0huaWNkZnln?=
- =?utf-8?B?QVdQMDZiM0s4enpwc0Vlcm9RWkxMTUNqT3I3cC90UGF2MmM5TzZST05uMGly?=
- =?utf-8?B?L3VMNnNyM012bXBhcE1JaUh1ajVjM0xJZFl4MGZITHNpR1BKRTFuOHRIMEsw?=
- =?utf-8?B?SUtYRm1ldU1xQjB3UTlEZmZXTVR6K3hPT3ErQ2swN1hWQzdYUFpkV3Z0U21Q?=
- =?utf-8?B?NHJUYW82N3pKVWVPU2hpMDNZSmFBbG9yWmFma1I4SkJrbTFaTEhFNWNkUUZy?=
- =?utf-8?B?dGNVM1lTSnV0ekZ0SnI2SmplTitoYWU2a0krOUcxZzFZc1RuQ1BnRThnUE9N?=
- =?utf-8?B?UzBBbUFtOXFQWVI3WTljUU1zSG1KMTc5UEk3NmxROU5BN3lQYjlxRmZzV0Fa?=
- =?utf-8?B?SEQwZTdOMCtvU1Jyc0RKNkJ2SFFXOHR2ZCt0aFB6Ym0vTE5DSVNzZjMwZ1Jw?=
- =?utf-8?B?bmd4QW83OWdPaG5pV1hHQ3AwRnBpT3pOL3NQeEVPck9jMk5FMG9TVjZReXJ2?=
- =?utf-8?B?eStwTlBObzYza3B5TWNScE1LOVR4U2V3b1ZMUEExclVNTFFvVjFUTGF2eWEv?=
- =?utf-8?B?cDZFZUdaYkdtMWNRTk9xdUZKZTdCVFN0QUxzSmx2RHVKZyswcTJjblBTbldY?=
- =?utf-8?B?TEhzR3hxaUF2eC9obWRoN1JRTk5PU1pyTlYxVGZxSTdWcldtNFVCd2sxSXZO?=
- =?utf-8?B?N1RIcDFXQjUwTFpWbFpYd1p5bDlVYlFZZDJoT1NtWTlKMTlENVRRUVl4RStU?=
- =?utf-8?Q?rYOJmvAfx0wUr80TebAXXyI=3D?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 99582fba-3ef5-44ac-a003-08dc4730a225
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:48:58.9454
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: fKq1kesf5lQkC+A/FgCKxwvRw51bv1/d6++JWK5Uc3Vj/8M5zVAxb1wgS/AEv4bMVXHJic+qhoXCoJi809sKBQ9XBlbI4A/5BbvCWsNGFsSWumoRaqctJhjX3w1/BDL2
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR01MB7407
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="t2wrf6PLaMqwtsDi"
+Content-Disposition: inline
+In-Reply-To: <20240307.oxQuab5tho0u@digikod.net>
 
 
+--t2wrf6PLaMqwtsDi
+Content-Type: text/plain; protected-headers=v1; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
+Date: Mon, 18 Mar 2024 10:50:42 +0100
+From: Alejandro Colomar <alx@kernel.org>
+To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
+Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
+	Paul Moore <paul@paul-moore.com>,
+	"Serge E . Hallyn" <serge@hallyn.com>,
+	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
+	Shervin Oloumi <enlightened@chromium.org>,
+	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-security-module@vger.kernel.org,
+	Kees Cook <keescook@chromium.org>
+Subject: Re: [PATCH v2 1/2] landlock: Extend documentation for kernel support
 
-On 11/03/2024 23:56, Krzysztof Kozlowski wrote:
-> On 11/03/2024 12:13, Chanh Nguyen wrote:
->> Add pwmout-pin-as-tach-input property.
-> 
-> Why is this split from original binding? This does not make much
-> sense... Add complete hardware description.
-> 
+Hi Micka=C3=ABl, G=C3=BCnther,
 
-Ok Krzysztof, I will merg the "[PATCH 1/3] dt-bindings: hwmon: Add maxim 
-max31790 driver bindings" commit and "[PATCH 3/3] dt-bindings: hwmon: 
-max31790: Add pwmout-pin-as-tach-input property" commit.
+Sorry for the delay!
 
->>
->> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
->> ---
->>   Documentation/devicetree/bindings/hwmon/max31790.yaml | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> index 5a93e6bdebda..447cac17053a 100644
->> --- a/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> @@ -25,6 +25,16 @@ properties:
->>     reg:
->>       maxItems: 1
->>   
->> +  pwmout-pin-as-tach-input:
->> +    description: |
->> +      An array of six integers responds to six PWM channels for
->> +      configuring the pwm to tach mode.
->> +      When set to 0, the associated PWMOUT produces a PWM waveform for
->> +      control of fan speed. When set to 1, PWMOUT becomes a TACH input
-> 
-> No vendor prefix, so generic property... but where is it defined?
-> 
+On Thu, Mar 07, 2024 at 11:21:57AM +0100, Micka=C3=ABl Sala=C3=BCn wrote:
+> CCing Alejandro
+>=20
+> On Tue, Feb 27, 2024 at 05:32:20PM +0100, G=C3=BCnther Noack wrote:
+> > On Tue, Feb 27, 2024 at 12:05:49PM +0100, Micka=C3=ABl Sala=C3=BCn wrot=
+e:
+> > > Extend the kernel support section with one subsection for build time
+> > > configuration and another for boot time configuration.
+> > >=20
+> > > Extend the boot time subsection with a concrete example.
+> > >=20
+> > > Update the journalctl command to include the boot option.
+> > >=20
+> > > Cc: G=C3=BCnther Noack <gnoack@google.com>
+> > > Cc: Kees Cook <keescook@chromium.org>
+> > > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
+> > > ---
+> > >=20
+> > > Changes since v1:
+> > > * New patch, suggested by Kees Cook.
+> > > ---
+> > >  Documentation/userspace-api/landlock.rst | 57 +++++++++++++++++++++-=
+--
+> > >  1 file changed, 51 insertions(+), 6 deletions(-)
 
-Thank Krzysztof! It is not generic property, I'll add the vendor prefix.
+[...]
 
-I'll update the "pwmout-pin-as-tach-input" to 
-"maxim,pwmout-pin-as-tach-input" at v2.
+> > > +
+> > > +  lsm=3Dlandlock,lockdown,yama,integrity,apparmor
+> > > +
+> > > +After a reboot, we can check that Landlock is up and running by look=
+ing at
+> > > +kernel logs:
+> > > +
+> > > +.. code-block:: console
+> > > +
+> > > +    # dmesg | grep landlock || journalctl -kb -g landlock
+> > > +    [    0.000000] Command line: [...] lsm=3Dlandlock,lockdown,yama,=
+integrity,apparmor
+> > > +    [    0.000000] Kernel command line: [...] lsm=3Dlandlock,lockdow=
+n,yama,integrity,apparmor
+> > > +    [    0.000000] LSM: initializing lsm=3Dlockdown,capability,landl=
+ock,yama,integrity,apparmor
+> > > +    [    0.000000] landlock: Up and running.
+> > > +
+> > > +Note that according to the built time kernel configuration,
+> >=20
+> > s/built time/build time/
+> >                  ^
+>=20
+> OK
 
-> 
-> Best regards,
-> Krzysztof
-> 
+Here, this should actually be "build-time" since it works as an
+adjective.
+
+>=20
+> >=20
+> > It feels like the phrase "according to" could be slightly more specific=
+ here.
+> >=20
+> > To paraphrase Alejandro Colomar, "Note that" is usually redundant.
+> > https://lore.kernel.org/all/0aafcdd6-4ac7-8501-c607-9a24a98597d7@gmail.=
+com/
+> >=20
+> > I'd suggest:
+> >=20
+> >   The kernel may be configured at build time to always load the ``lockd=
+own`` and
+> >   ``capability`` LSMs.  In that case, these LSMs will appear at the beg=
+inning of
+> >   the ``LSM: initializing`` log line as well, even if they are not conf=
+igured in
+> >   the boot loader.
+
+LGTM
+
+>=20
+> OK, I integrated your suggestion.  I guess `capability` is not really
+> considered an LSM but it would be too confusing and out of scope for an
+> user documentation to explain that.
+>=20
+> >=20
+> > > +``lockdown,capability,`` may always stay at the beginning of the ``L=
+SM:
+> > > +initializing lsm=3D`` list even if they are not configured with the =
+bootloader,
+> >=20
+> > Nit: The man pages spell this in two words as "boot loader".
+>=20
+> OK, I'll use "boot loader" too.
+>=20
+> >=20
+> >=20
+> > > +which is OK.
+> > > +
+> > > +Network support
+> > > +---------------
+> > > +
+> > >  To be able to explicitly allow TCP operations (e.g., adding a networ=
+k rule with
+> > >  ``LANDLOCK_ACCESS_NET_BIND_TCP``), the kernel must support TCP
+> > >  (``CONFIG_INET=3Dy``).  Otherwise, sys_landlock_add_rule() returns an
+> > >=20
+> > > base-commit: b4007fd27206c478a4b76e299bddf4a71787f520
+> > > --=20
+> > > 2.44.0
+> > >=20
+> >=20
+> > Reviewed-by: G=C3=BCnther Noack <gnoack@google.com>
+>=20
+> Thanks!
+
+Reviewed-by: Alejandro Colomar <alx@kernel.org>
+
+Have a lovely day!
+Alex
+
+--=20
+<https://www.alejandro-colomar.es/>
+Looking for a remote C programming job at the moment.
+
+--t2wrf6PLaMqwtsDi
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmX4DnIACgkQnowa+77/
+2zJdTA//d7J8aVihMiGfZiCLI9GhosQmnzKqxH6nxyShkAcHLDoJYZfAPDpXfqwM
+DlQAXbMmO+WWQrBXMQ97vYvNE4g6ldl53CAb5X2R96KBhR8vXToXkm/DfvxIeeEF
+Gc+B20PgyRtWqs1fWwZ6kBpIOEv4vhi2+KSky1FQUmTp7tUQXUNd8IaB8/8pXxzY
+YP04T18MMZ8qOMVnC4PnfJm2gij39i45YG7m3OT6hiFwh+AztlK3fFAZdIBM1X1O
+HTq36UG3E2Zog6kE7SjIUeRXcN+GG/9XraeQkyjBuiAR+4EmA9Z6fOcz41j9pu7w
+1fGpZ2i/19wTRkyAvzMZGjVUrCcItur/dkGuXAfzEvuuqsgLuLcabKqvz3EbLTme
++DBSaB+Q9FIx3ema9i/X1k098GLgDrlwS755Q2whV2LnUXfhor2r+OT22kDVedby
+xpxdkOWTTkBjwsnApw0QVw75xEh+ozGmVhfqi8sSwwZ5NS3I3EzAEVNjMOJJvVZS
+UUbooDUYC1YUuBDlhZfWl3HcSPFseBx/BT9YBGs9qq30dGC2Rv8LGmxSXRRo4zYJ
++cw9OJ9iCyogF9M4wcRK8WgzCVQ3Al6LlyAS42D+WiBJcmKXS+pFRzodb+HwtxBG
+X3G5U8RdRDbVhz/YaNx1Q9IZ0A4CW6WcYi5/G45RvN8LPH4M42o=
+=XEON
+-----END PGP SIGNATURE-----
+
+--t2wrf6PLaMqwtsDi--
 
