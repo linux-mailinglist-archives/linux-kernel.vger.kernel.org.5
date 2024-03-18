@@ -1,196 +1,125 @@
-Return-Path: <linux-kernel+bounces-106043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43DD987E849
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:11:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 17D8A87E84B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:12:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63EC21C2169C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:11:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 489AB1C21AC3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:12:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 29F3A364B8;
-	Mon, 18 Mar 2024 11:11:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6608C36138;
+	Mon, 18 Mar 2024 11:11:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="XPng3DZO"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="DsRh2wPZ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="2rXzzq0j"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8397E31A66;
-	Mon, 18 Mar 2024 11:11:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3746F3717F;
+	Mon, 18 Mar 2024 11:11:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710760298; cv=none; b=I88lFzlK77gZY1y+2LzpDKB1y6Gn0VxBvYKw+kTRE19ARUZ5An42gTSgYjH3z1Yj+K7Oc+O21VAVhqlt3s/MlUddCiTftNnYyu1yzgS51uHFFSIGcWku/YiwstjDIKT8tN69Id0HOtLa1/hUX4J/hhKPbMr5fCjkLBXWS4uEU9Y=
+	t=1710760305; cv=none; b=HzKgJbV3uK6dd2YGKJUx94kP2Jm+vmMHKQiW3WrZ1oSm5URIwE+0/INCFiBtaKwkRcn6z6pQf/s/YFFtTwBfuIOcD95y0YvUkKi191zUEcVJK/M94TKKoI3WnqtYmDuBRou726JK9vyfKjTHTFpk5XvbpQfz+RyIeg7O6T13vKI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710760298; c=relaxed/simple;
-	bh=/eNWMsh0F9jXQBWzGgZPQU2dDcVV4ugepMs2kdOvIcA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HBBQ1BJN52U5KlnXHDhuJXiV0nYcert4oq6jQXpd55IthNeSDeURJLJqZ3vUs8OPRAjScOjsVIYAT5OmH5yaedgEOkDqfRr1HbA4Ok4iAUjMKHX5519bzoPSfKlyqlYHqC+CvPRg1Ip0a74zIw8YlDoLLdw94dJlfq8agBbfoz0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=XPng3DZO; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710760297; x=1742296297;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=/eNWMsh0F9jXQBWzGgZPQU2dDcVV4ugepMs2kdOvIcA=;
-  b=XPng3DZO7w8UttmABkFa5gYOR6zZjTF607GFjPr/Dh+Kv9MzObjrCBvu
-   vDWah2AuBd9mAYyTKSEctz3/N1CKtEM/sipcpHuBJtWHuVhwawym/lUBd
-   sZ/UJagKIAS3PP/zAZmhFtlaVaTXxzAAzXqCpqOIwpUfKUNyrqmM+4z9V
-   KfW11KpQQixkUWi2u9hf5SbmAVAjZ0RVJABsKo/rRCGbTNZ3jAIbkupl5
-   SvYIxIp6JXBga5amdq7GqbWikfmrEdeCSKWcem6qXbbyRuxElDUuK2qvc
-   4prcXmfwh6RRbEpzOqFq/PBLtbzzONCVcARwl8j9xeFKcU2wViFCkEV6Z
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="17012273"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="17012273"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 04:11:36 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="937060155"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="937060155"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 18 Mar 2024 04:11:30 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Mar 2024 13:11:30 +0200
-Date: Mon, 18 Mar 2024 13:11:30 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Jameson Thies <jthies@google.com>
-Cc: linux-usb@vger.kernel.org, pmalani@chromium.org, bleung@google.com,
-	abhishekpandit@chromium.org, andersson@kernel.org,
-	dmitry.baryshkov@linaro.org, fabrice.gasnier@foss.st.com,
-	gregkh@linuxfoundation.org, hdegoede@redhat.com,
-	neil.armstrong@linaro.org, rajaram.regupathy@intel.com,
-	saranya.gopal@intel.com, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/1] usb: typec: ucsi: Check capabilities before cable
- and identity discovery
-Message-ID: <ZfghYnmiFBMdDp3/@kuha.fi.intel.com>
-References: <20240315171836.343830-1-jthies@google.com>
- <20240315171836.343830-2-jthies@google.com>
+	s=arc-20240116; t=1710760305; c=relaxed/simple;
+	bh=z5VR/SCFO4fju311eNKwJ63qRf/aHwz2D5n4iQqSiBc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=qpGvhHVBc1qATxPX4whZPGF8T7jP57IHJvIkPBH3rHNdckL7n6efKWDpdWa7oz9f5mbcWOcKWF+Xa0/oxvmR721uTMM4imEM95XJnVH2KgNNojeno7dfRkAooOjD6LzBDKEQ5z+jRCj+BmsGn4J8RAoXwvoiQfeazuUmkGDEkqs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=DsRh2wPZ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=2rXzzq0j; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+From: Thomas Gleixner <tglx@linutronix.de>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710760300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kz9iUiUQcoOz3awzuNQ4c0iM+L+HbF9KJgq1+b8ISwY=;
+	b=DsRh2wPZKF+ZU54Ol3+3tkG/vZylyJKaZweh1MbTMk/lURjsHdIIxR9igCB9VHwjgkxD8a
+	gQYsU5LPNq2+1Al2TIP9sSnKu2NbYbkdsewheKEY/AnZUJmCVi3AKiUn6h+IhdxT/snRIb
+	ej5HcPt2e8UzOp7tPCSdLosji5ZhlQP8dyxLwV3TlUerZc6wKsq4dkfHuXMwWq7Iyep5js
+	/YgKUt/0Lnm9kv/9dw9hRxSzq9sMEw7b38IAz5P7sfwz+gNxeuFeVrbAEUueNJ97JkK3v3
+	iScWXdApPrwJwhOZlgmxSmolkbFc2qbTJK1oMkT2xsaPjSPLM9tk0m2FMRoa+Q==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710760300;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Kz9iUiUQcoOz3awzuNQ4c0iM+L+HbF9KJgq1+b8ISwY=;
+	b=2rXzzq0jJ81Gok9ryRYJKmRQDOliceDGov4GITW3TRUy+rv/y+7Ff0yLJIQxjp1Rt4Gemp
+	yIEWeVdtMHkqiWCQ==
+To: Linus Torvalds <torvalds@linuxfoundation.org>
+Cc: Guenter Roeck <linux@roeck-us.net>, LKML <linux-kernel@vger.kernel.org>,
+ x86@kernel.org, Uros Bizjak <ubizjak@gmail.com>,
+ linux-sparse@vger.kernel.org, lkp@intel.com,
+ oe-kbuild-all@lists.linux.dev, Arnd Bergmann <arnd@kernel.org>
+Subject: Re: [patch 5/9] x86: Cure per CPU madness on UP
+In-Reply-To: <877ci3j80k.ffs@tglx>
+References: <20240303235029.555787150@linutronix.de>
+ <20240304005104.622511517@linutronix.de>
+ <e20d88d0-5fb9-4307-be67-88b04ae9a188@roeck-us.net>
+ <CAHk-=whK=G1o6RtS9DS3wEGF1KU7WLgLL1+6Se86bj8m7wwqrQ@mail.gmail.com>
+ <87y1ajjsv9.ffs@tglx> <87o7bfjeae.ffs@tglx>
+ <CAHk-=wiP+XMGHr8NU13sSOG_oasNZN02O9_c1PzCJNG7+O-GPw@mail.gmail.com>
+ <877ci3j80k.ffs@tglx>
+Date: Mon, 18 Mar 2024 12:11:39 +0100
+Message-ID: <87zfuviyl0.ffs@tglx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240315171836.343830-2-jthies@google.com>
+Content-Type: text/plain
 
-On Fri, Mar 15, 2024 at 05:18:35PM +0000, Jameson Thies wrote:
-> Check the UCSI_CAP_GET_PD_MESSAGE bit before sending GET_PD_MESSAGE to
-> discover partner and cable identity, check UCSI_CAP_CABLE_DETAILS before
-> sending GET_CABLE_PROPERTY to discover the cable and check
-> UCSI_CAP_ALT_MODE_DETAILS before registering the a cable plug. Additionally,
-> move 8 bits from reserved_1 to features in the ucsi_capability struct. This
-> makes the field 16 bits, still 8 short of the 24 bits allocated for it in
-> UCSI v3.0, but it will not overflow because UCSI only defines 14 bits in
-> bmOptionalFeatures.
-> 
-> Fixes: 38ca416597b0 ("usb: typec: ucsi: Register cables based on GET_CABLE_PROPERTY")
-> Link: https://lore.kernel.org/linux-usb/44e8142f-d9b3-487b-83fe-39deadddb492@linaro.org
-> Suggested-by: Neil Armstrong <neil.armstrong@linaro.org>
-> Signed-off-by: Jameson Thies <jthies@google.com>
+On Sat, Mar 16 2024 at 02:11, Thomas Gleixner wrote:
+> On Fri, Mar 15 2024 at 16:23, Linus Torvalds wrote:
+>> Either we should just make all machines look like they have the proper
+>> local apic mappings, or we shouldn't look at any local apic rules AT
+>> ALL.
+>
+> Sure. I can simply check if there was an APIC registered instead.
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Like the below. I'm not entirely sure though whether the sanity checks
+should return an error code, which is what caused the crash Guenter
+observed, but I couldn't come up with something sensible either.
 
-> ---
-> Confirmed a device which supports GET_PD_MESSAGE, GET_CABLE_PROPERTY and
-> GET_ALTERNATE_MODES still requested identity and cable information.
-> 
->  drivers/usb/typec/ucsi/ucsi.c | 34 +++++++++++++++++++++-------------
->  drivers/usb/typec/ucsi/ucsi.h |  5 +++--
->  2 files changed, 24 insertions(+), 15 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
-> index cf52cb34d2859..958dc82989b60 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.c
-> +++ b/drivers/usb/typec/ucsi/ucsi.c
-> @@ -1133,17 +1133,21 @@ static int ucsi_check_cable(struct ucsi_connector *con)
->  	if (ret < 0)
->  		return ret;
->  
-> -	ret = ucsi_get_cable_identity(con);
-> -	if (ret < 0)
-> -		return ret;
-> +	if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE) {
-> +		ret = ucsi_get_cable_identity(con);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
->  
-> -	ret = ucsi_register_plug(con);
-> -	if (ret < 0)
-> -		return ret;
-> +	if (con->ucsi->cap.features & UCSI_CAP_ALT_MODE_DETAILS) {
-> +		ret = ucsi_register_plug(con);
-> +		if (ret < 0)
-> +			return ret;
->  
-> -	ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
-> -	if (ret < 0)
-> -		return ret;
-> +		ret = ucsi_register_altmodes(con, UCSI_RECIPIENT_SOP_P);
-> +		if (ret < 0)
-> +			return ret;
-> +	}
->  
->  	return 0;
->  }
-> @@ -1189,8 +1193,10 @@ static void ucsi_handle_connector_change(struct work_struct *work)
->  			ucsi_register_partner(con);
->  			ucsi_partner_task(con, ucsi_check_connection, 1, HZ);
->  			ucsi_partner_task(con, ucsi_check_connector_capability, 1, HZ);
-> -			ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
-> -			ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
-> +			if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
-> +				ucsi_partner_task(con, ucsi_get_partner_identity, 1, HZ);
-> +			if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
-> +				ucsi_partner_task(con, ucsi_check_cable, 1, HZ);
->  
->  			if (UCSI_CONSTAT_PWR_OPMODE(con->status.flags) ==
->  			    UCSI_CONSTAT_PWR_OPMODE_PD)
-> @@ -1589,8 +1595,10 @@ static int ucsi_register_port(struct ucsi *ucsi, struct ucsi_connector *con)
->  		ucsi_register_partner(con);
->  		ucsi_pwr_opmode_change(con);
->  		ucsi_port_psy_changed(con);
-> -		ucsi_get_partner_identity(con);
-> -		ucsi_check_cable(con);
-> +		if (con->ucsi->cap.features & UCSI_CAP_GET_PD_MESSAGE)
-> +			ucsi_get_partner_identity(con);
-> +		if (con->ucsi->cap.features & UCSI_CAP_CABLE_DETAILS)
-> +			ucsi_check_cable(con);
->  	}
->  
->  	/* Only notify USB controller if partner supports USB data */
-> diff --git a/drivers/usb/typec/ucsi/ucsi.h b/drivers/usb/typec/ucsi/ucsi.h
-> index 32daf5f586505..0e7c92eb1b227 100644
-> --- a/drivers/usb/typec/ucsi/ucsi.h
-> +++ b/drivers/usb/typec/ucsi/ucsi.h
-> @@ -206,7 +206,7 @@ struct ucsi_capability {
->  #define UCSI_CAP_ATTR_POWER_OTHER		BIT(10)
->  #define UCSI_CAP_ATTR_POWER_VBUS		BIT(14)
->  	u8 num_connectors;
-> -	u8 features;
-> +	u16 features;
->  #define UCSI_CAP_SET_UOM			BIT(0)
->  #define UCSI_CAP_SET_PDM			BIT(1)
->  #define UCSI_CAP_ALT_MODE_DETAILS		BIT(2)
-> @@ -215,7 +215,8 @@ struct ucsi_capability {
->  #define UCSI_CAP_CABLE_DETAILS			BIT(5)
->  #define UCSI_CAP_EXT_SUPPLY_NOTIFICATIONS	BIT(6)
->  #define UCSI_CAP_PD_RESET			BIT(7)
-> -	u16 reserved_1;
-> +#define UCSI_CAP_GET_PD_MESSAGE		BIT(8)
-> +	u8 reserved_1;
->  	u8 num_alt_modes;
->  	u8 reserved_2;
->  	u16 bc_version;
-> -- 
-> 2.44.0.291.gc1ea87d7ee-goog
+Returning 0 might keep the machine alive, but does it make sense?
 
--- 
-heikki
+Thanks,
+
+        tglx
+---
+ arch/x86/kernel/cpu/topology.c |   15 +++++++++++++--
+ 1 file changed, 13 insertions(+), 2 deletions(-)
+
+--- a/arch/x86/kernel/cpu/topology.c
++++ b/arch/x86/kernel/cpu/topology.c
+@@ -277,10 +277,21 @@ int topology_get_logical_id(u32 apicid,
+ 	/* Remove the bits below @at_level to get the proper level ID of @apicid */
+ 	unsigned int lvlid = topo_apicid(apicid, at_level);
+ 
+-	if (lvlid >= MAX_LOCAL_APIC)
++	if (WARN_ON_ONCE(lvlid >= MAX_LOCAL_APIC))
+ 		return -ERANGE;
+-	if (!test_bit(lvlid, apic_maps[at_level].map))
++
++	/*
++	 * If there was no APIC registered, then the map check below would
++	 * fail. With no APIC this is guaranteed to be an UP system and
++	 * therefore all topology levels have only one entry and their
++	 * logical ID is obviously 0.
++	 */
++	if (topo_info.boot_cpu_apic_id == BAD_APICID)
++		return 0;
++
++	if (WARN_ON_ONCE(!test_bit(lvlid, apic_maps[at_level].map)))
+ 		return -ENODEV;
++
+ 	/* Get the number of set bits before @lvlid. */
+ 	return bitmap_weight(apic_maps[at_level].map, lvlid);
+ }
 
