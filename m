@@ -1,142 +1,207 @@
-Return-Path: <linux-kernel+bounces-106804-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C33A87F405
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:32:08 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1C5087F424
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:38:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BBAFE28391C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:32:06 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1E24A1C204BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:38:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 566BA5F86C;
-	Mon, 18 Mar 2024 23:31:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B9EE6169C;
+	Mon, 18 Mar 2024 23:34:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="g312OvpS"
-Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SyQAbhTB"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F825F569
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:31:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A4DB60ECA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:34:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710804716; cv=none; b=pu9XMoOiaktvrMDEVCm0jbfmFNFdhrQ/rT0cNfbXuwxxpXFpsEB5slE3TAK5N61T7YgQrWEjAkv+Zi3eFqY9asm99nNikfrbphDp41XV8hHUWhZCm0fw0rUzT2fQPtHuDaDGJp5A5yPe54fl2DDKqvqYYXEQlChENxKpN331Xac=
+	t=1710804850; cv=none; b=BgYH/V5RYufKuE9Gdm2y9E/22Dt3NWVVJ8aOspkcMqyCH4Q8zLlLQV0QEbWccopv4k104fqZK8z1RQiZMHKm4T8Xnigvg8Ey5JC/TKwtBhk3dz/FTBj8OV4b9EPB2ITP0MCN/thubq9oPq0pghM4AcDeHXrWjjOvj/6IJmKDwSA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710804716; c=relaxed/simple;
-	bh=G8PXI75wyQJnt2jt/Qu4uZ0MJ2bX8a6fiwFYVwQxj54=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=Ai7dxSEee5ac0qpn9DUtnrrBrKnLQOKSlIDL8Xll6RK2p1yClBB5fFTe0FWubP89zIVWUqJk1heTonSxLQuMoNRGffV7qz7ZNfPwx+4OOHMHP4X62BJcJaftLGeQJ5BEoML9ZfgR84UWiTaxyGpR0V/v1KRsrSnfzXW3Lj2W/e4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=g312OvpS; arc=none smtp.client-ip=209.85.219.202
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
-Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc6b26ce0bbso9336194276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:31:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710804714; x=1711409514; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=/hYA0yVMfoXQX/tkABnkiVaF9F5w17dveHRWbK7K11I=;
-        b=g312OvpSjuJfepmmeO/udfNfk+GkHNuEYN4qSpOB8eCCEfIV5Dpya11fRrUQ6GOpmb
-         jICcI55fNhFIgRHHL/3z7KhgnEDd8pVBysMy6XBO+zOx84nwtzTb2VtT4ci+Yu6vpWMA
-         Li5giSBYl/gtym+/kbcDtOte79YprYHwRkxfCRjga2dCXfFVBY4geTm0Vcvv9hUnwtf1
-         RA7QzxzZdBB2I0fGtK9vcCN91NdHW5iGQV4QcnZEKRxg0bB4kg+UYuVYUwBT3W45fLfT
-         ZIkJfbX5ZdMjaa09rT/I/gtiPWcXeIdxhKZpxBV8IpNoVPLSekPqATaplXCoc0kpwsap
-         zHGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710804714; x=1711409514;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=/hYA0yVMfoXQX/tkABnkiVaF9F5w17dveHRWbK7K11I=;
-        b=XGleguy2e9GZI/8mywhe9vh2lrZK9GjMyF0//x9Upw8MaDDqdxgXOji3vbQAn2CrAq
-         jcE2j6zLfimQq7nMDT7mIf3LzRdf1PQW4D1xzmb/wNVCcA0eOosLs9h5VOLLOt+LMhGN
-         EKve5EWu4z0BPsahXmkKBnb7OjlNAOdCBntqrDD00h2oCLK/od6/ilGBRZ5KbhcV83uQ
-         XCloVEXWU0c1H3ZkAZ2A34M8Uv+fx3DovIrNMRZTTUK8oxExJsKfwKe+0RSTz+EaSJ04
-         vj1SUXs+yq2ogDms89/ORF9UsPvTEgFUNKqBEcSNyBmoskUuX82HNahgWxqGhWkkxrTx
-         xf2g==
-X-Forwarded-Encrypted: i=1; AJvYcCVNuHImteQA0W9d5zZMC5EwBdyZE1zFukUEHnH6PMsOqSx/aNetX0QI9jpLdCQfgYIuvc2fNFBxT1yuYIWDZ5xI7poUUj5tWx7D4jxB
-X-Gm-Message-State: AOJu0YxxcBLf9G39aPXc565SJAfm0H5pDZiSbpGaH+OWcjoTQ2OyXVVX
-	93Kjmy1veulbwBcgaAx3cFY61KBVrzXQwN26676ekTVqK0FcFFXtdoHIA+zc+aBVXCzlmFTWhJi
-	kubPsZI0GHiMPfkbyd2WIlQ==
-X-Google-Smtp-Source: AGHT+IEcyEAm6+e1Tg0ayOlUnAb8GesMaSFK451Mqcd23PrLdQzWt457SqIzUIwgEynyMrhJc0UBWt78TjqL2Zdx7A==
-X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
- (user=justinstitt job=sendgmr) by 2002:a05:6902:e09:b0:dc6:dfd9:d431 with
- SMTP id df9-20020a0569020e0900b00dc6dfd9d431mr147939ybb.1.1710804714301; Mon,
- 18 Mar 2024 16:31:54 -0700 (PDT)
-Date: Mon, 18 Mar 2024 23:31:53 +0000
+	s=arc-20240116; t=1710804850; c=relaxed/simple;
+	bh=O8d8bKZo5siR8MieahkhVmdD32+jITrspI0Yw6jg/sg=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=ZGKkfjzZJDpPjMvzpeVODJ1DGwNmIKonrTlVLuDMD0whSPnQEMQ2GqUwxJ36hOsOdXjZ29EFT3BJ1DHdJ8QwuYkdFhHs/d++igaSyYubCtTrhcBTN3uUUVAj8/oPVg6CqL+jFR6gjcll4uLulobsuIR4KYgB67xmq5QN9muYKk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SyQAbhTB; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710804847;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Df3YFTKjtHSFy1h833T/9wNhgRF6OQfT8JsQ4nzMHO4=;
+	b=SyQAbhTBHa5Q+15iEGMhRUBN2nHO/Z//6ryWqbVnjYjTMOhpKNaSPBBu/DX076sWrSJVm8
+	DpGV3WYLRFzL1w3+7Q1oz3fvfq9qBSN8Uexkeg7KS5lq/dy57y4hvPozwXQV/V+eARMRjh
+	uJ4aB6LhYsc6Mnupq1mXdSFM5V4Bwu4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-470-bokCas9LPf2LDOxss9HlNg-1; Mon, 18 Mar 2024 19:33:54 -0400
+X-MC-Unique: bokCas9LPf2LDOxss9HlNg-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 9EAA0811E81;
+	Mon, 18 Mar 2024 23:33:53 +0000 (UTC)
+Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 4AD1B1121312;
+	Mon, 18 Mar 2024 23:33:53 +0000 (UTC)
+From: Paolo Bonzini <pbonzini@redhat.com>
+To: linux-kernel@vger.kernel.org,
+	kvm@vger.kernel.org
+Cc: michael.roth@amd.com,
+	isaku.yamahata@intel.com,
+	seanjc@google.com,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Subject: [PATCH v4 00/15] KVM: SEV: allow customizing VMSA features
+Date: Mon, 18 Mar 2024 19:33:37 -0400
+Message-ID: <20240318233352.2728327-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-B4-Tracking: v=1; b=H4sIAOjO+GUC/x3NTQrCMBBA4auUWTuQn4riVURKnIwxC9My04RK6
- d0NLr/NezsoS2aF27CDcMua59JhTwPQO5TEmGM3OONG4+0VdZVCyxej5MaiWPWJKcTEK9ZI+Gl T9XGiWRgJz4bDZXTOW0vQk4vwK2//3f1xHD/Njti4fgAAAA==
-X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
-X-Developer-Signature: v=1; a=ed25519-sha256; t=1710804713; l=1939;
- i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
- bh=G8PXI75wyQJnt2jt/Qu4uZ0MJ2bX8a6fiwFYVwQxj54=; b=SMrdYSJzX+MnSMD6sDqSBZWTY/HYEMo0XCaDfBfrmOfM9iiDJ5YOsiltw5Ae6VKsEq2hKUaoK
- nbWYum1TQMPCB9YQhj00veQ+IrIgkGxFZd78icvbRcCsqYhL2pjR+Dz
-X-Mailer: b4 0.12.3
-Message-ID: <20240318-strncpy-drivers-usb-gadget-udc-mv_u3d_core-c-v1-1-64f8dcdb7c07@google.com>
-Subject: [PATCH] usb: gadget: mv_u3d: replace deprecated strncpy with strscpy
-From: Justin Stitt <justinstitt@google.com>
-To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-strncpy() is deprecated for use on NUL-terminated destination strings
-[1] and as such we should prefer more robust and less ambiguous string
-interfaces.
-
-Let's opt for the new 2-argument version of strscpy() which guarantees
-NUL-termination on the destination buffer and simplifies snytax. The
-NUL-padding behavior that strncpy() provides is not required as u3d->eps
-is already zero-allocated:
-|	u3d->eps = kzalloc(size, GFP_KERNEL);
-
-Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-Link: https://github.com/KSPP/linux/issues/90
-Cc: linux-hardening@vger.kernel.org
-Signed-off-by: Justin Stitt <justinstitt@google.com>
----
-Note: build-tested only.
-
-Found with: $ rg "strncpy\("
----
- drivers/usb/gadget/udc/mv_u3d_core.c | 4 ++--
- 1 file changed, 2 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/usb/gadget/udc/mv_u3d_core.c b/drivers/usb/gadget/udc/mv_u3d_core.c
-index 2a421f0ff931..e1dd5cf25d08 100644
---- a/drivers/usb/gadget/udc/mv_u3d_core.c
-+++ b/drivers/usb/gadget/udc/mv_u3d_core.c
-@@ -1307,7 +1307,7 @@ static int mv_u3d_eps_init(struct mv_u3d *u3d)
- 	/* initialize ep0, ep0 in/out use eps[1] */
- 	ep = &u3d->eps[1];
- 	ep->u3d = u3d;
--	strncpy(ep->name, "ep0", sizeof(ep->name));
-+	strscpy(ep->name, "ep0");
- 	ep->ep.name = ep->name;
- 	ep->ep.ops = &mv_u3d_ep_ops;
- 	ep->wedge = 0;
-@@ -1337,7 +1337,7 @@ static int mv_u3d_eps_init(struct mv_u3d *u3d)
- 			ep->ep.caps.dir_out = true;
- 		}
- 		ep->u3d = u3d;
--		strncpy(ep->name, name, sizeof(ep->name));
-+		strscpy(ep->name, name);
- 		ep->ep.name = ep->name;
+[Dave: there is a small arch/x86/kernel/fpu change in patch 9;
+ I am CCing you in the cover letter just for context. - Paolo]
  
- 		ep->ep.caps.type_iso = true;
+The idea that no parameter would ever be necessary when enabling SEV or
+SEV-ES for a VM was decidedly optimistic.  The first source of variability
+that was encountered is the desired set of VMSA features, as that affects
+the measurement of the VM's initial state and cannot be changed
+arbitrarily by the hypervisor.
 
----
-base-commit: bf3a69c6861ff4dc7892d895c87074af7bc1c400
-change-id: 20240318-strncpy-drivers-usb-gadget-udc-mv_u3d_core-c-50ea7422311c
+This series adds all the APIs that are needed to customize the features,
+with room for future enhancements:
 
-Best regards,
---
-Justin Stitt <justinstitt@google.com>
+- a new /dev/kvm device attribute to retrieve the set of supported
+  features (right now, only debug swap)
+
+- a new sub-operation for KVM_MEM_ENCRYPT_OP that can take a struct,
+  replacing the existing KVM_SEV_INIT and KVM_SEV_ES_INIT
+
+It then puts the new op to work by including the VMSA features as a field
+of the The existing KVM_SEV_INIT and KVM_SEV_ES_INIT use the full set of
+supported VMSA features for backwards compatibility; but I am considering
+also making them use zero as the feature mask, and will gladly adjust the
+patches if so requested.
+
+In order to avoid creating *two* new KVM_MEM_ENCRYPT_OPs, I decided that
+I could as well make SEV and SEV-ES use VM types.  And then, why not make
+a SEV-ES VM, when created with the new VM type instead of KVM_SEV_ES_INIT,
+reject KVM_GET_REGS/KVM_SET_REGS and friends on the vCPU file descriptor
+once the VMSA has been encrypted...  Which is how the API should have
+always behaved.
+
+Note: despite having the same number of patches as v3, #9 and #15 are new!
+The series is structured as follows:
+
+- patches 1 and 2 change sev.c so that it is compiled only if SEV is enabled
+  in kconfig
+
+- patches 3 to 6 introduce the new device attribute to retrieve supported
+  VMSA features
+
+- patches 7 and 8 introduce new infrastructure for VM types, replacing
+  the similar code in the TDX patches
+
+- patch 9 allows setting the FPU and AVX state prior to encryption of the
+  VMSA
+
+- patches 10 to 12 introduce the new VM types for SEV and
+  SEV-ES, and KVM_SEV_INIT2 as a new sub-operation for KVM_MEM_ENCRYPT_OP.
+
+- patch 13 reenables DebugSwap, now that there is an API that allows doing
+  so without breaking backwards compatibility
+
+- patches 14 and 15 test the new ioctl.
+
+The idea is that SEV SNP will only ever support KVM_SEV_INIT2.  I have
+placed patches for QEMU to support this new API at branch sevinit2 of
+https://gitlab.com/bonzini/qemu.
+
+I haven't fully tested patch 9 and it really deserves a selftest,
+it is a bit tricky though without ucall infrastructure for SEV.
+I will look at it tomorrow.
+
+The series is at branch kvm-coco-queue of kvm.git, and I would like to
+include it in kvm/next as soon as possible after the release of -rc1.
+
+Thanks,
+
+Paolo
+
+v3->v4:
+- moved patches 1 and 5 to separate "fixes" series for 6.9
+- do not conditionalize prototypes for functions that are called by common
+  SVM code
+- rebased on top of SEV selftest infrastructure from 6.9 merge window;
+  include new patch to drop the "subtype" concept
+- rebased on top of SEV-SNP patches from 6.9 merge window
+- rebased on top of patch to disable DebugSwap from 6.8 rc;
+  drop "warn" once SEV_ES_INIT stops enabling VMSA features and
+  finally re-enable DebugSwap
+- simplified logic to return -EINVAL from ioctls
+- also block KVM_GET/SET_FPU for protected-state guests
+- move logic to set kvm_>arch.has_protected_state to svm_vm_init
+- fix "struct struct" in documentation
+
+Paolo Bonzini (14):
+  KVM: SVM: Compile sev.c if and only if CONFIG_KVM_AMD_SEV=y
+  KVM: x86: use u64_to_user_addr()
+  KVM: introduce new vendor op for KVM_GET_DEVICE_ATTR
+  KVM: SEV: publish supported VMSA features
+  KVM: SEV: store VMSA features in kvm_sev_info
+  KVM: x86: add fields to struct kvm_arch for CoCo features
+  KVM: x86: Add supported_vm_types to kvm_caps
+  KVM: SEV: sync FPU and AVX state at LAUNCH_UPDATE_VMSA time
+  KVM: SEV: introduce to_kvm_sev_info
+  KVM: SEV: define VM types for SEV and SEV-ES
+  KVM: SEV: introduce KVM_SEV_INIT2 operation
+  KVM: SEV: allow SEV-ES DebugSwap again
+  selftests: kvm: add tests for KVM_SEV_INIT2
+  selftests: kvm: switch to using KVM_X86_*_VM
+
+Sean Christopherson (1):
+  KVM: SVM: Invert handling of SEV and SEV_ES feature flags
+
+ Documentation/virt/kvm/api.rst                |   2 +
+ .../virt/kvm/x86/amd-memory-encryption.rst    |  52 +++++-
+ arch/x86/include/asm/fpu/api.h                |   3 +
+ arch/x86/include/asm/kvm-x86-ops.h            |   1 +
+ arch/x86/include/asm/kvm_host.h               |   8 +-
+ arch/x86/include/uapi/asm/kvm.h               |  12 ++
+ arch/x86/kernel/fpu/xstate.h                  |   2 -
+ arch/x86/kvm/Makefile                         |   7 +-
+ arch/x86/kvm/cpuid.c                          |   2 +-
+ arch/x86/kvm/svm/sev.c                        | 172 ++++++++++++++----
+ arch/x86/kvm/svm/svm.c                        |  27 ++-
+ arch/x86/kvm/svm/svm.h                        |  43 ++++-
+ arch/x86/kvm/x86.c                            | 170 +++++++++++------
+ arch/x86/kvm/x86.h                            |   2 +
+ tools/testing/selftests/kvm/Makefile          |   1 +
+ .../selftests/kvm/include/kvm_util_base.h     |  11 +-
+ .../selftests/kvm/include/x86_64/processor.h  |   6 -
+ .../selftests/kvm/include/x86_64/sev.h        |  16 +-
+ tools/testing/selftests/kvm/lib/kvm_util.c    |   1 -
+ .../selftests/kvm/lib/x86_64/processor.c      |  14 +-
+ tools/testing/selftests/kvm/lib/x86_64/sev.c  |  30 ++-
+ .../selftests/kvm/set_memory_region_test.c    |   8 +-
+ .../selftests/kvm/x86_64/sev_init2_tests.c    | 149 +++++++++++++++
+ 23 files changed, 569 insertions(+), 170 deletions(-)
+ create mode 100644 tools/testing/selftests/kvm/x86_64/sev_init2_tests.c
+
+-- 
+2.43.0
 
 
