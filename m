@@ -1,143 +1,130 @@
-Return-Path: <linux-kernel+bounces-106821-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106822-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 141BD87F42B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:39:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 253B287F42C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 44CB91C21112
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:39:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D50ED281026
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:40:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3549A5F86C;
-	Mon, 18 Mar 2024 23:39:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88A25FB91;
+	Mon, 18 Mar 2024 23:40:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="fRxQxe1v"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="g+757ZKW"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 712655F859;
-	Mon, 18 Mar 2024 23:39:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE84E5FB81;
+	Mon, 18 Mar 2024 23:40:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710805145; cv=none; b=AuQp2vawRqTbW1j3sdmUNtrryyUVomPepuhgnZ3S0Rsv/jlMpm8nKhDbveBp2EMCdK6frS0y6oQywY2GC5Zc9gbM5rov35N6WClS2WdOOYFoLvI+S66kl+XdLkxTaDw84aokJW3FC0lpdq17TzHzMSMG2BQ31acZvClALvQ33qY=
+	t=1710805214; cv=none; b=s0fUsFNRItF3WQ6RaLgaRrnAbUCjq8d0Y7ZDxqcitf2eqFMcrP1Nahwx+bsxqBQhOHTEgEr8fym3EsYDyyq6BnqtvElXipJJ7Ict6QOG9YQejJ2Sh/VGcfUI4WWIdfODOET+IGv3KltOVIJr51aje/Hu8stxn+8iqKxbU26h7L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710805145; c=relaxed/simple;
-	bh=vNPV+Zm1jo6GQke9UBMxQprrLogWyW6mK1dZOZf+eZ4=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=AASBViRejV7jwIgjj+TW5gZgGwB0qUAp1iLUrDulUylYjECAxz/P/xpSgTfAUl/s/DVSzj0cigz0oLs0XeTXN6N3BBd4sm2vTBkmJ5Q52ofxcE2psyFY/eZLXg2fcYhj22p24gXlNMaK7ZmO2ngODUV+TXWPlMqnAeml/QHT4uA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=fRxQxe1v; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E5A9FC433F1;
-	Mon, 18 Mar 2024 23:39:02 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710805144;
-	bh=vNPV+Zm1jo6GQke9UBMxQprrLogWyW6mK1dZOZf+eZ4=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=fRxQxe1vX8gFA4H4/tqhTxyx1PTwtyNbL63yiwezOezdjGrGu2yUxdzdrO6YfwvDJ
-	 Gy2MYnigaGTllxZyONLD/zOrf14lQ9QxcUqxZc4DwlWfec16z2A2zYb3Ja7d2ggEAj
-	 SDGtivMXm0puj/iglEDdFF7AJBHiljiYpaCvuaopqHnubCGqrkbs+ijVyhNaALqQpb
-	 jFacRouvnfhdEc9PNNd1FFZquD0pWYM6LXBh7iot2GreTyHec1jci00jEH0FwPmum/
-	 C8QpZe/h539LeIGNqtwghhAZzX2XYyqzRk3f2Hd6ddNmiBkELNZuQjVwWXXvGPs1JW
-	 6Z436URGh79cA==
+	s=arc-20240116; t=1710805214; c=relaxed/simple;
+	bh=oyx2Bz+RIgrwhRz3BjJO59HfmzWRjuo3TkptYTef3tM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HILsfOtF/9SH5F94S7Mu+LXFxRz8dyjiQkeBtgfMqDl9pM1fZo84MOSG7XcsIsBQHGg435c4mSyIzK+WCN1gMZBBdeZk+HVf+Q3+2UWjAy4kbEZqZQK6wC9pIOLZPD2UCTSXOByObyUhwm6+nAnVAuprb4Q5v1LQn1hSjK5EmDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=g+757ZKW; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710805212; x=1742341212;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=oyx2Bz+RIgrwhRz3BjJO59HfmzWRjuo3TkptYTef3tM=;
+  b=g+757ZKWW3lPOEh1an26YkdfpIhDsEm0d/jHfHG2QUFZ86kCWiqHIqiR
+   be0f1u9LdovmjxtgmS9jbk6kHAxEZ0pVlEU3W2roYjhLw/gdJ4HkoB+WF
+   qlLBSKP/PkzL8NToaoRN6OIdsFItE0kFhv1P0TjQbFjtze0HvCO0GreF3
+   EELMD0tGKa5u9RkPhoaILdWxrYF1HB1Ro3MVgHdHdmoUFhYzv+J6gj22U
+   V1NKPOwCaiQ+6MT2BmYrSKl1CusuWFdITZxZRjC8Y0vd5XVCZc65598Yu
+   ghA6BV7NTgDNv/sTyisesItSZsmoupR87UMvEN/+pLJJJwWSs0QPVVzK8
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5516812"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="5516812"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 16:40:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="18243367"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 16:40:11 -0700
+Date: Mon, 18 Mar 2024 16:40:10 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	isaku.yamahata@linux.intel.com
+Subject: Re: [PATCH v19 078/130] KVM: TDX: Implement TDX vcpu enter/exit path
+Message-ID: <20240318234010.GD1645738@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <dbaa6b1a6c4ebb1400be5f7099b4b9e3b54431bb.1708933498.git.isaku.yamahata@intel.com>
+ <7a24c01a03f68a87b0bbfa82a5d6ccbf3cbd6f4b.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 19 Mar 2024 01:39:00 +0200
-Message-Id: <CZX9T3TU6YU0.3JE9M7M3ENUE0@kernel.org>
-Cc: <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <linux-kernel@vger.kernel.org>, <lvc-project@linuxtesting.org>, "Sergey
- Shtylyov" <s.shtylyov@omp.ru>
-Subject: Re: [PATCH] KEYS: prevent NULL pointer dereference in
- find_asymmetric_key()
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Roman Smirnov" <r.smirnov@omp.ru>, "David Howells"
- <dhowells@redhat.com>, "Herbert Xu" <herbert@gondor.apana.org.au>, "David
- S. Miller" <davem@davemloft.net>, "Andrew Zaborowski"
- <andrew.zaborowski@intel.com>
-X-Mailer: aerc 0.15.2
-References: <20240315103320.18754-1-r.smirnov@omp.ru>
-In-Reply-To: <20240315103320.18754-1-r.smirnov@omp.ru>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <7a24c01a03f68a87b0bbfa82a5d6ccbf3cbd6f4b.camel@intel.com>
 
-On Fri Mar 15, 2024 at 12:33 PM EET, Roman Smirnov wrote:
-> With the current code, in case all NULLs are passed in id_{0,1,2},
+On Mon, Mar 18, 2024 at 09:01:05PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-"current code" is not unambigious reference of any part of the kernel
-tree. Please just write down the function name instead.
+> On Mon, 2024-02-26 at 00:26 -0800, isaku.yamahata@intel.com wrote:
+> > +fastpath_t tdx_vcpu_run(struct kvm_vcpu *vcpu)
+> > +{
+> > +       struct vcpu_tdx *tdx = to_tdx(vcpu);
+> > +
+> > +       if (unlikely(!tdx->initialized))
+> > +               return -EINVAL;
+> > +       if (unlikely(vcpu->kvm->vm_bugged)) {
+> > +               tdx->exit_reason.full = TDX_NON_RECOVERABLE_VCPU;
+> > +               return EXIT_FASTPATH_NONE;
+> > +       }
+> > +
+> 
+> Isaku, can you elaborate on why this needs special handling? There is a
+> check in vcpu_enter_guest() like:
+> 	if (kvm_check_request(KVM_REQ_VM_DEAD, vcpu)) {
+> 		r = -EIO;
+> 		goto out;
+> 	}
+> 
+> Instead it returns a SEAM error code for something actuated by KVM. But
+> can it even be reached because of the other check? Not sure if there is
+> a problem, just sticks out to me and wondering whats going on.
 
-> the kernel will first print out a WARNING and then have an oops
-> because id_2 gets dereferenced anyway.
+The original intention is to get out the inner loop.  As Sean pointed it out,
+the current code does poor job to check error of
+__seamcall_saved_ret(TDH_VP_ENTER).  So it fails to call KVM_BUG_ON() when it
+returns unexcepted error.
 
-Would be more exact":
+The right fix is to properly check an error from TDH_VP_ENTER and call
+KVM_BUG_ON().  Then the check you pointed out should go away.
 
-s/print out a WARNING/emit WARN/
+  for // out loop
+     if (kvm_check_request(KVM_REQ_VM_DEAD, vcpu)) {
+         for // inner loop
+           vcpu_run()
+           kvm_vcpu_exit_request(vcpu).
 
-> Note that WARN_ON() is also considered harmful by Greg Kroah-
-> Hartman since it causes the Android kernels to panic as they
-> get booted with the panic_on_warn option.
-
-Despite full respect to Greg, and agreeing what he had said about
-the topic (which you are lacking lore link meaning that in all
-cases the current description is incomplete), the only thing that
-should be documented should be that since WARN_ON() can emit
-panic when panic_on_warn is set in the *kernel command-line*
-(not "option") this condition should be relaxed.
-
->
-> Found by Linux Verification Center (linuxtesting.org) with Svace.
-
-I'm not sure if this should be part of the commit message.
-
->
-> Fixes: 7d30198ee24f ("keys: X.509 public key issuer lookup without AKID")
-> Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-
-Should be reported-by.
-
-> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
-> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
-> ---
->  crypto/asymmetric_keys/asymmetric_type.c | 6 +++---
->  1 file changed, 3 insertions(+), 3 deletions(-)
->
-> diff --git a/crypto/asymmetric_keys/asymmetric_type.c b/crypto/asymmetric=
-_keys/asymmetric_type.c
-> index a5da8ccd353e..f5cbd6ff14e2 100644
-> --- a/crypto/asymmetric_keys/asymmetric_type.c
-> +++ b/crypto/asymmetric_keys/asymmetric_type.c
-> @@ -60,17 +60,17 @@ struct key *find_asymmetric_key(struct key *keyring,
->  	char *req, *p;
->  	int len;
-> =20
-> -	WARN_ON(!id_0 && !id_1 && !id_2);
-> -
-
-Weird, I recall discussing about this issue in the past. Unfortunately
-could not find the thread from lore.
-
-Anyway I agree with the code change.
-
->  	if (id_0) {
->  		lookup =3D id_0->data;
->  		len =3D id_0->len;
->  	} else if (id_1) {
->  		lookup =3D id_1->data;
->  		len =3D id_1->len;
-> -	} else {
-> +	} else if (id_2) {
->  		lookup =3D id_2->data;
->  		len =3D id_2->len;
-> +	} else {
-> +		return ERR_PTR(-EINVAL);
->  	}
-> =20
->  	/* Construct an identifier "id:<keyid>". */
-
-
-BR, Jarkko
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
