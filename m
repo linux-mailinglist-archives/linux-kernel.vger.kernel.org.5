@@ -1,278 +1,95 @@
-Return-Path: <linux-kernel+bounces-106431-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B68587EE94
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:17:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8AD0887EE96
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:17:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 05F801F2397D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:17:06 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4609F28133C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:17:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9ABF555763;
-	Mon, 18 Mar 2024 17:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 975EC55C0B;
+	Mon, 18 Mar 2024 17:17:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="freZd4F0"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0403854F96
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:16:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="h1pfMRex"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C88855790;
+	Mon, 18 Mar 2024 17:17:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710782217; cv=none; b=HFT39WHanW6ywaLl80Qvx6QcwactvgpArtLKA/bXvw/x0fMhIxkwHKNrMYfjfFmmBKZ8yYA09kfSbOnVYdyKFrUuM+T1GHZRTMTucPIWlPDewKqNn704xhoXC+R7dvS+m5GykJ3AIyYXsPy0z06cjxMn7+JP9rpGFQZgcD6CuCs=
+	t=1710782222; cv=none; b=P3S7Bww4V/Vg11L8YelIsvC/RR4EmG9D9x2/sNDFQMAZAYuQxjebcC+xg05eiVx68512l18usjIv6Z414B8yiLW/TleQuBiPPMfDUbppucyMzMmZSC/JYzipl/AyqoNRQcc6cpB7Ff+LJhem/43uwTVM6ykcP/3ARFRacJh8nqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710782217; c=relaxed/simple;
-	bh=sSz3J6DdrpfFg+fiM5uwo3CSw8bryn65eUaO1X2q4CI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tfvU3MBwL9hBgi5uhooP9jjXRLztco3IgtBAXN/QQc+8+NbqlfSAfQJFm+6vXyhKfnRvMmtfc/Ku+xH6AifcRcan5iz4SrFy196cd5BbQnnXHWu816JUAw5jVTpXeAQtlH6qVdRrmz0F2IKTUnYjewDmnR4RRvwonqzb817hHq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=freZd4F0; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id BAAF87E9;
-	Mon, 18 Mar 2024 18:16:27 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710782187;
-	bh=sSz3J6DdrpfFg+fiM5uwo3CSw8bryn65eUaO1X2q4CI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=freZd4F0xyzGCudVLWlDsfpirbzAWyc2efjwWyaxIcmfzrxU1TubtiI6tfnpN6I7D
-	 PnqeMQIMPtyCqV/2AsdLvCa5qbuhAZ2Yc2hyibzUREqODuCT3P22X4Iux6fBJ3vPA/
-	 /6i5e46s3LU0vL+LockMBi0Hr1nATn24f2MRCjoA=
-Date: Mon, 18 Mar 2024 19:16:51 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
-	linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
-	linux-arm-kernel@lists.infradead.org,
-	Daniel Vetter <daniel@ffwll.ch>
-Subject: Re: [PATCH 3/6] drm: zynqmp_dp: Add locking
-Message-ID: <20240318171651.GJ13682@pendragon.ideasonboard.com>
-References: <20240315230916.1759060-1-sean.anderson@linux.dev>
- <20240315230916.1759060-4-sean.anderson@linux.dev>
+	s=arc-20240116; t=1710782222; c=relaxed/simple;
+	bh=vDTqZKYF8IvJ3DljVKzXoNPrU7o1alGyUizdeOTNDuA=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=GGoHgM7r4F5pUjP3R/IOsGp1OLe+M2h2CGqglQaNkutNRFIpCWwQmHe6t/0xm+w63mOEKm+P/+Xd1VVFTAvCTHxI0WivTfWvqSpv699QZ/bEnrlBuKVAKQ6JRC7J/XZYJcmcs8jY6AQPYia3DXtvJCW7ZOcpl21ZQHxjvLtTawg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=h1pfMRex; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [100.64.232.101] (unknown [20.29.225.195])
+	by linux.microsoft.com (Postfix) with ESMTPSA id BB2E920B74C0;
+	Mon, 18 Mar 2024 10:17:00 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com BB2E920B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710782221;
+	bh=oBaGphn3sgS15rqtIpRpiQQCVintTQGUoEgffbht8jc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=h1pfMRex9JeFAIpEfLqo3Ru1rw8Fd+cuLioiO2U87gharO5NtItLjy89I4sXiZUl0
+	 R58UuKXNooldgmFppgYSRNO+Dm3a803YuBiW8zm/gd0MuNSYE2rvM6tNnlOIaZfSVG
+	 r3rMFReXC7MIVCvXlg54AqeGpJKrMac3Q4Efu17c=
+Message-ID: <066c4b0c-c8a5-4abd-9456-20b0352ee1ab@linux.microsoft.com>
+Date: Mon, 18 Mar 2024 10:16:59 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240315230916.1759060-4-sean.anderson@linux.dev>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination for
+ keyfile format
+Content-Language: en-CA
+To: Ani Sinha <anisinha@redhat.com>
+Cc: Shradha Gupta <shradhagupta@linux.microsoft.com>,
+ linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+ "K. Y. Srinivasan" <kys@microsoft.com>,
+ Haiyang Zhang <haiyangz@microsoft.com>, Wei Liu <wei.liu@kernel.org>,
+ Dexuan Cui <decui@microsoft.com>, Long Li <longli@microsoft.com>,
+ Olaf Hering <olaf@aepfle.de>, Shradha Gupta <shradhagupta@microsoft.com>
+References: <1710729951-2695-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <9d24633d-b2bf-4cbe-86f7-6df56ba14657@linux.microsoft.com>
+ <C740F1C4-CA2A-425B-8E60-0EF5C2C15270@redhat.com>
+From: Easwar Hariharan <eahariha@linux.microsoft.com>
+In-Reply-To: <C740F1C4-CA2A-425B-8E60-0EF5C2C15270@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Sean,
-
-Thank you for the patch.
-
-On Fri, Mar 15, 2024 at 07:09:13PM -0400, Sean Anderson wrote:
-> Add some locking, since none is provided by the drm subsystem. This will
-
-That's not quite right, the DRM core doesn't call bridge operations
-concurrently. We may need locking to protect against race conditions
-between bridge operations and interrupts though.
-
-> prevent the IRQ/workers/bridge API calls from stepping on each other's
-> toes.
+On 3/18/2024 10:12 AM, Ani Sinha wrote:
 > 
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> ---
 > 
->  drivers/gpu/drm/xlnx/zynqmp_dp.c | 59 +++++++++++++++++++++++---------
->  1 file changed, 42 insertions(+), 17 deletions(-)
+<snip>
+
+>>> + }
+>>> +
+>>> + if (strlen(output_str)) {
+>>> + output_str[strlen(output_str) - 1] = '\0';
+>>
+>> You don't need this since you're using strncat which adds its own '\0'.
 > 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index 8635b5673386..d2dee58e7bf2 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -279,6 +279,7 @@ struct zynqmp_dp_config {
->   * @dpsub: Display subsystem
->   * @iomem: device I/O memory for register access
->   * @reset: reset controller
-> + * @lock: Mutex protecting this struct and register access (but not AUX)
+> If I understand this correctly, this code simply eliminates the extra “,” character in the end. Therefore it is needed.
+> Since it is not obvious, in the previous review and before, I asked the author to add a comment to explain this clearly.
+> 
+>> I wasn't quite able to follow along 
+>> on the discussion between Ani and you, so putting this in here in case it wasn't already mentioned.
+>>
 
-This patch does two things at once, it defers link training from the IRQ
-handler to a work queue, and covers everything with a big lock. The
-scope is too large. Please restrict the lock scope and document the
-individual fields that need to be protected, and explain the locking
-design in the commit message (or comments in the code).
+Ah, great, that makes sense. I did see that it was destroying data but didn't spend enough time to think through
+what data it was destroying, and if that was a feature or a bug. Thanks for calling it out!
 
->   * @irq: irq
->   * @bridge: DRM bridge for the DP encoder
->   * @next_bridge: The downstream bridge
-> @@ -299,6 +300,7 @@ struct zynqmp_dp {
->  	struct zynqmp_dpsub *dpsub;
->  	void __iomem *iomem;
->  	struct reset_control *reset;
-> +	struct mutex lock;
->  	int irq;
->  
->  	struct drm_bridge bridge;
-> @@ -308,7 +310,7 @@ struct zynqmp_dp {
->  	struct drm_dp_aux aux;
->  	struct phy *phy[ZYNQMP_DP_MAX_LANES];
->  	u8 num_lanes;
-> -	struct delayed_work hpd_work;
-> +	struct delayed_work hpd_work, hpd_irq_work;
+- Easwar
 
-One variable per line please.
 
->  	enum drm_connector_status status;
->  	bool enabled;
->  
-> @@ -1371,8 +1373,10 @@ zynqmp_dp_bridge_mode_valid(struct drm_bridge *bridge,
->  	}
->  
->  	/* Check with link rate and lane count */
-> +	mutex_lock(&dp->lock);
->  	rate = zynqmp_dp_max_rate(dp->link_config.max_rate,
->  				  dp->link_config.max_lanes, dp->config.bpp);
-> +	mutex_unlock(&dp->lock);
->  	if (mode->clock > rate) {
->  		dev_dbg(dp->dev, "filtered mode %s for high pixel rate\n",
->  			mode->name);
-> @@ -1399,6 +1403,7 @@ static void zynqmp_dp_bridge_atomic_enable(struct drm_bridge *bridge,
->  
->  	pm_runtime_get_sync(dp->dev);
->  
-> +	mutex_lock(&dp->lock);
->  	zynqmp_dp_disp_enable(dp, old_bridge_state);
->  
->  	/*
-> @@ -1459,6 +1464,7 @@ static void zynqmp_dp_bridge_atomic_enable(struct drm_bridge *bridge,
->  	zynqmp_dp_write(dp, ZYNQMP_DP_SOFTWARE_RESET,
->  			ZYNQMP_DP_SOFTWARE_RESET_ALL);
->  	zynqmp_dp_write(dp, ZYNQMP_DP_MAIN_STREAM_ENABLE, 1);
-> +	mutex_unlock(&dp->lock);
->  }
->  
->  static void zynqmp_dp_bridge_atomic_disable(struct drm_bridge *bridge,
-> @@ -1466,6 +1472,7 @@ static void zynqmp_dp_bridge_atomic_disable(struct drm_bridge *bridge,
->  {
->  	struct zynqmp_dp *dp = bridge_to_dp(bridge);
->  
-> +	mutex_lock(&dp->lock);
->  	dp->enabled = false;
->  	cancel_delayed_work(&dp->hpd_work);
->  	zynqmp_dp_write(dp, ZYNQMP_DP_MAIN_STREAM_ENABLE, 0);
-> @@ -1476,6 +1483,7 @@ static void zynqmp_dp_bridge_atomic_disable(struct drm_bridge *bridge,
->  		zynqmp_dp_write(dp, ZYNQMP_DP_TX_AUDIO_CONTROL, 0);
->  
->  	zynqmp_dp_disp_disable(dp, old_bridge_state);
-> +	mutex_unlock(&dp->lock);
->  
->  	pm_runtime_put_sync(dp->dev);
->  }
-> @@ -1518,6 +1526,8 @@ static enum drm_connector_status zynqmp_dp_bridge_detect(struct drm_bridge *brid
->  	u32 state, i;
->  	int ret;
->  
-> +	mutex_lock(&dp->lock);
-> +
->  	/*
->  	 * This is from heuristic. It takes some delay (ex, 100 ~ 500 msec) to
->  	 * get the HPD signal with some monitors.
-> @@ -1545,11 +1555,13 @@ static enum drm_connector_status zynqmp_dp_bridge_detect(struct drm_bridge *brid
->  					       dp->num_lanes);
->  
->  		dp->status = connector_status_connected;
-> +		mutex_unlock(&dp->lock);
->  		return connector_status_connected;
->  	}
->  
->  disconnected:
->  	dp->status = connector_status_disconnected;
-> +	mutex_unlock(&dp->lock);
->  	return connector_status_disconnected;
->  }
->  
-> @@ -1611,6 +1623,29 @@ static void zynqmp_dp_hpd_work_func(struct work_struct *work)
->  	drm_bridge_hpd_notify(&dp->bridge, status);
->  }
->  
-> +static void zynqmp_dp_hpd_irq_work_func(struct work_struct *work)
-> +{
-> +	struct zynqmp_dp *dp = container_of(work, struct zynqmp_dp,
-> +					    hpd_irq_work.work);
-> +	u8 status[DP_LINK_STATUS_SIZE + 2];
-> +	int err;
-> +
-> +	mutex_lock(&dp->lock);
-> +	err = drm_dp_dpcd_read(&dp->aux, DP_SINK_COUNT, status,
-> +			       DP_LINK_STATUS_SIZE + 2);
-> +	if (err < 0) {
-> +		dev_dbg_ratelimited(dp->dev,
-> +				    "could not read sink status: %d\n", err);
-> +	} else {
-> +		if (status[4] & DP_LINK_STATUS_UPDATED ||
-> +		    !drm_dp_clock_recovery_ok(&status[2], dp->mode.lane_cnt) ||
-> +		    !drm_dp_channel_eq_ok(&status[2], dp->mode.lane_cnt)) {
-> +			zynqmp_dp_train_loop(dp);
-> +		}
-> +	}
-> +	mutex_unlock(&dp->lock);
-> +}
-> +
->  static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
->  {
->  	struct zynqmp_dp *dp = (struct zynqmp_dp *)data;
-> @@ -1635,23 +1670,9 @@ static irqreturn_t zynqmp_dp_irq_handler(int irq, void *data)
->  	if (status & ZYNQMP_DP_INT_HPD_EVENT)
->  		schedule_delayed_work(&dp->hpd_work, 0);
->  
-> -	if (status & ZYNQMP_DP_INT_HPD_IRQ) {
-> -		int ret;
-> -		u8 status[DP_LINK_STATUS_SIZE + 2];
-> +	if (status & ZYNQMP_DP_INT_HPD_IRQ)
-> +		schedule_delayed_work(&dp->hpd_irq_work, 0);
->  
-> -		ret = drm_dp_dpcd_read(&dp->aux, DP_SINK_COUNT, status,
-> -				       DP_LINK_STATUS_SIZE + 2);
-> -		if (ret < 0)
-> -			goto handled;
-> -
-> -		if (status[4] & DP_LINK_STATUS_UPDATED ||
-> -		    !drm_dp_clock_recovery_ok(&status[2], dp->mode.lane_cnt) ||
-> -		    !drm_dp_channel_eq_ok(&status[2], dp->mode.lane_cnt)) {
-> -			zynqmp_dp_train_loop(dp);
-> -		}
-> -	}
-> -
-> -handled:
->  	return IRQ_HANDLED;
->  }
->  
-> @@ -1674,8 +1695,10 @@ int zynqmp_dp_probe(struct zynqmp_dpsub *dpsub)
->  	dp->dev = &pdev->dev;
->  	dp->dpsub = dpsub;
->  	dp->status = connector_status_disconnected;
-> +	mutex_init(&dp->lock);
->  
->  	INIT_DELAYED_WORK(&dp->hpd_work, zynqmp_dp_hpd_work_func);
-> +	INIT_DELAYED_WORK(&dp->hpd_irq_work, zynqmp_dp_hpd_irq_work_func);
->  
->  	/* Acquire all resources (IOMEM, IRQ and PHYs). */
->  	res = platform_get_resource_byname(pdev, IORESOURCE_MEM, "dp");
-> @@ -1775,6 +1798,7 @@ void zynqmp_dp_remove(struct zynqmp_dpsub *dpsub)
->  	zynqmp_dp_write(dp, ZYNQMP_DP_INT_DS, ZYNQMP_DP_INT_ALL);
->  	disable_irq(dp->irq);
->  
-> +	cancel_delayed_work_sync(&dp->hpd_irq_work);
->  	cancel_delayed_work_sync(&dp->hpd_work);
->  
->  	zynqmp_dp_write(dp, ZYNQMP_DP_TRANSMITTER_ENABLE, 0);
-> @@ -1782,4 +1806,5 @@ void zynqmp_dp_remove(struct zynqmp_dpsub *dpsub)
->  
->  	zynqmp_dp_phy_exit(dp);
->  	zynqmp_dp_reset(dp, true);
-> +	mutex_destroy(&dp->lock);
->  }
 
--- 
-Regards,
-
-Laurent Pinchart
 
