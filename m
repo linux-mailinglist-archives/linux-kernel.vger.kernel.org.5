@@ -1,228 +1,266 @@
-Return-Path: <linux-kernel+bounces-106295-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106296-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1B5487EC13
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:25:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7F1C687EC17
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:25:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 80EF41F21CE6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:25:02 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DDED281721
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:25:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 286964F201;
-	Mon, 18 Mar 2024 15:24:55 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4534F5EC;
+	Mon, 18 Mar 2024 15:25:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N7QDLfSO";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZTjCHXrW";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yfXMzMXw";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/z0mKqaD"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9484F1E3;
-	Mon, 18 Mar 2024 15:24:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0116E4F1FA;
+	Mon, 18 Mar 2024 15:25:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710775494; cv=none; b=gli7FOGOVQrRaXgHeZmaprCD4otMo4Ev3MQdG2ISooikYazkFCAuGsJjYFCJcFrgY7z9eF8M5WQ8VWIDFG8Np58tSUPlfvsE6Fp0lUFsbWUBw//kIlfJ683tfplHyaNHX0TQ7/8grIXkKDApsiRE/J+N6jnBL173l9Y0eWDtZXU=
+	t=1710775521; cv=none; b=oaPum8t/zL+oJa54PnMJm6eWikUoTt/avHXeM5oIoz6uxVCB1KQoWEWopQ+nRRDtiKDOzNn1waiG28FRjAEEwbgzSLOI0sti0YgSazAVUUOnV5fHDm7EKb4ZeY4k5l/nES3OG+QU0IKUo++E2CFEfmDyVees1KrcyTrsOPtk9WM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710775494; c=relaxed/simple;
-	bh=TW2sVKXmKodNGaQrOPxiyaWbuxEcgOd4Z5b5YRJ1Vrk=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=o3utBA7WVyMa7m2XSdfMmt69hyuAqGh8krFfMo4EztcT7D113zB0OyPNW0m+X7u4H64rhxayDVxvZBoQ5/3MtttT9uHGn9YqT1epE94SkfYt9zqqroCW/ai7eT6laYMDnjhvfi4LFS37PKW0uG0hqemlHcndAUSDpb8X9Wp06no=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.31])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TyzD607c6z6K6Pl;
-	Mon, 18 Mar 2024 23:24:22 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id 0E2E1140A30;
-	Mon, 18 Mar 2024 23:24:48 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 18 Mar
- 2024 15:24:47 +0000
-Date: Mon, 18 Mar 2024 15:24:46 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Sean Anderson <sean.anderson@linux.dev>
-CC: Jonathan Cameron <jic23@kernel.org>, "O'Griofa, Conall"
-	<conall.ogriofa@amd.com>, "linux-iio@vger.kernel.org"
-	<linux-iio@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_channels in
- scan_mask
-Message-ID: <20240318152446.00001345@Huawei.com>
-In-Reply-To: <7ee83f15-88fc-4530-84b7-b8ee31663dbc@linux.dev>
-References: <20240311162800.11074-1-sean.anderson@linux.dev>
-	<20240314154824.37150a54@jic23-huawei>
-	<a9ed95ec-aafe-49f6-93dd-c94c73620de2@linux.dev>
-	<DM6PR12MB4217EAA1049F815F234EE6D18B282@DM6PR12MB4217.namprd12.prod.outlook.com>
-	<3b481539-0c9c-4110-ad03-bd252e80efb0@linux.dev>
-	<20240316133627.5d2bf585@jic23-huawei>
-	<7ee83f15-88fc-4530-84b7-b8ee31663dbc@linux.dev>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1710775521; c=relaxed/simple;
+	bh=PK/AFuE4d26F9yJkFry5cVwY/JjHa0X2rvqK959sqao=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HczU7ALsHB/v1L5s6E1H1M0ZkFtrHXti31eahd9NPGE02wyveSDJpisfTnk4aUZUTIGWw5NV3FGu/dgV7R5izKHaGiN07RWo7UEtlPzzVgtnPJTGV2hpfppmryV4nj2RdabyjdxY5txFTBvXWY9EHjTsuBmu4bhhK4mTKLBBoO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N7QDLfSO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZTjCHXrW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yfXMzMXw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/z0mKqaD; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id EF8225C699;
+	Mon, 18 Mar 2024 15:25:13 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710775516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
+	b=N7QDLfSOQBr1PjDf8h5pqhB2J8FjBaZTLJViEOc19+NJoSedZBTB9dFJ72m/CXg739DbXD
+	9B0DyAiEwPHTI06czMtIx2tcJ6SFKI9Pe75/FO0FhfprqMfACulF+BhFxeAW5o7w9A6LFy
+	rWKhhbdzS+hXhaH+Q5y7NYLgp+2BSv0=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710775516;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
+	b=ZTjCHXrWUVoVMyOoGLXKGB6/F3Ot8epYK4Wx2y9AreCPrtXvtzJFZzOZM0DuRPVc7GFpBf
+	wuFRf/3Kgj63jnAg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710775513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
+	b=yfXMzMXwa5L4e8xXQ5XkbSZncnzJH1dTIHW85Ep3l4ljiojsaQxg/K+4NgZ3XcxsNe0kvc
+	EZJ56hzGw2ou6tpaHrQnNToFbq29yK0j+cVxnmUp0G2K+9HZlBweniz+hSLLipRMHprlDh
+	QD4c9/bf9a7g9XhAABBhhD22dawwyuE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710775513;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
+	b=/z0mKqaDX71Ea5tK0VUpklz3HQSHxU3bJemAPr+Q1RObisuKEgssVtfcoLYO0gcQih497x
+	t36p8ES/P2yWknCw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E07441349D;
+	Mon, 18 Mar 2024 15:25:13 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id t2PFNtlc+GVYTwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 15:25:13 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 533A5A07D9; Mon, 18 Mar 2024 16:25:09 +0100 (CET)
+Date: Mon, 18 Mar 2024 16:25:09 +0100
+From: Jan Kara <jack@suse.cz>
+To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+Cc: Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org,
+	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
+	ritesh.list@gmail.com, adobriyan@gmail.com,
+	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
+	yangerkun@huawei.com, stable@vger.kernel.org
+Subject: Re: [PATCH v3 4/9] ext4: fix slab-out-of-bounds in
+ ext4_mb_find_good_group_avg_frag_lists()
+Message-ID: <20240318152509.5tdmkojnhd3gqxqu@quack3>
+References: <20240314140906.3064072-1-libaokun1@huawei.com>
+ <20240314140906.3064072-5-libaokun1@huawei.com>
+ <Zfg19s2+fn9QYnUQ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml100003.china.huawei.com (7.191.160.210) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zfg19s2+fn9QYnUQ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+X-Spam-Score: -2.30
+X-Spamd-Result: default: False [-2.30 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-3.00)[100.00%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[12];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email,suse.cz:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[huawei.com,vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: 
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
-On Mon, 18 Mar 2024 11:18:43 -0400
-Sean Anderson <sean.anderson@linux.dev> wrote:
+On Mon 18-03-24 18:09:18, Ojaswin Mujoo wrote:
+> On Thu, Mar 14, 2024 at 10:09:01PM +0800, Baokun Li wrote:
+> > We can trigger a slab-out-of-bounds with the following commands:
+> > 
+> >     mkfs.ext4 -F /dev/$disk 10G
+> >     mount /dev/$disk /tmp/test
+> >     echo 2147483647 > /sys/fs/ext4/$disk/mb_group_prealloc
+> >     echo test > /tmp/test/file && sync
+> > 
+> > ==================================================================
+> > BUG: KASAN: slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
+> > Read of size 8 at addr ffff888121b9d0f0 by task kworker/u2:0/11
+> > CPU: 0 PID: 11 Comm: kworker/u2:0 Tainted: GL 6.7.0-next-20240118 #521
+> > Call Trace:
+> >  dump_stack_lvl+0x2c/0x50
+> >  kasan_report+0xb6/0xf0
+> >  ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
+> >  ext4_mb_regular_allocator+0x19e9/0x2370 [ext4]
+> >  ext4_mb_new_blocks+0x88a/0x1370 [ext4]
+> >  ext4_ext_map_blocks+0x14f7/0x2390 [ext4]
+> >  ext4_map_blocks+0x569/0xea0 [ext4]
+> >  ext4_do_writepages+0x10f6/0x1bc0 [ext4]
+> > [...]
+> > ==================================================================
+> > 
+> > The flow of issue triggering is as follows:
+> > 
+> > // Set s_mb_group_prealloc to 2147483647 via sysfs
+> > ext4_mb_new_blocks
+> >   ext4_mb_normalize_request
+> >     ext4_mb_normalize_group_request
+> >       ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc
+> >   ext4_mb_regular_allocator
+> >     ext4_mb_choose_next_group
+> >       ext4_mb_choose_next_group_best_avail
+> >         mb_avg_fragment_size_order
+> >           order = fls(len) - 2 = 29
+> >         ext4_mb_find_good_group_avg_frag_lists
+> >           frag_list = &sbi->s_mb_avg_fragment_size[order]
+> >           if (list_empty(frag_list)) // Trigger SOOB!
+> > 
+> > At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
+> > but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
+> > to be triggered by an attempt to access an element at index 29.
+> > 
+> > Add a new attr_id attr_clusters_in_group with values in the range
+> > [0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
+> > that type to fix the issue. In addition avoid returning an order
+> > from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
+> > and reduce some useless loops.
+> > 
+> > Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
+> > CC: stable@vger.kernel.org
+> > Signed-off-by: Baokun Li <libaokun1@huawei.com>
+> > Reviewed-by: Jan Kara <jack@suse.cz>
+> > ---
+> >  fs/ext4/mballoc.c |  4 ++++
+> >  fs/ext4/sysfs.c   | 13 ++++++++++++-
+> >  2 files changed, 16 insertions(+), 1 deletion(-)
+> > 
+> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
+> > index 12b3f196010b..48afe5aa228c 100644
+> > --- a/fs/ext4/mballoc.c
+> > +++ b/fs/ext4/mballoc.c
+> > @@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
+> >     return 0;
+> >   if (order == MB_NUM_ORDERS(sb))
+> >     order--;
+> > + if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
+> > +   order = MB_NUM_ORDERS(sb) - 1;
+> 
+> Hey Baokun,
+> 
+> Thanks for fixing this. This patch looks good to me, feel free to add:
+> 
+> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
+> 
+> my comments after this are less about the patch and more about some
+> thoughts on the working of average fragment lists.
+> 
+> So going through the v2 and this patch got me thinking about what really
+> is going to happen when a user tries to allocate 32768 blocks which is also 
+> the maximum value we could have in say ac->ac_g_ex.fe_len.
+> 
+> When this happens, ext4_mb_regular_allocator() will directly set the
+> criteria as CR_GOAL_LEN_FAST. Now, we'll follow:
+> 
+> ext4_mb_choose_next_group_goal_fast()
+>   for (i=mb_avg_fragment_size_order(); i < MB_NUM_ORDERS; i++) { .. }
+> 
+> Here, mb_avg_fragment_siz_order() will do something like:
+> 
+>   order = fls(32768) - 2 = 14
+>   ...
+>   if (order == MB_NUM_ORDERS(sb))
+>     order--;
+> 
+>   return order;
+> 
+> And we'll look in the fragment list[13] and since none of the groups
+> there would have 32768 blocks free (since we dont track it here) we'll
+> unnecessarily traverse the full list before falling to CR_BEST_AVAIL_LEN
+> (this will become a noop due to the way order and min_order
+> are calculated) and eventually to CR_GOAL_LEN_SLOW where we might get
+> something or end up splitting.
 
-> On 3/16/24 09:36, Jonathan Cameron wrote:
-> > On Fri, 15 Mar 2024 13:47:40 -0400
-> > Sean Anderson <sean.anderson@linux.dev> wrote:
-> >  =20
-> >> Hi Conall,
-> >>=20
-> >> On 3/15/24 09:18, O'Griofa, Conall wrote: =20
-> >> > [AMD Official Use Only - General]
-> >> >=20
-> >> > Hi,
-> >> >=20
-> >> > I think there was a fix for this issue applied to the version that w=
-as running on 5.15 that didn't seem to make it into the upstream driver.
-> >> > Please see link for reference https://github.com/Xilinx/linux-xlnx/c=
-ommit/608426961f16ab149b1b699f1c35f7ad244c0720
-> >> >=20
-> >> > I think a similar fix to the above patch is may be beneficial?   =20
-> >>=20
-> >> These patches look functionally identical to me. =20
-> >=20
-> > Because there are no channels with scan index between
-> > 22 * 2 + 16 (that patch) and 22 * 3 (your patch) that is
-> > the effect is indeed the same. But given the issues is the
-> > 64 limit on maximum scan index, 22 * 3 =3D 66 is an ugly value
-> > to compare with.
-> >=20
-> > I'm still very against the use of scan_index for anything other
-> > than scan indices (which is why partly how this bug wasn't noticed
-> > in the first palce). So the check should be scan_index !=3D -1
-> > and uses of those values elsewhere in the driver should be fixed
-> > (which looks simple to do from a quick glance at the code). =20
->=20
-> OK, so how do the sysfs files get named then?
+Yeah, agreed this looks a bit suboptimal. I'm just not 100% sure whether
+we'll ever generate a request to allocate 32768 blocks - that would need
+verification with tracing - because I have some vague recollection I once
+arrived at conclusion this is not possible.
 
-Using channel and channel2 as appropriate (+ index and modified
-which change the meaning of channel2) - scan_index never had
-anything to do with sysfs file names - just the value in
-bufferX/in_xyz_scan_index
+> I think something more optimal would be to:
+> 
+> 1. Add another entry to average fragment lists for completely empty
+> groups. (As a sidenote i think we should use something like MB_NUM_FRAG_ORDER
+> instead of MB_NUM_ORDERS in calculating limits related to average
+> fragment lists since the NUM_ORDERS seems to be the buddy max order ie
+> 8192 blocks only valid for CR_POWER2 and shouldn't really limit the
+> fragment size lists)
 
->=20
-> --Sean
->=20
-> >>=20
-> >> --Sean
-> >>  =20
-> >> >> -----Original Message-----
-> >> >> From: Sean Anderson <sean.anderson@linux.dev>
-> >> >> Sent: Thursday, March 14, 2024 5:30 PM
-> >> >> To: Jonathan Cameron <jic23@kernel.org>
-> >> >> Cc: linux-iio@vger.kernel.org; O'Griofa, Conall <conall.ogriofa@amd=
-com>;
-> >> >> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.org;=
- Lars-Peter
-> >> >> Clausen <lars@metafoo.de>
-> >> >> Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_channe=
-ls in
-> >> >> scan_mask
-> >> >>
-> >> >> Caution: This message originated from an External Source. Use prope=
-r caution
-> >> >> when opening attachments, clicking links, or responding.
-> >> >>
-> >> >>
-> >> >> On 3/14/24 11:48, Jonathan Cameron wrote:   =20
-> >> >> > On Mon, 11 Mar 2024 12:28:00 -0400
-> >> >> > Sean Anderson <sean.anderson@linux.dev> wrote:
-> >> >> >   =20
-> >> >> >> ams_enable_channel_sequence constructs a "scan_mask" for all the=
- PS
-> >> >> >> and PL channels. This works out fine, since scan_index for these
-> >> >> >> channels is less than 64. However, it also includes the
-> >> >> >> ams_ctrl_channels, where scan_index is greater than 64, triggeri=
-ng
-> >> >> >> undefined behavior. Since we don't need these channels anyway, j=
-ust   =20
-> >> >> exclude them.   =20
-> >> >> >>
-> >> >> >> Fixes: d5c70627a794 ("iio: adc: Add Xilinx AMS driver")
-> >> >> >> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>   =20
-> >> >> >
-> >> >> > Hi Sean,
-> >> >> >
-> >> >> > I'd ideally like to understand why we have channels with such lar=
-ge
-> >> >> > scan indexes.  Those values should only be used for buffered capt=
-ure.
-> >> >> > It feels like they are being abused here.  Can we set them to -1
-> >> >> > instead and check based on that?
-> >> >> > For a channel, a scan index of -1 means it can't be captured via =
-the
-> >> >> > buffered interfaces but only accessed via sysfs reads.
-> >> >> > I think that's what we have here?   =20
-> >> >>
-> >> >> From what I can tell, none of the channels support buffered reads. =
-And we can't
-> >> >> nai=CC=88vely convert the scan_index to -1, since that causes sysfs=
- naming conflicts
-> >> >> (not to mention the compatibility break).
-> >> >>   =20
-> >> >> >
-> >> >> > I just feel like if we leave these as things stand, we will get b=
-itten
-> >> >> > by similar bugs in the future.  At least with -1 it should be obv=
-ious why!   =20
-> >> >>
-> >> >> There are just as likely to be bugs confusing the PL/PS subdevices.=
-.
-> >> >>
-> >> >> FWIW I had no trouble identifying the channels involved with this b=
-ug.
-> >> >>
-> >> >> --Sean
-> >> >>   =20
-> >> >> > Jonathan
-> >> >> >
-> >> >> >   =20
-> >> >> >> ---
-> >> >> >>
-> >> >> >>  drivers/iio/adc/xilinx-ams.c | 8 ++++++--
-> >> >> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >> >> >>
-> >> >> >> diff --git a/drivers/iio/adc/xilinx-ams.c
-> >> >> >> b/drivers/iio/adc/xilinx-ams.c index a55396c1f8b2..4de7ce598e4d
-> >> >> >> 100644
-> >> >> >> --- a/drivers/iio/adc/xilinx-ams.c
-> >> >> >> +++ b/drivers/iio/adc/xilinx-ams.c
-> >> >> >> @@ -414,8 +414,12 @@ static void ams_enable_channel_sequence(str=
-uct
-> >> >> >> iio_dev *indio_dev)
-> >> >> >>
-> >> >> >>      /* Run calibration of PS & PL as part of the sequence */
-> >> >> >>      scan_mask =3D BIT(0) | BIT(AMS_PS_SEQ_MAX);
-> >> >> >> -    for (i =3D 0; i < indio_dev->num_channels; i++)
-> >> >> >> -            scan_mask |=3D BIT_ULL(indio_dev->channels[i].scan_=
-index);
-> >> >> >> +    for (i =3D 0; i < indio_dev->num_channels; i++) {
-> >> >> >> +            const struct iio_chan_spec *chan =3D
-> >> >> >> + &indio_dev->channels[i];
-> >> >> >> +
-> >> >> >> +            if (chan->scan_index < AMS_CTRL_SEQ_BASE)
-> >> >> >> +                    scan_mask |=3D BIT_ULL(chan->scan_index);
-> >> >> >> +    }
-> >> >> >>
-> >> >> >>      if (ams->ps_base) {
-> >> >> >>              /* put sysmon in a soft reset to change the sequenc=
-e */   =20
-> >> >> >   =20
-> >>  =20
-> >  =20
->=20
->=20
+I guess the thinking was that you can never get larger than
+1<<(MB_NUM_ORDERS-1) chunk from mballoc so there's no point to keep
+fragment lists of such chunks?
 
+								Honza
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
