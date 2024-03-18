@@ -1,151 +1,216 @@
-Return-Path: <linux-kernel+bounces-106779-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106780-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 880E487F364
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:52:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33D2F87F36A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:55:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 42D7C281F20
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:52:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B1612281D41
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:55:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BE3915A7AF;
-	Mon, 18 Mar 2024 22:52:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4702B5A7A7;
+	Mon, 18 Mar 2024 22:55:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OhN3xtZd"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bE6l2bqz"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC255A786;
-	Mon, 18 Mar 2024 22:52:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 239C15A786;
+	Mon, 18 Mar 2024 22:54:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710802359; cv=none; b=rU7hYSeR9v7JftJkUAZvjtoDeVEhqnQgtjgbnWLuRP5egWSOUYb3QDk+ykqRBLZvGjElX7ZCm2d6BxpNG6TqCg5pXsQFXvdGMTRBBOkfapwWV/+a/Kbd/MLD3pN++FvfZFlbIj38MvRZCEyANv6v9UZ8Oeo1DDRA57QWUx/2NkU=
+	t=1710802499; cv=none; b=fHjRTU4ten63sKywpvoBWam6yxu7iirNLYOrAO37Y2wS30TEZWtNcA3jR71zEeHY5mwMo8KryWagpW+eD6SCdVIJ6bZFez0tU0bkCYpk/KjF2C5FPmTlodXXXPVNXfXHcgxcG/7Z3GW34mK2yB4CUph6PncQvhVRk/ufmOTV2Jo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710802359; c=relaxed/simple;
-	bh=d8ENTjTWcVsCzBvWcyg0cn6pI2/9W2hfTSPfkGl9yqA=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=k8heJyqV1RVTyS/xODvHpcQfgy++yq9zw9aEzdnoT7BE1UKV0FwtrPE1pk6wRUxIFcrIYyaFTh6wTBhJPL4KpbkfdvnXhLTU0l6E+OPUgbWwJICiWU6+yNi/K/UtfabUozUUyz/BELlZBsLebCgtFLHdGaPOkI1XttECH1K0oH8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OhN3xtZd; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-3416a975840so1174790f8f.0;
-        Mon, 18 Mar 2024 15:52:37 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710802356; x=1711407156; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=DDVpvH3kaI7Vdha9XG2iONfusP79xsOJ6QJIxfHa214=;
-        b=OhN3xtZdHZoq9MYxnEdRdYI0WxdDK2AiIz2Rir9etOvV1le+Jj/Sq70+ZQDWNSxkIW
-         ukD0Vw6nbCxVlZuyuzdbA8z4WjhLEiD4D01Emo91//DHe4ZmyxMRCdDQeriEFOXUszld
-         LfPXCBj8XamaokVKuZ7lGrJJawNYgPTaido8lzm+HQ2FSbVa+d6RAvV0J910blnQ6FD1
-         znq6KxU2U1ExvNFlwtQA2dR947tgCKXKGTmjmQXNZU/mOTF7zKhyaFdSsfg2wmraDeOk
-         rrA/BJFokCDJOEPO5bGf3hm/4yhr9NBL//OtCqqE4aQEbPXvSuvs/L7vOrhLlcxtL3qQ
-         O46w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710802356; x=1711407156;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=DDVpvH3kaI7Vdha9XG2iONfusP79xsOJ6QJIxfHa214=;
-        b=VN4miZhIUGDh9zVnhyhkX/ofQU72zv0Eon3qnovCKMOUBFapgGn/bpi2gdLiyUu8Jx
-         XdutIPppw70D4lQP6NGP6CTYiorVMwB/JKLguN2ykX3vHVLQRAZMduQlLbhqKMBY+IzL
-         LYs1Q/ltLl0TEV3Lv73tcMuV9UkTf2mR6QuZjHtNt6/U7G4rc8dRwgTwpWHaCQQxzn04
-         wEZN+Ffoln7smjblRSQie3ROlEB/ucfTRwp1BMtQojNTbaBB2qPFouMaM11RhA+oH1zl
-         a6PmmAOJNjpPysia7lDket715FaDYxPrJCl9aFSrPTpzT48tKsVzEHaRoXMw5dmSXecJ
-         cFCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXM8tBBb/6mhj6hcejXjl2QyBeDKEQ5b5VSaebZK3dwstyahu+wriI9O8gQDNRDQ7chxDehWZh/qILVxsgneqNfE3X6k2GvQHN7JI5VGgWW/t0fczPYYjZ5gVprx4UDtk0KJijnnApib93t/p44
-X-Gm-Message-State: AOJu0Yzi0dObV58s0IKIp9wEtvZW9aftawa3vd298OHitgUNqfvKv+yf
-	CA/2RoaaEBFvxxjkIpCyijgoy5qRZYmc7v/mqtOiUXG+sUbFE34U
-X-Google-Smtp-Source: AGHT+IGYHVV6iNA52cUhhV9tsoy/msDnvWt2qBbnEVgVLxYcFmpA4/NVXUD8b7yDOoLka4qtB5yW+g==
-X-Received: by 2002:adf:f38c:0:b0:33e:7a1f:5824 with SMTP id m12-20020adff38c000000b0033e7a1f5824mr9524431wro.0.1710802355640;
-        Mon, 18 Mar 2024 15:52:35 -0700 (PDT)
-Received: from [192.168.6.255] ([5.1.5.0])
-        by smtp.gmail.com with ESMTPSA id k7-20020a056402048700b0056a033fa007sm1549937edv.64.2024.03.18.15.52.34
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 15:52:35 -0700 (PDT)
-Message-ID: <70ae8d7d2ed950466a61d118f59c16cb07fc9688.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 3/6] bpf/helpers: introduce
- bpf_timer_set_sleepable_cb() kfunc
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Tue, 19 Mar 2024 00:52:33 +0200
-In-Reply-To: <20240315-hid-bpf-sleepable-v4-3-5658f2540564@kernel.org>
-References: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
-	 <20240315-hid-bpf-sleepable-v4-3-5658f2540564@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+	s=arc-20240116; t=1710802499; c=relaxed/simple;
+	bh=NNxUzknMUx6JvNgGo1q+hdGtgoR/iRzhtpKz2FKCeCE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ZMwwkydgxQocJrQiYM4ol9CxlNYIAnZZSYYwdv59JwDMWhTSUrj0nj6Qi4fBlNchVZrDb0/w5kVkTGpwro2+rH2iMelIGODJgYKv+9V0d7zMB7mArE30R9jsUo8lvuJAlALisF48FrWEFnFAqMC43xFFohRCcKi7HMlGf+5WARQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bE6l2bqz; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42IMWZO3022155;
+	Mon, 18 Mar 2024 22:54:45 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=no0ND6ofS1ljLX84cue1h9RXKCUPZ3al3cKsA5mJDw0=;
+ b=bE6l2bqzKqqrgWGuKJosXW7gbIKTu5W0EV89aKiCqbyKQ19tg4PlhTod4PfBgvgtERx0
+ MGr6FAx3De78heBz8ByQP4UgCU9vGUawHUtOGiwVDXxSu8SKx9TXJaokzg0Lz+M/hGig
+ tFBLYAdvwGeOdrwphTstWAoXFS20RReBXwf7jJZeW1a47Zwj4MXPwz8x59lENdsvlKjh
+ mtNZ2s+GhlyyNIgiDvjiznlXF6MEBt2POH0tNZA/qbhzn8Ab+nXVG+HXHLHuIL+Q46tf
+ JFYDEwW9q3HJl94nz0x+7KzVcUkL463JnYTMkflz5f4jL0+Ukx80XdslNtp4iM01jaIK 8w== 
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wxxgbr24g-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 22:54:45 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42IKuZW5017231;
+	Mon, 18 Mar 2024 22:54:44 GMT
+Received: from smtprelay06.wdc07v.mail.ibm.com ([172.16.1.73])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrt3ym2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 22:54:44 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay06.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42IMsfgT50463148
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Mar 2024 22:54:43 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id BE39258059;
+	Mon, 18 Mar 2024 22:54:41 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AF29D58055;
+	Mon, 18 Mar 2024 22:54:40 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Mon, 18 Mar 2024 22:54:40 +0000 (GMT)
+Message-ID: <d462e493-c719-4372-8991-cdd860f433d9@linux.ibm.com>
+Date: Mon, 18 Mar 2024 18:54:40 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v6 08/13] crypto: ecc - Add NIST P521 curve parameters
+Content-Language: en-US
+To: Jarkko Sakkinen <jarkko@kernel.org>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>, keyrings@vger.kernel.org,
+        linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+        davem@davemloft.net
+Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
+        bbhushan2@marvell.com
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <20240312183618.1211745-9-stefanb@linux.vnet.ibm.com>
+ <CZX6JM30P6FG.138133OLNGMS2@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZX6JM30P6FG.138133OLNGMS2@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: AVgnEwh_6dFHKv5oxjldq-1355trb3_B
+X-Proofpoint-ORIG-GUID: AVgnEwh_6dFHKv5oxjldq-1355trb3_B
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ phishscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
+ suspectscore=0 adultscore=0 bulkscore=0 spamscore=0 mlxlogscore=999
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403180173
 
-On Fri, 2024-03-15 at 15:29 +0100, Benjamin Tissoires wrote:
 
-This patch looks good to me, please see two nitpicks below.
-Acked-by: Eduard Zingerman <eddyz87@gmail.com>
 
-[...]
+On 3/18/24 17:05, Jarkko Sakkinen wrote:
+> On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
+>> From: Stefan Berger <stefanb@linux.ibm.com>
+>>
+>> Add the parameters for the NIST P521 curve and define a new curve ID
+>> for it. Make the curve available in ecc_get_curve.
+> 
+> This is rare example of "complete story" in this series despite being
+> short, so no complains :-)
 
-> @@ -1350,6 +1358,11 @@ BPF_CALL_3(bpf_timer_start, struct bpf_timer_kern =
-*, timer, u64, nsecs, u64, fla
->  		goto out;
->  	}
-> =20
-> +	if (t->is_sleepable && !(flags & BPF_F_TIMER_SLEEPABLE)) {
-> +		ret =3D -EINVAL;
-> +		goto out;
-> +	}
+Wew :-) Thanks for the reviews.
 
-Nit:
-the BPF_F_TIMER_ABS and BPF_F_TIMER_CPU_PIN don't affect
-sleepable timers, should this check be changed to:
-'(t->is_sleepable && flags !=3D BPF_F_TIMER_SLEEPABLE)' ?
-
-[...]
-
-> @@ -12151,6 +12175,16 @@ static int check_kfunc_call(struct bpf_verifier_=
-env *env, struct bpf_insn *insn,
->  		}
->  	}
-> =20
-> +	if (is_async_callback_calling_kfunc(meta.func_id)) {
-> +		err =3D push_callback_call(env, insn, insn_idx, meta.subprogno,
-> +					 set_timer_callback_state);
-
-Nit: still think that this fragment would be better as:
-
-	if (is_bpf_timer_set_sleepable_cb_impl_kfunc(meta.func_id)) {
-		err =3D push_callback_call(env, insn, insn_idx, meta.subprogno,
-					 set_timer_callback_state);
-
-Because of the 'set_timer_callback_state' passed to push_callback_call().
-
-> +		if (err) {
-> +			verbose(env, "kfunc %s#%d failed callback verification\n",
-> +				func_name, meta.func_id);
-> +			return err;
-> +		}
-> +	}
-> +
->  	rcu_lock =3D is_kfunc_bpf_rcu_read_lock(&meta);
->  	rcu_unlock =3D is_kfunc_bpf_rcu_read_unlock(&meta);
-> =20
+> 
+>>
+>> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+>> Tested-by: Lukas Wunner <lukas@wunner.de>
+>> ---
+>>   crypto/ecc.c            |  2 ++
+>>   crypto/ecc_curve_defs.h | 45 +++++++++++++++++++++++++++++++++++++++++
+>>   include/crypto/ecdh.h   |  1 +
+>>   3 files changed, 48 insertions(+)
+>>
+>> diff --git a/crypto/ecc.c b/crypto/ecc.c
+>> index ead40b5ebb46..4f6fa8617308 100644
+>> --- a/crypto/ecc.c
+>> +++ b/crypto/ecc.c
+>> @@ -60,6 +60,8 @@ const struct ecc_curve *ecc_get_curve(unsigned int curve_id)
+>>   		return &nist_p256;
+>>   	case ECC_CURVE_NIST_P384:
+>>   		return &nist_p384;
+>> +	case ECC_CURVE_NIST_P521:
+>> +		return &nist_p521;
+>>   	default:
+>>   		return NULL;
+>>   	}
+>> diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
+>> index ab1ef3d94be5..0ecade7d02f5 100644
+>> --- a/crypto/ecc_curve_defs.h
+>> +++ b/crypto/ecc_curve_defs.h
+>> @@ -89,6 +89,51 @@ static struct ecc_curve nist_p384 = {
+>>   	.b = nist_p384_b
+>>   };
+>>   
+>> +/* NIST P-521 */
+>> +static u64 nist_p521_g_x[] = { 0xf97e7e31c2e5bd66ull, 0x3348b3c1856a429bull,
+>> +				0xfe1dc127a2ffa8deull, 0xa14b5e77efe75928ull,
+>> +				0xf828af606b4d3dbaull, 0x9c648139053fb521ull,
+>> +				0x9e3ecb662395b442ull, 0x858e06b70404e9cdull,
+>> +				0xc6ull };
+>> +static u64 nist_p521_g_y[] = { 0x88be94769fd16650ull, 0x353c7086a272c240ull,
+>> +				0xc550b9013fad0761ull, 0x97ee72995ef42640ull,
+>> +				0x17afbd17273e662cull, 0x98f54449579b4468ull,
+>> +				0x5c8a5fb42c7d1bd9ull, 0x39296a789a3bc004ull,
+>> +				0x118ull };
+>> +static u64 nist_p521_p[] = { 0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0x1ffull };
+>> +static u64 nist_p521_n[] = { 0xbb6fb71e91386409ull, 0x3bb5c9b8899c47aeull,
+>> +				0x7fcc0148f709a5d0ull, 0x51868783bf2f966bull,
+>> +				0xfffffffffffffffaull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0x1ffull };
+>> +static u64 nist_p521_a[] = { 0xfffffffffffffffcull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+>> +				0x1ffull };
+>> +static u64 nist_p521_b[] = { 0xef451fd46b503f00ull, 0x3573df883d2c34f1ull,
+>> +				0x1652c0bd3bb1bf07ull, 0x56193951ec7e937bull,
+>> +				0xb8b489918ef109e1ull, 0xa2da725b99b315f3ull,
+>> +				0x929a21a0b68540eeull, 0x953eb9618e1c9a1full,
+>> +				0x051ull };
+>> +static struct ecc_curve nist_p521 = {
+>> +	.name = "nist_521",
+>> +	.nbits = 521,
+>> +	.g = {
+>> +		.x = nist_p521_g_x,
+>> +		.y = nist_p521_g_y,
+>> +		.ndigits = 9,
+>> +	},
+>> +	.p = nist_p521_p,
+>> +	.n = nist_p521_n,
+>> +	.a = nist_p521_a,
+>> +	.b = nist_p521_b
+>> +};
+>> +
+>>   /* curve25519 */
+>>   static u64 curve25519_g_x[] = { 0x0000000000000009, 0x0000000000000000,
+>>   				0x0000000000000000, 0x0000000000000000 };
+>> diff --git a/include/crypto/ecdh.h b/include/crypto/ecdh.h
+>> index a9f98078d29c..9784ecdd2fb4 100644
+>> --- a/include/crypto/ecdh.h
+>> +++ b/include/crypto/ecdh.h
+>> @@ -26,6 +26,7 @@
+>>   #define ECC_CURVE_NIST_P192	0x0001
+>>   #define ECC_CURVE_NIST_P256	0x0002
+>>   #define ECC_CURVE_NIST_P384	0x0003
+>> +#define ECC_CURVE_NIST_P521	0x0004
+>>   
+>>   /**
+>>    * struct ecdh - define an ECDH private key
+> 
+> 
+> Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+> 
+> BR, Jarkko
+> 
 
