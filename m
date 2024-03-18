@@ -1,118 +1,85 @@
-Return-Path: <linux-kernel+bounces-105616-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 125DF87E19C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:27:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D47AF87E1A4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3D6EE1C20D5D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 01:26:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0FF941C2144D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 01:28:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 114591D54A;
-	Mon, 18 Mar 2024 01:26:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E041CFAD;
+	Mon, 18 Mar 2024 01:27:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="SIGz/bxS"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAZqwJus"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 77DBD18E1D;
-	Mon, 18 Mar 2024 01:26:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 753CD1CD07;
+	Mon, 18 Mar 2024 01:27:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710725210; cv=none; b=Hr/1Cy2i+7STe4HpB2B6Bi3fTWO5SxeOsohdLnX0priWkB6KSvcyBf3/+nhMmwzq7V8m5OE76mDX9eek5d/lD936/n+dFL7Eq8aUltuV7MqM7f2CMWurIsmyX96wlANVT1XfJjFJDcnBIOBx1/sob6nghLebHv7hRssDh+qJJws=
+	t=1710725276; cv=none; b=QIaFhdtuecS7skmpojejXTusE7xV6+H7voZvfc7IcBxvO6OdKefiRYExbEWeiUiASeROXwIFsbPGbuCJo58wQ27641ZfcPuqx4zR9M3f61cnFvbrvjFvN6aWizU/csHGgywIeYcsJua9CwzwPU9aTEaoW3Bjgp9tf9SsKnB7dSM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710725210; c=relaxed/simple;
-	bh=ftsEb9yXw9uzcEt530OlE8K0MzCs2GPsLpuZS+alOiM=;
+	s=arc-20240116; t=1710725276; c=relaxed/simple;
+	bh=RhB/nWWwoCQMMHLsN2PtqvPB+ZkEomggWeNkRLQBVUc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RMODDrcQJndYyawJFKOjIn3wVjrwGvw4pQgaAgviPJKXlRTKFG3nQc2myVFhm5Vz2cDm8COOJOnYsYlqXT65AEPVF275IeTqM/jo0sgyvve9dWQoB9oF66pEBxfdZgAMCXziLDHhVNpTm5RJGX4XnnDU1T21BNph2AD94QhfR6M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=SIGz/bxS; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Transfer-Encoding
-	:Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
-	Sender:Reply-To:Content-ID:Content-Description;
-	bh=S56ZGNytYd3VhDY57h4xgye0OIXsSZDMpFlintu/yL4=; b=SIGz/bxSjrLiXEBNRwH7HY2z9N
-	ze2G+vMckoZFXpELmcxty/8/rRu6ercUJM+AKkzsvPsc+AeEUa4B+9kS9TUucwrUWbH60pUnCk4Mo
-	HnVHxteb47hRWwvyrJoQXwTkhaNCgqTIhykAZglB60rDw7uEEAgogEuDssvDS9Ih4HuBrAg9t5tlO
-	FIek4XTcu958qiFl7n98VYbFgOwmSoGfZkKC9NwnB0NWx+C+0uRtov5BCKGIIpPw18XYba61FE+m7
-	hvQFDcf92qnwzqwor7OtC4tXY3ktOWU8D57VdoIvvhhO/S95vswBbWqV0qBCS1eovzom2kZENxwPW
-	STOnZ7/A==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rm1lz-00000006uvt-2Snu;
-	Mon, 18 Mar 2024 01:26:43 +0000
-Date: Sun, 17 Mar 2024 18:26:43 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>
-Cc: David Stevens <stevensd@chromium.org>,
-	Sean Christopherson <seanjc@google.com>,
-	Christoph Hellwig <hch@infradead.org>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Yu Zhang <yu.c.zhang@linux.intel.com>,
-	Isaku Yamahata <isaku.yamahata@gmail.com>,
-	Zhi Wang <zhi.wang.linux@gmail.com>,
-	Maxim Levitsky <mlevitsk@redhat.com>, kvmarm@lists.linux.dev,
-	linux-kernel@vger.kernel.org, kvm@vger.kernel.org
-Subject: Re: [PATCH v11 0/8] KVM: allow mapping non-refcounted pages
-Message-ID: <ZfeYU6hqlVF7y9YO@infradead.org>
-References: <0b109bc4-ee4c-4f13-996f-b89fbee09c0b@amd.com>
- <ZfG801lYHRxlhZGT@google.com>
- <9e604f99-5b63-44d7-8476-00859dae1dc4@amd.com>
- <ZfHKoxVMcBAMqcSC@google.com>
- <93df19f9-6dab-41fc-bbcd-b108e52ff50b@amd.com>
- <ZfHhqzKVZeOxXMnx@google.com>
- <c84fcf0a-f944-4908-b7f6-a1b66a66a6bc@amd.com>
- <d2a95b5c-4c93-47b1-bb5b-ef71370be287@amd.com>
- <CAD=HUj5k+N+zrv-Yybj6K3EvfYpfGNf-Ab+ov5Jv+Zopf-LJ+g@mail.gmail.com>
- <985fd7f8-f8dd-4ce4-aa07-7e47728e3ebd@amd.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=bLsmpKNpUAH6nxdY1qlO3iGcoFHYK5flGqF4I9iAn3jdagxuraBYcExPO1dbB0P3X9baCBzfiXYXLYCwE4KPR5IfG2MEH5gQNxFtLLlat0tio3X6inTqitzNmxWLwAzo+S4m+afjo7mYF6ylwF6i5By0HyGEcmDY5zqxlrNPjx4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAZqwJus; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id AE0F4C433C7;
+	Mon, 18 Mar 2024 01:27:54 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710725276;
+	bh=RhB/nWWwoCQMMHLsN2PtqvPB+ZkEomggWeNkRLQBVUc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=mAZqwJusQJZXb2OJMfT+mDfrdyC8ILUSY2QKpsvTPvP5oVcLiZ9GyhibASy3ausGx
+	 5JHmg3fBSOTc4NkezKfvT82kSECEFp049Z5SpFxh6nbg/natLPSx+uRbgvLJn9T3Rm
+	 AJIctURuGRrhcyszXa/oo5r/qhwp+e49EzTkjq0aPo+IlbR7ATcaKCiENjaAplVGaB
+	 BKZi9HQVhh9mamrTZoWwMWSjwngbgodqh5rXnjSb4scBrNsZr17vogzbxn2/2W5Aow
+	 08qpNcTQeweb+KERctFkLLKDCgS9DTFwqBBIE6OSqZDrsQrgz3QSrS+y/tYxRb0HuA
+	 obxAj+9QY/NNg==
+Date: Sun, 17 Mar 2024 20:27:52 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>, 
+	Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui <rui.zhang@intel.com>, 
+	Lukasz Luba <lukasz.luba@arm.com>, Rob Herring <robh@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Thara Gopinath <thara.gopinath@gmail.com>, Amit Kucheria <amitk@kernel.org>, 
+	Marijn Suijten <marijn.suijten@somainline.org>, linux-arm-msm@vger.kernel.org, linux-pm@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, stable@vger.kernel.org
+Subject: Re: [PATCH v2 2/3] thermal: qcom: lmh: Check for SCM availability at
+ probe
+Message-ID: <yes2jztatfs7abss6rt3dlnnifse7xh2klyd44zg2lkngp7mjf@dsmh23oqgbf6>
+References: <20240308-topic-rb1_lmh-v2-0-bac3914b0fe3@linaro.org>
+ <20240308-topic-rb1_lmh-v2-2-bac3914b0fe3@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=iso-8859-1
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <985fd7f8-f8dd-4ce4-aa07-7e47728e3ebd@amd.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <20240308-topic-rb1_lmh-v2-2-bac3914b0fe3@linaro.org>
 
-On Thu, Mar 14, 2024 at 12:51:40PM +0100, Christian König wrote:
-> > Does Christoph's objection come from my poorly worded cover letter and
-> > commit messages, then?
+On Sat, Mar 09, 2024 at 02:15:03PM +0100, Konrad Dybcio wrote:
+> Up until now, the necessary scm availability check has not been
+> performed, leading to possible null pointer dereferences (which did
+> happen for me on RB1).
 > 
-> Yes, that could certainly be.
-
-That's definitively a big part of it, but I think not the only one.
-
-> > Fundamentally, what this series is doing is
-> > allowing pfns returned by follow_pte to be mapped into KVM's shadow
-> > MMU without inadvertently translating them into struct pages.
+> Fix that.
 > 
-> As far as I can tell that is really the right thing to do. Yes.
+> Fixes: 53bca371cdf7 ("thermal/drivers/qcom: Add support for LMh driver")
+> Cc: <stable@vger.kernel.org>
+> Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+> Signed-off-by: Konrad Dybcio <konrad.dybcio@linaro.org>
 
-IFF your callers don't need pages and you just want to track the
-mapping in the shadow mmu and never take a refcount that is a good
-thing.
+Reviewed-by: Bjorn Andersson <andersson@kernel.org>
 
-But unless I completely misunderstood the series that doesn't seem
-to be the case - it builds a new kvm_follow_pfn API which is another
-of these weird multiplexers like get_user_pages that can to tons of
-different things depending on the flags.  And some of that still
-grabs the refcount, right?
-
-> Completely agree. In my thinking when you go a step further and offload
-> grabbing the page reference to get_user_pages() then you are always on the
-> save side.
-
-Agreed.
-
-> Because then it is no longer the responsibility of the KVM code to get all
-> the rules around that right, instead you are relying on a core functionality
-> which should (at least in theory) do the correct thing.
-
-Exactly.
-
+Regards,
+Bjorn
 
