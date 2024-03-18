@@ -1,123 +1,89 @@
-Return-Path: <linux-kernel+bounces-106442-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106443-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F3F9C87EEBA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:25:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D77E87EEBB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:25:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B0550280EE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:25:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F1A91F25FAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:25:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA88555784;
-	Mon, 18 Mar 2024 17:25:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A249755C32;
+	Mon, 18 Mar 2024 17:25:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="IiQ4SKMs"
-Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="qXAkRQFC"
+Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D94B654BC5;
-	Mon, 18 Mar 2024 17:25:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A90C55766;
+	Mon, 18 Mar 2024 17:25:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710782703; cv=none; b=Z5U/WHXLazZzM5j8DANdIUSfQpahQit75+JxpmobbQhENX5ln6yvEhniLFVMii9HKlGpp0qAwC3UeWKgxiaq3tmC9hZN14OLm4lFeHmVLyLpdh1DqHQbI4Fh1Kgk735TxxptHSpcQMK8DVrVcj4/YG3NrXu+YZHNNV4mscn5qDc=
+	t=1710782705; cv=none; b=hShmtpGq/PbS7ho0yzJ53q8e0eZd6Yl6LzAf9Fv/hTxzpSPbg0Rmg2df7X03XcNvxPT8MzvxueLnSvuoZLmoQkjjLs27evP0h50haGCNK/R2mGJUeZ/+jfA4Kgqrq20kOJ65UtMVTZ/XXoI850hihw+3SQktjhY4STPCp3/MrWw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710782703; c=relaxed/simple;
-	bh=By9zNHOAPEUzQgCAwnmGWAN0P+JcSIiVYrCNA/N3Lqg=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=KUgkDjiIRka0+wuhUe//4hJ6IqCyxFdw4JP4W3uF+qirNHTsdJMYsZvWTWuM22qqT0doZ0Q55nQ3pAs+4itV7P93KUUBhDdfHL/khWovpLpTiu+8TtFfjVSj4qkR+9uW+cdAS26OhM0QJnshSKKrygqMLJNTTv1wkqHoy4DJ+Ww=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=IiQ4SKMs; arc=none smtp.client-ip=209.85.128.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=jessamine.co.uk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-41413d116f6so5773785e9.1;
-        Mon, 18 Mar 2024 10:25:00 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710782699; x=1711387499; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=eVbU6njYiiJoqweMNi/CTr2/6zPXakEgjaYTRXv3XZw=;
-        b=IiQ4SKMsIPDeyQedlRcpjN1VTVJHB7payOGD2sIkp1V50D92YnkHyGI7AybHUoFpcH
-         HOwieCwTkXB1mSJMqHchmuUT0iMvLsegLVsbLQWxl/PtTYcRIwiSqcfhmMBrjqVAxS2x
-         WMxRI/G4RnH5z2oaDraI430ulqG684ub3DUc8yvcHKMfRXwD1VvJ9eOQ73Np1R8jgQaK
-         2MTAi7yDc2IwE+gNpXNu4gGMw1MpEKjDNtW4eOUmUBoBHUWttFJDrfHoTMfT7KEkaXNB
-         n+Gf/KrW0kzPbTqWfpr9M/rmiJYUCmAvBy9H0UiKu41+gHS3HgFLXG5zXexLTL0bbeI5
-         XNKg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710782699; x=1711387499;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:sender:x-gm-message-state:from
-         :to:cc:subject:date:message-id:reply-to;
-        bh=eVbU6njYiiJoqweMNi/CTr2/6zPXakEgjaYTRXv3XZw=;
-        b=LGBydraUyY8pWnz7BVhHMvN1qo/RyRvn6kHKVEek5A7cmdke+t7eXyneSOLkR7gRzJ
-         b6WgAjCKJlC1sJ71atTBulKzlmFNRFcPNDJsx6mxXMn9O2RGx7Na6MmtPj7Fmesom7om
-         /Vt3t5dor5kftugw+0wzdBUIyeTN5gJ/JP9HZ1jCTM48EQvbfpK0rOgHZsZ/IYvVxIfU
-         0Fv8lT0KWaA7/iAY5fBsaLcbk19j69auUYGZ0D+2iuv6xzJZ4zrqr/PLophJI1Erduim
-         2YWLx94vVCsS8S365WkbXs3OetTqp1A7qAtwt58d1XZTdaT/5cAd8rKvUt7ByA/Hy3Yl
-         FPSQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWa0c1G8CY5Q1Bzdm9x3o8iY8HxP8ZtkjAc8icX569AD0dkGuOlPXK/nLpP6zJ6TYQg74f++dFn+J+Aij3RPBvDLv8tx2D1ajX0y/eRrTdL9sksTcVtooERXx7gj3GxAW0ZhaZ10D/T
-X-Gm-Message-State: AOJu0YwrWBGOr2vyjIhn7zH1JjIxHJs8VqgWSn5+WL71CX6RKw4VLuwi
-	pDkIak4K2DpWpHM/2kwiOu4b9/MlZ2J6JzIfkrhU9Mhmj00zTMAr
-X-Google-Smtp-Source: AGHT+IFAGo5r7gdXXbUUCazX2pOBmsHfh9bfQQ/NaXwkVwNK2FUdr9fDbb5bjohyXESf8K3Q6ff2Gw==
-X-Received: by 2002:a05:600c:4e93:b0:414:245:f6df with SMTP id f19-20020a05600c4e9300b004140245f6dfmr121085wmq.21.1710782699021;
-        Mon, 18 Mar 2024 10:24:59 -0700 (PDT)
-Received: from localhost.localdomain (munkyhouse.force9.co.uk. [84.92.42.80])
-        by smtp.gmail.com with ESMTPSA id t15-20020a05600c198f00b0041312c4865asm18674313wmq.2.2024.03.18.10.24.58
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 10:24:58 -0700 (PDT)
-Sender: Adam Butcher <adam.jessaminenet@gmail.com>
-From: Adam Butcher <adam@jessamine.co.uk>
-To: broonie@kernel.org
-Cc: adam@jessamine.co.uk,
-	benjamin@bigler.one,
-	carlos.song@nxp.com,
-	kernel@pengutronix.de,
-	linux-imx@nxp.com,
-	linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org,
-	s.hauer@pengutronix.de,
-	shawnguo@kernel.org,
-	stefanmoring@gmail.com
-Subject: Re: [PATCH v2] spi: spi-imx: fix off-by-one in mx51 CPU mode burst length
-Date: Mon, 18 Mar 2024 17:21:48 +0000
-Message-ID: <20240318172415.1588-1-adam@jessamine.co.uk>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <98914a36-e5dc-4f44-bf3e-c237d803a7e8@sirena.org.uk>
-References: <98914a36-e5dc-4f44-bf3e-c237d803a7e8@sirena.org.uk>
+	s=arc-20240116; t=1710782705; c=relaxed/simple;
+	bh=dRwQGIJjcQCcbG/nv39ifGtF2OhFFWSOnXfgo7cUpZk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=pTrTy1tbyS87iJMiEJPiQVg0YcAhZrFC9kVD7R/wBO8wBJLQLgxwJMJqti3pbOvp3lOdB2XTZcAnqIzFobF+pDdVm8AVFQuZLz3B5JDlLnpCQqFNjLP9WsjtA53f7NfRZtDhghuBB6Iv6KWfmVmIiFlDyOCrCG7fBHOrkIoUQ84=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=qXAkRQFC; arc=none smtp.client-ip=91.218.175.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Mon, 18 Mar 2024 17:24:56 +0000
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710782701;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=zWGK09G8RtbS1Ej+sWUnnTckGMKYGUc3ngWPGG7e3lw=;
+	b=qXAkRQFCZu286hM70up4c4+VnJs+j1BnibxlxJ3hGEvtwOkjaL0xIbDS95+2tvvdlfOmP9
+	A2bczjitMzwjWpQAo+yBEkmf3Cjg44BxYx9Zh/AALJunTULBkPdOsNAI0KR0fuY9wjtzxb
+	SFKvWmyj3U86lgNFHSci29RneYTGPFs=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Oliver Upton <oliver.upton@linux.dev>
+To: Ethan Adams <j.ethan.adams@gmail.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>, Namhyung Kim <namhyung@kernel.org>,
+	Ian Rogers <irogers@google.com>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Tycho Andersen <tycho@tycho.pizza>
+Subject: Re: [PATCH] perf build: fix out of tree build
+Message-ID: <Zfh46MytnE3zOA4E@linux.dev>
+References: <20240314222012.47193-1-j.ethan.adams@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240314222012.47193-1-j.ethan.adams@gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, March 18, 2024 3:55 pm, Mark Brown wrote:=0D
-> On Wed, Mar 13, 2024 at 08:58:19PM +0000, Adam Butcher wrote:=0D
->> From: Adam Butcher <adam@jessamine.co.uk>=0D
->>=0D
->> 992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU=0D
->> mode") corrects three cases of setting the ECSPI burst length but=0D
->> erroneously leaves the in-range CPU case one bit to big (in that=0D
->> field a value of 0 means 1 bit).  The effect was that transmissions=0D
->> that should have been 8-bit bytes appeared as 9-bit causing failed=0D
->> communication with SPI devices.=0D
->=0D
-> This doesn't apply against current code, please check and resend.=0D
->=0D
-=0D
-That refers to the commit my patch fixes.  On looking it up I found it=0D
-was no longer reachable=0D
-(https://git.kernel.org/pub/scm/linux/kernel/git/broonie/spi.git/commit/?id=
-=3D992e1211dc91).=0D
-The corresponding upstream commit that is reachable from both=0D
-torvalds/linux.git/master and broonie/spi.git/spi-next is c712c05e46c8.=0D
-=0D
-Though it was made against 6.8.y, I was able to apply my patch with=0D
-git-am to both the latest broonie/spi.git/for-next (593c0afc18d) and=0D
-torvalds/linux.git/master (0a7b0acecea2) without conflicts.=0D
-=0D
-Shall I send a v3 correcting the hash mentioned in the commit message?=0D
-=0D
+On Thu, Mar 14, 2024 at 03:20:12PM -0700, Ethan Adams wrote:
+> It seems that a previous modification to sysreg-defs, which corrected
+> emitting the headaer to the specified output directory, exposed missing
+
+typo: header
+
+> subdir, prefix variables. This breaks out of tree builds of perf as the
+> file is now built into the output directory, but still tries to descend
+> into output directory as a subdir.
+> 
+> Fixes: a29ee6aea703 ("perf build: Ensure sysreg-defs Makefile respects output dir")
+> Tested-by: Tycho Andersen <tycho@tycho.pizza>
+> Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
+> Signed-off-by: Ethan Adams <j.ethan.adams@gmail.com>
+
+Reviewed-by: Oliver Upton <oliver.upton@linux.dev>
+
+-- 
+Thanks,
+Oliver
 
