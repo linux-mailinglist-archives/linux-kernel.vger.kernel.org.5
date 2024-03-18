@@ -1,105 +1,217 @@
-Return-Path: <linux-kernel+bounces-106470-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9752687EF10
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:38:44 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 39DD887EF1A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 54194284BF3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:38:43 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42CF1B21227
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1E2C955C2D;
-	Mon, 18 Mar 2024 17:38:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13AB355E62;
+	Mon, 18 Mar 2024 17:41:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UuKaQd/k"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="KA0YjSiy"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0D3745579C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:38:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 37CDD3A28B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:41:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783516; cv=none; b=P+YTptspM/G3HM2z7F/jJ/A0AbY2KGCk9pzrbgbMlz1dTq6bALeGaZiOy4bU8vSzC/elBE9prFEm4fb7A/vQ5qC45MmYco6vO5E+ObEazl2O8La5Knw2X7s47JuUKAp6+h+dhrWVOT+5gaJbLawQcSvTPl89KS+Kfqz6ZtQhMxA=
+	t=1710783677; cv=none; b=TSxHex47R08HtoMGVkKx3hsFlwKqNKBQRsYpzLH5VFIYrrAPRu7UBMdYTYG1cFnmlWw80p10SzfhQSy6puo9AoW0VipqwrO6YOKYY2u1yxGHmoVeFuiAsjshwLJqXIc+u6fL/vIIE5OfBUONtksq9ouUiw3DnfFfAaxeOIEMD7U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783516; c=relaxed/simple;
-	bh=R76I21nWlclOcet2e0P90I1PHkxwCPo5keHk8owejo4=;
+	s=arc-20240116; t=1710783677; c=relaxed/simple;
+	bh=05oiR2lU2TsDEcoK5/SsgXTOvq07hiupNFthPxkAt/Q=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BLRyzdvIMuUO0yVQOL8I1hX9vnicNA7LqEeYdHUzfDQ9zi2jUlZEjD1MPJO0xCt7fSyzgOxQ6IeIdV7hpUtneqitYKYxndEJtqEXF/D2l7RuyM0Yz/++eIP2WGkw9I69PYGBOi++jt12OKbuBG2Ov2o1Sn+2NGWZa9GIwmJ3hjA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UuKaQd/k; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1e036b76725so5658605ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:38:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710783514; x=1711388314; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=texmG0Gw1zeNIT3HK3A5521t3H/aX3K5C6j7gLeepPE=;
-        b=UuKaQd/kdUfqjFpdzStNEI14LWD6cUu+mlPELBj0uTovOm248wSiuF8z29fsIttms0
-         3jK7x5fmUURJ7wCOknt21/mkCZ3wHtLtpde78PS6cjxFx9yKGXU42LOE2stFLBTd5i40
-         iOetnjbZ81AcABVxnKR1StvGJXG2rQv3ZZRVg=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710783514; x=1711388314;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=texmG0Gw1zeNIT3HK3A5521t3H/aX3K5C6j7gLeepPE=;
-        b=OBkgZOc9p4iDRLhHU/EyWo0t8IMAh2oF9h0EJp5VGxOO/qMozeOgkGjmVo7dIeqDo+
-         X+Wik4NXRfi+Hj1w9TJC+6gXecahQCuhTSRLyqxPdMn5MxlHjg3AEQaeIaIknu5KB5yM
-         i8SYvnk2DHFlMNw2j1oQHIB6sDx6yTNzHDlCN0Y/p1y/34Ug99OQtF80AKBJ4L5PNdS3
-         Lv0XbZIxy6Ixt5+EcOPEw1nXHcS1KbQRThrpqK7o4VdQwfELYiM1/KQsCpYHdLIjjXGQ
-         ifsDt8I+ibXZ/3wqXuYI7wjf3bh/gbpG1vaNXGGqxp4dPjshhCMxB1VSn84HTzdOE3ov
-         yR3w==
-X-Forwarded-Encrypted: i=1; AJvYcCWikoc8O7uvRPB6qhnymegSHKUWLjUvPEaRQCrnGQz4WQwQToQdYqKdbQ59SaV3yBHRYfltZO/30/MMkAN8cl3I2TgadrpnQVdNwe8x
-X-Gm-Message-State: AOJu0YwzSJ7vqpY9iRxLKTSx/IAg3wtoBGJ4MGMjGs8q2fsyCRHQgAGj
-	rOAGILuHChh1PhSUXKuLzFDv2P2QxbI3G9MgmOvNlaTcSclP7FHWzPRqLu4HDg==
-X-Google-Smtp-Source: AGHT+IFwifvFDojSxhKBkKKqy3uuDnQSOhhO6SnmFZueyTL3hVRvKoeX4hiPXzD3uMyruoUadtwycA==
-X-Received: by 2002:a17:902:e841:b0:1de:e9b5:bb54 with SMTP id t1-20020a170902e84100b001dee9b5bb54mr478461plg.34.1710783514163;
-        Mon, 18 Mar 2024 10:38:34 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id 13-20020a170902ee4d00b001dd7d66aa18sm9500656plo.67.2024.03.18.10.38.32
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 10:38:33 -0700 (PDT)
-Date: Mon, 18 Mar 2024 10:38:32 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Alexander Lobakin <aleksander.lobakin@intel.com>
-Cc: linux-hardening@vger.kernel.org,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Marco Elver <elver@google.com>, Jakub Kicinski <kuba@kernel.org>,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH RFC kspp-next 0/3] compiler_types: add
- Endianness-dependent __counted_by_{le,be}
-Message-ID: <202403181037.C66CB5ABE@keescook>
-References: <20240318130354.2713265-1-aleksander.lobakin@intel.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=A9aancjDocL7pG4moo3/TSEMBdXcJSR/48++G401YemNL4qTfdes35VyIGk4vmwKb3IrzKm40bD+qEYD/f/oLqkpe+NqvGOH3JZSb5OnqfNQhgUu93LL7XtRE4Z4/zFd/6qYDujmAn0tE49NyddsScFczCzfLemIFBQy+9831sc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=KA0YjSiy; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 788FC7E9;
+	Mon, 18 Mar 2024 18:40:46 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710783646;
+	bh=05oiR2lU2TsDEcoK5/SsgXTOvq07hiupNFthPxkAt/Q=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=KA0YjSiy3NPZm8PF5+ZqDwPxUQoNwb6o57uy+1iXHwqDvaZkCN8B/ws0rHpxjXV45
+	 3Lg8PBe7MyNVRd1BsDXfwAIVCwgVKZ+jVOrnL2zZwaycmt6lLcHmpW8fU1dBx5P1gQ
+	 GKZBVIQmf8aFinvN1H4uvUeT+gmcEXKq2ZKHywc8=
+Date: Mon, 18 Mar 2024 19:41:10 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Sean Anderson <sean.anderson@linux.dev>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
+	linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
+	linux-arm-kernel@lists.infradead.org,
+	Daniel Vetter <daniel@ffwll.ch>
+Subject: Re: [PATCH 4/6] drm: zynqmp_dp: Split off several helper functions
+Message-ID: <20240318174110.GK13682@pendragon.ideasonboard.com>
+References: <20240315230916.1759060-1-sean.anderson@linux.dev>
+ <20240315230916.1759060-5-sean.anderson@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240318130354.2713265-1-aleksander.lobakin@intel.com>
+In-Reply-To: <20240315230916.1759060-5-sean.anderson@linux.dev>
 
-On Mon, Mar 18, 2024 at 02:03:51PM +0100, Alexander Lobakin wrote:
-> Some structures contain flexible arrays at the end and the counter for
-> them, but the counter has explicit Endianness and thus __counted_by()
-> can't be used directly.
+Hi Sean,
+
+Thank you for the patch.
+
+On Fri, Mar 15, 2024 at 07:09:14PM -0400, Sean Anderson wrote:
+> In preparation for supporting compliance testing, split off several
+> helper functions. No functional change intended.
 > 
-> To increase test coverage for potential problems without breaking
-> anything, introduce __counted_by_{le,be} defined depending on platform's
-> Endianness to either __counted_by() when applicable or noop otherwise.
-> The first user will be virtchnl2.h from idpf just as example with 9 flex
-> structures having Little Endian counters.
+> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> ---
+> 
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c | 49 +++++++++++++++++++++-----------
+>  1 file changed, 33 insertions(+), 16 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index d2dee58e7bf2..24043847dab4 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -627,6 +627,7 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
+>  /**
+>   * zynqmp_dp_update_vs_emph - Update the training values
+>   * @dp: DisplayPort IP core structure
+> + * @train_set: A set of training values
+>   *
+>   * Update the training values based on the request from sink. The mapped values
+>   * are predefined, and values(vs, pe, pc) are from the device manual.
+> @@ -634,12 +635,12 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
+>   * Return: 0 if vs and emph are updated successfully, or the error code returned
+>   * by drm_dp_dpcd_write().
+>   */
+> -static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp)
+> +static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp, u8 *train_set)
+>  {
+>  	unsigned int i;
+>  	int ret;
+>  
+> -	ret = drm_dp_dpcd_write(&dp->aux, DP_TRAINING_LANE0_SET, dp->train_set,
+> +	ret = drm_dp_dpcd_write(&dp->aux, DP_TRAINING_LANE0_SET, train_set,
+>  				dp->mode.lane_cnt);
+>  	if (ret < 0)
+>  		return ret;
+> @@ -647,7 +648,7 @@ static int zynqmp_dp_update_vs_emph(struct zynqmp_dp *dp)
+>  	for (i = 0; i < dp->mode.lane_cnt; i++) {
+>  		u32 reg = ZYNQMP_DP_SUB_TX_PHY_PRECURSOR_LANE_0 + i * 4;
+>  		union phy_configure_opts opts = { 0 };
+> -		u8 train = dp->train_set[i];
+> +		u8 train = train_set[i];
+>  
+>  		opts.dp.voltage[0] = (train & DP_TRAIN_VOLTAGE_SWING_MASK)
+>  				   >> DP_TRAIN_VOLTAGE_SWING_SHIFT;
+> @@ -691,7 +692,7 @@ static int zynqmp_dp_link_train_cr(struct zynqmp_dp *dp)
+>  	 * So, This loop should exit before 512 iterations
+>  	 */
+>  	for (max_tries = 0; max_tries < 512; max_tries++) {
+> -		ret = zynqmp_dp_update_vs_emph(dp);
+> +		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set);
+>  		if (ret)
+>  			return ret;
+>  
+> @@ -756,7 +757,7 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
+>  		return ret;
+>  
+>  	for (tries = 0; tries < DP_MAX_TRAINING_TRIES; tries++) {
+> -		ret = zynqmp_dp_update_vs_emph(dp);
+> +		ret = zynqmp_dp_update_vs_emph(dp, dp->train_set);
+>  		if (ret)
+>  			return ret;
+>  
+> @@ -779,28 +780,28 @@ static int zynqmp_dp_link_train_ce(struct zynqmp_dp *dp)
+>  }
+>  
+>  /**
+> - * zynqmp_dp_train - Train the link
+> - * @dp: DisplayPort IP core structure
+> + * zynqmp_dp_setup() - Set up major link parameters
+> + * @bw_code: The link bandwidth as a multiple of 270 MHz
+> + * @lane_cnt: The number of lanes to use
+> + * @enhanced: Use enhanced framing
+> + * @downspread: Enable spread-spectrum clocking
+>   *
+> - * Return: 0 if all trains are done successfully, or corresponding error code.
+> + * Return: 0 on success, or -errno on failure
+>   */
+> -static int zynqmp_dp_train(struct zynqmp_dp *dp)
+> +static int zynqmp_dp_setup(struct zynqmp_dp *dp, u8 bw_code, u8 lane_cnt,
+> +			   bool enhanced, bool downspread)
+>  {
+>  	u32 reg;
+> -	u8 bw_code = dp->mode.bw_code;
+> -	u8 lane_cnt = dp->mode.lane_cnt;
+>  	u8 aux_lane_cnt = lane_cnt;
+> -	bool enhanced;
+>  	int ret;
+>  
+>  	zynqmp_dp_write(dp, ZYNQMP_DP_LANE_COUNT_SET, lane_cnt);
+> -	enhanced = drm_dp_enhanced_frame_cap(dp->dpcd);
+>  	if (enhanced) {
+>  		zynqmp_dp_write(dp, ZYNQMP_DP_ENHANCED_FRAME_EN, 1);
+>  		aux_lane_cnt |= DP_LANE_COUNT_ENHANCED_FRAME_EN;
+>  	}
+>  
+> -	if (dp->dpcd[3] & 0x1) {
+> +	if (downspread) {
+>  		zynqmp_dp_write(dp, ZYNQMP_DP_DOWNSPREAD_CTL, 1);
+>  		drm_dp_dpcd_writeb(&dp->aux, DP_DOWNSPREAD_CTRL,
+>  				   DP_SPREAD_AMP_0_5);
+> @@ -843,8 +844,24 @@ static int zynqmp_dp_train(struct zynqmp_dp *dp)
+>  	}
+>  
+>  	zynqmp_dp_write(dp, ZYNQMP_DP_PHY_CLOCK_SELECT, reg);
+> -	ret = zynqmp_dp_phy_ready(dp);
+> -	if (ret < 0)
+> +	return zynqmp_dp_phy_ready(dp);
+> +}
+> +
+> +
+> +/**
+> + * zynqmp_dp_train - Train the link
+> + * @dp: DisplayPort IP core structure
+> + *
+> + * Return: 0 if all trains are done successfully, or corresponding error code.
+> + */
+> +static int zynqmp_dp_train(struct zynqmp_dp *dp)
+> +{
+> +	int ret;
+> +
+> +	ret = zynqmp_dp_setup(dp, dp->mode.bw_code, dp->mode.lane_cnt,
+> +			      drm_dp_enhanced_frame_cap(dp->dpcd),
+> +			      dp->dpcd[3] & 0x1);
 
-Yeah, okay, that makes good sense. It'll give us as much coverage as we
-can get until the compilers gain "expression" support for the
-'counted_by' attribute.
+This patch looks OK. Assuming you make correct use of the new functions
+in the next patches,
 
-Acked-by: Kees Cook <keescook@chromium.org>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+
+On a side note, I think the above could be written
+
+	ret = zynqmp_dp_setup(dp, dp->mode.bw_code, dp->mode.lane_cnt,
+			      drm_dp_enhanced_frame_cap(dp->dpcd),
+			      dp->dpcd[DP_MAX_DOWNSPREAD] & DP_MAX_DOWNSPREAD_0_5);
+
+> +	if (ret)
+>  		return ret;
+>  
+>  	zynqmp_dp_write(dp, ZYNQMP_DP_SCRAMBLING_DISABLE, 1);
 
 -- 
-Kees Cook
+Regards,
+
+Laurent Pinchart
 
