@@ -1,308 +1,140 @@
-Return-Path: <linux-kernel+bounces-106508-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106507-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8509087EFA1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:18:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3F21D87EF9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:18:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id F17161F23D2D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:18:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6E44E1C2229B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:18:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6251655E7C;
-	Mon, 18 Mar 2024 18:17:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="UMjlvWhe"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EA3656462;
+	Mon, 18 Mar 2024 18:17:36 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FC135811A;
-	Mon, 18 Mar 2024 18:17:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 65C9055E6B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:17:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710785858; cv=none; b=gsaVP1wzquiVgWYKKLFiQLOKYsaIGun7NxgjnYoGXbSP+iTO7Chr/wESn5LeeYlHeZ9twzgYmXkFrluFQHYHon7PU0ojKUXRbFQszeaIrx/8D9IaXONzWdSmuXu9Gh7yuXkCZk6RBgm3Mv7ebmMzDLGhfyVzVrrSzGwNHBbGncI=
+	t=1710785856; cv=none; b=XYNHNUMiH1XrUODZCzAmMBwZxJej85ZrzwN+XBx++zoROFeZubLAORLnxJVfyz1QlPhKGgubFU09rVxaZPEWNOQpq/iPvkoOOIpH9owDsyAgWlWLv3mQ2nz2sEkg/elEUsFNkvQI9Got1pEryosPOg0Pa69625EOkCU7aSEE9sc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710785858; c=relaxed/simple;
-	bh=6NWC2/XoSoHUQNSMpv1Z3Y78LMQHvwFvTzuw0p0Dxxs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Fs1UunFV20CuEoJIS4dXOVe8fi6o7s3/daLGimoQmTMuplCTNU0LFC2tJ4zXo562QtVu6bwTAFPns4Dmmfl5Yhep1+1jUJXZsxx5oX/ogpjMBbIxjLAwc9q8Aa1J+yrmPxuDgezklw5uvVpc50ohBxwc7J4NaqLstzdDG0TAGMQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=UMjlvWhe; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C1528C43394;
-	Mon, 18 Mar 2024 18:17:37 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710785858;
-	bh=6NWC2/XoSoHUQNSMpv1Z3Y78LMQHvwFvTzuw0p0Dxxs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UMjlvWheEmUcg4jSwpcZiqGDL3wywvNzKcL9Iui2fMxnEkQ8mJV80yg66o1vQyEkT
-	 H9PD1zvRYA5UZgJqGWIbPnOFTtCzDFAIatGbtX3DbUjjTbTTZBGy0sLEcpST9AxUyp
-	 Ih7ubEaQ7+EXHm4pDn2ySb+yMEQCZAqfzFJuAkNUM6dQaVIRiSx3m9NXtb8pyb3SDZ
-	 J96kXoQsgsGvxU17XLPF9UWaceYRUgXeLVTd1QqBG55CrCxnsKaRNNE0cVz3Dp2prz
-	 NH5Oh8Zl5sWfeC6IRfIAU5COgET6wkwAw8O+IZT0+hEQe+gy9zH2uzZo+37BpqoqU1
-	 cN7/I6FxJOsfQ==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: bpf@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	oleg@redhat.com,
-	jolsa@kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 1/3] uprobes: encapsulate preparation of uprobe args buffer
-Date: Mon, 18 Mar 2024 11:17:26 -0700
-Message-ID: <20240318181728.2795838-2-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240318181728.2795838-1-andrii@kernel.org>
-References: <20240318181728.2795838-1-andrii@kernel.org>
+	s=arc-20240116; t=1710785856; c=relaxed/simple;
+	bh=ljUrWkPTrnxySMMgHRBsRE9NywcmS1B0dCvLNhmjtR0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=FSK5taXimkENeLF8ImeHhvcaZuq0JdkQWtLsHF3v/9kQSIEhpMt5sJ7DzlUte/oCFQ6k9/k74BQSlqPjPDfPo4/F2TAC9FYJJGVNbu58JTDAHvl70MJ71B77kcU9MREB2VRrGBXQzmTbm3TX2J+1/lEClUJqCKvHVa9fJnlv5FE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rmHY8-0000eM-7a; Mon, 18 Mar 2024 19:17:28 +0100
+Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rmHY7-0077xN-Pn; Mon, 18 Mar 2024 19:17:27 +0100
+Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <ukl@pengutronix.de>)
+	id 1rmHY7-00873f-2G;
+	Mon, 18 Mar 2024 19:17:27 +0100
+Date: Mon, 18 Mar 2024 19:17:27 +0100
+From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
+To: Nylon Chen <nylon.chen@sifive.com>
+Cc: linux-riscv@lists.infradead.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-pwm@vger.kernel.org, conor@kernel.org, robh+dt@kernel.org, 
+	krzysztof.kozlowski+dt@linaro.org, palmer@dabbelt.com, paul.walmsley@sifive.com, 
+	aou@eecs.berkeley.edu, thierry.reding@gmail.com, vincent.chen@sifive.com, 
+	zong.li@sifive.com, nylon7717@gmail.com
+Subject: Re: [PATCH v9 3/3] pwm: sifive: Fix the error in the idempotent test
+ within the pwm_apply_state_debug function
+Message-ID: <jvwgsszvs4jtcytcphsdjulzgqfqzdp4sisu236ddwsqgmvriw@ngi4ljgh5b74>
+References: <20240222081231.213406-1-nylon.chen@sifive.com>
+ <20240222081231.213406-4-nylon.chen@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="x44go5u7hgleqhj7"
+Content-Disposition: inline
+In-Reply-To: <20240222081231.213406-4-nylon.chen@sifive.com>
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: ukl@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Move the logic of fetching temporary per-CPU uprobe buffer and storing
-uprobes args into it to a new helper function. Store data size as part
-of this buffer, simplifying interfaces a bit, as now we only pass single
-uprobe_cpu_buffer reference around, instead of pointer + dsize.
 
-This logic was duplicated across uprobe_dispatcher and uretprobe_dispatcher,
-and now will be centralized. All this is also in preparation to make
-this uprobe_cpu_buffer handling logic optional in the next patch.
+--x44go5u7hgleqhj7
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/trace/trace_uprobe.c | 78 +++++++++++++++++++------------------
- 1 file changed, 41 insertions(+), 37 deletions(-)
+Hello,
 
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index a84b85d8aac1..9bffaab448a6 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -854,6 +854,7 @@ static const struct file_operations uprobe_profile_ops = {
- struct uprobe_cpu_buffer {
- 	struct mutex mutex;
- 	void *buf;
-+	int dsize;
- };
- static struct uprobe_cpu_buffer __percpu *uprobe_cpu_buffer;
- static int uprobe_buffer_refcnt;
-@@ -943,9 +944,26 @@ static void uprobe_buffer_put(struct uprobe_cpu_buffer *ucb)
- 	mutex_unlock(&ucb->mutex);
- }
- 
-+static struct uprobe_cpu_buffer *prepare_uprobe_buffer(struct trace_uprobe *tu,
-+						       struct pt_regs *regs)
-+{
-+	struct uprobe_cpu_buffer *ucb;
-+	int dsize, esize;
-+
-+	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
-+	dsize = __get_data_size(&tu->tp, regs);
-+
-+	ucb = uprobe_buffer_get();
-+	ucb->dsize = tu->tp.size + dsize;
-+
-+	store_trace_args(ucb->buf, &tu->tp, regs, esize, dsize);
-+
-+	return ucb;
-+}
-+
- static void __uprobe_trace_func(struct trace_uprobe *tu,
- 				unsigned long func, struct pt_regs *regs,
--				struct uprobe_cpu_buffer *ucb, int dsize,
-+				struct uprobe_cpu_buffer *ucb,
- 				struct trace_event_file *trace_file)
- {
- 	struct uprobe_trace_entry_head *entry;
-@@ -956,14 +974,14 @@ static void __uprobe_trace_func(struct trace_uprobe *tu,
- 
- 	WARN_ON(call != trace_file->event_call);
- 
--	if (WARN_ON_ONCE(tu->tp.size + dsize > PAGE_SIZE))
-+	if (WARN_ON_ONCE(ucb->dsize > PAGE_SIZE))
- 		return;
- 
- 	if (trace_trigger_soft_disabled(trace_file))
- 		return;
- 
- 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
--	size = esize + tu->tp.size + dsize;
-+	size = esize + ucb->dsize;
- 	entry = trace_event_buffer_reserve(&fbuffer, trace_file, size);
- 	if (!entry)
- 		return;
-@@ -977,14 +995,14 @@ static void __uprobe_trace_func(struct trace_uprobe *tu,
- 		data = DATAOF_TRACE_ENTRY(entry, false);
- 	}
- 
--	memcpy(data, ucb->buf, tu->tp.size + dsize);
-+	memcpy(data, ucb->buf, ucb->dsize);
- 
- 	trace_event_buffer_commit(&fbuffer);
- }
- 
- /* uprobe handler */
- static int uprobe_trace_func(struct trace_uprobe *tu, struct pt_regs *regs,
--			     struct uprobe_cpu_buffer *ucb, int dsize)
-+			     struct uprobe_cpu_buffer *ucb)
- {
- 	struct event_file_link *link;
- 
-@@ -993,7 +1011,7 @@ static int uprobe_trace_func(struct trace_uprobe *tu, struct pt_regs *regs,
- 
- 	rcu_read_lock();
- 	trace_probe_for_each_link_rcu(link, &tu->tp)
--		__uprobe_trace_func(tu, 0, regs, ucb, dsize, link->file);
-+		__uprobe_trace_func(tu, 0, regs, ucb, link->file);
- 	rcu_read_unlock();
- 
- 	return 0;
-@@ -1001,13 +1019,13 @@ static int uprobe_trace_func(struct trace_uprobe *tu, struct pt_regs *regs,
- 
- static void uretprobe_trace_func(struct trace_uprobe *tu, unsigned long func,
- 				 struct pt_regs *regs,
--				 struct uprobe_cpu_buffer *ucb, int dsize)
-+				 struct uprobe_cpu_buffer *ucb)
- {
- 	struct event_file_link *link;
- 
- 	rcu_read_lock();
- 	trace_probe_for_each_link_rcu(link, &tu->tp)
--		__uprobe_trace_func(tu, func, regs, ucb, dsize, link->file);
-+		__uprobe_trace_func(tu, func, regs, ucb, link->file);
- 	rcu_read_unlock();
- }
- 
-@@ -1335,7 +1353,7 @@ static bool uprobe_perf_filter(struct uprobe_consumer *uc,
- 
- static void __uprobe_perf_func(struct trace_uprobe *tu,
- 			       unsigned long func, struct pt_regs *regs,
--			       struct uprobe_cpu_buffer *ucb, int dsize)
-+			       struct uprobe_cpu_buffer *ucb)
- {
- 	struct trace_event_call *call = trace_probe_event_call(&tu->tp);
- 	struct uprobe_trace_entry_head *entry;
-@@ -1356,7 +1374,7 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 
- 	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
- 
--	size = esize + tu->tp.size + dsize;
-+	size = esize + ucb->dsize;
- 	size = ALIGN(size + sizeof(u32), sizeof(u64)) - sizeof(u32);
- 	if (WARN_ONCE(size > PERF_MAX_TRACE_SIZE, "profile buffer not large enough"))
- 		return;
-@@ -1379,13 +1397,10 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 		data = DATAOF_TRACE_ENTRY(entry, false);
- 	}
- 
--	memcpy(data, ucb->buf, tu->tp.size + dsize);
-+	memcpy(data, ucb->buf, ucb->dsize);
- 
--	if (size - esize > tu->tp.size + dsize) {
--		int len = tu->tp.size + dsize;
--
--		memset(data + len, 0, size - esize - len);
--	}
-+	if (size - esize > ucb->dsize)
-+		memset(data + ucb->dsize, 0, size - esize - ucb->dsize);
- 
- 	perf_trace_buf_submit(entry, size, rctx, call->event.type, 1, regs,
- 			      head, NULL);
-@@ -1395,21 +1410,21 @@ static void __uprobe_perf_func(struct trace_uprobe *tu,
- 
- /* uprobe profile handler */
- static int uprobe_perf_func(struct trace_uprobe *tu, struct pt_regs *regs,
--			    struct uprobe_cpu_buffer *ucb, int dsize)
-+			    struct uprobe_cpu_buffer *ucb)
- {
- 	if (!uprobe_perf_filter(&tu->consumer, 0, current->mm))
- 		return UPROBE_HANDLER_REMOVE;
- 
- 	if (!is_ret_probe(tu))
--		__uprobe_perf_func(tu, 0, regs, ucb, dsize);
-+		__uprobe_perf_func(tu, 0, regs, ucb);
- 	return 0;
- }
- 
- static void uretprobe_perf_func(struct trace_uprobe *tu, unsigned long func,
- 				struct pt_regs *regs,
--				struct uprobe_cpu_buffer *ucb, int dsize)
-+				struct uprobe_cpu_buffer *ucb)
- {
--	__uprobe_perf_func(tu, func, regs, ucb, dsize);
-+	__uprobe_perf_func(tu, func, regs, ucb);
- }
- 
- int bpf_get_uprobe_info(const struct perf_event *event, u32 *fd_type,
-@@ -1475,10 +1490,8 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
- 	struct trace_uprobe *tu;
- 	struct uprobe_dispatch_data udd;
- 	struct uprobe_cpu_buffer *ucb;
--	int dsize, esize;
- 	int ret = 0;
- 
--
- 	tu = container_of(con, struct trace_uprobe, consumer);
- 	tu->nhit++;
- 
-@@ -1490,18 +1503,14 @@ static int uprobe_dispatcher(struct uprobe_consumer *con, struct pt_regs *regs)
- 	if (WARN_ON_ONCE(!uprobe_cpu_buffer))
- 		return 0;
- 
--	dsize = __get_data_size(&tu->tp, regs);
--	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
--
--	ucb = uprobe_buffer_get();
--	store_trace_args(ucb->buf, &tu->tp, regs, esize, dsize);
-+	ucb = prepare_uprobe_buffer(tu, regs);
- 
- 	if (trace_probe_test_flag(&tu->tp, TP_FLAG_TRACE))
--		ret |= uprobe_trace_func(tu, regs, ucb, dsize);
-+		ret |= uprobe_trace_func(tu, regs, ucb);
- 
- #ifdef CONFIG_PERF_EVENTS
- 	if (trace_probe_test_flag(&tu->tp, TP_FLAG_PROFILE))
--		ret |= uprobe_perf_func(tu, regs, ucb, dsize);
-+		ret |= uprobe_perf_func(tu, regs, ucb);
- #endif
- 	uprobe_buffer_put(ucb);
- 	return ret;
-@@ -1513,7 +1522,6 @@ static int uretprobe_dispatcher(struct uprobe_consumer *con,
- 	struct trace_uprobe *tu;
- 	struct uprobe_dispatch_data udd;
- 	struct uprobe_cpu_buffer *ucb;
--	int dsize, esize;
- 
- 	tu = container_of(con, struct trace_uprobe, consumer);
- 
-@@ -1525,18 +1533,14 @@ static int uretprobe_dispatcher(struct uprobe_consumer *con,
- 	if (WARN_ON_ONCE(!uprobe_cpu_buffer))
- 		return 0;
- 
--	dsize = __get_data_size(&tu->tp, regs);
--	esize = SIZEOF_TRACE_ENTRY(is_ret_probe(tu));
--
--	ucb = uprobe_buffer_get();
--	store_trace_args(ucb->buf, &tu->tp, regs, esize, dsize);
-+	ucb = prepare_uprobe_buffer(tu, regs);
- 
- 	if (trace_probe_test_flag(&tu->tp, TP_FLAG_TRACE))
--		uretprobe_trace_func(tu, func, regs, ucb, dsize);
-+		uretprobe_trace_func(tu, func, regs, ucb);
- 
- #ifdef CONFIG_PERF_EVENTS
- 	if (trace_probe_test_flag(&tu->tp, TP_FLAG_PROFILE))
--		uretprobe_perf_func(tu, func, regs, ucb, dsize);
-+		uretprobe_perf_func(tu, func, regs, ucb);
- #endif
- 	uprobe_buffer_put(ucb);
- 	return 0;
--- 
-2.43.0
+On Thu, Feb 22, 2024 at 04:12:31PM +0800, Nylon Chen wrote:
+> Round the result to the nearest whole number. This ensures that
+> real_period is always a reasonable integer that is not lower than the
+> actual value.
+>=20
+> e.g.
+> $ echo 110 > /sys/devices/platform/led-controller-1/leds/d12/brightness
+> $ .apply is not idempotent (ena=3D1 pol=3D0 1739692/4032985) -> (ena=3D1 =
+pol=3D0 1739630/4032985)
+>=20
+> Co-developed-by: Zong Li <zong.li@sifive.com>
+> Signed-off-by: Zong Li <zong.li@sifive.com>
+> Signed-off-by: Nylon Chen <nylon.chen@sifive.com>
+> ---
+>  drivers/pwm/pwm-sifive.c | 2 +-
+>  1 file changed, 1 insertion(+), 1 deletion(-)
+>=20
+> diff --git a/drivers/pwm/pwm-sifive.c b/drivers/pwm/pwm-sifive.c
+> index a586cfe4191b..bebcbebacccd 100644
+> --- a/drivers/pwm/pwm-sifive.c
+> +++ b/drivers/pwm/pwm-sifive.c
+> @@ -101,7 +101,7 @@ static void pwm_sifive_update_clock(struct pwm_sifive=
+_ddata *ddata,
+> =20
+>  	/* As scale <=3D 15 the shift operation cannot overflow. */
+>  	num =3D (unsigned long long)NSEC_PER_SEC << (PWM_SIFIVE_CMPWIDTH + scal=
+e);
+> -	ddata->real_period =3D div64_ul(num, rate);
+> +	ddata->real_period =3D DIV_ROUND_UP_ULL(num, rate);
+>  	dev_dbg(ddata->chip.dev,
+>  		"New real_period =3D %u ns\n", ddata->real_period);
+>  }
 
+pwm_sifive_apply has a DIV64_U64_ROUND_CLOSEST(). I wonder if that needs
+adaption, too?!
+
+Best regards
+Uwe
+
+--=20
+Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
+Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+
+--x44go5u7hgleqhj7
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmX4hTYACgkQj4D7WH0S
+/k6K9QgAlQOk5zs1qZjx50SM5kcMxMw+J3ccF0gM0gezDCINIsFANkmsKs+qY3m9
+b6NUelYUChHyY1+/zWpqLNGByQmGMm3yMBO4yZ3/jn/QPG1CxgejF6t60XVthOtr
+9YjvOnCh9SSM5XkoPajFJ/n7qlk7T/xRA9+MBjSpwcVOicRZGE4FtFJ+AiToc5Yc
+uebQi/SfgQ9uTUmYgOZzUJo140Q3XnoGasCf+V9C3SUVOPCPunEmhBH8aq5H6wk7
+D9fIOAVfxEK/YIHNIzv+KjrkJ6t/b5/yeYC3zQgMzvDZYW47aRhLNioG0hQcvdPO
+2ED/sw3W2E6eBAm8IBCDIyN9LWdNRw==
+=tmD5
+-----END PGP SIGNATURE-----
+
+--x44go5u7hgleqhj7--
 
