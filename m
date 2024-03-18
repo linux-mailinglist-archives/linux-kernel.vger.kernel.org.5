@@ -1,128 +1,139 @@
-Return-Path: <linux-kernel+bounces-106759-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106762-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3810587F331
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:43:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D556F87F33A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:44:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 685581C214E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:43:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 729B41F21A74
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:44:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BBEEC5A790;
-	Mon, 18 Mar 2024 22:42:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAA825B04B;
+	Mon, 18 Mar 2024 22:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="i76FQw2J"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="WlS06RNI"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F75A1B94D;
-	Mon, 18 Mar 2024 22:42:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 859BC5A4DC;
+	Mon, 18 Mar 2024 22:44:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710801778; cv=none; b=GZRZwc8mEbDb4txpqrCARyA6mbmlqWPryXqsdJ4pNyfDyU0eIqGXV2XtDdn3DbdLbzGxvRQTENoOaW892nmmJdimwk8r8PbOY3Xtiu5ugrOItYcqldy6cUUQqA9Mzvi/94pkFY0SDi23RWBOV8Q4ma7h3NfXwUR+5v4Kde3dVr4=
+	t=1710801852; cv=none; b=gMgSEuORreUXnaAIlZwHheSaIHb2+QLc6JVHAYTsHaZUMj684hyYvYOsovVCAzkLAtmJFnAzs93nlwGIrsiOAUDQX3YdzTCzlInBnTYo/B7hlElQBLBWNLPdBMdhG0gWjU62ipIfKNho8oNNOgBevFLnwiWONrSyua0ODx6X3mk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710801778; c=relaxed/simple;
-	bh=rKcxt+Ifoji1aSSIkIDX0L22ddZFTEE1J5wDyZm5/Jg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=XkmiL/OGQbicdbPYn7sH2dtSXda5w8eA7nSRkMj8YPBV1YDnnP/ByXmbaeptaqYpO5I3tnMytcvmEUaszSZpS+DZnvV9sv2t+oKikLJOv13CO5I2n/OdvHNcpbzdygm2yDb5rc31eHLUNuzSvhq6EPwvZF+lrEiD7zqcQb+5qcg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=i76FQw2J; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42IMetME032600;
-	Mon, 18 Mar 2024 22:42:43 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- subject : to : cc : references : from : in-reply-to : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=iPysDLdhbVVKcy20L/MPHXQLxk3DDciI1CVoRI7Mhs8=;
- b=i76FQw2JZohw1/8vyDaHqqg0gF58l8cwPxGYKmDDk02m/4UdpmMEglRe1cdDc28j1Zwx
- PAcreS8UCyFZIHAstUZsRN9yemw2CPPocNpyVvjpd3xladAbpdOTwAZ1cPHN40YUemw8
- 4KKIVf2zEnRt7Do6M99HURPcbnBg6LdUhc3TxbEQopev6AyUImFD8zYyfNJSWsKJNTAc
- e088Ig2IBXspIkvl26zQtA8Dn512cQ5aiK3YBX0mXdZ3O8eefU2NM7aOP0Z97Sgp98wv
- 7CfnvuPUrOh1wiFm9pz/85HTXh+6nSmctNlRquLL9PSspI0Xgta2OcxVORoNBX5Y6lNH VA== 
-Received: from ppma21.wdc07v.mail.ibm.com (5b.69.3da9.ip4.static.sl-reverse.com [169.61.105.91])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wxxgbr0uq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 22:42:42 +0000
-Received: from pps.filterd (ppma21.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma21.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42IK47pV010083;
-	Mon, 18 Mar 2024 22:42:42 GMT
-Received: from smtprelay06.dal12v.mail.ibm.com ([172.16.1.8])
-	by ppma21.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wxvaurnnp-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 22:42:42 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay06.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42IMgdZq2884308
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Mon, 18 Mar 2024 22:42:41 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 4C9795804B;
-	Mon, 18 Mar 2024 22:42:39 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id C1BCB58055;
-	Mon, 18 Mar 2024 22:42:37 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Mon, 18 Mar 2024 22:42:37 +0000 (GMT)
-Message-ID: <d02eda40-2d3a-43a2-a3a9-cb79055acda7@linux.ibm.com>
-Date: Mon, 18 Mar 2024 18:42:37 -0400
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/13] Add support for NIST P521 to ecdsa
-Content-Language: en-US
-To: Lukas Wunner <lukas@wunner.de>, Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
-        bbhushan2@marvell.com, jarkko@kernel.org
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
- <ZfiMhi9D2Rhh89BI@wunner.de>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <ZfiMhi9D2Rhh89BI@wunner.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: MskxMCOC4vKqeS8loHY-iCsPiuyozSZu
-X-Proofpoint-ORIG-GUID: MskxMCOC4vKqeS8loHY-iCsPiuyozSZu
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1710801852; c=relaxed/simple;
+	bh=QVvPe8HqF/hEu0sn46LH7OPfrbqHYTjl9rmwiW8KbI4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=uVj9PvVewUhPaDmvkI0QIke/avWTZcwWYjgWRG6tZtJiPwuWgDjmVNY3HfddwnXRugqqMUnmLS3SLvfJYuShWVgmFmaJZUOraSJdPfgXmxntiimbHjt+St+0JRv+TZoGqraxuZQQp8napN8vJ8eXRN61hmEQcMjmac9CVrOuY/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=WlS06RNI; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 6A2F1100011;
+	Tue, 19 Mar 2024 01:44:06 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 6A2F1100011
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1710801846;
+	bh=pa+89jrrCMIW8EjfG4aAgry+/vfLF62TIUqpulm7Y9A=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
+	b=WlS06RNIBTg0cU271+LYNhxdIVW8REnQkfL0Eq7bHWiEE2NaTUtuoRzgcod99PVOu
+	 90XcrVazKIOpMrrn2Lj5waYPR3pBMpoyE/svDsna6Hn/ncEAfIi4zZg45J34L38rKP
+	 lVo4tRAfocFgZCrdouhaItZsCLKbBfZq89MVAWFQJgD6s6aIvAf1uPVna8WJxugmor
+	 mr6LDxYqk7REZoeeNrR4tv0MyJNkhX43aJ/+u2MHK2TfgTH/luXpJhpJbSgoUEi8Ou
+	 ViJNVVN54rulbLvS7z84IQ4pLJeCbFV/tkIbru90+UwDb6C7lz+ie/jrcPfO/9lnvd
+	 wZ99a9nIdhl9w==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 19 Mar 2024 01:44:06 +0300 (MSK)
+Received: from [172.28.64.112] (100.64.160.123) by
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 19 Mar 2024 01:44:05 +0300
+Message-ID: <bafa1669-e98f-4d45-b5cc-0c707df5ed52@salutedevices.com>
+Date: Tue, 19 Mar 2024 01:43:20 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- phishscore=0 priorityscore=1501 clxscore=1015 malwarescore=0
- suspectscore=0 adultscore=0 bulkscore=0 spamscore=0 mlxlogscore=859
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403180172
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 12/25] ASoC: meson: t9015: add support for A1 SoC family
+Content-Language: en-US
+To: Mark Brown <broonie@kernel.org>
+CC: Neil Armstrong <neil.armstrong@linaro.org>, Jerome Brunet
+	<jbrunet@baylibre.com>, Michael Turquette <mturquette@baylibre.com>, Stephen
+ Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman <khilman@baylibre.com>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>, Liam Girdwood
+	<lgirdwood@gmail.com>, Linus Walleij <linus.walleij@linaro.org>, Jaroslav
+ Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+	<kernel@salutedevices.com>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-13-jan.dakinevich@salutedevices.com>
+ <5f8e8cd2-f9c4-4961-a85d-a0f3217294e6@sirena.org.uk>
+ <c4c0e3a3-eaa8-42c6-bbd3-e5c6993dc63b@salutedevices.com>
+ <30dadd4c-de10-43a7-baf8-8ddd49f5c80e@sirena.org.uk>
+From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+In-Reply-To: <30dadd4c-de10-43a7-baf8-8ddd49f5c80e@sirena.org.uk>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184250 [Mar 18 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 10 0.3.10 53c821b925e16276b831986eabc71d60ab82ee60, {Tracking_smtp_not_equal_from}, {Tracking_arrow_text}, {Tracking_from_domain_doesnt_match_to}, salutedevices.com:7.1.1;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;smtp.sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;100.64.160.123:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean
+X-KSMG-LinksScanning: Clean
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/18 20:02:00 #24276844
+X-KSMG-AntiVirus-Status: Clean, skipped
 
 
 
-On 3/18/24 14:48, Lukas Wunner wrote:
-> On Tue, Mar 12, 2024 at 02:36:05PM -0400, Stefan Berger wrote:
->> This series adds support for the NIST P521 curve to the ecdsa module
->> to enable signature verification with it.
+On 3/18/24 16:48, Mark Brown wrote:
+> On Sun, Mar 17, 2024 at 07:27:14PM +0300, Jan Dakinevich wrote:
 > 
-> v6 of this series is still
+>> Both mic bias and ADC's input mode depends on schematics and should be
+>> configurable. What is the better way to give access to these parameters?
+>> Device tree?
 > 
-> Tested-by: Lukas Wunner <lukas@wunner.de>
+> Yes.
+> 
+>>>> +	SOC_SINGLE("ADC Mic Bias Switch", LINEIN_CFG, MICBIAS_EN, 1, 0),
+>>>> +	SOC_ENUM("ADC Mic Bias Level", a1_adc_mic_bias_level),
+> 
+>>> Why would micbias be user controlled rather than a DAPM widget as
+>>> normal?
+> 
+>> Yes, I could use SND_SOC_DAPM_SUPPLY, but it supports only raw values,
+>> and doesn't supports enums. Here, I want to use enum to restrict
+>> possible values, because only these values mentioned in the
+>> documentation that I have.
+> 
+> A supply is an on/off switch not an enum.  Users should not be selecting
+> values at all.
 
-Thanks.
+Ok. For me it is great if I am free to move these kcontrols to device tree.
 
-> 
-> as it successfully authenticates PCI devices with the
-> "TPM_ALG_ECDSA_ECC_NIST_P521" SPDM asymmetric algorithm
-> using my development branch:
-> 
-> https://github.com/l1k/linux/commits/doe
-> 
-> Thanks,
-> 
-> Lukas
-> 
+-- 
+Best regards
+Jan Dakinevich
 
