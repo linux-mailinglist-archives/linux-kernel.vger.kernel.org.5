@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-106039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106041-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8B40B87E838
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:10:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2F39087E83C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:10:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 199FA28208C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:10:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BDB031F24B9E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:10:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8557338F9C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97E0939AEB;
 	Mon, 18 Mar 2024 11:09:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="DHqV08Sn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RstFvpPV"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAA6364A4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1FFB364BA;
 	Mon, 18 Mar 2024 11:08:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710760139; cv=none; b=sBvpcr6p2mUKSeG6u+A+IlkRBxkPuMnlvWLOhqohTqpMRqF+a7DDAR9/uIXfFnXDa1zdJ3E4OgLhTG6Y6vBzYguVgHjKN+gPtRYtdraFpegbQtEGXskbwmSvjtBkaHORIS365mQqgOLhfQO/anoCzmDNQ0YC6GJTuBbRIeTTK7Q=
+	t=1710760139; cv=none; b=sxzCQ85zcnlMq1BA4WqmgTs/wHUN88CfTmIjPopHbKAEf95eikCuITVhGTn3qsV+JfJBJ/v+S6/hBrUVEJu0jEGCkUVgENTd85vIUbaKD49tcwPdy9Hmgbsg6NzdzvTOidWyY8syCRYEHL5gvB/iRGre3Y9p/bwmD/B6g4GVfGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710760139; c=relaxed/simple;
-	bh=IkqXsf80aD3AGxwdY+jhdtqTqWS35qqFvr4ZSgDa2Xg=;
+	bh=VQl76OihFJ6MD7Q7CC4hfGfrDaQ2DcOqSN3Z7HUNPy4=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=GXpk6YMMZj/j0sbjS080xLM8Xhcv1qpWzitmUatZf4wgGciksAsrLkrnCcdtYRUbrXkqd+y09wumsuFkkvGSDLOAgjSxbIsJFWEcD9wHhyNzZFGc8q/8UwWqizJWk9SijrqHlZYL0pYUSx7g2Vu0YeP1eyCRLWC2mAw2EoQTF/E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=DHqV08Sn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 2E102C43390;
+	 MIME-Version; b=bt/HVZ+9u8h2+dp+CAsrLQEzGnrwqLILw3SEP22O1Tjry1qQRZFII53och698WW6+zQPmjuBpGkXFNy8/GaVuPupZjF8IRUAWJA1BM82EeUJMBQHsvgxsit7imZU/zd6v5Fg2eG6z6mNqHaF2UBKOXVEbq0AQDQo4VfFc9h222U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RstFvpPV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4DA0DC43141;
 	Mon, 18 Mar 2024 11:08:59 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710760139;
-	bh=IkqXsf80aD3AGxwdY+jhdtqTqWS35qqFvr4ZSgDa2Xg=;
+	bh=VQl76OihFJ6MD7Q7CC4hfGfrDaQ2DcOqSN3Z7HUNPy4=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=DHqV08Snc3Tt5Pe7MU8wwT9wFDWUmwpyYnYje2cQ1wzsNM6rCX0kkZmVSaq9PZS9L
-	 OsuW6KeozvRFAaQEcG2QjOdwVdXOL5SP/SR6ftEtZa4rbNcMAO5nq1C0JwP36VWI/6
-	 PgT7jn5CTU6BVM+19GsIDPd0VHuko5lxGoXsxxfg7bZX8+yJrgQ0qWecOBF2fkF3Z9
-	 GpawddXktnw8cSGNGpMEyWED1dcr8c9BSEZvUWTQcfRgUHM5VUoLwbVWDQ5pv+cH46
-	 eE7ttyzM3cam1bG1SvVQB7P45i7555QnvkXsKJAV8SpVLZI/h1ey0xaaJI9EnPd47X
-	 g/tyeoX/YdZRA==
+	b=RstFvpPV6fSrd69/0/PjEtpdZXRg9OeNvTe/kgTqto/4Fk8qVpZUDM9VkCwGYgk/v
+	 MrFQSwPnH+g2WO6EmFW0H3sSlF1XYFo7016p+hEu6CTsKJ9n5uB1nmWofWrjTwEv21
+	 1R1xDrw+RYhh06fFg1vSNCdG5WIT5QtsZfBTkgf2RWaurGPeI8OnTxMgOsqzhc7xfP
+	 BGa+JR1/XDwcPECcHIbwYSWDy1O/++R0YE0xj9HE+h+4OrFYTtYrarHw0QYBT566gu
+	 YV2UavkOmmsClR4Qv7yGZkMk+TzEgi1K0jGolhsi4T2NsLQKYBL4UOQWLV+3jhdXt9
+	 +EE0qOruf1n6w==
 Received: from johan by xi.lan with local (Exim 4.97.1)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rmArY-000000008Jn-3Nlm;
+	id 1rmArY-000000008Jp-3iDJ;
 	Mon, 18 Mar 2024 12:09:04 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Marcel Holtmann <marcel@holtmann.org>,
@@ -61,10 +61,12 @@ Cc: Rob Herring <robh+dt@kernel.org>,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org
-Subject: [PATCH v2 2/4] Bluetooth: add quirk for broken address properties
-Date: Mon, 18 Mar 2024 12:08:53 +0100
-Message-ID: <20240318110855.31954-3-johan+linaro@kernel.org>
+	stable@vger.kernel.org,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Nikita Travkin <nikita@trvn.ru>
+Subject: [PATCH v2 3/4] Bluetooth: qca: fix device-address endianness
+Date: Mon, 18 Mar 2024 12:08:54 +0100
+Message-ID: <20240318110855.31954-4-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240318110855.31954-1-johan+linaro@kernel.org>
 References: <20240318110855.31954-1-johan+linaro@kernel.org>
@@ -76,65 +78,54 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Some Bluetooth controllers lack persistent storage for the device
-address and instead one can be provided by the boot firmware using the
+The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
+device address in big-endian order when setting it using the
+EDL_WRITE_BD_ADDR_OPCODE command.
+
+Presumably, this is the case for all non-ROME devices which all use the
+EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
+use a different command and expect the address in little-endian order).
+
+Reverse the little-endian address before setting it to make sure that
+the address can be configured using tools like btmgmt or using the
 'local-bd-address' devicetree property.
 
-The Bluetooth devicetree bindings clearly states that the address should
-be specified in little-endian order, but due to a long-standing bug in
-the Qualcomm driver which reversed the address some bootloaders have
-been providing the address in big-endian order instead.
-
-Add a new quirk that can be used to mark deprecated compatible strings
-that expect such broken devicetree properties and use it to reverse the
-address when parsing the property so that the underlying driver bug can
-be fixed.
+Note that this can potentially break systems with boot firmware which
+has started relying on the broken behaviour and is incorrectly passing
+the address via devicetree in big-endian order.
 
 Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
 Cc: stable@vger.kernel.org      # 5.1
+Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
+Cc: Matthias Kaehlcke <mka@chromium.org>
+Tested-by: Nikita Travkin <nikita@trvn.ru> # sc7180
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- include/net/bluetooth/hci.h | 10 ++++++++++
- net/bluetooth/hci_sync.c    |  5 ++++-
- 2 files changed, 14 insertions(+), 1 deletion(-)
+ drivers/bluetooth/btqca.c | 8 ++++++--
+ 1 file changed, 6 insertions(+), 2 deletions(-)
 
-diff --git a/include/net/bluetooth/hci.h b/include/net/bluetooth/hci.h
-index bdee5d649cc6..556cffed5698 100644
---- a/include/net/bluetooth/hci.h
-+++ b/include/net/bluetooth/hci.h
-@@ -176,6 +176,16 @@ enum {
- 	 */
- 	HCI_QUIRK_USE_BDADDR_PROPERTY,
+diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
+index b40b32fa7f1c..19cfc342fc7b 100644
+--- a/drivers/bluetooth/btqca.c
++++ b/drivers/bluetooth/btqca.c
+@@ -826,11 +826,15 @@ EXPORT_SYMBOL_GPL(qca_uart_setup);
  
-+	/* When this quirk is set, the Bluetooth Device Address provided by
-+	 * the 'local-bd-address' fwnode property is incorrectly specified in
-+	 * big-endian order.
-+	 *
-+	 * This quirk can be set before hci_register_dev is called or
-+	 * during the hdev->setup vendor callback and must only be used for
-+	 * deprecated compatible strings.
-+	 */
-+	HCI_QUIRK_BDADDR_PROPERTY_BROKEN,
+ int qca_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
+ {
++	bdaddr_t bdaddr_swapped;
+ 	struct sk_buff *skb;
+ 	int err;
+ 
+-	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6, bdaddr,
+-				HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
++	baswap(&bdaddr_swapped, bdaddr);
 +
- 	/* When this quirk is set, the duplicate filtering during
- 	 * scanning is based on Bluetooth devices addresses. To allow
- 	 * RSSI based updates, restart scanning if needed.
-diff --git a/net/bluetooth/hci_sync.c b/net/bluetooth/hci_sync.c
-index 5716345a26df..283ae8edc1e5 100644
---- a/net/bluetooth/hci_sync.c
-+++ b/net/bluetooth/hci_sync.c
-@@ -3215,7 +3215,10 @@ static void hci_dev_get_bd_addr_from_property(struct hci_dev *hdev)
- 	if (ret < 0 || !bacmp(&ba, BDADDR_ANY))
- 		return;
- 
--	bacpy(&hdev->public_addr, &ba);
-+	if (test_bit(HCI_QUIRK_BDADDR_PROPERTY_BROKEN, &hdev->quirks))
-+		baswap(&hdev->public_addr, &ba);
-+	else
-+		bacpy(&hdev->public_addr, &ba);
- }
- 
- struct hci_init_stage {
++	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6,
++				&bdaddr_swapped, HCI_EV_VENDOR,
++				HCI_INIT_TIMEOUT);
+ 	if (IS_ERR(skb)) {
+ 		err = PTR_ERR(skb);
+ 		bt_dev_err(hdev, "QCA Change address cmd failed (%d)", err);
 -- 
 2.43.2
 
