@@ -1,238 +1,178 @@
-Return-Path: <linux-kernel+bounces-106666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106665-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9AB4187F1BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:05:56 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05EF387F1B9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:05:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4FCF1281B53
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:05:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3572A1C20F65
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:05:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F016758201;
-	Mon, 18 Mar 2024 21:05:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 420FA5821B;
+	Mon, 18 Mar 2024 21:05:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="Cd2rvKxY"
-Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YIVre6YP"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5C49158131
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:05:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 83C56250EC;
+	Mon, 18 Mar 2024 21:05:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710795947; cv=none; b=eNQp5vsGS6TsDhRp1ZmLLp0+6FS37MVmsbKBM8QEdQVRjXcBuy/32rJnoLXysta2eGLGzWNHI9kyERqxDNGF7OgmSdXjr5EpKyqgwPdt9Eda238O7xwTSglGvHIeDWeoWKml6+mnTeZvFgMFiTVurzXyQ4bPGW6HqLn2uXxrrxg=
+	t=1710795937; cv=none; b=EipgtgHj4peVC6sgnV3ygnc/g6/wfDH2iT37ZRPnWNSKINhdWuiOoMjziyGKVUmQE0jfgowsqV6yv79IBmEDT9z6IVCpURK6hSmWrYxf9Na3sZSFHU0l6+eEYoXsbxXUC5JhbR5hzRXF7Duplyd0zr8KCn12TSo5yBehBHzSGeI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710795947; c=relaxed/simple;
-	bh=mhEDrR9C7YEoGmhM49MXiXEW0net0pIPpVQcSKsrjxU=;
-	h=Content-Type:From:Mime-Version:Subject:Date:Message-Id:References:
-	 Cc:In-Reply-To:To; b=l8zgP5k+9EE0lWeNcUT5fMtMPkeQnw41FYDZ/ju+geXNVnH/9kMTb+9znhV4mhxlNHbAo5zFx7q8rB/F01vlRiLMcSnm34Nrwpk9gwnW0M0lrj01wtmbrYHw2LkihRArTgu/XeqZ1bE9G05Kl1EIXTcML3TqP++nB32XGE+kF0A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=Cd2rvKxY; arc=none smtp.client-ip=209.85.160.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-22200c78d4fso2011546fac.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:05:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710795944; x=1711400744; darn=vger.kernel.org;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Oc7CYcOIjU7/6iBC8IZweQUGbpgg4UYyzRmGvk3Smcg=;
-        b=Cd2rvKxYH000We5oWwfC/L1x7/fjHAD0dldRas9UAjG8RGhSeqJ4TK3mQuNzLngwQq
-         YU5tWQRs5VRkoQmpWrQ9EtUASJiYIjlWTV9ISlriVG1x/ChL8GPPJOrUyFgaV6o3cOJR
-         ck+vauPMkjBNpRMNANtcOMW40AtcfSGJSDZSU=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710795944; x=1711400744;
-        h=to:in-reply-to:cc:references:message-id:date:subject:mime-version
-         :from:content-transfer-encoding:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Oc7CYcOIjU7/6iBC8IZweQUGbpgg4UYyzRmGvk3Smcg=;
-        b=EKrw38+kuaDyY3kIvLOfbqv484pcc2/my2hlcy18Z7KGlq8nX0kqs29v6oibmD7TjD
-         KLbr0xWzkXz+watAwly9d8UpTGPTjB9Rd3/8wFnJwUN5/k7BpsJWTxwqjrywQ9rNPClQ
-         qf9sY29RawR30W3qXjnoZBELFd+1K7aQ8yXEgZurCUAxmhHf0Fv1T2q1oiLW//kL6FsU
-         KQY7YHDcL9VxDmUxehIocE7LcuYQP20RfdbLy5/0GsbWQlmI0BafFw/j5YWJYYn4aXbq
-         2+FcWV5zpFKEpaYnw3YP63yPg4bCTEyTLSAYlqqtk5bCh8P8hpujgIWM+Bf0y56AIPjs
-         UO2Q==
-X-Gm-Message-State: AOJu0Yzv/J0sszJ214bDFsVPAC2L1XmbN0GzmesbQ7eGJoZpC7Ze/P9B
-	2VnOisCBjZsbsrJ6KtdWCNTM32GburRkbOWHdUlTFaieyNpdQdjf1Zbhkq96Id8=
-X-Google-Smtp-Source: AGHT+IHW33l7BhtlKga5NrVN1zzblIpi1h58wHOlcqfnnpO0183ZjvtHvYrb1MW3aDsUS/gWGPIT/g==
-X-Received: by 2002:a05:6870:548e:b0:221:1c2f:23ee with SMTP id f14-20020a056870548e00b002211c2f23eemr14426318oan.22.1710795944325;
-        Mon, 18 Mar 2024 14:05:44 -0700 (PDT)
-Received: from smtpclient.apple ([192.145.116.24])
-        by smtp.gmail.com with ESMTPSA id u11-20020ad45aab000000b006942dcac56asm2755948qvg.103.2024.03.18.14.05.43
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 14:05:43 -0700 (PDT)
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
-From: Joel Fernandes <joel@joelfernandes.org>
+	s=arc-20240116; t=1710795937; c=relaxed/simple;
+	bh=VljmY+vHdIOew+g8Bg8csDq2nwbCNbkexDBBoVLITuA=;
+	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
+	 References:In-Reply-To; b=t6KNSCiAhQbaeSXJlP3LCKHbwifmTxo25SslasJyc7K1LDNNr6o9jFn09ioQ5ikTRb6F29naAYv9wyKriNxkFgx3Kt9XOzJDY7Kpt9X4sTdqfvXk3nu28hFwc/1pHmXFYKR+WFx0D/i3gGhzqs+hO262jwEKahlIQsyDXJXDLLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YIVre6YP; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57D0BC433C7;
+	Mon, 18 Mar 2024 21:05:35 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710795937;
+	bh=VljmY+vHdIOew+g8Bg8csDq2nwbCNbkexDBBoVLITuA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=YIVre6YP9imiMoL68Tjwxj9EMs9ej4+KrtplW7c4uo75GsfQBF/Bib8dh+Scv1Bcr
+	 eZsPiiJjd7r9lflwvjJNkbcre0/IoAwWVZvFjA/EHXuAxnoLbai692OCJBUVq+UD1D
+	 /CLBTiE5gs+myaREnmx+ITgSKBusd/oPP//x7qc1VMPQjMzsvCEAz9TmwCfujErN8X
+	 EvnuY7caWw5VoswIVs+B82ugcuCWojLQhb8JGF38jJFFYq+TOoL7lnU84O6WO2XWiB
+	 VBQQLxNT7pNE+9VgwyAtOdtQ/s9JFI4OWMhTd+ErhiJks7vW29n4Ol9oQijQkJtbI5
+	 00ik1Bq1Bo7vw==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (1.0)
-Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for synchronize_rcu() common case
-Date: Mon, 18 Mar 2024 17:05:31 -0400
-Message-Id: <404E28F5-B018-4CE7-BE57-D0362B0C9969@joelfernandes.org>
-References: <ZfiOwtPfnxXW4JX3@pc636>
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
- neeraj.iitr10@gmail.com, rcu@vger.kernel.org, rostedt@goodmis.org,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-In-Reply-To: <ZfiOwtPfnxXW4JX3@pc636>
-To: Uladzislau Rezki <urezki@gmail.com>
-X-Mailer: iPhone Mail (21D61)
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 18 Mar 2024 23:05:33 +0200
+Message-Id: <CZX6JM30P6FG.138133OLNGMS2@kernel.org>
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.vnet.ibm.com>,
+ <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
+ <lukas@wunner.de>, <bbhushan2@marvell.com>, "Stefan Berger"
+ <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v6 08/13] crypto: ecc - Add NIST P521 curve parameters
+X-Mailer: aerc 0.15.2
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <20240312183618.1211745-9-stefanb@linux.vnet.ibm.com>
+In-Reply-To: <20240312183618.1211745-9-stefanb@linux.vnet.ibm.com>
 
+On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
+>
+> Add the parameters for the NIST P521 curve and define a new curve ID
+> for it. Make the curve available in ecc_get_curve.
 
+This is rare example of "complete story" in this series despite being
+short, so no complains :-)
 
-> On Mar 18, 2024, at 2:58=E2=80=AFPM, Uladzislau Rezki <urezki@gmail.com> w=
-rote:
->=20
-> =EF=BB=BFHello, Joel!
->=20
-> Sorry for late checking, see below few comments:
->=20
->> In the synchronize_rcu() common case, we will have less than
->> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
->> is pointless just to free the last injected wait head since at that point=
+>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Tested-by: Lukas Wunner <lukas@wunner.de>
+> ---
+>  crypto/ecc.c            |  2 ++
+>  crypto/ecc_curve_defs.h | 45 +++++++++++++++++++++++++++++++++++++++++
+>  include/crypto/ecdh.h   |  1 +
+>  3 files changed, 48 insertions(+)
+>
+> diff --git a/crypto/ecc.c b/crypto/ecc.c
+> index ead40b5ebb46..4f6fa8617308 100644
+> --- a/crypto/ecc.c
+> +++ b/crypto/ecc.c
+> @@ -60,6 +60,8 @@ const struct ecc_curve *ecc_get_curve(unsigned int curv=
+e_id)
+>  		return &nist_p256;
+>  	case ECC_CURVE_NIST_P384:
+>  		return &nist_p384;
+> +	case ECC_CURVE_NIST_P521:
+> +		return &nist_p521;
+>  	default:
+>  		return NULL;
+>  	}
+> diff --git a/crypto/ecc_curve_defs.h b/crypto/ecc_curve_defs.h
+> index ab1ef3d94be5..0ecade7d02f5 100644
+> --- a/crypto/ecc_curve_defs.h
+> +++ b/crypto/ecc_curve_defs.h
+> @@ -89,6 +89,51 @@ static struct ecc_curve nist_p384 =3D {
+>  	.b =3D nist_p384_b
+>  };
+> =20
+> +/* NIST P-521 */
+> +static u64 nist_p521_g_x[] =3D { 0xf97e7e31c2e5bd66ull, 0x3348b3c1856a42=
+9bull,
+> +				0xfe1dc127a2ffa8deull, 0xa14b5e77efe75928ull,
+> +				0xf828af606b4d3dbaull, 0x9c648139053fb521ull,
+> +				0x9e3ecb662395b442ull, 0x858e06b70404e9cdull,
+> +				0xc6ull };
+> +static u64 nist_p521_g_y[] =3D { 0x88be94769fd16650ull, 0x353c7086a272c2=
+40ull,
+> +				0xc550b9013fad0761ull, 0x97ee72995ef42640ull,
+> +				0x17afbd17273e662cull, 0x98f54449579b4468ull,
+> +				0x5c8a5fb42c7d1bd9ull, 0x39296a789a3bc004ull,
+> +				0x118ull };
+> +static u64 nist_p521_p[] =3D { 0xffffffffffffffffull, 0xffffffffffffffff=
+ull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0x1ffull };
+> +static u64 nist_p521_n[] =3D { 0xbb6fb71e91386409ull, 0x3bb5c9b8899c47ae=
+ull,
+> +				0x7fcc0148f709a5d0ull, 0x51868783bf2f966bull,
+> +				0xfffffffffffffffaull, 0xffffffffffffffffull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0x1ffull };
+> +static u64 nist_p521_a[] =3D { 0xfffffffffffffffcull, 0xffffffffffffffff=
+ull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0xffffffffffffffffull, 0xffffffffffffffffull,
+> +				0x1ffull };
+> +static u64 nist_p521_b[] =3D { 0xef451fd46b503f00ull, 0x3573df883d2c34f1=
+ull,
+> +				0x1652c0bd3bb1bf07ull, 0x56193951ec7e937bull,
+> +				0xb8b489918ef109e1ull, 0xa2da725b99b315f3ull,
+> +				0x929a21a0b68540eeull, 0x953eb9618e1c9a1full,
+> +				0x051ull };
+> +static struct ecc_curve nist_p521 =3D {
+> +	.name =3D "nist_521",
+> +	.nbits =3D 521,
+> +	.g =3D {
+> +		.x =3D nist_p521_g_x,
+> +		.y =3D nist_p521_g_y,
+> +		.ndigits =3D 9,
+> +	},
+> +	.p =3D nist_p521_p,
+> +	.n =3D nist_p521_n,
+> +	.a =3D nist_p521_a,
+> +	.b =3D nist_p521_b
+> +};
+> +
+>  /* curve25519 */
+>  static u64 curve25519_g_x[] =3D { 0x0000000000000009, 0x0000000000000000=
 ,
->> all the users have already been awakened.
->>=20
->> Introduce a new counter to track this and prevent the wakeup in the
->> common case.
->>=20
->> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
->> ---
->> Rebased on paul/dev of today.
->>=20
->> kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
->> kernel/rcu/tree.h |  1 +
->> 2 files changed, 32 insertions(+), 5 deletions(-)
->>=20
->> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->> index 9fbb5ab57c84..bd29fe3c76bf 100644
->> --- a/kernel/rcu/tree.c
->> +++ b/kernel/rcu/tree.c
->> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state =3D {
->>    .ofl_lock =3D __ARCH_SPIN_LOCK_UNLOCKED,
->>    .srs_cleanup_work =3D __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
->>        rcu_sr_normal_gp_cleanup_work),
->> +    .srs_cleanups_pending =3D ATOMIC_INIT(0),
->> };
->>=20
->> /* Dump rcu_node combining tree at boot to verify correct setup. */
->> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct w=
-ork_struct *work)
->>     * the done tail list manipulations are protected here.
->>     */
->>    done =3D smp_load_acquire(&rcu_state.srs_done_tail);
->> -    if (!done)
->> +    if (!done) {
->> +        /* See comments below. */
->> +        atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
->>        return;
->> +    }
->>=20
->>    WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
->>    head =3D done->next;
->> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct wo=
-rk_struct *work)
->>=20
->>        rcu_sr_put_wait_head(rcu);
->>    }
->> +
->> +    /* Order list manipulations with atomic access. */
->> +    atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
->> }
->>=20
->> /*
->> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct wo=
-rk_struct *work)
->>  */
->> static void rcu_sr_normal_gp_cleanup(void)
->> {
->> -    struct llist_node *wait_tail, *next, *rcu;
->> +    struct llist_node *wait_tail, *next =3D NULL, *rcu =3D NULL;
->>    int done =3D 0;
->>=20
->>    wait_tail =3D rcu_state.srs_wait_tail;
->> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
->>            break;
->>    }
->>=20
->> -    // concurrent sr_normal_gp_cleanup work might observe this update.
->> -    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->> +    /*
->> +     * Fast path, no more users to process. Remove the last wait head
->> +     * if no inflight-workers. If there are in-flight workers, let them
->> +     * remove the last wait head.
->> +     */
->> +    WARN_ON_ONCE(!rcu);
->>=20
-> This assumption is not correct. An "rcu" can be NULL in fact.
-
-Hmm I could never trigger that. Are you saying that is true after Neeraj rec=
-ent patch or something else? Note, after Neeraj patch to handle the lack of h=
-eads availability, it could be true so I requested him to rebase his patch o=
-n top of this one.
-
-However I will revisit my patch and look for if it could occur but please le=
-t me know if you knew of a sequence of events to make it NULL.
->=20
->>    ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
->>=20
->> +    if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next =3D=3D NULL &&
->> +        /* Order atomic access with list manipulation. */
->> +        !atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
->> +        wait_tail->next =3D NULL;
->> +        rcu_sr_put_wait_head(rcu);
->> +        smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->> +        return;
->> +    }
->> +
->> +    /* Concurrent sr_normal_gp_cleanup work might observe this update. *=
-/
->> +    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->> +
->>    /*
->>     * We schedule a work in order to perform a final processing
->>     * of outstanding users(if still left) and releasing wait-heads
->>     * added by rcu_sr_normal_gp_init() call.
->>     */
->> -    queue_work(sync_wq, &rcu_state.srs_cleanup_work);
->> +    atomic_inc(&rcu_state.srs_cleanups_pending);
->> +    if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work)) {
->> +        atomic_dec(&rcu_state.srs_cleanups_pending);
->> +    }
->> }
-> No need an extra "{}" pair.
-
-I do prefer it for readability but I am ok with dropping it.
-
-Thanks!
-
- - Joel=20
+>  				0x0000000000000000, 0x0000000000000000 };
+> diff --git a/include/crypto/ecdh.h b/include/crypto/ecdh.h
+> index a9f98078d29c..9784ecdd2fb4 100644
+> --- a/include/crypto/ecdh.h
+> +++ b/include/crypto/ecdh.h
+> @@ -26,6 +26,7 @@
+>  #define ECC_CURVE_NIST_P192	0x0001
+>  #define ECC_CURVE_NIST_P256	0x0002
+>  #define ECC_CURVE_NIST_P384	0x0003
+> +#define ECC_CURVE_NIST_P521	0x0004
+> =20
+>  /**
+>   * struct ecdh - define an ECDH private key
 
 
->=20
->>=20
->> /*
->> diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
->> index bae7925c497f..affcb92a358c 100644
->> --- a/kernel/rcu/tree.h
->> +++ b/kernel/rcu/tree.h
->> @@ -420,6 +420,7 @@ struct rcu_state {
->>    struct llist_node *srs_done_tail; /* ready for GP users. */
->>    struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
->>    struct work_struct srs_cleanup_work;
->> +    atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
->> };
->>=20
->> /* Values for rcu_state structure's gp_flags field. */
->> --
->> 2.34.1
->>=20
+Reviewed-by: Jarkko Sakkinen <jarkko@kernel.org>
+
+BR, Jarkko
 
