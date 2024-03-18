@@ -1,192 +1,188 @@
-Return-Path: <linux-kernel+bounces-105695-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105696-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3B6F187E2D3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:45:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1CEA487E2D6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:46:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94D3B28137C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:45:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53FF5B21963
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:46:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B7960208BB;
-	Mon, 18 Mar 2024 04:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C321AAD7;
+	Mon, 18 Mar 2024 04:46:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="hlqVYZIr"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="CeNRQD4N";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cKHwx+kv"
+Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2FB661E883
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 04:45:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.14
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710737113; cv=fail; b=lL21gw117jvmctxK2Ippx4XyjsEr0sXhgVE09n6jRq6ZOTJ8tuG1Nq1+StwjElHB0bFs+H0islC0+95UlWW1fKJf3+E8XN3W8bCbbYwXoG6KfihDvUUTOU9xpnX8bip7yWMQU8ZKOGPlCgdeFOyw8QdHIBfU5QvnX2qrtka/YAY=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710737113; c=relaxed/simple;
-	bh=LcrXIgMUw0BzHJ/xv6Xw1l41G+A79gtRO3BWuECei/4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=q3q4eiPh8/qySNnxiJF+m1p0kNkc2K0oqoWojK5PN46hFG+QIR6hYLphDMPJEX1Ob1IMjLonxSQQNmx0IWIj2BbkGHZP4XjibgP4odyALz/I9ALNC7UNaAag5MtkoZ3KkXgoQn7BTG03rIsY28tRIwSKRRydVnChF/zjKPql5Uc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=hlqVYZIr; arc=fail smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710737111; x=1742273111;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=LcrXIgMUw0BzHJ/xv6Xw1l41G+A79gtRO3BWuECei/4=;
-  b=hlqVYZIrEel0xBJQl2EOMY2JvTdnSsKDFzm6cvd/UiGFVo+JeCVGWvrY
-   dWJBeJT+UtPEGXKs6joxzY5L3C6kxL9hASSJe5s9xhxIxHqexJ3KCsrjs
-   zHODJwUNSQbRreZtyUMHX/9Uk8PhhCgVGN/jLvOko5ZJfRun3oXNrzKXu
-   YxEfWVh1L6lNuaK0IEoXURKjS7u8pPtu+UpattkwotBH2Qyph0/ZB4FwE
-   PYTQsdz3QXi67wbCVjGo7isjJCoYDHFLuXI0YGa4UUmkO5o3NNM1HMf67
-   PJD3NveKlmOlze17a6bAI8y+QtJrQH9Leogqo9i1vpEJoUBzIB9AysxBc
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="9363039"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="9363039"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 21:45:10 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="13824270"
-Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
-  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Mar 2024 21:45:11 -0700
-Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
- ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Sun, 17 Mar 2024 21:45:10 -0700
-Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
- orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Sun, 17 Mar 2024 21:45:10 -0700
-Received: from NAM02-DM3-obe.outbound.protection.outlook.com (104.47.56.40) by
- edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Sun, 17 Mar 2024 21:45:02 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JGG2SvazbbLfj/LrS6kTzr4ZFs3TnfNpzDy52h1U5zzotsJJh5Sq5ZWMtBHkRCVVDKKHnjT1HRqGXfAI80bcIXQJMAixu1hBagpHxhRzOxj5PsGnvbL7oMkBUPz5mARaWHyCbNMbnzzUAzq3ESf1uBn1rkWsn3b460U0N4l4aT9+rEg2OCBI3c208wIHAUNx8uv4FS8+NIwsHO8LI826yKZJVrHWS5R0TqfH6ukLq+MqScHd17IOrPOiGlAqk5oK9CL6gdEZhFaRHOwxlgw3UQiXQTNfgEqw8RLBBe9fAblg4cBxa/Hffcho0wslL8AqkCIyKazdD5xJy/+SDieQxA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=l2sS0zymcsVKTfVdQseGnHu6LjdCJX8u0+BDIdPZSLY=;
- b=RuACDTIY2SCTBOLy7iH6NkBIGwKeKzYZEU1AleRQorFGZHwuAyDu2yD7at+7uLuAx576yfl1AC1uTUBpEXMUwQNdBZy/XV+x2W0P8/b729ixMyUXcbLunXfPa2P5mkaYv8HrZNzIZEy8PHu3KMqLriO2ddBeT/qMWv1umGJVn7i6ah45mw7le716xyc9bsIo90fWP6r68NXx3zvSfIio0XDF9U8p3IJWeYgYk/DnAE88B8Pbwgh+efak0JP9OOxBkHgybxjUAdelGWP8v2E/FeRMgVv0cvr8dUBu3ogrv11AE8vTFclTlrr3I9Ogz+56cPWnhnA5nXjEuYTGX+YyLA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH7PR11MB6522.namprd11.prod.outlook.com (2603:10b6:510:212::12)
- by DM6PR11MB4642.namprd11.prod.outlook.com (2603:10b6:5:2a2::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Mon, 18 Mar
- 2024 04:45:00 +0000
-Received: from PH7PR11MB6522.namprd11.prod.outlook.com
- ([fe80::9e7c:ccbc:a71c:6c15]) by PH7PR11MB6522.namprd11.prod.outlook.com
- ([fe80::9e7c:ccbc:a71c:6c15%5]) with mapi id 15.20.7409.010; Mon, 18 Mar 2024
- 04:45:00 +0000
-Date: Mon, 18 Mar 2024 04:43:12 +0000
-From: Matthew Brost <matthew.brost@intel.com>
-To: wangxiaoming321 <xiaoming.wang@intel.com>
-CC: <lucas.demarchi@intel.com>, <ogabbay@kernel.org>,
-	<thomas.hellstrom@linux.intel.com>, <maarten.lankhorst@linux.intel.com>,
-	<mripard@kernel.org>, <tzimmermann@suse.de>, <airlied@gmail.com>,
-	<daniel@ffwll.ch>, <intel-xe@lists.freedesktop.org>,
-	<dri-devel@lists.freedesktop.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] drm/xe: Failed getting VMA cause display stuck
-Message-ID: <ZffGYCzt7dUe9Ox9@DUT025-TGLU.fm.intel.com>
-References: <20240318041244.1239610-1-xiaoming.wang@intel.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240318041244.1239610-1-xiaoming.wang@intel.com>
-X-ClientProxiedBy: SJ0PR05CA0057.namprd05.prod.outlook.com
- (2603:10b6:a03:33f::32) To PH7PR11MB6522.namprd11.prod.outlook.com
- (2603:10b6:510:212::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99992208A8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 04:46:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710737178; cv=none; b=PyhDOGnd3f+asqvqnwcbVAnZSztl2pJuymW8m1nlBP2ZXmHG7vqsGV1jr51j+gWD28ol4lXFA/T0z2ghFsgb+YjAmQFavXyyqkOnpl7r4/kgzcqJTa4O76NrRuNGmltOQbPFxu02ZMMxe99EI92RIXWT0Wh2nmytzAjUGSYgfaM=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710737178; c=relaxed/simple;
+	bh=zlUcRY/+h5uE2xqKt7oW8gRWIW5IbgRjWeZszpx+Aoo=;
+	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=n6J5lUPbzZwmyMgFfhFy8No8zwh1hdyVUDCIcdYVj6sZtyLmfWHLA7Pot9yS1zWrU0WbVX5jr3IWdBD+Vt3G/gLGWThs3x3ZiuKFHjuaI8Iw9bbiFnm5DCu7lMn887YxSWkCJp/oFQziC+y2sIfcL4buKYGxEqekEoadVDl9FQo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=CeNRQD4N; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cKHwx+kv; arc=none smtp.client-ip=64.147.123.149
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfout.west.internal (Postfix) with ESMTP id 4577E1C000B9;
+	Mon, 18 Mar 2024 00:46:14 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Mon, 18 Mar 2024 00:46:14 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
+	:in-reply-to:message-id:mime-version:references:reply-to:subject
+	:subject:to:to; s=fm2; t=1710737173; x=1710823573; bh=xhipH5R8dC
+	uM4+XsucMJnjuzsIp1WFZtYIsfPrV6uAk=; b=CeNRQD4NiHE18F6/sRelJJjZTn
+	SGtLf29mrIwZV6SRIDQmZqjzsuWSccB8VzmO9v9NbGH1yN6PM/6EdJIO8S4AHL54
+	An+Abs/am2655XpiITrnJxT3VuvJNSBDR+sFXNbzHTM+SV/pCRlOlRxKch2i1JuJ
+	7r6IcvyLs/3ggQQ985DHizczhK1+zwlBxR1geRQgi7zd18z+INM52/FuZ2aAasYc
+	j/XrO74Iyvy/BqUHuaoQZSWQGAFwH3KDI8G/vT9DijrE+HgfRS+udFHH0FEwZLsz
+	CdD7ZpB5aPAF4Wsb3uks9sQISlvC7oCwdjGeV2dS+VHEjogg8TcSrUpIBaSA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1710737173; x=1710823573; bh=xhipH5R8dCuM4+XsucMJnjuzsIp1
+	WFZtYIsfPrV6uAk=; b=cKHwx+kvtdwvLsL9zol1O5iwU5QaXpxO3F9N0t0AD/k1
+	/k4YbvBrHHTc9aly9woJRjd/8xTLoaxEso905WlXNUKVrr+V5Z7Wlck8JSkLriF8
+	bIYOF/WAq8FjC7nqyLNjZr5DqoZbaak3bFUroJa5hjRbd5V9p58NeuD2VRq9O7xi
+	bVCdR5uqBn/qjLCk7Q7qsExR4Z3Fm+gfnrVVwcwri++v2iQKpC3ndKXLDkDvRw+K
+	HQrJufsEO7Zx8T2q4SLzs9YAMw4CJViETn7eLeuhnR2XVJxJSYPDWRLeV+Hf9S04
+	ZvJiJd7fx1ytpCskjzqOxoLu0vztPRt3drf2IPzzQA==
+X-ME-Sender: <xms:Fcf3ZTAxjNrDhgEXhNobdPjZ6meeJ9ISjlPNgk_JBQqgqCwftvHncw>
+    <xme:Fcf3ZZgtGEI0FVYj8KnMwsa5JbLnPjELvI9OZcostK1oHLcaA4h1XS4z3Guk8Fd0G
+    X4uNz77vsUl1aq649o>
+X-ME-Received: <xmr:Fcf3ZelRwqyblbDVaxkmitedrMb8pFU1vsMSm3Ru1D-hwW-CJzofbyCadaExmbpb5TAOZ3Nf3DaUZDeJxtxCCZZXbtsC_5dvfro>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeeigdejhecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
+    ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+    eqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueeivedt
+    tdegteejkedvfeegfefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
+    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
+X-ME-Proxy: <xmx:Fcf3ZVyiA_os9oEkwxCQGDsEagtPTLEGZq1Ksg_m39N8blnh5EqLhA>
+    <xmx:Fcf3ZYSNfmixv_8HvohEbB-BisvpVq2m_w6JsDpus1G5O7cgwHWlwg>
+    <xmx:Fcf3ZYZ1nZ89m57C-UlGagougelF_HWOV2tezuiD4oXsayKSagk2tw>
+    <xmx:Fcf3ZZT_xmuK4DDVi-H-vvDEDRRgdO97JWCNf1Noj6Nporss76aDSg>
+    <xmx:Fcf3ZeNsua5jGmrPZGFTHu9n24beHzHNHwO4hzxojN9MK7vYCsXVR5pY83U>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Mar 2024 00:46:12 -0400 (EDT)
+Date: Mon, 18 Mar 2024 13:46:09 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org,
+	linux1394-devel@lists.sourceforge.net
+Subject: Re: [PATCH 1/2] firewire: Kill unnecessary buf check in
+ device_attribute.show
+Message-ID: <20240318044609.GA659599@workstation.local>
+Mail-Followup-To: Li Zhijian <lizhijian@fujitsu.com>,
+	linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net
+References: <20240122053942.80648-1-lizhijian@fujitsu.com>
+ <20240122085604.GA254251@workstation.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH7PR11MB6522:EE_|DM6PR11MB4642:EE_
-X-MS-Office365-Filtering-Correlation-Id: ed39fdb8-ae63-4def-b661-08dc47062b6d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: ZbXj0ty16vLZFYikiNM1LYcd36OgyCBz9+gMM+uqalBnrP20pcPoDrb8jUkQRP+S4WFA/976sDu/S6UXRqIu+4zRCTHEyDEfnlxzBeG01yml1EXeJNCqTy+cNPgE7VOyTKyGAmtjjE4JYf/1t9A6F0iXncKj8IQKsYak3vtTDx5eGjkXhKWMKloaid+dUo7+B1gkZ8XLDvZs21jyqNvr9+2hZWB4rcso4HueW9tcTAvT6dnyMMZwre0eTQaGGrtBZmu8f4Ur+W0+Qw2FcQvsvO8gQSEqu78WHFxaI6Y9Ai7hForsnINcRi61S46OXpoaMJeCDh8ebWjXBxYxw04c/BtQfE9encpMdqdvMRwbeUU1Pt3tRpEqnO44wOcsCYHSvfuOI0uJ5jJN3CLcOQk+h4NZnx6VjwIg/aJKsWvSKJkwt7J2pWRjgjkReQuD4uhEqZ96vEauf+u3Is+xX3jopgbQxxD3/0FjtMeHV5/OAM/WFdvM+HYFOf3U0aCkuGgr7MPyTdVffmxd7CJTTzT0rg8dN9o52ob/TdYxDFdL5nG2x1Edxn20u96qH2EztbKVwblDCckZeaSniBvYrK/n1PIPdi9z8q1FqXXAewcEhcw/gaC57xWmxrpDzOUFulCRbKd2+wCsmQ/q7BOsimNCN/xBsAHx09dhOwCrWoX9Aso=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH7PR11MB6522.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?ilRN5mKyTvJ7ua6lIidV325+8UFdEy0+B7FAvz63jl4Z5I8gd4bU6O1SV19p?=
- =?us-ascii?Q?Yaiy4bDiqHJky9VTCYo7V0Vd3HM7XrKP9l/AfiF0vBXkE73YANKTVyNoM/XD?=
- =?us-ascii?Q?ITRMGgjaUCEqv0jC3Z33JRFrChfcyF0LrUbGoD86bVQVIihfKC0lH5Iy6/L2?=
- =?us-ascii?Q?TRguG71PCq+dfig88et5PtXzecBBOiEpExStVGfHerlcXfGsgYYq9Pd4+NgA?=
- =?us-ascii?Q?4tr4ogKARL/pLFbiDihF1JgvOT/snLEOT6yfKRrKSF8yrA7C7I4tbrQhztrx?=
- =?us-ascii?Q?j/WBuVJdvCKjrUClULlc6hlIEBnLILRrt1TEPzzJ+5Lwo6HgYnZLsDDVplz7?=
- =?us-ascii?Q?CarSQNnf7r89BopADrNqlQmn6NfCAsK3qgJDnzmqH+oFSe8y2ZKS/BaRMJYN?=
- =?us-ascii?Q?vRPi5bvgZyck1avN1fyfuu7+CwQChWNN+E3Cfo4T0+YgTyuX/FrTtOM8zvfQ?=
- =?us-ascii?Q?f5EOU58OtVfI/tdvKtb4RvYgYYB5MIWe9L0TU1vrPs1OqjETYiZFSeqwUbh8?=
- =?us-ascii?Q?LAB9J7XZzW3ScCjgT6MxoJJ5HQL6bfFX3Rhv6IZaKu8+GU60pNCTqdb9xMT6?=
- =?us-ascii?Q?gs14nEzyqDd8Rr/L4UQ+xC6c+/1ih2YuemWWlOdBkNw17IdzKdFDV3YqEeDX?=
- =?us-ascii?Q?4u8oZh8ejsVu0aqr+Jd+AjqTJRw/oWC7OWspMY5qjkysG3jt3MG7oIMbhKeX?=
- =?us-ascii?Q?XphWBnxkTAbeU3KWnCS+O07YpgoZlixqyrwcOul+7z10Th02hrktNQ9H6hzF?=
- =?us-ascii?Q?w5THW86kyb+Xxqdlr7NQWZH1ECQjGJAZltMuFTxzdIbyNgqP0HPDA+ucBA+0?=
- =?us-ascii?Q?ywlj0l/h9MPknu6H5It5iaUnkFmlon9dPtpDMY/TQGGXe7qHs7jDFIpyXR2c?=
- =?us-ascii?Q?r2xOLIb6VFmK3CdgALqH/FCjLMzTzb6ks3Xfw0HnCch5CPDXo180nqEd07G+?=
- =?us-ascii?Q?JYfKPVHz8rr83EYw8spQWRWpqjVs7XCFAonK8C9gFxBLXSc7afPn916fsKsS?=
- =?us-ascii?Q?bDkfq2N6HdScRAoAon2tyAFUX3rKeSbpFHZ84fIWKs11JxrtEohXm3zyHsdf?=
- =?us-ascii?Q?y8TbhlhzpdoZJ1eYF0DUWZ5V9TfVWMeTgaVYrA3l14QHPe8M5Lo+AvFK9TVT?=
- =?us-ascii?Q?2qIbijGlkEPdWBL1qaKICADKiN+Mm3gtP5yepmT0OGNHoz+ysMirIQzJ4Ty4?=
- =?us-ascii?Q?ceGyQnCV/Gn1HOHgIVUClWRyMNCicloJCRrYIjYOvYsgK2ByA6djydynQbkH?=
- =?us-ascii?Q?0ukmH1q+TGZRwELHQc8z/ozjQc7lFOpiW61KG8Qs8MrU+yYBLjXRrLHAV0Nm?=
- =?us-ascii?Q?+WekRT48wa2jSFTL4p7HJuN7wS1Rw6Ud4QYoPzF7e1BCxLa9D0AUSaNakZN4?=
- =?us-ascii?Q?F84DR0J4WnVX5gnQCp9dixyNJiUOmgyTyJRpDkNUN3UIAt0PILj+ScKvTrQi?=
- =?us-ascii?Q?Udl8T6zSW5VIpmsN1tHdzcFJcfW6gJRLfJNMmH2xQlZExfr1C1bySJ2ABeb+?=
- =?us-ascii?Q?ZrpzVLu/bduKDasfFHTBIYpNu4zL2OAEqd2JX55mDLDQGj0zSoC8p9EdBOhs?=
- =?us-ascii?Q?/8jslpcBkf5p7flVs5NcgHXEin1nUsVWao23SmEZGQboDMWkE5nxkUCBVXLS?=
- =?us-ascii?Q?aQ=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: ed39fdb8-ae63-4def-b661-08dc47062b6d
-X-MS-Exchange-CrossTenant-AuthSource: PH7PR11MB6522.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 04:45:00.5067
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 875zd8JESIZBi1PFSdt1muggPLddtuen9jVgLZsp/fykezjjKeQmK+RID1pcp0dXyvbohi8iBAfY4+6lWWY5zg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM6PR11MB4642
-X-OriginatorOrg: intel.com
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240122085604.GA254251@workstation.local>
 
-On Mon, Mar 18, 2024 at 12:12:44PM +0800, wangxiaoming321 wrote:
-> The failure of binding VMA is duing to interrupt,
-> So it needs to retry while return fail.
+Hi,
+
+On Mon, Jan 22, 2024 at 05:56:04PM +0900, Takashi Sakamoto wrote:
+> Hi,
 > 
-> Signed-off-by: wangxiaoming321 <xiaoming.wang@intel.com>
-> ---
->  drivers/gpu/drm/xe/xe_vm.c | 3 +++
->  1 file changed, 3 insertions(+)
+> On Mon, Jan 22, 2024 at 01:39:41PM +0800, Li Zhijian wrote:
+> > Per Documentation/filesystems/sysfs.rst:
+> > > sysfs allocates a buffer of size (PAGE_SIZE) and passes it to the
+> > > method.
+> > 
+> > So we can kill the unnecessary buf check safely.
+> > 
+> > Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> > ---
+> >  drivers/firewire/core-device.c | 14 +++-----------
+> >  1 file changed, 3 insertions(+), 11 deletions(-)
 > 
-> diff --git a/drivers/gpu/drm/xe/xe_vm.c b/drivers/gpu/drm/xe/xe_vm.c
-> index 99aa5ffb0ef1..d33476b631e1 100644
-> --- a/drivers/gpu/drm/xe/xe_vm.c
-> +++ b/drivers/gpu/drm/xe/xe_vm.c
-> @@ -2621,6 +2621,9 @@ static int __xe_vma_op_execute(struct xe_vm *vm, struct xe_vma *vma,
->  	}
->  	drm_exec_fini(&exec);
->  
-> +	if (err == -ERESTARTSYS)
-> +		goto retry_userptr;
+> Applied both patches to linux-next branch, since they are not so-urgent 
+> fixes.
 
-This doesn't look right. If the user presses ctrl-c we'd restart?
+I realized that it causes an issue at the path to initialize device
+structure for node in IEEE 1394 bus.
 
-Matt
+(drivers/firewire/core-device.c)
+fw_device_init() / fw_device_refresh()
+->create_units()
+  ->init_fw_attribute_group()
+    ->attr->show(dev, attr, NULL)
 
-> +
->  	if (err == -EAGAIN) {
->  		lockdep_assert_held_write(&vm->lock);
->  
-> -- 
-> 2.25.1
-> 
+kernel: ------------[ cut here ]------------
+kernel: invalid sysfs_emit: buf:0000000000000000
+kernel: WARNING: CPU: 5 PID: 647501 at fs/sysfs/file.c:747 sysfs_emit+0xb5/0xc0
+kernel: Modules linked in: snd_fireworks(OE) snd_firewire_lib(OE) firewire_ohci(OE) firewire_core(OE) cfg80211 veth nft_masq crc_itu_t vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd rpcsec_gss_krb5 nfsv4 nfs netfs snd_seq_dummy sn>
+kernel:  crypto_simd asus_wmi snd_timer ledtrig_audio cryptd cec sparse_keymap nls_iso8859_1 rapl platform_profile wmi_bmof k10temp i2c_piix4 snd rc_core i2c_algo_bit ccp soundcore zfs(PO) spl(O) input_leds joydev cdc_mbim cdc_wdm mac_h>
+kernel: CPU: 5 PID: 647501 Comm: kworker/5:0 Tainted: P        W  OE      6.8.0-11-generic #11-Ubuntu
+kernel: Hardware name: System manufacturer System Product Name/TUF GAMING X570-PLUS, BIOS 5003 10/07/2023
+kernel: Workqueue: firewire fw_device_workfn [firewire_core]
+kernel: RIP: 0010:sysfs_emit+0xb5/0xc0
+kernel: Code: 25 28 00 00 00 75 29 c9 31 d2 31 c9 31 f6 31 ff 45 31 c0 45 31 c9 e9 5a 89 c7 00 48 89 fe 48 c7 c7 64 06 3f bd e8 1b 80 b4 ff <0f> 0b 31 c0 eb c7 e8 a0 ea c5 00 90 90 90 90 90 90 90 90 90 90 90
+kernel: RSP: 0018:ffffacd857103cd0 EFLAGS: 00010246
+kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
+kernel: RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+kernel: RBP: ffffacd857103d20 R08: 0000000000000000 R09: 0000000000000000
+kernel: R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000010000
+kernel: R13: ffffffffc28e2ff8 R14: 0000000000000000 R15: 0000000000000001
+kernel: FS:  0000000000000000(0000) GS:ffff918190080000(0000) knlGS:0000000000000000
+kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+kernel: CR2: 00007835dca0b048 CR3: 00000003cb898000 CR4: 00000000003506f0
+kernel: Call Trace:
+kernel:  <TASK>
+kernel:  ? show_regs+0x6d/0x80
+kernel:  ? __warn+0x89/0x160
+kernel:  ? sysfs_emit+0xb5/0xc0
+kernel:  ? report_bug+0x17e/0x1b0
+kernel:  ? handle_bug+0x51/0xa0
+kernel:  ? exc_invalid_op+0x18/0x80
+kernel:  ? asm_exc_invalid_op+0x1b/0x20
+kernel:  ? sysfs_emit+0xb5/0xc0
+kernel:  show_immediate+0x13f/0x1d0 [firewire_core]
+kernel:  init_fw_attribute_group+0x81/0x150 [firewire_core]
+kernel:  create_units+0x119/0x160 [firewire_core]
+kernel:  fw_device_init+0x1a9/0x330 [firewire_core]
+kernel:  fw_device_workfn+0x12/0x20 [firewire_core]
+kernel:  process_one_work+0x16f/0x350
+kernel:  worker_thread+0x306/0x440
+kernel:  ? __pfx_worker_thread+0x10/0x10
+kernel:  kthread+0xf2/0x120
+kernel:  ? __pfx_kthread+0x10/0x10
+kernel:  ret_from_fork+0x47/0x70
+kernel:  ? __pfx_kthread+0x10/0x10
+kernel:  ret_from_fork_asm+0x1b/0x30
+kernel:  </TASK>
+kernel: ---[ end trace 0000000000000000 ]---
+kernel: ------------[ cut here ]------------
+
+Furthermore, 'show_text_leaf()' returns negative value when the NULL
+pointer is passed. It results in the lack of vendor/model names from
+sysfs.
+
+I absolutely overlooked them. I would like to fix them within this merge
+window, or revert them as a last resort...
+
+
+Regards
+
+Takashi Sakamoto
 
