@@ -1,266 +1,134 @@
-Return-Path: <linux-kernel+bounces-106296-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106297-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F1C687EC17
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:25:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BFF5087EC1C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:26:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3DDED281721
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:25:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BDE501C2129F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:26:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED4534F5EC;
-	Mon, 18 Mar 2024 15:25:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13F4D4F5FA;
+	Mon, 18 Mar 2024 15:26:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="N7QDLfSO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ZTjCHXrW";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="yfXMzMXw";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="/z0mKqaD"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ho4NZNqm"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0116E4F1FA;
-	Mon, 18 Mar 2024 15:25:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C752F4F1F9
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:26:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710775521; cv=none; b=oaPum8t/zL+oJa54PnMJm6eWikUoTt/avHXeM5oIoz6uxVCB1KQoWEWopQ+nRRDtiKDOzNn1waiG28FRjAEEwbgzSLOI0sti0YgSazAVUUOnV5fHDm7EKb4ZeY4k5l/nES3OG+QU0IKUo++E2CFEfmDyVees1KrcyTrsOPtk9WM=
+	t=1710775605; cv=none; b=PVyAad6nu9LE0SPRTPV+6NgpwgvSH8y90ZgpK6aJqxfgzWeh9K2KSAVToiZR/OGhntmywM1Fov893J6f6KSkPxLBS2/QZrObWRDOaYNXzq0VW+nNfoDKu3P8HN5O3WCoDHb8rHQD1Buek9UQ+v9PIk+5fIJUsfWgY/gbIYOMT4g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710775521; c=relaxed/simple;
-	bh=PK/AFuE4d26F9yJkFry5cVwY/JjHa0X2rvqK959sqao=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HczU7ALsHB/v1L5s6E1H1M0ZkFtrHXti31eahd9NPGE02wyveSDJpisfTnk4aUZUTIGWw5NV3FGu/dgV7R5izKHaGiN07RWo7UEtlPzzVgtnPJTGV2hpfppmryV4nj2RdabyjdxY5txFTBvXWY9EHjTsuBmu4bhhK4mTKLBBoO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=N7QDLfSO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ZTjCHXrW; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=yfXMzMXw; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=/z0mKqaD; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id EF8225C699;
-	Mon, 18 Mar 2024 15:25:13 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710775516; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
-	b=N7QDLfSOQBr1PjDf8h5pqhB2J8FjBaZTLJViEOc19+NJoSedZBTB9dFJ72m/CXg739DbXD
-	9B0DyAiEwPHTI06czMtIx2tcJ6SFKI9Pe75/FO0FhfprqMfACulF+BhFxeAW5o7w9A6LFy
-	rWKhhbdzS+hXhaH+Q5y7NYLgp+2BSv0=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710775516;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
-	b=ZTjCHXrWUVoVMyOoGLXKGB6/F3Ot8epYK4Wx2y9AreCPrtXvtzJFZzOZM0DuRPVc7GFpBf
-	wuFRf/3Kgj63jnAg==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710775513; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
-	b=yfXMzMXwa5L4e8xXQ5XkbSZncnzJH1dTIHW85Ep3l4ljiojsaQxg/K+4NgZ3XcxsNe0kvc
-	EZJ56hzGw2ou6tpaHrQnNToFbq29yK0j+cVxnmUp0G2K+9HZlBweniz+hSLLipRMHprlDh
-	QD4c9/bf9a7g9XhAABBhhD22dawwyuE=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710775513;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=TuguZ4pEpnLQaEpC5CAxXefyoe3rAzShOZPC2cxkvkw=;
-	b=/z0mKqaDX71Ea5tK0VUpklz3HQSHxU3bJemAPr+Q1RObisuKEgssVtfcoLYO0gcQih497x
-	t36p8ES/P2yWknCw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id E07441349D;
-	Mon, 18 Mar 2024 15:25:13 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id t2PFNtlc+GVYTwAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 15:25:13 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 533A5A07D9; Mon, 18 Mar 2024 16:25:09 +0100 (CET)
-Date: Mon, 18 Mar 2024 16:25:09 +0100
-From: Jan Kara <jack@suse.cz>
-To: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-Cc: Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org,
-	tytso@mit.edu, adilger.kernel@dilger.ca, jack@suse.cz,
-	ritesh.list@gmail.com, adobriyan@gmail.com,
-	linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-	yangerkun@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3 4/9] ext4: fix slab-out-of-bounds in
- ext4_mb_find_good_group_avg_frag_lists()
-Message-ID: <20240318152509.5tdmkojnhd3gqxqu@quack3>
-References: <20240314140906.3064072-1-libaokun1@huawei.com>
- <20240314140906.3064072-5-libaokun1@huawei.com>
- <Zfg19s2+fn9QYnUQ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
+	s=arc-20240116; t=1710775605; c=relaxed/simple;
+	bh=PhWdZeNBOqRnQlySupzqWY3j6i3+Ipt/UkCpMfvZd/U=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XxSewKYbmE21k0Kq8VvGDRTxeUzF4Mr3N3mL0UlgbBY4P6nhTCpplpcS8nF9Z82eZUCfvrjWEsxwyLDo4AjPIK1QvgyI4gKchOJdlcH8xTFGdBFFa2vZ6AjBKeUlt+iI5SohddPr/SAM6ohxq6t65qgfYiTOi2JrTU4UXcy9kXE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ho4NZNqm; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-430d3fcc511so195561cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:26:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710775603; x=1711380403; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1Hv/QWr8M8ls7knB1wZCVGtf2AvJWRUgL6rtvFRG9dk=;
+        b=ho4NZNqmCiLQ7HWHlsIjzcX9Rm4CtT9YQXvjax3No5poNUDL7DxYEj3uJoeKgEp4/v
+         viaCB3yR2Yvn5HTvnyG2jD3hT5mSxVMWSlLjDij2cOq3o34GqT1CAPvK8WcqFo9KGKDV
+         lSPDmxWPcYYjYqZF4r6bmExQzO5UTTHyKVFNhegw7SOjWLKge5zKe5rP7MS3Z0r3oRu0
+         JVdHJGjFg5vdkt6W63StUs59IFgJq0+deUbOzBicebrndoD+eyHFuIJE5QFnv/RnFjzd
+         fP26FtT/fVvcliQfLZEDIrNR+ioGVA6UnobnNi4LTf9zpyjmSrrgRJQct69FUTjv13vs
+         nEyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710775603; x=1711380403;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1Hv/QWr8M8ls7knB1wZCVGtf2AvJWRUgL6rtvFRG9dk=;
+        b=uXDu7/kl+2afg6b/gShaOMqqg8W5+07e2CsnD7QIKBosvLS1uhX3V0LEgSwJJJuDL2
+         qkSeaDgTL0M4UVQi5VVEbA0UnZaMpR5IhG9bJj0sTpA+o+7vp6MzbY5teto6WoZvIn8a
+         xSTNunm0ZkVnfDQYTz2X6FPx5BXtDqwaIYjRAcbF3dfUysR3B6fwYRRAq+/+vq4sDzko
+         jMwaeuCGzJ/Z5lBFIaJ3odsV7BgATeEl9j2OxyyVb0VbznLZNuaq61Dp+bxJJE0zIFOa
+         SSmBwra4l74nciw0TCUeufj1eToHouK9da8B7I8qR5EWXKUtRjGwZaJrhVPBwymc5Av0
+         jcqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWgjzmMwCj4wakx//HGIMqPnR+0ROuLvF4TXSzbl4U3guxTKHLqyipfhyJluvwjvm+DnISEa4Ju5MwB8tdaZ3vPib3suShdvlQL3ML+
+X-Gm-Message-State: AOJu0YycH6prXAJb27FIgErN+wyg6j57l52FaT9KrqophcNjcbRiLGpX
+	OCnnqXpNVreATOE5HOroiUScImDtn/9DZ1aFq72MjZpCPN9PdB+8I8HRSakRfOWLqjMFRfd4m7a
+	5XiDJUPvpRjfyYHr4TGcBbAadmOHl11onOihF
+X-Google-Smtp-Source: AGHT+IElNKMYwCi4pjlGQPSRb/mYiqxHrQTnrkhZuM+F1WRWvuGL2GBfnxd8OlBNdyC8AcvWl00mmRDtzrqltlVm71w=
+X-Received: by 2002:a05:622a:18a8:b0:42e:b6df:819d with SMTP id
+ v40-20020a05622a18a800b0042eb6df819dmr333517qtc.24.1710775602553; Mon, 18 Mar
+ 2024 08:26:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfg19s2+fn9QYnUQ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-X-Spam-Score: -2.30
-X-Spamd-Result: default: False [-2.30 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[12];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[huawei.com:email,suse.com:email,suse.cz:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 FREEMAIL_CC(0.00)[huawei.com,vger.kernel.org,mit.edu,dilger.ca,suse.cz,gmail.com];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+References: <20240318110855.31954-1-johan+linaro@kernel.org>
+ <20240318110855.31954-2-johan+linaro@kernel.org> <CAA8EJprywWbdoyfAbys=0WzEdAkp0UK1fzzCPzxKRjyk9DrC6Q@mail.gmail.com>
+ <Zfg--2_NMPSPTxK-@hovoldconsulting.com> <20240318144806.GA3963554-robh@kernel.org>
+ <ZfhZffrZXwtKgZ13@hovoldconsulting.com>
+In-Reply-To: <ZfhZffrZXwtKgZ13@hovoldconsulting.com>
+From: Doug Anderson <dianders@google.com>
+Date: Mon, 18 Mar 2024 08:26:26 -0700
+Message-ID: <CAD=FV=UpuD7Lq0DxSZAGpL4Mi2uxy9HNt3V3FZq7Y3p--gbMrg@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: bluetooth: add new wcn3991 compatible
+ to fix bd_addr
+To: Johan Hovold <johan@kernel.org>
+Cc: Rob Herring <robh@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Johan Hedberg <johan.hedberg@gmail.com>, Matthias Kaehlcke <mka@chromium.org>, 
+	Bjorn Andersson <quic_bjorande@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon 18-03-24 18:09:18, Ojaswin Mujoo wrote:
-> On Thu, Mar 14, 2024 at 10:09:01PM +0800, Baokun Li wrote:
-> > We can trigger a slab-out-of-bounds with the following commands:
-> > 
-> >     mkfs.ext4 -F /dev/$disk 10G
-> >     mount /dev/$disk /tmp/test
-> >     echo 2147483647 > /sys/fs/ext4/$disk/mb_group_prealloc
-> >     echo test > /tmp/test/file && sync
-> > 
-> > ==================================================================
-> > BUG: KASAN: slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-> > Read of size 8 at addr ffff888121b9d0f0 by task kworker/u2:0/11
-> > CPU: 0 PID: 11 Comm: kworker/u2:0 Tainted: GL 6.7.0-next-20240118 #521
-> > Call Trace:
-> >  dump_stack_lvl+0x2c/0x50
-> >  kasan_report+0xb6/0xf0
-> >  ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-> >  ext4_mb_regular_allocator+0x19e9/0x2370 [ext4]
-> >  ext4_mb_new_blocks+0x88a/0x1370 [ext4]
-> >  ext4_ext_map_blocks+0x14f7/0x2390 [ext4]
-> >  ext4_map_blocks+0x569/0xea0 [ext4]
-> >  ext4_do_writepages+0x10f6/0x1bc0 [ext4]
-> > [...]
-> > ==================================================================
-> > 
-> > The flow of issue triggering is as follows:
-> > 
-> > // Set s_mb_group_prealloc to 2147483647 via sysfs
-> > ext4_mb_new_blocks
-> >   ext4_mb_normalize_request
-> >     ext4_mb_normalize_group_request
-> >       ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc
-> >   ext4_mb_regular_allocator
-> >     ext4_mb_choose_next_group
-> >       ext4_mb_choose_next_group_best_avail
-> >         mb_avg_fragment_size_order
-> >           order = fls(len) - 2 = 29
-> >         ext4_mb_find_good_group_avg_frag_lists
-> >           frag_list = &sbi->s_mb_avg_fragment_size[order]
-> >           if (list_empty(frag_list)) // Trigger SOOB!
-> > 
-> > At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
-> > but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
-> > to be triggered by an attempt to access an element at index 29.
-> > 
-> > Add a new attr_id attr_clusters_in_group with values in the range
-> > [0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
-> > that type to fix the issue. In addition avoid returning an order
-> > from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
-> > and reduce some useless loops.
-> > 
-> > Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
-> > CC: stable@vger.kernel.org
-> > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > Reviewed-by: Jan Kara <jack@suse.cz>
-> > ---
-> >  fs/ext4/mballoc.c |  4 ++++
-> >  fs/ext4/sysfs.c   | 13 ++++++++++++-
-> >  2 files changed, 16 insertions(+), 1 deletion(-)
-> > 
-> > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> > index 12b3f196010b..48afe5aa228c 100644
-> > --- a/fs/ext4/mballoc.c
-> > +++ b/fs/ext4/mballoc.c
-> > @@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
-> >     return 0;
-> >   if (order == MB_NUM_ORDERS(sb))
-> >     order--;
-> > + if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
-> > +   order = MB_NUM_ORDERS(sb) - 1;
-> 
-> Hey Baokun,
-> 
-> Thanks for fixing this. This patch looks good to me, feel free to add:
-> 
-> Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> 
-> my comments after this are less about the patch and more about some
-> thoughts on the working of average fragment lists.
-> 
-> So going through the v2 and this patch got me thinking about what really
-> is going to happen when a user tries to allocate 32768 blocks which is also 
-> the maximum value we could have in say ac->ac_g_ex.fe_len.
-> 
-> When this happens, ext4_mb_regular_allocator() will directly set the
-> criteria as CR_GOAL_LEN_FAST. Now, we'll follow:
-> 
-> ext4_mb_choose_next_group_goal_fast()
->   for (i=mb_avg_fragment_size_order(); i < MB_NUM_ORDERS; i++) { .. }
-> 
-> Here, mb_avg_fragment_siz_order() will do something like:
-> 
->   order = fls(32768) - 2 = 14
->   ...
->   if (order == MB_NUM_ORDERS(sb))
->     order--;
-> 
->   return order;
-> 
-> And we'll look in the fragment list[13] and since none of the groups
-> there would have 32768 blocks free (since we dont track it here) we'll
-> unnecessarily traverse the full list before falling to CR_BEST_AVAIL_LEN
-> (this will become a noop due to the way order and min_order
-> are calculated) and eventually to CR_GOAL_LEN_SLOW where we might get
-> something or end up splitting.
+Hi,
 
-Yeah, agreed this looks a bit suboptimal. I'm just not 100% sure whether
-we'll ever generate a request to allocate 32768 blocks - that would need
-verification with tracing - because I have some vague recollection I once
-arrived at conclusion this is not possible.
+On Mon, Mar 18, 2024 at 8:10=E2=80=AFAM Johan Hovold <johan@kernel.org> wro=
+te:
+>
+> > > I wanted to avoid doing this, but if we have to support Google's brok=
+en
+> > > boot firmware for these devices, then this is how it needs to be done=
+.
+> >
+> > Don't Chromebooks update everything together. So maybe we don't care in
+> > this case?
+>
+> That was my hope, but Matthias seemed to suggest that we need to
+> continue supporting the current (broken) binding because doing such a
+> coordinated update may be easier said than done:
+>
+>         https://lore.kernel.org/lkml/ZcuQ2qRX0zsLSVRL@google.com/
 
-> I think something more optimal would be to:
-> 
-> 1. Add another entry to average fragment lists for completely empty
-> groups. (As a sidenote i think we should use something like MB_NUM_FRAG_ORDER
-> instead of MB_NUM_ORDERS in calculating limits related to average
-> fragment lists since the NUM_ORDERS seems to be the buddy max order ie
-> 8192 blocks only valid for CR_POWER2 and shouldn't really limit the
-> fragment size lists)
+Chromebooks update kernel and devicetree together, but not firmware.
+Firmware is relatively hard to get updated trying to have kernel and
+firmware updates coordinated at the exact same time has challenges.
+This would further be complicated by the fact that firmware
+qualification for each variant happens on its own timeline.
 
-I guess the thinking was that you can never get larger than
-1<<(MB_NUM_ORDERS-1) chunk from mballoc so there's no point to keep
-fragment lists of such chunks?
 
-								Honza
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> A new compatible string (or one-off property) would allow them do make a
+> change when they are ready (e.g. by only updating the devicetrees after
+> all boot firmware has been patched and pushed out).
+
+I have no real opinion about the exact way this is solved so happy to
+let DT folks decide on how they want this. I will note, however, that
+device trees are never shipped separately and thus we have no
+intrinsic need for DT backward compatbility here. It would be OK from
+a ChromeOS perspective to add a property or compatible string for the
+broken case.
+
+-Doug
 
