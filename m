@@ -1,70 +1,80 @@
-Return-Path: <linux-kernel+bounces-106046-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7478F87E851
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:12:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8646887E855
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:16:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1BC5B22F3D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:12:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B8C431C213AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:16:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EFA83364CD;
-	Mon, 18 Mar 2024 11:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100DC364A7;
+	Mon, 18 Mar 2024 11:16:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="dKtxEQZ1"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K2d95yni"
+Received: from mail-ed1-f53.google.com (mail-ed1-f53.google.com [209.85.208.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A503538385;
-	Mon, 18 Mar 2024 11:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8A59D36114
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:16:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710760362; cv=none; b=Cv3Vn1d4C+EMuV2cSfKpuD3ty0tY8zIGeZjJ4r0cKdkCi/ne1Sz9mII4PSWk7NUSozyiW8HGg9uRTFVM9VfkEWSM8duBA/i4ACmdwz0UgmkI25hFqhfnN+xNTt4EV5nR+ftTMbK6cecmXQe7HeIgNXb8MzOa+9XXDwO+Z+0nTGE=
+	t=1710760605; cv=none; b=Q8davwhHDh14wiieDuL0Xxj4zRqgjbs7hUWo5cZwV+cWEW6LG3s1B78wU0P3EPuryr+yxwEOSWDO+5EsAWkMJ/5/bD4N5pTyx0TWsAtOTyRqNCFfgG21Mow69t/KFCmTnvpIkxCrknHG+aXkYthSv5Gjo2vet9fQzYIVxAZx7tY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710760362; c=relaxed/simple;
-	bh=SrNpO6frBXeFes4/cfwvtY7bovpO8PEcBwfDBnzsgX8=;
+	s=arc-20240116; t=1710760605; c=relaxed/simple;
+	bh=K/B9jshhQTO4EDidb9xFu7jg5/YHjfatld4X7iyOsJE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=b/RwDKSWsG017UMNU0nKJvllmdTYPI1bsOLKwMPeIqtQ8sJrPhgpW6qKTCkybEwlZKP8+jqS23gvgIBYJoSrXijygb/hAL4VKHQHlP3zZEacP0biozCDd4Nr5XIibaV3mcOqXrR+jaGpQlOMQuiBb3EKpwSC3Uz8A2sU9/Sxkn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=dKtxEQZ1; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710760361; x=1742296361;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=SrNpO6frBXeFes4/cfwvtY7bovpO8PEcBwfDBnzsgX8=;
-  b=dKtxEQZ1vGph4AFryJ7ptrpdbBXXNCuVcKi2zATf0BnmcUfFfT0XSrLt
-   PaDLZRDKVh0NL4/Nu3hr6Z8qWTzrJ36pZwIQ6mj+MWbA3YgO+WKZj68Ef
-   V8l6zn6ktcOxVQTu+YkvALI5rWDXR4REIedZ/aLjKvYCHREeJo/Y/Ghwy
-   jCMwEG+g5zkhVIlsJx6Ny+iePMRJoEQMxez1mRATBQ7ZEvYcKj6U8RP02
-   g9PUKaRFpQTocnSn9oUd2P6E6i9nW3cLQ3p2+aqOg3R93UUgLoT+2QLPz
-   ocOpQy+cCVKAyQz0joR9geOJmpQcXHgObEBGVDwNYBG728H54f8Y6n7BP
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="17012457"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="17012457"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 04:12:40 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="937060156"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="937060156"
-Received: from kuha.fi.intel.com ([10.237.72.185])
-  by fmsmga001.fm.intel.com with SMTP; 18 Mar 2024 04:12:36 -0700
-Received: by kuha.fi.intel.com (sSMTP sendmail emulation); Mon, 18 Mar 2024 13:12:36 +0200
-Date: Mon, 18 Mar 2024 13:12:36 +0200
-From: Heikki Krogerus <heikki.krogerus@linux.intel.com>
-To: Luca Weiss <luca.weiss@fairphone.com>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
-	linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] usb: typec: ptn36502: switch to DRM_AUX_BRIDGE
-Message-ID: <ZfghpN81iR6vL+pu@kuha.fi.intel.com>
-References: <20240315-ptn36502-aux-v1-1-c9d3c828ff2e@fairphone.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=kgcZd23KFEW1RC6dcYmTCIVfq9hLxD40OvEwDhS6IjTQRcUr5RVfZ7npI+NBL4Sf2x2zAAIjCwHr0vcVn8N5pOfboDbxQJaGy8gj4yqY4pRnugvek6uebR5JP9YWLTUlCwiulwTKa3jdzaIei4SzQLNC0Bz7r4/spSuHzyZeUHA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K2d95yni; arc=none smtp.client-ip=209.85.208.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f53.google.com with SMTP id 4fb4d7f45d1cf-5687e7662a5so5672222a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 04:16:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710760602; x=1711365402; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=KnHhyb7uDpQBPnfr4V2y5wGYxknsht7Nq/KOV466kCg=;
+        b=K2d95yniZgrEVp/MnijD4bieQxXizdmrePBdLfGdqUOH5HDeQHduf/gLR67hQUqsfF
+         H066RbZMyqWubbfxL2toHNaEZcokEvDzh1lrHmz+giLZByIl2Rz4i2rHO31ZXlByOREC
+         arQXIh7J8A84ZYeF5V0F8OWJluw5YZDnFOw1NUSXNPuMwLVIUXkSYyrW5gevlL6krk1b
+         TiaISAPzJ91K6gf8TSA05j57RqZmZDevVDcDM32Yp92CLZEJdZ3Qb0QgsHgAjH/WEXoL
+         E5+jkedRRPuZL7FkzxGrIzCBM1PrCPTq/DLGXRYPvwA5oNdPqp23egxIaGcGU06LEL2h
+         qU/g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710760602; x=1711365402;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=KnHhyb7uDpQBPnfr4V2y5wGYxknsht7Nq/KOV466kCg=;
+        b=QQbyZYLWpj8blId6M1b73dVt2JyMQgjf0FCgHLnnDK2ph76s3cGaBMHwr61jVSOZsT
+         aeC8Mfvklv4t+OMod5oGDJ2LN3qdIJ3rD4ZJuPm9Gt+sTcm8xwMLSBgW2Bt3KfVp4vaG
+         0L1BWfKUlUFU0mhpfWCiYIOtZEZ9UDX9nXjWyBF39D6jbYWLcfOwYCkBJ79ENgLJP0xc
+         qKoryRAoI9PYefkSgQmp9d9Aj0bmimHqTym8vv44bULPN4ZTAgul3KJLct7EKmwYigXu
+         z61H6EiKHEbFXxh1U65SKcCbwKhmIzi4fQNW29hBOXld9V7q2jJYWvFOrLWJagAhossF
+         Kcpw==
+X-Forwarded-Encrypted: i=1; AJvYcCWMy39q3WeKD9qUWDvO9Xgmpdcre2Y+fDBVIvQ3rOhp9pEA9HYpHykq9L8Ho39Hu0k/3Fm7UioJszvbcaKRNsf9TU4FakmfMIXNpJ0x
+X-Gm-Message-State: AOJu0YyXIE28MyD5hdX5UB9+wgHyMnBUUFQUj4whe7dhj32SFnIEKSKp
+	e2Ij8Eud35+YqIa4eNWCUwrTdaWQyhJOPYJoT4W/2W+THB/ZEv0p5GhAKps2q4ypXdqBEE6RMBm
+	5
+X-Google-Smtp-Source: AGHT+IFLgonsgY/3PtzQAbuX1V/tusa6WXagx6nFGjo08BezauKdmdlJY/CD9Qb58XVaazG7ruBA0Q==
+X-Received: by 2002:a17:907:60ca:b0:a44:5477:bb46 with SMTP id hv10-20020a17090760ca00b00a445477bb46mr10100474ejc.61.1710760601717;
+        Mon, 18 Mar 2024 04:16:41 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id w17-20020a1709064a1100b00a466e772597sm4798756eju.177.2024.03.18.04.16.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 04:16:41 -0700 (PDT)
+Date: Mon, 18 Mar 2024 14:16:36 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v5] staging: greybus: Constify gb_audio_module_type
+Message-ID: <ea44d965-e727-4fc4-86cd-b727e1e0d2be@moroto.mountain>
+References: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -73,122 +83,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240315-ptn36502-aux-v1-1-c9d3c828ff2e@fairphone.com>
+In-Reply-To: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 
-On Fri, Mar 15, 2024 at 05:04:22PM +0100, Luca Weiss wrote:
-> Switch to using the new DRM_AUX_BRIDGE helper to create the transparent
-> DRM bridge device instead of handcoding corresponding functionality.
+On Sat, Mar 16, 2024 at 11:54:21PM +0530, Ayush Tiwari wrote:
+> Constify static struct kobj_type gb_audio_module_type to prevent
+> modification of data shared across many instances(instances here
+> refer to multiple kobject instances being created, since this same
+> gb_audio_module_type structure is used as a template for all audio
+> manager module kobjs, it is effectively 'shared' across all these
+> instances), ensuring that the structure's usage is consistent and
+> predictable throughout the driver and allowing the compiler to place
+> it in read-only memory. The gb_audio_module_type structure is used
+> when initializing and adding kobj instances to the kernel's object
+> hierarchy. After adding const, any attempt to alter
+> gb_audio_module_type in the code would raise a compile-time error.
+> This enforcement ensures that the sysfs interface and operations for
+> audio modules remain stable.
 > 
-> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
 
-Reviewed-by: Heikki Krogerus <heikki.krogerus@linux.intel.com>
+Basically the patch is fine.  The only comments have been around the
+commit message.  And all the reviewers have said correct things...  But
+I'm still going to chime in as well.
 
-> ---
-> Very similar to this patch:
-> c5d296bad640 ("usb: typec: nb7vpq904m: switch to DRM_AUX_BRIDGE")
-> ---
->  drivers/usb/typec/mux/Kconfig    |  2 +-
->  drivers/usb/typec/mux/ptn36502.c | 44 ++--------------------------------------
->  2 files changed, 3 insertions(+), 43 deletions(-)
-> 
-> diff --git a/drivers/usb/typec/mux/Kconfig b/drivers/usb/typec/mux/Kconfig
-> index 399c7b0983df..4827e86fed6d 100644
-> --- a/drivers/usb/typec/mux/Kconfig
-> +++ b/drivers/usb/typec/mux/Kconfig
-> @@ -60,7 +60,7 @@ config TYPEC_MUX_PTN36502
->  	tristate "NXP PTN36502 Type-C redriver driver"
->  	depends on I2C
->  	depends on DRM || DRM=n
-> -	select DRM_PANEL_BRIDGE if DRM
-> +	select DRM_AUX_BRIDGE if DRM_BRIDGE
->  	select REGMAP_I2C
->  	help
->  	  Say Y or M if your system has a NXP PTN36502 Type-C redriver chip
-> diff --git a/drivers/usb/typec/mux/ptn36502.c b/drivers/usb/typec/mux/ptn36502.c
-> index 72ae38a1b2be..0ec86ef32a87 100644
-> --- a/drivers/usb/typec/mux/ptn36502.c
-> +++ b/drivers/usb/typec/mux/ptn36502.c
-> @@ -8,7 +8,7 @@
->   * Copyright (C) 2023 Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
->   */
->  
-> -#include <drm/drm_bridge.h>
-> +#include <drm/bridge/aux-bridge.h>
->  #include <linux/bitfield.h>
->  #include <linux/i2c.h>
->  #include <linux/kernel.h>
-> @@ -68,8 +68,6 @@ struct ptn36502 {
->  
->  	struct typec_switch *typec_switch;
->  
-> -	struct drm_bridge bridge;
-> -
->  	struct mutex lock; /* protect non-concurrent retimer & switch */
->  
->  	enum typec_orientation orientation;
-> @@ -283,44 +281,6 @@ static int ptn36502_detect(struct ptn36502 *ptn)
->  	return 0;
->  }
->  
-> -#if IS_ENABLED(CONFIG_OF) && IS_ENABLED(CONFIG_DRM_PANEL_BRIDGE)
-> -static int ptn36502_bridge_attach(struct drm_bridge *bridge,
-> -				  enum drm_bridge_attach_flags flags)
-> -{
-> -	struct ptn36502 *ptn = container_of(bridge, struct ptn36502, bridge);
-> -	struct drm_bridge *next_bridge;
-> -
-> -	if (!(flags & DRM_BRIDGE_ATTACH_NO_CONNECTOR))
-> -		return -EINVAL;
-> -
-> -	next_bridge = devm_drm_of_get_bridge(&ptn->client->dev, ptn->client->dev.of_node, 0, 0);
-> -	if (IS_ERR(next_bridge)) {
-> -		dev_err(&ptn->client->dev, "failed to acquire drm_bridge: %pe\n", next_bridge);
-> -		return PTR_ERR(next_bridge);
-> -	}
-> -
-> -	return drm_bridge_attach(bridge->encoder, next_bridge, bridge,
-> -				 DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-> -}
-> -
-> -static const struct drm_bridge_funcs ptn36502_bridge_funcs = {
-> -	.attach	= ptn36502_bridge_attach,
-> -};
-> -
-> -static int ptn36502_register_bridge(struct ptn36502 *ptn)
-> -{
-> -	ptn->bridge.funcs = &ptn36502_bridge_funcs;
-> -	ptn->bridge.of_node = ptn->client->dev.of_node;
-> -
-> -	return devm_drm_bridge_add(&ptn->client->dev, &ptn->bridge);
-> -}
-> -#else
-> -static int ptn36502_register_bridge(struct ptn36502 *ptn)
-> -{
-> -	return 0;
-> -}
-> -#endif
-> -
->  static const struct regmap_config ptn36502_regmap = {
->  	.max_register = 0x0d,
->  	.reg_bits = 8,
-> @@ -369,7 +329,7 @@ static int ptn36502_probe(struct i2c_client *client)
->  	if (ret)
->  		goto err_disable_regulator;
->  
-> -	ret = ptn36502_register_bridge(ptn);
-> +	ret = drm_aux_bridge_register(dev);
->  	if (ret)
->  		goto err_disable_regulator;
->  
-> 
-> ---
-> base-commit: 9bb9b28d0568991b1d63e66fe75afa5f97ad1156
-> change-id: 20240315-ptn36502-aux-15dd6f289aff
-> 
-> Best regards,
-> -- 
-> Luca Weiss <luca.weiss@fairphone.com>
+The commit message is too long for something very simple.
 
--- 
-heikki
+Basically all kernel maintainers understand about constness.  There is
+sometimes trickiness around constness but in this specific case there
+isn't anything subtle or interesting.  You don't need to explain about
+constness.  Maybe you can say the word "hardenning" as an explanation.
+
+Julia asked you to write what steps you had done to ensure that the
+patch doesn't break anything.  And I was curious what she meant by that
+because I had forgotten that it would be bad if there were a cast that
+removed the const.  So the bit about "any attempt to alter
+gb_audio_module_type in the code would raise a compile-time error." is
+not true.
+
+Also we assume that you have compile tested everything so you never need
+to write that.
+
+The information which is missing from this commit message is the
+checkpatch warning.  I'm more familiar with checkpatch than a lot of
+kernel maintainers and I had forgotten that this was a checkpatch
+warning.  Please copy and paste the warning.
+
+Basically what I want in a commit message is this:
+
+"Checkpatch complains that "gb_audio_module_type" should be const as
+part of kernel hardenning.  <Copy and paste relevant bits from
+checkpatch>.  I have reviewed how this struct is used and it's never
+modified anywhere so checkpatch is correct that it can safely be
+declared as const.  Constify it."
+
+regards,
+dan carpenter
+
 
