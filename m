@@ -1,137 +1,235 @@
-Return-Path: <linux-kernel+bounces-105716-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105717-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B1A8787E35D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:51:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CFA6A87E360
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:52:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EA6DF2825A6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:51:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EFB051C20B47
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:52:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51B132231A;
-	Mon, 18 Mar 2024 05:51:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F062209D;
+	Mon, 18 Mar 2024 05:52:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DpZEY+Jm"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ssq9KoyX"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B55974C84;
-	Mon, 18 Mar 2024 05:51:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 653E5219E4;
+	Mon, 18 Mar 2024 05:52:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710741073; cv=none; b=exIHc+P06WOCvrCVt3c1EjFRN2u+wtWPX3FQJfALwHApannDUTPxgLV+gOVp8qcKtW1zyniRGl9aRpEZhyK6Byymfn0QQeeAsk++2ajVhlPc9aBfGrWM2KbNsSSybEoFenJEjtoce4rqXe35PlNwcVZ3Ya5qr7f+/rERfZfUByU=
+	t=1710741147; cv=none; b=nV4GbPX4AQDkBG0NIdk/KWBJNi86xz0TCu0eVLqsQ77lFMbJFfxPIOACkxUSK+O+rKOWYbLbq79+y5MY9dnACCEEhZ989WhN/xH/Ei8TWXzb4UkSr/pAzlbY8gmDeecEfDgL/g5oF7IvJFNkfxgfcWzykMgVn+tk1/TQUpDc2ik=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710741073; c=relaxed/simple;
-	bh=ZifoHiHF+0G0DDlsU72Q6JVu635GgHFgddmFiDxF9wo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=peIp6umRXkK7P9LbO7HiJkYu4aBQ4KQGVhULGPoqvy+NFb+3jquf0uU4lvluWOht55dhiPXdPx+C6VUW7RR2umPRcAqDQ4tug1NuG4TxW5KDsM4lIFnqjcabdXoLmxRC42xCG8diHVwdbzA1ziALGjepwyFl+pVwmL306KUa5Rc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DpZEY+Jm; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42I3SSOZ025531;
-	Mon, 18 Mar 2024 05:51:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=u0ICDs2zU4jCIeOhWZh7E5vm94P6RpA3q7jsOApTmN0=; b=Dp
-	ZEY+JmX3h9+8CJcjHBB4N6T5bCk8wYhIhLNvE+HWhpqKSy+yFrPNRVg8+9H7MHBG
-	0xQh9oTHiedEzIRzyowTFK3S6g9utYDGQ5jYqYhCVSXZ8ijPX0I2XwkLacxwftRe
-	fbpUyijCF26nvMhwOORVml8Y6V4U53kodUodjAaYbGBrKx69XjMT6Fiw/QK6b8A/
-	ykAJbYO955sM4WCthaF3beannBOAeLzakbVDB8RTkj3mwrrbYo8Ess8+5wkCXqAg
-	BIE3cGtL0F5JF9NZqgE6mYluvMkRMZnUL3iUv2iQ4Kfg9L7V5NSxo5LNY5sJpNw2
-	KO+7Vo5B1A7HjlB2sPKA==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wwxtb15aq-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 05:51:07 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42I5p7Xs020079
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 05:51:07 GMT
-Received: from [10.216.55.168] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 17 Mar
- 2024 22:51:02 -0700
-Message-ID: <7e1df07d-d047-4cfe-bfdd-fb17d0daf158@quicinc.com>
-Date: Mon, 18 Mar 2024 11:20:57 +0530
+	s=arc-20240116; t=1710741147; c=relaxed/simple;
+	bh=kVtWJwmgGzGWFvVb5ZU5qxatxchEdFKYX19+Ui8XHf8=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version; b=fmWRUarBsM6jwRLYhwKcpshxRccp9rYF9dMiNJZUnT986t0Dlyh7teOa//vfi6vn/9ys5GvTdSqld8LY6JogzbfCZBeoabCpnmjpgg+TPttwd/NF7f1OyxSIIdlYiTJtLKQ1VAJolJBoXD9o7b4K4S6co5arWVXpvQAfJn10COM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ssq9KoyX; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1deefb08b9eso13489335ad.3;
+        Sun, 17 Mar 2024 22:52:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710741145; x=1711345945; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:from:to:cc:subject:date:message-id:reply-to;
+        bh=90ypWIse8KDEw4JedjK1HuYEeI8yW2/WFlhRVCHxDPE=;
+        b=Ssq9KoyXvSNwFSNBZvq3TNUjNZ20FHtZe0n0Yl31PW3giYPWC0pCNjysxf+GOB6QOQ
+         EEC7mOa10jMilQ/nr6KyQ6kcl4sxwP3x3PlDLZKwHmdMxWxbQWTqse5etFzMDKB/aFwi
+         OGmk5JmLEG6Ob2ljR72ELBwbwkYGxuJidgFIsL/OLyTpoNtpoN1X2G/HrLGt4ZPQOAEc
+         yHYvML9yvJg6OPJ0qJS7YgPcuhSm0ZOu6fp7c9nQBOCEl6tWq7zolR5aEjcg9+mPCpg7
+         g3zvLNEUted+sd3JZvOLTfzAinRRNvPBcEMXnSIqEPCXbkcBP5yJ6ZaJbZL3qq3RvY6S
+         Odfw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710741145; x=1711345945;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=90ypWIse8KDEw4JedjK1HuYEeI8yW2/WFlhRVCHxDPE=;
+        b=I5O5l6NnOHhDZDKgyYPCq5LrxVoq0CA95I61cWxihHzgiGAtzOzln+5WQIGhCPCCqz
+         9Xd9wyQ316LscHs/15XePIDu+1n79E2QFNh3ScU0BORjxUEPp2x8qHrgckWtFMiVdRYF
+         bJQBHYDLO2rcyizoxSigCbyzf6EBP08PUCZWuLXTxs2sDQxgxt1ZiWB4H1+AHXoXgSQI
+         5BiVOfnvI0gSHbMdPhSBJa1ZUUDgbsj85ntcuTriZn+giUp5Md//BChxXSmGk9AZr52T
+         SpJ0Q9X9bZwdpGTO7BJiWaF21Z/4EGvgcXYs+RyJauPgJvvzswi6+WSVy22sXiZ69vZN
+         EB9Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVIH5d1h69IWRFZ2WK6n2CYbT58pCPD2vyQb0mU+cnvMvjGgWMCxoiJML/P1/YwxfuT2MhZ909GSiB5w+fDE0mOwglSelfgB+BXifjeNIaKNSnhPFOYS3S+X+2Fiw19o9/3p4UNrdHIg9qjtY60YYbf9CiINFVG8HpgkyuOtp6nSCEjFMV4ij8n
+X-Gm-Message-State: AOJu0YzGL2qCDBLlDLOsVaZc55ILflfXncGTqRepUXjn+tEZV45tcUOQ
+	FeHyhxPX+3okXXSVdVRj7ZdBhMrbailRY5eJnNCa8lWWo9HBRD4VLBFFZd0j
+X-Google-Smtp-Source: AGHT+IEzjVGGcpD2wdQdh4nNr8UA/bFIGmLYxCfglYwg6FzxomdZCRU5LfqgjRQaFqyKaDckZNH2Sg==
+X-Received: by 2002:a17:902:c412:b0:1dd:76f0:4455 with SMTP id k18-20020a170902c41200b001dd76f04455mr13656970plk.49.1710741145494;
+        Sun, 17 Mar 2024 22:52:25 -0700 (PDT)
+Received: from peter-bmc.dhcpserver.bu9bmc.local (2001-b400-e454-a466-01a3-78b9-4898-3442.emome-ip6.hinet.net. [2001:b400:e454:a466:1a3:78b9:4898:3442])
+        by smtp.gmail.com with ESMTPSA id j9-20020a170902da8900b001dd6c0800b4sm3975907plx.188.2024.03.17.22.52.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Sun, 17 Mar 2024 22:52:25 -0700 (PDT)
+From: Peter Yin <peteryin.openbmc@gmail.com>
+To: patrick@stwcx.xyz,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Joel Stanley <joel@jms.id.au>,
+	Andrew Jeffery <andrew@codeconstruct.com.au>,
+	Wim Van Sebroeck <wim@linux-watchdog.org>,
+	Guenter Roeck <linux@roeck-us.net>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-aspeed@lists.ozlabs.org,
+	linux-kernel@vger.kernel.org,
+	linux-watchdog@vger.kernel.org
+Subject: [PATCH v2] drivers: watchdog: ast2600 support bootstatus
+Date: Mon, 18 Mar 2024 13:52:19 +0800
+Message-Id: <20240318055219.3460121-1-peteryin.openbmc@gmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] arm64: dts: qcom: ipq8074: Remove unused gpio from QPIC
- pins
-Content-Language: en-US
-To: =?UTF-8?Q?Pawe=C5=82_Owoc?= <frut3k7@gmail.com>
-CC: Robert Marko <robimarko@gmail.com>,
-        Bjorn Andersson
-	<andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Rob Herring
-	<robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>, <linux-arm-msm@vger.kernel.org>,
-        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-References: <20240313102713.1727458-1-frut3k7@gmail.com>
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20240313102713.1727458-1-frut3k7@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
-X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: Pa9ZIP-g9LF56JKA-WbuR6oGjbQmtCC5
-X-Proofpoint-ORIG-GUID: Pa9ZIP-g9LF56JKA-WbuR6oGjbQmtCC5
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-17_12,2024-03-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 malwarescore=0
- adultscore=0 lowpriorityscore=0 clxscore=1011 phishscore=0 mlxlogscore=957
- impostorscore=0 bulkscore=0 spamscore=0 suspectscore=0 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.19.0-2403140001
- definitions=main-2403180042
 
+Add WDIOF_EXTERN1 and WDIOF_CARDRESET bootstatus in ast2600
 
+Regarding the AST2600 specification, the WDTn Timeout Status Register
+(WDT10) has bit 1 reserved. To verify the second boot source,
+we need to check SEC14 bit 12 and bit 13.
+The bits 8-23 in the WDTn Timeout Status Register are the Watchdog
+Event Count, which we can use to verify WDIOF_EXTERN1.
 
-On 3/13/2024 3:57 PM, Paweł Owoc wrote:
-> gpio16 will only be used for LCD support, as its NAND/LCDC data[8]
-> so its bit 9 of the parallel QPIC interface, and ONFI NAND is only 8
-> or 16-bit with only 8-bit one being supported in our case so that pin
-> is unused.
-> 
-> It should be dropped from the default NAND pinctrl configuration
-> as its unused and only needed for LCD.
+Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+---
+Change log:
 
+v1 -> v2
+  - Add comment and support WDIOF_CARDRESET in ast2600
 
-Matches with downstream.
+v1
+  - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
+---
+ arch/arm/boot/dts/aspeed/aspeed-g6.dtsi |  8 ++---
+ drivers/watchdog/aspeed_wdt.c           | 45 ++++++++++++++++++++++---
+ 2 files changed, 44 insertions(+), 9 deletions(-)
 
-Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+index e0b44498269f..23ae7f0430e9 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+@@ -556,24 +556,24 @@ uart5: serial@1e784000 {
+ 
+ 			wdt1: watchdog@1e785000 {
+ 				compatible = "aspeed,ast2600-wdt";
+-				reg = <0x1e785000 0x40>;
++				reg = <0x1e785000 0x40>, <0x1e6f2000 0x20>;
+ 			};
+ 
+ 			wdt2: watchdog@1e785040 {
+ 				compatible = "aspeed,ast2600-wdt";
+-				reg = <0x1e785040 0x40>;
++				reg = <0x1e785040 0x40>, <0x1e6f2000 0x020>;
+ 				status = "disabled";
+ 			};
+ 
+ 			wdt3: watchdog@1e785080 {
+ 				compatible = "aspeed,ast2600-wdt";
+-				reg = <0x1e785080 0x40>;
++				reg = <0x1e785080 0x40>, <0x1e6f2000 0x020>;
+ 				status = "disabled";
+ 			};
+ 
+ 			wdt4: watchdog@1e7850c0 {
+ 				compatible = "aspeed,ast2600-wdt";
+-				reg = <0x1e7850C0 0x40>;
++				reg = <0x1e7850C0 0x40>, <0x1e6f2000 0x020>;
+ 				status = "disabled";
+ 			};
+ 
+diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+index b4773a6aaf8c..65118e461130 100644
+--- a/drivers/watchdog/aspeed_wdt.c
++++ b/drivers/watchdog/aspeed_wdt.c
+@@ -33,6 +33,7 @@ struct aspeed_wdt {
+ 	void __iomem		*base;
+ 	u32			ctrl;
+ 	const struct aspeed_wdt_config *cfg;
++	void __iomem		*sec_base;
+ };
+ 
+ static const struct aspeed_wdt_config ast2400_config = {
+@@ -82,6 +83,15 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
+ #define WDT_RESET_MASK1		0x1c
+ #define WDT_RESET_MASK2		0x20
+ 
++/*
++ * Only Ast2600 support
++ */
++#define   WDT_EVENT_COUNTER_MASK	(0xFFF << 8)
++#define   WDT_SECURE_ENGINE_STATUS	(0x14)
++#define   ABR_IMAGE_SOURCE		BIT(12)
++#define   ABR_IMAGE_SOURCE_SPI		BIT(13)
++#define   SECOND_BOOT_ENABLE		BIT(14)
++
+ /*
+  * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
+  * enabled), specifically:
+@@ -313,6 +323,7 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+ 	const char *reset_type;
+ 	u32 duration;
+ 	u32 status;
++	u32 sec_st;
+ 	int ret;
+ 
+ 	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
+@@ -330,6 +341,12 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+ 	if (IS_ERR(wdt->base))
+ 		return PTR_ERR(wdt->base);
+ 
++	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
++		wdt->sec_base = devm_platform_ioremap_resource(pdev, 1);
++		if (IS_ERR(wdt->sec_base))
++			return PTR_ERR(wdt->sec_base);
++	}
++
+ 	wdt->wdd.info = &aspeed_wdt_info;
+ 
+ 	if (wdt->cfg->irq_mask) {
+@@ -459,12 +476,30 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+ 	}
+ 
+ 	status = readl(wdt->base + WDT_TIMEOUT_STATUS);
+-	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
+-		wdt->wdd.bootstatus = WDIOF_CARDRESET;
+ 
+-		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
+-		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
+-			wdt->wdd.groups = bswitch_groups;
++	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
++		/*
++		 * The WDTn Timeout Status Register bit 1 is reserved.
++		 * To verify the second boot source,
++		 * we need to check SEC14 bit 12 and bit 13.
++		 */
++		sec_st = readl(wdt->sec_base + WDT_SECURE_ENGINE_STATUS);
++		if( sec_st & SECOND_BOOT_ENABLE)
++			if (sec_st & ABR_IMAGE_SOURCE ||
++			    sec_st & ABR_IMAGE_SOURCE_SPI)
++				wdt->wdd.bootstatus |= WDIOF_CARDRESET;
++
++		/*
++		 * To check Watchdog Event Count for WDIOF_EXTERN1
++		 */
++		if (status & WDT_EVENT_COUNTER_MASK) {
++			wdt->wdd.bootstatus |= WDIOF_EXTERN1;
++		}
++	} else {
++		wdt->wdd.groups = bswitch_groups;
++
++		if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY)
++			wdt->wdd.bootstatus = WDIOF_CARDRESET;
+ 	}
+ 
+ 	dev_set_drvdata(dev, wdt);
+-- 
+2.25.1
 
-
-> 
-> Signed-off-by: Paweł Owoc <frut3k7@gmail.com>
-> ---
->   arch/arm64/boot/dts/qcom/ipq8074.dtsi | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/arch/arm64/boot/dts/qcom/ipq8074.dtsi b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> index e5b89753aa5c..8bed34174460 100644
-> --- a/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> +++ b/arch/arm64/boot/dts/qcom/ipq8074.dtsi
-> @@ -349,7 +349,7 @@ qpic_pins: qpic-state {
->   				       "gpio5", "gpio6", "gpio7",
->   				       "gpio8", "gpio10", "gpio11",
->   				       "gpio12", "gpio13", "gpio14",
-> -				       "gpio15", "gpio16", "gpio17";
-> +				       "gpio15", "gpio17";
->   				function = "qpic";
->   				drive-strength = <8>;
->   				bias-disable;
 
