@@ -1,100 +1,94 @@
-Return-Path: <linux-kernel+bounces-106343-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106345-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8541187ECC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:55:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5675C87ECCD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:56:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5BD6B21893
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:55:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 196D0280F64
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:56:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4C29B52F77;
-	Mon, 18 Mar 2024 15:55:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nW5D+Bib"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B956D52F7E;
+	Mon, 18 Mar 2024 15:56:11 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86AB553383;
-	Mon, 18 Mar 2024 15:55:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EDA3A524DE
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:56:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710777307; cv=none; b=iL4xGelzCpmW69T306NbQ6CE9l/qfz3vfwu3/UodeKsRJzJ1DnWDwa1T7tTqCffvJe3msXVsngDKUCVV8ZpyLlqzqZbgMcnrhv3UsacBsFDsKQb94xDK7/jlTTc0BikEIvyACuvSGalCf/v7wTAu/a7waTd0V26265sfMdf+29Y=
+	t=1710777371; cv=none; b=rQIeHfc3VoJ//2oWat4HhGM0eB7/FZPsReztM/Y/qSy5aMpQSFqJkSbQIwFVOg1qrf+EyN8sutOiYXgbANpsfXENz4f6e7Sp+UraEsuMOMllWJtPdISc3czryRrMxU2praVcvw305bRBut6H1ivyWRUR1xk8wiwR//3PPUlLp4U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710777307; c=relaxed/simple;
-	bh=dn4Mk0NAISKw4/N13srMplC75+6kBOMmaf/XVYCYjlE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=dDdWGo4RBmFuuCM+YWYBKIDNOLdb4hqvYjEJKKlHynE3jsIr04OE2no1ZkzkN9EQVRm6GWRwzYBP3htaU9kFaZYho9O/0YqN1TKdD1F5SK4lqWf99hLtW/uHVqF6zmh1xnvMy9CCutJjIXI6NisRD4++BYQKBkRjUkLMHan3yCg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nW5D+Bib; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0061BC433F1;
-	Mon, 18 Mar 2024 15:55:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710777307;
-	bh=dn4Mk0NAISKw4/N13srMplC75+6kBOMmaf/XVYCYjlE=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=nW5D+BibDvQ6CgkuaG5ja16EmbJb6gy4ZFh3o11fxMI3HJFmIVNuMQhf/SqiF24W3
-	 Oe0Gj4mYcMAHmXdESGRQjhKx4kT5ThENJfMNSGUZDch4O9ZG8VPMXrGzhrUGlKobk/
-	 c/CAgRQv/FfQbEhFHFE+rE/VUmGX2cy3tVC1q5wiy7rmMC0wWavMv9qix9oqc7kxWW
-	 uhfd++K0br97L3gFBx0GvQiQwWSHmHB41OE++axTSkg/0m6Iy7tpg8UP/SZvE1c+aB
-	 0xLNP8peByPusiYS94wkmcfhbRN5BDMI8ojovbOUmDEhVrEn7rab3kHmci0+jI1aTM
-	 CZEOw3gEB/qsg==
-Date: Mon, 18 Mar 2024 15:55:01 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Adam Butcher <adam@jessamine.co.uk>
-Cc: benjamin@bigler.one, carlos.song@nxp.com, s.hauer@pengutronix.de,
-	shawnguo@kernel.org, stefanmoring@gmail.com, kernel@pengutronix.de,
-	linux-imx@nxp.com, linux-kernel@vger.kernel.org,
-	linux-spi@vger.kernel.org
-Subject: Re: [PATCH v2] spi: spi-imx: fix off-by-one in mx51 CPU mode burst
- length
-Message-ID: <98914a36-e5dc-4f44-bf3e-c237d803a7e8@sirena.org.uk>
-References: <20240313210258.5990-1-adam@jessamine.co.uk>
+	s=arc-20240116; t=1710777371; c=relaxed/simple;
+	bh=VI4jxzNgLrtL4yc9lnV2mABn91LpO/tbxJWk0qqgnw4=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=gSNRhGBIjvY4F8RyP/HQIWexgBBzxdThOWUd6BMU47EwuRfvQmYD0e5zkxwEi8enOVmk74gWoUZ0BEhUFLiBXIxvXezoxdV9Wl4FX+UT4+SWqENj3zEyEpjO/2hTC2FQ8WzjogY1N3sW/JxDldkoXrDcf0TyTa/0yFtbEBuJfIA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cc70b85c48so84769839f.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:56:09 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710777369; x=1711382169;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=l3ezPXJXQwsR7BDGZUJv1LoFcv0GvmsTyFJHfj+hkm0=;
+        b=b4aP1uYoGsQiH7RAlQfDO/suGsrC+3TfkBZsuFr4st6QxWiJ4hZj2cqQ3Ekmn/U4+J
+         go4AcXm60JQzPCMi8jqLsLJLzqR/elj0LesIvgKd7zBNn2jltHxNHzOlzJ2x9dlA+oLZ
+         L+4dvGK+AJU5IczxisLQcx4NmnNTX7B8VIxQJj6SFsFjzAkQaWeDjObmnTImcvQd4yue
+         f6ristpwW3iSy+Rjxfz1Wbh6/dDejjVerPLBsaD1JRSOqtkaHhGtK+q39+zA7p5Px9f0
+         gsnnolc+bb2S8QR5312fc7bvdX9QZwgWtfpq9ccf0zb+kLe7ZjSOMZ9f2A1uZla0XTPw
+         PZ/g==
+X-Gm-Message-State: AOJu0YxVgeLVwUkOibUitD06OkBjOZZUwKkYHNbjvUs95hkBk+jK67bx
+	RecG7W+ynkUy3VTEIkvIbjetnwVuV5qaBvd7q+r2xsaPY9rCULEvJ8bdP6tMEDi7Y1Jccqtg4SY
+	HnSWg7e8zf8zEnymRAzPxnDJnpY/FQlCIFGrMeixRI25zm59QlDdwnnHT+A==
+X-Google-Smtp-Source: AGHT+IEUfGLyUpRaWvyNz7rB5R3LkvV/ohITqAazMCUjidNwTQ4B1Nn9/24mZ9rp8ukpiFTV+vDl5bMGJ0Ycv41XgklqDZC0V1TJ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="ZRYg3tMygsCO1ry3"
-Content-Disposition: inline
-In-Reply-To: <20240313210258.5990-1-adam@jessamine.co.uk>
-X-Cookie: I have become me without my consent.
+X-Received: by 2002:a05:6638:2403:b0:474:f25a:6fb with SMTP id
+ z3-20020a056638240300b00474f25a06fbmr932843jat.3.1710777369179; Mon, 18 Mar
+ 2024 08:56:09 -0700 (PDT)
+Date: Mon, 18 Mar 2024 08:56:09 -0700
+In-Reply-To: <000000000000169132060fc66db3@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000006148170613f165e2@google.com>
+Subject: Re: [syzbot] [PATCH net v2] nfc: nci: Fix uninit-value in nci_dev_up
+From: syzbot <syzbot+7ea9413ea6749baf5574@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org.
 
---ZRYg3tMygsCO1ry3
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+***
 
-On Wed, Mar 13, 2024 at 08:58:19PM +0000, Adam Butcher wrote:
-> From: Adam Butcher <adam@jessamine.co.uk>
->=20
-> 992e1211dc91 ("spi: imx: fix the burst length at DMA mode and CPU mode")
-> corrects three cases of setting the ECSPI burst length but erroneously
-> leaves the in-range CPU case one bit to big (in that field a value of
-> 0 means 1 bit).  The effect was that transmissions that should have been
-> 8-bit bytes appeared as 9-bit causing failed communication with SPI
-> devices.
+Subject: [PATCH net v2] nfc: nci: Fix uninit-value in nci_dev_up
+Author: ryasuoka@redhat.com
 
-This doesn't apply against current code, please check and resend.
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git 9f8413c4a66f2fb776d3dc3c9ed20bf435eb305e
 
---ZRYg3tMygsCO1ry3
-Content-Type: application/pgp-signature; name="signature.asc"
+diff --git a/net/nfc/nci/core.c b/net/nfc/nci/core.c
+index 6c9592d05120..f471fc54c6a1 100644
+--- a/net/nfc/nci/core.c
++++ b/net/nfc/nci/core.c
+@@ -1512,6 +1512,11 @@ static void nci_rx_work(struct work_struct *work)
+ 		nfc_send_to_raw_sock(ndev->nfc_dev, skb,
+ 				     RAW_PAYLOAD_NCI, NFC_DIRECTION_RX);
+ 
++		if (!nci_plen(skb->data)) {
++			kfree_skb(skb);
++			break;
++		}
++
+ 		/* Process frame */
+ 		switch (nci_mt(skb->data)) {
+ 		case NCI_MT_RSP_PKT:
 
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX4Y9UACgkQJNaLcl1U
-h9D0rAf+JpjGh4Vbmsuza2/SGG1M7Z9mIQpkMqQka+4SaFM/nAs+PyG6FHosvFa4
-Xz1KYIYK77xzsT3IVzXQJ/jfZ0uG//slbbWPV2og6oispMvAnizMFAC/6uk/R3rd
-K4p6iCXc0KjXhiPmilRBbEPCDqNS6g68STCisQLPJiJCQE+ANV8CPsDJG9F3qnQx
-uWrqddeU1T9KyOpCZVBcJOOe/o1KEbZfD2gV7vODWSypox5NRt0VIEN3fNc33Jhc
-+8tFddLlA5DcsBkupP4aSLH1+5efhSawcCouisMjJRiL5Cdbv6V+uoUo/5jeap4i
-ul49WCy/f3b6bXdkDNzVWIvoA7y9mQ==
-=YpBk
------END PGP SIGNATURE-----
-
---ZRYg3tMygsCO1ry3--
 
