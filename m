@@ -1,340 +1,173 @@
-Return-Path: <linux-kernel+bounces-106396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106397-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E884187EDED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:50:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 33F9787EDF2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:50:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9ECA22838B5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:50:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DE571F236E6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:50:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B1EB55C34;
-	Mon, 18 Mar 2024 16:48:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 960A355E7C;
+	Mon, 18 Mar 2024 16:48:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k3w50cXa"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ezgxXPKU"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4105B54FA6;
-	Mon, 18 Mar 2024 16:48:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56FC955E55;
+	Mon, 18 Mar 2024 16:48:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710780510; cv=none; b=ZBuhdQEAm9CGM25GcALa/Nwq8I2OHwC3CSjIGpWBEE/OF/j4WWcmzR9+tAmaSudkNHO0niEjeT8Ro+azXNy5UjB3SZmIM18ybq+gZCs4ODkzF32QcYv8ntzuNLImnz3LlnMaYVmdDapb6xnSbpnLkuLJtib17yvzILdoMjvMsvA=
+	t=1710780517; cv=none; b=k5vkQLSu76ZdFE6S8pJEbIV2UxgSDNlHBy6PNtKiY/0WVigiL8ECiupWwEHG6CrIg6ETGp7oPf95Xk2S8J28ZIdZTwzwfnPKk82H2QzX34GzEAyudMo3yJDbc1bXesvjW91sXvACqD8pgEGOc+HfLYiGIA9L5ciBoVyB2LMKa1M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710780510; c=relaxed/simple;
-	bh=yGU/0gf5M1EqusA+t0d+zz931jpa6jjz9G8iT77WZek=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=ldudGrr6sH5RPJ4dloEmB5aXCWRfkDLHg0Qmu9Dn+3CWbB9MGVnPcD3cNqzpBPDpp7ibQNnj+WZS0OC2dHNrbQhE956MxNaYE38tqRtvZ6pJMkbE1aPTHmOEoIoG0nU4CS1yanjxcbFmjE7gTbi/3nZT3FYNci6Wcf3/h6X60w8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k3w50cXa; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 508F6C433F1;
-	Mon, 18 Mar 2024 16:48:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710780510;
-	bh=yGU/0gf5M1EqusA+t0d+zz931jpa6jjz9G8iT77WZek=;
-	h=From:Date:Subject:To:Cc:From;
-	b=k3w50cXatDgcL9NK9Q2HcqD+oVewJZN4RL2cdEYiEMzrdMgYGy8CP3YWssngfvbGY
-	 xHc4c+0Uqo99vPfNivqd2SQmNunOAjNDnvae/HJ551B/3yz00G7eAmNiJVv5LBLSLS
-	 n7HzrL/k5pWz92lHoCi9KkdWFA+R3JTzExNbWCWU+qYBOG0tfYTHY4EAqVwcGWum9X
-	 TWjt/0V+853uU6VWlrOdN4lnLinUr1dpcJEPqT60P0yYsf3s55Q+3G06GcGmuHQFXY
-	 Sl3g+LTS6ulUt+SXei60M7p/XHQ8NjlNfUNL+jcCMKyMyXUJO25r4n/wFxKTeurUFH
-	 R9nEGUqGVp/6Q==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 18 Mar 2024 12:48:04 -0400
-Subject: [PATCH] nfsd: trivial GET_DIR_DELEGATION support
+	s=arc-20240116; t=1710780517; c=relaxed/simple;
+	bh=lU1C7DTp85JKeNgKskraiH+mdgY/2X4yC/gVSR1xvnI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=fHZwoEY7EH7/OIXuUfUYVvTY0LU6ieuPCMdYDH5eIJS4Z07xr+OEqAzywxH1nTib8U8IPD5vl2wLizc2CjXnFNXNQlQXI5DqdJTusGKixESX7Nv1lWWkTa9ouo+7g0WtDGxbaLVW8ZQ9VdF+iXPkuBMg+mLU4c7iy1j4mKu7aUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ezgxXPKU; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1def142ae7bso28414725ad.3;
+        Mon, 18 Mar 2024 09:48:35 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710780515; x=1711385315; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=iZIqnQz5vGWxZVXKOkJZQyu5dPoIWDD5/kalhVDtvps=;
+        b=ezgxXPKUlpRyMJ4S99HXbJ5HusOPCeNyCau+6UixsrOKBru9+4JtrP9RSTw9XMSEvQ
+         /VR7JR9SRgm20Z7eQehWJNF28uOhc9kHS9nH1Bj4vEV/pVrA41o+iXTKRhElQ+UY/aRV
+         JPfnwK99nr6bY0ZNEC92nAREj+VlggvtPvm8gIZReAQ9n6fgiYFzMvo6RRuIWh/ejEye
+         tVhtPRw3d50RsxEHuHjlUE465VsqEktxKzFVwFc/bkSeXz1H/ucxoB7s2odwuGoSyHTA
+         4FRhHE+0h+w/0U3TYRChsctkSHTYIsqoyCpLwIhniAHLetz67Z3pOSVBNO1umhHgD/ZS
+         Oyxw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710780515; x=1711385315;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=iZIqnQz5vGWxZVXKOkJZQyu5dPoIWDD5/kalhVDtvps=;
+        b=RI1a4tSn2iL2euxP5L6JtuFZ1oFB41RvG3DYsHyxmIhaJHpXe5fozvS8FH3w8i2EEM
+         3v30QUSQtgbQ63j2gzS1+SuoNO6N/II/zSErbf/yx4UjH0XSSCwyK58e4rYgzJWXQP2N
+         oCTE04bXlkUeqxh4l4+9gnHF+wlXDYt318l3fvm1FAXVOXGrXDDtBUjupkRCdSBU8W4A
+         0IWsKHsVwm9v3vCF/ASi7mSbP9oNDYYa6llG37ubQgrY4uG6ReRF/pakdwPy1fmBtFqU
+         kBLKQy6I61FC56xlFGjCWye8YsnbbuvA0H1zyQ6FG+LXbeYH+sBc/fLo0SNQxrdKajek
+         NLow==
+X-Forwarded-Encrypted: i=1; AJvYcCU1I1czZG0fkNK1c0COwfVAiIJr3kc4FIq928lPLMIBeTuHEMiBSOpExOohYO7jnMN/40NfYEtp+WcBJI6h6z+6NO9f1rNEKbDP6gvEGZIsTHR+JvZ829TA+ooykg1AL5zqcNFgKscXdCY/9K9poxlFGjVA0eVyVgm+hR4l39Xna+6i92BZMxzb5TDtfzQMiFxL0TL3IfTpuayM3XyGKZEXVf+qaXx2e57/Tc65SvAvKODrKk4DTVFlgE/i
+X-Gm-Message-State: AOJu0Yye7uYGFfiwnEeZm/cJw5Pzlgfivqd7dVgP1537gnVo/BE+KeTc
+	FFePzdyfGQd0u4DoVCF+14f5v0uGlZaoT8MjjR0+B3V7YlIqY9Fs
+X-Google-Smtp-Source: AGHT+IG6M8/5lB2addB/juUQJBdlWWsB8Nf1BI7pBnm8QdHQjPXouIOnERH5hJQZWk8zecX3k6LseA==
+X-Received: by 2002:a17:902:d512:b0:1e0:1355:c6b9 with SMTP id b18-20020a170902d51200b001e01355c6b9mr5063253plg.32.1710780515262;
+        Mon, 18 Mar 2024 09:48:35 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id f9-20020a170902ce8900b001d949393c50sm2984482plg.187.2024.03.18.09.48.34
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 09:48:34 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <8adceac6-9b23-4457-bb9a-8f7e55a581f9@roeck-us.net>
+Date: Mon, 18 Mar 2024 09:48:33 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Radu Sabau <radu.sabau@analog.com>, Jean Delvare <jdelvare@suse.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, linux-hwmon@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20240318112140.385244-1-radu.sabau@analog.com>
+ <20240318112140.385244-3-radu.sabau@analog.com>
+ <04b39945-e4e1-43bd-83bf-0d7eb3730352@linaro.org>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <04b39945-e4e1-43bd-83bf-0d7eb3730352@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-Message-Id: <20240318-nfs-gdd-trivial-v1-1-158924b9e00d@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAENw+GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDY0ML3by0Yt30lBTdkqLMsszEHF1DyySz5EQzU2MLE0MloK6CotS0zAq
- widGxtbUAhG3LP2EAAAA=
-To: Chuck Lever <chuck.lever@oracle.com>, Neil Brown <neilb@suse.de>, 
- Olga Kornievskaia <kolga@netapp.com>, Dai Ngo <Dai.Ngo@oracle.com>, 
- Tom Talpey <tom@talpey.com>, 
- Trond Myklebust <trond.myklebust@hammerspace.com>, 
- Anna Schumaker <anna@kernel.org>
-Cc: linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=8435; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=yGU/0gf5M1EqusA+t0d+zz931jpa6jjz9G8iT77WZek=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl+HBVp06wW7PPjy/egf7OEtVwU59KWmIoT3Kxc
- dfOWEZSgGeJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZfhwVQAKCRAADmhBGVaC
- FSnMD/9MvlvA6epxY6FccjlMbfRfWb8T867VI1M93qHHvvQhp+buXVzFHcOqsbbI48uki/fcTns
- gKBmEC/qVw5MN+UZjrgPf7dhOH2WY0A6IU42drZIWkXoBbpx6rVMMx0np8xs6YCG0Bo8bJwzxfG
- G7fuFj7GGrItGbUrrdcyqBnwsbNjUbTUW0pKGRuEjb8V/Tj4lTlSJEuKZh4zVJCrVfjb7fh0K5o
- QqDsassoBrHrFDb+pc+Lgp7ZsKaYqcOV5lWmvV0duZSnwwOGFxV1bChPLFF4MzMb3hqpECAC53n
- hxf6juIxs5nMJUZmmxyJ0rI/AurhQhfMK9+M38A/58NZR9tQZYCkQQiGhm9Ew5jlQ9cM8AAtkBL
- BgJU4jRsSxrHrk7a1o3C4A1Z7FlPv0zn3mh3SZ9EdLO+0N9jm8q9Za5QydFHvdPBpDHLcC7+k9w
- oEh0W25hIbLFA8oUaVYWY6lJzUz79DPYlzO6xKPtYX7dCgG/njyii0KX8rEOOCPhCyExWvzv6Ow
- PZGR3NMya86LOOipMlRup45HIpOWqDxVP6DyQDaZXrDQvS+srSeUSb5ld1cTebWHO/4PiTyJBEv
- i/wgB7zzdixDSexBNsvfzGVxbUsQ9i/EPm4xyAV0Z097wPHmrowyRR9sCRFczZl7/yzq/PEB1Hg
- W+gU6nNhm0Ge/aQ==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-This adds basic infrastructure for handing GET_DIR_DELEGATION calls from
-clients, including the decoders and encoders. For now, the server side
-always just returns that the  delegation is GDDR_UNAVAIL (and that we
-won't call back).
+On 3/18/24 09:12, Krzysztof Kozlowski wrote:
+> On 18/03/2024 12:21, Radu Sabau wrote:
+>> Add support for ADP1050 Digital Controller for Isolated Power Supplies
+>> with PMBus interface Voltage, Current and Temperature Monitor.
+>>
+> 
+> ...
+> 
+>> +static int adp1050_probe(struct i2c_client *client)
+>> +{
+>> +	u32 vin_scale_monitor, iin_scale_monitor;
+>> +	int ret;
+>> +
+>> +	if (!i2c_check_functionality(client->adapter,
+>> +				     I2C_FUNC_SMBUS_WRITE_WORD_DATA))
+>> +		return -ENODEV;
+>> +
+>> +	/* Unlock CHIP's password in order to be able to read/write to it's
+>> +	 * VIN_SCALE and IIN_SCALE registers.
+>> +	*/
+>> +	ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
+>> +	if (ret < 0) {
+>> +		dev_err_probe(&client->dev, "Device can't be unlocked.\n");
+> 
+> Syntax is: return dev_err_probe(). Same in other places.
+> 
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Please consider this for v6.10. Eventually clients may start sending
-this operation, and it's better if we can return GDD4_UNAVAIL instead of
-having to abort the whole compound.
----
- fs/nfsd/nfs4proc.c   | 30 +++++++++++++++++
- fs/nfsd/nfs4xdr.c    | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++--
- fs/nfsd/xdr4.h       | 19 +++++++++++
- include/linux/nfs4.h |  6 ++++
- 4 files changed, 144 insertions(+), 2 deletions(-)
+dev_err_probe() expects the error number as second parameter, so I don't
+really understand how the above even compiles.
 
-diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-index 2927b1263f08..46b3d99c2786 100644
---- a/fs/nfsd/nfs4proc.c
-+++ b/fs/nfsd/nfs4proc.c
-@@ -2154,6 +2154,18 @@ nfsd4_verify(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
- 	return status == nfserr_same ? nfs_ok : status;
- }
- 
-+static __be32
-+nfsd4_get_dir_delegation(struct svc_rqst *rqstp,
-+			 struct nfsd4_compound_state *cstate,
-+			 union nfsd4_op_u *u)
-+{
-+	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
-+
-+	/* FIXME: implement directory delegations */
-+	gdd->gddrnf_status = GDD4_UNAVAIL;
-+	return nfs_ok;
-+}
-+
- #ifdef CONFIG_NFSD_PNFS
- static const struct nfsd4_layout_ops *
- nfsd4_layout_verify(struct svc_export *exp, unsigned int layout_type)
-@@ -3082,6 +3094,18 @@ static u32 nfsd4_copy_notify_rsize(const struct svc_rqst *rqstp,
- 		* sizeof(__be32);
- }
- 
-+static u32 nfsd4_get_dir_delegation_rsize(const struct svc_rqst *rqstp,
-+					  const struct nfsd4_op *op)
-+{
-+	return (op_encode_hdr_size +
-+		1 /* gddr_status */ +
-+		op_encode_verifier_maxsz +
-+		op_encode_stateid_maxsz +
-+		2 /* gddr_notification */ +
-+		2 /* gddr_child_attributes */ +
-+		2 /* gddr_dir_attributes */);
-+}
-+
- #ifdef CONFIG_NFSD_PNFS
- static u32 nfsd4_getdeviceinfo_rsize(const struct svc_rqst *rqstp,
- 				     const struct nfsd4_op *op)
-@@ -3470,6 +3494,12 @@ static const struct nfsd4_operation nfsd4_ops[] = {
- 		.op_get_currentstateid = nfsd4_get_freestateid,
- 		.op_rsize_bop = nfsd4_only_status_rsize,
- 	},
-+	[OP_GET_DIR_DELEGATION] = {
-+		.op_func = nfsd4_get_dir_delegation,
-+		.op_flags = OP_MODIFIES_SOMETHING,
-+		.op_name = "OP_GET_DIR_DELEGATION",
-+		.op_rsize_bop = nfsd4_get_dir_delegation_rsize,
-+	},
- #ifdef CONFIG_NFSD_PNFS
- 	[OP_GETDEVICEINFO] = {
- 		.op_func = nfsd4_getdeviceinfo,
-diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-index fac938f563ad..369b85e42440 100644
---- a/fs/nfsd/nfs4xdr.c
-+++ b/fs/nfsd/nfs4xdr.c
-@@ -1732,6 +1732,40 @@ nfsd4_decode_free_stateid(struct nfsd4_compoundargs *argp,
- 	return nfsd4_decode_stateid4(argp, &free_stateid->fr_stateid);
- }
- 
-+static __be32
-+nfsd4_decode_get_dir_delegation(struct nfsd4_compoundargs *argp,
-+		union nfsd4_op_u *u)
-+{
-+	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
-+	__be32 status;
-+
-+	memset(gdd, 0, sizeof(*gdd));
-+
-+	if (xdr_stream_decode_bool(argp->xdr, &gdd->gdda_signal_deleg_avail) < 0)
-+		return nfserr_bad_xdr;
-+
-+	status = nfsd4_decode_bitmap4(argp, gdd->gdda_notification_types,
-+				      ARRAY_SIZE(gdd->gdda_notification_types));
-+	if (status)
-+		return status;
-+
-+	status = nfsd4_decode_nfstime4(argp, &gdd->gdda_child_attr_delay);
-+	if (status)
-+		return status;
-+
-+	status = nfsd4_decode_nfstime4(argp, &gdd->gdda_dir_attr_delay);
-+	if (status)
-+		return status;
-+
-+	status = nfsd4_decode_bitmap4(argp, gdd->gdda_child_attributes,
-+					ARRAY_SIZE(gdd->gdda_child_attributes));
-+	if (status)
-+		return status;
-+
-+	return nfsd4_decode_bitmap4(argp, gdd->gdda_dir_attributes,
-+					ARRAY_SIZE(gdd->gdda_dir_attributes));
-+}
-+
- #ifdef CONFIG_NFSD_PNFS
- static __be32
- nfsd4_decode_getdeviceinfo(struct nfsd4_compoundargs *argp,
-@@ -2370,7 +2404,7 @@ static const nfsd4_dec nfsd4_dec_ops[] = {
- 	[OP_CREATE_SESSION]	= nfsd4_decode_create_session,
- 	[OP_DESTROY_SESSION]	= nfsd4_decode_destroy_session,
- 	[OP_FREE_STATEID]	= nfsd4_decode_free_stateid,
--	[OP_GET_DIR_DELEGATION]	= nfsd4_decode_notsupp,
-+	[OP_GET_DIR_DELEGATION]	= nfsd4_decode_get_dir_delegation,
- #ifdef CONFIG_NFSD_PNFS
- 	[OP_GETDEVICEINFO]	= nfsd4_decode_getdeviceinfo,
- 	[OP_GETDEVICELIST]	= nfsd4_decode_notsupp,
-@@ -5002,6 +5036,59 @@ nfsd4_encode_device_addr4(struct xdr_stream *xdr,
- 	return nfserr_toosmall;
- }
- 
-+static __be32
-+nfsd4_encode_get_dir_delegation(struct nfsd4_compoundres *resp, __be32 nfserr,
-+				union nfsd4_op_u *u)
-+{
-+	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
-+	struct xdr_stream *xdr = resp->xdr;
-+	__be32 status = nfserr_resource;
-+
-+	switch(gdd->gddrnf_status) {
-+	case GDD4_OK:
-+		if (xdr_stream_encode_u32(xdr, GDD4_OK) != XDR_UNIT)
-+			break;
-+
-+		status = nfsd4_encode_verifier4(xdr, &gdd->gddr_cookieverf);
-+		if (status)
-+			break;
-+
-+		status = nfsd4_encode_stateid4(xdr, &gdd->gddr_stateid);
-+		if (status)
-+			break;
-+
-+		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_notification[0], 0, 0);
-+		if (status)
-+			break;
-+
-+		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_child_attributes[0],
-+						   gdd->gddr_child_attributes[1],
-+						   gdd->gddr_child_attributes[2]);
-+		if (status)
-+			break;
-+
-+		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_dir_attributes[0],
-+						   gdd->gddr_dir_attributes[1],
-+						   gdd->gddr_dir_attributes[2]);
-+		break;
-+	default:
-+		/*
-+		 * If we don't recognize the gddrnf_status value, just treat it
-+		 * like unavail + no notification, but print a warning too.
-+		 */
-+		pr_warn("nfsd: bad gddrnf_status (%u)\n", gdd->gddrnf_status);
-+		gdd->gddrnf_will_signal_deleg_avail = 0;
-+		fallthrough;
-+	case GDD4_UNAVAIL:
-+		if (xdr_stream_encode_u32(xdr, GDD4_UNAVAIL) != XDR_UNIT)
-+			break;
-+
-+		status = nfsd4_encode_bool(xdr, gdd->gddrnf_will_signal_deleg_avail);
-+		break;
-+	}
-+	return status;
-+}
-+
- static __be32
- nfsd4_encode_getdeviceinfo(struct nfsd4_compoundres *resp, __be32 nfserr,
- 		union nfsd4_op_u *u)
-@@ -5580,7 +5667,7 @@ static const nfsd4_enc nfsd4_enc_ops[] = {
- 	[OP_CREATE_SESSION]	= nfsd4_encode_create_session,
- 	[OP_DESTROY_SESSION]	= nfsd4_encode_noop,
- 	[OP_FREE_STATEID]	= nfsd4_encode_noop,
--	[OP_GET_DIR_DELEGATION]	= nfsd4_encode_noop,
-+	[OP_GET_DIR_DELEGATION]	= nfsd4_encode_get_dir_delegation,
- #ifdef CONFIG_NFSD_PNFS
- 	[OP_GETDEVICEINFO]	= nfsd4_encode_getdeviceinfo,
- 	[OP_GETDEVICELIST]	= nfsd4_encode_noop,
-diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
-index 415516c1b27e..446e72b0385e 100644
---- a/fs/nfsd/xdr4.h
-+++ b/fs/nfsd/xdr4.h
-@@ -518,6 +518,24 @@ struct nfsd4_free_stateid {
- 	stateid_t	fr_stateid;         /* request */
- };
- 
-+struct nfsd4_get_dir_delegation {
-+	/* request */
-+	u32			gdda_signal_deleg_avail;
-+	u32			gdda_notification_types[1];
-+	struct timespec64	gdda_child_attr_delay;
-+	struct timespec64	gdda_dir_attr_delay;
-+	u32			gdda_child_attributes[3];
-+	u32			gdda_dir_attributes[3];
-+	/* response */
-+	u32			gddrnf_status;
-+	nfs4_verifier		gddr_cookieverf;
-+	stateid_t		gddr_stateid;
-+	u32			gddr_notification[1];
-+	u32			gddr_child_attributes[3];
-+	u32			gddr_dir_attributes[3];
-+	bool			gddrnf_will_signal_deleg_avail;
-+};
-+
- /* also used for NVERIFY */
- struct nfsd4_verify {
- 	u32		ve_bmval[3];        /* request */
-@@ -797,6 +815,7 @@ struct nfsd4_op {
- 		struct nfsd4_reclaim_complete	reclaim_complete;
- 		struct nfsd4_test_stateid	test_stateid;
- 		struct nfsd4_free_stateid	free_stateid;
-+		struct nfsd4_get_dir_delegation	get_dir_delegation;
- 		struct nfsd4_getdeviceinfo	getdeviceinfo;
- 		struct nfsd4_layoutget		layoutget;
- 		struct nfsd4_layoutcommit	layoutcommit;
-diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
-index ef8d2d618d5b..0d896ce296ce 100644
---- a/include/linux/nfs4.h
-+++ b/include/linux/nfs4.h
-@@ -701,6 +701,12 @@ enum state_protect_how4 {
- 	SP4_SSV		= 2
- };
- 
-+/* GET_DIR_DELEGATION non-fatal status codes */
-+enum gddrnf4_status {
-+	GDD4_OK		= 0,
-+	GDD4_UNAVAIL	= 1
-+};
-+
- enum pnfs_layouttype {
- 	LAYOUT_NFSV4_1_FILES  = 1,
- 	LAYOUT_OSD2_OBJECTS = 2,
-
----
-base-commit: c442a42363b2ce5c3eb2b0ff1e052ee956f0a29f
-change-id: 20240318-nfs-gdd-trivial-19b6ca653841
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
+Guenter
 
 
