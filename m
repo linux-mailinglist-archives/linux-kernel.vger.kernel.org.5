@@ -1,177 +1,252 @@
-Return-Path: <linux-kernel+bounces-105845-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B607E87E559
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:01:24 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A395087E562
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:04:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D5C7C1C21548
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:01:23 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DDBEBB21447
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D1C28E0B;
-	Mon, 18 Mar 2024 09:01:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EFE328DD8;
+	Mon, 18 Mar 2024 09:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="Bk5ws+Zg";
-	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="BN4mcNZW"
-Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="vXj2NRw9"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBD5B28DC9;
-	Mon, 18 Mar 2024 09:01:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBFA25634
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:04:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710752475; cv=none; b=Q7RWJYczDyfrakL0TjJGbxc4iEsxSqefQcFUvoi2vGGP9Xu3PV17JJd2UMz5Nm+q2q77GxgrUyjtURdhephoDSgxWRx0rXyyYAhuwlvF1uL+74/Givxx/v0GXOo4Yw3qfDlyxqKrEfWnbEbMyWT1q9aoRx6A9S2Y+oZqMcWOx7I=
+	t=1710752674; cv=none; b=hDgqHiF+hagYMDjRQNUdl7ouR4l/QtLfZMjGpI+/KW9Est+PJoAqi1SvSVSyIh13hk0ZOKdLqCYob/q7UFOsP1opZTL8KXxpn/cgTZdsKJ+HVIOomnkKs1lHbvG5Tw2kHP59eO/stdn65aTVJ6UQ6T1Tkup85ciA+DwvKle7JpQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710752475; c=relaxed/simple;
-	bh=2o4/pJGqG1gzwjf7h/MbArnmzBbXAOBen6beh+yYECQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jgTZuHNyWF/aupvX+6+gMNspvo+MMW0RwGVe/Z+DPszUHDgNNxrUhLTm3FgHLjlO7EEza4sIFfpCJGQFWqGciDv1M1G9JNrVhPomaRq5EekyHCaR+Cn20AcbfnBjOS2tae1ibsM2hbfG8gP3vDCjqdmkxi3/fwiDJHZo+/eqjh0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=Bk5ws+Zg; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=BN4mcNZW; arc=none smtp.client-ip=193.142.43.55
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
-Date: Mon, 18 Mar 2024 10:01:08 +0100
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020; t=1710752469;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8EiV2gzXftggen6GL4Tj807WdurcECVI7Wmk1Mm55w=;
-	b=Bk5ws+ZgAtsMmV/Bg61xGm2mYCJmRY1ttMRepbifFjRw2oBPFnjigwB9BMyTt1v13+r6GR
-	i4eVBe6dZDPGIGv7sVGTx5zwrxqwKAoKKOzmUEnz3+AUG+5EntntcD52cgkuqb6yxg6pVD
-	JWRo3UZvmSoao/JhGhxziakluoCDkKobdNXf546RjEzTRBij65hL4KzUTlPc43gohDiGEF
-	4sfmHgdsNV9yNq2UA6ID0c1jDk6AKprxiA7Pg2hElMPTw5ZEaPkMTWPPn58hipDXUmqEun
-	2whEubn+xf0z1U1NbIK5W2nM5K1jTwQFk/gu3/RbAsT15gVzyYv7av2DN+sE+Q==
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
-	s=2020e; t=1710752469;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=r8EiV2gzXftggen6GL4Tj807WdurcECVI7Wmk1Mm55w=;
-	b=BN4mcNZW9LJt+7aw5DLrhZ/IG4G7TFzgzFAyO7MnMOJYNUH5J4LApJkR/eC35IYIKmeomT
-	GZcT9f5k6/I/x6BA==
-From: Nam Cao <namcao@linutronix.de>
-To: Eva Kurchatova <nyandarknessgirl@gmail.com>
-Cc: linux-riscv <linux-riscv@lists.infradead.org>, bugs@lists.linux.dev,
- linux-i2c@vger.kernel.org, jikos@kernel.org, benjamin.tissoires@redhat.com,
- dianders@chromium.org, mripard@kernel.org, johan+linaro@kernel.org,
- linux-input@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: Boot hang with SiFive PLIC when routing I2C-HID level-triggered
- interrupts
-Message-ID: <20240318100108.4fafd72b@namcao>
-In-Reply-To: <CA+eeCSMiqcvzrQcgRr7AZWJQTv-c9-uSX5jbPZPzmsDjy08z=A@mail.gmail.com>
-References: <CA+eeCSPUDpUg76ZO8dszSbAGn+UHjcyv8F1J-CUPVARAzEtW9w@mail.gmail.com>
-	<20240317222718.3e03edb1@namcao>
-	<CA+eeCSMiqcvzrQcgRr7AZWJQTv-c9-uSX5jbPZPzmsDjy08z=A@mail.gmail.com>
+	s=arc-20240116; t=1710752674; c=relaxed/simple;
+	bh=0s+Bo+G3KaxZiyGMieudAdG3u3JDO1GgJ+Hl/tmhrtE=;
+	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
+	 In-Reply-To:Content-Type; b=jM2wXrrJRSQsNS2zwM99LCGFINFRTYqGjjE5Vt53rOtjrRIr8RrD2+e4POSXLjQ4o6hcACPBC6pLN5WU1zvZckNmw2frVhf0VMdyJ5o84Ult3aLXrq+wPfWqdspVmn9K3PKuAPJK0qmlIjcx8f48ZnIlw+zDVzy3ffekag+Jy64=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=vXj2NRw9; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513cfc93f4eso4586059e87.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:04:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710752670; x=1711357470; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=Cx67NFg6k3z/hP6o29yTje1Tqs03MrVFCP2cg904mNo=;
+        b=vXj2NRw9MNox67D+wkU8HsYWhHBLbkNl4QBADKGFkV2nbcVlijcQq6hv3aIb+6WqCr
+         j9OXfay3OH7s0kw2ogMtWHerETPsAsEKrC+kyBsSWg2RnVCDRiBIbarA82S7+LPULhn6
+         qW3H/zRbpg+kHxhlqzwO2QWb8k3GHaW7pgnjZHDhSxn1wIaWpECEtqY3ugt1rRUKHR3f
+         YhzghcdZ5rnGwy6VQZB2vcf5l24KiwX3OOT5o2r4neGJUiKaI6w5Ow4LqFA7HFaufFrh
+         VHa9u9DM4dprBP0NajmSEnXQh6ub+ypZtOGZNaeAxKSikCojhFEnMgFW2T1JuxHB27py
+         W9WQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710752670; x=1711357470;
+        h=content-transfer-encoding:in-reply-to:organization:autocrypt
+         :references:cc:to:content-language:subject:reply-to:from:user-agent
+         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Cx67NFg6k3z/hP6o29yTje1Tqs03MrVFCP2cg904mNo=;
+        b=rliA0uY3IHjPlN+xw8oaYDEWfruX0wrKru/pS01UxHjwh09WuSd13IiNDHe2+NWCTi
+         MQfXAKqVBrE4sEuVj/28WQivRxGNvtE7RxpKSE+r7fJcuHdWFXYdfXElPLeWUGfzLE4i
+         CMpjAgS+jet3jWWvh4esVf9GDlAaPnqhdBExurOkYxIwqCyHZRb9FMOKSHa9bKdUbKYh
+         Ym0hkGkrS0t4u5omocpU84jfpeyJHsiqrAi3EcLZOce33rUWbFy6I8W5CzKOyekHfgDv
+         cOjMY0r1RzRLn3gGr7QKw9PkKaMnJ/3PfgnxrEwBviyEGqzNlw+8I9S0Y0D+I2kQqbIB
+         hhTQ==
+X-Forwarded-Encrypted: i=1; AJvYcCX+oM0OZAVajtQn9g/R2rFYvYe/nZlniy4ia+zsBiuKkF98VGXCjgdNIOLhRXHH4OSJaDlU7fkV/BQNYxOLVc6tQOBR0Tt9tpbq3eou
+X-Gm-Message-State: AOJu0Yzbd2QkX5saN5gJ+/fzO3zaoZ9OwuxyQ8RRrqWQEtWeIwSTTHhe
+	07aaqnOpYkghlWftlMinsMvgPd0F2rCp+5i+ser1bxuLJly3UKuJUQYDuI0sKCc=
+X-Google-Smtp-Source: AGHT+IFJNcbmM+h1fJhnFwTV+dPLBW03cF7R7EBAdJeE4g3j17IOtc7lNrB7A2u9VRzqdOMZ2U6RgQ==
+X-Received: by 2002:a19:2d15:0:b0:513:2329:4308 with SMTP id k21-20020a192d15000000b0051323294308mr8336569lfj.14.1710752669525;
+        Mon, 18 Mar 2024 02:04:29 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:982:cbb0:ad2b:a316:59d9:3dbc? ([2a01:e0a:982:cbb0:ad2b:a316:59d9:3dbc])
+        by smtp.gmail.com with ESMTPSA id r7-20020a05600c35c700b0041409fa57c4sm5752066wmq.34.2024.03.18.02.04.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 02:04:29 -0700 (PDT)
+Message-ID: <59580953-196b-482a-bbbd-7f0ff8da75f5@linaro.org>
+Date: Mon, 18 Mar 2024 10:04:28 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+From: neil.armstrong@linaro.org
+Reply-To: neil.armstrong@linaro.org
+Subject: Re: [PATCH] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
+Content-Language: en-US, fr
+To: Luca Weiss <luca.weiss@fairphone.com>,
+ Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
+ Laurent Pinchart <Laurent.pinchart@ideasonboard.com>,
+ Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+ ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+References: <20240111-drm-panel-bridge-fixup-v1-1-e06292f6f500@fairphone.com>
+ <b1da07f9-7e15-4d83-bef3-d0ce157654bc@linaro.org>
+ <CYGUWBAM3D62.35CPP5HGEYJ3Y@fairphone.com>
+ <CZHGFD9QYM82.371U2DPG1AEGQ@fairphone.com>
+ <CAA8EJppZRABYGuoDc-6e6VMwtAo3LvEyDpsHdkHFckrR=q+0ig@mail.gmail.com>
+ <CZO9HDL1N45S.1JIXM2QUFTQCS@fairphone.com>
+Autocrypt: addr=neil.armstrong@linaro.org; keydata=
+ xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
+ GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
+ BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
+ qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
+ 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
+ AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
+ OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
+ Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
+ YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
+ GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
+ UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
+ GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
+ yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
+ QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
+ SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
+ 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
+ Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
+ oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
+ M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
+ 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
+ KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
+ 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
+ QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
+Organization: Linaro Developer Services
+In-Reply-To: <CZO9HDL1N45S.1JIXM2QUFTQCS@fairphone.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On 18/Mar/2024 Eva Kurchatova wrote:
-> On Sun, Mar 17, 2024 at 11:27=E2=80=AFPM Nam Cao <namcao@linutronix.de> w=
-rote:
-> > It seems I2C HID's interrupt handler (i2c_hid_irq) returns immediately =
-if
-> > I2C_HID_READ_PENDING is set. This flag is supposed to be cleared in
-> > i2c_hid_xfer(), but since the (threaded) interrupt handler runs at high=
-er
-> > priority, the flag is never cleared. So we have a lock-up: interrupt
-> > handler won't do anything unless the flag is cleared, but the clearing =
-of
-> > this flag is done in a lower priority task which never gets scheduled w=
-hile
-> > the interrupt handler is active.
-> >
-> > There is RT throttling to prevent RT tasks from locking up the system l=
-ike
-> > this. I don't know much about scheduling stuffs, so I am not really sure
-> > why RT throttling does not work. I think because RT throttling triggers
-> > when RT tasks take too much CPU time, but in this case hard interrupt
-> > handlers take lots of CPU time too (~50% according to my measurement), =
-so
-> > RT throttling doesn't trigger often enough (in this case, it triggers o=
-nce
-> > and never again). Again, I don't know much about scheduler so I may be
-> > talking nonsense here.
-> >
-> > The flag I2C_HID_READ_PENDING seems to be used to make sure that only 1
-> > I2C operation can happen at a time. But this seems pointless, because I=
-2C
-> > subsystem already takes care of this. So I think we can just remove it.
-> >
-> > Can you give the below patch a try?
-> >
-> > diff --git a/drivers/hid/i2c-hid/i2c-hid-core.c b/drivers/hid/i2c-hid/i=
-2c-hid-core.c
-> > index 2735cd585af0..799ad0ef9c4a 100644
-> > --- a/drivers/hid/i2c-hid/i2c-hid-core.c
-> > +++ b/drivers/hid/i2c-hid/i2c-hid-core.c
-> > @@ -64,7 +64,6 @@
-> >  /* flags */
-> >  #define I2C_HID_STARTED                0
-> >  #define I2C_HID_RESET_PENDING  1
-> > -#define I2C_HID_READ_PENDING   2
-> >
-> >  #define I2C_HID_PWR_ON         0x00
-> >  #define I2C_HID_PWR_SLEEP      0x01
-> > @@ -190,15 +189,10 @@ static int i2c_hid_xfer(struct i2c_hid *ihid,
-> >                 msgs[n].len =3D recv_len;
-> >                 msgs[n].buf =3D recv_buf;
-> >                 n++;
-> > -
-> > -               set_bit(I2C_HID_READ_PENDING, &ihid->flags);
-> >         }
-> >
-> >         ret =3D i2c_transfer(client->adapter, msgs, n);
-> >
-> > -       if (recv_len)
-> > -               clear_bit(I2C_HID_READ_PENDING, &ihid->flags);
-> > -
-> >         if (ret !=3D n)
-> >                 return ret < 0 ? ret : -EIO;
-> >
-> > @@ -566,9 +560,6 @@ static irqreturn_t i2c_hid_irq(int irq, void *dev_i=
-d)
-> >  {
-> >         struct i2c_hid *ihid =3D dev_id;
-> >
-> > -       if (test_bit(I2C_HID_READ_PENDING, &ihid->flags))
-> > -               return IRQ_HANDLED;
-> > -
-> >         i2c_hid_get_input(ihid);
-> >
-> >         return IRQ_HANDLED; =20
->=20
-> Patch applied cleanly on top of 6.7.9, builds OK (No warns, etc).
->=20
-> This indeed fixes the hang completely.
+On 08/03/2024 10:29, Luca Weiss wrote:
+> On Sun Mar 3, 2024 at 9:37 PM CET, Dmitry Baryshkov wrote:
+>> On Thu, 29 Feb 2024 at 11:27, Luca Weiss <luca.weiss@fairphone.com> wrote:
+>>>
+>>> On Wed Jan 17, 2024 at 9:59 AM CET, Luca Weiss wrote:
+>>>> On Mon Jan 15, 2024 at 9:43 AM CET, Neil Armstrong wrote:
+>>>>> Hi Luca,
+>>>>>
+>>>>> On 11/01/2024 13:38, Luca Weiss wrote:
+>>>>>> Since the kconfig symbol of DRM_PANEL_BRIDGE is only adding
+>>>>>> bridge/panel.o to drm_kms_helper object, we need to select
+>>>>>> DRM_KMS_HELPER to make sure the file is actually getting built.
+>>>>>>
+>>>>>> Otherwise with certain defconfigs e.g. devm_drm_of_get_bridge will not
+>>>>>> be properly available:
+>>>>>>
+>>>>>>     aarch64-linux-gnu-ld: drivers/phy/qualcomm/phy-qcom-qmp-combo.o: in function `qmp_combo_bridge_attach':
+>>>>>>     drivers/phy/qualcomm/phy-qcom-qmp-combo.c:3204:(.text+0x8f4): undefined reference to `devm_drm_of_get_bridge'
+>>>>>>
+>>>>>> Signed-off-by: Luca Weiss <luca.weiss@fairphone.com>
+>>>>>> ---
+>>>>>> I can see "depends on DRM_KMS_HELPER" was removed with commit
+>>>>>> 3c3384050d68 ("drm: Don't make DRM_PANEL_BRIDGE dependent on DRM_KMS_HELPERS")
+>>
+>> Could you please make sure that the usecase described in the mentioned
+>> commit message doesn't get broken by your change?
+> 
+> Hi Neil,
+> 
+> The problem fixed in that linked patch (3c3384050d68) is about fixing
+> undefined reference errors with specific .config setups - similar to
+> this patch.
+> 
+> Since we're only adding a 'select' and not removing anything I don't see
+> how it could cause new errors like that, and it does fix the one I'm
+> describing.
+> 
+> And also I checked again and I don't see any circular dependencies
+> (something that was also mentioned in the linked patch), so apart from
+> what I mentioned with that I'm not too familiar when 'select' should be
+> used and when 'depend' should be used, it's good from my perspective.
 
-Nice! I assume I can add
-    Reported-and-tested-by: Eva Kurchatova <nyandarknessgirl@gmail.com>
-to the patch?
+Sure, LGTM:
 
-> I modified RVVM to send millions of keystroke events per second,
-> and put `reboot` as a service hook in the guest. It has been continuously
-> rebooting without a hitch for the last 30 minutes or so (Full boot takes
-> around 2 seconds), whereas unpatched 6.7.9 hangs almost immediately
-> in such conditions (Reverted your patch & rebuilt to be sure).
->=20
-> Thank you very much for this! Hope to see it upstreamed soon
+Reviewed-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Thank you for the report, your investigation helped a lot.
+> 
+> Regards
+> Luca
+> 
+>>
+>>>>>>
+>>>>>> I'm not too familiar with Kconfig but it feels more correct if
+>>>>>> PHY_QCOM_QMP_COMBO selects DRM_PANEL_BRIDGE that that's enough; and it
+>>>>>> doesn't also has to explicitly select DRM_KMS_HELPER because of how the
+>>>>>> objects are built in the Makefile.
+>>>>>>
+>>>>>> Alternatively solution to this patch could be adjusting this line in
+>>>>>> include/drm/drm_bridge.h:
+>>>>>>
+>>>>>>     -#if defined(CONFIG_OF) && defined(CONFIG_DRM_PANEL_BRIDGE)
+>>>>>>     +#if defined(CONFIG_OF) && defined(CONFIG_DRM_PANEL_BRIDGE) && defined(CONFIG_DRM_KMS_HELPER)
+>>>>>>      struct drm_bridge *devm_drm_of_get_bridge(struct device *dev, struct device_node *node,
+>>>>>>                                               u32 port, u32 endpoint);
+>>>>>>
+>>>>>> .. and then selecting DRM_KMS_HELPER for PHY_QCOM_QMP_COMBO.
+>>>>>>
+>>>>>> But I think the solution in this patch is better. Let me know what you
+>>>>>> think.
+>>>>>
+>>>>> I think this is no more the case after on linux-next:
+>>>>> 35921910bbd0 phy: qcom: qmp-combo: switch to DRM_AUX_BRIDGE
+>>>>>
+>>>>> But could you still check ?
+>>>>
+>>>> On next-20240117 the error happens in the aux-bridge file instead then.
+>>>>
+>>>> aarch64-linux-gnu-ld: drivers/gpu/drm/bridge/aux-bridge.o: in function `drm_aux_bridge_probe':
+>>>> drivers/gpu/drm/bridge/aux-bridge.c:115:(.text+0xe0): undefined reference to `devm_drm_of_get_bridge'
+>>>>
+>>>> I'm attaching the defconfig with which I can reproduce this but it's
+>>>> really just DRM_KMS_HELPER=n and PHY_QCOM_QMP_COMBO=y I believe.
+>>>
+>>> Hi Neil,
+>>>
+>>> Ping on this patch
+>>>
+>>> Regards
+>>> Luca
+>>>
+>>>>
+>>>> Regards
+>>>> Luca
+>>>>
+>>>>
+>>>>>
+>>>>> Neil
+>>>>>
+>>>>>> ---
+>>>>>>    drivers/gpu/drm/bridge/Kconfig | 1 +
+>>>>>>    1 file changed, 1 insertion(+)
+>>>>>>
+>>>>>> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
+>>>>>> index ac9ec5073619..ae782b427829 100644
+>>>>>> --- a/drivers/gpu/drm/bridge/Kconfig
+>>>>>> +++ b/drivers/gpu/drm/bridge/Kconfig
+>>>>>> @@ -8,6 +8,7 @@ config DRM_BRIDGE
+>>>>>>    config DRM_PANEL_BRIDGE
+>>>>>>            def_bool y
+>>>>>>            depends on DRM_BRIDGE
+>>>>>> + select DRM_KMS_HELPER
+>>>>>>            select DRM_PANEL
+>>>>>>            help
+>>>>>>              DRM bridge wrapper of DRM panels
+>>>>>>
+>>>>>> ---
+>>>>>> base-commit: b9c3a1fa6fb324e691a03cf124b79f4842e65d76
+>>>>>> change-id: 20240111-drm-panel-bridge-fixup-5c2977fb969f
+>>>>>>
+>>>>>> Best regards,
+>>>
+> 
 
-I am still confused why RT throttling doesn't unstuck the kernel in this
-case. I will consult some people and investigate more on this. But I think
-this patch is good on its own, so I will send a proper patch shortly.
-
-Best regards,
-Nam
 
