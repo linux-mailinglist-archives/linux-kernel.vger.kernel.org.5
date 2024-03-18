@@ -1,281 +1,169 @@
-Return-Path: <linux-kernel+bounces-106676-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106671-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97B4387F1D1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:11:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 232BC87F1C7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:10:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D153B21628
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:11:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C9FA22823B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:10:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D1ED05A7A2;
-	Mon, 18 Mar 2024 21:09:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00D2658137;
+	Mon, 18 Mar 2024 21:09:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="5NGiaLiX"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2051.outbound.protection.outlook.com [40.107.220.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="V9e06hcS"
+Received: from mail-qk1-f177.google.com (mail-qk1-f177.google.com [209.85.222.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E32E5A4FE;
-	Mon, 18 Mar 2024 21:09:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.51
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710796191; cv=fail; b=fCmBez3YbEwsDIGoFAcemZiT6vTxXc+YVhdw3VMALoKXDmszC8DQTsf0TidHLjRONxkDasqIFYtIK6oSC+oyTAA31znaXqlOjYWILth0KeyG/ekcjB6xOmsBZBl0jqfXsFGUVr0QXQc7NWHkhgsIOPR15oUZnNIiDRQzAQ3urpA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710796191; c=relaxed/simple;
-	bh=KNZGmdsVCrLf3seRR2GfWIW1FELjR4OvC92jm/nXvNg=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=qqTxYgQ/RaQPt5YKujrebkxdESQTgKYdndaUAm/XfKJoM1XiD75/zUtKG/nkJKqVYsDU/bp4GOL1EyooGqdUS5nb+kns/+rI4U+kWKKm43S0OVSXciJqhTO4QUDcMga/SttDoWcKRTFlUMyHWwSU/5npEyjh+wcoZoPy3xTRqV0=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=5NGiaLiX; arc=fail smtp.client-ip=40.107.220.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=NqnaixNS3jRPKCkgph9YK9hPUYAn29q3GijOOgLrrDnyvx9R45WbAzEUjdC7c52sqolo8KQQptyXlhEkvzKwoLlQN590EfKHkYhGwNQLZsFeuOrVQpnYCNtjUYppF8W1SgIwaMhQXOpl3WA0gqSJKavE6fT5+bHgPOQZtrIlcfflYIT+EiHsw3S/46H0R+GOztvFKWq7VxVNu60Jty51BadVcPCMYCfDMHQAgykAW/XzI0jCBdC5iOWvCT0lb70uml/cINpDg7Tso6eNudjJbA5CR6K3lujgPcL3zktTlcD6hmawT04epxK9Mp+qCgHVnoBmYn3tdRCrSGuTa8bm4Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=wDxjGRs+Pnxp2qPVtzcKnQXIHHdNTBtT0ek0PmSYo4U=;
- b=OoR1dchD/D9UL+OtQnWYAQkyezmkKMRc6olmRmVnsCzrysKmmgQ0QgIduDe1WlxmpYI87SA++hmkjT4jg345Ruwy1SY8gUK7/2SIHDhsYW8L3Zl2DZRST5swXKrTKJULxFADFTWFrm+1uLavTXLIzMzqQW1gTB4ZStqfAEH62Bwe2A+BF0bdZUZLMlitkWIzUYg1mwZbDUFUfk/MmPSwSc+naHxr11dbacObu4K+bwsozWEJ3Ry+KUo+d+8jITO7cK8Jt5xemzQ8NPyyBJNGgLUoAT41Z2fXuMrEYOJwpZ8Jn42QBNtRjGHSUZltgkl6K19VMl5poSOhI1IKjsvf5A==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=kernel.org smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=wDxjGRs+Pnxp2qPVtzcKnQXIHHdNTBtT0ek0PmSYo4U=;
- b=5NGiaLiXO38JPH9Xbu+BH37FNrOr25cRG0q5qmHmjSvp/gQh7PHeodz4bTXOtjlyH/hlNzJlB1HoQxjzxleAoEXIJr2Cef2Mt84uPhZOlGc+NV7x3tIlZoysfDtGRP35htSsj0vlLZ65ZvcKtNqkFd/UMj2QyUhG09fBcrEXt1c=
-Received: from DS7PR06CA0020.namprd06.prod.outlook.com (2603:10b6:8:2a::21) by
- DS7PR12MB6333.namprd12.prod.outlook.com (2603:10b6:8:96::15) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.23; Mon, 18 Mar 2024 21:09:48 +0000
-Received: from CY4PEPF0000EE30.namprd05.prod.outlook.com
- (2603:10b6:8:2a:cafe::7b) by DS7PR06CA0020.outlook.office365.com
- (2603:10b6:8:2a::21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
- Transport; Mon, 18 Mar 2024 21:09:47 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000EE30.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Mon, 18 Mar 2024 21:09:47 +0000
-Received: from rric.localdomain (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 18 Mar
- 2024 16:09:38 -0500
-From: Robert Richter <rrichter@amd.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-CC: Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams
-	<dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>,
-	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Robert Richter <rrichter@amd.com>, Len Brown
-	<lenb@kernel.org>
-Subject: [PATCH 3/3] ACPI/NUMA: Remove architecture dependent remainings
-Date: Mon, 18 Mar 2024 22:09:03 +0100
-Message-ID: <20240318210904.2188120-5-rrichter@amd.com>
-X-Mailer: git-send-email 2.39.2
-In-Reply-To: <20240318210904.2188120-1-rrichter@amd.com>
-References: <20240318210904.2188120-1-rrichter@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF530535D3
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:09:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710796167; cv=none; b=fua1E46GEhR9Qu2UKi4zTbNkrVaIGZ2/ICrzTHKKiSb0HbOLlvhFa/q8jGpOEYhlMTASx3m5LXwF62Aw1HazFmzBEJsY98NtJ0sjLVTU4jK+xXKXDXKYtbaKu8S5m+FyixeLv4S0+OY7tvfKyyeAv8fyjqlO0rpLi+PdmXz9Un8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710796167; c=relaxed/simple;
+	bh=C/Puvl79m49Cnp0XGqjFPs+46qFbmpop8duIGHpg/9A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=W3RL6DPM839RDmh/TlhMERJTbhYUUChBT/360YYbt2sMjpCVhtqw6ualIjp26B2iA6i6c22N8n1nnS4sJcl3aTf+sRBUGmbjuLOjyjcrcshSf+EXxdnLd/ND/HF+YKg3/33LBJvSeOQtGl4Edv4T6/RejUNRwtyxC3k/QyCrBcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=V9e06hcS; arc=none smtp.client-ip=209.85.222.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
+Received: by mail-qk1-f177.google.com with SMTP id af79cd13be357-78a0ab10316so72191485a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:09:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710796162; x=1711400962; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=FOqxWMcGpNyg6Z0UKe89d8UtFLAlVDl2Ge9RAirWCRg=;
+        b=V9e06hcSG9QVHvilkhymeyCrDdZKxsSj0hf+ky4aYbz224OR+jLWm6eN2bUrya8ll0
+         WADLkWJvURN/Y8G6dudPbGEtJYSN+qUpT12a9rXM860i/AMsCXqExtjkwV2fhS8/Mcr+
+         GV/E5YSSdKTfr5WnX2UW8Xz7URxih4pLRPNghOGKD0qKlxlR3QJt9LJiVeDcS+FYwVBc
+         prmlvPgT4fAgfGSbPyJQhKmYiG6o5eD+Ssrvp6r2gw/tTdXW/OIoyNoNVDCPc2r0paJ3
+         KXTY7sx+nx7miJouJymhEgknc0g+6FPUIY59YryBbCOu48RsjxtOjk7INH8EQljr0WZ1
+         i6oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710796162; x=1711400962;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=FOqxWMcGpNyg6Z0UKe89d8UtFLAlVDl2Ge9RAirWCRg=;
+        b=Agwb9t96G79UkY9lIGT3hRhGrUfTgvItTq7hcRWv8+MTJ9YvggNNkm2rAMUwdYxqsU
+         WEcCpQr7yvKPgOFmBE7XLYNEzmNl7Ja8oeFa93M3RZxZ5NzrOap1atKKftgW1DgbPz1a
+         ONwPiPMy58lRntHh7T/Wz9J+YDQI/W7OfJjYT6odj1+lwWLp2gDI4RpqRV5BFLuT0Pha
+         AVVUsepnZdOFUmDeWn2ARrM45n0wPdqcQNL6WTp+h/DpetTBXUHRZNU7duifVYSlsXs/
+         YBQTnLGiwcQwaVgsDnNOJ22CP4hbEA+9/+s0JMNozHDzOwN/BGTRLnjjz8DFTHiYCTAH
+         CPrw==
+X-Forwarded-Encrypted: i=1; AJvYcCVfCjoh9oio81y5/fPdCQWEjHV/fMOQvV8HX2QgRclJWJ5bXHF7kJHBsdoxM1gJzAwBq6Cx9hUpF3+cU8CWIXvnqGZa/Cp5FkhDw2K5
+X-Gm-Message-State: AOJu0Ywegcz1Z5xyvBTxjAh4UcVQYq2MdazL9ZI55IyH+ea9FreszJkd
+	w0Pzi6zsyJdhBJCpD69ZOnW19RSRfR6RPPrtW7gJdHYqrtOd4OjGUHERgCloH44=
+X-Google-Smtp-Source: AGHT+IGmezNd7Y22mqc+VPK+jo40NclSbGwKc23t/x+1Yd4e03ws0PD4BlmbAFcaD9ucT9vdpExrYg==
+X-Received: by 2002:a05:620a:1722:b0:78a:3c3:a629 with SMTP id az34-20020a05620a172200b0078a03c3a629mr1486052qkb.23.1710796162650;
+        Mon, 18 Mar 2024 14:09:22 -0700 (PDT)
+Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
+        by smtp.gmail.com with ESMTPSA id f18-20020ae9ea12000000b007884dd207b8sm4816696qkg.55.2024.03.18.14.09.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 14:09:21 -0700 (PDT)
+Date: Mon, 18 Mar 2024 17:09:17 -0400
+From: Johannes Weiner <hannes@cmpxchg.org>
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: Nhat Pham <nphamcs@gmail.com>,
+	syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>,
+	akpm@linux-foundation.org, chengming.zhou@linux.dev,
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
+	syzkaller-bugs@googlegroups.com, Barry Song <v-songbaohua@oppo.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
+Message-ID: <20240318210917.GA4210@cmpxchg.org>
+References: <000000000000bbb3d80613f243a6@google.com>
+ <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
+ <CAJD7tkbEuFkGuQeYjKS02rQoAAKOKieAJ1P2mwukirW3e2JN9A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000EE30:EE_|DS7PR12MB6333:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5f380fa9-0f50-4715-0e8a-08dc478fbe52
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xkxZ+qX//aGx2SwF9DFZDZh2TaLpDfDiKmRLkazKMIX67wnFxx7a4bpzSAs/Tf1nhajC5cptbcCuF75GcDAupyZu58vCpvE4zJWem9DZISG/sYjk5Dow1iVVC2xwGfMNrNTlqLgpphfixh3oaaTKSoEAhCtjNNM3ZeO+MF9rqy56vfVNag5bcl3QEAVXL4xvMSI9/mCRyf5EjsFlBxIuVp02N1/66egR6TKVygaafLRcEAmHhDAAiLHa3xYjSZbj+W3WeMc6FpZ1NmewZ98M4Rj0/sRoiBUR8hw6k3+OBP4y+Fgj8nRPILMz0ULqerFPt5QcBMdTSNFN/UCbedLH3sXdu6ppOb4mZU2SmIQlPDuif52qPQOoOWeyJgnRSj27fYM0j1V6/729uGKl2ao1nHDgSQRsKsttLvVK4PH/AiGgmT7EvImJM4GhQONL5LpHtuqVFMzkhij6i4gqP8PmspBxL+lIM0krLtroG3Q6nbrDXY7vp79i384PEukkvHfyQzQODyYPSkTcJQ0wziLMkKqVP+6SK/IuUDs3XFb3kn2sldWhTStV5sEitBBBmIVbRMUyxCRY9rJbNseit9pR8/66QG0I5E73e+9RSLKQSYXzv4KuEfOzSNBJ5Er4QeZfbEECWUdjUpHJgmhGQg8juk2CPt57TTKbe5j8f4fx6hn8NJADS/WYOIXJsb83OQLLW5LK718VtagGaXU0hKCAsw9Y6nPHm2T+ju5Gi4y06MnonQteAvAut9xLrPkUS7eh
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 21:09:47.6425
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5f380fa9-0f50-4715-0e8a-08dc478fbe52
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000EE30.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6333
+In-Reply-To: <CAJD7tkbEuFkGuQeYjKS02rQoAAKOKieAJ1P2mwukirW3e2JN9A@mail.gmail.com>
 
-With the removal of the Itanium architecture [1] the last architecture
-dependent functions:
+On Mon, Mar 18, 2024 at 01:17:19PM -0700, Yosry Ahmed wrote:
+> On Mon, Mar 18, 2024 at 11:00 AM Nhat Pham <nphamcs@gmail.com> wrote:
+> >
+> > On Mon, Mar 18, 2024 at 9:58 AM syzbot
+> > <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com> wrote:
+> > >
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=13043abe180000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=19bb57c23dffc38e
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=adbc983a1588b7805de3
+> > > compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> > > userspace arch: arm
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1706d231180000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ba7959180000
+> > >
+> > > Downloadable assets:
+> > > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-e5eb28f6.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/0a7371c63ff2/vmlinux-e5eb28f6.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/7539441b4add/zImage-e5eb28f6.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> > > Reported-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
+> > >
+> > > ------------[ cut here ]------------
+> > > kernel BUG at include/linux/scatterlist.h:187!
+> >
+> > Looks like the provided buffer is invalid:
+> >
+> > #ifdef CONFIG_DEBUG_SG
+> > BUG_ON(!virt_addr_valid(buf));
+> > #endif
+> >
+> > which is "src" from:
+> >
+> > sg_init_one(&input, src, entry->length);
+> >
+> > Looking at the surrounding code and recent history, there's this
+> > commit that stands out:
+> >
+> > mm/zswap: remove the memcpy if acomp is not sleepable
+> > (sha: 270700dd06ca41a4779c19eb46608f076bb7d40e)
+> >
+> > which has the effect of, IIUC, using the zpool mapped memory directly
+> > as src, instead of acomp_ctx->buffer (which was previously the case,
+> > as zsmalloc was not sleepable).
+> >
+> > This might not necessarily be a bug with that commit itself, but might
+> > have revealed another bug elsewhere.
+> >
+> > Anyway, cc-ing the author, Barry Song, to fact check me :) Will take a
+> > closer look later.
+> 
+> I am not a highmem expert, but the reproducer has CONFIG_HIGHMEM=y,
+> and it seems like zs_map_object() may return a highmem address if the
+> compressed object is entirely in a single page to avoid copying to a
+> buffer:
+> 
+> if (off + class->size <= PAGE_SIZE) {
+>    /* this object is contained entirely within a page */
+>    area->vm_addr = kmap_atomic(page);
+>    ret = area->vm_addr + off;
+>    goto out;
+> }
+> 
+> The virt_addr_valid() check seems to indicate that we expect a direct
+> map address in sg_init_one(), right?
 
- acpi_numa_slit_init(), acpi_numa_memory_affinity_init()
-
-were removed. Remove its remainings in the header files too an make
-them static.
-
-[1] cf8e8658100d arch: Remove Itanium (IA-64) architecture
-
-Signed-off-by: Robert Richter <rrichter@amd.com>
----
- drivers/acpi/numa/srat.c | 68 +++++++++++++---------------------------
- include/linux/acpi.h     |  5 ---
- 2 files changed, 21 insertions(+), 52 deletions(-)
-
-diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
-index 50ae8557e8d1..910609a9754b 100644
---- a/drivers/acpi/numa/srat.c
-+++ b/drivers/acpi/numa/srat.c
-@@ -208,16 +208,21 @@ int __init srat_disabled(void)
- 	return acpi_numa < 0;
- }
- 
--#if defined(CONFIG_X86) || defined(CONFIG_ARM64) || defined(CONFIG_LOONGARCH)
- /*
-  * Callback for SLIT parsing.  pxm_to_node() returns NUMA_NO_NODE for
-  * I/O localities since SRAT does not list them.  I/O localities are
-  * not supported at this point.
-  */
--void __init acpi_numa_slit_init(struct acpi_table_slit *slit)
-+static int __init acpi_parse_slit(struct acpi_table_header *table)
- {
-+	struct acpi_table_slit *slit = (struct acpi_table_slit *)table;
- 	int i, j;
- 
-+	if (!slit_valid(slit)) {
-+		pr_info("SLIT table looks invalid. Not used.\n");
-+		return -EINVAL;
-+	}
-+
- 	for (i = 0; i < slit->locality_count; i++) {
- 		const int from_node = pxm_to_node(i);
- 
-@@ -234,19 +239,25 @@ void __init acpi_numa_slit_init(struct acpi_table_slit *slit)
- 				slit->entry[slit->locality_count * i + j]);
- 		}
- 	}
-+
-+	return 0;
- }
- 
--/*
-- * Default callback for parsing of the Proximity Domain <-> Memory
-- * Area mappings
-- */
--int __init
--acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
-+static int __initdata parsed_numa_memblks;
-+
-+static int __init
-+acpi_parse_memory_affinity(union acpi_subtable_headers * header,
-+			   const unsigned long table_end)
- {
-+	struct acpi_srat_mem_affinity *ma;
- 	u64 start, end;
- 	u32 hotpluggable;
- 	int node, pxm;
- 
-+	ma = (struct acpi_srat_mem_affinity *)header;
-+
-+	acpi_table_print_srat_entry(&header->common);
-+
- 	if (srat_disabled())
- 		goto out_err;
- 	if (ma->header.length < sizeof(struct acpi_srat_mem_affinity)) {
-@@ -293,6 +304,8 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
- 
- 	max_possible_pfn = max(max_possible_pfn, PFN_UP(end - 1));
- 
-+	parsed_numa_memblks++;
-+
- 	return 0;
- out_err_bad_srat:
- 	bad_srat();
-@@ -448,27 +461,6 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
- 	(*fake_pxm)++;
- 	return 0;
- }
--#else
--static inline void acpi_table_print_cedt(void) {}
--static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
--				   void *arg, const unsigned long table_end)
--{
--	return 0;
--}
--#endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
--
--static int __init acpi_parse_slit(struct acpi_table_header *table)
--{
--	struct acpi_table_slit *slit = (struct acpi_table_slit *)table;
--
--	if (!slit_valid(slit)) {
--		pr_info("SLIT table looks invalid. Not used.\n");
--		return -EINVAL;
--	}
--	acpi_numa_slit_init(slit);
--
--	return 0;
--}
- 
- void __init __weak
- acpi_numa_x2apic_affinity_init(struct acpi_srat_x2apic_cpu_affinity *pa)
-@@ -559,24 +551,6 @@ acpi_parse_gi_affinity(union acpi_subtable_headers *header,
- }
- #endif /* defined(CONFIG_X86) || defined (CONFIG_ARM64) */
- 
--static int __initdata parsed_numa_memblks;
--
--static int __init
--acpi_parse_memory_affinity(union acpi_subtable_headers * header,
--			   const unsigned long end)
--{
--	struct acpi_srat_mem_affinity *memory_affinity;
--
--	memory_affinity = (struct acpi_srat_mem_affinity *)header;
--
--	acpi_table_print_srat_entry(&header->common);
--
--	/* let architecture-dependent part to do it */
--	if (!acpi_numa_memory_affinity_init(memory_affinity))
--		parsed_numa_memblks++;
--	return 0;
--}
--
- static int __init acpi_parse_srat(struct acpi_table_header *table)
- {
- 	struct acpi_table_srat *srat = (struct acpi_table_srat *)table;
-diff --git a/include/linux/acpi.h b/include/linux/acpi.h
-index 2a7c4b90d589..5f6472a7997c 100644
---- a/include/linux/acpi.h
-+++ b/include/linux/acpi.h
-@@ -242,9 +242,6 @@ static inline bool acpi_gicc_is_usable(struct acpi_madt_generic_interrupt *gicc)
- 	return gicc->flags & ACPI_MADT_ENABLED;
- }
- 
--/* the following numa functions are architecture-dependent */
--void acpi_numa_slit_init (struct acpi_table_slit *slit);
--
- #if defined(CONFIG_X86) || defined(CONFIG_LOONGARCH)
- void acpi_numa_processor_affinity_init (struct acpi_srat_cpu_affinity *pa);
- #else
-@@ -267,8 +264,6 @@ static inline void
- acpi_numa_gicc_affinity_init(struct acpi_srat_gicc_affinity *pa) { }
- #endif
- 
--int acpi_numa_memory_affinity_init (struct acpi_srat_mem_affinity *ma);
--
- #ifndef PHYS_CPUID_INVALID
- typedef u32 phys_cpuid_t;
- #define PHYS_CPUID_INVALID (phys_cpuid_t)(-1)
--- 
-2.39.2
-
+If the page is highmem, kmap_atomic() establishes a temporary mapping
+to it in the direct map, such that we have a legit kernel pointer to
+the memory. Otherwise the memcpy() in zswap also wouldn't work... Am I
+missing something?
 
