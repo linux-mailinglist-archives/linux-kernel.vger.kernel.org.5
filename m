@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-106364-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106365-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 321FF87ED26
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:12:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7986A87ED28
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:13:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBAA32822BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:12:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7012B1C21953
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:13:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C56753394;
-	Mon, 18 Mar 2024 16:12:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E740E5339B;
+	Mon, 18 Mar 2024 16:13:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="RA8YGDjO"
-Received: from mail-lj1-f178.google.com (mail-lj1-f178.google.com [209.85.208.178])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="AZ0L0dqq"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EA59537E4
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:12:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5968E53397
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:13:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710778363; cv=none; b=N59rpE2oesh793KMrhnmTmxyfxz2SL+KId4OQ8dQrDyLnVRmIJ43RqJU5crRDtrLjjNZ/pbvxkZeekTbbTxtOSeWdxpl2VEjoQCAffHdx8x+A32rGdgo5Tnwk1ohfKH8/1GOGo3fTu95CIqg+f563b/LCKTKSlt7OazBTGrrk9s=
+	t=1710778388; cv=none; b=ZQduN9hfRJ2M3Qa59vuj1UaxujDy/eAqf8UGfHojKstvh3Hj/Ux4WXfQjYH4Rg0gyB6+0qrbr74fhPjBt4xFfG1uAcYFKF2lTruHad5FYOHvijYabYuPAhF43JdrNC3AINoZSNJ+xjoqtEXDqc0J01DUe1SvP2f/30cElNR/T48=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710778363; c=relaxed/simple;
-	bh=qWIWRdlhHxM2YpAOK/CdrCJzY7erfxdMa6eYTRm+3dw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=aYzd0kEQeOyZPhtt1RFGdrPy4fs6uM/OErVighx/Wu8E0R84f06ZVMrgTRPwPXVHQ6z7Lb3dR/tXBcrhD31+b3H2xi2Ac1zRSs2JkhNylMbsxrlzsYP/V9RS1IuudwSBimm0tT3wJBqCERTlUtO9InGBc0YiGI4nKUcmNZ7H6RQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=RA8YGDjO; arc=none smtp.client-ip=209.85.208.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f178.google.com with SMTP id 38308e7fff4ca-2d4a901e284so24454311fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:12:41 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710778360; x=1711383160; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=G9oKEy66iQx7fLJGG39Ko2q9eHHj3gCyG5CIVLyLT/E=;
-        b=RA8YGDjOJMIoNz4+OUKFaBLtLr8J8Ocy3rMUGM9RIPCwSeVxIrXz8ESllrm9zZnKZv
-         jUaKcL/KWDI1tcahpkZAivgU5Lnb5TKWVO4UEJBYS4UwujTq5EUmOkp1U4YnAeGLOV3x
-         IdH6xjopRgehIVTIF1ScHzIxeCFj4ydMoRIcMdqUTgdNSxuKut6Sq42HW19sigZJyX2m
-         6PW8nn3nzX1HFZjei1Ph5BacvvozHDkiG6yvljnzKlpPBKyjK3cTjZJc/h32DaxZ68r7
-         n6Lfd5EKULExqCx5yGzQBdG4XXYDljJ4VOZUUugssf51tG3vXHzEGq13zssSGuyNagda
-         9MWg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710778360; x=1711383160;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G9oKEy66iQx7fLJGG39Ko2q9eHHj3gCyG5CIVLyLT/E=;
-        b=TllcVbGONhf4yNNgCVYD5ITGAlIDxK6sQRgp7yHijNNEJnjErntvYgA268kQ/4NV8a
-         UlFD8c/gZNeIhG748Aqt+t6PzNaZb8gLz8EW70EseJBh6wW4musRGRHo3JQjXhpKuoGo
-         BUyBSLyFAX+Se5T1j9V7Jp4OUpRs0qVmrLcxAHDU8vzffNHRSrlXVarq1v09Pidshggp
-         sCytdVCR8LdzyccevCV2NzmOlmgI5VwOlVUKTsSuSupiwB3N5HJ5qoIBvFOmG03UOKc2
-         etBAIOZb7mlvN+aYHn8NWxUgck2tUfh3T+64/343LDu0pGM+iBPOlOwTFWIyfEv813BD
-         jcaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXbJctP0EkKPLFmuu6P4KhyrvOZ0q7QWMnkg51xWtwN1EOJ4LiRKdo0pktxVH4eupJ/36mK53qDoXv7bb8vspilTu6tjyYMCsPvkVjI
-X-Gm-Message-State: AOJu0YyA1Y5gjzYybDIjHmGGdtxr0PV4oNiaPEl0dGpPawNE4/yntPmG
-	BjOdBOm5t1mljFEgnxvGxMcbr2FSqO2fqO+ZSFN/QWDYXTGs+4HQn/HcnWqu3GY=
-X-Google-Smtp-Source: AGHT+IHR94yES1pCaCbXUjgif8jE41k55vx1ZSsmjTkcDG0R6oz5GBnNbcczlwrVj1NsdRYJt7/t2w==
-X-Received: by 2002:a05:651c:337:b0:2d4:513d:7b34 with SMTP id b23-20020a05651c033700b002d4513d7b34mr4857648ljp.17.1710778359619;
-        Mon, 18 Mar 2024 09:12:39 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id e25-20020a170906845900b00a4652efd795sm5016635ejy.83.2024.03.18.09.12.38
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 09:12:39 -0700 (PDT)
-Message-ID: <04b39945-e4e1-43bd-83bf-0d7eb3730352@linaro.org>
-Date: Mon, 18 Mar 2024 17:12:37 +0100
+	s=arc-20240116; t=1710778388; c=relaxed/simple;
+	bh=94ux8QyQWzowA+ObkEkIPspy7vEY8QhoPMDTN1bjSFk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=TPjHAcI6qD8QNfpjlw5nXlG/ggZCAVmyvFu8V/zymziWQ1xoL7E/5azDVx+EBRuALFxNr7Xxfg5LLAkHpIw1LDT4yr4ho7IsC8pI8KO/GMTKC1TtoaOBqSgWHH+WS39O1S05q5zvwevoit4t0Ck/h7JnMAGqbjUGNIsNIQSyBMI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=AZ0L0dqq; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710778387; x=1742314387;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=94ux8QyQWzowA+ObkEkIPspy7vEY8QhoPMDTN1bjSFk=;
+  b=AZ0L0dqqHqGtOoAaOgfdEbtT//9aqPLpQMI0g+26FRP1MdXs3dm+hkUg
+   TbdBL+Y3BQzWfbZwBma+du9Vr3aAJ5LueHMq+W7Lqkpuqs304YC7Xk/G3
+   9Iy+CRVyQDD2XecnuaPfl2dDndJr5ThtiY2oOW6JBwzsPRYSZNSl8qWaU
+   dNLN1QC1rXq17ICK2dX89tni7SKI0M3yoQZP/MqJZ0l1X5FnQ5Oq3J3qz
+   FGEQbrrex/8dCno0gSbYyP26Tm5pfrWPjDr8k8CgW5ehr83Mu0z/zxo4V
+   +5rb3A3OPVojKXIBGW+SYF/bSFH6D+zNy+04izpSAFEwa5Wb1qSD3h1JD
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="8546981"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="8546981"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 09:13:06 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="18206294"
+Received: from johnxion-mobl1.amr.corp.intel.com (HELO [10.212.139.18]) ([10.212.139.18])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 09:13:05 -0700
+Message-ID: <65222aa2-d9a4-48d4-9ddc-2ee519ade4c5@intel.com>
+Date: Mon, 18 Mar 2024 09:13:04 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,164 +62,72 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
+Subject: Re: [RESEND PATCH v3] x86/apic: Improve data types to fix Coccinelle
+ warnings
 Content-Language: en-US
-To: Radu Sabau <radu.sabau@analog.com>, Jean Delvare <jdelvare@suse.com>,
- Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, linux-hwmon@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
-References: <20240318112140.385244-1-radu.sabau@analog.com>
- <20240318112140.385244-3-radu.sabau@analog.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240318112140.385244-3-radu.sabau@analog.com>
+To: Thorsten Blum <thorsten.blum@toblux.com>
+Cc: David.Laight@ACULAB.COM, bp@alien8.de, dave.hansen@linux.intel.com,
+ hpa@zytor.com, linux-kernel@vger.kernel.org, mingo@redhat.com,
+ peterz@infradead.org, tglx@linutronix.de, wei.liu@kernel.org, x86@kernel.org
+References: <20240308230228.3161-2-thorsten.blum@toblux.com>
+ <20240318104721.117741-3-thorsten.blum@toblux.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240318104721.117741-3-thorsten.blum@toblux.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 18/03/2024 12:21, Radu Sabau wrote:
-> Add support for ADP1050 Digital Controller for Isolated Power Supplies
-> with PMBus interface Voltage, Current and Temperature Monitor.
-> 
+On 3/18/24 03:47, Thorsten Blum wrote:
+> Given that acpi_pm_read_early() returns a u32 (masked to 24 bits), several
+> variables that store its return value are improved by adjusting their data
+> types from unsigned long to u32. Specifically, change deltapm's type from
+> long to u32 because its value fits into 32 bits and it cannot be negative.
 
-..
+Looks, good, thanks for the changes:
 
-> +static int adp1050_probe(struct i2c_client *client)
-> +{
-> +	u32 vin_scale_monitor, iin_scale_monitor;
-> +	int ret;
-> +
-> +	if (!i2c_check_functionality(client->adapter,
-> +				     I2C_FUNC_SMBUS_WRITE_WORD_DATA))
-> +		return -ENODEV;
-> +
-> +	/* Unlock CHIP's password in order to be able to read/write to it's
-> +	 * VIN_SCALE and IIN_SCALE registers.
-> +	*/
-> +	ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
-> +	if (ret < 0) {
-> +		dev_err_probe(&client->dev, "Device can't be unlocked.\n");
+Reviewed-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-Syntax is: return dev_err_probe(). Same in other places.
-
-> +		return ret;
-> +	}
-> +
-> +	ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
-> +	if (ret < 0) {
-> +		dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
-> +		return ret;
-> +	}
-> +
-> +	/* If adi,vin-scale-monitor isn't set or is set to 0 means that the
-> +	 * VIN monitor isn't used, therefore 0 is used as scale in order
-> +	 * for the readings to return 0.
-> +	*/
-
-Please use Linux coding style comments. /* and aligned */.
-
-
-> +	if (device_property_read_u32(&client->dev, "adi,vin-scale-monitor",
-> +				     &vin_scale_monitor))
-> +		vin_scale_monitor = 0;
-> +
-> +	/* If adi,iin-scale-monitor isn't set or is set to 0 means that the
-> +	 * IIN monitor isn't used, therefore 0 is used as scale in order
-> +	 * for the readings to return 0.
-> +	*/
-> +	if (device_property_read_u32(&client->dev, "adi,iin-scale-monitor",
-> +				     &iin_scale_monitor))
-> +		iin_scale_monitor = 0;
-> +
-> +	ret = i2c_smbus_write_word_data(client, ADP1050_VIN_SCALE_MONITOR,
-> +					vin_scale_monitor);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	ret = i2c_smbus_write_word_data(client, ADP1050_IIN_SCALE_MONITOR,
-> +					iin_scale_monitor);
-> +	if (ret < 0)
-> +		return ret;
-> +
-> +	return pmbus_do_probe(client, &adp1050_info);
-> +}
-> +
-> +static const struct i2c_device_id adp1050_id[] = {
-> +	{"adp1050", 0},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(i2c, adp1050_id);
-> +
-> +static const struct of_device_id adp1050_of_match[] = {
-> +	{ .compatible = "adi,adp1050"},
-> +	{}
-> +};
-> +MODULE_DEVICE_TABLE(of, adp1050_of_match);
-> +
-> +static struct i2c_driver adp1050_driver = {
-> +	.driver = {
-> +		.name = "adp1050",
-> +		.of_match_table = of_match_ptr(adp1050_of_match),
-
-Drop of_match_ptr, you will have here warnings.
-
-> +	},
-> +	.probe = adp1050_probe,
-> +	.id_table = adp1050_id,
-> +};
-> +module_i2c_driver(adp1050_driver);
-> +
-> +MODULE_AUTHOR("Radu Sabau <radu.sabau@analog.com>");
-> +MODULE_DESCRIPTION("Analog Devices ADP1050 HWMON PMBus Driver");
-> +MODULE_LICENSE("GPL");
-> +MODULE_IMPORT_NS(PMBUS);
-
-Best regards,
-Krzysztof
-
+I'll put this in the queue.
 
