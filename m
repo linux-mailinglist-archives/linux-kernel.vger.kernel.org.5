@@ -1,72 +1,73 @@
-Return-Path: <linux-kernel+bounces-106155-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106156-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C7AA487E9F6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:18:15 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C6CEE87E9FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:21:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E6D961C2106C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:18:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 860A728322C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:21:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 19BBB38F99;
-	Mon, 18 Mar 2024 13:17:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2633F47F50;
+	Mon, 18 Mar 2024 13:20:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com header.b="XVReJsTx"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PlQ+c4bl"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E5BA3BBDA
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:17:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A15674438F;
+	Mon, 18 Mar 2024 13:20:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710767876; cv=none; b=gIKgNGdPkYAdY2xyPMO7WppZZrRcaKta0AqOPJcsHLmqKjTRsD2zXPfHGjz8QtkxveNuv5Oc40jvC7ZzeplnB01de2rjMQuo8jII059kCYcqsRL9aN5C1jfImWFSzZWNcmhKtU6+dq6wP6TWBhkn+UmTnRm2h3ITB2WX9x8mrWs=
+	t=1710768058; cv=none; b=RRMjfuCpzA874WAZHompfdX4dNKqOwstOa+OnqJd5ELnjc2hbg35I7ZUpHdhK0gtwQwPJkFPCpeMKHwdgVGnBjxD0cthuM/uONn3kn9fHT4Em2MynzAGzP5KsBsWxpDY+QFbuY4JbwvTGEzeT0VzaOyerPr0c6zsS4DwoQH5OfQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710767876; c=relaxed/simple;
-	bh=hTRXqs+87AcQQdwX7hLXmpkNLX8eNTZwj5xd3y9wDh8=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:Content-Type; b=AjO5a1jspLnx8IDozQyCiYxTjB9Yuh/q60/6hwSp62j4WGSIsIgXMI3njAiUxaBnCvuHRvzuwTWLJyhVVf/drJKYUdN4W/LEq4K9kYb5srol7vAM2/CEGEexxiBFhOA/eqdasSLSqCdo6NiE/bCLPu6kZkVKjLSxkWMu+RlQN6o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cpp.in; spf=none smtp.mailfrom=cpp.in; dkim=pass (2048-bit key) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com header.b=XVReJsTx; arc=none smtp.client-ip=209.85.210.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cpp.in
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cpp.in
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e6f6d782e4so2419536b3a.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 06:17:52 -0700 (PDT)
+	s=arc-20240116; t=1710768058; c=relaxed/simple;
+	bh=Ro9DhNywcl6K5qDRLecjZIB/mP5nv+WPca/RqnMk09M=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=HZIOWwun8+lN98l85XYRMmVYQYYAR7Xj0TYWftt5WYkF7WR1GtwHoLWH+WsmxgcGhXwm45w39uIDQKHhH7yTboZ7M7Grz07BvR+MVm5Dqet2wfu5S1mEow8YgppGcDVahnNo/hdyYhBmRnrvJTwDHA/XbF4M3VXb8MfahNDPv7I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PlQ+c4bl; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d41d1bedc9so73982051fa.3;
+        Mon, 18 Mar 2024 06:20:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cpp-in.20230601.gappssmtp.com; s=20230601; t=1710767872; x=1711372672; darn=vger.kernel.org;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TccUwvnyA3+iIKaf7kLJqh49DkBa5LS6qGPxBEluav4=;
-        b=XVReJsTx+m3aEhPJ9BjJu+4J6ssFgLqY/vJPXGV20hNYsTeU30IR3nc1cv1hPKg3mE
-         ekSRdRgaIbqFUtN4TTsPGkCU/8LA814SwR457HjifMCECCDpc9crrIH9AF5I9BBYhSh5
-         24x9c93qpfAfKNwp7OyCEkq/A6Cf/bmFJA0xTOZ3fGAmT4vsJ1NwXrculfP4ClfNMcGD
-         iiJ3L64lxVAdLT7wgAVMfpN6a7PPUZwlxyW/wgq7VA3x4Kc8bDP/LD2tK/PJQp0lRFKr
-         pz90IfRr/2gPFpzE3IxNcGQYMVomWD2/DnxH3xnrENN4AnVPQBKohEVAjA2hdbQr+p1A
-         g97A==
+        d=gmail.com; s=20230601; t=1710768055; x=1711372855; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=B6f1uddVmun0jJOTXaZCQpPLYe/6XOnd9oX08SFGjC0=;
+        b=PlQ+c4bl91Dpmes14fBswcC6BcIbol49w+sQwMRe/TAeUvvaM3ac2D3bcjkLQiab3e
+         kxvAeD1ESF4SceQgKmgzJ2UA0gDA+vS5cLHgahaKEv6qs03SWOck70/XdJDI5IWog36G
+         Cc+kEbTy24WU4yCgCy+Y4HAA703c6iV7BjFvAktvlPwl0C1VqO2zid2eAmG9iHyWh/iv
+         SsvqDm1zzIKjeBUAg0lAfUvfOYrrUEsLEVsmRit3cs4k1W6IIhUbQ4Bye+krtc3Z550S
+         KEnewm6A/DwcFKXC2Vr8QdYGhMrYWiiV9BZu4obD1LP6Duww0X5bGdkL4fyHMV45JBNs
+         d6mw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710767872; x=1711372672;
-        h=content-transfer-encoding:content-language:cc:to:subject:from
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=TccUwvnyA3+iIKaf7kLJqh49DkBa5LS6qGPxBEluav4=;
-        b=sLiNL9F6fLYfwq/xMJ2gQty2UUU3HW8uHYYOYXyIQzovDsrhC4gdoqIjQoN08w763l
-         BiXjuhnMWkpVKHLVOmf4X3TZS8C6NKdrqLe2dXky0fh1tu4Za2EP/x2qksE67EWPhwG1
-         qjMJj1GiakBd/VKzIRkZjW2UZwAg/U58DggB0sHmhqzr2kICWajlaN+AGMo6g78SnmY2
-         TTeaJW4CexP/kZaVZXVOhp637tTmJPXhIcIvgB3pgw4HOLTXnp+JLyQr5DmHxeZwXDWe
-         kr5MSWKQdMQBirtkZYmn+5kZAxMA77SEvb6pyCSnXhN52HtP0cPbcS7I/V7hnAG9LlCX
-         mlzQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVrxfflNMW/d+xKcJD/EvNqGVm0BXd8Q7WaWfABfLphCY47EbMMiy1v9WpVZhzEbAnp5PotfQl68IAhOiY0AkdMS+AzAuB9iEy784nm
-X-Gm-Message-State: AOJu0Yzeq6otMw3W0tG+/isTeYEOJ0GsBltwIcJRp+Frid8RAxeD5vx5
-	2t3cvnwiv41/WGxtjKxCpXSjx5WbcrxxuYOUzY1erFguy9JNi5EB7lvVUWT4Rw==
-X-Google-Smtp-Source: AGHT+IE3BSS+qytG3C84b34czAdsgC/GjVd/Z/ylH0iIydUB/nO09+ycIyS4kwBZj2jrjPH8Tx9v1Q==
-X-Received: by 2002:a05:6a20:d807:b0:1a3:5336:f303 with SMTP id iv7-20020a056a20d80700b001a35336f303mr6672409pzb.15.1710767872001;
-        Mon, 18 Mar 2024 06:17:52 -0700 (PDT)
-Received: from [192.168.3.16] ([183.89.29.155])
-        by smtp.gmail.com with ESMTPSA id d1-20020aa78141000000b006e6c0080466sm8054389pfn.176.2024.03.18.06.17.50
+        d=1e100.net; s=20230601; t=1710768055; x=1711372855;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=B6f1uddVmun0jJOTXaZCQpPLYe/6XOnd9oX08SFGjC0=;
+        b=k2jtj/y/Nc2CXNuqtZIKCbwLJ7H5zs20+up0seADMaJvYxQ8rbYg3MKRxgUUTIcfUV
+         nRupgC/BSSsU5lYl3IbCYS1pSr5g3e9ETkcQLWJ4OFdUE4XCRPQJbPS+SH+aDMypfDgs
+         xXzYP3sD0si/gFik5en7IqniCUyJN0sil25IYyFki5gLBa5mTf1HeZVbodjLo1p+FNaj
+         J0n31HArjK7r86gfTSN+H5ghZXrj+6MsMJnqF3qFwhCgCn5YIlAedi6Z9UZ8JDWXJJnl
+         4y1lW5kvmqAQK7siIrtnQAhMHsEonIrR0GRpZnzTzCdxso5uuFd/nx8tO2P6JRtT7SAI
+         HoIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV+b8K65aybDDKyYXTuzO2rocOP3kcjpoyZgHHfUjkndoHF6J7zufyGTXC8F+0UM+9GsCzAyoNkWbVxz0+h9MUI/ElQHi3XdJdeqq+LErZg2ZiaduZlcN2cAlQrCN4jso248XCWhXY=
+X-Gm-Message-State: AOJu0YxDp+zm9pBLMxoc/K1SzjM4becevr4L6qgx4qcQS/V8SVg36l4B
+	LfuC9/G4otewzdSgH8auYTA1MwjV2l6sc499NO8S1papeFhZ408Z
+X-Google-Smtp-Source: AGHT+IGo7h2AxBg2UxkUko/nh1IfJYKCRKIBQwNwYP8I35nwUeXbiEw4QWW6hWgGVAaLpuqdbDqs6Q==
+X-Received: by 2002:a2e:9bcd:0:b0:2d4:5c03:5ccb with SMTP id w13-20020a2e9bcd000000b002d45c035ccbmr5121261ljj.10.1710768054395;
+        Mon, 18 Mar 2024 06:20:54 -0700 (PDT)
+Received: from ?IPV6:2620:10d:c096:310::2181? ([2620:10d:c092:600::1:429a])
+        by smtp.gmail.com with ESMTPSA id wk18-20020a170907055200b00a46c7ecb464sm709545ejb.27.2024.03.18.06.20.53
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 06:17:51 -0700 (PDT)
-Message-ID: <e2a7aaed-e9d7-4d36-8abf-b71dfd32a0ff@cpp.in>
-Date: Mon, 18 Mar 2024 16:17:48 +0300
+        Mon, 18 Mar 2024 06:20:54 -0700 (PDT)
+Message-ID: <0a556650-9627-48ee-9707-05d7cab33f0f@gmail.com>
+Date: Mon, 18 Mar 2024 13:19:19 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -74,96 +75,105 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-From: Anthony I Gilea <i@cpp.in>
-Subject: [PATCH v2] ALSA: hda/realtek: Add quirk for HP Spectre x360 14 eu0000
-To: Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>
-Cc: linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
+ TIF_NOTIFY_SIGNAL
 Content-Language: en-US
-Content-Type: text/plain; charset=UTF-8
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de,
+ linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+ Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
+ <7b82679f-9b69-4568-a61d-03eb1e4afc18@gmail.com>
+ <ZfgvNjWP8OYMIa3Y@pengutronix.de>
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <ZfgvNjWP8OYMIa3Y@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
-My original patch was based on an old branch, sorry for that.
-I've re-done it against master and tested if everything works properly.
+On 3/18/24 12:10, Sascha Hauer wrote:
+> On Fri, Mar 15, 2024 at 05:02:05PM +0000, Pavel Begunkov wrote:
+>> On 3/15/24 10:01, Sascha Hauer wrote:
+>>> It can happen that a socket sends the remaining data at close() time.
+>>> With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
+>>> out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
+>>> current task. This flag has been set in io_req_normal_work_add() by
+>>> calling task_work_add().
+>>
+>> The entire idea of task_work is to interrupt syscalls and let io_uring
+>> do its job, otherwise it wouldn't free resources it might be holding,
+>> and even potentially forever block the syscall.
+>>
+>> I'm not that sure about connect / close (are they not restartable?),
+>> but it doesn't seem to be a good idea for sk_stream_wait_memory(),
+>> which is the normal TCP blocking send path. I'm thinking of some kinds
+>> of cases with a local TCP socket pair, the tx queue is full as well
+>> and the rx queue of the other end, and io_uring has to run to receive
+>> the data.
 
-Cirrus amps support for this laptop was added in patch:
-33e5e648e631 ("ALSA: hda: cs35l41: Support additional HP Envy Models")
+There is another case, let's say the IO is done via io-wq
+(io_uring's worker thread pool) and hits the waiting. Now the
+request can't get cancelled, which is done by interrupting the
+task with TIF_NOTIFY_SIGNAL. User requested request cancellations
+is one thing, but we'd need to check if io_uring can ever be closed
+in this case.
 
-This patch adds fixes for wrong pincfgs, wrong DAC selection and mute/micmute LEDs.
 
-Signed-off-by: Anthony I Gilea <i@cpp.in>
----
-  sound/pci/hda/patch_realtek.c | 39 ++++++++++++++++++++++++++++++++++++++-
-  1 file changed, 38 insertions(+), 1 deletions(-)
+>> If interruptions are not welcome you can use different io_uring flags,
+>> see IORING_SETUP_COOP_TASKRUN and/or IORING_SETUP_DEFER_TASKRUN.
+> 
+> I tried with different combinations of these flags. For example
+> IORING_SETUP_TASKRUN_FLAG | IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
+> makes the issue less likely, but nevertheless it still happens.
+> 
+> However, reading the documentation of these flags, they shall provide
+> hints to the kernel for optimizations, but it should work without these
+> flags, right?
 
-diff --git a/sound/pci/hda/patch_realtek.c b/sound/pci/hda/patch_realtek.c
-index b6cd13b1775d..c2bed68b88e2 100644
---- a/sound/pci/hda/patch_realtek.c
-+++ b/sound/pci/hda/patch_realtek.c
-@@ -7097,6 +7097,38 @@ static void alc_fixup_headset_mic(struct hda_codec *codec,
- 	}
- }
- 
-+static void alc245_fixup_hp_spectre_x360_eu0xxx(struct hda_codec *codec,
-+					  const struct hda_fixup *fix, int action)
-+{
-+	/*
-+	 * The Pin Complex 0x14 for the treble speakers is wrongly reported as
-+	 * unconnected.
-+	 * The Pin Complex 0x17 for the bass speakers has the lowest association
-+	 * and sequence values so shift it up a bit to squeeze 0x14 in.
-+	 */
-+	static const struct hda_pintbl pincfgs[] = {
-+		{ 0x14, 0x90170110 }, // top/treble
-+		{ 0x17, 0x90170111 }, // bottom/bass
-+		{ }
-+	};
-+
-+	/*
-+	 * Force DAC 0x02 for the bass speakers 0x17.
-+	 */
-+	static const hda_nid_t conn[] = { 0x02 };
-+
-+	switch (action) {
-+	case HDA_FIXUP_ACT_PRE_PROBE:
-+		snd_hda_apply_pincfgs(codec, pincfgs);
-+		snd_hda_override_conn_list(codec, 0x17, ARRAY_SIZE(conn), conn);
-+		break;
-+	}
-+
-+	cs35l41_fixup_i2c_two(codec, fix, action);
-+	alc245_fixup_hp_mute_led_coefbit(codec, fix, action);
-+	alc245_fixup_hp_gpio_led(codec, fix, action);
-+}
-+
- 
- enum {
- 	ALC269_FIXUP_GPIO2,
-@@ -7373,6 +7405,7 @@ enum {
- 	ALC289_FIXUP_DELL_CS35L41_SPI_2,
- 	ALC294_FIXUP_CS35L41_I2C_2,
- 	ALC245_FIXUP_CS35L56_SPI_4_HP_GPIO_LED,
-+	ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX,
- };
- 
- /* A special fixup for Lenovo C940 and Yoga Duet 7;
-@@ -9562,6 +9595,10 @@ static const struct hda_fixup alc269_fixups[] = {
- 		.chained = true,
- 		.chain_id = ALC285_FIXUP_HP_GPIO_LED,
- 	},
-+	[ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX] = {
-+		.type = HDA_FIXUP_FUNC,
-+		.v.func = alc245_fixup_hp_spectre_x360_eu0xxx,
-+	},
- };
- 
- static const struct snd_pci_quirk alc269_fixup_tbl[] = {
-@@ -9924,7 +9961,7 @@ static const struct snd_pci_quirk alc269_fixup_tbl[] = {
- 	SND_PCI_QUIRK(0x103c, 0x8be8, "HP Envy 17", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8be9, "HP Envy 15", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8bf0, "HP", ALC236_FIXUP_HP_GPIO_LED),
--	SND_PCI_QUIRK(0x103c, 0x8c15, "HP Spectre 14", ALC287_FIXUP_CS35L41_I2C_2),
-+	SND_PCI_QUIRK(0x103c, 0x8c15, "HP Spectre x360 2-in-1 Laptop 14-eu0xxx", ALC245_FIXUP_HP_SPECTRE_X360_EU0XXX),
- 	SND_PCI_QUIRK(0x103c, 0x8c16, "HP Spectre 16", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8c17, "HP Spectre 16", ALC287_FIXUP_CS35L41_I2C_2),
- 	SND_PCI_QUIRK(0x103c, 0x8c46, "HP EliteBook 830 G11", ALC245_FIXUP_CS35L41_SPI_2_HP_GPIO_LED),
+That's true, and I guess there are other cases as well, like
+io-wq and perhaps even a stray fput.
+
+
+>> Maybe I'm missing something, why not restart your syscall?
+> 
+> The problem comes with TLS. Normally with synchronous encryption all
+> data on a socket is written during write(). When asynchronous
+> encryption comes into play, then not all data is written during write(),
+> but instead the remaining data is written at close() time.
+
+Was it considered to do the final cleanup in workqueue
+and only then finalising the release?
+
+
+> Here is my call stack when things go awry:
+> 
+> [  325.560946] tls_push_sg: tcp_sendmsg_locked returned -512
+> [  325.566371] CPU: 1 PID: 305 Comm: webserver_libur Not tainted 6.8.0-rc6-00022-g932acd9c444b-dirty #248
+> [  325.575684] Hardware name: NXP i.MX8MPlus EVK board (DT)
+> [  325.580997] Call trace:
+> [  325.583444]  dump_backtrace+0x90/0xe8
+> [  325.587122]  show_stack+0x18/0x24
+> [  325.590444]  dump_stack_lvl+0x48/0x60
+> [  325.594114]  dump_stack+0x18/0x24
+> [  325.597432]  tls_push_sg+0xfc/0x22c
+> [  325.600930]  tls_tx_records+0x114/0x1cc
+> [  325.604772]  tls_sw_release_resources_tx+0x3c/0x140
+> [  325.609658]  tls_sk_proto_close+0x2b0/0x3ac
+> [  325.613846]  inet_release+0x4c/0x9c
+> [  325.617341]  __sock_release+0x40/0xb4
+> [  325.621007]  sock_close+0x18/0x28
+> [  325.624328]  __fput+0x70/0x2bc
+> [  325.627386]  ____fput+0x10/0x1c
+> [  325.630531]  task_work_run+0x74/0xcc
+> [  325.634113]  do_notify_resume+0x22c/0x1310
+> [  325.638220]  el0_svc+0xa4/0xb4
+> [  325.641279]  el0t_64_sync_handler+0x120/0x12c
+> [  325.645643]  el0t_64_sync+0x190/0x194
+> 
+> As said, TLS is sending remaining data at close() time in tls_push_sg().
+> Here sk_stream_wait_memory() gets interrupted and returns -ERESTARTSYS.
+> There's no way to restart this operation, the socket is about to be
+> closed and won't accept data anymore.
+
+-- 
+Pavel Begunkov
 
