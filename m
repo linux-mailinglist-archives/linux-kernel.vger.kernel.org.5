@@ -1,119 +1,110 @@
-Return-Path: <linux-kernel+bounces-105818-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105819-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B903487E4FF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:32:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AE4287E504
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:34:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 495DEB2155A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:32:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4B57B21440
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:34:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C2A22577A;
-	Mon, 18 Mar 2024 08:32:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bit42.se header.i=@bit42.se header.b="BIPBhtVi"
-Received: from smtp.outgoing.loopia.se (smtp.outgoing.loopia.se [93.188.3.38])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3399B286BF;
+	Mon, 18 Mar 2024 08:34:36 +0000 (UTC)
+Received: from mail-oi1-f170.google.com (mail-oi1-f170.google.com [209.85.167.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A61E208DA
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:32:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=93.188.3.38
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3760E28DA5;
+	Mon, 18 Mar 2024 08:34:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710750761; cv=none; b=Ks7QQYhNYBY04+Txr1lUkqo4HPjubS+A4r+9Wsi3Ml17ih/hQkpun1RN9XfNOBJ8gCTKc25q6mT7ZybwPCpiOU1TmRcrbqE8G01aF4oqcKpGWm8v/ZD4l5VM+V+N7JMNeFNs7qHYLXxmiudZ9YD7vzb7b9cn2TMHuaS5U9jsmNU=
+	t=1710750875; cv=none; b=ocoZ7OTOv9p3sBI1jLf2K2FA2g8JydPsw9n3iYK7dPvD9lO+tMl7yEX6yAthlqpol5usQgTvydZ+zbu4WABPQ1kTfB0dQOhQE6lT4vnMO2gxGjQYpbHPf7eYGdygEVKVMY3Vf+nihGM7Eulm3n5rH7I/K7g3uJZtkM7cGH8ifBY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710750761; c=relaxed/simple;
-	bh=ZLLRwKv52FwS71Q9TRUs3pSjcDZEBliufyAc0LAPBEM=;
-	h=MIME-Version:Date:From:To:Cc:Subject:In-Reply-To:References:
-	 Message-ID:Content-Type; b=MFi7ed/eU8/griinvUUeTjW27HxhHxY3oSuxrpif83AGR6hGD73b9pEWfMdC9SqPrNWybN/s+lGNMpUxe3ym5JgfxiJVe8pgU0+xSrT28oYxJAVpUbDwoF6hQUaVf2mkkIW1COhmUg8cqInqU+Yn+IOjPj4bk9pyEKq3TPkLhks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bit42.se; spf=pass smtp.mailfrom=bit42.se; dkim=pass (2048-bit key) header.d=bit42.se header.i=@bit42.se header.b=BIPBhtVi; arc=none smtp.client-ip=93.188.3.38
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=bit42.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bit42.se
-Received: from s807.loopia.se (localhost [127.0.0.1])
-	by s807.loopia.se (Postfix) with ESMTP id 6FF8F2FFDEC9
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:32:36 +0100 (CET)
-Received: from s979.loopia.se (unknown [172.22.191.5])
-	by s807.loopia.se (Postfix) with ESMTP id 5F8482E286A0;
-	Mon, 18 Mar 2024 09:32:36 +0100 (CET)
-Received: from s470.loopia.se (unknown [172.22.191.6])
-	by s979.loopia.se (Postfix) with ESMTP id 59E2710BC3B2;
-	Mon, 18 Mar 2024 09:32:36 +0100 (CET)
-X-Virus-Scanned: amavisd-new at amavis.loopia.se
-X-Spam-Flag: NO
-X-Spam-Score: -1.21
-X-Spam-Level:
-Authentication-Results: s470.loopia.se (amavisd-new); dkim=pass (2048-bit key)
-	header.d=bit42.se
-Received: from s981.loopia.se ([172.22.191.6])
-	by s470.loopia.se (s470.loopia.se [172.22.190.34]) (amavisd-new, port 10024)
-	with UTF8LMTP id o87pN2BTdgsU; Mon, 18 Mar 2024 09:32:36 +0100 (CET)
-X-Loopia-Auth: webmail
-X-Loopia-User: richard@bit42.se
-Received: from webmail.loopia.se (unknown [172.22.212.9])
-	(Authenticated sender: richard@bit42.se)
-	by s981.loopia.se (Postfix) with ESMTPA id D152422B1705;
-	Mon, 18 Mar 2024 09:32:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bit42.se;
-	s=loopiadkim1707482520; t=1710750755;
-	bh=sCBjdIljVl7n3SHU3VSHSE5xRH6DxbvTSqyd6NrP4Fk=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References;
-	b=BIPBhtViO6u+7532rWxsm4A8kN5iHpcMJQmKUmm4T0DbSTbrmOsOAXxvEEUM8mWBA
-	 uS673T4dsOoJhy/0PBA8vGhacriKPT56XkxhWjtrB+y1s5iQyaOQkzMGCYGm52biKK
-	 MBOV5pIaqqdoIdLdtrsBv+Plr9fFYE9M3EGxPNdBimxFY0RGwVOvPSoEVJXHdV7Shu
-	 H8ZQGvXbNpWTnuiCNppfi4sbyGTulykrRaVr7GErKLWVAyBnFhsWBpWSC67Eo4HaGp
-	 WOe3LMo+PwZOlR2IYfveUEQb3dDq7s+uDrZYzIux13/07cHMZRlz8dwOJZ4W+l3VNd
-	 lpqUpTcl1Gmkw==
+	s=arc-20240116; t=1710750875; c=relaxed/simple;
+	bh=GsSIX3/CTa3M1g8uCjDs57wTL5NgRRrzEvE8JpLC1fo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=o/B4OuhmY99QKRUb9No/k89+hTGBKMn/Ro+K2OmEaxFNDkoDitg+YJMcqO8JK10pDvAjOAoyYckVZ7gItjWEXoYbIBtUIzPyndKe39EhLBzthRc1G8H3r+9QujMfrq6GwNePhro4fKNfQCA9kDTW1Uy1Pl9OurvCmcD8WjwkP0k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=linux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f170.google.com with SMTP id 5614622812f47-3c213690558so2066500b6e.0;
+        Mon, 18 Mar 2024 01:34:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710750873; x=1711355673;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvZQxWeSLOGmfnR+hu9jNLf/b2B+AxMGzTGTFwxzF5I=;
+        b=r9JOi+YXdcP+O4/DEU3jCw3elX3i1qg5WGBVAyzRB3A1jMgGjWQLanWF6XXExWmGPy
+         UuSQVo1QCalrRryabrBscjq328twg4rKSBbuof6tLdrfmvrF2c1GHC6rZryawQMffBrB
+         wZl5UFb5w7ttgQeoaqw7o8MutRk+T/b9oYIms0nkIY5faQQ89pvQXB6ZYVirDDrftvKK
+         MfoOUUhYI5Ry0Y/3KLTFuRard96R5h12pPj64S+UUl+iISipsb1+aEgIY2Zo8NEUrX9a
+         P00pPdnxQetdP/zmNXuVwTLnKy9CA3kn8u1kOsCCcuE0G+Giahf6vfI/YqRaJ54DJror
+         kTDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUGB0KDrzSZ/yfzm3U0VytxH+Wekg5QRpqOni8Zbb7JoJIQUUiZBepP/a2VEtMF+meLKA0rbgRyjfBRxbSxHI47tWuwknRwM/1Stq0kuvD0jNQyplHcBfWcRVdNoChRU94wGDtnn/uAvgM=
+X-Gm-Message-State: AOJu0Yz2Y3QuIMPwiOOGQyHshTXGB/c1zWPbDqtOV0tYOKc6qI5Oztx8
+	QqOYMYpuySf1ywZYjOmy4wYgtJtMol9sNE0jEAUvgztPkfW9BEr2cXY2ej45
+X-Google-Smtp-Source: AGHT+IGCTIYygH5ykNVKGapiN9rp8xjMRzpLhbU6cnFH/ODSTdenylh9aj9/DXgQizVHZfFwtpUnFQ==
+X-Received: by 2002:a05:6808:20a9:b0:3c3:7434:78be with SMTP id s41-20020a05680820a900b003c3743478bemr11360013oiw.27.1710750873353;
+        Mon, 18 Mar 2024 01:34:33 -0700 (PDT)
+Received: from [10.16.0.238] ([5.32.53.86])
+        by smtp.gmail.com with ESMTPSA id v2-20020aa78082000000b006e6b39e040esm7385003pff.165.2024.03.18.01.34.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 01:34:32 -0700 (PDT)
+Message-ID: <7ce0d4b7-2e4d-44a7-b268-3e2505e01abe@linux.com>
+Date: Mon, 18 Mar 2024 12:34:24 +0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Date: Mon, 18 Mar 2024 09:32:35 +0100
-From: richard@bit42.se
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-kernel@vger.kernel.org, =?UTF-8?Q?Niklas_S=C3=B6derlund?=
- <niklas.soderlund@ragnatech.se>, Michael Walle <michael@walle.cc>, Greg
- Kroah-Hartman <gregkh@linuxfoundation.org>
-Subject: Re: [PATCH 2/2] nvmem: Remove qoriq-efuse in favor of layerscape-sfp
-In-Reply-To: <20240316002026.1808336-2-sean.anderson@linux.dev>
-References: <20240316002026.1808336-1-sean.anderson@linux.dev>
- <20240316002026.1808336-2-sean.anderson@linux.dev>
-User-Agent: Loopia Webmail/1.6.3
-Message-ID: <6f5636e65df5616395cc8e24f63b09ef@bit42.se>
-X-Sender: richard@bit42.se
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] floppy: remove duplicated code, unlock_fdc() function has
+ the same code "do_floppy = NULL" inside.
+Content-Language: en-US
+To: Yufeng Wang <wangyufeng@kylinos.cn>, Jens Axboe <axboe@kernel.dk>,
+ linux-block@vger.kernel.org, linux-kernel@vger.kernel.org
+Cc: stable@vger.kernel.org
+References: <20240318060756.18649-1-wangyufeng@kylinos.cn>
+From: Denis Efremov <efremov@linux.com>
+In-Reply-To: <20240318060756.18649-1-wangyufeng@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 2024-03-16 01:20, Sean Anderson wrote:
-> The qoriq-efuse driver is a duplicate of layerscape-sfp.c. The T-series
-> uses TA 2.0, while Layerscape uses TA 2.1 or 3.0 (depending on the
-> chip). Add appropriate compatibles to the layerscape-sfp driver and
-> remove the qoriq-efuse driver. I did not add support for P-series SoCs,
-> since they use TA 1.0 which doesn't share a major version with either 
-> of
-> the existing implementations.
-> 
-> The qoriq-efuse driver does not properly abstract the location/offset 
-> of
-> the fuses properly, instead exposing the device's whole address range 
-> to
-> userspace. This is not appropriate, as the fuses only occupy a small
-> portion of this range. The layerscape-sfp module correctly constrains
-> the nvmem size to the fuses size. This represents a (necessary)
-> compatibility break. The qoriq-efuse driver has been in-tree for around
-> six months. Hopefully this will limit the fallout.
-> 
-> I would appreciate if someone with access to trust architecture 2.0 
-> user
-> guide could confirm the number of fuses.
-> 
-> Fixes: 0861110bb421 ("nvmem: add new NXP QorIQ eFuse driver")
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-I don't think Fixes is appropriate here. Apart from that:
+Hello,
 
-Acked-by: Richard Alpe <richard@bit42.se>
+Please, add a small commit message to the patch. The commit title
+is too long and can be reduced to something like "floppy: remove duplicated
+code in redo_fd_request()". Rest can be added to the commit message.
+
+On 3/18/24 10:07, Yufeng Wang wrote:
+> Cc: stable@vger.kernel.org
+
+We don't need to send this patch to stable. It's not a bugfix.
+
+Please, send v2 with commit message and new title.
+The change looks good to me.
+
+> Signed-off-by: Yufeng Wang <wangyufeng@kylinos.cn>
+> ---
+>  drivers/block/floppy.c | 1 -
+>  1 file changed, 1 deletion(-)
+> 
+> diff --git a/drivers/block/floppy.c b/drivers/block/floppy.c
+> index 1b399ec8c07d..25c9d85667f1 100644
+> --- a/drivers/block/floppy.c
+> +++ b/drivers/block/floppy.c
+> @@ -2787,7 +2787,6 @@ static void redo_fd_request(void)
+>  		pending = set_next_request();
+>  		spin_unlock_irq(&floppy_lock);
+>  		if (!pending) {
+> -			do_floppy = NULL;
+>  			unlock_fdc();
+>  			return;
+>  		}
+
+Thanks,
+Denis
 
