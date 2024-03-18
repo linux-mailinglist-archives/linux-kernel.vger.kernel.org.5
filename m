@@ -1,100 +1,62 @@
-Return-Path: <linux-kernel+bounces-105645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9512887E203
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:03:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 53B5987E1F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C501D1C21491
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:03:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 018301F210DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:03:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A302C208CA;
-	Mon, 18 Mar 2024 02:03:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A7171E894;
+	Mon, 18 Mar 2024 02:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Cl4LJpQb"
-Received: from bombadil.infradead.org (bombadil.infradead.org [198.137.202.133])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC5701E87E;
-	Mon, 18 Mar 2024 02:03:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.137.202.133
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="g7kCyzeB"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4514C1E86A;
+	Mon, 18 Mar 2024 02:03:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710727384; cv=none; b=Mt8QUMmDUCeuERpl31klCv8Z3z2MpGXziKj32es2c4DvLZAd8aAXPYRsk7P/ZWh7SVTzG9IYzZ7sQtM+bdCGGYJN/BacN5XkLcdvhCyN9wszOZMEwH8ZDxBQ11yI/X90tfgMVIEs5gN2MTjehDZ02WXz1tUJA7ACkbeq75r9sfw=
+	t=1710727382; cv=none; b=g+nDhY+Zo7+4tZ7fRGDQWSaVb3WTMgfAYJEHiLo94Cu4QoNJuK7oABUKoY5Mo/ZmVDZYOFQKuwi8Ib9kRWchTxLwAWddniY0nEQZHmiakqnRkQnK4EepId9eti4e0OmZGlpMQZWdVEGYAIUyukESH/KcQ5tZNf/wmEGESN3A9Us=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710727384; c=relaxed/simple;
-	bh=s2DTcYQv5t1E/AgG3AGAU+YYi9lLQeVvZlKV3Acyq9M=;
+	s=arc-20240116; t=1710727382; c=relaxed/simple;
+	bh=VEV3bHnrvpDLnxzjH5gw8v6jQnwfu7MuGbkOPp9uIZ8=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t3bmTEdiAyqp1q3XaGdbWkeJM3kHW5qwF7yN9BjkHqVGg/t7dHtsrpD7+yTCqM9P3FPHRtNpJJKCASiuEem/IqH6KTWcozmje7etvBacyIyaxpwI8sdKcQt1LKVivU/UqrsNMCCI0NgkVVXhO1bL1wlWJvt5T2JwbZCQ5+bh41I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Cl4LJpQb; arc=none smtp.client-ip=198.137.202.133
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=bombadil.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=bombadil.20210309; h=In-Reply-To:Content-Type:MIME-Version
-	:References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=nzZSUZc1IlLbKe81oj0XpOImEHMN1QwfDar40WlDId8=; b=Cl4LJpQbj38gTTSZEQUZ+1vpu3
-	kfvxEgbVIrASKys6zjX6NXQRWu09Lgn3IV65yLbtH4dUG8GB1Yqrznlf5YYQk37UR4dpnqVOEhv1o
-	w2K5FOiZ3xKMvsyJFyxhLSnZwjPs1HCtxbr+tuF9JhbtLngwAWn7usG/oNe+6woPNU7cNjWJxlJqD
-	ln0QmERP5F9CIT9MIbbXqzH0GBZ4M10aRQSSRBzUQIDZ7/9+/IL2GfU9AJDXFI35koQIIJJU8jO3B
-	QMSHsOqDU3V3fvm5V+tc15IIGsSZnzBfpqlpQEctTDCEj3pPcRujHYO3Wr1dAgj7vx/NrDvJcf1hE
-	buU9lkcQ==;
-Received: from hch by bombadil.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rm2Ky-00000006zOo-2Ad2;
-	Mon, 18 Mar 2024 02:02:53 +0000
-Date: Sun, 17 Mar 2024 19:02:52 -0700
-From: Christoph Hellwig <hch@infradead.org>
-To: Mina Almasry <almasrymina@google.com>
-Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
-	linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
-	sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
-	linux-arch@vger.kernel.org, bpf@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Richard Henderson <richard.henderson@linaro.org>,
-	Ivan Kokshaysky <ink@jurassic.park.msu.ru>,
-	Matt Turner <mattst88@gmail.com>,
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Ilias Apalodimas <ilias.apalodimas@linaro.org>,
-	Steven Rostedt <rostedt@goodmis.org>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	David Ahern <dsahern@kernel.org>,
-	Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
-	Shuah Khan <shuah@kernel.org>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Christian =?iso-8859-1?Q?K=F6nig?= <christian.koenig@amd.com>,
-	Pavel Begunkov <asml.silence@gmail.com>, David Wei <dw@davidwei.uk>,
-	Jason Gunthorpe <jgg@ziepe.ca>,
-	Yunsheng Lin <linyunsheng@huawei.com>,
-	Shailend Chand <shailend@google.com>,
-	Harshitha Ramamurthy <hramamurthy@google.com>,
-	Shakeel Butt <shakeelb@google.com>,
-	Jeroen de Borst <jeroendb@google.com>,
-	Praveen Kaligineedi <pkaligineedi@google.com>
-Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
- custom page providers
-Message-ID: <ZfegzB341oNc_Ocz@infradead.org>
-References: <20240305020153.2787423-1-almasrymina@google.com>
- <20240305020153.2787423-3-almasrymina@google.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZZTXmqbpXAQDDUsy/HR+JOgB30vxbTFJKHj9F2dgbv7jqNHicngvebD7+/QFS0S7x+IBEkmTiIwlZxjlLJRE2cIo/XuUpZktriz80woH497VFLCV4IPlzx+oUzbAQE8YDvvcWu8+6b9M9yDSnE9UP8BLKAJuUBMruic/XpI+4Us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=g7kCyzeB; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: by linux.microsoft.com (Postfix, from userid 1134)
+	id D4DB120B74C1; Sun, 17 Mar 2024 19:02:55 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com D4DB120B74C1
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710727375;
+	bh=SIf/+MqbeJUe2PsctvamEzR9L4uheZJqgV8P1Cq6s2c=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=g7kCyzeBH+DU6DesWij01JeVviGKuGmT0n/3kBzEaWiw0jS37RGr01rF0Ib22POFF
+	 XMQGugEfO90LOtzOC5xoJ94+tFkYkxuTk6z86G/uXDoeU71mZZ+8gDbTfwcaovuOcB
+	 aUIPqVW5sJvIROqXiUEk/60DUD6KR8/9AeXfrqm4=
+Date: Sun, 17 Mar 2024 19:02:55 -0700
+From: Shradha Gupta <shradhagupta@linux.microsoft.com>
+To: Easwar Hariharan <eahariha@linux.microsoft.com>
+Cc: linux-kernel@vger.kernel.org, linux-hyperv@vger.kernel.org,
+	"K. Y. Srinivasan" <kys@microsoft.com>,
+	Haiyang Zhang <haiyangz@microsoft.com>,
+	Wei Liu <wei.liu@kernel.org>, Dexuan Cui <decui@microsoft.com>,
+	Long Li <longli@microsoft.com>,
+	Michael Kelley <mikelley@microsoft.com>,
+	Olaf Hering <olaf@aepfle.de>, Ani Sinha <anisinha@redhat.com>,
+	Shradha Gupta <shradhagupta@microsoft.com>
+Subject: Re: [PATCH v2] hv/hv_kvp_daemon: Handle IPv4 and Ipv6 combination
+ for keyfile format
+Message-ID: <20240318020255.GA28704@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+References: <1710247112-7414-1-git-send-email-shradhagupta@linux.microsoft.com>
+ <3bf8844a-3e19-4105-8cce-2b1f8f98d3bc@linux.microsoft.com>
+ <20240313052212.GB22465@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <20240315140914.GA14685@linuxonhyperv3.guj3yctzbm1etfxqx2vob5hsef.xx.internal.cloudapp.net>
+ <dd1b378d-6750-419f-8c46-a8f42c0ebe11@linux.microsoft.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -103,26 +65,68 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240305020153.2787423-3-almasrymina@google.com>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <hch@infradead.org> by bombadil.infradead.org. See http://www.infradead.org/rpr.html
+In-Reply-To: <dd1b378d-6750-419f-8c46-a8f42c0ebe11@linux.microsoft.com>
+User-Agent: Mutt/1.5.21 (2010-09-15)
 
-On Mon, Mar 04, 2024 at 06:01:37PM -0800, Mina Almasry wrote:
-> From: Jakub Kicinski <kuba@kernel.org>
+On Fri, Mar 15, 2024 at 09:56:22AM -0700, Easwar Hariharan wrote:
+> On 3/15/2024 7:09 AM, Shradha Gupta wrote:
 > 
-> The page providers which try to reuse the same pages will
-> need to hold onto the ref, even if page gets released from
-> the pool - as in releasing the page from the pp just transfers
-> the "ownership" reference from pp to the provider, and provider
-> will wait for other references to be gone before feeding this
-> page back into the pool.
-
-The word hook always rings a giant warning bell for me, and looking into
-this series I am concerned indeed.
-
-The only provider provided here is the dma-buf one, and that basically
-is the only sensible one for the documented design.  So instead of
-adding hooks that random proprietary crap can hook into, why not hard
-code the dma buf provide and just use a flag?  That'll also avoid
-expensive indirect calls.
-
+> <snip>
+> 
+> >>>>  }
+> >>>>  
+> >>>> +static int process_dns_gateway_nm(FILE *f, char *ip_string, int type,
+> >>>> +				  int ip_sec)
+> >>>> +{
+> >>>> +	char addr[INET6_ADDRSTRLEN], *output_str;
+> >>>> +	int ip_offset = 0, error = 0, ip_ver;
+> >>>> +	char *param_name;
+> >>>> +
+> >>>> +	output_str = (char *)calloc(INET6_ADDRSTRLEN * MAX_IP_ENTRIES,
+> >>>> +				    sizeof(char));
+> >>>> +
+> >>>> +	if (!output_str)
+> >>>> +		return -ENOMEM;
+> >>>> +
+> >>>> +	memset(addr, 0, sizeof(addr));
+> >>>> +
+> >>>> +	if (type == DNS) {
+> >>>> +		param_name = "dns";
+> >>>> +	} else if (type == GATEWAY) {
+> >>>> +		param_name = "gateway";
+> >>>> +	} else {
+> >>>> +		error = -EINVAL;
+> >>>> +		goto cleanup;
+> >>>> +	}
+> >>>> +
+> >>>> +	while (parse_ip_val_buffer(ip_string, &ip_offset, addr,
+> >>>> +				   (MAX_IP_ADDR_SIZE * 2))) {
+> >>>> +		ip_ver = ip_version_check(addr);
+> >>>> +		if (ip_ver < 0)
+> >>>> +			continue;
+> >>>> +
+> >>>> +		if ((ip_ver == IPV4 && ip_sec == IPV4) ||
+> >>>> +		    (ip_ver == IPV6 && ip_sec == IPV6)) {
+> >>>> +			if (((INET6_ADDRSTRLEN * MAX_IP_ENTRIES) - strlen(output_str)) >
+> >>>> +			    (strlen(addr))) {
+> >>>> +				strcat(output_str, addr);
+> >>>> +				strcat(output_str, ",");
+> >>>
+> >>> Prefer strncat() here
+> > Is this needed with the bound check above. I am trying to keep parity with the rest of the 
+> > file.
+> >>>
+> <snip>
+> 
+> I missed this earlier because my comment was more of a general best practice comment.
+> 
+> Note that in the worst case where your bounds check (INET6_ADDRSTRLEN*MAX_IP_ENTRIES) - strlen(output_str) equals (strlen(addr) + 1),
+> you will be adding strlen(addr)+1(","), and end up with no ASCII NUL '\0' delimiter.
+> 
+> If you're going to rely on the bounds check to ensure correctness, you'll need to correct that. Generally speaking, strncat would still
+> be helpful in case the bounds check changes in the future.
+> 
+> Thanks,
+> Easwar
+got it. Thanks.
 
