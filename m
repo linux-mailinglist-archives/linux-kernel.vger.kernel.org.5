@@ -1,167 +1,125 @@
-Return-Path: <linux-kernel+bounces-106545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 228DF87F026
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:06:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D69B87F027
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3C1D1F22101
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:06:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCE1E2818D0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:06:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0173756466;
-	Mon, 18 Mar 2024 19:06:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D098856756;
+	Mon, 18 Mar 2024 19:06:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="IV5qgkfK"
-Received: from out-182.mta0.migadu.com (out-182.mta0.migadu.com [91.218.175.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ewmbfIfD"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A022855C14
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:06:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C3AC756742
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710788766; cv=none; b=BUD3ZIFYk/5d6exXXlfPqemZH/t8ZeyH0DKweeOh8EzIf1NGGvf3D6SHoSDOrchh6XSRIh8TmLjGaVUD89L9eR2+j0LL30VV1XJgIpAHyT2355ppCV5PW0ocnISrxq2Sgox2oAtMC1eo/RGNIaf3K6Tj7Qwq4fOgQmkx2PZeKtc=
+	t=1710788792; cv=none; b=WZPpYNCERCd5s+uzWaoc6RgBNB11JAxS84BUUUarIWFWj0v8FbAdUonBYS3DDMB3vDGVICmqc4EUx9mcERqk66L7SZ6IsaPS47Jlyr+3ZH54KsmGq1VJOsieyK6cj0Q+G7AI9rVPOS80b8CQFjj+zWe7a1n1jZrUKzemvXOYzsE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710788766; c=relaxed/simple;
-	bh=74ZSPlVYVJNFzX2CjhuI7nZPYa4reYpe31xx8MLhPLY=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=PB2Z/sjqNksz+KKqszTknGIRzy1iR1nvWgcECDQGCJ3Ss1eEkKPPxx/qaGoJVILy6TAypAg4u3PgiAtpehreHZ8x0wdJsSuI+0gi1ujPL+X0snxGVqcTcFaAHPsCB6O3x9tXcRygBC21jwqv5L9IMOkQ521XIJWs0vT/XHl+LUE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=IV5qgkfK; arc=none smtp.client-ip=91.218.175.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6b44c9b7-e1e2-4b69-a443-4616ceab6f17@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710788761;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=aI53OR+8o+dtnjSJRsKHjwQWA3OPclhRJ779bxvtMIA=;
-	b=IV5qgkfKSkQIYLWNQUflil6tfdnHRjp+RSS4A8Y6mtVmRh/JmXNI0eXK0Ru+4uPD61kQKz
-	/RBKDMPWbuC8WIUZC82MvShrtpw5g2omWnjWt5FLLts5o5SdVBrpxFfCnibUlOZuWzXZiT
-	d31TfX4l0nWmOpSjEtutiSfcvjs5fdw=
-Date: Mon, 18 Mar 2024 15:05:57 -0400
+	s=arc-20240116; t=1710788792; c=relaxed/simple;
+	bh=NEx2g4n6ufqCzilttVyJiiBJGnoeUzvPlQCp0qHeo88=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=UbS57H+OX+syuQ1nSpgwjZSpaT8GXqiBoVL2gZKYY/amoiMl+CZ/tr4ZoIPw7gU5086KWsYE9ZAcZO//Aes2diayXOnVWEQlvw0jjqF9YS0PGaT4JAldU96v5vXfZBPhlb+fZSTU6hw9OgXiSo5aUtA8zwRHto9RHZZ+MSKzfyw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ewmbfIfD; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dd9568fc51so36860865ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:06:30 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710788790; x=1711393590; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=3t/6qBY8GxMhzpyZRZVOzzJ2aUCI4p/xA2HtoPwjz48=;
+        b=ewmbfIfDQWRcNIZsrfFPmsIxKyMG+NyIHyAmEA4UWMt/zEKQ4dcb/pmAIiSnew4fKL
+         MBpWswLEGgNkdY6nogZN1mnDcAwVSsHACUHR+7LrXZ1ALCfB2QGluXZk9spkjq49zmtw
+         oQqEupfBHHh901prFCgR7+lYgFAXvjwoIj2pNWkqK9RBwtS0WmBqWPly2KT4eJXBDCEt
+         4HloyBPc44mxHsEtSIMh5+T0LEXiPSyxIaRXEHyoOqbWCfWkXe85JbuvqlJNtCHoTuaA
+         jZahg1ff6ZXnPOFH1cVjPoW+/3m2KfoKe2/NIwQNdLd0fzj7XdX9+NhE73tR3g+pckpx
+         nv+g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710788790; x=1711393590;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=3t/6qBY8GxMhzpyZRZVOzzJ2aUCI4p/xA2HtoPwjz48=;
+        b=fOAw+ZxdilwMhMaYc3yamUNjdQj6+UdWXgtfkpdghPiLBjX+7H3dxoWt5IfMx7DknI
+         Ysf1pUG0SYc7chT+LMDVYDhFFzSjoMaCSM019HkIA/DNm1ZoJNIbX2i1Y9eNIICWWZ8z
+         FcqqDTGuNjXXxdo7SDrF0NJzmFW4q/5pKfvdzusglZutnbJl4GdamSuIl/Ek8ez5cwFA
+         POGWYQv760EHs8dxeBwEaXI3vt/CVh5qYa3IsIft9Z2dhYxm7oH3HnR634tU6Fbzuvwj
+         VkVQNUZjWLXXvanrcVHa0fRP6Yc6pWthYh7O9gEqswgSQykRlMHiEBf2+yh0+baschGm
+         1MTw==
+X-Forwarded-Encrypted: i=1; AJvYcCWG3rVwGohoL+XWumdhgUo/9/TXCl47rkJWmtbkG02maG0e/uQ8TjKgN2QQgOTXxbxKpyQezhDqgxAf0Rpi5x66NH8WOzjxEcDRfUwD
+X-Gm-Message-State: AOJu0YykQ868AB9OkPcZ8l3XT8HUYBBRB0R0e3txA6SPaGLywWq8+2N5
+	bjghG/xo/Tg8urgo2zdJXS9AQh2460WHWCHy//mJbwQ+Z283JQRPntGFcXuOU5o=
+X-Google-Smtp-Source: AGHT+IHNcRSrETZMOBGBIJjxlTUKxhM+HgSfC4f7xoyv8I+epdayrvnayaKoLUuqEnsrvYN/c5dUzg==
+X-Received: by 2002:a17:902:bcc4:b0:1dd:9da3:59ff with SMTP id o4-20020a170902bcc400b001dd9da359ffmr559461pls.42.1710788789789;
+        Mon, 18 Mar 2024 12:06:29 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.68])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902c40a00b001defa97c6basm6416769plk.235.2024.03.18.12.06.28
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 12:06:28 -0700 (PDT)
+Date: Tue, 19 Mar 2024 00:36:25 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH v6] staging: greybus: Constify gb_audio_module_type
+Message-ID: <ZfiQsZBrHfImIJfc@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 6/6] drm: zynqmp_dp: Add debugfs interface for compliance
- testing
-Content-Language: en-US
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-Cc: kernel test robot <lkp@intel.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org, oe-kbuild-all@lists.linux.dev,
- David Airlie <airlied@gmail.com>, linux-kernel@vger.kernel.org,
- Michal Simek <monstr@monstr.eu>, linux-arm-kernel@lists.infradead.org,
- Daniel Vetter <daniel@ffwll.ch>
-References: <20240315230916.1759060-7-sean.anderson@linux.dev>
- <202403161704.ACHJdSJG-lkp@intel.com>
- <ce1190ad-27c2-4a16-b36f-442c0c419dcc@linux.dev>
- <20240318175032.GM13682@pendragon.ideasonboard.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <20240318175032.GM13682@pendragon.ideasonboard.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On 3/18/24 13:50, Laurent Pinchart wrote:
-> On Mon, Mar 18, 2024 at 11:06:40AM -0400, Sean Anderson wrote:
->> On 3/16/24 06:14, kernel test robot wrote:
->> > Hi Sean,
->> > 
->> > kernel test robot noticed the following build warnings:
->> > 
->> > [auto build test WARNING on v6.8]
->> > [cannot apply to drm-misc/drm-misc-next linus/master next-20240315]
->> > [If your patch is applied to the wrong git tree, kindly drop us a note.
->> > And when submitting patch, we suggest to use '--base' as documented in
->> > https://git-scm.com/docs/git-format-patch#_base_tree_information]
->> > 
->> > url:    https://github.com/intel-lab-lkp/linux/commits/Sean-Anderson/drm-zynqmp_dp-Downgrade-log-level-for-aux-retries-message/20240316-071208
->> > base:   v6.8
->> > patch link:    https://lore.kernel.org/r/20240315230916.1759060-7-sean.anderson%40linux.dev
->> > patch subject: [PATCH 6/6] drm: zynqmp_dp: Add debugfs interface for compliance testing
->> > config: microblaze-allmodconfig (https://download.01.org/0day-ci/archive/20240316/202403161704.ACHJdSJG-lkp@intel.com/config)
->> > compiler: microblaze-linux-gcc (GCC) 13.2.0
->> > reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240316/202403161704.ACHJdSJG-lkp@intel.com/reproduce)
->> > 
->> > If you fix the issue in a separate patch/commit (i.e. not just a new version of
->> > the same patch/commit), kindly add following tags
->> > | Reported-by: kernel test robot <lkp@intel.com>
->> > | Closes: https://lore.kernel.org/oe-kbuild-all/202403161704.ACHJdSJG-lkp@intel.com/
->> > 
->> > All warnings (new ones prefixed by >>):
->> > 
->> >    drivers/gpu/drm/xlnx/zynqmp_dp.c: In function 'zynqmp_dp_bridge_debugfs_init':
->> >>> drivers/gpu/drm/xlnx/zynqmp_dp.c:2168:31: warning: 'sprintf' may write a terminating nul past the end of the destination [-Wformat-overflow=]
->> >     2168 |                 sprintf(name, fmt, i);
->> >          |                               ^~~
->> >    drivers/gpu/drm/xlnx/zynqmp_dp.c:2168:17: note: 'sprintf' output between 18 and 20 bytes into a destination of size 19
->> >     2168 |                 sprintf(name, fmt, i);
->> >          |                 ^~~~~~~~~~~~~~~~~~~~~
->> 
->> Not a bug, as i will be at most 4, which uses 1 digit.
-> 
-> The compiler can't know that. Please fix this, there's a zero warning
-> policy.
+Constify static struct kobj_type gb_audio_module_type to prevent
+modification of data shared across many instances and to address the
+checkpatch warning that "gb_audio_module_type" should be const. The
+"gb_audio_module_type" struct is only used in one place:
+err = kobject_init_and_add(&m->kobj, &gb_audio_module_type, NULL, ...
+so checkpatch is correct that it can be made const.
 
-I cannot reproduce this with GCC 13.2.0. So given that this is not a bug and I can't reproduce
-it, I don't see how I can verify any fix.
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 
---Sean
+---
+Changes in v6: refined commit message as per suggestions
 
->> > vim +/sprintf +2168 drivers/gpu/drm/xlnx/zynqmp_dp.c
->> > 
->> >   2136	
->> >   2137	DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_rate, zynqmp_dp_rate_get,
->> >   2138				 zynqmp_dp_rate_set, "%llu\n");
->> >   2139	
->> >   2140	static void zynqmp_dp_bridge_debugfs_init(struct drm_bridge *bridge,
->> >   2141						  struct dentry *root)
->> >   2142	{
->> >   2143		struct zynqmp_dp *dp = bridge_to_dp(bridge);
->> >   2144		struct dentry *test;
->> >   2145		int i;
->> >   2146	
->> >   2147		dp->test.bw_code = DP_LINK_BW_5_4;
->> >   2148		dp->test.link_cnt = dp->num_lanes;
->> >   2149	
->> >   2150		test = debugfs_create_dir("test", root);
->> >   2151	#define CREATE_FILE(name) \
->> >   2152		debugfs_create_file(#name, 0600, test, dp, &fops_zynqmp_dp_##name)
->> >   2153		CREATE_FILE(pattern);
->> >   2154		CREATE_FILE(enhanced);
->> >   2155		CREATE_FILE(downspread);
->> >   2156		CREATE_FILE(active);
->> >   2157		CREATE_FILE(custom);
->> >   2158		CREATE_FILE(rate);
->> >   2159		CREATE_FILE(lanes);
->> >   2160	
->> >   2161		for (i = 0; i < dp->num_lanes; i++) {
->> >   2162			static const char fmt[] = "lane%d_preemphasis";
->> >   2163			char name[sizeof(fmt)];
->> >   2164	
->> >   2165			dp->debugfs_train_set[i].dp = dp;
->> >   2166			dp->debugfs_train_set[i].lane = i;
->> >   2167	
->> >> 2168			sprintf(name, fmt, i);
->> >   2169			debugfs_create_file(name, 0600, test,
->> >   2170					    &dp->debugfs_train_set[i],
->> >   2171					    &fops_zynqmp_dp_preemphasis);
->> >   2172	
->> >   2173			sprintf(name, "lane%d_swing", i);
->> >   2174			debugfs_create_file(name, 0600, test,
->> >   2175					    &dp->debugfs_train_set[i],
->> >   2176					    &fops_zynqmp_dp_swing);
->> >   2177		}
->> >   2178	}
->> >   2179	
-> 
+Changes in v5: added more details as per feedback.
+
+Changes in v4: added more details verifying the change.
+
+Changes in v3: added the message that verifies the change,
+as suggested by Julia
+
+Changes in v2: incorporated changes in commit message
+as suggested by Alison
+---
+ drivers/staging/greybus/audio_manager_module.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/drivers/staging/greybus/audio_manager_module.c b/drivers/staging/greybus/audio_manager_module.c
+index 5f9dcbdbc191..4a4dfb42f50f 100644
+--- a/drivers/staging/greybus/audio_manager_module.c
++++ b/drivers/staging/greybus/audio_manager_module.c
+@@ -144,7 +144,7 @@ static struct attribute *gb_audio_module_default_attrs[] = {
+ };
+ ATTRIBUTE_GROUPS(gb_audio_module_default);
+ 
+-static struct kobj_type gb_audio_module_type = {
++static const struct kobj_type gb_audio_module_type = {
+ 	.sysfs_ops = &gb_audio_module_sysfs_ops,
+ 	.release = gb_audio_module_release,
+ 	.default_groups = gb_audio_module_default_groups,
+-- 
+2.40.1
 
 
