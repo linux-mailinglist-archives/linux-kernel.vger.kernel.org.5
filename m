@@ -1,192 +1,122 @@
-Return-Path: <linux-kernel+bounces-106425-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106426-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F39B87EE7D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:10:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id AC47087EE7F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:11:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEDED1C20DE0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:10:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 622451F24F0E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:11:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2DA55763;
-	Mon, 18 Mar 2024 17:10:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC3554FB6;
+	Mon, 18 Mar 2024 17:10:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0nbuP9Do";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CczetMun";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jm1QiBgo";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5mzg8b9d"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJoCnLEK"
+Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E292354BEA;
-	Mon, 18 Mar 2024 17:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C8C54BF7;
+	Mon, 18 Mar 2024 17:10:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710781835; cv=none; b=risLy1vqu6Oag7SNK3xRr7nE89uMF6xzFtxfcfSQIn7KIHww+XwT49pvfk2KoVJcV1NPCje6yJhD0aifcd66GeCXGO49wahD7XD3ErhFdktW8NRvFNo/Ta0a8yGwarlz4zhW8e3oFi/UPc6cv7i4k7FxJS/W2pHIZJYDmVJgtTA=
+	t=1710781854; cv=none; b=q6QemTdCWBV2Dsm4j6nr0UnTOaClePjcPmIJqOkXI+zOgLhf3Vp9lk7z5P4jTXYW4T8A57ZLO4DMN/mMKn/mDLaPu+yiqiJxzWxWCaQ9drCIM4lPpOZjlWjBuwcfhl+5r0jO8uWC+TmtmKl/MeOsvVN7yLGVo4/ZtuJkFy5Nr+Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710781835; c=relaxed/simple;
-	bh=vglBofb08ocuNhH6yEZdJnGOBKA0rmTwcb6yq52+l0o=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=hk1AFOBnxm+6YwN0jkjpFNMd+A8OIE1v3aSO74KI9LWqpkO+2444mwMWCjDclPM3XHU0reKO1ZoNzK2Ie2ygZc15OC0/6KYwY9QBW2OoDeW+Fp0iEI9iyMeXlTksIV9F2amH/VlSutw02NVZJGazj/FmJBxbUUYzGMwWdvxoeZY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0nbuP9Do; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CczetMun; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jm1QiBgo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5mzg8b9d; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 284C534CBA;
-	Mon, 18 Mar 2024 17:10:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710781832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
-	b=0nbuP9DokzheIoEsPXA0OxerxioLxW3Sm8h0EsTd5cW9sNgu3Bm1EMC91XFlJALAEsRRtF
-	ehL5Iz6TsqVlRJkCWNq7kLBYritXRCaEtrWwIZ8hLnVDRn33gjQ/+XU1Zt7r3y5fEcOJtJ
-	jyFEAB/R0uZOdNSFzKk+VVLo8nEqTLs=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710781832;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
-	b=CczetMun/FTASezaghTeCpzgumd5MoKKcQFUWCjntm93iAG3YA522yHO+1pvRAVHcOYwad
-	v8Kb04fmq/UJDtCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710781830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
-	b=Jm1QiBgoUuHwzT2Q7NnEMvNtypImdmCBl7ttPKyCgtMf8Q/xuhB7VsZderZNgMVG1ZV8JW
-	00PvCQWbG0N2d6Ujo6g+sfz6OAeifwkTIgA1TfLxaWwMWvZEONbhybdFGTELtlJgSjtnDp
-	03obxyvKFdJrlcA0fw3STEVHcBQYKBg=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710781830;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
-	b=5mzg8b9dg9L7DgcdFmKd6yPLEh4xvOx++dLCBFJsczjBdoPOuHHviRyrT+vjZjcQwUzk8R
-	O0K3wtceKxAOiRBw==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E85B136A5;
-	Mon, 18 Mar 2024 17:10:30 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id fAp0B4Z1+GUjdQAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 17:10:30 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id CF33EA07D9; Mon, 18 Mar 2024 18:10:29 +0100 (CET)
-Date: Mon, 18 Mar 2024 18:10:29 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	tim.c.chen@linux.intel.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 4/6] fs/writeback: only calculate dirtied_before when
- b_io is empty
-Message-ID: <20240318171029.3rn3a7k7tse7b2bi@quack3>
-References: <20240228091958.288260-1-shikemeng@huaweicloud.com>
- <20240228091958.288260-5-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1710781854; c=relaxed/simple;
+	bh=TJf6LnwgsKl71TNbw+Pvtwa4Bl/y2PNwY3PC96VPFr4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AF5P8s1+oru3hq451/NUQBRFvJQBZrNR5doSBiW4c2TTEV3lI8kDOfEwhcY0AGcf0KwhOFdDAiyMDO7X1YKqLaL20HD26KAMoYB5cXNqYUFnN7ubUAeqsosnL5UUdfHGWzdmzx2ib2FjYuV2gHudY5s3uHtIT7RMAjOHzofB1TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJoCnLEK; arc=none smtp.client-ip=209.85.161.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a49261093cso1412415eaf.3;
+        Mon, 18 Mar 2024 10:10:52 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710781852; x=1711386652; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=6Fp/07gqSj3HNqiWAJVFuUHu0yxBPdZOSVPdfE9Qmrc=;
+        b=mJoCnLEKXuWTHIFWhXsLIz5OGTX3ct3za7RkrZujLO39fVjpevSmV2X4GTEKWBuQYy
+         71FLuXfRfqCj/S3TasXEvvVp5BKGdRNOHUmQ218VQ6zhclXqrt+MAQOqNg73l+N7MRgp
+         v34HAilGLF4k+vxhhGTmx9IYjhoB2UWLBacjQbs+bkTJR5bA1tZ1kvzdLAM7W9HzpKn5
+         HW0+7fta9A+oYSbxh2cQRhYYia5+TvLAx/Knr2HB36xjMsj2SiPwfPMJ/wAtyFai5Y1q
+         in9QqaqbXL+lDvjbQxp8SXEAPhAiAIbcQ67izqPAJKMqZhzJ0NJ+dyIQjPmfS6QTWjAJ
+         CR2A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710781852; x=1711386652;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6Fp/07gqSj3HNqiWAJVFuUHu0yxBPdZOSVPdfE9Qmrc=;
+        b=lCQEgph+0pz5IoZSAwjMXUNkM/6NYDE4rNsuB/+QWkicQCV801tY/8s00n+i5e3tnw
+         wauHEv4BeYvWUgAYM0wRjU0XIPwlD12d0hVLFG5hTnHzsBLj2px/pVRJnwwraWBolwQU
+         rP8v/IpXirbTzyF0q/ayK23ThYCBcxddVYFHKNdfvnczUXmVxJ4p21bxgOG5g2Z6BMr8
+         JQpatbgYqdwsYpraMjO4PgW0AirRIlP25KD2VP+FH21Z6JzyWqIJhCnNigF9AJLg5zGH
+         +qWexf/OIQt8LhNJMgyqenFZuogthERBRrCizqU+XIvXF5GDIlEz54b4pJWHlLc4TffZ
+         WwEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV3i3Opt3OqkZp8oRBIRDONYQFFxsu4MNbqbvjpNLqTvH6IlXcr7TqS6/7qjueUKn+Rd77mhvkOu6o7HubMzI9xd79DHf24yYcIkLRsQ9HSgW5gi+ri+nJtHykPmmQ6cZVyt5/zGl49
+X-Gm-Message-State: AOJu0YyumF4othZPTq9kJoQZg+2ME52s53wgorPKwHUhgWzBpBNq5gjk
+	4KcNf/WGPhokjNpvnih0hhoO18cUjTXxPzMFWuL1aFD5ZeAy7ZmQ9DxX2LpYdT2PR02YSEEzr7/
+	GIF6meUUJ9bbnhDylFUKXM0SYn6c=
+X-Google-Smtp-Source: AGHT+IHgCd3BExVo1DFNj17nFMKQ1w7GzsQ67J8jV3E/WZw61T0NX8LaQJaZcp1/mvXNBoc0UEc7RNlZagX1PWpGwm0=
+X-Received: by 2002:a05:6870:9688:b0:21e:7cee:9815 with SMTP id
+ o8-20020a056870968800b0021e7cee9815mr13809024oaq.53.1710781851752; Mon, 18
+ Mar 2024 10:10:51 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228091958.288260-5-shikemeng@huaweicloud.com>
-X-Spam-Level: 
-Authentication-Results: smtp-out1.suse.de;
-	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Jm1QiBgo;
-	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5mzg8b9d
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [-1.14 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
-	 TO_DN_SOME(0.00)[];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.cz:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.13)[67.40%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,huaweicloud.com:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: -1.14
-X-Rspamd-Queue-Id: 284C534CBA
-X-Spam-Flag: NO
+References: <20240301141800.30218-1-lukas.bulwahn@gmail.com>
+ <m21q8732wo.fsf@gmail.com> <41f28393-0211-4448-8add-ad3c55d02210@oracle.com>
+In-Reply-To: <41f28393-0211-4448-8add-ad3c55d02210@oracle.com>
+From: Donald Hunter <donald.hunter@gmail.com>
+Date: Mon, 18 Mar 2024 17:10:40 +0000
+Message-ID: <CAD4GDZzjc6=-Gzw23tRgCDE7=AxsenXqpD+qnh6gj1+MYYU2fA@mail.gmail.com>
+Subject: Re: [PATCH v2] docs: drop the version constraints for sphinx and dependencies
+To: Vegard Nossum <vegard.nossum@oracle.com>
+Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
+	Jani Nikula <jani.nikula@linux.intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Wed 28-02-24 17:19:56, Kemeng Shi wrote:
-> The dirtied_before is only used when b_io is not empty, so only calculate
-> when b_io is not empty.
-> 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+On Mon, 18 Mar 2024 at 16:54, Vegard Nossum <vegard.nossum@oracle.com> wrote:
+>
+> > % time make htmldocs
+> > ...
+> > real  9m0.533s
+> > user  15m38.397s
+> > sys   1m0.907s
+>
+> Was this running 'make cleandocs' (or otherwise removing the output
+> directory) in between? Sphinx is known to be slower if you already have
 
-Looks good. Feel free to add:
+Yes, times were after 'make cleandocs'.
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+> an output directory with existing-but-obsolete data, I believe this is
+> the case even when switching from one Sphinx version to another. Akira
+> also wrote about the 7.x performance:
+>
+> https://lore.kernel.org/linux-doc/6e4b66fe-dbb3-4149-ac7e-8ae333d6fc9d@gmail.com/
 
-								Honza
+Having looked at the Sphinx code, it doesn't surprise me that
+incremental builds can have worse performance. There's probably going
+to be some speedups to be found when we go looking for them.
 
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -2105,20 +2105,21 @@ static long wb_writeback(struct bdi_writeback *wb,
->  
->  		spin_lock(&wb->list_lock);
->  
-> -		/*
-> -		 * Kupdate and background works are special and we want to
-> -		 * include all inodes that need writing. Livelock avoidance is
-> -		 * handled by these works yielding to any other work so we are
-> -		 * safe.
-> -		 */
-> -		if (work->for_kupdate) {
-> -			dirtied_before = jiffies -
-> -				msecs_to_jiffies(dirty_expire_interval * 10);
-> -		} else if (work->for_background)
-> -			dirtied_before = jiffies;
-> -
->  		trace_writeback_start(wb, work);
->  		if (list_empty(&wb->b_io)) {
-> +			/*
-> +			 * Kupdate and background works are special and we want
-> +			 * to include all inodes that need writing. Livelock
-> +			 * avoidance is handled by these works yielding to any
-> +			 * other work so we are safe.
-> +			 */
-> +			if (work->for_kupdate) {
-> +				dirtied_before = jiffies -
-> +					msecs_to_jiffies(dirty_expire_interval *
-> +							 10);
-> +			} else if (work->for_background)
-> +				dirtied_before = jiffies;
-> +
->  			queue_io(wb, work, dirtied_before);
->  			queued = true;
->  		}
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+> > I have an experimental fix that uses a dict for lookups. With the fix, I
+> > consistently get times in the sub 5 minute range:
+>
+> Fantastic!
+>
+> There is a github issue for the C++ domain but I believe it's the same
+> issue for both C and C++ domains:
+>
+> https://github.com/sphinx-doc/sphinx/issues/10966
+
+Ahh, I looked for an issue for the C domain but did not see one. I
+didn't think to check for issues with the C++ domain, even though the
+code for the C domain has been copied from there.
 
