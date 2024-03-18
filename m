@@ -1,145 +1,105 @@
-Return-Path: <linux-kernel+bounces-106824-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106825-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A76E787F431
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:42:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21B6287F433
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7447B20E95
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:42:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB4041F22A4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:45:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9FF5F86C;
-	Mon, 18 Mar 2024 23:42:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 030335F86B;
+	Mon, 18 Mar 2024 23:45:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z8rzyd6x"
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="UP+WJbvt"
+Received: from mail-oo1-f41.google.com (mail-oo1-f41.google.com [209.85.161.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9715F85B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:42:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E403B59B64
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710805358; cv=none; b=WxmHGU8Ww13dVhh5hRy755ERrVjSn49f7uKaAbfH5vdglI4sc/bWwkAqCGw+gv6ZIelnjtq/1PitwzybJjXw0l4ZR0IKoPUN86NIb3NR8/FBxsaPnABco3Jgby9RbNRlgKG24eHJgSX9pk4XKt7rDVBX1wPDQOqV/BJbFL1fo00=
+	t=1710805549; cv=none; b=NV4E4UZ8XQqMIEaDY/X3G0okG+vWa3l8uANbGhd0KXF/Vp6DaPo9APFYc2kjMd3WV41PFZjpMpcbwAoj+8cwTK9iDvGnambdWB0WWNpUo2nHRUKrGzvVnxyHRAPJipAbJHIRU+9ro3pSsgZOMn+xGrJ9rHAXHDvP/0EHvTJmWmo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710805358; c=relaxed/simple;
-	bh=pGOvfu2z8KNkO7muzJdm/yKDZ5YG9b5n5cu77cFk1OU=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J63d4IpStH3xJB4PLs025qRue83mnGRNUW/lYy4kaLrOeZwg4KjWMLpAeGFk+Kc/KxCqzXeImD51InHsPfpE9o6JvrwKWkPIDhnZyAVAIOrVlOQCWKbeTs6OCNUmlEyBV1BcAwAD9aqRQAvNwXPkR03sA/hOEahwG3Bgmu1Q9Nk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z8rzyd6x; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710805353;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=w0W1TcwjE/iK1zTqE+wMMVfVgJ37P2hH21l+AHsTGLU=;
-	b=Z8rzyd6xT1dNzDVSCg4FMo4Giv0Hab4i1vuixvZyDpIfCN1gIe7/RcxmKBV28btFqI0/MA
-	Hw85v/PXbgXcRzfvd/iy4106ivcrwLMmWr8LVcgfkLDKNiq8sH1/PzKDAMBkfCnwL5oQwC
-	zq8ZSOIJgMjL7reRdWijDLqfqe5Kmrw=
-From: Sui Jingfeng <sui.jingfeng@linux.dev>
-To: "Rafael J . Wysocki" <rafael@kernel.org>,
-	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	Daniel Scally <djrscally@gmail.com>,
-	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
-	Sakari Ailus <sakari.ailus@linux.intel.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: linux-acpi@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linux-kernel@vger.kernel.org,
-	Sui Jingfeng <sui.jingfeng@linux.dev>
-Subject: [PATCH] software node: Implement device_get_match_data fwnode callback
-Date: Tue, 19 Mar 2024 07:42:22 +0800
-Message-Id: <20240318234222.1278882-1-sui.jingfeng@linux.dev>
+	s=arc-20240116; t=1710805549; c=relaxed/simple;
+	bh=ddIX1pX8PUKYlrEFSGxj4dp81Coz+WVwDW5gqZgq2IY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=acaePTSfetzeNVI9DyxAhRGljJL5uR7drXCXPH5cOSLt5MvTsFiBSfrYYDi1OnaIWuAyO04BljIkRGKsQNnfCik+u6ouj0ZzJQ8mInOXNs9WDdySUoidIS8ycjiNvG+hMUgXrBxHmLGmsJptQ1tBV/YdD39ljWroMFaS9UBm52s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=UP+WJbvt; arc=none smtp.client-ip=209.85.161.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-oo1-f41.google.com with SMTP id 006d021491bc7-5a21b920209so2012963eaf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:45:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710805547; x=1711410347; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=EyNKKJaFo0RNnDw1cX76A1V9oBiLwk9MCVF82VfEr8Q=;
+        b=UP+WJbvt4DkTE/aSDfcB2mZPHNKGKPI21xQbR4yaLTSXHLgFLohjYywOc1ESA/2dDW
+         eUGQWwXJqlBMmtf8kuDJvvyrYKtErkTttlhTVESunE6AEFIkFFNv6YaFtLzmjpFyP8x2
+         e1FWvDbKSQ8KM4wciG+pl3yMNLU8Ga6Swmcsc=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710805547; x=1711410347;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EyNKKJaFo0RNnDw1cX76A1V9oBiLwk9MCVF82VfEr8Q=;
+        b=SBwvB78f2+9nsyqUjpXh0Y+64DKv9RQd/9D6f5d3EyAn/zxYrZIsB3j2DLWXDBCo5n
+         yTITY6bNjRbBjhFzsJoF2sP6+D/7uryJvBgR4me+++d5muPX9K8suKwAIrw0ktjbYvp4
+         U+S2EMYkf7s88p4pMFPV45juvQJpD5JQx6L4F9yNt158a6Rn1XvHZyheVgq2HmAlqUIN
+         bphcCHj5mZTGy0Gf1wDx/9o2NdW9kTC1iFbLgNCDs4IJsb4YkyCaLnYkKBCXB8lgBC80
+         zqUncVNyoGazwrQgQRnneKzHHpnKDM6AJ4XpxPTwNQJLT6k3f5zWG6deKx6J9h9YEsB4
+         PrAw==
+X-Forwarded-Encrypted: i=1; AJvYcCWjpYbQDGVqWf1bnDu/kANHQwfRJlVbgHpPku2/4p1IghbbrTF6L/fPluU0R4mvNNIm/HNxzIFC6yEZ+FeF+0OvWG5bh8Q5zZ7wMGIT
+X-Gm-Message-State: AOJu0Yxzbkt4RM2muypaX0FtPEELUEylDsyJLu0MUVPZQlUYM0SpdiFA
+	wjcCelu6W433aFHsOmwok4zTMdtxlN8pe2YBnNGltUXJSAZfmHqWxBld316S+XDMJh9UkOmkPSU
+	=
+X-Google-Smtp-Source: AGHT+IHuGsFZKeGKS+5IfIvaZGbwZxy1NkSSfWwS6FkEclzsGrRPwV1rjWc4/CqC4usYaEiXM+0A2w==
+X-Received: by 2002:a05:6870:3926:b0:220:9f8c:b97b with SMTP id b38-20020a056870392600b002209f8cb97bmr16205988oap.4.1710805547072;
+        Mon, 18 Mar 2024 16:45:47 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id q20-20020a62ae14000000b006e6c38cbe96sm8493254pff.29.2024.03.18.16.45.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 16:45:46 -0700 (PDT)
+Date: Mon, 18 Mar 2024 16:45:45 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
+	jgross@suse.com, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
+	gregkh@linuxfoundation.org, tony.luck@intel.com,
+	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
+ walk_relocs
+Message-ID: <202403181644.690285D3@keescook>
+References: <20240317150547.24910-1-weiguixiong@bytedance.com>
+ <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
+ <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
 
-This makes it possible to support (and/or test) a few drivers that
-originates from DT World on the x86-64 platform. Originally, those
-drivers using the of_device_get_match_data() function to get match
-data. For example, drivers/gpu/drm/bridge/simple-bridge.c and
-drivers/gpu/drm/bridge/display-connector.c. Those drivers works very
-well in the DT world, however, there is no counterpart to
-of_device_get_match_data() when porting them to the x86 platform,
-because x86 CPUs lack DT support.
+On Mon, Mar 18, 2024 at 10:56:12PM +0100, Borislav Petkov wrote:
+> On Mon, Mar 18, 2024 at 02:40:50PM -0700, Kees Cook wrote:
+> > Applied to for-next/hardening
+> 
+> Why?
+> 
+> This is a patch that should go through the tip tree, if at all.
 
-By replacing it with device_get_match_data() and creating a software
-graph that mimics the OF graph, everything else works fine, except that
-there isn't an out-of-box replacement for the of_device_get_match_data()
-function. Because the software node backend of the fwnode framework lacks
-an implementation for the device_get_match_data callback.
+The commit it refs to landed via -hardening, so I was taking the
+responsibility of landing this fix too. But it's fine to go via
+-tip if you prefer?
 
-Implement device_get_match_data fwnode callback fwnode callback to fill
-this gap. Device drivers or platform setup codes are expected to provide
-a "compatible" string property. The value of this string property is used
-to match against the compatible entries in the of_device_id table. Which
-is consistent with the original usage style.
-
-Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
----
- drivers/base/swnode.c | 26 ++++++++++++++++++++++++++
- 1 file changed, 26 insertions(+)
-
-diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
-index 36512fb75a20..3670094592f2 100644
---- a/drivers/base/swnode.c
-+++ b/drivers/base/swnode.c
-@@ -8,6 +8,7 @@
- 
- #include <linux/device.h>
- #include <linux/kernel.h>
-+#include <linux/mod_devicetable.h>
- #include <linux/property.h>
- #include <linux/slab.h>
- 
-@@ -379,6 +380,30 @@ static void software_node_put(struct fwnode_handle *fwnode)
- 	kobject_put(&swnode->kobj);
- }
- 
-+static const void *
-+software_node_get_match_data(const struct fwnode_handle *fwnode,
-+			     const struct device *dev)
-+{
-+	struct swnode *swnode = to_swnode(fwnode);
-+	const struct of_device_id *matches = dev->driver->of_match_table;
-+	const char *val = NULL;
-+	int ret;
-+
-+	ret = property_entry_read_string_array(swnode->node->properties,
-+					       "compatible", &val, 1);
-+	if (ret < 0 || !val)
-+		return NULL;
-+
-+	while (matches && matches->compatible[0]) {
-+		if (!strcmp(matches->compatible, val))
-+			return matches->data;
-+
-+		matches++;
-+	}
-+
-+	return NULL;
-+}
-+
- static bool software_node_property_present(const struct fwnode_handle *fwnode,
- 					   const char *propname)
- {
-@@ -665,6 +690,7 @@ software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
- static const struct fwnode_operations software_node_ops = {
- 	.get = software_node_get,
- 	.put = software_node_put,
-+	.device_get_match_data = software_node_get_match_data,
- 	.property_present = software_node_property_present,
- 	.property_read_int_array = software_node_read_int_array,
- 	.property_read_string_array = software_node_read_string_array,
 -- 
-2.34.1
-
+Kees Cook
 
