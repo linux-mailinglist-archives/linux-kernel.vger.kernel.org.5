@@ -1,168 +1,131 @@
-Return-Path: <linux-kernel+bounces-106792-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 753E887F3D2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:10:46 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56CDE87F3D4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:10:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D6387B2134D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:10:43 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE5221F2224D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA7C35CDDE;
-	Mon, 18 Mar 2024 23:10:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 633085D484;
+	Mon, 18 Mar 2024 23:10:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lScFXXwV"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="PHlA5CWV"
+Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76C885CDCE
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:10:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1EA0B5CDE8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:10:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710803435; cv=none; b=bFoJKkooDi3BotuqbtEJsre0tSvj7RXab8m31WrfNP0+yh17OhmbfZ+YlUdsgfmdZb3JM5oxF9W6+nnO6QPp3V38h9vaxXMteYEVqP//m6qURKaGEXM6W/8N8hc03DiC0b/7LDFo6sR115Nt2pg1lHj4jMU+H5YGdYi3S2weBYY=
+	t=1710803437; cv=none; b=XEP+0fq4m0ZEo5X3noi9eAkO743TG25kD10ONtxKQkm4wiFEOpgscFbHa1sp4+kpiyadeOvTMr1+R4e/j2PtER+24Of7IOGoM4gh6oD7OnLkT8aqv2WuSsC86lyRnebYo9YZBTGZzRw9TsAV27N9CjyaPCX9oWBnQsdRlOEsPPU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710803435; c=relaxed/simple;
-	bh=3QfwHntJQMgvU6AuyLnxDRBkYhBLtNLtAuixY4b/WFE=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=HdbxdKr675GjxBryvqCRWdK3jpLy2cpehCOxanJK81L/plbYVahW6mlwOWIV33Jm1D+M+IUufWz9vIlraO+/cFwpp7Y5v6/YGrQVc96DiWyg4X565zEgJkKssGQx3khKQW0/x3PgvDMDAjgc1T4VKm6SsADUCJdkC2CSKjl4+4c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--acdunlap.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lScFXXwV; arc=none smtp.client-ip=209.85.128.201
+	s=arc-20240116; t=1710803437; c=relaxed/simple;
+	bh=6jYhW6ydpdVij+ItUl9+t6eOIBUYAlhnMEs4srqkJUA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=nWnp+qD2syjJf0byKluFUB6EZI2HYlfHbWPpc56++3d6fC7rvukIo/BnfE7PnlE+u544wXNOT8wIJ1456fJQgO6EOzJ+3cd1LI+xwRWQRCWPYKtCcBuIbSS3q20HcmZRxy2YMX6KOx9VQ66ESnSXE1pyRnbPzZaKZH3IbaDDb1g=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=PHlA5CWV; arc=none smtp.client-ip=209.85.219.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--acdunlap.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a54004e9fso90655227b3.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:10:33 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--justinstitt.bounces.google.com
+Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dcc4563611cso6956222276.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:10:35 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710803432; x=1711408232; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=101Rc15yJZ5dhEo4PySV2SOSqW3Lu8UuBq5uPa6A6n4=;
-        b=lScFXXwVh9jyBAvXdZSwvt7N53pk2nhnTVWJDQPn6PKBamPad/W8RaRd+srPnDm4wx
-         QExPf4WkCimbu2FtXiuT9kjat+6i4tFIElWiPXVPQawVC8Xp+RCgebbY4j6+5u0C23AL
-         pL7Jc3hShyBTGdw0wtOocblUSR54eBJZfmNJHwZXfBCXR7B0f2K0kcN6SdxFoIfjQFi9
-         36cvwMHb7LGtdr6Q4eHv1yLihO8wIskbRwLqAC7OTWUB+lzTYYy8B3N9k+vFbBAJBRyI
-         sgC9iW665TvLCTcMQJV0TcESOmmQNOFn4S6piT0BVN/BTtnrDtuYIa7FG6XLl3yDpKW9
-         Su2w==
+        d=google.com; s=20230601; t=1710803435; x=1711408235; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=tZvJyHjjeZb/3QPL6MnqU7na7/zPGmCJPMlCf4GgcJU=;
+        b=PHlA5CWV0mAZt501cGC2jwcO0KzOhIqWh1tuZOPXl7P3MbBZtaJqNnGEqODNDADgTG
+         T0okeAnLunL17DrsS6pU2wWwHYx62XFI+b6BCrApDloNEUW+VKANVM5blOmqZm1u0Xp9
+         hwv04WEQwJYuNvEeD6tDSAgGpnF/M2WrzVfR4GCdwcUa/Iszz/9ctOMx91KwFoF58wdG
+         EiYoTHDQEPDKLanYijik0uZqVMv9zpWZ3dNwbgSRsZY2alaSFE6N2OcyGkyd8iOxQPeV
+         lcVb7A80OBmdupy9jf7z/eLV49r0yXhFSUk6NyPrR0PzSgKSkB9fzMio3EqNF8IHMFUn
+         crCw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710803432; x=1711408232;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=101Rc15yJZ5dhEo4PySV2SOSqW3Lu8UuBq5uPa6A6n4=;
-        b=mXN+sqS2mS++26IY5dMdksAQokpK2PFPVcfdSJIBuFJ2UVpVBbyxBwDYcZDVCOkezx
-         V3URIMjDRn+mmX2Z80BQJAwLzfNvEKIpkEMVwi7sxmIO+tLC/BQOjRyW0QZURZnTsfcp
-         WT1usfMZoWw7RPV85dW6Sv1UKc+U8bbYJ5ajcT4oCSmWRT5xBxcuw7eQv7Gp2Tyjg1Id
-         B+FuVvA+VQd+rcWBE4RQTQRk8BdWtF2WMsO6tl1G0bBQlFZKP/wYFKPW1ln/NgTjXb7a
-         vGXnKilLjPs8c8ZdmU0bT2DJTC7w2Dy62ouFNux4BP8czoabfzwJGYmDfcO64CXlnwVU
-         E0UQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUCS96JXPjziKmX8LqQ9Ct0NA51NE0nyWdpgQCnNaJ1paZwbh3HMrqT1P7M3TXbqgVf876L+l3GUjN39hvHsSLo3Mqvt5ekxWNNiLLg
-X-Gm-Message-State: AOJu0YwE8mOcHKIZu/6MBlhWaN+PenVaH2liwI2iC/eGDPLuqxWuBxW6
-	mUBaFUwhJUTDxDGiQd7gouYyMGqvoU6zf/1bGgs3g4qTpmeON+n6KB3g8rs4o6yoEWubRVuL9tg
-	GScJLef653A==
-X-Google-Smtp-Source: AGHT+IH++3SMmZzNlMzKHz9FwHgWagIFoME8NVVi0QvZI89J+nCx6d7zWk0UM9APt0/6zAQC/gddneHi6BEO1w==
-X-Received: from anticipation.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:4517])
- (user=acdunlap job=sendgmr) by 2002:a0d:d5cd:0:b0:60a:267c:87bc with SMTP id
- x196-20020a0dd5cd000000b0060a267c87bcmr259907ywd.6.1710803432480; Mon, 18 Mar
- 2024 16:10:32 -0700 (PDT)
-Date: Mon, 18 Mar 2024 16:09:27 -0700
-In-Reply-To: <87frwrjc0i.ffs@tglx>
+        d=1e100.net; s=20230601; t=1710803435; x=1711408235;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=tZvJyHjjeZb/3QPL6MnqU7na7/zPGmCJPMlCf4GgcJU=;
+        b=vntbzHsFKq+7ewAYd3bBGB6RmkwHkntUJSFUPo5BXT+rT601R/OzURmLyu/3Or0kK8
+         y58h6TbHBeykAOcSTGSzYw3Zr/waAphh+/At19QidZYW14S8zNl0esdzjsECHORoMtV0
+         B4VMsHsCFmQhUUuX3aHbZFxTkZVlfDq1GPuG3pAx/s9ESWnXWIMne0ktfWBi9rJt24Ex
+         HRDefYzPkflK4uL/a/OaHkh8sq4Rl8YnjjWgeD/nXjK49fBRCnlCm9lSAoNiJQ+PU1Ji
+         mJnzVzohSk6WmfqqjQrGd1EfYzG/K9uHgXns9hE7Akvs4+Gb1C76y5xuVhAykcQ7VUtM
+         bvhg==
+X-Forwarded-Encrypted: i=1; AJvYcCXddWtb7faywqS1u32nq2C9QMJE1m+8xcPTF6XHI0tj8JIXu9y/XOST6csnmOjIwMF/+0RGEhrpAXycsbtP5Cw0Ddtl0EKgw08IyQn9
+X-Gm-Message-State: AOJu0YxoCK02mBH2iikFy8QZ2HrxvS3byEQEVX1sFcIWrErzg3MhoCpi
+	CRbuiPDpHoMkQXh1kKf5LVLNuAVJp2274IxOTALBx1tL5aReA8X9d0m41qnCTkun/GZEB57rKNK
+	pCbR2RUTKx45PqP+xZUhAPQ==
+X-Google-Smtp-Source: AGHT+IH73euqwF5jsoW328dNXM4qo380w3n37T5C8C32Ee+aaxPoawVFf4Jq8fPb3fV89pWUL7velSZ6dS5y+RcQpA==
+X-Received: from jstitt-linux1.c.googlers.com ([fda3:e722:ac3:cc00:2b:ff92:c0a8:23b5])
+ (user=justinstitt job=sendgmr) by 2002:a05:6902:248e:b0:dcc:54d0:85e0 with
+ SMTP id ds14-20020a056902248e00b00dcc54d085e0mr3417030ybb.11.1710803435207;
+ Mon, 18 Mar 2024 16:10:35 -0700 (PDT)
+Date: Mon, 18 Mar 2024 23:10:34 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-References: <87frwrjc0i.ffs@tglx>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240318230927.2191933-1-acdunlap@google.com>
-Subject: [PATCH v4] x86/asm: Force native_apic_mem_read() to use the MOV instruction
-From: Adam Dunlap <acdunlap@google.com>
-To: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, x86@kernel.org, 
-	"H. Peter Anvin" <hpa@zytor.com>, Nathan Chancellor <nathan@kernel.org>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Bill Wendling <morbo@google.com>, 
-	Justin Stitt <justinstitt@google.com>, "Peter Zijlstra (Intel)" <peterz@infradead.org>, 
-	Arjan van de Ven <arjan@linux.intel.com>, Wei Liu <wei.liu@kernel.org>, linux-kernel@vger.kernel.org, 
-	llvm@lists.linux.dev, Jacob Xu <jacobhxu@google.com>, Alper Gun <alpergun@google.com>, 
-	Kevin Loughlin <kevinloughlin@google.com>, Peter Gonda <pgonda@google.com>, 
-	Ard Biesheuvel <ardb@kernel.org>
-Cc: Adam Dunlap <acdunlap@google.com>, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-B4-Tracking: v=1; b=H4sIAOnJ+GUC/x2NQQqDMBAAvyJ77oJJapF+pRSJyRr3kspuIi3i3
+ w09zmFmDlASJoVnd4DQzsqf3MDcOgirz4mQY2Owvb33zoyoRXLYfhiFdxLFqjMmHxMVXGoOpfl YJyorCQY0dqA4OvcIfoDW3IQW/v5/r/d5Xl1slzl/AAAA
+X-Developer-Key: i=justinstitt@google.com; a=ed25519; pk=tC3hNkJQTpNX/gLKxTNQKDmiQl6QjBNCGKJINqAdJsE=
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710803434; l=1534;
+ i=justinstitt@google.com; s=20230717; h=from:subject:message-id;
+ bh=6jYhW6ydpdVij+ItUl9+t6eOIBUYAlhnMEs4srqkJUA=; b=2ohvlrMEBBX4ty5GbUeu3anF0rb8vduud1G67Tjv5hvf0EarSHFWyMTU9rL5VEZPl79Lgy2nS
+ N6K7HTiaa3DDlnd/w9onbZxW3Jlp56TX9ziuk4/QBAAVfrLI5YdAjuP
+X-Mailer: b4 0.12.3
+Message-ID: <20240318-strncpy-drivers-usb-gadget-function-u_ether-c-v1-1-e8543a1db24a@google.com>
+Subject: [PATCH] usb: gadget: u_ether: replace deprecated strncpy with strscpy
+From: Justin Stitt <justinstitt@google.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-usb@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-hardening@vger.kernel.org, Justin Stitt <justinstitt@google.com>
+Content-Type: text/plain; charset="utf-8"
 
-When done from a virtual machine, instructions that touch APIC memory
-must be emulated. By convention, MMIO access are typically performed via
-io.h helpers such as 'readl()' or 'writeq()' to simplify instruction
-emulation/decoding (ex: in KVM hosts and SEV guests) [0].
+strncpy() is deprecated for use on NUL-terminated destination strings
+[1] and as such we should prefer more robust and less ambiguous string
+interfaces.
 
-Currently, native_apic_mem_read() does not follow this convention,
-allowing the compiler to emit instructions other than the MOV
-instruction generated by readl(). In particular, when compiled with
-clang and run as a SEV-ES or SEV-SNP guest, the compiler would emit a
-TESTL instruction which is not supported by the SEV-ES emulator, causing
-a boot failure in that environment. It is likely the same problem would
-happen in a TDX guest as that uses the same instruction emulator as
-SEV-ES.
+Let's use the new 2-argument strscpy() as this guarantees
+NUL-termination on the destination buffer and also uses the destination
+buffer's size to bound the operation.
 
-To make sure all emulators can emulate APIC memory reads via MOV, use
-the readl() function in native_apic_mem_read(). It is expected that any
-emulator would support MOV in any addressing mode it is the most generic
-and is what is ususally emitted currently.
+Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
+Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
+Link: https://github.com/KSPP/linux/issues/90
+Cc: linux-hardening@vger.kernel.org
+Signed-off-by: Justin Stitt <justinstitt@google.com>
+---
+Note: build-tested only.
 
-The TESTL instruction is emitted when native_apic_mem_read() is inlined
-into apic_mem_wait_icr_idle(). The emulator comes from insn_decode_mmio
-in arch/x86/lib/insn-eval.c. It's not worth it to extend
-insn_decode_mmio to support more instructions since, in theory, the
-compiler could choose to output nearly any instruction for such reads
-which would bloat the emulator beyond reason.
+Found with: $ rg "strncpy\("
+---
+ drivers/usb/gadget/function/u_ether.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-[0] https://lore.kernel.org/all/20220405232939.73860-12-kirill.shutemov@linux.intel.com/
-
-Signed-off-by: Adam Dunlap <acdunlap@google.com>
-Tested-by: Kevin Loughlin <kevinloughlin@google.com>
-Reviewed-by: Thomas Gleixner <tglx@linutronix.de>
-Cc: stable@vger.kernel.org
+diff --git a/drivers/usb/gadget/function/u_ether.c b/drivers/usb/gadget/function/u_ether.c
+index 3c5a6f6ac341..6e4ff64532c2 100644
+--- a/drivers/usb/gadget/function/u_ether.c
++++ b/drivers/usb/gadget/function/u_ether.c
+@@ -1032,7 +1032,7 @@ int gether_set_ifname(struct net_device *net, const char *name, int len)
+ 	if (!p || p[1] != 'd' || strchr(p + 2, '%'))
+ 		return -EINVAL;
+ 
+-	strncpy(net->name, tmp, sizeof(net->name));
++	strscpy(net->name, tmp);
+ 	dev->ifname_set = true;
+ 
+ 	return 0;
 
 ---
+base-commit: bf3a69c6861ff4dc7892d895c87074af7bc1c400
+change-id: 20240318-strncpy-drivers-usb-gadget-function-u_ether-c-125ed8336ca5
 
-An alterative to this approach would be to use inline assembly instead
-of the readl() helper, as that is what native_apic_mem_write() does. I
-consider using readl() to be cleaner since it is documented to be a simple
-wrapper and inline assembly is less readable. native_apic_mem_write()
-cannot be trivially updated to use writel since it appears to use custom
-asm to workaround for a processor-specific bug.
-
-Patch changelog:
-V1 -> V2: Replaced asm with readl function which does the same thing
-V2 -> V3: Updated commit message to show more motivation and
-justification
-V3 -> V4: Fixed nits in commit message
-
-Link to v2 discussion: https://lore.kernel.org/all/20220908170456.3177635-1-acdunlap@google.com/
-
- arch/x86/include/asm/apic.h | 3 ++-
- 1 file changed, 2 insertions(+), 1 deletion(-)
-
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 9d159b771dc8..dddd3fc195ef 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -13,6 +13,7 @@
- #include <asm/mpspec.h>
- #include <asm/msr.h>
- #include <asm/hardirq.h>
-+#include <asm/io.h>
- 
- #define ARCH_APICTIMER_STOPS_ON_C3	1
- 
-@@ -96,7 +97,7 @@ static inline void native_apic_mem_write(u32 reg, u32 v)
- 
- static inline u32 native_apic_mem_read(u32 reg)
- {
--	return *((volatile u32 *)(APIC_BASE + reg));
-+	return readl((void __iomem *)(APIC_BASE + reg));
- }
- 
- static inline void native_apic_mem_eoi(void)
--- 
-2.43.0.594.gd9cf4e227d-goog
+Best regards,
+--
+Justin Stitt <justinstitt@google.com>
 
 
