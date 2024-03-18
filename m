@@ -1,200 +1,183 @@
-Return-Path: <linux-kernel+bounces-106520-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 247AB87EFC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:31:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 40D5687EFCE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:34:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73306B22D54
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:31:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFC631F21185
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:34:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C9572E400;
-	Mon, 18 Mar 2024 18:31:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88E6926297;
+	Mon, 18 Mar 2024 18:34:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cOAfzFmg"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="m4HCC2zT"
+Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2049.outbound.protection.outlook.com [40.107.7.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C2CE256A;
-	Mon, 18 Mar 2024 18:31:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710786687; cv=none; b=g32WIedCDQwFvhvsqkI6AQX6xYGDWfM+V2huARRQEfaap2ap5+Gi8bt4aLf0u3x0RneDuVPyIr/9ny2yz/mv+IEP1NNnzZpSAcBZoWkMGvh46+AqKOY8eYpoNyqq0dU0wU7oX3bRrk02AV/n5P5ZxmuHsbjiudzaSegbrp9DDag=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710786687; c=relaxed/simple;
-	bh=iHwyRG9+4juuu7c1xOvb0pqniSl3V2wL2xGVwaxzr2w=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=u2VYYqx8jwlq5EHtSMg3xSpfoP2Fv+VNGu10RXNpt7ua9NvhxrokUVbMk/mttGq+3TwkD25/Naqucckwx151gzDcYT7OgkWlnUIekqYFtqO4vJM7ceF6nMFp/r1VWBrGDsUUyYIkXrSRS2gseUdQOAX3kLmvNZ3DMV7K6WOoPxA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cOAfzFmg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C0E13C433F1;
-	Mon, 18 Mar 2024 18:31:26 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710786686;
-	bh=iHwyRG9+4juuu7c1xOvb0pqniSl3V2wL2xGVwaxzr2w=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=cOAfzFmgwlp06nEqpw2itw5KdTa31ENQTTXwa083LVxo5Oek20CJJ64XAMGbgsrpT
-	 8KtbJ18f/T0r/T/O4BQLjJ1lrldmr6KM9Q+chf7YvLgd9eLZli0int+roNHuG8vris
-	 /JUj4rDZXEHYKPSbF7sJ1gfRQKuKmHbIn/kdK9Mt1cA1NMUBlwhKE429e8gWSGjbXD
-	 991iH+rV7SWJPLXWe/wS++JWX929Ze7JoMBx+5G797DEX5ayAkLBlqGXbTJ9P9sezB
-	 2sFwxRWnloWbPxOKf5ateWvZhAb7/6TjEBZUD872/IeOqoAOW25Ot8fzm2K/KRIlG9
-	 XKNOXgsPc/yjQ==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rmHlc-00DM2p-GK;
-	Mon, 18 Mar 2024 18:31:24 +0000
-Date: Mon, 18 Mar 2024 18:31:24 +0000
-Message-ID: <86plvrz91f.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini
- <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton
- <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K
- Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi
- <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown
- <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Mostafa Saleh
- <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/4] arm64: Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
-In-Reply-To: <5d8394e6c2c77093eca0ecaf355da77eba710dc1.camel@infradead.org>
-References: <20240318164646.1010092-1-dwmw2@infradead.org>
-	<86wmpzzdep.wl-maz@kernel.org>
-	<eb9215850e8231ab8ef75f523925be671cc6f5a0.camel@infradead.org>
-	<86ttl3zbd3.wl-maz@kernel.org>
-	<5d8394e6c2c77093eca0ecaf355da77eba710dc1.camel@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC6BD3C2D;
+	Mon, 18 Mar 2024 18:34:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.49
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710786855; cv=fail; b=OJfQ0Y308j7SdTuSZxjNzhyijaQRCbEn2qe3SfiPuZCIh91KflVo2gOiP3aquZgrgk2Yt/cbpHlasjlvD/x0YenWR02vSlmulQjGxuU3MVGSsvY6gZML7wGNmKpt7vmNy5z5+XRZbKvlKrF4Ne7KcPeESQlIoqABSTS0CLiF/H8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710786855; c=relaxed/simple;
+	bh=Mi8kVC5+VMDRw8VaezQNdw9UX0n90UgpusG9YpfDEsU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=VzjReqSJjOuTqUShXQRsVTfGyzMCfPRdCXRqGInnpNLsvMaKorlZ/a2GcPT+txGEx/dlucx51P6HbupG56KhJRP6EoFNp5UudLc3en3A0JXfunQn2ipnVQnsoJifS6Yq8oJ2e2ZGaTYniKjUs4bksehpHzwJMi7iZ0iFTNuvbCU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=m4HCC2zT; arc=fail smtp.client-ip=40.107.7.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=VTLgIn+mfTn0e49H8ak4bfal8X70QQxM33Vo4+NfOexyZjA7gc3i5Yk/3JGK7/D5i3WCoyFG27F/Bq425Mn6vHEwLBK5PUOCdqpc/IgV5fFX5Mq+35YDUJiTNfGmZKsrJWPbYJ3lFvjm/wlCJ3XCelJ7QHsSokWm6dFVAMDFQDdYlhcajTDEye5sSOZpcVweXeMvB0kCG9iNQowLvPNv3AcuD8aULvtbLcJUP1/uS5YBVFwMlR1NZpNlILpDGJX6s+7ARJKuh0UWTciUcn71Rn5/95U1LHgC+n1WFzaRYVre6K5mnQXqIRnMcIMG8skUCPueoYjX3M4Nnj/U4YYgXw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=JkZf1zs8XB0YHQriDS+JXqm3Ik7UTxrn90/5hq9z5B8=;
+ b=Qvs4+eICkTMnjdBQxFT7+w6Nh8SMCQxB1mGHqTCZz/zZO0ud8SK/LXnwyRPdwCDGHyN16nYcWHJwZIRtP/x1IFehVv6Xp00DJmQ+LVy4KNwh6ClGZH1SFa71STN/xwWsnE2dhB5QZUbH+Y+LNQcMZmunKEeTiSwMbn5wG1oGMh7UEe+HOMH463B+V2/+YWqlm2jHX9ArVJPMi7DSCyAlJb11XngObfuN27UVq9+o/pOL11Pzh4UUkXJDR7Rl/Jo4FxDKbop2KJxlpHX3P+lRCafQ14OWee6MK9j4TDdj/xQN258lc0pxATcsliEvyOtpOGNgrHm6XarsBmMaTGe/aw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=JkZf1zs8XB0YHQriDS+JXqm3Ik7UTxrn90/5hq9z5B8=;
+ b=m4HCC2zTds6wx/3K9ey/g1dU6BMXmSfzpXquJqkxYbXtiIVr0JIZnXajBVbgJzbmMDYXbbLTCaYWYwc5a1qyBIYh5ladmt0tWYV25OLapA0kVlwtnzaW4/8n/S5RxduCfcjXsB6gkVDiYJFHf+288oAoMmuqBYp1izYCRtTeS8E=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS8PR04MB8371.eurprd04.prod.outlook.com (2603:10a6:20b:3b2::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
+ 2024 18:34:10 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 18:34:09 +0000
+Date: Mon, 18 Mar 2024 14:33:58 -0400
+From: Frank Li <Frank.li@nxp.com>
+To: Xu Yang <xu.yang_2@nxp.com>
+Cc: will@kernel.org, mark.rutland@arm.com, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
+	festevam@gmail.com, john.g.garry@oracle.com, jolsa@kernel.org,
+	namhyung@kernel.org, irogers@google.com, mike.leach@linaro.org,
+	peterz@infradead.org, mingo@redhat.com, acme@kernel.org,
+	alexander.shishkin@linux.intel.com, adrian.hunter@intel.com,
+	linux-arm-kernel@lists.infradead.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+	imx@lists.linux.dev
+Subject: Re: [PATCH v7 5/8] perf: imx_perf: fix counter start and config
+ sequence
+Message-ID: <ZfiJFj1IO67FR/z4@lizhi-Precision-Tower-5810>
+References: <20240315095555.2628684-1-xu.yang_2@nxp.com>
+ <20240315095555.2628684-5-xu.yang_2@nxp.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240315095555.2628684-5-xu.yang_2@nxp.com>
+X-ClientProxiedBy: SJ0PR03CA0288.namprd03.prod.outlook.com
+ (2603:10b6:a03:39e::23) To DB9PR04MB9626.eurprd04.prod.outlook.com
+ (2603:10a6:10:309::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS8PR04MB8371:EE_
+X-MS-Office365-Filtering-Correlation-Id: 2e5a7df5-0353-4d10-2359-08dc477a0034
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bbsiz+uHztgjKCTo8YyF8ruvoy0tzFOtg8XIlgF+pjeJ9OOi4fdoEtU7HFTgikkeA+LaceXpsgq6Tx3QlXtolSBNRtcxNEFux/R09Q9G9klqDlORIMk2gXPcYOzaNjgOeyfyIRZHHxUC0bq0OT8oasFLAuMsPQazqGqs7RJUdxIXqjlK8EEhw2StoRla6L2yHNDcITrRagmxaqVuHgr2p5Yiz2TL8Ao0gIHYxL7l3vIyhL0ZE+p7bPMYrOBlSc8B0GCYOjqIcFYeqvouSwMHXvStrqHaYDqIykFnaC0XYQuyldTnB4HV6kVgGPdYYjeuKVNeytPC9S+dx9Yvee2AMHnfRXqwIfjogIAU3PJiaxPHzO3zzv5YUL41aFxAKBjVMXw3PBm3VY+3zsV+PjhIwGIVWEPnBWaLvt8+CQwOi7he2ozZqqecrThy0JUIDy8wQoBSrCZrS1uTpvBAadQSddSTfGKAiFhSSR9ls8sTSGcaJPOv4t5C8VeRIGoWkQNFEnps1VghqpC0ouRAxiIIRB6IEZyrdk4cZDF19ygSCBRe1XPlqX7a6gm/OR+iVh3+G+4K1i2VpVyHlctYWgkzL1oQOgk0cdT5/Pgh2lRt5/oqzwOUL4LzBmEqDBJnxC5AtaHuI1U6g/ewu69mWjz160UGi6bz1HcoBm735zRZhwRWZaR2eqfxMEToK75uc4DdV8P0lfsXtFDtqgYhGsgRTw==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(52116005)(7416005)(1800799015)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?eHylLoPewnUxVuXLVzd/24ic8HJo9kfCVrHX23yeU9SZUs0oSiyG9EJV+dkR?=
+ =?us-ascii?Q?igMxDJo0qruLsA2LRklKgDdEoz9HKVrkNwbtPkukoPyl+kAW+BIajTOtruVZ?=
+ =?us-ascii?Q?2NmC8/Gy4yAWOkajuknDY1QsbdCoIua6U+gdDy5CCbwWQjhrRz3OiUgJ6aOz?=
+ =?us-ascii?Q?LXRBsrFQfT/QPpDEMaSa+BDDQzfWpdS0FGWvyJQJPBsycPJFBJh37Aq6NNXg?=
+ =?us-ascii?Q?rs7Uv5jQjluDk8FkYsOsq7iQr3zkpCD5jPh4X3qwUuIkIojMZg1JrEcBStmB?=
+ =?us-ascii?Q?CH35HsqgOEXoNJgfHT/r4RGV3n1UacJAgrbEGiXqzcWL2DNWw7Q+YofeEjiS?=
+ =?us-ascii?Q?TtgFpYFTYH3DePLb5lp5Lnu/Y7HTpPP3q6WfRp9dmDKvzvXYs20hup5h8Q+g?=
+ =?us-ascii?Q?qegQ/84gEfvg4Ub98LQM9WBcb7w3JUzGIKg7oC5iUjM7ohTSgN4TQK790NGG?=
+ =?us-ascii?Q?52ozzg6D0RSidlop2pe/daNpH7H0LHTwxa6h039rrnlFnV6IsTGKHxd+agJY?=
+ =?us-ascii?Q?VyWE07GQOpAFe2esrFeHoZwhvyiHnAFPs2W5tNL5ja7S0QH/n55QAaRHcI2E?=
+ =?us-ascii?Q?j49UChfcidgxOReNMiBOM6q23pPvuJJyq017wbu3qfl3JMDtPyFB0JFmav/V?=
+ =?us-ascii?Q?GsqG8+ZkrjkXVWoHREyAUxmWmC+DC7HYrb5EnyWCnyrDGQajoLrYMzEQIjFs?=
+ =?us-ascii?Q?cW50p8WfbeE57hek0WeLw7l+EeENF9YnSpXeZnPrw5eETrkoBgvwe5xPQJbv?=
+ =?us-ascii?Q?6ttmgIm9I01IlARAUSer1/wmEsGnG20vxTUDv3n1prlDMCR3HW4NAx8vbzy4?=
+ =?us-ascii?Q?PW7uTEw+zpgaBOofpCitMGSWwPbXNaE+fO6X7mmwY2+2SfIw0yqJZr4JK0hX?=
+ =?us-ascii?Q?14CfIF7934vk4PifV3FfBg6ALN4PcTnx18bq8x2goKJ2nmMJtJhZJGr2wKl3?=
+ =?us-ascii?Q?uq6xGWg10RWqp4HI3f550qYG09FeFTtx3MpxBuYXNMMP/8t+ltczCIMhqa5Q?=
+ =?us-ascii?Q?ABDwPZB5Hly1x1ufk57IXck70/aa6JeDwBNvdKuC4CY8wE7QdAcOFOwFUf2P?=
+ =?us-ascii?Q?jjYPKuUO9UcO28hC5ab96b3zwJJskQY1CDFOZWdAGyzABq7Tx+0JfnNqFgRa?=
+ =?us-ascii?Q?zN3+If3irj3NmJMbRKp0aJMskKfsbdOWCJdg/HXFMgW8Fsz25YngaT3Fsgxr?=
+ =?us-ascii?Q?lvauep1SmvcY+eApDPmkR17bFZYRdvPD8PIQ9uet4XlvKcwEbMuacWj+g4a/?=
+ =?us-ascii?Q?fDtTzKacwC9LdDqImkqOd+2Zm9/PTOSMDbbcv77pRWBxNwnl6smpAiLTuoXc?=
+ =?us-ascii?Q?Q2J2frF/nharhW4l7AgLs20lWdTHtlqzikfCPnaOnCw0s9xPutbMr3U0NBID?=
+ =?us-ascii?Q?ID9w/zb+C0ChS2i4d/bihv+1VAJJAAFzGchKSMGSvl3bQebzB5Tbce4viPm+?=
+ =?us-ascii?Q?VvZjx/DNUAwxcGKsA5YlKCqoDusAVQmzKfhtesH9oj8lZ37Cq6xbsjTiYuVi?=
+ =?us-ascii?Q?Y2v3JgBtMGuNCZRbfPR+8BMtGFbQTPJDlR5KrO5B2dwG/7M8+HtfYryLMGm9?=
+ =?us-ascii?Q?qKRKnZH6LAP326QbmB0=3D?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 2e5a7df5-0353-4d10-2359-08dc477a0034
+X-MS-Exchange-CrossTenant-AuthSource: DB9PR04MB9626.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 18:34:09.9188
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: LaAOsb/YhrTMC3yekoJmWRvFeHBm69pfTVTAHsSug7A2YGIonV/QgSRyUElMlHcsFSjA7ciaVY+gd2r4a1HCAg==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8371
 
-On Mon, 18 Mar 2024 18:15:36 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
->=20
-> [1  <text/plain; UTF-8 (quoted-printable)>]
-> On Mon, 2024-03-18 at 17:41 +0000, Marc Zyngier wrote:
-> > On Mon, 18 Mar 2024 17:26:07 +0000,
-> > David Woodhouse <dwmw2@infradead.org> wrote:
-> > >=20
-> > > [1=C2=A0 <text/plain; UTF-8 (quoted-printable)>]
-> > > On Mon, 2024-03-18 at 16:57 +0000, Marc Zyngier wrote:
-> > > >=20
-> > > > >=20
-> > > > > There *is* a way for a VMM to opt *out* of newer PSCI versions...=
- by=20
-> > > > > setting a per-vCPU "special" register that actually ends up setti=
-ng the=20
-> > > > > PSCI version KVM-wide. Quite why this isn't just a simple KVM_CAP=
-, I=20
-> > > > > have no idea.
-> > > >=20
-> > > > Because the expectations are that the VMM can blindly save/restore =
-the
-> > > > guest's state, including the PSCI version, and restore that blindly.
-> > > > KVM CAPs are just a really bad design pattern for this sort of thin=
-gs.
-> > >=20
-> > > Hm, am I missing something here? Does the *guest* get to set the PSCI
-> > > version somehow, and opt into the latest version that it understands
-> > > regardless of what the firmware/host can support?
-> >=20
-> > No. The *VMM* sets the PSCI version by writing to a pseudo register.
-> > It means that when the guest migrates, the VMM saves and restores that
-> > version, and the guest doesn't see any change.
->=20
-> And when you boot a guest image which has been working for years under
-> a new kernel+KVM, your guest suddenly experiences a new PSCI version.
-> As I said that's not just new optional functions; it's potentially even
-> returning new error codes to the functions that said guest was already
-> using.
+On Fri, Mar 15, 2024 at 05:55:52PM +0800, Xu Yang wrote:
+> In current driver, the counter will start firstly and then be configured.
+> This sequence is not correct for AXI filter events since the correct
+> AXI_MASK and AXI_ID are not set yet. Then the results may be inaccurate.
+> 
+> Signed-off-by: Xu Yang <xu.yang_2@nxp.com>
 
-If you want to stick to a given PSCI version, you write the version
-you want.
+This one should be bug fix. Can you add fixes tag?
 
->=20
-> And when you *hibernate* a guest and then launch it again under a newer
-> kernel+KVM, it experiences the same incompatibility.
->=20
-> Unless the VMM realises this problem and opts *out* of the newer KVM
-> behaviour, of course. This is very much unlike how we *normally* expose
-> new KVM capabilities.
-
-This was discussed at length 5 or 6 years ago (opt-in vs opt-out).
-
-The feedback from QEMU (which is the only public VMM that does
-anything remotely useful with this) was that opt-out was a better
-model, specially as PSCI is the conduit for advertising the Spectre
-mitigations and users (such as certain cloud vendors) were pretty keen
-on guests seeing the mitigations advertised *by default*.
-
-And if you can spot any form of "normality" in the KVM interface, I'll
-buy you whatever beer you want. It is all inconsistent crap, so I
-think we're in pretty good company here.
-
->=20
-> > > I don't think we ever aspired to be able to hand an arbitrary KVM fd =
-to
-> > > a userspace VMM and have the VMM be able to drive that VM without
-> > > having any a priori context, did we?
-> >=20
-> > Arbitrary? No. This is actually very specific and pretty well
-> > documented.
-> >=20
-> > Also, to answer your question about why we treat 0.1 differently from
-> > 0.2+: 0.1 didn't specify the PSCI SMC/HCR encoding, meaning that KVM
-> > implemented something that was never fully specified. The VMM has to
-> > provide firmware tables that describe that. With 0.2+, there is a
-> > standard encoding for all functions, and the VMM doesn't have to
-> > provide the encoding to the guest.
->=20
-> Gotcha. So for that case we were *forced* to do things correctly and
-> allow userspace to opt-in to the capability. While for 0.2 onwards we
-> got away with this awfulness of silently upgrading the version without
-> VMM consent.
->=20
-> I was hoping to just follow the existing model of SYSTEM_RESET2 and not
-> have to touch this awfulness with a barge-pole, but sure, whatever you
-> want.
-
-Unless I'm reading the whole thing wrong (which isn't impossible given
-that I'm jet-lagged to my eyeballs), SYSTEM_RESET2 doesn't have any
-form of configuration. If PSCI 1.1 is selected, SYSTEM_RESET2 is
-available. So that'd be the model to follow.
-
-	M.
-
---=20
-Without deviation from the norm, progress is not possible.
+> 
+> ---
+> Changes in v5:
+>  - new patch
+> Changes in v6:
+>  - no changes
+> Changes in v7:
+>  - no changes
+> ---
+>  drivers/perf/fsl_imx9_ddr_perf.c | 6 +++---
+>  1 file changed, 3 insertions(+), 3 deletions(-)
+> 
+> diff --git a/drivers/perf/fsl_imx9_ddr_perf.c b/drivers/perf/fsl_imx9_ddr_perf.c
+> index 5537f4e07852..c99c43b214cb 100644
+> --- a/drivers/perf/fsl_imx9_ddr_perf.c
+> +++ b/drivers/perf/fsl_imx9_ddr_perf.c
+> @@ -523,12 +523,12 @@ static int ddr_perf_event_add(struct perf_event *event, int flags)
+>  	hwc->idx = counter;
+>  	hwc->state |= PERF_HES_STOPPED;
+>  
+> -	if (flags & PERF_EF_START)
+> -		ddr_perf_event_start(event, flags);
+> -
+>  	/* read trans, write trans, read beat */
+>  	imx93_ddr_perf_monitor_config(pmu, event_id, counter, cfg1, cfg2);
+>  
+> +	if (flags & PERF_EF_START)
+> +		ddr_perf_event_start(event, flags);
+> +
+>  	return 0;
+>  }
+>  
+> -- 
+> 2.34.1
+> 
 
