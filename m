@@ -1,188 +1,237 @@
-Return-Path: <linux-kernel+bounces-106120-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106122-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C7E387E963
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:37:18 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C496587E96F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:37:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 120F01C213EB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:37:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C6081F2303F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:37:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A820B2FE0F;
-	Mon, 18 Mar 2024 12:37:07 +0000 (UTC)
-Received: from mail-ot1-f47.google.com (mail-ot1-f47.google.com [209.85.210.47])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 03A0A381DD;
+	Mon, 18 Mar 2024 12:37:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AjaGvWzg"
+Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE6C9381A4;
-	Mon, 18 Mar 2024 12:37:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B5152C1B6;
+	Mon, 18 Mar 2024 12:37:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710765427; cv=none; b=S8Z5UG2DOzDDBhNw6B0Vk3w7no8V0Evg9wac0zsgAJk/AlRGQpoZIvC3kiOGqoyNXWrUhylnIFhZOwpz4QG+DRqThg4Fa4o8S7R6DmuAFm8pO90nZygiQY9DBTvELxd5yGOmU7n+6JuLPfrXy1RcBgmSR4ue56Df6aN30hCWQPw=
+	t=1710765459; cv=none; b=badohQ4TjGSg1Vfmv46Os1RraS663vcnz0ToFGoiGNcEXoofkZhEqszSJRevlca8Dq5F4/vkFX9aiQ5kXrTepJeJXEUqrPHJK/VahzXZet0SZHYm73UNdskKjeW1oimoax9O4CVj6D7r66YbHAEETaMBn78VrJas0ThNYFcp04s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710765427; c=relaxed/simple;
-	bh=cIGQbqXwEkpHmSUSGwv0CkWp+CTN18AGAOKkRrvubDk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=jrsKckGc9N/YMn9uEO5D4GLG4EDHIn7HBrNWWDKKX2GcTsKAWX4/DABSVgEQxiIdwQJkqIek2ri+/1ByR5mAaVBQJL2q0DsnQNGCVYdZRRcpGG7d0d49sz+1ZbR45C0Vex67FAQor3wEoqljt9xjCaNL04PjlmHeYVh6aRaG3y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+	s=arc-20240116; t=1710765459; c=relaxed/simple;
+	bh=n3nj14kJhGQoVcDiuHhUwEg8Bhy8pR2tKc0A0QnHthE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=tjScqa2I29sFSTlT5gziY93jey+1EwUegMCHwJgscrYLIz/a5j5rOpUSuyov93fZknfQY7HHF9SFMDTwhn/ONAoIEZiAUZLnoeV+JoGpizYgkae7+9ABNMv3rd+o7Mzhl00AoLdIuafCB2A7BqyiNCnVtq6kwWIDzFaCM3UtyLA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AjaGvWzg; arc=none smtp.client-ip=209.85.210.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f47.google.com with SMTP id 46e09a7af769-6e67ad4c2e3so69649a34.1;
-        Mon, 18 Mar 2024 05:37:05 -0700 (PDT)
+Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6cb0f782bso3586116b3a.1;
+        Mon, 18 Mar 2024 05:37:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710765457; x=1711370257; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=HanPhs+5pxNZQ2UN6SW5+54Ajhvbvl08qcxZF5kLZJw=;
+        b=AjaGvWzgD0D8RqccSYzLOshHEUSJ07UHw5HPwdoN+C9LTD7yqnK70vTglzCqrM47sg
+         e0sGpWjEOXA00kzAyvhKFMNqlc3YGisi9j7kAhujCgIcCDRXSs2bflx1lfu2u2ZeFwLx
+         xEU51nBf4w9J6D+VjFP2+EKYkHi/Z5zZLuXm3kcuQuBoEkYFCptIOQSgPUpwHE27fjT6
+         AIdHa5K1MSGYWfUV5RpP+t1HeVgqQcZ6BOIiBqQWm6kriN4XS7hQCqfaI0cMYxirkEu1
+         Su86IQ3etAFF+tyxSjmZZmu4WLdlq3w9adWSJ3KuuUiHH8dzFZYX9Tuih+KwetGDwToS
+         t/MA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710765425; x=1711370225;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=7qjbJ8yR4itgbNq8Q11dnfj4BFgBdhtIsr7EAZiZBAk=;
-        b=VChGQlUtT7ueHW4E+7jBJjtAfQPQtSy8DHaEBSN+UOcNQf+63/95lBZjDAxW6mXAcc
-         BG93bsurnjlqBvL2XdGBuPIB2VnQjRFkamiwoKWanH0+G2jIrZ6ZikfwqtM5mwUwxa4L
-         bESpAvovxQoaPCvqbkBDwOo9tTwRl0g3JxX8Z17xb1OMj1184epGDaYJNQqVxNQ4UAUj
-         psG5NiNy/DlRxiUOzmaE0l9CHwzbFjbV0sGSK9o//qKY8O8kQenVCOhBS7fuS1W//xUQ
-         y+93cVRFYhSru8Gr/nrpL3ZWYVaL+2apySHg/GWYujA76Fp9FJvJFUSbDk5uZRJiUHpP
-         UV4g==
-X-Forwarded-Encrypted: i=1; AJvYcCUPyf9ov53mLbOSuPBIQw4gLoZPsb5I3jpoft8jgyER/0TYQOYYX8UjHSEbaRLnLGiKXCKuNbEE8fU/Z91rMK6U39rvGMmE9jLxRABMNYR/ZxOwB9FWMSpk6IDgLP7mhzoG189e6s4=
-X-Gm-Message-State: AOJu0YzfV+6rA7JMcHeAIfhGfTBwwvxrBYkKsDlEk8TIGyFPMeRIYobi
-	xF1YqsZ3wNX57DBK8h6L9LYv9xyiLeBvhC4cOQVP0XA4zwicZ/sSc59ObSDtKP90he+l4VskSfL
-	ZzSW86TYc385SAAJUvRk4B+wyUR8=
-X-Google-Smtp-Source: AGHT+IFAzXsV1FntoE35q7hpj2BcpxEpjp5RM1YnJQza6EzBR3vaHweTUIT9Fuc4N7kiUujvpMGNZfMBCclG9gksKA0=
-X-Received: by 2002:a05:6820:2c10:b0:5a4:7790:61b4 with SMTP id
- dw16-20020a0568202c1000b005a4779061b4mr6980768oob.0.1710765424769; Mon, 18
- Mar 2024 05:37:04 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710765457; x=1711370257;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=HanPhs+5pxNZQ2UN6SW5+54Ajhvbvl08qcxZF5kLZJw=;
+        b=gkpqj9PJDI2iacZNaqZZ2/YScAeg0oGqfDrb7zgRJrKlLlw4vWkIJJNZxCLTXiq2S+
+         gd9Y2wc7XT4M9vX6riDeOiDmaMXQEyYjMRfaHn3YGZCz/4SSpQVbmse7iFPlNX6zdngj
+         NnH7Gqbsd2zsP/vnivYeoHUsBmTC3x/AkpNbb6VtBK3iH3cYrVBUNgJI2y63Jq3RxUiO
+         xcflQx36BNuOgtvqltEuJFJW7DpI48uYyQPvv7K+Ee1RHz7ZzUmpHnntWDwhqcAGpjUW
+         vhYnVKc9nxJ7aaA8qlDS5iWLVGRFaMbolcdpHsyRrFCO0EchjzurFm5C+cgGurwkLqrR
+         45ig==
+X-Forwarded-Encrypted: i=1; AJvYcCXXZ1G54m/kCM7wMRKSDfuya8a6RUjRKOZo9ywdZ/goWyPPOtptpPmHIu9wg5qwwjeaJdHIs7P12rbqBx1BT8ENqKdYUJWyDkaG4H9FScO/0pDg3+ow7bxxOWMBCkGIdh+5E+gaxjgNgC19td3cv0VUWSjVY9AxGeSeL6wRffX6i7VQYw==
+X-Gm-Message-State: AOJu0YzKCpqTDwfWhZY63ePrAjBaGKDQWtrZYekifCS+aRvD9p7/yFKC
+	KTd9qGacb7EQxhKsVn98U1edy/xxaE6FWKKE3zqvr4ijXXlo6tQ4
+X-Google-Smtp-Source: AGHT+IE28j3JMcgmkhIHT5C2xjMBKmVzdMK31Wr/3TQ9SLPD+hsnPLfW9CeJ8hkB4t35V3ofHy0FWQ==
+X-Received: by 2002:a05:6a20:9185:b0:1a3:6b98:9a84 with SMTP id v5-20020a056a20918500b001a36b989a84mr852665pzd.10.1710765456826;
+        Mon, 18 Mar 2024 05:37:36 -0700 (PDT)
+Received: from [172.16.116.58] ([103.15.228.94])
+        by smtp.gmail.com with ESMTPSA id r3-20020a17090ad40300b0029c68206e2bsm7569501pju.0.2024.03.18.05.37.28
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 05:37:36 -0700 (PDT)
+Message-ID: <c3f5aa60-61e1-46df-8c3c-864e0acc750e@gmail.com>
+Date: Mon, 18 Mar 2024 18:07:17 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1710754409.git.perry.yuan@amd.com> <d9fe75ae9ba3893061c01fcaccd93f2915b09a35.1710754409.git.perry.yuan@amd.com>
-In-Reply-To: <d9fe75ae9ba3893061c01fcaccd93f2915b09a35.1710754409.git.perry.yuan@amd.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 18 Mar 2024 13:36:49 +0100
-Message-ID: <CAJZ5v0hJjkUoEGC2wVXs3_TZpc99HFPfi7yX7rO16ykwRxk+DA@mail.gmail.com>
-Subject: Re: [PATCH v8 4/8] cpufreq: amd-pstate: Remove amd_get_{min,max,nominal,lowest_nonlinear}_freq()
-To: Perry Yuan <perry.yuan@amd.com>
-Cc: rafael.j.wysocki@intel.com, Mario.Limonciello@amd.com, 
-	viresh.kumar@linaro.org, Ray.Huang@amd.com, gautham.shenoy@amd.com, 
-	Borislav.Petkov@amd.com, Alexander.Deucher@amd.com, Xinmei.Huang@amd.com, 
-	Xiaojian.Du@amd.com, Li.Meng@amd.com, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/8] dt-bindings: misc: Add mikrobus-connector
+To: Rob Herring <robh@kernel.org>
+Cc: linux-kernel@vger.kernel.org, jkridner@beagleboard.org,
+ robertcnelson@beagleboard.org, Vaishnav M A <vaishnav@beagleboard.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+ Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
+ <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
+ Jiri Slaby <jirislaby@kernel.org>, Johan Hovold <johan@kernel.org>,
+ Alex Elder <elder@kernel.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
+ linux-serial@vger.kernel.org, greybus-dev@lists.linaro.org
+References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
+ <20240315184908.500352-2-ayushdevel1325@gmail.com>
+ <20240317205927.GA2178147-robh@kernel.org>
+Content-Language: en-US
+From: Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <20240317205927.GA2178147-robh@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 10:49=E2=80=AFAM Perry Yuan <perry.yuan@amd.com> wr=
-ote:
->
-> From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
->
-> amd_get_{min,max,nominal,lowest_nonlinear}_freq() functions merely
-> return cpudata->{min,max,nominal,lowest_nonlinear}_freq values.
->
-> There is no loss in readability in replacing their invocations by
-> accesses to the corresponding members of cpudata.
->
-> Do so and remove these helper functions.
->
-> Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+A new version of the patch is up and can be found here: 
+https://lore.kernel.org/lkml/20240317193714.403132-1-ayushdevel1325@gmail.com/
 
-Sender sign-off missing (when sending somebody else's patch, you need
-to add your S-o-b tag to it).
 
-> ---
->  drivers/cpufreq/amd-pstate.c | 40 +++++++++---------------------------
->  1 file changed, 10 insertions(+), 30 deletions(-)
+On 3/18/24 02:29, Rob Herring wrote:
+
+> On Sat, Mar 16, 2024 at 12:18:59AM +0530, Ayush Singh wrote:
+>> Add DT bindings for mikroBUS interface. MikroBUS is an open standard
+>> developed by MikroElektronika for connecting add-on boards to
+>> microcontrollers or microprocessors.
+>>
+>> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+>> ---
+>>   .../bindings/misc/mikrobus-connector.yaml     | 110 ++++++++++++++++++
+>>   MAINTAINERS                                   |   6 +
+>>   2 files changed, 116 insertions(+)
+>>   create mode 100644 Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
+>>
+>> diff --git a/Documentation/devicetree/bindings/misc/mikrobus-connector.yaml b/Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
+>> new file mode 100644
+>> index 000000000000..6eace2c0dddc
+>> --- /dev/null
+>> +++ b/Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
+>> @@ -0,0 +1,110 @@
+>> +# SPDX-License-Identifier: GPL-2.0 OR BSD-2-Clause
+>> +%YAML 1.2
+>> +---
+>> +$id: http://devicetree.org/schemas/misc/mikrobus-connector.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: mikroBUS add-on board socket
+>> +
+>> +maintainers:
+>> +  - Ayush Singh <ayushdevel1325@gmail.com>
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: mikrobus-connector
+>> +
+>> +  pinctrl-0: true
+>> +  pinctrl-1: true
+>> +  pinctrl-2: true
+>> +  pinctrl-3: true
+>> +  pinctrl-4: true
+>> +  pinctrl-5: true
+>> +  pinctrl-6: true
+>> +  pinctrl-7: true
+>> +  pinctrl-8: true
+>> +
+>> +  pinctrl-names:
+>> +    items:
+>> +      - const: default
+>> +      - const: pwm_default
+>> +      - const: pwm_gpio
+>> +      - const: uart_default
+>> +      - const: uart_gpio
+>> +      - const: i2c_default
+>> +      - const: i2c_gpio
+>> +      - const: spi_default
+>> +      - const: spi_gpio
+>> +
+>> +  mikrobus-gpios:
+>> +    minItems: 11
+>> +    maxItems: 12
+> What is each GPIO entry?
+
+
+
+
 >
-> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-> index ba1baa6733e6..132330b4942f 100644
-> --- a/drivers/cpufreq/amd-pstate.c
-> +++ b/drivers/cpufreq/amd-pstate.c
-> @@ -604,26 +604,6 @@ static void amd_pstate_adjust_perf(unsigned int cpu,
->         cpufreq_cpu_put(policy);
->  }
->
-> -static int amd_get_min_freq(struct amd_cpudata *cpudata)
-> -{
-> -       return READ_ONCE(cpudata->min_freq);
-> -}
-> -
-> -static int amd_get_max_freq(struct amd_cpudata *cpudata)
-> -{
-> -       return READ_ONCE(cpudata->max_freq);
-> -}
-> -
-> -static int amd_get_nominal_freq(struct amd_cpudata *cpudata)
-> -{
-> -       return READ_ONCE(cpudata->nominal_freq);
-> -}
-> -
-> -static int amd_get_lowest_nonlinear_freq(struct amd_cpudata *cpudata)
-> -{
-> -       return READ_ONCE(cpudata->lowest_nonlinear_freq);
-> -}
-> -
->  static int amd_pstate_set_boost(struct cpufreq_policy *policy, int state=
-)
->  {
->         struct amd_cpudata *cpudata =3D policy->driver_data;
-> @@ -854,10 +834,10 @@ static int amd_pstate_cpu_init(struct cpufreq_polic=
-y *policy)
->         if (ret)
->                 goto free_cpudata1;
->
-> -       min_freq =3D amd_get_min_freq(cpudata);
-> -       max_freq =3D amd_get_max_freq(cpudata);
-> -       nominal_freq =3D amd_get_nominal_freq(cpudata);
-> -       lowest_nonlinear_freq =3D amd_get_lowest_nonlinear_freq(cpudata);
-> +       min_freq =3D READ_ONCE(cpudata->min_freq);
-> +       max_freq =3D READ_ONCE(cpudata->max_freq);
-> +       nominal_freq =3D READ_ONCE(cpudata->nominal_freq);
-> +       lowest_nonlinear_freq =3D READ_ONCE(cpudata->lowest_nonlinear_fre=
-q);
->
->         if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
->                 dev_err(dev, "min_freq(%d) or max_freq(%d) value is incor=
-rect\n",
-> @@ -960,7 +940,7 @@ static ssize_t show_amd_pstate_max_freq(struct cpufre=
-q_policy *policy,
->         int max_freq;
->         struct amd_cpudata *cpudata =3D policy->driver_data;
->
-> -       max_freq =3D amd_get_max_freq(cpudata);
-> +       max_freq =3D READ_ONCE(cpudata->max_freq);
->         if (max_freq < 0)
->                 return max_freq;
->
-> @@ -973,7 +953,7 @@ static ssize_t show_amd_pstate_lowest_nonlinear_freq(=
-struct cpufreq_policy *poli
->         int freq;
->         struct amd_cpudata *cpudata =3D policy->driver_data;
->
-> -       freq =3D amd_get_lowest_nonlinear_freq(cpudata);
-> +       freq =3D READ_ONCE(cpudata->lowest_nonlinear_freq);
->         if (freq < 0)
->                 return freq;
->
-> @@ -1315,10 +1295,10 @@ static int amd_pstate_epp_cpu_init(struct cpufreq=
-_policy *policy)
->         if (ret)
->                 goto free_cpudata1;
->
-> -       min_freq =3D amd_get_min_freq(cpudata);
-> -       max_freq =3D amd_get_max_freq(cpudata);
-> -       nominal_freq =3D amd_get_nominal_freq(cpudata);
-> -       lowest_nonlinear_freq =3D amd_get_lowest_nonlinear_freq(cpudata);
-> +       min_freq =3D READ_ONCE(cpudata->min_freq);
-> +       max_freq =3D READ_ONCE(cpudata->max_freq);
-> +       nominal_freq =3D READ_ONCE(cpudata->nominal_freq);
-> +       lowest_nonlinear_freq =3D READ_ONCE(cpudata->lowest_nonlinear_fre=
-q);
->         if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
->                 dev_err(dev, "min_freq(%d) or max_freq(%d) value is incor=
-rect\n",
->                                 min_freq, max_freq);
-> --
-> 2.34.1
+>> +
+>> +  i2c-adapter:
+> We already have i2c-bus and i2c-parent properties. Neither of those work
+> for you?
+
+I think i2c-bus should work. Although I could only find information 
+about what it is supposed to be in some old kernel i2c.txt so is there a 
+general place for such properties to be discovered?
+
+>> +    description: i2c adapter attached to the mikrobus socket.
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  spi-controller:
+>> +    description: spi bus number of the spi-master attached to the mikrobus socket.
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  uart:
+> Nice and consistent. In 3 properties, we have 'adapter', 'controller'
+> and <null>...
+
+Right. So the names I am currently using are from v2 of the patch and 
+are based on Linux kernel names for this. But yes, they probably need to 
+be changed since dt-bindings are not supposed to be tied to Linux. Not 
+sure if `spi-bus` and `serial-bus` are appropriate though, so maybe 
+`{spi, serial}-controller` is fine?
+
+To explain why these are here in the first place, mikroBUS addon boards 
+are free to only use a few of these buses or multiple of these 
+simultaneously. Also, some of the properties of spi, i2c etc device 
+needs to be changed depending on the mikroBUS board (mostly described by 
+mikroBUS manifest). This means, the driver needs access to i2c adapter, 
+spi controller, serdev-controller, pwm associated with the mikroBUS 
+connector to configure them (or not use them in case of Not Connected) 
+and register the board.
+
+> Also, DT generally uses 'serial' rather than 'uart'.
+Noted
+>> +    description: uart port attached to the mikrobus socket
+>> +    $ref: /schemas/types.yaml#/definitions/phandle
+>> +
+>> +  pwms:
+>> +    description: the pwm-controller corresponding to the mikroBUS PWM pin.
+>> +    maxItems: 1
+>> +
+>> +  spi-cs:
+>> +    description: spi chip-select numbers corresponding to the chip-selects on the mikrobus socket.
+>> +    $ref: /schemas/types.yaml#/definitions/uint32-array
+>> +    items:
+>> +      - description: chip select corresponding to CS pin
+>> +      - description: chip select corresponding to RST pin
+> How would someone handle any of the properties defined in
+> spi-peripheral-props.yaml?
 >
 >
+> Rob
+
+After taking a look at `spi-peripheral-props.yaml`, the properties 
+described here will actually be specified by mikroBUS manifest and thus 
+will be set by the driver after parsing the manifest.
+
+If you are referring to keeping `spi-cs` in sync with `reg`, well I'm 
+not quite sure how to do it better than the current implementation.
+
+Ayush Singh
+
 
