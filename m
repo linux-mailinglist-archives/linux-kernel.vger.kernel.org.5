@@ -1,73 +1,79 @@
-Return-Path: <linux-kernel+bounces-106141-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B83287E9C9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:05:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5431287E9DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:09:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6451AB226FA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:05:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0DEE52822E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:09:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 75C153DB86;
-	Mon, 18 Mar 2024 13:04:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DCF2338DDC;
+	Mon, 18 Mar 2024 13:08:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="McsYoMts"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.18])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gI4W76Fd"
+Received: from mail-pf1-f174.google.com (mail-pf1-f174.google.com [209.85.210.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94BD63BBF5;
-	Mon, 18 Mar 2024 13:04:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.18
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF92C383B2;
+	Mon, 18 Mar 2024 13:08:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710767062; cv=none; b=dELOtqsUdx9lKqDrnDD0jXUutP9FCWloobZj+l28CYns5tFHq4+46C0lMHzYvc68WrvsFJmBPQOZfXRPCgS4+/8t6VTqG/8NK95ZlaC+YyDaBeG3TL/5D/BQcOua+VP1CFCCn5r+FPFBOPO9ZxqhK6GoiVVLEY6v5GOOnAzE5Yc=
+	t=1710767337; cv=none; b=r+wr73QzhyRxLOXNnNzrVtlATFxbfDWYxMR3R5h2kzjkNKw6eUO6iWEygy6Z3izP+lBtfIjRNnrnYIsBwcQYsI3GCLXrWfxINOjebx74VuPOigQr+tExJ9S1WZqmeBWtVR5dEgkKF+orCK/v6mufUkQrCQpSuL5feUCoEtj7f/0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710767062; c=relaxed/simple;
-	bh=p82qphfLz+VUhriAAE/LBeA9xdMiTaxUuvgYxMmjVIs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WgpeivHu7BEiBmplma5hgwezzxg/s2CPVsyJq37eDnnY8+iAKBDoNcUAeXfVkj5E0vBP5o+qFo3vNkZExDWvGIWY9GpWzOdfCP+mHyOcEssVu80b51Dv9VXqZ2mAX1TSqFv60J0uBlPK7hQ/FT937E6tq92Jn3od+dEN/8eqDkI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=McsYoMts; arc=none smtp.client-ip=198.175.65.18
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710767060; x=1742303060;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=p82qphfLz+VUhriAAE/LBeA9xdMiTaxUuvgYxMmjVIs=;
-  b=McsYoMtsRwLQ3xIiBM516V+roip+cmt9U2+HIxo9swSbUR9K+H28B50A
-   rTzqmwFDLHAjhKxYsQ5LRThVV4E6RpQ3nUnXniq8PU/sJL+Q4TUF8SrUE
-   FCvaSNu0SKiyrD7IX60W7PVes54wCOgsdzYkcxBSZtWuNeT1OqZNZ+++T
-   p+s4V0vuLnKyrhW7YsnB6AzxdJoMBAYsP0OGydLlDXuXU/KvDTIoke+fX
-   u/OtaJBkI63Rbga8IDcs3gnoM8hG0bQNkdbEVChb2RkCaOvoE8uBYV653
-   /tjSVYITHMzjiCe5YhhEz+zZq0NFk4hKsIbzM21xkUcU4Nyzjmv7QuSTm
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="5707163"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="5707163"
-Received: from orviesa002.jf.intel.com ([10.64.159.142])
-  by orvoesa110.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 06:04:20 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="44392891"
-Received: from newjersey.igk.intel.com ([10.102.20.203])
-  by orviesa002.jf.intel.com with ESMTP; 18 Mar 2024 06:04:18 -0700
-From: Alexander Lobakin <aleksander.lobakin@intel.com>
-To: linux-hardening@vger.kernel.org
-Cc: Alexander Lobakin <aleksander.lobakin@intel.com>,
-	Kees Cook <keescook@chromium.org>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>,
-	Marco Elver <elver@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH RFC kspp-next 3/3] idpf: sprinkle __counted_by{,_le}() in the virtchnl2 header
-Date: Mon, 18 Mar 2024 14:03:54 +0100
-Message-ID: <20240318130354.2713265-4-aleksander.lobakin@intel.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240318130354.2713265-1-aleksander.lobakin@intel.com>
-References: <20240318130354.2713265-1-aleksander.lobakin@intel.com>
+	s=arc-20240116; t=1710767337; c=relaxed/simple;
+	bh=tWPkRR6HFcuKpjkZ82VVuu6HbeGvuiB4aXSvt84YX24=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=oxyM48zEAy1Tql4mIetIt38gL3HVXp8vITJQdSWlr1d+QfzVy2iBnN8cATNtJ+laqR57CzN8ZJFuCFsyQ8zLNe8LFvfzKgpuKGE1+cFguHQW5UQobhftUWbDYACisWMuBT7FufhpZneYqsGYIkCQ26r8q84GFvCkc5z9gb2kXes=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gI4W76Fd; arc=none smtp.client-ip=209.85.210.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f174.google.com with SMTP id d2e1a72fcca58-6e6ee9e3cffso2525983b3a.1;
+        Mon, 18 Mar 2024 06:08:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710767335; x=1711372135; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=1U28bb7gbM4m0sLestvOG+gnqR02WUXbA0L+LnulGYA=;
+        b=gI4W76FdWVFZS5k+j3bAc8HCV+UrXIsz0pPfDX89FxC8jE9zzKGof5OEo+r/nfqlbC
+         BeS7da6pMEY4e9bEXlS+D/aUOH9/UQ1+Kx0Csl8ja679XYvXRHgMAM6snvCMt1QqJsiP
+         8TY2p+reRXTkQcNbiiVXfol/aWpEjdQYG72Wf/W2kDPxFOka0DW/feeIHOW1Xa+mu70T
+         ol0LDJ6fzwlg/lWX6er2okgTJuHsD+SXgFWrbiViQLPvPttDjlmBfhnFfQfmwbVjCetu
+         INP9i0/i5FWFmWhcY/1p+F6Qy8rG60zJc3s+v06CZwxILydBPLfW4e0NRK8yVxbXtJAa
+         +r0w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710767335; x=1711372135;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=1U28bb7gbM4m0sLestvOG+gnqR02WUXbA0L+LnulGYA=;
+        b=Kjh/E20oigAHYrF6cQN63ICRVz7PmUp3Rs7B5csMxW9/pEjE7x7v8XXLeBENWaLICj
+         KXvktqJLK0TuXMzZq2IBPTcpiYQaqjq9bUXYyaTg/gG61N7D2+meTtWNRjDexmkJuxzo
+         wulAHZmNd0SuKD9K2+1z+DMVPmQ5GS+Qd9zLhr+OUQ0LbIaoAu2YCoOiTXhog0oshrqU
+         V9yq+dhL8Fa+nxsbV+dMT8SfhqeKN/U3X3i09oNw3fLVsBjolTBqwbB7wFRhsR+Hz8Pr
+         glf7yemltz94QTeieXgo5vpDQGMBXrfHuw4wz2HoO4S9aTDaIBjO1frKSisxthygWAts
+         mUUg==
+X-Gm-Message-State: AOJu0YxikId2tZxRs6cC5I3lewtNyPKm8G6wEqkreXtwb666pzwaozPC
+	xqICVfTsolwlUU6fz3zP+55utf8G4A6NCVdeLFRPUXWsOgQFKbUr2IP1EIWx
+X-Google-Smtp-Source: AGHT+IG+TUImjy/h+WKY5SWloTE3yLjy58p6P2kH2X3BIS3V4u11kFxUkJRzIAVT+9uLButYUk/WjQ==
+X-Received: by 2002:a05:6a00:928f:b0:6e6:c256:9d49 with SMTP id jw15-20020a056a00928f00b006e6c2569d49mr19782479pfb.0.1710767334603;
+        Mon, 18 Mar 2024 06:08:54 -0700 (PDT)
+Received: from kousik.local ([2405:201:c006:31f8:807c:8911:659b:1495])
+        by smtp.gmail.com with ESMTPSA id f31-20020a056a000b1f00b006e6bcda8481sm7932304pfu.164.2024.03.18.06.08.51
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 06:08:54 -0700 (PDT)
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: linux-spi@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	Mark Brown <broonie@kernel.org>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+	Kousik Sanagavarapu <five231003@gmail.com>
+Subject: [PATCH] spi: lm70llp: fix links in doc
+Date: Mon, 18 Mar 2024 18:34:21 +0530
+Message-ID: <20240318130840.74589-1-five231003@gmail.com>
+X-Mailer: git-send-email 2.44.0.273.g4bc5b65358.dirty
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,117 +82,48 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Both virtchnl2.h and its consumer idpf_virtchnl.c are very error-prone.
-There are 10 structures with flexible arrays at the end, but 9 of them
-has flex member counter in Little Endian.
-Make the code a bit more robust by applying __counted_by_le() to those
-9. LE platforms is the main target for this driver, so they would
-receive additional protection.
-While we're here, add __counted_by() to virtchnl2_ptype::proto_id, as
-its counter is `u8` regardless of the Endianness.
-Compile test on x86_64 (LE) didn't reveal any new issues after applying
-the attributes.
+Update links in the documentation which point to the datasheet and
+schematic.
 
-Signed-off-by: Alexander Lobakin <aleksander.lobakin@intel.com>
+The current links don't work because National Semiconductor (which is
+the manufacturer of this board and lm70) has been a part of Texas
+Instruments since 2011 and hence http://www.national.com/ doesn't work
+anymore.
+
+Fixes: 78961a574037 ("spi_lm70llp parport adapter driver")
+Fixes: 2b7300513b98 ("hwmon: (lm70) Code streamlining and cleanup")
+Signed-off-by: Kousik Sanagavarapu <five231003@gmail.com>
 ---
- drivers/net/ethernet/intel/idpf/virtchnl2.h | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+I didn't find the schematic link's TI website equivalent anywhere.  The
+board (not lm70) also doesn't seem to be manufactured anymore.  So just
+in case someone is still using it...
 
-diff --git a/drivers/net/ethernet/intel/idpf/virtchnl2.h b/drivers/net/ethernet/intel/idpf/virtchnl2.h
-index 29419211b3d9..63deb120359c 100644
---- a/drivers/net/ethernet/intel/idpf/virtchnl2.h
-+++ b/drivers/net/ethernet/intel/idpf/virtchnl2.h
-@@ -555,7 +555,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(32, virtchnl2_queue_reg_chunk);
- struct virtchnl2_queue_reg_chunks {
- 	__le16 num_chunks;
- 	u8 pad[6];
--	struct virtchnl2_queue_reg_chunk chunks[];
-+	struct virtchnl2_queue_reg_chunk chunks[] __counted_by_le(num_chunks);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_reg_chunks);
+ Documentation/spi/spi-lm70llp.rst | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
+
+diff --git a/Documentation/spi/spi-lm70llp.rst b/Documentation/spi/spi-lm70llp.rst
+index 2f20e5b405e6..ff98ddc76a74 100644
+--- a/Documentation/spi/spi-lm70llp.rst
++++ b/Documentation/spi/spi-lm70llp.rst
+@@ -6,7 +6,7 @@ Supported board/chip:
  
-@@ -703,7 +703,7 @@ struct virtchnl2_config_tx_queues {
- 	__le32 vport_id;
- 	__le16 num_qinfo;
- 	u8 pad[10];
--	struct virtchnl2_txq_info qinfo[];
-+	struct virtchnl2_txq_info qinfo[] __counted_by_le(num_qinfo);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_config_tx_queues);
+   * National Semiconductor LM70 LLP evaluation board
  
-@@ -782,7 +782,7 @@ struct virtchnl2_config_rx_queues {
- 	__le32 vport_id;
- 	__le16 num_qinfo;
- 	u8 pad[18];
--	struct virtchnl2_rxq_info qinfo[];
-+	struct virtchnl2_rxq_info qinfo[] __counted_by_le(num_qinfo);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(24, virtchnl2_config_rx_queues);
+-    Datasheet: http://www.national.com/pf/LM/LM70.html
++    Datasheet: https://www.ti.com/lit/gpn/lm70
  
-@@ -868,7 +868,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(32, virtchnl2_vector_chunk);
- struct virtchnl2_vector_chunks {
- 	__le16 num_vchunks;
- 	u8 pad[14];
--	struct virtchnl2_vector_chunk vchunks[];
-+	struct virtchnl2_vector_chunk vchunks[] __counted_by_le(num_vchunks);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_vector_chunks);
+ Author:
+         Kaiwan N Billimoria <kaiwan@designergraphix.com>
+@@ -28,7 +28,7 @@ Hardware Interfacing
+ The schematic for this particular board (the LM70EVAL-LLP) is
+ available (on page 4) here:
  
-@@ -912,7 +912,7 @@ struct virtchnl2_rss_lut {
- 	__le16 lut_entries_start;
- 	__le16 lut_entries;
- 	u8 pad[4];
--	__le32 lut[];
-+	__le32 lut[] __counted_by_le(lut_entries);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(12, virtchnl2_rss_lut);
+-  http://www.national.com/appinfo/tempsensors/files/LM70LLPEVALmanual.pdf
++  https://download.datasheets.com/pdfs/documentation/nat/kit&board/lm70llpevalmanual.pdf
  
-@@ -977,7 +977,7 @@ struct virtchnl2_ptype {
- 	u8 ptype_id_8;
- 	u8 proto_id_count;
- 	__le16 pad;
--	__le16 proto_id[];
-+	__le16 proto_id[] __counted_by(proto_id_count);
- } __packed __aligned(2);
- VIRTCHNL2_CHECK_STRUCT_LEN(6, virtchnl2_ptype);
- 
-@@ -1104,7 +1104,7 @@ struct virtchnl2_rss_key {
- 	__le32 vport_id;
- 	__le16 key_len;
- 	u8 pad;
--	u8 key_flex[];
-+	u8 key_flex[] __counted_by_le(key_len);
- } __packed;
- VIRTCHNL2_CHECK_STRUCT_LEN(7, virtchnl2_rss_key);
- 
-@@ -1131,7 +1131,7 @@ VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_queue_chunk);
- struct virtchnl2_queue_chunks {
- 	__le16 num_chunks;
- 	u8 pad[6];
--	struct virtchnl2_queue_chunk chunks[];
-+	struct virtchnl2_queue_chunk chunks[] __counted_by_le(num_chunks);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_queue_chunks);
- 
-@@ -1195,7 +1195,7 @@ struct virtchnl2_queue_vector_maps {
- 	__le32 vport_id;
- 	__le16 num_qv_maps;
- 	u8 pad[10];
--	struct virtchnl2_queue_vector qv_maps[];
-+	struct virtchnl2_queue_vector qv_maps[] __counted_by_le(num_qv_maps);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(16, virtchnl2_queue_vector_maps);
- 
-@@ -1247,7 +1247,7 @@ struct virtchnl2_mac_addr_list {
- 	__le32 vport_id;
- 	__le16 num_mac_addr;
- 	u8 pad[2];
--	struct virtchnl2_mac_addr mac_addr_list[];
-+	struct virtchnl2_mac_addr mac_addr_list[] __counted_by_le(num_mac_addr);
- };
- VIRTCHNL2_CHECK_STRUCT_LEN(8, virtchnl2_mac_addr_list);
+ The hardware interfacing on the LM70 LLP eval board is as follows:
  
 -- 
-2.44.0
+2.44.0.273.g4bc5b65358.dirty
 
 
