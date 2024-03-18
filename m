@@ -1,167 +1,163 @@
-Return-Path: <linux-kernel+bounces-105858-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105859-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0F5487E599
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:22:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 25FA387E59F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 881F5282062
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:22:12 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5BF3D280E07
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F030D2C19E;
-	Mon, 18 Mar 2024 09:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA53D2C198;
+	Mon, 18 Mar 2024 09:23:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b="I8rPfpZc"
-Received: from EUR01-VE1-obe.outbound.protection.outlook.com (mail-ve1eur01on2103.outbound.protection.outlook.com [40.107.14.103])
+	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="1e3CM53i";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="UPEWiFgY"
+Received: from wfhigh1-smtp.messagingengine.com (wfhigh1-smtp.messagingengine.com [64.147.123.152])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 482762C182;
-	Mon, 18 Mar 2024 09:22:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.14.103
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710753724; cv=fail; b=CXRmSPM6ivQLXxso196ln4H3SWvYmWLJb1a2bzQvlrMZtpjqLfbtGmCNM9aBbkVOcOMR9AObUMDS7Cjw1ViQOCh82sevASzeRJ3ZrEdMBBl3Qa7uprApClKbr5P2FsFsWeSa6DqXX6N4uByl+Ariw7niTv6AQAScRqXVbwGb1dE=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710753724; c=relaxed/simple;
-	bh=tk/8P81uObkLCBHkvaVLLd5PRfG6qBWQAeS1d4ZCIyM=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=XIfw+t4XuOfU7IcH5tXfuGDhOeefcOrXfmtXuJtLg/kN8gPlCCbGRKwtaztFcM88bbB0JFdDZzd6fWtrGlU6BnWXPqmod9kmBIwAS7Iz2psrW2zhKRR7krI9VVxqAWBscke2l91OKCYd7Qplisb7stLZ/JuC/+ljXysqBh7dDDE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com; spf=pass smtp.mailfrom=microsoft.com; dkim=pass (1024-bit key) header.d=microsoft.com header.i=@microsoft.com header.b=I8rPfpZc; arc=fail smtp.client-ip=40.107.14.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=microsoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microsoft.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BCgWnjOKE9bERwAoZCbj6m4IWrqz/ZEgHAMSg13YKA9i7KZHVMa6UmSakW8ITddFbSmGgTxNlXnaLOImn6Iu+OGVrU4zI4A+r6lkfwpOwuuf4tKEekmj5NaKnyv3Vi21bZXEozcuknELbI0Yu5KO4tIccXz4ah9FJmmAD6CHmL9ejGo31Gzlhg6DoD6pJg1s4ABLTqBIl6/AnXAtC1OnZvcDCWJNZzomO6PO02o8ey6u+FQTwJSYYGo0GBLntfZL8veTjWBFbKuEbm+x3ApOARdsq1gyupfFPMwiAsb/DXO9KP6jcmyn1quYl6Q4YQJo0BjoHv+ZQBiJa4Q6xpGPDw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=tk/8P81uObkLCBHkvaVLLd5PRfG6qBWQAeS1d4ZCIyM=;
- b=CSZKO7G8OwT2WKEk2P4wUnpfQs5L/XHNhVYJLt9EtH8gGxGuL3hLKz7wAxLhomXNxSTzsMLki2+9Ml0zAbww7oFrgnDCjYo55SxQ9kF/F++tByXXnzPfUCeF2VTa1iuVOyylKNWOkaHNW8fBacAW0RTKV8ZLeU3VCnQJ59iMMTYyH4CjtASefo/nL3eH4ZOwR1P0oqpoEAniIUdPDCZ9uex9Fny7SVuUbHvuE+EwjnIx5GnjA7qUB1iolVeSMkqMRIg/KV+Lz4oMZ1aS/SRHw0hOJSl1IJcEyll0Nevj9waIDxc4UnMZSQFqt1Xp81ZIDmXiF6Zf1sao720/zU7HXQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=microsoft.com; dmarc=pass action=none
- header.from=microsoft.com; dkim=pass header.d=microsoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=tk/8P81uObkLCBHkvaVLLd5PRfG6qBWQAeS1d4ZCIyM=;
- b=I8rPfpZcBLkm6wDm4D24rfxpIfxhvss7RxHYEkk3bdZPoDXoyID7clSas7WtEZ+0Rc/5U1uILeMzXCqlyJ7H4FJK4+BhNF9CEQNY99cnpFvrHtKnapMgFKbkmFoPlxJXZjVKBTKQFkdiv+2J0xIvGQnjtwj+KQEZRMFQDu5RkIU=
-Received: from PAXPR83MB0557.EURPRD83.prod.outlook.com (2603:10a6:102:244::16)
- by GV1PR83MB0573.EURPRD83.prod.outlook.com (2603:10a6:150:164::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Mon, 18 Mar
- 2024 09:21:57 +0000
-Received: from PAXPR83MB0557.EURPRD83.prod.outlook.com
- ([fe80::7c93:6a01:4c9f:2572]) by PAXPR83MB0557.EURPRD83.prod.outlook.com
- ([fe80::7c93:6a01:4c9f:2572%6]) with mapi id 15.20.7409.010; Mon, 18 Mar 2024
- 09:21:57 +0000
-From: Konstantin Taranov <kotaranov@microsoft.com>
-To: Long Li <longli@microsoft.com>, Konstantin Taranov
-	<kotaranov@linux.microsoft.com>, "sharmaajay@microsoft.com"
-	<sharmaajay@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, "leon@kernel.org"
-	<leon@kernel.org>
-CC: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH rdma-next 4/4] RDMA/mana_ib: Use struct mana_ib_queue for
- RAW QPs
-Thread-Topic: [PATCH rdma-next 4/4] RDMA/mana_ib: Use struct mana_ib_queue for
- RAW QPs
-Thread-Index: AQHadUnghF4FfMjLP0ST2J8XRLpsnLE5CuuAgAQ1XuA=
-Date: Mon, 18 Mar 2024 09:21:57 +0000
-Message-ID:
- <PAXPR83MB055703CBC2D8F2FEB6E82AF9B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
-References: <1710336299-27344-1-git-send-email-kotaranov@linux.microsoft.com>
- <1710336299-27344-5-git-send-email-kotaranov@linux.microsoft.com>
- <SJ1PR21MB3457C456D13346088AC78356CE282@SJ1PR21MB3457.namprd21.prod.outlook.com>
-In-Reply-To:
- <SJ1PR21MB3457C456D13346088AC78356CE282@SJ1PR21MB3457.namprd21.prod.outlook.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-msip_labels:
- MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ActionId=3cfefbec-3478-4290-a2e1-726f68dc64d6;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_ContentBits=0;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Enabled=true;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Method=Standard;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_Name=Internal;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SetDate=2024-03-15T16:59:44Z;MSIP_Label_f42aa342-8706-4288-bd11-ebb85995028c_SiteId=72f988bf-86f1-41af-91ab-2d7cd011db47;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: PAXPR83MB0557:EE_|GV1PR83MB0573:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- tC5eWXAeW1VygYBvNpumf0gHnv6fElsau2VJGDDN4wTfriiKGJQXxNw5dBRvBY6NY8NrV4giqENhFdLtaShpkUJmpcOf+9XIrBWvm24ObgWjpJPCyCHS6vJcdaEsuVfkQ9Eb871P+/Wd0IzIhuMB9aH7oiZWwaq8vAv9HhGqqxpEzlxHJMPNnYVflBV8anhrI+oyoJzmDC8hza3DB6scHW0t2QBz+/13MR92y6igFlJY6uxmEt592Tb+af/Hy3gT8t8PeXedlQQeajlp8e6ogCXfeXAq6pno4VQHF+WXL1ldxq2t3mb8MP04cFnz2xad2Qz33Wg3q/1apiI06/mNdYhbuTXvRkhTAC4PyXGPol51vZW6KXsG1OdKHWhEwMUsnv0MRrj7rngVgRM+zlqmWZkgqKexc71TK4wv/QorPBuRRVF+3Y4hrVTyeZ2lpoPwtl9OIFJ7VRiP6GcVT5Z8BbJSuSavIvZuDvj6solMzmppLNzAUlNWjxSJ/CGusc550gWM6C5wXPkF0zbvHBt1YF8uic6dt3LDtLvx0NTpD351yMMiLtB7FHw8LypU8JtgmirnVbS7CinvGAwg0l51SrrxLuMPijieXBcGhOzeWSTNAPKSc1tKDbkUOliP2YrMW3NYF0yfeFQdpbdeoOLJTC3CDpbX/SVKbLrtCTnzhoc=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR83MB0557.EURPRD83.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?bjR0Z2tQOXRlR3RHVWF5ZDhUejZwR0JWUnlGMnpOL3F6WFI4Sk1MeHB3Z2dL?=
- =?utf-8?B?b0pvS0h0VXh0ckJGdER2RVdLcXBpZ1lMLzBZN3FrbUtPRjlibkZCOCt2eXZL?=
- =?utf-8?B?L0dXdW55bVQ4bVBtVklLdTg0bjNLYmRHUUdGRGtpbmNqMGZwdzBMVWc2ekE3?=
- =?utf-8?B?Q1N6NllaekVXTU1IbEovUUM5UXFJQkhDakhscjJIZkptZVpwOVp6cmpRbkQ1?=
- =?utf-8?B?d29wYVhyNVFzWkw5aU1xTjEzMEpEU0tiTGhSWTdJYU1qcEVmTURlZVRJeEww?=
- =?utf-8?B?dGxJNDMvVlpPYnlhbktKWXE0T3RGNENKUnJzMzJhVmpXQUM3Sk1mbE9URHU5?=
- =?utf-8?B?RmNyWjZ3ZjVSWlVyVXRnZEZ5U1FmTXZGb29iZ3d2eFE3K00xNUNtRjJXcnpz?=
- =?utf-8?B?K0hVaDR4MUw5bFptSVdjbFNUakJxVEJJQWlTTG16T0NHb2RyMHV3SUIveVF5?=
- =?utf-8?B?ajdSeFlQeHhsZHhkM3BsU2Z2T0hNajBpaHZpQ09CNXhBYTBmbmhnbyt5ZEtS?=
- =?utf-8?B?YW1TNjV0dDV4L1ZyQzZ3UHh3eGZkMWNHbVhndXBUME9Pc1RhWWJaSEl1dEMr?=
- =?utf-8?B?MUdGNmcxOHg4Y0hvRXZlZWE5N1JzUEJMbVpMOGpOVFpmYkJ2WHRmdmFZK0Ir?=
- =?utf-8?B?THRlTVBzb0RNMEhUOUdKNWJWNjljRitWRTlMUmZyWFNkc2Nxbzh0VmRWTzM5?=
- =?utf-8?B?a0hHNm9VL25TU295LzZRUFE0cVgvQVAzM0VUZ3pxajFRK0JXaC96YVdNaUR0?=
- =?utf-8?B?VXJTSDh4b0Q5aU5zZlJyZDN5NE1BNUdHRjl5b0lNQmlOZ0FTZlpLWnF6cG9O?=
- =?utf-8?B?NzM1UnE1Zzc1c2FSeHJ6RUp5VWYxNkV2S0pmejRpeTVWNTFUTHpITnZwM0dE?=
- =?utf-8?B?Q2xTa3R4VmxkaElzT0hLZENqQkxETlV0SWlIMXlHYXRmbCtjclFaREVCamRY?=
- =?utf-8?B?TjRzVjlJb2lJMDlWZGlLcXNlOFdpVVV3VWRaVDJJQzM3aTh4bVhwTEtJaWNi?=
- =?utf-8?B?bk0vcDJLTjVZNW9qQzhsM1lTRTk3NlJiOGYzZ0dJSDFMVDFrYU1PeUxGaDVr?=
- =?utf-8?B?Um5sQzVwNmNxOEtuaXJLaEZKZEFjVDkwNVovVUJQbi90a2VORzFBY0JScmtz?=
- =?utf-8?B?TWY2a0l6SUhJeDNSa0d0d1pkZ1lmbTE0ODBqNng1Mk5OcmdmVTdiWTRjZW0v?=
- =?utf-8?B?RU4rYkNLMG50aFhJa2czSXJ2OFFmYW81WGdaU2VncDBxaFJCT2puS1c5SGU1?=
- =?utf-8?B?VFU2SFJKb283OExCcXFKb3VvR2E2ZFNaL25GZjlKSjhMZk5GcCsxK2pkTnhn?=
- =?utf-8?B?MFRWb1dLQmRDYUdFV05sQmlQOG9OdTVoTU1mbllPaG83QzBWeEpVVXlhNExy?=
- =?utf-8?B?cmNNQUE5dmRRV1NQZmpOajJSVjZzdTNZSGlJVVMzYXE1ZDdoN2ZmdjNzaUNm?=
- =?utf-8?B?L0pDRXF3ZDZQWHZYMGpZWldOVkxReDdWK2VVSGIyRXdCMnhGa1c4d1RGRzBI?=
- =?utf-8?B?eUJWcnhhblV3ZWRjeUcwTUthWWdIbG5PTFNqTnp5bnFRaWNuZXF1U0ZkVWdQ?=
- =?utf-8?B?NEYrSStPbENMTUZLR2dHOHJUa21qUWxqUjg4bFlNMDF2NE01YStUSkloOWlu?=
- =?utf-8?B?cHI2bmw0RVhrODMwQ3JGRnM0L2Ryb08xZStCbHZ1ZVh6MGpYT2QvV1YrdHho?=
- =?utf-8?B?dzcrUUNMcGVxV2lydXRhRGwxMjZ3cWZzQnA5bHZwN1UzUlk4RkxMOTVCNDhB?=
- =?utf-8?B?VWo4eGc4LzdtNUpZU2tMd3k5VjVrbkJ5NTNBZTR3cFY0UWpSMk1nck1KYWNG?=
- =?utf-8?B?aEtqWUx1eXI2MHhFc0tsbHZmT0gzV3ZxZXJaWGdDY2JJOThRUU1SakFYWlhU?=
- =?utf-8?B?eUtmZkFpWWFYb0tDZm8wV0hKb2t6dmk1WmVZOTZZTUpUSUxocXMyVDFmRC9u?=
- =?utf-8?B?eTZ3cmV3QmpML2o3V2Z0WXhqWnFleEEzejFtWjg0RjQ5RDdtM3BxRVltcGJ3?=
- =?utf-8?B?SlhubzJsMXpidE5VcTNlamxSSU1xbnpnYXpUV1JzS1EybXoxNk5FQ0s5U2xS?=
- =?utf-8?Q?BW+jCz?=
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E421828E34
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:23:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.152
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710753798; cv=none; b=LgehOliPj7fCLFBkkfryJQSkQTrM5cTGROH3wyMcSMJ8rsB+4q/zolLUSTXcRjMiHA8JeOIcDG7oGgBkSw62CZL/CPiqFCRomfu0J6yvGfyKoVrzhM6b0e0tArX47Mt86G2zyah6aed++3kOXYVAsBu6UUaF4+15ugTngMifKAE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710753798; c=relaxed/simple;
+	bh=vgVc0nJTSCtGLh4Qy77vLltYe2aYnfglXF90ldEZ9WQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=l2NsUi+iHJBY5C+3xRuHXRfskllxzD0QGcZ6eAcHj+PBsWxH1ITQzpxV26wSx0s6xku9O/GH23IdH9wJVTU6dDNcnPxHQUjRzsP26tu1fgRYUhWhSOR9J56Oj3hQscD89Ktuoljkdf0edGoFj4FD/yvDEZBOjy1fsl/UM1jqfU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=1e3CM53i; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=UPEWiFgY; arc=none smtp.client-ip=64.147.123.152
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
+Received: from compute6.internal (compute6.nyi.internal [10.202.2.47])
+	by mailfhigh.west.internal (Postfix) with ESMTP id C8C5B18000B9;
+	Mon, 18 Mar 2024 05:23:15 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute6.internal (MEProxy); Mon, 18 Mar 2024 05:23:16 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
+	 h=cc:cc:content-type:content-type:date:date:from:from
+	:in-reply-to:in-reply-to:message-id:mime-version:references
+	:reply-to:subject:subject:to:to; s=fm2; t=1710753795; x=
+	1710840195; bh=PUa/R/clxm2N8V+OKy2y0wtEIZOYD27dJAqezZK5f9M=; b=1
+	e3CM53iHxosZylc36+6xVFeSSSsnKAkj2NWTI34viiMVKkedvIQkewHjWfpxoZBC
+	36DKUzlrQJM5chxDzCpI/dzu79mh7MFtGUrPzfGP56XOrFDEdsU4F2UTNwaAnQqr
+	pn1hRu6yXtxl6rnSGxWmUSoLTurOi7Q3Kxe2KgKDj/HQW4fuBcz2tLa0myNA3/6z
+	7uEEY5JvkCrs/Ob9caUt+j+9gPjt4U1AE+n2QwceeMImnO51Vvo/jugJW2tTxBq6
+	y+gvtrvuKlxGPcI7/JPvbGzD+uof0lmnyiBHCHrQxdrIDNIvAlw/EthuThHVmpfL
+	45ybm5bUPFwFMJ85cmyEw==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-type:content-type:date:date
+	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
+	:message-id:mime-version:references:reply-to:subject:subject:to
+	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
+	fm2; t=1710753795; x=1710840195; bh=PUa/R/clxm2N8V+OKy2y0wtEIZOY
+	D27dJAqezZK5f9M=; b=UPEWiFgYFN/zDywhTp18AovpShgb4x85qjodUZAbvwCs
+	SFJbLQ+1PbYSCAO6fLS1WGnrIx+oFj6yVat3sMbcgqbViYQA5JqNfEny4F40052f
+	r76eSkTg8lLmkmBg0IoBhzUrH8gaxpB0XOhZjnkW2Od00yCRf6N2vEYyrvQ1baC2
+	JMRDES+yg8m0UBPt4IGO4kc1ePA7du51D+K39YTqwxt7lX2KdIfP8IcGkz99m1i+
+	Rsc0+usL95Iap+huhYshlKxbgHeiZIqzDr5OLCK7EAC2WcVdOf913m+PqYcYbcYB
+	uIHVZseOiPp71bMB1SoLTPsdefAorGFc7O5BqFKoDg==
+X-ME-Sender: <xms:Awj4ZaUY5kqN35OQOUhMf9i3yP5mUVrA3sFxzc4dBHkg06Ks_ofYEQ>
+    <xme:Awj4ZWnYLrSlvVDCmAhncjYEycIG0XRXZ3gud33FlDRWFYGy5GvSQD6nJwrNxPar_
+    rzrpi8_bR6_qcXCpE8>
+X-ME-Received: <xmr:Awj4ZebSjFQj9QyfdyyV0tgp6yVvRkbFV-BzSwrihEG5I777JgqsK6kunCL_D3oYSX6r0-X5mgl3D0wIRhyZ3ebjSNmGWTSj-68>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeejgddtfecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpefvrghkrghs
+    hhhiucfurghkrghmohhtohcuoehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjh
+    hpqeenucggtffrrghtthgvrhhnpeehhffhteetgfekvdeiueffveevueeftdelhfejieei
+    tedvleeftdfgfeeuudekueenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmh
+    grihhlfhhrohhmpehoqdhtrghkrghshhhisehsrghkrghmohgttghhihdrjhhp
+X-ME-Proxy: <xmx:Awj4ZRXcW6rE_HOLItLLrPsISZU5k_ovwhf32LHC60r5qO5rY8WPAg>
+    <xmx:Awj4ZUlXd2YHZuzNPXgsZkxDDgfS3bnT7KQ-1YctSEBJgOBetU8uyg>
+    <xmx:Awj4ZWdcbh_NrsdpBh40qN_GK3Y0_ALp-sR3gH5J6iLxEacbLbRCcQ>
+    <xmx:Awj4ZWFzk3yyxlgGDcToiySF_uYqP5yaxqRc1NLr5qPCcMUrU8Cl4g>
+    <xmx:Awj4ZVCtoeR73GRGh61qP6JNcHSc8mIJcBZzbtmqayViqaLTmqg8w_Ccr4o>
+Feedback-ID: ie8e14432:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Mar 2024 05:23:13 -0400 (EDT)
+Date: Mon, 18 Mar 2024 18:23:11 +0900
+From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+Cc: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux1394-devel@lists.sourceforge.net" <linux1394-devel@lists.sourceforge.net>
+Subject: Re: [PATCH 1/2] firewire: Kill unnecessary buf check in
+ device_attribute.show
+Message-ID: <20240318092311.GA678645@workstation.local>
+Mail-Followup-To: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux1394-devel@lists.sourceforge.net" <linux1394-devel@lists.sourceforge.net>
+References: <20240122053942.80648-1-lizhijian@fujitsu.com>
+ <20240122085604.GA254251@workstation.local>
+ <20240318044609.GA659599@workstation.local>
+ <625470f3-b196-43f7-9844-fa1cb6da99f8@fujitsu.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: microsoft.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR83MB0557.EURPRD83.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 32d1966c-c29e-4d6c-4f1d-08dc472cdbd3
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2024 09:21:57.1681
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 72f988bf-86f1-41af-91ab-2d7cd011db47
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: BjLAPkdmlZ5Do+Vfi6By2FgOpMd4IAU7k0JF/OGvrJ4YaVt0GP2t7K0ru9DO9myazSAS2t728cIu6rpBMP8g7Q==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: GV1PR83MB0573
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <625470f3-b196-43f7-9844-fa1cb6da99f8@fujitsu.com>
 
-PiBGcm9tOiBMb25nIExpIDxsb25nbGlAbWljcm9zb2Z0LmNvbT4NCj4gU2VudDogRnJpZGF5LCAx
-NSBNYXJjaCAyMDI0IDE4OjA0DQo+IFRvOiBLb25zdGFudGluIFRhcmFub3YgPGtvdGFyYW5vdkBs
-aW51eC5taWNyb3NvZnQuY29tPjsgS29uc3RhbnRpbg0KPiBUYXJhbm92IDxrb3RhcmFub3ZAbWlj
-cm9zb2Z0LmNvbT47IHNoYXJtYWFqYXlAbWljcm9zb2Z0LmNvbTsNCj4gamdnQHppZXBlLmNhOyBs
-ZW9uQGtlcm5lbC5vcmcNCj4gQ2M6IGxpbnV4LXJkbWFAdmdlci5rZXJuZWwub3JnOyBsaW51eC1r
-ZXJuZWxAdmdlci5rZXJuZWwub3JnDQo+IFN1YmplY3Q6IFJFOiBbUEFUQ0ggcmRtYS1uZXh0IDQv
-NF0gUkRNQS9tYW5hX2liOiBVc2Ugc3RydWN0DQo+IG1hbmFfaWJfcXVldWUgZm9yIFJBVyBRUHMN
-Cj4gDQo+ID4gK3N0cnVjdCBtYW5hX2liX3Jhd19xcCB7DQo+ID4gKwkvKiBXb3JrIHF1ZXVlIGlu
-Zm8gKi8NCj4gPiArCXN0cnVjdCBtYW5hX2liX3F1ZXVlIHF1ZXVlOw0KPiA+ICsJbWFuYV9oYW5k
-bGVfdCB0eF9vYmplY3Q7DQo+ID4gK307DQo+ID4gKw0KPiA+ICBzdHJ1Y3QgbWFuYV9pYl9xcCB7
-DQo+ID4gIAlzdHJ1Y3QgaWJfcXAgaWJxcDsNCj4gPg0KPiA+IC0JLyogV29yayBxdWV1ZSBpbmZv
-ICovDQo+ID4gLQlzdHJ1Y3QgaWJfdW1lbSAqc3FfdW1lbTsNCj4gPiAtCWludCBzcWU7DQo+ID4g
-LQl1NjQgc3FfZ2RtYV9yZWdpb247DQo+ID4gLQl1NjQgc3FfaWQ7DQo+ID4gLQltYW5hX2hhbmRs
-ZV90IHR4X29iamVjdDsNCj4gPiArCXN0cnVjdCBtYW5hX2liX3Jhd19xcCBzcTsNCj4gDQo+IFdo
-YXQncyB0aGUgbmFtaW5nIHNjaGVtZSBmb3IgUkM/IE1heWJlIHVzZSByYXdfc3EgaGVyZT8NCg0K
-VGhlIHBsYW4gaXMgdG8gdXNlIHN0cnVjdCBtYW5hX2liX3JjX3FwIGZvciBSQyBRUC4NCkJ1dCBJ
-IHRoaW5rIG1hbmFfaWJfcmF3X3NxIGlzIGEgZ29vZCBwcm9wb3NhbCBmb3IgUkFXIHBhY2tldHMu
-IEkgd2lsbCBtYWtlIGl0IGluIHYyLg0KVGhhbmtzIQ0KDQo=
+Hi,
+
+On Mon, Mar 18, 2024 at 06:24:52AM +0000, Zhijian Li (Fujitsu) wrote:
+> ...
+> Sorry for the mistake. I haven't considered callers from other than sysfs.
+> I'm fine to reverting both *two*.
+> 
+> If we are interesting in the sysfs_emit conversion one, i cooked(see the attachment)
+> a patch to revert "firewire: Kill unnecessary buf check in device_attribute.show" only.
+> 
+> (Feel free to ignore it if you have had a local fix.)
+> ...
+> From 96ad3e15b86e2504f3c17fd6a10be48e5ff81cb1 Mon Sep 17 00:00:00 2001
+> From: Li Zhijian <lizhijian@fujitsu.com>
+> Date: Mon, 18 Mar 2024 14:05:32 +0800
+> Subject: [PATCH] Revert "firewire: Kill unnecessary buf check in
+>  device_attribute.show"
+> 
+> This reverts commit 4a2b06ca33763b363038d333274e212db6ff0de1.
+> 
+> The previous fix didn't consider callers from other than sysfs. Revert
+> it to fix the NULL dereference
+> 
+>  kernel:  ? sysfs_emit+0xb5/0xc0
+>  kernel:  show_immediate+0x13f/0x1d0 [firewire_core]
+>  kernel:  init_fw_attribute_group+0x81/0x150 [firewire_core]
+>  kernel:  create_units+0x119/0x160 [firewire_core]
+>  kernel:  fw_device_init+0x1a9/0x330 [firewire_core]
+>  kernel:  fw_device_workfn+0x12/0x20 [firewire_core]
+>  kernel:  process_one_work+0x16f/0x350
+>  kernel:  worker_thread+0x306/0x440
+>  kernel:  ? __pfx_worker_thread+0x10/0x10
+>  kernel:  kthread+0xf2/0x120
+>  kernel:  ? __pfx_kthread+0x10/0x10
+>  kernel:  ret_from_fork+0x47/0x70
+>  kernel:  ? __pfx_kthread+0x10/0x10
+>  kernel:  ret_from_fork_asm+0x1b/0x30
+>  kernel:  </TASK>
+>  kernel: ---[ end trace 0000000000000000 ]---
+>  kernel: ------------[ cut here ]------------
+> 
+> Fixes: 4a2b06ca3376 ("firewire: Kill unnecessary buf check in device_attribute.show")
+> Reported-by: Takashi Sakamoto <o-takashi@sakamocchi.jp>
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>  drivers/firewire/core-device.c | 16 ++++++++++++----
+>  1 file changed, 12 insertions(+), 4 deletions(-)
+
+Thanks for your immediate action. I applied it to for-linus branch, and
+will send it in this week with my additional patch for notes. Let's back
+to test, hehe.
+
+
+Thanks
+
+Takashi Sakamoto
 
