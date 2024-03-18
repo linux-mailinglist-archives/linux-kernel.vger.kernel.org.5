@@ -1,305 +1,350 @@
-Return-Path: <linux-kernel+bounces-106575-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106576-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id E001B87F084
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:44:43 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3017B87F086
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:46:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 574A41F2247E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:44:43 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DA8592843B7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:46:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62D7556B65;
-	Mon, 18 Mar 2024 19:44:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C4FBC57326;
+	Mon, 18 Mar 2024 19:45:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b="Cy7me06J"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="WAZxgrQ3"
+Received: from EUR05-DB8-obe.outbound.protection.outlook.com (mail-db8eur05on2060.outbound.protection.outlook.com [40.107.20.60])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB66656454
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:44:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710791076; cv=none; b=a8eEQnb18KgCyknmgnaPpZKG2/HbbvgPplh+bMTXmqrO/Qj77D69+0SeO1cD45TFv/e/IB7rcM08/w2zQ9iA6xVVfSu9UgzqKxT269tlx/0JFsxU/m0reHw8fvDxd9mFtp3zWLZU7GQUmWwbxLIH1RMCRZO211FiZd1T1IaGJ2E=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710791076; c=relaxed/simple;
-	bh=cAQ9WrTqkLpyvRl2HHwei3B0+LO/SKYWgIRsl8YLCHs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BltEjWkyglOr+6E+e5vy33d7P2q5cSfmIW/jsUDAkhRlczQ1zRFyty0xx2E3cQsp/58c6gOULjOAFfQAYsi4s6E9y9EOzJOqlzngktX0XDXXrL4WCATuIegbbIO9wwsPcSn5OaHh1P3/RuQbe3+RCPF+Pe78rCOcnCAHmtM00Xk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org; spf=pass smtp.mailfrom=atishpatra.org; dkim=pass (1024-bit key) header.d=atishpatra.org header.i=@atishpatra.org header.b=Cy7me06J; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=atishpatra.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=atishpatra.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513d212f818so5611861e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:44:33 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=atishpatra.org; s=google; t=1710791072; x=1711395872; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Wng27roXh+1Oz6FjoTjsXspNwWV7X61+R2eoOFtPKaY=;
-        b=Cy7me06JDdtM+T7I1g2Tik1mChlKHkmn3He0kSBKgcCtbIl0+mr+iexm3AD2mx+dp3
-         tPptMeqLI3Ffi/j7UU6W3Y/RcBjpnrXefAf0Gcwn9tDth6k98ueVh3xAttPtC6XKjQYb
-         pifK/guhMeQC+IQrJB/tUkYaRNCCnO0T2V/o4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710791072; x=1711395872;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Wng27roXh+1Oz6FjoTjsXspNwWV7X61+R2eoOFtPKaY=;
-        b=HeNh7tDlUFachJP+6BUsvBm6GVuN4FCktcbZzDOL/Orl/fGaw0Xm9wjee//uu7d3EU
-         2/+i2/GuBIJcvVO944E06l0PXBfC/QM7i0VhJWT3eSGz65wm5S4FFxVYKg44ksOi4t7g
-         qUMr/wWx1sKCMgKejicOR4SKUK3emLbxKFKTM24+Nuvpyj0450LVrv+BoH0gxk45bttT
-         woYeESeNa5Ld+MXxnoLWsQ+6eX94EVBn1IaXnLKkEmDLiCFSrwMQiBAoO0YyVHENGa8U
-         TjwoKQJiizC1hdsZx+Xj/YXyHFbGSGk73TH5VTma4Feu6LjxF5lfGFUMx13fai7FZ0Np
-         jpPA==
-X-Forwarded-Encrypted: i=1; AJvYcCUz7hYJ2pFEvdA3T72O6VVzJz0kt5UJ1l//032Vh7JaE+TbfikqzxV/nPqvhWWaV6yH/f46FM7lo0ljcx5bOJ6FR7tlkMFt/cd58gbs
-X-Gm-Message-State: AOJu0YzHCCy8QR28bc31OOrqqGEfKJ68gvmtfQzhDjLlfyOTteGTtFCD
-	GdoS/D4HsAaTc+x0fkTEPw1f8ni0XMg9yCuXxCKdXU7CV3rPVONdfwzzwJuOmwM2m1dxH6KPT7m
-	8G4Mq5/hwLOwgY2NNsE2aLI5VxZvNWHH1QYY0
-X-Google-Smtp-Source: AGHT+IFC+n2bFbyiMarJ9LqD0wduWXrQYT/qjE6We5ijlhy4Fj/TvbBK1djkRdCHgzav6P/ENwNhq4hG6vjZDNXg+QE=
-X-Received: by 2002:a19:5f56:0:b0:513:ce5f:2a2a with SMTP id
- a22-20020a195f56000000b00513ce5f2a2amr7809396lfj.21.1710791071501; Mon, 18
- Mar 2024 12:44:31 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 39DA756774;
+	Mon, 18 Mar 2024 19:45:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.20.60
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710791158; cv=fail; b=O/41ziY5p7wWgQ3h6otVkBzU4weGwVxdun6x/2DCMwc5zp4I4itEt/6rxZ+bEm29iw197Y19e3sWEhUW25veMbHALH4p0fJjw4WAOeQSqQsF+YlOU0KrB01I2/raPuV36/eFp0UJDcncfY4lKVEBNOnQmgM1t98TnaeeGEjBpWE=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710791158; c=relaxed/simple;
+	bh=yc002MT+GmM1P/BpkAN/5VXoouYa5bMeN//BQnawdkE=;
+	h=From:To:Subject:Date:Message-Id:Content-Type:MIME-Version; b=c7gqVmIbEFfRIp80Jb1+3YwDpztMYRjRhc/clOJyX5ePdLBzCYXHL27bUMLSXQbf9fvzwu5g9NmHQuqVj9n7AIzGrnHLgKRpW7hqqkNAm7FJUM1XGFb2q6A1OVrqwkJ2/IzT2rhrQhqK3ObUbVowSD01GGuNSrK6jp4REEPCAfk=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=WAZxgrQ3; arc=fail smtp.client-ip=40.107.20.60
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=N9nUp+OzKhZjsDnAOEQCMxw5M2bZFXXeyKhRWHGqbfqoEngdkonw5t0/utZokzhZpEcOtnYh3aqCqY/9ZjH1TYoeW8kH+nvojPbEzYM4g1PRbnZ+f5kZLNH9ETIaxhwezjmpqY3Z22o78WXXbfPd6TKX7BwquiP45gqOlMR/tATIYjyeVCPFt4LsP9UDh+dsu4KAKRXrmzmQwwRn9jUN3ewA8ZE3Xydf/iicRPH/CaPw1AoR7Arxv6X/4lOOs/t0EjkKHMv9Sv0cQ4oVZgegc85aJp6zvm61XbH7wzTrpaQNnpYQsvV4AU+o2F+7BUPgNH7rDCvpGxyMzRrh/HXMBA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Grbht3TEkgdPqmEHjTaA9g92TVDNr5Jc7ivj0I1oX+s=;
+ b=KOix8LjI2cIsJ4zrrzRB56K+dQmczmx6ucKL+I81HIFbR6XBEcPxN8FuF2B/5IhljAlrMtv3DRxkmvOuqwAqKhEGRPIgKKzc85J7xOW5y4oli/xFWiNz8775480AxIROaJcqftlFaMifZQlp4T1BN2/ZoDLViacugjv5GJUIdTg3mb0jvm2nvz1LQY34QAcSdTjD5inc0Asd/ye4i3aHP0W3AxDf4lVdEx6bP/UgdRr80+WSHFFGa/y/fw/a/0atVD3UtOqD+unuBoNdrkNiS0vyBw2J7R1CWHUn73cvayQ2jguQsXX3Vv0LYEfX9m3WIUKbseQE84y1dNXHwX1OoQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Grbht3TEkgdPqmEHjTaA9g92TVDNr5Jc7ivj0I1oX+s=;
+ b=WAZxgrQ3WsZHRBTtgPezdQVBFgjHE0aKRNYM6I6YrPnuGs9vLeEhtoQtnJ9H5sWmP8kBtv0/UpiLRz3tTKKX+gDETq8lRNs58nqheoLnRHGLNBcKa/ramXg+9ueGxmL5Q5u02SaT4U2t1naLhgZTALv1WqeaeOZ9sYfXH/42svU=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=nxp.com;
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by AS1PR04MB9429.eurprd04.prod.outlook.com (2603:10a6:20b:4db::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Mon, 18 Mar
+ 2024 19:45:53 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 19:45:53 +0000
+From: Frank Li <Frank.Li@nxp.com>
+To: Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Shengjiu Wang <shengjiu.wang@nxp.com>,
+	linux-sound@vger.kernel.org (open list:SOUND - SOC LAYER / DYNAMIC AUDIO POWER MANAGEM...),
+	devicetree@vger.kernel.org (open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH 1/1] ASoC: dt-bindings: fsl-esai: Convert fsl,esai.txt to yaml
+Date: Mon, 18 Mar 2024 15:45:34 -0400
+Message-Id: <20240318194535.2274543-1-Frank.Li@nxp.com>
+X-Mailer: git-send-email 2.34.1
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SJ0PR05CA0203.namprd05.prod.outlook.com
+ (2603:10b6:a03:330::28) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240103165438.633054-1-samuel.holland@sifive.com>
-In-Reply-To: <20240103165438.633054-1-samuel.holland@sifive.com>
-From: Atish Patra <atishp@atishpatra.org>
-Date: Mon, 18 Mar 2024 12:44:19 -0700
-Message-ID: <CAOnJCUJ4rC+Rrs6GV4t+=NWA=LtTZix5Nk1VzgP9CK-3+5-jAg@mail.gmail.com>
-Subject: Re: [PATCH] perf: RISC-V: Check standard event availability
-To: Samuel Holland <samuel.holland@sifive.com>
-Cc: Anup Patel <anup@brainfault.org>, Albert Ou <aou@eecs.berkeley.edu>, 
-	Mark Rutland <mark.rutland@arm.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Will Deacon <will@kernel.org>, 
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org, 
-	linux-riscv@lists.infradead.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AS1PR04MB9429:EE_
+X-MS-Office365-Filtering-Correlation-Id: 9f6d4c5d-36e4-41bc-17df-08dc4784052c
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Fzk5bWO88mm8aY8Jy8PRwPPI3k7+Evf6ePGud5c6ngrCzO44f8uo8W4MWXlepM9zJIjBgNiumYCdX/K0s+Woz5BA5bQ0mzvjJ8DjLmwjAE51DoX+iHlSA8FVq+aOE0vjHz9igBVjXUvFkmG3I3+RQmyRe4m4tlIUF6mhVwoVodfWphksUSRTMexShsuIDMGeN53nC+OPRO6woAUa3qLRsSS4/pM2e0f20IylMF/WC8udhFG01pxck/u3QCz0cXQrirkGj/voNBVdan0TAm5DdQonRFuhm4dcKma5wRNB594otKZsHLdiRVwWQNpwVvLvanQP5kAFirSrnOHMuoVv90L2G9+fDSPFfIqA2c+TioSrrMfWlBNJupFOUOShu/ZlUqceXOND2BXuBOI92tHoDNEXEYF54vwZqgxK1TY9HfimkrruWXaa1EgNdlRCxn35zyk8Z8dco+up3VIvr5/xY4BxmupcTHScw5S4kvGkZpdl+cd4eoIV+ZTO6nNJPfevDC8eDApfEEXMKMQSH8o2t2UN7UIr+mJ5RLboAz3euBVGC3HHp99oolvLd+20F8qJZO1U7bHrhPT62WfRPlw7FN9uG08x3T+VQ3AJaR6KRMW0EBDSVheSlFruA+8oU3y7Mx6M7y1kDKU35KIysJQT458cG1YmCVjVOZh1c57Hi4M=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(52116005)(366007)(38350700005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?0dZEQSAMWFYD4Qq13RTF0dMXSInn47gOJOm4i1RtTJhcIdt7QQuBq/voMdDO?=
+ =?us-ascii?Q?a69HSZflA0vd+XsdtQg4b/whWUT2hWBb4eQoDTBFZLWrkbbk+M16+BmgUjsO?=
+ =?us-ascii?Q?cMlL5qN/G+yR7TqWH8YHLSvqA3Sl9gcccaYdcYoSc5n7VBcImU+R+0+zvf88?=
+ =?us-ascii?Q?GmczL8fO5Y9AL19RXKm9WFLTRuuOxLLTv0BFtwh1SrS4jQCEavtoKmubzB1l?=
+ =?us-ascii?Q?B+GvU1+rQ0jFgh5ep/1t0hzp1FdNeFzBqJc3mTLmmX35Z9GEqeZ1Pnpydj3B?=
+ =?us-ascii?Q?yPowzSMexIMP2qkAtM3ChtA1RnGXQLJ75LsRkHIl8Ymd1rjfuId+gNF415j6?=
+ =?us-ascii?Q?/xxK3+6filWwQF+WVn6FlQzNw1QAbrEPQ2J/UsJ3DlCN19bdrqYYL8/ezAsZ?=
+ =?us-ascii?Q?x7NaYwRXtFNynHwRHKOG2Al/46zoJMWIEC+4ds3mfncjUIFHn2FbGu0lTJc2?=
+ =?us-ascii?Q?NgePgl0oBfKOtPV9PfnBGRks7+XM0XTfFVj41EjLaQbJH4f7kre67MRq76vG?=
+ =?us-ascii?Q?/kQcpvNmo8ponj2MUJ1F9tLJrSO4vxIhVzOnn/BqAXDKxoyzxUIn6i2BUZ88?=
+ =?us-ascii?Q?6ZtR3Sg3uce/3ZYxTW1z07mQ9eTcIPLXDtbuTebyarRM8CX8GU2aCMI4Xkpf?=
+ =?us-ascii?Q?4++BehKjhx4DQszYBan4eDHAYm4MohCu0AIK7zVwwMKwiTgAig/cG86nbxNj?=
+ =?us-ascii?Q?kqT3QJWmZcjQrFErd+EvC2UbQCWWDEecYmyWm+HlsN8nz/CvCNBBbd8yco19?=
+ =?us-ascii?Q?LvCBr7LKTaTQ6OmW1gf/Uowsk24v2axXDl2ZWDC/3MVNJhiwmFpW9mlcCDb7?=
+ =?us-ascii?Q?RMT8OeIjtavBylc6mN3Bfi7QIhKKW+36Al/LCfXDbFANbcTeowX+pv9NGOR5?=
+ =?us-ascii?Q?R/VVEoayRpPS2aWSNfA1w64u8obiCY8kP8UGHiwcze8O7CuKIThY7I2svRjE?=
+ =?us-ascii?Q?1CvNEgwTJ6E5dXrchNUeE4H/093Rpuy1inaUwyDQM944U0y+1/0yfRuWcfBp?=
+ =?us-ascii?Q?4KLPsVWs2/v92hEKF56e/PV3FZ0q5z+8Up196vIEOc9cTYM1ZixioKJ+8i4c?=
+ =?us-ascii?Q?ms/ki+SmihjuOodNV2Sp8vqkWMNxTDPbzpf0UWuaGOqKCsjTKrmvdcz6SgMK?=
+ =?us-ascii?Q?d59HT7nBTzcpY8HVTLRmyMDChBOHJY6FTwpVtPw7IQYTfIRq7PqpHkGRbEe/?=
+ =?us-ascii?Q?mShf46wnUWoJzIyNJJqJilMkDXE7QeSu82FMs/o3fgA8jcN5HKG7OnEwjTsU?=
+ =?us-ascii?Q?NKfLdxskrtuxYcW+ULzV2H+9y2l1ON1tX9NivEISXroona+dtuLw0yv09+Fr?=
+ =?us-ascii?Q?IYHaER4gY7AcMV/X6bhu5UoApyasLLYJh1y6tA088bq8h30CaS5afv55k1cA?=
+ =?us-ascii?Q?FZsV8yHJ2Ufhdb68qEmCmM/lxScrR6PYlRiOsIBzrnI24LDnqjWh4UI6Z8wA?=
+ =?us-ascii?Q?Zxnf8p/7ZUXKYiNG9QwmypES3TM4J5F2qL/qDnl+SSX8dJtPWr5dggwdRB5f?=
+ =?us-ascii?Q?u1dWb2S8NkCsBjSekyZwCl5BG5bx2J5eZ8LbO17/GKeWGmbn0ZAxv2BTX4Kl?=
+ =?us-ascii?Q?ldok2VltxuvnL9X9+hC12mxjbHoh+832BYzP2Z6m?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 9f6d4c5d-36e4-41bc-17df-08dc4784052c
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 19:45:52.9322
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: iDo9JWCxHhwHc1HkkdiOqlI0aee6Dri6Eq8Rkt1MRsT7pd2RuAPREwtAh7seEBTixTPso6RlJ+VEhsl3wDh9+Q==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS1PR04MB9429
 
-On Wed, Jan 3, 2024 at 8:54=E2=80=AFAM Samuel Holland <samuel.holland@sifiv=
-e.com> wrote:
->
-> The RISC-V SBI PMU specification defines several standard hardware and
-> cache events. Currently, all of these events appear in the `perf list`
-> output, even if they are not actually implemented. Add logic to check
-> which events are supported by the hardware (i.e. can be mapped to some
-> counter), so only usable events are reported to userspace.
->
+Convert fsl,esai.txt to yaml. So DTB_CHECK tools can verify dts file about
+esai part.
 
-Thanks for the patch.
-This adds tons of SBI calls at every boot for a use case which is at
-best confusing for a subset of users who actually wants to run perf.
-This probing can be done at runtime by invoking the
-pmu_sbi_check_event from pmu_sbi_event_map.
-We can update the event map after that so that it doesn't need to
-invoke pmu_sbi_check_event next time.
+clock-names 'spba' is optional according to description. So minItems of
+clocks and clock-names is 3.
 
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
-> Before this patch:
-> $ perf list hw
->
-> List of pre-defined events (to be used in -e or -M):
->
->   branch-instructions OR branches                    [Hardware event]
->   branch-misses                                      [Hardware event]
->   bus-cycles                                         [Hardware event]
->   cache-misses                                       [Hardware event]
->   cache-references                                   [Hardware event]
->   cpu-cycles OR cycles                               [Hardware event]
->   instructions                                       [Hardware event]
->   ref-cycles                                         [Hardware event]
->   stalled-cycles-backend OR idle-cycles-backend      [Hardware event]
->   stalled-cycles-frontend OR idle-cycles-frontend    [Hardware event]
->
-> $ perf stat -ddd true
->
->  Performance counter stats for 'true':
->
->               4.36 msec task-clock                       #    0.744 CPUs =
-utilized
->                  1      context-switches                 #  229.325 /sec
->                  0      cpu-migrations                   #    0.000 /sec
->                 38      page-faults                      #    8.714 K/sec
->          4,375,694      cycles                           #    1.003 GHz  =
-                       (60.64%)
->            728,945      instructions                     #    0.17  insn =
-per cycle
->             79,199      branches                         #   18.162 M/sec
->             17,709      branch-misses                    #   22.36% of al=
-l branches
->            181,734      L1-dcache-loads                  #   41.676 M/sec
->              5,547      L1-dcache-load-misses            #    3.05% of al=
-l L1-dcache accesses
->      <not counted>      LLC-loads                                        =
-                       (0.00%)
->      <not counted>      LLC-load-misses                                  =
-                       (0.00%)
->      <not counted>      L1-icache-loads                                  =
-                       (0.00%)
->      <not counted>      L1-icache-load-misses                            =
-                       (0.00%)
->      <not counted>      dTLB-loads                                       =
-                       (0.00%)
->      <not counted>      dTLB-load-misses                                 =
-                       (0.00%)
->      <not counted>      iTLB-loads                                       =
-                       (0.00%)
->      <not counted>      iTLB-load-misses                                 =
-                       (0.00%)
->      <not counted>      L1-dcache-prefetches                             =
-                       (0.00%)
->      <not counted>      L1-dcache-prefetch-misses                        =
-                       (0.00%)
->
->        0.005860375 seconds time elapsed
->
->        0.000000000 seconds user
->        0.010383000 seconds sys
->
-> After this patch:
-> $ perf list hw
->
-> List of pre-defined events (to be used in -e or -M):
->
->   branch-instructions OR branches                    [Hardware event]
->   branch-misses                                      [Hardware event]
->   cache-misses                                       [Hardware event]
->   cache-references                                   [Hardware event]
->   cpu-cycles OR cycles                               [Hardware event]
->   instructions                                       [Hardware event]
->
-> $ perf stat -ddd true
->
->  Performance counter stats for 'true':
->
->               5.16 msec task-clock                       #    0.848 CPUs =
-utilized
->                  1      context-switches                 #  193.817 /sec
->                  0      cpu-migrations                   #    0.000 /sec
->                 37      page-faults                      #    7.171 K/sec
->          5,183,625      cycles                           #    1.005 GHz
->            961,696      instructions                     #    0.19  insn =
-per cycle
->             85,853      branches                         #   16.640 M/sec
->             20,462      branch-misses                    #   23.83% of al=
-l branches
->            243,545      L1-dcache-loads                  #   47.203 M/sec
->              5,974      L1-dcache-load-misses            #    2.45% of al=
-l L1-dcache accesses
->    <not supported>      LLC-loads
->    <not supported>      LLC-load-misses
->    <not supported>      L1-icache-loads
->    <not supported>      L1-icache-load-misses
->    <not supported>      dTLB-loads
->             19,619      dTLB-load-misses
->    <not supported>      iTLB-loads
->              6,831      iTLB-load-misses
->    <not supported>      L1-dcache-prefetches
->    <not supported>      L1-dcache-prefetch-misses
->
->        0.006085625 seconds time elapsed
->
->        0.000000000 seconds user
->        0.013022000 seconds sys
->
->
->  drivers/perf/riscv_pmu_sbi.c | 37 ++++++++++++++++++++++++++++++++++--
->  1 file changed, 35 insertions(+), 2 deletions(-)
->
-> diff --git a/drivers/perf/riscv_pmu_sbi.c b/drivers/perf/riscv_pmu_sbi.c
-> index 16acd4dcdb96..b58a70ee8317 100644
-> --- a/drivers/perf/riscv_pmu_sbi.c
-> +++ b/drivers/perf/riscv_pmu_sbi.c
-> @@ -86,7 +86,7 @@ struct sbi_pmu_event_data {
->         };
->  };
->
-> -static const struct sbi_pmu_event_data pmu_hw_event_map[] =3D {
-> +static struct sbi_pmu_event_data pmu_hw_event_map[] =3D {
->         [PERF_COUNT_HW_CPU_CYCLES]              =3D {.hw_gen_event =3D {
->                                                         SBI_PMU_HW_CPU_CY=
-CLES,
->                                                         SBI_PMU_EVENT_TYP=
-E_HW, 0}},
-> @@ -120,7 +120,7 @@ static const struct sbi_pmu_event_data pmu_hw_event_m=
-ap[] =3D {
->  };
->
->  #define C(x) PERF_COUNT_HW_CACHE_##x
-> -static const struct sbi_pmu_event_data pmu_cache_event_map[PERF_COUNT_HW=
-_CACHE_MAX]
-> +static struct sbi_pmu_event_data pmu_cache_event_map[PERF_COUNT_HW_CACHE=
-_MAX]
->  [PERF_COUNT_HW_CACHE_OP_MAX]
->  [PERF_COUNT_HW_CACHE_RESULT_MAX] =3D {
->         [C(L1D)] =3D {
-> @@ -265,6 +265,36 @@ static const struct sbi_pmu_event_data pmu_cache_eve=
-nt_map[PERF_COUNT_HW_CACHE_M
->         },
->  };
->
-> +static void pmu_sbi_check_event(struct sbi_pmu_event_data *edata)
-> +{
-> +       struct sbiret ret;
-> +
-> +       ret =3D sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_CFG_MATCH,
-> +                       0, cmask, 0, edata->event_idx, 0, 0);
-> +       if (!ret.error) {
-> +               sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP,
-> +                         ret.value, 0x1, SBI_PMU_STOP_FLAG_RESET, 0, 0, =
-0);
-> +       } else if (ret.error =3D=3D SBI_ERR_NOT_SUPPORTED) {
-> +               /* This event cannot be monitored by any counter */
-> +               edata->event_idx =3D -EINVAL;
-> +       }
-> +}
-> +
-> +static void pmu_sbi_update_events(void)
-> +{
-> +       /* Ensure events are not already mapped to a counter */
-> +       sbi_ecall(SBI_EXT_PMU, SBI_EXT_PMU_COUNTER_STOP,
-> +                 0, cmask, SBI_PMU_STOP_FLAG_RESET, 0, 0, 0);
-> +
-> +       for (int i =3D 0; i < ARRAY_SIZE(pmu_hw_event_map); i++)
-> +               pmu_sbi_check_event(&pmu_hw_event_map[i]);
-> +
-> +       for (int i =3D 0; i < ARRAY_SIZE(pmu_cache_event_map); i++)
-> +               for (int j =3D 0; j < ARRAY_SIZE(pmu_cache_event_map[i]);=
- j++)
-> +                       for (int k =3D 0; k < ARRAY_SIZE(pmu_cache_event_=
-map[i][j]); k++)
-> +                               pmu_sbi_check_event(&pmu_cache_event_map[=
-i][j][k]);
-> +}
-> +
->  static int pmu_sbi_ctr_get_width(int idx)
->  {
->         return pmu_ctr_list[idx].width;
-> @@ -1046,6 +1076,9 @@ static int pmu_sbi_device_probe(struct platform_dev=
-ice *pdev)
->         if (pmu_sbi_get_ctrinfo(num_counters, &cmask))
->                 goto out_free;
->
-> +       /* Check which standard events are available */
-> +       pmu_sbi_update_events();
-> +
->         ret =3D pmu_sbi_setup_irqs(pmu, pdev);
->         if (ret < 0) {
->                 pr_info("Perf sampling/filtering is not supported as ssco=
-f extension is not available\n");
-> --
-> 2.42.0
->
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
+---
 
+Notes:
+    Pass dt_binding check
+     make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,esai.yaml
+      DTEX    Documentation/devicetree/bindings/sound/fsl,esai.example.dts
+      LINT    Documentation/devicetree/bindings
+      CHKDT   Documentation/devicetree/bindings/processed-schema.json
+      SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+      DTC_CHK Documentation/devicetree/bindings/sound/fsl,esai.example.dtb
 
---
-Regards,
-Atish
+ .../devicetree/bindings/sound/fsl,esai.txt    |  68 -----------
+ .../devicetree/bindings/sound/fsl,esai.yaml   | 110 ++++++++++++++++++
+ 2 files changed, 110 insertions(+), 68 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/sound/fsl,esai.txt
+ create mode 100644 Documentation/devicetree/bindings/sound/fsl,esai.yaml
+
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.txt b/Documentation/devicetree/bindings/sound/fsl,esai.txt
+deleted file mode 100644
+index 90112ca1ff423..0000000000000
+--- a/Documentation/devicetree/bindings/sound/fsl,esai.txt
++++ /dev/null
+@@ -1,68 +0,0 @@
+-Freescale Enhanced Serial Audio Interface (ESAI) Controller
+-
+-The Enhanced Serial Audio Interface (ESAI) provides a full-duplex serial port
+-for serial communication with a variety of serial devices, including industry
+-standard codecs, Sony/Phillips Digital Interface (S/PDIF) transceivers, and
+-other DSPs. It has up to six transmitters and four receivers.
+-
+-Required properties:
+-
+-  - compatible		: Compatible list, should contain one of the following
+-			  compatibles:
+-			  "fsl,imx35-esai",
+-			  "fsl,vf610-esai",
+-			  "fsl,imx6ull-esai",
+-			  "fsl,imx8qm-esai",
+-
+-  - reg			: Offset and length of the register set for the device.
+-
+-  - interrupts		: Contains the spdif interrupt.
+-
+-  - dmas		: Generic dma devicetree binding as described in
+-			  Documentation/devicetree/bindings/dma/dma.txt.
+-
+-  - dma-names		: Two dmas have to be defined, "tx" and "rx".
+-
+-  - clocks		: Contains an entry for each entry in clock-names.
+-
+-  - clock-names		: Includes the following entries:
+-	"core"		  The core clock used to access registers
+-	"extal"		  The esai baud clock for esai controller used to
+-			  derive HCK, SCK and FS.
+-	"fsys"		  The system clock derived from ahb clock used to
+-			  derive HCK, SCK and FS.
+-	"spba"		  The spba clock is required when ESAI is placed as a
+-			  bus slave of the Shared Peripheral Bus and when two
+-			  or more bus masters (CPU, DMA or DSP) try to access
+-			  it. This property is optional depending on the SoC
+-			  design.
+-
+-  - fsl,fifo-depth	: The number of elements in the transmit and receive
+-			  FIFOs. This number is the maximum allowed value for
+-			  TFCR[TFWM] or RFCR[RFWM].
+-
+-  - fsl,esai-synchronous: This is a boolean property. If present, indicating
+-			  that ESAI would work in the synchronous mode, which
+-			  means all the settings for Receiving would be
+-			  duplicated from Transmission related registers.
+-
+-Optional properties:
+-
+-  - big-endian		: If this property is absent, the native endian mode
+-			  will be in use as default, or the big endian mode
+-			  will be in use for all the device registers.
+-
+-Example:
+-
+-esai: esai@2024000 {
+-	compatible = "fsl,imx35-esai";
+-	reg = <0x02024000 0x4000>;
+-	interrupts = <0 51 0x04>;
+-	clocks = <&clks 208>, <&clks 118>, <&clks 208>;
+-	clock-names = "core", "extal", "fsys";
+-	dmas = <&sdma 23 21 0>, <&sdma 24 21 0>;
+-	dma-names = "rx", "tx";
+-	fsl,fifo-depth = <128>;
+-	fsl,esai-synchronous;
+-	big-endian;
+-};
+diff --git a/Documentation/devicetree/bindings/sound/fsl,esai.yaml b/Documentation/devicetree/bindings/sound/fsl,esai.yaml
+new file mode 100644
+index 0000000000000..9e31283933d1b
+--- /dev/null
++++ b/Documentation/devicetree/bindings/sound/fsl,esai.yaml
+@@ -0,0 +1,110 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/sound/fsl,esai.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Freescale Enhanced Serial Audio Interface (ESAI) Controller
++
++maintainers:
++  - Shengjiu Wang <shengjiu.wang@nxp.com>
++  - Frank Li <Frank.Li@nxp.com>
++
++description:
++  The Enhanced Serial Audio Interface (ESAI) provides a full-duplex serial port
++  for serial communication with a variety of serial devices, including industry
++  standard codecs, Sony/Phillips Digital Interface (S/PDIF) transceivers, and
++  other DSPs. It has up to six transmitters and four receivers.
++
++properties:
++  compatible:
++    enum:
++      - fsl,imx35-esai
++      - fsl,vf610-esai
++      - fsl,imx6ull-esai
++      - fsl,imx8qm-esai
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    minItems: 3
++    maxItems: 4
++
++  clock-names:
++    minItems: 3
++    description: |
++      core:   The core clock used to access registers.
++      extal:  The esai baud clock for esai controller used to
++              derive HCK, SCK and FS.
++      fsys:   The system clock derived from ahb clock used to
++              derive HCK, SCK and FS.
++      spba:   The spba clock is required when ESAI is placed as a
++              bus slave of the Shared Peripheral Bus and when two
++              or more bus masters (CPU, DMA or DSP) try to access
++              it. This property is optional depending on the SoC
++              design.
++    items:
++      - const: core
++      - const: extal
++      - const: fsys
++      - const: spba
++
++  dmas:
++    minItems: 2
++    maxItems: 2
++
++  dma-names:
++    items:
++      - const: rx
++      - const: tx
++
++  fsl,fifo-depth:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: The number of elements in the transmit and receive
++                 FIFOs. This number is the maximum allowed value for
++                 TFCR[TFWM] or RFCR[RFWM].
++
++  fsl,esai-synchronous:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: This is a boolean property. If present, indicating
++                 that ESAI would work in the synchronous mode, which
++                 means all the settings for Receiving would be
++                 duplicated from Transmission related registers.
++
++  big-endian:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: If this property is absent, the native endian mode
++                 will be in use as default, or the big endian mode
++                 will be in use for all the device registers.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - dmas
++  - dma-names
++  - fsl,fifo-depth
++  - fsl,esai-synchronous
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    esai@2024000 {
++      compatible = "fsl,imx35-esai";
++      reg = <0x02024000 0x4000>;
++      interrupts = <0 51 0x04>;
++      clocks = <&clks 208>, <&clks 118>, <&clks 208>;
++      clock-names = "core", "extal", "fsys";
++      dmas = <&sdma 23 21 0>, <&sdma 24 21 0>;
++      dma-names = "rx", "tx";
++      fsl,fifo-depth = <128>;
++      fsl,esai-synchronous;
++      big-endian;
++    };
+-- 
+2.34.1
+
 
