@@ -1,157 +1,279 @@
-Return-Path: <linux-kernel+bounces-106319-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BADB787EC56
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:41:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A16287EC5D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:42:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 342D91F22C87
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:41:34 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0FBE3280F37
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:42:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 333E94F5FE;
-	Mon, 18 Mar 2024 15:41:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55A8152F90;
+	Mon, 18 Mar 2024 15:42:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="rGRpKAyV"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="cwrXHFsi"
+Received: from mail-lj1-f169.google.com (mail-lj1-f169.google.com [209.85.208.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AC491524AD
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:41:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA54052F85
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:42:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710776483; cv=none; b=hU5T5ojUbc1Ck5GyHnZ/FMIpq/GQvK0TXbI48xkMqaW6I8jLohDOGQE5+Q99zTcLcBokMIjmVX0qjXfAyfHA8wV8/SmrDs12wNhcafv8VZ/l4E1zLZ3vu//oKtIyNnwhmzzYbSlN4H2nalMutdxRv3hPJzJOFbcwzFgLQ0W4rUg=
+	t=1710776561; cv=none; b=cWwgfDlpCo40hGyQBtEneD61SF0mVnpma/KEDCyj/i5OuTHvOZLUe35/Gy9p7P24QhZ2LI5uRS3sGV2GmY0OmAyk5wNXTz6Gn6bDau/CVnTfb08MiCiw0kKLwIVSmt3c4RG6NZimG9Gt3vX6GgieGEB8ZZ4ay5HAfBQY+c3skTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710776483; c=relaxed/simple;
-	bh=y7pTHlOEFdkEJGEQJ2SGDR/z/kLUt3axolalibLrBXo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OLkSRV+jk9qrJocOH/494Aiz0Z4vUl8+uJOKcIVo7ZK5IMUgq/kO3HxpGfw9zcbH1QfQ5SutG70koPJll91J510ANh5/Y9GyVHxfJV+NE5z2zs+O4BpvXNwPLluSt7Fo5cOhyFSlbnzKvS5rIJTFtWq5fE3v8UjhpxC/iL2QD5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=rGRpKAyV; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-513c8b72b24so4988588e87.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:41:21 -0700 (PDT)
+	s=arc-20240116; t=1710776561; c=relaxed/simple;
+	bh=fstJsI88rFXxdnO6uRjee1SkFXXRCenAkMwozqG3HWw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JHTVMbO6k7aHmbW3Jnrmg6NsiMLRACcuGUQPbSA0YOsMzqCTxN0rs8mIu7uCWrzmLFiwxeTAF3mmVwEVpd92xJWlqxO8fKOjHKnAbJBqUtc5tBANBk0WENJ0Rhs9TuvzPU1PNcZCkW+7tW783s2M5sk9zmwCiYmPnJgHdwhhdqw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=cwrXHFsi; arc=none smtp.client-ip=209.85.208.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-lj1-f169.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so44003311fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:42:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710776480; x=1711381280; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=y7pTHlOEFdkEJGEQJ2SGDR/z/kLUt3axolalibLrBXo=;
-        b=rGRpKAyVSt6nYiMFLwU/CtDgzG3aOH1TTP9bQDQQorJFjM8LC9j01Z56pmUBDmO3zK
-         xtarQ5CFsDSSv003tYT4iB5xZpfBQOJ8aepgvE2Mdk7KVKokb48u/wSMvEe8WeY37GtN
-         6Ix5tdYKhoxK0VsXVR0BU+9Bzw8TPS4scAVZiZkBYB7+XxnzQQlT03bBpNa2eXZwhTlb
-         eUYBqecirMqAbvK06cBItW/NQW7Ho3cYPa7mpZdWKWLNkgh2g9tvt2tpZx+51NFcAMbJ
-         6lGLYA6cDNvfu6hGIshR6AJVCGGSLV/1z/24AzfUtn8ZUDdOu6J8jyw1c9pHiMvnjWtq
-         AGIw==
+        d=suse.com; s=google; t=1710776556; x=1711381356; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=0PTC94ZWbRaMxlVfwdin5J88yO9q91Lex65wqGvnlrg=;
+        b=cwrXHFsi/yuwVhWRUSEJSMt13GNIXXMjrsryBRW0janO6RAl1fTJILYlBSOfuD4r6X
+         BBomRnl6hNvwssdvlKOHTf0R7uNf+L1+e30kCFf3ztoDXzUCjDqsrbyXcgN69kBpT1vH
+         9EMMxEitpAyBW16RNFv5IhyCkShsFku2g6UDDsEoSHk/Se/zKIer1ipY0Nk7auqhRYk6
+         g6Yi1HmDjxMueJE/QsX9Go6No0lt02KgtZ7HPQeb+QLJDGtVwhTEhjFlwOscz7UyO8+l
+         Tll7nNmQKHwT+9QQSAAXRAKH/jgSWqLz9ddxrGOkR2vNiztYDatvnNFODSvUm2Wx6eA1
+         kddA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710776480; x=1711381280;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+        d=1e100.net; s=20230601; t=1710776556; x=1711381356;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=y7pTHlOEFdkEJGEQJ2SGDR/z/kLUt3axolalibLrBXo=;
-        b=BPTzTIxuRRrEbQSWjZK9zfI0GHZ/Wizt6yj1mLZpSD5fEjnK4pOTT05vEtq75obPXa
-         xjyvdPvePWpC26Kg5AFOuv4/2p/CfZrOZPG8tUK2mGFvFm2/xG0z7qx39iIMq5lcsQR0
-         V5SxHu8WMGClchf6sd89Tr2nXF8QG7YOhh32U8duWgtKbTF7qJhNSOlOpWtuqGcl8X1I
-         I1SJH48Hf6xu0XwQVCkABeJR9SMMftXVpwzMBoscVDBB2JJ+pmWQRUsJ2JJiANKCgb3F
-         PzhrJHKIX4wYl5OarS9zNn95GNh6S6Rrk/CRy3NsfmwF0E5TPH50Xk836EjnvFmNSMaF
-         UFmg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCOx8H8cliH1cETbXNbnZfaiUNHJOkzwNqVetKa0hjKzVQHoPbNe+jIonkN23iRE4MzwUgtmkH//oU/8ONN/DKoPpEZNDGD4H7dOFR
-X-Gm-Message-State: AOJu0Ywea9119gpSTkZw/ChlqjRpbBkvbGBNpS9V1r/wsrBtgeDfIgUp
-	/2Rc6kPRXQs6+s3B5MrILGqEN6jaM7l//To5CxAeZIsZlNmRrw+g3jNy5DBj508=
-X-Google-Smtp-Source: AGHT+IFb0AEqWaRxMz93fKPNwYFIC3RDq1Nl3Hx3yhLUTMz0fjmBAMObjTqhY0qm96Vb/mNK+Q8PUg==
-X-Received: by 2002:ac2:4ac6:0:b0:513:5af1:9d7b with SMTP id m6-20020ac24ac6000000b005135af19d7bmr8184241lfp.47.1710776479851;
-        Mon, 18 Mar 2024 08:41:19 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id l22-20020a1709067d5600b00a469e550472sm3129771ejp.60.2024.03.18.08.41.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 08:41:19 -0700 (PDT)
-Message-ID: <d3376204-0861-449f-b043-7a27e18d3eba@linaro.org>
-Date: Mon, 18 Mar 2024 16:41:16 +0100
+        bh=0PTC94ZWbRaMxlVfwdin5J88yO9q91Lex65wqGvnlrg=;
+        b=dm3YximRUV/k4RyKMPABcVJJzrcUUJ0YRRiJb9r9xGnCk83LdnmUrB2Kx93Bv6FgfM
+         oq2rSGItFEAOS14yPF525OTG/BExvd3CFnNYJHlmUJ6zcxlc9QpwO6iGQsLEDuXm45kM
+         00NF84gquYmkLYFJOR4v4+2kfuRmakH8zeBaX4VMYOf+o2cHF6KIMGTBnXn2hNZi59zQ
+         wHGpDytic60AMAhIXJpIvE7CJpKEGJWR5jaUxeNmB2A67nd8ayFqoE/CibIzgcCF8KO+
+         FwbULtGKRIH41grMmAkeeMxDUC1RnIJsEUFajEY8KOaR4QNvMAcwkSy5JOFxDIK/J6bn
+         APlQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVlTB0Hmq2OyrCmjJgWGt4qV/3FpNaFjj2tWi0BCPME1PDRIrzNC5+saKYKcOw6Tw1W60tchjkWiu+SB85wgNBxJiQ9pGnIzLhhZt8B
+X-Gm-Message-State: AOJu0Yw5BvZY4mop4JZB9/fFfwYZtU+EXEHES/LZwS7y4NkHuuFsTkj7
+	yABtwysaxiohhYTukd6IuNglrMLYfDsDhvu9WH2H8/R3mkOjFpAZ47UdZ5cyjI0=
+X-Google-Smtp-Source: AGHT+IEsO7vhRxVm7Fc2hwqUeCgM1PR81mOQVEuvXfit0SV++Crjwy29mrjq3FKCuRT4gP9ISH6VZg==
+X-Received: by 2002:a2e:9008:0:b0:2d4:5bc6:23a9 with SMTP id h8-20020a2e9008000000b002d45bc623a9mr7998112ljg.33.1710776552717;
+        Mon, 18 Mar 2024 08:42:32 -0700 (PDT)
+Received: from alley ([176.114.240.50])
+        by smtp.gmail.com with ESMTPSA id en10-20020a056402528a00b005693985c35dsm1368700edb.36.2024.03.18.08.42.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 08:42:32 -0700 (PDT)
+Date: Mon, 18 Mar 2024 16:42:30 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: John Ogness <john.ogness@linutronix.de>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Thomas Gleixner <tglx@linutronix.de>, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Jiri Slaby <jirislaby@kernel.org>,
+	Ilpo =?iso-8859-1?Q?J=E4rvinen?= <ilpo.jarvinen@linux.intel.com>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Tony Lindgren <tony@atomide.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Justin Chen <justin.chen@broadcom.com>,
+	Jiaqing Zhao <jiaqing.zhao@linux.intel.com>,
+	linux-serial@vger.kernel.org
+Subject: Re: [PATCH printk v2 08/26] printk: nbcon: Implement processing in
+ port->lock wrapper
+Message-ID: <Zfhg5mBd27HmRzQp@alley>
+References: <Zdh4eEJJpasEWqa5@alley>
+ <87le6oy9vg.fsf@jogness.linutronix.de>
+ <ZfMIX8bsftsDNdlm@alley>
+ <87sf0rbkp9.fsf@jogness.linutronix.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 3/6] dt-bindings: media: cnm,wave521c: drop resets
- restriction
-To: Ivan Bornyakov <brnkv.i1@gmail.com>, Nas Chung
- <nas.chung@chipsnmedia.com>, Jackson Lee <jackson.lee@chipsnmedia.com>,
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-media@vger.kernel.org,
- linux-kernel@vger.kernel.org, devicetree@vger.kernel.org
-References: <20240318144225.30835-1-brnkv.i1@gmail.com>
- <20240318144225.30835-4-brnkv.i1@gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240318144225.30835-4-brnkv.i1@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <87sf0rbkp9.fsf@jogness.linutronix.de>
 
-On 18/03/2024 15:42, Ivan Bornyakov wrote:
-> Different designs may have different amount of routed reset signals.
+On Fri 2024-03-15 16:10:18, John Ogness wrote:
+> On 2024-03-14, Petr Mladek <pmladek@suse.com> wrote:
+> > Well, it brings another question. Does this allow to have
+> > the following situation?
+> >
+> > CPU0				CPU1
+> >
+> >   some_function()
+> >     uart_port_lock()
+> >       // locked just with up->lock
+> >       // doing something with the port
+> >
+> > 				register_console()
+> > 				  // add struct console using the same
+> > 				  // port as CPU0
+> > 				  printk()
+> > 				    console_try_lock()
+> > 				    console_unlock()
+> > 				      console_flush_all()
+> > 					// acquire context for the newly
+> > 					// registered nbcon
+> > 					nbcon_context_try_acquire(ctxt)
+> > 					  con->write()
+> >
+> > BANG: Both CPU0 and CPU1 are writing to the same port.
+> >
+> > Reason: CPU0 locked only via port->lock.
+> > 	CPU1 locked only by acquiring nbcon context.
+> 
+> Great catch! Yes, this is possible. :-/
+> 
+> When the kthread series part is introduced, there will be additional
+> callbacks that nbcon consoles must implement
+> (driver_enter()/driver_exit()). These provide driver-level
+> synchronization. In the case of serial uarts, the callbacks map to
+> locking/unlocking the port lock.
+> 
+> If I were to introduce those callbacks in _this_ series, they can be
+> used when adding a console to the list in register_console(). This
+> changes your example to:
+> 
+> CPU0				CPU1
+> 
+>   some_function()
+>     uart_port_lock()
+>       // locked just with up->lock
+>       // doing something with the port
+> 
+> 				register_console()
+> 				  // add struct console using the same
+> 				  // port as CPU0
+> 				  newcon->driver_enter()
+> 				    spin_lock(port_lock)
+> 				    // spin on CPU0
+>     uart_port_unlock()
+> 				  // add new console to console list
+> 				  newcon->driver_exit()
+> 				    spin_unlock(port_lock)
+> 				  ...
+> 
+> If any other CPUs come in and call uart_port_lock(), they will see the
+> console as registered and will acquire the nbcon to avoid the BANG.
 
-You changed nothing. This commit msg does not match code at all. I don't
-understand this.
+Looks good. See below.
 
-And your subject is entirely wrong - again, you did not drop any
-restriction.
+> > Maybe, this is not possible because the console is registered when
+> > the struct uart_port is being initialized and nobody could
+> > use the same port in parallel, except for the early console.
+> > Where the early console is serialized using the console_lock().
+> 
+> Yes, it is possible. Just check out:
+> 
+>     find /sys/ -name console -type f
+> 
+> If you echo 'Y' or 'N' into any of those files, you can dynamically
+> register and unregister those consoles, respectively.
+> 
+> I just ran some tests to verify this and was even able to trigger a
+> mainline bug because probe_baud() of the 8250 driver is not called under
+> the port lock. This is essentially the same scenario you
+> illustrated. But the 8250 probe_baud() issue is a driver bug and not
+> related to this series.
 
-But in general: we expect restrictions (constraints).
+Thanks a lot for checking it.
 
-> Drop maxItems restriction, add a small description instead.
+> Getting back to this series, my proposal would change register_console()
+> like this:
+> 
+> diff --git a/kernel/printk/printk.c b/kernel/printk/printk.c
+> index 68657d4d6649..25a0a81e8397 100644
+> --- a/kernel/printk/printk.c
+> +++ b/kernel/printk/printk.c
+> @@ -3733,6 +3733,7 @@ void register_console(struct console *newcon)
+>  	struct console *con;
+>  	bool bootcon_registered = false;
+>  	bool realcon_registered = false;
+> +	unsigned long flags;
+>  	int err;
+>  
+>  	console_list_lock();
+> @@ -3831,6 +3832,19 @@ void register_console(struct console *newcon)
+>  	if (newcon->flags & CON_BOOT)
+>  		have_boot_console = true;
+>  
+> +	/*
+> +	 * If another context is actively using the hardware of this new
+> +	 * console, it will not be aware of the nbcon synchronization. This
+> +	 * is a risk that two contexts could access the hardware
+> +	 * simultaneously if this new console is used for atomic printing
+> +	 * and the other context is still using the hardware.
+> +	 * 
+> +	 * Use the driver synchronization to ensure that the hardware is not
+> +	 * in use while this new console transitions to being registered.
+> +	 */
+> +	if ((newcon->flags & CON_NBCON) && newcon->write_atomic)
+> +		newcon->driver_enter(newcon, &flags);
+> +
+>  	/*
+>  	 * Put this console in the list - keep the
+>  	 * preferred driver at the head of the list.
+> @@ -3855,6 +3869,10 @@ void register_console(struct console *newcon)
+>  	 * register_console() completes.
+>  	 */
+>  
+> +	/* This new console is now registered. */
+> +	if ((newcon->flags & CON_NBCON) && newcon->write_atomic)
+> +		newcon->driver_exit(newcon, flags);
+> +
+>  	console_sysfs_notify();
+>  
+>  	/*
+> 
+> > One solution would be to add nbcon consoles into the console_list
+> > under uart_port_lock().
+> 
+> This is what I have proposed and I think it is the most straight forward
+> solution.
+> 
+> > Another solution would be to make sure that any code serialized
+> > by uart_port_lock() will be already synchronized by nbcon context
+> > while the nbcon is added into the console_list.
+> 
+> I do not think this would be acceptable. It would mean that non-console
+> ports would need to lock the nbcon. Not only will that slow down the
+> non-console ports, but it will also cause serious contention between the
+> ports. (Remember, all the ports share the same struct console.)
 
+I actually did not want to lock the nbcon for all ports. This is why
+I proposed to do it in con->setup() where con->index is already set.
+It might solve the problem without adding yet another callbacks.
 
-Best regards,
-Krzysztof
+That said, I like your solution with newcon->driver_enter()/exit()
+callbacks. It seems to have an easier and more straightforward semantic.
 
+Go for it, especially when you need these callbacks later in
+the printk kthread.
+
+Nit: I think about renaming the callbacks to"device_lock()
+     and device_unlock().
+
+     "(un)lock" probably better describes what the callbacks do.
+     register_console() does not want to do any operations
+     on the serial port. It just needs to serialize adding
+     the console into the list.
+
+     I suggest "device" because the callbacks will lock/unlock
+     the tty_driver pointed by "con->device".
+
+> 
+> > Maybe, we could do this in con->setup() callback. Something like:
+> 
+> This proposal would work, but IMHO it adds too much complexity by
+> requiring console drivers to implement the callbacks and do special
+> things in those callbacks.
+
+Fair enough.
+
+Best Regards,
+Petr
 
