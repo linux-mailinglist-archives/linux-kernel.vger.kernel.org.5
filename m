@@ -1,143 +1,188 @@
-Return-Path: <linux-kernel+bounces-105972-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105973-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA3AB87E6FD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:15:12 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9D8C387E701
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:15:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 218811F22307
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:15:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0280AB21C77
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:15:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A0A6B3E480;
-	Mon, 18 Mar 2024 10:11:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E77A02DF9F;
+	Mon, 18 Mar 2024 10:12:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="OFMf/xoJ"
-Received: from NAM02-SN1-obe.outbound.protection.outlook.com (mail-sn1nam02on2062.outbound.protection.outlook.com [40.107.96.62])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2dw1UmQt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3z0xrg9c";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="2dw1UmQt";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="3z0xrg9c"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5EE4D3CF4F;
-	Mon, 18 Mar 2024 10:11:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.96.62
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710756714; cv=fail; b=gq0nXnxfK8+RJIJfWb5XcJHutLwlp3dxi66mnvu+8Z9YPyhBv/Bz4dviZCGEiKm6p9QuJjIBP+2jLSjJYN0zzcdVJNQTzvxQiTyeHLL7sAA1UtjrFw1S/Sc+bXXnlieN/hwIa98GnItOMFIAZZ5p1MJXxfJg8SooJGefgdLvjaQ=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710756714; c=relaxed/simple;
-	bh=W+dCh9C8EntywcvXhSubkaBnZJJuzKjsF7idcfLgto4=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IDbuPK7c0SA7NTcgq+JJUprTvq1PCd9r62ev+9f68sFC01ew10dXEscvrkMRFlJVFGDWYBCIz38afDZXqaQp6EI6pPdOMkd6KY/IOuuVMmmfpv/tF+E1YX9ao79Dirr0GZHXWVfCkYb+9gDGMZPx9OKCPHtgBhGn9TQj+H78Maw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=OFMf/xoJ; arc=fail smtp.client-ip=40.107.96.62
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=UoMaU+oD6EqVX3wLO0MeAKadS9i0GRNpNe21Ob9NmTbGzguIuIXV9mlc/+Qbk9ikSiB+2r2Kf+0PDo+llE2KCtRyTXt2GpvNvVO26yF81FpBD34NJ5c9f2nBP6+PAJYVTEcrYR0DrU36CBDrEI0uUYqvU/ceTaiwBdmgv0Xh9ymeKA76tc2HagyycEDlYnXcAHUN5B8EufhgRr0+Lyfsil3ALZqYzuzkruaXTnxPM2Z7P0yIeA9A3KrYODAkht3O48jL2zQPz1sCpSAyjPSe1ws3DUYX63eyefEuJ1n82+wfU5pgYyPZBPhIXSnv89pUK/NIg3T9W47wcPxUpT2mNg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=o8EDLYk3NSyioGPjxU+pIEAuL4I7f4cRvkuByN872I4=;
- b=jXsF9maqbZlFcik6+dZK4PCT7S67SPp4WAOcQ1JsgRC89gNbeta1Lw4oGr7t1pitIGrZUKvMP3P1gxSGkEpapUPJvnhbnUPPF0pMXNa9DpSb3ZHaas8GS1mvSbqPad7NKFcrVqT4qtb7cS8fU4oCytIbXv3wUrzXvsD1s85M3U3ChD8ls9bPpE/oEDErdmp+43oqlHJckvYPX6JSrcyMaU5cdZFLcNTA75qcFbEkT8KVOORoYTcWFPHcd4Qo8P58GZx02YpVSZ/rWFXaeEZ6xdtK0SAQRVcH2vqzN/oX4PBjBcZy9DZKot5ReH2YsgqClkL2cGBmV+2Hxxa6fM/wiw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=o8EDLYk3NSyioGPjxU+pIEAuL4I7f4cRvkuByN872I4=;
- b=OFMf/xoJ+zE3a0QeUiiamITwLJwwHLF2RYPj6GEGSiS1kv0LhEhkdJRxrjCQ1H3obPTqAWEfPE+1XOqsZaR9pecdjdaZcUMZ3M7X5A6oM9UE/ATgvX70eomfuI9rjX5TT6AGTYHAQB6gSnZlZSRVYQD1H+7/dVsccQmYEJft2OI=
-Received: from DM6PR18CA0024.namprd18.prod.outlook.com (2603:10b6:5:15b::37)
- by SN7PR12MB8819.namprd12.prod.outlook.com (2603:10b6:806:32a::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
- 2024 10:11:50 +0000
-Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
- (2603:10b6:5:15b:cafe::cf) by DM6PR18CA0024.outlook.office365.com
- (2603:10b6:5:15b::37) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
- Transport; Mon, 18 Mar 2024 10:11:50 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Mon, 18 Mar 2024 10:11:50 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Mar 2024 05:11:47 -0500
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>
-CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
-	<oleksandr@natalenko.name>, <Xiaojian.Du@amd.com>, <Li.Meng@amd.com>,
-	<linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: [PATCH v6 6/6] cpufreq: amd-pstate-ut: support new cpb boost control interface
-Date: Mon, 18 Mar 2024 18:11:13 +0800
-Message-ID: <f5253f94e60b03fcec15e3338d9fa9581eeadf11.1710754236.git.perry.yuan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1710754236.git.perry.yuan@amd.com>
-References: <cover.1710754236.git.perry.yuan@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4911C2C87A;
+	Mon, 18 Mar 2024 10:12:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710756746; cv=none; b=SA1AGNsuVXfDPErOhRUb7lKnR80vfZFydoLebAKofCGKrrRCNR2CSaGw2QOuKlHGmO5KHReE4fgNsmOMvxDwpyCpxULZEMyUa32FmvKTHeaUZzq7FeMhYZKDZ3Y69wzxXwiO+bfY8tkr+6p2FG5tqLTucrtIW6b5QPP0FrN4qT0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710756746; c=relaxed/simple;
+	bh=bErza8r5vX4TMpVnLgnjWknUlsjPH6b+8522Wz2lM54=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q3dXTk1abGbsMqIhBP27rFTNnI1cZIMQB9t+RiIugt+6JNlZrw2R+hjSCmSvWmNMasnb17T/R2QmhSZydPLKSYuUNi54KHMg9t3fKDZdwXGiIjDoCFQGwAQbLQnpDdFwgYEOu297xSf2eW/RCW3Vgri2zgaHeXdUSJvZOR+2qiU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2dw1UmQt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3z0xrg9c; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=2dw1UmQt; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=3z0xrg9c; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 880CF348C3;
+	Mon, 18 Mar 2024 10:12:22 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710756742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
+	b=2dw1UmQtc7AIvk4NmyXmy1gMrw9H9l9ObhFnI29e+XZf2iJ1LNr31QYMlOjjLYr2rvJQog
+	hQDALrZKeXlSgW+Ppj1yVUnpeu49nv5xqQiKyIpbFo/ZlyDfTie+PU9R4aXQNXhYDEd9T9
+	Bhif0CoMg7CxytzI/n/+H2WaULS4Wjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710756742;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
+	b=3z0xrg9c5b0ltCbZEyJT3buHnc54X0K8YJjSdemSfbP4dr6iISxl8z2aR0atSZuDvo8JbP
+	Uw2aoGrpk1cUTuCg==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710756742; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
+	b=2dw1UmQtc7AIvk4NmyXmy1gMrw9H9l9ObhFnI29e+XZf2iJ1LNr31QYMlOjjLYr2rvJQog
+	hQDALrZKeXlSgW+Ppj1yVUnpeu49nv5xqQiKyIpbFo/ZlyDfTie+PU9R4aXQNXhYDEd9T9
+	Bhif0CoMg7CxytzI/n/+H2WaULS4Wjs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710756742;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=sXeXlxOahp88uM7sj5XyseV2tk62A3EuPgcosS5F4ow=;
+	b=3z0xrg9c5b0ltCbZEyJT3buHnc54X0K8YJjSdemSfbP4dr6iISxl8z2aR0atSZuDvo8JbP
+	Uw2aoGrpk1cUTuCg==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7D8C61389C;
+	Mon, 18 Mar 2024 10:12:22 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id uACdHoYT+GXkWwAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 10:12:22 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 2043CA07D9; Mon, 18 Mar 2024 11:12:22 +0100 (CET)
+Date: Mon, 18 Mar 2024 11:12:22 +0100
+From: Jan Kara <jack@suse.cz>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: cheung wall <zzqq0103.hey@gmail.com>,
+	Alexander Viro <viro@zeniv.linux.org.uk>,
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>,
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: WARNING in mark_buffer_dirty
+Message-ID: <20240318101222.sbh52pa4mmwidzyw@quack3>
+References: <CAKHoSAuCUF8kNFdv5Chb2Fnup2vwDb0W+UPOxHzgCg_O=KJA0A@mail.gmail.com>
+ <ZfUl8pGp_JMWMaVI@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|SN7PR12MB8819:EE_
-X-MS-Office365-Filtering-Correlation-Id: e0991a4a-d80e-48fd-e593-08dc4733d3dc
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	RI2ZaYE9JFPH1Y6Fq8Y0pXUXz9SGVBQfRl5VXMgCtdzIRScqFHbvNwf7rdKeKAwyudslHz8GJQtv1BjvAhjhG3SBvg8VjpX4KdP/0JKuI52cVyEsFxgnErbchXVt9yaJvW/tPMhWKU5yc2kmvB2MP/apliKP5vgtgJExWmcKuhRL/qeKBtJbV4txdBoWiHOBLLVYx39nK367Bdpx/bdDD3bT3DtEoj3MDzWox7NxQ8Snn/r55GWFk33/+o6orl82akct3VUN1xwBAzXcA9o+Xb8miWeO4Whc55g+Qdtl7ofmCCEPs0HAt6coJObswjQAisU5rQylNsXetM/5FXfvY3ooXpF8i8OdikOe7EU1mqqrekBJsSAC0Io6lMkFKv5mbdIAAIJk6EnhU898a21YgaO8XN7C8yVTKj8gfQuS/zBrx8eo3K4FtcXsbDH3+Azue9q6+HaIzTvZ1OZXESoZLvoV9INJ80h1YD2jWTMDzqYZYzhsgrdHVyU7ZzZ0D/56qntqVuYxps7m8dGm3T7NnTbVL4jY6JVauLJFrsnBZc38mqKtRdvvSkAsUNhCwEjao4DgWLenTsYxOB9bV/QJR5wa0w3isLnxWbmASltwVR5y31h6ORbO11XATzAuQqoDm3+GFmC+krm1UzmW2svPUdb/KavvFdchaSGzhE0t5BkoixD4fGfwOCgFI5ZYOB9AvPZzSksPDnSZN13bmN2tjLxZqQL1wXw2KC5Swg5QHUOdmWs1gKVmEM+eV2G4uv40
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(1800799015)(376005);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 10:11:50.2047
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: e0991a4a-d80e-48fd-e593-08dc4733d3dc
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	CY4PEPF0000E9D3.namprd03.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN7PR12MB8819
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfUl8pGp_JMWMaVI@casper.infradead.org>
+X-Spam-Score: 7.91
+X-Spamd-Result: default: False [7.91 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 BAYES_HAM(-0.48)[79.55%];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 TAGGED_RCPT(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_SPAM_SHORT(3.00)[0.999];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 FREEMAIL_CC(0.00)[gmail.com,zeniv.linux.org.uk,kernel.org,suse.cz,vger.kernel.org];
+	 RCVD_TLS_ALL(0.00)[];
+	 SUSPICIOUS_RECIPS(1.50)[]
+X-Spam-Level: *******
+Authentication-Results: smtp-out1.suse.de;
+	none
+X-Spam-Flag: NO
 
-As the new CPB boost control is enabled, pstate unit test needs to remove
-legacy `boost_supported` check and start to use new CPB boost control
-interface `amd_pstate_global_params.cpb_boost`.
+On Sat 16-03-24 04:54:10, Matthew Wilcox wrote:
+> 
+> This might be an iomap bug, so adding Christoph & Darrick.
+> 
+> On Sat, Mar 16, 2024 at 12:29:36PM +0800, cheung wall wrote:
+> > HEAD commit: 0dd3ee31125508cd67f7e7172247f05b7fd1753a  (tag: v6.7)
+> > WARNING: CPU: 0 PID: 2920 at fs/buffer.c:1176
+> > mark_buffer_dirty+0x232/0x290
+> 
+> This is WARN_ON_ONCE(!buffer_uptodate(bh)), so we're trying to mark a
+> buffer dirty when that buffer is not uptodate.
+> 
+> > RIP: 0010:mark_buffer_dirty+0x232/0x290
+> > fs/buffer.c:1176
+> > Call Trace:
+> >  <TASK>
+> >  __block_commit_write+0xe9/0x200
+> > fs/buffer.c:2191
+> 
+> ... but line 2190 and 91 are:
+> 
+>                         set_buffer_uptodate(bh);
+>                         mark_buffer_dirty(bh);
+> 
+> and the folio is locked.  So how do we clear the uptodate flag on the
+> buffer without the folio locked?
 
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
----
- drivers/cpufreq/amd-pstate-ut.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Given this happens on block device page cache, I can imagine there's
+someone operating on the cache directly using buffer heads without locking
+the page. Filesystems do this all the time. I don't see the reproducer doing
+anything like that but who knows...
 
-diff --git a/drivers/cpufreq/amd-pstate-ut.c b/drivers/cpufreq/amd-pstate-ut.c
-index f04ae67dda37..b3601b0e6dd3 100644
---- a/drivers/cpufreq/amd-pstate-ut.c
-+++ b/drivers/cpufreq/amd-pstate-ut.c
-@@ -226,7 +226,7 @@ static void amd_pstate_ut_check_freq(u32 index)
- 			goto skip_test;
- 		}
- 
--		if (cpudata->boost_supported) {
-+		if (amd_pstate_global_params.cpb_boost) {
- 			if ((policy->max == cpudata->max_freq) ||
- 					(policy->max == cpudata->nominal_freq))
- 				amd_pstate_ut_cases[index].result = AMD_PSTATE_UT_RESULT_PASS;
+								Honza
+
+> >  block_write_end+0xb1/0x1f0
+> > fs/buffer.c:2267
+> >  iomap_write_end+0x461/0x8c0
+> > fs/iomap/buffered-io.c:857
+> >  iomap_write_iter
+> > fs/iomap/buffered-io.c:938
+> > [inline]
+> >  iomap_file_buffered_write+0x4eb/0x800
+> > fs/iomap/buffered-io.c:987
+> >  blkdev_buffered_write
+> > block/fops.c:646
+> > [inline]
+> >  blkdev_write_iter+0x4ae/0xa40
+> > block/fops.c:696
+> >  call_write_iter
+> 
 -- 
-2.34.1
-
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
