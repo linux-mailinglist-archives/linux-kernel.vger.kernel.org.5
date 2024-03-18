@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-106281-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106283-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD22087EBDF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:18:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1C54E87EBE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:19:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3315EB2140C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:18:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCE67283FF1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:19:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2A594F206;
-	Mon, 18 Mar 2024 15:17:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 49E534F206;
+	Mon, 18 Mar 2024 15:18:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="ovQlWTwu"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="kLV6nTZu"
+Received: from fllv0016.ext.ti.com (fllv0016.ext.ti.com [198.47.19.142])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 48B1D4EB46;
-	Mon, 18 Mar 2024 15:17:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D6C3352F62;
+	Mon, 18 Mar 2024 15:18:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.142
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710775069; cv=none; b=q5HzFGtP33FoKrt+IurBCnMnxVjVgHsleGsf7FoDqUQDO9fs2IU91Wm4Ug5wXoK2YR5NSCL+ypqPYDVzSz04whLSWAvqHuIfx+PjDqvelOaar+idgWgS/63xEYpxP+dHHK3+zzWIHLO2jcdAipLXiSPva35yveUwv2SHh3RU+wU=
+	t=1710775082; cv=none; b=Wz3Jzt8xnKGKuyhWlaEqZMTFcRN7r/fjeTK+xs1ggyiWGycAy89gZYbvlMtGynwF2mlpj5ywcoT0KHrPiEZp+NgGiTXlor0Wm7WOu+9EnEWefokevuIf2wu5W4D4jP/1KUh1Mn7DPwAKLm5PA17+3qar5qrwJP1/ObshvNWwwbA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710775069; c=relaxed/simple;
-	bh=y/KV7IDnVF/uSieuLOjwbN5xyNqyrgWGuEXefd4dk3M=;
+	s=arc-20240116; t=1710775082; c=relaxed/simple;
+	bh=3m20nb+0fwc41U7YJQ9XAzJmFBzXIOodTQ3VpSG1EFc=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=jNL0cqyevKRWPOp8UTE3n6HaxZKro07C3obLUKz3jb/5tcrUY+D4bUYeqApwCl2yLhjYoCsnXfgE34xHXuWtZl6+g26Dz9zwbSTxXJ+yP7dsDqIImza7fkzJqWtMswiGYzS/GZcyF8orD4hOlcFpUUPfXlE1WcuNUj7+xB8JvCI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=ovQlWTwu; arc=none smtp.client-ip=198.47.19.141
+	 MIME-Version:Content-Type; b=sBAefLi3mVVpKBRUTitld6oAjrcUSoahz8H839OFfG2Zrmb8RpkLVsA2MXPS/wI+YcGFI4XW6h3/s9OjNYvZGRfTD2oVHrgU0j+rjrN3+KG7J9RZW2dwHlGIqRpSEZ1Bs5m6fI7RSNJlOfIhm+tgN8vMkXgzx+F/Nqb4Z+2Ydl0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=kLV6nTZu; arc=none smtp.client-ip=198.47.19.142
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0265.itg.ti.com ([10.180.67.224])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42IFHSPQ031688;
-	Mon, 18 Mar 2024 10:17:28 -0500
+Received: from fllv0034.itg.ti.com ([10.64.40.246])
+	by fllv0016.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42IFHgCt094553;
+	Mon, 18 Mar 2024 10:17:42 -0500
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710775048;
-	bh=s1A/rACeOI/xak+PzvcBoHYT3X7oUiCFIvMILHl9lXA=;
+	s=ti-com-17Q1; t=1710775062;
+	bh=dBZehhRkwqiGdVM7akbnBQ3ei6Ss2qkowGyOhsxBVUY=;
 	h=From:To:CC:Subject:Date:In-Reply-To:References;
-	b=ovQlWTwujoUGCVcLSgXopVVmVcYrjLS4zBi39wPHWh7YuE6S5moH7otiWad6Q22gP
-	 PMFIRUtxgydCfnELFQ9B2U/aoqRlft1v/hJU5xHEVK7q39tXKhvgWnYpOMhOua94Dy
-	 snp9i/fVkLZvkFQt97WYHe2jA2Rerfa+B2LvV0sM=
-Received: from DLEE100.ent.ti.com (dlee100.ent.ti.com [157.170.170.30])
-	by lelv0265.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42IFHSuo031947
+	b=kLV6nTZuZ7rOrkBYm95SViN4U2pn2qO8IjKLfdXRpoaKCfwUPPEFsBMmSf4qXnUQU
+	 4kdT30QN9R6qCNnhGAgTOK9hXV7qkUmTAPgLepCYu3819agO0IY3mF2oCSsdV/UlD8
+	 kWN4vIr/h74Rva165jjxpL2UYfPHP7sLmcuDjGbE=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42IFHgme111710
 	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Mon, 18 Mar 2024 10:17:28 -0500
-Received: from DLEE105.ent.ti.com (157.170.170.35) by DLEE100.ent.ti.com
- (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+	Mon, 18 Mar 2024 10:17:42 -0500
+Received: from DLEE108.ent.ti.com (157.170.170.38) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 18
- Mar 2024 10:17:28 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
+ Mar 2024 10:17:42 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE108.ent.ti.com
+ (157.170.170.38) with Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Mon, 18 Mar 2024 10:17:28 -0500
+ Frontend Transport; Mon, 18 Mar 2024 10:17:42 -0500
 Received: from dhruva.dhcp.ti.com (dhruva.dhcp.ti.com [172.24.227.68])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42IFH8GS095329;
-	Mon, 18 Mar 2024 10:17:25 -0500
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42IFH8GT095329;
+	Mon, 18 Mar 2024 10:17:39 -0500
 From: Dhruva Gole <d-gole@ti.com>
 To: "Rafael J . Wysocki" <rafael@kernel.org>
 CC: Tony Lindgren <tony@atomide.com>, Len Brown <len.brown@intel.com>,
@@ -65,9 +65,9 @@ CC: Tony Lindgren <tony@atomide.com>, Len Brown <len.brown@intel.com>,
         Dhruva
  Gole <d-gole@ti.com>, <linux-pm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <linux-mmc@vger.kernel.org>
-Subject: [PATCH V2 1/2] PM: wakeup: make device_wakeup_disable return void
-Date: Mon, 18 Mar 2024 20:46:32 +0530
-Message-ID: <20240318151631.1621881-2-d-gole@ti.com>
+Subject: [PATCH V2 2/2] PM: wakeup: Remove unnecessary else from device_init_wakeup
+Date: Mon, 18 Mar 2024 20:46:33 +0530
+Message-ID: <20240318151631.1621881-3-d-gole@ti.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240318151631.1621881-1-d-gole@ti.com>
 References: <20240318151631.1621881-1-d-gole@ti.com>
@@ -81,91 +81,34 @@ Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
 X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-The device_wakeup_disable call only returns an error if no dev exists
-however there's not much a user can do at that point.
-Rather make this function return void.
+Checkpatch warns that else is generally not necessary after a return
+condition which exists in the if part of this function. Hence, just to
+abide by what checkpatch recommends, follow it's guidelines.
 
 Signed-off-by: Dhruva Gole <d-gole@ti.com>
 ---
- drivers/base/power/wakeup.c       | 11 +++++++----
- drivers/mmc/host/sdhci-pci-core.c |  2 +-
- include/linux/pm_wakeup.h         |  5 ++---
- 3 files changed, 10 insertions(+), 8 deletions(-)
+ include/linux/pm_wakeup.h | 7 +++----
+ 1 file changed, 3 insertions(+), 4 deletions(-)
 
-diff --git a/drivers/base/power/wakeup.c b/drivers/base/power/wakeup.c
-index a917219feea6..752b417e8129 100644
---- a/drivers/base/power/wakeup.c
-+++ b/drivers/base/power/wakeup.c
-@@ -451,16 +451,15 @@ static struct wakeup_source *device_wakeup_detach(struct device *dev)
-  * Detach the @dev's wakeup source object from it, unregister this wakeup source
-  * object and destroy it.
-  */
--int device_wakeup_disable(struct device *dev)
-+void device_wakeup_disable(struct device *dev)
- {
- 	struct wakeup_source *ws;
- 
- 	if (!dev || !dev->power.can_wakeup)
--		return -EINVAL;
-+		return;
- 
- 	ws = device_wakeup_detach(dev);
- 	wakeup_source_unregister(ws);
--	return 0;
- }
- EXPORT_SYMBOL_GPL(device_wakeup_disable);
- 
-@@ -502,7 +501,11 @@ EXPORT_SYMBOL_GPL(device_set_wakeup_capable);
-  */
- int device_set_wakeup_enable(struct device *dev, bool enable)
- {
--	return enable ? device_wakeup_enable(dev) : device_wakeup_disable(dev);
-+	if (enable)
-+		return device_wakeup_enable(dev);
-+
-+	device_wakeup_disable(dev);
-+	return 0;
- }
- EXPORT_SYMBOL_GPL(device_set_wakeup_enable);
- 
-diff --git a/drivers/mmc/host/sdhci-pci-core.c b/drivers/mmc/host/sdhci-pci-core.c
-index 025b31aa712c..ef89ec382bfe 100644
---- a/drivers/mmc/host/sdhci-pci-core.c
-+++ b/drivers/mmc/host/sdhci-pci-core.c
-@@ -63,7 +63,7 @@ static int sdhci_pci_init_wakeup(struct sdhci_pci_chip *chip)
- 	if ((pm_flags & MMC_PM_KEEP_POWER) && (pm_flags & MMC_PM_WAKE_SDIO_IRQ))
- 		return device_wakeup_enable(&chip->pdev->dev);
- 	else if (!cap_cd_wake)
--		return device_wakeup_disable(&chip->pdev->dev);
-+		device_wakeup_disable(&chip->pdev->dev);
- 
- 	return 0;
- }
 diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
-index 6eb9adaef52b..428803eed798 100644
+index 428803eed798..76cd1f9f1365 100644
 --- a/include/linux/pm_wakeup.h
 +++ b/include/linux/pm_wakeup.h
-@@ -107,7 +107,7 @@ extern void wakeup_sources_read_unlock(int idx);
- extern struct wakeup_source *wakeup_sources_walk_start(void);
- extern struct wakeup_source *wakeup_sources_walk_next(struct wakeup_source *ws);
- extern int device_wakeup_enable(struct device *dev);
--extern int device_wakeup_disable(struct device *dev);
-+extern void device_wakeup_disable(struct device *dev);
- extern void device_set_wakeup_capable(struct device *dev, bool capable);
- extern int device_set_wakeup_enable(struct device *dev, bool enable);
- extern void __pm_stay_awake(struct wakeup_source *ws);
-@@ -154,10 +154,9 @@ static inline int device_wakeup_enable(struct device *dev)
- 	return 0;
+@@ -234,11 +234,10 @@ static inline int device_init_wakeup(struct device *dev, bool enable)
+ 	if (enable) {
+ 		device_set_wakeup_capable(dev, true);
+ 		return device_wakeup_enable(dev);
+-	} else {
+-		device_wakeup_disable(dev);
+-		device_set_wakeup_capable(dev, false);
+-		return 0;
+ 	}
++	device_wakeup_disable(dev);
++	device_set_wakeup_capable(dev, false);
++	return 0;
  }
  
--static inline int device_wakeup_disable(struct device *dev)
-+static inline void device_wakeup_disable(struct device *dev)
- {
- 	dev->power.should_wakeup = false;
--	return 0;
- }
- 
- static inline int device_set_wakeup_enable(struct device *dev, bool enable)
+ #endif /* _LINUX_PM_WAKEUP_H */
 -- 
 2.34.1
 
