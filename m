@@ -1,119 +1,157 @@
-Return-Path: <linux-kernel+bounces-105842-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105841-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAF6387E54D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:56:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7E7D87E54A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:55:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EB8AB1C2145D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:56:06 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 835C41F22095
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 37D8028DD3;
-	Mon, 18 Mar 2024 08:56:00 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B948128DD2;
+	Mon, 18 Mar 2024 08:55:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="2SIpIfIB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="z5QGDrCw";
+	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="2SIpIfIB";
+	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="z5QGDrCw"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 143882C191
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:55:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B5FCEAD7;
+	Mon, 18 Mar 2024 08:55:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710752159; cv=none; b=dHEP7km1x4vly1Y2l5Tso1M+kf5hPsmtrkfr68EH7EukFb2XxkmsNJE1j0eb2g6t+xZDp1hBE/JOSzLutWc8k7YMgpqxSsE8/4J8D1W8HbQvh9iP/W4cNB4loqMsSAURvzPBRiOVrLaENndrrskOrUPtVE4lKysVHuC11tGYQEY=
+	t=1710752149; cv=none; b=L1E3uLZ1stxFO0waF1YQ0L4B1Jg09SsffFqHPdXl9xBbbqofDBwGlOY3KJ43n4gvvUdPSnG4DyE0IghGtM02FUcUMNS7mgVH9jxE5N0Kl9Jf/JZ5vnnqRzrecUWhBxdrLQ77bMYSOPesxoQa4D3ysAbxJtMoZvTPgud+0//1WdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710752159; c=relaxed/simple;
-	bh=KgiID1u9b6jsTKcZdyTtZYCrP4qZRlwO+wPt5NLQZ6I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ZIIejgspCMHcyUoXYQ+wb1u6DIHSXFrUpsdsM1GiYZCLFDfrtPDGLp70WqgRo6bnzRD5y6wNYI6zcqdA3z2fP2uNTyfTpKp0VPMxQZNWczlY6XlHdOo3UvOkE3bSdjzxrUJQE0NH6AaJbfHmHrZiTEKmZcotPY5iIYCW/qI8oWE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rm8mR-000807-Ap; Mon, 18 Mar 2024 09:55:39 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rm8mO-0072eN-6X; Mon, 18 Mar 2024 09:55:36 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rm8mO-007ozV-0L;
-	Mon, 18 Mar 2024 09:55:36 +0100
-Date: Mon, 18 Mar 2024 09:55:36 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Varshini Rajendran <varshini.rajendran@microchip.com>
-Cc: claudiu.beznea@tuxon.dev, robh+dt@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, nicolas.ferre@microchip.com, 
-	alexandre.belloni@bootlin.com, linux-arm-kernel@lists.infradead.org, linux-pwm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v4 14/39] dt-bindings: pwm: at91: Add sam9x7 compatible
- strings list
-Message-ID: <3kqufnvhnmelm7brtuutt7db7himhnb62pi5huq6jhc37n6jww@7emwacpgt6tp>
-References: <20240223171342.669133-1-varshini.rajendran@microchip.com>
- <20240223172619.672262-1-varshini.rajendran@microchip.com>
- <igmm3npqcnjuhhncfd22pjhjuzbtsl25jfzbpcsyx5bu2xbbto@ynp7psnpldxr>
+	s=arc-20240116; t=1710752149; c=relaxed/simple;
+	bh=/fB2tphTIRzK7XGA5TcnCZsCEUMQG1ulyI1hCwC4Bw8=;
+	h=Date:Message-ID:From:To:Cc:Subject:MIME-Version:Content-Type; b=X1zUcCii0cBtwK/PyJ2Zg+dKyzjFtu9PIQ9j8O2dXkRNR8kwnjrd+9tTndoHi/2bN7N0/wDrl5H4bN0KejZcdrUIdzEgthcL+VZKayjR+zAsgsE3Y6dzY5KjXQiXk6yfpZn48ruSG0xNhAELPkqjjB9SQRlEgYS8ttvlFjrAc/k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=2SIpIfIB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=z5QGDrCw; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=2SIpIfIB; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=z5QGDrCw; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id A2A155C2D4;
+	Mon, 18 Mar 2024 08:55:45 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710752145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=joiuEo91VaTCIwnvp+a7CPqnwqgmwdAIwB6fL+M9w4g=;
+	b=2SIpIfIBkbLcg16opl1AI6CC1Wtdmlz5OFDbcRe1IMHczWM3IGOBQLothI0c/ae93xrglZ
+	0V1Y7PTEJubCZ5wOk10j3k55Y5L5TXuLu7UjEEW+vCykfY1jtrI9omiza3JoE2F/DST4Pw
+	ehPQaWLueNiylw2Co68YofgZKhaBQeE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710752145;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=joiuEo91VaTCIwnvp+a7CPqnwqgmwdAIwB6fL+M9w4g=;
+	b=z5QGDrCw7unS8nkjac2KKiKrM5C8zIDGQHEEd1rb6WWVYEfT0Z0DFxAOJNuaakDAnDg6gm
+	kCfp9GBwQTYR7OAA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
+	t=1710752145; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=joiuEo91VaTCIwnvp+a7CPqnwqgmwdAIwB6fL+M9w4g=;
+	b=2SIpIfIBkbLcg16opl1AI6CC1Wtdmlz5OFDbcRe1IMHczWM3IGOBQLothI0c/ae93xrglZ
+	0V1Y7PTEJubCZ5wOk10j3k55Y5L5TXuLu7UjEEW+vCykfY1jtrI9omiza3JoE2F/DST4Pw
+	ehPQaWLueNiylw2Co68YofgZKhaBQeE=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
+	s=susede2_ed25519; t=1710752145;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type;
+	bh=joiuEo91VaTCIwnvp+a7CPqnwqgmwdAIwB6fL+M9w4g=;
+	b=z5QGDrCw7unS8nkjac2KKiKrM5C8zIDGQHEEd1rb6WWVYEfT0Z0DFxAOJNuaakDAnDg6gm
+	kCfp9GBwQTYR7OAA==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 7EA8B1349D;
+	Mon, 18 Mar 2024 08:55:45 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([10.150.64.162])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id IiFnHZEB+GW5QAAAD6G6ig
+	(envelope-from <tiwai@suse.de>); Mon, 18 Mar 2024 08:55:45 +0000
+Date: Mon, 18 Mar 2024 09:55:45 +0100
+Message-ID: <87o7bb9awe.wl-tiwai@suse.de>
+From: Takashi Iwai <tiwai@suse.de>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux Sound Mailing List <linux-sound@vger.kernel.org>, Linux Kernel
+ Mailing List <linux-kernel@vger.kernel.org>
+Subject: [GIT PULL] sound fixes for 6.9-rc1
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) Emacs/27.2 Mule/6.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="llk2bc7ap25wcrcr"
-Content-Disposition: inline
-In-Reply-To: <igmm3npqcnjuhhncfd22pjhjuzbtsl25jfzbpcsyx5bu2xbbto@ynp7psnpldxr>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-Spam-Score: 6.69
+X-Spamd-Result: default: False [6.69 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 TO_DN_ALL(0.00)[];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.71)[83.53%];
+	 ARC_NA(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 RCPT_COUNT_THREE(0.00)[3];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_SPAM_SHORT(3.00)[1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
+	 NEURAL_SPAM_LONG(3.50)[1.000];
+	 MID_CONTAINS_FROM(1.00)[];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Level: ******
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Flag: NO
 
+Linus,
 
---llk2bc7ap25wcrcr
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+please pull sound fixes for v6.9-rc1 from:
 
-Hello,
+  git://git.kernel.org/pub/scm/linux/kernel/git/tiwai/sound.git tags/sound-fix-6.9-rc1
 
-On Fri, Feb 23, 2024 at 11:42:57PM +0100, Uwe Kleine-K=F6nig wrote:
-> What is the merge plan for this series? I'd expect it to go in
-> completely via arm-soc. If you want me to pick up this patch, please
-> tell me.
+The topmost commit is 585f5bf9e9f65b1fec607780d75d08afee0f0b85
 
-Other maintainers picked some patches from this thread and I didn't get
-an answer to my question. To be able to close this thread on my side I
-applied this patch now to my for-nexxt branch
+----------------------------------------------------------------
 
-	https://git.kernel.org/pub/scm/linux/kernel/git/ukleinek/linux.git for-nex=
-xt
+sound fixes for 6.9-rc1
 
-=2E This is expected to be rebased once v6.9-rc1 is available, but it
-won't get lost this way.
+Two regression fixes that had been introduced in the previous PR,
+additional HD-audio quirks, and a further enhancement for the new
+kunit.
 
-Best regards
-Uwe
+----------------------------------------------------------------
 
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
+Ian Murphy (1):
+      ALSA: hda/realtek: add in quirk for Acer Swift Go 16 - SFG16-71
 
---llk2bc7ap25wcrcr
-Content-Type: application/pgp-signature; name="signature.asc"
+Jichi Zhang (1):
+      ALSA: hda/realtek: Add quirk for Lenovo Yoga 9 14IMH9
 
------BEGIN PGP SIGNATURE-----
+Takashi Iwai (2):
+      ALSA: timer: Fix missing irq-disable at closing
+      Revert "ALSA: usb-audio: Name feature ctl using output if input is PCM"
 
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmX4AYcACgkQj4D7WH0S
-/k55HAf/THdprVTV+CtYTdSymvUxL+vo9ng4B3Wg4714vu5TgVXfbXzRaGWpVp/g
-wC8YSmArkKvoQNC33j8nZLTYncGvMWfoT0Jhy08XtPJ/tzkqBSrAz1kVzDS251g0
-zoWgLrohzAMnJUvZqiBuLufx363NdCAG1tN3n2A6eSAgFIZq/qCZ9ghnHSpgmvmj
-AnwQyeaBYGp0KE2ngoZTFVloQfptvsgE+ybX0P6WcN6dgqrHo+VqeP/0KNzwc46S
-5ujRvo4kZSh+j/jLtQsfSe9KxRBw4sSW/AZ9O8eA4gRS5HC9v/Cn/af5qyMRfZi7
-/yrvNNfQaApZg6v0Y66uyooQKW/83g==
-=En9w
------END PGP SIGNATURE-----
+Takashi Sakamoto (1):
+      ALSA: core: add kunitconfig
 
---llk2bc7ap25wcrcr--
+---
+ sound/core/.kunitconfig       |  5 +++++
+ sound/core/timer.c            |  2 +-
+ sound/pci/hda/patch_realtek.c | 22 +++++++++++++++++++
+ sound/usb/mixer.c             | 49 +++++++++++++------------------------------
+ 4 files changed, 42 insertions(+), 36 deletions(-)
+ create mode 100644 sound/core/.kunitconfig
+
 
