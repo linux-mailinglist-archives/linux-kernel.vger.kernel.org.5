@@ -1,135 +1,158 @@
-Return-Path: <linux-kernel+bounces-106412-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A22DD87EE49
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:00:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8AD387EE4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:01:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 42567B230DA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:00:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04F831C21192
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:01:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30D385578E;
-	Mon, 18 Mar 2024 16:59:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DAE454BFA;
+	Mon, 18 Mar 2024 17:01:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mo/GJa7t"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="d2pC0zQ/"
+Received: from mail-qt1-f182.google.com (mail-qt1-f182.google.com [209.85.160.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 711945577F;
-	Mon, 18 Mar 2024 16:59:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 362BE54BC8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:01:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710781170; cv=none; b=ppjPdiM9NaVUKRXIaBC2n4zGNWgUi+OODsjdUrCdzp6nrRv4W6BRPumSikhP+1brhJPC6o9GqZXViFdMgdBihbXu7r2UoTwl1Sp4Sli+Zf0Ra3WGFQ0kQ4V02u2glLhGjSOFtNQkBJ1rcSMPRFqV+I6EjUDo8n7shhloll3FL/U=
+	t=1710781293; cv=none; b=fvaCLpUtM0Sd9xbirFPSSSRf5PXqeLPtqwN8jCJtY04r8ezfn6zAwWXsJ69sOALJR8Ygtc8HL0fwGxtUmCKecZoMOrE3Al5FRyKwTBmeoidHyR0o4ExQDj2qQintKsQJeboIWBQnz31tOINiGLGRa6m4cDfMrq7STarpEMx7Xkk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710781170; c=relaxed/simple;
-	bh=309esXPROR72XF5lugy8hqSX4sumxs3hZ1s5WYP+zMw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AnBKDRL9KkGsK51Bx3yU2Mt2DUPq999sXyKsj8hqQQ5VlHUC53hoWX7i/9HLCKizagA763BkjnBB/Uz2Ce190IRFnub29pwCNTSUXu59vm0ob+Wy4fTcN2cXtjOl/bd3Qreo1mNRucszhSFEpz4ZBAk1081bH8zKZhK5kvgXl1s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mo/GJa7t; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61A2BC433F1;
-	Mon, 18 Mar 2024 16:59:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710781170;
-	bh=309esXPROR72XF5lugy8hqSX4sumxs3hZ1s5WYP+zMw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mo/GJa7t/sGuslJBzjOp2deS2+fdXByifJ25a9x15hSNp470Rb1nTno4Bl7BM7NOm
-	 jmfJzlzWYhweTaNGRy769kXt5by/dyQYvgiYam7eFhCk9/JqZZVLGj6694+97I9mn4
-	 ZgWBorPUQl3AkWYg9/m1FSWHVm/JDKjQVDm/SBgPCl/YiV3qseRnLtc9gtiQTpBqmv
-	 hpIrhqprHNqDuG0b3XCdM31vHUbfyaeT0FiXcOBzUT/eX3f7AG4aZkDa42zNzoLSxW
-	 8q3+i7yTMVuGfVKbifvBe7nlJVFqUCRnJi7uHBLPZEVoDUPO+oh3UBV+4ibd/23A//
-	 SxTQ4HWKSY0Hg==
-Date: Mon, 18 Mar 2024 16:59:24 +0000
-From: Will Deacon <will@kernel.org>
-To: Gavin Shan <gshan@redhat.com>
-Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-	yihyu@redhat.com, shan.gavin@gmail.com
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Message-ID: <20240318165924.GA1824@willie-the-truck>
-References: <20240314074923.426688-1-gshan@redhat.com>
+	s=arc-20240116; t=1710781293; c=relaxed/simple;
+	bh=w7GgSb9S2Enoq5taIUw0h1ISrSxBQIt+nkuhzqbWFhQ=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FPD5bdhNbVKd4S/M2UmyLlOWSt0fLQ8VS+0V68sOdQNatNfrYh5kVCWoEVJIrFf5vOxr8g6ebcudMGZDQVF2FrMGH0XZWaccTDHyhoj9zhZ81mDeJ+QRFCPkzknYo32gMSyGlQ1UND4WuVHIVDNcek7HOGcB4rEuJsbvphCSLoc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=d2pC0zQ/; arc=none smtp.client-ip=209.85.160.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f182.google.com with SMTP id d75a77b69052e-430c45ab240so11527261cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:01:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710781291; x=1711386091; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=n33MLXZoglDyHrWKjv9agU9CQY4n6w7XF7nYX+56vfA=;
+        b=d2pC0zQ/Pvr/OPXRZfNkz7mEVs1yYGTR4Xin5rZ84xtEukWv0S3SQbQEWZDKOHtlpt
+         LEovb85BBUJkw4EAeK0Qli29kaTGslKlFZ1vRVT0Nijtn2y8x3AXf+Urmraoyn6tQNFj
+         CNPM4aPkj6NCpg8nv7k4HNae+cWoX+MZ1V5WiI5h4GY9ULmwmU25EoF9b2bG0CDknBFM
+         304Ad3wcENmtAu7f4pEru+YrkwLdDhc9pZLSx4HcVbvx4CYDPua7EfkHfLgChOm1LmKP
+         PTwCPp/D9PyWnZ7RoiZ5BFq9eyi7CCPdLP+Npi/Y/E6/29X2vMI3L1U/uYQydaGqfgVo
+         l7dA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710781291; x=1711386091;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=n33MLXZoglDyHrWKjv9agU9CQY4n6w7XF7nYX+56vfA=;
+        b=nniy3kNjFdcdPCRB+kbMlC2xcyUCjQE99Keq0S5xgZj577ljS1pHJf8PASnDY1lIuz
+         v12rjmFFK4oJHbeHpYihux4CVUAIRjz42PQX/L4VM+zg+2mwCdyptUS1itHBztqis+Gv
+         43hcwBZ9yhHxsK7+mD9nP0zfmZc25XaohYctuN89msYYn417NvHpurkaBPUffA5WStIu
+         9f9wmwO14V11Myos3fovnoYg5oq7ihrrxVkRIVj6r+WuikqmozYjtWyFYVNyAMCBpXDZ
+         FsJiCnnKAzmpgAk7RmId1/s7kTjYDTGQgGe7KgBncM4cHPfRXQoNKJ2m7YBp/WT7MzLx
+         zUoA==
+X-Forwarded-Encrypted: i=1; AJvYcCW0Z3JmH9wH2CYJluIzAN/wCD16tjVpOrQga/qKB31TgYdLdSfoNq7laDYjDyala+mSluJn/LoT6wd27nVsP9wkWks4V+TCdhUzFfwx
+X-Gm-Message-State: AOJu0YyiegVIkuNXdaRm/97NIV0S0IzXOGztCv5SOGCFudqEZHUO/J4w
+	C6ZWzw26oy9V/7gjFVxsffe3yfKtKx6pZtJ9eji4sSBYfTdZIt1xyV8JuWZopAE5MAXh181z9J4
+	iN7vujTuOJCWiV5+Bq8mT04I/eqiislHA4S1VKQ==
+X-Google-Smtp-Source: AGHT+IHLgPlajLx2pVxBiY+uW2kN+jbOqLvMD5j+Bx9XsZ8LoAl/WbjfKey1Lf18oYec9BuA1muX2WLIhYnEVfIYfSs=
+X-Received: by 2002:ac8:5cc3:0:b0:430:c1e4:2cb7 with SMTP id
+ s3-20020ac85cc3000000b00430c1e42cb7mr8266936qta.43.1710781291061; Mon, 18 Mar
+ 2024 10:01:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240314074923.426688-1-gshan@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
+ <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
+ <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
+ <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com> <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
+ <74c82d8a6b5f490784cc8f16fa7d2c12@AcuMS.aculab.com>
+In-Reply-To: <74c82d8a6b5f490784cc8f16fa7d2c12@AcuMS.aculab.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Mon, 18 Mar 2024 13:00:52 -0400
+Message-ID: <CA+CK2bCksQyhNWh-ZonMQSdcr95dDCfe4W0VNVhG+0i7et1fiw@mail.gmail.com>
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+To: David Laight <David.Laight@aculab.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"akpm@linux-foundation.org" <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, 
+	"bp@alien8.de" <bp@alien8.de>, "brauner@kernel.org" <brauner@kernel.org>, 
+	"bristot@redhat.com" <bristot@redhat.com>, "bsegall@google.com" <bsegall@google.com>, 
+	"dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>, 
+	"dianders@chromium.org" <dianders@chromium.org>, 
+	"dietmar.eggemann@arm.com" <dietmar.eggemann@arm.com>, 
+	"eric.devolder@oracle.com" <eric.devolder@oracle.com>, "hca@linux.ibm.com" <hca@linux.ibm.com>, 
+	"hch@infradead.org" <hch@infradead.org>, 
+	"jacob.jun.pan@linux.intel.com" <jacob.jun.pan@linux.intel.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>, 
+	"jpoimboe@kernel.org" <jpoimboe@kernel.org>, "jroedel@suse.de" <jroedel@suse.de>, 
+	"juri.lelli@redhat.com" <juri.lelli@redhat.com>, "kinseyho@google.com" <kinseyho@google.com>, 
+	"kirill.shutemov@linux.intel.com" <kirill.shutemov@linux.intel.com>, "lstoakes@gmail.com" <lstoakes@gmail.com>, 
+	"luto@kernel.org" <luto@kernel.org>, "mgorman@suse.de" <mgorman@suse.de>, "mic@digikod.net" <mic@digikod.net>, 
+	"michael.christie@oracle.com" <michael.christie@oracle.com>, "mingo@redhat.com" <mingo@redhat.com>, 
+	"mjguzik@gmail.com" <mjguzik@gmail.com>, "mst@redhat.com" <mst@redhat.com>, 
+	"npiggin@gmail.com" <npiggin@gmail.com>, "peterz@infradead.org" <peterz@infradead.org>, 
+	"pmladek@suse.com" <pmladek@suse.com>, 
+	"rick.p.edgecombe@intel.com" <rick.p.edgecombe@intel.com>, "rostedt@goodmis.org" <rostedt@goodmis.org>, 
+	"surenb@google.com" <surenb@google.com>, "tglx@linutronix.de" <tglx@linutronix.de>, 
+	"urezki@gmail.com" <urezki@gmail.com>, 
+	"vincent.guittot@linaro.org" <vincent.guittot@linaro.org>, "vschneid@redhat.com" <vschneid@redhat.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
-> The issue is reported by Yihuang Yu who have 'netperf' test on
-> NVidia's grace-grace and grace-hopper machines. The 'netperf'
-> client is started in the VM hosted by grace-hopper machine,
-> while the 'netperf' server is running on grace-grace machine.
-> 
-> The VM is started with virtio-net and vhost has been enabled.
-> We observe a error message spew from VM and then soft-lockup
-> report. The error message indicates the data associated with
-> the descriptor (index: 135) has been released, and the queue
-> is marked as broken. It eventually leads to the endless effort
-> to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
-> and soft-lockup. The stale index 135 is fetched from the available
-> ring and published to the used ring by vhost, meaning we have
-> disordred write to the available ring element and available index.
-> 
->   /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
->   -accel kvm -machine virt,gic-version=host                            \
->      :                                                                 \
->   -netdev tap,id=vnet0,vhost=on                                        \
->   -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
-> 
->   [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
-> 
-> Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
-> virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
-> ARM64. It should work for other architectures, but performance loss is
-> expected.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Yihuang Yu <yihyu@redhat.com>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  drivers/virtio/virtio_ring.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 49299b1f9ec7..7d852811c912 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
->  	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
->  	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
->  
-> -	/* Descriptors and available array need to be set before we expose the
-> -	 * new available array entries. */
-> -	virtio_wmb(vq->weak_barriers);
-> +	/*
-> +	 * Descriptors and available array need to be set before we expose
-> +	 * the new available array entries. virtio_wmb() should be enough
-> +	 * to ensuere the order theoretically. However, a stronger barrier
-> +	 * is needed by ARM64. Otherwise, the stale data can be observed
-> +	 * by the host (vhost). A stronger barrier should work for other
-> +	 * architectures, but performance loss is expected.
-> +	 */
-> +	virtio_mb(false);
->  	vq->split.avail_idx_shadow++;
->  	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
->  						vq->split.avail_idx_shadow);
+On Mon, Mar 18, 2024 at 11:39=E2=80=AFAM David Laight <David.Laight@aculab.=
+com> wrote:
+>
+> ...
+> > - exit_to_user_mode(): Unmap the extra three pages and return them to
+> > the per-CPU cache. This function is called late in the kernel exit
+> > path.
+>
+> Why bother?
+> The number of tasks running in user_mode is limited to the number
+> of cpu. So the most you save is a few pages per cpu.
+>
+> Plausibly a context switch from an interrupt (eg timer tick)
+> could suspend a task without saving anything on its kernel stack.
+> But how common is that in reality?
+> In a well behaved system most user threads will be sleeping on
+> some event - so with an active kernel stack.
+>
+> I can also imagine that something like sys_epoll() actually
+> sleeps with not (that much) stack allocated.
+> But the calls into all the drivers to check the status
+> could easily go into another page.
+> You really wouldn't to keep allocating and deallocating
+> physical pages (which I'm sure has TLB flushing costs)
+> all the time for those processes.
+>
+> Perhaps a 'garbage collection' activity that reclaims stack
+> pages from processes that have been asleep 'for a while' or
+> haven't used a lot of stack recently (if hw 'page accessed'
+> bit can be used) might make more sense.
+>
+> Have you done any instrumentation to see which system calls
+> are actually using more than (say) 8k of stack?
+> And how often the user threads that make those calls do so?
 
-Replacing a DMB with a DSB is _very_ unlikely to be the correct solution
-here, especially when ordering accesses to coherent memory.
+None of our syscalls, AFAIK.
 
-In practice, either the larger timing different from the DSB or the fact
-that you're going from a Store->Store barrier to a full barrier is what
-makes things "work" for you. Have you tried, for example, a DMB SY
-(e.g. via __smb_mb()).
+Pasha
 
-We definitely shouldn't take changes like this without a proper
-explanation of what is going on.
-
-Will
+>
+>         David
+>
+> -
+> Registered Address Lakeside, Bramley Road, Mount Farm, Milton Keynes, MK1=
+ 1PT, UK
+> Registration No: 1397386 (Wales)
 
