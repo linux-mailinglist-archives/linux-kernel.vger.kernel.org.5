@@ -1,255 +1,216 @@
-Return-Path: <linux-kernel+bounces-105791-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105794-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7356987E484
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:58:39 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D634C87E498
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:01:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 29926281B71
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:58:38 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41A1F1F21EA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:01:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 668AB24B21;
-	Mon, 18 Mar 2024 07:58:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A96625763;
+	Mon, 18 Mar 2024 08:01:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GsJEdQr4"
-Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yhl5nkYu"
+Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5B702374C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:58:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D29C250F8
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:01:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710748711; cv=none; b=frZvlDSWVUPiUNykiYKkIwjh+AwPsz/QjYnBzBV4cGOIE7B4HkuGYDFl7iXY2szbxY1WwpilA+sAv2FPol61Q4n1emhZk9CTl25XzTqHcQV8DcFUuJPTldCEcvqeTqGSv4U2unxRafoW1b7VsEaG2NgReDdvmxGQGw5F4NCSmeQ=
+	t=1710748884; cv=none; b=rGvPJq6xLVaVINjP/MR46pwuy7PmBmdPBT+oi/5dY3UEO0Em/3wdg7l3G8h872SW2UcGR2icV/3H9IwGhGyExAwhSDxCGtdD3iuU4fcd13GM2eCs7ZdVyLr2M4Zn4Rf6INDNOj7/4MMpzTXJTDNbPgOepZcoOHBqHkSEJrgknGQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710748711; c=relaxed/simple;
-	bh=Fst39intlKRDb/8ggxNIhAICJfqxINb4emMiCTbBLds=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=N4e0FF9bGg2HmiTPb7ycMHFJNWV4R+vdZj7qZorkCS+DqRWS+7B9qQnpwh+sg1Woe4tZeBvoQPJ85BT6OFVu+/g6fSKBncZU/HWkcMXDd8XUQs7sTry7fd3pCfFDK+NosUUpAR3im69+6XjFxrWBOztbjrc2/uc5XkDHnV7O3UA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GsJEdQr4; arc=none smtp.client-ip=209.85.208.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56b7facf2e1so336458a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 00:58:28 -0700 (PDT)
+	s=arc-20240116; t=1710748884; c=relaxed/simple;
+	bh=PZyrbkwevDI9NPGznhgKgASWkfEa1UGJIeNjocS81VU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=fnU5vRYYK2YAKFNYDEUbeqYpdBn5l4PXEhgZMpglYkgLs+CUmo+C524MndUUcI10EodCnMyvOZzeeLXn0iIvXu1lbto9ffp8/jfLWcFWDLsKR4ezj0tOzJAlPg7XHXZ8VQfbk47I30mB6u6CSNYDIR/UUKg+3lHQRVGCDDpGf/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yhl5nkYu; arc=none smtp.client-ip=209.85.208.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so37155411fa.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 01:01:22 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710748707; x=1711353507; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=QFGE95RVCnIMXh4rzBbheQjJCqPcx4uOp3c9aQsSW7U=;
-        b=GsJEdQr4pKSPUuMOlGATSqcAlohQXnjQkW5DYFwKGpdU3TJ9iyz1ji6RdkTSchhfsS
-         HO/+034C6HtKofXuq+w9LeROKzScenFuZGGlibOl8flfH8ykMcnda61D//kdPBR9eOfq
-         IqmtzRHCJkJpwgwylTgsqtde/TZz/WnvYC9KVmM6ve5xPBX+pF+BoSXFvL0upeN01n7l
-         a4U06OpxLa67YRTeAR6SWawgoRIBoPeTDj2ildHVUsAH+CNGE3Vbr9NTfUDcJ3nqTMrd
-         qRaoqqbGLQFjdZNVw0U6aAmc3tq0MKp7P27DPQwapjeYL3XsHoDowHby1WznImFpmOSV
-         p3nA==
+        d=gmail.com; s=20230601; t=1710748881; x=1711353681; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=1RkSK5/rL7+nrcDu6W4JMfMUWleyDEMj8nS89Ven6gI=;
+        b=Yhl5nkYuh5+vvqrCI88AvMT5sINwHjDqG2+Q6RIWxdZCRBZ9bNcmx2038o9BcyKiBs
+         iRtZKqBeMzcZqU3OdP1q6it4h1j/velEtYXuiEioNmAwJKtTIHuGhAQQh33hTlXoQ29u
+         HFwYshb2P/xB8uTIzRdEnmm24etl35q67d+7pctZ7B2Xhdf7aWE3tbamL5uUcvJicT0a
+         H1+4wqOVVbLC3x6R0zZa7uNwDQHzRJXWjVIP7bDGYnG43j0NSlLVstYWlu3BqlwDmHB9
+         3Q1vho7tZEM6NkWmw1GXeBDThib3HNKlkO/XPS+Bv9lNSY5qxssbSvRNzCWflse0Z7UJ
+         MRPA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710748707; x=1711353507;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=QFGE95RVCnIMXh4rzBbheQjJCqPcx4uOp3c9aQsSW7U=;
-        b=cKf4VHO9vQAirURkrtqu7Y5BwW/P8ybNUuz+Z8+mgprUX/DbbEBLPkAZkKq6GbaniZ
-         BXTG23G5yb/DEsrKHZLnmoLYS8IDIn0DE1UStndSNf/hASeFePSQ+SUrI72tBm+1WkWy
-         bO4eKcwuafCAe9PjLblgR5elVgmJwgRuZ71LRn9tvKYH1XNG1hXtqBx1CQZWS19Kwafa
-         ktJ+lf4FFTGuZSI9sohWWmDmKrW7ooZh0+gBmhjCjDYm34Mg3qoaJ0RCHTcoz7W+cgAM
-         O8CT6yN4XwqbAEoTrR/ImsYf7mA3Ns930d8oDuQlsMIjjUvPZGg5sDfxfXzC2Yv+TXkv
-         tgvw==
-X-Forwarded-Encrypted: i=1; AJvYcCUHqWXT+l5IcPZQcYtN7S5EdLK66/A7cd/MUgzJPgl2X9coqI5PLYrT7MfyBTd0R1aLaN+vxXTpBKoWRQUFoPoeM7CkadILVoUauC/+
-X-Gm-Message-State: AOJu0Yx5JPIN8Xd3mKeHkGA/EfR33bLMEkIONsOTd3R7XzZhs3D3Sthn
-	ZBP7dNiv8Bva9XFLdvhLe5GbaHoQ+1kRf83edBCIorAxefp883YUwxo/dgFAakEgB5TmgFzxa56
-	l
-X-Google-Smtp-Source: AGHT+IGWsAI8IE05B16HXMG4BE0mLPO5bP9vn+BWp97d0rV7EEb40TJsYMYSTg3wKa+JjrRBguKLGA==
-X-Received: by 2002:a50:cccd:0:b0:568:b71a:5954 with SMTP id b13-20020a50cccd000000b00568b71a5954mr1822684edj.10.1710748707006;
-        Mon, 18 Mar 2024 00:58:27 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id co24-20020a0564020c1800b00568c613570dsm1911155edb.79.2024.03.18.00.58.25
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 00:58:26 -0700 (PDT)
-Message-ID: <d94a4833-3fe2-4dfa-be88-9508971d12bd@linaro.org>
-Date: Mon, 18 Mar 2024 08:58:24 +0100
+        d=1e100.net; s=20230601; t=1710748881; x=1711353681;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=1RkSK5/rL7+nrcDu6W4JMfMUWleyDEMj8nS89Ven6gI=;
+        b=ooIW/aszehSr0E2h8ym9LuSlz3PEWVffceean/xHcpf7/w7Epqo3wqQx1z+3HFJR25
+         GVCuCZ6Aaygpg+QgPp1gjhATRhNQeY9aDqw5xNYCb2z884zNubjzrtoYIZL8Xdqb0bNm
+         8zXexTzvmMrYqzQqftHNfRC7s0frlAec0h8SXRM2bbGnL3Omxret724aXdqqnOWnRjpK
+         OFRsdipamDwrAy4jBcAOcevUeLch1uNpYjseihn+qVmQ6YbiGu0LpJcs7KehhCA43Ghs
+         j2PGEDlshwLRkOdULVbyUP9Oq6oSMM+38DzTuwZgTY6IueWT1bnmn6plM+IR2Iyp3v6s
+         RPBA==
+X-Forwarded-Encrypted: i=1; AJvYcCXglVNs8/1DmT0J+tZIl/YgHlxze2viARqGVbZ4YgfP2Twh2H8Kpq+4tuujm/fKKcz/MAJ9JvUTSNlNImm49xkL/Bno4r9yQ6A19Ilm
+X-Gm-Message-State: AOJu0YxKE3ngg53o5/IkwCYgc494eMV2mGEA6+Gagozrby/etTiiW6RQ
+	UoncePe4mn05yc1/J+K5hMEq6QTn+9mKjHguGgFWCoinHHBIpVAxYNpG1jXsiaZnX/XhJ98LCX9
+	gvsrxMsrFGdGeFTa1aXhY64hh6eU=
+X-Google-Smtp-Source: AGHT+IGMH3lhqUYgmFgqJRNqfeoYwJtJ/H3jRknEGjY/jGfZI4wfOZNsfbaQsNbkTlBe8wYxxITrsdV3A9ZgrQj0d0c=
+X-Received: by 2002:a2e:b5c8:0:b0:2d2:6227:d30a with SMTP id
+ g8-20020a2eb5c8000000b002d26227d30amr6771186ljn.2.1710748880358; Mon, 18 Mar
+ 2024 01:01:20 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] drivers: watchdog: ast2600 support bootstatus
-Content-Language: en-US
-To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
- Andrew Jeffery <andrew@codeconstruct.com.au>,
- Wim Van Sebroeck <wim@linux-watchdog.org>, Guenter Roeck
- <linux@roeck-us.net>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
- linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
-References: <20240318055219.3460121-1-peteryin.openbmc@gmail.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240318055219.3460121-1-peteryin.openbmc@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <b88ce9ecad0d456d8adbc78e42ec713a@BJMBX01.spreadtrum.com>
+ <Zfe0yl2QTV1zSS1n@casper.infradead.org> <CAGWkznHQLoU48Wx5kP64LN-ord6J2kvopBzpOLno4PDKTnQsiQ@mail.gmail.com>
+In-Reply-To: <CAGWkznHQLoU48Wx5kP64LN-ord6J2kvopBzpOLno4PDKTnQsiQ@mail.gmail.com>
+From: Zhaoyang Huang <huangzhaoyang@gmail.com>
+Date: Mon, 18 Mar 2024 16:01:09 +0800
+Message-ID: <CAGWkznEZcn74KX-4rWxUocNLa-ZRTf+Ay=dQKNdbUCxLX0wyEA@mail.gmail.com>
+Subject: Re: reply: [PATCH] mm: fix a race scenario in folio_isolate_lru
+To: Matthew Wilcox <willy@infradead.org>
+Cc: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>, 
+	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
+	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 18/03/2024 06:52, Peter Yin wrote:
-> Add WDIOF_EXTERN1 and WDIOF_CARDRESET bootstatus in ast2600
-> 
-> Regarding the AST2600 specification, the WDTn Timeout Status Register
-> (WDT10) has bit 1 reserved. To verify the second boot source,
-> we need to check SEC14 bit 12 and bit 13.
-> The bits 8-23 in the WDTn Timeout Status Register are the Watchdog
-> Event Count, which we can use to verify WDIOF_EXTERN1.
-> 
-> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
-> ---
-> Change log:
-> 
-> v1 -> v2
->   - Add comment and support WDIOF_CARDRESET in ast2600
-> 
-> v1
->   - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi |  8 ++---
-
-No, DTS is always separate patchset.
-
->  drivers/watchdog/aspeed_wdt.c           | 45 ++++++++++++++++++++++---
->  2 files changed, 44 insertions(+), 9 deletions(-)
-> 
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> index e0b44498269f..23ae7f0430e9 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
-> @@ -556,24 +556,24 @@ uart5: serial@1e784000 {
->  
->  			wdt1: watchdog@1e785000 {
->  				compatible = "aspeed,ast2600-wdt";
-> -				reg = <0x1e785000 0x40>;
-> +				reg = <0x1e785000 0x40>, <0x1e6f2000 0x20>;
-
-And how does it pass dtbs_check? Where did you update the bindings?
-
->  			};
->  
->  			wdt2: watchdog@1e785040 {
->  				compatible = "aspeed,ast2600-wdt";
-> -				reg = <0x1e785040 0x40>;
-> +				reg = <0x1e785040 0x40>, <0x1e6f2000 0x020>;
->  				status = "disabled";
->  			};
->  
->  			wdt3: watchdog@1e785080 {
->  				compatible = "aspeed,ast2600-wdt";
-> -				reg = <0x1e785080 0x40>;
-> +				reg = <0x1e785080 0x40>, <0x1e6f2000 0x020>;
->  				status = "disabled";
->  			};
->  
->  			wdt4: watchdog@1e7850c0 {
->  				compatible = "aspeed,ast2600-wdt";
-> -				reg = <0x1e7850C0 0x40>;
-> +				reg = <0x1e7850C0 0x40>, <0x1e6f2000 0x020>;
->  				status = "disabled";
->  			};
->  
-> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
-> index b4773a6aaf8c..65118e461130 100644
-> --- a/drivers/watchdog/aspeed_wdt.c
-> +++ b/drivers/watchdog/aspeed_wdt.c
-> @@ -33,6 +33,7 @@ struct aspeed_wdt {
->  	void __iomem		*base;
->  	u32			ctrl;
->  	const struct aspeed_wdt_config *cfg;
-> +	void __iomem		*sec_base;
->  };
->  
->  static const struct aspeed_wdt_config ast2400_config = {
-> @@ -82,6 +83,15 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
->  #define WDT_RESET_MASK1		0x1c
->  #define WDT_RESET_MASK2		0x20
->  
-> +/*
-> + * Only Ast2600 support
-> + */
-> +#define   WDT_EVENT_COUNTER_MASK	(0xFFF << 8)
-> +#define   WDT_SECURE_ENGINE_STATUS	(0x14)
-> +#define   ABR_IMAGE_SOURCE		BIT(12)
-> +#define   ABR_IMAGE_SOURCE_SPI		BIT(13)
-> +#define   SECOND_BOOT_ENABLE		BIT(14)
-> +
->  /*
->   * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
->   * enabled), specifically:
-> @@ -313,6 +323,7 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
->  	const char *reset_type;
->  	u32 duration;
->  	u32 status;
-> +	u32 sec_st;
->  	int ret;
->  
->  	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
-> @@ -330,6 +341,12 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
->  	if (IS_ERR(wdt->base))
->  		return PTR_ERR(wdt->base);
->  
-> +	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
-
-
-> +		wdt->sec_base = devm_platform_ioremap_resource(pdev, 1);
-> +		if (IS_ERR(wdt->sec_base))
-> +			return PTR_ERR(wdt->sec_base);
-> +	}
-
-NAK, ABI break without clear reason.
-
-Best regards,
-Krzysztof
-
+On Mon, Mar 18, 2024 at 2:15=E2=80=AFPM Zhaoyang Huang <huangzhaoyang@gmail=
+com> wrote:
+>
+> On Mon, Mar 18, 2024 at 11:28=E2=80=AFAM Matthew Wilcox <willy@infradead.=
+org> wrote:
+> >
+> > On Mon, Mar 18, 2024 at 01:37:04AM +0000, =E9=BB=84=E6=9C=9D=E9=98=B3 (=
+Zhaoyang Huang) wrote:
+> > > >On Sun, Mar 17, 2024 at 12:07:40PM +0800, Zhaoyang Huang wrote:
+> > > >> Could it be this scenario, where folio comes from pte(thread 0), l=
+ocal
+> > > >> fbatch(thread 1) and page cache(thread 2) concurrently and proceed
+> > > >> intermixed without lock's protection? Actually, IMO, thread 1 also
+> > > >> could see the folio with refcnt=3D=3D1 since it doesn't care if th=
+e page
+> > > >> is on the page cache or not.
+> > > >>
+> > > >> madivise_cold_and_pageout does no explicit folio_get thing since t=
+he
+> > > >> folio comes from pte which implies it has one refcnt from pagecach=
+e
+> > > >
+> > > >Mmm, no.  It's implicit, but madvise_cold_or_pageout_pte_range()
+> > > >does guarantee that the folio has at least one refcount.
+> > > >
+> > > >Since we get the folio from vm_normal_folio(vma, addr, ptent); we kn=
+ow that
+> > > >there is at least one mapcount on the folio.  refcount is always >=
+=3D mapcount.
+> > > >Since we hold pte_offset_map_lock(), we know that mapcount (and ther=
+efore
+> > > >refcount) cannot be decremented until we call pte_unmap_unlock(), wh=
+ich we
+> > > >don't do until we have called folio_isolate_lru().
+> > > >
+> > > >Good try though, took me a few minutes of looking at it to convince =
+myself that
+> > > >it was safe.
+> > > >
+> > > >Something to bear in mind is that if the race you outline is real, f=
+ailing to hold a
+> > > >refcount on the folio leaves the caller susceptible to the
+> > > >VM_BUG_ON_FOLIO(!folio_ref_count(folio), folio); if the other thread=
+ calls
+> > > >folio_put().
+> > > Resend the chart via outlook.
+> > > I think the problem rely on an special timing which is rare, I would =
+like to list them below in timing sequence.
+> > >
+> > > 1. thread 0 calls folio_isolate_lru with refcnt =3D=3D 1
+> >
+> > (i assume you mean refcnt =3D=3D 2 here, otherwise none of this makes s=
+ense)
+> >
+> > > 2. thread 1 calls release_pages with refcnt =3D=3D 2.(IMO, it could b=
+e 1 as release_pages doesn't care if the folio is used by page cache or fs)
+> > > 3. thread 2 decrease refcnt to 1 by calling filemap_free_folio.(as I =
+mentioned in 2, thread 2 is not mandatary here)
+> > > 4. thread 1 calls folio_put_testzero and pass.(lruvec->lock has not b=
+een take here)
+> >
+> > But there's already a bug here.
+> >
+> > Rearrange the order of this:
+> >
+> > 2. thread 1 calls release_pages with refcount =3D=3D 2 (decreasing refc=
+ount to 1)
+> > 3. thread 2 decrease refcount to 0 by calling filemap_free_folio
+> > 1. thread 0 calls folio_isolate_lru() and hits the BUG().
+> >
+> > > 5. thread 0 clear folio's PG_lru by calling folio_test_clear_lru. The=
+ folio_get behind has no meaning there.
+> > > 6. thread 1 failed in folio_test_lru and leave the folio on the LRU.
+> > > 7. thread 1 add folio to pages_to_free wrongly which could break the =
+LRU's->list and will have next folio experience list_del_invalid
+> > >
+> > > #thread 0(madivise_cold_and_pageout)        #1(lru_add_drain->fbatch_=
+release_pages)       #2(read_pages->filemap_remove_folios)
+> > > refcnt =3D=3D 1(represent page cache)             refcnt=3D=3D2(anoth=
+er one represent LRU)          folio comes from page cache
+> >
+> > This is still illegible.  Try it this way:
+> >
+> > Thread 0        Thread 1        Thread 2
+> > madvise_cold_or_pageout_pte_range
+> >                 lru_add_drain
+> >                 fbatch_release_pages
+> >                                 read_pages
+> >                                 filemap_remove_folio
+> Thread 0        Thread 1        Thread 2
+> madvise_cold_or_pageout_pte_range
+>                 truncate_inode_pages_range
+>                 fbatch_release_pages
+>                                 truncate_inode_pages_range
+>                                 filemap_remove_folio
+> Sorry for the confusion. Rearrange the timing chart like above
+> according to the real panic's stacktrace. Thread 1&2 are all from
+> truncate_inode_pages_range(I think thread2(read_pages) is not
+> mandatory here as thread 0&1 could rely on the same refcnt=3D=3D1).
+> >
+> > Some accuracy in your report would also be appreciated.  There's no
+> > function called madivise_cold_and_pageout, nor is there a function call=
+ed
+> > filemap_remove_folios().  It's a little detail, but it's annoying for
+> > me to try to find which function you're actually referring to.  I have
+> > to guess, and it puts me in a bad mood.
+> >
+> > At any rate, these three functions cannot do what you're proposing.
+> > In read_page(), when we call filemap_remove_folio(), the folio in
+> > question will not have the uptodate flag set, so can never have been
+> > put in the page tables, so cannot be found by madvise().
+> >
+> > Also, as I said in my earlier email, madvise_cold_or_pageout_pte_range(=
+)
+> > does guarantee that the refcount on the folio is held and can never
+> > decrease to zero while folio_isolate_lru() is running.  So that's two
+> > ways this scenario cannot happen.
+> The madivse_xxx comes from my presumption which has any proof.
+> Whereas, It looks like truncate_inode_pages_range just cares about
+> page cache refcnt by folio_put_testzero without noticing any task's VM
+> stuff. Furthermore, I notice that move_folios_to_lru is safe as it
+> runs with holding lruvec->lock.
+> >
+BTW, I think we need to protect all
+folio_test_clear_lru/folio_test_lru by moving them into lruvec->lock
+in such as __page_cache_release and folio_activate functions.
+Otherwise, there is always a race window between judging PG_lru and
+following actions.
 
