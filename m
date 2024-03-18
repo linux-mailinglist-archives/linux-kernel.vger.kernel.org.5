@@ -1,167 +1,150 @@
-Return-Path: <linux-kernel+bounces-106019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106020-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4766587E7A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:49:40 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B5F587E7B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:52:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B2A1EB21D46
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:49:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4C852836CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:52:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6173B2E83C;
-	Mon, 18 Mar 2024 10:49:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069462EAE5;
+	Mon, 18 Mar 2024 10:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="KWICTmE6"
-Received: from mail-wm1-f46.google.com (mail-wm1-f46.google.com [209.85.128.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ehMsiZyV"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD01724B26
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:49:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C28A2DF92;
+	Mon, 18 Mar 2024 10:52:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710758969; cv=none; b=FCPgqvF7y2tWPZ8GC+RhDYHaFHZ/I6XzBWHsKeV8ndyQHFLjLNmF1sb8dTMv5X5ZC4OAC6efsUxcpatOx1elP+OwqxQjzH8+5CuiXgR2RlGQxHnCivmi7PyZNfEDKxu8/Tl1zqei/YZYeEuMQeu6FpBZwWuhYdpHU5IIKeq/EMQ=
+	t=1710759142; cv=none; b=QgU3QDxvj7wttnCeDpezTo+HxHqoLyaC9XzcPptKzLhcdOZnjiP3DwiDGPbH8KaMDV1GNrsjwkBcQPrvik5UX8186mMqKq1zWUmX7796FisOIZuTq21CKudOEsWMXxnk9l9OHCOTH4V/TXywopVEaUU3Wl+w1gbx0O3yZGiwANQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710758969; c=relaxed/simple;
-	bh=w8kGD73Xz/uZpQJ5ZgCw6GsFXXl9zD5Qm0dcGMbIXpc=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=K4oh5YfxgaDt8dZDcgh3tO93AXds96Nt/pNxZNYbr+1wLb/KuXaQ8Ew7NURn0Ly/ZYay7xrPCZbNggNMoxYCJhLM9oDik7WRxvlMhfO7cuYdJFfILdB0qvzBbpAEOnqyaa1+czyT23lyceG62z+JF10GHHNzywUtR2tuAvbsvvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=KWICTmE6; arc=none smtp.client-ip=209.85.128.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
-Received: by mail-wm1-f46.google.com with SMTP id 5b1f17b1804b1-41413ad1f73so3480725e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:49:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1710758966; x=1711363766; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=G7t60vDpglsBHCmAmlybKd04G36JOxRBGBizt48yxWg=;
-        b=KWICTmE6NJO9weCBlZUnGlGljaSiuk6R39tYYCWdc0DeefF7eyIVvQfuJcmDicCPyl
-         jH37jR29E9oaYYkcs5Vrrw+FoS6Cs88tMJdU4oesm8eqQbo2OEFpuI8JF0AgfX5IcD5w
-         LmF7SH2lGAfxL0trfwCOq58kgIh1UD9X6QL/rE7Tl2pAjdi9kJJnL6sVE/1KidvuUFMB
-         qYKVXjpNNlXbsDQL4tqIdDH69HB5b4iRRU11tTPMmzBl3rC2eKjJuZC8IaB7L0ouVJ2k
-         fWqv2j0f9mJaqQVuehLTUkedwSPiAIgbgGjBgrgpwSbDgF2Z7mTEW7p24F0VzabpUp7+
-         e1iw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710758966; x=1711363766;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=G7t60vDpglsBHCmAmlybKd04G36JOxRBGBizt48yxWg=;
-        b=M1x3KvnsadPb+a+4ofQdwu2dpvhW4c1PaLl0CTGCxd0pQ12P2LgvdhpLH59cFm6os/
-         FvW2Nzba3YAs4oZTyu6gp3e95zfpSVZi2mk9pxmH5iCcm9O279ShfTzhGPlQaypEceGv
-         q4W2PSFVln9IIEUDUH97mo5Nk2Bb7Io+pwr0iwTr7l3hmPcsHCvNAgN1rWTjdkuLEPfe
-         hqE/7X9BsvSFCnygUd/0CDeaash/us8sbj3qJ7+VW2XQ7rW+RVjfI3ajJK+Pjt8n7XrU
-         uj54auZmkKT87OGz2JiPx5Ip4Ts5fQLeH3QZfUuSYIqPQQ6DsvDkX7cy4s1p+mj8Pku4
-         3CNA==
-X-Forwarded-Encrypted: i=1; AJvYcCXoVOSBo90PllSsQ5I/3runlV2d+Y82O89DDCtPResxNvXPkytT320meBx71RzyJNspV6VOLk6QCO9fMH8fTi4zaqo1Ysrq5zYwnoYe
-X-Gm-Message-State: AOJu0YxsbOa7KLnj66estAZ7lqZeHI0dy2LvXa2IJKOdR0Jd7mLDESV1
-	79CB5X2MsmPF/PO3JRuFqIObD/FnkGWOZn0IFfcm2Pk/ob684YecUvo8HiAT6oUxSnqM6KROW3p
-	KPeQ=
-X-Google-Smtp-Source: AGHT+IFRTKwvp4NAQQcRK/V8ww6cX01HYijcJTkmICr2vjDu8vieDPT+5eRXaPiSiQ6RMubCEtHFHA==
-X-Received: by 2002:a05:600c:1987:b0:413:ee55:8bba with SMTP id t7-20020a05600c198700b00413ee558bbamr5642354wmq.4.1710758965961;
-        Mon, 18 Mar 2024 03:49:25 -0700 (PDT)
-Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
-        by smtp.gmail.com with ESMTPSA id o5-20020a05600c510500b00412cfdc41f7sm4899567wms.0.2024.03.18.03.49.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 03:49:25 -0700 (PDT)
-From: Thorsten Blum <thorsten.blum@toblux.com>
-To: thorsten.blum@toblux.com
-Cc: David.Laight@ACULAB.COM,
-	bp@alien8.de,
-	dave.hansen@intel.com,
-	dave.hansen@linux.intel.com,
-	hpa@zytor.com,
-	linux-kernel@vger.kernel.org,
-	mingo@redhat.com,
-	peterz@infradead.org,
-	tglx@linutronix.de,
-	wei.liu@kernel.org,
-	x86@kernel.org
-Subject: [RESEND PATCH v3] x86/apic: Improve data types to fix Coccinelle warnings
-Date: Mon, 18 Mar 2024 11:47:23 +0100
-Message-ID: <20240318104721.117741-3-thorsten.blum@toblux.com>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240308230228.3161-2-thorsten.blum@toblux.com>
-References: <20240308230228.3161-2-thorsten.blum@toblux.com>
+	s=arc-20240116; t=1710759142; c=relaxed/simple;
+	bh=kGc4kRCh8K/u7JQbGUUELXchD0hHGvGrWcrArfa4cP0=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=nesgm071j9C4hHUv1cSxN2EIyR19kuxskfatVqdkKgL9f1OYDbd2hgHDV+lwmAaQHEEyDJqTjprqLCfijzDVGrk8no+hBy1gr9w5MNDZwxPF91IyK0ihZ0IH3LiO9Hjps/jx4LOh+Cs4BBfxpsrmSL6cT2D6NJ3n2Y51bFo03SQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ehMsiZyV; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710759140; x=1742295140;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=kGc4kRCh8K/u7JQbGUUELXchD0hHGvGrWcrArfa4cP0=;
+  b=ehMsiZyVMN+Knlxbbqq8/LQ4qF0jodZibQLWR8sigrUWA7ZcNnUJLglB
+   w6m01gDoUi12J+3xx1zDdVA6dUMYzAnCZ6V8+ToqxSYtpdsbG4tGDNBLl
+   KgTrCDZ2rVXQpC1tkwowtLNN3WuIlIZMYXDM24iHHS8/0H0Ak6x3AK1X0
+   o0rZ7fXzpnDVoN07UD2SoAM7JdvtXX39MIrVZCvbSXxFbqxTxz3FnQxDj
+   Clewhloz2nAX/8Ph9YvgyRDqlrLgp/C/ZMEvKR67hBzGMKAStMAG4ykXD
+   4dC9TJgapZkQw3L7io3uONm7SpylU0+oB1pAVQHUA0AxhlwUvI2/HS36o
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="23023571"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="23023571"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:52:19 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="18039699"
+Received: from ahmedess-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.133])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:52:13 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>, Andrzej Hajda
+ <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, Laurent
+ Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
+ <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Luca Weiss
+ <luca.weiss@fairphone.com>
+Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
+In-Reply-To: <171075294759.1615603.8073986785380285265.b4-ty@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240111-drm-panel-bridge-fixup-v1-1-e06292f6f500@fairphone.com>
+ <171075294759.1615603.8073986785380285265.b4-ty@linaro.org>
+Date: Mon, 18 Mar 2024 12:52:10 +0200
+Message-ID: <87wmpzq0bp.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Given that acpi_pm_read_early() returns a u32 (masked to 24 bits), several
-variables that store its return value are improved by adjusting their data
-types from unsigned long to u32. Specifically, change deltapm's type from
-long to u32 because its value fits into 32 bits and it cannot be negative.
+On Mon, 18 Mar 2024, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> Hi,
+>
+> On Thu, 11 Jan 2024 13:38:04 +0100, Luca Weiss wrote:
+>> Since the kconfig symbol of DRM_PANEL_BRIDGE is only adding
+>> bridge/panel.o to drm_kms_helper object, we need to select
+>> DRM_KMS_HELPER to make sure the file is actually getting built.
+>> 
+>> Otherwise with certain defconfigs e.g. devm_drm_of_get_bridge will not
+>> be properly available:
+>> 
+>> [...]
+>
+> Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-fixes)
+>
+> [1/1] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
+>       https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/e3f18b0dd1db242791afbc3bd173026163ce0ccc
 
-These data type improvements resolve the following two Coccinelle/
-coccicheck warnings reported by do_div.cocci:
+With my kernel config, e3f18b0dd1db ("drm/bridge: Select DRM_KMS_HELPER
+for DRM_PANEL_BRIDGE") leads to:
 
-arch/x86/kernel/apic/apic.c:734:1-7: WARNING: do_div() does a 64-by-32
-division, please consider using div64_long instead.
+WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
+  Depends on [m]: HAS_IOMEM [=y] && DRM [=m]
+  Selected by [y]:
+  - DRM_PANEL_BRIDGE [=y] && HAS_IOMEM [=y] && DRM_BRIDGE [=y]
+  Selected by [m]:
+  - DRM [=m] && HAS_IOMEM [=y] && (AGP [=y] || AGP [=y]=n) && !EMULATED_CMPXCHG && HAS_DMA [=y] && DRM_FBDEV_EMULATION [=y]
+  - DRM_MIPI_DBI [=m] && HAS_IOMEM [=y] && DRM [=m]
+  - DRM_KUNIT_TEST [=m] && HAS_IOMEM [=y] && DRM [=m] && KUNIT [=y] && MMU [=y]
+  - DRM_RADEON [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && (AGP [=y] || !AGP [=y])
+  - DRM_AMDGPU [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && !UML
+  - DRM_NOUVEAU [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
+  - DRM_I915 [=m] && HAS_IOMEM [=y] && DRM [=m] && X86 [=y] && PCI [=y] && !PREEMPT_RT [=n]
+  - DRM_XE [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && (m && MODULES [=y] || y && KUNIT [=y]=y) && 64BIT [=y]
+  - DRM_VKMS [=m] && HAS_IOMEM [=y] && DRM [=m] && MMU [=y]
+  - DRM_VMWGFX [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && (X86 [=y] || ARM64)
+  - DRM_GMA500 [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && X86 [=y] && MMU [=y]
+  - DRM_UDL [=m] && HAS_IOMEM [=y] && DRM [=m] && USB [=m] && USB_ARCH_HAS_HCD [=y] && MMU [=y]
+  - DRM_AST [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
+  - DRM_MGAG200 [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
+  - DRM_QXL [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
+  - DRM_VIRTIO_GPU [=m] && HAS_IOMEM [=y] && DRM [=m] && VIRTIO_MENU [=y] && MMU [=y]
+  - DRM_BOCHS [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
+  - DRM_CIRRUS_QEMU [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
+  - DRM_GM12U320 [=m] && HAS_IOMEM [=y] && DRM [=m] && USB [=m] && MMU [=y]
+  - DRM_PANEL_MIPI_DBI [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - DRM_SIMPLEDRM [=m] && HAS_IOMEM [=y] && DRM [=m] && MMU [=y]
+  - TINYDRM_HX8357D [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_ILI9163 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_ILI9225 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_ILI9341 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_ILI9486 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_MI0283QT [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_REPAPER [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_ST7586 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - TINYDRM_ST7735R [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
+  - DRM_XEN_FRONTEND [=m] && HAS_IOMEM [=y] && XEN [=y] && DRM [=m]
+  - DRM_VBOXVIDEO [=m] && HAS_IOMEM [=y] && DRM [=m] && X86 [=y] && PCI [=y]
+  - DRM_GUD [=m] && HAS_IOMEM [=y] && DRM [=m] && USB [=m] && MMU [=y]
+  - DRM_SSD130X [=m] && HAS_IOMEM [=y] && DRM [=m] && MMU [=y]
+  - DRM_ANALOGIX_ANX78XX [=m] && HAS_IOMEM [=y] && DRM [=m] && DRM_BRIDGE [=y]
 
-arch/x86/kernel/apic/apic.c:742:2-8: WARNING: do_div() does a 64-by-32
-division, please consider using div64_long instead.
 
-Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
----
-Changes in v2:
-- Revert changing do_div() to div64_ul() after feedback from David Laight
-- Use u32 instead of unsigned long to fix Coccinelle warnings
-- Update patch title and description
+BR,
+Jani.
 
-Changes in v3:
-- Adjust patch summary and description after feedback from Dave Hansen
----
- arch/x86/kernel/apic/apic.c | 8 ++++----
- 1 file changed, 4 insertions(+), 4 deletions(-)
-
-diff --git a/arch/x86/kernel/apic/apic.c b/arch/x86/kernel/apic/apic.c
-index 4667bc4b00ab..184e1843620d 100644
---- a/arch/x86/kernel/apic/apic.c
-+++ b/arch/x86/kernel/apic/apic.c
-@@ -664,7 +664,7 @@ void lapic_update_tsc_freq(void)
- static __initdata int lapic_cal_loops = -1;
- static __initdata long lapic_cal_t1, lapic_cal_t2;
- static __initdata unsigned long long lapic_cal_tsc1, lapic_cal_tsc2;
--static __initdata unsigned long lapic_cal_pm1, lapic_cal_pm2;
-+static __initdata u32 lapic_cal_pm1, lapic_cal_pm2;
- static __initdata unsigned long lapic_cal_j1, lapic_cal_j2;
- 
- /*
-@@ -674,7 +674,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
- {
- 	unsigned long long tsc = 0;
- 	long tapic = apic_read(APIC_TMCCT);
--	unsigned long pm = acpi_pm_read_early();
-+	u32 pm = acpi_pm_read_early();
- 
- 	if (boot_cpu_has(X86_FEATURE_TSC))
- 		tsc = rdtsc();
-@@ -699,7 +699,7 @@ static void __init lapic_cal_handler(struct clock_event_device *dev)
- }
- 
- static int __init
--calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
-+calibrate_by_pmtimer(u32 deltapm, long *delta, long *deltatsc)
- {
- 	const long pm_100ms = PMTMR_TICKS_PER_SEC / 10;
- 	const long pm_thresh = pm_100ms / 100;
-@@ -710,7 +710,7 @@ calibrate_by_pmtimer(long deltapm, long *delta, long *deltatsc)
- 	return -1;
- #endif
- 
--	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %ld\n", deltapm);
-+	apic_printk(APIC_VERBOSE, "... PM-Timer delta = %u\n", deltapm);
- 
- 	/* Check, if the PM timer is available */
- 	if (!deltapm)
 -- 
-2.44.0
-
+Jani Nikula, Intel
 
