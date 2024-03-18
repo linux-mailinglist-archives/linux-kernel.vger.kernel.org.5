@@ -1,168 +1,270 @@
-Return-Path: <linux-kernel+bounces-106168-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106172-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 89BB887EA26
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:33:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2561387EA33
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:37:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4551A2814A7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:33:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9296C1F22D6B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:37:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9A1E481AE;
-	Mon, 18 Mar 2024 13:33:48 +0000 (UTC)
-Received: from invmail4.hynix.com (exvmail4.hynix.com [166.125.252.92])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5F0020315;
-	Mon, 18 Mar 2024 13:33:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=166.125.252.92
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CE6D64879B;
+	Mon, 18 Mar 2024 13:37:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="My2kqKgz"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F3F24249EB;
+	Mon, 18 Mar 2024 13:37:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710768828; cv=none; b=EebzyFUlcb5NRx6t9SIxCuyUWQvhyJHJ/r4Xrzo5WMIDtiIctpj/qmCMx8HQVr1g6zEAE+MCPw8p2m+07+R0g6QXw5eFlRzAD1ASP6LHWS3MzVCfVW8kcLSnO4O7/DLqXpWRAfO6jrg5O6whckAWXdmRhhOweLR2XASdzL55BI0=
+	t=1710769035; cv=none; b=U0oK0LOk6CsnVgA0gcpRzxQyRB5Bt8BpCHyY7lohzGYKPTZSSfKcjzgn/5JYO2HFr1PcloV/TmRgN5B1P5aHq8qxlV7W5vYjcY7Hi/Qz5rYTj6AWh4kUOUKHK6X7nV6VWOA09AJxsEiZP/3F3YW4WYZG9F8x+bJUgrUK/XWlfj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710768828; c=relaxed/simple;
-	bh=q0xLpqYTqkB9ibXN1mY5JqcfX9PKUlK+8T5l2q2RBq4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=On5KFJ0aRgxwuARNdyISbVdN1TCJMzLrcznfkdNX9dQlCwelS1AIZWP7HoiTVTk90gLYKETrCrWqg2hO0MVdshnNV5EBHaWOzNq3cB9a+qIKXiIisVc5EdTvwuUAjZlj7lGWWDRs6rLh0/Y3qBTCkjHabF8CSB1yo+K+iGKuZzU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com; spf=pass smtp.mailfrom=sk.com; arc=none smtp.client-ip=166.125.252.92
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sk.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sk.com
-X-AuditID: a67dfc5b-d85ff70000001748-7a-65f842b48e22
-From: Honggyu Kim <honggyu.kim@sk.com>
-To: SeongJae Park <sj@kernel.org>
-Cc: Honggyu Kim <honggyu.kim@sk.com>,
-	damon@lists.linux.dev,
-	linux-mm@kvack.org,
-	akpm@linux-foundation.org,
-	apopple@nvidia.com,
-	baolin.wang@linux.alibaba.com,
-	dave.jiang@intel.com,
-	hyeongtak.ji@sk.com,
-	kernel_team@skhynix.com,
-	linmiaohe@huawei.com,
-	linux-kernel@vger.kernel.org,
-	linux-trace-kernel@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	mhiramat@kernel.org,
-	rakie.kim@sk.com,
-	rostedt@goodmis.org,
-	surenb@google.com,
-	yangx.jy@fujitsu.com,
-	ying.huang@intel.com,
-	ziy@nvidia.com,
-	42.hyeyoo@gmail.com
-Subject: Re: [RFC PATCH v2 0/7] DAMON based 2-tier memory management for CXL memory
-Date: Mon, 18 Mar 2024 22:33:34 +0900
-Message-ID: <20240318133338.2135-1-honggyu.kim@sk.com>
-X-Mailer: git-send-email 2.43.0.windows.1
-In-Reply-To: <20240317191358.97578-1-sj@kernel.org>
-References: 
+	s=arc-20240116; t=1710769035; c=relaxed/simple;
+	bh=u82l/MBNpObPyrd/rtRsi0HOp2zPMN16KTaVMbMuxec=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=IidW6vmMreQBLmlS2H7cLrzNPbUB/bOETcu9xQ5Y+VDFU5FBsljsJ+3Ch1O0oCqEUOJMeNp+Vx6KqsLfawjGzCZlAq/WpxnwCYc+0Uq9LiMQ5o7iHeg7sZNMu94jBx8oB2UPnSKiWiT+YUGCr5SipiaXNMTwyc0nV9bkTChACKM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=My2kqKgz; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710769033; x=1742305033;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=u82l/MBNpObPyrd/rtRsi0HOp2zPMN16KTaVMbMuxec=;
+  b=My2kqKgzCby75PAglA0ekpm/4P/BvPQa+JWj8bg0RY2SrMo1JhEtgwf6
+   edj2rLD82aDKLfXvURsIVX82mfYSorzHvgnuy6aiQE30+1vD6dINk+KX/
+   +7odyFkjYWggJwFAunpKJPii96roj8DAvnqyrpSgPYeQc2yDCpCiD/SR7
+   4IWKA+WhizlGr4uiFRDVVOJirE+VR3gOz2Ah7brafR+BAfsZWWyy82a3w
+   ImwbohvLcoPHnxdsXABayGgAlT8ZjbiwdOzqkmXlEiSprH0oRFtOlkKmp
+   GO0o0woBJ9xSN5bKUtXJkfZgOObQ1L5YHwc04jB2siRoGsPfiensOzLXv
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="5765138"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="5765138"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 06:37:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="827781787"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="827781787"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga001.jf.intel.com with SMTP; 18 Mar 2024 06:37:05 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 18 Mar 2024 15:37:05 +0200
+Date: Mon, 18 Mar 2024 15:37:05 +0200
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
+	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Sebastian Wick <sebastian.wick@redhat.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH v9 14/27] drm/connector: hdmi: Compute bpc and format
+ automatically
+Message-ID: <ZfhDgRcC6sdGmcmH@intel.com>
+References: <20240311-kms-hdmi-connector-state-v9-0-d45890323344@kernel.org>
+ <20240311-kms-hdmi-connector-state-v9-14-d45890323344@kernel.org>
+ <ZfQBPHoAvI1dquEY@intel.com>
+ <20240318-organic-debonair-beetle-b2817b@houat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprHIsWRmVeSWpSXmKPExsXC9ZZnke4Wpx+pBs+6lS0m9hhYzFm/hs1i
-	140Qi/97jzFaPPn/m9XixM1GNovO70tZLC7vmsNmcW/Nf1aLI+vPslhsPnuG2WLxcjWLfR0P
-	mCwOf33DZDH50gI2ixdTzjBanJw1mcVi9tF77A5CHktPv2Hz2NAEJHbOusvu0bLvFrvHgk2l
-	Hi1H3rJ6LN7zkslj06pONo9Nnyaxe5yY8ZvFY+dDS48Xm2cyevQ2v2Pz+LxJLoAvissmJTUn
-	syy1SN8ugStjxcu3zAVdEhX9J1ezNDBOF+pi5OSQEDCRWLf8NhuM/fBbNzuIzSagJnHl5SQm
-	EFtEQFHi3OOLrF2MXBzMAgtZJHq/bwBLCAsES8w9+5+xi5GDg0VAVeLGLl6QMK+AmcT+M8cZ
-	IWZqSjze/hNsJqeAscT6BU1gtpAAj8SrDfsZIeoFJU7OfMICYjMLyEs0b53NDNF7iF3i8npH
-	CFtS4uCKGywTGPlnIWmZhaRlASPTKkahzLyy3MTMHBO9jMq8zAq95PzcTYzAWFtW+yd6B+On
-	C8GHGAU4GJV4eA/o/EgVYk0sK67MPcQowcGsJMLrKvY1VYg3JbGyKrUoP76oNCe1+BCjNAeL
-	kjiv0bfyFCGB9MSS1OzU1ILUIpgsEwenVAOjQ/qcys2LU1YKRdSH1Jnf3rwkv2LdvdPdoV/8
-	5tgUq+5tzE9adfb0ksDtlRUFVmp/P7UfU2x/EzZlzr5CyYA1EbW3ud/vMmPiPdg/f1rJ7G/8
-	lxPFz59cP7tcRf1A/zvDbzI7y5u+Lm3P0moOfaka+cFQJ6Fn06SNL54vnfKwic272nravw/p
-	SizFGYmGWsxFxYkAt5lNN7ECAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFprJIsWRmVeSWpSXmKPExsXCNUNLT3eL049Ug+5nIhYTewws5qxfw2ax
-	60aIxf+9xxgtnvz/zWpx4mYjm8XnZ6+ZLTqffGe0ODz3JKtF5/elLBaXd81hs7i35j+rxZH1
-	Z1ksNp89w2yxeLmaxaFrz1kt9nU8YLI4/PUNk8XkSwvYLF5MOcNocXLWZBaL2UfvsTuIeSw9
-	/YbNY0MTkNg56y67R8u+W+weCzaVerQcecvqsXjPSyaPTas62Tw2fZrE7nFixm8Wj50PLT1e
-	bJ7J6NHb/I7N49ttD4/FLz4weXzeJBcgEMVlk5Kak1mWWqRvl8CVseLlW+aCLomK/pOrWRoY
-	pwt1MXJySAiYSDz81s0OYrMJqElceTmJCcQWEVCUOPf4ImsXIxcHs8BCFone7xvAEsICwRJz
-	z/5n7GLk4GARUJW4sYsXJMwrYCax/8xxRoiZmhKPt/8Em8kpYCyxfkETmC0kwCPxasN+Roh6
-	QYmTM5+wgNjMAvISzVtnM09g5JmFJDULSWoBI9MqRpHMvLLcxMwcU73i7IzKvMwKveT83E2M
-	wAhbVvtn4g7GL5fdDzEKcDAq8fAe0PmRKsSaWFZcmXuIUYKDWUmE11Xsa6oQb0piZVVqUX58
-	UWlOavEhRmkOFiVxXq/w1AQhgfTEktTs1NSC1CKYLBMHp1QD4yR+9nk/bxYF/6qWNjOTrcy8
-	s+TuJYFpxy8edpookeYfaFbUp58d6rf1U+a3/gmrV7sEb+fLf9uTu1RrjYIOP8eWjsy66lUr
-	tEt32SX2vatL/dfM84FlZdbSlq0nP7H+2/vd7fVdrxdbT1jLv/s5TViMa+aqlFyOUBeZ8+3r
-	1rw2k5VNjbm8RYmlOCPRUIu5qDgRAHvKqbKsAgAA
-X-CFilter-Loop: Reflected
+In-Reply-To: <20240318-organic-debonair-beetle-b2817b@houat>
+X-Patchwork-Hint: comment
 
-Hi SeongJae,
-
-On Sun, 17 Mar 2024 12:13:57 -0700 SeongJae Park <sj@kernel.org> wrote:
-> On Sun, 17 Mar 2024 08:31:44 -0700 SeongJae Park <sj@kernel.org> wrote:
+On Mon, Mar 18, 2024 at 01:05:22PM +0100, Maxime Ripard wrote:
+> Hi Ville,
 > 
-> > Hi Honggyu,
+> Thanks for your review !
+> 
+> On Fri, Mar 15, 2024 at 10:05:16AM +0200, Ville Syrjälä wrote:
+> > On Mon, Mar 11, 2024 at 03:49:42PM +0100, Maxime Ripard wrote:
+> > > +static bool
+> > > +sink_supports_format_bpc(const struct drm_connector *connector,
+> > > +			 const struct drm_display_info *info,
+> > > +			 const struct drm_display_mode *mode,
+> > > +			 unsigned int format, unsigned int bpc)
+> > > +{
+> > > +	struct drm_device *dev = connector->dev;
+> > > +	u8 vic = drm_match_cea_mode(mode);
+> > > +
+> > > +	if (vic == 1 && bpc != 8) {
+> > > +		drm_dbg(dev, "VIC1 requires a bpc of 8, got %u\n", bpc);
 > > 
-> > On Sun, 17 Mar 2024 17:36:29 +0900 Honggyu Kim <honggyu.kim@sk.com> wrote:
+> > Use of drm_dbg() for kms stuff is surprising.
 > > 
-> > > Hi SeongJae,
-> > > 
-> > > Thanks for the confirmation.  I have a few comments on young filter so
-> > > please read the inline comments again.
-> > > 
-> > > On Wed, 12 Mar 2024 08:53:00 -0800 SeongJae Park <sj@kernel.org> wrote:
-> > > > Hi Honggyu,
-> [...]
-> > > Thanks.  I see that it works fine, but I would like to have more
-> > > discussion about "young" filter.  What I think about filter is that if I
-> > > apply "young" filter "true" for demotion, then the action applies only
-> > > for "young" pages, but the current implementation works opposite.
-> > > 
-> > > I understand the function name of internal implementation is
-> > > "damos_pa_filter_out" so the basic action is filtering out, but the
-> > > cgroup filter works in the opposite way for now.
+> > > +		return false;
+> > > +	}
 > > 
-> > Does memcg filter works in the opposite way?  I don't think so because
-> > __damos_pa_filter_out() sets 'matches' as 'true' only if the the given folio is
-> > contained in the given memcg.  'young' filter also simply sets 'matches' as
-> > 'true' only if the given folio is young.
+> > I don't think we have this in i915. My original impression was that you
+> > can use higher color depth if you can determine the sink capabilities,
+> > but all sinks are required to accept 640x480@8bpc as a fallback.
 > > 
-> > If it works in the opposite way, it's a bug that need to be fixed.  Please let
-> > me know if I'm missing something.
+> > but CTA-861-H says:
+> > "5.4 Color Coding & Quantization
+> >  Component Depth: The coding shall be N-bit, where N = 8, 10, 12, or 16
+> >  bits/component — except in the case of the default 640x480 Video Timing 1,
+> >  where the value of N shall be 8."
+> > 
+> > So that does seem to imply that you're supposed to use exactly 8bpc.
+> > Though the word "default" in there is confusing. Are they specifically
+> > using that to indicate that this is about the fallback behaviour, or
+> > is it just indicating that it is a "default mode that always has to
+> > be supported". Dunno. I guess no real harm in forcing 8bpc for 640x480
+> > since no one is likely to use that for any high fidelity stuff.
 > 
-> I just read the DAMOS filters part of the documentation for DAMON sysfs
-> interface again.  I believe it is explaining the meaning of 'matching' as I
-> intended to, as below:
+> My understanding was that CTA-861 mandates that 640x480@60Hz is
+> supported, and mentions it being the default timing on a few occurences,
+> like in section 4 - Video Formats and Waveform Timings that states "This
+> section describes the default IT 640x480 Video Timing as well as all of
+> the standard CE Video Timings.", or Section 6.2 - Describing Video
+> Formats in EDID "The 640x480@60Hz flag, in the Established Timings area,
+> shall always be set, since the 640x480p format is a mandatory default
+> timing."
 > 
->     You can write ``Y`` or ``N`` to ``matching`` file to filter out pages that does
->     or does not match to the type, respectively.  Then, the scheme's action will
->     not be applied to the pages that specified to be filtered out.
+> So my understanding is that default here applies to the timing itself,
+> and not the bpc, and is thus the second interpretation you suggested.
 > 
-> But, I found the following example for memcg filter is wrong, as below:
+> I'll add a comment to make it clearer.
 > 
->     For example, below restricts a DAMOS action to be applied to only non-anonymous
->     pages of all memory cgroups except ``/having_care_already``.::
->     
->         # echo 2 > nr_filters
->         # # filter out anonymous pages
->         echo anon > 0/type
->         echo Y > 0/matching
->         # # further filter out all cgroups except one at '/having_care_already'
->         echo memcg > 1/type
->         echo /having_care_already > 1/memcg_path
->         echo N > 1/matching
+> > > +static int
+> > > +hdmi_compute_format(const struct drm_connector *connector,
+> > > +		    struct drm_connector_state *state,
+> > > +		    const struct drm_display_mode *mode,
+> > > +		    unsigned int bpc)
+> > > +{
+> > > +	struct drm_device *dev = connector->dev;
+> > > +
+> > > +	if (hdmi_try_format_bpc(connector, state, mode, bpc, HDMI_COLORSPACE_RGB)) {
+> > > +		state->hdmi.output_format = HDMI_COLORSPACE_RGB;
+> > > +		return 0;
+> > > +	}
+> > > +
+> > > +	if (hdmi_try_format_bpc(connector, state, mode, bpc, HDMI_COLORSPACE_YUV422)) {
+> > > +		state->hdmi.output_format = HDMI_COLORSPACE_YUV422;
+> > > +		return 0;
+> > > +	}
+> > 
+> > Looks like you're preferring YCbCr 4:2:2 over RGB 8bpc. Not sure
+> > if that's a good tradeoff to make.
 > 
-> Specifically, the last line of the commands should write 'Y' instead of 'N' to
-> do what explained.  Without the fix, the action will be applied to only
-> non-anonymous pages of 'having_care_already' memcg.  This is definitely wrong.
-> I will fix this soon.  I'm unsure if this is what made you to believe memcg
-> DAMOS filter is working in the opposite way, though.
+> Yeah, indeed. I guess it's a judgement call on whether we prioritise
+> lowering the bpc over selecting YUV422, but I guess I can try all
+> available RGB bpc before falling back to YUV422.
+> 
+> > In i915 we don't currently expose 4:2:2 at all because it doesn't
+> > help in getting a working display, and we have no uapi for the
+> > user to force it if they really want 4:2:2 over RGB.
+> 
+> I guess if the priority is given to lowering bpc, then it indeed doesn't
+> make sense to support YUV422, since the limiting factor is likely to be
+> the TMDS char rate and YUV422 12 bpc is equivalent to RGB 8bpc there.
+> 
+> dw-hdmi on the other hand will always put YUV422 and YUV444 before RGB
+> for a given bpc, which is weird to me:
+> https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/bridge/synopsys/dw-hdmi.c#L2696
+> 
+> What is even weirder to me is that YUV422 is explicitly stated to be
+> 12bpc only, so there's some invalid configurations there (8 and 10 bpc).
+> 
+> And given that it's order by decreasing order of preference, I'm pretty
+> sure it'll never actually pick any YUV or RGB > 8bpc format since RGB
+> 8bpc is super likely to be always available and thus picked first.
 
-I got confused not because of this.  I just think it again that this
-user interface is better to be more intuitive as I mentioned in the
-previous thread.
-
-Thanks,
-Honggyu
+8bpc RGB is in fact mandatory.
 
 > 
-> Thanks,
-> SJ
+> If we want to converge, I think we should amend this code to support
+> YUV420 for YUV420-only modes first, and then the RGB options like i915
+> is doing. And then if someone is interested in more, we can always
+> expand it to other formats.
 > 
-> [...]
+> > > +
+> > > +	drm_dbg(dev, "Failed. No Format Supported for that bpc count.\n");
+> > > +
+> > > +	return -EINVAL;
+> > > +}
+> > > +
+> > > +static int
+> > > +hdmi_compute_config(const struct drm_connector *connector,
+> > > +		    struct drm_connector_state *state,
+> > > +		    const struct drm_display_mode *mode)
+> > > +{
+> > > +	struct drm_device *dev = connector->dev;
+> > > +	unsigned int max_bpc = clamp_t(unsigned int,
+> > > +				       state->max_bpc,
+> > > +				       8, connector->max_bpc);
+> > > +	unsigned int bpc;
+> > > +	int ret;
+> > > +
+> > > +	for (bpc = max_bpc; bpc >= 8; bpc -= 2) {
+> > > +		drm_dbg(dev, "Trying with a %d bpc output\n", bpc);
+> > > +
+> > > +		ret = hdmi_compute_format(connector, state, mode, bpc);
+> > 
+> > Hmm. Actually I'm not sure your 4:2:2 stuff even works since you 
+> > check for bpc==12 in there and only call this based on the max_bpc.
+> > I'm not convinced max_bpc would actually be 12 for a sink that
+> > supports YCbCr 4:2:2 but not 12bpc RGB.
+> 
+> It's another discussion we had in an earlier version, but yeah we lack
+> the infrastructure to support those for now. I still believe it would
+> require an increased max_bpc to select YUV422, otherwise things would be
+> pretty inconsistent with other YUV formats.
+
+Ideally I'd like to know the actual color depth of the panel
+independently of the supported signal color depths. Unfortunately
+I don't think EDID gives us that. Can't recall if DisplayID might
+have something a bit more sensible.
+
+Given how info->bpc works right now, I suppose it would make sense
+to bump it up to 12 when 4:2:2 is supported. But I've not thought
+through the actual implications such a change.
+
+> But yeah, we need to provide a hook to report we don't support RGB >
+> 8bpc for HDMI 1.4 devices. Which goes back to the previous question
+> actually, I believe it would still provide value to support YUV422 on
+> those devices, with something like:
+> 
+> for (bpc = max_bpc; bpc >= 8; bpc -= 2) {
+>     if (!connector->hdmi->funcs->validate_config(mode, RGB, bpc))
+>        continue;
+> 
+>     // Select RGB with bpc
+>     ...
+> }
+> 
+> if (connector->hdmi->funcs->validate_config(mode, YUV) &&
+>     hdmi_try_format_bpc(..., mode, 12, YUV422) {
+>    // Select YUV422, 12 bpc
+>    ...
+> }
+> 
+> What do you think?
+
+Since 8bpc RGB must always be supported this looks
+like dead code to me.
+
+-- 
+Ville Syrjälä
+Intel
 
