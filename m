@@ -1,216 +1,108 @@
-Return-Path: <linux-kernel+bounces-106517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106518-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCF5587EFBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:29:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id EABC987EFC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:30:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1777C284297
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:29:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2656F1C21F74
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:30:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC4DF56445;
-	Mon, 18 Mar 2024 18:29:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C85A656455;
+	Mon, 18 Mar 2024 18:30:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxieFLyG"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QlX7pZNQ"
+Received: from mail-oo1-f44.google.com (mail-oo1-f44.google.com [209.85.161.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C8B855C07;
-	Mon, 18 Mar 2024 18:29:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C383D52F79;
+	Mon, 18 Mar 2024 18:30:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710786553; cv=none; b=HEhc/HPyfDtzMPoKq62otdwBBzg1I2FVXUE/wRGvr/bNd2UbRgiLEhHW6VdmKx/Ac9jT7JXOc+zOJgrK9rPMGds1sWaMfaUwMueLvmeLX+JyObbdxZw4vzGfhFH+azjBOYLUqKpSxxYJX8REFR7PcTvVWeH15lQFh4RjaRw1ZtY=
+	t=1710786605; cv=none; b=V9mxBxV1y0kaiyxvDYdtuT8bsCUWSMmTl3KDCTFBGoQHvZFa7nC6YYaB+HqF8NiyuI6gSco84k6q856p+dxLc+EkHv/7hmAPQhGec2s74uyeU4CMMxxF1gLiCFXv3WBptKM6uQCvO/n3N2yEagufQTEW1tCcT/2QqRbUKO0aR0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710786553; c=relaxed/simple;
-	bh=4BiSnBXF2XntdujNulUT7s4tD/RrjPjxiNCH97QXwF4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=rqfPOvb8r4uv5uvzA+VHajZ9W5kmWhq3Uk2PiITfRgu0R1AXk4x+aDKWDybw2HT9GoZ4ggin8YXDHsbr46nLRD75Yu3iC2AvDeJX2r+xDTxgVC392eUpv1rVvjqyxi8u3YGFeMIn3fcvszANWa1JHtgwIhllrfhzSNZITyNDKr4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxieFLyG; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1689FC433F1;
-	Mon, 18 Mar 2024 18:29:11 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710786552;
-	bh=4BiSnBXF2XntdujNulUT7s4tD/RrjPjxiNCH97QXwF4=;
-	h=From:Date:Subject:To:Cc:From;
-	b=rxieFLyGRT76cOB5hREmWHq0exWv5OwSlzGrKK5pMe3PZjAu6CbZjnRHQK20eL3di
-	 1r8T5wJ/UYZ2+fEBtir0gbCgsIs1JlI9mno8d0rpCIDTEv1DUzsEGPQjBLgF+i50ke
-	 witk82ptXef2U4o8mVt+g0MoCnii8ghNuVEea3KacErBxdqoMDD0W1P2szHwTRT1oL
-	 5meV8a1N0/3vO+nsZfkmOVe+nEERtEN1MYu5yOTxdoz94RhsOtiN0n01cbAXdqhd1h
-	 kbVwOKkjYpHCKw+wGLYTAvg5lMovBKBGo/QpPsh/Y9ajmV0R/+oZky0q4ZFaaDExh5
-	 0diPrkn3HtYVw==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Mon, 18 Mar 2024 14:28:50 -0400
-Subject: [PATCH RFC] ntfs3: remove atomic_open
+	s=arc-20240116; t=1710786605; c=relaxed/simple;
+	bh=Ynp8bnG6+buv71x1Nn3/pZNzAA8yZum+DGfVX7g8v38=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=YafSttsYsfflzmA/phdw9R6KEVD6lzT5C30pC8aboq9Cvwv5ja+Tg7OdAxLFlWEO+fDQOYgJVRtGNWk26/8OwHCbBC71Zyw3CHGLIetQOwbtQUqKQqKICEwTvNyY1dLJ/wdHJ+u8ccHEDB3jRvCSvm9YifH/OH0HD3u68zJN9s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QlX7pZNQ; arc=none smtp.client-ip=209.85.161.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f44.google.com with SMTP id 006d021491bc7-5a1bd83d55dso1792183eaf.2;
+        Mon, 18 Mar 2024 11:30:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710786602; x=1711391402; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=PaPJt/hu7G4f/gTzUz3Um2wpMJFHsYNVfGbPZ6hAVDU=;
+        b=QlX7pZNQl8C1iZuGK/1lrdQXagw4YaqJRld6fQpT4rclar1m/HSZ8dOrC5278Ts72J
+         3Bytlb0VX2+MBGSmhHxX+rj1eLBvOr8YDdjSksT/s5NtbMcQzpnApKIKY4JfxskO64jr
+         kQham7O7t41eY4VS0fET0BjZqVTENc/oRb1PtIpVyWSJ/VyBOXKulBVTK/090tfEPJAh
+         oJ5wLZ+MiSoHNvds+hY6RJl9zLZwfF2SZFypuj7iPhMRc2H4KKO0cAkUy/55MK1okou0
+         wswhQRQ3OFjkwCE8ZIZ5v5gEmu/dlbRyQe/2hjx0WE09g9wEs2vwmLqa2RbTN0/NkOf5
+         claQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710786602; x=1711391402;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=PaPJt/hu7G4f/gTzUz3Um2wpMJFHsYNVfGbPZ6hAVDU=;
+        b=fu8uieOalurtv46+xD+JhIcDxkvksX/I0SdJAEYjcRJS1iiissfqTTMQ9FZ/JnSygx
+         DPGjc0Kncm6dx+hDAUYpdhDXaN9M4E1/0iuoIBMNfWh5w6+hG/AXHnnbRp760RbAt5Lo
+         r3/HDFPEZIexFaYCyTYSr6Ii4HIClBBClBiXfN0VIj/klYVlyKoGHx8HHNOwJwk+6SoX
+         16iYrTeE5PoUpq80iccJ/VT8qz35AElKS8yNpjxIIMaYbUg+a3RezybCPe+Y7eeYfWLD
+         33WmYpCj81vlqe1KezSp3yUYIXFCHZByZgqpTy553oa0nLOc7vp61TH+bAuE8c7fxvA9
+         l+cQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVxLbLmChMYuULT237oaJ56KyV+0JeBXYgaLx0m/5nYRdBJrjVcf6gGjrHWz+la8X2NACz79iqsqUYqxravBgOXNZU9FHMZ84/9a7Ryd3UJxyM2YtLhlpRJSfe9C+2pTEw3aVvlk6g=
+X-Gm-Message-State: AOJu0Yw2LCpOvHLjsMT3y78ONMim0QxRoyq3H+Syv6el3iQOwOAPyNMi
+	xleoYQTb4KDY+4KWSh3EcW9sBYtpUZvFMBjT1FGiqUVcbTCmhC7T
+X-Google-Smtp-Source: AGHT+IF8xiLUm5ZYOFopZ7ZCcIOH7LS23jILG8PxDkK5d3PlqHTVcf/ilXTgyuhGaFAODtP8m0RFbg==
+X-Received: by 2002:a05:6358:52cd:b0:17e:694d:57f9 with SMTP id z13-20020a05635852cd00b0017e694d57f9mr10760688rwz.31.1710786601681;
+        Mon, 18 Mar 2024 11:30:01 -0700 (PDT)
+Received: from five231003 ([2405:201:c006:31f8:807c:8911:659b:1495])
+        by smtp.gmail.com with ESMTPSA id s26-20020a65691a000000b005e838b99c96sm3770527pgq.80.2024.03.18.11.29.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 11:30:01 -0700 (PDT)
+Date: Mon, 18 Mar 2024 23:59:55 +0530
+From: Kousik Sanagavarapu <five231003@gmail.com>
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: linux-kernel@vger.kernel.org, linux-spi@vger.kernel.org,
+	linux-hwmon@vger.kernel.org, Mark Brown <broonie@kernel.org>,
+	Jean Delvare <jdelvare@suse.com>,
+	Shuah Khan <skhan@linuxfoundation.org>,
+	Javier Carrasco <javier.carrasco.cruz@gmail.com>
+Subject: Re: [PATCH v2 2/2] hwmon: lm70: fix links in doc and comments
+Message-ID: <ZfiII_4xMnemzWqi@five231003>
+References: <20240318130840.74589-1-five231003@gmail.com>
+ <20240318154540.90613-1-five231003@gmail.com>
+ <20240318154540.90613-3-five231003@gmail.com>
+ <6c8b2699-5488-4ae0-8d78-59bcb2030a2e@roeck-us.net>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240318-ntfs3-atomic-open-v1-1-57afed48fe86@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAOKH+GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDY0ML3byStGJj3cSS/NzMZN38gtQ8XYPkZEtzyxTzZKASJaC+gqLUtMw
- KsJnRSkFuzkqxtbUAMe9nWmgAAAA=
-To: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>
-Cc: Alexander Viro <viro@zeniv.linux.org.uk>, 
- Christian Brauner <brauner@kernel.org>, ntfs3@lists.linux.dev, 
- linux-kernel@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=3536; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=4BiSnBXF2XntdujNulUT7s4tD/RrjPjxiNCH97QXwF4=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl+Ify5+ag2l9CjEgDqMW/OZyFDhQDA+SVLVzKv
- p5Fta4VoIyJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZfiH8gAKCRAADmhBGVaC
- FY7wD/0XW6LwAkm0hdlpMO20mie+EqZnQNvNoXjZWMXJcV+rYPS1oWHc3eRlh3aseEGkXSWBJ3r
- djujh2o+yWLj2axMk+k9ZEdxRaEMgh0dnsrgdOi0Ot+GqNUZih24E7slSwm+5eE0oz40J3LjNm5
- Y2uj4pD7FdrrXf0CVLQpV7O02nLIw9/dQLAuSs0vQUZYxx+OaW+r9DeJXblaCDcrKqHsJKF07v5
- f6Stqsen8Fi6XVGOCdwgF2FyEVBwn+nexirtbYcLlpibP6/WKEqkIn7ZlyPLf0IYz5NXRKua4z5
- hgJgC0yyi/W0RMoN6/pUDhOocROGouEbSEFulzhp+yP01aQbEfE2Ceh1E/BHyyUrmzp4NcvRvUS
- tejN9LIXJzCeswyo1Sj/CKhZ0Z2MQPVjEhBVFRm0uZTUSE3WBUM9bLtTSFKmF6fNDeMApGogdmr
- 5TTQNh8cDhDk0F+XHoGiaiLj6kvWW05XuWzrEsUHi6MIOFriHIh2KkdjXJsmK7VX4vbsSB0IdNg
- CtrQIqQmdt34q4LvHnCP1WvuFC7WCzLc94j8tNl4X5metw9u8MpcWzDVAi/1ny/8wL7Lp2RLM0q
- iu/Aff89joy1pkWwcUP7ygjyucknK4AerThCyPAAHc34bFZg0lBebP32+XVidJbikmX6/Pn0kzg
- p1YxMrzKOZLj92Q==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <6c8b2699-5488-4ae0-8d78-59bcb2030a2e@roeck-us.net>
 
-atomic_open is an optional VFS operation, and is primarily for network
-filesystems. NFS (for instance) can just send an open call for the last
-path component rather than doing a lookup and then having to follow that
-up with an open when it doesn't have a dentry in cache.
+On Mon, Mar 18, 2024 at 11:11:29AM -0700, Guenter Roeck wrote:
+> On Mon, Mar 18, 2024 at 09:08:35PM +0530, Kousik Sanagavarapu wrote:
+> > Update links in the documentation and in-code comments which point to
+> > the datasheet.
+> > 
+> > The current links don't work because National Semiconductor (which is
+> > the manufacturer of this board and lm70) has been a part of Texas
+>                       ^^^^^^^^^^
+> 
+> Is this a leftover from the other patch ? The lm70 driver supports
+> the LM70 chip, not a specific board.
 
-ntfs3 is a local filesystem however, and its atomic_open just does a
-typical lookup + open, but in a convoluted way. atomic_open will also
-make directory leases more difficult to implement on the filesystem.
+Yeah, it should be "the manufacturer of lm70".  Thanks for spotting.
 
-Remove ntfs_atomic_open.
-
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Am I missing something about why ntfs3 requires an atomic_open op? In
-any case, this is only lightly tested, but it seems to work.
----
- fs/ntfs3/namei.c | 90 --------------------------------------------------------
- 1 file changed, 90 deletions(-)
-
-diff --git a/fs/ntfs3/namei.c b/fs/ntfs3/namei.c
-index 084d19d78397..edb6a7141246 100644
---- a/fs/ntfs3/namei.c
-+++ b/fs/ntfs3/namei.c
-@@ -358,95 +358,6 @@ static int ntfs_rename(struct mnt_idmap *idmap, struct inode *dir,
- 	return err;
- }
- 
--/*
-- * ntfs_atomic_open
-- *
-- * inode_operations::atomic_open
-- */
--static int ntfs_atomic_open(struct inode *dir, struct dentry *dentry,
--			    struct file *file, u32 flags, umode_t mode)
--{
--	int err;
--	struct inode *inode;
--	struct ntfs_fnd *fnd = NULL;
--	struct ntfs_inode *ni = ntfs_i(dir);
--	struct dentry *d = NULL;
--	struct cpu_str *uni = __getname();
--	bool locked = false;
--
--	if (!uni)
--		return -ENOMEM;
--
--	err = ntfs_nls_to_utf16(ni->mi.sbi, dentry->d_name.name,
--				dentry->d_name.len, uni, NTFS_NAME_LEN,
--				UTF16_HOST_ENDIAN);
--	if (err < 0)
--		goto out;
--
--#ifdef CONFIG_NTFS3_FS_POSIX_ACL
--	if (IS_POSIXACL(dir)) {
--		/*
--		 * Load in cache current acl to avoid ni_lock(dir):
--		 * ntfs_create_inode -> ntfs_init_acl -> posix_acl_create ->
--		 * ntfs_get_acl -> ntfs_get_acl_ex -> ni_lock
--		 */
--		struct posix_acl *p = get_inode_acl(dir, ACL_TYPE_DEFAULT);
--
--		if (IS_ERR(p)) {
--			err = PTR_ERR(p);
--			goto out;
--		}
--		posix_acl_release(p);
--	}
--#endif
--
--	if (d_in_lookup(dentry)) {
--		ni_lock_dir(ni);
--		locked = true;
--		fnd = fnd_get();
--		if (!fnd) {
--			err = -ENOMEM;
--			goto out1;
--		}
--
--		d = d_splice_alias(dir_search_u(dir, uni, fnd), dentry);
--		if (IS_ERR(d)) {
--			err = PTR_ERR(d);
--			d = NULL;
--			goto out2;
--		}
--
--		if (d)
--			dentry = d;
--	}
--
--	if (!(flags & O_CREAT) || d_really_is_positive(dentry)) {
--		err = finish_no_open(file, d);
--		goto out2;
--	}
--
--	file->f_mode |= FMODE_CREATED;
--
--	/*
--	 * fnd contains tree's path to insert to.
--	 * If fnd is not NULL then dir is locked.
--	 */
--	inode = ntfs_create_inode(file_mnt_idmap(file), dir, dentry, uni,
--				  mode, 0, NULL, 0, fnd);
--	err = IS_ERR(inode) ? PTR_ERR(inode) :
--			      finish_open(file, dentry, ntfs_file_open);
--	dput(d);
--
--out2:
--	fnd_put(fnd);
--out1:
--	if (locked)
--		ni_unlock(ni);
--out:
--	__putname(uni);
--	return err;
--}
--
- struct dentry *ntfs3_get_parent(struct dentry *child)
- {
- 	struct inode *inode = d_inode(child);
-@@ -612,7 +523,6 @@ const struct inode_operations ntfs_dir_inode_operations = {
- 	.setattr	= ntfs3_setattr,
- 	.getattr	= ntfs_getattr,
- 	.listxattr	= ntfs_listxattr,
--	.atomic_open	= ntfs_atomic_open,
- 	.fiemap		= ntfs_fiemap,
- };
- 
-
----
-base-commit: 0a7b0acecea273c8816f4f5b0e189989470404cf
-change-id: 20240318-ntfs3-atomic-open-0cc979d7c024
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Should I fix and resend this specific patch as v3 or would you edit it
+while pulling?
 
