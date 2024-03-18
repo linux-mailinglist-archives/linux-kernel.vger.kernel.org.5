@@ -1,102 +1,102 @@
-Return-Path: <linux-kernel+bounces-106692-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106693-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 48BDB87F1FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:24:10 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C774687F211
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:25:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CF973282037
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:24:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 674BE1F220AF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:25:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0339D58AA2;
-	Mon, 18 Mar 2024 21:23:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D7C6858AAF;
+	Mon, 18 Mar 2024 21:25:18 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="lfdCBJjP"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QB7YwHLe"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E7DB758230;
-	Mon, 18 Mar 2024 21:23:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DB8841C6C
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710797027; cv=none; b=OwxNuT/5L2yRW7L6/mO+/3A/5WVFPe15rlL7hqzbK6YAonHvOaCAZNS955Q2T1AdzJTUXhfto1U1KmiLiE6xt+RtTycZ4a14Zbzqeyq1yY2hvTf79DTEGGSymOyaApRZESLLXS3ZWYjZLrSXyYylm/FWONjjLskQlJYJ1WOxq0w=
+	t=1710797118; cv=none; b=lxHry2oPTxtEQsW0WDSiZ1aiWN6uX1jjBj8WXf9wXgZ8dbyxP9k6uNQNYTHU1sgWlmdxyeppPbeVCddaR4hOnDmXP01ho+V5bHqz0rwE04cMfMO66vohEhVEIMU5HwwDRasYkfYJ5hC6R4U4Q49VnWwwDHQmWhGVorFZEwN8++c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710797027; c=relaxed/simple;
-	bh=bj4M62RiByQRlTBjZPQ8rXvS3glPzrIJAWqA7mRKj7k=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=g6Os3Dk22xTN7Xv1bbq3Gz96tN0pGP0kuJJyhhDj8x9gnl/eGoljssW+lPGC2+8vb+sEUxnfoVNwNBeSYU70rZlIKTMYV1xJuYQ4UFOqG4Bja9BjAP0T3WYmF3paViXjs+E7OUBiewUXc9dRHl+O2mA+sT2mvBPIo4tqPoHQ+oE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=lfdCBJjP; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710797022;
-	bh=TVqaAIoEkwXM0+zXFmchwHuGTFez6sg5JrLqF4O6pUA=;
-	h=Date:From:To:Cc:Subject:From;
-	b=lfdCBJjPOCO83Gx3TyeSX9a5PWCKnFKoDBmC1oylRsk8k9l7hvhsFPAzYtLJDzHap
-	 f6wYfzq0Gmni3Jg15mKKHO73NRWp5f5GCir/z2NM4wpIjDyI5fkaL3HZ4+qF9dUayA
-	 qsvdPHXld99v4aZD5Fr2V7tO7Lm2TjL08uWPWokmKNG3z33ASJ6zUZvz/llytXGpbk
-	 dQSO4aGS0rOSHAjPHqxSMExLs0mw0x4AbkywJ0oz13aJHfs+ITS8iymkCfZt9Tcsza
-	 VHuulkN963LYJQCZSTZ0hhJKaa9v6XWzzrm+ekkot/8yrZyUAtT40jxjuf/Sy9omXh
-	 mXKVKrfMloNiw==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
+	s=arc-20240116; t=1710797118; c=relaxed/simple;
+	bh=1yYAUVXg471XBaEkdzLqewpUZFjkuA6bdcdrf5Xw5wA=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=GBCu8pXUZMOzPYOBQ2hko7IPoplpYoeIXVax+pU+hFm0OUGJMeKsKhlDflxoQ6Q35wmGN50TvvAt3w/jU7tS5Q9fcp8juhcJn4TyFTQ/JGfPt4av6gVeLO04m3D7ArkgQD4ilVgyEqsRyF5hksFSsPZn96DqFfrMA9iQ5CtLrdU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QB7YwHLe; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710797115;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=UmM1fPWNhj6tjWD2n7+gLLrX2EVWqRmyZvqXhbV7HXk=;
+	b=QB7YwHLeOSJa56FCGCGo80QdVcHq/gwpTnfaPKOvnoF4/TLLOv4tn3rkEtdfocl23nh2DP
+	GdOWSjMpwQKKudK4+zoEctrIFZFGwahOyBEjozuPy11BrIePCQic0ILEXffcqI9BVllN0n
+	AIwbYLWScEcI/cow5aJIyNJReVNLfN0=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-622-2vGLZnkgOBiJpvF1xb522w-1; Mon, 18 Mar 2024 17:25:13 -0400
+X-MC-Unique: 2vGLZnkgOBiJpvF1xb522w-1
+Received: from smtp.corp.redhat.com (int-mx06.intmail.prod.int.rdu2.redhat.com [10.11.54.6])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4Tz7Bk5QMjz4wck;
-	Tue, 19 Mar 2024 08:23:42 +1100 (AEDT)
-Date: Tue, 19 Mar 2024 08:23:41 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Christian Brauner <brauner@kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>, Linux Next
- Mailing List <linux-next@vger.kernel.org>
-Subject: linux-next: duplicate patch in the vfs-brauner tree
-Message-ID: <20240319082341.51a1d007@canb.auug.org.au>
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3218D101A552;
+	Mon, 18 Mar 2024 21:25:13 +0000 (UTC)
+Received: from redhat.com (unknown [10.22.8.29])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id E566E2166B32;
+	Mon, 18 Mar 2024 21:25:12 +0000 (UTC)
+Date: Mon, 18 Mar 2024 16:25:07 -0500
+From: David Teigland <teigland@redhat.com>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, gfs2@lists.linux.dev
+Subject: [GIT PULL v2] dlm fixes for 6.9
+Message-ID: <ZfixMxRWFNmkf-Ta@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/qfwbP+BDQYswKTQ.emHQKGl";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.6
 
---Sig_/qfwbP+BDQYswKTQ.emHQKGl
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Hi Linus,
 
-Hi all,
+Please pull dlm fixes from tag:
 
-The following commit is also in Linus Torvalds' tree as a different commit
-(but the same patch):
+git://git.kernel.org/pub/scm/linux/kernel/git/teigland/linux-dlm.git dlm-6.9
 
-  9ddf5fe47f2e ("fs,block: get holder during claim")
+(For v2 I recreated the tag with the same name as before, but now realize
+I probably should have left it and used a new tag name.)
 
-This is commit
+I dropped the commit with the bad atomic usage, and replaced it with two
+other commits: the first reverts the unnecessary change that began using
+atomic_t for lkb_wait_count, and the second adds comments to the recovery
+code that forcibly resets the wait_count state.
 
-  59a55a63c246 ("fs,block: get holder during claim")
+Thanks,
+Dave
 
-in Linus' tree.
 
---=20
-Cheers,
-Stephen Rothwell
+Alexander Aring (1):
+      dlm: fix user space lkb refcounting
 
---Sig_/qfwbP+BDQYswKTQ.emHQKGl
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+David Teigland (2):
+      dlm: revert atomic_t lkb_wait_count
+      dlm: add comments about forced waiters reset
 
------BEGIN PGP SIGNATURE-----
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX4sN0ACgkQAVBC80lX
-0Gz9+gf9EXH//dUSCHIpiGr+TuOKPJx4EkbbqZ2iDQnsRHatxSGxETNb9BJzxAUy
-/F/OD6EQfc+6GkAWmLr8kBKA30iOFEIWlYytD8K2oDckuwS8+diK0qSz4e+8lem2
-LhJJY4dI4uAcJ0TxaXhAju+cBVNq72+d+kh22lGmfFTQx28AWkdD/GBnC7+rkM+N
-q9n8wO9a0adAASqITF+Hfsaj87PsybNZIcVj4R7zx2ieG/NTowPC+WE04I7LtdQ3
-wFGPxXEFXUD7ZXRx+traypS4j+QYJ4HMI9jBjJlu3O20eOenUJHm2yOOo3foWLSQ
-wWhscRyHW/ht+rD45t5vLkDASQSbeA==
-=fJzf
------END PGP SIGNATURE-----
+ fs/dlm/dlm_internal.h |   2 +-
+ fs/dlm/lock.c         | 114 ++++++++++++++++++++++++++++++++++----------------
+ fs/dlm/user.c         |  10 ++---
+ 3 files changed, 84 insertions(+), 42 deletions(-)
 
---Sig_/qfwbP+BDQYswKTQ.emHQKGl--
 
