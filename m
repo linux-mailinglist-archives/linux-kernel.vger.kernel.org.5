@@ -1,98 +1,163 @@
-Return-Path: <linux-kernel+bounces-106106-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106107-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1C6687E93D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:21:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0574987E941
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:22:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2DF90B2167F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:21:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 619A6282C89
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:22:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C14D2381B0;
-	Mon, 18 Mar 2024 12:21:40 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 013DFA2A
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:21:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94491381C6;
+	Mon, 18 Mar 2024 12:22:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Ln+WCaVd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D53F9A2A;
+	Mon, 18 Mar 2024 12:22:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710764500; cv=none; b=qgpuDkCDRQZG0/OuyZd97M7Pd/pPaSOnzdLFtco6Br+wAvsWczN+fmwIHQLgrv1uBtjzTlBvXIiqcsdlVje23a7/0Z9ZSF89YPxNpSSAtptWOKW15IkOe3MTi+t7eXDIFkq6VqtiLq5inb8EbCRQd+ZnIFsTLAAD02NIhWR/gRo=
+	t=1710764567; cv=none; b=F8nngUOg2d3h8yyhPj0UcEJ3l1kDPRH0a2yckMgTNdZUA8tWzyZr+wGvYVBCCZqa8Ln032NSJxq1/Spr85CZJyv7RZ9Ty3EvojycsE6xJ6qmK7Dq4gVfiLHa6kVpH00H2FVENPJiOV2b6HIxK7NR1SU7c4m577tjRzD0pCYE7a8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710764500; c=relaxed/simple;
-	bh=QJgUMhgnGoBqLU3vlvcKVDzr6lGw90lJFubuJOd9aNQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qTA6j2h4ZR3/NB0Q3IbTkoQ19vsPG5PdB7wQQUdm62f4YHGnhcWE4OeHVoUagkN37lwFV2fk/qKDQ+UiGcmHyyoPeFNBs9PoIZ0Z5gNWYgEA6SIiLjqzleLKIb3cJx2vTGUtDGdSYg7geLtBeR+cgqYiO5HIre5NlnsPJ0KKgmA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 2CAD0DA7;
-	Mon, 18 Mar 2024 05:22:12 -0700 (PDT)
-Received: from [10.57.12.69] (unknown [10.57.12.69])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 073553F762;
-	Mon, 18 Mar 2024 05:21:34 -0700 (PDT)
-Message-ID: <794bff85-4b59-42e5-ad6c-2a39609fe74f@arm.com>
-Date: Mon, 18 Mar 2024 12:21:35 +0000
+	s=arc-20240116; t=1710764567; c=relaxed/simple;
+	bh=un1g+YfgVkYFs27YaapA86lET7/7qDXX/87foF3/4jQ=;
+	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
+	 In-Reply-To; b=YtZdW9emqGJk0qviqH+fahG6/1W/YLJlqjOryrmhCpqH5arkpZLfog+1+Rj3AGFjk7K4Ea3F7PTEQsZc/9xKC/IqTZOiMwI/uD676RTaO0RyCeN3gatf4U0cjHpOQFuFwYrHrgwmlvMmixz6uSHUXIR71O0FWDWQw2wrYCQYs+4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Ln+WCaVd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D97ADC433F1;
+	Mon, 18 Mar 2024 12:22:46 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710764567;
+	bh=un1g+YfgVkYFs27YaapA86lET7/7qDXX/87foF3/4jQ=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=Ln+WCaVdNRqXaJFEuNS5IoXa4rRybNMBmx+LnPLdoJtQJ4xqmpdcYJHtwq71mfprs
+	 KdfRAPkcJDqETrkrxAeuexH4AwM/KC+fDT4tFJ1PjqK4U2H4DBxZ0uiqMMz0W8msIY
+	 whR+8woYzhVQN24/90IGy2hWtUoWfHD+lN1hRiS84pO/zXHG1d3QVM9RfiXDkCY+hZ
+	 pAPYFgNtweCNjG9uMaWNln7uobtZUG2Ul3pwmZdrbwpXYUnD77+NqPzfCKDPzwH+XJ
+	 W6aQtPsJsnE2ii5mWbSlzK8eyDf1uj35iYzKLnJ8ZF4jsax2P7EOMNCfCIcwGtVwOr
+	 5ETGK47CYH+pA==
+Content-Type: multipart/signed;
+ boundary=5b1cdbb2bfff3981f7fa73881728b1e490b4ec8b8dbb9cc9a77399e55bd9;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
+Date: Mon, 18 Mar 2024 13:22:39 +0100
+Message-Id: <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
+Cc: <jkridner@beagleboard.org>, <robertcnelson@beagleboard.org>,
+ <lorforlinux@beagleboard.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Nishanth Menon" <nm@ti.com>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>, "Derek Kiernan"
+ <derek.kiernan@amd.com>, "Dragan Cvetic" <dragan.cvetic@amd.com>, "Arnd
+ Bergmann" <arnd@arndb.de>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Vaishnav M A" <vaishnav.a@ti.com>, "Mark
+ Brown" <broonie@kernel.org>, "Johan Hovold" <johan@kernel.org>, "Alex
+ Elder" <elder@kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/TEXAS
+ INSTRUMENTS K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "open
+ list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>, "moderated list:GREYBUS
+ SUBSYSTEM" <greybus-dev@lists.linaro.org>, "Vaishnav M A"
+ <vaishnav@beagleboard.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Ayush Singh" <ayushdevel1325@gmail.com>, "open list"
+ <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-2-ayushdevel1325@gmail.com>
+In-Reply-To: <20240317193714.403132-2-ayushdevel1325@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] drm/panfrost: Only display fdinfo's engine and cycle tags
- when profiling is on
-Content-Language: en-GB
-To: =?UTF-8?Q?Adri=C3=A1n_Larumbe?= <adrian.larumbe@collabora.com>,
- Boris Brezillon <boris.brezillon@collabora.com>,
- Rob Herring <robh@kernel.org>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>
-Cc: kernel@collabora.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <20240316231306.293817-1-adrian.larumbe@collabora.com>
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <20240316231306.293817-1-adrian.larumbe@collabora.com>
+
+--5b1cdbb2bfff3981f7fa73881728b1e490b4ec8b8dbb9cc9a77399e55bd9
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
 
-On 16/03/2024 23:13, Adrián Larumbe wrote:
-> If job accounting is disabled, then both fdinfo's drm-engine and drm-cycle
-> key values will remain immutable. In that case, it makes more sense not to
-> display them at all to avoid confusing user space profiling tools.
-> 
-> Signed-off-by: Adrián Larumbe <adrian.larumbe@collabora.com>
-
-Reviewed-by: Steven Price <steven.price@arm.com>
-
+On Sun Mar 17, 2024 at 8:37 PM CET, Ayush Singh wrote:
+> Add DT bindings for mikroBUS interface. MikroBUS is an open standard
+> developed by MikroElektronika for connecting add-on boards to
+> microcontrollers or microprocessors.
+>
+> mikroBUS is a connector and does not have a controller. Instead the
+> software is responsible for identification of board and setting up /
+> registering uart, spi, i2c, pwm and other buses. Thus it needs a way to
+> get uart, spi, i2c, pwm and gpio controllers / adapters.
+>
+> A mikroBUS addon board is free to leave some of the pins unused which
+> are marked as NC or Not Connected.
+>
+> Some of the pins might need to be configured as GPIOs deviating from thei=
+r
+> reserved purposes Eg: SHT15 Click where the SCL and SDA Pins need to be
+> configured as GPIOs for the driver (drivers/hwmon/sht15.c) to work.
+>
+> For some add-on boards the driver may not take care of some additional
+> signals like reset/wake-up/other. Eg: ENC28J60 click where the reset line
+> (RST pin on the mikrobus port) needs to be pulled high.
+>
+> Here's the list of pins in mikroBUS connector:
+> Analog - AN
+> Reset - RST
+> SPI Chip Select - CS
+> SPI Clock - SCK
+> SPI Master Input Slave Output - MISO
+> SPI Master Output Slave Input - MOSI
+> VCC-3.3V power - +3.3V
+> Reference Ground - GND
+> PWM - PWM output
+> INT - Hardware Interrupt
+> RX - UART Receive
+> TX - UART Transmit
+> SCL - I2C Clock
+> SDA - I2C Data
+> +5V - VCC-5V power
+> GND - Reference Ground
+>
+> Additionally, some new mikroBUS boards contain 1-wire EEPROM that contain=
+s
+> a manifest to describe the addon board to provide plug and play
+> capabilities.
+>
+> Link: https://www.mikroe.com/mikrobus
+> Link:
+> https://download.mikroe.com/documents/standards/mikrobus/mikrobus-standar=
+d-specification-v200.pdf
+> mikroBUS specification
+> Link: https://www.mikroe.com/sht1x-click SHT15 Click
+> Link: https://www.mikroe.com/eth-click ENC28J60 Click
+> Link: https://www.mikroe.com/clickid ClickID
+>
+> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
+> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
 > ---
->  drivers/gpu/drm/panfrost/panfrost_drv.c | 10 ++++++----
->  1 file changed, 6 insertions(+), 4 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/panfrost/panfrost_drv.c b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> index eec250114114..ef9f6c0716d5 100644
-> --- a/drivers/gpu/drm/panfrost/panfrost_drv.c
-> +++ b/drivers/gpu/drm/panfrost/panfrost_drv.c
-> @@ -550,10 +550,12 @@ static void panfrost_gpu_show_fdinfo(struct panfrost_device *pfdev,
->  	BUILD_BUG_ON(ARRAY_SIZE(engine_names) != NUM_JOB_SLOTS);
->  
->  	for (i = 0; i < NUM_JOB_SLOTS - 1; i++) {
-> -		drm_printf(p, "drm-engine-%s:\t%llu ns\n",
-> -			   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
-> -		drm_printf(p, "drm-cycles-%s:\t%llu\n",
-> -			   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
-> +		if (pfdev->profile_mode) {
-> +			drm_printf(p, "drm-engine-%s:\t%llu ns\n",
-> +				   engine_names[i], panfrost_priv->engine_usage.elapsed_ns[i]);
-> +			drm_printf(p, "drm-cycles-%s:\t%llu\n",
-> +				   engine_names[i], panfrost_priv->engine_usage.cycles[i]);
-> +		}
->  		drm_printf(p, "drm-maxfreq-%s:\t%lu Hz\n",
->  			   engine_names[i], pfdev->pfdevfreq.fast_rate);
->  		drm_printf(p, "drm-curfreq-%s:\t%lu Hz\n",
-> 
-> base-commit: 97252d0a4bfbb07079503d059f7522d305fe0f7a
+>  .../connector/mikrobus-connector.yaml         | 113 ++++++++++++++++++
 
+See also
+https://lore.kernel.org/r/YmFo+EntwxIsco%2Ft@robh.at.kernel.org/
+
+Looks like this proposal doesn't have the subnodes. How do you
+attach a kernel driver to it's spi port for example? Only through
+the manifest files?
+
+-michael
+
+--5b1cdbb2bfff3981f7fa73881728b1e490b4ec8b8dbb9cc9a77399e55bd9
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfgyDxIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQzcodo7VsRvumDQD8CZkXa8J8MUqzwei97TL1VRyNWj2W9lIy
+UvuoJENGh0oBAJxlj4QiS6iQAYFIzlfq+qxOHyAaZxYmbMrXfMzOEV0C
+=Uh8v
+-----END PGP SIGNATURE-----
+
+--5b1cdbb2bfff3981f7fa73881728b1e490b4ec8b8dbb9cc9a77399e55bd9--
 
