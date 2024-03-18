@@ -1,185 +1,196 @@
-Return-Path: <linux-kernel+bounces-106595-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106596-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7CBD387F0C2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:03:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6BD6387F0C5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:04:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0E76D1F23DA2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:03:28 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7DA7FB22CA3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:04:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D88C35787B;
-	Mon, 18 Mar 2024 20:02:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4EC2E5787B;
+	Mon, 18 Mar 2024 20:04:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="UR4BTesF"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2090.outbound.protection.outlook.com [40.107.21.90])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="InxVHWpS"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 11C5657879;
-	Mon, 18 Mar 2024 20:02:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.90
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710792171; cv=fail; b=mkod9/qpVhNbz4VGbf8CtEvdtGAE2WlFuwdUGOJtOP7U1yx6GHVqUvcYQbxOMOeCmOjbvyiKZvpZNAT3CTxhF6e8N6s0BnIf7RVxUsukORiqifSlgg1i/JKTwI6MZh64DchhbXMyBw9Lf3b+hS/X5QsYpn9F8u5ssEyas13b8H4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710792171; c=relaxed/simple;
-	bh=JTojZFCK65KDJqbhTqasg1kl3O41gBUBv+kaprN9iww=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Qeo89Q6kbQUj6705JTt8kSBVlLARTF3hvCQQkbE6My2Afc5mMc4Qx80a72sF8nDjaXr3Igl4RN6zC7X8ZtsAAsVN37Y1+HmK9f6rhTEFw00ihbJuWHYPIHS3CHLihg/iRBYWI4d2Un5kSwPxc5Fvof3WbB7WSNWnynwlaOZIHAw=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=UR4BTesF; arc=fail smtp.client-ip=40.107.21.90
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=X/SsSkMD5ezqa9IjhBw+4ktXuhQEs7lIKplejQbZD2jaky5bjxQIQR3HHBfn0XSIU+JQioWtY9uWtNDcUGw+k7NFDNxapWhSMiBL5/87F4v+EBGk9MyJ+/9ndk5A2++WMMbcdj+pAO8Vl7xFZutjoGOMphUtkT4si+2hHMIMGVzMQPfHa5s7wdW2Me/V85LwWaYHeJ687Nb3se2hkdpOip7fu/MIZqq+lPmvadZRM+A863xv1gWWWWTR/AqIOLFqGGA2cuffLWRB3UhSw3WmdkTKecQSf4vTOE33r5sB2E6hLx6osryYdZx+0DpJ1JNjd+/IGWIK06d1ecVuMzanHw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=L6Dt2mWJHL534nYeNRMUGwAviyOijujLkez0rZUPmnU=;
- b=aIFbSdQA2h/H5JEEYUdxZ9q3xt2f3t1oM0G6hNydMzT4uORxolV/Jke3PGVL4BipreGKAl2vzodnS8vW2xcsRrSX+VYAl0THbdbY3WzYc5nVDwwhAx1lJQYrev9HybIjIsXZi0wenWseMK4/EgaXa0neKIhgVQAKSOFC7bzFjkAg7mNpyuIrks42Ib9tvZtaOvGVSbEHdnTQ6ZfCnQZ2qBjuBlb/d7f2gx2emHrwUIrT4GTf4LFd9+VhHnr4W8JWD9QqXu6rwchlQ0BsOwbl7e7zOpybb+9lwkEZxkWdaWWhII7odI8lXnrtMBG9PZBtrXmHM2LgKj+xHVwcIdIT9w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=L6Dt2mWJHL534nYeNRMUGwAviyOijujLkez0rZUPmnU=;
- b=UR4BTesFrP1GdrKevynfP8YICZbAXWiHyOFMji7POQIfI65HRNEiQLKgPjYvVFA+Mjc5SZBn5eFNmHqri0NmwKw+k1rXsHqrSwcfuWjcH4oBvmDmozBt07rsVqU9Dy8f39caAL0NIYq+9WB4PQX9MWhCLZ27GDtPbRqRaQRFX5M=
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by DU2PR04MB8790.eurprd04.prod.outlook.com (2603:10a6:10:2e1::23) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.25; Mon, 18 Mar
- 2024 20:02:46 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
- 20:02:45 +0000
-Date: Mon, 18 Mar 2024 16:02:36 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Joy Zou <joy.zou@nxp.com>, ping.bai@nxp.com, lgirdwood@gmail.com,
-	broonie@kernel.org, robh+dt@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
-	shawnguo@kernel.org, s.hauer@pengutronix.de, kernel@pengutronix.de,
-	festevam@gmail.com, linux-imx@nxp.com, devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	imx@lists.linux.dev
-Subject: Re: [PATCH v5 3/3] arm64: dts: imx93-11x11-evk: add pca9451a support
-Message-ID: <Zfid3D7JW5HGIZVc@lizhi-Precision-Tower-5810>
-References: <20240318095633.4079027-1-joy.zou@nxp.com>
- <20240318095633.4079027-4-joy.zou@nxp.com>
- <7f601f5e-98af-4a78-a3eb-04d814669973@linaro.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7f601f5e-98af-4a78-a3eb-04d814669973@linaro.org>
-X-ClientProxiedBy: SJ0PR03CA0076.namprd03.prod.outlook.com
- (2603:10b6:a03:331::21) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7C6D57327
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:04:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710792252; cv=none; b=MoLq/i48GPW0hrF3BbBhcAwJJG7rGOO8NNGbZsJRpMb792fGL4bAz5NCBlZfq77p1vvNxlhK+p765WyHhp+vnYNTfkWCFh3b6eZnFY10TaSSsAmV/L0uDMPdhkHi6sfTYRgA4/RmUzu8vs80UY7r7/xb6gJvlvfLILGA820iB5U=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710792252; c=relaxed/simple;
+	bh=Bn8UEEZs0nJ4FHyVWhLc7SJHMnJcP5WPrALi4/aCuNE=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=bMNGwlJYVBDMx7xOSnepgF77CW+znADVKCGYUg1ITU1HN64k5SCYtqEQL4v+QQNZ9ipvJdvUKR5StMpFKP7tkU8gJlz2JQbQrlwvAoCgms/H60szAqcstcVtm8e2G971cshcV+CUgDSrl3GjS6GG11UFrf++WTpKDiUi8zBB9+Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=InxVHWpS; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710792249;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=j5cONy39WPTChmBWXZo5a/mjWSs5JnDb/U3l3IKfJB0=;
+	b=InxVHWpSgzQYn8fmIygDW65nFhl7yfRlR6+iXjYiqPdZwLTAw5iJKlzHhkGOjIg4Y0Q0oJ
+	6EK+XpRRBMsJWfu+QeqIi5S6cBl4+p/vr7hi7FCOROAmBC1ytCQf9r+0Eu31sJcYrPQf3e
+	EbcoFelezV5gzKFeOXvuEdT10b4QOjI=
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com
+ [209.85.160.197]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-262-upmEpC8xPZieTtFK_tP5QQ-1; Mon, 18 Mar 2024 16:04:08 -0400
+X-MC-Unique: upmEpC8xPZieTtFK_tP5QQ-1
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-430d45c66acso2197681cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:04:08 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710792247; x=1711397047;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=j5cONy39WPTChmBWXZo5a/mjWSs5JnDb/U3l3IKfJB0=;
+        b=L01hVLA0cCNePdtbnG/XF/qMTN/SJicXCfx4Fbs0YLlhoyCPRHx3p2BSER+u8vG5Gm
+         njQbfHNPR8bz4lTEg4qwz3ZWi0GoO3uYhQqkNyr21cBTbUDLkLHhflIB9yVdpXwmnRVf
+         Mt4ltTWACSz92qkatqaAtbxYlKtq8uNPadzAlGZAvrRmKu7WXMTrtcg1k5z7DjU891i1
+         gkSUX5Za9p7GKkVnSTdJS+y9toFPFPJy1vdwd5peEHu2zijLYBvTLoEfqrHjzLOukK0b
+         utu3qBc7HSb7B+lN9eqM7nJoi/U98teZ9+mXXgCezDnPSxe+chutlsVH/2i8RTJhW+sP
+         F5HA==
+X-Gm-Message-State: AOJu0YwdlHQXETLu3L8Xrz2hMIXZRg0onCIBTJc2r/NhmtbG35OHo3ig
+	BJUs8XTxzk5JlmwQHkaXYBdXF/dVsifcSKB0hmOi2z2q7A/EuZNRSNblbzoRKQOuCOG5wfvm5ae
+	8kvNlKhGjMcrQbGydSiiLn4/Ft6J5p05v7sqwkjwjvwujf4iomAgL9N4rvsnP7k0t6ODPQJj4OX
+	U00NagrUnQ4XSZ9dngBD0P+mu3PPXbcnlZaQcwK75t4b4=
+X-Received: by 2002:ac8:7c98:0:b0:430:ace8:980c with SMTP id y24-20020ac87c98000000b00430ace8980cmr316499qtv.1.1710792247164;
+        Mon, 18 Mar 2024 13:04:07 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGo9BloGRl/c/yuy7ygQZyZX9tfR07zN6D3r4pfcwUlCUAvWyqq6nKAa5eHOp/ysbaQ7B4Kng==
+X-Received: by 2002:ac8:7c98:0:b0:430:ace8:980c with SMTP id y24-20020ac87c98000000b00430ace8980cmr316449qtv.1.1710792246399;
+        Mon, 18 Mar 2024 13:04:06 -0700 (PDT)
+Received: from x1n.. ([99.254.121.117])
+        by smtp.gmail.com with ESMTPSA id hj10-20020a05622a620a00b0042ebbc1196fsm3484491qtb.87.2024.03.18.13.04.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 13:04:06 -0700 (PDT)
+From: peterx@redhat.com
+To: linux-kernel@vger.kernel.org,
+	linux-mm@kvack.org
+Cc: Andrew Morton <akpm@linux-foundation.org>,
+	x86@kernel.org,
+	Muchun Song <muchun.song@linux.dev>,
+	Mike Rapoport <rppt@kernel.org>,
+	Matthew Wilcox <willy@infradead.org>,
+	sparclinux@vger.kernel.org,
+	Jason Gunthorpe <jgg@nvidia.com>,
+	linuxppc-dev@lists.ozlabs.org,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	linux-arm-kernel@lists.infradead.org,
+	peterx@redhat.com
+Subject: [PATCH v2 00/14] mm/treewide: Remove pXd_huge() API
+Date: Mon, 18 Mar 2024 16:03:50 -0400
+Message-ID: <20240318200404.448346-1-peterx@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|DU2PR04MB8790:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	6nJ81cethsgohCUVjy68MD+oksYFyng8ZpT1sQODdpCQ80ZB0eyB+CVnsFymjl3Vf1vVPIR6FNO5hglX2XFH7mPP4d2geuU4HsRm9hR6nAo7XanI4c424vbj1aDITCsNIGYxAbVZnpXOZftPdGao8Z1T9qP7v5Nnib5deuez0vJQuGESY9IASFYAVxstaZHrZ6QcdwTp0q0/MJaugq41zvqwG+WTyvsc2EC1plN4MU2RbWk+OcKHlPUxtukb/k3uYSzv2lZQeyY1melKatGZD5XlTnEEUkmkOvUj09zzu974FGNapNTw84aYwBOYj4a6wHY6hT2MPEUoM7Gknpb5JWEpK1Kin6LIad+qRHWKBZGR+qKrGVZCmzRkLH1VUdFBrb4Q94jT8z/jiWDZYB9N0IBbgmY4T+fvHvuDDRf6vUbsTlZ/ny1P0bYQxxgWRrVqJTmnWWdCWi2folb6eEx5nQB6a8uWhvxDKprEKxZV8gIC1YxXk4HU8MWaGIHB5XRsD2eUy1wylNVt+uQGNy5vJoM6Lq2cc1+BGQYRZIMVTelNnw16Oz5WeMgE3BckBH475zYQNE/eUK2pr52B+3kWZe5nvSCCw0c4m6wc+jIDvx4Yi7aEY1yzSwYNkjV4WhYMF7ZlfB/5qcYIElt3WXN/MoPPO2mHLLzrG5GpQkg8Z520Kp/ZY52BAqXgEGVs/iCtofbVnfZMQhrxg5pLAalx0Q==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(52116005)(7416005)(376005)(366007)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?MX3VQIPFP9nE1WXWiVE+M6oZ+is7mYStT1JkZ9BBiNyndl+xSjMAlzTy5vi5?=
- =?us-ascii?Q?r/A0j1ovJ4CjUFuBKmg1crqJxhIGlUb4W4/fgX902GhPg6RlslFKjANNk1W6?=
- =?us-ascii?Q?0PNIBuAMQj1RhjK2FWDtD6whDt7RhtuzipZOud8WmNQkZHPFPVjUgNRIieM/?=
- =?us-ascii?Q?EGAqV1+wTA8u+ObI2PDPJqtTHRYLhIDaA8OtoIBF5NUcaQfXzsfDJ8Vwa5fE?=
- =?us-ascii?Q?Ww1kDiS7wjljskw2vM1AyD8JNd7BsY68pcdmTzSLJWjNF/ckDfyS+i7BBXmd?=
- =?us-ascii?Q?yz/cHw5fCHuy8b0YJ8LtYcn3B91NOoemcG/eNX+szFsdSeb4tXMrPtoryzRZ?=
- =?us-ascii?Q?qe2s7baivw4rDo8vxaZsgwJu0+qa3lvs1BMK4TlBdwcwomjFb/UJnAqwKqmp?=
- =?us-ascii?Q?mmMxdvpaP/Qm2YaoEID1gtYitJv28uju4nybn9p5YtuLJrbhi/kf1rsDuFYb?=
- =?us-ascii?Q?NIxu2c/S/HdEMeHrkx1m9ywCZ8E9fpfwczGxlrvR+0qGHPDFowhfQJ3a1xvd?=
- =?us-ascii?Q?Pkavauug7GYj/jkIasvfwrqKgcf//F/FSNcpl0k0BSSjsNRFwUWlA2gjrkM1?=
- =?us-ascii?Q?OdjXuKOoa5jgnlhgYPNwis9fkR8C0poDf6w28KXZOngyrg0Qdy23v+cRL361?=
- =?us-ascii?Q?eQsYJkA3qfvBZ3m1C6yy3ZowqV2rV1Lr4mMvkMpAl/i5NOq1xICfXVmr03mu?=
- =?us-ascii?Q?z0YDozv6q4+NBEG8swqX98mxYrAfvYzcmF9oHjkEB9dGG58QEKgbIk2T5/kG?=
- =?us-ascii?Q?eoZyQ9uOlCxlRCQ2+6ZRkozDCASLtw2pwO0+ID1ysm9lcc9gLFVr0W24xNiC?=
- =?us-ascii?Q?GEj+B7PvGRo4FWtuwfz1hFn/Xvl5YtfbaX2on54/4ljkKzoEpP+yNu8osnxJ?=
- =?us-ascii?Q?CsERaoUUSHg0Ew4+5ZZxrpBpEAcaV+WswMtWE0+mmayeccWmUbz3N1id5CY6?=
- =?us-ascii?Q?UPtf+SXGomGalF9fuuLuYuxzWY8Lr80g9aM4IqYAg71CA9UxMGAihSi+j25Z?=
- =?us-ascii?Q?/WRLFdhvKCfPZwulZjIyE0mXTG4F2w2H1q7p3x7gP7WfcNAmokc58o3GhQXF?=
- =?us-ascii?Q?J6znBNMMNA8tmCIJi/hACuyEfo/eg8YgGmSzmirGkvUP8rV1zqlt5mEq2nOE?=
- =?us-ascii?Q?UJQ/ZRhqeqj07Z7C/Gmu8WwPoYTTonuJTi+6pvv1Usq9LX1aGLIRRq56R3sx?=
- =?us-ascii?Q?ahbA5LUkJk6tFMHsfWb5/2YVJAJi00I42NpkgOzWBHXv20atyvMV7OLAfxex?=
- =?us-ascii?Q?CvH3jrzUXKE9hbCRH4uirsOpJq8mR9LLW54Gyp6RDHtcIKKOJ0eHQwRaGgnS?=
- =?us-ascii?Q?ApHL39cfbBdgay51WyHo0GHQrbx9FKBdYpjr7dn2DZqG1PIrTu0xDzW+tGGM?=
- =?us-ascii?Q?k+CyZ7szRUAZBBhIBtQ3KhgJefv9s26kIK35CIqCHOHNVB3iVpT18kqb2mEV?=
- =?us-ascii?Q?+waq3aoOTiovLr3dc+X/kXgeEY9mdnFldJ9LUe+WRwSTSgqpB6nq1PIChoRq?=
- =?us-ascii?Q?KmOs0C3ENi58A4dlXMWiiMT3IU6ciVGQ6GhQMLQbJwpFRHS/mbsYQiU1J4Xx?=
- =?us-ascii?Q?pla6k716m5MUJH8PFv06wkQwbxQt03CGy094IFLB?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 94b4e32a-e396-4e47-0593-08dc478660f6
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 20:02:45.8554
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: AR9220nBBlENoXlNgeZaFaRQrydHpRNbVNYZ0iJEE7M3VdZ7xUjO1uehCtdbyqNWZR9djcoIs/fZgkLcpaxqfg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DU2PR04MB8790
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 07:50:51PM +0100, Krzysztof Kozlowski wrote:
-> On 18/03/2024 10:56, Joy Zou wrote:
-> > Support pca9451a on imx93-11x11-evk.
-> > 
-> > Signed-off-by: Joy Zou <joy.zou@nxp.com>
-> > ---
-> > Changes in v5:
-> > 1.adjust gpio@22 to the front of pmic@25.
-> > 
-> > Changes in v4:
-> > 1. modify the comment for uSDHC but not i2c.
-> > 
-> > Changes in v3:
-> > 1. modify the voltages constraints according to the imx93 datasheet.
-> > ---
-> >  .../boot/dts/freescale/imx93-11x11-evk.dts    | 111 ++++++++++++++++++
-> >  1 file changed, 111 insertions(+)
-> > 
-> > diff --git a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-> > index 9921ea13ab48..478a134d4416 100644
-> > --- a/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-> > +++ b/arch/arm64/boot/dts/freescale/imx93-11x11-evk.dts
-> > @@ -183,6 +183,104 @@ &wdog3 {
-> >  	status = "okay";
-> >  };
-> >  
-> > +&lpi2c2 {
-> > +	#address-cells = <1>;
-> > +	#size-cells = <0>;
-> > +	clock-frequency = <400000>;
-> > +	pinctrl-names = "default", "sleep";
-> > +	pinctrl-0 = <&pinctrl_lpi2c2>;
-> > +	pinctrl-1 = <&pinctrl_lpi2c2>;
-> > +	status = "okay";
-> > +
-> > +	pcal6524: gpio@22 {
-> > +		compatible = "nxp,pcal6524";
-> > +		pinctrl-names = "default";
-> > +		pinctrl-0 = <&pinctrl_pcal6524>;
-> > +		reg = <0x22>;
-> 
-> reg is the second property. Please do not introduce some other coding style.
+From: Peter Xu <peterx@redhat.com>
 
-Yes, Do you know if there are any tools to check it? If no, which tools
-should be good to add such check. I may add it if have free time.
+[based on akpm/mm-unstable commit b66d4391d8fe, March 18th]
 
-Frank Li
+v2:
+- Add a patch to cleanup ARM's pmd_thp_or_huge [Christophe]
+- Enhance commit message for PowerPC patch on hugepd [Christophe]
 
-> 
-> Best regards,
-> Krzysztof
-> 
+v1: https://lore.kernel.org/r/20240313214719.253873-1-peterx@redhat.com
+
+In previous work [1], we removed the pXd_large() API, which is arch
+specific.  This patchset further removes the hugetlb pXd_huge() API.
+
+Hugetlb was never special on creating huge mappings when compared with
+other huge mappings.  Having a standalone API just to detect such pgtable
+entries is more or less redundant, especially after the pXd_leaf() API set
+is introduced with/without CONFIG_HUGETLB_PAGE.
+
+When looking at this problem, a few issues are also exposed that we don't
+have a clear definition of the *_huge() variance API.  This patchset
+started by cleaning these issues first, then replace all *_huge() users to
+use *_leaf(), then drop all *_huge() code.
+
+On x86/sparc, swap entries will be reported "true" in pXd_huge(), while for
+all the rest archs they're reported "false" instead.  This part is done in
+patch 1-5, in which I suspect patch 1 can be seen as a bug fix, but I'll
+leave that to hmm experts to decide.
+
+Besides, there are three archs (arm, arm64, powerpc) that have slightly
+different definitions between the *_huge() v.s. *_leaf() variances.  I
+tackled them separately so that it'll be easier for arch experts to chim in
+when necessary.  This part is done in patch 6-9.
+
+The final patches 10-14 do the rest on the final removal, since *_leaf()
+will be the ultimate API in the future, and we seem to have quite some
+confusions on how *_huge() APIs can be defined, provide a rich comment for
+*_leaf() API set to define them properly to avoid future misuse, and
+hopefully that'll also help new archs to start support huge mappings and
+avoid traps (like either swap entries, or PROT_NONE entry checks).
+
+The whole series is lightly tested on x86 and arm64.
+
+[1] https://lore.kernel.org/r/20240305043750.93762-1-peterx@redhat.com
+
+Peter Xu (14):
+  mm/hmm: Process pud swap entry without pud_huge()
+  mm/gup: Cache p4d in follow_p4d_mask()
+  mm/gup: Check p4d presence before going on
+  mm/x86: Change pXd_huge() behavior to exclude swap entries
+  mm/sparc: Change pXd_huge() behavior to exclude swap entries
+  mm/arm: Use macros to define pmd/pud helpers
+  mm/arm: Redefine pmd_huge() with pmd_leaf()
+  mm/arm64: Merge pXd_huge() and pXd_leaf() definitions
+  mm/powerpc: Redefine pXd_huge() with pXd_leaf()
+  mm/gup: Merge pXd huge mapping checks
+  mm/treewide: Replace pXd_huge() with pXd_leaf()
+  mm/treewide: Remove pXd_huge()
+  mm/arm: Remove pmd_thp_or_huge()
+  mm: Document pXd_leaf() API
+
+ arch/arm/include/asm/pgtable-2level.h         |  5 ++-
+ arch/arm/include/asm/pgtable-3level-hwdef.h   |  1 +
+ arch/arm/include/asm/pgtable-3level.h         |  5 ++-
+ arch/arm/lib/uaccess_with_memcpy.c            |  4 +--
+ arch/arm/mm/Makefile                          |  1 -
+ arch/arm/mm/hugetlbpage.c                     | 34 -------------------
+ arch/arm64/include/asm/pgtable.h              |  6 ++--
+ arch/arm64/mm/hugetlbpage.c                   | 18 ++--------
+ arch/loongarch/mm/hugetlbpage.c               | 12 +------
+ arch/mips/include/asm/pgtable-32.h            |  2 +-
+ arch/mips/include/asm/pgtable-64.h            |  2 +-
+ arch/mips/mm/hugetlbpage.c                    | 10 ------
+ arch/mips/mm/tlb-r4k.c                        |  2 +-
+ arch/parisc/mm/hugetlbpage.c                  | 11 ------
+ .../include/asm/book3s/64/pgtable-4k.h        | 20 -----------
+ .../include/asm/book3s/64/pgtable-64k.h       | 25 --------------
+ arch/powerpc/include/asm/book3s/64/pgtable.h  | 27 +++++++--------
+ arch/powerpc/include/asm/nohash/pgtable.h     | 10 ------
+ arch/powerpc/mm/pgtable_64.c                  |  6 ++--
+ arch/riscv/mm/hugetlbpage.c                   | 10 ------
+ arch/s390/mm/hugetlbpage.c                    | 10 ------
+ arch/sh/mm/hugetlbpage.c                      | 10 ------
+ arch/sparc/mm/hugetlbpage.c                   | 12 -------
+ arch/x86/mm/hugetlbpage.c                     | 26 --------------
+ arch/x86/mm/pgtable.c                         |  4 +--
+ include/linux/hugetlb.h                       | 24 -------------
+ include/linux/pgtable.h                       | 24 ++++++++++---
+ mm/gup.c                                      | 24 ++++++-------
+ mm/hmm.c                                      |  9 ++---
+ mm/memory.c                                   |  2 +-
+ 30 files changed, 68 insertions(+), 288 deletions(-)
+ delete mode 100644 arch/arm/mm/hugetlbpage.c
+
+-- 
+2.44.0
+
 
