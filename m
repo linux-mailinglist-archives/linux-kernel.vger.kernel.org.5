@@ -1,172 +1,154 @@
-Return-Path: <linux-kernel+bounces-105599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EC38487E137
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 01:21:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1821487E138
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 01:28:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2A85E1C20D40
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 00:21:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2536E281E8A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 00:28:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB95F15BA;
-	Mon, 18 Mar 2024 00:21:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 430E3C120;
+	Mon, 18 Mar 2024 00:28:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SsKPWtIU"
-Received: from mail-vk1-f171.google.com (mail-vk1-f171.google.com [209.85.221.171])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="b1Nj6hTu"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B101F7E5;
-	Mon, 18 Mar 2024 00:21:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C2D64C63
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 00:27:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710721283; cv=none; b=c7D67FJEuHS2WMcrjLuxFJRKu6Fh5u+ylJMdcSkbuo71b/yARfkoJotjStM3YwMbgK+aTKruz0KQmwltrnDU65x3UFo2IVEtFX7Ddcvuaxlm4VsxqThjbe7JWbF1nFSItxydd2UjyhVS+HlOof7vLvD6GC4+NLYVPpKffmrPoX4=
+	t=1710721679; cv=none; b=ASCacRAS81OVleUQLGuauqAMvbyrZuBL5Ox4kHYjTWLKmkMi5GqRuMYuQNIjF9/sp6HMfqUDNYeEiz2fgwKid7dtRaVRlvZ2jJ/XtMk3ClXa7J78ErK6iDOal5k4XqABS3vhSAIJRVqaxAOZYJoAL3B3AhT85S0lP0ioySVIOdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710721283; c=relaxed/simple;
-	bh=f3H4ztEdb/QTqtcxCoOxruc3vl6fvB7jHiB7xWeWILg=;
+	s=arc-20240116; t=1710721679; c=relaxed/simple;
+	bh=3yDSAwIFbySv3JmaN6hmK5jPysilhvZsLdYo9LyvPIQ=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VEYJdxMR1tgZ3fJ/jRkzZQqGWkhT1rnWpYgXNx7zY1z6KH6RblqgEzbrmcNCag1vdp8EH7++r6o2rOwyhi7DSEwzsEvkSddHd9sV6mFeEc/VWB+afOlF7DnRNwCcgoHTBAh9bYWCHJXFC/nygXH0p767yTsS1e/sF9M+qA8eHzo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SsKPWtIU; arc=none smtp.client-ip=209.85.221.171
+	 To:Cc:Content-Type; b=VeCJkI7zWRVvDfbyb5P2SDE1s5N/sHbXNxlZ/Daba09aaOmViNW+sCmGYO2x/96ROvm+38LcQvrwdeiVDEktFr/3hwNftvBd9P1nD/npMqIzQTqJVDW4T3n4Vv33Z6j7TM4oNQ3eMWX9jHeX2w5TlyQ54iNP10Pta2Rx4oJRt40=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=b1Nj6hTu; arc=none smtp.client-ip=209.85.217.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f171.google.com with SMTP id 71dfb90a1353d-4d41b749a83so932531e0c.3;
-        Sun, 17 Mar 2024 17:21:21 -0700 (PDT)
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-476665f067fso1100544137.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 17:27:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710721280; x=1711326080; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710721677; x=1711326477; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Gsg5x8F7NyLBg6aH9JvA2OC0P3nOeMtCLCZO4MngXuA=;
-        b=SsKPWtIUN9JLuE45XCWSTat1o0hGxZtYZhN638sbx+qvmfttZ1FKJsXLNqezXAYs0v
-         wA3Qvr6MGHTTra22zKNKip9fgEJ0tTjca7XeKX1MEF0eBjlmtn2gH3OirbZdLQPRhREj
-         BFJ7rZ6U19kaT3OPGQizRpbq4jqZyF50j910lIf1VqxTczhRWqmLzQKLRms5Y7SCWvwl
-         mhbT+eMWHeBJey0CBnhRkhHxkb0N/2VUrOr8XNdf0d4Omk9emZxQpCx9HHuTPNNpJPwD
-         RYyusJJ5/jjryNNPuW1U5/u+YaTLt+KeCtFLlIhcuR1/woY+dfgLOho2UNFxhC2tQxw+
-         qCWw==
+        bh=1Qt7u+PWqpqCiGmiH10iOB2sx5m0iKrXs+EtR3m51rw=;
+        b=b1Nj6hTuyBMesAhKH6pBfwzNvoWQwyeKfojziNRkuYBa8RuS3H3lE1s2uiWXRaXpo+
+         2HloAORUsu/5QTjVP4EBTyepCoKQ0Oi72b62FzhMRCqSbZVZMTgOXeVDGHhq83MLMYPA
+         yW6QiwULKJjywPEIHwiOfHzAiLxFWQS4fg1SRNOQ0mSbBsrfZXkjGZgzvKFaUOdjpd+B
+         dv8t5cS5ujLU2N29hbW+uRBjv4+YJ2gn85L1CRTPCnuksIgfb8/jI6b+5fETOV/H2VJj
+         iLN3lphjSwt98t9VOWb4wnUzHNF+p0N4NmgAeWbn5UeTmkEatUXNLRqgqGkNs/esvtue
+         edDg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710721280; x=1711326080;
+        d=1e100.net; s=20230601; t=1710721677; x=1711326477;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=Gsg5x8F7NyLBg6aH9JvA2OC0P3nOeMtCLCZO4MngXuA=;
-        b=kyx/VXT9KHZ/WkCOnT8Z0bKWm8i9AUZe14AAIWvO/wq/4vQmkL5Z0MPRUr5PIT2mHe
-         a6bxcp5LNeDTlBLD1usP56RKqd4irB+L0z1Np6rBpZ62L9ZQzvVmbXIgKoBNqIA2tu+M
-         Gzk20nwdspcjqBAmgfDrOYKeVgijEO/784l11SKfvDIGSopsnYl+ZnE3x/y4K107cp96
-         byofGjy4L+27mZNhM+6trrLksgFKmdEXHPS5bxpaE1rb/vf9tSTN8MY04834vqoCTW6W
-         NoTwPYkd5ZwVZEIH0PxSU1YJPLRUa+We/Bp7Vis7DCoRewrdVpcSgTa9zCE8fmGM7sWh
-         giNw==
-X-Forwarded-Encrypted: i=1; AJvYcCVI5Fqg1gl0BCr8uX23rbQkH8BS2AqllIE3OwYI51+3CirZnaDbIvh/RhWMLkpSyqNjuzKUcH2MMcrePxQEs1BxWgcxmdKMz90vuQbJA+i8bgBhbmHDVR7/qgJqsyyhwipcz9P5eaRWmIZ1
-X-Gm-Message-State: AOJu0YwqVF7so48LTJ+5D5KMds4TO04GcFdhrgn1vrMRUKCiLYZtPtlx
-	fpQRza4zzqAJmM0NMs2yjLC6lQdUNXE1ckCg/jdGmv46GEpQQyeyPwOc2aKBLZOWN9BUtxlhn28
-	xMx8GUGt8TWtwDaahp/XOSmDLHW4=
-X-Google-Smtp-Source: AGHT+IH0mp2EgeEmE4Jy6dAAUiRM9Gxtao8mkbxRzMduoFAQpXvs1kKQDEHdalgrdZW9M370tKPGfxWOXOZv8oDcM+8=
-X-Received: by 2002:a05:6122:20a2:b0:4d3:36b9:2c26 with SMTP id
- i34-20020a05612220a200b004d336b92c26mr8776353vkd.14.1710721280560; Sun, 17
- Mar 2024 17:21:20 -0700 (PDT)
+        bh=1Qt7u+PWqpqCiGmiH10iOB2sx5m0iKrXs+EtR3m51rw=;
+        b=AdaE53HC4U6ipGK3mygOvgGvWntJlSCiUVw+1pEGrS/03PU5eq9LRm1vi/cmcQU9Y+
+         ZQo8D21nzSEjVF4GjesRUpE2FIABOOF4wqD8lMiB8DbQ/nb7zZJBE5KBmjWVN8eBhUir
+         mqDxDhU4fBdEVL7L96SO3CQKQyelgigov0h7ONfAsskmBZQRIMN/py10X7w4bp3DaW2t
+         qTrPB+737qAZIbf56Ub76M4+Af1+etVRi79et/EAynTUCuxIwOzH+vhbyFeCalGQBf1T
+         5vfjaGOMoB/pHi+E62T6QGKpQunG7HXWWCQmk6OJp55Zy2qpGDqKHvoPwh04JQZpIKxk
+         WaHw==
+X-Forwarded-Encrypted: i=1; AJvYcCUOFpsHIokCUxS8mxt7q8B57diKOA/gDgw6SbY2XMwOjsRthEHgPg9xVJhwHjphzYMJxnxfFGgOuddPVaDVj/b1IGfnveWQ3zmpG1Na
+X-Gm-Message-State: AOJu0YyhS1bB1318HFzmZDsmdZo0zCP1/5nwT2biePxCORn1L3ki/jUt
+	DFBuHpGdjDRgpJRhO7antgfyC8nYtFsQkjsw1kUAey9oFws5+Z421zHRMjW7PpjaBBDbsdZ6ivh
+	CBGdczh1g5cDfZby42wUyo0e5wBA=
+X-Google-Smtp-Source: AGHT+IHG99wuwIcjHpS0GwtKYujnhS+B0twGqSxjIj1JHxpH1vNKhFeTlUqAlEgTo4AeyHWb0DNzsiayAysEFrf/vSQ=
+X-Received: by 2002:a67:fc10:0:b0:476:5b1b:b109 with SMTP id
+ o16-20020a67fc10000000b004765b1bb109mr6696501vsq.17.1710721676913; Sun, 17
+ Mar 2024 17:27:56 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301192745.14987-1-21cnbao@gmail.com> <aaa8b7d7-5abe-47bf-93f6-407942436472@roeck-us.net>
- <CAGsJ_4wWEdxk0qNV89bL0zeGaXUBb7h92mdNeRCgcUCY5C84ww@mail.gmail.com> <bf2a5631-79cc-414e-82f0-6b45e487c8d9@roeck-us.net>
-In-Reply-To: <bf2a5631-79cc-414e-82f0-6b45e487c8d9@roeck-us.net>
+References: <20240313045036.51065-1-21cnbao@gmail.com> <369716bf-0216-4114-b502-a2d2c819ee8c@roeck-us.net>
+In-Reply-To: <369716bf-0216-4114-b502-a2d2c819ee8c@roeck-us.net>
 From: Barry Song <21cnbao@gmail.com>
-Date: Mon, 18 Mar 2024 08:21:06 +0800
-Message-ID: <CAGsJ_4xGKFaQPD-KurP2=qiD5zSdnOwZtH-kyASP_PgFX_mJAg@mail.gmail.com>
-Subject: Re: [PATCH v7] crypto: scompress: remove memcpy if sg_nents is 1 and
- pages are lowmem
+Date: Mon, 18 Mar 2024 08:27:42 +0800
+Message-ID: <CAGsJ_4zVQVCBv4+b=pmd78hsv=LnQoBcC+bDmuL0oM7EOGF4eg@mail.gmail.com>
+Subject: Re: [PATCH] xtensa: remove redundant flush_dcache_page and
+ ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
 To: Guenter Roeck <linux@roeck-us.net>
-Cc: herbert@gondor.apana.org.au, davem@davemloft.net, 
-	linux-crypto@vger.kernel.org, akpm@linux-foundation.org, chrisl@kernel.org, 
-	sjenning@redhat.com, vitaly.wool@konsulko.com, linux-kernel@vger.kernel.org, 
-	Barry Song <v-songbaohua@oppo.com>, Johannes Weiner <hannes@cmpxchg.org>, 
-	Nhat Pham <nphamcs@gmail.com>, Yosry Ahmed <yosryahmed@google.com>, 
-	Chengming Zhou <zhouchengming@bytedance.com>
+Cc: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, chris@zankel.net, 
+	jcmvbkbc@gmail.com, willy@infradead.org, alexghiti@rivosinc.com, 
+	rppt@kernel.org, dennis@kernel.org, Barry Song <v-songbaohua@oppo.com>, 
+	Huacai Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 8:14=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
+On Mon, Mar 18, 2024 at 8:16=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
 wrote:
 >
-> On 3/17/24 16:48, Barry Song wrote:
-> > On Mon, Mar 18, 2024 at 7:13=E2=80=AFAM Guenter Roeck <linux@roeck-us.n=
-et> wrote:
-> >>
-> >> Hi,
-> >>
-> >> On Sat, Mar 02, 2024 at 08:27:45AM +1300, Barry Song wrote:
-> >> [ ... ]
-> >>> @@ -152,8 +165,17 @@ static int scomp_acomp_comp_decomp(struct acomp_=
-req *req, int dir)
-> >>>                        ret =3D -ENOSPC;
-> >>>                        goto out;
-> >>>                }
-> >>> -             scatterwalk_map_and_copy(scratch->dst, req->dst, 0, req=
-->dlen,
-> >>> -                                      1);
-> >>> +             if (dst =3D=3D scratch->dst) {
-> >>> +                     scatterwalk_map_and_copy(scratch->dst, req->dst=
-, 0,
-> >>> +                                              req->dlen, 1);
-> >>> +             } else {
-> >>> +                     int nr_pages =3D DIV_ROUND_UP(req->dst->offset =
-+ req->dlen, PAGE_SIZE);
-> >>> +                     int i;
-> >>> +                     struct page *dst_page =3D sg_page(req->dst);
-> >>> +
-> >>> +                     for (i =3D 0; i < nr_pages; i++)
-> >>> +                             flush_dcache_page(dst_page + i);
-> >>
-> >> flush_dcache_page() is an empty macro on some architectures
-> >> such as xtensa. This results in
+> On Wed, Mar 13, 2024 at 05:50:36PM +1300, Barry Song wrote:
+> > From: Barry Song <v-songbaohua@oppo.com>
 > >
-> > Hi Guenter,
+> > xtensa's flush_dcache_page() can be a no-op sometimes. There is a
+> > generic implementation for this case in include/asm-generic/
+> > cacheflush.h.
+> >  #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+> >  static inline void flush_dcache_page(struct page *page)
+> >  {
+> >  }
 > >
-> > this is a bug of xtensa, could you test the patch:
->
-> Thanks for the update.
->
-> > https://lore.kernel.org/all/20240313045036.51065-1-21cnbao@gmail.com/
+> >  #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+> >  #endif
+> >
+> > So remove the superfluous flush_dcache_page() definition, which also
+> > helps silence potential build warnings complaining the page variable
+> > passed to flush_dcache_page() is not used.
+> >
+> >    In file included from crypto/scompress.c:12:
+> >    include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
+> >    include/crypto/scatterwalk.h:76:30: warning: variable 'page' set but=
+ not used [-Wunused-but-set-variable]
+> >       76 |                 struct page *page;
+> >          |                              ^~~~
+> >    crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> > >> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wun=
+used-variable]
+> >      174 |                         struct page *dst_page =3D sg_page(re=
+q->dst);
+> >          |
+> >
+> > The issue was originally reported on LoongArch by kernel test
+> > robot. And Huacai fixed it on LoongArch, but I found xtensa
+> > obviously has the same issue.
 > >
 >
-> That doesn't build for me.
+> Maybe I am doing something wrong, but this patch doesn't build
+> for me.
 >
->    CC      arch/xtensa/kernel/asm-offsets.s
+>  CC      arch/xtensa/kernel/asm-offsets.s
 > In file included from ./include/linux/highmem.h:8,
->                   from ./include/linux/bvec.h:10,
->                   from ./include/linux/blk_types.h:10,
->                   from ./include/linux/writeback.h:13,
->                   from ./include/linux/memcontrol.h:23,
->                   from ./include/linux/swap.h:9,
->                   from ./include/linux/suspend.h:5,
->                   from arch/xtensa/kernel/asm-offsets.c:24:
+>                  from ./include/linux/bvec.h:10,
+>                  from ./include/linux/blk_types.h:10,
+>                  from ./include/linux/writeback.h:13,
+>                  from ./include/linux/memcontrol.h:23,
+>                  from ./include/linux/swap.h:9,
+>                  from ./include/linux/suspend.h:5,
+>                  from arch/xtensa/kernel/asm-offsets.c:24:
 > ./include/linux/cacheflush.h:9:5: error: "ARCH_IMPLEMENTS_FLUSH_DCACHE_PA=
 GE" is not defined, evaluates to 0 [-Werror=3Dundef]
->      9 | #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
->
-> A similar works for loongarch, so I don't know what is wrong.
-> Maybe some context patch is missing.
+>     9 | #if ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
 
-this is weird as include/asm-generic/cacheflush.h will define it to 0
+is it because xtensa doesn't include this at the end of
+arch/xtensa/include/asm/cacheflush.h
+while other architectures do?
 
- #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
- static inline void flush_dcache_page(struct page *page)
- {
- }
+#include <asm-generic/cacheflush.h>
 
- #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
- #endif
 
-Maybe somewhere else also needs to be fixed.
-Can you tell me your toolchain version and toolchain name? and defconfig na=
-me?
 
 >
 > Guenter
-
-Thanks
-Barry
 
