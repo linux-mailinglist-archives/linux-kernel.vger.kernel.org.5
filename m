@@ -1,212 +1,421 @@
-Return-Path: <linux-kernel+bounces-105711-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105712-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B123D87E34A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:40:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 92B8287E34E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 06:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C58D1F21BA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:40:55 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E5188B2142B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 39D1C22087;
-	Mon, 18 Mar 2024 05:40:44 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E7FD21A1C;
+	Mon, 18 Mar 2024 05:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="LxgE5pX+"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="ifLYgCN2"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.154.123])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F20161E89E;
-	Mon, 18 Mar 2024 05:40:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C828E1E864;
+	Mon, 18 Mar 2024 05:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.154.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710740443; cv=none; b=KGy1O2rMeREqrUHx/R2dUW3HpUYmf0Rgd7h6vGOKn8DykYXlIEMIVAoe5AMHwNzsv66X1oP8QuLoLLT47GFnuuai+II6a6ECWKuPu7X2x6OBiiHF8r5xw9lxPz0X9egRUvoYxwPclxnWL7sAkaOdk6l5wnxx3/fF3Yhb6qeB76s=
+	t=1710740528; cv=none; b=bbxF5wh08DKVaaWVQ6qox6j58w9IfdXiMBzJ6yYNMpP11iWdMiKiSyJAy06pMu8QDRi8zRaXyx76Y4nISN6t+9sSliaZ/AHiG05oP9VmGVOX6f6g6Uu36ixG1WmGx90pFoRKORaR6kUN3RxtpL2vrwHGZ4lnv3yjsXGVKDmJGdM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710740443; c=relaxed/simple;
-	bh=h/Ln9yPHtqlby+Fp6MUf3PS6y0nv61hhQvGCsQv9BhA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=kOBvvSXQMJMKTJq3z8aoDoTEO7RCA7pv5lwbiwIMGZKh3MPL81RgV43I7VWjSny6yEEjv2ythUelV3pSafjeltMmnAIzzMy3vpd8HbnhGxbp7JW1dLj/wuNNc/TNfEk2tE6GNvEy5Gj3qeL6j/hb63c1BFIjG8iwy1oQfmikR28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=LxgE5pX+; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279862.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42I5dWbk022455;
-	Mon, 18 Mar 2024 05:40:37 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	message-id:date:mime-version:subject:to:cc:references:from
-	:in-reply-to:content-type:content-transfer-encoding; s=
-	qcppdkim1; bh=SPiZIQTn+g32WTjYdojmq9ZTZLv8aPvVwv57pq3k6Xg=; b=Lx
-	gE5pX+0vB4K643dXvGWDy4A6xruBaRzDJN5kQ9ie1OG5+R+a0PqpJSciYMhvUpSU
-	plvjikMgISvjw50epftMGm2OFMQdKKr2fPkvAC3fVX4godl8XE3wYq88oLzD4iJF
-	1H/NlqDSiZVyd0Jo6YvPNB6fpFeWDtBMxKM2YPNk6bYj9qggXjEv9zwEe5RsoHNT
-	fhefp4F48ZttLXAR95R5MNOuvm69le0brl0WAg9iQVBpKg5/0az4JPyFT4QXaLcV
-	2pv9+YLAYAoC/dzLbZnBhYChCDI7XO5YFfSDx+izsZlNUMegN/0f1CiK6Ze0R7BI
-	5Zm0HXrvYJKMhpESYqDw==
-Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wwxtds4tb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 05:40:37 +0000 (GMT)
-Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
-	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42I5ea7q019434
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 05:40:36 GMT
-Received: from [10.216.55.168] (10.80.80.8) by nalasex01b.na.qualcomm.com
- (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Sun, 17 Mar
- 2024 22:40:30 -0700
-Message-ID: <7d0e81fd-8cc2-46f2-bc12-759a0d48e3ae@quicinc.com>
-Date: Mon, 18 Mar 2024 11:09:52 +0530
+	s=arc-20240116; t=1710740528; c=relaxed/simple;
+	bh=7KtphudW08v3j8hsGj4FHCEmq2vBqBU1nXvXdEn8XrE=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-ID:To:CC; b=cZHbY0SA1ueg9j7WK0fCSoK1m5aF5i1LJJeniDh4bKxoUYAqTSK6Uv0iJjZFr9Tmply/V90oCAExqBOtbIGG+HESqdKtDgXErGsVqoESI84uxZG/iAYRkqcb4dAMY3Q0+TS1dvu4z101M9R3qtpPYd5aeckzOyuGMgGFkiAzfJg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=ifLYgCN2; arc=none smtp.client-ip=68.232.154.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1710740525; x=1742276525;
+  h=from:date:subject:mime-version:content-transfer-encoding:
+   message-id:to:cc;
+  bh=7KtphudW08v3j8hsGj4FHCEmq2vBqBU1nXvXdEn8XrE=;
+  b=ifLYgCN2eD5ldh3LEBeraGiNHleVAEPWJ5CTqQAqo0Z7mox8reKCh3Y/
+   77O6g+Yl/lquQOGmhZo80d+hwTQEr85Sh4ev7TvdrbjsBnyRtfa5KoNCl
+   tjG2rdMvqNuQBt3E4Oap2+3l54lA7wZRCFhUNCoNNRlsQeTtahbLmmWlz
+   KZf7SMwatAQPaC57hBTnLk+z4bWGcyzvHOIIAz2MRgTlkUTQ1vndIIMCM
+   otaIAejOYmNrduywwbaGGbk+ysJKNTRdy0oUkzeUZCIGhVtVro2PTC46+
+   gAJ02tT83OGdjU2cEV9Wr6vTfQ4XYMIVJ/IF1ToQID6WB4z/GXw+YRhJp
+   w==;
+X-CSE-ConnectionGUID: oBxbmAQ8RyGXMoL9fzPpkg==
+X-CSE-MsgGUID: xj2kPIJxTw6jJI8aiJ1/Kw==
+X-IronPort-AV: E=Sophos;i="6.07,134,1708412400"; 
+   d="scan'208";a="17742587"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa4.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 17 Mar 2024 22:40:56 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 17 Mar 2024 22:40:29 -0700
+Received: from che-lt-i70843lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Sun, 17 Mar 2024 22:40:23 -0700
+From: Dharma Balasubiramani <dharma.b@microchip.com>
+Date: Mon, 18 Mar 2024 11:10:13 +0530
+Subject: [PATCH v4] dt-bindings: display: atmel,lcdc: convert to dtschema
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] clk: qcom: apss-ipq-pll: use stromer ops for IPQ5018
- to fix boot failure
-To: Gabor Juhos <j4g8y7@gmail.com>, Bjorn Andersson <andersson@kernel.org>,
-        Konrad Dybcio <konrad.dybcio@linaro.org>,
-        Michael Turquette
-	<mturquette@baylibre.com>,
-        Stephen Boyd <sboyd@kernel.org>,
-        "Sricharan
- Ramabadhran" <quic_srichara@quicinc.com>,
-        Dmitry Baryshkov
-	<dmitry.baryshkov@linaro.org>,
-        Gokul Sriram Palanisamy
-	<quic_gokulsri@quicinc.com>
-CC: <linux-arm-msm@vger.kernel.org>, <linux-clk@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>, <stable@vger.kernel.org>
-References: <20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com>
-Content-Language: en-US
-From: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-In-Reply-To: <20240315-apss-ipq-pll-ipq5018-hang-v2-1-6fe30ada2009@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nalasex01b.na.qualcomm.com (10.47.209.197)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: VOi_2MVMftvGOeRjEnYMyJVyBiACw76m
-X-Proofpoint-ORIG-GUID: VOi_2MVMftvGOeRjEnYMyJVyBiACw76m
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-17_12,2024-03-15_01,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
- lowpriorityscore=0 phishscore=0 mlxlogscore=999 mlxscore=0 clxscore=1015
- impostorscore=0 malwarescore=0 suspectscore=0 adultscore=0 bulkscore=0
- spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403180041
+Message-ID: <20240318-lcdc-fb-v4-1-c533c7c2c706@microchip.com>
+X-B4-Tracking: v=1; b=H4sIALzT92UC/3XMTQ7CIBCG4asY1mJgQNq68h7GRRnAktjSgCGap
+ neXdtPEn+U3meedSLLR20ROu4lEm33yYShD7ncEu3a4WepN2QQYSAYg6B0NUqeprg1YcAIbLkn
+ 5HqN1/rmWLteyO58eIb7WcObL9buROeVUopKoFVSVcefeYwzY+fGAoSdLJ8NmBZObhWJbLrVUA
+ vmxan9Z8ceKYmutuHJaM940n3ae5zdi08UQGgEAAA==
+To: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Rob Herring
+	<robh+dt@kernel.org>, Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>, Alexandre Belloni
+	<alexandre.belloni@bootlin.com>, Claudiu Beznea <claudiu.beznea@tuxon.dev>
+CC: <dri-devel@lists.freedesktop.org>, <devicetree@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	Dharma Balasubiramani <dharma.b@microchip.com>
+X-Mailer: b4 0.13.0
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710740422; l=10193;
+ i=dharma.b@microchip.com; s=20240209; h=from:subject:message-id;
+ bh=7KtphudW08v3j8hsGj4FHCEmq2vBqBU1nXvXdEn8XrE=;
+ b=Xll0PHbapNWcdl+aNX7Q9XZBrOg6/VSdZRd6BB4a/AwcTQx1u5dDFI/mNlkcBvyN/hmMgSq0V
+ MQiLqEWNy4FDwzUGYsX21iDgD0ZhfsMAthF0ReB1sJeJuJXWExbhFJz
+X-Developer-Key: i=dharma.b@microchip.com; a=ed25519;
+ pk=kCq31LcpLAe9HDfIz9ZJ1U7T+osjOi7OZSbe0gqtyQ4=
 
+Convert the atmel,lcdc bindings to DT schema.
+Changes during conversion: add missing clocks and clock-names properties.
 
+Signed-off-by: Dharma Balasubiramani <dharma.b@microchip.com>
+---
+This patch converts the existing lcdc display text binding to JSON schema.
+The binding is split into two namely
+lcdc.yaml
+- Holds the frame buffer properties
+lcdc-display.yaml
+- Holds the display panel properties which is a phandle to the display
+property in lcdc fb node.
 
-On 3/15/2024 9:46 PM, Gabor Juhos wrote:
-> Booting v6.8 results in a hang on various IPQ5018 based boards.
-> Investigating the problem showed that the hang happens when the
-> clk_alpha_pll_stromer_plus_set_rate() function tries to write
-> into the PLL_MODE register of the APSS PLL.
-> 
-> Checking the downstream code revealed that it uses [1] stromer
-> specific operations for IPQ5018, whereas in the current code
-> the stromer plus specific operations are used.
-> 
-> The ops in the 'ipq_pll_stromer_plus' clock definition can't be
-> changed since that is needed for IPQ5332, so add a new alpha pll
-> clock declaration which uses the correct stromer ops and use this
-> new clock for IPQ5018 to avoid the boot failure.
-> 
-> Also, change pll_type in 'ipq5018_pll_data' to
-> CLK_ALPHA_PLL_TYPE_STROMER to better reflect that it is a Stromer
-> PLL and change the apss_ipq_pll_probe() function accordingly.
-> 
-> 1. https://git.codelinaro.org/clo/qsdk/oss/kernel/linux-ipq-5.4/-/blob/NHSS.QSDK.12.4/drivers/clk/qcom/apss-ipq5018.c#L67
-> 
-> Cc: stable@vger.kernel.org
-> Fixes: 50492f929486 ("clk: qcom: apss-ipq-pll: add support for IPQ5018")
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
-> Changes in v2:
->    - extend commit description due to the changes
->    - add a comment about why CLK_ALPHA_PLL_TYPE_STROMER_PLUS register offsets
->      are used
->    - constify hw clock init data (Stephen)
->    - change pll_type in ipq5018_pll_data to CLK_ALPHA_PLL_TYPE_STROMER (Konrad)
->    - Link to v1: https://lore.kernel.org/r/20240311-apss-ipq-pll-ipq5018-hang-v1-1-8ed42b7a904d@gmail.com
+These bindings are tested using the following command.
+'make DT_CHECKER_FLAGS=-m dt_binding_check'
+---
+Changes in v4:
+- Add maximum for atmel,guard-time property.
+- Add constraints for bits-per-pixel property.
+- Update the atmel,lcd-wiring-mode property's ref to point single string
+  rather than an array.
+- Add constraints for atmel,lcd-wiring-mode property.
+- Add maxItems to the atmel,power-control-gpio property.
+- Link to v3: https://lore.kernel.org/r/20240304-lcdc-fb-v3-1-8b616fbb0199@microchip.com
 
+Changes in v3:
+- Remove the generic property "bits-per-pixel"
+- Link to v2: https://lore.kernel.org/r/20240304-lcdc-fb-v2-1-a14b463c157a@microchip.com
 
-I don't see a reason why my tags are dropped, nevertheless
+Changes in v2:
+- Run checkpatch and remove whitespace errors.
+- Add the standard interrupt flags.
+- Split the binding into two, namely lcdc.yaml and lcdc-display.yaml.
+- Link to v1: https://lore.kernel.org/r/20240223-lcdc-fb-v1-1-4c64cb6277df@microchip.com
+---
+ .../bindings/display/atmel,lcdc-display.yaml       | 103 +++++++++++++++++++++
+ .../devicetree/bindings/display/atmel,lcdc.txt     |  87 -----------------
+ .../devicetree/bindings/display/atmel,lcdc.yaml    |  70 ++++++++++++++
+ 3 files changed, 173 insertions(+), 87 deletions(-)
 
-Tested-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
-Reviewed-by: Kathiravan Thirumoorthy <quic_kathirav@quicinc.com>
+diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
+new file mode 100644
+index 000000000000..a5cf040ab4ea
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/atmel,lcdc-display.yaml
+@@ -0,0 +1,103 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/atmel,lcdc-display.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip's LCDC Display
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Dharma Balasubiramani <dharma.b@microchip.com>
++
++description:
++  The LCD Controller (LCDC) consists of logic for transferring LCD image data
++  from an external display buffer to a TFT LCD panel. The LCDC has one display
++  input buffer per layer that fetches pixels through the single bus host
++  interface and a look-up table to allow palletized display configurations. The
++  LCDC is programmable on a per layer basis, and supports different LCD
++  resolutions, window sizes, image formats and pixel depths.
++
++# We need a select here since this schema is applicable only for nodes with the
++# following properties
++
++select:
++  anyOf:
++    - required: [ 'atmel,dmacon' ]
++    - required: [ 'atmel,lcdcon2' ]
++    - required: [ 'atmel,guard-time' ]
++
++properties:
++  atmel,dmacon:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: dma controller configuration
++
++  atmel,lcdcon2:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: lcd controller configuration
++
++  atmel,guard-time:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: lcd guard time (Delay in frame periods)
++    maximum: 127
++
++  bits-per-pixel:
++    $ref: /schemas/types.yaml#/definitions/uint32
++    description: lcd panel bit-depth.
++    enum: [1, 2, 4, 8, 16, 24, 32]
++
++  atmel,lcdcon-backlight:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: enable backlight
++
++  atmel,lcdcon-backlight-inverted:
++    $ref: /schemas/types.yaml#/definitions/flag
++    description: invert backlight PWM polarity
++
++  atmel,lcd-wiring-mode:
++    $ref: /schemas/types.yaml#/definitions/string
++    description: lcd wiring mode "RGB" or "BRG"
++    enum:
++      - RGB
++      - BRG
++
++  atmel,power-control-gpio:
++    description: gpio to power on or off the LCD (as many as needed)
++    maxItems: 1
++
++  display-timings:
++    $ref: panel/display-timings.yaml#
++
++required:
++  - atmel,dmacon
++  - atmel,lcdcon2
++  - atmel,guard-time
++  - bits-per-pixel
++
++additionalProperties: false
++
++examples:
++  - |
++    display: panel {
++      bits-per-pixel = <32>;
++      atmel,lcdcon-backlight;
++      atmel,dmacon = <0x1>;
++      atmel,lcdcon2 = <0x80008002>;
++      atmel,guard-time = <9>;
++      atmel,lcd-wiring-mode = "RGB";
++
++      display-timings {
++        native-mode = <&timing0>;
++        timing0: timing0 {
++          clock-frequency = <9000000>;
++          hactive = <480>;
++          vactive = <272>;
++          hback-porch = <1>;
++          hfront-porch = <1>;
++          vback-porch = <40>;
++          vfront-porch = <1>;
++          hsync-len = <45>;
++          vsync-len = <1>;
++        };
++      };
++    };
+diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc.txt b/Documentation/devicetree/bindings/display/atmel,lcdc.txt
+deleted file mode 100644
+index b5e355ada2fa..000000000000
+--- a/Documentation/devicetree/bindings/display/atmel,lcdc.txt
++++ /dev/null
+@@ -1,87 +0,0 @@
+-Atmel LCDC Framebuffer
+------------------------------------------------------
+-
+-Required properties:
+-- compatible :
+-	"atmel,at91sam9261-lcdc" , 
+-	"atmel,at91sam9263-lcdc" ,
+-	"atmel,at91sam9g10-lcdc" ,
+-	"atmel,at91sam9g45-lcdc" ,
+-	"atmel,at91sam9g45es-lcdc" ,
+-	"atmel,at91sam9rl-lcdc" ,
+-- reg : Should contain 1 register ranges(address and length).
+-	Can contain an additional register range(address and length)
+-	for fixed framebuffer memory. Useful for dedicated memories.
+-- interrupts : framebuffer controller interrupt
+-- display: a phandle pointing to the display node
+-
+-Required nodes:
+-- display: a display node is required to initialize the lcd panel
+-	This should be in the board dts.
+-- default-mode: a videomode within the display with timing parameters
+-	as specified below.
+-
+-Optional properties:
+-- lcd-supply: Regulator for LCD supply voltage.
+-
+-Example:
+-
+-	fb0: fb@00500000 {
+-		compatible = "atmel,at91sam9g45-lcdc";
+-		reg = <0x00500000 0x1000>;
+-		interrupts = <23 3 0>;
+-		pinctrl-names = "default";
+-		pinctrl-0 = <&pinctrl_fb>;
+-		display = <&display0>;
+-		#address-cells = <1>;
+-		#size-cells = <1>;
+-
+-	};
+-
+-Example for fixed framebuffer memory:
+-
+-	fb0: fb@00500000 {
+-		compatible = "atmel,at91sam9263-lcdc";
+-		reg = <0x00700000 0x1000 0x70000000 0x200000>;
+-		[...]
+-	};
+-
+-Atmel LCDC Display
+------------------------------------------------------
+-Required properties (as per of_videomode_helper):
+-
+- - atmel,dmacon: dma controller configuration
+- - atmel,lcdcon2: lcd controller configuration
+- - atmel,guard-time: lcd guard time (Delay in frame periods)
+- - bits-per-pixel: lcd panel bit-depth.
+-
+-Optional properties (as per of_videomode_helper):
+- - atmel,lcdcon-backlight: enable backlight
+- - atmel,lcdcon-backlight-inverted: invert backlight PWM polarity
+- - atmel,lcd-wiring-mode: lcd wiring mode "RGB" or "BRG"
+- - atmel,power-control-gpio: gpio to power on or off the LCD (as many as needed)
+-
+-Example:
+-	display0: display {
+-		bits-per-pixel = <32>;
+-		atmel,lcdcon-backlight;
+-		atmel,dmacon = <0x1>;
+-		atmel,lcdcon2 = <0x80008002>;
+-		atmel,guard-time = <9>;
+-		atmel,lcd-wiring-mode = <1>;
+-
+-		display-timings {
+-			native-mode = <&timing0>;
+-			timing0: timing0 {
+-				clock-frequency = <9000000>;
+-				hactive = <480>;
+-				vactive = <272>;
+-				hback-porch = <1>;
+-				hfront-porch = <1>;
+-				vback-porch = <40>;
+-				vfront-porch = <1>;
+-				hsync-len = <45>;
+-				vsync-len = <1>;
+-			};
+-		};
+-	};
+diff --git a/Documentation/devicetree/bindings/display/atmel,lcdc.yaml b/Documentation/devicetree/bindings/display/atmel,lcdc.yaml
+new file mode 100644
+index 000000000000..1b6f7e395006
+--- /dev/null
++++ b/Documentation/devicetree/bindings/display/atmel,lcdc.yaml
+@@ -0,0 +1,70 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/display/atmel,lcdc.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: Microchip's LCDC Framebuffer
++
++maintainers:
++  - Nicolas Ferre <nicolas.ferre@microchip.com>
++  - Dharma Balasubiramani <dharma.b@microchip.com>
++
++description:
++  The LCDC works with a framebuffer, which is a section of memory that contains
++  a complete frame of data representing pixel values for the display. The LCDC
++  reads the pixel data from the framebuffer and sends it to the LCD panel to
++  render the image.
++
++properties:
++  compatible:
++    enum:
++      - atmel,at91sam9261-lcdc
++      - atmel,at91sam9263-lcdc
++      - atmel,at91sam9g10-lcdc
++      - atmel,at91sam9g45-lcdc
++      - atmel,at91sam9g45es-lcdc
++      - atmel,at91sam9rl-lcdc
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clocks:
++    maxItems: 2
++
++  clock-names:
++    items:
++      - const: hclk
++      - const: lcdc_clk
++
++  display:
++    $ref: /schemas/types.yaml#/definitions/phandle
++    description: A phandle pointing to the display node.
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - clocks
++  - clock-names
++  - display
++
++additionalProperties: false
++
++examples:
++  - |
++    #include <dt-bindings/clock/at91.h>
++    #include <dt-bindings/interrupt-controller/irq.h>
++    fb@500000 {
++      compatible = "atmel,at91sam9g45-lcdc";
++      reg = <0x00500000 0x1000>;
++      interrupts = <23 IRQ_TYPE_LEVEL_HIGH 0>;
++      pinctrl-names = "default";
++      pinctrl-0 = <&pinctrl_fb>;
++      clocks = <&pmc PMC_TYPE_PERIPHERAL 23>, <&pmc PMC_TYPE_PERIPHERAL 23>;
++      clock-names = "hclk", "lcdc_clk";
++      display = <&display>;
++    };
 
+---
+base-commit: f6cef5f8c37f58a3bc95b3754c3ae98e086631ca
+change-id: 20240223-lcdc-fb-b8d2e2f3c914
 
-> ---
-> Based on v6.8.
-> ---
->   drivers/clk/qcom/apss-ipq-pll.c | 30 +++++++++++++++++++++++++++---
->   1 file changed, 27 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
-> index 678b805f13d45..dfffec2f06ae7 100644
-> --- a/drivers/clk/qcom/apss-ipq-pll.c
-> +++ b/drivers/clk/qcom/apss-ipq-pll.c
-> @@ -55,6 +55,29 @@ static struct clk_alpha_pll ipq_pll_huayra = {
->   	},
->   };
->   
-> +static struct clk_alpha_pll ipq_pll_stromer = {
-> +	.offset = 0x0,
-> +	/*
-> +	 * Reuse CLK_ALPHA_PLL_TYPE_STROMER_PLUS register offsets.
-> +	 * Although this is a bit confusing, but the offset values
-> +	 * are correct nevertheless.
-> +	 */
-> +	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
-> +	.flags = SUPPORTS_DYNAMIC_UPDATE,
-> +	.clkr = {
-> +		.enable_reg = 0x0,
-> +		.enable_mask = BIT(0),
-> +		.hw.init = &(const struct clk_init_data) {
-> +			.name = "a53pll",
-> +			.parent_data = &(const struct clk_parent_data) {
-> +				.fw_name = "xo",
-> +			},
-> +			.num_parents = 1,
-> +			.ops = &clk_alpha_pll_stromer_ops,
-> +		},
-> +	},
-> +};
-> +
->   static struct clk_alpha_pll ipq_pll_stromer_plus = {
->   	.offset = 0x0,
->   	.regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_STROMER_PLUS],
-> @@ -144,8 +167,8 @@ struct apss_pll_data {
->   };
->   
->   static const struct apss_pll_data ipq5018_pll_data = {
-> -	.pll_type = CLK_ALPHA_PLL_TYPE_STROMER_PLUS,
-> -	.pll = &ipq_pll_stromer_plus,
-> +	.pll_type = CLK_ALPHA_PLL_TYPE_STROMER,
-> +	.pll = &ipq_pll_stromer,
->   	.pll_config = &ipq5018_pll_config,
->   };
->   
-> @@ -203,7 +226,8 @@ static int apss_ipq_pll_probe(struct platform_device *pdev)
->   
->   	if (data->pll_type == CLK_ALPHA_PLL_TYPE_HUAYRA)
->   		clk_alpha_pll_configure(data->pll, regmap, data->pll_config);
-> -	else if (data->pll_type == CLK_ALPHA_PLL_TYPE_STROMER_PLUS)
-> +	else if (data->pll_type == CLK_ALPHA_PLL_TYPE_STROMER ||
-> +		 data->pll_type == CLK_ALPHA_PLL_TYPE_STROMER_PLUS)
->   		clk_stromer_pll_configure(data->pll, regmap, data->pll_config);
->   
->   	ret = devm_clk_register_regmap(dev, &data->pll->clkr);
-> 
-> ---
-> base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
-> change-id: 20240311-apss-ipq-pll-ipq5018-hang-74d9a8f47136
-> 
-> Best regards,
+Best regards,
+-- 
+Dharma Balasubiramani <dharma.b@microchip.com>
+
 
