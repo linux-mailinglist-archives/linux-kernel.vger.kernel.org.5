@@ -1,80 +1,59 @@
-Return-Path: <linux-kernel+bounces-105680-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id C3A0387E28B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:25:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1EC8587E28F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:28:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 793FD281026
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:25:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 495C31C20F4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:28:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843DB200D5;
-	Mon, 18 Mar 2024 03:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA1F51EB21;
+	Mon, 18 Mar 2024 03:28:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b="aZwR6Ce1"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="JAE4AHGL"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1C6A01E86A;
-	Mon, 18 Mar 2024 03:25:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3B981DDF4
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:28:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710732311; cv=none; b=bVnLtilTpvxblq3GqKOOQCY1jMff3LNbrlXXEqytJ63xkGzDPeRFdWgQCznu1G/vDh0BVUEM2pbGeLKdOVdvLLgc1z2VnoraEwOX8XpGnkK3VoU/K9+BYbDKYf4gRhSyw3JKEStzKi9qVjMuWbVeCHqPEuEjU8qxqkVcl1/37t4=
+	t=1710732507; cv=none; b=XUjCgeCiD3mmmKNvWN+raoOtRAqrkW3uhmS23+Gr+KzddbJHHI5q0F1PqyRQ660X09gvvGsogREjeHAeJN4o07vj+iL7Ujfrx+rhOgEfZkEsMGicVrwDlb8ZUQgGAdbrT3gqw/NJZWhACl58/PE9ILp0c9dX5zzjUwST4FEjKD4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710732311; c=relaxed/simple;
-	bh=NV+IEiKEp7lCdjzjbneFkp6G29/AFeVDyz/GqmHX3m4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=qI9I8/C6jvBvgSNuCCFvnjTqzeoFisRHqtE3qI9yvJaq+bb9OBGWx/yWfy95GlIINluKUU0ORg9rRQPsS//T9CGnBX7SRqWHI+cE8l0dQBnISAYkJQmE8ckRG8rqFgRFENJzD+8w/hC7e8ec2LSh5cj7ssB8mqmDCiAbeKq/Jw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au; spf=pass smtp.mailfrom=ellerman.id.au; dkim=pass (2048-bit key) header.d=ellerman.id.au header.i=@ellerman.id.au header.b=aZwR6Ce1; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ellerman.id.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ellerman.id.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ellerman.id.au;
-	s=201909; t=1710732306;
-	bh=NV+IEiKEp7lCdjzjbneFkp6G29/AFeVDyz/GqmHX3m4=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:From;
-	b=aZwR6Ce11vNXim4mOCh1eXkx7K65RfM+cau+BhgB9SdLqlZPW+NSBiMfH6HvhOd0A
-	 Cxq4iA45zUMfJd0t0fiCZUW9oT7MdElC1lAHDwjgYhkFVet+3SexBY3VTuWZ+t2GS/
-	 R6YtLN+mqg6XUSgVsgcCPTEOKRlHDfSmPt/ef1FfXW6waLfQPAdiG7JMm/zsq5BT3k
-	 vdQUUXBAz8sJiI6L7YfwQCfB8GuYQWxC3Reysu8xNTnmju7VZ+DNwIB5BF60uJsyDk
-	 OdmHw4LQNlhzuekWxZGLa0lNLJlIa+tl6Z4Z3Fg6YFxfGk0yqItTN1sXJzV54NgtGp
-	 w8QwwUGGGIyQQ==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TygG42yLDz4wc1;
-	Mon, 18 Mar 2024 14:25:00 +1100 (AEDT)
-From: Michael Ellerman <mpe@ellerman.id.au>
-To: Guenter Roeck <linux@roeck-us.net>, Geert Uytterhoeven
- <geert@linux-m68k.org>
-Cc: linux-kselftest@vger.kernel.org, David Airlie <airlied@gmail.com>, Arnd
- Bergmann <arnd@arndb.de>, =?utf-8?Q?Ma=C3=ADra?= Canal <mcanal@igalia.com>,
- Dan Carpenter
- <dan.carpenter@linaro.org>, Kees Cook <keescook@chromium.org>, Daniel Diaz
- <daniel.diaz@linaro.org>, David Gow <davidgow@google.com>, Arthur Grillo
- <arthurgrillo@riseup.net>, Brendan Higgins <brendan.higgins@linux.dev>,
- Naresh Kamboju <naresh.kamboju@linaro.org>, Maarten Lankhorst
- <maarten.lankhorst@linux.intel.com>, Andrew Morton
- <akpm@linux-foundation.org>, Maxime Ripard <mripard@kernel.org>, Ville
- =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>, Daniel Vetter
- <daniel@ffwll.ch>,
- Thomas Zimmermann <tzimmermann@suse.de>, dri-devel@lists.freedesktop.org,
- kunit-dev@googlegroups.com, linux-arch@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-parisc@vger.kernel.org,
- linuxppc-dev@lists.ozlabs.org, linux-riscv@lists.infradead.org,
- linux-s390@vger.kernel.org, linux-sh@vger.kernel.org,
- loongarch@lists.linux.dev, netdev@lists.linux.dev
-Subject: Re: [PATCH 00/14] Add support for suppressing warning backtraces
-In-Reply-To: <04f34097-7788-490d-a9c2-82b44bf6af44@roeck-us.net>
-References: <20240312170309.2546362-1-linux@roeck-us.net>
- <CAMuHMdUkvagJVEfnhq=Nx2jnmdS0Ax+zy1CvyN0k7k1EwUpu+g@mail.gmail.com>
- <6d9269c0-bd38-4965-a454-4358e0a182e3@roeck-us.net>
- <04f34097-7788-490d-a9c2-82b44bf6af44@roeck-us.net>
-Date: Mon, 18 Mar 2024 14:24:59 +1100
-Message-ID: <87ttl4z0fo.fsf@mail.lhotse>
+	s=arc-20240116; t=1710732507; c=relaxed/simple;
+	bh=n+IvaFg5pDR8fyHm+L0s6tr64Pxcm4bGuDa/VfNWVXY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Q2PRp8G6lfpAiVHy7g+tqOFFzOdtauohVrpGOoqzmTSuEQMyA6irEvCsp1COlJ1vyhOOeeoAriCHrzzDTZHE6TRjwSL32uz9D4i9LZMEz4EcaCpDdFHF3hynDUSzXU4eWpXoYs9mD2zUMb9LinHPa6Q2H1VMqGUICTC0jb9FDxk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=JAE4AHGL; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=Mywcfnh5NNAq/uHuTcHdgmDU+e61uebZtDEUql6Qjmw=; b=JAE4AHGLLAA2zK2ofDzl5hLk36
+	/+4V+3CniMhm7baMAv5R3LEgDXySCbFUc8wFAhzff4ybeXNCp+1u/D7iy9sF+zDr/5W9lHtHB3RSC
+	cjrL9rNzpQuabd26vq4jFlTPKXQVR0G9U9b1Umfj+oEMDXjYsFEzGdFngM7HEN2AKklbpYfkofe28
+	wYfVIVcLeKDE45So9YsTtH9LhnxC/gyTxiE0HUV0QHxd4/Za0rTExc5Gl9n+lQrI14SXT+DPjUkl3
+	lT1dNIk5fsx5BUoXW3NnI0QtHavIVC5Q51QGk3BrUA/jj+NMdtTk6I+V5OoNcqSuGDopwL04KM7q/
+	po/8tNzw==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rm3fW-0000000GDq7-21up;
+	Mon, 18 Mar 2024 03:28:10 +0000
+Date: Mon, 18 Mar 2024 03:28:10 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>
+Cc: Zhaoyang Huang <huangzhaoyang@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Subject: Re: reply: [PATCH] mm: fix a race scenario in folio_isolate_lru
+Message-ID: <Zfe0yl2QTV1zSS1n@casper.infradead.org>
+References: <b88ce9ecad0d456d8adbc78e42ec713a@BJMBX01.spreadtrum.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,115 +61,86 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <b88ce9ecad0d456d8adbc78e42ec713a@BJMBX01.spreadtrum.com>
 
-Guenter Roeck <linux@roeck-us.net> writes:
-> On 3/14/24 07:37, Guenter Roeck wrote:
->> On 3/14/24 06:36, Geert Uytterhoeven wrote:
->>> Hi G=C3=BCnter,
->>>
->>> On Tue, Mar 12, 2024 at 6:03=E2=80=AFPM Guenter Roeck <linux@roeck-us.n=
-et> wrote:
->>>> Some unit tests intentionally trigger warning backtraces by passing bad
->>>> parameters to kernel API functions. Such unit tests typically check the
->>>> return value from such calls, not the existence of the warning backtra=
-ce.
->>>>
->>>> Such intentionally generated warning backtraces are neither desirable
->>>> nor useful for a number of reasons.
->>>> - They can result in overlooked real problems.
->>>> - A warning that suddenly starts to show up in unit tests needs to be
->>>> =C2=A0=C2=A0 investigated and has to be marked to be ignored, for exam=
-ple by
->>>> =C2=A0=C2=A0 adjusting filter scripts. Such filters are ad-hoc because=
- there is
->>>> =C2=A0=C2=A0 no real standard format for warnings. On top of that, suc=
-h filter
->>>> =C2=A0=C2=A0 scripts would require constant maintenance.
->>>>
->>>> One option to address problem would be to add messages such as "expect=
-ed
->>>> warning backtraces start / end here" to the kernel log.=C2=A0 However,=
- that
->>>> would again require filter scripts, it might result in missing real
->>>> problematic warning backtraces triggered while the test is running, and
->>>> the irrelevant backtrace(s) would still clog the kernel log.
->>>>
->>>> Solve the problem by providing a means to identify and suppress specif=
-ic
->>>> warning backtraces while executing test code. Support suppressing mult=
-iple
->>>> backtraces while at the same time limiting changes to generic code to =
-the
->>>> absolute minimum. Architecture specific changes are kept at minimum by
->>>> retaining function names only if both CONFIG_DEBUG_BUGVERBOSE and
->>>> CONFIG_KUNIT are enabled.
->>>>
->>>> The first patch of the series introduces the necessary infrastructure.
->>>> The second patch introduces support for counting suppressed backtraces.
->>>> This capability is used in patch three to implement unit tests.
->>>> Patch four documents the new API.
->>>> The next two patches add support for suppressing backtraces in drm_rect
->>>> and dev_addr_lists unit tests. These patches are intended to serve as
->>>> examples for the use of the functionality introduced with this series.
->>>> The remaining patches implement the necessary changes for all
->>>> architectures with GENERIC_BUG support.
->>>
->>> Thanks for your series!
->>>
->>> I gave it a try on m68k, just running backtrace-suppression-test,
->>> and that seems to work fine.
->>>
->>>> Design note:
->>>> =C2=A0=C2=A0 Function pointers are only added to the __bug_table secti=
-on if both
->>>> =C2=A0=C2=A0 CONFIG_KUNIT and CONFIG_DEBUG_BUGVERBOSE are enabled to a=
-void image
->>>> =C2=A0=C2=A0 size increases if CONFIG_KUNIT=3Dn. There would be some b=
-enefits to
->>>> =C2=A0=C2=A0 adding those pointers all the time (reduced complexity, a=
-bility to
->>>> =C2=A0=C2=A0 display function names in BUG/WARNING messages). That cha=
-nge, if
->>>> =C2=A0=C2=A0 desired, can be made later.
->>>
->>> Unfortunately this also increases kernel size in the CONFIG_KUNIT=3Dm
->>> case (ca. 80 KiB for atari_defconfig), making it less attractive to have
->>> kunit and all tests enabled as modules in my standard kernel.
->>>
->>=20
->> Good point. Indeed, it does. I wanted to avoid adding a configuration op=
-tion,
->> but maybe I should add it after all. How about something like this ?
->>=20
->> +config KUNIT_SUPPRESS_BACKTRACE
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 bool "KUnit - Enable backtrace sup=
-pression"
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 default y
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 help
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 Enable backtrace suppr=
-ession for KUnit. If enabled, backtraces
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 generated intentionall=
-y by KUnit tests can be suppressed. Disable
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 to reduce kernel image=
- size if image size is more important than
->> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 suppression of backtra=
-ces generated by KUnit tests.
->
-> Any more comments / feedback on this ? Otherwise I'll introduce the
-> above configuration option in v2 of the series.
->
-> In this context, any suggestions if it should be enabled or disabled by
-> default ? I personally think it would be more important to be able to
-> suppress backtraces, but I understand that others may not be willing to
-> accept a ~1% image size increase with CONFIG_KUNIT=3Dm unless
-> KUNIT_SUPPRESS_BACKTRACE is explicitly disabled.
+On Mon, Mar 18, 2024 at 01:37:04AM +0000, 黄朝阳 (Zhaoyang Huang) wrote:
+> >On Sun, Mar 17, 2024 at 12:07:40PM +0800, Zhaoyang Huang wrote:
+> >> Could it be this scenario, where folio comes from pte(thread 0), local
+> >> fbatch(thread 1) and page cache(thread 2) concurrently and proceed
+> >> intermixed without lock's protection? Actually, IMO, thread 1 also
+> >> could see the folio with refcnt==1 since it doesn't care if the page
+> >> is on the page cache or not.
+> >>
+> >> madivise_cold_and_pageout does no explicit folio_get thing since the
+> >> folio comes from pte which implies it has one refcnt from pagecache
+> >
+> >Mmm, no.  It's implicit, but madvise_cold_or_pageout_pte_range()
+> >does guarantee that the folio has at least one refcount.
+> >
+> >Since we get the folio from vm_normal_folio(vma, addr, ptent); we know that
+> >there is at least one mapcount on the folio.  refcount is always >= mapcount.
+> >Since we hold pte_offset_map_lock(), we know that mapcount (and therefore
+> >refcount) cannot be decremented until we call pte_unmap_unlock(), which we
+> >don't do until we have called folio_isolate_lru().
+> >
+> >Good try though, took me a few minutes of looking at it to convince myself that
+> >it was safe.
+> >
+> >Something to bear in mind is that if the race you outline is real, failing to hold a
+> >refcount on the folio leaves the caller susceptible to the
+> >VM_BUG_ON_FOLIO(!folio_ref_count(folio), folio); if the other thread calls
+> >folio_put().
+> Resend the chart via outlook.
+> I think the problem rely on an special timing which is rare, I would like to list them below in timing sequence.
+> 
+> 1. thread 0 calls folio_isolate_lru with refcnt == 1
 
-Please enable it by default.
+(i assume you mean refcnt == 2 here, otherwise none of this makes sense)
 
-There are multiple CI systems that will benefit from it, whereas the
-number of users enabling KUNIT in severely spaced constrainted
-environments is surely small - perhaps just Geert ;).
+> 2. thread 1 calls release_pages with refcnt == 2.(IMO, it could be 1 as release_pages doesn't care if the folio is used by page cache or fs)
+> 3. thread 2 decrease refcnt to 1 by calling filemap_free_folio.(as I mentioned in 2, thread 2 is not mandatary here)
+> 4. thread 1 calls folio_put_testzero and pass.(lruvec->lock has not been take here)
 
-cheers
+But there's already a bug here.
+
+Rearrange the order of this:
+
+2. thread 1 calls release_pages with refcount == 2 (decreasing refcount to 1)
+3. thread 2 decrease refcount to 0 by calling filemap_free_folio
+1. thread 0 calls folio_isolate_lru() and hits the BUG().
+
+> 5. thread 0 clear folio's PG_lru by calling folio_test_clear_lru. The folio_get behind has no meaning there.
+> 6. thread 1 failed in folio_test_lru and leave the folio on the LRU.
+> 7. thread 1 add folio to pages_to_free wrongly which could break the LRU's->list and will have next folio experience list_del_invalid
+> 
+> #thread 0(madivise_cold_and_pageout)        #1(lru_add_drain->fbatch_release_pages)       #2(read_pages->filemap_remove_folios)
+> refcnt == 1(represent page cache)             refcnt==2(another one represent LRU)          folio comes from page cache
+
+This is still illegible.  Try it this way:
+
+Thread 0	Thread 1	Thread 2
+madvise_cold_or_pageout_pte_range
+		lru_add_drain
+		fbatch_release_pages
+				read_pages
+				filemap_remove_folio
+
+Some accuracy in your report would also be appreciated.  There's no
+function called madivise_cold_and_pageout, nor is there a function called
+filemap_remove_folios().  It's a little detail, but it's annoying for
+me to try to find which function you're actually referring to.  I have
+to guess, and it puts me in a bad mood.
+
+At any rate, these three functions cannot do what you're proposing.
+In read_page(), when we call filemap_remove_folio(), the folio in
+question will not have the uptodate flag set, so can never have been
+put in the page tables, so cannot be found by madvise().
+
+Also, as I said in my earlier email, madvise_cold_or_pageout_pte_range()
+does guarantee that the refcount on the folio is held and can never
+decrease to zero while folio_isolate_lru() is running.  So that's two
+ways this scenario cannot happen.
+
 
