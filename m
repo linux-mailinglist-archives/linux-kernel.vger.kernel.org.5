@@ -1,149 +1,90 @@
-Return-Path: <linux-kernel+bounces-106712-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106714-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2472B87F250
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:37:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2FD2987F253
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:38:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B0F8C1F24F9A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:37:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 494A51C213CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:38:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5E8C58ACA;
-	Mon, 18 Mar 2024 21:37:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cs8yPxag"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0D9659B46;
+	Mon, 18 Mar 2024 21:38:04 +0000 (UTC)
+Received: from mail-io1-f70.google.com (mail-io1-f70.google.com [209.85.166.70])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B54658ADF;
-	Mon, 18 Mar 2024 21:37:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8D85A790
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:38:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.70
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710797860; cv=none; b=V+64OyJDJ8K9lB+kUd99TgqqILiDp4JI6QSeUOty1mQiYZSGxDS9zvzuIsnLI9JSCtSJ8X96PmFCvwwDVSBH/kXQk5c+pi9dVRSAcUCIhU7XcBQvfayt9GERRHNnx8stdJ2SYtRdu/DuYHHoUeEWzw3kXie3xWzV8012FtYxxaI=
+	t=1710797884; cv=none; b=kCmen9K0OXdNWXWhf93h8/37nbGX6vI62ODboHY5utEuuSmUVNWsbIRa57bCLKW0lASLgTKFacBvBYHA9ROOVjbsrOBlizTW/beeI8h5gFS4YDHcEjzc63i7vheGMdQwSD5ReqTRkhb8ye9hG3NR5XE5h+mOiC8XfNd//Np2IRc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710797860; c=relaxed/simple;
-	bh=ddA5fr3D5LmbfEYfDAkP0jwL8eKv8+2KFsAx6wyNvQU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Qu76xsVpm8wuGIYi5rHqIMxJFcHqHJvSaR+UNC5WmJ2YU0+cg1XLDW/EjDlkyl9pQKdjTvxadNavDD2eIaYp8l9oHBFbeUMfD44e+2mbLdqyugTBjHGDjcQ8MVeAkc7/ll8LhaYuHPu+R4ale9B0CoGrOX4dph4GiIFfaugcrs8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cs8yPxag; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 10B04C433F1;
-	Mon, 18 Mar 2024 21:37:39 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710797859;
-	bh=ddA5fr3D5LmbfEYfDAkP0jwL8eKv8+2KFsAx6wyNvQU=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=cs8yPxagbUznXrCb64F/T27JfTQMj54nlRvrLev9KpPCam/DieIiDfaAV8E1NZ4xb
-	 r7MxltpqySX7uui9zxGNjoF51X+MWbi8PysU2iS9gdiNW4o/wC93bGbvhZN5blFRUg
-	 sg5LjDjCpbSBphBwqBad1IMb64Ao7kRu+JDLIuoMoAbZ6R91SnZ2yYC+8gGdk4Bbgp
-	 K47zmAGnDZNkTMoYcogW3pEAJpJoEGlsYNNuaRqYBqG4b7qUcThYwKrQsD0/9fOwI8
-	 YDdhYW60V7hqPBC1sx5p5qLybADkGtLK0RBcLFXb5JEMvqcqa4k7gEiNxVP5tL2uzX
-	 WAyqzWLB8OaCQ==
-Date: Mon, 18 Mar 2024 18:37:36 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	James Clark <james.clark@arm.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Mike Leach <mike.leach@linaro.org>,
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Darren Hart <dvhart@infradead.org>,
-	Davidlohr Bueso <dave@stgolabs.net>,
-	=?iso-8859-1?Q?Andr=E9?= Almeida <andrealmeid@igalia.com>,
-	Kan Liang <kan.liang@linux.intel.com>,
-	K Prateek Nayak <kprateek.nayak@amd.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Kajol Jain <kjain@linux.ibm.com>,
-	Athira Rajeev <atrajeev@linux.vnet.ibm.com>,
-	Andrew Jones <ajones@ventanamicro.com>,
-	Alexandre Ghiti <alexghiti@rivosinc.com>,
-	Atish Patra <atishp@rivosinc.com>,
-	"Steinar H. Gunderson" <sesse@google.com>,
-	Yang Jihong <yangjihong1@huawei.com>,
-	Yang Li <yang.lee@linux.alibaba.com>,
-	Changbin Du <changbin.du@huawei.com>,
-	Sandipan Das <sandipan.das@amd.com>,
-	Ravi Bangoria <ravi.bangoria@amd.com>,
-	Paran Lee <p4ranlee@gmail.com>,
-	Nick Desaulniers <ndesaulniers@google.com>,
-	Huacai Chen <chenhuacai@kernel.org>,
-	Yanteng Si <siyanteng@loongson.cn>,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	coresight@lists.linaro.org, linux-arm-kernel@lists.infradead.org,
-	bpf@vger.kernel.org, Leo Yan <leo.yan@linux.dev>
-Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
-Message-ID: <Zfi0IJV-OKwyDK0r@x1>
-References: <20240202234057.2085863-1-irogers@google.com>
- <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
- <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
- <CAM9d7cgbxHZoaq4ZLCda-6TW5A+b+-8dSrRApk+AjcTVNC5hNA@mail.gmail.com>
+	s=arc-20240116; t=1710797884; c=relaxed/simple;
+	bh=O4umbVjFHYUDfEMizAn5kUkkWDtKLtGnkvI7A/r4rMg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=RMBxrN34flvvXrb/iQXz8uO3Y1Fg53YxWdnWQ+xul2T6Z9fnpPAMj90MXrW0+0bEndMxCDbF7tggf5shz+filLWaj2s8QhQzQPlkkRJ6sswYc8ZR7p4GgTX2kriBt2wWRSyH8b8Me0wjtYpP2Ww0hE1lWLWQA1kYKKijGEETlmQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.70
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f70.google.com with SMTP id ca18e2360f4ac-7c88a694b46so404342839f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:38:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710797882; x=1711402682;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=GJmAzOZTchuP4uA1qhK5Bek7hETqC3bRqV9ZUNXqqkg=;
+        b=UZ2d2r6qiNEeJP+PrR3tKTG4lrt5Gd/s3k26TXyNuGkd/xh37toVlq2YX7uKr19n5+
+         yL1PPJGMVvy3dgcEBzoq/C78kTuJJyJyGJTv4ZtIAAGwATy+3PvatIYDTAQT8ok0BfqA
+         4AhZKOy+63XYh2H//kOP/9gAwnvA/XFQb7f0xW3nsHihX4IVxtRShp/tXv8TW0Y7HOvV
+         gWXyezkwz+ZW7q5AeFzq/0SE5wQrSu/xPva1/O/AVvjh/HkDxBfgiGjE+T8Omz/XvImf
+         1TNGc4ZL7AFn2jcWV8uM1+gKAO2+d8mFy6we5mJKg/v/eKTZ38YqKyq1ud+Q/rPfq/SM
+         Hqkw==
+X-Forwarded-Encrypted: i=1; AJvYcCV4/rUsyyjg46M+XvHtZAHM7OgFrAryXRRbjvyHZaP/cWByKLBY1mIpDaGNUFfOqtOkhaeej5fQk5sRvLxGsuT7srbvRaWdWV+bnFOB
+X-Gm-Message-State: AOJu0Yx2gX7RAHir3SJ0pxv8l89Owqk5ElBoq9NimJlM2EeouRg60r5L
+	4uHso0Q1dZHG2xMtGQwFrZyVzKsRLryguLURWHoe50xLKf/CrLV6CVdMK7h5UCR5LjSb0ax+AaM
+	jr6h9MRuZ8vl9olEjwgKsQwsi03r11P0AAB7pjmTNHfcWCf1hC+bPTB4=
+X-Google-Smtp-Source: AGHT+IEE0bl1tT2EzGs5vApz2wZu53dx4QAXfi7kjhMEVBTjBAHVikJmo68tYp6WxIDBl91ZI6pdnd0yhhgF/4otTEnc3TJgJEZQ
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAM9d7cgbxHZoaq4ZLCda-6TW5A+b+-8dSrRApk+AjcTVNC5hNA@mail.gmail.com>
+X-Received: by 2002:a05:6602:1656:b0:7cc:76d0:cc1f with SMTP id
+ y22-20020a056602165600b007cc76d0cc1fmr25629iow.4.1710797882097; Mon, 18 Mar
+ 2024 14:38:02 -0700 (PDT)
+Date: Mon, 18 Mar 2024 14:38:02 -0700
+In-Reply-To: <B6E22992-FF45-44E3-8FBE-D157BED7B922@posteo.net>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000b942f0613f62cdf@google.com>
+Subject: Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
+From: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
+To: asmadeus@codewreck.org, charmitro@posteo.net, ericvh@kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux_oss@crudebyte.com, lucho@ionkov.net, syzkaller-bugs@googlegroups.com, 
+	v9fs@lists.linux.dev
+Content-Type: text/plain; charset="UTF-8"
 
-On Thu, Mar 07, 2024 at 03:47:00PM -0800, Namhyung Kim wrote:
-> Hi Ian,
-> 
-> Sorry for the late reply.
-> 
-> On Fri, Feb 16, 2024 at 5:04 PM Namhyung Kim <namhyung@kernel.org> wrote:
-> >
-> > On Wed, Feb 14, 2024 at 2:03 PM Ian Rogers <irogers@google.com> wrote:
-> > >
-> > > On Fri, Feb 2, 2024 at 3:41 PM Ian Rogers <irogers@google.com> wrote:
-> > > >
-> > > > Rename and clean up the use of libperf CPU map functions particularly
-> > > > focussing on perf_cpu_map__empty that may return true for maps
-> > > > containing CPUs but also with an "any CPU"/dummy value.
-> > > >
-> > > > perf_cpu_map__nr is also troubling in that iterating an empty CPU map
-> > > > will yield the "any CPU"/dummy value. Reduce the appearance of some
-> > > > calls to this by using the perf_cpu_map__for_each_cpu macro.
-> > > >
-> > > > v3: Address handling of "any" is arm-spe/cs-etm patch.
-> > > > v2: 6 patches were merged by Arnaldo. New patch added ensure empty
-> > > >     maps are allocated as NULL (suggested by James Clark). Hopefully a
-> > > >     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
-> > > >
-> > > > Ian Rogers (8):
-> > > >   libperf cpumap: Add any, empty and min helpers
-> > > >   libperf cpumap: Ensure empty cpumap is NULL from alloc
-> > > >   perf arm-spe/cs-etm: Directly iterate CPU maps
-> > > >   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is_empty
-> > > >     use
-> > > >   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_empty
-> > > >   perf arm64 header: Remove unnecessary CPU map get and put
-> > > >   perf stat: Remove duplicate cpus_map_matched function
-> > > >   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
-> > >
-> > > Ping. Thanks,
-> > > Ian
+Hello,
 
-> > Adrian and James, are you ok with this now?
+syzbot tried to test the proposed patch but the build/boot failed:
 
-> I think James is fine now and the Intel-pt part seems straight-forward
-> so I'd like to merge this change.  Please tell me if you have any concerns.
+failed to apply patch:
+checking file fs/9p/vfs_inode.c
+patch: **** unexpected end of file in patch
 
-Namhyung,
 
-	I noticed this hasn't been merged and applies cleanly, so I'm
-adding it to perf-tools-next, from your comment above can I take it as
-an Acked-by or even Reviewed-by?
 
-- Arnaldo
+Tested on:
+
+commit:         bf3a69c6 Merge tag 'for-linus-6.9-ofs1' of git://git.k..
+git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
+kernel config:  https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
+dashboard link: https://syzkaller.appspot.com/bug?extid=eb83fe1cce5833cd66a0
+compiler:       
+patch:          https://syzkaller.appspot.com/x/patch.diff?x=160cdef1180000
+
 
