@@ -1,332 +1,164 @@
-Return-Path: <linux-kernel+bounces-106084-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106086-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4785187E8C8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:43:17 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 121D587E8CB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:43:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA9421F23C21
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:43:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7A92D1F23BE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:43:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D048E374FB;
-	Mon, 18 Mar 2024 11:43:04 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 15609364DA;
-	Mon, 18 Mar 2024 11:43:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7D2374D3;
+	Mon, 18 Mar 2024 11:43:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=yotsuba.nl header.i=@yotsuba.nl header.b="gmSdw2Qc";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="RHeeDNMH"
+Received: from wfout2-smtp.messagingengine.com (wfout2-smtp.messagingengine.com [64.147.123.145])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B66381A1;
+	Mon, 18 Mar 2024 11:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.145
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710762184; cv=none; b=p07gQu7OfSPOVpmvJM9tPcYFgP0iWqGLkrMfyDP157cBA71aHjWTuFrXWtbVo8FdgF9wLjDwsOurRrmadSXYIXELwXfB0l413Z1ZVCmMKnTojIT4Vh0kkmbj0zaVACP/YK5xufb4lwHyAXyOFCi76pkCGfKQGwJQbDzPQgTGj+s=
+	t=1710762217; cv=none; b=ok+bK4AxMOgJHEdvepg6cKtwNbeTbO51qQzabbqHZJPJEOXywkgzm1Ta+9YPaXgaxXksnLY7791FHOfILfH3kqsBKSShIzoVvotjt8QlqR7iQSUM27Xf1RO8BXoCjchmxSR9z7Do6ECAw30nMV5RrtUv/GjCW10MyFIMjoE9mGY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710762184; c=relaxed/simple;
-	bh=u3IBIGiwMrtIsxvZh/YvI9+XCRfa0ixwSyRVrL93rCc=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=lCuy+Ow3hPqvr9+PAflr8Ku9USxqboti5KgFoAaJIEGEAkNoowUral862WRMPVF2E8Xog+P+JXinpX+S3eFqAsbhTZ/3sEyeRoFZ89ErLpLqFH56CAxcNJZGR676pkuojbASPh/KmkLe/xBMxeNeeRaYUMocmVISA1vOB3AhPgY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 6B7C1DA7;
-	Mon, 18 Mar 2024 04:43:36 -0700 (PDT)
-Received: from donnerap.manchester.arm.com (usa-sjc-imap-foss1.foss.arm.com [10.121.207.14])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id E73D23F762;
-	Mon, 18 Mar 2024 04:42:59 -0700 (PDT)
-Date: Mon, 18 Mar 2024 11:42:57 +0000
-From: Andre Przywara <andre.przywara@arm.com>
-To: Kamil Kasperski <ressetkk@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v3 3/3] arm64: dts: allwinner: h616: add support for T95
- tv boxes
-Message-ID: <20240318114257.46667aef@donnerap.manchester.arm.com>
-In-Reply-To: <20240317-add-t95-axp313-support-v3-3-0d63f7c23d37@gmail.com>
-References: <20240317-add-t95-axp313-support-v3-0-0d63f7c23d37@gmail.com>
-	<20240317-add-t95-axp313-support-v3-3-0d63f7c23d37@gmail.com>
-Organization: ARM
-X-Mailer: Claws Mail 3.18.0 (GTK+ 2.24.32; aarch64-unknown-linux-gnu)
+	s=arc-20240116; t=1710762217; c=relaxed/simple;
+	bh=H+Ct9EJKuBXxy6FkALq1UJAazffMwumuGhqyxaMkEnc=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=sbcXms/OVZjvM+WmvvDd7CzNWvA4TSwG8HclTsbsTRzzavWc8cl1sa3BWMyae+LtTVShkI+3ad2lEgnwTekB7q4xgW3uJRqi85gyx9f38A4RhNXVcqXh2CTpyJb64RMSBzLiLIc3cXg76TbvKuqa4aY+UhovbIkOfSmU+TPSxfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yotsuba.nl; spf=pass smtp.mailfrom=yotsuba.nl; dkim=pass (2048-bit key) header.d=yotsuba.nl header.i=@yotsuba.nl header.b=gmSdw2Qc; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=RHeeDNMH; arc=none smtp.client-ip=64.147.123.145
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=yotsuba.nl
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=yotsuba.nl
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfout.west.internal (Postfix) with ESMTP id 0B8D21C0008E;
+	Mon, 18 Mar 2024 07:43:30 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute7.internal (MEProxy); Mon, 18 Mar 2024 07:43:31 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=yotsuba.nl; h=cc
+	:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm1; t=1710762210;
+	 x=1710848610; bh=y0d2j2d3CaGP3R5RQDy+IW3nY2J08YoFoA0R013PCZg=; b=
+	gmSdw2Qc0P1+y5n1u0JhsFQB44HWZw/LHaygvm4OYbvklZdbAkUZuY78kZ+sWcVY
+	ppEigYL+7T3F8EGLzYlB1gaSBnq3f+/n1MSeagDEn54O5ogJ8Cpe2J1dnqakKNSH
+	QJY31Q+vIQ6l+DP2eYR8V6XgmcyDqFe9ck+yh3OV069ET7MSem1RLTg3QQuj2bTn
+	A3ggCFVEin+Z7c4CPMUbwhcOO/ufl9BEi7H2gekQbnKS3GwSIJLIxNt9ThwnVsOG
+	9zfKg7O4D6hKDROKVTSyCZRsek8nXaNuVOvz2VKg0ON7vGI6heGIdmxzPUghpCz+
+	3r5piqwps98FCNShExLuLQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710762210; x=
+	1710848610; bh=y0d2j2d3CaGP3R5RQDy+IW3nY2J08YoFoA0R013PCZg=; b=R
+	HeeDNMHB10EZrhF3zKDg/HNv2i32WbYy+XI7M65UPMXM9T0X9kp0eZVao5rV7BmE
+	7WyGltbmoEzXSWfqmFvuJK/AruUMv8AoY6/ajlq2GYeeqErjLtEAPkuVSHfQCCzD
+	ndT1STwguWC4+CEc49dSQEJzehmCtduFpTjCp6ps99zdjX8uKe74scS748uCagO+
+	/QnOceh7nqkSiprnZ9qZK2T9XBzEtbTCseEF26ytiR59PpKLDkOxztKSOhJPZRdU
+	EXLVRQElXDr9cNrvngY+ZtfI28e6dB5NgiYCR6dGDzBCYhx/u50KfN98TufduxjC
+	HTPX/+2nCsIHClSdk6nbQ==
+X-ME-Sender: <xms:4ij4ZTtHlSnu59FXsiWdPqPuFIRkXttNvGSypPn-HQuPloDEISMVgw>
+    <xme:4ij4ZUdy6O52kGCD4zoLENVKJEr0hW553pd3mtHNXAG-rZV2pQFBgv8lDjC8c0jMI
+    R_RDkeHfMIiLgGTuZ0>
+X-ME-Received: <xmr:4ij4ZWzKeHK8XSDYzkYXczKmsZmTT6ZoxgdCIIst2muYpFZc62goRJ6wHVoo0wtrLC3xBxgxO4SBy26RTYRCrCR9VAP9pEl129VrxNY>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeejgdefudcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpegtggfuhfgjffevgffkfhfvofesthhqmhdthhdtjeenucfhrhhomhepofgrrhhk
+    uceomhgrrhhkseihohhtshhusggrrdhnlheqnecuggftrfgrthhtvghrnhephfffjeefje
+    eutedvjeekleduteettdehkeeugefgjedvgfevteffffeukefggedtnecuvehluhhsthgv
+    rhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepmhgrrhhkseihohhtshhusg
+    grrdhnlh
+X-ME-Proxy: <xmx:4ij4ZSOkvsthEABwsScDi3GFdQ35moLvqt5RDQUi3xpxtt06ctA44w>
+    <xmx:4ij4ZT8ZK-4RQp00QFWPHRAi_RH9YkbZsc22LE1KQKrwdEAJtPWVmw>
+    <xmx:4ij4ZSX2AooPT3wAOUhbpGNKkFZFxYRV8U8yEWIlGCcYSLanOb1ZqA>
+    <xmx:4ij4ZUedId-KYmwF1PdJBqKHJW8b68zfqiTZ9eu6qjGKyh7T3kBOqw>
+    <xmx:4ij4ZSXcBrhDy8el12TQojAegjLRYBhsfwgMd6FAemltp6Il9YeGPLY3j1o>
+Feedback-ID: i85e1472c:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
+ 18 Mar 2024 07:43:28 -0400 (EDT)
+Content-Type: text/plain;
+	charset=utf-8
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.300.61.1.2\))
+Subject: Re: [EXTERNAL] [PATCH] netpoll: support sending over raw IP
+ interfaces
+From: Mark <mark@yotsuba.nl>
+In-Reply-To: <MWHPR1801MB1918F15413BA4766F29A8581D3292@MWHPR1801MB1918.namprd18.prod.outlook.com>
+Date: Mon, 18 Mar 2024 12:43:16 +0100
+Cc: "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
+ Hans de Goede <hdegoede@redhat.com>,
+ Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>,
+ Breno Leitao <leitao@debian.org>,
+ Ingo Molnar <mingo@redhat.com>,
+ "David S. Miller" <davem@davemloft.net>,
+ Paolo Abeni <pabeni@redhat.com>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <57AE2A31-257C-4702-A571-C590A5DD234A@yotsuba.nl>
+References: <20240313124613.51399-1-mark@yotsuba.nl>
+ <20240313133602.GA1263314@maili.marvell.com>
+ <7C42FC4B-D803-4194-8FBB-19A432D37124@yotsuba.nl>
+ <MWHPR1801MB1918F15413BA4766F29A8581D3292@MWHPR1801MB1918.namprd18.prod.outlook.com>
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+X-Mailer: Apple Mail (2.3774.300.61.1.2)
 
-On Sun, 17 Mar 2024 20:44:51 +0100
-Kamil Kasperski <ressetkk@gmail.com> wrote:
 
-Hi Kamil,
+Hi Ratheesh,
 
-thanks a lot for putting together those patches and sending them
-for upstream inclusion!
+> Op 14 mrt 6 Reiwa, om 03:46 heeft Ratheesh Kannoth =
+<rkannoth@marvell.com> het volgende geschreven:
+>=20
+>> From: Mark <mark@yotsuba.nl>
+>> [=E2=80=A6]
+>=20
+> Hmm.  That is not my question.   Let me explain it in detail. =
+Netconsole is using netpoll_send_udp() to encapsulate the msg over=20
+> UDP/IP/ MAC headers. Job well done. Now it calls =
+netdev->ops->ndo_start_xmit(skb, dev).  If your driver is well aware =
+that you can
+> Transmit only from network header, why don=E2=80=99t you dma map from =
+network header ? =20
 
-> Add dtsi file for T95 tv boxes and add initial support for T95 5G AXP313A
-> variant with a board name H616-T95MAX-AXP313A-v3.0 Internal storage is not
-> accessible due to lack of support for H616 NAND controller.
+The rest of the network subsystem seems to not add a header to skbs =
+submitted
+to netdev->ops->ndo_start_xmit() at all, which makes sense considering
+netdev->header_ops is either NULL or no-op for these devices.
 
-Them using raw NAND is really unfortunate. I think the original T95 box
-used eMMC?
+Following this line of reasoning, from API perspective it made more =
+sense
+to me for netpoll to not submit =E2=80=98bogus=E2=80=99 skbs that are =
+out-of-line with what
+the rest of the network subsystem does to ndo_start_xmit() to begin =
+with.
+It really depends on the API guarantees we want to have for netdev,
+but personally I'm wary of introducing an allowance for bogus headers.
 
-> 
-> Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
-> ---
->  arch/arm64/boot/dts/allwinner/Makefile             |   1 +
->  arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi | 109 +++++++++++++++++++++
->  .../dts/allwinner/sun50i-h616-t95max-axp313.dts    |  85 ++++++++++++++++
->  3 files changed, 195 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-> index 21149b346a60..294921f12b73 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -42,6 +42,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-t95max-axp313.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-longanpi-3h.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero2w.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi
-> new file mode 100644
-> index 000000000000..815cf2dac24b
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi
-> @@ -0,0 +1,109 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2024 Kamil Kasperski <ressetkk@gmail.com>
-> + *
-> + * Common DT nodes for H616-based T95 TV boxes
-> + * There are two versions reported with different PMIC variants.
-> + */
-> +
-> +#include "sun50i-h616.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +/ {
-> +	aliases {
-> +		ethernet1 = &sdio_wifi;
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	reg_vcc5v: vcc5v {
-> +		/* board wide 5V supply directly from the DC input */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-5v";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vcc3v3: vcc3v3 {
-> +		/* discrete 3.3V regulator */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	wifi_pwrseq: wifi-pwrseq {
+Additionally from a practical perspective, this would require changing =
+almost
+every, if not every, IP interface driver. I took a look at the WireGuard
+driver to see what it would entail, and from my limited experience with =
+the
+networking code it seems like there's some quite annoying interactions =
+with
+e.g. GSO which would make driver-side handling of such packets quite a =
+bit
+more complex.
 
-Krzysztof recently sent a patch to just use "pwrseq" as the node name,
-so can you do the same here?
+So from my perspective, fixing this in netpoll is both the more =
+API-correct
+change and introduces the least amount of additional complexity.
 
-https://lore.kernel.org/linux-sunxi/20240317184130.157695-2-krzysztof.kozlowski@linaro.org/T/#u
+> [=E2=80=A6]
 
-> +		compatible = "mmc-pwrseq-simple";
-> +		clocks = <&rtc CLK_OSC32K_FANOUT>;
-> +		clock-names = "ext_clock";
-> +		pinctrl-0 = <&x32clk_fanout_pin>;
-> +		pinctrl-names = "default";
-> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
-> +	};
-> +};
-> +
-> +&ehci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci2 {
-> +	status = "okay";
-> +};
-> +
-> +&ir {
-> +	status = "okay";
-> +};
-> +
-> +&mmc0 {
-> +	cd-gpios = <&pio 8 16 GPIO_ACTIVE_LOW>;	/* PI16 */
-> +	bus-width = <4>;
-> +	status = "okay";
-> +};
-> +
-> +&mmc1 {
-> +	mmc-pwrseq = <&wifi_pwrseq>;
-> +	bus-width = <4>;
-> +	non-removable;
-> +	status = "okay";
-> +
-> +	sdio_wifi: wifi@1 {
-> +		reg = <1>;
-> +	};
-
-So does the WiFi work with mainline drivers? IIUC the BCM43342 is not
-supported by the existing Broadcom drivers?
-
-> +};
-> +
-> +&ohci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci2 {
-> +	status = "okay";
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart0_ph_pins>;
-> +	status = "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
-> +	uart-has-rtscts;
-> +	status = "okay";
-
-Similar question here, what is the Bluetooth situation in mainline? I
-guess it's not supported, since you didn't put a BT node in here?
-
-> +};
-> +
-> +&usbotg {
-> +	dr_mode = "host";	/* USB A type receptable */
-> +	status = "okay";
-> +};
-> +
-> +&usbphy {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts
-> new file mode 100644
-> index 000000000000..c8650aca2407
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts
-> @@ -0,0 +1,85 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2024 Kamil Kasperski <ressetkk@gmail.com>
-> + *
-> + * Configuration for T95 TV box with board label H616-T95MAX-AXP313A-v3.0
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616-t95.dtsi"
-> +
-> +/ {
-> +	model = "T95 5G (AXP313)";
-> +	compatible = "t95,t95max-axp313", "allwinner,sun50i-h616";
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply = <&reg_dldo1>;
-> +};
-> +
-> +&mmc1 {
-> +	vmmc-supply = <&reg_dldo1>;
-> +	vqmmc-supply = <&reg_aldo1>;
-> +};
-> +
-> +&r_i2c {
-> +	status = "okay";
-> +
-> +	axp313: pmic@36 {
-> +		compatible = "x-powers,axp313a";
-> +		reg = <0x36>;
-> +		#interrupt-cells = <1>;
-> +		interrupt-controller;
-> +		interrupt-parent = <&pio>;
-
-I don't think you need interrupt-parent unless you also actually specify
-an interrupt line.
-(But please keep #interrupt-cells and interrupt-controller.)
-
-> +
-> +		vin1-supply = <&reg_vcc5v>;
-> +		vin2-supply = <&reg_vcc5v>;
-> +		vin3-supply = <&reg_vcc5v>;
-> +
-> +		regulators {
-> +			reg_aldo1: aldo1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcc1v8";
-> +			};
-> +
-> +			reg_dldo1: dldo1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-name = "vcc3v3";
-> +			};
-> +
-> +			reg_dcdc1: dcdc1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <810000>;
-> +				regulator-max-microvolt = <990000>;
-> +				regulator-name = "vdd-gpu-sys";
-> +			};
-> +
-> +			reg_dcdc2: dcdc2 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <810000>;
-> +				regulator-max-microvolt = <1100000>;
-> +				regulator-name = "vdd-cpu";
-> +			};
-> +
-> +			reg_dcdc3: dcdc3 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <1500000>;
-> +				regulator-max-microvolt = <1500000>;
-> +				regulator-name = "vdd-dram";
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&pio {
-> +	vcc-pc-supply = <&reg_aldo1>;
-> +	vcc-pf-supply = <&reg_dldo1>;
-> +	vcc-pg-supply = <&reg_dldo1>;
-
-So if vqmmc-supply for MMC1 is at the 1.8V from ALDO1, that must mean that
-the whole of PortG is at 1.8V, right? So I think this would need to be
-reg_aldo1 here.
-
-Apart from those minor things it looks good to me.
-
-Cheers,
-Andre
-
-> +	vcc-ph-supply = <&reg_dldo1>;
-> +	vcc-pi-supply = <&reg_dldo1>;
-> +};
-> 
+Thanks and regards,
+Mark=
 
