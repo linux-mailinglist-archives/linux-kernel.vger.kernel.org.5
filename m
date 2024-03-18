@@ -1,261 +1,186 @@
-Return-Path: <linux-kernel+bounces-106419-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106420-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0CB5587EE69
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:07:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5293287EE6A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:07:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CD26283D58
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:07:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 705721C20FFC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:07:58 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51FAB54FAF;
-	Mon, 18 Mar 2024 17:07:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B6E55C01;
+	Mon, 18 Mar 2024 17:07:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="iXb1PKuu";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="ArCWwG1v";
-	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="eWbbtdtO";
-	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="SjSCGtwr"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="am7QO7fk"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DBE9A3A8F9;
-	Mon, 18 Mar 2024 17:07:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CAD205578E
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710781651; cv=none; b=H3jgvkDTJN9zd+sEWqJ6q3CTQl1l7V2Lrrdl1ox/HdHGf1J1xDC0UPuQs/DuE9t02yWcihUxF/1i/5PqoPIVrychd3jFj0aNlY0qT57fUpUOaNRhNjIEXJfgBsE/wXSrGtYL4XekJQ4ygA8BCjkAcS39xWg97/KumcudSIKvjes=
+	t=1710781662; cv=none; b=SYKuWSlmgsfseD6pE0zZr79sZoWx6Sq9dllB6xOT4adfr6/U4GAKSXzLAlAl49olLSsWAaYVJ+C5zJcXHdt+kncVL/p/iA42ckK/FiP54H5EKNuF+T4KKYK9WbfM/+aYNjtNNVtR7gek4Zjqqaokw5MPhEvYhWrCmmUAG7waZB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710781651; c=relaxed/simple;
-	bh=HUsRDo7Jc5bEEXI3vYu8ImWAopUkQ+k9hXHhlIthcTU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=AY2lS5wc/veQi5dbaYSQXapbXh9fZ0WBL7EqVqwu0Ma38j4bUtspfJCdLSGHd7Sy+LflU99VE5agF4/Y3iAwslLdkRDweb2xUlaRmVbmwDpBlqqvWchw//JtBl7Ef+rNkiFRPoCR/ZAIxWyD5y3zzGh3bzsgifqFTVB8MArc2z4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=iXb1PKuu; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=ArCWwG1v; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=eWbbtdtO; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=SjSCGtwr; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 0CC8A5C7BB;
-	Mon, 18 Mar 2024 17:07:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710781647; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qJZVd+/t6/T/I9QFCHsi+gcMomJFVa7ZLsqdOX6uWZg=;
-	b=iXb1PKuuDGGCUjN++LNeztrlwGPPl5GVIL7V3Tdp+zZdGYaYdahKg+NHbPHbhi/PKzpe7Y
-	dgP8XvlcUGXPWShxVmkN1XpQX34Ux5Vf/Pjo0SLK+aEu5mWoS3BAPAWoFA634S+3eO24eX
-	xucZej1YO5JdNJji+1F0Ev2V16XlszY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710781647;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qJZVd+/t6/T/I9QFCHsi+gcMomJFVa7ZLsqdOX6uWZg=;
-	b=ArCWwG1vdwHamxfg99VxdZN8c+1mIzBU44jSfNkbuHWVCJJJItjVVkSZANQvxQgWvb78/q
-	aamt7wMT193xJfDw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
-	t=1710781645; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qJZVd+/t6/T/I9QFCHsi+gcMomJFVa7ZLsqdOX6uWZg=;
-	b=eWbbtdtOfLsZiZcNne86jekbsLCwozzSBlkEHIlQrYhWPqGSjo9b+npLAPfX8DkjXFM56t
-	MHz+4VEs3F4lPy22g79/522qIchYPlnaEXahsJThkKrpKJx0dnGCMxfr025QhpLVv0NfYv
-	rAhgGCvxP4nM5Mr/v5ZWUVnTLx9L/tY=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
-	s=susede2_ed25519; t=1710781645;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qJZVd+/t6/T/I9QFCHsi+gcMomJFVa7ZLsqdOX6uWZg=;
-	b=SjSCGtwrz2xaeId9fVFnKt9Q87nZpbeDyOifBMGZ1ImmOGPfmMwsLD21+VHHMSSligcrA+
-	njFbUXQwDPx1KqDQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 0036C136A5;
-	Mon, 18 Mar 2024 17:07:25 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id cYsDAM10+GUtdAAAD6G6ig
-	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 17:07:24 +0000
-Received: by quack3.suse.cz (Postfix, from userid 1000)
-	id 997CCA07D9; Mon, 18 Mar 2024 18:07:24 +0100 (CET)
-Date: Mon, 18 Mar 2024 18:07:24 +0100
-From: Jan Kara <jack@suse.cz>
-To: Kemeng Shi <shikemeng@huaweicloud.com>
-Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
-	tim.c.chen@linux.intel.com, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 1/6] fs/writeback: avoid to writeback non-expired
- inode in kupdate writeback
-Message-ID: <20240318170724.zatj2bgfv36fkkos@quack3>
-References: <20240228091958.288260-1-shikemeng@huaweicloud.com>
- <20240228091958.288260-2-shikemeng@huaweicloud.com>
+	s=arc-20240116; t=1710781662; c=relaxed/simple;
+	bh=iw44JYMdpRhnvUSLK2BkH4jibuZa/JCBTRlLI+djmyk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=th/k6tc11/Zg66XLwSYVn3lLUs7m0E+zl8sKamKEjQz83tT5R/zkUhNHBCa4WC/XaAmryQ6UMOaTKoAl/KevApsF0w1G9rHuSFwKjXvoO2VVJ0YB0XUmnqerKvAnCku5/U4c6ebyrWAcKt3MohhWFtJMykzIRg8ntsgbFcFb4ns=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=am7QO7fk; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56aa63bd94cso278263a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:07:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710781659; x=1711386459; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=RQXiBvps7/vhp9jm0e7FEbfRyxZWtxROwZJ9DzCuQWw=;
+        b=am7QO7fkw8WSBZUkVodwEGdmkiuPuhfJn9b0ZVdIUjY2GBoNc63Z5CwQJP9mHsDHG4
+         V3LZCKMdfpf7u+Y9wWGyHzOqYEMJgek8BsUI0zrPHWbfkmhkRsR9qc4B98dZrCXoKUgh
+         GpcQb5WfnJmv2a/wR4m5eN53XtJldzysfFNHOxSJGCKDsKYg7vmKYyvZwxljGgQ/0lpW
+         9gu+kNu4ElraIRlW/RKr5vr9EY8aRzDbP2Vic6CNyLD7Ay67tuaeFjxn8Mmku1c5r4ba
+         lRxkBqmz4EFgy8JfDPrAfvXFdaE2OzjMj3Uh0LFfHsCUOawtvk09ZO1/X8toi9y0CWeh
+         M9HA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710781659; x=1711386459;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RQXiBvps7/vhp9jm0e7FEbfRyxZWtxROwZJ9DzCuQWw=;
+        b=jzY5bInzkd0WKqLigz4iGCO/XOkX5EG1ycJnQxwsPNzHu7Rbd+b0Zq4eU4MpYJkzTE
+         eHxsTmIBml9gBsas0bRWSboZnQJ+zH+JCzbOKfGFRjipTg/Mk1vSwZFF6DBn7lybOVg1
+         fK/xxTP9alJ2CjA1sngveMg3Uh2wx0/zHeNgcMd+kkmwUywcnrqMckKpzKylekXKjZu7
+         H1H6tFcUELysffXPx9iUdpAWDgF5xna6ktPyCqfrsOsU9nDBqrJY1999U1J3jcoArxR4
+         XmxYgPxeox1n6YXhFTQ8oYI+M3jInSZKJ2lhAQrs6nl+zru6sSrr6xEz0hnOoB7EUWvM
+         ECbg==
+X-Forwarded-Encrypted: i=1; AJvYcCVJbOZxrTki9piWbMxwYo0dO0YChHDHeTpTuVEAkvk/pOgGnxMWMSFdNxsRfhDongoJBZ0RlZasNI/4rpWpBise4eckAavwqVHfDzCk
+X-Gm-Message-State: AOJu0Yw9Ex2ThheJ5pd5+gqyfQNQ/6Q+g+s1oo5195eVcxj82wHr8jZ0
+	BRL4YIVVknwKtM6flVjaWCICYjwPGX6/oesjdIHrv1oKNQNw6c0g
+X-Google-Smtp-Source: AGHT+IGuaU6uzyYeX6jSGyfcME0djstfNqJmUWGI6VUkVW/mutim/j1ZGboBusSrwRLn6uTqmrHtLw==
+X-Received: by 2002:a05:6402:3212:b0:568:8b4d:ad91 with SMTP id g18-20020a056402321200b005688b4dad91mr34361eda.0.1710781658985;
+        Mon, 18 Mar 2024 10:07:38 -0700 (PDT)
+Received: from [192.168.1.101] (p54a07fa0.dip0.t-ipconnect.de. [84.160.127.160])
+        by smtp.gmail.com with ESMTPSA id c1-20020a056402100100b0056b8345e10csm516764edu.6.2024.03.18.10.07.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 10:07:38 -0700 (PDT)
+Message-ID: <5fa18cb8-3c51-4ac6-811e-63ae74f82f17@gmail.com>
+Date: Mon, 18 Mar 2024 18:07:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240228091958.288260-2-shikemeng@huaweicloud.com>
-X-Spam-Score: -3.80
-X-Spamd-Result: default: False [-3.80 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 MIME_GOOD(-0.10)[text/plain];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_SEVEN(0.00)[7];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-3.00)[100.00%]
-X-Spam-Level: 
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Flag: NO
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
+Content-Language: en-US
+To: Dan Carpenter <dan.carpenter@linaro.org>, Arnd Bergmann <arnd@arndb.de>
+Cc: Lee Jones <lee@kernel.org>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+ Larry Finger <Larry.Finger@lwfinger.net>,
+ Johannes Berg <johannes@sipsolutions.net>, Kalle Valo <kvalo@kernel.org>,
+ Julia Lawall <julia.lawall@inria.fr>
+References: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
+ <fba3951f-00b7-41af-8ef4-1e7c86e0cb48@moroto.mountain>
+ <6c772d15-d249-4175-93f4-ca523006129b@gmail.com>
+ <5716d138-ace0-4621-ab34-118610255207@app.fastmail.com>
+ <cbdb25ca-f419-4afe-9b58-7d274445aefd@moroto.mountain>
+From: Philipp Hortmann <philipp.g.hortmann@gmail.com>
+In-Reply-To: <cbdb25ca-f419-4afe-9b58-7d274445aefd@moroto.mountain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed 28-02-24 17:19:53, Kemeng Shi wrote:
-> In kupdate writeback, only expired inode (have been dirty for longer than
-> dirty_expire_interval) is supposed to be written back. However, kupdate
-> writeback will writeback non-expired inode left in b_io or b_more_io from
-> last wb_writeback. As a result, writeback will keep being triggered
-> unexpected when we keep dirtying pages even dirty memory is under
-> threshold and inode is not expired. To be more specific:
-> Assume dirty background threshold is > 1G and dirty_expire_centisecs is
-> > 60s. When we running fio -size=1G -invalidate=0 -ioengine=libaio
-> --time_based -runtime=60... (keep dirtying), the writeback will keep
-> being triggered as following:
-> wb_workfn
->   wb_do_writeback
->     wb_check_background_flush
->       /*
->        * Wb dirty background threshold starts at 0 if device was idle and
->        * grows up when bandwidth of wb is updated. So a background
->        * writeback is triggered.
->        */
->       wb_over_bg_thresh
->       /*
->        * Dirtied inode will be written back and added to b_more_io list
->        * after slice used up (because we keep dirtying the inode).
->        */
->       wb_writeback
+On 3/18/24 09:01, Dan Carpenter wrote:
+> On Sun, Mar 17, 2024 at 09:20:34PM +0100, Arnd Bergmann wrote:
+>> On Sun, Mar 17, 2024, at 21:07, Philipp Hortmann wrote:
+>>> On 3/11/24 08:04, Dan Carpenter wrote:
+>>>> On Sat, Mar 09, 2024 at 11:09:24PM +0100, Philipp Hortmann wrote:
+>>> You are right with the statement that it is this commit.
+>>> commit ea82ff749587807fa48e3277c977ff3cec266f25 (HEAD)
+>>> Author: Lee Jones <lee.jones@linaro.org>
+>>> Date:   Wed Apr 14 19:10:39 2021 +0100
+>>>
+>>>       staging: wlan-ng: cfg80211: Move large struct onto the heap
+>>>
+>>>       Fixes the following W=1 kernel build warning(s):
+>>>
+>>>        drivers/staging/wlan-ng/cfg80211.c: In function ‘prism2_scan’:
+>>>        drivers/staging/wlan-ng/cfg80211.c:388:1: warning: the frame size
+>>> of 1296 bytes is larger than 1024 bytes [-Wframe-larger-than=]
+>>>
+>>> But It is not depending on the line you pointed to.
+>>
+>> Right, the kzalloc() already clears the data, so the memset
+>> is not needed.
+>>
 > 
-> Writeback is triggered per dirty_writeback_centisecs as following:
-> wb_workfn
->   wb_do_writeback
->     wb_check_old_data_flush
->       /*
->        * Write back inode left in b_io and b_more_io from last wb_writeback
->        * even the inode is non-expired and it will be added to b_more_io
->        * again as slice will be used up (because we keep dirtying the
->        * inode)
->        */
->       wb_writeback
+> No, it's inside a loop so it needs to be cleared on each iteration.
 > 
-> Fix this by moving non-expired inode to dirty list instead of more io
-> list for kupdate writeback in requeue_inode.
+>>> I need another week to look into this.
+>>
+>> I'm fairly sure this fixes the bug, the problem here was that
+>> the cast to (u8 *) hides the incorrect conversion:
+>>
+>> diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
+>> index 471bb310176f..9d6a2dd35ba9 100644
+>> --- a/drivers/staging/wlan-ng/cfg80211.c
+>> +++ b/drivers/staging/wlan-ng/cfg80211.c
+>> @@ -350,7 +350,7 @@ static int prism2_scan(struct wiphy *wiphy,
+>>   		msg2->msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
+>>   		msg2->bssindex.data = i;
+>>   
+>> -		result = p80211req_dorequest(wlandev, (u8 *)&msg2);
+>> +		result = p80211req_dorequest(wlandev, (u8 *)msg2);
 > 
-> Test as following:
-> /* make it more easier to observe the issue */
-> echo 300000 > /proc/sys/vm/dirty_expire_centisecs
-> echo 100 > /proc/sys/vm/dirty_writeback_centisecs
-> /* create a idle device */
-> mkfs.ext4 -F /dev/vdb
-> mount /dev/vdb /bdi1/
-> /* run buffer write with fio */
-> fio -name test -filename=/bdi1/file -size=800M -ioengine=libaio -bs=4K \
-> -iodepth=1 -rw=write -direct=0 --time_based -runtime=60 -invalidate=0
+> Ah, well done.
 > 
-> Fio result before fix (run three tests):
-> 1360MB/s
-> 1329MB/s
-> 1455MB/s
+> It feels like this is the kind of bug which should be caught with
+> static analysis.  One of the things that people want from static
+> analysis is looking at what a patch does.  So if we pass &msg2 and the
+> patch moved msg from the stack to be kmalloc()ed, then print a warning.
+> It's not something that Smatch does.
 > 
-> Fio result after fix (run three tests):
-> 1737MB/s
-> 1729MB/s
-> 1789MB/s
+> I have my rename_rev.pl script (https://github.com/error27/rename_rev)
+> which I use to filter out variable renames or see if (1 << foo) is
+> converted to BIT(foo) correctly.  Maybe I could extend that to check
+> "move stack to heap" patches...
 > 
-> Writeback for non-expired inode is gone as expeted. Observe this with trace
-> writeback_start and writeback_written as following:
-> echo 1 > /sys/kernel/debug/tracing/events/writeback/writeback_start/enab
-> echo 1 > /sys/kernel/debug/tracing/events/writeback/writeback_written/enable
-> cat /sys/kernel/tracing/trace_pipe
+> regards,
+> dan carpenter
 > 
-> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
 
-Looks good. Feel free to add:
+Hi,
 
-Reviewed-by: Jan Kara <jack@suse.cz>
+This change alone.
 
-								Honza
++++ b/drivers/staging/wlan-ng/cfg80211.c
+@@ -350,7 +350,7 @@ static int prism2_scan(struct wiphy *wiphy,
+                 msg2->msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
+                 msg2->bssindex.data = i;
 
-> ---
->  fs/fs-writeback.c | 13 ++++++++++---
->  1 file changed, 10 insertions(+), 3 deletions(-)
-> 
-> diff --git a/fs/fs-writeback.c b/fs/fs-writeback.c
-> index 5ab1aaf805f7..4e6166e07eaf 100644
-> --- a/fs/fs-writeback.c
-> +++ b/fs/fs-writeback.c
-> @@ -1561,7 +1561,8 @@ static void inode_sleep_on_writeback(struct inode *inode)
->   * thread's back can have unexpected consequences.
->   */
->  static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
-> -			  struct writeback_control *wbc)
-> +			  struct writeback_control *wbc,
-> +			  unsigned long dirtied_before)
->  {
->  	if (inode->i_state & I_FREEING)
->  		return;
-> @@ -1594,7 +1595,8 @@ static void requeue_inode(struct inode *inode, struct bdi_writeback *wb,
->  		 * We didn't write back all the pages.  nfs_writepages()
->  		 * sometimes bales out without doing anything.
->  		 */
-> -		if (wbc->nr_to_write <= 0) {
-> +		if (wbc->nr_to_write <= 0 &&
-> +		    !inode_dirtied_after(inode, dirtied_before)) {
->  			/* Slice used up. Queue for next turn. */
->  			requeue_io(inode, wb);
->  		} else {
-> @@ -1862,6 +1864,11 @@ static long writeback_sb_inodes(struct super_block *sb,
->  	unsigned long start_time = jiffies;
->  	long write_chunk;
->  	long total_wrote = 0;  /* count both pages and inodes */
-> +	unsigned long dirtied_before = jiffies;
-> +
-> +	if (work->for_kupdate)
-> +		dirtied_before = jiffies -
-> +			msecs_to_jiffies(dirty_expire_interval * 10);
->  
->  	while (!list_empty(&wb->b_io)) {
->  		struct inode *inode = wb_inode(wb->b_io.prev);
-> @@ -1967,7 +1974,7 @@ static long writeback_sb_inodes(struct super_block *sb,
->  		spin_lock(&inode->i_lock);
->  		if (!(inode->i_state & I_DIRTY_ALL))
->  			total_wrote++;
-> -		requeue_inode(inode, tmp_wb, &wbc);
-> +		requeue_inode(inode, tmp_wb, &wbc, dirtied_before);
->  		inode_sync_complete(inode);
->  		spin_unlock(&inode->i_lock);
->  
-> -- 
-> 2.30.0
-> 
--- 
-Jan Kara <jack@suse.com>
-SUSE Labs, CR
+-               result = p80211req_dorequest(wlandev, (u8 *)&msg2);
++               result = p80211req_dorequest(wlandev, (u8 *)msg2);
+                 if ((result != 0) ||
+                     (msg2->resultcode.data != 
+P80211ENUM_resultcode_success)) {
+                         break;
+makes the driver work again under latest kernel.
+
+I can only use unencrypted transmission. Throughput is 200 to 800kByte/s
+WEP would need further investigation.
+
+Thanks for your support.
+
+Bye Philipp
+
+
+
+
+
+
+
 
