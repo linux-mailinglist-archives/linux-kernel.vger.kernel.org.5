@@ -1,183 +1,105 @@
-Return-Path: <linux-kernel+bounces-106621-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4EFF587F112
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:21:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 047B687F114
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:22:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BA85282DB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:21:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 344C71C2191D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:22:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E47557879;
-	Mon, 18 Mar 2024 20:21:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBE957879;
+	Mon, 18 Mar 2024 20:22:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="uI0ivwG0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IOHKA6hc"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A456D38395;
-	Mon, 18 Mar 2024 20:21:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A810538395;
+	Mon, 18 Mar 2024 20:21:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710793284; cv=none; b=f8ybR4ydYkZV7SN2hqThJJxgJuplLsn4FZDc4bkW/ENBPu+qCOUpN+T29JOS78+Nmx5rLDMzaPoTf/5giBInHamfD/51grjgvCA8z4hYiNW0is5UCIO6fqV4oSnq/ifbj9KmuBBTT5dhFBDuWLEqggAMyV38Ke1fSH2LtwRbuzQ=
+	t=1710793323; cv=none; b=nJsornJ05b4oV0YJt6310io/J37v+GVlB3A9E6elGSeLjRXYU0fQlMfL9AGVqDfDinOkurMN5chX+m06VMYf23UuqdA3ahy88RS3o5W67Nd7QwrNTBeNh1mz+cx8hMGOuI+vGSjvtJNVKrk+FveUChEx03IPIpfJobro4eSRTj4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710793284; c=relaxed/simple;
-	bh=xbA+A4Sn/jWGynEOPEAKuBYZCVmC+y7CRcBOCeWJZXk=;
-	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
-	 References:In-Reply-To; b=XRIU4Cj/s3KoV4aQn5V6GsWYe3sAs7Lk4jdYOyJViRgt/LKtNq5Js8zOBgCozyit0OM4Y+ggtcrMmYzqSPC2Hxvl0kZmqnuZElLMUQBuaQ2IUp7cpp4DnjUpMNU1Qkqr+S163SK1d7ehodrpj8706tozhyt6Ms6ULiIFEKMKbq8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=uI0ivwG0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 35268C433F1;
-	Mon, 18 Mar 2024 20:21:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710793284;
-	bh=xbA+A4Sn/jWGynEOPEAKuBYZCVmC+y7CRcBOCeWJZXk=;
-	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
-	b=uI0ivwG06Pxa8J9A3Mh+EfAY2GBr9iYDKGKlXy8tCJ9DATJYWAVRZ1jpD3GEh0y/r
-	 Rm1ZzjZaXbrcmepg1+Og+RZKxHLYbxypn1uwMDbQQRTrqeyRWFSHQv1dUTkrSxS+Zd
-	 RQ1WFwRcD0uLUH/3tdYsdNKASphaYvq3oTG91ifuLckGXzCOj/HEq8+yLNAz39KVoa
-	 FIw8jQfvnUZVYC1b8VB7dWOX3819cb4yOHoRAYWOA0xKy6dMKU9PXOnbgFXyC7YGqZ
-	 bR90CQTLS7qn98S2KTdmtmeDyzdLSfMUO2dkagpga1kF8rp4aoci70ieuoGCxt0e7f
-	 YrXSGSgndJ8nw==
+	s=arc-20240116; t=1710793323; c=relaxed/simple;
+	bh=DfLx4MCfxXP9EcZzXdlUj+8HOLfw4rLVu4UL/Qa8UL4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=p1ddoyzmj+hClhUlo2jr+P1yPmG5nEJ+eA1Zd1utpuwnYzTVzYJpSmJoqx7VW9DODVBK9+NU2+Kh74lJJ17k2omfPAFXtNBvpb4PiUVYVwVisiUayI46hwfyFZbA+JbmaAxY97zuygdUQilfaQcd8cBCc5ahH7YFtcn84NSabvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IOHKA6hc; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D950F40E0140;
+	Mon, 18 Mar 2024 20:21:56 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id aEJSuwqi6nMp; Mon, 18 Mar 2024 20:21:53 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1710793312; bh=9S7B89ex3wmSeSlcaPgVJHiZJD5MpmWiVmVp92JMtEM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=IOHKA6hc66upLBhuiNhxTLcNjwz6jMIuG9eC9D5L4aUPEYYRyBurrllOzBXDoLbH+
+	 2F4Xv44hFUhn73AMZA96n5gSlb7dDj6lwXWA5vejF0+48ts2g7HLkQtJID5dH4Zo2B
+	 SNmS1f0nNBbTm7tVaCfq5KDwVulBXZIXDN2gL2v+qDYhGEBkUygU+o2VwGpeylMgvC
+	 QW5kRkWpJkdHG3STwcEpX18IQT6/f9i29c3HeebU8V+ReyHrHNd0E/iV30Bh3oUreP
+	 WBFxtc9I+pNJRc2eLjXU73wkf81yMOdg45OPbMHGyjC759d49o9l0j7KrO6vspusXG
+	 znGuxB+jxmtPEpN9kEOFlcZ5WAC/eNZAqsGQSMocdC8k3dFaji1AOPuh7zxqaO6MQh
+	 y6fr+xje1opTtCwPzHGmlBqeaVxfU73s+LAVA9LGMTC+2c+IsorKi/ISJ007+xHWdT
+	 5XIKhZb40sl/+VbqrzHxOIAbzGk6vAqL3kyoBi4buMFfQv9FPaTo5AB9EvRta7+wcV
+	 bmyt8wQnFIHC/VNGtA2esqsKmXZySAmXWisVLNo3lyHg+ft0Iy7ZzFHKkGRQeBsqmt
+	 /9vtAS6yf4TNeP9xfHK2xWaLmt/PLMvjNthQaBkfILztjLs+vKNABXyter1dGMPt7J
+	 WVcSXTN7pOeXL9DkSXCJSmyk=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 954DF40E016B;
+	Mon, 18 Mar 2024 20:21:34 +0000 (UTC)
+Date: Mon, 18 Mar 2024 21:21:24 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc: x86@kernel.org, Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Ingo Molnar <mingo@redhat.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
+	Fuad Tabba <tabba@google.com>, Marc Zyngier <maz@kernel.org>,
+	Shaoqin Huang <shahuang@redhat.com>,
+	David Matlack <dmatlack@google.com>,
+	Josh Poimboeuf <jpoimboe@kernel.org>,
+	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Breno Leitao <leitao@debian.org>, kvm@vger.kernel.org
+Subject: Re: [BUG net-next] arch/x86/kernel/cpu/bugs.c:2935: "Unpatched
+ return thunk in use. This should not happen!" [STACKTRACE]
+Message-ID: <20240318202124.GCZfiiRGVV0angYI9j@fat_crate.local>
+References: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Mon, 18 Mar 2024 22:21:20 +0200
-Message-Id: <CZX5LR621YXT.A2MGGVPKINOG@kernel.org>
-Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
- <lukas@wunner.de>, <bbhushan2@marvell.com>, "Stefan Berger"
- <stefanb@linux.ibm.com>
-Subject: Re: [PATCH v6 02/13] crypto: ecdsa - Convert byte arrays with key
- coordinates to digits
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Stefan Berger" <stefanb@linux.vnet.ibm.com>,
- <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
- <herbert@gondor.apana.org.au>, <davem@davemloft.net>
-X-Mailer: aerc 0.15.2
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
- <20240312183618.1211745-3-stefanb@linux.vnet.ibm.com>
-In-Reply-To: <20240312183618.1211745-3-stefanb@linux.vnet.ibm.com>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
 
-On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
-> From: Stefan Berger <stefanb@linux.ibm.com>
->
-> For NIST P192/256/384 the public key's x and y parameters could be copied
-> directly from a given array since both parameters filled 'ndigits' of
+On Mon, Mar 18, 2024 at 08:47:26PM +0100, Mirsad Todorovac wrote:
+> With the latest net-next v6.8-5204-g237bb5f7f7f5 kernel, while running kselftest, there was this
+> trap and stacktrace:
 
-We "could" do various things but a commit message should describe the
-gain or motivation of doing something, even if you think it should be
-obvious.
+Send your kernel .config and how exactly you're triggering it, please.
 
+Thx.
 
-> digits (a 'digit' is a u64). For support of NIST P521 the key parameters
-> need to have leading zeros prepended to the most significant digit since
-> only 2 bytes of the most significant digit are provided.
->
-> Therefore, implement ecc_digits_from_bytes to convert a byte array into a=
-n
-> array of digits and use this function in ecdsa_set_pub_key where an input
-> byte array needs to be converted into digits.
+-- 
+Regards/Gruss,
+    Boris.
 
-Please, dscribe the format of "array of digits" instead of waving hands
-here.
-
-
->
-> Suggested-by: Lukas Wunner <lukas@wunner.de>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Tested-by: Lukas Wunner <lukas@wunner.de>
-> ---
->  crypto/ecdsa.c                | 14 +++++++++-----
->  include/crypto/internal/ecc.h | 21 +++++++++++++++++++++
->  2 files changed, 30 insertions(+), 5 deletions(-)
->
-> diff --git a/crypto/ecdsa.c b/crypto/ecdsa.c
-> index fbd76498aba8..6653dec17327 100644
-> --- a/crypto/ecdsa.c
-> +++ b/crypto/ecdsa.c
-> @@ -222,9 +222,8 @@ static int ecdsa_ecc_ctx_reset(struct ecc_ctx *ctx)
->  static int ecdsa_set_pub_key(struct crypto_akcipher *tfm, const void *ke=
-y, unsigned int keylen)
->  {
->  	struct ecc_ctx *ctx =3D akcipher_tfm_ctx(tfm);
-> +	unsigned int digitlen, ndigits;
->  	const unsigned char *d =3D key;
-> -	const u64 *digits =3D (const u64 *)&d[1];
-> -	unsigned int ndigits;
->  	int ret;
-> =20
->  	ret =3D ecdsa_ecc_ctx_reset(ctx);
-> @@ -238,12 +237,17 @@ static int ecdsa_set_pub_key(struct crypto_akcipher=
- *tfm, const void *key, unsig
->  		return -EINVAL;
-> =20
->  	keylen--;
-> -	ndigits =3D (keylen >> 1) / sizeof(u64);
-> +	digitlen =3D keylen >> 1;
-> +
-> +	ndigits =3D DIV_ROUND_UP(digitlen, sizeof(u64));
->  	if (ndigits !=3D ctx->curve->g.ndigits)
->  		return -EINVAL;
-> =20
-> -	ecc_swap_digits(digits, ctx->pub_key.x, ndigits);
-> -	ecc_swap_digits(&digits[ndigits], ctx->pub_key.y, ndigits);
-> +	d++;
-
-This pointer increment is more confusing...
-
-> +
-> +	ecc_digits_from_bytes(d, digitlen, ctx->pub_key.x, ndigits);
-
-..than "&d[1]" which would also match better the earlier code.
-
-
-> +	ecc_digits_from_bytes(&d[digitlen], digitlen, ctx->pub_key.y, ndigits);
-> +
->  	ret =3D ecc_is_pubkey_valid_full(ctx->curve, &ctx->pub_key);
-> =20
->  	ctx->pub_key_set =3D ret =3D=3D 0;
-> diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.=
-h
-> index 4f6c1a68882f..ab722a8986b7 100644
-> --- a/include/crypto/internal/ecc.h
-> +++ b/include/crypto/internal/ecc.h
-> @@ -56,6 +56,27 @@ static inline void ecc_swap_digits(const void *in, u64=
- *out, unsigned int ndigit
->  		out[i] =3D get_unaligned_be64(&src[ndigits - 1 - i]);
->  }
-> =20
-> +/**
-> + * ecc_digits_from_bytes() - Create ndigits-sized digits array from byte=
- array
-> + * @in:       Input byte array
-> + * @nbytes    Size of input byte array
-> + * @out       Output digits array
-> + * @ndigits:  Number of digits to create from byte array
-> + */
-> +static inline void ecc_digits_from_bytes(const u8 *in, unsigned int nbyt=
-es,
-> +					 u64 *out, unsigned int ndigits)
-> +{
-> +	unsigned int o =3D nbytes & 7;
-> +	__be64 msd =3D 0;
-> +
-> +	if (o) {
-> +		memcpy((u8 *)&msd + sizeof(msd) - o, in, o);
-> +		out[--ndigits] =3D be64_to_cpu(msd);
-> +		in +=3D o;
-> +	}
-> +	ecc_swap_digits(in, out, ndigits);
-> +}
-> +
->  /**
->   * ecc_is_key_valid() - Validate a given ECDH private key
->   *
-
-BR, Jarkko
+https://people.kernel.org/tglx/notes-about-netiquette
 
