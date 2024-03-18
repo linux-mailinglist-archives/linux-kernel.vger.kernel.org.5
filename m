@@ -1,150 +1,110 @@
-Return-Path: <linux-kernel+bounces-106020-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106021-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1B5F587E7B6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:52:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1D7E187E7BB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:54:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C4C852836CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:52:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1A62B22D4B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:54:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 069462EAE5;
-	Mon, 18 Mar 2024 10:52:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 045AC31A83;
+	Mon, 18 Mar 2024 10:53:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ehMsiZyV"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b="vxCL4z8Z"
+Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C28A2DF92;
-	Mon, 18 Mar 2024 10:52:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AED5E38DF2
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:53:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710759142; cv=none; b=QgU3QDxvj7wttnCeDpezTo+HxHqoLyaC9XzcPptKzLhcdOZnjiP3DwiDGPbH8KaMDV1GNrsjwkBcQPrvik5UX8186mMqKq1zWUmX7796FisOIZuTq21CKudOEsWMXxnk9l9OHCOTH4V/TXywopVEaUU3Wl+w1gbx0O3yZGiwANQ=
+	t=1710759225; cv=none; b=N0pOZVlfz6fVx+DhS2BCKj3VNDziL8pBFW18eEeG2Gqzna06NVl1Sg9UW1HMUw9UH6GDPn93z7aBSeyL7J91WzOH7g1AKvGVwTec8fAGO3Mrd4khSyJkicX7WcJ+S3H1LaUAAxrVjnwNhgkO9a5hcwkcF1nm+Gvbg1k0uCiHWzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710759142; c=relaxed/simple;
-	bh=kGc4kRCh8K/u7JQbGUUELXchD0hHGvGrWcrArfa4cP0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=nesgm071j9C4hHUv1cSxN2EIyR19kuxskfatVqdkKgL9f1OYDbd2hgHDV+lwmAaQHEEyDJqTjprqLCfijzDVGrk8no+hBy1gr9w5MNDZwxPF91IyK0ihZ0IH3LiO9Hjps/jx4LOh+Cs4BBfxpsrmSL6cT2D6NJ3n2Y51bFo03SQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ehMsiZyV; arc=none smtp.client-ip=198.175.65.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710759140; x=1742295140;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version;
-  bh=kGc4kRCh8K/u7JQbGUUELXchD0hHGvGrWcrArfa4cP0=;
-  b=ehMsiZyVMN+Knlxbbqq8/LQ4qF0jodZibQLWR8sigrUWA7ZcNnUJLglB
-   w6m01gDoUi12J+3xx1zDdVA6dUMYzAnCZ6V8+ToqxSYtpdsbG4tGDNBLl
-   KgTrCDZ2rVXQpC1tkwowtLNN3WuIlIZMYXDM24iHHS8/0H0Ak6x3AK1X0
-   o0rZ7fXzpnDVoN07UD2SoAM7JdvtXX39MIrVZCvbSXxFbqxTxz3FnQxDj
-   Clewhloz2nAX/8Ph9YvgyRDqlrLgp/C/ZMEvKR67hBzGMKAStMAG4ykXD
-   4dC9TJgapZkQw3L7io3uONm7SpylU0+oB1pAVQHUA0AxhlwUvI2/HS36o
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="23023571"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="23023571"
-Received: from fmviesa004.fm.intel.com ([10.60.135.144])
-  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:52:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="18039699"
-Received: from ahmedess-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.133])
-  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 03:52:13 -0700
-From: Jani Nikula <jani.nikula@linux.intel.com>
-To: Neil Armstrong <neil.armstrong@linaro.org>, Andrzej Hajda
- <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, Laurent
- Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
- <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten
- Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
- <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
- Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Luca Weiss
- <luca.weiss@fairphone.com>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org,
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-In-Reply-To: <171075294759.1615603.8073986785380285265.b4-ty@linaro.org>
-Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
-References: <20240111-drm-panel-bridge-fixup-v1-1-e06292f6f500@fairphone.com>
- <171075294759.1615603.8073986785380285265.b4-ty@linaro.org>
-Date: Mon, 18 Mar 2024 12:52:10 +0200
-Message-ID: <87wmpzq0bp.fsf@intel.com>
+	s=arc-20240116; t=1710759225; c=relaxed/simple;
+	bh=XhvyBK8RuxD5Aa0izhkt9Ci2OFjxet20Xsv0wYg085w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=MWah7g4M06CFjvjfxLJYo5vo7ZPmH4YnSPGo8igGK6ZLScgUq4q5JeLMRaG2h2K6CT5Om9mRPHIo8d3hKNwg0axseORc8gLocG3+e4ShKNy2EQhMEvSPv/ZSkXjBAQ0rtGL34Sx3p58cRxasPpdOYftbdkt/b+5YS7jUpxehG0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com; spf=none smtp.mailfrom=toblux.com; dkim=pass (2048-bit key) header.d=toblux-com.20230601.gappssmtp.com header.i=@toblux-com.20230601.gappssmtp.com header.b=vxCL4z8Z; arc=none smtp.client-ip=209.85.167.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=toblux.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=toblux.com
+Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513e10a4083so1894183e87.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:53:43 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=toblux-com.20230601.gappssmtp.com; s=20230601; t=1710759222; x=1711364022; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=8XqG2x/M+BHVWmsybR9voBPoGJqnviYlltRdmFVnhHg=;
+        b=vxCL4z8Zz+RPK08OJfwtsNI69yzftiLXolj3IgDqIZ2adfnMtyp+MRXKdHGcUthY4X
+         pJIbOUULQVgQJKVnlGhZBcYueeCx0vrzto0OBZ8S/AWRUbP/q+fteE7IRXHbrR1iUiiS
+         wQFVvEhbqrDRFIVD+SKex+MBUsrCxJCKI/iCjgbocz5X0fmslBgsIKetJbH7n2MkJT+q
+         8YY3NNUrMmnj3I6mbbyYDytpnpLrDO3DdpemePM++azlnUYlzmWvfTX4kXy8uC+d4BVb
+         p1wGpfV+QDlYg5TuMUos/Bf+GPM55g9xDGpFg4eygjOS5TyDECaUeXC7BMdAdyH7E3zA
+         7ssA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710759222; x=1711364022;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8XqG2x/M+BHVWmsybR9voBPoGJqnviYlltRdmFVnhHg=;
+        b=jMFYfdGJUluu6HSqVOk74mv2hsZWns1VE6HvXZxKK75+PMnSXDn1dPx/95tXySLURl
+         d8kiopdYkvtaFnMPcY8MmgNDBwfxRuFtnhKwPNbF/QUEGJ4TiIf7MFbONgAsVUk1Jq2u
+         o0KJlGN/uM56QCtAfakVCUGT9MSTX+UvduBP0NGYc1pDtfr491DYnEarBqn0xvprcnpK
+         roXVbiv4uSxma2S2TW6rlTK0PBObC3nWXMWhE1wdVLML8U4vvBAp1LSAct0NN8SHO3Cu
+         2Ij1AKiN0lhtW1f8lazp6Xb7s6DNjoQTwXTfZuteVSWygoC+vUotPSRt+QGBZhOSdWXM
+         h3+A==
+X-Forwarded-Encrypted: i=1; AJvYcCWmw0wF+fe1PnyhYMnctKxEiMlNbPCzuDWdBrumyvE3xNLwP4nlHVuuiuCZub8UEUmnyRQv0MnxzHAw2g9B6gUlkNs1VUZhOImLrNVS
+X-Gm-Message-State: AOJu0Yy8pcCVgSxf3gwTOrM4L5yFHGsISWc3ihWdgsDg+dWY/GBIvAIU
+	J51KVzXUgx/wPWHLDeQDZScwO5eawRTmPb8+HNkXMGQH/Q7qMDRKJEqe9KNIhDA=
+X-Google-Smtp-Source: AGHT+IGHB5gHClxTzaPri9vHfioAkOsY7ktzCLS7y8Ff5PRJViyHNbO7xTE9ZiCC4tYmAwqZCG7Rgw==
+X-Received: by 2002:a05:6512:28c:b0:513:cadf:ef0c with SMTP id j12-20020a056512028c00b00513cadfef0cmr7852924lfp.18.1710759221771;
+        Mon, 18 Mar 2024 03:53:41 -0700 (PDT)
+Received: from fedora.fritz.box (aftr-82-135-80-212.dynamic.mnet-online.de. [82.135.80.212])
+        by smtp.gmail.com with ESMTPSA id h7-20020a05600c314700b004140c161e8dsm4871932wmo.43.2024.03.18.03.53.41
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 03:53:41 -0700 (PDT)
+From: Thorsten Blum <thorsten.blum@toblux.com>
+To: Steven Rostedt <rostedt@goodmis.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	linux-kernel@vger.kernel.org,
+	linux-trace-kernel@vger.kernel.org,
+	Thorsten Blum <thorsten.blum@toblux.com>
+Subject: [PATCH] tracing: Explicitly cast divisor to fix Coccinelle warning
+Date: Mon, 18 Mar 2024 11:52:44 +0100
+Message-ID: <20240318105243.117911-2-thorsten.blum@toblux.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
 
-On Mon, 18 Mar 2024, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> Hi,
->
-> On Thu, 11 Jan 2024 13:38:04 +0100, Luca Weiss wrote:
->> Since the kconfig symbol of DRM_PANEL_BRIDGE is only adding
->> bridge/panel.o to drm_kms_helper object, we need to select
->> DRM_KMS_HELPER to make sure the file is actually getting built.
->> 
->> Otherwise with certain defconfigs e.g. devm_drm_of_get_bridge will not
->> be properly available:
->> 
->> [...]
->
-> Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-fixes)
->
-> [1/1] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
->       https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/e3f18b0dd1db242791afbc3bd173026163ce0ccc
+Explicitly cast the divisor to u32 to fix a Coccinelle/coccicheck warning
+reported by do_div.cocci.
 
-With my kernel config, e3f18b0dd1db ("drm/bridge: Select DRM_KMS_HELPER
-for DRM_PANEL_BRIDGE") leads to:
+Signed-off-by: Thorsten Blum <thorsten.blum@toblux.com>
+---
+ kernel/trace/trace_benchmark.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
-  Depends on [m]: HAS_IOMEM [=y] && DRM [=m]
-  Selected by [y]:
-  - DRM_PANEL_BRIDGE [=y] && HAS_IOMEM [=y] && DRM_BRIDGE [=y]
-  Selected by [m]:
-  - DRM [=m] && HAS_IOMEM [=y] && (AGP [=y] || AGP [=y]=n) && !EMULATED_CMPXCHG && HAS_DMA [=y] && DRM_FBDEV_EMULATION [=y]
-  - DRM_MIPI_DBI [=m] && HAS_IOMEM [=y] && DRM [=m]
-  - DRM_KUNIT_TEST [=m] && HAS_IOMEM [=y] && DRM [=m] && KUNIT [=y] && MMU [=y]
-  - DRM_RADEON [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && (AGP [=y] || !AGP [=y])
-  - DRM_AMDGPU [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && !UML
-  - DRM_NOUVEAU [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
-  - DRM_I915 [=m] && HAS_IOMEM [=y] && DRM [=m] && X86 [=y] && PCI [=y] && !PREEMPT_RT [=n]
-  - DRM_XE [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && (m && MODULES [=y] || y && KUNIT [=y]=y) && 64BIT [=y]
-  - DRM_VKMS [=m] && HAS_IOMEM [=y] && DRM [=m] && MMU [=y]
-  - DRM_VMWGFX [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y] && (X86 [=y] || ARM64)
-  - DRM_GMA500 [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && X86 [=y] && MMU [=y]
-  - DRM_UDL [=m] && HAS_IOMEM [=y] && DRM [=m] && USB [=m] && USB_ARCH_HAS_HCD [=y] && MMU [=y]
-  - DRM_AST [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
-  - DRM_MGAG200 [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
-  - DRM_QXL [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
-  - DRM_VIRTIO_GPU [=m] && HAS_IOMEM [=y] && DRM [=m] && VIRTIO_MENU [=y] && MMU [=y]
-  - DRM_BOCHS [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
-  - DRM_CIRRUS_QEMU [=m] && HAS_IOMEM [=y] && DRM [=m] && PCI [=y] && MMU [=y]
-  - DRM_GM12U320 [=m] && HAS_IOMEM [=y] && DRM [=m] && USB [=m] && MMU [=y]
-  - DRM_PANEL_MIPI_DBI [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - DRM_SIMPLEDRM [=m] && HAS_IOMEM [=y] && DRM [=m] && MMU [=y]
-  - TINYDRM_HX8357D [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_ILI9163 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_ILI9225 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_ILI9341 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_ILI9486 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_MI0283QT [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_REPAPER [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_ST7586 [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - TINYDRM_ST7735R [=m] && HAS_IOMEM [=y] && DRM [=m] && SPI [=y]
-  - DRM_XEN_FRONTEND [=m] && HAS_IOMEM [=y] && XEN [=y] && DRM [=m]
-  - DRM_VBOXVIDEO [=m] && HAS_IOMEM [=y] && DRM [=m] && X86 [=y] && PCI [=y]
-  - DRM_GUD [=m] && HAS_IOMEM [=y] && DRM [=m] && USB [=m] && MMU [=y]
-  - DRM_SSD130X [=m] && HAS_IOMEM [=y] && DRM [=m] && MMU [=y]
-  - DRM_ANALOGIX_ANX78XX [=m] && HAS_IOMEM [=y] && DRM [=m] && DRM_BRIDGE [=y]
-
-
-BR,
-Jani.
-
+diff --git a/kernel/trace/trace_benchmark.c b/kernel/trace/trace_benchmark.c
+index 54d5fa35c90a..218b40050629 100644
+--- a/kernel/trace/trace_benchmark.c
++++ b/kernel/trace/trace_benchmark.c
+@@ -105,7 +105,7 @@ static void trace_do_benchmark(void)
+ 		stddev = 0;
+ 
+ 	delta = bm_total;
+-	do_div(delta, bm_cnt);
++	do_div(delta, (u32)bm_cnt);
+ 	avg = delta;
+ 
+ 	if (stddev > 0) {
 -- 
-Jani Nikula, Intel
+2.44.0
+
 
