@@ -1,235 +1,113 @@
-Return-Path: <linux-kernel+bounces-106335-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106337-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16B8D87ECA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:52:28 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2970487ECAF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:52:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 66889B219A8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:52:25 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id ADAABB21870
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:52:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 04DBA54646;
-	Mon, 18 Mar 2024 15:51:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1FB51548E9;
+	Mon, 18 Mar 2024 15:51:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="dCssnwzV"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="L5UflZSp"
+Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 446D353804;
-	Mon, 18 Mar 2024 15:51:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 915A852F83;
+	Mon, 18 Mar 2024 15:51:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710777078; cv=none; b=mxHo+UYzNbHHpzCFgr5EXtbRyNAx1irKMofIzX6C+9YRVsqhGYMTK2F3dE0JFJvtiQEaLPeVbhTww2Pu4JlqJTd8Kkxu8/jChBW00CSEJ49tOdLvbo5xhSCyheqkHGlh/ZJLiykbi4viNK1mbSe+V/7XPwn1CuWxxGpwnsEXRB8=
+	t=1710777085; cv=none; b=mv5TWpq9HCivIK5/lY/pxD9AP7LryLi6JnX5c9QpE/vNGK3+wZdRPyII6VcsqS9QIwNYpNloUeGcoH61iAeIzcz7ZgO6GgxDMvZjlaKSm/KRIq3UEyJPLixoTLu/vIoBD66IqDYMnK3MeTN5rLLyDtV0yBVpFxKnjZphqfDeDWg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710777078; c=relaxed/simple;
-	bh=jDy2bk5yUpu/wRarNxbYZJ4R4dFghppwsZWkImSP4Mk=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=pP1PMpIQLs0KY8KKshB176SVQ4tVQmQnb1fJuDHvtewcVOAFYKDc15orOxPG6jLeAR4sPaE/Lf6xyNxfyjMF4qRVfi5wHIr6XkE3FxTye/jUfs353tewRVZs10QEQ6P+ryxL8tP+/Wd7yKHsghtilutcoThA+KvJ9YMTdZRqBxg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=dCssnwzV; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [127.0.1.1] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id EE9B01FB1;
-	Mon, 18 Mar 2024 16:50:43 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710777044;
-	bh=jDy2bk5yUpu/wRarNxbYZJ4R4dFghppwsZWkImSP4Mk=;
-	h=From:Date:Subject:References:In-Reply-To:To:Cc:From;
-	b=dCssnwzV7glXnKwC8s/8Xzai/vVLM/2Tsv4uL+JkvEdgfOGOeInfgGFWoQDAds2HS
-	 Stm8xL7yrJRYWClHNuTaYICKqkI6/CoH8h54tBrCQ6SdFGQKKHswukZTVQMDDCJdp2
-	 iNQIC5hL0M0maMoD6jODFwp9JYM0GYYnEAi3+UKM=
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Date: Mon, 18 Mar 2024 17:49:59 +0200
-Subject: [PATCH 4/4] media: admin-guide: Document the Raspberry Pi CFE
- (rp1-cfe)
+	s=arc-20240116; t=1710777085; c=relaxed/simple;
+	bh=1fZJZWNWJbLA2ckdpmhdzs+n3qrTr7rfpP5E/IhBtCo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=mFuN5XZj1kXhaopYpKLq97Z1YQbjMyKeXjQDOFmyhLXwYnA+tZPmZLI+BoG/OHlTvxD99yK/adInq5o5ImHxbzY6dGrxeeBjpdRQ2jC0QbP6r2q1NTMF8uStxGFuFoNZrq4c72vkZAWP7a2m6eW2LK/EhDg8QDfS5+Zn7CBewbU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=L5UflZSp; arc=none smtp.client-ip=217.70.183.196
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
+Received: by mail.gandi.net (Postfix) with ESMTPSA id 32915E0005;
+	Mon, 18 Mar 2024 15:51:11 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
+	t=1710777075;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=A05q6KoR0JEWg+AapjwLG9ZBzCyQlsIDEalElRAtOMg=;
+	b=L5UflZSpH2pvPOZJq67tgjFsh9FmimSSKG1CIj7BkPVn21owzSnc2FCv1Z8TXrEjr/COf8
+	0uJVcTuS33VzvGeLFN5Y/XcLYfniCTmzArj5bhddNit2+9A67ea1/6PUZkM2PjfNt4bSIp
+	gGAvUAuJtQaviRuMz5g6AlLTzU7rKdCtuTIqQHiGWdfqU3cyGUe4YpgG7UhCFDNJXV3WWo
+	mTc9Zt0BhBXUR0vUveKS1+oTBzjeRHXVKOtVu2r+2ZQ+BGfMtE7ldow4JAVLJdcje4hfbj
+	ro9naMUU213HFXZdugz0B+Ej0dYWyoTFn04VRizljW+pYZWxFze224bvvcYUVQ==
+Message-ID: <4c1c4420-b539-4e29-972d-cb3838fff066@arinc9.com>
+Date: Mon, 18 Mar 2024 18:50:53 +0300
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240318-rp1-cfe-v1-4-ac6d960ff22d@ideasonboard.com>
-References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
-In-Reply-To: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
-To: Mauro Carvalho Chehab <mchehab@kernel.org>, 
- Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, 
- Florian Fainelli <florian.fainelli@broadcom.com>, 
- Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org, 
- linux-arm-kernel@lists.infradead.org, 
- Naushir Patuck <naush@raspberrypi.com>, 
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Sakari Ailus <sakari.ailus@linux.intel.com>, 
- Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
- Kieran Bingham <kieran.bingham@ideasonboard.com>, 
- Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-X-Mailer: b4 0.13.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=6375;
- i=tomi.valkeinen@ideasonboard.com; h=from:subject:message-id;
- bh=jDy2bk5yUpu/wRarNxbYZJ4R4dFghppwsZWkImSP4Mk=;
- b=owEBbQKS/ZANAwAIAfo9qoy8lh71AcsmYgBl+GLpAUkyF4pVVtErxFmbK/rOeY7jLHGp7g2S5
- zo9rhAQ3yiJAjMEAAEIAB0WIQTEOAw+ll79gQef86f6PaqMvJYe9QUCZfhi6QAKCRD6PaqMvJYe
- 9TcTD/9fEh4AwaHUQD0ALozBILy86k/3q7VJSNpMxA4P0ErdHqrnpbc8GodPhiM04BkZNNjJUsi
- hfbWr2qgBp09kjT+17s4xEyVAesqcikRGwrz38JjnuA+m8kbIBbrFbVGMI3r56dPzmCUooZQU7a
- pJ9K3i513EUKwxCH+1JtCgIs4sC3m1VW7vUODFTOefOoTanQZTunUp50Jdk2o5T32bMrbJ04Y5E
- tWHjKCb2VC6K/ivdtKj4AxJUyP/lP4aZTBZhT/LYgNJ76QMqbfbAFOJDHALs21+4EIvp9zeYvuc
- 7nDgTXKDOtNs1Jf8iTLMl/AVcNy55sB05J/IiarjT7EDHgQI7Bunt3TYtGRg3xz91gCg5Nxz8kT
- Ru8ypSNszjYhYeVu/D24TplR2dHnU4UUp5Afas37y0JdvgltjNCXggksuFPFLGhPZEqwMfdaUGW
- zUx2pyug//202NXc8Weiri7KSaKwl8x5BTAlcvKPb7smlNuR0Nfmy7ucuh5LzAHUT1Jqn2PrkLD
- b1R7gLlFiSLdqMewvP24+xkT+i+bTh2YNyVQZhOCRpSLk4t/xmhbB/OSBOKRtwwMQTLAtYUV/3p
- IyetDWzdfVe0DaGqjRSYkwCqdTT69wE+IUZgSU8KSrQV6r+0O7DQLavzOfHDAuiR9gjzl5Jtk9h
- 9xjI9Lf9UikNDrg==
-X-Developer-Key: i=tomi.valkeinen@ideasonboard.com; a=openpgp;
- fpr=C4380C3E965EFD81079FF3A7FA3DAA8CBC961EF5
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/2] arm64: dts: mediatek: mt7622: set PHY address of
+ MT7531 switch to 0x1f
+Content-Language: en-US
+To: Florian Fainelli <f.fainelli@gmail.com>, Rob Herring
+ <robh+dt@kernel.org>, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
+ Matthias Brugger <matthias.bgg@gmail.com>,
+ AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: mithat.guner@xeront.com, erkin.bozoglu@xeront.com,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-mediatek@lists.infradead.org
+References: <20240314-for-mediatek-mt7531-phy-address-v1-0-52f58db01acd@arinc9.com>
+ <20240314-for-mediatek-mt7531-phy-address-v1-1-52f58db01acd@arinc9.com>
+ <94e3d09a-e6a4-4808-bc29-3f494b65e170@gmail.com>
+ <62d128f1-11ac-4669-90ff-e9cdd0ec5bd9@arinc9.com>
+ <71dd200a-0306-4baa-abab-6e6906aeef2a@gmail.com>
+ <7d1ad037-d8ac-4b9a-b6d2-ab683e52a898@arinc9.com>
+ <23f4c9b1-5c6b-4f3c-9290-41d195650368@gmail.com>
+From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
+In-Reply-To: <23f4c9b1-5c6b-4f3c-9290-41d195650368@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-Spam-Flag: yes
+X-Spam-Level: **************************
+X-GND-Spam-Score: 400
+X-GND-Status: SPAM
+X-GND-Sasl: arinc.unal@arinc9.com
 
-Add documentation for rp1-cfe driver.
+On 18.03.2024 18:38, Florian Fainelli wrote:
+> On 3/18/24 08:26, Arınç ÜNAL wrote:
+>> On 18.03.2024 16:02, Florian Fainelli wrote:
+>>>>> Can we call it a pseudo PHY to use a similar terminology as what is done through drivers/net/dsa/{bcm_sf2,b53}*?
+>>>>>
+>>>>> This is not a real PHY as in it has no actual transceiver/digital signal processing logic, this is a piece of logic that snoops for MDIO transactions at that specific address and lets you access the switch's internal register as if it was a MDIO device.
+>>>>
+>>>> I can get behind calling the switch a psuedo-PHY in the context of MDIO.
+>>>> However, as described on "22.2.4.5.5 PHYAD (PHY Address)" of "22.2.4.5
+>>>> Management frame structure" of the active standard IEEE Std 802.3™‐2022,
+>>>> the field is called "PHY Address". The patch log doesn't give an identifier
+>>>> as to what a switch is in the context of MDIO. Only that it listens on a
+>>>> certain PHY address which the term complies with IEEE Std 802.3™‐2022.
+>>>>
+>>>> So I don't see an improvement to be made on the patch log. Feel free to
+>>>> elaborate further.
+>>>
+>>> I would just s/PHY/MDIO bus address/ since that is simply more generic, but if it is not written as-is in the spec, then I won't fight it much more than I already did.
+>>
+>> I'm not sure what you're referring to by spec. Are you asking how specific
+>> the name of the PHYAD field is described on the standard?
+> 
+> Spec = IEEE Std 802.3-2022 standard, aka the document you are quoting.
 
-Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
----
- .../admin-guide/media/raspberrypi-rp1-cfe.dot      | 27 ++++++++
- .../admin-guide/media/raspberrypi-rp1-cfe.rst      | 78 ++++++++++++++++++++++
- Documentation/admin-guide/media/v4l-drivers.rst    |  1 +
- 3 files changed, 106 insertions(+)
+Ok. The field is referred to as "PHY Address" (capital A) in a sentence on
+the standard. I interpret that as it defines the term to mention the field
+in a sentence which is why I'd like to stick to it on my patch log.
 
-diff --git a/Documentation/admin-guide/media/raspberrypi-rp1-cfe.dot b/Documentation/admin-guide/media/raspberrypi-rp1-cfe.dot
-new file mode 100644
-index 000000000000..7717f2291049
---- /dev/null
-+++ b/Documentation/admin-guide/media/raspberrypi-rp1-cfe.dot
-@@ -0,0 +1,27 @@
-+digraph board {
-+	rankdir=TB
-+	n00000001 [label="{{<port0> 0} | csi2\n/dev/v4l-subdev0 | {<port1> 1 | <port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
-+	n00000001:port1 -> n00000011 [style=dashed]
-+	n00000001:port1 -> n00000007:port0
-+	n00000001:port2 -> n00000015
-+	n00000001:port2 -> n00000007:port0 [style=dashed]
-+	n00000001:port3 -> n00000019 [style=dashed]
-+	n00000001:port3 -> n00000007:port0 [style=dashed]
-+	n00000001:port4 -> n0000001d [style=dashed]
-+	n00000001:port4 -> n00000007:port0 [style=dashed]
-+	n00000007 [label="{{<port0> 0 | <port1> 1} | pisp-fe\n/dev/v4l-subdev1 | {<port2> 2 | <port3> 3 | <port4> 4}}", shape=Mrecord, style=filled, fillcolor=green]
-+	n00000007:port2 -> n00000021
-+	n00000007:port3 -> n00000025 [style=dashed]
-+	n00000007:port4 -> n00000029
-+	n0000000d [label="{imx219 6-0010\n/dev/v4l-subdev2 | {<port0> 0}}", shape=Mrecord, style=filled, fillcolor=green]
-+	n0000000d:port0 -> n00000001:port0 [style=bold]
-+	n00000011 [label="rp1-cfe-csi2-ch0\n/dev/video0", shape=box, style=filled, fillcolor=yellow]
-+	n00000015 [label="rp1-cfe-csi2-ch1\n/dev/video1", shape=box, style=filled, fillcolor=yellow]
-+	n00000019 [label="rp1-cfe-csi2-ch2\n/dev/video2", shape=box, style=filled, fillcolor=yellow]
-+	n0000001d [label="rp1-cfe-csi2-ch3\n/dev/video3", shape=box, style=filled, fillcolor=yellow]
-+	n00000021 [label="rp1-cfe-fe-image0\n/dev/video4", shape=box, style=filled, fillcolor=yellow]
-+	n00000025 [label="rp1-cfe-fe-image1\n/dev/video5", shape=box, style=filled, fillcolor=yellow]
-+	n00000029 [label="rp1-cfe-fe-stats\n/dev/video6", shape=box, style=filled, fillcolor=yellow]
-+	n0000002d [label="rp1-cfe-fe-config\n/dev/video7", shape=box, style=filled, fillcolor=yellow]
-+	n0000002d -> n00000007:port1
-+}
-diff --git a/Documentation/admin-guide/media/raspberrypi-rp1-cfe.rst b/Documentation/admin-guide/media/raspberrypi-rp1-cfe.rst
-new file mode 100644
-index 000000000000..668d978a9875
---- /dev/null
-+++ b/Documentation/admin-guide/media/raspberrypi-rp1-cfe.rst
-@@ -0,0 +1,78 @@
-+.. SPDX-License-Identifier: GPL-2.0
-+
-+============================================
-+Raspberry Pi PiSP Camera Front End (rp1-cfe)
-+============================================
-+
-+The PiSP Camera Front End
-+=========================
-+
-+The PiSP Camera Front End (CFE) is a module which combines a CSI-2 receiver with
-+a simple ISP, called the Front End (FE).
-+
-+The CFE has four DMA engines and can write frames from four separate streams
-+received from the CSI-2 to the memory. One of those streams can also be routed
-+directly to the FE, which can do minimal image processing, write two versions
-+(e.g. non-scaled and downscaled versions) of the received frames to memory and
-+provide statistics of the received frames.
-+
-+The FE registers are documented in the `Raspberry Pi Image Signal Processor
-+(ISP) Specification document
-+<https://datasheets.raspberrypi.com/camera/raspberry-pi-image-signal-processor-specification.pdf>`_,
-+and example code for FE can be found in `libpisp
-+<https://github.com/raspberrypi/libpisp>`_.
-+
-+The rp1-cfe driver
-+==================
-+
-+The Raspberry Pi PiSP Camera Front End (rp1-cfe) driver is located under
-+drivers/media/platform/raspberrypi/rp1-cfe. It uses the `V4L2 API` to register
-+a number of video capture and output devices, the `V4L2 subdev API` to register
-+subdevices for the CSI-2 received and the FE that connects the video devices in
-+a single media graph realized using the `Media Controller (MC) API`.
-+
-+The media topology registered by the `rp1-cfe` driver, in this particular
-+example connected to an imx219 sensor, is the following one:
-+
-+.. _rp1-cfe-topology:
-+
-+.. kernel-figure:: raspberrypi-rp1-cfe.dot
-+    :alt:   Diagram of an example media pipeline topology
-+    :align: center
-+
-+The media graph contains the following video device nodes:
-+
-+- rp1-cfe-csi2-ch0: capture device for the first CSI-2 stream
-+- rp1-cfe-csi2-ch1: capture device for the second CSI-2 stream
-+- rp1-cfe-csi2-ch2: capture device for the third CSI-2 stream
-+- rp1-cfe-csi2-ch3: capture device for the fourth CSI-2 stream
-+- rp1-cfe-fe-image0: capture device for the first FE output
-+- rp1-cfe-fe-image1: capture device for the second FE output
-+- rp1-cfe-fe-stats: capture device for the FE statistics
-+- rp1-cfe-fe-config: output device for FE configuration
-+
-+rp1-cfe-csi2-chX
-+----------------
-+
-+The rp1-cfe-csi2-chX capture devices are normal V4L2 capture devices which
-+can be used to capture video frames or metadata received from the CSI-2.
-+
-+rp1-cfe-fe-image0, rp1-cfe-fe-image1
-+------------------------------------
-+
-+The rp1-cfe-fe-image0 and rp1-cfe-fe-image1 capture devices are used to write
-+the processed frames to memory.
-+
-+rp1-cfe-fe-stats
-+----------------
-+
-+The format of the FE statistics buffer is defined by
-+:c:type:`pisp_statistics` C structure and the meaning of each parameter is
-+described in the `PiSP specification` document.
-+
-+rp1-cfe-fe-config
-+-----------------
-+
-+The format of the FE configuration buffer is defined by
-+:c:type:`pisp_fe_config` C structure and the meaning of each parameter is
-+described in the `PiSP specification` document.
-diff --git a/Documentation/admin-guide/media/v4l-drivers.rst b/Documentation/admin-guide/media/v4l-drivers.rst
-index c15a6bb952d9..20be545e866c 100644
---- a/Documentation/admin-guide/media/v4l-drivers.rst
-+++ b/Documentation/admin-guide/media/v4l-drivers.rst
-@@ -25,6 +25,7 @@ Video4Linux (V4L) driver-specific documentation
- 	raspberrypi-pisp-be
- 	rcar-fdp1
- 	rkisp1
-+	raspberrypi-rp1-cfe
- 	saa7134
- 	si470x
- 	si4713
-
--- 
-2.34.1
-
+Arınç
 
