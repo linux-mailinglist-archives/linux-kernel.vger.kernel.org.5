@@ -1,714 +1,236 @@
-Return-Path: <linux-kernel+bounces-105777-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105778-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99BCF87E432
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:41:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD5A287E437
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:42:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BA9AB1C20AE8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:41:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46A141F212EA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:42:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AC8A23746;
-	Mon, 18 Mar 2024 07:40:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D9A22F1C;
+	Mon, 18 Mar 2024 07:42:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="EGcJ4zvU"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2127.outbound.protection.outlook.com [40.107.223.127])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="mBfV+HVw"
+Received: from mail-ej1-f52.google.com (mail-ej1-f52.google.com [209.85.218.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FCA8241E1;
-	Mon, 18 Mar 2024 07:40:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.127
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710747650; cv=fail; b=i+x8qEhjXOBxIjcUGzoSWwMLJ0n5lmvZk2cSb9iS49xY5Ld7YUd16hb95OzXdsimTlcey0+Kwbta8DE3/dziUgNsZjLxv6skUFNhpUDZYZD1gRFNbuVBZTNHyYHig9Cw6CD+RlXxC9T9ujLiPheOLv1ugF19oJ40LA4rxeJV1hA=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710747650; c=relaxed/simple;
-	bh=8bbe7XXmsLC6kbqcGNy9Byvxj0UF8Vlt4MQ8mNsmttg=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=SoRq7zWJiKcE72qF8LKXse01K4/boekmynpOYuACZ8FaQZNkyIvxzTfoGywUu833/4qOXsGp3yyz9BCCSr8E93Z83HokWZnNe2KZQpUeDzeNQwgRnwAsinptlPQabVI+mS8LhqhjETHH8AG05UJRLAT+08CHekvCP20e3oJ2XNk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=EGcJ4zvU; arc=fail smtp.client-ip=40.107.223.127
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MzeX0R4+EUzMPqNXBKI2WZkb+BoQPPIdSvxFM5AGUO3WlcKg1WXReTU7qTSLEAwXlzAiRssvsKkkj9jXP4QFA0mmPfj3rW+C1cmDY4LmrIqW+LM7I80evvo7VDfxAS/F76Ao2iRxl6PR8hukLp7qDISu/bYQ5YfsjNbBRka1oivNgVqDLRp577fJSAHPq00rdFPv57Pg+KSGsgvNALFUSgjWDR0vHRtuTRQyiWgfa0bx7blt0/R7495iImIVPV5TrcXLxCIOmbjpf2uZtKHUadVDL/iFXXhIadX1Wm7HYlr5aWDvVY6ego7OCXBkFiw+zJx1vpSv91lQR+yge9TGcA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=GjY+Onnn4YsdIXnz5zDWPQdHRLABu7dJ2X/07WCv9xU=;
- b=SN1x5rOUNVeXVkgR0hlS9NFBJlD0Vo1HNNmz0I9CUWV6PKDgiadtgmG5urMg4tIjO9wtvrHXNqw0ZeGBDL/3wYJapo3uBp8Dijqai4sBUOqjt2o5SD3Vq5Ehr+4uFPO3V9sqL78L5uPLeTuOmBVLYxHuqmfBOfVuaih+v83MlKpkYcVQYT3BBjiElcVvYBrC47d0T56CmoLKmeDj5q0U/9fAxkOBHMcdPd9P/XmjAUISryYAflwQxmAkm8IES0EPpYNo2nkLlbn4zAzspxbrWy4TSTIRVqcjJqQ5omJahv1/ej7vekDHD9wCApKSk4TQB9GnKjP+lhOUVm6H/uH5Og==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=os.amperecomputing.com; dkim=pass
- header.d=os.amperecomputing.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F88122EF0
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:41:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710747719; cv=none; b=N2KMjxDC/ZG/+TMi4gRW85wv3uq0y7RKGKbut0BqV/Kb+7RerkUrQM8BGagPDIaWS9FO7mFwmQcrU/HyQq+m96D29kr8wvLU/PjHYQ9eYRAjTsRw1jmo+q0Wjg+ReQk6ENN+d0xtpkO9JMWtygbg5Q/EIhtDV3xIgoujXioN47s=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710747719; c=relaxed/simple;
+	bh=PINzWdH0Ne7ORYZjAwoSX8t/RRcw1lLoN8REYVtAW7o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nlWK6MPHOE/KgaL3aWv8g7ePR3wM2Ezm2PqX6FvOwCJbz0uNvWKZ6fyvAplH/QKz6UZqXQ93NLx3YkZOSRNOMJC9W+/h48l/lX4abKav99SIdAg1YvH2y1ElH1nFr5FRZ6FSoLoBn0WL7upwFM9QWSOP1sUXPCKJEHLeQmtdQ1c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=mBfV+HVw; arc=none smtp.client-ip=209.85.218.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f52.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so920051066b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 00:41:57 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=os.amperecomputing.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=GjY+Onnn4YsdIXnz5zDWPQdHRLABu7dJ2X/07WCv9xU=;
- b=EGcJ4zvUzMD5YiYnJylSPrDhZIh8RshwqEtdoDDpdADI/OiTxsesUq8nPw/XfygQBlyoMRIMULgLsCHAQneEI18kVP6MmYhURM/fMGBr6UQ1iMKLNM5ibri42Gfqq9vpkas3imJ55MY06Su0cda/abdRtwcX/lwbuIYXo/Qr+Hc=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
-Received: from SJ2PR01MB8101.prod.exchangelabs.com (2603:10b6:a03:4f6::10) by
- CO1PR01MB7324.prod.exchangelabs.com (2603:10b6:303:157::12) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.27; Mon, 18 Mar 2024 07:40:44 +0000
-Received: from SJ2PR01MB8101.prod.exchangelabs.com
- ([fe80::d3dd:ece:637f:bde9]) by SJ2PR01MB8101.prod.exchangelabs.com
- ([fe80::d3dd:ece:637f:bde9%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
- 07:40:43 +0000
-Message-ID: <e5267f44-5e9a-42a2-a921-5f3428b03c05@os.amperecomputing.com>
-Date: Mon, 18 Mar 2024 13:10:31 +0530
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 06/28] arm64: RME: ioctls to create and configure
- realms
-Content-Language: en-US
-To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
- kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Joey Gouly <joey.gouly@arm.com>,
- Alexandru Elisei <alexandru.elisei@arm.com>,
- Christoffer Dall <christoffer.dall@arm.com>, Fuad Tabba <tabba@google.com>,
- linux-coco@lists.linux.dev
-References: <20230127112248.136810-1-suzuki.poulose@arm.com>
- <20230127112932.38045-1-steven.price@arm.com>
- <20230127112932.38045-7-steven.price@arm.com>
-From: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
-In-Reply-To: <20230127112932.38045-7-steven.price@arm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: CH0PR03CA0243.namprd03.prod.outlook.com
- (2603:10b6:610:e5::8) To SJ2PR01MB8101.prod.exchangelabs.com
- (2603:10b6:a03:4f6::10)
+        d=linaro.org; s=google; t=1710747716; x=1711352516; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=c72fdTUZtGgEqYLgWdMw4Z3JQurOW9liWuFGsNI6KVg=;
+        b=mBfV+HVwCgsHX52KuLR6rkiqPJQEahdfe+7kCtN9QFqzlIoP//KK/BO71WomHEn8rW
+         jDwjotzx5Wt0gX4XHjR3yEZgdEyLEMZVt4xQUQD1NNGuBnibkoS7ZcdOOuQxfpulWtvJ
+         +1GfvaMtVGRnZ4H+W1oXVCA91sIGS1Y3jCmYdYOZJnx1qlZn5+IxRDRltJ2IJ1dHZrDG
+         hq/EF3v9uT81K2NAWiecbEJ8whHNT1dde5EAxLofVi6zdReGI+090prmoPpt0kpoJpi+
+         UoFP2jFLou1UFyPFz+7Oe+y9zDJrcWQ/q2v+MT2erpuUNyaEflBQP51cTG8ZKOsBt726
+         itDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710747716; x=1711352516;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=c72fdTUZtGgEqYLgWdMw4Z3JQurOW9liWuFGsNI6KVg=;
+        b=EfFDH4zZN5GKvK+j217Ogh7hM1wE/4mMLOV6ydBUlPaN6aXK4fqtajnXIHfLNxRbWT
+         8boSIBrgYIeg82I6+UUNkUy/VppOxg4M9csI6My2k+byAgyphktTv8F9dAVi6YgiWLKT
+         FHzAQbFCuqQKZ2vMiZ6XAq76Bwslfy3bAbwIyWb2Wr4/CR2x1SgaH8criwCjdxRdY5b9
+         x7z81sGpMvoBD9P9yNUMk5LXhmykU9YzCMujhM8hgFPDJJXl4IKy58PpJjOhcLlafM+T
+         rzjIC3Bqedva41yq/Lz8WR5e56P8K+PLwb3zVvsmQGu3hNcittLJ50VgqorSDRz/XGoX
+         gB8g==
+X-Forwarded-Encrypted: i=1; AJvYcCVaSrqPoVu9bJBpAL5nDQS5cRGVOESqa6PMpG6oUse8Ekqco+YuewM+PSThw6dNbW++9TWIQHkckq3jIZePdSfEi3kpYED6o7PKF5MH
+X-Gm-Message-State: AOJu0YxeqcEd6YPh4UWQ5h+sLKDQqO32ki4gBVPQK6jFt/2mSSwACe3j
+	iA2gblFKPyoJFMMi5k1InylF88Q4atQG5dYNPbpdihkn/2QZEl43Y6h6V6EjFYs=
+X-Google-Smtp-Source: AGHT+IGksPpLOMb3TcnP90t1eD27JwWBE7KI1x8yQDxO+JrHME9wevbX26wxSebKQDpK5VYvLcqZyA==
+X-Received: by 2002:a17:906:e942:b0:a45:ab98:aec with SMTP id jw2-20020a170906e94200b00a45ab980aecmr9473404ejb.10.1710747715638;
+        Mon, 18 Mar 2024 00:41:55 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id bn8-20020a170907268800b00a46be7fb6b8sm789126ejc.43.2024.03.18.00.41.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 00:41:55 -0700 (PDT)
+Message-ID: <b2793d2d-d0ae-406f-b024-06d3a327ed35@linaro.org>
+Date: Mon, 18 Mar 2024 08:41:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR01MB8101:EE_|CO1PR01MB7324:EE_
-X-MS-Office365-Filtering-Correlation-Id: e4243d7a-edda-4f72-5035-08dc471eb79d
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	x9VEJwm2kWzpW9kt5yf6XCyhjX8aUZeZ6rme1HA08LD9vdNheS2A2MKwIrJlLKcpf0yHU8u5eRKzY3JEiXDdXVilJyjlz78gMTyPXLhiQSOB1eFo5KFGYMePObJxNcUZu0l6JRAe6tuqR7HSiKNouK0AbCDDk0RDKCHE8igTyjuXhOJfLX5WshIcxxlIjdLPmM51Yw11R2FPFI2sJShVyBJL3aWFm2jNjKeNZX3cZSanva0Hq+Sqr94asRDbNReR/rBDrs3fGq+sR+emt9kSVU7O6lfG8m2DnmGlw5EN2MNgEAf2c6kxNJRlZsHlT0EpS1jSPgmKBAGrgnu2BVNAX6utGzRw7QvXXKW37tontReqMBNDqM47279mQt3dutwpSt5+t7SfFxDZH7ljK47VjZFFW2rcZ3H8VNMHsvgGS7QdkU9V+6WXJ9YHEf5KVOVHIX1g8h0/UkWkeKLzXN5hjmBTY5Tuz/q9OT2alakGsuaJWFUHORyheZnjAD4RMS/4Pfqf0V7WCYSUPOOjiTepxDt9yCuKGcYTo093AXD7rO3RQHa6hD6+2QhiV8NJifUq5IamgO3g+7AwpEHD/Pu+vTwpoCgw70AXLw/ADIVWASCtugg2dIoPlv92zQrJGOoo6btaqHilbgZ+UvuEnGaEdVZHPVyMUg7DqUVC7o7C1LE=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR01MB8101.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?aFRwNy9TbkZiYnc0K2NFcU1paXZYejB6OGxxN0d4cUFCUURTMW1jZ1lRUEZG?=
- =?utf-8?B?MlpwZ2hBb2FPYS9HVWxZWTA4TGJrVnpXTEk5ZCtISFUzazVjRG9RZGNyN2Zn?=
- =?utf-8?B?RHBPM0xLbnRMV2g2eHMwVGNlMDVqUTdmamIxc3dYUlBkK0JsN3dFc29hUm53?=
- =?utf-8?B?bkwydHByS09XdVJEMWZvckhHNDBqTk5wS2dwZkxSZjk1Y1l3dzBCdjE3Z0tm?=
- =?utf-8?B?cWFwS2RwblpvS2VJRTc4UDZvZjdjSjdiUkFHdFdOb2dya0hmTVgzZk5vM3hq?=
- =?utf-8?B?bDNrMnJpTjFJZWhmWVdXZjlmZ1owaGRud2EvVnFxR0t1dnkwNWZ3YzJHOXJy?=
- =?utf-8?B?Z1hBVHNCazBWSnpRTU1ZeUFja0lPVXRFTzBvdGdMUHdVcTdDNCtpOG5jaitD?=
- =?utf-8?B?MzJlclZFOUZSNXBkZWhxOEhxVVVlUHMvSVlKdUJJbXQyMUNYUzR5S2RkYTAx?=
- =?utf-8?B?TnZJVEU1NGgxZndLb29UMWs2d09WY0NyYnBaVHFWcEJ5dUlNcUozcmpnTE0x?=
- =?utf-8?B?WVc2Ykp2OFVhOUlOVWpYZXpVMnhJd1RZTlpwM2lYckRLdXhpS2JBeVc1UHlt?=
- =?utf-8?B?cnF6eXNMYVdpOTY4V3V5MVBld3k3Sm5wZnplVXhqUlQwWDFVdnFGTVVSdW90?=
- =?utf-8?B?WExGYTlRQmZtckM1UlpVM0dham5LMEdNRktFdVh0T0FjaW96TXp5YS9SOFA3?=
- =?utf-8?B?TDg3VjRCK2F6RVJ6U0N1L2ZLUm9MbERoUytUdnZVcElVcDhOWDBKVmxFd1Bq?=
- =?utf-8?B?QmV5ZER0VncvYzlCTEJPODhRUzhWREtqdmpieUhBWGF2THFnbWhUK2wrOC9F?=
- =?utf-8?B?cVlPWmNhNFRndkNiR29RT3VESVVyUnJYNnRkcFZLVzRvVlNzNndpbkc4WHN6?=
- =?utf-8?B?MWhhYmk5TUZQQmlCd05jUnNYSzBzcC9IVHNKSXNjcm4zSk1naU91cnkycnQr?=
- =?utf-8?B?bU9Jby9hYUJUNTZoR2haeUVic0xNVjZwK1YvdGg4VEhKaU9Tamp2eEUzTTlL?=
- =?utf-8?B?RVRzRUFoVXpqL2ZUM0orZVNsUWdqdEFvRkR2Um1Dek02dEgrMGJyTGtXcTJU?=
- =?utf-8?B?N1pmMG5tQ0JWMVdhSUNScUVmUFdQV1dpdXUxOWFXOGJPaDFiYWpDUXNJR3px?=
- =?utf-8?B?SStqb1lXNnlodUNtRGYxMnMzTDdwbDF0dEVjeTZUZ21XK0puKzZ4cTcwcjJX?=
- =?utf-8?B?S0ozaGFicWh3UkExY1FMK0gyWXNwWTgrZllidUJlR1hneXVGY0cwWDlaM0dN?=
- =?utf-8?B?WHhjbVJQdDZsdTZuR2Y3T1Y0Z2JhT1FIM2hHYWN5QlBCSWg2L20weWJ3MU1B?=
- =?utf-8?B?Z01wOUY2dDhSejhMRXd5OCsrMlZyeUZCYWxydXh1cjFtUEY4MEk5VUdDRlow?=
- =?utf-8?B?Y1BuakJKbWI4Zjl1a2hzT2N3TE9ydjRxaFA3ZFIzNWdRZDlRelNiRzJxZHBN?=
- =?utf-8?B?NHVKVE96RFpCM2Jra0dFM2Njc0xzYU9ya00rbkF0b005cm9NL3RiK1ZBRjJW?=
- =?utf-8?B?NzBNT2VyVGpVY21QeVNab1RsZDl3RjJnK3V2WGRvQTlPVkVTdVNsdDRPMkZj?=
- =?utf-8?B?QUJpTzAwYlVGYjI4MC9ZNkZnOUhxSnlpNGdXM0tkekJ6Tmo4NEMzZEhERGYw?=
- =?utf-8?B?V1N3WXlpU05kQndFbDFEVEI2ZERINUMrNFp0UjZjNDBUeUJ4VzJ5NFZCSDV6?=
- =?utf-8?B?d3JZRFpBTHF1RFlBdHV0STdXK1g4cXlkbi9kbWY4N2FDVXB3K2htS05Pbk4v?=
- =?utf-8?B?aTEwWGp6UTlQRDJCdWpRQU9GQitxbStjSGgwNzViRW43dGlGY01VWmd6c3Rx?=
- =?utf-8?B?QlE4U2ZxUEVvYjFEL2lFbS9pdHN0WXQ2a1U4QWRJdEtNb3dZNG5Mb1lUOGx6?=
- =?utf-8?B?cTMzLzk0NE5TZk9SWUR2QjJpMThYWERFSEk4U2VHZ1lYY2JnNWNaS2FUVU1G?=
- =?utf-8?B?V2c5dk5Mc2MvRjkyNFhpRUcydml6akpLN2hWRGFRcDhrNzZCODJiQk5tdW5U?=
- =?utf-8?B?Z1dUVEdvUXByb2dpUVIrMC9yVS94N0tNZjNTSDJQMDlFbTNFc2pHMmMwOXRO?=
- =?utf-8?B?RUo3Q3prWk94aG1UUElvN0E2V1ZIeUtsSzlBTGE5QjhDZm0rNFY1ektKUXho?=
- =?utf-8?B?MEVxUUpEaThDSjE2YVdQVEZON0E0dHg3bmRuaWdwQmQvZGZlSTVuVWJGRlBl?=
- =?utf-8?Q?yDEk8DObnyIlxV87CW5Y8rD7uzQrwhzQybJzrSbuyuvM?=
-X-OriginatorOrg: os.amperecomputing.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: e4243d7a-edda-4f72-5035-08dc471eb79d
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR01MB8101.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 07:40:43.6406
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 29UA+MwyIFDAJ1/wjFk7cqCq1O0MnCsH9frZCVPY9sd+sUKhVnIP7CUYlYmaaXbR8botjg5WJVtd+lPDOgMeiiJBA8SbqFcv3rSp1xhAVtzeMi4rDqz9dwZgzHn6NEht
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR01MB7324
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] net: stmmac: Add NXP S32 SoC family support
+Content-Language: en-US
+To: Wadim Mueller <wafgo01@gmail.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>,
+ Sascha Hauer <s.hauer@pengutronix.de>,
+ Pengutronix Kernel Team <kernel@pengutronix.de>,
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>,
+ Chester Lin <chester62515@gmail.com>, =?UTF-8?Q?Andreas_F=C3=A4rber?=
+ <afaerber@suse.de>, Matthias Brugger <mbrugger@suse.com>,
+ NXP S32 Linux Team <s32@nxp.com>,
+ Alexandre Torgue <alexandre.torgue@foss.st.com>,
+ Jose Abreu <joabreu@synopsys.com>,
+ Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+ Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
+ <sboyd@kernel.org>, Richard Cochran <richardcochran@gmail.com>,
+ Andrew Halaney <ahalaney@redhat.com>, Simon Horman <horms@kernel.org>,
+ Bartosz Golaszewski <bartosz.golaszewski@linaro.org>,
+ Johannes Zink <j.zink@pengutronix.de>, Shenwei Wang <shenwei.wang@nxp.com>,
+ "Russell King (Oracle)" <rmk+kernel@armlinux.org.uk>,
+ Swee Leong Ching <leong.ching.swee@intel.com>,
+ Giuseppe Cavallaro <peppe.cavallaro@st.com>, netdev@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org,
+ linux-stm32@st-md-mailman.stormreply.com, linux-clk@vger.kernel.org
+References: <20240315222754.22366-1-wafgo01@gmail.com>
+ <20240315222754.22366-3-wafgo01@gmail.com>
+ <2316e61d-ad7d-46fb-9f55-67964552855a@linaro.org>
+ <20240317232615.GB22886@bhlegrsu.conti.de>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240317232615.GB22886@bhlegrsu.conti.de>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 27-01-2023 04:59 pm, Steven Price wrote:
-> Add the KVM_CAP_ARM_RME_CREATE_FD ioctl to create a realm. This involves
-> delegating pages to the RMM to hold the Realm Descriptor (RD) and for
-> the base level of the Realm Translation Tables (RTT). A VMID also need
-> to be picked, since the RMM has a separate VMID address space a
-> dedicated allocator is added for this purpose.
+On 18/03/2024 00:26, Wadim Mueller wrote:
+> On Sun, Mar 17, 2024 at 03:53:19PM +0100, Krzysztof Kozlowski wrote:
+>> On 15/03/2024 23:27, Wadim Mueller wrote:
+>>> Add support for NXP S32 SoC family's GMAC to the stmmac network driver. This driver implementation is based on the patchset originally contributed by Chester Lin [1], which itself draws heavily from NXP's downstream implementation [2]. The patchset was never merged.
+>>>
+>>> The S32G2/3 SoCs feature multiple Ethernet interfaces (PFE0, PFE1, PFE2, and GMAC) which can be routed through a SerDes Subsystem, supporting various interfaces such as SGMII and RGMII. However, the current Glue Code lacks support for SerDes routing and pinctrl handling, relying solely on correct settings in U-Boot. Clock settings for this SoC are managed by the ATF Firmware.
+>>
+>>
+>> Please run scripts/checkpatch.pl and fix reported warnings. Some
+>> warnings can be ignored, but the code here looks like it needs a fix.
+>> Feel free to get in touch if the warning is not clear.
+>>
+>> Read how commit msg should be wrapped.
+>>
+>> Please wrap commit message according to Linux coding style / submission
+>> process (neither too early nor over the limit):
+>> https://elixir.bootlin.com/linux/v6.4-rc1/source/Documentation/process/submitting-patches.rst#L597
+>>
+>>>
+>>> Changes made compared to [1]:
+>>>
+>>>     Rebased onto Linux 6.8-rc7
+>>>     Consolidated into a single commit
+>>>     Minor adjustments in naming and usage of dev_err()/dev_info()
+>>>
+>>> Test Environment:
+>>> The driver has been successfully tested on the official S32G-VNP-RDB3 Reference Design Board from NXP, utilizing an S32G3 SoC. The firmware and U-Boot used were from the BSP39 Release. The official BSP39 Ubuntu 22.04 Release was successfully booted. A network stress test using iperf [3] was also executed without issues.
+>>>
+>>> [1] https://patchwork.kernel.org/project/netdevbpf/patch/20221031101052.14956-6-clin@suse.com/#25068228
+>>> [2] https://github.com/nxp-auto-linux/linux/blob/release/bsp39.0-5.15.129-rt/drivers/net/ethernet/stmicro/stmmac/dwmac-s32cc.c
+>>> [3] https://linux.die.net/man/1/iperf
+>>> [4] https://github.com/nxp-auto-linux/u-boot
+>>> [5] https://github.com/nxp-auto-linux/arm-trusted-firmware
+>>>
+>>> Signed-off-by: Wadim Mueller <wafgo01@gmail.com>
+>>> ---
+>>>  drivers/net/ethernet/stmicro/stmmac/Kconfig   |  12 +
+>>>  drivers/net/ethernet/stmicro/stmmac/Makefile  |   1 +
+>>
+>> That's totally unrelated to DTS. Do not mix independent work in one
+>> patchset. This targets net-next, not SoC, so please send it as separate
+>> patchset when net-next reopens, so after merge window.
+>>
 > 
-> KVM_CAP_ARM_RME_CONFIG_REALM is provided to allow configuring the realm
-> before it is created.
+> Let me try to explain why I was thinking that both should be part of the
+> same patchset. 
 > 
-> Signed-off-by: Steven Price <steven.price@arm.com>
-> ---
->   arch/arm64/include/asm/kvm_rme.h |  14 ++
->   arch/arm64/kvm/arm.c             |  19 ++
->   arch/arm64/kvm/mmu.c             |   6 +
->   arch/arm64/kvm/reset.c           |  33 +++
->   arch/arm64/kvm/rme.c             | 357 +++++++++++++++++++++++++++++++
->   5 files changed, 429 insertions(+)
+> The DTS file patch [1/3] is refering to a NIC for which there is no
+> upstream driver (or lets call it better glue code for the real driver) available. 
+
+That's not valid reason. You only need to mention where the bindings are
+for dwmac.
+
 > 
-> diff --git a/arch/arm64/include/asm/kvm_rme.h b/arch/arm64/include/asm/kvm_rme.h
-> index c26bc2c6770d..055a22accc08 100644
-> --- a/arch/arm64/include/asm/kvm_rme.h
-> +++ b/arch/arm64/include/asm/kvm_rme.h
-> @@ -6,6 +6,8 @@
->   #ifndef __ASM_KVM_RME_H
->   #define __ASM_KVM_RME_H
->   
-> +#include <uapi/linux/kvm.h>
-> +
->   enum realm_state {
->   	REALM_STATE_NONE,
->   	REALM_STATE_NEW,
-> @@ -15,8 +17,20 @@ enum realm_state {
->   
->   struct realm {
->   	enum realm_state state;
-> +
-> +	void *rd;
-> +	struct realm_params *params;
-> +
-> +	unsigned long num_aux;
-> +	unsigned int vmid;
-> +	unsigned int ia_bits;
->   };
->   
->   int kvm_init_rme(void);
-> +u32 kvm_realm_ipa_limit(void);
-> +
-> +int kvm_realm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
-> +int kvm_init_realm_vm(struct kvm *kvm);
-> +void kvm_destroy_realm(struct kvm *kvm);
->   
->   #endif
-> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
-> index d97b39d042ab..50f54a63732a 100644
-> --- a/arch/arm64/kvm/arm.c
-> +++ b/arch/arm64/kvm/arm.c
-> @@ -103,6 +103,13 @@ int kvm_vm_ioctl_enable_cap(struct kvm *kvm,
->   		r = 0;
->   		set_bit(KVM_ARCH_FLAG_SYSTEM_SUSPEND_ENABLED, &kvm->arch.flags);
->   		break;
-> +	case KVM_CAP_ARM_RME:
-> +		if (!static_branch_unlikely(&kvm_rme_is_available))
-> +			return -EINVAL;
-> +		mutex_lock(&kvm->lock);
-> +		r = kvm_realm_enable_cap(kvm, cap);
-> +		mutex_unlock(&kvm->lock);
-> +		break;
->   	default:
->   		r = -EINVAL;
->   		break;
-> @@ -172,6 +179,13 @@ int kvm_arch_init_vm(struct kvm *kvm, unsigned long type)
->   	 */
->   	kvm->arch.dfr0_pmuver.imp = kvm_arm_pmu_get_pmuver_limit();
->   
-> +	/* Initialise the realm bits after the generic bits are enabled */
-> +	if (kvm_is_realm(kvm)) {
-> +		ret = kvm_init_realm_vm(kvm);
-> +		if (ret)
-> +			goto err_free_cpumask;
-> +	}
-> +
->   	return 0;
->   
->   err_free_cpumask:
-> @@ -204,6 +218,8 @@ void kvm_arch_destroy_vm(struct kvm *kvm)
->   	kvm_destroy_vcpus(kvm);
->   
->   	kvm_unshare_hyp(kvm, kvm + 1);
-> +
-> +	kvm_destroy_realm(kvm);
->   }
->   
->   int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
-> @@ -300,6 +316,9 @@ int kvm_vm_ioctl_check_extension(struct kvm *kvm, long ext)
->   	case KVM_CAP_ARM_PTRAUTH_GENERIC:
->   		r = system_has_full_ptr_auth();
->   		break;
-> +	case KVM_CAP_ARM_RME:
-> +		r = static_key_enabled(&kvm_rme_is_available);
-> +		break;
->   	default:
->   		r = 0;
->   	}
-> diff --git a/arch/arm64/kvm/mmu.c b/arch/arm64/kvm/mmu.c
-> index 31d7fa4c7c14..d0f707767d05 100644
-> --- a/arch/arm64/kvm/mmu.c
-> +++ b/arch/arm64/kvm/mmu.c
-> @@ -840,6 +840,12 @@ void kvm_free_stage2_pgd(struct kvm_s2_mmu *mmu)
->   	struct kvm_pgtable *pgt = NULL;
->   
->   	write_lock(&kvm->mmu_lock);
-> +	if (kvm_is_realm(kvm) &&
-> +	    kvm_realm_state(kvm) != REALM_STATE_DYING) {
-> +		/* TODO: teardown rtts */
-> +		write_unlock(&kvm->mmu_lock);
-> +		return;
-> +	}
->   	pgt = mmu->pgt;
->   	if (pgt) {
->   		mmu->pgd_phys = 0;
-> diff --git a/arch/arm64/kvm/reset.c b/arch/arm64/kvm/reset.c
-> index e0267f672b8a..c165df174737 100644
-> --- a/arch/arm64/kvm/reset.c
-> +++ b/arch/arm64/kvm/reset.c
-> @@ -395,3 +395,36 @@ int kvm_set_ipa_limit(void)
->   
->   	return 0;
->   }
-> +
-> +int kvm_arm_setup_stage2(struct kvm *kvm, unsigned long type)
-> +{
-> +	u64 mmfr0, mmfr1;
-> +	u32 phys_shift;
-> +	u32 ipa_limit = kvm_ipa_limit;
-> +
-> +	if (kvm_is_realm(kvm))
-> +		ipa_limit = kvm_realm_ipa_limit();
-> +
-> +	if (type & ~KVM_VM_TYPE_ARM_IPA_SIZE_MASK)
-> +		return -EINVAL;
-> +
-> +	phys_shift = KVM_VM_TYPE_ARM_IPA_SIZE(type);
-> +	if (phys_shift) {
-> +		if (phys_shift > ipa_limit ||
-> +		    phys_shift < ARM64_MIN_PARANGE_BITS)
-> +			return -EINVAL;
-> +	} else {
-> +		phys_shift = KVM_PHYS_SHIFT;
-> +		if (phys_shift > ipa_limit) {
-> +			pr_warn_once("%s using unsupported default IPA limit, upgrade your VMM\n",
-> +				     current->comm);
-> +			return -EINVAL;
-> +		}
-> +	}
-> +
-> +	mmfr0 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR0_EL1);
-> +	mmfr1 = read_sanitised_ftr_reg(SYS_ID_AA64MMFR1_EL1);
-> +	kvm->arch.vtcr = kvm_get_vtcr(mmfr0, mmfr1, phys_shift);
-> +
-> +	return 0;
-> +}
-> diff --git a/arch/arm64/kvm/rme.c b/arch/arm64/kvm/rme.c
-> index f6b587bc116e..9f8c5a91b8fc 100644
-> --- a/arch/arm64/kvm/rme.c
-> +++ b/arch/arm64/kvm/rme.c
-> @@ -5,9 +5,49 @@
->   
->   #include <linux/kvm_host.h>
->   
-> +#include <asm/kvm_emulate.h>
-> +#include <asm/kvm_mmu.h>
->   #include <asm/rmi_cmds.h>
->   #include <asm/virt.h>
->   
-> +/************ FIXME: Copied from kvm/hyp/pgtable.c **********/
-> +#include <asm/kvm_pgtable.h>
-> +
-> +struct kvm_pgtable_walk_data {
-> +	struct kvm_pgtable		*pgt;
-> +	struct kvm_pgtable_walker	*walker;
-> +
-> +	u64				addr;
-> +	u64				end;
-> +};
-> +
-> +static u32 __kvm_pgd_page_idx(struct kvm_pgtable *pgt, u64 addr)
-> +{
-> +	u64 shift = kvm_granule_shift(pgt->start_level - 1); /* May underflow */
-> +	u64 mask = BIT(pgt->ia_bits) - 1;
-> +
-> +	return (addr & mask) >> shift;
-> +}
-> +
-> +static u32 kvm_pgd_pages(u32 ia_bits, u32 start_level)
-> +{
-> +	struct kvm_pgtable pgt = {
-> +		.ia_bits	= ia_bits,
-> +		.start_level	= start_level,
-> +	};
-> +
-> +	return __kvm_pgd_page_idx(&pgt, -1ULL) + 1;
-> +}
-> +
-> +/******************/
-> +
-> +static unsigned long rmm_feat_reg0;
-> +
-> +static bool rme_supports(unsigned long feature)
-> +{
-> +	return !!u64_get_bits(rmm_feat_reg0, feature);
-> +}
-> +
->   static int rmi_check_version(void)
->   {
->   	struct arm_smccc_res res;
-> @@ -33,8 +73,319 @@ static int rmi_check_version(void)
->   	return 0;
->   }
->   
-> +static unsigned long create_realm_feat_reg0(struct kvm *kvm)
-> +{
-> +	unsigned long ia_bits = VTCR_EL2_IPA(kvm->arch.vtcr);
-> +	u64 feat_reg0 = 0;
-> +
-> +	int num_bps = u64_get_bits(rmm_feat_reg0,
-> +				   RMI_FEATURE_REGISTER_0_NUM_BPS);
-> +	int num_wps = u64_get_bits(rmm_feat_reg0,
-> +				   RMI_FEATURE_REGISTER_0_NUM_WPS);
-> +
-> +	feat_reg0 |= u64_encode_bits(ia_bits, RMI_FEATURE_REGISTER_0_S2SZ);
-> +	feat_reg0 |= u64_encode_bits(num_bps, RMI_FEATURE_REGISTER_0_NUM_BPS);
-> +	feat_reg0 |= u64_encode_bits(num_wps, RMI_FEATURE_REGISTER_0_NUM_WPS);
-> +
-> +	return feat_reg0;
-> +}
-> +
-> +u32 kvm_realm_ipa_limit(void)
-> +{
-> +	return u64_get_bits(rmm_feat_reg0, RMI_FEATURE_REGISTER_0_S2SZ);
-> +}
-> +
-> +static u32 get_start_level(struct kvm *kvm)
-> +{
-> +	long sl0 = FIELD_GET(VTCR_EL2_SL0_MASK, kvm->arch.vtcr);
-> +
-> +	return VTCR_EL2_TGRAN_SL0_BASE - sl0;
-> +}
-> +
-> +static int realm_create_rd(struct kvm *kvm)
-> +{
-> +	struct realm *realm = &kvm->arch.realm;
-> +	struct realm_params *params = realm->params;
-> +	void *rd = NULL;
-> +	phys_addr_t rd_phys, params_phys;
-> +	struct kvm_pgtable *pgt = kvm->arch.mmu.pgt;
-> +	unsigned int pgd_sz;
-> +	int i, r;
-> +
-> +	if (WARN_ON(realm->rd) || WARN_ON(!realm->params))
-> +		return -EEXIST;
-> +
-> +	rd = (void *)__get_free_page(GFP_KERNEL);
-> +	if (!rd)
-> +		return -ENOMEM;
-> +
-> +	rd_phys = virt_to_phys(rd);
-> +	if (rmi_granule_delegate(rd_phys)) {
-> +		r = -ENXIO;
-> +		goto out;
-> +	}
-> +
-> +	pgd_sz = kvm_pgd_pages(pgt->ia_bits, pgt->start_level);
-> +	for (i = 0; i < pgd_sz; i++) {
-> +		phys_addr_t pgd_phys = kvm->arch.mmu.pgd_phys + i * PAGE_SIZE;
-> +
-> +		if (rmi_granule_delegate(pgd_phys)) {
-> +			r = -ENXIO;
-> +			goto out_undelegate_tables;
-> +		}
-> +	}
-> +
-> +	params->rtt_level_start = get_start_level(kvm);
-> +	params->rtt_num_start = pgd_sz;
-> +	params->rtt_base = kvm->arch.mmu.pgd_phys;
-> +	params->vmid = realm->vmid;
-> +
-> +	params_phys = virt_to_phys(params);
-> +
-> +	if (rmi_realm_create(rd_phys, params_phys)) {
-> +		r = -ENXIO;
-> +		goto out_undelegate_tables;
-> +	}
-> +
-> +	realm->rd = rd;
-> +	realm->ia_bits = VTCR_EL2_IPA(kvm->arch.vtcr);
-> +
-> +	if (WARN_ON(rmi_rec_aux_count(rd_phys, &realm->num_aux))) {
-> +		WARN_ON(rmi_realm_destroy(rd_phys));
-> +		goto out_undelegate_tables;
-> +	}
-> +
-> +	return 0;
-> +
-> +out_undelegate_tables:
-> +	while (--i >= 0) {
-> +		phys_addr_t pgd_phys = kvm->arch.mmu.pgd_phys + i * PAGE_SIZE;
-> +
-> +		WARN_ON(rmi_granule_undelegate(pgd_phys));
-> +	}
-> +	WARN_ON(rmi_granule_undelegate(rd_phys));
-> +out:
-> +	free_page((unsigned long)rd);
-> +	return r;
-> +}
-> +
-> +/* Protects access to rme_vmid_bitmap */
-> +static DEFINE_SPINLOCK(rme_vmid_lock);
-> +static unsigned long *rme_vmid_bitmap;
-> +
-> +static int rme_vmid_init(void)
-> +{
-> +	unsigned int vmid_count = 1 << kvm_get_vmid_bits();
-> +
-> +	rme_vmid_bitmap = bitmap_zalloc(vmid_count, GFP_KERNEL);
-> +	if (!rme_vmid_bitmap) {
-> +		kvm_err("%s: Couldn't allocate rme vmid bitmap\n", __func__);
-> +		return -ENOMEM;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static int rme_vmid_reserve(void)
-> +{
-> +	int ret;
-> +	unsigned int vmid_count = 1 << kvm_get_vmid_bits();
-> +
-> +	spin_lock(&rme_vmid_lock);
-> +	ret = bitmap_find_free_region(rme_vmid_bitmap, vmid_count, 0);
-> +	spin_unlock(&rme_vmid_lock);
-> +
-> +	return ret;
-> +}
-> +
-> +static void rme_vmid_release(unsigned int vmid)
-> +{
-> +	spin_lock(&rme_vmid_lock);
-> +	bitmap_release_region(rme_vmid_bitmap, vmid, 0);
-> +	spin_unlock(&rme_vmid_lock);
-> +}
-> +
-> +static int kvm_create_realm(struct kvm *kvm)
-> +{
-> +	struct realm *realm = &kvm->arch.realm;
-> +	int ret;
-> +
-> +	if (!kvm_is_realm(kvm) || kvm_realm_state(kvm) != REALM_STATE_NONE)
-> +		return -EEXIST;
-> +
-> +	ret = rme_vmid_reserve();
-> +	if (ret < 0)
-> +		return ret;
-> +	realm->vmid = ret;
-> +
-> +	ret = realm_create_rd(kvm);
-> +	if (ret) {
-> +		rme_vmid_release(realm->vmid);
-> +		return ret;
-> +	}
-> +
-> +	WRITE_ONCE(realm->state, REALM_STATE_NEW);
-> +
-> +	/* The realm is up, free the parameters.  */
-> +	free_page((unsigned long)realm->params);
-> +	realm->params = NULL;
-> +
-> +	return 0;
-> +}
-> +
-> +static int config_realm_hash_algo(struct realm *realm,
-> +				  struct kvm_cap_arm_rme_config_item *cfg)
-> +{
-> +	switch (cfg->hash_algo) {
-> +	case KVM_CAP_ARM_RME_MEASUREMENT_ALGO_SHA256:
-> +		if (!rme_supports(RMI_FEATURE_REGISTER_0_HASH_SHA_256))
-> +			return -EINVAL;
-> +		break;
-> +	case KVM_CAP_ARM_RME_MEASUREMENT_ALGO_SHA512:
-> +		if (!rme_supports(RMI_FEATURE_REGISTER_0_HASH_SHA_512))
-> +			return -EINVAL;
-> +		break;
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +	realm->params->measurement_algo = cfg->hash_algo;
-> +	return 0;
-> +}
-> +
-> +static int config_realm_sve(struct realm *realm,
-> +			    struct kvm_cap_arm_rme_config_item *cfg)
-> +{
-> +	u64 features_0 = realm->params->features_0;
-> +	int max_sve_vq = u64_get_bits(rmm_feat_reg0,
-> +				      RMI_FEATURE_REGISTER_0_SVE_VL);
-> +
-> +	if (!rme_supports(RMI_FEATURE_REGISTER_0_SVE_EN))
-> +		return -EINVAL;
-> +
-> +	if (cfg->sve_vq > max_sve_vq)
-> +		return -EINVAL;
-> +
-> +	features_0 &= ~(RMI_FEATURE_REGISTER_0_SVE_EN |
-> +			RMI_FEATURE_REGISTER_0_SVE_VL);
-> +	features_0 |= u64_encode_bits(1, RMI_FEATURE_REGISTER_0_SVE_EN);
-> +	features_0 |= u64_encode_bits(cfg->sve_vq,
-> +				      RMI_FEATURE_REGISTER_0_SVE_VL);
-> +
-> +	realm->params->features_0 = features_0;
-> +	return 0;
-> +}
-> +
-> +static int kvm_rme_config_realm(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	struct kvm_cap_arm_rme_config_item cfg;
-> +	struct realm *realm = &kvm->arch.realm;
-> +	int r = 0;
-> +
-> +	if (kvm_realm_state(kvm) != REALM_STATE_NONE)
-> +		return -EBUSY;
-> +
-> +	if (copy_from_user(&cfg, (void __user *)cap->args[1], sizeof(cfg)))
-> +		return -EFAULT;
-> +
-> +	switch (cfg.cfg) {
-> +	case KVM_CAP_ARM_RME_CFG_RPV:
-> +		memcpy(&realm->params->rpv, &cfg.rpv, sizeof(cfg.rpv));
-> +		break;
-> +	case KVM_CAP_ARM_RME_CFG_HASH_ALGO:
-> +		r = config_realm_hash_algo(realm, &cfg);
-> +		break;
-> +	case KVM_CAP_ARM_RME_CFG_SVE:
-> +		r = config_realm_sve(realm, &cfg);
-> +		break;
-> +	default:
-> +		r = -EINVAL;
-> +	}
-> +
-> +	return r;
-> +}
-> +
-> +int kvm_realm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap)
-> +{
-> +	int r = 0;
-> +
-> +	switch (cap->args[0]) {
-> +	case KVM_CAP_ARM_RME_CONFIG_REALM:
-> +		r = kvm_rme_config_realm(kvm, cap);
-> +		break;
-> +	case KVM_CAP_ARM_RME_CREATE_RD:
-> +		if (kvm->created_vcpus) {
-> +			r = -EBUSY;
-> +			break;
-> +		}
-> +
-> +		r = kvm_create_realm(kvm);
-> +		break;
-> +	default:
-> +		r = -EINVAL;
-> +		break;
-> +	}
-> +
-> +	return r;
-> +}
-> +
-> +void kvm_destroy_realm(struct kvm *kvm)
-> +{
-> +	struct realm *realm = &kvm->arch.realm;
-> +	struct kvm_pgtable *pgt = kvm->arch.mmu.pgt;
-> +	unsigned int pgd_sz;
-> +	int i;
-> +
-> +	if (realm->params) {
-> +		free_page((unsigned long)realm->params);
-> +		realm->params = NULL;
-> +	}
-> +
-> +	if (kvm_realm_state(kvm) == REALM_STATE_NONE)
-> +		return;
-> +
-> +	WRITE_ONCE(realm->state, REALM_STATE_DYING);
-> +
-> +	rme_vmid_release(realm->vmid);
-> +
-> +	if (realm->rd) {
-> +		phys_addr_t rd_phys = virt_to_phys(realm->rd);
-> +
-> +		if (WARN_ON(rmi_realm_destroy(rd_phys)))
-> +			return;
-> +		if (WARN_ON(rmi_granule_undelegate(rd_phys)))
-> +			return;
-> +		free_page((unsigned long)realm->rd);
-> +		realm->rd = NULL;
-> +	}
-> +
-> +	pgd_sz = kvm_pgd_pages(pgt->ia_bits, pgt->start_level);
-> +	for (i = 0; i < pgd_sz; i++) {
-> +		phys_addr_t pgd_phys = kvm->arch.mmu.pgd_phys + i * PAGE_SIZE;
-> +
-> +		if (WARN_ON(rmi_granule_undelegate(pgd_phys)))
-> +			return;
-> +	}
-> +
-> +	kvm_free_stage2_pgd(&kvm->arch.mmu);
-> +}
-> +
-> +int kvm_init_realm_vm(struct kvm *kvm)
-> +{
-> +	struct realm_params *params;
-> +
-> +	params = (struct realm_params *)get_zeroed_page(GFP_KERNEL);
-> +	if (!params)
-> +		return -ENOMEM;
-> +
-> +	params->features_0 = create_realm_feat_reg0(kvm);
-> +	kvm->arch.realm.params = params;
-> +	return 0;
-> +}
-> +
->   int kvm_init_rme(void)
->   {
-> +	int ret;
-> +
->   	if (PAGE_SIZE != SZ_4K)
->   		/* Only 4k page size on the host is supported */
->   		return 0;
-> @@ -43,6 +394,12 @@ int kvm_init_rme(void)
->   		/* Continue without realm support */
->   		return 0;
->   
-> +	ret = rme_vmid_init();
-> +	if (ret)
-> +		return ret;
-> +
-> +	WARN_ON(rmi_features(0, &rmm_feat_reg0));
+> This patch here is supposed to add support for this driver. So without this part the DT
+> node named "gmac0" of [1/3] is not of much use. Thats why I was thinking they
 
-Why WARN_ON, Is that good enough to print err/info message and keep 
-"kvm_rme_is_available" disabled?
+Does not matter. DTS is independent description of hardware. Do you want
+to say that without driver support in Linux you could not add the DTS?
+No, that's irrelevant.
 
-IMO, we should print message when rme is enabled, otherwise it should be 
-silent return.
 
-> +
->   	/* Future patch will enable static branch kvm_rme_is_available */
->   
->   	return 0;
+> should be part of one patchset.
+> 
+> But your statement also totally makes sense to me.
 
-Thanks,
-Ganapat
+You unnecessary grow the CC list - it is already way too big (please
+trim it to maintainers only and CC lists) - and make applying more
+complicated, e.g. suggesting there is some dependency.
+
+DTS *must* go via arm-soc, not net-next, combining it here increases the
+risk it will go via wrong tree.
+
+
+Best regards,
+Krzysztof
+
 
