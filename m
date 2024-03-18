@@ -1,170 +1,112 @@
-Return-Path: <linux-kernel+bounces-106591-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106590-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9066C87F0B4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:01:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id A4DEA87F0B3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:00:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C0BC81C21C4F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:01:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 615FA28385D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:00:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A5F2F5731C;
-	Mon, 18 Mar 2024 20:00:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7594957862;
+	Mon, 18 Mar 2024 20:00:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="GpIwdP4p"
-Received: from mail-lj1-f171.google.com (mail-lj1-f171.google.com [209.85.208.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ceug2BPQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BC3B5733F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6DA9155C14
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:00:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710792051; cv=none; b=WQ0/DdgMT6rl+sUz7XS8TcTSUXD/ukSFEbDWFok6L8seJum/RIMM8teQE31hoFvUgjj/4oFNucBf9vdj3S1/RZW9RqmzMqLGcpIuJJIqY562pA5dxIga55v6fhFZiHBi9YM/gJYtMQ4n1TbDYg3YX+/Uyf3kSrjUtueJL9zPfg0=
+	t=1710792048; cv=none; b=GuDzhRwGuh0kuN9riZlXYZML6wCfho5Hr5WZ9XO/ZWPpJbA2DZHnFbuA3032uaSpz8VYkhRKjuhXJxjLcgIfw26T6dWbeL5Gpdbz/dRHkJutEdcHJ9JuxNLwyXk+hXQ9Y1SiZsZWo/ArqJxi6012p2D8t9EcfYMj0oeZkJcmEJQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710792051; c=relaxed/simple;
-	bh=4UU/Wt6ugiN/8OdzdCOP/dpF0PyxGrerAfISuir4TCM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cn9FQdqzsiAI5fIvvUZLBZnCZJLmPIfgUm1SiBC3Jstg6Nu0u4WZmhfSlEocYkgZ7ACOG/6yOxbM0Khc5yYNYwD4mUxLIp6Xe6yDkAL98KW6lnVc7apn2wKesjeFvH8BXdqgTFIxZjSIWDgQn+nOxkePbvQ3ckm1v3U9ntNTR38=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=GpIwdP4p; arc=none smtp.client-ip=209.85.208.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: by mail-lj1-f171.google.com with SMTP id 38308e7fff4ca-2d47a92cfefso64356281fa.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:00:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=suse.com; s=google; t=1710792047; x=1711396847; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=p/uOKD1vdAmoLenmLGYJq1arvP7Bn4vYf3UI4yux59c=;
-        b=GpIwdP4pDae9aTfcYO2dQ1fi6AFOwngO90B7UwFcXBjn+sS/7OpOM569aRKAo5pF77
-         pH0cHl6PaWoZG2oACF+pq5pe7cf++3E8U3EiAyje3c9P1zBpS0TxUQEbVSsc0u3tAwJY
-         KXNHo61uMG9TmtNYEy/eiLdobaUdskFBU+AVu9HiRib1dWjz1qprubO29xoYqHIQRj6q
-         sC7WEr0tBBuMMtteLCztg9qi8SE38HSZlkjOpAAvgfi3DiMRtkOV45zNGLa1YnEIfdse
-         XoG3Q3aOZEY+RKH2Rk+ZEjgC7AL/ESLIooaSGoSX99kWcWLl4DxbwojB77jrRZNh36hH
-         vHJQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710792047; x=1711396847;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=p/uOKD1vdAmoLenmLGYJq1arvP7Bn4vYf3UI4yux59c=;
-        b=cSn2mb96KSRAKHQycsnhd1CucV/6pW9xPc/vzXHjAhbNbLrj/Vn6udCAlQ1aJiqWXb
-         Qn4v5qFje2MWh5Re8nCjSO+hPKTuE6MN/AwgFJnhdwVCSUdMAq++lqtQJ0Da0RuVHHOl
-         49zR81RQQqVI/Po61AlHIxsH33afsB0+UBr7ZYluvko9uCE9y1G4KuHHTj7HuN5rPO52
-         sIlMTubLw8RpSb132N2oypWn8VVXjBV3JJeprQyH5b/8EvA15gFoY4vze1ql8ebiM2yJ
-         zUYMPEL4PIULsVMtlJ0RMUPGnkGzPcC/D+5QVElJ8ciMEl6hSUmLUOg8roKjUEJ1/yrL
-         PhZQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVpYcdKbU5kC/XgA2o9ftSTB23izrPVHoFnYvndHkAuDgnOwOGClr4NN1T1sobSwmOlUZ7ct8BFgaNBiuWFe9ouedz6O4O6FTpnFS3X
-X-Gm-Message-State: AOJu0YzKvv8Tieoa/jRq4yV8xqEgklzO7P50mTeY0IW6+e0pNgMxta4O
-	sCvQZwHpaaqyOw6wHSVyCY49H5mQJvy6wLh2QU2ZMGBy5NTiHqH0AP6AmnK7qkg=
-X-Google-Smtp-Source: AGHT+IGn0cDzWBnnZPzwWaYjEKj1pD1PrLo79AiavzmxTMEEIb617V/diJW81rlnhNqkOQMDnrvRLw==
-X-Received: by 2002:a2e:9001:0:b0:2d4:7455:89f4 with SMTP id h1-20020a2e9001000000b002d4745589f4mr7487623ljg.2.1710792047553;
-        Mon, 18 Mar 2024 13:00:47 -0700 (PDT)
-Received: from ?IPV6:2403:580d:fda1::299? (2403-580d-fda1--299.ip6.aussiebb.net. [2403:580d:fda1::299])
-        by smtp.gmail.com with ESMTPSA id n3-20020a170902e54300b001db37fd26bcsm3595673plf.116.2024.03.18.13.00.44
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 13:00:46 -0700 (PDT)
-Message-ID: <ea4ebb71-df6d-40e1-9e37-a0131b23d63d@suse.com>
-Date: Tue, 19 Mar 2024 06:30:41 +1030
+	s=arc-20240116; t=1710792048; c=relaxed/simple;
+	bh=el0HPdAPF4mHn0BlNYeNhSj/Fplf86ilRk12/hHw6cg=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HDa2MmxcDS3I1zDO5i4Avii0hm9D7QXkY4LA0zkH0NUlDv2n7ednckwDzzBiPWMjQlVN9vi58equIxr0OQMgdGT9FRa8xctwEbkeOevziZvHQVTHCg/+iMvZPNxTQjJ18UtDycRhgFKv5TZSALHDbq2uL+jhlpyCkvwW4sEFUc8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b=ceug2BPQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CE556C433C7;
+	Mon, 18 Mar 2024 20:00:46 +0000 (UTC)
+Authentication-Results: smtp.kernel.org;
+	dkim=pass (1024-bit key) header.d=zx2c4.com header.i=@zx2c4.com header.b="ceug2BPQ"
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=zx2c4.com; s=20210105;
+	t=1710792045;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=x/ouslTaGHLCxb1m+bGhdTdK1PrUUCc7ZDIw9C0aeXY=;
+	b=ceug2BPQdk5IAlFjKlflM+G9KtwVWLB93z8vnCZtBAbfbqZIn5P8Hv+q61AMG9xV1Kulz8
+	P7fnBvzrGFm9KRmIKizhg0LM5oOUlWn5xbnKQuSRVTmy9fd8T+1hhQWeNEX2CYzE1Sk7w8
+	jD/XacaQSEOhyjssoqUtuaXsFyM35UY=
+Received: 
+	by mail.zx2c4.com (ZX2C4 Mail Server) with ESMTPSA id b4eb4cb4 (TLSv1.3:TLS_AES_256_GCM_SHA384:256:NO);
+	Mon, 18 Mar 2024 20:00:44 +0000 (UTC)
+Date: Mon, 18 Mar 2024 21:00:42 +0100
+From: "Jason A. Donenfeld" <Jason@zx2c4.com>
+To: Guoyong Wang <guoyong.wang@mediatek.com>
+Cc: Theodore Ts'o <tytso@mit.edu>, Tejun Heo <tj@kernel.org>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-mediatek@lists.infradead.org, wsd_upstream@mediatek.com
+Subject: Re: [PATCH] random: Fix the issue of '_might_sleep' function running
+ in an atomic contex
+Message-ID: <Zfidal8CEZStp3R7@zx2c4.com>
+References: <20240318075327.26318-1-guoyong.wang@mediatek.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] btrfs: New helper to clear EXTENT_BUFFER_READING
-Content-Language: en-US
-To: Tavian Barnes <tavianator@tavianator.com>, linux-btrfs@vger.kernel.org
-Cc: Chris Mason <clm@fb.com>, Josef Bacik <josef@toxicpanda.com>,
- David Sterba <dsterba@suse.com>, linux-kernel@vger.kernel.org
-References: <cover.1710769876.git.tavianator@tavianator.com>
- <477327c2e21e253b56261f504a91603419bb167a.1710769876.git.tavianator@tavianator.com>
-From: Qu Wenruo <wqu@suse.com>
-Autocrypt: addr=wqu@suse.com; keydata=
- xsBNBFnVga8BCACyhFP3ExcTIuB73jDIBA/vSoYcTyysFQzPvez64TUSCv1SgXEByR7fju3o
- 8RfaWuHCnkkea5luuTZMqfgTXrun2dqNVYDNOV6RIVrc4YuG20yhC1epnV55fJCThqij0MRL
- 1NxPKXIlEdHvN0Kov3CtWA+R1iNN0RCeVun7rmOrrjBK573aWC5sgP7YsBOLK79H3tmUtz6b
- 9Imuj0ZyEsa76Xg9PX9Hn2myKj1hfWGS+5og9Va4hrwQC8ipjXik6NKR5GDV+hOZkktU81G5
- gkQtGB9jOAYRs86QG/b7PtIlbd3+pppT0gaS+wvwMs8cuNG+Pu6KO1oC4jgdseFLu7NpABEB
- AAHNGFF1IFdlbnJ1byA8d3F1QHN1c2UuY29tPsLAlAQTAQgAPgIbAwULCQgHAgYVCAkKCwIE
- FgIDAQIeAQIXgBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJVBQkNOgemAAoJEMI9kfOh
- Jf6oapEH/3r/xcalNXMvyRODoprkDraOPbCnULLPNwwp4wLP0/nKXvAlhvRbDpyx1+Ht/3gW
- p+Klw+S9zBQemxu+6v5nX8zny8l7Q6nAM5InkLaD7U5OLRgJ0O1MNr/UTODIEVx3uzD2X6MR
- ECMigQxu9c3XKSELXVjTJYgRrEo8o2qb7xoInk4mlleji2rRrqBh1rS0pEexImWphJi+Xgp3
- dxRGHsNGEbJ5+9yK9Nc5r67EYG4bwm+06yVT8aQS58ZI22C/UeJpPwcsYrdABcisd7dddj4Q
- RhWiO4Iy5MTGUD7PdfIkQ40iRcQzVEL1BeidP8v8C4LVGmk4vD1wF6xTjQRKfXHOwE0EWdWB
- rwEIAKpT62HgSzL9zwGe+WIUCMB+nOEjXAfvoUPUwk+YCEDcOdfkkM5FyBoJs8TCEuPXGXBO
- Cl5P5B8OYYnkHkGWutAVlUTV8KESOIm/KJIA7jJA+Ss9VhMjtePfgWexw+P8itFRSRrrwyUf
- E+0WcAevblUi45LjWWZgpg3A80tHP0iToOZ5MbdYk7YFBE29cDSleskfV80ZKxFv6koQocq0
- vXzTfHvXNDELAuH7Ms/WJcdUzmPyBf3Oq6mKBBH8J6XZc9LjjNZwNbyvsHSrV5bgmu/THX2n
- g/3be+iqf6OggCiy3I1NSMJ5KtR0q2H2Nx2Vqb1fYPOID8McMV9Ll6rh8S8AEQEAAcLAfAQY
- AQgAJgIbDBYhBC3fcuWlpVuonapC4cI9kfOhJf6oBQJjTSJuBQkNOge/AAoJEMI9kfOhJf6o
- rq8H/3LJmWxL6KO2y/BgOMYDZaFWE3TtdrlIEG8YIDJzIYbNIyQ4lw61RR+0P4APKstsu5VJ
- 9E3WR7vfxSiOmHCRIWPi32xwbkD5TwaA5m2uVg6xjb5wbdHm+OhdSBcw/fsg19aHQpsmh1/Q
- bjzGi56yfTxxt9R2WmFIxe6MIDzLlNw3JG42/ark2LOXywqFRnOHgFqxygoMKEG7OcGy5wJM
- AavA+Abj+6XoedYTwOKkwq+RX2hvXElLZbhYlE+npB1WsFYn1wJ22lHoZsuJCLba5lehI+//
- ShSsZT5Tlfgi92e9P7y+I/OzMvnBezAll+p/Ly2YczznKM5tV0gboCWeusM=
-In-Reply-To: <477327c2e21e253b56261f504a91603419bb167a.1710769876.git.tavianator@tavianator.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240318075327.26318-1-guoyong.wang@mediatek.com>
 
+Hi Guoyong,
 
-
-在 2024/3/19 00:26, Tavian Barnes 写道:
-> We are clearing the bit and waking up any waiters in two different
-> places.  Factor that code out into a static helper function.
+On Mon, Mar 18, 2024 at 03:53:27PM +0800, Guoyong Wang wrote:
+> 'input_handle_event' runs in an atomic context
+> (spinlock). In rare instances, it may call
+> the '_might_sleep' function, which could trigger
+> a kernel exception.
 > 
-> Signed-off-by: Tavian Barnes <tavianator@tavianator.com>
+> Backtrace:
+>   [<ffffffd613025ba0>] die+0xa8/0x2fc
+>   [<ffffffd613027428>] bug_handler+0x44/0xec
+>   [<ffffffd613016964>] brk_handler+0x90/0x144
+>   [<ffffffd613041e58>] do_debug_exception+0xa0/0x148
+>   [<ffffffd61400c208>] el1_dbg+0x60/0x7c
+>   [<ffffffd61400c000>] el1h_64_sync_handler+0x38/0x90
+>   [<ffffffd613011294>] el1h_64_sync+0x64/0x6c
+>   [<ffffffd613102d88>] __might_resched+0x1fc/0x2e8
+>   [<ffffffd613102b54>] __might_sleep+0x44/0x7c
+>   [<ffffffd6130b6eac>] cpus_read_lock+0x1c/0xec
+>   [<ffffffd6132c2820>] static_key_enable+0x14/0x38
+>   [<ffffffd61400ac08>] crng_set_ready+0x14/0x28
+>   [<ffffffd6130df4dc>] execute_in_process_context+0xb8/0xf8
+>   [<ffffffd61400ab30>] _credit_init_bits+0x118/0x1dc
+>   [<ffffffd6138580c8>] add_timer_randomness+0x264/0x270
+>   [<ffffffd613857e54>] add_input_randomness+0x38/0x48
+>   [<ffffffd613a80f94>] input_handle_event+0x2b8/0x490
+>   [<ffffffd613a81310>] input_event+0x6c/0x98
 
-Reviewed-by: Qu Wenruo <wqu@suse.com>
+Thanks for reporting this.
 
-Thanks,
-Qu
-> ---
->   fs/btrfs/extent_io.c | 15 +++++++++------
->   1 file changed, 9 insertions(+), 6 deletions(-)
-> 
-> diff --git a/fs/btrfs/extent_io.c b/fs/btrfs/extent_io.c
-> index 61594eaf1f89..46173dcfde4f 100644
-> --- a/fs/btrfs/extent_io.c
-> +++ b/fs/btrfs/extent_io.c
-> @@ -4270,6 +4270,13 @@ void set_extent_buffer_uptodate(struct extent_buffer *eb)
->   	}
->   }
->   
-> +static void clear_extent_buffer_reading(struct extent_buffer *eb)
-> +{
-> +	clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
-> +	smp_mb__after_atomic();
-> +	wake_up_bit(&eb->bflags, EXTENT_BUFFER_READING);
-> +}
-> +
->   static void end_bbio_meta_read(struct btrfs_bio *bbio)
->   {
->   	struct extent_buffer *eb = bbio->private;
-> @@ -4304,9 +4311,7 @@ static void end_bbio_meta_read(struct btrfs_bio *bbio)
->   		bio_offset += len;
->   	}
->   
-> -	clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
-> -	smp_mb__after_atomic();
-> -	wake_up_bit(&eb->bflags, EXTENT_BUFFER_READING);
-> +	clear_extent_buffer_reading(eb);
->   	free_extent_buffer(eb);
->   
->   	bio_put(&bbio->bio);
-> @@ -4340,9 +4345,7 @@ int read_extent_buffer_pages(struct extent_buffer *eb, int wait, int mirror_num,
->   	 * will now be set, and we shouldn't read it in again.
->   	 */
->   	if (unlikely(test_bit(EXTENT_BUFFER_UPTODATE, &eb->bflags))) {
-> -		clear_bit(EXTENT_BUFFER_READING, &eb->bflags);
-> -		smp_mb__after_atomic();
-> -		wake_up_bit(&eb->bflags, EXTENT_BUFFER_READING);
-> +		clear_extent_buffer_reading(eb);
->   		return 0;
->   	}
->   
+I'm wondering, though, rather than introducing a second function, maybe
+execute_in_process_context() should just gain a `&& !in_atomic()`.
+That'd make things a bit simpler.
+
+However, I'm pretty sure in_atomic() isn't actually a reliable way of
+determining that, depending on config. So maybe this should just call
+the worker always (if system_wq isn't null).
+
+Alternatively, any chance the call to add_input_randomness() could be
+moved outside the spinlock, or does this not look possible?
+
+Jason
 
