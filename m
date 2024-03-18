@@ -1,192 +1,229 @@
-Return-Path: <linux-kernel+bounces-106699-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106700-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 547EC87F21C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:27:56 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FAB187F222
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:29:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 097AF282A1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:27:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2B54282938
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:29:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F8A558239;
-	Mon, 18 Mar 2024 21:27:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D59E59166;
+	Mon, 18 Mar 2024 21:29:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="FwuKAMEZ"
-Received: from mail-yb1-f201.google.com (mail-yb1-f201.google.com [209.85.219.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="apKMhkWh"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E352659B45
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:27:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1FF58239;
+	Mon, 18 Mar 2024 21:29:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710797268; cv=none; b=TjgDncGwVXVxqP9MkrRmvG69/gdrakdwGT1KI0I2qzH6LyCymz06o5NKR3YbuOKxlj14xmstIU3Wuw9rdWk5MAkGaSYk1ceRszxZb5IzcUokLOKJxyO56r/8upzPT+toU3Af21l2AzdpD1yviHYnSQsVc2Lxq1MuR7rEPay/bow=
+	t=1710797360; cv=none; b=oK3kJmx/ghIS81fsk+5LtD2g9ahADoMyYag+3SUKcRi5XziYQWYRfG3yZSb8IyUHitP1dtVyVWa9symXIuYv8us8RNenuE5ZapL3AyD50qbEVS5bmDWaGTHLnQsek17UczlscwK6HxqKawAqXRJ4DIPs14YIZFirI2bSZLA8Bwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710797268; c=relaxed/simple;
-	bh=vmXf9hen+ww7UwnjCyTyA1t3Yt4iiFW6uRFTYiKQPwA=;
-	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=AgSCDKZOjI7e122VKm9kkP94EChZsi3RvljJb5ripgzFcg0xdHUliwOwP3sEwad8VBEqcpK7j3SKQjM8ZyA/LVET9Fu3adiirX/LwL3iSLlCCDveNdOW2LGimuyzNELH0M4NFgQ40xCekp4HFr7BAcgXtCAJCaBmBef7Je+PVf0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=FwuKAMEZ; arc=none smtp.client-ip=209.85.219.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--rmoar.bounces.google.com
-Received: by mail-yb1-f201.google.com with SMTP id 3f1490d57ef6-dc693399655so8689992276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:27:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710797266; x=1711402066; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=qYYHZ4rmvHoUFOfsHiMEKzZLvI6O49Agsr51YnPkVVs=;
-        b=FwuKAMEZwBYAxIzDEHwzNrcyVv786mfW6QCIq527jIWvE/z11ihc5D/0OC92gTCTb9
-         xhs9ViU0OywPdFUqWwLdM6z4YdHC13wErVs9dJYzE2hOV96fpPJRPYtjI84A+EYgLBfz
-         0rXKMkSRO3ix1RI/kLmcMLdQKLGoywpszInQrhJ6JzMpjpdtf3AB0BTmyE1Kfhy4iqiA
-         0r9YD5dDSMD+o7O6IIcUnL9RJSYyQTdWd0Ywk4RPAyX1Fldn3ZEw245UqrXIY6+9YHtN
-         fWMDmAg26zDvBN0/dMV+6VVPH4xCl7HkhQGofk4S0VbcuHC6lduBCpgdyUhHx0d/2W8E
-         cFRg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710797266; x=1711402066;
-        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=qYYHZ4rmvHoUFOfsHiMEKzZLvI6O49Agsr51YnPkVVs=;
-        b=PA3WHjcT/wRXFSpZ5+emLCJqZMMocw27ykMRImGNMCdpBaURlpjLlCCvJ4xcBZalOh
-         NVxgvdBbRLgcsM4TRnJWU8UnZWXO6Jp+i++XGAnfkdoPZOuXLVPAtRo4irDC42gj0a51
-         8fRUSSbZEbbydYVaqaOSkOuu1/AlISr93no3cFYq9GxC4E4eJM1dzKMfvdMAam80IVRP
-         pMFm8pfkHWbguJ1Q4NTZMxo0HuFHJEiwK0xi+Xkz6/rmKgdwZeorOBhKEdEnFtzyrKV0
-         3psU9hySz+Wkvf0k9l0j0qBF2vNA3x47pbENbnmCH+Jlq4EH7to50zuNlYPmaJMq6AZB
-         O4rg==
-X-Forwarded-Encrypted: i=1; AJvYcCUCjsURk5lBNmdQfcWAiCagzBEzKCPNm6uQD8eOywFaBMRlBYSr6MRf6pE8bKdtLIrG0+e8UDbygikj1ID4RYl92XxU83x9VUoRNb65
-X-Gm-Message-State: AOJu0Ywxyeftjbkfu5u+RF4F+xjOruUFyC9GSCqECnvZlssrHxPvs5MK
-	3RVCmeWuvMeUdnA90rnNvszt8CkWjG9WC8TeY6TN7dQLLiCOJYPRhDmy1nUWRUANnOBApGNI2w=
-	=
-X-Google-Smtp-Source: AGHT+IGKAqFu3qBLUi9P18lamHu1iDSypU8dNxgfUULB9Qh8q8BdEz4QgtAmkzrUXqulzme+fpo8AePL1A==
-X-Received: from rmoar-specialist.c.googlers.com ([fda3:e722:ac3:cc00:2b:7d90:c0a8:45d3])
- (user=rmoar job=sendgmr) by 2002:a05:6902:2609:b0:dd9:3a6b:11f8 with SMTP id
- dw9-20020a056902260900b00dd93a6b11f8mr75071ybb.5.1710797266005; Mon, 18 Mar
- 2024 14:27:46 -0700 (PDT)
-Date: Mon, 18 Mar 2024 21:27:34 +0000
+	s=arc-20240116; t=1710797360; c=relaxed/simple;
+	bh=gcIdQLeaNhnFtWxkw1Wh/QfYZrOV3Xkp/tjnkxtLVnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=V9mp7eDy1lbIzXngqo+oxuQh4BRJFCuKj7wdjokIdI8P5mpm+S1GrcptUoHtmcyuX/vnvDlu2/eEDApjSBIVLIXnD97GiZJPOH1L1ETJSwtSwyEf6X4yNq1fkZ6ggyLqnfuKX5IdRCAj+LUSyTp9qC72RBajkr2RIkQF97QK+UQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=apKMhkWh; arc=none smtp.client-ip=198.175.65.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710797358; x=1742333358;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=gcIdQLeaNhnFtWxkw1Wh/QfYZrOV3Xkp/tjnkxtLVnQ=;
+  b=apKMhkWhm5KPfgL0aEBaT1IJ0pzksQ2B85QimnwIeyfDpvyIvYQPAk3T
+   ROHS/d6mDGdKtewaKiq4uDs/HVaoSTHgT67ITcnvaQZrTm+/vyLZtKgia
+   tangrg6RxXKhw5zEr4w4HnLhnWxq/1Em4EJ+FNXm0ni6FbjEP0RkIo5m3
+   dZlLPYzE7weMhwlBe2deVSh8a2qHB0WWcZUa6JAU72boj0Hj2Y59FzuTz
+   RToU+y8x39czkJOF7U9POMYtqnDx6u/U9yZvQD+XgWiux5k7QJjejNZp+
+   aG28bODWz+KzLTWdA9fmrk3568jQQta9RmE5FM1fPzNhbp0fUx/WmRF5Q
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="9463214"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="9463214"
+Received: from orviesa009.jf.intel.com ([10.64.159.149])
+  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 14:29:18 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="13623636"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa009.jf.intel.com with ESMTP; 18 Mar 2024 14:29:15 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rmKXg-000HFj-0V;
+	Mon, 18 Mar 2024 21:29:12 +0000
+Date: Tue, 19 Mar 2024 05:28:37 +0800
+From: kernel test robot <lkp@intel.com>
+To: Radu Sabau <radu.sabau@analog.com>, Jean Delvare <jdelvare@suse.com>,
+	Guenter Roeck <linux@roeck-us.net>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzk@kernel.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
+	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
+	linux-i2c@vger.kernel.org
+Cc: oe-kbuild-all@lists.linux.dev
+Subject: Re: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
+Message-ID: <202403190552.U4RHYvqc-lkp@intel.com>
+References: <20240318112140.385244-3-radu.sabau@analog.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240318212734.3508838-1-rmoar@google.com>
-Subject: [PATCH v4] kunit: tool: add ability to parse multiple files
-From: Rae Moar <rmoar@google.com>
-To: shuah@kernel.org, davidgow@google.com, dlatypov@google.com, 
-	brendan.higgins@linux.dev, kevko@google.com
-Cc: linux-kselftest@vger.kernel.org, kunit-dev@googlegroups.com, 
-	linux-kernel@vger.kernel.org, Rae Moar <rmoar@google.com>
-Content-Type: text/plain; charset="UTF-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318112140.385244-3-radu.sabau@analog.com>
 
-Add ability to parse multiple files. Additionally add the
-ability to parse all results in the KUnit debugfs repository.
+Hi Radu,
 
-How to parse multiple files:
+kernel test robot noticed the following build errors:
 
-/tools/testing/kunit/kunit.py parse results.log results2.log
+[auto build test ERROR on groeck-staging/hwmon-next]
+[also build test ERROR on robh/for-next linus/master v6.8 next-20240318]
+[If your patch is applied to the wrong git tree, kindly drop us a note.
+And when submitting patch, we suggest to use '--base' as documented in
+https://git-scm.com/docs/git-format-patch#_base_tree_information]
 
-How to parse all files in directory:
+url:    https://github.com/intel-lab-lkp/linux/commits/Radu-Sabau/dt-bindings-hwmon-pmbus-adp1050-add-bindings/20240318-202619
+base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
+patch link:    https://lore.kernel.org/r/20240318112140.385244-3-radu.sabau%40analog.com
+patch subject: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
+config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240319/202403190552.U4RHYvqc-lkp@intel.com/config)
+compiler: m68k-linux-gcc (GCC) 13.2.0
+reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240319/202403190552.U4RHYvqc-lkp@intel.com/reproduce)
 
-/tools/testing/kunit/kunit.py parse directory_path/*
+If you fix the issue in a separate patch/commit (i.e. not just a new version of
+the same patch/commit), kindly add following tags
+| Reported-by: kernel test robot <lkp@intel.com>
+| Closes: https://lore.kernel.org/oe-kbuild-all/202403190552.U4RHYvqc-lkp@intel.com/
 
-How to parse KUnit debugfs repository:
+All error/warnings (new ones prefixed by >>):
 
-/tools/testing/kunit/kunit.py parse debugfs
+   drivers/hwmon/pmbus/adp1050.c: In function 'adp1050_probe':
+>> drivers/hwmon/pmbus/adp1050.c:47:45: warning: passing argument 2 of 'dev_err_probe' makes integer from pointer without a cast [-Wint-conversion]
+      47 |                 dev_err_probe(&client->dev, "Device can't be unlocked.\n");
+         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                             |
+         |                                             char *
+   In file included from include/linux/device.h:15,
+                    from include/linux/acpi.h:14,
+                    from include/linux/i2c.h:13,
+                    from drivers/hwmon/pmbus/adp1050.c:9:
+   include/linux/dev_printk.h:277:64: note: expected 'int' but argument is of type 'char *'
+     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+         |                                                            ~~~~^~~
+>> drivers/hwmon/pmbus/adp1050.c:47:17: error: too few arguments to function 'dev_err_probe'
+      47 |                 dev_err_probe(&client->dev, "Device can't be unlocked.\n");
+         |                 ^~~~~~~~~~~~~
+   include/linux/dev_printk.h:277:20: note: declared here
+     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+         |                    ^~~~~~~~~~~~~
+   drivers/hwmon/pmbus/adp1050.c:53:45: warning: passing argument 2 of 'dev_err_probe' makes integer from pointer without a cast [-Wint-conversion]
+      53 |                 dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
+         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+         |                                             |
+         |                                             char *
+   include/linux/dev_printk.h:277:64: note: expected 'int' but argument is of type 'char *'
+     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+         |                                                            ~~~~^~~
+   drivers/hwmon/pmbus/adp1050.c:53:17: error: too few arguments to function 'dev_err_probe'
+      53 |                 dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
+         |                 ^~~~~~~~~~~~~
+   include/linux/dev_printk.h:277:20: note: declared here
+     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
+         |                    ^~~~~~~~~~~~~
 
-For each file, the parser outputs the file name, results, and test
-summary. At the end of all parsing, the parser outputs a total summary
-line.
 
-This feature can be easily tested on the tools/testing/kunit/test_data/
-directory.
+vim +/dev_err_probe +47 drivers/hwmon/pmbus/adp1050.c
 
-Signed-off-by: Rae Moar <rmoar@google.com>
----
-Changes since v3:
-- Changing from input() to stdin
-- Add checking for non-regular files
-- Spacing fix
-- Small printing fix
+   > 9	#include <linux/i2c.h>
+    10	#include <linux/init.h>
+    11	#include <linux/kernel.h>
+    12	#include <linux/module.h>
+    13	#include <linux/of.h>
+    14	#include "pmbus.h"
+    15	
+    16	#define ADP1050_CHIP_PASSWORD		0xD7
+    17	
+    18	#define ADP1050_VIN_SCALE_MONITOR	0xD8
+    19	#define ADP1050_IIN_SCALE_MONITOR	0xD9
+    20	
+    21	static struct pmbus_driver_info adp1050_info = {
+    22		.pages = 1,
+    23		.format[PSC_VOLTAGE_IN] = linear,
+    24		.format[PSC_VOLTAGE_OUT] = linear,
+    25		.format[PSC_CURRENT_IN] = linear,
+    26		.format[PSC_TEMPERATURE] = linear,
+    27		.func[0] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
+    28			| PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
+    29			| PMBUS_HAVE_IIN | PMBUS_HAVE_TEMP
+    30			| PMBUS_HAVE_STATUS_TEMP,
+    31	};
+    32	
+    33	static int adp1050_probe(struct i2c_client *client)
+    34	{
+    35		u32 vin_scale_monitor, iin_scale_monitor;
+    36		int ret;
+    37	
+    38		if (!i2c_check_functionality(client->adapter,
+    39					     I2C_FUNC_SMBUS_WRITE_WORD_DATA))
+    40			return -ENODEV;
+    41	
+    42		/* Unlock CHIP's password in order to be able to read/write to it's
+    43		 * VIN_SCALE and IIN_SCALE registers.
+    44		*/
+    45		ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
+    46		if (ret < 0) {
+  > 47			dev_err_probe(&client->dev, "Device can't be unlocked.\n");
+    48			return ret;
+    49		}
+    50	
+    51		ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
+    52		if (ret < 0) {
+    53			dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
+    54			return ret;
+    55		}
+    56	
+    57		/* If adi,vin-scale-monitor isn't set or is set to 0 means that the
+    58		 * VIN monitor isn't used, therefore 0 is used as scale in order
+    59		 * for the readings to return 0.
+    60		*/
+    61		if (device_property_read_u32(&client->dev, "adi,vin-scale-monitor",
+    62					     &vin_scale_monitor))
+    63			vin_scale_monitor = 0;
+    64	
+    65		/* If adi,iin-scale-monitor isn't set or is set to 0 means that the
+    66		 * IIN monitor isn't used, therefore 0 is used as scale in order
+    67		 * for the readings to return 0.
+    68		*/
+    69		if (device_property_read_u32(&client->dev, "adi,iin-scale-monitor",
+    70					     &iin_scale_monitor))
+    71			iin_scale_monitor = 0;
+    72	
+    73		ret = i2c_smbus_write_word_data(client, ADP1050_VIN_SCALE_MONITOR,
+    74						vin_scale_monitor);
+    75		if (ret < 0)
+    76			return ret;
+    77	
+    78		ret = i2c_smbus_write_word_data(client, ADP1050_IIN_SCALE_MONITOR,
+    79						iin_scale_monitor);
+    80		if (ret < 0)
+    81			return ret;
+    82	
+    83		return pmbus_do_probe(client, &adp1050_info);
+    84	}
+    85	
 
- tools/testing/kunit/kunit.py | 54 +++++++++++++++++++++++++-----------
- 1 file changed, 38 insertions(+), 16 deletions(-)
-
-diff --git a/tools/testing/kunit/kunit.py b/tools/testing/kunit/kunit.py
-index bc74088c458a..641b8ca83e3e 100755
---- a/tools/testing/kunit/kunit.py
-+++ b/tools/testing/kunit/kunit.py
-@@ -511,19 +511,40 @@ def exec_handler(cli_args: argparse.Namespace) -> None:
- 
- 
- def parse_handler(cli_args: argparse.Namespace) -> None:
--	if cli_args.file is None:
--		sys.stdin.reconfigure(errors='backslashreplace')  # type: ignore
--		kunit_output = sys.stdin  # type: Iterable[str]
--	else:
--		with open(cli_args.file, 'r', errors='backslashreplace') as f:
--			kunit_output = f.read().splitlines()
--	# We know nothing about how the result was created!
--	metadata = kunit_json.Metadata()
--	request = KunitParseRequest(raw_output=cli_args.raw_output,
--					json=cli_args.json)
--	result, _ = parse_tests(request, metadata, kunit_output)
--	if result.status != KunitStatus.SUCCESS:
--		sys.exit(1)
-+	parsed_files = cli_args.files # type: List[str]
-+	total_test = kunit_parser.Test()
-+	total_test.status = kunit_parser.TestStatus.SUCCESS
-+	if not parsed_files:
-+		parsed_files.append('/dev/stdin')
-+	elif len(parsed_files) == 1 and parsed_files[0] == "debugfs":
-+		parsed_files.pop()
-+		for (root, _, files) in os.walk("/sys/kernel/debug/kunit"):
-+			parsed_files.extend(os.path.join(root, f) for f in files if f == "results")
-+		if not parsed_files:
-+			print("No files found.")
-+
-+	for file in parsed_files:
-+		if os.path.isdir(file):
-+			print(f'Ignoring directory "{file}"')
-+		elif os.path.exists(file):
-+			print(file)
-+			with open(file, 'r', errors='backslashreplace') as f:
-+				kunit_output = f.read().splitlines()
-+			# We know nothing about how the result was created!
-+			metadata = kunit_json.Metadata()
-+			request = KunitParseRequest(raw_output=cli_args.raw_output,
-+							json=cli_args.json)
-+			_, test = parse_tests(request, metadata, kunit_output)
-+			total_test.subtests.append(test)
-+		else:
-+			print(f'Could not find "{file}"')
-+
-+	if len(parsed_files) > 1: # if more than one file was parsed output total summary
-+		print('All files parsed.')
-+		if not request.raw_output:
-+			stdout.print_with_timestamp(kunit_parser.DIVIDER)
-+			kunit_parser.bubble_up_test_results(total_test)
-+			kunit_parser.print_summary_line(total_test)
- 
- 
- subcommand_handlers_map = {
-@@ -569,9 +590,10 @@ def main(argv: Sequence[str]) -> None:
- 					    help='Parses KUnit results from a file, '
- 					    'and parses formatted results.')
- 	add_parse_opts(parse_parser)
--	parse_parser.add_argument('file',
--				  help='Specifies the file to read results from.',
--				  type=str, nargs='?', metavar='input_file')
-+	parse_parser.add_argument('files',
-+				  help='List of file paths to read results from or keyword'
-+				  '"debugfs" to read all results from the debugfs directory.',
-+				  type=str, nargs='*', metavar='input_files')
- 
- 	cli_args = parser.parse_args(massage_argv(argv))
- 
-
-base-commit: 806cb2270237ce2ec672a407d66cee17a07d3aa2
 -- 
-2.44.0.291.gc1ea87d7ee-goog
-
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
