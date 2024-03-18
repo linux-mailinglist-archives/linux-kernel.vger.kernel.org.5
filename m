@@ -1,327 +1,201 @@
-Return-Path: <linux-kernel+bounces-106798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106799-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id F382A87F3E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:17:13 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0179087F3E6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:17:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A99BE2830CC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:17:12 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5AC15B21767
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:17:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8C4A95DF2A;
-	Mon, 18 Mar 2024 23:16:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D8045DF0C;
+	Mon, 18 Mar 2024 23:17:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="p1Z0Mh9e"
-Received: from EUR03-AM7-obe.outbound.protection.outlook.com (mail-am7eur03on2095.outbound.protection.outlook.com [40.107.105.95])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="BKF5sbXy"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47F2F5D918;
-	Mon, 18 Mar 2024 23:16:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.105.95
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710803815; cv=fail; b=LuppwTUBwvETfN/qmdVt64VPk/XDbQab5t6j/Ia/Ui80MTv06MPgAH6kecwcWGrZq9L4wyOxF/xzcjOa6hUogFHe1tXGvDZq5Hl/KJyCga3hJ3qckmfDRnu7c1UBS7KB1mOhPIZdr8EnmRbw3edRE6OV3LoV36lTg/ov8ZjreCw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710803815; c=relaxed/simple;
-	bh=Xr0jH/u0TZk/IZa3AF2DGD0ucwgcar3AGSTW4n0r+zU=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=kv5G/ta+Y+DbNztgP6rkQj0iCSJcXoVyEzqBY3ksQNbR5nP+/3dHbczuo0/EpMfBkuonrKmYbUY2IJD0cPZsizjMxUk9ijDCAann7fyfe6T5009CHeEdJPnw1LL0seW4Sj4YvTjjtxNen3/k2uOANsmRnI0lhPYLvfe2ihN4IQE=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=p1Z0Mh9e; arc=fail smtp.client-ip=40.107.105.95
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SVsQjdjyVYBHh2FvcoCthIT5aTcVLnK3rhbB4faQj19A08ElNCvwTQSpg+5Ob+3M0h2QzzvWrrfDlwHCqYLqeWq3m48AFFs6Ngvfu5F/n3ZwlZ1rsL+yg5UZPGCTCfT/lvonYnXuNsGd+LAVy45sqgAOAGVwOcfAO5FPy+b3ow+XWisDQ1MRnqpkY8fOGvp/ByMr1ljoA5jkd2RtoqEJTBzPtLkbKZpm2b2qt+ebl0oXeU3luxQ+A5PoaE0HD1csLuqWwGPRdahKsTTbbo7iG2KL6+QeqwNrcVqK4U5wze7KTsPbSa+dr08mNPrhIjsAEVSbIjNaVYsPtSIzT5x5kg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=a3sE8u59A1NjiewBmFkwYkBBG8sHBiVCetPv0GDlgc8=;
- b=h43n6crjrLy36igPxXRybTNEs5qEMiQEXCasiTriNb+A121l8SekVhQk95JHdfzsL+YaGY29BB4vCwBuJsPsMFbdTfrD7kx4DSSCUVXlKVKiQJnNR4HrfIIPrtY5BaFL722OghitV8trAquMoEk3FRTIcsEFB+5cg/SEE566WFSnss0NZL3Zb4c31giUgagfggos23k3mUjvBiyBgSqGCG2xOycVNP4h4iQIF2R21pDa5KYS2yEB7GYn/g6ICx+3u3x1KOHulHwgy70Jl40asB9L44tTNCdS6CB57zs1j1kMri/fdNOKANMYuzhFXvSD5gg6j7pEQiPo8zobfaJ/eQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=a3sE8u59A1NjiewBmFkwYkBBG8sHBiVCetPv0GDlgc8=;
- b=p1Z0Mh9eUY1FJzl+91Q+CsJcSZ1xomVbiM/7eiBNcT29eBFA5Pr2Ou2i1op4jSB8gALrAgUbIxyzjH02ZAdKSwqQylgWgOiVyHpKJQHXjDVa9nsZAC8TcUn8rH5bC/0I1zwJqoC1eRqfwiBAkWztGKtGo7xd5QPNvZle/TD+BVk=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AM9PR04MB8129.eurprd04.prod.outlook.com (2603:10a6:20b:3ea::12) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
- 2024 23:16:50 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.017; Mon, 18 Mar 2024
- 23:16:50 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: "S.J. Wang" <shengjiu.wang@nxp.com>, "abelvesa@kernel.org"
-	<abelvesa@kernel.org>, "mturquette@baylibre.com" <mturquette@baylibre.com>,
-	"sboyd@kernel.org" <sboyd@kernel.org>, "shawnguo@kernel.org"
-	<shawnguo@kernel.org>, "s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>, "festevam@gmail.com"
-	<festevam@gmail.com>, dl-linux-imx <linux-imx@nxp.com>,
-	"shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>
-CC: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power saving
-Thread-Topic: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power
- saving
-Thread-Index: AQHaeQD2LJT94i1NhEORr0hu4k8XbrE+Ip3w
-Date: Mon, 18 Mar 2024 23:16:50 +0000
-Message-ID:
- <DU0PR04MB941745611C0FE10E847C4B25882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <1710743811-1698-1-git-send-email-shengjiu.wang@nxp.com>
-In-Reply-To: <1710743811-1698-1-git-send-email-shengjiu.wang@nxp.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AM9PR04MB8129:EE_
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- XFPkp5JEwaPaXoydacjFAhg9cDSDAGRXcqKv6dSTZrRJAQ9UFxXY1hCaKs8vkwd/6qksY6PkVNuXyytJUhyLCp734ulfO27/QXpZ9e2DOoEn2llz/LZksCkarSTlf7lpOxpwHGbzSrH8oJ2r2DJsIz040LkTVEzGxbrB9Z6TfMM/wG8YhP7WPP9L9zvhwG1Xmh3LSjyuhPOeWLau0WSKyYOO3WRPHO3d1irfJeOyD5Fi6LVV3+E9U0HBe85UHI1WQf3g3yuUkfNduReZT+0cEsOTh/gDr0v/vnzvX1crbk2KyzeiBogutp7gtd8JgULj5rXn66giiIp0WSHDwFLU1H58FEGyyf0OHPLlEbrHfwc0Fi36jJR56H3i/uYdxM5oMUN+BGTUzVH1+Zech4MjcmHlNjCMZ+V7VD1b0YBYlXSgzaisYNMN68jAgmFnNlBGX5nVtGIgZ2M2cOlq9cJlZ5BXDzGiAOLZNFxfAJbQo3+ZQ1Y6ro9uxLLenXnJYWbvfT4qzUAhXp00dcTZi2+LiSWDHGJGBvfnV+MYvkyoyw9u/djYzmN8DG8L2sQmhGy3gy6geTqc8AzwkusuC45JAuHk8J5TO69VItj5Lr7cNE8bPvNZOCzKn3sdZngSx+qkUBUemz1a0Fq2o9XolS++B78Fc8T/vKhm4XDkCTgRblloS57ueNMquO6y9y02KQ2dGXLHkW3Buc3LY+fmNv4KiQ==
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005)(921011);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?TFy98a5BZo+VK9MXl+93MW6EerGVfkPZqSVZ8q5HWSmr9sR+Sp15kBnzG/JV?=
- =?us-ascii?Q?rY9KSJ1iuGP/+fdqVlmyGLMjQ1/Z3xmOfLJqXXaJjGPmiw8e2o/uIiW4NHkB?=
- =?us-ascii?Q?sXQNhNOgPSHKtKBy1AUSoM6ffimIRxhpgeYMkh9BbBuJQel/qHaqSWVXfN4w?=
- =?us-ascii?Q?aRVLPizFNNKQlu7yRPj3nxjcGaGmXBo1QwJwrqopucspSYaHxltahc1nTmz9?=
- =?us-ascii?Q?OjRUK08ESqnnVRoNRjFn7JBLn+EgiOkOS1QLYjJpVmvPFMygWAVNOALW4Azo?=
- =?us-ascii?Q?/cgIgdH4dbnOx87zsKZOaUtW4coZ28K0SrLMCfJ5EllHHoRJ00h+kOGnrwLQ?=
- =?us-ascii?Q?HlpY6I4VnC1SDDFeVsrHGfhh897FFyJdvTSgC5MrvLGv0lz7uTHeeLHYb1A4?=
- =?us-ascii?Q?Y7snAayyPmjN5I+sI0P/7ANhilOOa2DwufKzt3jRaR6qDM0cZBvF691apzeC?=
- =?us-ascii?Q?rpKYKJqjFzQBsh84hgNGNGEvxDHSfx2glxcLo5HBdsYN3EgFpLrQbwNm0Vij?=
- =?us-ascii?Q?vKFB/hJ4Uji1ofNa0vi2uzmqAjD7caJ7dCQT04BgZs6b3p7qqLgX3+Uj1lHO?=
- =?us-ascii?Q?Zmq4BdGoEtEbnHpcmb5yGc5GjPYsVX6TmaSOInkFZlCZBI2jS7RZ67sJP9Wt?=
- =?us-ascii?Q?nlULsqWMpCl6MKjWvFWRsdlr17tsjvQJd35lKTpZzOMMFztTRY7Ww+NFLa22?=
- =?us-ascii?Q?haqReCpnipuhu2IFy+ui/YGu1vYAxdvKfEat4PTecW93EPvWLD3L2ELXoGEb?=
- =?us-ascii?Q?QvxReSiZeL29xbR8wRg7mVtN+8WQlepfqh/PiVYr8X4zoheCNyMwxLloIldA?=
- =?us-ascii?Q?YFIAplypHneVTAUgSANxCKtbXxYuvGxBYzMn4X37Mr3yGBPd0AwavxLD+WEZ?=
- =?us-ascii?Q?ZxQi+1bKLPUqrabJvSVOdniH4T4ZXhZzUXx4mtaGHGirRoHj4zN8B/Gfukh2?=
- =?us-ascii?Q?Mjl+pEubXNHGZzoDNy/byw0/QOQXXocV/B4SWuAnkDfgjw0LIaNVHDJEoxKw?=
- =?us-ascii?Q?wYlbhachNXrndDcvlcXmH5CDOoB2wPI7M9+OxKxZBWmaiWorBYqReAXcOY53?=
- =?us-ascii?Q?pT9LMU8vGdY2r4NsBG8etrNs+OXDRis2rxOW3L/fMaKZ2K1UTnvkvTDDB+kR?=
- =?us-ascii?Q?VtZR+F5rW71GP7F6+3fy/U7de85PqmZ/6fJazuXA80W5+7He+2kFVJBNWHya?=
- =?us-ascii?Q?oxkoXHzOE2FrN9NV1KKtMpp168rdsChEvOP1iXJwRMww/lnZFt214TfdW9qJ?=
- =?us-ascii?Q?uT69P4tgccPPp61/MZYtXjJQ7ZOhft/Zp7BDUrQbDqchAnZxxPrYOpQDd11E?=
- =?us-ascii?Q?YkpZWhKQa0Pha4TM8UEWHx6qPbSzHvx4W1EmG4P1PBZ7uIUYCpwRvrTpXC8S?=
- =?us-ascii?Q?MVHfuoewVRdBQsuyunaNL/+E4EGK1zNJOjIIRbUIOrdc95h5QK3yvK8x5i/s?=
- =?us-ascii?Q?ylSUo/0B0gpxViw3AnvW45j+fmh8HWtsPyDvSWvy1ravsYlEVxYLbKeIY2My?=
- =?us-ascii?Q?Xvvy4Xeo67Vgo15XhqFyOgj5W/wSPIpz7sohg2vURoJD6tCfbc9LYAlNLxs+?=
- =?us-ascii?Q?N05QwccWAyLjL+2mZqo=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA4C85DF2F;
+	Mon, 18 Mar 2024 23:16:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710803819; cv=none; b=PHJevaEgRvB2tHBTIJPcOPZ+kLXrTUtNNzc/lLrciu3e6a/MoEbcSLAYHvpS7ilyYF/pF3WZfwRcmJUfMsfw4w+9/xH7jNxCCQFzNcYCfiPiAB9DQkc7ScaM4vBUfBeLbQv+2qd3WO8fk99phC6JKjIRbh2LHOFNcxzLc05VPmc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710803819; c=relaxed/simple;
+	bh=F7/g5UOqRnAxP7ocolUUcKO59EIsH4cDnxzVx+ErLjw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jjSOJTH3anZO1PPyytzTQlmzac1HX9h9IW9ov3CGvZTBTCy9u6q2ALkAWd4/GQZjv5+66Pirez8eodV8++lnEW2S+ZEBBSRv5Ly/t6Wk1Cr2T21gviDINbtPU/1ot2aqBDS1a5NPPky2oG4mQJMyGLNTQoUgqcy+imVTJLlqtXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=BKF5sbXy; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710803818; x=1742339818;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=F7/g5UOqRnAxP7ocolUUcKO59EIsH4cDnxzVx+ErLjw=;
+  b=BKF5sbXy/27aPe9Bwm/sIkMTt5j2zu5kqrOhryI1WG1SmqTn8ivh6V4W
+   nEiXVRTJ5xuEU4Y26OmDdXXVtuw1huz3Dzq1jRasj7QibDUL9H30bTeVA
+   upuqO806QCXeOmfhSokkkXDWYCnSnReCBAnC7r0TMuHlbkbKt7rpZbroQ
+   xcqgIKNV9FWOA+5D97Ire8r7IhlpplZ+Jt6a2P2LMgZr8cBtMIbmdpWjv
+   RQNZnpvo4ISRymw4g4XuqVRQIVJVkAkt3f2CEanSnOGGSphzIv8xJ8qcL
+   cf0lkvDaYOCoT7VTxgOE1KHVOwaMK5tgGwOOn5bjaniIRcInRpINw15cJ
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5577929"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="5577929"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 16:16:57 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="44684981"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 16:16:57 -0700
+Date: Mon, 18 Mar 2024 16:16:56 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: "Edgecombe, Rick P" <rick.p.edgecombe@intel.com>
+Cc: "Yamahata, Isaku" <isaku.yamahata@intel.com>,
+	"Zhang, Tina" <tina.zhang@intel.com>,
+	"Yuan, Hang" <hang.yuan@intel.com>,
+	"Huang, Kai" <kai.huang@intel.com>, "Chen, Bo2" <chen.bo@intel.com>,
+	"sagis@google.com" <sagis@google.com>,
+	"isaku.yamahata@linux.intel.com" <isaku.yamahata@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"Aktas, Erdem" <erdemaktas@google.com>,
+	"kvm@vger.kernel.org" <kvm@vger.kernel.org>,
+	"pbonzini@redhat.com" <pbonzini@redhat.com>,
+	"seanjc@google.com" <seanjc@google.com>,
+	"isaku.yamahata@gmail.com" <isaku.yamahata@gmail.com>
+Subject: Re: [PATCH v19 120/130] KVM: TDX: Add a method to ignore dirty
+ logging
+Message-ID: <20240318231656.GC1645738@ls.amr.corp.intel.com>
+References: <cover.1708933498.git.isaku.yamahata@intel.com>
+ <1491dd247829bf1a29df1904aeed5ed6b464d29c.1708933498.git.isaku.yamahata@intel.com>
+ <b4cde44a884f2f048987826d59e2054cd1fa532b.camel@intel.com>
+ <20240315013511.GF1258280@ls.amr.corp.intel.com>
+ <fc6278a55deeccf8c67fba818647829a1dddcf0a.camel@intel.com>
+ <20240318171218.GA1645738@ls.amr.corp.intel.com>
+ <6986b1ddf25f064d3609793979ca315567d7e875.camel@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2815800f-d244-4e97-2c5c-08dc47a17dbe
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2024 23:16:50.4531
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: fTTV0nKfUufTusi67lypYpuwx7ByssFFtkfPFRRRZXkv6313/Jw9+8g0+pjgfVP4IPcA4p9ITjNJUG1TSVjlIw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8129
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <6986b1ddf25f064d3609793979ca315567d7e875.camel@intel.com>
 
-> Subject: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power
-> saving
->=20
-> Add pm_runtime support for power saving. In pm runtime suspend state the
-> registers will be reseted, so add registers save in pm runtime suspend an=
-d
-> restore them in pm runtime resume.
->=20
-> Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
+On Mon, Mar 18, 2024 at 05:43:33PM +0000,
+"Edgecombe, Rick P" <rick.p.edgecombe@intel.com> wrote:
 
-Reviewed-by: Peng Fan <peng.fan@nxp.com>
-> ---
->  drivers/clk/imx/clk-imx8mp-audiomix.c | 99 ++++++++++++++++++++++++++-
->  1 file changed, 96 insertions(+), 3 deletions(-)
->=20
-> diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-
-> imx8mp-audiomix.c
-> index 55ed211a5e0b..d2bf53e2aacf 100644
-> --- a/drivers/clk/imx/clk-imx8mp-audiomix.c
-> +++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
-> @@ -7,10 +7,12 @@
->=20
->  #include <linux/clk-provider.h>
->  #include <linux/device.h>
-> +#include <linux/io.h>
->  #include <linux/mod_devicetable.h>
->  #include <linux/module.h>
->  #include <linux/of.h>
->  #include <linux/platform_device.h>
-> +#include <linux/pm_runtime.h>
->=20
->  #include <dt-bindings/clock/imx8mp-clock.h>
->=20
-> @@ -18,6 +20,7 @@
->=20
->  #define CLKEN0			0x000
->  #define CLKEN1			0x004
-> +#define EARC			0x200
->  #define SAI1_MCLK_SEL		0x300
->  #define SAI2_MCLK_SEL		0x304
->  #define SAI3_MCLK_SEL		0x308
-> @@ -26,6 +29,12 @@
->  #define SAI7_MCLK_SEL		0x314
->  #define PDM_SEL			0x318
->  #define SAI_PLL_GNRL_CTL	0x400
-> +#define SAI_PLL_FDIVL_CTL0	0x404
-> +#define SAI_PLL_FDIVL_CTL1	0x408
-> +#define SAI_PLL_SSCG_CTL	0x40C
-> +#define SAI_PLL_MNIT_CTL	0x410
-> +#define IPG_LP_CTRL		0x504
-> +#define REGS_NUM		16
->=20
->  #define SAIn_MCLK1_PARENT(n)						\
->  static const struct clk_parent_data					\
-> @@ -182,13 +191,65 @@ static struct clk_imx8mp_audiomix_sel sels[] =3D {
->  	CLK_SAIn(7)
->  };
->=20
-> +struct clk_imx8mp_audiomix_regs {
-> +	u32 regs_num;
-> +	u32 regs_off[];
-> +};
-> +
-> +static const struct clk_imx8mp_audiomix_regs audiomix_regs =3D {
-> +	.regs_num =3D REGS_NUM,
-> +	.regs_off =3D {
-> +		CLKEN0,
-> +		CLKEN1,
-> +		EARC,
-> +		SAI1_MCLK_SEL,
-> +		SAI2_MCLK_SEL,
-> +		SAI3_MCLK_SEL,
-> +		SAI5_MCLK_SEL,
-> +		SAI6_MCLK_SEL,
-> +		SAI7_MCLK_SEL,
-> +		PDM_SEL,
-> +		SAI_PLL_GNRL_CTL,
-> +		SAI_PLL_FDIVL_CTL0,
-> +		SAI_PLL_FDIVL_CTL1,
-> +		SAI_PLL_SSCG_CTL,
-> +		SAI_PLL_MNIT_CTL,
-> +		IPG_LP_CTRL
-> +	},
-> +};
-> +
-> +struct clk_imx8mp_audiomix_drvdata {
-> +	void __iomem *base;
-> +	u32 regs_save[REGS_NUM];
-> +};
-> +
-> +static void clk_imx8mp_audiomix_save_restore(struct device *dev, bool
-> +save) {
-> +	struct clk_imx8mp_audiomix_drvdata *drvdata =3D
-> dev_get_drvdata(dev);
-> +	void __iomem *base =3D drvdata->base;
-> +	int i;
-> +
-> +	if (save) {
-> +		for (i =3D 0; i < audiomix_regs.regs_num; i++)
-> +			drvdata->regs_save[i] =3D readl(base +
-> audiomix_regs.regs_off[i]);
-> +	} else {
-> +		for (i =3D 0; i < audiomix_regs.regs_num; i++)
-> +			writel(drvdata->regs_save[i], base +
-> audiomix_regs.regs_off[i]);
-> +	}
-> +}
-> +
->  static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)  {
-> +	struct clk_imx8mp_audiomix_drvdata *drvdata;
->  	struct clk_hw_onecell_data *priv;
->  	struct device *dev =3D &pdev->dev;
->  	void __iomem *base;
->  	struct clk_hw *hw;
-> -	int i;
-> +	int i, ret;
-> +
-> +	drvdata =3D devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> +	if (!drvdata)
-> +		return -ENOMEM;
->=20
->  	priv =3D devm_kzalloc(dev,
->  			    struct_size(priv, hws,
-> IMX8MP_CLK_AUDIOMIX_END), @@ -202,6 +263,9 @@ static int
-> clk_imx8mp_audiomix_probe(struct platform_device *pdev)
->  	if (IS_ERR(base))
->  		return PTR_ERR(base);
->=20
-> +	drvdata->base =3D base;
-> +	dev_set_drvdata(dev, drvdata);
-> +
->  	for (i =3D 0; i < ARRAY_SIZE(sels); i++) {
->  		if (sels[i].num_parents =3D=3D 1) {
->  			hw =3D devm_clk_hw_register_gate_parent_data(dev,
-> @@ -257,10 +321,38 @@ static int clk_imx8mp_audiomix_probe(struct
-> platform_device *pdev)
->  	if (IS_ERR(hw))
->  		return PTR_ERR(hw);
->=20
-> -	return devm_of_clk_add_hw_provider(&pdev->dev,
-> of_clk_hw_onecell_get,
-> -					   priv);
-> +	ret =3D devm_of_clk_add_hw_provider(&pdev->dev,
-> of_clk_hw_onecell_get,
-> +					  priv);
-> +	if (ret)
-> +		return ret;
-> +
-> +	pm_runtime_enable(&pdev->dev);
-> +	clk_imx8mp_audiomix_save_restore(&pdev->dev, true);
-> +
-> +	return 0;
->  }
->=20
-> +static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev) {
-> +	clk_imx8mp_audiomix_save_restore(dev, true);
-> +
-> +	return 0;
-> +}
-> +
-> +static int clk_imx8mp_audiomix_runtime_resume(struct device *dev) {
-> +	clk_imx8mp_audiomix_save_restore(dev, false);
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops =3D {
-> +	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
-> +			   clk_imx8mp_audiomix_runtime_resume, NULL)
-> +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-> +				      pm_runtime_force_resume)
-> +};
-> +
->  static const struct of_device_id clk_imx8mp_audiomix_of_match[] =3D {
->  	{ .compatible =3D "fsl,imx8mp-audio-blk-ctrl" },
->  	{ /* sentinel */ }
-> @@ -272,6 +364,7 @@ static struct platform_driver
-> clk_imx8mp_audiomix_driver =3D {
->  	.driver =3D {
->  		.name =3D "imx8mp-audio-blk-ctrl",
->  		.of_match_table =3D clk_imx8mp_audiomix_of_match,
-> +		.pm =3D &clk_imx8mp_audiomix_pm_ops,
->  	},
->  };
->=20
-> --
-> 2.34.1
+> On Mon, 2024-03-18 at 10:12 -0700, Isaku Yamahata wrote:
+> > I categorize as follows. Unless otherwise, I'll update this series.
+> > 
+> > - dirty log check
+> >   As we will drop this ptach, we'll have no call site.
+> > 
+> > - KVM_BUG_ON() in main.c
+> >   We should drop them because their logic isn't complex.
+> What about "KVM: TDX: Add methods to ignore guest instruction
+> emulation"? Is it cleanly blocked somehow?
 
+KVM fault handler, kvm_mmu_page_fault(), is the caller into the emulation,
+It should skip the emulation.
+
+As the second guard, x86_emulate_instruction(), calls
+check_emulate_instruction() callback to check if the emulation can/should be
+done.  TDX callback can return it as X86EMUL_UNHANDLEABLE.  Then, the flow goes
+to user space as error.  I'll update the vt_check_emulate_instruction().
+
+
+
+> > - KVM_BUG_ON() in tdx.c
+> >   - The error check of the return value from SEAMCALL
+> >     We should keep it as it's unexpected error from TDX module. When
+> > we hit
+> >     this, we should mark the guest bugged and prevent further
+> > operation.  It's
+> >     hard to deduce the reason.  TDX mdoule might be broken.
+> Yes. Makes sense.
+> 
+> > 
+> >   - Other check
+> >     We should drop them.
+> 
+> Offhand, I'm not sure what is in this category.
+
+- Checking error code on TD enter/exit
+  I'll revise how to check error from TD enter/exit.  We'll have new code.  I
+  will update wrapper function to take struct kvm_tdx or struct tdx_vcpu, and
+  revise to remove random check.  Cleanups related to kvm_rebooting,
+  TDX_SW_ERROR, kvm_spurious_fault()
+
+- Remaining random check for debug.
+  The examples are as follows.  They were added for debug.
+
+
+@@ -797,18 +788,14 @@ void tdx_vcpu_free(struct kvm_vcpu *vcpu)
+         * list_{del,add}() on associated_tdvcpus list later.
+         */
+        tdx_disassociate_vp_on_cpu(vcpu);
+-       WARN_ON_ONCE(vcpu->cpu != -1);
+ 
+        /*
+         * This methods can be called when vcpu allocation/initialization
+         * failed. So it's possible that hkid, tdvpx and tdvpr are not assigned
+         * yet.
+         */
+-       if (is_hkid_assigned(to_kvm_tdx(vcpu->kvm))) {
+-               WARN_ON_ONCE(tdx->tdvpx_pa);
+-               WARN_ON_ONCE(tdx->tdvpr_pa);
++       if (is_hkid_assigned(to_kvm_tdx(vcpu->kvm)))
+                return;
+-       }
+ 
+        if (tdx->tdvpx_pa) {
+                for (i = 0; i < tdx_info->nr_tdvpx_pages; i++) {
+@@ -831,9 +818,9 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ {
+ 
+        /* vcpu_deliver_init method silently discards INIT event. */
+-       if (KVM_BUG_ON(init_event, vcpu->kvm))
++       if (init_event)
+                return;
+-       if (KVM_BUG_ON(is_td_vcpu_created(to_tdx(vcpu)), vcpu->kvm))
++       if (is_td_vcpu_created(to_tdx(vcpu)))
+                return;
+ 
+        /*
+@@ -831,9 +818,9 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ {
+ 
+        /* vcpu_deliver_init method silently discards INIT event. */
+-       if (KVM_BUG_ON(init_event, vcpu->kvm))
++       if (init_event)
+                return;
+-       if (KVM_BUG_ON(is_td_vcpu_created(to_tdx(vcpu)), vcpu->kvm))
++       if (is_td_vcpu_created(to_tdx(vcpu)))
+                return;
+ 
+        /*
+@@ -831,9 +818,9 @@ void tdx_vcpu_reset(struct kvm_vcpu *vcpu, bool init_event)
+ {
+ 
+        /* vcpu_deliver_init method silently discards INIT event. */
+-       if (KVM_BUG_ON(init_event, vcpu->kvm))
++       if (init_event)
+                return;
+-       if (KVM_BUG_ON(is_td_vcpu_created(to_tdx(vcpu)), vcpu->kvm))
++       if (is_td_vcpu_created(to_tdx(vcpu)))
+                return;
+ 
+        /*
+
+  
+-- 
+Isaku Yamahata <isaku.yamahata@intel.com>
 
