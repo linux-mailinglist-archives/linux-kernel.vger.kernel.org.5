@@ -1,199 +1,177 @@
-Return-Path: <linux-kernel+bounces-106208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DF11F87EAC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:22:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD26387EAD1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:23:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF8331C20FBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:22:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 127391C210B2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:23:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323AE4CE08;
-	Mon, 18 Mar 2024 14:21:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E38464F8A0;
+	Mon, 18 Mar 2024 14:22:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FmJeA8AE"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gfieCbQx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AB82C877;
-	Mon, 18 Mar 2024 14:21:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9C89A4F887
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:22:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771712; cv=none; b=CX5wRyeM5SoNNPH9g477YFfvx+9RvIgjvMFsQAfNIS55gDd3lqhtShadBdpjo6f+wMRetEjUFx+VMCYRDT0ysTZZnPH6ibqEhthCYAsEfgY+4KAXvJeUy5MwlS1cCCgNwf9pvhnXaTh53iVQESGeFuLU7LUmBLEOM9nqn1kwpS0=
+	t=1710771731; cv=none; b=I4M6LWi3l6JOAimwP+gDlLn2W2XO6UylM9HfI8ON/82Nn8dGh4Gy/S1lIXbxnBrf2DxDXLsGdY7ixn0rcrfBIin2dm4FzIP+Fyqp/jzBL66XIyqkLAbX32H0U+vM9557ZSsEaAu+SXODpkB5pWcp2qh64VHD00V9oxvsCBDZ1iQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771712; c=relaxed/simple;
-	bh=QUbSeiRZVfNGfqAcNd6KenE2viIRmcdDxVpkHP2kLGA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=NvgnXniiWe86XXOQl4isaDhMSBAqce5UE28lrFlNdqIbGiRPB8pDsInVfv68Q02yP5JOxtaqZERtxE5sh3qRW421/eWeEq8b45lfM2J3L8voR/Xh5ncASsLuhcuIc+bHtxko37y+pBpR2oG75MRfDMvFu5sMAbzvr/USpQL5G60=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FmJeA8AE; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46cc947929so92155066b.1;
-        Mon, 18 Mar 2024 07:21:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710771708; x=1711376508; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Y8pVWVzYyCf08T0G0EdrgewZbyCpSJ/9af1OTexXimM=;
-        b=FmJeA8AEw4DRLt/3d+cxC5L+5LYFO5JoZD17Ald8pUlYrr5imYG7fhb66OKnXSKcHa
-         RpctgCeLRuVqtkOdo6o0Q4BDcONpWg24otOgttK/aAB/AiD9+Iup0JF8I6R2kfUC5tGz
-         vfhEM7h9Xf8vQNcMO9h29WEXSjVmIV0b/1EJPyWDEYjTKV9Ag2TiRba5M8A4cZpFr3DU
-         +FXgnygx3lwqZydmKqJKRS+0mlyvQtjzKKm9KJPx+w0dM1YuymQj0fsQIQ299pcXJjd8
-         F9AfFjYsIFDFrxCu6WWxGDddPHOiqbSEKW/+1d5dW+BR9a5omEno9ETQ7wCjMlJN5IMY
-         E/fw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710771708; x=1711376508;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Y8pVWVzYyCf08T0G0EdrgewZbyCpSJ/9af1OTexXimM=;
-        b=LwejlTN9ZfSpm86rZL0stmbooUk7YeP5aFNDNHaX77UJ8vYO+PIsP9h6C+DeuGpE3D
-         e9rbhjhWywy02YyuVr8hPNGeA5wgq7z/6xU9W8D5j0PSfzlSknuhmOXFLqGyb6Z/4gg1
-         51OUx1PCEj94FDFCJmdbCyIqZK2H36ukacmDx4/CE89HR28Z9QkcLvaCSNso9HrhE2gZ
-         tQt4cyjUMJkkLSpYix3tR6F+LRWMK6WGNrN6M4i61ZZmRBz7OdaBV3RGAINyF9SRyVT4
-         PPH6azPYAzGMl2KGMn+fG1H/KxGt20oPxZegErev04HXNzV0gqKS1VEA1+h4gCyw1ZCg
-         UF1A==
-X-Forwarded-Encrypted: i=1; AJvYcCVWhG+knlUA8asxmDCIZOEnjrGAzrS4BW+Pz8p5MUKF///pw4pQu5x25VjtwVXL+qr0grB7lX4kpxoOtdh4osw63kqNNuMX64OhLMmgsJ6rO3hBYapg0fIR2AFr2Er8bC4B2fW7pCpPHzWchyoaAimyY/b76QuWf/TVbN32lUvDetW/CZOiR0G4Ip0/smcofjV+A/K4aZAa3BkyS0m59VUhk5gbrrz9sYEnqd9eeiKRCE1O7ixc3g==
-X-Gm-Message-State: AOJu0YzP3HlmYqR3iJZgD/VwH47j7vF32XaGFk2OZ/1ZGiEDzbDFIPXm
-	g9ykkyCFPymIRyJ4qjKL8FyQdBEPnd3XApoUK2sQEbAnxjnmfZruUDW/sDYNjGCNIJALv+lO4Eo
-	vCAJWdlKNzGrTWsVIuM34N5vpjx4=
-X-Google-Smtp-Source: AGHT+IEmolW0IFTzdRdXfU6t34pFwBQaiVlrS0IC58RhqDvErCec6W0W/ryDp9izwdRL/cqTBgM/X8T7/t/jUiN1Vuk=
-X-Received: by 2002:a17:906:c14e:b0:a46:a786:8c8c with SMTP id
- dp14-20020a170906c14e00b00a46a7868c8cmr3870315ejc.77.1710771708145; Mon, 18
- Mar 2024 07:21:48 -0700 (PDT)
+	s=arc-20240116; t=1710771731; c=relaxed/simple;
+	bh=bcv6FJltuCWCscc1CAhHtJ3CFRESpwC8ZI3NheBSPwI=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-type; b=EKw9jBPxGGwdhYpru4CaRdPwqN8keddQI5nahjC45DaTZTmUeIruAnsvUcr29J4r38jq/4II47gv1vuUKxSDBQkUKTfALLihGk+zMqtLIBMlMJLxXZK2M+NKQideapj4jqaoQulVSH7Pc73GSo8fyyX9HvwW4uMAPbBfdKyHX/c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gfieCbQx; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710771728;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=KylbygHFZqY0Y1GdcbNhcWaGXpHQjrqCbtqoLy1m2Bc=;
+	b=gfieCbQxWToUzaGoVXd+MlQUly5XynLCeNYCe4X53GJHaniEyeunLziOqrt6x3cd3wQQO3
+	1Ya7fsE9cLdheHk57kjVjCyu4EZ4kIfYyRq40XiwDcQ8GONPkUbajfoIlw6JWPd/fHWPO/
+	LBUBbAwsYsenXoaKR3sxTFFAnnK3gac=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-477-Mj8ycNDdNl-3_fqL6K9nzw-1; Mon, 18 Mar 2024 10:22:04 -0400
+X-MC-Unique: Mj8ycNDdNl-3_fqL6K9nzw-1
+Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id BF3D085A58C;
+	Mon, 18 Mar 2024 14:22:03 +0000 (UTC)
+Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id D7BC3492BC4;
+	Mon, 18 Mar 2024 14:22:00 +0000 (UTC)
+From: Baoquan He <bhe@redhat.com>
+To: linux-mm@kvack.org
+Cc: linux-kernel@vger.kernel.org,
+	x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org,
+	akpm@linux-foundation.org,
+	rppt@kernel.org,
+	Baoquan He <bhe@redhat.com>
+Subject: [PATCH 4/6] mm/mm_init.c: remove meaningless calculation of zone->managed_pages in free_area_init_core()
+Date: Mon, 18 Mar 2024 22:21:36 +0800
+Message-ID: <20240318142138.783350-5-bhe@redhat.com>
+In-Reply-To: <20240318142138.783350-1-bhe@redhat.com>
+References: <20240318142138.783350-1-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20220714084136.570176-1-chenhuacai@loongson.cn>
- <20220714084136.570176-3-chenhuacai@loongson.cn> <3a5a4bee5c0739a3b988a328376a6eed3c385fda.camel@physik.fu-berlin.de>
-In-Reply-To: <3a5a4bee5c0739a3b988a328376a6eed3c385fda.camel@physik.fu-berlin.de>
-From: Huacai Chen <chenhuacai@gmail.com>
-Date: Mon, 18 Mar 2024 22:21:36 +0800
-Message-ID: <CAAhV-H5bw3xcym2-GpyntQEad1h2eB8xDQGwVr_bRRKAOakzoQ@mail.gmail.com>
-Subject: Re: [PATCH V2 3/3] SH: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
-To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
-Cc: Huacai Chen <chenhuacai@loongson.cn>, Arnd Bergmann <arnd@arndb.de>, 
-	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
-	Rich Felker <dalias@libc.org>, loongarch@lists.linux.dev, linux-arch@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>, 
-	Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org, 
-	linux-sh@vger.kernel.org, stable@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
 
-Hi, SuperH maintainers,
+Currently, in free_area_init_core(), when initialize zone's field, a
+rough value is set to zone->managed_pages. That value is calculated by
+(zone->present_pages - memmap_pages).
 
-On Wed, Feb 8, 2023 at 8:59=E2=80=AFPM John Paul Adrian Glaubitz
-<glaubitz@physik.fu-berlin.de> wrote:
->
-> On Thu, 2022-07-14 at 16:41 +0800, Huacai Chen wrote:
-> > When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
-> > cpu_max_bits_warn() generates a runtime warning similar as below while
-> > we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
-> > instead of NR_CPUS to iterate CPUs.
-> >
-> > [    3.052463] ------------[ cut here ]------------
-> > [    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 sh=
-ow_cpuinfo+0x5e8/0x5f0
-> > [    3.070072] Modules linked in: efivarfs autofs4
-> > [    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
-> > [    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf84=
-6c 9000000100154000
-> > [    3.109127]         9000000100157a50 0000000000000000 9000000100157a=
-58 9000000000ef7430
-> > [    3.118774]         90000001001578e8 0000000000000040 00000000000000=
-20 ffffffffffffffff
-> > [    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de=
-80 900000000101c890
-> > [    3.138056]         0000000000000000 0000000000000000 00000000000000=
-00 0000000000aaaaaa
-> > [    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab40=
-00 0000000000000000
-> > [    3.157364]         900000000101c998 0000000000000004 9000000000ef74=
-30 0000000000000000
-> > [    3.167012]         0000000000000009 000000000000006c 00000000000000=
-00 0000000000000000
-> > [    3.176641]         9000000000d3de08 9000000001639390 90000000002086=
-d8 00007ffff0080286
-> > [    3.186260]         00000000000000b0 0000000000000004 00000000000000=
-00 0000000000071c1c
-> > [    3.195868]         ...
-> > [    3.199917] Call Trace:
-> > [    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
-> > [    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
-> > [    3.217625] [<900000000023d268>] __warn+0xd0/0x100
-> > [    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
-> > [    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
-> > [    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
-> > [    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
-> > [    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
-> > [    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
-> > [    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
-> > [    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
-> > [    3.281824] ---[ end trace 8b484262b4b8c24c ]---
-> >
-> > Cc: stable@vger.kernel.org
-> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
-> > ---
-> >  arch/sh/kernel/cpu/proc.c | 2 +-
-> >  1 file changed, 1 insertion(+), 1 deletion(-)
-> >
-> > diff --git a/arch/sh/kernel/cpu/proc.c b/arch/sh/kernel/cpu/proc.c
-> > index a306bcd6b341..5f6d0e827bae 100644
-> > --- a/arch/sh/kernel/cpu/proc.c
-> > +++ b/arch/sh/kernel/cpu/proc.c
-> > @@ -132,7 +132,7 @@ static int show_cpuinfo(struct seq_file *m, void *v=
-)
-> >
-> >  static void *c_start(struct seq_file *m, loff_t *pos)
-> >  {
-> > -     return *pos < NR_CPUS ? cpu_data + *pos : NULL;
-> > +     return *pos < nr_cpu_ids ? cpu_data + *pos : NULL;
-> >  }
-> >  static void *c_next(struct seq_file *m, void *v, loff_t *pos)
-> >  {
->
-> I build-tested the patch and also booted the patched kernel successfully
-> on my SH-7785LCR board.
->
-> Showing the contents of /proc/cpuinfo works fine, too:
->
-> root@tirpitz:~> cat /proc/cpuinfo
-> machine         : SH7785LCR
-> processor       : 0
-> cpu family      : sh4a
-> cpu type        : SH7785
-> cut             : 7.x
-> cpu flags       : fpu perfctr llsc
-> cache type      : split (harvard)
-> icache size     : 32KiB (4-way)
-> dcache size     : 32KiB (4-way)
-> address sizes   : 32 bits physical
-> bogomips        : 599.99
-> root@tirpitz:~>
->
-> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
->
-> I am not sure yet whether the change is also correct as I don't know whet=
-her
-> it's possible to change the number of CPUs at runtime on SuperH.
-Can this patch be merged? This is the only one still unmerged in the
-whole series.
+In the meantime, add the value to nr_all_pages and nr_kernel_pages which
+represent all free pages of system (only low memory or including HIGHMEM
+memory separately). Both of them are gonna be used in
+alloc_large_system_hash().
 
-Huacai
+However, the rough calculation and setting of zone->managed_pages is
+meaningless because
+  a) memmap pages are allocated on units of node in sparse_init() or
+     alloc_node_mem_map(pgdat); The simple (zone->present_pages -
+     memmap_pages) is too rough to make sense for zone;
+  b) the set zone->managed_pages will be zeroed out and reset with
+     acutal value in mem_init() via memblock_free_all(). Before the
+     resetting, no buddy allocation request is issued.
 
->
-> Adrian
->
-> --
->  .''`.  John Paul Adrian Glaubitz
-> : :' :  Debian Developer
-> `. `'   Physicist
->   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
+Here, remove the meaningless and complicated calculation of
+(zone->present_pages - memmap_pages), directly set zone->present_pages to
+zone->managed_pages. It will be adjusted in mem_init().
+
+And also remove the assignment of nr_all_pages and nr_kernel_pages in
+free_area_init_core(). Instead, call the newly added calc_nr_kernel_pages()
+to count up all free but not reserved memory in memblock and assign to
+nr_all_pages and nr_kernel_pages. The counting excludes memmap_pages,
+and other kernel used data, which is more accurate than old way and
+simpler, and can also cover the ppc required arch_reserved_kernel_pages()
+case.
+
+Signed-off-by: Baoquan He <bhe@redhat.com>
+---
+ mm/mm_init.c | 38 ++++++--------------------------------
+ 1 file changed, 6 insertions(+), 32 deletions(-)
+
+diff --git a/mm/mm_init.c b/mm/mm_init.c
+index c57a7fc97a16..55a2b886b7a6 100644
+--- a/mm/mm_init.c
++++ b/mm/mm_init.c
+@@ -1584,41 +1584,14 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
+ 
+ 	for (j = 0; j < MAX_NR_ZONES; j++) {
+ 		struct zone *zone = pgdat->node_zones + j;
+-		unsigned long size, freesize, memmap_pages;
+-
+-		size = zone->spanned_pages;
+-		freesize = zone->present_pages;
+-
+-		/*
+-		 * Adjust freesize so that it accounts for how much memory
+-		 * is used by this zone for memmap. This affects the watermark
+-		 * and per-cpu initialisations
+-		 */
+-		memmap_pages = calc_memmap_size(size, freesize);
+-		if (!is_highmem_idx(j)) {
+-			if (freesize >= memmap_pages) {
+-				freesize -= memmap_pages;
+-				if (memmap_pages)
+-					pr_debug("  %s zone: %lu pages used for memmap\n",
+-						 zone_names[j], memmap_pages);
+-			} else
+-				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
+-					zone_names[j], memmap_pages, freesize);
+-		}
+-
+-		if (!is_highmem_idx(j))
+-			nr_kernel_pages += freesize;
+-		/* Charge for highmem memmap if there are enough kernel pages */
+-		else if (nr_kernel_pages > memmap_pages * 2)
+-			nr_kernel_pages -= memmap_pages;
+-		nr_all_pages += freesize;
++		unsigned long size = zone->spanned_pages;
+ 
+ 		/*
+-		 * Set an approximate value for lowmem here, it will be adjusted
+-		 * when the bootmem allocator frees pages into the buddy system.
+-		 * And all highmem pages will be managed by the buddy system.
++		 * Set the zone->managed_pages as zone->present_pages roughly, it
++		 * be zeroed out and reset when memblock allocator frees pages into
++		 * buddy system.
+ 		 */
+-		zone_init_internals(zone, j, nid, freesize);
++		zone_init_internals(zone, j, nid, zone->present_pages);
+ 
+ 		if (!size)
+ 			continue;
+@@ -1915,6 +1888,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
+ 		check_for_memory(pgdat);
+ 	}
+ 
++	calc_nr_kernel_pages();
+ 	memmap_init();
+ 
+ 	/* disable hash distribution for systems with a single node */
+-- 
+2.41.0
+
 
