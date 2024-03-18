@@ -1,94 +1,94 @@
-Return-Path: <linux-kernel+bounces-106330-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106331-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 704EA87EC83
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:48:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E66BD87EC90
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:49:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4B6C61C20C4A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:48:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3C8641F210DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:49:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63B2E52F62;
-	Mon, 18 Mar 2024 15:48:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B24DC52F83;
+	Mon, 18 Mar 2024 15:48:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="HDIOWmN9"
-Received: from out-171.mta0.migadu.com (out-171.mta0.migadu.com [91.218.175.171])
+	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="cnmFKxKn"
+Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7ACA4F5FE
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:48:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95280524D1
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:48:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710776894; cv=none; b=tIumFLenTGYyaToU1r1bTGw88Q94EQQmzUS0vypB6Gi+pWz5UQX8EZ4RELeUv55/aGpJmEGA0VP0e0VrW+3TerCAsiiTYvQmrBZDKunGhY7D5ZL2pzqUe0u3Wx3xSPpQ4gEPpunKU9EFk/Wedk3hzVNIXx8eAQ97MtPys8E0/aM=
+	t=1710776939; cv=none; b=GePUGfcBxXZlZ4oxMwgbjiX7bh62GQQCFb7SNnr2kAuj5nt5WR0I71zfRCU3+zKf1rIz1FGN8+PWQ/Q/iFZ1re/LC7E05IzHIk2jZtVHApIY7gXu8gKXX7glwhDl5ms3dzKKRL2XOzhLYuqcTbSubsoU7DLo1kdm/fFqm0hoqUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710776894; c=relaxed/simple;
-	bh=DpYz0hySlKxEHAOQmWqMeZkwyJg+LhqeQY2mrmV/0cc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=rdSpJIzH1kFdAAtl5v8aueqRxy4QFsz91Bt/KW0zfOF/f8R5ljsB6euDjaxF9aHAzqPs15U+6WIqCjc83HBQXIFaVoQ1TwgCQgsrFxH2i9cyOnrVUkKGNL2I1ihE4/O1N52xIGQ75xW1nNK1a+Pr6K4SV6+1UM2rrVf/BnFI2R4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=HDIOWmN9; arc=none smtp.client-ip=91.218.175.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <fa047914-da03-4234-b48f-eebdf350795e@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710776891;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Bad6F74F9fm5QOGUdbjG96YKjkLK+JYj8KXYElcQaw8=;
-	b=HDIOWmN98GCxTIBHZkDR4L2R1YYSH4ojjz6vVh2nYaXg5czvF/hU6MMYVwYzuEdzCEefgT
-	hbe14o3GOvFshvKX08m5PbF20mU2qQqAOIn/bWXSApW8P9pxU0QBhzlGxh9c26pxqfhCg3
-	0L6+8ygQ/QC+NUOb+IuM7ZbCFHJmFho=
-Date: Mon, 18 Mar 2024 11:48:06 -0400
+	s=arc-20240116; t=1710776939; c=relaxed/simple;
+	bh=P2mrvSmlzie7vQSmXFC32spGcjtp7fqRoyCIPryRSRs=;
+	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
+	 Message-Id:References:To; b=ORHXxqsDnDk1W43TtaAdno8JOky3//hCa515ZtYOETjL2/froY1sY9cX71gdXBd5qbXEb6qoc2c7cp+Ym5kkF/M/EYS3MxwX/wcdPvLQnXrcrcpiaZHWDEHNfTSA9wkQHeQjcVsmaHS4xvUowxqOW6J8CugFEIoMzeDBSU1RZvA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=cnmFKxKn; arc=none smtp.client-ip=185.67.36.65
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
+Received: from submission (posteo.de [185.67.36.169]) 
+	by mout01.posteo.de (Postfix) with ESMTPS id 5A32324002B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:48:48 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
+	t=1710776928; bh=P2mrvSmlzie7vQSmXFC32spGcjtp7fqRoyCIPryRSRs=;
+	h=Content-Type:Mime-Version:Subject:From:Date:Cc:
+	 Content-Transfer-Encoding:Message-Id:To:From;
+	b=cnmFKxKn0+APiCmv+eTDjs1YIjZIlKWbTZGXwgTagExa64Mhli4fMPXr0gnetBNEE
+	 1PmCuYANO3Z2waQvNfuC4vSRhFJRkIj7lxsW7UCxKzjLrWMfTArP0GiMZ5T7LPnc0G
+	 tab6HG4Hdu8DvlWZpw4fXzT5Mev3PjDpz9XhE4vLn9FN8mS9JVyvh8MJ0Hx590SBJy
+	 gCa5yIJSVml3mRFzchAbFO32u7R1sTN+vfX3b+Ey2oS7jbgzAKvR5ZOMQNXgMvo0uh
+	 r374aMUqrPHsBQJbBjpPlR9sRAbgpyjkoK1ZLJsSlXkFK0Dce9YsrRR7SYRVtKKQjN
+	 /9KS3YrhMM5eQ==
+Received: from customer (localhost [127.0.0.1])
+	by submission (posteo.de) with ESMTPSA id 4TyzmD52ZWz9rxN;
+	Mon, 18 Mar 2024 16:48:44 +0100 (CET)
+Content-Type: text/plain;
+	charset=us-ascii
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Subject: Re: [PATCH 1/2] dt-bindings: nvmem: Remove fsl,t1023-sfp in favor of
- fsl,layerscape-sfp
-Content-Language: en-US
-To: Conor Dooley <conor@kernel.org>
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- Richard Alpe <richard@bit42.se>, linux-kernel@vger.kernel.org,
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- Michael Walle <michael@walle.cc>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Conor Dooley <conor+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Rob Herring <robh+dt@kernel.org>, devicetree@vger.kernel.org
-References: <20240316002026.1808336-1-sean.anderson@linux.dev>
- <20240317-starved-pager-7a81c5045cfc@spud>
- <9daf9c8f-6606-4ff6-8065-6a32fa0d152c@linux.dev>
- <20240318-scarf-startup-64088b1d8d35@spud>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <20240318-scarf-startup-64088b1d8d35@spud>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
+Subject: Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
+From: Charalampos Mitrodimas <charmitro@posteo.net>
+In-Reply-To: <0000000000002750950613c53e72@google.com>
+Date: Mon, 18 Mar 2024 15:48:11 +0000
+Cc: asmadeus@codewreck.org,
+ ericvh@kernel.org,
+ linux-fsdevel@vger.kernel.org,
+ linux-kernel@vger.kernel.org,
+ linux_oss@crudebyte.com,
+ lucho@ionkov.net,
+ syzkaller-bugs@googlegroups.com,
+ v9fs@lists.linux.dev
+Content-Transfer-Encoding: quoted-printable
+Message-Id: <B6E22992-FF45-44E3-8FBE-D157BED7B922@posteo.net>
+References: <0000000000002750950613c53e72@google.com>
+To: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
 
-On 3/18/24 11:40, Conor Dooley wrote:
-> On Mon, Mar 18, 2024 at 11:08:00AM -0400, Sean Anderson wrote:
->> On 3/17/24 11:10, Conor Dooley wrote:
-> 
->> > Additionally, should
->> > they fall back to t1023-sfp? I see that there's already some dts files
->> > with these compatibles in them but seemingly no driver support as there
->> > is for the t1023-sfp.
->> 
->> I checked the reference manuals for these processors, and all of them use TA 2.0.
-> 
-> Sounds like a fallback is suitable then, although that will require
-> updating the various dts files.
+please test uv in v9fs_evict_inode
 
-Yes, a fallback (like what is done for the T-series) would be suitable,
-but given that these devicetrees have been in-tree for eight years I
-think it would be preferable to support the existing bindings for
-compatibility purposes.
+#syz test =
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git =
+master
 
---Sean
+diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
+index 360a5304ec03..5d046f63e5fa 100644
+--- a/fs/9p/vfs_inode.c
++++ b/fs/9p/vfs_inode.c
+@@ -353,7 +353,8 @@ void v9fs_evict_inode(struct inode *inode)
+ 	filemap_fdatawrite(&inode->i_data);
+
+ #ifdef CONFIG_9P_FSCACHE
+-	fscache_relinquish_cookie(v9fs_inode_cookie(v9inode), false);
++	if (v9fs_inode_cookie(v9inode))
++		fscache_relinquish_cookie(v9fs_inode_cookie(v9inode), =
+false);
+ #endif
+ }=
 
