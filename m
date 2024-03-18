@@ -1,229 +1,171 @@
-Return-Path: <linux-kernel+bounces-106700-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106701-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5FAB187F222
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:29:32 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0060B87F223
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:29:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2B54282938
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:29:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6C1A91F20C74
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:29:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D59E59166;
-	Mon, 18 Mar 2024 21:29:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 100BE58AC3;
+	Mon, 18 Mar 2024 21:29:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="apKMhkWh"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.14])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="mRbbR7m8"
+Received: from mail-il1-f174.google.com (mail-il1-f174.google.com [209.85.166.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA1FF58239;
-	Mon, 18 Mar 2024 21:29:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.14
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99E8058233
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:29:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710797360; cv=none; b=oK3kJmx/ghIS81fsk+5LtD2g9ahADoMyYag+3SUKcRi5XziYQWYRfG3yZSb8IyUHitP1dtVyVWa9symXIuYv8us8RNenuE5ZapL3AyD50qbEVS5bmDWaGTHLnQsek17UczlscwK6HxqKawAqXRJ4DIPs14YIZFirI2bSZLA8Bwg=
+	t=1710797375; cv=none; b=V/YjtzXnAHXbHTiSDwH0IDmbv+ZUKKMYca46c0NX+ltm+S6TMxPkr18gFTArj2tOPUBPeba7bGnTeLi69QGwpcl1TwakFTYTRmYhSmwlpDuf98ybMKxugBR5JNxtZTxk2TqFdnxNz9QZQLDdYS3YIGPMWLVul4jZO4+MpOGnGtY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710797360; c=relaxed/simple;
-	bh=gcIdQLeaNhnFtWxkw1Wh/QfYZrOV3Xkp/tjnkxtLVnQ=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=V9mp7eDy1lbIzXngqo+oxuQh4BRJFCuKj7wdjokIdI8P5mpm+S1GrcptUoHtmcyuX/vnvDlu2/eEDApjSBIVLIXnD97GiZJPOH1L1ETJSwtSwyEf6X4yNq1fkZ6ggyLqnfuKX5IdRCAj+LUSyTp9qC72RBajkr2RIkQF97QK+UQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=apKMhkWh; arc=none smtp.client-ip=198.175.65.14
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710797358; x=1742333358;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=gcIdQLeaNhnFtWxkw1Wh/QfYZrOV3Xkp/tjnkxtLVnQ=;
-  b=apKMhkWhm5KPfgL0aEBaT1IJ0pzksQ2B85QimnwIeyfDpvyIvYQPAk3T
-   ROHS/d6mDGdKtewaKiq4uDs/HVaoSTHgT67ITcnvaQZrTm+/vyLZtKgia
-   tangrg6RxXKhw5zEr4w4HnLhnWxq/1Em4EJ+FNXm0ni6FbjEP0RkIo5m3
-   dZlLPYzE7weMhwlBe2deVSh8a2qHB0WWcZUa6JAU72boj0Hj2Y59FzuTz
-   RToU+y8x39czkJOF7U9POMYtqnDx6u/U9yZvQD+XgWiux5k7QJjejNZp+
-   aG28bODWz+KzLTWdA9fmrk3568jQQta9RmE5FM1fPzNhbp0fUx/WmRF5Q
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="9463214"
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="9463214"
-Received: from orviesa009.jf.intel.com ([10.64.159.149])
-  by orvoesa106.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 14:29:18 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="13623636"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by orviesa009.jf.intel.com with ESMTP; 18 Mar 2024 14:29:15 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rmKXg-000HFj-0V;
-	Mon, 18 Mar 2024 21:29:12 +0000
-Date: Tue, 19 Mar 2024 05:28:37 +0800
-From: kernel test robot <lkp@intel.com>
-To: Radu Sabau <radu.sabau@analog.com>, Jean Delvare <jdelvare@suse.com>,
-	Guenter Roeck <linux@roeck-us.net>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzk@kernel.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Delphine CC Chiu <Delphine_CC_Chiu@wiwynn.com>,
-	linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-i2c@vger.kernel.org
-Cc: oe-kbuild-all@lists.linux.dev
-Subject: Re: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
-Message-ID: <202403190552.U4RHYvqc-lkp@intel.com>
-References: <20240318112140.385244-3-radu.sabau@analog.com>
+	s=arc-20240116; t=1710797375; c=relaxed/simple;
+	bh=wa4AsEHowlTcQ7Yg5/g6MIQX/SG3V6t/gqBj8pYSItg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=jOpLWVN8s9j4fz/IN0G1jDJwcICaiYgNq8RmPjxywO+19UfxJk1RoqeRyYQfhs5IwK3JAl8fmGqsva9F0QSIWF1r3YQ52iCdmHJ8fx9XIW7bM8JzrMxGpNI8ddCt3yU1JVlWhfCkdPo4ebufNS1KWYuFrpiXCChXDbWG1FOk9+k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=mRbbR7m8; arc=none smtp.client-ip=209.85.166.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f174.google.com with SMTP id e9e14a558f8ab-366ad40144fso5896345ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:29:33 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710797373; x=1711402173; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=/Nul1eVuq4XLe3SGFf2DVNn6S2hK2sqq4oKFGkGjGXg=;
+        b=mRbbR7m8X5JfixQi24ou2bbV4TNAeyCcRHYyskqLRwWQlu2hIMJrgWZeltOcocde8V
+         oYTGVIrrQCr9CzaZ5+4P7hw5oyNx67zWgThX5yxPKmvlLwf8DARgGuQyKSiBHzb3snJd
+         GTFA6eQQVAb2Affv1ujR6K1z4J95S38g9t5xHt7JCkyUymxWO04gLEYxBi7CEzitPFQY
+         VrTmNLE7k00lL9ol2ddDeeswc8UaMiQ9KPSZ5D0ZE+UEsslVqF7wYORfJSHQjC8LXphb
+         2VwR0zLl+kMurAh1akG3ZiQgHP/3HyX+N3OCUwODOSH/x4ZirgLQWOHiPn1wYhc6X5It
+         Jt1g==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710797373; x=1711402173;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=/Nul1eVuq4XLe3SGFf2DVNn6S2hK2sqq4oKFGkGjGXg=;
+        b=oaV7ZWN3WVq3sfZT5QAORtXB4YKhaMIHQ8Ixx7RmmXFB6AQhoB4SeVQjhYV6oMkvL9
+         NdVw93vYwqxwlF46X5nt6ZwAvSMe/yAPeTpfRG/Sq5NLG5xg9xAIbmDmfJ0hcZ5wG+TT
+         JrpWALxCoGLBgXLmP37BTCFtAa3sLAgyzfij0bgzFYF5vYMr86pc3Oz3s0lqXhyArwEN
+         VgAVXgwd+SDE0s6raVADldwSNaNT7cEn1uDYM8J4BSxdEGFfuKJw15eIsSQur55xWmzk
+         vfNP/2KguTVekWKKgrtTTvOriD2rvjSkS5PGzD/4Hul1pK+6O8OoiN3cCKIDwyE5hHLM
+         hqEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWu8kaXtAWNJynk9LDppRTCQebX5K3ZRQzpTAMkkWmX7O+rFHRy5npbbJk5XFY1mxLomMzFwY+FMx0vhs5UIAR8u+Jb3LIj6XlXlz3B
+X-Gm-Message-State: AOJu0YxGviObRz4PnjgcxQfPmzIShOxvSvqdgO7O83lIe6+Q0nRJhKoE
+	XVUe5Cr0BYg2KLOSx8gzntk0U5Bt6TtF7L34y2+URCFCdHkCb4bSsSSofMeKXIU=
+X-Google-Smtp-Source: AGHT+IGplRx/3NjrYT/brJF88QRJLUV/wi8Qy9KFuvMjBRp+xMbCOC5rIkYwtdBM4rJ6IEL040jsVA==
+X-Received: by 2002:a05:6e02:1064:b0:366:8c58:42ea with SMTP id q4-20020a056e02106400b003668c5842eamr887284ilj.11.1710797372753;
+        Mon, 18 Mar 2024 14:29:32 -0700 (PDT)
+Received: from [100.64.0.1] ([136.226.86.189])
+        by smtp.gmail.com with ESMTPSA id l13-20020a056e0205cd00b00366164573dfsm2512024ils.63.2024.03.18.14.29.31
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 14:29:32 -0700 (PDT)
+Message-ID: <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
+Date: Mon, 18 Mar 2024 16:29:30 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318112140.385244-3-radu.sabau@analog.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
+Content-Language: en-US
+To: Alexandre Ghiti <alexghiti@rivosinc.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
+ Albert Ou <aou@eecs.berkeley.edu>, Andrew Morton
+ <akpm@linux-foundation.org>, Charlie Jenkins <charlie@rivosinc.com>,
+ Guo Ren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
+ Kemeng Shi <shikemeng@huaweicloud.com>,
+ "Matthew Wilcox (Oracle)" <willy@infradead.org>,
+ "Mike Rapoport (IBM)" <rppt@kernel.org>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Xiao Wang <xiao.w.wang@intel.com>,
+ Yangyu Chen <cyy@cyyself.name>, linux-kernel@vger.kernel.org
+References: <20240313180010.295747-1-samuel.holland@sifive.com>
+ <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hi Radu,
+Hi Alex,
 
-kernel test robot noticed the following build errors:
+On 2024-03-18 3:50 PM, Alexandre Ghiti wrote:
+> On Wed, Mar 13, 2024 at 7:00 PM Samuel Holland
+> <samuel.holland@sifive.com> wrote:
+>>
+>> TASK_SIZE_MAX should be set to the largest userspace address under any
+>> runtime configuration. This optimizes the check in __access_ok(), which
+>> no longer needs to compute the current value of TASK_SIZE. It is still
+>> safe because addresses between TASK_SIZE and TASK_SIZE_MAX are invalid
+>> at the hardware level.
+>>
+>> This removes about half of the references to pgtable_l[45]_enabled.
+>>
+>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+>> ---
+>>
+>>  arch/riscv/include/asm/pgtable-64.h | 1 +
+>>  arch/riscv/include/asm/pgtable.h    | 1 +
+>>  2 files changed, 2 insertions(+)
+>>
+>> diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
+>> index b99bd66107a6..a677ef3c0fe2 100644
+>> --- a/arch/riscv/include/asm/pgtable-64.h
+>> +++ b/arch/riscv/include/asm/pgtable-64.h
+>> @@ -17,6 +17,7 @@ extern bool pgtable_l5_enabled;
+>>  #define PGDIR_SHIFT_L4  39
+>>  #define PGDIR_SHIFT_L5  48
+>>  #define PGDIR_SIZE_L3   (_AC(1, UL) << PGDIR_SHIFT_L3)
+>> +#define PGDIR_SIZE_L5   (_AC(1, UL) << PGDIR_SHIFT_L5)
+>>
+>>  #define PGDIR_SHIFT     (pgtable_l5_enabled ? PGDIR_SHIFT_L5 : \
+>>                 (pgtable_l4_enabled ? PGDIR_SHIFT_L4 : PGDIR_SHIFT_L3))
+>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
+>> index 6066822e7396..2032f8ac5fc5 100644
+>> --- a/arch/riscv/include/asm/pgtable.h
+>> +++ b/arch/riscv/include/asm/pgtable.h
+>> @@ -867,6 +867,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
+>>  #ifdef CONFIG_64BIT
+>>  #define TASK_SIZE_64   (PGDIR_SIZE * PTRS_PER_PGD / 2)
+>>  #define TASK_SIZE_MIN  (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
+>> +#define TASK_SIZE_MAX  (PGDIR_SIZE_L5 * PTRS_PER_PGD / 2)
+>>
+>>  #ifdef CONFIG_COMPAT
+>>  #define TASK_SIZE_32   (_AC(0x80000000, UL))
+>> --
+>> 2.43.1
+>>
+> 
+> I think you also need to change the check in handle_page_fault() by
+> using TASK_SIZE_MAX instead of TASK_SIZE, otherwise the fixup can't
+> happen (https://elixir.bootlin.com/linux/latest/source/arch/riscv/mm/fault.c#L273).
 
-[auto build test ERROR on groeck-staging/hwmon-next]
-[also build test ERROR on robh/for-next linus/master v6.8 next-20240318]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+It is not necessary to change that check in fault.c unless we expect to handle
+exceptions (outside of userspace access routines) for addresses between
+TASK_SIZE and TASK_SIZE_MAX. It looks like the call to fixup_exception() [added
+in 416721ff05fd ("riscv, mm: Perform BPF exhandler fixup on page fault")] is
+only intended to catch null pointer dereferences. So making the change wouldn't
+have any functional impact, but it would still be a valid optimization.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Radu-Sabau/dt-bindings-hwmon-pmbus-adp1050-add-bindings/20240318-202619
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/groeck/linux-staging.git hwmon-next
-patch link:    https://lore.kernel.org/r/20240318112140.385244-3-radu.sabau%40analog.com
-patch subject: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
-config: m68k-allmodconfig (https://download.01.org/0day-ci/archive/20240319/202403190552.U4RHYvqc-lkp@intel.com/config)
-compiler: m68k-linux-gcc (GCC) 13.2.0
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240319/202403190552.U4RHYvqc-lkp@intel.com/reproduce)
+> Or I was wondering if it would not be better to do like x86 and use an
+> alternative, it would be more correct (even though I believe your
+> solution works)
+> https://elixir.bootlin.com/linux/latest/source/arch/x86/include/asm/page_64.h#L82.
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403190552.U4RHYvqc-lkp@intel.com/
+What would be the benefit of using an alternative? Any access to an address
+between TASK_SIZE and TASK_SIZE_MAX is guaranteed to generate a page fault, so
+the only benefit I see is returning -EFAULT slightly faster at the cost of
+applying a few hundred alternatives at boot. But it's possible I'm missing
+something.
 
-All error/warnings (new ones prefixed by >>):
+Regards,
+Samuel
 
-   drivers/hwmon/pmbus/adp1050.c: In function 'adp1050_probe':
->> drivers/hwmon/pmbus/adp1050.c:47:45: warning: passing argument 2 of 'dev_err_probe' makes integer from pointer without a cast [-Wint-conversion]
-      47 |                 dev_err_probe(&client->dev, "Device can't be unlocked.\n");
-         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                                             |
-         |                                             char *
-   In file included from include/linux/device.h:15,
-                    from include/linux/acpi.h:14,
-                    from include/linux/i2c.h:13,
-                    from drivers/hwmon/pmbus/adp1050.c:9:
-   include/linux/dev_printk.h:277:64: note: expected 'int' but argument is of type 'char *'
-     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-         |                                                            ~~~~^~~
->> drivers/hwmon/pmbus/adp1050.c:47:17: error: too few arguments to function 'dev_err_probe'
-      47 |                 dev_err_probe(&client->dev, "Device can't be unlocked.\n");
-         |                 ^~~~~~~~~~~~~
-   include/linux/dev_printk.h:277:20: note: declared here
-     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-         |                    ^~~~~~~~~~~~~
-   drivers/hwmon/pmbus/adp1050.c:53:45: warning: passing argument 2 of 'dev_err_probe' makes integer from pointer without a cast [-Wint-conversion]
-      53 |                 dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
-         |                                             ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-         |                                             |
-         |                                             char *
-   include/linux/dev_printk.h:277:64: note: expected 'int' but argument is of type 'char *'
-     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-         |                                                            ~~~~^~~
-   drivers/hwmon/pmbus/adp1050.c:53:17: error: too few arguments to function 'dev_err_probe'
-      53 |                 dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
-         |                 ^~~~~~~~~~~~~
-   include/linux/dev_printk.h:277:20: note: declared here
-     277 | __printf(3, 4) int dev_err_probe(const struct device *dev, int err, const char *fmt, ...);
-         |                    ^~~~~~~~~~~~~
-
-
-vim +/dev_err_probe +47 drivers/hwmon/pmbus/adp1050.c
-
-   > 9	#include <linux/i2c.h>
-    10	#include <linux/init.h>
-    11	#include <linux/kernel.h>
-    12	#include <linux/module.h>
-    13	#include <linux/of.h>
-    14	#include "pmbus.h"
-    15	
-    16	#define ADP1050_CHIP_PASSWORD		0xD7
-    17	
-    18	#define ADP1050_VIN_SCALE_MONITOR	0xD8
-    19	#define ADP1050_IIN_SCALE_MONITOR	0xD9
-    20	
-    21	static struct pmbus_driver_info adp1050_info = {
-    22		.pages = 1,
-    23		.format[PSC_VOLTAGE_IN] = linear,
-    24		.format[PSC_VOLTAGE_OUT] = linear,
-    25		.format[PSC_CURRENT_IN] = linear,
-    26		.format[PSC_TEMPERATURE] = linear,
-    27		.func[0] = PMBUS_HAVE_VOUT | PMBUS_HAVE_STATUS_VOUT
-    28			| PMBUS_HAVE_VIN | PMBUS_HAVE_STATUS_INPUT
-    29			| PMBUS_HAVE_IIN | PMBUS_HAVE_TEMP
-    30			| PMBUS_HAVE_STATUS_TEMP,
-    31	};
-    32	
-    33	static int adp1050_probe(struct i2c_client *client)
-    34	{
-    35		u32 vin_scale_monitor, iin_scale_monitor;
-    36		int ret;
-    37	
-    38		if (!i2c_check_functionality(client->adapter,
-    39					     I2C_FUNC_SMBUS_WRITE_WORD_DATA))
-    40			return -ENODEV;
-    41	
-    42		/* Unlock CHIP's password in order to be able to read/write to it's
-    43		 * VIN_SCALE and IIN_SCALE registers.
-    44		*/
-    45		ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
-    46		if (ret < 0) {
-  > 47			dev_err_probe(&client->dev, "Device can't be unlocked.\n");
-    48			return ret;
-    49		}
-    50	
-    51		ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
-    52		if (ret < 0) {
-    53			dev_err_probe(&client->dev, "Device couldn't be unlocked.\n");
-    54			return ret;
-    55		}
-    56	
-    57		/* If adi,vin-scale-monitor isn't set or is set to 0 means that the
-    58		 * VIN monitor isn't used, therefore 0 is used as scale in order
-    59		 * for the readings to return 0.
-    60		*/
-    61		if (device_property_read_u32(&client->dev, "adi,vin-scale-monitor",
-    62					     &vin_scale_monitor))
-    63			vin_scale_monitor = 0;
-    64	
-    65		/* If adi,iin-scale-monitor isn't set or is set to 0 means that the
-    66		 * IIN monitor isn't used, therefore 0 is used as scale in order
-    67		 * for the readings to return 0.
-    68		*/
-    69		if (device_property_read_u32(&client->dev, "adi,iin-scale-monitor",
-    70					     &iin_scale_monitor))
-    71			iin_scale_monitor = 0;
-    72	
-    73		ret = i2c_smbus_write_word_data(client, ADP1050_VIN_SCALE_MONITOR,
-    74						vin_scale_monitor);
-    75		if (ret < 0)
-    76			return ret;
-    77	
-    78		ret = i2c_smbus_write_word_data(client, ADP1050_IIN_SCALE_MONITOR,
-    79						iin_scale_monitor);
-    80		if (ret < 0)
-    81			return ret;
-    82	
-    83		return pmbus_do_probe(client, &adp1050_info);
-    84	}
-    85	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
 
