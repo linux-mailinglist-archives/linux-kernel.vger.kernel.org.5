@@ -1,116 +1,133 @@
-Return-Path: <linux-kernel+bounces-105685-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105686-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 978D087E29A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:35:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 659A787E2A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:37:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2B2C41F2237E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:35:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2145F2817C3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:37:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A6982200D5;
-	Mon, 18 Mar 2024 03:35:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4D5651F614;
+	Mon, 18 Mar 2024 03:37:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Ogn+bVi9"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rIfMeZve"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A03BC1E866;
-	Mon, 18 Mar 2024 03:35:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E97A1D530;
+	Mon, 18 Mar 2024 03:37:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710732921; cv=none; b=smzWdAm6ClZyM4qy4eE5d43ztS/lU5KH3VNqd9zNDKFiQrVy3tMMENp3mPwcP28W7LnwRoV7WetOS13MJ6qcY255K3QTYx0B2OWMsr7curFBMNM7zGVuzhf+429k04LqMPzpeabl9FGyX2ftbN4LvQMU0l4KHQgvt9uKz3zPbCE=
+	t=1710733038; cv=none; b=gZ7MZYgGuTls8XBwvApMA7gIVpJWj+UpTcNCLhC1jOZnrukil16vct7qwNlbDZLZcVn3QctMkWSOUpLBnKqY55rC/0Yl8IhiE3L/uRVg88+sJNdKyUXAULkzokKNqNozAPvRH41Hd7Qh29aBdjRuL+Zwt8ey9KBTCRG5uQX2+J0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710732921; c=relaxed/simple;
-	bh=srHab0CvgrTVsFnDbUyGDJnK/gDZ2myxNeNNeVJC15c=;
+	s=arc-20240116; t=1710733038; c=relaxed/simple;
+	bh=OtYNbsQDiWdUoo7LT1A1WLk7i98yL98HDFPaacqRjwM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=B9HU0kIKHLrhFnNTyde+uldrTg+cvGzx45h6keiSqyehPTFGqz00quE6L6N4QEVcyHJrL7vVwwtLMGUJrf1y/0i0IvnRDOm8DJRqEj0JnYhBKp3Yaia9ki+aOOdf/KoYXhg3yQLoyFK1a0KZVNoDRZQpnQ2OfWCBGBBS8GJjwl8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Ogn+bVi9; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3c38b719ab5so29856b6e.2;
-        Sun, 17 Mar 2024 20:35:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710732918; x=1711337718; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=wrOYXD68fVx///jNgINMPnwrCj4qHGzpRc3DdPVkGqc=;
-        b=Ogn+bVi9cotmunPBgtG1gKXqibTOilcfjI9YpwV9fjFLBn5BFYoD2/UHcwwGS3ht+p
-         vEFdlZt5HVJwF1whZkYbScoGVkdxSbMBZPG0tIglxNzvhT4mj+7C8nB3atRi110+n8u+
-         QCJ9lURSLdjnYilVYgt1E7GHVMy1DpLnxlsrzmPoY0yIDXRQdKIYsS6OMKv9zHoo289G
-         dOof5/4KZhVr0zo2kaKNP8Ao6mWf6TNRrV0KofTEIllEo3TFeQRFIo99ulYb++9X24c/
-         9t0PkSyPIsmZ8XGsWMYivkhNXfsHExXaTNdx94D7RV+0NtBAA0EaO3HBUsyg+1dQx7gw
-         D4nQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710732918; x=1711337718;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=wrOYXD68fVx///jNgINMPnwrCj4qHGzpRc3DdPVkGqc=;
-        b=bG6viKo202y+bkLsNAV2/CdtGtl7nnMzV/UoP/981anIXcWDw6hPcepUePIVgOojM1
-         zl5QKrwiI9Rpr6gmTmefVCy4h7fOnZGigJZJIWrVJ2nD/04PqopevJQ4M0aXdM9zn6xS
-         iZYoVQPM5XnlMQG3cZYgsgI+TJSNg3sHWVvj/kC9PoE2LrG4SlIbuRYGXjm+qWlLt8LX
-         PjsAIRzxxnfuFxWU8OZu59taoesf6qBlbEtq4zw9GX+mVtYmizzN97QcMXawwTTZ9g1j
-         fmgpKmtt7Ukm8Yd9pHPGjyIEoVypOf83QbP8l6ZGiY7PEKAiMXWncvVL/ytFBTCbgdzi
-         jSbw==
-X-Forwarded-Encrypted: i=1; AJvYcCXMh1pUJcDf2sOyL8/uim8XQLhV5FejOp0krFT3EqO8mEhuuKcavk6LyWRzJywtKb7iRUDIiTlnXtxtnQeTKVlbQraDuzhjjdOI2QRVuB8RwoutRu7Vz5GcfepQdS2biFzxAdtUZHxCHCfdKP/7
-X-Gm-Message-State: AOJu0Yw6S9i/6Zefag0Mxt3AEH3XMMFKUdeVZykytPOOx77tXITwl14G
-	Aj35at3t6/rrOlIONCZ67QLYBjUGvT/E+bvKZKOyrhgu5MRr9Fu9
-X-Google-Smtp-Source: AGHT+IE/uNSXoSrFg8tJozjHDVYN/SchdG9u6ImD1VcULJ9M33t1PQu81kTJDBuhxhesXPkGn8ELmw==
-X-Received: by 2002:a05:6808:228b:b0:3c3:814a:fc6f with SMTP id bo11-20020a056808228b00b003c3814afc6fmr5118573oib.38.1710732918389;
-        Sun, 17 Mar 2024 20:35:18 -0700 (PDT)
-Received: from Laptop-X1 ([43.228.180.230])
-        by smtp.gmail.com with ESMTPSA id y125-20020a62ce83000000b006e6b2ba1577sm7166090pfg.138.2024.03.17.20.35.15
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Sun, 17 Mar 2024 20:35:17 -0700 (PDT)
-Date: Mon, 18 Mar 2024 11:35:12 +0800
-From: Hangbin Liu <liuhangbin@gmail.com>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, Ido Schimmel <idosch@nvidia.com>
-Subject: Re: [BUG] selftests/net: test_vxlan_mdb.sh: 84 out of 642 tests
- [FAIL]
-Message-ID: <Zfe2cGv_EWFAZXAJ@Laptop-X1>
-References: <5bb50349-196d-4892-8ed2-f37543aa863f@alu.unizg.hr>
+	 Content-Type:Content-Disposition:In-Reply-To; b=JHufaLVcgh5KkESnyo5JgZgBnC70qUFfnIROqvxixMJBJWvtGPpAt8K28zb3VZM1LMiqbeyD1uyU4LxG9sAuVNUib6/RCpF6YihLq/NHtOjAi43YKzoLttYcncSORQnETQlx44/ep/NRYcE92PvgzAw4VAmwFUT3JAbS5vuMKvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rIfMeZve; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 490C2C433F1;
+	Mon, 18 Mar 2024 03:37:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710733038;
+	bh=OtYNbsQDiWdUoo7LT1A1WLk7i98yL98HDFPaacqRjwM=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rIfMeZveN5OCk18QBPfTD0sndOtEkG1C/4pQNBc1hok8JZcWfLhjB2nGWenYIxdy4
+	 wynrBuJW0qhDlU6BzYYEblmJYe7KWxLFnkqYfAXuC34PR1jkOZrEne5ir4HmPiz4EH
+	 n8KKCqoMoSnX2A2zsXytGzxR6Nw3XyVmu8z4eVdvcFplcqpvbxKkMxa2LVXNDJdgcA
+	 eoKDC7Qpw4uMWn2XVh3IHHgapcMsz+0hh/Mg5DibI9YlbAWaJJR2mD9XGCj1ozYP3F
+	 k7U62WcARSxR6yYcqFzKCXnN0R8p+IKv2P+GrxGZxxY/5795+uKCaEVtxsJ3dJvzRD
+	 MxijlzD+C0xjA==
+Date: Sun, 17 Mar 2024 22:37:15 -0500
+From: Bjorn Andersson <andersson@kernel.org>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, cros-qcom-dts-watchers@chromium.org, 
+	linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 09/21] arm64: dts: qcom: sc8280xp: Add PCIe bridge node
+Message-ID: <26mic7smm2aez3enydiiuul2c5yru4kmx26n4mo63nvy4bscuv@jql4hhe3gia6>
+References: <20240221-pcie-qcom-bridge-dts-v1-0-6c6df0f9450d@linaro.org>
+ <20240221-pcie-qcom-bridge-dts-v1-9-6c6df0f9450d@linaro.org>
+ <9d6c617a-bc3a-47c4-a988-b41b804d8cfe@linaro.org>
+ <20240222053958.GF3374@thinkpad>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <5bb50349-196d-4892-8ed2-f37543aa863f@alu.unizg.hr>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240222053958.GF3374@thinkpad>
 
-On Sun, Mar 17, 2024 at 12:19:12AM +0100, Mirsad Todorovac wrote:
-> Hi,
+On Thu, Feb 22, 2024 at 11:09:58AM +0530, Manivannan Sadhasivam wrote:
+> On Wed, Feb 21, 2024 at 01:39:01PM +0100, Konrad Dybcio wrote:
+> > On 21.02.2024 04:41, Manivannan Sadhasivam wrote:
+> > > On Qcom SoCs, the PCIe host bridge is connected to a single PCIe bridge
+> > > for each controller instance. Hence, add a node to represent the bridge.
+> > > 
+> > > While at it, let's remove the bridge properties from board dts as they are
+> > > now redundant.
+> > > 
+> > > Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> > > ---
+> > >  .../dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts     |  8 -----
+> > >  arch/arm64/boot/dts/qcom/sc8280xp.dtsi             | 40 ++++++++++++++++++++++
+> > >  2 files changed, 40 insertions(+), 8 deletions(-)
+> > > 
+> > > diff --git a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> > > index def3976bd5bb..f0a0115e08fa 100644
+> > > --- a/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> > > +++ b/arch/arm64/boot/dts/qcom/sc8280xp-lenovo-thinkpad-x13s.dts
+> > > @@ -733,14 +733,6 @@ &pcie4 {
+> > >  	status = "okay";
+> > >  
+> > >  	pcie@0 {
+> > > -		device_type = "pci";
+> > > -		reg = <0x0 0x0 0x0 0x0 0x0>;
+> > > -		#address-cells = <3>;
+> > > -		#size-cells = <2>;
+> > > -		ranges;
+> > > -
+> > > -		bus-range = <0x01 0xff>;
+> > > -
+> > >  		wifi@0 {
+> > 
+> > This doesn't seem right, pleas use a label
+> > 
 > 
-> While running kselftest on vanilla torvalds tree kernel commit v6.8-11167-g4438a810f396,
-> the test suite reported a number of errors.
+> Why? A node label is useful if we want to reference it at the root level in
+> board dts, but here it is not.
 > 
-> I was using the latest iproute2-next suite on an Ubuntu 22.04 LTS box.
+
+Giving the bridge a label and then adding wifi@0 as a child using that
+label in the dts is pretty much how we do for everything else.
+
+I find this over-flattening hard to follow, but relying on child node
+names when extending the structure or adding properties have bitten us
+many times in the past.
+
+As such, I think the desired result in the dts should be:
+
+&pcie4 {
+	status = "okay";
+};
+
+&pcie4_bridge {
+	wifi@0 {
+		...
+	};
+};
+
+Regards,
+Bjorn
+
+> - Mani
 > 
-> # Tests passed: 558
-> # Tests failed:  84
-> not ok 90 selftests: net: test_vxlan_mdb.sh # exit=1
-
-FYI, I tested with 6.8 kernel with net tree. All passed.
-
-Data path: MDB torture test - IPv6 overlay / IPv6 underlay
-----------------------------------------------------------
-TEST: Torture test                                                  [ OK ]
-
-Tests passed: 642
-Tests failed:   0
-
-# uname -r
-6.8.0-virtme
-
-Thanks
-Hangbin
+> -- 
+> மணிவண்ணன் சதாசிவம்
 
