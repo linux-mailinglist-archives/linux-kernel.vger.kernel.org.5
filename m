@@ -1,216 +1,153 @@
-Return-Path: <linux-kernel+bounces-105794-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105793-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D634C87E498
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:01:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5BF787E497
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:01:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 41A1F1F21EA8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:01:39 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 122441C20C00
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:01:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3A96625763;
-	Mon, 18 Mar 2024 08:01:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8C4C249FA;
+	Mon, 18 Mar 2024 08:01:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Yhl5nkYu"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="hA2ze8xV"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D29C250F8
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:01:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 621E3241E1
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:01:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710748884; cv=none; b=rGvPJq6xLVaVINjP/MR46pwuy7PmBmdPBT+oi/5dY3UEO0Em/3wdg7l3G8h872SW2UcGR2icV/3H9IwGhGyExAwhSDxCGtdD3iuU4fcd13GM2eCs7ZdVyLr2M4Zn4Rf6INDNOj7/4MMpzTXJTDNbPgOepZcoOHBqHkSEJrgknGQ=
+	t=1710748880; cv=none; b=EUjpwJfsZBjgmUI1EOII2MPBT0nFh6Lwad0KKb3tFXA7nTYGWtF0YmVS1Y/JfHKRBAZS9Igexxl0zcbRh86kE4YW3Jg3Yum0xaVWLJ4nw9Yh8Q2W8CVjizBVNOv9OEKDhYOQMSzUSOt3+Q2KV4tbLOAu1Pd2akjHwK6Kjy3aZJg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710748884; c=relaxed/simple;
-	bh=PZyrbkwevDI9NPGznhgKgASWkfEa1UGJIeNjocS81VU=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=fnU5vRYYK2YAKFNYDEUbeqYpdBn5l4PXEhgZMpglYkgLs+CUmo+C524MndUUcI10EodCnMyvOZzeeLXn0iIvXu1lbto9ffp8/jfLWcFWDLsKR4ezj0tOzJAlPg7XHXZ8VQfbk47I30mB6u6CSNYDIR/UUKg+3lHQRVGCDDpGf/s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Yhl5nkYu; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d48d75ab70so37155411fa.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 01:01:22 -0700 (PDT)
+	s=arc-20240116; t=1710748880; c=relaxed/simple;
+	bh=iB85aYGmUCbO9V/e5pZGdJl9hpxyDlCg+1fwsehbscI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=S9qfL8XJ8WAzggqUU4L+WYO3CK9ph+1q/H86o8Zy/j/HyjMTXUYT/UFIZX1fScoBxoomh6h4HZWuGKP3svtw2nOo8oUgypafL5Kd7hmeeSG1hUeeWUWYwPhvIuhXg77fHRWmi9/sl/HzsaKY/0WONCA/hzCIQR2n2JK/Xt+nrOc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=hA2ze8xV; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-56b7facf2e1so341342a12.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 01:01:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710748881; x=1711353681; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=1RkSK5/rL7+nrcDu6W4JMfMUWleyDEMj8nS89Ven6gI=;
-        b=Yhl5nkYuh5+vvqrCI88AvMT5sINwHjDqG2+Q6RIWxdZCRBZ9bNcmx2038o9BcyKiBs
-         iRtZKqBeMzcZqU3OdP1q6it4h1j/velEtYXuiEioNmAwJKtTIHuGhAQQh33hTlXoQ29u
-         HFwYshb2P/xB8uTIzRdEnmm24etl35q67d+7pctZ7B2Xhdf7aWE3tbamL5uUcvJicT0a
-         H1+4wqOVVbLC3x6R0zZa7uNwDQHzRJXWjVIP7bDGYnG43j0NSlLVstYWlu3BqlwDmHB9
-         3Q1vho7tZEM6NkWmw1GXeBDThib3HNKlkO/XPS+Bv9lNSY5qxssbSvRNzCWflse0Z7UJ
-         MRPA==
+        d=linaro.org; s=google; t=1710748877; x=1711353677; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=MKMaAttCP6hb7C+u7MLE+GUVtnN97FseTKGTtYCu3sU=;
+        b=hA2ze8xV10hyCvFXMIg70m8LPFxpTFIFTTOkHyN4QeXjuf+oKRGW7fnu7rqK/Y7r9h
+         xSD0NZKGkY5R+Q3d84lIiaQqRRvlpnVPkVBOyCB6FpgcN7SAHZZ0u4Gcpyg08KxzDw/H
+         MSzu8rm/1u+nyrxkKhv0IFTmBaHrnVO13JdZzcp0M2EmaE9t/uQIk/g0kD/WOnNQ9bak
+         dFqbPmWFTXuSvI7Pr3GOYslQCOKNsqHaNSuiN9dJVBuIlp1npRe9yqQv309118o8AYUA
+         n+0dwJbOqOWPSrOkD0upJbNHDSxtULgIbBh6cHJVdzfak+RN34MADh74gR0HjwB5/M7i
+         iL+w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710748881; x=1711353681;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=1RkSK5/rL7+nrcDu6W4JMfMUWleyDEMj8nS89Ven6gI=;
-        b=ooIW/aszehSr0E2h8ym9LuSlz3PEWVffceean/xHcpf7/w7Epqo3wqQx1z+3HFJR25
-         GVCuCZ6Aaygpg+QgPp1gjhATRhNQeY9aDqw5xNYCb2z884zNubjzrtoYIZL8Xdqb0bNm
-         8zXexTzvmMrYqzQqftHNfRC7s0frlAec0h8SXRM2bbGnL3Omxret724aXdqqnOWnRjpK
-         OFRsdipamDwrAy4jBcAOcevUeLch1uNpYjseihn+qVmQ6YbiGu0LpJcs7KehhCA43Ghs
-         j2PGEDlshwLRkOdULVbyUP9Oq6oSMM+38DzTuwZgTY6IueWT1bnmn6plM+IR2Iyp3v6s
-         RPBA==
-X-Forwarded-Encrypted: i=1; AJvYcCXglVNs8/1DmT0J+tZIl/YgHlxze2viARqGVbZ4YgfP2Twh2H8Kpq+4tuujm/fKKcz/MAJ9JvUTSNlNImm49xkL/Bno4r9yQ6A19Ilm
-X-Gm-Message-State: AOJu0YxKE3ngg53o5/IkwCYgc494eMV2mGEA6+Gagozrby/etTiiW6RQ
-	UoncePe4mn05yc1/J+K5hMEq6QTn+9mKjHguGgFWCoinHHBIpVAxYNpG1jXsiaZnX/XhJ98LCX9
-	gvsrxMsrFGdGeFTa1aXhY64hh6eU=
-X-Google-Smtp-Source: AGHT+IGMH3lhqUYgmFgqJRNqfeoYwJtJ/H3jRknEGjY/jGfZI4wfOZNsfbaQsNbkTlBe8wYxxITrsdV3A9ZgrQj0d0c=
-X-Received: by 2002:a2e:b5c8:0:b0:2d2:6227:d30a with SMTP id
- g8-20020a2eb5c8000000b002d26227d30amr6771186ljn.2.1710748880358; Mon, 18 Mar
- 2024 01:01:20 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710748877; x=1711353677;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=MKMaAttCP6hb7C+u7MLE+GUVtnN97FseTKGTtYCu3sU=;
+        b=j6yW9JXfdOQEwifUHwkDDgkKI4+sALko8T8nAKKEtHu3cRLt7lZ7mey0sPmtOA/lT7
+         aAgMVYn4KbT2YBMwxvRbjW9laGzZ9iv2w1QX5ZqtHm4WsdCcLIJDXKhEuxHXnz3EWfdW
+         gTkcF/vr82y5mBLZpIqJJh/6T/1FAfikkHf17PNBII4Id5OnuvcQzpE40dMnofSO4Q/m
+         fFO07PXb0VLRrnvzg/EhRp+q0ehIGHAR071oD4MW7HUGhdUgISAi46tIAYnS/QrnYzmj
+         s3ikM5VNyTmdgVyO7BHfk3Zp03ueSvThlRrLlUE7EJI+TH3Jk3BKS1cHzcnPtFehGwXs
+         m2gw==
+X-Forwarded-Encrypted: i=1; AJvYcCWKtiOeIYtOWqUtil9+oJ7C0K2/xykWGXeRc41fFhHsWXlcRShvNvzr5zorysjDA1NkEwdmOkwF+R/8DxESmuAxm0H+Lyla1Agcedj5
+X-Gm-Message-State: AOJu0YwEGv4e0ePsZ9tSGufjvgnkOGbFR+vKf6vGO9gh/EkbRWg0la9M
+	6/a1lSD++mRqwehDhSvX10wbYmb3U09DEXli/B+rFdc4xmsTWMriW1WqZ8/Q2YQ=
+X-Google-Smtp-Source: AGHT+IFoXELRc9Tw5lJNGAKg3uNqc7S1nog4kOCdlgZSG1DP3JVGB0UzWwCQsfcef1Guf0Wv2xW3sQ==
+X-Received: by 2002:a50:cccd:0:b0:568:b71a:5954 with SMTP id b13-20020a50cccd000000b00568b71a5954mr1828600edj.10.1710748876538;
+        Mon, 18 Mar 2024 01:01:16 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id cs4-20020a0564020c4400b00568a1ce4562sm4157752edb.25.2024.03.18.01.01.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 01:01:16 -0700 (PDT)
+Date: Mon, 18 Mar 2024 11:01:12 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Arnd Bergmann <arnd@arndb.de>
+Cc: Philipp Hortmann <philipp.g.hortmann@gmail.com>,
+	Lee Jones <lee@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	linux-staging@lists.linux.dev, linux-kernel@vger.kernel.org,
+	Larry Finger <Larry.Finger@lwfinger.net>,
+	Johannes Berg <johannes@sipsolutions.net>,
+	Kalle Valo <kvalo@kernel.org>, Julia Lawall <julia.lawall@inria.fr>
+Subject: Re: [RFC] staging: wlan-ng: Driver broken since kernel 5.15
+Message-ID: <cbdb25ca-f419-4afe-9b58-7d274445aefd@moroto.mountain>
+References: <6dc14151-e71e-4118-826d-3ca5c8ee907f@gmail.com>
+ <fba3951f-00b7-41af-8ef4-1e7c86e0cb48@moroto.mountain>
+ <6c772d15-d249-4175-93f4-ca523006129b@gmail.com>
+ <5716d138-ace0-4621-ab34-118610255207@app.fastmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <b88ce9ecad0d456d8adbc78e42ec713a@BJMBX01.spreadtrum.com>
- <Zfe0yl2QTV1zSS1n@casper.infradead.org> <CAGWkznHQLoU48Wx5kP64LN-ord6J2kvopBzpOLno4PDKTnQsiQ@mail.gmail.com>
-In-Reply-To: <CAGWkznHQLoU48Wx5kP64LN-ord6J2kvopBzpOLno4PDKTnQsiQ@mail.gmail.com>
-From: Zhaoyang Huang <huangzhaoyang@gmail.com>
-Date: Mon, 18 Mar 2024 16:01:09 +0800
-Message-ID: <CAGWkznEZcn74KX-4rWxUocNLa-ZRTf+Ay=dQKNdbUCxLX0wyEA@mail.gmail.com>
-Subject: Re: reply: [PATCH] mm: fix a race scenario in folio_isolate_lru
-To: Matthew Wilcox <willy@infradead.org>
-Cc: =?UTF-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>, 
-	Andrew Morton <akpm@linux-foundation.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	=?UTF-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <5716d138-ace0-4621-ab34-118610255207@app.fastmail.com>
 
-On Mon, Mar 18, 2024 at 2:15=E2=80=AFPM Zhaoyang Huang <huangzhaoyang@gmail=
-com> wrote:
->
-> On Mon, Mar 18, 2024 at 11:28=E2=80=AFAM Matthew Wilcox <willy@infradead.=
-org> wrote:
+On Sun, Mar 17, 2024 at 09:20:34PM +0100, Arnd Bergmann wrote:
+> On Sun, Mar 17, 2024, at 21:07, Philipp Hortmann wrote:
+> > On 3/11/24 08:04, Dan Carpenter wrote:
+> >> On Sat, Mar 09, 2024 at 11:09:24PM +0100, Philipp Hortmann wrote:
+> > You are right with the statement that it is this commit.
+> > commit ea82ff749587807fa48e3277c977ff3cec266f25 (HEAD)
+> > Author: Lee Jones <lee.jones@linaro.org>
+> > Date:   Wed Apr 14 19:10:39 2021 +0100
 > >
-> > On Mon, Mar 18, 2024 at 01:37:04AM +0000, =E9=BB=84=E6=9C=9D=E9=98=B3 (=
-Zhaoyang Huang) wrote:
-> > > >On Sun, Mar 17, 2024 at 12:07:40PM +0800, Zhaoyang Huang wrote:
-> > > >> Could it be this scenario, where folio comes from pte(thread 0), l=
-ocal
-> > > >> fbatch(thread 1) and page cache(thread 2) concurrently and proceed
-> > > >> intermixed without lock's protection? Actually, IMO, thread 1 also
-> > > >> could see the folio with refcnt=3D=3D1 since it doesn't care if th=
-e page
-> > > >> is on the page cache or not.
-> > > >>
-> > > >> madivise_cold_and_pageout does no explicit folio_get thing since t=
-he
-> > > >> folio comes from pte which implies it has one refcnt from pagecach=
-e
-> > > >
-> > > >Mmm, no.  It's implicit, but madvise_cold_or_pageout_pte_range()
-> > > >does guarantee that the folio has at least one refcount.
-> > > >
-> > > >Since we get the folio from vm_normal_folio(vma, addr, ptent); we kn=
-ow that
-> > > >there is at least one mapcount on the folio.  refcount is always >=
-=3D mapcount.
-> > > >Since we hold pte_offset_map_lock(), we know that mapcount (and ther=
-efore
-> > > >refcount) cannot be decremented until we call pte_unmap_unlock(), wh=
-ich we
-> > > >don't do until we have called folio_isolate_lru().
-> > > >
-> > > >Good try though, took me a few minutes of looking at it to convince =
-myself that
-> > > >it was safe.
-> > > >
-> > > >Something to bear in mind is that if the race you outline is real, f=
-ailing to hold a
-> > > >refcount on the folio leaves the caller susceptible to the
-> > > >VM_BUG_ON_FOLIO(!folio_ref_count(folio), folio); if the other thread=
- calls
-> > > >folio_put().
-> > > Resend the chart via outlook.
-> > > I think the problem rely on an special timing which is rare, I would =
-like to list them below in timing sequence.
-> > >
-> > > 1. thread 0 calls folio_isolate_lru with refcnt =3D=3D 1
+> >      staging: wlan-ng: cfg80211: Move large struct onto the heap
 > >
-> > (i assume you mean refcnt =3D=3D 2 here, otherwise none of this makes s=
-ense)
+> >      Fixes the following W=1 kernel build warning(s):
 > >
-> > > 2. thread 1 calls release_pages with refcnt =3D=3D 2.(IMO, it could b=
-e 1 as release_pages doesn't care if the folio is used by page cache or fs)
-> > > 3. thread 2 decrease refcnt to 1 by calling filemap_free_folio.(as I =
-mentioned in 2, thread 2 is not mandatary here)
-> > > 4. thread 1 calls folio_put_testzero and pass.(lruvec->lock has not b=
-een take here)
+> >       drivers/staging/wlan-ng/cfg80211.c: In function ‘prism2_scan’:
+> >       drivers/staging/wlan-ng/cfg80211.c:388:1: warning: the frame size 
+> > of 1296 bytes is larger than 1024 bytes [-Wframe-larger-than=]
 > >
-> > But there's already a bug here.
-> >
-> > Rearrange the order of this:
-> >
-> > 2. thread 1 calls release_pages with refcount =3D=3D 2 (decreasing refc=
-ount to 1)
-> > 3. thread 2 decrease refcount to 0 by calling filemap_free_folio
-> > 1. thread 0 calls folio_isolate_lru() and hits the BUG().
-> >
-> > > 5. thread 0 clear folio's PG_lru by calling folio_test_clear_lru. The=
- folio_get behind has no meaning there.
-> > > 6. thread 1 failed in folio_test_lru and leave the folio on the LRU.
-> > > 7. thread 1 add folio to pages_to_free wrongly which could break the =
-LRU's->list and will have next folio experience list_del_invalid
-> > >
-> > > #thread 0(madivise_cold_and_pageout)        #1(lru_add_drain->fbatch_=
-release_pages)       #2(read_pages->filemap_remove_folios)
-> > > refcnt =3D=3D 1(represent page cache)             refcnt=3D=3D2(anoth=
-er one represent LRU)          folio comes from page cache
-> >
-> > This is still illegible.  Try it this way:
-> >
-> > Thread 0        Thread 1        Thread 2
-> > madvise_cold_or_pageout_pte_range
-> >                 lru_add_drain
-> >                 fbatch_release_pages
-> >                                 read_pages
-> >                                 filemap_remove_folio
-> Thread 0        Thread 1        Thread 2
-> madvise_cold_or_pageout_pte_range
->                 truncate_inode_pages_range
->                 fbatch_release_pages
->                                 truncate_inode_pages_range
->                                 filemap_remove_folio
-> Sorry for the confusion. Rearrange the timing chart like above
-> according to the real panic's stacktrace. Thread 1&2 are all from
-> truncate_inode_pages_range(I think thread2(read_pages) is not
-> mandatory here as thread 0&1 could rely on the same refcnt=3D=3D1).
-> >
-> > Some accuracy in your report would also be appreciated.  There's no
-> > function called madivise_cold_and_pageout, nor is there a function call=
-ed
-> > filemap_remove_folios().  It's a little detail, but it's annoying for
-> > me to try to find which function you're actually referring to.  I have
-> > to guess, and it puts me in a bad mood.
-> >
-> > At any rate, these three functions cannot do what you're proposing.
-> > In read_page(), when we call filemap_remove_folio(), the folio in
-> > question will not have the uptodate flag set, so can never have been
-> > put in the page tables, so cannot be found by madvise().
-> >
-> > Also, as I said in my earlier email, madvise_cold_or_pageout_pte_range(=
-)
-> > does guarantee that the refcount on the folio is held and can never
-> > decrease to zero while folio_isolate_lru() is running.  So that's two
-> > ways this scenario cannot happen.
-> The madivse_xxx comes from my presumption which has any proof.
-> Whereas, It looks like truncate_inode_pages_range just cares about
-> page cache refcnt by folio_put_testzero without noticing any task's VM
-> stuff. Furthermore, I notice that move_folios_to_lru is safe as it
-> runs with holding lruvec->lock.
-> >
-BTW, I think we need to protect all
-folio_test_clear_lru/folio_test_lru by moving them into lruvec->lock
-in such as __page_cache_release and folio_activate functions.
-Otherwise, there is always a race window between judging PG_lru and
-following actions.
+> > But It is not depending on the line you pointed to.
+> 
+> Right, the kzalloc() already clears the data, so the memset
+> is not needed.
+> 
+
+No, it's inside a loop so it needs to be cleared on each iteration.
+
+> > I need another week to look into this.
+> 
+> I'm fairly sure this fixes the bug, the problem here was that
+> the cast to (u8 *) hides the incorrect conversion:
+> 
+> diff --git a/drivers/staging/wlan-ng/cfg80211.c b/drivers/staging/wlan-ng/cfg80211.c
+> index 471bb310176f..9d6a2dd35ba9 100644
+> --- a/drivers/staging/wlan-ng/cfg80211.c
+> +++ b/drivers/staging/wlan-ng/cfg80211.c
+> @@ -350,7 +350,7 @@ static int prism2_scan(struct wiphy *wiphy,
+>  		msg2->msgcode = DIDMSG_DOT11REQ_SCAN_RESULTS;
+>  		msg2->bssindex.data = i;
+>  
+> -		result = p80211req_dorequest(wlandev, (u8 *)&msg2);
+> +		result = p80211req_dorequest(wlandev, (u8 *)msg2);
+
+Ah, well done.
+
+It feels like this is the kind of bug which should be caught with
+static analysis.  One of the things that people want from static
+analysis is looking at what a patch does.  So if we pass &msg2 and the
+patch moved msg from the stack to be kmalloc()ed, then print a warning.
+It's not something that Smatch does.
+
+I have my rename_rev.pl script (https://github.com/error27/rename_rev)
+which I use to filter out variable renames or see if (1 << foo) is
+converted to BIT(foo) correctly.  Maybe I could extend that to check
+"move stack to heap" patches...
+
+regards,
+dan carpenter
+
 
