@@ -1,345 +1,372 @@
-Return-Path: <linux-kernel+bounces-106660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DEA9987F1A9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:02:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D41CB87F1AD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:03:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F23571C210F5
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:02:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A7A728280E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:03:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6DD7C5812E;
-	Mon, 18 Mar 2024 21:02:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E288358136;
+	Mon, 18 Mar 2024 21:03:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="D5bhkmNd"
-Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DX8vzqRU"
+Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D2CD56B7F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:02:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7D8250EC
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:03:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710795743; cv=none; b=NSmq7o4HNUj8McSdcgh596Duzfb0Zu0UVsVrOQBubWk+7k1EllD4vZ+ycLMD6W6W3aq4RTOwhUc3stGuI0DSLkbZZavKgbAGrU0tape/1BXl3ZZ02QzRfYplkX+HqsowGe7pZ1fhcgwJ2F7y/gs3TDsj5jWdDgVESbrD4R2inhY=
+	t=1710795782; cv=none; b=i8th+IkSiZqjt836DK/sryDvZg/xHs3YytTAaBguhM8tJOEpey1hsWF0kWE63w30XoQiHLoAHB1lW2+xMMEMODjEa96p+iX6Vx12fSTfVCE3mUf6T0mUZpUebrhc0EaCQND/IZZ7y2gmI+ks7giTx7DEEXXy62zCocx6CxWFGyQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710795743; c=relaxed/simple;
-	bh=BXZLP7MOa5Xo2y9G1WmsmS2tlN82SwZ5joLRxkLlD8Q=;
+	s=arc-20240116; t=1710795782; c=relaxed/simple;
+	bh=Vv3HQy11IP2LQR/uQVs/P+bSmRO749wrsaVehu1bjo4=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=FGi12jFJxqvGSQ21EutJknvzzlHwRq5jYKj077vMDKgc3NhW0MSp7vGV+Q1ScEBF1UmeqsNPVNF4FJIOhdSYMxFBQ/XpY6spNN+YAwP81OPg5s+fKoOD0qyHJkfED74ce+dH8Ymj+FvY1u91kCCYCW7oG8eJY2moYSW637/68s0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=D5bhkmNd; arc=none smtp.client-ip=209.85.208.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5687ebddd8eso5340a12.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:02:21 -0700 (PDT)
+	 To:Cc:Content-Type; b=N1dO6Aug+Gj2XXxJdEPja1g0JN0SuunK1QrUEU93rfMdtF7wPYMxix3qReBqT+ELTmDQ2bzgK27FZXFYAh7ESft5a43miOJggdDN4jS8WJ2YGW32YEeKSG96PSIVTvUIED4EeXQ+LpSzoXnbEwyIfwi+ZnoEJv8zjSUZK3U7LKQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DX8vzqRU; arc=none smtp.client-ip=209.85.167.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513d247e3c4so4020036e87.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:03:00 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710795740; x=1711400540; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710795779; x=1711400579; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=O5gZjTRSl4x8yAd+Qw3jrLTaZ/uMFzSSgIEwAnGQaeg=;
-        b=D5bhkmNdzrMld7/pTzSImHD4D/4rVxvWz+VsbEKNq0nD+6Tzoejt7zQ0B7QHJy95aQ
-         iH77w3QE+vsfUUl8ykojUzDQSdp1R8jlgaoA/hfhd7Uwsj23MbiRBlBRshIzpsVRAvbD
-         AtINRlOAE8c3uCL/OHoY0dW5PCY5GVNJ05sll3vqtOQzPEqVN6VQxJrEdZpZACrt1Pj0
-         Y6bWHSnKDxbJu3hNPN2nILmVoL274UtEt6T+FEyBC1HGMqmr1sTpKtYLjKbCMBRWCb20
-         ECehfowdeCE0DdoxDFAlZimPrCPAAcKtQEi6j8iai5q1yWlcde8qUzFdgLWIZ6m/KCid
-         zbag==
+        bh=9HedJcrSxPQdXLuoYD1u0yMNVHwaM2bPmO6FcpMXPtg=;
+        b=DX8vzqRU2jKDNvwKCoHQ6fOVvlmpvyn65HAeaApTh+vwRUP5C10IYoHYV85ItZVMAS
+         8Hj3tuiqgUHJBRpiOZBknRfm3RUS4AmcbKMy3sQsGL6vamje5EZFKBgTIq3Xxd2+DgEA
+         O0GiBZZwWZTA8oO8G3Rb0tH7/NDoDRsU48eCkBgVeT9mdOMEODrxlE3AtI0e6rEaJOmL
+         2Bj0uneNGIWmE1u7UJ0hvxDgEmGRHYjcvMv4Qn+02+vYf9Es4mH0DMSZGI5lq+/OnQtm
+         5EvHYBKEpLNqtYKJtEv3AhDQnDUioHWNiVJRreAUeCrmKevZNSNhAUypLyHYZpjFVG5W
+         P6ag==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710795740; x=1711400540;
+        d=1e100.net; s=20230601; t=1710795779; x=1711400579;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=O5gZjTRSl4x8yAd+Qw3jrLTaZ/uMFzSSgIEwAnGQaeg=;
-        b=CtBHZEYHiG0b08Gsq13TtcJ5bWZX5J5j2ZOSm+bLHyNIUghPDdg2noxgP2CPVxBHuF
-         yxflsFt95EgqVbX7kW2Pw9Zt2W2IlvB10AMA1K8+/phtfCMCvE0494FWnM1QgwgZqE9o
-         yJep98hDRHs8Eu4dMKcyJJWrNCs6tZAK3MSSl0zerM8bGkerChlQAgUJ4iOc8YeTExSR
-         YX05aebElde6sND2Klp22UygU/8l6z2SNo+E9S4Ws6HWRw6oUeKyC+uTG62F6XahjkZb
-         yhksEfKnIrIBSll7oA2AwGrWKJ+XnWuV4AD0OH5Gw1QspJdPRjpOM+INXgUMrWnXcaVd
-         NSkA==
-X-Forwarded-Encrypted: i=1; AJvYcCVggkfGKIUhyXc6oXkGu0cGqEdCXVmLuJzGLEt2pcG8S/Aykq096l8jlvN3e+xdpmCmph/dzOvAfjVUus4CL/L/koZCI4pEmuxGOEqM
-X-Gm-Message-State: AOJu0YwDByX/jxxrS7QOS4keeG+6AbgxB4YMQDaGRsqeLuYm7JaINUc0
-	Fh4ZH6VS1fofq2yCaIhhKZcBjdPpj3ImSUspn21cw1XqoCYww0jq0XxAH6dG/zjTAOQyJvPPZw0
-	3MQcgZ1y3EjkN3jKBtye5K/Y87Jwcqzmvha3r
-X-Google-Smtp-Source: AGHT+IFivxti4l4UI/CAm+HxOzS2U25vJiH0+czbF7e4DZfoW53/wo+Dx8ivStQaqHTTVwkli/GuvoWdN+oEvPRUZQE=
-X-Received: by 2002:aa7:c3d0:0:b0:568:ce1e:94e5 with SMTP id
- l16-20020aa7c3d0000000b00568ce1e94e5mr17596edr.5.1710795739649; Mon, 18 Mar
- 2024 14:02:19 -0700 (PDT)
+        bh=9HedJcrSxPQdXLuoYD1u0yMNVHwaM2bPmO6FcpMXPtg=;
+        b=MVfxK0VgeIO/f66qt7nE9S5oabHm2s0NxRtDedWV5NV248UsEaTiUkF+rscVb/78in
+         ihcIPeFvKmeIgKNcPbLWMGwDPMRE+I1LFxGEKxME5/ZUZCf4lthE8/qarsOhuu9sOZiC
+         /GSXsvIK7mn+MSqhkq8LZuJhQYx8gT/jIAZSnBOdV8PCxUkT/1xTPgYGQ1h79sj1Zzoy
+         9GFoAzGTKc+dyAOsYq12Its/6KAsOHNjtNjRKQc8ypjzTA+o3Eo5UGl+m7eeVS+RVW9C
+         29t2e6oB0I2iETlEDpg91fUUCDWc3wA4NjemVQlKNprRVdJ803BvL/nLlk2HfoSuIJgt
+         13tg==
+X-Forwarded-Encrypted: i=1; AJvYcCUwkhz5u3neBIDblSSBDlCq183cmxM8fhLfWIPWr4Zd3lTkEzINSkfUHVLpypp5V/6zbfcJ4eWlJtAinKZTMuTOAskmLudE6LjOYPPl
+X-Gm-Message-State: AOJu0YwkU0BmVNHKed4BTwbf4jfROgsqc2TsdhdEsUHw/eEKIuEZpRDJ
+	v89SMIqnhJH8XFO3d03aV6uMmTFqC/vwl4gXFA8T8Jg6Nh7J2S76k7UOhkMjeAwsfmBeBQbqFzQ
+	GqWuSfyIXvZFQZuNGxw5iSs7uvw==
+X-Google-Smtp-Source: AGHT+IFJGMO1vXOqGkBJWLc3mzMExY0GPMC678LKTt28lEkLyqW704bJ3SplAQTTBSU+7DTlk1jVuqKmC++jdQNJu8g=
+X-Received: by 2002:a19:6914:0:b0:513:ca5c:fccc with SMTP id
+ e20-20020a196914000000b00513ca5cfcccmr274112lfc.7.1710795778518; Mon, 18 Mar
+ 2024 14:02:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20231230172351.574091-1-michael.roth@amd.com> <20231230172351.574091-19-michael.roth@amd.com>
-In-Reply-To: <20231230172351.574091-19-michael.roth@amd.com>
-From: Peter Gonda <pgonda@google.com>
-Date: Mon, 18 Mar 2024 15:02:04 -0600
-Message-ID: <CAMkAt6qtnfkhU_Ks6=U-Zg7r-k7CT2WzVPLq5xdLML9JHr5rhQ@mail.gmail.com>
-Subject: Re: [PATCH v11 18/35] KVM: SEV: Add KVM_SEV_SNP_LAUNCH_UPDATE command
-To: Michael Roth <michael.roth@amd.com>
-Cc: kvm@vger.kernel.org, linux-coco@lists.linux.dev, linux-mm@kvack.org, 
-	linux-crypto@vger.kernel.org, x86@kernel.org, linux-kernel@vger.kernel.org, 
-	tglx@linutronix.de, mingo@redhat.com, jroedel@suse.de, 
-	thomas.lendacky@amd.com, hpa@zytor.com, ardb@kernel.org, pbonzini@redhat.com, 
-	seanjc@google.com, vkuznets@redhat.com, jmattson@google.com, luto@kernel.org, 
-	dave.hansen@linux.intel.com, slp@redhat.com, peterz@infradead.org, 
-	srinivas.pandruvada@linux.intel.com, rientjes@google.com, 
-	dovmurik@linux.ibm.com, tobin@ibm.com, bp@alien8.de, vbabka@suse.cz, 
-	kirill@shutemov.name, ak@linux.intel.com, tony.luck@intel.com, 
-	sathyanarayanan.kuppuswamy@linux.intel.com, alpergun@google.com, 
-	jarkko@kernel.org, ashish.kalra@amd.com, nikunj.dadhania@amd.com, 
-	pankaj.gupta@amd.com, liam.merwick@oracle.com, zhi.a.wang@intel.com, 
-	Brijesh Singh <brijesh.singh@amd.com>
+References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
+ <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
+ <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
+ <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
+ <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com> <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
+ <CAMzpN2hZgEpJcyLqPhEqKSHy33j1G=FjzrOvnLPqiDeijanM=w@mail.gmail.com>
+ <CA+CK2bBTrrJerZMdJrKhg683H4VmnqbgkGu2VG2UuirWNm1TnA@mail.gmail.com>
+ <CAMzpN2jmQoG9Cw56JOh7t_Y21Fax3bA9iAEA2B7TLnYs5ycdJQ@mail.gmail.com> <CA+CK2bDO=LV8nEFn=q6w3Pyna3aqKAiFEzHMb-d7xzMOThOXSQ@mail.gmail.com>
+In-Reply-To: <CA+CK2bDO=LV8nEFn=q6w3Pyna3aqKAiFEzHMb-d7xzMOThOXSQ@mail.gmail.com>
+From: Brian Gerst <brgerst@gmail.com>
+Date: Mon, 18 Mar 2024 17:02:46 -0400
+Message-ID: <CAMzpN2i8SRkgUZ+XSj7wJrtRn=-mB=7v7=C8auES=FAW_MFN-Q@mail.gmail.com>
+Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
+To: Pasha Tatashin <pasha.tatashin@soleen.com>
+Cc: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
+	Kent Overstreet <kent.overstreet@linux.dev>, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, 
+	brauner@kernel.org, bristot@redhat.com, bsegall@google.com, 
+	dave.hansen@linux.intel.com, dianders@chromium.org, dietmar.eggemann@arm.com, 
+	eric.devolder@oracle.com, hca@linux.ibm.com, hch@infradead.org, 
+	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
+	jroedel@suse.de, juri.lelli@redhat.com, kinseyho@google.com, 
+	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, 
+	mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com, 
+	mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com, 
+	peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com, 
+	rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, urezki@gmail.com, 
+	vincent.guittot@linaro.org, vschneid@redhat.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Dec 30, 2023 at 10:27=E2=80=AFAM Michael Roth <michael.roth@amd.com=
-> wrote:
+On Mon, Mar 18, 2024 at 11:00=E2=80=AFAM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
 >
-> From: Brijesh Singh <brijesh.singh@amd.com>
+> On Sun, Mar 17, 2024 at 5:30=E2=80=AFPM Brian Gerst <brgerst@gmail.com> w=
+rote:
+> >
+> > On Sun, Mar 17, 2024 at 12:15=E2=80=AFPM Pasha Tatashin
+> > <pasha.tatashin@soleen.com> wrote:
+> > >
+> > > On Sun, Mar 17, 2024 at 10:43=E2=80=AFAM Brian Gerst <brgerst@gmail.c=
+om> wrote:
+> > > >
+> > > > On Sat, Mar 16, 2024 at 3:18=E2=80=AFPM Pasha Tatashin
+> > > > <pasha.tatashin@soleen.com> wrote:
+> > > > >
+> > > > > On Thu, Mar 14, 2024 at 11:40=E2=80=AFPM H. Peter Anvin <hpa@zyto=
+r.com> wrote:
+> > > > > >
+> > > > > > On March 14, 2024 8:13:56 PM PDT, Pasha Tatashin <pasha.tatashi=
+n@soleen.com> wrote:
+> > > > > > >On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <willy@=
+infradead.org> wrote:
+> > > > > > >>
+> > > > > > >> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet wr=
+ote:
+> > > > > > >> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox w=
+rote:
+> > > > > > >> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anvin=
+ wrote:
+> > > > > > >> > > > Second, non-dynamic kernel memory is one of the core d=
+esign decisions in
+> > > > > > >> > > > Linux from early on. This means there are lot of deepl=
+y embedded assumptions
+> > > > > > >> > > > which would have to be untangled.
+> > > > > > >> > >
+> > > > > > >> > > I think there are other ways of getting the benefit that=
+ Pasha is seeking
+> > > > > > >> > > without moving to dynamically allocated kernel memory.  =
+One icky thing
+> > > > > > >> > > that XFS does is punt work over to a kernel thread in or=
+der to use more
+> > > > > > >> > > stack!  That breaks a number of things including lockdep=
+ (because the
+> > > > > > >> > > kernel thread doesn't own the lock, the thread waiting f=
+or the kernel
+> > > > > > >> > > thread owns the lock).
+> > > > > > >> > >
+> > > > > > >> > > If we had segmented stacks, XFS could say "I need at lea=
+st 6kB of stack",
+> > > > > > >> > > and if less than that was available, we could allocate a=
+ temporary
+> > > > > > >> > > stack and switch to it.  I suspect Google would also be =
+able to use this
+> > > > > > >> > > API for their rare cases when they need more than 8kB of=
+ kernel stack.
+> > > > > > >> > > Who knows, we might all be able to use such a thing.
+> > > > > > >> > >
+> > > > > > >> > > I'd been thinking about this from the point of view of a=
+llocating more
+> > > > > > >> > > stack elsewhere in kernel space, but combining what Pash=
+a has done here
+> > > > > > >> > > with this idea might lead to a hybrid approach that work=
+s better; allocate
+> > > > > > >> > > 32kB of vmap space per kernel thread, put 12kB of memory=
+ at the top of it,
+> > > > > > >> > > rely on people using this "I need more stack" API correc=
+tly, and free the
+> > > > > > >> > > excess pages on return to userspace.  No complicated "sw=
+itch stacks" API
+> > > > > > >> > > needed, just an "ensure we have at least N bytes of stac=
+k remaining" API.
+> > > > > > >
+> > > > > > >I like this approach! I think we could also consider having pe=
+rmanent
+> > > > > > >big stacks for some kernel only threads like kvm-vcpu. A coope=
+rative
+> > > > > > >stack increase framework could work well and wouldn't negative=
+ly
+> > > > > > >impact the performance of context switching. However, thorough
+> > > > > > >analysis would be necessary to proactively identify potential =
+stack
+> > > > > > >overflow situations.
+> > > > > > >
+> > > > > > >> > Why would we need an "I need more stack" API? Pasha's appr=
+oach seems
+> > > > > > >> > like everything we need for what you're talking about.
+> > > > > > >>
+> > > > > > >> Because double faults are hard, possibly impossible, and the=
+ FRED approach
+> > > > > > >> Peter described has extra overhead?  This was all described =
+up-thread.
+> > > > > > >
+> > > > > > >Handling faults in #DF is possible. It requires code inspectio=
+n to
+> > > > > > >handle race conditions such as what was shown by tglx. However=
+, as
+> > > > > > >Andy pointed out, this is not supported by SDM as it is an abo=
+rt
+> > > > > > >context (yet we return from it because of ESPFIX64, so return =
+is
+> > > > > > >possible).
+> > > > > > >
+> > > > > > >My question, however, if we ignore memory savings and only con=
+sider
+> > > > > > >reliability aspect of this feature.  What is better unconditio=
+nally
+> > > > > > >crashing the machine because a guard page was reached, or prin=
+ting a
+> > > > > > >huge warning with a backtracing information about the offendin=
+g stack,
+> > > > > > >handling the fault, and survive? I know that historically Linu=
+s
+> > > > > > >preferred WARN() to BUG() [1]. But, this is a somewhat differe=
+nt
+> > > > > > >scenario compared to simple BUG vs WARN.
+> > > > > > >
+> > > > > > >Pasha
+> > > > > > >
+> > > > > > >[1] https://lore.kernel.org/all/Pine.LNX.4.44.0209091832160.17=
+14-100000@home.transmeta.com
+> > > > > > >
+> > > > > >
+> > > > > > The real issue with using #DF is that if the event that caused =
+it was asynchronous, you could lose the event.
+> > > > >
+> > > > > Got it. So, using a #DF handler for stack page faults isn't feasi=
+ble.
+> > > > > I suppose the only way for this to work would be to use a dedicat=
+ed
+> > > > > Interrupt Stack Table (IST) entry for page faults (#PF), but I su=
+spect
+> > > > > that might introduce other complications.
+> > > > >
+> > > > > Expanding on Mathew's idea of an interface for dynamic kernel sta=
+ck
+> > > > > sizes, here's what I'm thinking:
+> > > > >
+> > > > > - Kernel Threads: Create all kernel threads with a fully populate=
+d
+> > > > > THREAD_SIZE stack.  (i.e. 16K)
+> > > > > - User Threads: Create all user threads with THREAD_SIZE kernel s=
+tack
+> > > > > but only the top page mapped. (i.e. 4K)
+> > > > > - In enter_from_user_mode(): Expand the thread stack to 16K by ma=
+pping
+> > > > > three additional pages from the per-CPU stack cache. This functio=
+n is
+> > > > > called early in kernel entry points.
+> > > > > - exit_to_user_mode(): Unmap the extra three pages and return the=
+m to
+> > > > > the per-CPU cache. This function is called late in the kernel exi=
+t
+> > > > > path.
+> > > > >
+> > > > > Both of the above hooks are called with IRQ disabled on all kerne=
+l
+> > > > > entries whether through interrupts and syscalls, and they are cal=
+led
+> > > > > early/late enough that 4K is enough to handle the rest of entry/e=
+xit.
+> > >
+> > > Hi Brian,
+> > >
+> > > > This proposal will not have the memory savings that you are looking
+> > > > for, since sleeping tasks would still have a fully allocated stack.
+> > >
+> > > The tasks that were descheduled while running in user mode should not
+> > > increase their stack. The potential saving is greater than the
+> > > origianl proposal, because in the origianl proposal we never shrink
+> > > stacks after faults.
+> >
+> > A task has to enter kernel mode in order to be rescheduled.  If it
+> > doesn't make a syscall or hit an exception, then the timer interrupt
+> > will eventually kick it out of user mode.  At some point schedule() is
+> > called, the task is put to sleep and context is switched to the next
+> > task.  A sleeping task will always be using some amount of kernel
+> > stack.  How much depends a lot on what caused the task to sleep.  If
+> > the timeslice expired it could switch right before the return to user
+> > mode.  A page fault could go deep into filesystem and device code
+> > waiting on an I/O operation.
+> >
+> > > > This also would add extra overhead to each entry and exit (includin=
+g
+> > > > syscalls) that can happen multiple times before a context switch.  =
+It
+> > > > also doesn't make much sense because a task running in user mode wi=
+ll
+> > > > quickly need those stack pages back when it returns to kernel mode.
+> > > > Even if it doesn't make a syscall, the timer interrupt will kick it
+> > > > out of user mode.
+> > > >
+> > > > What should happen is that the unused stack is reclaimed when a tas=
+k
+> > > > goes to sleep.  The kernel does not use a red zone, so any stack pa=
+ges
+> > > > below the saved stack pointer of a sleeping task (task->thread.sp) =
+can
+> > > > be safely discarded.  Before context switching to a task, fully
+> > >
+> > > Excellent observation, this makes Andy Lutomirski per-map proposal [1=
+]
+> > > usable without tracking dirty/accessed bits. More reliable, and also
+> > > platform independent.
+> >
+> > This is x86-specific.  Other architectures will likely have differences=
+.
+> >
+> > > > populate its task stack.  After context switching from a task, recl=
+aim
+> > > > its unused stack.  This way, the task stack in use is always fully
+> > > > allocated and we don't have to deal with page faults.
+> > > >
+> > > > To make this happen, __switch_to() would have to be split into two
+> > > > parts, to cleanly separate what happens before and after the stack
+> > > > switch.  The first part saves processor context for the previous ta=
+sk,
+> > > > and prepares the next task.
+> > >
+> > > By knowing the stack requirements of __switch_to(), can't we actually
+> > > do all that in the common code in context_switch() right before
+> > > __switch_to()? We would do an arch specific call to get the
+> > > __switch_to() stack requirement, and use that to change the value of
+> > > task->thread.sp to know where the stack is going to be while sleeping=
+.
+> > > At this time we can do the unmapping of the stack pages from the
+> > > previous task, and mapping the pages to the next task.
+> >
+> > task->thread.sp is set in __switch_to_asm(), and is pretty much the
+> > last thing done in the context of the previous task.  Trying to
+> > predict that value ahead of time is way too fragile.
 >
-> The KVM_SEV_SNP_LAUNCH_UPDATE command can be used to insert data into
-> the guest's memory. The data is encrypted with the cryptographic context
-> created with the KVM_SEV_SNP_LAUNCH_START.
->
-> In addition to the inserting data, it can insert a two special pages
-> into the guests memory: the secrets page and the CPUID page.
->
-> While terminating the guest, reclaim the guest pages added in the RMP
-> table. If the reclaim fails, then the page is no longer safe to be
-> released back to the system and leak them.
->
-> For more information see the SEV-SNP specification.
->
-> Co-developed-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Michael Roth <michael.roth@amd.com>
-> Signed-off-by: Brijesh Singh <brijesh.singh@amd.com>
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  .../virt/kvm/x86/amd-memory-encryption.rst    |  28 +++
->  arch/x86/kvm/svm/sev.c                        | 181 ++++++++++++++++++
->  include/uapi/linux/kvm.h                      |  19 ++
->  3 files changed, 228 insertions(+)
->
-> diff --git a/Documentation/virt/kvm/x86/amd-memory-encryption.rst b/Docum=
-entation/virt/kvm/x86/amd-memory-encryption.rst
-> index b1beb2fe8766..d4325b26724c 100644
-> --- a/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-> +++ b/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-> @@ -485,6 +485,34 @@ Returns: 0 on success, -negative on error
->
->  See the SEV-SNP specification for further detail on the launch input.
->
-> +20. KVM_SNP_LAUNCH_UPDATE
-> +-------------------------
-> +
-> +The KVM_SNP_LAUNCH_UPDATE is used for encrypting a memory region. It als=
-o
-> +calculates a measurement of the memory contents. The measurement is a si=
-gnature
-> +of the memory contents that can be sent to the guest owner as an attesta=
-tion
-> +that the memory was encrypted correctly by the firmware.
+> We don't require an exact value, but rather an approximate upper
+> limit. To illustrate, subtract 1K from the current .sp, then determine
+> the corresponding page to decide the number of pages needing
+> unmapping. The primary advantage is that we can avoid
+> platform-specific ifdefs for DYNAMIC_STACKS within the arch-specific
+> switch_to() function. Instead, each platform can provide an
+> appropriate upper bound for switch_to() operations. We know the amount
+> of information is going to be stored on the stack by the routines, and
+> also since interrupts are disabled stacks are not used for anything
+> else there, so I do not see a problem with determining a reasonable
+> upper bound.
 
-Nit: The measurement is a rolling hash of all the launch updated pages
-and their metadata. The attestation quote contains a signature of
-information about the SNP VM including this measurement.
+The stack usage will vary depending on compiler version and
+optimization settings.  Making an educated guess is possible, but may
+not be enough in the future.
 
-Also technically the attestation doesn't confirm to the guest owner
-the memory was encrypted correctly, I don't think we can
-cryptographically prove that. But the attestation does provide the
-guest owner confirmation about the exact steps the ASP took in
-creating the SNP VMs initial memory context. If the ASP firmware is
-bug free and follows the spec, your 'memory was encrypted correctly by
-the firmware' line is implied.
+What would be nice is to get some actual data on stack usage under
+various workloads, both maximum depth and depth at context switch.
 
-> +
-> +Parameters (in): struct  kvm_snp_launch_update
-> +
-> +Returns: 0 on success, -negative on error
-> +
-> +::
-> +
-> +        struct kvm_sev_snp_launch_update {
-> +                __u64 start_gfn;        /* Guest page number to start fr=
-om. */
-> +                __u64 uaddr;            /* userspace address need to be =
-encrypted */
-> +                __u32 len;              /* length of memory region */
-> +                __u8 imi_page;          /* 1 if memory is part of the IM=
-I */
-> +                __u8 page_type;         /* page type */
-> +                __u8 vmpl3_perms;       /* VMPL3 permission mask */
-> +                __u8 vmpl2_perms;       /* VMPL2 permission mask */
-> +                __u8 vmpl1_perms;       /* VMPL1 permission mask */
-> +        };
-> +
-> +See the SEV-SNP spec for further details on how to build the VMPL permis=
-sion
-> +mask and page type.
-> +
->  References
->  =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >  Also, the key
+> > point I was trying to make is that you cannot safely shrink the active
+> > stack.  It can only be done after the stack switch to the new task.
 >
-> diff --git a/arch/x86/kvm/svm/sev.c b/arch/x86/kvm/svm/sev.c
-> index e2f4d4bc125c..d60209e6e68b 100644
-> --- a/arch/x86/kvm/svm/sev.c
-> +++ b/arch/x86/kvm/svm/sev.c
-> @@ -245,6 +245,36 @@ static void sev_decommission(unsigned int handle)
->         sev_guest_decommission(&decommission, NULL);
->  }
+> Can you please elaborate why this is so? If the lowest pages are not
+> used, and interrupts are disabled what is not safe about removing them
+> from the page table?
 >
-> +static int snp_page_reclaim(u64 pfn)
-> +{
-> +       struct sev_data_snp_page_reclaim data =3D {0};
-> +       int err, rc;
-> +
-> +       data.paddr =3D __sme_set(pfn << PAGE_SHIFT);
-> +       rc =3D sev_do_cmd(SEV_CMD_SNP_PAGE_RECLAIM, &data, &err);
-> +       if (rc) {
-> +               /*
-> +                * If the reclaim failed, then page is no longer safe
-> +                * to use.
-> +                */
-> +               snp_leak_pages(pfn, 1);
-> +       }
-> +
-> +       return rc;
-> +}
-> +
-> +static int host_rmp_make_shared(u64 pfn, enum pg_level level, bool leak)
-> +{
-> +       int rc;
-> +
-> +       rc =3D rmp_make_shared(pfn, level);
-> +       if (rc && leak)
-> +               snp_leak_pages(pfn,
-> +                              page_level_size(level) >> PAGE_SHIFT);
-> +
-> +       return rc;
-> +}
-> +
->  static void sev_unbind_asid(struct kvm *kvm, unsigned int handle)
->  {
->         struct sev_data_deactivate deactivate;
-> @@ -1990,6 +2020,154 @@ static int snp_launch_start(struct kvm *kvm, stru=
-ct kvm_sev_cmd *argp)
->         return rc;
->  }
->
-> +static int snp_launch_update_gfn_handler(struct kvm *kvm,
-> +                                        struct kvm_gfn_range *range,
-> +                                        void *opaque)
-> +{
-> +       struct kvm_sev_info *sev =3D &to_kvm_svm(kvm)->sev_info;
-> +       struct kvm_memory_slot *memslot =3D range->slot;
-> +       struct sev_data_snp_launch_update data =3D {0};
-> +       struct kvm_sev_snp_launch_update params;
-> +       struct kvm_sev_cmd *argp =3D opaque;
-> +       int *error =3D &argp->error;
-> +       int i, n =3D 0, ret =3D 0;
-> +       unsigned long npages;
-> +       kvm_pfn_t *pfns;
-> +       gfn_t gfn;
-> +
-> +       if (!kvm_slot_can_be_private(memslot)) {
-> +               pr_err("SEV-SNP requires private memory support via guest=
-_memfd.\n");
-> +               return -EINVAL;
-> +       }
-> +
-> +       if (copy_from_user(&params, (void __user *)(uintptr_t)argp->data,=
- sizeof(params))) {
-> +               pr_err("Failed to copy user parameters for SEV-SNP launch=
-\n");
-> +               return -EFAULT;
-> +       }
-> +
-> +       data.gctx_paddr =3D __psp_pa(sev->snp_context);
-> +
-> +       npages =3D range->end - range->start;
-> +       pfns =3D kvmalloc_array(npages, sizeof(*pfns), GFP_KERNEL_ACCOUNT=
-);
-> +       if (!pfns)
-> +               return -ENOMEM;
-> +
-> +       pr_debug("%s: GFN range 0x%llx-0x%llx, type %d\n", __func__,
-> +                range->start, range->end, params.page_type);
-> +
-> +       for (gfn =3D range->start, i =3D 0; gfn < range->end; gfn++, i++)=
- {
-> +               int order, level;
-> +               bool assigned;
-> +               void *kvaddr;
-> +
-> +               ret =3D __kvm_gmem_get_pfn(kvm, memslot, gfn, &pfns[i], &=
-order, false);
-> +               if (ret)
-> +                       goto e_release;
-> +
-> +               n++;
-> +               ret =3D snp_lookup_rmpentry((u64)pfns[i], &assigned, &lev=
-el);
-> +               if (ret || assigned) {
-> +                       pr_err("Failed to ensure GFN 0x%llx is in initial=
- shared state, ret: %d, assigned: %d\n",
-> +                              gfn, ret, assigned);
-> +                       return -EFAULT;
-> +               }
-> +
-> +               kvaddr =3D pfn_to_kaddr(pfns[i]);
-> +               if (!virt_addr_valid(kvaddr)) {
-> +                       pr_err("Invalid HVA 0x%llx for GFN 0x%llx\n", (ui=
-nt64_t)kvaddr, gfn);
-> +                       ret =3D -EINVAL;
-> +                       goto e_release;
-> +               }
-> +
-> +               ret =3D kvm_read_guest_page(kvm, gfn, kvaddr, 0, PAGE_SIZ=
-E);
-> +               if (ret) {
-> +                       pr_err("Guest read failed, ret: 0x%x\n", ret);
+> I am not against the idea of unmapping in __switch_to(), I just want
+> to understand the reasons why more generic but perhaps not as precise
+> approach would not  work.
 
-Should these be pr_debugs()?  This could get noisy.
+As long as a wide buffer is given, it would probably be safe.  But it
+would still be safer and more precise if done after the switch.
 
-> +                       goto e_release;
-> +               }
-> +
-> +               ret =3D rmp_make_private(pfns[i], gfn << PAGE_SHIFT, PG_L=
-EVEL_4K,
-> +                                      sev_get_asid(kvm), true);
-> +               if (ret) {
-> +                       ret =3D -EFAULT;
-> +                       goto e_release;
-> +               }
-> +
-> +               data.address =3D __sme_set(pfns[i] << PAGE_SHIFT);
-> +               data.page_size =3D PG_LEVEL_TO_RMP(PG_LEVEL_4K);
-> +               data.page_type =3D params.page_type;
-> +               data.vmpl3_perms =3D params.vmpl3_perms;
-> +               data.vmpl2_perms =3D params.vmpl2_perms;
-> +               data.vmpl1_perms =3D params.vmpl1_perms;
-> +               ret =3D __sev_issue_cmd(argp->sev_fd, SEV_CMD_SNP_LAUNCH_=
-UPDATE,
-> +                                     &data, error);
-> +               if (ret) {
-> +                       pr_err("SEV-SNP launch update failed, ret: 0x%x, =
-fw_error: 0x%x\n",
-> +                              ret, *error);
-> +                       snp_page_reclaim(pfns[i]);
-> +
-> +                       /*
-> +                        * When invalid CPUID function entries are detect=
-ed, the firmware
-> +                        * corrects these entries for debugging purpose a=
-nd leaves the
-> +                        * page unencrypted so it can be provided users f=
-or debugging
-> +                        * and error-reporting.
-> +                        *
-> +                        * Copy the corrected CPUID page back to shared m=
-emory so
-> +                        * userpsace can retrieve this information.
 
-Typo: userpsace
+
+Brian Gerst
 
