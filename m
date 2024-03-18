@@ -1,122 +1,130 @@
-Return-Path: <linux-kernel+bounces-106064-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106065-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3480787E887
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:25:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1B14087E889
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:26:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 65A7C280FA9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:25:42 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CB85F2815CF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:26:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867C6364BA;
-	Mon, 18 Mar 2024 11:25:33 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BC0EF36AF6;
-	Mon, 18 Mar 2024 11:25:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 70B49364C0;
+	Mon, 18 Mar 2024 11:26:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b="uid9H/zb"
+Received: from mail2-relais-roc.national.inria.fr (mail2-relais-roc.national.inria.fr [192.134.164.83])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84FCB2EB05
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:26:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.134.164.83
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710761133; cv=none; b=YOiwIQHr+4Ep96zkVWd5BMgxFNb1etaIq6elhOXqQK434cS47KDNaYoRJl4KFigdXhL1gElZpOdQ2EvSKUB8m+n8+ZLdeGF9LpZpxCry1mnzOVX1W8R0IGZy3thQfCuILoMlbLY3s9BfrollXdUnc4Y9PND7z90LbTnK8OHmGUA=
+	t=1710761166; cv=none; b=GezwtXrQgdX28+cdi7Ep0E6VcESnXmaQGg3sYzSHFAroDzOnwmM3G4FhLkUcMSUKB2J64E3Cmz8PhIAMV4e2a4OH+zJt0Z628/sWSqDFJi1RXeXXUeNd2ecnwmbU4+U5bDo2VTzh60SlklMxafjsUQyirgDUHhC/GXUD94dp0dM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710761133; c=relaxed/simple;
-	bh=aC23jAhpl0yvzLg9qN8KuMrly14TJFysyuJEzIOBEaQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tEqybUf5H/4Awhs2pO8l87LpOZ8Bb6enRvwIiSZO67wEbWhvqWEZQcpRxZS2XLG933ipNBHz6/OSKCCOFDHEL079vn/swr0dWuEkn8b2qwWDVCyM9U1vnpVywOSWap/Ter6hiykgAW9L6jPNj6o9iq3FmJJsNiJHA1VmbTQESp0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 268A6DA7;
-	Mon, 18 Mar 2024 04:26:06 -0700 (PDT)
-Received: from [10.57.12.69] (unknown [10.57.12.69])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 1102E3F762;
-	Mon, 18 Mar 2024 04:25:27 -0700 (PDT)
-Message-ID: <ef2e7c22-1efb-427f-8ed4-10f9374c066a@arm.com>
-Date: Mon, 18 Mar 2024 11:25:28 +0000
+	s=arc-20240116; t=1710761166; c=relaxed/simple;
+	bh=MEmrvENBqeieEXTIPQlE2F8voSVpBzVnRwiUlh4OCz8=;
+	h=Date:From:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=kNYvvIQUZ1LWxn3v27c8tHfNAkWWkObcuJ8fHjYrGQToMLcJSZtJq8yp7AbpQYdyzhpSrwCnsa089aQMvt/TCg9GxZs9ns3Fff1n+w//LNKXMlrUTCY8ZkoR39Vi00+uvG3Qfq54yH0nmNGsYXFF4zHkox5fvOL8UygkzOscm70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr; spf=pass smtp.mailfrom=inria.fr; dkim=pass (1024-bit key) header.d=inria.fr header.i=@inria.fr header.b=uid9H/zb; arc=none smtp.client-ip=192.134.164.83
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=inria.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=inria.fr
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+  d=inria.fr; s=dc;
+  h=date:from:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=S66/KalXCkob0K7VW7z58059Pe/AA7tM2tbI8/rUpdQ=;
+  b=uid9H/zbSYP1dsKLD8q9q/cpRYZQh8IZWmKabUCPzOzWIbRKr6cy2cek
+   C3L+LRMDLmti8WuR8C1V1PECp1BgiVAG2Tz18V9Kg0NsVbhQUV9TJtKok
+   7RjZJKP90ZOeYbAP2KlyArw1aqK4cW8zMkYoby2huQ73923w6hAqGE3/i
+   w=;
+Authentication-Results: mail2-relais-roc.national.inria.fr; dkim=none (message not signed) header.i=none; spf=SoftFail smtp.mailfrom=julia.lawall@inria.fr; dmarc=fail (p=none dis=none) d=inria.fr
+X-IronPort-AV: E=Sophos;i="6.07,134,1708383600"; 
+   d="scan'208";a="157162375"
+Received: from dt-lawall.paris.inria.fr ([128.93.67.65])
+  by mail2-relais-roc.national.inria.fr with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 12:25:56 +0100
+Date: Mon, 18 Mar 2024 12:25:55 +0100 (CET)
+From: Julia Lawall <julia.lawall@inria.fr>
+To: Dan Carpenter <dan.carpenter@linaro.org>
+cc: Ayush Tiwari <ayushtiw0110@gmail.com>, Larry.Finger@lwfinger.net, 
+    florian.c.schilhabel@googlemail.com, gregkh@linuxfoundation.org, 
+    linux-kernel@vger.kernel.org, linux-staging@lists.linux.dev, 
+    outreachy@lists.linux.dev
+Subject: Re: [PATCH v5] staging: greybus: Constify gb_audio_module_type
+In-Reply-To: <ea44d965-e727-4fc4-86cd-b727e1e0d2be@moroto.mountain>
+Message-ID: <95d1caf9-aac4-9b10-a933-63874274464@inria.fr>
+References: <ZfXj1WkJ3nrYh3qL@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx> <ea44d965-e727-4fc4-86cd-b727e1e0d2be@moroto.mountain>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 09/28] arm64: RME: RTT handling
-Content-Language: en-GB
-To: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>,
- kvm@vger.kernel.org, kvmarm@lists.linux.dev
-Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
- Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
- Oliver Upton <oliver.upton@linux.dev>,
- Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
- <yuzenghui@huawei.com>, linux-arm-kernel@lists.infradead.org,
- linux-kernel@vger.kernel.org, Joey Gouly <joey.gouly@arm.com>,
- Alexandru Elisei <alexandru.elisei@arm.com>,
- Christoffer Dall <christoffer.dall@arm.com>, Fuad Tabba <tabba@google.com>,
- linux-coco@lists.linux.dev
-References: <20230127112248.136810-1-suzuki.poulose@arm.com>
- <20230127112932.38045-1-steven.price@arm.com>
- <20230127112932.38045-10-steven.price@arm.com>
- <84bb27a2-0649-4ba4-8f31-baff7b3a9b3a@os.amperecomputing.com>
-From: Steven Price <steven.price@arm.com>
-In-Reply-To: <84bb27a2-0649-4ba4-8f31-baff7b3a9b3a@os.amperecomputing.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=US-ASCII
 
-On 18/03/2024 11:01, Ganapatrao Kulkarni wrote:
-> 
-> On 27-01-2023 04:59 pm, Steven Price wrote:
->> The RMM owns the stage 2 page tables for a realm, and KVM must request
->> that the RMM creates/destroys entries as necessary. The physical pages
->> to store the page tables are delegated to the realm as required, and can
->> be undelegated when no longer used.
->>
->> Signed-off-by: Steven Price <steven.price@arm.com>
->> ---
->>   arch/arm64/include/asm/kvm_rme.h |  19 +++++
->>   arch/arm64/kvm/mmu.c             |   7 +-
->>   arch/arm64/kvm/rme.c             | 139 +++++++++++++++++++++++++++++++
->>   3 files changed, 162 insertions(+), 3 deletions(-)
->>
->> diff --git a/arch/arm64/include/asm/kvm_rme.h
->> b/arch/arm64/include/asm/kvm_rme.h
->> index a6318af3ed11..eea5118dfa8a 100644
->> --- a/arch/arm64/include/asm/kvm_rme.h
->> +++ b/arch/arm64/include/asm/kvm_rme.h
->> @@ -35,5 +35,24 @@ u32 kvm_realm_ipa_limit(void);
->>   int kvm_realm_enable_cap(struct kvm *kvm, struct kvm_enable_cap *cap);
->>   int kvm_init_realm_vm(struct kvm *kvm);
->>   void kvm_destroy_realm(struct kvm *kvm);
->> +void kvm_realm_destroy_rtts(struct realm *realm, u32 ia_bits, u32
->> start_level);
->> +
->> +#define RME_RTT_BLOCK_LEVEL    2
->> +#define RME_RTT_MAX_LEVEL    3
->> +
->> +#define RME_PAGE_SHIFT        12
->> +#define RME_PAGE_SIZE        BIT(RME_PAGE_SHIFT)
-> 
-> Can we use PAGE_SIZE and PAGE_SHIFT instead of redefining?
-> May be we can use them to define RME_PAGE_SIZE and RME_PAGE_SHIFT.
 
-At the moment the code only supports the host page size matching the
-RMM's. But I want to leave open the possibility for the host size being
-larger than the RMM's. In this case PAGE_SHIFT/PAGE_SIZE will not equal
-RME_PAGE_SIZE and RME_PAGE_SHIFT. The host will have to create multiple
-RMM RTTs for each host page.
 
->> +/* See ARM64_HW_PGTABLE_LEVEL_SHIFT() */
->> +#define RME_RTT_LEVEL_SHIFT(l)    \
->> +    ((RME_PAGE_SHIFT - 3) * (4 - (l)) + 3)
-> 
-> Instead of defining again, can we define to
-> ARM64_HW_PGTABLE_LEVEL_SHIFT?
+On Mon, 18 Mar 2024, Dan Carpenter wrote:
 
-Same as above - ARM64_HW_PGTABLE_LEVEL_SHIFT uses PAGE_SHIFT, but we
-want the same calculation using RME_PAGE_SHIFT which might be different.
+> On Sat, Mar 16, 2024 at 11:54:21PM +0530, Ayush Tiwari wrote:
+> > Constify static struct kobj_type gb_audio_module_type to prevent
+> > modification of data shared across many instances(instances here
+> > refer to multiple kobject instances being created, since this same
+> > gb_audio_module_type structure is used as a template for all audio
+> > manager module kobjs, it is effectively 'shared' across all these
+> > instances), ensuring that the structure's usage is consistent and
+> > predictable throughout the driver and allowing the compiler to place
+> > it in read-only memory. The gb_audio_module_type structure is used
+> > when initializing and adding kobj instances to the kernel's object
+> > hierarchy. After adding const, any attempt to alter
+> > gb_audio_module_type in the code would raise a compile-time error.
+> > This enforcement ensures that the sysfs interface and operations for
+> > audio modules remain stable.
+> >
+>
+> Basically the patch is fine.  The only comments have been around the
+> commit message.  And all the reviewers have said correct things...  But
+> I'm still going to chime in as well.
+>
+> The commit message is too long for something very simple.
+>
+> Basically all kernel maintainers understand about constness.  There is
+> sometimes trickiness around constness but in this specific case there
+> isn't anything subtle or interesting.  You don't need to explain about
+> constness.  Maybe you can say the word "hardenning" as an explanation.
+>
+> Julia asked you to write what steps you had done to ensure that the
+> patch doesn't break anything.  And I was curious what she meant by that
+> because I had forgotten that it would be bad if there were a cast that
+> removed the const.  So the bit about "any attempt to alter
+> gb_audio_module_type in the code would raise a compile-time error." is
+> not true.
+>
+> Also we assume that you have compile tested everything so you never need
+> to write that.
+>
+> The information which is missing from this commit message is the
+> checkpatch warning.  I'm more familiar with checkpatch than a lot of
+> kernel maintainers and I had forgotten that this was a checkpatch
+> warning.  Please copy and paste the warning.
+>
+> Basically what I want in a commit message is this:
+>
+> "Checkpatch complains that "gb_audio_module_type" should be const as
+> part of kernel hardenning.  <Copy and paste relevant bits from
+> checkpatch>.  I have reviewed how this struct is used and it's never
+> modified anywhere so checkpatch is correct that it can safely be
+> declared as const.  Constify it."
 
-Thanks,
+I would still prefer to see that the structure is only passed to a certain
+function, and that function only uses the structure in a certain way (fill
+in the exact details).  In this case, one may just rely on the fact that
+the parameter that receives the value is also declared as const, or one
+could check that that const declaration is actually correct.  I think that
+is what Ayush was trying to do, although in a somewhat verbose way.  This
+case is a bit more complex than many others, because the structure isn't
+used locally, but is passed off to some other function.
 
-Steve
-
+julia
 
