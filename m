@@ -1,142 +1,95 @@
-Return-Path: <linux-kernel+bounces-105878-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105875-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DAC9B87E5CF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:32:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A3EB87E5CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:31:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 973FD282DE4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:32:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1B3C4B2171A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:31:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B4F364AB;
-	Mon, 18 Mar 2024 09:30:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4A932E63B;
+	Mon, 18 Mar 2024 09:30:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="hJbvuCoc"
-Received: from mx0b-0016f401.pphosted.com (mx0a-0016f401.pphosted.com [67.231.148.174])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="u7zOq/T+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E2B5536122;
-	Mon, 18 Mar 2024 09:30:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.148.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EC2822E419;
+	Mon, 18 Mar 2024 09:30:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710754235; cv=none; b=gEyW1TWcBqaf7tM780zEy9hsOtNCROhuNutb1K2W9nRZkR8cmbsnjTegRmKZ//SU/HgY27BIieX3BlCur9IHeCEdfCTMMsTOWNu7ZxbEQOPE9sRnm9eNjE9F9ixI/sRuaMQAkeq30X24zfT1V6hdC9lYBydZjdnYmLWFfVntgac=
+	t=1710754228; cv=none; b=bpMauE+ncuQ4Jx7Vk+K4OAh/9vMSD2y7vaIQQGtJkIAvjAmi8vYVuXfZbh+2h8Lr3wc5+jpIsg+6arIPk40VyjR84KhEHNte1jOTGFFIx9ma8SdllhfQIkWjto07tscq5WzvqiUOe2Ggly/ycmVHj3gEa+1jbWwKhUWcsWCblqs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710754235; c=relaxed/simple;
-	bh=4Hb9jbRlWYeyKViYjaod8C19ssNo3mf3yKVNdmOioug=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=kLxdF3f1S637G+NRndrkoJYH8KcuCucazPZuW03TgQHgaLGvnWgYV3HNnjqheVLdixuqL9As9lCOH7TSoXAJj4GAQ0pYauTXQLcQjHblwos4teCe6ckybrNXTp57DGJ+3ns072PQ7EfInaAoixTyNkddgNdB6gtNGYIVx+GeUQU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=hJbvuCoc; arc=none smtp.client-ip=67.231.148.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045849.ppops.net [127.0.0.1])
-	by mx0a-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42HMo2A9006638;
-	Mon, 18 Mar 2024 02:30:28 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	from:to:cc:subject:date:message-id:in-reply-to:references
-	:mime-version:content-type; s=pfpt0220; bh=NmmQRCZi034beJqnDhaoi
-	G0ejgZQ2JEiKFCBg3EUDWg=; b=hJbvuCocV4Pa+JUaFDCtJ8O9oUF3c6ozSrGMa
-	wXoLodntsor4DXg5xrOi9+g4sLNbDL80PWYj5tzGulSY9oPADEr4UfrxoVC1YxRJ
-	pS8hOn9YRz+bbXqHVNvSveCz7L//5ouP3UvULH5/FZfah73POkycD32O7faZWhky
-	bFgyG+G6//jwLnifEj/ojVTf/QoFWbYffz5qYSN125TUGN/e8nR9ezmsk/Afv9mt
-	Tk1I9oJcFo+z5xkXEM1kxXFGBBsthWtQZ8/FtvO+ARsGQgKX+AP80FHmHoSgmuCF
-	2LdJpVoLyxN9RdPgqn2A68z/qgGQl7+wexQAQvkMgV8mDlKAg==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0a-0016f401.pphosted.com (PPS) with ESMTPS id 3ww8skmj1x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Mon, 18 Mar 2024 02:30:28 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Mon, 18 Mar 2024 02:30:27 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Mon, 18 Mar 2024 02:30:27 -0700
-Received: from hyd1358.marvell.com (unknown [10.29.37.11])
-	by maili.marvell.com (Postfix) with ESMTP id 6CC4C3F7065;
-	Mon, 18 Mar 2024 02:30:23 -0700 (PDT)
-From: Subbaraya Sundeep <sbhatta@marvell.com>
-To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
-        <pabeni@redhat.com>, <sgoutham@marvell.com>, <lcherian@marvell.com>,
-        <gakula@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
-        <horms@kernel.org>, Subbaraya Sundeep <sbhatta@marvell.com>
-Subject: [v2 net PATCH 5/5] octeontx2-af: Use separate handlers for interrupts
-Date: Mon, 18 Mar 2024 14:59:58 +0530
-Message-ID: <1710754198-18632-6-git-send-email-sbhatta@marvell.com>
-X-Mailer: git-send-email 2.7.4
-In-Reply-To: <1710754198-18632-1-git-send-email-sbhatta@marvell.com>
-References: <1710754198-18632-1-git-send-email-sbhatta@marvell.com>
+	s=arc-20240116; t=1710754228; c=relaxed/simple;
+	bh=wa8S5aQ0Fzi4i7GlEYIb73Ld/KafiFSLsqPj7Efjbi0=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=LBqF1ulIh5nhGjqPXtuaejzsK1WOqz4odRFrqkKSzocfi91Q7Ztr7MeWzHEIMRGG44oQC6CTEbg2Mo7+KxToRAL0oWd3/v8YPYePR00UBEBXV82LVaNQiVLd2qoi7cQrgxefQDGU4/S0uksCSKu/T3JV0SkniHK2xGE3MJtVyIE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=u7zOq/T+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 5FFB3C43399;
+	Mon, 18 Mar 2024 09:30:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710754227;
+	bh=wa8S5aQ0Fzi4i7GlEYIb73Ld/KafiFSLsqPj7Efjbi0=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=u7zOq/T+2e0HggZ/WQdkDzR0G8QMpdeSemZfzugL74LUOQ02tAv/n6eS6Kx+vEldX
+	 phqUbOvi1az5LXAWZAZuWZ5znyaVa2GZ6MgkzPXrPXbMj+TywfN3uhU0PwuucpbbxQ
+	 5H0XnLfYoSbrLSY8nMABiUhzsGICcmvq8+yoKgUT3c8HNTbPdhDQis9qD5E4cz/Bf4
+	 P37wHZCP8P1ZaGx+anM/Ascqzsa4c3Dmk7Kl1Y1PZGDjPzvj6H1908d9AuEKy+E/QQ
+	 CBKq9e439vt4/OHOQObE/nHKcCatFeXWYDaShsMsRF3UQsetajPusOrYjOZsiTJ1ny
+	 r+41iwwRFmNwg==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 504A1D84BB3;
+	Mon, 18 Mar 2024 09:30:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-Proofpoint-ORIG-GUID: bHF1t9cbSMJa_0ko5trC-zXsGEmGBAlz
-X-Proofpoint-GUID: bHF1t9cbSMJa_0ko5trC-zXsGEmGBAlz
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-17_12,2024-03-18_01,2023-05-22_02
+Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH] net: wan: fsl_qmc_hdlc: Fix module compilation
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171075422732.16862.15652727322358933272.git-patchwork-notify@kernel.org>
+Date: Mon, 18 Mar 2024 09:30:27 +0000
+References: <20240314123346.461350-1-herve.codina@bootlin.com>
+In-Reply-To: <20240314123346.461350-1-herve.codina@bootlin.com>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: mpe@ellerman.id.au, vadim.fedorenko@linux.dev, davem@davemloft.net,
+ edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
+ yury.norov@gmail.com, andriy.shevchenko@linux.intel.com,
+ linux@rasmusvillemoes.dk, linux-kernel@vger.kernel.org,
+ netdev@vger.kernel.org, linuxppc-dev@lists.ozlabs.org, andrew@lunn.ch,
+ broonie@kernel.org, rkannoth@marvell.com, christophe.leroy@csgroup.eu,
+ thomas.petazzoni@bootlin.com
 
-For PF to AF interrupt vector and VF to AF vector same
-interrupt handler is registered which is causing race condition.
-When two interrupts are raised to two CPUs at same time
-then two cores serve same event corrupting the data.
+Hello:
 
-Fixes: 7304ac4567bc ("octeontx2-af: Add mailbox IRQ and msg handlers")
-Signed-off-by: Subbaraya Sundeep <sbhatta@marvell.com>
----
- drivers/net/ethernet/marvell/octeontx2/af/rvu.c | 17 ++++++++++++++---
- 1 file changed, 14 insertions(+), 3 deletions(-)
+This patch was applied to netdev/net.git (main)
+by David S. Miller <davem@davemloft.net>:
 
-diff --git a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-index 0b65a18..ff78251 100644
---- a/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-+++ b/drivers/net/ethernet/marvell/octeontx2/af/rvu.c
-@@ -2533,10 +2533,9 @@ static void rvu_queue_work(struct mbox_wq_info *mw, int first,
- 	}
- }
- 
--static irqreturn_t rvu_mbox_intr_handler(int irq, void *rvu_irq)
-+static irqreturn_t rvu_mbox_pf_intr_handler(int irq, void *rvu_irq)
- {
- 	struct rvu *rvu = (struct rvu *)rvu_irq;
--	int vfs = rvu->vfs;
- 	u64 intr;
- 
- 	intr = rvu_read64(rvu, BLKADDR_RVUM, RVU_AF_PFAF_MBOX_INT);
-@@ -2550,6 +2549,18 @@ static irqreturn_t rvu_mbox_intr_handler(int irq, void *rvu_irq)
- 
- 	rvu_queue_work(&rvu->afpf_wq_info, 0, rvu->hw->total_pfs, intr);
- 
-+	return IRQ_HANDLED;
-+}
-+
-+static irqreturn_t rvu_mbox_intr_handler(int irq, void *rvu_irq)
-+{
-+	struct rvu *rvu = (struct rvu *)rvu_irq;
-+	int vfs = rvu->vfs;
-+	u64 intr;
-+
-+	/* Sync with mbox memory region */
-+	rmb();
-+
- 	/* Handle VF interrupts */
- 	if (vfs > 64) {
- 		intr = rvupf_read64(rvu, RVU_PF_VFPF_MBOX_INTX(1));
-@@ -2894,7 +2905,7 @@ static int rvu_register_interrupts(struct rvu *rvu)
- 	/* Register mailbox interrupt handler */
- 	sprintf(&rvu->irq_name[RVU_AF_INT_VEC_MBOX * NAME_SIZE], "RVUAF Mbox");
- 	ret = request_irq(pci_irq_vector(rvu->pdev, RVU_AF_INT_VEC_MBOX),
--			  rvu_mbox_intr_handler, 0,
-+			  rvu_mbox_pf_intr_handler, 0,
- 			  &rvu->irq_name[RVU_AF_INT_VEC_MBOX * NAME_SIZE], rvu);
- 	if (ret) {
- 		dev_err(rvu->dev,
+On Thu, 14 Mar 2024 13:33:46 +0100 you wrote:
+> The fsl_qmc_driver does not compile as module:
+>   error: ‘qmc_hdlc_driver’ undeclared here (not in a function);
+>     405 | MODULE_DEVICE_TABLE(of, qmc_hdlc_driver);
+>         |                         ^~~~~~~~~~~~~~~
+> 
+> Fix the typo.
+> 
+> [...]
+
+Here is the summary with links:
+  - net: wan: fsl_qmc_hdlc: Fix module compilation
+    https://git.kernel.org/netdev/net/c/badc9e33c795
+
+You are awesome, thank you!
 -- 
-2.7.4
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
+
 
 
