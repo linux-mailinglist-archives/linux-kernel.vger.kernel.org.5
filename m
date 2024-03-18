@@ -1,117 +1,149 @@
-Return-Path: <linux-kernel+bounces-105687-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id A562B87E2A4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:38:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C8B1C87E270
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:15:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3572EB20C3A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:38:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 049581C21000
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:15:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9CEA21F951;
-	Mon, 18 Mar 2024 03:37:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64C001EB21;
+	Mon, 18 Mar 2024 03:15:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="Rtap6GhU"
-Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RzTJaYmk"
+Received: from mail-wr1-f51.google.com (mail-wr1-f51.google.com [209.85.221.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568081E86A;
-	Mon, 18 Mar 2024 03:37:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00AFA1DDF1;
+	Mon, 18 Mar 2024 03:15:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710733076; cv=none; b=Qw3pTTX9okvHNRwNv7BbnqtTdEUWQ/QFPD+PzgTHEwu/VnRAW2CvMT4XzeW6mu4sdoPUZ0FaNzHKVcLPVm2emD7ImslZPn5tDc7b/0o4lvPzqut9+qS54PKy/IGHOJBp5W0amkQdIkMxSNWqYLPQOEbfWttI+lU/GoRAIeMdHUA=
+	t=1710731746; cv=none; b=CZmJL6nfR7na83HEm9DsCxum4LzekMbYNJMIhJW1FO68NLlnR1sEzPDF4SBTnsutuuAsTiZ1bfdqlm7ifOh54pIC9dJQF+48hbgYyebSGTbLIqie3VGgv1F9kD5d53j2xAqbOFPXhmzN1pcRe4B0E52mGX1JcT1xkeHKsxOT3Io=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710733076; c=relaxed/simple;
-	bh=Z0/gdV4cCBOh4vllNLfzHr1A+MKLPraA8SnzR3S6xJ4=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ruo88fRmwyJ5qmwujd9Ymig+Xj13vZatx05MRN5Cseyymx1eNwd3SZ72fKKR8SGnjpPFL7AfLwFG5DDkw2eLhjgXojcq3dAEUF+32DI24ejS5MFIuD7Sr6v4hpHtzatbNx3kuPSgCHMXC09/BOeBbNY4JnyLqXF8ufaDR9fs7BM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=Rtap6GhU; arc=none smtp.client-ip=67.231.156.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
-Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
-	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42HKwTdS030284;
-	Sun, 17 Mar 2024 20:15:04 -0700
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=pfpt0220; bh=5PHteGiApJD0KUkkw4/qyw
-	UQZ26T+OOJg48LpixAtFg=; b=Rtap6GhU6GXV2oh5Gu7SJGCbR2fWjlJ1/dKgaO
-	gaYCcaEAVpuUqSwGtTM7Rx7vz8Yyh8WBsh6WPyuVRtvHPKVv5uI9w/9XlI9/ARgK
-	97TXEaUaT+Xy5oPnw/6mb6NzMpH6b5iDrFZkqTr2M5v28553OA7yzp0RpP9rl0RA
-	etlTdT9Zf9SGwjqkHGTyBR73CN7CNpd6OQkTYIm0494+Tu2KDVnM+I3zITds6z9+
-	M8ywX/jq2T8mceQmF7F+vxQ9IG4jXPuVMUEYvlPM7NGBW3tZD24f+SeTZ40qH2mS
-	dAH3kpnsjn+1l9EpivwddoeT4WTKIchsDLz8TYuJHJW3sg+A==
-Received: from dc5-exch05.marvell.com ([199.233.59.128])
-	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3wwaxgbder-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Sun, 17 Mar 2024 20:15:04 -0700 (PDT)
-Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
- DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.12; Sun, 17 Mar 2024 20:15:02 -0700
-Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
- (10.69.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Sun, 17 Mar 2024 20:15:02 -0700
-Received: from maili.marvell.com (unknown [10.28.36.165])
-	by maili.marvell.com (Postfix) with SMTP id 8482C3F7065;
-	Sun, 17 Mar 2024 20:14:58 -0700 (PDT)
-Date: Mon, 18 Mar 2024 08:44:57 +0530
-From: Ratheesh Kannoth <rkannoth@marvell.com>
-To: Jijie Shao <shaojijie@huawei.com>
-CC: <yisen.zhuang@huawei.com>, <salil.mehta@huawei.com>, <davem@davemloft.net>,
-        <edumazet@google.com>, <kuba@kernel.org>, <pabeni@redhat.com>,
-        <michal.kubiak@intel.com>, <shenjian15@huawei.com>,
-        <wangjie125@huawei.com>, <liuyonglong@huawei.com>,
-        <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH V2 net 1/3] net: hns3: fix index limit to support all
- queue stats
-Message-ID: <20240318031457.GA1312724@maili.marvell.com>
-References: <20240316111057.277591-1-shaojijie@huawei.com>
- <20240316111057.277591-2-shaojijie@huawei.com>
+	s=arc-20240116; t=1710731746; c=relaxed/simple;
+	bh=EV1jgEB67L4DibF4K3GRAt4qlAY4piYIbt1FnPIiMTE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=GpufbOoiHkLOKDKURIhDnBW/GIBFf4+IV40wx9oRZootyKgURS62ijwYDSb7sbspYZe51M6OQ2je1wIOfZq9XK/YztRGw9Gvu7xqvMwy6soXdos05RXbYArjN4I1AxRm+kSXHm8LljTW3rjmkA9MaZRBlEYMQuwGmVUOxOHXRXY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RzTJaYmk; arc=none smtp.client-ip=209.85.221.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f51.google.com with SMTP id ffacd0b85a97d-3417a3151c5so39498f8f.1;
+        Sun, 17 Mar 2024 20:15:44 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710731743; x=1711336543; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=hRzQu99iK7dFeEkT4/LSgZlyk18Bq2YECzC1XOFAmuo=;
+        b=RzTJaYmkPDQNeHHe3YvqWn/SzeFF0nmS0+ghJ4ASRQj+Od1p6xcliuCdAjgy9wEy4U
+         k9M+3puOea0c8oT/PV8FDPgTe1Cscf9ngdw390oLtwS2CtTKvdqwHa9ps5wHEx61o2sx
+         6kcYTo9rYRPgAATxneEzsoZsSJtULKKNEv3sDtK7ENI6M7Ve/AvWdX/q1y8hEVVCCXj8
+         KHRfyUlxlhf4ZnEwTHsWug/46ndJzdMQhFZiSuqYyhDGODMRS3IYnMgxN0ziKDDog/+5
+         L3g7DKDNm0L8Nv1vX6pzL5TFfL4uaZC/mVkGzrOHbNM684XPeneuegomd8xaspyqBgzp
+         JOsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710731743; x=1711336543;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=hRzQu99iK7dFeEkT4/LSgZlyk18Bq2YECzC1XOFAmuo=;
+        b=P6ecfYglef2OZxWAOV3hI1fnHCpudV9skSiJGG3qRBX6BZJ4UKb9CLsgTkK8ZA18CD
+         VN2bIlWX4VvBVIG/K57ZnsSfK3V9yl4/TYvNJ2gyIxwlN133MM1dkIZrl4rAmPzy89ub
+         jAzPZp52iwPP7XPmcRyyLh5chA2HzxG1ZXTKftaXxkNEAT7Y90AzwHf4ysecG6VFKgno
+         Eh3DStrEgqHXRtNZE6MzkSBCIFYjU2LVdMreU8eoLuDkUMCHNot4s7n3jFMiBVRYq7Lm
+         Gwr/ngrKrHe/Xk80+dnJr94pBscHllOnfYjlE2FmGEqsh8Dt46KI6Y6YCNItXmrhOq9D
+         5HjQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVTUzGvt27oSE1ciQ3NdbLv5l4FekosKlOOSiymIpC2uF0wdbHanCgopYLDMI3lS25vAKrUPb3fZfktB8/Y9oaN6LQUFyHj4Q8DrWqz51Sh4RugB2TGmlgZxtAODyMCOZe3I38cLsRFEH0Y5ewSsEfTRc/mz+JAvBOVDnbvU1jYoqzS
+X-Gm-Message-State: AOJu0YxpqACIPXA60keR+fdiYK1PkvptT8qhpxv45oyQRnUP3Rg2KTjg
+	dl90UtxHxkWTGG5GSd7zQnLFzyKVvncAJzoIXqpT+/RJiw1PmNF6vzB/tU8jTdQ090+OrIyaL2h
+	zdmU8PdcvjXNrzaS1AW4gc5zfQWM=
+X-Google-Smtp-Source: AGHT+IHcmWOUlzSvzWRM2pTMhiqH4IZ0HFkN9dgvq1QcbSPEbSyKYcS5oJOt2jjvoN/Abc1yuzwxA8iP2ap9cXm2eoU=
+X-Received: by 2002:a5d:4b82:0:b0:33e:67dc:1ec0 with SMTP id
+ b2-20020a5d4b82000000b0033e67dc1ec0mr8634072wrt.26.1710731742964; Sun, 17 Mar
+ 2024 20:15:42 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240316111057.277591-2-shaojijie@huawei.com>
-X-Proofpoint-GUID: tcY-9LN2-udleDWftkZ1_pn0UqaAua_S
-X-Proofpoint-ORIG-GUID: tcY-9LN2-udleDWftkZ1_pn0UqaAua_S
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-17_12,2024-03-15_01,2023-05-22_02
+References: <20240316162241.628855-1-josef@netflix.com> <20240316162241.628855-2-josef@netflix.com>
+ <20240318031025.GA1312616@maili.marvell.com>
+In-Reply-To: <20240318031025.GA1312616@maili.marvell.com>
+From: Alexei Starovoitov <alexei.starovoitov@gmail.com>
+Date: Sun, 17 Mar 2024 20:15:31 -0700
+Message-ID: <CAADnVQ+9s3yCR2eLL=b_Mqrv37VB_mywa9cnbE=+X_E8VcFBKA@mail.gmail.com>
+Subject: Re: [PATCH V2 bpf-next 2/2] selftests/bpf: add selftest for bpf_task_get_cgroup
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+Cc: Jose Fernandez <josef@netflix.com>, Alexei Starovoitov <ast@kernel.org>, 
+	Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>, 
+	Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>, 
+	Yonghong Song <yonghong.song@linux.dev>, John Fastabend <john.fastabend@gmail.com>, 
+	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, 
+	Jiri Olsa <jolsa@kernel.org>, bpf <bpf@vger.kernel.org>, 
+	LKML <linux-kernel@vger.kernel.org>, 
+	"open list:KERNEL SELFTEST FRAMEWORK" <linux-kselftest@vger.kernel.org>, Tycho Andersen <tycho@tycho.pizza>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 2024-03-16 at 16:40:55, Jijie Shao (shaojijie@huawei.com) wrote:
-> From: Jie Wang <wangjie125@huawei.com>
+On Sun, Mar 17, 2024 at 8:10=E2=80=AFPM Ratheesh Kannoth <rkannoth@marvell.=
+com> wrote:
 >
-> Currently, hns hardware supports more than 512 queues and the index limit
-> in hclge_comm_tqps_update_stats is useless. So this patch removes it.
-s/useless/wrong
->
-> Fixes: 287db5c40d15 ("net: hns3: create new set of common tqp stats APIs for PF and VF reuse")
-> Signed-off-by: Jie Wang <wangjie125@huawei.com>
-> Signed-off-by: Jijie Shao <shaojijie@huawei.com>
-> ---
->  .../ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c  | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
->
-> diff --git a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c
-> index f3c9395d8351..618f66d9586b 100644
-> --- a/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c
-> +++ b/drivers/net/ethernet/hisilicon/hns3/hns3_common/hclge_comm_tqp_stats.c
-> @@ -85,7 +85,7 @@ int hclge_comm_tqps_update_stats(struct hnae3_handle *handle,
->  		hclge_comm_cmd_setup_basic_desc(&desc, HCLGE_OPC_QUERY_TX_STATS,
->  						true);
->
-> -		desc.data[0] = cpu_to_le32(tqp->index & 0x1ff);
-> +		desc.data[0] = cpu_to_le32(tqp->index);
->  		ret = hclge_comm_cmd_send(hw, &desc, 1);
->  		if (ret) {
->  			dev_err(&hw->cmq.csq.pdev->dev,
-> --
-> 2.30.0
->
+> On 2024-03-16 at 21:52:41, Jose Fernandez (josef@netflix.com) wrote:
+> > This patch adds a selftest for the `bpf_task_get_cgroup` kfunc. The tes=
+t
+> > focuses on the use case of obtaining the cgroup ID of the previous task
+> > in a `sched_switch` tracepoint.
+> >
+> > The selftest involves creating a test cgroup, attaching a BPF program
+> > that utilizes the `bpf_task_get_cgroup` during a `sched_switch`
+> > tracepoint, and validating that the obtained cgroup ID for the previous
+> > task matches the expected cgroup ID.
+> >
+> > Signed-off-by: Jose Fernandez <josef@netflix.com>
+> > Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
+> > ---
+> > V1 -> V2: Refactor test to work with a cgroup pointer instead of the ID
+> >
+> >  .../bpf/prog_tests/task_get_cgroup.c          | 58 +++++++++++++++++++
+> >  .../bpf/progs/test_task_get_cgroup.c          | 37 ++++++++++++
+> >  2 files changed, 95 insertions(+)
+> >  create mode 100644 tools/testing/selftests/bpf/prog_tests/task_get_cgr=
+oup.c
+> >  create mode 100644 tools/testing/selftests/bpf/progs/test_task_get_cgr=
+oup.c
+> >
+> > diff --git a/tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c b=
+/tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c
+> > new file mode 100644
+> > index 000000000000..67ed65d0c461
+> > --- /dev/null
+> > +++ b/tools/testing/selftests/bpf/prog_tests/task_get_cgroup.c
+> > @@ -0,0 +1,58 @@
+> > +// SPDX-License-Identifier: GPL-2.0
+> > +// Copyright 2024 Netflix, Inc.
+> > +
+> > +#include <test_progs.h>
+> > +#include <cgroup_helpers.h>
+> > +#include "test_task_get_cgroup.skel.h"
+> > +#include <unistd.h>
+> > +
+> > +#define TEST_CGROUP "/test-task-get-cgroup/"
+> > +
+> > +void test_task_get_cgroup(void)
+> > +{
+> > +     struct test_task_get_cgroup *skel;
+> > +     int err, fd;
+> > +     pid_t pid;
+> > +     __u64 cgroup_id, expected_cgroup_id;
+> > +     const struct timespec req =3D {
+> > +             .tv_sec =3D 1,
+> > +             .tv_nsec =3D 0,
+> > +     };
+> Reverse Xmas tree.
+
+NO. We don't do it in bpf trees.
 
