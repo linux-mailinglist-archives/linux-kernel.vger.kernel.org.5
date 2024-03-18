@@ -1,280 +1,372 @@
-Return-Path: <linux-kernel+bounces-105760-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105763-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5291187E3ED
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:15:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 326D887E3F6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:17:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DAF4B1F2161A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:15:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 512CE1C20B9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 07:17:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87A31225AE;
-	Mon, 18 Mar 2024 07:15:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D089225CE;
+	Mon, 18 Mar 2024 07:17:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="hgw+0b+g"
-Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2084.outbound.protection.outlook.com [40.107.21.84])
+	dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b="UzwalN86"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2130.outbound.protection.outlook.com [40.107.243.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5945422EE5;
-	Mon, 18 Mar 2024 07:15:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B951523741;
+	Mon, 18 Mar 2024 07:17:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.130
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710746140; cv=fail; b=rsnNHfptuTVVrJ/qhJLs579DtioYwGbHZrY6p2q0Oh8pCjldAFpEnocGIH7gTLBFgofYFmJu8aa1VHiWZX1737N4vf2NxxSUQJlDWCQU1Le/fb2Q4aDeETu49IEo7GRdqRBqMz0o0y93C+uPTZUZ8SxssU9DT4tIe5OoZ5jgENg=
+	t=1710746262; cv=fail; b=YVzNWqJtYxd68kVurdLiU3jpM3CLAYk5aWCJTbShp7Jo/ZaEecr0teHTMJkj9zpzpi42JTZy4BBnzWFzucFO/pyhlbcIUZIgHE4qirx7Lh1jksjrKkF31Nsl0NxdrMUZ5KwrRXYqLVg395HDg2B29vYB+Z2dHvKRB/epCaPZlLs=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710746140; c=relaxed/simple;
-	bh=QZzUE8Ni0EL5kQMH93CTY03XQefB+z62J6+2s5MqRSk=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=mA73LlKlQr607ZGGNhY9KrZ/4JlBYIePCJmWSqOuiY1CVi8MxVikvcfNPZP/57cqUiu5Lcu5qN5IxKymmDi3o6qAyIpUWyi7BMGoUTKqbbpfOQwjZ8/wEbhEMf2uVTnmPRMDTms2MPLS+XuBUoOZe3HBAeZi6yCWLzx+XsZbqlA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=hgw+0b+g; arc=fail smtp.client-ip=40.107.21.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+	s=arc-20240116; t=1710746262; c=relaxed/simple;
+	bh=Q2WYZ56znIOudsqNTmhEgcjCuf4TP6gNUzAVI/zLUZw=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=akpxx0lRjum/lX8vCiCjnA1MeIYoXo/2vgRIQ3h30an7CKnryaT7gHLyUdRX/j2q4tdXwykzPcEEz07C9KokzOowcnQnyoyrJvCdA0r5poxiXqTKlLxIkkbilJNfb0kXhWT/N0zxolhEw6PuAmHsiNyt4Q0J1ERVamxM77035t0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=pass (1024-bit key) header.d=os.amperecomputing.com header.i=@os.amperecomputing.com header.b=UzwalN86; arc=fail smtp.client-ip=40.107.243.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=os.amperecomputing.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SeaWxIISRLzx5pzxxdoSv+E7aKq7GpXX65xtzPv9CrX1zPvvwrxid18c9fG0+TTRGji0c4XqQP0qBFw80XR5mLR/7WwTbwfH/98izR0iRY5iICndMzU+DipEedcHLOzbCorW7D4CeVNq8psnci9r3JWZwjLYS0jPj7hgES93/eYqy0CF61udhe6XFIFCka5AU2gmAQzMqDuMN6+bsA6pouWuNK1ObfzEZ4o1/N4+VjdHEE+LfEFsZR4jjfRag3WUM4/6hymC7eOg8p4pYxTWpJJA1NdQ1l+Q7CXDhc6FytGfyTOulgy6Ao3o1mRonTy8ny3cp2A4HGtvgG3Zc9wCNQ==
+ b=ite+GNJsanYn+V4oTjqIVdZpmrjJi85wQe9NaZQ/y1m8b+vCvxHPDpG3fcSUVnmWF7e9OlAoogxTpg7S3xrLy4Ra2r1SyXJjaCJQyrHbKMNcX2Vdm74+0Adw6kE9TwaPhi0/a3doGijatLGHV8G98TLs+wFVsocJkdsAOF7FfxgWfakuL133lcgvBsQZl4bLGtsxH96wVlvYiZgpW/Gn2JKKymb1X95LbYhvP/YqM2eWT3w0zAYNtWTIPS/WHZzn10s8df/wNArhTnvwt1lRPaWE9PmZy5APgsPm3ChPaeS+fnl+9WeX12Kfxi9ZhP5LsURgtSzTpSPG8xKFXPCuAg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=EPkHsDEUCwfA0ZE3vx2En+FIAsicT8aeR3ImO4Tig7Q=;
- b=XqnEDJfDoFwqoaLjMkwvKX1Vj7eG8SPOch98BBm6kZ37iGVr0paW80RZektUjFTW9LKQ9IsaEUy3R8KWr2foP+Nzec8OpDnRukcuF6zGPwoy21eMEjo5S68Ji2c1ghbnaJZ0vU5L/6SOV7ieBRl7WtLd0DuAWLy2f9UF/0XncExlg/45EvyBeoo26eoWCEQZcdqlD2U7ZyOcZNyYeg/nj1DMzlMkJzzmn1CzWYimAxQkXdJPCNpxOw3/UJvoi6+r8UAwms9E41rbrfzV9BAP1t4oXaGUDAGrcO6qDWiW6NtcF0TzBCGasj0ySWhdaD396FLK/iqgDhY+QiBvqKpW6w==
+ bh=b0ZQ9GyWRwaw9VO8UZTGHzkd0dSLOp7iG0Nc1a2y+U0=;
+ b=D9jsJOqpXNq2l1rNaLc9nAxX1kPoo83EO4SL2740RXp2Pk7Tcyhdfg7RmO64XhUSL2GwB6X/ONJSv/vSdcqJG82dbOhGRpjhHjEvtC+/i/LeaLePbfh9+58QHGAngklseLpLzx8Ki2Q/ppNTEsb0dGuAJsCXxny6TQIlLS6SBayQSE2b8R/fVkPJBlFJDOBopovX0B39d7y5R3XFhDX7+5t9NqWrCpzsTlqoQMmEgUpkXrU1YVo+IIwY5IEF2zygQUL5dZCAfJzpzbqTjpmmZ/RHT2JauixazWfmA5vELr9l1iaRCoUlLqA+lvdok0AzAafkrhkTWA+OD7iD8CNHSA==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=os.amperecomputing.com; dkim=pass
+ header.d=os.amperecomputing.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=os.amperecomputing.com; s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=EPkHsDEUCwfA0ZE3vx2En+FIAsicT8aeR3ImO4Tig7Q=;
- b=hgw+0b+g+JYUmRaHMKdwiYAoTwj3zSVXKdnAGKbni80RrwUolwc+DFoefNhANgg35jTVf4BVC2RY3q6f7XBR2ey2d0Ym0rZmA1YisbdGmq3DDbznLmVtmbc0Q7sIgveEsYbiE6KtQgXpBukfU51c6QOT6asXPqZt7Pyw/sXe08M=
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com (2603:10a6:10:358::11)
- by AS8PR04MB8022.eurprd04.prod.outlook.com (2603:10a6:20b:28a::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
- 2024 07:15:35 +0000
-Received: from DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d]) by DU0PR04MB9417.eurprd04.prod.outlook.com
- ([fe80::d30b:44e7:e78e:662d%4]) with mapi id 15.20.7386.017; Mon, 18 Mar 2024
- 07:15:35 +0000
-From: Peng Fan <peng.fan@nxp.com>
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, "Peng Fan (OSS)"
-	<peng.fan@oss.nxp.com>, Abel Vesa <abelvesa@kernel.org>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob Herring
-	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Shawn Guo <shawnguo@kernel.org>, Sascha
- Hauer <s.hauer@pengutronix.de>, Pengutronix Kernel Team
-	<kernel@pengutronix.de>, Fabio Estevam <festevam@gmail.com>
-CC: "linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"imx@lists.linux.dev" <imx@lists.linux.dev>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-Subject: RE: [PATCH v4 1/6] dt-bindindgs: clock: nxp: support i.MX95 VPU CSR
- module
-Thread-Topic: [PATCH v4 1/6] dt-bindindgs: clock: nxp: support i.MX95 VPU CSR
- module
-Thread-Index: AQHadhH4UE3MbiZEYkaA9C+JsAj7gbE5R/qAgAPTvsA=
-Date: Mon, 18 Mar 2024 07:15:35 +0000
-Message-ID:
- <DU0PR04MB9417BA412243B8E3FEC0A46D882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-References: <20240314-imx95-blk-ctl-v4-0-d23de23b6ff2@nxp.com>
- <20240314-imx95-blk-ctl-v4-1-d23de23b6ff2@nxp.com>
- <99b72931-0007-4ab5-87fb-9b4c3021c1c2@linaro.org>
-In-Reply-To: <99b72931-0007-4ab5-87fb-9b4c3021c1c2@linaro.org>
-Accept-Language: en-US
+ bh=b0ZQ9GyWRwaw9VO8UZTGHzkd0dSLOp7iG0Nc1a2y+U0=;
+ b=UzwalN86aB6rS1Y2IvTyisN5Vb4b2nWUgfrWvIXoIJc5a19RJ3PmCuF1a8pKIQeZb9/ULCdowiAYSPxZlZLZOY4y9+gfun9C3tZMszjv4q1pROKhYlB+NiXBcRijxvwgFRK5mRNq2v5N+VQRGSvSCiIG2745CGqXytBmA9WpMhA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=os.amperecomputing.com;
+Received: from SJ2PR01MB8101.prod.exchangelabs.com (2603:10b6:a03:4f6::10) by
+ BL3PR01MB6849.prod.exchangelabs.com (2603:10b6:208:350::5) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7362.35; Mon, 18 Mar 2024 07:17:36 +0000
+Received: from SJ2PR01MB8101.prod.exchangelabs.com
+ ([fe80::d3dd:ece:637f:bde9]) by SJ2PR01MB8101.prod.exchangelabs.com
+ ([fe80::d3dd:ece:637f:bde9%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 07:17:36 +0000
+Message-ID: <d5a1adac-d0d1-4eac-b5ad-b2b8f4d9d971@os.amperecomputing.com>
+Date: Mon, 18 Mar 2024 12:47:24 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH 04/28] arm64: RME: Check for RME support at KVM init
 Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: DU0PR04MB9417:EE_|AS8PR04MB8022:EE_
-x-ms-office365-filtering-correlation-id: 13a51504-fa48-4bc1-5c5a-08dc471b34b5
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- ntKutNczlzqaJdHNzuYic6DbeqKp2a8B7CUPlcE98ErGfP9hdpRs6nmC9kPWNCOjMnXjdelvGc//cTzF6USzusgEYBYeINWJpk9m3eiPp3+mc4cjPtw7B4omcaEOaPAOZ3Z/ILdeOOOD20l7NFm+rqdUbAUoBhdyvkXBPMb4yaMNG1sABmu3jOYNbbfWq5gF8AhD6lUpEkwa/2v3AylgpCE8tBsyzOqikJYNj6zAWv8ntC3asD7Rmjn/MOn1zivC3z8cYwsbkjYuC79F+9myzAKd+ZT4yTXd2lKGFRHN9EBnyO2ZnXYaJt3j0/LOrCeWQQ86rWrnYKhGCvTkk/85yBsT1q61RiE1IIJjk3GPQkcHN7pV5I8o4V1Fyuj2nSvl41FBdXBNdMwTgX5vgKCoXc7JhvRCk3DchIKFn0xjV4Z8h82RblG1qho66hHZdjykenu1EPvYM2XGRWDlE37QEsGVtnpKxD062sjnZgPF5AxzkMaQnn/u9octTHedgly+QQK6RHSqgLn37V2/9Sg4Pb0mxi8zdUqjwrsNXTy8DLAW4qkiDQmqP37jVx5osfbS4Y5erWssNhZVNqnVsQqUcsNupEG45ApyQ3ExONjRxYrtJxYcgmPjZZghGShAaZde5r6xKEDByinEpApLnkxN9rA1KMmFVUf7bmfTAbB9Iu/SW5LjvRH5rbLzW1wFAME+gOdpuRzJtnqfKaio8+zOI1OPHN518lpja9CIQ9FRqq4=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DU0PR04MB9417.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015)(921011)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?MrH8/MBOfS2EOqaQZEZl18bNxqUur6tXKNcK+pU3v0h0fjFLIPszTdtldPXa?=
- =?us-ascii?Q?JA2sxG064cf1sc+gOmgsBy19hzwNTZJAPDi89Ow8OE9YZpCA4lJa2nU9QwYS?=
- =?us-ascii?Q?Wodr+SbHuimrzVGhC4WGy/d270gdoJ5BaszkXv7EftrxfBiW9/hrjlo1rcwF?=
- =?us-ascii?Q?lftPLXxIweZdRPHmVxyThs4MzIrDGJNiR18NrSsdo+17Q8DC+8AupWJTIOxN?=
- =?us-ascii?Q?+fZeolrWC6HJqrCyaqHPpQun0z24pFPDa22NHzupl+1KNy32hIlDG6uP1Don?=
- =?us-ascii?Q?xKgh+o46M6KzN8i9HuZFoR31KByoicTDvy2/HnpHtdAixmQ8hu0ghF+UQ327?=
- =?us-ascii?Q?bcKA5MZ4dGZL4cteHxzhHpbu0ObZo2CUYDuSD4OKDT9nOf6lEV9M5z9Zh1Ey?=
- =?us-ascii?Q?ZJHpUSeoG5GqeEUA9Kex+VlcXD0P7LyZhUnz9A/jNJ8Lb9cfpWn2JoESfIEw?=
- =?us-ascii?Q?vtOexBOz9B/pHWAMb4i0F6qvQIN0DJ/KUwBBPf2RUeFKIeUN9AJqG9sq/qCB?=
- =?us-ascii?Q?meFZU5ZVn+qvxatQgv9Lfg2VD9+Y31vVQmN/npQLtnCuOrLs0yfg5OA6iidw?=
- =?us-ascii?Q?bcjiAsj0BInbsFAZQ2RKu0B9/IUEM06fZ3ruCTGFnUh3lfcM2OCwie+j/21V?=
- =?us-ascii?Q?tC2t36ViZVnm8UXuqQupfe/Sqm5ORsePYgDZyvcDjfqq5mZf45fn4vVVFART?=
- =?us-ascii?Q?Xir4ruzWF4umO7DTXZVPM4dEcjKbhmcyoHHMbd80b0M6dWsqnaKEqYSlk68d?=
- =?us-ascii?Q?pTiCrLfhrqN7bIYR+N9Sn7u70eocRuFxRMa2MN/t+ssA3RS7HyPta4kQ0nqN?=
- =?us-ascii?Q?YAGYjEOE4sgdiPDbzCgnqhXRdmf9lMVi6evcCAd2ZVouAAHN3BuHZShlpdXu?=
- =?us-ascii?Q?kjcTNZCx9QO8B8pWz0hXK8IHd7fqi0TlOGYx6HYSACAWKcxxn/TWzLcfKf6B?=
- =?us-ascii?Q?48wV8onERTrcqVNYhAmcBf2BvnnV8zdxPBbmhCf+4aBBmSaOBqJfZpM8tHxa?=
- =?us-ascii?Q?9szuUbBtG8GOMUGbxU0XDJUH9u7hlk1pEYMwQWZVmQaBXHOyn+YYgtyY40Es?=
- =?us-ascii?Q?hhv9I4Lhfa/yTICUEhLcOfquyW4al9gnOHWydiKxSeEQx268fxT9roZkxNMY?=
- =?us-ascii?Q?kTUKuboOE8WIY7cxasW/9Qx+wfMOKOABpgee5XaO5SBKydeElac+NzMr2KX1?=
- =?us-ascii?Q?qvE9dIlrNdJCMj5eSFtHTYMgvKf/FNzL8D4P3c3zUcia6uVRw7UWlIoFC/OJ?=
- =?us-ascii?Q?qu4urnuw94HsX/tI7l880VYwuEY3b8uA7SWE+qCrEayaP9NxDC3Tm9Rpaxo/?=
- =?us-ascii?Q?ZD1VuaaRsOy/BJNzyM7L0InGnMU/FOUKGz8QjhYOkg25WCfA3Z2no48TM8kO?=
- =?us-ascii?Q?uxtd6LhoK/8is30ex+6dIONQJoLAVondJjmyVayShF31FB/6R5VIT0RDHrVG?=
- =?us-ascii?Q?0ccv99GxqqcT15rEeA15Etzs4nKzWvhJcCQB2iK+XA/8nSl4DwbpI9RlFhBr?=
- =?us-ascii?Q?5DRvuS/UweSqJVf/4knZbKFSyxtf2cbBi3CLDjuLnPA1lgFUpTNhlOgh5H4E?=
- =?us-ascii?Q?juqYi1MYVFC8b4SKWFI=3D?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+To: Steven Price <steven.price@arm.com>, kvm@vger.kernel.org,
+ kvmarm@lists.linux.dev
+Cc: Catalin Marinas <catalin.marinas@arm.com>, Marc Zyngier <maz@kernel.org>,
+ Will Deacon <will@kernel.org>, James Morse <james.morse@arm.com>,
+ Oliver Upton <oliver.upton@linux.dev>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, Joey Gouly <joey.gouly@arm.com>,
+ Alexandru Elisei <alexandru.elisei@arm.com>,
+ Christoffer Dall <christoffer.dall@arm.com>, Fuad Tabba <tabba@google.com>,
+ linux-coco@lists.linux.dev
+References: <20230127112248.136810-1-suzuki.poulose@arm.com>
+ <20230127112932.38045-1-steven.price@arm.com>
+ <20230127112932.38045-5-steven.price@arm.com>
+From: Ganapatrao Kulkarni <gankulkarni@os.amperecomputing.com>
+In-Reply-To: <20230127112932.38045-5-steven.price@arm.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH2PR03CA0023.namprd03.prod.outlook.com
+ (2603:10b6:610:59::33) To SJ2PR01MB8101.prod.exchangelabs.com
+ (2603:10b6:a03:4f6::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: nxp.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR01MB8101:EE_|BL3PR01MB6849:EE_
+X-MS-Office365-Filtering-Correlation-Id: a28495ff-301d-45b1-5500-08dc471b7cf1
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	4dAHXPx7QS0mDvlbBV+fUdEebqwmLL9sRDox0bbYNDfcfsUo+0u70+fUkBb4utck9stHE/HRBp1Gs9Esi/ZE06c9+jTpuh1vWeQS/SbY+9rO81VBPK+RccNByu2vo9oG1YWqI1pWGm561vJl811PTlezqBqZPQ7+J6yC34+Ift9o2aDm5mChO4S9i+/11x6Dw1xi7H6qAQkHcExnKQg+ViN9/63lwxZoHyC3s/VheM5DZXWiBvcLIAYVon6O4hNlPQ7Fn3OlJLwgzqqG5bouGjtvG/48+hnwaH61jKjHu/OiOTV4eMe3rxXgUz6FfCyaBhWqm85onCXeT5dELa4ATE7/KZuwC9mzMZZrZBPNOA+Hxz0Kxv3M+o9PUg8R/Khb3bWRP4y8wn8rKSg0MGU80Xu2NASrVS7ptDNylsuBdRn5Fft7NWV2Fu2FFE102+ksgr2WdlvLK25TUIvMwZsK7qDkzNXGBiNlNdhNP7H/T98IKd+3aLrieMa7BRy5w3DvywgseDHoXq+KcyBgwxVY6ediDgmfYlS4ldl9oFcBxpp3AWPbBvG497xaS0qzquOO/suSRfgaaRAeNsWFyD24wxn3QLsshismow+gRUTEdschYelFP+nnlvntQ0Ra7M/T21CMb+rewV7Stw8i0bzAlt+izD4RM8qcq5d5jKRuw2A=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR01MB8101.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZElOc1NMS2hITHVORE9abTNGcmNvR2Yxdk9rMlBNWjVSd2tuNSswWE9KbzYz?=
+ =?utf-8?B?SUJ1UkhlVU5zWXBMT3FVK0N4NFU3TFAzZDlQamNEa2xHaVZlNVFsVmQ0ZzlK?=
+ =?utf-8?B?ZDNrb1dmdlZ1YTN5a1dhWjQ4ZXdTNkdqR3VGQ2xnaXhqaFNNVmozWHFOQnkx?=
+ =?utf-8?B?Vm5YTDZoeW5zOEcybEJkeW1GbEdBUVRyZkhmM29MSi9BdmxQZmlmR0Y0S1pa?=
+ =?utf-8?B?OTdUNENPOW83c2t6NFZwN0NBVmRjbkNjZEJPOEpWMXpwYnN5RHdycXRJcUVE?=
+ =?utf-8?B?T2tDN1hUUFlvckxkWlcyNnlyT2ZmM2N5RUF5aEU2K0NJSTFXYnpKY0xsTisx?=
+ =?utf-8?B?eFZGM3ZRZDFDV3FhT2duV292dTRlRVpucktvdlZxNG9wTElYQVRuUVpVd2xs?=
+ =?utf-8?B?SVJUQ0Y4MU9NemQrRC9TYng5bExndHBYTWJoL0x4TzBjWDczYW8zN1oxYmdS?=
+ =?utf-8?B?QnByYmQyZTdSbFBFYTlkdGZRZkFrRGxGRVI2cWplMVMxTFVrMy9zUm9TTmVZ?=
+ =?utf-8?B?ZXdJRzVDd0dWRXlCaE81MlV2OCtYbWVIL1ZTVFdTMWxhSVFqN21sQUtRb0pG?=
+ =?utf-8?B?R21mdG9Hb0owNEtCc0MxT0ZKRG1SVGREbXhTRGZjVDdqd3FWVVplcVJwdWFm?=
+ =?utf-8?B?RFJLZGg0TXU5UkdFdXRwMHZCOEt6dlZxRDZZcWVDd3JVR1Uxc2p1K25RbHVZ?=
+ =?utf-8?B?ZzhrV3FIUktFc3ExUHBCNTRkY0hGUWR2SmVKd1N5dGppdUJqY3F0cjMrRUlF?=
+ =?utf-8?B?Nk51MHV0WEZWQjhmNldsaTB4a0xFb3h3em5xL2YrTzhaeUx2RUVZY205elNa?=
+ =?utf-8?B?cUl1empVRDQyRGUwS2xWNm9uekFiMTA3OEpROS9BbHVkWncwcTF2T0N4WHI4?=
+ =?utf-8?B?YU9rNTFPak5kbXQ3S0h1L3RnV0hubCtoRmlaak82U05BSU5wa29ucEgrTWZw?=
+ =?utf-8?B?SEs1K0hodWRvNnlHYnBmVmF1L2ZPeXp4cWpremhvQVk3VUgxeXUrN1l5TUFG?=
+ =?utf-8?B?OTFBVDdCWG9iN1llMVdIOWNrS3pYRjd6NXNwMm9EMzRTb3ZRK085djR2YjQ3?=
+ =?utf-8?B?VjlDcVlmSGZtZVNsWmdJOFppbGF2ZXhaamZwQjJ3Q3hZSXZlalNtZWlhZ3BX?=
+ =?utf-8?B?eEFwOEplTExoRGtISzRoMkN1KzROcWxiZjUvUmZ3TmNQYXlRazJpaExsUGw4?=
+ =?utf-8?B?QWUzQUtSMC80MUp3cGVUWWtJd0ViWFlUZHhYcHZ1SHhQVi9IWkQ3ZFJRWTRD?=
+ =?utf-8?B?Y3d2Q0ZFS3lrUHFDYTE2Y2dlUm1MUVhWWDBSN3k1TDRtWWxETDVQais5aXB4?=
+ =?utf-8?B?K25UVmhuemJ1WTh2bGMxSlMxbi9aYThUSDhVck5KYllaZjBicis4eU5aaXVW?=
+ =?utf-8?B?UE81NjZaSktEbFZHemNGZHRaayttWlJRRnNhMStDL0UvWUtvUVEzaE95YzRh?=
+ =?utf-8?B?cWVzaVVIYUNaejJNUFNqUFVDVTV3bldoU3k5cjJMSnVGa3BjTWp5R2JuNThi?=
+ =?utf-8?B?NHpiRUtFcW1WN1FKanpKYzBrNmdmeUxPNndsMHRWcXhlbmpnS016clJRcDd5?=
+ =?utf-8?B?WjVNaVJaNFpxaGkrdy9FQUlTeWpST3dDeWwzL21NVHFMaE9VaitHTnpkQjJ5?=
+ =?utf-8?B?Q1lDS2NJS1NVYndQSUxGd24xZVR1MnVGVFlsbzBwMjR6aEVOUWFNSlQ4VFVG?=
+ =?utf-8?B?d2Y5ZW40TGFKUmJvN2ZpQmhPZzhOUEV1VkVnYVlZOGFnczhROEt5RHVnWXNV?=
+ =?utf-8?B?YjkrUml1RmIvWDZjSm04QWNjVEs4TUx3Sko5Y05xRlFFSFNQQ3kzSXpVZEVM?=
+ =?utf-8?B?VUV1VDZ4VjVUMzZBR0IxOHMyVU5zbG5OZzdab0hWZlF6djVxOVA5c1lGVUdN?=
+ =?utf-8?B?WXZDbmFDQWVkM3VoQklWTW91QlJiTHNUT3NHMDZrR05yZ3RVYjUxOHZtV3NB?=
+ =?utf-8?B?VTlrajZ6NDg3SDJUaVByaXQwbjY0dWFSb3J2OG9qRlJUSkF4dW9xY3kwWGlD?=
+ =?utf-8?B?ZXFKaW5SMVhoenVQWlRYRytrUUFheWR3Vk15aEFMSHBlN1BVdi9MNk9rc243?=
+ =?utf-8?B?S1lxT0ZsWTBCbS90bDhreUx5L3p4QWx3Z3YwVmgxOXZNK0lxSUczYk1iclNN?=
+ =?utf-8?B?UU95MTBaaEpwTnJwVXV3SmdzcjV2TURGdnMyYkhzTjVPbXd2UG9PNERVdTUy?=
+ =?utf-8?Q?sWLLmy11DWWwcPjSMT2MittFzyo+pTI0l1zzyFguVEE7?=
+X-OriginatorOrg: os.amperecomputing.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a28495ff-301d-45b1-5500-08dc471b7cf1
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR01MB8101.prod.exchangelabs.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: DU0PR04MB9417.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 13a51504-fa48-4bc1-5c5a-08dc471b34b5
-X-MS-Exchange-CrossTenant-originalarrivaltime: 18 Mar 2024 07:15:35.3689
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 07:17:36.6590
  (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: bfjR1g41aUNFkfo79TnSBR6QV+V1hJmND/+57V5/9U7x0HHF+urK5zVlJpwih2lxx3BOStj2gzRNSHfHoJ6QfA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AS8PR04MB8022
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: VHfQiaFc1VNnMHnXSx5lLmqpW35zINsxWH6Y/41GxVf+uU0lk2kNkV9bK27vnx0IPcrqrwVGANMEzxG3qHKL06Qj0uNASyLw5Wr5TxyEamT06IIutD0FDpVqJ+f7VaXa
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BL3PR01MB6849
 
-> Subject: Re: [PATCH v4 1/6] dt-bindindgs: clock: nxp: support i.MX95 VPU
-> CSR module
->=20
-> On 14/03/2024 14:25, Peng Fan (OSS) wrote:
-> > From: Peng Fan <peng.fan@nxp.com>
-> >
-> > The i.MX95 VPU_CSR contains control and status registers for VPU
-> > status, pending transaction status, and clock gating controls.
-> >
-> > This patch is to add clock features for VPU CSR.
->=20
-> Fix the subject prefix. You mess with people's filters.
 
-Sorry, a typo error. Will fix it.
->=20
-> >
-> > Signed-off-by: Peng Fan <peng.fan@nxp.com>
-> > ---
-> >  .../bindings/clock/nxp,imx95-vpu-csr.yaml          | 50
-> ++++++++++++++++++++++
-> >  include/dt-bindings/clock/nxp,imx95-clock.h        | 14 ++++++
-> >  2 files changed, 64 insertions(+)
-> >
-> > diff --git
-> > a/Documentation/devicetree/bindings/clock/nxp,imx95-vpu-csr.yaml
-> > b/Documentation/devicetree/bindings/clock/nxp,imx95-vpu-csr.yaml
-> > new file mode 100644
-> > index 000000000000..4a1c6dcfe3f8
-> > --- /dev/null
-> > +++ b/Documentation/devicetree/bindings/clock/nxp,imx95-vpu-csr.yaml
-> > @@ -0,0 +1,50 @@
-> > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause) %YAML 1.2
-> > +---
-> > +$id:
-> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
-i
-> > +cetree.org%2Fschemas%2Fclock%2Fnxp%2Cimx95-vpu-
-> csr.yaml%23&data=3D05%7C
-> >
-> +02%7Cpeng.fan%40nxp.com%7Cbd64d1b5d1784bdb6df508dc453133ca%7
-> C686ea1d3
-> >
-> +bc2b4c6fa92cd99c5c301635%7C0%7C0%7C638461324818682648%7CUnk
-> nown%7CTWF
-> >
-> +pbGZsb3d8eyJWIjoiMC4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJX
-> VCI6
-> >
-> +Mn0%3D%7C0%7C%7C%7C&sdata=3DPtStE2Y%2BnS4HpesF9wE66t8bh0Qmg
-> 3s3y4aERwhSr
-> > +Mo%3D&reserved=3D0
-> > +$schema:
-> > +https://eur01.safelinks.protection.outlook.com/?url=3Dhttp%3A%2F%2Fdev=
-i
-> > +cetree.org%2Fmeta-
-> schemas%2Fcore.yaml%23&data=3D05%7C02%7Cpeng.fan%40nx
-> >
-> +p.com%7Cbd64d1b5d1784bdb6df508dc453133ca%7C686ea1d3bc2b4c6fa
-> 92cd99c5c
-> >
-> +301635%7C0%7C0%7C638461324818692719%7CUnknown%7CTWFpbGZs
-> b3d8eyJWIjoiM
-> >
-> +C4wLjAwMDAiLCJQIjoiV2luMzIiLCJBTiI6Ik1haWwiLCJXVCI6Mn0%3D%7C0%7
-> C%7C%7
-> >
-> +C&sdata=3DzWKRFnTPTwLZvtOvOrFUo%2FNlqPKRqRIEYCrztlfhzAU%3D&reserv
-> ed=3D0
-> > +
-> > +title: NXP i.MX95 VPUMIX Block Control
-> > +
-> > +maintainers:
-> > +  - Peng Fan <peng.fan@nxp.com>
-> > +
-> > +properties:
-> > +  compatible:
-> > +    items:
-> > +      - const: nxp,imx95-vpu-csr
-> > +      - const: syscon
-> > +
-> > +  reg:
-> > +    maxItems: 1
-> > +
-> > +  power-domains:
-> > +    maxItems: 1
-> > +
-> > +  clocks:
-> > +    maxItems: 1
-> > +
-> > +  '#clock-cells':
-> > +    const: 1
-> > +    description:
-> > +      The clock consumer should specify the desired clock by having th=
-e
-> clock
-> > +      ID in its "clocks" phandle cell. See
-> > +      include/dt-bindings/clock/nxp,imx95-clock.h
-> > +
-> > +required:
-> > +  - compatible
-> > +  - reg
-> > +  - '#clock-cells'
-> > +
-> > +additionalProperties: false
-> > +
-> > +examples:
-> > +  - |
-> > +    syscon@4c410000 {
-> > +      compatible =3D "nxp,imx95-vpu-csr", "syscon";
-> > +      reg =3D <0x4c410000 0x10000>;
-> > +      #clock-cells =3D <1>;
-> > +      clocks =3D <&scmi_clk 114>;
-> > +      power-domains =3D <&scmi_devpd 21>;
-> > +    };
-> > +...
-> > diff --git a/include/dt-bindings/clock/nxp,imx95-clock.h
-> > b/include/dt-bindings/clock/nxp,imx95-clock.h
-> > new file mode 100644
-> > index 000000000000..9d8f0a6d12d0
-> > --- /dev/null
-> > +++ b/include/dt-bindings/clock/nxp,imx95-clock.h
->=20
-> If the header is only for clock IDs for this binding, then keep the same
-> filename as binding filename.
 
-No, this file will also include other IDs in following patches.
+On 27-01-2023 04:59 pm, Steven Price wrote:
+> Query the RMI version number and check if it is a compatible version. A
+> static key is also provided to signal that a supported RMM is available.
+> 
+> Functions are provided to query if a VM or VCPU is a realm (or rec)
+> which currently will always return false.
+> 
+> Signed-off-by: Steven Price <steven.price@arm.com>
+> ---
+>   arch/arm64/include/asm/kvm_emulate.h | 17 ++++++++++
+>   arch/arm64/include/asm/kvm_host.h    |  4 +++
+>   arch/arm64/include/asm/kvm_rme.h     | 22 +++++++++++++
+>   arch/arm64/include/asm/virt.h        |  1 +
+>   arch/arm64/kvm/Makefile              |  3 +-
+>   arch/arm64/kvm/arm.c                 |  8 +++++
+>   arch/arm64/kvm/rme.c                 | 49 ++++++++++++++++++++++++++++
+>   7 files changed, 103 insertions(+), 1 deletion(-)
+>   create mode 100644 arch/arm64/include/asm/kvm_rme.h
+>   create mode 100644 arch/arm64/kvm/rme.c
+> 
+> diff --git a/arch/arm64/include/asm/kvm_emulate.h b/arch/arm64/include/asm/kvm_emulate.h
+> index 9bdba47f7e14..5a2b7229e83f 100644
+> --- a/arch/arm64/include/asm/kvm_emulate.h
+> +++ b/arch/arm64/include/asm/kvm_emulate.h
+> @@ -490,4 +490,21 @@ static inline bool vcpu_has_feature(struct kvm_vcpu *vcpu, int feature)
+>   	return test_bit(feature, vcpu->arch.features);
+>   }
+>   
+> +static inline bool kvm_is_realm(struct kvm *kvm)
+> +{
+> +	if (static_branch_unlikely(&kvm_rme_is_available))
+> +		return kvm->arch.is_realm;
+> +	return false;
+> +}
+> +
+> +static inline enum realm_state kvm_realm_state(struct kvm *kvm)
+> +{
+> +	return READ_ONCE(kvm->arch.realm.state);
+> +}
+> +
+> +static inline bool vcpu_is_rec(struct kvm_vcpu *vcpu)
+> +{
+> +	return false;
+> +}
+> +
+>   #endif /* __ARM64_KVM_EMULATE_H__ */
+> diff --git a/arch/arm64/include/asm/kvm_host.h b/arch/arm64/include/asm/kvm_host.h
+> index 35a159d131b5..04347c3a8c6b 100644
+> --- a/arch/arm64/include/asm/kvm_host.h
+> +++ b/arch/arm64/include/asm/kvm_host.h
+> @@ -26,6 +26,7 @@
+>   #include <asm/fpsimd.h>
+>   #include <asm/kvm.h>
+>   #include <asm/kvm_asm.h>
+> +#include <asm/kvm_rme.h>
+>   
+>   #define __KVM_HAVE_ARCH_INTC_INITIALIZED
+>   
+> @@ -240,6 +241,9 @@ struct kvm_arch {
+>   	 * the associated pKVM instance in the hypervisor.
+>   	 */
+>   	struct kvm_protected_vm pkvm;
+> +
+> +	bool is_realm;
+> +	struct realm realm;
+>   };
+>   
+>   struct kvm_vcpu_fault_info {
+> diff --git a/arch/arm64/include/asm/kvm_rme.h b/arch/arm64/include/asm/kvm_rme.h
+> new file mode 100644
+> index 000000000000..c26bc2c6770d
+> --- /dev/null
+> +++ b/arch/arm64/include/asm/kvm_rme.h
+> @@ -0,0 +1,22 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +/*
+> + * Copyright (C) 2023 ARM Ltd.
+> + */
+> +
+> +#ifndef __ASM_KVM_RME_H
+> +#define __ASM_KVM_RME_H
+> +
+> +enum realm_state {
+> +	REALM_STATE_NONE,
+> +	REALM_STATE_NEW,
+> +	REALM_STATE_ACTIVE,
+> +	REALM_STATE_DYING
+> +};
+> +
+> +struct realm {
+> +	enum realm_state state;
+> +};
+> +
+> +int kvm_init_rme(void);
+> +
+> +#endif
+> diff --git a/arch/arm64/include/asm/virt.h b/arch/arm64/include/asm/virt.h
+> index 4eb601e7de50..be1383e26626 100644
+> --- a/arch/arm64/include/asm/virt.h
+> +++ b/arch/arm64/include/asm/virt.h
+> @@ -80,6 +80,7 @@ void __hyp_set_vectors(phys_addr_t phys_vector_base);
+>   void __hyp_reset_vectors(void);
+>   
+>   DECLARE_STATIC_KEY_FALSE(kvm_protected_mode_initialized);
+> +DECLARE_STATIC_KEY_FALSE(kvm_rme_is_available);
+>   
+>   /* Reports the availability of HYP mode */
+>   static inline bool is_hyp_mode_available(void)
+> diff --git a/arch/arm64/kvm/Makefile b/arch/arm64/kvm/Makefile
+> index 5e33c2d4645a..d2f0400c50da 100644
+> --- a/arch/arm64/kvm/Makefile
+> +++ b/arch/arm64/kvm/Makefile
+> @@ -20,7 +20,8 @@ kvm-y += arm.o mmu.o mmio.o psci.o hypercalls.o pvtime.o \
+>   	 vgic/vgic-v3.o vgic/vgic-v4.o \
+>   	 vgic/vgic-mmio.o vgic/vgic-mmio-v2.o \
+>   	 vgic/vgic-mmio-v3.o vgic/vgic-kvm-device.o \
+> -	 vgic/vgic-its.o vgic/vgic-debug.o
+> +	 vgic/vgic-its.o vgic/vgic-debug.o \
+> +	 rme.o
+>   
+>   kvm-$(CONFIG_HW_PERF_EVENTS)  += pmu-emul.o pmu.o
+>   
+> diff --git a/arch/arm64/kvm/arm.c b/arch/arm64/kvm/arm.c
+> index 9c5573bc4614..d97b39d042ab 100644
+> --- a/arch/arm64/kvm/arm.c
+> +++ b/arch/arm64/kvm/arm.c
+> @@ -38,6 +38,7 @@
+>   #include <asm/kvm_asm.h>
+>   #include <asm/kvm_mmu.h>
+>   #include <asm/kvm_pkvm.h>
+> +#include <asm/kvm_rme.h>
+>   #include <asm/kvm_emulate.h>
+>   #include <asm/sections.h>
+>   
+> @@ -47,6 +48,7 @@
+>   
+>   static enum kvm_mode kvm_mode = KVM_MODE_DEFAULT;
+>   DEFINE_STATIC_KEY_FALSE(kvm_protected_mode_initialized);
+> +DEFINE_STATIC_KEY_FALSE(kvm_rme_is_available);
+>   
+>   DECLARE_KVM_HYP_PER_CPU(unsigned long, kvm_hyp_vector);
+>   
+> @@ -2213,6 +2215,12 @@ int kvm_arch_init(void *opaque)
+>   
+>   	in_hyp_mode = is_kernel_in_hyp_mode();
+>   
+> +	if (in_hyp_mode) {
+> +		err = kvm_init_rme();
+> +		if (err)
+> +			return err;
+> +	}
+> +
+>   	if (cpus_have_final_cap(ARM64_WORKAROUND_DEVICE_LOAD_ACQUIRE) ||
+>   	    cpus_have_final_cap(ARM64_WORKAROUND_1508412))
+>   		kvm_info("Guests without required CPU erratum workarounds can deadlock system!\n" \
+> diff --git a/arch/arm64/kvm/rme.c b/arch/arm64/kvm/rme.c
+> new file mode 100644
+> index 000000000000..f6b587bc116e
+> --- /dev/null
+> +++ b/arch/arm64/kvm/rme.c
+> @@ -0,0 +1,49 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 ARM Ltd.
+> + */
+> +
+> +#include <linux/kvm_host.h>
+> +
+> +#include <asm/rmi_cmds.h>
+> +#include <asm/virt.h>
+> +
+> +static int rmi_check_version(void)
+> +{
+> +	struct arm_smccc_res res;
+> +	int version_major, version_minor;
+> +
+> +	arm_smccc_1_1_invoke(SMC_RMI_VERSION, &res);
+> +
+> +	if (res.a0 == SMCCC_RET_NOT_SUPPORTED)
+> +		return -ENXIO;
+> +
+> +	version_major = RMI_ABI_VERSION_GET_MAJOR(res.a0);
+> +	version_minor = RMI_ABI_VERSION_GET_MINOR(res.a0);
+> +
+> +	if (version_major != RMI_ABI_MAJOR_VERSION) {
+> +		kvm_err("Unsupported RMI ABI (version %d.%d) we support %d\n",
+
+Can we please replace "we support" to host supports.
+Also in the patch present in the repo, you are using variable 
+our_version, can this be changed to host_version?
+
+> +			version_major, version_minor,
+> +			RMI_ABI_MAJOR_VERSION);
+> +		return -ENXIO;
+> +	}
+> +
+> +	kvm_info("RMI ABI version %d.%d\n", version_major, version_minor);
+> +
+> +	return 0;
+> +}
+> +
+> +int kvm_init_rme(void)
+> +{
+> +	if (PAGE_SIZE != SZ_4K)
+> +		/* Only 4k page size on the host is supported */
+> +		return 0;
+> +
+> +	if (rmi_check_version())
+> +		/* Continue without realm support */
+> +		return 0;
+> +
+> +	/* Future patch will enable static branch kvm_rme_is_available */
+> +
+> +	return 0;
+> +}
 
 Thanks,
-Peng.
-
->=20
-> Best regards,
-> Krzysztof
-
+Ganapat
 
