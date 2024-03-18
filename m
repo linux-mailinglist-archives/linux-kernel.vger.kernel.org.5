@@ -1,102 +1,191 @@
-Return-Path: <linux-kernel+bounces-106206-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106207-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D34A887EABD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:19:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 929BE87EAC2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:20:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E086281840
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:19:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 09031B20BFB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:20:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441844BA94;
-	Mon, 18 Mar 2024 14:19:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4F14CE0F;
+	Mon, 18 Mar 2024 14:19:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UP0WJzz3"
-Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="ga5bHmeU"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1562B4AECA
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:18:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771541; cv=none; b=iGkXsw6SJ05MhCZWcvo1XO7URtfPE5nA/jTCTYbrJ9VpdXOYZNaIkXERFlkBNDrUUIULKQMLMf/h96zcOxp+VQy23kny00945JTzp5YwuDYXaOyEat8ON2I/cuHezC0KvbM+oJXQiYS4hM36B3SGoXflFqJvP7AgggBUc5t9A5I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771541; c=relaxed/simple;
-	bh=UtoQrV8V4WHcjC1HvrWHCQs9LMwKtT9GXyBCr3rwGhc=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AzFqEYvXGgR2XGfDapG3eSC/JBiD7hFBpsyJNooBHBwJYvmolmGgBzXsnyNS+1jPJQveiu7kIH7s8dvjsYj3H3Ed6IPgel/mH2nB9lmFUPkTT4BFKyL4U7Dr7Z0JiPDmeqnQ8X6eyEW/wZGQZ8t5pxUpgHpw5SCt+mu8RmDJAO0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UP0WJzz3; arc=none smtp.client-ip=209.85.128.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-609fb19ae76so47035457b3.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:18:59 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710771539; x=1711376339; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=T8/eBwVdC8e/Zu5B3miETRaLCkLZGjLcGDUAWsXNX/E=;
-        b=UP0WJzz3CZz8Gzd7s3GryUi7wfBHASAXDIEovRDrKKr8QZdgEQJHLz2ffjugBu/l3B
-         bRFtmjq/ARNmiR9eLc+teYW6IUK9gBl8Kuk1h/aGAkShPczPbUFcmoPN5HK0xeOq+zwG
-         K0wTYxu5PTZyZv5Elzh/BCMXGRuH943/2SRNrzDFbiIB2B2tY+CT5Odn0E5RoAdq9x6v
-         hBbfJJhcCVEYDFt4Om5G9HuGuWRaS4iBAt8u8fab6ivogs7Fc7xra7R3I9yt4gthlDax
-         I9JMgTNCQ7L2YVsfKu5vfvZtNmb5DAv/7CduGcbsJzlk4H+uGEX3eu3ZGyu6NDAYqlgK
-         7+qw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710771539; x=1711376339;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=T8/eBwVdC8e/Zu5B3miETRaLCkLZGjLcGDUAWsXNX/E=;
-        b=chFISsvFw7n0ofASPnU5hbOveM2blu5TxsZ4Kh7HxbDxbFWsC03siXwEnhJVmwoiO2
-         o/B0jo46h00tf9CcJ62f1qo9ief10gg8FWwmYxB1bPs/YRwnZugd4kvAMV19XLUp9Kuw
-         WABuRyZ5mNGlAbUH4IQ8Vm6eHlhADGleYZlS9nC9iuvgIhVHUt4VyauULYl3LZXKOZ27
-         FZpHKwHxAvAAlAVdMDOGBFrv+19ZfiSjVzS7ib78US6ii8QYb7GwL1kEymT6pmRMpLW7
-         U6llILkH2WTro7LZYQ9i9T2GglWY/jazzBsyxCWYFz2rGC6KzX03HEpta1QxUAEthGOU
-         qxjg==
-X-Forwarded-Encrypted: i=1; AJvYcCVfkydhMZh2mff78C6XOFrYKtmVwUqVcidQmrzdyhMvkvTHkjqHrFh1NcPOv0r6CvSEauCofp45KzthPrAfpDGt9ncqj2stOlrdG5K1
-X-Gm-Message-State: AOJu0Yy88Ls5R4l096QDxzST3aA6qMgkj7ZqOm2ef7jggSBHzjCmc+EB
-	LDiVCBTCVt8/7lBoHHEAhacil2XmXpC9i5/Vd4OkOZ/N2Oq/wCgRb/2po7YqlxL8LcnfWWqvAk5
-	qnbmrMhTSYcr6nVs62IS6ESRmdKQ4zY2SkGzN2Q==
-X-Google-Smtp-Source: AGHT+IF3f/CCR3DdCW9EhoZwH11fEMIYWHeUtnck7qTC0x9yNt+rbxfUfkX98XpGGqmd3SSienqf8G8v4kmrNcJEdj0=
-X-Received: by 2002:a81:d514:0:b0:609:f062:a9af with SMTP id
- i20-20020a81d514000000b00609f062a9afmr12882787ywj.19.1710771539185; Mon, 18
- Mar 2024 07:18:59 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 491C74AECA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:19:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710771595; cv=fail; b=gMZ0FRnamqOYrh8N0xhyMkrtHpaAmxdv60WT7hzyZGkE+7fXbmj1YT+wfln83PZQirKheBZwRAe+9keSkGMxbaIBTh0GFhPBKNafCgcDnl/lYq+rykyyOdp9DJmtbkU+i9VmqNRJqJj4JZy1+7VSF7Nlk1d4OfHYl4+tnA4CYxs=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710771595; c=relaxed/simple;
+	bh=RUEj+zItmvSpUBi5r2gfU2cfSx9jE8/4maKXb4hNEd0=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=d7iIxdCkwRjcjROCi3BvOnuiorIyEUteEwVM0D5hZ0bwREz5UdbCDYdndQKSFUzwexztf7hZPpgJXM0OfV9yuEjwooi0Tdaev3seiAwznoB5c9Ve4q841V4GPg4FQcCYr2uVUpnLe4pIA2qL7G+zlDzXmqkVsw64BgrAfMhTuoI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=ga5bHmeU; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710771594; x=1742307594;
+  h=date:from:to:cc:subject:message-id:references:
+   content-transfer-encoding:in-reply-to:mime-version;
+  bh=RUEj+zItmvSpUBi5r2gfU2cfSx9jE8/4maKXb4hNEd0=;
+  b=ga5bHmeUlQR+RiiJgrMrTgsoV//AvUBdZg+N5jR93hB/06DAp19zt2E6
+   VQwjF+yMBqabBOEAxwwD3vWtZS2f8igSZVO7yVGGSlx3CMtAzK6qDERDp
+   xh3eYqWqkFhc8hIXQ+PAMjbqWdUgocOcreBcI44TbBxle3vjCf7UEezat
+   MxPzj/N2gZMbbelVvi1bR5ei7t7NcNoOzKbpLqNASArduvqpzTUDD8mYM
+   VO5be6IRcq4WRmklGRwTEH3r8QTdxGh6dNM2zTL+EijrvFmjvvd5WA/U6
+   eDeqa5P9ZzL4mIEqK+8rZirYcfSq4FkFpigngAMPWI7neg0S94IVeyD7i
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="28065769"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="28065769"
+Received: from fmviesa001.fm.intel.com ([10.60.135.141])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 07:19:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="44538809"
+Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
+  by fmviesa001.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Mar 2024 07:19:52 -0700
+Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
+ fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 18 Mar 2024 07:19:51 -0700
+Received: from fmsedg602.ED.cps.intel.com (10.1.192.136) by
+ fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 18 Mar 2024 07:19:51 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.168)
+ by edgegateway.intel.com (192.55.55.71) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 18 Mar 2024 07:19:51 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=UNe0J3CNlxmS3P6+jJUfGLW7+bFEZPOx9hvCNpmerFoqk7UFQI0IPPZcfdzG9LzuyMhIdAwVIAlz9Gk+A2uhBCcqTYBofSAAjMDXZuqSchoMdgLxppsKwF7GbiTUeNltQT5yONv8+gqa600OebALcc1wGMgTwYIs4owrKsUzLymX5mZj0LU9FSM2k0VPyYn2U/1mFQHXGzxnmY+BotRhM+3/C/Um6G2b91C27nMicz7KIX4WO9xuHGZOgmTfXCaLZTrJYJGPjli+8kMLyCyAa9TzQH+kkUhXrdpfXiD1EmboRjZkBEQH8im5B0t/X5eD8m8XSlJcZxW55vuK8j8uQA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=phk0AMjDk/Lt5i91o1rXHDzRh12uswDW47G4ZUcluoc=;
+ b=mLRMPiNUCW3Z37H1iLwpbK2RjnA2CA/GnMgxiRguvqXAnXQhZikvzjVcBPV8EuUe+mvr08zM8WOQVg3zLktz3QsCbgeKaSO/FasdDbiqq2lJaVTG7mhWyZ3xFI90STODuk3j21oeD09vdEhKagT1UF9bdson5GSBgc2phCrak2U2YWNdhcWL1O428iNReKlkLS89ssZKisK0GqJw6rMhqf2KSh/V3HfWmprxq9ZNZ8+RhhNTEH5x1WOrH9/X0nolKTfmbWv3x34sRq7Nk5O3V8l4tn5fKKkPO+eYjYPFMgTSnlPMY8y3ztno8TtajzRFV3iQiYVygTkZmqPrEqPVPA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com (2603:10b6:930:29::17)
+ by LV3PR11MB8742.namprd11.prod.outlook.com (2603:10b6:408:212::14) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Mon, 18 Mar
+ 2024 14:19:49 +0000
+Received: from CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::e9dd:320:976f:e257]) by CY5PR11MB6139.namprd11.prod.outlook.com
+ ([fe80::e9dd:320:976f:e257%4]) with mapi id 15.20.7409.010; Mon, 18 Mar 2024
+ 14:19:49 +0000
+Date: Mon, 18 Mar 2024 09:19:41 -0500
+From: Lucas De Marchi <lucas.demarchi@intel.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>
+CC: Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>,
+	Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
+	<jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, "Maarten
+ Lankhorst" <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Luca Weiss
+	<luca.weiss@fairphone.com>, Jani Nikula <jani.nikula@linux.intel.com>, "Imre
+ Deak" <imre.deak@intel.com>, Ville =?utf-8?B?U3lyasOkbMOk?=
+	<ville.syrjala@linux.intel.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH] Revert "drm/bridge: Select DRM_KMS_HELPER for
+ DRM_PANEL_BRIDGE"
+Message-ID: <7fz7tg63pul4frzik7g6z5j365mia2yg5e7iyo2ukpzkj7t4dc@tlsculuypoc7>
+References: <20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-v1-1-52a42a116286@linaro.org>
+Content-Type: text/plain; charset="iso-8859-1"; format=flowed
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-v1-1-52a42a116286@linaro.org>
+X-ClientProxiedBy: BYAPR07CA0002.namprd07.prod.outlook.com
+ (2603:10b6:a02:bc::15) To CY5PR11MB6139.namprd11.prod.outlook.com
+ (2603:10b6:930:29::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318-apss-ipq-pll-cleanup-v1-0-52f795429d5d@gmail.com> <20240318-apss-ipq-pll-cleanup-v1-4-52f795429d5d@gmail.com>
-In-Reply-To: <20240318-apss-ipq-pll-cleanup-v1-4-52f795429d5d@gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 18 Mar 2024 16:18:48 +0200
-Message-ID: <CAA8EJppzBpsLwU6Uk4LxWCL=EK14=NG5Wdpq01wSdWQp6wGKsw@mail.gmail.com>
-Subject: Re: [PATCH 4/5] clk: qcom: apss-ipq-pll: constify match data structures
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR11MB6139:EE_|LV3PR11MB8742:EE_
+X-MS-Office365-Filtering-Correlation-Id: 19ed1841-d6c7-479d-dd41-08dc47567833
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: GeH423FZIpMeRjhwvYpmixJz5cIN+E0g5Jv6fvOY5y+GcgdpWrSgZHzaXT52F4oFSHLiOh3GgXwoiNz6NTPEveftxqlqP1IPom9MjowBfSaJ8Td84SYt9VNXpIIwa/a5gY4640FFOrYnxklrHz/DDPUSWWndpj9pxw+VaM7xo5e+m3V52RMCrfJ+wH7RkMIS7UIZ8CPWzQpGVSXmBB8d8QrL4xBL0tJiViTyd02vsRjYtmOL5rwQc4EpPCWbUDZy7PhSiznf/a5iJu3m++mcV05Z5ly/yoD41yRKVIU7R1YTrkozdCQcckKzpaHxkViQ398vsmWAhAo0MNB9HZO2EiEt6EwHyI2QlUkoUPZDP893dO7R7Xr1RqdpxpaNfAp84oegyTTLtMkxrwBMp4Z2ReLbaFCn6RVgm+9Vf0CVeMMn/aI6BtgABO79/T0t1AMjLXHtcr6BGhQfOXSx7QmvNaoc1ewqDTwPQZ1Q+GM5Pnw8zosnYtmXtJMR534uO2loRwNp9lc0GW0NEkmraGuJDGJ94m1zLn3a3CIkXIZlxQCpsR60j8Hakvey6CLb494Thq/BoBn2IH9RVF13S+P0jgC+3IqMOQ6pjRtihae+NqjliO5+BAV0/4M7SNDJq1Nc3/lTB8AeMUm/gNFLT0A7Pwrel4jxBzj+F8556XpYmuA=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR11MB6139.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(7416005)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?iso-8859-1?Q?BbKx86nNiuo7yVZGtSRJ0feItdk7Y7b2PJdK8e2p+Cw7cQdNaxfbYO6PY3?=
+ =?iso-8859-1?Q?nIadFMPUQuYVHiu+fztUIMc/EPwfSOL/etOENQfnZ+Uh5d/zxV0EN9VuyJ?=
+ =?iso-8859-1?Q?tw7p45keVuizW2anRAuiTFVxMOfraEHd5AwK5nvDYZ8Xy4lRV6s/ae1+1S?=
+ =?iso-8859-1?Q?IluYIL/LlaD5w682m5aTXZmTYiIVgDaoKtsGB2yQFz9PYmn20zi5GF41Es?=
+ =?iso-8859-1?Q?uRUgE/9V+K/C2SixIX7HiorytxogZfBpP1ql+HYJWojokppPfZGeMZbe3D?=
+ =?iso-8859-1?Q?D+YdeEo2mooMJ3Es6XUmamfaVSzBXavDeT4o6mWfgPhjQd1X8E3JFkGpJA?=
+ =?iso-8859-1?Q?Ungf0R/9oN/TOiJ9lzEAscFNgBIVNrkjwIOchLIa64jCFO0uhb/swyzvZh?=
+ =?iso-8859-1?Q?kYfhcTRTHTFnh069a5AXGay5tYEd/ajvU4YPxlsJHEf4BIcVd+OLoTLDSR?=
+ =?iso-8859-1?Q?3esp1eEM8fj1FTrkG0mrLFr0sKs3mSzNtUkyvg0XLnC9kxVEatqMQx9FYO?=
+ =?iso-8859-1?Q?MiW4NJkqaAsg+vLLfrp0xSOMem+o3wBzY7DtNM2ArcXx55Pp0dTyz9WaO5?=
+ =?iso-8859-1?Q?3aBp3Jn0wd8VY5NG32kTkB7WpQOcjIBoJiEBy4LSo+FqCW9CmIK9uPSuSp?=
+ =?iso-8859-1?Q?rHtAdzhyOzy4XoVgVDasS9/P6tWUjNkOMA5bsFlBfQRiSOIy3YKLMoS5bb?=
+ =?iso-8859-1?Q?0ev1bBg5Gi06jfSjpvObDerUXGJ+evSiuQ4sMdTA0SMpk2HmFD9aS2D+ul?=
+ =?iso-8859-1?Q?yuAAZLUWdD05Ywp3gb9SbHjFTEsQe+DEGc4BksS3NQwL+1l80Kqrt8ZYVn?=
+ =?iso-8859-1?Q?k0JTMwJc01D3+g4DUODlpCfuVXAE/LbTv3X1aYKAzIHqhEcFXd0Fcu6OPa?=
+ =?iso-8859-1?Q?zitdG3pHNGk+trMKpYGRe0s1u5/Y3EGD1YadwqgWSvlxawVGQsX/r9mMJd?=
+ =?iso-8859-1?Q?++9OxinrxvLxYndTko5Sjuu/PuKqnXcELSzgVBve5tLoh1ZWEQOv+c3tWA?=
+ =?iso-8859-1?Q?1w/oOfb1p2CL7KizNBPakODuTSsk4IcONgY1oar6AkK3fWABVJf6Y1zZQb?=
+ =?iso-8859-1?Q?AYC93gySFcMyChlc46zmQMcgATnDB5nqwzFNFlsKRH+FRu2xVsDpqkfzW7?=
+ =?iso-8859-1?Q?nGT+nkxtbqvq2R9jMRNuG3zIv7yGGFzmCFDffAfia4ed4ZsvAbIbEYkUDt?=
+ =?iso-8859-1?Q?/EIUBCOZ1wC4b4+K9xbYgKmpiRjf9cY4WW+bYKFqBIWGZ0k7+AIc9ShHUP?=
+ =?iso-8859-1?Q?VIPI6LkNqC9mmB1setqe69qn6JlQRo833YZ9v7CuuABo2BGn5NKvPTmkb5?=
+ =?iso-8859-1?Q?Je7w9WpGdF2AhRcxqPKOb/E/YkzIL78RJzP4xlDGcbB46okQ0k3eOARzbb?=
+ =?iso-8859-1?Q?MXO5Di/MfFPpEnVvtATv59N2O0GQiwe8Py1x/HxFbi+NyG2FRvRSPqIh82?=
+ =?iso-8859-1?Q?F3CY6PKvoO6TIt0E9jqLbMV+X4VH1GQWLI9lCsqK+8ks1fyg/IGU4apvJE?=
+ =?iso-8859-1?Q?SO1A8wIM0lwhNuXSu6WS/3+CAGG25zaWwG5JA+L89tFzZduwvdTdddmAlk?=
+ =?iso-8859-1?Q?IdnvDfDk9QhGJ9Ie2HDokZW1ALZOLR4fgbBgrkTvMk5v0Nq+8DmFdQ0ytR?=
+ =?iso-8859-1?Q?VpfYkDfx5Lc+obLIe+ByUMzxEGHnajsqtrGXpxYuB/Q64Ss+eD3HfXvQ?=
+ =?iso-8859-1?Q?=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 19ed1841-d6c7-479d-dd41-08dc47567833
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR11MB6139.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 14:19:49.0079
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: hEKfu6gbQEHgi8Xi0pMbZHGjH1NVbLYGkE8GbjRUY2MZf3XAyZvzsu+JnosjpW2WQb8+jKysflwrHJ2t1QcusDVp6O7unl2gto9J0Xi/ghA=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV3PR11MB8742
+X-OriginatorOrg: intel.com
 
-On Mon, 18 Mar 2024 at 13:20, Gabor Juhos <j4g8y7@gmail.com> wrote:
+On Mon, Mar 18, 2024 at 03:16:21PM +0100, Neil Armstrong wrote:
+>This reverts commit e3f18b0dd1db242791afbc3bd173026163ce0ccc.
 >
-> The match data structures are used only by the apss_ipq_pll_probe()
-> function and are never modified so mark those as constant.
+>Selecting DRM_KMS_HELPER for DRM_PANEL_BRIDGE leads to:
+>WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
+>  Depends on [m]: HAS_IOMEM [=y] && DRM [=m]
+>  ...
 >
-> No functional changes.
+>and builds with CONFIG_DRM=m will fail with the above kconfig
+>warns and then multiple linker error.
 >
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
->  drivers/clk/qcom/apss-ipq-pll.c | 8 ++++----
->  1 file changed, 4 insertions(+), 4 deletions(-)
+>Reported-by: Imre Deak <imre.deak@intel.com>
+>Reported-by: Jani Nikula <jani.nikula@linux.intel.com>
+>Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
+>Fixes: e3f18b0dd1db ("drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE")
+>Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
 
-Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
--- 
-With best wishes
-Dmitry
+Acked-by: Lucas De Marchi <lucas.demarchi@intel.com>
+
+Lucas De Marchi
 
