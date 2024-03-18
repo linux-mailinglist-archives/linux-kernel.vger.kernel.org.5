@@ -1,151 +1,123 @@
-Return-Path: <linux-kernel+bounces-106202-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106203-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BBA187EAAD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:17:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 524CD87EAB0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:17:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2380FB2280D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:17:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E712A1F21054
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:17:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87C04C627;
-	Mon, 18 Mar 2024 14:16:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C11B54C626;
+	Mon, 18 Mar 2024 14:17:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GGxIxtJh"
-Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
+	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="wsjr9B1x"
+Received: from mail-lj1-f174.google.com (mail-lj1-f174.google.com [209.85.208.174])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91AE4CB20
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:16:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9C034AED2
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:17:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771418; cv=none; b=S9cKgKg19r//kkzLiiCNmceG45hXjIMrS/p8RNWGBYaR0p4SpsFrEVXbwsiKynqZOiUTNXM+nXabvtjPcWRkD5V7En2CMsJs+CGaN+93c+1Pkleqc6IpKmie2Wo4aQfpB6KJJqQ9go8UOa2fhGLMGOwbfGlERUlxfdLcLxpZC1A=
+	t=1710771456; cv=none; b=kbjuyOJSJFzOagurdC5tvvoaqtiCqp+xhvnWu7DqM2fxaprwehpQfbwgbeXhs+jSkJNXfnYRJRfZ5jNweYZlyi2lXGLft6XKYuTz7tFNc9jD2q+v4MPnuff/rPmmJXFjgwQtOvXZoA7/Frz/FlPuL8k6AspTAKb42Add+Sw7Z6A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771418; c=relaxed/simple;
-	bh=rOzlSTthASyQgwpZVjNchS4VHdUqgwg+0fthytEsCP0=;
+	s=arc-20240116; t=1710771456; c=relaxed/simple;
+	bh=1BMaNU0E/2bIytmAKxmyvavAPtvvU8WEvdK71T7wLaE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=F6jJFMTDdP/XnlX4lCsNyggSltSLwCM9G25WYfWxUMaeyijgDCMJKQKitXeR56631L0o9/mmHJW+yAiljjExCx/WKou6wMJQfEv+Y6U29USVP4a4RKJ8r3CRhv+qsKPZCYTh6GHlZevWrH9e46NwGB/hLGEw9mOOXLZ98334hDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GGxIxtJh; arc=none smtp.client-ip=209.85.128.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-609f4d8551eso55394167b3.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:16:56 -0700 (PDT)
+	 To:Cc:Content-Type; b=KTO9U8O2mqq2p6cjPw50kCORvduR/wq5xqsUZ3ti2C9osFkiRpZuydAkTXsDBfUjo+nbJqsx+CpGWuFWU7wsk+LQn98d4NnxxnRzuMytcMHABvvj7PUOgSUpnHRXA8E1ydvXFpXHAv8l0XQ0DsxZ9Ew5eh7vn9/rlv5OChsvemw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=wsjr9B1x; arc=none smtp.client-ip=209.85.208.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
+Received: by mail-lj1-f174.google.com with SMTP id 38308e7fff4ca-2d46c44dcc0so54581741fa.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:17:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710771415; x=1711376215; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=8J4xg8pL+JVnZ2d+xdfnq4XTZIIQf2BljKguZHBIW44=;
-        b=GGxIxtJhxPDWVQ6BqtVsdXA8qDfl2tdxBvTZrAlsWiJoSwQj1QiX7IvG9Z0SXsRCtM
-         2gKL1vNT63/aiK47fPlDHs4LCN0AEe38x2MntPIuz2IjqDyvTtGB2kQiRIzgqdNCKHWb
-         em4gm5AxjJcjZtLNOwqUp4S/haRFXmDGAMYJEo52EiwKyEPL8eOqLv4XBgtA0xpqOgjv
-         P9hhYUH9Pio2NpT6HYKhisOmmX2cBjYKH4UVpw2SX58gt5Zzf09q0Figv1UEqaqx6gZM
-         kQanxyPtZDdrJRZcGo2TKVL5b7UWEcqh8O4Lw0QwwiZ480STAOSaN+29dX4ZnRQylOe5
-         ZWrg==
+        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710771451; x=1711376251; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=ME6ksLF4MpzhmHVbYXi2u6r0c/TRTWgp1dMRqLVgFwU=;
+        b=wsjr9B1xN51E8mvYUPux9bc98h6s0CCN6LrZW5an8DLtbz+Ndm25VkKrpuNCwpXelI
+         kr4Z6B7ljQAAp0LquO0Inn1LQgQMKRpVCLZEh/J1SLO+9Qh1ff/br3XuOqjShnlIgN38
+         hrCstjSyRfxU4Yt4cg8V+wkpbSiTj9tBSM8IQk+/fzjgRy7GBI75O+MFDjwvtph5IiaZ
+         Xc9bB5F/mqIqK1ggJ8KEVGeBnQ1Qc4/5c8YdAf6paM13W3MjmcfO/L0dGfLfZquiOPBb
+         K84JindNipSHduij5xZ2SI0WuWAAknGWhUIgiWrNrmEyv0M+2HM4wmIlanHgRONDxJzJ
+         /h1A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710771415; x=1711376215;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=8J4xg8pL+JVnZ2d+xdfnq4XTZIIQf2BljKguZHBIW44=;
-        b=TAYpqvHXv+sU0vQcbQbVS8pTX7ZZW2NVSOSiI4dCfNCWmjUCIAYAeMutTVB1hMN+0+
-         C6MUQ0NVyVoq7EHrsJ/ZKhSMDr10OC/9OGARlbfczMYt0sxwXmQtRlVV8drlPo/RsnUe
-         aUUZq2KFcwoYfhbgC/kV4qFbWgkogLDkqI7WEy6v12DcMHsl1dvwFtj2v9uHKX2MNjsG
-         AgPozprZHLQ2Z6kUq16sEUzFlVUANzQ1/SRVK+u+VGRKGZZFcmOc6DLU6Hfd7DJSr3ht
-         nsAQFCsEc8eVHPQYXnFo9R571kD6a80JnNNGY/ws/j4idfzkAp5U+yKAFWFopn8CeLJa
-         EHfg==
-X-Forwarded-Encrypted: i=1; AJvYcCUEbaEwPpZgUM/fn31C2lW2jD+f2d7Wb3+CCPx4QGg6L3D17zezcNaKru4aHpfUSMjHg2E7NTkMuaAsGCA7Zzx8il+HmUr9mvX1tOuZ
-X-Gm-Message-State: AOJu0YzXMz8zwsPaqrapQph78HhIXcQ9sZ8SILgpAreDXL4QpbrCNVC3
-	AsroqcVFytL78FQjmrG0//B3nGwiGeuWim389pjdwgtzX3QWEIYS1UtrasnJKJcORTczab8F3k+
-	ORlpwbGED63x7sjtLiyhYq+h3fyL5yXgpjFAi2Q==
-X-Google-Smtp-Source: AGHT+IEvFYwE5sS/ZdUGl4QC1VMK4V6gFZsyCtq7eO/fPjCvn7WtuPLxgRxXP4/a0hitKTpfQiEy5JVcez/WdWvhImM=
-X-Received: by 2002:a0d:d614:0:b0:609:e710:3a32 with SMTP id
- y20-20020a0dd614000000b00609e7103a32mr7648479ywd.12.1710771415485; Mon, 18
- Mar 2024 07:16:55 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710771451; x=1711376251;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=ME6ksLF4MpzhmHVbYXi2u6r0c/TRTWgp1dMRqLVgFwU=;
+        b=hFoFtCQw9454kRRAHnf3tyNCtvpL6sr+6ObOHZcoq/kqefWyqv732c9Xf6RPMQgrTw
+         2FH6m/IuajsuHC9QB6cqCxfdb62JprH3/6K1TnIkrTemMW70fxf7A74YTCpTKrXS9euE
+         fcxowFOp0R188Cduq49MMnxXZ90CMR3ojkAKvrd1fbWtzml/QMyBp3mnqYUxKSqlUt2A
+         yV1jgERXqsSrn2i6ZOPCHc6ikS/eqC/ayyOY2rXEt5UJYe960W6GMOQcZVDZz2We/P6i
+         vGDGDy4p7kupDbKj6LZzEOkYn2ntJuewtC7I+vmm8bPpA7c9lYBQGCvxqoITbNW6Ucnq
+         mpNw==
+X-Forwarded-Encrypted: i=1; AJvYcCWZZ634Nmeqou2vwVmTyLxp9DG6w8qvDAsaI9TEcNXQaChsQjuEHf3SHzqzp7XUy7fxxdfOIm2xUaTJleWtUuKn3Rlnfg4JgBOBiT07
+X-Gm-Message-State: AOJu0Yzx6cSvGLCnNDbRc0fqK8aYMs2fncEUIvhfXf5AvlIbbX1mBS5M
+	OY5Tl43KAB/vB94vN4D0hFbJRkLJqTbAhHGiv7BS2P/v0MGRbvaIhzu87RcBpyJf4+uuBQHXtJF
+	EnrbArf+mLMd3+g9uOhZTw0YD8mZE8m758ImLpg==
+X-Google-Smtp-Source: AGHT+IFV3lnYog2QCYliVIypmWM0EjlzA1MG9cFe6FTWDujKfk7Qq020WT7L6jVTGy2B45+hBQUIH0K8ogOutG9URJw=
+X-Received: by 2002:a2e:aa98:0:b0:2d4:31a0:6adf with SMTP id
+ bj24-20020a2eaa98000000b002d431a06adfmr6804803ljb.24.1710771451026; Mon, 18
+ Mar 2024 07:17:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318-apss-ipq-pll-cleanup-v1-0-52f795429d5d@gmail.com> <20240318-apss-ipq-pll-cleanup-v1-2-52f795429d5d@gmail.com>
-In-Reply-To: <20240318-apss-ipq-pll-cleanup-v1-2-52f795429d5d@gmail.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Mon, 18 Mar 2024 16:16:44 +0200
-Message-ID: <CAA8EJpo2Vo-XqstNk69dWW8pqNkGi0tz3UmHY7j6LLKd-yH22w@mail.gmail.com>
-Subject: Re: [PATCH 2/5] clk: qcom: apss-ipq-pll: use an 1-D array for Huayra
- pll register offsets
-To: Gabor Juhos <j4g8y7@gmail.com>
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
-	linux-kernel@vger.kernel.org
+References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+ <ZfX5jynjW4M9pvw1@surfacebook.localdomain> <20240318124041.0000032d@Huawei.com>
+ <CAHp75VeQcvuEy4V6-+3PeWTZJ9=Qae0AiiNB93OOw3wuc-uh3A@mail.gmail.com>
+In-Reply-To: <CAHp75VeQcvuEy4V6-+3PeWTZJ9=Qae0AiiNB93OOw3wuc-uh3A@mail.gmail.com>
+From: David Lechner <dlechner@baylibre.com>
+Date: Mon, 18 Mar 2024 09:17:19 -0500
+Message-ID: <CAMknhBG4OAc=qsZZrahYBiwOEK=XM3pUWup9O5J5W4dMCS4FUw@mail.gmail.com>
+Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+Cc: Jonathan Cameron <Jonathan.Cameron@huawei.com>, Jonathan Cameron <jic23@kernel.org>, 
+	Michael Hennerich <michael.hennerich@analog.com>, =?UTF-8?B?TnVubyBTw6E=?= <nuno.sa@analog.com>, 
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, 18 Mar 2024 at 13:20, Gabor Juhos <j4g8y7@gmail.com> wrote:
+On Mon, Mar 18, 2024 at 8:10=E2=80=AFAM Andy Shevchenko
+<andy.shevchenko@gmail.com> wrote:
 >
-> The 'ipq_pll_offsets' is defined as a two-dimensional array, but it
-> contains a sole element only so convert it to an one-dimensional
-> array. Also, rename the variable to better reflect that it is used
-> for the Huayra PLLs.
+> On Mon, Mar 18, 2024 at 2:41=E2=80=AFPM Jonathan Cameron
+> <Jonathan.Cameron@huawei.com> wrote:
+> > > >  struct ad7944_adc {
+> > > >     struct spi_device *spi;
+> > > > +   enum ad7944_spi_mode spi_mode;
+> > > >     /* Chip-specific timing specifications. */
+> > > >     const struct ad7944_timing_spec *timing_spec;
+> > > >     /* GPIO connected to CNV pin. */
+> > > > @@ -58,6 +75,9 @@ struct ad7944_adc {
+> > > >      } sample __aligned(IIO_DMA_MINALIGN);
+> > > >  };
+> > >
+> > > Have you run `pahole` to see if there is a better place for a new mem=
+ber?
+> >
+> > I know this matters for structures where we see lots of them, but do we=
+ actually
+> > care for one offs?  Whilst it doesn't matter here I'd focus much more
+> > on readability and like parameter grouping for cases like this than was=
+ting
+> > a few bytes.
 >
-> No functional changes.
->
-> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
-> ---
->  drivers/clk/qcom/apss-ipq-pll.c | 22 ++++++++++------------
->  1 file changed, 10 insertions(+), 12 deletions(-)
->
-> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
-> index ed3e6405f99cb..f5c7eaf8db374 100644
-> --- a/drivers/clk/qcom/apss-ipq-pll.c
-> +++ b/drivers/clk/qcom/apss-ipq-pll.c
-> @@ -13,22 +13,20 @@
->   * are different from the one mentioned in the clk-alpha-pll.c, since the
->   * PLL is specific to APSS, so lets the define the same.
->   */
-> -static const u8 ipq_pll_offsets[][PLL_OFF_MAX_REGS] = {
-> -       [CLK_ALPHA_PLL_TYPE_HUAYRA] =  {
-> -               [PLL_OFF_L_VAL] = 0x08,
-> -               [PLL_OFF_ALPHA_VAL] = 0x10,
-> -               [PLL_OFF_USER_CTL] = 0x18,
-> -               [PLL_OFF_CONFIG_CTL] = 0x20,
-> -               [PLL_OFF_CONFIG_CTL_U] = 0x24,
-> -               [PLL_OFF_STATUS] = 0x28,
-> -               [PLL_OFF_TEST_CTL] = 0x30,
-> -               [PLL_OFF_TEST_CTL_U] = 0x34,
-> -       },
-> +static const u8 ipq_pll_huayra_regs[PLL_OFF_MAX_REGS] = {
-> +       [PLL_OFF_L_VAL] = 0x08,
-> +       [PLL_OFF_ALPHA_VAL] = 0x10,
-> +       [PLL_OFF_USER_CTL] = 0x18,
-> +       [PLL_OFF_CONFIG_CTL] = 0x20,
-> +       [PLL_OFF_CONFIG_CTL_U] = 0x24,
-> +       [PLL_OFF_STATUS] = 0x28,
-> +       [PLL_OFF_TEST_CTL] = 0x30,
-> +       [PLL_OFF_TEST_CTL_U] = 0x34,
->  };
+> This is _also_ true, but think more about cache line contamination.
+> Even not-so-important bytes may decrease the performance. In some
+> cases it's tolerable, in some it is not (high-speed ADC). In general I
+> assume that the developer has to understand many aspects of the
+> software and cache line contamination may be last but definitely not
+> least.
 
-Can you please move this to clk_alpha_pll? We can then drop it from
-clk-cbf-8996.c too.
-
->
->  static struct clk_alpha_pll ipq_pll_huayra = {
->         .offset = 0x0,
-> -       .regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_HUAYRA],
-> +       .regs = ipq_pll_huayra_regs,
->         .flags = SUPPORTS_DYNAMIC_UPDATE,
->         .clkr = {
->                 .enable_reg = 0x0,
->
-> --
-> 2.44.0
->
->
-
-
--- 
-With best wishes
-Dmitry
+Where could someone who doesn't know anything about cache line
+contamination learn more about it? (searching the web for that phrase
+doesn't turn up much)
 
