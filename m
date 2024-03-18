@@ -1,172 +1,117 @@
-Return-Path: <linux-kernel+bounces-106795-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106796-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7E5EE87F3D8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:12:34 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6932287F3DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:16:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D94A1B215BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:12:31 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 985291C2128C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:16:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59A295D483;
-	Mon, 18 Mar 2024 23:12:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 304D45D914;
+	Mon, 18 Mar 2024 23:16:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="hvqVWd7f"
-Received: from mail-ua1-f52.google.com (mail-ua1-f52.google.com [209.85.222.52])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="ApfgFdHq"
+Received: from mail-pj1-f73.google.com (mail-pj1-f73.google.com [209.85.216.73])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 134AB5CDF7
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:12:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D4A75D8E5
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:16:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.73
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710803546; cv=none; b=bIXkp2XbxKRrXo67Jdux33S5YtQFv/lmXmUrbsv8ItGXzkI5SBSQDlTrA5RLInef9+JTm6FDlD7t6nQ+NE6a43mfBHDTRDAqmIxxraPZz0hakDxPaWeRN0LZkMzIc1FwqKptNbO1wpFsgH8dkljDkLTAfSrKYlc4Jd8myLFlP2Y=
+	t=1710803775; cv=none; b=l/n3AgLd0w5WEnOV/kc6+BNRV0sqUr+d8BMWvKtTnsNCnS/37KDPZG9+uuJ/26j6ixztpFuMIpOUWt9An0QdrDyWt3CajNGfrPfqp5UGLTii0R8Ox8h0CH83h2d74Ls3cWUXNsdVnCjmNahNr5DKfw41ouC6kvRRD4GUG7kk4ac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710803546; c=relaxed/simple;
-	bh=NG8z/DxOrpQGQkKs2gp5YXEcjaCTSb7v4M1rxRAteGM=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=GHsMjQ8b7CWdn25MUV8HSEoJuGdcvbTqNR/hbFWFZQrIvWttAMWvIHlB6CY6iRLQA89zptvf/d1z2XLr8pYcqsGEkF9pwF+JSl9Fftug1J57xZgS5zLbhguklVbCUWaUZ5ZSvjw7/jRMbRbFE8gChK1SM9pJLXJ8Lh+7TRp2KVM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=hvqVWd7f; arc=none smtp.client-ip=209.85.222.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ua1-f52.google.com with SMTP id a1e0cc1a2514c-7de17974a6fso2007973241.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:12:24 -0700 (PDT)
+	s=arc-20240116; t=1710803775; c=relaxed/simple;
+	bh=CHxdl6kAXtZp0a3hKo/dM7poV0nO/vJGX8P8Nu3+bDA=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=O6EJY6gkbVrUaUueplvUiVLBxnyzChwal3VqeXxucG8V9XbiuwtSCG12yDJbWuujd0wJ3FIqXX8Kpzzixu8pT4JtNjoWNQstq+rQcBNKunBuWlaK8EtU900xFrPMIVgtMVpWL7gVJHFfVyn/yq5Qnuxtk/Zd825FkkPgMAasi7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=ApfgFdHq; arc=none smtp.client-ip=209.85.216.73
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pj1-f73.google.com with SMTP id 98e67ed59e1d1-29df49083afso2682213a91.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:16:13 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710803544; x=1711408344; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=co75mbG3pWST74knvXilbjAm8wLeoltnx/M2lNlSSf8=;
-        b=hvqVWd7f8lptmL3WuOi4ailbVzSukL8Gp1fetAYIFBBXYydefL2dz+2cvcHAcNValH
-         FBFxcLA7YG8avdbFsFG9U4l5l7DeRXj17cLao3eX779sC18+deSxo3xOv96cAMbWpghS
-         7MUqNn6+b5aOUThM+9Bw+Zm7jyc8wqVUqaKPNsk9HodsWylUZEPa1daM2dostVQnNnDH
-         ueIuRdKc1SLz8A3YFZjlGvGN0Oi+Cc44pb6V/dyWBHAtgI1vpxjDEKKPOZfCNE6N3aNl
-         0nQ+6E67Ubqw2lAnx2Ud06Q7IOtAHQXtAvCV5Zm6lK1qbLljKdDDHDjt+4ttuVZ779gt
-         0IUw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710803544; x=1711408344;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=google.com; s=20230601; t=1710803773; x=1711408573; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=co75mbG3pWST74knvXilbjAm8wLeoltnx/M2lNlSSf8=;
-        b=p/dfQZX5nKvuA6GwquQGhiSAyGCiq2EvNOhl/+HzZrpbHFCVWqsS93qGmMXkXlHRoy
-         T+dYzfpRyOTgmq93vp1HPHuM1LGe9Yptqh/MlPXboRa7MbN657A264BJwtCDY7L7DUyM
-         +h1JsqiNBgV6/ZH94r2hD6jA7UrIoledB0WxdI2rU4dBx6u11T5zH8igy7+ewh2LYy1v
-         oGsi62HWLZqa+UeAQL/rev2aj1K4bp0Cxzsd/RILPV1R7ScIDXyNhSXAVTTBT0FNjWmO
-         ev5oEr3KsTA7Ih7J58MefNTlYgBkAc8OWWETydUfppbvfx1TVOb3o1iloH2gpBfbjXLG
-         5zlg==
-X-Forwarded-Encrypted: i=1; AJvYcCWk/Tmo0NSrmZYiczByY/ku/RpgUBplfMSHVGvDTBpf2Z6ojljvH0kvhxTlSF8PuRHTH8UZ5NuOtDk/8ZgGBX9m+AgFrai5H7orkJ+s
-X-Gm-Message-State: AOJu0YxGIPltCweWoyxeMz4uKKUc+5LeBTjHTUyKrdjs+Wa3LDmrPkhd
-	22IKKbzbZAGtXbrmq+v9TmD3D/zlyB5DkqPjp7JmRme6tXqR+Yonmq0yXnvuG0SfjldbuIOvaaq
-	AX03NPc/YWI6xb11xyd0wzrisC3Y=
-X-Google-Smtp-Source: AGHT+IH9we0pIW9qQXR/OE/uny3WFqaQqRISrT5OAHOcUKmginDEs3dKSSY65MbfvwYIExrLFoT8L8FtRC49QFDh2ZQ=
-X-Received: by 2002:a05:6122:20a2:b0:4d3:36b9:2c26 with SMTP id
- i34-20020a05612220a200b004d336b92c26mr12222400vkd.14.1710803543933; Mon, 18
- Mar 2024 16:12:23 -0700 (PDT)
+        bh=712Uq95Ye80r9VKiZLIOk45Be4JzcIlUt71r/EgKKMo=;
+        b=ApfgFdHqACTeUsaZ22yMNig5nznpsFysY53xcdyQhu+hYPv5Jwe4o8lNEoWkYB0aA4
+         FEfkBsyUYGk2IZf/MAAhxrcyyla1uxnDN4X/mi+cYr1dBuW7KhIuoux0E0Bz8A0d/qAM
+         +ZjPQAWETMUwk6uvlkGTU03++cPsDbTMX6xN1jx1QJukYeL17QujgcTHR4FivJvvsvr7
+         4V97E4okpcz05DTVDMChkmYChWmyfL3smlVlbzmSNavBKaQ1xldqguDcKrvQOzCEXh+i
+         MbsJ3CnjsYQD/Q1mXuBejRWV86EUsiKWsna2z8vcYnCh13kZz8dUExoMd8HakkYv4JbI
+         t0HQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710803773; x=1711408573;
+        h=cc:to:from:subject:message-id:mime-version:date:reply-to
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=712Uq95Ye80r9VKiZLIOk45Be4JzcIlUt71r/EgKKMo=;
+        b=AIGi/vGKjaEuSGITqKR9PF1LlrGIXrv6UT/ZACT9QW1m1kVm9GVO0aJd++mah9aq1t
+         kgD6qWXpQ6kW2wQI63lCNms1plu9jUlSJ2MFIbeJWQYWfxHaXJlqtKRK5s6Od8lg8URA
+         /+SsF0EfZEW8GWCtGJ4QWpNKq3Upz+jAAuuA1YrewcuKIdBv/CaGjlye1VCqDXCppaM0
+         1sUXVeQaXO8XItNQNgpxwBgJYRyYkC85cxGv0671oy1PFrHCQ8dXevgbImo9lHTkFPIi
+         lEucPs/2TmGHCEEcg9oQCC9lucjTpTdxNAzb8+45303DseWPzl4WXCiT4Ug8NDA7y8K9
+         Me8Q==
+X-Forwarded-Encrypted: i=1; AJvYcCWYJC08z4qr8qBxjeFHA6JkXsc8RKpb1ctARkr8VJ9RrPOkDtWl5WgJ6muDdEotcRwqlyuaTNkCnczZsrDcxwKpij32W3+pCPRSc/DV
+X-Gm-Message-State: AOJu0YwLxbL1wvA0SipQg1QoBUMEbXD7fqlEpuNNeSMYQJQivqd3iO1a
+	Ug5OaeIr2hOM4ofdxb5Bp5lpMGdsbmNvzFbLb7Ukugcy75wgNROtrNcwy1NKySE16r7+qWy6k9f
+	g/Q==
+X-Google-Smtp-Source: AGHT+IEJCS4sso9+BDUHjE08Zy8XM+CBXBCA9eeN7sJX1a/RvK/k4u2k/DK1M0owQMR4EL87j5D4U3ec98c=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:90a:c582:b0:29b:f557:3ebb with SMTP id
+ l2-20020a17090ac58200b0029bf5573ebbmr36131pjt.9.1710803773342; Mon, 18 Mar
+ 2024 16:16:13 -0700 (PDT)
+Reply-To: Sean Christopherson <seanjc@google.com>
+Date: Mon, 18 Mar 2024 16:16:09 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240318230013.87543-1-21cnbao@gmail.com> <CAJD7tkYVJHsWoaEkTiTigJRzSNBrRSg3YVAL3Q5Q96cLSNJZrQ@mail.gmail.com>
-In-Reply-To: <CAJD7tkYVJHsWoaEkTiTigJRzSNBrRSg3YVAL3Q5Q96cLSNJZrQ@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 19 Mar 2024 12:12:12 +1300
-Message-ID: <CAGsJ_4wqPuZc47h=QRPForrxinhG3cvoh4VupLyDRo_uhneC-g@mail.gmail.com>
-Subject: Re: [PATCH] mm: zswap: fix kernel BUG in sg_init_one
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: hannes@cmpxchg.org, nphamcs@gmail.com, akpm@linux-foundation.org, 
-	chrisl@kernel.org, v-songbaohua@oppo.com, linux-mm@kvack.org, 
-	linux-kernel@vger.kernel.org, ira.weiny@intel.com, 
-	syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240318231609.2958332-1-seanjc@google.com>
+Subject: [GIT PULL] KVM: x86: Late CPUID related fix for 6.9
+From: Sean Christopherson <seanjc@google.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Sean Christopherson <seanjc@google.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 12:06=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> On Mon, Mar 18, 2024 at 4:00=E2=80=AFPM Barry Song <21cnbao@gmail.com> wr=
-ote:
-> >
-> > From: Barry Song <v-songbaohua@oppo.com>
-> >
-> > sg_init_one() relies on linearly mapped low memory for the safe
-> > utilization of virt_to_page(). Consequently, we have two choices:
-> > either employ kmap_to_page() alongside sg_set_page(), or resort to
-> > copying high memory contents to a temporary buffer residing in low
-> > memory. However, considering the introduction of the WARN_ON_ONCE
-> > in commit ef6e06b2ef870 ("highmem: fix kmap_to_page() for
-> > kmap_local_page() addresses"), which specifically addresses high
-> > memory concerns, it appears that memcpy remains the sole viable
-> > option.
-> >
-> > Reported-and-tested-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotma=
-il.com
-> > Closes: https://lore.kernel.org/all/000000000000bbb3d80613f243a6@google=
-com/
-> > Fixes: 270700dd06ca ("mm/zswap: remove the memcpy if acomp is not sleep=
-able")
-> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
-> > ---
-> >  mm/zswap.c | 5 +++--
-> >  1 file changed, 3 insertions(+), 2 deletions(-)
-> >
-> > diff --git a/mm/zswap.c b/mm/zswap.c
-> > index 9dec853647c8..17bf6d87b274 100644
-> > --- a/mm/zswap.c
-> > +++ b/mm/zswap.c
-> > @@ -1080,7 +1080,8 @@ static void zswap_decompress(struct zswap_entry *=
-entry, struct page *page)
-> >         mutex_lock(&acomp_ctx->mutex);
-> >
-> >         src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
-> > -       if (acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) =
-{
-> > +       if ((acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool))=
- ||
-> > +           !virt_addr_valid(src)) {
->
->
-> Would it be better to explicitly check is_kmap_addr() here? I am
-> particularly worried about hiding a bug where the returned address
-> from zpool_map_handle() is not a kmap address, but also not a valid
-> linear mapping address.
->
-> If we use is_kmap_addr() here, then the virt_addr_valid() check in
-> sg_init_one() will catch any non-kmap non-linear mapping addresses.
-> WDYT? Am I being paranoid? :)
+Another small series for 6.9.  In hindsight, I could have squeezed this into the
+"misc" PR, but since it was from Vitaly, my mind thought "Hyper-V!" and I put in
+kvm-x86/hyperv.  *sigh*
 
-we have a possibility that a userspace buffer or vmalloc address is given t=
-o
-sg_init_one, then it is non-kmap non-linear. but is it possible someday som=
-e
-people return a vmalloc/vmap address from zpool_map_handle() in the future?
-then we still need !virt_addr_valid().
+FWIW, I'm hoping to eliminate this sort of bug in KVM_SET_CPUID{2,} by swapping
+the incoming CPUID with the current CPUID, and undoing the swap on failure,  But
+that's firmly a future cleanup (if it even works).
 
->
-> Also, I think a comment would be nice to explain the cases where we
-> need to use a temporary buffer since we have two different cases now.
+The following changes since commit 41bccc98fb7931d63d03f326a746ac4d429c1dd3:
 
-that makes sense.
+  Linux 6.8-rc2 (2024-01-28 17:01:12 -0800)
 
->
-> >
-> >                 memcpy(acomp_ctx->buffer, src, entry->length);
-> >                 src =3D acomp_ctx->buffer;
-> >                 zpool_unmap_handle(zpool, entry->handle);
-> > @@ -1094,7 +1095,7 @@ static void zswap_decompress(struct zswap_entry *=
-entry, struct page *page)
-> >         BUG_ON(acomp_ctx->req->dlen !=3D PAGE_SIZE);
-> >         mutex_unlock(&acomp_ctx->mutex);
-> >
-> > -       if (!acomp_ctx->is_sleepable || zpool_can_sleep_mapped(zpool))
-> > +       if (src !=3D acomp_ctx->buffer)
-> >                 zpool_unmap_handle(zpool, entry->handle);
-> >  }
-> >
-> > --
-> > 2.34.1
-> >
+are available in the Git repository at:
+
+  https://github.com/kvm-x86/linux.git tags/kvm-x86-pvunhalt-6.9
+
+for you to fetch changes up to c2585047c8e185b070ad5c7bd887ef59cee3941f:
+
+  KVM: selftests: Check that PV_UNHALT is cleared when HLT exiting is disabled (2024-03-06 09:59:20 -0800)
+
+----------------------------------------------------------------
+Fix a bug in KVM_SET_CPUID{2,} where KVM looks at the wrong CPUID entries (old
+vs. new) and ultimately neglects to clear PV_UNHALT from vCPUs with HLT-exiting
+disabled.
+
+----------------------------------------------------------------
+Vitaly Kuznetsov (3):
+      KVM: x86: Introduce __kvm_get_hypervisor_cpuid() helper
+      KVM: x86: Use actual kvm_cpuid.base for clearing KVM_FEATURE_PV_UNHALT
+      KVM: selftests: Check that PV_UNHALT is cleared when HLT exiting is disabled
+
+ arch/x86/kvm/cpuid.c                               | 44 +++++++++++++---------
+ .../selftests/kvm/include/x86_64/processor.h       |  9 +++++
+ tools/testing/selftests/kvm/x86_64/kvm_pv_test.c   | 39 +++++++++++++++++++
+ 3 files changed, 75 insertions(+), 17 deletions(-)
 
