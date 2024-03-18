@@ -1,114 +1,105 @@
-Return-Path: <linux-kernel+bounces-105847-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105848-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 738A787E568
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:09:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6011687E56B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:10:59 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A2DF41C215FC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:09:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D8FD0B213C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:10:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0296C28DDA;
-	Mon, 18 Mar 2024 09:09:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02E728E0B;
+	Mon, 18 Mar 2024 09:10:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="d/gmm4Ds"
-Received: from mail-wm1-f53.google.com (mail-wm1-f53.google.com [209.85.128.53])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="DLf/Pa1n"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8885128E0F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:09:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 890F628DB3
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:10:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710752953; cv=none; b=QxQn+DLvXs+b7NS72gC71RwfsMwJnhqzQPy/qHtM55qk4jtpKYKcvxihRIVWpVGia112sK+Kvt6KXNGo8vYPAXqQbaPuoAtPpKX0qs8VpfGVALE5/hoCYH21JteeZfsXvd37MEHwW5Z3GlhyabD2/QWLF2S2cmqpCpCNh2GOB3E=
+	t=1710753048; cv=none; b=Df7Bs88urhF84lRXyzzw2wywNUzozcM8GrhYorp4+jUXWSiXDpFsEv6kJmvPpDx3UZZ0z7e1W4kwe50z40rWVl3U78p6CyAzxawIxFnCmlPhLYgtvxYTa+GaU6nll04u7LkAJwSUCeP4HvKfBgPVOuE0bWJL8hNfL4/Q7HmTfJw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710752953; c=relaxed/simple;
-	bh=IVUpohtzR+EG1KfJKPwzKREt/qsTSP9YwSmRK7S/FPQ=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=cgdSFAtc+bxP+OM+w7m25xknnu0ZNbVOmu9mIpdQGf2ClVrE2WgQbWXgFvj9S/kMBl3drTbzcrB1bEvzu7sdrWkPEUs7EM5l0i+e4okO63Lsi01xkt5a+ncnwZroMqGJqYj/4+GSDDoyWKTXJ4jecW9Ns9ZuRjbBdQsqeMkI/Ko=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=d/gmm4Ds; arc=none smtp.client-ip=209.85.128.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f53.google.com with SMTP id 5b1f17b1804b1-412e784060cso29520865e9.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:09:09 -0700 (PDT)
+	s=arc-20240116; t=1710753048; c=relaxed/simple;
+	bh=GMZ677o8MXMXiSv4h8mvXL5gZjYj5c1FwMqptPvTaEM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=X4MIppVs3tx8ENsR8mTow7COE9AwrK5gNzSROOXjLMwIZlKVMO76obhnfRTze2BPZj7z6caF4A1KcLOlnD6ia9uN4LeKrhU0zICSUuPa4s5Aisg/5GzAHlxGb5IBEHNwobOFMdUdyUeubxwNlrmVz853QCDdrDuXwfnGCfZfhio=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=DLf/Pa1n; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-3662feb90a8so30877375ab.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:10:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710752948; x=1711357748; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=TjcfkHxBxUl/qIQt/Ofx5WFnmYUZXoas2jOxK15tT+U=;
-        b=d/gmm4DseuP3Xk+ijzpy6VhIkwUwssvpwcLNrYXt1EvUOXfYkBw2sln2QR9MIjHUst
-         WOtLPS6tVFWRI1Le35R8vMWFgzejONuMAdOzbR00X9I+BiOixpliLXcIQEFhpmEUp3aY
-         8qVztldnSzulMLqgA4Y1QHpl1wbhsQWGn9O3QrJkg3H6PFm+qARdUIAOOna7RXGRMnOJ
-         Kc1FyZ/zWDHgsBK/WtRteia4Y36+MZ1Q9W8MLA1M/yKUTva/RW5cUhnELldnJQS+WCJX
-         xNvSxlbIvmYH+qDmSRHOXGx/fJeWTQbmyCCOur77yReI+dykVByZcSBsRAZybaYcc89Q
-         POqw==
+        d=chromium.org; s=google; t=1710753045; x=1711357845; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KgQV9frW8RnICjhCsBOh9fiyAly3vsXKMsPIiymkwaQ=;
+        b=DLf/Pa1nakucNoxiQta7N9uay6nDaNJ/R8cLZRFfVe5emAfTQRImEw+mtZZgHv/zaX
+         K6B9DLGIaxsJmsGiOU3U0BhNQ2rsDHUticwPz5YK70HRas7J1yOOBJefcjzIh8wu7Oo0
+         /9kDuBKLpkmj0cOdwP1EfTUfVfDmtONxCO8zg=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710752948; x=1711357748;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=TjcfkHxBxUl/qIQt/Ofx5WFnmYUZXoas2jOxK15tT+U=;
-        b=myjHRpDcand6paQODJWq+tXD23ko9EkWwnM+1350KDpX5eN8+uxPZYzwcaL/o8kAWR
-         hHSmq2Nts/RJGK+WuzIpVrbyeKhLqnXSzbgx/cy10kkWr/qdS7uUfOmQ4YdRuI4UpH+G
-         iHrHO3Xrad51T71tV2y0BqsWJxvgR4tpx4c2Lo0VRHZN6gQ7hwYqP039piVf8Z8GehsP
-         l02dUxwGXocx7NKxVFi31DGotIT/5v7BCyQxWOHogBtDH2GmhJd99D8mavRdLKpDCwK4
-         E+0UHPD/LAzoZmnBnvnqd2lTt3C4bbhFrlVx1UImFNSs+N6gqiwoG4rN+ktgVPK2vdRX
-         3TEA==
-X-Forwarded-Encrypted: i=1; AJvYcCWgt3LnFC1nxCP6ZhmXTTbuADOrlxEQpY5ngxocFSXSkdKuVXaSZZCMB5/oYylE+TZPhwp7EuUR6ghvjOtMrVD9+VFrw69MR0v7Ar3C
-X-Gm-Message-State: AOJu0YwED41OrLAF250V+WPmlidXxTn+L4++vPwmCmfryHfDzhjjxoDb
-	po/O0JlgEGTTxqM8f+MN+F3FEMabHOBpOQvS5DmuUMjKoggLA1JbNWGxMKpj+D4=
-X-Google-Smtp-Source: AGHT+IGu5diyfcVwRWLR4Yg7B7pmlWNzDuDfX75UM7cmY/NusuEIrSALQsCIn5bPVMuxM9z9I8g2Wg==
-X-Received: by 2002:a05:600c:1d13:b0:414:1072:4b36 with SMTP id l19-20020a05600c1d1300b0041410724b36mr1564266wms.0.1710752948485;
-        Mon, 18 Mar 2024 02:09:08 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id p5-20020a05600c1d8500b00414109c66f7sm2491149wms.38.2024.03.18.02.09.07
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 02:09:08 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Luca Weiss <luca.weiss@fairphone.com>
-Cc: ~postmarketos/upstreaming@lists.sr.ht, phone-devel@vger.kernel.org, 
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org
-In-Reply-To: <20240111-drm-panel-bridge-fixup-v1-1-e06292f6f500@fairphone.com>
-References: <20240111-drm-panel-bridge-fixup-v1-1-e06292f6f500@fairphone.com>
-Subject: Re: [PATCH] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-Message-Id: <171075294759.1615603.8073986785380285265.b4-ty@linaro.org>
-Date: Mon, 18 Mar 2024 10:09:07 +0100
+        d=1e100.net; s=20230601; t=1710753045; x=1711357845;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KgQV9frW8RnICjhCsBOh9fiyAly3vsXKMsPIiymkwaQ=;
+        b=rcHhvsO3GaOPe2ILjHJ9Mo4Enl9jcbu96RUrPWonCIx+HV0bhXssbA/dp6AJDr7nn1
+         k8eOifJbsyfkxC/UqM2zAPvZyYGHkX2SV5xQlPxGtRO/z5Dq/Dl1aptph0/8+bJK11Ti
+         T9FQ0Hx575FjgGfsR+2HLN9r5CVllBCoSQq0bxYr+NoeqdY+LwfIdMcITrl60jqjFRMY
+         1fX565mRM0br8APwzIEzwqol1TFy+BON4vBDK9aJ9aLCUOKlqXlvAP1j4/25DWS4W/C5
+         G0cGndNRxxomrDKmcnByAPUvr2Jae3qnmxVyng/mxaxodcqWUTc5A8y5mQ9h3fAug2Pm
+         uPEg==
+X-Forwarded-Encrypted: i=1; AJvYcCVEFLItka22SQ2sYdaP1A9B38Two0vwlLAOXpgg00U56o0LyTH0Ty0rfNy3/IdWHT27rqy51ACGM3+T9iuN6f1XybvfFLxi012r0s5B
+X-Gm-Message-State: AOJu0YzRAi36VswmXvZsS3it5YXtpwv8mKLv/ZbSdErM1nFopJDY4//F
+	pQSw/KsoTf7awktIy/ihlYyjWUwBpn5MaO3ovQb21uG5Bd625ERXJWCSHD6bZg==
+X-Google-Smtp-Source: AGHT+IG0cB7zGyiKSLMYQArEsPlbj+Pzce168Z3n8zBAgOe+pLyNBhxXOnjnY5ntbeL3bLG/AJUWYQ==
+X-Received: by 2002:a92:6c03:0:b0:366:c678:599 with SMTP id h3-20020a926c03000000b00366c6780599mr1857042ilc.13.1710753045597;
+        Mon, 18 Mar 2024 02:10:45 -0700 (PDT)
+Received: from localhost ([2401:fa00:8f:203:171e:5cf4:dcfa:390f])
+        by smtp.gmail.com with UTF8SMTPSA id f35-20020a635563000000b005dc884e9f5bsm6638068pgm.38.2024.03.18.02.10.43
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 02:10:45 -0700 (PDT)
+From: David Stevens <stevensd@chromium.org>
+X-Google-Original-From: David Stevens <stevensd@google.com>
+To: "Michael S . Tsirkin" <mst@redhat.com>,
+	David Hildenbrand <david@redhat.com>
+Cc: virtualization@lists.linux-foundation.org,
+	linux-kernel@vger.kernel.org,
+	David Stevens <stevensd@chromium.org>
+Subject: [PATCH 0/2] Improvements to virtio_balloon pm
+Date: Mon, 18 Mar 2024 18:10:32 +0900
+Message-ID: <20240318091034.535573-1-stevensd@google.com>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Transfer-Encoding: 8bit
 
-Hi,
+From: David Stevens <stevensd@chromium.org>
 
-On Thu, 11 Jan 2024 13:38:04 +0100, Luca Weiss wrote:
-> Since the kconfig symbol of DRM_PANEL_BRIDGE is only adding
-> bridge/panel.o to drm_kms_helper object, we need to select
-> DRM_KMS_HELPER to make sure the file is actually getting built.
-> 
-> Otherwise with certain defconfigs e.g. devm_drm_of_get_bridge will not
-> be properly available:
-> 
-> [...]
+The virtio_balloon driver uses wakeup sources to allow the guest to
+enter system power management sleep states (e.g. s2idle) without running
+the risk of becoming unresponsive to cooperative memory management
+requests from the host. This series fixes an issue where wakeup sources
+for inflate/deflate were improperly shared between drivers. It also
+closes a race where stats requests that come in immediately before a
+sleep state transition could fail to be handled in a timely manner.
 
-Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-fixes)
+David Stevens (2):
+  virtio_balloon: Give the balloon its own wakeup source
+  virtio_balloon: Treat stats requests as wakeup events
 
-[1/1] drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/e3f18b0dd1db242791afbc3bd173026163ce0ccc
+ drivers/virtio/virtio_balloon.c | 76 ++++++++++++++++++++-------------
+ 1 file changed, 47 insertions(+), 29 deletions(-)
 
+
+base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
 -- 
-Neil
+2.44.0.291.gc1ea87d7ee-goog
 
 
