@@ -1,253 +1,305 @@
-Return-Path: <linux-kernel+bounces-106097-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106098-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 76C5187E917
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:05:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CEE8987E91B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:07:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9515A1C21E64
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:05:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 85D6F282FF6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:07:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3339381B0;
-	Mon, 18 Mar 2024 12:05:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2061337711;
+	Mon, 18 Mar 2024 12:06:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Xzowg3dC"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="UN53Jgfd"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B148B364DA;
-	Mon, 18 Mar 2024 12:05:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 55C5F376F5
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:06:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710763525; cv=none; b=Heh35N8f2ZkbM1zEaHnA/hVX3mJ7c3/cj42nHXQTnVYSecozv/jq17Abh/GZxJHZHkOLR88uztdBbybZ2WBXjo71oi32Ah0+7rMWBVwFOU/Vd0CmRsWLfLV8TFBKjQ503iKFzyfyrgDQAyQVwOEibz/fKKGlSL1irwuS5r3kft4=
+	t=1710763617; cv=none; b=TCpw1mEZN/YmC/NFOXKBXcYKwKVs/fvJo0Tnnq9NVoyjdpJ6YSLTm1XM369rwdtDaBbhcxa+Pr+XtBD6gxwhghon64WmlknKn751eSu3cucpqVfkWWTzumDXukG80N5179k0bYwRa8orYuMAgTNL1EcAqj1SxSEHfKcgvAa1H2Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710763525; c=relaxed/simple;
-	bh=spmrgaz+d/ratRJa6u45mh5Puc6y8qRKDT0QzweebPA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=iaN+1MKrqyuizgS5TQ3U3Eo0iODlxU7SEkWIRdKgcH9jTWN6C/mHObkwQK8JF9G9s+VHdGIMl+yBSO9YtQ2DS9Mr+8wOnDk0wgW1mLs2doieNjrxsdXW/bOh5nafn0/6Ih8bAH1H4euiod1bR0D12RE96CcCkHdxTqQ/8bVM93Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Xzowg3dC; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id E7343C433F1;
-	Mon, 18 Mar 2024 12:05:24 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710763525;
-	bh=spmrgaz+d/ratRJa6u45mh5Puc6y8qRKDT0QzweebPA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Xzowg3dCqvKCrmwUvVrmZOIsNPFQ91DMwOyBdDwGAkpb3RjqIXONdZL/m7DCkru99
-	 nnjm+uEuQtmkeSWSj3GzxIuM+dZZ0Kx+zqXahFUwqZkIvf64vdCUKhMh77dS/roHQ3
-	 17uG5BGhjDelIH0ETt/cjidm7xdOybiRTez3lmLKVoes/btZ1ZL7/ji+evkLIN+JKr
-	 NnD0elvM1gzu5WMMuFSQKsn/ttxyB1UOKTVnJU4YJ/GeFxq2FZHzNzq7ky5cFW1tfs
-	 yyjDyZhHd8YmM5FDcEZ3UkpqfH4GAgFqvEQ09BZlo6fnrxT+fnGzcsae8xxNGBr9SE
-	 bm99p/nQn5vZw==
-Date: Mon, 18 Mar 2024 13:05:22 +0100
-From: Maxime Ripard <mripard@kernel.org>
-To: Ville =?utf-8?B?U3lyasOkbMOk?= <ville.syrjala@linux.intel.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
-	Thomas Zimmermann <tzimmermann@suse.de>, David Airlie <airlied@gmail.com>, 
-	Daniel Vetter <daniel@ffwll.ch>, Jonathan Corbet <corbet@lwn.net>, 
-	Sandy Huang <hjc@rock-chips.com>, Heiko =?utf-8?Q?St=C3=BCbner?= <heiko@sntech.de>, 
-	Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
-	Samuel Holland <samuel@sholland.org>, Hans Verkuil <hverkuil@xs4all.nl>, 
-	Sebastian Wick <sebastian.wick@redhat.com>, dri-devel@lists.freedesktop.org, 
-	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-media@vger.kernel.org, linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v9 14/27] drm/connector: hdmi: Compute bpc and format
- automatically
-Message-ID: <20240318-organic-debonair-beetle-b2817b@houat>
-References: <20240311-kms-hdmi-connector-state-v9-0-d45890323344@kernel.org>
- <20240311-kms-hdmi-connector-state-v9-14-d45890323344@kernel.org>
- <ZfQBPHoAvI1dquEY@intel.com>
+	s=arc-20240116; t=1710763617; c=relaxed/simple;
+	bh=1ucnOX4eBH2Gp0p4Y9VWFs1z6yWidDpAfiK6Vg0nQvo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=uCkH5uLgK0WgYey7M5YeHx3WPLGkn2Zy61MfUWaQ78UtDRxeqsIuijom3v1Q0kwQai3bNlJHxy1zERy6qseTk5ahktsekVZxuoYp34cIgpPJ9AYSh3vrOgYNgsG0UsfkO9HQ1RQpE7WhTgvwLZh/Em8tOHeini/zYGjUYB+I7F4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=UN53Jgfd; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710763614;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=Cfvb4rfMrCjDejQ9hwiY10cL20PKYA901UXEHxyf/eY=;
+	b=UN53JgfdT8b6xrPqf3AtYqz+c69++a+AVZEff/bmWZfgEQaYS6HQCMZq3LrsO/R6+maj/u
+	t8J2e+P3HFRy3dvp8o/BOHIz+HHYgX7fwUxpat6sr3jQUHwNipTPx/HKHd1zfiMzN7XAMK
+	ebY4DM1IbId86W1+4pr4JVRpim506G4=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-151-As0tlG6dPpmcA6X8wT67zQ-1; Mon, 18 Mar 2024 08:06:52 -0400
+X-MC-Unique: As0tlG6dPpmcA6X8wT67zQ-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 0BAA687A9FA;
+	Mon, 18 Mar 2024 12:06:52 +0000 (UTC)
+Received: from t14s.redhat.com (unknown [10.39.194.88])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 437CC17A96;
+	Mon, 18 Mar 2024 12:06:50 +0000 (UTC)
+From: David Hildenbrand <david@redhat.com>
+To: linux-kernel@vger.kernel.org
+Cc: virtualization@lists.linux.dev,
+	David Hildenbrand <david@redhat.com>,
+	"Michael S. Tsirkin" <mst@redhat.com>,
+	Jason Wang <jasowang@redhat.com>,
+	Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Subject: [PATCH v1] virtio-mem: support suspend+resume
+Date: Mon, 18 Mar 2024 13:06:45 +0100
+Message-ID: <20240318120645.105664-1-david@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="xdawchznocicixqa"
-Content-Disposition: inline
-In-Reply-To: <ZfQBPHoAvI1dquEY@intel.com>
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
+With virtio-mem, primarily hibernation is problematic: as the machine shuts
+down, the virtio-mem device loses its state. Powering the machine back up
+is like losing a bunch of DIMMs. While there would be ways to add limited
+support, suspend+resume is more commonly used for VMs and "easier" to
+support cleanly.
 
---xdawchznocicixqa
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+s2idle can be supported without any device dependencies. Similarly, one
+would expect suspend-to-ram (i.e., S3) to work out of the box. However,
+QEMU currently unplugs all device memory when resuming the VM, using a
+cold reset on the "wakeup" path. In order to support S3, we need a feature
+flag for the device to tell us if memory remains plugged when waking up. In
+the future, QEMU will implement this feature.
 
-Hi Ville,
+So let's always support s2idle and support S3 with plugged memory only if
+the device indicates support. Block hibernation early using the PM
+notifier.
 
-Thanks for your review !
+Trying to hibernate now fails early:
+	# echo disk > /sys/power/state
+	[   26.455369] PM: hibernation: hibernation entry
+	[   26.458271] virtio_mem virtio0: hibernation is not supported.
+	[   26.462498] PM: hibernation: hibernation exit
+	-bash: echo: write error: Operation not permitted
 
-On Fri, Mar 15, 2024 at 10:05:16AM +0200, Ville Syrj=C3=A4l=C3=A4 wrote:
-> On Mon, Mar 11, 2024 at 03:49:42PM +0100, Maxime Ripard wrote:
-> > +static bool
-> > +sink_supports_format_bpc(const struct drm_connector *connector,
-> > +			 const struct drm_display_info *info,
-> > +			 const struct drm_display_mode *mode,
-> > +			 unsigned int format, unsigned int bpc)
-> > +{
-> > +	struct drm_device *dev =3D connector->dev;
-> > +	u8 vic =3D drm_match_cea_mode(mode);
-> > +
-> > +	if (vic =3D=3D 1 && bpc !=3D 8) {
-> > +		drm_dbg(dev, "VIC1 requires a bpc of 8, got %u\n", bpc);
->=20
-> Use of drm_dbg() for kms stuff is surprising.
->=20
-> > +		return false;
-> > +	}
->=20
-> I don't think we have this in i915. My original impression was that you
-> can use higher color depth if you can determine the sink capabilities,
-> but all sinks are required to accept 640x480@8bpc as a fallback.
->=20
-> but CTA-861-H says:
-> "5.4 Color Coding & Quantization
->  Component Depth: The coding shall be N-bit, where N =3D 8, 10, 12, or 16
->  bits/component =E2=80=94 except in the case of the default 640x480 Video=
- Timing 1,
->  where the value of N shall be 8."
->=20
-> So that does seem to imply that you're supposed to use exactly 8bpc.
-> Though the word "default" in there is confusing. Are they specifically
-> using that to indicate that this is about the fallback behaviour, or
-> is it just indicating that it is a "default mode that always has to
-> be supported". Dunno. I guess no real harm in forcing 8bpc for 640x480
-> since no one is likely to use that for any high fidelity stuff.
+s2idle works even without the new feature bit:
+	# echo s2idle > /sys/power/mem_sleep
+	# echo mem > /sys/power/state
+	[   52.083725] PM: suspend entry (s2idle)
+	[   52.095950] Filesystems sync: 0.010 seconds
+	[   52.101493] Freezing user space processes
+	[   52.104213] Freezing user space processes completed (elapsed 0.001 seconds)
+	[   52.106520] OOM killer disabled.
+	[   52.107655] Freezing remaining freezable tasks
+	[   52.110880] Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
+	[   52.113296] printk: Suspending console(s) (use no_console_suspend to debug)
 
-My understanding was that CTA-861 mandates that 640x480@60Hz is
-supported, and mentions it being the default timing on a few occurences,
-like in section 4 - Video Formats and Waveform Timings that states "This
-section describes the default IT 640x480 Video Timing as well as all of
-the standard CE Video Timings.", or Section 6.2 - Describing Video
-Formats in EDID "The 640x480@60Hz flag, in the Established Timings area,
-shall always be set, since the 640x480p format is a mandatory default
-timing."
+S3 does not work without the feature bit when memory is plugged:
+	# echo deep > /sys/power/mem_sleep
+	# echo mem > /sys/power/state
+	[   32.788281] PM: suspend entry (deep)
+	[   32.816630] Filesystems sync: 0.027 seconds
+	[   32.820029] Freezing user space processes
+	[   32.823870] Freezing user space processes completed (elapsed 0.001 seconds)
+	[   32.827756] OOM killer disabled.
+	[   32.829608] Freezing remaining freezable tasks
+	[   32.833842] Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
+	[   32.837953] printk: Suspending console(s) (use no_console_suspend to debug)
+	[   32.916172] virtio_mem virtio0: suspend+resume with plugged memory is not supported
+	[   32.916181] virtio-pci 0000:00:02.0: PM: pci_pm_suspend(): virtio_pci_freeze+0x0/0x50 returns -1
+	[   32.916197] virtio-pci 0000:00:02.0: PM: dpm_run_callback(): pci_pm_suspend+0x0/0x170 returns -1
+	[   32.916210] virtio-pci 0000:00:02.0: PM: failed to suspend async: error -1
 
-So my understanding is that default here applies to the timing itself,
-and not the bpc, and is thus the second interpretation you suggested.
+But S3 works with the new feature bit when memory is plugged (patched
+QEMU):
+	# echo deep > /sys/power/mem_sleep
+	# echo mem > /sys/power/state
+	[   33.983694] PM: suspend entry (deep)
+	[   34.009828] Filesystems sync: 0.024 seconds
+	[   34.013589] Freezing user space processes
+	[   34.016722] Freezing user space processes completed (elapsed 0.001 seconds)
+	[   34.019092] OOM killer disabled.
+	[   34.020291] Freezing remaining freezable tasks
+	[   34.023549] Freezing remaining freezable tasks completed (elapsed 0.001 seconds)
+	[   34.026090] printk: Suspending console(s) (use no_console_suspend to debug)
 
-I'll add a comment to make it clearer.
+Cc: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Jason Wang <jasowang@redhat.com>
+Cc: Xuan Zhuo <xuanzhuo@linux.alibaba.com>
+Signed-off-by: David Hildenbrand <david@redhat.com>
+---
 
-> > +static int
-> > +hdmi_compute_format(const struct drm_connector *connector,
-> > +		    struct drm_connector_state *state,
-> > +		    const struct drm_display_mode *mode,
-> > +		    unsigned int bpc)
-> > +{
-> > +	struct drm_device *dev =3D connector->dev;
-> > +
-> > +	if (hdmi_try_format_bpc(connector, state, mode, bpc, HDMI_COLORSPACE_=
-RGB)) {
-> > +		state->hdmi.output_format =3D HDMI_COLORSPACE_RGB;
-> > +		return 0;
-> > +	}
-> > +
-> > +	if (hdmi_try_format_bpc(connector, state, mode, bpc, HDMI_COLORSPACE_=
-YUV422)) {
-> > +		state->hdmi.output_format =3D HDMI_COLORSPACE_YUV422;
-> > +		return 0;
-> > +	}
->=20
-> Looks like you're preferring YCbCr 4:2:2 over RGB 8bpc. Not sure
-> if that's a good tradeoff to make.
+I had QEMU support ready [1] but reset-related things just changed upstream
+that will require a bit of a rework -- and it will end up looking cleaner.
 
-Yeah, indeed. I guess it's a judgement call on whether we prioritise
-lowering the bpc over selecting YUV422, but I guess I can try all
-available RGB bpc before falling back to YUV422.
+Will come back to upstreaming the QEMU part once I can properly sync
+the Linux headers to contain VIRTIO_MEM_F_PERSISTENT_SUSPEND.
 
-> In i915 we don't currently expose 4:2:2 at all because it doesn't
-> help in getting a working display, and we have no uapi for the
-> user to force it if they really want 4:2:2 over RGB.
+[1] https://github.com/davidhildenbrand/qemu/tree/virtio-mem-suspend
 
-I guess if the priority is given to lowering bpc, then it indeed doesn't
-make sense to support YUV422, since the limiting factor is likely to be
-the TMDS char rate and YUV422 12 bpc is equivalent to RGB 8bpc there.
+---
+ drivers/virtio/virtio_mem.c     | 68 ++++++++++++++++++++++++++++++---
+ include/uapi/linux/virtio_mem.h |  2 +
+ 2 files changed, 64 insertions(+), 6 deletions(-)
 
-dw-hdmi on the other hand will always put YUV422 and YUV444 before RGB
-for a given bpc, which is weird to me:
-https://elixir.bootlin.com/linux/latest/source/drivers/gpu/drm/bridge/synop=
-sys/dw-hdmi.c#L2696
+diff --git a/drivers/virtio/virtio_mem.c b/drivers/virtio/virtio_mem.c
+index 8e32232944423..51088d02de32f 100644
+--- a/drivers/virtio/virtio_mem.c
++++ b/drivers/virtio/virtio_mem.c
+@@ -21,6 +21,7 @@
+ #include <linux/bitmap.h>
+ #include <linux/lockdep.h>
+ #include <linux/log2.h>
++#include <linux/suspend.h>
+ 
+ #include <acpi/acpi_numa.h>
+ 
+@@ -252,6 +253,9 @@ struct virtio_mem {
+ 	/* Memory notifier (online/offline events). */
+ 	struct notifier_block memory_notifier;
+ 
++	/* Notifier to block hibernation image storing/reloading. */
++	struct notifier_block pm_notifier;
++
+ #ifdef CONFIG_PROC_VMCORE
+ 	/* vmcore callback for /proc/vmcore handling in kdump mode */
+ 	struct vmcore_cb vmcore_cb;
+@@ -1111,6 +1115,25 @@ static int virtio_mem_memory_notifier_cb(struct notifier_block *nb,
+ 	return rc;
+ }
+ 
++static int virtio_mem_pm_notifier_cb(struct notifier_block *nb,
++				     unsigned long action, void *arg)
++{
++	struct virtio_mem *vm = container_of(nb, struct virtio_mem,
++					     pm_notifier);
++	switch (action) {
++	case PM_HIBERNATION_PREPARE:
++	case PM_RESTORE_PREPARE:
++		/*
++		 * When restarting the VM, all memory is unplugged. Don't
++		 * allow to hibernate and restore from an image.
++		 */
++		dev_err(&vm->vdev->dev, "hibernation is not supported.\n");
++		return NOTIFY_BAD;
++	default:
++		return NOTIFY_OK;
++	}
++}
++
+ /*
+  * Set a range of pages PG_offline. Remember pages that were never onlined
+  * (via generic_online_page()) using PageDirty().
+@@ -2615,11 +2638,19 @@ static int virtio_mem_init_hotplug(struct virtio_mem *vm)
+ 	rc = register_memory_notifier(&vm->memory_notifier);
+ 	if (rc)
+ 		goto out_unreg_group;
+-	rc = register_virtio_mem_device(vm);
++	/* Block hibernation as early as possible. */
++	vm->pm_notifier.priority = INT_MAX;
++	vm->pm_notifier.notifier_call = virtio_mem_pm_notifier_cb;
++	rc = register_pm_notifier(&vm->pm_notifier);
+ 	if (rc)
+ 		goto out_unreg_mem;
++	rc = register_virtio_mem_device(vm);
++	if (rc)
++		goto out_unreg_pm;
+ 
+ 	return 0;
++out_unreg_pm:
++	unregister_pm_notifier(&vm->pm_notifier);
+ out_unreg_mem:
+ 	unregister_memory_notifier(&vm->memory_notifier);
+ out_unreg_group:
+@@ -2897,6 +2928,7 @@ static void virtio_mem_deinit_hotplug(struct virtio_mem *vm)
+ 
+ 	/* unregister callbacks */
+ 	unregister_virtio_mem_device(vm);
++	unregister_pm_notifier(&vm->pm_notifier);
+ 	unregister_memory_notifier(&vm->memory_notifier);
+ 
+ 	/*
+@@ -2960,17 +2992,40 @@ static void virtio_mem_config_changed(struct virtio_device *vdev)
+ #ifdef CONFIG_PM_SLEEP
+ static int virtio_mem_freeze(struct virtio_device *vdev)
+ {
++	struct virtio_mem *vm = vdev->priv;
++
+ 	/*
+-	 * When restarting the VM, all memory is usually unplugged. Don't
+-	 * allow to suspend/hibernate.
++	 * We block hibernation using the PM notifier completely. The workqueue
++	 * is already frozen by the PM core at this point, so we simply
++	 * reset the device and cleanup the queues.
+ 	 */
+-	dev_err(&vdev->dev, "save/restore not supported.\n");
+-	return -EPERM;
++	if (pm_suspend_target_state != PM_SUSPEND_TO_IDLE &&
++	    vm->plugged_size &&
++	    !virtio_has_feature(vm->vdev, VIRTIO_MEM_F_PERSISTENT_SUSPEND)) {
++		dev_err(&vm->vdev->dev,
++			"suspending with plugged memory is not supported\n");
++		return -EPERM;
++	}
++
++	virtio_reset_device(vdev);
++	vdev->config->del_vqs(vdev);
++	vm->vq = NULL;
++	return 0;
+ }
+ 
+ static int virtio_mem_restore(struct virtio_device *vdev)
+ {
+-	return -EPERM;
++	struct virtio_mem *vm = vdev->priv;
++	int ret;
++
++	ret = virtio_mem_init_vq(vm);
++	if (ret)
++		return ret;
++	virtio_device_ready(vdev);
++
++	/* Let's check if anything changed. */
++	virtio_mem_config_changed(vdev);
++	return 0;
+ }
+ #endif
+ 
+@@ -2979,6 +3034,7 @@ static unsigned int virtio_mem_features[] = {
+ 	VIRTIO_MEM_F_ACPI_PXM,
+ #endif
+ 	VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE,
++	VIRTIO_MEM_F_PERSISTENT_SUSPEND,
+ };
+ 
+ static const struct virtio_device_id virtio_mem_id_table[] = {
+diff --git a/include/uapi/linux/virtio_mem.h b/include/uapi/linux/virtio_mem.h
+index e9122f1d0e0cb..6e4b2cf6b7f11 100644
+--- a/include/uapi/linux/virtio_mem.h
++++ b/include/uapi/linux/virtio_mem.h
+@@ -90,6 +90,8 @@
+ #define VIRTIO_MEM_F_ACPI_PXM		0
+ /* unplugged memory must not be accessed */
+ #define VIRTIO_MEM_F_UNPLUGGED_INACCESSIBLE	1
++/* plugged memory will remain plugged when suspending+resuming */
++#define VIRTIO_MEM_F_PERSISTENT_SUSPEND		2
+ 
+ 
+ /* --- virtio-mem: guest -> host requests --- */
+-- 
+2.43.2
 
-What is even weirder to me is that YUV422 is explicitly stated to be
-12bpc only, so there's some invalid configurations there (8 and 10 bpc).
-
-And given that it's order by decreasing order of preference, I'm pretty
-sure it'll never actually pick any YUV or RGB > 8bpc format since RGB
-8bpc is super likely to be always available and thus picked first.
-
-If we want to converge, I think we should amend this code to support
-YUV420 for YUV420-only modes first, and then the RGB options like i915
-is doing. And then if someone is interested in more, we can always
-expand it to other formats.
-
-> > +
-> > +	drm_dbg(dev, "Failed. No Format Supported for that bpc count.\n");
-> > +
-> > +	return -EINVAL;
-> > +}
-> > +
-> > +static int
-> > +hdmi_compute_config(const struct drm_connector *connector,
-> > +		    struct drm_connector_state *state,
-> > +		    const struct drm_display_mode *mode)
-> > +{
-> > +	struct drm_device *dev =3D connector->dev;
-> > +	unsigned int max_bpc =3D clamp_t(unsigned int,
-> > +				       state->max_bpc,
-> > +				       8, connector->max_bpc);
-> > +	unsigned int bpc;
-> > +	int ret;
-> > +
-> > +	for (bpc =3D max_bpc; bpc >=3D 8; bpc -=3D 2) {
-> > +		drm_dbg(dev, "Trying with a %d bpc output\n", bpc);
-> > +
-> > +		ret =3D hdmi_compute_format(connector, state, mode, bpc);
->=20
-> Hmm. Actually I'm not sure your 4:2:2 stuff even works since you=20
-> check for bpc=3D=3D12 in there and only call this based on the max_bpc.
-> I'm not convinced max_bpc would actually be 12 for a sink that
-> supports YCbCr 4:2:2 but not 12bpc RGB.
-
-It's another discussion we had in an earlier version, but yeah we lack
-the infrastructure to support those for now. I still believe it would
-require an increased max_bpc to select YUV422, otherwise things would be
-pretty inconsistent with other YUV formats.
-
-But yeah, we need to provide a hook to report we don't support RGB >
-8bpc for HDMI 1.4 devices. Which goes back to the previous question
-actually, I believe it would still provide value to support YUV422 on
-those devices, with something like:
-
-for (bpc =3D max_bpc; bpc >=3D 8; bpc -=3D 2) {
-    if (!connector->hdmi->funcs->validate_config(mode, RGB, bpc))
-       continue;
-
-    // Select RGB with bpc
-    ...
-}
-
-if (connector->hdmi->funcs->validate_config(mode, YUV) &&
-    hdmi_try_format_bpc(..., mode, 12, YUV422) {
-   // Select YUV422, 12 bpc
-   ...
-}
-
-What do you think?
-
-Maxime
-
---xdawchznocicixqa
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYKAB0WIQRcEzekXsqa64kGDp7j7w1vZxhRxQUCZfguAgAKCRDj7w1vZxhR
-xYX7AP9YL4GNF0yRNJ7z070+Yv3mLmj5X5hTspQ7QEnH+S7OjAD9Fq5i530AZlv4
-skxZS8QVnm8P0o92d7zjzIdrvZFL/QQ=
-=HIYX
------END PGP SIGNATURE-----
-
---xdawchznocicixqa--
 
