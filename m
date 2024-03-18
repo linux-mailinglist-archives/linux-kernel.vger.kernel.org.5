@@ -1,185 +1,173 @@
-Return-Path: <linux-kernel+bounces-106005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106006-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B1B687E763
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:31:26 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E27987E765
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:35:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DD831F22681
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:31:25 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBB711F2278F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:35:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDCA02577D;
-	Mon, 18 Mar 2024 10:31:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 096962206B;
+	Mon, 18 Mar 2024 10:35:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b="adoeg+gC"
-Received: from out30-111.freemail.mail.aliyun.com (out30-111.freemail.mail.aliyun.com [115.124.30.111])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bdABAXjb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9207B1FB5
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:31:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=115.124.30.111
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4831E1FB5
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:35:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710757878; cv=none; b=sbx43t+4W36absMxRKR9CvgbwCXnglPThKGFqVKuSmdOmzZkqebiVaUKjoGSYTLats0YW17Gc5NsGLPSC3QKTKf9jo+e+L51jcEYPU3kBnnqWDSvpauy6X2DtdHO5n33SLIhbARJ0C49EQMwG/kSabJfbssetKyjOXaPGjzZU84=
+	t=1710758146; cv=none; b=sKiuzsBQvP53WSW/+HSzAbUFb7H7eQBVyajZVABjZ+Z8aaWdPhGhTgd/6Q/eMBpMTqSulbBwfuuKpjCBbS03Z4csG52zlCgYJSls8YE3pBIjGb2/KFFKd56laSMgns/Ayfr7X7bquYRRMPpTpbUtrUUIhjjBj4/Jizp57aZ+n2M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710757878; c=relaxed/simple;
-	bh=XYotKAMNzvycl1JG/Q3HI/vrv2SJntIP+AhU4IZD0vs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=YQRLo3NvigHrDsdCankODtnb/zclN8u09a8uWMQY1UqgGO0Qr1Z/q8nNmKDJf1FpkMZ1gf3SF3pJup8I0fCGaLOeTDcqnV3BffRYLeq7wWhRxc95bfbwsZEf9yvWGUQCAbrC602WlZkeR8M2QUoxEfhMz/i0hb32q/a77a4cNH4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com; spf=pass smtp.mailfrom=linux.alibaba.com; dkim=pass (1024-bit key) header.d=linux.alibaba.com header.i=@linux.alibaba.com header.b=adoeg+gC; arc=none smtp.client-ip=115.124.30.111
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.alibaba.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.alibaba.com
-DKIM-Signature:v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=linux.alibaba.com; s=default;
-	t=1710757873; h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type;
-	bh=N+z5yj4errvZzUnsDbH2i/qBxwekB8l9wAKiw6mVF4c=;
-	b=adoeg+gCyGNv1WWfHrujKljcBNQdifgQMgknPj1c4M/rfgBp6Lr5X0EQidqLixgaD/ASaQ5Usriq0A6jKJMI0C9f8NISvC4BEAQ13bFpZz/i58m+Dk2Irr9m3Ylf6VJgpYUhDTUCqCYc14w4I8g5UU/7uHAaUJDY+/cWJe7XmZw=
-X-Alimail-AntiSpam:AC=PASS;BC=-1|-1;BR=01201311R111e4;CH=green;DM=||false|;DS=||;FP=0|-1|-1|-1|0|-1|-1|-1;HT=ay29a033018046050;MF=baolin.wang@linux.alibaba.com;NM=1;PH=DS;RN=10;SR=0;TI=SMTPD_---0W2mJh7n_1710757871;
-Received: from 30.97.56.66(mailfrom:baolin.wang@linux.alibaba.com fp:SMTPD_---0W2mJh7n_1710757871)
-          by smtp.aliyun-inc.com;
-          Mon, 18 Mar 2024 18:31:12 +0800
-Message-ID: <e9e614cd-1df6-4f8b-baef-aaa0a041ec07@linux.alibaba.com>
-Date: Mon, 18 Mar 2024 18:31:10 +0800
+	s=arc-20240116; t=1710758146; c=relaxed/simple;
+	bh=CkgNZo2VZ1mRD1qHIehHKPRG0ccnO/PVak+xrzyRH8k=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=R0+R322FGLisMWEumdRV8s0sbY2GncQ+bvzz+q6EXFWALEIZ2qE285bi/dUkRE00TEH10OCNjozt8ncXA3mCDMvtfG1NhR/APQNfnfIctlkzcR15e7leWp/3SN1xCVkkwAkaDajuGuBmUVYYJD7K9qp/3fDXy76WGZrCeHVRBcA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bdABAXjb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC40FC433C7;
+	Mon, 18 Mar 2024 10:35:44 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710758145;
+	bh=CkgNZo2VZ1mRD1qHIehHKPRG0ccnO/PVak+xrzyRH8k=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=bdABAXjbuipaqAf+DKR+nyxiX48WoCWJl0da45FgNSucOvTNqOxRz6wm53ohZjoHB
+	 zBrMIZmPMxznWjWcVTzQITm+aiyLTe9tLfaiYT8bZky6Fc/6ELKVkdKjyUR4h6wDe/
+	 fszmt/OWvCLuSNm3iWAqdhT90FMAiGQ/fbd8uJXn8HMVjLLjjLcTyrbxjQAAddfT8v
+	 2CNTus5LyjDUYXoFhuelIrFG9wtXBQhDkzzBSmtemJUWGUvRP02/3TSicPXt/UhIKu
+	 r6dGoHGX5kaa0CfQtRYqwG8L6vvlxaF7SReGkoutMLkT86OyUP3+IlwvmsRnH7srW9
+	 qfWBKNftvJnCg==
+Date: Mon, 18 Mar 2024 10:35:42 +0000
+From: Lee Jones <lee@kernel.org>
+To: Robert Frohl <rfrohl@suse.de>
+Cc: cve@kernel.org, linux-kernel@vger.kernel.org,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Subject: Re: CVE-2021-47115: nfc: fix NULL ptr dereference in
+ llcp_sock_getname() after failed connect
+Message-ID: <20240318103542.GR1522089@google.com>
+References: <2024031508-CVE-2021-47115-9715@gregkh>
+ <1183ad89-f88a-4663-a78a-38155a6e4028@suse.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2] mm: support multi-size THP numa balancing
-To: David Hildenbrand <david@redhat.com>, "Huang, Ying" <ying.huang@intel.com>
-Cc: akpm@linux-foundation.org, mgorman@techsingularity.net,
- wangkefeng.wang@huawei.com, jhubbard@nvidia.com, 21cnbao@gmail.com,
- ryan.roberts@arm.com, linux-mm@kvack.org, linux-kernel@vger.kernel.org
-References: <903bf13fc3e68b8dc1f256570d78b55b2dd9c96f.1710493587.git.baolin.wang@linux.alibaba.com>
- <871q88vzc4.fsf@yhuang6-desk2.ccr.corp.intel.com>
- <f00316da-e45d-46c1-99b8-ee160303eaaa@linux.alibaba.com>
- <ca6cca00-8a1b-48c8-b93a-99a772103b8e@redhat.com>
- <3bf2c3e1-44fd-4bc8-a97b-9da7b606aec0@linux.alibaba.com>
- <8e13bce5-e353-4258-9891-97158b8ccd84@redhat.com>
-From: Baolin Wang <baolin.wang@linux.alibaba.com>
-In-Reply-To: <8e13bce5-e353-4258-9891-97158b8ccd84@redhat.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <1183ad89-f88a-4663-a78a-38155a6e4028@suse.de>
 
+On Mon, 18 Mar 2024, Robert Frohl wrote:
 
-
-On 2024/3/18 18:15, David Hildenbrand wrote:
-> On 18.03.24 11:13, Baolin Wang wrote:
->>
->>
->> On 2024/3/18 17:48, David Hildenbrand wrote:
->>> On 18.03.24 10:42, Baolin Wang wrote:
->>>>
->>>>
->>>> On 2024/3/18 14:16, Huang, Ying wrote:
->>>>> Baolin Wang <baolin.wang@linux.alibaba.com> writes:
->>>>>
->>>>>> Now the anonymous page allocation already supports multi-size THP
->>>>>> (mTHP),
->>>>>> but the numa balancing still prohibits mTHP migration even though it
->>>>>> is an
->>>>>> exclusive mapping, which is unreasonable. Thus let's support the
->>>>>> exclusive
->>>>>> mTHP numa balancing firstly.
->>>>>>
->>>>>> Allow scanning mTHP:
->>>>>> Commit 859d4adc3415 ("mm: numa: do not trap faults on shared data
->>>>>> section
->>>>>> pages") skips shared CoW pages' NUMA page migration to avoid shared
->>>>>> data
->>>>>> segment migration. In addition, commit 80d47f5de5e3 ("mm: don't 
->>>>>> try to
->>>>>> NUMA-migrate COW pages that have other uses") change to use
->>>>>> page_count()
->>>>>> to avoid GUP pages migration, that will also skip the mTHP numa
->>>>>> scaning.
->>>>>> Theoretically, we can use folio_maybe_dma_pinned() to detect the GUP
->>>>>> issue, although there is still a GUP race, the issue seems to have 
->>>>>> been
->>>>>> resolved by commit 80d47f5de5e3. Meanwhile, use the
->>>>>> folio_estimated_sharers()
->>>>>> to skip shared CoW pages though this is not a precise sharers 
->>>>>> count. To
->>>>>> check if the folio is shared, ideally we want to make sure every
->>>>>> page is
->>>>>> mapped to the same process, but doing that seems expensive and using
->>>>>> the estimated mapcount seems can work when running autonuma 
->>>>>> benchmark.
->>>>>>
->>>>>> Allow migrating mTHP:
->>>>>> As mentioned in the previous thread[1], large folios are more
->>>>>> susceptible
->>>>>> to false sharing issues, leading to pages ping-pong back and forth
->>>>>> during
->>>>>> numa balancing, which is currently hard to resolve. Therefore, as a
->>>>>> start to
->>>>>> support mTHP numa balancing, only exclusive mappings are allowed to
->>>>>> perform
->>>>>> numa migration to avoid the false sharing issues with large folios.
->>>>>> Similarly,
->>>>>> use the estimated mapcount to skip shared mappings, which seems can
->>>>>> work
->>>>>> in most cases (?), and we've used folio_estimated_sharers() to skip
->>>>>> shared
->>>>>> mappings in migrate_misplaced_folio() for numa balancing, seems no 
->>>>>> real
->>>>>> complaints.
->>>>>
->>>>> IIUC, folio_estimated_sharers() cannot identify multi-thread
->>>>> applications.  If some mTHP is shared by multiple threads in one
->>>>
->>>> Right.
->>>>
->>>
->>> Wasn't this "false sharing" previously raised/described by Mel in this
->>> context?
->>
->> Yes, I got confused with the process's false sharing.
->>
->>>>> process, how to deal with that?
->>>>
->>>> IMHO, seems the should_numa_migrate_memory() already did something to
->>>> help?
->>>>
->>>> ......
->>>>      if (!cpupid_pid_unset(last_cpupid) &&
->>>>                  cpupid_to_nid(last_cpupid) != dst_nid)
->>>>          return false;
->>>>
->>>>      /* Always allow migrate on private faults */
->>>>      if (cpupid_match_pid(p, last_cpupid))
->>>>          return true;
->>>> ......
->>>>
->>>> If the node of the CPU that accessed the mTHP last time is different
->>>> from this time, which means there is some contention for that mTHP 
->>>> among
->>>> threads. So it will not allow migration.
->>>>
->>>> If the contention for the mTHP among threads is light or the accessing
->>>> is relatively stable, then we can allow migration?
->>>>
->>>>> For example, I think that we should avoid to migrate on the first 
->>>>> fault
->>>>> for mTHP in should_numa_migrate_memory().
->>>>>
->>>>> More thoughts?  Can we add a field in struct folio for mTHP to count
->>>>> hint page faults from the same node?
->>>>
->>>> IIUC, we do not need add a new field for folio, seems we can reuse
->>>> ->_flags_2a field. But how to use it? If there are multiple consecutive
->>>> NUMA faults from the same node, then allow migration?
->>>
->>> _flags_2a cannot be used. You could place something after _deferred_list
->>
->> Could you be more explicit? I didn't see _flags_2 currently being used,
->> did I miss something?
+> Hi all,
 > 
-> Yes, that we use it implicitly via page->flags on subpages (for example, 
-> some flags are still per-subpage and not per-folio).
+> CVE-2021-47115 looks like a duplicate of CVE-2021-38208 [0].
 
-Yes, thanks for reminding:)
+CVE-2021-47115 now rejected, thank you for the report Robert.
+
+https://lore.kernel.org/all/20240318103331.2845054-2-lee@kernel.org/
+
+> Cheers,
+> Robert
+> 
+> [0] https://cve.mitre.org/cgi-bin/cvename.cgi?name=CVE-2021-38208
+> 
+> 
+> On 15.03.24 21:15, Greg Kroah-Hartman wrote:
+> > Description
+> > ===========
+> > 
+> > In the Linux kernel, the following vulnerability has been resolved:
+> > 
+> > nfc: fix NULL ptr dereference in llcp_sock_getname() after failed connect
+> > 
+> > It's possible to trigger NULL pointer dereference by local unprivileged
+> > user, when calling getsockname() after failed bind() (e.g. the bind
+> > fails because LLCP_SAP_MAX used as SAP):
+> > 
+> >    BUG: kernel NULL pointer dereference, address: 0000000000000000
+> >    CPU: 1 PID: 426 Comm: llcp_sock_getna Not tainted 5.13.0-rc2-next-20210521+ #9
+> >    Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.14.0-1 04/01/2014
+> >    Call Trace:
+> >     llcp_sock_getname+0xb1/0xe0
+> >     __sys_getpeername+0x95/0xc0
+> >     ? lockdep_hardirqs_on_prepare+0xd5/0x180
+> >     ? syscall_enter_from_user_mode+0x1c/0x40
+> >     __x64_sys_getpeername+0x11/0x20
+> >     do_syscall_64+0x36/0x70
+> >     entry_SYSCALL_64_after_hwframe+0x44/0xae
+> > 
+> > This can be reproduced with Syzkaller C repro (bind followed by
+> > getpeername):
+> > https://syzkaller.appspot.com/x/repro.c?x=14def446e00000
+> > 
+> > The Linux kernel CVE team has assigned CVE-2021-47115 to this issue.
+> > 
+> > 
+> > Affected and fixed versions
+> > ===========================
+> > 
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 4.4.272 with commit eb6875d48590
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 4.9.272 with commit 39c15bd2e5d1
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 4.14.236 with commit ffff05b9ee5c
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 4.19.194 with commit 93e4ac2a9979
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 5.4.125 with commit 5d4c4b06ed9f
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 5.10.43 with commit 48ee0db61c82
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 5.12.10 with commit 0c4559736d9a
+> > 	Issue introduced in 3.3 with commit d646960f7986 and fixed in 5.13 with commit 4ac06a1e013c
+> > 
+> > Please see https://www.kernel.org or a full list of currently supported
+> > kernel versions by the kernel community.
+> > 
+> > Unaffected versions might change over time as fixes are backported to
+> > older supported kernel versions.  The official CVE entry at
+> > 	https://cve.org/CVERecord/?id=CVE-2021-47115
+> > will be updated if fixes are backported, please check that for the most
+> > up to date information about this issue.
+> > 
+> > 
+> > Affected files
+> > ==============
+> > 
+> > The file(s) affected by this issue are:
+> > 	net/nfc/llcp_sock.c
+> > 
+> > 
+> > Mitigation
+> > ==========
+> > 
+> > The Linux kernel CVE team recommends that you update to the latest
+> > stable kernel version for this, and many other bugfixes.  Individual
+> > changes are never tested alone, but rather are part of a larger kernel
+> > release.  Cherry-picking individual commits is not recommended or
+> > supported by the Linux kernel community at all.  If however, updating to
+> > the latest release is impossible, the individual changes to resolve this
+> > issue can be found at these commits:
+> > 	https://git.kernel.org/stable/c/eb6875d48590d8e564092e831ff07fa384d7e477
+> > 	https://git.kernel.org/stable/c/39c15bd2e5d11bcf7f4c3dba2aad9e1e110a5d94
+> > 	https://git.kernel.org/stable/c/ffff05b9ee5c74c04bba2801c1f99b31975d74d9
+> > 	https://git.kernel.org/stable/c/93e4ac2a9979a9a4ecc158409ed9c3044dc0ae1f
+> > 	https://git.kernel.org/stable/c/5d4c4b06ed9fb7a69d0b2e2a73fc73226d25ab70
+> > 	https://git.kernel.org/stable/c/48ee0db61c8299022ec88c79ad137f290196cac2
+> > 	https://git.kernel.org/stable/c/0c4559736d9a4ec1ca58ba98ca34e7c4da4c422b
+> > 	https://git.kernel.org/stable/c/4ac06a1e013cf5fdd963317ffd3b968560f33bba
+> > 
+> 
+> -- 
+> Security Engineer, SUSE Software Solutions Germany GmbH, Frankenstraße 146,
+> 90461 Nürnberg, Germany, GF: Ivo Totev, Andrew McDonald, Werner Knoblich
+> (HRB 36809, AG Nürnberg)
+> GPG: D29F 82AA 9FD5 9D6E 74B1  6370 089E DB3D 230A 2404
+
+
+
+
+
+
+-- 
+Lee Jones [李琼斯]
 
