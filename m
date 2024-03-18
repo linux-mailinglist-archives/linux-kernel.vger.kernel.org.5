@@ -1,199 +1,153 @@
-Return-Path: <linux-kernel+bounces-106631-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106632-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83EA387F132
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:35:39 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C3D87F137
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:35:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39AAD284458
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:35:38 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 796FD1C21718
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:35:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DC77249F7;
-	Mon, 18 Mar 2024 20:35:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3388258128;
+	Mon, 18 Mar 2024 20:35:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="SdLDBBUh"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="q8Catys+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F066B1862C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:35:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 729A81862C;
+	Mon, 18 Mar 2024 20:35:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710794132; cv=none; b=jsuZdbtp11aZw30JWE06lC7emxX8usMmR0s5RTJmE9TGsRYxlKkOXA8f7ByJPziuoxoM/SL/sGOTEL4dE9KMiRe8VzaYPOBmCGlYhlLFDXm7NRx8cDqVg2T4C6/A8E+BiPPCzV3qr+qBuwnX+IQcUe1NzcuVG4GHBHOmU+X67ds=
+	t=1710794141; cv=none; b=NEa+mUuxTk6Gskvm36TBeyVxq5C0q3Mm3N1ateJqeoVd5W7S9UZaMTrI53W1EHqHswlnbh4xgBXZDv3gB/8/MaZ2v/JMvJbgP/0B5t5Y3pmcAcVvjt+WZFEr1PXRaKCnvmDidGxRfsAtzqQ9H0PHXJQ13eJYy9tzPth0KhiFBxE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710794132; c=relaxed/simple;
-	bh=0KlFaugblY0RG/JMeoq+qlMxJs2HBMsCvC4ogmRFe3Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=nXNAcC8873drndYAh5riMnca44S7PWS0VTP6T74ANZR9xGHAMHXlxdrYGHv6r3wxyGMlfhroK0c2AM9B6bi2HMM3byKP6aBnWiiYPkdazNH/Jy5UsuXk4nU608OUnLVuHBrUeGm7v9wtT9TYnKAJCMPulRe0gEc+kYj2XaqLPIU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=SdLDBBUh; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46db55e64fso2987866b.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:35:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710794129; x=1711398929; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=x5BUKxjEnp0SlFbo7OxBR2+MgOTG/OdBxN7WM985RJk=;
-        b=SdLDBBUhs6YWh+VANncJZ0NKfD7ho6h5dl/gEOhfnssD5kt6zXtnwzDyOeVKqoOZTT
-         ZW5aWVUw8VG9c+LAQtEkeXv5j1qUBmBEWGwryJTu3sUsc/+LShYe2tknRDctAlefEw3J
-         NsAFiijlPUpepaWmHVXtQbXCKf9DK2/5hE7Jv/0vtoW8qw+h5d2vsu5Kyp3GwWZ72H2G
-         IY4FIoy36tc/UjcQjSoBWm26egLj8e/O3lni9xf9n83w4SC4b1VMGzPTGpB1ybABzpjE
-         mKg/+aS61Gv3oJTm0aMdCB/LuGjQqKPUFUUjQ+DMC581X6N5jrTOArAqOZ2thgIu6a2u
-         XtKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710794129; x=1711398929;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=x5BUKxjEnp0SlFbo7OxBR2+MgOTG/OdBxN7WM985RJk=;
-        b=a7q8LGsYz5mccjB0jgn5F5fwD7eZAZDe/Izi+D30fB0+dHxfjVzJo6dySaSZcF60CT
-         QxnB/ANhqnos9ZJlEIkrIR7Q6R1LWvFdtD2jZeW77F1p+7QelQBMoLJclG2uI3jaL20p
-         YznKr76KZlcZv0RYfDmA5bAZcT1+GA+fzjtCcYd/Eov2UYrDYtCC7dxB9b5fGX3dqYxu
-         SXeD0NGK1phSMDK0GUQ+lz92OWwqW+foaiiBgL9fQl4X+NjSZ1XodSMME2G0PHaOBYjB
-         ovRrGGhl3JcrV4tj0gwj6YlFUbSZVMbBBl+/iLnuh/j6X2pHesDQCVWZDq94n5CsGwrF
-         a3kQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXGTsP8KnjPch8As2H+eogShopZd4mkexjOdtwV5tgOx6U5+6clsn2v31L1Jn2SZjTDoWrhk9j8utbVGShYuMKqpVeQHvPaKin2OAVl
-X-Gm-Message-State: AOJu0Ywsk95WqjPgn/sFtY7R2TnJJHkCStHH7q2a/nKYoh8eRoAfWwHn
-	RmS5nUit90ryYFpX7TX8aeIpNhec7b3UKHvh596Ruq2ewRFvQk606PolH55QZ4p/YnqXD2vu5oW
-	iNB6YMtGqHWd/0IDg/pRhzek3sAw2w7v+2KCO
-X-Google-Smtp-Source: AGHT+IEfA8uNHoyZHC8a5dMsN20mTU0Fb48nkHfeZIdgAvI/ZuuR+1ELW7nIy3FSvWU96PSYY1HHPdrLW5wIatuJ1ao=
-X-Received: by 2002:a17:907:7a93:b0:a46:74fe:904f with SMTP id
- mm19-20020a1709077a9300b00a4674fe904fmr9931408ejc.26.1710794129097; Mon, 18
- Mar 2024 13:35:29 -0700 (PDT)
+	s=arc-20240116; t=1710794141; c=relaxed/simple;
+	bh=orWSS3XjvgfjIC9DwWOLzXoI8+NsAFOPJClCk6qbYZI=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=cfwdBVZGcSvvXPqGEBBO+OmpJj8pLsfCX3MKrX3M6q5rhx1U8am5eLB6snQBB3f9T7UEFfabaMe1vofbdU5q4RUrPUnoV1SfLtIdthhHYUTzdjr5U/DbRrVY4zbAgNQFPKn3rSXnq/db9GDx1M5B9EBFlxojaeaJOCb+WWEA1kA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=q8Catys+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E436BC433C7;
+	Mon, 18 Mar 2024 20:35:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710794140;
+	bh=orWSS3XjvgfjIC9DwWOLzXoI8+NsAFOPJClCk6qbYZI=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=q8Catys+haXMiigzK4cBnscaZ1jbDck+drKVXs1es3K/vt/gGsVVPMtDhMcB68AG2
+	 wL/Sm6etyvLdYRS6u6NKjevg/6YVJc6ENgxS1wHpnYNB+WnfI2Bvlup7zBz2IA73TV
+	 HBkOgxJDdtTedYFR+x5+w5rtq0ZQqNFQmVwGh4OMDTFbYWT2PhK1nVLE1tNFAyeEv6
+	 aZFx4BV5ug0/Hr2wfSAjFUNiEUHTDLIRrLaO4PxZTJKoY/qmGuEJ0W20MHNSqUe2mQ
+	 KqBj8ecJZm1MPd9VA0/M+b0JJ7aZ1kLCmwjQLTB5pPlTT+U3KpuApIKqtcvzyhLPCU
+	 llY4WLf32aSZQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <000000000000bbb3d80613f243a6@google.com> <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
- <CAGsJ_4y7aFg3FBh_isa_TCqY1B8n64Rro5mVu6=wvk7FP35mWw@mail.gmail.com>
-In-Reply-To: <CAGsJ_4y7aFg3FBh_isa_TCqY1B8n64Rro5mVu6=wvk7FP35mWw@mail.gmail.com>
-From: Yosry Ahmed <yosryahmed@google.com>
-Date: Mon, 18 Mar 2024 13:34:50 -0700
-Message-ID: <CAJD7tkaPmgsUjPCi0wKCYAmPb+Vnif_zS+ouyd9NGQN=mdhJPw@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
-To: Barry Song <21cnbao@gmail.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, 
-	syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Mon, 18 Mar 2024 22:35:37 +0200
+Message-Id: <CZX5WOTXS1KU.31Z1MRFBC1B0@kernel.org>
+Cc: <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
+ <lukas@wunner.de>, <bbhushan2@marvell.com>, "Stefan Berger"
+ <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v6 06/13] crypto: ecc - Implement vli_mmod_fast_521 for
+ NIST p521
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.vnet.ibm.com>,
+ <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>
+X-Mailer: aerc 0.15.2
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <20240312183618.1211745-7-stefanb@linux.vnet.ibm.com>
+In-Reply-To: <20240312183618.1211745-7-stefanb@linux.vnet.ibm.com>
 
-On Mon, Mar 18, 2024 at 1:25=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
-e:
+On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
+> From: Stefan Berger <stefanb@linux.ibm.com>
 >
-> On Tue, Mar 19, 2024 at 7:00=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wro=
-te:
-> >
-> > On Mon, Mar 18, 2024 at 9:58=E2=80=AFAM syzbot
-> > <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com> wrote:
-> > >
-> > > Hello,
-> > >
-> > > syzbot found the following issue on:
-> > >
-> > > HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09=
--36' ..
-> > > git tree:       upstream
-> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D13043abe1=
-80000
-> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D19bb57c23=
-dffc38e
-> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadbc983a158=
-8b7805de3
-> > > compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU =
-ld (GNU Binutils for Debian) 2.40
-> > > userspace arch: arm
-> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1706d23=
-1180000
-> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13ba79591=
-80000
-> > >
-> > > Downloadable assets:
-> > > disk image (non-bootable): https://storage.googleapis.com/syzbot-asse=
-ts/8ead8862021c/non_bootable_disk-e5eb28f6.raw.xz
-> > > vmlinux: https://storage.googleapis.com/syzbot-assets/0a7371c63ff2/vm=
-linux-e5eb28f6.xz
-> > > kernel image: https://storage.googleapis.com/syzbot-assets/7539441b4a=
-dd/zImage-e5eb28f6.xz
-> > >
-> > > IMPORTANT: if you fix the issue, please add the following tag to the =
-commit:
-> > > Reported-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
-> > >
-> > > ------------[ cut here ]------------
-> > > kernel BUG at include/linux/scatterlist.h:187!
-> >
-> > Looks like the provided buffer is invalid:
-> >
-> > #ifdef CONFIG_DEBUG_SG
-> > BUG_ON(!virt_addr_valid(buf));
-> > #endif
-> >
-> > which is "src" from:
-> >
-> > sg_init_one(&input, src, entry->length);
-> >
-> > Looking at the surrounding code and recent history, there's this
-> > commit that stands out:
-> >
-> > mm/zswap: remove the memcpy if acomp is not sleepable
-> > (sha: 270700dd06ca41a4779c19eb46608f076bb7d40e)
-> >
-> > which has the effect of, IIUC, using the zpool mapped memory directly
-> > as src, instead of acomp_ctx->buffer (which was previously the case,
-> > as zsmalloc was not sleepable).
-> >
-> > This might not necessarily be a bug with that commit itself, but might
-> > have revealed another bug elsewhere.
-> >
-> > Anyway, cc-ing the author, Barry Song, to fact check me :) Will take a
-> > closer look later.
+> Implement vli_mmod_fast_521 following the description for how to calculat=
+e
+> the modulus for NIST P521 in the NIST publication "Recommendations for
+> Discrete Logarithm-Based Cryptography: Elliptic Curve Domain Parameters"
+> section G.1.4.
 >
-> I guess that is because on arm32 , we have highmem but
-> sg_init_one supports lowmem only. the below should be
-> able to fix?
+> NIST p521 requires 9 64bit digits, so increase the ECC_MAX_DIGITS so that
+> arrays fit the larger numbers.
 >
-> diff --git a/mm/zswap.c b/mm/zswap.c
-> index 9dec853647c8..47c0386caba2 100644
-> --- a/mm/zswap.c
-> +++ b/mm/zswap.c
-> @@ -1086,7 +1086,8 @@ static void zswap_decompress(struct zswap_entry
-> *entry, struct page *page)
->                 zpool_unmap_handle(zpool, entry->handle);
->         }
->
-> -       sg_init_one(&input, src, entry->length);
-> +       sg_init_table(&input, 1);
-> +       sg_set_page(&input, kmap_to_page(src), entry->length,
-> offset_in_page(src));
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
 
-Is this working around the debug check in sg_init_one()? IIUC, only
-lowmem pages are supported. We may be passing in a highmem page to
-sg_set_page() now, right?
+Should provide context on what it will be used (for completeness).
 
-Also, it seems like if src is a lowmem address kmap_to_page() will be
-doing unnecessary checks (assuming it's working correctly)?
 
-Would it be more robust to just use the temporary buffer if src is a
-kmap address?
-
-Also FWIW, I think you can use "#sys test" to check if a diff fixes the pro=
-blem.
-
->         sg_init_table(&output, 1);
->         sg_set_page(&output, page, PAGE_SIZE, 0);
->         acomp_request_set_params(acomp_ctx->req, &input, &output,
-> entry->length, PAGE_SIZE);
+> ---
+>  crypto/ecc.c                  | 25 +++++++++++++++++++++++++
+>  include/crypto/internal/ecc.h |  3 ++-
+>  2 files changed, 27 insertions(+), 1 deletion(-)
 >
->
->
-> >
+> diff --git a/crypto/ecc.c b/crypto/ecc.c
+> index 415a2f4e7291..99d41887c005 100644
+> --- a/crypto/ecc.c
+> +++ b/crypto/ecc.c
+> @@ -902,6 +902,28 @@ static void vli_mmod_fast_384(u64 *result, const u64=
+ *product,
+>  #undef AND64H
+>  #undef AND64L
+> =20
+> +/*
+> + * Computes result =3D product % curve_prime
+> + * from "Recommendations for Discrete Logarithm-Based Cryptography:
+> + *       Elliptic Curve Domain Parameters" section G.1.4
+> + */
+> +static void vli_mmod_fast_521(u64 *result, const u64 *product,
+> +			      const u64 *curve_prime, u64 *tmp)
+> +{
+> +	const unsigned int ndigits =3D ECC_CURVE_NIST_P521_DIGITS;
+> +	size_t i;
+> +
+> +	/* Initialize result with lowest 521 bits from product */
+> +	vli_set(result, product, ndigits);
+> +	result[8] &=3D 0x1ff;
+> +
+> +	for (i =3D 0; i < ndigits; i++)
+> +		tmp[i] =3D (product[8 + i] >> 9) | (product[9 + i] << 55);
+> +	tmp[8] &=3D 0x1ff;
+> +
+> +	vli_mod_add(result, result, tmp, curve_prime, ndigits);
+> +}
+> +
+>  /* Computes result =3D product % curve_prime for different curve_primes.
+>   *
+>   * Note that curve_primes are distinguished just by heuristic check and
+> @@ -941,6 +963,9 @@ static bool vli_mmod_fast(u64 *result, u64 *product,
+>  	case ECC_CURVE_NIST_P384_DIGITS:
+>  		vli_mmod_fast_384(result, product, curve_prime, tmp);
+>  		break;
+> +	case ECC_CURVE_NIST_P521_DIGITS:
+> +		vli_mmod_fast_521(result, product, curve_prime, tmp);
+> +		break;
+>  	default:
+>  		pr_err_ratelimited("ecc: unsupported digits size!\n");
+>  		return false;
+> diff --git a/include/crypto/internal/ecc.h b/include/crypto/internal/ecc.=
+h
+> index ab722a8986b7..4e2f5f938e91 100644
+> --- a/include/crypto/internal/ecc.h
+> +++ b/include/crypto/internal/ecc.h
+> @@ -33,7 +33,8 @@
+>  #define ECC_CURVE_NIST_P192_DIGITS  3
+>  #define ECC_CURVE_NIST_P256_DIGITS  4
+>  #define ECC_CURVE_NIST_P384_DIGITS  6
+> -#define ECC_MAX_DIGITS              (512 / 64) /* due to ecrdsa */
+> +#define ECC_CURVE_NIST_P521_DIGITS  9
+> +#define ECC_MAX_DIGITS              DIV_ROUND_UP(521, 64) /* NIST P521 *=
+/
+> =20
+>  #define ECC_DIGITS_TO_BYTES_SHIFT 3
+> =20
+
+Otherwise, lgtm
+
+BR, Jarkko
 
