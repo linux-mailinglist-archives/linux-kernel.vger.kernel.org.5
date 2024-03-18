@@ -1,131 +1,199 @@
-Return-Path: <linux-kernel+bounces-106212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106208-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A466A87EACF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:23:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF11F87EAC8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:22:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 58FA31F21861
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:23:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CF8331C20FBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:22:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 85F594F21F;
-	Mon, 18 Mar 2024 14:22:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 323AE4CE08;
+	Mon, 18 Mar 2024 14:21:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="NemGzvaQ"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="FmJeA8AE"
+Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 602294F201
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:22:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 14AB82C877;
+	Mon, 18 Mar 2024 14:21:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771726; cv=none; b=K4onqpiKMaYm6rCLTJmRTgX+A/Y1wSQoRjIIghIZbD8AJwdTaRho8PxfaLcO6yhW9VZeNBAIxb7rQlIMwX/1+mUsIbkYDhR5J7tlbNYPoMMWfJqp4Ei9PXRDvo0naNhQH1gQNYUFEE185/tElJtk6E44HhbAu2zhjufIGjJy5wc=
+	t=1710771712; cv=none; b=CX5wRyeM5SoNNPH9g477YFfvx+9RvIgjvMFsQAfNIS55gDd3lqhtShadBdpjo6f+wMRetEjUFx+VMCYRDT0ysTZZnPH6ibqEhthCYAsEfgY+4KAXvJeUy5MwlS1cCCgNwf9pvhnXaTh53iVQESGeFuLU7LUmBLEOM9nqn1kwpS0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771726; c=relaxed/simple;
-	bh=/3x9uU4JEdnWRIIFRxv/hyPYL+QmN9SSLlG04ZxhdSE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-type; b=nyxXodNZN9YTxslHYkj6wovDJQcu+S7PWlVcGzHtx485k0MTAlONgmTPpdQZCzwu0P/0Rlb8YAhStBk3cGf4mZCmLPNhL9Ckz+VFM+gGHqzy3YqLsHX9+jsog8j1iLghs2icffi7IJXysFkcZvriltYpUKGdFVETRj81EXeCRk8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=NemGzvaQ; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710771724;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=1Ez2QF5MYw9LVg300C2Oo4I1YSujmhzgBkyBgmFJgxw=;
-	b=NemGzvaQz6x+9Tvmazy9vlvUIO21sLbjiOkcA5S13eU4fAPFVkHhSew531dQILq15ZDgvN
-	yUM1bJpsBmEghjwOoxm7lAup5MIf+J1T3m8CPfs/LUed8h1MxzyB6j2CuelNA88+L7zdcl
-	QwVAplpjhg/l1c9IZ6a9reVhfZ2hZqc=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-357-Ksx67UdVPXy4bpjfV4ra_w-1; Mon, 18 Mar 2024 10:22:00 -0400
-X-MC-Unique: Ksx67UdVPXy4bpjfV4ra_w-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 3A2F4800269;
-	Mon, 18 Mar 2024 14:22:00 +0000 (UTC)
-Received: from MiWiFi-R3L-srv.redhat.com (unknown [10.72.116.12])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 510F6492BD4;
-	Mon, 18 Mar 2024 14:21:57 +0000 (UTC)
-From: Baoquan He <bhe@redhat.com>
-To: linux-mm@kvack.org
-Cc: linux-kernel@vger.kernel.org,
-	x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org,
-	akpm@linux-foundation.org,
-	rppt@kernel.org,
-	Baoquan He <bhe@redhat.com>
-Subject: [PATCH 3/6] mm/mm_init.c: add new function calc_nr_kernel_pages()
-Date: Mon, 18 Mar 2024 22:21:35 +0800
-Message-ID: <20240318142138.783350-4-bhe@redhat.com>
-In-Reply-To: <20240318142138.783350-1-bhe@redhat.com>
-References: <20240318142138.783350-1-bhe@redhat.com>
+	s=arc-20240116; t=1710771712; c=relaxed/simple;
+	bh=QUbSeiRZVfNGfqAcNd6KenE2viIRmcdDxVpkHP2kLGA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=NvgnXniiWe86XXOQl4isaDhMSBAqce5UE28lrFlNdqIbGiRPB8pDsInVfv68Q02yP5JOxtaqZERtxE5sh3qRW421/eWeEq8b45lfM2J3L8voR/Xh5ncASsLuhcuIc+bHtxko37y+pBpR2oG75MRfDMvFu5sMAbzvr/USpQL5G60=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=FmJeA8AE; arc=none smtp.client-ip=209.85.218.44
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a46cc947929so92155066b.1;
+        Mon, 18 Mar 2024 07:21:49 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710771708; x=1711376508; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Y8pVWVzYyCf08T0G0EdrgewZbyCpSJ/9af1OTexXimM=;
+        b=FmJeA8AEw4DRLt/3d+cxC5L+5LYFO5JoZD17Ald8pUlYrr5imYG7fhb66OKnXSKcHa
+         RpctgCeLRuVqtkOdo6o0Q4BDcONpWg24otOgttK/aAB/AiD9+Iup0JF8I6R2kfUC5tGz
+         vfhEM7h9Xf8vQNcMO9h29WEXSjVmIV0b/1EJPyWDEYjTKV9Ag2TiRba5M8A4cZpFr3DU
+         +FXgnygx3lwqZydmKqJKRS+0mlyvQtjzKKm9KJPx+w0dM1YuymQj0fsQIQ299pcXJjd8
+         F9AfFjYsIFDFrxCu6WWxGDddPHOiqbSEKW/+1d5dW+BR9a5omEno9ETQ7wCjMlJN5IMY
+         E/fw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710771708; x=1711376508;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Y8pVWVzYyCf08T0G0EdrgewZbyCpSJ/9af1OTexXimM=;
+        b=LwejlTN9ZfSpm86rZL0stmbooUk7YeP5aFNDNHaX77UJ8vYO+PIsP9h6C+DeuGpE3D
+         e9rbhjhWywy02YyuVr8hPNGeA5wgq7z/6xU9W8D5j0PSfzlSknuhmOXFLqGyb6Z/4gg1
+         51OUx1PCEj94FDFCJmdbCyIqZK2H36ukacmDx4/CE89HR28Z9QkcLvaCSNso9HrhE2gZ
+         tQt4cyjUMJkkLSpYix3tR6F+LRWMK6WGNrN6M4i61ZZmRBz7OdaBV3RGAINyF9SRyVT4
+         PPH6azPYAzGMl2KGMn+fG1H/KxGt20oPxZegErev04HXNzV0gqKS1VEA1+h4gCyw1ZCg
+         UF1A==
+X-Forwarded-Encrypted: i=1; AJvYcCVWhG+knlUA8asxmDCIZOEnjrGAzrS4BW+Pz8p5MUKF///pw4pQu5x25VjtwVXL+qr0grB7lX4kpxoOtdh4osw63kqNNuMX64OhLMmgsJ6rO3hBYapg0fIR2AFr2Er8bC4B2fW7pCpPHzWchyoaAimyY/b76QuWf/TVbN32lUvDetW/CZOiR0G4Ip0/smcofjV+A/K4aZAa3BkyS0m59VUhk5gbrrz9sYEnqd9eeiKRCE1O7ixc3g==
+X-Gm-Message-State: AOJu0YzP3HlmYqR3iJZgD/VwH47j7vF32XaGFk2OZ/1ZGiEDzbDFIPXm
+	g9ykkyCFPymIRyJ4qjKL8FyQdBEPnd3XApoUK2sQEbAnxjnmfZruUDW/sDYNjGCNIJALv+lO4Eo
+	vCAJWdlKNzGrTWsVIuM34N5vpjx4=
+X-Google-Smtp-Source: AGHT+IEmolW0IFTzdRdXfU6t34pFwBQaiVlrS0IC58RhqDvErCec6W0W/ryDp9izwdRL/cqTBgM/X8T7/t/jUiN1Vuk=
+X-Received: by 2002:a17:906:c14e:b0:a46:a786:8c8c with SMTP id
+ dp14-20020a170906c14e00b00a46a7868c8cmr3870315ejc.77.1710771708145; Mon, 18
+ Mar 2024 07:21:48 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-type: text/plain
-Content-Transfer-Encoding: 8bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+References: <20220714084136.570176-1-chenhuacai@loongson.cn>
+ <20220714084136.570176-3-chenhuacai@loongson.cn> <3a5a4bee5c0739a3b988a328376a6eed3c385fda.camel@physik.fu-berlin.de>
+In-Reply-To: <3a5a4bee5c0739a3b988a328376a6eed3c385fda.camel@physik.fu-berlin.de>
+From: Huacai Chen <chenhuacai@gmail.com>
+Date: Mon, 18 Mar 2024 22:21:36 +0800
+Message-ID: <CAAhV-H5bw3xcym2-GpyntQEad1h2eB8xDQGwVr_bRRKAOakzoQ@mail.gmail.com>
+Subject: Re: [PATCH V2 3/3] SH: cpuinfo: Fix a warning for CONFIG_CPUMASK_OFFSTACK
+To: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+Cc: Huacai Chen <chenhuacai@loongson.cn>, Arnd Bergmann <arnd@arndb.de>, 
+	Thomas Bogendoerfer <tsbogend@alpha.franken.de>, Yoshinori Sato <ysato@users.sourceforge.jp>, 
+	Rich Felker <dalias@libc.org>, loongarch@lists.linux.dev, linux-arch@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, Guo Ren <guoren@kernel.org>, 
+	Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, linux-mips@vger.kernel.org, 
+	linux-sh@vger.kernel.org, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-This is a preparation to calculate nr_kernel_pages and nr_all_pages,
-both of which will be used later in alloc_large_system_hash().
+Hi, SuperH maintainers,
 
-nr_all_pages counts up all free but not reserved memory in memblock
-allocator, including HIGHMEM memory. While nr_kernel_pages counts up
-all free but not reserved low memory in memblock allocator, excluding
-HIGHMEM memory.
+On Wed, Feb 8, 2023 at 8:59=E2=80=AFPM John Paul Adrian Glaubitz
+<glaubitz@physik.fu-berlin.de> wrote:
+>
+> On Thu, 2022-07-14 at 16:41 +0800, Huacai Chen wrote:
+> > When CONFIG_CPUMASK_OFFSTACK and CONFIG_DEBUG_PER_CPU_MAPS is selected,
+> > cpu_max_bits_warn() generates a runtime warning similar as below while
+> > we show /proc/cpuinfo. Fix this by using nr_cpu_ids (the runtime limit)
+> > instead of NR_CPUS to iterate CPUs.
+> >
+> > [    3.052463] ------------[ cut here ]------------
+> > [    3.059679] WARNING: CPU: 3 PID: 1 at include/linux/cpumask.h:108 sh=
+ow_cpuinfo+0x5e8/0x5f0
+> > [    3.070072] Modules linked in: efivarfs autofs4
+> > [    3.076257] CPU: 0 PID: 1 Comm: systemd Not tainted 5.19-rc5+ #1052
+> > [    3.099465] Stack : 9000000100157b08 9000000000f18530 9000000000cf84=
+6c 9000000100154000
+> > [    3.109127]         9000000100157a50 0000000000000000 9000000100157a=
+58 9000000000ef7430
+> > [    3.118774]         90000001001578e8 0000000000000040 00000000000000=
+20 ffffffffffffffff
+> > [    3.128412]         0000000000aaaaaa 1ab25f00eec96a37 900000010021de=
+80 900000000101c890
+> > [    3.138056]         0000000000000000 0000000000000000 00000000000000=
+00 0000000000aaaaaa
+> > [    3.147711]         ffff8000339dc220 0000000000000001 0000000006ab40=
+00 0000000000000000
+> > [    3.157364]         900000000101c998 0000000000000004 9000000000ef74=
+30 0000000000000000
+> > [    3.167012]         0000000000000009 000000000000006c 00000000000000=
+00 0000000000000000
+> > [    3.176641]         9000000000d3de08 9000000001639390 90000000002086=
+d8 00007ffff0080286
+> > [    3.186260]         00000000000000b0 0000000000000004 00000000000000=
+00 0000000000071c1c
+> > [    3.195868]         ...
+> > [    3.199917] Call Trace:
+> > [    3.203941] [<90000000002086d8>] show_stack+0x38/0x14c
+> > [    3.210666] [<9000000000cf846c>] dump_stack_lvl+0x60/0x88
+> > [    3.217625] [<900000000023d268>] __warn+0xd0/0x100
+> > [    3.223958] [<9000000000cf3c90>] warn_slowpath_fmt+0x7c/0xcc
+> > [    3.231150] [<9000000000210220>] show_cpuinfo+0x5e8/0x5f0
+> > [    3.238080] [<90000000004f578c>] seq_read_iter+0x354/0x4b4
+> > [    3.245098] [<90000000004c2e90>] new_sync_read+0x17c/0x1c4
+> > [    3.252114] [<90000000004c5174>] vfs_read+0x138/0x1d0
+> > [    3.258694] [<90000000004c55f8>] ksys_read+0x70/0x100
+> > [    3.265265] [<9000000000cfde9c>] do_syscall+0x7c/0x94
+> > [    3.271820] [<9000000000202fe4>] handle_syscall+0xc4/0x160
+> > [    3.281824] ---[ end trace 8b484262b4b8c24c ]---
+> >
+> > Cc: stable@vger.kernel.org
+> > Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+> > ---
+> >  arch/sh/kernel/cpu/proc.c | 2 +-
+> >  1 file changed, 1 insertion(+), 1 deletion(-)
+> >
+> > diff --git a/arch/sh/kernel/cpu/proc.c b/arch/sh/kernel/cpu/proc.c
+> > index a306bcd6b341..5f6d0e827bae 100644
+> > --- a/arch/sh/kernel/cpu/proc.c
+> > +++ b/arch/sh/kernel/cpu/proc.c
+> > @@ -132,7 +132,7 @@ static int show_cpuinfo(struct seq_file *m, void *v=
+)
+> >
+> >  static void *c_start(struct seq_file *m, loff_t *pos)
+> >  {
+> > -     return *pos < NR_CPUS ? cpu_data + *pos : NULL;
+> > +     return *pos < nr_cpu_ids ? cpu_data + *pos : NULL;
+> >  }
+> >  static void *c_next(struct seq_file *m, void *v, loff_t *pos)
+> >  {
+>
+> I build-tested the patch and also booted the patched kernel successfully
+> on my SH-7785LCR board.
+>
+> Showing the contents of /proc/cpuinfo works fine, too:
+>
+> root@tirpitz:~> cat /proc/cpuinfo
+> machine         : SH7785LCR
+> processor       : 0
+> cpu family      : sh4a
+> cpu type        : SH7785
+> cut             : 7.x
+> cpu flags       : fpu perfctr llsc
+> cache type      : split (harvard)
+> icache size     : 32KiB (4-way)
+> dcache size     : 32KiB (4-way)
+> address sizes   : 32 bits physical
+> bogomips        : 599.99
+> root@tirpitz:~>
+>
+> Tested-by: John Paul Adrian Glaubitz <glaubitz@physik.fu-berlin.de>
+>
+> I am not sure yet whether the change is also correct as I don't know whet=
+her
+> it's possible to change the number of CPUs at runtime on SuperH.
+Can this patch be merged? This is the only one still unmerged in the
+whole series.
 
-Signed-off-by: Baoquan He <bhe@redhat.com>
----
- mm/mm_init.c | 24 ++++++++++++++++++++++++
- 1 file changed, 24 insertions(+)
+Huacai
 
-diff --git a/mm/mm_init.c b/mm/mm_init.c
-index 153fb2dc666f..c57a7fc97a16 100644
---- a/mm/mm_init.c
-+++ b/mm/mm_init.c
-@@ -1264,6 +1264,30 @@ static void __init reset_memoryless_node_totalpages(struct pglist_data *pgdat)
- 	pr_debug("On node %d totalpages: 0\n", pgdat->node_id);
- }
- 
-+static void __init calc_nr_kernel_pages(void)
-+{
-+	unsigned long start_pfn, end_pfn;
-+	phys_addr_t start_addr, end_addr;
-+	u64 u;
-+#ifdef CONFIG_HIGHMEM
-+	unsigned long high_zone_low = arch_zone_lowest_possible_pfn[ZONE_HIGHMEM];
-+#endif
-+
-+	for_each_free_mem_range(u, NUMA_NO_NODE, MEMBLOCK_NONE, &start_addr, &end_addr, NULL) {
-+		start_pfn = PFN_UP(start_addr);
-+		end_pfn   = PFN_DOWN(end_addr);
-+
-+		if (start_pfn < end_pfn) {
-+			nr_all_pages += end_pfn - start_pfn;
-+#ifdef CONFIG_HIGHMEM
-+			start_pfn = clamp(start_pfn, 0, high_zone_low);
-+			end_pfn = clamp(end_pfn, 0, high_zone_low);
-+#endif
-+			nr_kernel_pages += end_pfn - start_pfn;
-+		}
-+	}
-+}
-+
- static void __init calculate_node_totalpages(struct pglist_data *pgdat,
- 						unsigned long node_start_pfn,
- 						unsigned long node_end_pfn)
--- 
-2.41.0
-
+>
+> Adrian
+>
+> --
+>  .''`.  John Paul Adrian Glaubitz
+> : :' :  Debian Developer
+> `. `'   Physicist
+>   `-    GPG: 62FF 8A75 84E0 2956 9546  0006 7426 3B37 F5B5 F913
 
