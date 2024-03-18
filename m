@@ -1,100 +1,98 @@
-Return-Path: <linux-kernel+bounces-106271-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106272-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F355387EBB1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:09:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6A06187EBB6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:09:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87BA62815F2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:09:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9AF5E1C213E4
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:09:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F49F4F20C;
-	Mon, 18 Mar 2024 15:09:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5F87D4F1EA;
+	Mon, 18 Mar 2024 15:09:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ri1M17Kr"
-Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="SPH0kgji"
+Received: from mail-oa1-f49.google.com (mail-oa1-f49.google.com [209.85.160.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35224EB54
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:09:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 591894EB3D;
+	Mon, 18 Mar 2024 15:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710774543; cv=none; b=tOrHYPJTKNGpZsm+LDqLzAnjmbpUeyglQ6MsgKJvFfCOQDeHXaR8GuFnNFbRZWKf2fSySqNzfnqUKWEPw8hKr29kbYm/gkg5L9fDtJ6lCYvWZT2UVXolei2WoUGsv1thnlosFkT3oPrFtroa+YkanY1uwmOZ+SKpmAfZ0dq3p/g=
+	t=1710774578; cv=none; b=cAvAT256DpislrBH9fbOUHF1bGkCDTu1ijkHHJM5tHRbLdvWcDeqvmh0D6glfI31ZBRx4i4MMV5YhAFtC28dzPaJ+Opk5bnRyYNOr6OmYNhQf0+8g0eQlJanORfsOYCdMNg/6El84PXYk9Bs/51fkxp0rV5KJWeacxM/JEPi4ck=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710774543; c=relaxed/simple;
-	bh=jdUSjQfELoCxrmMar6U8OQhaRPvf8KwScinRJQd8ysE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nzl/4oW/G3sRz4whuOoSPTxPycQvmzFyDeLbZg8JgR0qcmPvw3RehNyhVIOpO3w52dREjhIxZcwwFj9odtv5kR5aZfoUxQ8f/6xwbTGBOM8L8UbddsEC4sCCqZGvWSIxWd2Qqbiq0zVVne10b+kueUbaE2IjsGalXN8/KuP0LyY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ri1M17Kr; arc=none smtp.client-ip=91.218.175.185
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <7e04a248-cf29-4f0e-b6c5-6dce0fd78613@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710774540;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=jdUSjQfELoCxrmMar6U8OQhaRPvf8KwScinRJQd8ysE=;
-	b=ri1M17KrHBQVuuHS6Pt0zlxhvdeECi6rIYC/QjRPDyMakidFBANeT9usyBd1f8yzhL6ssJ
-	DiDCzFkSWXI8Vup9oo0wTgft/WWwI05jJ4fgudAflQjECt6fST+ztm6k9LUFQN2CSpdAQ+
-	N3c5iD68lcWN7S9PMnLUq/KQNpntEaw=
-Date: Mon, 18 Mar 2024 11:08:58 -0400
+	s=arc-20240116; t=1710774578; c=relaxed/simple;
+	bh=RVZ6WcRCz0GZsj3KPodHOeWYk9mSNq77l8mgUMPuTLE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=rXXPgpEO0+7yT57PXznX8aAxDh4HaFCaNSPczli8wbjqZjU4ab4Wj9S+nbddOXivITBVcKTpvVzrjLVJNumsW8b76Anve5Tu9o4egEmMSQtlCV4J/VrAk0i3Z2FQSyBKyF+10DR8gkgYkx1VqOzElzx+RUsXdbHgWdIcS/Kesk8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=SPH0kgji; arc=none smtp.client-ip=209.85.160.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oa1-f49.google.com with SMTP id 586e51a60fabf-221822a7dc7so2579280fac.3;
+        Mon, 18 Mar 2024 08:09:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710774576; x=1711379376; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=RVZ6WcRCz0GZsj3KPodHOeWYk9mSNq77l8mgUMPuTLE=;
+        b=SPH0kgjijJSHtfENI+H3AJRQozJrQgCBfIf5FdR60PlMmGKxamdTuxPzhvEQr4RYyQ
+         TD/UhN2H5feOEskxsfpDe6x5oUh+SaY+S03LolP+urXfGYZMdekmC7+jy+cHxYB7vtp6
+         GlSSg2vca4/nc1i/Mq0na77FvH4VgbuxjUvCccF8FgkvrIoGuog1VF8oAA4Q35zXc9fB
+         rLMz/Z85MOvq3wZBZFr2/qSDHc8VtlugDV4INWZU6MPPJ1hFv7untk2p2LL1WsvgKi0H
+         7M724iiGQNqEzjhnlQTzJI4/upQOfyM9lwJq/6GnI+I6AE8ITpIsca7zpKA+ryWHqcle
+         d2VA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710774576; x=1711379376;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=RVZ6WcRCz0GZsj3KPodHOeWYk9mSNq77l8mgUMPuTLE=;
+        b=LyBTWTGccwYRZom4pLlgf6xhIZWAilQ+P0KoRZPkeC9uSGw/dGCzpP8VG2hE8BHeOu
+         0XIYeHEMeIfktbuxzDOOIPBhMEhh2PUgH/eGRnmcPFCoI8HRj0fdUsQXblRP8G+1QX3j
+         zB2So2jGuFAZOvl0u2Xai/Nu5ZLjikBNRPGkzwlnVeK1rsZGv45NP/WJlL1NDeG+Byt5
+         N5Tsy+nn0wZft5xCnwonX7Ow1fV56LFCJa+iDKuMTjcTnIyiYYZEZqR3fOvLvrM8hAFK
+         cXk6PXmcQ+aivqt1Tlm+NExud0CrIZnJdW631rDknFZ23HRo+e+VRdGztUxzdNGS7suW
+         /Nlg==
+X-Forwarded-Encrypted: i=1; AJvYcCUmpQbwXcGkVTVUvLjrCjz0Bix6Otbg/iL2X2Lw7vBo6jHuP1bldxaTHSOYW5aqQgu6I+lWqrfMOa8Tr0JMg1auAt9ZDIWGau7nHfRIrWcldjQRh4Q0slJcAhOIik4SfKC38i6lgBDDDzn0jC9H2+LC/jy1505rIEgrC71DPgMYdwfZ3g==
+X-Gm-Message-State: AOJu0YxpcjX/aZFnMjJfb75wUpqt6FWtkMczaqRHXndENfTkf5PTzSwH
+	kSvdIGwHVBubYNYS815BoO3KKKO18h9I/Ufq7oWab0uJq3DyBm7GDLrXYyZ4UHdX5pwl2qFe+kq
+	aUsBgQ03vJQqU2qKyWje6/yVkwrM=
+X-Google-Smtp-Source: AGHT+IFWRfZFllmVa+XahwIMCXQBAwA5XNnRHBjx6aEbdcdugUpjtP3x63gtCLCMbnyfk3UsJK8JAPQX47E46Yh3rSg=
+X-Received: by 2002:a05:6870:3281:b0:221:b4a5:e732 with SMTP id
+ q1-20020a056870328100b00221b4a5e732mr14572704oac.34.1710774576287; Mon, 18
+ Mar 2024 08:09:36 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH 2/2] nvmem: Remove qoriq-efuse in favor of layerscape-sfp
-Content-Language: en-US
-To: richard@bit42.se
-Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
- linux-kernel@vger.kernel.org,
- =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
- Michael Walle <michael@walle.cc>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-References: <20240316002026.1808336-1-sean.anderson@linux.dev>
- <20240316002026.1808336-2-sean.anderson@linux.dev>
- <6f5636e65df5616395cc8e24f63b09ef@bit42.se>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Sean Anderson <sean.anderson@linux.dev>
-In-Reply-To: <6f5636e65df5616395cc8e24f63b09ef@bit42.se>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+References: <20240318091911.13426-1-animeshagarwal28@gmail.com> <20240318142324.GA3960676-robh@kernel.org>
+In-Reply-To: <20240318142324.GA3960676-robh@kernel.org>
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+Date: Mon, 18 Mar 2024 20:39:25 +0530
+Message-ID: <CAE3Oz81ez-d_yL4xQRS-Y707ok--3vFK5FD56m3r+PGZuUMFmw@mail.gmail.com>
+Subject: Re: [PATCH] dt-bindings: nxp,i2c-pnx: Convert to dtschema
+To: Rob Herring <robh@kernel.org>
+Cc: Vladimir Zapolskiy <vz@mleia.com>, Andi Shyti <andi.shyti@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	linux-arm-kernel@lists.infradead.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/18/24 04:32, richard@bit42.se wrote:
-> On 2024-03-16 01:20, Sean Anderson wrote:
->> The qoriq-efuse driver is a duplicate of layerscape-sfp.c. The T-series
->> uses TA 2.0, while Layerscape uses TA 2.1 or 3.0 (depending on the
->> chip). Add appropriate compatibles to the layerscape-sfp driver and
->> remove the qoriq-efuse driver. I did not add support for P-series SoCs,
->> since they use TA 1.0 which doesn't share a major version with either of
->> the existing implementations.
->>
->> The qoriq-efuse driver does not properly abstract the location/offset of
->> the fuses properly, instead exposing the device's whole address range to
->> userspace. This is not appropriate, as the fuses only occupy a small
->> portion of this range. The layerscape-sfp module correctly constrains
->> the nvmem size to the fuses size. This represents a (necessary)
->> compatibility break. The qoriq-efuse driver has been in-tree for around
->> six months. Hopefully this will limit the fallout.
->>
->> I would appreciate if someone with access to trust architecture 2.0 user
->> guide could confirm the number of fuses.
->>
->> Fixes: 0861110bb421 ("nvmem: add new NXP QorIQ eFuse driver")
->> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> I don't think Fixes is appropriate here. Apart from that:
+On Mon, Mar 18, 2024 at 7:53=E2=80=AFPM Rob Herring <robh@kernel.org> wrote=
+:
+> Doesn't quite match the compatible string.
+Will change the file name to nxp,pnx-i2c.yaml
+> These 2 are defined in i2c-controller.yaml, so drop.
+> Drop unused labels.
 
-As mentioned in the second paragraph, the original driver exposes the whole
-register space in the nvmem. I consider this a bug.
+Making these fixes in v2.
 
---Sean
-
-> Acked-by: Richard Alpe <richard@bit42.se>
-
+Thanks,
+Animesh
 
