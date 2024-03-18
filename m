@@ -1,165 +1,202 @@
-Return-Path: <linux-kernel+bounces-106288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 03B0A87EC01
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:22:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 6AF9387EC04
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:22:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 341901C21319
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:22:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8C0531C21392
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:22:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EEFEB4F206;
-	Mon, 18 Mar 2024 15:22:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ECF3A4F1FC;
+	Mon, 18 Mar 2024 15:22:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="O/Lx+BFJ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="xOz+5+hc"
+Received: from out-185.mta1.migadu.com (out-185.mta1.migadu.com [95.215.58.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3545C1CD3B;
-	Mon, 18 Mar 2024 15:22:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BAF14F1E3
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:22:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710775343; cv=none; b=QVe++/MICt86hGC2r2EdExYZmlG6DE06i6qYxcXlTwFcfS66WLgNf3mrzEKJfmU4iV8gy56dvBgd91/6ZQEH1IkypQS7LlAgUJW6ELxdXivaqPvtcIdzBfSyOv9dkgtyLsH8Y7vEW9hN+rfwWTgoD6DgUHX84l0zPIAk/jwEcXY=
+	t=1710775354; cv=none; b=YfA/sORY6bgDI4qVyUSuQo2gRWKvDj0mawxQ1974AVWlEZiU2KpaMiUfmkV/crPoNPXDeNYrmglz580JRJgT8s5ocG44K+ULc5fIk/CY0X2Fjd+Uqb/lXIZfWBVj0H2+troJWMURfrI0cmtMxoCV24aKlaMldOGz8DuYhRzrEvQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710775343; c=relaxed/simple;
-	bh=Pm8X9+GHL3uhjeSunL8byVQe/wt5/ZgrK6SBitYJwQ8=;
-	h=Date:Content-Type:MIME-Version:From:To:Cc:In-Reply-To:References:
-	 Message-Id:Subject; b=jfLj6g5fRq+YrW9pJVpIHdCjXrYPlIHzHV6n2eECM4qoGt8yyQMpHlf12eAMsiICbaAL5jweExFYqrBhEQ3VHMUy8MA08imljvI9eBF36JAtP6yVmdzYLq5F4dyRS8K4bvAv3UDlxTk94HRWx+r4CH9Gut/8vHmO26qAcBR/ko4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=O/Lx+BFJ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DE8A4C433C7;
-	Mon, 18 Mar 2024 15:22:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710775343;
-	bh=Pm8X9+GHL3uhjeSunL8byVQe/wt5/ZgrK6SBitYJwQ8=;
-	h=Date:From:To:Cc:In-Reply-To:References:Subject:From;
-	b=O/Lx+BFJiEhZA5JOLrhuwSx0lVplFQ5dOaMpZZ/39IuoxojbIYV8s1edlMtqy2uug
-	 Tqm7pyBLvzcw6oh1RzAMkFsXyb95BRp4jsBpqFFQjGIQCt/cqUp1W3J9HD9XuhoTwS
-	 aY6Z2/6QNJihEKh/KnGpwRwtotjCpAxqIUbsFfZTO2jYOBN/xECozY2guH1GjcdbP3
-	 LaSnt+d2JVv1HkBU8ZKXv1LXlJXBqymKUB3YfBaqQPhgHzn2Ke4YVh0o+ulJQx29wO
-	 i27KEUd+GSwaTRm0JAv2btMoWpJk1nCm9MBjFo6DdQFcrJIOBw3WtVKzWh/6P1Sgly
-	 gf32w3EfnuhoA==
-Date: Mon, 18 Mar 2024 10:22:21 -0500
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+	s=arc-20240116; t=1710775354; c=relaxed/simple;
+	bh=9YW4WvhSKSeC1bqdySTFHHYNczS13IltV5/yYx8Z2/8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=iQmuUT6iDvcv0Fz7Ar9qRnahV4I4hHfl1R9bJlOFuW81x9qgVJpFn1WApYvGaFhLoJPLkhNptZLV8FV0q1FqlHXolQ07kp2Vau+3KMJ7Ha8qkqCNFfKPlAQ6YcHHSxxvH+jBUKCXz271tfLoXIuMr/IRXi1f6rCFOACLHAZhg7c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=xOz+5+hc; arc=none smtp.client-ip=95.215.58.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <cda22b0c-8d7c-4ce2-9a7c-3b5ab540fa1f@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710775350;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=xy6k9xRVjS7ywoka2yI3ZucurvNu1EJ6Z2EBQrWjdzQ=;
+	b=xOz+5+hcR3hKGDRU3ohsK+6VDQuGZv/ehTx44Lwrda532CNJzZ26SE81f1eaVswBP7xJgD
+	OsKb59CCUyjuj86kKDxZmTPO9n5jD9j4wk2Rh+lLNorNhvJUa4E7GZcb/7Da0zhlDsDpHr
+	qXRNLP+60xgxGa2ZVvXFCBCRs6HZsfg=
+Date: Mon, 18 Mar 2024 11:22:26 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Rob Herring <robh@kernel.org>
-To: Neil Armstrong <neil.armstrong@linaro.org>
-Cc: Conor Dooley <conor+dt@kernel.org>, linux-kernel@vger.kernel.org, 
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Konrad Dybcio <konrad.dybcio@linaro.org>, 
- Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>, 
- Bjorn Andersson <andersson@kernel.org>, devicetree@vger.kernel.org, 
- linux-arm-msm@vger.kernel.org
-In-Reply-To: <20240318-topic-sm8650-upstream-hdk-v2-0-b63a5d45a784@linaro.org>
-References: <20240318-topic-sm8650-upstream-hdk-v2-0-b63a5d45a784@linaro.org>
-Message-Id: <171077500758.4030479.17208797895858042949.robh@kernel.org>
-Subject: Re: [PATCH v2 0/3] arm64: qcom: sm8650: add support for the
- SM8650-HDK board
+Subject: Re: [PATCH 6/6] drm: zynqmp_dp: Add debugfs interface for compliance
+ testing
+Content-Language: en-US
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+ Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
+ dri-devel@lists.freedesktop.org, David Airlie <airlied@gmail.com>,
+ linux-kernel@vger.kernel.org, Michal Simek <michal.simek@amd.com>,
+ linux-arm-kernel@lists.infradead.org, Daniel Vetter <daniel@ffwll.ch>
+References: <20240315230916.1759060-1-sean.anderson@linux.dev>
+ <20240315230916.1759060-7-sean.anderson@linux.dev>
+ <CAA8EJpoh_5EB5H8yf2yQhRYovXPo0QgrzssDHUzcoFo7rik5Bw@mail.gmail.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <CAA8EJpoh_5EB5H8yf2yQhRYovXPo0QgrzssDHUzcoFo7rik5Bw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-
-On Mon, 18 Mar 2024 10:51:52 +0100, Neil Armstrong wrote:
-> The SM8650-HDK is an embedded development platforms for the
-> Snapdragon 8 Gen 3 SoC aka SM8650, with the following features:
-> - Qualcomm SM8650 SoC
-> - 16GiB On-board LPDDR5
-> - On-board WiFi 7 + Bluetooth 5.3/BLE
-> - On-board UFS4.0
-> - M.2 Key B+M Gen3x2 PCIe Slot
-> - HDMI Output
-> - USB-C Connector with DP Almode & Audio Accessory mode
-> - Micro-SDCard Slot
-> - Audio Jack with Playback and Microphone
-> - 2 On-board Analog microphones
-> - 2 On-board Speakers
-> - 96Boards Compatible Low-Speed and High-Speed connectors [1]
-> - For Camera, Sensors and external Display cards
-> - Compatible with the Linaro Debug board [2]
-> - SIM Slot for Modem
-> - Debug connectors
-> - 6x On-Board LEDs
+On 3/16/24 13:56, Dmitry Baryshkov wrote:
+> On Sat, 16 Mar 2024 at 01:09, Sean Anderson <sean.anderson@linux.dev> wrote:
+>>
+>> Add a debugfs interface for exercising the various test modes supported
+>> by the DisplayPort controller. This allows performing compliance
+>> testing, or performing signal integrity measurements on a failing link.
+>> At the moment, we do not support sink-driven link quality testing,
+>> although such support would be fairly easy to add.
 > 
-> An optional Display Card kit can be connected on top,
-> an overlay is handled to add support for the DSI Display
-> and Touch Controller.
+> Could you please point out how this is used for compliance testing? We
+> have been using the msm_dp_compliance tool [1].
+
+Here's some quick documentation I wrote up. This probably could be put
+under Documentation for v2.
+
+The following files in /sys/kernel/debug/dri/1/DP-1/test/ control the
+DisplayPort test modes:
+
+active:
+  Writing a 1 to this file will activate test mode, and writing a 0 will
+  deactivate test mode. Writing a 1 or 0 when the test mode is already
+  active/inactive will reactivate/re-deactivate test mode. When test mode
+  is inactive, changes made to other files will have no effect. When
+  test mode is active, changes made to other files will apply instantly.
+  Additionally, hotplug events (as removing the cable or if the monitor
+  requests link retraining) are ignored.
+custom:
+  Custom test pattern value
+downspread:
+  Enable/disable clock downspreading (spread-spectrum clocking) by
+  writing 1/0
+enhanced:
+  Enable/disable enhanced framing
+lane0_preemphasis:
+  Preemphasis from 0 (lowest) to 2 (most) for lane 0
+lane0_swing:
+  Voltage swing from 0 (lowest) to 3 (most) for lane 0
+lane1_preemphasis:
+  Preemphasis from 0 (lowest) to 2 (most) for lane 1
+lane1_swing:
+  Voltage swing from 0 (lowest) to 3 (most) for lane 1
+lanes:
+  Number of lanes to use (1 or 2)
+pattern:
+  Test pattern. May be one of:
+    - video: Use regular video input
+    - symbol-error: Symbol error measurement pattern
+    - prbs7: Output of the PRBS7 (x^7 + x^6 + 1) polynomial
+    - 80bit-custom: A custom 80-bit pattern
+    - cp2520: HBR2 compliance eye pattern
+    - tps1: Link training symbol pattern TPS1 (/D10.2/)
+    - tps2: Link training symbol pattern TPS2
+    - tps3: Link training symbol pattern TPS3 (for HBR2)
+rate:
+  Rate in hertz. One of
+    - 5400000000: HBR2
+    - 2700000000: HBR
+    - 1620000000: RBR
+
+You can dump the displayport test settings with the following command:
+
+for prop in /sys/kernel/debug/dri/1/DP-1/test/*; do
+	printf '%-20s ' ${prop##*/}
+	if [ ${prop##*/} = custom ]; then
+		hexdump -C $prop | head -1
+	else
+		cat $prop
+	fi
+done
+
+The output could look something like
+
+active               1
+custom               00000000  00 00 00 00 00 00 00 00  00 00                    |..........|
+downspread           0
+enhanced             1
+lane0_preemphasis    0
+lane0_swing          3
+lane1_preemphasis    0
+lane1_swing          3
+lanes                2
+pattern              prbs7
+rate                 1620000000
+
+The recommended test procedure is to connect the board to a monitor,
+configure test mode, activate test mode, and then disconnect the cable
+and connect it to your test equipment of choice. For example, one
+sequence of commands could be:
+
+echo 1 > /sys/kernel/debug/dri/1/DP-1/test/enhanced
+echo tps1 > /sys/kernel/debug/dri/1/DP-1/test/pattern
+echo 1620000000 > /sys/kernel/debug/dri/1/DP-1/test/rate
+echo 1 > /sys/kernel/debug/dri/1/DP-1/test/active
+
+at which point the cable could be disconnected from the monitor. When
+the cable is disconnected there will be several errors while changing
+the settings. This is expected.
+
+> I think it would be nice to rework our drivers towards a common
+> debugfs interface used for DP connectors, maybe defining generic
+> internal interface/helpers like Maxime is implementing for HDMI
+> connectors.
 > 
-> Product Page: [3]
-> 
-> Dependencies: None
-> 
-> [1] https://www.96boards.org/specifications/
-> [2] https://git.codelinaro.org/linaro/qcomlt/debugboard
-> [3] https://www.lantronix.com/products/snapdragon-8-gen-3-mobile-hardware-development-kit/
-> 
-> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> ---
-> Changes in v2:
-> - Fixed commit messages with links, and recently added product page URL
-> - Swapped i2c3/i2c6 nodes
-> - Moved pcie_1_phy_aux_clk under pcie1_phy
-> - Removed duplicate mdp_vsync pinctrl state
-> - Collected review & tested tags
-> - Link to v1: https://lore.kernel.org/r/20240223-topic-sm8650-upstream-hdk-v1-0-ccca645cd901@linaro.org
-> 
-> ---
-> Neil Armstrong (3):
->       dt-bindings: arm: qcom: Document the HDK8650 board
->       arm64: dts: qcom: sm8650: add support for the SM8650-HDK board
->       arch: arm64: dts: sm8650-hdk: add support for the Display Card overlay
-> 
->  Documentation/devicetree/bindings/arm/qcom.yaml    |    1 +
->  arch/arm64/boot/dts/qcom/Makefile                  |    5 +
->  .../boot/dts/qcom/sm8650-hdk-display-card.dtso     |  144 +++
->  arch/arm64/boot/dts/qcom/sm8650-hdk.dts            | 1259 ++++++++++++++++++++
->  4 files changed, 1409 insertions(+)
-> ---
-> base-commit: 2e93f143ca010a5013528e1cfdc895f024fe8c21
-> change-id: 20240223-topic-sm8650-upstream-hdk-e21cfd6f1de8
-> 
-> Best regards,
-> --
-> Neil Armstrong <neil.armstrong@linaro.org>
-> 
-> 
-> 
+> [1] https://gitlab.freedesktop.org/drm/igt-gpu-tools/-/blob/master/tools/msm_dp_compliance.c?ref_type=heads
 
+I was definitely inspired by the msm, intel, and amd approaches.
+However, those debugfs implementations seem to be oriented towards
+DisplayPort text fixtures which emulate DPRXs. In particular, both the
+intel and msm debugfs interfaces provide no method for configuring test
+parameters in userspace. As test fixtures supporting DPCD can run into
+the thousands of dollars, I think it is more economical to support
+userspace-driven testing. I was particularly inspired by the AMD
+approach:
 
-My bot found new DTB warnings on the .dts files added or changed in this
-series.
+	/* Usage: set DP physical test pattern using debugfs with normal DP
+	 * panel. Then plug out DP panel and connect a scope to measure
+	 * For normal video mode and test pattern generated from CRCT,
+	 * they are visibile to user. So do not disable HPD.
+	 * Video Mode is also set to clear the test pattern, so enable HPD
+	 * because it might have been disabled after a test pattern was set.
+	 * AUX depends on HPD * sequence dependent, do not move!
+	 */
 
-Some warnings may be from an existing SoC .dtsi. Or perhaps the warnings
-are fixed by another series. Ultimately, it is up to the platform
-maintainer whether these warnings are acceptable or not. No need to reply
-unless the platform maintainer has comments.
+But I chose to always disable HPD events and ignore DPCD
+errors in test mode. I think this is pretty convenient, since you can
+run the same commands regardless of whether you have a monitor attached.
+Although the initial setup does need a monitor (which is likely since
+not everything gets set up by activating test mode; definitely fixable
+but I didn't need it).
 
-If you already ran DT checks and didn't see these error(s), then
-make sure dt-schema is up to date:
-
-  pip3 install dtschema --upgrade
-
-
-New warnings running 'make CHECK_DTBS=y qcom/sm8650-hdk.dtb' for 20240318-topic-sm8650-upstream-hdk-v2-0-b63a5d45a784@linaro.org:
-
-arch/arm64/boot/dts/qcom/sm8650-hdk.dtb: usb@a6f8800: interrupt-names:0: 'pwr_event' was expected
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-arch/arm64/boot/dts/qcom/sm8650-hdk.dtb: usb@a6f8800: interrupt-names:1: 'hs_phy_irq' was expected
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-arch/arm64/boot/dts/qcom/sm8650-hdk.dtb: usb@a6f8800: interrupt-names:2: 'dp_hs_phy_irq' was expected
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-arch/arm64/boot/dts/qcom/sm8650-hdk.dtb: usb@a6f8800: interrupt-names:3: 'dm_hs_phy_irq' was expected
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-arch/arm64/boot/dts/qcom/sm8650-hdk.dtb: usb@a6f8800: interrupt-names: ['hs_phy_irq', 'ss_phy_irq', 'dm_hs_phy_irq', 'dp_hs_phy_irq'] is too short
-	from schema $id: http://devicetree.org/schemas/usb/qcom,dwc3.yaml#
-
-
-
-
-
+--Sean
 
