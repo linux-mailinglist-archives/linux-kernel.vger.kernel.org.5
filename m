@@ -1,132 +1,170 @@
-Return-Path: <linux-kernel+bounces-106359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106274-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCCFB87ED08
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:09:08 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id E27DE87EBB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:10:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5C28D1F21C8A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:09:08 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 72B46B21937
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:10:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BC6E537F2;
-	Mon, 18 Mar 2024 16:08:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZvzuPbWX"
-Received: from mail-wr1-f54.google.com (mail-wr1-f54.google.com [209.85.221.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 262B453385;
-	Mon, 18 Mar 2024 16:08:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6EDD24F898;
+	Mon, 18 Mar 2024 15:09:43 +0000 (UTC)
+Received: from mx.gpxsee.org (mx.gpxsee.org [37.205.14.76])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 617064F1EB;
+	Mon, 18 Mar 2024 15:09:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.205.14.76
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710778122; cv=none; b=WI+lkF2qDFF11eTyfzv/BkOfHn6fIMey8KtUNVucKLBcFhvoqbOKqyNhKnQbSUMabgRUkmuIp4xIbEoXoBsoCCl7gn40gR3Bf02jxlMuvcJyG0BOpMxlkhcgK7OdFLOpdEaIV0CC5XM+zCFR0J29VMqFFogsuvrZjAUbqxPbVEE=
+	t=1710774583; cv=none; b=VJkRHCHxieTuP+mPChrgrR05X7yBbf00fpduBCn68wzQKOFmboeyQDGMjlqeYWd9x3uRxAq5VJFsg2FOqC1gGOZOzwNFYt8ZSSMgfquU4Uz6QCEP0zeARQ4z7JJyM98IA7SU+XcLYQ8P/td4y4vRprXKb9yEK7uMv7C6ooj1MNg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710778122; c=relaxed/simple;
-	bh=EmaVoP+earJuSu2o65o4pl6OdAyua9nqaR2HtePrF48=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=SqcTT2kIaOjvWRxFjLgMNbSacq1rittf6z1ICkQk1TY/xXXQgifp+St2h0+VOxWdt1KLUOzGF4we4j3W4JSXFkYoLL67QNJDaJxnHOyGdq2ptPGLo6IZSh98IZuOg8exEQx5PsMXTEshIjh2gaxpwu+lfnwy9EZVD8SrXxdSX+s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZvzuPbWX; arc=none smtp.client-ip=209.85.221.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-wr1-f54.google.com with SMTP id ffacd0b85a97d-33ec8f13c62so3294832f8f.0;
-        Mon, 18 Mar 2024 09:08:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710778119; x=1711382919; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ddHXVjuqLW268HLK7jnmZpsNduOijqKpccgoOAn1Qkw=;
-        b=ZvzuPbWXqq3+rv9LSit7EflN6wOPJXDRP+9c4CpX6lzKkpVrFhO6CAcT29I/ezu+Dp
-         t3Bvibof/XOpZEFJq6tGPO9/eT5trQ1GtTvskcHSuN8XqD263poDyKxjvWAnk9Pj0Hd9
-         yD73E15Sz/tgWGRYDG+cIqD8z4PwocKb8rdY42l/mqkyK/17Hc8AavTBxDcc2lSQZ0lQ
-         W31n31RGdZjHL1U+8niYbzbSrV4+UveFkuPc3RHPsnjZHNeBEqhjPpMdZgIxy8/+9QBA
-         Y0cXaPA1NXZw7dqirXi7Z/DOzkf61cmPv1SuLsc4WskT/Q0bnZIgg1chf/SV9bxmu+jS
-         Z9+Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710778119; x=1711382919;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ddHXVjuqLW268HLK7jnmZpsNduOijqKpccgoOAn1Qkw=;
-        b=s9vtfCJDDeuqMN4RwJ5n7ZgN7zE/PK3NMXppmpSH5k7Txlz3TVdQ7KJs9r2/2LHU2V
-         iikeyAjXAFgMchCmZGIY7gjpd8yOcg1lU7tVW+AzWkodp/0xzKvUnsnjQ83+Ut0LZTL+
-         UA2AmN0tA8IOncFlqBvYp921CubE3iosPcmkMNiRru3QOsXCDJdLJT7bwbFMAZtRwUEW
-         Bpv9wrJdC1r2Hi5S8DOk4fSYzVdfxd4WYoNlkTyIutqo15DNWG8WVo7KwnH1vN/Jmhif
-         1eUrjdsbZ/4GZuUIkUFgCRiJ6XN1zxxKQFPLLfvp4Nqh2neHK4OihQnnPBf5LbuF1V9W
-         FpjQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUxoHzePMzmyTeFv1W75NTwR2/p+zHcmWKzMBKoulVMNQ8S3b7KY1Dr3Ng+VH8rUIseFH3ReUsLzgJNsNx2IwLlJd3qCgdb+gTGD78izuhVznsh7AyuJWrdx7qMn9YHuaEoLROurFnmPOgDr2Th
-X-Gm-Message-State: AOJu0YwxEpCdeUqKlJGJCD0qj6EBwznrXVNfW486l2CWKjW4V0F++GRZ
-	LERX3/5DthsSGAYAj/9sIuADEc/+hzMKlIRMgJoV7yZDEV95G94S+98xHbuO
-X-Google-Smtp-Source: AGHT+IFtqrZcMnGF6ca8UZ/MYdVWqOaQQ4YvkEpCU272vqBcP1q6pTRS5/qxg57iDjKOHu02upRSUw==
-X-Received: by 2002:a05:6000:136a:b0:33e:6056:6b84 with SMTP id q10-20020a056000136a00b0033e60566b84mr9185105wrz.2.1710778119556;
-        Mon, 18 Mar 2024 09:08:39 -0700 (PDT)
-Received: from prasmi.home ([2a00:23c8:2500:a01:c23f:76ae:8149:291])
-        by smtp.gmail.com with ESMTPSA id by19-20020a056000099300b0034174875850sm2686930wrb.70.2024.03.18.09.08.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 09:08:38 -0700 (PDT)
-From: Prabhakar <prabhakar.csengg@gmail.com>
-X-Google-Original-From: Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-To: Geert Uytterhoeven <geert+renesas@glider.be>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Chris Brandt <chris.brandt@renesas.com>,
-	Magnus Damm <magnus.damm@gmail.com>
-Cc: linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-renesas-soc@vger.kernel.org,
-	Prabhakar <prabhakar.csengg@gmail.com>,
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Subject: [PATCH 2/2] clocksource/drivers/renesas-ostm: Add OSTM support for RZ/V2H(P) SoC
-Date: Mon, 18 Mar 2024 16:07:31 +0000
-Message-Id: <20240318160731.33960-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240318160731.33960-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
-References: <20240318160731.33960-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+	s=arc-20240116; t=1710774583; c=relaxed/simple;
+	bh=FipI5WsNECJeOw6c7DF39GapkTYB24oPG38+PzmCmUo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=o13HcvXzzJwBgIGpJlv07tDTrT47GgK/2mzOe8+TJrHEf4uRF8WLH00cmrC95GE7xrBXnJFEkF8vQ3hXZX/FVukGjj7C3fxZZRMGm/fCrB7SvQ2+SoSBKIZ6RDt0KH5I58eA5EP+ePEISfcgSl8HtzBgIScpZkfweK1X7h2q6kk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org; spf=pass smtp.mailfrom=gpxsee.org; arc=none smtp.client-ip=37.205.14.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=gpxsee.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gpxsee.org
+Received: from mgb4.digiteq.red (unknown [62.77.71.229])
+	by mx.gpxsee.org (Postfix) with ESMTPSA id 13E7853CF0;
+	Mon, 18 Mar 2024 16:09:32 +0100 (CET)
+From: tumic@gpxsee.org
+To: Mauro Carvalho Chehab <mchehab@kernel.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>
+Cc: linux-media@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	=?UTF-8?q?Martin=20T=C5=AFma?= <martin.tuma@digiteqautomotive.com>
+Subject: [PATCH] media: admin-guide: Fix mgb4 driver documentation structure
+Date: Mon, 18 Mar 2024 17:09:19 +0100
+Message-ID: <20240318160919.6144-1-tumic@gpxsee.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Martin Tůma <martin.tuma@digiteqautomotive.com>
 
-RZ/V2H(P) (R9A09G057) SoC has Generic Timer Module(a.k.a OSTM) which
-needs to deassert the reset line before accessing any registers just
-like the RZ/G2L SoC.
+Fix the mgb4 driver documentation structure that breaks the "Video4Linux (V4L)
+driver-specific documentation" outline.
 
-Enable the entry point for RZ/V2H(P) SoC so that we can deassert
-the reset line in probe callback.
-
-While at it use IS_ENABLED() macro instead of open coding.
-
-Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Signed-off-by: Martin Tůma <martin.tuma@digiteqautomotive.com>
 ---
- drivers/clocksource/renesas-ostm.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ Documentation/admin-guide/media/mgb4.rst | 35 ++++++++++--------------
+ 1 file changed, 15 insertions(+), 20 deletions(-)
 
-diff --git a/drivers/clocksource/renesas-ostm.c b/drivers/clocksource/renesas-ostm.c
-index 8da972dc1713..b8b3c82b2528 100644
---- a/drivers/clocksource/renesas-ostm.c
-+++ b/drivers/clocksource/renesas-ostm.c
-@@ -224,7 +224,7 @@ static int __init ostm_init(struct device_node *np)
+diff --git a/Documentation/admin-guide/media/mgb4.rst b/Documentation/admin-guide/media/mgb4.rst
+index 2977f74d7e26..e434d4a9eeb3 100644
+--- a/Documentation/admin-guide/media/mgb4.rst
++++ b/Documentation/admin-guide/media/mgb4.rst
+@@ -1,8 +1,10 @@
+ .. SPDX-License-Identifier: GPL-2.0
  
- TIMER_OF_DECLARE(ostm, "renesas,ostm", ostm_init);
+-====================
+-mgb4 sysfs interface
+-====================
++The mgb4 driver
++===============
++
++sysfs interface
++---------------
  
--#ifdef CONFIG_ARCH_RZG2L
-+#if IS_ENABLED(CONFIG_ARCH_RZG2L) || IS_ENABLED(CONFIG_ARCH_R9A09G057)
- static int __init ostm_probe(struct platform_device *pdev)
- {
- 	struct device *dev = &pdev->dev;
+ The mgb4 driver provides a sysfs interface, that is used to configure video
+ stream related parameters (some of them must be set properly before the v4l2
+@@ -12,9 +14,8 @@ There are two types of parameters - global / PCI card related, found under
+ ``/sys/class/video4linux/videoX/device`` and module specific found under
+ ``/sys/class/video4linux/videoX``.
+ 
+-
+ Global (PCI card) parameters
+-============================
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ **module_type** (R):
+     Module type.
+@@ -42,9 +43,8 @@ Global (PCI card) parameters
+ 
+     where each component is a 8b number.
+ 
+-
+ Common FPDL3/GMSL input parameters
+-==================================
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ **input_id** (R):
+     Input number ID, zero based.
+@@ -190,9 +190,8 @@ Common FPDL3/GMSL input parameters
+     *Note: This parameter can not be changed while the input v4l2 device is
+     open.*
+ 
+-
+ Common FPDL3/GMSL output parameters
+-===================================
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ **output_id** (R):
+     Output number ID, zero based.
+@@ -282,9 +281,8 @@ Common FPDL3/GMSL output parameters
+     Number of video lines between the end of the last valid pixel line (marked
+     by DE=1) and assertion of the VSYNC signal. The default value is 2.
+ 
+-
+ FPDL3 specific input parameters
+-===============================
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ **fpdl3_input_width** (RW):
+     Number of deserializer input lines.
+@@ -294,7 +292,7 @@ FPDL3 specific input parameters
+     | 2 - dual
+ 
+ FPDL3 specific output parameters
+-================================
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ **fpdl3_output_width** (RW):
+     Number of serializer output lines.
+@@ -304,7 +302,7 @@ FPDL3 specific output parameters
+     | 2 - dual
+ 
+ GMSL specific input parameters
+-==============================
++~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+ 
+ **gmsl_mode** (RW):
+     GMSL speed mode.
+@@ -328,10 +326,8 @@ GMSL specific input parameters
+     | 0 - disabled
+     | 1 - enabled (default)
+ 
+-
+-====================
+-mgb4 mtd partitions
+-====================
++MTD partitions
++--------------
+ 
+ The mgb4 driver creates a MTD device with two partitions:
+  - mgb4-fw.X - FPGA firmware.
+@@ -344,9 +340,8 @@ also have a third partition named *mgb4-flash* available in the system. This
+ partition represents the whole, unpartitioned, card's FLASH memory and one should
+ not fiddle with it...
+ 
+-====================
+-mgb4 iio (triggers)
+-====================
++IIO (triggers)
++--------------
+ 
+ The mgb4 driver creates an Industrial I/O (IIO) device that provides trigger and
+ signal level status capability. The following scan elements are available:
+
+base-commit: b14257abe7057def6127f6fb2f14f9adc8acabdb
 -- 
-2.34.1
+2.44.0
 
 
