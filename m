@@ -1,104 +1,133 @@
-Return-Path: <linux-kernel+bounces-106252-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106253-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A914187EB70
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:54:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 98CF687EB73
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:55:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CD6CB1C20FA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:54:33 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 593331F2195B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:55:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E69C4EB36;
-	Mon, 18 Mar 2024 14:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2ABFC4EB32;
+	Mon, 18 Mar 2024 14:54:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CdxMXb2i"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Kilj8Lpi"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9870D2C6B7;
-	Mon, 18 Mar 2024 14:54:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4C5DE4BA88
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:54:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710773666; cv=none; b=JD4DmvmcD6jMjHs2RpUbqT/xAp1P73pUjSLoxRoHUDNJP7FSYHRs57+gPNTsGLXfgmVAbZf70/J80R0+N/MiLKDDvxu5fjjx0Qxh525W76GHoX+8hP+iPhWnjis09lcNbfBdNPMLRxKCmJDsAwVFfgfBKqjL4Q7ee7JWjUyjpr8=
+	t=1710773693; cv=none; b=iWjxxyVA0FSo292+PNKgI0X3pYEXMfoQIHItNgSzRxjwvfjfpAWovBX+pxcHlj5A5cLQBSKuMbMTSlqLXo6saTA7VBQah+zge1bmChoiKwqKBbubIEc626iQYqTO1uR4pjQWF1ZAFxtbQsE5TFu74oQGpp6qQYGZ6Gxljs2XBlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710773666; c=relaxed/simple;
-	bh=ywjXIx6HmklPsjIr1i1IzyaHa8odZGdCDM27OSINcmM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ctbxpUvm2bAH26FndHjEHPLkPr4hk4NWsdzmYdAT1cGutYQM7P9FyIkiNFzS+DGvqqOUvB61OO4qE/44u6eZQ3RAZu4K4GsSKlu+IiXhC7jsChOCD6E1kd0lpkiTWkIv/iDbSRRF1a5eE1sv52zIHfOF6ByEvLybqj1PV+G0kvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CdxMXb2i; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D660CC433F1;
-	Mon, 18 Mar 2024 14:54:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710773666;
-	bh=ywjXIx6HmklPsjIr1i1IzyaHa8odZGdCDM27OSINcmM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CdxMXb2iz+7JsM/SUAYZYz1a0za5xAhxZOCC3lmz+q98zXps0G46eAz43LPzBoHsn
-	 67j2U2E6WOpFWw9gsmMa4RPICEsQH7XpodOIBhZfCOPZRDZQrlL4oFPQatyssd2sPw
-	 BH/mzt6eQXw1JFkZzOkzubzdLiWh2/M7CM+Ka8ye+662wrxuwr8SCxxrygrKl4Gsg1
-	 /G3P/Ru1sNH+HD/YJe0O9YGY2xeuCbVL8NqM/64UstD292013btVgoFU+JyBbJQyZB
-	 HorS0tvkqpI3CtDmcIzAMY3ZbVd907Gnr7iPnj4t/Cq6r+usfMMJRdpoVPAfltgbVS
-	 cQDML6T2f56HA==
-Date: Mon, 18 Mar 2024 09:54:23 -0500
-From: Rob Herring <robh@kernel.org>
-To: Lucas Tanure <tanure@linux.com>
-Cc: Xianwei Zhao <xianwei.zhao@amlogic.com>, Yu Tu <yu.tu@amlogic.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Kevin Hilman <khilman@baylibre.com>,
-	Jerome Brunet <jbrunet@baylibre.com>,
-	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Stephen Boyd <sboyd@kernel.org>,
-	Michael Turquette <mturquette@baylibre.com>,
-	linux-arm-kernel@lists.infradead.org,
-	linux-amlogic@lists.infradead.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-clk@vger.kernel.org
-Subject: Re: [RFC][PATCH 1/2] clk: meson: T7: add support for Amlogic T7 SoC
- PLL clock driver
-Message-ID: <20240318145423.GA3993342-robh@kernel.org>
-References: <20240318114346.112935-1-tanure@linux.com>
- <20240318114346.112935-2-tanure@linux.com>
+	s=arc-20240116; t=1710773693; c=relaxed/simple;
+	bh=H0x4rZpZdEgTOzMqO16a9P1LKpGfuBCG6aau50yGdNE=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=phcI9fJsBQB9gG9zZg/4JbnmaGLc8oeOzbINWlksZGqUF9XxLQNzHsySWcYCs3YaeuLOyPPo6YhNy37NqGvIwjXRH43TDjGt/z4THC9brDTmXnyU7olap84pMH8V3hxkfpi3xpF+EX2mC0k8nh4v6YTxBh8H6zOQ8HAz3SJ9ojM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Kilj8Lpi; arc=none smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710773691; x=1742309691;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version:content-transfer-encoding;
+  bh=H0x4rZpZdEgTOzMqO16a9P1LKpGfuBCG6aau50yGdNE=;
+  b=Kilj8Lpi2Zj1++s6VB4PGwscAjHUTlxeHemXUXYVWL6bDsxh2M1Q5sHJ
+   yKN4nTB2gsIvT+j4h26M9f/tFi07oAcFh6e6QY0DSFPahJe90PZctteQN
+   iH7IDlGrq8SuFIjG9zxwKIJxZJtp/q9WxjbETyXWaRdrGlUYpr31vnOyN
+   vybPRdRXUJW1CY5SUowpEuB35WsslMjtyAm+QtHRNE2SuRLtNmBeCZpqq
+   4u0+fQLFSzoCr4PKmJ/SxNCGEgppWJbP5/dWahjoEBJ9rELdzBjFhq4yU
+   92FKQ7rliZFjbUA9QWZ+A0tN2lxcHzXH0Ww74cCnG9otinM5SSZITtSmr
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5721801"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="5721801"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 07:54:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="13443005"
+Received: from ahmedess-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.133])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 07:54:45 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Neil Armstrong <neil.armstrong@linaro.org>, Andrzej Hajda
+ <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, Laurent
+ Pinchart <Laurent.pinchart@ideasonboard.com>, Jonas Karlman
+ <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+ <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Luca Weiss
+ <luca.weiss@fairphone.com>
+Cc: Imre Deak <imre.deak@intel.com>, Ville =?utf-8?B?U3lyasOkbMOk?=
+ <ville.syrjala@linux.intel.com>, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>
+Subject: Re: [PATCH] Revert "drm/bridge: Select DRM_KMS_HELPER for
+ DRM_PANEL_BRIDGE"
+In-Reply-To: <20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-v1-1-52a42a116286@linaro.org>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-v1-1-52a42a116286@linaro.org>
+Date: Mon, 18 Mar 2024 16:54:42 +0200
+Message-ID: <875xxjpp3h.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318114346.112935-2-tanure@linux.com>
+Content-Type: text/plain; charset=utf-8
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 11:43:45AM +0000, Lucas Tanure wrote:
-> Add the T7 PLL clock controller driver in the T7 SoC family.
-> 
-> This is RFC patch that enables SDCard, Ethernet and Clocking
-> for Amlogic T7 soc.
-> In this current state the patch doesn't work and gives a kernel
-> panic when probing the meson-axg-mmc for the SDCard.
-> DO NOT MERGE.
-> 
-> Signed-off-by: Lucas Tanure <tanure@linux.com>
+On Mon, 18 Mar 2024, Neil Armstrong <neil.armstrong@linaro.org> wrote:
+> This reverts commit e3f18b0dd1db242791afbc3bd173026163ce0ccc.
+>
+> Selecting DRM_KMS_HELPER for DRM_PANEL_BRIDGE leads to:
+> WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
+>   Depends on [m]: HAS_IOMEM [=3Dy] && DRM [=3Dm]
+>   ...
+>
+> and builds with CONFIG_DRM=3Dm will fail with the above kconfig
+> warns and then multiple linker error.
+>
+> Reported-by: Imre Deak <imre.deak@intel.com>
+> Reported-by: Jani Nikula <jani.nikula@linux.intel.com>
+> Reported-by: Ville Syrj=C3=A4l=C3=A4 <ville.syrjala@linux.intel.com>
+> Fixes: e3f18b0dd1db ("drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRI=
+DGE")
+> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+
+Acked-by: Jani Nikula <jani.nikula@intel.com>
+Tested-by: Jani Nikula <jani.nikula@intel.com>
+
+
 > ---
->  drivers/clk/meson/Kconfig                     |   25 +
->  drivers/clk/meson/Makefile                    |    2 +
->  drivers/clk/meson/t7-peripherals.c            | 6368 +++++++++++++++++
->  drivers/clk/meson/t7-peripherals.h            |  131 +
->  drivers/clk/meson/t7-pll.c                    | 1543 ++++
->  drivers/clk/meson/t7-pll.h                    |   83 +
->  .../clock/amlogic,t7-peripherals-clkc.h       |  410 ++
->  .../dt-bindings/clock/amlogic,t7-pll-clkc.h   |   69 +
->  8 files changed, 8631 insertions(+)
->  create mode 100644 drivers/clk/meson/t7-peripherals.c
->  create mode 100644 drivers/clk/meson/t7-peripherals.h
->  create mode 100644 drivers/clk/meson/t7-pll.c
->  create mode 100644 drivers/clk/meson/t7-pll.h
+>  drivers/gpu/drm/bridge/Kconfig | 1 -
+>  1 file changed, 1 deletion(-)
+>
+> diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kcon=
+fig
+> index 1d4f010af97b..efd996f6c138 100644
+> --- a/drivers/gpu/drm/bridge/Kconfig
+> +++ b/drivers/gpu/drm/bridge/Kconfig
+> @@ -8,7 +8,6 @@ config DRM_BRIDGE
+>  config DRM_PANEL_BRIDGE
+>  	def_bool y
+>  	depends on DRM_BRIDGE
+> -	select DRM_KMS_HELPER
+>  	select DRM_PANEL
+>  	help
+>  	  DRM bridge wrapper of DRM panels
+>
+> ---
+> base-commit: e3f18b0dd1db242791afbc3bd173026163ce0ccc
+> change-id: 20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-0e4=
+ad7c73496
+>
+> Best regards,
 
->  create mode 100644 include/dt-bindings/clock/amlogic,t7-peripherals-clkc.h
->  create mode 100644 include/dt-bindings/clock/amlogic,t7-pll-clkc.h
-
-I'm assuming since this is an RFC you know these go in a separate patch 
-with the DT binding schema which is missing.
-
-Rob
+--=20
+Jani Nikula, Intel
 
