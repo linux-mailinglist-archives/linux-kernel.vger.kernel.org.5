@@ -1,125 +1,105 @@
-Return-Path: <linux-kernel+bounces-106466-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106467-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 044EC87EF07
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:37:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3655E87EF0A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:37:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFA531F22FBD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:36:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 66FF91C222C8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:37:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0D5374CB;
-	Mon, 18 Mar 2024 17:35:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08D1E55781;
+	Mon, 18 Mar 2024 17:36:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JogwiI17"
-Received: from mout.web.de (mout.web.de [212.227.17.12])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QXDphS0g"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1ECC55780;
-	Mon, 18 Mar 2024 17:35:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B1055E67;
+	Mon, 18 Mar 2024 17:36:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.9
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783334; cv=none; b=uSAp/L+X2LXIgdxAT2Gi0kLJlteqomXB1xcuOZfzrIbq8Xkp7yibdOIIWtU5wqJkdnGLRDq5X/5KkyNJpYCEKrMHcEzl0lw1vjcbHmX58ZtqCLCURSFX8tIk1HE6J9RGPDLqGPL9jR6eFryZvcBKsxrTirJ0e5V85ts/K7o6siU=
+	t=1710783363; cv=none; b=iZN5sKyCKADnjzfjhJLMXrnxN4wfFqgfDPeBh7w4pES9Qb3B9oRAnWkL9UpD/f7gvww+kL05xkXpjcr3d5aJJzVRxhmAk/7iWx080+W9idsGLDZ8dhpE2H+7wtiQBJcy/2ncgOjrmjoW40t8ISNisyGYWQksCeujk1VNt5XEUKc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783334; c=relaxed/simple;
-	bh=XoJNQUUFayCUG3xRrAmVCwbMxRg8KixIWe/vEYZcOPQ=;
-	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
-	 In-Reply-To:Content-Type; b=dVR6nTDi4hQOKrzpLnGlrnNuV/TbKF7BK8o9R1ajht5KcOdjWshnkhQmzzwg9fZibLtODPmEtukOysyiadLp5wFe+EaanY5HBefm2gUkdHtOBxS9jVfx1fPFEo3fnnnY1nDA45rlP5b3zAH10D1qhQrl3RH954mqG7HoBOurxow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=JogwiI17; arc=none smtp.client-ip=212.227.17.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
-	s=s29768273; t=1710783296; x=1711388096; i=markus.elfring@web.de;
-	bh=zL2UFIO2avZuf4cHRjFFmzwc7ks5q6OVftTUkucV4BQ=;
-	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
-	 In-Reply-To;
-	b=JogwiI17BOi49/yQuCytE7MPZ/qIpHhWfyoqhHAd1TiqdebvHZReeoEAEJSrIeEN
-	 DX3zIUxRV8l7Bx7gh0YwFqKSx1gKdlhHNX1961842Z2I6fbVA2Qk+6VDWB76T92n0
-	 F2v1Z+ULfkSf/50Zf0cCOiTaNmG7vzwMFcFjQhFGduQl6nnd9CocAGpnT/hY0pZgk
-	 mKBXG4pRtCuoMQPwCwy8UmhLKG29gzFTUJIQ77MJ3llLubG0VDuNz2d93DZMhyk8p
-	 keSdAdQ5byNbGHds15H2XdG5kOeOEfWCHr4jJu8WsJVf5XsQPOp8NM93EXwNwQj/Q
-	 vSNz9+PuUCu6RYyE1g==
-X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
-Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb105
- [213.165.67.124]) with ESMTPSA (Nemesis) id 1MzkSZ-1qrOwA3vX7-00vVE0; Mon, 18
- Mar 2024 18:34:56 +0100
-Message-ID: <7d834747-0004-4556-b260-c747074a5df6@web.de>
-Date: Mon, 18 Mar 2024 18:34:47 +0100
+	s=arc-20240116; t=1710783363; c=relaxed/simple;
+	bh=5lepVMjaegCUK0SIqSPdsEcjoX5wIILym+A9zxP7jxc=;
+	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
+	 MIME-Version:Content-Type; b=Cr9Nt3xcC/1nq5vi21XzUZBjMu1EnfFVxzbkn4zZ4nmLdseL2nJmWhBN6pWrIycYNX2f6i0O4M5KcsVcZ0dbUMfJaVbOOjPGnfgxtD2pniuhEcn+f5XZKX4+moXa6Xrwj2JkB7gz6Rrogwd+iISEo58pIOAOLhJGJL5iWQg7e+o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QXDphS0g; arc=none smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710783361; x=1742319361;
+  h=from:to:cc:subject:in-reply-to:references:date:
+   message-id:mime-version;
+  bh=5lepVMjaegCUK0SIqSPdsEcjoX5wIILym+A9zxP7jxc=;
+  b=QXDphS0gn8kZy2b0NNK6mEpVPlXAAOx44iOU73Q1fMtVXX6euU3FFpN0
+   LRPtS9NUIlYtyzo/uFHiMMWVagUdBLjANRolZ05xgALaDM6tp8phMwkyQ
+   XPIgLOAsaFjE00btbzbicwuxWzZQG20+4GabZuZJc6tRW90++T5bxfo9h
+   75tdjvFYP027zR1383tOXiKNHoLadLjz1HkWDXLFUz9WR2NsJDRrye8E0
+   S1FgxkJPT2KRXZpChkImqTpSjJyYJaqpyYnXwtQtH6m4Jfd8s396V85qP
+   jRWDwpsmUAW23HfJC+Q4jmQBv9JDBpDQTp8uClyUdzuliGmb9TyS+b3iN
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="28092429"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="28092429"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 10:36:01 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="18016376"
+Received: from ahmedess-mobl.ger.corp.intel.com (HELO localhost) ([10.252.53.133])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 10:35:58 -0700
+From: Jani Nikula <jani.nikula@linux.intel.com>
+To: Bjorn Helgaas <helgaas@kernel.org>, linux-doc@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, Konstantin Ryabitsev
+ <konstantin@linuxfoundation.org>
+Subject: Re: stable docs.kernel.org links?
+In-Reply-To: <20240318170309.GA1187959@bhelgaas>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
+References: <20240318170309.GA1187959@bhelgaas>
+Date: Mon, 18 Mar 2024 19:35:55 +0200
+Message-ID: <87zfuvo32c.fsf@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-To: Ayush Singh <ayushdevel1325@gmail.com>,
- Vaishnav M A <vaishnav@beagleboard.org>, devicetree@vger.kernel.org,
- kernel-janitors@vger.kernel.org, linux-spi@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, lorforlinux@beagleboard.org,
- greybus-dev@lists.linaro.org
-Cc: LKML <linux-kernel@vger.kernel.org>, Alex Elder <elder@kernel.org>,
- Arnd Bergmann <arnd@arndb.de>, Conor Dooley <conor+dt@kernel.org>,
- Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
- <dragan.cvetic@amd.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Jason Kridner <jkridner@beagleboard.org>, Johan Hovold <johan@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
- Rob Herring <robh@kernel.org>, Robert Nelson
- <robertcnelson@beagleboard.org>, Tero Kristo <kristo@kernel.org>,
- Vaishnav M A <vaishnav.a@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
-References: <20240317193714.403132-5-ayushdevel1325@gmail.com>
-Subject: Re: [PATCH v4 4/5] mikrobus: Add mikroBUS driver
-Content-Language: en-GB
-From: Markus Elfring <Markus.Elfring@web.de>
-In-Reply-To: <20240317193714.403132-5-ayushdevel1325@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:rGQO4fDn0vNN389tBnKe7onogTvUErLvvTXduyGL6pWKFdmDEqy
- MCYn5pkmCHDACrPUJoNy2C7GvGm1hYCvBujMK+WsDmVllQ2MYfQf5+4qeUPkILbJYGTHjoy
- cMNmBfhajyMkcoBbxdstbnNIoU6tToHIwCqiARcUKBEdM5V/z5GbrKM5TGJjdtTWsSdEl7J
- mBvYGlMAiI8JvT71ryP2A==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:7zD/DEBSM+I=;jR8jlBRRX3dOz59O2ZMyBlQGtol
- u0BPn49w8vjSOeOdVkdxwlyYABexe3OvWICT6qmI9Apqsf9MKaxT8EIV5+CV04pIdjvwBE896
- 1ueen8J87DYHuiI3PzZnN+2NoQbCptvE68Jp6AymKTBzPe1vw2VjsReQIqjUJJiKlsQ2jAePP
- Yi/m9dWJ1XlzlQBGURVqOHxAn4n9S+bWzqs6W3pULZkbgnMH8BIU/XqkCnCxReW/TiGzEii/G
- EFpvohWYchriay7ZZv4oP+nPZ633qrUYakf2SIlL69r/Rrvi3Kzze5ppl5HJAmnYB5Wvy0IkZ
- 5SLUhpV/0DsR4+SLaUn4EEFq2rjOdWZWriQKIBXcw8/FhoEUQq8tHOeaaxy/AF+wsSUp+15q+
- k10dFxBhHnOfJ2jBWXmNfsIqj1iGGquEu8QzAV69obc26noD1e9qnKhVzWZm8mil9YyHiLYSl
- sDcXCAaccEogysA0PlBqbwcWC38hnHB2qAU89hV63umMfwr/VqD3P30E6/haT6MScpodO0tz0
- rTIaj1KNEQp2qe2SYILnp1syn1GTieirb/cnkJmoFoITI/Y66OX+CAVdyeHaJYDMStfLSljUE
- NnEzzX0PWIkut/Rkg3FOEcPeovfKjha0PoMGYm/x3QDpmDXnMkuunqrxn37M1Hxh5CkcozJzO
- wrXAIyT4AoPvF55AwkS19hbVqbV9J8V5cXn6l0OYdxyjXn+HZZKcaXedRBYmazomRlXQa7dX/
- jFczj4w8pDvlGGnOeRqD3awYga8yynVb2zhc9y2ELKVi6jiWv1GLaNSm87XUSpL2l6Nc/Rc3T
- kES1V8VyySJ69k0OKaP1TK1gG/zBpZ9dRvmKLmTiF3McI=
+Content-Type: text/plain
 
-=E2=80=A6
-> +++ b/drivers/misc/mikrobus/mikrobus_core.c
-=E2=80=A6
-> +static int mikrobus_pinctrl_select(struct mikrobus_port *port,
-> +				   const char *pinctrl_selected)
-> +{
-> +	struct pinctrl_state *state;
-> +	int ret;
-> +
-> +	state =3D pinctrl_lookup_state(port->pinctrl, pinctrl_selected);
-> +	if (IS_ERR(state)) {
-> +		return dev_err_probe(&port->dev, PTR_ERR(state),
-> +				     "failed to find state %s",
-> +				     pinctrl_selected);
-> +	}
-=E2=80=A6
+On Mon, 18 Mar 2024, Bjorn Helgaas <helgaas@kernel.org> wrote:
+> When providing a URL to a bit of code, it's nice if the URL remains
+> useful indefinitely, e.g., this should work "forever" because it
+> includes a git tag:
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/pci/pci.c?id=v6.8#n1300
+>
+> Is there a similar "id=" mechanism for https://docs.kernel.org?  I
+> could use https://docs.kernel.org/core-api/genalloc.html, but the link
+> may become stale as docs get reorganized.
+>
+> I could link to the .rst file directly with the git tag, e.g.,
+>
+>   https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Documentation/core-api/genalloc.rst?id=v6.8
+>
+> but of course that's not as nicely formatted.
 
-I suggest to reconsider the need for extra curly brackets here.
+This works, but I don't know if there are any guarantees that it keeps
+working:
 
-See also:
-Section =E2=80=9C3) Placing Braces and Spaces=E2=80=9D
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
-cumentation/process/coding-style.rst?h=3Dv6.8#n197
+https://www.kernel.org/doc/html/v6.8/core-api/genalloc.html
+
+Cc: Konstantin
 
 
-Regards,
-Markus
+BR,
+Jani.
+
+
+-- 
+Jani Nikula, Intel
 
