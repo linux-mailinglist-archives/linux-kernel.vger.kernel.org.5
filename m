@@ -1,181 +1,149 @@
-Return-Path: <linux-kernel+bounces-105891-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105892-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3D387E613
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:40:41 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E195487E618
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:41:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC4E81C216DD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:40:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D25628266E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:41:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CD482D05B;
-	Mon, 18 Mar 2024 09:40:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0049A2C6BD;
+	Mon, 18 Mar 2024 09:40:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="fZon5mgq"
-Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gUota3MG"
+Received: from mail-wr1-f52.google.com (mail-wr1-f52.google.com [209.85.221.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DA86A2D04A;
-	Mon, 18 Mar 2024 09:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 866B22C6B6
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:40:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710754823; cv=none; b=fDWLtdgqiHO9nCr8/EmZte/Y34zf3g6cLoN0xvi0mTzntNOA+9Nytjb2uVcv1OzKs4xgl+jhxq75JvsHvL8OrgMleNDa2LP6n++b8b16I+HaXqGz9hW4ekA6Prtsj+3Cl+Sxo+fOCweXURuMKEVa3xN/fIbjy0TxSTtaBKHPFdQ=
+	t=1710754836; cv=none; b=pBXueWzND3QTrQWCWjUlZyp2sfW4O080JoasJx6Uac9LvR1pYMnfc+RQUbuKSfYoO4zzGuYqAIUtSV3REg1z2EXSbb2mUbZ4k79/h4IvmkEHUOkbMutedzxW1LdY54+2z/xiAMT3vcZRNDzRqvuFKS7Enzzb6J8A0S/moswcGs8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710754823; c=relaxed/simple;
-	bh=bEznuMA+1zD98Hw8ywoN0Uc2fkSmDNXf8LAQqCKlFzc=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BvOAxM8cCTsDuESVBgIowg+hOwtLkwGZDrn2NSm8aCUIpgyw8HbG7sUbv7LvauZ95Zxgmjjyz45xXNL+m8gXFxEbCJCljZwSCJYarPmsf4R4s1yYElh9iDGc6hoPSQiCJ55hiXbFknvRWHPLqleJ3m1sH39wrp3a+xHELKc36hs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=fZon5mgq; arc=none smtp.client-ip=209.85.167.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+	s=arc-20240116; t=1710754836; c=relaxed/simple;
+	bh=9ZcDOwOqW2gF0C2lI0a37n8cgKWGS5eMMytStmdvdAU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=QWgoACZKUZF709QCAfvuP7CSM817RZdPs1dNiUqIyAjXIieFi3ST6GvX+B8U1YK2cHZVe7GTfJ5hcR6TkoUfA2kj5nrZqraJQ6PSMZ8uk9Nxpv9mcZa9tMgzt42o7fdgHdEN35d76LcESlnfUp7/VP+W/+8kNcWrgFxWc1+LVUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gUota3MG; arc=none smtp.client-ip=209.85.221.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513d599dbabso4397194e87.1;
-        Mon, 18 Mar 2024 02:40:21 -0700 (PDT)
+Received: by mail-wr1-f52.google.com with SMTP id ffacd0b85a97d-33ed6078884so1305266f8f.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:40:34 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710754820; x=1711359620; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=zIQCJ/OsqAraYCUqvyhok/Yclx8bJxWBxE1EUszmreg=;
-        b=fZon5mgq/B6QeWk9JqdBTBqlaDEVV0sL2sWqAT2Wu0dnGUNXXghIw5eeGfDhpmy5Sj
-         S42j6bR3JQmiavJtKU+Yb/yEFUMQWhXX1geC/SqeGhBj2S5L5Sa4nmfOUexDPJ6QhVp1
-         MLRFwU3AAfVqv9N6dzVxHbs/DlLF24IhEEn4IqKxeSjmr/KFkzd4TVqjhMmzphHmlPls
-         nesDoX4tyEbRZXwkVlOXuc2SAoAaNdvnkTOTtAZ86yDFvFPoEjnnSackpvHJXB6i1CPr
-         YxkECemU0z2tSlOR2uQlaG08OcIbLGVv1C6zBTGd8BzNLpEhgmn7HWr0JeezITwQxsTI
-         uUyA==
+        d=gmail.com; s=20230601; t=1710754833; x=1711359633; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=IlTtOZqwQBQp58gzcbNXtnMX5UBC9Jqt776QgB9ni+4=;
+        b=gUota3MG6QQ0HzJp/su8LipP0gi1BIepomEjDDXo2r254aDjZJA15p35lgQs8mvS6m
+         SSaZR3CoSLPAwi9v6es4+LiJEljXz3mhuJUM1NMPimyGncXu3+ozr+ghO3B/+Pf3dTh/
+         xRaL0VsLmN7FprAhoPpYL4uewtd1BiTEmLuSp0x9/lVpccxkYrvYGKncRZTDmOHEFwlW
+         h02esXyYwvi9zsi5KDq8iyX3QOALDNVqksnS7PgW7Ue4baro/kYPbnG5RdThVGuxsdm4
+         d0hx4sor1ma4KCbfzE6I87aQVwEbKb/bqdWzW+cVEPy7HziX5zCe5mq0fIjdgdUyY/7p
+         EsNQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710754820; x=1711359620;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=zIQCJ/OsqAraYCUqvyhok/Yclx8bJxWBxE1EUszmreg=;
-        b=UsbMp7ClHBHaRD9FfLlZ5bWyKnY0odwQdExClOlX/KGSVT5uj4rbfX45gsqbNQEUOV
-         unIZ8z9GhJ0G3AAaBdsUccq2ERWvi3s1wVC32UvmyJqa/08DAUQebJkVtGTN7zNRNS1P
-         66ZA9qkRhCrVUJgUhHCm5+iA+X8I5cFHY8S/OVlEt+Zfjfvr9xEBR4/waU4+Rb8xr1Iw
-         ns73PLrLQPfeimv9dbcxZwh3uubq2i1fqe0jLPVaze4T3PvLm4/05GW74m+VWb4hOLZZ
-         FkqV/FS17lBvZ5dRIZcN+ANF8ddglnwi6YqTaKv7Z/zPSN9qpfw9sZQSaHlPQd+NbpCr
-         1zLw==
-X-Forwarded-Encrypted: i=1; AJvYcCXAG0pN0au4C/DiuTmgr8a1LGTAatIgOre/8ABmVI3MUPOVwgMjfu8waMy6aCYBj2NUJgI8t6sTPIvN3zoGQRNPasmM84WgClHd
-X-Gm-Message-State: AOJu0YxzYg/UlNH22tOd+jsq2BcVet8WN6itI0zJbmkXefTSAS9N+NUP
-	mPNk5Xv68zIEcs0CFyi29FUsK9LzAiR+KBYgr+KrAj658c7dNmvw
-X-Google-Smtp-Source: AGHT+IHlG0jLb8/d60aF+YVkDif9YyCdRn4xn2S1BdwgErAiuJn3lQxqfCp3rdZ2sH2Uxw9A/Ucnjg==
-X-Received: by 2002:a05:6512:32b7:b0:513:c9d2:e1e1 with SMTP id q23-20020a05651232b700b00513c9d2e1e1mr7591669lfe.66.1710754819778;
-        Mon, 18 Mar 2024 02:40:19 -0700 (PDT)
-Received: from [192.168.1.68] (79-139-148-139.dynamic.spd-mgts.ru. [79.139.148.139])
-        by smtp.gmail.com with ESMTPSA id x23-20020ac24897000000b00513d3c1c7c7sm1370328lfc.191.2024.03.18.02.40.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 02:40:19 -0700 (PDT)
-Message-ID: <56fe9e1c-80a5-47a4-b5e5-610c694db152@gmail.com>
-Date: Mon, 18 Mar 2024 12:40:17 +0300
+        d=1e100.net; s=20230601; t=1710754833; x=1711359633;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=IlTtOZqwQBQp58gzcbNXtnMX5UBC9Jqt776QgB9ni+4=;
+        b=KawhMl8t72jC/CA2nqKFJG1XA/Bc0d+MNR2osKIeSRhGlHplUAH3lU9J6+ejjX9+0D
+         aRK23X+V/CVafO1No0ujqD9S9xborKU9Yutpzt1NTbaWs4qI/hwHUDOz2+m525WsPGPR
+         3tviv4DD8BTgMOLFJuUPUeSyx/omg9JpODuCIxJCJWuHfs5WNcw3nuWdWME6eq2cAlU/
+         LkiunP/QHUcbGG/v4Ay2sBFp0XGkRMIO7+mKDTYt0GFhZeXMkYxGxvK/dIGP6y6CepNn
+         xdnA8woW5rBOXBGqIUtU86eDRVuwao63IBXRjpT+RirjMe1uQ3Vyg4st3QEM9Z8oF6Bl
+         kwVA==
+X-Gm-Message-State: AOJu0YzC8/Z9uSUHSsqn/XvvFVuHuab/Ilsml5fDmENIidOmcCeigY6G
+	DDwvQ/TfakW/GBTZ715L/cZuATWtlRdFhpuhaV64OWuaaS0RKHTK
+X-Google-Smtp-Source: AGHT+IH6mCw6mLyut3I43YtoUs70hq5ucpI5g0XO82WSUEx2HTQitNDE/jlNFnpl1rdOXklTDvug9Q==
+X-Received: by 2002:adf:db4d:0:b0:33e:621e:35b2 with SMTP id f13-20020adfdb4d000000b0033e621e35b2mr11230086wrj.6.1710754832450;
+        Mon, 18 Mar 2024 02:40:32 -0700 (PDT)
+Received: from gmail.com (195-38-112-2.pool.digikabel.hu. [195.38.112.2])
+        by smtp.gmail.com with ESMTPSA id u6-20020a5d5146000000b0034171f3aeedsm2662419wrt.19.2024.03.18.02.40.31
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 02:40:31 -0700 (PDT)
+Sender: Ingo Molnar <mingo.kernel.org@gmail.com>
+Date: Mon, 18 Mar 2024 10:40:29 +0100
+From: Ingo Molnar <mingo@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-kernel@vger.kernel.org, Thomas Gleixner <tglx@linutronix.de>,
+	Peter Zijlstra <a.p.zijlstra@chello.nl>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Borislav Petkov <bp@alien8.de>
+Subject: [GIT PULL] IRQ fix
+Message-ID: <ZfgMDZiXhrimMVC3@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 0/2] mmc: sdhci-of-dwcmshc: Add CQE support
-To: Ulf Hansson <ulf.hansson@linaro.org>
-Cc: linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org,
- Adrian Hunter <adrian.hunter@intel.com>, Shawn Lin
- <shawn.lin@rock-chips.com>, Jyan Chou <jyanchou@realtek.com>
-References: <20240314141440.3305802-1-serghox@gmail.com>
- <CAPDyKFrP1XgJo_zDDunpzb6g8QWo4k3Ye1dJCWBGVvhdprCCkg@mail.gmail.com>
-Content-Language: en-US
-From: Sergey Khimich <serghox@gmail.com>
-In-Reply-To: <CAPDyKFrP1XgJo_zDDunpzb6g8QWo4k3Ye1dJCWBGVvhdprCCkg@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-Hello, Uffe!
 
-Thanks for the info! I'll update mailing list in the next v7 version of 
-my patch set. I'll send it anyway to fix last comments from Adrian Hunter.
+Linus,
 
-On 15.03.2024 13:55, Ulf Hansson wrote:
-> On Thu, 14 Mar 2024 at 15:14, Sergey Khimich <serghox@gmail.com> wrote:
->> Hello!
->>
->> This is implementation of SDHCI CQE support for sdhci-of-dwcmshc driver.
->> For enabling CQE support just set 'supports-cqe' in your DevTree file
->> for appropriate mmc node.
->>
->> Also, while implementing CQE support for the driver, I faced with a problem
->> which I will describe below.
->> According to the IP block documentation CQE works only with "AMDA-2 only"
->> mode which is activated only with v4 mode enabled. I see in dwcmshc_probe()
->> function that v4 mode gets enabled only for 'sdhci_dwcmshc_bf3_pdata'
->> platform data.
->>
->> So my question is: is it correct to enable v4 mode for all platform data
->> if 'SDHCI_CAN_64BIT_V4' bit is set in hw?
->>
->> Because I`m afraid that enabling v4 mode for some platforms could break
->> them down. On the other hand, if host controller says that it can do v4
->> (caps & SDHCI_CAN_64BIT_V4), lets do v4 or disable it manualy by some
->> quirk. Anyway - RFC.
->>
-> We have just updated the bouncing addresses in MAINTAINERS for Asutosh
-> Das and Ritesh Harjani, that also helps maintain cqhci. Would you mind
-> re-submitting to allow them to have a look at this too?
-> Asutosh Das <quic_asutoshd@quicinc.com>
-> Ritesh Harjani <ritesh.list@gmail.com>
->
-> Kind regards
-> Uffe
->
->> v2:
->>   - Added dwcmshc specific cqe_disable hook to prevent losing
->>     in-flight cmd when an ioctl is issued and cqe_disable is called;
->>
->>   - Added processing 128Mb boundary for the host memory data buffer size
->>     and the data buffer. For implementing this processing an extra
->>     callback is added to the struct 'sdhci_ops'.
->>
->>   - Fixed typo.
->>
->> v3:
->>   - Fix warning reported by kernel test robot:
->>          | Reported-by: kernel test robot <lkp@intel.com>
->>          | Closes: https://lore.kernel.org/oe-kbuild-all/202309270807.VoVn81m6-lkp@intel.com/
->>          | Closes: https://lore.kernel.org/oe-kbuild-all/202309300806.dcR19kcE-lkp@intel.com/
->>
->> v4:
->>   - Data reset moved to custom driver tuning hook.
->>   - Removed unnecessary dwcmshc_sdhci_cqe_disable() func
->>   - Removed unnecessary dwcmshc_cqhci_set_tran_desc. Export and use
->>     cqhci_set_tran_desc() instead.
->>   - Provide a hook for cqhci_set_tran_desc() instead of cqhci_prep_tran_desc().
->>   - Fix typo: int_clok_disable --> int_clock_disable
->>
->> v5:
->>   - Fix warning reported by kernel test robot:
->>          | Reported-by: kernel test robot <lkp@intel.com>
->>          | Closes: https://lore.kernel.org/oe-kbuild-all/202312301130.itEZhhI5-lkp@intel.com/
->>
->> v6:
->>   - Rebase to master branch
->>   - Fix typo;
->>   - Fix double blank line;
->>   - Add cqhci_suspend() and cqhci_resume() functions
->>     to support mmc suspend-to-ram (s2r);
->>   - Move reading DWCMSHC_P_VENDOR_AREA2 register under "supports-cqe"
->>     condition as not all IPs have that register;
->>   - Remove sdhci V4 mode from the list of prerequisites to init cqhci.
->>
->>
->> Sergey Khimich (2):
->>    mmc: cqhci: Add cqhci set_tran_desc() callback
->>    mmc: sdhci-of-dwcmshc: Implement SDHCI CQE support
->>
->>   drivers/mmc/host/Kconfig            |   1 +
->>   drivers/mmc/host/cqhci-core.c       |  11 +-
->>   drivers/mmc/host/cqhci.h            |   4 +
->>   drivers/mmc/host/sdhci-of-dwcmshc.c | 188 +++++++++++++++++++++++++++-
->>   4 files changed, 199 insertions(+), 5 deletions(-)
->>
->> --
->> 2.30.2
->>
+Please pull the latest irq/urgent git tree from:
+
+   git://git.kernel.org/pub/scm/linux/kernel/git/tip/tip.git irq-urgent-2024-03-17
+
+   # HEAD: ca5b0b717b75d0f86f7f5dfe18369781bec742ad irqchip/riscv-intc: Fix use of AIA interrupts 32-63 on riscv32
+
+A RISC-V irqchip driver fix.
+
+ Thanks,
+
+	Ingo
+
+------------------>
+Samuel Holland (1):
+      irqchip/riscv-intc: Fix use of AIA interrupts 32-63 on riscv32
+
+
+ drivers/irqchip/irq-riscv-intc.c | 13 ++++++++-----
+ 1 file changed, 8 insertions(+), 5 deletions(-)
+
+diff --git a/drivers/irqchip/irq-riscv-intc.c b/drivers/irqchip/irq-riscv-intc.c
+index f87aeab460eb..9e71c4428814 100644
+--- a/drivers/irqchip/irq-riscv-intc.c
++++ b/drivers/irqchip/irq-riscv-intc.c
+@@ -149,8 +149,9 @@ static int riscv_intc_domain_alloc(struct irq_domain *domain,
+ 	 * Only allow hwirq for which we have corresponding standard or
+ 	 * custom interrupt enable register.
+ 	 */
+-	if ((hwirq >= riscv_intc_nr_irqs && hwirq < riscv_intc_custom_base) ||
+-	    (hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
++	if (hwirq >= riscv_intc_nr_irqs &&
++	    (hwirq < riscv_intc_custom_base ||
++	     hwirq >= riscv_intc_custom_base + riscv_intc_custom_nr_irqs))
+ 		return -EINVAL;
+ 
+ 	for (i = 0; i < nr_irqs; i++) {
+@@ -183,10 +184,12 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
+ 		return -ENXIO;
+ 	}
+ 
+-	if (riscv_isa_extension_available(NULL, SxAIA))
++	if (riscv_isa_extension_available(NULL, SxAIA)) {
++		riscv_intc_nr_irqs = 64;
+ 		rc = set_handle_irq(&riscv_intc_aia_irq);
+-	else
++	} else {
+ 		rc = set_handle_irq(&riscv_intc_irq);
++	}
+ 	if (rc) {
+ 		pr_err("failed to set irq handler\n");
+ 		return rc;
+@@ -195,7 +198,7 @@ static int __init riscv_intc_init_common(struct fwnode_handle *fn, struct irq_ch
+ 	riscv_set_intc_hwnode_fn(riscv_intc_hwnode);
+ 
+ 	pr_info("%d local interrupts mapped%s\n",
+-		riscv_isa_extension_available(NULL, SxAIA) ? 64 : riscv_intc_nr_irqs,
++		riscv_intc_nr_irqs,
+ 		riscv_isa_extension_available(NULL, SxAIA) ? " using AIA" : "");
+ 	if (riscv_intc_custom_nr_irqs)
+ 		pr_info("%d custom local interrupts mapped\n", riscv_intc_custom_nr_irqs);
 
