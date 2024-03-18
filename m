@@ -1,60 +1,58 @@
-Return-Path: <linux-kernel+bounces-106129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4090887E98C
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:47:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2C24987E992
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:49:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id F0214281B99
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:47:50 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BFC6B1F218CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:49:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 00E20381D4;
-	Mon, 18 Mar 2024 12:47:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D934B37141;
+	Mon, 18 Mar 2024 12:49:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mAqzdd6R"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YReeFoj7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32642210EC;
-	Mon, 18 Mar 2024 12:47:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2814638DEF;
+	Mon, 18 Mar 2024 12:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710766061; cv=none; b=lkAtwHyzSORuMpMa05Xfu6yJPOh6rXlYyK3xDl/+zQPXMq/8GOLmkHJJoTpW2AS3RTjPAyogRDcmkxGnoK10cJECu3h+LT28WfL+l5c2o1Bv72l5/xxKoPPATs4lyN3clQbIy2IE/oq8Xo/pMe9yYgySK8nLiGTyQitYIorLkqM=
+	t=1710766190; cv=none; b=XnPFpe3mFKRMnfFjRzInvutlqWn8WRLx6PSpd6d2ygBao/yRMaslQEOXio0PFDetObyX1pWu/B6vI7xvNrvnojZE+DQM4KaNOLBC4gTn+vaPbAFvir1A0erSKjxJq6/QM99OUIuXNdGd8TPrCdI7FPMQG8Gc9qkECDFulKtFvu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710766061; c=relaxed/simple;
-	bh=IAavgjwG9/Sp67iqayo+f0gCAIYZtO5K2WA3YjasHuc=;
+	s=arc-20240116; t=1710766190; c=relaxed/simple;
+	bh=pnw8L0MNVMd/tH7o0U2AgWQ3mCUlzbF10paSUT8SIv0=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Io2+2bcza3En+1mh24UcT4sco0MJ/4KcnPMsRKaUTzjdniwZYsU1Bu3k5afFC2GjQuJ2xpJsW0WGOv7Sq0NGHuy/utAyY5Vf5i3CWlApPNnEroPlz+ow3LmlYnJcFtyoeChF3jtFK2BK2LwoArv72MVSkJCzC7RlHMQ3zkkyWqk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mAqzdd6R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D1C0C433F1;
-	Mon, 18 Mar 2024 12:47:40 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=ub9eMFcUHMe+tzaudSQtDmTjn4uCRs2ZrGhJQmxHRdOSO+qwV0dLyEzmaSI0l74hw8BJTNsGn/bc3XYkYR/Nx9961TwpoBqI1ssIv4SuNss5p9ymNJlJUkNK5eTX1KZrjqmyZfCZZJ8JN8mlmN7oD/YI/DbNFOfkcnkLnFxfYbA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YReeFoj7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 739B7C433C7;
+	Mon, 18 Mar 2024 12:49:49 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710766060;
-	bh=IAavgjwG9/Sp67iqayo+f0gCAIYZtO5K2WA3YjasHuc=;
+	s=k20201202; t=1710766189;
+	bh=pnw8L0MNVMd/tH7o0U2AgWQ3mCUlzbF10paSUT8SIv0=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=mAqzdd6R/vU2Nv0dkmdQywWtGgulP98Rw/ZEjYI+MfsUCh7OM9bqiaAzvpkthK7Sy
-	 h7brfiOiogtbnOTH7nmHqE2VVp2o6sjUTv4T1IMfnmpCLuT1efoRaOmUD2jR9beT22
-	 CAUJAJZ7Epbi6ab17jyTL9V3N8e6BxI57L9D6XiHkhDvWkgqrQPjzf/gvrONNG5VRa
-	 jvtpiXsa5oh27fqEbaNDgWOJthsdUsbYuHN3sJ93ql+s3tnOv/s9jIyOx8++Z/11+8
-	 XjzQbYoNwizZQ20MST827W/iodqoUkBhzo7fIQ+8YjLxkaeMcvRYEsrQwxSYOoxIJ2
-	 Dr8Ji/lSHg6Ww==
-Date: Mon, 18 Mar 2024 08:47:38 -0400
+	b=YReeFoj7iZ3Ac+JFI1bQFdZ7qayaK3YaEXbMa5iR17TRY+jcv81UmRFr0aE9OMkoM
+	 N5LohlmVpmugJo3nzeci1EQUz3XZXJ5+hja9wIEO58fiA6jwwQzaw0j+qeo08or022
+	 wOSkQ/Kuv9YNvr41NbKAWf8d5E3m3r+Ss88AkkD3jq2taoje9+sNNmjTv+wVZvKHLu
+	 OVmwaiqHZCkF25GztQzHu9S95r7y9tFAXn0jRCCAaAzHMZh5FyPe9phEpNio6bWj6/
+	 L43SnZTAEBTBAFrdPzGgkotyaEb8xb69kPlDl7E4G28QxnDXR3RVPMMzJTgHPVgZFz
+	 KLmYoatt4cX7A==
+Date: Mon, 18 Mar 2024 08:49:47 -0400
 From: Sasha Levin <sashal@kernel.org>
-To: Matthieu Baerts <matttbe@kernel.org>
+To: Pavel Machek <pavel@ucw.cz>
 Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Paolo Abeni <pabeni@redhat.com>, Simon Horman <horms@kernel.org>,
-	Jakub Kicinski <kuba@kernel.org>, martineau@kernel.org,
-	davem@davemloft.net, edumazet@google.com, shuah@kernel.org,
-	netdev@vger.kernel.org, mptcp@lists.linux.dev,
-	linux-kselftest@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 6.7 14/23] selftests: mptcp: explicitly trigger
- the listener diag code-path
-Message-ID: <Zfg36tcGXUsZnJCh@sashalap>
-References: <20240311151217.317068-1-sashal@kernel.org>
- <20240311151217.317068-14-sashal@kernel.org>
- <afd248db-921f-4067-b917-a7ea3e807816@kernel.org>
+	Hou Tao <houtao1@huawei.com>, Sohil Mehta <sohil.mehta@intel.com>,
+	Alexei Starovoitov <ast@kernel.org>, tglx@linutronix.de,
+	mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com,
+	x86@kernel.org
+Subject: Re: [PATCH AUTOSEL 4.19 1/4] x86/mm: Move is_vsyscall_vaddr() into
+ asm/vsyscall.h
+Message-ID: <Zfg4a5Y1UnFO3O1m@sashalap>
+References: <20240229204208.2862333-1-sashal@kernel.org>
+ <Ze9zol7kZucywfOy@duo.ucw.cz>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -63,27 +61,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii; format=flowed
 Content-Disposition: inline
-In-Reply-To: <afd248db-921f-4067-b917-a7ea3e807816@kernel.org>
+In-Reply-To: <Ze9zol7kZucywfOy@duo.ucw.cz>
 
-On Mon, Mar 11, 2024 at 04:28:01PM +0100, Matthieu Baerts wrote:
->Hi Sasha,
+On Mon, Mar 11, 2024 at 10:12:02PM +0100, Pavel Machek wrote:
+>Hi!
 >
->On 11/03/2024 16:11, Sasha Levin wrote:
->> From: Paolo Abeni <pabeni@redhat.com>
->>
->> [ Upstream commit b4b51d36bbaa3ddb93b3e1ca3a1ef0aa629d6521 ]
+>> Move is_vsyscall_vaddr() into asm/vsyscall.h to make it available for
+>> copy_from_kernel_nofault_allowed() in arch/x86/mm/maccess.c.
 >
->Thank you for having backported this patch to v6.7 and v6.6 versions.
->But it looks like it depends on commit 9369777c2939 ("selftests: mptcp:
->add mptcp_lib_wait_local_port_listen") which is not in these versions.
->
->Because CIs will soon use the kselftests from the new v6.8, I think it
->is better to drop this patch from v6.7 and v6.6 versions.
->
->Cheers,
->Matt
+>This seems to be just part of a patch -- it does not move anything --
+>and we should not really need it for 4.19, as we don't have those
+>copy_from_kernel_nofault_allowed changes.
 
-I'll drop it, thanks.
+Yup, looks like it's not needed on <5.10.
 
 -- 
 Thanks,
