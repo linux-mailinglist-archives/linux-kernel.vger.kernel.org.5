@@ -1,177 +1,230 @@
-Return-Path: <linux-kernel+bounces-105925-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105926-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE05C87E679
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:54:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DCCB87E67D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:55:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D45A31C2187A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:54:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DFC3FB20CE5
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:55:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48A42D634;
-	Mon, 18 Mar 2024 09:54:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B5F62CCBA;
+	Mon, 18 Mar 2024 09:55:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xnoeNPEI"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="gPqycIN4"
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2137.outbound.protection.outlook.com [40.107.220.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F292E40F;
-	Mon, 18 Mar 2024 09:54:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755649; cv=none; b=nGdidq5Z00vL+d1CBeTKL1bbpzLpgUjgxYQ69B6AhaO/tZrvZs8pBx5e0RcBXcrFONik/CkxHcBd71NquxztaWEGB4GzCC96J6qNhB/A0ue2eEVI+YruT508PwoQKvvUaHmHPsu4c/wkLM0RcG2mYO3KG1SIaO72kb7v4xYoDDI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755649; c=relaxed/simple;
-	bh=SRglM2PBHV4RNTf7tLETeShVgLn5d55vx8MZNE7zvQg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=V5FMdwDqAMFbnBrZxbDdBTCM75MYS4iiG6pkpzXbs4zKeKTEdp+d7gabsNc0OmVjqgc+dgdtHvlhoc041NZZnR8VdxNN64gXAzo45mvs7Py4xltiRhOjhJb+Bhib+yQAFlE+cSmowV66mB+S8CXekrghfIiPULL7yxinDqVaaOo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xnoeNPEI; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710755639;
-	bh=SRglM2PBHV4RNTf7tLETeShVgLn5d55vx8MZNE7zvQg=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=xnoeNPEIL9MQK915O+a9dDj7qJx/fLSrZ0SOsAvnWDzUhpWc8UCi40xfYEcf0LVG2
-	 6vlBOS0Z/YqF1rF1Y09Xdo0H/gh3g1uWK7V71J4vFxSjA0EX9QqWiXvh2/3WpwebR6
-	 RsBPA4Yyf9xDs8OvWY1zDRVqMd44wEnA9B3JPjOrRGpn/Mf2/cIKmXa19mZ6BGV6Gn
-	 twwXb7PzK1M1Nr/NLReSq9LxKBAliuCpog5EII/vqfh6F6GKT4icAzBPHCMIIalpJM
-	 KFN0l6U++DWCcb/OkM+qDuj/c05daFoyxiXDIxMEykKVRfs2M/76AJW2lNLOOm81z3
-	 KyiNZIQBt17Yw==
-Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9BA15378203E;
-	Mon, 18 Mar 2024 09:53:56 +0000 (UTC)
-Message-ID: <cea072bf-0ae5-4d0d-b0db-cd2ac772f463@collabora.com>
-Date: Mon, 18 Mar 2024 11:53:54 +0200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D6582C848;
+	Mon, 18 Mar 2024 09:55:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.137
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710755702; cv=fail; b=LmJtiInJR+bMZV3wCR6JOkAAdq5IbBFRGZ6ywxScwrxocYZ2F+neHd6xRmbgNay6KxX89g/SakwoXBS+cJIuxJs8K+BjVvVnp9KmCF7j0vnsrxyOBLwY8vSNaPQAf10JgqDeSxClK6Go/3A06m74wfaRCTTli5W9PaA2bJ47jco=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710755702; c=relaxed/simple;
+	bh=QFmA+CqxPbhd0peaVP5HG0QAqQ7CDjFbHnPpnXgRkRA=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=Zd4Ghgkzmr3q4pYDXSOkhWVjhp0nbYOgQUAvpm2xZN/p/f6Ojf1PQlHJ2jCDHldqmgY0VmndrPz4IEw5S9ofQywMW0yvbRmxGqbHK9lzjpOnLR1CcwOzkFs4TNP8PjVzxcAf9VxN547hv/fbDfaJv9/kLLpTILSqypPT3GIm2pI=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=gPqycIN4 reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.220.137
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=A5L6KrmfyOTaXp4ZLuXSKOIoDonFP36hUaq/szkZ5O/FkB9sVrO+SKEBv5nSIsE0uVcETzoXNKBthzEXpBw5KFefVWQCb1nPUchmSOvb+PZKNjPQnYVt6ybBWbWdLSlVP8vppnY/s/Ygux3fxmimFJNiwBLflChIv789ORDilM7NhymioI2Ry5i+ikPhvMNtEyCP4r5xc4JHDIG9Y7e2txUgIrUKN+Aqt6gTLt2y/LFZSImZNNPPVW5jjOBuqaEh/8qsOIplPSJ7dV9sTlrDzE9R0qZ/mFhZ6URTwx4RBtJLQqG4Y1VzSwPhYLsMX20vsgRXibeXS/V5sjjd0vH4FA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=nCEls9z8YPNhiNU3HQ9bxt8ajLbLpt0iaEtdf4LWGdM=;
+ b=igOIHvGV2wmK6ZqsA+5H3UDNFj4vsVFQ9m75rGMUmVY3R/X5N3tPBSU2E+eZS/8l7KGkhtVu9pv5vPLdG2DsnuQaJ0ZKYnZu+24DVFBbAD/hut9u4rxF7YqkvH3ynnz3RSHmXpIPjAs287WMpVFfrZgo0rjYr7c2kWbfCafTIeZsDxTuU/WyZ2vX1162IqIqU/drt6XhJQCIs6lUZ6uJ9wUsfl6c6M6SU364T7QPAiZOVzAgraVj44qc8zXM00vHw/lxYLEjCJck65ZeJsLoFuLdBdMGSf7jtqCG85gNxptJk/U1e0VjhDbN9nRrf+UgCFE3/uc++g0BDLXAGd9sxA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=nCEls9z8YPNhiNU3HQ9bxt8ajLbLpt0iaEtdf4LWGdM=;
+ b=gPqycIN4Kk3YyYj/zsqG4hDGvW/kdLfIHeFo38RVIusH/zD6DYSaXj7su8suZihM7kk7hbm031PjoUFD/ycgmr6C4l4JqiFJuFxCSTjw/m0HZi2Xgk7IxT8i+AdO4J1e9We3QHU1bRwiL0aXKaGslxKYWBTKCw3ahzyZYeQF7HQ=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
+ SA0PR01MB6473.prod.exchangelabs.com (2603:10b6:806:ec::8) with Microsoft SMTP
+ Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.23; Mon, 18 Mar 2024 09:54:58 +0000
+Received: from DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 09:54:58 +0000
+Message-ID: <e4a48c97-dd95-4ef5-8895-84f6f0e76355@amperemail.onmicrosoft.com>
+Date: Mon, 18 Mar 2024 16:54:52 +0700
+User-Agent: Mozilla Thunderbird
+From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
+Subject: Re: [PATCH 3/3] dt-bindings: hwmon: max31790: Add
+ pwmout-pin-as-tach-input property
+To: Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>,
+ Chanh Nguyen <chanh@os.amperecomputing.com>
+Cc: Jean Delvare <jdelvare@suse.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Justin Ledford
+ <justinledford@google.com>, devicetree@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ Open Source Submission <patches@amperecomputing.com>,
+ Phong Vo <phong@os.amperecomputing.com>,
+ Thang Nguyen <thang@os.amperecomputing.com>,
+ Quan Nguyen <quan@os.amperecomputing.com>
+References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
+ <20240311111347.23067-4-chanh@os.amperecomputing.com>
+ <20240311173438.GA1451467-robh@kernel.org>
+ <43f62612-bd16-4d66-b1ee-26932f6ab2f7@roeck-us.net>
+Content-Language: en-US
+In-Reply-To: <43f62612-bd16-4d66-b1ee-26932f6ab2f7@roeck-us.net>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: SI1PR02CA0037.apcprd02.prod.outlook.com
+ (2603:1096:4:1f6::13) To DM6PR01MB5947.prod.exchangelabs.com
+ (2603:10b6:5:1dd::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v13 2/9] f2fs: Simplify the handling of cached insensitive
- names
-Content-Language: en-US
-To: Gabriel Krisman Bertazi <krisman@suse.de>
-Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
- jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
- linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
- kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
- jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
-References: <20240305101608.67943-1-eugen.hristev@collabora.com>
- <20240305101608.67943-3-eugen.hristev@collabora.com>
- <87edcdk8li.fsf@mailhost.krisman.be>
- <aaa4561e-fd23-4b21-8963-7ba4cc99eed3@collabora.com>
- <8734sskha1.fsf@mailhost.krisman.be>
-From: Eugen Hristev <eugen.hristev@collabora.com>
-In-Reply-To: <8734sskha1.fsf@mailhost.krisman.be>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|SA0PR01MB6473:EE_
+X-MS-Office365-Filtering-Correlation-Id: cb936daa-fe48-4e88-1a01-08dc47317897
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	eokvQDN/dEGKvTNqJsfiW5kV0QiHb1HxzsdaTiwVjwi1+CKUo8A+JrswIGvquZ/+gj1QwlP7U0piviWalUbpI3hLASkgfrfxZjXJFKtpstHYTKc912T+kg8nvGkkMZRWqURcVydHyiSn9grcPzAHVUE7b9yfqOGHIRiG0oU5ZfexPW+9NMzISx4gaHqT4k2uwDMUy6dUUsmUzVYeraokojdwiMCCGfcMdrhlJXCMj0zCONJKgQE9uAW1ewbtjLAd3Ic7B2FOPj9K9MZNTRMakhlN/6v2XfauSrMVDrirmXyCZ1B8568iStWO2h6WztZYK1HsmGkaNVRXx+KOQsMoZwVYjHOhb8EIPvS45EHMyjkPXEOr6OJnNNYD6VvDPK3GarLphDixI4joQ/p5QOtjHNCGjoEOz55xOs6S9Zjve6+O+2gprKKgefN5LkNM2nbh75rP6wg3fKeHlbgWA5pZhiWqEjCeWVun/KzPxwEcukTiJpTYpXFhvFkMI8Vfuxq6T4f4eKUzlkCX8YzzttWAW4vggZxD3t5Cl1NUVmSFvStzubQ6Q2P90pqvRp11k4fx8XkXpYSIK1GZ5DrRG5lDHuN2UmkTJmsfqBspSzr44BXNl0k89yqzikz/aWTbZIzabMjKzeZLCJKMYmevLx/4GhV4rYKVd9KHYyLhrkphIYo=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?ZmxSa0RYZkpVVkRDczUvaFByd3BwaU96blduaS9iMUJMRC91MEVhTUZNWERJ?=
+ =?utf-8?B?cnFDaStkeXpsQTJER25VbTdGNDEvMVllVUhGOSs4dStQNnJFM0wxZTI1T3ZJ?=
+ =?utf-8?B?djYvU285NmU0Y1RjWFVNZFVvQ3NkMlNxdlF4T3hHZWhDRmZuRjdDYWFmeHFm?=
+ =?utf-8?B?eXFGbExPdno0ZDVGcmJBK3p2K0Z6b0JDZXdiNVZZVDJHaXVaZDVBUlZmTnY0?=
+ =?utf-8?B?QnZNSm1tU1FMTzN3RC9iYklnSmlYSUN4ZTBqOW9ERGlDSWRwQ0tkbVlob1Ja?=
+ =?utf-8?B?R1dtaEpIbVI4Vy8vU3BUUE45TldKOHlPV0djYzZpRXJrMVh3YkkvVDZtd1Uz?=
+ =?utf-8?B?ZU51S2VyeittZ0tZcE14K1FhcGMzR1ZFM2lRTXVlSUcvU0srTFQxMGhvQlpY?=
+ =?utf-8?B?MER4cSs5cWhBUGE2RWgwRzhvQjhOblo5N3hrYlJGYk1JcFdZTnJUN29iVGh6?=
+ =?utf-8?B?d2NoeUdsSUtuczRKZXVVZ3lLUEljNnd5R3NINlBaaEFkNXlxeVkvaDRYWDQ1?=
+ =?utf-8?B?WEllSWpaYUI0NGFKQVBLQTZkdk1WV0JhYXRjN21OWHR4eklZc0dlRE8va2lG?=
+ =?utf-8?B?YVRWdnR2c2t0aTdodmE3SlZUZy82dHN0T2FGL1hFNnh4WGxNOUtQZy9OVUxo?=
+ =?utf-8?B?bnpPOHR3VkZRMzBmcTJPcktydDRqOXcvM0RiTEFyY0prQ0FwWVJ5eVZmSDho?=
+ =?utf-8?B?aDF1L0Ftc0cxaHJFa3QvUnp4aGgrTGF6cStCeldYU2RWQkg2enVnaEhXY3h4?=
+ =?utf-8?B?Um42blRZbFp3SkVBUXdOSW9ER2dZNzBVYnZGeis5QUh2Tk1xUEo5YTc5UnQv?=
+ =?utf-8?B?TjRSY2RlNjZVZnJBelF5T0JHa3FVaHpnR0dNVFo0WmpyR041Wm5DZzZLdUlx?=
+ =?utf-8?B?REl4MHlidTZxY3hWOTlZSVZkRVJNNTZzU2VXamFwWVB0Q0hRNEUvNEZHQ1FF?=
+ =?utf-8?B?QkhJSmxxVDM0bG4vNm9rWEFSUTc1cXhobFdBdGl1YXd0NVN3N0pFU1h1aTFh?=
+ =?utf-8?B?Nk9ZM1pNUjM0REYvN2R4aHJhT25Wd29tZ05uN3BLTmVXbTFHRUpHM2NLc1ZO?=
+ =?utf-8?B?V01uSy9Fb0M2b3ROaXBTTHF0SFdtUWV3ZmtBS1pLYkdpckpzTDczT3J0alpZ?=
+ =?utf-8?B?ZE9xYngxZ0FKRWtzbXYwNVhpckJ1R0RSakZLeG5vVzBaaWRmL2xMaFo3cXIy?=
+ =?utf-8?B?ZWtvMmhHbTJzNC9qczQ4Y0Nsb25NenQ1YnVYMXV0Q3dmMTBLOWNmVUFMTTFF?=
+ =?utf-8?B?U1pUZ2FZOUFyWWl3SmxuUnNZREN1b2NQdmVKbGJyQ2cxZ2tMUUw2b2JhVXgr?=
+ =?utf-8?B?cUxKRXk4K2xnbG5xRXlpVS9ZN2txR2RBL1hUL1hRMmdxVFdKaDBBVkhmb1JP?=
+ =?utf-8?B?VEZVamFNSCt6dEIwUnB1NVNPQ1dKamMrQmZKaEtyaWhwY3JYL1lmcVdVdWZy?=
+ =?utf-8?B?bXJPeXg5ZUVBZzJzWFZXV2E1d3llVFJQTC9QNmNMMjB6K0xGL1VXY2pZYUdT?=
+ =?utf-8?B?amtiQ0dmUkhMMXM2anczakJDb0czbW1iTGVDMEErNGtOWkpORGt2WXlqYzAy?=
+ =?utf-8?B?Rm1GMWNKNW01TksyNVVQMkNHck8zYUFkN0Z5ZDNzSCtHamlTWFBxOEozRkkw?=
+ =?utf-8?B?ZURtUktSVVU3b2JEUVZuMnpBZHN4T3FuclVpWlBKUElRUTdXbGdWbTRnL3Zz?=
+ =?utf-8?B?RGNoaU4vSEk4V3VQNms0Tk4xOGM3c2gwWjFFRTlzeDZEcXpmZ3pWV0ZJTU00?=
+ =?utf-8?B?eDQvVEZ3SlU4M1pqbkRZNC8zanJqM3AyS3VmM2t4Z2JiTXBGVVJrT3JVWGlj?=
+ =?utf-8?B?VHdDaGdsN3dDWnF6MkI1NGV3ZHpETEU3SHhIcCt6UjZteHBHRy9OblpQZ2E1?=
+ =?utf-8?B?ejNBeTMxNmxYRFBrTjVNbm9VYThEeGdrUGJnQ29UeTRDOG91RUh2SSs1Z0V5?=
+ =?utf-8?B?VEFtTzNrR0RvTkhxODJZRURWYWxHOVZIZTcwMmVCdkQ5cWVCanBaUjVKS2da?=
+ =?utf-8?B?OW5MK204Z3pYVTY0enE2SHRRb09YTzFBVHd1bnVCRGFQSndHczJNSVlUdkdj?=
+ =?utf-8?B?eU9DZkdRVlNFN2wrNnU3WUpRT1VaMmtGTXRBcjFIZ2xiRXNzbmhYRXhVYW12?=
+ =?utf-8?B?WDlTQ0NmY20xVUVzZVIrL1hCUHhhQ2N1ZFR2bnlkNXJPZUhmUlBUazB0QkZJ?=
+ =?utf-8?Q?XtlK5gTKlQMKlf6dOzlqMgo=3D?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: cb936daa-fe48-4e88-1a01-08dc47317897
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:54:58.3222
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: i+JV/do8pXV3DfgCKSKXnVuqy+3MMSPJPSHrYTvWgkt9XjHmHBQU6Yd6FR+YcoWCOjGuc3Zx6cPnz4bod2r00WMXrgwLfzYaFgeWY6G3waLE6VwcjMEue7r3xyWZwE/+
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR01MB6473
 
-On 3/14/24 16:41, Gabriel Krisman Bertazi wrote:
-> Eugen Hristev <eugen.hristev@collabora.com> writes:
-> 
->>> Please, make sure you actually stress test this patchset with fstests
->>> against both f2fs and ext4 before sending each new version.
+
+
+On 12/03/2024 00:52, Guenter Roeck wrote:
+> On 3/11/24 10:34, Rob Herring wrote:
+>> On Mon, Mar 11, 2024 at 06:13:47PM +0700, Chanh Nguyen wrote:
+>>> Add pwmout-pin-as-tach-input property.
+>>>
+>>> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+>>> ---
+>>>   Documentation/devicetree/bindings/hwmon/max31790.yaml | 11 +++++++++++
+>>>   1 file changed, 11 insertions(+)
+>>>
+>>> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml 
+>>> b/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>>> index 5a93e6bdebda..447cac17053a 100644
+>>> --- a/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>>> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>>> @@ -25,6 +25,16 @@ properties:
+>>>     reg:
+>>>       maxItems: 1
+>>> +  pwmout-pin-as-tach-input:
+>>> +    description: |
+>>> +      An array of six integers responds to six PWM channels for
+>>> +      configuring the pwm to tach mode.
+>>> +      When set to 0, the associated PWMOUT produces a PWM waveform for
+>>> +      control of fan speed. When set to 1, PWMOUT becomes a TACH input
+>>> +    $ref: /schemas/types.yaml#/definitions/uint8-array
+>>> +    maxItems: 6
+>>> +    minItems: 6
 >>
->> I did run the xfstests, however, maybe I did not run the full suite, or maybe I am
->> running it in a wrong way ?
+>> Seems incomplete. For example, fan tachs have different number of
+>> pulses per revolution, don't you need to know that too?
+>>
 > 
-> No worries.  Did you manage to reproduce it?
-
-Yes, thank you, using qemu on the x86_64 with your commands below.
-
-While the oops was caused by that wrong kfree call, fixing it and moving further
-got me into further problems.
-I am unsure though how these patches cause it.
-
-Here is a snippet of the problem that occurs now :
-
-generic/417 12s ... [  616.265444] run fstests generic/417 at 2024-03-18 09:22:48
-[  616.768435] ------------[ cut here ]------------
-[  616.769493] WARNING: CPU: 4 PID: 133 at block/blk-merge.c:580
-__blk_rq_map_sg+0x46a/0x480
-[  616.771253] Modules linked in:
-[  616.771873] CPU: 4 PID: 133 Comm: kworker/4:1H Not tainted
-6.7.0-09941-g554c4640dff5 #18
-[  616.773660] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1
-04/01/2014
-[  616.775573] Workqueue: kblockd blk_mq_run_work_fn
-[  616.776570] RIP: 0010:__blk_rq_map_sg+0x46a/0x480
-[  616.777547] Code: 17 fe ff ff 44 89 58 0c 48 8b 01 e9 ec fc ff ff 43 8d 3c 06 48
-8b 14 24 81 ff 00 10 00 00 0f 86 af fc ff ff e9 02 fe ff ff 90 <0f> 0b 90 e9 76 fd
-ff ff 90 0f 0b 90 0f 0b 0f 1f 84 00 00 00 00 00
-[  616.781245] RSP: 0018:ffff97e4804f3b98 EFLAGS: 00010216
-[  616.782322] RAX: 000000000000005e RBX: 0000000000000f10 RCX: ffff8f5701eed000
-[  616.783929] RDX: ffffdc0c4052df82 RSI: 0000000000001000 RDI: 00000000fffffffc
-[  616.785426] RBP: 000000000000005e R08: 0000000000000000 R09: ffff8f5702120000
-[  616.787065] R10: ffffdc0c4052df80 R11: 0000000000000000 R12: ffff8f5702118000
-[  616.788650] R13: 0000000000000000 R14: 0000000000001000 R15: ffffdc0c4052df80
-[  616.790129] FS:  0000000000000000(0000) GS:ffff8f577db00000(0000)
-knlGS:0000000000000000
-[  616.791826] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-[  616.793069] CR2: 00007fbe596adc98 CR3: 000000001162e000 CR4: 0000000000350ef0
-[  616.794528] Call Trace:
-[  616.795093]  <TASK>
-[  616.795541]  ? __warn+0x7f/0x130
-[  616.796242]  ? __blk_rq_map_sg+0x46a/0x480
-[  616.797101]  ? report_bug+0x199/0x1b0
-[  616.797843]  ? handle_bug+0x3d/0x70
-[  616.798656]  ? exc_invalid_op+0x18/0x70
-[  616.799461]  ? asm_exc_invalid_op+0x1a/0x20
-[  616.800313]  ? __blk_rq_map_sg+0x46a/0x480
-[  616.801207]  ? __blk_rq_map_sg+0xfc/0x480
-[  616.802213]  scsi_alloc_sgtables+0xae/0x2b0
-[  616.803258]  sd_init_command+0x181/0x860
-[  616.804111]  scsi_queue_rq+0x7c3/0xae0
-[  616.804910]  blk_mq_dispatch_rq_list+0x2bf/0x7c0
-[  616.805962]  __blk_mq_sched_dispatch_requests+0x40a/0x5c0
-[  616.807226]  blk_mq_sched_dispatch_requests+0x34/0x60
-[  616.808389]  blk_mq_run_work_fn+0x5f/0x70
-[  616.809332]  process_one_work+0x136/0x2f0
-[  616.810268]  ? __pfx_worker_thread+0x10/0x10
-[  616.811320]  worker_thread+0x2ef/0x400
-[  616.812215]  ? __pfx_worker_thread+0x10/0x10
-[  616.813205]  kthread+0xd5/0x100
-[  616.813907]  ? __pfx_kthread+0x10/0x10
-[  616.814787]  ret_from_fork+0x2f/0x50
-[  616.815598]  ? __pfx_kthread+0x10/0x10
-[  616.816394]  ret_from_fork_asm+0x1b/0x30
-[  616.817210]  </TASK>
-[  616.817658] ---[ end trace 0000000000000000 ]---
-[  616.818687] ------------[ cut here ]------------
-[  616.819697] kernel BUG at drivers/scsi/scsi_lib.c:1068!
-
-
-Do you have any ideas ?
-
-Thanks !
-Eugen
-
+> Per Documentation/ABI/testing/sysfs-class-hwmon:
 > 
->> How are you running the kvm-xfstests with qemu ? Can you share your command
->> arguments please ?
+> What:           /sys/class/hwmon/hwmonX/fanY_pulses
+> Description:
+>                  Number of tachometer pulses per fan revolution.
 > 
-> I don't use kvm-xfstests.  I run ./check directly:
+>                  Integer value, typically between 1 and 4.
 > 
-> export SCRATCH_DEV=/dev/loop1
-> export SCRATCH_MNT=$BASEMNT/scratch
-> export TEST_DEV=/dev/loop0
-> export TEST_DIR=$BASEMNT/test
-> export RESULT_BASE=${BASEMNT}/results
-> export REPORT_DIR=${BASEMNT}/report
-> export FSTYP=f2fs
+>                  RW
 > 
-> mkfs.f2fs -f -C utf8 -O casefold ${TEST_DEV}
+>                  This value is a characteristic of the fan connected to the
+>                  device's input, so it has to be set in accordance with 
+> the fan
+>                  model.
 > 
-> ./check -g encrypt,quick
+>                  Should only be created if the chip has a register to 
+> configure
+>                  the number of pulses. In the absence of such a register 
+> (and
+>                  thus attribute) the value assumed by all devices is 2 
+> pulses
+>                  per fan revolution.
+> 
+> We only expect the property (and attribute) to exist if the controller
+> supports it.
+> 
+> Guenter
 > 
 
+Hi Guenter and Rob,
+Most general-purpose brushless DC fans produce two tachometer pulses per 
+revolution. My fan devices also produce two tachometer pulses per 
+revolution.
+
+In max31790.c, I saw the formula that is used to calculate TACH Count 
+Registers, which defines the pulses per revolution as 2
+
+	#define RPM_TO_REG(rpm, sr)             ((60 * (sr) * 8192) / ((rpm) * 2))
+
+Do you think we should support the pulses-per-revolution property in 
+this case?
 
