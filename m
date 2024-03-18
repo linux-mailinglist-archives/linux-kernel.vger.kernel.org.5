@@ -1,245 +1,202 @@
-Return-Path: <linux-kernel+bounces-105915-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0AB7287E654
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:51:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64D5987E64A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:50:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B54E428278A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:51:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 19AC7281A72
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:50:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7DD4239AF0;
-	Mon, 18 Mar 2024 09:49:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAF8B364D2;
+	Mon, 18 Mar 2024 09:49:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="P194mdFU"
-Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2089.outbound.protection.outlook.com [40.107.102.89])
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="enolJEeJ"
+Received: from NAM11-BN8-obe.outbound.protection.outlook.com (mail-bn8nam11on2100.outbound.protection.outlook.com [40.107.236.100])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD6F2383A3;
-	Mon, 18 Mar 2024 09:49:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.89
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AB0BC33CF1;
+	Mon, 18 Mar 2024 09:49:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.236.100
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755360; cv=fail; b=Kc6ZvtjYdR/S/Y19g1w2m5S7lfXbbO5wJVbVQu7O1lfKHAGAeJF2Q6+mEueU8DoDfvMXFm6wLTiUkzYrJwU60JqfRNcKutCFq6nYsE1Cw4Rlf55iEKoTJ/31Bz0oyo1lNREPQZMIT5xgH/E+pnw/D8nL+2NulbmGcg1OxlbqsCE=
+	t=1710755345; cv=fail; b=fzuGa3fqe83mfw1tmplu2WHToo7G+CIHihJg2xEbEfGtLpeIjGWV58fmHncgE8POrK74zdDo+w6tIIEHNEq57IJkV82XPlYbm3C0u7giok/TqgP7cw2bhhcAEyrmyWB1/E5VxxNQjVWBVi7vmLQx5w+OBbI3h3RJEZwCNFnQU20=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755360; c=relaxed/simple;
-	bh=CfC8Dtdej8Bs2obErQD2thPXyALKckCC+ZpjubXph5k=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=mftpQCbx4dI1BycdejebCjYtkK3jEaVXycPeZAkpeJIj/MWkEWwJUiSCKJ21JcnANUZ6JsarwfJwQkj303K2XekSeQuiqrkGlDmcXuiwUqw+0XvBQo7pqZUhkgXUcS6veJSb66UvgucaR3/SVR+QrH6s2KxLixnKYYgyuVVRy90=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=P194mdFU; arc=fail smtp.client-ip=40.107.102.89
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+	s=arc-20240116; t=1710755345; c=relaxed/simple;
+	bh=BEii7rs/hFdOmv1bHDkx4YKg9Ap1bBoAkk07Ilv9swg=;
+	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=CQfYMujZYZbTeI4mADWOY8tJfih9XQEG8D4RxnWU2RWOeD/T7qZikC3kkWdxmZUdFZolEt8G4+JSiUzVBv+x45Gw9T9/xmbuenaB2v3am+zgCrcdhMdWMsLSx6Zyu81+mjXWgtd5hB9SHlJyWuCRemoX8KRmmn3krvLOy7u88po=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=enolJEeJ reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.236.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=k3xbfMED2D3QOalQx6YzdwduoXcaLzocdTT7Q7TMSxBWMBeTT6Iqr5cMpOTqLQppiGTGWU+lY2rjZv840W+cn8dlm3i8AsOuBXZNnxJrH0RaRT8e/ZW2CbZtxuR8H47sNrBVJcciRHs/UJtUceSSCirqrOAZMPOh3U31YBiHySIwzgiFFEbR31H/J3tksWo/fcpt5jJqbP+0Ml4DxAyE/Uab4tUlv9rESQH7ncPY2RhR8baYDJ2sQSU/cuze54OGzbCAmxnUACINxZeRybvdeTEZa6qAYDvrcEt+BTk8s2ixKZg9X6SD8J3/iN4FzfH3dhr7s4jlSqT4tWkkzwLsdQ==
+ b=SeKCnQSphmP3j04LH0Ogs+EM58morR3VJ3W8g3WwF+T3JQXlsFmzW+84dCLuo0z15AJU7t/XkBWphBNquAALVDa+25wuitEkV3leL9r8x1B6y1dWB5TQC/MSYOjF4FI34Xq2/JI/75/3aMwEnK+GF9NYUjiblz/Reu6JbsRrL1wL3Gh2S0xb3yiMg8jbUeHU2jyVfpofdmuHogxa/4VFeTtRh1YmffoYdFUTBdtXz32aWqljOPgGSgdwhQ3wrWXCRdvlPVfcktRkh0FudzFJEv0pxPOPxqVrJWs0ZguTCGN/twmCr3Hs8AeLdrzJIB2QuhHXedufQPC4RsR7IBxQvw==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=1dq3+SeUoyG/XIVatEuBb4Cc9u8W4ZcJ68xS0opsXjc=;
- b=kvbL23WLeVZ1NgqTsCc4i4CtJZnLs/IWSlzYj2AA29/YzG+48KH9KEhMczU/O5bLJaPs+R+hpc8RUi/ju2BvbSy2j908wmXzQYzzkwChEbj9BjVjQ8xHeriz3himwOb1NEjp0acvUXQOCuuYVYUskpn0eum7fc8gapTFynd4SPiBAO9EJX8M28iL9N7eUBj1Y/oUGH7teCFkidmEQ4Lit1S/KZJzB8+skGHxaLS94iroZzJa8ofPthA2HU/VyDLr0PVIFV3j7IgtiOGr5hFo9neSpBU+ixPwP0wOj80OHrQ/FZ8OmU4MRQ1bnYvdqZd8GmgVcldedEkzMLLtmK5R/w==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ bh=q3/ycp74okAofij7yXh03gofzuR0e/9TCUsnpW8gfwk=;
+ b=NmMg3sO3Ify2op9QjAmcTf+Uv/liiQqlINj4ChcCWrxnlHk3t6DVNjA+igQZXos3bUqqHT8S9bFAmDl80vIk2Xc7BclFSOGnk11sXPBoAnXrr4/QjvivFEcKf4hHtb1o1wUSAuaVFv/Mp3i6Wc+1Yy/unQ67+ryCXQyKeavK0MdrAy+PooQWGSlHbpMGS3iYNSdXHzoQ3emnfxT2Bm9VexrmORaqsc3l/F/1E57axn0YqOAp0acGbulLIt5Yh8lBKj94n6Zja7INRGrk110MHZQeLyYX25BLRpauV5NZqA8l74cD/hwKcvzgg2ICspc4rSEO0J3gXrtUK63UhwOwRg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=1dq3+SeUoyG/XIVatEuBb4Cc9u8W4ZcJ68xS0opsXjc=;
- b=P194mdFUZc8+xQIViHck7z8CP7Q5PhXOerWjG6u+sLGUcRMqIo9HHiqztXszN23PW3h69gUjy/Twb5vF8Jpb7bqhnVvRqveJF+DZA0RRFqnzRAwQoAheCrEBe/OnQmEjsjd8T2RsPn9nur8Og+x/sJ2dErHetNhfrTRhK/2deUs=
-Received: from SN1PR12CA0070.namprd12.prod.outlook.com (2603:10b6:802:20::41)
- by DS7PR12MB6335.namprd12.prod.outlook.com (2603:10b6:8:94::11) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.27; Mon, 18 Mar
- 2024 09:49:16 +0000
-Received: from SA2PEPF00001506.namprd04.prod.outlook.com
- (2603:10b6:802:20:cafe::e9) by SN1PR12CA0070.outlook.office365.com
- (2603:10b6:802:20::41) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26 via Frontend
- Transport; Mon, 18 Mar 2024 09:49:16 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- SA2PEPF00001506.mail.protection.outlook.com (10.167.242.38) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Mon, 18 Mar 2024 09:49:15 +0000
-Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
- SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Mar 2024 04:49:13 -0500
-From: Perry Yuan <perry.yuan@amd.com>
-To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
-	<viresh.kumar@linaro.org>, <Ray.Huang@amd.com>, <gautham.shenoy@amd.com>,
-	<Borislav.Petkov@amd.com>
-CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
-	<Xiaojian.Du@amd.com>, <Li.Meng@amd.com>, <linux-pm@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>
-Subject: [PATCH v8 8/8] cpufreq: amd-pstate: Add quirk for the pstate CPPC capabilities missing
-Date: Mon, 18 Mar 2024 17:48:27 +0800
-Message-ID: <b8fc02f3c7ba4515bea4def3b006dab54ecc594d.1710754409.git.perry.yuan@amd.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <cover.1710754409.git.perry.yuan@amd.com>
-References: <cover.1710754409.git.perry.yuan@amd.com>
+ bh=q3/ycp74okAofij7yXh03gofzuR0e/9TCUsnpW8gfwk=;
+ b=enolJEeJo5l6AM4S/rGbQIDcqp30g6shhPMqRA5nBcAYOluq2bWrrDUn348A2qmTMhBnIVE7TXIkzN4jEHOMElXQ4xgVeROSrFvV4A9b36d7Lm72FD0wzRX9Byv4PTim0PgqBrAvY/IIi+DH1viwkUvSDlWQVAo3DGmuPvoATNA=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
+ SN4PR01MB7407.prod.exchangelabs.com (2603:10b6:806:1ea::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.26; Mon, 18 Mar 2024 09:48:59 +0000
+Received: from DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 09:48:59 +0000
+Message-ID: <f281d2b1-54ff-4e5a-83b9-5b05f18c40fb@amperemail.onmicrosoft.com>
+Date: Mon, 18 Mar 2024 16:48:46 +0700
+User-Agent: Mozilla Thunderbird
+From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
+Subject: Re: [PATCH 3/3] dt-bindings: hwmon: max31790: Add
+ pwmout-pin-as-tach-input property
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Chanh Nguyen <chanh@os.amperecomputing.com>, Jean Delvare
+ <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Justin Ledford
+ <justinledford@google.com>, devicetree@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ Open Source Submission <patches@amperecomputing.com>
+Cc: Phong Vo <phong@os.amperecomputing.com>,
+ Thang Nguyen <thang@os.amperecomputing.com>,
+ Quan Nguyen <quan@os.amperecomputing.com>
+References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
+ <20240311111347.23067-4-chanh@os.amperecomputing.com>
+ <9d1207f1-4941-4f2a-99d6-371f5b4709f5@linaro.org>
+Content-Language: en-US
+In-Reply-To: <9d1207f1-4941-4f2a-99d6-371f5b4709f5@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: SG2PR02CA0117.apcprd02.prod.outlook.com
+ (2603:1096:4:92::33) To DM6PR01MB5947.prod.exchangelabs.com
+ (2603:10b6:5:1dd::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001506:EE_|DS7PR12MB6335:EE_
-X-MS-Office365-Filtering-Correlation-Id: bc8e6009-2341-47de-40ac-08dc4730aca2
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|SN4PR01MB7407:EE_
+X-MS-Office365-Filtering-Correlation-Id: 99582fba-3ef5-44ac-a003-08dc4730a225
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	G6YT1YglgkrqZ7KXhL8AvJCu1eGBi2/tyKiyVhKtNvmrZrMaIslAUC6nmPJGeB3KP38u2vcf4b4aT9MjzBTIsSVg7zv0vP/MB6h5s+E6e8PW8er1O1TzMOaM9CX16UXRou3I8CzB2whPlZlV+lcy11CLaic1iJYos7uUl3cFzGbIqk/KMnKlLghhgWzw4X6yQgyCeTPTz9S3WjZWhHYyzInqGlZhBzRDlxsaJ1iBIp2yoAVBIDnsGj+OVng0BYwsnDPXy9vOyMtXqOur9x4H9q2s81Wy19QZWeUAA8VLYNijKavJIxJbctlpz2ivLnE8CJ691ol6qxt3EIk/JsF969MsOnqU6SuTMG2W4BJUxB3sffuQEWegEnxOJikZnuC/eC19AqMOaHIYmvvFbnPNo9LJa2b6uwnl1ebXUBpJvydFTlqBmRcQTrX0d/71iHBuA/k8ser6Z7U5TnrlZP1lwcdIbQ7esXTUfoGe5OAvmpxEpOtF4xsM+I1Cd8fbLxSLHWkoVCa+Imne7rkdDxYSeW7JEtuN5Q8lpsgAMcQUvjwgjrsYLPTrXoD927UzBfObSL41u6sEazOADjHvq5i0O3e03vHyvR30y1gUvQ2nxlicMkgOfwYyg1yuJYB2eZccWfuuIJmtyhzNOM4ocAOjW5VFhg+nPzgoR1tqaC3HEn1EjIQNUF2Cu6UyR63dIhJmyZ52uMYTQdv/WnVsgRHowZrxFm1oxKzZqdN8EDeZ4VNnTLapzMimBBR/GXKoSjmj
+	UWSjllHDCtwzXRXyFxSxoCLT6DRVI9Rm7ikjENfq5yhE5lCYaCHbkb5/A0UIqK9GRgLQOMpv5S38XQ+TsSGw9ysyerX8Aq9nWYfON4QKVe8i3EVh4ZVKewTQU29K7aVdaQUMFHSeuauw1K81bxLI6NNC+CHHXZ3+uvq6hY48TIbUSYb0PHHQsm0rbAB2gIoZCJWO08hQomm2m5GhOWEGYXzAuPhUF76Lek+/bytpkLiY99wCDpsAjy1NSREcuGLZe936sk2AX/80ncW8FuTC1yx5uFg0/PdFgF6rLjvntxxo0tue69ZjcuoeRS+GTK0JCup/Lbj8ykPCQ6e9bK28XXkYFtZLcExo+rn9dOz08CbZ0YSIWd8AwznDc4nInqLbHsAW3fEH3+p8Pl2FxathY1s/BPIJ7cL9IJx+cv1CgGVy3G59UVn08hWWT7tnQUqqdw2w73+nMS1/wzqvnNjs38vHi0HDbcHY8Nlph66rPN/YrPVqLKoba81zTulZVX/DldgiT+TAv1VPMg3KmJt57obo375dDo4iPh12n0QSthY1AcMt2zzigQXAxcX9y0qDT9vZt46RRoUeUcJGUs6c/WY0BlTvH8880O//aXRBce1NrQBWuVo07ZcWrEB0Cg4+/xVWBcRKmHqnwwI8OHmgczcNKny9hnDsiHvAfbj05Iex6h/UxejIFirC6PYA5MYXJvnimxyKvWDax7EM+ur4iQ==
 X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(36860700004)(376005)(82310400014)(1800799015);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:49:15.9459
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(7416005)(1800799015)(366007)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?bHVOSThKeDh0bVk5dWM3RGtNM0x4Sk9XbmgrdWg2V2o5WmU2a2dIZ0kzdFRL?=
+ =?utf-8?B?aW5MZmczZU85ZHlFSktIOXA1ckRHcWhrYm1rMW5kd0dmUnVnRGdQb1V4cjNo?=
+ =?utf-8?B?QS91c2ViWUVQMzdVem9QamZnU05BVi9yWW45TlQxR3dCbGJFblp4VCtROW1R?=
+ =?utf-8?B?NVIyMHF5NXZwWnI2amV6RExYRUFZM29neW1DRTZrNTlyZGlrUHY1b2o3elQ3?=
+ =?utf-8?B?WWlXdU02Y1BTRTNDb0luWWZUUEI0QmNmcVE5aUtvZE11VzA5a0ZHajJRa0pW?=
+ =?utf-8?B?WDZiZlY5d0l4SjE5alYybjdwckhaZDFSak5qVkpKRGdtckY4NWU5V0owNlNM?=
+ =?utf-8?B?VjJuK1RJTDdRL0hPbXhsY1lSRVpvSFIvODJDSzVyeEpoblJsdENHT2RJdlNO?=
+ =?utf-8?B?Nk1weFhwQ2cxa0VZWVFnQ0VlR1plUU0zOWl4VUZSUS8xR0pyRjJpK21XZDRF?=
+ =?utf-8?B?dWRiSDBBNlFlYnNyekhEbzJnM3VtaWJTQTBqSFRWWVh5a1ZuOVZJWFJKT1Ba?=
+ =?utf-8?B?YTJqd2U2SmdML0Z2Tmh5Q0oxUk9NbEZuVEN4bzZ6TUNLbk5KaFNaRTRFWGtz?=
+ =?utf-8?B?THZ1bEpwdHJUTlovM21zSHVTMFk0RU9ONHhYU1gyRVJzWmM1cVp6azJ4MHBo?=
+ =?utf-8?B?cDBxOExteDdsWElOQlZKOUc5d1dySk05OTJkWWZTbHBWSDRXYmkzenBiV0E1?=
+ =?utf-8?B?MTY4dFVyN3h2MkR6c3plVGwxVWFZNngvSWtMTE5GaVRydnZNM1hqVHd0cTBz?=
+ =?utf-8?B?WDROWXFSZTNVMWpYdFExZFRaT0pFTnllTmFWU3BxQnpYWGhxQ2RwTVNiYllY?=
+ =?utf-8?B?bU9OL0RHRlJwWTdaRFRCbXVaNiszY0FteWgrUXZPZFpDZ2VFK2VVR0EvdWUr?=
+ =?utf-8?B?NysvM0t5NnduNndsMnRaY1ZUV0tWYlFoWXNDYWxkWGttc0l1NnBYdEFOK1RN?=
+ =?utf-8?B?dG85S0RKZXltS09SYWFLWkpjb1hnYlVsOTRzZXh6RlJhdDBKS3JLZmJrRXZz?=
+ =?utf-8?B?djN3Q2hsdG5seW02ME8vWmM5dHcrOUY2NThLME43SjZJcmtMa1pscnZFL015?=
+ =?utf-8?B?U0daM1YwUDgrNE9IVlBRWDdFTWVhK0dTa2pJVHJBK3FZTFpGaWtqSm00czhz?=
+ =?utf-8?B?Mk5uVG9HUVlISjhiZ3ZBU05UOUV1bGpCdnFWUG5FdVMxbURFeGZaWWVGOUdT?=
+ =?utf-8?B?dG8wcE5nZFFPdUVicHl3WWt2YmFXSDlTUXd3V2NoUGVDYjRESWlvOHdiMXla?=
+ =?utf-8?B?NEo4UWNFUHBjcjJHb2FBS2hzN0pYc2JxblZEMGhCclUxeHV1cHM0SVhIQU9J?=
+ =?utf-8?B?YXBMS1pEN01kT0hHVHVjTW1wUmZCbmhMb2ZmSGRRa3JVTUJUYkJHMFhlekdj?=
+ =?utf-8?B?VnFEeG5uRTFRcG9hSmRwT21JU0xGT1dJVEVWK1E1MS96bW15R0huaWNkZnln?=
+ =?utf-8?B?QVdQMDZiM0s4enpwc0Vlcm9RWkxMTUNqT3I3cC90UGF2MmM5TzZST05uMGly?=
+ =?utf-8?B?L3VMNnNyM012bXBhcE1JaUh1ajVjM0xJZFl4MGZITHNpR1BKRTFuOHRIMEsw?=
+ =?utf-8?B?SUtYRm1ldU1xQjB3UTlEZmZXTVR6K3hPT3ErQ2swN1hWQzdYUFpkV3Z0U21Q?=
+ =?utf-8?B?NHJUYW82N3pKVWVPU2hpMDNZSmFBbG9yWmFma1I4SkJrbTFaTEhFNWNkUUZy?=
+ =?utf-8?B?dGNVM1lTSnV0ekZ0SnI2SmplTitoYWU2a0krOUcxZzFZc1RuQ1BnRThnUE9N?=
+ =?utf-8?B?UzBBbUFtOXFQWVI3WTljUU1zSG1KMTc5UEk3NmxROU5BN3lQYjlxRmZzV0Fa?=
+ =?utf-8?B?SEQwZTdOMCtvU1Jyc0RKNkJ2SFFXOHR2ZCt0aFB6Ym0vTE5DSVNzZjMwZ1Jw?=
+ =?utf-8?B?bmd4QW83OWdPaG5pV1hHQ3AwRnBpT3pOL3NQeEVPck9jMk5FMG9TVjZReXJ2?=
+ =?utf-8?B?eStwTlBObzYza3B5TWNScE1LOVR4U2V3b1ZMUEExclVNTFFvVjFUTGF2eWEv?=
+ =?utf-8?B?cDZFZUdaYkdtMWNRTk9xdUZKZTdCVFN0QUxzSmx2RHVKZyswcTJjblBTbldY?=
+ =?utf-8?B?TEhzR3hxaUF2eC9obWRoN1JRTk5PU1pyTlYxVGZxSTdWcldtNFVCd2sxSXZO?=
+ =?utf-8?B?N1RIcDFXQjUwTFpWbFpYd1p5bDlVYlFZZDJoT1NtWTlKMTlENVRRUVl4RStU?=
+ =?utf-8?Q?rYOJmvAfx0wUr80TebAXXyI=3D?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 99582fba-3ef5-44ac-a003-08dc4730a225
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:48:58.9454
  (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: bc8e6009-2341-47de-40ac-08dc4730aca2
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00001506.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6335
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: fKq1kesf5lQkC+A/FgCKxwvRw51bv1/d6++JWK5Uc3Vj/8M5zVAxb1wgS/AEv4bMVXHJic+qhoXCoJi809sKBQ9XBlbI4A/5BbvCWsNGFsSWumoRaqctJhjX3w1/BDL2
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SN4PR01MB7407
 
-Add quirks table to get CPPC capabilities issue fixed by providing
-correct perf or frequency values while driver loading.
 
-If CPPC capabilities are not defined in the ACPI tables or wrongly
-defined by platform firmware, it needs to use quick to get those
-issues fixed with correct workaround values to make pstate driver
-can be loaded even though there are CPPC capabilities errors.
 
-The workaround will match the broken BIOS which lack of CPPC capabilities
-nominal_freq and lowest_freq definition in the ACPI table.
+On 11/03/2024 23:56, Krzysztof Kozlowski wrote:
+> On 11/03/2024 12:13, Chanh Nguyen wrote:
+>> Add pwmout-pin-as-tach-input property.
+> 
+> Why is this split from original binding? This does not make much
+> sense... Add complete hardware description.
+> 
 
-$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/lowest_freq
-0
-$ cat /sys/devices/system/cpu/cpu0/acpi_cppc/nominal_freq
-0
+Ok Krzysztof, I will merg the "[PATCH 1/3] dt-bindings: hwmon: Add maxim 
+max31790 driver bindings" commit and "[PATCH 3/3] dt-bindings: hwmon: 
+max31790: Add pwmout-pin-as-tach-input property" commit.
 
-Reviewed-by: Mario Limonciello <mario.limonciello@amd.com>
-Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
-Signed-off-by: Perry Yuan <perry.yuan@amd.com>
----
- drivers/cpufreq/amd-pstate.c | 53 ++++++++++++++++++++++++++++++++++--
- include/linux/amd-pstate.h   |  6 ++++
- 2 files changed, 57 insertions(+), 2 deletions(-)
+>>
+>> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+>> ---
+>>   Documentation/devicetree/bindings/hwmon/max31790.yaml | 11 +++++++++++
+>>   1 file changed, 11 insertions(+)
+>>
+>> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml b/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>> index 5a93e6bdebda..447cac17053a 100644
+>> --- a/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>> @@ -25,6 +25,16 @@ properties:
+>>     reg:
+>>       maxItems: 1
+>>   
+>> +  pwmout-pin-as-tach-input:
+>> +    description: |
+>> +      An array of six integers responds to six PWM channels for
+>> +      configuring the pwm to tach mode.
+>> +      When set to 0, the associated PWMOUT produces a PWM waveform for
+>> +      control of fan speed. When set to 1, PWMOUT becomes a TACH input
+> 
+> No vendor prefix, so generic property... but where is it defined?
+> 
 
-diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
-index ec049b62b366..59a2db225d98 100644
---- a/drivers/cpufreq/amd-pstate.c
-+++ b/drivers/cpufreq/amd-pstate.c
-@@ -67,6 +67,7 @@ static struct cpufreq_driver amd_pstate_epp_driver;
- static int cppc_state = AMD_PSTATE_UNDEFINED;
- static bool cppc_enabled;
- static bool amd_pstate_prefcore = true;
-+static struct quirk_entry *quirks;
- 
- /*
-  * AMD Energy Preference Performance (EPP)
-@@ -111,6 +112,41 @@ static unsigned int epp_values[] = {
- 
- typedef int (*cppc_mode_transition_fn)(int);
- 
-+static struct quirk_entry quirk_amd_7k62 = {
-+	.nominal_freq = 2600,
-+	.lowest_freq = 550,
-+};
-+
-+static int __init dmi_matched_7k62_bios_bug(const struct dmi_system_id *dmi)
-+{
-+	/**
-+	 * match the broken bios for family 17h processor support CPPC V2
-+	 * broken BIOS lack of nominal_freq and lowest_freq capabilities
-+	 * definition in ACPI tables
-+	 */
-+	if (boot_cpu_has(X86_FEATURE_ZEN2)) {
-+		quirks = dmi->driver_data;
-+		pr_info("Overriding nominal and lowest frequencies for %s\n", dmi->ident);
-+		return 1;
-+	}
-+
-+	return 0;
-+}
-+
-+static const struct dmi_system_id amd_pstate_quirks_table[] __initconst = {
-+	{
-+		.callback = dmi_matched_7k62_bios_bug,
-+		.ident = "AMD EPYC 7K62",
-+		.matches = {
-+			DMI_MATCH(DMI_BIOS_VERSION, "5.14"),
-+			DMI_MATCH(DMI_BIOS_RELEASE, "12/12/2019"),
-+		},
-+		.driver_data = &quirk_amd_7k62,
-+	},
-+	{}
-+};
-+MODULE_DEVICE_TABLE(dmi, amd_pstate_quirks_table);
-+
- static inline int get_mode_idx_from_str(const char *str, size_t size)
- {
- 	int i;
-@@ -812,8 +848,16 @@ static int amd_pstate_init_freq(struct amd_cpudata *cpudata)
- 	if (ret)
- 		return ret;
- 
--	min_freq = cppc_perf.lowest_freq * 1000;
--	nominal_freq = cppc_perf.nominal_freq * 1000;
-+	if (quirks && quirks->lowest_freq)
-+		min_freq = quirks->lowest_freq * 1000;
-+	else
-+		min_freq = cppc_perf.lowest_freq * 1000;
-+
-+	if (quirks && quirks->nominal_freq)
-+		nominal_freq = quirks->nominal_freq * 1000;
-+	else
-+		nominal_freq = cppc_perf.nominal_freq * 1000;
-+
- 	nominal_perf = READ_ONCE(cpudata->nominal_perf);
- 
- 	highest_perf = READ_ONCE(cpudata->highest_perf);
-@@ -1662,6 +1706,11 @@ static int __init amd_pstate_init(void)
- 	if (cpufreq_get_current_driver())
- 		return -EEXIST;
- 
-+	quirks = NULL;
-+
-+	/* check if this machine need CPPC quirks */
-+	dmi_check_system(amd_pstate_quirks_table);
-+
- 	switch (cppc_state) {
- 	case AMD_PSTATE_UNDEFINED:
- 		/* Disable on the following configs by default:
-diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
-index ab7e82533718..6b832153a126 100644
---- a/include/linux/amd-pstate.h
-+++ b/include/linux/amd-pstate.h
-@@ -128,4 +128,10 @@ static const char * const amd_pstate_mode_string[] = {
- 	[AMD_PSTATE_GUIDED]      = "guided",
- 	NULL,
- };
-+
-+struct quirk_entry {
-+	u32 nominal_freq;
-+	u32 lowest_freq;
-+};
-+
- #endif /* _LINUX_AMD_PSTATE_H */
--- 
-2.34.1
+Thank Krzysztof! It is not generic property, I'll add the vendor prefix.
 
+I'll update the "pwmout-pin-as-tach-input" to 
+"maxim,pwmout-pin-as-tach-input" at v2.
+
+> 
+> Best regards,
+> Krzysztof
+> 
 
