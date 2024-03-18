@@ -1,106 +1,93 @@
-Return-Path: <linux-kernel+bounces-106070-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106072-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C92A87E897
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:28:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91E6387E89B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:29:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 08532B222F0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:28:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C1D171C20CE7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:29:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0133436B11;
-	Mon, 18 Mar 2024 11:28:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 88416374E9;
+	Mon, 18 Mar 2024 11:28:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="M94LeBaz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b="h7AYbJfg"
+Received: from mail11.truemail.it (mail11.truemail.it [217.194.8.81])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 350F82EB05;
-	Mon, 18 Mar 2024 11:28:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4551364A5;
+	Mon, 18 Mar 2024 11:28:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.194.8.81
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710761301; cv=none; b=vAWoKxe7t6+VH2jx2qrR+A+BTH24R98fGoJdc0SL5lxGpcCbRtwW0bSUoHByMOFr65Ga9ouKPDZmq5eBGoJo+4ojOf7HsBvOhtZ45mUMi/u/0VofgD4e5U4CQNu9z012j5GMnCD4exbzkGN3GuH0/zQDherzkk56VUQ1Z1pWWio=
+	t=1710761326; cv=none; b=Kufb/uTtwRw3SawVAL/aHJ80osMht6TWotrn1k6kpSW2+4Zny67rf46Sp4ygFcloTL3bl29AyurJ8/3fvPc43AYJiYPnoSrMOXFrRjKEHGjvEbSdHewdleasHBP9NYtsTTw9x6UitZEa/AM28BtuNj00iF3/SLoOUjnQHcR4+2o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710761301; c=relaxed/simple;
-	bh=YWSGx/XRw+rQGSUAj5COs58nByZSMdkxqDrDOksH/64=;
+	s=arc-20240116; t=1710761326; c=relaxed/simple;
+	bh=XP3eK5HcPs5i97lomC6HdBMoGbV9duL2dKQZymBXmsc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=E4atp0jbq76oVvxgszysIGbLJThlLoW0D3Fk8CwlhrhhYcKf8hE0t61r0fY78mYBVH4nthzYu1V0+c7iYf147JCInvg/CDe4ym12RpecRrXJzjaCeU0Unqk8uieIIPWpXMp5hpEEx37HWOm/wQ4RpUJp7YQXJMlpE1wc1yY+BMU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=M94LeBaz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9D29AC433C7;
-	Mon, 18 Mar 2024 11:28:18 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710761300;
-	bh=YWSGx/XRw+rQGSUAj5COs58nByZSMdkxqDrDOksH/64=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=M94LeBaz5RutfpnW9DhqWssP+WDFS9DQ55rIwEA9vZKL6kRrPxUx4YNV0nzm5yclY
-	 IJzFMl3RJ8a09aQLN56aoPDM5YC9Cc831Jjc/36B6vjckSyOfneNSnPEMcKOIUQ2+e
-	 yqp71W6Xkxr5Hsdo5PuBlWiPFbCzRLJPGW+D24ClPQEHf2VZCXiIRfWDBW5uTdbihB
-	 +REtsgrggQM4SU5ctOYzmeFCocVPMfiu9MCZAAgIQ2hO5LHixNe0deDa4C7SO/H9JS
-	 Y67FGNz3xwHLnfbagq+A1TyOLd1CQfZN8vrr9B7QpuC/Lg6YTGI76paHiASJNZE8hA
-	 3qDF2XIoY/dXg==
-Date: Mon, 18 Mar 2024 11:28:16 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Huacai Chen <chenhuacai@kernel.org>
-Cc: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>,
-	Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
-	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v6 0/2] Add support for Loongson1 DMA
-Message-ID: <20240318-average-likely-6a55c18db7bb@spud>
-References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
- <CAAhV-H6aGS6VXGzkqWTyxL7bGw=KdjmnRZj7SpwrV5hT6XQcpg@mail.gmail.com>
- <CAJhJPsVSM-8VA604p2Vr58QJEp+Tg72YTTntnip64Ejz=0aQng@mail.gmail.com>
- <CAAhV-H5TR=y_AmbF6QMJmoS0BhfB=K7forMg0-b2YWm7trktjA@mail.gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ooWkhNn+FMn6Sn5Kv0KBK2wvqPQcBli1NaybQCFfOTkWknP0dnDUc0yxFYxphsPYef2iK9YMnQ8nvEe3R2xLQpojGlzHBQcJOxLHidWnQIizsq7WEhLyamwORHEti2gj1tyEPDyTRSgXEY43nBRArAzhX2tBkEWpQNBeRKrf7dQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it; spf=pass smtp.mailfrom=dolcini.it; dkim=pass (2048-bit key) header.d=dolcini.it header.i=@dolcini.it header.b=h7AYbJfg; arc=none smtp.client-ip=217.194.8.81
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=dolcini.it
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=dolcini.it
+Received: from francesco-nb (93-49-2-63.ip317.fastwebnet.it [93.49.2.63])
+	by mail11.truemail.it (Postfix) with ESMTPA id 71A92206BF;
+	Mon, 18 Mar 2024 12:28:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=dolcini.it;
+	s=default; t=1710761314;
+	bh=FkOHD0pnGkKqXtObJnUFQNgDIavF2Al3e0sMsXfSMsI=; h=From:To:Subject;
+	b=h7AYbJfg/BYwKxCY9VAvAKKHRSOZGVoO5Tqd3cE3ywBHvMNpVbyXrVNG9ZhpixfUT
+	 xjkE8E8+mHiULVeunSO7Ev596qy7n0XevxJckGkqVI3ySmAioAZRfvmTs3NPoa0PlV
+	 C6g4r4XTDOUkbEyeYYzaFSSy3y0IWlkP0pX2PFjFe0yIrskHgLkotzsVS2pMvRGjRW
+	 NgetGz9VQMFusVVe/0UKgyUQOjed00aumaRWZBqvaFiwA1fuPJR9LjiZwa40AeOTGZ
+	 qyhvesfjAzexl04vDnGwwyZTn2WJxvu5MVIMUKHDKEzCoiirhIaBkIZ07FJJHHI1rk
+	 SjRg/jXOBumzA==
+Date: Mon, 18 Mar 2024 12:28:30 +0100
+From: Francesco Dolcini <francesco@dolcini.it>
+To: Brian Norris <briannorris@chromium.org>
+Cc: Francesco Dolcini <francesco@dolcini.it>, kvalo@kernel.org,
+	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
+	David Lin <yu-hao.lin@nxp.com>, tsung-hsien.hsieh@nxp.com,
+	rafael.beims@toradex.com,
+	Francesco Dolcini <francesco.dolcini@toradex.com>
+Subject: Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host mlme
+Message-ID: <20240318112830.GA9565@francesco-nb>
+References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
+ <20240315094927.GA6624@francesco-nb>
+ <ZfTg1xKT-Mxmpf9w@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="QhK2PIeDRLdrsGtC"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <CAAhV-H5TR=y_AmbF6QMJmoS0BhfB=K7forMg0-b2YWm7trktjA@mail.gmail.com>
+In-Reply-To: <ZfTg1xKT-Mxmpf9w@google.com>
 
+On Fri, Mar 15, 2024 at 04:59:19PM -0700, Brian Norris wrote:
+> On Fri, Mar 15, 2024 at 10:49:27AM +0100, Francesco Dolcini wrote:
+> > On Wed, Mar 06, 2024 at 10:00:51AM +0800, David Lin wrote:
+> > > This series add host based MLME support to the mwifiex driver, this
+> > > enables WPA3 support in both client and AP mode.
+> > 
+> > What's your plan for this series? I know you raised some concern when
+> > this started months ago and I'd love to know if there is something that
+> > would need to be addressed to move forward here.
+> 
+> My plan was (especially given the "Odd Fixes" status in MAINTAINERS) to
+> wait until a 2nd party was happy with things here. From my cursory
+> following of things, that has now occurred -- thanks for all the review
+> Francesco.
 
---QhK2PIeDRLdrsGtC
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+Brian/Kalle, would be ok for you to add myself as reviewer for mwifiex?
+The patch flow on the driver is pretty limited, but I care about it
+and I am happy to help out if needed (and I have some hardware available
+for testing).
 
-On Mon, Mar 18, 2024 at 03:31:59PM +0800, Huacai Chen wrote:
-> On Mon, Mar 18, 2024 at 10:08=E2=80=AFAM Keguang Zhang <keguang.zhang@gma=
-il.com> wrote:
-> >
-> > Hi Huacai,
-> >
-> > > Hi, Keguang,
-> > >
-> > > Sorry for the late reply, there is already a ls2x-apb-dma driver, I'm
-> > > not sure but can they share the same code base? If not, can rename
-> > > this driver to ls1x-apb-dma for consistency?
-> >
-> > There are some differences between ls1x DMA and ls2x DMA, such as
-> > registers and DMA descriptors.
-> > I will rename it to ls1x-apb-dma.
-> OK, please also rename the yaml file to keep consistency.
+If you agree I'll send a patch to the MAINTAINERS file.
 
-No, the yaml file needs to match the (one of the) compatible strings.
+Francesco
 
---QhK2PIeDRLdrsGtC
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfglUAAKCRB4tDGHoIJi
-0imRAQDW5obsdOQ1Qf36y3Y9p4UM3IbT22yjGxcXNXDRMsONYwD+KVzSWGSm73jY
-MbZrvy6JxG0g0IPxRKAVdrIehFUZAgI=
-=+PD8
------END PGP SIGNATURE-----
-
---QhK2PIeDRLdrsGtC--
+ 
 
