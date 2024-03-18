@@ -1,138 +1,118 @@
-Return-Path: <linux-kernel+bounces-106833-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106834-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5F6CA87F443
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:54:54 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B31AA87F446
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:55:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 18C202826F7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:54:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 323821F23565
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:55:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DB505F87D;
-	Mon, 18 Mar 2024 23:54:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75385FB81;
+	Mon, 18 Mar 2024 23:55:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="VBoI8BDN"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kuFAKYCf"
+Received: from mail-qk1-f181.google.com (mail-qk1-f181.google.com [209.85.222.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB1C35F861;
-	Mon, 18 Mar 2024 23:54:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A33695F86F
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:55:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710806082; cv=none; b=cR4x/avIEvb9AbNvRDmD3ev9b3TKY7f3uJwJra7BQmGn4ss7rdy9RbqWASjvItg0RtVaA0afoNXfuD82k7jKskFqCblhVF07todVuBpREL37p2oTHoevrzC8r2/ItyL312f4DUJnXIi//f84sOxGPUC83r2drf52ucQ64+41fGI=
+	t=1710806134; cv=none; b=QIs7dI5zn+R00wPkWdy1nzKnoQ6eV+OzY0nG+ddRPrOUvDWb+ZlBCLOP8DduMWxmHvB/J4hKAuXEh7Zcpms94aLcvxo+gE0ywlPYSV+hltJRnt+ZrjnasY+EHRNCW1m2DJVWXA6NOiHkGdVPvPRTDM+cqmJXKRlUS2IOgFqHF9c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710806082; c=relaxed/simple;
-	bh=2ampYUB3qmvgKnA422RU+89kfH3qiVaLbH2sevIcLo0=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=nD+E75GWP1Nq89iwoo9Nx1eOEabqnhK/4dNurydJZ8Yk1XnKjlUpKUPgtHOp3guIhTVZselv9mEOzAGicyEZc306RIT8wpIyKApMsDosEMwvUtvRM9zautHCH1SdiU1K74dqN1JA7VXmB3ABEkN1B8EXhgHjhwSnhe+3nWANW9c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=VBoI8BDN; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d24a727f78so57987381fa.0;
-        Mon, 18 Mar 2024 16:54:40 -0700 (PDT)
+	s=arc-20240116; t=1710806134; c=relaxed/simple;
+	bh=cNoHLLQvJGEdRJ/fXGpe0t7q5Pac3xLinizI/oUYWCI=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=GhA8FGDn7zt1itNiWgBhadXvdyr6Uxh5xC/srFT8NRzXRn9fqdHBHoow4nNMxES+cZwtWbS/tBo6cVahjBsM73ikLqGxFf0WRe2HE/gKutJMIaFo0uoQoP2zCo0eDMO2ErseYWGhFBjrq21seR06/AXMSkudmjy1wlwO8npid7M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kuFAKYCf; arc=none smtp.client-ip=209.85.222.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-qk1-f181.google.com with SMTP id af79cd13be357-78822e21a9dso221251385a.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:55:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710806079; x=1711410879; darn=vger.kernel.org;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=xsqudSCPxYDZb7vIDJzkGeBhlTUqtvhnvvGW1FIJAQA=;
-        b=VBoI8BDNj/0XcIyEPIW4qBJ6ENa/RDVcGllGjTGtHxnZBA6uusLJHBcd6dkhDYWzjS
-         rP2Hh206SPH3TIFGaC5T3BcwgnfJU+UyH/eS1N8VZJo4VHLUmzheYTU05WZvsCbh93He
-         e7HnLVVILC+//9f8jcXqPAFNaeVPf2MFyLymCeeU/5y2B1ufzPczrYO51tNfxUYn+TWq
-         Ir5V2vxGDsJ1MHf7mpKvqLde4rxFcyBktczsYo5UBM8CF7jYi6Im9bP8M9utTeY5DvqF
-         X+FqHS8d8hjfsZn7M+F3WFu099AexrrNuocvHHSt7pPiJ6JTQbTFzFmLDXMhxTCs1sT2
-         RrnQ==
+        d=chromium.org; s=google; t=1710806131; x=1711410931; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=HH164PWpqmWsxknEeMAJyub736cK5Z2OEMFfDMtcc0Y=;
+        b=kuFAKYCfjwmGmqGlpzDFDcey0dsNPxschPwQgzON18poiwYsMCIYqT32rCK1BTBgUT
+         bOsoGyFXnTK2dLxPUWtAo8ampMvFQLIQSMSDexGPdarQi1LUyFXZdsY+5zOtAJYq0GQy
+         K4a8raqnQeW5DaF7UPY2uVHyAQzGC+x63wLy4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710806079; x=1711410879;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=xsqudSCPxYDZb7vIDJzkGeBhlTUqtvhnvvGW1FIJAQA=;
-        b=bOzGF33hOPvRwmRfDHrc859qeYZm+9kRDKGBaW2vXeVeO6ZDebfPx3xYPahkF7j1MF
-         o10wETCZTTvU72OCfk1tLO9N2EReWnct3hQyM3LAn900K+PO+zA/NYR/bEgnP++cs50i
-         DahOy4RkDeH0OXzkhEmAbIGoZw6BfzjtKtGXcER+82S7hzKdZaUnOlD52vGRttGZNm/z
-         i7qXKdABvwDIYAIrfT7mi930HRTF2hOOpt/nRgrVndNQMKXSHs1+tSKahLrImVeI4VJT
-         fQm4xIxU+1boh0s5342Fq2KXR8NmGQJN4jT53Zc6VFViLUGIcgtI1G5iu21Tn1tOVXZd
-         QlqA==
-X-Forwarded-Encrypted: i=1; AJvYcCXw6vcHErWYZyGv+VSEaVbA4iic/cked4YV0pgSGxVukUVTlI2sQr1ILQB8UfhD+WlCZEiQ47ylN3j5eYWJGizvJ14bqEauo7wYYwJ7zZxi41peq2L1rVj8R+f0kxEGNvugG+memmoAOjDVNuVN
-X-Gm-Message-State: AOJu0Yz/11x03ZQUsknGT1CQ+uQ/GXB87YJKSKXC1Zp1wX8orV09S4N4
-	bdQdyM8xQeXK2+cah/ZbpvpK/FoPTpdnjQHSvsVtAMcRXFxERu65
-X-Google-Smtp-Source: AGHT+IGu+JLoqo0gIozPOStNDZMLbGGn/PwGQf5p0HeA7JWQkGAltvBsa97RHkp5tDqPRcj12SbM8w==
-X-Received: by 2002:a05:6512:3687:b0:512:f6a0:1311 with SMTP id d7-20020a056512368700b00512f6a01311mr8317091lfs.47.1710806078749;
-        Mon, 18 Mar 2024 16:54:38 -0700 (PDT)
-Received: from [192.168.6.255] ([5.1.5.0])
-        by smtp.gmail.com with ESMTPSA id di17-20020a170906731100b00a45aa7cb029sm5340411ejc.36.2024.03.18.16.54.37
+        d=1e100.net; s=20230601; t=1710806131; x=1711410931;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=HH164PWpqmWsxknEeMAJyub736cK5Z2OEMFfDMtcc0Y=;
+        b=NSEkfmf01HUJOAaKJWHsmKxwUYyYgYhUGkQSOA50VCbrsTGIICzgTCzW0Pkmkmb60o
+         hzmvjLlMmx4a2QFvTQot5/LiXHsWMP/Pj2eS5PuTSaDPGlCWgMkQJv+XV2QGaMZYLO9L
+         xj8SRw6aOeZcPsl9/JRz/CT+0n5d2RhY/JtIq1n8hWDdNMM9w1v2eggZI17fEy68tI9m
+         PYi0HqqnJtwRx9vQ1ZqJ681wG5mp65m0sZ2ZxGkGagkEsao5kgi74Tbe2o62STkKUhoC
+         brqylhUQB1E76AlzID5S3aCBCBiqE/yTZVLcxvLJl9CWnXux9o2uTZpW7WaCgOP7po1a
+         1Zng==
+X-Forwarded-Encrypted: i=1; AJvYcCX6rB/AUxssAUb16vwvWtc/QIdn1q5apewdhTSERJb8Mf7yqaP4SXj5Qnc/olcAhI2Te+WEfmOB2AKjO7/73HSqyD2QJ3ENuQmQKd2U
+X-Gm-Message-State: AOJu0YwFXgqynhj0JeM+Qvged6JjDiwh0FxUnZje7+VcdXjKHROnM1wG
+	W/Qz6zVQtTfCleyKrw7u+bYRQ5JIH7OeZipmkUqY4OFvR/+vwPcJumXzpCLl2VOJYxLoFtt2qqk
+	=
+X-Google-Smtp-Source: AGHT+IHxInxRNV6IqZh9cCvDPHVqyxnR81Scsj5aqtqnwOcJMSH57AaJel1+HzXIfNAQdV5Ou8PR9w==
+X-Received: by 2002:a05:620a:2e9:b0:788:2fc4:c3ff with SMTP id a9-20020a05620a02e900b007882fc4c3ffmr14008745qko.31.1710806130967;
+        Mon, 18 Mar 2024 16:55:30 -0700 (PDT)
+Received: from denia.c.googlers.com (188.173.86.34.bc.googleusercontent.com. [34.86.173.188])
+        by smtp.gmail.com with ESMTPSA id h15-20020ae9ec0f000000b00787930320b6sm4991690qkg.70.2024.03.18.16.55.30
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 16:54:38 -0700 (PDT)
-Message-ID: <bee98dce6c5bf59fb1ad06855f0a1740b8195d45.camel@gmail.com>
-Subject: Re: [PATCH bpf-next v4 4/6] bpf/helpers: mark the callback of
- bpf_timer_set_sleepable_cb() as sleepable
-From: Eduard Zingerman <eddyz87@gmail.com>
-To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
- <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
- <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
- <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
- <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
- Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
- <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
- <shuah@kernel.org>
-Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-kselftest@vger.kernel.org
-Date: Tue, 19 Mar 2024 01:54:36 +0200
-In-Reply-To: <20240315-hid-bpf-sleepable-v4-4-5658f2540564@kernel.org>
-References: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
-	 <20240315-hid-bpf-sleepable-v4-4-5658f2540564@kernel.org>
-Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.3 
+        Mon, 18 Mar 2024 16:55:30 -0700 (PDT)
+From: Ricardo Ribalda <ribalda@chromium.org>
+Subject: [PATCH 0/5] media: uvc: Probe PLF limits at start-up
+Date: Mon, 18 Mar 2024 23:55:22 +0000
+Message-Id: <20240318-billion-v1-0-2f7bc0ee2030@chromium.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIAGrU+GUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
+ vPSU3UzU4B8JSMDIxMDY0Nj3aTMnBygGl3TJKNEE9O0RAuzNBMloOqCotS0zAqwSdGxtbUAXaF
+ yhlkAAAA=
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: Sergey Senozhatsky <senozhatsky@chromium.org>, 
+ linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ Ricardo Ribalda <ribalda@chromium.org>
+X-Mailer: b4 0.12.4
 
-On Fri, 2024-03-15 at 15:29 +0100, Benjamin Tissoires wrote:
-[...]
+The UVC standard descries the values for the PLF control for its
+versions 1.1 and and 1.5, but it does not describe which values MUST be
+implemented.
 
-> @@ -5279,7 +5281,8 @@ static int map_kptr_match_type(struct bpf_verifier_=
-env *env,
-> =20
->  static bool in_sleepable(struct bpf_verifier_env *env)
->  {
-> -	return env->prog->sleepable;
-> +	return env->prog->sleepable ||
-> +	       (env->cur_state && env->cur_state->in_sleepable);
->  }
+So far, we have been adding "device quirks" to provide proper limits for
+the control, but this is failing to scale.
 
-I was curious why 'env->cur_state &&' check was needed and found that
-removing it caused an error in the following fragment:
+Add a function that during probe-time checks the capability of the
+control.
 
-static int do_misc_fixups(struct bpf_verifier_env *env)
-{
-		...
-		if (is_storage_get_function(insn->imm)) {
-			if (!in_sleepable(env) ||
-			    env->insn_aux_data[i + delta].storage_get_func_atomic)
-				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_ATOMIC);
-			else
-				insn_buf[0] =3D BPF_MOV64_IMM(BPF_REG_5, (__force __s32)GFP_KERNEL);
-			...
-		}
-		...
-}
+Signed-off-by: Ricardo Ribalda <ribalda@chromium.org>
+---
+Ricardo Ribalda (5):
+      media: uvcvideo: Allow custom control mapping
+      media: uvcvideo: Refactor Power Line Frequency limit selection
+      media: uvcvideo: Probe the PLF characteristics
+      media: uvcvideo: Cleanup version-specific mapping
+      media: uvcvideo: Remove PLF device quirking
 
-When do_misc_fixups() is done env->cur_state is NULL.
-Current implementation would use GFP_ATOMIC allocation even for
-sleepable callbacks, where GFP_KERNEL is sufficient.
-Is this is something we want to address?
+ drivers/media/usb/uvc/uvc_ctrl.c   | 173 ++++++++++++++++++++++++-------------
+ drivers/media/usb/uvc/uvc_driver.c | 122 --------------------------
+ drivers/media/usb/uvc/uvcvideo.h   |  61 ++++++-------
+ 3 files changed, 143 insertions(+), 213 deletions(-)
+---
+base-commit: b14257abe7057def6127f6fb2f14f9adc8acabdb
+change-id: 20240313-billion-5b2a45fa86f4
 
-> =20
->  /* The non-sleepable programs and sleepable programs with explicit bpf_r=
-cu_read_lock()
+Best regards,
+-- 
+Ricardo Ribalda <ribalda@chromium.org>
+
 
