@@ -1,109 +1,161 @@
-Return-Path: <linux-kernel+bounces-106165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106159-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0F17387EA14
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:29:03 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 18F2987EA02
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:24:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4053B1C211C1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:29:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 467F91C2105E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:24:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 199B347F69;
-	Mon, 18 Mar 2024 13:28:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28C1F47A67;
+	Mon, 18 Mar 2024 13:24:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KPwx81na"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="SQIC7C78"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5726547F50;
-	Mon, 18 Mar 2024 13:28:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7F4B45BFA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:24:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710768533; cv=none; b=AFL/XfWCmI/o6+DjxtA/9hx+nYqN1D0MhXd4IHVTm+Vg2PLgOdIPNCVJizwLE+YMTCORykEkFHuXacEmOvhg0qiIkijmRGxdLdUfD2DA4XLugl+RI88msoyqKiOJutWkY8O5F/TTYD2JxCxXfQE7NnkSqiSgQHBWam/2rrEj67g=
+	t=1710768254; cv=none; b=h/GAmx3hYtxXd02wn1MOal3iDPO9FoFUs5kfgrT6/r0k/ty7um1w7rXqgFuBaHdQivFcKvExnZmJRSX3IBqtmHsXCdFHYhcJ2HaVt9+A3TWUY/5gbJTyE6xiEP/jNCos3ua/3Yr94jgUHJqtlw5y9qQ937sQH+jVlmT7exmQ4TI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710768533; c=relaxed/simple;
-	bh=H4T7GRxUc7yBWQ/u7+eX/MPNWtS9olwvn5w3951JJzo=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=tTSlN6IwMW/ovnS5iKPhMUAyqqSXJRlYWdzfHR46b4m9RH/8XV+xN3mKAZNQxQ2AZ5nen9YjVqaYTbrZqTDTZDATVUia99aYK8in2NVT3FPHVLaa4XX8afVYYxuLk/olykt7c0xo7CcxE1u3JP/P3mvllZtzo+FtAr2UtQ0/H6E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KPwx81na; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6FDDAC433F1;
-	Mon, 18 Mar 2024 13:28:48 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710768532;
-	bh=H4T7GRxUc7yBWQ/u7+eX/MPNWtS9olwvn5w3951JJzo=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=KPwx81naHa13NzOUadChg3ZXXlM4Sfuiu0hyjqME8CSu7bbn6dPXX9fM3Av51MWwp
-	 lC6BjSjjKXisOf6Kvo0k30BSGCQfHKEVSPAMVo8LAwdYWGTUZUMS5aHHFpJ390HQE+
-	 KystrWwhb03wJgV+GuBOFmbQN4WUyAEUbeJhFnSroQKxi7YHBnKb5X335rck3OiuZ9
-	 ORW1KLzz9YcbC7cPhtj5UZHvZ5wZYTZeVlMIjuTMINnEH3fjFVqS6Fc1MYzCQHwGpv
-	 wfrxRv5tLvclqRosigeSDxi4ltoMjD44u15AGBfr1C1z9WAHE4aRdcLrAEkwvokDGa
-	 apDTwQGa95aFg==
-Date: Mon, 18 Mar 2024 13:28:44 +0000
-From: Mark Brown <broonie@kernel.org>
-To: Bastien Curutchet <bastien.curutchet@bootlin.com>
-Cc: Herve Codina <herve.codina@bootlin.com>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Peter Ujfalusi <peter.ujfalusi@gmail.com>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	linux-sound@vger.kernel.org, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org, alsa-devel@alsa-project.org,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
-	christophercordahi@nanometrics.ca
-Subject: Re: [PATCH 04/13] ASoC: ti: davinci-i2s: Replace dev_err with
- dev_err_probe
-Message-ID: <0ee075c8-7c74-444b-9024-ad5440c36789@sirena.org.uk>
-References: <20240315112745.63230-1-bastien.curutchet@bootlin.com>
- <20240315112745.63230-5-bastien.curutchet@bootlin.com>
- <6102130b-b496-4e75-9b9f-f960484848fb@sirena.org.uk>
- <20240315152332.57c8fdc4@bootlin.com>
- <2f58922d-8964-4693-ab8a-612eb2f427e1@sirena.org.uk>
- <622b8b7e-7bd1-4e88-b705-79f7077b754a@bootlin.com>
+	s=arc-20240116; t=1710768254; c=relaxed/simple;
+	bh=6XG9peCgdkVt7DtdGWYG9FGSKJXneNx01xZftM/aGBg=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=IPD3LBZn5EcBSlZy8KoyQHXp8FjX/mwJw7WsZjdmfqwnGGtfv4/uJ5UuxNfUzsvPsS23HC97ZjRgRzBC6pY3/Co5VkY1RwufueAGVLt1fxpe/Wp95F1951zeLxDkUo5v/Azpe5b9cWjR0yIX8O6iNh5HcDlk69yacbzaYFI/pdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=SQIC7C78; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710768251; x=1742304251;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=6XG9peCgdkVt7DtdGWYG9FGSKJXneNx01xZftM/aGBg=;
+  b=SQIC7C78MPpopgzSJLdxGAHbY5bFCeXYxRcXpaaagfYhepgSebdRuS3M
+   mzOv6siAbVD+sp4oEBNgvFH/4VJBpymTJVFOqcDt5rObr9yE/0a8STY2k
+   p3UhKNWwoYrwiTKoC6ZV25ZejpjMzwobcIDvQDX2eAyjE665+r5xgrfCh
+   uNreA520xfeSyXZCgKk6JiXrnqew9TsK5rxFjZb2Qd4OxEAanLgU5X3rh
+   9o8zyy6qoLVsJwM7q8qUr5iSc7lan9HLsJlGcDA+a6dIgtvLUkNeABniy
+   BSXqaSsEVYjf9PVoHx4M9rikqOGcbcEk5g2MhfucZ0qxmCGkDx/TwEq4U
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="23037911"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="23037911"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 06:24:11 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="14102713"
+Received: from adr-par-inspur1.iind.intel.com ([10.223.93.209])
+  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 06:24:07 -0700
+From: Aravinda Prasad <aravinda.prasad@intel.com>
+To: damon@lists.linux.dev,
+	linux-mm@kvack.org,
+	sj@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: aravinda.prasad@intel.com,
+	s2322819@ed.ac.uk,
+	sandeep4.kumar@intel.com,
+	ying.huang@intel.com,
+	dave.hansen@intel.com,
+	dan.j.williams@intel.com,
+	sreenivas.subramoney@intel.com,
+	antti.kervinen@intel.com,
+	alexander.kanevskiy@intel.com
+Subject: [PATCH v2 0/3] mm/damon: Profiling enhancements for DAMON
+Date: Mon, 18 Mar 2024 18:58:45 +0530
+Message-Id: <20240318132848.82686-1-aravinda.prasad@intel.com>
+X-Mailer: git-send-email 2.21.3
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sdrGDqd8KEdxafwD"
-Content-Disposition: inline
-In-Reply-To: <622b8b7e-7bd1-4e88-b705-79f7077b754a@bootlin.com>
-X-Cookie: Alaska:
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+DAMON randomly samples one or more pages in every region and tracks
+accesses to them using the ACCESSED bit in PTE (or PMD for 2MB pages).
+When the region size is large (e.g., several GBs), which is common
+for large footprint applications, detecting whether the region is
+accessed or not completely depends on whether the pages that are
+actively accessed in the region are picked during random sampling.
+If such pages are not picked for sampling, DAMON fails to identify
+the region as accessed. However, increasing the sampling rate or
+increasing the number of regions increases CPU overheads of kdamond.
+
+This patch proposes profiling different levels of the application’s
+page table tree to detect whether a region is accessed or not. This
+patch set is based on the observation that, when the accessed bit for a
+page is set, the accessed bits at the higher levels of the page table
+tree (PMD/PUD/PGD) corresponding to the path of the page table walk
+are also set. Hence, it is efficient to check the accessed bits at
+the higher levels of the page table tree to detect whether a region
+is accessed or not. For example, if the access bit for a PUD entry
+is set, then one or more pages in the 1GB PUD subtree is accessed as
+each PUD entry covers 1GB mapping. Hence, instead of sampling
+thousands of 4K/2M pages to detect accesses in a large region, 
+sampling at the higher level of page table tree is faster and efficient.
+
+This patch set is based on 6.8-rc5 kernel (commit: f48159f8, mm-unstable
+tree)
+
+Changes since v1 [1]
+====================
+
+ - Added support for 5-level page table tree
+ - Split the patch to mm infrastructure changes and DAMON enhancements
+ - Code changes as per comments on v1
+ - Added kerneldoc comments
+
+[1] https://lkml.org/lkml/2023/12/15/272
+ 
+Evaluation:
+
+- MASIM benchmark with 1GB, 10GB, 100GB footprint with 10% hot data
+  and 5TB with 10GB hot data.
+- DAMON: 5ms sampling, 200ms aggregation interval. Rest all
+  parameters set to default value.
+- DAMON+PTP: Page table profiling applied to DAMON with the above
+  parameters.
+
+Profiling efficiency in detecting hot data:
+
+Footprint	1GB	10GB	100GB	5TB
+---------------------------------------------
+DAMON		>90%	<50%	 ~0%	  0%
+DAMON+PTP	>90%	>90%	>90%	>90%
+
+CPU overheads (in billion cycles) for kdamond:
+
+Footprint	1GB	10GB	100GB	5TB
+---------------------------------------------
+DAMON		1.15	19.53	3.52	9.55
+DAMON+PTP	0.83	 3.20	1.27	2.55
+
+A detailed explanation and evaluation can be found in the arXiv paper:
+https://arxiv.org/pdf/2311.10275.pdf
 
 
---sdrGDqd8KEdxafwD
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+Aravinda Prasad (3):
+  mm/damon: mm infrastructure support
+  mm/damon: profiling enhancement
+  mm/damon: documentation updates
 
-On Mon, Mar 18, 2024 at 08:40:24AM +0100, Bastien Curutchet wrote:
-> On 3/15/24 15:40, Mark Brown wrote:
+ Documentation/mm/damon/design.rst |  42 ++++++
+ arch/x86/include/asm/pgtable.h    |  20 +++
+ arch/x86/mm/pgtable.c             |  28 +++-
+ include/linux/mmu_notifier.h      |  36 +++++
+ include/linux/pgtable.h           |  79 ++++++++++
+ mm/damon/vaddr.c                  | 233 ++++++++++++++++++++++++++++--
+ 6 files changed, 424 insertions(+), 14 deletions(-)
 
-> > I'm not convinced TBH, the fixed error code smells pretty bad.
+-- 
+2.21.3
 
-> Ok. I'll keep the dev_err() for the fixed errors then, and use the
-> dev_err_probe() for the others, would that be ok ?
-
-Yes, when we can get a deferral it's the right thing.
-
---sdrGDqd8KEdxafwD
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEreZoqmdXGLWf4p/qJNaLcl1Uh9AFAmX4QYsACgkQJNaLcl1U
-h9DEsgf+Ny9qlyRP+/by6BPfHGXB+skGcS3TPXz/GIAnirpIiVrZg4hPTC/uSxWF
-kuUx+m7UnPWUrUm7rBjDOhBNBpF16YY06MguCTLpBoOJ1f79tVB6Pn/8afzpGWS5
-GjmCKVR8riUNwbh+/WvWF6t9FPMnjRWYPqudsy8w/Bw2zgkDzFCYUhKzdfhii7bp
-TxBsaLFP8c+OT4plH/ofuW/RJNidJwn/f2cC2PWF5pv3uv2s3Jy4IAl/KvKRaYzl
-Q+H3bGkfGslxduSxefjqGmB5WW0eFmOfefTZ0OVckvp5GdORBWPp8uGLq+Ge+sh0
-poWhOCiuHaeY5JEeyFx2YXhxaFrCLw==
-=wK3n
------END PGP SIGNATURE-----
-
---sdrGDqd8KEdxafwD--
 
