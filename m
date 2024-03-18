@@ -1,320 +1,196 @@
-Return-Path: <linux-kernel+bounces-105638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105650-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 719C787E1E7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:54:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 988E087E211
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:11:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8F1A41C213BC
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 01:54:11 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 806991C21DE9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:11:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6C41DDF4;
-	Mon, 18 Mar 2024 01:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A86ED1DFC7;
+	Mon, 18 Mar 2024 02:11:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="IsA83tlM"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kxg1GDVi"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C914A1D530
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 01:54:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710726845; cv=none; b=I/3DnTyl1JOoEGwgFhHPXq1EurfX4rILRCsPw/XYgK4M7xqUTQ3qCcTuo4wr/+pYlkEUURhxJ5sEcYtLWN8PA6f7FqvZHZKyFOierE2OH/LqojoMHIvJTysXKGhL/XSWXXVYIdLBg4I+xovKkuXAPip4jLrHDVkE00slgGS0Dlc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710726845; c=relaxed/simple;
-	bh=DCE39TGVpS0txfwp5jV8UNIpvR25WyxcPS+4+/R4rSU=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=Avsiffh/ZcKCp+vWhZgfUGIzHwJ25eTPeOttInT/dKvhfXowChiGI2qPVcWM6wwt+4M9UjuQVEZnmD/DLPCmjttMZu7CXl/iDZs4OfLaJrxz9Pj4/2qw1Rpx30j2iPxHQMRD0fW3lERGpRUU3pcZBmAauN2zsga5lMrRp6Su/pc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=IsA83tlM; arc=none smtp.client-ip=192.198.163.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF8811DDE9
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:11:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.7
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710727894; cv=fail; b=V8G8xpp7K63EO7uN4qGgmkaxKN8hGM0wQl/KbBykOIoELFyP3gm6cQd1qfdpV2owsKM19ncY4sERp20TKwEusHOP8kJhUMvgT+mBUJpVUsMM+1Gq9pCJfKycBhlBPH/MWQGlgmKRS+e492IcZ1xG5a4w3qWBQTMgCaMkvoPAVmo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710727894; c=relaxed/simple;
+	bh=HQIDwulmZPt2qQErNJEY4G/vulFhvOixbmxh5aK26u8=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=sOFLnWchIlcD16aOGSSBRn6yUN2xccy7ITqT+4NuHR8W43s+vIS2yub26rPU3BtM7XkAFAictLw+uKqElUrhVr04NGmnO+gH6FfZoTCvsCpTU//bfsgRemcFGgAgiegzwg4PnyQKl82g/J9uRGBFQENQ71KH0GYwULnlFpanPqA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kxg1GDVi; arc=fail smtp.client-ip=192.198.163.7
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710726842; x=1742262842;
-  h=from:to:cc:subject:in-reply-to:references:date:
-   message-id:mime-version:content-transfer-encoding;
-  bh=DCE39TGVpS0txfwp5jV8UNIpvR25WyxcPS+4+/R4rSU=;
-  b=IsA83tlMlRjym9UleK458AHhXbNwcJ5yQjc2O9ntKBwa8yZRk/0srMnk
-   /RVDNU0gMNMbtPPsM96Rv6m8G7w1yYo6FR9hBpH+3S58xzReGVGXLkV60
-   p/b/WJmXzmlJ95bt3TRCQTVQznsmTZ2H3j11VrNdrzf2nmuuAhC6nQYg4
-   TmFussoML1sFm7IhKV/7ipOzQ4BsGp1BCUh4F3+6rGvgYWK563kyrTV/h
-   GhdoF+jPXpTfmX0+sW+KU9daI/gUOHVpImsIVeE9FebQG5g+Yjot9zYCI
-   14nCvh0CGJyITkYUpz6zsFtyUynGOIdk6dvGTLG7cxTtLao73d3lh+ktr
+  t=1710727892; x=1742263892;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=HQIDwulmZPt2qQErNJEY4G/vulFhvOixbmxh5aK26u8=;
+  b=kxg1GDViGRd/m6o10s0dmakT6qv0WWBqbPNHVUbCd8nhIaxeZYlJK4YQ
+   O72pNXlz42s78hyWdY2k42BBDOVdJRFqEkSUhwIUQZz93ygdXDseurPOj
+   Lc1kwp7cAlt9njdwJ27pWKSTReMvKYzou1mv+LMdozBKTc3NDlau9MCAE
+   4sZo1CCotIJao9CXr85YpsxPhB8bD2WwNIy7sBxRZ+tEsFEwyrgdWwO3X
+   06viNtXtLHmqGZkPytk/bRymIbvhakzm5lk43byfkibgX/ISO8elL2F5M
+   q8RHPiDgFYStlaLjPOM3uXfGRBQscmYcs3aJeMbDf4NxZsXD4pfIO7x3j
    Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="5377733"
+X-IronPort-AV: E=McAfee;i="6600,9927,11016"; a="30962760"
 X-IronPort-AV: E=Sophos;i="6.07,133,1708416000"; 
-   d="scan'208";a="5377733"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 18:54:00 -0700
+   d="scan'208";a="30962760"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa101.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 19:11:32 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,133,1708416000"; 
-   d="scan'208";a="13383128"
-Received: from yhuang6-desk2.sh.intel.com (HELO yhuang6-desk2.ccr.corp.intel.com) ([10.238.208.55])
-  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 17 Mar 2024 18:53:56 -0700
-From: "Huang, Ying" <ying.huang@intel.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: Matthew Wilcox <willy@infradead.org>,  akpm@linux-foundation.org,
-  linux-mm@kvack.org,  ryan.roberts@arm.com,  chengming.zhou@linux.dev,
-  chrisl@kernel.org,  david@redhat.com,  hannes@cmpxchg.org,
-  kasong@tencent.com,  linux-arm-kernel@lists.infradead.org,
-  linux-kernel@vger.kernel.org,  mhocko@suse.com,  nphamcs@gmail.com,
-  shy828301@gmail.com,  steven.price@arm.com,  surenb@google.com,
-  wangkefeng.wang@huawei.com,  xiang@kernel.org,  yosryahmed@google.com,
-  yuzhao@google.com,  Chuanhua Han <hanchuanhua@oppo.com>,  Barry Song
- <v-songbaohua@oppo.com>
-Subject: Re: [RFC PATCH v3 5/5] mm: support large folios swapin as a whole
-In-Reply-To: <CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
-	(Barry Song's message of "Fri, 15 Mar 2024 23:01:46 +1300")
-References: <20240304081348.197341-1-21cnbao@gmail.com>
-	<20240304081348.197341-6-21cnbao@gmail.com>
-	<87wmq3yji6.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4x+t_X4Tn15=QPbH58e1S1FwOoM3t37T+cUE8-iKoENLw@mail.gmail.com>
-	<87sf0rx3d6.fsf@yhuang6-desk2.ccr.corp.intel.com>
-	<CAGsJ_4xna1xKz7J=MWDR3h543UvnS9v0-+ggVc5fFzpFOzfpyA@mail.gmail.com>
-Date: Mon, 18 Mar 2024 09:52:01 +0800
-Message-ID: <87jzm0wblq.fsf@yhuang6-desk2.ccr.corp.intel.com>
-User-Agent: Gnus/5.13 (Gnus v5.13)
+   d="scan'208";a="18005284"
+Received: from orsmsx602.amr.corp.intel.com ([10.22.229.15])
+  by orviesa005.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 17 Mar 2024 19:11:31 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 17 Mar 2024 19:11:31 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Sun, 17 Mar 2024 19:11:30 -0700
+Received: from ORSEDG601.ED.cps.intel.com (10.7.248.6) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Sun, 17 Mar 2024 19:11:30 -0700
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (104.47.58.100)
+ by edgegateway.intel.com (134.134.137.102) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Sun, 17 Mar 2024 19:11:30 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=OjAckDTl+2eZ006lUpULOg5yGpdv22E603bFEr2tClWhpE2rabeSuwu6uAJIIsjCnF22a+cFHdKVhMu4c94BtPb6KCFQvM7y1IJ2pXsRXImVf3ku+dr1Y3iRyJ3LFIGJQ7ONfrk1xBurqlpcwb5+1W37Jq8S9i7I9zEiAtb/u6TFmRGZhDulokCHwDLPdAdxHP7D/ABFFrJRVjC1u5fagXgUQPbt7uDjNrXZucOSojL1YLhoOf9kCMl8vfGhlRice1p//ODbr/udYXvjHh7KX5NoyNCgtxpb8vA+Gs9Mtl15nCGdBlwX6DNQPrlUJL8RlWlHPwz9GwMeON/Fo6+rkQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=f8QwSD7JBuLcmHAuGPrNw84mqycbjZGTH2hxqh4pINU=;
+ b=S65yf/nQlH2RmUQMbwd02UP/3IRE5YNSTPhS16Yz364lzc+OB9yYsOMShsLRnSmaBxMx9Eqk4gh1dHnQBKqD9BTNC7L+AAE6fcMc26URDwtaNCMl0vF2Z/LKUSwa+y1T7mipHuO6j+dEII6Jf5huKyyWuXKHwaPCmhCMxLeIHTKTyzW1ayuH1yG1pSycJbGL+y79Ghwu51nRHgNuzMdrnu0yURl2wCrroKleOcsq0sqRMoFv93T09IdfOGgn1TzsQCmTh8soNzaj5qB2TMckQM5mEVX0+GFg1q4b+bST/VDvepRhWFpcahdzbYg+xvQEPxObTzbDY194tO/sn258RQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com (2603:10b6:208:3c0::7)
+ by CY5PR11MB6511.namprd11.prod.outlook.com (2603:10b6:930:41::7) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.9; Mon, 18 Mar
+ 2024 02:11:27 +0000
+Received: from MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::4d4c:6d3e:4780:f643]) by MN0PR11MB6304.namprd11.prod.outlook.com
+ ([fe80::4d4c:6d3e:4780:f643%5]) with mapi id 15.20.7409.010; Mon, 18 Mar 2024
+ 02:11:27 +0000
+Date: Mon, 18 Mar 2024 09:57:30 +0800
+From: Feng Tang <feng.tang@intel.com>
+To: Waiman Long <longman@redhat.com>
+CC: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>,
+	Borislav Petkov <bp@alien8.de>, Dave Hansen <dave.hansen@intel.com>, "H .
+ Peter Anvin" <hpa@zytor.com>, Peter Zijlstra <peterz@infradead.org>,
+	<x86@kernel.org>, <paulmck@kernel.org>, <rui.zhang@intel.com>,
+	<linux-kernel@vger.kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>
+Subject: Re: [PATCH] x86/tsc: Use topology_max_packages() to get package
+ number
+Message-ID: <ZfefinwL7jUo+Ly0@feng-clx.sh.intel.com>
+References: <20240315112606.2248284-1-feng.tang@intel.com>
+ <e0d1b16a-2880-4e3f-b3ca-b0b47494014a@redhat.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <e0d1b16a-2880-4e3f-b3ca-b0b47494014a@redhat.com>
+X-ClientProxiedBy: SI2PR06CA0014.apcprd06.prod.outlook.com
+ (2603:1096:4:186::11) To MN0PR11MB6304.namprd11.prod.outlook.com
+ (2603:10b6:208:3c0::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR11MB6304:EE_|CY5PR11MB6511:EE_
+X-MS-Office365-Filtering-Correlation-Id: 26f3ba5a-f24a-4868-58ff-08dc46f0b82f
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: C04JVaQozXuENTpjZCLqhBOo+Uh2KKgtm6toceNH/a+q8Y/lRHZdfWefuLsKuKH/X4a4f2kwcf6ccI6pNPNkueWagssbusTpmKZNsY73Z1dMnn61/8ErpI3phS0t43BSWJ2M8YtWLEJ754iT2IUy0l+zTCQOymNEEacij5icUu56MuLLZw8mV8eADWxhWrKPA3M4IT2nHpWgBqHurig5Uy5mTu4siGru2nfUXyNtbZ19/lwkBCsEMQoBkVqrCpqB3YMWGm2G/dVVOvE/4MSrCT4lcEtyc1l2V9I7RGVrlM0pb/z2EOwIuASAnmrheTywpMlWg4UkmrCZWnZQjt91M/hYBf3+ak09SMfFVvJNecbsuHUIGaM1v3pcquEZzV7VteGyv9a+f8eJR+RdC0bPASE/ZM5Am+2pobmGUC9/AAVmYY8/RPV7rfVQ3nJgy546Pfncp8G2sCP2upmpdn+WCXdfIWbUJs8YNxAhtCxDUpI1tdfL4ZDRXYhm0DE8pzcge26Xnfd94M8Fs1pPTLNTROO/MZcTXz7UGqP80O+W9lq8KAbkO1fKuZdm64gzxvFk252bsvMt5LPzoDHds5dffSLcmID4oFa8n7P+f56a/m9DRjsJMQIw+mOkOTvdahEiP5OjAZfQO+7IDXEU0PRDumQgVriE2flvwfRTiQ7cH8M=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR11MB6304.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?voMtb5hUA89MlbRfWbfjqTa4Qb4ea/aE5TVybf4SkjWQrB6d1VpUt+HBRLjb?=
+ =?us-ascii?Q?9mung1MAFyJhOtGrIpBSKWOB+doVWe0gCRsEl6G+pC/ZFk27ADmwHcn07kXE?=
+ =?us-ascii?Q?VuGaekJFAh6VZ7Du2OMeuCabygBWWlX8rvuh1qUe+Wi6MxwDeNNJ7SlG7gxW?=
+ =?us-ascii?Q?8D/L7CyLxhyGAvZu0e2Ydlb1jSlnuyCw0lLv+V/B7yYDYUzJCKX6vqcqQhQi?=
+ =?us-ascii?Q?P22eMptRHJoDltvtSFrH6zVcGwvQGY/vp85ZF6TRfwydYaLnCDucCmmGt1ya?=
+ =?us-ascii?Q?QscTUY5WRg7hO4h1fehBMBuIv+YAhDRzJih3LPC/fo2XjJhH5dC2RtSIRGSd?=
+ =?us-ascii?Q?unx1RmheLE2Svnwq979EO3IePCOBDJBR9USuXaJ/TUEcLNSJBTWb0df/i3BQ?=
+ =?us-ascii?Q?7216v/MGim8dnB4JCSrUCV1+ta1Mtm/taaTNX+mzI1Gwj1Y7l4MRb0y+weOr?=
+ =?us-ascii?Q?s3cyOOZwSVdGGlWJKOUBQ3mV6aIOAGdhZ9lXvN7VMQHTrQeB90Po3QtLSj19?=
+ =?us-ascii?Q?OV5AWJntvurhyy/xwNbM+GFf6XFfvSfw8JWTBfHmNrlbDXfWRF5paUmY7dNl?=
+ =?us-ascii?Q?ZJKQek7zoy4204zU38360vP2F9hkgRy+eq1a/SJ1oFCfrTLSPwbmt+p0CFCT?=
+ =?us-ascii?Q?HYqyPbA/Z6oW70Nfpk7MMsfqqJU8+SUcvsTNn2y1ROmTAUuZ6E7PsDbDd8DZ?=
+ =?us-ascii?Q?T4ZD1p35gGI9IwbRRlpnwQF/o16u87qzmwOIymXvxrLfpgvoO8nKRE/8z/8t?=
+ =?us-ascii?Q?s1Rs3rFfTfUExt8wPyxDWSJzm2fc0XNHGMHx6nF3pVXmAshwXgoFDZanRigT?=
+ =?us-ascii?Q?/ZkdQTH4C6TJc8t9uzOPwleHjkHUJk1TKeuYL88zkONCzzZYkRrY4vnhLLsl?=
+ =?us-ascii?Q?FuJrzvF1iJ+ZV/Sa9JnF4DRkUY6T6+2UqtLkmziM6esjTnFz3eBFGzduz6uV?=
+ =?us-ascii?Q?ZMpJhUuVgJHiIx6vlgBdUmjNBScND+O1HbkoKe+84UDRq/Pc27ktfryWFvQB?=
+ =?us-ascii?Q?mFM8ZtOqrt02suzsi0eSjihV3vzM1Jyb6gDiIw3+I7y07hErexY0skNwBd6c?=
+ =?us-ascii?Q?8O0v32EWmBYfkIOqVF0VeGg7a3HBJgRymRDB1eoIXm/7PY+AdLqdIEpPLLrP?=
+ =?us-ascii?Q?31tfHVd7N2863PNMYCD8tlzL2R13uEg9SeaZSwbYsVqnrxAkigq5JaWs1ock?=
+ =?us-ascii?Q?UGEAc65Uopa7hktEV8hq57Jq9VsITG/mHvmi9Z1snw9f2KyvP33VZ0w3JZB+?=
+ =?us-ascii?Q?VHIxfjE8pMaWQV3E1IhkFuIkEpJd/URKfiGV4Vl8ZMHMdVd5HqgRAAEmhJHV?=
+ =?us-ascii?Q?l81f6YABpeNwJInFCbMuxBg4hCjlBeudqSXEdKYYKQQNAZSMucapuSqGfw32?=
+ =?us-ascii?Q?SsNKCDO6WXO4TAOd/uEnmdgy72NcHjgaB51N7jA9E6OgxwMhpWWGkG5dRILl?=
+ =?us-ascii?Q?ojDosRJ6jbpYUrVEWPDAWIBYcrur3WVMPJtR1cDyozbQJoErfXxP9Sz/yK/U?=
+ =?us-ascii?Q?E+77P55gjsrOC6cic2q7KG+TxP75fbbp1eiu/DUFc3YT2wE2qHCqITm/behu?=
+ =?us-ascii?Q?RCp17BbJUPK/vquv6o72STao9EkWE1+yr5sfPYgR?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 26f3ba5a-f24a-4868-58ff-08dc46f0b82f
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR11MB6304.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 02:11:27.6828
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: e8e2srkj7PAHjCi0qUXi4o51nZK/4UMQTCUtgrkVF6r/597FuyRyXYtpJ4F8ELORTPf20bLLBjl5F65oShKi8g==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR11MB6511
+X-OriginatorOrg: intel.com
 
-Barry Song <21cnbao@gmail.com> writes:
+On Sun, Mar 17, 2024 at 10:03:38PM -0400, Waiman Long wrote:
+> 
+> On 3/15/24 07:26, Feng Tang wrote:
+> > Commit b50db7095fe0 ("x86/tsc: Disable clocksource watchdog for TSC
+> > on qualified platorms") was introduced to solve problem that
+> > sometimes TSC clocksource is wrongly judged as unstable by watchdog
+> > like 'jiffies', HPET, etc.
+> > 
+> > In it, the hardware package number is a key factor for judging whether
+> > to disable the watchdog for TSC, and 'nr_online_nodes' was chosen as
+> > an estimation due to it is needed in early boot phase before
+> > registering 'tsc-early' clocksource, where all none-boot CPUs are not
+> 
+> "none-boot"? You mean "non-boot". Right?
 
-> On Fri, Mar 15, 2024 at 10:17=E2=80=AFPM Huang, Ying <ying.huang@intel.co=
-m> wrote:
->>
->> Barry Song <21cnbao@gmail.com> writes:
->>
->> > On Fri, Mar 15, 2024 at 9:43=E2=80=AFPM Huang, Ying <ying.huang@intel.=
-com> wrote:
->> >>
->> >> Barry Song <21cnbao@gmail.com> writes:
->> >>
->> >> > From: Chuanhua Han <hanchuanhua@oppo.com>
->> >> >
->> >> > On an embedded system like Android, more than half of anon memory is
->> >> > actually in swap devices such as zRAM. For example, while an app is
->> >> > switched to background, its most memory might be swapped-out.
->> >> >
->> >> > Now we have mTHP features, unfortunately, if we don't support large=
- folios
->> >> > swap-in, once those large folios are swapped-out, we immediately lo=
-se the
->> >> > performance gain we can get through large folios and hardware optim=
-ization
->> >> > such as CONT-PTE.
->> >> >
->> >> > This patch brings up mTHP swap-in support. Right now, we limit mTHP=
- swap-in
->> >> > to those contiguous swaps which were likely swapped out from mTHP a=
-s a
->> >> > whole.
->> >> >
->> >> > Meanwhile, the current implementation only covers the SWAP_SYCHRONO=
-US
->> >> > case. It doesn't support swapin_readahead as large folios yet since=
- this
->> >> > kind of shared memory is much less than memory mapped by single pro=
-cess.
->> >>
->> >> In contrast, I still think that it's better to start with normal swap=
--in
->> >> path, then expand to SWAP_SYCHRONOUS case.
->> >
->> > I'd rather try the reverse direction as non-sync anon memory is only a=
-round
->> > 3% in a phone as my observation.
->>
->> Phone is not the only platform that Linux is running on.
->
-> I suppose it's generally true that forked shared anonymous pages only
-> constitute a
-> small portion of all anonymous pages. The majority of anonymous pages are=
- within
-> a single process.
+Yes, you are right. will fix it. non-boot CPU means AP (application
+processor) here.
 
-Yes.  But IIUC, SWP_SYNCHRONOUS_IO is quite limited, they are set only
-for memory backed swap devices.
+> 
+> Other than that, the patch looks reasonable to me.
 
-> I agree phones are not the only platform. But Rome wasn't built in a
-> day. I can only get
-> started on a hardware which I can easily reach and have enough hardware/t=
-est
-> resources on it. So we may take the first step which can be applied on
-> a real product
-> and improve its performance, and step by step, we broaden it and make it
-> widely useful to various areas  in which I can't reach :-)
+Thanks for the review!
 
-We must guarantee the normal swap path runs correctly and has no
-performance regression when developing SWP_SYNCHRONOUS_IO optimization.
-So we have to put some effort on the normal path test anyway.
+- Feng
 
-> so probably we can have a sysfs "enable" entry with default "n" or
-> have a maximum
-> swap-in order as Ryan's suggestion [1] at the beginning,
->
-> "
-> So in the common case, swap-in will pull in the same size of folio as was
-> swapped-out. Is that definitely the right policy for all folio sizes? Cer=
-tainly
-> it makes sense for "small" large folios (e.g. up to 64K IMHO). But I'm no=
-t sure
-> it makes sense for 2M THP; As the size increases the chances of actually =
-needing
-> all of the folio reduces so chances are we are wasting IO. There are simi=
-lar
-> arguments for CoW, where we currently copy 1 page per fault - it probably=
- makes
-> sense to copy the whole folio up to a certain size.
-> "
->
->>
->> >>
->> >> In normal swap-in path, we can take advantage of swap readahead
->> >> information to determine the swapped-in large folio order.  That is, =
-if
->> >> the return value of swapin_nr_pages() > 1, then we can try to allocate
->> >> and swapin a large folio.
->> >
->> > I am not quite sure we still need to depend on this. in do_anon_page,
->> > we have broken the assumption and allocated a large folio directly.
->>
->> I don't think that we have a sophisticated policy to allocate large
->> folio.  Large folio could waste memory for some workloads, so I think
->> that it's a good idea to allocate large folio always.
->
-> i agree, but we still have the below check just like do_anon_page() has i=
-t,
->
->         orders =3D thp_vma_allowable_orders(vma, vma->vm_flags, false, tr=
-ue, true,
->                                           BIT(PMD_ORDER) - 1);
->         orders =3D thp_vma_suitable_orders(vma, vmf->address, orders);
->
-> in do_anon_page, we don't worry about the waste so much, the same
-> logic also applies to do_swap_page().
-
-As I said, "readahead" may help us from application/user specific
-configuration in most cases.  It can be a starting point of "using mTHP
-automatically when it helps and not cause many issues".
-
->>
->> Readahead gives us an opportunity to play with the policy.
->
-> I feel somehow the rules of the game have changed with an upper
-> limit for swap-in size. for example, if the upper limit is 4 order,
-> it limits folio size to 64KiB which is still a proper size for ARM64
-> whose base page can be 64KiB.
->
-> on the other hand, while swapping out large folios, we will always
-> compress them as a whole(zsmalloc/zram patch will come in a
-> couple of days), if we choose to decompress a subpage instead of
-> a large folio in do_swap_page(), we might need to decompress
-> nr_pages times. for example,
->
-> For large folios 16*4KiB, they are saved as a large object in zsmalloc(wi=
-th
-> the coming patch), if we swap in a small folio, we decompress the large
-> object; next time, we will still need to decompress a large object. so
-> it is more sensible to swap in a large folio if we find those
-> swap entries are contiguous and were allocated by a large folio swap-out.
-
-I understand that there are some special requirements for ZRAM.  But I
-don't think it's a good idea to force the general code to fit the
-requirements of a specific swap device too much.  This is one of the
-reasons that I think that we should start with normal swap devices, then
-try to optimize for some specific devices.
-
->>
->> > On the other hand, compressing/decompressing large folios as a
->> > whole rather than doing it one by one can save a large percent of
->> > CPUs and provide a much lower compression ratio.  With a hardware
->> > accelerator, this is even faster.
->>
->> I am not against to support large folio for compressing/decompressing.
->>
->> I just suggest to do that later, after we play with normal swap-in.
->> SWAP_SYCHRONOUS related swap-in code is an optimization based on normal
->> swap.  So, it seems natural to support large folio swap-in for normal
->> swap-in firstly.
->
-> I feel like SWAP_SYCHRONOUS is a simpler case and even more "normal"
-> than the swapcache path since it is the majority.
-
-I don't think so.  Most PC and server systems uses !SWAP_SYCHRONOUS
-swap devices.
-
-> and on the other hand, a lot
-> of modification is required for the swapcache path. in OPPO's code[1], we=
- did
-> bring-up both paths, but the swapcache path is much much more complicated
-> than the SYNC path and hasn't really noticeable improvement.
->
-> [1] https://github.com/OnePlusOSS/android_kernel_oneplus_sm8650/tree/onep=
-lus/sm8650_u_14.0.0_oneplus12
-
-That's great.  Please cleanup the code and post it to mailing list.  Why
-doesn't it help?  IIUC, it can optimize TLB at least.
-
->>
->> > So I'd rather more aggressively get large folios swap-in involved
->> > than depending on readahead.
->>
->> We can take advantage of readahead algorithm in SWAP_SYCHRONOUS
->> optimization too.  The sub-pages that is not accessed by page fault can
->> be treated as readahead.  I think that is a better policy than
->> allocating large folio always.
->
-> Considering the zsmalloc optimization, it would be a better choice to
-> always allocate
-> large folios if we find those swap entries are for a swapped-out large fo=
-lio. as
-> decompressing just once, we get all subpages.
-> Some hardware accelerators are even able to decompress a large folio with
-> multi-hardware threads, for example, 16 hardware threads can compress
-> each subpage of a large folio at the same time, it is just as fast as
-> decompressing
-> one subpage.
->
-> for platforms without the above optimizations, a proper upper limit
-> will help them
-> disable the large folios swap-in or decrease the impact. For example,
-> if the upper
-> limit is 0-order, we are just removing this patchset. if the upper
-> limit is 2 orders, we
-> are just like BASE_PAGE size is 16KiB.
->
->>
->> >>
->> >> To do that, we need to track whether the sub-pages are accessed.  I
->> >> guess we need that information for large file folio readahead too.
->> >>
->> >> Hi, Matthew,
->> >>
->> >> Can you help us on tracking whether the sub-pages of a readahead large
->> >> folio has been accessed?
->> >>
->> >> > Right now, we are re-faulting large folios which are still in swapc=
-ache as a
->> >> > whole, this can effectively decrease extra loops and early-exitings=
- which we
->> >> > have increased in arch_swap_restore() while supporting MTE restore =
-for folios
->> >> > rather than page. On the other hand, it can also decrease do_swap_p=
-age as
->> >> > PTEs used to be set one by one even we hit a large folio in swapcac=
-he.
->> >> >
->> >>
-
---
-Best Regards,
-Huang, Ying
+> Thanks,
+> Longman
+> 
+> 
 
