@@ -1,37 +1,46 @@
-Return-Path: <linux-kernel+bounces-106656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9F81887F197
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:53:56 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 67A1187F19F
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 35CC91F22276
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:53:56 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B4AB8B217A3
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:58:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 585EC56B7F;
-	Mon, 18 Mar 2024 20:53:50 +0000 (UTC)
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 546E726AC7
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:53:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2D0C58218;
+	Mon, 18 Mar 2024 20:58:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="onnCPRbH"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8CA3443AA3;
+	Mon, 18 Mar 2024 20:58:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710795229; cv=none; b=nzrdIuEniUST5mxGcl7ZZRwhGwbt8guTjU7DTm1UCbDJZZwIyoehkgzM4alznGXoszpiw9P06QseRD2PmHZ66dLDoX1lrqGIvw/qQmj1Wd+Hf+u9A6a3+i1L2q7vUIKCr4eNWScRvp24cTVGA6AyGExOKGj0ln3PH+gwNR14388=
+	t=1710795506; cv=none; b=qkk7EF87iB6TKPXcS0KX/mtxUZv/FQMdMldPGmw0Nddc+vQTfpwlcuvb/E1qXr10xJIZVxZyj26xAqBkyK0OLidD2Fnob3yzdSWZ/zBf/TAfNP8fYFaVZzvBSQ8OSRwcDGqYS3mwhS2eqfJ9s858dGeKRDKN9jFznh2fzQl/lXQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710795229; c=relaxed/simple;
-	bh=SIy/tUuY7q66cY1sM9aARvm5DKIXY/vZ/C96YA2Pv7c=;
+	s=arc-20240116; t=1710795506; c=relaxed/simple;
+	bh=iBeE7+uw1+a5Vgld1wKCLp+1aV7VFk9n2FjdtnYxOC8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=eSvsiYedeBFFwXsKL6v/f0v+vonlqV1MScMLsplBsLmBRC0dXC9YKJLIvlhpT3A0Ipt5i7wbeD4qgqgIbdkeICx4FoPjPMz+jLYgelZZdfSf22bXCkNHdvBc56nkJCLZslYUShBOHTzMwIM+kZjIXbh8LMdiNQZhuYF0PON+Vys=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id EA8C01BF205;
-	Mon, 18 Mar 2024 20:53:42 +0000 (UTC)
-Message-ID: <1a1bf141-9fbf-4d30-bdd3-fd20f6170c3f@ghiti.fr>
-Date: Mon, 18 Mar 2024 21:53:42 +0100
+	 In-Reply-To:Content-Type; b=G0nTymvf2sb3R/jblFnKttfCRmvQ+ZcOyf1hOgFOmVrSWVSAlIY4E9KowAPupOgrPUndqyYxkjtmzHNHiv0ZICy1fGSW7ggtFnFbDSZtP6kX7z7/qUvHtTid7uMFYghK99ZvaWKOCqJrif91pOFPYzen4xyY3Wu7y9nP4X6MDn8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=onnCPRbH; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [10.137.106.151] (unknown [167.220.2.23])
+	by linux.microsoft.com (Postfix) with ESMTPSA id E7B8820B74C0;
+	Mon, 18 Mar 2024 13:58:23 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com E7B8820B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710795504;
+	bh=VwjmcstDx+NgU9BBFPDxpbqSu2gppqDHoUWpsVz/Th0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=onnCPRbHf1Ctws2/MdDiXWRWVU/AtpyiqTCWaP9IGfzEKNsiBab2QiD70n2xNWdiE
+	 +iMmKlhUXXPx2YJll5Q9m9B6+1hqBB2jN6iRC/N/plU/BbpF12cOc5b4kBRfN/EhVJ
+	 FocQoZ2pW//0/MyUBBIDG10lyLap3A58o8x5R6ow=
+Message-ID: <02453956-46d0-40f4-9e20-1bb0808996bb@linux.microsoft.com>
+Date: Mon, 18 Mar 2024 13:58:23 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -39,121 +48,66 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: compat_vdso: install compat_vdso.so.dbg to
- /lib/modules/*/vdso/
-Content-Language: en-US
-To: Masahiro Yamada <masahiroy@kernel.org>
-Cc: Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20231117125807.1058477-1-masahiroy@kernel.org>
- <CAK7LNAStoCja1gnoFmsKikbzGZmKTcTu+Vc7v9zg8B9hwsH+iQ@mail.gmail.com>
- <CAK7LNATVAcj-pa_G-NGBTr9doCACGk1nKCNbxM50-M0mi9q=7w@mail.gmail.com>
- <ca097f2a-59ec-4945-9860-5e380e1665e4@ghiti.fr>
- <CAK7LNARShVA953-U+p6=wzq3GFsKx4GwpRiqmqftjQz3VkE2VA@mail.gmail.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <CAK7LNARShVA953-U+p6=wzq3GFsKx4GwpRiqmqftjQz3VkE2VA@mail.gmail.com>
+Subject: Re: [RFC PATCH v15 18/21] ipe: enable support for fs-verity as a
+ trust provider
+Content-Language: en-CA
+To: Roberto Sassu <roberto.sassu@huaweicloud.com>,
+ Eric Biggers <ebiggers@kernel.org>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+ tytso@mit.edu, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+ eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+ fsverity@lists.linux.dev, linux-block@vger.kernel.org,
+ dm-devel@lists.linux.dev, audit@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
+ <1710560151-28904-19-git-send-email-wufan@linux.microsoft.com>
+ <20240318051703.GB63337@sol.localdomain>
+ <53a067f80db2e53ae29dc811515ab51c6ef86aed.camel@huaweicloud.com>
+From: Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <53a067f80db2e53ae29dc811515ab51c6ef86aed.camel@huaweicloud.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Transfer-Encoding: 7bit
 
-Hi Masahiro,
 
-On 15/03/2024 05:06, Masahiro Yamada wrote:
-> On Thu, Mar 7, 2024 at 5:12 AM Alexandre Ghiti <alex@ghiti.fr> wrote:
->> Hi Masahiro,
+
+On 3/18/2024 1:08 AM, Roberto Sassu wrote:
+> On Sun, 2024-03-17 at 22:17 -0700, Eric Biggers wrote:
+>> On Fri, Mar 15, 2024 at 08:35:48PM -0700, Fan Wu wrote:
+>>> +config IPE_PROP_FS_VERITY
+>>> +	bool "Enable property for fs-verity files"
+>>> +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
+>>> +	help
+>>> +	  This option enables the usage of properties "fsverity_signature"
+>>> +	  and "fsverity_digest". These properties evaluate to TRUE when
+>>> +	  a file is fsverity enabled and with a signed digest
 >>
->> On 24/02/2024 04:37, Masahiro Yamada wrote:
->>> Ping x 2 ?
->>>
->>>
->>>
->>>
->>>
->>> On Sun, Jan 21, 2024 at 6:48 AM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>>> On Fri, Nov 17, 2023 at 9:58 PM Masahiro Yamada <masahiroy@kernel.org> wrote:
->>>>> 'make vdso_install' installs debug vdso files to /lib/modules/*/vdso/.
->>>>>
->>>>> Only for the compat vdso on riscv, the installation destination differs;
->>>>> compat_vdso.so.dbg is installed to /lib/module/*/compat_vdso/.
->>>>>
->>>>> To follow the standard install destination and simplify the vdso_install
->>>>> logic, change the install destination to standard /lib/modules/*/vdso/.
->>>>>
->>>>> Signed-off-by: Masahiro Yamada <masahiroy@kernel.org>
->>>>> ---
->>>> Ping?
->>>> (in case "yet more RISC-V updates" happens)
->>>>
->>>>
->>>>
->>>>
->>>>>    arch/riscv/Makefile | 2 +-
->>>>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>>>
->>>>> diff --git a/arch/riscv/Makefile b/arch/riscv/Makefile
->>>>> index a74be78678eb..5cbe596345c1 100644
->>>>> --- a/arch/riscv/Makefile
->>>>> +++ b/arch/riscv/Makefile
->>>>> @@ -146,7 +146,7 @@ endif
->>>>>    endif
->>>>>
->>>>>    vdso-install-y                 += arch/riscv/kernel/vdso/vdso.so.dbg
->>>>> -vdso-install-$(CONFIG_COMPAT)  += arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg:../compat_vdso/compat_vdso.so
->>>>> +vdso-install-$(CONFIG_COMPAT)  += arch/riscv/kernel/compat_vdso/compat_vdso.so.dbg
->>>>>
->>>>>    ifneq ($(CONFIG_XIP_KERNEL),y)
->>>>>    ifeq ($(CONFIG_RISCV_M_MODE)$(CONFIG_ARCH_CANAAN),yy)
->>>>> --
->>>>> 2.40.1
->>>>>
->>>> --
->>>> Best Regards
->>>> Masahiro Yamada
->>>
->>> --
->>> Best Regards
->>> Masahiro Yamada
->>>
->>> _______________________________________________
->>> linux-riscv mailing list
->>> linux-riscv@lists.infradead.org
->>> http://lists.infradead.org/mailman/listinfo/linux-riscv
+>> Again: why would anyone care if there is a signature, if that signature is not
+>> checked.
 >>
->> Couldn't changing this library install path break some existing
->> application? I mean it kind of breaks where the library is expected to
->> be right?
->
-> Do you have a particular library in mind?
+>> I think you meant to write something like: "when a file is fsverity enabled and
+>> has a valid builtin signature whose signing cert is in the .fs-verity keyring".
+> 
+> I was also thinking the same. I didn't follow the recent development
+> closely, but unless IPE locks somehow the .fs-verity keyring, the
+> property you suggested would not be immutable. Meaning that someone can
+> add/remove a key in that keyring, making the property true or false.
+> 
+> Roberto
 
+Yes, the .fs-verity keyring's mutability could affect the property's 
+immutability. However, we are not planing to "lock" the keyrings, but we 
+would like to use policies languages to express what certificate can be 
+trusted.
 
-None in particular.
+For example, we can have a rule like this:
 
+#Certificate declaration
+CERTIFICATE=MyCertificate CertThumbprint=DummyThumbprint
+op=EXECUTE fsverity_signature=MyCertificate action=ALLOW
 
->
->
-> RISV-V is the only architecture that installs a debug vdso
-> to a different location than the
-> standard lib/modules/*/vdso/.
->
->
-> I regard this as a fix.
+This will be our immediate next work after the initial version is accepted.
 
+-Fan
 
-You're probably right, I don't see why the search path would be 
-different on riscv, unless it was fixed in userspace but I think this is 
-the right thing to do, so:
-
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
-
-Thanks,
-
-Alex
-
-
->
->
->
->
->
 
