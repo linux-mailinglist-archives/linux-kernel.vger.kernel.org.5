@@ -1,131 +1,219 @@
-Return-Path: <linux-kernel+bounces-106640-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106641-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB57A87F159
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:42:36 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E0D4787F165
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:45:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7EDCC2847F3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:42:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6CA4A1F2244A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:45:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C72845812E;
-	Mon, 18 Mar 2024 20:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9EDE043AA3;
+	Mon, 18 Mar 2024 20:45:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YAaOItsc"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="nBpGvUE7"
+Received: from EUR05-VI1-obe.outbound.protection.outlook.com (mail-vi1eur05on2100.outbound.protection.outlook.com [40.107.21.100])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB8DE58101
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:42:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710794550; cv=none; b=pTZRkahuzTUsPDAYBf+0hjRMf7/L9Vh0KvUd9wTDiLJr2foX9RcdWoOBaEwpzJRT0oIosLYoQJikoVzThNVQFj8hj/TntvX5hu/bA6K48Yve2O/0tPTX0zzd0caJTKthQJaEbVxR5IrNoKTVJxD0kOBnhcFLoyf2XXG+j5rj8XE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710794550; c=relaxed/simple;
-	bh=0bBvFG2L1I0MqGSSWQyROx+p1tXb04MkJOQiiHHdpmo=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gvSP/8lM5KP7g7Gqii60OIOy7kt103pFyCp54WEJv0ZrS2m3yPnzPtq3yD7NNbYhdwCuPfD3Nlfeq4UFXffk9WrDnmQe96s5jOUKipB0Zdn8zVtPbAM4o8cTB27UiQrRwto3kTuU5Xe6Unpq8rLwT09GLbO+ClHF2rW/ERkSTBY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YAaOItsc; arc=none smtp.client-ip=209.85.214.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dde26f7e1dso33918085ad.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:42:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710794548; x=1711399348; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=mOsqTDQ0hoCpx6NngOtwgMcIYvc2i1Le/r+OHK5eWY4=;
-        b=YAaOItscB9IIniZQn8JEcqP9Mwwv3wLfn3laKtsB4LTVU4MmitvY/wnnhMmg2RDzVV
-         /zSc7Hwy8HaS75NZEFguJ2NaF1Vcj41rjOkPAE7vsHra6toooiikcVr1ngfDivWBgSDs
-         n/wflSU49yNhGHzyLnKN8oJFsi/8SSJzqc+HzFDXwuqlb9a059vdAxMwvjPj7sPTxbh1
-         hcI1cRGeG2GmgxOU1znrWI52DoZEU2DEpFvnvf3sgxr65l9WNL0fkG4AXsn9IStEIF6c
-         LETdLuYRAeK6ObT3cYmJb0I0ePk5aRVIUOEYCwreooKccXFxkkrF9gQtGRZSrnlby6Q4
-         ZzQw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710794548; x=1711399348;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mOsqTDQ0hoCpx6NngOtwgMcIYvc2i1Le/r+OHK5eWY4=;
-        b=MxuKtbivtc3vP2evG7ZLlavJHfW3G2yrSkDkRULcuufU01GVffQOeWycD1aP0ibHYr
-         62tuuT01BTiDiMIqlW8S4e4++FvlKLBZpPx5qhZ9HSm3cxWPTu7lHBOIy3IxUPHg2qZX
-         akmgZ79tFARGQNZVbSQSAKefeok57Z+/Zlaef4cFb3CHu/t+YtywO1F48rARPzOk6kiK
-         SPd/c6aw1U6Ad4yBJAY/DS+l8DhUF77iW8muAAMv3IqU64UFK6jB6iG36BKUk0thes8l
-         XImCCy5geN19QmZ+zNscIUIMb9/FF0uLfeNmxDL+mp4vSZgRaNeqkzciNOfppA+Ng1gg
-         7IGQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWRSsHpfZPTXlk+gLSwTkyjEArALA3GY6haiO4/ylJrhdJInYGiUeH+E6gL+C5CZvWRc7a0IY4mG2cIj5vzx8eI3og/HazGBeEQud2i
-X-Gm-Message-State: AOJu0YzGJAjYHLiLEQDrpZBC6z9MHZOoGXPX+R6lcHp6IyT4bS6ojywz
-	M+pCNIUU0Sc9CRDmIVeYtsYLYsw/E1ZjTuU5uet6w4CCHsyC2QjN
-X-Google-Smtp-Source: AGHT+IFCYHczU0tpIIDzQoQiXOblgmkwVE2mrTbYFR1AS7iQJdFmL+Fi/BVFr3ctCanVQdjkZRIXhA==
-X-Received: by 2002:a17:902:ecc9:b0:1e0:3f65:f503 with SMTP id a9-20020a170902ecc900b001e03f65f503mr731769plh.39.1710794548027;
-        Mon, 18 Mar 2024 13:42:28 -0700 (PDT)
-Received: from localhost.localdomain ([2407:7000:8942:5500:aaa1:59ff:fe57:eb97])
-        by smtp.gmail.com with ESMTPSA id e11-20020a170902784b00b001db579a146csm9927711pln.241.2024.03.18.13.42.24
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 13:42:27 -0700 (PDT)
-From: Barry Song <21cnbao@gmail.com>
-To: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
-Cc: akpm@linux-foundation.org,
-	chengming.zhou@linux.dev,
-	hannes@cmpxchg.org,
-	linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	nphamcs@gmail.com,
-	syzkaller-bugs@googlegroups.com,
-	yosryahmed@google.com
-Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
-Date: Tue, 19 Mar 2024 09:42:12 +1300
-Message-Id: <20240318204212.36505-1-21cnbao@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <000000000000bbb3d80613f243a6@google.com>
-References: <000000000000bbb3d80613f243a6@google.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AFD342374C;
+	Mon, 18 Mar 2024 20:45:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.21.100
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710794713; cv=fail; b=Dr5ZDarG+h10UvY6zWcoWlVIa8Houaxy6QDgkjzECunV30tvPronkcp6w2IeXO6eLQD4K5UDHLIL13DjV6XtHshSVpssYeDjVKf+QsWUGpTuXwWmXql0WrR8RDhnkL7R2JtQeJW0uXZ+XzEXxMz0WooJrtmXwyeR+Ha1rn0uSFo=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710794713; c=relaxed/simple;
+	bh=Zky+Znjx1smgTOWwFA8llSwP/pFgUiS6R270jVMZ610=;
+	h=From:Subject:Date:Message-Id:Content-Type:To:Cc:MIME-Version; b=KccEtIFXarW6JBSHiP41a3mQGKW0AGGcVX+uuEsT/DuS5Az1rv+yMjqrjd030K8ZzM4+kVfuXyx7SLWhpSPVZetVV88g3+8BYNXFW4c/iWXsDe/wjtyKjE7mNzrB1hvo156uFpI8Ia9Wmxq1bOvXiF+Btqc1/JL4LdseDyzX+cY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=nBpGvUE7; arc=fail smtp.client-ip=40.107.21.100
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mx51Pnqtp+18JbCzpnW8zzrM6ZfaKqJX5DJPxC0RW0dhorqUVw9SuvIoIVz66q+Auh6vbDA2OUO2taNM/l0JR2tVR7T5TJQLTBP/28tStSEM7aBfj9V5fGiFK+dsHdo266gBSXEB07Mm/ukgvJ/aYKJyvSzFs2niIDmpy3viGyyA11jVzUJVpGZREd0uECuHfGdDHe9XnMZ/EY9qXedB0BQePtpPXgsY5H/GEG+JTL+UTKx9v0xImNcIxZT0nbpDix99fMKEOHb9hLUb63f4/hnyZMJCGln2Fp+PHyikxw8xEXV8T932saZnvycorHgh+i/fVxnhUEkFQHrN6/6uug==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=QeXTAsx5wn5AZ7vRzCw5hlcTmibnQD0jD+A6q0ihS1E=;
+ b=AgmnKrwYL5Cz8Exhk7/+WtpxJrAA6es5SKe4H7Kn8Ncj+eukhbam2fFoE3s/5BvX8RIFFG/euDspY6ulLyaXbNC0Fvoy7XjJM419ms+LhZyb6f8vAABHqn2sWaTHmwuDwFGxD0XMIkyXU9Bsy+vzEizJ8IgfyQ16w+EPwwlR9pKSjnoyOD1ad2C7JqdsixBWrZ57MI+y+Eui75zh9iLOxJzuATWTLcH58hWTcf61O981XRjF8Q9fH18tS6QF5WkGCYqTRGPn3JnA+5XK4PZLt0hR5UYPdr9W4dp+gIhIPXynch6mv+tKe94EKDAbG8ZEARyvt2YPI3jgLFc0fGGrsQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
+ header.d=nxp.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=QeXTAsx5wn5AZ7vRzCw5hlcTmibnQD0jD+A6q0ihS1E=;
+ b=nBpGvUE75piB0yeASkPUNU7duWvaD2U6kYllZqmC/Td81G7M01ZQQep6RR2coiLzwW2z6ejKCssoJzKu5puyRxcvM5PpPJ8PtW5zPqDchcJ+DWEu3t3noYJXIq3EaPWTdsPWkp28Fd6s4Hv4OYZ4lRukVqJy4YBr8dWTcGXurEI=
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
+ by PAXPR04MB8489.eurprd04.prod.outlook.com (2603:10a6:102:1dd::20) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Mon, 18 Mar
+ 2024 20:45:08 +0000
+Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
+ ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 20:45:08 +0000
+From: Frank Li <Frank.Li@nxp.com>
+Subject: [PATCH v3 0/5] dmaengine: fsl-sdma: Some improvement for fsl-sdma
+Date: Mon, 18 Mar 2024 16:44:33 -0400
+Message-Id: <20240318-sdma_upstream-v3-0-da37ddd44d49@nxp.com>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALGn+GUC/3XM0Q6CIBiG4VtxHEf7BZHoqPtorSH+JAeKA2M25
+ 72HntTaOvy+7XkXEjE4jORcLCRgctH5IQ9+KIjp9PBA6tq8CQNWAQdOY9vr+3OMU0DdU22wsVo
+ 0SlpJshkDWjfvvest787FyYfXnk/l9v4rpZICPdXKtFDWogF1GebxaHxPtk5i31b+WpYtKslB6
+ IobKz52Xdc3py775OQAAAA=
+To: Vinod Koul <vkoul@kernel.org>, Shawn Guo <shawnguo@kernel.org>, 
+ Sascha Hauer <s.hauer@pengutronix.de>, 
+ Pengutronix Kernel Team <kernel@pengutronix.de>, 
+ Fabio Estevam <festevam@gmail.com>, NXP Linux Team <linux-imx@nxp.com>, 
+ Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>, Joy Zou <joy.zou@nxp.com>
+Cc: dmaengine@vger.kernel.org, linux-arm-kernel@lists.infradead.org, 
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+ imx@lists.linux.dev, Frank Li <Frank.Li@nxp.com>, 
+ Nicolin Chen <b42378@freescale.com>, Shengjiu Wang <shengjiu.wang@nxp.com>, 
+ Daniel Baluta <daniel.baluta@nxp.com>, Vipul Kumar <vipul_kumar@mentor.com>, 
+ Srikanth Krishnakar <Srikanth_Krishnakar@mentor.com>, 
+ Robin Gong <yibin.gong@nxp.com>, Clark Wang <xiaoning.wang@nxp.com>
+X-Mailer: b4 0.13-dev-c87ef
+X-Developer-Signature: v=1; a=ed25519-sha256; t=1710794703; l=2326;
+ i=Frank.Li@nxp.com; s=20240130; h=from:subject:message-id;
+ bh=Zky+Znjx1smgTOWwFA8llSwP/pFgUiS6R270jVMZ610=;
+ b=OIwW3uPI9YIz9lBG2BJd0/OQCSWBuoJIJAu1buyvZSxJ7CI0TZwywso3jC/iozCD/QlE1BBxl
+ O9xIQi5BVe3DXTI6v1Pf10JghB2FwjrCNhxxiX2P12L2GqOSQN3q4iS
+X-Developer-Key: i=Frank.Li@nxp.com; a=ed25519;
+ pk=I0L1sDUfPxpAkRvPKy7MdauTuSENRq+DnA+G4qcS94Q=
+X-ClientProxiedBy: SJ0P220CA0005.NAMP220.PROD.OUTLOOK.COM
+ (2603:10b6:a03:41b::12) To PAXPR04MB9642.eurprd04.prod.outlook.com
+ (2603:10a6:102:240::14)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|PAXPR04MB8489:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	vf6kH+RC0vWecGKtfBNfJ40eF6ZZYWOcaff7IqpBsnCXoa8Gm0xs7Rzf6Ps9bAaxy/WYt8k5pn5VvWK6QB/qW26J8d5pY4o1ZVYnKFxnXtxqGIVQER9yiFMs3OmR1g9EzxKOXRgtB3ZQcKM/DmzRCRUZSVty1SWB4ew6sRER2ITAhb6/ZVQ+7Nh7dBQOz5C2KtJw0EJ+EPwxVAmBcoJr4U9SePjuiBiWEJH8ZvMAPt/2lggjPYQMMlcQDgA1vcC+mCeKhFDx4IZk0tpnW1uBBubs0BZRPwHhThAfXyoTv+ksIMttJ6h4Vz/xKardf4e/+lTXUmpbzE04h7PkXfzPplaYl4jF7EVTUm8FaxfrhH0WOBgRGtq6SFnOewoRYn/4CZXu3hk++D7e/CwnVrM+pru+zG3qLYNjBXtx7YKyUxUkIzpJfm/IRIGDOsJP9Vlv22gxzADfYtka8TACf0vulSoCP9CgV+R/rCjA8DWegnoef36MWrCDn771fzuXdkjqcjhQ4s/xUKSAdH48jsRnTq2Q9BnES1yv+39K3F6JzpiSnpb6y/LI1eldiDDKxsKlZ3QbIk0V3FXNdXYoQmezApmKUXQilzUQaOLRPts5QUgjpIOYM5R3HL3D80Ir05lZjy8jkFJBA9hjynbsH9KpKgRsbwEPhAJNLIo8FzekigrFNrtIClB45ZyVZ14QilX6
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(7416005)(52116005)(1800799015)(38350700005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Z08waldqckhteHlIc1U2dXdSVTRXdFFzc1lMTVhRSjhwR2prcS8yenZIaFlJ?=
+ =?utf-8?B?Zng0bEk3LzVvUUd2aFVvOUE2d1pFVDJvNnB0Umd3OWFYR2VLakFnWk83Ylh6?=
+ =?utf-8?B?dk5xKytLWlNMT1VKUFN4cXN0RE0zcXN0eFVENWVweEdKVnNNR0tuUDlRTURm?=
+ =?utf-8?B?dkVxWE9MOWhLelAyWXhyOU1zdnoxVmxmbGg0QVRsZG9hSnZ2MkZkSnRKbVov?=
+ =?utf-8?B?Vk8vZVpWZmQ0aEdmVmtjTkoyZGkxRDdRMUxqY3F3akdDa3F0QmpybHYzNUJp?=
+ =?utf-8?B?eGhuMjVPU1l0azA0K0ZUN05OeUpEQWdMYnRtejZsVHJuSHBvUmgxK0Fxdkpo?=
+ =?utf-8?B?RG5HbUViTW5BTGhuZGp2L2dhTGRlcWkwN3RDWG9GQ0UxZElORkwvWkdya1VK?=
+ =?utf-8?B?K3VWVjJEUVhpRWR6QUJHcHZXekF0SGdNMjlyMVlOblFsbWJvSkpqamZ0cHZ6?=
+ =?utf-8?B?c0dwRmgyM0lSUWlJQmoyU1NWb09RTFdvODV5Z2w3VGhhSk1vQzBTWkFQUjEr?=
+ =?utf-8?B?V3EybGh6Q0NJVFNxUElMVkJkYS84bWU4SU5abjc4NlozQm5WUkFuOGd2czZH?=
+ =?utf-8?B?ekNOMUtRZXk0ZE05OEp1TnIyQzhHcEtteGd6U1dZNEh6RVVnci9JT2ppUW5s?=
+ =?utf-8?B?dHMzMktPWEl4ZTU0eDJabWVJOVJDNVA1RFBBMk82MWhUUGtWcTVEUHRnNk9I?=
+ =?utf-8?B?dDlaQ3F0bTdZb3N1Wi9wL2prSFQxZ3NpaE4zMUNpSEIyTEdCZWFXczU2V3VP?=
+ =?utf-8?B?R1NKbzFzbTlxaHRoTVkwMnd0RW9DakhmUk5UZlljcktpZndKYlFETnF3RE13?=
+ =?utf-8?B?ejNsRHViVytzZ1BsMTdtNnRoNitFaC9tVU00L1ZSQ2hIRXV0bU1Eemw5OHVR?=
+ =?utf-8?B?SWtVTG8xUmhVenRzZndHNVNWWmR3TXk3ZVJxMlFOcS9Db1k2b2hlNFZEdnpa?=
+ =?utf-8?B?NU1yNW5oLzFhbUVqY29oLzNDKzhHbXZzdHdneEhZdmpVK1A1b1lHcUV5d2l5?=
+ =?utf-8?B?eHcxREgzTjk5Sm1jSjVMbXhZVGlnRjZNTnZwWWJ0QnY0SklhNXhsZWs2RzJn?=
+ =?utf-8?B?ZCtrMDJOQnhyMFpXWFkrQlc0UDdXcTVNTFdWd3p4bWpsa3A0NjZyQTlGaGY0?=
+ =?utf-8?B?RXFSMWdvMDNoSk5KOU53QW5MandzQ2srSzAzakdpUWI3MmVpRDZWSzFQV1pJ?=
+ =?utf-8?B?bGNNTmFCdUppS0Y5ZUNEaHVWV1p5TXhLMGJyQXhyUGNkZlNVTUYwYXNCbWxR?=
+ =?utf-8?B?aHRCakIxckVHSnNnUWloZFhSY2VJUmlRVG1ORlRXTWtqL1BHVTJsSEZaeWNo?=
+ =?utf-8?B?R1F3aXhrVlR4ZVlRNHdPeFJETG0xdFNhV1ZyNGhYZ2E1VnpMOU9aQTR6NDZY?=
+ =?utf-8?B?TllGUFhwRWRkenZlNmFQTktrcysrTXB1RS96dTFySi90aFV0Q0VmN1l1VUU3?=
+ =?utf-8?B?QThwUE1SdzVUK0FMb1NXbE5hRFVjUEN3V2NadTJhZFkwQldFOHhaRTd6Z3Va?=
+ =?utf-8?B?czNXU080bjl3d2NrM05zTGs2aFZQazN5cFQ2ditKT2VyeUZ2TVk4dHh0L1ZF?=
+ =?utf-8?B?V1hYOGxDVlA2b2hXUVlwb3FFN0ptWkZCY1Z6MkRwQXllWDhaTklMbyt4clB4?=
+ =?utf-8?B?dzZqUzdHSjg1c2lhUFdCVTNXQjhUN25NdFh3S002bFFRSDNhdnlBYUQvejN2?=
+ =?utf-8?B?MmIxRU11QkRtM3UxM1F5bStqZ2lJQUtoa1g2WkxNSFE5RjJIQ3V3Yk94SVBa?=
+ =?utf-8?B?WWEvbFFvTXJLTjZzNDR3UkJ2RGZ3a3laVGFnVHRaZDFoaG9PVG43L3BuNW1N?=
+ =?utf-8?B?VEltY0MzWGV1aFFvNGZFajJFdjROOWI2SHJWVGJHSUtxQTdNNUd0UDVHbkk2?=
+ =?utf-8?B?OUVTc0pxQ3BnWE1xSWlTWlk4c3ZBUHdIb2E5TXFLK1lXdk9RQWZiV2FKREVo?=
+ =?utf-8?B?RlBXVTdJdE9sUjZyUU9wSDJYOVBMdForeTcrWVR2SXVxZkMzMWRiN25NeTNN?=
+ =?utf-8?B?ZTdGR0JMTjRURkxtb21NZTY3SnViNWdMcEJjeG5JZXpwVWFNdXFiK0Z2K3gy?=
+ =?utf-8?B?dmpZbm5vSlp2OUhwZWNiclVDTEVFYzRpU3VMMmxsbjU0K2NxREExU0pSZlZ5?=
+ =?utf-8?Q?Nk1WhWHPJUf2UYlygG4Ii2oT9?=
+X-OriginatorOrg: nxp.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 03c7f088-4705-4693-66bb-08dc478c4c8e
+X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 20:45:08.6144
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: pBUYXWcYeEnwD65pD2uozimGnCHLr3c2iy6F1KldxVsvWYZXlA2yK0K4I3wmb9b8v3dUJZQPAJNbM4tGaf/o2A==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PAXPR04MB8489
 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
-> git tree:       upstream
-> console output: https://syzkaller.appspot.com/x/log.txt?x=13043abe180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=19bb57c23dffc38e
-> dashboard link: https://syzkaller.appspot.com/bug?extid=adbc983a1588b7805de3
-> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> userspace arch: arm
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1706d231180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ba7959180000
-> 
-> Downloadable assets:
-> disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-e5eb28f6.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/0a7371c63ff2/vmlinux-e5eb28f6.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/7539441b4add/zImage-e5eb28f6.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
+To: Vinod Koul <vkoul@kernel.org>
+To: Shawn Guo <shawnguo@kernel.org>
+To: Sascha Hauer <s.hauer@pengutronix.de>
+To: Pengutronix Kernel Team <kernel@pengutronix.de>
+To: Fabio Estevam <festevam@gmail.com>
+To: NXP Linux Team <linux-imx@nxp.com>
+To: Rob Herring <robh@kernel.org>
+To: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>
+To: Conor Dooley <conor+dt@kernel.org>
+To: Joy Zou <joy.zou@nxp.com>
+Cc: dmaengine@vger.kernel.org
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-kernel@vger.kernel.org
+Cc: devicetree@vger.kernel.org
+Cc: imx@lists.linux.dev
 
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git e5eb28f6d1afebed4bb7d740a797d0390bd3a357
+Signed-off-by: Frank Li <Frank.Li@nxp.com>
 
-diff --git a/mm/zswap.c b/mm/zswap.c
-index 9dec853647c8..47c0386caba2 100644
---- a/mm/zswap.c
-+++ b/mm/zswap.c
-@@ -1086,7 +1086,8 @@ static void zswap_decompress(struct zswap_entry *entry, struct page *page)
- 		zpool_unmap_handle(zpool, entry->handle);
- 	}
- 
--	sg_init_one(&input, src, entry->length);
-+	sg_init_table(&input, 1);
-+	sg_set_page(&input, kmap_to_page(src), entry->length, offset_in_page(src));
- 	sg_init_table(&output, 1);
- 	sg_set_page(&output, page, PAGE_SIZE, 0);
- 	acomp_request_set_params(acomp_ctx->req, &input, &output, entry->length, PAGE_SIZE);
+Changes in v3:
+- Fixed sdma firware version number (v3.6/v4.6).
+- Update sdma binding doc and pass dt_binding_check
+make ARCH=arm64 CROSS_COMPILE=aarch64-linux-gnu- -j8  dt_binding_check DT_SCHEMA_FILES=fsl,imx-sdma.yaml
+  LINT    Documentation/devicetree/bindings
+  DTEX    Documentation/devicetree/bindings/dma/fsl,imx-sdma.example.dts
+  CHKDT   Documentation/devicetree/bindings/processed-schema.json
+  SCHEMA  Documentation/devicetree/bindings/processed-schema.json
+  DTC_CHK Documentation/devicetree/bindings/dma/fsl,imx-sdma.example.dtb
+
+- Link to v2: https://lore.kernel.org/r/20240307-sdma_upstream-v2-0-e97305a43cf5@nxp.com
+
+Changes in v2:
+- remove ccb_phy from struct sdma_engine
+- add i2c test platform and sdma script version informaiton at commit
+  message.
+- Link to v1: https://lore.kernel.org/r/20240303-sdma_upstream-v1-0-869cd0165b09@nxp.com
+
+---
+Frank Li (1):
+      dt-bindings: fsl-imx-sdma: Add I2C peripheral types ID
+
+Joy Zou (1):
+      dmaengine: imx-sdma: Add multi fifo for DEV_TO_DEV
+
+Nicolin Chen (1):
+      dmaengine: imx-sdma: Support allocate memory from internal SRAM (iram)
+
+Robin Gong (1):
+      dmaengine: imx-sdma: Add i2c dma support
+
+Shengjiu Wang (1):
+      dmaengine: imx-sdma: Support 24bit/3bytes for sg mode
+
+ .../devicetree/bindings/dma/fsl,imx-sdma.yaml      |  1 +
+ drivers/dma/imx-sdma.c                             | 64 ++++++++++++++++++----
+ include/linux/dma/imx-dma.h                        |  1 +
+ 3 files changed, 56 insertions(+), 10 deletions(-)
+---
+base-commit: af20f396b91f335f907422249285cc499fb4e0d8
+change-id: 20240303-sdma_upstream-acebfa5b97f7
+
+Best regards,
+-- 
+Frank Li <Frank.Li@nxp.com>
+
 
