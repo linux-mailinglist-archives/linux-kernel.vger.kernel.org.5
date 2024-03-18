@@ -1,53 +1,56 @@
-Return-Path: <linux-kernel+bounces-106634-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106635-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B81A087F142
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:38:42 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id F361887F147
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:39:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E33751C218B2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:38:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 951541F23D64
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:39:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBC7726AC5;
-	Mon, 18 Mar 2024 20:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="MvMHB99Z"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6747C5810B;
+	Mon, 18 Mar 2024 20:39:18 +0000 (UTC)
+Received: from bmailout2.hostsharing.net (bmailout2.hostsharing.net [83.223.78.240])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CB0F22087
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:38:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E85558101;
+	Mon, 18 Mar 2024 20:39:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.223.78.240
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710794316; cv=none; b=TtQJuZGCWVifEnNddzWiFHu7Op9rchbCxRaugS2fnBRyaH0+rHGCgddO2JUXt7l5OB4h7oXrjYoJimpje1cEwJ75gBnTa+rH6MFQRD+FfrphwLO6dibjSmQbmE7pWq99RRnR/5haaTCiQeNSKWj0zBhhZmeqeY2jJuKIChf3Tv0=
+	t=1710794357; cv=none; b=u10sBwwWVsioxm3eD7OQjFngFxbP/qkb++57bBjkWdBtix8FK+OiZwGuwsqLKOCnExmb+sctiIu78SP1SXGMX8GkreWpE5CQSKYHZUYGvxo3+320z7Zx/UHfxB6HFvzV3IpNLSGUbB0x/XZ5NUFBB7xt+IuJsLQSrN2KZUHPg0w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710794316; c=relaxed/simple;
-	bh=q4WLmhu28x58xZ4DZAEo0ZfSLiDCHD0gVl59UgFzn5s=;
+	s=arc-20240116; t=1710794357; c=relaxed/simple;
+	bh=ReFqyHxcEKeh7w/BK0VTSDZ0C9vGF4T9kJDfsz3o/xw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=h2gTp3KH6mr6hTDCulpvbPGwtn4RYygb+nB9iajZP6exqKSK8WrD7bIG2Ili7Slw6XZQv5zeczjahU0ijFQQQItjlm4mf+GPHI/iToGWYnUbDoxSaGQe2BBmAyJ2py1ZCYssnGyraLiSay8b81qN0ioNxJ5RZkUz6t4J8GZTe7k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=MvMHB99Z; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 848B7C433F1;
-	Mon, 18 Mar 2024 20:38:35 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710794316;
-	bh=q4WLmhu28x58xZ4DZAEo0ZfSLiDCHD0gVl59UgFzn5s=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=MvMHB99Zi8UWGTiGwVwNkjhGa/f8xkONpGPxsNlMA6WNkX6HDAFJSW3wPK0MwlHUS
-	 NCEXy5KF8yTXG6/5FAuUx6/KY4uXbsYDIF16vGVCxD+w0aPGuVZjDCBKZpXRBncQYy
-	 4xZIWOhprLeIAZ9Qn1XGwnCD49qvEKMw7QP+q3K3duIJ/c54fyL3lyxVpJEOCt/gSL
-	 9v8xgTnadPJ5o50DBL6BaVrqdJNL5FnXQiukAMY6GW5+S7VcIAW5KEt/wyEhgQjQH9
-	 OQSfEtBTC+Ffa0FU5OFYPpKz+Byml38d0ibzLTZsXI++AlLf/PmjVR3adGY4ltR303
-	 /wBDbRCQ1Bpxw==
-Date: Mon, 18 Mar 2024 14:38:32 -0600
-From: Keith Busch <kbusch@kernel.org>
-To: iBug <i@ibugone.com>
-Cc: axboe@kernel.dk, hch@lst.de, sagi@grimberg.me,
-	linux-nvme@lists.infradead.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] drivers/nvme: Add quirks for device 126f:2262
-Message-ID: <ZfimSElFZMQYB1j1@kbusch-mbp.dhcp.thefacebook.com>
-References: <20240315192747.1749119-3-i@ibugone.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=G+KYui6QjMkHULxmWgtschbVjmrOxyOmZWQm/5tArdFf5jF8DQc6ivWaaMhEGGeaAwPcw0mezTYKg4rEHTz4QPyNAF13wnZmk170X8dnUVbdprGNQsqOfVYFvW+PoQ3wTs4vxK6Xm1az7njl1I36ulXARd49efnavpo49wedYRI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de; spf=none smtp.mailfrom=h08.hostsharing.net; arc=none smtp.client-ip=83.223.78.240
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=wunner.de
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=h08.hostsharing.net
+Received: from h08.hostsharing.net (h08.hostsharing.net [83.223.95.28])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256
+	 client-signature RSA-PSS (4096 bits) client-digest SHA256)
+	(Client CN "*.hostsharing.net", Issuer "RapidSSL TLS RSA CA G1" (verified OK))
+	by bmailout2.hostsharing.net (Postfix) with ESMTPS id 1BC9D2800BD88;
+	Mon, 18 Mar 2024 21:39:13 +0100 (CET)
+Received: by h08.hostsharing.net (Postfix, from userid 100393)
+	id 0719C5931A7; Mon, 18 Mar 2024 21:39:13 +0100 (CET)
+Date: Mon, 18 Mar 2024 21:39:12 +0100
+From: Lukas Wunner <lukas@wunner.de>
+To: Jarkko Sakkinen <jarkko@kernel.org>
+Cc: Stefan Berger <stefanb@linux.vnet.ibm.com>, keyrings@vger.kernel.org,
+	linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au,
+	davem@davemloft.net, linux-kernel@vger.kernel.org,
+	saulo.alessandre@tse.jus.br, bbhushan2@marvell.com,
+	Stefan Berger <stefanb@linux.ibm.com>
+Subject: Re: [PATCH v6 04/13] crypto: ecdsa - Extend res.x mod n calculation
+ for NIST P521
+Message-ID: <ZfimcDtBNQ42UEqB@wunner.de>
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <20240312183618.1211745-5-stefanb@linux.vnet.ibm.com>
+ <CZX5VA5Q4NYY.34VCD8R3ND3KL@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,14 +59,19 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240315192747.1749119-3-i@ibugone.com>
+In-Reply-To: <CZX5VA5Q4NYY.34VCD8R3ND3KL@kernel.org>
 
-On Sat, Mar 16, 2024 at 03:27:49AM +0800, iBug wrote:
-> From: "Jiawei Fu (iBug)" <i@ibugone.com>
+On Mon, Mar 18, 2024 at 10:33:47PM +0200, Jarkko Sakkinen wrote:
+> On Tue Mar 12, 2024 at 8:36 PM EET, Stefan Berger wrote:
+> > Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> > Tested-by: Lukas Wunner <lukas@wunner.de>
 > 
-> This commit adds NVME_QUIRK_NO_DEEPEST_PS and NVME_QUIRK_BOGUS_NID for
-> device [126f:2262], which appears to be a generic VID:PID pair used for
-> many SSDs based on the Silicon Motion SM2262/SM2262EN controller.
+> What was there to test in this anyway? I see only comment change below.
 
-Thanks, applied to nvme-6.9.
+The full series was tested, irrespective of the content of the individual
+patches.
+
+Thanks,
+
+Lukas
 
