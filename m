@@ -1,93 +1,102 @@
-Return-Path: <linux-kernel+bounces-106205-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106206-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71FFE87EABB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:18:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D34A887EABD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:19:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 25F851F21448
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:18:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E086281840
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:19:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F6124C62E;
-	Mon, 18 Mar 2024 14:18:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441844BA94;
+	Mon, 18 Mar 2024 14:19:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="t7OQ4Lk+"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="UP0WJzz3"
+Received: from mail-yw1-f173.google.com (mail-yw1-f173.google.com [209.85.128.173])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D71D14AECA;
-	Mon, 18 Mar 2024 14:18:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1562B4AECA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:18:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771519; cv=none; b=FD/RRFw+MRuolCmUlqTQo3ubetvXvIupbMznx3hyv7pr5puU1ShK1cYOfzSPjEJ6TF2xFNV5uqlHymiA9g6TLvRTHTovz/1GCD2jjT7MARMevGcU63Vofi9kz45GE0h2RGb9LY00cfwWyeUMFG3go0HWWUWItj0SkTNrx8rTQtM=
+	t=1710771541; cv=none; b=iGkXsw6SJ05MhCZWcvo1XO7URtfPE5nA/jTCTYbrJ9VpdXOYZNaIkXERFlkBNDrUUIULKQMLMf/h96zcOxp+VQy23kny00945JTzp5YwuDYXaOyEat8ON2I/cuHezC0KvbM+oJXQiYS4hM36B3SGoXflFqJvP7AgggBUc5t9A5I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771519; c=relaxed/simple;
-	bh=c+EJsJ4lo9mv4RH4IasCH1QvoE0TFkuE2iylhHttUZA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FOqsvcox9MJoniFg2JJ4U9QgN8zqBC+EDae5IFEXYXf0hOv9YwPUz7whlo/XIUFe1g20mgnj6vy+AIZyt/TVC6e0XkSpHlLolGFYmdAtgmOf9BleYn0LCiFs7+vC9CZrkCaujt0DT35XdTie74nEADU5WjAm1riSIE8HkWl740k=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=t7OQ4Lk+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FE40C433F1;
-	Mon, 18 Mar 2024 14:18:38 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710771518;
-	bh=c+EJsJ4lo9mv4RH4IasCH1QvoE0TFkuE2iylhHttUZA=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=t7OQ4Lk+bJkSLp5R/ojNbZn14jfMuoX8zuAj6dvYFyAZ1mi+tEeJLW3T/tSKXkZ04
-	 rmTsG5Qhm9ixx6m37FOOL0VFvr9MxxxkSC7OIINYTZScHnyOQyEWrBw2BHLARYnpVo
-	 eT8iWo2vROO3h/rWw74cB9t4pYhb8CGW56nkubOKNk2ytaCGiByl17oUSA0E4VS4/f
-	 0bBFsSQdMo3XEz+zWyxQk0w/iX9iekRK7fnRnnvnjhMl1aOyOGzdQgtqbTLjJbNOBR
-	 6/fn4AzoqeQfeni3IBlZvMLPxVAjDCo01Xsjjaqk1SgIlyNQKVljIjpw0zEQlerT25
-	 oQH6pCbfCanYQ==
-Date: Mon, 18 Mar 2024 10:18:36 -0400
-From: Sasha Levin <sashal@kernel.org>
-To: David Sterba <dsterba@suse.cz>
-Cc: Pavel Machek <pavel@ucw.cz>, linux-kernel@vger.kernel.org,
-	stable@vger.kernel.org, Filipe Manana <fdmanana@suse.com>,
-	Johannes Thumshirn <johannes.thumshirn@wdc.com>,
-	Josef Bacik <josef@toxicpanda.com>, Boris Burkov <boris@bur.io>,
-	David Sterba <dsterba@suse.com>, clm@fb.com,
-	linux-btrfs@vger.kernel.org
-Subject: Re: [PATCH AUTOSEL 5.10 1/7] btrfs: add and use helper to check if
- block group is used
-Message-ID: <ZfhNPInQFHipsW3c@sashalap>
-References: <20240229155112.2851155-1-sashal@kernel.org>
- <Ze9w+3cUTI0mSDlL@duo.ucw.cz>
- <20240311210540.GU2604@suse.cz>
+	s=arc-20240116; t=1710771541; c=relaxed/simple;
+	bh=UtoQrV8V4WHcjC1HvrWHCQs9LMwKtT9GXyBCr3rwGhc=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=AzFqEYvXGgR2XGfDapG3eSC/JBiD7hFBpsyJNooBHBwJYvmolmGgBzXsnyNS+1jPJQveiu7kIH7s8dvjsYj3H3Ed6IPgel/mH2nB9lmFUPkTT4BFKyL4U7Dr7Z0JiPDmeqnQ8X6eyEW/wZGQZ8t5pxUpgHpw5SCt+mu8RmDJAO0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=UP0WJzz3; arc=none smtp.client-ip=209.85.128.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f173.google.com with SMTP id 00721157ae682-609fb19ae76so47035457b3.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:18:59 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710771539; x=1711376339; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=T8/eBwVdC8e/Zu5B3miETRaLCkLZGjLcGDUAWsXNX/E=;
+        b=UP0WJzz3CZz8Gzd7s3GryUi7wfBHASAXDIEovRDrKKr8QZdgEQJHLz2ffjugBu/l3B
+         bRFtmjq/ARNmiR9eLc+teYW6IUK9gBl8Kuk1h/aGAkShPczPbUFcmoPN5HK0xeOq+zwG
+         K0wTYxu5PTZyZv5Elzh/BCMXGRuH943/2SRNrzDFbiIB2B2tY+CT5Odn0E5RoAdq9x6v
+         hBbfJJhcCVEYDFt4Om5G9HuGuWRaS4iBAt8u8fab6ivogs7Fc7xra7R3I9yt4gthlDax
+         I9JMgTNCQ7L2YVsfKu5vfvZtNmb5DAv/7CduGcbsJzlk4H+uGEX3eu3ZGyu6NDAYqlgK
+         7+qw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710771539; x=1711376339;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=T8/eBwVdC8e/Zu5B3miETRaLCkLZGjLcGDUAWsXNX/E=;
+        b=chFISsvFw7n0ofASPnU5hbOveM2blu5TxsZ4Kh7HxbDxbFWsC03siXwEnhJVmwoiO2
+         o/B0jo46h00tf9CcJ62f1qo9ief10gg8FWwmYxB1bPs/YRwnZugd4kvAMV19XLUp9Kuw
+         WABuRyZ5mNGlAbUH4IQ8Vm6eHlhADGleYZlS9nC9iuvgIhVHUt4VyauULYl3LZXKOZ27
+         FZpHKwHxAvAAlAVdMDOGBFrv+19ZfiSjVzS7ib78US6ii8QYb7GwL1kEymT6pmRMpLW7
+         U6llILkH2WTro7LZYQ9i9T2GglWY/jazzBsyxCWYFz2rGC6KzX03HEpta1QxUAEthGOU
+         qxjg==
+X-Forwarded-Encrypted: i=1; AJvYcCVfkydhMZh2mff78C6XOFrYKtmVwUqVcidQmrzdyhMvkvTHkjqHrFh1NcPOv0r6CvSEauCofp45KzthPrAfpDGt9ncqj2stOlrdG5K1
+X-Gm-Message-State: AOJu0Yy88Ls5R4l096QDxzST3aA6qMgkj7ZqOm2ef7jggSBHzjCmc+EB
+	LDiVCBTCVt8/7lBoHHEAhacil2XmXpC9i5/Vd4OkOZ/N2Oq/wCgRb/2po7YqlxL8LcnfWWqvAk5
+	qnbmrMhTSYcr6nVs62IS6ESRmdKQ4zY2SkGzN2Q==
+X-Google-Smtp-Source: AGHT+IF3f/CCR3DdCW9EhoZwH11fEMIYWHeUtnck7qTC0x9yNt+rbxfUfkX98XpGGqmd3SSienqf8G8v4kmrNcJEdj0=
+X-Received: by 2002:a81:d514:0:b0:609:f062:a9af with SMTP id
+ i20-20020a81d514000000b00609f062a9afmr12882787ywj.19.1710771539185; Mon, 18
+ Mar 2024 07:18:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
-Content-Disposition: inline
-In-Reply-To: <20240311210540.GU2604@suse.cz>
+References: <20240318-apss-ipq-pll-cleanup-v1-0-52f795429d5d@gmail.com> <20240318-apss-ipq-pll-cleanup-v1-4-52f795429d5d@gmail.com>
+In-Reply-To: <20240318-apss-ipq-pll-cleanup-v1-4-52f795429d5d@gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 18 Mar 2024 16:18:48 +0200
+Message-ID: <CAA8EJppzBpsLwU6Uk4LxWCL=EK14=NG5Wdpq01wSdWQp6wGKsw@mail.gmail.com>
+Subject: Re: [PATCH 4/5] clk: qcom: apss-ipq-pll: constify match data structures
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 11, 2024 at 10:05:40PM +0100, David Sterba wrote:
->On Mon, Mar 11, 2024 at 10:00:43PM +0100, Pavel Machek wrote:
->> Hi!
->>
->> > From: Filipe Manana <fdmanana@suse.com>
->> >
->> > [ Upstream commit 1693d5442c458ae8d5b0d58463b873cd879569ed ]
->> >
->> > Add a helper function to determine if a block group is being used and make
->> > use of it at btrfs_delete_unused_bgs(). This helper will also be used in
->> > future code changes.
->>
->> Does not fix a bug and does not seem to be preparation for anything,
->> so probably should not be here.
+On Mon, 18 Mar 2024 at 13:20, Gabor Juhos <j4g8y7@gmail.com> wrote:
 >
->Agreed, this patch does not belong to stable and I objected in
->https://lore.kernel.org/all/20240229155207.GA2604@suse.cz/
+> The match data structures are used only by the apss_ipq_pll_probe()
+> function and are never modified so mark those as constant.
 >
->for version 6.7 and all other stable versions.
+> No functional changes.
+>
+> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+> ---
+>  drivers/clk/qcom/apss-ipq-pll.c | 8 ++++----
+>  1 file changed, 4 insertions(+), 4 deletions(-)
 
-Dropped, thanks!
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
 -- 
-Thanks,
-Sasha
+With best wishes
+Dmitry
 
