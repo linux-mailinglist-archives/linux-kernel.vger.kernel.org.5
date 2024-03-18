@@ -1,66 +1,68 @@
-Return-Path: <linux-kernel+bounces-106578-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106579-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDFBE87F090
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:50:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8EA1387F092
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 29DE91C21BC8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:50:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EF1BE28198A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:50:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5824157326;
-	Mon, 18 Mar 2024 19:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 58DAA57872;
+	Mon, 18 Mar 2024 19:50:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="I2QrNSjt"
-Received: from mail-pg1-f180.google.com (mail-pg1-f180.google.com [209.85.215.180])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="kCCzlCrM"
+Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47CC056464
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:50:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E97C57866
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:50:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710791405; cv=none; b=IDdThUUSvJj7eFsdS4m3PxoaHKtgcbc1at8TWP6BWCzi8yOfZCecdb9TU8mmQx5mlePwdg+GUYYMhCYpQNF680HuQIjDWVCMayPq3SQe6bdf4XtRMY6qcnKW1EY30upDXZy2eBIwHebtKFnwvWCR3dKs4vApcStgUypzBcNSFj8=
+	t=1710791420; cv=none; b=udQ+TlkvX3rnNl+9r1Ez20iPWR/nD0swYwHsPzwwZ5Ex7n8yZq3vLZTmujBQv2/FueKeJz69b7sCfsL6O/PVGs2q71t1eNTIaLPHEBTrMZvTRY16/E0FQbhU0TsaV8ZFYuYLyWExIT8JXLO7hTdOR3h4/0G+aAIe0bMVPmx8Qsw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710791405; c=relaxed/simple;
-	bh=nbS5LGN2ouWURiMV3g1XD5IvjDaRV44oVY5u9CjawzI=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=EdZWeo6Yxn8z28yVI8R4YAaHSNbS42KLIc+jXtoiiEa653ow5M/pZ2ZdLIBzQDeEBNe3AHv7abMU2kvWoaM52Hv5oJ5Sev89AhxPfQT3zoLtJoN/KkS7371bo+glkuU10UD0HZ1yqVzx323kF/kfQBfqlodnid2a45U11DF6DVc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=I2QrNSjt; arc=none smtp.client-ip=209.85.215.180
+	s=arc-20240116; t=1710791420; c=relaxed/simple;
+	bh=KZ3rIV5HMKqyM/bNYA6ICEqFK4FA1/+/ftfgAoqZXqc=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=AUfinkxQf5EjAI+Ec6f9cFurgNOJOLMb+XcDVDoHRye2UI8vKfasRalgkW6SDfjWyC30oXgbu7/No4PmG7XAiIQan0NRKHj5Jt+pirBwzVJLQ+BL2TpFjK9vLURL71/5GHWnSLD4VM6Ss5W+ZEUzSvs6JidsGR7TaLO4XzBUUPI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=kCCzlCrM; arc=none smtp.client-ip=209.85.214.171
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pg1-f180.google.com with SMTP id 41be03b00d2f7-5e42b4bbfa4so2946530a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:50:04 -0700 (PDT)
+Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1e0000cdf99so16719605ad.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:50:19 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710791404; x=1711396204; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zn9nLMkX+9ot7mpB5JfFnXrn3aoEdcb9jRXTQzDWKlU=;
-        b=I2QrNSjtQm+xVQ8RihOlJZ2xu3A7seG3YeOIRwS6FGVo2F2s5QS9l8CWic+An39gn5
-         ov+6mC8CBDMC7XJ2RoWDmcXghaI2IEtqbt2vpTOVOjllTHGcydZ9cqLSZ1wn3BK3358U
-         +l/RACjrb8T4UIBd1rTCk2a7Z95eSQyt51EV8=
+        d=chromium.org; s=google; t=1710791418; x=1711396218; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=zC1qwydc9xH+y2vdl2+XzzOC/d+jLN+PsRUWImtjlRY=;
+        b=kCCzlCrMkngQZmLTnbmxT1k3erbm3ZoRwY7dgZGHhF/thIF12hyhj0jZgGLf5Pi174
+         p2yUFodtX9LTr1u4cDNolJk2H/PkLXBh7/ULIRWBgJu/5EYn8NemJT00NJR8kT7Idd+C
+         LU4jLJcVeIo125iPz1Kj7BrD/9hzuejZslDlE=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710791404; x=1711396204;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zn9nLMkX+9ot7mpB5JfFnXrn3aoEdcb9jRXTQzDWKlU=;
-        b=c3tGB9a0sRvXbiC4BTilpW4qhclLgM+68ldRGiiCPK00aRjup2LTLP7EsEprB1AJAY
-         yteiBoNTRIgDDAgrn3VfRPXt8nAJk5ptiIWTBxizqdkj5NDAi8LqGU5BzUtpYx4JcWUs
-         zl5LQ43lCKjkNJRt+Z80Y/MQy15M95uRAsco18V1O24+Uee69NM2ezzSLgGCkWcspuVU
-         DiXLEklXeadc78hUi2SOQmn6bgrbG+fmkSN1Uel8W71ZPMtiEwTMw82MZKr9CSmYQrrd
-         sr44deLimP0jHnEaFBMdZvNmNUYqBa+4W0yBveucVsctBH/4rQIYPFa2utlfpzclfXA3
-         DLlQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWbPbcLNkdSNTjbEpYA9omC7B8WdCeEF0qY72XOQG9MmmWTQ2wjoxkZFMOklaKkbdiTf0qcGvELwO4kSasj6zTaRxWN4E+ZUQ+qvaW7
-X-Gm-Message-State: AOJu0YyoaK2EiheZU/io97F7C4GnQkU/wWAMdNQW5odJ1WUNUrFWdDl/
-	i07JHhanC94Aj1N3S+G51uQNY2Sk7hfsGkcIaNHh5E6qCrqHkD/1uRApa7e3wA==
-X-Google-Smtp-Source: AGHT+IF6xxiCD+ojCiaab8EsajiPNJF8kZdxDEny7QVum2isRCnYR16O3y3eSNdTzVFM3sEWOuBncg==
-X-Received: by 2002:a17:902:ecc9:b0:1de:f3bf:a47a with SMTP id a9-20020a170902ecc900b001def3bfa47amr13050726plh.9.1710791403740;
-        Mon, 18 Mar 2024 12:50:03 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710791418; x=1711396218;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=zC1qwydc9xH+y2vdl2+XzzOC/d+jLN+PsRUWImtjlRY=;
+        b=f+Y81TB2IW5/VzMXZEfmoJncIvkwU6F3zVGKuS4QBWRxxdt6r+FLzx6Tt63R4hmMG3
+         Gn+ScXjgFkx3BSfIxe0mIED9ZiQ08IYxLdMNhnWhhtOI1hLylX1vD7ztdWEpXpReAHKf
+         DO+qABeODjMswLlRXgW3+ja0/ZsJj5hiUbPPLrFRojTVSGpeyJTAAFT3b1i/nDwNVp6v
+         uoHNSA68KlVR2Kh4boIDdIwOj9Pvlbw5AldqomzH4x8xrGc5Go+czALBLrpmykQ0ZgIR
+         br6vwwnsrw1El9DA0DSSexk0Fo43DgNeRAy56kNgVRUmlfNU8mivbREozYMHlI5U/8Rg
+         mr7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCV+dIJEWbkU3+G65zWl5t0f+a6pvGE97o+7phwnzpRRSTGTGbpcNhPLs9zNaoa/QEz9VaehhiD7Eer9Pfd3/3vGOMZXTaVWkGNnCRa9
+X-Gm-Message-State: AOJu0YxehoWyLRwvtX27FAsEu7zJT0cpHQqBj9pCBe/CjI9uHU7/CFfS
+	6mh3x/bdtpWYIOXVQCYTks6STr7tH5VoooBcyR0mfxkQ1jSigCIpwPf6+RD58g==
+X-Google-Smtp-Source: AGHT+IG8+lPsfxHZ+zVWOGguTuaZgsiUp2vtqHikGI8aqsjtFgNyHq71mM9ZLiwKKhCawCorAmOYww==
+X-Received: by 2002:a17:902:e5c2:b0:1de:e026:1b8e with SMTP id u2-20020a170902e5c200b001dee0261b8emr16615202plf.41.1710791418685;
+        Mon, 18 Mar 2024 12:50:18 -0700 (PDT)
 Received: from khazhy-linux.svl.corp.google.com ([2620:15c:2a3:200:5620:6f64:dfac:61dc])
-        by smtp.gmail.com with ESMTPSA id k4-20020a170902c40400b001defa98b03fsm6476916plk.101.2024.03.18.12.50.02
+        by smtp.gmail.com with ESMTPSA id k4-20020a170902c40400b001defa98b03fsm6476916plk.101.2024.03.18.12.50.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 12:50:02 -0700 (PDT)
+        Mon, 18 Mar 2024 12:50:18 -0700 (PDT)
 From: Khazhismel Kumykov <khazhy@chromium.org>
 X-Google-Original-From: Khazhismel Kumykov <khazhy@google.com>
 To: Lee Duncan <lduncan@suse.com>,
@@ -72,10 +74,12 @@ Cc: open-iscsi@googlegroups.com,
 	linux-scsi@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Khazhismel Kumykov <khazhy@google.com>
-Subject: [PATCH 1/2] iscsi_tcp: do not bind sockets that already have extra callbacks
-Date: Mon, 18 Mar 2024 12:49:01 -0700
-Message-ID: <20240318194902.3290795-1-khazhy@google.com>
+Subject: [PATCH 2/2] iscsi_tcp: disallow binding the same connection twice
+Date: Mon, 18 Mar 2024 12:49:02 -0700
+Message-ID: <20240318194902.3290795-2-khazhy@google.com>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+In-Reply-To: <20240318194902.3290795-1-khazhy@google.com>
+References: <20240318194902.3290795-1-khazhy@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -84,37 +88,28 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-This attempts to avoid a situation where a misbehaving iscsi daemon
-passes a socket for a different iSCSI connection to BIND_CONN - which
-would result in infinite recursion and stack overflow. This will
-also prevent passing *other* sockets which had sk_user_data overridden,
-but that wouldn't have been safe anyways - since we throw away that
-pointer anyways. This does not cover all hypothetical scenarios where we
-pass bad sockets to BIND_CONN.
-
-This also papers over a different bug - we allow a daemon to call
-BIND_CONN twice for the same connection - which would result in, at the
-least, failing to uninitialize/teardown the previous socket, which will
-be addressed separately.
+iscsi_sw_tcp_conn_bind does not check or cleanup previously bound
+sockets, nor should we allow binding the same connection twice.
 
 Signed-off-by: Khazhismel Kumykov <khazhy@google.com>
 ---
- drivers/scsi/iscsi_tcp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/scsi/iscsi_tcp.c | 3 +++
+ 1 file changed, 3 insertions(+)
 
 diff --git a/drivers/scsi/iscsi_tcp.c b/drivers/scsi/iscsi_tcp.c
-index 8e14cea15f98..e8ed60b777c6 100644
+index e8ed60b777c6..8cf5dc203a82 100644
 --- a/drivers/scsi/iscsi_tcp.c
 +++ b/drivers/scsi/iscsi_tcp.c
-@@ -725,7 +725,7 @@ iscsi_sw_tcp_conn_bind(struct iscsi_cls_session *cls_session,
- 	}
+@@ -716,6 +716,9 @@ iscsi_sw_tcp_conn_bind(struct iscsi_cls_session *cls_session,
+ 	struct socket *sock;
+ 	int err;
  
- 	err = -EINVAL;
--	if (!sk_is_tcp(sock->sk))
-+	if (!sk_is_tcp(sock->sk) || sock->sk->sk_user_data)
- 		goto free_socket;
- 
- 	err = iscsi_conn_bind(cls_session, cls_conn, is_leading);
++	if (tcp_sw_conn->sock)
++		return -EINVAL;
++
+ 	/* lookup for existing socket */
+ 	sock = sockfd_lookup((int)transport_eph, &err);
+ 	if (!sock) {
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
