@@ -1,154 +1,161 @@
-Return-Path: <linux-kernel+bounces-106510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106511-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 393D187EFA6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:19:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314B487EFA8
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:19:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4D95B1C21FA3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:19:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AB0381F23B4A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:19:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DA1DB5917B;
-	Mon, 18 Mar 2024 18:17:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1878B55E76;
+	Mon, 18 Mar 2024 18:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VJgg29Y0"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="GY91ay93"
+Received: from smtp.smtpout.orange.fr (smtp-20.smtpout.orange.fr [80.12.242.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 23B5156758;
-	Mon, 18 Mar 2024 18:17:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D88DD55E50;
+	Mon, 18 Mar 2024 18:18:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710785865; cv=none; b=A/o1z0uUfLdK2ROvvP7S1/2d6XjnCo4X8uHm86S7ez6tlXLwEcAG9S5wfcEbA7GSKLMByyvYAjn+5bexbVIBKLSecphYgAjq7if5MnxYFlTYy+aAIUYRUIBho6HjpLiKwJ5vCg8ptfJq2CtVCyuhaVghQxFNKaUVkanoGki4+Qw=
+	t=1710785899; cv=none; b=l6wqFMlQufiNwwZJ+coSYeS6bwZHC45kSELKZOR/YxkgYHc7EIFUk4FAXtWlfpPz3/tzxbRgoh7HBE5Z1EIeNa5fhQxh0jiMmepMokKSqB6PiDoFqekQ/vU2X348oVGdZYZ4+/P+0rN7LlgHXFFhOb7ZstYQzI7wftS39rzS0N8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710785865; c=relaxed/simple;
-	bh=U9oCw1odVmOqvb/OZWEqiwrY/4XbjPGtO9KdGOsYVUo=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=IZr4KHrEWnPgRpxX0WcOeCxSXgNL/eXAJueObFCjFInhIoV4T1U7E5+ssx7f4VNBwZ4F/CDqYQF3nGMIDtu0Oxdb7w45wPwIf1joPrBed0QxU0oRKNPvrhw2+cKLIBbsoZhaAwgzhxIdy1xjuCNxUQMgdEkbYWAxyJnCzJ8YlBE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VJgg29Y0; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 73CF9C433A6;
-	Mon, 18 Mar 2024 18:17:44 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710785864;
-	bh=U9oCw1odVmOqvb/OZWEqiwrY/4XbjPGtO9KdGOsYVUo=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=VJgg29Y0irfwUw4LAtRRC8MmtnRjV2J6zdwQYhk5ED5CcDtPotUSKv7gU+iC7QnQC
-	 zJnfXuAUPKK+cwpA4XlgherY8S/XwyJeAfkAMW62IAfFnShi7KEIz+k6eNAbSuz1ho
-	 yZgHrF7iZzVQJ0SSf/QTbpmAv5QCL+AtNQFGhE2IVR9u0ia/6TW9MOoflmTsJwkL1t
-	 +uhsrvQHU398ynzqSl6ul9+8NBspa5OJww3DZLIOK+rdeCzH0JuJsdOuxp1/yXJMK9
-	 DVydC1qPi1dC9yerrifQkzn4W0IYkDhkQojVGC2dYIAJC80pXVRyIknzeHdlA773av
-	 5MIPfcXSeoM3A==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: linux-trace-kernel@vger.kernel.org,
-	rostedt@goodmis.org,
-	mhiramat@kernel.org
-Cc: bpf@vger.kernel.org,
-	mathieu.desnoyers@efficios.com,
-	linux-kernel@vger.kernel.org,
-	oleg@redhat.com,
-	jolsa@kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH v2 3/3] uprobes: add speculative lockless system-wide uprobe filter check
-Date: Mon, 18 Mar 2024 11:17:28 -0700
-Message-ID: <20240318181728.2795838-4-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240318181728.2795838-1-andrii@kernel.org>
-References: <20240318181728.2795838-1-andrii@kernel.org>
+	s=arc-20240116; t=1710785899; c=relaxed/simple;
+	bh=vKeJUKB+u37db36gTjNo+UeW5oHXh6y2QnpeIS+yaqw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=afgFxqJDoGfTWjj3UdnIS5xBpFnIWehLk/+pBmbB9jneUm2K21E0drMoqir3x6bCkq6qX/DcPhjLxIRFPvSE0WGNvCyb9XowIUey5pbfGbfwGqkmz+ID0XWi4XqKIMcJRtWlh69SVVQ7V2svL84saEUnuoo04JRxYiCa+TVzhgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=GY91ay93; arc=none smtp.client-ip=80.12.242.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id mHYVrl4elyrKRmHYVrKA63; Mon, 18 Mar 2024 19:18:02 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1710785882;
+	bh=eieEvLVG/XbO56JpsYoKOkYnwQ/98oNJVqRk70FrbqM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=GY91ay93GRg5TcFi14M2AefmSt9/lRZ4CpJ4b5Huq1Oa0jMPG6mRikKF/PvPlRbiP
+	 ijgQl8qmROifMvJ+QfLRinqcuVlv24CHwYCwLi9HHNu9H7AbCuM/gkqx+c2DYchrSI
+	 bFNTxmcH/pyv0TbY0jtw4Y7riAGMCQMOdcRPOVa2yqxM+mOorsLdrBkwCRrDLA8IP8
+	 NZ5Wgi7nawF6p2/TiZ7bF+ZfxxKEKKg840kJEnZlBomGXYds3dw78xceyPGmHNIcNT
+	 5oCoH7mM1vF4bSwAndR5kTOchgYp48Z937EBHiVoJDoZ6HIoAczOvU4C8DZz3Gd+87
+	 vNIPaUlQ9i2Jg==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 18 Mar 2024 19:18:02 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <588c9ba0-fcec-4700-a577-b604511f22a1@wanadoo.fr>
+Date: Mon, 18 Mar 2024 19:17:48 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 1/4] HID: hid-picolcd*: Convert sprintf/scnprintf to
+ sysfs_emit/sysfs_emit_at
+To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org
+Cc: =?UTF-8?Q?Bruno_Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
+ Jiri Kosina <jikos@kernel.org>,
+ Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+ linux-input@vger.kernel.org
+References: <20240318012819.1405003-1-lizhijian@fujitsu.com>
+Content-Language: en-MW
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240318012819.1405003-1-lizhijian@fujitsu.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-It's very common with BPF-based uprobe/uretprobe use cases to have
-a system-wide (not PID specific) probes used. In this case uprobe's
-trace_uprobe_filter->nr_systemwide counter is bumped at registration
-time, and actual filtering is short circuited at the time when
-uprobe/uretprobe is triggered.
+Le 18/03/2024 à 02:28, Li Zhijian a écrit :
+> Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+> or sysfs_emit_at() when formatting the value to be returned to user space.
+> 
+> coccinelle complains that there are still a couple of functions that use
+> snprintf(). Convert them to sysfs_emit().
+> 
+> scnprintf() will be converted as weel if they have.
+> 
+> Generally, this patch is generated by
+> make coccicheck M=<path/to/file> MODE=patch \
+> COCCI=scripts/coccinelle/api/device_attr_show.cocci
+> 
+> No functional change intended
+> 
+> CC: "Bruno Prémont" <bonbons@linux-vserver.org>
+> CC: Jiri Kosina <jikos@kernel.org>
+> CC: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+> CC: linux-input@vger.kernel.org
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+> V3:
+>     Covert more file(drivers/hid/hid-picolcd_fb.c) as suggested by Bruno
+> 
+> This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+> Split them per subsystem so that the maintainer can review it easily
+> [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+> ---
+>   drivers/hid/hid-picolcd_core.c | 6 +++---
+>   drivers/hid/hid-picolcd_fb.c   | 4 ++--
+>   2 files changed, 5 insertions(+), 5 deletions(-)
+> 
+> diff --git a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_core.c
+> index bbda231a7ce3..fa46fb6eab3f 100644
+> --- a/drivers/hid/hid-picolcd_core.c
+> +++ b/drivers/hid/hid-picolcd_core.c
+> @@ -256,9 +256,9 @@ static ssize_t picolcd_operation_mode_show(struct device *dev,
+>   	struct picolcd_data *data = dev_get_drvdata(dev);
+>   
+>   	if (data->status & PICOLCD_BOOTLOADER)
+> -		return snprintf(buf, PAGE_SIZE, "[bootloader] lcd\n");
+> +		return sysfs_emit(buf, "[bootloader] lcd\n");
+>   	else
+> -		return snprintf(buf, PAGE_SIZE, "bootloader [lcd]\n");
+> +		return sysfs_emit(buf, "bootloader [lcd]\n");
+>   }
+>   
+>   static ssize_t picolcd_operation_mode_store(struct device *dev,
+> @@ -301,7 +301,7 @@ static ssize_t picolcd_operation_mode_delay_show(struct device *dev,
+>   {
+>   	struct picolcd_data *data = dev_get_drvdata(dev);
+>   
+> -	return snprintf(buf, PAGE_SIZE, "%hu\n", data->opmode_delay);
+> +	return sysfs_emit(buf, "%hu\n", data->opmode_delay);
+>   }
+>   
+>   static ssize_t picolcd_operation_mode_delay_store(struct device *dev,
+> diff --git a/drivers/hid/hid-picolcd_fb.c b/drivers/hid/hid-picolcd_fb.c
+> index d7dddd99d325..369c78d70e66 100644
+> --- a/drivers/hid/hid-picolcd_fb.c
+> +++ b/drivers/hid/hid-picolcd_fb.c
+> @@ -424,9 +424,9 @@ static ssize_t picolcd_fb_update_rate_show(struct device *dev,
 
-This is a great optimization, and the only issue with it is that to even
-get to checking this counter uprobe subsystem is taking
-read-side trace_uprobe_filter->rwlock. This is actually noticeable in
-profiles and is just another point of contention when uprobe is
-triggered on multiple CPUs simultaneously.
+Hi,
 
-This patch moves this nr_systemwide check outside of filter list's
-rwlock scope, as rwlock is meant to protect list modification, while
-nr_systemwide-based check is speculative and racy already, despite the
-lock (as discussed in [0]). trace_uprobe_filter_remove() and
-trace_uprobe_filter_add() already check for filter->nr_systewide
-explicitly outside of __uprobe_perf_filter, so no modifications are
-required there.
+just above we have:
+	for (i = 1; i <= PICOLCDFB_UPDATE_RATE_LIMIT; i++)
 
-Confirming with BPF selftests's based benchmarks.
+>   		if (ret >= PAGE_SIZE)
+>   			break;
 
-BEFORE (based on changes in previous patch)
-===========================================
-uprobe-nop     :    2.732 ± 0.022M/s
-uprobe-push    :    2.621 ± 0.016M/s
-uprobe-ret     :    1.105 ± 0.007M/s
-uretprobe-nop  :    1.396 ± 0.007M/s
-uretprobe-push :    1.347 ± 0.008M/s
-uretprobe-ret  :    0.800 ± 0.006M/s
+and PICOLCDFB_UPDATE_RATE_LIMIT is 10, so it is not possible to have ret 
+ >= PAGE_SIZE. Should it happen, sysfs_emit_at() handles it.
+So, this test can also be removed, IMHO.
 
-AFTER
-=====
-uprobe-nop     :    2.878 ± 0.017M/s (+5.5%, total +8.3%)
-uprobe-push    :    2.753 ± 0.013M/s (+5.3%, total +10.2%)
-uprobe-ret     :    1.142 ± 0.010M/s (+3.8%, total +3.8%)
-uretprobe-nop  :    1.444 ± 0.008M/s (+3.5%, total +6.5%)
-uretprobe-push :    1.410 ± 0.010M/s (+4.8%, total +7.1%)
-uretprobe-ret  :    0.816 ± 0.002M/s (+2.0%, total +3.9%)
+CJ
 
-In the above, first percentage value is based on top of previous patch
-(lazy uprobe buffer optimization), while the "total" percentage is
-based on kernel without any of the changes in this patch set.
-
-As can be seen, we get about 4% - 10% speed up, in total, with both lazy
-uprobe buffer and speculative filter check optimizations.
-
-  [0] https://lore.kernel.org/bpf/20240313131926.GA19986@redhat.com/
-
-Reviewed-by: Jiri Olsa <jolsa@kernel.org>
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- kernel/trace/trace_uprobe.c | 10 +++++++---
- 1 file changed, 7 insertions(+), 3 deletions(-)
-
-diff --git a/kernel/trace/trace_uprobe.c b/kernel/trace/trace_uprobe.c
-index b5da95240a31..ac05885a6ce6 100644
---- a/kernel/trace/trace_uprobe.c
-+++ b/kernel/trace/trace_uprobe.c
-@@ -1226,9 +1226,6 @@ __uprobe_perf_filter(struct trace_uprobe_filter *filter, struct mm_struct *mm)
- {
- 	struct perf_event *event;
- 
--	if (filter->nr_systemwide)
--		return true;
--
- 	list_for_each_entry(event, &filter->perf_events, hw.tp_list) {
- 		if (event->hw.target->mm == mm)
- 			return true;
-@@ -1353,6 +1350,13 @@ static bool uprobe_perf_filter(struct uprobe_consumer *uc,
- 	tu = container_of(uc, struct trace_uprobe, consumer);
- 	filter = tu->tp.event->filter;
- 
-+	/*
-+	 * speculative short-circuiting check to avoid unnecessarily taking
-+	 * filter->rwlock below, if the uprobe has system-wide consumer
-+	 */
-+	if (READ_ONCE(filter->nr_systemwide))
-+		return true;
-+
- 	read_lock(&filter->rwlock);
- 	ret = __uprobe_perf_filter(filter, mm);
- 	read_unlock(&filter->rwlock);
--- 
-2.43.0
+>   		else if (i == fb_update_rate)
+> -			ret += scnprintf(buf+ret, PAGE_SIZE-ret, "[%u] ", i);
+> +			ret += sysfs_emit_at(buf, ret, "[%u] ", i);
+>   		else
+> -			ret += scnprintf(buf+ret, PAGE_SIZE-ret, "%u ", i);
+> +			ret += sysfs_emit_at(buf, ret, "%u ", i);
+>   	if (ret > 0)
+>   		buf[min(ret, (size_t)PAGE_SIZE)-1] = '\n';
+>   	return ret;
 
 
