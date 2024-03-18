@@ -1,121 +1,118 @@
-Return-Path: <linux-kernel+bounces-106717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106719-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7FF8287F265
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:43:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C57F887F27E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 39F8A28280A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:43:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5DD0A1F22738
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:48:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2095859166;
-	Mon, 18 Mar 2024 21:42:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 64EFF5A784;
+	Mon, 18 Mar 2024 21:47:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="P07bGrcU"
-Received: from mail-pj1-f43.google.com (mail-pj1-f43.google.com [209.85.216.43])
+	dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b="BtT6BSCA"
+Received: from smtp.smtpout.orange.fr (smtp-16.smtpout.orange.fr [80.12.242.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 08C9C5916F
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:42:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD1DC5A4C4;
+	Mon, 18 Mar 2024 21:47:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.12.242.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710798176; cv=none; b=AkNOYiddhlVU5Jxjpg+RaGM7c3eUxNOIi8ytpFNT2Mpd7FATcRVTyVVPUgyCvrS1nXKWjODyfuy3RCVraHT3MzVevPmrnAgarurEMKufTqMK5Fu8mTtmAZsZfDgGtOMY0KWme3X0q4Zddh53YLtdUz9xZKxX71VuCEQfIHtDlS0=
+	t=1710798452; cv=none; b=uRRd8JiSfGnjlu/64PfQluj1/wHCZQMfau7DQ9XFiBzsgqal28ZxhcXbMgXxyB2a0mM83NaOK3omHXb8CajKtBtteQ+0rYrxKPLaWmrnI8OTLaCB2LIIHPaFxo+MCJrYlDorhdufNY9+xPWyAY3qX6lfXmuCZ9lwQsUCYMzSNj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710798176; c=relaxed/simple;
-	bh=iVcACEXJ7ByPQf/VBR4On2mYZO1me0Bq9PH9vIqjwdk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HOpcHbtxjkF51QmGP54MxVkXyx/hPusfG08XF5754WFHmaj4uWiUjAASgcEOSXuuOfUvYNSP0r9kSHat9FPjCz/uz9WEQxQiip46vFKClvInKHo/7L/d1K1PyC3hdPUAjiL3w/qt/t7pyZk5rJN9srJ1OpRyssW1EUyeUGLst6Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=P07bGrcU; arc=none smtp.client-ip=209.85.216.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pj1-f43.google.com with SMTP id 98e67ed59e1d1-29bfc3ca816so4338237a91.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:42:54 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710798174; x=1711402974; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=7ZT3rXspzzYF/8VZb3BdJDfiIw9byhNvhoKVVNwzolw=;
-        b=P07bGrcUbCkl6Na9Jht1T9n59gwomnTOspdHFH4AvL0VyCoWGjuVN+oomoYbTJ9bb7
-         fu7UXDwbSHJSVNwg459j90QJNN+DhZZWPys+hiNv9JCxeXHTow89eMr95249LnQ6t1m0
-         QmTny9xaFOK5tYK8tagQBQpBytPOIXgZ/HNZ4=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710798174; x=1711402974;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=7ZT3rXspzzYF/8VZb3BdJDfiIw9byhNvhoKVVNwzolw=;
-        b=b9AXnLLpL9hasuNt37F0zxcrBAOvQwoGskK2K3U9bBj9uYVPzkSbGa+UPWILhfEkMn
-         vl+OgKH1ODoxnstTPrwLummHDgN/6W9gTOJ2Rgdiyobs8bjuG23+H00Lr2QB7iZozQzp
-         V5H3KtYwkKJ6V4hcY/vnFioVrZNXnrRhzSiQyQ3sRVs2hdARVVqglkigJq43ajttaoSC
-         mxo1l2zdA0wFEjRMZXC/WMNiBNkZs/IZEPVG/s5gLHFRtrDtmC/n9JhzYwq6Nh+kF9Yy
-         fpjy8OAJUXR5Ck5aP3xvMTP4NSkrbjyz4Jihne29qsZtw/PL5lScjX2/PpLeOttDuUEo
-         nU1w==
-X-Forwarded-Encrypted: i=1; AJvYcCX0cTyp/vdWP4UaXdTP6blc+8Pu4H6ORlmK1YyrcLqKejQE9K5rr47XUMlASAAXKro7JEsROOvhNJce7noJOOO1csDrI970mQppdVHS
-X-Gm-Message-State: AOJu0YxtIm8GPQTA27oy3jckt0w4jTPa721YgOA9NRpOrjneJh7TYdqd
-	Ehskbto78dGnX5kSbnOtVeXMzDpHZIfmRoFzyi9DdrZTvnoGOs7RUJjXR+TIWQ==
-X-Google-Smtp-Source: AGHT+IGg9l6bZmeO7Ny5acljZFDqRjc8/N34eF9u08DQc0aZry14iz4qSdvaqNwuhzR5e/Zliea6fQ==
-X-Received: by 2002:a17:90a:8044:b0:29c:7931:87f8 with SMTP id e4-20020a17090a804400b0029c793187f8mr10092454pjw.43.1710798174286;
-        Mon, 18 Mar 2024 14:42:54 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id l23-20020a17090a3f1700b0029bce05b7dfsm9004860pjc.32.2024.03.18.14.42.53
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 14:42:53 -0700 (PDT)
-Date: Mon, 18 Mar 2024 14:42:53 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Justin Stitt <justinstitt@google.com>
-Cc: "Martin K. Petersen" <martin.petersen@oracle.com>,
-	linux-scsi@vger.kernel.org, target-devel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] scsi: target: replace deprecated strncpy with strscpy
-Message-ID: <202403181442.1E78DAA4@keescook>
-References: <20240318-strncpy-drivers-target-target_core_configfs-c-v1-1-dc319e85fe45@google.com>
+	s=arc-20240116; t=1710798452; c=relaxed/simple;
+	bh=0KHLOX989patS77pGpcRZFTzkTlt4FFLOAPNDbE1sso=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T4HIZpse48Yf171OUKy/XABQ6+qPLPDQrOrnYsAOc/wPcWdY4CLaXT0g/3iCKndwD0pZjxoEwLx+uzD3Vv66vrRGsq4frQV5xmzflavJa9C8g7NZCO6oo13fct5QbF7sdTnh2tad5X5EHOIpNZ3UIZ5WLAWSKGeVWd8kpqNMkxg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr; spf=pass smtp.mailfrom=wanadoo.fr; dkim=pass (2048-bit key) header.d=wanadoo.fr header.i=@wanadoo.fr header.b=BtT6BSCA; arc=none smtp.client-ip=80.12.242.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=wanadoo.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=wanadoo.fr
+Received: from [192.168.1.18] ([92.140.202.140])
+	by smtp.orange.fr with ESMTPA
+	id mKpDrVX3HykpTmKpDrlHk1; Mon, 18 Mar 2024 22:47:21 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=wanadoo.fr;
+	s=t20230301; t=1710798441;
+	bh=Ki8LFuEpDeR2mCHJn1d/kGG14vmkqd8OY5uyzfzg9Qc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:From;
+	b=BtT6BSCAllOalo4Torsvp9ebPARr532K3yfpGu5YkFPtWUGFT/8yFUxQl8rrSGqk7
+	 LJLXIPCFJcnIXv/hS+TrJeQ+0QxMKSYFHguTyrBjz6Ehsdwiksg6I1E98NAGRl7prY
+	 Evnf6p4hrYbW/oUufarHq975ylA3gkz5NhoX3OoPsn61LVFZcduJloyvN/M4PPJ4Tl
+	 1txPov/jEW1BdfZURM0okyyOYrpClTiF83clIDbJlhbk9qjz4GdTQAbAtvnb9sW0Hk
+	 t1zLN7ddTI/g/5wsMKOq+ZpfA/pKA2wiAv92ysOtbLcmtU59/u3dDho5g+wAGTfwkl
+	 OMpS+aL8j3UwQ==
+X-ME-Helo: [192.168.1.18]
+X-ME-Auth: Y2hyaXN0b3BoZS5qYWlsbGV0QHdhbmFkb28uZnI=
+X-ME-Date: Mon, 18 Mar 2024 22:47:21 +0100
+X-ME-IP: 92.140.202.140
+Message-ID: <c4236382-d3c8-4560-9a95-f90effcf6d88@wanadoo.fr>
+Date: Mon, 18 Mar 2024 22:47:19 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318-strncpy-drivers-target-target_core_configfs-c-v1-1-dc319e85fe45@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] caif: Use UTILITY_NAME_LENGTH instead of hard-coding 16
+Content-Language: en-MW
+To: Ratheesh Kannoth <rkannoth@marvell.com>
+Cc: "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, linux-kernel@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, netdev@vger.kernel.org
+References: <af10f5a3236d47fd183487c9dcba3b3b3c66b595.1710584144.git.christophe.jaillet@wanadoo.fr>
+ <20240318032133.GA1312783@maili.marvell.com>
+From: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+In-Reply-To: <20240318032133.GA1312783@maili.marvell.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 09:32:01PM +0000, Justin Stitt wrote:
-> strncpy() is deprecated for use on NUL-terminated destination strings
-> [1] and as such we should prefer more robust and less ambiguous string
-> interfaces.
-> 
-> We expect db_root and db_root_stage to be NUL-terminated based on its
-> immediate use with pr_debug which expects a C-string argument (%s).
-> Moreover, it seems NUL-padding is not required.
-> 
-> Considering the above, a suitable replacement is `strscpy` [2] due to
-> the fact that it guarantees NUL-termination on the destination buffer
-> without unnecessarily NUL-padding.
-> 
-> Additionally, we should also change snprintf() to scnprintf().
-> `read_bytes` may be improperly assigned as snprintf() does NOT return
-> the number of bytes written into the destination buffer, rather it
-> returns the number of bytes that COULD have been written to that buffer
-> if it had ample space. Conversely, scnprintf() returns the actual number
-> of bytes written into the destination buffer (except the NUL-byte). This
-> essentially means the ``if (!read_bytes)`` was probably never a possible
-> branch.
-> 
-> After these changes, this code is more self-describing since it uses
-> string APIs that more accurately match the desired behavior.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-on-nul-terminated-strings [1]
-> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html [2]
-> Link: https://github.com/KSPP/linux/issues/90
-> Cc: linux-hardening@vger.kernel.org
-> Signed-off-by: Justin Stitt <justinstitt@google.com>
+Le 18/03/2024 à 04:21, Ratheesh Kannoth a écrit :
+> On 2024-03-16 at 15:46:10, Christophe JAILLET (christophe.jaillet@wanadoo.fr) wrote:
+>> UTILITY_NAME_LENGTH is 16. So better use the former when defining the
+>> 'utility_name' array. This makes the intent clearer when it is used around
+>> line 260.
+>>
+>> Signed-off-by: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+>> ---
+>>   net/caif/cfctrl.c | 2 +-
+>>   1 file changed, 1 insertion(+), 1 deletion(-)
+>>
+>> diff --git a/net/caif/cfctrl.c b/net/caif/cfctrl.c
+>> index 8480684f2762..b6d9462f92b9 100644
+>> --- a/net/caif/cfctrl.c
+>> +++ b/net/caif/cfctrl.c
+>> @@ -206,7 +206,7 @@ int cfctrl_linkup_request(struct cflayer *layer,
+>>   	u8 tmp8;
+>>   	struct cfctrl_request_info *req;
+>>   	int ret;
+>> -	char utility_name[16];
+>> +	char utility_name[UTILITY_NAME_LENGTH];
+> Reverse xmas tree.
 
-Good catch on "read_bytes"!
+Hi,
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+I'll update and repost when net-next is reopened, but honestly, looking 
+at this file, changing this to reverse xmas style won't change that much 
+for the overall coding style!
 
--- 
-Kees Cook
+Moreover, as said by Dan, it is not really easy to understand the wishes 
+of different maintainers. Should I have updated the lay-out, someone 
+could have argued that patches should be 1 thing at a time.
+
+CJ
+
+> 
+>>   	struct cfpkt *pkt;
+>>   	struct cflayer *dn = cfctrl->serv.layer.dn;
+>>
+>> --
+>> 2.44.0
+>>
+> 
+> 
+
 
