@@ -1,111 +1,213 @@
-Return-Path: <linux-kernel+bounces-106182-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106184-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4E5E287EA69
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:52:24 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 54B8087EA71
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:57:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D1EEE2835F4
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:52:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BC51283680
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:56:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0C0A4AEDD;
-	Mon, 18 Mar 2024 13:52:15 +0000 (UTC)
-Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677CB4AEDC;
+	Mon, 18 Mar 2024 13:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kfiTWVdT"
+Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09A4C482F2;
-	Mon, 18 Mar 2024 13:52:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623F548CFC
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:56:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710769935; cv=none; b=r166SRhPRAO7ZX61KlwKpeyXgqnz/AvPZ0Mu2+1ii7cLy5dwhb9Rnha+d09EcqMl4RxgeMghzRARj+a62vdIpYR8DipXjT1QReJHqXv/0B1XSaOrL+QMPm5qVytCq1N/lOqguqeiwJIgMlHTFS96EF2Httq9NFST0VfQPtti5dI=
+	t=1710770210; cv=none; b=L3HeYnQ44ixvMEkrd04bZEI02D7f2jTvsE+E+5lbAksldroOl2r3RZEHLUTkXNH8NDMdKJ65JMi2DARVOODJpcjuKXs3Iowc3YhSeV7+ft/oBjqlzJyx7AbgwcSeXevKVBVtRfqqsYCja+Fea8sFMq5vdSKmIZ8JkN2NKLX4NKs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710769935; c=relaxed/simple;
-	bh=PookXp4bPOX0npWy6gd5rk2aO3Vm9Zf52HsOGP+Nz4k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=iFWbJtbKxjkoD3PeVECr/6ddTU6ms+v3cYaGFcpQPphv02HUNekgo22rOOv3kwW9j4r+6u+Kj9vmWlDXANNBm6v1sX7hRZ/zlTInm0DaIv/P8bkyl9JEbYn6LVddSQG2uEbiLyNuyijhK/giYgNYTtAZwPJSuBcjOV6mPEbUAnA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.167.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c380e99582so583082b6e.1;
-        Mon, 18 Mar 2024 06:52:13 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710769933; x=1711374733;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=w7ebsFZDfZ8wRGX/ymUxLQCpYnUCXb5v3M/6qeGcR2k=;
-        b=hjfS2nO8SHKLtE/PoUkK8lSjYBwP/CENXlm/UFFmQ7Tom+pK1QMakkn4zD1SrWAI3G
-         th6tHu/kjjMre5ZzW8Y7qw+zoGINfA4N/Dv8qSMCVPzaz/qt3r2t7aX/GWVbL783DYvT
-         CrTWsteHGzyGiDZSw7FAte4PxrKo1M5j4dYWm5vRwbtDix7sSyYIwBYM6pxLDfsCwRc2
-         CgYS2ooHk+gJUyDjhpNGjiGvJQ2nYRTyIYH0z2GUmb5F9t58p7vSik6HEYCRIe8oNfNs
-         yhw2YoKZLFW4cZfcLSKeRzHzV1llRPt2NlCvDM2cuYf3w1a5gVJg6HnIlZkG/wRyLcwT
-         Z1Pg==
-X-Forwarded-Encrypted: i=1; AJvYcCWMATI41fj60/ceIxox66L1642dnYoWGPmP5sDwV4EJdGCdKIo0fgtTgGhl/pEEGtZpD/3yFbE15qgMwjJ7UZdiBv1HctRRUKfs/91ZnDD9MYmWJbJY38LXc51It1B9WrkJLpzf5A6/ZlOf17Kxte1x49WaM2rzOWQNnOfaIW2FobE=
-X-Gm-Message-State: AOJu0YzM5NqZ8U8xepE7ccV/Q3Xv8Hkd7w/J3BFNstG0cTQH3ehw80nh
-	P3+A/JcFszTo7a+iGd6/y5xmyabtdaBhW8993uUmzHIynjEQjGliOFYXwtNNHEZ15PUVRCf9KEH
-	jzPLnQ08dm/G5qJkUO+H8rLICAbE=
-X-Google-Smtp-Source: AGHT+IFkp+fjhly6fcg9naTNI6FjwK6V6nEo8JqRLqLJlYLU9NJHzdhKUmIPMkqXB5aEfMpA4Kog4/1ILyL5IzDJNzk=
-X-Received: by 2002:a05:6820:d02:b0:5a4:5630:93d6 with SMTP id
- ej2-20020a0568200d0200b005a4563093d6mr9713906oob.1.1710769933182; Mon, 18 Mar
- 2024 06:52:13 -0700 (PDT)
+	s=arc-20240116; t=1710770210; c=relaxed/simple;
+	bh=ERVnSpjVdDsO/HGZdby1785ElVvvS6M95VHMrvBbUs4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gCS1CdocgE20rCsEbt9Ctg6J4/+YeOtPJm/bmqei6SBueRBPe+vurxvYlpb9eEHwy+pm/0PJRi9B1aw/RQ/TJxk2bZzmpJddpr9NRLgSif5S2uspzrndTYt7JhIeFtuWJe1zPxkIW5jvUSdR4UnJmR90JUpNd6QGSa3L+Vxa8yA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kfiTWVdT; arc=none smtp.client-ip=95.215.58.186
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <6f0a86cd-dd01-40b1-87ed-39f8d655e18a@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710770205;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=muvpwz7a96M6/2doTJBM5VlsnMcGZ+AFVmWiFaXOnls=;
+	b=kfiTWVdT8ReLHqMbkUM8dB16NUYpUQUu9Yfp8lnzUy1+Tt/BID2KvcFeq1kyyd8XZNw+kF
+	qBPpBYMR2nJqFecICQ2n+oHEsQPz6kmT96Pf3Wm3CD8l/HvSrrP2hiOdKlKcGuxRd/3fw3
+	7hjvwA236ed1PCoUQV/oqXVOJQlnIYs=
+Date: Mon, 18 Mar 2024 14:56:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318055054.1564696-1-d-gole@ti.com> <20240318055054.1564696-3-d-gole@ti.com>
-In-Reply-To: <20240318055054.1564696-3-d-gole@ti.com>
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Mon, 18 Mar 2024 14:52:02 +0100
-Message-ID: <CAJZ5v0hP0TR1zVc1hNMw+SnqCw7hJUcFM-J5Y6Mtgh-tnrrdEw@mail.gmail.com>
-Subject: Re: [PATCH 2/3] PM: wakeup: Remove unnecessary else from device_init_wakeup
-To: Dhruva Gole <d-gole@ti.com>
-Cc: Ulf Hansson <ulf.hansson@linaro.org>, "Rafael J. Wysocki" <rafael@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Tony Lindgren <tony@atomide.com>, 
-	Len Brown <len.brown@intel.com>, Pavel Machek <pavel@ucw.cz>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Viresh Kumar <viresh.kumar@linaro.org>, 
-	theo.lebrun@bootlin.com, linux-pm@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-mmc@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Subject: Re: [EXTERNAL] Re: [PATCH rdma-next 1/4] RDMA/mana_ib: Introduce
+ helpers to create and destroy mana queues
+To: Konstantin Taranov <kotaranov@microsoft.com>,
+ Konstantin Taranov <kotaranov@linux.microsoft.com>,
+ "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
+ Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
+ "leon@kernel.org" <leon@kernel.org>
+Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+References: <1710336299-27344-1-git-send-email-kotaranov@linux.microsoft.com>
+ <1710336299-27344-2-git-send-email-kotaranov@linux.microsoft.com>
+ <7956dd4b-3002-4073-aff7-f85ea436e6e0@linux.dev>
+ <PAXPR83MB0557CAF749EE4161E3EE5A31B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+Content-Language: en-US
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Zhu Yanjun <yanjun.zhu@linux.dev>
+In-Reply-To: <PAXPR83MB0557CAF749EE4161E3EE5A31B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On Mon, Mar 18, 2024 at 6:55=E2=80=AFAM Dhruva Gole <d-gole@ti.com> wrote:
->
-> Checkpatch warns that else is generally not necessary after a return
-> condition which exists in the if part of this function. Hence, just to
-> abide by what checkpatch recommends, follow it's guidelines.
->
-> Signed-off-by: Dhruva Gole <d-gole@ti.com>
-> ---
->  include/linux/pm_wakeup.h | 7 +++----
->  1 file changed, 3 insertions(+), 4 deletions(-)
->
-> diff --git a/include/linux/pm_wakeup.h b/include/linux/pm_wakeup.h
-> index 428803eed798..76cd1f9f1365 100644
-> --- a/include/linux/pm_wakeup.h
-> +++ b/include/linux/pm_wakeup.h
-> @@ -234,11 +234,10 @@ static inline int device_init_wakeup(struct device =
-*dev, bool enable)
->         if (enable) {
->                 device_set_wakeup_capable(dev, true);
->                 return device_wakeup_enable(dev);
-> -       } else {
-> -               device_wakeup_disable(dev);
-> -               device_set_wakeup_capable(dev, false);
-> -               return 0;
->         }
-> +       device_wakeup_disable(dev);
-> +       device_set_wakeup_capable(dev, false);
-> +       return 0;
->  }
->
->  #endif /* _LINUX_PM_WAKEUP_H */
-> --
 
-This one is fine with me, but not 6.9-rc material.
+On 18.03.24 10:31, Konstantin Taranov wrote:
+>>> From: Konstantin Taranov <kotaranov@microsoft.com>
+>>>
+>>> Intoduce helpers to work with mana ib queues (struct mana_ib_queue).
+>>> A queue always consists of umem, gdma_region, and id.
+>>> A queue can be used for a WQ or a CQ.
+>>>
+>>> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
+>>> ---
+>>>    drivers/infiniband/hw/mana/main.c    | 40
+>> ++++++++++++++++++++++++++++
+>>>    drivers/infiniband/hw/mana/mana_ib.h | 10 +++++++
+>>>    2 files changed, 50 insertions(+)
+>>>
+>>> diff --git a/drivers/infiniband/hw/mana/main.c
+>>> b/drivers/infiniband/hw/mana/main.c
+>>> index 71e33feee..0ec940b97 100644
+>>> --- a/drivers/infiniband/hw/mana/main.c
+>>> +++ b/drivers/infiniband/hw/mana/main.c
+>>> @@ -237,6 +237,46 @@ void mana_ib_dealloc_ucontext(struct
+>> ib_ucontext *ibcontext)
+>>>                ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n", ret);
+>>>    }
+>>>
+>>> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+>>> +                      struct mana_ib_queue *queue) {
+>>> +     struct ib_umem *umem;
+>>> +     int err;
+>>> +
+>>> +     queue->umem = NULL;
+>>> +     queue->id = INVALID_QUEUE_ID;
+>>> +     queue->gdma_region = GDMA_INVALID_DMA_REGION;
+>>> +
+>>> +     umem = ib_umem_get(&mdev->ib_dev, addr, size,
+>> IB_ACCESS_LOCAL_WRITE);
+>>> +     if (IS_ERR(umem)) {
+>>> +             err = PTR_ERR(umem);
+>>> +             ibdev_dbg(&mdev->ib_dev, "Failed to get umem, %d\n", err);
+>>> +             return err;
+>>> +     }
+>>> +
+>>> +     err = mana_ib_create_zero_offset_dma_region(mdev, umem, &queue-
+>>> gdma_region);
+>>> +     if (err) {
+>>> +             ibdev_dbg(&mdev->ib_dev, "Failed to create dma region, %d\n",
+>> err);
+>>> +             goto free_umem;
+>>> +     }
+>>> +     queue->umem = umem;
+>>> +
+>>> +     ibdev_dbg(&mdev->ib_dev,
+>>> +               "create_dma_region ret %d gdma_region 0x%llx\n",
+>>> +               err, queue->gdma_region);
+>>> +
+>>> +     return 0;
+>>> +free_umem:
+>>> +     ib_umem_release(umem);
+>>> +     return err;
+>>> +}
+>>> +
+>>> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct
+>>> +mana_ib_queue *queue) {
+>>> +     mana_ib_gd_destroy_dma_region(mdev, queue->gdma_region);
+>> The function mana_ib_gd_destroy_dma_region will call
+>> mana_gd_destroy_dma_region. In the function
+>> mana_gd_destroy_dma_region, the function mana_gd_send_request will
+>> return the error -EPROTO.
+>> The procedure is as below. So the function mana_ib_destroy_queue should
+>> also handle this error?
+> Thanks for the comment!
+> This error can be ignored and it was ignored before this commit.
+> I checked the corresponding Windows driver code, and it is also intentionally ignored there.
+> I can add a comment that the error is ignored intentionally if you want.
 
-Thanks!
+Sure. Thanks a lot.
+
+Zhu Yanjun
+
+>
+>> mana_ib_gd_destroy_dma_region --- > mana_gd_destroy_dma_region
+>>
+>>    693 int mana_gd_destroy_dma_region(struct gdma_context *gc, u64
+>> dma_region_handle)
+>>    694 {
+>>
+>> ...
+>>
+>>    706         err = mana_gd_send_request(gc, sizeof(req), &req,
+>> sizeof(resp), &resp);
+>>    707         if (err || resp.hdr.status) {
+>>    708                 dev_err(gc->dev, "Failed to destroy DMA region:
+>> %d, 0x%x\n",
+>>    709                         err, resp.hdr.status);
+>>    710                 return -EPROTO;
+>>    711         }
+>>
+>> ...
+>>
+>>    714 }
+>>
+>> Zhu Yanjun
+>>
+>>> +     ib_umem_release(queue->umem);
+>>> +}
+>>> +
+>>>    static int
+>>>    mana_ib_gd_first_dma_region(struct mana_ib_dev *dev,
+>>>                            struct gdma_context *gc, diff --git
+>>> a/drivers/infiniband/hw/mana/mana_ib.h
+>>> b/drivers/infiniband/hw/mana/mana_ib.h
+>>> index f83390eeb..859fd3bfc 100644
+>>> --- a/drivers/infiniband/hw/mana/mana_ib.h
+>>> +++ b/drivers/infiniband/hw/mana/mana_ib.h
+>>> @@ -45,6 +45,12 @@ struct mana_ib_adapter_caps {
+>>>        u32 max_inline_data_size;
+>>>    };
+>>>
+>>> +struct mana_ib_queue {
+>>> +     struct ib_umem *umem;
+>>> +     u64 gdma_region;
+>>> +     u64 id;
+>>> +};
+>>> +
+>>>    struct mana_ib_dev {
+>>>        struct ib_device ib_dev;
+>>>        struct gdma_dev *gdma_dev;
+>>> @@ -169,6 +175,10 @@ int mana_ib_create_dma_region(struct
+>> mana_ib_dev *dev, struct ib_umem *umem,
+>>>    int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
+>>>                                  mana_handle_t gdma_region);
+>>>
+>>> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
+>>> +                      struct mana_ib_queue *queue); void
+>>> +mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct
+>> mana_ib_queue
+>>> +*queue);
+>>> +
+>>>    struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
+>>>                                struct ib_wq_init_attr *init_attr,
+>>>                                struct ib_udata *udata);
 
