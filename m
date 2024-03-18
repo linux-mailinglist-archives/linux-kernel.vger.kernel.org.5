@@ -1,145 +1,146 @@
-Return-Path: <linux-kernel+bounces-105871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B59AC87E5BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:27:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 314B487E5C2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:30:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6961B2827E2
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:27:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 59FBD1C217CA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:30:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE662C1AD;
-	Mon, 18 Mar 2024 09:27:35 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41BCE2C1AF;
+	Mon, 18 Mar 2024 09:30:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b="VEZkKPE2"
+Received: from mx0b-0016f401.pphosted.com (mx0b-0016f401.pphosted.com [67.231.156.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030D426AF7
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:27:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3E0624205;
+	Mon, 18 Mar 2024 09:30:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=67.231.156.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710754055; cv=none; b=Aet9523VGYQy6G1GDsVMd/BqOKJ18+yFnqlFgbavUX3iwTkKDS4sCfyHEciEba35NNjIorD4ybIsdGWpyzg+g/IdouElI72L8D1VpK7VIhZZCzAQ4D659Uftanu366hRfBAIPUzSESMHe7CP1GoVRVTEGBqqZc5TGrl+bzQDG2k=
+	t=1710754217; cv=none; b=cGLMkkY0c3ou2qiIrQi/7pPapCrAAxZoJNeBPdYzmpk2ezitEI4YryHxtSoAtAPKW8bAY8wXnpdq5elUZDszNZnrEdEeboacyqXosP0q828+9rDs1wHQ6eJNZQ5s+UQQ3RmNxwyqRvG/bXQ1XIcdZ2qyvuVO7OaRbsgla1TwTxw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710754055; c=relaxed/simple;
-	bh=YHiuOn4hq18fkHfMqEhWJZ8muMTRuaWOyeakJRLBng4=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=MuITdIjvxZUMA3b06Nq67GpUoXr0UNJx0LsoAxdE/1KAWjIcFX6ewtir9E88JZyJPixfMXeEV9M3RKl13tYI0UObWBBMxAYBMWv3/OeMBvUFaBgbvO5DZG8GZ13sHHEHQEDGhHkx5JiShQ++eIjzdOK/w2bnGchoE1dQdO+ox4E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rm9HF-000139-72; Mon, 18 Mar 2024 10:27:29 +0100
-Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rm9HE-00735O-QA; Mon, 18 Mar 2024 10:27:28 +0100
-Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
-	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
-	(envelope-from <m.grzeschik@pengutronix.de>)
-	id 1rm9HE-006V5M-2R;
-	Mon, 18 Mar 2024 10:27:28 +0100
-From: Michael Grzeschik <m.grzeschik@pengutronix.de>
-Date: Mon, 18 Mar 2024 10:27:28 +0100
-Subject: [PATCH v3] uvc_video: move clock_decode and stats_decode to the
- end of decode_start
+	s=arc-20240116; t=1710754217; c=relaxed/simple;
+	bh=BPXDf7rV3OrXPaxIf58C0rfEhbVnaKvDjZ564s1bO1I=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jJ+cDntPeB1YTTX0ntaWf3Lt+ol39Aw73+HgRHCsjZJEC+ikXfXTkL8US5Ft16QCd5hUlLIcKVoxZ1KRvqrNk9WScT/GC/RcHH5AKa/KEEV1fB4EQnCHf2iFmYbhijAlxztsGQPrpbd6RmAd9NpmUDY6AD1lK2H8girWW9UVlFk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com; spf=pass smtp.mailfrom=marvell.com; dkim=pass (2048-bit key) header.d=marvell.com header.i=@marvell.com header.b=VEZkKPE2; arc=none smtp.client-ip=67.231.156.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=marvell.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=marvell.com
+Received: from pps.filterd (m0045851.ppops.net [127.0.0.1])
+	by mx0b-0016f401.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42HMwH16011594;
+	Mon, 18 Mar 2024 02:30:06 -0700
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=marvell.com; h=
+	from:to:cc:subject:date:message-id:mime-version:content-type; s=
+	pfpt0220; bh=cd0oB67DNWqAGSh/WIoCmb/Fvb1TO1x0tgEB6/3bgas=; b=VEZ
+	kKPE2/uAR1qq/67DJ2HEWJir6SjbF012pCqA6f+Nv9w1wOt1n9J1DP8JjoA8KG1G
+	sugvVOj5dx8jcfoS1rQTwTdQ2GQBtNkwgp4kGIqhyiAoq/Iz0QVhdHceT/TS8WgH
+	phcI/w3fY6aoQn2V44kvpHj6ylJ8Fbxv8PSss/Ii3zDM0lyhHClGlsBNB+PEgl2b
+	6ztKxLdiVkVLmbHiXVAfF5MajPKCB2KUUS+E+XH4mdDXCYAmQwygDZeEuXJbAuwn
+	ivJLc4V6Q/20uUP1VigJDGWleIzXsjm5WjXMS/omVe+k0JGz9YNGmWI+gPTPp6+Y
+	nwK1FYxMHwETNKQkCnA==
+Received: from dc5-exch05.marvell.com ([199.233.59.128])
+	by mx0b-0016f401.pphosted.com (PPS) with ESMTPS id 3wwaxgc6qc-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 02:30:06 -0700 (PDT)
+Received: from DC5-EXCH05.marvell.com (10.69.176.209) by
+ DC5-EXCH05.marvell.com (10.69.176.209) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.12; Mon, 18 Mar 2024 02:30:05 -0700
+Received: from maili.marvell.com (10.69.176.80) by DC5-EXCH05.marvell.com
+ (10.69.176.209) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
+ Transport; Mon, 18 Mar 2024 02:30:05 -0700
+Received: from hyd1358.marvell.com (unknown [10.29.37.11])
+	by maili.marvell.com (Postfix) with ESMTP id 940D63F708D;
+	Mon, 18 Mar 2024 02:30:01 -0700 (PDT)
+From: Subbaraya Sundeep <sbhatta@marvell.com>
+To: <netdev@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+        <pabeni@redhat.com>, <sgoutham@marvell.com>, <lcherian@marvell.com>,
+        <gakula@marvell.com>, <hkelam@marvell.com>, <naveenm@marvell.com>,
+        <horms@kernel.org>, Subbaraya Sundeep <sbhatta@marvell.com>
+Subject: [v2 net PATCH 0/5] octeontx2-pf: RVU Mailbox fixes
+Date: Mon, 18 Mar 2024 14:59:53 +0530
+Message-ID: <1710754198-18632-1-git-send-email-sbhatta@marvell.com>
+X-Mailer: git-send-email 2.7.4
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240221-uvc-host-video-decode-start-v3-1-40e9b9ced97b@pengutronix.de>
-X-B4-Tracking: v=1; b=H4sIAP8I+GUC/5WOsQ6DIBRFf8Uw9zXy1Kqd+h9NB4SnkhgwgMTG+
- O9F1y7teO5wzt2YJ6fJs3u2MUdRe21NguKSMTkKMxBolZhhjmWOyGGJEkbrA0StyIIiaRWBD8I
- FEH1VqL5qsZSKJUMnPEHnhJFjcphlmtI4O+r1eiafr8Sj9sG69/kg8mP9LRY5cEBs2jYFK1nnj
- 5nMsARnjV6vitghj/iHEJOwaeSNeE1lU4sv4b7vHw606zUxAQAA
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
- Mauro Carvalho Chehab <mchehab@kernel.org>
-Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
- kernel@pengutronix.de, Michael Grzeschik <m.grzeschik@pengutronix.de>
-X-Mailer: b4 0.12.0
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2110;
- i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
- bh=YHiuOn4hq18fkHfMqEhWJZ8muMTRuaWOyeakJRLBng4=;
- b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBl+AkAsnlDrR3gAv9akcDuPnTJurQXGhOslEARd
- QJhUAOxujOJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZfgJAAAKCRC/aVhE+XH0
- qz6mEACP/k2WYqTeiJ5VuMRsRkih5hAz0R/tAYjJpbRm6Jo8ztDwS4OenojAITwo89NSaVn9ep5
- IvT1/qTzUP+B8Wgl5b67VgLlN2/jLED8+/bVF8Ym8NRB+H+6+J+ZVA37WlMTih5Lc4jclhJVjcs
- UssvT1JFEJ3oeU3FNivsxT0l6D/f9Kohl0KQjoobncY9FwqWkLjRMwDVsr6Uvqlr/EuYw4a3mXj
- /+yocd4F6vIv0P1BrlxLmOMSGDCg/0KudLg3kP+C5BK/vsTA+Z8ZyKToIMYhGRwrehd3G3LKkyP
- vA8pxLS4gaN3NEbc07YigNJsgeUCzPrgbyw273jC8vXLA/3c09oCOjFaGdAg0JDNSmTHJYDoEYC
- nWXgchHhkUa0xai1REo2Er0voziEfWcObJn6Vr2azsEGIYUxs75MUqtqA1F0hsISUIHA7Ak9270
- PW0XGM3SPvp+h2gZ5M+TKa3EFa3vwQin1ePgXZDlptOuJl9ZubrZUEqqjPjkX0g5ftJfs0Qhyxd
- ZOVcV2siP+01cpsKouOO52bML7vhmlsBIRXoK3R1y3d6jP/XyhWUKn3/Uoq2UXP2qIAjRgj1l2W
- 2b4IaUd8OG7QXBULaDCTw0WD/cC+PCR+iW28T5joQj+jQ5Br4lGwccOXjV+MzbjvdC9a5zVSrgj
- knx2D+NCfmh43Vg==
-X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
- fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Type: text/plain
+X-Proofpoint-GUID: DSxtPiF5kYFHQBgK3jgQ4bVmtJiMChWk
+X-Proofpoint-ORIG-GUID: DSxtPiF5kYFHQBgK3jgQ4bVmtJiMChWk
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-17_12,2024-03-18_01,2023-05-22_02
 
-When the uvc request will get parsed by uvc_video_decode_start it will
-leave the function with -EAGAIN to be restarted on the next frame. While
-the first wrong parse the statistics will already be updated with
-uvc_video_stats_decode.
+This patchset fixes the problems related to RVU mailbox.
+During long run tests some times VF commands like setting
+MTU or toggling interface fails because VF mailbox is timedout
+waiting for response from PF.
 
-One value e.g. is the error_count, which therefor will be incremented
-twice in case the fid has changed on the way. This patch fixes the
-unnecessary extra parsing by moving the decode functions to the
-end of decode_start, when it is save to really parse the data.
+Below are the fixes
+Patch 1: There are two types of messages in RVU mailbox namely up and down
+messages. Down messages are synchronous messages where a PF/VF sends
+a message to AF and AF replies back with response. UP messages are
+notifications and are asynchronous like AF sending link events to
+PF. When VF sends a down message to PF, PF forwards to AF and sends
+the response from AF back to VF. PF has to forward VF messages since
+there is no path in hardware for VF to send directly to AF.
+There is one mailbox interrupt from AF to PF when raised could mean
+two scenarios one is where AF sending reply to PF for a down message
+sent by PF and another one is AF sending up message asynchronously
+when link changed for that PF. Receiving the up message interrupt while
+PF is in middle of forwarding down message causes mailbox errors.
+Fix this by receiver detecting the type of message from the mbox data register
+set by sender.
 
-Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
----
-Changes in v3:
-- Moved the clock_decode and stat_decode to end of function as suggested by Ricardo Ribalda
-- Link to v2: https://lore.kernel.org/r/20240221-uvc-host-video-decode-start-v2-1-88c6e17e487a@pengutronix.de
+Patch 2:
+During VF driver remove, VF has to wait until last message is
+completed and then turn off mailbox interrupts from PF.
 
-Changes in v2:
-- Moved the EAGAIN bailout after the sequence handling as mentioned by Ricardo Ribalda
-- Link to v1: https://lore.kernel.org/r/20240221-uvc-host-video-decode-start-v1-1-228995925c70@pengutronix.de
----
- drivers/media/usb/uvc/uvc_video.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+Patch 3:
+Do not use ordered workqueue for message processing since multiple works are
+queued simultaneously by all the VFs and PF link UP messages.
 
-diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
-index 7cbf4692bd875..7471bff0ca894 100644
---- a/drivers/media/usb/uvc/uvc_video.c
-+++ b/drivers/media/usb/uvc/uvc_video.c
-@@ -1078,9 +1078,6 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
- 			uvc_video_stats_update(stream);
- 	}
- 
--	uvc_video_clock_decode(stream, buf, data, len);
--	uvc_video_stats_decode(stream, data, len);
--
- 	/*
- 	 * Store the payload FID bit and return immediately when the buffer is
- 	 * NULL.
-@@ -1147,6 +1144,9 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
- 		return -EAGAIN;
- 	}
- 
-+	uvc_video_clock_decode(stream, buf, data, len);
-+	uvc_video_stats_decode(stream, data, len);
-+
- 	stream->last_fid = fid;
- 
- 	return data[0];
+Patch 4:
+When sending link event to VF by PF check whether VF is really up to
+receive this message.
 
----
-base-commit: d99e42ce6b8341d3f09e22c6706461ec900fe172
-change-id: 20240221-uvc-host-video-decode-start-af53df5924cd
+Patch 5:
+In AF driver, use separate interrupt handlers for the AF-VF interrupt and
+AF-PF interrupt. Sometimes both interrupts are raised to two CPUs at same
+time and both CPUs execute same function at same time corrupting the data.
 
-Best regards,
+v2 changes:
+	Added missing mutex unlock in error path in patch 1
+	Refactored if else logic in patch 1 as suggested by Paolo Abeni
+
+
+Subbaraya Sundeep (5):
+  octeontx2: Detect the mbox up or down message via register
+  octeontx2-pf: Wait till detach_resources msg is complete
+  octeontx2-pf: Use default max_active works instead of one
+  octeontx2-pf: Send UP messages to VF only when VF is up.
+  octeontx2-af: Use separate handlers for interrupts
+
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.c   |  43 +++++++-
+ drivers/net/ethernet/marvell/octeontx2/af/mbox.h   |   6 ++
+ .../net/ethernet/marvell/octeontx2/af/mcs_rvu_if.c |  17 +--
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.c    |  31 ++++--
+ drivers/net/ethernet/marvell/octeontx2/af/rvu.h    |   2 +
+ .../net/ethernet/marvell/octeontx2/af/rvu_cgx.c    |  20 ++--
+ .../ethernet/marvell/octeontx2/nic/otx2_common.c   |   2 +-
+ .../ethernet/marvell/octeontx2/nic/otx2_common.h   |   2 +-
+ .../net/ethernet/marvell/octeontx2/nic/otx2_pf.c   | 119 ++++++++++++++-------
+ .../net/ethernet/marvell/octeontx2/nic/otx2_vf.c   |  71 +++++++-----
+ 10 files changed, 225 insertions(+), 88 deletions(-)
+
 -- 
-Michael Grzeschik <m.grzeschik@pengutronix.de>
+2.7.4
 
 
