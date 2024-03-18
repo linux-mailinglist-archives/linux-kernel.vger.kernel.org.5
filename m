@@ -1,278 +1,171 @@
-Return-Path: <linux-kernel+bounces-105923-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5C54087E66E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:53:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 58EE587E665
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:53:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C6531C2172E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:53:41 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0ED11280195
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:53:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 730512CCBA;
-	Mon, 18 Mar 2024 09:52:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="8DBEDTIp"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2091.outbound.protection.outlook.com [40.107.243.91])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3BB9B36139;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 329F036122;
 	Mon, 18 Mar 2024 09:52:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.91
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755524; cv=fail; b=hTI+AJRTW42wI6Snqy8oF/5SUMziIyu7CSvtZqBJGooTu9RIhtjEGlG6QWmxJHz898D6qkEIqE8s2OfTXd7OM3unE/tvI/0YKPhbKtw6pze48RgvEaprh0sUy45016QjLLmPqP3fxcEoTaL7va1XJoGf3hlKgMOd7uo5Cyt8XJg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755524; c=relaxed/simple;
-	bh=sq2E40ovciK0ZKxkv2B7DezKwUKVU65ZtPKEUZ1cy+M=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=Lx6NvpsiYE72+jymo6wxz7LboCru83TSjqjkOdvAUCOxXK1QsQlD1k4TEOEnqtNaREB9bJblz3dtwbll7Lj9W6OXLnRoSnhp8kLUOJnq32SsOuY+qAoAcbv8IYHl2KxrqeP8yBhTLY4LP4jMRTgYwg//xX2BICfA0Usm/pqhrrI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=8DBEDTIp reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.243.91
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=jAUUUfs2qAlRx10bYMmDyXcgNfYVvB8n7H6G9HkHfA1+se1qoZVqm06fmCzm9ECIpPQ3d2ZrXPF4apMmVWcop/ktpU1Sa53yDGLPCcFVJs4PR1XCLgR6TmZlRDyB0SuZhUhDPYBBTibmN0w1AnQ64tFY+02kMRemvP9yrtEkIpHeWS2K+KMEBY7JLX/lmmPdPTrAfmSjj4a8JpBrrjf6D3BNHzo2Jz6WMg6bgUkMwSMkXZKKKAVUZt6i4qt67GAZiYYrstnJk16gDZ8AN1xyLqM0n0OSArEEjoxunktZrOFK6kKvTmEw8aqWTe5URA43ZF/ZoJhFAE87Ix5vtvcE7Q==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=WoK+xJSZpP7i2J8ROnc7f3400BG2gRVtkASGq/4rIJI=;
- b=Y0IyQpK514wnNId0ZMumFHHBzxi8TRFiYqHv16gRJnqXwwOpePcROe/kRpvnwfonFVBfH0akwu10Y3aAJIRGQnnpmlpjFNHpywX0nvwkZVQ3vt1+WNN4QMlrjvXd404VDFqMKQAerJC+8aQpAM7QK7vXqrDnoxRh1AjYI1HQO6EXw0eL+xaI+I4kAOD3YImmjlH/cDDff8jo/hmHcoVo8WOETaFMzbQ5BDdGrYDRGNHYdDpeb+5HZQ2BokGaQ9Tef3dvoMOVPUzXjH9Ra1Iu+kctPVXnsA+baM2RNk/ODZHjiGskuUIkeFBVw+MZaBI43vbxPcdmDFUqZ80UIMc79g==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WmPFT7Gq"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9514D36114
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:51:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710755520; cv=none; b=b0fGn4PsVc73p78rla5Qyp74EbmgllxsM6QYO3A07jCOp7Jj8Vjls8++lPUMNaqbIY0834b9q4GQh0jB5xeri1hb++1FasQ6gkgcZr6UbfnLPBPHjUklpJwty0ewDf6vhMgnfh+tr+XSs1jSzj6WKHIEz77YBoP4LBVFCSwmuco=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710755520; c=relaxed/simple;
+	bh=PIfBWZ6wslpgmOaI5QqBZUbYKMOZbqTD0EQ38/257Fw=;
+	h=From:Subject:Date:Message-Id:MIME-Version:Content-Type:To:Cc; b=HI+lYEvRyYu+qduv1sB2h9Vd6Kqm+oFBtbpYoMuGUfGiB4FZHPs3b4fhHfubkQ+hVf2eO+Dv8iGUi5BCCaVhiwnCdahncxx6I43dUqWHmrLsDHANr160bBcn3z43FYFtBZantll8WnmwgcOtTEHvkqz0gGJSvE6KUe7ndFZOTtE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WmPFT7Gq; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-33d38c9ca5bso2022822f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:51:58 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=WoK+xJSZpP7i2J8ROnc7f3400BG2gRVtkASGq/4rIJI=;
- b=8DBEDTIps7W+CGlX1txNDZOFxFtgY/XtuYAH8T7LhkADl0NKf9cxB57dsZbPSprvFOdl46c9b4k+TZi1PKISOnlSnxOjlzSqgWVIoR/aGxspRIsi7P0ewWExJBmgTi5i0tyX9MrWqU/5V7pVmFYg75p53JscFhY1JujgzH39pgY=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
-Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
- SA0PR01MB6473.prod.exchangelabs.com (2603:10b6:806:ec::8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.23; Mon, 18 Mar 2024 09:51:58 +0000
-Received: from DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
- 09:51:58 +0000
-Message-ID: <ab8b45c5-2ef0-4a87-87bf-f797954b4574@amperemail.onmicrosoft.com>
-Date: Mon, 18 Mar 2024 16:51:46 +0700
-User-Agent: Mozilla Thunderbird
-From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
-Subject: Re: [PATCH 1/3] dt-bindings: hwmon: Add maxim max31790 driver
- bindings
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Chanh Nguyen <chanh@os.amperecomputing.com>, Jean Delvare
- <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Justin Ledford
- <justinledford@google.com>, devicetree@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Open Source Submission <patches@amperecomputing.com>
-Cc: Phong Vo <phong@os.amperecomputing.com>,
- Thang Nguyen <thang@os.amperecomputing.com>,
- Quan Nguyen <quan@os.amperecomputing.com>
-References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
- <20240311111347.23067-2-chanh@os.amperecomputing.com>
- <6fb70adb-aa85-4b9c-b093-afa4ec7ed056@linaro.org>
-Content-Language: en-US
-In-Reply-To: <6fb70adb-aa85-4b9c-b093-afa4ec7ed056@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0037.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::13) To DM6PR01MB5947.prod.exchangelabs.com
- (2603:10b6:5:1dd::12)
+        d=linaro.org; s=google; t=1710755517; x=1711360317; darn=vger.kernel.org;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=bhpR8m1BKg/4ZqXCedQn8etISKen0k3LBbXkscAw5/o=;
+        b=WmPFT7GqZqW3sb/5nxIY9suGNlEZwRFBeCpk30E1jo1sJ4xrHFlwVXZwapPX6OZN3l
+         O+quCdone83eF8Gs3rckZ1wUqRZzUqCcKW8GDb3r8JlVym5+dBPp1Jj0fQGHGI3Bd2zT
+         gTJmVmJ/J8zvMCorF0l7bhgiYsuWnW4F5KtZ/UMmtNDfg5u+aF9sOQIBIZ8uJqc2NTmS
+         V6E/n4HkVtFtfk9gzypkg5H9daRwpAf3CTb3IG/FTFJFymkUm98+kw3So4VhoxujzpQI
+         wI3VVMsoFv1CAmn27Od1qT3qfUdfq4ShCOL5IGX2yc9KEVUYpRnCrlkwe5jaJfFfnv+v
+         nMUg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710755517; x=1711360317;
+        h=cc:to:content-transfer-encoding:mime-version:message-id:date
+         :subject:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=bhpR8m1BKg/4ZqXCedQn8etISKen0k3LBbXkscAw5/o=;
+        b=ht1qFyjGxj0jJ779vOcITUJE020BoIKyHqHEzYuwSpp1BvwKwGFegmgNiqrVYUTZfG
+         3HyrTLMOc3/VEyvncfMUw/OM5qRXvkY+LW3XPsR/W8ZWYQaEDDXRqWt9ggHz9KtPac0Z
+         dUfvNGEPXNNrzS2cBv4jrI08LuDj/QpDZudB/jM4G0Lq8ROs5J09TdI9vljGWj4Qb/Bn
+         4+QNOWTxjU2ljyZGaN9PEFnG2PKuqR2wiaQPut6TICBtcNb6N9aRukRj9QQna0mrPp97
+         KF5LXD+0MKZhiBnEBwaqlNktL1e5DED9r/5NLeVrTizaKYjk2+TytLjyfv2Xqw8fTvga
+         JzsA==
+X-Forwarded-Encrypted: i=1; AJvYcCWtXB1WLe86YrSjYH5WwoeK7f16qOl2DZSnA6aui6C2trasuS/1Jo7AqKoTwt4YDRMz+YJCcHlmm09w83RlYYDVVJXt7cvnJbmbZe2F
+X-Gm-Message-State: AOJu0Yyr2PUfF1mChh/m1YlrciNzR5TZ/xYNYJSkgMXNnkDoLhwznXhV
+	9iKpjVCBoLRF3N4CSTdY22+wE11iSwxaBWuaGecn4H5ZgLc5PdQgRCVMHFBGhyE=
+X-Google-Smtp-Source: AGHT+IF4hqwhhN9ejGxakhVlgNcsc5fxhX/noA7MKMBWR+IsuUkU3u72avfLIQIRnp+t6eqhMuMs2g==
+X-Received: by 2002:a05:6000:b50:b0:33e:d547:4318 with SMTP id dk16-20020a0560000b5000b0033ed5474318mr5844510wrb.47.1710755516824;
+        Mon, 18 Mar 2024 02:51:56 -0700 (PDT)
+Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
+        by smtp.gmail.com with ESMTPSA id bq22-20020a5d5a16000000b0033ebf702e17sm7514974wrb.21.2024.03.18.02.51.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 02:51:56 -0700 (PDT)
+From: Neil Armstrong <neil.armstrong@linaro.org>
+Subject: [PATCH v2 0/3] arm64: qcom: sm8650: add support for the SM8650-HDK
+ board
+Date: Mon, 18 Mar 2024 10:51:52 +0100
+Message-Id: <20240318-topic-sm8650-upstream-hdk-v2-0-b63a5d45a784@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|SA0PR01MB6473:EE_
-X-MS-Office365-Filtering-Correlation-Id: 688e077c-0db0-46e5-b900-08dc47310d6f
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	08exW8Mm9W2mGL19aMQzBUMC2e+ilzr4IFA5FSMsPbhJJWCXH+sa+O2i0lOyUk/a65TpdB6sHCtMH4aFvhuIW9Uyrtsgs6/Lk/MJmLvu1Q9tLVHqaI2lSZp3cp7/vSYkHv6p2cQ8IqrgaFeLBbQmPbrOLk/FASAGb2DNcnYltQOftCrM+mZFx8xv1p2HNgvUlDxYXinoKaNNkrCexZ/1wg93tWjYBqnmOKc6spCw861O7Z0ErIhRT9OkSfgm0BvdfPHxrprufl3r0khEQ9M4PsN3/O20oh0lBgRSOLkhXPJOr9WgXCkibDFr7PRqSRsNP6XFhOAsLwRQsJFzP9Swyt3GVxxI2qbXMWV1UZ5VXlxOhhbsMKrI1xrY9X0PMpTZNassm/kDnRZCCMzwtUqs62UbjI8QqVZVBqDKaNeN7JIZAZERd9RXBX1GhoGqxlpOj75NO5GBkygO1s+/H1nQpGLBr+g+Xoib5SAksoimQx61mnH+IfG8K4Xf+6sQjhXegsPocRHk86o1iWwg29MBzFNrCVcA14e9N4iuXH9E1PDI8kwfpFBtETDCFB7F95FcYBe+lS/D21OyY0U2cwUOGp1NRTmYTzjMsn5bnw5YDCKgA9rWzwIx00fwpca3rOHu9l4RYA96w0ZixW4dsPDNTA==
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(376005)(366007)(921011);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WjBCVGJrbStIbzJXRUUydlNjRElSQ2NSVy85cGtBKzE1RWVlNXRyd3orbTMx?=
- =?utf-8?B?dTZiYWd4S29HTzVleFJsdm5uazRVSFR2Sm9FK2sxQjZaMi9Gb2o4OUcwdGph?=
- =?utf-8?B?Y3QvNDFZOXk3TWpBSjBiUktNVStOL2FKckxTVHFmMDlHcmRYQ2krRHhVNHR5?=
- =?utf-8?B?Nkh1NWx3bXQ3UmR1K2JmR3lvRStEKzZDaXhVTmxjVkZFSWVMRklLSndFd2xt?=
- =?utf-8?B?QWxPdUlkVHZsZlY5L3J3UXZRVHVYbGJnZ1JHS1NWQlhTL1pMUFl0S2xzVVpa?=
- =?utf-8?B?a2xPMWlWVHM2Q0F2ZG9iMHR0MUpiSVJ1OUhQMS9WR1dTbFB3MHlZTXhuSnFs?=
- =?utf-8?B?bG9WaEg5cUF2cTFjZnFzc0ZVcGxsVmZHaXRIK1AySzF0ZndjM3M2cTFDMUhw?=
- =?utf-8?B?ckJnRjlVQTUramF2T2s3U1Rud2IxNDVNamFTVGFYcUJMcDg3N24rSGRjZXAr?=
- =?utf-8?B?MXdZODhVeDdPb004TmNweFJ4NzFRZk5uS09UaktGQXNnWWFNUVlvcUFkU3NC?=
- =?utf-8?B?cUJxSXhQdGpyalgxS1RISG5VdUpUdlorYnFLSlFvalJQeVhUclNydnM2Wksv?=
- =?utf-8?B?UEhqUGZqSG12bEp5UW55MHUrNmErK3Z5MkEvcktoNVVOdjlnYWxLbzk3cGYw?=
- =?utf-8?B?eis0MldoTVJTR0VBV05VZS8zclNQMzFjRUlOeEVCNnlHcThrK3krcTR3VFlW?=
- =?utf-8?B?MVA3YzQzcnkwM0JDNDRLTVF5UUttb090WFNMV2gvZy9EVkE3NnAzcDQ4VEVs?=
- =?utf-8?B?SWptV0UwcEpVdmkxS3VpWU9nQm15aFhXblliZ1pmT08walFQNzZpSCswWXZ6?=
- =?utf-8?B?d2NLbTg4WU1QQUFLVmRjQlpmOTVSbWpiSFZDN3JQdkZDMDkyR0M3SzlBc2VF?=
- =?utf-8?B?c2NTZzdNVVQ5b2FwQmQvYi9xV2lhTlRrSVhqVEpJaGx3cVdRUkNiMWhiYmpP?=
- =?utf-8?B?VUUySzVBUWhPSGhMK0xvMjBxUUJDR2tzcDZzdHcxM0U3Rjl1eFcyOUhPZlN3?=
- =?utf-8?B?MmFKQ2JvVHl3bjZaNzBWSnAzMUpUTmd0cXc0VmZkMGFJR0QvaG8xMEJscE9H?=
- =?utf-8?B?NHhWdVBkdHpHR0FjeTNydlY2MUlWYjBsbjhxVi94ZXprNUd2RTdyMzFDVDlj?=
- =?utf-8?B?S0p0Qy82SVJXYVFiWHVFTGZ4dERqWE50eDhyV2tyeFFKbWU5VEVETUFzRjAw?=
- =?utf-8?B?Q2hDOFFSSWJWcHJYYmZWRXZzVUcrYlMwV0pudGswakJiODJpRGM1WFdyT0hV?=
- =?utf-8?B?SFl1RW5xemJIY2Q4QWVyN3k0K0UzUm1WVENQQS9GcFhlOTdwdFQ0d3cxdG5v?=
- =?utf-8?B?OWdaVUlkTTlPdlJiOS9EWE5tUXNBQkkvL2pGSG5UdmgzZUhWOVg3cDZaZ0gr?=
- =?utf-8?B?RlZiRlVhZTVsWS9yeUNlQm5zc0N4Ui9aQnVyVHU1OTRRdk91czhqN0k5dktl?=
- =?utf-8?B?NmNNRUZuRFdzUWpuUXBjQ2JwOEFmTTBleXhRZTY4RUVQTkJRRXI0SktUTCty?=
- =?utf-8?B?eVZpdWU3UW1DMWNVUFNkQjVtSGRwZnk4ZEJCSVdmK0FzSTYzaEFKZ2tjNytQ?=
- =?utf-8?B?SW5obmJESnp6eGlCdjNDVkI5QnNHUllMRmM5U3A5WTV4U0VYbXMzck9ab1pK?=
- =?utf-8?B?TXIzL0FlSEpnbFRoZEZwOUYvL1RUN3VDTld5Um03eDBDTVJsSmhDKy8zcmJY?=
- =?utf-8?B?b3hMbG1VYm04Nk1tN1V5RUpOQUp3VVdqcWZNS2o1R3BjTHRsREgva2JjK0Y0?=
- =?utf-8?B?TGFXMmUrdEdKVm5DNnpORW52aGRZL1V2bzYzS2g4Vm5WU0l3OENHSkk2WVdr?=
- =?utf-8?B?NEpsRCtrYlVGM0grWUZ5YWUrbTh4TVlIYlhnT3RiNEdCUU5nZDlJenB4K2Vz?=
- =?utf-8?B?SmgzenJPYXJ1S1V5Sm02MkFhZW9OVHVYOGYza3luaUVNTkNjSko4NW1lWk5m?=
- =?utf-8?B?OEtvWGRPTkdpeHgvcURQdE5jQTcraEtnQW0xV01ORUdNL2wrbUc3dW92cmU0?=
- =?utf-8?B?Snh0M0tBVnhCTGZROEZzWjBoaGI2MEcyN3FkM3VpQkFWMFR3d3lHemJYazQ2?=
- =?utf-8?B?RlJoQkZ5WW9yUjkxNFlEMFBvOCtFenFDanpxbk9TZDA5QXgybzBpZEdTT1o0?=
- =?utf-8?B?b0dUaUJ6TVdnZm9pSkR3Z1hOMXVxTmZQU1hZd282ektqSi9pMm8wU2xWVVVK?=
- =?utf-8?Q?7x2mGcXh3FUHVGx7s7zSy9I=3D?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 688e077c-0db0-46e5-b900-08dc47310d6f
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:51:58.5510
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: lJQasXtzwVfSFSuleFuKCOHbfVMCmaucZeVZ6bOSyxWMKRYLsU72alxkogHVbpexeriyyUnP6AE6lmMjTk+oeTf9UuYj7HK+zETLGEKK+kH6mdXXhY12A2F3Bu/MI7v/
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR01MB6473
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+X-B4-Tracking: v=1; b=H4sIALgO+GUC/42NQQ6CMBBFr0Jm7Zi2AkFX3sOwaKYDTFRKpkg0h
+ LtbOYHL95L//gqJVTjBpVhBeZEkcczgDgXQ4MeeUUJmcMaVxrkTznESwvRs6srga0qzsn/iEO7
+ IzlIX6s4GbiDvJ+VO3nv71mYeJM1RP/vVYn/2n+pi0SAR+bqsKJyNvT5k9BqPUXtot237AlXgR
+ JTDAAAA
+To: Bjorn Andersson <andersson@kernel.org>, 
+ Konrad Dybcio <konrad.dybcio@linaro.org>, Rob Herring <robh@kernel.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-arm-msm@vger.kernel.org, devicetree@vger.kernel.org, 
+ linux-kernel@vger.kernel.org, Neil Armstrong <neil.armstrong@linaro.org>, 
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+ Vladimir Zapolskiy <vladimir.zapolskiy@linaro.org>
+X-Mailer: b4 0.12.4
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2194;
+ i=neil.armstrong@linaro.org; h=from:subject:message-id;
+ bh=PIfBWZ6wslpgmOaI5QqBZUbYKMOZbqTD0EQ38/257Fw=;
+ b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl+A66PVCQkfCUV58DJMMXLdfhNUsK1ofUOI4Uimxs
+ UAspql6JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZfgOugAKCRB33NvayMhJ0Z6OD/
+ 9xGb36ZvV2cADpQDRDltw1IKUXo6WwBxRjHH/VFMcV4f77D61GjFNjGurrvkZlc+gTJzRNyGi6mYPg
+ 3Wbz5cjx1X6BnGwpQ420Qyir+OZGLT6YlpBgkXphaXz7/c2OShck+eFNOFSjRF8u19nAb+72vKyRHc
+ kPrsbFG0f3B1eh0txyyEmXHEzzbczU5rvUGsb+CpQ0AXA6q4eayqMImX0Plc9u+5Vli/GGGUTij42Y
+ DPzOnrv86Kp8M9+N1U4dmQ5HvfhvZhXqa3qVmQsBZA+jJzeC/xLVuBa2VYcD++UUCmc5RuVzaK8iR2
+ 85Z2Upv/V1lT1cbGDoJfmcsOlRxBFSgeERRClSji8EqFmADngJGsk1SG4dFf+SE5kpwQNzPcJw38/1
+ fi4tgjUtU2fVXJKEXhO2i9thmk0v+y54+AmKYaREbixQ9JS59323p1VE39CfrAwNlBUGeqNsYMzI30
+ ihvIBULQY3ikD0RO0oWoUbbQDJJxIqgJ4VBX7PVPVK6cfxMpLtonWCrshK+WHYFrjv0XYBYLSRLfYP
+ MSDMQRn6U2ccYWtyo02RAAV53bq2ULntukQUpHTMEzt756tSzeiM/n6UDZXDwintPhTalqGD7HBVGA
+ 67lg+B3BPwGyK876TC/SOh6r0CZOadrHY1NsE5QE78JaITOcX+AkLH/Ctcqg==
+X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
+ fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
 
+The SM8650-HDK is an embedded development platforms for the
+Snapdragon 8 Gen 3 SoC aka SM8650, with the following features:
+- Qualcomm SM8650 SoC
+- 16GiB On-board LPDDR5
+- On-board WiFi 7 + Bluetooth 5.3/BLE
+- On-board UFS4.0
+- M.2 Key B+M Gen3x2 PCIe Slot
+- HDMI Output
+- USB-C Connector with DP Almode & Audio Accessory mode
+- Micro-SDCard Slot
+- Audio Jack with Playback and Microphone
+- 2 On-board Analog microphones
+- 2 On-board Speakers
+- 96Boards Compatible Low-Speed and High-Speed connectors [1]
+- For Camera, Sensors and external Display cards
+- Compatible with the Linaro Debug board [2]
+- SIM Slot for Modem
+- Debug connectors
+- 6x On-Board LEDs
 
+An optional Display Card kit can be connected on top,
+an overlay is handled to add support for the DSI Display
+and Touch Controller.
 
-On 11/03/2024 23:55, Krzysztof Kozlowski wrote:
-> On 11/03/2024 12:13, Chanh Nguyen wrote:
->> Add a device tree bindings for max31790 device.
-> 
-> Subject: drop "driver", bindings are about hardware.
-> 
+Product Page: [3]
 
-Yes, I'll drop "driver" at v2 updating.
+Dependencies: None
 
-> It does not look like you tested the bindings, at least after quick
-> look. Please run `make dt_binding_check` (see
-> Documentation/devicetree/bindings/writing-schema.rst for instructions).
-> Maybe you need to update your dtschema and yamllint.
-> 
+[1] https://www.96boards.org/specifications/
+[2] https://git.codelinaro.org/linaro/qcomlt/debugboard
+[3] https://www.lantronix.com/products/snapdragon-8-gen-3-mobile-hardware-development-kit/
 
+Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
+---
+Changes in v2:
+- Fixed commit messages with links, and recently added product page URL
+- Swapped i2c3/i2c6 nodes
+- Moved pcie_1_phy_aux_clk under pcie1_phy
+- Removed duplicate mdp_vsync pinctrl state
+- Collected review & tested tags
+- Link to v1: https://lore.kernel.org/r/20240223-topic-sm8650-upstream-hdk-v1-0-ccca645cd901@linaro.org
 
-I tested the binding, I didn't see any warning/error log. Please review 
-my logs as below
+---
+Neil Armstrong (3):
+      dt-bindings: arm: qcom: Document the HDK8650 board
+      arm64: dts: qcom: sm8650: add support for the SM8650-HDK board
+      arch: arm64: dts: sm8650-hdk: add support for the Display Card overlay
 
-=> make dt_binding_check DT_SCHEMA_FILES=/hwmon/max31790.yaml
-make[1]: Entering directory '/DISK4T/work/community/linux/out'
-   DTEX    Documentation/devicetree/bindings/hwmon/max31790.example.dts
-   DTC_CHK Documentation/devicetree/bindings/hwmon/max31790.example.dtb
-make[1]: Leaving directory '/DISK4T/work/community/linux/out'
+ Documentation/devicetree/bindings/arm/qcom.yaml    |    1 +
+ arch/arm64/boot/dts/qcom/Makefile                  |    5 +
+ .../boot/dts/qcom/sm8650-hdk-display-card.dtso     |  144 +++
+ arch/arm64/boot/dts/qcom/sm8650-hdk.dts            | 1259 ++++++++++++++++++++
+ 4 files changed, 1409 insertions(+)
+---
+base-commit: 2e93f143ca010a5013528e1cfdc895f024fe8c21
+change-id: 20240223-topic-sm8650-upstream-hdk-e21cfd6f1de8
 
->>
->> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
->> ---
->>   .../devicetree/bindings/hwmon/max31790.yaml   | 44 +++++++++++++++++++
->>   1 file changed, 44 insertions(+)
->>   create mode 100644 Documentation/devicetree/bindings/hwmon/max31790.yaml
->>
->> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> new file mode 100644
->> index 000000000000..5a93e6bdebda
->> --- /dev/null
->> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
-> 
-> Filename like compatible.
+Best regards,
+-- 
+Neil Armstrong <neil.armstrong@linaro.org>
 
-Yes, I'll update that in v2
-
-> 
->> @@ -0,0 +1,44 @@
->> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
->> +%YAML 1.2
->> +---
->> +$id: http://devicetree.org/schemas/hwmon/max31790.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: The Maxim MAX31790 Fan Controller
->> +
->> +maintainers:
->> +  - Jean Delvare <jdelvare@suse.com>
->> +  - Guenter Roeck <linux@roeck-us.net>
-> 
-> You should have here someone responsible for hardware, not subsystem
-> maintainers.
-> 
-
-Hi Krzysztof,
-I checked the history of the drivers/hwmon/max31790.c and see Guenter 
-Roeck <linux@roeck-us.net> as an important maintainer. I saw many 
-commits from him. So, I add him to maintainer list.
-
->> +
->> +description: >
->> +  The MAX31790 controls the speeds of up to six fans using six
->> +  independent PWM outputs. The desired fan speeds (or PWM duty cycles)
->> +  are written through the I2C interface.
->> +
->> +  Datasheets:
->> +    https://datasheets.maximintegrated.com/en/ds/MAX31790.pdf
->> +
->> +properties:
->> +  compatible:
->> +    const: maxim,max31790
->> +
->> +  reg:
->> +    maxItems: 1
-> 
-> That's weirdly empty.
-> 
-
-Hi Krzysztof,
-I have not yet understood your comment here. Please help give more 
-details for my missing! Thank Krzysztof!
->> +
->> +required:
->> +  - compatible
->> +  - reg
->> +
-> 
-> You miss allOf: with $ref to fan controller schema.
-> 
-
-Thank Krzysztof,
-I'll add the allOf at v2.
-
->> +additionalProperties: false
->> +
->> +examples:
->> +  - |
->> +    i2c {
->> +      #address-cells = <1>;
->> +      #size-cells = <0>;
->> +
->> +      max31790@20 {
-> 
-> Node names should be generic. See also an explanation and list of
-> examples (not exhaustive) in DT specification:
-> https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-> 
-
-I suggest some node names, such as "i2c-fan" or "fan-controller" . Can 
-you please share your ideas with me!
-
-> 
-> Best regards,
-> Krzysztof
-> 
 
