@@ -1,97 +1,86 @@
-Return-Path: <linux-kernel+bounces-106125-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106126-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5444587E97A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:40:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C1D887E97D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:41:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E8A9B1F23295
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:40:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DCD281F22F97
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:41:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11A8536B11;
-	Mon, 18 Mar 2024 12:40:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Enfm3adz"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C8EB364A4;
+	Mon, 18 Mar 2024 12:41:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 543321E49B;
-	Mon, 18 Mar 2024 12:40:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 96BAF208CA;
+	Mon, 18 Mar 2024 12:41:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710765628; cv=none; b=rS721cYsBY03NaY+hbKt7qquARqic54Q39NuXZekNAkxq/Y4auxLJEffF/YVhyVMBpsc8lnzRItEJ6ffGVFQo5Dapphlfph/hLetCmAd/excwoJgt6X2bSBvmnzYNNG//VETbb8/TRnsNA4uz4zqvPuQUy0caIUxMEQoPpDfh00=
+	t=1710765672; cv=none; b=TlUNxmvS9dIvBW1oTZLgqjPZRe9ovjsM4coCj+/QjAwptOauSrG2lC3RDpIBrs/DPHkBsNiM7xUazHlUf8lnyJ5KoAAeVLWa4hRzGi47dQiuzhGizQs0rd2Aid239GCTc78/3q9OgpUA7VrU3nBKABzOsr1Z5ZBcWaMqvvy7RqE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710765628; c=relaxed/simple;
-	bh=5XX7xe2v9TVwMD/Q7kw64MatCriscLje9aNzRQpdmKA=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=pCcxxMAFXO4V7nehnEvYijYcvs3Abl7+UEp8I6N9q60XG+kP+dBcseO/RvQJirdkNG6eIJaKt9egvU2/2f8xt1rxf5T5OqpwINQCMvxtzjlq1wUEG1OTb44hPwpuqkBvXR6STIsuFFDKEBzh7fKr/1LkGjMy5wgwHrLwqM7JYq0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Enfm3adz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id DFAABC433C7;
-	Mon, 18 Mar 2024 12:40:27 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710765627;
-	bh=5XX7xe2v9TVwMD/Q7kw64MatCriscLje9aNzRQpdmKA=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=Enfm3adzTkG0gOHfGHXsJ5kFUygBBIvLr+lkMdhyabmfyuaWwsV5/rCe4XEMFygX+
-	 mW8iQI3G8JD4MG+8MN+jFegzCzHS0XAGRSkgyvWvDFr9ZQRicq/pS2Dz+Z81zPFO0N
-	 P5k6DQ19TpSrasIR8D2yWc3XofRHun3HhUkwmGOei3ByPM7z18I8cjSgUq03rIlNFS
-	 d/YJD1vmALAFtGy2x7gSmkozlvtxM2YCPklEeW59/OCAFTse1mw8w+NuO8zOkHHE8n
-	 2U1SDa1N8zj4VFMS8Mha4zaKjxdhj79vGJzohko/r/biwcFJZdHpbLl2C+LPrcpt/V
-	 iqKX1o43ZK8YA==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id D0061D95053;
-	Mon, 18 Mar 2024 12:40:27 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710765672; c=relaxed/simple;
+	bh=hbCWsyyyVc2IxKC9ULbhavy+FEcr/XWMY4tqRuI8NbM=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=FeToIy0gel4O/fEEFX1CXs72QzPP3A5U8L0MUW2BJmLXHz+rKFmHr83L0I2p8Jo+E1NyC+qFQsVvP5LDwlImmfWjssQ2YGocpiuqmyQ1ereMcaclhuTQxi9xjRJIf4ytxHUV5mwBj2wTOW0woSAqfXz2Kqe1habkg/5M6hCYGsE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TyvbD1T1pz6K6ST;
+	Mon, 18 Mar 2024 20:40:40 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id D5A75141D1E;
+	Mon, 18 Mar 2024 20:41:05 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Mon, 18 Mar
+ 2024 12:40:42 +0000
+Date: Mon, 18 Mar 2024 12:40:41 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Andy Shevchenko <andy.shevchenko@gmail.com>
+CC: David Lechner <dlechner@baylibre.com>, Jonathan Cameron
+	<jic23@kernel.org>, Michael Hennerich <michael.hennerich@analog.com>, Nuno
+ =?ISO-8859-1?Q?S=E1?= <nuno.sa@analog.com>, <linux-iio@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
+Message-ID: <20240318124041.0000032d@Huawei.com>
+In-Reply-To: <ZfX5jynjW4M9pvw1@surfacebook.localdomain>
+References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+	<ZfX5jynjW4M9pvw1@surfacebook.localdomain>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net-next v3] Revert "net: Re-use and set mono_delivery_time
- bit for userspace tstamp packets"
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171076562784.6189.6426367474212497766.git-patchwork-notify@kernel.org>
-Date: Mon, 18 Mar 2024 12:40:27 +0000
-References: <20240314192404.1867189-1-quic_abchauha@quicinc.com>
-In-Reply-To: <20240314192404.1867189-1-quic_abchauha@quicinc.com>
-To: Abhishek Chauhan (ABC) <quic_abchauha@quicinc.com>
-Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
- pabeni@redhat.com, netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- ahalaney@redhat.com, willemdebruijn.kernel@gmail.com, martin.lau@kernel.org,
- martin.lau@linux.dev, daniel@iogearbox.net, kernel@quicinc.com
+Content-Type: text/plain; charset="US-ASCII"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-Hello:
-
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
-
-On Thu, 14 Mar 2024 12:24:04 -0700 you wrote:
-> This reverts commit 885c36e59f46375c138de18ff1692f18eff67b7f.
 > 
-> The patch currently broke the bpf selftest test_tc_dtime because
-> uapi field __sk_buff->tstamp_type depends on skb->mono_delivery_time which
-> does not necessarily mean mono with the original fix as the bit was re-used
-> for userspace timestamp as well to avoid tstamp reset in the forwarding
-> path. To solve this we need to keep mono_delivery_time as is and
-> introduce another bit called user_delivery_time and fall back to the
-> initial proposal of setting the user_delivery_time bit based on
-> sk_clockid set from userspace.
+> >  struct ad7944_adc {
+> >  	struct spi_device *spi;
+> > +	enum ad7944_spi_mode spi_mode;
+> >  	/* Chip-specific timing specifications. */
+> >  	const struct ad7944_timing_spec *timing_spec;
+> >  	/* GPIO connected to CNV pin. */
+> > @@ -58,6 +75,9 @@ struct ad7944_adc {
+> >  	 } sample __aligned(IIO_DMA_MINALIGN);
+> >  };  
 > 
-> [...]
+> Have you run `pahole` to see if there is a better place for a new member?
 
-Here is the summary with links:
-  - [net-next,v3] Revert "net: Re-use and set mono_delivery_time bit for userspace tstamp packets"
-    https://git.kernel.org/netdev/net/c/35c3e2791756
+I know this matters for structures where we see lots of them, but do we actually
+care for one offs?  Whilst it doesn't matter here I'd focus much more
+on readability and like parameter grouping for cases like this than wasting
+a few bytes.
 
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
+Jonathan
 
 
