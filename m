@@ -1,178 +1,226 @@
-Return-Path: <linux-kernel+bounces-106399-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106400-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 24C7887EDF9
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:51:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 59BB087EDFE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:51:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D114C28393D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:51:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 103C82839A6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:51:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6F9C56774;
-	Mon, 18 Mar 2024 16:49:09 +0000 (UTC)
-Received: from mail-yw1-f180.google.com (mail-yw1-f180.google.com [209.85.128.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1CB6754BD5;
+	Mon, 18 Mar 2024 16:50:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="Ng+NzCtA"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2121.outbound.protection.outlook.com [40.107.212.121])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 05CCB5646A;
-	Mon, 18 Mar 2024 16:49:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.180
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710780549; cv=none; b=DLbwFmSpXoZCAiMdcbm8KqnHjHeG0WCqnkVEfpNAzdY+W4PqMIuGAhDw28FmkGGnakJN0kpu8KzVbh6OqgKq/IAx/EcDO8DZuVpPBFJYXawFrWfEBl80exKkRTP3F8N9/fYJagyXtPrDXWdabknD0FYeoQFzFoQuypc2KvNSqo8=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710780549; c=relaxed/simple;
-	bh=9BLHtiOM2Y9S3eBqUD6Y6l0tWRCU28HpRShaWs4UV1Y=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=hDjbalqWPSXMI+3j8xbjZtHuGI/Ix2pWPMPtjnSb+0CvktopCMVCQ2R7TPFhNCFGyC2PIP76ZTPp4JmZ7byPwcBgO4rXvPGq+0uxxqsnR1Aq87iHNNoncH6omAP+w5PUes/Iucs0w9U3Y71rnn+/YEvQyvDkCwUJitp603FHSec=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f180.google.com with SMTP id 00721157ae682-609fb19ae76so48931247b3.2;
-        Mon, 18 Mar 2024 09:49:06 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710780545; x=1711385345;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lcxd8RIGuWD0U3DfwA0Q+JXL0ze4DLYKVsNL4T9NgQ0=;
-        b=HQbZR02imzgB/DRBdF3CQX/iWkfFxrfx+d7aryPCJUuxcOQNWPcWqRPupC+HTHB6Wy
-         r1jbSGRgBmH5H/AA4eJpPQXBuPaV+wVxvenVp/Bx5W3AmYsK/q0oe3LsJnXne4D/qvMT
-         sNEJ5CdXJoyQ2Ctg8PggwUyiOvE2vXARHez7frOUDp6X0oEFvXD+aE7QIFwmAEvwlhJN
-         QUc6wtYrYEOMew4jn9biBdJjbd00eH8V4HtnjmqcX4uisrkc/5EwNc5Al0aXjhslEcCF
-         jDxdSs+25NcwSiF6EhfqLmNHQxn7E0cUoGB9mmTsGGP4L9ZMYVq2XAH+glAV5xn30gjm
-         65hw==
-X-Forwarded-Encrypted: i=1; AJvYcCXZQ682CzkVAT2hN2oL9ZfuZVECkH5idaV7cIcVrfhAUOYOAz+mGvGa5/52hT9jGTEXptI2y1uyLouw/s0oXXBzsEPJ6Kh057vL1f3MiRjvFbEEGte2UU0gPC8VbFhBbwupZSpSWqWLHBYUuIP0/qRkR0hb3uxStfKmTfeDCxRMWlNVfccLh8pNmgKNZVxpcUFOpv1In/L2uaq0VMGOAfjGfKFYrdMx
-X-Gm-Message-State: AOJu0YyujttXw8EhawQ/l2jbJHcqO2PddDKHQjy3xZ+9yr2g3JuWtyps
-	9mrH58Cp3/WaNIdXtdNeB65yWBq350XRqb/7ILXnG2iuyNcncve9RJKLENjGTnY=
-X-Google-Smtp-Source: AGHT+IFgG+saLyFC5zOSIJGAOufrLKp7GhIg9yxq/uDcDGT9oWhN79rdzqdXvua7LysgjxQmeaZhYw==
-X-Received: by 2002:a81:4849:0:b0:609:f87b:aad3 with SMTP id v70-20020a814849000000b00609f87baad3mr11100419ywa.31.1710780545000;
-        Mon, 18 Mar 2024 09:49:05 -0700 (PDT)
-Received: from mail-yw1-f182.google.com (mail-yw1-f182.google.com. [209.85.128.182])
-        by smtp.gmail.com with ESMTPSA id b12-20020a0dd90c000000b0060a5795fde5sm2021194ywe.98.2024.03.18.09.49.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 09:49:03 -0700 (PDT)
-Received: by mail-yw1-f182.google.com with SMTP id 00721157ae682-60a068e26d8so52487677b3.3;
-        Mon, 18 Mar 2024 09:49:03 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVYlpclFdu9jmbE2SI3Mxd428aEv5L4q1I2MrHtfehsjsZOl0ew+U4+9kYWFE1hUgtufrFI+R1I5wEZwV7L/0qSdJxrkpNpmlw0wkXFrMNdC8EsKo18EqReiA7Zgh1osWoBmGBeP06iGzjiPkFCw6InmKQSWcgSLA4V98yHqMa8J3EBi7tNaiL3z/m3J46414JdFSchb8eoB/2VZjf4rfMa5Q2c333o
-X-Received: by 2002:a0d:f3c4:0:b0:60a:38ef:82f9 with SMTP id
- c187-20020a0df3c4000000b0060a38ef82f9mr11889664ywf.37.1710780543176; Mon, 18
- Mar 2024 09:49:03 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4033654BD2;
+	Mon, 18 Mar 2024 16:50:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.121
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710780656; cv=fail; b=lnL06ZPKPL+LSCc67PP6fx/YFnBuL63ccc/8HsYRAuKS7DkwMmU+Yvjz9dgwle3iOeiVtIGP9unFO7IOcVtC5twsLmay/ZU5CzjbHV/XbvlxBWgCk9oDXTs5RdBsU7jOxGPRYnnWg5seHO2/GCeb5eD0GHsDgpi+uVP0FaXUD8g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710780656; c=relaxed/simple;
+	bh=fBpa2DNSVvHo0LpAolDsgcoVbQL/1ZCqFfkL4ewTIRI=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Ehmyb6lMPxDW8eVpSzluVeMEgrfu7hVKQ0LEd/ey1AAIJwooYByLf/InbTKT/Zc53l7V6zmyAqb2AJdjNRlTi+ZatC3TJI0yis0F3PkE0qAjz6MCpWKq/2Rm743tFSWZBM+/Ue6ttOGtfh50fYzE/zhUPcliIaLmykM1wQbU/zY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=Ng+NzCtA reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.212.121
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=QV9HTSEMQkIVDAbVmcb2b7p8ekJ2roXBYdVdJge/2CXFLvyFLtUi3UC/PdMrfJORwtIfBjMi2zuSKmMbgVO08zqi+kUpGbLTIBml64I4Y7HkEaLwYDbIvE0NRtIOkD9L55/jwK7M1VqOvu6vQ94cvIVbNPRnYzmjQwn+kBq7pZkc8AW8SfiTBnyChs7z3Lve2KesYn1Ocxg1DF7wGVVc6BZVPTf5aTI3Bbf7kUgI3t57pIAFNt6fzE9qINTM8GkygvXNcYtUTqTYqwc/KUUk8Sz/nG6ynifY4rsuSkmioqXjIWhcbHpliLRI8OswQLJwuH0XLOkOA0P1+GrjSsguUg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HE48w1eUljyjT1r0DoeIvCeFYZOogsmMvflmgdqT2/Y=;
+ b=SPguZ4pQklDmczou5P640K1EYD8wfgLg5Fd+Q5Q69KgxOmrb5Nq1svFUtohadFsxh0iNh7X/ejL0StK1zZXwN8gdSdr2Gr7DepPaMmjRar4OcKr6ffbjLNXcByZAP4gTZ53oz/UbsXLQrsdhd3TxShm096z+qu3USyvGnSKqKYiUGOiJguDrdDJgbdX7gQfvNwRoGoNrjv21doTS9KGCB0k/El4OtZVsi4G5mwpHCiUv3ry9cnAYwT0sYhrmfwhBWGFqLDocHbyiN24KxJomVlMULFbhNX3/BVOmzw1S2/oJ/m3bQNoRxBzMaQERFJe1bJDVyUUPx/E799zi0cNrSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
+ header.from=amperemail.onmicrosoft.com; dkim=pass
+ header.d=amperemail.onmicrosoft.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HE48w1eUljyjT1r0DoeIvCeFYZOogsmMvflmgdqT2/Y=;
+ b=Ng+NzCtAyyV0TSrNxdkNIjAyvdTOWXY3DvXs4cRD8NJdredURv4qLWvy88zkjnvIiXWqYn+MNoDtMIIuR070frLikOyQaGLwIRUf1THWJyr+y7FiINUJ9su/H/PI9ZvJU6sztXlJf4jAR7HV4dpBZsBYE3H+TjgFJYFLhj5uQsM=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
+Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
+ SA1PR01MB8251.prod.exchangelabs.com (2603:10b6:806:389::10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.26; Mon, 18 Mar 2024 16:50:50 +0000
+Received: from DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
+ ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 16:50:49 +0000
+Message-ID: <e7ae980c-8408-46e3-909d-29b3d7e1e050@amperemail.onmicrosoft.com>
+Date: Mon, 18 Mar 2024 23:50:37 +0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 3/3] dt-bindings: hwmon: max31790: Add
+ pwmout-pin-as-tach-input property
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Chanh Nguyen <chanh@os.amperecomputing.com>, Jean Delvare
+ <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Justin Ledford
+ <justinledford@google.com>, devicetree@vger.kernel.org,
+ linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
+ OpenBMC Maillist <openbmc@lists.ozlabs.org>,
+ Open Source Submission <patches@amperecomputing.com>
+Cc: Phong Vo <phong@os.amperecomputing.com>,
+ Thang Nguyen <thang@os.amperecomputing.com>,
+ Quan Nguyen <quan@os.amperecomputing.com>
+References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
+ <20240311111347.23067-4-chanh@os.amperecomputing.com>
+ <9d1207f1-4941-4f2a-99d6-371f5b4709f5@linaro.org>
+ <f281d2b1-54ff-4e5a-83b9-5b05f18c40fb@amperemail.onmicrosoft.com>
+ <7252305b-4c7c-4cec-8ef1-8bf96293b469@linaro.org>
+From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
+In-Reply-To: <7252305b-4c7c-4cec-8ef1-8bf96293b469@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: CH5PR03CA0016.namprd03.prod.outlook.com
+ (2603:10b6:610:1f1::28) To DM6PR01MB5947.prod.exchangelabs.com
+ (2603:10b6:5:1dd::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240307140728.190184-1-claudiu.beznea.uj@bp.renesas.com> <20240307140728.190184-9-claudiu.beznea.uj@bp.renesas.com>
-In-Reply-To: <20240307140728.190184-9-claudiu.beznea.uj@bp.renesas.com>
-From: Geert Uytterhoeven <geert@linux-m68k.org>
-Date: Mon, 18 Mar 2024 17:48:50 +0100
-X-Gmail-Original-Message-ID: <CAMuHMdVdn9K1gKJAKyyDz8ObaJboknE_qqYfS_vyxNU+zhRWPA@mail.gmail.com>
-Message-ID: <CAMuHMdVdn9K1gKJAKyyDz8ObaJboknE_qqYfS_vyxNU+zhRWPA@mail.gmail.com>
-Subject: Re: [PATCH v2 08/10] clk: renesas: rzg2l-cpg: Add suspend/resume
- support for power domains
-To: Claudiu <claudiu.beznea@tuxon.dev>
-Cc: mturquette@baylibre.com, sboyd@kernel.org, robh@kernel.org, 
-	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, magnus.damm@gmail.com, 
-	linux-renesas-soc@vger.kernel.org, linux-clk@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|SA1PR01MB8251:EE_
+X-MS-Office365-Filtering-Correlation-Id: 505d79d1-8c4c-4e6d-6806-08dc476b90c4
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	+hx+Dv0yjN/GwkXH9EfLZ1a5NwdbNNTIZ9370LFYxv7eYAvo5zV6QQUt+70RPoF7Z64QlwPz2KAl3kAHSpZv9pTPQfoSUWJ6SkFy5uJThjxuLKNKnVTgFU1wkH8G96tcUbPtdg3ubc2tcT33ixhu4pND91jsaCehcrVSlKwrttSN4HvqfoNOnV1V1s7x3Nmz+/RLMHYTGbaLmFmn7lACrTJSLPg3vMRu8so84RsDKxrliYX9BLTYOFVMCA3Qt+X51BQ5zTqTEYGXyZGwyTwTiCBhELhKvHlt5B8DZ7a6BQqpXNXjGCsT6zmhJvAPF9tQgxCL9UTV3kmYzfB5UH+w812ONmekwzwNDYlQHfIRX0fxsTfTboMASRBwRpPLTdsmVaqCYdiqXpw4zjKXKJ29fAtDAzrwizHmJO2p1C1ZV8kl46bxfj/DXCuU0L7CDk/29UKbgU54keH1EyTZiDiaXqpULYUmHTSyx93ak526ocuhpgI4MwxKuHyCwOxJisHiOVh4uSYQuAaCycdAmbwXmBhnslpX9XfvjBeD0bHkInfSa4yRtWEhpF/ELlkB6Titzg5UG3BqTGYftfX2q01DQbM2KJz5qkvUuwRZlCPAQUQ9sQYFIWrvCWqUIqt4qCpWQk/WtGK/3hg52n06+VKFWIS7IWNYVcXqv1ujoW4fSHMcHCuITInWxjGZBtfP9sP6mk7hHRy/DQxUMgBi44hIeg==
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015)(7416005)(921011);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?c0RGV2ZvQ001eWR1aDJGS3JwSkFvNlhTbUJUcGVIMVZmZXhUMlJWcnNmQncw?=
+ =?utf-8?B?SitTR1JFb0NiMVg0ckpPR1ZOY1RiUFFOVzNxSytLcFNvdm13VWpLendtVGNW?=
+ =?utf-8?B?TTFUUlZLcjZyL1BiTnFFb3dyUSt2bWl3UXp4c1lxNm9pblpwMlg0elNpcUNK?=
+ =?utf-8?B?cUdJNHdXSy9HUlNsUmhSNjZYOXJrTTk3eXp1OWc3Q1g3L1J6VHRPQlVWY1BT?=
+ =?utf-8?B?OFV5UXdhOGgva2s2bmtSbDdJVUJMd1pXN3A3VUU1NzJkWUJWaHUrcnZZV0Nw?=
+ =?utf-8?B?c2k4RHRIdGs1NzhwQWh2aGRmbG5sQ3RsWFZmbmdhZHN6U1dYd3hXVjFncTFy?=
+ =?utf-8?B?ck4wRFhqeVNCTFhuT1g2OE5WL3p4bi9FSU5YR2R2KzdHOTU0b0NSYTV6YVZ2?=
+ =?utf-8?B?OUk1RTZqRXMrbDBHZHRoTHJhTFRScXkwSkdiWGZDaklxZGlRRDc1Zmc3V0FJ?=
+ =?utf-8?B?SGIxckdpVkd2dXZFUVhob2dtK0VPUktQVk1zUkpOdzVwL1ZsZ1pjSG5wM3pH?=
+ =?utf-8?B?VUNRRkJNOG1lZVVJd3dGWkZ4aU5iMGhNZktKeElyTW5oSGs1SXhKSUVtZzlj?=
+ =?utf-8?B?ZDFKMmdzYzhOVVIwNGFWWjgyTWY0Z2l1SmV5TFRRaEFrRjBtMHJzNm9pbytI?=
+ =?utf-8?B?VnVZL25JeFRYUVRmYnNUdm5qUC9MMFJzeStTN1FyMU05TXNHOUk5ZUFhVHVm?=
+ =?utf-8?B?YmVnWXhqVUlDdnlHblBOSC9NQWEvYmlLUzRqOUdLR2hOSUt5NTBVVCsrMkho?=
+ =?utf-8?B?ZkZIYmw5NXVmb2JjSytjMDViM3RMQ1N3MjBGa3JFQ2tKYUFrZWFMNHVlSUYw?=
+ =?utf-8?B?RkRhZzA4U24zQUNMNG1nbVllVStCenVXOG5XNWY2L2g1SGNVMHFUMDN6QUxa?=
+ =?utf-8?B?QkgyaDk4VHlEeXVhZllwWGJTMlBHbkNwYXg1Y0hKNkpvdEpzK3ZhR3V3dUZI?=
+ =?utf-8?B?SW9KemFIaWFOc255b2h5NlZ0Vmk4cG5vVmR2MVJLanlhNW9XdU1aZFl2QWMz?=
+ =?utf-8?B?S1RrNmRTMVJzSDBBZ0x0aWREMGQrNjkyTlNzQ0QwVEY4VGVpRDZGeGVoTlJs?=
+ =?utf-8?B?THk0Sm5QTzMrZitza2hVSFZ0dTQrdE5WMkc0UW85STlScHZHcXNiRjJIQmRG?=
+ =?utf-8?B?ZUlodTBuTmJyYWdvZzZaRzFXM29HU0VzZVZIaWpIaG5SRGRoTlBib2dCN3hq?=
+ =?utf-8?B?OGQyZG5oYWZLYWpId051ZUg0VVVIVWFJTVlobi9mYXhZNlJlTFdqMGMyeXp2?=
+ =?utf-8?B?ZUFpcmNUODdzdEkyN1N4Z0NqSlRHVzhJdGRiZlZGcnVBaFFFSlFrWDJ0MUNP?=
+ =?utf-8?B?OHF6eHdOdjFCK090bjdaQkV0WUk0Q0F1N1A1bC8yTGRPSFZaRm4yOEthb21F?=
+ =?utf-8?B?VSs4dGFIMjJUR09KSnVxd0dybVh0MlRoWVM1MmIyTXZFaURRYUxGMmFHb3VO?=
+ =?utf-8?B?S3pPVUdRRVpNakNPQzJEaGkrcTRUZTU3aVhJTXhjVVRsdHhjK3djNjVRWC9M?=
+ =?utf-8?B?MmZKYlBVa0hiUjM4aDBTeWtISnE2WmJpbDVOTDUrVlNhamlTQmZycHdacDdQ?=
+ =?utf-8?B?bEJiM1dmTVJVWGdvL01uT2xPdGJRMDFIbXBwMDN2Skxnd0VISWRGUDNoYUxC?=
+ =?utf-8?B?YmFPc2NTM1ZNVXNBamh2MHF3L1BEYk5aU3dacUZmcW1EOW80bjBhaFlGU05H?=
+ =?utf-8?B?YUp0VzdmVmRsL0VnKzJnckJnUjZrR1JrSXkxTGpJeFVYby9Pdndqb3JXOW10?=
+ =?utf-8?B?cEFLMlpUVkpVSDZ1MEZLQjhiVzVBVVJUTnlSbFVNZHY0a01hZUVTUHRjSGlF?=
+ =?utf-8?B?Y25FV1duelBqVUozRkRKdDhCbzcwYlJHSENUNUdtVVZVaXpzRnBucG1QVTRo?=
+ =?utf-8?B?QjVrbndXUGRTeWt0S0VZaUQvMTFUOTdiUlNaSFpDWmdyRTRoaVo3TW9oZHNm?=
+ =?utf-8?B?aG4vWDMvdGcrVDIxTUJSWm52WklwZ2hQQnprL1FzNWxJU2tNeWtUNVF4ME04?=
+ =?utf-8?B?VWZHL2FJdFVNb2xQNGZsSTFuZWNZM1pKZDIvRUVTdllCRFpCYVAvSTV1U0E5?=
+ =?utf-8?B?QlBEa3crVnFyVjRMbFA5aGV2VmRObGxDaFVOQklCZVY0bHFtL0IyM1YrdXdQ?=
+ =?utf-8?B?cVF3M01BSk1JeFNrWDJBcEJBVWFPalBhN216UGNwRXMwNW1EZTUwWUdUc3Bu?=
+ =?utf-8?Q?GGENGJHs2jXTz6dSGrdBYrI=3D?=
+X-OriginatorOrg: amperemail.onmicrosoft.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 505d79d1-8c4c-4e6d-6806-08dc476b90c4
+X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 16:50:49.8441
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: +yl9N8Mht5+P49FyQTaNaahitdq/sh74CYs5iTGSXQKH0G6Az4J5zLtog5tmj4l7yi9mknIIkgu0mZfvSLqRiWWzG66aDe/AUT99nbhbR2DT+7py77+LeATODNwXFOU8
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR01MB8251
 
-Hi Claudiu,
 
-On Thu, Mar 7, 2024 at 3:07=E2=80=AFPM Claudiu <claudiu.beznea@tuxon.dev> w=
-rote:
-> From: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
->
-> RZ/G3S supports deep sleep states that it can reach with the help of the
-> TF-A.
->
-> RZ/G3S has a few power domains (e.g. GIC) that need to be always-on while
-> Linux is running. These domains are initialized (and powered on) when
-> clock driver is probed.
->
-> As the TF-A takes control at the very last(suspend)/first(resume)
-> phase of configuring the deep sleep state, it can do it's own settings on
-> power domains.
->
-> Thus, to restore the proper Linux state, add rzg2l_cpg_resume() which
-> powers on the always-on domains and rzg2l_cpg_complete() which activates
-> the power down mode for the IPs selected through CPG_PWRDN_IP{1, 2}.
->
-> Along with it, added the suspend_check member to the RZ/G2L power domain
-> data structure whose purpose is to checks if a domain can be powered off
-> while the system is going to suspend. This is necessary for the serial
-> console domain which needs to be powered on if no_console_suspend is
-> available in bootargs.
->
-> Signed-off-by: Claudiu Beznea <claudiu.beznea.uj@bp.renesas.com>
-> ---
->
-> Changes in v2:
-> - none; this patch is new
 
-Thanks for your patch!
+On 18/03/2024 17:02, Krzysztof Kozlowski wrote:
+> On 18/03/2024 10:48, Chanh Nguyen wrote:
+>>
+>>
+>> On 11/03/2024 23:56, Krzysztof Kozlowski wrote:
+>>> On 11/03/2024 12:13, Chanh Nguyen wrote:
+>>>> Add pwmout-pin-as-tach-input property.
+>>>
+>>> Why is this split from original binding? This does not make much
+>>> sense... Add complete hardware description.
+>>>
+>>
+>> Ok Krzysztof, I will merg the "[PATCH 1/3] dt-bindings: hwmon: Add maxim
+>> max31790 driver bindings" commit and "[PATCH 3/3] dt-bindings: hwmon:
+>> max31790: Add pwmout-pin-as-tach-input property" commit.
+> 
+> Later I checked your driver code and this explains a bit. However first
+> patch should explain that instead. The split is fine, but just lack of
+> rationale is confusing.
+> 
 
-> --- a/drivers/clk/renesas/rzg2l-cpg.c
-> +++ b/drivers/clk/renesas/rzg2l-cpg.c
-> @@ -1700,6 +1719,8 @@ static int __init rzg2l_cpg_pd_setup(struct rzg2l_c=
-pg_pd *pd, bool always_on)
->         } else {
->                 pd->genpd.power_on =3D rzg2l_cpg_power_on;
->                 pd->genpd.power_off =3D rzg2l_cpg_power_off;
-> +               if (flags & RZG2L_PD_F_CONSOLE)
+Thank Krzysztof. I'll try to explain in detail each patch in v2.
 
-I think this should be replaced by some dynamic check, cfr. my comments
-on PATCH 9/10.
+> 
+>>
+>>>>
+>>>> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
+>>>> ---
+>>>>    Documentation/devicetree/bindings/hwmon/max31790.yaml | 11 +++++++++++
+>>>>    1 file changed, 11 insertions(+)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml b/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>>>> index 5a93e6bdebda..447cac17053a 100644
+>>>> --- a/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>>>> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
+>>>> @@ -25,6 +25,16 @@ properties:
+>>>>      reg:
+>>>>        maxItems: 1
+>>>>    
+>>>> +  pwmout-pin-as-tach-input:
+>>>> +    description: |
+>>>> +      An array of six integers responds to six PWM channels for
+>>>> +      configuring the pwm to tach mode.
+>>>> +      When set to 0, the associated PWMOUT produces a PWM waveform for
+>>>> +      control of fan speed. When set to 1, PWMOUT becomes a TACH input
+>>>
+>>> No vendor prefix, so generic property... but where is it defined?
+>>>
+>>
+>> Thank Krzysztof! It is not generic property, I'll add the vendor prefix.
+>>
+>> I'll update the "pwmout-pin-as-tach-input" to
+>> "maxim,pwmout-pin-as-tach-input" at v2.
+> 
+> Except that you should really look into common properties and use them.
+> Or explain why do you need new property?
+> 
+> Best regards,
+> Krzysztof
+> 
 
-> +                       pd->suspend_check =3D rzg2l_pd_suspend_check_cons=
-ole;
->                 governor =3D &simple_qos_governor;
->         }
->
-
-> @@ -1890,9 +1911,43 @@ static int __init rzg2l_cpg_probe(struct platform_=
-device *pdev)
->         if (error)
->                 return error;
->
-> +       dev_set_drvdata(dev, priv);
-> +
->         return 0;
->  }
->
-> +static int rzg2l_cpg_resume(struct device *dev)
-> +{
-> +       struct rzg2l_cpg_priv *priv =3D dev_get_drvdata(dev);
-> +       const struct rzg2l_cpg_info *info =3D priv->info;
-> +
-> +       /* Power on always ON domains. */
-> +       for (unsigned int i =3D 0; i < info->num_pm_domains; i++) {
-> +               if (info->pm_domains[i].flags & RZG2L_PD_F_ALWAYS_ON) {
-
-If you would check "priv-domains[i].flags & GENPD_FLAG_ALWAYS_ON"
-instead, I think you can make r9a08g045_pm_domains[] __initconst.
-You may need to make a copy of the name for pd->genpd.name, though.
-
-> +                       int ret =3D rzg2l_cpg_power_on(priv->domains[i]);
-
-I assume you are sure none of these domains are enabled by TF/A after
-system resume, or by the pmdomain core code?
-
-Gr{oetje,eeting}s,
-
-                        Geert
-
---=20
-Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
-org
-
-In personal conversations with technical people, I call myself a hacker. Bu=
-t
-when I'm talking to journalists I just say "programmer" or something like t=
-hat.
-                                -- Linus Torvalds
+I'm also discussing with Rob Herring that on patch 3/3, I checked in the 
+Documentation/devicetree/bindings/hwmon/fan-common.yaml. I found the 
+tach-ch property, but it seems to define the tach channel used for the 
+fan. It does not match my purpose. I want to configure the PWM-OUT pin 
+to become a TACH-IN pin. I wonder if I can use the tach-ch property for 
+my purpose.
 
