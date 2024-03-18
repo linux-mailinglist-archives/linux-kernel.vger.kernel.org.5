@@ -1,372 +1,218 @@
-Return-Path: <linux-kernel+bounces-106661-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106662-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D41CB87F1AD
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:03:09 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BCF687F1AE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:03:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8A7A728280E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:03:08 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C7521C20AB9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:03:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E288358136;
-	Mon, 18 Mar 2024 21:03:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8679958AA2;
+	Mon, 18 Mar 2024 21:03:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DX8vzqRU"
-Received: from mail-lf1-f45.google.com (mail-lf1-f45.google.com [209.85.167.45])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ho0dvD6F"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AD7D8250EC
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:03:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19BBD58ABA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:03:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710795782; cv=none; b=i8th+IkSiZqjt836DK/sryDvZg/xHs3YytTAaBguhM8tJOEpey1hsWF0kWE63w30XoQiHLoAHB1lW2+xMMEMODjEa96p+iX6Vx12fSTfVCE3mUf6T0mUZpUebrhc0EaCQND/IZZ7y2gmI+ks7giTx7DEEXXy62zCocx6CxWFGyQ=
+	t=1710795798; cv=none; b=e4JCdReSQwFvDZMsCHwy5/+l4zTYlTifjfqVgKq3nIXtpIFJ+LBIrbtS4B6IQ8bVcyXmf19cizxCAFomh/IEjQtTcOLyoPWHfDKabGXqkqs3s8BYDbQbZ+znc2CpBfCVPKFBzwu7Cx2K6jF6KVDjuaQnAXTdS5Wss8j8EkQXAMo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710795782; c=relaxed/simple;
-	bh=Vv3HQy11IP2LQR/uQVs/P+bSmRO749wrsaVehu1bjo4=;
+	s=arc-20240116; t=1710795798; c=relaxed/simple;
+	bh=DwpPM+oVXubBmc1sbSQ/XM7V6SsaUdrngUvpvnQqXxE=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=N1dO6Aug+Gj2XXxJdEPja1g0JN0SuunK1QrUEU93rfMdtF7wPYMxix3qReBqT+ELTmDQ2bzgK27FZXFYAh7ESft5a43miOJggdDN4jS8WJ2YGW32YEeKSG96PSIVTvUIED4EeXQ+LpSzoXnbEwyIfwi+ZnoEJv8zjSUZK3U7LKQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DX8vzqRU; arc=none smtp.client-ip=209.85.167.45
+	 To:Cc:Content-Type; b=LKj0lxrApA+0p2FO5PFhsRUMSsQqsINrZgccZ1lLjuSy3zsyKZwvdVLKnN+HlshpfkVU5b287bDu1HGh6CQD/izLAk1NQqRJAEinNtObVAILdoIaM1w68u2lIpkW5TJL8R1GD0SaTMbB9Zj8KuWlw1fHFDC3f98YNr4rxkDtCUc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ho0dvD6F; arc=none smtp.client-ip=209.85.161.51
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f45.google.com with SMTP id 2adb3069b0e04-513d247e3c4so4020036e87.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:03:00 -0700 (PDT)
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a47cecb98bso2044061eaf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:03:16 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710795779; x=1711400579; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710795796; x=1711400596; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=9HedJcrSxPQdXLuoYD1u0yMNVHwaM2bPmO6FcpMXPtg=;
-        b=DX8vzqRU2jKDNvwKCoHQ6fOVvlmpvyn65HAeaApTh+vwRUP5C10IYoHYV85ItZVMAS
-         8Hj3tuiqgUHJBRpiOZBknRfm3RUS4AmcbKMy3sQsGL6vamje5EZFKBgTIq3Xxd2+DgEA
-         O0GiBZZwWZTA8oO8G3Rb0tH7/NDoDRsU48eCkBgVeT9mdOMEODrxlE3AtI0e6rEaJOmL
-         2Bj0uneNGIWmE1u7UJ0hvxDgEmGRHYjcvMv4Qn+02+vYf9Es4mH0DMSZGI5lq+/OnQtm
-         5EvHYBKEpLNqtYKJtEv3AhDQnDUioHWNiVJRreAUeCrmKevZNSNhAUypLyHYZpjFVG5W
-         P6ag==
+        bh=TdUoNk+AdcNzgEKbiFEZWryIFkFAsqcjJShgKTbGrcA=;
+        b=ho0dvD6FgqSaBQ8C/TXSWL6TCmg/2jFxgUFcvYdmivRgD05R8lqMMSaiiEYi5wXyc7
+         4vjFnP2Aa23DblvJo1nPRsux3SEQ//tHfIF4iBjZL4JaL1rv6T7fRPUAcFRwQxxYBHux
+         JI3jj7BuQyUCi5Cwm6QexRCy0IIo613sIN5k3S5+lUimHGdEBjAvSAgxt3jslQHiDLOG
+         WMYRFx5JSY1gsuQhDqbBA8nUYiYiB5qVS6mnOvobfLHZyQFbp8chEkWJsadHU5Il14P2
+         OibZ/AN76us+5z2Xyacj38nNRV0s7U4IpLK+oHZhhCpzWHMoMTFaaFNJ+WYvOLXOSikz
+         aIWw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710795779; x=1711400579;
+        d=1e100.net; s=20230601; t=1710795796; x=1711400596;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=9HedJcrSxPQdXLuoYD1u0yMNVHwaM2bPmO6FcpMXPtg=;
-        b=MVfxK0VgeIO/f66qt7nE9S5oabHm2s0NxRtDedWV5NV248UsEaTiUkF+rscVb/78in
-         ihcIPeFvKmeIgKNcPbLWMGwDPMRE+I1LFxGEKxME5/ZUZCf4lthE8/qarsOhuu9sOZiC
-         /GSXsvIK7mn+MSqhkq8LZuJhQYx8gT/jIAZSnBOdV8PCxUkT/1xTPgYGQ1h79sj1Zzoy
-         9GFoAzGTKc+dyAOsYq12Its/6KAsOHNjtNjRKQc8ypjzTA+o3Eo5UGl+m7eeVS+RVW9C
-         29t2e6oB0I2iETlEDpg91fUUCDWc3wA4NjemVQlKNprRVdJ803BvL/nLlk2HfoSuIJgt
-         13tg==
-X-Forwarded-Encrypted: i=1; AJvYcCUwkhz5u3neBIDblSSBDlCq183cmxM8fhLfWIPWr4Zd3lTkEzINSkfUHVLpypp5V/6zbfcJ4eWlJtAinKZTMuTOAskmLudE6LjOYPPl
-X-Gm-Message-State: AOJu0YwkU0BmVNHKed4BTwbf4jfROgsqc2TsdhdEsUHw/eEKIuEZpRDJ
-	v89SMIqnhJH8XFO3d03aV6uMmTFqC/vwl4gXFA8T8Jg6Nh7J2S76k7UOhkMjeAwsfmBeBQbqFzQ
-	GqWuSfyIXvZFQZuNGxw5iSs7uvw==
-X-Google-Smtp-Source: AGHT+IFJGMO1vXOqGkBJWLc3mzMExY0GPMC678LKTt28lEkLyqW704bJ3SplAQTTBSU+7DTlk1jVuqKmC++jdQNJu8g=
-X-Received: by 2002:a19:6914:0:b0:513:ca5c:fccc with SMTP id
- e20-20020a196914000000b00513ca5cfcccmr274112lfc.7.1710795778518; Mon, 18 Mar
- 2024 14:02:58 -0700 (PDT)
+        bh=TdUoNk+AdcNzgEKbiFEZWryIFkFAsqcjJShgKTbGrcA=;
+        b=dTwX7ntPhwxQrejWIqpBpiARdcUEqzTIYaUxSTRk07N2I6e2hOCFPYgSX6utFyadc1
+         LEKqIj+qxzz1D5YiGCA2nXNzJ3v5tnAXyGJZ3JmjvQ+nlnMwFhLJ+ksKJHmn44qO/JDD
+         s2yMRAdVp/sj4E20NVQ8yyd94eQecW/T2n6gPMFov2BQFffoY+d3SetJOCBnh4d9XSnC
+         RMPiThJ4QZCnPHGgfToPDQNCYP2u+DWqmf0ZDlNB4YAs+kRt9NGFCNYATMqgzz4egsOh
+         /5KwsNGdl933UqiwTMwJWja9XImJNqjbMl0lHeEmzxMYmdHCJ1U9R3Z2QS9O40UorPse
+         SRKA==
+X-Forwarded-Encrypted: i=1; AJvYcCXpjdNq+tSJGSsYODE+47P+dCsgtftUklwdd3qJLPDrCu1JBj4zLy63Wuy3+ZduxqvRqBD0NPZZiMfkMBTs7nTo7JXPWnSC/lO0CiUM
+X-Gm-Message-State: AOJu0Yx7S+rN/SiJ889qk0syyqtFaIjmfGNMrV9bkI/j6YLYbQFFBlXu
+	ZazmHyBRMjA48A1jB4WEloxUWs5VUl3W16CJGoUsmbIFdAzOJzb5HA4RRS+M4k3B6C5oAT6GJHo
+	mQA8L+l9La1cnwQ0LtdLXqFMHf0lbs+ZZSV8=
+X-Google-Smtp-Source: AGHT+IFNBhKxlZShP9RB+uxdatc2C31HCBGRF3jiaJEyJeXWYONyDbOmGodUj4DNAbOkm0SemGe7bemw87K/4hqPFUg=
+X-Received: by 2002:a05:6820:54:b0:5a4:d09f:1eea with SMTP id
+ v20-20020a056820005400b005a4d09f1eeamr547627oob.0.1710795796106; Mon, 18 Mar
+ 2024 14:03:16 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
- <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
- <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
- <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com> <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
- <CAMzpN2hZgEpJcyLqPhEqKSHy33j1G=FjzrOvnLPqiDeijanM=w@mail.gmail.com>
- <CA+CK2bBTrrJerZMdJrKhg683H4VmnqbgkGu2VG2UuirWNm1TnA@mail.gmail.com>
- <CAMzpN2jmQoG9Cw56JOh7t_Y21Fax3bA9iAEA2B7TLnYs5ycdJQ@mail.gmail.com> <CA+CK2bDO=LV8nEFn=q6w3Pyna3aqKAiFEzHMb-d7xzMOThOXSQ@mail.gmail.com>
-In-Reply-To: <CA+CK2bDO=LV8nEFn=q6w3Pyna3aqKAiFEzHMb-d7xzMOThOXSQ@mail.gmail.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Mon, 18 Mar 2024 17:02:46 -0400
-Message-ID: <CAMzpN2i8SRkgUZ+XSj7wJrtRn=-mB=7v7=C8auES=FAW_MFN-Q@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: Pasha Tatashin <pasha.tatashin@soleen.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, 
-	brauner@kernel.org, bristot@redhat.com, bsegall@google.com, 
-	dave.hansen@linux.intel.com, dianders@chromium.org, dietmar.eggemann@arm.com, 
-	eric.devolder@oracle.com, hca@linux.ibm.com, hch@infradead.org, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
-	jroedel@suse.de, juri.lelli@redhat.com, kinseyho@google.com, 
-	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, 
-	mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com, 
-	mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com, 
-	peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com, 
-	rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, urezki@gmail.com, 
-	vincent.guittot@linaro.org, vschneid@redhat.com
+References: <20240318204212.36505-1-21cnbao@gmail.com> <0000000000009221d60613f58726@google.com>
+In-Reply-To: <0000000000009221d60613f58726@google.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 19 Mar 2024 10:03:04 +1300
+Message-ID: <CAGsJ_4xdKbH8v0WaBFo_kDOHPXQnX7zrc43D=+irfzM-=2RxGw@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
+To: syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>, 
+	ira.weiny@intel.com
+Cc: akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, nphamcs@gmail.com, 
+	syzkaller-bugs@googlegroups.com, yosryahmed@google.com
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 11:00=E2=80=AFAM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
+On Tue, Mar 19, 2024 at 9:52=E2=80=AFAM syzbot
+<syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com> wrote:
 >
-> On Sun, Mar 17, 2024 at 5:30=E2=80=AFPM Brian Gerst <brgerst@gmail.com> w=
-rote:
-> >
-> > On Sun, Mar 17, 2024 at 12:15=E2=80=AFPM Pasha Tatashin
-> > <pasha.tatashin@soleen.com> wrote:
-> > >
-> > > On Sun, Mar 17, 2024 at 10:43=E2=80=AFAM Brian Gerst <brgerst@gmail.c=
-om> wrote:
-> > > >
-> > > > On Sat, Mar 16, 2024 at 3:18=E2=80=AFPM Pasha Tatashin
-> > > > <pasha.tatashin@soleen.com> wrote:
-> > > > >
-> > > > > On Thu, Mar 14, 2024 at 11:40=E2=80=AFPM H. Peter Anvin <hpa@zyto=
-r.com> wrote:
-> > > > > >
-> > > > > > On March 14, 2024 8:13:56 PM PDT, Pasha Tatashin <pasha.tatashi=
-n@soleen.com> wrote:
-> > > > > > >On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <willy@=
-infradead.org> wrote:
-> > > > > > >>
-> > > > > > >> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet wr=
-ote:
-> > > > > > >> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox w=
-rote:
-> > > > > > >> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anvin=
- wrote:
-> > > > > > >> > > > Second, non-dynamic kernel memory is one of the core d=
-esign decisions in
-> > > > > > >> > > > Linux from early on. This means there are lot of deepl=
-y embedded assumptions
-> > > > > > >> > > > which would have to be untangled.
-> > > > > > >> > >
-> > > > > > >> > > I think there are other ways of getting the benefit that=
- Pasha is seeking
-> > > > > > >> > > without moving to dynamically allocated kernel memory.  =
-One icky thing
-> > > > > > >> > > that XFS does is punt work over to a kernel thread in or=
-der to use more
-> > > > > > >> > > stack!  That breaks a number of things including lockdep=
- (because the
-> > > > > > >> > > kernel thread doesn't own the lock, the thread waiting f=
-or the kernel
-> > > > > > >> > > thread owns the lock).
-> > > > > > >> > >
-> > > > > > >> > > If we had segmented stacks, XFS could say "I need at lea=
-st 6kB of stack",
-> > > > > > >> > > and if less than that was available, we could allocate a=
- temporary
-> > > > > > >> > > stack and switch to it.  I suspect Google would also be =
-able to use this
-> > > > > > >> > > API for their rare cases when they need more than 8kB of=
- kernel stack.
-> > > > > > >> > > Who knows, we might all be able to use such a thing.
-> > > > > > >> > >
-> > > > > > >> > > I'd been thinking about this from the point of view of a=
-llocating more
-> > > > > > >> > > stack elsewhere in kernel space, but combining what Pash=
-a has done here
-> > > > > > >> > > with this idea might lead to a hybrid approach that work=
-s better; allocate
-> > > > > > >> > > 32kB of vmap space per kernel thread, put 12kB of memory=
- at the top of it,
-> > > > > > >> > > rely on people using this "I need more stack" API correc=
-tly, and free the
-> > > > > > >> > > excess pages on return to userspace.  No complicated "sw=
-itch stacks" API
-> > > > > > >> > > needed, just an "ensure we have at least N bytes of stac=
-k remaining" API.
-> > > > > > >
-> > > > > > >I like this approach! I think we could also consider having pe=
-rmanent
-> > > > > > >big stacks for some kernel only threads like kvm-vcpu. A coope=
-rative
-> > > > > > >stack increase framework could work well and wouldn't negative=
-ly
-> > > > > > >impact the performance of context switching. However, thorough
-> > > > > > >analysis would be necessary to proactively identify potential =
-stack
-> > > > > > >overflow situations.
-> > > > > > >
-> > > > > > >> > Why would we need an "I need more stack" API? Pasha's appr=
-oach seems
-> > > > > > >> > like everything we need for what you're talking about.
-> > > > > > >>
-> > > > > > >> Because double faults are hard, possibly impossible, and the=
- FRED approach
-> > > > > > >> Peter described has extra overhead?  This was all described =
-up-thread.
-> > > > > > >
-> > > > > > >Handling faults in #DF is possible. It requires code inspectio=
-n to
-> > > > > > >handle race conditions such as what was shown by tglx. However=
-, as
-> > > > > > >Andy pointed out, this is not supported by SDM as it is an abo=
-rt
-> > > > > > >context (yet we return from it because of ESPFIX64, so return =
-is
-> > > > > > >possible).
-> > > > > > >
-> > > > > > >My question, however, if we ignore memory savings and only con=
-sider
-> > > > > > >reliability aspect of this feature.  What is better unconditio=
-nally
-> > > > > > >crashing the machine because a guard page was reached, or prin=
-ting a
-> > > > > > >huge warning with a backtracing information about the offendin=
-g stack,
-> > > > > > >handling the fault, and survive? I know that historically Linu=
-s
-> > > > > > >preferred WARN() to BUG() [1]. But, this is a somewhat differe=
-nt
-> > > > > > >scenario compared to simple BUG vs WARN.
-> > > > > > >
-> > > > > > >Pasha
-> > > > > > >
-> > > > > > >[1] https://lore.kernel.org/all/Pine.LNX.4.44.0209091832160.17=
-14-100000@home.transmeta.com
-> > > > > > >
-> > > > > >
-> > > > > > The real issue with using #DF is that if the event that caused =
-it was asynchronous, you could lose the event.
-> > > > >
-> > > > > Got it. So, using a #DF handler for stack page faults isn't feasi=
-ble.
-> > > > > I suppose the only way for this to work would be to use a dedicat=
-ed
-> > > > > Interrupt Stack Table (IST) entry for page faults (#PF), but I su=
-spect
-> > > > > that might introduce other complications.
-> > > > >
-> > > > > Expanding on Mathew's idea of an interface for dynamic kernel sta=
-ck
-> > > > > sizes, here's what I'm thinking:
-> > > > >
-> > > > > - Kernel Threads: Create all kernel threads with a fully populate=
-d
-> > > > > THREAD_SIZE stack.  (i.e. 16K)
-> > > > > - User Threads: Create all user threads with THREAD_SIZE kernel s=
-tack
-> > > > > but only the top page mapped. (i.e. 4K)
-> > > > > - In enter_from_user_mode(): Expand the thread stack to 16K by ma=
-pping
-> > > > > three additional pages from the per-CPU stack cache. This functio=
-n is
-> > > > > called early in kernel entry points.
-> > > > > - exit_to_user_mode(): Unmap the extra three pages and return the=
-m to
-> > > > > the per-CPU cache. This function is called late in the kernel exi=
-t
-> > > > > path.
-> > > > >
-> > > > > Both of the above hooks are called with IRQ disabled on all kerne=
-l
-> > > > > entries whether through interrupts and syscalls, and they are cal=
-led
-> > > > > early/late enough that 4K is enough to handle the rest of entry/e=
-xit.
-> > >
-> > > Hi Brian,
-> > >
-> > > > This proposal will not have the memory savings that you are looking
-> > > > for, since sleeping tasks would still have a fully allocated stack.
-> > >
-> > > The tasks that were descheduled while running in user mode should not
-> > > increase their stack. The potential saving is greater than the
-> > > origianl proposal, because in the origianl proposal we never shrink
-> > > stacks after faults.
-> >
-> > A task has to enter kernel mode in order to be rescheduled.  If it
-> > doesn't make a syscall or hit an exception, then the timer interrupt
-> > will eventually kick it out of user mode.  At some point schedule() is
-> > called, the task is put to sleep and context is switched to the next
-> > task.  A sleeping task will always be using some amount of kernel
-> > stack.  How much depends a lot on what caused the task to sleep.  If
-> > the timeslice expired it could switch right before the return to user
-> > mode.  A page fault could go deep into filesystem and device code
-> > waiting on an I/O operation.
-> >
-> > > > This also would add extra overhead to each entry and exit (includin=
-g
-> > > > syscalls) that can happen multiple times before a context switch.  =
-It
-> > > > also doesn't make much sense because a task running in user mode wi=
-ll
-> > > > quickly need those stack pages back when it returns to kernel mode.
-> > > > Even if it doesn't make a syscall, the timer interrupt will kick it
-> > > > out of user mode.
-> > > >
-> > > > What should happen is that the unused stack is reclaimed when a tas=
-k
-> > > > goes to sleep.  The kernel does not use a red zone, so any stack pa=
-ges
-> > > > below the saved stack pointer of a sleeping task (task->thread.sp) =
-can
-> > > > be safely discarded.  Before context switching to a task, fully
-> > >
-> > > Excellent observation, this makes Andy Lutomirski per-map proposal [1=
-]
-> > > usable without tracking dirty/accessed bits. More reliable, and also
-> > > platform independent.
-> >
-> > This is x86-specific.  Other architectures will likely have differences=
-.
-> >
-> > > > populate its task stack.  After context switching from a task, recl=
-aim
-> > > > its unused stack.  This way, the task stack in use is always fully
-> > > > allocated and we don't have to deal with page faults.
-> > > >
-> > > > To make this happen, __switch_to() would have to be split into two
-> > > > parts, to cleanly separate what happens before and after the stack
-> > > > switch.  The first part saves processor context for the previous ta=
-sk,
-> > > > and prepares the next task.
-> > >
-> > > By knowing the stack requirements of __switch_to(), can't we actually
-> > > do all that in the common code in context_switch() right before
-> > > __switch_to()? We would do an arch specific call to get the
-> > > __switch_to() stack requirement, and use that to change the value of
-> > > task->thread.sp to know where the stack is going to be while sleeping=
-.
-> > > At this time we can do the unmapping of the stack pages from the
-> > > previous task, and mapping the pages to the next task.
-> >
-> > task->thread.sp is set in __switch_to_asm(), and is pretty much the
-> > last thing done in the context of the previous task.  Trying to
-> > predict that value ahead of time is way too fragile.
+> Hello,
 >
-> We don't require an exact value, but rather an approximate upper
-> limit. To illustrate, subtract 1K from the current .sp, then determine
-> the corresponding page to decide the number of pages needing
-> unmapping. The primary advantage is that we can avoid
-> platform-specific ifdefs for DYNAMIC_STACKS within the arch-specific
-> switch_to() function. Instead, each platform can provide an
-> appropriate upper bound for switch_to() operations. We know the amount
-> of information is going to be stored on the stack by the routines, and
-> also since interrupts are disabled stacks are not used for anything
-> else there, so I do not see a problem with determining a reasonable
-> upper bound.
-
-The stack usage will vary depending on compiler version and
-optimization settings.  Making an educated guess is possible, but may
-not be enough in the future.
-
-What would be nice is to get some actual data on stack usage under
-various workloads, both maximum depth and depth at context switch.
-
-> >  Also, the key
-> > point I was trying to make is that you cannot safely shrink the active
-> > stack.  It can only be done after the stack switch to the new task.
+> syzbot has tested the proposed patch but the reproducer is still triggeri=
+ng an issue:
+> WARNING in __kmap_to_page
 >
-> Can you please elaborate why this is so? If the lowest pages are not
-> used, and interrupts are disabled what is not safe about removing them
-> from the page table?
+> ------------[ cut here ]------------
+> WARNING: CPU: 0 PID: 3529 at mm/highmem.c:167 __kmap_to_page+0x100/0x194 =
+mm/highmem.c:167
+> Modules linked in:
+
++ Ira
+
+Hi Ira,
+
+I noticed this warning is coming from commit ef6e06b2ef87077.
+
+you have a commit message like
+"    Because it is intended to remove kmap_to_page() add a warn on once to
+    the kmap checks to flag potential issues early.
+"
+
+Do we have a replacement for kmap_to_page()? The background is that we
+want to pass a highmem buffer to sg_set_page() but we only know its virt
+address.
+
+> Kernel panic - not syncing: kernel: panic_on_warn set ...
+> CPU: 0 PID: 3529 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller #0
+> Hardware name: ARM-Versatile Express
+> Backtrace:
+> [<8185fe64>] (dump_backtrace) from [<8185ff60>] (show_stack+0x18/0x1c arc=
+h/arm/kernel/traps.c:256)
+>  r7:00000000 r6:82622e44 r5:00000000 r4:81fc00fc
+> [<8185ff48>] (show_stack) from [<8187d720>] (__dump_stack lib/dump_stack.=
+c:88 [inline])
+> [<8185ff48>] (show_stack) from [<8187d720>] (dump_stack_lvl+0x54/0x7c lib=
+/dump_stack.c:114)
+> [<8187d6cc>] (dump_stack_lvl) from [<8187d760>] (dump_stack+0x18/0x1c lib=
+/dump_stack.c:123)
+>  r5:00000000 r4:82857d18
+> [<8187d748>] (dump_stack) from [<81860a08>] (panic+0x120/0x358 kernel/pan=
+ic.c:348)
+> [<818608e8>] (panic) from [<80243844>] (check_panic_on_warn kernel/panic.=
+c:241 [inline])
+> [<818608e8>] (panic) from [<80243844>] (print_tainted+0x0/0xa0 kernel/pan=
+ic.c:236)
+>  r3:8260c584 r2:00000001 r1:81fa8e48 r0:81fb09f0
+>  r7:80477264
+> [<802437d0>] (check_panic_on_warn) from [<80243a38>] (__warn+0x7c/0x180 k=
+ernel/panic.c:694)
+> [<802439bc>] (__warn) from [<80243cb4>] (warn_slowpath_fmt+0x178/0x1f4 ke=
+rnel/panic.c:719)
+>  r8:00000009 r7:81fd71bc r6:df9b1bf4 r5:83682400 r4:00000000
+> [<80243b40>] (warn_slowpath_fmt) from [<80477264>] (__kmap_to_page+0x100/=
+0x194 mm/highmem.c:167)
+>  r10:00000000 r9:ff7e7f14 r8:83e402c0 r7:dedf0b48 r6:800fd004 r5:ffefd000
+>  r4:7fefd004
+> [<80477164>] (__kmap_to_page) from [<804c248c>] (kmap_to_page include/lin=
+ux/highmem-internal.h:63 [inline])
+> [<80477164>] (__kmap_to_page) from [<804c248c>] (zswap_decompress+0xc0/0x=
+23c mm/zswap.c:1090)
+>  r9:ff7e7f14 r8:83e402c0 r7:dedf0b48 r6:ffefd004 r5:840fb8e8 r4:ff7e7ef4
+> [<804c23cc>] (zswap_decompress) from [<804c449c>] (zswap_load+0x15c/0x198=
+ mm/zswap.c:1638)
+>  r9:846e3240 r8:846e3240 r7:846e3244 r6:dedf0b48 r5:00000010 r4:840fb8e8
+> [<804c4340>] (zswap_load) from [<804b9644>] (swap_read_folio+0xa8/0x498 m=
+m/page_io.c:518)
+>  r9:8420fa00 r8:83682400 r7:00000000 r6:df9b1d4c r5:00000000 r4:dedf0b48
+> [<804b959c>] (swap_read_folio) from [<804bb064>] (swap_cluster_readahead+=
+0x1c4/0x34c mm/swap_state.c:684)
+>  r10:00000000 r9:00000017 r8:df9b1d4b r7:00000000 r6:00000000 r5:00100cca
+>  r4:00000010
+> [<804baea0>] (swap_cluster_readahead) from [<804bb3b8>] (swapin_readahead=
++0x68/0x4a8 mm/swap_state.c:904)
+>  r10:df9b1eb8 r9:00000000 r8:00100cca r7:8371e2a0 r6:00000012 r5:00000000
+>  r4:00000001
+> [<804bb350>] (swapin_readahead) from [<8047cde0>] (do_swap_page+0x200/0xc=
+c4 mm/memory.c:4046)
+>  r10:00000040 r9:00000000 r8:8420fa00 r7:8371e2a0 r6:00000012 r5:00000000
+>  r4:df9b1eb8
+> [<8047cbe0>] (do_swap_page) from [<8047e6c4>] (handle_pte_fault mm/memory=
+c:5301 [inline])
+> [<8047cbe0>] (do_swap_page) from [<8047e6c4>] (__handle_mm_fault mm/memor=
+y.c:5439 [inline])
+> [<8047cbe0>] (do_swap_page) from [<8047e6c4>] (handle_mm_fault+0x3d8/0x12=
+b8 mm/memory.c:5604)
+>  r10:00000040 r9:83dfb900 r8:83682400 r7:8371e2a0 r6:001403b8 r5:83682400
+>  r4:00001254
+> [<8047e2ec>] (handle_mm_fault) from [<80215da8>] (do_page_fault+0x1c8/0x3=
+a8 arch/arm/mm/fault.c:292)
+>  r10:00000007 r9:83dfb900 r8:83682400 r7:00000207 r6:00000254 r5:001403b8
+>  r4:df9b1fb0
+> [<80215be0>] (do_page_fault) from [<80216170>] (do_DataAbort+0x38/0xa8 ar=
+ch/arm/mm/fault.c:558)
+>  r10:7eded670 r9:00000000 r8:80215be0 r7:df9b1fb0 r6:001403b8 r5:00000207
+>  r4:8261d0e0
+> [<80216138>] (do_DataAbort) from [<80200e3c>] (__dabt_usr+0x5c/0x60 arch/=
+arm/kernel/entry-armv.S:427)
+> Exception stack(0xdf9b1fb0 to 0xdf9b1ff8)
+> 1fa0:                                     00000000 00000000 00000000 0000=
+0000
+> 1fc0: 00000002 7eded61c 00000000 000001f4 00140000 00000000 7eded670 0000=
+1238
+> 1fe0: 00000000 7eded5a8 00000001 00021804 60000010 ffffffff
+>  r8:824a9044 r7:83682400 r6:ffffffff r5:60000010 r4:00021804
+> Rebooting in 86400 seconds..
 >
-> I am not against the idea of unmapping in __switch_to(), I just want
-> to understand the reasons why more generic but perhaps not as precise
-> approach would not  work.
+>
+> Tested on:
+>
+> commit:         e5eb28f6 Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
+> git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/torvalds/li=
+nux.git
+> console output: https://syzkaller.appspot.com/x/log.txt?x=3D1491ea6e18000=
+0
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=3D19bb57c23dffc=
+38e
+> dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadbc983a1588b78=
+05de3
+> compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (=
+GNU Binutils for Debian) 2.40
+> userspace arch: arm
+> patch:          https://syzkaller.appspot.com/x/patch.diff?x=3D1265154618=
+0000
+>
 
-As long as a wide buffer is given, it would probably be safe.  But it
-would still be safer and more precise if done after the switch.
-
-
-
-Brian Gerst
+Thanks
+Barry
 
