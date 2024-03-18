@@ -1,268 +1,296 @@
-Return-Path: <linux-kernel+bounces-106361-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106362-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B33887ED12
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:11:10 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1318987ED17
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:11:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F0525B21118
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:11:07 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 32AD21C21021
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:11:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24D585338F;
-	Mon, 18 Mar 2024 16:10:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 923F753394;
+	Mon, 18 Mar 2024 16:11:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="ZB+5VaPa"
-Received: from mail-lj1-f177.google.com (mail-lj1-f177.google.com [209.85.208.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="kaX0kFNn"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4475A52F93
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:10:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C4FCE374CB;
+	Mon, 18 Mar 2024 16:11:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710778258; cv=none; b=KWRHjIYg2DkLQOUwb21ND9aLpxgkIDW1JKvPKe9An96KR5ceOopNIxp1nKzDLk2wOjvF+gtpeHPCRsS/YNPgkNyp0I5Z2mGH9Yq38xKtXB7aE/yTgjEj7Fvo818pg9+TFUX2JDFqCVTSbdA0M/vm1i+DQHZytOALIxB9GCb4KOk=
+	t=1710778299; cv=none; b=Tf3LkNEPpkiXBSguIgJpWEre0UeJBLA6qgKpkavptmjC+g7Uc8nkPPP5IfMMqyqSCO0Rjmkw29XpJl7Y6a0tYBrB2h4/rmBertcdRtaSSj7rLZ4m8Wfk+qnZ00G3oN1uMPOiQLPi4iCPEhb581gSdHXH2qS1wdgaVBmPV3UoKpo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710778258; c=relaxed/simple;
-	bh=AYb2lq5LX/8aweRNC/57Ae4xwsA/O52DROdPAT9dQkA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=G8VPmhj+58fgA+eQHxxqh5L/VrYeUPGHLrvv43kcdZYG2qRPZu4VMAn/RZEKvkMAtfLnJ+4i2DSnVyqF1et6Lf8n3nTX+Tby5LqB1wJHMf9GdvIfrsBGasrFVc6RKANmgqHx5xy4MWqkvg2O4nNTPorb9xbDNbVSNV023BvVXb8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=ZB+5VaPa; arc=none smtp.client-ip=209.85.208.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f177.google.com with SMTP id 38308e7fff4ca-2d2509c66daso65253271fa.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:10:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710778253; x=1711383053; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=y8dUXbiRvTaXe7jzoN2uhqGgGMYVk6uFqv8HZ26Pr0E=;
-        b=ZB+5VaPagLf7RjhtFg+mN9KkrbdMengYnzor4Qcv1vBgax5gTPcjoLHG9qbnBuGuLX
-         5MtEqrB/EVSMtyRqjyYIkTkBP5+Uz0LB/Bo9DYwvxQB0V8scYimvDdW9u9ACb6hH5Dia
-         0ARzMBXwrhfpdmwUQ+1Fft/E7wfc6X65dl7BAOZgIxfLzxggqjcMAPuQmlMBhoUujF5N
-         7ACEhPht+fRF+1MSqJ+AsWXwkoBsFd2qKoVL+AVYc9x6kGhezo0MG48Zn1seQglQDAtd
-         U64ChimJQ1kfBohXUKFfjElOAVQfUZJ4HigG2OBvPTP4yNAPDQUwFtDqDDa13A4hV2wW
-         qL4g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710778253; x=1711383053;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=y8dUXbiRvTaXe7jzoN2uhqGgGMYVk6uFqv8HZ26Pr0E=;
-        b=ByckJpmpiO3k+SETBJNYaNUn++GhqTCKTChyrAM81y4sDZgP3dvHcnk8+XBgow1rqG
-         yrdQ8qWk8dLlc3tySCTEg/D/v8YjMsP8fz/pld6cxEpw2UvHnfnHBePzi5eT3oTeXd+P
-         p3H0sXw6Ygtpj150C3luYMEtTLVO5z7P55zEtM1H6gTm57unqAuzX9TetbfT57srxQB3
-         RfijSRL6IOwiTML6NHfg+d0wPs/+5TemFQ9dRZ9Q7YQPgSagf3SXbRq7+sZlRXln7DSE
-         XlYUt5txsbsSob9RgSaoLJvK52zCf5X2UNHQ2gyzJFB/sVIGtgxvWLkvmCyHVSWAMbpc
-         /gIg==
-X-Forwarded-Encrypted: i=1; AJvYcCXhcCPeUYm94IxqyKaa7dlI9DXmXdE8eN8X8tNBNozlSX4W3MWtT+3Q68VEqlMFkSUVBCdmuRVjZQ2ANd39IeQYT4AAF8IyFO7O0YVX
-X-Gm-Message-State: AOJu0YwiOtYVG42akom8c8zLHFlFoO/sO7SWq29ECiCGMpiOiA5mVzX8
-	lj6YBuDsCL0BB/ChVUuPBWBp8lC3r8pD+ksgLg0EOsbh0hAH9JOILyumZuJWT9Q=
-X-Google-Smtp-Source: AGHT+IHcNGWovNAwvG6xUZmGi1jrBAezgz96CrnlpJRoFjgy2DseL1o729ovzMBt0OfE9BGKqw4wUA==
-X-Received: by 2002:a05:651c:204c:b0:2d3:1c52:7ae5 with SMTP id t12-20020a05651c204c00b002d31c527ae5mr7962218ljo.46.1710778253392;
-        Mon, 18 Mar 2024 09:10:53 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id g18-20020a056402091200b00568b6f73491sm3321676edz.14.2024.03.18.09.10.51
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 09:10:52 -0700 (PDT)
-Message-ID: <ce082596-b468-463e-95d6-89776a1ef30f@linaro.org>
-Date: Mon, 18 Mar 2024 17:10:51 +0100
+	s=arc-20240116; t=1710778299; c=relaxed/simple;
+	bh=84xfgGQdhPYLNJtOqDpwXG2/hc97FrIjHbfrfTzN6qs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=BZ91iMouOOnflNt5RbbZbvdettDc7kBIDfW6eGEfHgSkl8k3BmtMjHiX/0mq3pCvOTo0wQduicj7nDoqKyx1wPdWPL3NhSn8Os63kjVI2iyxx4joy2ltCxTEzi6DhNy/jawWG7rhciz2WdedQoWWChwJ9kg5hH7ZrIEPS5dhDUg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=kaX0kFNn; arc=none smtp.client-ip=198.175.65.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710778298; x=1742314298;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:content-transfer-encoding:in-reply-to;
+  bh=84xfgGQdhPYLNJtOqDpwXG2/hc97FrIjHbfrfTzN6qs=;
+  b=kaX0kFNnWUc1eAyNhyCJWDvMd8hydTtjYl0xxJp+AU7aS5LMUOR1SHLa
+   8/UDyuj8xGdtnU+nkQTuHnpLX9l4YquZFTSPsXWURmVIX1rS33DA7+TWU
+   6lAc6kJIsisIYbrTnJ/ANORaW+5y2WBpTd0hSOPofUQ+sLhpy+arxI0BQ
+   MrdUT7RVJEg2XiQQ6UGsx3jzez9q6bDrJUCfmWn9r1Qfy8TMsxjITViUs
+   pvyUEOhyDDweByUltMA71RPbb6sBRqVIc6dcgtWFiH6CINd7IGWOBQCBV
+   gJE5cKl+DfOdyT/id+tejEDH8j96xYkbHXMMqdpOtvd8gU8j4L9MjQU/Q
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5536446"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="5536446"
+Received: from orsmga001.jf.intel.com ([10.7.209.18])
+  by orvoesa113.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 09:11:37 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="827781855"
+X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
+   d="scan'208";a="827781855"
+Received: from stinkpipe.fi.intel.com (HELO stinkbox) ([10.237.72.74])
+  by orsmga001.jf.intel.com with SMTP; 18 Mar 2024 09:11:31 -0700
+Received: by stinkbox (sSMTP sendmail emulation); Mon, 18 Mar 2024 18:11:30 +0200
+Date: Mon, 18 Mar 2024 18:11:30 +0200
+From: Ville =?iso-8859-1?Q?Syrj=E4l=E4?= <ville.syrjala@linux.intel.com>
+To: Maxime Ripard <mripard@kernel.org>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Jonathan Corbet <corbet@lwn.net>, Sandy Huang <hjc@rock-chips.com>,
+	Heiko =?iso-8859-1?Q?St=FCbner?= <heiko@sntech.de>,
+	Chen-Yu Tsai <wens@csie.org>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Samuel Holland <samuel@sholland.org>,
+	Hans Verkuil <hverkuil@xs4all.nl>,
+	Sebastian Wick <sebastian.wick@redhat.com>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-media@vger.kernel.org,
+	linux-rockchip@lists.infradead.org, linux-sunxi@lists.linux.dev
+Subject: Re: [PATCH v9 20/27] drm/connector: hdmi: Add Infoframes generation
+Message-ID: <ZfhnsgYfwe_3mpWx@intel.com>
+References: <20240311-kms-hdmi-connector-state-v9-0-d45890323344@kernel.org>
+ <20240311-kms-hdmi-connector-state-v9-20-d45890323344@kernel.org>
+ <ZfQFLR2xO6vUpAJ9@intel.com>
+ <20240318-abstract-myna-of-exercise-adfcde@houat>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/2] dt-bindings: hwmon: pmbus: adp1050 : add bindings
-Content-Language: en-US
-To: Radu Sabau <radu.sabau@analog.com>, Jean Delvare <jdelvare@suse.com>,
- Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, linux-hwmon@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
-References: <20240318112140.385244-1-radu.sabau@analog.com>
- <20240318112140.385244-2-radu.sabau@analog.com>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240318112140.385244-2-radu.sabau@analog.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=iso-8859-1
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240318-abstract-myna-of-exercise-adfcde@houat>
+X-Patchwork-Hint: comment
 
-On 18/03/2024 12:21, Radu Sabau wrote:
-> Add dt-bindings for adp1050 digital controller for isolated power supply
-> with pmbus interface voltage, current and temperature monitor.
+On Mon, Mar 18, 2024 at 02:49:47PM +0100, Maxime Ripard wrote:
+> Hi,
 > 
-> Signed-off-by: Radu Sabau <radu.sabau@analog.com>
-
-Subject: drop space before ':'
-
-> ---
->  .../bindings/hwmon/pmbus/adi,adp1050.yaml     | 65 +++++++++++++++++++
->  MAINTAINERS                                   |  8 +++
->  2 files changed, 73 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+> On Fri, Mar 15, 2024 at 10:22:05AM +0200, Ville Syrjälä wrote:
+> > On Mon, Mar 11, 2024 at 03:49:48PM +0100, Maxime Ripard wrote:
+> > > Infoframes in KMS is usually handled by a bunch of low-level helpers
+> > > that require quite some boilerplate for drivers. This leads to
+> > > discrepancies with how drivers generate them, and which are actually
+> > > sent.
+> > > 
+> > > Now that we have everything needed to generate them in the HDMI
+> > > connector state, we can generate them in our common logic so that
+> > > drivers can simply reuse what we precomputed.
+> > > 
+> > > Signed-off-by: Maxime Ripard <mripard@kernel.org>
+> > > ---
+> > >  drivers/gpu/drm/Kconfig                            |   1 +
+> > >  drivers/gpu/drm/drm_atomic_state_helper.c          | 323 +++++++++++++++++++++
+> > >  drivers/gpu/drm/drm_connector.c                    |  14 +
+> > >  .../gpu/drm/tests/drm_atomic_state_helper_test.c   |   1 +
+> > >  drivers/gpu/drm/tests/drm_connector_test.c         |  12 +
+> > >  include/drm/drm_atomic_state_helper.h              |   8 +
+> > >  include/drm/drm_connector.h                        | 133 +++++++++
+> > >  7 files changed, 492 insertions(+)
+> > > 
+> > > diff --git a/drivers/gpu/drm/Kconfig b/drivers/gpu/drm/Kconfig
+> > > index 872edb47bb53..ad9c467e20ce 100644
+> > > --- a/drivers/gpu/drm/Kconfig
+> > > +++ b/drivers/gpu/drm/Kconfig
+> > > @@ -97,10 +97,11 @@ config DRM_KUNIT_TEST
+> > >  	  If in doubt, say "N".
+> > >  
+> > >  config DRM_KMS_HELPER
+> > >  	tristate
+> > >  	depends on DRM
+> > > +	select DRM_DISPLAY_HDMI_HELPER
+> > >  	help
+> > >  	  CRTC helpers for KMS drivers.
+> > >  
+> > >  config DRM_DEBUG_DP_MST_TOPOLOGY_REFS
+> > >          bool "Enable refcount backtrace history in the DP MST helpers"
+> > > diff --git a/drivers/gpu/drm/drm_atomic_state_helper.c b/drivers/gpu/drm/drm_atomic_state_helper.c
+> > > index e66272c0d006..2bf53666fc9d 100644
+> > > --- a/drivers/gpu/drm/drm_atomic_state_helper.c
+> > > +++ b/drivers/gpu/drm/drm_atomic_state_helper.c
+> > > @@ -36,10 +36,12 @@
+> > >  #include <drm/drm_plane.h>
+> > >  #include <drm/drm_print.h>
+> > >  #include <drm/drm_vblank.h>
+> > >  #include <drm/drm_writeback.h>
+> > >  
+> > > +#include <drm/display/drm_hdmi_helper.h>
+> > > +
+> > >  #include <linux/slab.h>
+> > >  #include <linux/dma-fence.h>
+> > >  
+> > >  /**
+> > >   * DOC: atomic state reset and initialization
+> > > @@ -912,10 +914,143 @@ hdmi_compute_config(const struct drm_connector *connector,
+> > >  	}
+> > >  
+> > >  	return -EINVAL;
+> > >  }
+> > >  
+> > > +static int hdmi_generate_avi_infoframe(const struct drm_connector *connector,
+> > > +				       struct drm_connector_state *state)
+> > > +{
+> > > +	const struct drm_display_mode *mode =
+> > > +		connector_state_get_mode(state);
+> > > +	struct drm_connector_hdmi_infoframe *infoframe =
+> > > +		&state->hdmi.infoframes.avi;
+> > > +	struct hdmi_avi_infoframe *frame =
+> > > +		&infoframe->data.avi;
+> > > +	bool is_full_range = state->hdmi.is_full_range;
+> > > +	enum hdmi_quantization_range rgb_quant_range =
+> > > +		is_full_range ? HDMI_QUANTIZATION_RANGE_FULL : HDMI_QUANTIZATION_RANGE_LIMITED;
+> > > +	int ret;
+> > > +
+> > > +	ret = drm_hdmi_avi_infoframe_from_display_mode(frame, connector, mode);
+> > > +	if (ret)
+> > > +		return ret;
+> > > +
+> > > +	frame->colorspace = state->hdmi.output_format;
+> > > +
+> > > +	drm_hdmi_avi_infoframe_quant_range(frame, connector, mode, rgb_quant_range);
+> > 
+> > drm_hdmi_avi_infoframe_quant_range() doesn't handle YCbCr currently.
 > 
-> diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
-> new file mode 100644
-> index 000000000000..e3162d0df0e2
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
-> @@ -0,0 +1,65 @@
-> +# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
-> +%YAML 1.2
-> +---
-> +
+> I guess it's not really a problem anymore if we drop YUV422 selection,
+> but I'll add a comment.
+> 
+> > > +	drm_hdmi_avi_infoframe_colorimetry(frame, state);
+> > > +	drm_hdmi_avi_infoframe_bars(frame, state);
+> > > +
+> > > +	infoframe->set = true;
+> > > +
+> > > +	return 0;
+> > > +}
+> > > +
+> > <snip>
+> > > +
+> > > +#define UPDATE_INFOFRAME(c, os, ns, i)				\
+> > > +	write_or_clear_infoframe(c,				\
+> > > +				 &(c)->hdmi.infoframes.i,	\
+> > > +				 &(os)->hdmi.infoframes.i,	\
+> > > +				 &(ns)->hdmi.infoframes.i)
+> > 
+> > This macro feels like pointless obfuscation to me.
+> 
+> I'll remove it then.
+> 
+> > <snip>
+> > > @@ -1984,20 +2063,73 @@ struct drm_connector {
+> > >  
+> > >  	/**
+> > >  	 * @hdmi: HDMI-related variable and properties.
+> > >  	 */
+> > >  	struct {
+> > > +#define DRM_CONNECTOR_HDMI_VENDOR_LEN	8
+> > > +		/**
+> > > +		 * @vendor: HDMI Controller Vendor Name
+> > > +		 */
+> > > +		unsigned char vendor[DRM_CONNECTOR_HDMI_VENDOR_LEN] __nonstring;
+> > > +
+> > > +#define DRM_CONNECTOR_HDMI_PRODUCT_LEN	16
+> > > +		/**
+> > > +		 * @product: HDMI Controller Product Name
+> > > +		 */
+> > > +		unsigned char product[DRM_CONNECTOR_HDMI_PRODUCT_LEN] __nonstring;
+> > > +
+> > >  		/**
+> > >  		 * @supported_formats: Bitmask of @hdmi_colorspace
+> > >  		 * supported by the controller.
+> > >  		 */
+> > >  		unsigned long supported_formats;
+> > >  
+> > >  		/**
+> > >  		 * @funcs: HDMI connector Control Functions
+> > >  		 */
+> > >  		const struct drm_connector_hdmi_funcs *funcs;
+> > > +
+> > > +		/**
+> > > +		 * @infoframes: Current Infoframes output by the connector
+> > > +		 */
+> > > +		struct {
+> > > +			/**
+> > > +			 * @lock: Mutex protecting against concurrent access to
+> > > +			 * the infoframes, most notably between KMS and ALSA.
+> > > +			 */
+> > > +			struct mutex lock;
+> > > +
+> > > +			/**
+> > > +			 * @audio: Current Audio Infoframes structure. Protected
+> > > +			 * by @lock.
+> > > +			 */
+> > > +			struct drm_connector_hdmi_infoframe audio;
+> > > +
+> > > +			/**
+> > > +			 * @avi: Current AVI Infoframes structure. Protected by
+> > > +			 * @lock.
+> > > +			 */
+> > > +			struct drm_connector_hdmi_infoframe avi;
+> > > +
+> > > +			/**
+> > > +			 * @hdr_drm: Current DRM (Dynamic Range and Mastering)
+> > > +			 * Infoframes structure. Protected by @lock.
+> > > +			 */
+> > > +			struct drm_connector_hdmi_infoframe hdr_drm;
+> > > +
+> > > +			/**
+> > > +			 * @spd: Current SPD Infoframes structure. Protected by
+> > > +			 * @lock.
+> > > +			 */
+> > > +			struct drm_connector_hdmi_infoframe spd;
+> > > +
+> > > +			/**
+> > > +			 * @vendor: Current HDMI Vendor Infoframes structure.
+> > > +			 * Protected by @lock.
+> > > +			 */
+> > > +			struct drm_connector_hdmi_infoframe hdmi;
+> > > +		} infoframes;
+> > >  	} hdmi;
+> > 
+> > What's the deal with this bloat? These are already tracked in the
+> > connector's state so this looks entirely redundant.
+> 
+> The next patch in this series is about adding debugfs entries to read
+> the infoframes, and thus we need to care about concurrency between
+> debugfs files accesses and commits. Copying the things we care about
+> from the state to the entity is the typical solution for that, but I
+> guess we could also take the proper locks and access the current
+> connector state.
 
-Drop
+Yeah, just lock and dump the latest state. That is the only thing
+that should of interest to anyone in userspace.
 
-> +$id: htpps://devicetree.org/schemas/hwmon/pmbus/adi,adp1050.yaml#
-> +$schema: htpps://devicetree.org/meta-schemes/core.yaml#
-> +
-> +title: Analog Devices ADP1050 digital controller with PMBus interface
-> +
-> +maintainers:
-> +  - Radu Sabau <radu.sabau@analog.com>
-> +
-> +description: |
-> +   The ADP1050 is used to monitor system voltages, currents and temperatures.
-> +   Through the PMBus interface, the ADP1050 targets isolated power supplies
-> +   and has four individual monitors for input/output voltage, input current
-> +   and temperature.
-> +   Datasheet:
-> +     https://www.analog.com/en/products/adp1050.html
+Also are you actually adding some kind of ad-hoc state dump things
+just for these? Why not do whatever is needed to include them in
+the normal .atomic_state_print() stuff?
 
-Missing blank line
-
-> +properties:
-> +  compatbile:
-
-Typo. And you did not test it...
-
-> +    const: adi,adp1050
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  vcc-supply: true
-> +
-> +  adi,vin-scale-monitor:
-> +    description:
-> +      The value of the input voltage scale used by the internal ADP1050 ADC in
-> +      order to read correct voltage values.
-> +    $ref: /schemas/typees.yaml#/definitions/uint16
-
-Missing blank line.
-
-> +  adi,iin-scale-monitor:
-> +    description:
-> +      The value of the input current scale used by the internal ADP1050 ADC in
-> +      order to read carrect current values.
-> +    $ref: /schemas/typees.yaml#/definitions/uint16
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - vcc-supply
-> +  - adi,vin-scale-monitor
-> +  - adi,iin-scale-monitor
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    i2c {
-> +             #adress-cells = <1>;
-
-Totally messed indentation.
-Use 4 spaces for example indentation.
-
-> +             #size-cells = <0>;
-> +             clock-frequency = <100000>;
-> +            adp1050@70 {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +                   #adress-cells = <1>;
-> +                   #size-cells = <0>;
-> +                   compatible = "adi,adp1050";
-> +                   reg = <0x70>;
-> +                   adi,vin-scale-monitor = <0xB030>;
-> +                   adi,iin-scale-monitor = <0x1>;
-> +                   vcc-supply = <&vcc>;
-> +          };
-> +...
-> +
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index f4d7f7cb7577..c90140859988 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -479,6 +479,14 @@ L:	linux-wireless@vger.kernel.org
->  S:	Orphan
->  F:	drivers/net/wireless/admtek/adm8211.*
->  
-> +ADP1050 HARDWARE MONITOR DRIVER
-> +M:	Radu Sabau <radu.sabau@analog.com>
-> +L:	linux-hwmon@vger.kernel.org
-> +S:	Supported
-> +W:	https://ez.analog.com/linux-software-drivers
-> +F:	Dcumentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
-> +F:	drivers/hwmon/pmbus/adp1050.c
-
-There is no such file...
-
-
-
-Best regards,
-Krzysztof
-
+-- 
+Ville Syrjälä
+Intel
 
