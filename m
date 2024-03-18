@@ -1,211 +1,148 @@
-Return-Path: <linux-kernel+bounces-106495-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106496-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6E1587EF6F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:02:52 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 8FF1E87EF75
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:07:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 747821F23531
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:02:52 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3F02B1F22A9D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:07:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B49157872;
-	Mon, 18 Mar 2024 18:02:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86A9955E6B;
+	Mon, 18 Mar 2024 18:07:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="hga6v1TA"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aFIXnKwl"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF6FE57862
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:02:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5FFC52F62;
+	Mon, 18 Mar 2024 18:07:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710784953; cv=none; b=LTV+KnnrmEZPJFhoc1c70QabTuhySsGoDPm+jMj4EN0iJbD93jm/HgIUybAUTwJyTfTZBTqLO1m21jjA2R5ve3BbcIZdCFmz6QNxVcXcMgg9cHee0LXLIApJT49f9OIP7PZ3h7OmHTKIVkVX5MxKi6DUVsHzM0o/wFa2SKPq8xs=
+	t=1710785234; cv=none; b=CSFzHLAuAzn5Jh+Nh4ANE4WqBO+0NPxv/j364sbgce5d8TNQogSowbPKXY3UyBhvryGQjdF8m6gYi8ex6iwQvnIiSADwCktuc0jtws4MmvdwrW+BWaIrOt5Hym1pEsQb3IB2MZpSROXHxOQWGSe/MLG2CBtWpMzydIqjABUPVgE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710784953; c=relaxed/simple;
-	bh=+JAH1mBsMESLs3MwMiRGxq6NxSHuEAFGRULjvG0Mhr4=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=JVcplCBIL+I1QdRrpr+SMWdzwRuzz7Og+bq0l+jqUSGcySvFZeBFM2IX8roiToiYTFrgG9V3b3x8lmVCxlhtli8PCmit0q8whGqy5/rESHy3iQCHlaiUUoVXdFJdYN+CSpkSxZTRZcatyknSBz72p1Y/ksfocg3jCD4nrjdzm1E=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=hga6v1TA; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 360AEC433F1;
-	Mon, 18 Mar 2024 18:02:33 +0000 (UTC)
+	s=arc-20240116; t=1710785234; c=relaxed/simple;
+	bh=uFTDIwgPe+HRP1kBbmqy1DdKe8I3YJWXH7EL3qi+Uac=;
+	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=euCS5gxtyX9lcJbCVVuiNBUXZozLOAOSdVkWpZgWliqbGZS9mhQ2hveTU57jDqAIJGxGMTwABeFR5sF9pCIEppz1hJJlN0vCqkpWJkT+Qe5Prm7Y1aVcP13waBmCxR9kk9LI3cXILoLtDoKV5pEV6ZUMFMhOWx7tbuQzYp+JWkc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aFIXnKwl; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 39864C433F1;
+	Mon, 18 Mar 2024 18:07:14 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710784953;
-	bh=+JAH1mBsMESLs3MwMiRGxq6NxSHuEAFGRULjvG0Mhr4=;
-	h=Date:From:To:Cc:Subject:From;
-	b=hga6v1TALUxc8qjnxy9FOWozsLh8+6tDVZu7/Wm5O2OVFN8akL4GBoRvkx/yPe26d
-	 4giQ5RCm7AVJYxnXyJYsh5husS+FkG+8A8DCDNVKhFqPjfjX0ecVX3P19urSnZtnho
-	 xYiR6POW3L2h2dGsU9WV8i7s71JZLG/O9vZLnLx+9oO7PI5/oB1zSJ7hRrjOZ7aFPO
-	 U11/CFv220tl/UXDXci3N9z5BUxc3bfjeB9ujEFYBE59p/nFCaoO4JDdZP2b3yYC9p
-	 NU89s/o/Ugg5i0hpLoDx6hu5bKG4EA+D0Jgr81R3d+g5MAXGqIsfBTKgsXLE030RHV
-	 gte8pdr1DPM2Q==
-Date: Mon, 18 Mar 2024 11:02:31 -0700
-From: Jaegeuk Kim <jaegeuk@kernel.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux F2FS Dev Mailing List <linux-f2fs-devel@lists.sourceforge.net>,
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: [GIT PULL] f2fs update for 6.9-rc1
-Message-ID: <ZfiBt0gRe_Elp7hE@google.com>
+	s=k20201202; t=1710785234;
+	bh=uFTDIwgPe+HRP1kBbmqy1DdKe8I3YJWXH7EL3qi+Uac=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=aFIXnKwlETENqQtQwVlftkKQrg2YFGR9DtlST0lBXmTOzWhVputjq/zoBTDs1uymk
+	 FE1wNfyXdG5m1FDxOvMMqqgi1RmUsPXMnc56rOaNYAdzd3CKVyAWUGCrMJCE/hDC3E
+	 dW0mza7sbdPb6RD/6XNCd+9zrfjB3GKHw/hV1Xe/qbrC8Qx16eTcPBAQ8Q1T6rz7cB
+	 b68G3sLcWvwCvrzrmqkmmOJaAIj4bEBYxslQ1YmQeHGLDPKQAjndEAsb/h18bVU+tF
+	 MJgvVrBKToFBT5qAxVK979GIyphgqBjl8LNksPfPEPniG5d/opr1e7izJm5bhhreDA
+	 Z+NntFzp88CCA==
+Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
+	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.95)
+	(envelope-from <maz@kernel.org>)
+	id 1rmHOB-00DLe3-Nq;
+	Mon, 18 Mar 2024 18:07:11 +0000
+Date: Mon, 18 Mar 2024 18:07:11 +0000
+Message-ID: <86r0g7za5s.wl-maz@kernel.org>
+From: Marc Zyngier <maz@kernel.org>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org,
+	Paolo Bonzini
+ <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Oliver Upton
+ <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K
+ Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi
+ <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown
+ <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	Mostafa Saleh
+ <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: Re: [RFC PATCH v2 2/4] KVM: arm64: Add PSCI SYSTEM_OFF2 function for hibernation
+In-Reply-To: <6a2107864d45bd6ac403c218d68bf97025eca971.camel@infradead.org>
+References: <20240318164646.1010092-1-dwmw2@infradead.org>
+	<20240318164646.1010092-3-dwmw2@infradead.org>
+	<86v85jzbw8.wl-maz@kernel.org>
+	<6a2107864d45bd6ac403c218d68bf97025eca971.camel@infradead.org>
+User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
+ FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
+ (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
+MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
+Content-Type: text/plain; charset=US-ASCII
+X-SA-Exim-Connect-IP: 185.219.108.64
+X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
+X-SA-Exim-Mail-From: maz@kernel.org
+X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
 
-Hi Linus,
+On Mon, 18 Mar 2024 17:54:06 +0000,
+David Woodhouse <dwmw2@infradead.org> wrote:
+> 
+> [1  <text/plain; UTF-8 (quoted-printable)>]
+> On Mon, 2024-03-18 at 17:29 +0000, Marc Zyngier wrote:
+> > 
+> > Again, I really oppose this way of doing things. We already have an
+> > infrastructure for selecting PSCI levels. You may not like it, but it
+> > exists, and I'm not going entertain supporting yet another bike-shed
+> > model. Adding an orthogonal cap for a feature that is specific to a
+> > new PSCI version is just awful.
+> 
+> Huh? This isn't a "new bike-shed model". This is a straight copy of
+> what we *already* have for SYSTEM_RESET2.
 
-Could you please consider this pull request?
+There is no KVM capability for SYSTEM_RESET2. It is directly
+advertised to the guest when PSCI 1.1 is supported.
 
-Thanks,
+> If I were bike-shedding, I wouldn't do separate caps for them; I'd have
+> done it as a *bitmask* of the optional PSCI calls that should be
+> enabled.
+>
+> The *mandatory* ones should obviously come from the PSCI version alone,
+> but I can't see how that makes sense for the optional ones...
 
-The following changes since commit 54be6c6c5ae8e0d93a6c4641cb7528eb0b6ba478:
+The guest is in a position to probe for what is supported or not with
+the PSCI_FEATURES call.  Why would you add anything else?
 
-  Linux 6.8-rc3 (2024-02-04 12:20:36 +0000)
+> 
+> > Please make PSCI 1.3 the only version of PSCI supporting suspend in a
+> > non-optional way, and be done with it.
+> 
+> SYSTEM_OFF2 is an *optional* feature in PSCI v1.3. As are
+> CLEAR_INV_MEMREGION and CLEAR_INV_MEMREGION_ATTRIBUTES.
+> 
+> Are you suggesting that enabling v1.3 should automatically enable *all*
+> of the optional features that were defined in that version (and
+> previous versions) of the spec?
 
-are available in the Git repository at:
+No. We have everything we need to incrementally *add* features. So you
+can perfectly implement PSCI 1.3 with only SYSTEM_OFF2, and only later
+on add the rest, if ever.
 
-  git://git.kernel.org/pub/scm/linux/kernel/git/jaegeuk/f2fs.git tags/f2fs-for-6.9-rc1
+	M.
 
-for you to fetch changes up to eb70d5a6c932d9d23f4bb3e7b83782c21ac4b064:
-
-  f2fs: fix to avoid use-after-free issue in f2fs_filemap_fault (2024-03-14 09:14:53 -0700)
-
-----------------------------------------------------------------
-f2fs update for 6.9-rc1
-
-In this round, there are a number of updates on mainly two areas: Zoned block
-device support and Per-file compression. For example, we've found several issues
-to support Zoned block device especially having large sections regarding to GC
-and file pinning used for Android devices. In compression side, we've fixed many
-corner race conditions that had broken the design assumption.
-
-Enhancement:
- - Support file pinning for Zoned block device having large section
- - Enhance the data recovery after sudden power cut on Zoned block device
- - Add more error injection cases to easily detect the kernel panics
- - add a proc entry show the entire disk layout
- - Improve various error paths paniced by BUG_ON in block allocation and GC
- - support SEEK_DATA and SEEK_HOLE for compression files
-
-Bug fix:
- - fix to avoid use-after-free issue in f2fs_filemap_fault
- - fix some race conditions to break the atomic write design assumption
- - fix to truncate meta inode pages forcely
- - resolve various per-file compression issues wrt the space management and
-   compression policies
- - fix some swap-related bugs
-
-In addition, we removed deprecated codes such as io_bits and heap_allocation,
-and also fixed minor error handling routines with neat debugging messages.
-
-----------------------------------------------------------------
-Chao Yu (29):
-      f2fs: compress: fix to guarantee persisting compressed blocks by CP
-      f2fs: compress: fix to cover normal cluster write with cp_rwsem
-      f2fs: compress: fix to avoid inconsistence bewteen i_blocks and dnode
-      f2fs: fix to remove unnecessary f2fs_bug_on() to avoid panic
-      f2fs: introduce FAULT_BLKADDR_CONSISTENCE
-      f2fs: zone: fix to wait completion of last bio in zone correctly
-      f2fs: support printk_ratelimited() in f2fs_printk()
-      f2fs: use f2fs_err_ratelimited() to avoid redundant logs
-      f2fs: compress: fix to cover f2fs_disable_compressed_file() w/ i_sem
-      f2fs: fix to avoid potential panic during recovery
-      f2fs: fix to create selinux label during whiteout initialization
-      f2fs: compress: fix to check zstd compress level correctly in mount option
-      f2fs: introduce get_available_block_count() for cleanup
-      f2fs: delete f2fs_get_new_segment() declaration
-      f2fs: fix to handle segment allocation failure correctly
-      f2fs: compress: fix to check compress flag w/ .i_sem lock
-      f2fs: introduce FAULT_NO_SEGMENT
-      f2fs: fix to use correct segment type in f2fs_allocate_data_block()
-      f2fs: fix to check return value in f2fs_insert_range()
-      f2fs: ro: compress: fix to avoid caching unaligned extent
-      f2fs: ro: don't start discard thread for readonly image
-      f2fs: fix blkofs_end correctly in f2fs_migrate_blocks()
-      f2fs: relocate f2fs_precache_extents() in f2fs_swap_activate()
-      f2fs: clean up new_curseg()
-      f2fs: fix to reset fields for unloaded curseg
-      f2fs: introduce SEGS_TO_BLKS/BLKS_TO_SEGS for cleanup
-      f2fs: fix to truncate meta inode pages forcely
-      f2fs: zone: fix to remove pow2 check condition for zoned block device
-      f2fs: fix to avoid use-after-free issue in f2fs_filemap_fault
-
-Daeho Jeong (4):
-      f2fs: separate f2fs_gc_range() to use GC for a range
-      f2fs: support SEEK_DATA and SEEK_HOLE for compression files
-      f2fs: support file pinning for zoned devices
-      f2fs: prevent atomic write on pinned file
-
-HuangXiaojia (1):
-      f2fs: Use folio in f2fs_read_merkle_tree_page
-
-Jaegeuk Kim (10):
-      f2fs: remove unnecessary f2fs_put_page in f2fs_rename
-      f2fs: deprecate io_bits
-      f2fs: use BLKS_PER_SEG, BLKS_PER_SEC, and SEGS_PER_SEC
-      f2fs: kill heap-based allocation
-      f2fs: prevent an f2fs_gc loop during disable_checkpoint
-      f2fs: check number of blocks in a current section
-      f2fs: fix write pointers all the time
-      f2fs: print zone status in string and some log
-      f2fs: allow to mount if cap is 100
-      f2fs: add a proc entry show disk layout
-
-Jeffrey Hugo (1):
-      f2fs: doc: Fix bouncing email address for Sahitya Tummala
-
-Sheng Yong (1):
-      f2fs: compress: fix to check unreleased compressed cluster
-
-Sunmin Jeong (2):
-      f2fs: mark inode dirty for FI_ATOMIC_COMMITTED flag
-      f2fs: truncate page cache before clearing flags when aborting atomic write
-
-Wenjie Qi (1):
-      f2fs: fix NULL pointer dereference in f2fs_submit_page_write()
-
-Wu Bo (1):
-      f2fs: check free sections before disable checkpoint
-
-Xiuhong Wang (2):
-      f2fs: compress: relocate some judgments in f2fs_reserve_compress_blocks
-      f2fs: compress: fix reserve_cblocks counting error when out of space
-
-Zhiguo Niu (8):
-      f2fs: compress: remove some redundant codes in f2fs_cache_compressed_page
-      f2fs: use IS_INODE replace IS_DNODE in f2fs_flush_inline_data
-      f2fs: stop checkpoint when get a out-of-bounds segment
-      f2fs: fix to do sanity check in update_sit_entry
-      f2fs: fix to check return value __allocate_new_segment
-      f2fs: fix to check return value of f2fs_gc_range
-      f2fs: unify the error handling of f2fs_is_valid_blkaddr
-      f2fs: fix to handle error paths of {new,change}_curseg()
-
- Documentation/ABI/testing/sysfs-fs-f2fs |  52 ++--
- Documentation/filesystems/f2fs.rst      |  54 ++--
- fs/f2fs/checkpoint.c                    |  74 +++---
- fs/f2fs/compress.c                      |  55 ++--
- fs/f2fs/data.c                          | 191 +++++---------
- fs/f2fs/debug.c                         |  11 +-
- fs/f2fs/dir.c                           |  10 +-
- fs/f2fs/extent_cache.c                  |   5 +-
- fs/f2fs/f2fs.h                          | 241 ++++++++++-------
- fs/f2fs/file.c                          | 171 +++++++-----
- fs/f2fs/gc.c                            | 129 +++++-----
- fs/f2fs/gc.h                            |   4 +-
- fs/f2fs/namei.c                         |  36 +--
- fs/f2fs/node.c                          |  26 +-
- fs/f2fs/node.h                          |   4 +-
- fs/f2fs/recovery.c                      |  56 ++--
- fs/f2fs/segment.c                       | 444 ++++++++++++++++++++------------
- fs/f2fs/segment.h                       |  90 ++++---
- fs/f2fs/super.c                         | 208 +++++----------
- fs/f2fs/sysfs.c                         |  52 +++-
- fs/f2fs/verity.c                        |  16 +-
- include/linux/f2fs_fs.h                 |   8 +-
- 22 files changed, 1054 insertions(+), 883 deletions(-)
+-- 
+Without deviation from the norm, progress is not possible.
 
