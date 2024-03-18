@@ -1,205 +1,177 @@
-Return-Path: <linux-kernel+bounces-105924-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105925-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 095DA87E675
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:54:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BE05C87E679
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:54:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2945C1C21863
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:54:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D45A31C2187A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:54:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B6EF2D029;
-	Mon, 18 Mar 2024 09:53:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E48A42D634;
+	Mon, 18 Mar 2024 09:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="key not found in DNS" (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b="mj2aDmlR"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2103.outbound.protection.outlook.com [40.107.220.103])
+	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="xnoeNPEI"
+Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 922122C692;
-	Mon, 18 Mar 2024 09:53:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.103
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710755607; cv=fail; b=LlDlpJIZ54YuPHd0DpShm6XAzpSmu6rm5CadoAGKeGJQRozZSHA9d0N3fl5FEyP83j8Qkr2LH/20TpRjRgcIGr4mOHf+7KOmokQ62gnYvgaQopdP7sSZ1GQpE6N6pVgKoyomleokyhVyRK4ci/1vKxJJXpiJRWVovKkk0w7ZmAk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710755607; c=relaxed/simple;
-	bh=L/DkK5eOZAYEezwrmIs4IkqMJsoA2SeCB3agZzsqneQ=;
-	h=Message-ID:Date:From:Subject:To:Cc:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=iluyGHUra8lpsVTTJsLs+ocOE7oozntwN+fJP8ZfZlS9HSRTcAvHulD89+FF8rlyTAWBNOqdrYbG/Ut/E/gw/O8hMV+9FxU0T9tj4aE3qjdfFGUhguSU9mrZ+YbuL9krBuXjLj/5oOXsHhg4CbJECMwNxA3QezGi/z0brPdvKjk=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com; spf=pass smtp.mailfrom=os.amperecomputing.com; dkim=fail (0-bit key) header.d=amperemail.onmicrosoft.com header.i=@amperemail.onmicrosoft.com header.b=mj2aDmlR reason="key not found in DNS"; arc=fail smtp.client-ip=40.107.220.103
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=amperemail.onmicrosoft.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=os.amperecomputing.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=mH1p9002cZzeu4a6yEJNuVP7RW53tusR+eNPTjKP4QTW6Oxuj3PB6TurApThvHd/n8EBslfkyfrm7383mO5raJ31HVtikEn6qe4ZRBNO6F6l1KtihlFz4ZjmJ4G/uVtY9SenKCbLraNUrrpE0xU0DIzhjFNcQTnDzYio1fFj61tmaXpVX0j2ysPONzPw4C3YJR4z+NPE1XW2gRHS7IM3/THT393ZFJR/D2/uasiDu4zMFtLp7go51tk61AsmXHDINlwl8BcJl7sb+sIF03cMXckP2qm/5ZbL1vRzc0Pbo6JwmNbz3JSM86GwA1oDIqltZXVoTWOuOFo8MrcMfv2Tpw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=JRoUxzfQsi766FgN4eu8RdcBeYODo79dt6sdx0sOJqQ=;
- b=LPpEYNwfP4lBFr7p3wBI5oc0tUS7mC6jD92YbhNL7Wxbce2BLSC8fuOUBVg5WvbHP/s39k0KcHVWCWcuIVhTqr88mgUBm10b8i4zgoyjvovNpU29elb6EJXi9o5pj6da5NciDJvHgTg94i4f6SpA48YQ/rcNwOz2bLjGBtb+j5rgj3lk5gdwBEl18z25kYKeIByQV3DSny8/L8P3PIpMtQs5lwkiiffB/LXo9WbcrQg5av7uoMi+catA3w1NB2pQOQn77Es/6P6txumA0j2XBo/eqQDRqw38EVV9emfmAwhSHy5oDT0N1my8Wmf86uABz2krzw9y00BcQgmipoCYvg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=os.amperecomputing.com; dmarc=pass action=none
- header.from=amperemail.onmicrosoft.com; dkim=pass
- header.d=amperemail.onmicrosoft.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=amperemail.onmicrosoft.com; s=selector1-amperemail-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=JRoUxzfQsi766FgN4eu8RdcBeYODo79dt6sdx0sOJqQ=;
- b=mj2aDmlRmTyXqgrPGZ64O/TZsxBwsf0Q4HbzzXBnzIE93jzXA4zUv1763he7ZXsJFpZ/LZfE7oTvP9Jvoc7J13l3il4d6uVmYwoVTz4dFm44XOifH0hRfP98IDn4X80NDn44RRT43I74IgDaucue6vzuMx3ZVM6EMgNAoIlMbVE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=amperemail.onmicrosoft.com;
-Received: from DM6PR01MB5947.prod.exchangelabs.com (2603:10b6:5:1dd::12) by
- SA0PR01MB6473.prod.exchangelabs.com (2603:10b6:806:ec::8) with Microsoft SMTP
- Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.23; Mon, 18 Mar 2024 09:53:23 +0000
-Received: from DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08]) by DM6PR01MB5947.prod.exchangelabs.com
- ([fe80::b557:13cd:8a29:ae08%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
- 09:53:23 +0000
-Message-ID: <ce8b2b49-b194-42f7-8f83-fcbf7b460970@amperemail.onmicrosoft.com>
-Date: Mon, 18 Mar 2024 16:53:17 +0700
-User-Agent: Mozilla Thunderbird
-From: Chanh Nguyen <chanh@amperemail.onmicrosoft.com>
-Subject: Re: [PATCH 3/3] dt-bindings: hwmon: max31790: Add
- pwmout-pin-as-tach-input property
-To: Rob Herring <robh@kernel.org>, Chanh Nguyen <chanh@os.amperecomputing.com>
-Cc: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Justin Ledford
- <justinledford@google.com>, devicetree@vger.kernel.org,
- linux-hwmon@vger.kernel.org, linux-kernel@vger.kernel.org,
- OpenBMC Maillist <openbmc@lists.ozlabs.org>,
- Open Source Submission <patches@amperecomputing.com>,
- Phong Vo <phong@os.amperecomputing.com>,
- Thang Nguyen <thang@os.amperecomputing.com>,
- Quan Nguyen <quan@os.amperecomputing.com>
-References: <20240311111347.23067-1-chanh@os.amperecomputing.com>
- <20240311111347.23067-4-chanh@os.amperecomputing.com>
- <20240311173438.GA1451467-robh@kernel.org>
-Content-Language: en-US
-In-Reply-To: <20240311173438.GA1451467-robh@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0037.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::13) To DM6PR01MB5947.prod.exchangelabs.com
- (2603:10b6:5:1dd::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73F292E40F;
+	Mon, 18 Mar 2024 09:54:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710755649; cv=none; b=nGdidq5Z00vL+d1CBeTKL1bbpzLpgUjgxYQ69B6AhaO/tZrvZs8pBx5e0RcBXcrFONik/CkxHcBd71NquxztaWEGB4GzCC96J6qNhB/A0ue2eEVI+YruT508PwoQKvvUaHmHPsu4c/wkLM0RcG2mYO3KG1SIaO72kb7v4xYoDDI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710755649; c=relaxed/simple;
+	bh=SRglM2PBHV4RNTf7tLETeShVgLn5d55vx8MZNE7zvQg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=V5FMdwDqAMFbnBrZxbDdBTCM75MYS4iiG6pkpzXbs4zKeKTEdp+d7gabsNc0OmVjqgc+dgdtHvlhoc041NZZnR8VdxNN64gXAzo45mvs7Py4xltiRhOjhJb+Bhib+yQAFlE+cSmowV66mB+S8CXekrghfIiPULL7yxinDqVaaOo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=xnoeNPEI; arc=none smtp.client-ip=46.235.227.194
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
+	s=mail; t=1710755639;
+	bh=SRglM2PBHV4RNTf7tLETeShVgLn5d55vx8MZNE7zvQg=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=xnoeNPEIL9MQK915O+a9dDj7qJx/fLSrZ0SOsAvnWDzUhpWc8UCi40xfYEcf0LVG2
+	 6vlBOS0Z/YqF1rF1Y09Xdo0H/gh3g1uWK7V71J4vFxSjA0EX9QqWiXvh2/3WpwebR6
+	 RsBPA4Yyf9xDs8OvWY1zDRVqMd44wEnA9B3JPjOrRGpn/Mf2/cIKmXa19mZ6BGV6Gn
+	 twwXb7PzK1M1Nr/NLReSq9LxKBAliuCpog5EII/vqfh6F6GKT4icAzBPHCMIIalpJM
+	 KFN0l6U++DWCcb/OkM+qDuj/c05daFoyxiXDIxMEykKVRfs2M/76AJW2lNLOOm81z3
+	 KyiNZIQBt17Yw==
+Received: from [100.90.194.27] (cola.collaboradmins.com [195.201.22.229])
+	(using TLSv1.3 with cipher TLS_AES_128_GCM_SHA256 (128/128 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	(Authenticated sender: ehristev)
+	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 9BA15378203E;
+	Mon, 18 Mar 2024 09:53:56 +0000 (UTC)
+Message-ID: <cea072bf-0ae5-4d0d-b0db-cd2ac772f463@collabora.com>
+Date: Mon, 18 Mar 2024 11:53:54 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR01MB5947:EE_|SA0PR01MB6473:EE_
-X-MS-Office365-Filtering-Correlation-Id: d41d6db9-370a-4cfc-bf23-08dc47313fa1
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	LeYPdqCC8BpqcYGP86ZLJMGDsvpdx/zCUctOypWxAOyHKiLc8szjihcOog9QtNrmkcetjgHu1jTYftRDTZMZ7BsqblTEI8yIxH0TLyyHQCDHrTw5gJrGB43J8s2YX2bwoQPW3WhF6zeL7dlc2oOlCLtAJ9JU8xQG9hqKJpJh6R3eg1gEGtPtYKFIjNk1Jcm583FSmBmoOTOk/oTiukPs9z6xVWukNxRHGbw/fWAlt6D1pBZpbEDE/vXr4Rpqaquftj4sVDwPD8r1LpzTpum4+sBYUXqXt5znofUbP2DEO8cTG3PzGWzwri56GM1hnm/AIDNFkqaoZ4nnqYvZDfluYbpC8MwIaW3to7FFxNvTCAA9+6D+46s6dUEhYH76uwpCG4oqK+aXwgHNZ75osVl/wubC+PXJJ1sbP52a57m4lgEQvgZGmuY3Dp6wes7NlgSmXfYUMwfVWcOnEAgqnd7T0FwfrKzi0vvCK2LxCq3gRLGKpJLXXJFTZDiIEGpDVBUNSJFqRfzrhS3smqL993r4bRS49iDbHGuI231IgHQoV1MqdBzVELt/duDH3tnPQ8e4qyzn9Bknyd2fsIAxk8+2L+evfLeXHSqEfLn9PPI1y6GfpnB6DU6bPCpmzWQP7sYbGTYVjUGotgL/xPykgCIwVnE0x6ih4nYRP6qw7SCo9CY=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR01MB5947.prod.exchangelabs.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?bHh6QVpteHg4cm1SQmhSOElValM5WVZIcHQzTitPY2c4WWFtS01KblRCRDM0?=
- =?utf-8?B?ZmNzT2UyZVVDMU9uc0hiKzFCKy9zSjBIWlBITS9pZnlCdXpJRS9wQkEyUFlG?=
- =?utf-8?B?OHg1TE9PVE5pWXhEdmhBZzRMdW12QnhuK05xMVZDcURXWEp6MDVuRlpsYWRk?=
- =?utf-8?B?d09tMCtadklTWlFPNWtGZGJQTzhWZXpYU05rTktRcWZ2c3dsZmM2dHFyUEdi?=
- =?utf-8?B?M2hsd0JTQ0ZadVRXNzl4a0lNVVQ5M1pQY3VOcFdYY1ZvZ0UybDE1QS9oazBH?=
- =?utf-8?B?ZDBCSVMxOHVhVGZaQlFkNkR2VzFPT21VM2t0QjBSVXRUQjhaWUVud3pUNFhm?=
- =?utf-8?B?WG9QQXhRMjFmN0w3L3k3eWxyWTJVK0k0ejR0Z3ZISnpNVDVqN2UzY2V0NjVr?=
- =?utf-8?B?eURJVm9tQzlDaFJIVUNYNXpPNytRMFg5QmJUUjZVVUl4MzVhNjh3NmhITnNP?=
- =?utf-8?B?RWlhWE1rRjBZam9JekpJaUlOK3pVSlgrRHFwak9BNHVhZzFaM1hmVzBMaUNz?=
- =?utf-8?B?MFl3SmFHOFp2ZTNCY1ZDN1lNdy9iS25jWjdCZ2xwRitQVTNEakZEOFY0VFE1?=
- =?utf-8?B?djFrMTRGdDBjUE1aT3FpL256S25uYVR5WVJIcFNrNmxKWWxYNUNxNWdoeGxT?=
- =?utf-8?B?bkw3Y1NzK0Y3d2d1dkNqa24wbEZsM0hkTm8xejlnK3hkWDZ1emlRbW1XQjg5?=
- =?utf-8?B?ak5OZUZVbnlqVlkvL05Gc0QyaCtIdE84OEovSFJBNkFWZ04xM0M1UFQzWlU4?=
- =?utf-8?B?V1lBN3BWSHFSYUhHbVI2U25qTGpqR0NiY2daOENETFAxdVFBbDViV2FicEky?=
- =?utf-8?B?MVB1cTczRkVPYjdBc2NOWVVLVjVIbkJ1WGUrYWI4Rit5MHdoQVQrSW1IdzFJ?=
- =?utf-8?B?dGhZNU84dzRFYTlsMkZ6MkdCMzFSQUVQOXpRWXBtY1dFeVRGUUZoQ3NrWGZE?=
- =?utf-8?B?UXhGME1PWkpxcjd0UHZNRlFhWTlkdmlMUjRhU28zVzhOWTNwSGM1aGs3SSs4?=
- =?utf-8?B?MjBWMW9qYVg5RTFBeTVNejhVVmc0bGZ0M3Y1UjgvQW84elpXSGtDLzJ4ZTRM?=
- =?utf-8?B?aVdxRmhDU25JWndEZTZwVHVzWnFCaUVhUS90MmlEaHZnZUNKaFErc0Q3dG5E?=
- =?utf-8?B?Nzl5VzFZQ0dCT2NOVmlZYmN4NXN4NjRWVmxac3Z1M3hkb3J5TU50SG9tZE82?=
- =?utf-8?B?cEJKVnJOc2x1NnYrNWRTVEpHMWNlcHkxSW1QWEQwMmtGODhEMzRNdEFEQ3lR?=
- =?utf-8?B?QmttNFhnc3NITnQzZ3NMVGJzdUZSQWh6S3JsdjBlRmxXYUdlQ25oVWp0RzhE?=
- =?utf-8?B?K1JkamNZL1JiNzJtLzdTeUlXVWl0anBuWnd0UE1lKzB5U3FrdjRDMG84MUhY?=
- =?utf-8?B?R1dYZUxIS0Z5a21GdDRGM3ZiZWhPZmRxOEU1Z05KaW9pYjRMT1pZZ2ZXaUpR?=
- =?utf-8?B?OFEra2xJRTNWUlVyQlM2VDNLT1ZZRWxCZVVZd3ZkaGdwem5KSDN2ZUhFODFE?=
- =?utf-8?B?cmttQjNadnhDSkRYdnNjZGxNdC9RSVBhZTdncmprWEpNRzFEYUwrSWlnS0VS?=
- =?utf-8?B?NEZYU2VPVkFjamtDSGxzakVLdldLTUp6ZkI0VUQwc0cwTGNFeit1ZUtNZGwz?=
- =?utf-8?B?TFpSQ2Q4cnJ0VnBzeUNraklta3NWcGxCLzdCZFRTdElmanp0MWVDV0dyNmFV?=
- =?utf-8?B?UWgwK0VxNW5QUWEvNlVlenZmc0hRZUhyY01ORGlEa0pVWHVZemR4SDVvRnNE?=
- =?utf-8?B?TS8zTG4xU3VqblpFdjdBM0xXY2JoRk1KUU1NOVBRZVd5NTBORXpLZk5ERlVz?=
- =?utf-8?B?ODRLM0gyMlBXcjRoRkdra2NlTDMxb2VhZ1Z6aFZmR0p5NmJMMlhoNWsvaitm?=
- =?utf-8?B?VDRpMzFYRTE4c0ZqSFVFVlhSdFVWUVRwTVdIQzByeGw4ZndSWG1KOTU2OWQ5?=
- =?utf-8?B?cGdoWkwwRlk3R0tuVEV5WGFicXEwc0FyMmRLNGVWY3FsWUxlK0R1Mmt0bzNv?=
- =?utf-8?B?QUpMQTRlcmtHOEVtRUk3b1VXZGZHV2xxK2xiWXNPME02S0wwN002NTFKVmdo?=
- =?utf-8?B?em5vMnJXWGV0d1BMQmZRYnM3eEo3T0Njejl3bS95aHI2ZUNBN1JZN005WTJ5?=
- =?utf-8?B?bWVNdzltd0R5cWprUWU4eGNsR21tUnpqeHQ3NEp4NHhmUGZxTXMzQm96VW1N?=
- =?utf-8?Q?hQMc8AIIM4U8l+UOgfPQRjI=3D?=
-X-OriginatorOrg: amperemail.onmicrosoft.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: d41d6db9-370a-4cfc-bf23-08dc47313fa1
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR01MB5947.prod.exchangelabs.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 09:53:22.9691
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3bc2b170-fd94-476d-b0ce-4229bdc904a7
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: K5IB0STQqwkP5PmG+PpN41urW14l4zlI/49DFS+NTql2/PWA1FAwX8AsGKtpvofo4TOsKRxFfxUBfXd82HxR39evHaNDFvOOcvomkVB3jHWyj4HoGozS6rY4FmScbKC4
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA0PR01MB6473
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 2/9] f2fs: Simplify the handling of cached insensitive
+ names
+Content-Language: en-US
+To: Gabriel Krisman Bertazi <krisman@suse.de>
+Cc: tytso@mit.edu, adilger.kernel@dilger.ca, linux-ext4@vger.kernel.org,
+ jaegeuk@kernel.org, chao@kernel.org, linux-f2fs-devel@lists.sourceforge.net,
+ linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org,
+ kernel@collabora.com, viro@zeniv.linux.org.uk, brauner@kernel.org,
+ jack@suse.cz, Gabriel Krisman Bertazi <krisman@collabora.com>
+References: <20240305101608.67943-1-eugen.hristev@collabora.com>
+ <20240305101608.67943-3-eugen.hristev@collabora.com>
+ <87edcdk8li.fsf@mailhost.krisman.be>
+ <aaa4561e-fd23-4b21-8963-7ba4cc99eed3@collabora.com>
+ <8734sskha1.fsf@mailhost.krisman.be>
+From: Eugen Hristev <eugen.hristev@collabora.com>
+In-Reply-To: <8734sskha1.fsf@mailhost.krisman.be>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-
-
-On 12/03/2024 00:34, Rob Herring wrote:
-> On Mon, Mar 11, 2024 at 06:13:47PM +0700, Chanh Nguyen wrote:
->> Add pwmout-pin-as-tach-input property.
+On 3/14/24 16:41, Gabriel Krisman Bertazi wrote:
+> Eugen Hristev <eugen.hristev@collabora.com> writes:
+> 
+>>> Please, make sure you actually stress test this patchset with fstests
+>>> against both f2fs and ext4 before sending each new version.
 >>
->> Signed-off-by: Chanh Nguyen <chanh@os.amperecomputing.com>
->> ---
->>   Documentation/devicetree/bindings/hwmon/max31790.yaml | 11 +++++++++++
->>   1 file changed, 11 insertions(+)
->>
->> diff --git a/Documentation/devicetree/bindings/hwmon/max31790.yaml b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> index 5a93e6bdebda..447cac17053a 100644
->> --- a/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> +++ b/Documentation/devicetree/bindings/hwmon/max31790.yaml
->> @@ -25,6 +25,16 @@ properties:
->>     reg:
->>       maxItems: 1
->>   
->> +  pwmout-pin-as-tach-input:
->> +    description: |
->> +      An array of six integers responds to six PWM channels for
->> +      configuring the pwm to tach mode.
->> +      When set to 0, the associated PWMOUT produces a PWM waveform for
->> +      control of fan speed. When set to 1, PWMOUT becomes a TACH input
->> +    $ref: /schemas/types.yaml#/definitions/uint8-array
->> +    maxItems: 6
->> +    minItems: 6
+>> I did run the xfstests, however, maybe I did not run the full suite, or maybe I am
+>> running it in a wrong way ?
 > 
-> Seems incomplete. For example, fan tachs have different number of
-> pulses per revolution, don't you need to know that too?
+> No worries.  Did you manage to reproduce it?
+
+Yes, thank you, using qemu on the x86_64 with your commands below.
+
+While the oops was caused by that wrong kfree call, fixing it and moving further
+got me into further problems.
+I am unsure though how these patches cause it.
+
+Here is a snippet of the problem that occurs now :
+
+generic/417 12s ... [  616.265444] run fstests generic/417 at 2024-03-18 09:22:48
+[  616.768435] ------------[ cut here ]------------
+[  616.769493] WARNING: CPU: 4 PID: 133 at block/blk-merge.c:580
+__blk_rq_map_sg+0x46a/0x480
+[  616.771253] Modules linked in:
+[  616.771873] CPU: 4 PID: 133 Comm: kworker/4:1H Not tainted
+6.7.0-09941-g554c4640dff5 #18
+[  616.773660] Hardware name: QEMU Standard PC (i440FX + PIIX, 1996), BIOS 1.15.0-1
+04/01/2014
+[  616.775573] Workqueue: kblockd blk_mq_run_work_fn
+[  616.776570] RIP: 0010:__blk_rq_map_sg+0x46a/0x480
+[  616.777547] Code: 17 fe ff ff 44 89 58 0c 48 8b 01 e9 ec fc ff ff 43 8d 3c 06 48
+8b 14 24 81 ff 00 10 00 00 0f 86 af fc ff ff e9 02 fe ff ff 90 <0f> 0b 90 e9 76 fd
+ff ff 90 0f 0b 90 0f 0b 0f 1f 84 00 00 00 00 00
+[  616.781245] RSP: 0018:ffff97e4804f3b98 EFLAGS: 00010216
+[  616.782322] RAX: 000000000000005e RBX: 0000000000000f10 RCX: ffff8f5701eed000
+[  616.783929] RDX: ffffdc0c4052df82 RSI: 0000000000001000 RDI: 00000000fffffffc
+[  616.785426] RBP: 000000000000005e R08: 0000000000000000 R09: ffff8f5702120000
+[  616.787065] R10: ffffdc0c4052df80 R11: 0000000000000000 R12: ffff8f5702118000
+[  616.788650] R13: 0000000000000000 R14: 0000000000001000 R15: ffffdc0c4052df80
+[  616.790129] FS:  0000000000000000(0000) GS:ffff8f577db00000(0000)
+knlGS:0000000000000000
+[  616.791826] CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+[  616.793069] CR2: 00007fbe596adc98 CR3: 000000001162e000 CR4: 0000000000350ef0
+[  616.794528] Call Trace:
+[  616.795093]  <TASK>
+[  616.795541]  ? __warn+0x7f/0x130
+[  616.796242]  ? __blk_rq_map_sg+0x46a/0x480
+[  616.797101]  ? report_bug+0x199/0x1b0
+[  616.797843]  ? handle_bug+0x3d/0x70
+[  616.798656]  ? exc_invalid_op+0x18/0x70
+[  616.799461]  ? asm_exc_invalid_op+0x1a/0x20
+[  616.800313]  ? __blk_rq_map_sg+0x46a/0x480
+[  616.801207]  ? __blk_rq_map_sg+0xfc/0x480
+[  616.802213]  scsi_alloc_sgtables+0xae/0x2b0
+[  616.803258]  sd_init_command+0x181/0x860
+[  616.804111]  scsi_queue_rq+0x7c3/0xae0
+[  616.804910]  blk_mq_dispatch_rq_list+0x2bf/0x7c0
+[  616.805962]  __blk_mq_sched_dispatch_requests+0x40a/0x5c0
+[  616.807226]  blk_mq_sched_dispatch_requests+0x34/0x60
+[  616.808389]  blk_mq_run_work_fn+0x5f/0x70
+[  616.809332]  process_one_work+0x136/0x2f0
+[  616.810268]  ? __pfx_worker_thread+0x10/0x10
+[  616.811320]  worker_thread+0x2ef/0x400
+[  616.812215]  ? __pfx_worker_thread+0x10/0x10
+[  616.813205]  kthread+0xd5/0x100
+[  616.813907]  ? __pfx_kthread+0x10/0x10
+[  616.814787]  ret_from_fork+0x2f/0x50
+[  616.815598]  ? __pfx_kthread+0x10/0x10
+[  616.816394]  ret_from_fork_asm+0x1b/0x30
+[  616.817210]  </TASK>
+[  616.817658] ---[ end trace 0000000000000000 ]---
+[  616.818687] ------------[ cut here ]------------
+[  616.819697] kernel BUG at drivers/scsi/scsi_lib.c:1068!
+
+
+Do you have any ideas ?
+
+Thanks !
+Eugen
+
 > 
-> There's a common fan binding now (or pending). You should use that and
-> this property won't be needed.
+>> How are you running the kvm-xfstests with qemu ? Can you share your command
+>> arguments please ?
 > 
-> Rob
+> I don't use kvm-xfstests.  I run ./check directly:
+> 
+> export SCRATCH_DEV=/dev/loop1
+> export SCRATCH_MNT=$BASEMNT/scratch
+> export TEST_DEV=/dev/loop0
+> export TEST_DIR=$BASEMNT/test
+> export RESULT_BASE=${BASEMNT}/results
+> export REPORT_DIR=${BASEMNT}/report
+> export FSTYP=f2fs
+> 
+> mkfs.f2fs -f -C utf8 -O casefold ${TEST_DEV}
+> 
+> ./check -g encrypt,quick
+> 
 
-Thank Rob,
-
-I checked in the 
-Documentation/devicetree/bindings/hwmon/fan-common.yaml. I found the 
-tach-ch property, but it seems define the tach channel used for fan.
-
-   tach-ch:
-     description:
-       The tach channel used for the fan.
-     $ref: /schemas/types.yaml#/definitions/uint8-array
-
-I would like to define a new vendor property to configure the PWM-OUT 
-pin to become a TACH-IN pin. So I introduce the 
-"maxim,pwmout-pin-as-tach-input" property. Please help me share your 
-comments!
 
