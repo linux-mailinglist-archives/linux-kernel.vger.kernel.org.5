@@ -1,77 +1,77 @@
-Return-Path: <linux-kernel+bounces-106609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3395987F0E3
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:07:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD16887F0E7
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:07:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 613D61C21C28
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:07:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC4271C212EE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:07:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3214B5C60A;
-	Mon, 18 Mar 2024 20:04:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6453F5CDC5;
+	Mon, 18 Mar 2024 20:04:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="L4Ep7v3T"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Xsx88nhx"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A09F65C03D
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:04:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DA0A5C8EA
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:04:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710792271; cv=none; b=ZmkMw5KajThPkBpyWqNvgdDEdue1cgNaU0j2jRcg3F2S3YTEFY+wmEz7UXP3FNmW1x2o7Yhzc+remIZD+5TAn0o7KNHP3dIhRqfTiRlJEpvDIj08s/P87HRZd9EIOehN2dZyF8vW86dDu53g5qFkwPxRv8jCKHgb97TsGj8l22k=
+	t=1710792274; cv=none; b=FYWaonQGvRFvmsVsGoEOXKnMSFsP28UNpGNspvNhhQOwIlo148v2Va1emfQMJI9dN6Ju3kfTX4KpQCJb5/CJ6GKmlZtDdJbVydwC2Sj30dHC2Ilx4doJZlFdySeNyF/tCD6Jluwoz+ptV6lLTsiznlIQIeHFEYC4MvCriAVwPB0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710792271; c=relaxed/simple;
-	bh=ojVmr5RD35FTPLpAqjeK88wQPTEg2L/XUu1gv37ZNsY=;
+	s=arc-20240116; t=1710792274; c=relaxed/simple;
+	bh=OtdxslPn00ut3ZNOwlMQpC8bAo76CW3Q9+JhiTFcwrI=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=NYxNGr8Txa1TI27i+k2+DdqmyQ4hNDh4WtB1RxU/nAkfFYZ8Nt8mT/Ex6Vh0FO9ws+Lm+pk+oxPFvWHj6h1km6yA6NZ+SOmn4+F6JxG6CN+fcT6cLGIKruDrXXZcoCqH2t50ty8RGuggKNIMR+AQPVGuEo15nYwULiloDQFbOHE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=L4Ep7v3T; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version; b=ewHokDbMn87F1tZKClzRQQXfOM/jXLzx+6ilMpITxueT0P1Vj+HrCaz8GDEkwkW+B6SK3K1DEXC90XV1//xjfBNs7RtKIQBJtQM+KcOdJ9WHtHHyHXmWEhHI9dmRIGuqBEAjdhU8MplMMaG3ojD9K/l9fA7vpPsqaOQ7elR+9h8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Xsx88nhx; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710792268;
+	s=mimecast20190719; t=1710792272;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JXDMCLhq+SpXi29RlzCNqEUhIAFpzfV1ImIXAFsvuS0=;
-	b=L4Ep7v3TjjUmVZvPyHytKh9PvQ1IHGfW6QsXsWdGxwfFi5vdZkhcKDDHhlHP2cIBdnGHre
-	svhSUe6vsX2b3BXxzqs41/INLYooaCOwzAuCsX3yXe6zqfr6N9wIJ0gJqbA9WbbQwhYmxN
-	VIruHyyG8J3Ub2jfDX/ttuxN230cvJE=
-Received: from mail-qt1-f199.google.com (mail-qt1-f199.google.com
- [209.85.160.199]) by relay.mimecast.com with ESMTP with STARTTLS
+	bh=RceLUqudgSYtio91tFrZNJeoSc+POoSD4WuQnIajVyw=;
+	b=Xsx88nhxMF/DcgSyDpu9CDVBBvkqgGOL2ei9k9ANdJyTwau522QPNuwYKYgOW4V6xYPHiR
+	XXeBOPYu58c4l+sxpqASOgNH5fvgXxeyQSn+b3oRNeDr80dO9V7QGWCo71Mqx/5epRw0Jf
+	4i9g7zzFURsKFb+24R2MbQoFp9oBGzs=
+Received: from mail-ot1-f71.google.com (mail-ot1-f71.google.com
+ [209.85.210.71]) by relay.mimecast.com with ESMTP with STARTTLS
  (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-29-2pk3gYkzMgK9sh7u--y8WA-1; Mon, 18 Mar 2024 16:04:27 -0400
-X-MC-Unique: 2pk3gYkzMgK9sh7u--y8WA-1
-Received: by mail-qt1-f199.google.com with SMTP id d75a77b69052e-430b9ee6bfbso6674891cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:04:27 -0700 (PDT)
+ us-mta-44-Xy61K1HcMNCKmynbQTEGww-1; Mon, 18 Mar 2024 16:04:29 -0400
+X-MC-Unique: Xy61K1HcMNCKmynbQTEGww-1
+Received: by mail-ot1-f71.google.com with SMTP id 46e09a7af769-6dea8b7e74aso1769401a34.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:04:29 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710792266; x=1711397066;
+        d=1e100.net; s=20230601; t=1710792268; x=1711397068;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=JXDMCLhq+SpXi29RlzCNqEUhIAFpzfV1ImIXAFsvuS0=;
-        b=Zl0d4gm87esGYI6GzRhk7Uk4xBERi8yHTlGSil5FTAqRF0+/LXaouoB+hOqCSTo2QA
-         LBwfLvHKSQlT10jlOg7BTkNoPyDH2gK1XPiidPzzh28m1GVWO41Ku3ZdWsyR5Ug/yKeQ
-         ++F0Uz8XaELpftyrN0LHc9LKdylUYqEdx15D+5yrEeu7/t+Tv2OvTNw8MTByKQaCv8ay
-         bDtMgJSWyBwRkw0+WT1WnEb/6gwT7z7TPPufiEHTTndBddhk6ahEYnPhMN72s2g17HVk
-         5+urrCln5InbH+UMSePpwowBVOq2PnAMUkNnro5YcYEAprRb3lN/Qr6ciSNGz/DcvODi
-         sn3g==
-X-Gm-Message-State: AOJu0Yw4GLRbOeUPlm00foG8YJ4H9X7SrmImIbOSUGH2M1T8o/FbPoj1
-	kmiSs5Kc1JqTm64WX61gBAK7mLj4bdd1hzxflr/du8gT5b1+1nawrGgQz4NyeN/Gp3qXqIfaHLu
-	oWFxJ1rBhzoJeTRq3XEPMek/oITemIzOAzK7xCsJlUHjSy7J2d3QFImSyB826hPMBglglLT9zp8
-	hYOCj6HH4MmNRba8Va4S6gUsRJjH02FqcCop6kl0OsR2w=
-X-Received: by 2002:ac8:5f91:0:b0:430:c2dc:a5ef with SMTP id j17-20020ac85f91000000b00430c2dca5efmr447862qta.2.1710792266608;
-        Mon, 18 Mar 2024 13:04:26 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHBYHTFmkqNiU+ToXou6wXh4FVDhWI9gJPxxfj+3GqwNDwAz7q/kbYXHDobvjaQIuNomZFyOQ==
-X-Received: by 2002:ac8:5f91:0:b0:430:c2dc:a5ef with SMTP id j17-20020ac85f91000000b00430c2dca5efmr447812qta.2.1710792266091;
-        Mon, 18 Mar 2024 13:04:26 -0700 (PDT)
+        bh=RceLUqudgSYtio91tFrZNJeoSc+POoSD4WuQnIajVyw=;
+        b=q+wEUSAoEKeZb65/vwI4hyRqawtnX/u6ilal8iG5MRRfOhMDbzcKYflljgILSWQaoY
+         t1sy/ggcVXGYueXbRrmTCVWJhk47l+GZiGk0gqFljfUl4VJJ4via7aU/J5D1O3asnTwy
+         hHYrjmFZ3IawRuhaXCgYCnzxnMOCg9109uEWjnnz1CCRTjVE4nocJO4OD2P+Cp+nWUTa
+         2ZCYkj30YozfphYc7MbQOjyT6D6s4YN1LZOswJ8l33ESyJH2avgbNJYMWfq+LWh7Nq9m
+         CRXeTtB3CAMCKuHvSrmK1obh3lVsSlA1dM8vqR9XWjNCzW58kmDhFEj08quOHjP8XzLT
+         01dw==
+X-Gm-Message-State: AOJu0YwPBN9nvg56MpRX3o2Qz7lS/OBdVlAzOUnXxl6OUEglDKLzB3wJ
+	Tbw8nzERBTWosLJYJzYbGd+VXdJ9kEv5F3YgdeP6bt/uI0R/0y7TKWbMszMUB29a+5cdF6VEdsp
+	xX2+GEBf325jC6oX6aKPI2/c83qnr0DwGBGMpf0EIaHvb71EorRJJCrbADXfpHUu8ZsKgE0s5xk
+	oWsqLDTVHH885X9EE7yo++ArhjoehsNTar5T2kjO8L4sA=
+X-Received: by 2002:a05:6358:65a5:b0:17e:b905:ae1a with SMTP id x37-20020a05635865a500b0017eb905ae1amr174651rwh.0.1710792268217;
+        Mon, 18 Mar 2024 13:04:28 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGISjMhnC6jpMGGK6QBF7/frbKYlLqkW40smiDqxegPdY+XDqO7mpvYlvBe3yHbKZyIwRsTRA==
+X-Received: by 2002:a05:6358:65a5:b0:17e:b905:ae1a with SMTP id x37-20020a05635865a500b0017eb905ae1amr174607rwh.0.1710792267562;
+        Mon, 18 Mar 2024 13:04:27 -0700 (PDT)
 Received: from x1n.. ([99.254.121.117])
-        by smtp.gmail.com with ESMTPSA id hj10-20020a05622a620a00b0042ebbc1196fsm3484491qtb.87.2024.03.18.13.04.24
+        by smtp.gmail.com with ESMTPSA id hj10-20020a05622a620a00b0042ebbc1196fsm3484491qtb.87.2024.03.18.13.04.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 13:04:25 -0700 (PDT)
+        Mon, 18 Mar 2024 13:04:27 -0700 (PDT)
 From: peterx@redhat.com
 To: linux-kernel@vger.kernel.org,
 	linux-mm@kvack.org
@@ -85,20 +85,10 @@ Cc: Andrew Morton <akpm@linux-foundation.org>,
 	linuxppc-dev@lists.ozlabs.org,
 	Christophe Leroy <christophe.leroy@csgroup.eu>,
 	linux-arm-kernel@lists.infradead.org,
-	peterx@redhat.com,
-	Mark Salter <msalter@redhat.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Russell King <linux@armlinux.org.uk>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Arnd Bergmann <arnd@arndb.de>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Fabio Estevam <festevam@denx.de>
-Subject: [PATCH v2 13/14] mm/arm: Remove pmd_thp_or_huge()
-Date: Mon, 18 Mar 2024 16:04:03 -0400
-Message-ID: <20240318200404.448346-14-peterx@redhat.com>
+	peterx@redhat.com
+Subject: [PATCH v2 14/14] mm: Document pXd_leaf() API
+Date: Mon, 18 Mar 2024 16:04:04 -0400
+Message-ID: <20240318200404.448346-15-peterx@redhat.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240318200404.448346-1-peterx@redhat.com>
 References: <20240318200404.448346-1-peterx@redhat.com>
@@ -112,82 +102,53 @@ Content-Transfer-Encoding: 8bit
 
 From: Peter Xu <peterx@redhat.com>
 
-ARM/ARM64 used to define pmd_thp_or_huge().  Now this macro is completely
-redundant.  Remove it and use pmd_leaf().
+There's one small section already, but since we're going to remove
+pXd_huge(), that comment may start to obsolete.
 
-Cc: Mark Salter <msalter@redhat.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>
-Cc: Will Deacon <will@kernel.org>
-Cc: Russell King <linux@armlinux.org.uk>
-Cc: Shawn Guo <shawnguo@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>
-Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Fabio Estevam <festevam@denx.de>
-Cc: linux-arm-kernel@lists.infradead.org
+Rewrite that section with more information, hopefully with that the API is
+crystal clear on what it implies.
+
+Reviewed-by: Jason Gunthorpe <jgg@nvidia.com>
 Signed-off-by: Peter Xu <peterx@redhat.com>
 ---
- arch/arm/include/asm/pgtable-2level.h | 1 -
- arch/arm/include/asm/pgtable-3level.h | 1 -
- arch/arm/lib/uaccess_with_memcpy.c    | 4 ++--
- arch/arm64/include/asm/pgtable.h      | 2 --
- 4 files changed, 2 insertions(+), 6 deletions(-)
+ include/linux/pgtable.h | 24 +++++++++++++++++++-----
+ 1 file changed, 19 insertions(+), 5 deletions(-)
 
-diff --git a/arch/arm/include/asm/pgtable-2level.h b/arch/arm/include/asm/pgtable-2level.h
-index 4245c2e74720..6b5392e20f41 100644
---- a/arch/arm/include/asm/pgtable-2level.h
-+++ b/arch/arm/include/asm/pgtable-2level.h
-@@ -241,7 +241,6 @@ static inline pmd_t *pmd_offset(pud_t *pud, unsigned long addr)
-  * define empty stubs for use by pin_page_for_write.
+diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
+index 85fc7554cd52..6b0d222a7fad 100644
+--- a/include/linux/pgtable.h
++++ b/include/linux/pgtable.h
+@@ -1770,11 +1770,25 @@ typedef unsigned int pgtbl_mod_mask;
+ #endif
+ 
+ /*
+- * p?d_leaf() - true if this entry is a final mapping to a physical address.
+- * This differs from p?d_huge() by the fact that they are always available (if
+- * the architecture supports large pages at the appropriate level) even
+- * if CONFIG_HUGETLB_PAGE is not defined.
+- * Only meaningful when called on a valid entry.
++ * pXd_leaf() is the API to check whether a pgtable entry is a huge page
++ * mapping.  It should work globally across all archs, without any
++ * dependency on CONFIG_* options.  For architectures that do not support
++ * huge mappings on specific levels, below fallbacks will be used.
++ *
++ * A leaf pgtable entry should always imply the following:
++ *
++ * - It is a "present" entry.  IOW, before using this API, please check it
++ *   with pXd_present() first. NOTE: it may not always mean the "present
++ *   bit" is set.  For example, PROT_NONE entries are always "present".
++ *
++ * - It should _never_ be a swap entry of any type.  Above "present" check
++ *   should have guarded this, but let's be crystal clear on this.
++ *
++ * - It should contain a huge PFN, which points to a huge page larger than
++ *   PAGE_SIZE of the platform.  The PFN format isn't important here.
++ *
++ * - It should cover all kinds of huge mappings (e.g., pXd_trans_huge(),
++ *   pXd_devmap(), or hugetlb mappings).
   */
- #define pmd_hugewillfault(pmd)	(0)
--#define pmd_thp_or_huge(pmd)	(0)
- 
- #endif /* __ASSEMBLY__ */
- 
-diff --git a/arch/arm/include/asm/pgtable-3level.h b/arch/arm/include/asm/pgtable-3level.h
-index 9e3c44f0aea2..fa5939eb9864 100644
---- a/arch/arm/include/asm/pgtable-3level.h
-+++ b/arch/arm/include/asm/pgtable-3level.h
-@@ -190,7 +190,6 @@ static inline pte_t pte_mkspecial(pte_t pte)
- #define pmd_dirty(pmd)		(pmd_isset((pmd), L_PMD_SECT_DIRTY))
- 
- #define pmd_hugewillfault(pmd)	(!pmd_young(pmd) || !pmd_write(pmd))
--#define pmd_thp_or_huge(pmd)	(pmd_leaf(pmd) || pmd_trans_huge(pmd))
- 
- #ifdef CONFIG_TRANSPARENT_HUGEPAGE
- #define pmd_trans_huge(pmd)	(pmd_val(pmd) && !pmd_table(pmd))
-diff --git a/arch/arm/lib/uaccess_with_memcpy.c b/arch/arm/lib/uaccess_with_memcpy.c
-index 2f6163f05e93..c0ac7796d775 100644
---- a/arch/arm/lib/uaccess_with_memcpy.c
-+++ b/arch/arm/lib/uaccess_with_memcpy.c
-@@ -56,10 +56,10 @@ pin_page_for_write(const void __user *_addr, pte_t **ptep, spinlock_t **ptlp)
- 	 * to see that it's still huge and whether or not we will
- 	 * need to fault on write.
- 	 */
--	if (unlikely(pmd_thp_or_huge(*pmd))) {
-+	if (unlikely(pmd_leaf(*pmd))) {
- 		ptl = &current->mm->page_table_lock;
- 		spin_lock(ptl);
--		if (unlikely(!pmd_thp_or_huge(*pmd)
-+		if (unlikely(!pmd_leaf(*pmd)
- 			|| pmd_hugewillfault(*pmd))) {
- 			spin_unlock(ptl);
- 			return 0;
-diff --git a/arch/arm64/include/asm/pgtable.h b/arch/arm64/include/asm/pgtable.h
-index c4efa47fed5f..a580068a6564 100644
---- a/arch/arm64/include/asm/pgtable.h
-+++ b/arch/arm64/include/asm/pgtable.h
-@@ -512,8 +512,6 @@ static inline pmd_t pmd_mkinvalid(pmd_t pmd)
- 	return pmd;
- }
- 
--#define pmd_thp_or_huge(pmd)	(pmd_leaf(pmd) || pmd_trans_huge(pmd))
--
- #define pmd_write(pmd)		pte_write(pmd_pte(pmd))
- 
- #define pmd_mkhuge(pmd)		(__pmd(pmd_val(pmd) & ~PMD_TABLE_BIT))
+ #ifndef pgd_leaf
+ #define pgd_leaf(x)	false
 -- 
 2.44.0
 
