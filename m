@@ -1,179 +1,233 @@
-Return-Path: <linux-kernel+bounces-106491-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106493-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB31E87EF65
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:00:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id AA72A87EF6D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:02:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 385901F22CBE
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:00:55 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAE6D1C222DD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:02:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E9455E5F;
-	Mon, 18 Mar 2024 18:00:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1AF0956455;
+	Mon, 18 Mar 2024 18:02:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="poUywc5M"
-Received: from mail-ej1-f42.google.com (mail-ej1-f42.google.com [209.85.218.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="UAeDBALZ"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ACBD156445
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:00:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BD0555C0E;
+	Mon, 18 Mar 2024 18:01:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710784844; cv=none; b=GxVJHYE3V8qDdatJM6tuuD2lROGxCE5cIoMCZ2Jca3sILDp3sj31XqR5yzVdxpHhGw4KLb46sqGvcv99jA8exaw9OZZTWZDNRb7hwBP6uTyTCUa0QOQDqmS//VUB3CdfahoYYJSVhPMA2uMAuaKay+XsYYGXBbKCW+bnFq40pEk=
+	t=1710784921; cv=none; b=DXlPDohLueYgMNJv7xbI0rnx7MH6KLa5tHDGHaaFhRIXTDFN7bW5WFChWVqNYyUYXv1/mJUCqe4dZMunC7xFhBGHDOCVJVdUdZVFQeJ0Xay+GP6mG2oNCwp9IZ/UjLKUkbyvPk6gsaaa8JlCs3pgPT7VwVE43AmmSILA2I7sxg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710784844; c=relaxed/simple;
-	bh=JZTERrfhGHZ98bdsXf2rYYX8wFraHwMFYnZf4nSwBO8=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=BcFUSGfPoOCZkqD3qYZbGx4uzWWz8synPCeApf6Uuh31JW7YizqjTr9/lI2yJ6QN8ZBOnrpULPUDgrStSdveh0nULIsw34VAlU+GrNpuHm6m9a9ulDQFFyy4pXzunDUAbUia5StpDwWVGoV+qxT1AZcW/GohbjlmHRSOV65N4lc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=poUywc5M; arc=none smtp.client-ip=209.85.218.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f42.google.com with SMTP id a640c23a62f3a-a46a7b8e07fso311658766b.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:00:42 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710784841; x=1711389641; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=GSD1BKkDRKT4zNl8Y1a8A4oIxqi6RhgxEsOmyYNbPCo=;
-        b=poUywc5MXljQ2hP7OarBtF/S6327rzsXvlTMN8pdPS6y0AHsyMzxk47ZvSx4tq/ErR
-         xbQFrgZOnk1PMEXjuGVSd9JdLqmiSHu4f2V3a2byAnoxA5RviP16kJJAUu/7gtCDvGsn
-         ga1Hs1AiyRvCvVdCoXY/tuCAnBzMTQUwZiCbgyNrs6RsE01bmH7Js5N8kBkrezEfUYgk
-         ajuETanJINB9SHM+AluAJRvtSnBzSksdsdrKE60a8Rd8VpOiXwrTGLS7jirx8gAQXb2G
-         tc2qarHx8spFZ9xEPzMuXx+OOw2cosg1Lzvx9rr4kneiv2bflpM6xTPndUpd4Bn/vD7L
-         tfCg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710784841; x=1711389641;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=GSD1BKkDRKT4zNl8Y1a8A4oIxqi6RhgxEsOmyYNbPCo=;
-        b=M5YM4qnYcH6ZD7OQYtnEuOClz0Oc7s9EpZPtxvIiQFuTnfZ0KKPZWLqTflHOEVJuSw
-         KbYDubIrOiHDTNiD0gGSzgpuscczfjq/1vS9wW/d372VHMFZCsCAl5VR7TBTMpWOcKNu
-         ktc/NWNl3Yx9osVKkySms2hRh6iWheqq1YM6X0//eScP93Kn+SD+akSrFkcZO68cxkGb
-         f8QWY4R3rdx4OPaGIGl2JcbtcAToN49A9JHtCLWpSLlhhvBMnLdyVRYi7O/iIFUcwxGb
-         oJgfuls+PsY5clyX19ryah2S3XJT8uMo76FkQeXKbdhiseSZq1SYtgyttQWjpSNSoSAc
-         OVbg==
-X-Forwarded-Encrypted: i=1; AJvYcCWCyZ0g414V8pfqU3eZDFuJOKmAiebZmDVZRaveei6ZcqmgUe+pZMUSW3ER0/qt+iWGHJA7Q2V7Pjl6X7F3ozRUs8Jfbct3yDGefEpS
-X-Gm-Message-State: AOJu0Ywzougdw+UZRGLwUZfOQgIGLflg0pVdpEyTR6A73RFDnJut0RU7
-	zIA4UK3abTnoZZQ01fxDnQa3b5uoDo43GPrKu1PS+gJ383TT0huCNfU2RALIWkI=
-X-Google-Smtp-Source: AGHT+IGSsuCCHT+xvdzHHjGgx7IFJRlVzUlz+T9lZi1dvi3o6LaK3eFNhUeCRsLXsrkKn/j+5UO+dw==
-X-Received: by 2002:a17:907:94d1:b0:a46:8846:5abe with SMTP id dn17-20020a17090794d100b00a4688465abemr8273080ejc.62.1710784840993;
-        Mon, 18 Mar 2024 11:00:40 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id jw10-20020a170906e94a00b00a46c743bc6bsm969288ejb.32.2024.03.18.11.00.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 11:00:40 -0700 (PDT)
-Message-ID: <ba01a372-b012-4b39-9494-f13b2a80123f@linaro.org>
-Date: Mon, 18 Mar 2024 19:00:38 +0100
+	s=arc-20240116; t=1710784921; c=relaxed/simple;
+	bh=FMAVdfB4w3pChOs+EqtLOOLctRQ22NOKNNwmW+uwWQ4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=rXC8KdHT5wWeFqtnPN+tN2mHsKSZetLER1IY5Tgerdx/E1ZO9f6qKvbKAbFBWf7Pj4e27JMuntDlVxJ54u5hFaGTLgx6dGzJaFFoV2IPRTgeFVqC2Rww3pgKFHE8YSF4nQ4Tl0y0gPul7te2Vo5O9ia7NSQroXuVEkQsQeycp+M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=UAeDBALZ; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42IHfZd0026628;
+	Mon, 18 Mar 2024 18:01:34 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=qSI1sdsTiph9RZvhdAC7pZQBrBCG43U53azau8lu5Ps=; b=UA
+	eDBALZDDXSnCXfylWfq538S09qPcKLf0NsHE2q3v9j/fntIlZt5qhALsmBLQ2iic
+	OhrA/LKIXbgZJwvZUYJ81HbjaJgC6F6BPlrGsISzG4ogsKrzWPMswRyuUMKU3inM
+	H6kAEiWOU0DuSLJ36NKdP3w7d/xWgYHdMHNCPLal2UDJqLCDPyXCH7T0kG29ijc3
+	RRyQ3QGa1tphUlhkMgcEZGGnL5G5PicdYFQn/hRYVDARqXjPOA2svvV2hf/IVZRu
+	Fq0qC7sUG+fJBpUB0vgmw9vortSeimuB6PPMIYhI5+T43M4du+dLDU1pU73DYu/m
+	4oMw1vSfT81m5RJiEJhg==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wxq7p0ksf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 18:01:34 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42II1WAe018878
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 18:01:32 GMT
+Received: from [10.110.10.159] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Mar
+ 2024 11:01:27 -0700
+Message-ID: <a1152afe-b652-d83e-05e4-25c07292b568@quicinc.com>
+Date: Mon, 18 Mar 2024 11:01:25 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/2] hwmon: pmbus: adp1050 : Add driver support
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.11.0
+Subject: Re: [PATCH] drm/msm/dp: move link_ready out of HPD event thread
 Content-Language: en-US
-To: Guenter Roeck <linux@roeck-us.net>, Radu Sabau <radu.sabau@analog.com>,
- Jean Delvare <jdelvare@suse.com>, Rob Herring <robh+dt@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
- Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, linux-hwmon@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
-References: <20240318112140.385244-1-radu.sabau@analog.com>
- <20240318112140.385244-3-radu.sabau@analog.com>
- <04b39945-e4e1-43bd-83bf-0d7eb3730352@linaro.org>
- <8adceac6-9b23-4457-bb9a-8f7e55a581f9@roeck-us.net>
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8adceac6-9b23-4457-bb9a-8f7e55a581f9@roeck-us.net>
-Content-Type: text/plain; charset=UTF-8
+To: Johan Hovold <johan@kernel.org>
+CC: <freedreno@lists.freedesktop.org>, Rob Clark <robdclark@gmail.com>,
+        "Dmitry Baryshkov" <dmitry.baryshkov@linaro.org>,
+        Sean Paul
+	<sean@poorly.run>,
+        "Marijn Suijten" <marijn.suijten@somainline.org>,
+        David
+ Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+        Kuogee Hsieh
+	<quic_khsieh@quicinc.com>,
+        <dri-devel@lists.freedesktop.org>, <swboyd@chromium.org>,
+        <quic_jesszhan@quicinc.com>, <quic_parellan@quicinc.com>,
+        <quic_bjorande@quicinc.com>, Rob Clark
+	<robdclark@chromium.org>,
+        <linux-arm-msm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+References: <20240308214532.1404038-1-quic_abhinavk@quicinc.com>
+ <ZfApxyVAJMK4bL8O@hovoldconsulting.com>
+ <ZfCFsmNv62-KMkA6@hovoldconsulting.com>
+ <ZfCKDGq9n9WG3Quj@hovoldconsulting.com>
+ <8e125a99-543d-8328-a2a9-100e223e4faf@quicinc.com>
+ <ZfFhXG5yd6O29spS@hovoldconsulting.com>
+ <ec2cba17-5644-6cf6-f6c9-d37d7ca56204@quicinc.com>
+ <ZfMaEIzv3Z3ny3y0@hovoldconsulting.com>
+ <9313aa00-41f0-15af-a646-3f4e4b3098c7@quicinc.com>
+ <ZfRv5le7Bfdiwrk_@hovoldconsulting.com>
+From: Abhinav Kumar <quic_abhinavk@quicinc.com>
+In-Reply-To: <ZfRv5le7Bfdiwrk_@hovoldconsulting.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: pqxdgPBrULBwzC0zfLcxtmEBjfajNgtU
+X-Proofpoint-ORIG-GUID: pqxdgPBrULBwzC0zfLcxtmEBjfajNgtU
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0 spamscore=0
+ clxscore=1015 mlxlogscore=999 lowpriorityscore=0 suspectscore=0
+ phishscore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403180136
 
-On 18/03/2024 17:48, Guenter Roeck wrote:
-> On 3/18/24 09:12, Krzysztof Kozlowski wrote:
->> On 18/03/2024 12:21, Radu Sabau wrote:
->>> Add support for ADP1050 Digital Controller for Isolated Power Supplies
->>> with PMBus interface Voltage, Current and Temperature Monitor.
->>>
->>
->> ...
->>
->>> +static int adp1050_probe(struct i2c_client *client)
->>> +{
->>> +	u32 vin_scale_monitor, iin_scale_monitor;
->>> +	int ret;
->>> +
->>> +	if (!i2c_check_functionality(client->adapter,
->>> +				     I2C_FUNC_SMBUS_WRITE_WORD_DATA))
->>> +		return -ENODEV;
->>> +
->>> +	/* Unlock CHIP's password in order to be able to read/write to it's
->>> +	 * VIN_SCALE and IIN_SCALE registers.
->>> +	*/
->>> +	ret = i2c_smbus_write_word_data(client, ADP1050_CHIP_PASSWORD, 0xFFFF);
->>> +	if (ret < 0) {
->>> +		dev_err_probe(&client->dev, "Device can't be unlocked.\n");
->>
->> Syntax is: return dev_err_probe(). Same in other places.
->>
+
+
+On 3/15/2024 8:57 AM, Johan Hovold wrote:
+> On Thu, Mar 14, 2024 at 09:30:57AM -0700, Abhinav Kumar wrote:
+>> On 3/14/2024 8:38 AM, Johan Hovold wrote:
+>>> On Wed, Mar 13, 2024 at 10:24:08AM -0700, Abhinav Kumar wrote:
 > 
-> dev_err_probe() expects the error number as second parameter, so I don't
-> really understand how the above even compiles.
+>>> Perhaps I'm missing something in the race that you are trying to
+>>> describe (and which I've asked you to describe in more detail so that I
+>>> don't have to spend more time trying to come up with a reproducer
+>>> myself).
+> 
+>> The race condition is between the time we get disconnect event and set
+>> link_ready to false, a commit can come in. Because setting link_ready to
+>> false happens in the event thread so it could be slightly delayed.
+> 
+> I get this part, just not why, or rather when, that becomes a problem.
+> 
+> Once the disconnect event is processed, dp_hpd_unplug_handle() will
+> update the state to ST_DISCONNECT_PENDING, and queue a notification
+> event. link_ready is (before this patch) still set to 1.
+> 
 
-I did not explain the arguments, because they are obvious... but if you
-need so:
+This is the case I am thinking of:
 
-return dev_err_probe(&client->dev, ret, "Device can't be unlocked.\n");
+1) Disconnect event happens which will call dp_hpd_unplug_handle() but 
+link_ready is not false yet.
 
-Best regards,
-Krzysztof
+2) There is a commit with a modeset, which shall trigger 
+atomic_disable() followed by an atomic_enable()
 
+atomic_disable() will go through disable clocks and set hpd_state to 
+ST_DISCONNECTED.
+
+3) atomic_enable() will not go through because we will bail out because 
+state was ST_DISCONNECTED.
+
+         if (state != ST_DISPLAY_OFF && state != ST_MAINLINK_READY) {
+                 mutex_unlock(&dp_display->event_mutex);
+                 return;
+         }
+
+4) Now, if there is another commit with a modeset, it will go and crash 
+at atomic_disable()
+
+> Here a commit comes in; what exactly are you suggesting would trigger
+> that? And in such a way that it breaks the state machine?
+> 
+
+Like we have seen, the commit can either come directly from userspace as 
+one last frame (the original bug I had given the link to) or from the 
+__drm_fb_helper_restore_fbdev_mode_unlocked() which happened in 
+sc8280xp's case. This is totally independent of the hpd_thread() with no 
+mutual exclusion.
+
+This commit() can come before the link_ready was set to false. If it had 
+come after link_ready was set to false, atomic_check() would have failed 
+and no issue would have been seen.
+
+My change is making the link_ready false sooner in the disconnect case.
+
+> One way this could cause trouble is if you end up with a call to
+> dp_bridge_atomic_post_disable() which updates the state to
+> ST_DISCONNECTED. (1)
+> 
+> This would then need to be followed by another call to
+> dp_bridge_atomic_enable() which bails out early with the link clock
+> disabled. (2) (And if link_ready were to be set to 0 sooner, the
+> likelihood of this is reduced.)
+> 
+> This in turn, would trigger a reset when dp_bridge_atomic_disable() is
+> later called.
+> 
+
+Yes, this is exactly what I have written above.
+
+> This is the kind of description of the race I expect to see in the
+> commit message, and I'm still not sure what would trigger the call to
+> dp_bridge_atomic_post_disable() and dp_bridge_atomic_enable() (i.e. (1)
+> and (2) above) and whether this is a real issue or not.
+> 
+
+I have explained what triggers the disable/enable call below.
+
+> Also note that the above scenario is quite different from the one I've
+> hit and described earlier.
+> 
+
+Why is that so? Eventually it will also translate to the same scenario. 
+I would like to understand why this is different. I think in your case, 
+probably we do not know what triggers the modeset, but its a minor 
+detail like I have written before.
+
+>> It will be hard to reproduce this. Only way I can think of is to delay
+>> the EV_NOTIFICATION for sometime and see in dp_bridge_hpd_notify()
+>>
+>>           else if (dp_display->link_ready && status ==
+>> connector_status_disconnected)
+>>                   dp_add_event(dp, EV_HPD_UNPLUG_INT, 0, 0);
+>>
+>> as dp_add_event() will add the event, then wakeup the event_q.
+> 
+> Sure that would increase the race window with the current code, but that
+> alone isn't enough to trigger the bug AFAICT.
+> 
+>> Before the event thread wakes up and processes this unplug event, the
+>> commit can come in. This is the race condition i was thinking of.
+> 
+> Yes, but what triggers the commit? And why would it lead to a mode set
+> that disables the bridge?
+> 
+
+Commit was triggered from the userspace as it did not process the 
+disconnect event on time and the userspace was triggering a couple of 
+modesets by by changing the mode on the CRTC from 1080P to NONE to 1080P.
+
+[drm:drm_atomic_helper_check_modeset] [CRTC:60:crtc-1] mode changed
+
+> Johan
 
