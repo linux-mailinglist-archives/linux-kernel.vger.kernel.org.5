@@ -1,52 +1,54 @@
-Return-Path: <linux-kernel+bounces-105656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8ED2487E223
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:30:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 24B6687E229
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:35:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C1EB2B21908
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:30:12 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 539071C20F1E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:35:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7D2C71E533;
-	Mon, 18 Mar 2024 02:30:01 +0000 (UTC)
-Received: from zg8tmja5ljk3lje4ms43mwaa.icoremail.net (zg8tmja5ljk3lje4ms43mwaa.icoremail.net [209.97.181.73])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 015771DA58;
-	Mon, 18 Mar 2024 02:29:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.97.181.73
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0E42B18E01;
+	Mon, 18 Mar 2024 02:35:09 +0000 (UTC)
+Received: from vmicros1.altlinux.org (vmicros1.altlinux.org [194.107.17.57])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74ECF17547;
+	Mon, 18 Mar 2024 02:35:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.107.17.57
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710729001; cv=none; b=KzNNr+PXV9p9ZiCS6P7d8LXRtWDdRK42+RhHH0VurUx0CFviejRaGmK8cakeCC5ihFQnxn/dFmPXhy+UQXwtpMR+JgvEjiSFh0nGFuoBcMLRS9avKVaCU5sTghPEpd5SrWn6h+sFkyVZKlD3tCDEH78LGCpWn+f+2S1F0uovApI=
+	t=1710729308; cv=none; b=tRkJxhTEilTC8ARPtltVFEkzKl1QGOlvf8ZhWal1r6veBFZ3ozhLjtITzjYxGKUD2VeLej1JrJfTZrLvLlSf1T2hkiCMaDDjecTRFL4X3BDr6Z488cdqTfy7W8ohqMsozwo72bnJSbI9M48HIVBM+hrls6snOdzEwGRU8CXcasY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710729001; c=relaxed/simple;
-	bh=Vzfj5o6D7Na/6aOu8CV74Zqtv20GrJloloDTpGKeZZU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=M5Y+nRrecjupZyiiP2t1IA4Xi2Cv39V75cwyuYb/AjAIV0JCUHg7RPTmhFBgZayrWkSqe+UTVFhr3Tfe5lKFb1hfhnjIFcNHLaTXk9tKiYfzIeTcJhBX1TlY1RjNyTBO3lBr6rNY5sFIxHA++5Qt4x0L64/hYgOr4eFsPzoE3yk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytium.com.cn; spf=pass smtp.mailfrom=phytium.com.cn; arc=none smtp.client-ip=209.97.181.73
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=phytium.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=phytium.com.cn
-Received: from prodtpl.icoremail.net (unknown [10.12.1.20])
-	by hzbj-icmmx-6 (Coremail) with SMTP id AQAAfwCHNwgbp_dlClvTBg--.42586S2;
-	Mon, 18 Mar 2024 10:29:47 +0800 (CST)
-Received: from phytium.com.cn (unknown [123.150.8.50])
-	by mail (Coremail) with SMTP id AQAAfwDXXNEPp_dlAEUAAA--.183S4;
-	Mon, 18 Mar 2024 10:29:39 +0800 (CST)
-From: Yuquan Wang <wangyuquan1236@phytium.com.cn>
-To: ira.weiny@intel.com,
-	jonathan.cameron@huawei.com,
-	dan.j.williams@intel.com
-Cc: linux-cxl@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	qemu-devel@nongnu.org,
-	chenbaozi@phytium.com.cn,
-	Yuquan Wang <wangyuquan1236@phytium.com.cn>
-Subject: [PATCH v2 1/1] cxl/mem: Fix for the index of Clear Event Record Handle
-Date: Mon, 18 Mar 2024 10:29:28 +0800
-Message-Id: <20240318022928.509130-2-wangyuquan1236@phytium.com.cn>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240318022928.509130-1-wangyuquan1236@phytium.com.cn>
-References: <20240318022928.509130-1-wangyuquan1236@phytium.com.cn>
+	s=arc-20240116; t=1710729308; c=relaxed/simple;
+	bh=3fvjQ3XM2dUSCoHrk4prb1GoygcuSIqrovfjGK/r3oA=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=A21ZIJCwLsiQXpUrSPUo00iygoGH3bNR9tQzsgEcO/b2cIcTGRKE+MW0Qvw+q2cD+TkiBQiOmw1WCBCnc3ZANnsEdGKGypqCasMCWf+sjAX14D6PtmI8+uTyh9TWMSUc7V5fqH0vIIzNGUw2cvdG8sijfiE/HaL3VZXzgDimDXc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org; spf=pass smtp.mailfrom=altlinux.org; arc=none smtp.client-ip=194.107.17.57
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=altlinux.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=altlinux.org
+Received: from imap.altlinux.org (imap.altlinux.org [194.107.17.38])
+	by vmicros1.altlinux.org (Postfix) with ESMTP id B1C3E72C8F5;
+	Mon, 18 Mar 2024 05:35:03 +0300 (MSK)
+Received: from beacon.altlinux.org (unknown [193.43.10.9])
+	by imap.altlinux.org (Postfix) with ESMTPSA id 9DA5836D015F;
+	Mon, 18 Mar 2024 05:35:03 +0300 (MSK)
+From: Vitaly Chikunov <vt@altlinux.org>
+To: Andrew Morton <akpm@linux-foundation.org>,
+	Keith Busch <kbusch@kernel.org>,
+	Yang Shi <shy828301@gmail.com>,
+	Zi Yan <ziy@nvidia.com>,
+	David Hildenbrand <david@redhat.com>,
+	Peter Xu <peterx@redhat.com>,
+	linux-mm@kvack.org,
+	linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Vitaly Chikunov <vt@altlinux.org>,
+	Andrea Arcangeli <aarcange@redhat.com>,
+	Nadav Amit <nadav.amit@gmail.com>,
+	Shuah Khan <shuah@kernel.org>
+Subject: [PATCH] selftests/mm: Fix build with _FORTIFY_SOURCE
+Date: Mon, 18 Mar 2024 05:34:44 +0300
+Message-ID: <20240318023445.3192922-1-vt@altlinux.org>
+X-Mailer: git-send-email 2.42.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -54,41 +56,85 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAfwDXXNEPp_dlAEUAAA--.183S4
-X-CM-SenderInfo: 5zdqw5pxtxt0arstlqxsk13x1xpou0fpof0/1tbiAQAIAWX3ReYBDQAAs1
-Authentication-Results: hzbj-icmmx-6; spf=neutral smtp.mail=wangyuquan
-	1236@phytium.com.cn;
-X-Coremail-Antispam: 1Uk129KBjvdXoW7Jw1rXryDuFW7uFWfGF18uFg_yoWfAFb_CF
-	10qF1xuw4YkFnak342krsYvrySvw1rWF4S9r1qqFW5J347Zw13JFZ09rnFyrnxXrWUAr17
-	ZFy3XryFkrnxWjkaLaAFLSUrUUUUjb8apTn2vfkv8UJUUUU8wcxFpf9Il3svdxBIdaVrnU
-	Uv73VFW2AGmfu7jjvjm3AaLaJ3UjIYCTnIWjDUYxBIdaVFxhVjvjDU0xZFpf9x0zRUUUUU
-	UUUU=
 
-The dev_dbg info for Clear Event Records mailbox command would report
-the handle of the next record to clear not the current one.
+Add missing flags argument to open(2) call with O_CREAT.
 
-This was because the index 'i' had incremented before printing the
-current handle value.
+Some tests fail to compile if _FORTIFY_SOURCE is defined (to any valid
+value) (together with -O), resulting in similar error messages such as:
 
-Signed-off-by: Yuquan Wang <wangyuquan1236@phytium.com.cn>
+  In file included from /usr/include/fcntl.h:342,
+                   from gup_test.c:1:
+  In function 'open',
+      inlined from 'main' at gup_test.c:206:10:
+  /usr/include/bits/fcntl2.h:50:11: error: call to '__open_missing_mode' declared with attribute error: open with O_CREAT or O_TMPFILE in second argument needs 3 arguments
+     50 |           __open_missing_mode ();
+        |           ^~~~~~~~~~~~~~~~~~~~~~
+
+_FORTIFY_SOURCE is enabled by default in some distributions, so the
+tests are not built by default and are skipped.
+
+open(2) man-page warns about missing flags argument: "if it is not
+supplied, some arbitrary bytes from the stack will be applied as the
+file mode."
+
+Fixes: aeb85ed4f41a ("tools/testing/selftests/vm/gup_benchmark.c: allow user specified file")
+Fixes: fbe37501b252 ("mm: huge_memory: debugfs for file-backed THP split")
+Fixes: c942f5bd17b3 ("selftests: soft-dirty: add test for mprotect")
+Cc: Keith Busch <kbusch@kernel.org>
+Cc: Zi Yan <ziy@nvidia.com>
+Cc: Peter Xu <peterx@redhat.com>
+Cc: Yang Shi <shy828301@gmail.com>
+Cc: Andrea Arcangeli <aarcange@redhat.com>
+Cc: Nadav Amit <nadav.amit@gmail.com>
+Cc: David Hildenbrand <david@redhat.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Signed-off-by: Vitaly Chikunov <vt@altlinux.org>
 ---
- drivers/cxl/core/mbox.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ tools/testing/selftests/mm/gup_test.c             | 2 +-
+ tools/testing/selftests/mm/soft-dirty.c           | 2 +-
+ tools/testing/selftests/mm/split_huge_page_test.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/cxl/core/mbox.c b/drivers/cxl/core/mbox.c
-index 9adda4795eb7..b810a6aa3010 100644
---- a/drivers/cxl/core/mbox.c
-+++ b/drivers/cxl/core/mbox.c
-@@ -915,7 +915,7 @@ static int cxl_clear_event_record(struct cxl_memdev_state *mds,
+diff --git a/tools/testing/selftests/mm/gup_test.c b/tools/testing/selftests/mm/gup_test.c
+index cbe99594d319..18a49c70d4c6 100644
+--- a/tools/testing/selftests/mm/gup_test.c
++++ b/tools/testing/selftests/mm/gup_test.c
+@@ -203,7 +203,7 @@ int main(int argc, char **argv)
+ 	ksft_print_header();
+ 	ksft_set_plan(nthreads);
  
- 		payload->handles[i++] = gen->hdr.handle;
- 		dev_dbg(mds->cxlds.dev, "Event log '%d': Clearing %u\n", log,
--			le16_to_cpu(payload->handles[i]));
-+			le16_to_cpu(payload->handles[i-1]));
+-	filed = open(file, O_RDWR|O_CREAT);
++	filed = open(file, O_RDWR|O_CREAT, 0664);
+ 	if (filed < 0)
+ 		ksft_exit_fail_msg("Unable to open %s: %s\n", file, strerror(errno));
  
- 		if (i == max_handles) {
- 			payload->nr_recs = i;
+diff --git a/tools/testing/selftests/mm/soft-dirty.c b/tools/testing/selftests/mm/soft-dirty.c
+index cc5f144430d4..7dbfa53d93a0 100644
+--- a/tools/testing/selftests/mm/soft-dirty.c
++++ b/tools/testing/selftests/mm/soft-dirty.c
+@@ -137,7 +137,7 @@ static void test_mprotect(int pagemap_fd, int pagesize, bool anon)
+ 		if (!map)
+ 			ksft_exit_fail_msg("anon mmap failed\n");
+ 	} else {
+-		test_fd = open(fname, O_RDWR | O_CREAT);
++		test_fd = open(fname, O_RDWR | O_CREAT, 0664);
+ 		if (test_fd < 0) {
+ 			ksft_test_result_skip("Test %s open() file failed\n", __func__);
+ 			return;
+diff --git a/tools/testing/selftests/mm/split_huge_page_test.c b/tools/testing/selftests/mm/split_huge_page_test.c
+index 856662d2f87a..6c988bd2f335 100644
+--- a/tools/testing/selftests/mm/split_huge_page_test.c
++++ b/tools/testing/selftests/mm/split_huge_page_test.c
+@@ -223,7 +223,7 @@ void split_file_backed_thp(void)
+ 		ksft_exit_fail_msg("Fail to create file-backed THP split testing file\n");
+ 	}
+ 
+-	fd = open(testfile, O_CREAT|O_WRONLY);
++	fd = open(testfile, O_CREAT|O_WRONLY, 0664);
+ 	if (fd == -1) {
+ 		ksft_perror("Cannot open testing file");
+ 		goto cleanup;
 -- 
-2.34.1
+2.42.1
 
 
