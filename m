@@ -1,199 +1,279 @@
-Return-Path: <linux-kernel+bounces-106560-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCBAF87F04B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:16:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DA63D87F04C
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:16:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 93F7928149F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:16:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8EC37281A6E
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:16:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 50C3356756;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E535156765;
 	Mon, 18 Mar 2024 19:16:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="PJs0KaCd"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="WWh53zCt"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.9])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7BDE955E63;
-	Mon, 18 Mar 2024 19:16:04 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710789370; cv=none; b=ZO6j636ge04ZkAOEOu2xpgkuu0d79afd9V3nX+7LFQ9PCRYXxr4SlE4U7F1gBtVHu5lAqgS/1DoubxWQmyUrmyKjuZVJo0Yf9tAjc5eSKtaSbke5UfW2R5KYEASBbsLX8rXNQoGOdCObR9aYDzzGAtGxiBvFHbRRoOs5QrQSba4=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B4E595645C;
+	Mon, 18 Mar 2024 19:16:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.9
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710789370; cv=fail; b=dVQRVL4Yfk4hgJlpeRm4Apn+L6PlCabdvzFhcDI9+7d58Vb3MurvobZOe9YP8+Aq5Ahnu6IOYCOVJe/+MvaJ1zIYucrpsICeuQ4SGNxjDBrg40Zu04/cKMWZqbd42Q1hirF6vrSzTpgY0TC7prEwNM68sDgPGEMGts2Jqtbg7TI=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710789370; c=relaxed/simple;
-	bh=CkGRetItDQppGg7YbBf5RUWwn2PEMJKn5KGR6Ej04qk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gSRX5TN9dmw/jGUWOTD6oZQ4BBmYnbl1nlp0VOTtF981gW2Zl2NjtlqQHiwv7R2j20b+/4DiTjloplttKaDDDQWmgZumefxab599Oop9m5XKsWk8jKbFChuG3Eb58bIIajgCAT6iiLm3wZEN5c29x5iH5UQko96J9AYgmrv3OFU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=PJs0KaCd; arc=none smtp.client-ip=212.227.17.22
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710789357; x=1711394157; i=deller@gmx.de;
-	bh=baNEB8GwgHQTWX0dtW4C8L51C1M0pt/c+uwolfOihag=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=PJs0KaCdSY4gxFQzbmTkX48JPB5Ilna3KUFW5PnMFF3lGZi4gp12J15ANrnrJtjp
-	 R9wQjANPzWoHxykVUL9YIyeC5GXdyTbUhRa5sR5UY4GWQVSw2T4dXS7Go3ADS64mx
-	 kQCRQ+f3bsorFP+DgLr1JJqvplWpHLXjLfTkM5xjtsrhh2IbybUTcYn2dWaKVVty5
-	 ecgugewfAua8EQYLB95wT8rRbL62Sw3vOTeR6eebBqfI8VMnk3U3Q1T7YWtDma9p0
-	 M2JKOQiAG2mSjXXnExneS0nEDaJzwTbU6r0PgQkzJDGRpe9Aqtc+UqT76/oYKd7CG
-	 tYXgkfvq2tmtmaQt/w==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.155.237]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1ML9uU-1rVJXj1Nze-00ICpH; Mon, 18
- Mar 2024 20:15:57 +0100
-Message-ID: <b5d52c4c-534f-4897-ab96-351f09bee89a@gmx.de>
-Date: Mon, 18 Mar 2024 20:15:55 +0100
+	bh=eVvd9lHfb/f9dy3kiDMygMz3jMLMr/Xx2QOTwK7r9r8=;
+	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=jRdyaOiuh0RhnBWigRQ3erFeQp2UxQm5Hq8xrQdLT2hGaGfcJ7GfpSUEk6D3Rvr7lj+aITFw6McBbz5hyyusVPf4R91S4qy+Ws9m3vAMKuKAjBXP50B2+ypu+VCMRu9bT9qlChDmJU1G/ZC1Ssy2Ve4BNGXuc4psVEGeCakW1Mw=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=WWh53zCt; arc=fail smtp.client-ip=198.175.65.9
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710789369; x=1742325369;
+  h=message-id:date:subject:to:cc:references:from:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=eVvd9lHfb/f9dy3kiDMygMz3jMLMr/Xx2QOTwK7r9r8=;
+  b=WWh53zCtY8/N+ztVaFxnQKXwWyLUCHd+dBtzQdTWAliIfRIUVO7shtaM
+   Z0nhwHxtDeK66IU+z27dsaHKKhWIARftBxaCTCGx6/fYrCWr9XtJ2Q6H+
+   U8eazVu+uneQ/4TCmBxSylvogXUlTK16hPN30NFdXV29oQ04D3tDMTYrw
+   WYA3dcMMV74plHPKtOW1P3uC41Hso/QEXIuS4HR30KAaoUqN3c5zltenP
+   KxOtW+4+VO9XNf9uJ1cGShA0sykHLkysDp3s7HWsZJNBR4vn1GoJ0Ne6v
+   jC/RHUN+PJinTO0L176N6M/8MfN5oJEW8FX+OM7p14RNyCUirQptia/5/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="28104544"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="28104544"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by orvoesa101.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 12:16:08 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="14038349"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by orviesa007.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 18 Mar 2024 12:16:08 -0700
+Received: from orsmsx612.amr.corp.intel.com (10.22.229.25) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 18 Mar 2024 12:16:07 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx612.amr.corp.intel.com (10.22.229.25) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Mon, 18 Mar 2024 12:16:07 -0700
+Received: from NAM11-CO1-obe.outbound.protection.outlook.com (104.47.56.168)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Mon, 18 Mar 2024 12:16:07 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=HJEaNxnmVv0uP1cyfcRdYCFEDmZYgmBAtslKMnO4VhEzWPJPah0i4qS+9MFXDUZsA0bQ5Ouz1BTag+CeyVUy8qYK0tCv/7Jde9g5XJUHnqdhixBLFZdcdH2m+w0MsBwt8DDtdnuGvLHYj0lh0u97v+L2qh+Fl0QpeHPctJea/GFAedO83cMSBjDcTkMPaWQpk2+R81jPb01aOtbkdc/HS3q4MCFr4A29qBgcWTX5YWLh4WBGxACpLEYvsiYT83Gn9kejYe1nrN+1702WaFfpT4ePO5AvlrseW+L736GcogtAbveJe3nAXPzIIb1hiOTCQeXgMMa9qNtandeaC/NA+g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dDT+9QObBWyOwEW7buDvLVmHatW4g/XqTTcQpR6GR+E=;
+ b=SySeyEncA+thwzSccPox+8NousftYhHdQbUpUzo13n9oheoV1TYXiC8QNwDOPWXPGwlsNWIYmnhuY4xSjtb5PHDPdKWZl7LVFDoQppIkvXJmpm7CGEQ1BsqVx3D7p3paHf+4omIBnAQBGr59zhVP5yaXlJ9onfiKdfomzP5izws1eId/fc+sA2PeK1iQ60RN4hIaZqplwxdfFigpayXLRQbiuHci41g3FK/2yhlxsQD1apMrrE24Mxac8Azf98mLS17OjqffUEkgCMe9pavZ0q3dqPFN/yJQdduHCdA2WNvQgxMg51cuFwhd6ALj1fNTzmBVQ4jceL9IZ/Nl/4xf5g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com (2603:10b6:a03:4d2::10)
+ by MW4PR11MB7007.namprd11.prod.outlook.com (2603:10b6:303:22c::17) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7292.29; Mon, 18 Mar
+ 2024 19:15:59 +0000
+Received: from SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68]) by SJ2PR11MB7573.namprd11.prod.outlook.com
+ ([fe80::d610:9c43:6085:9e68%7]) with mapi id 15.20.7409.009; Mon, 18 Mar 2024
+ 19:15:59 +0000
+Message-ID: <47c28b3d-3b90-4b33-ba71-1e359d43238e@intel.com>
+Date: Mon, 18 Mar 2024 12:15:57 -0700
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
+Content-Language: en-US
+To: James Morse <james.morse@arm.com>, Tony Luck <tony.luck@intel.com>
+CC: "Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>, "Yu, Fenghua"
+	<fenghua.yu@intel.com>, Shuah Khan <shuah@kernel.org>,
+	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
+References: <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
+ <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <159474e6-ef11-4769-a182-86483efcf2a6@intel.com>
+ <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com>
+ <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
+ <55a55960-8bb1-4ce2-a2c7-68e167da8bcc@intel.com>
+ <ZepK4mtoV_J8-UbE@agluck-desk3>
+ <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com>
+ <ZetcM9GO2PH6SC0j@agluck-desk3>
+ <88430722-67b3-4f7d-8db2-95ee52b6f0b0@arm.com>
+From: Reinette Chatre <reinette.chatre@intel.com>
+In-Reply-To: <88430722-67b3-4f7d-8db2-95ee52b6f0b0@arm.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: MW4PR03CA0121.namprd03.prod.outlook.com
+ (2603:10b6:303:8c::6) To SJ2PR11MB7573.namprd11.prod.outlook.com
+ (2603:10b6:a03:4d2::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] fbmon: prevent division by zero in
- fb_videomode_from_videomode()
-Content-Language: en-US
-To: Roman Smirnov <r.smirnov@omp.ru>, Daniel Vetter <daniel@ffwll.ch>
-Cc: Thomas Zimmermann <tzimmermann@suse.de>,
- Sergey Shtylyov <s.shtylyov@omp.ru>, Karina Yankevich <k.yankevich@omp.ru>,
- "linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
- "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
- "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>
-References: <20240305135150.23240-1-r.smirnov@omp.ru>
- <64bbc4dd-b617-4f3d-809e-763bedf37fb7@gmx.de>
- <9688d1d453b0472cb90f5e2151cbd2f8@omp.ru>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <9688d1d453b0472cb90f5e2151cbd2f8@omp.ru>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:NnQfhbMNZELSCjyQL7cE+HwHocTPewlUjySjoVafeSmg9ynZy6j
- 9dy4WxvW7OQ2d38bmbjwhU4mTS7K65Ln+6K6hikc1UErCN89hbkPDP2WaXt9DG1hUUaN84Q
- DoNAa3URYlNTULC9PqmDklQFacJ0qN+GKkERLdRFZHRCyjM5Nfhc2lfi0VGMoq1gAg0xMUr
- mtHi7d7VoYRuzF6BhCxHA==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:XiJPDnatA9U=;U2lyn5St5sMr/uzFfxS4Q768t0W
- YVOK0cegzBads0UbO9CVJz+sFsmpK/QB20kIH9M/PZv43uNGESKcWzFv65FC81zRbtGG7Pq8F
- dcMWWShyO3Gijvzm+vCfBSvVFwU7h3p9KZtRJv9a0ejpneADjuwLxqif5/jpdEDfR5krl/CqT
- MPOmoU1RTzmNQy3/U7lx8Y2bw2iUrwkGfSW/dTC89ZGwqlszjEp07AGBssPFXeS/YzIN3t+V0
- DeaHsz/1PbEJOazWIPV/X376BldMmWNdHWh7JwtAXR50YGr/C0zUu4HHUiEbJsE1+HB45V2VW
- kzgtAmADuhxddTsASknMf20L1dxypCdGddqlMp3q2D3i9ICmK4CRPsCmZOL3Lh0f3LrtxxSJ8
- 51LvDJYy8CGJZn6Ih6tSlK7OsyXjHk41qLfQRhQ8yrI7X1K3nOTqzsuU4J9U/K7D56rDNu+bs
- FsI9PsBriyrvkU/mAQFNWnOyxx9U5dBaz/ldh+2zuRg2U2bxLLjXmB54fg7203NaYoqkUqIpG
- PPPKtuwm9V6+DwVhnYQZ1Oe+1521JpP27BiKAfC85z9LzPvPRNoDfCnI623+xraAkfwNEVXru
- TMll/NlIfd1ByKocsmOor7eG4PEzhCGme0u7Ew2AHsKIxyALHEXXtE8dLSq/fmMGtPFWP21MG
- 4qMvBgG6vLcErEY+Z6oafl36JxlWIA45tSWAzhZTlUQIFkNouskUneHnIo8LXdT0EUZabppmj
- H4moEXp9+HI+myFzyc9Iz51gUweeIALd7/eSXQ9/BW2zkyvgKWFW25BGZKMd5rWRrd2D1HsvH
- S2NnskRQndlc25xbk1wfRfhRE4ZmWOXfK3xNebVK4MWG4=
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ2PR11MB7573:EE_|MW4PR11MB7007:EE_
+X-MS-Office365-Filtering-Correlation-Id: d5cc809b-96dc-4902-19a7-08dc477fd83b
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: j8g3/9/L1H/K38Jqt+3TDWTXR85b2Mu+EdoY/X+B76HgqpsfHqx76VJzfJk0lWVesVeULFKe8yLxxEyGS2m6Yciiedqq1eLtJjrk+Imfz2+5RAYhrYOPoTb91CBEuWA5n/C3LNgDV8gSYaLRafhQ+ebhyU0HJCWlQeIOpEVqOAtUw3HQJ7Jsg/+ap19bajKMhfaOoB3BfrfFrQqOroUVfdz3sR9vEiSkbw6ATlJ8bve/W2n3IXgtJCjpaVTlIdP23vOwk2qwd8o+1IzsdGL1QVePRJHJeeoOwAF528buTWl9DKU9aI/Tfb3mQ8oeMSLT6b+DinEFZWiAlfqYLLHn47nMR+es1JwFy8UhZ1p4Na2PLiBBIUOksL/jASf7KjhvUeZiSTyZ3Fs86BhedDXnYibWCtA8kpU/uTuXOWCrdHzrNpF+3c7wbtXIVdjwd6b/ys8COMNQHsKe2OTlIa06ZGSV5UqSpdHRMggs7wpy8G8nO8CeGcCKrCxgrTeQqQGFhePFHxpJ5pkQ74aYvAjkctcxNJDrBjxjbKlI76RcpvchS3cbFXS32/aM2wYQ9bWwTDUe2zQ2w/JTqofHrxReVh117xHT0mnEvy3jPt05eQyKFpd9mLjk47wINuVPWnzKdFXIpvlzVdlPe6IcDjdds6+nILrHI4WB8Afr/E/ysYw=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR11MB7573.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?aS9tZWZOanpZeXBLUkVDa1FXMVkyZHFvR1VYZ3dhcUJpUU96dTcwUUV0RXgr?=
+ =?utf-8?B?R1JjejlRSVRxTzdjWG1zMlROZjlpT0U5RmZMZnFQWHptSjkvbW04cm13Ung2?=
+ =?utf-8?B?TXBMRHMwZEpyZEp5OGJoQ3RsUnBLTGFwUVNwTmw3bGRmR055QUpDTWJkQWov?=
+ =?utf-8?B?d1JORXJxTW96SjFnZ29nOUFmWFo3Y1JMQzYrNEtvb2k2eHkzN0hKTlAreWF5?=
+ =?utf-8?B?Qlk0Zk8ydEZnYXpybXB0QWJnS3NpSUF5VXBBbGIzZTRDc3J6ZkhDOEJvSFZC?=
+ =?utf-8?B?UlllZTB1U01DbXJLWVFvVWFFS1RrSG9rNngxa09uRFI0NDRuUTRpc3hpS210?=
+ =?utf-8?B?UnJra29VdlJrSVVIbXMvUEttMjRPMzdsaUlJeTZWVFU3dzFqcWpLbkkrZXFp?=
+ =?utf-8?B?REl5bDljcCtBSjVGWk1sRVZ4Wlc3bStsL3VXejN4bHBGUE1WOXZGTVVINFBr?=
+ =?utf-8?B?N01ZRHRxUzFxaEc4Sk4wQjNza2VKKzN5S1RxMjVKYjRHcVovejR5TXJ5eHRQ?=
+ =?utf-8?B?S3o2OSs2Y3lRWTNrT0NmZUdUQi8vK3BVVmJOQ2tCOWJCWUM2alFPM0pnei83?=
+ =?utf-8?B?K0lBUytHbVRKbVV5OHh4S2t5MkgzeHVRM1B2cnl4eUNidDU2RWErNDVtK0RG?=
+ =?utf-8?B?V0JTVGhva1pxMVF4T3dJZG1rMXJRSUN0QWZvZ0tlNXZQcUxEMVk4MG9oa3lO?=
+ =?utf-8?B?bVF5VnF0NU9GKzVReVFBcE8vQUtuVUl2Z1FKY1gybmx5aFZ3anpZL05nR0Y5?=
+ =?utf-8?B?anNRc254T3k4dWd0SFlnbnNZdUJGMjlxYmZJaGVnMW96ZWNKck9qY0FFdCti?=
+ =?utf-8?B?K0tXSVBXUmdqVnZqSXJTRkUwQzBFSFpDU0lrOFNWZ2xEY3BNTE1hNlVDTVpo?=
+ =?utf-8?B?MmlvclU5SG8wTUhuUXJIOWEybzExK3RwNkJ4amFlcFZkWHJydWRMVU12bDN5?=
+ =?utf-8?B?aVdMOUZ2MEd0bS85ZHg3ZkFZSzJGNzB6b0p2ZGhpNmVqc2dNYjNjWFJiWlpJ?=
+ =?utf-8?B?Vm1sYnVXYWZablZtMGJrY1Q5UXdUL1dWTDBDM0dWanlYUjRiY3ZUTG9WNHh4?=
+ =?utf-8?B?emxYb2o0Rm5OelFrRmozdm5tbVNOckZxTk5Bb2tLMjlvNmJkTkJFMkJ1REFr?=
+ =?utf-8?B?ampxMThzSm90Qmsvcm5CdUtpM0RySDhnZ3JERDVOaEZaMkRWOWdwTGl5dlRs?=
+ =?utf-8?B?SWFFOEFnU0l3NHhrNlN4NldmbXlqamVGQWVKY0RRVG83Qit4djNxbUhGam1F?=
+ =?utf-8?B?M1I0YXU0UG9OZVFxemY1N3R4eWllLzdGWFptcDJSNGVCTEZwazRrUERpZmZD?=
+ =?utf-8?B?QmJ5amRwWmJzZ0hQeDVGNUMzSURUSks5NDRVdUs4dTAvR3dyS1Q1U0RJTTNJ?=
+ =?utf-8?B?ckVvSTN6bHBaa0xzR2FMTUpCZnpVMEZQY28vb0tONTJ4Wi9EQjk4UXI0VkF6?=
+ =?utf-8?B?cWNyWWNmNUJDWlZ3Wno2UHU1WjNrbEZPOUhQeCtEU2lBa3NPYzM4VnZRV2tU?=
+ =?utf-8?B?QW0wYVJMZW9EcHJuS3hGNVlFeTV1c01lTGl6cERvaVFUZ2lrVSs3TXdiK1Qy?=
+ =?utf-8?B?K0hrZ1JDWk1zd0ZweUxlR3hvMWJJS1ptU0JOYWhXTGtJZE1oUllwMkVQTzBs?=
+ =?utf-8?B?anFQalVZZlJZNHpMZ3dGUzAvRTc1ekhsbE9VdVpSYjlVSXg2bkkxdWF3a3lW?=
+ =?utf-8?B?NjhOT3ZDUkhMNkhYTXFlOGhiRk5JaVJ3eWVoZzN3TDB4dWxHNDArc0lJZDRy?=
+ =?utf-8?B?Q0RGUloyQjlreG12SDFUb2tvazkzNk5oanpjU1lKOEQ4Wk9HRTZ4QkZ0cDcy?=
+ =?utf-8?B?K0RvcVc5dFk2TmUrZmFnMnJOeFBjbktPZU1CY0VZTDI5MktGMGlGekRkbUNo?=
+ =?utf-8?B?MCtNd3J1YzdFUVdKblZzOElLemhEN0N1MllMazA3dzMvd0xuMnJyRlpJQWxT?=
+ =?utf-8?B?QmhNNUlCbjhsRVVuSVVHcWlVdCt0Nng0V3g1eFlWYnBibjRpbnhiclBJRW03?=
+ =?utf-8?B?c1l1MERhM0VrMTZ3ZjFMRjluUVBvQ2EvMTNVVm8wREpnZG9jNEdVQ2lldDNW?=
+ =?utf-8?B?VnVKRG5TTmhPMmxmcWR6aHJQdThPdGMrWG9DcU1jSURmNTRRWmhabEpGRlBw?=
+ =?utf-8?B?WGo2dWZ5a2xSNVJ3Q3BrWThkOGl3UVp5NzJIS1prUWhjci9saGdPNXZIQ3RK?=
+ =?utf-8?B?aHc9PQ==?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: d5cc809b-96dc-4902-19a7-08dc477fd83b
+X-MS-Exchange-CrossTenant-AuthSource: SJ2PR11MB7573.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 19:15:59.5712
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: OYv7ZGN1oq2siQoteVZkDP6/7EV1uAKf958XL5id7xY2Y7FKpSVHnazRc4QQ86/k0wz4gAkXMC4AnHy193iAYDrpXCEfKmoxNVUDPYJ75+0=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR11MB7007
+X-OriginatorOrg: intel.com
 
-On 3/18/24 09:11, Roman Smirnov wrote:
-> On Fri, 15 Mar 2024 09:44:08 +0100 Helge Deller wrote:
->> On 3/5/24 14:51, Roman Smirnov wrote:
->>> The expression htotal * vtotal can have a zero value on
->>> overflow.
->>
->> I'm not sure if those always results in zero in kernel on overflow.
->> Might be architecture-depended too, but let's assume it
->> can become zero, ....
->>
->>> It is necessary to prevent division by zero like in
->>> fb_var_to_videomode().
->>>
->>> Found by Linux Verification Center (linuxtesting.org) with Svace.
->>>
->>> Signed-off-by: Roman Smirnov <r.smirnov@omp.ru>
->>> Reviewed-by: Sergey Shtylyov <s.shtylyov@omp.ru>
->>> ---
->>>    V1 -> V2: Replaced the code of the first version with a check.
->>>
->>>    drivers/video/fbdev/core/fbmon.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/video/fbdev/core/fbmon.c b/drivers/video/fbdev/co=
-re/fbmon.c
->>> index 79e5bfbdd34c..b137590386da 100644
->>> --- a/drivers/video/fbdev/core/fbmon.c
->>> +++ b/drivers/video/fbdev/core/fbmon.c
->>> @@ -1344,7 +1344,7 @@ int fb_videomode_from_videomode(const struct vid=
-eomode *vm,
->>>         vtotal =3D vm->vactive + vm->vfront_porch + vm->vback_porch +
->>>                  vm->vsync_len;
->>>         /* prevent division by zero */
->>> -     if (htotal && vtotal) {
->>> +     if (htotal && vtotal && (vm->pixelclock / htotal >=3D vtotal)) {
->>
->> why don't you then simply check for
->>          if .. ((htotal * vtotal) =3D=3D 0) ...
->> instead?
->>
->> Helge
->
-> Thomas Zimmermann from the previous discussion said:
->
-> On Tue, 5 Mar 2024 11:18:05 +0100 Thomas Zimmerman wrote:
->> Maybe use
->>
->>     if (htotal && vtotal && (vm->pixelclock / htotal >=3D vtotal))
->>
->> for the test. That rules out overflowing multiplication and sets
->> refresh to 0 in such cases.
->
-> This prevents overflow, which is also a problematic case.
 
-I don't like adding another division here and I doubt we have
-a problem with possible overflow.
-So, I suggest to keep it simple, something like:
-	...
-	total =3D htotal * vtotal;
-	if (total)
-		fbmode->refresh =3D vm->pixelclock / total;
-	else...
-Helge
+
+On 3/15/2024 11:02 AM, James Morse wrote:
+> On 08/03/2024 18:42, Tony Luck wrote:
+>> On Fri, Mar 08, 2024 at 06:06:45PM +0000, James Morse wrote:
+>>> Hi guys,
+>>>
+>>> On 07/03/2024 23:16, Tony Luck wrote:
+>>>> On Thu, Mar 07, 2024 at 02:39:08PM -0800, Reinette Chatre wrote:
+>>>>> Thank you for the example. I find that significantly easier to
+>>>>> understand than a single number in a generic "nodes_per_l3_cache".
+>>>>> Especially with potential confusion surrounding inconsistent "nodes"
+>>>>> between allocation and monitoring. 
+>>>>>
+>>>>> How about domain_cpu_list and domain_cpu_map ?
+>>>
+>>>> Like this (my test system doesn't have SNC, so all domains are the same):
+>>>>
+>>>> $ cd /sys/fs/resctrl/info/
+>>>> $ grep . */domain*
+>>>> L3/domain_cpu_list:0: 0-35,72-107
+>>>> L3/domain_cpu_list:1: 36-71,108-143
+>>>> L3/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+>>>> L3/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+>>>> L3_MON/domain_cpu_list:0: 0-35,72-107
+>>>> L3_MON/domain_cpu_list:1: 36-71,108-143
+>>>> L3_MON/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+>>>> L3_MON/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+>>>> MB/domain_cpu_list:0: 0-35,72-107
+>>>> MB/domain_cpu_list:1: 36-71,108-143
+>>>> MB/domain_cpu_map:0: 0000,00000fff,ffffff00,0000000f,ffffffff
+>>>> MB/domain_cpu_map:1: ffff,fffff000,000000ff,fffffff0,00000000
+>>>
+>>> This duplicates the information in /sys/devices/system/cpu/cpuX/cache/indexY ... is this
+>>> really because that information is, er, wrong on SNC systems. Is it possible to fix that?
+>>
+>> On an SNC system the resctrl domain for L3_MON becomes the SNC node
+>> instead of the L3 cache instance. With 2, 3, or 4 SNC nodes per L3.
+>>
+>> Even without the SNC issue this duplication may be a useful
+>> convienience. On Intel to get from a resctrl domain is a multi-step
+>> process to first find which of the indexY directories has level=3
+>> and then look for the "id" that matches the domain.
+>>
+>>> >From Tony's earlier description of how SNC changes things, the MB controls remain
+>>> per-socket. To me it feels less invasive to fix the definition of L3 on these platforms to
+>>> describe how it behaves (assuming that is possible), and define a new 'MB' that is NUMA
+>>> scoped.
+>>> This direction of redefining L3 means /sys/fs/resctrl and /sys/devices have different
+>>> views of 'the' cache hierarchy.
+>>
+>> I almost went partly in that direction when I started this epic voyage.
+>> The "almost" part was to change the names of the monitoring directories
+>> under mon_data from (legacy non-SNC system):
+>>
+>> $ ls -l mon_data
+>> total 0
+>> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_L3_00
+>> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_L3_01
+>>
+>> to (2 socket, SNC=2 system):
+>>
+>> $ ls -l mon_data
+>> total 0
+>> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_00
+>> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_01
+>> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_02
+>> dr-xr-xr-x. 2 root root 0 Mar  8 10:31 mon_NODE_03
+> 
+> This would be useful for MPAM. I've seen a couple of MPAM systems that have per-NUMA MPAM
+> controls on the 'L3', but describe it as a single global L3. The MPAM driver currently
+> hides this by summing the NUMA node counters and reporting it as the global L3's value.
+> 
+> 
+>> While that is in some ways a more accurate view, it breaks a lot of
+>> legacy monitoring applications that expect the "L3" names.
+> 
+> True - but the behaviour is different from a non SNC system, if this software can read the
+> file - but goes wrong because the contents of the file represent something different, its
+> still broken.
+
+This is a good point. There is also /sys/fs/resctrl/info/L3_MON to consider and trying to think
+what to do about that makes me go in circles about when user space may expect resctrl to indicate
+the resource and when user space may expect resctrl to indicate the scope. For example, 
+/sys/fs/resctrl/mon_data/mon_L3_00 contains files with data that monitor the
+"L3" _resource_, no? If we change that to /sys/fs/resctrl/mon_data/mon_NODE_00 then it
+switches the meaning of the middle term to be "scope" while it still contains the monitoring
+data of the "L3" resource. So does that mean user space would need to rely on
+/sys/fs/resctrl/info/L3_MON to obtain the information about which monitoring files 
+(/sys/fs/resctrl/info/L3_MON/mon_features) are related to the particular resource and then
+match those filenames with the filenames in /sys/fs/resctrl/mon_data/mon_NODE_00 to know
+which resource it applies to and learn from the directory name what scope measurement is at?
+
+Reinette
+
+
 
