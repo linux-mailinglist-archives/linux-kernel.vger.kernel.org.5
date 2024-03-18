@@ -1,153 +1,151 @@
-Return-Path: <linux-kernel+bounces-106200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 99BFF87EAA7
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:16:39 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9BBA187EAAD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:17:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 399B71F21A37
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:16:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 2380FB2280D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:17:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A830D4AEFB;
-	Mon, 18 Mar 2024 14:16:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E87C04C627;
+	Mon, 18 Mar 2024 14:16:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="lmBkPmGZ"
-Received: from mail-wm1-f42.google.com (mail-wm1-f42.google.com [209.85.128.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="GGxIxtJh"
+Received: from mail-yw1-f177.google.com (mail-yw1-f177.google.com [209.85.128.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1AD714AECD
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:16:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A91AE4CB20
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:16:56 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710771391; cv=none; b=RqtKSJsO2yvKX/0mJ/HIa/6MosxlKVId/tVk3d26OdKFyScrdWKDrc9Nxj95QeZeQUThAT/Lv2a8IpHsrMyzmzw/ehKYMXZ7Qmu9QEZAwfV5Ys2nshb6rSU2Y5G0KpnD015PRfjMptf6KEOx1hS4Ec6xwuYnJVhGXKD4/AvswCo=
+	t=1710771418; cv=none; b=S9cKgKg19r//kkzLiiCNmceG45hXjIMrS/p8RNWGBYaR0p4SpsFrEVXbwsiKynqZOiUTNXM+nXabvtjPcWRkD5V7En2CMsJs+CGaN+93c+1Pkleqc6IpKmie2Wo4aQfpB6KJJqQ9go8UOa2fhGLMGOwbfGlERUlxfdLcLxpZC1A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710771391; c=relaxed/simple;
-	bh=AVO0CRv0JE94l/fO/dv5SVK7xIoOeyHJggaKr7jbwXQ=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=K6et6TM/lWVntmX0gS9pRzw0FKBq53Im5bwrnZU9+iSVNEVboIOf7GBNg20im5S7vHoF6ktNASruvtVzh9c1+x5odvC3HHtAC3YtzfmcKxsCNG94hh8YL9g9N5LvmYaf/9zri5O8JFkRI3cBi+LYV13r+8l6kPDt8vEsw+XO12M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=lmBkPmGZ; arc=none smtp.client-ip=209.85.128.42
+	s=arc-20240116; t=1710771418; c=relaxed/simple;
+	bh=rOzlSTthASyQgwpZVjNchS4VHdUqgwg+0fthytEsCP0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=F6jJFMTDdP/XnlX4lCsNyggSltSLwCM9G25WYfWxUMaeyijgDCMJKQKitXeR56631L0o9/mmHJW+yAiljjExCx/WKou6wMJQfEv+Y6U29USVP4a4RKJ8r3CRhv+qsKPZCYTh6GHlZevWrH9e46NwGB/hLGEw9mOOXLZ98334hDA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=GGxIxtJh; arc=none smtp.client-ip=209.85.128.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f42.google.com with SMTP id 5b1f17b1804b1-41460512c25so2080595e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:16:29 -0700 (PDT)
+Received: by mail-yw1-f177.google.com with SMTP id 00721157ae682-609f4d8551eso55394167b3.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 07:16:56 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710771388; x=1711376188; darn=vger.kernel.org;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=6hoHJPzKivMW1yEjOBGD1bftC6F87yAj85WAtXr98Do=;
-        b=lmBkPmGZKFbvIh7bcsTWXu33xARq6OYyKS0e3zW/Is8IF1ny/sVbjXqd2EFtJFAdVV
-         R34HxHenYOUihdposUQAUpMfT7OAGGJGRGR1OGYbgAiAD1fvU8X5NMgMyWevLPtin11Q
-         Zcs9kkOIUeupi+02EcCa1AibEeErWcRL9FR4LqhRIFgiaAAJ6ZTkij941/R17NeE67pw
-         1yzFq2/LJyyCIzxSwZNR1JETN7OHCMWsOrFp93IrE14dTq5G6YHYRou91GnvQBnb/rEV
-         k/yKBmH4HKvJbvO3jdI8AQH+w76+4i+WNws1AdWzqwEw022lvviHjq0GOeszbUURiAkM
-         BRqA==
+        d=linaro.org; s=google; t=1710771415; x=1711376215; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=8J4xg8pL+JVnZ2d+xdfnq4XTZIIQf2BljKguZHBIW44=;
+        b=GGxIxtJhxPDWVQ6BqtVsdXA8qDfl2tdxBvTZrAlsWiJoSwQj1QiX7IvG9Z0SXsRCtM
+         2gKL1vNT63/aiK47fPlDHs4LCN0AEe38x2MntPIuz2IjqDyvTtGB2kQiRIzgqdNCKHWb
+         em4gm5AxjJcjZtLNOwqUp4S/haRFXmDGAMYJEo52EiwKyEPL8eOqLv4XBgtA0xpqOgjv
+         P9hhYUH9Pio2NpT6HYKhisOmmX2cBjYKH4UVpw2SX58gt5Zzf09q0Figv1UEqaqx6gZM
+         kQanxyPtZDdrJRZcGo2TKVL5b7UWEcqh8O4Lw0QwwiZ480STAOSaN+29dX4ZnRQylOe5
+         ZWrg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710771388; x=1711376188;
-        h=cc:to:message-id:content-transfer-encoding:mime-version:subject
-         :date:from:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1710771415; x=1711376215;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=6hoHJPzKivMW1yEjOBGD1bftC6F87yAj85WAtXr98Do=;
-        b=q5fCZJKhVtwxlONCE0Ej8b5wYjZymGoOLQ9t+ejSw4L5kKCMJe3N8OsPhP/VseX04f
-         UtOhtrGw0jhOBmvbWuEYFVrEVrfXSElmWibpkIXmkgfilvuTsohCdbpW0eKfmD1RMGrL
-         xAhEhK5p973puN3yiOOXjxMPWcJSuzHhhtijQraMXUkoyYRyWxxGvHuikbotPnPoybp9
-         nUtQXnbQPfitomQKtkEIqwKvYEYp/dAm3cUHYhMW1kBMgDrT92YzWkcZ6qMuGnTWheyF
-         354Il0qaIGe9+dyRU3sZCWuTTgbnwFu4uM9QgeI+RlN8lthG9WtwXzq72r2upZIdLBqE
-         L1Ng==
-X-Forwarded-Encrypted: i=1; AJvYcCUgj3QFrB+Sdtuxul8dmpTB3KNH/v6LTgs4YTdZNkGk9GyaHVRertUmpGzBKWlckGRLri0BOXFE2230vn+pVuH/PWcl6m3riJISTtqm
-X-Gm-Message-State: AOJu0YxRQO3M/aqu3It0PekzRH8X6XYPvLyq2dYYNlh3qHLplN2yabSt
-	h+ewvdpki7Axi2TYtQEWckyXTUwB36c0/0vrmP9wCE90PFbaYTw9RbpBdFu2VCA=
-X-Google-Smtp-Source: AGHT+IEqzbstFUamf1dr3ZQZI+3TDFusQzNphV5aLQUHgxcZhBUC+9G9ERQlw3BfIaiybAdjAODiyA==
-X-Received: by 2002:a05:600c:314b:b0:413:7f3:8d5 with SMTP id h11-20020a05600c314b00b0041307f308d5mr6541011wmo.0.1710771388257;
-        Mon, 18 Mar 2024 07:16:28 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:52eb:f6ff:feb3:451a])
-        by smtp.gmail.com with ESMTPSA id a18-20020a05600c349200b0041413d11838sm1642584wmq.26.2024.03.18.07.16.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 07:16:27 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Date: Mon, 18 Mar 2024 15:16:21 +0100
-Subject: [PATCH] Revert "drm/bridge: Select DRM_KMS_HELPER for
- DRM_PANEL_BRIDGE"
+        bh=8J4xg8pL+JVnZ2d+xdfnq4XTZIIQf2BljKguZHBIW44=;
+        b=TAYpqvHXv+sU0vQcbQbVS8pTX7ZZW2NVSOSiI4dCfNCWmjUCIAYAeMutTVB1hMN+0+
+         C6MUQ0NVyVoq7EHrsJ/ZKhSMDr10OC/9OGARlbfczMYt0sxwXmQtRlVV8drlPo/RsnUe
+         aUUZq2KFcwoYfhbgC/kV4qFbWgkogLDkqI7WEy6v12DcMHsl1dvwFtj2v9uHKX2MNjsG
+         AgPozprZHLQ2Z6kUq16sEUzFlVUANzQ1/SRVK+u+VGRKGZZFcmOc6DLU6Hfd7DJSr3ht
+         nsAQFCsEc8eVHPQYXnFo9R571kD6a80JnNNGY/ws/j4idfzkAp5U+yKAFWFopn8CeLJa
+         EHfg==
+X-Forwarded-Encrypted: i=1; AJvYcCUEbaEwPpZgUM/fn31C2lW2jD+f2d7Wb3+CCPx4QGg6L3D17zezcNaKru4aHpfUSMjHg2E7NTkMuaAsGCA7Zzx8il+HmUr9mvX1tOuZ
+X-Gm-Message-State: AOJu0YzXMz8zwsPaqrapQph78HhIXcQ9sZ8SILgpAreDXL4QpbrCNVC3
+	AsroqcVFytL78FQjmrG0//B3nGwiGeuWim389pjdwgtzX3QWEIYS1UtrasnJKJcORTczab8F3k+
+	ORlpwbGED63x7sjtLiyhYq+h3fyL5yXgpjFAi2Q==
+X-Google-Smtp-Source: AGHT+IEvFYwE5sS/ZdUGl4QC1VMK4V6gFZsyCtq7eO/fPjCvn7WtuPLxgRxXP4/a0hitKTpfQiEy5JVcez/WdWvhImM=
+X-Received: by 2002:a0d:d614:0:b0:609:e710:3a32 with SMTP id
+ y20-20020a0dd614000000b00609e7103a32mr7648479ywd.12.1710771415485; Mon, 18
+ Mar 2024 07:16:55 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-v1-1-52a42a116286@linaro.org>
-X-B4-Tracking: v=1; b=H4sIALRM+GUC/x2NUQqDMBAFryL73UDUUNtepUhIk2ddGmPYSCmId
- 2/wc4bHvJ0KhFHo0ewk+HLhNVVoLw352aU3FIfK1OnO6L69qTqCbKogwm8qyGI/S7EzYoaoaZV
- TZZcQ7Us41ICGcWHwQ2/uV6rdLJj4d34+x+P4A5vjllqDAAAA
-To: Andrzej Hajda <andrzej.hajda@intel.com>, Robert Foss <rfoss@kernel.org>, 
- Laurent Pinchart <Laurent.pinchart@ideasonboard.com>, 
- Jonas Karlman <jonas@kwiboo.se>, Jernej Skrabec <jernej.skrabec@gmail.com>, 
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>, 
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, 
- David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, 
- Luca Weiss <luca.weiss@fairphone.com>
-Cc: Jani Nikula <jani.nikula@linux.intel.com>, 
- Imre Deak <imre.deak@intel.com>, 
- =?utf-8?q?Ville_Syrj=C3=A4l=C3=A4?= <ville.syrjala@linux.intel.com>, 
- dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org, 
- Neil Armstrong <neil.armstrong@linaro.org>
-X-Mailer: b4 0.12.4
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1324;
- i=neil.armstrong@linaro.org; h=from:subject:message-id;
- bh=AVO0CRv0JE94l/fO/dv5SVK7xIoOeyHJggaKr7jbwXQ=;
- b=owEBbQKS/ZANAwAKAXfc29rIyEnRAcsmYgBl+Ey6S6ifjkU3YMO3rgKK5FOvKjMM3uGWoM5xG2o7
- N201Wu+JAjMEAAEKAB0WIQQ9U8YmyFYF/h30LIt33NvayMhJ0QUCZfhMugAKCRB33NvayMhJ0e9SEA
- CcbN4WdLH4CEADtmqIVE2Xtq5X2X7rEhhGy6VcD2y4DKdXTRz53ijDHOVdnkeo0/hos94YeCl4qufj
- AFN2UxsLFgB3NHZVzY9L0Y5B0vvDUcIZEaYDReC286ANi4fgXvDJOjL4FvyKQCvMjqPpvmaiDNYcXM
- pynfskGc4LNdzgxcjnYOzO7tx9j/h4XS0D5ogPJUd8NYl0lE6tPfG9fYkLg+X4JiNZQzX3+GO2zJD/
- kryghoe9ixPlOQM6QwdH0U3CStqM52jLURE6DgBooJX7HJ8sWiKlIFVhW4S+EG/8px030HS6ltIuwX
- xNkFLQh3ZJ0woCwRdWJM1m8pH3zOenMvAGqPS1dK4IyhJCXd4VpiVNiM1M866FIaNnowS/aEh/AFlE
- dPCuWeeSery+dIe6I+JLZtS9xee3eGEQyuKJrw3PtrfTWzvozMfDE7LXz24uvR2Bf16WkVTeN8QVrV
- 8JF+qUfBIAt/Rq24jpZez7sHq93f0RQcKuhRXO8kq7erV2f5Qu2AYG3avsbvhDdkG6dBExIyz9CUXu
- jei7sjB7c6UUJiCIrhzGvY/X8crqRNh380If+QzxuwlQurGXCSZAO9ZhZ00MJdQm7yrmtwcq6M/D3k
- BEw4+Qtzzo1LTnkF1Z/kN/wjS1TtA38o77pfiX58P7Hz970ttecQw8vRweWA==
-X-Developer-Key: i=neil.armstrong@linaro.org; a=openpgp;
- fpr=89EC3D058446217450F22848169AB7B1A4CFF8AE
+References: <20240318-apss-ipq-pll-cleanup-v1-0-52f795429d5d@gmail.com> <20240318-apss-ipq-pll-cleanup-v1-2-52f795429d5d@gmail.com>
+In-Reply-To: <20240318-apss-ipq-pll-cleanup-v1-2-52f795429d5d@gmail.com>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Mon, 18 Mar 2024 16:16:44 +0200
+Message-ID: <CAA8EJpo2Vo-XqstNk69dWW8pqNkGi0tz3UmHY7j6LLKd-yH22w@mail.gmail.com>
+Subject: Re: [PATCH 2/5] clk: qcom: apss-ipq-pll: use an 1-D array for Huayra
+ pll register offsets
+To: Gabor Juhos <j4g8y7@gmail.com>
+Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	Michael Turquette <mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, 
+	linux-arm-msm@vger.kernel.org, linux-clk@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-This reverts commit e3f18b0dd1db242791afbc3bd173026163ce0ccc.
+On Mon, 18 Mar 2024 at 13:20, Gabor Juhos <j4g8y7@gmail.com> wrote:
+>
+> The 'ipq_pll_offsets' is defined as a two-dimensional array, but it
+> contains a sole element only so convert it to an one-dimensional
+> array. Also, rename the variable to better reflect that it is used
+> for the Huayra PLLs.
+>
+> No functional changes.
+>
+> Signed-off-by: Gabor Juhos <j4g8y7@gmail.com>
+> ---
+>  drivers/clk/qcom/apss-ipq-pll.c | 22 ++++++++++------------
+>  1 file changed, 10 insertions(+), 12 deletions(-)
+>
+> diff --git a/drivers/clk/qcom/apss-ipq-pll.c b/drivers/clk/qcom/apss-ipq-pll.c
+> index ed3e6405f99cb..f5c7eaf8db374 100644
+> --- a/drivers/clk/qcom/apss-ipq-pll.c
+> +++ b/drivers/clk/qcom/apss-ipq-pll.c
+> @@ -13,22 +13,20 @@
+>   * are different from the one mentioned in the clk-alpha-pll.c, since the
+>   * PLL is specific to APSS, so lets the define the same.
+>   */
+> -static const u8 ipq_pll_offsets[][PLL_OFF_MAX_REGS] = {
+> -       [CLK_ALPHA_PLL_TYPE_HUAYRA] =  {
+> -               [PLL_OFF_L_VAL] = 0x08,
+> -               [PLL_OFF_ALPHA_VAL] = 0x10,
+> -               [PLL_OFF_USER_CTL] = 0x18,
+> -               [PLL_OFF_CONFIG_CTL] = 0x20,
+> -               [PLL_OFF_CONFIG_CTL_U] = 0x24,
+> -               [PLL_OFF_STATUS] = 0x28,
+> -               [PLL_OFF_TEST_CTL] = 0x30,
+> -               [PLL_OFF_TEST_CTL_U] = 0x34,
+> -       },
+> +static const u8 ipq_pll_huayra_regs[PLL_OFF_MAX_REGS] = {
+> +       [PLL_OFF_L_VAL] = 0x08,
+> +       [PLL_OFF_ALPHA_VAL] = 0x10,
+> +       [PLL_OFF_USER_CTL] = 0x18,
+> +       [PLL_OFF_CONFIG_CTL] = 0x20,
+> +       [PLL_OFF_CONFIG_CTL_U] = 0x24,
+> +       [PLL_OFF_STATUS] = 0x28,
+> +       [PLL_OFF_TEST_CTL] = 0x30,
+> +       [PLL_OFF_TEST_CTL_U] = 0x34,
+>  };
 
-Selecting DRM_KMS_HELPER for DRM_PANEL_BRIDGE leads to:
-WARNING: unmet direct dependencies detected for DRM_KMS_HELPER
-  Depends on [m]: HAS_IOMEM [=y] && DRM [=m]
-  ...
+Can you please move this to clk_alpha_pll? We can then drop it from
+clk-cbf-8996.c too.
 
-and builds with CONFIG_DRM=m will fail with the above kconfig
-warns and then multiple linker error.
+>
+>  static struct clk_alpha_pll ipq_pll_huayra = {
+>         .offset = 0x0,
+> -       .regs = ipq_pll_offsets[CLK_ALPHA_PLL_TYPE_HUAYRA],
+> +       .regs = ipq_pll_huayra_regs,
+>         .flags = SUPPORTS_DYNAMIC_UPDATE,
+>         .clkr = {
+>                 .enable_reg = 0x0,
+>
+> --
+> 2.44.0
+>
+>
 
-Reported-by: Imre Deak <imre.deak@intel.com>
-Reported-by: Jani Nikula <jani.nikula@linux.intel.com>
-Reported-by: Ville Syrjälä <ville.syrjala@linux.intel.com>
-Fixes: e3f18b0dd1db ("drm/bridge: Select DRM_KMS_HELPER for DRM_PANEL_BRIDGE")
-Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
----
- drivers/gpu/drm/bridge/Kconfig | 1 -
- 1 file changed, 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/bridge/Kconfig b/drivers/gpu/drm/bridge/Kconfig
-index 1d4f010af97b..efd996f6c138 100644
---- a/drivers/gpu/drm/bridge/Kconfig
-+++ b/drivers/gpu/drm/bridge/Kconfig
-@@ -8,7 +8,6 @@ config DRM_BRIDGE
- config DRM_PANEL_BRIDGE
- 	def_bool y
- 	depends on DRM_BRIDGE
--	select DRM_KMS_HELPER
- 	select DRM_PANEL
- 	help
- 	  DRM bridge wrapper of DRM panels
-
----
-base-commit: e3f18b0dd1db242791afbc3bd173026163ce0ccc
-change-id: 20240318-revert-select-drm_kms_helper-for-drm_panel_bridge-0e4ad7c73496
-
-Best regards,
 -- 
-Neil Armstrong <neil.armstrong@linaro.org>
-
+With best wishes
+Dmitry
 
