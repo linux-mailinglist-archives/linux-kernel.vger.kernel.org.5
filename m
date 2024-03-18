@@ -1,159 +1,200 @@
-Return-Path: <linux-kernel+bounces-106047-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106048-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E1FAB87E852
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:13:01 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id E00A687E854
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:13:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 238DFB22FC1
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:12:59 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 963B61F25A16
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:13:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2182C36AF5;
-	Mon, 18 Mar 2024 11:12:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9185374EF;
+	Mon, 18 Mar 2024 11:12:52 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com header.b="2ROMi7FD"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="vCvUgQ0n"
+Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4109538387
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 11:12:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3304B381AC;
+	Mon, 18 Mar 2024 11:12:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710760362; cv=none; b=ZGnoVYL9fYuWJE4y8oJxtnWac+XFpioWGkO+LAOJdTQGWLEZ/jJizjCQ7O2xMCD3z6xu5gsKspQq9xOCMdZ7jCwlvcUxk+KxhT01brMz2lW+Ez4FT+vpppY+6QGmQ53skl4UnF8XBjZHJbg1tSSoawfi0no2v5iW28HZspKTrOE=
+	t=1710760372; cv=none; b=Al3o44r6zi19/HTYoGz3y0yPsH0W5hFQxT4OOsjbsL33W69/yufOnaiKfZgcmJpY5zJ6s8E5oXi5PRknpqs1gzJOc3oAUtjo3OEIS7fns8L0c283f6iMiVHSzREasxI0TMKysDTzCsws/FVyLpf/r15uPfvsLe+5GlGwKhmSXnk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710760362; c=relaxed/simple;
-	bh=0Bx39X9nrmaOe2siDGBtD8UvPB5+0atvcfW4BaACz+4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=gTgFh/S2p/4qIZ9gBv2KysVkCggZs3VM428meOsODnixUN9g78ICDujyySiQS5Cy/Ef3QxnCDptInSKKN6RnauVV9OBdaJBc8BLzEk9bedVHnVZDyvS+qk62K7DEjgez4fcgSoblkKeUVyZN0yn0do3aLt7N9gI0MUO0pKVPHKo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cpp.in; spf=none smtp.mailfrom=cpp.in; dkim=pass (2048-bit key) header.d=cpp-in.20230601.gappssmtp.com header.i=@cpp-in.20230601.gappssmtp.com header.b=2ROMi7FD; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=cpp.in
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=cpp.in
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbef31a9dbso2731421276.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 04:12:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cpp-in.20230601.gappssmtp.com; s=20230601; t=1710760358; x=1711365158; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=CJoZDN6ezIJlLMa5gaDKCST13mLnHhS66r8V7Evf8Jc=;
-        b=2ROMi7FDJwptKqSspUrVQ6fZTE/NhmeID0jQXfMNvLylVl03Isq/pPLOH4nvdmX7Zh
-         9KCNUm4bUeY4d1Z2jy+IcbCF040fCMqQNv/K+o0Jz3qNnGqCP7yfjRhhOrMTGeLfJ1XS
-         rMoNEFfhP2MhzYeYfGbjNMN5BONjXhKg1PHYUeUqI4qKtw57aJ63VlT5j1CaVW0rorjA
-         PD24HbD2Mx2IIfVCVzpDkMOyWx63JoRqZICwfMw6b2hmdtTJf3hWfSFtbQHxSEsYC1f4
-         Iu8NrchQQBlb8LntshiWgPkRgjmlWPWBYktSPectDwSM4uVKjwHysD/PINR/CLYNGBUY
-         93pQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710760358; x=1711365158;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=CJoZDN6ezIJlLMa5gaDKCST13mLnHhS66r8V7Evf8Jc=;
-        b=Xcapzl97FDmRwFqIOWfNiglV/jP2vP5kjdMvTvNi5d82Ne+R0zQeLDNGV8ErEuLdSz
-         mT3qDYbOcKhJ/dnvH0UKaO3WfSSjLc2V39PPpc6yAczsa9hnC9e2y4u/+UsRQEIqa+dc
-         gDU4xcc378Nghh7TVsjQyi6tRwKCOomgCUC2jT4D+JT+9oAeh9x8hZ+eMeOSJ0TqrHp2
-         E1WX8vakY09f/Z0Ls+YJoO2mlXU6QJmZgXmCO6JUKQ0kPIaKrBBRIX/54YBbCrvtlrYd
-         5F4rpsdbCRdyK/JSvx4ozcvqk/rI4VDOSVyrdq+OgliSSWCmB1cfPm23kjoUTu6/BBlY
-         THJw==
-X-Forwarded-Encrypted: i=1; AJvYcCXwR9dYcY6SaBkp0akOzu2ze7r/iJUhJB2jY40ottEv+ea9DCNQDy1A3E0eUFRcqfC5TD/SvxPJN/7irjxtDHQO6XoECEqOWtVVvPt6
-X-Gm-Message-State: AOJu0Ywehes4MVBM9jM8ChKECyyyylG7LnjmiGrgKtllxl/faqXU+GU8
-	OsWS3PE2AXAvMGAz9WJiQF22pqInDF4hNtKeWg0ZfOhrcJNYdzeJ1kw/Yt2xgMK6lgwpAVxHrRR
-	H6nugrxowqGmptBheCV3HQ0zGiroe8He/BYpF
-X-Google-Smtp-Source: AGHT+IG/HgIgdSgvQqy3AXOe0r/4PVhQlkf8W/nO+Clig28YU2mx//r0WREn/yYLRmNX0scfU3SYjJOJrqswVfJx9YE=
-X-Received: by 2002:a25:3187:0:b0:dcc:1449:71ea with SMTP id
- x129-20020a253187000000b00dcc144971eamr8864308ybx.50.1710760357653; Mon, 18
- Mar 2024 04:12:37 -0700 (PDT)
+	s=arc-20240116; t=1710760372; c=relaxed/simple;
+	bh=DnVZF8SGVwGKINb0idkVhUywVWKD3UaEQ9II6Y0tp+o=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=cHCXk92C+Jrw4fOyoIDQAT/Zj/yak2hm+B1T0Mn7V9taRwxL0XdDf0AliwhKn3N7ZJ25aOd6Bi14BlPtj7QEMJkwKkScFhgJBjCH8ceXTboekeq97gQVKchtMCzfIQ+TD3o83KE+hlXXnVi/jjFWDw5bvH6XRA0piHtUodiRz70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=vCvUgQ0n; arc=none smtp.client-ip=198.47.19.141
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42IBCUfc088930;
+	Mon, 18 Mar 2024 06:12:30 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1710760350;
+	bh=DV4xGfeZV0MHV7EUiL5CPLZLpyUrr+cQbMmhRNUiEbU=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=vCvUgQ0no+l0m+XxSAIntTEFS5NRdg6Qg9ZfIyoCdnhCn7Epf1UxV01TV4MKOozmC
+	 6gjGxyUGmnEz1t06ZqbIvoSc3s5hOGFtXDlrkOv0Shdr4gPnhECKcg1j9deVSiwxF2
+	 MzwoiqsMCd1Z9UI9VF0/C44dE90V0uow2ekWqIbU=
+Received: from DLEE103.ent.ti.com (dlee103.ent.ti.com [157.170.170.33])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42IBCUfW029670
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Mon, 18 Mar 2024 06:12:30 -0500
+Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE103.ent.ti.com
+ (157.170.170.33) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Mon, 18
+ Mar 2024 06:12:30 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
+ (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Mon, 18 Mar 2024 06:12:30 -0500
+Received: from [172.24.227.220] (chintan-thinkstation-p360-tower.dhcp.ti.com [172.24.227.220])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42IBCQSs091840;
+	Mon, 18 Mar 2024 06:12:26 -0500
+Message-ID: <47f8db23-52b8-4a37-89b9-70e5ed4c8d83@ti.com>
+Date: Mon, 18 Mar 2024 16:42:25 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <570989e3-299f-4617-adde-b6b8d1e06277@cpp.in> <000901da7922$c81acee0$58506ca0$@opensource.cirrus.com>
-In-Reply-To: <000901da7922$c81acee0$58506ca0$@opensource.cirrus.com>
-From: aigilea <i@cpp.in>
-Date: Mon, 18 Mar 2024 14:12:01 +0300
-Message-ID: <CABYkuAi9+XmXnJP0J+jvXkOaOGyK0pvRiFic1v2LmxkGo4ic0g@mail.gmail.com>
-Subject: Re: [PATCH] ALSA: hda: cs35l41: Support HP Spectre x360 14 eu0000
-To: Stefan Binding <sbinding@opensource.cirrus.com>
-Cc: James Schulman <james.schulman@cirrus.com>, David Rhodes <david.rhodes@cirrus.com>, 
-	Richard Fitzgerald <rf@opensource.cirrus.com>, Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>, 
-	alsa-devel@alsa-project.org, patches@opensource.cirrus.com, 
-	linux-sound@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/3] net: ethernet: ti: am65-cpts: Enable PTP RX HW
+ timestamp using CPTS FIFO
+Content-Language: en-US
+To: Paolo Abeni <pabeni@redhat.com>, Dan Carpenter <dan.carpenter@linaro.org>,
+        Siddharth Vadapalli <s-vadapalli@ti.com>,
+        Heiner Kallweit
+	<hkallweit1@gmail.com>,
+        Vladimir Oltean <vladimir.oltean@nxp.com>,
+        "Grygorii
+ Strashko" <grygorii.strashko@ti.com>,
+        Andrew Lunn <andrew@lunn.ch>, "Roger
+ Quadros" <rogerq@kernel.org>,
+        Richard Cochran <richardcochran@gmail.com>,
+        Jakub Kicinski <kuba@kernel.org>, Eric Dumazet <edumazet@google.com>,
+        "David
+ S. Miller" <davem@davemloft.net>
+CC: <linux-kernel@vger.kernel.org>, <netdev@vger.kernel.org>
+References: <20240312100233.941763-1-c-vankar@ti.com>
+ <dc45f4f104a0d0691715398d2f7efa6a0a3447b8.camel@redhat.com>
+From: Chintan Vankar <c-vankar@ti.com>
+In-Reply-To: <dc45f4f104a0d0691715398d2f7efa6a0a3447b8.camel@redhat.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi.
 
-Indeed, my bad, this patch is obsolete then. I will update and resend
-the second one (for the patch_realtek.c) as more quirks are needed.
 
-On Mon, Mar 18, 2024 at 1:55=E2=80=AFPM Stefan Binding
-<sbinding@opensource.cirrus.com> wrote:
->
-> Hi,
->
-> Support for this laptop was previously added in patch:
-> 33e5e648e631 ("ALSA: hda: cs35l41: Support additional HP Envy Models")
->
-> Is your branch out of date?
->
-> Thanks,
-> Stefan Binding
->
-> > -----Original Message-----
-> > From: Anthony I Gilea <i@cpp.in>
-> > Sent: Sunday, March 17, 2024 2:05 AM
-> > To: James Schulman <james.schulman@cirrus.com>; David Rhodes
-> > <david.rhodes@cirrus.com>; Richard Fitzgerald
-> > <rf@opensource.cirrus.com>; Jaroslav Kysela <perex@perex.cz>; Takashi
-> > Iwai <tiwai@suse.com>
-> > Cc: alsa-devel@alsa-project.org; patches@opensource.cirrus.com; linux-
-> > sound@vger.kernel.org; linux-kernel@vger.kernel.org
-> > Subject: [PATCH] ALSA: hda: cs35l41: Support HP Spectre x360 14 eu0000
-> >
-> > The new HP Spectre x360 has _DSD for CS35L41 amps in ACPI but
-> > reset-gpios and spk-id-gpios are merged into single Package of size 4 s=
-o
-> > _DSD parser fails to parse it.
-> >
-> > Overwrite broken _DSD with the correct configuration.
-> >
-> > Signed-off-by: Anthony I Gilea <i@cpp.in>
-> > ---
-> >   sound/pci/hda/cs35l41_hda_property.c | 2 ++
-> >   1 file changed, 2 insertions(+)
-> >
-> > diff --ruNp a/sound/pci/hda/cs35l41_hda_property.c
-> > b/sound/pci/hda/cs35l41_hda_property.c
-> >
-> > --- a/sound/pci/hda/cs35l41_hda_property.c    2024-03-10
-> > 23:38:09.000000000 +0300
-> > +++ b/sound/pci/hda/cs35l41_hda_property.c    2024-03-14
-> > 18:22:01.887566917 +0300
-> > @@ -64,6 +64,7 @@ static const struct cs35l41_config cs35l
-> >       { "103C8BE5", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> >       { "103C8BE6", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> >       { "103C8B3A", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> > +     { "103C8C15", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4100, 24 },
-> >       { "104312AF", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 1, 2, 0, 1000, 4500, 24 },
-> >       { "10431433", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4500, 24 },
-> >       { "10431463", 2, INTERNAL, { CS35L41_LEFT, CS35L41_RIGHT, 0, 0
-> > }, 0, 1, -1, 1000, 4500, 24 },
-> > @@ -405,6 +406,7 @@ static const struct cs35l41_prop_model c
-> >       { "CSC3551", "103C8BE5", generic_dsd_config },
-> >       { "CSC3551", "103C8BE6", generic_dsd_config },
-> >       { "CSC3551", "103C8B3A", generic_dsd_config },
-> > +     { "CSC3551", "103C8C15", generic_dsd_config },
-> >       { "CSC3551", "104312AF", generic_dsd_config },
-> >       { "CSC3551", "10431433", generic_dsd_config },
-> >       { "CSC3551", "10431463", generic_dsd_config },
->
+On 12/03/24 16:20, Paolo Abeni wrote:
+> On Tue, 2024-03-12 at 15:32 +0530, Chintan Vankar wrote:
+>> diff --git a/drivers/net/ethernet/ti/am65-cpts.c b/drivers/net/ethernet/ti/am65-cpts.c
+>> index c66618d91c28..6c1d571c5e0b 100644
+>> --- a/drivers/net/ethernet/ti/am65-cpts.c
+>> +++ b/drivers/net/ethernet/ti/am65-cpts.c
+>> @@ -859,29 +859,6 @@ static long am65_cpts_ts_work(struct ptp_clock_info *ptp)
+>>   	return delay;
+>>   }
+>>   
+>> -/**
+>> - * am65_cpts_rx_enable - enable rx timestamping
+>> - * @cpts: cpts handle
+>> - * @en: enable
+>> - *
+>> - * This functions enables rx packets timestamping. The CPTS can timestamp all
+>> - * rx packets.
+>> - */
+>> -void am65_cpts_rx_enable(struct am65_cpts *cpts, bool en)
+>> -{
+>> -	u32 val;
+>> -
+>> -	mutex_lock(&cpts->ptp_clk_lock);
+>> -	val = am65_cpts_read32(cpts, control);
+>> -	if (en)
+>> -		val |= AM65_CPTS_CONTROL_TSTAMP_EN;
+>> -	else
+>> -		val &= ~AM65_CPTS_CONTROL_TSTAMP_EN;
+>> -	am65_cpts_write32(cpts, val, control);
+>> -	mutex_unlock(&cpts->ptp_clk_lock);
+>> -}
+>> -EXPORT_SYMBOL_GPL(am65_cpts_rx_enable);
+> 
+> It looks like the above chunk will cause a transient build break, as
+> the function is still in use and the caller will be removed by the next
+> patch. I guess you should move this chunk there.
+
+Thank you for your suggestion. I will update the patch with this
+change in the next version.
+
+> 
+>> -
+>>   static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>   {
+>>   	unsigned int ptp_class = ptp_classify_raw(skb);
+>> @@ -906,6 +883,72 @@ static int am65_skb_get_mtype_seqid(struct sk_buff *skb, u32 *mtype_seqid)
+>>   	return 1;
+>>   }
+>>   
+>> +static u64 am65_cpts_find_rx_ts(struct am65_cpts *cpts, struct sk_buff *skb,
+>> +				int ev_type, u32 skb_mtype_seqid)
+>> +{
+>> +	struct list_head *this, *next;
+>> +	struct am65_cpts_event *event;
+>> +	unsigned long flags;
+>> +	u32 mtype_seqid;
+>> +	u64 ns = 0;
+>> +
+>> +	am65_cpts_fifo_read(cpts);
+>> +	spin_lock_irqsave(&cpts->lock, flags);
+>> +	list_for_each_safe(this, next, &cpts->events) {
+>> +		event = list_entry(this, struct am65_cpts_event, list);
+>> +		if (time_after(jiffies, event->tmo)) {
+>> +			list_del_init(&event->list);
+>> +			list_add(&event->list, &cpts->pool);
+>> +			continue;
+>> +		}
+>> +
+>> +		mtype_seqid = event->event1 &
+>> +			      (AM65_CPTS_EVENT_1_MESSAGE_TYPE_MASK |
+>> +			       AM65_CPTS_EVENT_1_SEQUENCE_ID_MASK |
+>> +			       AM65_CPTS_EVENT_1_EVENT_TYPE_MASK);
+>> +
+>> +		if (mtype_seqid == skb_mtype_seqid) {
+>> +			ns = event->timestamp;
+>> +			list_del_init(&event->list);
+>> +			list_add(&event->list, &cpts->pool);
+>> +			break;
+>> +		}
+>> +	}
+>> +	spin_unlock_irqrestore(&cpts->lock, flags);
+> 
+> Ouch, you have to acquire an additional lock per packet and a lot of
+> cacheline dithering.
+> 
+> Not strictly necessary for this series, but I suggest to invest some
+> time reconsidering this schema, it looks bad from performance pov.
+> 
+> Possibly protecting the list with RCU and leaving the recycle to the
+> producer could help.
+
+Thank you for pointing out this. I will consider your point and spend
+some time on it.
+
+> 
+> Additionally net-next is currently closed for the merge window, please
+> post the new revision (including the target tree in the subj prefix)
+> when net-next will re-open in ~2weeks.
+> 
+Thank you for information. I will update the patch and post its next
+version with above mentioned changes.
+
+> Cheers,
+> 
+> Paolo
+> 
 
