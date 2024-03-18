@@ -1,152 +1,138 @@
-Return-Path: <linux-kernel+bounces-105827-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105828-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 165FC87E517
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:40:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 06BA787E518
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:42:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C6483281D89
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:40:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E17041C211A2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 08:42:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EC491288D7;
-	Mon, 18 Mar 2024 08:39:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68F88288D7;
+	Mon, 18 Mar 2024 08:42:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="im9Z2UT/"
-Received: from mail-pg1-f179.google.com (mail-pg1-f179.google.com [209.85.215.179])
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="gWzGAQRd"
+Received: from mail-yb1-f177.google.com (mail-yb1-f177.google.com [209.85.219.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C74DF2D605;
-	Mon, 18 Mar 2024 08:39:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCFBC1E866
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:41:59 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710751177; cv=none; b=Dap25xApVGzXY792ClCjUvGdHO/Vpj971UCGg2SSXfeoDaWKyfkv2bP5OdTGh+5TjgkAl3wILxS9ddNFCcxW0FBT4HdpsIZrqp7a4sbHuSaQyC4PqOU6cFj2RFF17hzuA6StPwGINrG7Bzp9FezwoG1Fm05TO0sq9wtZIy00hO0=
+	t=1710751321; cv=none; b=b4dDDR8jYuY0fXIVQwbIAqiZYFKgVqFjw5HiHIyZi2vC8QtRA+A8ymT53XVhXNSFia1tXMY7ZaPZAWL/isNjLUVsjVUbWnJ0JKbvqVIyhfYwO2GIkW0M/224a9OYX10L3d4O1b7xeLmwKWBS4dn6QIQ+U38XCigFiygsrw1a5kM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710751177; c=relaxed/simple;
-	bh=vVRNDFTWoPtwzQ3IZjFY5VjQCSazSJ7M7SEttHV0hKQ=;
+	s=arc-20240116; t=1710751321; c=relaxed/simple;
+	bh=/Ao+rO9SYdti3VAE+xg23jyg7XXRQAwBbXmqo0PcSys=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=KzXPmlhGLGGLHR9ijFYixVFaxFxHUvsgL848Ev+OGNusoCOD1Uu6Jjn3wIdQgLB5mo0ZcA3R9wEJGRiDKtGRex9pDUrXnSvGlK2GlV007uelTAn1GlbyT6MNv+h5UbGqaZW34OBW6LlnIYCANu4OGK6NpsL1ZC36lS7g4YCSUaE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=im9Z2UT/; arc=none smtp.client-ip=209.85.215.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f179.google.com with SMTP id 41be03b00d2f7-5cfcf509fbdso521195a12.1;
-        Mon, 18 Mar 2024 01:39:35 -0700 (PDT)
+	 To:Cc:Content-Type; b=lEELEhaFOZeKjWUVPwS+CWW1h3XwUL5yUdaAz7A1qKWKclCM5OI1CJ/GvJIOh5vVPjEcAsIEx+2kRBXp7S4bsvjSUvpY1X0CNxjSLUDeWRyVng3zTNiTqCC4Vm8kTo7ZRLMQALEKb/LofJes8HLeuJonF4Qrsin/JR+TNCM+rYQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=gWzGAQRd; arc=none smtp.client-ip=209.85.219.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-yb1-f177.google.com with SMTP id 3f1490d57ef6-dc74435c428so3618480276.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 01:41:59 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710751175; x=1711355975; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IhqD0/DPJNiiogh7PLeACfknOmZrcyXgxXzcRpXuP6A=;
-        b=im9Z2UT/8UIg4//cOSR96Q/CTa+q2pNj9po6mbIGTqflAVyePSOnYEaCm/0FIu+ZoX
-         7iHJxV93hTy1CggPybLreA6yJjYtP0ZZzMCIFNL+dCJuSbGPVrFKJPHZKyxMju+BVm37
-         gIIsSpMUXsNZnJZpcIEA8Fr4Dg+3CJtd+Lgb7DxwTG8ws5vdHC4SPFJbNrasEnMUnjSa
-         yI87poqaS+369XIW7OzzJBlMfzizQeZ2eEqVIZ+VKkSoPpczJ42cudHcyJUcm2Wn0xfW
-         YWGbxAx+Qm5qoBMqB+M2P3+LejdFpvyCffbwXg6WinMnmA1bBEHyF00Lx2mXg3cHwond
-         BPtA==
+        d=raspberrypi.com; s=google; t=1710751319; x=1711356119; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=VIYSHAzUIRDojyXoAAjEUNZdKBZsmGjQo4tf8URh/nU=;
+        b=gWzGAQRds3KPLEur/AKy97iaStaFYbCPhFa77YwxLX5x5pRyScgPw38g3pkPRKWcNs
+         QeHRlakv/Y6IXjTlJ40zQGdrKeCmsd4nwXb/upaPBy1Lufq0Aq59Fmni4jXmN/LClpjY
+         xLqU2nV8kppFIi/0SqxJE7091klTmwXQz3+AOfapy8NWk+Z7tKECRFYpcQmvuFmjkgZs
+         d5E3nELDFKNyMiDVv2n5eLJXe/VPgllbSOj0xSCK1jUUWwgO4+AbJAjpIEFT30jhEUlV
+         bZ9da+uV/kOrTLywy007+LeZbajHzJGfwNQAGuSslC1HjUuNvW16DKTvo4r5KaBYKfWw
+         8Ibg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710751175; x=1711355975;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IhqD0/DPJNiiogh7PLeACfknOmZrcyXgxXzcRpXuP6A=;
-        b=M82OOvXC1sPFjniVNO+gleJJw9tpBcL3SsEY62Bxn7VKgrdQWXgtENlBcr4tohQgyG
-         XAXccfE5YBKk5m24RO+T1JSMlWxNrJHKFLO2jOiQm8bGfrZVQIF4YQHjMKYakYY7+3UG
-         R/MduJgepus7sHdty/P4bwmasDoCBKXIsBrTwRYcrXEKsM6+MImm4seulYpUGCbBHotn
-         HrAquYNOJacd9XGsgYuXOe/N9WtoVTyZS8kJHVk+MUn7p9aigRxVbS0MF54fgZtE7QkN
-         HC/GEfF/Z1B1mxRsSiihFBuUGGIg6s5tM/B7yRNbqa6kO7aPvTCRY6kIgBGxe5s1XUI9
-         PG5w==
-X-Forwarded-Encrypted: i=1; AJvYcCWNMbr0Fhb/9yZXu2c2nBWtZ8ApRAIK+Oi3bSP8L0jSHYFLkFC8dXMsOWukyIz3psbmovy/TTh8CCj3Z7AauuPSf6kfBj0o
-X-Gm-Message-State: AOJu0Yzw2ujU0PtPGV1Dt5yneuzg56ereopbAInMd5xlHaym5a9z/Rla
-	KJIn74E9mfEFTGAJGKLPrYqMZySi1EUufJQ27LtImxmA+zAw+lxp9Heapp9bWruY5EsGhwE0b8k
-	8Z8y+P+STaAbeV+pmsXGl2fSrNhY=
-X-Google-Smtp-Source: AGHT+IE4i31LAUwvRUHVTCId5zVUOwoXPTGvQMFDx7yawo6GGCMp1hz0y9+TOB5qkAipp9NHqfdsziyK9xpfVGSrRG0=
-X-Received: by 2002:a17:90a:ba81:b0:29c:7614:1cb4 with SMTP id
- t1-20020a17090aba8100b0029c76141cb4mr9794036pjr.0.1710751175017; Mon, 18 Mar
- 2024 01:39:35 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710751319; x=1711356119;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=VIYSHAzUIRDojyXoAAjEUNZdKBZsmGjQo4tf8URh/nU=;
+        b=qznanjh2cYNb2HumS2DllWbuM+5IHgpM/pef4DrrBR9CQsOiVUfKRpOWELl+bc45Q6
+         rtnjWwM3KHm9gzw1a2zKSrsRB6kwBkutvXalmHDXpHALIIyAXnAWrdIoUcqvQZsGLMUg
+         xpFov0BKCyFo1EIZ+iUNUnTJeLvI/gwHPf1pPER2vhOWtUAYlEooMbwFjdoOs4iCS9ka
+         WhiemZPjycIjUTywZUSznjcYQf34/BBd+fotVkH8nj9rdp3UnxdSnLaPXcl5AQWKtslG
+         dQcKkyfroWLay2wKueYyWrw7Ay98D2nZpDmB4a+z58FM2SIsasJso3uJ11BhAN9nPqDZ
+         XFWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUqM1MLN5CuuFaLngjq+Pm/lRwlEdLIVMVcQd/Tom/0cXst9Acl3o8r8J0JXjDMkrmz6NnL6R1lQz4yA8grM61eoZ69TQQCv0y039Zs
+X-Gm-Message-State: AOJu0YzxGOc64tlfK1vALJywDsldHdQuqqWQiCZj3i6xx57IkNF30nG7
+	30Ov987pWZ6bi3x9zq+FOgV4wUoo6I82OPAgQrfqaEDsSXtFaPwxUUvIhUzemyFSli2VaUEN08p
+	R/T1vQ7pK0UY6TLg1SYRr2sh0pxWvWquKvd+AOw==
+X-Google-Smtp-Source: AGHT+IF8wwv3ZYqOOUIu6PR6XNV2RjVzHn8LILTUbDnyIninSmaNrCNUbexvDIyHwBt+lTK8AMVnuSEbUvEpBilkN18=
+X-Received: by 2002:a5b:a84:0:b0:dc2:4f34:c964 with SMTP id
+ h4-20020a5b0a84000000b00dc24f34c964mr9280814ybq.23.1710751318958; Mon, 18 Mar
+ 2024 01:41:58 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311122401.6549-1-lizheng043@gmail.com> <20240311135117.GA1244788@maili.marvell.com>
-In-Reply-To: <20240311135117.GA1244788@maili.marvell.com>
-From: James Lee <lizheng043@gmail.com>
-Date: Mon, 18 Mar 2024 16:39:21 +0800
-Message-ID: <CAPCnf4zS=FN0MHM2tQV0b468zN0yqRHbaNMsk3cDQ7Vu8wiHKA@mail.gmail.com>
-Subject: Re: [PATCH] neighbour: guarantee the localhost connections be
- established successfully even the ARP table is full
-To: Ratheesh Kannoth <rkannoth@marvell.com>
-Cc: linux-kernel@vger.kernel.org, netdev@vger.kernel.org, 
-	nhorman@tuxdriver.com, davem@davemloft.net, jmorris@namei.org, 
-	James.Z.Li@dell.com
+References: <20240315-mc-graph-fix-v1-1-91d59d752614@ideasonboard.com>
+In-Reply-To: <20240315-mc-graph-fix-v1-1-91d59d752614@ideasonboard.com>
+From: Naushir Patuck <naush@raspberrypi.com>
+Date: Mon, 18 Mar 2024 08:41:23 +0000
+Message-ID: <CAEmqJPoMmneTZAjJgOMRpd_B_236jh8NU8bpnaK6Odvnd1zcWg@mail.gmail.com>
+Subject: Re: [PATCH] media: mc: Fix graph walk in media_pipeline_start
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: Sakari Ailus <sakari.ailus@linux.intel.com>, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-loopback neigh is a special device in the neighbour system which is
-used by all local communications and state is NUD_NOARP.
-Any setting value of gc_thresh3 might encounter arp table be full,
-manually increasing gc_thresh3 can resolve this issue for every time,
-but we hope this issue automatically be resolved in Linux kernel for
-all local communications whenever ARP table is full, rather than
-manually operation as a workaround.
+Hi Tomi,
 
+Thank you for this fix.
 
-Ratheesh Kannoth <rkannoth@marvell.com> =E4=BA=8E2024=E5=B9=B43=E6=9C=8811=
-=E6=97=A5=E5=91=A8=E4=B8=80 21:51=E5=86=99=E9=81=93=EF=BC=9A
+On Fri, 15 Mar 2024 at 15:13, Tomi Valkeinen
+<tomi.valkeinen@ideasonboard.com> wrote:
 >
-> On 2024-03-11 at 17:54:01, Zheng Li (lizheng043@gmail.com) wrote:
-> >
-> > Inter-process communication on localhost should be established successf=
-ully even the ARP table is full,
-> > many processes on server machine use the localhost to communicate such =
-as command-line interface (CLI),
-> > servers hope all CLI commands can be executed successfully even the arp=
- table is full.
-> > Right now CLI commands got timeout when the arp table is full.
-> > Set the parameter of exempt_from_gc to be true for LOOPBACK net device =
-to
-> > keep localhost neigh in arp table, not removed by gc.
-> >
-> > the steps of reproduced:
-> > server with "gc_thresh3 =3D 1024" setting, ping server from more than 1=
-024 IPv4 addresses,
-> > run "ssh localhost" on console interface, then the command will get tim=
-eout.
-> it does not look correct to me. why gc has to behave differently for loop=
-back devices.
-> why can't a higher gc_thresh3 value (fine tuned to your use case) wont so=
-lve the issue ?
-> can't you add localhost arp entry statically and get rid of gc issue ?
+> The graph walk tries to follow all links, even if they are not between
+> pads. This causes a crash with, e.g. a MEDIA_LNK_FL_ANCILLARY_LINK link.
 >
-> >
-> > Signed-off-by: Zheng Li <James.Z.Li@Dell.com>
-> > ---
-> >  net/core/neighbour.c | 5 ++++-
-> >  1 file changed, 4 insertions(+), 1 deletion(-)
-> >
-> > diff --git a/net/core/neighbour.c b/net/core/neighbour.c
-> > index 552719c3bbc3..d96dee3d4af6 100644
-> > --- a/net/core/neighbour.c
-> > +++ b/net/core/neighbour.c
-> > @@ -734,7 +734,10 @@ ___neigh_create(struct neigh_table *tbl, const voi=
-d *pkey,
-> >  struct neighbour *__neigh_create(struct neigh_table *tbl, const void *=
-pkey,
-> >                                struct net_device *dev, bool want_ref)
-> >  {
-> > -     return ___neigh_create(tbl, pkey, dev, 0, false, want_ref);
-> > +     if (dev->flags & IFF_LOOPBACK)
-> > +             return ___neigh_create(tbl, pkey, dev, 0, true, want_ref)=
-;
-> > +     else
-> > +             return ___neigh_create(tbl, pkey, dev, 0, false, want_ref=
-);
-> >  }
-> >  EXPORT_SYMBOL(__neigh_create);
-> >
-> > --
-> > 2.17.1
-> >
+> Fix this by allowing the walk to proceed only for MEDIA_LNK_FL_DATA_LINK
+> links.
+>
+> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+> Fixes: ae219872834a ("media: mc: entity: Rewrite media_pipeline_start()")
+
+I was having problems with the Raspberry Pi Camera v3 module (IMX708 +
+DW9817 VCM) that would crash in media_pipeline_start().  This patch
+fixes the issue for me, so
+
+Tested-by: Naushir Patuck <naush@raspberrypi.com>
+
+> ---
+>  drivers/media/mc/mc-entity.c | 6 ++++++
+>  1 file changed, 6 insertions(+)
+>
+> diff --git a/drivers/media/mc/mc-entity.c b/drivers/media/mc/mc-entity.c
+> index 543a392f8635..fcafe5c59052 100644
+> --- a/drivers/media/mc/mc-entity.c
+> +++ b/drivers/media/mc/mc-entity.c
+> @@ -627,6 +627,12 @@ static int media_pipeline_explore_next_link(struct media_pipeline *pipe,
+>                 return 0;
+>         }
+>
+> +       if ((link->flags & MEDIA_LNK_FL_LINK_TYPE) != MEDIA_LNK_FL_DATA_LINK) {
+> +               dev_dbg(walk->mdev->dev,
+> +                       "media pipeline: skipping link (not data-link)\n");
+> +               return 0;
+> +       }
+> +
+>         /* Get the local pad and remote pad. */
+>         if (link->source->entity == pad->entity) {
+>                 local = link->source;
+>
+> ---
+> base-commit: e8f897f4afef0031fe618a8e94127a0934896aba
+> change-id: 20240315-mc-graph-fix-8a2a245d7346
+>
+> Best regards,
+> --
+> Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>
+>
 
