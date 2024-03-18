@@ -1,197 +1,145 @@
-Return-Path: <linux-kernel+bounces-106823-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106824-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 694DE87F42E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:40:42 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id A76E787F431
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:42:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1E6FA280628
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:40:41 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E7447B20E95
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:42:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C368E5F870;
-	Mon, 18 Mar 2024 23:40:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B9FF5F86C;
+	Mon, 18 Mar 2024 23:42:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LCWzjlg+"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Z8rzyd6x"
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F2645F85B
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6B9715F85B
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:42:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710805234; cv=none; b=AIIzwK/kiY0agfQ8aEhBVXq8W96ZCF/fsdyAav7hmMUZvY+hfEAUf2d4RR5EatkeQzJ10JdeQ4BQA7lrpY85ey/7F8smTg7sAKARIXC3HSKYePTIHFmE1o0Pevgk6mcAzui4mYWHdmVfZngjL6WUwRCysebXiFqP2X6tqMDCvX0=
+	t=1710805358; cv=none; b=WxmHGU8Ww13dVhh5hRy755ERrVjSn49f7uKaAbfH5vdglI4sc/bWwkAqCGw+gv6ZIelnjtq/1PitwzybJjXw0l4ZR0IKoPUN86NIb3NR8/FBxsaPnABco3Jgby9RbNRlgKG24eHJgSX9pk4XKt7rDVBX1wPDQOqV/BJbFL1fo00=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710805234; c=relaxed/simple;
-	bh=Yijpf6hdcX9Zz+at/Pl05PNPDv5yz2KSyc2hARlGVyA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=BS1WJA0FL24wNK9aYcCpGTw7K2hoCvIzurLpFNC/IFu18PwYGBbBUn7fTEhj1EUOgLFF1d/QpvUrCqBq8pafG7XtGOemhwlhvweDOOCdGLQLTrS3oxEwz5m0kDQacRIHugXL5Rs9rMtkmJzrRYfvdfB4iTCTYiADUWZ3V7H60nA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LCWzjlg+; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e034607879so8506965ad.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 16:40:32 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710805232; x=1711410032; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=qGVjXx+j07fAtzWyhzuz39ABH1ricioExB9tBdSnz3U=;
-        b=LCWzjlg+zokALRFDsK+PmKtA9cJKjFrbsPh5Q76Wk+vIfEd3TCLdznZ4ulGLVJRVke
-         IVY0QTj71Q4/89HFogbjEJVNrVwm5+1/7u0ilJJD/KTFAu0ytxpDmJmhu1PyfZFl39mM
-         0OOH+UAkCncaOGAYAPcnA11gKT0DIOXlP/36U=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710805232; x=1711410032;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=qGVjXx+j07fAtzWyhzuz39ABH1ricioExB9tBdSnz3U=;
-        b=IDRxKj1NK2IXSBfWZJ4sf3YWN1BgBq+0bjdZ4KpeQBcXQ10RIVPKTMctt5/DPWxOtk
-         4NLgf9tPCEt33hT7mhSQ2ZXCZIqYPW+s+Jk+5xH3NnavrNGLBIccNFBH/rDL6CCUB4UY
-         QTEHNvekghqU60ePB4zZ0lLbR6UrLEMkm6VpdpTJQmbAkcZm0EOlnCoja/W0I4MhUasj
-         P8tIF4JWxVTSKSPIh+ymZxBYS+15UTQMZygT4fzcX0GT5ekJNH677I/mP5JBG1CFyByO
-         Mh5w4+jOrx4SIGospey1juOXGsbllXL4vhMmKZCV6cUSDZngpVLk6YJA7/I1RhbjwsA/
-         VPSA==
-X-Forwarded-Encrypted: i=1; AJvYcCVt9GhJbOmGbgcXV6W61fvW4wC1lSECbl36O/3//271Ejzn1e2dR32/2Ewnn0lw9f8b4FhAS4LJOlUHlmzGF39CmICDCEkdnTy0aDuf
-X-Gm-Message-State: AOJu0YxFc0wdICObOUuTYkfdndqjCc1yhJ+BzFXjEuNLvWTuifRylEO2
-	QJYJ4ydAQ0zjZIHO4jJn2FW4yQTVHeGigOvoQ9RU3VcRnYsxDZGaslUJzAE5Dg==
-X-Google-Smtp-Source: AGHT+IE6ZJkwZUoHdQ1XKk7dfD4fL/GhYshEq7O4lP3zklm4arTM8pnOn3Dx/fJ9+Pp6EnYJuQnZ2g==
-X-Received: by 2002:a17:902:b68e:b0:1e0:f8:17ca with SMTP id c14-20020a170902b68e00b001e000f817camr1076507pls.39.1710805231878;
-        Mon, 18 Mar 2024 16:40:31 -0700 (PDT)
-Received: from www.outflux.net ([198.0.35.241])
-        by smtp.gmail.com with ESMTPSA id s7-20020a170902a50700b001e0287592casm2566226plq.295.2024.03.18.16.40.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 16:40:31 -0700 (PDT)
-Date: Mon, 18 Mar 2024 16:40:30 -0700
-From: Kees Cook <keescook@chromium.org>
-To: Erick Archer <erick.archer@gmx.com>
-Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
-	Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>, Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>,
-	"Gustavo A. R. Silva" <gustavoars@kernel.org>, x86@kernel.org,
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] perf/x86/rapl: Prefer struct_size over open coded
- arithmetic
-Message-ID: <202403181635.46CBABD994@keescook>
-References: <20240317164442.6729-1-erick.archer@gmx.com>
+	s=arc-20240116; t=1710805358; c=relaxed/simple;
+	bh=pGOvfu2z8KNkO7muzJdm/yKDZ5YG9b5n5cu77cFk1OU=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=J63d4IpStH3xJB4PLs025qRue83mnGRNUW/lYy4kaLrOeZwg4KjWMLpAeGFk+Kc/KxCqzXeImD51InHsPfpE9o6JvrwKWkPIDhnZyAVAIOrVlOQCWKbeTs6OCNUmlEyBV1BcAwAD9aqRQAvNwXPkR03sA/hOEahwG3Bgmu1Q9Nk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Z8rzyd6x; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710805353;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=w0W1TcwjE/iK1zTqE+wMMVfVgJ37P2hH21l+AHsTGLU=;
+	b=Z8rzyd6xT1dNzDVSCg4FMo4Giv0Hab4i1vuixvZyDpIfCN1gIe7/RcxmKBV28btFqI0/MA
+	Hw85v/PXbgXcRzfvd/iy4106ivcrwLMmWr8LVcgfkLDKNiq8sH1/PzKDAMBkfCnwL5oQwC
+	zq8ZSOIJgMjL7reRdWijDLqfqe5Kmrw=
+From: Sui Jingfeng <sui.jingfeng@linux.dev>
+To: "Rafael J . Wysocki" <rafael@kernel.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Daniel Scally <djrscally@gmail.com>,
+	Heikki Krogerus <heikki.krogerus@linux.intel.com>,
+	Sakari Ailus <sakari.ailus@linux.intel.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: linux-acpi@vger.kernel.org,
+	dri-devel@lists.freedesktop.org,
+	linux-kernel@vger.kernel.org,
+	Sui Jingfeng <sui.jingfeng@linux.dev>
+Subject: [PATCH] software node: Implement device_get_match_data fwnode callback
+Date: Tue, 19 Mar 2024 07:42:22 +0800
+Message-Id: <20240318234222.1278882-1-sui.jingfeng@linux.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240317164442.6729-1-erick.archer@gmx.com>
+Content-Transfer-Encoding: 8bit
+X-Migadu-Flow: FLOW_OUT
 
-On Sun, Mar 17, 2024 at 05:44:42PM +0100, Erick Archer wrote:
-> This is an effort to get rid of all multiplications from allocation
-> functions in order to prevent integer overflows [1][2].
-> 
-> As the "rapl_pmus" variable is a pointer to "struct rapl_pmus" and
-> this structure ends in a flexible array:
-> 
-> struct rapl_pmus {
-> 	[...]
-> 	struct rapl_pmu *pmus[] __counted_by(maxdie);
-> };
-> 
-> the preferred way in the kernel is to use the struct_size() helper to
-> do the arithmetic instead of the calculation "size + count * size" in
-> the kzalloc() function.
-> 
-> This way, the code is more readable and safer.
-> 
-> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#open-coded-arithmetic-in-allocator-arguments [1]
-> Link: https://github.com/KSPP/linux/issues/160 [2]
-> Signed-off-by: Erick Archer <erick.archer@gmx.com>
+This makes it possible to support (and/or test) a few drivers that
+originates from DT World on the x86-64 platform. Originally, those
+drivers using the of_device_get_match_data() function to get match
+data. For example, drivers/gpu/drm/bridge/simple-bridge.c and
+drivers/gpu/drm/bridge/display-connector.c. Those drivers works very
+well in the DT world, however, there is no counterpart to
+of_device_get_match_data() when porting them to the x86 platform,
+because x86 CPUs lack DT support.
 
-Thanks!
+By replacing it with device_get_match_data() and creating a software
+graph that mimics the OF graph, everything else works fine, except that
+there isn't an out-of-box replacement for the of_device_get_match_data()
+function. Because the software node backend of the fwnode framework lacks
+an implementation for the device_get_match_data callback.
 
-Reviewed-by: Kees Cook <keescook@chromium.org>
+Implement device_get_match_data fwnode callback fwnode callback to fill
+this gap. Device drivers or platform setup codes are expected to provide
+a "compatible" string property. The value of this string property is used
+to match against the compatible entries in the of_device_id table. Which
+is consistent with the original usage style.
 
-I was inspired to come up with a Coccinelle script to find this pattern.
-This seems to do it, though it also removes the blank line. I'm not sure
-how to stop it from doing that. I'm running this treewide to see if I
-can find others...
+Signed-off-by: Sui Jingfeng <sui.jingfeng@linux.dev>
+---
+ drivers/base/swnode.c | 26 ++++++++++++++++++++++++++
+ 1 file changed, 26 insertions(+)
 
-// Options: --no-includes --include-headers
-
-@allocation@
-type SIZE_TYPE;
-identifier SIZE;
-type PTR_TYPE;
-PTR_TYPE *PTR;
-identifier ALLOC =~ "kmalloc|kzalloc|kmalloc_node|kzalloc_node|vmalloc|vzalloc|kvmalloc|kvzalloc";
-@@
-
-	SIZE_TYPE SIZE;
-	...
-	PTR = ALLOC(..., SIZE, ...)
-
-@structure@
-type allocation.PTR_TYPE;
-type FLEX_TYPE;
-identifier FLEX;
-@@
-
-	PTR_TYPE {
-		...
- 		FLEX_TYPE FLEX[];
-		...
-	};
-
-@single_shot_sizing@
-type allocation.SIZE_TYPE;
-identifier allocation.SIZE;
-type allocation.PTR_TYPE;
-PTR_TYPE *allocation.PTR;
-identifier allocation.ALLOC;
-type structure.FLEX_TYPE;
-identifier structure.FLEX;
-expression COUNT;
-@@
-
-- 	SIZE_TYPE SIZE;
- 	... when != SIZE
--	SIZE = (\(sizeof(*PTR)\|sizeof(PTR_TYPE)\) + ((COUNT) * \(sizeof(*PTR->FLEX)\|sizeof(PTR->FLEX[0])\|sizeof(FLEX_TYPE)\)));
- 	... when != SIZE
- 	PTR = ALLOC(...,
--			SIZE
-+			struct_size(PTR, FLEX, COUNT)
- 			, ...)
- 	... when != SIZE
-
-@reused_sizing@
-type allocation.SIZE_TYPE;
-identifier allocation.SIZE;
-type allocation.PTR_TYPE;
-PTR_TYPE *allocation.PTR;
-identifier allocation.ALLOC;
-type structure.FLEX_TYPE;
-identifier structure.FLEX;
-expression COUNT;
-@@
-
-  	SIZE_TYPE SIZE;
- 	...
-	SIZE =
--		(\(sizeof(*PTR)\|sizeof(PTR_TYPE)\) + ((COUNT) * \(sizeof(*PTR->FLEX)\|sizeof(PTR->FLEX[0])\|sizeof(FLEX_TYPE)\)))
-+		struct_size(PTR, FLEX, COUNT)
-	;
- 	... when != SIZE
- 	PTR = ALLOC(..., SIZE , ...)
-
-
+diff --git a/drivers/base/swnode.c b/drivers/base/swnode.c
+index 36512fb75a20..3670094592f2 100644
+--- a/drivers/base/swnode.c
++++ b/drivers/base/swnode.c
+@@ -8,6 +8,7 @@
+ 
+ #include <linux/device.h>
+ #include <linux/kernel.h>
++#include <linux/mod_devicetable.h>
+ #include <linux/property.h>
+ #include <linux/slab.h>
+ 
+@@ -379,6 +380,30 @@ static void software_node_put(struct fwnode_handle *fwnode)
+ 	kobject_put(&swnode->kobj);
+ }
+ 
++static const void *
++software_node_get_match_data(const struct fwnode_handle *fwnode,
++			     const struct device *dev)
++{
++	struct swnode *swnode = to_swnode(fwnode);
++	const struct of_device_id *matches = dev->driver->of_match_table;
++	const char *val = NULL;
++	int ret;
++
++	ret = property_entry_read_string_array(swnode->node->properties,
++					       "compatible", &val, 1);
++	if (ret < 0 || !val)
++		return NULL;
++
++	while (matches && matches->compatible[0]) {
++		if (!strcmp(matches->compatible, val))
++			return matches->data;
++
++		matches++;
++	}
++
++	return NULL;
++}
++
+ static bool software_node_property_present(const struct fwnode_handle *fwnode,
+ 					   const char *propname)
+ {
+@@ -665,6 +690,7 @@ software_node_graph_parse_endpoint(const struct fwnode_handle *fwnode,
+ static const struct fwnode_operations software_node_ops = {
+ 	.get = software_node_get,
+ 	.put = software_node_put,
++	.device_get_match_data = software_node_get_match_data,
+ 	.property_present = software_node_property_present,
+ 	.property_read_int_array = software_node_read_int_array,
+ 	.property_read_string_array = software_node_read_string_array,
 -- 
-Kees Cook
+2.34.1
+
 
