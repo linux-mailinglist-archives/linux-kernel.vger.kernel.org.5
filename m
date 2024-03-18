@@ -1,33 +1,33 @@
-Return-Path: <linux-kernel+bounces-106744-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106742-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5790087F301
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:12:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1F9AD87F2FD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 23:11:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1073428314D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:12:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9BF0DB215D9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:11:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C8B35C8EB;
-	Mon, 18 Mar 2024 22:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 672B05B66B;
+	Mon, 18 Mar 2024 22:10:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XWKXmU5k"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Wbvgy+qp"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 69EB05A4CA
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DCBCD5A4E9
 	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710799812; cv=none; b=asTA9S9QAlWF+C66RVZXrRoZbl0N3E5tcj5OLoXiKuaD5OnlBoyexUa2Z1/Bvi6x+905kUl1vn7KjCBTq25FzGynVQrxa9ez1NDMNWdDIRkIGPHFPogVhw9Db12DwTwIVX6mnYP3v0R6u7q72hRuerTKfAoE0BaebPdW4HssgCw=
+	t=1710799811; cv=none; b=t2tLN+FRclwjl6X1i+5tHcSVAdh8Kcjwe5dFSO7amNbci/Gwv4gHjcZ20w0dfKBWO8NgY1hRjo3dkTSxIZKZDMxTm2ULYL6m50+HTeD/hPOtHO1UzjdBv6cbVKCGlxmHg8bo9sXGAevIgw0W8SpOZsX7aYlOmHjkn+xCX2xf67Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710799812; c=relaxed/simple;
-	bh=Z5iRfxdNh5CyrDoUPDoH234u8YFkwUvwaTp8RBly4oA=;
+	s=arc-20240116; t=1710799811; c=relaxed/simple;
+	bh=qaJEDXwpaSJXM+1hD3fE9I/G0z5IQq6ORF3Rr7L/kFA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=p4elbk+OFVa1waiFocSGhTEhdg4eC5hUy+lM4EojsGeKMBEshsGOaGbejMr5AnZ6ysBvIDN8FoIMnMCNlqOaT4GtlQnu5sZhqL/C++KifJ4l+4o0NU8GbGMFKEDzFmmGgQyaLQTQx5JgQRg4queFuGmFZOhldbKHAIutQ9ev3b8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XWKXmU5k; arc=none smtp.client-ip=170.10.129.124
+	 MIME-Version:Content-Type; b=Ezjn14ZhcU5e5uWl/DF7h5neQhHKH1XBZtHGSOJd9C8BoN3ch7vJp4xlXNVL5M1WNI6l/a2hFIuC5e8DL8ON5CmW1MnpkXk7dfMgV058S2q2ecMzZSpBUUpqLKqdJmDN+U+ANNVoCLqOm1Ba+TxRap61di5bW46FQw0wrRU8KSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Wbvgy+qp; arc=none smtp.client-ip=170.10.133.124
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
@@ -36,32 +36,31 @@ DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=WBkKm95Ln/2RsUgEOWoo/2LuPFULXZi0eLnZQwdqLAM=;
-	b=XWKXmU5kMG0UVPLYFCQ6x0ReXR9vxZsINggyDCtk4O+4Xc46qLeGMSsMQoRIj1Y0lqpb0j
-	UUECrgPKGsvisE2/hCBgy8FUmDoyIAoyeMW/iPxLym4VwgWXU6caFZcYXXklFALZJVGR12
-	gYx7MzyXyjyWvWJD9niSit79kVVbh6k=
+	bh=gMEmPn7yUS4wreWy4Dg8bjqaNwIrv+R0K2a7wjWFE2c=;
+	b=Wbvgy+qpjzltpD+psahFXWvob3PC13wEU2g8t18e3vgBqPljWw1VazF64xnMWOsaaciUOb
+	R/fOsXyyhSLNua98P415ICaONJvhS2zLyxnGFHOD7NXdqk3XCVkB1PmmXfBsjRryw+zd8q
+	nxnDVQSfYqtmSPF4gCOPAF64Sf+5d/c=
 Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
  by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
- cipher=TLS_AES_256_GCM_SHA384) id us-mta-591-NnrrJCCFNB-Nld8hG1-VXA-1; Mon,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-302-0_C0MuIrMzapy9sgm8UnZQ-1; Mon,
  18 Mar 2024 18:10:05 -0400
-X-MC-Unique: NnrrJCCFNB-Nld8hG1-VXA-1
+X-MC-Unique: 0_C0MuIrMzapy9sgm8UnZQ-1
 Received: from smtp.corp.redhat.com (int-mx09.intmail.prod.int.rdu2.redhat.com [10.11.54.9])
 	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
 	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
 	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id ACB591C04330;
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id D1DC11C04332;
 	Mon, 18 Mar 2024 22:10:04 +0000 (UTC)
 Received: from virtlab701.virt.lab.eng.bos.redhat.com (virtlab701.virt.lab.eng.bos.redhat.com [10.19.152.228])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 8BF02492BC8;
+	by smtp.corp.redhat.com (Postfix) with ESMTP id B483F492BC8;
 	Mon, 18 Mar 2024 22:10:04 +0000 (UTC)
 From: Paolo Bonzini <pbonzini@redhat.com>
 To: linux-kernel@vger.kernel.org,
 	kvm@vger.kernel.org
-Cc: seanjc@google.com,
-	Michael Roth <michael.roth@amd.com>
-Subject: [PATCH 6/7] Documentation: kvm/sev: separate description of firmware
-Date: Mon, 18 Mar 2024 18:10:01 -0400
-Message-ID: <20240318221002.2712738-7-pbonzini@redhat.com>
+Cc: seanjc@google.com
+Subject: [PATCH 7/7] Documentation: kvm/sev: clarify usage of KVM_MEMORY_ENCRYPT_OP
+Date: Mon, 18 Mar 2024 18:10:02 -0400
+Message-ID: <20240318221002.2712738-8-pbonzini@redhat.com>
 In-Reply-To: <20240318221002.2712738-1-pbonzini@redhat.com>
 References: <20240318221002.2712738-1-pbonzini@redhat.com>
 Precedence: bulk
@@ -74,73 +73,41 @@ Content-Type: text/plain
 Content-Transfer-Encoding: 8bit
 X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.9
 
-The description of firmware is included part under the "SEV Key Management"
-header, part under the KVM_SEV_INIT ioctl.  Put these two bits together and
-and rename "SEV Key Management" to what it actually is, namely a description
-of the KVM_MEMORY_ENCRYPT_OP API.
+Explain that it operates on the VM file descriptor, and also clarify how
+detection of SEV operates on old kernels predating commit 2da1ed62d55c
+("KVM: SVM: document KVM_MEM_ENCRYPT_OP, let userspace detect if SEV
+is available").
 
-Reviewed-by: Michael Roth <michael.roth@amd.com>
 Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
 ---
- .../virt/kvm/x86/amd-memory-encryption.rst    | 29 +++++++++++--------
- 1 file changed, 17 insertions(+), 12 deletions(-)
+ .../virt/kvm/x86/amd-memory-encryption.rst          | 13 +++++++------
+ 1 file changed, 7 insertions(+), 6 deletions(-)
 
 diff --git a/Documentation/virt/kvm/x86/amd-memory-encryption.rst b/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-index 995780088eb2..4f2eb441c718 100644
+index 4f2eb441c718..84335d119ff1 100644
 --- a/Documentation/virt/kvm/x86/amd-memory-encryption.rst
 +++ b/Documentation/virt/kvm/x86/amd-memory-encryption.rst
-@@ -46,14 +46,8 @@ SEV hardware uses ASIDs to associate a memory encryption key with a VM.
- Hence, the ASID for the SEV-enabled guests must be from 1 to a maximum value
- defined in the CPUID 0x8000001f[ecx] field.
+@@ -49,12 +49,13 @@ defined in the CPUID 0x8000001f[ecx] field.
+ The KVM_MEMORY_ENCRYPT_OP ioctl
+ ===============================
  
--SEV Key Management
--==================
--
--The SEV guest key management is handled by a separate processor called the AMD
--Secure Processor (AMD-SP). Firmware running inside the AMD-SP provides a secure
--key management interface to perform common hypervisor activities such as
--encrypting bootstrap code, snapshot, migrating and debugging the guest. For more
--information, see the SEV Key Management spec [api-spec]_
-+The KVM_MEMORY_ENCRYPT_OP ioctl
-+===============================
+-The main ioctl to access SEV is KVM_MEMORY_ENCRYPT_OP.  If the argument
+-to KVM_MEMORY_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
+-and ``ENOTTY`` if it is disabled (on some older versions of Linux,
+-the ioctl runs normally even with a NULL argument, and therefore will
+-likely return ``EFAULT``).  If non-NULL, the argument to KVM_MEMORY_ENCRYPT_OP
+-must be a struct kvm_sev_cmd::
++The main ioctl to access SEV is KVM_MEMORY_ENCRYPT_OP, which operates on
++the VM file descriptor.  If the argument to KVM_MEMORY_ENCRYPT_OP is NULL,
++the ioctl returns 0 if SEV is enabled and ``ENOTTY`` if it is disabled
++(on some older versions of Linux, the ioctl tries to run normally even
++with a NULL argument, and therefore will likely return ``EFAULT`` instead
++of zero if SEV is enabled).  If non-NULL, the argument to
++KVM_MEMORY_ENCRYPT_OP must be a struct kvm_sev_cmd::
  
- The main ioctl to access SEV is KVM_MEMORY_ENCRYPT_OP.  If the argument
- to KVM_MEMORY_ENCRYPT_OP is NULL, the ioctl returns 0 if SEV is enabled
-@@ -87,10 +81,6 @@ guests, such as launching, running, snapshotting, migrating and decommissioning.
- The KVM_SEV_INIT command is used by the hypervisor to initialize the SEV platform
- context. In a typical workflow, this command should be the first command issued.
- 
--The firmware can be initialized either by using its own non-volatile storage or
--the OS can manage the NV storage for the firmware using the module parameter
--``init_ex_path``. If the file specified by ``init_ex_path`` does not exist or
--is invalid, the OS will create or override the file with output from PSP.
- 
- Returns: 0 on success, -negative on error
- 
-@@ -434,6 +424,21 @@ issued by the hypervisor to make the guest ready for execution.
- 
- Returns: 0 on success, -negative on error
- 
-+Firmware Management
-+===================
-+
-+The SEV guest key management is handled by a separate processor called the AMD
-+Secure Processor (AMD-SP). Firmware running inside the AMD-SP provides a secure
-+key management interface to perform common hypervisor activities such as
-+encrypting bootstrap code, snapshot, migrating and debugging the guest. For more
-+information, see the SEV Key Management spec [api-spec]_
-+
-+The AMD-SP firmware can be initialized either by using its own non-volatile
-+storage or the OS can manage the NV storage for the firmware using
-+parameter ``init_ex_path`` of the ``ccp`` module. If the file specified
-+by ``init_ex_path`` does not exist or is invalid, the OS will create or
-+override the file with PSP non-volatile storage.
-+
- References
- ==========
- 
+        struct kvm_sev_cmd {
+                __u32 id;
 -- 
 2.43.0
-
 
 
