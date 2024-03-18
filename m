@@ -1,202 +1,153 @@
-Return-Path: <linux-kernel+bounces-105665-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105666-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0C2C887E247
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:49:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2B9787E251
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 03:50:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B5C321F21DEA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:49:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1EC681C212AB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 02:50:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 83EF11DFC4;
-	Mon, 18 Mar 2024 02:48:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D31041EB2F;
+	Mon, 18 Mar 2024 02:49:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pzSpKKRN"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b="iV4pzRO6"
+Received: from mail-oo1-f52.google.com (mail-oo1-f52.google.com [209.85.161.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B28741CD23;
-	Mon, 18 Mar 2024 02:48:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D89131EF0D
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:49:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710730136; cv=none; b=joELPeDwq2aYM19VsYawHpSdWZQiVH9N2tjlukYfHdmRq95HSphml8/JYU5d/nyI/QK8DNicI2T0r/KuOYtCsVz1VMv2xTZjLcXVZWM+vrfAI8hmbdgHULccucH3QlpMwEXs7Ff7H5pRYDhDnHjxNMLZOr87gS/9dORZ8YIOpKA=
+	t=1710730189; cv=none; b=LF9OMFEmT679AnZn2VOXVyOW9UkdjtkKoS0AQcjx7WSRdzNP9QsuY/0Ca8Q8pQMB3e+/Hy3ABeUjRmMOhzfhRyLFuuJQHkJ5LJDsSHNWrGoyW80Gc6CnwrSiUpEoED9mWJdEyuKpO1WbQo9tmox7TlRhcOwqSAhj+9Pp3WmMkN0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710730136; c=relaxed/simple;
-	bh=CzvPHoJJhRy8ouq9M+SUixwcSc9tWXezI/vHAFvTKuw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ztf9ZqL2me8EaRlPwQF2M79xo9nk9ci2XHUxdIiaoqE83u4M9x8GuilAgWnXUsbcZTlPbwNjQG1dyr2A94uI0cv7hroy8lgGJtWEmFkP1MH00Inl4irJupcwEJtWvNg3WjOVTjDX5IJ+xx2fWes6QTias9W7Y9Tmw/92eW3G0cU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pzSpKKRN; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 0DC94C433F1;
-	Mon, 18 Mar 2024 02:48:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710730136;
-	bh=CzvPHoJJhRy8ouq9M+SUixwcSc9tWXezI/vHAFvTKuw=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pzSpKKRNqVx75HPJncZTGDAfAOfv+O603VOCS+vZ4wr5/Akbick6T10vEpsUBoDT0
-	 07G02j6r9gAl1VKp+7adRpUiZ8rV2W5JSl8AYPeYVG3/caYB9uKDyFDw8ffdTuLaH6
-	 RkSJphGJmbxLVPPeBEuPI0p+4zD1HktNMvhB18KQ++zWF5SAB6YBxE6LL2HlDVBImY
-	 T9EnsAVw/sLT7T1mSxIn00dWxNf0NFt4RrH0s2GQaH98uYulF9dkthGDE5Zuz4xzPa
-	 8cNyC1HDe5l4tt4UTmbgFI4NBmRnE6Z+kWdevqXgCuLixzXC5pXZ+9Si/P2PVrnPSs
-	 kptCgwfr0lZRw==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 32A4CCE0D83; Sun, 17 Mar 2024 19:48:54 -0700 (PDT)
-Date: Sun, 17 Mar 2024 19:48:54 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Z qiang <qiang.zhang1211@gmail.com>
-Cc: frederic@kernel.org, neeraj.upadhyay@kernel.org, joel@joelfernandes.org,
-	rcu@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] rcu-tasks: Remove unnecessary lazy_jiffies in
- call_rcu_tasks_generic_timer()
-Message-ID: <9247666f-8557-4419-a4aa-42193c386086@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <20240312113524.7654-1-qiang.zhang1211@gmail.com>
- <d3762d8c-1996-4703-8fa2-f0b00febf2fb@paulmck-laptop>
- <CALm+0cVivqMsTi0P_4dSK5XSE1ZW_Xx=9_h61VapZTtuOoUwDw@mail.gmail.com>
- <986428d9-5d82-463c-908b-b88435d53e79@paulmck-laptop>
- <CALm+0cWf9ODsxodfm+3JHciuEAe4=0fA3R4n4rhjh7XZzHonNQ@mail.gmail.com>
- <ed220ce3-943f-4554-8f79-fd5da1dfb458@paulmck-laptop>
- <CALm+0cVywbBNfzZBjcxJNvpeixkBrfPZu_4qSnOXQvqYTbjMyg@mail.gmail.com>
+	s=arc-20240116; t=1710730189; c=relaxed/simple;
+	bh=ybVBqVNCXzGJGuz6lwF+tzdhl5wD9gmQp2PXPNadGZI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NmIgxwUeVZmC6sGF9z+y9S1y2lt2hyT6+66zVwVbk4YSAVyZ11twCz5uVkq8ivGJsbjOailot140811PVO2FZqOjMDXoZ8LkRI16QyVoR4xF7LN+Oqkq4WPmhGzkQIVigodjh16xmDLj83vNYJqv4wbEqskgGdKp39H14yN7Olo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk; spf=none smtp.mailfrom=davidwei.uk; dkim=pass (2048-bit key) header.d=davidwei-uk.20230601.gappssmtp.com header.i=@davidwei-uk.20230601.gappssmtp.com header.b=iV4pzRO6; arc=none smtp.client-ip=209.85.161.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=davidwei.uk
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=davidwei.uk
+Received: by mail-oo1-f52.google.com with SMTP id 006d021491bc7-5a4a14c52fcso469357eaf.1
+        for <linux-kernel@vger.kernel.org>; Sun, 17 Mar 2024 19:49:46 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=davidwei-uk.20230601.gappssmtp.com; s=20230601; t=1710730186; x=1711334986; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=QE0CXFBu76tpBM6gpoJrOe0mC6QUf5XbAI8puJxCLjs=;
+        b=iV4pzRO6P3GXwlCKnBLXNP1M23gu1zQrspv6JPJ8fStuXR6pQ39ApKrDntPI5tx/uE
+         /MnuWm41o/lbyJAypmV8amaK7R/DY9hx5GRXs/0r9iXayTGjDZNX/3a3xzI+TRbmrgc5
+         CKaIjiPutwDoASk/sLDAWwavRiaWn0pBM9030+PUUupT3yeK7y4jPmhcyEMY7r4Hl52y
+         XWNfIYJJTMt5wTngWdOXFC2+N/RSAkoF1vsgGy7/X1ZW8EIw0zE/PfsaGzUF6O4qnNcM
+         v/ZuzSbzmtn0escS9ERzZ4uMFZQ9IggD068oFEU9q2JSyZaFtYe56f0HASQWjPvNI5se
+         3jpg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710730186; x=1711334986;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=QE0CXFBu76tpBM6gpoJrOe0mC6QUf5XbAI8puJxCLjs=;
+        b=IAeGqIbdM6pQ8QHWHt4vaKnLjziP85ujBU4YuzE1lL6xI//KTBwnrBrt/ms8eTN1t2
+         3dcNedlvGtHW0BGkOso3Z3HSDI3nlTy8jtukNz/FbDafhONatiY3IMcwmOStutML7MHa
+         GGKdtL77xa2jN3DOUTIMd8j2o8ipUCw/4OswklrY/3BU/039dFjJzHtDUFKbBDNQ2Vfs
+         f7+gH5ma5cLsb6DyYCHh1vq5K0J/zjgBEROhx253rya73+ai37bkpQ1Ap9JAZIfjn+IV
+         nyLqfmU2CCa4/2rn6rr4h2Jz/sjfLdAqfNRwHFJ5UIYZ6R2Sal05nFQBOyMlxUImLl8h
+         noVQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVsOI41ER4nM/h8rMSZE0aBberhn0qrF8CX0u+FQLA595+0G5GZtY0DwgP88a64r8pXqjYFW3QOqr+kuQW1khmSsztoSVVicS22Gav/
+X-Gm-Message-State: AOJu0YyupPRnomMH0/7fLtaJsSkBeAuNyPUw6b36REEU0JkMJQdGpbNF
+	P/dckmwnjWaQJiW2liVdExKPpctEHYL1aAZHRALcFDGPXnj7/Q2UaiVGH9HE3Jk=
+X-Google-Smtp-Source: AGHT+IENq8waTwhUkJrEOrb8DEHjfl4QDem6FZJYYGTlmjRRGItMoHQ4P2wTQfIoEZJr502KAVnEEA==
+X-Received: by 2002:a05:6870:8e05:b0:222:d6a:9ae8 with SMTP id lw5-20020a0568708e0500b002220d6a9ae8mr10284561oab.35.1710730185882;
+        Sun, 17 Mar 2024 19:49:45 -0700 (PDT)
+Received: from [192.168.1.24] (71-212-18-124.tukw.qwest.net. [71.212.18.124])
+        by smtp.gmail.com with ESMTPSA id i189-20020a62c1c6000000b006e66a76d877sm7120229pfg.153.2024.03.17.19.49.44
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Sun, 17 Mar 2024 19:49:45 -0700 (PDT)
+Message-ID: <b938514c-61cc-41e6-b592-1003b8deccae@davidwei.uk>
+Date: Sun, 17 Mar 2024 19:49:43 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <CALm+0cVywbBNfzZBjcxJNvpeixkBrfPZu_4qSnOXQvqYTbjMyg@mail.gmail.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH net-next v6 02/15] net: page_pool: create hooks for
+ custom page providers
+Content-Language: en-GB
+To: Christoph Hellwig <hch@infradead.org>,
+ Mina Almasry <almasrymina@google.com>
+Cc: netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-alpha@vger.kernel.org,
+ linux-mips@vger.kernel.org, linux-parisc@vger.kernel.org,
+ sparclinux@vger.kernel.org, linux-trace-kernel@vger.kernel.org,
+ linux-arch@vger.kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-media@vger.kernel.org,
+ dri-devel@lists.freedesktop.org, "David S. Miller" <davem@davemloft.net>,
+ Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+ Paolo Abeni <pabeni@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
+ Richard Henderson <richard.henderson@linaro.org>,
+ Ivan Kokshaysky <ink@jurassic.park.msu.ru>, Matt Turner
+ <mattst88@gmail.com>, Thomas Bogendoerfer <tsbogend@alpha.franken.de>,
+ "James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
+ Helge Deller <deller@gmx.de>, Andreas Larsson <andreas@gaisler.com>,
+ Jesper Dangaard Brouer <hawk@kernel.org>,
+ Ilias Apalodimas <ilias.apalodimas@linaro.org>,
+ Steven Rostedt <rostedt@goodmis.org>, Masami Hiramatsu
+ <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Arnd Bergmann <arnd@arndb.de>, Alexei Starovoitov <ast@kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko <andrii@kernel.org>,
+ Martin KaFai Lau <martin.lau@linux.dev>, Eduard Zingerman
+ <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
+ Yonghong Song <yonghong.song@linux.dev>,
+ John Fastabend <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>,
+ Stanislav Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>,
+ Jiri Olsa <jolsa@kernel.org>, David Ahern <dsahern@kernel.org>,
+ Willem de Bruijn <willemdebruijn.kernel@gmail.com>,
+ Shuah Khan <shuah@kernel.org>, Sumit Semwal <sumit.semwal@linaro.org>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Pavel Begunkov <asml.silence@gmail.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+ Yunsheng Lin <linyunsheng@huawei.com>, Shailend Chand <shailend@google.com>,
+ Harshitha Ramamurthy <hramamurthy@google.com>,
+ Jeroen de Borst <jeroendb@google.com>,
+ Praveen Kaligineedi <pkaligineedi@google.com>
+References: <20240305020153.2787423-1-almasrymina@google.com>
+ <20240305020153.2787423-3-almasrymina@google.com>
+ <ZfegzB341oNc_Ocz@infradead.org>
+From: David Wei <dw@davidwei.uk>
+In-Reply-To: <ZfegzB341oNc_Ocz@infradead.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 10:35:44AM +0800, Z qiang wrote:
-> > On Sun, Mar 17, 2024 at 10:31:22PM +0800, Z qiang wrote:
-> > > > On Wed, Mar 13, 2024 at 12:49:50PM +0800, Z qiang wrote:
-> > > > > > On Tue, Mar 12, 2024 at 07:35:24PM +0800, Zqiang wrote:
-> > > > > > > The rcu_tasks_percpu structure's->lazy_timer is queued only when
-> > > > > > > the rcu_tasks structure's->lazy_jiffies is not equal to zero in
-> > > > > > > call_rcu_tasks_generic(), if the lazy_timer callback is invoked,
-> > > > > > > that means the lazy_jiffes is not equal to zero, this commit
-> > > > > > > therefore remove lazy_jiffies check in call_rcu_tasks_generic_timer().
-> > > > > > >
-> > > > > > > Signed-off-by: Zqiang <qiang.zhang1211@gmail.com>
-> > > > > > > ---
-> > > > > > >  kernel/rcu/tasks.h | 2 +-
-> > > > > > >  1 file changed, 1 insertion(+), 1 deletion(-)
-> > > > > > >
-> > > > > > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > > > > > index b1254cf3c210..439e0b9a2656 100644
-> > > > > > > --- a/kernel/rcu/tasks.h
-> > > > > > > +++ b/kernel/rcu/tasks.h
-> > > > > > > @@ -299,7 +299,7 @@ static void call_rcu_tasks_generic_timer(struct timer_list *tlp)
-> > > > > > >
-> > > > > > >       rtp = rtpcp->rtpp;
-> > > > > > >       raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> > > > > > > -     if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-> > > > > > > +     if (!rcu_segcblist_empty(&rtpcp->cblist)) {
-> > > > > >
-> > > > > > Good eyes!
-> > > > > >
-> > > > > > But did you test with something like a WARN_ON_ONCE(rtp->lazy_jiffies)?
-> > > > >
-> > > > > Hi, Paul
-> > > > >
-> > > > > +  if (!rcu_segcblist_empty(&rtpcp->cblist) &&
-> > > > > !WARN_ON_ONCE(!rtp->lazy_jiffies))
-> > > > >
-> > > > > I've done tests like this:
-> > > > >
-> > > > > 1. runqemu nographic kvm slirp qemuparams="-smp 4 -m 2048M -drive
-> > > > > file=$PWD/share.img,if=virtio"
-> > > > > bootparams="rcupdate.rcu_tasks_trace_lazy_ms=0" -d
-> > > > >
-> > > > > 2.  insmod torture.ko
-> > > > >      insmod rcutorture.ko torture_type=tasks-tracing fwd_progress=4
-> > > > >
-> > > > > 3. bpftrace -e 't:timer:timer_expire_entry /args->function ==
-> > > > > kaddr("call_rcu_tasks_generic_timer")/
-> > > > >                                             {
-> > > > > printf("comm:%s,cpu:%d,stack:%s,func:%s\n", comm, cpu, kstack,
-> > > > > ksym(args->function)); }'
-> > > > >
-> > > > > The call_rcu_tasks_generic_timer() has never been executed.
-> > > >
-> > > > Very good!
-> > > >
-> > > > Then if we get a couple of acks or reviews from the others acknowledging
-> > > > that if they ever make ->lazy_jiffies be changeable at runtime, they
-> > > > will remember to do something to adjust this logic appropriately, I will
-> > > > take it.  ;-)
-> > > >
-> > >
-> > > Hi, Paul
-> > >
-> > > Would it be better to modify it as follows? set needwake not
-> > > depend on lazy_jiffies,  if  ->lazy_jiffies be changed at runtime,
-> > > and set it to zero, will miss the chance to wake up gp kthreads.
-> > >
-> > > diff --git a/kernel/rcu/tasks.h b/kernel/rcu/tasks.h
-> > > index e7ac9138a4fd..aea2b71af36c 100644
-> > > --- a/kernel/rcu/tasks.h
-> > > +++ b/kernel/rcu/tasks.h
-> > > @@ -299,11 +299,12 @@ static void call_rcu_tasks_generic_timer(struct
-> > > timer_list *tlp)
-> > >
-> > >         rtp = rtpcp->rtpp;
-> > >         raw_spin_lock_irqsave_rcu_node(rtpcp, flags);
-> > > -       if (!rcu_segcblist_empty(&rtpcp->cblist) && rtp->lazy_jiffies) {
-> > > +       if (!rcu_segcblist_empty(&rtpcp->cblist)) {
-> > >                 if (!rtpcp->urgent_gp)
-> > >                         rtpcp->urgent_gp = 1;
-> > >                 needwake = true;
-> > > -               mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
-> > > +               if (rtp->lazy_jiffies)
-> > > +                       mod_timer(&rtpcp->lazy_timer, rcu_tasks_lazy_time(rtp));
-> > >         }
-> > >         raw_spin_unlock_irqrestore_rcu_node(rtpcp, flags);
-> > >         if (needwake)
-> >
-> > Interesting approach!
-> >
-> > But how does that avoid defeating laziness by doing the wakeup early?
+On 2024-03-17 19:02, Christoph Hellwig wrote:
+> On Mon, Mar 04, 2024 at 06:01:37PM -0800, Mina Almasry wrote:
+>> From: Jakub Kicinski <kuba@kernel.org>
+>>
+>> The page providers which try to reuse the same pages will
+>> need to hold onto the ref, even if page gets released from
+>> the pool - as in releasing the page from the pp just transfers
+>> the "ownership" reference from pp to the provider, and provider
+>> will wait for other references to be gone before feeding this
+>> page back into the pool.
 > 
-> Hello, Paul
+> The word hook always rings a giant warning bell for me, and looking into
+> this series I am concerned indeed.
 > 
-> Does this mean that if cblist is empty, we will miss the opportunity to
-> enqueue the timer again?  If so, we can move mod_timer() outside
-> the if condition.
-> or I didn't understand your question?
+> The only provider provided here is the dma-buf one, and that basically
+> is the only sensible one for the documented design.  So instead of
+> adding hooks that random proprietary crap can hook into, why not hard
+> code the dma buf provide and just use a flag?  That'll also avoid
+> expensive indirect calls.
 
-Never mind!  I was getting confused, and forgetting that this code has
-already seen a timeout.
+I'm working on a similar proposal for zero copy Rx but to host memory
+and depend on this memory provider API.
 
-Let's see what others think.
+Jakub also designed this API for hugepages too IIRC. Basically there's
+going to be at least three fancy ways of providing pages (one of which
+isn't actually pages, hence the merged netmem_t series) to drivers.
 
-							Thanx, Paul
-
-> Thanks
-> Zqiang
 > 
-> 
-> >
-> >                                                         Thanx, Paul
-> >
-> > > Thanks
-> > > Zqiang
-> > >
-> > >
-> > > >                                                         Thanx, Paul
-> > > >
-> > > > > Thanks
-> > > > > Zqiang
-> > > > >
-> > > > >
-> > > > > >
-> > > > > >                                                 Thanx, Paul
-> > > > > >
-> > > > > > >               if (!rtpcp->urgent_gp)
-> > > > > > >                       rtpcp->urgent_gp = 1;
-> > > > > > >               needwake = true;
-> > > > > > > --
-> > > > > > > 2.17.1
-> > > > > > >
 
