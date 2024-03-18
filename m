@@ -1,186 +1,125 @@
-Return-Path: <linux-kernel+bounces-106465-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106466-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C74187EF03
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:36:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 044EC87EF07
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:37:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 157861F22434
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:36:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AFA531F22FBD
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:36:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7183355C1E;
-	Mon, 18 Mar 2024 17:34:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EF0D5374CB;
+	Mon, 18 Mar 2024 17:35:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="iD7p+ozw"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b="JogwiI17"
+Received: from mout.web.de (mout.web.de [212.227.17.12])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D463B54F9C
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C1ECC55780;
+	Mon, 18 Mar 2024 17:35:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.12
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783290; cv=none; b=DL1paoFIbOvFCKURaV0vUc0iOJrl234NuK+5Xq27ANXtn1IwqWo+rtpFItmYHhStDtwCm8YqLndZV3a2nPEQ8/+sk/nshF9Fl02YlB/LeD+cl2X53fKxdswKytxHUJexvlq3uS42NfumLmOMXSGsFc5ciJ2H/A7Appp+eNdiQ84=
+	t=1710783334; cv=none; b=uSAp/L+X2LXIgdxAT2Gi0kLJlteqomXB1xcuOZfzrIbq8Xkp7yibdOIIWtU5wqJkdnGLRDq5X/5KkyNJpYCEKrMHcEzl0lw1vjcbHmX58ZtqCLCURSFX8tIk1HE6J9RGPDLqGPL9jR6eFryZvcBKsxrTirJ0e5V85ts/K7o6siU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783290; c=relaxed/simple;
-	bh=3iaop3a58uHKADlQcfRI1jJ8IYIC7oQNRC98DXDnUV0=;
-	h=From:To:Cc:Subject:In-Reply-To:References:Date:Message-ID:
-	 MIME-Version:Content-Type; b=IgE5WMOV0j7zRIxR0R84ngqsmjlG/eTu7y4l5MzYSQ2ZTZEB167JbxwvzZFdTCyIbQLc5JYpnBDn13m81vbDOXfOA8g27RssWQ3lHrdVnDF8nC6du/n/SppSd65Nc99yWokHU2Mi3wzEh/BqGJ/8x5ZEBqg9QYgoJyYZpeqbx/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=iD7p+ozw; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710783287;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kd3/KuROcegeJ4IEXQZcY+p0ull0SaScgtMChZmBUjY=;
-	b=iD7p+ozw+I1v+5OGuf5uXcF8CgBd2rTkyo8ssKx83NSC1QVP2GJ5DzrmQz/l59hEgiYzLm
-	EtcqdDKnfX4+78LDM5iqHuC2m+MVQtxN03S94eJLviPJJsy7Lc88KJXiIAzR+g2uq79DJ3
-	Kgo7defGhCrPFV1HkArff8HB64vdM0o=
-Received: from mail-oi1-f198.google.com (mail-oi1-f198.google.com
- [209.85.167.198]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-50-JIk4lx9EMmKRb_xWp1NCGQ-1; Mon, 18 Mar 2024 13:34:44 -0400
-X-MC-Unique: JIk4lx9EMmKRb_xWp1NCGQ-1
-Received: by mail-oi1-f198.google.com with SMTP id 5614622812f47-3c385de08aeso1600656b6e.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:34:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710783282; x=1711388082;
-        h=mime-version:message-id:date:references:in-reply-to:subject:cc:to
-         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=kd3/KuROcegeJ4IEXQZcY+p0ull0SaScgtMChZmBUjY=;
-        b=OpUxw0P2hm51lv0RMzYQyrbZDr4KNT+zQ+mR4w2842j8vXUEeQhaQ9b1wvaVSo7sSv
-         eB7YcDSyBietmjw3I3Ll5Li00Ob7ByA0NIx0CzsttHq8O+Xwnd2GBEgOf53viKXW2PqL
-         1cmXZDyq+Vw5TEjP5nYuUfQi7M0NK88FJKj9CFCy8jkvp1Al8vE7NJL0DJxM8qjH5FXl
-         tXkrBA3KZ4cazTtsG1BoJN9ZwPqrNR20nLcA9rdFMDOKQgiKulZew8TpFLuhtkinXqit
-         tplBJ1rdZktbHdNmJarB/tWQ7RT/dou3zNMV1dDCNwvASIVaH95NOTFEcq5nM1xU6WC3
-         DG3g==
-X-Forwarded-Encrypted: i=1; AJvYcCXfBMbQH4ibSisaxfFbXHxPGaUw6Cwkn6SmF0VYnbO68G4m/tKAOhI25g56zhyh1StQUpHd2mxiMEVU6Ke+3+nXi+G7yCz+0aCwEE8W
-X-Gm-Message-State: AOJu0YwEFudywxmKKBLxKDzrH7sggRXR06tmHaP5iw7ZbX1tae6qe527
-	QuChAHjAVd8woRsP5y4zuWAAikNwJ/1Jl6Gsam1A7VrU85bCaerJ9wWFPrFDnsdFyoKSi+QZE7g
-	tL4xWFz0qwVLr7+DZX3RbmmvYuJCngGuxsIaPwSXIKF+hYTcITASdYm19ezqv0zH6RTH48EGYoe
-	JKATv4o/T2v+Y5YMGGmSDnmzdm1gKU/e4X1g9AK2jxkhBRSg==
-X-Received: by 2002:a05:6808:e85:b0:3c2:52b5:23ab with SMTP id k5-20020a0568080e8500b003c252b523abmr15636593oil.50.1710783282411;
-        Mon, 18 Mar 2024 10:34:42 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IF46gf+0UHB4+cNMdwNpj07RpQnTrUPPq56CQg9XXcWz4a//IkkI11Sz3zKkiE6+1HeUNqjyA==
-X-Received: by 2002:a05:6808:e85:b0:3c2:52b5:23ab with SMTP id k5-20020a0568080e8500b003c252b523abmr15636557oil.50.1710783282120;
-        Mon, 18 Mar 2024 10:34:42 -0700 (PDT)
-Received: from vschneid-thinkpadt14sgen2i.remote.csb (213-44-141-166.abo.bbox.fr. [213.44.141.166])
-        by smtp.gmail.com with ESMTPSA id gg8-20020a056214252800b00690befbe5a5sm5514612qvb.74.2024.03.18.10.34.38
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 10:34:41 -0700 (PDT)
-From: Valentin Schneider <vschneid@redhat.com>
-To: Daniel Vacek <neelx@redhat.com>, Ingo Molnar <mingo@redhat.com>, Peter
- Zijlstra <peterz@infradead.org>, Juri Lelli <juri.lelli@redhat.com>,
- Vincent Guittot <vincent.guittot@linaro.org>, Dietmar Eggemann
- <dietmar.eggemann@arm.com>, Steven Rostedt <rostedt@goodmis.org>, Ben
- Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>, Daniel Bristot
- de Oliveira <bristot@redhat.com>
-Cc: Daniel Vacek <neelx@redhat.com>, stable@vger.kernel.org, Bill Peters
- <wpeters@atpco.net>, Ingo Molnar <mingo@kernel.org>,
- linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] sched/core: fix affine_move_task failure case
-In-Reply-To: <20240318111750.3097906-1-neelx@redhat.com>
-References: <20240318111750.3097906-1-neelx@redhat.com>
-Date: Mon, 18 Mar 2024 18:34:37 +0100
-Message-ID: <xhsmhfrwncuky.mognet@vschneid-thinkpadt14sgen2i.remote.csb>
+	s=arc-20240116; t=1710783334; c=relaxed/simple;
+	bh=XoJNQUUFayCUG3xRrAmVCwbMxRg8KixIWe/vEYZcOPQ=;
+	h=Message-ID:Date:MIME-Version:To:Cc:References:Subject:From:
+	 In-Reply-To:Content-Type; b=dVR6nTDi4hQOKrzpLnGlrnNuV/TbKF7BK8o9R1ajht5KcOdjWshnkhQmzzwg9fZibLtODPmEtukOysyiadLp5wFe+EaanY5HBefm2gUkdHtOBxS9jVfx1fPFEo3fnnnY1nDA45rlP5b3zAH10D1qhQrl3RH954mqG7HoBOurxow=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de; spf=pass smtp.mailfrom=web.de; dkim=pass (2048-bit key) header.d=web.de header.i=markus.elfring@web.de header.b=JogwiI17; arc=none smtp.client-ip=212.227.17.12
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=web.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=web.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=web.de;
+	s=s29768273; t=1710783296; x=1711388096; i=markus.elfring@web.de;
+	bh=zL2UFIO2avZuf4cHRjFFmzwc7ks5q6OVftTUkucV4BQ=;
+	h=X-UI-Sender-Class:Date:To:Cc:References:Subject:From:
+	 In-Reply-To;
+	b=JogwiI17BOi49/yQuCytE7MPZ/qIpHhWfyoqhHAd1TiqdebvHZReeoEAEJSrIeEN
+	 DX3zIUxRV8l7Bx7gh0YwFqKSx1gKdlhHNX1961842Z2I6fbVA2Qk+6VDWB76T92n0
+	 F2v1Z+ULfkSf/50Zf0cCOiTaNmG7vzwMFcFjQhFGduQl6nnd9CocAGpnT/hY0pZgk
+	 mKBXG4pRtCuoMQPwCwy8UmhLKG29gzFTUJIQ77MJ3llLubG0VDuNz2d93DZMhyk8p
+	 keSdAdQ5byNbGHds15H2XdG5kOeOEfWCHr4jJu8WsJVf5XsQPOp8NM93EXwNwQj/Q
+	 vSNz9+PuUCu6RYyE1g==
+X-UI-Sender-Class: 814a7b36-bfc1-4dae-8640-3722d8ec6cd6
+Received: from [192.168.178.21] ([94.31.90.95]) by smtp.web.de (mrweb105
+ [213.165.67.124]) with ESMTPSA (Nemesis) id 1MzkSZ-1qrOwA3vX7-00vVE0; Mon, 18
+ Mar 2024 18:34:56 +0100
+Message-ID: <7d834747-0004-4556-b260-c747074a5df6@web.de>
+Date: Mon, 18 Mar 2024 18:34:47 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
+User-Agent: Mozilla Thunderbird
+To: Ayush Singh <ayushdevel1325@gmail.com>,
+ Vaishnav M A <vaishnav@beagleboard.org>, devicetree@vger.kernel.org,
+ kernel-janitors@vger.kernel.org, linux-spi@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, lorforlinux@beagleboard.org,
+ greybus-dev@lists.linaro.org
+Cc: LKML <linux-kernel@vger.kernel.org>, Alex Elder <elder@kernel.org>,
+ Arnd Bergmann <arnd@arndb.de>, Conor Dooley <conor+dt@kernel.org>,
+ Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
+ <dragan.cvetic@amd.com>, Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Jason Kridner <jkridner@beagleboard.org>, Johan Hovold <johan@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Mark Brown <broonie@kernel.org>, Nishanth Menon <nm@ti.com>,
+ Rob Herring <robh@kernel.org>, Robert Nelson
+ <robertcnelson@beagleboard.org>, Tero Kristo <kristo@kernel.org>,
+ Vaishnav M A <vaishnav.a@ti.com>, Vignesh Raghavendra <vigneshr@ti.com>
+References: <20240317193714.403132-5-ayushdevel1325@gmail.com>
+Subject: Re: [PATCH v4 4/5] mikrobus: Add mikroBUS driver
+Content-Language: en-GB
+From: Markus Elfring <Markus.Elfring@web.de>
+In-Reply-To: <20240317193714.403132-5-ayushdevel1325@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:rGQO4fDn0vNN389tBnKe7onogTvUErLvvTXduyGL6pWKFdmDEqy
+ MCYn5pkmCHDACrPUJoNy2C7GvGm1hYCvBujMK+WsDmVllQ2MYfQf5+4qeUPkILbJYGTHjoy
+ cMNmBfhajyMkcoBbxdstbnNIoU6tToHIwCqiARcUKBEdM5V/z5GbrKM5TGJjdtTWsSdEl7J
+ mBvYGlMAiI8JvT71ryP2A==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:7zD/DEBSM+I=;jR8jlBRRX3dOz59O2ZMyBlQGtol
+ u0BPn49w8vjSOeOdVkdxwlyYABexe3OvWICT6qmI9Apqsf9MKaxT8EIV5+CV04pIdjvwBE896
+ 1ueen8J87DYHuiI3PzZnN+2NoQbCptvE68Jp6AymKTBzPe1vw2VjsReQIqjUJJiKlsQ2jAePP
+ Yi/m9dWJ1XlzlQBGURVqOHxAn4n9S+bWzqs6W3pULZkbgnMH8BIU/XqkCnCxReW/TiGzEii/G
+ EFpvohWYchriay7ZZv4oP+nPZ633qrUYakf2SIlL69r/Rrvi3Kzze5ppl5HJAmnYB5Wvy0IkZ
+ 5SLUhpV/0DsR4+SLaUn4EEFq2rjOdWZWriQKIBXcw8/FhoEUQq8tHOeaaxy/AF+wsSUp+15q+
+ k10dFxBhHnOfJ2jBWXmNfsIqj1iGGquEu8QzAV69obc26noD1e9qnKhVzWZm8mil9YyHiLYSl
+ sDcXCAaccEogysA0PlBqbwcWC38hnHB2qAU89hV63umMfwr/VqD3P30E6/haT6MScpodO0tz0
+ rTIaj1KNEQp2qe2SYILnp1syn1GTieirb/cnkJmoFoITI/Y66OX+CAVdyeHaJYDMStfLSljUE
+ NnEzzX0PWIkut/Rkg3FOEcPeovfKjha0PoMGYm/x3QDpmDXnMkuunqrxn37M1Hxh5CkcozJzO
+ wrXAIyT4AoPvF55AwkS19hbVqbV9J8V5cXn6l0OYdxyjXn+HZZKcaXedRBYmazomRlXQa7dX/
+ jFczj4w8pDvlGGnOeRqD3awYga8yynVb2zhc9y2ELKVi6jiWv1GLaNSm87XUSpL2l6Nc/Rc3T
+ kES1V8VyySJ69k0OKaP1TK1gG/zBpZ9dRvmKLmTiF3McI=
 
-On 18/03/24 12:17, Daniel Vacek wrote:
-> Bill Peters reported CPU hangs while offlining/onlining CPUs on s390.
->
-> Analyzing the vmcore data shows `stop_one_cpu_nowait()` in `affine_move_task()`
-> can fail when racing with off-/on-lining resulting in a deadlock waiting for
-> the pending migration stop work completion which is never done.
->
-> Fix this by correctly handling such a condition.
->
-
-IIUC the problem is that the dest_cpu and its stopper thread can be taken
-down by take_cpu_down(), and affine_move_task() currently isn't aware of
-that. I thought we had tested this vs hotplug, but oh well...
-
-> Fixes: 9e81889c7648 ("sched: Fix affine_move_task() self-concurrency")
-> Cc: stable@vger.kernel.org
-> Reported-by: Bill Peters <wpeters@atpco.net>
-> Tested-by: Bill Peters <wpeters@atpco.net>
-> Signed-off-by: Daniel Vacek <neelx@redhat.com>
-> ---
->  kernel/sched/core.c | 13 +++++++++++--
->  1 file changed, 11 insertions(+), 2 deletions(-)
->
-> diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-> index 9116bcc903467..d0ff5c611a1c8 100644
-> --- a/kernel/sched/core.c
-> +++ b/kernel/sched/core.c
-> @@ -3069,8 +3069,17 @@ static int affine_move_task(struct rq *rq, struct task_struct *p, struct rq_flag
->               preempt_disable();
->               task_rq_unlock(rq, p, rf);
->               if (!stop_pending) {
-> -			stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-> -					    &pending->arg, &pending->stop_work);
-> +			stop_pending =
-> +				stop_one_cpu_nowait(cpu_of(rq), migration_cpu_stop,
-> +						    &pending->arg, &pending->stop_work);
+=E2=80=A6
+> +++ b/drivers/misc/mikrobus/mikrobus_core.c
+=E2=80=A6
+> +static int mikrobus_pinctrl_select(struct mikrobus_port *port,
+> +				   const char *pinctrl_selected)
+> +{
+> +	struct pinctrl_state *state;
+> +	int ret;
 > +
-> +			if (!stop_pending) {
-> +				rq = task_rq_lock(p, rf);
-> +				pending->stop_pending = false;
-> +				p->migration_pending = NULL;
-> +				task_rq_unlock(rq, p, rf);
-> +				complete_all(&pending->done);
-> +			}
+> +	state =3D pinctrl_lookup_state(port->pinctrl, pinctrl_selected);
+> +	if (IS_ERR(state)) {
+> +		return dev_err_probe(&port->dev, PTR_ERR(state),
+> +				     "failed to find state %s",
+> +				     pinctrl_selected);
+> +	}
+=E2=80=A6
 
-This can leave the task @p on a now-illegal CPU; consider a task affined to
-CPUs 0-1, migrate_disable(); then affined to CPUs 2-3, then in
-migrate_enable() the dest_cpu is chosen as 3 but that's racing with it
-being brought down. The stop_one_cpu_nowait() fails, and we leave the task
-on CPUs 0-1.
+I suggest to reconsider the need for extra curly brackets here.
 
-Issuing a redo of affine_move_task() with a different dest_cpu doesn't
-sound great, and while very unlikely that doesn't have forward progress
-guarantees.
+See also:
+Section =E2=80=9C3) Placing Braces and Spaces=E2=80=9D
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/Do=
+cumentation/process/coding-style.rst?h=3Dv6.8#n197
 
-Unfortunately we can't hold the hotplug lock during the affinity change of
-migrate_enable(), as migrate_enable() isn't allowed to block.
 
-Now, the CPU selection in __set_cpus_allowed_ptr_locked() that is passed
-down to affine_move_task() relies on the active mask, which itself is
-cleared in sched_cpu_deactivate() and is followed by a
-synchronize_rcu().
-
-What if we made the affinity change of migrate_enable() an RCU read-side
-section? Then if a CPU X is observed as active in
-  migrate_enable()->__set_cpus_allowed_ptr_locked()
-, then its' hotplug state cannot go lower than CPUHP_AP_ACTIVE until the task is
-migrated away.
-
-Something like the below. Thoughts?
----
-diff --git a/kernel/sched/core.c b/kernel/sched/core.c
-index 929fce69f555e..c6d128711d1a9 100644
---- a/kernel/sched/core.c
-+++ b/kernel/sched/core.c
-@@ -2450,8 +2450,11 @@ void migrate_enable(void)
- 	 * __set_cpus_allowed_ptr(SCA_MIGRATE_ENABLE) doesn't schedule().
- 	 */
- 	guard(preempt)();
--	if (p->cpus_ptr != &p->cpus_mask)
-+	if (p->cpus_ptr != &p->cpus_mask) {
-+		guard(rcu)();
- 		__set_cpus_allowed_ptr(p, &ac);
-+	}
-+
- 	/*
- 	 * Mustn't clear migration_disabled() until cpus_ptr points back at the
- 	 * regular cpus_mask, otherwise things that race (eg.
-
+Regards,
+Markus
 
