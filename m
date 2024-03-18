@@ -1,213 +1,105 @@
-Return-Path: <linux-kernel+bounces-106184-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 54B8087EA71
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:57:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A10D287EA75
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:58:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0BC51283680
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:56:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 886141C212F9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:58:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 677CB4AEDC;
-	Mon, 18 Mar 2024 13:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E6174AEF2;
+	Mon, 18 Mar 2024 13:58:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="kfiTWVdT"
-Received: from out-186.mta1.migadu.com (out-186.mta1.migadu.com [95.215.58.186])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GAaFYi+H"
+Received: from mail-qk1-f180.google.com (mail-qk1-f180.google.com [209.85.222.180])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 623F548CFC
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.186
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD9F54AED2;
+	Mon, 18 Mar 2024 13:58:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710770210; cv=none; b=L3HeYnQ44ixvMEkrd04bZEI02D7f2jTvsE+E+5lbAksldroOl2r3RZEHLUTkXNH8NDMdKJ65JMi2DARVOODJpcjuKXs3Iowc3YhSeV7+ft/oBjqlzJyx7AbgwcSeXevKVBVtRfqqsYCja+Fea8sFMq5vdSKmIZ8JkN2NKLX4NKs=
+	t=1710770299; cv=none; b=plj1cDLXbni2xfGjfBuFkVM7jFoLhqA+YsYyOq/lWpd7SjYRRVFbRgsQZlHynKz36Ob9yhnrUzBYCC5IkEHBigMGCYlRojSkA8j4YP4GovleGzZtInX7RT108BhvuLIYS6qz9+wSl2PeFSEfIp4eKmbHnYl3alf16KsrKNEErZg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710770210; c=relaxed/simple;
-	bh=ERVnSpjVdDsO/HGZdby1785ElVvvS6M95VHMrvBbUs4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=gCS1CdocgE20rCsEbt9Ctg6J4/+YeOtPJm/bmqei6SBueRBPe+vurxvYlpb9eEHwy+pm/0PJRi9B1aw/RQ/TJxk2bZzmpJddpr9NRLgSif5S2uspzrndTYt7JhIeFtuWJe1zPxkIW5jvUSdR4UnJmR90JUpNd6QGSa3L+Vxa8yA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=kfiTWVdT; arc=none smtp.client-ip=95.215.58.186
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <6f0a86cd-dd01-40b1-87ed-39f8d655e18a@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710770205;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=muvpwz7a96M6/2doTJBM5VlsnMcGZ+AFVmWiFaXOnls=;
-	b=kfiTWVdT8ReLHqMbkUM8dB16NUYpUQUu9Yfp8lnzUy1+Tt/BID2KvcFeq1kyyd8XZNw+kF
-	qBPpBYMR2nJqFecICQ2n+oHEsQPz6kmT96Pf3Wm3CD8l/HvSrrP2hiOdKlKcGuxRd/3fw3
-	7hjvwA236ed1PCoUQV/oqXVOJQlnIYs=
-Date: Mon, 18 Mar 2024 14:56:42 +0100
+	s=arc-20240116; t=1710770299; c=relaxed/simple;
+	bh=6QxRV6tobGzrYtTQEDu1f/p08nKI5Bg5eQskEppiJiM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=n/baQTbcT6uO2crTHG60dVWnX1I5HyLcAEbu6xaNrdk8U0LGC9SKKUcbaDY6U/D4BdPB2StmzbAfvWj+/Bvj7ioI4Ks2hrE5tHPZYt86H9UyvnbMzG/nmucKL715Lk2QMC0sKDbTbceTWSIohTH5TrAn6HJlR8D6qCM2Tr56yYY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GAaFYi+H; arc=none smtp.client-ip=209.85.222.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=tavianator.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-qk1-f180.google.com with SMTP id af79cd13be357-789db18e169so336053385a.1;
+        Mon, 18 Mar 2024 06:58:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710770296; x=1711375096; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=CvFCY++I3zBVjUi32budzYz2qcp/D+ixqQd6wPMXSKE=;
+        b=GAaFYi+H4pn+fo1GQ8YC4fQKZeZUNzUYyzeicEoBiOZw0aFIhgTfzKllyBeBgBygO3
+         IZ2lyBllpXm+ArWMKI/M866rjfm4kCV4hZvQT/Fom3QhIvLe68CL0vN4BB71cDtiyng5
+         JMIjwTAAqe//GMcpoqAC+F/aqER1H+2rlWLZ270uyQOGC+nEQ1mY+LPxmZAde2JmDNKt
+         7eBiSqphiCFGWVIlmN6djSReuAb5iBSrPPzOYgyzIUdgnIMOaJ5zS6cqsZLsu/Zy28c0
+         /KQRZbjK1nB731Z2B6O2B47/KmDB4pSaVhMXkUSyAQhLjSyajkEYvUwdMTJDTFK7U0Kk
+         lfew==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710770296; x=1711375096;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:sender:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=CvFCY++I3zBVjUi32budzYz2qcp/D+ixqQd6wPMXSKE=;
+        b=vDhpMC8RfDEoGHFmM2Mtv2jey79CF1aOb/+sYQmEcFtNQ5iWpDQEzeFc1uduoDQCXL
+         zxbFC0/3wu5xwJOB9US5e2tULi4RB1rSTMr568Zgp1XCFj8MeCjQQ8m10jt8uoI/23g5
+         VuADWWgIalYOUY9TW5uZly0F1KWgln6SsN/hvfd+04zQEVmWuVxV5ObeRMF9M7mNwNvI
+         vEd0baaxOzFNU5r6dlp5suV3G7YsNwje+W9FxzOeMbnTHEdnbsgv25j06zOfUvMwWDRz
+         kTK9ctO59XBizgETQf8KwZzcqKjloyfdsYv+N8CG6f8GaMVMpTj60oSvCMkaAelPjsz/
+         chbA==
+X-Forwarded-Encrypted: i=1; AJvYcCWHE6Ax+xSVufLaxVgCiMK1pI3bg5M7LJ79l1/0HeISi3XKkfiw9W4hDM2489oKauDPwRQ/gWXPFcF72VK6AQv6mhEiemNGUdmErgZ3
+X-Gm-Message-State: AOJu0YyGBqoxQd1VbJz3poSFSgaDfpvm6OZS68nJZVrM0E3ss2Gk6K0u
+	efodfFKnd5vXvuGQkUO8xP6VB3PA4h9zr/NhUysSnGubd8mQmx/LhbUXUoyXvlQ=
+X-Google-Smtp-Source: AGHT+IFrDSG0OxhDXEIdkz7aCXoxkObfKaZBsCA7h/JGfjIjXnXNl3+CAMq1vxFEW0BLtYDvXDUoVg==
+X-Received: by 2002:a05:622a:191e:b0:42e:9146:a0bd with SMTP id w30-20020a05622a191e00b0042e9146a0bdmr12885414qtc.49.1710770296308;
+        Mon, 18 Mar 2024 06:58:16 -0700 (PDT)
+Received: from tachyon.tail92c87.ts.net ([192.159.180.233])
+        by smtp.gmail.com with ESMTPSA id fb19-20020a05622a481300b004309cf16815sm1284968qtb.39.2024.03.18.06.58.15
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 06:58:15 -0700 (PDT)
+Sender: Tavian Barnes <tavianator@gmail.com>
+From: Tavian Barnes <tavianator@tavianator.com>
+To: linux-btrfs@vger.kernel.org
+Cc: Qu Wenruo <wqu@suse.com>,
+	Tavian Barnes <tavianator@tavianator.com>,
+	Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>,
+	David Sterba <dsterba@suse.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/2] extent_buffer read cleanups
+Date: Mon, 18 Mar 2024 09:56:52 -0400
+Message-ID: <cover.1710769876.git.tavianator@tavianator.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [EXTERNAL] Re: [PATCH rdma-next 1/4] RDMA/mana_ib: Introduce
- helpers to create and destroy mana queues
-To: Konstantin Taranov <kotaranov@microsoft.com>,
- Konstantin Taranov <kotaranov@linux.microsoft.com>,
- "sharmaajay@microsoft.com" <sharmaajay@microsoft.com>,
- Long Li <longli@microsoft.com>, "jgg@ziepe.ca" <jgg@ziepe.ca>,
- "leon@kernel.org" <leon@kernel.org>
-Cc: "linux-rdma@vger.kernel.org" <linux-rdma@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <1710336299-27344-1-git-send-email-kotaranov@linux.microsoft.com>
- <1710336299-27344-2-git-send-email-kotaranov@linux.microsoft.com>
- <7956dd4b-3002-4073-aff7-f85ea436e6e0@linux.dev>
- <PAXPR83MB0557CAF749EE4161E3EE5A31B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
-Content-Language: en-US
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Zhu Yanjun <yanjun.zhu@linux.dev>
-In-Reply-To: <PAXPR83MB0557CAF749EE4161E3EE5A31B42D2@PAXPR83MB0557.EURPRD83.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
+Content-Transfer-Encoding: 8bit
 
+This small series refactors some duplicated code introduced by a recent
+bugfix (which was intentionally duplicated to make stable backports
+easier), and adds a WARN_ON() to make it easier to debug similar issues
+in the future.
 
-On 18.03.24 10:31, Konstantin Taranov wrote:
->>> From: Konstantin Taranov <kotaranov@microsoft.com>
->>>
->>> Intoduce helpers to work with mana ib queues (struct mana_ib_queue).
->>> A queue always consists of umem, gdma_region, and id.
->>> A queue can be used for a WQ or a CQ.
->>>
->>> Signed-off-by: Konstantin Taranov <kotaranov@microsoft.com>
->>> ---
->>>    drivers/infiniband/hw/mana/main.c    | 40
->> ++++++++++++++++++++++++++++
->>>    drivers/infiniband/hw/mana/mana_ib.h | 10 +++++++
->>>    2 files changed, 50 insertions(+)
->>>
->>> diff --git a/drivers/infiniband/hw/mana/main.c
->>> b/drivers/infiniband/hw/mana/main.c
->>> index 71e33feee..0ec940b97 100644
->>> --- a/drivers/infiniband/hw/mana/main.c
->>> +++ b/drivers/infiniband/hw/mana/main.c
->>> @@ -237,6 +237,46 @@ void mana_ib_dealloc_ucontext(struct
->> ib_ucontext *ibcontext)
->>>                ibdev_dbg(ibdev, "Failed to destroy doorbell page %d\n", ret);
->>>    }
->>>
->>> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
->>> +                      struct mana_ib_queue *queue) {
->>> +     struct ib_umem *umem;
->>> +     int err;
->>> +
->>> +     queue->umem = NULL;
->>> +     queue->id = INVALID_QUEUE_ID;
->>> +     queue->gdma_region = GDMA_INVALID_DMA_REGION;
->>> +
->>> +     umem = ib_umem_get(&mdev->ib_dev, addr, size,
->> IB_ACCESS_LOCAL_WRITE);
->>> +     if (IS_ERR(umem)) {
->>> +             err = PTR_ERR(umem);
->>> +             ibdev_dbg(&mdev->ib_dev, "Failed to get umem, %d\n", err);
->>> +             return err;
->>> +     }
->>> +
->>> +     err = mana_ib_create_zero_offset_dma_region(mdev, umem, &queue-
->>> gdma_region);
->>> +     if (err) {
->>> +             ibdev_dbg(&mdev->ib_dev, "Failed to create dma region, %d\n",
->> err);
->>> +             goto free_umem;
->>> +     }
->>> +     queue->umem = umem;
->>> +
->>> +     ibdev_dbg(&mdev->ib_dev,
->>> +               "create_dma_region ret %d gdma_region 0x%llx\n",
->>> +               err, queue->gdma_region);
->>> +
->>> +     return 0;
->>> +free_umem:
->>> +     ib_umem_release(umem);
->>> +     return err;
->>> +}
->>> +
->>> +void mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct
->>> +mana_ib_queue *queue) {
->>> +     mana_ib_gd_destroy_dma_region(mdev, queue->gdma_region);
->> The function mana_ib_gd_destroy_dma_region will call
->> mana_gd_destroy_dma_region. In the function
->> mana_gd_destroy_dma_region, the function mana_gd_send_request will
->> return the error -EPROTO.
->> The procedure is as below. So the function mana_ib_destroy_queue should
->> also handle this error?
-> Thanks for the comment!
-> This error can be ignored and it was ignored before this commit.
-> I checked the corresponding Windows driver code, and it is also intentionally ignored there.
-> I can add a comment that the error is ignored intentionally if you want.
+Link: https://lore.kernel.org/linux-btrfs/20240317203508.GA5975@lst.de/T/
 
-Sure. Thanks a lot.
+Tavian Barnes (2):
+  btrfs: New helper to clear EXTENT_BUFFER_READING
+  btrfs: WARN if EXTENT_BUFFER_UPTODATE is set while reading
 
-Zhu Yanjun
+ fs/btrfs/extent_io.c | 22 ++++++++++++++++------
+ 1 file changed, 16 insertions(+), 6 deletions(-)
 
->
->> mana_ib_gd_destroy_dma_region --- > mana_gd_destroy_dma_region
->>
->>    693 int mana_gd_destroy_dma_region(struct gdma_context *gc, u64
->> dma_region_handle)
->>    694 {
->>
->> ...
->>
->>    706         err = mana_gd_send_request(gc, sizeof(req), &req,
->> sizeof(resp), &resp);
->>    707         if (err || resp.hdr.status) {
->>    708                 dev_err(gc->dev, "Failed to destroy DMA region:
->> %d, 0x%x\n",
->>    709                         err, resp.hdr.status);
->>    710                 return -EPROTO;
->>    711         }
->>
->> ...
->>
->>    714 }
->>
->> Zhu Yanjun
->>
->>> +     ib_umem_release(queue->umem);
->>> +}
->>> +
->>>    static int
->>>    mana_ib_gd_first_dma_region(struct mana_ib_dev *dev,
->>>                            struct gdma_context *gc, diff --git
->>> a/drivers/infiniband/hw/mana/mana_ib.h
->>> b/drivers/infiniband/hw/mana/mana_ib.h
->>> index f83390eeb..859fd3bfc 100644
->>> --- a/drivers/infiniband/hw/mana/mana_ib.h
->>> +++ b/drivers/infiniband/hw/mana/mana_ib.h
->>> @@ -45,6 +45,12 @@ struct mana_ib_adapter_caps {
->>>        u32 max_inline_data_size;
->>>    };
->>>
->>> +struct mana_ib_queue {
->>> +     struct ib_umem *umem;
->>> +     u64 gdma_region;
->>> +     u64 id;
->>> +};
->>> +
->>>    struct mana_ib_dev {
->>>        struct ib_device ib_dev;
->>>        struct gdma_dev *gdma_dev;
->>> @@ -169,6 +175,10 @@ int mana_ib_create_dma_region(struct
->> mana_ib_dev *dev, struct ib_umem *umem,
->>>    int mana_ib_gd_destroy_dma_region(struct mana_ib_dev *dev,
->>>                                  mana_handle_t gdma_region);
->>>
->>> +int mana_ib_create_queue(struct mana_ib_dev *mdev, u64 addr, u32 size,
->>> +                      struct mana_ib_queue *queue); void
->>> +mana_ib_destroy_queue(struct mana_ib_dev *mdev, struct
->> mana_ib_queue
->>> +*queue);
->>> +
->>>    struct ib_wq *mana_ib_create_wq(struct ib_pd *pd,
->>>                                struct ib_wq_init_attr *init_attr,
->>>                                struct ib_udata *udata);
+-- 
+2.44.0
+
 
