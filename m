@@ -1,100 +1,125 @@
-Return-Path: <linux-kernel+bounces-106113-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 744A987E954
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:30:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6CE8987E95A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:32:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7FD7AB2248E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:30:47 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1C25A2811FB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:32:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC05B381C1;
-	Mon, 18 Mar 2024 12:30:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4701E208CA;
+	Mon, 18 Mar 2024 12:32:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="nGJycxgL"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="XEm+Wdrx"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 185E2179B1;
-	Mon, 18 Mar 2024 12:30:29 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00B381E49E
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:32:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710765030; cv=none; b=pBVuXA3QBbHRJ0ZcYboOjta4y9VH4Nw/Q2FfTnBYAD0yk7qBXuYOxiscwixrGkuNuk6vdJIHRmfJ+uHUt8Qfe7+BFmCTYdoLuQeciDoiZv2l2sguGkHgJkh5c3B7hBwvd98J84qwffZI5MYWGrs9sEGi93Q21dYfheulrsXqYpI=
+	t=1710765160; cv=none; b=S+r28NLSRBs0KNJtL6GuXqy6uJwTcAaDe4C0GQVGWm+DMXCY8APDoWpgB+vfMB14NMISJHKaNniy0PmomPBpagiYEUPO5Gt/f1nyWU5S/qN4oPKxfqIKJswvqrlAwDeRqo1eCJ2vijc8kJu7bzV4pGBsuqABHfdZtyjKssw1xc8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710765030; c=relaxed/simple;
-	bh=Pf3JZGSV0vq0+Ep32XwBVnIFfn/v8WNnsG3rb8t8ghQ=;
-	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
-	 In-Reply-To:To:Cc; b=TylQmn9GiJSRK2vRC4Ajv+1ooDd/sqSDWsvTbv8r524M03P+c58TfahOVrjSn9hfCMMHNu7rEmMgLdBr9X3Gc0WilwFKuQRMfzQkicKPdxn7emrOzEc4hHXNMtH+CMzLkVifxmLwnoJMdDfpPbUDpSegbUtc9pDfczG4S2a14sE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=nGJycxgL; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id AEDA4C433F1;
-	Mon, 18 Mar 2024 12:30:29 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710765029;
-	bh=Pf3JZGSV0vq0+Ep32XwBVnIFfn/v8WNnsG3rb8t8ghQ=;
-	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
-	b=nGJycxgLs+3XFpLWAHW0vsUe3BzzPE5xJRp/m8qxdtLJo8qln3kUI6WU7PK+Ubfc9
-	 UlefgKwutWEfXIyGaGscl1BC7/xIk7fdHv+KamIY3d8ETQWJadkRN45hCdsRnQwaex
-	 mxH83Du4dl8hcu9Y0GGNBJxEbpymxSSZe/86/cEkV024L+ubVMlZile6HVZYu4YRnZ
-	 TZ/KrUBiHwukN63HlT8GACqLib8vtqFNQTkD6wgDvkE1oz7AGrAClgFQOvLJSOwr9A
-	 Tbcb2c7IHU/Ci4eTfR6NaURF0GsAllXGBZnwzqUQoR+54c7NDympnR6mpPJUm1Z9ye
-	 pg+dscuOIwzFw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id A00E7D95053;
-	Mon, 18 Mar 2024 12:30:29 +0000 (UTC)
-Content-Type: text/plain; charset="utf-8"
+	s=arc-20240116; t=1710765160; c=relaxed/simple;
+	bh=efnVPpmb2teYRxdgVuvr53GXPaEARKO2oJiZDPTgVSQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sMRW907IUYoYSOPOOjWXvBGFNu60OXI20CGrFR9RVtl49N3P0oio9gO3ISYL1cLgPfunzO8eFeri5h6G0BboLLXEiTUmYpgV3HSROQg46ffzbnuDa0mjvArm4mMv7C0klMg53epo5pgnwAeM2HwMR6q62bt5Fo+q2BYW/kY+bZs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=XEm+Wdrx; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Transfer-Encoding:
+	Content-Type:MIME-Version:References:Message-ID:Subject:Cc:To:From:Date:
+	Sender:Reply-To:Content-ID:Content-Description;
+	bh=HSPhwXSCxS++lB8cW7HjxSToUp/DCPeVhcBtHho/j3E=; b=XEm+WdrxFnpkahFybnf2FrA+2/
+	rw1XzkwVssLBE54wENkAoZC8nJIs/MbYgaGfgGfxS12nOe5T+nND8XrN9cBOt0W3TfZx1NvE1oOWU
+	HFevprZ7dWzFtOFYcLSMCvABeljS5xnpTCzBV3OGCeA3RRk28Rh8X3/ijDv785eu6/dnqRbCSOI+a
+	YcsB95n1tMjF0A+SWYwN5OtsaP2CJ/dJHjeWfVhlmjrGXbjg7iB14GUT2mijIQYh99nD/1wTnHzqp
+	7BE4J7lKnVCgkaN6T4VCUcHwuyzIrtPt3dauNribIu8tiXLoxuARtDB/aK/H1yMrTjWQO2XDys2ds
+	7lBlZfVg==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rmCAC-0000000H9S1-2Xle;
+	Mon, 18 Mar 2024 12:32:24 +0000
+Date: Mon, 18 Mar 2024 12:32:24 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: =?utf-8?B?6buE5pyd6ZizIChaaGFveWFuZyBIdWFuZyk=?= <zhaoyang.huang@unisoc.com>
+Cc: Zhaoyang Huang <huangzhaoyang@gmail.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"linux-mm@kvack.org" <linux-mm@kvack.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	=?utf-8?B?5bq357qq5ruoIChTdGV2ZSBLYW5nKQ==?= <Steve.Kang@unisoc.com>
+Subject: Re: summarize all information again at bottom//reply: reply: [PATCH]
+ mm: fix a race scenario in folio_isolate_lru
+Message-ID: <Zfg0WLrcOmCtdn_M@casper.infradead.org>
+References: <be75859d7e4245939d825da5e881902c@BJMBX01.spreadtrum.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-Subject: Re: [PATCH net v2] net: dsa: mt7530: prevent possible incorrect XTAL
- frequency selection
-From: patchwork-bot+netdevbpf@kernel.org
-Message-Id: 
- <171076502965.32045.18266951934755323293.git-patchwork-notify@kernel.org>
-Date: Mon, 18 Mar 2024 12:30:29 +0000
-References: <20240314-for-netnext-mt7530-better-fix-xtal-frequency-v2-1-fe30795593df@arinc9.com>
-In-Reply-To: <20240314-for-netnext-mt7530-better-fix-xtal-frequency-v2-1-fe30795593df@arinc9.com>
-To: =?utf-8?b?QXLEsW7DpyDDnE5BTCB2aWEgQjQgUmVsYXkgPGRldm51bGwrYXJpbmMudW5hbC5h?=@codeaurora.org,
-	=?utf-8?b?cmluYzkuY29tQGtlcm5lbC5vcmc+?=@codeaurora.org
-Cc: daniel@makrotopia.org, dqfext@gmail.com, sean.wang@mediatek.com,
- andrew@lunn.ch, f.fainelli@gmail.com, olteanv@gmail.com, davem@davemloft.net,
- edumazet@google.com, kuba@kernel.org, pabeni@redhat.com,
- matthias.bgg@gmail.com, angelogioacchino.delregno@collabora.com,
- p.zabel@pengutronix.de, Landen.Chao@mediatek.com,
- bartel.eerdekens@constell8.be, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org, justin.swartz@risingedge.co.za,
- arinc.unal@arinc9.com
+In-Reply-To: <be75859d7e4245939d825da5e881902c@BJMBX01.spreadtrum.com>
 
-Hello:
 
-This patch was applied to netdev/net.git (main)
-by David S. Miller <davem@davemloft.net>:
+Stop creating new threads.  You're really annoying.
 
-On Thu, 14 Mar 2024 12:28:35 +0300 you wrote:
-> From: Arınç ÜNAL <arinc.unal@arinc9.com>
+On Mon, Mar 18, 2024 at 09:32:32AM +0000, 黄朝阳 (Zhaoyang Huang) wrote:
+> Summarize all information below to make it more clear(remove thread2 which is not mandatory and make the scenario complex)
+
+You've gone back to over-indenting.  STOP IT.
+
+> #thread 0(madivise_cold_and_pageout)        #thread1(truncate_inode_pages_range) 
+
+This is still an impossible race, and it's the third time I've told you
+this.  And madivise_cold_and_pageout does not exist, it's
+madvise_cold_or_pageout_pte_range().  I'm going to stop responding to
+your emails if you keep on uselessly repeating the same mistakes.
+
+So, once again,
+
+For madvise_cold_or_pageout_pte_range() to find a page, it must have
+a PTE pointing to the page.  That means there's a mapcount on the page.
+That means there's a refcount on the page.
+
+truncate_inode_pages_range() will indeed attempt to remove a page from
+the page cache.  BUT before it does that, it has to shoot down TLB
+entries that refer to the affected folios.  That happens like this:
+
+                for (i = 0; i < folio_batch_count(&fbatch); i++)
+                        truncate_cleanup_folio(fbatch.folios[i]);
+truncate_cleanup_folio() -> unmap_mapping_folio ->
+unmap_mapping_range_tree() -> unmap_mapping_range_vma() ->
+zap_page_range_single() -> unmap_single_vma -> unmap_page_range ->
+zap_p4d_range -> zap_pud_range -> zap_pmd_range -> zap_pte_range ->
+pte_offset_map_lock()
+
+> pte_offset_map_lock						 takes NO lock
+> 										 truncate_inode_folio(refcnt == 2)
+> 										 <decrease the refcnt of page cache>
+> folio_isolate_lru(refcnt == 1)	                 
+> 										 release_pages(refcnt == 1)
+> folio_test_clear_lru 
+> <remove folio's PG_lru>
+> 										folio_put_testzero == true
+> folio_get(refer to isolation)
+> 										folio_test_lru == false
+> 									  	<No lruvec_del_folio>
+> 										list_add(folio->lru, pages_to_free)
+> 										****current folio will break LRU's integrity since it has not been deleted****
 > 
-> On MT7530, the HT_XTAL_FSEL field of the HWTRAP register stores a 2-bit
-> value that represents the frequency of the crystal oscillator connected to
-> the switch IC. The field is populated by the state of the ESW_P4_LED_0 and
-> ESW_P4_LED_0 pins, which is done right after reset is deasserted.
-> 
-> [...]
-
-Here is the summary with links:
-  - [net,v2] net: dsa: mt7530: prevent possible incorrect XTAL frequency selection
-    https://git.kernel.org/netdev/net/c/f490c492e946
-
-You are awesome, thank you!
--- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/patchwork/pwbot.html
-
-
+> 0. Folio's refcnt decrease from 2 to 1 by filemap_remove_folio
+> 1. thread 0 calls folio_isolate_lru with refcnt == 1. Folio comes from vm's pte
+> 2. thread 1 calls release_pages with refcnt == 1. Folio comes from address_space
+> (refcnt == 1 make sense for both of folio_isolate_lru and release_pages)
+> 3. thread0 clear folio's PG_lru by folio_test_clear_lru
+> 4. thread1 decrease folio's refcnt from 1 to 0 and get permission to proceed
+> 5. thread1 failed in folio_test_lru and do no list_del(folio)
+> 6. thread1 add folio to pages_to_free wrongly which break the LRU's->list 
+> 7. next folio after current one within thread1 experiences list_del_invalid when calling lruvec_del_folio
 
