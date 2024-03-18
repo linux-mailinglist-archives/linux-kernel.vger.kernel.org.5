@@ -1,151 +1,136 @@
-Return-Path: <linux-kernel+bounces-106471-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A7C287EF18
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:41:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28BFC87EF1B
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:41:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id ED4741F2197A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:41:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 58E671C21F37
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:41:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7611655E40;
-	Mon, 18 Mar 2024 17:41:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D798E5579C;
+	Mon, 18 Mar 2024 17:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NBp3bQEc"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="X8mCslIJ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1BC23B18D;
-	Mon, 18 Mar 2024 17:41:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2458B3B18D;
+	Mon, 18 Mar 2024 17:41:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710783676; cv=none; b=L7ZFPgEiV/xeZKDSN5rwcHK92JPRDW7jAY5P5T5BMNP4dYhF6see4lNbBTiS2ym8Cw5nH5crf+dDNdvY3PuvTmeDucQpG3a+KHtobsus85gLb59TA9QXYToN8f5NPCP2yxUWHEOahleRMg/jYRCe8iZqDZYoRNebs72M8InpTEo=
+	t=1710783687; cv=none; b=WmY8K0vqNiDTm1I0m+CllueLt3VTBCV4VT++4m9VqzqGg4F7Zqj+klbDo2R+O2RUboq+zwwTSHZHaQlhWNAz6XMIrWhR+vJqO0oqTdtutpSemqP/vGcauVTRejlINFFn5evdGpmLqQBMo/+2zwo2Tu8MDJbXIQzGYZwWGG7oXWM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710783676; c=relaxed/simple;
-	bh=E9X/vXcE+KfbqUnxxDsQCnC6isDz8nMc3x3A5fhOaPY=;
-	h=Date:Message-ID:From:To:Cc:Subject:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pv24dSbeacilhaYZ/XK7bQo8iCWh2uIQCmW/YiaKXGDpB7Es+kDPcP8hkRaqAflaVAsoexjhVKNmVtoky84Ta++gQ/4QR7ZTjWfBC211xYurw57J38A3QqXzOH6rgSkhBDCBN0ojEjEZsZWbHvdJaBB3Ln637FOGp24ASbRN4KY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NBp3bQEc; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 208E6C43390;
-	Mon, 18 Mar 2024 17:41:16 +0000 (UTC)
+	s=arc-20240116; t=1710783687; c=relaxed/simple;
+	bh=AeD+xtd/SWdYD0ybNwABImyLxfcVppzYgjid8FtIZMM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=UM/R6iNU5JE85ltxWuIHad2L7hFmQhXFC/P0gZlB1ZNV6W0jaS1UDdo4ct6AqOG+y5QrcoiLdR+NwvJ6VRcHiwHRkEyeauKiQaMIovHjME82bthEX0DAkcWWkikGT142umnGHx+xBF582XyJ7yZ9wIkvp6ENlrT90I7CTh4N9sY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=X8mCslIJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 64606C43390;
+	Mon, 18 Mar 2024 17:41:25 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710783676;
-	bh=E9X/vXcE+KfbqUnxxDsQCnC6isDz8nMc3x3A5fhOaPY=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=NBp3bQEcp/MJFUxlDZZdTRT+zxsK1KhrVvtNTwiqett4hZDhYBEgYGIHpc6UHCEvS
-	 EkesHyPTiPyQPuHPBWc3avUjHOjXPt3NkwrF0DsetSTiEtkfzualAki1E+D3pBjcm8
-	 eXdQUP8pYq03mJEPUXChGIOxc2mqGZQroTdoXoB933rxnvhuy6Sw4ne2cIJjdr1+1G
-	 4Aq4xVgsM7VpfafU7r33mRbSswMvvvE27KRCQUQY9WPyk9SO9NyAeeCn8w94lHJ5yi
-	 ZRzmAq6ACJNrSOAJlD88wxRiVFOYzqLKEysA6vU9bbD+DKbNkSiUwyXvK+RVEZ4igi
-	 H7zgOUD6oUWNw==
-Received: from sofa.misterjones.org ([185.219.108.64] helo=goblin-girl.misterjones.org)
-	by disco-boy.misterjones.org with esmtpsa  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.95)
-	(envelope-from <maz@kernel.org>)
-	id 1rmGz2-00DLD7-Q3;
-	Mon, 18 Mar 2024 17:41:12 +0000
-Date: Mon, 18 Mar 2024 17:41:12 +0000
-Message-ID: <86ttl3zbd3.wl-maz@kernel.org>
-From: Marc Zyngier <maz@kernel.org>
-To: David Woodhouse <dwmw2@infradead.org>
-Cc: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org,
-	Paolo Bonzini
- <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Oliver Upton
- <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K
- Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi
- <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown
- <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	Mostafa Saleh
- <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
+	s=k20201202; t=1710783687;
+	bh=AeD+xtd/SWdYD0ybNwABImyLxfcVppzYgjid8FtIZMM=;
+	h=From:To:Cc:Subject:Date:From;
+	b=X8mCslIJIo1YZdYA2qtn6bHDe/Z6vt63FyeHlUC1LTEksaNYluGTpDK36t3ARGjRK
+	 PO7VNeiHWTW3oRswcZEaMqwfkMtglb1ZGo4SRPuEORJoyVlugPmgVzZLgTWALaL/2j
+	 WSn3oU3anH1itPzPuS9RS/WJj8LmpFVK/YCfYE6TlaYV+YPtmYnmOEzEiLmg6MF3Os
+	 Bj5WQYDGPB2bReNlXnYd4nFeEuOm1rYn1USDlASwpRF/U0+vLB5RqonzpY4h3Qs2LA
+	 0HZTttew4XXeR3mY6SV8EK46ra+txecW8WTswu2V1LgA976K5JXd29OG4f61JqpeQI
+	 tUstXPO9z4r7w==
+From: Daniel Bristot de Oliveira <bristot@kernel.org>
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: Daniel Bristot de Oliveira <bristot@kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: Re: [RFC PATCH v2 0/4] arm64: Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
-In-Reply-To: <eb9215850e8231ab8ef75f523925be671cc6f5a0.camel@infradead.org>
-References: <20240318164646.1010092-1-dwmw2@infradead.org>
-	<86wmpzzdep.wl-maz@kernel.org>
-	<eb9215850e8231ab8ef75f523925be671cc6f5a0.camel@infradead.org>
-User-Agent: Wanderlust/2.15.9 (Almost Unreal) SEMI-EPG/1.14.7 (Harue)
- FLIM-LB/1.14.9 (=?UTF-8?B?R29qxY0=?=) APEL-LB/10.8 EasyPG/1.0.0 Emacs/29.1
- (aarch64-unknown-linux-gnu) MULE/6.0 (HANACHIRUSATO)
+	linux-trace-kernel@vger.kernel.org
+Subject: [GIT PULL] tracing/tools: Updates for 6.9
+Date: Mon, 18 Mar 2024 18:41:13 +0100
+Message-ID: <20240318174116.420584-1-bristot@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0 (generated by SEMI-EPG 1.14.7 - "Harue")
-Content-Type: text/plain; charset=US-ASCII
-X-SA-Exim-Connect-IP: 185.219.108.64
-X-SA-Exim-Rcpt-To: dwmw2@infradead.org, linux-arm-kernel@lists.infradead.org, kvm@vger.kernel.org, pbonzini@redhat.com, corbet@lwn.net, oliver.upton@linux.dev, james.morse@arm.com, suzuki.poulose@arm.com, yuzenghui@huawei.com, catalin.marinas@arm.com, will@kernel.org, mark.rutland@arm.com, lpieralisi@kernel.org, rafael@kernel.org, len.brown@intel.com, pavel@ucw.cz, smostafa@google.com, jean-philippe@linaro.org, linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org, kvmarm@lists.linux.dev, linux-pm@vger.kernel.org
-X-SA-Exim-Mail-From: maz@kernel.org
-X-SA-Exim-Scanned: No (on disco-boy.misterjones.org); SAEximRunCond expanded to false
+MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
 
-On Mon, 18 Mar 2024 17:26:07 +0000,
-David Woodhouse <dwmw2@infradead.org> wrote:
-> 
-> [1  <text/plain; UTF-8 (quoted-printable)>]
-> On Mon, 2024-03-18 at 16:57 +0000, Marc Zyngier wrote:
-> > 
-> > > 
-> > > There *is* a way for a VMM to opt *out* of newer PSCI versions... by 
-> > > setting a per-vCPU "special" register that actually ends up setting the 
-> > > PSCI version KVM-wide. Quite why this isn't just a simple KVM_CAP, I 
-> > > have no idea.
-> > 
-> > Because the expectations are that the VMM can blindly save/restore the
-> > guest's state, including the PSCI version, and restore that blindly.
-> > KVM CAPs are just a really bad design pattern for this sort of things.
-> 
-> Hm, am I missing something here? Does the *guest* get to set the PSCI
-> version somehow, and opt into the latest version that it understands
-> regardless of what the firmware/host can support?
+Steven,
 
-No. The *VMM* sets the PSCI version by writing to a pseudo register.
-It means that when the guest migrates, the VMM saves and restores that
-version, and the guest doesn't see any change.
+Tracing tooling updates for 6.9
 
-The host firmware has nothing to do with it, obviously. This is all
-about KVM's own implementation of the "firmware", as seen by the guest.
+Tracing:
+        - Update makefiles for latency-collector and RTLA,
+          using tools/build/ makefiles like perf does, inheriting
+          its benefits. For example, having a proper way to
+          handle dependencies.
 
-> Because if not, surely it's just part of the basic shape of the
-> machine, like "how many vCPUs does it have". You don't need to be able
-> to query it back again.
+        - The timerlat tracer has an interface for any tool to use.
+          rtla timerlat tool uses this interface dispatching its
+          own threads as workload. But, rtla timerlat could also be
+          used for any other process. So, add 'rtla timerlat -U'
+          option, allowing the timerlat tool to measure the latency of
+          any task using the timerlat tracer interface.
 
-Nobody needs to do this.
+Verification:
+        - Update makefiles for verification/rv, using tools/build/
+          makefiles like perf does, inheriting its benefits.
+          For example, having a proper way to handle dependencies.
 
-> I don't think we ever aspired to be able to hand an arbitrary KVM fd to
-> a userspace VMM and have the VMM be able to drive that VM without
-> having any a priori context, did we?
 
-Arbitrary? No. This is actually very specific and pretty well
-documented.
+Please pull the latest trace-tools-v6.9 tree, which can be found at:
 
-Also, to answer your question about why we treat 0.1 differently from
-0.2+: 0.1 didn't specify the PSCI SMC/HCR encoding, meaning that KVM
-implemented something that was never fully specified. The VMM has to
-provide firmware tables that describe that. With 0.2+, there is a
-standard encoding for all functions, and the VMM doesn't have to
-provide the encoding to the guest.
 
-	M.
+  git://git.kernel.org/pub/scm/linux/kernel/git/bristot/linux.git
+trace-tools-v6.9
 
--- 
-Without deviation from the norm, progress is not possible.
+Tag SHA1: 2eb09a97c56af3c27bd9dcebccb495f70d56d5c0
+Head SHA1: 9c63d9f58a42b979a42bcaed534d9246996ac0d9
+
+
+Daniel Bristot de Oliveira (4):
+      tools/tracing: Use tools/build makefiles on latency-collector
+      tools/rtla: Use tools/build makefiles to build rtla
+      tools/verification: Use tools/build makefiles on rv
+      tools/rtla: Add -U/--user-load option to timerlat
+
+----
+ .../tools/rtla/common_timerlat_options.rst         |   6 +
+ tools/tracing/latency/.gitignore                   |   5 +-
+ tools/tracing/latency/Build                        |   1 +
+ tools/tracing/latency/Makefile                     | 105 ++++++++--
+ tools/tracing/latency/Makefile.config              |  30 +++
+ tools/tracing/rtla/.gitignore                      |   7 +-
+ tools/tracing/rtla/Build                           |   1 +
+ tools/tracing/rtla/Makefile                        | 217 +++++++--------------
+ tools/tracing/rtla/Makefile.config                 |  47 +++++
+ tools/tracing/rtla/Makefile.rtla                   |  80 ++++++++
+ tools/tracing/rtla/Makefile.standalone             |  26 +++
+ tools/tracing/rtla/sample/timerlat_load.py         |  74 +++++++
+ tools/tracing/rtla/src/Build                       |  11 ++
+ tools/tracing/rtla/src/timerlat_hist.c             |  16 +-
+ tools/tracing/rtla/src/timerlat_top.c              |  14 +-
+ tools/verification/rv/.gitignore                   |   6 +
+ tools/verification/rv/Build                        |   1 +
+ tools/verification/rv/Makefile                     | 207 +++++++-------------
+ tools/verification/rv/Makefile.config              |  47 +++++
+ tools/verification/rv/Makefile.rv                  |  51 +++++
+ tools/verification/rv/src/Build                    |   4 +
+ 21 files changed, 650 insertions(+), 306 deletions(-)
+ create mode 100644 tools/tracing/latency/Build
+ create mode 100644 tools/tracing/latency/Makefile.config
+ create mode 100644 tools/tracing/rtla/Build
+ create mode 100644 tools/tracing/rtla/Makefile.config
+ create mode 100644 tools/tracing/rtla/Makefile.rtla
+ create mode 100644 tools/tracing/rtla/Makefile.standalone
+ create mode 100644 tools/tracing/rtla/sample/timerlat_load.py
+ create mode 100644 tools/tracing/rtla/src/Build
+ create mode 100644 tools/verification/rv/.gitignore
+ create mode 100644 tools/verification/rv/Build
+ create mode 100644 tools/verification/rv/Makefile.config
+ create mode 100644 tools/verification/rv/Makefile.rv
+ create mode 100644 tools/verification/rv/src/Build
+---------------------------
 
