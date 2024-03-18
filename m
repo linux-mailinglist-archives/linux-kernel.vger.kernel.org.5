@@ -1,153 +1,190 @@
-Return-Path: <linux-kernel+bounces-106684-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106685-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C72187F1E6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:16:45 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 601F387F1E9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:19:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 147131F2231B
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:16:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CB90A1F216CE
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:19:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0E5458AB6;
-	Mon, 18 Mar 2024 21:16:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8B25658222;
+	Mon, 18 Mar 2024 21:19:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PvdQ02Mz"
-Received: from mail-oa1-f48.google.com (mail-oa1-f48.google.com [209.85.160.48])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JCU4dwkg"
+Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com [209.85.218.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D05B58224;
-	Mon, 18 Mar 2024 21:16:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FB3858136
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710796597; cv=none; b=p9in9BwL7Qf/sVT4Kmv4HScHJwrsViqPomkxIxciT/eaJXasQa6AsG0e6vShYFPjsGWr5xIISYYJZsixHT/pe2hINsEjy+XmjNG1ZGG+RFj+c+k4I9W7UWv5HTlwrHXIbM73hM0te4n48wAuooVjnv2WuYRaTFrxtxLPA05PUXo=
+	t=1710796773; cv=none; b=p6XSb8vmn+31Hv6rqkmzpqsnlQICHbKGr1Vm+YWy1rozksgmoaGPzpgzp1Jskbm0+tdMLphLy6A79HNy2sIqkt8/XFy+1ymLys6V+S9wY86p0YTfemMhPZB39pqDlftpXOqg9ebnNsKzEsLCUcHwEpe02/oP9sqAbnE/EyUClX8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710796597; c=relaxed/simple;
-	bh=Yt0f+dVHrji/FGnjmFC58DJf7pxYkZrEgSIp3AfMov8=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gsInghL3AoncXztpGWOitkGWKYy1oCR4ji8iBxcrNgjnExBMGTtTdvf8QQxAE+yIud7MZ6uE8FkJugdAgsoJA8jQsFabkJ7eRvWEmMFfZdA/0hWFnGnJ92paY4sjJdSdrLes54lE2ZmblNkCKnHvCY8HgSLOuwnRGuocOI0n7Is=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PvdQ02Mz; arc=none smtp.client-ip=209.85.160.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oa1-f48.google.com with SMTP id 586e51a60fabf-2297d0d6013so98653fac.0;
-        Mon, 18 Mar 2024 14:16:35 -0700 (PDT)
+	s=arc-20240116; t=1710796773; c=relaxed/simple;
+	bh=2YHPoaBQsYT0YkSAWvrUDogtcYPNLnmpMuPQ1F2h7q8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=WKauv5w6JvUMDBnrMAb9qPSYTjiUSeyvs95e0fnXdTUt2rwTscJhitIVPgLE90z0OiI4UzSnx/tTVSr0zRpuMSy9sbCI1Rcy7OAmZQBpJwd1NqH5seHzFtdZLsYZBRxiYJ4aE8CJ0lYVWxCkU0xg1z3s/UmDATsqP2/3tf6fTcc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JCU4dwkg; arc=none smtp.client-ip=209.85.218.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso232066b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:19:31 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710796594; x=1711401394; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
+        d=google.com; s=20230601; t=1710796770; x=1711401570; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=8QJWxTmIJrEhWMzXrfsFzOSKGe8edB69jBc3Ml/9B9o=;
-        b=PvdQ02MzLXob0fpaxEA6zwTIGl4vXGeL76+vQS6ac3/ilsLcBMWrqC1XPDe+mQVgJL
-         Ni7mQX0t7TWspGmTU+PoA3e6t/EonMkanQ2NSNTHFobpwidLy7rx2vdnb6gHcjXV0wwX
-         a2HubcDGA9CyYXwzRu5vfradQ/CwK9l4evvaVpcCESa//pAWq1iqWDppmn7M++TTSCEd
-         SPJwbx1S4ONjDuf7JRKgg/It6HZbdSUmt2OgIXLWQ3UFxIFdkMjUgNVvxyd2nOcgyZWh
-         2vX5xVHqJ6r/H3qmhUvTIIJW0eKMBr2FPkEh5NSBmgjFWX+VkZe709/M2LwfMg+yOVFs
-         eANg==
+        bh=0k4g9Luo3bAdRb+VgV0WA5X8hJ3aXO3GEXSTe7Flz9U=;
+        b=JCU4dwkg4KtiVMDdiOVd+9BcD0yMBZoCgNnWQLCTZyfn3hGUFLNLWHGWDWUYtaacMT
+         Y0oprrMuFz/Ry7nc3bZQNCldm98WlazyKzDdmpM7C+Z00zdq/NOsvRuXCC1SgDfG+bJk
+         K3WMBzqvar+gndfwRmrZEBhtkHDEKI/v6UbsKZmBdJO07GgKkXSwz5lUfAfxzixEQuIi
+         0WoXGx3Wi45QJsKooayIHqRmHP7j92pNCFK5NBORqd4UU+5jHCSjkAclfxueEC0htQpt
+         2Op76bXDeY1WAUCNGS9reSSgnMNtiKybSj/u1cTJ7iX6dzoW+pQEZYgFb8XSwkBmBuga
+         rz3w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710796594; x=1711401394;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1710796770; x=1711401570;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=8QJWxTmIJrEhWMzXrfsFzOSKGe8edB69jBc3Ml/9B9o=;
-        b=ZI5X9cwmgUW4SOpXUxsyVBE2OdYFmcNHUGEtahJhbzOvFKEVkVPJ3t5bss3icxyV6a
-         lRIjSTwu6ScRazyBz6e96aUkUfEYFOht354vt8HF1270jE5/dHZ2IKrc5WdXyHiv20Vk
-         NgWIaLqokPp12hQFD1umc4XAcPbq3wE58hW7CGp0JViMF2ovsEuNPLPMcKY79BttXGFZ
-         QgN+pB2OfDISZZMcj52ssennJgeFgiMdgOpMLNtqQuU90RPA2hu2+h3JrJTeKvva7g+3
-         dZllJhNIxr6r75HN+ye6xm35/rL/v1EgD3atsAlKnyCeIi3cNzcMZtNdNrgv0b6US9bB
-         BFoQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVTJrPvl7A2qF2X1IRnvvFibvKLtnqh3A07PG7AKvrKX1EcUcgiRteZaTc4YQGdCJ29OP+I4swrVl4rfgj+s8a6BwkwOTe+U+tQAhn98o1FIyjkotvZfYiW/UncYgB3m0xcu4Jq6JwJPH/+4dU=
-X-Gm-Message-State: AOJu0YyVJvfmiM3ejBQ+W7t2mRXtNEyjHPrkK6O6aB/BXQ60e0jvXrR/
-	AT9U5L6f29m4pHAfU/7j8O5ERdPb3zr8mhKJJmd2s5oa2gsanvRM
-X-Google-Smtp-Source: AGHT+IEVxMBj1ySrAZy1h4aIv0Q09QPCGofkuXyjet6GfgHFvDWyvLhUpyruY9PUdSMRW22egpzpKQ==
-X-Received: by 2002:a05:6870:2315:b0:221:5c49:5d02 with SMTP id w21-20020a056870231500b002215c495d02mr12691764oao.51.1710796594664;
-        Mon, 18 Mar 2024 14:16:34 -0700 (PDT)
-Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
-        by smtp.gmail.com with ESMTPSA id gu15-20020a056214260f00b006905c8b37bbsm5715590qvb.133.2024.03.18.14.16.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 14:16:34 -0700 (PDT)
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfauth.nyi.internal (Postfix) with ESMTP id 5A5AF1200043;
-	Mon, 18 Mar 2024 17:16:33 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute2.internal (MEProxy); Mon, 18 Mar 2024 17:16:33 -0400
-X-ME-Sender: <xms:MK_4ZUnSqbuoSRdN51SKopiueOmcf8Mn61jAh1cN7rIqsC9wUN-XRw>
-    <xme:MK_4ZT07futncp-PmqIfIMgcC2BMxLJM_sosJWX_MLyhQLlhSbdPR-WC91Q8ABoG-
-    kERW7r0M3fk5UCMGw>
-X-ME-Received: <xmr:MK_4ZSpflCeIuYa30osxDA6pUFQ1nflaFs41mpjrGCHz6QSB6bluVC88q-w>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeejgddugeejucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepfffhvfevuffkfhggtggujgesthdtrodttddtvdenucfhrhhomhepuehoqhhu
-    nhcuhfgvnhhguceosghoqhhunhdrfhgvnhhgsehgmhgrihhlrdgtohhmqeenucggtffrrg
-    htthgvrhhnpeeitdefvefhteeklefgtefhgeelkeefffelvdevhfehueektdevhfettddv
-    teevvdenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpe
-    gsohhquhhnodhmvghsmhhtphgruhhthhhpvghrshhonhgrlhhithihqdeiledvgeehtdei
-    gedqudejjeekheehhedvqdgsohhquhhnrdhfvghngheppehgmhgrihhlrdgtohhmsehfih
-    igmhgvrdhnrghmvg
-X-ME-Proxy: <xmx:MK_4ZQmtR5N5La4Q6xWKLUwfz9qab6ckAYBkEKwxAxugKvA5HwBqOA>
-    <xmx:MK_4ZS2HiqmNAhg5XqImeHmaTPX5MkzWk6TBp29w7eI34CwLhm0ZLQ>
-    <xmx:MK_4ZXuY0MlJl1TU9idc_DKtiMOyrMARh_yx8jlLc6woBLHjA4wC2g>
-    <xmx:MK_4ZeX_0ATj5D4kM6Oaw-uJ0MzoKbn4iA97BWxnhLvD28YMcdGuHw>
-    <xmx:Ma_4ZXdrV0oXuSVF9Z8dgDwh5Gqu1bppYJnNCRHQXBt6tzc09J84bAXUhB0>
-Feedback-ID: iad51458e:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Mar 2024 17:16:32 -0400 (EDT)
-Date: Mon, 18 Mar 2024 14:16:17 -0700
-From: Boqun Feng <boqun.feng@gmail.com>
-To: Alice Ryhl <aliceryhl@google.com>
-Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>,
-	Al Viro <viro@zeniv.linux.org.uk>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Alex Gaynor <alex.gaynor@gmail.com>,
-	Wedson Almeida Filho <wedsonaf@gmail.com>,
-	Gary Guo <gary@garyguo.net>,
-	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
-	Benno Lossin <benno.lossin@proton.me>,
-	Andreas Hindborg <a.hindborg@samsung.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
-	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Carlos Llamas <cmllamas@google.com>,
-	Suren Baghdasaryan <surenb@google.com>,
-	Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
-	Christian Brauner <brauner@kernel.org>
-Subject: Re: [PATCH v3 2/4] uaccess: always export _copy_[from|to]_user with
- CONFIG_RUST
-Message-ID: <ZfivIRxNmjaljsuP@boqun-archlinux>
-References: <20240311-alice-mm-v3-0-cdf7b3a2049c@google.com>
- <20240311-alice-mm-v3-2-cdf7b3a2049c@google.com>
+        bh=0k4g9Luo3bAdRb+VgV0WA5X8hJ3aXO3GEXSTe7Flz9U=;
+        b=e3elKZ6XPs+9EabygQITtfXAb9CD+CKsE9oKNEKW77hvyYxke9QWtyN/o2/yxywGv4
+         YOaWMGcYRZOMmn4Cc8/7CUiXPo+TXzDcYnp0m06E6p1YHG6nMvrQfJhrIX3E3XVbLSsA
+         Uqi8ZX9NmaeT8WxpOYdNZfXWt3IFAJz02i/rjhL/bHhgXUH33+zIm7Jsw7VWK93P812q
+         mclwZDvB8vf92w3vJc+EdV7iFXauMon3ujllR4lDVQZOH5CheLqvn5XdnewAe9qYzoRs
+         T1mCRWHNLXBFq8sJJVp+pTgsToV2aykz6K6dg9y5EjQ4atX8P3pNo+J3mSIZ9VvHQD0B
+         ya9w==
+X-Forwarded-Encrypted: i=1; AJvYcCUgXzJp9wPbrfhmg4BFSI2oTB3iU1wARySudrTrqGWeKcCNG/SItYNDshMbKWYHI9EpFrw/1m82NootrOmqw0G3UQuEEAM7nEZF9KTU
+X-Gm-Message-State: AOJu0Yy8ykthkEXHhBl5sdfp8fOUNvqRTHWo3RfWuNC5INg91+ejnkFJ
+	EfvJH+uKG1pnJpNDmBTnN7IQ29G/qMib6tzTcWcUy+FCr42WGIx3PqL8KgUanzGomxVCvktqxim
+	f2FO3yKl1ATkQfOuY6hbWW2FcogixBNWK+y1D
+X-Google-Smtp-Source: AGHT+IEqBcJlc9hk11QYxUUW3Tt+HncgIEKlWgi7wAcHPn1nVS0sddMMhyd9YD1iPGbupGFNo8jCUcOQlDuC3ema1Aw=
+X-Received: by 2002:a17:906:168a:b0:a46:9985:b264 with SMTP id
+ s10-20020a170906168a00b00a469985b264mr5879888ejd.62.1710796770210; Mon, 18
+ Mar 2024 14:19:30 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240311-alice-mm-v3-2-cdf7b3a2049c@google.com>
+References: <000000000000bbb3d80613f243a6@google.com> <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
+ <CAJD7tkbEuFkGuQeYjKS02rQoAAKOKieAJ1P2mwukirW3e2JN9A@mail.gmail.com> <20240318210917.GA4210@cmpxchg.org>
+In-Reply-To: <20240318210917.GA4210@cmpxchg.org>
+From: Yosry Ahmed <yosryahmed@google.com>
+Date: Mon, 18 Mar 2024 14:18:51 -0700
+Message-ID: <CAJD7tkZhCt_r1uULbfe4eg=zo7=o7muJ787wyEw1yN7x+ijYGA@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
+To: Johannes Weiner <hannes@cmpxchg.org>
+Cc: Nhat Pham <nphamcs@gmail.com>, 
+	syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, chengming.zhou@linux.dev, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com, Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 11, 2024 at 10:47:14AM +0000, Alice Ryhl wrote:
-> From: Arnd Bergmann <arnd@arndb.de>
-> 
-> Rust code needs to be able to access _copy_from_user and _copy_to_user
-> so that it can skip the check_copy_size check in cases where the length
-> is known at compile-time, mirroring the logic for when C code will skip
-> check_copy_size. To do this, we ensure that exported versions of these
-> methods are available when CONFIG_RUST is enabled.
-> 
-> Alice has verified that this patch passes the CONFIG_TEST_USER_COPY test
-> on x86 using the Android cuttlefish emulator.
-> 
-> Signed-off-by: Arnd Bergmann <arnd@arndb.de>
-> Tested-by: Alice Ryhl <aliceryhl@google.com>
-> Signed-off-by: Alice Ryhl <aliceryhl@google.com>
+On Mon, Mar 18, 2024 at 2:09=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org=
+> wrote:
+>
+> On Mon, Mar 18, 2024 at 01:17:19PM -0700, Yosry Ahmed wrote:
+> > On Mon, Mar 18, 2024 at 11:00=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> =
+wrote:
+> > >
+> > > On Mon, Mar 18, 2024 at 9:58=E2=80=AFAM syzbot
+> > > <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com> wrote:
+> > > >
+> > > > Hello,
+> > > >
+> > > > syzbot found the following issue on:
+> > > >
+> > > > HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-=
+09-36' ..
+> > > > git tree:       upstream
+> > > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D13043ab=
+e180000
+> > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D19bb57c=
+23dffc38e
+> > > > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadbc983a1=
+588b7805de3
+> > > > compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GN=
+U ld (GNU Binutils for Debian) 2.40
+> > > > userspace arch: arm
+> > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1706d=
+231180000
+> > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13ba795=
+9180000
+> > > >
+> > > > Downloadable assets:
+> > > > disk image (non-bootable): https://storage.googleapis.com/syzbot-as=
+sets/8ead8862021c/non_bootable_disk-e5eb28f6.raw.xz
+> > > > vmlinux: https://storage.googleapis.com/syzbot-assets/0a7371c63ff2/=
+vmlinux-e5eb28f6.xz
+> > > > kernel image: https://storage.googleapis.com/syzbot-assets/7539441b=
+4add/zImage-e5eb28f6.xz
+> > > >
+> > > > IMPORTANT: if you fix the issue, please add the following tag to th=
+e commit:
+> > > > Reported-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
+> > > >
+> > > > ------------[ cut here ]------------
+> > > > kernel BUG at include/linux/scatterlist.h:187!
+> > >
+> > > Looks like the provided buffer is invalid:
+> > >
+> > > #ifdef CONFIG_DEBUG_SG
+> > > BUG_ON(!virt_addr_valid(buf));
+> > > #endif
+> > >
+> > > which is "src" from:
+> > >
+> > > sg_init_one(&input, src, entry->length);
+> > >
+> > > Looking at the surrounding code and recent history, there's this
+> > > commit that stands out:
+> > >
+> > > mm/zswap: remove the memcpy if acomp is not sleepable
+> > > (sha: 270700dd06ca41a4779c19eb46608f076bb7d40e)
+> > >
+> > > which has the effect of, IIUC, using the zpool mapped memory directly
+> > > as src, instead of acomp_ctx->buffer (which was previously the case,
+> > > as zsmalloc was not sleepable).
+> > >
+> > > This might not necessarily be a bug with that commit itself, but migh=
+t
+> > > have revealed another bug elsewhere.
+> > >
+> > > Anyway, cc-ing the author, Barry Song, to fact check me :) Will take =
+a
+> > > closer look later.
+> >
+> > I am not a highmem expert, but the reproducer has CONFIG_HIGHMEM=3Dy,
+> > and it seems like zs_map_object() may return a highmem address if the
+> > compressed object is entirely in a single page to avoid copying to a
+> > buffer:
+> >
+> > if (off + class->size <=3D PAGE_SIZE) {
+> >    /* this object is contained entirely within a page */
+> >    area->vm_addr =3D kmap_atomic(page);
+> >    ret =3D area->vm_addr + off;
+> >    goto out;
+> > }
+> >
+> > The virt_addr_valid() check seems to indicate that we expect a direct
+> > map address in sg_init_one(), right?
+>
+> If the page is highmem, kmap_atomic() establishes a temporary mapping
+> to it in the direct map, such that we have a legit kernel pointer to
+> the memory. Otherwise the memcpy() in zswap also wouldn't work... Am I
+> missing something?
 
-Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
+IIUC kmap_atomic() establishes a mapping in the kernel portion of the
+address space, but not a direct map mapping (i.e. not a linear
+mapping), right?
 
-Regards,
-Boqun
+Does virt_addr_valid() check for addresses being in the kernel portion
+of the address space, or it being a linear mapping? I thought it
+checks for the latter.
 
