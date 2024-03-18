@@ -1,122 +1,145 @@
-Return-Path: <linux-kernel+bounces-106426-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AC47087EE7F
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:11:04 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 94CB487EE9A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:19:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 622451F24F0E
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:11:04 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5005628399A
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:19:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CCC3554FB6;
-	Mon, 18 Mar 2024 17:10:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DCBD55772;
+	Mon, 18 Mar 2024 17:19:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mJoCnLEK"
-Received: from mail-oo1-f47.google.com (mail-oo1-f47.google.com [209.85.161.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b="AaUbH/lU"
+Received: from smtp-relay-internal-1.canonical.com (smtp-relay-internal-1.canonical.com [185.125.188.123])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B3C8C54BF7;
-	Mon, 18 Mar 2024 17:10:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2419954FB2
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:19:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.125.188.123
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710781854; cv=none; b=q6QemTdCWBV2Dsm4j6nr0UnTOaClePjcPmIJqOkXI+zOgLhf3Vp9lk7z5P4jTXYW4T8A57ZLO4DMN/mMKn/mDLaPu+yiqiJxzWxWCaQ9drCIM4lPpOZjlWjBuwcfhl+5r0jO8uWC+TmtmKl/MeOsvVN7yLGVo4/ZtuJkFy5Nr+Q=
+	t=1710782371; cv=none; b=SuY9mkDjmxBWzvhkoUHHwyzMmokRPgLMLOJSUZIJ0hnALrH+El1EWLB/WxbOq2f8kWBmt6ZzwyogZiqlWBmugt7ixDmD9lTvQsTAdHJ+tQrhpADbsvHWdpBwQkr1otjcvqC0n94k5uvwhfx88ox0WHuA2dBJd0IvYK3SNmdCQzs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710781854; c=relaxed/simple;
-	bh=TJf6LnwgsKl71TNbw+Pvtwa4Bl/y2PNwY3PC96VPFr4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=AF5P8s1+oru3hq451/NUQBRFvJQBZrNR5doSBiW4c2TTEV3lI8kDOfEwhcY0AGcf0KwhOFdDAiyMDO7X1YKqLaL20HD26KAMoYB5cXNqYUFnN7ubUAeqsosnL5UUdfHGWzdmzx2ib2FjYuV2gHudY5s3uHtIT7RMAjOHzofB1TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mJoCnLEK; arc=none smtp.client-ip=209.85.161.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f47.google.com with SMTP id 006d021491bc7-5a49261093cso1412415eaf.3;
-        Mon, 18 Mar 2024 10:10:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710781852; x=1711386652; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=6Fp/07gqSj3HNqiWAJVFuUHu0yxBPdZOSVPdfE9Qmrc=;
-        b=mJoCnLEKXuWTHIFWhXsLIz5OGTX3ct3za7RkrZujLO39fVjpevSmV2X4GTEKWBuQYy
-         71FLuXfRfqCj/S3TasXEvvVp5BKGdRNOHUmQ218VQ6zhclXqrt+MAQOqNg73l+N7MRgp
-         v34HAilGLF4k+vxhhGTmx9IYjhoB2UWLBacjQbs+bkTJR5bA1tZ1kvzdLAM7W9HzpKn5
-         HW0+7fta9A+oYSbxh2cQRhYYia5+TvLAx/Knr2HB36xjMsj2SiPwfPMJ/wAtyFai5Y1q
-         in9QqaqbXL+lDvjbQxp8SXEAPhAiAIbcQ67izqPAJKMqZhzJ0NJ+dyIQjPmfS6QTWjAJ
-         CR2A==
+	s=arc-20240116; t=1710782371; c=relaxed/simple;
+	bh=NipOqWcaGtie6YlGlJBGhNEiVysAImFex/86T3xnNXA=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=CzVL6t3cus2wZGgcFiDgUBTbTl26XWzFTDS19CnHNCS+RsmlGGdZFschQ3a4eQWg6b0d/uBnWDV2nINc0phtzORcD6CfA0jfrHa63Q3fJH0zP+OgXW10Rg6HzZREjFxmAKEaAMtCkD0IrXGk7WvwnfVFzUq9MrOlITLcK6OAW70=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com; spf=pass smtp.mailfrom=canonical.com; dkim=pass (2048-bit key) header.d=canonical.com header.i=@canonical.com header.b=AaUbH/lU; arc=none smtp.client-ip=185.125.188.123
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canonical.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canonical.com
+Received: from mail-qt1-f197.google.com (mail-qt1-f197.google.com [209.85.160.197])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-relay-internal-1.canonical.com (Postfix) with ESMTPS id 873E53F10A
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:12:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canonical.com;
+	s=20210705; t=1710781939;
+	bh=RHlFPdlhlD864SJZUhjfxgbABspep+IYfDLVWgg2pJg=;
+	h=From:In-Reply-To:References:Mime-Version:Date:Message-ID:Subject:
+	 To:Cc:Content-Type;
+	b=AaUbH/lUr5TuNuXGV8Kboiq3jnqe7sSPayG42+aXWW7fmgiRRqGlc9RfCNTcqEjXQ
+	 oZylYg9uU2YVPFUxpVnFXEUUFbzZk6xKQuy1KX0hJ+ozmmXawvLhKmfnXeS4ZI8mgp
+	 vhULNGuhz9+NJ1AuzvwjnGkMj5qYGQy5mhWYmD/vlCfxkQF+bqNdcP8X354uENoQWL
+	 cA7Q3qSILZh0qvIQs+49XAZuZR2239kXwh7AZSUfSrUFDAA3nM8c0dgTrPKJwGNKGe
+	 PDRfGwIoGtb7MyxW4MgoK6DsYBAr8h07Otgkrv/EekBUaNDp76VnZPIHDl4hN/Q9Q2
+	 kYNqa8XSGGzbg==
+Received: by mail-qt1-f197.google.com with SMTP id d75a77b69052e-43095bdc7caso53815561cf.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:12:19 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710781852; x=1711386652;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6Fp/07gqSj3HNqiWAJVFuUHu0yxBPdZOSVPdfE9Qmrc=;
-        b=lCQEgph+0pz5IoZSAwjMXUNkM/6NYDE4rNsuB/+QWkicQCV801tY/8s00n+i5e3tnw
-         wauHEv4BeYvWUgAYM0wRjU0XIPwlD12d0hVLFG5hTnHzsBLj2px/pVRJnwwraWBolwQU
-         rP8v/IpXirbTzyF0q/ayK23ThYCBcxddVYFHKNdfvnczUXmVxJ4p21bxgOG5g2Z6BMr8
-         JQpatbgYqdwsYpraMjO4PgW0AirRIlP25KD2VP+FH21Z6JzyWqIJhCnNigF9AJLg5zGH
-         +qWexf/OIQt8LhNJMgyqenFZuogthERBRrCizqU+XIvXF5GDIlEz54b4pJWHlLc4TffZ
-         WwEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV3i3Opt3OqkZp8oRBIRDONYQFFxsu4MNbqbvjpNLqTvH6IlXcr7TqS6/7qjueUKn+Rd77mhvkOu6o7HubMzI9xd79DHf24yYcIkLRsQ9HSgW5gi+ri+nJtHykPmmQ6cZVyt5/zGl49
-X-Gm-Message-State: AOJu0YyumF4othZPTq9kJoQZg+2ME52s53wgorPKwHUhgWzBpBNq5gjk
-	4KcNf/WGPhokjNpvnih0hhoO18cUjTXxPzMFWuL1aFD5ZeAy7ZmQ9DxX2LpYdT2PR02YSEEzr7/
-	GIF6meUUJ9bbnhDylFUKXM0SYn6c=
-X-Google-Smtp-Source: AGHT+IHgCd3BExVo1DFNj17nFMKQ1w7GzsQ67J8jV3E/WZw61T0NX8LaQJaZcp1/mvXNBoc0UEc7RNlZagX1PWpGwm0=
-X-Received: by 2002:a05:6870:9688:b0:21e:7cee:9815 with SMTP id
- o8-20020a056870968800b0021e7cee9815mr13809024oaq.53.1710781851752; Mon, 18
- Mar 2024 10:10:51 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710781938; x=1711386738;
+        h=cc:to:subject:message-id:date:mime-version:references:in-reply-to
+         :from:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=RHlFPdlhlD864SJZUhjfxgbABspep+IYfDLVWgg2pJg=;
+        b=YpzWyuy9YxLqTI9uByXfb+wbYm/BXdw9uCtl2otjPOctTuWsJjKcuoNwZK/Xzk+QxR
+         9WI7paYz7OL5tNagiy5h3ISdvbn6uQ/Vc57jfe2Lm5e/Hrsh2hNgON6HqFsxOEq+yUs3
+         FWj2Hupj0EOk05uCpC5vNgpRhsKm68z1wIH5lmnnIaE4UHGPOciu1YAN83mFqZwGFiv8
+         m/QO7BxGPY9cuAzAGkfodaJdRuC0tdb6cx3PNm/oOoGcl8MSxAJEBueiQyQB2lHwAhtk
+         xKuc3f2QC4yGUHE0nm2R0z+ikpidhd+Xre7C1YszgGaJx2VSxzjNxLQF9TBb3I0398QG
+         Sq9w==
+X-Forwarded-Encrypted: i=1; AJvYcCVPgak20LrjOoQOAf+kwGOV3DeXI1BWZ09HtNUWNs/eWgdzzn0kcB/XCxeCFh4kzN3k0kxNPhr/Y7yR6c0PXTvYtIbzRVmNTYITJr76
+X-Gm-Message-State: AOJu0YxT/MjeQQcyeXGJajOzX8qUe1w/lX89XRwfXO6eKx1mpo/ojY/q
+	TB+VouxVOjSCAe64+6wvAPrLmcPdPdGCYknFIq3pSWWhs2eQEvQW/YkFY5qx6uDmKW+fP/4/QBL
+	mWaPJeuqZG/CLm6979Bkt1ZZJ07hgO2l6XJANzao6VkD2n68xPBaWvurXmbCBNDbIzMoHLOqzHm
+	ze52o8Kh8z8ffL3ImUTKxCP7t/qtKYG6qYnZPUQ0n7DYRVoYFTvuCM
+X-Received: by 2002:a05:622a:49:b0:42e:f7cf:ff98 with SMTP id y9-20020a05622a004900b0042ef7cfff98mr13273227qtw.16.1710781938491;
+        Mon, 18 Mar 2024 10:12:18 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEIdRe+ShfPpkWIqNza89+B1bp5+Xj+Ait5mURceCooCGFBZ2x0UImLi2Iek0huAH9NY6RsAslH53iOtRgxPsw=
+X-Received: by 2002:a05:622a:49:b0:42e:f7cf:ff98 with SMTP id
+ y9-20020a05622a004900b0042ef7cfff98mr13273206qtw.16.1710781938216; Mon, 18
+ Mar 2024 10:12:18 -0700 (PDT)
+Received: from 348282803490 named unknown by gmailapi.google.com with
+ HTTPREST; Mon, 18 Mar 2024 10:12:17 -0700
+From: Emil Renner Berthing <emil.renner.berthing@canonical.com>
+In-Reply-To: <20240318-emphatic-rally-f177a4fe1bdc@spud>
+References: <20240318-emphatic-rally-f177a4fe1bdc@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240301141800.30218-1-lukas.bulwahn@gmail.com>
- <m21q8732wo.fsf@gmail.com> <41f28393-0211-4448-8add-ad3c55d02210@oracle.com>
-In-Reply-To: <41f28393-0211-4448-8add-ad3c55d02210@oracle.com>
-From: Donald Hunter <donald.hunter@gmail.com>
-Date: Mon, 18 Mar 2024 17:10:40 +0000
-Message-ID: <CAD4GDZzjc6=-Gzw23tRgCDE7=AxsenXqpD+qnh6gj1+MYYU2fA@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: drop the version constraints for sphinx and dependencies
-To: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
+Mime-Version: 1.0
+Date: Mon, 18 Mar 2024 10:12:17 -0700
+Message-ID: <CAJM55Z9vR0+KwQX6BQZak4NeAfLdiJuZJuZJMj8kfF9EHBCF5A@mail.gmail.com>
+Subject: Re: [PATCH v1] perf: starfive: fix 64-bit only COMPILE_TEST condition
+To: Conor Dooley <conor@kernel.org>, linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor.dooley@microchip.com>, Palmer Dabbelt <palmer@rivosinc.com>, 
+	Will Deacon <will@kernel.org>, Mark Rutland <mark.rutland@arm.com>, 
+	Ji Sheng Teoh <jisheng.teoh@starfivetech.com>, linux-arm-kernel@lists.infradead.org, 
+	linux-kernel@vger.kernel.org
 Content-Type: text/plain; charset="UTF-8"
 
-On Mon, 18 Mar 2024 at 16:54, Vegard Nossum <vegard.nossum@oracle.com> wrote:
+Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
 >
-> > % time make htmldocs
-> > ...
-> > real  9m0.533s
-> > user  15m38.397s
-> > sys   1m0.907s
+> ARCH_STARFIVE is not restricted to 64-bit platforms, so while Will's
+> addition of a 64-bit only condition satisfied the build robots doing
+> COMPILE_TEST builds, Palmer ran into the same problems with writeq()
+> being undefined during regular rv32 builds.
 >
-> Was this running 'make cleandocs' (or otherwise removing the output
-> directory) in between? Sphinx is known to be slower if you already have
+> Promote the dependency on 64-bit to its own `depends on` so that the
+> driver can never be included in 32-bit builds.
+>
+> Reported-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Fixes: c2b24812f7bc ("perf: starfive: Add StarLink PMU support")
+> Fixes: f0dbc6d0de38 ("perf: starfive: Only allow COMPILE_TEST for 64-bit architectures")
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
 
-Yes, times were after 'make cleandocs'.
+Acked-by: Emil Renner Berthing <emil.renner.berthing@canonical.com>
 
-> an output directory with existing-but-obsolete data, I believe this is
-> the case even when switching from one Sphinx version to another. Akira
-> also wrote about the 7.x performance:
+> ---
+> CC: Will Deacon <will@kernel.org>
+> CC: Mark Rutland <mark.rutland@arm.com>
+> CC: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> CC: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  drivers/perf/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
 >
-> https://lore.kernel.org/linux-doc/6e4b66fe-dbb3-4149-ac7e-8ae333d6fc9d@gmail.com/
-
-Having looked at the Sphinx code, it doesn't surprise me that
-incremental builds can have worse performance. There's probably going
-to be some speedups to be found when we go looking for them.
-
-> > I have an experimental fix that uses a dict for lookups. With the fix, I
-> > consistently get times in the sub 5 minute range:
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 5060e1f1ea10..7526a9e714fa 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -87,7 +87,8 @@ config RISCV_PMU_SBI
+>  	  filtering, counter configuration.
 >
-> Fantastic!
+>  config STARFIVE_STARLINK_PMU
+> -	depends on ARCH_STARFIVE || (COMPILE_TEST && 64BIT)
+> +	depends on ARCH_STARFIVE || COMPILE_TEST
+> +	depends on 64BIT
+>  	bool "StarFive StarLink PMU"
+>  	help
+>  	   Provide support for StarLink Performance Monitor Unit.
+> --
+> 2.43.0
 >
-> There is a github issue for the C++ domain but I believe it's the same
-> issue for both C and C++ domains:
 >
-> https://github.com/sphinx-doc/sphinx/issues/10966
-
-Ahh, I looked for an issue for the C domain but did not see one. I
-didn't think to check for issues with the C++ domain, even though the
-code for the C domain has been copied from there.
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
