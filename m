@@ -1,175 +1,124 @@
-Return-Path: <linux-kernel+bounces-106103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E5D0987E937
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:19:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 197A687E939
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:20:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72A031F234BA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:19:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C44BA2826B6
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 12:20:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E8B0F381BB;
-	Mon, 18 Mar 2024 12:19:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30C2381C7;
+	Mon, 18 Mar 2024 12:20:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YOvNiscL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KpK9Smku"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70B6A364A4
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:19:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2347A3771C;
+	Mon, 18 Mar 2024 12:20:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710764387; cv=none; b=jIMGTVd9X1sCNTuHq+rLWFnBqqAIFJStCQfr0qZZeuJ6C/yduOvyLgTKoLvf5aXHsc3eAChLu91a85gL1dcEXt1phRJHv9bDK1HcPQHj04tSoKYu4ruE5YVD8qLrq833dx43qKn3A6eMBLs0dI+TwIcJ1sHqbFhgVP2A38A6sTI=
+	t=1710764411; cv=none; b=JrwopN3YLxxWvHOVNIeXwtX7afEHy95qAQiLsIj1vybuF/4LXowUgeq0yD68y9IFeomfL0pH9Jbu2+BArvB5oSXK0KbHiIPGEiR0uGjxD5b6ZKzBJVKsyaEcQs6bqZikYdEHF78gnnXsXTcZdl0i2dTtE8tAq2kmGra2ftf2ZQQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710764387; c=relaxed/simple;
-	bh=SfOzydn5WiIlkxoB11jIvKv/kj2NfAbiHa9cC3pAxgM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NiljcPNpgDhVtBsKDKhGMfNBvW2fuDUGB5V3LXZ42TNGASixMZYwyfmIY+Qd24d7EhsOOt7/IqsRN9QAjUon9Xh9iML8Mc63Srk3Z519b6C/Ob3ADnsrsFc5HjvIaSjGp4aors3GVCAEYgNdrQuz66TH1xcGR2y/O0+Du5/LQf8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YOvNiscL; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710764384;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=Riwf3MWStmr2vSS3p/CTbOW0bR3Ycq544igOWwCzcqs=;
-	b=YOvNiscLLbcqkk+CICXRDKZ59DW+HHv/uVFr7mAhXvtou8slkowjfFOb7vXL2R7S148VCQ
-	40RGh4d0fOqcohRUMoe/Q9ydu9G0/yYT0FvOWKlJnhqomLxnjUCdVb/wnSoitQZoixZnKR
-	ccCaTGWcvIgIjYxYvPszTK5Z1BQMaqQ=
-Received: from mail-wm1-f72.google.com (mail-wm1-f72.google.com
- [209.85.128.72]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-153-r1crWlCbOyqI-p6p_ArCZg-1; Mon, 18 Mar 2024 08:19:42 -0400
-X-MC-Unique: r1crWlCbOyqI-p6p_ArCZg-1
-Received: by mail-wm1-f72.google.com with SMTP id 5b1f17b1804b1-412c7ee0c97so20186955e9.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 05:19:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710764382; x=1711369182;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Riwf3MWStmr2vSS3p/CTbOW0bR3Ycq544igOWwCzcqs=;
-        b=LmxIUgj8JM3Y5iiBvaULw8rON1XQB+zugLw7st+Ckc3aEg/FBqufFKUDwz+VGwdd/u
-         YdSEJwLbWQtcqdP0qhwGc+OPG4RMav7e12nGJ0DNxF1SmIUUoCEXUj86TumsmgRNhs4l
-         pyJJrEWSSbSFPC0FbYbj9a6Emfc4UXhR4avOEz/knkPdGWw0c1PNLWxeI1GROKNmTDip
-         TwQ37k8vWGngbdPeYVIjQPP2/AjpKB58MAis78B6QF60p1U5QkxA7Gw8zAJhKRlMY05/
-         twmjXi0tnLbthrGRGWRn6rIdeQYR61/jEOmpBAzoDhFxP4/8pOz7Y8xdDvh8o7r0cYxW
-         s/qA==
-X-Gm-Message-State: AOJu0YzuUA/LhRPIA4NoVcai/AT+1CifSk3JFhmfiqLMFvUJsyfwsv0y
-	j6oK3wI9nvkx2zfm1dGDjHX4MJdaS9eWeFeENODrwtoSD1dEHUvJH0Umtl2unGDT7kp+OOQeOu1
-	KLEhK2SEupKIRi28o8YWc8ErOG+7evabSZnuxug0svi6EfRmXn4XZDJ68IvRPCA==
-X-Received: by 2002:a5d:4d05:0:b0:33e:7065:78f2 with SMTP id z5-20020a5d4d05000000b0033e706578f2mr8464007wrt.40.1710764381762;
-        Mon, 18 Mar 2024 05:19:41 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGSeaSc2V2KVoLf+J19hl3rtMu0eID5XzHNhylFk/KnsVV+Hk2Zwp7UYA2V6PwAImZsm8M9gw==
-X-Received: by 2002:a5d:4d05:0:b0:33e:7065:78f2 with SMTP id z5-20020a5d4d05000000b0033e706578f2mr8463993wrt.40.1710764381281;
-        Mon, 18 Mar 2024 05:19:41 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c737:1f00:94ff:246b:30d0:686b? (p200300cbc7371f0094ff246b30d0686b.dip0.t-ipconnect.de. [2003:cb:c737:1f00:94ff:246b:30d0:686b])
-        by smtp.gmail.com with ESMTPSA id i9-20020a5d4389000000b0033e75e5f280sm9719732wrq.113.2024.03.18.05.19.40
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 05:19:40 -0700 (PDT)
-Message-ID: <c9341492-cf7b-4c4d-8b6b-2b92b4ecbe74@redhat.com>
-Date: Mon, 18 Mar 2024 13:19:39 +0100
+	s=arc-20240116; t=1710764411; c=relaxed/simple;
+	bh=B5o2vdQkYKf0gLGLbgOOM3rM1ASv07qeSLQyl+ljBY4=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=HnslGtnS/kNMnaVTCrwqJT2Wg9KoF7JJ7KIqHWS6MaFHGvCScxa1Di7lcA6y8PVpot82WlfFsCrpGhHgLs8DRNZEj+ACepM9jYfBmNK5yuqI4mryMT/1yKOZRRl1PqdlG1qvf9Jkiizdm9md17q2aQneioAMBMQ7W/LP9ZYN/QE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KpK9Smku; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D1DCC433F1;
+	Mon, 18 Mar 2024 12:20:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710764410;
+	bh=B5o2vdQkYKf0gLGLbgOOM3rM1ASv07qeSLQyl+ljBY4=;
+	h=From:To:Cc:Subject:Date:From;
+	b=KpK9SmkuD1eVJP6NUtXLtYZKpHB1QJF+TESlpo/fn7T8KeZKzmH9bG800/QCKkcXW
+	 fQEW/Aq78dySwA4HmZRFqAESyJQYSnALY5axve5g5jYi219pOgBaHuz7hgzAC8i8eQ
+	 XxqYvQVr6WqyMr4Uvk66sCC/A9Fr6CyVCYjflWbfhBdm3SHZwUtHJQHvzfK8AOX/Tn
+	 iu6wbWgnFiunJblwGAdDkpqt87AUV5eeIY4Y0uAfJgORiT9El8MGlD7gHlEGcQfUMM
+	 H7gc5/J7hx2rrOS7Wq334jxkWmT6sIrQpGClZ9hVWKmDjYEBJ0OkKl8/hf2fRyNAz1
+	 XK2cOdLBlyicA==
+From: Christian Brauner <brauner@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Christian Brauner <brauner@kernel.org>,
+	linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] vfs fixes
+Date: Mon, 18 Mar 2024 13:19:54 +0100
+Message-ID: <20240318-vfs-fixes-e0e7e114b1d1@brauner>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] mm: Remove guard around pgd_offset_k() macro
-Content-Language: en-US
-To: Christophe Leroy <christophe.leroy@csgroup.eu>,
- Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org
-References: <59d3f47d5615d18cca1986f269be2fcb3df34556.1710589838.git.christophe.leroy@csgroup.eu>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <59d3f47d5615d18cca1986f269be2fcb3df34556.1710589838.git.christophe.leroy@csgroup.eu>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2338; i=brauner@kernel.org; h=from:subject:message-id; bh=B5o2vdQkYKf0gLGLbgOOM3rM1ASv07qeSLQyl+ljBY4=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaT+MCzsj9YMPrl72hP2Vz+3FU5cI9i9fV2blaHHk19Bx 3+p9K1N6yhlYRDjYpAVU2RxaDcJl1vOU7HZKFMDZg4rE8gQBi5OAZhI0ClGhjcLWJKnvp2kdPWH 2MTSh+9vbZ2zym52q9l/ZqdJDJM57tczMtzbbPdSXP5Qq/GpGp6CqBSh6ND9r3/1GhRcCth9+aD PUQ4A
+X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
+Content-Transfer-Encoding: 8bit
 
-On 16.03.24 12:52, Christophe Leroy wrote:
-> The last architecture redefining pgd_offset_k() was IA64 and it was
-> removed by commit cf8e8658100d ("arch: Remove Itanium (IA-64)
-> architecture")
-> 
-> There is no need anymore to guard generic version of pgd_offset_k()
-> with #ifndef pgd_offset_k
-> 
-> Signed-off-by: Christophe Leroy <christophe.leroy@csgroup.eu>
-> ---
->   include/linux/pgtable.h | 2 --
->   1 file changed, 2 deletions(-)
-> 
-> diff --git a/include/linux/pgtable.h b/include/linux/pgtable.h
-> index 85fc7554cd52..bd9c7180718c 100644
-> --- a/include/linux/pgtable.h
-> +++ b/include/linux/pgtable.h
-> @@ -149,9 +149,7 @@ static inline pgd_t *pgd_offset_pgd(pgd_t *pgd, unsigned long address)
->    * a shortcut which implies the use of the kernel's pgd, instead
->    * of a process's
->    */
-> -#ifndef pgd_offset_k
->   #define pgd_offset_k(address)		pgd_offset(&init_mm, (address))
-> -#endif
->   
->   /*
->    * In many cases it is known that a virtual address is mapped at PMD or PTE
+Hey Linus,
 
-Reviewed-by: David Hildenbrand <david@redhat.com>
+/* Summary */
+This contains a few small fixes for this merge window:
 
--- 
-Cheers,
+* Undo the hiding of silly-rename files in afs. If they're hidden they
+  can't be deleted by rm manually anymore causing regressions.
+* Avoid caching the preferred address for an afs server to avoid
+  accidently overriding an explicitly specified preferred server address.
+* Fix bad stat() and rmdir() interaction in afs.
+* Take a passive reference on the superblock when opening a block device
+  so the holder is available to concurrent callers from the block layer.
+* Clear private data pointer in fscache_begin_operation() to avoid it
+  being falsely treated as valid.
 
-David / dhildenb
+/* Testing */
+clang: Debian clang version 16.0.6 (19)
+gcc: (Debian 13.2.0-7) 13.2.0
 
+All patches are based on mainline and have been sitting in linux-next.
+No build failures or warnings were observed.
+
+/* Conflicts */
+No known conflicts.
+
+The following changes since commit 480e035fc4c714fb5536e64ab9db04fedc89e910:
+
+  Merge tag 'drm-next-2024-03-13' of https://gitlab.freedesktop.org/drm/kernel (2024-03-13 18:34:05 -0700)
+
+are available in the Git repository at:
+
+  git@gitolite.kernel.org:pub/scm/linux/kernel/git/vfs/vfs tags/vfs-6.9-rc1.fixes
+
+for you to fetch changes up to 449ac5514631dd9b9b66dd708dd5beb1428e2812:
+
+  fscache: Fix error handling in fscache_begin_operation() (2024-03-18 10:33:48 +0100)
+
+Please consider pulling these changes from the signed vfs-6.9-rc1.fixes tag.
+
+Thanks!
+Christian
+
+----------------------------------------------------------------
+vfs-6.9-rc1.fixes
+
+----------------------------------------------------------------
+Christian Brauner (1):
+      fs,block: get holder during claim
+
+David Howells (4):
+      afs: Revert "afs: Hide silly-rename files from userspace"
+      afs: Don't cache preferred address
+      afs: Fix occasional rmdir-then-VNOVNODE with generic/011
+      fscache: Fix error handling in fscache_begin_operation()
+
+ block/bdev.c           |  7 +++++++
+ fs/afs/dir.c           | 10 ----------
+ fs/afs/rotate.c        | 21 ++++-----------------
+ fs/afs/validation.c    | 16 +++++++++-------
+ fs/netfs/fscache_io.c  |  4 +++-
+ fs/super.c             | 18 ++++++++++++++++++
+ include/linux/blkdev.h | 10 ++++++++++
+ 7 files changed, 51 insertions(+), 35 deletions(-)
 
