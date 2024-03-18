@@ -1,186 +1,149 @@
-Return-Path: <linux-kernel+bounces-106707-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106708-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6C25787F235
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:33:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3806B87F237
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:34:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D79391F23AAF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:33:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BCEFBB20E15
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:34:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F107F59140;
-	Mon, 18 Mar 2024 21:33:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 350E85916D;
+	Mon, 18 Mar 2024 21:34:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="RTDU9oaq"
-Received: from mail-qt1-f170.google.com (mail-qt1-f170.google.com [209.85.160.170])
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="3Mq2qY+u"
+Received: from mail-pl1-f202.google.com (mail-pl1-f202.google.com [209.85.214.202])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE4D358AC3
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:33:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2659C58ABE
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:34:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710797587; cv=none; b=BQE+lL85963AvwqBzeMGi2wPaM5m2DW8R1/dyc64hSxu7dGb8yLBw9u2TOee+6iSW7iUm4GeTqv9HPc25K+U+mkTyGTF9LwiRJhyNQ+Toq+CWnNpY4NlhNP4Emao13rwaTwP0CddK/zPEj+Dc2hYJnWxtSjI9vtiqvKnF2as2gs=
+	t=1710797671; cv=none; b=e5Ig1G/uQiOv8otMoCFsAnir+P69gpxOsz3EC3SbZVybBPH7q21APS3z4+arGYwmIgEn5hdrRY/T/kz4KdLSEPh67ylT68tIIqtTPyZAPDcfFbgVkmQRJwMVoSMPRTriUecTG1nltvdQ2BK3Hj6TKXP3e80JV0V9E02PJXH+Dsk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710797587; c=relaxed/simple;
-	bh=9UyEleUnZum8/j9s4RGJ600MaybJEwjgwNGZe5TtsUk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aQS0gOW3/IooCLBU5xpGbz+YPLw0zhqdCoxX30O0DapQ3k+q56mofgVRnx6nwb2xiVfiy08K5s1AAPH10Wk9/QCfD18zhBkoHGYJe5pOO/FJ/+2tpY07yh9GJZvl7Mz0QwQZLIGSS+R0pkvls6Xy5cAWsndTbagvnNrvpKrB908=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=RTDU9oaq; arc=none smtp.client-ip=209.85.160.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qt1-f170.google.com with SMTP id d75a77b69052e-42a0ba5098bso28525151cf.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:33:03 -0700 (PDT)
+	s=arc-20240116; t=1710797671; c=relaxed/simple;
+	bh=tDMM25GFM35ln5xFJFl8/1m4EvWiz90qb7o7MPzbLoI=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=ehNHMVNorP2wv3pFODa7LYIb5yPeYu1xct1lDypH/rpRvsY2uV3ALI2DjdPpwTNSYyw5RcNGmZYYzEecCz7zlQ5kB5E03Bhblb+tnBuRcZi/E/EvsbFuqRMiuB3zG7R+TMyKPLsB5R1IyrswOd0GA81gAx+tNCHNkfiJFDiRvIg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=3Mq2qY+u; arc=none smtp.client-ip=209.85.214.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pl1-f202.google.com with SMTP id d9443c01a7336-1e0310bb981so9541255ad.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:34:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710797583; x=1711402383; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=mGPv8yamP9bphcl7rsqbJVKUCn1NBYwIxJacintSX4E=;
-        b=RTDU9oaqsdXUorIbRjEhK9OIxR741Co9b21x0FX5SCuhXXUtUQrsjFs5DQ9P+rOVGm
-         7y4EoDmqrd19H6iiU9yAc35sYfVodWMS6HZ+L9aBG+cA7O23YmGe+DVJB7NRzIckOhoY
-         TbIEIux0kSGGBAhKnf8KHFtVnrFna3qGgLcAui5SpkrPmIg/xzhUEAcJVaJCU97frCPo
-         DXICth2ujuhmOa1I3yF/UQZAnx0mTomKdZ9sjx6Lyybslhc0O0UCCVA2GQ7dm8jf6QxM
-         YFbrzR5qakiy094/zZJvRWrQvy3qMl0nm+RN4jnazi/az8cKw2CL9f3v4Y0Ez2IOrbKz
-         hYJw==
+        d=google.com; s=20230601; t=1710797669; x=1711402469; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=TeKReu/YtEZ4HGj+nixBj489LFLFbiNCXrSvK0Sz0P8=;
+        b=3Mq2qY+uJzGr/KI8Fmbt5z0x+j2fzDvkAD9hxmeiTIJonYOjGezSMxWlorQRoUbMEv
+         ihQCQTwN9cjcpEiLaXF6vqfmqoNsUNxq4EBhOp2YCjVlf1l2f7qIPougq+v5ojktixFE
+         sKob58cbM/eSMvkYySgJ4KodcfndxFhex98JKhEQ5YBl52Yt2/soYepCcVHdlFFY9mrV
+         Sb0nRbR0vUxUGBbtRkexPTSAzuPIwILddhsm/z2c3arqh/ABwdaC7X+cqraw46UhDqks
+         55t+MmQFLPUnpGjmvVL2vrp9tKBrSRw9UZ1MsaBnsN4G/L2J7bwXQu+ENvY+8BGLxEtA
+         OKbg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710797583; x=1711402383;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=mGPv8yamP9bphcl7rsqbJVKUCn1NBYwIxJacintSX4E=;
-        b=jqmilrfzSImIQUFHitvnbnlnJTC/hHUQGYGnYmwVWQ6X9X6WYzUId0Xl/kHRjQ9tya
-         FMwcJ9HQyHgMAiVKVubf6l4BaKU7ekrwhoHa7Nt0Oo1RhSrm88uBePVkD3fi5ydToDwP
-         Npas1gwl2987SPkFwGUBaWw8oZZTC3tNBH2n6kpRpQLw0lrhaf04c35n+DLh6a0j06Xe
-         V8NieqNtAbUqKX0radXng7T3882CRnEnyT6dWywRt9ab2SK23S9jGty6qh1ZKU3VwgWC
-         yDyeiYqGS9stm+JkZyViaHqmpTedwUD4EAOhQTnoaoNEDOPiQdxgFgpQjMv2PDRiTPB2
-         /dWw==
-X-Forwarded-Encrypted: i=1; AJvYcCXGXR4sSmJXDOrzk8HOJjDGlkSEftzVRYUipSZ6TI4WI/BHpa/F5ucgNf9mfNVAFZhAOP6+aSc+g1R/920dvm1nvQssJuF60sGMjzhc
-X-Gm-Message-State: AOJu0YxqVcpq28cs1cAyXCjQ7uGhT4To8q4Vw/1PFlTxnczYPzJYG9M7
-	tlaND/w+bdXN8Ytf6IDpbzvkm/BXF4gjzZ9eveFBLRggg0gTysvQKWSCoMjhPTomuKjhpV+LkoY
-	8
-X-Google-Smtp-Source: AGHT+IHy9RlxCISU3kmenwXlDWSWKdj/pdGdU/FQ7uGUX7Pn1QHqJCVyLWVjT1NiurJWUrhsxjcsvQ==
-X-Received: by 2002:ac8:7e96:0:b0:430:e2a3:f80c with SMTP id w22-20020ac87e96000000b00430e2a3f80cmr696515qtj.31.1710797582770;
-        Mon, 18 Mar 2024 14:33:02 -0700 (PDT)
-Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id ay29-20020a05622a229d00b00430b385f721sm3924923qtb.15.2024.03.18.14.33.02
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 14:33:02 -0700 (PDT)
-Date: Mon, 18 Mar 2024 17:32:57 -0400
-From: Johannes Weiner <hannes@cmpxchg.org>
-To: Barry Song <21cnbao@gmail.com>
-Cc: Yosry Ahmed <yosryahmed@google.com>, Nhat Pham <nphamcs@gmail.com>,
-	syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>,
-	akpm@linux-foundation.org, chengming.zhou@linux.dev,
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org,
-	syzkaller-bugs@googlegroups.com, Barry Song <v-songbaohua@oppo.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
-Message-ID: <20240318213257.GB4210@cmpxchg.org>
-References: <000000000000bbb3d80613f243a6@google.com>
- <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
- <CAJD7tkbEuFkGuQeYjKS02rQoAAKOKieAJ1P2mwukirW3e2JN9A@mail.gmail.com>
- <20240318210917.GA4210@cmpxchg.org>
- <CAGsJ_4wEjgAscao4BiLbNFChfF7aTpFFdXXozWC45_j+vADdPw@mail.gmail.com>
+        d=1e100.net; s=20230601; t=1710797669; x=1711402469;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=TeKReu/YtEZ4HGj+nixBj489LFLFbiNCXrSvK0Sz0P8=;
+        b=uvq7bNube9EKPCacwCnQ6lMnzucTRm31MmYzdBoKcU7MLmTrEVtIJUB+gFUp2AZpVQ
+         Pd9DQU248QYZrKoHvlVN9vaYjpbSUs4GZ/2RXpix/d8x81/RxI5+NvabJ7I8RRFTHRJs
+         W5y9XNhYL3stv7qr6fGgKFkEE7YcO1VM5rNrc0FH94klgpoi/ahwN7mHkoQwtXlWNe/w
+         BAA5FEoZg2ekz6n75KjY13u/GYV7kBManRfYuLJRy/6Sl7VR7U6TwbYy+xlHKibOv/ox
+         tc0HuqGBbWIHAAXGndsOw0m7DskJhZ8732GDZvNroWH+IjzGnp8pmv99S2QkKqbDNXgA
+         uVqw==
+X-Forwarded-Encrypted: i=1; AJvYcCWG17WBNMYb2+qHtvgjxxA1/fMlif1Dpj3gN4eNpQKH7fNfXWFkjAf2vBk8fDsQ9wL3IUxrXfYVVsqL0GTekD77hqsCo/yPOP6tfZWN
+X-Gm-Message-State: AOJu0YxoxnQkmpob9RjOY6qG+YHQExQS5U2EI6INFsfQITTXt/CDolQP
+	ejX2R8AyHrm3Gt0EHwaGzQQ8sot4h2jpQH+YajIqB/5Hqa8OdqAmPD6aPygCSpzGKJSfLzexamd
+	omw==
+X-Google-Smtp-Source: AGHT+IHHFfh8bUUrLY2QtXWlRmbDtHa4OYjClyEvG8anTXs7Tp/AWB9SI9q73Zu0u18+D/q5oVz2ixwSpW8=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a17:903:1207:b0:1dd:761d:6c6e with SMTP id
+ l7-20020a170903120700b001dd761d6c6emr824423plh.5.1710797669325; Mon, 18 Mar
+ 2024 14:34:29 -0700 (PDT)
+Date: Mon, 18 Mar 2024 14:34:27 -0700
+In-Reply-To: <b7561e6d6d357fcd8ec1a1257aaf2f97d971061c.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGsJ_4wEjgAscao4BiLbNFChfF7aTpFFdXXozWC45_j+vADdPw@mail.gmail.com>
+Mime-Version: 1.0
+References: <0000000000005fa5cc0613f1cebd@google.com> <b7561e6d6d357fcd8ec1a1257aaf2f97d971061c.camel@infradead.org>
+Message-ID: <ZfizYzC9-9Qo47tE@google.com>
+Subject: Re: [syzbot] [kvm?] WARNING in __kvm_gpc_refresh
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: syzbot <syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com>, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, 
+	syzkaller-bugs@googlegroups.com, paul <paul@xen.org>
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 10:15:43AM +1300, Barry Song wrote:
-> On Tue, Mar 19, 2024 at 10:10 AM Johannes Weiner <hannes@cmpxchg.org> wrote:
-> >
-> > On Mon, Mar 18, 2024 at 01:17:19PM -0700, Yosry Ahmed wrote:
-> > > On Mon, Mar 18, 2024 at 11:00 AM Nhat Pham <nphamcs@gmail.com> wrote:
-> > > >
-> > > > On Mon, Mar 18, 2024 at 9:58 AM syzbot
-> > > > <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com> wrote:
-> > > > >
-> > > > > Hello,
-> > > > >
-> > > > > syzbot found the following issue on:
-> > > > >
-> > > > > HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
-> > > > > git tree:       upstream
-> > > > > console output: https://syzkaller.appspot.com/x/log.txt?x=13043abe180000
-> > > > > kernel config:  https://syzkaller.appspot.com/x/.config?x=19bb57c23dffc38e
-> > > > > dashboard link: https://syzkaller.appspot.com/bug?extid=adbc983a1588b7805de3
-> > > > > compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-> > > > > userspace arch: arm
-> > > > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1706d231180000
-> > > > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=13ba7959180000
-> > > > >
-> > > > > Downloadable assets:
-> > > > > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/8ead8862021c/non_bootable_disk-e5eb28f6.raw.xz
-> > > > > vmlinux: https://storage.googleapis.com/syzbot-assets/0a7371c63ff2/vmlinux-e5eb28f6.xz
-> > > > > kernel image: https://storage.googleapis.com/syzbot-assets/7539441b4add/zImage-e5eb28f6.xz
-> > > > >
-> > > > > IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> > > > > Reported-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
-> > > > >
-> > > > > ------------[ cut here ]------------
-> > > > > kernel BUG at include/linux/scatterlist.h:187!
-> > > >
-> > > > Looks like the provided buffer is invalid:
-> > > >
-> > > > #ifdef CONFIG_DEBUG_SG
-> > > > BUG_ON(!virt_addr_valid(buf));
-> > > > #endif
-> > > >
-> > > > which is "src" from:
-> > > >
-> > > > sg_init_one(&input, src, entry->length);
-> > > >
-> > > > Looking at the surrounding code and recent history, there's this
-> > > > commit that stands out:
-> > > >
-> > > > mm/zswap: remove the memcpy if acomp is not sleepable
-> > > > (sha: 270700dd06ca41a4779c19eb46608f076bb7d40e)
-> > > >
-> > > > which has the effect of, IIUC, using the zpool mapped memory directly
-> > > > as src, instead of acomp_ctx->buffer (which was previously the case,
-> > > > as zsmalloc was not sleepable).
-> > > >
-> > > > This might not necessarily be a bug with that commit itself, but might
-> > > > have revealed another bug elsewhere.
-> > > >
-> > > > Anyway, cc-ing the author, Barry Song, to fact check me :) Will take a
-> > > > closer look later.
-> > >
-> > > I am not a highmem expert, but the reproducer has CONFIG_HIGHMEM=y,
-> > > and it seems like zs_map_object() may return a highmem address if the
-> > > compressed object is entirely in a single page to avoid copying to a
-> > > buffer:
-> > >
-> > > if (off + class->size <= PAGE_SIZE) {
-> > >    /* this object is contained entirely within a page */
-> > >    area->vm_addr = kmap_atomic(page);
-> > >    ret = area->vm_addr + off;
-> > >    goto out;
-> > > }
-> > >
-> > > The virt_addr_valid() check seems to indicate that we expect a direct
-> > > map address in sg_init_one(), right?
-> >
-> > If the page is highmem, kmap_atomic() establishes a temporary mapping
-> > to it in the direct map, such that we have a legit kernel pointer to
-> > the memory. Otherwise the memcpy() in zswap also wouldn't work... Am I
-> > missing something?
-> 
-> Right, we built a map but it is not a linear mapping. so we can't use
-> virt_to_page
-> on this kind of non-linear mapping.
-> kmap_to_page can handle both linear and non-linear, but  Ira's commit
-> added a WARN_ON_ONCE in it for non-linear mapping case.
+On Mon, Mar 18, 2024, David Woodhouse wrote:
+> On Mon, 2024-03-18 at 09:25 -0700, syzbot wrote:
+> > Hello,
+> >=20
+> > syzbot found the following issue on:
+> >=20
+> > HEAD commit:=C2=A0=C2=A0=C2=A0 277100b3d5fe Merge tag 'block-6.9-202403=
+15' of git://git.k..
+> > git tree:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D17c96aa5180=
+000
+> > kernel config:=C2=A0 https://syzkaller.appspot.com/x/.config?x=3D1c6662=
+240382da2
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3D106a4f72b0474=
+e1d1b33
+> > compiler:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 gcc (Debian 12.2.0-14) 12=
+2.0, GNU ld (GNU Binutils for Debian) 2.40
+> > syz repro:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 https://syzkaller.appspot.com/=
+x/repro.syz?x=3D14358231180000
+> > C reproducer:=C2=A0=C2=A0 https://syzkaller.appspot.com/x/repro.c?x=3D1=
+10ed231180000
+> >=20
+> > Downloadable assets:
+> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
+/7bc7510fe41f/non_bootable_disk-277100b3.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/6872e049b27c/vmli=
+nux-277100b3.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/68ec7230df0f=
+/bzImage-277100b3.xz
+>=20
+> static int __kvm_gpc_refresh(struct gfn_to_pfn_cache *gpc, gpa_t gpa, uns=
+igned long uhva,
+>                              unsigned long len)
+> {
+>         unsigned long page_offset;
+>         bool unmap_old =3D false;
+>         unsigned long old_uhva;
+>         kvm_pfn_t old_pfn;
+>         bool hva_change =3D false;
+>         void *old_khva;
+>         int ret;
+>=20
+>         /* Either gpa or uhva must be valid, but not both */
+>         if (WARN_ON_ONCE(kvm_is_error_gpa(gpa) =3D=3D kvm_is_error_hva(uh=
+va)))
+>                 return -EINVAL;
+>=20
+> Hm, that comment doesn't match the code. It says "not both", but the
+> code also catches the "neither" case. I think the gpa is in %rbx and
+> uhva is in %r12, so this is indeed the 'neither' case.
+>=20
+> Is it expected that we can end up with a cache marked active, but with
+> the address not valid? Maybe through a race condition with deactive? or
+> more likely than that?
 
-Ah, I misread what virt_addr_valid() does. It actually excludes
-kmap. Which, yes, makes sense, if the next line does virt_to_page()...
-
-Sorry about the noise.
+It's the darn PV system time MSR, which allows the guest to triggering acti=
+vation
+with any GPA value.  That results in the cache being marked active without =
+KVM
+ever setting the GPA (or any other fields).  The fix I'm testing is to move=
+ the
+offset+len check up into activate() and refresh().
 
