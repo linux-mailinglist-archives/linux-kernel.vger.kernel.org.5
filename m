@@ -1,87 +1,99 @@
-Return-Path: <linux-kernel+bounces-106424-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106425-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8BD3F87EE78
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:09:50 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F39B87EE7D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 18:10:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 468D2284D1A
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:09:49 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BEDED1C20DE0
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 17:10:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B69854FA4;
-	Mon, 18 Mar 2024 17:09:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E2DA55763;
+	Mon, 18 Mar 2024 17:10:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cCWb+peo"
-Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="0nbuP9Do";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="CczetMun";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="Jm1QiBgo";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5mzg8b9d"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2496054BC5;
-	Mon, 18 Mar 2024 17:09:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E292354BEA;
+	Mon, 18 Mar 2024 17:10:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710781761; cv=none; b=pl+DgRtJdloBMLpblXRLQ8JD+TRm4R/QulNjgpJsCAP/bPjeu2CDYfRFTpyxLTz1RIU11qS09PyxmGUAczvMAa44i2jAX905sZPGGWL+dbapIjWIP0slTMK4da43A9GYV/r1m9Om4aNPQmqO4fieXidPgwwrE6P6pdusXZimF1M=
+	t=1710781835; cv=none; b=risLy1vqu6Oag7SNK3xRr7nE89uMF6xzFtxfcfSQIn7KIHww+XwT49pvfk2KoVJcV1NPCje6yJhD0aifcd66GeCXGO49wahD7XD3ErhFdktW8NRvFNo/Ta0a8yGwarlz4zhW8e3oFi/UPc6cv7i4k7FxJS/W2pHIZJYDmVJgtTA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710781761; c=relaxed/simple;
-	bh=jNRe2ju3Zcf7G54gDt0tR7LNFlKhal3eQR/I3o+piho=;
+	s=arc-20240116; t=1710781835; c=relaxed/simple;
+	bh=vglBofb08ocuNhH6yEZdJnGOBKA0rmTwcb6yq52+l0o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=G+6H7IQkrkog4+Dt5HE+rSeTDCr/E65/HXKImpaj4iTH5h4C9K8p/5iI9dSL1/LCptQBDlasBnNnx3dieXMD2VWZqjL5hjkkCcRmIDrG+Ruug3OX26I2V31DZz3S2sTkSF2BfT89XQJsddP9Q48iQldSKukWYoTpzvHc8P84C1g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cCWb+peo; arc=none smtp.client-ip=209.85.214.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1dff837d674so14502185ad.3;
-        Mon, 18 Mar 2024 10:09:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710781759; x=1711386559; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Vfm8aqSFTZhq4k8QDQrwA8cmUmmr2go/ov1JbIvzwB4=;
-        b=cCWb+peoIxZFez2M2qCmPeVyD+CRjH0MwMdh+hUA//X1/hn7iJhwtX5M2RoCjw8nkm
-         HsJIfbS58YI0viS3NqmPpLEnz27T8mdYij1O94Xoypd5n+oFPa0n8HJhtIWcwMnJKV17
-         OAGtxAnmEKQJLVifrxuLKs/hJFDRjGccsOzujxj4iloAC1ENOgh6TCT0aWN0jKDlB2kb
-         9manIB+WYoBBkETDZg8opODJh8WmoeEOdTn1Z3mYJK0gUkpKgEGmInVcPN3xEjslwGNt
-         JfozWTYGZciZ6VjBb2gPGkC11FXX8JV71eL1GR4mg31Lf7tNQuQNl7himyUptXwQ+Dpt
-         OdxA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710781759; x=1711386559;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Vfm8aqSFTZhq4k8QDQrwA8cmUmmr2go/ov1JbIvzwB4=;
-        b=KgyzRKjYfvGczUlI16h69ULFolvBRB0tT1OeiDuDzgTV6dAclk8Xte9uS0HOCTNw0G
-         VCGRPJ20SFH6fL/h+9n5EROmZp448x3AGyc0wiDZ13JnoxfcB+goMW6D9QyYRTt9IjXD
-         ny+2hQ3skA16br1g6ZfP/ioqrvEawU9Amil5py8zQvs3xKKdGYCpaBPf6G9HdbaeDhpu
-         Ox51jONTFPzFq/2w2CRlsBL9KuKAtfFoydmtSfP040RYX+vqUIx+qV3eg1KtYtm0N51N
-         wWuTVn8dCbVqsdrSOBnYVDkZFQXitG2YrPMA3uyT3dpnb+V0MQ3oyhAsCbvW+xeVe05s
-         pP+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWG+zTBI8d2tYLJ+HemQmHOqf6KIm4qaJ08gKpwH7OJe1lAnxy9F7BrDIWR6Xxr4VzxTg8XWZU0MJdWtq0dZ5JXUtCrrVxsBy8kWLk+XtLP0dcLZKHbw6BEyUjvpNvTRxmSoPIDOr8RCQ==
-X-Gm-Message-State: AOJu0YwWD2DOWw6Ijbp1zsNIw99mDR8dNiZ7JcntLFQWPjOJhAciyZUE
-	MgVYrbfQlq9kcb7+IOUC6wI9gjpPUk4y0pnPgbfJZd/b9DZ27NcuBWtbRlRy
-X-Google-Smtp-Source: AGHT+IGWYQREuCQkK5LgsEXAibyefc0q3DE3EHrwCJvnmWmhe5CGw8hhYIJ1LtOZhGE8IkQ49cD4eQ==
-X-Received: by 2002:a17:903:8cb:b0:1dd:e159:3e3b with SMTP id lk11-20020a17090308cb00b001dde1593e3bmr348889plb.49.1710781759531;
-        Mon, 18 Mar 2024 10:09:19 -0700 (PDT)
-Received: from server.roeck-us.net ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
-        by smtp.gmail.com with ESMTPSA id mi16-20020a170902fcd000b001dd578121d4sm9552101plb.204.2024.03.18.10.09.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 10:09:18 -0700 (PDT)
-Sender: Guenter Roeck <groeck7@gmail.com>
-Date: Mon, 18 Mar 2024 10:09:17 -0700
-From: Guenter Roeck <linux@roeck-us.net>
-To: Frank Rowand <frowand.list@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	=?iso-8859-1?Q?Cl=E9ment_L=E9ger?= <clement.leger@bootlin.com>,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	Lizhi Hou <lizhi.hou@xilinx.com>,
-	Allan Nielsen <allan.nielsen@microchip.com>,
-	Horatiu Vultur <horatiu.vultur@microchip.com>,
-	Steen Hegelund <steen.hegelund@microchip.com>,
-	Thomas Petazzoni <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v4 1/2] of: create of_root if no dtb provided
-Message-ID: <886049ed-4f5f-4e17-86f4-1245024ade3a@roeck-us.net>
-References: <20230317053415.2254616-1-frowand.list@gmail.com>
- <20230317053415.2254616-2-frowand.list@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=hk1AFOBnxm+6YwN0jkjpFNMd+A8OIE1v3aSO74KI9LWqpkO+2444mwMWCjDclPM3XHU0reKO1ZoNzK2Ie2ygZc15OC0/6KYwY9QBW2OoDeW+Fp0iEI9iyMeXlTksIV9F2amH/VlSutw02NVZJGazj/FmJBxbUUYzGMwWdvxoeZY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=0nbuP9Do; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=CczetMun; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=Jm1QiBgo; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5mzg8b9d; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 284C534CBA;
+	Mon, 18 Mar 2024 17:10:30 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710781832; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
+	b=0nbuP9DokzheIoEsPXA0OxerxioLxW3Sm8h0EsTd5cW9sNgu3Bm1EMC91XFlJALAEsRRtF
+	ehL5Iz6TsqVlRJkCWNq7kLBYritXRCaEtrWwIZ8hLnVDRn33gjQ/+XU1Zt7r3y5fEcOJtJ
+	jyFEAB/R0uZOdNSFzKk+VVLo8nEqTLs=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710781832;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
+	b=CczetMun/FTASezaghTeCpzgumd5MoKKcQFUWCjntm93iAG3YA522yHO+1pvRAVHcOYwad
+	v8Kb04fmq/UJDtCA==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710781830; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
+	b=Jm1QiBgoUuHwzT2Q7NnEMvNtypImdmCBl7ttPKyCgtMf8Q/xuhB7VsZderZNgMVG1ZV8JW
+	00PvCQWbG0N2d6Ujo6g+sfz6OAeifwkTIgA1TfLxaWwMWvZEONbhybdFGTELtlJgSjtnDp
+	03obxyvKFdJrlcA0fw3STEVHcBQYKBg=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710781830;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=yarzoTsRuj8Emrnbn2M575ER7Vs+qkT96GvxoQnAZKI=;
+	b=5mzg8b9dg9L7DgcdFmKd6yPLEh4xvOx++dLCBFJsczjBdoPOuHHviRyrT+vjZjcQwUzk8R
+	O0K3wtceKxAOiRBw==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1E85B136A5;
+	Mon, 18 Mar 2024 17:10:30 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id fAp0B4Z1+GUjdQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Mon, 18 Mar 2024 17:10:30 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id CF33EA07D9; Mon, 18 Mar 2024 18:10:29 +0100 (CET)
+Date: Mon, 18 Mar 2024 18:10:29 +0100
+From: Jan Kara <jack@suse.cz>
+To: Kemeng Shi <shikemeng@huaweicloud.com>
+Cc: viro@zeniv.linux.org.uk, brauner@kernel.org, jack@suse.cz,
+	tim.c.chen@linux.intel.com, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 4/6] fs/writeback: only calculate dirtied_before when
+ b_io is empty
+Message-ID: <20240318171029.3rn3a7k7tse7b2bi@quack3>
+References: <20240228091958.288260-1-shikemeng@huaweicloud.com>
+ <20240228091958.288260-5-shikemeng@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -90,35 +102,91 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20230317053415.2254616-2-frowand.list@gmail.com>
+In-Reply-To: <20240228091958.288260-5-shikemeng@huaweicloud.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=Jm1QiBgo;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5mzg8b9d
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-1.14 / 50.00];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[7];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 BAYES_HAM(-0.13)[67.40%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,huaweicloud.com:email];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[]
+X-Spam-Score: -1.14
+X-Rspamd-Queue-Id: 284C534CBA
+X-Spam-Flag: NO
 
-Hi,
-
-On Fri, Mar 17, 2023 at 12:34:14AM -0500, Frank Rowand wrote:
-> When enabling CONFIG_OF on a platform where of_root is not populated by
-> firmware, we end up without a root node. In order to apply overlays and
-> create subnodes of the root node, we need one. Create this root node
-> by unflattening an empty builtin dtb.
+On Wed 28-02-24 17:19:56, Kemeng Shi wrote:
+> The dirtied_before is only used when b_io is not empty, so only calculate
+> when b_io is not empty.
 > 
-> If firmware provides a flattened device tree (FDT) then the FDT is
-> unflattened via setup_arch().  Otherwise setup_of(), which is called
-> immediately after setup_arch(), will create the default root node
-> if it does not exist.
+> Signed-off-by: Kemeng Shi <shikemeng@huaweicloud.com>
+
+Looks good. Feel free to add:
+
+Reviewed-by: Jan Kara <jack@suse.cz>
+
+								Honza
+
+> --- a/fs/fs-writeback.c
+> +++ b/fs/fs-writeback.c
+> @@ -2105,20 +2105,21 @@ static long wb_writeback(struct bdi_writeback *wb,
+>  
+>  		spin_lock(&wb->list_lock);
+>  
+> -		/*
+> -		 * Kupdate and background works are special and we want to
+> -		 * include all inodes that need writing. Livelock avoidance is
+> -		 * handled by these works yielding to any other work so we are
+> -		 * safe.
+> -		 */
+> -		if (work->for_kupdate) {
+> -			dirtied_before = jiffies -
+> -				msecs_to_jiffies(dirty_expire_interval * 10);
+> -		} else if (work->for_background)
+> -			dirtied_before = jiffies;
+> -
+>  		trace_writeback_start(wb, work);
+>  		if (list_empty(&wb->b_io)) {
+> +			/*
+> +			 * Kupdate and background works are special and we want
+> +			 * to include all inodes that need writing. Livelock
+> +			 * avoidance is handled by these works yielding to any
+> +			 * other work so we are safe.
+> +			 */
+> +			if (work->for_kupdate) {
+> +				dirtied_before = jiffies -
+> +					msecs_to_jiffies(dirty_expire_interval *
+> +							 10);
+> +			} else if (work->for_background)
+> +				dirtied_before = jiffies;
+> +
+>  			queue_io(wb, work, dirtied_before);
+>  			queued = true;
+>  		}
+> -- 
+> 2.30.0
 > 
-> Signed-off-by: Frank Rowand <frowand.list@gmail.com>
-
-This patch results in a crash on nios2.
-
-Building nios2:10m50-ghrd:10m50_defconfig:10m50_devboard.dts ... running ...R failed (crashed)
-------------
-qemu log:
-earlycon: uart8250 at MMIO32 0x18001600 (options '')
-printk: legacy bootconsole [uart8250] enabled
-Linux version 6.8.0-11409-gf6cef5f8c37f (groeck@desktop) (nios2-linux-gcc (GCC) 11.4.0, GNU ld (GNU Binutils) 2.40) #1 Sun Mar 17 23:38:59 PDT 2024
-Kernel panic - not syncing: early_init_dt_alloc_memory_arch: Failed to allocate 72 bytes align=0x40
----[ end Kernel panic - not syncing: early_init_dt_alloc_memory_arch: Failed to allocate 72 bytes align=0x40 ]---
-
-Reverting this patch fixes the problem.
-
-Guenter
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
