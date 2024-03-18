@@ -1,188 +1,216 @@
-Return-Path: <linux-kernel+bounces-105696-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105697-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1CEA487E2D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:46:27 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5855C87E2DB
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 05:51:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 53FF5B21963
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:46:24 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A75D31F21927
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 04:51:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E9C321AAD7;
-	Mon, 18 Mar 2024 04:46:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A21F120B0E;
+	Mon, 18 Mar 2024 04:51:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b="CeNRQD4N";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="cKHwx+kv"
-Received: from wfout6-smtp.messagingengine.com (wfout6-smtp.messagingengine.com [64.147.123.149])
+	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="ctPmIjx2";
+	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="lC2bwg5E"
+Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 99992208A8
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 04:46:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.149
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710737178; cv=none; b=PyhDOGnd3f+asqvqnwcbVAnZSztl2pJuymW8m1nlBP2ZXmHG7vqsGV1jr51j+gWD28ol4lXFA/T0z2ghFsgb+YjAmQFavXyyqkOnpl7r4/kgzcqJTa4O76NrRuNGmltOQbPFxu02ZMMxe99EI92RIXWT0Wh2nmytzAjUGSYgfaM=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710737178; c=relaxed/simple;
-	bh=zlUcRY/+h5uE2xqKt7oW8gRWIW5IbgRjWeZszpx+Aoo=;
-	h=Date:From:To:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=n6J5lUPbzZwmyMgFfhFy8No8zwh1hdyVUDCIcdYVj6sZtyLmfWHLA7Pot9yS1zWrU0WbVX5jr3IWdBD+Vt3G/gLGWThs3x3ZiuKFHjuaI8Iw9bbiFnm5DCu7lMn887YxSWkCJp/oFQziC+y2sIfcL4buKYGxEqekEoadVDl9FQo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp; spf=pass smtp.mailfrom=sakamocchi.jp; dkim=pass (2048-bit key) header.d=sakamocchi.jp header.i=@sakamocchi.jp header.b=CeNRQD4N; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=cKHwx+kv; arc=none smtp.client-ip=64.147.123.149
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sakamocchi.jp
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sakamocchi.jp
-Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
-	by mailfout.west.internal (Postfix) with ESMTP id 4577E1C000B9;
-	Mon, 18 Mar 2024 00:46:14 -0400 (EDT)
-Received: from mailfrontend2 ([10.202.2.163])
-  by compute3.internal (MEProxy); Mon, 18 Mar 2024 00:46:14 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sakamocchi.jp;
-	 h=cc:content-type:content-type:date:date:from:from:in-reply-to
-	:in-reply-to:message-id:mime-version:references:reply-to:subject
-	:subject:to:to; s=fm2; t=1710737173; x=1710823573; bh=xhipH5R8dC
-	uM4+XsucMJnjuzsIp1WFZtYIsfPrV6uAk=; b=CeNRQD4NiHE18F6/sRelJJjZTn
-	SGtLf29mrIwZV6SRIDQmZqjzsuWSccB8VzmO9v9NbGH1yN6PM/6EdJIO8S4AHL54
-	An+Abs/am2655XpiITrnJxT3VuvJNSBDR+sFXNbzHTM+SV/pCRlOlRxKch2i1JuJ
-	7r6IcvyLs/3ggQQ985DHizczhK1+zwlBxR1geRQgi7zd18z+INM52/FuZ2aAasYc
-	j/XrO74Iyvy/BqUHuaoQZSWQGAFwH3KDI8G/vT9DijrE+HgfRS+udFHH0FEwZLsz
-	CdD7ZpB5aPAF4Wsb3uks9sQISlvC7oCwdjGeV2dS+VHEjogg8TcSrUpIBaSA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:content-type:content-type:date:date
-	:feedback-id:feedback-id:from:from:in-reply-to:in-reply-to
-	:message-id:mime-version:references:reply-to:subject:subject:to
-	:to:x-me-proxy:x-me-proxy:x-me-sender:x-me-sender:x-sasl-enc; s=
-	fm2; t=1710737173; x=1710823573; bh=xhipH5R8dCuM4+XsucMJnjuzsIp1
-	WFZtYIsfPrV6uAk=; b=cKHwx+kvtdwvLsL9zol1O5iwU5QaXpxO3F9N0t0AD/k1
-	/k4YbvBrHHTc9aly9woJRjd/8xTLoaxEso905WlXNUKVrr+V5Z7Wlck8JSkLriF8
-	bIYOF/WAq8FjC7nqyLNjZr5DqoZbaak3bFUroJa5hjRbd5V9p58NeuD2VRq9O7xi
-	bVCdR5uqBn/qjLCk7Q7qsExR4Z3Fm+gfnrVVwcwri++v2iQKpC3ndKXLDkDvRw+K
-	HQrJufsEO7Zx8T2q4SLzs9YAMw4CJViETn7eLeuhnR2XVJxJSYPDWRLeV+Hf9S04
-	ZvJiJd7fx1ytpCskjzqOxoLu0vztPRt3drf2IPzzQA==
-X-ME-Sender: <xms:Fcf3ZTAxjNrDhgEXhNobdPjZ6meeJ9ISjlPNgk_JBQqgqCwftvHncw>
-    <xme:Fcf3ZZgtGEI0FVYj8KnMwsa5JbLnPjELvI9OZcostK1oHLcaA4h1XS4z3Guk8Fd0G
-    X4uNz77vsUl1aq649o>
-X-ME-Received: <xmr:Fcf3ZelRwqyblbDVaxkmitedrMb8pFU1vsMSm3Ru1D-hwW-CJzofbyCadaExmbpb5TAOZ3Nf3DaUZDeJxtxCCZZXbtsC_5dvfro>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrkeeigdejhecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpeffhffvuffkfhggtggujgesthdtredttddtvdenucfhrhhomhepvfgrkhgrshhh
-    ihcuufgrkhgrmhhothhouceoohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-    eqnecuggftrfgrthhtvghrnheplefhueegvdejgfejgfdukeefudetvddtuddtueeivedt
-    tdegteejkedvfeegfefhnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrg
-    hilhhfrhhomhepohdqthgrkhgrshhhihesshgrkhgrmhhotggthhhirdhjph
-X-ME-Proxy: <xmx:Fcf3ZVyiA_os9oEkwxCQGDsEagtPTLEGZq1Ksg_m39N8blnh5EqLhA>
-    <xmx:Fcf3ZYSNfmixv_8HvohEbB-BisvpVq2m_w6JsDpus1G5O7cgwHWlwg>
-    <xmx:Fcf3ZYZ1nZ89m57C-UlGagougelF_HWOV2tezuiD4oXsayKSagk2tw>
-    <xmx:Fcf3ZZT_xmuK4DDVi-H-vvDEDRRgdO97JWCNf1Noj6Nporss76aDSg>
-    <xmx:Fcf3ZeNsua5jGmrPZGFTHu9n24beHzHNHwO4hzxojN9MK7vYCsXVR5pY83U>
-Feedback-ID: ie8e14432:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Mon,
- 18 Mar 2024 00:46:12 -0400 (EDT)
-Date: Mon, 18 Mar 2024 13:46:09 +0900
-From: Takashi Sakamoto <o-takashi@sakamocchi.jp>
-To: Li Zhijian <lizhijian@fujitsu.com>, linux-kernel@vger.kernel.org,
-	linux1394-devel@lists.sourceforge.net
-Subject: Re: [PATCH 1/2] firewire: Kill unnecessary buf check in
- device_attribute.show
-Message-ID: <20240318044609.GA659599@workstation.local>
-Mail-Followup-To: Li Zhijian <lizhijian@fujitsu.com>,
-	linux-kernel@vger.kernel.org, linux1394-devel@lists.sourceforge.net
-References: <20240122053942.80648-1-lizhijian@fujitsu.com>
- <20240122085604.GA254251@workstation.local>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E3AD91DDE9;
+	Mon, 18 Mar 2024 04:51:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710737479; cv=fail; b=fCajZEEQS1EQhTW2XJacFAeTy+1s2PaZFeBlu4WI1KVigFIBkY4/UB/lRSnKmga5Q+Rfvqr1eFFcHJkKMsPU0hFu64HNumB3avOblbCLVpZ2+FMzi3MkAmWGCplB+dK8qd9YHd17NjPl4CS12o0jVRrUDqvxIjK4rNbuej/eB9Q=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710737479; c=relaxed/simple;
+	bh=UcE4NO/OJ383x81NoEAPOC5aIpxW7s29M2VgLeDFe98=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=PnL8nd8A61MQh/4VC4wfBc6+Q1CJDjtdtrP6MZABE+WFg0+JKIIDwDOih4Rbp0N7s6CHeGK5m91pWZOVsGSo6OGv/We1qOgforsVcfUgMFounTt4WWMZDJbiZr+OKxgm6m4GlChzPiGM6Pe0eG1CcbXLpPZGHgURDMGEQjN1WC8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=ctPmIjx2; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=lC2bwg5E; arc=fail smtp.client-ip=205.220.177.32
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
+Received: from pps.filterd (m0246632.ppops.net [127.0.0.1])
+	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42I1iENO024290;
+	Mon, 18 Mar 2024 04:51:07 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=message-id : date :
+ subject : to : cc : references : from : in-reply-to : content-type :
+ content-transfer-encoding : mime-version; s=corp-2023-11-20;
+ bh=pleFli8ci26IO1kMaTXfZezXzBTNc859SJuQJTuU5kQ=;
+ b=ctPmIjx21V/XQBbBkV1tPRUC13TdFSyYXUjflBt2v5dqtCbhgylGMtrxeUlTKoFkao9Y
+ 8tLi+gb3mqUodHzjZg3FUAY50rWacVM3FefdBHcQ4CPSBgzaqLWVUcNy8cpWIte7D+di
+ z5uEL3hFpmtug7e0aFkZMp6Rniuirkodj54ontBD8Uw0bkIMEivbVIeNeL4GAHceYi1a
+ E76NZpbMnWLz2HD3PPHTMoPVgR5qlIxyZlUJ39wd1CXBW5Stq/xTT01I6UvQny3/qQLX
+ Fa7RGSPRKnO19DhPaYL7FPqiuFAmN7IWOk2FHvRNY6JXT8dcUEXyS2LxHjNhC9omvgGw lQ== 
+Received: from phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (phxpaimrmta02.appoci.oracle.com [147.154.114.232])
+	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww31tj5k6-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Mar 2024 04:51:07 +0000
+Received: from pps.filterd (phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com [127.0.0.1])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42I4Gsjr007615;
+	Mon, 18 Mar 2024 04:51:06 GMT
+Received: from nam10-bn7-obe.outbound.protection.outlook.com (mail-bn7nam10lp2100.outbound.protection.outlook.com [104.47.70.100])
+	by phxpaimrmta02.imrmtpd1.prodappphxaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v4ccmj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Mon, 18 Mar 2024 04:51:06 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=NNRzERnb8CWDdpdzmwLEmj64ceYiV2g1D/WAfvcMnck5XqUfZ9qm7u079pKPoGLAxuWnl2Q0UO5o0mciBD3TBV9f8z+C0sPeo9k/oy92UQsKUE+hp3G4nozLXh1JmauhzrCq/wlOWY8lR7g9V3i9uW68lz8yeqNOy45jjd3fTfysaU1mqadSGnzvEIryH5IxpjIUQRNe550U+2tDDo5LftuB6K9twLPWVd5nW2GTEqPmwaOzoLGttezXDH2njiyMRnq9YX3W5tC9+MvnRKAIt/CStKnFbSOzSkHG/hmpa4weXJLsCo/SV6ZlyDqs4U2TMP39y1wEMF7sIvpjyCi3Hg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pleFli8ci26IO1kMaTXfZezXzBTNc859SJuQJTuU5kQ=;
+ b=JHPGgT/twkx1qlmmk+mgS55pFainrbs9wmtTRZZxmOqMqw2Wy9yfCe8kVzdmd4BMCmYAOIR5U+6Ru0+2f+eh5wZpcFrK6UndDjEN9DdFuMDhL14hwX1fP8KMZ5HG2uW76Dt0blSrUgdirthbhzSa/Fo9+N4wP60uWOaA2LRw+A+WYt9++kwddVQQDQk3VUQ+MbqwKlO9PVd+hyeLv6mPuoNwxcJd3G/NJsz8Aqh32Yf3Ev50wleSgSa1XfnZWbIgcPYs3mA2CHgiSe3G4bdh4nQO8K6kPXOCyHXcoldi6i239St00mNmq+DlWuA/wUTMdOcacMQ/GdW9VReYbuNHPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
+ dkim=pass header.d=oracle.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pleFli8ci26IO1kMaTXfZezXzBTNc859SJuQJTuU5kQ=;
+ b=lC2bwg5Exxum/T46X7TYOtUtisuqbbifJoHB0Hvk2FWxMDc58A5hIRrz5Iw86pqD4dvR+KSbag+dYhwQ28NEiRanfJDIHCivjZ/Qtlazqu4pluksfelTYIHf/GhpTTlZlpwKYWW3W/ibD6sPGLXlpT1zhzfvly4aSlp6mDYA3tI=
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com (2603:10b6:510:148::10)
+ by BN0PR10MB5031.namprd10.prod.outlook.com (2603:10b6:408:117::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Mon, 18 Mar
+ 2024 04:51:02 +0000
+Received: from PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b]) by PH0PR10MB5706.namprd10.prod.outlook.com
+ ([fe80::814:3d5c:443b:17b%7]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 04:51:02 +0000
+Message-ID: <d9d6d334-7d50-4d36-a03e-f2f6811e0ecb@oracle.com>
+Date: Mon, 18 Mar 2024 10:20:54 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: linux-next: build failure after merge of the btrfs-fixes tree
+Content-Language: en-US
+To: Stephen Rothwell <sfr@canb.auug.org.au>, David Sterba <dsterba@suse.cz>
+Cc: David Sterba <dsterba@suse.com>,
+        Linux Kernel Mailing List <linux-kernel@vger.kernel.org>,
+        Linux Next Mailing List <linux-next@vger.kernel.org>,
+        Christian Brauner <brauner@kernel.org>
+References: <20240318091755.1d0f696f@canb.auug.org.au>
+From: Anand Jain <anand.jain@oracle.com>
+In-Reply-To: <20240318091755.1d0f696f@canb.auug.org.au>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0053.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:98::14) To PH0PR10MB5706.namprd10.prod.outlook.com
+ (2603:10b6:510:148::10)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240122085604.GA254251@workstation.local>
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH0PR10MB5706:EE_|BN0PR10MB5031:EE_
+X-MS-Office365-Filtering-Correlation-Id: bb1591b0-d1f0-4939-fd57-08dc47070322
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: 
+	DIg5PADRuy3etMIHjRg3pv2EUIoPTN9ZwBDhSNqxBMX7vJk/AIAzzSiXZqHgK4N/TTEzWnPOQu1y0bCOSd6R6a1rxkVnt82NT3DH1MhZIa0fvc04gFf72ftYb2SvhAW8Ah2YhEHwcW8MFCquy0aEKUSlDE9d8zV5e/SYWAhONC4YY6hsZK1/2mIXa/5eRZx434C6TqjRJMkvcG3Cer9t2/1q2VMtJVlH8pRN9/BjEJ72pKB8XrWyWEMC0U7VpiW2VA/2e6rUyx9RlAtozf3hgecJry69DFWFr3nW38Pesiglsuf7Ey3eOppJ4R968IhSHG0bkxxFM51wEmYgz8hx7oFgd3Zad54m6NlC6U51SBZQhtPMJnxiCGuVvun66/oGNHmKye0Z69/IKg7pnCvOS93PnTjk+T2QT/jFm2VnGJMEbwRD11mZG0gqaXKD6xJpU6apFZzTXUxyR14bRD6U7cZfYwi2QSnKnLrJFJZ1wqMAggR4cn8vffZ/x0kBRAxeduBA/gutG3iKveDkREreF113dIjwsCLK6M2vaDYGhhfnTglrTvjnLD34epkH3b+F0P72JneGUjLlj4reuHHK6tpgP4dWwgMGchkfRTYLi1M=
+X-Forefront-Antispam-Report: 
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH0PR10MB5706.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: 
+	=?utf-8?B?THI3eUVwWWFudkNTdGl2cG5uQkF5R0sxbytqak9PUWZqNkhlTGNqUjF6Ujdh?=
+ =?utf-8?B?UnNBRHdaT3krS1ZxRXVWUHQ0allpelByR1NNMmFBZVdzTGlHKzBBUm1qRUps?=
+ =?utf-8?B?K2pIZ2dMZzJqdDVXWSt5OXRmRlM4Qk10Q0FtVys4Vks0d3pOc2JUcFVWWjN5?=
+ =?utf-8?B?UTVsTUt0WXpKVEFnSjVEVkJoZFUzUHo5S01pN0I4VWYyU0wyM2o2YUFWOVU0?=
+ =?utf-8?B?MG1rSVdhSTVaMjFvaUh1ZnZXSU5kZlpVUFh2amQ1WVcxRkxmNC9JbFEzZFZa?=
+ =?utf-8?B?c3JTbCs2TmJ0TzJKL0JGYTNnd3prWTZQN2x0TS9BUmgwb0xYcXNlT3BnUmQ5?=
+ =?utf-8?B?RDNxUG9oSTI5LzVSYlkxYU5oYThOdDFLM1RJd3d3Nk82R3NRK1VvcHkwcTFE?=
+ =?utf-8?B?akc2Y3hRa0ZXVTlHNmNhcTIzOVREdGJxWnhnYmgwY1RLVCtQVGg5bThLbUNq?=
+ =?utf-8?B?dWhCditKbW1uazNuVHdicm0vTlVZcDdDTkg4dU1FQnpkMlFTY2FxSFQyeGJn?=
+ =?utf-8?B?b20yT2JtazI0ZXl6Sm5vUWxIQ2VJS1JqdFY2QTkyZFBwdXQ3N3RtcXVhTjYz?=
+ =?utf-8?B?V2JML3VqZGhHcUFHNk9DTU5tQjB0RHp3b0d1QlJtaWlZM3BZaU5Ra0RyblRs?=
+ =?utf-8?B?aTVXQkVjY1ZqZmg5YXllc0xhL1FQdythVnBLd09PbVRFRFRReUdRdU42RVla?=
+ =?utf-8?B?MTZWeGhuKzRVb0VXUVgyZlFGaGloVnhZZU1pVysyWHF5eHd0OS9lSU81eDUv?=
+ =?utf-8?B?cHY0SzBaTHRaNU1hQXZmZk81VzErNFdML1lLN1ltWjhXZGxQZlpqWWhONi9s?=
+ =?utf-8?B?aWo4Y3N4RkJ0QzhhdXdlVXlBS1hsM1dBUlJkUzhZRVh0MWR4UXpkdjY0VGto?=
+ =?utf-8?B?N3RzNG5uOWRKVTMvcmRCNXYzUnJGS1hOZktuSUh2Y3N6ZlFmTGVwelA5S1RY?=
+ =?utf-8?B?S0gvTHR4a0hyQXh0eTFhd2RQVEZGOERFa3I4K0lSOEZGVW1samhoT1lFYnd2?=
+ =?utf-8?B?cWgwdFFRbkI3Z3VGSUF6SjJYWG1yQTMxaXZCVlNya0hiYVlROXptN252aHU2?=
+ =?utf-8?B?eWFsUW5wcnY3QmIxMzg2dzhObVJ0QjJIUkY2Z2FXSmJjZ1ZxZEVNcnZEdWdt?=
+ =?utf-8?B?blpkWGludjQwWS9tVjlIdlhtS0cxL2VkdXlYN2s4clBxemdhUzFrTXJaZkJZ?=
+ =?utf-8?B?QllDSWtzYjBsdkpXcFpCQ2wvUnJocWU5OWhFTDl6TGk4aVF3NmwrRXYwYWRn?=
+ =?utf-8?B?N2RseU93OWcvS283T3VvcmxrUWcrUW4vSEJGM0hHV1A2dDdJYXJtdStsdGN4?=
+ =?utf-8?B?QnVsTDNVbHFGbnA3aGhUQzhIOUVvQXRxc3VGZ2hTdVBvQnJTaGdLMk5NQTdi?=
+ =?utf-8?B?b0Y1R1Q5WDgzcGVXbGFUMVgzbVRFRXIyT3FwWXUwSkJNL3hzbGZBR2hnaVp1?=
+ =?utf-8?B?WVVLMkpxYkRuR3ozTmtEcEY5eHJ0aXZmYWVNWjZXTUY0VUdDYlB5WEdneDJ1?=
+ =?utf-8?B?Vm9KN3ArOEd2MXRWcjRPdEdhM1Z4NEtKOWpwSSszMEdZM3B4dnhGYjVXTE9v?=
+ =?utf-8?B?L0ZsTHBrcWJMdzNUSThzSU4xdERXd1lpNHBubzZNTVJNU2tpbjREWGtmeFlS?=
+ =?utf-8?B?ck1WSVcxUGJ3UURqZUM5YndyUW95UFJOT2cvL2o1K3Z3WEFJdGN3YUlPN0hR?=
+ =?utf-8?B?OEhMenh0ZTVzVnozemFVVFgvaVF1dEUrSUpMK0t5cmJGSjdROHZRVHNnVG9r?=
+ =?utf-8?B?VnBwbTh4djFjWGdSMzd5bElGR0ZSY29HQ0JjS3dCbFkwTzdHQTdPNU9nKzlM?=
+ =?utf-8?B?S2gra2xzcGt5ei9zS2ZZaFUvZUsvRkszcG1jV1ZESnIwT29PUlhNSWZJNkxl?=
+ =?utf-8?B?bnp6czZvbWdJUTc3Z1ZZS0RRNFFDanNFc3lLeExteFV2Z3pyRFZVbWxOd1N6?=
+ =?utf-8?B?aXhrRXFXVG5MbmxReTEyZ0NzRXJ2RHFlK3pBemlWTkZlSU1OVFhIQ3Qvc3Fz?=
+ =?utf-8?B?T0JiVzB2MzZ1cGhacE5VMEE5UWNVeW5hQWR2WGhINFI0RXZ4S0hsalhqM2ky?=
+ =?utf-8?B?MEFjeTZGNlVFUE5FbFZPVjVWK0s0Z016aTB1blJXMWZGZ25lbWFsMDdreXdm?=
+ =?utf-8?Q?VmpDMtRIuix7vY+C5qV8jmo3k?=
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
+	FfWibi2/QfJvLUkRavKX66Lxam78W7kvUHua0eY3R0FUUW7HHAuc9UUOnqYvkGu8gAKQZiOptUDuiCNdNt7ncXncEyqoJ4aGaudKd5rhhOpxUtQ2mYxAIskK/CcKCzKSkXZ811UX4cD5rfxiBiIj23Nekao6srtNR6Ogg9GKpNRM1FH96SzLZb8SbTEE/PZ4anFbIYcGfrMZx8boH27q8sEJzeUWuNOyFVRmTk5Ccmm0B6pQvWu8FVoCkjPVouyNTo3Ttx85dRp/kzNrCKEe+nL00BLswGIv+QowC/Bsc1KIlH26ttt2wQ2qPJGxxu1lbEQjGCsyXcBWulOdWbtTQ9UQmJsZHXmpZwRXBfzvcOJ/LdHvAAvqHRc7AZyJrRpeQO8wW3UGfb8ax2l5nSPjoTiBvUiZo9oHFa99iJhg/BD2dOZ9TBnjjKwAJoMQf1zpIcV+zzFhaXNc7Q3Z7MMbknXOniDZZ7tAbdp6xS0Aqvil6Kzx6n3csuNbwiMItAA7+NJB1NPdVfTbUwurkDeYu2BA13ple4uAfEtjzhywgbHZ9Nmh/mh4FjQNshdYQVSM9Dl5IHcuiZEi0RQygcXv3STrubJ9gq8Fodj4mI9CW6w=
+X-OriginatorOrg: oracle.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: bb1591b0-d1f0-4939-fd57-08dc47070322
+X-MS-Exchange-CrossTenant-AuthSource: PH0PR10MB5706.namprd10.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 04:51:02.5797
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: E+g0/Ol+WYDJ2ZzJ5RGztBlSRHiYGJZNkXmEWSAptDVvGJhZjBWqotuynKXvqacLSwgHKQpGG99GnMXi0F93gw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BN0PR10MB5031
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-17_12,2024-03-15_01,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 malwarescore=0 adultscore=0 mlxscore=0
+ bulkscore=0 mlxlogscore=999 suspectscore=0 phishscore=0 spamscore=0
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403140000
+ definitions=main-2403180034
+X-Proofpoint-ORIG-GUID: CelVlTXGGrtIF8CAilCZP8xyT879l7SK
+X-Proofpoint-GUID: CelVlTXGGrtIF8CAilCZP8xyT879l7SK
 
-Hi,
 
-On Mon, Jan 22, 2024 at 05:56:04PM +0900, Takashi Sakamoto wrote:
-> Hi,
+
+On 3/18/24 03:47, Stephen Rothwell wrote:
+> Hi all,
 > 
-> On Mon, Jan 22, 2024 at 01:39:41PM +0800, Li Zhijian wrote:
-> > Per Documentation/filesystems/sysfs.rst:
-> > > sysfs allocates a buffer of size (PAGE_SIZE) and passes it to the
-> > > method.
-> > 
-> > So we can kill the unnecessary buf check safely.
-> > 
-> > Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> > ---
-> >  drivers/firewire/core-device.c | 14 +++-----------
-> >  1 file changed, 3 insertions(+), 11 deletions(-)
+> After merging the btrfs-fixes tree, today's linux-next build (powerpc
+> ppc64_defconfig) failed like this:
 > 
-> Applied both patches to linux-next branch, since they are not so-urgent 
-> fixes.
-
-I realized that it causes an issue at the path to initialize device
-structure for node in IEEE 1394 bus.
-
-(drivers/firewire/core-device.c)
-fw_device_init() / fw_device_refresh()
-->create_units()
-  ->init_fw_attribute_group()
-    ->attr->show(dev, attr, NULL)
-
-kernel: ------------[ cut here ]------------
-kernel: invalid sysfs_emit: buf:0000000000000000
-kernel: WARNING: CPU: 5 PID: 647501 at fs/sysfs/file.c:747 sysfs_emit+0xb5/0xc0
-kernel: Modules linked in: snd_fireworks(OE) snd_firewire_lib(OE) firewire_ohci(OE) firewire_core(OE) cfg80211 veth nft_masq crc_itu_t vfio_pci vfio_pci_core vfio_iommu_type1 vfio iommufd rpcsec_gss_krb5 nfsv4 nfs netfs snd_seq_dummy sn>
-kernel:  crypto_simd asus_wmi snd_timer ledtrig_audio cryptd cec sparse_keymap nls_iso8859_1 rapl platform_profile wmi_bmof k10temp i2c_piix4 snd rc_core i2c_algo_bit ccp soundcore zfs(PO) spl(O) input_leds joydev cdc_mbim cdc_wdm mac_h>
-kernel: CPU: 5 PID: 647501 Comm: kworker/5:0 Tainted: P        W  OE      6.8.0-11-generic #11-Ubuntu
-kernel: Hardware name: System manufacturer System Product Name/TUF GAMING X570-PLUS, BIOS 5003 10/07/2023
-kernel: Workqueue: firewire fw_device_workfn [firewire_core]
-kernel: RIP: 0010:sysfs_emit+0xb5/0xc0
-kernel: Code: 25 28 00 00 00 75 29 c9 31 d2 31 c9 31 f6 31 ff 45 31 c0 45 31 c9 e9 5a 89 c7 00 48 89 fe 48 c7 c7 64 06 3f bd e8 1b 80 b4 ff <0f> 0b 31 c0 eb c7 e8 a0 ea c5 00 90 90 90 90 90 90 90 90 90 90 90
-kernel: RSP: 0018:ffffacd857103cd0 EFLAGS: 00010246
-kernel: RAX: 0000000000000000 RBX: 0000000000000000 RCX: 0000000000000000
-kernel: RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
-kernel: RBP: ffffacd857103d20 R08: 0000000000000000 R09: 0000000000000000
-kernel: R10: 0000000000000000 R11: 0000000000000000 R12: 0000000000010000
-kernel: R13: ffffffffc28e2ff8 R14: 0000000000000000 R15: 0000000000000001
-kernel: FS:  0000000000000000(0000) GS:ffff918190080000(0000) knlGS:0000000000000000
-kernel: CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
-kernel: CR2: 00007835dca0b048 CR3: 00000003cb898000 CR4: 00000000003506f0
-kernel: Call Trace:
-kernel:  <TASK>
-kernel:  ? show_regs+0x6d/0x80
-kernel:  ? __warn+0x89/0x160
-kernel:  ? sysfs_emit+0xb5/0xc0
-kernel:  ? report_bug+0x17e/0x1b0
-kernel:  ? handle_bug+0x51/0xa0
-kernel:  ? exc_invalid_op+0x18/0x80
-kernel:  ? asm_exc_invalid_op+0x1b/0x20
-kernel:  ? sysfs_emit+0xb5/0xc0
-kernel:  show_immediate+0x13f/0x1d0 [firewire_core]
-kernel:  init_fw_attribute_group+0x81/0x150 [firewire_core]
-kernel:  create_units+0x119/0x160 [firewire_core]
-kernel:  fw_device_init+0x1a9/0x330 [firewire_core]
-kernel:  fw_device_workfn+0x12/0x20 [firewire_core]
-kernel:  process_one_work+0x16f/0x350
-kernel:  worker_thread+0x306/0x440
-kernel:  ? __pfx_worker_thread+0x10/0x10
-kernel:  kthread+0xf2/0x120
-kernel:  ? __pfx_kthread+0x10/0x10
-kernel:  ret_from_fork+0x47/0x70
-kernel:  ? __pfx_kthread+0x10/0x10
-kernel:  ret_from_fork_asm+0x1b/0x30
-kernel:  </TASK>
-kernel: ---[ end trace 0000000000000000 ]---
-kernel: ------------[ cut here ]------------
-
-Furthermore, 'show_text_leaf()' returns negative value when the NULL
-pointer is passed. It results in the lack of vendor/model names from
-sysfs.
-
-I absolutely overlooked them. I would like to fix them within this merge
-window, or revert them as a last resort...
+> fs/btrfs/volumes.c: In function 'btrfs_scan_one_device':
+> fs/btrfs/volumes.c:1413:55: error: 'bdev_handle' undeclared (first use in this function)
+>   1413 |         if (btrfs_skip_registration(disk_super, path, bdev_handle->bdev->bd_dev,
+>        |                                                       ^~~~~~~~~~~
+> fs/btrfs/volumes.c:1413:55: note: each undeclared identifier is reported only once for each function it appears in
+> 
+> Caused by commit
+> 
+>    cc019bc0d55b ("btrfs: do not skip re-registration for the mounted device")
+> 
+> I have used the btrfs-fixes tree from next-20240315 for today.
+> 
 
 
-Regards
+> This is actually caused by an interaction with commit
+> 
+>    9ae061cf2a46 ("btrfs: port device access to file")
+> 
 
-Takashi Sakamoto
+Ah, unaware of this change. Thanks for the report.
+A new fix, built on top of this change, has now been sent out.
+
+As the Linux-next branch no longer has the commit cc019bc0d55b,
+I've sent out the entire patch again.
+
+https://lore.kernel.org/linux-btrfs/57a63f9905549f22618a85991b775fba76104412.1710732026.git.anand.jain@oracle.com/
+
+
+Thanks, Anand
+
+> which has been in Linus' tree since March 12 (and linux-next since Feb 26).
 
