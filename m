@@ -1,255 +1,154 @@
-Return-Path: <linux-kernel+bounces-106302-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7812B87EC29
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:28:42 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91EF387EC37
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:31:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2F783281B37
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:28:41 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AC8A31C2128D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:31:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C7284F214;
-	Mon, 18 Mar 2024 15:28:35 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A457B50264;
+	Mon, 18 Mar 2024 15:31:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="oW+ds6Wx"
+Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C62C74F200
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:28:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5B1054F891
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:31:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710775714; cv=none; b=ntp14qBuytHGoX558daineCrnAAf1deWLMq/BYJx/zcj6a4hQbkSCSHu0ciL9moSSqUFK0dEm2ze67WgSzbCT8b2U/t0qDTZir7txufS4Vz537fxHb2ftzl4FHcEAACraXg92UztQ6puPVYKScQa0KSqi8B1pITTAtTboCWREbw=
+	t=1710775887; cv=none; b=HzlLs1P94RZfiNG4H+n0JKtZknoC53/7B33XV0Rjp28XondEH8benY1NyADSvs1fn+ylBVo9vrYnMeA58jjac58000b+MyyXPiFpNNtxkv0BikCDBnhg+umB+YRVCDaYWpukv4h9V840O35mdWRqw6JIZjf09MyleItUyx73UPs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710775714; c=relaxed/simple;
-	bh=cesoN5LrQO2lw73x5MpjoTR1Qb8KG91ktWn+qjMYN+o=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=OdyDceATefNJ65MOhJncPHtTHpIBJ2GFsYF22FgUk6/p+bIjANt9nsgrTl8gT19wbAA5OnzHHH80ZXJugyoPdEupFO188gAPN7PXJ+CaYgdM0FEbvfwxKGXbokYyd4+50HxlqoGKWR7i+GNjdo+/+V+eQy2+U/A3QbGDhyeISZg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id F2C3AC433F1;
-	Mon, 18 Mar 2024 15:28:32 +0000 (UTC)
-Date: Mon, 18 Mar 2024 11:30:53 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Alison Schofield <alison.schofield@intel.com>, Beau Belgrave
- <beaub@linux.microsoft.com>, Huang Yiwei <quic_hyiwei@quicinc.com>, John
- Garry <john.g.garry@oracle.com>, Randy Dunlap <rdunlap@infradead.org>,
- Thorsten Blum <thorsten.blum@toblux.com>, Vincent Donnefort
- <vdonnefort@google.com>, linke li <lilinke99@qq.com>
-Subject: [GIT PULL v2] tracing: Updates for v6.9
-Message-ID: <20240318113053.7f87ce7f@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710775887; c=relaxed/simple;
+	bh=m4+I6MBoUeUHGxnrD5vzjttWojTZkPCJQ14dx3myEDk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=lVJ3nDmV131SulVAl3hVJMV/C/5CtZvXCV0bX35jDSYwuOXuGd3pCl2YQt0031YZm3QwPbCZ1PBvS06DwM74GI3Hgx5JT2m2/pQ88U942GKLGBBXCv+B4K9J0KncKLBNLh7xAkL7ubJJudOTT5DlMx/W4QIIYQY9SlxmawFpSTQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oW+ds6Wx; arc=none smtp.client-ip=209.85.160.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430d3fcc511so197001cf.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 08:31:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710775885; x=1711380685; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=VA9/NiX8/E19WUiHKA9tr52IADuhSxANcPtKQ97R1nM=;
+        b=oW+ds6WxOpW/jRhOjraBRnZ9oYYtUDIgqGcTiI85U7K+Cpj8UktYnD9iWkB0J6OnGZ
+         c2TNHu9EpLVqHrKYgQayqEAY3RLhQc/B/mf6fNManTAVjNN/zEA02701EyoSgQukjHYM
+         MK8S3x0j44jgkZun13lguylavxOPYCsWEuvLSIZWcu5xr6C4OSoEkTFuRA8xmBXR1y+V
+         /uFIY9300VbpIrFPs3Cn9cgtXjwkjtF8K0urRG+6KKl03MF7V9SiUMRrgtTpp5pVEK2j
+         2jdwfKzWkL27aaIzCGKLYVXkz9qR7WzfeJ3IUoTfFSAyt8Iq5U5oTaodMnrlwV0ffY1G
+         3Zyw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710775885; x=1711380685;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=VA9/NiX8/E19WUiHKA9tr52IADuhSxANcPtKQ97R1nM=;
+        b=NByCJfWv1a7wjeYQ+2XoSSkxChnYflqYDPfn1wwnSwW9YEzjHZZccJlrHsBRG4u0m0
+         Ew/N3T0tRLhk7v9Xhf4oRs/HryUB/w75F9JzdnvsjPT/fythhd09UMwCD4vW+ohB3b2O
+         gxYp5DYjhwMhX3c8u7GYDYvlkhmx+jlv+6BNUXqwvBVqQFnssVZX7hUxWEAAnLI1srE4
+         dRZGxK6UXYac7DgU/Fju6/S4rMyG8+8XdqVmNctrtak5iXvNiY88yuhVFBB+79ioHKXE
+         VE0go4MWkAOsWYiJOdeO96+kTPlIKsDJQpPk4mIj9WvZd67L5SNJEYjQyegtfabSfVxB
+         mVgw==
+X-Forwarded-Encrypted: i=1; AJvYcCVs+ZykbG+OkSpBBP2UYEtsdAej7UUJ3vFjXNnulskeFGnnIV1mdoLM/4Cyk3ZoD4qdFpg+V8+AlJbkq1n+hdfalx00cEcRHBcX/LW9
+X-Gm-Message-State: AOJu0Ywlyh4whC0fNwL1uBHlUvwGGjRryYmLLw/vWB0kUs4YyTeqBsxN
+	MWD7y6caPfkNJePEd/uhSdmG3iH8GN5hwcq7GtyexJdXYiFxeRsZ19crcbZboOMpEDN7Vd883pi
+	sSk/Cm0x5pM45WCymJJLRwl1tGjaeelRQXsNi
+X-Google-Smtp-Source: AGHT+IGzWqUIOUu5I0duuZgvPFrMrMabv8H/NdN0jk0nuFo5i4muxUfa/my0tZITK0IRu5y8Tg7eEzkZ4UvjvZQkd6c=
+X-Received: by 2002:ac8:5913:0:b0:430:a5df:a3af with SMTP id
+ 19-20020ac85913000000b00430a5dfa3afmr367264qty.5.1710775885132; Mon, 18 Mar
+ 2024 08:31:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240318110855.31954-1-johan+linaro@kernel.org>
+ <20240318110855.31954-2-johan+linaro@kernel.org> <CAA8EJprywWbdoyfAbys=0WzEdAkp0UK1fzzCPzxKRjyk9DrC6Q@mail.gmail.com>
+ <Zfg--2_NMPSPTxK-@hovoldconsulting.com> <20240318144806.GA3963554-robh@kernel.org>
+ <ZfhZffrZXwtKgZ13@hovoldconsulting.com> <CAD=FV=UpuD7Lq0DxSZAGpL4Mi2uxy9HNt3V3FZq7Y3p--gbMrg@mail.gmail.com>
+In-Reply-To: <CAD=FV=UpuD7Lq0DxSZAGpL4Mi2uxy9HNt3V3FZq7Y3p--gbMrg@mail.gmail.com>
+From: Doug Anderson <dianders@google.com>
+Date: Mon, 18 Mar 2024 08:31:09 -0700
+Message-ID: <CAD=FV=WCzrh926mkiyBnKRG_+KGuOkGN6v0DgPiXhQCD3PSQ9w@mail.gmail.com>
+Subject: Re: [PATCH v2 1/4] dt-bindings: bluetooth: add new wcn3991 compatible
+ to fix bd_addr
+To: Johan Hovold <johan@kernel.org>
+Cc: Rob Herring <robh@kernel.org>, Dmitry Baryshkov <dmitry.baryshkov@linaro.org>, 
+	Johan Hovold <johan+linaro@kernel.org>, Marcel Holtmann <marcel@holtmann.org>, 
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Johan Hedberg <johan.hedberg@gmail.com>, Matthias Kaehlcke <mka@chromium.org>, 
+	Bjorn Andersson <quic_bjorande@quicinc.com>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
+	linux-bluetooth@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	netdev@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
-Linus,
+On Mon, Mar 18, 2024 at 8:26=E2=80=AFAM Doug Anderson <dianders@google.com>=
+ wrote:
+>
+> Hi,
+>
+> On Mon, Mar 18, 2024 at 8:10=E2=80=AFAM Johan Hovold <johan@kernel.org> w=
+rote:
+> >
+> > > > I wanted to avoid doing this, but if we have to support Google's br=
+oken
+> > > > boot firmware for these devices, then this is how it needs to be do=
+ne.
+> > >
+> > > Don't Chromebooks update everything together. So maybe we don't care =
+in
+> > > this case?
+> >
+> > That was my hope, but Matthias seemed to suggest that we need to
+> > continue supporting the current (broken) binding because doing such a
+> > coordinated update may be easier said than done:
+> >
+> >         https://lore.kernel.org/lkml/ZcuQ2qRX0zsLSVRL@google.com/
+>
+> Chromebooks update kernel and devicetree together, but not firmware.
+> Firmware is relatively hard to get updated trying to have kernel and
+> firmware updates coordinated at the exact same time has challenges.
+> This would further be complicated by the fact that firmware
+> qualification for each variant happens on its own timeline.
+>
+>
+> > A new compatible string (or one-off property) would allow them do make =
+a
+> > change when they are ready (e.g. by only updating the devicetrees after
+> > all boot firmware has been patched and pushed out).
+>
+> I have no real opinion about the exact way this is solved so happy to
+> let DT folks decide on how they want this. I will note, however, that
+> device trees are never shipped separately and thus we have no
+> intrinsic need for DT backward compatbility here. It would be OK from
+> a ChromeOS perspective to add a property or compatible string for the
+> broken case.
 
-[
-  I rebased my entire queue on top of the last pull request you took from
-  me. This made it so that I didn't need to do a merge with commits in that
-  branch. It also included fixes needed for the __assign_str() update.
+Actually, I should probably say more about this to make it clear how it wor=
+ks.
 
-  The rebase removed the ring buffer user space mmapping and that will be
-  worked on later to fix the issues you had with it, and hopefully that can
-  go into the next merge window. Preparations for mapping are still there
-  like zeroing out the pages (that should be done anyway) and the snapshot
-  accounting.
+Chromebooks ship the kernel as a FIT image which bundles the kernel
+and device trees together. The firmware looks at all the bundled
+device trees and picks the proper one based on the board name,
+revision, and SKU ID. The firmware then looks for the bluetooth node
+(I believe it finds it from the "aliases" section) and adds the MAC
+address there.
 
-  I added the __string() and __assign_str() checks with fixes to users that
-  had that broken. The second parameter of __assign_str() is no longer used
-  but it is now checked to make sure that its the same as what is passed into
-  __string() so that the next merge window than second parameter can be
-  removed without causing regressions.
-]
+..so we could update the DT to add a property (if that's desired)
+even if we don't update the firmware.
 
-Tracing updates for 6.9:
-
-Main user visible change:
-
-- User events can now have "multi formats"
-
-  The current user events have a single format. If another event is created
-  with a different format, it will fail to be created. That is, once an
-  event name is used, it cannot be used again with a different format. This
-  can cause issues if a library is using an event and updates its format.
-  An application using the older format will prevent an application using
-  the new library from registering its event.
-
-  A task could also DOS another application if it knows the event names, and
-  it creates events with different formats.
-
-  The multi-format event is in a different name space from the single
-  format. Both the event name and its format are the unique identifier.
-  This will allow two different applications to use the same user event name
-  but with different payloads.
-
-- Added support to have ftrace_dump_on_oops dump out instances and
-  not just the main top level tracing buffer.
-
-Other changes:
-
-- Add eventfs_root_inode
-
-  Only the root inode has a dentry that is static (never goes away) and
-  stores it upon creation. There's no reason that the thousands of other
-  eventfs inodes should have a pointer that never gets set in its
-  descriptor. Create a eventfs_root_inode desciptor that has a eventfs_inode
-  descriptor and a dentry pointer, and only the root inode will use this.
-
-- Added WARN_ON()s in eventfs
-
-  There's some conditionals remaining in eventfs that should never be hit,
-  but instead of removing them, add WARN_ON() around them to make sure that
-  they are never hit.
-
-- Have saved_cmdlines allocation also include the map_cmdline_to_pid array
-
-  The saved_cmdlines structure allocates a large amount of data to hold its
-  mappings. Within it, it has three arrays. Two are already apart of it:
-  map_pid_to_cmdline[] and saved_cmdlines[]. More memory can be saved by
-  also including the map_cmdline_to_pid[] array as well.
-
-- Restructure __string() and __assign_str() macros used in TRACE_EVENT().
-
-  Dynamic strings in TRACE_EVENT() are declared with:
-
-      __string(name, source)
-
-  And assigned with:
-
-     __assign_str(name, source)
-
-  In the tracepoint callback of the event, the __string() is used to get the
-  size needed to allocate on the ring buffer and __assign_str() is used to
-  copy the string into the ring buffer. There's a helper structure that is
-  created in the TRACE_EVENT() macro logic that will hold the string length
-  and its position in the ring buffer which is created by __string().
-
-  There are several trace events that have a function to create the string
-  to save. This function is executed twice. Once for __string() and again
-  for __assign_str(). There's no reason for this. The helper structure could
-  also save the string it used in __string() and simply copy that into
-  __assign_str() (it also already has its length).
-
-  By using the structure to store the source string for the assignment, it
-  means that the second argument to __assign_str() is no longer needed.
-
-  It will be removed in the next merge window, but for now add a warning if
-  the source string given to __string() is different than the source string
-  given to __assign_str(), as the source to __assign_str() isn't even used
-  and will be going away.
-
-- Added checks to make sure that the source of __string() is also the
-  source of __assign_str() so that it can be safely removed in the next
-  merge window.
-
-  Included fixes that the above check found.
-
-- Other minor clean ups and fixes
-
-
-Please pull the latest trace-v6.9-2 tree, which can be found at:
-
-
-  git://git.kernel.org/pub/scm/linux/kernel/git/trace/linux-trace.git
-trace-v6.9-2
-
-Tag SHA1: f40626f0ff0f9241d1d565a355c3375c8a007c69
-Head SHA1: 7604256cecef34a82333d9f78262d3180f4eb525
-
-
-Alison Schofield (1):
-      cxl/trace: Properly initialize cxl_poison region name
-
-Beau Belgrave (4):
-      tracing/user_events: Prepare find/delete for same name events
-      tracing/user_events: Introduce multi-format events
-      selftests/user_events: Test multi-format events
-      tracing/user_events: Document multi-format flag
-
-Huang Yiwei (1):
-      tracing: Support to dump instance traces by ftrace_dump_on_oops
-
-John Garry (1):
-      tracing: Use init_utsname()->release
-
-Randy Dunlap (1):
-      ftrace: Fix most kernel-doc warnings
-
-Steven Rostedt (Google) (22):
-      eventfs: Add WARN_ON_ONCE() to checks in eventfs_root_lookup()
-      eventfs: Create eventfs_root_inode to store dentry
-      tracing: Have saved_cmdlines arrays all in one allocation
-      tracing: Move open coded processing of tgid_map into helper function
-      tracing: Move saved_cmdline code into trace_sched_switch.c
-      ring-buffer: Make wake once of ring_buffer_wait() more robust
-      NFSD: Fix nfsd_clid_class use of __string_len() macro
-      drm/i915: Add missing ; to __assign_str() macros in tracepoint code
-      net: hns3: tracing: fix hclgevf trace event strings
-      tracing: Rework __assign_str() and __string() to not duplicate getting the string
-      tracing: Do not calculate strlen() twice for __string() fields
-      tracing: Use ? : shortcut in trace macros
-      tracing: Use EVENT_NULL_STR macro instead of open coding "(null)"
-      tracing: Fix snapshot counter going between two tracers that use it
-      tracing: Decrement the snapshot if the snapshot trigger fails to register
-      tracing: Remove __assign_str_len()
-      tracing: Add __string_len() example
-      tracing: Add warning if string in __assign_str() does not match __string()
-      tracing: Remove second parameter to __assign_rel_str()
-      tracepoints: Use WARN() and not WARN_ON() for warnings
-      tracing: Use strcmp() in __assign_str() WARN_ON() check
-      tracing: Add __string_src() helper to help compilers not to get confused
-
-Thorsten Blum (1):
-      tracing: Use div64_u64() instead of do_div()
-
-Vincent Donnefort (2):
-      ring-buffer: Zero ring-buffer sub-buffers
-      tracing: Add snapshot refcount
-
-linke li (1):
-      ring-buffer: use READ_ONCE() to read cpu_buffer->commit_page in concurrent environment
-
-----
- Documentation/admin-guide/kernel-parameters.txt    |  26 +-
- Documentation/admin-guide/sysctl/kernel.rst        |  30 +-
- Documentation/trace/user_events.rst                |  27 +-
- drivers/cxl/core/trace.h                           |  14 +-
- drivers/gpu/drm/i915/display/intel_display_trace.h |   6 +-
- .../ethernet/hisilicon/hns3/hns3pf/hclge_trace.h   |   8 +-
- .../ethernet/hisilicon/hns3/hns3vf/hclgevf_trace.h |   8 +-
- fs/nfsd/trace.h                                    |  10 +-
- fs/tracefs/event_inode.c                           |  70 +-
- fs/tracefs/internal.h                              |   2 -
- include/linux/ftrace.h                             |   4 +-
- include/linux/kernel.h                             |   1 +
- include/linux/trace_events.h                       |   3 +
- include/linux/tracepoint.h                         |   6 +-
- include/trace/events/sunrpc.h                      |  12 +-
- include/trace/stages/stage2_data_offsets.h         |   4 +-
- include/trace/stages/stage5_get_offsets.h          |  25 +-
- include/trace/stages/stage6_event_callback.h       |  29 +-
- include/uapi/linux/user_events.h                   |   6 +-
- kernel/sysctl.c                                    |   4 +-
- kernel/trace/ftrace.c                              |  90 +--
- kernel/trace/ring_buffer.c                         |  45 +-
- kernel/trace/trace.c                               | 768 ++++++---------------
- kernel/trace/trace.h                               |  18 +-
- kernel/trace/trace_benchmark.c                     |   5 +-
- kernel/trace/trace_events_trigger.c                |  63 +-
- kernel/trace/trace_events_user.c                   | 209 ++++--
- kernel/trace/trace_sched_switch.c                  | 515 ++++++++++++++
- kernel/trace/trace_selftest.c                      |   2 +-
- samples/trace_events/trace-events-sample.h         |  18 +-
- tools/testing/selftests/user_events/abi_test.c     | 134 ++++
- 31 files changed, 1363 insertions(+), 799 deletions(-)
----------------------------
+-Doug
 
