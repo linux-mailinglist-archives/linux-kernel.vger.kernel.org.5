@@ -1,105 +1,181 @@
-Return-Path: <linux-kernel+bounces-106622-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106623-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 047B687F114
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:22:12 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 64E5987F119
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:25:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 344C71C2191D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:22:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1ADBA283ECC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:25:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DBE957879;
-	Mon, 18 Mar 2024 20:22:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 12BC558224;
+	Mon, 18 Mar 2024 20:25:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="IOHKA6hc"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GZzyZL4p"
+Received: from mail-vs1-f48.google.com (mail-vs1-f48.google.com [209.85.217.48])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A810538395;
-	Mon, 18 Mar 2024 20:21:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CA33158201
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:25:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710793323; cv=none; b=nJsornJ05b4oV0YJt6310io/J37v+GVlB3A9E6elGSeLjRXYU0fQlMfL9AGVqDfDinOkurMN5chX+m06VMYf23UuqdA3ahy88RS3o5W67Nd7QwrNTBeNh1mz+cx8hMGOuI+vGSjvtJNVKrk+FveUChEx03IPIpfJobro4eSRTj4=
+	t=1710793525; cv=none; b=FPoWtvYv4zXKUrHMbpRgXjOtKyASKXYgIm+oCtCgV+pFpffbDifKAJFOmoCEJB1MkcU23hDeSCNfvUYNZYpKg0tC7i2UUlSRowS10Hy/GsGXlVrx4pnCj+asUMIVvJW2EyBaS/DkCQQ95VKcNb/0MrzgilfKHVmeBlz2eLOHdIo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710793323; c=relaxed/simple;
-	bh=DfLx4MCfxXP9EcZzXdlUj+8HOLfw4rLVu4UL/Qa8UL4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=p1ddoyzmj+hClhUlo2jr+P1yPmG5nEJ+eA1Zd1utpuwnYzTVzYJpSmJoqx7VW9DODVBK9+NU2+Kh74lJJ17k2omfPAFXtNBvpb4PiUVYVwVisiUayI46hwfyFZbA+JbmaAxY97zuygdUQilfaQcd8cBCc5ahH7YFtcn84NSabvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=IOHKA6hc; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id D950F40E0140;
-	Mon, 18 Mar 2024 20:21:56 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id aEJSuwqi6nMp; Mon, 18 Mar 2024 20:21:53 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1710793312; bh=9S7B89ex3wmSeSlcaPgVJHiZJD5MpmWiVmVp92JMtEM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=IOHKA6hc66upLBhuiNhxTLcNjwz6jMIuG9eC9D5L4aUPEYYRyBurrllOzBXDoLbH+
-	 2F4Xv44hFUhn73AMZA96n5gSlb7dDj6lwXWA5vejF0+48ts2g7HLkQtJID5dH4Zo2B
-	 SNmS1f0nNBbTm7tVaCfq5KDwVulBXZIXDN2gL2v+qDYhGEBkUygU+o2VwGpeylMgvC
-	 QW5kRkWpJkdHG3STwcEpX18IQT6/f9i29c3HeebU8V+ReyHrHNd0E/iV30Bh3oUreP
-	 WBFxtc9I+pNJRc2eLjXU73wkf81yMOdg45OPbMHGyjC759d49o9l0j7KrO6vspusXG
-	 znGuxB+jxmtPEpN9kEOFlcZ5WAC/eNZAqsGQSMocdC8k3dFaji1AOPuh7zxqaO6MQh
-	 y6fr+xje1opTtCwPzHGmlBqeaVxfU73s+LAVA9LGMTC+2c+IsorKi/ISJ007+xHWdT
-	 5XIKhZb40sl/+VbqrzHxOIAbzGk6vAqL3kyoBi4buMFfQv9FPaTo5AB9EvRta7+wcV
-	 bmyt8wQnFIHC/VNGtA2esqsKmXZySAmXWisVLNo3lyHg+ft0Iy7ZzFHKkGRQeBsqmt
-	 /9vtAS6yf4TNeP9xfHK2xWaLmt/PLMvjNthQaBkfILztjLs+vKNABXyter1dGMPt7J
-	 WVcSXTN7pOeXL9DkSXCJSmyk=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 954DF40E016B;
-	Mon, 18 Mar 2024 20:21:34 +0000 (UTC)
-Date: Mon, 18 Mar 2024 21:21:24 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: x86@kernel.org, Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Ingo Molnar <mingo@redhat.com>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H. Peter Anvin" <hpa@zytor.com>, linux-kernel@vger.kernel.org,
-	Fuad Tabba <tabba@google.com>, Marc Zyngier <maz@kernel.org>,
-	Shaoqin Huang <shahuang@redhat.com>,
-	David Matlack <dmatlack@google.com>,
-	Josh Poimboeuf <jpoimboe@kernel.org>,
-	Pawan Gupta <pawan.kumar.gupta@linux.intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Breno Leitao <leitao@debian.org>, kvm@vger.kernel.org
-Subject: Re: [BUG net-next] arch/x86/kernel/cpu/bugs.c:2935: "Unpatched
- return thunk in use. This should not happen!" [STACKTRACE]
-Message-ID: <20240318202124.GCZfiiRGVV0angYI9j@fat_crate.local>
-References: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
+	s=arc-20240116; t=1710793525; c=relaxed/simple;
+	bh=Qb5PtJbv+LWEYgdVtG6iXUBoTHAx6rVZJO7TcJA7ugw=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=t40hxH7MpdNNPMggxfrZxspBLdyk5LqoDHOoiZme5TKan7ljj+tEsgFns8fvtw89MfXFk2biJr6WztiNFFsdphCY/ltqVUyl4imx8p4NJxMV2wbV329v3UoZf4EugFGW8QKO/ItJb1hGor4VMe+wRfVIapn5s0Pioy/BXmUZcDs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GZzyZL4p; arc=none smtp.client-ip=209.85.217.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f48.google.com with SMTP id ada2fe7eead31-4760fe9c282so1527082137.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:25:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710793522; x=1711398322; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=yh13/+xplAtGooEGPkIeg18n7lJuselZGYLiwqNgbTg=;
+        b=GZzyZL4pu83QOn92VBE0B9H5gu68w3VMfOv9lgbIVlwe+ULhaWWNf5MbgxPesLIFk7
+         VYQ5Q2B71w+10KgHqBdCxaxoroVkgp45DtOWZtQwZX4YP8jaZnUTQl9fPwrSEfaSJiQZ
+         KmB0RLVDVkmNi7O5Tgm1D3sYCnEkpPRndtWamAE+bP92X9ln2HjehXbYpMMfjI9NxQwe
+         WFCTtr4crzPBIFBVW34B/nP9GLxNjlHCKqiIhy1sIDaBWq9v4UQy82tgWm2iuh1maleX
+         UXRv8KusUb81Rr6yr3/RsjcxabDB+Y9HTx5xGstHfQNTTot+uTu3TyBN8kvkftbEwCaw
+         MaFA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710793522; x=1711398322;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=yh13/+xplAtGooEGPkIeg18n7lJuselZGYLiwqNgbTg=;
+        b=D1rXlgKxXPnkYIVprzNnkwxjEWjgzzWGTmpzqNBhHhednG2FZHKJwNLEN8wi5pR9qr
+         C0titaMWsfk7WS6GXcd/s4iOawDLwEkYRrVAPPzosQ7Ilsm6LM3uMZjvjWANj7nZyEXP
+         /Lsx6RZlLDxlnoyqiCl94D3yNvBw4anZlglu3z40oQ+/9CHSK1vd8vLUBqKX9w5fB3oT
+         HGVYKzngoh5+cCdWQWsbZrOM4YbfEqQMw9qjp8bTyZEpuiRb9tMpVZ/B99oxdqe9TAvZ
+         8Xoo4VlzMphnVY3GDjao/g1gIdg8KH4Tpmp7YhnZovqgpRyQ9OJ8RnO4zrcNYd2a+0/A
+         EpOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWnhucpEQa3Czsq7jFCdHPxa9NVJc8sBhajQ2/xbq4Jgq4ZIeJgKU3mVDw8nhcd9Sf9OmenBzzMzf4u7194peEyaHmfQiM8P7+5lDZl
+X-Gm-Message-State: AOJu0YyYR5AFooY8ssif9cbYbVjRvgQHQ70r/6gIXw6wvwEUk4OTNKtt
+	Hx22LBYE5WiUCxKFcOElnxfsAptKCobTwsJ0cnd9FWArRbiakvb11YcqUS84yw60oO7U07OCAeh
+	4Ky/rwVQEsNslOIu26UiQ39efaAPegmzhme0=
+X-Google-Smtp-Source: AGHT+IHD+hGP/ZN8Jo+jvJKOM89hWwYxhbzHH5KX8yOZkQv9N4xi/9XSZZLwCnxJaXCwqOIP+t2YDTUGZUKmUo9UWvc=
+X-Received: by 2002:a05:6102:216d:b0:476:9727:b810 with SMTP id
+ i13-20020a056102216d00b004769727b810mr1611089vsg.35.1710793521127; Mon, 18
+ Mar 2024 13:25:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <1d10cd73-2ae7-42d5-a318-2f9facc42bbe@alu.unizg.hr>
+References: <000000000000bbb3d80613f243a6@google.com> <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
+In-Reply-To: <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 19 Mar 2024 09:25:09 +1300
+Message-ID: <CAGsJ_4y7aFg3FBh_isa_TCqY1B8n64Rro5mVu6=wvk7FP35mWw@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
+To: Nhat Pham <nphamcs@gmail.com>
+Cc: syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>, 
+	akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com, yosryahmed@google.com, 
+	Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 08:47:26PM +0100, Mirsad Todorovac wrote:
-> With the latest net-next v6.8-5204-g237bb5f7f7f5 kernel, while running kselftest, there was this
-> trap and stacktrace:
+On Tue, Mar 19, 2024 at 7:00=E2=80=AFAM Nhat Pham <nphamcs@gmail.com> wrote=
+:
+>
+> On Mon, Mar 18, 2024 at 9:58=E2=80=AFAM syzbot
+> <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com> wrote:
+> >
+> > Hello,
+> >
+> > syzbot found the following issue on:
+> >
+> > HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-3=
+6' ..
+> > git tree:       upstream
+> > console output: https://syzkaller.appspot.com/x/log.txt?x=3D13043abe180=
+000
+> > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D19bb57c23df=
+fc38e
+> > dashboard link: https://syzkaller.appspot.com/bug?extid=3Dadbc983a1588b=
+7805de3
+> > compiler:       arm-linux-gnueabi-gcc (Debian 12.2.0-14) 12.2.0, GNU ld=
+ (GNU Binutils for Debian) 2.40
+> > userspace arch: arm
+> > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D1706d2311=
+80000
+> > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D13ba7959180=
+000
+> >
+> > Downloadable assets:
+> > disk image (non-bootable): https://storage.googleapis.com/syzbot-assets=
+/8ead8862021c/non_bootable_disk-e5eb28f6.raw.xz
+> > vmlinux: https://storage.googleapis.com/syzbot-assets/0a7371c63ff2/vmli=
+nux-e5eb28f6.xz
+> > kernel image: https://storage.googleapis.com/syzbot-assets/7539441b4add=
+/zImage-e5eb28f6.xz
+> >
+> > IMPORTANT: if you fix the issue, please add the following tag to the co=
+mmit:
+> > Reported-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
+> >
+> > ------------[ cut here ]------------
+> > kernel BUG at include/linux/scatterlist.h:187!
+>
+> Looks like the provided buffer is invalid:
+>
+> #ifdef CONFIG_DEBUG_SG
+> BUG_ON(!virt_addr_valid(buf));
+> #endif
+>
+> which is "src" from:
+>
+> sg_init_one(&input, src, entry->length);
+>
+> Looking at the surrounding code and recent history, there's this
+> commit that stands out:
+>
+> mm/zswap: remove the memcpy if acomp is not sleepable
+> (sha: 270700dd06ca41a4779c19eb46608f076bb7d40e)
+>
+> which has the effect of, IIUC, using the zpool mapped memory directly
+> as src, instead of acomp_ctx->buffer (which was previously the case,
+> as zsmalloc was not sleepable).
+>
+> This might not necessarily be a bug with that commit itself, but might
+> have revealed another bug elsewhere.
+>
+> Anyway, cc-ing the author, Barry Song, to fact check me :) Will take a
+> closer look later.
 
-Send your kernel .config and how exactly you're triggering it, please.
+I guess that is because on arm32 , we have highmem but
+sg_init_one supports lowmem only. the below should be
+able to fix?
 
-Thx.
+diff --git a/mm/zswap.c b/mm/zswap.c
+index 9dec853647c8..47c0386caba2 100644
+--- a/mm/zswap.c
++++ b/mm/zswap.c
+@@ -1086,7 +1086,8 @@ static void zswap_decompress(struct zswap_entry
+*entry, struct page *page)
+                zpool_unmap_handle(zpool, entry->handle);
+        }
 
--- 
-Regards/Gruss,
-    Boris.
+-       sg_init_one(&input, src, entry->length);
++       sg_init_table(&input, 1);
++       sg_set_page(&input, kmap_to_page(src), entry->length,
+offset_in_page(src));
+        sg_init_table(&output, 1);
+        sg_set_page(&output, page, PAGE_SIZE, 0);
+        acomp_request_set_params(acomp_ctx->req, &input, &output,
+entry->length, PAGE_SIZE);
 
-https://people.kernel.org/tglx/notes-about-netiquette
+
+
+>
 
