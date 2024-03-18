@@ -1,177 +1,160 @@
-Return-Path: <linux-kernel+bounces-106678-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106679-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 97CAD87F1D8
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:12:45 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12F5687F1DC
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 22:14:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B6D681C20D21
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:12:44 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5506DB213C9
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:14:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9BBE35915F;
-	Mon, 18 Mar 2024 21:12:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86FE65822C;
+	Mon, 18 Mar 2024 21:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L2Gn5PCP"
-Received: from mail-vk1-f177.google.com (mail-vk1-f177.google.com [209.85.221.177])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="txLW4s/W"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2111.outbound.protection.outlook.com [40.107.243.111])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E89D59140
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:12:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.177
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710796361; cv=none; b=bJFm7xbjvu5mlJfQmq+stCdybMa1i07dvQ1xqdZjoY0cjlcoeBbAlVJ7QUJ7BykuYAmGvko1hRdRgQobk+AJGd7zT0doerailK8zEJks+oTt39yMt+FMaLkp4e2Rw+jd+CaJ2Qy5a5ySaD5SvI8I9KPYPd/XcNdiaGD9EAkf1+I=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710796361; c=relaxed/simple;
-	bh=3YjLqajLJ5T3EW8Lu9X/xeHWJ+3fF1/Ew3tqQVLC2xo=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VpuvEtp4pMoXANqnIus+UhvhnH0NzhjA2M76AxguagbBy6ZSGfYNh5qBpLBB52f0xTL2tIAuX3fANI+4Te52kdjfr+4CK+SB+FNu9/gesRH3X7QaeKUjIrNa1UTMDpcTdPv36KgDP+YrkNFo5YibaGukPY0x55CLTFtzGjoLBSw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L2Gn5PCP; arc=none smtp.client-ip=209.85.221.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f177.google.com with SMTP id 71dfb90a1353d-4d452e2f0aeso322224e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 14:12:40 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710796359; x=1711401159; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=zlB2IBskv+pb6Y21WlslfXrWn1gChW7bUWNPd3xKciM=;
-        b=L2Gn5PCPRPqgQM2RgQ1lqmCfiWNavO2mna2vjkGS9J6Hyfn3yAcc7S6/csB1So3L2m
-         TiQqe5OrXp8oln7MEO5u1Zb9V6Tak2XRhSw7XwMeyi3N80/G2gTo+ZhU6OluEcIcihb5
-         nE0oq1VmjSfo8pCjmilspH1TkGyH5q2FqskBJmJANfzCIzTsRBwaIw/vGJDDem9k/quX
-         Q5q8uqcQLQRf25dV2yG7xfY3zdMuXj1UvvpyhrUfryWBH0dS0elT60s0vlBdBjZ5z2YF
-         NUSUILsvaepFbPNdFkIf/jjq+nRefH6hF/PYYPp2d6nm/iJDFLk2a80cxFk11nKlTEST
-         jQjA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710796359; x=1711401159;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=zlB2IBskv+pb6Y21WlslfXrWn1gChW7bUWNPd3xKciM=;
-        b=pGhI6dklDN7YOB94Q7pShgi+0GXBAUuo3A5i2wtux9QgeMQ+dSDuCZXQQoyVi+ngbp
-         uixCXOxGgZ+eqLr4+XZSWsNBXi0rFKxyn4nF9r9D0qVZtgTqUxqzhgX/EVjw5DzwGfid
-         9bC4fACzmi573ytdWmVjGLsbiUNIewPezibgXkKjbQW4tlCuYzLvqWwXXSGeZZDSCDOp
-         UOlZ52ujGd5L1xL8YlRFmpp2rPCsMdE8cMtWYol/VIjgw71HToLh1VV6j+gCtvwtsL6E
-         qZy4u7Xh7SXQ0bxLPz6kAgxemTlNKSfk+6/I+iAVrHm8Lwbrh9hd/rQpij68QOfJh5O9
-         sxcA==
-X-Forwarded-Encrypted: i=1; AJvYcCVeL9oXXY52dllsO4819bsvsq8E8KHvCZzOPUTYc23LwZywwB9WiQPfOXrwALlrnahCuAbsBdR2sxhqEuo9TA67p2TAftSYH+Od4VRz
-X-Gm-Message-State: AOJu0YyVwuLsKUDxtxmVgmMA35h9n5krkKuBGp72w4Sh9UJt77vgdoj6
-	XD35tVnOenrwQDu+Y/RmXDynamKWtEEns1pJc4kZATM+SwlvmRkxNPfHmDz2mN1gGqs0i5r2NYj
-	/zqjhZTOr05loliriKqrjBENnQwTqIBpI7QI=
-X-Google-Smtp-Source: AGHT+IH6nNI7kAYp9hdUHVHAEoerdfDrfXI1sQHCSXBSe302uiu29a/CWmWw7OpFggD4+7kus4h7qpPmoMuEozc1OXU=
-X-Received: by 2002:ac5:c7b7:0:b0:4cd:b718:4b08 with SMTP id
- d23-20020ac5c7b7000000b004cdb7184b08mr7207012vkn.11.1710796359326; Mon, 18
- Mar 2024 14:12:39 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2AF0C5811A;
+	Mon, 18 Mar 2024 21:14:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.111
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710796460; cv=fail; b=EpLu/Qew5S9K4cpLshRXnkOlfphpdIiJg7Rm2bryHj5Y7TwXTzC3RmnO8ZOYzjlxJ0hKVlkstcrboyter57GqjFa+PehYilhv19V3DtOOwl7kvsMi1fVJqGg/uwBjJ/kaq/RdfHADmkmJ//ms/kaQQGPnryf5hWBcH3tgiBKg8g=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710796460; c=relaxed/simple;
+	bh=bQYReBqQ29yTsMo7OPxEFNor7sai8b+ogXnO5JzTf2U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=SRHIqKHOi7FoA1yd+oyij0mkEIWHNTV//RSQhDPrCf6hKB9sbIUY2QDX/eWp1K3FcXao82ZU1Qx6vjqCwD9eYMNWl6+TGeRDpLlkd+JTpKGIsanmfQpVvq6Q5/bvucySmaGcv+5hk1ksZ/1Qmy0NVSekTJZcfTv2eHF1cNCmwws=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=txLW4s/W; arc=fail smtp.client-ip=40.107.243.111
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=g6DnF57ofNQ10P2Tg40BLulHB0lZ53g7G7DegcfUoDZwAppLw45UjcgAWtMrYTB71nxA3TlgtQGk2xd9+TPmXfgMp8PKvYhVw9xEyThIcpFtUzgoZ47H5PXIv6Os1NO/0Cs2SEiswDiowQRHjg++dxdtfT6LjhRkKSuTrmCyKli3ETR9JaDz5NkhxkFN20e3hrfgJFUQWAf/DOQiNFjpMTmq07q1VPRVBUbCqqsX9Lnz374g2uPJtNPa5OsMWfnxHbKYiwPre+p3bjq7jV3JeQpjEwsGOVO370waEODRIfS3uISxP1GUXP3OmjXG79KgnFI/HHHcoC943uWNAvRuHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=dqyztqco/pBsSkglJl5a2XLgD1qp42hIcTUOHCHHCfE=;
+ b=Mz+DkQiTvyorrHqaeGyVz2if2lOO4VMyer187adg/TLw6RZ2vXhsDjejOS3bKTzo0g0eaBF6BUxSR6qn9RRh00D0sA2A90IOM3NyZfasnAUlCCRvZSolH6emwqPxPhlt+/Vbae2GZXCrK9O2Hl63BXyXqvC4yI+aX/0/pCe/BDNly/mWvDQ+hkR87v2K/TgTkhr5AlZsw9gVNENqtWJQIcZ5DI9qlfg/9qQofcTEPW8NB98BqWGphCIWPciJS+k+CpnDFQoKobYctLOnCUKKo3OtuLnez6oQp0iFIWvGq9/5hn7HUyhiZrzWKwDisiAaAOOuyKfDZesxmwxFxZOjIg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=dqyztqco/pBsSkglJl5a2XLgD1qp42hIcTUOHCHHCfE=;
+ b=txLW4s/WbZcqF8g5tZC1Ydwgjn7yUMrUAvpBmfLe0xb7U1hEXraKzl+TVRcWdIyzFRVOi1hX9E42YuNL7Ztev3FlCB43XZncM9pfR4xyPscxukb6+ZRzucbPet30T6oApVy0mQUR5uLQJQEpN3vhfzqcs9KPyJrynBcIH7CxSXQ=
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
+ by DM4PR12MB5747.namprd12.prod.outlook.com (2603:10b6:8:5e::16) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Mon, 18 Mar
+ 2024 21:14:17 +0000
+Received: from CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::9d:17f1:8b3b:1958]) by CYYPR12MB8750.namprd12.prod.outlook.com
+ ([fe80::9d:17f1:8b3b:1958%4]) with mapi id 15.20.7386.025; Mon, 18 Mar 2024
+ 21:14:16 +0000
+Date: Mon, 18 Mar 2024 22:14:11 +0100
+From: Robert Richter <rrichter@amd.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Dan Williams <dan.j.williams@intel.com>,
+	Dave Hansen <dave.hansen@linux.intel.com>
+Cc: linux-acpi@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-cxl@vger.kernel.org, Derick Marks <derick.w.marks@intel.com>,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH 1/3] x86/numa: Fix SRAT lookup for CFMWS ranges with
+ numa_fill_memblks()
+Message-ID: <Zfiuow9LiOIl3C7X@rric.localdomain>
+References: <20240318210904.2188120-1-rrichter@amd.com>
+ <20240318210904.2188120-2-rrichter@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318210904.2188120-2-rrichter@amd.com>
+X-ClientProxiedBy: FRYP281CA0012.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10::22)
+ To CYYPR12MB8750.namprd12.prod.outlook.com (2603:10b6:930:be::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <000000000000bbb3d80613f243a6@google.com> <CAKEwX=MAX0km1p43DQmKbeSy2G4dPFHiF+deH_qzqygc2Vnjig@mail.gmail.com>
- <CAGsJ_4y7aFg3FBh_isa_TCqY1B8n64Rro5mVu6=wvk7FP35mWw@mail.gmail.com>
- <CAJD7tkaPmgsUjPCi0wKCYAmPb+Vnif_zS+ouyd9NGQN=mdhJPw@mail.gmail.com>
- <CAGsJ_4xyDm0BLYvbW0z9J-Q=sQPYrttva33g2mRFVXcJJ+wimw@mail.gmail.com> <CAJD7tkaP_wfkJG_dfsp-jV7QP2JWyMFfNApTFPWbsqmTvfKyLw@mail.gmail.com>
-In-Reply-To: <CAJD7tkaP_wfkJG_dfsp-jV7QP2JWyMFfNApTFPWbsqmTvfKyLw@mail.gmail.com>
-From: Barry Song <21cnbao@gmail.com>
-Date: Tue, 19 Mar 2024 10:12:27 +1300
-Message-ID: <CAGsJ_4yKHYsPomhjnmdoWPSes_M5+8ZxvPry+X78pA5Kj_F_Jg@mail.gmail.com>
-Subject: Re: [syzbot] [mm?] kernel BUG in sg_init_one
-To: Yosry Ahmed <yosryahmed@google.com>
-Cc: Nhat Pham <nphamcs@gmail.com>, 
-	syzbot <syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com>, 
-	akpm@linux-foundation.org, chengming.zhou@linux.dev, hannes@cmpxchg.org, 
-	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
-	syzkaller-bugs@googlegroups.com, Barry Song <v-songbaohua@oppo.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CYYPR12MB8750:EE_|DM4PR12MB5747:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	n2LYQAG0C+R2ctD1k2f0I5gvy9dTc+cRIIt2moSzsGArzQHrSMyWR0pVXJmYrC5a6tfpcv5CTJDduO5tJt6Tw2RA2KA3A9+AlBbWoy+JvS7NZ8Xg6AZgzh7jbur4TRVWE96QOKUwtqbkJ7rzP072mNuMGC/HsmQQbNh9p4a//mcDtY4tQMN95QhKYAMYfXPH1LCAYRVTLw9Ym5NLCKgMrH7koHVeeLkENZxlA0842eBQnZcZ4Jyik7ZGaDADdu2YDjjVS3Zmi4fw2usgf8CkZM1Wrdz6ejfW+QPPNE2590aef9niVHW1R10tLVUemslmnk917m6EWJSfsN2wYcXn43706pThk3mAm4vXlpb5KPBd2ELTgU2CkxO86PecUqmYjbGcktdrhXfheUqNE+QHlyDVpGGSJi1xL2zMYPAgLfZwDyh8seN7J5WPmkm8GHQXxP4ChbuGu+AEf4+fLvomjUhtA2qJmX46LYsIV87URDC4+e0UXGOfEfeYj9EGNNeow2Eq12UROTeanhaN9xPC2jFrnlFnJcq3T9wmnzqv7QmSm0UmhmlhKccNN6tWA/1rnvsiFf1huzV0YAKNDkQOERSu1Ypzg6f46L6385+GGcIU6av0QeFrmnG2zFQvwOWLfNTRkXc0k4eOhQH2or8hK8NFal/UPz8XSREFQmjMYXk=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CYYPR12MB8750.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?NSFoOhp2u1Mc4bort+dxXWcgeJ5UdDY7UFU7+3sOh4EyPhrUXGEEn5hk+Bia?=
+ =?us-ascii?Q?6GP6edKmbKpQf6twQ2LFvvMZBC/KDWtxIaald54Nbfvp9oMwbgD9tJXdC20c?=
+ =?us-ascii?Q?QmMhPKulUiNnNgSRRu1dtTh9X2HBcGfH/VL+47f/z+jGk/XkwJcm930RGD8/?=
+ =?us-ascii?Q?h8oGmkSO8xla6cxVr+4uHu1GtovbkUZ+OR14ltTyLAOkGeOQTVjmr3o3GrzS?=
+ =?us-ascii?Q?Fc5xeQVLmv0SY4gEOQDbpemiUQ9Uny5aKCPyn8lwfFp2Wo3Egc1UeClsefpe?=
+ =?us-ascii?Q?h3EA4z9O0iVLIxf+Cg5knQzpKyDpR7E+J9bvSdqutOubmpdHtWVtVOV3JHe3?=
+ =?us-ascii?Q?4ueYSLG3Sag8FybVi5YUyY2Y5MOkFa1lqPZoD9qbdfhgFC/nd4WF2y9FtpWN?=
+ =?us-ascii?Q?vXRF/t60J+OSM+FPO3Nu0qKQGF1iUmMuiqNLhdi9SAPqaRX8wrFDOGVL9twM?=
+ =?us-ascii?Q?KypMhW1oU/i+CaD3HxVF2xnI431kTRBO4x/0bd7ZS74RYkaq2RtENwtirZ0t?=
+ =?us-ascii?Q?ShQmB3ravBhL/9fU1zOHnnRuwez1n+JVN8AiLQU2dmMfaeZowZH1y3/RsYNi?=
+ =?us-ascii?Q?YEZQ4UWqLZ54vD9NArJR+AX3loTk6zjE0BX0QGj9oDCTERbL//tGLBGluG0V?=
+ =?us-ascii?Q?fBfSCTuJLtIBB/shvtNPKzGdSX7btTGmkm6RMkzbQANn3TCC6+Ev1+1ce7i0?=
+ =?us-ascii?Q?Y6jwK73nIuOuJtlJnWIh5rlco7wnqyBe0yYSJqcw2v3TNuzQqiAfT46+O1DZ?=
+ =?us-ascii?Q?HWI0v1Wgui/PbbVwRNuXIBPddLKXQ8uodKwPd0xH+FNuSceBJij1LGnVnar+?=
+ =?us-ascii?Q?kPVMRbIO0IEqYvuZuYBbxVYTN3kB/VcxSPx/F3dLrxdvcdLwqxnEA7KnKsSc?=
+ =?us-ascii?Q?HvbX30MRFQnzfbPw5WmQJa8Eaw+J2aq8upmgXFKfXhcFyBTY/oC80NRS0853?=
+ =?us-ascii?Q?dosAPJtRCzn/XZeaFEPJYkl/8G4zCBONRhKUt8B0BDDRZTgBzT2BrcSBkNlE?=
+ =?us-ascii?Q?y3bALedboq23f2IrjYLfg4N3vrQ0T31C4PfMnMJ/pEPfeSEhabauH3miQFYZ?=
+ =?us-ascii?Q?HuemZlXVQwT0chHMByW22OYwGj5OBj074Eo+CqmyyCQERIHyNge9vCuWxmcb?=
+ =?us-ascii?Q?x3HI+8VR62q1KoNfj/siYBjTr+/RGNn43fMnnfNI17oesU/jB9eukcg18e/T?=
+ =?us-ascii?Q?KOJe9wgQdPAjASWTu2M87e1jc0pSuDUGi7anW1QUA8ySxXNn4IpLL8l+Zslt?=
+ =?us-ascii?Q?ME5cIqIsqh8pijIuvqqvCFZ8UBCL7DjgwCt8XyCbJnVFYXGOTh52kOBt03OY?=
+ =?us-ascii?Q?FMznReM3yRsgJ86m5mp9iYExLNDQRW/8uw2gZWwIQq1zYW53jicTeyBMy7j/?=
+ =?us-ascii?Q?QttjugJa/n7zbECXGsS2z4ihdA53aCU4OzhUFmIVXZLu9Py/3537SPZO26EQ?=
+ =?us-ascii?Q?V4FmSh/l0PsbpO13JuZonH3+eARS5aU1Pe0ikTXH5ur8ctYY6pQZzpe+rnHX?=
+ =?us-ascii?Q?kq261gvyJxduWholhFUZgn2pWQ/7iYnY0b8JMXYhOpZb0IEChbLf/4WbzF8W?=
+ =?us-ascii?Q?iKZbddtC+3zKDGoKr1H9kLXb1JjFT4jJsvXZE7MD?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75d329b2-b21d-48ef-c4e2-08dc47905e9e
+X-MS-Exchange-CrossTenant-AuthSource: CYYPR12MB8750.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 18 Mar 2024 21:14:16.9135
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: rwQCQBH5j601LdQhj+Mmo5Udk5/2L3XF16imWZXxj0RZu/yQRlGF4gP0NcoBuGu3OLGsqaypfDFmeaLUVG+3TA==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5747
 
-On Tue, Mar 19, 2024 at 10:00=E2=80=AFAM Yosry Ahmed <yosryahmed@google.com=
-> wrote:
->
-> [..]
-> > > > I guess that is because on arm32 , we have highmem but
-> > > > sg_init_one supports lowmem only. the below should be
-> > > > able to fix?
-> > > >
-> > > > diff --git a/mm/zswap.c b/mm/zswap.c
-> > > > index 9dec853647c8..47c0386caba2 100644
-> > > > --- a/mm/zswap.c
-> > > > +++ b/mm/zswap.c
-> > > > @@ -1086,7 +1086,8 @@ static void zswap_decompress(struct zswap_ent=
-ry
-> > > > *entry, struct page *page)
-> > > >                 zpool_unmap_handle(zpool, entry->handle);
-> > > >         }
-> > > >
-> > > > -       sg_init_one(&input, src, entry->length);
-> > > > +       sg_init_table(&input, 1);
-> > > > +       sg_set_page(&input, kmap_to_page(src), entry->length,
-> > > > offset_in_page(src));
-> > >
-> > > Is this working around the debug check in sg_init_one()? IIUC, only
-> >
-> > I wouldn't characterize it as a workaround; it's more of a solution.
->
-> I assumed that the debug check in sg_set_buf() is because
-> sg_set_page() cannot handle highmem pages, sorry if that isn't the
-> case. Apparently we are hitting a warning with kmap_to_page() though
-> as syzbot just reported.
->
-> >
-> > > lowmem pages are supported. We may be passing in a highmem page to
-> > > sg_set_page() now, right?
-> >
-> > we can pass highmem to sg_set_page(). This is perfectly fine.
->
-> So the debug check is only because we are using virt_to_page() in sg_set_=
-buf()?
+On 18.03.24 22:09:00, Robert Richter wrote:
+> With kconfig option NUMA_KEEP_MEMINFO disabled the SRAT lookup done
+> with numa_fill_memblks() fails returning NUMA_NO_MEMBLK (-1). An
+> existing SRAT memory range cannot be found for a CFMWS address range.
+> This causes the addition of a duplicate numa_memblk with a different
+> node id and a subsequent page fault and kernel crash during boot.
+> 
+> Note that the issue was initially introduced with [1]. But since
+> phys_to_target_node() was originally used that returned the valid node
+> 0, an additional numa_memblk was not added. Though, the node id was
+> wrong too.
+> 
+> Fix this by enabling NUMA_KEEP_MEMINFO for x86 with ACPI and NUMA
+> enabled.
+> 
+> [1] fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each CFMWS not in SRAT")
+> 
+> Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
+> Cc: Derick Marks <derick.w.marks@intel.com>
+> Cc: Dan Williams <dan.j.williams@intel.com>
+> Cc: Alison Schofield <alison.schofield@intel.com>
+> Signed-off-by: Robert Richter <rrichter@amd.com>
 
-yes. it is checking if linear_mapping can apply on the buffer.
+This patch should be dropped in favor of the other 1/3 patch, it is a
+leftover.
 
->
-> >
-> > >
-> > > Also, it seems like if src is a lowmem address kmap_to_page() will be
-> > > doing unnecessary checks (assuming it's working correctly)?
-> >
-> > In practice, we consistently use kmap and kunmap even on systems with
-> > low memory.
-> > However, it's worth noting that for low memory scenarios, kmap
-> > essentially returns
-> > page_to_virt(page_address). Thus, the overhead of kmap_to_page shouldn'=
-t be
-> > significant on low memory systems, especially considering that it simpl=
-ifies to
-> > virt_to_page().
-> >
-> > Another approach is to consistently employ page_to_virt() for low
-> > memory situations
-> > and reserve kmap for high memory scenarios. However, since we always
-> > utilize kmap
-> > regardless of whether the page is low or high memory, we don't need to =
-concern
-> > ourselves with this distinction
->
-> I see. Thanks for elaborating.
->
-> >
-> > >
-> > > Would it be more robust to just use the temporary buffer if src is a
-> > > kmap address?
-> >
-> > I don't think so because we will need a memcpy then.
->
-> I thought that was necessary because sg_set_page() cannot take in
-> highmem pages, but you mentioned that this isn't the case.
+Thanks,
 
-I think both sg_init_one() and sg_set_page() lack docs. as apparently
-sg_init_one() can't take highmem. sg_set_page() can definitely take
-highmem as crypto/scompress.c takes care of both high
-and low. and scatterwalk_map_and_copy() can handle both.
-
-Thanks
-Barry
+-Robert
 
