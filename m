@@ -1,39 +1,35 @@
-Return-Path: <linux-kernel+bounces-106142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E6D5987E9CA
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:05:48 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6D75287E9D1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 14:06:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9D1481F221BF
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:05:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 28DF02820DA
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 13:06:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D53C3FBA1;
-	Mon, 18 Mar 2024 13:05:09 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A605B3FB99
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 13:05:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5FF6238DF2;
+	Mon, 18 Mar 2024 13:06:38 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E85F338385;
+	Mon, 18 Mar 2024 13:06:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710767109; cv=none; b=qsK5lkeIbxd7wAOlpNWlbQSWF8IoK2lfF/+GZoUcMk5OWMeUOvmiiRYuLjvpRe3aSskT/H8qcmGg1zfoSI+6p1I+XKQ0Ext1YcrTwhCnHjJUXh+shmao1OvV9Hz4ivfweYTIGkmQ6q0nKyzfHPYTl+m+upcuOeZ0irZeTulQZuY=
+	t=1710767198; cv=none; b=eCDkf2vW3Etp6rsl6m3LhArWj24ZXYgmMGPMi9nXNcpgqwqEU1uxgfgKWB+7zAKCaWDZiwpnzqzAmDHyZZyvZxXD4j7k9jSL6BnmOQEOxUjjODte9NoFKl1xtiOsWeQF2qu31W6bPpdMfOygm4VFBrwCMgE3T7X86bbiqVoaxvc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710767109; c=relaxed/simple;
-	bh=ZarPO9ClVSp9miIoAdrkxdLyf33d8aB50kRIYFkoTQw=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tjT5YHY9l38Z7cttFSNMfn3XV/dMIpee8wqrSINhOIykgrwW0GcQk3tWZU0bTQHG5vH266TwdT2dgEiQSsPD8/qy2NunTi6yLpx//E8JzFSSurgS9HiUDlarDjbxn8jEWs2x1L4ig43NZfhr5CCbURqk/5N1r594Us8pg+H2Cqs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id DCE18DA7;
-	Mon, 18 Mar 2024 06:05:40 -0700 (PDT)
-Received: from [10.1.196.40] (e121345-lin.cambridge.arm.com [10.1.196.40])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 87B973F23F;
-	Mon, 18 Mar 2024 06:05:04 -0700 (PDT)
-Message-ID: <b4488238-0c05-4d06-a60d-10e00460ea98@arm.com>
-Date: Mon, 18 Mar 2024 13:05:03 +0000
+	s=arc-20240116; t=1710767198; c=relaxed/simple;
+	bh=WrAEeEsm2dnWpOkvKTcEiN05vIFPd1XTg8CXuJ0xj24=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=iw5GfTA3CZu8nfQ9VvAJ0FcSqnpazVUISjUUKuzMF7SOcxXyYMApV0lZgv3XZt7hEqdffxyPhNUIjgmzYU/B6BTFPEDzY7DNkiWqNSc/soNOsXNSu3k9tlnYdhCHmAy4pr64xxccAnwYfN+jDnBtxtxDFjjVz7ugjm+YCF8yDJY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 03EA6C43390;
+	Mon, 18 Mar 2024 13:06:34 +0000 (UTC)
+Message-ID: <00fe576e-df97-4cae-9937-d8e9272cf5e0@xs4all.nl>
+Date: Mon, 18 Mar 2024 14:06:33 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,62 +37,115 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/1] swiotlb: extend buffer pre-padding to
- alloc_align_mask if necessary
-Content-Language: en-GB
-To: Michael Kelley <mhklinux@outlook.com>,
- Petr Tesarik <petrtesarik@huaweicloud.com>, Christoph Hellwig <hch@lst.de>,
- Marek Szyprowski <m.szyprowski@samsung.com>, Will Deacon <will@kernel.org>,
- Nicolin Chen <nicolinc@nvidia.com>,
- "open list:DMA MAPPING HELPERS" <iommu@lists.linux.dev>,
- open list <linux-kernel@vger.kernel.org>
-Cc: Roberto Sassu <roberto.sassu@huaweicloud.com>,
- Petr Tesarik <petr.tesarik1@huawei-partners.com>
-References: <20240312134149.497-1-petrtesarik@huaweicloud.com>
- <SN6PR02MB4157FB27CD890E9F29408926D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
-From: Robin Murphy <robin.murphy@arm.com>
-In-Reply-To: <SN6PR02MB4157FB27CD890E9F29408926D4282@SN6PR02MB4157.namprd02.prod.outlook.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Subject: Re: [PATCH v21 3/9] media: test-drivers: Set REQBUFS minimum number
+ of buffers
+Content-Language: en-US, nl
+From: Hans Verkuil <hverkuil-cisco@xs4all.nl>
+To: Benjamin Gaignard <benjamin.gaignard@collabora.com>, mchehab@kernel.org,
+ tfiga@chromium.org, m.szyprowski@samsung.com, ezequiel@vanguardiasur.com.ar,
+ p.zabel@pengutronix.de, nicolas@ndufresne.ca
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-rockchip@lists.infradead.org, kernel@collabora.com
+References: <20240314153226.197445-1-benjamin.gaignard@collabora.com>
+ <20240314153226.197445-4-benjamin.gaignard@collabora.com>
+ <43d27ed7-94ff-4916-b1f3-07204b2f54ab@xs4all.nl>
+In-Reply-To: <43d27ed7-94ff-4916-b1f3-07204b2f54ab@xs4all.nl>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 15/03/2024 2:53 am, Michael Kelley wrote:
-[...]
->> diff --git a/kernel/dma/swiotlb.c b/kernel/dma/swiotlb.c
->> index 86fe172b5958..8ce11abc691f 100644
->> --- a/kernel/dma/swiotlb.c
->> +++ b/kernel/dma/swiotlb.c
->> @@ -69,11 +69,13 @@
->>    * @alloc_size:	Size of the allocated buffer.
->>    * @list:	The free list describing the number of free entries available
->>    *		from each index.
->> + * @padding:    Number of preceding padding slots.
->>    */
->>   struct io_tlb_slot {
->>   	phys_addr_t orig_addr;
->>   	size_t alloc_size;
->>   	unsigned int list;
->> +	unsigned int padding;
+On 18/03/2024 11:06 am, Hans Verkuil wrote:
+> Hi Benjamin,
 > 
-> Even without the padding field, I presume that in
-> 64-bit builds this struct is already 24 bytes in size so as
-> to maintain 64-bit alignment for the orig_addr and
-> alloc_size fields. If that's the case, then adding the
-> padding field doesn't change the amount of memory
-> required for the slot array.  Is that correct? Both the
-> "list" and "padding" fields contain only small integers,
-> but presumably reducing their size from "int" to "short"
-> wouldn't help except in 32-bit builds.
+> On 14/03/2024 4:32 pm, Benjamin Gaignard wrote:
+>> Instead of using 'min_queued_buffers' field to specify the
+>> minimum number of buffers to be allocated when calling REQBUF
+>> use 'min_reqbufs_allocation' field which is dedicated to this
+>> purpose.
+>>
+>> While at it rename vivid_create_queue() parameter.
+>>
+>> Signed-off-by: Benjamin Gaignard <benjamin.gaignard@collabora.com>
+>> ---
+>>  drivers/media/test-drivers/vimc/vimc-capture.c | 2 +-
+>>  drivers/media/test-drivers/vivid/vivid-core.c  | 4 ++--
+>>  2 files changed, 3 insertions(+), 3 deletions(-)
+>>
+>> diff --git a/drivers/media/test-drivers/vimc/vimc-capture.c b/drivers/media/test-drivers/vimc/vimc-capture.c
+>> index 2a2d19d23bab..97693561f1e4 100644
+>> --- a/drivers/media/test-drivers/vimc/vimc-capture.c
+>> +++ b/drivers/media/test-drivers/vimc/vimc-capture.c
+>> @@ -432,7 +432,7 @@ static struct vimc_ent_device *vimc_capture_add(struct vimc_device *vimc,
+>>  	q->mem_ops = vimc_allocator == VIMC_ALLOCATOR_DMA_CONTIG
+>>  		   ? &vb2_dma_contig_memops : &vb2_vmalloc_memops;
+>>  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+>> -	q->min_queued_buffers = 2;
+>> +	q->min_reqbufs_allocation = 2;
+>>  	q->lock = &vcapture->lock;
+>>  	q->dev = v4l2_dev->dev;
+>>  
+>> diff --git a/drivers/media/test-drivers/vivid/vivid-core.c b/drivers/media/test-drivers/vivid/vivid-core.c
+>> index 159c72cbb5bf..11b8520d9f57 100644
+>> --- a/drivers/media/test-drivers/vivid/vivid-core.c
+>> +++ b/drivers/media/test-drivers/vivid/vivid-core.c
+>> @@ -861,7 +861,7 @@ static const struct media_device_ops vivid_media_ops = {
+>>  static int vivid_create_queue(struct vivid_dev *dev,
+>>  			      struct vb2_queue *q,
+>>  			      u32 buf_type,
+>> -			      unsigned int min_queued_buffers,
+>> +			      unsigned int min_reqbufs_allocation,
+>>  			      const struct vb2_ops *ops)
+>>  {
+>>  	if (buf_type == V4L2_BUF_TYPE_VIDEO_CAPTURE && dev->multiplanar)
+>> @@ -898,7 +898,7 @@ static int vivid_create_queue(struct vivid_dev *dev,
+>>  	q->mem_ops = allocators[dev->inst] == 1 ? &vb2_dma_contig_memops :
+>>  						  &vb2_vmalloc_memops;
+>>  	q->timestamp_flags = V4L2_BUF_FLAG_TIMESTAMP_MONOTONIC;
+>> -	q->min_queued_buffers = supports_requests[dev->inst] ? 0 : min_queued_buffers;
+>> +	q->min_reqbufs_allocation = min_reqbufs_allocation;
+>>  	q->lock = &dev->mutex;
+>>  	q->dev = dev->v4l2_dev.dev;
+>>  	q->supports_requests = supports_requests[dev->inst];
+> 
+> How did you test this series? If I run the test-media script using the patch
+> v4l2-compliance (the v9 series) I get two failures. Both are traced to code
+> in vivid: meta_out_queue_setup() and touch_cap_queue_setup():
+> 
+> Both have this code:
+> 
+>         if (*nplanes) {
+>                 if (sizes[0] < size)
+>                         return -EINVAL;
+>         } else {
+>                 sizes[0] = size;
+>         }
+> 
+>         if (q_num_bufs + *nbuffers < 2)
+>                 *nbuffers = 2 - q_num_bufs;
+> 
+>         *nplanes = 1;
+>         return 0;
+> 
+> It's the *nbuffers assignment that is wrong. Looking at vivid-core.c I see
+> that vivid_create_queue() is called with min_reqbufs_allocation set to 1 for
+> these two devices. I think that should be 2, and then the code above can
+> be dropped.
 
-Technically I think we could shrink the whole thing down to 16 bytes*, 
-since just 24 bits of size should still be more than enough, with the 
-remaining 8 bits similarly plenty for a padding slot count. Depends if 
-we think the overall memory saving is worth the marginal extra 
-complexity of packing values into bitfields.
+Note that if that 'if (q_num_bufs + *nbuffers < 2)' is dropped, then you
+should also drop the q_num_bufs assignment at the beginning of the function
+since that is now no longer used.
 
-Thanks,
-Robin.
+Regards,
 
+	Hans
 
-* The relevance of SWIOTLB to 32-bit builds is primarily going to be for 
-PAE cases where phys_addr_t is still 64-bit.
+> 
+> It is probably best to post a v21.1 3/9 patch only.
+> 
+> Regards,
+> 
+> 	Hans
+> 
+> 
+> 
+
 
