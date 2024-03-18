@@ -1,125 +1,145 @@
-Return-Path: <linux-kernel+bounces-105869-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-105871-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 67DBD87E5BB
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:27:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B59AC87E5BF
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:27:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0734F1F22694
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:27:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6961B2827E2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 09:27:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C92182C68C;
-	Mon, 18 Mar 2024 09:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="tyKpNz69"
-Received: from mail-vk1-f182.google.com (mail-vk1-f182.google.com [209.85.221.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AE662C1AD;
+	Mon, 18 Mar 2024 09:27:35 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 751222C1AF
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:26:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 030D426AF7
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 09:27:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710753968; cv=none; b=BU6naKX+1AmfqD8QnxfGPFldm/AA5oj6wYmDIBBehasZG+6lHQ9jJN0ZAbvznmSRUxKLNnpZeIwUwtE7mmdCPdwyWiuU00svwXtxxYHOzpAwIVdhXg6eVm1pZ4RBeCRWwlf1hYJ40BmmoxKfmMPUNxOmSLAOcuWf+tWSJEvvqqE=
+	t=1710754055; cv=none; b=Aet9523VGYQy6G1GDsVMd/BqOKJ18+yFnqlFgbavUX3iwTkKDS4sCfyHEciEba35NNjIorD4ybIsdGWpyzg+g/IdouElI72L8D1VpK7VIhZZCzAQ4D659Uftanu366hRfBAIPUzSESMHe7CP1GoVRVTEGBqqZc5TGrl+bzQDG2k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710753968; c=relaxed/simple;
-	bh=8y4vSdVUZCk+aPZhva5pLco3uG5l2lCYnp2HRRGYbkg=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=SPjZdz/Wj924JZIPnEJusMAFFCktB29QJA5hxMiO6wLDA4jlVACxSvBTpS87vilZHpSosnKOMTWjjI2fAnO9m+eAYBPR2bcGF4YI7HacBXcTje9O7EnNO1R3gzP3rVztNMy3dNTIDmJfCQi821aQXWkboovAU3FBHy3/sK5PuTU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=tyKpNz69; arc=none smtp.client-ip=209.85.221.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-vk1-f182.google.com with SMTP id 71dfb90a1353d-4d4515aca90so251999e0c.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 02:26:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710753965; x=1711358765; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:mime-version:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=dr558Gtc+rRfkIYnJ72l9uUtS+S0kUdV5Cm0VXr/mqc=;
-        b=tyKpNz69GkAF/dxzi9qfLSPyLCVErblaF4Nkwhl3t+ipwJzq8rtnLlv1GqG4PJ/lpJ
-         JzcXZmvwtynAJeth3rowcHafUj+P4xEGKufFbSRqtuQ5P3Wo7Pl4sv1IhaIYW6yUtdCm
-         jqbfRkY2CJUhav0KD0h4juyF0YhmITziNU3P1abs+dbZaE5VlNkOA7mQVSObs1RD7ooh
-         V9Bd/dr/UgyQej7koeQXPdZB0uiU1TTDXgD0ewCNTfQuu4tAbu/VRkoJ6b6wA5a4XPOd
-         Ntrc+j9SAtGSCL/7TwA+q/Wjr+dzIi9oZIm+loICzM3OpNpO1cHsXWrML36lN9HaFcPr
-         49hg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710753965; x=1711358765;
-        h=cc:to:subject:message-id:date:from:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=dr558Gtc+rRfkIYnJ72l9uUtS+S0kUdV5Cm0VXr/mqc=;
-        b=EyDJvoTOUg6HW5RLPIaibca41hbmYpTcshy6OF9q+tLtkV9WE1e0zfn6LBZyaDSwKv
-         yAuEppJvKdrbDRIvkr7NYAGDXIepYNCRdhydh8zjL9ge0gBwNyraY8Phgveen9/sM4cV
-         FqqFskxFCGZt68DW9Rf6E7y6xy/G7igXVLAFw2JQw/GbCsU63Vu6WrWInnVounsjg+jx
-         BKh+5JA+SpBNF/XD2nm6xEuBMexql0D8AplJYtMiOh/2AknqoOqlmvjRZTRHnCfEY9nv
-         BgZGOh2Km3NewakxwuxAgtbjEhjuj/jizmgUn2ycBbnFA/d0w1bFh6DY6mgIbPx06EXF
-         NQ0A==
-X-Forwarded-Encrypted: i=1; AJvYcCXqhted8jhHOvsXtTQGlp9vrmpKVNl/iOvE57lh+t1gY2gOijjplUs6xTsm7hsdiCO2yZ9i764b2HbaSLFcC4NK3xhJOu1dMuDR25Xp
-X-Gm-Message-State: AOJu0YzzxLa1EPJhEARUo+dutFlemCk7QHwTFQsuzxPQOuuV0zNw+f4X
-	totpVXI9ITWb1BSexlZ/Eo3vX3pAvoLnUicUcg5u6Rn0DkpadwLb0SomQMtKCBkfz/7ubWobar5
-	NuWjDLOo0VEpVZxACpZcXkyvtiD5JRjCqH/SiFA==
-X-Google-Smtp-Source: AGHT+IFDDQIlK3lVhoDg3KpbK/eh3Hhxm8PIDTagoTjsDxY8wbny4dXn7KvLQWqbF5dW8Rr0jLCdFvvcFrJRC5YENVg=
-X-Received: by 2002:a1f:724c:0:b0:4ca:615e:1b61 with SMTP id
- n73-20020a1f724c000000b004ca615e1b61mr7860598vkc.10.1710753965337; Mon, 18
- Mar 2024 02:26:05 -0700 (PDT)
+	s=arc-20240116; t=1710754055; c=relaxed/simple;
+	bh=YHiuOn4hq18fkHfMqEhWJZ8muMTRuaWOyeakJRLBng4=;
+	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=MuITdIjvxZUMA3b06Nq67GpUoXr0UNJx0LsoAxdE/1KAWjIcFX6ewtir9E88JZyJPixfMXeEV9M3RKl13tYI0UObWBBMxAYBMWv3/OeMBvUFaBgbvO5DZG8GZ13sHHEHQEDGhHkx5JiShQ++eIjzdOK/w2bnGchoE1dQdO+ox4E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rm9HF-000139-72; Mon, 18 Mar 2024 10:27:29 +0100
+Received: from [2a0a:edc0:0:1101:1d::ac] (helo=dude04.red.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rm9HE-00735O-QA; Mon, 18 Mar 2024 10:27:28 +0100
+Received: from localhost ([::1] helo=dude04.red.stw.pengutronix.de)
+	by dude04.red.stw.pengutronix.de with esmtp (Exim 4.96)
+	(envelope-from <m.grzeschik@pengutronix.de>)
+	id 1rm9HE-006V5M-2R;
+	Mon, 18 Mar 2024 10:27:28 +0100
+From: Michael Grzeschik <m.grzeschik@pengutronix.de>
+Date: Mon, 18 Mar 2024 10:27:28 +0100
+Subject: [PATCH v3] uvc_video: move clock_decode and stats_decode to the
+ end of decode_start
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: Naresh Kamboju <naresh.kamboju@linaro.org>
-Date: Mon, 18 Mar 2024 14:55:54 +0530
-Message-ID: <CA+G9fYs=OTKAZS6g1P1Ewadfr0qoe6LgOVSohqkXmFXotEODdg@mail.gmail.com>
-Subject: net/sunrpc/sched.c: error: result of comparison against a string
- literal is unspecified (use an explicit string comparison function instead)
-To: Netdev <netdev@vger.kernel.org>, clang-built-linux <llvm@lists.linux.dev>, 
-	open list <linux-kernel@vger.kernel.org>, lkft-triage@lists.linaro.org
-Cc: "David S. Miller" <davem@davemloft.net>, Nathan Chancellor <nathan@kernel.org>, 
-	Trond Myklebust <trond.myklebust@hammerspace.com>, Eric Dumazet <edumazet@google.com>
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 7bit
+Message-Id: <20240221-uvc-host-video-decode-start-v3-1-40e9b9ced97b@pengutronix.de>
+X-B4-Tracking: v=1; b=H4sIAP8I+GUC/5WOsQ6DIBRFf8Uw9zXy1Kqd+h9NB4SnkhgwgMTG+
+ O9F1y7teO5wzt2YJ6fJs3u2MUdRe21NguKSMTkKMxBolZhhjmWOyGGJEkbrA0StyIIiaRWBD8I
+ FEH1VqL5qsZSKJUMnPEHnhJFjcphlmtI4O+r1eiafr8Sj9sG69/kg8mP9LRY5cEBs2jYFK1nnj
+ 5nMsARnjV6vitghj/iHEJOwaeSNeE1lU4sv4b7vHw606zUxAQAA
+To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+ Mauro Carvalho Chehab <mchehab@kernel.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ kernel@pengutronix.de, Michael Grzeschik <m.grzeschik@pengutronix.de>
+X-Mailer: b4 0.12.0
+X-Developer-Signature: v=1; a=openpgp-sha256; l=2110;
+ i=m.grzeschik@pengutronix.de; h=from:subject:message-id;
+ bh=YHiuOn4hq18fkHfMqEhWJZ8muMTRuaWOyeakJRLBng4=;
+ b=owEBbQKS/ZANAwAKAb9pWET5cfSrAcsmYgBl+AkAsnlDrR3gAv9akcDuPnTJurQXGhOslEARd
+ QJhUAOxujOJAjMEAAEKAB0WIQQV2+2Fpbqd6fvv0Gi/aVhE+XH0qwUCZfgJAAAKCRC/aVhE+XH0
+ qz6mEACP/k2WYqTeiJ5VuMRsRkih5hAz0R/tAYjJpbRm6Jo8ztDwS4OenojAITwo89NSaVn9ep5
+ IvT1/qTzUP+B8Wgl5b67VgLlN2/jLED8+/bVF8Ym8NRB+H+6+J+ZVA37WlMTih5Lc4jclhJVjcs
+ UssvT1JFEJ3oeU3FNivsxT0l6D/f9Kohl0KQjoobncY9FwqWkLjRMwDVsr6Uvqlr/EuYw4a3mXj
+ /+yocd4F6vIv0P1BrlxLmOMSGDCg/0KudLg3kP+C5BK/vsTA+Z8ZyKToIMYhGRwrehd3G3LKkyP
+ vA8pxLS4gaN3NEbc07YigNJsgeUCzPrgbyw273jC8vXLA/3c09oCOjFaGdAg0JDNSmTHJYDoEYC
+ nWXgchHhkUa0xai1REo2Er0voziEfWcObJn6Vr2azsEGIYUxs75MUqtqA1F0hsISUIHA7Ak9270
+ PW0XGM3SPvp+h2gZ5M+TKa3EFa3vwQin1ePgXZDlptOuJl9ZubrZUEqqjPjkX0g5ftJfs0Qhyxd
+ ZOVcV2siP+01cpsKouOO52bML7vhmlsBIRXoK3R1y3d6jP/XyhWUKn3/Uoq2UXP2qIAjRgj1l2W
+ 2b4IaUd8OG7QXBULaDCTw0WD/cC+PCR+iW28T5joQj+jQ5Br4lGwccOXjV+MzbjvdC9a5zVSrgj
+ knx2D+NCfmh43Vg==
+X-Developer-Key: i=m.grzeschik@pengutronix.de; a=openpgp;
+ fpr=957BC452CE953D7EA60CF4FC0BE9E3157A1E2C64
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: m.grzeschik@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-The following build warnings / errors noticed on x86 kselftests build with
-clang nightly  / clang-17 on Linux  next tag next-20240318.
+When the uvc request will get parsed by uvc_video_decode_start it will
+leave the function with -EAGAIN to be restarted on the next frame. While
+the first wrong parse the statistics will already be updated with
+uvc_video_stats_decode.
 
-This build config is generated from kselftest merge configs [1].
+One value e.g. is the error_count, which therefor will be incremented
+twice in case the fid has changed on the way. This patch fixes the
+unnecessary extra parsing by moving the decode functions to the
+end of decode_start, when it is save to really parse the data.
 
-Reported-by: Linux Kernel Functional Testing <lkft@linaro.org>
+Signed-off-by: Michael Grzeschik <m.grzeschik@pengutronix.de>
+---
+Changes in v3:
+- Moved the clock_decode and stat_decode to end of function as suggested by Ricardo Ribalda
+- Link to v2: https://lore.kernel.org/r/20240221-uvc-host-video-decode-start-v2-1-88c6e17e487a@pengutronix.de
 
-Build log:
------------
-In file included from net/sunrpc/sched.c:31:
-In file included from include/trace/events/sunrpc.h:2524:
-In file included from include/trace/define_trace.h:102:
-In file included from include/trace/trace_events.h:419:
-include/trace/events/sunrpc.h:707:4: error: result of comparison
-against a string literal is unspecified (use an explicit string
-comparison function instead) [-Werror,-Wstring-compare]
-  667 |                         __assign_str(progname,
-      |                         ~~~~~~~~~~~~~~~~~~~~~~
-  668 |                                      task->tk_client->cl_program->name);
-      |                                      ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  669 |                         __entry->version = task->tk_client->cl_vers;
-      |                         ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-  670 |                         __assign_str(procedure,
-task->tk_msg.rpc_proc->p_name);
-      |
+Changes in v2:
+- Moved the EAGAIN bailout after the sequence handling as mentioned by Ricardo Ribalda
+- Link to v1: https://lore.kernel.org/r/20240221-uvc-host-video-decode-start-v1-1-228995925c70@pengutronix.de
+---
+ drivers/media/usb/uvc/uvc_video.c | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
 
-[1] steps to reproduce:
------------
-tuxmake --runtime podman --target-arch x86_64 --toolchain
-clang-nightly --kconfig
-https://storage.tuxsuite.com/public/linaro/lkft/builds/2dqIWv3Qq5qYmJfnmKfkSg9fvN0/config
-LLVM=1 LLVM_IAS=1 debugkernel cpupower headers kernel kselftest
-modules
+diff --git a/drivers/media/usb/uvc/uvc_video.c b/drivers/media/usb/uvc/uvc_video.c
+index 7cbf4692bd875..7471bff0ca894 100644
+--- a/drivers/media/usb/uvc/uvc_video.c
++++ b/drivers/media/usb/uvc/uvc_video.c
+@@ -1078,9 +1078,6 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+ 			uvc_video_stats_update(stream);
+ 	}
+ 
+-	uvc_video_clock_decode(stream, buf, data, len);
+-	uvc_video_stats_decode(stream, data, len);
+-
+ 	/*
+ 	 * Store the payload FID bit and return immediately when the buffer is
+ 	 * NULL.
+@@ -1147,6 +1144,9 @@ static int uvc_video_decode_start(struct uvc_streaming *stream,
+ 		return -EAGAIN;
+ 	}
+ 
++	uvc_video_clock_decode(stream, buf, data, len);
++	uvc_video_stats_decode(stream, data, len);
++
+ 	stream->last_fid = fid;
+ 
+ 	return data[0];
 
+---
+base-commit: d99e42ce6b8341d3f09e22c6706461ec900fe172
+change-id: 20240221-uvc-host-video-decode-start-af53df5924cd
 
-Links:
- - https://storage.tuxsuite.com/public/linaro/lkft/builds/2dqIWv3Qq5qYmJfnmKfkSg9fvN0/
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240318/testrun/23069554/suite/build/test/clang-nightly-lkftconfig-kselftest/log
- - https://qa-reports.linaro.org/lkft/linux-next-master/build/next-20240318/testrun/23069554/suite/build/test/clang-nightly-lkftconfig-kselftest/details/
+Best regards,
+-- 
+Michael Grzeschik <m.grzeschik@pengutronix.de>
 
-
---
-Linaro LKFT
-https://lkft.linaro.org
 
