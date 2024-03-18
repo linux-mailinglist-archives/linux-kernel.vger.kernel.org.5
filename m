@@ -1,75 +1,75 @@
-Return-Path: <linux-kernel+bounces-106012-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106013-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B353A87E783
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:41:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 612BE87E787
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 11:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6C6042835D6
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:41:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 212BA283657
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 10:41:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7799E374FE;
-	Mon, 18 Mar 2024 10:40:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 164C9381C1;
+	Mon, 18 Mar 2024 10:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="C7Vpf0UA"
-Received: from mail-pf1-f176.google.com (mail-pf1-f176.google.com [209.85.210.176])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="jCYnzivw"
+Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3ACEE37159
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:40:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 995D63770C
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 10:40:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710758419; cv=none; b=Ecdg0Igxli5utxXfFg+IBkJYP4KdGrwtELBhI/0aDuD6+lQbDtYqFn1BTvEU2rfHhIcVcd9SJgNBWw/+0Kh6GNp0Q29MAhu+8MegWNP4Cbsg7YP5N+p0mhGMV8YshORDfsr5ZsKvJUe6O5ru7h92AuaG9eGXFcWQVeUqDN3wulA=
+	t=1710758424; cv=none; b=YkIPTW03d9YjsQOU6zVzIunyHBf/e9YLbpZ34B0niaX1lah93n91OT92pn/4/qKxrNxl/nb6jrS1JXFBpEajoUMAJ2si96/KJkXpxgje/ME9781Fmlm/OEt1kU0MveUEIHP+lIc2j69yrCBHkpaUhfH6/ps/7RocUloDTkR2N60=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710758419; c=relaxed/simple;
-	bh=3S9fzgrhpr37e6u603MyEzK4ZDEnNNexKCWCZt2/GWY=;
+	s=arc-20240116; t=1710758424; c=relaxed/simple;
+	bh=uubmLa91yNB8dZEdaOLb52luySkhGjATl5lAE4q/Ev4=;
 	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=QYfGsla+2dy+fbcjHfe/E3KJI+LFM6QbHpNIJbqGQ0yxsH9zV0/VC2hAoYvR03JPhxIXQKCISqmIO00rf26wPwv9nnKnqUS6gcoJdqz9S3a30Qo0Jb22bGGbgNBCLCGng11leAl58ikCp75Vkw1NBuf2QHxBmpFcjH1SSXfEQ6A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=C7Vpf0UA; arc=none smtp.client-ip=209.85.210.176
+	 In-Reply-To:To:Cc; b=Cg6RMHu8ZAcSDiHGzGmN3Uu3eBeKOVQCbso84muuYySs6NQf3yfrp3JF2M8zPxQ3P8vDNjsxAwSGKs1/EK9neneS0LGsbQ/9SoaCWzLnX9pgo+eIpGHF9ff9gooEEb9IrGpHOGt4e+k2yizwSgU9rhU7St25nLn+GAYqogee18M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=jCYnzivw; arc=none smtp.client-ip=209.85.210.169
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f176.google.com with SMTP id d2e1a72fcca58-6e4d48a5823so2730286b3a.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:40:18 -0700 (PDT)
+Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6b6e000a4so2972835b3a.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 03:40:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710758417; x=1711363217; darn=vger.kernel.org;
+        d=sifive.com; s=google; t=1710758421; x=1711363221; darn=vger.kernel.org;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=wmjJM7prKhSJUQ/iHjZSKFVAIwCvyZorqbvL8NpufQk=;
-        b=C7Vpf0UAl332x6//PdJikgLnr75TqvS43a7IDWNmdLHZyiVfUYebtRmgjg9kQtUclq
-         E5Cv6Rnpwg/szC2X7JmoKN70SfJBkejc43XdsFzFird/UKdX9VG7+nXKvLm/mgsVhXZ2
-         fIwg/oeftG/dsRZmRnjF3qQxZyxqfy9ttYSsq3/doh7IBVsEen51mqMf94vWn08bkWxf
-         whRcLwZG11nsYR6sYCD57KpG2c6u6sEzMtrs4fciyMvp6Wl1he8CKsTkJ+VIRlpaIzeI
-         bwLaowqAsZsPYMkp5BCz2oQSlTP6RFk6kRjgUmDaO/1hiuPJpN+nx+IOZw7Rpv6aLFZm
-         ukbA==
+        bh=pHRXW9BfVlGJGTuBqz21x9jZhOCb5ENaxkoeEzRsV8g=;
+        b=jCYnzivwTIVsESyhJokuxIhy0ZGrpE1xC3jZ52wpRNqB+c/fkajv0EZVA8IoB3GXD7
+         iCGqWPPopWif+42c6UaSd/ReUzRoMouHGDyZ9lW7pBV5ZRiPtHeLPSQwPzGJEWALdnjg
+         4/xrIWLVPdSLyxyzRa/MJ1pQAwl7yhKP9+GnmQA/bf/oZohb5c4JKuFT8Cp6qsjj5K3X
+         1neQow0MfiW7hCOOgQK+hynlJEQRCRdjI39tVXnC9QsSGt7hul9+dxGz8WTRePipBgdj
+         MBwbVQ1j7WpeY8H9vjsfQwUPqLZZORGHKaYSNtt9XJpAS4gn6WsocyF6VD8pSn9/nK47
+         1NyA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710758417; x=1711363217;
+        d=1e100.net; s=20230601; t=1710758421; x=1711363221;
         h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
          :mime-version:subject:date:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=wmjJM7prKhSJUQ/iHjZSKFVAIwCvyZorqbvL8NpufQk=;
-        b=kbujQ1Hmb0BcmwhiGBM7Cq8FYX+Pwk10xU/3fFNxFTIdS4DnLD0xpyD77ny9tdE12l
-         BzT5fbYlZtYkgjUAPZQA8C9S3h1gIehllaYequ6QCZpqzuplBdU3arGOC3kNvVz8UuVx
-         jdDu/nhALJsgBoC5uCOyTHkvF7HlG194bYSZnPUsFfFVhMESk0gE6fFOXo9XS3iI+ajz
-         Fuvz0II66LHmfoRWxOGFv2Pa0OgISwDzInRmcjND8zyLK8N+VVbqwJMyKbTiBHqvTszz
-         unC9Rz5Ld41UmvWsrU6XdVe6T9gcaRV5AHbqCDpJZ+gXsPEURbjDhtjOCpGQ8EyvmyFU
-         dVzw==
-X-Forwarded-Encrypted: i=1; AJvYcCV1aYPuGzIxGwxcBH46cPxc26se4CyDE/FZ6w16VA4JUdXBlAEN8XPvQnUqBtTnwXqA4UNE+X9IrbGEfU5StAbV6KfLXwA2NhUROIzI
-X-Gm-Message-State: AOJu0YyQP6uxu+R1cQJN/OOLju+1iXZop9pGiiTDimRMU0hEpey6sOJ/
-	pDfYiuN51n0jTyGLWZ9LbSt0MXmDJRr6ZPOS+VDBzV5+ZvCESjuDqAANZN9mcwY=
-X-Google-Smtp-Source: AGHT+IGA7ENajAXygIvHMDvo3jrNxFzvmQ16iQc/gXb9EOfl1njFlKoIYWJx4IXelaDE1hz5NLCwCA==
-X-Received: by 2002:a05:6a00:1491:b0:6e6:a3b3:923c with SMTP id v17-20020a056a00149100b006e6a3b3923cmr12692171pfu.6.1710758417599;
-        Mon, 18 Mar 2024 03:40:17 -0700 (PDT)
+        bh=pHRXW9BfVlGJGTuBqz21x9jZhOCb5ENaxkoeEzRsV8g=;
+        b=qtZpVXIDscL+ytQRjDnUwxMJ7nSjONbmBYQP8O7K36uOsRdVAvgTCFcyd6zL7SywjT
+         j3mU9dy9fCc23diWO0WKPw8tMbVLoSTF5hBePA6miejkNm66VXzfWqJVAkb6KTVjyMhM
+         YAxH5Fr+nLmjx4JwT6+VgXrZfIkjuPWdNqTKW3C8f5/fj0DFk6Io6yGvCpFTQ1vX2Dng
+         MMBhdnvdK2cTIVW+tnoNNN0EN4Bxj58uu/aVF78vm23AlauDVO2JaYEqIj0TVP0YzSjf
+         A+PJBnjt6HZ5wUvILcIZUd2aMzDNexMbNOVg2Wq3Jzxa6HeW2SjOWzLmktJ2WQ2sKNL8
+         JIUg==
+X-Forwarded-Encrypted: i=1; AJvYcCViDtODYB5mhx7pP3wQ2wIFbfXV1jsJBPXQAU83XMQthR4Pugk5w8a4lhIVAXl0pIRQhGwDJBR0EhaEjIGV1wFnFLWSgEF7kva67ejp
+X-Gm-Message-State: AOJu0Yzfzc9iC1O/dZQYyXzQ6ZibkEDSXlIshl1Wotynb8/iL4B+JjZt
+	0PcE7GqLUL5XEThYKCCPMCkU+uB0/7soDwkpVG157WjCAjpW8dfEWIhcy57J95w=
+X-Google-Smtp-Source: AGHT+IG9HD964lIVN8dn6HAV4SJOQzPvmgY/XIApnnZHHKJ2o1e4fnnwwXWsSW7pnppyra0VzXddow==
+X-Received: by 2002:a05:6a00:17a6:b0:6e6:9dfb:7e71 with SMTP id s38-20020a056a0017a600b006e69dfb7e71mr22547429pfg.2.1710758420941;
+        Mon, 18 Mar 2024 03:40:20 -0700 (PDT)
 Received: from [127.0.1.1] (59-124-168-89.hinet-ip.hinet.net. [59.124.168.89])
-        by smtp.gmail.com with ESMTPSA id c11-20020a056a00008b00b006e647716b6esm7838969pfj.149.2024.03.18.03.40.14
+        by smtp.gmail.com with ESMTPSA id c11-20020a056a00008b00b006e647716b6esm7838969pfj.149.2024.03.18.03.40.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 03:40:17 -0700 (PDT)
+        Mon, 18 Mar 2024 03:40:20 -0700 (PDT)
 From: Andy Chiu <andy.chiu@sifive.com>
-Date: Mon, 18 Mar 2024 18:39:58 +0800
-Subject: [PATCH v3 5/7] dt-bindings: riscv: add Zve32[xf] Zve64[xfd] ISA
- extension description
+Date: Mon, 18 Mar 2024 18:39:59 +0800
+Subject: [PATCH v3 6/7] riscv: hwprobe: add zve Vector subextensions into
+ hwprobe interface
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,8 +77,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240318-zve-detection-v3-5-e12d42107fa8@sifive.com>
+Content-Transfer-Encoding: 8bit
+Message-Id: <20240318-zve-detection-v3-6-e12d42107fa8@sifive.com>
 References: <20240318-zve-detection-v3-0-e12d42107fa8@sifive.com>
 In-Reply-To: <20240318-zve-detection-v3-0-e12d42107fa8@sifive.com>
 To: Paul Walmsley <paul.walmsley@sifive.com>, 
@@ -91,62 +91,94 @@ To: Paul Walmsley <paul.walmsley@sifive.com>,
 Cc: linux-riscv@lists.infradead.org, linux-kernel@vger.kernel.org, 
  Palmer Dabbelt <palmer@rivosinc.com>, 
  Greentime Hu <greentime.hu@sifive.com>, Guo Ren <guoren@kernel.org>, 
- devicetree@vger.kernel.org, linux-doc@vger.kernel.org
+ devicetree@vger.kernel.org, linux-doc@vger.kernel.org, 
+ =?utf-8?q?Cl=C3=A9ment_L=C3=A9ger?= <cleger@rivosinc.com>
 X-Mailer: b4 0.13-dev-a684c
 
-Add description for Zve32x Zve32f Zve64x Zve64f Zve64d ISA extensions.
+The following Vector subextensions for "embedded" platforms are added
+into RISCV_HWPROBE_KEY_IMA_EXT_0:
+ - ZVE32X
+ - ZVE32F
+ - ZVE64X
+ - ZVE64F
+ - ZVE64D
+
+Extensions ending with an X indicates that the platform doesn't have a
+vector FPU.
+Extensions ending with F/D mean that whether single (F) or double (D)
+precision vector operation is supported.
+The number 32 or 64 follows from ZVE tells the maximum element length.
 
 Signed-off-by: Andy Chiu <andy.chiu@sifive.com>
+Reviewed-by: Clément Léger <cleger@rivosinc.com>
 ---
-Changelog v3:
- - Correct extension names and their order (Stefan)
 Changelog v2:
- - new patch since v2
+ - zve* extensions in hwprobe depends on whether kernel supports v, so
+   include them after has_vector(). Fix a typo. (Clément)
 ---
- .../devicetree/bindings/riscv/extensions.yaml      | 30 ++++++++++++++++++++++
- 1 file changed, 30 insertions(+)
+ Documentation/arch/riscv/hwprobe.rst  | 15 +++++++++++++++
+ arch/riscv/include/uapi/asm/hwprobe.h |  5 +++++
+ arch/riscv/kernel/sys_hwprobe.c       |  5 +++++
+ 3 files changed, 25 insertions(+)
 
-diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
-index 468c646247aa..cfed80ad5540 100644
---- a/Documentation/devicetree/bindings/riscv/extensions.yaml
-+++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
-@@ -381,6 +381,36 @@ properties:
-             instructions, as ratified in commit 56ed795 ("Update
-             riscv-crypto-spec-vector.adoc") of riscv-crypto.
+diff --git a/Documentation/arch/riscv/hwprobe.rst b/Documentation/arch/riscv/hwprobe.rst
+index b2bcc9eed9aa..d0b02e012e5d 100644
+--- a/Documentation/arch/riscv/hwprobe.rst
++++ b/Documentation/arch/riscv/hwprobe.rst
+@@ -188,6 +188,21 @@ The following keys are defined:
+        manual starting from commit 95cf1f9 ("Add changes requested by Ved
+        during signoff")
  
-+        - const: zve32f
-+          description:
-+            The standard Zve32f extension for embedded processors, as ratified
-+            in commit 6f702a2 ("Vector extensions are now ratified") of
-+            riscv-v-spec.
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVE32X`: The Vector sub-extension Zve32x is
++    supported, as defined by version 1.0 of the RISC-V Vector extension manual.
 +
-+        - const: zve32x
-+          description:
-+            The standard Zve32x extension for embedded processors, as ratified
-+            in commit 6f702a2 ("Vector extensions are now ratified") of
-+            riscv-v-spec.
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVE32F`: The Vector sub-extension Zve32f is
++    supported, as defined by version 1.0 of the RISC-V Vector extension manual.
 +
-+        - const: zve64d
-+          description:
-+            The standard Zve64d extension for embedded processors, as ratified
-+            in commit 6f702a2 ("Vector extensions are now ratified") of
-+            riscv-v-spec.
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVE64X`: The Vector sub-extension Zve64x is
++    supported, as defined by version 1.0 of the RISC-V Vector extension manual.
 +
-+        - const: zve64f
-+          description:
-+            The standard Zve64f extension for embedded processors, as ratified
-+            in commit 6f702a2 ("Vector extensions are now ratified") of
-+            riscv-v-spec.
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVE64F`: The Vector sub-extension Zve64f is
++    supported, as defined by version 1.0 of the RISC-V Vector extension manual.
 +
-+        - const: zve64x
-+          description:
-+            The standard Zve64x extension for embedded processors, as ratified
-+            in commit 6f702a2 ("Vector extensions are now ratified") of
-+            riscv-v-spec.
++  * :c:macro:`RISCV_HWPROBE_EXT_ZVE64D`: The Vector sub-extension Zve64d is
++    supported, as defined by version 1.0 of the RISC-V Vector extension manual.
 +
-         - const: zvfh
-           description:
-             The standard Zvfh extension for vectored half-precision
+ * :c:macro:`RISCV_HWPROBE_KEY_CPUPERF_0`: A bitmask that contains performance
+   information about the selected set of processors.
+ 
+diff --git a/arch/riscv/include/uapi/asm/hwprobe.h b/arch/riscv/include/uapi/asm/hwprobe.h
+index 9f2a8e3ff204..b9a0876e969f 100644
+--- a/arch/riscv/include/uapi/asm/hwprobe.h
++++ b/arch/riscv/include/uapi/asm/hwprobe.h
+@@ -59,6 +59,11 @@ struct riscv_hwprobe {
+ #define		RISCV_HWPROBE_EXT_ZTSO		(1ULL << 33)
+ #define		RISCV_HWPROBE_EXT_ZACAS		(1ULL << 34)
+ #define		RISCV_HWPROBE_EXT_ZICOND	(1ULL << 35)
++#define		RISCV_HWPROBE_EXT_ZVE32X	(1ULL << 36)
++#define		RISCV_HWPROBE_EXT_ZVE32F	(1ULL << 37)
++#define		RISCV_HWPROBE_EXT_ZVE64X	(1ULL << 38)
++#define		RISCV_HWPROBE_EXT_ZVE64F	(1ULL << 39)
++#define		RISCV_HWPROBE_EXT_ZVE64D	(1ULL << 40)
+ #define RISCV_HWPROBE_KEY_CPUPERF_0	5
+ #define		RISCV_HWPROBE_MISALIGNED_UNKNOWN	(0 << 0)
+ #define		RISCV_HWPROBE_MISALIGNED_EMULATED	(1 << 0)
+diff --git a/arch/riscv/kernel/sys_hwprobe.c b/arch/riscv/kernel/sys_hwprobe.c
+index 8cae41a502dd..c8219b82fbfc 100644
+--- a/arch/riscv/kernel/sys_hwprobe.c
++++ b/arch/riscv/kernel/sys_hwprobe.c
+@@ -113,6 +113,11 @@ static void hwprobe_isa_ext0(struct riscv_hwprobe *pair,
+ 		EXT_KEY(ZICOND);
+ 
+ 		if (has_vector()) {
++			EXT_KEY(ZVE32X);
++			EXT_KEY(ZVE32F);
++			EXT_KEY(ZVE64X);
++			EXT_KEY(ZVE64F);
++			EXT_KEY(ZVE64D);
+ 			EXT_KEY(ZVBB);
+ 			EXT_KEY(ZVBC);
+ 			EXT_KEY(ZVKB);
 
 -- 
 2.44.0.rc2
