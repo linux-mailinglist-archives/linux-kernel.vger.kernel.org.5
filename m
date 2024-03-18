@@ -1,179 +1,94 @@
-Return-Path: <linux-kernel+bounces-106636-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106637-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4053C87F149
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:39:41 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1BBE287F156
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 21:40:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E43A1C21920
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:39:40 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B16131F244F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:40:56 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B385288B6;
-	Mon, 18 Mar 2024 20:39:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CEAB45788C;
+	Mon, 18 Mar 2024 20:40:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gOeTv3G7"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2339E58AB6;
-	Mon, 18 Mar 2024 20:39:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
+	dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b="P+T8Utrr"
+Received: from linux.microsoft.com (linux.microsoft.com [13.77.154.182])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3BFE58206;
+	Mon, 18 Mar 2024 20:40:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=13.77.154.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710794368; cv=none; b=J6+7YUmOP2bVIfY1Yf/WSyCS2dnciiW47JM/EJUxGFbAu926AmEOH3LQHxcn1MsYs9AEp3ZV1k3HX/p+N+lJUba1vZW9DtG0EqBjFjAzNlpXgHjQV+wEEu79jrZeqSgteKmb4RYwrN2zUP6Ph7ouRPjjXNeEYGuNrzDn2awCyT0=
+	t=1710794444; cv=none; b=Zyjkk89tCKJcoj6nF/8So9VWvrozeeWzUHqUJykDhIjmTB931ylTH2XqaSguHJkNb4LqjjxwFXSmBfeSydFeG5ux61nhxPaiSdP07MwVGouxVmthgGdK3jSqcXF5g9WPmSuSGN0JDub/qiDhzSJqZ9uWTGrtlqYMlXK/gioP/6Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710794368; c=relaxed/simple;
-	bh=2h5jo8wEAkXTw9G7gniyt7zf6JOSZSqfam+jr8qgV0c=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qs2G2rRuZAqTmcnBCKLw9S5a2rmqrkFVFG2dpvv2SVZKxe12mzQbfSLr/oB2mQiDN6MXN3Hw7DJW/6P3k7XUTD6DSICEiAXejqYhdrKev2J1UC8jSeTVFduNU9rm+bfUVngwb4VmUvpR2B4S0oVgVkkGDR+k4VLhX545gAOKo6w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gOeTv3G7; arc=none smtp.client-ip=192.198.163.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710794367; x=1742330367;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=2h5jo8wEAkXTw9G7gniyt7zf6JOSZSqfam+jr8qgV0c=;
-  b=gOeTv3G7SZwueLHzeNdOioPGWYG9jh4g76hZlsrBiC9ZofVMkDzlBvC5
-   D9vWq8jIFkMRi7d7PqpWtvuXmdZikEW0EKzQWJbGJblDoFaZBBefsx+CS
-   riNMruYeBSnh44IhllDCfljqafhu+rHKkkFd1z0CLnmDTr45onApq8LrY
-   bdyb4Oh97LZYzMOV+R5g1pnWGCtWt/RxTpugz28+hSrm0LyjNUuZUSjgV
-   3fzDMha415LloXhemuMm+MLD3KfaYl57t3t98gCTxLuwJRAVDrQl71Prx
-   R0SnfQBPhAB68Y+vjqPBDzmdICrfi8AH01KlDVUbOkmDosY9+lKanHF0b
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5482171"
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="5482171"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 13:39:26 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="937060676"
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="937060676"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 18 Mar 2024 13:39:25 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1003)
-	id 2767C241; Mon, 18 Mar 2024 22:39:24 +0200 (EET)
-From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
-	netdev@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Subject: [PATCH net-next v1 1/1] nfc: st95hf: Switch to using gpiod API
-Date: Mon, 18 Mar 2024 22:39:23 +0200
-Message-ID: <20240318203923.183943-1-andriy.shevchenko@linux.intel.com>
-X-Mailer: git-send-email 2.43.0.rc1.1.gbec44491f096
+	s=arc-20240116; t=1710794444; c=relaxed/simple;
+	bh=mn4Xz1ZtJYWIfNb4PThhTYu0EooQbh05dxo1V6xh/po=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=oYpt81zeEM15RaerQEqJuaN/T2AQNJ4Ern3gRByteAbf9Om13hiWoVQWtVISyyEp+bIwJkBBdmI8yDICFZ2tfODldWKsv3i2HO7xEv105bhAmUmpGfUC7w36qtMbWDmR3KA2tGYQSYHFQR5nqqtIxvBBPTsTGUp8mGaQ8Bjk0Qs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com; spf=pass smtp.mailfrom=linux.microsoft.com; dkim=pass (1024-bit key) header.d=linux.microsoft.com header.i=@linux.microsoft.com header.b=P+T8Utrr; arc=none smtp.client-ip=13.77.154.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.microsoft.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.microsoft.com
+Received: from [10.137.106.151] (unknown [167.220.2.23])
+	by linux.microsoft.com (Postfix) with ESMTPSA id 1B38B20B74C0;
+	Mon, 18 Mar 2024 13:40:42 -0700 (PDT)
+DKIM-Filter: OpenDKIM Filter v2.11.0 linux.microsoft.com 1B38B20B74C0
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.microsoft.com;
+	s=default; t=1710794442;
+	bh=k0/I7p41f3QocEgsxb/Pps2tOnOrvwXWMYTG9ZCpr8M=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=P+T8UtrrP2wCtmdJ07oc3BDruPa8P5MIkG92h75fdRPvWL8DDBKRFVNqqr5+UyeQD
+	 ooCeQJRHYKzrv7CB7fiaFoTGzm5swxy4FXiUU5m7RejK1zt0qWh+Yvh3Y/Q7OgT8bn
+	 MuD2Vel7eb5QgWibwRXsNWgrHkiyiUoe4ynUfMu4=
+Message-ID: <59357d13-c980-4f5a-a9e1-6ad6e480d46e@linux.microsoft.com>
+Date: Mon, 18 Mar 2024 13:40:41 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v15 18/21] ipe: enable support for fs-verity as a
+ trust provider
+To: Eric Biggers <ebiggers@kernel.org>
+Cc: corbet@lwn.net, zohar@linux.ibm.com, jmorris@namei.org, serge@hallyn.com,
+ tytso@mit.edu, axboe@kernel.dk, agk@redhat.com, snitzer@kernel.org,
+ eparis@redhat.com, paul@paul-moore.com, linux-doc@vger.kernel.org,
+ linux-integrity@vger.kernel.org, linux-security-module@vger.kernel.org,
+ fsverity@lists.linux.dev, linux-block@vger.kernel.org,
+ dm-devel@lists.linux.dev, audit@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Deven Bowers <deven.desai@linux.microsoft.com>
+References: <1710560151-28904-1-git-send-email-wufan@linux.microsoft.com>
+ <1710560151-28904-19-git-send-email-wufan@linux.microsoft.com>
+ <20240318051703.GB63337@sol.localdomain>
+Content-Language: en-CA
+From: Fan Wu <wufan@linux.microsoft.com>
+In-Reply-To: <20240318051703.GB63337@sol.localdomain>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-This updates the driver to gpiod API, and removes yet another use of
-of_get_named_gpio().
 
-Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
----
- drivers/nfc/st95hf/core.c | 27 +++++++++++----------------
- 1 file changed, 11 insertions(+), 16 deletions(-)
 
-diff --git a/drivers/nfc/st95hf/core.c b/drivers/nfc/st95hf/core.c
-index ed704bb77226..067e0ec31d2d 100644
---- a/drivers/nfc/st95hf/core.c
-+++ b/drivers/nfc/st95hf/core.c
-@@ -7,14 +7,13 @@
-  */
- 
- #include <linux/err.h>
--#include <linux/gpio.h>
-+#include <linux/gpio/consumer.h>
- #include <linux/init.h>
- #include <linux/interrupt.h>
- #include <linux/irq.h>
- #include <linux/module.h>
- #include <linux/netdevice.h>
- #include <linux/nfc.h>
--#include <linux/of_gpio.h>
- #include <linux/of.h>
- #include <linux/property.h>
- #include <linux/regulator/consumer.h>
-@@ -196,7 +195,7 @@ struct st95_digital_cmd_complete_arg {
-  *	for spi communication between st95hf and host.
-  * @ddev: nfc digital device object.
-  * @nfcdev: nfc device object.
-- * @enable_gpio: gpio used to enable st95hf transceiver.
-+ * @enable_gpiod: gpio used to enable st95hf transceiver.
-  * @complete_cb_arg: structure to store various context information
-  *	that is passed from nfc requesting thread to the threaded ISR.
-  * @st95hf_supply: regulator "consumer" for NFC device.
-@@ -219,7 +218,7 @@ struct st95hf_context {
- 	struct st95hf_spi_context spicontext;
- 	struct nfc_digital_dev *ddev;
- 	struct nfc_dev *nfcdev;
--	unsigned int enable_gpio;
-+	struct gpio_desc *enable_gpiod;
- 	struct st95_digital_cmd_complete_arg complete_cb_arg;
- 	struct regulator *st95hf_supply;
- 	unsigned char sendrcv_trflag;
-@@ -451,19 +450,19 @@ static int st95hf_select_protocol(struct st95hf_context *stcontext, int type)
- static void st95hf_send_st95enable_negativepulse(struct st95hf_context *st95con)
- {
- 	/* First make irq_in pin high */
--	gpio_set_value(st95con->enable_gpio, HIGH);
-+	gpiod_set_value(st95con->enable_gpiod, HIGH);
- 
- 	/* wait for 1 milisecond */
- 	usleep_range(1000, 2000);
- 
- 	/* Make irq_in pin low */
--	gpio_set_value(st95con->enable_gpio, LOW);
-+	gpiod_set_value(st95con->enable_gpiod, LOW);
- 
- 	/* wait for minimum interrupt pulse to make st95 active */
- 	usleep_range(1000, 2000);
- 
- 	/* At end make it high */
--	gpio_set_value(st95con->enable_gpio, HIGH);
-+	gpiod_set_value(st95con->enable_gpiod, HIGH);
- }
- 
- /*
-@@ -1063,6 +1062,7 @@ MODULE_DEVICE_TABLE(of, st95hf_spi_of_match);
- 
- static int st95hf_probe(struct spi_device *nfc_spi_dev)
- {
-+	struct device *dev = &nfc_spi_dev->dev;
- 	int ret;
- 
- 	struct st95hf_context *st95context;
-@@ -1108,19 +1108,14 @@ static int st95hf_probe(struct spi_device *nfc_spi_dev)
- 	 */
- 	dev_set_drvdata(&nfc_spi_dev->dev, spicontext);
- 
--	st95context->enable_gpio =
--		of_get_named_gpio(nfc_spi_dev->dev.of_node,
--				  "enable-gpio",
--				  0);
--	if (!gpio_is_valid(st95context->enable_gpio)) {
-+	st95context->enable_gpiod = devm_gpiod_get(dev, "enable", GPIOD_OUT_HIGH);
-+	if (IS_ERR(st95context->enable_gpiod)) {
-+		ret = PTR_ERR(st95context->enable_gpiod);
- 		dev_err(&nfc_spi_dev->dev, "No valid enable gpio\n");
--		ret = st95context->enable_gpio;
- 		goto err_disable_regulator;
- 	}
- 
--	ret = devm_gpio_request_one(&nfc_spi_dev->dev, st95context->enable_gpio,
--				    GPIOF_DIR_OUT | GPIOF_INIT_HIGH,
--				    "enable_gpio");
-+	ret = gpiod_set_consumer_name(st95context->enable_gpiod, "enable_gpio");
- 	if (ret)
- 		goto err_disable_regulator;
- 
--- 
-2.43.0.rc1.1.gbec44491f096
+On 3/17/2024 10:17 PM, Eric Biggers wrote:
+> On Fri, Mar 15, 2024 at 08:35:48PM -0700, Fan Wu wrote:
+>> +config IPE_PROP_FS_VERITY
+>> +	bool "Enable property for fs-verity files"
+>> +	depends on FS_VERITY && FS_VERITY_BUILTIN_SIGNATURES
+>> +	help
+>> +	  This option enables the usage of properties "fsverity_signature"
+>> +	  and "fsverity_digest". These properties evaluate to TRUE when
+>> +	  a file is fsverity enabled and with a signed digest
+> 
+> Again: why would anyone care if there is a signature, if that signature is not
+> checked.
+> 
+> I think you meant to write something like: "when a file is fsverity enabled and
+> has a valid builtin signature whose signing cert is in the .fs-verity keyring".
+> 
+> - Eric
 
+Thanks for the suggestion. I agree this is a more accurate description. 
+I'll update the description to include these details.
+
+-Fan
 
