@@ -1,151 +1,100 @@
-Return-Path: <linux-kernel+bounces-106270-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106271-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2E66D87EBB0
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:09:08 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F355387EBB1
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 16:09:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E7E61C21428
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:09:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87BA62815F2
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 15:09:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0022B4EB55;
-	Mon, 18 Mar 2024 15:09:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0F49F4F20C;
+	Mon, 18 Mar 2024 15:09:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HgEtamWg"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.16])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ri1M17Kr"
+Received: from out-185.mta0.migadu.com (out-185.mta0.migadu.com [91.218.175.185])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BD66D4EB46
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:08:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E35224EB54
+	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 15:09:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.185
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710774541; cv=none; b=BqVm4utH6oOuslXAZYKbdyhGZZraq1sRcpqBUZeYu7gM9HXEixFuhW6dp0CD36CrriKDbZSdclAX8yPa1qe7OTt+ZPm2A9Vtc4hL/eVEEnyPkniYwUqlmxZTIAB+uyiTJYfmHPsgXCcmhIGsC1ezpAmtwFMhawTnIogmn/CCEZQ=
+	t=1710774543; cv=none; b=tOrHYPJTKNGpZsm+LDqLzAnjmbpUeyglQ6MsgKJvFfCOQDeHXaR8GuFnNFbRZWKf2fSySqNzfnqUKWEPw8hKr29kbYm/gkg5L9fDtJ6lCYvWZT2UVXolei2WoUGsv1thnlosFkT3oPrFtroa+YkanY1uwmOZ+SKpmAfZ0dq3p/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710774541; c=relaxed/simple;
-	bh=GkeeuTOuIm+hmxyCuYei4d3GLqXnkyuh0s74zQrLvuA=;
+	s=arc-20240116; t=1710774543; c=relaxed/simple;
+	bh=jdUSjQfELoCxrmMar6U8OQhaRPvf8KwScinRJQd8ysE=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RElYNnV+ncHNNkDqRIPXhlAgirc/Q9qVBhmg/VZVIv8jyT8ifQcIcTUoeejjd7fz5nJqqN/YWHF3HX4aGOWYVLYgaOc8w9rpH9gP0JI7vVjOfFsThvhOW5GeNPG/JXT77EjaMXsoUxXoEbpCzhC5oiRPAfvlQipvpT6zrDWUdYA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HgEtamWg; arc=none smtp.client-ip=192.198.163.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710774540; x=1742310540;
-  h=message-id:date:mime-version:subject:to:cc:references:
-   from:in-reply-to:content-transfer-encoding;
-  bh=GkeeuTOuIm+hmxyCuYei4d3GLqXnkyuh0s74zQrLvuA=;
-  b=HgEtamWgUmUFmv8m5GCOtDWUpEcHVMiBoCLtE+Cds4NeNumRDiEjZ0Zf
-   3k5YH70mh2wy4CbX0Loo/I1mdj6FD79ds18MSlCf2/U8e6HfpsGUmRwh3
-   jHxxHxpiGc8vS9R8Gb1Je4XpIFbH3udHm+vWbXtLV/lEqbnqiYfzR6eSh
-   0FrDiXEXrefZTnscaOJ4coYd7ZK+9bX84aLiBK/dxfAeEdlRypx0qjQLa
-   wO/yoaCMfTgy1ND92bn/7yCC9Dcnbbl2IjXtjaQRnlcbSgNke9ovTq7lT
-   W4OcKOZQ7jw9VC19vZmK20GR5Z3qEpvK4fh2ezwmLbAvRH42rtHrZkZSk
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="6197637"
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="6197637"
-Received: from fmviesa005.fm.intel.com ([10.60.135.145])
-  by fmvoesa110.fm.intel.com with ESMTP; 18 Mar 2024 08:08:59 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,134,1708416000"; 
-   d="scan'208";a="17986561"
-Received: from johnxion-mobl1.amr.corp.intel.com (HELO [10.212.139.18]) ([10.212.139.18])
-  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 08:08:58 -0700
-Message-ID: <ef266750-b848-4cef-8372-e5ce1d0289aa@intel.com>
-Date: Mon, 18 Mar 2024 08:08:57 -0700
+	 In-Reply-To:Content-Type; b=nzl/4oW/G3sRz4whuOoSPTxPycQvmzFyDeLbZg8JgR0qcmPvw3RehNyhVIOpO3w52dREjhIxZcwwFj9odtv5kR5aZfoUxQ8f/6xwbTGBOM8L8UbddsEC4sCCqZGvWSIxWd2Qqbiq0zVVne10b+kueUbaE2IjsGalXN8/KuP0LyY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ri1M17Kr; arc=none smtp.client-ip=91.218.175.185
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <7e04a248-cf29-4f0e-b6c5-6dce0fd78613@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710774540;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=jdUSjQfELoCxrmMar6U8OQhaRPvf8KwScinRJQd8ysE=;
+	b=ri1M17KrHBQVuuHS6Pt0zlxhvdeECi6rIYC/QjRPDyMakidFBANeT9usyBd1f8yzhL6ssJ
+	DiDCzFkSWXI8Vup9oo0wTgft/WWwI05jJ4fgudAflQjECt6fST+ztm6k9LUFQN2CSpdAQ+
+	N3c5iD68lcWN7S9PMnLUq/KQNpntEaw=
+Date: Mon, 18 Mar 2024 11:08:58 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] x86/tsc: Use topology_max_packages() to get package
- number
+Subject: Re: [PATCH 2/2] nvmem: Remove qoriq-efuse in favor of layerscape-sfp
 Content-Language: en-US
-To: "Zhang, Rui" <rui.zhang@intel.com>, "bp@alien8.de" <bp@alien8.de>,
- "x86@kernel.org" <x86@kernel.org>,
- "peterz@infradead.org" <peterz@infradead.org>, "hpa@zytor.com"
- <hpa@zytor.com>, "mingo@redhat.com" <mingo@redhat.com>,
- "tglx@linutronix.de" <tglx@linutronix.de>,
- "paulmck@kernel.org" <paulmck@kernel.org>,
- "longman@redhat.com" <longman@redhat.com>, "Tang, Feng"
- <feng.tang@intel.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Cc: "dave.hansen@linux.intel.com" <dave.hansen@linux.intel.com>
-References: <20240315112606.2248284-1-feng.tang@intel.com>
- <ce02f1a8-870f-41bc-8650-4bd6103f9637@intel.com>
- <f9da97d86e5599edca74fa859053ba9caf2b4d9c.camel@intel.com>
-From: Dave Hansen <dave.hansen@intel.com>
-Autocrypt: addr=dave.hansen@intel.com; keydata=
- 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
-In-Reply-To: <f9da97d86e5599edca74fa859053ba9caf2b4d9c.camel@intel.com>
+To: richard@bit42.se
+Cc: Srinivas Kandagatla <srinivas.kandagatla@linaro.org>,
+ linux-kernel@vger.kernel.org,
+ =?UTF-8?Q?Niklas_S=C3=B6derlund?= <niklas.soderlund@ragnatech.se>,
+ Michael Walle <michael@walle.cc>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+References: <20240316002026.1808336-1-sean.anderson@linux.dev>
+ <20240316002026.1808336-2-sean.anderson@linux.dev>
+ <6f5636e65df5616395cc8e24f63b09ef@bit42.se>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Sean Anderson <sean.anderson@linux.dev>
+In-Reply-To: <6f5636e65df5616395cc8e24f63b09ef@bit42.se>
 Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 3/17/24 05:00, Zhang, Rui wrote:
->> I also did a big *gulp* when I saw this:
+On 3/18/24 04:32, richard@bit42.se wrote:
+> On 2024-03-16 01:20, Sean Anderson wrote:
+>> The qoriq-efuse driver is a duplicate of layerscape-sfp.c. The T-series
+>> uses TA 2.0, while Layerscape uses TA 2.1 or 3.0 (depending on the
+>> chip). Add appropriate compatibles to the layerscape-sfp driver and
+>> remove the qoriq-efuse driver. I did not add support for P-series SoCs,
+>> since they use TA 1.0 which doesn't share a major version with either of
+>> the existing implementations.
 >>
->>         #define topology_max_packages() (__max_logical_packages)
+>> The qoriq-efuse driver does not properly abstract the location/offset of
+>> the fuses properly, instead exposing the device's whole address range to
+>> userspace. This is not appropriate, as the fuses only occupy a small
+>> portion of this range. The layerscape-sfp module correctly constrains
+>> the nvmem size to the fuses size. This represents a (necessary)
+>> compatibility break. The qoriq-efuse driver has been in-tree for around
+>> six months. Hopefully this will limit the fallout.
 >>
->> and:
+>> I would appreciate if someone with access to trust architecture 2.0 user
+>> guide could confirm the number of fuses.
 >>
->>>         /*
->>>          * Today neither Intel nor AMD support heterogeneous
->>> systems so
->>>          * extrapolate the boot cpu's data to all packages.
->>>          */
->>>         ncpus = cpu_data(0).booted_cores *
->>> topology_max_smt_threads();
->>>         __max_logical_packages = DIV_ROUND_UP(total_cpus, ncpus);
->> Because Intel obviously has heterogeneous systems today.
->>
-> Dave, I think you were checking the old code.
-> Please refer to commit 090610ba704a ("x86/cpu/topology: Use topology
-> bitmaps for sizing"), which is just merged in this merge window.
+>> Fixes: 0861110bb421 ("nvmem: add new NXP QorIQ eFuse driver")
+>> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> I don't think Fixes is appropriate here. Apart from that:
 
-You're 100% right.  I was looking at a weeks-old tree.  Sorry for the noise.
+As mentioned in the second paragraph, the original driver exposes the whole
+register space in the nvmem. I consider this a bug.
+
+--Sean
+
+> Acked-by: Richard Alpe <richard@bit42.se>
+
 
