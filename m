@@ -1,129 +1,220 @@
-Return-Path: <linux-kernel+bounces-106542-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106543-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD0C487F01D
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:02:29 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7997F87F022
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 20:03:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 094011C22248
-	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:02:29 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D195EB22C0D
+	for <lists+linux-kernel@lfdr.de>; Mon, 18 Mar 2024 19:02:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D362A59146;
-	Mon, 18 Mar 2024 19:01:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2CD5D56743;
+	Mon, 18 Mar 2024 19:02:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="oGk3Tsn5"
-Received: from mail-qt1-f179.google.com (mail-qt1-f179.google.com [209.85.160.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="YkZwBAUK"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9338958ABA
-	for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:01:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4CE235645C;
+	Mon, 18 Mar 2024 19:02:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710788472; cv=none; b=m/Oc599OO2VnpudYzdT5j/gnEIf7qxRKCSal4jwnxIolaWZ0icynl7aN87/hzmasR6W7zWUUlAr9nXxqQixaN6xPer1rCX4/JZeG4BHsNdEzmjk4Fp+yTmyU1v19reVchkF4lDf34NTHcnfWARsNTZ3kc2/IDb9mwOAE6dXeVZw=
+	t=1710788565; cv=none; b=jnkuzjxuA9OYhkiTMMEhc4iMwZm4ZExWziSYbktK7g1tKvvtSuIC/CtX3smI1M5i5YuVpafhqycNFLVtVJ26jx/x3S43dfE1gsPBPO3+U3U4bCi/A+I50xNyEAZeDfCSW6xmUIuStjaOk2FK+8GZQfONPWp5M8AsDXpe5lhrM9Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710788472; c=relaxed/simple;
-	bh=rur/NpMfQ5E+JK8zLSnV25zMNQtg/qbyVnSWbDsjCXQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Xx0agrnD9kTaURvfO+fGvNf+IyFefdx6M6Wv6r5X7rroP65qPOpaHUUrZujzpOW7lcZhIeaeeLvCXHNNxwSwmafzAIsokWlkq26dhGSOXCB5KucifmpMU/yckPawh/S2vtZPiIVUm4B3VM563S6CgMWPMMUtvnhGPG6yDGskZS4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=oGk3Tsn5; arc=none smtp.client-ip=209.85.160.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-qt1-f179.google.com with SMTP id d75a77b69052e-430d3fcc511so42911cf.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 12:01:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710788469; x=1711393269; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3a9+/zCGjuSa4QQGh70luzmUtKh7fCOOBHF2Uqxv3is=;
-        b=oGk3Tsn5i9eX27J6tGY1bOZlF1IqWzEr45nLeYS9Mze5knC0otvIfqwAG5p0ls4vpP
-         HUOvhTkfC5KE9PzrR7VxHwjrVL73zPdviHqzwYBSaCe+alJ74DN782OaB54ARrcNriOa
-         WsdyChwOz90epSGM33q1TRO1grJj11CDp39swTDM8PqEP11Z5aV4Fuyn/cASYTBPOpCO
-         a3S1h+WTGgse2my99yzA4IoHBVTgfttV8kTZSs1NzxB3Pgmoi9aE1dQ665iiKciNu1xv
-         ulmMUpLIYQJQS1BUj7UolXnzOr/chxBAN2ADAg/2PJzMoWZdU0TTfakZ2Sy3+QCTrgc+
-         fYrQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710788469; x=1711393269;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3a9+/zCGjuSa4QQGh70luzmUtKh7fCOOBHF2Uqxv3is=;
-        b=hBfHGI9dog5Xmx9+870F/V1m4vxPmITrxv/HR77zIt0Jsc6LQb6YMR7IcICM+FUOyV
-         kyVNvCtN7p/xoG1Cprsokes0KywotedK5TuOq2xET69Pr5kAG/VP3+NRAHNQPvTxcl1A
-         AmhkteCO9OKZkRBdsUPeuZR5mvof93M1mw/ikcwBD4nv2Hnl7DKbMmsG/HA0VP/B5ACg
-         f+FkqKDhBk1+/OOLtelhL5ibNEejC+32NC5AhaEfElaOuv576kymXnA9czEVu7g1QudL
-         679TgtUG/YdHjyUi4cBWzCWG096x+zWNLvt3GTKi/NCWIsMZXt6nUq3QCn8ETzDOTykx
-         CMcg==
-X-Forwarded-Encrypted: i=1; AJvYcCXr7k30ruFSPuwG2+nTI9meTb6BoCMQuyoNFHxpmWqFzHTAV0AxpdcnDxAabljUfTW7dYdHyM9S1H+xE2zEkH2KPmoaLPlW4g0aAsMp
-X-Gm-Message-State: AOJu0YzLjOwb4nQMP0H3iUuGhVYwjf1q7VljHAnW2VtcEIKrpUwza6zo
-	vazZ5iyBjs+84SuoL8B2rEghDY0RQP/NNknhGt/C6ZMiUMApj78JgZ9RXH+sYZDIODrZ5MBwORG
-	d4vlhEHRTVWzOYcWGjOtizfDMB+e732fKMcbJ
-X-Google-Smtp-Source: AGHT+IFY/yfGJUeP8KNPEPbLvVSiXsA+krK9uGNKfXk2Mkf/JprWlaA1RL309jU2CTF9ByR2EIGqP7dAnUMvEay1uBM=
-X-Received: by 2002:a05:622a:294:b0:430:b7dd:c175 with SMTP id
- z20-20020a05622a029400b00430b7ddc175mr40522qtw.23.1710788469338; Mon, 18 Mar
- 2024 12:01:09 -0700 (PDT)
+	s=arc-20240116; t=1710788565; c=relaxed/simple;
+	bh=z3Xld9/7/DDCMRDufaRKujC9gmU3SIBIYnbq+ZzOM3w=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:CC:References:
+	 In-Reply-To:Content-Type; b=r5OzuED8IjHrAjXcvGbD/jzHFQfoNHtI+1sLQyYX291MVAcsS7V0qj/auIeHFKyPra3wP6se+HeY8PM7bp1yB+r7zeuAmSitmkF5EdXma4qKEC2woGxzgM5t1hk3/8AqMTdgs1ErLvIrQJ+6iLD4QwGNbFy/oE36mnC15V8riHQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=YkZwBAUK; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279868.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42IHfM2b016130;
+	Mon, 18 Mar 2024 19:02:15 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:from:to:cc:references
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=SqpQcUYqes3Cs8Uu9tkbzQvcgpVIF66UjNmZ42F6quQ=; b=Yk
+	ZwBAUK/pCwEVzXhwob0umqJec/R4HyXNPWDsk8RtdkdcbTqCycgnIL3vaIv+joLk
+	cjLYTpcbjbSmHcO/JEYITwL/sW/OnpOtEo1DK8nSw3u5QFpv+NfCwd2fyVEfHWrO
+	YI6PqsNOLbvQ7VJTu0GBInehjt17or4Bi/KU8xtz03g3+zJhw6UqaZBIorK0IvCu
+	W9GJskn1vMi6OP+StEMpWi4Jr0wJLmc/nPlBsHMgZ8Ha4PZ2u8HTSensdaMdCkDv
+	rwdD8EZnos8Qdm6RfBSw/IP6/SaAvhbqBd2z4TS7lF9S42jARYWS2YcHUqPIl0K5
+	hCSgJa+2lixvx0erLq/A==
+Received: from nasanppmta05.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wxt7d05e7-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 19:02:15 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42IJ2DkI017831
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Mon, 18 Mar 2024 19:02:13 GMT
+Received: from [10.46.19.239] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Mon, 18 Mar
+ 2024 12:02:09 -0700
+Message-ID: <66ad9e5b-0126-476e-bf0f-6a33f446c976@quicinc.com>
+Date: Mon, 18 Mar 2024 12:02:09 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240317221522.896040-1-jsperbeck@google.com> <252d1ba7-0ae0-4616-9ee7-f7c204531eaa@infradead.org>
-In-Reply-To: <252d1ba7-0ae0-4616-9ee7-f7c204531eaa@infradead.org>
-From: John Sperbeck <jsperbeck@google.com>
-Date: Mon, 18 Mar 2024 12:00:56 -0700
-Message-ID: <CAFNjLiVws+mCrMp4wMZuWTjaryK+-cKtNR9yFzVdqGf2u44oLg@mail.gmail.com>
-Subject: Re: [PATCH] init: open /initrd.image with O_LARGEFILE
-To: Randy Dunlap <rdunlap@infradead.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>, Jens Axboe <axboe@kernel.dk>, 
-	"Peter Zijlstra (Intel)" <peterz@infradead.org>, Thomas Gleixner <tglx@linutronix.de>, 
-	"ndesaulniers@google.com" <ndesaulniers@google.com>, linux-kernel@vger.kernel.org, 
-	Nazerke Turtayeva <nturtayeva@ucsb.edu>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+To: Martin KaFai Lau <martin.lau@linux.dev>
+CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, <kernel@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney
+	<ahalaney@redhat.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf
+	<bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Alexei
+ Starovoitov" <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+ <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+ <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
+ <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
+ <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
+ <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
+ <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
+ <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
+ <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
+ <65f35e00a83c0_2132294f5@willemb.c.googlers.com.notmuch>
+ <e270b646-dae0-41cf-9ef8-e991738b9c57@quicinc.com>
+ <8d245f5a-0c75-4634-9513-3d420eb2c88f@linux.dev>
+ <d10254cc-a908-4d81-98d2-2eed715e521f@quicinc.com>
+Content-Language: en-US
+In-Reply-To: <d10254cc-a908-4d81-98d2-2eed715e521f@quicinc.com>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: Fs-n4a9nCVZ0zaDyrqzbof_dsR3RM1rl
+X-Proofpoint-GUID: Fs-n4a9nCVZ0zaDyrqzbof_dsR3RM1rl
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 adultscore=0
+ spamscore=0 impostorscore=0 mlxlogscore=999 bulkscore=0 phishscore=0
+ suspectscore=0 priorityscore=1501 clxscore=1015 mlxscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403180144
 
-On Sun, Mar 17, 2024 at 4:47=E2=80=AFPM Randy Dunlap <rdunlap@infradead.org=
-> wrote:
->
-> Hi,
->
-> On 3/17/24 15:15, John Sperbeck wrote:
-> > If initrd data is larger than 2Gb, we'll eventually fail to write to
-> > the /initrd.image file when we hit that limit, unless O_LARGEFILE is se=
-t.
-> >
->
-> Could this be related to
-> https://lore.kernel.org/lkml/CAHY78BqCpMQptPN0SMaXuRqHOhYi+wnMEUSTYt7OHDZ=
-ih4e7yQ@mail.gmail.com/
-> ?
->
-> Thanks.
->
 
-I think there's a separate problem that this patch doesn't address.
-If an individual component of a CPIO file is larger than 2Gb, then
-there will be an EFBIG error when processing it.  The backtrace where
-this occurs would be:
 
-    generic_write_checks_count
-    generic_write_checks
-    generic_file_write_iter
-    __kernel_write_iter
-    kernel_write
-    xwrite
-    do_copy
-    unpack_to_rootfs
-    do_populate_rootfs
-    async_run_entry_fn
-    process_scheduled_works
-    worker_thread
-    kthread
-    ret_from_fork
-    ret_from_fork_asm
+On 3/14/2024 3:29 PM, Abhishek Chauhan (ABC) wrote:
+> 
+> 
+> On 3/14/2024 2:48 PM, Martin KaFai Lau wrote:
+>> On 3/14/24 1:53 PM, Abhishek Chauhan (ABC) wrote:
+>>>>> The bpf_convert_tstamp_{read,write} and the helper bpf_skb_set_tstamp need to be
+>>>>> changed to handle the new "user_delivery_time" bit anyway, e.g.
+>>>>> bpf_skb_set_tstamp(BPF_SKB_TSTAMP_DELIVERY_MONO) needs to clear the
+>>>>> "user_delivery_time" bit.
+>>>>>
+>>>>> I think the "struct inet_frag_queue" also needs a new "user_delivery_time"
+>>>>> field. "mono_delivery_time" is already in there.
+>>
+>> [ ... ]
+>>
 
-I think that could be dealt with by a patch to add O_LARGEFILE to
-'openflags' in initramfs:do_name().
+Martin, Do we really need to add user_delivery_time as part of inet_frag_queue struct? I was wondering why is this required since we are using tstamp_type:2 to 
+distinguish between timestamp anyway .
+
+Let me know what you think ? 
+
+>> I would think the first step is to revert this patch. I don't think much of the current patch can be reused.
+>>
+>>> 1. I will raise one patch to introduce rename mono_delivery_time to
+>>> tstamp_type
+>>
+>> Right, I expect something like this:
+>>
+>> struct sk_buff {
+>>         /* ... */
+>> -            __u8                    mono_delivery_time:1;
+>> +        __u8            tstamp_type:1;
+>>         /* ... */
+>> };
+>>
+> 
+> Okay ,This should be straight-forward. 
+> 
+>>> 2. I will introduce setting of userspace timestamp type as the second bit
+>>> whem transmit_time is set.
+>>
+>> I expect the second patch should be introducing the enum first
+>>
+>> enum skb_tstamp_type {
+>>     SKB_TSTAMP_TYPE_RX_REAL = 0, /* A RX (receive) time in real */
+>>     SKB_TSTAMP_TYPE_TX_MONO = 1, /* A TX (delivery) time in mono */
+>> };
+>>
+>> and start doing "skb->tstamp_type = SKB_TSTAMP_TYPE_TX_MONO;" instead of
+>> "skb->tstamp_type = 1;"
+>>
+>> and the same for "skb->tstamp_type = SKB_TSTAMP_TYPE_RX_REAL;" instead of
+>> "skb->tstamp_type = 0;"
+>>
+>>
+>> This one I am not sure but probably need to change the skb_set_delivery_time() function signature also:
+>>
+>> static inline void skb_set_delivery_time(struct sk_buff *skb, ktime_t kt,
+>> -                                        bool mono)
+>> +                     enum skb_tstamp_type tstamp_type)
+>>
+> This should be straight-forward as well 
+> 
+>> The third patch is to change tstamp_type from 1 bit to 2 bits and add SKB_TSTAMP_TYPE_TX_USER.
+>>
+>> struct sk_buff {
+>>         /* ... */
+>> -        __u8            tstamp_type:1;
+>> +        __u8            tstamp_type:2;
+>>         /* ... */
+>> };
+>>
+>> enum skb_tstamp_type {
+>>     SKB_TSTAMP_TYPE_RX_REAL = 0,    /* A RX (receive) time in real */
+>>     SKB_TSTAMP_TYPE_TX_MONO = 1,    /* A TX (delivery) time in mono */
+>> +    SKB_TSTAMP_TYPE_TX_USER = 2,    /* A TX (delivery) time and its clock
+>>                      * is in skb->sk->sk_clockid.
+>>                      */
+>>                
+>> };
+>>
+>> This will shift a bit out of the byte where tstamp_type lives. It should be the "inner_protocol_type" bit by my hand count. Please check if it is directly used in bpf instruction (filter.c). As far as I look, it is not, so should be fine. Some details about bpf instruction accessible skb bit field here: https://lore.kernel.org/all/20230321014115.997841-1-kuba@kernel.org/
+> This is where i would need thorough reviews from you and Willem as my area of expertise is limited to part of network stack and BPF is not one of them. 
+> But i have plan on this and i know how to do it. 
+> 
+> Expect patches to be arriving to your inboxes next week, as we have a long weekend in Qualcomm 
+> Fingers crossed :) 
+> 
+>>
+>>
+>>> 3. This will be a first step to make the design scalable.
+>>> 4. Tomorrow if we have more timestamp to support, upstream community has to do is
+>>> update the enum and increase the bitfield from 2=>3 and so on.
+>>>
+>>> I need help from Martin to test the patch which renames the mono_delivery_time
+>>> to tstamp_type (Which i feel should be straight forward as the value of the bit is 1)
+>>
+>> The bpf change is not a no-op rename of mono_delivery_time. It needs to take care of the new bit added to the tstamp_type. Please see the previous email (and I also left it in the beginning of this email).
+>>
+>> Thus, you need to compile the selftests/bpf/ and run it to verify the changes when handling the new bit. The Documentation/bpf/bpf_devel_QA.rst has the howto details. You probably only need the newer llvm (newer gcc should work also as bpf CI has been using it) and the newer pahole. I can definitely help if there is issue in running the test_progs in selftests/bpf or you have question on making the changes in filter.c. To run the test: "./test_progs -t tc_redirect/tc_redirect_dtime"
+>>
 
