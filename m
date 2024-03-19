@@ -1,210 +1,112 @@
-Return-Path: <linux-kernel+bounces-107255-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107257-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 83D3C87FA06
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:36:09 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B029187FA09
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:37:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC8A1B21229
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:36:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1CD47B20B93
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:37:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8735954BF6;
-	Tue, 19 Mar 2024 08:36:00 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08A095916D;
+	Tue, 19 Mar 2024 08:37:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rRfbE/T3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2yhlVDNT";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="rRfbE/T3";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="2yhlVDNT"
-Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="1pY4XLkN"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3CDE154BCB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:35:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A78222339;
+	Tue, 19 Mar 2024 08:37:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710837359; cv=none; b=assdthBzJpyxKO2LAdb8S57wT82a8Tk7uCZQEMMXd14KaXveHDq7uwXJdXaajbazOAQtu7Y1Bp5INozmr7hknFHoLMwLeIT/82koTjfMtvra/Vcrdxqx2ftyJpPFjH8lVnGByFgqpeIfskh2NWD/X6K/Evpde07TN9SejPbkOUs=
+	t=1710837432; cv=none; b=uP+4RtxwT/83oXxX2nPvG5MNiaABYQlG04u8AeXr2Lg+2DYxFrp7w1fTa0oTnNnA/2b+1g72vCOs0/aAuYmpf/UDLpHrmNpOKE88O5RZrtAzCMToKcEa6I5t/MG1ySPtGf04Ra74Cpj3nFU2hbIQlEuhJIxLEOc9V0O9ZB3/NmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710837359; c=relaxed/simple;
-	bh=wIpGG5R6KkYoemAVk2Sazcjr1VHV8sWaDJxHwhXckco=;
-	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
-	 In-Reply-To:Content-Type; b=m4KEDrNjOLbjPgnAcEjgQpk8R4tZBl/sElgu6g7OOGqZKExv5raYgpGmbt+qKMBaD4ppegF9puethu4w9mTffXvBoOj2Fas8vvNIeeKak9gKbUlBqB2s7X9OHwjXn0eQqoUUcxySsLcoIVp+HiCckAx6MXZnXiieA5II8GE/vY8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rRfbE/T3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2yhlVDNT; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=rRfbE/T3; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=2yhlVDNT; arc=none smtp.client-ip=195.135.223.130
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out1.suse.de (Postfix) with ESMTPS id 956293754A;
-	Tue, 19 Mar 2024 08:35:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710837349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QDQ8BGnF0EPZ6BvnbghWANat2RUqDRmHdJvdpWEN6cc=;
-	b=rRfbE/T3bKNK79atff7gLWbKhySNwYIaTxu1knYeWKmzfWTuMv0Bta4NivzOYJCWtOIhWi
-	DLLJt9saiehXOsekoJiqHbb1vXIjLKw9o3UA/MWW/t+Cats3ZKP/0vidM5yXoC1fzeDAFg
-	jNJfgZG+On8GLO+KNRF92Bt0IZJckY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710837349;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QDQ8BGnF0EPZ6BvnbghWANat2RUqDRmHdJvdpWEN6cc=;
-	b=2yhlVDNT+fpy/tNC79+octfyHoQJU8dtnDIubFpIX6xOHfdjNpODLdqs2gqr7uh/SzO0BM
-	LmwwpEr1cCFjMVBQ==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710837349; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QDQ8BGnF0EPZ6BvnbghWANat2RUqDRmHdJvdpWEN6cc=;
-	b=rRfbE/T3bKNK79atff7gLWbKhySNwYIaTxu1knYeWKmzfWTuMv0Bta4NivzOYJCWtOIhWi
-	DLLJt9saiehXOsekoJiqHbb1vXIjLKw9o3UA/MWW/t+Cats3ZKP/0vidM5yXoC1fzeDAFg
-	jNJfgZG+On8GLO+KNRF92Bt0IZJckY4=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710837349;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=QDQ8BGnF0EPZ6BvnbghWANat2RUqDRmHdJvdpWEN6cc=;
-	b=2yhlVDNT+fpy/tNC79+octfyHoQJU8dtnDIubFpIX6xOHfdjNpODLdqs2gqr7uh/SzO0BM
-	LmwwpEr1cCFjMVBQ==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 6CDC0136D6;
-	Tue, 19 Mar 2024 08:35:49 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([10.150.64.162])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id imQ3GWVO+WXXfwAAD6G6ig
-	(envelope-from <tzimmermann@suse.de>); Tue, 19 Mar 2024 08:35:49 +0000
-Message-ID: <da7cfff1-e147-48ea-bcda-9ea913e5feee@suse.de>
-Date: Tue, 19 Mar 2024 09:35:48 +0100
+	s=arc-20240116; t=1710837432; c=relaxed/simple;
+	bh=KxEovkRLfcOBJo8sLybFppNre+BC/0BqX5kv7PHyjYY=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=hOp54i5dYWHJMYXLn9vYPMF4JEjO9rVfoMVohkFuFf5sPf/bS4qr5f+mqdOlPelmXyKcIOts+r+OgMZ6on9/F4bDgqDckp+iRdk1Lsim176I4tpI5p7ucK4iLhHCMzh0ev3abnwpQX7Sbop5JXizKgwIKdQOz78AmT5+4dSiHjU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=1pY4XLkN; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1710837430; x=1742373430;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=KxEovkRLfcOBJo8sLybFppNre+BC/0BqX5kv7PHyjYY=;
+  b=1pY4XLkN8M3AeN4xZUrVuppVrHDCABPDf8VEOBB1QhaWWq+GuemsvHHn
+   fZoQ6hW/IdSw7LjHn0oJv5MQAa21jrSPfShPC0AMN1ROTQC6Klnjqu2ot
+   2vicVEX7NDXmdSpWMpB76UIvwPU18LZCuG34Gnjly5Qo21Kjslw20w9Ly
+   pNT75TLcQSvswiSJf2eEiRASu9YFPgG/ptQdPEwe0UTeeAajAX5VMripA
+   PQGRALWSUYaKAZvcqCP3M3SWWqKx7LkXeLeiUehgxSL2BHKBQqKUK1XGF
+   PUb1giofIZZCWQrfWWwTS2fU0kbdfls4MKYS+qRe25yLu9I04F36a4pwq
+   w==;
+X-CSE-ConnectionGUID: nAyssGQoRB+MEbN67pDo4w==
+X-CSE-MsgGUID: 66fYV4QuQzi8PbUn7UuNOQ==
+X-IronPort-AV: E=Sophos;i="6.07,136,1708412400"; 
+   d="scan'208";a="19571076"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 19 Mar 2024 01:37:04 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Mar 2024 01:36:37 -0700
+Received: from che-lt-i64410lx.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 01:36:34 -0700
+From: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+To: <linux-kernel@vger.kernel.org>, <linux-mtd@lists.infradead.org>,
+	<linux-crypto@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>
+CC: <balamanikandan.gunasundar@microchip.com>, <Hari.PrasathGE@microchip.com>
+Subject: [PATCH] MAINTAINERS: update maintainer for microchip nand and pmecc drivers
+Date: Tue, 19 Mar 2024 14:06:20 +0530
+Message-ID: <20240319083620.88181-1-balamanikandan.gunasundar@microchip.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: drm/tiny: QUESTION: What to use instead of
- drm_simple_display_pipe ?
-To: Mehdi Djait <mehdi.djait.k@gmail.com>, daniel@ffwll.ch,
- maarten.lankhorst@linux.intel.com, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org
-References: <ZfiTbYAa7qxXlrPd@mehdi-archlinux>
-Content-Language: en-US
-From: Thomas Zimmermann <tzimmermann@suse.de>
-Autocrypt: addr=tzimmermann@suse.de; keydata=
- xsBNBFs50uABCADEHPidWt974CaxBVbrIBwqcq/WURinJ3+2WlIrKWspiP83vfZKaXhFYsdg
- XH47fDVbPPj+d6tQrw5lPQCyqjwrCPYnq3WlIBnGPJ4/jreTL6V+qfKRDlGLWFjZcsrPJGE0
- BeB5BbqP5erN1qylK9i3gPoQjXGhpBpQYwRrEyQyjuvk+Ev0K1Jc5tVDeJAuau3TGNgah4Yc
- hdHm3bkPjz9EErV85RwvImQ1dptvx6s7xzwXTgGAsaYZsL8WCwDaTuqFa1d1jjlaxg6+tZsB
- 9GluwvIhSezPgnEmimZDkGnZRRSFiGP8yjqTjjWuf0bSj5rUnTGiyLyRZRNGcXmu6hjlABEB
- AAHNJ1Rob21hcyBaaW1tZXJtYW5uIDx0emltbWVybWFubkBzdXNlLmRlPsLAjgQTAQgAOAIb
- AwULCQgHAgYVCgkICwIEFgIDAQIeAQIXgBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftODH
- AAoJEGgNwR1TC3ojx1wH/0hKGWugiqDgLNXLRD/4TfHBEKmxIrmfu9Z5t7vwUKfwhFL6hqvo
- lXPJJKQpQ2z8+X2vZm/slsLn7J1yjrOsoJhKABDi+3QWWSGkaGwRJAdPVVyJMfJRNNNIKwVb
- U6B1BkX2XDKDGffF4TxlOpSQzdtNI/9gleOoUA8+jy8knnDYzjBNOZqLG2FuTdicBXblz0Mf
- vg41gd9kCwYXDnD91rJU8tzylXv03E75NCaTxTM+FBXPmsAVYQ4GYhhgFt8S2UWMoaaABLDe
- 7l5FdnLdDEcbmd8uLU2CaG4W2cLrUaI4jz2XbkcPQkqTQ3EB67hYkjiEE6Zy3ggOitiQGcqp
- j//OwE0EWznS4AEIAMYmP4M/V+T5RY5at/g7rUdNsLhWv1APYrh9RQefODYHrNRHUE9eosYb
- T6XMryR9hT8XlGOYRwKWwiQBoWSDiTMo/Xi29jUnn4BXfI2px2DTXwc22LKtLAgTRjP+qbU6
- 3Y0xnQN29UGDbYgyyK51DW3H0If2a3JNsheAAK+Xc9baj0LGIc8T9uiEWHBnCH+RdhgATnWW
- GKdDegUR5BkDfDg5O/FISymJBHx2Dyoklv5g4BzkgqTqwmaYzsl8UxZKvbaxq0zbehDda8lv
- hFXodNFMAgTLJlLuDYOGLK2AwbrS3Sp0AEbkpdJBb44qVlGm5bApZouHeJ/+n+7r12+lqdsA
- EQEAAcLAdgQYAQgAIAIbDBYhBHIX+6yM6c9jRKFo5WgNwR1TC3ojBQJftOH6AAoJEGgNwR1T
- C3ojVSkIALpAPkIJPQoURPb1VWjh34l0HlglmYHvZszJWTXYwavHR8+k6Baa6H7ufXNQtThR
- yIxJrQLW6rV5lm7TjhffEhxVCn37+cg0zZ3j7zIsSS0rx/aMwi6VhFJA5hfn3T0TtrijKP4A
- SAQO9xD1Zk9/61JWk8OysuIh7MXkl0fxbRKWE93XeQBhIJHQfnc+YBLprdnxR446Sh8Wn/2D
- Ya8cavuWf2zrB6cZurs048xe0UbSW5AOSo4V9M0jzYI4nZqTmPxYyXbm30Kvmz0rYVRaitYJ
- 4kyYYMhuULvrJDMjZRvaNe52tkKAvMevcGdt38H4KSVXAylqyQOW5zvPc4/sq9c=
-In-Reply-To: <ZfiTbYAa7qxXlrPd@mehdi-archlinux>
-Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
-Authentication-Results: smtp-out1.suse.de;
-	none
-X-Spam-Level: *
-X-Spam-Score: 1.20
-X-Spamd-Result: default: False [1.20 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 XM_UA_NO_VERSION(0.01)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 TAGGED_RCPT(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 BAYES_HAM(-0.01)[49.13%];
-	 RCPT_COUNT_FIVE(0.00)[5];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 MID_RHS_MATCH_FROM(0.00)[];
-	 FREEMAIL_TO(0.00)[gmail.com,ffwll.ch,linux.intel.com,lists.freedesktop.org,vger.kernel.org];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 SUBJECT_ENDS_QUESTION(1.00)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 SUSPICIOUS_RECIPS(1.50)[]
-X-Spam-Flag: NO
+Content-Type: text/plain
 
-Hi
+Update myself as maintainer for microchip nand and pmecc drivers.
 
-Am 18.03.24 um 20:18 schrieb Mehdi Djait:
-> Hello everyone :)
->
-> I am implementing a tiny drm driver and I am currently working on the
-> V2: https://lore.kernel.org/dri-devel/cover.1701267411.git.mehdi.djait@bootlin.com/
->
-> I got a review on the v1 telling me not to use the
-> drm_simple_display_pipe. Can someone please explain this further ? Or
-> give me an example drm driver that does it the right way ?
+Signed-off-by: Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+---
+ MAINTAINERS | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
-You can copy the code from drm_simple_kms_helper.c into your driver file 
-and start inlining everything. For example
-
-  1) Your driver calls drm_simple_display_pipe_init(), so you copy that 
-code into your source file
-  2) drm_simple_display_pipe_init() uses drm_simple_kms_plane_funcs and 
-drm_simple_kms_crtc_funcs, so you copy these into your source file; 
-together with the drm_simple_kms_*() helpers that they use for their 
-callback pointers.
-  3) Mayb do this for other drm_simple_kms_*() code.
-  4) Then start inlining: inline your copy of 
-drm_simple_display_pipe_iit(). Instead of using 
-sharp_ls027b7dh01_pipe_funcs, inline its functions into your copy of the 
-callers. And so on.
-  5) Rename the resulting code, so that it fits you driver.
-
-With careful changes, you 'll end up with the same functionality as 
-before, but without the intermediate layer of the simple-KMS code.
-
-Best regards
-Thomas
-
->
-> --
-> Kind Regards
-> Mehdi Djait
-
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 82896c3e0559..46c177aa2b60 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -14394,8 +14394,9 @@ F:	Documentation/devicetree/bindings/media/microchip,csi2dc.yaml
+ F:	drivers/media/platform/microchip/microchip-csi2dc.c
+ 
+ MICROCHIP ECC DRIVER
++M:	Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+ L:	linux-crypto@vger.kernel.org
+-S:	Orphan
++S:	Supported
+ F:	drivers/crypto/atmel-ecc.*
+ 
+ MICROCHIP EIC DRIVER
+@@ -14500,8 +14501,9 @@ S:	Maintained
+ F:	drivers/mmc/host/atmel-mci.c
+ 
+ MICROCHIP NAND DRIVER
++M:	Balamanikandan Gunasundar <balamanikandan.gunasundar@microchip.com>
+ L:	linux-mtd@lists.infradead.org
+-S:	Orphan
++S:	Supported
+ F:	Documentation/devicetree/bindings/mtd/atmel-nand.txt
+ F:	drivers/mtd/nand/raw/atmel/*
+ 
 -- 
---
-Thomas Zimmermann
-Graphics Driver Developer
-SUSE Software Solutions Germany GmbH
-Frankenstrasse 146, 90461 Nuernberg, Germany
-GF: Ivo Totev, Andrew Myers, Andrew McDonald, Boudien Moerman
-HRB 36809 (AG Nuernberg)
+2.25.1
 
 
