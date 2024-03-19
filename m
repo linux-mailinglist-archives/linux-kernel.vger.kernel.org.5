@@ -1,78 +1,117 @@
-Return-Path: <linux-kernel+bounces-107838-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107840-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D35E88025D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:32:55 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 78904880260
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:33:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B6CCB1F249BD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:32:54 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2CB681F24B70
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:33:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87CC220DC8;
-	Tue, 19 Mar 2024 16:32:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98F8714A84;
+	Tue, 19 Mar 2024 16:33:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="EVywMTv1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jwA6f1Lg"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF8E220335
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:32:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB695111B1;
+	Tue, 19 Mar 2024 16:33:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710865945; cv=none; b=F8gFr1gaXRHlFi7CpMRB/T357/r/2/R2N4ueGIHjp0WZAvRAbWvKkBHvfpPNyfD/RdjMAkthxtUEpcDDt6RJ5fFRa5+oZpHaARB3NeDpkYq8Hd9by9uODXbGZyJ/VOJm74RunuOlupc34moh3556/f2HVKrOW5J23N2H9MzE3JE=
+	t=1710865992; cv=none; b=BdPewOrL/ljSsOmUgjzE5caajOEWEnoH8IOUFqNTVubVCnMMgLT2AE3h5PGpdsSMKO+VmidzxXSD1cso1Jd1MrEGnACEfL6OLX9KwavGBDbQK5kivaOUmTLENdM6Ae5eIuO4rmeowTh442c0RgFKdDOU2ctNhZzS6bHoJD7yNO4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710865945; c=relaxed/simple;
-	bh=thznYSl/RULrLuI/zS56kmqKZGuZNeDoORWBvdGwIrQ=;
-	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=MTTLZppxGqm1RGg+waMiGLNYXa5ebJnAxgTX+kZPxjID02Usd1zpSIq5PJN1Wwkm8YSTgv7OT6mnI1QFNWM21ejhiG6R0bWh+DES4j8mHv5eQb60nA0XG+MC/AQVbLvxUO7BG7qVxs8nABo4fKyA20qSnBeRTLOceM1cHmm/vgk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=EVywMTv1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPS id B1588C433C7;
-	Tue, 19 Mar 2024 16:32:25 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710865945;
-	bh=thznYSl/RULrLuI/zS56kmqKZGuZNeDoORWBvdGwIrQ=;
-	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
-	b=EVywMTv1T8LmU8pLrqbhN3KB0Tjxm1ynvn8vr9rEGry566r3cnlITHyEQT37ukb+M
-	 7NCa+nkF7qP2B+ZoESetk9riut7VP51dlE3Joh/F9AZeQFaTJ703Pqd1V0wO+cc4p1
-	 gu+TsE/l/294+dfDW1RcaollOUut83o9espjDZv+xeBCmaZW1762lOI4oPqWXUzTgM
-	 M/JCLancaMXuMKPa/S/+GgzZkG+HMSHT9TCdL8QNyrZbEjWQdpaponpgGLmtsTDBDr
-	 mQ2gitEHVHY24bakpDPG4A/SKd4CU43ga5aN8N1n4VZJnT+y4sEnbu3QpKE93Ca4UO
-	 MxfXp4vR6x/Fw==
-Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
-	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id AA2E8D84BA6;
-	Tue, 19 Mar 2024 16:32:25 +0000 (UTC)
-Subject: Re: [GIT PULL] xen: branch for v6.9-rc1
-From: pr-tracker-bot@kernel.org
-In-Reply-To: <20240319071022.7513-1-jgross@suse.com>
-References: <20240319071022.7513-1-jgross@suse.com>
-X-PR-Tracked-List-Id: <linux-kernel.vger.kernel.org>
-X-PR-Tracked-Message-Id: <20240319071022.7513-1-jgross@suse.com>
-X-PR-Tracked-Remote: git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.9-rc1-tag
-X-PR-Tracked-Commit-Id: d277f9d82802223f242cd9b60c988cfdda1d6be0
-X-PR-Merge-Tree: torvalds/linux.git
-X-PR-Merge-Refname: refs/heads/master
-X-PR-Merge-Commit-Id: 0815d5cc7dfb4a2c6d02a6eb86974ab3992b803d
-Message-Id: <171086594569.7768.14518623666259076339.pr-tracker-bot@kernel.org>
-Date: Tue, 19 Mar 2024 16:32:25 +0000
-To: Juergen Gross <jgross@suse.com>
-Cc: torvalds@linux-foundation.org, linux-kernel@vger.kernel.org, xen-devel@lists.xenproject.org, sstabellini@kernel.org
+	s=arc-20240116; t=1710865992; c=relaxed/simple;
+	bh=CeSuf34/jNpbYW011k2s5HeIiCXlBsD3n8WDQsNB1Vw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=MMAMNBWk2u58vhSQFzWpU86JtSnG8+U4DYUr0nemsqmjsfftPgVWP5tmxwkFfIxumPA53i4cwJBO0KlwNCihZrWhW+LyDSfVy9Z3a8c8DCaNtJN2KGLYS1lollMAfNRCsAyRnit8CD7e4iNsfDu5BKVASBacWnofau5fa7gDDfc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jwA6f1Lg; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710865991; x=1742401991;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CeSuf34/jNpbYW011k2s5HeIiCXlBsD3n8WDQsNB1Vw=;
+  b=jwA6f1LgEg8uvyptxHEcqW+9z/+QmfQ2qfQ3qQdiQNCv60AlTdBFdCEk
+   vOyhKupFPXsZSm1HdGebHxRf+44kXKpScUG3AAZu//cgND/m/zUfGqpDv
+   DV6+CLMh+C+jUBvoQgndg9Oo7PirL+3zCIihhmaDCX1LJaLEJ6ih2Ywv4
+   W/MpYxyVNt+Ukuhf1X8+WU4J8gcEXuxy+jO35K8kfhLQHCuJkXgU4XfVn
+   FzGOHfc4jaz+SCesmKKyuxRgVeTCQQ9zDJcI8o+FQLRjHR+SbqZDX3Luv
+   HfwE2GV0YI1S9hJazvDNenpTAfoM3+OWG8RGvB2bmHCnDmr41dai7pYYT
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5609688"
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="5609688"
+Received: from fmviesa004.fm.intel.com ([10.60.135.144])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 09:33:10 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="18513375"
+Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
+  by fmviesa004-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 09:33:10 -0700
+Date: Tue, 19 Mar 2024 09:33:09 -0700
+From: Isaku Yamahata <isaku.yamahata@intel.com>
+To: isaku.yamahata@intel.com
+Cc: David Matlack <dmatlack@google.com>, kvm@vger.kernel.org,
+	isaku.yamahata@gmail.com, linux-kernel@vger.kernel.org,
+	Sean Christopherson <seanjc@google.com>,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Michael Roth <michael.roth@amd.com>,
+	Federico Parola <federico.parola@polito.it>
+Subject: Re: [RFC PATCH 0/8] KVM: Prepopulate guest memory API
+Message-ID: <20240319163309.GG1645738@ls.amr.corp.intel.com>
+References: <cover.1709288671.git.isaku.yamahata@intel.com>
+ <ZekQFdPlU7RDVt-B@google.com>
+ <20240307020954.GG368614@ls.amr.corp.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240307020954.GG368614@ls.amr.corp.intel.com>
 
-The pull request you sent on Tue, 19 Mar 2024 08:10:22 +0100:
+On Wed, Mar 06, 2024 at 06:09:54PM -0800,
+Isaku Yamahata <isaku.yamahata@linux.intel.com> wrote:
 
-> git://git.kernel.org/pub/scm/linux/kernel/git/xen/tip.git for-linus-6.9-rc1-tag
+> On Wed, Mar 06, 2024 at 04:53:41PM -0800,
+> David Matlack <dmatlack@google.com> wrote:
+> 
+> > On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
+> > > From: Isaku Yamahata <isaku.yamahata@intel.com>
+> > > 
+> > > Implementation:
+> > > - x86 KVM MMU
+> > >   In x86 KVM MMU, I chose to use kvm_mmu_do_page_fault().  It's not confined to
+> > >   KVM TDP MMU.  We can restrict it to KVM TDP MMU and introduce an optimized
+> > >   version.
+> > 
+> > Restricting to TDP MMU seems like a good idea. But I'm not quite sure
+> > how to reliably do that from a vCPU context. Checking for TDP being
+> > enabled is easy, but what if the vCPU is in guest-mode?
+> 
+> As you pointed out in other mail, legacy KVM MMU support or guest-mode will be
+> troublesome.  The use case I supposed is pre-population before guest runs, the
+> guest-mode wouldn't matter. I didn't add explicit check for it, though.
+> 
+> Any use case while vcpus running?
+> 
+> 
+> > Perhaps we can just return an error out to userspace if the vCPU is in
+> > guest-mode or TDP is disabled, and make it userspace's problem to do
+> > memory mapping before loading any vCPU state.
+> 
+> If the use case for default VM or sw-proteced VM is to avoid excessive kvm page
+> fault at guest boot, error on guest-mode or disabled TDP wouldn't matter.
 
-has been merged into torvalds/linux.git:
-https://git.kernel.org/torvalds/c/0815d5cc7dfb4a2c6d02a6eb86974ab3992b803d
-
-Thank you!
-
+Any input?  If no further input, I assume the primary use case is pre-population
+before guest running.
 -- 
-Deet-doot-dot, I am a bot.
-https://korg.docs.kernel.org/prtracker.html
+Isaku Yamahata <isaku.yamahata@intel.com>
 
