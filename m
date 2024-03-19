@@ -1,223 +1,166 @@
-Return-Path: <linux-kernel+bounces-107573-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107546-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9500387FE55
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:13:19 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 75DF487FDEF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:00:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4A75D283FE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:13:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 674691C21F9D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:00:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8DB2823BF;
-	Tue, 19 Mar 2024 13:10:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08042405FC;
+	Tue, 19 Mar 2024 13:00:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="BzVstWiW"
-Received: from desiato.infradead.org (desiato.infradead.org [90.155.92.199])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="m2Zz7PY0"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.22])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAF1781724;
-	Tue, 19 Mar 2024 13:10:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.92.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEE3633981;
+	Tue, 19 Mar 2024 13:00:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.22
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853814; cv=none; b=lcK0oiHZ/SFoLG2uy49JFHzPnpyePdpCwXRBB9ILloJBy5aoApLyU/VRlq+FgtSDUOvMzeXI1/f1swRTRpGIm/Hx0/ilfU7OYn2icbgdV9p0hBD05J7cNJZFHd1hlIZM91V5QhiUJmEWYEdqjMJLQ+Bhs1y9bR/trfpD1FWN2mE=
+	t=1710853226; cv=none; b=Cyy3NvzucIX7fhQePn6ab+vWybHmNC0P+pKdXhNUnEekOphvhmIIcNW8C/OwObh+F4O12ZUUZu6T159hoRFqA4plvkSblruBnQgYAXR3FdPPhUHvOVoKc5u1unitYzMQ+EU93O+1DHRTuBOXMR+KHKrcL0RhpIQ2HGHe/ky3qlY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853814; c=relaxed/simple;
-	bh=HMH0aJ/yhL4TtEL6UtwH+nkbeX43Qv6MTp6+ytOSTDE=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=YlbOlof590IQW8Y6g0VsZmr/6OFzOjQoymgtogW4UmM7Muom6OzS7+B3tKtqyzQY5abKzRk55hE3tMsnOVbEEdlsOsZgSZNHBlFvE3sdRxEb9DySQ855Z5YM1hpYpGtaegEgmth7YZmfHgeiSEin3HYKTh26aVn9l1Yr7X2S8iI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=desiato.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=BzVstWiW; arc=none smtp.client-ip=90.155.92.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=desiato.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=desiato.20200630; h=Sender:Content-Transfer-Encoding:
-	MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:Cc:To:From:
-	Reply-To:Content-Type:Content-ID:Content-Description;
-	bh=Pmgtt4mh52E0ERFpZQ40Zoz9sGIFhtqH6Ihl0RxJeMs=; b=BzVstWiW0OSzgfgyp5EL36bCHd
-	86Xs7gLeF5roLtNMG54Dn1YYIvNc7gFSioT8eLie20NZCKfUJ6KFGEiyFND8oEuIZ+7+7AezXl03n
-	VULB8oA3SmrzJohhfyMB/jh4zIsGuA4NsqZXoacin9gfq2IfsgoPNeBzKwb6ETlsP3TBvRP2knK0I
-	14S05r5narRksQo6uCu9f5Ck1Eza3Er1wUjTRC2D5JID3D2X6KgDEvDVynePdJ3uWgJlvNRv2ONKu
-	DNdKKV8cej+zKVKSi6KYsz2pAyA7fa/tzmJbKlfx2NpbvBzSA1dDefq3bjUgZhWdByX2Z4P0cUMAm
-	RgiQvtkw==;
-Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
-	by desiato.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmZEA-0000000DDly-1ioY;
-	Tue, 19 Mar 2024 13:10:02 +0000
-Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmZE9-00000004PN6-0ttC;
-	Tue, 19 Mar 2024 13:10:01 +0000
-From: David Woodhouse <dwmw2@infradead.org>
-To: linux-arm-kernel@lists.infradead.org,
-	kvm@vger.kernel.org
-Cc: Paolo Bonzini <pbonzini@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Marc Zyngier <maz@kernel.org>,
-	Oliver Upton <oliver.upton@linux.dev>,
-	James Morse <james.morse@arm.com>,
-	Suzuki K Poulose <suzuki.poulose@arm.com>,
-	Zenghui Yu <yuzenghui@huawei.com>,
-	Catalin Marinas <catalin.marinas@arm.com>,
-	Will Deacon <will@kernel.org>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	"Rafael J. Wysocki" <rafael@kernel.org>,
-	Len Brown <len.brown@intel.com>,
-	Pavel Machek <pavel@ucw.cz>,
-	David Woodhouse <dwmw@amazon.co.uk>,
-	Mostafa Saleh <smostafa@google.com>,
-	Jean-Philippe Brucker <jean-philippe@linaro.org>,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	kvmarm@lists.linux.dev,
-	linux-pm@vger.kernel.org
-Subject: [RFC PATCH v3 5/5] arm64: Use SYSTEM_OFF2 PSCI call to power off for hibernate
-Date: Tue, 19 Mar 2024 12:59:06 +0000
-Message-ID: <20240319130957.1050637-6-dwmw2@infradead.org>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240319130957.1050637-1-dwmw2@infradead.org>
-References: <20240319130957.1050637-1-dwmw2@infradead.org>
+	s=arc-20240116; t=1710853226; c=relaxed/simple;
+	bh=6h4ggd4kJsuUDgFPIuZLKp2omf7z2OBHeTS2aSVdzfk=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Tz3xOewzpYUqU9NMYEabCHA6N5qKo/xvaihMa84SMwVrtRlQY/Lg1EJn9FCH2Jxfi4AkKl9LyVzotEQVn5rSis3ThcqkICns7fj7JNCE8ud/NOAadHdvmc3Djv0UUb1YuvmloOSSgwvrBE7gOfg1EWTCZ2X6HsaUNqoAAqajPOg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=m2Zz7PY0; arc=none smtp.client-ip=212.227.17.22
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710853208; x=1711458008; i=w_armin@gmx.de;
+	bh=h3r0i7uxPBQEXuxnP1w5J3zwT2m6u+r35CHLKMvMNIc=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=m2Zz7PY0a42nqVUVsGeQDMOXEmTDXX02LB82mK5zu1gnkB5LA7NfxN8m13REtLhO
+	 TMBAm2gmxbmBiee6BVnQHBUtXejlEjIB2N/hr1ECg4ZDeoKBopQ9CmAGR6FUNtP+m
+	 9WTmDHS0Isl0r0NHIhIRKM78bSfm5nkEkPPg1/xwVicliGNfEG+hawhxNxZZCj76Q
+	 tE9Xw/Dk9Rc8EFzvLEtS3zl+Yr7LOLmbVC+2R13UpbYSaORIAef/DYF4TdLx35r0e
+	 +Z9tFWL30zwBWBrifdLAchJjiIXMD9RXImy8B8g1ytOeDGKweDO+ea+8NlQlNHyUf
+	 AYYDgch4/1hyMs7ktQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx104
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1Mgeo8-1r7jbf46m4-00h6AJ; Tue, 19
+ Mar 2024 14:00:08 +0100
+Message-ID: <a2c2ef97-3830-4277-8560-b97cfb8eb78e@gmx.de>
+Date: Tue, 19 Mar 2024 14:00:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Sender: David Woodhouse <dwmw2@infradead.org>
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by desiato.infradead.org. See http://www.infradead.org/rpr.html
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC 0/1] hwmon: (hp-wmi-sensors) Support autoloading
+To: James Seo <james@equiv.tech>
+Cc: jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318215732.322798-1-W_Armin@gmx.de>
+ <Zfkm71dmnRsdmYJz@equiv.tech>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <Zfkm71dmnRsdmYJz@equiv.tech>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:vwIxFHYpYPhEq7Io7uBPH7Aocn/DNwHAIHC5Ie1kcRvXfPXbUL1
+ osjJtoQUMwbjmsM4/fqxUzz23FaF9diUWVbYAQjzczCMQ3lN7XmaPIxW3pww0SJV78EHqMF
+ zPD118kf8e80KubPIDhjZBabhEHR+CIIpxmypPWAObsueJmRQwI0FNRrDR46Jrdbrn1PREO
+ HhOvdZYWbkX9EODAZgwqw==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:mXACdlmHwYA=;fwGvU2m/7SqJuxtXPb/0Gzv84yz
+ ubycw5gUJAGAmWxK3UTYnZWwoSvJgpxdXdgBgMPT4uXO470+TEwevjoFvmtWQ3yieNIMAallx
+ h0wp8ZFq/wk/rLFrEgTmZ7fkLCxoq4mF3glW6CkD12rqedXzJayG1/t8AwEoTKIUNScN5cEZp
+ hT+RuwJ1tXg/fIpqcUvH/Gp4AjY8uKX7eODeWjeGrB3FhkwEM3FwyK8BBxRd0vk1qU1uCxJU9
+ L4SfM0f8/1dFcJisAO0PpGOGNjFXvVApSXBwx9ccMBu3yrrn4R1ZzniKd0pXy1bUrQltC37cc
+ YlPpEymLXCCxAlWnxhc7aL3+f0gi/h6OZS/WYxoCTagTigbttFUFptm2u0kXAU6RbHV/vtfzn
+ dna1FXveXCho0jeLxrzkQDTBilDYBYRI0lxtH2yeAPgjciDUf3PdLXbwyJmQdYpJrGabXwV1w
+ tsD1qaVI+Ibe+rp/TPKW7I3Z2d2rOblWJRDY8jymvS6c1DPLC0kKnz1pomMTC4ZfB7VyXG7FH
+ C+IP17oVrukFZ9VSY+q4q/Il7xKVaP5+4/H4movOtHAPtqGFYUPNnUv+bAcjwNrCLR+85R9Wn
+ KAsw7s0vUPHfhzSPTruYii4defKyzt7NmoM/SaRkxmdI4ivlO3/uIX7f1R+yssRWcg6hwZTZt
+ 9tDCpUn6oqI6PWE/P2Ft3i6C1RPRmOFmhVjDTuO+mP9D2JvkbwTeymirkfahXfuPR1cH+yOTq
+ YQUJlLkSLCLuyUSPdy+PjklgykzfUqTCLLtUeG4GcGYKym1Xj1dHVyLxXTjelIUx3bx4LtdxE
+ DhKe4QML86UGSXV9In/HG7FquIsSCaPdNCsq2Mapk39Uw=
 
-From: David Woodhouse <dwmw@amazon.co.uk>
+Am 19.03.24 um 06:47 schrieb James Seo:
 
-The PSCI v1.3 specification (alpha) adds support for a SYSTEM_OFF2
-function which is analogous to ACPI S4 state. This will allow hosting
-environments to determine that a guest is hibernated rather than just
-powered off, and handle that state appropriately on subsequent launches.
+> On Mon, Mar 18, 2024 at 10:57:31PM +0100, Armin Wolf wrote:
+>> Currently, the hp-wmi-sensors driver needs to be loaded manually
+>> on supported machines. This however is unnecessary since the WMI
+>> id table can be used to support autoloading.
+>>
+>> However the driver might conflict with the hp-wmi driver since both
+>> seem to use the same WMI GUID for registering notify handler.
+>>
+>> I am thus submitting this patch as an RFC for now.
+>>
+>> Armin Wolf (1):
+>>    hwmon: (hp-wmi-sensors) Add missing MODULE_DEVICE_TABLE()
+>>
+>>   drivers/hwmon/hp-wmi-sensors.c | 2 ++
+>>   1 file changed, 2 insertions(+)
+>>
+>> --
+>> 2.39.2
+>>
+> Autoloading was deliberately left out for now because of the GUID
+> conflict with hp-wmi's WMI notify handler.
+>
+> HP's GUID reuse across product lines for different types of WMI
+> objects with different names and shapes means that with a patch like
+> this, many systems that should only load hp-wmi-sensors but not
+> hp-wmi will try to autoload both. (Perhaps all of them; I want to say
+> that the GUID 5FB7F034-2C63-45e9-BE91-3D44E2C707E4, which is the
+> second of the two GUIDs that hp-wmi uses to autoload, exists on every
+> HP system I've examined.)
+>
+> Meanwhile, hp-wmi does various other platform things, and there's so
+> much hardware out there that who knows, maybe there are some systems
+> that really should load both. I don't think so but I can't rule it
+> out.
+>
+> Unlike hp-wmi-sensors, hp-wmi doesn't survive failure to install its
+> notify handler, which sets up a potential race condition depending on
+> when hp-wmi and hp-wmi-sensors loads on a given system.
+>
+> Therefore, I intended to add autoloading at the same time as
+> converting hp-wmi-sensors to use the bus-based WMI interface once
+> aggregate WMI devices are better supported.
+>
+> As you mentioned [1], I ran into issues when I tried to do the
+> conversion by simply adding the GUID to struct wmi_driver.id_table.
+> That resulted in two separate independent instances of hp_wmi_sensors
+> being loaded, which isn't what I wanted.
 
-Since commit 60c0d45a7f7a ("efi/arm64: use UEFI for system reset and
-poweroff") the EFI shutdown method is deliberately preferred over PSCI
-or other methods. So register a SYS_OFF_MODE_POWER_OFF handler which
-*only* handles the hibernation, leaving the original PSCI SYSTEM_OFF as
-a last resort via the legacy pm_power_off function pointer.
+After taking a look at a ACPI table dump of a HP machine, i noticed that
+HPBIOS_BIOSEvent has the GUID 2B814318-4BE8-4707-9D84-A190A859B5D0, which is
+different than the event GUID used by hp-wmi.
 
-The hibernation code already exports a system_entering_hibernation()
-function which is be used by the higher-priority handler to check for
-hibernation. That existing function just returns the value of a static
-boolean variable from hibernate.c, which was previously only set in the
-hibernation_platform_enter() code path. Set the same flag in the simpler
-code path around the call to kernel_power_off() too.
+According your comment in hp_wmi_notify(), i assume that some machines have
+mixed-up event GUIDs.
 
-An alternative way to hook SYSTEM_OFF2 into the hibernation code would
-be to register a platform_hibernation_ops structure with an ->enter()
-method which makes the new SYSTEM_OFF2 call. But that would have the
-unwanted side-effect of making hibernation take a completely different
-code path in hibernation_platform_enter(), invoking a lot of special dpm
-callbacks.
+I thing it would be best to create a separate WMI driver for the event and
+use a notifier chain (see include/linux/notifier.h) to distribute the event data.
 
-Another option might be to add a new SYS_OFF_MODE_HIBERNATE mode, with
-fallback to SYS_OFF_MODE_POWER_OFF. Or to use the sys_off_data to
-indicate whether the power off is for hibernation.
+In case of event GUID 95F24279-4D7B-4334-9387-ACCDC67EF61C, both hp-wmi and
+hp-wmi-sensors can subscribe on this notifier and receive event data without
+stepping on each other's toes.
 
-But this version works and is relatively simple.
+The same can be done for the event GUID 2B814318-4BE8-4707-9D84-A190A859B5D0,
+with a separate notifier chain.
 
-Signed-off-by: David Woodhouse <dwmw@amazon.co.uk>
----
- drivers/firmware/psci/psci.c | 35 +++++++++++++++++++++++++++++++++++
- kernel/power/hibernate.c     |  5 ++++-
- 2 files changed, 39 insertions(+), 1 deletion(-)
+This would decouple the event handling from the event data consumers, allowing
+both hp-wmi and hp-wmi-sensors to coexist.
 
-diff --git a/drivers/firmware/psci/psci.c b/drivers/firmware/psci/psci.c
-index d9629ff87861..69d2f6969438 100644
---- a/drivers/firmware/psci/psci.c
-+++ b/drivers/firmware/psci/psci.c
-@@ -78,6 +78,7 @@ struct psci_0_1_function_ids get_psci_0_1_function_ids(void)
- 
- static u32 psci_cpu_suspend_feature;
- static bool psci_system_reset2_supported;
-+static bool psci_system_off2_supported;
- 
- static inline bool psci_has_ext_power_state(void)
- {
-@@ -333,6 +334,28 @@ static void psci_sys_poweroff(void)
- 	invoke_psci_fn(PSCI_0_2_FN_SYSTEM_OFF, 0, 0, 0);
- }
- 
-+#ifdef CONFIG_HIBERNATION
-+static int psci_sys_hibernate(struct sys_off_data *data)
-+{
-+	if (system_entering_hibernation())
-+		invoke_psci_fn(PSCI_FN_NATIVE(1_3, SYSTEM_OFF2),
-+			       PSCI_1_3_HIBERNATE_TYPE_OFF, 0, 0);
-+	return NOTIFY_DONE;
-+}
-+
-+static int __init psci_hibernate_init(void)
-+{
-+	if (psci_system_off2_supported) {
-+		/* Higher priority than EFI shutdown, but only for hibernate */
-+		register_sys_off_handler(SYS_OFF_MODE_POWER_OFF,
-+					 SYS_OFF_PRIO_FIRMWARE + 2,
-+					 psci_sys_hibernate, NULL);
-+	}
-+	return 0;
-+}
-+subsys_initcall(psci_hibernate_init);
-+#endif
-+
- static int psci_features(u32 psci_func_id)
- {
- 	return invoke_psci_fn(PSCI_1_0_FN_PSCI_FEATURES,
-@@ -364,6 +387,7 @@ static const struct {
- 	PSCI_ID_NATIVE(1_1, SYSTEM_RESET2),
- 	PSCI_ID(1_1, MEM_PROTECT),
- 	PSCI_ID_NATIVE(1_1, MEM_PROTECT_CHECK_RANGE),
-+	PSCI_ID_NATIVE(1_3, SYSTEM_OFF2),
- };
- 
- static int psci_debugfs_read(struct seq_file *s, void *data)
-@@ -523,6 +547,16 @@ static void __init psci_init_system_reset2(void)
- 		psci_system_reset2_supported = true;
- }
- 
-+static void __init psci_init_system_off2(void)
-+{
-+	int ret;
-+
-+	ret = psci_features(PSCI_FN_NATIVE(1_3, SYSTEM_OFF2));
-+
-+	if (ret != PSCI_RET_NOT_SUPPORTED)
-+		psci_system_off2_supported = true;
-+}
-+
- static void __init psci_init_system_suspend(void)
- {
- 	int ret;
-@@ -653,6 +687,7 @@ static int __init psci_probe(void)
- 		psci_init_cpu_suspend();
- 		psci_init_system_suspend();
- 		psci_init_system_reset2();
-+		psci_init_system_off2();
- 		kvm_init_hyp_services();
- 	}
- 
-diff --git a/kernel/power/hibernate.c b/kernel/power/hibernate.c
-index 4b0b7cf2e019..ac87b3cb670c 100644
---- a/kernel/power/hibernate.c
-+++ b/kernel/power/hibernate.c
-@@ -676,8 +676,11 @@ static void power_down(void)
- 		}
- 		fallthrough;
- 	case HIBERNATION_SHUTDOWN:
--		if (kernel_can_power_off())
-+		if (kernel_can_power_off()) {
-+			entering_platform_hibernation = true;
- 			kernel_power_off();
-+			entering_platform_hibernation = false;
-+		}
- 		break;
- 	}
- 	kernel_halt();
--- 
-2.44.0
+I can provide a prototype implementation, but unfortunately i have no HP machine
+myself for testing. But i might be able to find one to test my changes.
 
+Thanks,
+Armin Wolf
+
+>
+> [1] https://lore.kernel.org/linux-hwmon/cd81a7d6-4b81-f074-1f28-6d1b5300b937@gmx.de/
+>
 
