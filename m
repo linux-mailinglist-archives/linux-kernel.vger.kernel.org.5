@@ -1,122 +1,127 @@
-Return-Path: <linux-kernel+bounces-107922-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107923-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C71E880394
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:38:01 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id C091188039C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:38:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E17E51F256DE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:38:00 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 77173282ED9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:38:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7205820332;
-	Tue, 19 Mar 2024 17:37:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4E56424B34;
+	Tue, 19 Mar 2024 17:38:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b="Yw23IB9o"
-Received: from thorn.bewilderbeest.net (thorn.bewilderbeest.net [71.19.156.171])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FhpGq69C"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0007E19BDC;
-	Tue, 19 Mar 2024 17:37:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=71.19.156.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73BFD19BDC;
+	Tue, 19 Mar 2024 17:38:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710869871; cv=none; b=W9Lch6yuv+h2FMqrxnNAy3KywyPsaLI/ctplX0e41qdopeZ0MqjtBuhqPdWAQRy8Q5If3p1Agdv6tW1JMlLWiMHr1NnR4HdpdnWuel38tq1uJe1VSRDFXlIYRmcz8XKhV3e1MiEHveOCyKo3ab5EZYk1oQveBM/T4m5X3TUE2zQ=
+	t=1710869916; cv=none; b=e7yO4h/L8fmWDxroIUM0qmid17v+XCPqlo1PQZvEAxCIg1+i2VTClznjEs7xFkY4XLICDkqYSmjW6szf6igixwLTJORGep/LecaOTWvzT6KqzjYtzB+h78yF+T8POcpp5ygOrblAsJ7kmW0TEXYCWKtFtABVU0rMDXiAM1OZbW8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710869871; c=relaxed/simple;
-	bh=3SfnrzwmkkMF8R9JhbYStPD6FosPH0R9WbGo/F4C5jY=;
+	s=arc-20240116; t=1710869916; c=relaxed/simple;
+	bh=4vuAWBj1evs6v+OZMqxOpqf/OaE6RssOo2tlPJIKe2o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ddkIOmST5czSpzQEB0AiS8c190VCqoS5aceexd9in1/rKfpW2F/PKPxdXMv2tLmIu2h8ijuRavfRSwCStchv2cBz+iNpFz+SR6hGhXj2/kl8scahIf7Eqquygw9c/EiRzEp0npqOKffhiIRu4eruYdkFdYTbFdUT8gew+8U3Vr0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net; spf=pass smtp.mailfrom=bewilderbeest.net; dkim=pass (1024-bit key) header.d=bewilderbeest.net header.i=@bewilderbeest.net header.b=Yw23IB9o; arc=none smtp.client-ip=71.19.156.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=bewilderbeest.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bewilderbeest.net
-Received: from hatter.bewilderbeest.net (unknown [IPv6:2602:61:712b:6300::2])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: zev)
-	by thorn.bewilderbeest.net (Postfix) with ESMTPSA id 8C49F6C5;
-	Tue, 19 Mar 2024 10:37:46 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bewilderbeest.net;
-	s=thorn; t=1710869867;
-	bh=3SfnrzwmkkMF8R9JhbYStPD6FosPH0R9WbGo/F4C5jY=;
+	 Content-Type:Content-Disposition:In-Reply-To; b=FBbHb3nfeM5Y/ZwZNvNJO52MK5dNvVsdAY6wmuHFZLsFg7Ua36MpynaYReQNJTxu6/85yVS07Ifwxh4IvH+MK5mQzUbSWyiF5CUkFl7DAEnN1EBJaBMLg8EqXJ+bI3KmJyFIfb5fLbLD5TMlLn95UnSjEaukTu0MgHKwBeKpv6w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FhpGq69C; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 00477C433F1;
+	Tue, 19 Mar 2024 17:38:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710869916;
+	bh=4vuAWBj1evs6v+OZMqxOpqf/OaE6RssOo2tlPJIKe2o=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Yw23IB9oMmIiDLLw4cX4HvHYB6lxgOSm1IJBbODouWBF6Tdg9DIANXgrscEsrepIn
-	 w05eEa0mr0polnd9iRwE9B69iugXx+h8TR/FTlvcRIZwBNtXDJfHVpjNVdn1GFUy9M
-	 k6xGaqa1kNQcU91A5R5+pBy5Xq8yeo6zMG2TgW/I=
-Date: Tue, 19 Mar 2024 10:37:45 -0700
-From: Zev Weiss <zev@bewilderbeest.net>
-To: Helge Deller <deller@gmx.de>
-Cc: "Russell King (Oracle)" <linux@armlinux.org.uk>,
-	linux-parisc@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
-	Florent Revest <revest@chromium.org>,
-	"James E.J. Bottomley" <James.Bottomley@hansenpartnership.com>,
-	"Borislav Petkov (AMD)" <bp@alien8.de>,
-	Yin Fengwei <fengwei.yin@intel.com>,
-	"Mike Rapoport (IBM)" <rppt@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Kees Cook <keescook@chromium.org>,
-	Yang Shi <yang@os.amperecomputing.com>,
-	Rick Edgecombe <rick.p.edgecombe@intel.com>,
-	Oleg Nesterov <oleg@redhat.com>,
-	David Hildenbrand <david@redhat.com>,
-	Stefan Roesch <shr@devkernel.io>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Ondrej Mosnacek <omosnace@redhat.com>,
-	Miguel Ojeda <ojeda@kernel.org>, linux-kernel@vger.kernel.org,
-	openbmc@lists.ozlabs.org, Sam James <sam@gentoo.org>,
-	stable@vger.kernel.org
-Subject: Re: [PATCH RESEND 1/2] prctl: Generalize PR_SET_MDWE support check
- to be per-arch
-Message-ID: <c7bb388b-2c4c-4102-9b84-278f6c6855ee@hatter.bewilderbeest.net>
-References: <20240227013546.15769-4-zev@bewilderbeest.net>
- <20240227013546.15769-5-zev@bewilderbeest.net>
- <Zd24aCps4xD28c74@shell.armlinux.org.uk>
- <e391cad0-7b98-4efd-bea1-cf5ab9c626bf@gmx.de>
+	b=FhpGq69CjbpLw7gdlpfimviyUI9rG1eiCMCeg4oRTfRHYiaEvNeWnvg8fB629aLZW
+	 AZ81lwqhxnWfbJDM9iuNZ5Kl5VgSgWoIfbkIO/0TdZPrxNElSmJNv1D4NHBr1x3QQd
+	 d98gs93XJgtAocflD6uznvPw2sPCqqyu19aSUi6BLS8vDa9pSw7V22D7C0mag/CeXa
+	 J+Bwkwx3Dn4Rg02ptndnzDRowRBiznOdoFMON7/tYTQ3gGghhJIQFnLmaFVdaWM7K0
+	 tRNrfqA5FYAFZjs861/KJiC57kUwu+d4A5Q5wuYc3cLP7a6wjL6pOW4W69YHBVCwGG
+	 HvG5QSe0kw+nQ==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rmdQA-0000000016b-11LA;
+	Tue, 19 Mar 2024 18:38:42 +0100
+Date: Tue, 19 Mar 2024 18:38:42 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: Doug Anderson <dianders@chromium.org>,
+	Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Matthias Kaehlcke <mka@chromium.org>,
+	Rocky Liao <quic_rjliao@quicinc.com>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org
+Subject: Re: [PATCH v3 2/5] Bluetooth: add quirk for broken address properties
+Message-ID: <ZfnNoi4ahVlzHvvo@hovoldconsulting.com>
+References: <20240319152926.1288-1-johan+linaro@kernel.org>
+ <20240319152926.1288-3-johan+linaro@kernel.org>
+ <CAD=FV=VUFodCAXEJgfpSqZZdtQaw5-8n_-sX_2p6LuQ2ixLRpQ@mail.gmail.com>
+ <Zfm8nifvqb3xO5HG@hovoldconsulting.com>
+ <CAA8EJprp89VgFMjHv=EynROUs632CfQPbEka0GAcEAy743EMaA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii; format=flowed
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <e391cad0-7b98-4efd-bea1-cf5ab9c626bf@gmx.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAA8EJprp89VgFMjHv=EynROUs632CfQPbEka0GAcEAy743EMaA@mail.gmail.com>
 
-On Tue, Feb 27, 2024 at 11:53:59AM PST, Helge Deller wrote:
->On 2/27/24 11:24, Russell King (Oracle) wrote:
->>On Mon, Feb 26, 2024 at 05:35:41PM -0800, Zev Weiss wrote:
->>>There exist systems other than PARISC where MDWE may not be feasible
->>>to support; rather than cluttering up the generic code with additional
->>>arch-specific logic let's add a generic function for checking MDWE
->>>support and allow each arch to override it as needed.
->>>
->>>Signed-off-by: Zev Weiss <zev@bewilderbeest.net>
->>>Cc: <stable@vger.kernel.org> # v6.3+
->>
->>PA-RISC folk need to ack/review-by this patch.
->
->I'm fine with patch 1/2:
->Acked-by: Helge Deller <deller@gmx.de> # parisc
->
->>Alternatively, it needs
->>to be restructured to add the arch_memory_deny_write_exec_supported()
->>override without touching the PA-RISC code, which then makes the Arm
->>patch independent of the status of the PA-RISC patch. That will allow
->>the Arm issue to be solved even if an ack is not forthcoming for the
->>PA-RISC parts.
->>>Alternatively, I wonder whether akpm would be willing to pick up this
->>patch set as-is.
->
->I have no preference, but I think both patches should be pushed
->together via arm tree or akpm.
->
->Helge
+On Tue, Mar 19, 2024 at 07:01:57PM +0200, Dmitry Baryshkov wrote:
+> On Tue, 19 Mar 2024 at 18:26, Johan Hovold <johan@kernel.org> wrote:
+> >
+> > On Tue, Mar 19, 2024 at 09:10:23AM -0700, Doug Anderson wrote:
+> > > On Tue, Mar 19, 2024 at 8:29 AM Johan Hovold <johan+linaro@kernel.org> wrote:
+> >
+> > > > +       /* When this quirk is set, the Bluetooth Device Address provided by
+> > > > +        * the 'local-bd-address' fwnode property is incorrectly specified in
+> > > > +        * big-endian order.
+> > > > +        *
+> > > > +        * This quirk can be set before hci_register_dev is called or
+> > > > +        * during the hdev->setup vendor callback.
+> > > > +        */
+> > > > +       HCI_QUIRK_BDADDR_PROPERTY_BROKEN,
+> > >
+> > > Like with the binding, I feel like
+> > > "HCI_QUIRK_BDADDR_PROPERTY_BACKWARDS" or
+> > > "HCI_QUIRK_BDADDR_PROPERTY_SWAPPED" would be more documenting but I
+> > > don't feel strongly.
+> >
+> > So, same reasoning here, this it not some quirk that people should go
+> > around setting without first considering to fix their boot firmware.
+> 
+> The address can be considered broken in many different ways. The name
+> should still be descriptive enough. If you want to specify that it is
+> a broken behaviour, please consider something like BROKEN_BE.
 
-Ping...Russell, Andrew, any thoughts on how this could move forward?
+I doubt that Qualcomm will be able come up with another way to break the
+address property. They'd have to try real hard.
 
+And this is an internal define which can be changed at any time. There's
+also some worth in keeping it aligned with the DT property, which I'm
+more open to renaming (e.g. if the DT maintainers thinks dropping the
+vendor prefix makes sense).
 
-Thanks,
-Zev
+The alternative I considered but rejected was something like
+"local-bd-address-be" as that would be too neutral.
 
+Perhaps "local-bd-address-reversed" would at least signal that something
+is backwards, but I still fear that that may be too subtle.
+
+Johan
 
