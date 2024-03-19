@@ -1,54 +1,62 @@
-Return-Path: <linux-kernel+bounces-108040-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108035-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E43F880524
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:53:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 20BA6880514
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:47:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 90AA31C22B7D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:53:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 529791C230F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:47:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2A01939FCE;
-	Tue, 19 Mar 2024 18:53:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AE89B39FD7;
+	Tue, 19 Mar 2024 18:47:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="lM95JhmQ"
-Received: from mslow1.mail.gandi.net (mslow1.mail.gandi.net [217.70.178.240])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="I9BNLvmx"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C786639ACD;
-	Tue, 19 Mar 2024 18:53:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.178.240
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 811DB38DC3;
+	Tue, 19 Mar 2024 18:47:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710874403; cv=none; b=AS6xMQQ+ks7N6+2cEJ0Lcn6BerqKHpl/It3LJgYiw6BFENU8ieW8WHp2xZo9JFO1PDYMUDTssQgfal0u7c97jmw/mC2Y+IO81s95DnkRmu+qLms8nuxwJ0bN3D22oc7OCOgzdpNouxRng/OdNrwuYZ2auCfzXaxd/tT5Wz47DcU=
+	t=1710874023; cv=none; b=ZkZA3seEIvwyA3e2npIcGMlIjbgW4nYwNKe5wu7kpBZ6zm9Brp35G4Hnj/0q3dHg8COF2jhjXSfY7NnIijzC3+C1sbYuJxc4/Uk87FQblnOccWMCrQbiwfvlAfmkCuFuQ/VEbBVRTSF5C995vrSZ8Z2F1vew72ioMhvUcreivXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710874403; c=relaxed/simple;
-	bh=lBQhmh2kAEkLdGWl3ngSGG0TPu+2FbksK509QDmeZTQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kD4r6xN4xuG4UmRwlfeas7t9txB5h5wJvd1r4Xvp+pZHVQVGM1mNbo3XKd7MjmNUGnpz4dKxmRvYJ5f7yidfj7xAJ5Pre0+TPgP4sD3KzovislcPzo/9SiaeEp0lDW9rso0+cu9wDH8FNNVjdECmQsGDW4uZ1/47Bd2Ib7ddmZ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=lM95JhmQ; arc=none smtp.client-ip=217.70.178.240
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: from relay5-d.mail.gandi.net (unknown [217.70.183.197])
-	by mslow1.mail.gandi.net (Postfix) with ESMTP id 3CFAFC102C;
-	Tue, 19 Mar 2024 18:47:03 +0000 (UTC)
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 296531C0005;
-	Tue, 19 Mar 2024 18:46:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710874015;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=hqjw5/4OqJvrXdntVY+Zb5+0XQA0wPKvw3S8mwvRbX4=;
-	b=lM95JhmQPcXUfhGSFLijlkAHQxEuDJdCn0ODi7c+UcwmmUpfUz5Jmcfdg8whXK6f/RpGEz
-	DILnO21s+QISwJhhIFPHDkahn+GFdTsYGh6fxmQmpGZ0YCAd3vxPHpNhL4pPLDLYClVeOy
-	j/f4yJWXq3s+SSYUK878yVsGwlXhEOl54UiFd63sqdK32b4vlVvIYOa8tznzL60IRo9y6W
-	9XAA6+IHnK5e6c5jLGmHIVBP3iT+W3BTBlSsyGVxDaclnM0j2niazvM3zEByu9j3Yh3W2q
-	xfVvLW2p+YEmJPJCzvdv1MBwTpN/K/nGFn5NzfcpQbnNeVDfqWTT6Cs5oi5APw==
-Message-ID: <00ec9779-19ce-4005-83f0-f4abf37350fc@arinc9.com>
-Date: Tue, 19 Mar 2024 21:46:30 +0300
+	s=arc-20240116; t=1710874023; c=relaxed/simple;
+	bh=DaMdMRqPQX4MktdbTTIbll7N57Ee5lAFzSn2B0C2n7c=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=a2txyRFPpsamKGgb/Z/vqau7jlDEQgE5i5lgn3rU79mNRfdRTOM81Gtn2m+5+x8hDzP17cotlBI1w5fHkj/kBQbhaHf5gn4fb1JOKM8xWyZ0IvRqvGwoOiehx3A/Clo95lUh2gVm+Iav3pFulwMzBs/XAIsL9Um1zaZyNVrHjfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=I9BNLvmx; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JHGjQs030198;
+	Tue, 19 Mar 2024 18:46:44 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=TP4ackwa+Ob3sp81duFElM8Xs9uwBheL7CE1OFm03yk=; b=I9
+	BNLvmx9OEJwyrV8g2vUfcY2jGgG+WmZpTvO2/hPNYRTCxWno55uHueHej7ToWLW6
+	qwvW3R1rM5hbf0OSFfbh4jgOXnLRGxD4bKUbNPJIEXEa9xLn7iRNBVpWL5fZZ+6v
+	YBpcQLSFjXkdcJQPhicNf5qPhyvh3FMRVoYHtut0S8eZpWBHazNE5vuSQKsnjdBR
+	M1JH2rPfEjPmxjSHfCFAtO15HQMFYg9GikRQqzH1YlksRB1BHWxK7FxcbAWl09wR
+	FTu6U8xF9wGcPx8KCScg8mAsKkYdO+eM3QlMXrgJnjdGwXkz5pKKALNkn5FxdX/r
+	1hAE93Bqsb3bBtVB4LPA==
+Received: from nalasppmta02.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy94ts7gk-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 18:46:44 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JIkhYu030051
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 18:46:43 GMT
+Received: from [10.110.120.226] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 11:46:43 -0700
+Message-ID: <c9ed5980-c01b-4d20-a5c2-e2ee97373dca@quicinc.com>
+Date: Tue, 19 Mar 2024 11:46:42 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,100 +64,70 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Fix EEE support for MT7531 and MT7988 SoC switch
+Subject: Re: [PATCH] ath10k: allocate dummy net_device dynamically
 Content-Language: en-US
-To: Daniel Golle <daniel@makrotopia.org>
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- Andrew Lunn <andrew@lunn.ch>, Florian Fainelli <f.fainelli@gmail.com>,
- Vladimir Oltean <olteanv@gmail.com>, "David S. Miller"
- <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
- Russell King <linux@armlinux.org.uk>,
- SkyLake Huang <SkyLake.Huang@mediatek.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <<20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v>
- <ZfnYkuzuvwLepIfC@makrotopia.org>
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <ZfnYkuzuvwLepIfC@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+To: Breno Leitao <leitao@debian.org>
+CC: Kalle Valo <kvalo@kernel.org>, Jeff Johnson <jjohnson@kernel.org>,
+        <kuba@kernel.org>, <keescook@chromium.org>,
+        "open list:NETWORKING DRIVERS
+ (WIRELESS)" <linux-wireless@vger.kernel.org>,
+        "open list:QUALCOMM ATHEROS
+ ATH10K WIRELESS DRIVER" <ath10k@lists.infradead.org>,
+        open list
+	<linux-kernel@vger.kernel.org>
+References: <20240319104754.2535294-1-leitao@debian.org>
+ <8771e856-3d9f-41c6-88c8-3c75e77b2aab@quicinc.com>
+ <ZfnILSPBiqk8JdJ4@gmail.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <ZfnILSPBiqk8JdJ4@gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: sH8aayGgxF7shxzpMxP7VMhozu2dYCSS
+X-Proofpoint-ORIG-GUID: sH8aayGgxF7shxzpMxP7VMhozu2dYCSS
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-19_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 mlxscore=0
+ spamscore=0 clxscore=1011 mlxlogscore=955 suspectscore=0
+ priorityscore=1501 impostorscore=0 malwarescore=0 bulkscore=0 adultscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403190142
 
-On 19.03.2024 21:25, Daniel Golle wrote:
-> On Mon, Mar 18, 2024 at 10:46:22AM +0300, Arınç ÜNAL via B4 Relay wrote:
->> Hi.
+On 3/19/2024 10:15 AM, Breno Leitao wrote:
+> On Tue, Mar 19, 2024 at 09:05:24AM -0700, Jeff Johnson wrote:
+>> On 3/19/2024 3:47 AM, Breno Leitao wrote:
+>>> @@ -3687,6 +3690,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
+>>>  
+>>>  err_free_coredump:
+>>>  	ath10k_coredump_destroy(ar);
+>>> +err_free_netdev:
+>>> +	free_netdev(ar->napi_dev);
+>>>  err_free_tx_complete:
+>>>  	destroy_workqueue(ar->workqueue_tx_complete);
+>>>  err_free_aux_wq:
+>>> @@ -3708,6 +3713,7 @@ void ath10k_core_destroy(struct ath10k *ar)
+>>>  
+>>>  	destroy_workqueue(ar->workqueue_tx_complete);
+>>>  
+>>> +	free_netdev(ar->napi_dev);
+>>>  	ath10k_debug_destroy(ar);
+>>>  	ath10k_coredump_destroy(ar);
+>>>  	ath10k_htt_tx_destroy(&ar->htt);
 >>
->> This patch series fixes EEE support for MT7531 and the switch on the MT7988
->> SoC. EEE did not work on MT7531 on most boards before this, it is unclear
->> what's the status on MT7988 SoC switch as I don't have the hardware.
+>> looks like there is a pre-existing issue that the order of operations in
+>> _destroy() doesn't match the order of operations in the _create() error path.
 > 
-> EEE seems to already work just fine on the MT7988 built-in switch, at least
-> on the BPI-R4. I don't think the SoC has bootstrap pins related to EEE like
-> stand-alone MT753x may have.
+> Right. I found it weird as well. Basically "ath10k_coredump" and
+> "ath10k_debug" operations are swapped between ath10k_core_create() and
+> ath10k_core_destroy().
 > 
-> root@bpi-r4:~# ethtool --show-eee lan1
-> EEE settings for lan1:
->      EEE status: disabled
->      Tx LPI: 30 (us)
->      Supported EEE link modes:  100baseT/Full
->                                 1000baseT/Full
->      Advertised EEE link modes:  Not reported
->      Link partner advertised EEE link modes:  100baseT/Full
->                                               1000baseT/Full
-> 
-> root@bpi-r4:~# ethtool --set-eee lan1 eee on
-> root@bpi-r4:~# ethtool --show-eee lan1
-> EEE settings for lan1:
->      EEE status: enabled - inactive
->      Tx LPI: 30 (us)
->      Supported EEE link modes:  100baseT/Full
->                                 1000baseT/Full
->      Advertised EEE link modes:  100baseT/Full
->                                  1000baseT/Full
->      Link partner advertised EEE link modes:  Not reported
-> root@bpi-r4:~# ethtool --show-eee lan1
-> EEE settings for lan1:
->      EEE status: enabled - active
->      Tx LPI: 30 (us)
->      Supported EEE link modes:  100baseT/Full
->                                 1000baseT/Full
->      Advertised EEE link modes:  100baseT/Full
->                                  1000baseT/Full
->      Link partner advertised EEE link modes:  100baseT/Full
->                                               1000baseT/Full
-> 
-> So don't fix if it ain't broken maybe...?
+> If you wish, I can submit a patch ordering it properly.
 
-I would argue that EEE advertisement on the PHY should be enabled by
-default. I guess we're supposed to supply that on the PHY driver. Can you
-test with this diff applied and see if it works without manually enabling
-EEE using ethtool?
+Don't bother. I'll queue that up to fix separately myself
 
-diff --git a/drivers/net/phy/mediatek-ge-soc.c b/drivers/net/phy/mediatek-ge-soc.c
-index 0f3a1538a8b8..5f482c12018a 100644
---- a/drivers/net/phy/mediatek-ge-soc.c
-+++ b/drivers/net/phy/mediatek-ge-soc.c
-@@ -978,6 +978,9 @@ static void mt798x_phy_eee(struct phy_device *phydev)
-  		       MTK_PHY_RG_LPI_PCS_DSP_CTRL_REG122,
-  		       MTK_PHY_LPI_NORM_MSE_HI_THRESH1000_MASK,
-  		       FIELD_PREP(MTK_PHY_LPI_NORM_MSE_HI_THRESH1000_MASK, 0xff));
-+
-+	phy_write_mmd(phydev, MDIO_MMD_AN, MDIO_AN_EEE_ADV, MDIO_EEE_100TX |
-+		      MDIO_EEE_1000T);
-  }
-  
-  static int cal_sw(struct phy_device *phydev, enum CAL_ITEM cal_item,
-
-Arınç
+/jeff
 
