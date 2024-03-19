@@ -1,208 +1,187 @@
-Return-Path: <linux-kernel+bounces-106919-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106920-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E35687F569
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:26:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 018A587F56D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:26:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8CE91F21D53
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:26:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3268D1C20283
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:26:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B5B64CFF;
-	Tue, 19 Mar 2024 02:26:19 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DA964CE9;
-	Tue, 19 Mar 2024 02:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9702657AC;
+	Tue, 19 Mar 2024 02:26:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u+QpXFOH"
+Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525B6651B3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:26:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710815179; cv=none; b=mAmqoI+0cJouvy00IxFIgoghU3YbqqVxehAUjuMXHUIGR8tF0zUN6zYvKKsckdrmItztncZXEzT/fuHPW6FPGtJSHe3Kb+4rjxTT2ZMQo/v2vk3yBZXTu/6ZTg/Jd3JUXKkI9vqTy3EM7liIunFzqVrklSsvyMmtJSv5PP6J87o=
+	t=1710815185; cv=none; b=GBT0EyHulrHbEra4qt3s07cUoSASaAQYNX/U/EoxdVeG5UccemOJcUVgOclMAs67/l2AeW2knbsx+/c7z5nR36GxFlvS8BQrBhlFA44ElBPGk5zkzEZv5y+LipRPQmOD8RS0cRfHG2Z8sPs9h1YNlLXcVQkaTw0SCd3PI81Zs1c=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710815179; c=relaxed/simple;
-	bh=KQzfakRcrbHa4iQaTVLI/sbWCXQ1mlHncl75EffgA64=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=WY2QzQwbXtVIO/MFMBmnnROGoFkDdFNLqJbQyxRG0tgAeLtRpFNocG+050E1inAh64banbty4xnp1rG0vo3py9zLpCYXq99iPqyACp+h3eP1i6hptskos2hPDVb/F4y0J3aNy7CyGSFPUhoRFQ+L8AeRUH+n+HgCmpfNqFIXwOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72621106F;
-	Mon, 18 Mar 2024 19:26:49 -0700 (PDT)
-Received: from [10.163.53.80] (unknown [10.163.53.80])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB44B3F762;
-	Mon, 18 Mar 2024 19:26:12 -0700 (PDT)
-Message-ID: <ad9bdae3-0eb2-4262-8412-ba42c27ee767@arm.com>
-Date: Tue, 19 Mar 2024 07:56:02 +0530
+	s=arc-20240116; t=1710815185; c=relaxed/simple;
+	bh=sggre/bwedm+SjhOnNs5oKMSJXt1Hx/MhvbnEbYdQRE=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ZJIn7nlB4Xr3aasn3ozpibIGKX7cwZp8cRdg6IKFTCIIEX+tQ6d3BgcGmLCT+sCoAz3qDpm2Bh22anoUszASsLncz5WvPessEPymH92ps61IDlnU42ZnCxL01yf65nZZ5XnXPfxfoj4GsgbQNbCMTsRLMUr+E8j98vc8HO4iWwE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u+QpXFOH; arc=none smtp.client-ip=209.85.218.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a467d8efe78so524230166b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:26:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710815182; x=1711419982; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9PVwebktWBWty2mBrf17cNCGtAzEMmWTbg3BNLwRbR4=;
+        b=u+QpXFOHxIIm2aA8ZtgDstbdEP0JytJobxygrcibELE2iSg42kVC3nIhORU+hQRdCR
+         g02IrjRD211Th2bTY7QgjIDz8/vvzyrWwbNp74QLJaFZFfbHDgcS2+5Tuoj0930kPNkf
+         c5x6ok0I/EMtikTXIe6THfEeU4JEvOhnoN+MkV1pV8QRt5gUoq42kfYXtxdB4JbDg8Mq
+         Ny7aNIrtG/saUzznCbyJGJp+gTdqkFow4k6LyzTqM8w2oRxnxSQ41Quu/jitkpJYs0uC
+         3GS4g2V6k/At4g57bbgqkF2rtgkVMB32SCqGrKB26kWQdo1HgPBZk0ytKK3VgS62qucq
+         Xqsw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710815182; x=1711419982;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=9PVwebktWBWty2mBrf17cNCGtAzEMmWTbg3BNLwRbR4=;
+        b=mx/99YazDwqsrAfe6P7+tqdtQPtQLjcUoJ46kwznSVc1oeeNXJj/LXxH2xMiqtmarM
+         AJF9kvvjoNv28ozxD61zWvnANvRtGb8QAW4XnclIwhtI86Q7OMiB5DErTOMufoJnbNEc
+         vmxBAEQWb6Aqkeh9PA9RxnD7jUycg2PLK/JgtiM40ZgOCDYUXlr4JyEkTMRxCMpJjMYl
+         uBHnSj5PBu8Gvy+IL34JUTTfQ1sEC8+mli/nSB2Oek+vNrb7WmD+OgomNZmaM1M+08ww
+         SVaKN0ofn1hGF3k9Q8TZs7rvaSSzgJULHaWo2SsT1IhPQ1MwkQFTTeurUYEVOpZzNF3C
+         iJuw==
+X-Forwarded-Encrypted: i=1; AJvYcCVHMwcg9ZxbRpHsJ7NVBcMTNuc0aYiGYS7Frqc1CkZaoYAz5HTRgDU8QKf7zWZctp7yP8ANa5KXosDlo8fhs+QzbnY+axMxtAA/cNBy
+X-Gm-Message-State: AOJu0YwYyVmVdlqhrBrSAdhz+k/FobJCBay501bi7nPKbFAaUO6/MVxV
+	cNShiC48qtuUkkPCrXdAB3YimAVnW272sKsSUUWFUEi6Kui7ScrzfXck/vIKA0ZB2bQrq0EY6GN
+	AUyaXV/nz3/eJEpy20FU3VVXGR97It5CA9P5+
+X-Google-Smtp-Source: AGHT+IFu9/5+j8r+Fb4pBtW95+Cl0mFkAx99vWRUt0Y35XyzFmr6MbTbI8DsVSvg5VsvJGnE/Mvw9QqpeiGeWfWctas=
+X-Received: by 2002:a17:906:81c9:b0:a46:6958:c415 with SMTP id
+ e9-20020a17090681c900b00a466958c415mr639887ejx.8.1710815181445; Mon, 18 Mar
+ 2024 19:26:21 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] perf tools: Only treat files as map files when they
- have the extension .map
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
- anshuman.khandual@arm.com,
- Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-References: <20240220042957.2022391-1-ChaitanyaS.Prakash@arm.com>
- <20240220042957.2022391-3-ChaitanyaS.Prakash@arm.com>
- <CAP-5=fUFmeoTjLuZTgcaV23iGQU1AdddG+7Rw=d6buMU007+1Q@mail.gmail.com>
- <ZdYPf3wMl35VemsL@x1> <0fa391c6-fd9e-42fe-b535-17e7725280e5@arm.com>
- <ZfSw7AL8EgFoFQkM@x1>
-Content-Language: en-US
-From: Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>
-In-Reply-To: <ZfSw7AL8EgFoFQkM@x1>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
+References: <20240228013619.29758-1-quic_wcheng@quicinc.com>
+ <20240228013619.29758-21-quic_wcheng@quicinc.com> <CANqn-rjTgHgzssxZiuwvTKzOS31wzjS4Y9G-XacZN4a7c82MaA@mail.gmail.com>
+ <d97f635f-053b-70a7-5ffe-a1ae273091d1@quicinc.com> <CANqn-ring2uf=A-F7VuRwnJ--n=FtFzSddCmR-=nfxCGcFAF2g@mail.gmail.com>
+ <0e9f0f2f-a404-3b76-3c52-9eca7594efa3@quicinc.com>
+In-Reply-To: <0e9f0f2f-a404-3b76-3c52-9eca7594efa3@quicinc.com>
+From: Albert Wang <albertccwang@google.com>
+Date: Tue, 19 Mar 2024 10:26:08 +0800
+Message-ID: <CANqn-rjMcncjZv9YNZJOZgFo0_ro9hk=TBSFrY9RfhE1Mi13qw@mail.gmail.com>
+Subject: Re: [PATCH v18 20/41] ALSA: usb-audio: qcom: Introduce QC USB SND
+ offloading support
+To: Wesley Cheng <quic_wcheng@quicinc.com>
+Cc: srinivas.kandagatla@linaro.org, mathias.nyman@intel.com, perex@perex.cz, 
+	conor+dt@kernel.org, corbet@lwn.net, lgirdwood@gmail.com, 
+	andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
+	gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org, 
+	bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, 
+	konrad.dybcio@linaro.org, linux-kernel@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-sound@vger.kernel.org, 
+	linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
+	linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 3/16/24 02:04, Arnaldo Carvalho de Melo wrote:
-> On Fri, Feb 23, 2024 at 05:40:02PM +0530, Chaitanya S Prakash wrote:
->> I'll make the changes, thanks for the review.
-> Have you submitted a new series?
+> We can discuss that offline and come up with an approach that is
+> reviewable by maintainers and the community.
+
+Sure, looking forward to working together with you!
+
+Thanks,
+Albert Wang
+
+On Fri, Mar 15, 2024 at 4:57=E2=80=AFAM Wesley Cheng <quic_wcheng@quicinc.c=
+om> wrote:
 >
-> Thanks,
+> Hi Albert
 >
-> - Arnaldo
-I will be posting it this week, extremely sorry for the delay!
->   
->> On 2/21/24 20:28, Arnaldo Carvalho de Melo wrote:
->>> On Tue, Feb 20, 2024 at 06:40:47AM -0800, Ian Rogers wrote:
->>>> On Mon, Feb 19, 2024 at 8:30 PM Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com> wrote:
->>>>> +++ b/tools/perf/util/string2.h
->>>>> @@ -40,5 +40,6 @@ char *strdup_esc(const char *str);
->>>>>
->>>>>    unsigned int hex(char c);
->>>>>    char *strreplace_chars(char needle, const char *haystack, const char *replace);
->>>>> +const char *ends_with(const char *str, const char *suffix);
->>>> nit: string2.h is an extension of linux's string.h. The tools copy of
->>>> that is missing functions in the kernel version:
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/include/linux/string.h?h=perf-tools-next
->>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/include/linux/string.h?h=perf-tools-next#n398
->>>> specifically str_has_prefix.
->>>>
->>>> The naming ends_with makes sense but there is also strstarts and
->>>> str_has_prefix, perhaps str_has_suffix would be the most consistent
->>>> and intention revealing name?
->>>>
->>>> Also, we have strtailcmp which behaves like a reverse strcmp that
->>>> doesn't compare the lengths of the strings. It seems all uses of
->>>> strtailcmp are just for a "str_has_suffix". It would make sense to me
->>>> to remove that function and switch to a common str_has_suffix function
->>>> which I think is a more intention revealing way of naming what the
->>>> code is doing.
->>> So far in perf we try to just reuse whatever function the kernel has for
->>> the purpose at hand, right now the kernel has:
->>>
->>> /**
->>>    * strstarts - does @str start with @prefix?
->>>    * @str: string to examine
->>>    * @prefix: prefix to look for.
->>>    */
->>> static inline bool strstarts(const char *str, const char *prefix)
->>> {
->>>           return strncmp(str, prefix, strlen(prefix)) == 0;
->>> }
->>>
->>> And:
->>>
->>> /**
->>>    * str_has_prefix - Test if a string has a given prefix
->>>    * @str: The string to test
->>>    * @prefix: The string to see if @str starts with
->>>    *
->>>    * A common way to test a prefix of a string is to do:
->>>    *  strncmp(str, prefix, sizeof(prefix) - 1)
->>>    *
->>>    * But this can lead to bugs due to typos, or if prefix is a pointer
->>>    * and not a constant. Instead use str_has_prefix().
->>>    *
->>>    * Returns:
->>>    * * strlen(@prefix) if @str starts with @prefix
->>>    * * 0 if @str does not start with @prefix
->>>    */
->>> static __always_inline size_t str_has_prefix(const char *str, const char *prefix)
->>> {
->>>           size_t len = strlen(prefix);
->>>           return strncmp(str, prefix, len) == 0 ? len : 0;
->>> }
->>>
->>> The later seems to give more bang for the buck, so to say, returning the
->>> prefix lenght.
->>>
->>> It is a new addition:
->>>
->>> 72921427d46bf9731 (Steven Rostedt (VMware) 2018-12-21 18:10:14 -0500 398) static __always_inline size_t str_has_prefix(const char *str, const char *prefix)
->>>
->>> While:
->>>
->>> 66f92cf9d415e96a5 (Rusty Russell           2009-03-31 13:05:36 -0600 249)  * strstarts - does @str start with @prefix?
->>>
->>> ⬢[acme@toolbox linux]$ git grep str_has_prefix| wc -l
->>> 94
->>> ⬢[acme@toolbox linux]$ git grep strstarts| wc -l
->>> 177
->>> ⬢[acme@toolbox linux]$
->>>
->>> Some places use it:
->>>
->>> kernel/printk/printk.c: len = str_has_prefix(str, "on");
->>> kernel/printk/printk.c: len = str_has_prefix(str, "off");
->>> kernel/printk/printk.c: len = str_has_prefix(str, "ratelimit");
->>>
->>>
->>> static int __control_devkmsg(char *str)
->>> {
->>> 	size_t len;
->>>
->>> 	if (!str)
->>> 		return -EINVAL;
->>>
->>> 	len = str_has_prefix(str, "on");
->>> 	if (len) {
->>> 		devkmsg_log = DEVKMSG_LOG_MASK_ON;
->>> 		return len;
->>> 	}
->>>
->>> 	len = str_has_prefix(str, "off");
->>> 	if (len) {
->>> 		devkmsg_log = DEVKMSG_LOG_MASK_OFF;
->>> 		return len;
->>> 	}
->>>
->>> 	len = str_has_prefix(str, "ratelimit");
->>> 	if (len) {
->>> 		devkmsg_log = DEVKMSG_LOG_MASK_DEFAULT;
->>> 		return len;
->>> 	}
->>>
->>> 	return -EINVAL;
->>> }
->>>
->>>
->>>                   err = __control_devkmsg(devkmsg_log_str);
->>>                   /*
->>>                    * Do not accept an unknown string OR a known string with
->>>                    * trailing crap...
->>>                    */
->>>                   if (err < 0 || (err + 1 != *lenp)) {
->>>
->>>                           /* ... and restore old setting. */
->>>                           devkmsg_log = old;
->>>                           strncpy(devkmsg_log_str, old_str, DEVKMSG_STR_MAX_SIZE);
->>>
->>>                           return -EINVAL;
->>>                   }
->>>
->>>
->>> So yeah, I agree with Ian that it is more intention revealing, has this
->>> bonus of returning the strlen for the above use cases, is in the kernel
->>> sources, so I'm in favour of grabbing a copy of it and replacing the
->>> strstarts() usage with it, drop strstarts(), then also introduce
->>> str_has_suffix(), the kernel will get it when it needs, possibly from
->>> tools/lib/ :-)
->>>
->>> - Arnaldo
+> On 3/14/2024 3:29 AM, Albert Wang wrote:
+> > On Thu, Mar 14, 2024 at 3:18=E2=80=AFAM Wesley Cheng <quic_wcheng@quici=
+nc.com> wrote:
+> >>
+> >> Hi Albert,
+> >>
+> >> On 3/13/2024 1:03 AM, Albert Wang wrote:
+> >>> Hi Wesley,
+> >>>
+> >>> The suspend function `qc_usb_audio_offload_suspend()` looks to stop
+> >>> the traffic on the bus, so that the bus can be suspended. That allows
+> >>> the application processor(AP) to enter suspend. There is a subtle
+> >>> difference with our feature, which is to allow AP suspend with the
+> >>> Host and USB controller active to continue the audio offloading. We
+> >>> call this feature `allow AP suspend in playback`. So, I have some
+> >>> points to clarify with you:
+> >>
+> >> Yes, I'm aware of that feature also.
+> >>
+> >>> 1. Will the suspend flow `usb_audio_suspend() -->
+> >>> platform_ops->suspend_cb() --> qc_usb_audio_offload_suspend()` be
+> >>> called when offloading is active?
+> >>
+> >> It can be.  This is why in our case, we are going to issue the
+> >> disconnect event to the audio DSP to stop the session if it is current=
+ly
+> >> in one.
+> >>
+> >>> 2. As my understanding, the suspend function is to allow AP suspend
+> >>> when the offloading is IDLE, but it won't allow AP suspend when in
+> >>> playback or capture. Please correct me if anything is wrong.
+> >>
+> >> As mentioned above, it will let apps go into PM suspend after forcing
+> >> the audio stream to be idle.  We won't block PM suspend entry.
+> >>
+> > Right. Your design is to force the audio stream idle, or say, inform
+> > the audio DSP
+> > to stop the current offloading session first, then AP can go into PM
+> > suspend as usual.
+> > Then I can say the current design did not support the `allow AP
+> > suspend in playback`
+> > feature, right?
+> >
+>
+> Correct, this series does not cover this mechanism.
+>
+> >> Yes, I saw that patch as well.  I'll take a look once this series land=
+s
+> >> upstream.
+> >
+> > That patch is rejected and archived now. So we need to find another
+> > approach to do
+> > that, even based on your framework.
+> >
+>
+> We can discuss that offline and come up with an approach that is
+> reviewable by maintainers and the community.
+>
+> Thanks
+> Wesley Cheng
+>
+> > Thanks,
+> > Albert
+> >
+> >
+> >>> 3. We would like to integrate the `allow AP suspend in playback`
+> >>> feature with your framework to become one upstream offload solution.
+> >>> Here is the patch:
+> >>> https://patchwork.kernel.org/project/linux-pm/patch/20240223143833.15=
+09961-1-guanyulin@google.com/
+> >>> .
+> >>
+> >> Yes, I saw that patch as well.  I'll take a look once this series land=
+s
+> >> upstream.
+> >>
+> >> Thanks
+> >> Wesley Cheng
 
