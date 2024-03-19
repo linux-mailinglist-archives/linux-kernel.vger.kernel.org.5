@@ -1,73 +1,60 @@
-Return-Path: <linux-kernel+bounces-107108-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107109-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id C89DE87F794
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:40:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2E91387F796
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:41:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B86D281C20
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:40:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D6EA11F2501C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:41:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA57554664;
-	Tue, 19 Mar 2024 06:34:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5E69548F8;
+	Tue, 19 Mar 2024 06:35:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XrDxmQ5J"
-Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Unb7/JgK"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA45D53E3B;
-	Tue, 19 Mar 2024 06:34:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A430553E3B;
+	Tue, 19 Mar 2024 06:35:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710830073; cv=none; b=iVBR0/IQp46w4aDtAH2qQil/sETLmn989C0bhNruqLK0tykAL3lmth4f3pUyaEUfCmEnvc1KCpob3OTBcO5G5k8fdmRNW4N6ujmOpdl5hvLt6LPJj+Nd/1f51oEQKXaslL3JdcSauD8IR4Aq8DM8xg17eqy0Wr6rnznn+O5AVZQ=
+	t=1710830120; cv=none; b=PPSxUlQAniKl1SqNkJs6PcFbU71pClcDQIOPhKLkuW9n8eUBWjUof0tPuTmj9msOFjGWSsxN/lG8Z27MwSHS63wf3XmQhZSLqxomp+TIL/O8xn4IW0A2hk5HUjm0YeT3boZTrepfsb+St2eabuv4V9VoDrGr80iuZ1VqvuCFZKQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710830073; c=relaxed/simple;
-	bh=pRf8TvoYF8JNJ5Thdif3hhC2RUUwmwcP7kipJbjOdv8=;
+	s=arc-20240116; t=1710830120; c=relaxed/simple;
+	bh=6At5zdtZjau/wMd/lI8rbtFMSApBoONr9bvcK65Phl8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XeDJ/3MB43eRNwjGYgPmcItlt8H52PI87aB+7Im7Tel4oqctcFB6yc/dYbRfI29HXPqofkgBS+Mz3ncq6fYtKhEcUKTV1LG7+hpC9ld03g4VAyIXB1mBYEUuZnFFg3+yYgsQWTJYx0AIY/mzxRe0RRAF4RZQmDp4N7nvAJ1rw48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XrDxmQ5J; arc=none smtp.client-ip=209.85.167.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3c38d76384cso707240b6e.2;
-        Mon, 18 Mar 2024 23:34:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710830070; x=1711434870; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=6i7aoJ1vHA+2Toojra4EO+vaFmcLOGaxt4dt9iW58AU=;
-        b=XrDxmQ5JYqZJ6izWvfhHfeyb69qoAtDh+4qSL7AsyAcgOFJkaUWvwQLaPZDTORHQIF
-         MiLf3swp9x4gRM9tX7uhHA9YFsanyfkfxnNBy4GQTcOAQmZrtCIGpxrnr784lt5h5nPz
-         X7NrW852brjeqNBqJaqdguCH7NjH4vP5Oa5TQhMNUAJIaD9lNchD5rzHvxWkjyzCafIU
-         MbkOnSKMZlqQPkNUqKDAuUglsz4/FpgqJjPfg9ooRkBmHW1a0HZ2li1Q7R29J7blre7m
-         l43ef1aiekLA80wW8HeBCay5opa4z4qAtth46J0sxluSYI89bsKjqva+ISuTO2f+vJ0b
-         eq5A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710830070; x=1711434870;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=6i7aoJ1vHA+2Toojra4EO+vaFmcLOGaxt4dt9iW58AU=;
-        b=PVPKjKGCGH7T32i3kV4Csk5dsCJAqYdwWLIC8BHUYma8SA7HIjZIOes8ap4Fo01QYz
-         PGSNSA8Uh9W6Pjp6qW2jdCa5L4kOUWDrYT0XF/vmrhG8/FRsR+3PpNf9LtxSQX7I4tRC
-         HcLccX9zi4DGJz6ReQKhxkeeQOzb0CYgWcqelEMN2DavpRljC/+ez0pm2NiFJ+vvDI0x
-         3fNblLgVSiTIGvg8O+auzUHGMXNfV78A53NzfkRELNIHn+DM7SunMRWKgs9s4Fmd4lJJ
-         V6iIoN1tElH8P38FgcJb8uvaZf1Ip9WqyS27XfI2Anwf8tlfTNkGrpHpHpQv5sYFJx0R
-         lzPg==
-X-Forwarded-Encrypted: i=1; AJvYcCWJdzsZPJCs4c2x1DSogLkpiT5r7qhuYpM6NglO8MSGUmDoT/xjAlu/rR9tyi3jTN2TbiC3yTfVwojPXYn+wC2DJCqG0De+Ch6mxWiLsy4KRWTFXB7k96AVFfP1qqDyTZsiRfDp4MNqyo/p/uvdTtPg8OlmMAUKRzDdYbj4AF+5o0H5FQ==
-X-Gm-Message-State: AOJu0YwhImvD8/8vVYm3is8BWkio2bE+u/vpGJCaJ05RCxf1suC3yTJT
-	ehu/o59eoFSmZe186FDFmCpdIYu+0zA0bh5iRr9w+M///GkuKr7Q
-X-Google-Smtp-Source: AGHT+IGuQNKk/56j6/1OgRfV+KuiHjrbg9qcyLSSf4NVGqlYs9w0eVzrJxbIdhfaTJLPhN/H3r/twA==
-X-Received: by 2002:a05:6871:3403:b0:222:649a:a932 with SMTP id nh3-20020a056871340300b00222649aa932mr14307687oac.7.1710830069957;
-        Mon, 18 Mar 2024 23:34:29 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id p13-20020a62ab0d000000b006e53cc789c3sm8958908pff.107.2024.03.18.23.34.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 23:34:29 -0700 (PDT)
-Message-ID: <3ed8c487-544b-4d72-b1e0-edb5baa8119b@gmail.com>
-Date: Tue, 19 Mar 2024 12:04:11 +0530
+	 In-Reply-To:Content-Type; b=fR4+bDudojM8eK1oKhEd6YCf9qU0nLvaZGa54YrCx5JJFu77FGbjxoBxqm+N6RrrL36FJlLxfH8lybihcP+EVduuyzLnttaRXsDLHoHAJje/T6cGpc0TOW8HAwBNKLQAKv4OYa+pGUG/rB3tNdvnVe3CyxAz+I2m/2nIiie4CSg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Unb7/JgK; arc=none smtp.client-ip=192.198.163.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710830117; x=1742366117;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=6At5zdtZjau/wMd/lI8rbtFMSApBoONr9bvcK65Phl8=;
+  b=Unb7/JgK/JDmMePgj9jPCnk/FTvZCbqEknWTYdkA8/H542gWJYSAKAN6
+   VbmAglcx5uua4mL4cesuKmgaqCJePt1fiiHVtSGqaei8e50litqZhstbG
+   SkUCI+jWMgZcyiksJj+Xncs5zM+uq6nLXyYBqdaxUZibmDL7lPHbPFYwz
+   kyRtIQ2O21yANpHAFHhWjlExCcjIUzklr9YWtcMKPvmHos526UWUNSu0w
+   E1Mu87p+SepT8fnB3LDOrZOhj0oCj7JzyQA9T7RkmEMxavn2IrTOiQT5Z
+   xRfNrqjlcQjQXJFOI9MjXGI3t12Fp6v6Cr98J2lN8hC7UXO0WkVZhG0/B
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5527368"
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="5527368"
+Received: from orviesa005.jf.intel.com ([10.64.159.145])
+  by fmvoesa113.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 23:35:17 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="18405790"
+Received: from ahunter6-mobl1.ger.corp.intel.com (HELO [10.0.2.15]) ([10.249.47.203])
+  by orviesa005-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 23:35:15 -0700
+Message-ID: <f4392550-bbec-4c26-a5de-ce29e9f34551@intel.com>
+Date: Tue, 19 Mar 2024 08:35:10 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,90 +62,47 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 5/5] dts: ti: k3-am625-beagleplay: Add mikroBUS
+Subject: Re: [PATCH v3 1/7] mmc: sdhci_am654: Add tuning algorithm for delay
+ chain
+To: Judith Mendez <jm@ti.com>
+Cc: Andrew Davis <afd@ti.com>, linux-mmc@vger.kernel.org,
+ linux-kernel@vger.kernel.org, Ulf Hansson <ulf.hansson@linaro.org>
+References: <20240308005746.1059813-1-jm@ti.com>
+ <20240308005746.1059813-2-jm@ti.com>
+ <e0ae65bf-9cca-4dd7-9915-dd9ad67cfb35@intel.com>
+ <8e8edccd-49d4-4157-b92d-8dd0630d52ac@ti.com>
 Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: jkridner@beagleboard.org, robertcnelson@beagleboard.org,
- lorforlinux@beagleboard.org, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
- <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Vaishnav M A <vaishnav.a@ti.com>, Mark Brown <broonie@kernel.org>,
- Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
- "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
- Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-6-ayushdevel1325@gmail.com>
- <889fb174-076c-44d1-9c6f-c3b967cd01ea@linaro.org>
-From: Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <889fb174-076c-44d1-9c6f-c3b967cd01ea@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+From: Adrian Hunter <adrian.hunter@intel.com>
+Organization: Intel Finland Oy, Registered Address: PL 281, 00181 Helsinki,
+ Business Identity Code: 0357606 - 4, Domiciled in Helsinki
+In-Reply-To: <8e8edccd-49d4-4157-b92d-8dd0630d52ac@ti.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-
-On 3/19/24 11:29, Krzysztof Kozlowski wrote:
-> On 17/03/2024 20:37, Ayush Singh wrote:
->> DONOTMERGE
-> Why? Explain then the purpose of this patch.
-
-Well, it was suggested to have DONOTMERGE by Vaishnav in the patches 
-until dt bindings have been approved, since this patch touches different 
-subsystems. Here is the full context from v3:
-
-> The reasoning behind this is that these patches go in to separate  maintainer trees and without the bindings merged first the device tree changes cannot be validated, thus it is a usual practice to get the bindings and driver merged first and the device tree changes to go in the next cycle. Another alternative is you can point to your fork with  all the changes together.
-
->> this patch depends on patch 1
-> How? I don't see any dependency.
-
-I think it is not allowed to have code in device tree unless a 
-corresponding dt-binding exists for the device. And thus every time the 
-dt-binding changes, this patch also needs to change.So I thought it is 
-dependent on patch 1.
-
->> Add mikroBUS connector support for Beagleplay.
+On 18/03/24 16:04, Judith Mendez wrote:
+> On 3/14/24 9:18 AM, Adrian Hunter wrote:
+>> On 8/03/24 02:57, Judith Mendez wrote:
+>>> @@ -290,10 +297,12 @@ static void sdhci_am654_set_clock(struct sdhci_host *host, unsigned int clock)
+>>>         regmap_update_bits(sdhci_am654->base, PHY_CTRL4, mask, val);
+>>>   -    if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ)
+>>> +    if (timing > MMC_TIMING_UHS_SDR25 && clock >= CLOCK_TOO_SLOW_HZ) {
+>>>           sdhci_am654_setup_dll(host, clock);
+>>> -    else
+>>> +        sdhci_am654->dll_enable = true;
+>>> +    } else {
+>>>           sdhci_am654_setup_delay_chain(sdhci_am654, timing);
 >>
->> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
->> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
->> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
->> ---
->>   .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 80 +++++++++++++++++--
->>   1 file changed, 72 insertions(+), 8 deletions(-)
+>> V2 patch had here:
 >>
->> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
->> index a34e0df2ab86..e1dce1b80153 100644
->> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
->> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
->> @@ -29,6 +29,7 @@ aliases {
->>   		i2c3 = &main_i2c3;
->>   		i2c4 = &wkup_i2c0;
->>   		i2c5 = &mcu_i2c0;
->> +		mikrobus0 = &mikrobus0;
->>   		mmc0 = &sdhci0;
->>   		mmc1 = &sdhci1;
->>   		mmc2 = &sdhci2;
->> @@ -230,6 +231,38 @@ simple-audio-card,codec {
->>   		};
->>   	};
->>   
->
-> Best regards,
-> Krzysztof
+>>         sdhci_am654->dll_enable = false;
+>>
+>> Was its removal intended?
+> 
+> I did remove on purpose since it did not seem to be necessary.
 
-
-Link: 
-https://lore.kernel.org/lkml/CALudOK5v_uCUffxHGKS-jA-DKLNV7xwmKkxJwjHaMWWgDdPDqA@mail.gmail.com/ 
-Patch v3
-
-
-Ayush Singh
+I suspect it is necessary because ->set_clock() can be called in
+when the timing has changed (e.g. recovery resets and reinitializes
+the card device, or the card changes etc.) but it seems like
+dll_enable would be stuck as always true once it is set to true.
 
 
