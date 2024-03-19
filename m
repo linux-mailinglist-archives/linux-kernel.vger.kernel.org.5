@@ -1,116 +1,119 @@
-Return-Path: <linux-kernel+bounces-107748-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107751-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id AB292880135
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:54:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C787D880141
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:56:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FE771F241B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:54:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7499E1F24207
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:56:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B5E65BA5;
-	Tue, 19 Mar 2024 15:54:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38E2B657C9;
+	Tue, 19 Mar 2024 15:56:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gcYDTijV"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="lfZms955"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4296B657BA
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:54:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F1517FBAB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:56:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710863642; cv=none; b=WbQOdlfOphRVg3WOJrrPqV2YESRqcfdHtYJS6SAKjW0mDha1WIn5wnsChb1UUe7vL0kgEQHCQtTbL34hMc+Pvv6JACZ6I4HYXci9mjQeuRvK6Eem81XhIRPwd4iOIyUApkdJw+4TtfZApK+NPbrgmvTgr7PhQNWtJ4QQEpZiWDk=
+	t=1710863782; cv=none; b=odFyLHM6cr4TBnSqg+/lHo5a1nbfUcrXNwot9B+AkAoq3+FVFxZ9GLyAEDrfKnjX6zEiva172H/c7zqvcpkgWs81GNW0xmz/ZmWzBaGxx8kFoHNQ6RjqZrARDywfiBUAdiqSYWLjGH8dzCditAyT4r4ahmcuGLWYnPhkI2Pdel8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710863642; c=relaxed/simple;
-	bh=paSWeKBIFxB+F/AXMlOAQl6P1bEPAiBsLyGlr2J3chs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=K/5WOjljey+/fJXZ0X+68rwUfaYvv8Eo7QnQcj3jF86cXkxEgX4fnuqvzGm4hRilaZACSjlp2uERNOsuK6tpSeY40itbB4QlBCPLQpopl22NyuAEfbN15hOww6Si8h+QKirMMJN8cmSAW70iDpQMu+lds7VhyRyFr3uDII6QhI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gcYDTijV; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710863640;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ko9D6jNCbeVAgprQATdARtgHSvmfZlnh+pwV+XTC6LU=;
-	b=gcYDTijVM6RpkRLGRAL5e2N6YQchIZjHELMa+Q4Rj7yxyY3mFMiHRIqdA1XYC/EmZ2HxRo
-	k4h+/IP71TX9bTbQpVnraQq/t0EixYAgciGAMpQrWYGYYlUnkjvDLBUg0tf/trCuHw3sle
-	sXT8lYH9LEs+4Q9F2ZpYgn6uyPy0rpY=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-616-zfuj1Uq-N6GFgh1hIK-5Tw-1; Tue, 19 Mar 2024 11:53:55 -0400
-X-MC-Unique: zfuj1Uq-N6GFgh1hIK-5Tw-1
-Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6784D800266;
-	Tue, 19 Mar 2024 15:53:55 +0000 (UTC)
-Received: from [10.22.10.159] (unknown [10.22.10.159])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id F06D01121306;
-	Tue, 19 Mar 2024 15:53:54 +0000 (UTC)
-Message-ID: <9b4f3dac-779a-4eef-945b-3ca1455c0dfe@redhat.com>
-Date: Tue, 19 Mar 2024 11:53:50 -0400
+	s=arc-20240116; t=1710863782; c=relaxed/simple;
+	bh=txdGx+DK7znFHGf/0tjjerKq64zYiimbR1qcsYKXEwc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HeadZdZmSuH3W5VFboDXP2o0asMHZehVGfRyAE7o8aIVxc2zW5WoyuWZNhR/q4GmQnnf5VlmrlYKFle9mHPq0bxRUMmAO7UfKGba0FII+vyj5AmNY7QqFSysvqJLQdpZILhjnedWFZ+eIrIcuTSoZqm3ATibmZIst+U8sNGCijY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=lfZms955; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3A3ADC433C7;
+	Tue, 19 Mar 2024 15:56:20 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710863782;
+	bh=txdGx+DK7znFHGf/0tjjerKq64zYiimbR1qcsYKXEwc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=lfZms95528UbY5tS+DZlHXPvGdfzpILgEyRdEPXRU5/FevqAaYzJl8l/uYMo4T/5g
+	 G0KyQQL1bDZ+4bh8Z2JpuF/vI2koqKVWwjHxmAAKVy1CXZGfnqxhj9vxhcyHNify9p
+	 6Hssk2wpYQDvFdCUEoWvFulZMmMqWZKThqWCh/zrXHvbfWOIWk2Ra2Qk7Dx8CvPKAv
+	 3IMLgBimgp08RRx/QskyZowU2DD05VdT+48IKH/xLbqpjBdhdIfUadK786BPq7ufGS
+	 cnhAkC4Re/eeuHZ1CNF8nhxVApf/051Ax2LlqJjwZTl4ZLb9+SijLBMaboTC68D/uC
+	 6Xibd+2/5wFSA==
+Date: Tue, 19 Mar 2024 15:56:16 +0000
+From: Will Deacon <will@kernel.org>
+To: Conor Dooley <conor@kernel.org>, catalin.marinas@arm.com
+Cc: linux-riscv@lists.infradead.org,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Palmer Dabbelt <palmer@rivosinc.com>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Ji Sheng Teoh <jisheng.teoh@starfivetech.com>,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v1] perf: starfive: fix 64-bit only COMPILE_TEST condition
+Message-ID: <20240319155616.GC2901@willie-the-truck>
+References: <20240318-emphatic-rally-f177a4fe1bdc@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] Locking: Let PREEMPT_RT compile again with new rwsem
- asserts.
-Content-Language: en-US
-To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
- Matthew Wilcox <willy@infradead.org>
-Cc: linux-kernel@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
- Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
- Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
- Clark Williams <williams@redhat.com>
-References: <20240319070550.ws_uO21-@linutronix.de>
- <ZfmVPid-d7cpf6Yt@casper.infradead.org>
- <20240319141506.DUd9NKl4@linutronix.de>
-From: Waiman Long <longman@redhat.com>
-In-Reply-To: <20240319141506.DUd9NKl4@linutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318-emphatic-rally-f177a4fe1bdc@spud>
+User-Agent: Mutt/1.10.1 (2018-07-13)
+
+On Mon, Mar 18, 2024 at 03:35:04PM +0000, Conor Dooley wrote:
+> From: Conor Dooley <conor.dooley@microchip.com>
+> 
+> ARCH_STARFIVE is not restricted to 64-bit platforms, so while Will's
+> addition of a 64-bit only condition satisfied the build robots doing
+> COMPILE_TEST builds, Palmer ran into the same problems with writeq()
+> being undefined during regular rv32 builds.
+> 
+> Promote the dependency on 64-bit to its own `depends on` so that the
+> driver can never be included in 32-bit builds.
+> 
+> Reported-by: Palmer Dabbelt <palmer@rivosinc.com>
+> Fixes: c2b24812f7bc ("perf: starfive: Add StarLink PMU support")
+> Fixes: f0dbc6d0de38 ("perf: starfive: Only allow COMPILE_TEST for 64-bit architectures")
+> Signed-off-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> CC: Will Deacon <will@kernel.org>
+> CC: Mark Rutland <mark.rutland@arm.com>
+> CC: Ji Sheng Teoh <jisheng.teoh@starfivetech.com>
+> CC: linux-arm-kernel@lists.infradead.org
+> CC: linux-kernel@vger.kernel.org
+> ---
+>  drivers/perf/Kconfig | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/perf/Kconfig b/drivers/perf/Kconfig
+> index 5060e1f1ea10..7526a9e714fa 100644
+> --- a/drivers/perf/Kconfig
+> +++ b/drivers/perf/Kconfig
+> @@ -87,7 +87,8 @@ config RISCV_PMU_SBI
+>  	  filtering, counter configuration.
+>  
+>  config STARFIVE_STARLINK_PMU
+> -	depends on ARCH_STARFIVE || (COMPILE_TEST && 64BIT)
+> +	depends on ARCH_STARFIVE || COMPILE_TEST
+> +	depends on 64BIT
+>  	bool "StarFive StarLink PMU"
+>  	help
+>  	   Provide support for StarLink Performance Monitor Unit.
+> -- 
+> 2.43.0
 
 
-On 3/19/24 10:15, Sebastian Andrzej Siewior wrote:
-> On 2024-03-19 13:38:06 [+0000], Matthew Wilcox wrote:
->> On Tue, Mar 19, 2024 at 08:05:50AM +0100, Sebastian Andrzej Siewior wrote:
->>> -static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
->>> +static __always_inline bool rwsem_held_write(const struct rw_semaphore *sem)
->> The locking maintainers were very clear that this predicate Should Not
->> Exist.  It encourages people to write bad code.  Assertions only!
-> What do you refer to? The inline vs __always_inline or
-> rwsem_held_write() should not exists and it should invoke directly
-> rw_base_is_write_locked()?
+Thanks guys, I don't know what a starfive is so sorry for not spotting
+this when I noticed the build failure on arm64.
 
-Just merge rwsem_held_write() into rwsem_assert_held_write_nolockdep() 
-and we should be all set.
+Acked-by: Will Deacon <will@kernel.org>
+
+Catalin -- please can you pick this into the arm64 fixes branch for -rc1?
 
 Cheers,
-Longman
 
->>>   {
->>> -	rw_base_assert_held_write(sem);
->>> +	return rw_base_is_write_locked(&sem->rwbase);
->>> +}
->>> +
->>> +static __always_inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
->>> +{
->>> +	WARN_ON(!rwsem_held_write(sem));
->>>   }
->>>   
->>>   static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
-> Sebastian
->
-
+Will
 
