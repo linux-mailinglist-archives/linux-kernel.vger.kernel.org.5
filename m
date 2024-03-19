@@ -1,237 +1,156 @@
-Return-Path: <linux-kernel+bounces-107851-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id BAD2988027A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:37:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72803880278
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:37:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 33D521F24BE5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:37:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EC567B232FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:37:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA85A1804A;
-	Tue, 19 Mar 2024 16:37:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADFB9620;
+	Tue, 19 Mar 2024 16:37:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="Erl0TSIa"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="dQvR/kLP"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52D0D107B2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:37:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7F8F3847C
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:37:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710866227; cv=none; b=P5DjrFhHSVvVXdUQWTpKwo3dwzoklsWA7HOVgGWthb3RqXJU+bmnZUe8/09TLFX/e9cP7L7Wtiib3QCpQUkwfd3NCmUQgvCKDzpmDv8E9BvqOn/nRKQMhWEo6Z1yzO8mB7UCKKqlxJoJ/Do6KfLE/7hrGSh2NRJxlIpWQP5Xz74=
+	t=1710866224; cv=none; b=sgbo6NP062hT17+W8FfGahaEgvkU9Wf4Iw9YsjIipGP7fKPKKOjoLpixUtEwyrsT0co4E44KfZFSrOeHj43peebZU4iHnThiPAm8zqdA7j544KrRk0MO1NsWLJrVmdeaqhfDDZRYZNTVpisRQr5NpACUhdEh8i42xJAGRgGWjb0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710866227; c=relaxed/simple;
-	bh=DiDJbXClJgb1cM5ngsf4599IGKIEVZmVsszUVM95sbI=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tOsT4Sz2gJ07WfcZpzmRAokqYYegZQlmuR9GGfoLb//LifGjVDpYCJiBxVAhZcb2lTUHmi60QLccG8z0gKMhHk37taUSazPYXNLCCWYHpxv623BUtev2X4gDfx1hJE8Bg/wEuzPWWCEeLGffxLX2oYHam1QqJKK2ygfE+ztClp8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Erl0TSIa; arc=none smtp.client-ip=209.85.214.182
+	s=arc-20240116; t=1710866224; c=relaxed/simple;
+	bh=AmAmCe23OTfeKAUnrQCYn3TUQz3Ynnj28Y0Z07KqhW4=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=aYk7u4q+KeEFRau3F71IOpoV1PDbSIVquh/mfHyyG0dSGhy4giF1tQ1Wd61sZkwecEvcagXcTIsIS6EcQcgxi1g2F/ffFa9TtMzNRXDlfl7oog6/iV7BJyW9zSzCRD7xP8xSb4nmeIFOgv8nWK1uYRPPF0l+iheeuB54eE9vjQ4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--glider.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=dQvR/kLP; arc=none smtp.client-ip=209.85.128.201
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dddd7d64cdso182575ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:37:06 -0700 (PDT)
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--glider.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60a2b53b99eso124173077b3.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:37:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710866226; x=1711471026; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=RrjuHZ6Kox9TX/BS1xzAx8QX4KFAzs+jwjCKuYq+Z68=;
-        b=Erl0TSIazOiH1pzrH86ukj6jM3ECmKjzYspXNd2Q135p+sahli/zfgZQmCXfEBmHcA
-         bE4+yejrYTxtIriqesRxxNyQ3sXVq4rOY4WjUXhXxQNdM2VG6k8jlTMOmiLeGQhuMszE
-         +DhHPz3vd+nb6fG3hn2YL8WM/1UnnB1rTUmqPXiL6YIa2j+QYceukkPleqRoniI22kHk
-         8e4nm2WkDNhLa//e9R9uJpFPCnfABymJ+9GRQaV1X3tfRQXx+7ISVcilmWRn6QNGljC5
-         5DLhEfxZoC3d/f4847ID2BvQ6oYfGOokoA2jnuqFTiTeLSZV/9vaOFsDPuS7tXcwjNZm
-         N3mA==
+        d=google.com; s=20230601; t=1710866221; x=1711471021; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=Pe97FWHITdYkiCtSSFDy2YJv9pSAbWKeZZSBy5Rk1y0=;
+        b=dQvR/kLPsdwHqpzPSxWzG8Fw3dy8rzUQ4vQMpfA7a9EMj/A7AycNoVmva48D6CvOG0
+         Z7j4mNbz24jf2vyx4NryZFnLDGA7eWUOm17geHF7l5Vkb0Bew9PNVOtsRyJVppAXv1Xo
+         HyAz5wYYgojxCLHcrKsjIXLoEiFSZ9ajQ9RBlvkWfKYsg3W/H9AEJF+ewFDiPlpnAFXS
+         JWwWq3bnVPNtCjAdz4+YH0gI8GdyuSqkddBN2j/kMFbEWFyHMEgT63ca9ywVxvctSzZZ
+         zkG5/VAy1HPbbdjDJRnfrJl/7tJofcKDlBBrzuOWVK3dgRCqAdN0mfTi+6Beu6XTzCfl
+         /cqw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710866226; x=1711471026;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=RrjuHZ6Kox9TX/BS1xzAx8QX4KFAzs+jwjCKuYq+Z68=;
-        b=HZhXKR3rc7Yll7EhUTRVfhxBN+9bChWF1ac8C1ZCjw6iucVIPRDpuZmGwDDJH4rhmO
-         YIzDGORkd1rZKELSEipKhqZ9iuRStmrYflrl/JGLxu1nANUqzhkotfQGfS0poAQ8Yuut
-         vii9FUU+AF4EVoL1CDfg/FJqHtRuKc/E1H7Y7e9Auqanq830hwedYUy2vQGUY1h4LPPG
-         TIxoMUS0J7GqsXRDw2dky5hPmLa9vrxe0x4/uFQKie/Azk+tOWWwwVR58Eq9bzXjPVo0
-         /zjF0Wk5c6Ha8cbp/3vUVFc9/YBf+RY1gV0MrBy4bpeq6NqIsPZK22Xo1tXdWs8P/Swa
-         hYCA==
-X-Gm-Message-State: AOJu0YwnDwB4fmfhgoIrZT/WaMNyrEr0TfZIgmA5JOE93/PrO0aT2/lV
-	syS/QaxxEbnvsyOaX/ZTHTzFOavl6GSYPOpBrGxP2MkcTh4vTpLJnSkLPSvXQf0G+H4ZYGwnFU+
-	G8c05X4adgBIxfmhpL1/lKnGTWtMdAlpVPP/p
-X-Google-Smtp-Source: AGHT+IFuvEAMa2HYTMxxsWcOsREdY/SJEi2+0RBp9e4eNZ6k3M7DL2FnItc0sbxzD2yuKBpCxQkz1IlPltYAjqPnXO4=
-X-Received: by 2002:a17:903:2292:b0:1df:f726:8b50 with SMTP id
- b18-20020a170903229200b001dff7268b50mr1044plh.10.1710866225128; Tue, 19 Mar
- 2024 09:37:05 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710866221; x=1711471021;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Pe97FWHITdYkiCtSSFDy2YJv9pSAbWKeZZSBy5Rk1y0=;
+        b=CnQZ7g9dj9mc9TvZ8SYXCoWS5T+05xYeZp8WDRYrRiX1wCvph13SbkWAWNU2uNvE+T
+         hpRV+ct98CY3lZQL73VRqGVQy4ytEcEX2wAXsEjZRuMyzj7e99cep2Q5EY7yDT9qYshC
+         A8ow5uirvt/yTYk68VsD5cDnP2sDrtOuGCNSWK89ffW/b/cuUduct7IuO2rLyyIvlAdR
+         w8Tf4C/xvHBttIPGL/xBMjdU0bc5CAEqK0557EDfExVtSWYNBmh2YhiZWkVwM+/VytGN
+         XL3uavAfdpdP/tjiwOvGh0DG1ZivyaKb8QPmagv8vQqwqOez4cLICfsHuOGuAwPoFr1A
+         eEmA==
+X-Gm-Message-State: AOJu0YwxNdUGakytTGaU+xyliUG7Y0AtxAP36o+mLgScU0a7hW/MZi8C
+	8oPE94EWeZI1gPIXT1jBi5LZLqVhHfeLdgDRyRA+VqZ3w6MBZ9EaF/Neo1dO7xgRHWloI3ZHgQp
+	/gw==
+X-Google-Smtp-Source: AGHT+IEz30VBiIgqKB2uLCoDK46fqUug5yjDscbPTqKHvlX6fQbTCw7l6zHUNahzxmdhiA2a5cr8piuX0n4=
+X-Received: from glider.muc.corp.google.com ([2a00:79e0:9c:201:2234:4e4b:bcf0:406e])
+ (user=glider job=sendgmr) by 2002:a81:4941:0:b0:610:c60a:bd27 with SMTP id
+ w62-20020a814941000000b00610c60abd27mr1741328ywa.0.1710866221483; Tue, 19 Mar
+ 2024 09:37:01 -0700 (PDT)
+Date: Tue, 19 Mar 2024 17:36:54 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240319095043.857594-1-tmricht@linux.ibm.com> <20240319095043.857594-2-tmricht@linux.ibm.com>
-In-Reply-To: <20240319095043.857594-2-tmricht@linux.ibm.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 19 Mar 2024 09:36:51 -0700
-Message-ID: <CAP-5=fUGakVrS36u73dSU8KMbp1zQBQea6N5zOidMKoQoL0F7w@mail.gmail.com>
-Subject: Re: [PATCH 2/2] perf list: do not print metrics on s390 zvm systems
-To: Thomas Richter <tmricht@linux.ibm.com>
-Cc: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org, 
-	acme@kernel.org, namhyung@kernel.org, svens@linux.ibm.com, gor@linux.ibm.com, 
-	sumanthk@linux.ibm.com, hca@linux.ibm.com
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240319163656.2100766-1-glider@google.com>
+Subject: [PATCH v1 1/3] mm: kmsan: implement kmsan_memmove()
+From: Alexander Potapenko <glider@google.com>
+To: glider@google.com, akpm@linux-foundation.org
+Cc: linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	kasan-dev@googlegroups.com, tglx@linutronix.de, x86@kernel.org, 
+	Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>, Dmitry Vyukov <dvyukov@google.com>, 
+	Marco Elver <elver@google.com>, Linus Torvalds <torvalds@linux-foundation.org>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 2:56=E2=80=AFAM Thomas Richter <tmricht@linux.ibm.c=
-om> wrote:
->
-> On s390 z/VM virtual machines command perf list also displays metrics:
->
->  # ./perf list | grep -A 20 'Metric Groups:'
->  Metric Groups:
->
->  No_group:
->   cpi
->        [Cycles per Instruction]
->   est_cpi
->        [Estimated Instruction Complexity CPI infinite Level 1]
->   finite_cpi
->        [Cycles per Instructions from Finite cache/memory]
->   l1mp
->        [Level One Miss per 100 Instructions]
->   l2p
->        [Percentage sourced from Level 2 cache]
->   l3p
->        [Percentage sourced from Level 3 on same chip cache]
->   l4lp
->        [Percentage sourced from Level 4 Local cache on same book]
->   l4rp
->        [Percentage sourced from Level 4 Remote cache on different book]
->   memp
->        [Percentage sourced from memory]
->   ....
->  #
->
-> This is not correct, on s390 z/VM virtual machines the referenced
-> CPU Counter Measurement facility does not exist. The command
->
->  # ./perf stat -M cpi -- true
->  event syntax error: '{CPU_CYCLES/metric-id=3DCPU_CYCLES/.....'
->                        \___ Bad event or PMU
->
->  Unable to find PMU or event on a PMU of 'CPU_CYCLES'
->
->  event syntax error: '{CPU_CYCLES/metric-id=3DCPU_CYCLES/...'
->                        \___ Cannot find PMU `CPU_CYCLES'.
->                             Missing kernel support?
->  #
->
-> fails.
->
-> Perf list should not display the metrics when the referenced
-> CPU Counter Measurement PMU is not available.
->
-> Output after:
->  # ./perf list | grep -A 20 'Metric Groups:'
->  #
->
-> Fixes: 7f76b3113068 ("perf list: Add IBM z16 event description for s390")
-> Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-> Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
-> ---
->  tools/perf/arch/s390/util/pmu.c | 17 +++++++++++++++++
->  1 file changed, 17 insertions(+)
->
-> diff --git a/tools/perf/arch/s390/util/pmu.c b/tools/perf/arch/s390/util/=
-pmu.c
-> index 886c30e001fa..2dc27acc860c 100644
-> --- a/tools/perf/arch/s390/util/pmu.c
-> +++ b/tools/perf/arch/s390/util/pmu.c
-> @@ -8,6 +8,7 @@
->  #include <string.h>
->
->  #include "../../../util/pmu.h"
-> +#include "../../../util/pmus.h"
->
->  #define        S390_PMUPAI_CRYPTO      "pai_crypto"
->  #define        S390_PMUPAI_EXT         "pai_ext"
-> @@ -20,3 +21,19 @@ void perf_pmu__arch_init(struct perf_pmu *pmu)
->             !strcmp(pmu->name, S390_PMUCPUM_CF))
->                 pmu->selectable =3D true;
->  }
-> +
-> +const struct pmu_metrics_table *pmu_metrics_table__find(void)
-> +{
-> +       struct perf_pmu *pmu;
-> +
-> +       /*
-> +        * Metrics defined on events from PMU cpum_cf aren't supported
-> +        * on z/VM. Make sure the PMU exists and return NULL if that
-> +        * PMU cannot be found.
-> +        */
-> +       pmu =3D perf_pmus__find("cpum_cf");
-> +       if (pmu)
-> +               return perf_pmu__find_metrics_table(pmu);
-> +
-> +       return NULL;
-> +}
+Provide a hook that can be used by custom memcpy implementations to tell
+KMSAN that the metadata needs to be copied. Without that, false positive
+reports are possible in the cases where KMSAN fails to intercept memory
+initialization.
 
-Hi Thomas,
+Link: https://lore.kernel.org/all/3b7dbd88-0861-4638-b2d2-911c97a4cadf@I-love.SAKURA.ne.jp/
+Suggested-by: Tetsuo Handa <penguin-kernel@I-love.SAKURA.ne.jp>
+Signed-off-by: Alexander Potapenko <glider@google.com>
+Cc: Dmitry Vyukov <dvyukov@google.com>
+Cc: Marco Elver <elver@google.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+---
+ include/linux/kmsan-checks.h | 15 +++++++++++++++
+ mm/kmsan/hooks.c             | 11 +++++++++++
+ 2 files changed, 26 insertions(+)
 
-Thank you for this, it is good the patch addresses the issue but I'm
-less keen on the approach. The approach is to disable all metrics when
-the PMU cpum_cf isn't present.
+diff --git a/include/linux/kmsan-checks.h b/include/linux/kmsan-checks.h
+index c4cae333deec5..e1082dc40abc2 100644
+--- a/include/linux/kmsan-checks.h
++++ b/include/linux/kmsan-checks.h
+@@ -61,6 +61,17 @@ void kmsan_check_memory(const void *address, size_t size);
+ void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
+ 			size_t left);
+ 
++/**
++ * kmsan_memmove() - Notify KMSAN about a data copy within kernel.
++ * @to:   destination address in the kernel.
++ * @from: source address in the kernel.
++ * @size: number of bytes to copy.
++ *
++ * Invoked after non-instrumented version (e.g. implemented using assembly
++ * code) of memmove()/memcpy() is called, in order to copy KMSAN's metadata.
++ */
++void kmsan_memmove(void *to, const void *from, size_t to_copy);
++
+ #else
+ 
+ static inline void kmsan_poison_memory(const void *address, size_t size,
+@@ -78,6 +89,10 @@ static inline void kmsan_copy_to_user(void __user *to, const void *from,
+ {
+ }
+ 
++static inline void kmsan_memmove(void *to, const void *from, size_t to_copy)
++{
++}
++
+ #endif
+ 
+ #endif /* _LINUX_KMSAN_CHECKS_H */
+diff --git a/mm/kmsan/hooks.c b/mm/kmsan/hooks.c
+index 5d6e2dee5692a..364f778ee226d 100644
+--- a/mm/kmsan/hooks.c
++++ b/mm/kmsan/hooks.c
+@@ -285,6 +285,17 @@ void kmsan_copy_to_user(void __user *to, const void *from, size_t to_copy,
+ }
+ EXPORT_SYMBOL(kmsan_copy_to_user);
+ 
++void kmsan_memmove(void *to, const void *from, size_t size)
++{
++	if (!kmsan_enabled || kmsan_in_runtime())
++		return;
++
++	kmsan_enter_runtime();
++	kmsan_internal_memmove_metadata(to, (void *)from, size);
++	kmsan_leave_runtime();
++}
++EXPORT_SYMBOL(kmsan_memmove);
++
+ /* Helper function to check an URB. */
+ void kmsan_handle_urb(const struct urb *urb, bool is_out)
+ {
+-- 
+2.44.0.291.gc1ea87d7ee-goog
 
-Similar to the metric cpi there is a hard coded IPC metric:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/stat-shadow.c?h=3Dperf-tools-next#n314
-I'd like to delete this code :-) The hard coded metrics magically fire
-when certain events are present. This causes issues with code that
-processes the output as some metrics can accidentally fire unasked for
-additional hard coded metrics. The hard coded metrics also don't use
-groups for events, etc. I do like they have more color options
-(thresholds) than the json metrics.
-
-Using python to generate metrics achieves a lot of simplification and
-hopefully lowers the bar for new metrics being written. Having metrics
-disabled when a PMU isn't present means that the only way to get the
-metric could be to hard code it - something I want to delete :-) There
-are metrics like cycles (looking for review/unmerged):
-https://lore.kernel.org/lkml/20240314055801.1973422-3-irogers@google.com/
-that don't use sysfs or json events and that could work on s390. I
-think ideally we'd work to enable this.
-
-(1) For the cpi metric here, presumably CPU_CYCLES is used to avoid
-the legacy cpu-cycles event. Would using cpu-cycles fix the metric
-(assuming legacy events work in a virtual machine) ? An aside, it is
-kind of gross that the event names are so similar as event names
-aren't case sensitive. As sysfs/json events now have priority over
-legacy events, using the name cpu-cycles is a possibility (x86 uses
-this name).
-
-(2) Another option is that in the metric you can use the "has_event"
-function. So:
-    "MetricExpr": "CPU_CYCLES / INSTRUCTIONS"
-becomes something like :
-    "MetricExpr": "(CPU_CYCLES / INSTRUCTIONS) if has_event(CPU_CYCLES) els=
-e 0"
-This has been the existing approach taken.
-
-(3) We could also make "perf list" not show metrics when the events
-aren't present. We do something similar for legacy cache events:
-https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tr=
-ee/tools/perf/util/print-events.c?h=3Dperf-tools-next#n306
-This could complicate testing as we iterate through all metrics
-expecting them to work. An event name typo would hide the metric in
-the list from and we'd miss the typo in testing.
-
-So I think solution (2) is best, wdyt?
-
-Thanks,
-Ian
-
-
-> --
-> 2.44.0
->
 
