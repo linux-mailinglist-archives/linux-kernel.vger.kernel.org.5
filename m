@@ -1,205 +1,120 @@
-Return-Path: <linux-kernel+bounces-107181-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107182-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 277A687F888
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:42:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 72BCB87F88B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:43:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1A1A61C2191A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:42:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0D6F41F21749
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFD562030A;
-	Tue, 19 Mar 2024 07:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6C942537ED;
+	Tue, 19 Mar 2024 07:43:34 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gUpEDfKx"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="VrvtbxoS"
+Received: from mail-yb1-f202.google.com (mail-yb1-f202.google.com [209.85.219.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 893B6535D2
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:41:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 470971E536
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710834114; cv=none; b=TPVhMi8kIYgxSewrm+2pHJ0+sxsMqP6Q5ey4sukv73HzRliiW7Z4Tuhixt8izTYcZmRLPsuOuPfgCCTPlIFAOYZDkHZ1qdn6Dftz8rGL1riYdMeOdPImPfIWZ7QkNpxaszX4opvoqpdXRhGTMdrOcSjOkNfYnbOZSuOuRJskYfg=
+	t=1710834213; cv=none; b=u+ph7k55+eDXNuNufbTmG1FNEPUx/rw+Ca5g0LCsCgdJsyrZgV2mr4K3r9sFp5AQSOhtD6ufs6BjVbD7KPhmmoVxSfV84doKlZD8VueaN3nRhXt2BT6Z8Zd/8NM/BzRdtTZwEkZYGKRdIfJ7rFikEZwIGPWgyrBgDY3b8sLNy6g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710834114; c=relaxed/simple;
-	bh=2crLoEVLnwiq99cE6HQUHEb+ylseepzZNYcoRSHN6zw=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=PqjXbTv1n/a5mUmQUKKbMGmwbyJm5SpFAmZT04hQER5yR43NV3EnkeENCVRAfeRIgL9C4d7wgvVnAN5xHtX9wIZuui7zH73WC1sDVz2yLsTH4v+dgDnbFjjtxZpaaFtusZV5/UGJTNQedDMMZoF7Ji0AI0vY2AlKBTwIOlKh+Ek=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gUpEDfKx; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710834111;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
-	bh=sTsSPri+D6Wdelir2mIVSESP1KmjuvB/LjDkRovj8pE=;
-	b=gUpEDfKx2cA7200XkIVh3Xb/TR6xcVWTaNRi7kAaxtu1VM8XxKqfaQ4ozngpKQnjAdk8pQ
-	Wvxfi/e4XwyB0eXHByS9Wj7P5BGumz7Kn9dGpKA1x6xSQC7U9KHJJ5kY7pyKo++USiijXY
-	QH7M5PF2iBcuHEsWbMri2D8SWMju5ao=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-679-UZoCTq3MObexdv99a_Ox7Q-1; Tue, 19 Mar 2024 03:41:50 -0400
-X-MC-Unique: UZoCTq3MObexdv99a_Ox7Q-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ed22facfeso2055356f8f.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:41:49 -0700 (PDT)
+	s=arc-20240116; t=1710834213; c=relaxed/simple;
+	bh=HD6kQ+ioRHxPGSTP8IsOyUFZW7mQgOF13zNVMkezjnM=;
+	h=Date:Mime-Version:Message-ID:Subject:From:To:Cc:Content-Type; b=XCvJEB+vDeOreNm+OHs3Qig/E6oB6FgFh7etEn7VRWU7ZtrKyPc1+LEEB24vX+zEPVNwvpMk/sV4sMCBtNdtjCIw4g5xXioVsK5wOlU6RrEAeFtu3TWzDQRRDeDxXRXTM0TWh0CPWbOsZwkBjkIpBXiiZro0MSADWZgcagAKEXA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--kyletso.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=VrvtbxoS; arc=none smtp.client-ip=209.85.219.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--kyletso.bounces.google.com
+Received: by mail-yb1-f202.google.com with SMTP id 3f1490d57ef6-dc3645a6790so8428094276.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:43:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710834211; x=1711439011; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:mime-version:date:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=OnwyORFqYkzH8hHLHjIf5KeiogbCHS6CJlbafRrvsPA=;
+        b=VrvtbxoSY3waMrjWNC/AGaYlDvPANZv8vkPkRNMbz9UgTAWSy62LIQRz98qIMSHMqu
+         Pt3M11+reS1L4uLeFR0zx+7Xs1tL+lGv1s/LL+bAuZdr4Gp7UCpTuabNpZH1SM4airGt
+         yNsksEe4o8wUMXsfv8Df7RnNTgNTHa/jlv0UVm93/u5Me3nSAfXlYgCbLmlo+sAQFaJo
+         rEBN5IxygtAmvjzYep9h3Zu8iyDUA1s3qDyeCRk6XwAX8dfxIm8C+cjNMFSDN7EXW2sY
+         ifvjDihmShjE4UnbI32sd3KhFmAeOLi+4qvJZ6lUr8T2wMZrge6K7GvHWyKsRbwGM1WQ
+         7fmw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710834109; x=1711438909;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sTsSPri+D6Wdelir2mIVSESP1KmjuvB/LjDkRovj8pE=;
-        b=Mb1DB7CEF19anfxJ8gEc1Z/jEkM1j1oo5dP1LhigNLK2cv8PK3qTY7+1Aq6VFOkJZI
-         oAWNVmnWV85d54IG7aL5OGc9E3gJ8G15QUJY9v8kC/aL1OOqLTpdghYnVGx9TrEEAEQN
-         LGRXktPUEJauzT68dnPnGNkyVwEYOw5qseZNCz9OPdYYGrcKxXu69gGg3t5vxMaWHETR
-         heaj+zqk9tS+ft8lyURJo3vbzF0Eqbtd2ffRaKEDU+8kAgHk3emyLT7FpCoMRlhgBfCp
-         4zUgEyFOehA/Xp08wbdHeJFdav0ktRxV0H09oeF0Hte2JZNODebNZzpzJqrF3iPrmf/W
-         KLyQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWkL+nMcQO+MhTEZk4ix01V7v9QjxfKhDIg69y/8r5348tNnPUr71oVjQJ+2kYY50RyCwh/C24tjJFuXFULyMRxLGd4pBLJpqC4vkiU
-X-Gm-Message-State: AOJu0Yzhcoe3epRZ6611GjUX6pzsC3eD5oJ9gOccRO2/U6ZfOagGeE6E
-	5Pq7HF0WHO2TClLrayyl9Fh6A93cwxy76x3pvBVbFI3vHr7QmT4g6B7eIgCE3gfGvfOLi/XDmwR
-	Vnb8r/PsyxRDYywMWqYZX+C8qf5lo0J3ycxRq/JYEBu7DsUjQfeDtI1P+QZIbKg==
-X-Received: by 2002:a5d:4e11:0:b0:33e:7adc:516c with SMTP id p17-20020a5d4e11000000b0033e7adc516cmr10534551wrt.57.1710834108704;
-        Tue, 19 Mar 2024 00:41:48 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFAK2WGJat4vmdPSy7ECLAOOCSKt1cm0uCh7BMlmPoT49BMQqI0q9+XAAprgAMQmNyXP8ysuQ==
-X-Received: by 2002:a5d:4e11:0:b0:33e:7adc:516c with SMTP id p17-20020a5d4e11000000b0033e7adc516cmr10534503wrt.57.1710834108096;
-        Tue, 19 Mar 2024 00:41:48 -0700 (PDT)
-Received: from redhat.com ([2.52.6.254])
-        by smtp.gmail.com with ESMTPSA id t18-20020a5d42d2000000b0033e456f6e7csm11781382wrr.1.2024.03.19.00.41.44
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 00:41:47 -0700 (PDT)
-Date: Tue, 19 Mar 2024 03:41:43 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: kvm@vger.kernel.org, virtualization@lists.linux-foundation.org,
-	netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
-	alex.williamson@redhat.com, andrew@daynix.com, david@redhat.com,
-	dtatulea@nvidia.com, eperezma@redhat.com, feliu@nvidia.com,
-	gregkh@linuxfoundation.org, jasowang@redhat.com,
-	jean-philippe@linaro.org, jonah.palmer@oracle.com,
-	leiyang@redhat.com, lingshan.zhu@intel.com,
-	maxime.coquelin@redhat.com, mst@redhat.com, ricardo@marliere.net,
-	shannon.nelson@amd.com, stable@kernel.org,
-	steven.sistare@oracle.com, suzuki.poulose@arm.com,
-	xuanzhuo@linux.alibaba.com, yishaih@nvidia.com
-Subject: [GIT PULL] virtio: features, fixes
-Message-ID: <20240319034143-mutt-send-email-mst@kernel.org>
+        d=1e100.net; s=20230601; t=1710834211; x=1711439011;
+        h=cc:to:from:subject:message-id:mime-version:date:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=OnwyORFqYkzH8hHLHjIf5KeiogbCHS6CJlbafRrvsPA=;
+        b=JhODQhag0cYFmXDM/l9m3Sck3HivSYEdVKLubDx5ubKWPcg3tjT6+bduD0jQTE+Ogu
+         dVAHvqMiEqgGwr/GhnOZ7xXC3BmIzGarxpgWli5xMJ/j8c7eOVSZbDtK5c5r8bme3ZEj
+         DInSCj6YR4A3Tyk0WOQMob5zPrmrzQtpKc75Z4nG+n1KAzTWPj3hthw6viskT60Sy060
+         pm6PNGEcmZaAEiHxCwWinZ4Y0gggNv53YCB3ihwOO2tLDcCDtsIl3oR26P4FftgVhmqp
+         G7y5GrZF3CjbWmK0nL0/83l6qGXY8BPVuHS76hA7muuxLp1RLn/8zvOtEY9lxFxecn0B
+         FOug==
+X-Forwarded-Encrypted: i=1; AJvYcCX8xak2diGryvY3NYmzdOE/aCGxmmPKmR2/AWdqidLCwpA3xsgBhnfGbZQvb6g2kOreHVlITIB402i1lwm1yKGjzSPiejwWJE1syxqb
+X-Gm-Message-State: AOJu0YxUWc6uN74WAuF8R5yKaEgxBm/laFRIsdJnO7FkKRl6lrEHO+LF
+	W3oo7ryXVwoQWab91awUgqM9vWGFslTxnfz3vY+clGNY5gwyFZGfecv8zZtfly/oUn/doS5tXPp
+	RSPsVUw==
+X-Google-Smtp-Source: AGHT+IH6atxfqMs0Z5PSMVfV6XRX3NOJZvi6OTsXrgS1I78Y0u2K25gag5+nyxOg0DCLkK9hS6meBUKwHlq3
+X-Received: from kyletso-p620lin01.ntc.corp.google.com ([2401:fa00:fc:202:2f6c:fc01:709:12f4])
+ (user=kyletso job=sendgmr) by 2002:a05:6902:e09:b0:dc6:dfd9:d431 with SMTP id
+ df9-20020a0569020e0900b00dc6dfd9d431mr394859ybb.1.1710834211438; Tue, 19 Mar
+ 2024 00:43:31 -0700 (PDT)
+Date: Tue, 19 Mar 2024 15:43:09 +0800
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-X-Mutt-Fcc: =sent
+Mime-Version: 1.0
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240319074309.3306579-1-kyletso@google.com>
+Subject: [PATCH v1] usb: typec: Return size of buffer if pd_set operation succeeds
+From: Kyle Tso <kyletso@google.com>
+To: linux@roeck-us.net, heikki.krogerus@linux.intel.com, 
+	gregkh@linuxfoundation.org
+Cc: badhri@google.com, linux-kernel@vger.kernel.org, linux-usb@vger.kernel.org, 
+	Kyle Tso <kyletso@google.com>, stable@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-The following changes since commit e8f897f4afef0031fe618a8e94127a0934896aba:
+The attribute writing should return the number of bytes used from the
+buffer on success.
 
-  Linux 6.8 (2024-03-10 13:38:09 -0700)
+Fixes: a7cff92f0635 ("usb: typec: USB Power Delivery helpers for ports and partners")
+Cc: stable@vger.kernel.org
+Signed-off-by: Kyle Tso <kyletso@google.com>
+---
+ drivers/usb/typec/class.c | 7 ++++++-
+ 1 file changed, 6 insertions(+), 1 deletion(-)
 
-are available in the Git repository at:
-
-  https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
-
-for you to fetch changes up to 5da7137de79ca6ffae3ace77050588cdf5263d33:
-
-  virtio_net: rename free_old_xmit_skbs to free_old_xmit (2024-03-19 03:19:22 -0400)
-
-----------------------------------------------------------------
-virtio: features, fixes
-
-Per vq sizes in vdpa.
-Info query for block devices support in vdpa.
-DMA sync callbacks in vduse.
-
-Fixes, cleanups.
-
-Signed-off-by: Michael S. Tsirkin <mst@redhat.com>
-
-----------------------------------------------------------------
-Andrew Melnychenko (1):
-      vhost: Added pad cleanup if vnet_hdr is not present.
-
-David Hildenbrand (1):
-      virtio: reenable config if freezing device failed
-
-Jason Wang (2):
-      virtio-net: convert rx mode setting to use workqueue
-      virtio-net: add cond_resched() to the command waiting loop
-
-Jonah Palmer (1):
-      vdpa/mlx5: Allow CVQ size changes
-
-Maxime Coquelin (1):
-      vduse: implement DMA sync callbacks
-
-Ricardo B. Marliere (2):
-      vdpa: make vdpa_bus const
-      virtio: make virtio_bus const
-
-Shannon Nelson (1):
-      vdpa/pds: fixes for VF vdpa flr-aer handling
-
-Steve Sistare (2):
-      vdpa_sim: reset must not run
-      vdpa: skip suspend/resume ops if not DRIVER_OK
-
-Suzuki K Poulose (1):
-      virtio: uapi: Drop __packed attribute in linux/virtio_pci.h
-
-Xuan Zhuo (3):
-      virtio: packed: fix unmap leak for indirect desc table
-      virtio_net: unify the code for recycling the xmit ptr
-      virtio_net: rename free_old_xmit_skbs to free_old_xmit
-
-Zhu Lingshan (20):
-      vhost-vdpa: uapi to support reporting per vq size
-      vDPA: introduce get_vq_size to vdpa_config_ops
-      vDPA/ifcvf: implement vdpa_config_ops.get_vq_size
-      vp_vdpa: implement vdpa_config_ops.get_vq_size
-      eni_vdpa: implement vdpa_config_ops.get_vq_size
-      vdpa_sim: implement vdpa_config_ops.get_vq_size for vDPA simulator
-      vduse: implement vdpa_config_ops.get_vq_size for vduse
-      virtio_vdpa: create vqs with the actual size
-      vDPA/ifcvf: get_max_vq_size to return max size
-      vDPA/ifcvf: implement vdpa_config_ops.get_vq_num_min
-      vDPA: report virtio-block capacity to user space
-      vDPA: report virtio-block max segment size to user space
-      vDPA: report virtio-block block-size to user space
-      vDPA: report virtio-block max segments in a request to user space
-      vDPA: report virtio-block MQ info to user space
-      vDPA: report virtio-block topology info to user space
-      vDPA: report virtio-block discarding configuration to user space
-      vDPA: report virtio-block write zeroes configuration to user space
-      vDPA: report virtio-block read-only info to user space
-      vDPA: report virtio-blk flush info to user space
-
- drivers/net/virtio_net.c             | 151 +++++++++++++++---------
- drivers/vdpa/alibaba/eni_vdpa.c      |   8 ++
- drivers/vdpa/ifcvf/ifcvf_base.c      |  11 +-
- drivers/vdpa/ifcvf/ifcvf_base.h      |   2 +
- drivers/vdpa/ifcvf/ifcvf_main.c      |  15 +++
- drivers/vdpa/mlx5/net/mlx5_vnet.c    |  13 ++-
- drivers/vdpa/pds/aux_drv.c           |   2 +-
- drivers/vdpa/pds/vdpa_dev.c          |  20 +++-
- drivers/vdpa/pds/vdpa_dev.h          |   1 +
- drivers/vdpa/vdpa.c                  | 214 ++++++++++++++++++++++++++++++++++-
- drivers/vdpa/vdpa_sim/vdpa_sim.c     |  15 ++-
- drivers/vdpa/vdpa_user/iova_domain.c |  27 ++++-
- drivers/vdpa/vdpa_user/iova_domain.h |   8 ++
- drivers/vdpa/vdpa_user/vduse_dev.c   |  34 ++++++
- drivers/vdpa/virtio_pci/vp_vdpa.c    |   8 ++
- drivers/vhost/net.c                  |   3 +
- drivers/vhost/vdpa.c                 |  14 +++
- drivers/virtio/virtio.c              |   6 +-
- drivers/virtio/virtio_ring.c         |   6 +-
- drivers/virtio/virtio_vdpa.c         |   5 +-
- include/linux/vdpa.h                 |   6 +
- include/uapi/linux/vdpa.h            |  17 +++
- include/uapi/linux/vhost.h           |   7 ++
- include/uapi/linux/virtio_pci.h      |  10 +-
- 24 files changed, 521 insertions(+), 82 deletions(-)
+diff --git a/drivers/usb/typec/class.c b/drivers/usb/typec/class.c
+index 389c7f0b8d93..9610e647a8d4 100644
+--- a/drivers/usb/typec/class.c
++++ b/drivers/usb/typec/class.c
+@@ -1310,6 +1310,7 @@ static ssize_t select_usb_power_delivery_store(struct device *dev,
+ {
+ 	struct typec_port *port = to_typec_port(dev);
+ 	struct usb_power_delivery *pd;
++	int ret;
+ 
+ 	if (!port->ops || !port->ops->pd_set)
+ 		return -EOPNOTSUPP;
+@@ -1318,7 +1319,11 @@ static ssize_t select_usb_power_delivery_store(struct device *dev,
+ 	if (!pd)
+ 		return -EINVAL;
+ 
+-	return port->ops->pd_set(port, pd);
++	ret = port->ops->pd_set(port, pd);
++	if (ret)
++		return ret;
++
++	return size;
+ }
+ 
+ static ssize_t select_usb_power_delivery_show(struct device *dev,
+-- 
+2.44.0.291.gc1ea87d7ee-goog
 
 
