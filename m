@@ -1,186 +1,155 @@
-Return-Path: <linux-kernel+bounces-107600-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107601-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C1CC887FEF5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:39:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 29A5687FEF7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:40:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CAD81F25C74
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:39:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CEA51C22BD8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:40:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7011D80612;
-	Tue, 19 Mar 2024 13:39:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C818060A;
+	Tue, 19 Mar 2024 13:40:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="P1OqbeGV"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HNys9iGe";
+	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HNys9iGe"
+Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F9780607
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:39:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E147A2B9A3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:40:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710855567; cv=none; b=eWrlGxkp9i4YUnpZommC/lC7qM9SIoGLPA9ehRr6yiSD0ZiZFuuYoTpFj38TeVQ+qHDMyQGkanBBpqpY3gjsSloOeGimWHTltOUhER0vsmQfJegtapMgLHFRvPwPiEGl9+dVeE7yZixLE2TKI//Eb1LVV5tLZR7LxrEakMMqwjo=
+	t=1710855646; cv=none; b=mQMQYE+CEaipGt0i3Sm3zz+MAIWc9EanoqSFkAAMppNHXL1vYTC3eMEpL0XI4/OwGMcxa6I0AyjfPccFIqlua3dxXuCNEs+wa99a87+qeUlxJTu8OrMk+kn4e5eiaE4ZMPiyBZLtBHgVUw7OZIdiuStglDPG7lI/eiHwbfgdzBE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710855567; c=relaxed/simple;
-	bh=sGGyhg7qmrAF3VEJNWEaHGwkum60h1VaoacXAoOTovk=;
+	s=arc-20240116; t=1710855646; c=relaxed/simple;
+	bh=63oP/O63tle25p4dXnRwpLxRWoEsPPqahgfFN+0CMCE=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=JsBNQSAs0mFMr94c2jEtO2DmKe6ynBtBwQoNXCYuImtG1VtnyDeixajQtUscmBbKnwlczDrv4rxEGUVlOj7t260Q/W35AReAWvHv7HJQ+g94G26pdfLU8IBE++OzDWPErk3iwxLx+xbYTRRZr6xbEavS8PJxZDmo/oAr7q0OCvY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=P1OqbeGV; arc=none smtp.client-ip=209.85.208.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-568107a9ff2so6680820a12.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:39:24 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ventanamicro.com; s=google; t=1710855563; x=1711460363; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=4zAsS/uNen1I904a04qYYT/TYDmbVxX/Uth0W4MlTuw=;
-        b=P1OqbeGVx/LNo6k00aDeY0qqnZbyhwxJi/H5vPs6blh9cklngarVGr+2Kzw4IJuh70
-         IHsav1HSdeXmJmu0MgqJNAyJGChxVzybXBLcOlvptlhZHQaaQvVdZ52/dvfBzaca6rFx
-         rXk/Te8lH7/NwcnTOYnJZbXrAdHziu2G9JLPHlfCU275a4W5kUqRNvEQaVw0KSkN//PB
-         2A283x3TDCPoPcbPlYs3h4CrcbcazIDpje6gu0cmDePzxJAjBabTvgxyMthK3BKVEOyH
-         ckEnLuasQGtvjUmZiXrwXmtg9NZvsfsryVW38m5mjRVOZKFiehQ6WPw5Dya2bb30S343
-         p0BQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710855563; x=1711460363;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=4zAsS/uNen1I904a04qYYT/TYDmbVxX/Uth0W4MlTuw=;
-        b=d2JMHE9BhjXZUheK763DKgKTdhbfYNKhVlFyKrelce9o2fRIQkbMbRQrSLjZ4ozVfF
-         8hnhcWmeQ5rNOb3g2f/HZ0wZ9WFjpLd0MRu9eIAh4o//jS8im/koT8PzEkcgbtNKIMel
-         CnnueUEVmTu6uM+bWONLfkmhHMVdNaZUPEjpcHq/g7gAijPTiOSPgl6DOSFlxd0wxA3L
-         aAj/JeOJUnbf28d2hbzG84yy+iUglsQiNhZj3+exuO+DHy/NirrfD+KKCzuqynsJRJLj
-         fly/fkTpuYuVk+w6hS3IKZRddVhqfkBmuEy89Arl8lH4eNkCEMeRgCOZKkOccknalLWd
-         tpEQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVAMdSkgNfHeW5ccCMaAML79kyc3P2JGKlBknczsZAPtX549CMCQo+g/2QOZ8AgYc3dvj89FXl3vnal5HC3YSboKZ4Y66k1MhywFwhT
-X-Gm-Message-State: AOJu0YyYVbZKj78YyuPofTtnnslGQFecUzWqvK1eFO5x29+WUAQXnrej
-	P6o7HU6jkGSVLx/oVVz25D9zii75ve3qXwp/at2wlhWtBkOpzIi4G7leyKCMJ0Q=
-X-Google-Smtp-Source: AGHT+IHVRMJgWhA6FUGYuB3YQ2YkT+vT6+CMMifWJKwecbxw4bHQrbgtLR+eeZnyMUCHzJq6zdMjMg==
-X-Received: by 2002:a05:6402:5516:b0:568:1248:9f49 with SMTP id fi22-20020a056402551600b0056812489f49mr11014066edb.18.1710855562942;
-        Tue, 19 Mar 2024 06:39:22 -0700 (PDT)
-Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
-        by smtp.gmail.com with ESMTPSA id er27-20020a056402449b00b00568d2518105sm2756561edb.12.2024.03.19.06.39.22
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 06:39:22 -0700 (PDT)
-Date: Tue, 19 Mar 2024 14:39:21 +0100
-From: Andrew Jones <ajones@ventanamicro.com>
-To: Conor Dooley <conor@kernel.org>
-Cc: Atish Patra <atishp@rivosinc.com>, 
-	Inochi Amaoto <inochiama@outlook.com>, Qingfang Deng <dqfext@gmail.com>, 
-	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
-	Albert Ou <aou@eecs.berkeley.edu>, Atish Patra <atishp@atishpatra.org>, 
-	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>, 
-	Mark Rutland <mark.rutland@arm.com>, Conor Dooley <conor.dooley@microchip.com>, 
-	Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org, 
-	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
-Message-ID: <20240319-3e72d732cbf2fcf1cb81f968@orel>
-References: <20240311063018.1886757-1-dqfext@gmail.com>
- <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
- <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
- <20240312-evil-resource-66370b68b9b4@spud>
- <IA1PR20MB4953CE8999960BA71B46DE6CBB2A2@IA1PR20MB4953.namprd20.prod.outlook.com>
- <20240315-73aa13079ef83a4559869084@orel>
- <2de56d8b-bc78-428b-9c09-4729b269fa41@rivosinc.com>
- <20240318-such-animal-bf33de12dc3a@spud>
- <4bdaaff1-13ec-48c2-b165-6a8255784aef@rivosinc.com>
- <20240319-worry-video-66589b3ed8ae@spud>
+	 Content-Type:Content-Disposition:In-Reply-To; b=or4dB8IFwCrQ+FXB+Uivk9HWLP4VKlFldwPoTkHg6QOvuataDNd4hangspoq+03jkThrrgEkBdUYL5A1PCjWMV/nIHNC8SG/Ms7jFhr7F9LgdkNmfajhgkWl8woYKddecBfQwCuWLmKmhQV1LlEtaYRk296ihyg0kRwKZe/Chhg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HNys9iGe; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HNys9iGe; arc=none smtp.client-ip=195.135.223.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out2.suse.de (Postfix) with ESMTPS id 1F5495D714;
+	Tue, 19 Mar 2024 13:40:43 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710855643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gPnsq29Wc/buvWIEmuCObK4jFQyJYrkPVaoqmvReZ3g=;
+	b=HNys9iGe2SR/wFIjkvSlF8NHw/ARy1KUUGVVXmmib3rYzIqtQMQgy7Tc/LDPFq57vSrfqP
+	4AePwczBpK/GQevULP+7L6FytLrElZJcjZUf6qUhw9mMAKz3hd4FPqV6z+1qIRh4/AONiG
+	IeKogcEvtKvKAtvAoXV+EkA8cw09sEc=
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
+	t=1710855643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=gPnsq29Wc/buvWIEmuCObK4jFQyJYrkPVaoqmvReZ3g=;
+	b=HNys9iGe2SR/wFIjkvSlF8NHw/ARy1KUUGVVXmmib3rYzIqtQMQgy7Tc/LDPFq57vSrfqP
+	4AePwczBpK/GQevULP+7L6FytLrElZJcjZUf6qUhw9mMAKz3hd4FPqV6z+1qIRh4/AONiG
+	IeKogcEvtKvKAtvAoXV+EkA8cw09sEc=
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4F0C136A5;
+	Tue, 19 Mar 2024 13:40:42 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id AIUdLdqV+WWraQAAD6G6ig
+	(envelope-from <mhocko@suse.com>); Tue, 19 Mar 2024 13:40:42 +0000
+Date: Tue, 19 Mar 2024 14:40:34 +0100
+From: Michal Hocko <mhocko@suse.com>
+To: Barry Song <21cnbao@gmail.com>
+Cc: liuhailong@oppo.com, akpm@linux-foundation.org, nathan@kernel.org,
+	ndesaulniers@google.com, trix@redhat.com, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
+	surenb@google.com, zhaoyang.huang@unisoc.com,
+	quic_charante@quicinc.com, yuzhao@google.com
+Subject: Re: [PATCH v2] Revert "mm: skip CMA pages when they are not
+ available"
+Message-ID: <ZfmV0uEMgZ2Dzdnm@tiehlicka>
+References: <20240314141516.31747-1-liuhailong@oppo.com>
+ <20240315081803.2223-1-liuhailong@oppo.com>
+ <ZflTCY-Oaxm0U70u@tiehlicka>
+ <CAGsJ_4w0EHuAwvSFuqUsMO-bLjJwCmN_qjL6NuA043-4rgfgsQ@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240319-worry-video-66589b3ed8ae@spud>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAGsJ_4w0EHuAwvSFuqUsMO-bLjJwCmN_qjL6NuA043-4rgfgsQ@mail.gmail.com>
+Authentication-Results: smtp-out2.suse.de;
+	none
+X-Spam-Level: 
+X-Spam-Score: -0.82
+X-Spamd-Result: default: False [-0.82 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCPT_COUNT_TWELVE(0.00)[13];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
+	 FREEMAIL_TO(0.00)[gmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-0.02)[54.42%]
+X-Spam-Flag: NO
 
-On Tue, Mar 19, 2024 at 09:06:34AM +0000, Conor Dooley wrote:
-> On Mon, Mar 18, 2024 at 05:48:13PM -0700, Atish Patra wrote:
-> > On 3/18/24 16:48, Conor Dooley wrote:
-> > > On Mon, Mar 18, 2024 at 03:46:54PM -0700, Atish Patra wrote:
+On Tue 19-03-24 19:09:18, Barry Song wrote:
+> On Tue, Mar 19, 2024 at 4:56 PM Michal Hocko <mhocko@suse.com> wrote:
+> >
+> > On Fri 15-03-24 16:18:03, liuhailong@oppo.com wrote:
+> > > From: "Hailong.Liu" <liuhailong@oppo.com>
+> > >
+> > > This reverts
+> > > commit b7108d66318a ("Multi-gen LRU: skip CMA pages when they are not eligible")
+> > > commit 5da226dbfce3 ("mm: skip CMA pages when they are not available")
+> > >
+> > > skip_cma may cause system not responding. if cma pages is large in lru_list
+> > > and system is in lowmemory, many tasks would direct reclaim and waste
+> > > cpu time to isolate_lru_pages and return.
+> > >
+> > > Test this patch on android-5.15 8G device
+> > > reproducer:
+> > > - cma_declare_contiguous 3G pages
+> > > - set /proc/sys/vm/swappiness 0 to enable direct_reclaim reclaim file
+> > >   only.
+> > > - run a memleak process in userspace
+> >
+> > Does this represent a sane configuration? CMA memory is unusable for
+> > kernel allocations and memleak process is also hard to reclaim due to
+> > swap suppression. Isn't such a system doomed to struggle to reclaim any
+> > memory? Btw. how does the same setup behave with the regular LRU
+> > implementation? My guess would be that it would struggle as well.
 > 
-> > > > For 2.b, either we can start defining pseudo extensions or adding
-> > > > vendor/arch/impid checks.
-> > > > 
-> > > > @Conor: You seems to prefer the earlier approach instead of adding the
-> > > > checks. Care to elaborate why do you think that's a better method compared
-> > > > to a simple check ?
-> > > 
-> > > Because I don't think that describing these as "errata" in the first
-> > > place is even accurate. This is not a case of a vendor claiming they
-> > > have Sscofpmf support but the implementation is flawed. As far as I
-> > > understand, this is a vendor creating a useful feature prior to the
-> > > creation of a standard extension.
-> > > A bit of a test for this could be "If the standard extension never
-> > > existed, would this be considered a new feature or an implementation
-> > > issue". I think this is pretty clearly in the former camp.
-> > > 
-> > 
-> > So we have 3 cases.
-> > 
-> > 1. Pseudo extension: An vendor extension designed and/or implemented before
-> > the standard RVI extension was ratified but do not violate any standard
-> > encoding space.
+> I assume the regular LRU implementation you are talking about is the LRU
+> without skip_cma()?
 
-The vendor should name these extensions themselves.
+No, I mean standard LRU reclaim implementation rather than MGLRU.
 
-> > 
-> > 2. Erratas: An genuine bug/design issue in the expected behavior from a
-> > standard RVI extension (including violating standard encoding space)
-
-More on this below, but I think vendors should name these too.
-
-> > 
-> > 3. Vendor extension: A new or a variant of standard RVI extension which is
-> > different enough from standard extension.
-> > 
-> > IMO, the line between #2 and #1 may get blurry as we going forward because
-> > of the sheer number of small extensions RVI is comping up with (which is a
-> > problem as well).
-
-The line between #1 and #2 is blurry because the only difference is the
-original intentions. The end result is that a vendor has implemented
-something that resembles a standard extension, but is not the same as the
-standard extension.
-
-> 
-> Aye, I think some of that is verging on ridiculous.
-> 
-> > Just to clarify: I am not too worried about this particular case as we know
-> > that T-head's implementation predates the Sscofpmf extension.
-> > But once we define a standard mechanism for this kind of situation, vendor
-> > may start to abuse it.
-> 
-> How do you envisage it being abused by a vendor?
-> Pre-dating the standard extension does make this one fairly clear-cut,
-> but are you worried about people coming along and claiming to implement
-> XConorSscofpmf instead of Sscofpmf rather than suffer the "shame" of a
-> broken implementation?
-
-Other than the concern of the ballooning bitmap, I'd prefer this approach.
-If a vendor has implemented some extension which happens to be "almost
-Sscofpmf", then whether it was implemented before the Sscofpmf spec
-existed, or after, isn't really important. What's important is that it's
-only "almost Sscofpmf" and not _exactly_ Sscofpmf, which means it should
-not use the Sscofpmf extension name. Since vendors are allowed to create
-their own XVendor names, then that shouldn't be a problem. Indeed, the
-abuse concern seems to be in the opposite direction, that vendors will
-try to pass off almost-standard extensions as standard extensions by
-trying to get workarounds into Linux. Maybe Linux policy should be to
-simply reject workarounds to extensions, requiring vendors to create new
-names instead.
-
-> All this stuff is going to be pretty case-by-case (to begin with at
-> least) so I'm not too worried about that sort of abuse.
-
-Case-by-case is reasonable, since it's probably too strict to always
-require new names. We can consider each proposed workaround as they
-come, but it's a slippery slope once workarounds are accepted.
-
-Thanks,
-drew
+-- 
+Michal Hocko
+SUSE Labs
 
