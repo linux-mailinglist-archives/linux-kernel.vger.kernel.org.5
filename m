@@ -1,161 +1,340 @@
-Return-Path: <linux-kernel+bounces-108130-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108131-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id CFA5288066B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:01:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id CF6C388066F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:01:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5AD6D1F22C8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:01:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 48F441F22D1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:01:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 731963D0B8;
-	Tue, 19 Mar 2024 21:01:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DEE23D3BB;
+	Tue, 19 Mar 2024 21:01:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="B0tVCjgz"
-Received: from mail-pl1-f171.google.com (mail-pl1-f171.google.com [209.85.214.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="gOP1c+sq"
+Received: from lelv0142.ext.ti.com (lelv0142.ext.ti.com [198.47.23.249])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4E4733CF58
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:01:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 271923FBA3;
+	Tue, 19 Mar 2024 21:01:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.249
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710882076; cv=none; b=ZIZTm4MbN6GFp2Erch9cinL1CvMgV7e3wzdr46hha8PAeSDlji9y+RAfU8fLr+5COpcTqZRE3/l/pD8Z6dGNEEfrFeVB86yntvDxcd30oNkcy/w+TzDzxmW15o4hJyE3KNebm/NIG0uOJWrDg/0pAEZ7jGN1swHj8gphtfXIYiA=
+	t=1710882095; cv=none; b=X5rroKcB8nB63N/zGdYzGQ2oZuBbX5H9UuvxR7NCNFX8l13h8NQU80eyV0IPIAgQvpuEt3X6ncLPbvP04CJmVlzZy2KnNKmajtmPNIoZEHCBQEyTToB30qa40/uu46q7HYBF81aLDBbhBr356nhbiZer6U77/ddL4isveYSeVTw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710882076; c=relaxed/simple;
-	bh=ZvhANbuYYdzjDlSNCOObZlNwSVeG5SJGde/R3AYV+0Q=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=LMUyaCCMgJu26+srJvAwGp3ewfz/XwmxiJ+ewQE+edc2+LAy3GwYG/a33nrHBjcisQLfFy0KcM3Sj+TIGshm0U7GAK7hxILAzci92XSm1kT4w/F90U7mwDYRnzQj/Ru39UeLeCmakNpQbIjt+oOrgSXzWmOlOgkMJp3NvXp7shs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=B0tVCjgz; arc=none smtp.client-ip=209.85.214.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f171.google.com with SMTP id d9443c01a7336-1dddd7d64cdso14855ad.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:01:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710882074; x=1711486874; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ZvhANbuYYdzjDlSNCOObZlNwSVeG5SJGde/R3AYV+0Q=;
-        b=B0tVCjgzesu+Fy0pe+9lnGHc+9MpO1bIAYLHtiLhgQEjOhqSyFJ63xHnA71lAtsUJU
-         lcDFZA0OPjujHEqtDthZWfnUenNKIXey63yb2LrmAWAxEZ42trqOV3XOTrmHaIQR97dU
-         kD5BYU1M800qXa0sCDeoHlANuvEN5Y5WMGtU++qULXxyh4By8Vq+OjXySutJNhRNYROE
-         hM1OWenE88vokESm56sxMj9XsqwLX0HHqPUIgkyui3J7lka3QHPk9SfVPVO5LhPwqdKG
-         nC87780IAeFpO0XwCB38jAqQheOb0ojFrjAcYh9ePEtWhlDb3QN+c1P5XABUdU7xl1i1
-         SDgw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710882074; x=1711486874;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ZvhANbuYYdzjDlSNCOObZlNwSVeG5SJGde/R3AYV+0Q=;
-        b=tUnyTsoWc4rgeQyTvQ4l9jtdlGQSSorK8Ozrg0CKEs+GN5jLFq3Vp4nRRBHEw649rL
-         1QhhpHOYY53M/zFZMNTY4KCt4XsyujUYbAo/VPdxtw2leijxxSjLpt+ci33HkGhYSvzc
-         y2CSsCL9zn3gAWgUwh4jlHQIy7Cuqd602qRzhiol+SsGh07P2OiEG5yoNIC8BsnwxPWV
-         63ltn7wTv8Fmp31ho59btAJMyko8JL0QfBznUY2RwsT0TQAYIjH/0P35kBkXlvbq+Naf
-         S8NClUMaGUeKT2Z35xSQmR2krzC6f0j3U9ZLOQQcctYRtBujcBS/KLHaY4bI3Whq/bud
-         KHKQ==
-X-Forwarded-Encrypted: i=1; AJvYcCX99iVvWyaxgeEX4YQEOAUSmoOtfIB1gkvVE2QP2h7V31P2v+hqB9aXuCcMLWKrNif+A268cTDWZ5q/NYioSudhlmK+H0cdCdgQ6i0A
-X-Gm-Message-State: AOJu0YzSiIYwkRSaPqOC91lBWP5CJdQ0aF7xlbGIZyf05KiRWul5krwl
-	9e4bYuSYA4b8H5aIjCftRrTkoMJWOib6qBsAK5j3ukHxnkmQ9gfk6KAZiOlAoWAsYXDfEAtvPzq
-	XomD45VuQ/IpzuqBWllJm06LDsj57cWUQYqHx
-X-Google-Smtp-Source: AGHT+IHTts9WTZeXfm7QG5MBLfM47UzPfKpIRbymYy8+sSS02gQyuQ17Sh9LpPAbl2m9576EbW8jaYR2DD3FniSwitc=
-X-Received: by 2002:a17:903:2292:b0:1df:f726:8b50 with SMTP id
- b18-20020a170903229200b001dff7268b50mr85063plh.10.1710882073295; Tue, 19 Mar
- 2024 14:01:13 -0700 (PDT)
+	s=arc-20240116; t=1710882095; c=relaxed/simple;
+	bh=Fefg+/1BVjbXtjfPp8AMwDaKfpDHl61WCT0z7N1myzQ=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Iemq7yda52lo9FOIxfOqhR9Pmb44b9AkVcLuGnOXnBXM2lCmWwDVpNBOkuXVUlSa5GXBeLRS77ucBsp09EWzTQfT0lrno9YwlrwNH5eqTfKHGV9+RSQ/aNIWybATTL0tI7dbpT5vVIqUABRIP5qaAx6ZlCksXMFoiAUXBuUCysg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=gOP1c+sq; arc=none smtp.client-ip=198.47.23.249
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from lelv0266.itg.ti.com ([10.180.67.225])
+	by lelv0142.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42JL16Rg103012;
+	Tue, 19 Mar 2024 16:01:06 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1710882066;
+	bh=yXu//FYcXdqFH43bJEjGRJ337gdmABIU7dHUdY94yvo=;
+	h=Date:From:To:CC:Subject:References:In-Reply-To;
+	b=gOP1c+sqxwwRn98Dd9lMVNRtbPa5us7BdSTFAI6KmQHBeixbIcTiTaeI0QQZlUjbn
+	 Pk6tO2BjWXCQD4+/yejUttx7MDAO49sUKPhtwtKcM+6wRZzP37/v01+LUNPhfGb9SF
+	 4oVWpADdLRjjkTRWjDslYAIt39/xoErJq7AuA0cc=
+Received: from DLEE112.ent.ti.com (dlee112.ent.ti.com [157.170.170.23])
+	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42JL16pq039676
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 19 Mar 2024 16:01:06 -0500
+Received: from DLEE100.ent.ti.com (157.170.170.30) by DLEE112.ent.ti.com
+ (157.170.170.23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
+ Mar 2024 16:01:06 -0500
+Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DLEE100.ent.ti.com
+ (157.170.170.30) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 19 Mar 2024 16:01:06 -0500
+Received: from localhost (udba0500997.dhcp.ti.com [128.247.81.249])
+	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42JL16D6080117;
+	Tue, 19 Mar 2024 16:01:06 -0500
+Date: Tue, 19 Mar 2024 16:01:06 -0500
+From: Brandon Brnich <b-brnich@ti.com>
+To: Ivan Bornyakov <brnkv.i1@gmail.com>
+CC: Nas Chung <nas.chung@chipsnmedia.com>,
+        Philipp Zabel
+	<p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>,
+        "linux-media@vger.kernel.org" <linux-media@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+        "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
+        "jackson.lee"
+	<jackson.lee@chipsnmedia.com>,
+        Mauro Carvalho Chehab <mchehab@kernel.org>
+Subject: Re: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
+Message-ID: <20240319210106.awn33cm7ex33g65b@udba0500997>
+References: <20240318144225.30835-1-brnkv.i1@gmail.com>
+ <20240318144225.30835-6-brnkv.i1@gmail.com>
+ <SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
+ <hpqhbksvyfbqjumopk2k2drxri2ycb6j2dbdo74cfymcd7blgx@kzomazfosfwg>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <SJ1PR11MB608310C72D7189C139EA6302FC212@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <o6va7b7rc3q46olsbscav7pla4hxot2g6xhctflhmf64pj5hpx@56vtbg3yyquy>
- <SJ1PR11MB60830E546B3D575B01D37104FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <159474e6-ef11-4769-a182-86483efcf2a6@intel.com> <SJ1PR11MB60832DAD58E864F99A16FCC4FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <0393c4ce-7e41-4dcc-940a-a6bea9437970@intel.com> <SJ1PR11MB6083AACB10645E41DD3F9639FC202@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <55a55960-8bb1-4ce2-a2c7-68e167da8bcc@intel.com> <ZepK4mtoV_J8-UbE@agluck-desk3>
- <eacdc287-24bd-4137-85c8-df055cfd78b1@arm.com> <ZetcM9GO2PH6SC0j@agluck-desk3>
- <88430722-67b3-4f7d-8db2-95ee52b6f0b0@arm.com> <47c28b3d-3b90-4b33-ba71-1e359d43238e@intel.com>
- <SJ1PR11MB60832422CBDCCDA580010769FC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <6948784d-6a20-435a-8781-30f324bed472@intel.com> <SJ1PR11MB608303C5E0BEB42CAC5B02BAFC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
- <fe4a54cf-7103-49c7-add4-ee4bcf76c7b3@intel.com> <SJ1PR11MB6083CF09A97C13C0859D5A67FC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-In-Reply-To: <SJ1PR11MB6083CF09A97C13C0859D5A67FC2D2@SJ1PR11MB6083.namprd11.prod.outlook.com>
-From: Peter Newman <peternewman@google.com>
-Date: Tue, 19 Mar 2024 14:01:02 -0700
-Message-ID: <CALPaoCiTe+50Ymve5kcjaasQe4AhvayMbTM9yCp2F5PtwHyAcQ@mail.gmail.com>
-Subject: Re: [PATCH 4/4] selftests/resctrl: Adjust SNC support messages
-To: "Luck, Tony" <tony.luck@intel.com>
-Cc: "Chatre, Reinette" <reinette.chatre@intel.com>, James Morse <james.morse@arm.com>, 
-	"Wieczor-Retman, Maciej" <maciej.wieczor-retman@intel.com>, "Yu, Fenghua" <fenghua.yu@intel.com>, 
-	Shuah Khan <shuah@kernel.org>, 
-	"ilpo.jarvinen@linux.intel.com" <ilpo.jarvinen@linux.intel.com>, 
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, 
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <hpqhbksvyfbqjumopk2k2drxri2ycb6j2dbdo74cfymcd7blgx@kzomazfosfwg>
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Hi Tony,
+Hi Ivan, 
 
-On Mon, Mar 18, 2024 at 3:05=E2=80=AFPM Luck, Tony <tony.luck@intel.com> wr=
-ote:
->
-> > Could you please help me understand the details by answering my first
-> > question: What is the use case for needing to expose the individual clu=
-ster
-> > counts?
-> >
-> > This is a model specific feature so if this is something needed for jus=
-t a
-> > couple of systems I think we should be less inclined to make changes to
-> > resctrl interface. I am starting to be concerned about something simila=
-r
-> > becoming architectural later and then we need to wrangle this model spe=
-cific
-> > resctrl support (which has then become ABI) again to support whatever t=
-hat
-> > may look like.
->
-> Reinette,
->
-> Model specific. But present in multiple consecutive generations (Sapphire=
- Rapids,
-> Emerald Rapids, Granite Rapids, Sierra Forest).
->
-> Adding Peter Newman for a resctrl user perspective on SNC, rather than me
-> continue to speculate on possible ways this might be used.
->
-> Peter: You will need to dig back a few messages on lore.kernel.org to
-> get context.
+On 14:24-20240319, Ivan Bornyakov wrote:
+> Hello, Nas
+> 
+> On Tue, Mar 19, 2024 at 10:56:22AM +0000, Nas Chung wrote:
+> > Hi, Ivan.
+> > 
+> > >
+> > >Allocate SRAM memory on module probe, free on remove. There is no need
+> > >to allocate on device open, free on close, the memory is the same every
+> > >time.
+> > 
+> > If there is no decoder/encoder instance, driver don't need to allocate SRAM memory.
+> > The main reason of allocating the memory in open() is to allow other modules to
+> > use more SRAM memory, if wave5 is not working.
 
-Our main concern with supporting SNC in resctrl is all of the
-monitoring groups successfully recording memory bandwidth from all
-CPUs, regardless of the RMIDs they're assigned.
+I have to agree with this statement. Moving allocation to probe results
+in wasting SRAM when VPU is not in use. VPU should only be allocating SRAM
+when a stream instance is running and free that back once all instances
+close.
+ 
+> > >
+> > >Also use gen_pool_size() to determine SRAM memory size to be allocated
+> > >instead of separate "sram-size" DT property to reduce duplication.
+> > >
+> > >Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
+> > >---
+> > > .../platform/chips-media/wave5/wave5-helper.c |  3 ---
+> > > .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++++++++---------
+> > > .../chips-media/wave5/wave5-vpu-dec.c         |  2 --
+> > > .../chips-media/wave5/wave5-vpu-enc.c         |  2 --
+> > > .../platform/chips-media/wave5/wave5-vpu.c    | 12 +++++------
+> > > .../platform/chips-media/wave5/wave5-vpuapi.h |  1 -
+> > > 6 files changed, 16 insertions(+), 25 deletions(-)
+> > >
+> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c
+> > >b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+> > >index 8433ecab230c..ec710b838dfe 100644
+> > >--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
+> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
+> > >@@ -29,9 +29,6 @@ void wave5_cleanup_instance(struct vpu_instance *inst)
+> > > {
+> > > 	int i;
+> > >
+> > >-	if (list_is_singular(&inst->list))
+> > >-		wave5_vdi_free_sram(inst->dev);
+> > >-
+> > > 	for (i = 0; i < inst->fbc_buf_count; i++)
+> > > 		wave5_vpu_dec_reset_framebuffer(inst, i);
+> > >
+> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+> > >b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+> > >index 3809f70bc0b4..ee671f5a2f37 100644
+> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
+> > >@@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
+> > >*vpu_dev, struct vpu_buf *array,
+> > > void wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)
+> > > {
+> > > 	struct vpu_buf *vb = &vpu_dev->sram_buf;
+> > >+	dma_addr_t daddr;
+> > >+	void *vaddr;
+> > >+	size_t size;
+> > >
+> > >-	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
+> > >+	if (!vpu_dev->sram_pool || vb->vaddr)
+> > > 		return;
+> > >
+> > >-	if (!vb->vaddr) {
+> > >-		vb->size = vpu_dev->sram_size;
+> > >-		vb->vaddr = gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
+> > >-					       &vb->daddr);
+> > >-		if (!vb->vaddr)
+> > >-			vb->size = 0;
+> > >+	size = gen_pool_size(vpu_dev->sram_pool);
+> > >+	vaddr = gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
+> > >+	if (vaddr) {
+> > >+		vb->vaddr = vaddr;
+> > >+		vb->daddr = daddr;
+> > >+		vb->size = size;
+> > > 	}
+> > >
+> > > 	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
+> > >0x%p\n",
+> > >@@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct vpu_device *vpu_dev)
+> > > 	if (!vb->size || !vb->vaddr)
+> > > 		return;
+> > >
+> > >-	if (vb->vaddr)
+> > >-		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
+> > >-			      vb->size);
+> > >+	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
+> > >>size);
+> > >
+> > > 	memset(vb, 0, sizeof(*vb));
+> > > }
+> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> > >index aa0401f35d32..84dbe56216ad 100644
+> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
+> > >@@ -1854,8 +1854,6 @@ static int wave5_vpu_open_dec(struct file *filp)
+> > > 		goto cleanup_inst;
+> > > 	}
+> > >
+> > >-	wave5_vdi_allocate_sram(inst->dev);
+> > >-
+> > > 	return 0;
+> > >
+> > > cleanup_inst:
+> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> > >index 8bbf9d10b467..86ddcb82443b 100644
+> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
+> > >@@ -1727,8 +1727,6 @@ static int wave5_vpu_open_enc(struct file *filp)
+> > > 		goto cleanup_inst;
+> > > 	}
+> > >
+> > >-	wave5_vdi_allocate_sram(inst->dev);
+> > >-
+> > > 	return 0;
+> > >
+> > > cleanup_inst:
+> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+> > >b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+> > >index f3ecadefd37a..2a0a70dd7062 100644
+> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
+> > >@@ -178,16 +178,11 @@ static int wave5_vpu_probe(struct platform_device
+> > >*pdev)
+> > > 		return ret;
+> > > 	}
+> > >
+> > >-	ret = of_property_read_u32(pdev->dev.of_node, "sram-size",
+> > >-				   &dev->sram_size);
+> > >-	if (ret) {
+> > >-		dev_warn(&pdev->dev, "sram-size not found\n");
+> > >-		dev->sram_size = 0;
+> > >-	}
+> > >-
+> > 
+> > Required SRAM size is different from each wave5 product.
+> > And, SoC vendor also can configure the different SRAM size
+> > depend on target SoC specification even they use the same wave5 product.
+> > 
+> 
+> One can limit iomem address range in SRAM node. Here is the example of
+> how I setup Wave515 with SRAM:
+> 
+> 	sram@2000000 {
+> 		compatible = "mmio-sram";
+> 		reg = <0x0 0x2000000 0x0 0x80000>;
+> 		#address-cells = <1>;
+> 		#size-cells = <1>;
+> 		ranges = <0x0 0x0 0x2000000 0x80000>;
+> 		
+> 		wave515_vpu_sram: wave515-vpu-sram@0 {
+> 			reg = <0x0 0x80000>;
+> 			pool;
+> 		};
+> 	};
+> 
+> 	wave515@410000 {
+> 		compatible = "cnm,wave515";
+> 		reg = <0x0 0x410000 0x0 0x10000>;
+> 		clocks = <&clk_ref1>;
+> 		clock-names = "videc";
+> 		interrupt-parent = <&wave515_intc>;
+> 		interrupts = <16 IRQ_TYPE_LEVEL_HIGH>;
+> 		resets = <&wave515_reset 0>,
+> 			 <&wave515_reset 4>,
+> 			 <&wave515_reset 8>,
+> 			 <&wave515_reset 12>;
+> 		sram = <&wave515_vpu_sram>;
+> 	};
+> 
+> gen_pool_size() returns size of wave515_vpu_sram, no need for extra
+> "sram-size" property.
 
-I would prefer that we don't complicate the model of resctrl
-monitoring domains for this feature. On ARM SoCs there will be a
-plethora of technologies influencing the layout of resources, so we
-shouldn't start cluttering the model with special cases for each.
+"sram-size" property does need to be removed, as this was the consensus
+gathered from my patch[0]. However, I think your method is still taking
+a more static approach. One of the recommendations in my thread[1] was
+making a list of known SRAM sizes given typical resolutions and
+iterating through until a valid allocation is done. I don't think this
+is the correct approach either based on Nas's comment that each Wave5
+has different SRAM size requirement. It would clutter up the file too
+much if each wave5 product had its own SRAM size mapping.
 
-I think it's valid for the number of domains in the L3 resource to
-increase or stay the same when the system is configured for SNC. I
-don't think the details of how the domains came about is relevant at
-the resctrl interface level so long as the user has enough information
-to deduce what the domain is referring to based on knowledge of their
-system configuration.
+Could another approach be to change Wave5 dts node to have property set
+as "sram = <&sram>;" in your example, then driver calls
+gen_pool_availble to get size remaining? From there, a check could be 
+put in place to make sure an unnecessary amount is not being allocated.
 
-I would prefer per-cluster as more information could prove useful in
-some future investigation, but if you feel the data is misleading,
-providing the clusters combined is also fine. I would prefer that the
-choice remains consistent from this point forward on any particular
-implementation to avoid breaking existing controller software
-developed for that implementation.
 
-In our main use case, we sum mon_data/*/mbm_total_bytes to determine a
-group's total bandwidth, so please don't cause this logic to produce
-the wrong answer.
+[0]: https://lore.kernel.org/lkml/99bf4d6d988d426492fffc8de9015751c323bd8a.camel@ndufresne.ca/
+[1]: https://lore.kernel.org/lkml/9c5b7b2c-8a66-4173-dfe9-5724ec5f733d@ti.com/
 
-Thanks!
--Peter
+Thanks,
+Brandon
+> 
+> > Thanks.
+> > Nas.
+> > 
+> > > 	dev->sram_pool = of_gen_pool_get(pdev->dev.of_node, "sram", 0);
+> > > 	if (!dev->sram_pool)
+> > > 		dev_warn(&pdev->dev, "sram node not found\n");
+> > >+	else
+> > >+		wave5_vdi_allocate_sram(dev);
+> > >
+> > > 	dev->product_code = wave5_vdi_read_register(dev,
+> > >VPU_PRODUCT_CODE_REGISTER);
+> > > 	ret = wave5_vdi_init(&pdev->dev);
+> > >@@ -259,6 +254,8 @@ static int wave5_vpu_probe(struct platform_device
+> > >*pdev)
+> > > err_clk_dis:
+> > > 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
+> > >
+> > >+	wave5_vdi_free_sram(dev);
+> > >+
+> > > 	return ret;
+> > > }
+> > >
+> > >@@ -275,6 +272,7 @@ static void wave5_vpu_remove(struct platform_device
+> > >*pdev)
+> > > 	v4l2_device_unregister(&dev->v4l2_dev);
+> > > 	wave5_vdi_release(&pdev->dev);
+> > > 	ida_destroy(&dev->inst_ida);
+> > >+	wave5_vdi_free_sram(dev);
+> > > }
+> > >
+> > > static const struct wave5_match_data ti_wave521c_data = {
+> > >diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> > >b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> > >index fa62a85080b5..8d88381ac55e 100644
+> > >--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> > >+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
+> > >@@ -749,7 +749,6 @@ struct vpu_device {
+> > > 	struct vpu_attr attr;
+> > > 	struct vpu_buf common_mem;
+> > > 	u32 last_performance_cycles;
+> > >-	u32 sram_size;
+> > > 	struct gen_pool *sram_pool;
+> > > 	struct vpu_buf sram_buf;
+> > > 	void __iomem *vdb_register;
+> > >--
+> > >2.44.0
+> > 
+> 
 
