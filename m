@@ -1,209 +1,159 @@
-Return-Path: <linux-kernel+bounces-108225-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108226-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 87ECA88080C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:07:23 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EE592880810
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:10:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35A7828472F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:07:22 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C2F284CC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:10:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 762885EE67;
-	Tue, 19 Mar 2024 23:07:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1822C5FB8B;
+	Tue, 19 Mar 2024 23:10:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b="lPpZal5U"
-Received: from PAUP264CU001.outbound.protection.outlook.com (mail-francecentralazon11021011.outbound.protection.outlook.com [52.101.167.11])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="c/QF7TMa"
+Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 286623D55D;
-	Tue, 19 Mar 2024 23:07:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.167.11
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710889633; cv=fail; b=n/iQm8WVA0SfI8OS49QbE2kxb1n8qRIF0Ht6o2sVHxHgqNqVnfKTcXf5Yz3YYw2V8QzemGbmXHg5eR6NIzR1L312gI5b/FINC8JPFDeD4SZQKj09BOFzaFOdxdBG3r9XKLRwALPW08PFsUNP28gzDWvnQ1o4Wr/7GUPdF72DF5g=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710889633; c=relaxed/simple;
-	bh=SIWgk6SMYkNoRglA1OadUQRN+DUaDuIzSTpI0bKYhY8=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=LLMWMuxLzO+EG9BIua2hv94KPdHxSgC7of7YWPO6Sk5/BDoHO1JXsAgZ6J1Bx4FFlWs0Z1TPOCDIbYvKp22vmp6oAj9He8RSIrjulE/J+KnKZYLJXUijGCChYRWNtOD+KQ36QJI5Id0kYFLjaYYuwXIFWuXdZKrCTzk6x5eq8Qo=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu; spf=pass smtp.mailfrom=csgroup.eu; dkim=pass (2048-bit key) header.d=csgroup.eu header.i=@csgroup.eu header.b=lPpZal5U; arc=fail smtp.client-ip=52.101.167.11
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=csgroup.eu
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=csgroup.eu
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=i07XMCF3EHrZcHxTks3Bl86t3xl+UfHwkgFDEfqXEbMgXBboXlYLfN9dmgzHDOyBUSNjakr71HqRkmTXPKVyIaZGqtxF/dFyauZZ2kG0pEsAkfSvDczUQKGB7XwaQErLjtp/gVRkeBSXF16LjMfG7isNeVQz1AxhYYrLyBfbJN5bZxeXEFgAu23hF5E4tps0lagQAUU5G1kSXSkDRXr/XU6p3mOHv3knDrrR642UbhJs3y/UVTAI2/DTDDP2w6COR+Ya6dnnzznv9G5YrcLt4FqdibdH9EwX569YEiG/y5qTnR+GPGOKUBXvXp4O8Wppb6jG/5fujtD0NTSmV5yrZw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=SIWgk6SMYkNoRglA1OadUQRN+DUaDuIzSTpI0bKYhY8=;
- b=E0SXt8o9/JhXRVunyF2rOlsxLUcHVsfyocvRGZgBxVK5BhLLTLAI7fe4cKjDXboLGOnCwYZjVvpqTRu01aIYVb3oa7XLKrdi5KoA6NetMGlHyZ/9tl8JWYlj7w4rGZIXJ8EEfesccAOJ1wvRS6elxrh8owyxVXMLcoyMXLEl7WanawAd5Fspo0v7ucDjD+KiRu/MB9+KfdssexpcQ1i18d/KfCndhZ71pH4DwJr8A3Z8pAuAmxYOmhbqF1AZD0+MAJ7KtEeyP1gLXHfT1SH9BEmfX7wuagCRNJmYZy7UmsrdiBEEL6O1b8xgNKF2oFN5MQYvnVu6do81LvRAy+/XIw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=csgroup.eu; dmarc=pass action=none header.from=csgroup.eu;
- dkim=pass header.d=csgroup.eu; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=csgroup.eu;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=SIWgk6SMYkNoRglA1OadUQRN+DUaDuIzSTpI0bKYhY8=;
- b=lPpZal5UpBSZWr7/GRfzvP4HU2NzgWSA/pK6fyu1iNhWqKlaB7UICCcItI1myglzMumG4M9hn0BGHKaZXuDivimqIEGvW8DfDVz+MSPxvE1nbbSfq2zXqXeYI9mISGuQS7ja0iuPNgoId/tgzNHryMWjCZT+JqZ42lS16wJ9ieWgjVBGtHw4JL5mWOh6i8KNWK4FSmjWCS8yAakbZm0fhI5bkW5HCYN16AUkpfDX3NEBgx3ziXg1cwWW+IApFRf3UP8M3MheuZWXTUAkSeaPCbBMC8bRKd2FgLDfhmkLEu8Fryk9eWQ8uQcE5n9FlVsyRuRDwf3fGY15FoXIqVgqug==
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:31::15)
- by MRZP264MB2729.FRAP264.PROD.OUTLOOK.COM (2603:10a6:501:1e::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.31; Tue, 19 Mar
- 2024 23:07:08 +0000
-Received: from MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e]) by MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
- ([fe80::c192:d40f:1c33:1f4e%6]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 23:07:08 +0000
-From: Christophe Leroy <christophe.leroy@csgroup.eu>
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Peter Xu <peterx@redhat.com>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "linux-mm@kvack.org" <linux-mm@kvack.org>,
-	"linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, Matthew Wilcox <willy@infradead.org>,
-	"linuxppc-dev@lists.ozlabs.org" <linuxppc-dev@lists.ozlabs.org>, Andrew
- Morton <akpm@linux-foundation.org>, "x86@kernel.org" <x86@kernel.org>, Mike
- Rapoport <rppt@kernel.org>, Muchun Song <muchun.song@linux.dev>,
-	"sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>, Michael Ellerman
-	<mpe@ellerman.id.au>, Nicholas Piggin <npiggin@gmail.com>, Aneesh Kumar K.V
-	<aneesh.kumar@kernel.org>, "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
-Subject: Re: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Topic: [PATCH 09/13] mm/powerpc: Redefine pXd_huge() with pXd_leaf()
-Thread-Index: AQHadZASkAUcDDurK02wtpi3kLRmM7E27NOAgABFZ4CAAAUJAIAGfI2AgAIFYYA=
-Date: Tue, 19 Mar 2024 23:07:08 +0000
-Message-ID: <e0417c2a-2ef1-4435-b5a7-aadfe90ff8f1@csgroup.eu>
-References: <20240313214719.253873-1-peterx@redhat.com>
- <20240313214719.253873-10-peterx@redhat.com>
- <7b7d6ce1-4a3f-4392-951d-a9bd146c954c@csgroup.eu> <ZfLzZekFBp3J6JUy@x1n>
- <1f6ad500-3ff7-44d4-8223-067bd2ed9ffe@csgroup.eu>
- <20240318161519.GA5825@nvidia.com>
-In-Reply-To: <20240318161519.GA5825@nvidia.com>
-Accept-Language: fr-FR, en-US
-Content-Language: fr-FR
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-user-agent: Mozilla Thunderbird
-authentication-results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=csgroup.eu;
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: MRZP264MB2988:EE_|MRZP264MB2729:EE_
-x-ms-office365-filtering-correlation-id: bb33fc70-d59d-4634-b1ab-08dc48694d1f
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- RNEsIE5gY1K/0eGdse2lih8ZPwec/AZJcone3w8ANRCwDhRVKgNjQrA9Z6OcYTbozRLsKj5SAgR5jfsC5ADO9tfJ++AdDDDdRDl0QvbZBcVzy4xS97USoaU2UK/4sBeUuAX6qEcZutb+VGbtZMrcWXLNXVpicLJtAlEkmjLNjCgStDleTOXGtd+1ZVD4uV77v8PleC4lQXz5G3D/1zETawE0aLVJNFevJw9MmmJGciszLt7k5K4VuaYuQuMMSk5MpLf8apCYHqtZUSASNfLTNW7MoIfY2aHrRGbxJnKSOynGZ0Dt3yWAOesFHzolEtxg3UIP22F7okH1zDaw0XK44/nWbfo127TuQAaCepoaWvNNvXM42mFVKdCV/715YNXQFf0Gah/guKhA/G8I8JgunWZhoT8Jto1oq5SRuiaK6TXQBYj55B46WLHbGy4UQNtrje9BxguNldhrDTP2/kOYAgUsaaizRaBFcRd7+NlIMhJF1oU/AGMgPEszd0dKTtIA1FY7Ttpb+aX1WlGaV0Q/JpSu6G+/nz+KSJD1EmmXCWiLBQC19zVM+9hYqBJRAZOShG5D6yZnKPgjqc7ebcOYBCvTcrmNhdFRnoXhSz22qeVOBg0RNhGdhyOJyrGVZrv16awnuieVHzfd6tiVWZKYm5tNSny1V+agHdSS5l/FCY83ejrViTITGOJ/PD0RZDLoO/3seCp6cgXEvlTXlQ4AgNxzOv3BiuSazcHIIV6o42c=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015)(38070700009);DIR:OUT;SFP:1102;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?utf-8?B?QUE1WndueHFnaVhROWw4ZDJNNGhyRzRwZm1HbFV1UlhsL0pkTHdDNklZRkto?=
- =?utf-8?B?OWYrWTJsempYNmt1ZjBleUlVNTQ3VmczQ1ZwZmRLU0hMT1QvNUV1UW5TcHRK?=
- =?utf-8?B?UTJqMDFORW9zZFdkcW53OGcvYXRvRFozSC9oL1NhallEOFAzOHlmbVB5UTM2?=
- =?utf-8?B?TWluNCsrS1ROYVNuMkRTMGlXRy9ndXROajlIQmQxcHpGcEh5TDc2NHlmblpq?=
- =?utf-8?B?OUpXclpmeUg5dUhDU2RkbHdLWTNCNVg5dXVYM1JFbmFRRDR3dVA0L3Fkb2lL?=
- =?utf-8?B?V2o1NURtTjdLUGUraDh3Z243dUtxU0lURVdFVHdQbmxEazZCcWdSZ3pUdHFn?=
- =?utf-8?B?RlBIOU13Q05lTXA3VVJsUi9MK3h0aXltWGlldzBpVVB6eFAxRGl1TCtoTHp4?=
- =?utf-8?B?MWZxYU8zQzVTMnZWQ0pmOGZjeXh1clpvdVFvNkMyeVZPOHhpRGtqNHJUemRR?=
- =?utf-8?B?Y2U1UDJlSEhpdWN0SjFCVjA1Vm5pMmhSK05ENW54MzNZYml5OTdERytoenFE?=
- =?utf-8?B?NFBBR1F0NFNTNjV6cytlc1BiMnZiUFUxWTF2RTh1LzVTMUd1TXl2RWV6Q3VN?=
- =?utf-8?B?RUZnV3FuWm8vWnREOEYxZmlyeDZmYk5hTDRHM1hZRW5YYy9pbmRwL095OW4v?=
- =?utf-8?B?WWNYcmVHMWQ3STFEdXdMM0JhenRRZFN3b0dLT2pvYWYvdlZ5QW5TTDJydjVQ?=
- =?utf-8?B?Y0xaWnNzaGRVOTJDemFZQjNLZDlMa2ppQWllT3NIOThQaFFscDdQV2xXbGE3?=
- =?utf-8?B?T1ZZM3pJL3pwZlpyWlRha0htRWozczdmZlFEZUI1T3BCQkh6UmRsbm0wRVpk?=
- =?utf-8?B?T0R4bUsrcWdmTHh5RFNKVjFRSDNMYjJqalZqVlBoaDJmYS9zWTM2RVRCY3lR?=
- =?utf-8?B?TnlkSUh1ZWdCNFN2dlpic0dHZ0JrZUhEYWhYc3krWXlJdGRhQkNuSTNCRGNa?=
- =?utf-8?B?aGJtZG9OZVBWOUQzL056K1FhZlhJQnEwbVZWZHh4ZngvekxVTTd0N2M1cmMx?=
- =?utf-8?B?K3R2Z1RIaHR3RkRWRExaMUdRai83SnArMCtXRWQ3T3pMeHU4V3BLdEMxUFo2?=
- =?utf-8?B?VkY3ekZZcnJIeHVHRU5QN0t5NG5ZaTJ3TTBLc2FrUmEzZm9HMDNZb3RFUnFZ?=
- =?utf-8?B?WWJYcHJWNWtYNkszMWc3K0VlWFRsMWVWM3BSYXhrZU11MDVjU1k1aFZQS0dB?=
- =?utf-8?B?QWhQeUhrZUhwVVpzNmU4U2hhd2x3dy8wQ2cxK1NmczMvNExmYUFaMmt3b2Fu?=
- =?utf-8?B?V01qRGRqQ2tHVUViNUlrMDJnKzE0WW90OVIvbVplSlNnQ1pQVXFMM2dOTjht?=
- =?utf-8?B?eW1BdHppR0luQURZVGp6dTlPaE0zR1NzRno5VXFNekpPK0FZVDBQUHpzbFlZ?=
- =?utf-8?B?Q0NwUlRFUTM4NHUyb3hsUUNQbURvaHFyaDZzRE42SEluamIzSjErM3o1TDVY?=
- =?utf-8?B?T1hnZ3RXSTFpbjNldkFWVlFKVzFNc2U3cnlsMXNYdmpjQUZGNjR0ZGJFZ1RQ?=
- =?utf-8?B?MWY3ZGxybjY1OW9HeE5NNEx5Z09qRVpZcGtnM25JbmpqSUJWZTBiUVBUb2Ix?=
- =?utf-8?B?OWFiNm94RkoyOUpuYmlpUFdNRHQ2NzNabytDV0pKeTZ1UU9vZUdoeCs3ZGdh?=
- =?utf-8?B?V1J1VzZrWGw4L0M2bFJQWjh6M29qc1J5VmUvZFJNRWl2OU9OVUE0YTRmL05m?=
- =?utf-8?B?TlZBZlBjVU9zai9KRFhCN1BrcmxnTUlOem1GMUhWUmdxbGYyRzF5Y3FFYnVp?=
- =?utf-8?B?RTZ1ZlZ0T25SZnZ1K0J0aFE3NEdFdTNQbXFHdmV1aEI2UkZtNFNRYm42QVdU?=
- =?utf-8?B?dFV2ME1HQTVBM3o1OGVudlZDWTZwYjJXdnk2WXcyWXhhbFM4RC8vTU4vMkhI?=
- =?utf-8?B?bHlJbFp5NlZhOG82TVJQTHpCbmdHYXFvV2ZnV2R1L0VZWlptR3dQY01qYmJx?=
- =?utf-8?B?dE8zbDdZMENGUEpPaEpIb29WMkdRanE5U1FQaUNnUEN6MExkSjBUVC95ODc4?=
- =?utf-8?B?VXp2TndhZHJQT1UxN0ZBd21GUm15Q0FhN2hqcDk0VVk4cXM4cGJUd0Z2RWJC?=
- =?utf-8?B?NXpQWDlTN0w5RHJNZ1paYVNnUHI0TVJHT1BhUnNkc21GV2Fuc2NUWHBTb2lP?=
- =?utf-8?B?SGhTQVdiWmVmL1g2eHNwam54TmNhZTArQ0U2bi94eTlacXBFU1NsTzlKbGQx?=
- =?utf-8?B?amc9PQ==?=
-Content-Type: text/plain; charset="utf-8"
-Content-ID: <EE40AF53CDBE0C43995A0518B12E0F31@FRAP264.PROD.OUTLOOK.COM>
-Content-Transfer-Encoding: base64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA81A4F889
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:10:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710889816; cv=none; b=iBHr6R6ucJa2me6kh08ZPkpEPDQZxe24jE7rP+RLmkuERNDpsx/8Zu5+nP1XcZx3vIMS8WNZQXW9Vmtuqg/KOp3Yoz7/uKWVFxZFwg2l3MzC7ZP2u4wAb4SIpE0a6DQn6EJfb8wTA8iF37nWqla66aWpd5tnW+vPuGBWfZ6tvM8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710889816; c=relaxed/simple;
+	bh=n2hwhhpCp+wrS8iH5XBuAd5W5hKp1kphMF+/gXoFfXA=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=EKa5ZxW9tK/4d2gv9Dx51FnV2rZAj3Lnr8//9iCVVquNwEc+gfB+3itovNiXHqgT6nocAE8bzBhKJRiqP8KHGNuN+2FP5DH9ngOyZNH94GE6b/SoqTlGnKIF7+NGBnsIba48iuR6BeQi23oiE3QgTeXGCGgX6iztadW4jbbpGM8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=c/QF7TMa; arc=none smtp.client-ip=209.85.219.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
+Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so5563866276.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:10:13 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=paul-moore.com; s=google; t=1710889813; x=1711494613; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=C+dHH9ODplRPDsF7SLLanW1hsK5MRMZ53v3XJwlytqw=;
+        b=c/QF7TMaLp6yUZO44kvhv4DltTfXDhHCHdYZxZY51HjneZ14x8gZrL+qr+oql8uVnL
+         HJWKL9ghAvhcw+W2Fqk1teId9IpRR4NDF9ty3xv8puyvLZIPq0F8+To4fHZU5Y3uPU46
+         ISrYhRw//mbf/dUE7Pwcw1k3HYujLXanZv/1W4JekHu+LCO2dPElFLsbRMYaG9m/4Q/p
+         Ma8LeMFPZ4zEnxN1JxfdQJ324TBJGpHfT9Umt5B+vDPGdDCZTuofMYxS54iQ6MqaOpL8
+         FJFv0SfoWFso7z3O6fb9536wLzo1J3YElC6/Wb0W9dEbyhz+xyeXDh0k94z8bubCsnoI
+         RPIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710889813; x=1711494613;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=C+dHH9ODplRPDsF7SLLanW1hsK5MRMZ53v3XJwlytqw=;
+        b=U1aeZ2UcyYkRDVF4cIn18fz1tahS0APEt/NsXItGyNfDTHxtsWxD7Go3cXqAQnKzX4
+         AsZi3M8FFXTzA8ctHIn28vxRIcaZhxggEr1Gzv3O5n+TWHRgNEvK2a9Pzp3A+ktL8SKd
+         wnFY8hYSLgINs5ZCKnmbvks7EUb/1Rft4QQlcCMMY2zn265I4iOfXB7t9iboZogq7fFZ
+         r0u8umsz+tUHsCs/Hg7WCksL3GTAxWiC1UFF77ZJi/fnXkZkTEw/pwWrKaNjCPi3GmqO
+         31AddNIq++uw+oKUxeeg5xnpTsRiFAtcd3kvqDz2CuLYVvjRYXzKWJJCNqfPxjnjyvGT
+         h8EA==
+X-Forwarded-Encrypted: i=1; AJvYcCXCIJLyPoaly7Y5DlvE4mUNE4tEc+WADYGsLiYVGr3EtitNdgusEAml9OjMS+pa/o+Gvjp/FdxT5bxvLnNAb9bCpylVMNsqn1dSyF7s
+X-Gm-Message-State: AOJu0YwzRj7qp3VlMNeTijHOoUwldB1Jk6wC4pu+4GnQhpoK2MUaExEo
+	2uJTzyZJND22L8JhyEf8rfsm7KfROxGCW1NSVYC/JNJ5fdpvqc5b8dAJmsj7SsyqA3YoEYNB9tP
+	CwwJMiEUqbLHaGT8H7KD4RBHfVqV+Q53wDW/9
+X-Google-Smtp-Source: AGHT+IG3Yh4bbfa1wN00q4KaF6p48afEQKOxM8IY1af14YL2d/7MolgsUvabXrQz8hWdkCEJDKcZlgNSYZvMusHk3aM=
+X-Received: by 2002:a25:a547:0:b0:dc6:cf96:2956 with SMTP id
+ h65-20020a25a547000000b00dc6cf962956mr14662766ybi.44.1710889812886; Tue, 19
+ Mar 2024 16:10:12 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: csgroup.eu
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: MRZP264MB2988.FRAP264.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: bb33fc70-d59d-4634-b1ab-08dc48694d1f
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 23:07:08.1998
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 9914def7-b676-4fda-8815-5d49fb3b45c8
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: oga5Smck483vhPlQBah2PaCKh1R6s2eYTe42Ukg3kh2wq8wkxdzda+PH+x5rL2G8iuf05dDwKbEi8pVKdlFhEBMGMAGHLp4H++ayWXTdfAs=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MRZP264MB2729
+References: <20240315181032.645161-1-cgzones@googlemail.com>
+ <20240315181032.645161-2-cgzones@googlemail.com> <CAHC9VhRkawYWQN0UY2R68Qn4pRijpXgu97YOr6XPA7Ls0-zQcA@mail.gmail.com>
+ <5368DC74-41CF-4450-AF6F-FFB51EFCCF99@kernel.org>
+In-Reply-To: <5368DC74-41CF-4450-AF6F-FFB51EFCCF99@kernel.org>
+From: Paul Moore <paul@paul-moore.com>
+Date: Tue, 19 Mar 2024 19:10:02 -0400
+Message-ID: <CAHC9VhTpTbVL4=tchR3Bpcfe0Hsijf5XJ6wsEvU7cu8eUy_iDA@mail.gmail.com>
+Subject: Re: [RFC PATCH 1/2] lsm: introduce new hook security_vm_execstack
+To: Kees Cook <kees@kernel.org>
+Cc: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>, 
+	linux-security-module@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>, 
+	Kees Cook <keescook@chromium.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
+	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, James Morris <jmorris@namei.org>, 
+	"Serge E. Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
+	Andrii Nakryiko <andrii@kernel.org>, Casey Schaufler <casey@schaufler-ca.com>, 
+	Alexei Starovoitov <ast@kernel.org>, Ondrej Mosnacek <omosnace@redhat.com>, 
+	Roberto Sassu <roberto.sassu@huawei.com>, Alfred Piccioni <alpic@google.com>, 
+	John Johansen <john.johansen@canonical.com>, linux-mm@kvack.org, 
+	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-DQoNCkxlIDE4LzAzLzIwMjQgw6AgMTc6MTUsIEphc29uIEd1bnRob3JwZSBhIMOpY3JpdMKgOg0K
-PiBPbiBUaHUsIE1hciAxNCwgMjAyNCBhdCAwMToxMTo1OVBNICswMDAwLCBDaHJpc3RvcGhlIExl
-cm95IHdyb3RlOg0KPj4NCj4+DQo+PiBMZSAxNC8wMy8yMDI0IMOgIDEzOjUzLCBQZXRlciBYdSBh
-IMOpY3JpdMKgOg0KPj4+IE9uIFRodSwgTWFyIDE0LCAyMDI0IGF0IDA4OjQ1OjM0QU0gKzAwMDAs
-IENocmlzdG9waGUgTGVyb3kgd3JvdGU6DQo+Pj4+DQo+Pj4+DQo+Pj4+IExlIDEzLzAzLzIwMjQg
-w6AgMjI6NDcsIHBldGVyeEByZWRoYXQuY29tIGEgw6ljcml0wqA6DQo+Pj4+PiBGcm9tOiBQZXRl
-ciBYdSA8cGV0ZXJ4QHJlZGhhdC5jb20+DQo+Pj4+Pg0KPj4+Pj4gUG93ZXJQQyBib29rM3MgNEsg
-bW9zdGx5IGhhcyB0aGUgc2FtZSBkZWZpbml0aW9uIG9uIGJvdGgsIGV4Y2VwdCBwWGRfaHVnZSgp
-DQo+Pj4+PiBjb25zdGFudGx5IHJldHVybnMgMCBmb3IgaGFzaCBNTVVzLiAgQXMgTWljaGFlbCBF
-bGxlcm1hbiBwb2ludGVkIG91dCBbMV0sDQo+Pj4+PiBpdCBpcyBzYWZlIHRvIGNoZWNrIF9QQUdF
-X1BURSBvbiBoYXNoIE1NVXMsIGFzIHRoZSBiaXQgd2lsbCBuZXZlciBiZSBzZXQgc28NCj4+Pj4+
-IGl0IHdpbGwga2VlcCByZXR1cm5pbmcgZmFsc2UuDQo+Pj4+Pg0KPj4+Pj4gQXMgYSByZWZlcmVu
-Y2UsIF9fcFttdV1kX21raHVnZSgpIHdpbGwgdHJpZ2dlciBhIEJVR19PTiB0cnlpbmcgdG8gY3Jl
-YXRlDQo+Pj4+PiBzdWNoIGh1Z2UgbWFwcGluZ3MgZm9yIDRLIGhhc2ggTU1Vcy4gIE1lYW53aGls
-ZSwgdGhlIG1ham9yIHBvd2VycGMgaHVnZXRsYg0KPj4+Pj4gcGd0YWJsZSB3YWxrZXIgX19maW5k
-X2xpbnV4X3B0ZSgpIGFscmVhZHkgdXNlZCBwWGRfbGVhZigpIHRvIGNoZWNrIGh1Z2V0bGINCj4+
-Pj4+IG1hcHBpbmdzLg0KPj4+Pj4NCj4+Pj4+IFRoZSBnb2FsIHNob3VsZCBiZSB0aGF0IHdlIHdp
-bGwgaGF2ZSBvbmUgQVBJIHBYZF9sZWFmKCkgdG8gZGV0ZWN0IGFsbCBraW5kcw0KPj4+Pj4gb2Yg
-aHVnZSBtYXBwaW5ncy4gIEFGQUlDVCB3ZSBuZWVkIHRvIHVzZSB0aGUgcFhkX2xlYWYoKSBpbXBs
-IChyYXRoZXIgdGhhbg0KPj4+Pj4gcFhkX2h1Z2UoKSBvbmVzKSB0byBtYWtlIHN1cmUgaWUuIFRI
-UHMgb24gaGFzaCBNTVUgd2lsbCBhbHNvIHJldHVybiB0cnVlLg0KPj4+Pg0KPj4+PiBBbGwga2lu
-ZHMgb2YgaHVnZSBtYXBwaW5ncyA/DQo+Pj4+DQo+Pj4+IHBYZF9sZWFmKCkgd2lsbCBkZXRlY3Qg
-b25seSBsZWFmIG1hcHBpbmdzIChsaWtlIHBYZF9odWdlKCkgKS4gVGhlcmUgYXJlDQo+Pj4+IGFs
-c28gaHVnZSBtYXBwaW5ncyB0aHJvdWdoIGh1Z2VwZC4gT24gcG93ZXJwYyA4eHggd2UgaGF2ZSA4
-TSBodWdlIHBhZ2VzDQo+Pj4+IGFuZCA1MTJrIGh1Z2UgcGFnZXMuIEEgUEdEIGVudHJ5IGNvdmVy
-cyA0TSBzbyBwZ2RfbGVhZigpIHdvbid0IHJlcG9ydA0KPj4+PiB0aG9zZSBodWdlIHBhZ2VzLg0K
-Pj4+DQo+Pj4gQWggeWVzLCBJIHNob3VsZCBhbHdheXMgbWVudGlvbiB0aGlzIGlzIGluIHRoZSBj
-b250ZXh0IG9mIGxlYWYgaHVnZSBwYWdlcw0KPj4+IG9ubHkuICBBcmUgdGhlIGV4YW1wbGVzIHlv
-dSBwcm92aWRlZCBhbGwgZmFsbCBpbnRvIGh1Z2VwZCBjYXRlZ29yeT8gIElmIHNvDQo+Pj4gSSBj
-YW4gcmV3b3JkIHRoZSBjb21taXQgbWVzc2FnZSwgYXM6DQo+Pg0KPj4gT24gcG93ZXJwYyA4eHgs
-IG9ubHkgdGhlIDhNIGh1Z2UgcGFnZXMgZmFsbCBpbnRvIHRoZSBodWdlcGQgY2FzZS4NCj4+DQo+
-PiBUaGUgNTEyayBodWdlcGFnZXMgYXJlIGF0IFBURSBsZXZlbCwgdGhleSBhcmUgaGFuZGxlZCBt
-b3JlIG9yIGxlc3MgbGlrZQ0KPj4gQ09OVF9QVEUgb24gQVJNLiBzZWUgZnVuY3Rpb24gc2V0X2h1
-Z2VfcHRlX2F0KCkgZm9yIG1vcmUgY29udGV4dC4NCj4+DQo+PiBZb3UgY2FuIGFsc28gbG9vayBh
-dCBwdGVfbGVhZl9zaXplKCkgYW5kIHBnZF9sZWFmX3NpemUoKS4NCj4gDQo+IElNSE8gbGVhZiBz
-aG91bGQgcmV0dXJuIGZhbHNlIGlmIHRoZSB0aGluZyBpcyBwb2ludGluZyB0byBhIG5leHQgbGV2
-ZWwNCj4gcGFnZSB0YWJsZSwgZXZlbiBpZiB0aGF0IG5leHQgbGV2ZWwgaXMgZnVsbHkgcG9wdWxh
-dGVkIHdpdGggY29udGlndW91cw0KPiBwYWdlcy4NCj4gDQo+IFRoaXMgc2VlbXMgbW9yZSBhbGln
-bmVkIHdpdGggdGhlIGNvbnRpZyBwYWdlIGRpcmVjdGlvbiB0aGF0IGh1Z2VwZA0KPiBzaG91bGQg
-YmUgbW92ZWQgb3ZlciB0by4uDQoNClNob3VsZCBodWdlcGQgYmUgbW92ZWQgdG8gdGhlIGNvbnRp
-ZyBwYWdlIGRpcmVjdGlvbiwgcmVhbGx5ID8NCg0KV291bGQgaXQgYmUgYWNjZXB0YWJsZSB0aGF0
-IGEgOE0gaHVnZXBhZ2UgcmVxdWlyZXMgMjA0OCBjb250aWcgZW50cmllcyANCmluIDIgcGFnZSB0
-YWJsZXMsIHdoZW4gdGhlIGh1Z2VwZCBhbGxvd3MgYSBzaW5nbGUgZW50cnkgPyBXb3VsZCBpdCBi
-ZSANCmFjY2VwdGFibGUgcGVyZm9ybWFuY2V3aXNlID8NCg0KPiANCj4+IEJ5IHRoZSB3YXkgcGdk
-X2xlYWZfc2l6ZSgpIGxvb2tzIG9kZCBiZWNhdXNlIGl0IGlzIGNhbGxlZCBvbmx5IHdoZW4NCj4+
-IHBnZF9sZWFmX3NpemUoKSByZXR1cm5zIHRydWUsIHdoaWNoIG5ldmVyIGhhcHBlbnMgZm9yIDhN
-IHBhZ2VzLg0KPiANCj4gTGlrZSB0aGlzLCB5b3Ugc2hvdWxkIHJlYWNoIHRoZSBhY3R1YWwgZmlu
-YWwgbGVhZiB0aGF0IHRoZSBIVyB3aWxsDQo+IGxvYWQgYW5kIGxlYWZfc2l6ZSgpIHNob3VsZCBz
-YXkgaXQgaXMgZ3JlYXRlciBzaXplIHRoYW4gdGhlIGN1cnJlbnQNCj4gdGFibGUgbGV2ZWwuIE90
-aGVyIGxldmVscyBzaG91bGQgcmV0dXJuIDAuDQo+IA0KPiBJZiBuZWNlc3NhcnkgdGhlIGNvcmUg
-TU0gY29kZSBzaG91bGQgZGVhbCB3aXRoIHRoaXMgYnkgaXRlcmF0aW5nIG92ZXINCj4gYWRqYWNl
-bnQgdGFibGVzLg0KPiANCj4gSmFzb24NCg==
+On Fri, Mar 15, 2024 at 11:24=E2=80=AFPM Kees Cook <kees@kernel.org> wrote:
+> On March 15, 2024 1:22:39 PM PDT, Paul Moore <paul@paul-moore.com> wrote:
+> >On Fri, Mar 15, 2024 at 2:10=E2=80=AFPM Christian G=C3=B6ttsche
+> ><cgzones@googlemail.com> wrote:
+> >>
+> >> Add a new hook guarding instantiations of programs with executable
+> >> stack.  They are being warned about since commit 47a2ebb7f505 ("execve=
+:
+> >> warn if process starts with executable stack").  Lets give LSMs the
+> >> ability to control their presence on a per application basis.
+> >>
+> >> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
+> >> ---
+> >>  fs/exec.c                     |  4 ++++
+> >>  include/linux/lsm_hook_defs.h |  1 +
+> >>  include/linux/security.h      |  6 ++++++
+> >>  security/security.c           | 13 +++++++++++++
+> >>  4 files changed, 24 insertions(+)
+> >
+> >Looking at the commit referenced above, I'm guessing the existing
+> >security_file_mprotect() hook doesn't catch this?
+> >
+> >> diff --git a/fs/exec.c b/fs/exec.c
+> >> index 8cdd5b2dd09c..e6f9e980c6b1 100644
+> >> --- a/fs/exec.c
+> >> +++ b/fs/exec.c
+> >> @@ -829,6 +829,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
+> >>         BUG_ON(prev !=3D vma);
+> >>
+> >>         if (unlikely(vm_flags & VM_EXEC)) {
+> >> +               ret =3D security_vm_execstack();
+> >> +               if (ret)
+> >> +                       goto out_unlock;
+> >> +
+> >>                 pr_warn_once("process '%pD4' started with executable s=
+tack\n",
+> >>                              bprm->file);
+> >>         }
+> >
+> >Instead of creating a new LSM hook, have you considered calling the
+> >existing security_file_mprotect() hook?  The existing LSM controls
+> >there may not be a great fit in this case, but I'd like to hear if
+> >you've tried that, and if you have, what made you decide a new hook
+> >was the better option?
+>
+> Also, can't MDWE handle this already?
+> https://git.kernel.org/linus/b507808ebce23561d4ff8c2aa1fb949fe402bc61
+
+It looks like it, but that doesn't mean there isn't also value in an
+associated LSM hook as the LSM hook would admins and security policy
+developers/analysts to incorporate this as part of the system's
+security policy.  It's great that we have all of these cool knobs that
+we can play with independent of each other, but sometimes you really
+want a single unified security policy that you can look at, analyze,
+and reason about.
+
+Regardless, my previous comments still stand, I'd like to hear
+verification that the existing security_file_mprotect() hook is not
+sufficient, and if its current placement is lacking, why calling it
+from a second location wasn't practical and required the creation of a
+new LSM hook.
+
+--=20
+paul-moore.com
 
