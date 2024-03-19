@@ -1,289 +1,165 @@
-Return-Path: <linux-kernel+bounces-107740-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107741-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id AE6AB88010B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:48:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ED10388010A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:48:09 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C68381C22062
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:48:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 78F101F22AFF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:48:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CED587FBB7;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2DA257CF03;
 	Tue, 19 Mar 2024 15:48:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b="J0vcsUth";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="X0tz1iv0"
-Received: from wfout3-smtp.messagingengine.com (wfout3-smtp.messagingengine.com [64.147.123.146])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VsE+Dgj7"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49ACB2E400
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:48:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=64.147.123.146
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FF22657D3;
+	Tue, 19 Mar 2024 15:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710863282; cv=none; b=L18S8kPNGpLvrxZQ+IcvqmYDBKzPHIm7FsHzUxRQRMYqYhvnbG9HWhcmqCJI7002j7gZ5soxt1E+lO1QZzjsqPEORMlDQQ2LYE1Hpv+vPxQsqPSPvobnIXABsT0Kf5k5u63S+bxlR7xDe8o/pFfUNWTHc009xui5Tt8JAx2SMPU=
+	t=1710863282; cv=none; b=tu3JzoEpH8Rmus7298Via0HcFc8WBO6lUTS3RPqepvjcUEc8AnDDj9G44xTfySn59O2E0Pdt7Oa5j1wdOqmy8RxMa133z/AnIPbWhHqPIStvKdg4TOQPB/tuiXQFR06grCuC5/gqzgXPm7VbkiEf5ipsWkqu2Fk/mX4bAtJPN0k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710863282; c=relaxed/simple;
-	bh=Bc1T32A34DjgDza/Nbd7gpMv8tERceu8/EdVkXPeZ/U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=lz8QWDwwkS0bbMijQlBSlRHnhnGE2cfVjvJyAinPzFyWGLV+rtrJVyfGFhi0h2Z/hjrGtitHNBeFgGADLlizV42elHA4K2CiFjxBzDLpjFhE+V/jS9O2PU4yvndwnkJIw+nlJblmPk+v28nxXQhycvLmArErQ4KRXTWgL/DvVjM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com; spf=pass smtp.mailfrom=sent.com; dkim=pass (2048-bit key) header.d=sent.com header.i=@sent.com header.b=J0vcsUth; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=X0tz1iv0; arc=none smtp.client-ip=64.147.123.146
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=sent.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sent.com
-Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
-	by mailfout.west.internal (Postfix) with ESMTP id 790B21C000F7;
-	Tue, 19 Mar 2024 11:47:58 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute7.internal (MEProxy); Tue, 19 Mar 2024 11:47:59 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=sent.com; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:message-id:mime-version:reply-to
-	:reply-to:subject:subject:to:to; s=fm2; t=1710863277; x=
-	1710949677; bh=nessaiOBTaNCwP7gjUOn86nFinuzdOOpq2kbEfd5EGw=; b=J
-	0vcsUthTSQYrwXZb6x4NqkHmEFK8yNAKPH0eud1LI9GxXiA4y6Mh+lULGpL352Z8
-	6Ck0j00psKFiBfpR6y/Bh48vki09ys+eSlehhtyprmArhs+X2kO+jALDpO/6bL8M
-	gh6VuMoCSrFea8mcbIDfWqPsj4wHeqWAzMOu9tZMGKAH9LABV2ZI8tiDa1Dg/E98
-	kgfdPdu/VF34hy/G/UDENvx3OPytMZpFr/ZZXG2zpjx0gA0JuKdjBEiM9L4YFlrg
-	0DaYh6Wka0wt1j6NZvzLqcEMGGbbAN+iWBCZQndZazIOWHxy0ff04YvnO4TXRMG9
-	qpsJ9p4WHuS+5616exHFA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:message-id:mime-version:reply-to:reply-to
-	:subject:subject:to:to:x-me-proxy:x-me-proxy:x-me-sender
-	:x-me-sender:x-sasl-enc; s=fm2; t=1710863277; x=1710949677; bh=n
-	essaiOBTaNCwP7gjUOn86nFinuzdOOpq2kbEfd5EGw=; b=X0tz1iv04y3dkcwvP
-	OLigajGJCLsEEzXoX99mR0e/P/WBdFXnAeyY8pqKsydTTcuSlQu1IQHo1zr0kvA+
-	aoSO+AamEqs2vocidbud0M3pCfJQvdUMOakknueQcV+YAk6YaQCoNmaRTriJYkK1
-	gub+QxUCMSoYPxzp6He5dTlfAHtqpzV+aDqdPs95DE0FVh74BKFI6PvcySUXKUu/
-	mn6i0dQbUh4EqnjyCZuuo/ndrbhO86oed4bBUKAvIDN9pgxOwjJNfSLhioGKxzYg
-	gzv3fm2x+oAuHGe68LnJX79hs2+sfce+KgOo+2xdk8SmBSMSBqfbvIE1LCBOsr84
-	KBW+w==
-X-ME-Sender: <xms:rLP5ZSM-qdF3yIUHvLUbGYH-VL4TgqmOd6-qbj1q1kteRjC4lUJdtw>
-    <xme:rLP5ZQ8DHT2HdMEO80kMF1dy_KXMQ9rpHFWMO0h2enb8huBmXoMPM8mdss1-oeD6Q
-    ptDhF3dmxunpyRxQg>
-X-ME-Received: <xmr:rLP5ZZQfTuGBucvO-fyuxy8cFmy6Urd9zs14lj-Ny-1o0ZtjNzBS4PYUqLQ1gT5ey12wKI9pCsmr8jjZvdkG1kH_2yAcJZ48iM1RxCd2-jEPu9cPvuypTq6z>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrledtgdehgecutefuodetggdotefrodftvf
-    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
-    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
-    fjughrpefhvfevufffkfforhggtgfgsehtkeertdertdejnecuhfhrohhmpegkihcujggr
-    nhcuoeiiihdrhigrnhesshgvnhhtrdgtohhmqeenucggtffrrghtthgvrhhnpeetudevhe
-    etheehieetiefhjeevjeeltdfgvdeiueeiudetffdtvedthfetvedtffenucffohhmrghi
-    nhepkhgvrhhnvghlrdhorhhgnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpe
-    hmrghilhhfrhhomhepiihirdihrghnsehsvghnthdrtghomh
-X-ME-Proxy: <xmx:rLP5ZSvW9dcktSUDDJ3SQJJb4DVoWtpym0mVf2cUmjyoemIWyNCLnQ>
-    <xmx:rLP5ZaeW_se_tU8FTiKsocZtiUEm7h1zDVCEZJCOpkiJRvZIHsDjRg>
-    <xmx:rLP5ZW3LmhfD6dx9NgWNRkEpEm5TnSxz5HIkUUwQESv43uD5vJuQsw>
-    <xmx:rLP5Ze8cxqD-jRpES4m3QcyM9iNKjIUuVDA-UJ77rZ68cQcA8ZieyQ>
-    <xmx:rbP5ZQ03f8EYYZuK_LRJqHT9vqyDjHqsbEdd18SVaEwFxGdWfQQONBzr9U0>
-Feedback-ID: iccd040f4:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 Mar 2024 11:47:56 -0400 (EDT)
-From: Zi Yan <zi.yan@sent.com>
-To: linux-mm@kvack.org
-Cc: Zi Yan <ziy@nvidia.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	"Matthew Wilcox (Oracle)" <willy@infradead.org>,
-	Yang Shi <shy828301@gmail.com>,
-	Huang Ying <ying.huang@intel.com>,
-	"Kirill A . Shutemov" <kirill.shutemov@linux.intel.com>,
-	Ryan Roberts <ryan.roberts@arm.com>,
-	Baolin Wang <baolin.wang@linux.alibaba.com>,
-	"Yin, Fengwei" <fengwei.yin@intel.com>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v3] mm/migrate: split source folio if it is on deferred split list
-Date: Tue, 19 Mar 2024 11:47:53 -0400
-Message-ID: <20240319154753.253262-1-zi.yan@sent.com>
-X-Mailer: git-send-email 2.43.0
-Reply-To: Zi Yan <ziy@nvidia.com>
+	bh=eHlATGPtHi4Dvca5jjoXEJntrvdbTpLgFF3K6HWMAzY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ndYwGMDp0HzAOTnFpzCckyNv8OewHm0DM3Cw9KaLQTqzqYZ27DEUV5CtfX4mEBZF8wutRC0Pr6D5xqpfO8AK/MQ7RsCo2gjf3MIgjOI19ZOEIdvWT2d+OBGUX5Z6Czmg8b5GflO6W7kUzHIZtfMKpD22gCucfU955m7P4PRKqdY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VsE+Dgj7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 11012C433F1;
+	Tue, 19 Mar 2024 15:47:59 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710863281;
+	bh=eHlATGPtHi4Dvca5jjoXEJntrvdbTpLgFF3K6HWMAzY=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VsE+Dgj7KK5X9edOigr2E9e0soVH+z1IP9FfEPEuF2WC5aZzxXt8QUODUToTIwdWA
+	 TSPeAV/m5dgZiwVBZy90MnQQ2RNSdiLA9yaPtSRLQQzU/AEWAjcxcwKcbbDoyGTlZK
+	 GlXC/lllWrTuWCvXbilzgE3r129QA0y2Ob7DGXN6uNylVU3NeQXDJG0X0KfRK+QUb6
+	 aMnjD5FMNGWA6xhWtzJTEi1l6tzWDhvUgfNzAuh8dwlu7zkFCLYRQxJgBxm+aQSzgZ
+	 M+2Zsx5jNwi40c3wns11IgtOBLZK93TYDsR5ys30AHgc6wbRIscvljvw1d+riJF9Kh
+	 oCF7zuBJr3/Yw==
+Date: Tue, 19 Mar 2024 15:47:56 +0000
+From: Will Deacon <will@kernel.org>
+To: Robin Murphy <robin.murphy@arm.com>
+Cc: Tyler Hicks <code@tyhicks.com>, Jason Gunthorpe <jgg@ziepe.ca>,
+	Jerry Snitselaar <jsnitsel@redhat.com>,
+	linux-arm-kernel@lists.infradead.org, iommu@lists.linux.dev,
+	linux-kernel@vger.kernel.org, Dexuan Cui <decui@microsoft.com>,
+	Easwar Hariharan <eahariha@linux.microsoft.com>
+Subject: Re: Why is the ARM SMMU v1/v2 put into bypass mode on kexec?
+Message-ID: <20240319154756.GB2901@willie-the-truck>
+References: <ZfKsAIt8RY/JcL/V@sequoia>
+ <ZfNKv70oqqwMwIeS@sequoia>
+ <120d0dec-450f-41f8-9e05-fd763e84f6dd@arm.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <120d0dec-450f-41f8-9e05-fd763e84f6dd@arm.com>
+User-Agent: Mutt/1.10.1 (2018-07-13)
 
-From: Zi Yan <ziy@nvidia.com>
+On Tue, Mar 19, 2024 at 12:57:52PM +0000, Robin Murphy wrote:
+> On 2024-03-14 7:06 pm, Tyler Hicks wrote:
+> > On 2024-03-14 09:55:46, Tyler Hicks wrote:
+> > > Given that drivers are only optionally asked to implement the .shutdown
+> > > hook, which is required to properly quiesce devices before a kexec, why
+> > > is it that we put the ARM SMMU v1/v2 into bypass mode in the arm-smmu
+> > > driver's own .shutdown hook?
+> > > 
+> > >   arm_smmu_device_shutdown() -> set SMMU_sCR0.CLIENTPD bit to 1
+> > > 
+> > > Driver authors often forget to even implement a .shutdown hook, which
+> > > results in some hard-to-debug memory corruption issues in the kexec'ed
+> > > target kernel due to pending DMA operations happening on untranslated
+> > > addresses. Why not leave the SMMU in translate mode but clear the stream
+> > > mapping table (or maybe even call arm_smmu_device_reset()) in the SMMU's
+> > > .shutdown hook to prevent the memory corruption from happening in the
+> > > first place?
+> > > 
+> > > Fully acknowledging that the proper fix is to quiesce the devices, I
+> > > feel like resetting the SMMU and leaving it in translate mode across
+> > > kexec would be more consistent with the intent behind v5.2 commit
+> > > 954a03be033c ("iommu/arm-smmu: Break insecure users by disabling bypass
+> > > by default"). The incoming transactions of devices, that weren't
+> > > properly quiesced during a kexec, would be blocked until their drivers
+> > > have a chance to reinitialize the devices in the new kernel.
+> > > 
+> > > I appreciate any help understanding why bypass mode is utilized here as
+> > > I'm sure there are nuances that I haven't considered. Thank you!
+> > 
+> > I now see that Will has previously mentioned that he'd be open to such a
+> > change:
+> > 
+> >   One thing I would be in favour of is changing the ->shutdown() code to
+> >   honour disable_bypass=1 so that we put the SMMU in an aborting state
+> >   instead of passthrough. Would that help at all? It would at least
+> >   avoid the memory corruption on missing shutdown callback.
+> > 
+> >   - https://lore.kernel.org/linux-arm-kernel/20200608113852.GA3108@willie-the-truck/
+> > 
+> > Robin mentions the need to support kexec into a non-SMMU-aware OS. I
+> > hadn't considered that bit of complexity:
+> > 
+> >   ... consider if the first kernel *did* leave it enabled with whatever
+> >   left-over translations in place, and kexec'ed into another OS that
+> >   wasn't SMMU-aware...
+> > 
+> >   - https://lore.kernel.org/linux-arm-kernel/e072f61a-d6cf-2e34-efd5-c1db38c5c622@arm.com/
+> > 
+> > Now that we're 3-4 years removed from that conversation, has anything
+> > changed? Will, is there anything we'd need to watch out for if we were
+> > to prototype this sort of change? For example, would it be wise to
+> > disable fault interrupts when putting the SMMU in an aborting state
+> > before kexec'ing?
 
-If the source folio is on deferred split list, it is likely some subpages
-are not used. Split it before migration to avoid migrating unused subpages.
+I've grown older and wiser in those four years and no longer think that's
+a good idea :) Well, older maybe, but the reality is that the code around
+the driver has evolved and 'disable_bypass' is even more of a hack now
+than it used to be.
 
-Commit 616b8371539a6 ("mm: thp: enable thp migration in generic path")
-did not check if a THP is on deferred split list before migration, thus,
-the destination THP is never put on deferred split list even if the source
-THP might be. The opportunity of reclaiming free pages in a partially
-mapped THP during deferred list scanning is lost, but no other harmful
-consequence is present[1].
+> Fundamentally, we expect the SMMU to be disabled at initial boot, so per the
+> intent of kexec we put it back in that state. That also seems the most
+> likely expectation of anything we could kexec into, given that it is the
+> natural state of an untouched SMMU after a hard reset, and thus comes out as
+> the least-worst option.
 
-From v2:
-1. Split the source folio instead of migrating it (per Matthew Wilcox)[2].
+Heh, that sounded too good to be true when I read it so I went and looked at
+the code:
 
-From v1:
-1. Used dst to get correct deferred split list after migration
-   (per Ryan Roberts).
+SMMUv3: arm_smmu_device_shutdown() -> clears CR0 but doesn't touch GBPA
+SMMUv2: arm_smmu_device_shutdown() -> writes CLIENTPD to CR0
 
-[1]: https://lore.kernel.org/linux-mm/03CE3A00-917C-48CC-8E1C-6A98713C817C@nvidia.com/
-[2]: https://lore.kernel.org/linux-mm/Ze_P6xagdTbcu1Kz@casper.infradead.org/
+So it's a bit of a muddle afaict; SMMUv2 explicitly goes into bypass
+whereas SMMUv3 probably does honour disable_bypass=false! Did I miss
+something?
 
-Fixes: 616b8371539a ("mm: thp: enable thp migration in generic path")
-Signed-off-by: Zi Yan <ziy@nvidia.com>
----
- mm/huge_memory.c | 22 ------------------
- mm/internal.h    | 23 +++++++++++++++++++
- mm/migrate.c     | 60 +++++++++++++++++++++++++++++++++++++++---------
- 3 files changed, 72 insertions(+), 33 deletions(-)
+As discussed elsewhere, if we remove disable_bypass from SMMUv3, then
+we should be able to be consistent here. The question is, what's the
+right behaviour?
 
-diff --git a/mm/huge_memory.c b/mm/huge_memory.c
-index 9859aa4f7553..c6d4d0cdf4b3 100644
---- a/mm/huge_memory.c
-+++ b/mm/huge_memory.c
-@@ -766,28 +766,6 @@ pmd_t maybe_pmd_mkwrite(pmd_t pmd, struct vm_area_struct *vma)
- 	return pmd;
- }
- 
--#ifdef CONFIG_MEMCG
--static inline
--struct deferred_split *get_deferred_split_queue(struct folio *folio)
--{
--	struct mem_cgroup *memcg = folio_memcg(folio);
--	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
--
--	if (memcg)
--		return &memcg->deferred_split_queue;
--	else
--		return &pgdat->deferred_split_queue;
--}
--#else
--static inline
--struct deferred_split *get_deferred_split_queue(struct folio *folio)
--{
--	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
--
--	return &pgdat->deferred_split_queue;
--}
--#endif
--
- void folio_prep_large_rmappable(struct folio *folio)
- {
- 	if (!folio || !folio_test_large(folio))
-diff --git a/mm/internal.h b/mm/internal.h
-index d1c69119b24f..8fa36e84463a 100644
---- a/mm/internal.h
-+++ b/mm/internal.h
-@@ -1107,6 +1107,29 @@ struct page *follow_trans_huge_pmd(struct vm_area_struct *vma,
- 				   unsigned long addr, pmd_t *pmd,
- 				   unsigned int flags);
- 
-+#ifdef CONFIG_MEMCG
-+static inline
-+struct deferred_split *get_deferred_split_queue(struct folio *folio)
-+{
-+	struct mem_cgroup *memcg = folio_memcg(folio);
-+	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
-+
-+	if (memcg)
-+		return &memcg->deferred_split_queue;
-+	else
-+		return &pgdat->deferred_split_queue;
-+}
-+#else
-+static inline
-+struct deferred_split *get_deferred_split_queue(struct folio *folio)
-+{
-+	struct pglist_data *pgdat = NODE_DATA(folio_nid(folio));
-+
-+	return &pgdat->deferred_split_queue;
-+}
-+#endif
-+
-+
- /*
-  * mm/mmap.c
-  */
-diff --git a/mm/migrate.c b/mm/migrate.c
-index 73a052a382f1..3fd58b267e37 100644
---- a/mm/migrate.c
-+++ b/mm/migrate.c
-@@ -1654,25 +1654,63 @@ static int migrate_pages_batch(struct list_head *from,
- 
- 			/*
- 			 * Large folio migration might be unsupported or
--			 * the allocation might be failed so we should retry
--			 * on the same folio with the large folio split
-+			 * the folio is on deferred split list so we should
-+			 * retry on the same folio with the large folio split
- 			 * to normal folios.
- 			 *
- 			 * Split folios are put in split_folios, and
- 			 * we will migrate them after the rest of the
- 			 * list is processed.
- 			 */
--			if (!thp_migration_supported() && is_thp) {
--				nr_failed++;
--				stats->nr_thp_failed++;
--				if (!try_split_folio(folio, split_folios)) {
--					stats->nr_thp_split++;
--					stats->nr_split++;
-+			if (is_thp) {
-+				bool is_on_deferred_list = false;
-+
-+				/*
-+				 * Check without taking split_queue_lock to
-+				 * reduce locking overheads. The worst case is
-+				 * that if the folio is put on the deferred
-+				 * split list after the check, it will be
-+				 * migrated and not put back on the list.
-+				 * The migrated folio will not be split
-+				 * via shrinker during memory pressure.
-+				 */
-+				if (!data_race(list_empty(&folio->_deferred_list))) {
-+					struct deferred_split *ds_queue;
-+					unsigned long flags;
-+
-+					ds_queue =
-+						get_deferred_split_queue(folio);
-+					spin_lock_irqsave(&ds_queue->split_queue_lock,
-+							  flags);
-+					/*
-+					 * Only check if the folio is on
-+					 * deferred split list without removing
-+					 * it. Since the folio can be on
-+					 * deferred_split_scan() local list and
-+					 * removing it can cause the local list
-+					 * corruption. Folio split process
-+					 * below can handle it with the help of
-+					 * folio_ref_freeze().
-+					 */
-+					is_on_deferred_list =
-+						!list_empty(&folio->_deferred_list);
-+					spin_unlock_irqrestore(&ds_queue->split_queue_lock,
-+							       flags);
-+				}
-+				if (!thp_migration_supported() ||
-+						is_on_deferred_list) {
-+					nr_failed++;
-+					stats->nr_thp_failed++;
-+					if (!try_split_folio(folio,
-+							     split_folios)) {
-+						stats->nr_thp_split++;
-+						stats->nr_split++;
-+						continue;
-+					}
-+					stats->nr_failed_pages += nr_pages;
-+					list_move_tail(&folio->lru, ret_folios);
- 					continue;
- 				}
--				stats->nr_failed_pages += nr_pages;
--				list_move_tail(&folio->lru, ret_folios);
--				continue;
- 			}
- 
- 			rc = migrate_folio_unmap(get_new_folio, put_new_folio,
+> Beyond properly quiescing and resetting the system back to a boot-time
+> state, the outgoing kernel in a kexec can only really do things which affect
+> itself. Sure, we *could* configure the SMMU to block all traffic and disable
+> the interrupt to avoid getting stuck in a storm of faults on the way out,
+> but what does that mean for the incoming kexec payload? That it can have the
+> pleasure of discovering the SMMU, innocently enabling the interrupt and
+> getting stuck in an unexpected storm of faults. Or perhaps just resetting
+> the SMMU into a disabled state and thus still unwittingly allowing its
+> memory to be corrupted by the previous kernel not supporting kexec properly.
 
-base-commit: 384df0d61b071bb7a38ae63bae9b59d088335911
--- 
-2.43.0
+Right, it's hard to win if DMA-active devices weren't quiesced properly
+by the outgoing kernel. Either the SMMU was left in abort (leading to the
+problems you list above) or the SMMU is left in bypass (leading to possible
+data corruption). Which is better?
 
+The best solution is obviously to implement those missing ->shutdown()
+callbacks.
+
+Will
 
