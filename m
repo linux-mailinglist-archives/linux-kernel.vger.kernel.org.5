@@ -1,105 +1,106 @@
-Return-Path: <linux-kernel+bounces-107535-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107536-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0E84687FDC6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:48:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id ABF6487FDC8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3DDBE1C21D56
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:48:49 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5789F1F218C3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:49:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A91B405FC;
-	Tue, 19 Mar 2024 12:48:44 +0000 (UTC)
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93F9680029;
+	Tue, 19 Mar 2024 12:48:47 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DC0740842
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:48:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C210980059
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:48:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710852522; cv=none; b=DJCTHEVM3pgTvamVoXOMN4xQIdzr7xgUsRLIVzphIPouxyAl5RmNhX5CpXCe8TXfzoL1rYNo+9MBqO8IeqD2o1OCMhUZQvkxWZ74cGG3MiF+5pT0Yx+zWYw3awT34M88yYJviun2iJJFbmOH3uA5mXJoYAtR3LYtxqqEfb5SXJk=
+	t=1710852524; cv=none; b=QiaEPGQH1KhPHkN1cX99JjZ9Y+MXKrddawEdOjtTdn78qRbORDpkY07cEiZzxe9wYy0eG8iTkJdMd2PZl2EKvF7cgZvRV6nQqxgS0qKszTPQsLHIv+cRuaBHK+7BR1FBOPhtrzthpA83C3Gxv/zoS7O1ANUlJ7JJLRlBbo1WRaA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710852522; c=relaxed/simple;
-	bh=eaVhfJvGv/hDmpx/njYgkJ4X//xScrjZU2TF4zYPJAg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ky8cjz+E8Os8sdy/pJuftJ3B5owQLN3p7kw+Tqhhbjq+IhvAGhJpIfir3In3DYMsnS8DtPLDmU7s4S5+tmdzo2cilBr9PCWaMSL37VlxrPWZPMPVQJ+6xmmPWWiAsuvaoH0cuFXvbsoCtxGftgKSmM79+IojLSPhEhjVORV36vg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E316920004;
-	Tue, 19 Mar 2024 12:48:12 +0000 (UTC)
-Message-ID: <5c900e62-2101-4862-93cf-06292deccabf@ghiti.fr>
-Date: Tue, 19 Mar 2024 13:48:12 +0100
+	s=arc-20240116; t=1710852524; c=relaxed/simple;
+	bh=Y6LPOARZv6WMKc8GrR/5roQF7A4U3axLXMt0DuN3/Bk=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=kAeEfo2SvR+SVmO6M+fL94PgvbUtMixF6xpVjWJhGnvtuYSaZpSvPvhlAX0HOzZZimgByk1D22Am894Kyj49Xb4uZ2AMXe52t2SxhVKenQHhDoawqersd4C5ivm6WsCyZ+vm2wyAESX0k1HleDSrkLefHlgAqLGdGQxRLazBAik=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7c7e21711d0so346028139f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:48:30 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710852504; x=1711457304;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=R6fy4P1aZSyUUNvRv02sBgKzOYoAXr7SlJGAokWQeik=;
+        b=KOBWQsUUofIgwUV2f6iowmHHZll71kCi8ZA0Acqwd0PQap5cZylnygCkJiEP0mrMmB
+         MciMpBf6p6vuEtS5VS7UKSwr/ovmLS7WKvfWNXcAc3szC02PaFWot/wPAdt0hV3g32rs
+         E0dVaI89dwDaUYebnBMdpoD2K9Hr6dQpykbgwUZgxkFHeJbUCsiAdPPed8VxTs8ZB3zR
+         5Z9dUm+SI/nWsZkGxs7aMZmrg2FVKipkWDd/8xPSxsPrW9ltjMAZB1vFS0+ciKT7cK6w
+         6vvmfpSIVa/loCCRWnA6vfgpC3kYxfXjDtxGIKYwme1i3xzcw7l+AFFeZRJ+sOZYlT1F
+         GfHQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVNX6iWmBIMr98lKDly6PBj6+0SzGgChGnS72eVVhOnZSC+4YfBcBc1AorWq0nNYP3JQJUhYdyYPdyUf+lSEsPEJV5VlMnxiLBtTszr
+X-Gm-Message-State: AOJu0YzeT58wGzHbBDVQsdELw5af/YL3HWxRMIYuMAuBl0gYUoJM8zCL
+	byX/NNJGSmuFryi/B7/1m7XWoeWEGoLj6b+9HZGBQTVyPHKu4EhhG1trtHrkoJ9n/Qu7zQ3HcvH
+	4mRXCzR7Xtld9pji4kjdNcMl3A0WQD9+4G0VkbI3JJciUTLDIdIWYB9c=
+X-Google-Smtp-Source: AGHT+IF/ILp4C+BsiS38oKgAOXmQ+mU8zqK/MQqgsIGFBg3XWXLdpEB90k5eJ4Mgd2FeYirmoo44bc5dQjGv7yEaZwAyqHeXvZnw
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: mm: Fix prototype to avoid discarding const
-Content-Language: en-US
-To: Samuel Holland <samuel.holland@sifive.com>,
- linux-riscv@lists.infradead.org
-Cc: Albert Ou <aou@eecs.berkeley.edu>,
- Alexandre Ghiti <alexghiti@rivosinc.com>,
- Andrew Jones <ajones@ventanamicro.com>, Anup Patel
- <apatel@ventanamicro.com>, Dylan Jhong <dylan@andestech.com>,
- Jisheng Zhang <jszhang@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
- Paul Walmsley <paul.walmsley@sifive.com>,
- Sergey Matyukevich <sergey.matyukevich@syntacore.com>,
- linux-kernel@vger.kernel.org
-References: <20240301201837.2826172-1-samuel.holland@sifive.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <20240301201837.2826172-1-samuel.holland@sifive.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-GND-Sasl: alex@ghiti.fr
+X-Received: by 2002:a05:6638:2710:b0:476:fdd3:7bf6 with SMTP id
+ m16-20020a056638271000b00476fdd37bf6mr118712jav.3.1710852504752; Tue, 19 Mar
+ 2024 05:48:24 -0700 (PDT)
+Date: Tue, 19 Mar 2024 05:48:24 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cf3aae061402e3f0@google.com>
+Subject: [syzbot] Monthly input report (Mar 2024)
+From: syzbot <syzbot+listcb0f0391866add338d69@syzkaller.appspotmail.com>
+To: linux-input@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Hi Samuel,
+Hello input maintainers/developers,
 
-On 01/03/2024 21:18, Samuel Holland wrote:
-> __flush_tlb_range() does not modify the provided cpumask, so its cmask
-> parameter can be pointer-to-const. This avoids the unsafe cast of
-> cpu_online_mask.
->
-> Fixes: 54d7431af73e ("riscv: Add support for BATCHED_UNMAP_TLB_FLUSH")
-> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
-> ---
->
->   arch/riscv/mm/tlbflush.c | 4 ++--
->   1 file changed, 2 insertions(+), 2 deletions(-)
->
-> diff --git a/arch/riscv/mm/tlbflush.c b/arch/riscv/mm/tlbflush.c
-> index 893566e004b7..07d743f87b3f 100644
-> --- a/arch/riscv/mm/tlbflush.c
-> +++ b/arch/riscv/mm/tlbflush.c
-> @@ -99,7 +99,7 @@ static void __ipi_flush_tlb_range_asid(void *info)
->   	local_flush_tlb_range_asid(d->start, d->size, d->stride, d->asid);
->   }
->   
-> -static void __flush_tlb_range(struct cpumask *cmask, unsigned long asid,
-> +static void __flush_tlb_range(const struct cpumask *cmask, unsigned long asid,
->   			      unsigned long start, unsigned long size,
->   			      unsigned long stride)
->   {
-> @@ -200,7 +200,7 @@ void flush_tlb_range(struct vm_area_struct *vma, unsigned long start,
->   
->   void flush_tlb_kernel_range(unsigned long start, unsigned long end)
->   {
-> -	__flush_tlb_range((struct cpumask *)cpu_online_mask, FLUSH_TLB_NO_ASID,
-> +	__flush_tlb_range(cpu_online_mask, FLUSH_TLB_NO_ASID,
->   			  start, end - start, PAGE_SIZE);
->   }
->   
+This is a 31-day syzbot report for the input subsystem.
+All related reports/information can be found at:
+https://syzkaller.appspot.com/upstream/s/input
 
+During the period, 2 new issues were detected and 0 were fixed.
+In total, 16 issues are still open and 52 have been fixed so far.
 
-Reviewed-by: Alexandre Ghiti <alexghiti@rivosinc.com>
+Some of the still happening issues:
 
-Thanks,
+Ref Crashes Repro Title
+<1> 4654    Yes   WARNING in input_mt_init_slots
+                  https://syzkaller.appspot.com/bug?extid=0122fa359a69694395d5
+<2> 454     No    possible deadlock in evdev_pass_values (2)
+                  https://syzkaller.appspot.com/bug?extid=13d3cb2a3dc61e6092f5
+<3> 312     Yes   INFO: task hung in uhid_char_release
+                  https://syzkaller.appspot.com/bug?extid=8fe2d362af0e1cba8735
+<4> 163     Yes   WARNING in cm109_urb_irq_callback/usb_submit_urb
+                  https://syzkaller.appspot.com/bug?extid=2d6d691af5ab4b7e66df
+<5> 156     Yes   KASAN: stack-out-of-bounds Read in sched_show_task
+                  https://syzkaller.appspot.com/bug?extid=8d2757d62d403b2d9275
+<6> 4       Yes   WARNING in __input_unregister_device
+                  https://syzkaller.appspot.com/bug?extid=b03b0fc32e288051502d
+<7> 4       Yes   WARNING in input_unregister_device (2)
+                  https://syzkaller.appspot.com/bug?extid=617f4ccb03b9869f6494
 
-Alex
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
+To disable reminders for individual bugs, reply with the following command:
+#syz set <Ref> no-reminders
+
+To change bug's subsystems, reply with:
+#syz set <Ref> subsystems: new-subsystem
+
+You may send multiple commands in a single email message.
 
