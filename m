@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-108201-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108202-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id BD61888076F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:52:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id DE2DA880770
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:52:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6814EB21E5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:52:09 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 902351F2336F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:52:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590995FBB5;
-	Tue, 19 Mar 2024 22:51:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91BC65FDBD;
+	Tue, 19 Mar 2024 22:51:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WzPmELvW"
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="LN8mrOGd"
 Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B508D57339
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:51:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4EF6E5FB97
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:51:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710888704; cv=none; b=FI6XR2K3rYFvjFc/D0WAge3Bf7a3vVniFB09GWAKci8O8Xxn4YTsJNfgwNXd1nD0P3G7rWjIkmIAxlJvfOMVA2hU0pd+IGwovJU5AP+Zk9d4Wh1SgCqijW3hHwTjPt+82ZCVVgMHLdf7l31C3jL8rS/TuevK1nAb5Mv39iAvsVs=
+	t=1710888705; cv=none; b=HmEEt+JNCTrACBzem133k/WpYXpR8MewwcJ9Q/VKXL1sOV0Dgu8YH851E/3FLtfpACANiMXWkSIJhOz76PlopFvGZQVHLxwukDP0CM1kcjOSmNXkd88Kh48ImLoKYaWoMZt3p6Fw/H644JvLzZQ7+JKQ3IFLX37UzFYXoZ3yA3A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710888704; c=relaxed/simple;
-	bh=TKYth13OUvG2X5xH4dCFIl7vaPaJEU/aW43tlNEYL/Q=;
+	s=arc-20240116; t=1710888705; c=relaxed/simple;
+	bh=MWuTKfjHkHaCEukGyzuOT0/yJ2QmwbAVkuQmjpVP8YU=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=E07+p1xqkh6+8q5eog2IYCEnzsvT0xA30bLWO6G+kKfpJIxmIdzm3b4vVMlB/eG2xErRcfq0ZzJxAfGLb+JFztu8LUsSeJEJPA+e5035noowRq1Jk7bM+dTFy59pJRHpVhuPNaCmDlitbVuTqAj9RtRM9lyHV3BuV6CFVDGSwdM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WzPmELvW; arc=none smtp.client-ip=91.218.175.176
+	 MIME-Version; b=uILqeZ6AjKFK0zJU80p5mCaMF3AzzWMljOMCBYyJEJfdZb7ORyG+54u2G3b3fKvMg3ZBeNiraKcUIXmhcHQgshtjWBB6VBw3U2Yseq/nzH7vWJgUtT0HIsnnrDjFAZUd7IfCb6fJpAVmxrIVlW+RoYqFO/z4vshood5WDBKFr/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=LN8mrOGd; arc=none smtp.client-ip=91.218.175.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710888700;
+	t=1710888702;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=JeaHRXKBzw1bfVIToXZ4TgPxAvKCcRBCRPJibCEPmqo=;
-	b=WzPmELvWu+EfQEuP1EnSILJcOb+DN1FUQIpjCHt16IjHlipGJ2mWcnH7RTEnAOtKBxtSCy
-	Xoa5CdyBskDo1e3VOAwksGCeDeLkkrrEgk+HSIFfm8pePlwQdg8AuMedNW16shiiNfQ74u
-	wXRXNmj6rivfKKROKioZJfczu0lISzU=
+	bh=U6urapeaZnHdW/DTzeHEHFd6f+TsIuajmiHq4Eb1FjY=;
+	b=LN8mrOGdATpuIA+XTvh2wePemRSNcyWEJNCGn+sZpgJEsunJhvJDNJukRMB2ru8j/QBufY
+	YiswVT4xw+wAzZencVWtu2RBLy8YbBprJPHn/MNxZ8NK6uxX6ZAG+XiS+29JjbAV5jeAx8
+	p/T1eE95awqHrt34Vq1WgHpqYtySunE=
 From: Sean Anderson <sean.anderson@linux.dev>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,9 +53,9 @@ Cc: Michal Simek <michal.simek@amd.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	linux-arm-kernel@lists.infradead.org,
 	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH v2 2/8] drm: zynqmp_dp: Downgrade log level for aux retries message
-Date: Tue, 19 Mar 2024 18:51:15 -0400
-Message-Id: <20240319225122.3048400-3-sean.anderson@linux.dev>
+Subject: [PATCH v2 3/8] drm: zynqmp_dp: Adjust training values per-lane
+Date: Tue, 19 Mar 2024 18:51:16 -0400
+Message-Id: <20240319225122.3048400-4-sean.anderson@linux.dev>
 In-Reply-To: <20240319225122.3048400-1-sean.anderson@linux.dev>
 References: <20240319225122.3048400-1-sean.anderson@linux.dev>
 Precedence: bulk
@@ -67,31 +67,59 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Enable this message for verbose debugging only as it is otherwise
-printed after every AUX message, quickly filling the log buffer.
+The feedback we get from the DPRX is per-lane. Make changes using this
+information, instead of picking the maximum values from all lanes. This
+results in more-consistent training on marginal links.
 
 Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
 
 (no changes since v1)
 
- drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 23 ++++++++---------------
+ 1 file changed, 8 insertions(+), 15 deletions(-)
 
 diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-index a0606fab0e22..98a32e6a0459 100644
+index 98a32e6a0459..8635b5673386 100644
 --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
 +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-@@ -1006,7 +1006,7 @@ zynqmp_dp_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
- 					       msg->buffer, msg->size,
- 					       &msg->reply);
- 		if (!ret) {
--			dev_dbg(dp->dev, "aux %d retries\n", i);
-+			dev_vdbg(dp->dev, "aux %d retries\n", i);
- 			return msg->size;
- 		}
+@@ -605,28 +605,21 @@ static void zynqmp_dp_adjust_train(struct zynqmp_dp *dp,
+ 				   u8 link_status[DP_LINK_STATUS_SIZE])
+ {
+ 	u8 *train_set = dp->train_set;
+-	u8 voltage = 0, preemphasis = 0;
+ 	u8 i;
  
+ 	for (i = 0; i < dp->mode.lane_cnt; i++) {
+-		u8 v = drm_dp_get_adjust_request_voltage(link_status, i);
+-		u8 p = drm_dp_get_adjust_request_pre_emphasis(link_status, i);
++		u8 voltage = drm_dp_get_adjust_request_voltage(link_status, i);
++		u8 preemphasis =
++			drm_dp_get_adjust_request_pre_emphasis(link_status, i);
+ 
+-		if (v > voltage)
+-			voltage = v;
++		if (voltage >= DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
++			voltage |= DP_TRAIN_MAX_SWING_REACHED;
+ 
+-		if (p > preemphasis)
+-			preemphasis = p;
+-	}
++		if (preemphasis >= DP_TRAIN_PRE_EMPH_LEVEL_2)
++			preemphasis |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
+ 
+-	if (voltage >= DP_TRAIN_VOLTAGE_SWING_LEVEL_3)
+-		voltage |= DP_TRAIN_MAX_SWING_REACHED;
+-
+-	if (preemphasis >= DP_TRAIN_PRE_EMPH_LEVEL_2)
+-		preemphasis |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
+-
+-	for (i = 0; i < dp->mode.lane_cnt; i++)
+ 		train_set[i] = voltage | preemphasis;
++	}
+ }
+ 
+ /**
 -- 
 2.35.1.1320.gc452695387.dirty
 
