@@ -1,206 +1,152 @@
-Return-Path: <linux-kernel+bounces-107238-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6E98687F9D3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:29:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E922587F9CB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:29:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E156A1F21ECD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:29:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1872C1C21A5C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:29:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 38DC97CF30;
-	Tue, 19 Mar 2024 08:29:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ACCFA5916D;
+	Tue, 19 Mar 2024 08:29:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="cE3LpN2/"
-Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="dMTcSdg0"
+Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2050.outbound.protection.outlook.com [40.107.92.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0B9E7C08E;
-	Tue, 19 Mar 2024 08:29:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710836955; cv=none; b=PuPNkdzn34LCcZeF0SXzQpJ75oMzmFCqj7PaAE0WEexxl3NVPqN2g8Y9koVd7zN472oSZwb1AH9P70pOmzqrz6MVZa0CNQMFK9AsfMf5ejiOl0d/BFZ3sNYZd+gHd/UKKNNF6laWZ7ilDJPzxOaiDXY85XjAC69lcSuNI+n/ioE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710836955; c=relaxed/simple;
-	bh=rVF9H8p5A/tZCcUzg90IMGb1EulK+WvD39yZtuREOCE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=JHovoFAQQAEJ3HL3L/H9mk9a+QPvq5T7pbyNZZBB/sG1RkCkOzXiqls2OGnNdCEOs7nPV1qC90uZMSSsA8xpwOKeqFNw2VVuhMBdL5kxQez+lr3hTo7RuDBgFLFfLIr6kk5Mk828MqJ3K6XevZ6Z9FDgA85a/pH66kkcCQxGd9M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=cE3LpN2/; arc=none smtp.client-ip=209.85.208.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-5684ea117a3so7717949a12.0;
-        Tue, 19 Mar 2024 01:29:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710836952; x=1711441752; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=k+caFpiF1NE9VjCHjmW6BZDvqMJLVV4nvdJHe6aB/9w=;
-        b=cE3LpN2/GMOpGdvs+lXMV+/pVld0OiUT795aLQnqV29mzUD1emWLleOd4Sh9XbZpkG
-         sfDma3OKiBD8qVukQaWKp/hEbgT/nWUiaAms7rospyf7rgghz8rx9oUYwolBvK0Re+59
-         TlLhq35i6D8ygOt4wnYaPJkc5un4K9ozJ5ovAVu7EjW7o3Bji4fbzNFwmjadJt77qlCx
-         ICt1UhGWSg8xm+ThO670FWVa5MVUd3a/A74DwVvO+BE8vqW/qrKEPYBkY+KHxB2d90i7
-         PHlphRw93c5gSBCauOE+oylBG3Dta26vWmQOCZjAoOqDyT2FWCrFMVcF4BV9jO+fXlAd
-         0zyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710836952; x=1711441752;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k+caFpiF1NE9VjCHjmW6BZDvqMJLVV4nvdJHe6aB/9w=;
-        b=Kmweg7FJPiz6kbZmviLmaaZsJwiglloK9v4qRHlefvH+5SCROb/TuI3kS5JHZRSO3B
-         OFaSk4ih4+bHx7aP8XQHndAlfT2BRBBBjj+GlNl1RN7zm31pzcPrjq9/fhx1NqW4kbJf
-         4KY19CStfclaxjkmgaKncHOEDh0DIKTnjpx+YU/GjScTK0uzwPObIcizHUeiTNhjgPkM
-         IHjp/BOJX04bB9XiW3wlKuw4MT7VJwzO1vqMaq1bMBmockkahM01MOnCuXQD4AN0blNh
-         nPRiaqoJfedyAQi+4qLbAeGgXZAFmBCKCrzSK1P6xOkpr42v1ihFsCQ5vocTKDGEDnv8
-         Rftg==
-X-Forwarded-Encrypted: i=1; AJvYcCUYjE76bAnfKVx+YiAT/i2+++OQbdq3iWuyIPF77/yFYptKD3EXS9jEK45hiBvBfzIyvriMoWJHt0uPhE2knTmIWh/VzlgiyY4P0R3iPfgnTNOISbfzpgPvsurStk8H+xZ+SzeFDZK1ctmfDN4xk8LaW70NQla+Ma1Q+9c+sI1OxWA8KRWjgrOZVtflYo8P0BVu0CAX4qbBxre4RSdiB1k=
-X-Gm-Message-State: AOJu0YycfI4gVkc8yZl5Xi5m//o2tYlZASSjgwcNfgDducsOfaFAhg7a
-	h1b/Yv3KIgpDfpP5QTSXGv4CEm4abTctyEGCyx2ttU+AssNFaIJEyMDci83x7pGAzfUn9toW+4q
-	hY8C1gxHG7ENPbXUsEDAbKibfHOk=
-X-Google-Smtp-Source: AGHT+IENQGSo2CY36rseL4WEmz3mPXsVW0fWojGGC/2UdA9byb37TJLO4V6lJIqrbscjz/c+UmnsE5alQVGx2i6us3s=
-X-Received: by 2002:a05:6402:320d:b0:56b:9ef8:f656 with SMTP id
- g13-20020a056402320d00b0056b9ef8f656mr149159eda.7.1710836951986; Tue, 19 Mar
- 2024 01:29:11 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E4DB54645;
+	Tue, 19 Mar 2024 08:29:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.50
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710836951; cv=fail; b=jWfDXPU/lakhp9t1JwLqnSST5nZ35ZSWD8FUtDXLEGMUfADvo8jbJ2b20fI76lpYhOr0HxC8M3TZGYi00YoQhurMmEAL4QwOcHvsw7By3J4aazV3Rj9v6HPdVYqvxDxevk/0IPfNql4CwFgGbsIhkLIo2hi1WYUsVp37/qhn4HU=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710836951; c=relaxed/simple;
+	bh=Uegy1dPjPJXcJatYbxxKEJnRlswxiN2wQD0bFVrhO/Q=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=foCwCOn3ipaEV7HIbjtVQCIOBsXp8yQXkYV/dbDBxmO1Kt/UEF9djPZatLFURzzIE/nqQQMU5aY5Xc0zkVR17zkLrNif/GmDUqwlhqrfImYClBK2ShhnRI4bHA44rNOHG2bamqpCe2gKdmqjIhMWJkocrbXK/ljefZkGOmHSSEg=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=dMTcSdg0; arc=fail smtp.client-ip=40.107.92.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=fKA/RDRkDmmSjKVyoULcMig/yD6vedy/HVYOrh1qD/JdboC3Mdm97+oWu4dY3hZX1b19sopmdtovB+/GyttmlS2rhPQR1RgXbD3gvg6lKRSUu0qBCmLR8MEqd8DC1bIykDknVKi7ybcozksV3DPgTVY3qPi13hC6DM6JSkobQEFDm0ChSkKA7Y2Q6W4FAOanRj4hg+huPklsY3SKe7cJt1LRQvmoNgROf1Uj1YA9fyBSmlLmC7LdkIm5sHR0FLESyC+Y8Qenl+ZzJDT3wXur7GrT1K025lIYPMwXJYGAGP/3lBHVHUD/u8j/gM8szzSFE1OTPdKR25mqa2kf1xhaHA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gSAtW8xlj2sL6Zjhj4yanoKUkddG/Gthab4cpoJRwDE=;
+ b=VchyGMtSKzMk59yxw9ILqtfZPIYvg3+tcuQzuT9mDvj63cKU++WPR2W12Ts60ct+TnTWDOH6yT+ZoT29/5ugJRIR+xjr0kcn4JBofJ5VRYha7leD4sZC+1mvV0d6wIUZP/+cPkt9BO2hynreDBpD/wqPgsrKOuXY//rEnTJ93nPMDZW367ZAUqYcCeWZw2C3oyFzvdd5HuQXMnbZ28w81dJSmFfwXaq7wwABCk0HW1PkWGfXt9SgTyibnrle40slFadXYsTBPIQSIDErWmICBjD+4hhJetAJH5HxRblco7UPggFGo6Oy3p1xN/uZG21GreLCxfQRtRy842iP8UaaPg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=intel.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gSAtW8xlj2sL6Zjhj4yanoKUkddG/Gthab4cpoJRwDE=;
+ b=dMTcSdg0WilZ9s/93XIS5YJP3/6cGCyb+O9/ppQx3CVkyHLyMjjeKIotKkRVCaQDnY1ckZ8zai9kFJ4fuOMaveYlQHR4BuuvoVhxpqRxI9cnM6Gs4i20guS8Mv5dD/eh2MwGqV+iZZRZHGaj/r8C7TYJkCn/MdgeYNYVm3HHZAY=
+Received: from SJ0PR03CA0029.namprd03.prod.outlook.com (2603:10b6:a03:33a::34)
+ by IA0PR12MB9047.namprd12.prod.outlook.com (2603:10b6:208:402::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Tue, 19 Mar
+ 2024 08:29:07 +0000
+Received: from SJ5PEPF000001D6.namprd05.prod.outlook.com
+ (2603:10b6:a03:33a:cafe::45) by SJ0PR03CA0029.outlook.office365.com
+ (2603:10b6:a03:33a::34) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26 via Frontend
+ Transport; Tue, 19 Mar 2024 08:29:07 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ SJ5PEPF000001D6.mail.protection.outlook.com (10.167.242.58) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 08:29:06 +0000
+Received: from pyuan-Chachani-VN.amd.com (10.180.168.240) by
+ SATLEXMB04.amd.com (10.181.40.145) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Mar 2024 03:29:03 -0500
+From: Perry Yuan <perry.yuan@amd.com>
+To: <rafael.j.wysocki@intel.com>, <Mario.Limonciello@amd.com>,
+	<viresh.kumar@linaro.org>, <gautham.shenoy@amd.com>,
+	<Borislav.Petkov@amd.com>, <Ray.Huang@amd.com>
+CC: <Alexander.Deucher@amd.com>, <Xinmei.Huang@amd.com>,
+	<oleksandr@natalenko.name>, <Xiaojian.Du@amd.com>, <Li.Meng@amd.com>,
+	<linux-pm@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+Subject: [PATCH v9 1/8] cpufreq: amd-pstate: Document *_limit_* fields in struct amd_cpudata
+Date: Tue, 19 Mar 2024 16:28:36 +0800
+Message-ID: <4b00dae2cc2ed3146a747a7fc72438972c689dca.1710836407.git.perry.yuan@amd.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <cover.1710836407.git.perry.yuan@amd.com>
+References: <cover.1710836407.git.perry.yuan@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
- <20240316-loongson1-dma-v6-1-90de2c3cc928@gmail.com> <20240317-exorcist-spectator-90f5acb3fe2a@spud>
- <CAJhJPsWOUZsWFvreRrPqQHAjYW7uRT31THHi7CRDN46+nHpL9g@mail.gmail.com>
-In-Reply-To: <CAJhJPsWOUZsWFvreRrPqQHAjYW7uRT31THHi7CRDN46+nHpL9g@mail.gmail.com>
-From: Keguang Zhang <keguang.zhang@gmail.com>
-Date: Tue, 19 Mar 2024 16:28:35 +0800
-Message-ID: <CAJhJPsXzGjD43nj7eLPSmtDLgp1FCvzJFRJDDTY=9Uq_Dc8Qdg@mail.gmail.com>
-Subject: Re: [PATCH v6 1/2] dt-bindings: dma: Add Loongson-1 DMA
-To: Conor Dooley <conor@kernel.org>
-Cc: Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB04.amd.com (10.181.40.145) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ5PEPF000001D6:EE_|IA0PR12MB9047:EE_
+X-MS-Office365-Filtering-Correlation-Id: 6ee6e07b-c14a-410f-7bd4-08dc47eea4a7
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Tez5Q9HRNFDCUIPYCqS+71neyZwVQ6uLCuSoGkPf4MFAF6sRLreoqrP5WfvLomnnT00NOsggAVL00I7RdlJYzy3ISACSISuWA67ZaOT59ljD+FsiF07TUiOtm6x5/U5buBLsg5dPfC/cWFX9WMMK73LYC57v7UzDh7bCURfqSwR2NGuPVJOBn0IHfz2D6OTJ3ULASQFAeQ3Qcg7W+LRzS4LCluYgbrT4aozQHut/jelBN8d4cLmCBKz+R0XejZ838F+F8c2qjKfvkSFuwkRkIOt9PFlHDD1KSyi8Wx3ho2uFKjcDm/TJCzdcf2orYUvjUNmVs9bZpEnGeKWGayJP3tvyR1ZS9MvdqDnoPlRuJCfPBMD4VOmfyzhkcB143bnwbq5Y/Hg1hx5BRt5VQws/+aL79kDla+xhKDTbKa1WbY7UYmtHLE2CoGbB98V6h6VlMxNYTfVOO3bS2+T4ZgYzRz1aPH+KfT4xvBfw5DCtN1lx7c97dXnb90EVgSkX7vr79JSxtWxDnRbyJURZW7Wt6UqqxPDrDoz3HUDT41TZtcl99gpfKvGLrj4lSVb1BnORZ3hyxwmPqEoI0TQZkpQccC/JUzw6x14jNTA6FjZnQqwtYbRMAD/AyIXv2DRoksQjV40xg7WC+TtBTQE8hNTAL3avA8uhnNtXAX4J4v96qlTycPB7lRidO9/oeyqRL1DFtoavlo0MmPO4o2pSuf2GAplYeKrejmqN3Gnv2WoXRZ/47awlNYy8jHwuJNVxtAur
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 08:29:06.8589
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 6ee6e07b-c14a-410f-7bd4-08dc47eea4a7
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	SJ5PEPF000001D6.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9047
 
-On Mon, Mar 18, 2024 at 2:18=E2=80=AFPM Keguang Zhang <keguang.zhang@gmail.=
-com> wrote:
->
-> On Sun, Mar 17, 2024 at 10:40=E2=80=AFPM Conor Dooley <conor@kernel.org> =
-wrote:
-> >
-> > On Sat, Mar 16, 2024 at 07:33:53PM +0800, Keguang Zhang via B4 Relay wr=
-ote:
-> > > From: Keguang Zhang <keguang.zhang@gmail.com>
-> > >
-> > > Add devicetree binding document for Loongson-1 DMA.
-> > >
-> > > Signed-off-by: Keguang Zhang <keguang.zhang@gmail.com>
-> > > ---
-> > > V5 -> V6:
-> > >    Change the compatible to the fallback
-> > >    Some minor fixes
-> > > V4 -> V5:
-> > >    A newly added patch
-> > > ---
-> > >  .../devicetree/bindings/dma/loongson,ls1x-dma.yaml | 66 ++++++++++++=
-++++++++++
-> > >  1 file changed, 66 insertions(+)
-> > >
-> > > diff --git a/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.=
-yaml b/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
-> > > new file mode 100644
-> > > index 000000000000..06358df725c6
-> > > --- /dev/null
-> > > +++ b/Documentation/devicetree/bindings/dma/loongson,ls1x-dma.yaml
-> > > @@ -0,0 +1,66 @@
-> > > +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> > > +%YAML 1.2
-> > > +---
-> > > +$id: http://devicetree.org/schemas/dma/loongson,ls1x-dma.yaml#
-> > > +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> > > +
-> > > +title: Loongson-1 DMA Controller
-> > > +
-> > > +maintainers:
-> > > +  - Keguang Zhang <keguang.zhang@gmail.com>
-> > > +
-> > > +description:
-> > > +  Loongson-1 DMA controller provides 3 independent channels for
-> > > +  peripherals such as NAND and AC97.
-> > > +
-> > > +properties:
-> > > +  compatible:
-> > > +    oneOf:
-> > > +      - const: loongson,ls1b-dma
-> > > +      - items:
-> > > +          - enum:
-> > > +              - loongson,ls1c-dma
-> > > +          - const: loongson,ls1b-dma
-> >
-> > Aren't there several more devices in this family? Do they not have DMA
-> > controllers?
-> >
-> You are right. Loongson1 is a SoC family.
-> However, only 1A/1B/1C have DMA controller.
->
-> > > +
-> > > +  reg:
-> > > +    maxItems: 1
-> > > +
-> > > +  interrupts:
-> > > +    description: Each channel has a dedicated interrupt line.
-> > > +    minItems: 1
-> > > +    maxItems: 3
-> >
-> > Is this number not fixed for each SoC?
-> >
-> Yes. Actually, it's fixed for the whole family.
->
-> > > +  interrupt-names:
-> > > +    minItems: 1
-> > > +    items:
-> > > +      - pattern: ch0
-> > > +      - pattern: ch1
-> > > +      - pattern: ch2
-> >
-> > Why have you made these a pattern? There's no regex being used here at
-> > all.
-> >
-> Will change items to the following regex.
->   interrupt-names:
->     minItems: 1
->     items:
->       - pattern: "^ch[0-2]$"
->
-Sorry. This pattern fails in dt_binding_check.
-Will use const instead of pattern.
-  interrupt-names:
-   items:
-     - const: ch0
-     - const: ch1
-     - const: ch2
+From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
 
+The four fields of struct cpudata namely min_limit_perf,
+max_limit_perf, min_limit_freq, max_limit_freq introduced in the
+commit febab20caeba("cpufreq/amd-pstate: Fix scaling_min_freq and
+scaling_max_freq update") are currently undocumented
 
-> Thanks!
->
-> > Cheers,
-> > Cono4.
->
->
->
-> --
-> Best regards,
->
-> Keguang Zhang
+Add comments describing these fields
 
+Fixes: febab20caeba("cpufreq/amd-pstate: Fix scaling_min_freq and scaling_max_freq update")
+Signed-off-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+Signed-off-by: Perry Yuan <perry.yuan@amd.com>
+---
+ include/linux/amd-pstate.h | 4 ++++
+ 1 file changed, 4 insertions(+)
 
+diff --git a/include/linux/amd-pstate.h b/include/linux/amd-pstate.h
+index d21838835abd..212f377d615b 100644
+--- a/include/linux/amd-pstate.h
++++ b/include/linux/amd-pstate.h
+@@ -49,6 +49,10 @@ struct amd_aperf_mperf {
+  * @lowest_perf: the absolute lowest performance level of the processor
+  * @prefcore_ranking: the preferred core ranking, the higher value indicates a higher
+  * 		  priority.
++ * @min_limit_perf: Cached value of the perf corresponding to policy->min
++ * @max_limit_perf: Cached value of the perf corresponding to policy->max
++ * @min_limit_freq: Cached value of policy->min
++ * @max_limit_freq: Cached value of policy->max
+  * @max_freq: the frequency that mapped to highest_perf
+  * @min_freq: the frequency that mapped to lowest_perf
+  * @nominal_freq: the frequency that mapped to nominal_perf
+-- 
+2.34.1
 
---
-Best regards,
-
-Keguang Zhang
 
