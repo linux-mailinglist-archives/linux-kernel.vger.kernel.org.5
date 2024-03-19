@@ -1,177 +1,139 @@
-Return-Path: <linux-kernel+bounces-107517-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107521-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 79C6187FD90
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:30:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16CE087FD99
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:32:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6725E1C21FB7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:30:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2421F2320A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:32:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC01A5812E;
-	Tue, 19 Mar 2024 12:30:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AAE080021;
+	Tue, 19 Mar 2024 12:31:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="YGIbOdcC"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="eQmoZWZ7"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0C3A818EAB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:30:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E940254BDA;
+	Tue, 19 Mar 2024 12:31:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710851436; cv=none; b=I4rAZCzUulZytBrjhXtf+GTYV8ODxvTmgopSibb3lf+vauvezvJ0idITUUikE0WZYCEKo0gGVC6OC6HFKYbdgutQUDWzTUa2dEIzIWogp6dnGRikicWBqe23SD0tA1Fxueci2k0IbkfVC5RB2IFzWfuZr//LLTNKKIdfA/EQkBE=
+	t=1710851506; cv=none; b=a1BbXxFzdh/bOaT0tDc3mAC5jVHIkwLpO+RDyrCV2KVxgk963/6hNQ1zf2Xxg+cEJtmVqfhbtNNlLRSuo65+a31sZsudhG/37eQprG07bqoO7uV2CDNzmjrBwUfIQq7VG+CgnXvnMikeWj9zpHmnnQkAHalDMpDksAZdQk8OPwg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710851436; c=relaxed/simple;
-	bh=NuYxhdluYleWL4hPUjiEYWiMglYwHi6VwlRckDkov7o=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ThFXLFrqEN1lqiLOxSF+Csr5VEXwrOBR73nwH9JCg4IcJ98je9FBJgaCe/EWLpOli305vpuW9hVRlKV2ULieO6KnKb5mLpzusiaUKQqHRGjMMtCZoZVOPgq63aOK6xyLwIfc1vpuknXtlwyZCizpaK7oDXvoAmtmPkfBYXtsvZU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=YGIbOdcC; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710851434;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=hk6fXodssFp8pxdmo3yTVAFcI2aHv/hJ/chEAC3UfVc=;
-	b=YGIbOdcCdGNOykT7rWfHsUuOFwULsjSGK0u3GbZ/RLo6iQDRTc55j2sT8X5adMKo4eN3K8
-	VPAmmLaQzrvTZS46vFK2n+OapqF+xeFqmalJbL6koxT4l8VcbbFFL9gTQCaaoHXqEAnIYM
-	Xrx1d+P8GNofopFTovotUlQ9yyr6Lus=
-Received: from mail-qk1-f199.google.com (mail-qk1-f199.google.com
- [209.85.222.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-567-ju3ld3R-O6WtpWYvMvMR_w-1; Tue, 19 Mar 2024 08:30:31 -0400
-X-MC-Unique: ju3ld3R-O6WtpWYvMvMR_w-1
-Received: by mail-qk1-f199.google.com with SMTP id af79cd13be357-78356ddf3cfso89682085a.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:30:30 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710851430; x=1711456230;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hk6fXodssFp8pxdmo3yTVAFcI2aHv/hJ/chEAC3UfVc=;
-        b=ZzJWI+FuJmttcridavGjITCJrnC+O+7hsk49UaCytYSn8RpGBWV/egOxwcGnOP9fS4
-         CmWe9jaUrnppJtSxOWM4n86Tuq7l8H1SdriXVUGUZR2D9NVYBzDkrJ/bXEComiXrHoox
-         Ey+jhXhA8n6jDZ3jDSFleFwSb7DVOeWdw4VyvnIC/BZdkY8faTWGRgdRdQs3Lm83fHOp
-         SDr1cvAkyfw9WoKrT1frZ7d/Ok1cE2bSYK7Krs/26UjLaRUNQE3nECAKBUXnauySHC7B
-         KvjWLrx6q6FlPypqZMqr16wM/L8danQltkdYN3XA2isCteN1xp7Ip9tVC54KLsy/fxn+
-         3gHg==
-X-Forwarded-Encrypted: i=1; AJvYcCW76PKa746Qgw25sPN01Y2a75s966GWxZg1v3Osz4yw/hYWWJZ/lJPKT2y4oPBVI4DXu7IiLqcD1QxffAf+v/0PQRxgu04ogeM1Pab/
-X-Gm-Message-State: AOJu0Yyi86wBX4OXkUzYFJ5UnGlNtdyOU2boLGg7mEWhjCWLON46tNq3
-	1gHoNuTFHeHd174fQppv4ldKdpzxY+5qOtzz1u9xsqTohmWa6SY5HCxoHvl1l32464OgQ8P7rx9
-	X9KeFgyeod7mXqtQ2y4C4YGHeZmNnCPUmdORrCH3U6/Bo1PLaKmqmawZZ5x7brA==
-X-Received: by 2002:a05:620a:198c:b0:788:3a16:d8b5 with SMTP id bm12-20020a05620a198c00b007883a16d8b5mr14337950qkb.4.1710851430033;
-        Tue, 19 Mar 2024 05:30:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHd9RalBe1bNJtEB8MezogsCo3Vhxoc3LhemnSbnzLQ6LMNhvFa5LLiu3OB+VRxEYhPu6tgxA==
-X-Received: by 2002:a05:620a:198c:b0:788:3a16:d8b5 with SMTP id bm12-20020a05620a198c00b007883a16d8b5mr14337925qkb.4.1710851429706;
-        Tue, 19 Mar 2024 05:30:29 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-224-202.dyn.eolo.it. [146.241.224.202])
-        by smtp.gmail.com with ESMTPSA id y1-20020ae9f401000000b00789ed16d039sm3045072qkl.54.2024.03.19.05.30.27
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 05:30:29 -0700 (PDT)
-Message-ID: <9c63cf0c31792270026fc673334aa76f855eae35.camel@redhat.com>
-Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
- TIF_NOTIFY_SIGNAL
-From: Paolo Abeni <pabeni@redhat.com>
-To: Sascha Hauer <s.hauer@pengutronix.de>, netdev@vger.kernel.org
-Cc: kernel@pengutronix.de, linux-kernel@vger.kernel.org, Jens Axboe
-	 <axboe@kernel.dk>, io-uring@vger.kernel.org
-Date: Tue, 19 Mar 2024 13:30:26 +0100
-In-Reply-To: <ZfgtgwEM69VPJGs7@pengutronix.de>
-References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
-	 <ZfgtgwEM69VPJGs7@pengutronix.de>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+	s=arc-20240116; t=1710851506; c=relaxed/simple;
+	bh=dpUPLrqHwakMnlL6jbNOapLyjpMQqdiCfAGidRZmjgI=;
+	h=From:Date:To:cc:Subject:In-Reply-To:Message-ID:References:
+	 MIME-Version:Content-Type; b=lMD+I57yUaneqdZQUCndgCtQCoj8sU4Lbp2KOiihyTPzlXqK1KGy/XgXUyDqZtSzc+hVDgyZbh9x9VzDD4xC29NSqQdDrBbuCPutdqEA/pYYCJHhrQR2JUneC+fYPv6SXW35+NfHZE/xNiOEJ6Y23JwXabalHhjoqXmGuzkh0uQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=eQmoZWZ7; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710851505; x=1742387505;
+  h=from:date:to:cc:subject:in-reply-to:message-id:
+   references:mime-version;
+  bh=dpUPLrqHwakMnlL6jbNOapLyjpMQqdiCfAGidRZmjgI=;
+  b=eQmoZWZ7g3BzcE1hRYQkn/AwzXZeNgA8hRAwXYCORSKX1eb3hk6gnawy
+   jhWRJG4HqxNCZj4HIJ5Dn5YLn6AuA0nVW0bhiP7UC62Xc7PXBR5mNbrsp
+   Fn7m34FaOzdTyxZ1rnvBmIpywJM6deA8RFKHlxq5XAfVsMB46h3OQsIL0
+   fCh/tqAkmw0kIGoNiVPK7lFJYAE7fSiP5zb8lBWDcabOX9YVzJIHUscGb
+   lFGLOC+XgcURdSr6ks2a6OUFhA2tZtd0UVAdrsBdcrNoRWVhvqoWzfD6p
+   iqVGVH5vBvoabT4eqf/2bynXoD4GN4bWGgRbk3/S4GtsBS8gB+SWFDa03
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5583057"
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="5583057"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 05:31:45 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="18250218"
+Received: from ijarvine-desk1.ger.corp.intel.com (HELO localhost) ([10.245.247.12])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 05:31:42 -0700
+From: =?UTF-8?q?Ilpo=20J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
+Date: Tue, 19 Mar 2024 14:31:38 +0200 (EET)
+To: "Luke D. Jones" <luke@ljones.dev>
+cc: platform-driver-x86@vger.kernel.org, Hans de Goede <hdegoede@redhat.com>, 
+    LKML <linux-kernel@vger.kernel.org>
+Subject: Re: [PATCH v1 1/1] platform/x86: asus-wmi: add support variant of
+ TUF RGB
+In-Reply-To: <20240310055750.13160-2-luke@ljones.dev>
+Message-ID: <42f1c0d5-e7ac-4efb-fef7-75d07ad2ffaa@linux.intel.com>
+References: <20240310055750.13160-1-luke@ljones.dev> <20240310055750.13160-2-luke@ljones.dev>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
 
-On Mon, 2024-03-18 at 13:03 +0100, Sascha Hauer wrote:
-> Apologies, I have sent the wrong mail. Here is the mail I really wanted
-> to send, with answers to some of the questions Paolo raised the last
-> time I sent it.
->=20
-> -----------------------------------8<------------------------------
->=20
-> > From 566bb198546423c024cdebc50d0aade7ed638a40 Mon Sep 17 00:00:00 2001
-> From: Sascha Hauer <s.hauer@pengutronix.de>
-> Date: Mon, 23 Oct 2023 14:13:46 +0200
-> Subject: [PATCH v2] net: Do not break out of sk_stream_wait_memory() with=
- TIF_NOTIFY_SIGNAL
->=20
-> It can happen that a socket sends the remaining data at close() time.
-> With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
-> out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
-> current task. This flag has been set in io_req_normal_work_add() by
-> calling task_work_add().
->=20
-> It seems signal_pending() is too broad, so this patch replaces it with
-> task_sigpending(), thus ignoring the TIF_NOTIFY_SIGNAL flag.
->=20
-> A discussion of this issue can be found at
-> https://lore.kernel.org/20231010141932.GD3114228@pengutronix.de
->=20
-> Suggested-by: Jens Axboe <axboe@kernel.dk>
-> Fixes: 12db8b690010c ("entry: Add support for TIF_NOTIFY_SIGNAL")
-> Link: https://lore.kernel.org/r/20231023121346.4098160-1-s.hauer@pengutro=
-nix.de
-> Signed-off-by: Sascha Hauer <s.hauer@pengutronix.de>
+On Sun, 10 Mar 2024, Luke D. Jones wrote:
+
+> Adds support for a second TUF RGB wmi call that some versions of the TUF
+> laptop come with. Also adjusts existing support to select whichever is
+> available.
+> 
+> Signed-off-by: Luke D. Jones <luke@ljones.dev>
 > ---
->=20
-> Changes since v1:
-> - only replace signal_pending() with task_sigpending() where we need it,
->   in sk_stream_wait_memory()
->=20
-> I'd like to pick up the discussion on this patch as it is still needed fo=
-r our
-> usecase. Paolo Abeni raised some concerns about this patch for which I di=
-dn't have
-> good answers. I am referencing them here again with an attempts to answer=
- them.
-> Jens, maybe you also have a few words here.
->=20
-> Paolo raised some concerns in
-> https://lore.kernel.org/all/e1e15554bfa5cfc8048d6074eedbc83c4d912c98.came=
-l@redhat.com/:
->=20
-> > To be more explicit: why this will not cause user-space driven
-> > connect() from missing relevant events?
->=20
-> Note I dropped the hunk in sk_stream_wait_connect() and
-> sk_stream_wait_close() in this version.
-> Userspace driven signals are still catched with task_sigpending() which
-> tests for TIF_SIGPENDING. signal_pending() will additionally check for
-> TIF_NOTIFY_SIGNAL which is exclusively used by task_work_add() to add
-> work to a task.
+>  drivers/platform/x86/asus-wmi.c            | 12 +++++++++++-
+>  include/linux/platform_data/x86/asus-wmi.h |  1 +
+>  2 files changed, 12 insertions(+), 1 deletion(-)
+> 
+> diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+> index 2cf695289655..ca8c73c15fcc 100644
+> --- a/drivers/platform/x86/asus-wmi.c
+> +++ b/drivers/platform/x86/asus-wmi.c
+> @@ -280,6 +280,7 @@ struct asus_wmi {
+>  	bool nv_temp_tgt_available;
+>  
+>  	bool kbd_rgb_mode_available;
+> +	u32 kbd_rgb_dev;
+>  	bool kbd_rgb_state_available;
+>  
+>  	bool throttle_thermal_policy_available;
+> @@ -870,6 +871,7 @@ static ssize_t kbd_rgb_mode_store(struct device *dev,
+>  				 struct device_attribute *attr,
+>  				 const char *buf, size_t count)
+>  {
+> +	struct asus_wmi *asus = dev_get_drvdata(dev);
+>  	u32 cmd, mode, r, g, b, speed;
+>  	int err;
+>  
+> @@ -906,7 +908,7 @@ static ssize_t kbd_rgb_mode_store(struct device *dev,
+>  		speed = 0xeb;
+>  	}
+>  
+> -	err = asus_wmi_evaluate_method3(ASUS_WMI_METHODID_DEVS, ASUS_WMI_DEVID_TUF_RGB_MODE,
+> +	err = asus_wmi_evaluate_method3(ASUS_WMI_METHODID_DEVS, asus->kbd_rgb_dev,
+>  			cmd | (mode << 8) | (r << 16) | (g << 24), b | (speed << 8), NULL);
+>  	if (err)
+>  		return err;
+> @@ -4537,6 +4539,14 @@ static int asus_wmi_add(struct platform_device *pdev)
+>  		asus->gpu_mux_dev = ASUS_WMI_DEVID_GPU_MUX_VIVO;
+>  	}
+>  
+> +	if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE)) {
+> +		asus->kbd_rgb_mode_available = true;
+> +		asus->kbd_rgb_dev = ASUS_WMI_DEVID_TUF_RGB_MODE;
+> +	} else if (asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE2)) {
+> +		asus->kbd_rgb_mode_available = true;
+> +		asus->kbd_rgb_dev = ASUS_WMI_DEVID_TUF_RGB_MODE2;
+> +	}
 
-It looks like even e.g. livepatch would set TIF_NOTIFY_SIGNAL, and
-ignoring it could break livepatch for any code waiting e.g. in
-tcp_sendmsg()?!?
+Hi,
 
-This change looks scary to me.
+Why are you leaving this line there (unlike in the GPU MUX patch where 
+you replaced it with the similar if()s as above):
 
-I think what Pavel is suggesting is to refactor the KTLS code to ensure
-all the writes are completed before releasing the last socket
-reference.
+	asus->kbd_rgb_mode_available = asus_wmi_dev_is_present(asus, ASUS_WMI_DEVID_TUF_RGB_MODE);
 
-I would second such suggestion.
+?
 
-If really nothing else works, and this change is the only option, try
-to obtain an ack from kernel/signal.c maintainers.
-
-Thanks,
-
-Paolo
+-- 
+ i.
 
 
