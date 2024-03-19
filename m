@@ -1,218 +1,132 @@
-Return-Path: <linux-kernel+bounces-107530-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107531-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A6A4B87FDB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:45:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5563C87FDBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:45:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 647B8282AA2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:45:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B8501F22162
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:45:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 326075A783;
-	Tue, 19 Mar 2024 12:45:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F161A5A4CA;
+	Tue, 19 Mar 2024 12:45:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="CEcjNzpD"
-Received: from mail-vk1-f170.google.com (mail-vk1-f170.google.com [209.85.221.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="Et3Hm9Ji"
+Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E11481E4BF;
-	Tue, 19 Mar 2024 12:45:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A62295A4C7
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:45:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710852321; cv=none; b=LZQhPLjzShHu2ufKfDXx7xSQvwgYbgP4Kjce4sZ9XLJkoJyyx+pv+BIUBjZoqr7NDYvIjqkkms9FDhBPNvI1hhdWlnLFOLI+JOgLK5VyWd41kakSe273jdiktmkS480lnnCSCR5sDxQH3Mc1ht3ZrAAPizgoJPs195ztHHeC3ao=
+	t=1710852350; cv=none; b=dac2UqG0XZ673uH0Ds5t3oC7XS0Ng3gWBEHCGL/P0ZBHN6+BLzk9pJ+hDhVUodsdzhvqcBvMtNPbmK2+ourj8OXUVBbQ6Ds3yl1P4gQhwsh+Tx36AaO6RKDRsEGEl7uchmkYe2KSOj7y873usi5EUgVB2r7LKnXrk31Y+Z7+M34=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710852321; c=relaxed/simple;
-	bh=uWH0Ro9XG24lVXLdz6QSPi6hJo+xcnq6ND5qoTb1ScA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=D/VH34Sc2G+jUvqUCt3ciDtKeoLjhOz9Umkvk/y9VlIqIJV5B/rp20In7+EOsYmbpE/eRaGqvfXjqDFE72JyPeDAyfVCb4EpYl513Kju/NgOV4dRAfVF/ac30HdVcXcxT5vQEYv2TPIBBLMsXpRAE9zx+q58xVh7stwC/scJSbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=CEcjNzpD; arc=none smtp.client-ip=209.85.221.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-vk1-f170.google.com with SMTP id 71dfb90a1353d-4d43ec959f8so737075e0c.1;
-        Tue, 19 Mar 2024 05:45:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710852319; x=1711457119; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=6TRN0nj5y7SM6+DeA2Go5q4zExBuxT8jctOtKQOcJuY=;
-        b=CEcjNzpDuoCDvu3jojFnVFfdr5Udc3J+HRtHHnFclA/cXX7/szS6xntCEqHFUVIwBl
-         HHH7kZ5/wxdeV3DZt+N5sl0tMOHCtCEQbQ4WwkUuk58uj034ZMT/FURvTPjfQ6iwiQtu
-         dCFpLzpq4T9F8aZJf8mAk95etDFln3Ef2LPEQAgPi/bHH0lDMogTWLLaJ97XuYSW8Tpx
-         NpwyQnXa1nfxMrrqExaRCAnfKzyGspAVv5zOOocH+zxfD+Gc+ntbf/wWyzrwCuoRz5+T
-         /vMcFsYgAC/1o9iqtLmEx0V1nB+w2mDWXxDIjI99VdS/XNQ+N+J2dzr/Ws7ihuCgge0U
-         xc+A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710852319; x=1711457119;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=6TRN0nj5y7SM6+DeA2Go5q4zExBuxT8jctOtKQOcJuY=;
-        b=lqH4C8/pf4du083JhtIBqeH/iCPSup/0LbmNDx/4IwSgobaWP4y3tLJvLvUJ96PX/G
-         oDLFKvLLm0OUbS8KU0++xcfUFtxb/STadMO42raeJh+tnd85zyTUNxD1L5i+45r13JcP
-         diRLMEzdRevlO0AiWNej70bfkyj8kNA1uy6LAvKhfAotc+fxRhdgDDXiV6gP1KtFZds2
-         wFa2ypb6gXi29WGeavH5Blcw7lOyciEycKv3xncwbbOXustOJ5qHdGZwrMQdnlIhei3u
-         cnZvPDhZgHmCfqyvDPFqg1gZhfCaqNs9FZcb/IrRCZuLHL+1iysmLVwujXhjlIDOyNJw
-         lEoA==
-X-Forwarded-Encrypted: i=1; AJvYcCXeDCMeySLJkdl0brAjQnI4tkzmBJ8TcZGyIUX+alKDi4oUaIhA339fmFCiF8iuJzPPLNkOMTyDYI9BvHYWwhsQdc3LRxJB7dbEW5J6LtcDKSzBKGNKe7O9fNK8wNJBy9LIv6LgbWmP/7ZmmXVSrAV7q/tEzunnqjBHJpviB35qqgRJ1VuFnxRfSAa9nlXpHJJor4Xmld5B/gXX4UpnQRz6pJKLfK1gJvFy
-X-Gm-Message-State: AOJu0YxlO3teRAl7dj3Kcv+50BSIN7YPF6471RD/pIYIE1skW+8GgpLq
-	cHdOJ4f2gLRLEahPTp2KQ6+ScZ4mT2G5pzm61/WcAWG/xmzs9osMK0eLOAjnmusMLeMI/dNabL9
-	bb0EkbE5gQyGP/j2CEWfuJtkFcFM=
-X-Google-Smtp-Source: AGHT+IHJPomT7sP53nJXawvVpaRjsxhtKM+VCNrfHI9UzyYiM4vfyEEMa1IExYYbYGUknB+IHNYSLNsGYwi7YIZgbFk=
-X-Received: by 2002:a05:6122:690:b0:4c0:9ec7:b324 with SMTP id
- n16-20020a056122069000b004c09ec7b324mr10279107vkq.0.1710852318689; Tue, 19
- Mar 2024 05:45:18 -0700 (PDT)
+	s=arc-20240116; t=1710852350; c=relaxed/simple;
+	bh=Vq5FfZgwtJTnS/zN0GAF3T/ikNNPCy9YkKCxgLh4tTc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jwSALvW7wICGYZcz1HV/KzHApY0ZyrFTZvGqnzTWQyPollCBWGgwcahDrW+/RM8sf4hnxWQyNSCVGH84Ke4zvDWt0nFxPBSDkm3ix+Z/7Kg2xTrS35gnKDZoOyQNc6koOdMrOyMF9wHqTQlTzaYA32o2tSk8ZMavqeDPd6LtcPM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=Et3Hm9Ji; arc=none smtp.client-ip=65.109.113.108
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
+Received: from localhost (localhost.localdomain [127.0.0.1])
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id DC2BC40E016C;
+	Tue, 19 Mar 2024 12:45:44 +0000 (UTC)
+X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
+Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
+	header.d=alien8.de
+Received: from mail.alien8.de ([127.0.0.1])
+	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
+	with ESMTP id RQzMyzj0HghI; Tue, 19 Mar 2024 12:45:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
+	t=1710852340; bh=QCnVQ6eF8q7c3H5K7fRMGpDCEN2zvByN9L+V6LcZ1Jk=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=Et3Hm9JiolA9aI76GMPr2Avio38cnEMabndlqy6Ti3VdhnvqlJXlnbfI6T6nlXjqN
+	 oS/TroIo1tLAQzBUP4eJCc9dDy7UkxAuZI8zWa3S9eRzcdzcEyHOSQVimzYpCn3Vfh
+	 8AxMDUj6w/UQSLMW5bgyV8IEVACukmVQBORWFM4p8/xi6hXa+pS2RvDPX9gYuodp+F
+	 2JoA7K+G+gONWmCwZrpRn9T89w8g92i6hj7HIMV+goEkqv3rat0+z2ssjjBZI6ggOt
+	 yNhQ+L8+4L5KGpaYXZTfDLnVhbkJ7CrsZSxJzNAu5ed4YmyumsRn1sLaR5H1H+P9sv
+	 SN0A2+UH4u1EVi6OlCrSMka3IrPPI4RrsrSp33Ggj1Lacl9A8lkjrVsciXyMdZ+/oC
+	 i3ZtPW+NP8Ha/LExRJrw8R6fFOxwwttGAMhDQkX/uQWXYPGqSKPlez8MZ5mtXjmd5j
+	 zS5jXoEX7j8EZ0y1a8BTOdJAoL5ATN1gTExjJPphZf+S6VDkG+fyk/USHMttSslkM6
+	 JF0EEM9Q6pyjXP39qun77l5ntLt9JigHZhvmeCREPi67Ywa4x+1dBdutf/J4rFppNN
+	 1/bns/P5R/BMxN808sizeMGAcedQ1zwx+nTgTp4lqttCDocM5pLWyqyNNQhBRQdQRS
+	 m+a5lGCGG7bVBNkQ5LBlrdtk=
+Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
+	(No client certificate requested)
+	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 69EEC40E0140;
+	Tue, 19 Mar 2024 12:45:29 +0000 (UTC)
+Date: Tue, 19 Mar 2024 13:45:24 +0100
+From: Borislav Petkov <bp@alien8.de>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: x86@kernel.org, linux-kernel@vger.kernel.org,
+	Andy Lutomirski <luto@kernel.org>, Brian Gerst <brgerst@gmail.com>,
+	Denys Vlasenko <dvlasenk@redhat.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Josh Poimboeuf <jpoimboe@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Subject: Re: [PATCH -tip 0/3] x86/asm: Use generic asm operand modifiers
+ instead of %P in asm templates
+Message-ID: <20240319124524.GBZfmI5IWLaioPcOUz@fat_crate.local>
+References: <20240319104418.284519-1-ubizjak@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318172102.45549-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <20240318172102.45549-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
- <db13e305-adc4-4990-b9ec-b1cdcdad4406@linaro.org> <010e4742-438f-413f-811f-a033ec104832@linaro.org>
-In-Reply-To: <010e4742-438f-413f-811f-a033ec104832@linaro.org>
-From: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
-Date: Tue, 19 Mar 2024 12:43:53 +0000
-Message-ID: <CA+V-a8txP39HJJrJcNqCUgw2NkdA3uSvBrbdSzw0bN6r5LpNaQ@mail.gmail.com>
-Subject: Re: [PATCH v3 2/4] dt-bindings: serial: renesas,scif: Validate
- 'interrupts' and 'interrupt-names'
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Geert Uytterhoeven <geert+renesas@glider.be>, 
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>, Jiri Slaby <jirislaby@kernel.org>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-serial@vger.kernel.org, 
-	linux-renesas-soc@vger.kernel.org, 
-	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
-	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240319104418.284519-1-ubizjak@gmail.com>
 
-Hi Krzysztof,
+On Tue, Mar 19, 2024 at 11:40:11AM +0100, Uros Bizjak wrote:
+> The "P" asm operand modifier is a x86 target-specific modifier.
+> 
+> For x86_64, when used with a symbol reference, the "P" modifier
+> emits "sym" instead of "sym(%rip)". When used with a constant, the
+> "P" modifier emits "cst" instead of "$cst". This property is used to
+> emit bare symbol references and bare constants without all
+> syntax-specific prefixes.
+> 
+> The generic "c", "n" and "a" operand modifiers should be used instead.
+> The following table shows the modifiers supported by all targets and
+> their effects:
+> 
+> Modifier    Description
+> -----------------------------------------------------------
+> 'c'         Require a constant operand and print the
+>             constant expression with no punctuation.
+> 'n'         Like '%c' except that the value of the constant
+>             is negated before printing.
+> 'a'         Substitute a memory reference, with the actual
+>             operand treated as the address.  This may be
+>             useful when outputting a "load address"
+>             instruction, because often the assembler syntax
+>             for such an instruction requires you to write
+>             the operand as if it were a memory reference.
+> 
+> Also note that unlike GCC, clang emits %rip-relative symbol
+> reference with "P" asm operand modifier, so the patch also unifies
+> symbol handling with both compilers.
 
-On Tue, Mar 19, 2024 at 6:22=E2=80=AFAM Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 19/03/2024 07:19, Krzysztof Kozlowski wrote:
-> > On 18/03/2024 18:21, Prabhakar wrote:
-> >> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >>
-> >> Add support to validate the 'interrupts' and 'interrupt-names' propert=
-ies
-> >> for every supported SoC. This ensures proper handling and configuratio=
-n of
-> >> interrupt-related properties across supported platforms.
-> >>
-> >> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
-> >> ---
-> >> v2->v3
-> >> - Listed interrupts and interrupt-names for every SoC in if check
-> >> ---
-> >>  .../bindings/serial/renesas,scif.yaml         | 95 ++++++++++++------=
--
-> >>  1 file changed, 63 insertions(+), 32 deletions(-)
-> >>
-> >> diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yam=
-l b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> >> index af72c3420453..53f18e9810fd 100644
-> >> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> >> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
-> >> @@ -82,38 +82,6 @@ properties:
-> >>    reg:
-> >>      maxItems: 1
-> >>
-> >> -  interrupts:
-> >
-> > I don't understand what is happening with this patchset. Interrupts mus=
-t
-> > stay here. Where did you receive any different feedback?
->
-> Look how it is done:
-> https://elixir.bootlin.com/linux/v6.8/source/Documentation/devicetree/bin=
-dings/ufs/qcom,ufs.yaml#L44
->
-Thanks for the pointer, as the above binding doesn't have any
-description items as compared to our case, to clarify I have updated
-the binding is below. Is this the correct approach?
+FTR, I really appreciate the clear explanations of the operand modifiers
+along with an example in the commit messages. What they really do and
+what they mean have caused some serious head-scratching in the past, up
+to the point where I went through gcc sources with Matz' help to figure
+out what some of them do.
 
-option #1
----------------
-  interrupts:
-    minItems: 1
-    maxItems: 6
+So thanks!
 
- interrupt-names:
-    minItems: 4
-    maxItems: 6
+:-)
 
-  - if:
-      properties:
-        compatible:
-          contains:
-            enum:
-              - renesas,rcar-gen1-scif
-              - renesas,rcar-gen2-scif
-              - renesas,rcar-gen3-scif
-              - renesas,rcar-gen4-scif
-    then:
-      properties:
-        interrupts:
-          items:
-            - description: Single combined interrupt
+-- 
+Regards/Gruss,
+    Boris.
 
-        interrupt-names: false
-
-  - if:
-      properties:
-        compatible:
-          contains:
-            const: renesas,scif-r7s72100
-    then:
-      properties:
-        interrupts:
-          items:
-            - description: Error interrupt
-            - description: Receive buffer full interrupt
-            - description: Transmit buffer empty interrupt
-            - description: Break interrupt
-
-        interrupt-names:
-          items:
-            - const: eri
-            - const: rxi
-            - const: txi
-            - const: bri
-  - if:
-      properties:
-        compatible:
-          contains:
-            enum:
-              - renesas,scif-r7s9210
-              - renesas,scif-r9a07g044
-    then:
-      properties:
-        interrupts:
-          items:
-            - description: Error interrupt
-            - description: Receive buffer full interrupt
-            - description: Transmit buffer empty interrupt
-            - description: Break interrupt
-            - description: Data Ready interrupt
-            - description: Transmit End interrupt
-
-        interrupt-names:
-          items:
-            - const: eri
-            - const: rxi
-            - const: txi
-            - const: bri
-            - const: dri
-            - const: tei
-
-Cheers,
-Prabhakar
+https://people.kernel.org/tglx/notes-about-netiquette
 
