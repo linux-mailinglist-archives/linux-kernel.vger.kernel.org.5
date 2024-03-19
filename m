@@ -1,146 +1,135 @@
-Return-Path: <linux-kernel+bounces-107545-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107574-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A10C87FDEC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:59:04 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6114287FE56
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:13:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40D141F2280E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:59:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 61663B2101B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:13:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEFC38FA6;
-	Tue, 19 Mar 2024 12:58:47 +0000 (UTC)
-Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CB477823C7;
+	Tue, 19 Mar 2024 13:10:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="Fk31kwtY"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5D53C08E;
-	Tue, 19 Mar 2024 12:58:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FBDF81728;
+	Tue, 19 Mar 2024 13:10:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853126; cv=none; b=kEdoQOrwHPhjPw8Jfg9nYXCMm/SSx+pWeguduR52ilw54cYYbhXKgB3cK0aazAIszMs01ZYfh4k/6TTwYSg38g3c729uJ4GN47VnTMm1OdGB3JQKMWbobR0826gahrKVdGDimeYNROGBhXaGjOuL47qUG/sUtCpjaplME+jcXlQ=
+	t=1710853815; cv=none; b=l1+U0krv5NfrT8rv70tqnPFD1cd07XuUQi5Yv7jINdgjY3HosR4eADmkuX57buupnxf3yjf5fUbPMHLWCNsvIMdL0jcD2Ge6lHyKMzRakOP/epEVu3G/2mJZkJR8qORCGglJzYj3XV1QnK2J8Eg4rbrNZp2ygk0KZIQ2j8edkYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853126; c=relaxed/simple;
-	bh=bDGVu2ht54DNJY9D61w97Glx7t+GS1mjdPbvuhX2RKU=;
-	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=p27TdvpHt6IHt+Ql+jBf9WrExB5BLyV0UIcc4BMxl7+c90YBT6JhtrQcOoJVqzO6kWH5MF2b659FrLkJ2XQq7PibEU9qPYZ6DIFPcIab0NdtVSv8PEKNautCo6gG/KpAIz8imYObKA2Etmsj2B3zJHXnbSZUiw9OoyTggoo2zdQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a4e0859b65so11494eaf.0;
-        Tue, 19 Mar 2024 05:58:44 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710853124; x=1711457924;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=kVedSuy1YaJHE6kqXfvwlKhYz6NEiCNUxLQc9igH1PY=;
-        b=Bu+U2HQ+YJXGlSOG0w94ed3+OMs31Z8DyzMinPDk2OJpwxItR3yI+yHqrZrzk9LZwv
-         q6eIXdprLeW8v195s1naIzxuhPtO2DmL8i2cpU6Js5vhNRAQuvir21e9DJUjHugjwuJA
-         +IKmY6WUcppxxXz5Z8ADbB4PDGNKgmSkCFoIBzjt0SAxWO2h+up7x7qRFX7esJPAh9U2
-         ySlFsVPAVRweCRvyMHag2oYyRRC3vSZTOY5OM3IOgfcEpxqhikA5cPvfXeNC19XpOm6F
-         7y16djEvJ7iC0uFC/q/prMQ8ePW1WmkUWKQLeHk52ao5bhPDAEcGJEDL8f+jegZLg+Th
-         mGoA==
-X-Forwarded-Encrypted: i=1; AJvYcCUAK/EEKS5qAL9Af1gkUqTnJnCzXkgimgtPwxRzSWNxPVPhFaxq86J1kLLFr0TLn02L0dOwM0h2dydF9czbe3JpHfquLslYJ4VOBg6P
-X-Gm-Message-State: AOJu0YxqwenieNYrafrrlf7bbRBadRDMOti/e7SqE8WS+jgj6Fr3WYtZ
-	LiGYN19HBQZKFxFHW/SMk/z+TqI9GIciTwIj92bqpvKPxQdSY5Kd2zNozoATqUutyRfqq+fvG5H
-	hdQdoenGtd2Ocr6uXfOFaT2y2W3U=
-X-Google-Smtp-Source: AGHT+IHUaNKZWYRgiZaX9fAuFEFaoobcM3pxAzz8lLMeRycqVfpgjD+vzJ9MAn8uUJNY3yQv1dX8DHno4IbptehmE+c=
-X-Received: by 2002:a05:6820:b95:b0:5a4:7790:61b4 with SMTP id
- eg21-20020a0568200b9500b005a4779061b4mr2110542oob.0.1710853124158; Tue, 19
- Mar 2024 05:58:44 -0700 (PDT)
+	s=arc-20240116; t=1710853815; c=relaxed/simple;
+	bh=/2gz5oE7X2HoTza/fnScy8bF/yxdMo8k73vGexhITbo=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Bgz2wjiDzWEbJXOinp5HLs1O0StKVO9SawrajmzPeHjOYdsLNHCXa9QqqbUXSoLwexDSLSV2oXWTRpiEk4yP+sGZpk0DGx3P72wGLtHWk6MhPKKZHmzKendJcxE3hc+7rZZV9NifWiCMzW7kooZtkYoEP4IJEZbjmvphBGsCNyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=Fk31kwtY; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=Sender:Content-Transfer-Encoding:
+	MIME-Version:Message-ID:Date:Subject:Cc:To:From:Reply-To:Content-Type:
+	Content-ID:Content-Description:In-Reply-To:References;
+	bh=NRFhPNgO2KTc9pPyC3K2O36/9jEWFqud2QKSFyqGdjk=; b=Fk31kwtY0xiAnzFHmq5RbsfnPl
+	sZjE/0LXazWJZFkqELo5wcmgHGdb4PJmx9n+LLppmtb/ES00rt4HI/4IxKNJkQd+s2TwtwFnV0Z6J
+	wv86rcQLi2x6XkqLa32lg0qL5ipFtT/vYobvqVL631TNU1wSAExw6wFY/fuhbiRdlZYLjjDnSg9j1
+	HF2E2D+Q9rJvZIOUB8ShvIZObfyqGm9fqZg3UrxqXpE7XvV5PfABKe8zarvbnedYrEE7cIZsbGKEu
+	tbMTaxomdjYUxr4nzPQ955Ih2NBewXNFGnSD3u5YOYiDFHj1npk5PilLKgUxb+8mfl8QqFQA6OoDu
+	Gup9ef0Q==;
+Received: from [2001:8b0:10b:1::ebe] (helo=i7.infradead.org)
+	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rmZE9-00000001zLS-11MH;
+	Tue, 19 Mar 2024 13:10:01 +0000
+Received: from dwoodhou by i7.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rmZE8-00000004PMn-3PUg;
+	Tue, 19 Mar 2024 13:10:00 +0000
+From: David Woodhouse <dwmw2@infradead.org>
+To: linux-arm-kernel@lists.infradead.org,
+	kvm@vger.kernel.org
+Cc: Paolo Bonzini <pbonzini@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Marc Zyngier <maz@kernel.org>,
+	Oliver Upton <oliver.upton@linux.dev>,
+	James Morse <james.morse@arm.com>,
+	Suzuki K Poulose <suzuki.poulose@arm.com>,
+	Zenghui Yu <yuzenghui@huawei.com>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Lorenzo Pieralisi <lpieralisi@kernel.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Len Brown <len.brown@intel.com>,
+	Pavel Machek <pavel@ucw.cz>,
+	David Woodhouse <dwmw@amazon.co.uk>,
+	Mostafa Saleh <smostafa@google.com>,
+	Jean-Philippe Brucker <jean-philippe@linaro.org>,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	kvmarm@lists.linux.dev,
+	linux-pm@vger.kernel.org
+Subject: [RFC PATCH v3 0/5] Add PSCI v1.3 SYSTEM_OFF2 support for hibernation
+Date: Tue, 19 Mar 2024 12:59:01 +0000
+Message-ID: <20240319130957.1050637-1-dwmw2@infradead.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-From: "Rafael J. Wysocki" <rafael@kernel.org>
-Date: Tue, 19 Mar 2024 13:58:32 +0100
-Message-ID: <CAJZ5v0jjQ90P=+oQKdA2VY-8r0QAXjXfq50UMRDs6=XbcJ7R_A@mail.gmail.com>
-Subject: [GIT PULL] More power management updates for v6.9-rc1
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: Linux PM <linux-pm@vger.kernel.org>, 
-	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-
-Hi Linus,
-
-Please pull from the tag
-
- git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
- pm-6.9-rc1-2
-
-with top-most commit a6d6590917ec352270bd3e3c040240aab31f2e90
-
- Merge branches 'pm-em', 'pm-powercap' and 'pm-sleep'
-
-on top of commit 07abb19a9b201c11e4367e8a428be7235b6dbd0d
-
- Merge tag 'pm-6.9-rc1' of
-git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
-
-to receive more power management updates for 6.9-rc1.
-
-These update the Energy Model to make it prevent errors due to power
-unit mismatches, fix a typo in power management documentation,
-convert one driver to using a platform remove callback returning void,
-address two cpufreq issues (one in the core and one in the DT driver),
-and enable boost support in the SCMI cpufreq driver.
-
-Specifics:
-
- - Modify the Energy Model code to bail out and complain if the unit of
-   power is not uW to prevent errors due to unit mismatches (Lukasz Luba).
-
- - Make the intel_rapl platform driver use a remove callback returning
-   void (Uwe Kleine-K=C3=B6nig).
-
- - Fix typo in the suspend and interrupts document (Saravana Kannan).
-
- - Make per-policy boost flags actually take effect on platforms using
-   cpufreq_boost_set_sw() (Sibi Sankar).
-
- - Enable boost support in the SCMI cpufreq driver (Sibi Sankar).
-
- - Make the DT cpufreq driver use zalloc_cpumask_var() for allocating
-   cpumasks to avoid using uninitialized memory (Marek Szyprowski).
-
-Thanks!
+Content-Transfer-Encoding: 8bit
+Sender: David Woodhouse <dwmw2@infradead.org>
+X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
 
 
----------------
+The PSCI v1.3 spec (https://developer.arm.com/documentation/den0022,
+currently in Alpha state, hence 'RFC') adds support for a SYSTEM_OFF2
+function enabling a HIBERNATE_OFF state which is analogous to ACPI S4.
+This will allow hosting environments to determine that a guest is
+hibernated rather than just powered off, and ensure that they preserve
+the virtual environment appropriately to allow the guest to resume
+safely (or bump the hardware_signature in the FACS to trigger a clean
+reboot instead).
 
-Lukasz Luba (1):
-      PM: EM: Force device drivers to provide power in uW
+This updates KVM to support advertising PSCI v1.3, and unconditionally
+enables the SYSTEM_OFF2 support when PSCI v1.3 is enabled. For now,
+KVM defaults to PSCI v1.2 unless explicitly requested.
 
-Marek Szyprowski (1):
-      cpufreq: dt: always allocate zeroed cpumask
+For the guest side, add a new SYS_OFF_MODE_POWER_OFF handler with higher
+priority than the EFI one, but which *only* triggers when there's a
+hibernation in progress. There are other ways to do this (see the commit
+message for more details) but this seemed like the simplest.
 
-Saravana Kannan (1):
-      Documentation: power: Fix typo in suspend and interrupts doc
+Version 2 of the patch series splits out the psci.h definitions into a
+separate commit (a dependency for both the guest and KVM side), and adds
+definitions for the other new functions added in v1.3. It also moves the
+pKVM psci-relay support to a separate commit; although in arch/arm64/kvm
+that's actually about the *guest* side of SYSTEM_OFF2 (i.e. using it
+from the host kernel, relayed through nVHE).
 
-Sibi Sankar (3):
-      cpufreq: Fix per-policy boost behavior on SoCs using
-cpufreq_boost_set_sw()
-      firmware: arm_scmi: Add support for marking certain frequencies as tu=
-rbo
-      cpufreq: scmi: Enable boost support
+Version 3 dropped the KVM_CAP which allowed userspace to explicitly opt
+in to the new feature like with SYSTEM_SUSPEND, and makes it depend only
+on PSCI v1.3 being exposed to the guest.
 
-Uwe Kleine-K=C3=B6nig (1):
-      powercap: intel_rapl: Convert to platform remove callback returning v=
-oid
+David Woodhouse (5):
+      firmware/psci: Add definitions for PSCI v1.3 specification (ALPHA)
+      KVM: arm64: Add support for PSCI v1.2 and v1.3
+      KVM: arm64: Add PSCI v1.3 SYSTEM_OFF2 function for hibernation
+      KVM: arm64: nvhe: Pass through PSCI v1.3 SYSTEM_OFF2 call
+      arm64: Use SYSTEM_OFF2 PSCI call to power off for hibernate
 
----------------
+ Documentation/virt/kvm/api.rst       | 11 +++++++++
+ arch/arm64/include/uapi/asm/kvm.h    |  6 +++++
+ arch/arm64/kvm/hyp/nvhe/psci-relay.c |  2 ++
+ arch/arm64/kvm/hypercalls.c          |  2 ++
+ arch/arm64/kvm/psci.c                | 43 +++++++++++++++++++++++++++++++++++-
+ drivers/firmware/psci/psci.c         | 35 +++++++++++++++++++++++++++++
+ include/kvm/arm_psci.h               |  4 +++-
+ include/uapi/linux/psci.h            | 20 +++++++++++++++++
+ kernel/power/hibernate.c             |  5 ++++-
+ 9 files changed, 125 insertions(+), 3 deletions(-)
 
- Documentation/power/suspend-and-interrupts.rst |  2 +-
- drivers/cpufreq/cpufreq-dt.c                   |  2 +-
- drivers/cpufreq/cpufreq.c                      | 18 ++++++++++++------
- drivers/cpufreq/freq_table.c                   |  2 +-
- drivers/cpufreq/scmi-cpufreq.c                 | 20 +++++++++++++++++++-
- drivers/firmware/arm_scmi/perf.c               |  3 +++
- drivers/powercap/intel_rapl_msr.c              |  5 ++---
- kernel/power/energy_model.c                    | 11 +++++++++++
- 8 files changed, 50 insertions(+), 13 deletions(-)
 
