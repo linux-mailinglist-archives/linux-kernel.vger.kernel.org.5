@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-108043-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108044-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8A5A5880529
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:55:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4697688052C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:56:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 174DE1F24850
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:55:44 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7951F2471E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:56:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87D9E39FCE;
-	Tue, 19 Mar 2024 18:55:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE8C39FCF;
+	Tue, 19 Mar 2024 18:56:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nKR6sUQB"
-Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com [209.85.167.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a93kvzT8"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E07183B19D
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:55:18 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAAF39AD5;
+	Tue, 19 Mar 2024 18:56:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710874520; cv=none; b=j3gipJ8VpuJmdr58MVU4nrEZzLT1LV63nQtEPANxf5I+UIHCxQ5sT+eVkeS+zi73nXsqsGYtGD7vbScj+qRCuX18OOQXFYpSNOiNbW84awmbj7kotXaO1Hfy0s1x9FJiOZ/vqjupv1MbSBHfYrB55GXZJ4qfNTAspkE8JgOvk5c=
+	t=1710874581; cv=none; b=rQa53qnjLQFez06A76qjjofggp+ZhPHAlG8WdCsW/ON63swYvWf9u2zUA53Y5CG2JfV91FXlduLwz9tH2jaeNQhiH1/1DoX2I8sirS/cb++5KqDj3QzPgmXZDw2Nb9NRkKDR802MspDBeh1t9z+3UqZm9AuLTl6QBxnf8Hfuidc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710874520; c=relaxed/simple;
-	bh=h9vb3dzJK50rF+unzuJ++DX9Ls1tluXIoBoBDWHdUaU=;
+	s=arc-20240116; t=1710874581; c=relaxed/simple;
+	bh=DdYQb2a+xcV5YeF7/xy5cNg5XH3bFTlzk6qS9cbOnPk=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=uMjDxVDO0ZgmzG3gYqq+C8H2iKTa4Sh3Ps1AkkupoVsEXxicdXPvazPCi2fDv8kNrYSOkXnI/4z+k24A104w2tqaOjAQ8dLXrI1u0b41eesm7g9e+OPI0dxuMGgQpNA+Oeb7TNqPCglOSYkn2HMjL2wYziK/x8UfF6hsaP3Amks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nKR6sUQB; arc=none smtp.client-ip=209.85.167.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513d23be0b6so6288667e87.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:55:18 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710874517; x=1711479317; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=83V+kLXEKnt3rHh9YFy/TefnTTCMNLk8pL8V6XrQ+/8=;
-        b=nKR6sUQBm0dfXhBkztlwAWqK+5+79hQOe+QiU2rEh7BsGLYQwXA6DqOg8VNikeWVAm
-         4XRO3oIjj/V3zWgs379QsleBfyM5p5YMaVy8WrMgTGu4ozQbkWZGPEfGhgQF5vU9xu7m
-         JEK9KXXg91XEq1i4oSRNhHgCDFiQ4wnJdPmvmiPRI9P1wYFsKPs6ab6WYibfmb6Esq2y
-         RfW7MgB+Dg7ENxJf7bsot2GjkXoJLSb77aJkjvBo6Hl3fj16ulOkCq88HJXF8U9ZqHrL
-         C6OjFg2cDI/xJ52zGfj3JzCDhrBMSZ8qDk4uKx3l58x8OPFf1f0TEm7z4TvpB5VAu7Pp
-         dHmw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710874517; x=1711479317;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=83V+kLXEKnt3rHh9YFy/TefnTTCMNLk8pL8V6XrQ+/8=;
-        b=iR+hvHmnj0VXmbSdqlSEreXxaI9BhA824+o+M9vvzmPV2u+o/qH2mBGk7ZuAaB0CoP
-         9kZD6a5FCpA7Ejh2HFPV8nTGYHalkxDpZ1UbZSSCqupTCVF5t0S6gaWT4y2Eb5/3KoTj
-         /H0Elx8eoXgEjtMZhgu43siUEqEq+K8gmPbZ8tarSgZxMBT3EjLsloeI5O79ymIpwxP8
-         0D1OsrYSyRm8mdqgEHnHhdvCxU3uzOxJpG8bM8U1vKGvrS2A0/2H2HMQUL04fKau9DKL
-         MPIGlakKEgrlwF8gGXUiosN0qEbB1E0M/Igh+1xT0qujl5DcpAV5llT8ClTfqPXSH0Yh
-         vu1g==
-X-Forwarded-Encrypted: i=1; AJvYcCVbzL808E9Y2uem2mLp/Ze1JZM5Op53jRm5+E8OgnEKaPdyh50bn4NHVofjGSNTndxGQ8/dfKB1DcMgVI1O/dLrNMtoGn1WoZSsVdq8
-X-Gm-Message-State: AOJu0YxASU3ZvsPGgholF5Xg4iQSJxtUT3BhcQmAFB1qjC9HWL0Tdi5S
-	3w0xZn4sYeHozx+hk3AV9652Tuql3Vca6vDo/xcCxx0srOD1pLi08UJbeeG7394=
-X-Google-Smtp-Source: AGHT+IEoKE7/yvG89Di0GzAV77SummXupTNxWOUpcNfs4kVIta6lcqVF6t/RsIBXEM6KgN+0jqSVZQ==
-X-Received: by 2002:ac2:5a1c:0:b0:513:d24f:6455 with SMTP id q28-20020ac25a1c000000b00513d24f6455mr33557lfn.29.1710874516960;
-        Tue, 19 Mar 2024 11:55:16 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id bw9-20020a170906c1c900b00a4650ec48d0sm6453124ejb.140.2024.03.19.11.55.15
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 11:55:16 -0700 (PDT)
-Message-ID: <ae8e8151-b73f-413e-8535-95fc829654bb@linaro.org>
-Date: Tue, 19 Mar 2024 19:55:14 +0100
+	 In-Reply-To:Content-Type; b=ZMIoHsz/DmbqUJTEHBoZVUv0NJzZ/0maAnwLKUXOQn2hK8R0W/9tnQfZ6WZYH1L03FUlpi0ezquD7dg/d3boQkI2dBrwjhWdg4kbpnUPt9Zl6qKkb52YJZyS9KW5qOaeHPfP8XzkuZ4PtQVVAdcQq2mhunAQbkbey76/zlE3VbM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a93kvzT8; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JIp7SW009331;
+	Tue, 19 Mar 2024 18:56:01 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
+ mime-version : subject : to : cc : references : from : in-reply-to :
+ content-type : content-transfer-encoding; s=pp1;
+ bh=sErdNKpGwdXCXGL6HoHiUJZ1yPwMRBR6HoPdLoOlibI=;
+ b=a93kvzT8SWMsT1tfXJiXqNMoT63RCIiTWe3f7f5Wmqe2bJSN/XE8iJfYmkqh1iozjXT9
+ yETbLFjlPLB+FjBSJN3OxEaG+huppqHONy7R7N1+O2CUM5l/4PXJfI3aGG1Ix2CPQ5cs
+ ZW2FJpad8E34U3liKr4bM5YXr2phdW7gxDyrGKTwWgrkfStJh5vnp+2s1Gx1qiiOojv1
+ Lk46OqIJw5nCKwcJ1UEgVFgu53A/21ovuIZ55w6VQ4CLdRpmAM6b1XOCGsUu1MxEPaoM
+ hOmMxqTeViQTQGtPlBUeb2gjpziwyB3DTis9rwQuXl/GVVdvb4ViW6LKFlAPAnPe1Zmb vw== 
+Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyfuwg2ts-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 18:56:00 +0000
+Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
+	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JIcIeL015829;
+	Tue, 19 Mar 2024 18:56:00 GMT
+Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
+	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wwp501qgb-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 18:56:00 +0000
+Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
+	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JItvpD19726910
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Mar 2024 18:55:59 GMT
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 2D9AA5804B;
+	Tue, 19 Mar 2024 18:55:57 +0000 (GMT)
+Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id E1F3258067;
+	Tue, 19 Mar 2024 18:55:55 +0000 (GMT)
+Received: from [9.47.158.152] (unknown [9.47.158.152])
+	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Mar 2024 18:55:55 +0000 (GMT)
+Message-ID: <026ad747-eb04-44e6-9c1e-cb1a56a6e0e3@linux.ibm.com>
+Date: Tue, 19 Mar 2024 14:55:55 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,84 +75,65 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] arm64: dts: iesy: add support for iesy PX30 SoM OSM-S
-To: Dominik Poggel <pog@iesy.com>, "robh+dt@kernel.org" <robh+dt@kernel.org>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Tianling Shen <cnsztl@gmail.com>, Chris Morgan <macromorgan@hotmail.com>,
- Ondrej Jirman <megi@xff.cz>, Andy Yan <andyshrk@163.com>,
- "devicetree@vger.kernel.org" <devicetree@vger.kernel.org>,
- "linux-arm-kernel@lists.infradead.org"
- <linux-arm-kernel@lists.infradead.org>,
- "linux-rockchip@lists.infradead.org" <linux-rockchip@lists.infradead.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240319095411.4112296-1-pog@iesy.com>
- <20240319095411.4112296-2-pog@iesy.com>
- <b4f4f8e3-9832-4789-b4fb-beeeeb5c859e@linaro.org>
- <8ace15e8-0da1-4384-9042-ab89329c352a@iesy.com>
+Subject: Re: [PATCH v6 00/13] Add support for NIST P521 to ecdsa
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <8ace15e8-0da1-4384-9042-ab89329c352a@iesy.com>
-Content-Type: text/plain; charset=UTF-8
+To: Jarkko Sakkinen <jarkko@kernel.org>, Lukas Wunner <lukas@wunner.de>,
+        Stefan Berger <stefanb@linux.vnet.ibm.com>
+Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
+        herbert@gondor.apana.org.au, davem@davemloft.net,
+        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
+        bbhushan2@marvell.com
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <ZfiMhi9D2Rhh89BI@wunner.de>
+ <d02eda40-2d3a-43a2-a3a9-cb79055acda7@linux.ibm.com>
+ <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org>
+From: Stefan Berger <stefanb@linux.ibm.com>
+In-Reply-To: <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 79g6SWib6schXeCJA2BReBDbIz_Nh0sw
+X-Proofpoint-GUID: 79g6SWib6schXeCJA2BReBDbIz_Nh0sw
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-19_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
+ suspectscore=0 adultscore=0 clxscore=1015 malwarescore=0 impostorscore=0
+ phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=533 priorityscore=1501
+ classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403140000
+ definitions=main-2403190143
 
-On 19/03/2024 16:17, Dominik Poggel wrote:
+
+
+On 3/19/24 14:22, Jarkko Sakkinen wrote:
+> On Tue Mar 19, 2024 at 12:42 AM EET, Stefan Berger wrote:
+>>
+>>
+>> On 3/18/24 14:48, Lukas Wunner wrote:
+>>> On Tue, Mar 12, 2024 at 02:36:05PM -0400, Stefan Berger wrote:
+>>>> This series adds support for the NIST P521 curve to the ecdsa module
+>>>> to enable signature verification with it.
+>>>
+>>> v6 of this series is still
+>>>
+>>> Tested-by: Lukas Wunner <lukas@wunner.de>
+>>
+>> Thanks.
 > 
-> Thanks for your input, I will use it and resubmit it afterwards.
+> This has been discussed before in LKML but generally tested-by for
+> series does not have semantical meaning.
 > 
-> Unfortunately 'make dtbs_check' isn't working, as it can't resolve
-> http://devicetree.org/meta-schemas/core.yaml. Probably just a problem on 
-> my end,
-> I will investigate further.
+> Please apply only for patches that were tested.
 
-There is nothing to resolve there... did you install all prerequisites
-as mentioned in linked writing schema (dtschema, yamllint)?
+Ok, I will remove the Tested-by tag.
 
-Best regards,
-Krzysztof
+However, patch 4/13, that only changes a comment, can also be tested in 
+so far as to check whether the code is correct as-is for the tests that 
+'I' ran and no further modifications are needed for NIST P521. In this 
+case it would mean that a single subtraction of 'n' from res.x seems 
+sufficient and existing code is good as described by the modified comment.
 
+> 
+> BR, Jarkko
+> 
 
