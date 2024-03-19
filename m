@@ -1,60 +1,49 @@
-Return-Path: <linux-kernel+bounces-108228-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108229-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1799088081A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:17:17 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 611F588081F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:20:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C0E5E1F22D35
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:17:16 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91F0A1C2252E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:20:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 294015F87F;
-	Tue, 19 Mar 2024 23:17:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA7C45FB8E;
+	Tue, 19 Mar 2024 23:20:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b="CtbjiIZZ"
-Received: from mail.ispras.ru (mail.ispras.ru [83.149.199.84])
-	(using TLSv1.2 with cipher DHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="RdaLhh37"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D15C61E532;
-	Tue, 19 Mar 2024 23:17:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=83.149.199.84
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 00326364D4;
+	Tue, 19 Mar 2024 23:20:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710890227; cv=none; b=mBBNba6+di33sYHjuct6MHYIg/SpckJR9ENBBVDsgyUtnmcZLm1h8AzZmAQPjJLNoGF8/c5OPv5Zla8hv2MFRnBN340d16rTXaBDkF3DJt+RwXu/i44k5WwPY+y9w5GqXsWUykBev1kcTgaghjSbe6JUfvqSLUzUSO6du4hSGB8=
+	t=1710890428; cv=none; b=MkL0oNp+Mf14m8e/x+mxyzLPKVvj6MAAB3L4BwK2aTXg+hJQpR6Bu9KfjCHwFM1Fm9zhFc3T8dDsvSsIDS7g8xqwQuFPBr2nm/J7pgwJ9pisWrzwY9q2A4SbJ0CGQrFCj0b7ZBtxwPzKs8z4bU10M9E81lSakSMFYltz2QqYyMA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710890227; c=relaxed/simple;
-	bh=BFzKvRGNRoiy2oC6xsZEBAKqCMoBrZ+wlOEg9IuwYbk=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=Dx1SJu2pGTPJrVTFyY0372PwklqFeFXQHCMfRe8zSd91hqBpEqc3ys6rRL6DfmlJwqG4WJeehNOIpDXANVbzPbUk+56asVowSW/F2v5fWf2AAFKgJLG9vLqOJCwss3OUkZ6MTpMIuXiCvOkZpjofTZpOM/jIDWyyc5I0F03jdac=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru; spf=pass smtp.mailfrom=ispras.ru; dkim=pass (1024-bit key) header.d=ispras.ru header.i=@ispras.ru header.b=CtbjiIZZ; arc=none smtp.client-ip=83.149.199.84
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ispras.ru
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ispras.ru
-Received: from localhost.localdomain (unknown [85.89.126.105])
-	by mail.ispras.ru (Postfix) with ESMTPSA id 87CB640ADFF1;
-	Tue, 19 Mar 2024 23:16:53 +0000 (UTC)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mail.ispras.ru 87CB640ADFF1
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ispras.ru;
-	s=default; t=1710890213;
-	bh=bK361IhiE+XMAZTsxOEj0ZXg25Ch4uk2S2o4xZFwevs=;
-	h=From:To:Cc:Subject:Date:From;
-	b=CtbjiIZZOBd/GIX9iUGfUhyJyEejdhVoS+R3KZqQ1kwulOhDw75ifvkprBVahyjo9
-	 ySOicKeGkCeYiVlww9iC1LWARppBVUfG6iKNM33C4Y2Pgm40ivwWZP3RpQ6duQe6zp
-	 Tnqk22FtM4gyFlLElMgNzkvPkl0ckh4j4niFs0ps=
-From: Pavel Sakharov <p.sakharov@ispras.ru>
-To: =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>
-Cc: Pavel Sakharov <p.sakharov@ispras.ru>,
-	Sumit Semwal <sumit.semwal@linaro.org>,
-	Arvind Yadav <Arvind.Yadav@amd.com>,
-	linux-media@vger.kernel.org,
-	dri-devel@lists.freedesktop.org,
-	linaro-mm-sig@lists.linaro.org,
-	linux-kernel@vger.kernel.org,
-	Fedor Pchelkin <pchelkin@ispras.ru>,
-	lvc-project@linuxtesting.org
-Subject: [PATCH] dma-buf: Fix NULL pointer dereference in sanitycheck()
-Date: Wed, 20 Mar 2024 04:15:23 +0500
-Message-ID: <20240319231527.1821372-1-p.sakharov@ispras.ru>
-X-Mailer: git-send-email 2.44.0
+	s=arc-20240116; t=1710890428; c=relaxed/simple;
+	bh=CQKbFkrVkDYh/llXbWxxM3JwFbyg1gkNdIvlA/llHQg=;
+	h=Content-Type:MIME-Version:Subject:From:Message-Id:Date:References:
+	 In-Reply-To:To:Cc; b=KXIgDVaAISyWXqYniqiSn8qa6Tqp2RKdE097SxG/AgyEJc9hysJkJa41FsLR7zLynJIKrPR/Et7b1ZIQVKVU6DgqJVftK0cX5Y9Fqng8buy4H7XhE5GSiiIUIBovU4oslElTs3axcK95wlYU6mU+RrsJjgU0oLSC6AhxejNGvDI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=RdaLhh37; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 523E9C433F1;
+	Tue, 19 Mar 2024 23:20:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710890427;
+	bh=CQKbFkrVkDYh/llXbWxxM3JwFbyg1gkNdIvlA/llHQg=;
+	h=Subject:From:Date:References:In-Reply-To:To:Cc:From;
+	b=RdaLhh37gd8OOwXuZblOjmi5Q63P1keLkG8dua+AmT9ioknX7bOkd1fd2oIrDUto3
+	 NCLXKpq+EYDT7d2b2M94y6Ypk5D/VaUWEVnMXlaP7WTU8pXTAwmw6tJ4NFkeszPnWF
+	 GeG7CbrFWcFtMmJmCRS8lYSagBJ6uNVWMZ27eexu5IBVBInvXR+2U/95/U7gdsyDa9
+	 EoYwDxWV/fbnTq9BHPF1sZWpQHssphSBrOmAGETmm8kslUv9/dLiTxKacgaOSyvCHw
+	 c86yyYj1M6CRgt4vIbwc0rZANC+ZqlyUD6keupUba+4DYxytFsJGbtOlheWeI3mUmF
+	 4asiQzbrI9w0Q==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id 41BC8D84BB3;
+	Tue, 19 Mar 2024 23:20:27 +0000 (UTC)
+Content-Type: text/plain; charset="utf-8"
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -62,42 +51,46 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Subject: Re: [PATCH v2] tools/testing/selftests/bpf/test_tc_tunnel.sh: Prevent
+ client connect before server bind
+From: patchwork-bot+netdevbpf@kernel.org
+Message-Id: 
+ <171089042726.26358.17979567034735426753.git-patchwork-notify@kernel.org>
+Date: Tue, 19 Mar 2024 23:20:27 +0000
+References: <20240314105911.213411-1-alessandro.carminati@gmail.com>
+In-Reply-To: <20240314105911.213411-1-alessandro.carminati@gmail.com>
+To: Alessandro Carminati (Red Hat) <alessandro.carminati@gmail.com>
+Cc: andrii@kernel.org, shuah@kernel.org, martin.lau@linux.dev, mykolal@fb.com,
+ ast@kernel.org, daniel@iogearbox.net, song@kernel.org,
+ yonghong.song@linux.dev, john.fastabend@gmail.com, kpsingh@kernel.org,
+ sdf@google.com, haoluo@google.com, jolsa@kernel.org, bpf@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org
 
-If due to a memory allocation failure mock_chain() returns NULL, it is
-passed to dma_fence_enable_sw_signaling() resulting in NULL pointer
-dereference there.
+Hello:
 
-Call dma_fence_enable_sw_signaling() only if mock_chain() succeeds.
+This patch was applied to bpf/bpf-next.git (master)
+by Andrii Nakryiko <andrii@kernel.org>:
 
-Found by Linux Verification Center (linuxtesting.org) with SVACE.
+On Thu, 14 Mar 2024 10:59:11 +0000 you wrote:
+> In some systems, the netcat server can incur in delay to start listening.
+> When this happens, the test can randomly fail in various points.
+> This is an example error message:
+> 
+>    # ip gre none gso
+>    # encap 192.168.1.1 to 192.168.1.2, type gre, mac none len 2000
+>    # test basic connectivity
+>    # Ncat: Connection refused.
+> 
+> [...]
 
-Fixes: d62c43a953ce ("dma-buf: Enable signaling on fence for selftests")
-Signed-off-by: Pavel Sakharov <p.sakharov@ispras.ru>
+Here is the summary with links:
+  - [v2] tools/testing/selftests/bpf/test_tc_tunnel.sh: Prevent client connect before server bind
+    https://git.kernel.org/bpf/bpf-next/c/f803bcf9208a
 
----
- drivers/dma-buf/st-dma-fence-chain.c | 6 +++---
- 1 file changed, 3 insertions(+), 3 deletions(-)
+You are awesome, thank you!
+-- 
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/patchwork/pwbot.html
 
-diff --git a/drivers/dma-buf/st-dma-fence-chain.c b/drivers/dma-buf/st-dma-fence-chain.c
-index 9c2a0c082a76..ed4b323886e4 100644
---- a/drivers/dma-buf/st-dma-fence-chain.c
-+++ b/drivers/dma-buf/st-dma-fence-chain.c
-@@ -84,11 +84,11 @@ static int sanitycheck(void *arg)
- 		return -ENOMEM;
-
- 	chain = mock_chain(NULL, f, 1);
--	if (!chain)
-+	if (chain)
-+		dma_fence_enable_sw_signaling(chain);
-+	else
- 		err = -ENOMEM;
-
--	dma_fence_enable_sw_signaling(chain);
--
- 	dma_fence_signal(f);
- 	dma_fence_put(f);
-
---
-2.44.0
 
 
