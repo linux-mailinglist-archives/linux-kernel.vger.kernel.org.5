@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-107129-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107130-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 917F887F7E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:59:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 88BED87F7E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:00:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4CF85281A5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:59:37 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC58D281AE7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:00:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E838E5102A;
-	Tue, 19 Mar 2024 06:59:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C07455103F;
+	Tue, 19 Mar 2024 07:00:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QhewyzF/"
-Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="QNobSf7e"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E315450A73;
-	Tue, 19 Mar 2024 06:59:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10CCD50A6B;
+	Tue, 19 Mar 2024 07:00:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710831569; cv=none; b=bcyz3+oSd28yjZFgBxnSo9/CHhUyZ76mqf286kn6j2ULm16ShmBtXxRNedVSVDIUi3MPaKTIfg6Foq4zE0T5v+ExV+blpJDcddPj5INpMQH2S85Ydr3p5fh59NY4V67Q/qr5guZOCnsiaFuy3W7dyjo/6gso/RPT686k0vveM5Y=
+	t=1710831612; cv=none; b=j74A6RNX1i+iRWMkg/bHgAnvJ6d2EjmQrPSYAUgrisPZVHNcdmwRVXB0FTKUj+PhZYInrTdTISz/ITll9c/VL1PqZc/ZbtX9eXHNKufFmwu4IPBeMfMK5Ofmj6GM3PFjNNvFnSz5ZXrXYd378XQOqZWPar067Cfevi0WiXCmpxU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710831569; c=relaxed/simple;
-	bh=AIm9eviEi3P0eyCT+yS25nZjVcga1ARn9xwEwLrT2z4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=RGgE1beBt0R//zqp1sObchryM44rcjz0A6y3wLK8L2jA4wcLxXIV5/UtqZkNaQ4A5EF/9FvcndLKaEqddTm0emG7Dm/TY6yaEqHnx+frWcJ3KVATq558ikmCtCxe9KckCcU0oS/mDWzSxLcRNdITNOW0aCzt3xxl9M+bbib6ns0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QhewyzF/; arc=none smtp.client-ip=209.85.214.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1df01161b39so25575245ad.3;
-        Mon, 18 Mar 2024 23:59:27 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710831567; x=1711436367; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=sMcKfZi1xz5eaYp9NuQfLHyNEpRw2+4mgzvyh4Nj45M=;
-        b=QhewyzF/Jn+Z1v9mHxuUMSfyzkvgXVoacIY2h4W0CuJgQ6tzh52oGHf3LgfGFCucsU
-         o93cc+Zd6nAl2V8c0NB+2QF0vVYYnRL4mB8d3Nno81GkelyVM8J93FRugkcGs37+qkU6
-         UPUQyqhLwmdvdDwWV6yapypvAtIOM4BNbQMkl+8/8h5oG1QZ9t+0PLl82Gwldb/ixIUV
-         KTnhZBUD8JzJWeKAZ86DD9r2Cgb8x/vvoujmxKEYx2SnpKT2xzVf8kkxxsECV4hR9sa5
-         ySMLjCtkFhp8QP711lBAfRjhwHx2S15ZsJMgcQdjMTNZMk2i3i5Ni1n4s3c6eYCjELer
-         TqNA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710831567; x=1711436367;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=sMcKfZi1xz5eaYp9NuQfLHyNEpRw2+4mgzvyh4Nj45M=;
-        b=Qzl4WcSTmcxKG/6QZ/k9UoHfNsvG1cPtd5TQIYhW2qcrhuxxC25LrG4xatzGj3e2ok
-         57srK5YYlnr7wycYXZmrxzWU+fYREFRfU8ZiGDSmmWaUjOsiLn0dOGvtbPxvOKutxfdx
-         ZQA7WqDCw9Z7jLutkEyuj2K5dPjWxw96vQ9brcV6GGIA14KvIAZvznIlOfX7LOzLj/yS
-         m0TAekZYnSrILLoeiQ8JoFkbK6VTHcv8lvYAm9AWHnwtkfejurflXnb4X7n00tnw5FQF
-         UlIqoVoHDuxGt4LpdhEKw/SvuvOcO/oQH71OAnAdz9D6CL8p0RherxtVBp37wJMAiHBD
-         Nthw==
-X-Forwarded-Encrypted: i=1; AJvYcCXkmbqL4d9CENbHEMpnR6YOk//X+bfY3u7UWq8xljhwlbHyP8B2grbfQWPXUk/SxWKZtF90a8DiAHFW0jx/YLugBIeibUklt9OopsGXZwNHcE0WMKLX7AG7SVmaoYNHhUP3e8libctnyQT6RV/oDhlU1DOCI5g1g11ADM1ge6/G/qnhQn6apk54z0tg0SSbLgcsqnpj/uGZhp2BxUUXdftx6g==
-X-Gm-Message-State: AOJu0Yzon5b7V8Z8s/NDyfZpZXxmMdEiwvb/4Ha3Bq3Bj89Eqj6BmNj4
-	savS96a5NdnqFLM6HQ4qGOiXHsHT7Tiw8aSE1Zd1ijjITsYZn9w/
-X-Google-Smtp-Source: AGHT+IEPaXPncig+2mfJueHot0LijD4BGVGO0GUG1oH2eSfMb7KVBv96LoNJAMJa6u8EF69x5xL/1g==
-X-Received: by 2002:a17:903:230a:b0:1de:f6aa:c991 with SMTP id d10-20020a170903230a00b001def6aac991mr14909604plh.34.1710831567041;
-        Mon, 18 Mar 2024 23:59:27 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id u16-20020a170903125000b001dd8e1db1b1sm10509163plh.175.2024.03.18.23.59.18
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 23:59:26 -0700 (PDT)
-Message-ID: <28a5e314-30ba-4fc4-9228-51adb63e7aaa@gmail.com>
-Date: Tue, 19 Mar 2024 12:29:07 +0530
+	s=arc-20240116; t=1710831612; c=relaxed/simple;
+	bh=kDbKmZZNsINgi/dApLj0S6Istcg2gNirhdD5PgV7b14=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Rpio/lreB/NDx82Uf+26dRcG3vmrzUlZxohzwJUuzt3RUGvq3x8g+BjVqKGtFaT7wxUAyeygmhJKeDD0Nz51RT7C1CLCXLswAuz8ch/JV672boCQIKLF7xLppF2mwzOZ7b3xUL9zQ6NOAG/NRHvM0RJ7rOV3V/7aT3OyhTXmOgU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=QNobSf7e; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 267CC480;
+	Tue, 19 Mar 2024 07:59:37 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710831578;
+	bh=kDbKmZZNsINgi/dApLj0S6Istcg2gNirhdD5PgV7b14=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=QNobSf7eIH1lbcLm86zcCduCYuRJ/5Xr1+iXyQjTq4g/rX9LmAj1GOYg/PGpmLIIU
+	 aTezgoSvJwlwyJ278j9817D5v/R8hrRvds7hCHZ5GVOmJMXRVXKklbrVnUsrsJBkQI
+	 9HypUVoKRMdvFRpnslTAzIQhfJnSxSwk4I/KQyiE=
+Message-ID: <30430e0e-70de-4831-97ad-974e350a2e54@ideasonboard.com>
+Date: Tue, 19 Mar 2024 09:00:00 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,66 +49,115 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v3 7/8] mikrobus: Add mikrobus driver
+Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for
+ raspberrypi,rp1-cfe
 Content-Language: en-US
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- linux-kernel@vger.kernel.org
-Cc: jkridner@beagleboard.org, robertcnelson@beagleboard.org,
- Vaishnav M A <vaishnav@beagleboard.org>, Rob Herring <robh@kernel.org>,
+ Naushir Patuck <naush@raspberrypi.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>,
+ Rob Herring <robh+dt@kernel.org>,
  Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
- <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Liam Girdwood <lgirdwood@gmail.com>, Mark Brown <broonie@kernel.org>,
- Jiri Slaby <jirislaby@kernel.org>, Johan Hovold <johan@kernel.org>,
- Alex Elder <elder@kernel.org>, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-spi@vger.kernel.org,
- linux-serial@vger.kernel.org, greybus-dev@lists.linaro.org
-References: <20240315184908.500352-1-ayushdevel1325@gmail.com>
- <20240315184908.500352-8-ayushdevel1325@gmail.com>
- <8799b216-57a7-451b-80a3-3d4ae9693e0b@linaro.org>
- <402d1296-0a0c-4f85-a096-be7993869f94@gmail.com>
- <81d55f10-c538-494f-8274-6ea8c4366ab2@linaro.org>
-From: Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <81d55f10-c538-494f-8274-6ea8c4366ab2@linaro.org>
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
+ <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
+ <eb854c43-1e92-4c19-bfd3-1bde94924319@linaro.org>
+ <f97faeb9-8a6b-47c6-9317-daca88257802@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <f97faeb9-8a6b-47c6-9317-daca88257802@ideasonboard.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
 
-On 3/19/24 11:02, Krzysztof Kozlowski wrote:
-
-> On 16/03/2024 14:06, Ayush Singh wrote:
->>   > Are you sure this fits in Linux coding style limit (not checkpatch
->> limit, but the limit expressed by Linux coding style)?
+On 19/03/2024 08:48, Tomi Valkeinen wrote:
+> On 19/03/2024 08:23, Krzysztof Kozlowski wrote:
+>> On 18/03/2024 16:49, Tomi Valkeinen wrote:
+>>> Add DT bindings for raspberrypi,rp1-cfe.
+>>>
+>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+>>> ---
+>>>   .../bindings/media/raspberrypi,rp1-cfe.yaml        | 103 
+>>> +++++++++++++++++++++
+>>>   1 file changed, 103 insertions(+)
+>>>
+>>> diff --git 
+>>> a/Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.yaml 
+>>> b/Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.yaml
+>>> new file mode 100644
+>>> index 000000000000..7b2beeaaab0e
+>>> --- /dev/null
+>>> +++ b/Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.yaml
+>>> @@ -0,0 +1,103 @@
+>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+>>> +%YAML 1.2
+>>> +---
+>>> +$id: http://devicetree.org/schemas/media/raspberrypi,rp1-cfe.yaml#
 >>
->>
->> Well, I am just using clang-format with column width of 100 instead of
->> 80. The docs now say 80 is prefered rather than mandatory, so well I was
-> So you introduce your own style? Then consider it mandatory...
->
->> using 100 since I prefer that. If 80 is necessary or would make review
->> easier than I can just switch to it.
-> You do not choose your own coding style.
->
->>
->> I will remove serdev, pwm, clickID and send a new patch with the minimal
->> driver and better commit messages as suggested with Vaishnav. It is
->> important to have good support for mikroBUS boards without clickID as well.
-> Best regards,
-> Krzysztof
->
+>> Use compatible as filename.
+> 
+> Ah, indeed. I changed the compatible quite late, adding the "rpi5" as 
+> versioning, and missed changing the file name.
+> 
+> I'll rename.
 
-I mean after the whole discussion about 80 vs 100 column line limit a 
-few years ago, and change in checkpatch behavior, I thought 100 was an 
-acceptable column length in the kernel, but I guess was mistaken, and 80 
-character is still mandatory? Not sure why there was a change in 
-checkpatch and docs though.
+Actually, maybe it's better to have two compatibles, 
+"raspberrypi,rp1-cfe" as the generic one, and "raspberrypi,rpi5-rp1-cfe" 
+(or something similar) for RaspberryPi 5.
 
-Regardless, I have switched 80 in the next patch since it is mandatory, 
-and I do not care as long as I can format using a formatter.
+And I'm not sure if the "rp1" part is relevant there, would 
+"raspberrypi,cfe" be just as fine? Naush?
 
-
-Ayush Singh
+  Tomi
 
 
