@@ -1,129 +1,137 @@
-Return-Path: <linux-kernel+bounces-107985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107984-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DFDED880476
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:12:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9ACBE880472
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:12:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F365E1C22242
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:12:46 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 506BD2843BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:12:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD30A33CC4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 07B7E2C84F;
 	Tue, 19 Mar 2024 18:12:23 +0000 (UTC)
 Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A383B2BAF0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:12:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09E412B9DA
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:12:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871943; cv=none; b=lLbXixAeynnUNH9cNgc0jePW8OtaRYKithGGJm/GSWSug+CHgcAr1/PKB3QfbdTVFpuOZbQ+8ZnL31Eq7xbGZetxcmFvJmNmpvmbGq7F9IOrRBgufArDydjGEFSJfL9vIoNuGjGFHxaGh9TQxJdOh2gojsu6ssNKGQGCP6chTBA=
+	t=1710871942; cv=none; b=SyWfPHR93/6oO0Akkaw3dqQrUi05Pndl1t54vLiMRNegspZ31kGtQVeb+5CQUGJ+fY1vOlJidyuF6cl/QNkzgQiMPj2DFdooq5jCe+/eIE5xG6RpKkFUc+Ypla7T6fcfZVrqeo/gLOBFS4UTkYpsu9qEfM9INskOHzow3YmkeCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710871943; c=relaxed/simple;
-	bh=8CwvOpkzHWi5sDEiBu4yO13qK3DYHyI818weqm9THfY=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=X4JkLzTSIQ+tVzS+tQgnUtY2FXAACq/Ikv8GgKaX91l7x8cSft3fYFzMwHeVXREyZ5hPDoVDuLUt19EVNZLV7K29pfg06uWdQWIDcQqAxAevFJIB+j3eFJg/80FtjtGwO/v04iUGo4PWMtMEP0FYCxSViVyuWUwMhuiaePGgcLE=
+	s=arc-20240116; t=1710871942; c=relaxed/simple;
+	bh=siI8VeFTsF4LULV55XYmK8BQojlECYFyKavt0Y88i+U=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=L9BFhs54ebI9bdBdhKHUwX9yxZWJmxmQv//zHulQpclFWrkUik71cPZioUyciB18TStDJWl4zICMW81K+Y7a1mrrOzOTko78zYQBoWrbhbqWDdXUBLUdGSbFHpkTbU7chKewLBFw2THN3QtDOSpu3wywcx7UmQOBPa++iaZL8Io=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c8a98e52b5so440460939f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:12:21 -0700 (PDT)
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c874fb29a3so414167939f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:12:20 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710871941; x=1711476741;
+        d=1e100.net; s=20230601; t=1710871940; x=1711476740;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=KUl8KngKDhKat2ID3WrGzxmO4pwALhdfll2XNSs2Xd8=;
-        b=Unx9dMp7gJQn8s23/NuC447vM5a/GBa6HXfAgiA/vFVG+jCVWUnk5K8aHkL8zMs+ZB
-         i3h6SCiUU0XHHPaJS7MG94dr/oatlAqrzQMISbEVce3H0PUHDbmrvz1N4sM3mzu1VCNo
-         85wWEghsYv9+U8CE1dUnV0E8e+0w/pnGpC4Yo17pAhnO7JlwLmQ/o2M0WBcFF9P3qGpK
-         2bztWtEfW/eoAZWDvWRKdmHy6/VKArlrAxt+uzuN01rV+Al2fHxc5whvE9/lS/fCxMH8
-         17pHnVqSqqB/jsu9s+hJG74G+QEknSwFlszGqCe8USd39lVIyl+AK3dffeU9Vd4g+R1x
-         ug0A==
-X-Forwarded-Encrypted: i=1; AJvYcCWuxz2prJkRYoSxI0oYs/ZUVxn25paP+WkW8Rga0EVAtflQu7UsHg5hD51NCrxl12UWiIrs+KMNBTlyEHOdWlQoWGT5NNCYd0vYCEVr
-X-Gm-Message-State: AOJu0YydydYmo31J/4hQJPTJQqFay8iou+BrILLbnAKh5GkVxHK45FQP
-	pKU+jRzNb0q7zVvVlvxzDaijI6oz4HtoX7iPB9Jp6sMFcOryRJhc3dYW56pJj0whfLibN5x0Zen
-	XNiL4UhOjo1yA+9v4SJ5knPm/bv9w10p2exFggL7TyyJruosy0jjhPBU=
-X-Google-Smtp-Source: AGHT+IHMVS2mCLbNF2hdzoCk8GpLFWyRFSX1ZPuWPNcY8kCgzSWWzeStiW6AYWuYmGmqcqZcY80wuhTt/0Tm5wb/HVekb4fvy3gb
+        bh=1Sqn0ln2THzqHfmXyaFjzD4QiULXDUL2ozzKYWDWQtk=;
+        b=LVKgiyMFa3evKGXCBKxyQQOZURL0v8GcOl+4cYmdP6tOxWJUhiLJvM4HlcihNTnOVP
+         m7XGNPYqjqEql3XAW0bH0WX3Tq1vH59Nhd0ALoamAXHm32wEYBDtImM4amCACa8OpBM2
+         58s1RUwn8PPdYa17pmgXpHr07LaWno9ph6QzzI2SyFcTLOFrCLaXeSQww/0IrLIncJjD
+         bnW233PqGE82+mQ4PWlo24icIUT9ynwyJ5XjJyROvUE+pTMY0xySm6WJh9+O1tO8g2aC
+         EZ2of8hNCjMuim+owj1t1bRvP7Gv1w2ADaFwyZWmkNAINd+OTwqI3YJS5cOBvzGzuTJO
+         O8OQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXOuoYwqgz8Z7noFa+xxwKAztfagEO38U8VEl/VsFJ/Danl5iNQSJqcQuPPUWDCrn2n1eGnRFKP1Z7eo6MgkCltlj6s1Ob2ArGcs0Ej
+X-Gm-Message-State: AOJu0Yx3+ymePP6w+sJ8hniDIX5g0CH48bwTsEuneij5xKtlAWGCjlg0
+	3RtP3XNClO/Gse2RoqyFVMUOYgAZLekQniEjFhyrsgdHsqL0aTnshyZjOCDCAC2/dexQqjkgbUU
+	FckrcyyA5GPa0y+u9mKu+Lbli6blEHqnkuszTqdBSSH7oH3tG+p1ZKw0=
+X-Google-Smtp-Source: AGHT+IHErSdRgmQ5olpFbigDrmj0p7684ktfMfinf4zKPWNBf58VW/Z3IOdNSUAovPmu0WS2PYfgf/5KOTWcoeMDmSI/V8FP7mj0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6602:1693:b0:7cc:ce74:4293 with SMTP id
- s19-20020a056602169300b007ccce744293mr171278iow.0.1710871940020; Tue, 19 Mar
+X-Received: by 2002:a05:6602:1687:b0:7cf:16d5:1820 with SMTP id
+ s7-20020a056602168700b007cf16d51820mr9579iow.2.1710871940246; Tue, 19 Mar
  2024 11:12:20 -0700 (PDT)
 Date: Tue, 19 Mar 2024 11:12:20 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000003dc8e00614076ab6@google.com>
-Subject: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in check_stack_range_initialized
-From: syzbot <syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com>
+Message-ID: <0000000000004139c80614076a2c@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in percpu_array_map_lookup_elem
+From: syzbot <syzbot+5e23b0df3b12b8b215b7@syzkaller.appspotmail.com>
 To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
 	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
 	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, netdev@vger.kernel.org, 
-	sdf@google.com, song@kernel.org, syzkaller-bugs@googlegroups.com, 
-	yonghong.song@linux.dev
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    0740b6427e90 Merge branch 'bpf-arena-followups'
-git tree:       bpf
-console+strace: https://syzkaller.appspot.com/x/log.txt?x=12fed769180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-dashboard link: https://syzkaller.appspot.com/bug?extid=33f4297b5f927648741a
+HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
+git tree:       upstream
+console+strace: https://syzkaller.appspot.com/x/log.txt?x=14e351c9180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=aa3d79b689f321c8
+dashboard link: https://syzkaller.appspot.com/bug?extid=5e23b0df3b12b8b215b7
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=1763a479180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=15c38711180000
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=14498006180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11e4d769180000
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/c9e6e9f97566/disk-0740b642.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/78476a588b62/vmlinux-0740b642.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/50cd6fab9ead/bzImage-0740b642.xz
+disk image: https://storage.googleapis.com/syzbot-assets/eaca555a0446/disk-e5eb28f6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/4fbf90fa0d23/vmlinux-e5eb28f6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/bbae0627aafd/bzImage-e5eb28f6.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com
+Reported-by: syzbot+5e23b0df3b12b8b215b7@syzkaller.appspotmail.com
 
-------------[ cut here ]------------
-UBSAN: array-index-out-of-bounds in kernel/bpf/verifier.c:7190:12
-index -1 is out of range for type 'u8[8]' (aka 'unsigned char[8]')
-CPU: 0 PID: 5071 Comm: syz-executor474 Not tainted 6.8.0-syzkaller-05226-g0740b6427e90 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
- ubsan_epilogue lib/ubsan.c:217 [inline]
- __ubsan_handle_out_of_bounds+0x121/0x150 lib/ubsan.c:415
- check_stack_range_initialized+0x1668/0x19a0 kernel/bpf/verifier.c:7190
- check_helper_mem_access+0x2eb/0xfa0 kernel/bpf/verifier.c:7294
- check_helper_call+0x263c/0x7220 kernel/bpf/verifier.c:10252
- do_check+0x9e29/0x10530 kernel/bpf/verifier.c:17801
- do_check_common+0x14bd/0x1dd0 kernel/bpf/verifier.c:20500
- do_check_main kernel/bpf/verifier.c:20591 [inline]
- bpf_check+0x136ab/0x19010 kernel/bpf/verifier.c:21261
- bpf_prog_load+0x1667/0x20f0 kernel/bpf/syscall.c:2895
- __sys_bpf+0x4ee/0x810 kernel/bpf/syscall.c:5631
- __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
- __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
- do_syscall_64+0xfb/0x240
+=====================================================
+BUG: KMSAN: uninit-value in percpu_array_map_lookup_elem+0x142/0x160 kernel/bpf/arraymap.c:243
+ percpu_array_map_lookup_elem+0x142/0x160 kernel/bpf/arraymap.c:243
+ ____bpf_map_lookup_elem kernel/bpf/helpers.c:42 [inline]
+ bpf_map_lookup_elem+0x5c/0x80 kernel/bpf/helpers.c:38
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run64+0xb5/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
+ __bpf_trace_ext4_es_insert_delayed_block+0x34/0x50 include/trace/events/ext4.h:2481
+ trace_ext4_es_insert_delayed_block include/trace/events/ext4.h:2481 [inline]
+ ext4_es_insert_delayed_block+0x11e1/0x1290 fs/ext4/extents_status.c:2082
+ ext4_insert_delayed_block fs/ext4/inode.c:1676 [inline]
+ ext4_da_map_blocks fs/ext4/inode.c:1777 [inline]
+ ext4_da_get_block_prep+0x1714/0x1d30 fs/ext4/inode.c:1817
+ ext4_block_write_begin+0x749/0x1df0 fs/ext4/inode.c:1055
+ ext4_da_write_begin+0x889/0xec0 fs/ext4/inode.c:2894
+ generic_perform_write+0x400/0xc60 mm/filemap.c:3974
+ ext4_buffered_write_iter+0x564/0xaa0 fs/ext4/file.c:299
+ ext4_file_write_iter+0x208/0x3450
+ call_write_iter include/linux/fs.h:2108 [inline]
+ new_sync_write fs/read_write.c:497 [inline]
+ vfs_write+0xb63/0x1520 fs/read_write.c:590
+ ksys_write+0x20f/0x4c0 fs/read_write.c:643
+ __do_sys_write fs/read_write.c:655 [inline]
+ __se_sys_write fs/read_write.c:652 [inline]
+ __x64_sys_write+0x93/0xe0 fs/read_write.c:652
+ do_syscall_64+0xd5/0x1f0
  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7f8416194629
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffdc6f0fdb8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
-RAX: ffffffffffffffda RBX: 00007ffdc6f0ff88 RCX: 00007f8416194629
-RDX: 0000000000000090 RSI: 00000000200000c0 RDI: 0000000000000005
-RBP: 00007f8416207610 R08: 0000000000000000 R09: 00007ffdc6f0ff88
-R10: 00000000fffffff8 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffdc6f0ff78 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
----[ end trace ]---
+
+Local variable stack created at:
+ __bpf_prog_run64+0x45/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run3+0x132/0x320 kernel/trace/bpf_trace.c:2421
+
+CPU: 1 PID: 5001 Comm: syz-executor118 Not tainted 6.8.0-syzkaller-09791-ge5eb28f6d1af #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+=====================================================
 
 
 ---
