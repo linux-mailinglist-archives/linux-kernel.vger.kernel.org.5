@@ -1,128 +1,112 @@
-Return-Path: <linux-kernel+bounces-108053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108054-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC1DA880545
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:12:35 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 062F7880549
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:14:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6BF0AB224EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:12:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8E9D4284439
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:14:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2291339FD8;
-	Tue, 19 Mar 2024 19:12:26 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ED7C139FE9;
+	Tue, 19 Mar 2024 19:14:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="hA/li5iN"
-Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YUIs1Fb9"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2245E39FCE;
-	Tue, 19 Mar 2024 19:12:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 354A139FCF;
+	Tue, 19 Mar 2024 19:14:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710875545; cv=none; b=sVE8Rp/f/XCX/ifB1RLo5iXPhprZ6DDQR+oTgabNKCu/66sE3OkMU0VuzegXlVLoU0YqEaCJH8atZvt8xKuiRFKp4qnP4GjOpLVxfNmbrCzowZn2k1KCes+HDI30LsAb48GobtfxuUxd6Ncs3rXYdDjXmDytoBr0D/kTjJEfzRo=
+	t=1710875661; cv=none; b=UDYJ1Ji0Brl2cgLkzTK3Q/IPTwAiNhFRrXQj7A7oZKrV8yOmfiiMLwJALOTjcD6y6SEtHhEyMuCiQiDerEF8Q5irkrkOSxRjHoZNnvIW42BH0lhHBfA88/yYNN6e9ozLgZo5n17MG3ei+SUACTZvxdnf6ns0jpKsJs82yzz8utc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710875545; c=relaxed/simple;
-	bh=O8NYpGM0/OyuIF8bjp4YEUnlFA9aHIm3cnZ/dXozUvI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OgtXL6FZ5X9h1ufyCQeZHLhT1ArtqrkoItiwzdRQhcaPZAOoZ2oy7HfoeaJj7oCGvorr7Mc7GTQ4aBwsFLI4gEduQn99CGjVyMD8VLWe6GFnaTCK3Cwsf5YWgQWLWt28Q9a/ta7IGGc1qYuKMMuBDGZsI83D/j0s99JrXtTsUOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=hA/li5iN; arc=none smtp.client-ip=205.220.168.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JHI4tR025635;
-	Tue, 19 Mar 2024 19:12:19 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	date:from:to:cc:subject:message-id:references:mime-version
-	:content-type:in-reply-to; s=qcppdkim1; bh=S3U7YTobRt4muzvepzN9U
-	ioae2zubIX7XXpm6xsDWsc=; b=hA/li5iN7HN/Uk97RcX4ciEX6hWv7/F5Tg1Li
-	1kzzIwp23pbbwp1HWiJ9DlWmGxbKNGa2ReCvnvG1WxkJ6AQGe06TRGzDn/p7oV6Y
-	hsu4/e1NGQlLFYkHq5Od8I1Dq8PfV+MsfLp6sHwSFm55R98R904jVXy7yG0SNZkq
-	rzYuIjvPoMTH2fpjWsLTyQiPR6Z60gn0yq8by4uTuQ4d3qK/GwZMnfYM/sNfbowD
-	lavVpaYBQUgitQEQO0U8RyJLFj97I/cHdopbMl7/ljxq8SnmK8msEdFHr7/MvYBR
-	hE4o+rrJ/gccfDE8P0EIMQfMv/mXgPuiNr+tsV2YIF5yCozQA==
-Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wye5n8ey5-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 19:12:18 +0000 (GMT)
-Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JJCIrm026714
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 19:12:18 GMT
-Received: from hu-bjorande-lv.qualcomm.com (10.49.16.6) by
- nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Mar 2024 12:12:18 -0700
-Date: Tue, 19 Mar 2024 12:12:16 -0700
-From: Bjorn Andersson <quic_bjorande@quicinc.com>
-To: jianbinz <quic_jianbinz@quicinc.com>
-CC: <alexandre.belloni@bootlin.com>, <a.zummo@towertech.it>,
-        <linux-rtc@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v3 2/2] rtc: rtc-pm8xxx: Correct the
- PM8xxx_RTC_ALARM_CLEAR vaule in trigger
-Message-ID: <20240319191216.GB3796206@hu-bjorande-lv.qualcomm.com>
-References: <20240314033449.10872-1-quic_jianbinz@quicinc.com>
+	s=arc-20240116; t=1710875661; c=relaxed/simple;
+	bh=AskgniET8Tqn44PIKtPuXBtGixttuBhuyMYiySvc3B8=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Subject:From:To:Cc:
+	 References:In-Reply-To; b=TptAkXrRwznfPu8wE0zEmaOcDsRK3EQtJPxjRAioePTWcHPIRTnjovXSsrstMocXyv/8bBWjsdmS4kTKWmcPX7ymGB61xCrScB75TvrV+4qyxbyChx8qTfDyxHcQGgLkIojBdpIwgCVQES2cz63+R0WL8G+0w6O4orYIGr7LJaY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YUIs1Fb9; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B53C9C433C7;
+	Tue, 19 Mar 2024 19:14:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710875660;
+	bh=AskgniET8Tqn44PIKtPuXBtGixttuBhuyMYiySvc3B8=;
+	h=Date:Subject:From:To:Cc:References:In-Reply-To:From;
+	b=YUIs1Fb9rqLF3FLp3OpW0j9RsDAvrhWxCYYoiGl7okUDJLvDb5RI9c/kfSQ8BjEIQ
+	 g8nWGHyb2V5OiEWK0wW1uDTur1zE80yTmWpCjrnFFYaL8hNgnFTyX5UfkJGlqbUW5x
+	 +rfXhOc5D0UVwVmufbnMzWH2JshjKLP/cYvSOv+RMIA/yJZz27x9oZdPM5P5eeOyaE
+	 oFHjwm4GerzAYHtZJT9RbA+l76/bU1wzvhy6qc74n6snKI/eN9JBYvYIoSQZOKb2xV
+	 yuuegtG8sOdHPfqYXMn2VfOTSJQrXzrkbuBSaQbUdjylgEy7p4MPzikAlx2jO51QHC
+	 kyeUH4M+MN5aQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240314033449.10872-1-quic_jianbinz@quicinc.com>
-X-ClientProxiedBy: nalasex01c.na.qualcomm.com (10.47.97.35) To
- nalasex01c.na.qualcomm.com (10.47.97.35)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: DIOob3ir223Gc6ojX2gkbG4QAL9nt17X
-X-Proofpoint-ORIG-GUID: DIOob3ir223Gc6ojX2gkbG4QAL9nt17X
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-19_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
- spamscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
- malwarescore=0 clxscore=1015 mlxlogscore=954 mlxscore=0 suspectscore=0
- impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2403140001 definitions=main-2403190146
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 19 Mar 2024 21:14:16 +0200
+Message-Id: <CZXYSYBHZ0XD.1XYUMR2DZ3I0O@kernel.org>
+Subject: Re: [PATCH v6 00/13] Add support for NIST P521 to ecdsa
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Stefan Berger" <stefanb@linux.ibm.com>, "Lukas Wunner"
+ <lukas@wunner.de>, "Stefan Berger" <stefanb@linux.vnet.ibm.com>
+Cc: <keyrings@vger.kernel.org>, <linux-crypto@vger.kernel.org>,
+ <herbert@gondor.apana.org.au>, <davem@davemloft.net>,
+ <linux-kernel@vger.kernel.org>, <saulo.alessandre@tse.jus.br>,
+ <bbhushan2@marvell.com>
+X-Mailer: aerc 0.15.2
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <ZfiMhi9D2Rhh89BI@wunner.de>
+ <d02eda40-2d3a-43a2-a3a9-cb79055acda7@linux.ibm.com>
+ <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org>
+ <026ad747-eb04-44e6-9c1e-cb1a56a6e0e3@linux.ibm.com>
+In-Reply-To: <026ad747-eb04-44e6-9c1e-cb1a56a6e0e3@linux.ibm.com>
 
-On Thu, Mar 14, 2024 at 11:34:49AM +0800, jianbinz wrote:
-> Change in v3:
-> *Correct the vaule that writed into the PM8xxx_RTC_ALARM_CLEAR to 1.
-> 
-> Change in v2:
-> *Switch to using regmap_update_bits() instead of open coding
-> read-modify-write accesses.
-> Link to v2: https://lore.kernel.org/lkml/20230202155448.6715-4-johan+linaro@kernel.org/
-> 
-> Signed-off-by: jianbinz <quic_jianbinz@quicinc.com>
+On Tue Mar 19, 2024 at 8:55 PM EET, Stefan Berger wrote:
+>
+>
+> On 3/19/24 14:22, Jarkko Sakkinen wrote:
+> > On Tue Mar 19, 2024 at 12:42 AM EET, Stefan Berger wrote:
+> >>
+> >>
+> >> On 3/18/24 14:48, Lukas Wunner wrote:
+> >>> On Tue, Mar 12, 2024 at 02:36:05PM -0400, Stefan Berger wrote:
+> >>>> This series adds support for the NIST P521 curve to the ecdsa module
+> >>>> to enable signature verification with it.
+> >>>
+> >>> v6 of this series is still
+> >>>
+> >>> Tested-by: Lukas Wunner <lukas@wunner.de>
+> >>
+> >> Thanks.
+> >=20
+> > This has been discussed before in LKML but generally tested-by for
+> > series does not have semantical meaning.
+> >=20
+> > Please apply only for patches that were tested.
+>
+> Ok, I will remove the Tested-by tag.
+>
+> However, patch 4/13, that only changes a comment, can also be tested in=
+=20
+> so far as to check whether the code is correct as-is for the tests that=
+=20
+> 'I' ran and no further modifications are needed for NIST P521. In this=20
+> case it would mean that a single subtraction of 'n' from res.x seems=20
+> sufficient and existing code is good as described by the modified comment=
+.
 
-Same feedback as on patch 1/2, but on this one you're also completely
-missing a commit message clearly describing the problem that your change
-is solving.
+So, since all patches are required to test anything at all, I think that
+putting tested-by to 13/13 would be the most appropriate, right?
 
-Regards,
-Bjorn
+I without enabling this x509 parser, there is nothing to test, I'd
+presume.
 
-> ---
->  drivers/rtc/rtc-pm8xxx.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/rtc/rtc-pm8xxx.c b/drivers/rtc/rtc-pm8xxx.c
-> index 1b5a96924e57..8a9be78d0b0b 100644
-> --- a/drivers/rtc/rtc-pm8xxx.c
-> +++ b/drivers/rtc/rtc-pm8xxx.c
-> @@ -391,7 +391,7 @@ static irqreturn_t pm8xxx_alarm_trigger(int irq, void *dev_id)
->  
->  	/* Clear alarm status */
->  	rc = regmap_update_bits(rtc_dd->regmap, regs->alarm_ctrl2,
-> -				PM8xxx_RTC_ALARM_CLEAR, 0);
-> +				PM8xxx_RTC_ALARM_CLEAR, 1);
->  	if (rc)
->  		return IRQ_NONE;
->  
-> -- 
-> 2.17.1
-> 
+It doesn't have to be more complicated than this.
+
+BR, Jarkko
 
