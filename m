@@ -1,191 +1,160 @@
-Return-Path: <linux-kernel+bounces-107958-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107959-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 15DE988041C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:59:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 08827880421
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7578DB2314B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:59:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 898451F248E5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16697282F1;
-	Tue, 19 Mar 2024 17:59:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 851EF2B9C5;
+	Tue, 19 Mar 2024 18:00:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="HUIVV/qi"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="P28VbwyB"
+Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5FBF23772;
-	Tue, 19 Mar 2024 17:59:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 66F0A2C18E;
+	Tue, 19 Mar 2024 18:00:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871173; cv=none; b=XPBu+9l34rycGohF9UJoHUL5JM/NL0tXzBJfLysCuu+BJPaNrMUeaOuUEZ7F3I1Gv9D6wS/8wwe+r1122y7yaE4GeysYLLgOfzQLaO2k48EgHtnx7Zmnu9XGBdzkfu6QKFOw6XrKhaVwgaa+MlCWDrXY97J03AOOx6lxpV3UBlE=
+	t=1710871216; cv=none; b=s4RyljexK8obcUo7Chjzva1qg3yPhMkJTivzzLepFuxcBOaieQuZf7jBciuIL63dtnpyIOPWiAo5ezNH1w59QdLEF+nO32uiM5xhuyhvi3QrFCE4K+Sq/5wsg9jbuiPCQgZtcrRfHcdrnNDT5HiEp/sILkOGqTCupB0eUFNkjHg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710871173; c=relaxed/simple;
-	bh=CStYVCbwa3SM09u8mdWsii9+sW18CUi2oA9JWjwq60I=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=Tn2ijbSuyZ3fEpptQ8ZW87gn1916S0P6ezpDiKZaVHEH7e0QGA9EZHMVkLGHy9yzD3FtpiEN5zHPq+gNpxuQeGIrSkIsgc/It/AXNOZ0EN6IflwOUZhUwzBm0/IocV/NadtB/n0f+m/iTcM7JE0Ok81xnT+xLd5gJvpeZCJz++g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=HUIVV/qi; arc=none smtp.client-ip=209.85.210.42
+	s=arc-20240116; t=1710871216; c=relaxed/simple;
+	bh=m6qS5617TuTpmfK97/po0jJIyNcw9wN2GHQJwTKGgww=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=YgNU7whFRFdBmSLXS/O/gJ9dTZNrioF5K5ii8+iwqz0fSqsriPM/BIsD+OZBfUjAerkpliorTpnAvQxEyZrAZW87xoybggZ80ZxXQrviPiNURz4dBU9DU/UTXOLezrvrW1obw9/c6/94G/udLiH3DyiZqjgOED1aYt8PUJLB9dE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=P28VbwyB; arc=none smtp.client-ip=209.85.214.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6dc8b280155so3749894a34.0;
-        Tue, 19 Mar 2024 10:59:31 -0700 (PDT)
+Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dee5daedf6so7810645ad.0;
+        Tue, 19 Mar 2024 11:00:15 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710871171; x=1711475971; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=KUviNEGEqF0+oL+GaKig6+TM+nN7wBAl9E2p2JkHJnc=;
-        b=HUIVV/qia2xbYtLa3Z6JwHhZo5QFlw8r2m0B30ltLbZ9WrccfI1xqymmd2SEqYPYcx
-         mP4GJVqtCIcThsdm+GVL313k/PvlaFTnS93bYwP0NdkY5WTRRUrMxKNoC08fcsba37Sv
-         00voRVE6+Uz7WDdOLoSfR4nUOlrgUk0amAxWnbcmv0IQM9Ulst3V838NtjbnabG0TWql
-         GhNizf/PepVErk/Qo1a/qNCE54+O9aMw9x0xy3ReL/F4hE+NYy8G3cVZn0PYh0u2Vo7q
-         tROn/v4GGjVy3SuKSiZQLDbpgNe+Ki18cffSnToeBdyDEB1fNBUOLV9QvRzww/XuDpdS
-         3MnQ==
+        d=gmail.com; s=20230601; t=1710871215; x=1711476015; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=/7BfNykyTLG5a+/FmijDVcSSld3Qh/CcbfWa98bWLIQ=;
+        b=P28VbwyBAyTRH+x0rSgK34ROjRqFr1yL00lFZjp3aaXgpXEb18eEbakS5Btk/or8Lb
+         hAyWAPFNFCpdHqMJTAGf0ut2f0FYF7dWWisTnnuKgYxZmLzRQjG5omG9Xuoaw+NTYlnT
+         5d2TqrxyVACfSeUSqng3fpS0ObQpFI22mhaDOb7bIfEVYQQYi9i5kD2AGDp1M76GoFsX
+         jnLbF8W8cjY7wbq+SNgBpj0e58AwKUNJK56Ghr+ozMbcj6gJeaaMPtp+qRxRT8PGytwG
+         rgrOj2Y8rvMFsEYZuMxiHnHs06XGEj8ey0q+KOMWCOY6YvowFq8y6hUi/3Q+SOS0gyFr
+         ynJA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710871171; x=1711475971;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1710871215; x=1711476015;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=KUviNEGEqF0+oL+GaKig6+TM+nN7wBAl9E2p2JkHJnc=;
-        b=VC0Un3LE0dJLeSgxDOcGhmnCQgJw3yHJ6TDTUixZbKXb7MRoEIQp2x40w77QSFhWWh
-         pj0pu6y1bV95P4/l1qXtvPK6BnLc0h9n7zlztSgjES5+GFXzDytda/PkqlTzFjMungiX
-         ymBqx8ZH7gp1RqbDB0qKupVLSwbxEcH2kKMsk/toeJ/SQylo15STMHKJbKJ4F28BQklW
-         7u/4ZpPKE66so39XPm/+mUXyYFlNiliFxV5pgO304W6NQ428olkfJTLPSFEo3BxEiUlP
-         8Rf84x1VDj98mjjNszTjTT5JpsXFuRMvrozRG/PpT3U9OaVldn/LDjJP+Y94L35B+q2w
-         dEvA==
-X-Forwarded-Encrypted: i=1; AJvYcCV+Qb9p8CQRKfk/digwioltrw1TW3tZQE8MMJThr/UaEylxWoIAI8fyggTjgyo9TzVSxOvwhnN1CL/I1lsCvRxHGW0lLE3KKtES2u0peIa3i1xP48ZwSRmYKb0SO2I5YWwJSo6yaeL7
-X-Gm-Message-State: AOJu0Ywx6Cc9R9xaYeoPJV7hSaz0rDA1ifB12ZZCsEjSq5IVcm5XrpnR
-	LlPMiI7IICrlW3ULf8+73zRGQIDAbvf1kiVHgmE2N48oCmNWYJ9+gEpFNlHLPU6Nn173ISqSGM0
-	ttTUykHyWGbdkg2iEr35jp/wRENc=
-X-Google-Smtp-Source: AGHT+IE+RutNEX3M+HIkQNfNpI+FwvPVtCZ/xwoKMyDLGVXTUIL9sN4LxDcYmpdBxbiguwrC/QknDAQHtY/D1IrFkj0=
-X-Received: by 2002:a05:6870:b529:b0:221:a08b:5fd7 with SMTP id
- v41-20020a056870b52900b00221a08b5fd7mr14676195oap.59.1710871170790; Tue, 19
- Mar 2024 10:59:30 -0700 (PDT)
+        bh=/7BfNykyTLG5a+/FmijDVcSSld3Qh/CcbfWa98bWLIQ=;
+        b=mEqsUQLG/FU3YPSrB1M6djBjqoQ27JrkRMbzwM0QtXo6Q5U0cXzuqqDdyRU48MVxpL
+         tH2pqZqI/hwEk5Bfk+3QmhOnusJZ+MP0S+2o0smxwVPnrz4fpflN0H4sDLhCtsg5yMnj
+         KfO1RbJ8N4bk3pk3YVlxF3nc9/VPSP32AYjCUowFFybIY7b0rkQBGU9riSU9jyYbsq/C
+         dXH5J49IQtMxoxKD7fBotfj9yFLTc4ZUJKwUU2o57x7BP9+6dm2hRApjhnze+3D+FbdD
+         9ZBgGUh9VrjQS73qfxURkeGZVK0DE+3GlKeqYQF9YcP5R7TpFVFG9+fXlTur12lTr3UR
+         G6/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUQ7GK43co8a28dgK+OKjNrJFrJkxyqEfZyJ2XMOOCnSDCBHuPFxqf2jOWRar2rb1wLhUdt6ikIjjleRzLCC9vc/0NTTsU48T0PPegSx1/eTk4aQZMEyhnFLlySTI2U+X7YAfQ7KR7iohRTSXOEDUHqwKhWjTED4lRXrxvnSmuodVVh0ci5HdLHl/2Rh8AXjscmCwlglL+q/jgTtRD9Y1v5ZHzUgC2ED2pAJFcM
+X-Gm-Message-State: AOJu0Yw5iOxD9WJD0kQYY5rX8hQMzyK9dVv7j3Y+AKNRf22kKG55aziw
+	TUxirhrwoevl/JGrZSe2djhgwTM26PX9vD8E+W1x5XWwNZVysdr4
+X-Google-Smtp-Source: AGHT+IHe8YREwchsBs/MaMDuaMAMnJOq1i+WfWlbqsJTZbtd+9d60AYKAxpEKoD2MKO4iTbMEMZ5oA==
+X-Received: by 2002:a17:903:2448:b0:1dd:85eb:b11 with SMTP id l8-20020a170903244800b001dd85eb0b11mr3178823pls.1.1710871214158;
+        Tue, 19 Mar 2024 11:00:14 -0700 (PDT)
+Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
+        by smtp.gmail.com with ESMTPSA id u16-20020a17090341d000b001dd3bee3cd6sm5531359ple.219.2024.03.19.11.00.10
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 11:00:13 -0700 (PDT)
+From: Kuan-Wei Chiu <visitorckw@gmail.com>
+To: colyli@suse.de,
+	kent.overstreet@linux.dev,
+	msakai@redhat.com,
+	peterz@infradead.org,
+	mingo@redhat.com,
+	acme@kernel.org,
+	namhyung@kernel.org,
+	akpm@linux-foundation.org
+Cc: bfoster@redhat.com,
+	mark.rutland@arm.com,
+	alexander.shishkin@linux.intel.com,
+	jolsa@kernel.org,
+	irogers@google.com,
+	adrian.hunter@intel.com,
+	jserv@ccns.ncku.edu.tw,
+	linux-bcache@vger.kernel.org,
+	dm-devel@lists.linux.dev,
+	linux-bcachefs@vger.kernel.org,
+	linux-perf-users@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	Kuan-Wei Chiu <visitorckw@gmail.com>
+Subject: [PATCH 00/13] treewide: Refactor heap related implementation
+Date: Wed, 20 Mar 2024 01:59:52 +0800
+Message-Id: <20240319180005.246930-1-visitorckw@gmail.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240301141800.30218-1-lukas.bulwahn@gmail.com>
- <m21q8732wo.fsf@gmail.com> <41f28393-0211-4448-8add-ad3c55d02210@oracle.com> <CAD4GDZzjc6=-Gzw23tRgCDE7=AxsenXqpD+qnh6gj1+MYYU2fA@mail.gmail.com>
-In-Reply-To: <CAD4GDZzjc6=-Gzw23tRgCDE7=AxsenXqpD+qnh6gj1+MYYU2fA@mail.gmail.com>
-From: Donald Hunter <donald.hunter@gmail.com>
-Date: Tue, 19 Mar 2024 17:59:19 +0000
-Message-ID: <CAD4GDZyABi3wjKY4SUV804OyBDBaC=Ckz5b0GZ34JmCX8S6V_g@mail.gmail.com>
-Subject: Re: [PATCH v2] docs: drop the version constraints for sphinx and dependencies
-To: Vegard Nossum <vegard.nossum@oracle.com>
-Cc: Lukas Bulwahn <lukas.bulwahn@gmail.com>, Jonathan Corbet <corbet@lwn.net>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, Akira Yokosawa <akiyks@gmail.com>, 
-	Jani Nikula <jani.nikula@linux.intel.com>, Randy Dunlap <rdunlap@infradead.org>, 
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Mon, 18 Mar 2024 at 17:10, Donald Hunter <donald.hunter@gmail.com> wrote:
->
-> On Mon, 18 Mar 2024 at 16:54, Vegard Nossum <vegard.nossum@oracle.com> wrote:
-> >
-> > > % time make htmldocs
-> > > ...
-> > > real  9m0.533s
-> > > user  15m38.397s
-> > > sys   1m0.907s
-> >
-> > Was this running 'make cleandocs' (or otherwise removing the output
-> > directory) in between? Sphinx is known to be slower if you already have
->
-> Yes, times were after 'make cleandocs'.
->
-> > an output directory with existing-but-obsolete data, I believe this is
-> > the case even when switching from one Sphinx version to another. Akira
-> > also wrote about the 7.x performance:
-> >
-> > https://lore.kernel.org/linux-doc/6e4b66fe-dbb3-4149-ac7e-8ae333d6fc9d@gmail.com/
->
-> Having looked at the Sphinx code, it doesn't surprise me that
-> incremental builds can have worse performance. There's probably going
-> to be some speedups to be found when we go looking for them.
+Hello,
 
-Following up on this, Symbol.clear_doc(docname) does a linear walk of
-symbols which impacts incremental builds. The implementation of
-clear_doc() looks broken in other ways which I think would further
-worsen the incremental build performance.
+This patch series focuses on several adjustments related to heap
+implementation. Firstly, a type-safe interface has been added to the
+min_heap, along with the introduction of several new functions to
+enhance its functionality. Additionally, the heap implementation for
+bcache and bcachefs has been replaced with the generic min_heap
+implementation from include/linux. Furthermore, several typos have been
+corrected.
 
-Incremental builds also seem to do far more work than I'd expect. A
-single modified .rst file is quick to build but a handful of modified
-rst files seems to trigger a far larger rebuild. That would be worth
-investigating too.
+Previous discussion with Kent Overstreet:
+https://lkml.kernel.org/ioyfizrzq7w7mjrqcadtzsfgpuntowtjdw5pgn4qhvsdp4mqqg@nrlek5vmisbu
 
-> > > I have an experimental fix that uses a dict for lookups. With the fix, I
-> > > consistently get times in the sub 5 minute range:
-> >
-> > Fantastic!
+Regards,
+Kuan-Wei
 
-I pushed my performance changes to GitHub if you want to try them out:
+Kuan-Wei Chiu (13):
+  perf/core: Fix several typos
+  bcache: Fix typo
+  bcachefs: Fix typo
+  lib min_heap: Add type safe interface
+  lib min_heap: Add min_heap_init()
+  lib min_heap: Add min_heap_peek()
+  lib min_heap: Add min_heap_full()
+  lib min_heap: Add args for min_heap_callbacks
+  lib min_heap: Update min_heap_push() and min_heap_pop() to return bool
+    values
+  bcache: Remove heap-related macros and switch to generic min_heap
+  lib min_heap: Add min_heap_del()
+  lib min_heap: Add min_heap_sift_up()
+  bcachefs: Remove heap-related macros and switch to generic min_heap
 
-https://github.com/donaldh/sphinx/tree/c-domain-speedup
+ drivers/md/bcache/alloc.c      |  66 ++++++++----
+ drivers/md/bcache/bcache.h     |   2 +-
+ drivers/md/bcache/bset.c       |  73 ++++++++-----
+ drivers/md/bcache/bset.h       |  38 ++++---
+ drivers/md/bcache/btree.c      |  27 ++++-
+ drivers/md/bcache/extents.c    |  44 ++++----
+ drivers/md/bcache/movinggc.c   |  40 ++++++--
+ drivers/md/bcache/super.c      |  16 +++
+ drivers/md/bcache/sysfs.c      |   3 +
+ drivers/md/bcache/util.c       |   2 +-
+ drivers/md/bcache/util.h       |  81 +--------------
+ drivers/md/dm-vdo/repair.c     |  29 +++---
+ drivers/md/dm-vdo/slab-depot.c |  21 ++--
+ fs/bcachefs/clock.c            |  53 +++++++---
+ fs/bcachefs/clock_types.h      |   2 +-
+ fs/bcachefs/ec.c               |  99 +++++++++++-------
+ fs/bcachefs/ec_types.h         |   2 +-
+ fs/bcachefs/util.c             |   2 +-
+ fs/bcachefs/util.h             | 127 ++---------------------
+ include/linux/min_heap.h       | 180 ++++++++++++++++++++++++++-------
+ kernel/events/core.c           |  53 +++++-----
+ lib/test_min_heap.c            |  75 +++++++-------
+ 22 files changed, 565 insertions(+), 470 deletions(-)
 
-I noticed that write performance (the second phase of sphinx-build) is
-quite slow and doesn't really benefit from multi processing with -j
-nn. It turns out that the bulk of the write work is done in the main
-process and only the eventual writing is farmed out to forked
-processes. I experimented with pushing more work out to the forked
-processes (diff below) and it gives a significant speedup at the cost
-of breaking index generation. It might be a  viable enhancement if
-indexing can be fixed thru persisting the indices from the
-sub-processes and merging them in the main process.
+-- 
+2.34.1
 
-With the below patch, this is the build time I get:
-
-% time make htmldocs SPHINXOPTS=-j12
-..
-real 1m58.988s
-user 9m57.817s
-sys 0m49.411s
-
-Note that I get better performance with -j12 than -jauto which auto
-detects 24 cores.
-
-diff --git a/sphinx/builders/__init__.py b/sphinx/builders/__init__.py
-index 6afb5d4cc44d..6b203799390e 100644
---- a/sphinx/builders/__init__.py
-+++ b/sphinx/builders/__init__.py
-@@ -581,9 +581,11 @@ class Builder:
-                 self.write_doc(docname, doctree)
-
-     def _write_parallel(self, docnames: Sequence[str], nproc: int) -> None:
--        def write_process(docs: list[tuple[str, nodes.document]]) -> None:
-+        def write_process(docs: list[str]) -> None:
-             self.app.phase = BuildPhase.WRITING
--            for docname, doctree in docs:
-+            for docname in docs:
-+                doctree = self.env.get_and_resolve_doctree(docname, self)
-+                self.write_doc_serialized(docname, doctree)
-                 self.write_doc(docname, doctree)
-
-         # warm up caches/compile templates using the first document
-@@ -596,6 +598,7 @@ class Builder:
-
-         tasks = ParallelTasks(nproc)
-         chunks = make_chunks(docnames, nproc)
-+        logger.info(f"_write_parallel: {len(chunks)} chunks")
-
-         # create a status_iterator to step progressbar after writing a document
-         # (see: ``on_chunk_done()`` function)
-@@ -607,12 +610,7 @@ class Builder:
-
-         self.app.phase = BuildPhase.RESOLVING
-         for chunk in chunks:
--            arg = []
--            for docname in chunk:
--                doctree = self.env.get_and_resolve_doctree(docname, self)
--                self.write_doc_serialized(docname, doctree)
--                arg.append((docname, doctree))
--            tasks.add_task(write_process, arg, on_chunk_done)
-+            tasks.add_task(write_process, chunk, on_chunk_done)
-
-         # make sure all threads have finished
-         tasks.join()
 
