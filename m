@@ -1,158 +1,200 @@
-Return-Path: <linux-kernel+bounces-108138-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108127-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2A990880687
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:08:04 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9EA70880663
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:00:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4E3E11C21EA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:08:03 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C31FC1C22059
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:00:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C79913D0B8;
-	Tue, 19 Mar 2024 21:07:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC18F405CC;
+	Tue, 19 Mar 2024 21:00:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="S2XV8n7x"
-Received: from mail-ed1-f51.google.com (mail-ed1-f51.google.com [209.85.208.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="cLP/h6K6"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 560353C47C
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:07:55 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B0BB3FB99;
+	Tue, 19 Mar 2024 21:00:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710882477; cv=none; b=NQFrf1lwAduPoKDFOVOWxnZSlk8gfxom1LL37rXf+w1WquPzkp+jwqK0AU8pOX7L9b++a6++hHUsVsQamxPC0iCRTBy+lcQ3WhJUML+VNVKbqltys+UpDmUUlqXNev1QyYyaJvQkYVLGKaUOVvproYR0Qvd1+itU9RjycBEiYm4=
+	t=1710882020; cv=none; b=TDUvqsOPTJ+wqO/OwuM/ZP3iGUjY84gxZBTK/FNoeAVgD3k3vnQPVNgQh+nGxCRoX+BeoNxS+Kzm0fjuKbpfwj3gVeS9f4Z4spZv6VGw6Q5JJIrC/iEE8j617q6p1uJdyf32Kb73Tba64QK8cQMKqcHoIusRfPb7rMzMuAZaET0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710882477; c=relaxed/simple;
-	bh=FFxWdNsrCs+Ws3tNdAflAKfMvAZZKT7Q+ZcIn5QT9hE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rJO6ZfOvG0QkaUtac6WjpaiThzGD5Ne0EJkpzNpzrQYAJwOhYtHQF62Nk+Bp80qPFHc5kAJA3X5Gpn4X3QpVRzWnUqWLT7YgzPTy5lIXn8XJtbnq7dhZKhpsdTxEai9FCyySWLBIpc+P5QyHOJU8P/qUZHIijS0v/d1W3V/XHw4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=S2XV8n7x; arc=none smtp.client-ip=209.85.208.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-ed1-f51.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so441185a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:07:55 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710882473; x=1711487273; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=XJm66ymQj4qZljhVLm+D5W3oaVWUS1R2lKPopMwVbNw=;
-        b=S2XV8n7xOCoKA1ZsGeTKJxm4LVxd17jzvzbsILfKbvLSiFxb8YvXIW8k/pruthvZhU
-         b6F1ibvmfDEpJQXDRDu6KcGpgt72XP64HEEa0u9ZaTIqubx4YOfgimKtzsZ0/7SoQtec
-         5plzljmu+EDUfBr4XtT+eyy8ZE7sVzP2O6iuk=
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710882473; x=1711487273;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=XJm66ymQj4qZljhVLm+D5W3oaVWUS1R2lKPopMwVbNw=;
-        b=uaGKc2burCADR2YdEFkIlV7WLvPPE+KrbQGg7CxuFeHspPeRUU8+Qtzsp/4iISLNUM
-         J1DUK4BCVSftMQns56B/DXYMLnVrFg2gCaJ1XEBHZrMS097MrujjOlqZx0O1tkuqZjcp
-         aCAlyWWMLTvYkhyP5+XPRTCSG08MiX66TysfefylITfvwiWoK+eDAncYb0vkThW2q8pq
-         Dtl3p61v1rg4OA61FL3xWDlrwG1OIG4Hos20PBuNKw5UxZbys4qhA7FvD25P1fuZSAhb
-         l/u8gup1YFUr/tDHwKEFnHwZ5k0EsS5nFcuJoHE8P9q4hRZahfOj1TWIXFY0d4WVSO3o
-         fK1A==
-X-Forwarded-Encrypted: i=1; AJvYcCU8fnUI71giADcNmgQ0/l6Kr5+GOmMWBwUA9hT1H+Nj6lKLWjIk+x5ngMysGhcWjhWVuGYtuIfeAazMIiwEgfQQMgky/FH5VFhDadoQ
-X-Gm-Message-State: AOJu0Yz39msyyVW8xvcSe62AmVjSM0YkF4rP1LqLUL2rxb95Oj7ICmFp
-	bSjrnGubBLQlst7qbWsPQyzfKlXUCbBxrrsIhT/uvK4kRDQN7h+15JIA82PmK/gkeZQHitPLQsO
-	wSPE4
-X-Google-Smtp-Source: AGHT+IFZywubxRU2D1nav+U3ZPUWtgE9JV67CssCp/nnlmZkj/3tHGFfk6a8i2vGMTZyamxX6cqCgw==
-X-Received: by 2002:a17:907:7d9e:b0:a46:85ea:7e9e with SMTP id oz30-20020a1709077d9e00b00a4685ea7e9emr735224ejc.1.1710882473484;
-        Tue, 19 Mar 2024 14:07:53 -0700 (PDT)
-Received: from mail-wm1-f54.google.com (mail-wm1-f54.google.com. [209.85.128.54])
-        by smtp.gmail.com with ESMTPSA id af3-20020a170906998300b00a469604c464sm4990996ejc.160.2024.03.19.14.07.53
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 14:07:53 -0700 (PDT)
-Received: by mail-wm1-f54.google.com with SMTP id 5b1f17b1804b1-41428b378b9so8795e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:07:53 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCVINjdgc3TMNwUYK99xL9X3g2EJ2JN82ZZM6ZXSvfimjrVl+M3VRujBTeIoOuUpOSdR/qk+1Neyiv/ygp1ZhyBRx9fKOe8crIEPBzyx
-X-Received: by 2002:a7b:cbd0:0:b0:414:da8:76dc with SMTP id
- n16-20020a7bcbd0000000b004140da876dcmr63824wmi.6.1710882032388; Tue, 19 Mar
- 2024 14:00:32 -0700 (PDT)
+	s=arc-20240116; t=1710882020; c=relaxed/simple;
+	bh=bhy84YlengXETx08r7sse1M0VWl1v653zOdsuGcwMCI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=UDhuIu0ifPiOiYV03HPZywu0PzLJ6nkBPtGEKGROpO/96zGjlOMlFyLlin1LB+f3Y6ZwlhbveP+M+0Do01nVBBXNTiQmaghaIQUFqxpVsBmo9MxWTcpSXxXqC5Gx1biTc1DcgrPFl25V3PBpNLU48fD6IE9szwMDv6Fi76OlkIo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=cLP/h6K6; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 833E8C433C7;
+	Tue, 19 Mar 2024 21:00:19 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710882019;
+	bh=bhy84YlengXETx08r7sse1M0VWl1v653zOdsuGcwMCI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=cLP/h6K6AKNx77IvHJsSYlLIRrloVJhj4AO4/P3PUxRWgmdRFwtNpFskdh50lZ5P5
+	 PB9WDMb43x1ifdBmMlVdQ6BglEsaNXwyrU2V0XOHnQR61/HniTlggpq9pwmhRU2O/v
+	 Mmlas5hxNwcinCHVvvUtZnXx53AMIqiLjFTZo0vMCsqQzCPLH3JsGYknrAlnkoASCE
+	 FssbFzOpJW5HkOx6hUtfKz0Q0VPOMGFC3H+MmpkcVAFNyslSnIsBcn98Y5Kg8kziEL
+	 mhncQcU5sMLTDMZtSqSJOItmClZ3aFqptdnp0U+8ReCCU538yYSNyhRgvUrwitt3le
+	 uqcUG2e2adPHA==
+Date: Tue, 19 Mar 2024 14:00:19 -0700
+From: "Darrick J. Wong" <djwong@kernel.org>
+To: Zhang Yi <yi.zhang@huaweicloud.com>
+Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
+	linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
+	david@fromorbit.com, tytso@mit.edu, jack@suse.cz,
+	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
+Subject: Re: [PATCH v3 4/9] xfs: convert delayed extents to unwritten when
+ zeroing post eof blocks
+Message-ID: <20240319210019.GH1927156@frogsfrogsfrogs>
+References: <20240319011102.2929635-1-yi.zhang@huaweicloud.com>
+ <20240319011102.2929635-5-yi.zhang@huaweicloud.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319111432.1.I521dad0693cc24fe4dd14cba0c7048d94f5b6b41@changeid>
- <CAA8EJpq-NjmYkWHAVsuP5jA_Z7Xx0jCiqEDgU-0ni9BCg7Opuw@mail.gmail.com>
- <2fa9a262-de60-2c1e-9ac3-1e478ec65bb8@quicinc.com> <CAA8EJpqg+Di7PH2bmQ6uMidD3MhQ+N7w-1MWWEOBrH5DbsWSTA@mail.gmail.com>
- <977f647a-fc30-d9c9-f973-fd8bd9a4020a@quicinc.com> <CAA8EJpoAwRKbHxVhi0q9koSUWFPcD4sP=F36r+rYsrtbY0fLkQ@mail.gmail.com>
-In-Reply-To: <CAA8EJpoAwRKbHxVhi0q9koSUWFPcD4sP=F36r+rYsrtbY0fLkQ@mail.gmail.com>
-From: Doug Anderson <dianders@chromium.org>
-Date: Tue, 19 Mar 2024 14:00:14 -0700
-X-Gmail-Original-Message-ID: <CAD=FV=W0k5U0i+Q_X_3HAviY-LXNrAw=PFjWDg+eej-Kq=0Y3w@mail.gmail.com>
-Message-ID: <CAD=FV=W0k5U0i+Q_X_3HAviY-LXNrAw=PFjWDg+eej-Kq=0Y3w@mail.gmail.com>
-Subject: Re: [PATCH] drm/dp: Clarify that wait_hpd_asserted() is not optional
- for panels
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Abhinav Kumar <quic_abhinavk@quicinc.com>, dri-devel@lists.freedesktop.org, 
-	linux-tegra@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>, 
-	Jonathan Hunter <jonathanh@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, 
-	Ankit Nautiyal <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Imre Deak <imre.deak@intel.com>, 
-	Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319011102.2929635-5-yi.zhang@huaweicloud.com>
 
-Hi,
+On Tue, Mar 19, 2024 at 09:10:57AM +0800, Zhang Yi wrote:
+> From: Zhang Yi <yi.zhang@huawei.com>
+> 
+> Current clone operation could be non-atomic if the destination of a file
+> is beyond EOF, user could get a file with corrupted (zeroed) data on
+> crash.
+> 
+> The problem is about to pre-alloctions. If you write some data into a
 
-On Tue, Mar 19, 2024 at 1:55=E2=80=AFPM Dmitry Baryshkov
-<dmitry.baryshkov@linaro.org> wrote:
->
-> > >>>> -        * panel to finish powering on. This is an optional functi=
-on.
-> > >>>> +        * panel to finish powering on. It is optional for DP AUX =
-controllers
-> > >>>> +        * to implement this function but required for DP AUX endp=
-oints (panel
-> > >>>> +        * drivers) to call it after powering up but before doing =
-AUX transfers.
-> > >>>> +        * If a DP AUX controller does not implement this function=
- then it
-> > >>>> +        * may still support eDP panels that use the AUX controlle=
-r's built-in
-> > >>>> +        * HPD signal by implementing a long wait for HPD in the t=
-ransfer()
-> > >>>> +        * callback, though this is deprecated.
-> > >>>
-> > >>> It doesn't cover a valid case when the panel driver handles HPD sig=
-nal
-> > >>> on its own.
-> > >>>
-> > >>
-> > >> This doc is only for wait_for_hpd_asserted(). If panel driver handle=
-s
-> > >> HPD signal on its own, this will not be called. Do we need a doc for=
- that?
-> > >
-> > > This comment declares that this callback must be called by the panel
-> > > driver: '...but required for DP AUX endpoints [...] to call it after
-> > > powering up but before doing AUX transfers.'
-> > >
-> > > If we were to follow documentation changes from this patch, we'd have
-> > > to patch panel-edp to always call wait_for_hpd_asserted, even if HPD
-> > > GPIO is used. However this is not correct from my POV.
-> > >
-> >
-> > hmmm I dont mind explicitly saying "unless the panel can independently
-> > check the HPD state" but not required in my opinion because if panel wa=
-s
-> > capable of checking the HPD gpio (its self-capable) why would it even
-> > call wait_for_hpd_asserted?
->
-> I'm fine with the proposed change. Doug?
->
-> >
-> > I will let you and Doug discuss this but fwiw, I am fine without this
-> > additional clarification. So the R-b stands with or without this
-> > additional clause.
+"...is about preallocations."
 
-Adjusted wording in v2. Kept Abhniav's R-b. PTAL.
+> file [A, B) (the position letters are increased one by one), and xfs
 
-https://lore.kernel.org/r/20240319135836.v2.1.I521dad0693cc24fe4dd14cba0c70=
-48d94f5b6b41@changeid
+I think it would help with understandability if you'd pasted the ascii
+art from the previous thread(s) into this commit message:
+
+"The problem is about preallocations.  If you write some data into a
+file:
+
+	[A...B)
+
+and XFS decides to preallocate some post-eof blocks, then it can create
+a delayed allocation reservation:
+
+	[A.........D)
+
+The writeback path tries to convert delayed extents to real ones by
+allocating blocks.  If there aren't enough contiguous free space, we can
+end up with two extents, the first real and the second still delalloc:
+
+	[A....C)[C.D)
+
+After that, both the in-memory and the on-disk file sizes are still B.
+If we clone into the range [E...F) from another file:
+
+	[A....C)[C.D)      [E...F)
+
+then xfs_reflink_zero_posteof calls iomap_zero_range to zero out the
+range [B, E) beyond EOF and flush it.  Since [C, D) is still a delalloc
+extent, its pagecache will be zeroed and both the in-memory and on-disk
+size will be updated to D after flushing but before cloning.  This is
+wrong, because the user can see the size change and read the zeroes
+while the clone operation is ongoing."
+
+> could pre-allocate some blocks, then we get a delayed extent [A, D).
+> Then the writeback path allocate blocks and convert this delayed extent
+> [A, C) since lack of enough contiguous physical blocks, so the extent
+> [C, D) is still delayed. After that, both the in-memory and the on-disk
+> file size are B. If we clone file range into [E, F) from another file,
+> xfs_reflink_zero_posteof() would call iomap_zero_range() to zero out the
+> range [B, E) beyond EOF and flush range. Since [C, D) is still a delayed
+> extent, it will be zeroed and the file's in-memory && on-disk size will
+> be updated to D after flushing and before doing the clone operation.
+> This is wrong, because user can user can see the size change and read
+> zeros in the middle of the clone operation.
+> 
+> We need to keep the in-memory and on-disk size before the clone
+> operation starts, so instead of writing zeroes through the page cache
+> for delayed ranges beyond EOF, we convert these ranges to unwritten and
+> invalidating any cached data over that range beyond EOF.
+
+"...and invalidate any cached data..."
+
+> Suggested-by: Dave Chinner <david@fromorbit.com>
+> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
+> Reviewed-by: Christoph Hellwig <hch@lst.de>
+> ---
+>  fs/xfs/xfs_iomap.c | 29 +++++++++++++++++++++++++++++
+>  1 file changed, 29 insertions(+)
+> 
+> diff --git a/fs/xfs/xfs_iomap.c b/fs/xfs/xfs_iomap.c
+> index ccf83e72d8ca..1a6d05830433 100644
+> --- a/fs/xfs/xfs_iomap.c
+> +++ b/fs/xfs/xfs_iomap.c
+> @@ -1035,6 +1035,24 @@ xfs_buffered_write_iomap_begin(
+>  	}
+>  
+>  	if (imap.br_startoff <= offset_fsb) {
+> +		/*
+> +		 * For zeroing out delayed allocation extent, we trim it if
+> +		 * it's partial beyonds EOF block, or convert it to unwritten
+> +		 * extent if it's all beyonds EOF block.
+
+"Trim a delalloc extent that extends beyond the EOF block.  If it starts
+beyond the EOF block, convert it to an unwritten extent."
+
+> +		 */
+> +		if ((flags & IOMAP_ZERO) &&
+> +		    isnullstartblock(imap.br_startblock)) {
+> +			xfs_fileoff_t eof_fsb = XFS_B_TO_FSB(mp, XFS_ISIZE(ip));
+> +
+> +			if (offset_fsb >= eof_fsb)
+> +				goto convert_delay;
+> +			if (end_fsb > eof_fsb) {
+> +				end_fsb = eof_fsb;
+> +				xfs_trim_extent(&imap, offset_fsb,
+> +						end_fsb - offset_fsb);
+> +			}
+> +		}
+> +
+>  		/*
+>  		 * For reflink files we may need a delalloc reservation when
+>  		 * overwriting shared extents.   This includes zeroing of
+> @@ -1158,6 +1176,17 @@ xfs_buffered_write_iomap_begin(
+>  	xfs_iunlock(ip, lockmode);
+>  	return xfs_bmbt_to_iomap(ip, iomap, &imap, flags, 0, seq);
+>  
+> +convert_delay:
+> +	xfs_iunlock(ip, lockmode);
+> +	truncate_pagecache(inode, offset);
+> +	error = xfs_bmapi_convert_delalloc(ip, XFS_DATA_FORK, offset,
+> +					iomap, NULL);
+
+Either indent this two tabs (XFS style), or make the second line of
+arguments line up with the start of the arguments on the first line
+(kernel style).
+
+With those improvements applied,
+Reviewed-by: Darrick J. Wong <djwong@kernel.org>
+
+--D
+
+> +	if (error)
+> +		return error;
+> +
+> +	trace_xfs_iomap_alloc(ip, offset, count, XFS_DATA_FORK, &imap);
+> +	return 0;
+> +
+>  found_cow:
+>  	seq = xfs_iomap_inode_sequence(ip, 0);
+>  	if (imap.br_startoff <= offset_fsb) {
+> -- 
+> 2.39.2
+> 
+> 
 
