@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-108165-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108166-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 315A8880702
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:59:29 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D528880706
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:59:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 958FE1F22C4A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:59:28 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D1CE21F22DC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:59:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3CCE4F5F2;
-	Tue, 19 Mar 2024 21:59:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D8954F885;
+	Tue, 19 Mar 2024 21:59:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="gpnpnNQt"
-Received: from mail-pf1-f172.google.com (mail-pf1-f172.google.com [209.85.210.172])
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="h4ElhIxx"
+Received: from mail-pf1-f177.google.com (mail-pf1-f177.google.com [209.85.210.177])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9E5A842A86
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:59:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DC6BF4C626
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:59:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710885559; cv=none; b=mrF94B5Lxaai3BEJgQZq4n2CwkbN0VWDodC84P7oT9i9eW9lVCxpKg8YIsgaZ0gz4/TNvXZJz+5fW2QBtBn8mUrG4dfmzACkNBCZAjUY7UJZvIWU4ldcax/kp7MUbYGH52sf3SVhul7oWB47+WrYANU6eQg/Myi1vG2oeNuldg4=
+	t=1710885560; cv=none; b=PKVKHeosv1qik4WNoyJFov6ycyMUUP/9olkJMf05jQbLeKeUfKzj9QaotpHx5+ZL+CNywYt1OJ4y18mSXIXJCd2wk6/+NeZvD5maka30qrYr2EF/HJnI6MslrF/baWqdoTbfG41YJ07Ct4AhFYq1Wl7bE4FqaWdYZ0K2Tv+lIXk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710885559; c=relaxed/simple;
-	bh=JrhTzLNU7JDIXj1MsuBxCmEsCkl39IGeWPNJ9ltYd2U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rZWcELOisKkCQZYdLgLghIzAL+0RncU5jRgKOf3CJr8xA0PJmCXYpv/6xPConr+WcvOVLjv9DOqEQ9Ie9hRXNOy0p9HCgRDsO7N/Cc8gJGC+qTP7w53k0gvTRcLRZEN/6ev+SJigvBMXPFIfMF0sb88k4EimyQHUyk0wpe+NuDA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=gpnpnNQt; arc=none smtp.client-ip=209.85.210.172
+	s=arc-20240116; t=1710885560; c=relaxed/simple;
+	bh=FmlnN/GKOAOCg5UbOr9A5w45WtgIdMY5JUe3z3aaSTs=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=bRqEVmOKJER195G+OvdvQbBYSQSMbu+EJM2Qyq9cDn9K/pmVieKBaoIWCfpGJbEFjEtkvoRh5LBlAzwaL3vCm2wEhl5Xv6YSy3uIFDjiEF9rKLwVW/dHktjejIlXKQ5Xh7Rw52zzjgm+RWlVvP27DXnZKUfGAKIJfeEpM0Xt6VE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=h4ElhIxx; arc=none smtp.client-ip=209.85.210.177
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-pf1-f172.google.com with SMTP id d2e1a72fcca58-6e6afb754fcso5786601b3a.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:59:17 -0700 (PDT)
+Received: by mail-pf1-f177.google.com with SMTP id d2e1a72fcca58-6e6bee809b8so5628188b3a.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:59:18 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710885557; x=1711490357; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Rmlb8dkFyYxdz94/c3CDo0QI5YbaWEmRF37tY2/vORM=;
-        b=gpnpnNQtlGY4/QW2SSNOxZiMmeVOK4pkFOqn8wUWwX5IDIGbQ23tgl/KyXWJmfL9EW
-         Ha4Wrgtw0X3K2uN33bdvaG/pno+QAi9ynJSyYmfgPU8VK6u0eu7DkNOmQC4/0/dDCfNd
-         uBM5l6Flc1faxubX3ncCt2/Av8HzHfmljsOy9qL+w9a5cIGTT4k/zRo1xs2+xknQO4Vv
-         W9wkF4Ejp/Pce2WpFZ3gGtKvM3irz3pN3w5g5E6e4fMVFi/iMPHRfNlrI1QxMn+Yt4uN
-         vgYHoy7bP4ItlejmelK8ZYl5nZNGbdzV2TjwwUZ9BYKYBwR2fAI6UaI9PR03+s/lD0Vx
-         Ek4w==
+        d=sifive.com; s=google; t=1710885558; x=1711490358; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mf8TbChjgkUHpdp7I/ykwc/bJc9eIQRGH4wGpVTxw4U=;
+        b=h4ElhIxxgcBFKJpDrNLqiOlMU8/BnoaTPFp5Q8tDZXfePRxS2oo66AK2KCRHk3uso4
+         Eqh9MSwDoGtjERIVfVDeBuy7ZsT+RsTn56n7y0P3WAvI61GSI1MOuNxVRz2KE6hTe5HM
+         c8GWRQCiOU2A5ppIXlRkVEu4c9yiQLbolZ9VWdKVoIU4bCIn+KbCeU6X3hZCDxG7ff7S
+         xMcF8sKdaiT1F+0ug/rRyRKaNY7hm6ml1OaxAdjRSqdPN6bMDkXgBaejzA9ShK42XnLn
+         iEFTxRNu/s1NDWOOEvIuGm7Cahfeb/QR9MVM7ceRejGHSBb7aqMiqWVQoeg6AOHYVuF/
+         5GsQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710885557; x=1711490357;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=Rmlb8dkFyYxdz94/c3CDo0QI5YbaWEmRF37tY2/vORM=;
-        b=gOilcbtO9aGs+xrEBNpYy1QsSXnNoUbukPFHMO6+lVdjk4aAb4TigdwQl6fVxfQ0L/
-         t/iFaE++L9LIhmh31fy2uXxUzhceLQes1no/tssrmnAzkP00Vu/dC1QWHjkn66viJcB2
-         xy4vKKvi/+lMzwwpqY8mIrpZWWi+DuEKObtAtnwJLwaAwZasJm4kaR3iWoT+HG7CV+cm
-         GRJKsnjfUHDOHvfAL9thdNJkrF5jPEQCVX+wFRb8UJNOcn02owdrIcrl7xTx4cReO7mg
-         fZc4HnlWEw1P2hwioS1Ro8/0ActevwxQn4m4wk65SZ9SyXT8d2HTIGJUHwuCKCiUJGYd
-         4IgA==
-X-Forwarded-Encrypted: i=1; AJvYcCWyz8h6kBjM2tnsC8LJgVj1vVN8hT3swhq4+0zb4lG9uc8kKQdN2tDKyDe+t6MS+J/O+DdzGB9rMuZag7tQoGYodnty+AdbCk+H0JXG
-X-Gm-Message-State: AOJu0YwaV1qDwNCYJalIvY5O1t9qHmcBECGzraDXxx/MX2esxUdn9Bcj
-	VKD/XNReCOFNa/du7Tc98FSqtzgDcVstSdUotRUgV71K2adtx1dytrebYTah09g=
-X-Google-Smtp-Source: AGHT+IFq09XmFNSIoRgARl6YR9z7iEUW5Yif2KVMNG/hMOVVaxwVphqnsk3Rt+lVEueTdkA4OIwSpQ==
-X-Received: by 2002:a05:6a00:a22:b0:6e7:4abe:85a0 with SMTP id p34-20020a056a000a2200b006e74abe85a0mr457780pfh.14.1710885556934;
-        Tue, 19 Mar 2024 14:59:16 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710885558; x=1711490358;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mf8TbChjgkUHpdp7I/ykwc/bJc9eIQRGH4wGpVTxw4U=;
+        b=IEXOHrzHjClS1PA+flg9c2vkX9JEGslCp4QfX4Tl0wwBQJ5kAQD8pQVMdVdv6euCoU
+         wGn13JCH73TB+/UjXLdzxktoEazsinYfMyCEj0XAulJvK2MyoqVjeHxa0YJnqmwlMUMF
+         FPG0eoq2JJY1sPg4IzTFYRRCKA7bL3pBWLw5s2M4+lcvJ+ZNYWRz88gu3fitAhqpPIkA
+         w0FzgEiP/VCCR1FfjKSTNbLEQzbAVfMu26FLc90Q7RHuZuk+l79Dr2TOvTGtnV4aqWSY
+         nALzA1Ds/pZHsOmfdt83mmYAwvd18iOnf19IZsSnermrO/bdOsoxfuGqhvUdkUXVtNOG
+         GCRg==
+X-Forwarded-Encrypted: i=1; AJvYcCUNecv5Eq1h5B1KwKN4pyleVoh+UvqH2J8bs237Bb/MPNWL3ow0/MfFqRPSzfpI90PTPxGO3gifR9lAbkOGgObi0YQLCHoZcVzgEv5Y
+X-Gm-Message-State: AOJu0YyhvWSQjtl6UA6nN+3FCS1r7FBskkZ5nvKIdiRjgH0T8KqwN7lq
+	e6qiWLC/MwBg9poO3nUh8R7GXMcVuIqlHSh9++T7QNlkS2DTKq1fOOV98u1tr2Y=
+X-Google-Smtp-Source: AGHT+IHxqp3vSJIj8u1FQnLhGGhgkkZd9sPyRN/6PCbIT9hhDxZABaPjD8SNbLUKLifMerMmPS4+xQ==
+X-Received: by 2002:a05:6a00:cd5:b0:6e6:9ac4:d501 with SMTP id b21-20020a056a000cd500b006e69ac4d501mr443835pfv.25.1710885558184;
+        Tue, 19 Mar 2024 14:59:18 -0700 (PDT)
 Received: from sw06.internal.sifive.com ([4.53.31.132])
-        by smtp.gmail.com with ESMTPSA id z25-20020aa785d9000000b006e6c61b264bsm10273892pfn.32.2024.03.19.14.59.16
+        by smtp.gmail.com with ESMTPSA id z25-20020aa785d9000000b006e6c61b264bsm10273892pfn.32.2024.03.19.14.59.17
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 14:59:16 -0700 (PDT)
+        Tue, 19 Mar 2024 14:59:17 -0700 (PDT)
 From: Samuel Holland <samuel.holland@sifive.com>
 To: Palmer Dabbelt <palmer@dabbelt.com>,
 	linux-riscv@lists.infradead.org
@@ -78,11 +80,13 @@ Cc: devicetree@vger.kernel.org,
 	Rob Herring <robh+dt@kernel.org>,
 	Samuel Holland <samuel.holland@sifive.com>,
 	Albert Ou <aou@eecs.berkeley.edu>,
-	Andrew Jones <ajones@ventanamicro.com>
-Subject: [RFC PATCH 0/9] riscv: Userspace pointer masking and tagged address ABI
-Date: Tue, 19 Mar 2024 14:58:26 -0700
-Message-ID: <20240319215915.832127-1-samuel.holland@sifive.com>
+	Paul Walmsley <paul.walmsley@sifive.com>
+Subject: [RFC PATCH 1/9] dt-bindings: riscv: Add pointer masking ISA extensions
+Date: Tue, 19 Mar 2024 14:58:27 -0700
+Message-ID: <20240319215915.832127-2-samuel.holland@sifive.com>
 X-Mailer: git-send-email 2.43.1
+In-Reply-To: <20240319215915.832127-1-samuel.holland@sifive.com>
+References: <20240319215915.832127-1-samuel.holland@sifive.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,65 +95,52 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-RISC-V defines three extensions for pointer masking[1]:
- - Smmpm: configured in M-mode, affects M-mode
- - Smnpm: configured in M-mode, affects the next lower mode (S or U-mode)
- - Ssnpm: configured in S-mode, affects the next lower mode (U-mode)
+The RISC-V Pointer Masking specification defines three extensions:
+Smmpm, Smnpm, and Ssnpm. Document the behavior as of the current draft
+of the specification, which is version 0.8.4.
 
-This series adds support for configuring Smnpm or Ssnpm (depending on
-which mode the kernel is running in) to allow pointer masking in
-userspace by extending the existing PR_SET_TAGGED_ADDR_CTRL API from
-arm64. Unlike arm64 TBI, userspace pointer masking is not enabled by
-default on RISC-V. Additionally, the tag width (referred to as PMLEN) is
-variable, so userspace needs to ask the kernel for a specific tag width
-(which is interpreted as a minimum number of tag bits).
+Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+---
 
-This series also adds support for a tagged address ABI similar to arm64.
-Since accesses from the kernel to user memory use the kernel's pointer
-masking configuration, not the user's, the kernel must untag user
-pointers in software before dereferencing them.
+ .../devicetree/bindings/riscv/extensions.yaml  | 18 ++++++++++++++++++
+ 1 file changed, 18 insertions(+)
 
-This series can be tested in QEMU by applying a patch set[2].
-
-KASAN support is not included here because there is not yet any standard
-way for the kernel to ask firmware to enable pointer masking in S-mode.
-
-[1]: https://github.com/riscv/riscv-j-extension/raw/a1e68469c60/zjpm-spec.pdf
-[2]: https://patchwork.kernel.org/project/qemu-devel/list/?series=822467&archive=both
-
-
-Samuel Holland (9):
-  dt-bindings: riscv: Add pointer masking ISA extensions
-  riscv: Add ISA extension parsing for pointer masking
-  riscv: Add CSR definitions for pointer masking
-  riscv: Define is_compat_thread()
-  riscv: Split per-CPU and per-thread envcfg bits
-  riscv: Add support for userspace pointer masking
-  riscv: Add support for the tagged address ABI
-  riscv: Allow ptrace control of the tagged address ABI
-  selftests: riscv: Add a pointer masking test
-
- .../devicetree/bindings/riscv/extensions.yaml |  18 +
- arch/riscv/Kconfig                            |   8 +
- arch/riscv/include/asm/compat.h               |  16 +
- arch/riscv/include/asm/cpufeature.h           |   2 +
- arch/riscv/include/asm/csr.h                  |  16 +
- arch/riscv/include/asm/hwcap.h                |   5 +
- arch/riscv/include/asm/processor.h            |  10 +
- arch/riscv/include/asm/switch_to.h            |  12 +
- arch/riscv/include/asm/uaccess.h              |  40 ++-
- arch/riscv/kernel/cpufeature.c                |   7 +-
- arch/riscv/kernel/process.c                   | 154 +++++++++
- arch/riscv/kernel/ptrace.c                    |  42 +++
- include/uapi/linux/elf.h                      |   1 +
- include/uapi/linux/prctl.h                    |   3 +
- tools/testing/selftests/riscv/Makefile        |   2 +-
- tools/testing/selftests/riscv/tags/Makefile   |  10 +
- .../selftests/riscv/tags/pointer_masking.c    | 307 ++++++++++++++++++
- 17 files changed, 646 insertions(+), 7 deletions(-)
- create mode 100644 tools/testing/selftests/riscv/tags/Makefile
- create mode 100644 tools/testing/selftests/riscv/tags/pointer_masking.c
-
+diff --git a/Documentation/devicetree/bindings/riscv/extensions.yaml b/Documentation/devicetree/bindings/riscv/extensions.yaml
+index 63d81dc895e5..bb7d5d84f31f 100644
+--- a/Documentation/devicetree/bindings/riscv/extensions.yaml
++++ b/Documentation/devicetree/bindings/riscv/extensions.yaml
+@@ -128,6 +128,18 @@ properties:
+             changes to interrupts as frozen at commit ccbddab ("Merge pull
+             request #42 from riscv/jhauser-2023-RC4") of riscv-aia.
+ 
++        - const: smmpm
++          description: |
++            The standard Smmpm extension for M-mode pointer masking as defined
++            at commit a1e68469c60 ("Minor correction to pointer masking spec.")
++            of riscv-j-extension.
++
++        - const: smnpm
++          description: |
++            The standard Smnpm extension for next-mode pointer masking as defined
++            at commit a1e68469c60 ("Minor correction to pointer masking spec.")
++            of riscv-j-extension.
++
+         - const: smstateen
+           description: |
+             The standard Smstateen extension for controlling access to CSRs
+@@ -147,6 +159,12 @@ properties:
+             and mode-based filtering as ratified at commit 01d1df0 ("Add ability
+             to manually trigger workflow. (#2)") of riscv-count-overflow.
+ 
++        - const: ssnpm
++          description: |
++            The standard Ssnpm extension for next-mode pointer masking as defined
++            at commit a1e68469c60 ("Minor correction to pointer masking spec.")
++            of riscv-j-extension.
++
+         - const: sstc
+           description: |
+             The standard Sstc supervisor-level extension for time compare as
 -- 
 2.43.1
 
