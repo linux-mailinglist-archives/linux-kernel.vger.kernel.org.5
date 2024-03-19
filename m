@@ -1,74 +1,79 @@
-Return-Path: <linux-kernel+bounces-107099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107084-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 60E4F87F784
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:37:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1329787F762
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:33:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DBB1C28180C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:37:42 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E576A1C213DD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:33:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E7D2C7F7C7;
-	Tue, 19 Mar 2024 06:32:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD47D51C34;
+	Tue, 19 Mar 2024 06:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="kgMSsekE"
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="nzU/xCkt"
+Received: from esa11.hc1455-7.c3s2.iphmx.com (esa11.hc1455-7.c3s2.iphmx.com [207.54.90.137])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 176447CF39;
-	Tue, 19 Mar 2024 06:32:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ABC9C208DA;
+	Tue, 19 Mar 2024 06:32:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.137
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710829959; cv=none; b=XFJW+JSJWrjpjlt1rjGZtsAKv0DzGXk0EEqZHXpeUDOMHuBBex7bk/PEKljXDBAdIWSQOrv5fPYLy6OQNpbY4zs45c6vEWq94y1/XrFub4en7PGotIBS+rlI2EmQP8cjVhUCEcqHo1apdPEsObp979EIc+Vxc6ldWpQ1sbnKVNA=
+	t=1710829951; cv=none; b=FGX12lelE3+3DiRMRgcZUomROG5H76r520H+5diz4Fe26c7TpJvvyRlTOFxU2Igp59jKNFuqVLr6h+zh8v4FuJosnAEZj55RPHm44jTnr6HYhM3fu4AINxPf1j0uF/lzfwVSV9XdpnOobtWyWxHg+2OWDBPsgVnM4RgOIdYoADk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710829959; c=relaxed/simple;
-	bh=IbSVMgZx41kP9mucdGRkZ+TwMkWR19uh07az1NIR6E0=;
+	s=arc-20240116; t=1710829951; c=relaxed/simple;
+	bh=V4maAJaq34YaWmfmxUxtcXRMFcNFk9d5IOBVN/enRVk=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=AZNWG1PX2PX/BInT4pxm6vAi28NYaRtohglxDhFccnEHwLO3bQvvcdPj0MIh+nPTTKC2gxlJh+8GBHw0xR2rQuOTW6Y00EfcM08aI0VW/mz4sM1TDn+nBMqQB9ofIl0k6lCagoLx5cxDkVokOwJJoZ67nj6QnGDERoX6Sn2NNRY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=kgMSsekE; arc=none smtp.client-ip=68.232.139.117
+	 MIME-Version; b=BgPQ9nyB80TQfvxA9X1BO6rXXIhXOVFE5ocrqptJXFJ7gjxN/w15Ys8lualUS2sjA/TnVojJ6TvR8ulIMFf+b4uzRKlGjZiylLjov3pqaEITYxHI12K7aQuTZAoxFncsfpTTx2+8RnY+ozV9hhgGJ+CgtDAEae9K4aZSdFVtEX4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=nzU/xCkt; arc=none smtp.client-ip=207.54.90.137
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1710829957; x=1742365957;
+  t=1710829949; x=1742365949;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=IbSVMgZx41kP9mucdGRkZ+TwMkWR19uh07az1NIR6E0=;
-  b=kgMSsekE9Mz8JC8Q8PDCaCpy+eTdYdtNNneBPMrSxBwhMVfw8d2BF74F
-   A/0COCh9uZaeAlrZZNzIYyw9hNlsznVgspUrMoOWZAgt/z9IN6tSAYTsZ
-   LwWjRMw+ruTYPH9FS9LG5P2xwMyRvR7pbdklRi7RTRmGCbgFxr5T1nyMl
-   YOhRR4uC8SmyaEuhljlqss1TfkBquHv8fcB3KsyBeEzsdYzesEEjBBn5I
-   FYuKUu/FS9UylxDiIJMouexLEun/NJ2ehzfVyyt5yM0wHnVWu+tdmm31Y
-   V9nu+zlaXO/9viHDA7vuWH0fFXjGAx0F4WV6dPHQcvBJtQfZ+LWUo+n2n
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="152971383"
+  bh=V4maAJaq34YaWmfmxUxtcXRMFcNFk9d5IOBVN/enRVk=;
+  b=nzU/xCktZfGXGhoOgKjlcpxMhaIS12gfZd5wH5wQivTbOqLOZJL17JT5
+   etOsceP+3ZOqEGDBDgvCfYFSvzT0m5xCStkFFau6hoWbwpJrPO/AzZHRM
+   M2KNbm0wZlPEj2aOQh17sHvoWsXRpbtYs8nK7uYa9v3zmjkCTgOCQNvSP
+   c+evthb1uD2CZUKzieBlz+9yPJk1/6+Ue6mGu+gGjuTw5akhRcslKA+oE
+   mq4iKivPMvHj6IG8VLK189j1iAmTXG3p7ZuJYKlr8GFznXdyo/mQT++4H
+   Y2M7tJc+ZBZVXMoIvq8GRDwMg+oLS62Dx7t3znhjyNFdgiHpqHd26IGVS
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="132064677"
 X-IronPort-AV: E=Sophos;i="6.07,136,1708354800"; 
-   d="scan'208";a="152971383"
-Received: from unknown (HELO oym-r1.gw.nic.fujitsu.com) ([210.162.30.89])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 15:32:25 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
-	by oym-r1.gw.nic.fujitsu.com (Postfix) with ESMTP id 64992D4800;
+   d="scan'208";a="132064677"
+Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
+  by esa11.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 15:32:26 +0900
+Received: from oym-m1.gw.nic.fujitsu.com (oym-nat-oym-m1.gw.nic.fujitsu.com [192.168.87.58])
+	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id C64A6141203;
 	Tue, 19 Mar 2024 15:32:23 +0900 (JST)
-Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
-	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 84366BF4B8;
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by oym-m1.gw.nic.fujitsu.com (Postfix) with ESMTP id E6EB9C5205;
 	Tue, 19 Mar 2024 15:32:22 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 156AC2288DF;
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 7EF1020099077;
 	Tue, 19 Mar 2024 15:32:22 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 9FEB21A006E;
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id E32C31A006B;
 	Tue, 19 Mar 2024 14:32:21 +0800 (CST)
 From: Li Zhijian <lizhijian@fujitsu.com>
 To: linux-kernel@vger.kernel.org
 Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Kashyap Desai <kashyap.desai@broadcom.com>,
+	Sumit Saxena <sumit.saxena@broadcom.com>,
+	Shivasharan S <shivasharan.srikanteshwara@broadcom.com>,
+	Chandrakanth patil <chandrakanth.patil@broadcom.com>,
 	"James E.J. Bottomley" <jejb@linux.ibm.com>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	megaraidlinux.pdl@broadcom.com,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH v2 06/25] scsi: fcoe: Convert sprintf() family to sysfs_emit() family (part 2)
-Date: Tue, 19 Mar 2024 14:31:13 +0800
-Message-Id: <20240319063132.1588443-6-lizhijian@fujitsu.com>
+Subject: [PATCH v2 07/25] scsi: megaraid: Convert sprintf() family to sysfs_emit() family
+Date: Tue, 19 Mar 2024 14:31:14 +0800
+Message-Id: <20240319063132.1588443-7-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240319063132.1588443-1-lizhijian@fujitsu.com>
 References: <20240319063132.1588443-1-lizhijian@fujitsu.com>
@@ -83,16 +88,14 @@ X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28260.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28260.005
-X-TMASE-Result: 10--9.144400-10.000000
+X-TMASE-Result: 10--11.401400-10.000000
 X-TMASE-MatchedRID: pfKaEBrCt3IbO59FK9BdmJiHtCNYjckMjkDrBOJwwnQ8JmmJxjOaQXVX
 	Q3/qdw5yDiqGKKMcNgRhoUIS5GGeEs1HQN/TlJ3ZOIQ9GP2P2u/iwxLjNbuPBWO0yVK/5LmcQiM
-	ingSlKoKMx5HzfQifbPE41045MrHXFDCN/1eC4ASdVNZaI2n6/8E5XPQnBzGXq8KsbROd9VSArq
-	oIZrVn10Bh0sVevfs+KARHumklBHdgNUdcYnHhO869emDs42ddJ1hCPLkD1Z0elQy/uI/kRRhBv
-	WgZlX+84vM1YF6AJbbCCfuIMF6xLSAHAopEd76vDgB4GwJOR3Dpx/3g93ShNJLNK9Jps9Vaf+w/
-	hpgGsH/X1yytYt1jVw==
+	ingSlKoKMx5HzfQifbPE41045MrHXFDCN/1eC4ASdVNZaI2n6/wK0ZgbTOeKUwLkNMQzGl5B+Kr
+	WCPbERP80Age9hS2jaorLpu20+QH7QVDF+NEc7OLNE9DxPih7lWQ3R4k5PTnCm04TWLzKiuBhBv
+	WgZlX+84vM1YF6AJbbCCfuIMF6xLSAHAopEd76vlJCE5xaQ34yOfAg8k/613mIZPVAHECUgnLiz
+	jkg33w6g3hSkeF22Zw==
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
-
-This focuses on abused cases in macros
 
 Per filesystems/sysfs.rst, show() should only use sysfs_emit()
 or sysfs_emit_at() when formatting the value to be returned to user space.
@@ -108,8 +111,13 @@ COCCI=scripts/coccinelle/api/device_attr_show.cocci
 
 No functional change intended
 
+CC: Kashyap Desai <kashyap.desai@broadcom.com>
+CC: Sumit Saxena <sumit.saxena@broadcom.com>
+CC: Shivasharan S <shivasharan.srikanteshwara@broadcom.com>
+CC: Chandrakanth patil <chandrakanth.patil@broadcom.com>
 CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
 CC: "Martin K. Petersen" <martin.petersen@oracle.com>
+CC: megaraidlinux.pdl@broadcom.com
 CC: linux-scsi@vger.kernel.org
 Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
 ---
@@ -117,161 +125,79 @@ This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
 Split them per subsystem so that the maintainer can review it easily
 [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
 ---
- drivers/scsi/fcoe/fcoe_sysfs.c | 82 +++++++++++++++++-----------------
- 1 file changed, 41 insertions(+), 41 deletions(-)
+ drivers/scsi/megaraid/megaraid_sas_base.c | 18 +++++++++---------
+ 1 file changed, 9 insertions(+), 9 deletions(-)
 
-diff --git a/drivers/scsi/fcoe/fcoe_sysfs.c b/drivers/scsi/fcoe/fcoe_sysfs.c
-index 46a2f7f0669f..2baa1d6456fc 100644
---- a/drivers/scsi/fcoe/fcoe_sysfs.c
-+++ b/drivers/scsi/fcoe/fcoe_sysfs.c
-@@ -134,7 +134,7 @@ static int fcoe_fcf_set_dev_loss_tmo(struct fcoe_fcf_device *fcf,
- struct device_attribute device_attr_fcoe_##_prefix##_##_name =	\
- 	__ATTR(_name, _mode, _show, _store)
+diff --git a/drivers/scsi/megaraid/megaraid_sas_base.c b/drivers/scsi/megaraid/megaraid_sas_base.c
+index 3d4f13da1ae8..07df615f43af 100644
+--- a/drivers/scsi/megaraid/megaraid_sas_base.c
++++ b/drivers/scsi/megaraid/megaraid_sas_base.c
+@@ -3333,8 +3333,8 @@ fw_crash_buffer_size_show(struct device *cdev,
+ 	struct megasas_instance *instance =
+ 		(struct megasas_instance *) shost->hostdata;
  
--#define fcoe_ctlr_show_function(field, format_string, sz, cast)	\
-+#define fcoe_ctlr_show_function(field, format_string, cast)	\
- static ssize_t show_fcoe_ctlr_device_##field(struct device *dev, \
- 					    struct device_attribute *attr, \
- 					    char *buf)			\
-@@ -142,11 +142,11 @@ static ssize_t show_fcoe_ctlr_device_##field(struct device *dev, \
- 	struct fcoe_ctlr_device *ctlr = dev_to_ctlr(dev);		\
- 	if (ctlr->f->get_fcoe_ctlr_##field)				\
- 		ctlr->f->get_fcoe_ctlr_##field(ctlr);			\
--	return snprintf(buf, sz, format_string,				\
--			cast fcoe_ctlr_##field(ctlr));			\
-+	return sysfs_emit(buf, format_string,				\
-+			  cast fcoe_ctlr_##field(ctlr));		\
+-	return snprintf(buf, PAGE_SIZE, "%ld\n", (unsigned long)
+-		((instance->fw_crash_buffer_size) * 1024 * 1024)/PAGE_SIZE);
++	return sysfs_emit(buf, "%ld\n", (unsigned long)
++		((instance->fw_crash_buffer_size) * 1024 * 1024) / PAGE_SIZE);
  }
  
--#define fcoe_fcf_show_function(field, format_string, sz, cast)	\
-+#define fcoe_fcf_show_function(field, format_string, cast)	\
- static ssize_t show_fcoe_fcf_device_##field(struct device *dev,	\
- 					   struct device_attribute *attr, \
- 					   char *buf)			\
-@@ -155,55 +155,55 @@ static ssize_t show_fcoe_fcf_device_##field(struct device *dev,	\
- 	struct fcoe_ctlr_device *ctlr = fcoe_fcf_dev_to_ctlr_dev(fcf);	\
- 	if (ctlr->f->get_fcoe_fcf_##field)				\
- 		ctlr->f->get_fcoe_fcf_##field(fcf);			\
--	return snprintf(buf, sz, format_string,				\
--			cast fcoe_fcf_##field(fcf));			\
-+	return sysfs_emit(buf, format_string,				\
-+			  cast fcoe_fcf_##field(fcf));			\
- }
- 
--#define fcoe_ctlr_private_show_function(field, format_string, sz, cast)	\
-+#define fcoe_ctlr_private_show_function(field, format_string, cast)	\
- static ssize_t show_fcoe_ctlr_device_##field(struct device *dev, \
- 					    struct device_attribute *attr, \
- 					    char *buf)			\
- {									\
- 	struct fcoe_ctlr_device *ctlr = dev_to_ctlr(dev);		\
--	return snprintf(buf, sz, format_string, cast fcoe_ctlr_##field(ctlr)); \
-+	return sysfs_emit(buf, format_string, cast fcoe_ctlr_##field(ctlr)); \
- }
- 
--#define fcoe_fcf_private_show_function(field, format_string, sz, cast)	\
-+#define fcoe_fcf_private_show_function(field, format_string, cast)	\
- static ssize_t show_fcoe_fcf_device_##field(struct device *dev,	\
- 					   struct device_attribute *attr, \
- 					   char *buf)			\
- {								\
- 	struct fcoe_fcf_device *fcf = dev_to_fcf(dev);			\
--	return snprintf(buf, sz, format_string, cast fcoe_fcf_##field(fcf)); \
-+	return sysfs_emit(buf, format_string, cast fcoe_fcf_##field(fcf)); \
- }
- 
--#define fcoe_ctlr_private_rd_attr(field, format_string, sz)		\
--	fcoe_ctlr_private_show_function(field, format_string, sz, )	\
-+#define fcoe_ctlr_private_rd_attr(field, format_string)		\
-+	fcoe_ctlr_private_show_function(field, format_string, )	\
- 	static FCOE_DEVICE_ATTR(ctlr, field, S_IRUGO,			\
- 				show_fcoe_ctlr_device_##field, NULL)
- 
--#define fcoe_ctlr_rd_attr(field, format_string, sz)			\
--	fcoe_ctlr_show_function(field, format_string, sz, )		\
-+#define fcoe_ctlr_rd_attr(field, format_string)			\
-+	fcoe_ctlr_show_function(field, format_string, )		\
- 	static FCOE_DEVICE_ATTR(ctlr, field, S_IRUGO,			\
- 				show_fcoe_ctlr_device_##field, NULL)
- 
--#define fcoe_fcf_rd_attr(field, format_string, sz)			\
--	fcoe_fcf_show_function(field, format_string, sz, )		\
-+#define fcoe_fcf_rd_attr(field, format_string)			\
-+	fcoe_fcf_show_function(field, format_string, )		\
- 	static FCOE_DEVICE_ATTR(fcf, field, S_IRUGO,			\
- 				show_fcoe_fcf_device_##field, NULL)
- 
--#define fcoe_fcf_private_rd_attr(field, format_string, sz)		\
--	fcoe_fcf_private_show_function(field, format_string, sz, )	\
-+#define fcoe_fcf_private_rd_attr(field, format_string)		\
-+	fcoe_fcf_private_show_function(field, format_string, )	\
- 	static FCOE_DEVICE_ATTR(fcf, field, S_IRUGO,			\
- 				show_fcoe_fcf_device_##field, NULL)
- 
--#define fcoe_ctlr_private_rd_attr_cast(field, format_string, sz, cast)	\
--	fcoe_ctlr_private_show_function(field, format_string, sz, (cast)) \
-+#define fcoe_ctlr_private_rd_attr_cast(field, format_string, cast)	\
-+	fcoe_ctlr_private_show_function(field, format_string, (cast)) \
- 	static FCOE_DEVICE_ATTR(ctlr, field, S_IRUGO,			\
- 				show_fcoe_ctlr_device_##field, NULL)
- 
--#define fcoe_fcf_private_rd_attr_cast(field, format_string, sz, cast)	\
--	fcoe_fcf_private_show_function(field, format_string, sz, (cast)) \
-+#define fcoe_fcf_private_rd_attr_cast(field, format_string, cast)	\
-+	fcoe_fcf_private_show_function(field, format_string, (cast)) \
- 	static FCOE_DEVICE_ATTR(fcf, field, S_IRUGO,			\
- 				show_fcoe_fcf_device_##field, NULL)
- 
-@@ -489,30 +489,30 @@ store_private_fcoe_ctlr_fcf_dev_loss_tmo(struct device *dev,
- 	mutex_unlock(&ctlr->lock);
- 	return count;
- }
--fcoe_ctlr_private_show_function(fcf_dev_loss_tmo, "%d\n", 20, );
-+fcoe_ctlr_private_show_function(fcf_dev_loss_tmo, "%d\n", );
- static FCOE_DEVICE_ATTR(ctlr, fcf_dev_loss_tmo, S_IRUGO | S_IWUSR,
- 			show_fcoe_ctlr_device_fcf_dev_loss_tmo,
- 			store_private_fcoe_ctlr_fcf_dev_loss_tmo);
- 
- /* Link Error Status Block (LESB) */
--fcoe_ctlr_rd_attr(link_fail, "%u\n", 20);
--fcoe_ctlr_rd_attr(vlink_fail, "%u\n", 20);
--fcoe_ctlr_rd_attr(miss_fka, "%u\n", 20);
--fcoe_ctlr_rd_attr(symb_err, "%u\n", 20);
--fcoe_ctlr_rd_attr(err_block, "%u\n", 20);
--fcoe_ctlr_rd_attr(fcs_error, "%u\n", 20);
--
--fcoe_fcf_private_rd_attr_cast(fabric_name, "0x%llx\n", 20, unsigned long long);
--fcoe_fcf_private_rd_attr_cast(switch_name, "0x%llx\n", 20, unsigned long long);
--fcoe_fcf_private_rd_attr(priority, "%u\n", 20);
--fcoe_fcf_private_rd_attr(fc_map, "0x%x\n", 20);
--fcoe_fcf_private_rd_attr(vfid, "%u\n", 20);
--fcoe_fcf_private_rd_attr(mac, "%pM\n", 20);
--fcoe_fcf_private_rd_attr(fka_period, "%u\n", 20);
--fcoe_fcf_rd_attr(selected, "%u\n", 20);
--fcoe_fcf_rd_attr(vlan_id, "%u\n", 20);
--
--fcoe_fcf_private_show_function(dev_loss_tmo, "%d\n", 20, )
-+fcoe_ctlr_rd_attr(link_fail, "%u\n");
-+fcoe_ctlr_rd_attr(vlink_fail, "%u\n");
-+fcoe_ctlr_rd_attr(miss_fka, "%u\n");
-+fcoe_ctlr_rd_attr(symb_err, "%u\n");
-+fcoe_ctlr_rd_attr(err_block, "%u\n");
-+fcoe_ctlr_rd_attr(fcs_error, "%u\n");
-+
-+fcoe_fcf_private_rd_attr_cast(fabric_name, "0x%llx\n", unsigned long long);
-+fcoe_fcf_private_rd_attr_cast(switch_name, "0x%llx\n", unsigned long long);
-+fcoe_fcf_private_rd_attr(priority, "%u\n");
-+fcoe_fcf_private_rd_attr(fc_map, "0x%x\n");
-+fcoe_fcf_private_rd_attr(vfid, "%u\n");
-+fcoe_fcf_private_rd_attr(mac, "%pM\n");
-+fcoe_fcf_private_rd_attr(fka_period, "%u\n");
-+fcoe_fcf_rd_attr(selected, "%u\n");
-+fcoe_fcf_rd_attr(vlan_id, "%u\n");
-+
-+fcoe_fcf_private_show_function(dev_loss_tmo, "%d\n", )
  static ssize_t
- store_fcoe_fcf_dev_loss_tmo(struct device *dev, struct device_attribute *attr,
- 			    const char *buf, size_t count)
+@@ -3379,14 +3379,14 @@ fw_crash_state_show(struct device *cdev,
+ 	struct megasas_instance *instance =
+ 		(struct megasas_instance *) shost->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", instance->fw_crash_state);
++	return sysfs_emit(buf, "%d\n", instance->fw_crash_state);
+ }
+ 
+ static ssize_t
+ page_size_show(struct device *cdev,
+ 	struct device_attribute *attr, char *buf)
+ {
+-	return snprintf(buf, PAGE_SIZE, "%ld\n", (unsigned long)PAGE_SIZE - 1);
++	return sysfs_emit(buf, "%ld\n", (unsigned long)PAGE_SIZE - 1);
+ }
+ 
+ static ssize_t
+@@ -3396,7 +3396,8 @@ ldio_outstanding_show(struct device *cdev, struct device_attribute *attr,
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct megasas_instance *instance = (struct megasas_instance *)shost->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&instance->ldio_outstanding));
++	return sysfs_emit(buf, "%d\n",
++			  atomic_read(&instance->ldio_outstanding));
+ }
+ 
+ static ssize_t
+@@ -3406,7 +3407,7 @@ fw_cmds_outstanding_show(struct device *cdev,
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct megasas_instance *instance = (struct megasas_instance *)shost->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", atomic_read(&instance->fw_outstanding));
++	return sysfs_emit(buf, "%d\n", atomic_read(&instance->fw_outstanding));
+ }
+ 
+ static ssize_t
+@@ -3416,7 +3417,7 @@ enable_sdev_max_qd_show(struct device *cdev,
+ 	struct Scsi_Host *shost = class_to_shost(cdev);
+ 	struct megasas_instance *instance = (struct megasas_instance *)shost->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%d\n", instance->enable_sdev_max_qd);
++	return sysfs_emit(buf, "%d\n", instance->enable_sdev_max_qd);
+ }
+ 
+ static ssize_t
+@@ -3470,8 +3471,7 @@ raid_map_id_show(struct device *cdev, struct device_attribute *attr,
+ 	struct megasas_instance *instance =
+ 			(struct megasas_instance *)shost->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE, "%ld\n",
+-			(unsigned long)instance->map_id);
++	return sysfs_emit(buf, "%ld\n", (unsigned long)instance->map_id);
+ }
+ 
+ static DEVICE_ATTR_RW(fw_crash_buffer);
 -- 
 2.29.2
 
