@@ -1,106 +1,120 @@
-Return-Path: <linux-kernel+bounces-107054-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107063-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF5C087F701
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:58:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4968E87F71B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:07:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E10AA1C21ABE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:58:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id DF44A1F222B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:07:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4FD57C6CE;
-	Tue, 19 Mar 2024 05:54:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="JlWABp9j"
-Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB494EB32;
+	Tue, 19 Mar 2024 06:07:28 +0000 (UTC)
+Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D8884594F
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:54:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6CB2C4594E;
+	Tue, 19 Mar 2024 06:07:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710827657; cv=none; b=pvuMuIlq8JQ3ZpUUvC42pSTlY+me7wlohqxWTc3Cnui4jxY0G4jWzFWjIaicd1PRnVa6H9PIu5IvBpEgtbKcdU823xd0YbcQvxZGwtgqnGxEIIdIkUrom6JE/Z1SgnOkYOsP38J8ZrYlVLJQg+DVWUcnePztDe6RoI7pTMjb2uU=
+	t=1710828447; cv=none; b=NE0oy0ygP31eNoZa+ux52QhD5DfF3kf+fUUh9qeoHOt4KR7OlRpEY/1xmuHmE854hhUoPUP8qTSgW7cDOWZzMCeg89BAKmO1rRuoqAC4o5gd40sGPMpm+Qmshy2PR+2nyNiVRGxkGNXANbe87WK7HCcGH1c+O00xhE1SKEZ1uO0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710827657; c=relaxed/simple;
-	bh=1hih6VSpKV8xqGVxi4o4YhgWg8A3pPntjmOFpkgpVZU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nFEVLZJcXd54RyL2B/bpy41ToSJLsW9YeVJT9FVDhYcjG4MYqv43HBMcKQ4A6/AWHqVy2NNvan5UnkvSkMMLpTISbrnODvMA9umLYyNnHULOTwAtxSBw3OQKHtgSFFDsT4X7b7ZCI9VC5ycqMtzrxJ+rbuDW0yUKN+k7wBkinQc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=JlWABp9j; arc=none smtp.client-ip=209.85.221.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-34175878e3cso1042072f8f.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:54:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710827654; x=1711432454; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=vl6AA9br/anlnpNsGMnkWOpzBxrWrKpWnKKq2r224oo=;
-        b=JlWABp9joYdgeaOpU8Kvf+9q18vjOHAevhyHScmXidU4MWSxV1yoxrmrxPy3vrO/dt
-         zbsC7+JzT3WQVDn9z6ikBxVf7qI5lfuyd9nKKyZGbrmFfC8OmfVAkJjfbE1gvB6cHxZ5
-         JsRu9kWSldTGmtquxVA+WQ3FxI7c4EnPKp+zj485EC0iVA3ry/bH8JS3aaw4RlEFaIJo
-         y2u8JYV5g3WM41sToBEmH1e00m49NFbwPRF9xYQW2VTwKmqRbOqjCUUbfrLtBnbTvBee
-         uBVHvE+RVCEC3Sh63kZqadamFsHxmHgxklg3I2sGW9A2vVNMV3CQdsWm93u76hYNLCae
-         auFA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710827654; x=1711432454;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vl6AA9br/anlnpNsGMnkWOpzBxrWrKpWnKKq2r224oo=;
-        b=IqkVTmQaLyx76cKOJtGFTOxqihqOsnhyxgRUTlKMz2dAOb4mu3kjew7E2hVmbxL8J7
-         6WI1HucpS8rsVdGWlAVm5MbgxVQmBjFbm0ysHebs72PQXwA5j8a4ymCsG1Ypoq9sG8Ai
-         Lh+4Du1DgJLjR3HCNxTKj6TX7nTIiyL6WpAB2bPqaAFpvSiB+4PGFmIY3PyYyCD7xfpI
-         gBwcQ9XNlhlDPq7DrC5pBINjXZOdxdpZ1h+/UCRehERfUHsulV+Ppk/mFZK0AltPcGcK
-         Zg4V84SbfcdAr9EOyMiK0BO57G2shP8j7xsTdY8vEDRZ3P83s5Q+1hvH2jzp1nNnU/Md
-         9r+w==
-X-Forwarded-Encrypted: i=1; AJvYcCWT2jy+kXaDV2mzBcVbMG9FyNP1FhNGxLNyStiKcQbnIG28y2kPoJ2F1e0DwQrfp9CX9mNpflaDxLWSq8OkPllrqYFE5jqUPgS5cfDi
-X-Gm-Message-State: AOJu0YwgFdCiGrznJXpfL9xFNnaSmv3CpzGxQwNQGitYdA1lD6Vry0ng
-	H3vn7J7YKrEcyEPhiEdzIXQcc3YCx8B779ryeX8L7fV5f6u1V2Rx091amkV6LIY=
-X-Google-Smtp-Source: AGHT+IElLSQLz49jl6r3n4FmIzslQwWn+SuuJwo5rV6apuyC+62iDEgiFx46QapPIPE18jQwDqHimQ==
-X-Received: by 2002:adf:a494:0:b0:33e:6a17:3e63 with SMTP id g20-20020adfa494000000b0033e6a173e63mr7815867wrb.47.1710827653420;
-        Mon, 18 Mar 2024 22:54:13 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id z5-20020a5d44c5000000b0033b87c2725csm11418889wrr.104.2024.03.18.22.54.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 22:54:12 -0700 (PDT)
-Date: Tue, 19 Mar 2024 08:54:00 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
-Subject: Re: [PATCH v2] staging: rtl8712: Fix line length exceeding 100
- columns
-Message-ID: <51060bc1-7d1c-4687-ae20-864e65068858@moroto.mountain>
-References: <ZfiNNvks6v0JGhRA@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+	s=arc-20240116; t=1710828447; c=relaxed/simple;
+	bh=97rmmRyR/THWjxWYYtBPperXwuTci/JnGu8FEM9o6/M=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=NWnfvVYHorWJNhlOxEhwHpQmhRqc9/ndlsMjw73uNaO4F+ypIA6LWLFEe+amR+5JZyOhMCJhfY5OYUdTvkvnf1wQmaNxaivX9wZZVfspvK1Eb7q25XbnhO2Xox+ftvXZPb/3QcnUXM1rfDbwEw1D68YNRYs/q5ogC0ivluGFIlQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
+X-UUID: 58ace020264d481a83be61a850fd3cbb-20240319
+X-CID-O-RULE: Release_Ham
+X-CID-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:7193bbf2-430b-478f-801c-480c7314e308,IP:10,
+	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
+	ON:release,TS:-5
+X-CID-INFO: VERSION:1.1.37,REQID:7193bbf2-430b-478f-801c-480c7314e308,IP:10,UR
+	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
+	:release,TS:-5
+X-CID-META: VersionHash:6f543d0,CLOUDID:55bba981-4f93-4875-95e7-8c66ea833d57,B
+	ulkID:240319135640TV1N0V1G,BulkQuantity:0,Recheck:0,SF:17|19|44|66|38|24|1
+	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
+	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_FSD,TF_CID_SPAM_FSI,TF_CID_SPAM_SNR,TF_CID_SPAM_FAS
+X-UUID: 58ace020264d481a83be61a850fd3cbb-20240319
+X-User: aichao@kylinos.cn
+Received: from localhost.localdomain [(112.64.161.44)] by mailgw
+	(envelope-from <aichao@kylinos.cn>)
+	(Generic MTA)
+	with ESMTP id 1627458638; Tue, 19 Mar 2024 13:56:38 +0800
+From: Ai Chao <aichao@kylinos.cn>
+To: corentin.chary@gmail.com,
+	luke@ljones.dev,
+	hdegoede@redhat.com,
+	ilpo.jarvinen@linux.intel.com,
+	platform-driver-x86@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Ai Chao <aichao@kylinos.cn>
+Subject: [PATCH v1] platform/x86: asus-wmi: use sysfs_emit() instead of sprintf()
+Date: Tue, 19 Mar 2024 13:56:36 +0800
+Message-Id: <20240319055636.150289-1-aichao@kylinos.cn>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfiNNvks6v0JGhRA@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 19, 2024 at 12:21:34AM +0530, Ayush Tiwari wrote:
-> Split the argument list of the kthread_run function call across two
-> lines to address the checkpatch warning "line length exceeds 100
-> columns".
-> 
-> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> 
-> ---
-> change in v2: Fixed the alignment to address checkpatch.pl warning
+This changes all *_show attributes in asus-wmi.c to use sysfs_emit()
+instead of the older method of writing to the output buffer manually.
 
-You've created this patch to be applied on top of the v1 patch that we
-are not going to apply.  You need to restart based on a clean repo.
+Follow the advice in Documentation/filesystems/sysfs.rst:
+show() should only use sysfs_emit() or sysfs_emit_at() when formatting
+the value to be returned to user space.
 
-https://staticthinking.wordpress.com/2022/07/27/how-to-send-a-v2-patch/
+Signed-off-by: Ai Chao <aichao@kylinos.cn>
+---
+ drivers/platform/x86/asus-wmi.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
-regards,
-dan carpenter
+diff --git a/drivers/platform/x86/asus-wmi.c b/drivers/platform/x86/asus-wmi.c
+index 3f07bbf809ef..df4c103459da 100644
+--- a/drivers/platform/x86/asus-wmi.c
++++ b/drivers/platform/x86/asus-wmi.c
+@@ -2326,7 +2326,7 @@ static ssize_t pwm1_show(struct device *dev,
+ 
+ 	/* If we already set a value then just return it */
+ 	if (asus->agfn_pwm >= 0)
+-		return sprintf(buf, "%d\n", asus->agfn_pwm);
++		return sysfs_emit(buf, "%d\n", asus->agfn_pwm);
+ 
+ 	/*
+ 	 * If we haven't set already set a value through the AGFN interface,
+@@ -2512,8 +2512,8 @@ static ssize_t asus_hwmon_temp1(struct device *dev,
+ 	if (err < 0)
+ 		return err;
+ 
+-	return sprintf(buf, "%ld\n",
+-		       deci_kelvin_to_millicelsius(value & 0xFFFF));
++	return sysfs_emit(buf, "%ld\n",
++			  deci_kelvin_to_millicelsius(value & 0xFFFF));
+ }
+ 
+ /* GPU fan on modern ROG laptops */
+@@ -4061,7 +4061,7 @@ static ssize_t show_sys_wmi(struct asus_wmi *asus, int devid, char *buf)
+ 	if (value < 0)
+ 		return value;
+ 
+-	return sprintf(buf, "%d\n", value);
++	return sysfs_emit(buf, "%d\n", value);
+ }
+ 
+ #define ASUS_WMI_CREATE_DEVICE_ATTR(_name, _mode, _cm)			\
+-- 
+2.25.1
 
 
