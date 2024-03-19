@@ -1,81 +1,81 @@
-Return-Path: <linux-kernel+bounces-108098-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108099-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 450DE8805EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:13:40 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71A108805EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:13:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 765641C227CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:13:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D1CEB21BC0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:13:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E8BA5A0FA;
-	Tue, 19 Mar 2024 20:13:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F685FB9C;
+	Tue, 19 Mar 2024 20:13:48 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="lar24pDF"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gtAnEDUV"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8080757339
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:13:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F705FB90
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:13:45 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710879210; cv=none; b=qPBHyeqJ7VNVQyxyiJedBOe6pUjLsK7he4OhAHKFcod2aCUXL9xiFQolsr631LBuXYhRmezG3CElqgCcjj5fWLWAIEHj0/pvFIq3wRBBq27t7QKPW2pjHJxh9+Pq0NM+SW4GSwhYtG8KTUX3HUVgCqKAMqnskAHH4Z42CwlZZnU=
+	t=1710879227; cv=none; b=HIA0nUsPLKN9gm0ULugxnleKGXqXi4cs2Fm5of2wMwYolqhn/eGHnGeCzC4R2noFkBjbvn9+inzQSnTsi4Q3Y0Galp4jQlGW9UgRw2+3Q0q20q5p7WI5kJ9Oi3jn+cD8eGmYgEb1stif3Idzjwpys8IIO00FyWyy+hANKZF4Vrc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710879210; c=relaxed/simple;
-	bh=+sQCudOZfuqXiUUoG5vR5ACJJLNxAMax7xwD1W4e41A=;
+	s=arc-20240116; t=1710879227; c=relaxed/simple;
+	bh=TEI1l16U8O229iRg+bnRlquzTRC42x/8zMW3wG5XbLs=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=BWRFHku7HI1dtjk78pPi/lH+4WCnZH9almGsiufVUZ1Tut+YpuajxwnSZ+YIL5OZ9p4TtwWDiBHubvytnL7Jk09CXUTWn3VL/fI2zGHJyskyApiO1EAWamTWLB/HczPf4aSze4pK37jKyNtZmU+QFa8W23p5AL24NRkgMD9Ar7s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=lar24pDF; arc=none smtp.client-ip=209.85.214.181
+	 To:Cc:Content-Type; b=tsVaTKpj9JM+moY6NfNcIWp7X+mQmvb++2xuczidKNxbVE96MyMHFunmmVPquQVG+IEzuvvLlDeun4rLryeG8YFGqfdlzo075UHp4wXBwmcx5LBTMZQE1lbXVZdyKgaB1j4U2SkWN/j9VaAVWYLuJG6srkOtaLBlD0FvKXVeo0U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gtAnEDUV; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1deddb82b43so46015ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:13:28 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e058b9e479so28105ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:13:45 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710879208; x=1711484008; darn=vger.kernel.org;
+        d=google.com; s=20230601; t=1710879225; x=1711484025; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/TmjIUAWre/OnPAbZKoo/CqmH4il78nzu/N6uFzuSi8=;
-        b=lar24pDFUtX0vMzb51TSzwEnwoyRetN5jsA51ZK+b/N1rz662USWBlivjRosZbUgVu
-         VuvOm2WMWPJktHRQI0tmukLK7fj6iW5Cn01nfso20ZqHRt5HJHykOyU680fvDrY3upXz
-         Ehhw2tyJOaDF6zLunagaC4gD2vjE+PtWF19b2B4GKeidnrh5OYceD/tYIVdc3jceA3zx
-         EoS9/z47ERCRLxCGKGSwEjZmoD8l0sUXDjMGS26CAQR0x20ZE6mCmJ8/zU3eVAlKIpd3
-         xa18f/j3Y0FeeLx2JzNNkzSAkxbnHczZ1P/HWr91ZwCiO/6z+aaXVCeODoPFk8dM8gH2
-         9nzw==
+        bh=61E5NQ6/YcOhVh/0k2iDBO7WpqpNwA0nbieT/ua9ouc=;
+        b=gtAnEDUVnZvHgfuPvOALSV92laz8czMB1cfJmNpfaAI3SDF8yI8PpIvoIB8wspgUSY
+         5w0y9kN4RgfF7ReI8e8vf1xrpiVTr17eG083oEne+DYTGEmE3qgXtLu/7Ad3h+kW1gPX
+         GaL5y0w+oY/C33fvFIQYF30A396dqMPN2qPiGBAs5sjCkxnV2Y//egkHXxm/fJGBrhdf
+         dVx0alJ9xtYq+nY2azq325TtMfdnKGeP6rsk6yUV/UwKP91IqIs2bgxXabJsNoAZbrI4
+         hbursat8QPTCctysg1URfQUtJoyMy7Oc3+xw9D8pgDaTrccOhuEab4eNJr7jzdEgQiLA
+         Vuqg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710879208; x=1711484008;
+        d=1e100.net; s=20230601; t=1710879225; x=1711484025;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=/TmjIUAWre/OnPAbZKoo/CqmH4il78nzu/N6uFzuSi8=;
-        b=Bg8tMvIMH9n+U/2pG3DqD9EmaHduFI36D6TPCdD8Eh9PHrXlq3hB2Dh+b1bSUDk3k/
-         2DNdi6i5DzA1A3+P1bBe7UhP/YVcTGBA6UKHKVqzgTH8jGJK8gO/IeVbtsnFnpcUA9w/
-         ewwp1lViexuzCKpFimTGiO4qg/38QoBcnFjKWdurMUzV6avpAaudJDg5p8EXOolonv8O
-         Pi0sqkuqntEKNhekEsmxOmonA65Y/YW10TBISsxXdNmMaTRC13OyJktt0/UEfK4a3R/3
-         7bYAUovYdcGxhB2Yu8SJswvY3mUYwJeJnJYGKXg082w9u58KaGw+Feki5CUVKAvcFXvy
-         L18A==
-X-Forwarded-Encrypted: i=1; AJvYcCVWsrR/RVXLivfUme2Mv6+G1qJe5xRiMlcLK81eG8pg2nZsyMQBC+uCRTbedrZ9Wk/QZjpF5e8/GKRXqw9jxnbpxJ4fX625wJ9fkY1Z
-X-Gm-Message-State: AOJu0Yy7pBFvseydyhUXSJuSbfz8NSBqv6dXh5Nx8YfdayDFE6qPs1oR
-	8o+uyRUTh4gRTMRR5FoVyY+7+UP9/Bz5qCgrNGFE3FZHU88nRr8QUPj9ISk9otyk9qEAEXRdrWo
-	Jyyy6QQeGjHFI/aI697XbKoRKKOzlJKt1nCnq
-X-Google-Smtp-Source: AGHT+IEw7XqscOujrExd+TjwtySjz62M3/jll6P8bD2QCyweYla8m9DhRt5lU7Qo9n5jCXQMEtTIf22XYc74lAhBJZ8=
-X-Received: by 2002:a17:902:ea11:b0:1de:ed50:41f8 with SMTP id
- s17-20020a170902ea1100b001deed5041f8mr65676plg.22.1710879207491; Tue, 19 Mar
- 2024 13:13:27 -0700 (PDT)
+        bh=61E5NQ6/YcOhVh/0k2iDBO7WpqpNwA0nbieT/ua9ouc=;
+        b=Jj3Rdau73jdmWCxE5fCuN2IMSGgwUjmc3t7lLpEMi/th+7Gbkmpz5jqZ6xN3ynDXeb
+         eR/SGdOigGr9rmsPlPZh7APsmSQeO1YthSGGBcWhOpaJU9LVKYayRoKX4N++lx3l9mmy
+         vU+6ulmYu+kgqp3SH2wR9CsysEgnSF1BscVpYxGUUIGUp8jJ3jpR6Kp3AnVvEC8U/z3k
+         v+kKtcMmCDs1duudE/ZY15nnKc9bmiSF+KSpNONmUVcbaOKBonIkRHDNMDdaO3GftzZj
+         7d5efhuXJi2tzK0jvR1YUv9kC8tF++ZUvBIy7zv5zfMPDQfYlnrg4XMJL+EYtU5cCIzk
+         NI3A==
+X-Forwarded-Encrypted: i=1; AJvYcCW+jebecL8D4cf5lTGfEzj8/mxv3xaAd0b0c1rzWYuXRnMiMAtrEAwe4xFl6KWylQ19PmoVaYW8dVw7UDq49UbO9HUjDFO636QJTvqb
+X-Gm-Message-State: AOJu0Yy4tq4JPVtR3gY7yrUwKjPZdKIvrp7SOckPxjzdeRrzGSVQtAPX
+	CDjxSTL5lnRI4QO6EYgfJPTTNiaK/LWsw6+HLNIwzSEZeyMiqF5wVMrd5F6qZzRi9TbxiitJlfJ
+	t52BYZWJwHZnSheIzp7UDZ2JtmFsEqbNfPixy
+X-Google-Smtp-Source: AGHT+IFREg9SwBdMDFnHH3n5tmN6yW8u/tyc7IrpIagXi7ukyBFEM1dN3wdN7uqPHmnG3vaEtYonkph3M4qPe2lMJDA=
+X-Received: by 2002:a17:902:f691:b0:1de:f0f0:90aa with SMTP id
+ l17-20020a170902f69100b001def0f090aamr68484plg.26.1710879225101; Tue, 19 Mar
+ 2024 13:13:45 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319180005.246930-1-visitorckw@gmail.com> <20240319180005.246930-3-visitorckw@gmail.com>
-In-Reply-To: <20240319180005.246930-3-visitorckw@gmail.com>
+References: <20240319180005.246930-1-visitorckw@gmail.com> <20240319180005.246930-4-visitorckw@gmail.com>
+In-Reply-To: <20240319180005.246930-4-visitorckw@gmail.com>
 From: Ian Rogers <irogers@google.com>
-Date: Tue, 19 Mar 2024 13:13:16 -0700
-Message-ID: <CAP-5=fXvQoOOpCTm1FXqatzv-wCTYxAymjAu5Veb2fBZE6KivQ@mail.gmail.com>
-Subject: Re: [PATCH 02/13] bcache: Fix typo
+Date: Tue, 19 Mar 2024 13:13:33 -0700
+Message-ID: <CAP-5=fUy=m2_f7jKO_kn4+onto5As2fUwrcNBtKEh8uObsNvYA@mail.gmail.com>
+Subject: Re: [PATCH 03/13] bcachefs: Fix typo
 To: Kuan-Wei Chiu <visitorckw@gmail.com>
 Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
 	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
@@ -100,13 +100,13 @@ Thanks,
 Ian
 
 > ---
->  drivers/md/bcache/util.c | 2 +-
+>  fs/bcachefs/util.c | 2 +-
 >  1 file changed, 1 insertion(+), 1 deletion(-)
 >
-> diff --git a/drivers/md/bcache/util.c b/drivers/md/bcache/util.c
-> index ae380bc3992e..410d8cb49e50 100644
-> --- a/drivers/md/bcache/util.c
-> +++ b/drivers/md/bcache/util.c
+> diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
+> index 216fadf16928..f5a16ad65424 100644
+> --- a/fs/bcachefs/util.c
+> +++ b/fs/bcachefs/util.c
 > @@ -1,6 +1,6 @@
 >  // SPDX-License-Identifier: GPL-2.0
 >  /*
