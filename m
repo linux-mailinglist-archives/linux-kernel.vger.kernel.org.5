@@ -1,186 +1,140 @@
-Return-Path: <linux-kernel+bounces-107421-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107418-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA17287FC47
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:55:20 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 18E4C87FC2D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:50:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D24811C22302
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:55:19 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C2AA81F21CE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:50:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D9AB7D401;
-	Tue, 19 Mar 2024 10:55:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="UewFEH4i"
-Received: from smtp-bc0a.mail.infomaniak.ch (smtp-bc0a.mail.infomaniak.ch [45.157.188.10])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8731E7E117;
+	Tue, 19 Mar 2024 10:50:13 +0000 (UTC)
+Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B7D56444;
-	Tue, 19 Mar 2024 10:55:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.157.188.10
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 393DB4F8A9
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:50:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710845714; cv=none; b=cEZiWLzrSoEBVihpkJXpNR2TBmLvWcb2suc1kY46jQIP9N5vsJZeoYupkGszc6adjAkkYtAfIMHzu/Ypxz/BORMxYL7KgJCxn/41efsi0iUjMqepYghuAV6bovJa3UfJ+jH0RXZEhev6Dc4vbMlibglN7FWdvs/a4F3L4t+3oTs=
+	t=1710845413; cv=none; b=BcGR0jW38dtL6w9Ed2oyFz2xt3nnh3jK9PZgxcqU1K7/9NUbhovw2Yz8eNI5bDRE86Q2fYMLJCuzb9Z6b22MQanASFlVIeILSMLuIz2Uman3kmIq3kaMwRpgCv9Pjo3CLApFUfZdSvEQA3uD8/oM4QfWw83kTrNpaobJaK9oLxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710845714; c=relaxed/simple;
-	bh=71EEtOY8haZwTtkTzteQK0uaERkTAj9zbYONX0mzdMA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=C+kyWezc+oko8rXFUMjlfsqifZ7b4zpfKaioQQyyxDCzH2lwykqtWxUSBa/YzfrQL+8NqVDmZckRTwBXPxomQeb5Rdv+uTfziVKG8Z1F78GNelnJDinycag+13rJI/eWDyres8aDwQPSRu2cyjvuXl3vmr47K+GTsWD1RjpZups=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=UewFEH4i; arc=none smtp.client-ip=45.157.188.10
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (unknown [10.7.10.107])
-	by smtp-3-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TzT4Q53BnzMq2xZ;
-	Tue, 19 Mar 2024 11:49:26 +0100 (CET)
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TzT4P6PZPzlgm;
-	Tue, 19 Mar 2024 11:49:25 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1710845366;
-	bh=71EEtOY8haZwTtkTzteQK0uaERkTAj9zbYONX0mzdMA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=UewFEH4iSrJrSPok5JS56YwvhtiOCFyy6B9GXYlmlHWpW3KWLdiRoId3n+kFBXjMF
-	 etwj9/UZH7Ip6ElZVb89YVw79q7dLm3KuQrZ/8/TT5X81VPhxlKYsM6gBmIBzZv/Vk
-	 NDB2kDMrDI0ThVP+B7S6krYlWLMWDirT6vs4HyD0=
-From: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>
-To: Brendan Higgins <brendanhiggins@google.com>,
-	David Gow <davidgow@google.com>,
-	Rae Moar <rmoar@google.com>,
-	Shuah Khan <skhan@linuxfoundation.org>
-Cc: =?UTF-8?q?Micka=C3=ABl=20Sala=C3=BCn?= <mic@digikod.net>,
-	Alan Maguire <alan.maguire@oracle.com>,
-	Borislav Petkov <bp@alien8.de>,
-	Dave Hansen <dave.hansen@linux.intel.com>,
-	"H . Peter Anvin" <hpa@zytor.com>,
-	Ingo Molnar <mingo@redhat.com>,
-	James Morris <jamorris@linux.microsoft.com>,
-	Kees Cook <keescook@chromium.org>,
-	Luis Chamberlain <mcgrof@kernel.org>,
-	"Madhavan T . Venkataraman" <madvenka@linux.microsoft.com>,
-	Marco Pagani <marpagan@redhat.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Sean Christopherson <seanjc@google.com>,
-	Stephen Boyd <sboyd@kernel.org>,
-	Thara Gopinath <tgopinath@microsoft.com>,
-	Thomas Gleixner <tglx@linutronix.de>,
-	Vitaly Kuznetsov <vkuznets@redhat.com>,
-	Wanpeng Li <wanpengli@tencent.com>,
-	Zahra Tarkhani <ztarkhani@microsoft.com>,
-	kvm@vger.kernel.org,
-	linux-hardening@vger.kernel.org,
-	linux-hyperv@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	linux-um@lists.infradead.org,
-	x86@kernel.org
-Subject: [PATCH v3 7/7] kunit: Add tests for fault
-Date: Tue, 19 Mar 2024 11:48:57 +0100
-Message-ID: <20240319104857.70783-8-mic@digikod.net>
-In-Reply-To: <20240319104857.70783-1-mic@digikod.net>
-References: <20240319104857.70783-1-mic@digikod.net>
+	s=arc-20240116; t=1710845413; c=relaxed/simple;
+	bh=xqv4EgS8mHvM2qs+1DYNGILQWcWFrc1cXZ0pMI0SaDU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ALZRZCiHDa9cFMN0N19PkX24N3iWxgOPmqtqH5b3jeTZnwshwUXlc/2a86MfJLmJpCXUvJj70Un9AgLna7w9IplsCEG/cSoVcbVw+N+fwZko8jeV04qzgjFw/tO1lt6q6tgzZDhngTxFQukpDc0pGQr7f/n7lvinL4pE8yFm1K4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
+Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
+	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
+	(Exim 4.92)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rmX2i-0001N5-V2; Tue, 19 Mar 2024 11:50:04 +0100
+Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
+	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
+	(Exim 4.94.2)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rmX2i-007FuF-7o; Tue, 19 Mar 2024 11:50:04 +0100
+Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
+	(envelope-from <sha@pengutronix.de>)
+	id 1rmX2i-0070ad-0V;
+	Tue, 19 Mar 2024 11:50:04 +0100
+Date: Tue, 19 Mar 2024 11:50:04 +0100
+From: Sascha Hauer <s.hauer@pengutronix.de>
+To: Pavel Begunkov <asml.silence@gmail.com>
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de,
+	linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+	Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
+ TIF_NOTIFY_SIGNAL
+Message-ID: <Zflt3EVf744LOA6i@pengutronix.de>
+References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
+ <7b82679f-9b69-4568-a61d-03eb1e4afc18@gmail.com>
+ <ZfgvNjWP8OYMIa3Y@pengutronix.de>
+ <0a556650-9627-48ee-9707-05d7cab33f0f@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-Infomaniak-Routing: alpha
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <0a556650-9627-48ee-9707-05d7cab33f0f@gmail.com>
+X-Sent-From: Pengutronix Hildesheim
+X-URL: http://www.pengutronix.de/
+X-Accept-Language: de,en
+X-Accept-Content-Type: text/plain
+X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
+X-SA-Exim-Mail-From: sha@pengutronix.de
+X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
+X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
 
-Add a test case to check NULL pointer dereference and make sure it would
-result as a failed test.
+On Mon, Mar 18, 2024 at 01:19:19PM +0000, Pavel Begunkov wrote:
+> On 3/18/24 12:10, Sascha Hauer wrote:
+> > On Fri, Mar 15, 2024 at 05:02:05PM +0000, Pavel Begunkov wrote:
+> > > On 3/15/24 10:01, Sascha Hauer wrote:
+> > > > It can happen that a socket sends the remaining data at close() time.
+> > > > With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
+> > > > out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
+> > > > current task. This flag has been set in io_req_normal_work_add() by
+> > > > calling task_work_add().
+> > > 
+> > > The entire idea of task_work is to interrupt syscalls and let io_uring
+> > > do its job, otherwise it wouldn't free resources it might be holding,
+> > > and even potentially forever block the syscall.
+> > > 
+> > > I'm not that sure about connect / close (are they not restartable?),
+> > > but it doesn't seem to be a good idea for sk_stream_wait_memory(),
+> > > which is the normal TCP blocking send path. I'm thinking of some kinds
+> > > of cases with a local TCP socket pair, the tx queue is full as well
+> > > and the rx queue of the other end, and io_uring has to run to receive
+> > > the data.
+> 
+> There is another case, let's say the IO is done via io-wq
+> (io_uring's worker thread pool) and hits the waiting. Now the
+> request can't get cancelled, which is done by interrupting the
+> task with TIF_NOTIFY_SIGNAL. User requested request cancellations
+> is one thing, but we'd need to check if io_uring can ever be closed
+> in this case.
+> 
+> 
+> > > If interruptions are not welcome you can use different io_uring flags,
+> > > see IORING_SETUP_COOP_TASKRUN and/or IORING_SETUP_DEFER_TASKRUN.
+> > 
+> > I tried with different combinations of these flags. For example
+> > IORING_SETUP_TASKRUN_FLAG | IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
+> > makes the issue less likely, but nevertheless it still happens.
+> > 
+> > However, reading the documentation of these flags, they shall provide
+> > hints to the kernel for optimizations, but it should work without these
+> > flags, right?
+> 
+> That's true, and I guess there are other cases as well, like
+> io-wq and perhaps even a stray fput.
+> 
+> 
+> > > Maybe I'm missing something, why not restart your syscall?
+> > 
+> > The problem comes with TLS. Normally with synchronous encryption all
+> > data on a socket is written during write(). When asynchronous
+> > encryption comes into play, then not all data is written during write(),
+> > but instead the remaining data is written at close() time.
+> 
+> Was it considered to do the final cleanup in workqueue
+> and only then finalising the release?
 
-The full kunit_fault test suite is marked as skipped when run on UML
-because it would result to a kernel panic.
+No, but I don't really understand what you mean here. Could you
+elaborate?
 
-Tested with:
-/tools/testing/kunit/kunit.py run --arch x86_64 kunit_fault
-/tools/testing/kunit/kunit.py run --arch arm64 \
-  --cross_compile=aarch64-linux-gnu- kunit_fault
+Sascha
 
-Cc: Brendan Higgins <brendanhiggins@google.com>
-Cc: Rae Moar <rmoar@google.com>
-Cc: Shuah Khan <skhan@linuxfoundation.org>
-Reviewed-by: David Gow <davidgow@google.com>
-Signed-off-by: Mickaël Salaün <mic@digikod.net>
-Link: https://lore.kernel.org/r/20240319104857.70783-8-mic@digikod.net
----
-
-Changes since v2:
-* Add David's Reviewed-by.
-
-Changes since v1:
-* Remove the rodata and const test cases for now.
-* Replace CONFIG_X86 check with !CONFIG_UML, and remove the "_x86"
-  references.
----
- lib/kunit/kunit-test.c | 45 +++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 44 insertions(+), 1 deletion(-)
-
-diff --git a/lib/kunit/kunit-test.c b/lib/kunit/kunit-test.c
-index f7980ef236a3..0fdca5fffaec 100644
---- a/lib/kunit/kunit-test.c
-+++ b/lib/kunit/kunit-test.c
-@@ -109,6 +109,48 @@ static struct kunit_suite kunit_try_catch_test_suite = {
- 	.test_cases = kunit_try_catch_test_cases,
- };
- 
-+#ifndef CONFIG_UML
-+
-+static void kunit_test_null_dereference(void *data)
-+{
-+	struct kunit *test = data;
-+	int *null = NULL;
-+
-+	*null = 0;
-+
-+	KUNIT_FAIL(test, "This line should never be reached\n");
-+}
-+
-+static void kunit_test_fault_null_dereference(struct kunit *test)
-+{
-+	struct kunit_try_catch_test_context *ctx = test->priv;
-+	struct kunit_try_catch *try_catch = ctx->try_catch;
-+
-+	kunit_try_catch_init(try_catch,
-+			     test,
-+			     kunit_test_null_dereference,
-+			     kunit_test_catch);
-+	kunit_try_catch_run(try_catch, test);
-+
-+	KUNIT_EXPECT_EQ(test, try_catch->try_result, -EINTR);
-+	KUNIT_EXPECT_TRUE(test, ctx->function_called);
-+}
-+
-+#endif /* !CONFIG_UML */
-+
-+static struct kunit_case kunit_fault_test_cases[] = {
-+#ifndef CONFIG_UML
-+	KUNIT_CASE(kunit_test_fault_null_dereference),
-+#endif /* !CONFIG_UML */
-+	{}
-+};
-+
-+static struct kunit_suite kunit_fault_test_suite = {
-+	.name = "kunit_fault",
-+	.init = kunit_try_catch_test_init,
-+	.test_cases = kunit_fault_test_cases,
-+};
-+
- /*
-  * Context for testing test managed resources
-  * is_resource_initialized is used to test arbitrary resources
-@@ -826,6 +868,7 @@ static struct kunit_suite kunit_current_test_suite = {
- 
- kunit_test_suites(&kunit_try_catch_test_suite, &kunit_resource_test_suite,
- 		  &kunit_log_test_suite, &kunit_status_test_suite,
--		  &kunit_current_test_suite, &kunit_device_test_suite);
-+		  &kunit_current_test_suite, &kunit_device_test_suite,
-+		  &kunit_fault_test_suite);
- 
- MODULE_LICENSE("GPL v2");
 -- 
-2.44.0
-
+Pengutronix e.K.                           |                             |
+Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
+31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
+Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
 
