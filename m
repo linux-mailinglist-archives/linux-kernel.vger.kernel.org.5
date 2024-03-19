@@ -1,263 +1,118 @@
-Return-Path: <linux-kernel+bounces-107871-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107872-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B3E58802CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:56:49 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id E3D1F8802CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:57:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 2EA481C22664
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:56:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 84C101F2202B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:57:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BDCA111B1;
-	Tue, 19 Mar 2024 16:56:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5E2A013AF9;
+	Tue, 19 Mar 2024 16:56:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="h/jqgUs3"
-Received: from mail-yb1-f169.google.com (mail-yb1-f169.google.com [209.85.219.169])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="GdiPitYE"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4BADC17F6
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:56:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 32C2525601
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:56:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710867375; cv=none; b=OLjQSnEK7aCLRZATZ9DcxQt/4enjNMM2rVXdaMVJzkgP/fSWCiiRUbMyFRPO932GqnWj/fzrv7n5ButLxCxLlm1+hlJrAjjFtswJtjJ9oH9GQZToaGe2iJexV2z0gvjsKeSsODDqeakppxyQvdPgPbfMM9sJsFf4Kz1z7Wta23A=
+	t=1710867392; cv=none; b=gxEIYV6VlZAYO5VWHmhdCtpGxL8jWr+eUWGdK2gxkvUv6cemU68+0yOAp6ITF/ar6Bs9ANyJpXLnok9/QV28VM72aA0iSQPUBLRXRFvgPnKGANsJMTuLM20tjlCoZLutiLV+XT/IEFnfo4irXm/Qahc7Q7yc0Qp10RI6jSHBYg0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710867375; c=relaxed/simple;
-	bh=LaVCpzbTH+LzhK8Y8DRFFpXIJfoYVinZlhQWI32SZPA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=lY3f47Apm2+3SOlYfOzGn4LA8ineHjPo+KwbWZVHvgy6ljzvkPkrPzmL8GCQTFTcC9kntKjlnXYwBQp8XVjQOmOZ4EUpKM0lMzWZxRzlQFm7H61/FZgncOrIC728ASQBOed7ydaO7qBeqg45qSAhJe2L7uLWhJt28geHAl1glUU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=h/jqgUs3; arc=none smtp.client-ip=209.85.219.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f169.google.com with SMTP id 3f1490d57ef6-dcbc6a6808fso5445625276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:56:13 -0700 (PDT)
+	s=arc-20240116; t=1710867392; c=relaxed/simple;
+	bh=xjgzHX9IZesh/m9mX3LwRDZEWPaQf//ud0zb58ExHUE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CBb8QZ9e9hG3ma0+wMNhQVeX8Mkmv6Sb4wJfA0u2q84fVt5rnuqXxj5GGIulV8QamsY9+XRiXcbmkB52GIwMuJ/CUkD7w9DwKDoyBKKnuYWra+AvOMRN5231+PK/42vq1+uIna5wyZ9T03FMoyrmMqmDL5VMLkUU8DafTn5DVQk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=GdiPitYE; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1def89f0cfdso586635ad.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:56:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710867372; x=1711472172; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=YkHjKPhUPt3fZU/G756ueDdxkjyiTjvSfugB2XJYp2E=;
-        b=h/jqgUs3Mqp1nrfrpXxi3haS1TjlIn1XHNjSEoQ7JrBrBP+FeKpG21hMjeFHHajFkw
-         EYvYRocdve5WTfXqklq/55qBlajd8OtY6ivg4QTDiedMW7HLBvhgA8gnZRdK8D7BxTTj
-         Q0Uk3ojVJbQXu1TGeWBnoSY/2/oygBkzYMnnvQn/1IRfPzlcDKhjVv+Tt6NhbFVZR0FB
-         15LKcl6lB6w+tJG8OK4AH+4teh1tUA4WixblpA4w5QMeCYx/u+A/0iTn+FT040fBEhyV
-         ifTGXn6yOTwvzXASFMbbA2DVMGEHG80+cLCzWMgDSc4SotnMHFVcFr0cmEtSA6L4vcPZ
-         Ynng==
+        d=chromium.org; s=google; t=1710867390; x=1711472190; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=IuNfW02G+/boJdMGNpGppLuETi2AT/FTA/TQaVA8xgU=;
+        b=GdiPitYE6QEh0arRBKslX2pd+8Naw4qNnm2dLaG2i9ZWUkrECenDxMpuDRKTcfCjAB
+         VD2Vzs2WKLtE8gW8EJUYMQvpPWVmNNMDgiHQNSIPSj6AgJjp1E3gvYKeBIrMtmaXX9a4
+         MuMI89g55ZTiiY2VxygXz6bcGtN6NPDJxYtt4=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710867372; x=1711472172;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=YkHjKPhUPt3fZU/G756ueDdxkjyiTjvSfugB2XJYp2E=;
-        b=efobF+3advAtVJq2IB52ekEAOMXl+LiW7Ex9aNalQrlHIL4HsSl0eefaD18hvowBPp
-         IFI85mbCp4yv2Nd/Fnk2bz3dSzIgt/u4hGLigUs9XlJfaCkyyLSBVNzStypurLuPaLOx
-         gtkKsMfXB8IDTvCfei2hvRXguhzFaxR7KE0eVdHVJlj2BmUGu5gph9iLGWmF+yMhbHlq
-         2jRg52HWOLVKNsmL8ccH4bVAlb5Ook0O1+5HyQVNz+mPv9/8L5Aqdfbv6M4xSL3U2Wt/
-         EsIDceC1ort6/zCU1sjjct+Pcs6DAxg8GqnH+/hRu6krjg5JSnNk5n39ojKcluoA60N9
-         INzA==
-X-Forwarded-Encrypted: i=1; AJvYcCURV94+2DXrNymOaQjXDCR8hljQ9YSiUw5KIPR6EfKkG59FPS7ycGWVli7PVAKrX/9VllGo5nJukonWV3RyuElAhVPESCU6nAp+JrzT
-X-Gm-Message-State: AOJu0YwwdM8AzSUu6fvzXAz1hx20mpyHQsxbtsE3XV1jnb4Quly3FqXl
-	Uskmv4YyYIekm7I26JydGrTpGXTghHDs2frq1QvcyV8BWJz7QC68fZpx3bSh1+xOwOXWv9o8vq+
-	WaOcn8e6FAf9paxrCZMFOzgjFOptFffU1RJ8X/g==
-X-Google-Smtp-Source: AGHT+IHQGyrQSCFzYPtFZI5OVIQnV9UqVHhY1ukDJX0beVjFP+DlS1CQJiXmzNZgxIr8UYHu6GIuRKmLMusHowKmWWE=
-X-Received: by 2002:a25:904:0:b0:dbe:9509:141c with SMTP id
- 4-20020a250904000000b00dbe9509141cmr2672384ybj.30.1710867372238; Tue, 19 Mar
- 2024 09:56:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710867390; x=1711472190;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=IuNfW02G+/boJdMGNpGppLuETi2AT/FTA/TQaVA8xgU=;
+        b=PVYlTSPIUDJd7edc7yHCW/53cn7mPqSJj0ph78RsW8B87MmWcxVCHmLjHEgg7LTJpI
+         m0zq92wJ7y+INfWcJMezA7pyb1qKA95IKbd+QRLlEscibYblirKwGJZdu/oBwKEqu7fO
+         +vfdoo/OWzOLPY3xB/xABWTm7iXXHAexqLwb1RGOtgzJYd0y/R/MElhAn3SscrDEZRdO
+         /IvmKWm68kHACSo7Zlq6Lv/ohArF+jt9oES8ygxex2wgHu7OyQHsWOJeZ9pC1+Kt01xq
+         nEZeaOzPqMKVT4zhzuiVujQnJQOMRJ+slwJ1KtOP2nV9EXTo22TJjY9tJ2WMhTgUHWoh
+         KzLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUulgWIKE2J5rlu4ciOk1TKWNLzDkNocRGzoS6Xp9+jugxA4DcTbk0duXvn68kh14J2mGuaTX9LVWtGEzfLLOcyCxRmUOfGAX4NjRJo
+X-Gm-Message-State: AOJu0Yyck4zjBYM3OUnnWXvsxSjrq/pUVYuqrPZnotXJvIHUQIeSGUGU
+	3M9KsCNBwgOeDJwuzTQL28e7GBZSCUdrkLDVXOH0xXmhdDUgi0IARqYqY1qozQ==
+X-Google-Smtp-Source: AGHT+IFkeoK263knhmrpLNnBINDlmy10rclHAlIAD41tF+qJaj4Clmgqm/zNALlw6SqC/+XtoKd3Lw==
+X-Received: by 2002:a17:902:a388:b0:1de:fab2:98eb with SMTP id x8-20020a170902a38800b001defab298ebmr51491pla.5.1710867390467;
+        Tue, 19 Mar 2024 09:56:30 -0700 (PDT)
+Received: from www.outflux.net ([198.0.35.241])
+        by smtp.gmail.com with ESMTPSA id k10-20020a170902c40a00b001defa2d8e22sm8424413plk.233.2024.03.19.09.56.29
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 09:56:29 -0700 (PDT)
+Date: Tue, 19 Mar 2024 09:56:29 -0700
+From: Kees Cook <keescook@chromium.org>
+To: Borislav Petkov <bp@alien8.de>
+Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
+	jgross@suse.com, mingo@redhat.com, dave.hansen@linux.intel.com,
+	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
+	gregkh@linuxfoundation.org, tony.luck@intel.com,
+	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
+	linux-hardening@vger.kernel.org
+Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
+ walk_relocs
+Message-ID: <202403190955.25E5E03E6@keescook>
+References: <20240317150547.24910-1-weiguixiong@bytedance.com>
+ <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
+ <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
+ <202403181644.690285D3@keescook>
+ <20240319081640.GAZflJ6IBQ7TEKD2Ll@fat_crate.local>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-0-926d7a4ccd80@linaro.org>
- <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-3-926d7a4ccd80@linaro.org>
- <CAA8EJpoJ0rUd8aY6xpXyL3Obg66XtOebso_AUUxKmg1CWNykJA@mail.gmail.com>
- <85d67f3f-2b01-44c0-ace3-5e7cb48a9431@linaro.org> <090e306c-0bfc-4374-83ed-e883d73a0f0a@linaro.org>
- <CAA8EJpovp1S9MYb3ByeoR7WmjPgUmqicqs_fQo_OoL5_NTNPJw@mail.gmail.com>
- <c799b110-978f-412f-b50e-87a4215a17cf@linaro.org> <CAA8EJpp2pVnKh4J0TnGy_s_GB60P58xEW7OtmzReGVTF-1Ax-g@mail.gmail.com>
- <3141e539-67f9-4a90-abf7-0cc8d95f7396@linaro.org>
-In-Reply-To: <3141e539-67f9-4a90-abf7-0cc8d95f7396@linaro.org>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 19 Mar 2024 18:56:00 +0200
-Message-ID: <CAA8EJpq70JervmeDKS8T3xY3qgTunJWyPPomn_pRTRqOyDzMMg@mail.gmail.com>
-Subject: Re: [PATCH 3/7] phy: qcom: qmp-pcie: register second optional PHY AUX clock
-To: neil.armstrong@linaro.org
-Cc: Bjorn Andersson <andersson@kernel.org>, Konrad Dybcio <konrad.dybcio@linaro.org>, 
-	Vinod Koul <vkoul@kernel.org>, Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-arm-msm@vger.kernel.org, linux-phy@lists.infradead.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319081640.GAZflJ6IBQ7TEKD2Ll@fat_crate.local>
 
-On Tue, 19 Mar 2024 at 18:46, <neil.armstrong@linaro.org> wrote:
->
-> On 19/03/2024 17:05, Dmitry Baryshkov wrote:
-> > On Tue, 19 Mar 2024 at 17:15, <neil.armstrong@linaro.org> wrote:
-> >>
-> >> On 19/03/2024 15:46, Dmitry Baryshkov wrote:
-> >>> On Tue, 19 Mar 2024 at 16:35, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> >>>>
-> >>>> On 19/03/2024 11:59, Neil Armstrong wrote:
-> >>>>> On 19/03/2024 11:55, Dmitry Baryshkov wrote:
-> >>>>>> On Tue, 19 Mar 2024 at 12:45, Neil Armstrong <neil.armstrong@linaro.org> wrote:
-> >>>>>>>
-> >>>>>>> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
-> >>>>>>> add the code to register it for PHYs configs that sets a aux_clock_rate.
-> >>>>>>>
-> >>>>>>> In order to get the right clock, add qmp_pcie_clk_hw_get() which uses
-> >>>>>>> the newly introduced QMP_PCIE_PIPE_CLK & QMP_PCIE_PHY_AUX_CLK clock
-> >>>>>>> IDs and also supports the legacy bindings by returning the PIPE clock.
-> >>>>>>>
-> >>>>>>> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
-> >>>>>>> ---
-> >>>>>>>     drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 70 ++++++++++++++++++++++++++++++++
-> >>>>>>>     1 file changed, 70 insertions(+)
-> >>>>>>>
-> >>>>>>> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-> >>>>>>> index 079b3e306489..2d05226ae200 100644
-> >>>>>>> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-> >>>>>>> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
-> >>>>>>> @@ -22,6 +22,8 @@
-> >>>>>>>     #include <linux/reset.h>
-> >>>>>>>     #include <linux/slab.h>
-> >>>>>>>
-> >>>>>>> +#include <dt-bindings/phy/phy-qcom-qmp.h>
-> >>>>>>> +
-> >>>>>>>     #include "phy-qcom-qmp-common.h"
-> >>>>>>>
-> >>>>>>>     #include "phy-qcom-qmp.h"
-> >>>>>>> @@ -2389,6 +2391,9 @@ struct qmp_phy_cfg {
-> >>>>>>>
-> >>>>>>>            /* QMP PHY pipe clock interface rate */
-> >>>>>>>            unsigned long pipe_clock_rate;
-> >>>>>>> +
-> >>>>>>> +       /* QMP PHY AUX clock interface rate */
-> >>>>>>> +       unsigned long aux_clock_rate;
-> >>>>>>>     };
-> >>>>>>>
-> >>>>>>>     struct qmp_pcie {
-> >>>>>>> @@ -2420,6 +2425,7 @@ struct qmp_pcie {
-> >>>>>>>            int mode;
-> >>>>>>>
-> >>>>>>>            struct clk_fixed_rate pipe_clk_fixed;
-> >>>>>>> +       struct clk_fixed_rate aux_clk_fixed;
-> >>>>>>>     };
-> >>>>>>>
-> >>>>>>>     static inline void qphy_setbits(void __iomem *base, u32 offset, u32 val)
-> >>>>>>> @@ -3681,6 +3687,62 @@ static int phy_pipe_clk_register(struct qmp_pcie *qmp, struct device_node *np)
-> >>>>>>>            return devm_clk_hw_register(qmp->dev, &fixed->hw);
-> >>>>>>>     }
-> >>>>>>>
-> >>>>>>> +/*
-> >>>>>>> + * Register a fixed rate PHY aux clock.
-> >>>>>>> + *
-> >>>>>>> + * The <s>_phy_aux_clksrc generated by PHY goes to the GCC that gate
-> >>>>>>> + * controls it. The <s>_phy_aux_clk coming out of the GCC is requested
-> >>>>>>> + * by the PHY driver for its operations.
-> >>>>>>> + * We register the <s>_phy_aux_clksrc here. The gcc driver takes care
-> >>>>>>> + * of assigning this <s>_phy_aux_clksrc as parent to <s>_phy_aux_clk.
-> >>>>>>> + * Below picture shows this relationship.
-> >>>>>>> + *
-> >>>>>>> + *         +---------------+
-> >>>>>>> + *         |   PHY block   |<<---------------------------------------------+
-> >>>>>>> + *         |               |                                               |
-> >>>>>>> + *         |   +-------+   |                      +-----+                  |
-> >>>>>>> + *   I/P---^-->|  PLL  |---^--->phy_aux_clksrc--->| GCC |--->phy_aux_clk---+
-> >>>>>>> + *    clk  |   +-------+   |                      +-----+
-> >>>>>>> + *         +---------------+
-> >>>>>>> + */
-> >>>>>>> +static int phy_aux_clk_register(struct qmp_pcie *qmp, struct device_node *np)
-> >>>>>>> +{
-> >>>>>>> +       struct clk_fixed_rate *fixed = &qmp->aux_clk_fixed;
-> >>>>>>> +       struct clk_init_data init = { };
-> >>>>>>> +       int ret;
-> >>>>>>> +
-> >>>>>>> +       ret = of_property_read_string_index(np, "clock-output-names", 1, &init.name);
-> >>>>>>> +       if (ret) {
-> >>>>>>> +               dev_err(qmp->dev, "%pOFn: No clock-output-names index 1\n", np);
-> >>>>>>> +               return ret;
-> >>>>>>> +       }
-> >>>>>>> +
-> >>>>>>> +       init.ops = &clk_fixed_rate_ops;
-> >>>>>>> +
-> >>>>>>> +       fixed->fixed_rate = qmp->cfg->aux_clock_rate;
-> >>>>>>> +       fixed->hw.init = &init;
-> >>>>>>> +
-> >>>>>>> +       return devm_clk_hw_register(qmp->dev, &fixed->hw);
-> >>>>>>> +}
-> >>>>>>> +
-> >>>>>>> +static struct clk_hw *qmp_pcie_clk_hw_get(struct of_phandle_args *clkspec, void *data)
-> >>>>>>> +{
-> >>>>>>> +       struct qmp_pcie *qmp = data;
-> >>>>>>> +
-> >>>>>>> +       /* Support legacy bindings */
-> >>>>>>> +       if (!clkspec->args_count)
-> >>>>>>> +               return &qmp->pipe_clk_fixed.hw;
-> >>>>>>> +
-> >>>>>>> +       switch (clkspec->args[0]) {
-> >>>>>>> +       case QMP_PCIE_PIPE_CLK:
-> >>>>>>> +               return &qmp->pipe_clk_fixed.hw;
-> >>>>>>> +       case QMP_PCIE_PHY_AUX_CLK:
-> >>>>>>> +               return &qmp->aux_clk_fixed.hw;
-> >>>>>>> +       }
-> >>>>>>> +
-> >>>>>>> +       return ERR_PTR(-EINVAL);
-> >>>>>>> +}
-> >>>>>>
-> >>>>>> Can we use of_clk_hw_onecell_get() instead? I think it even should be
-> >>>>>> possible to use onecell for both cases, it will look at the first arg,
-> >>>>>> which will be 0 in case of #clock-cells equal to 0.
-> >>>>>
-> >>>>> Let me investigate if it's possible
-> >>>>
-> >>>> Ok, it would work but it would require building a clk_hw_onecell_data a runtime,
-> >>>> while we could simply provide this qmp_pcie_clk_hw_get() and avoid runtime 2 allocations.
-> >>>>
-> >>>> I'm not sure it's worth it.
-> >>>
-> >>> Single allocation (or even 0 allocations if you embed it into struct
-> >>> qmp_pcie) for the sake of using standard helpers.
-> >>
-> >> And I just recall I tried the same for Amlogic clocks, but the clk_hw_onecell_data hws
-> >> field is a flexible array member you can't set at runtime, if you try you'll get:
-> >> drivers/phy/qualcomm/phy-qcom-qmp-pcie.c:3753:38: error: invalid use of flexible array member
-> >>    3753 |                 qmp->clk_hw_data.hws = qmp->clk_hws;
-> >
-> > Yes, so it's either
-> > devm_kzalloc(dev, struct_size(data, hws, 2), GFP_KERNEL);
-> > or
-> > struct qmp_pcie {
-> > ...
-> >    struct {
-> >      struct clk_hw_onecell_data clk_data;
-> >      struct clk_hw clocks[2];
-> >    };
-> > };
->
-> I won't go down this path because of that mess and using of_clk_hw_onecell_get() would need
-> to still add a custom getter before calling of_clk_hw_onecell_get() to handle the
-> #clock-cells=0 legacy case.
+On Tue, Mar 19, 2024 at 09:16:40AM +0100, Borislav Petkov wrote:
+> On Mon, Mar 18, 2024 at 04:45:45PM -0700, Kees Cook wrote:
+> > The commit it refs to landed via -hardening,
+> 
+> Yap, saw that. It should've gone through tip too as it is clearly a tip
+> tree patch.
+> 
+> > responsibility of landing this fix too. But it's fine to go via -tip
+> > if you prefer?
+> 
+> Yes, please. Just send a Reviewed-by and it'll get picked up.
 
-No need for custom getters, if you select the getter during DT probe.
-But yes, choose whatever seems better.
+Okay, thanks!
 
->
-> Neil
->
-> >
-> >>
-> >> Neil
-> >>
-> >>>
-> >>>
-> >>>
-> >>
-> >
-> >
->
+Reviewed-by: Kees Cook <keescook@chromium.org>
 
+> 
+> Btw, while looking at that second patch, why does it have *three* Fixes:
+> tags? I think it wants to fix only your
+> 
+> aaa8736370db ("x86, relocs: Ignore relocations in .notes section")
+
+As I understand it, the first first was incomplete.
 
 -- 
-With best wishes
-Dmitry
+Kees Cook
 
