@@ -1,128 +1,179 @@
-Return-Path: <linux-kernel+bounces-107983-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107982-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 57388880470
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:11:51 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 007E388046F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:11:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3E1DB23E9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:11:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 238981C21FD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:11:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46E22D638;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 933062D052;
 	Tue, 19 Mar 2024 18:11:29 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87E62BAE9
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5059D282E1
 	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:11:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871889; cv=none; b=Y6WKtYEEnFfq99JMk1H/V+koi0KGJRjtGLXnk+x/tTcTiWrw3oX5l2l+T3zeXimoGUEF25u109YtfeuqmWen3fAyKQu7M6mTWnUO062QVnG9u1rIPCav2ag9xDH2EWA+Lw1HQdC/WHIV5ZA0GUHdKort7/FoECAxTavlcunP8YE=
+	t=1710871889; cv=none; b=c/ahD/ikaPofXcvaIxMax+FA1ryuz5vBvnz1Z5tXK3iwaIjgHxHYZsETSaYS6sYz/5eAJSwOSiDkWIjyfmeBfZoJJSqDnoyRWb4l4zeAzO8NcML1+5Ad5IHhepEuSmJDFIaoUGfCeVVwMSGYDHfYsIHoqFw+S0Sn5RqFRfZ0OLk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710871889; c=relaxed/simple;
-	bh=tiGL1NHxk39qgpzX58WM7MKSdnmnH6vTVN+JwmMZD6g=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GbM07rAY4SBjs2//8xjvLVo5zUwZ0ywgkM0D6E7XtsS2F6F+h51CwtYtv0WugPGEXEL8MjjkeKrlehnb+kPEuwlmOYvwicJq6FiCEXHQQfqt8hses1XcrTXdafstEWxQTHZDyk4ty4hBbX3FGBprUMY96uv7DoUY2Hsk5cZu3Qo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+	bh=uYvVu5K7QwhKGbXSEeoiVsXNboYdx8Q/CM6U6r9GiVA=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=RCcsJ8+zbAj4ja/LYanF2mQYCxV46F7g/QDJ5ELCgfOInV3/KjnrODQtrzLjs/6MiJdgHCOq6Ef9RXpPHe17+x+OkUMEYm1rHQVgIdJL5jXT5VEVE8SDuF0uvRIuqh3V/3mU0JRfZv25yawSmHrthptIk4o9+sGub6++OqFUtxQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
 Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3657cf730a0so65040805ab.2
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7c9aa481ce4so519781939f.3
         for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:11:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710871887; x=1711476687;
+        d=1e100.net; s=20230601; t=1710871886; x=1711476686;
         h=to:from:subject:message-id:date:mime-version:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=4FGA3Q/Jsb5iylMpt4gm0U57kMlr8EgSfuZyJGPJfJk=;
-        b=CuLFRausT+JEgXKVWehNNx+0WQn+Xtaxg41Sp8b47Pv66tQabQbY3bn9C9ZwCKvnXb
-         k0yjF4B9tUH3/u/dMPl23cqyCDj+dG9TJsE2K26sr4JL0pIKTeYIAneblwJ1KFVzyXpc
-         BUmiZonkHL83gnIG0CM8e1N4rkHg6/aNzP9YihnhUYly4REVeKeohbH87vbOajgK6VHo
-         JrC1v+gXxnJ8lwLxX+Y+cRBWL4t5WtFHtBnKPzYO2DPjKCa62GaXLgBg9Rk5T+6rZ7uJ
-         ohaTrHHgTJJHYm9ZgE5d1EZeXEW5y7EEgWwcMezVNVJFZLXWfWRSRkyv3/zm6Vw9ydNm
-         fcqA==
-X-Forwarded-Encrypted: i=1; AJvYcCVNlfNETQR4rPQHPe9HYnW4n1MD881PGarlB/V3A/YgBc3QJaJ+dvXxW9dMJcaB01VnUA4hXVcBH1JepQOUbKy6YJdEPjLlOLOEQdlP
-X-Gm-Message-State: AOJu0YwMEf43FZp3E3T6R5u6utnowTJZCp2CRRMEl3m6l2pyWQ7zYQhM
-	t8KpBhyeosS1q8h8lyQA7M3SKf16ciRjajV4nQNb8HgeOeHubCezB00L4sgTUpuh7YGSNRIN7bo
-	G8qnVXQnyHWVgINEk5EmEt0wI9X+NM6SmXpKTTwQvBu6s5VP1bFAEaF8=
-X-Google-Smtp-Source: AGHT+IFmFGl290mOUiju8BeiMLuWxemiwm3OHI1KQCej6a3+CV9O/BljYHG38jI0cLAM186qzncQTYeAY5huH5cRFpHkhyemTZ+b
+        bh=+ourJvfzE9Sqxygx+pIOlRci/YzZqikS4/H53deuGRw=;
+        b=S+xQL8Pp+onN3fmitxkmNz0pusSVlBiStbB039nnS3PKIue4BvdEwkHonJ146/blZC
+         uTJrD1pa135latTUePrzjruU1FNP7WlH4+t/Z7Vkeowcdcr7IL9KxdGBfj+iwlO0IJYq
+         HHVEFTsZNYaJcVdUJuHijRgoCDzQtumbt6fHW4hmvwfLiytg7/kXYg+eZy0l9EeLh70y
+         IHleaWyXqi2Ow8vyge59JcTlBZEr9ii5Ygrc7sxQBO2BQLu0hXgQmBjByMXySg4R9A9Z
+         qZivZbEtqjFSbQgXoK+mEk2iFIAnCdZyn4hncl3/AS9INyiMguJyANROzTMAmzZOX8rn
+         GqTw==
+X-Forwarded-Encrypted: i=1; AJvYcCU/ZGJbEZ2cWJlCniowVpL1fEFJmDnNGnimltc/nijI2zTQsvQmWETMdZTpXVmrsM7see1989CMYLgowf7qDYBWJf27sIegIMZ+tfTL
+X-Gm-Message-State: AOJu0YweFIU3uS76ALwwVaoa9oF5cHNRgNJIKh3Zk0j1Xm7vJGiW8tKQ
+	CRef+l95bzzPhSJugAjY6+mxD5cJiQ4B30jdVmBMcY61/jPQalhQJkx6q+3WurMIhXxcMz5w8ud
+	Uw5Wb4LU2sP1ih0mQVN3A02dxK1ICtbcaabhBNRgZNR8RksQZvnmw6mI=
+X-Google-Smtp-Source: AGHT+IGCNpKnwTt4DT3OQWvNfN51FK+pSxwl2xGRKFkiOCEaAW3rXW2DWbn42o68gc4+m46mkIvlq1EB0cYypTEUtC7dSmLctOXh
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:360a:0:b0:366:9ead:645b with SMTP id
- d10-20020a92360a000000b003669ead645bmr343659ila.1.1710871886800; Tue, 19 Mar
+X-Received: by 2002:a05:6638:349e:b0:477:2773:11ca with SMTP id
+ t30-20020a056638349e00b00477277311camr1048215jal.3.1710871886523; Tue, 19 Mar
  2024 11:11:26 -0700 (PDT)
 Date: Tue, 19 Mar 2024 11:11:26 -0700
 X-Google-Appengine-App-Id: s~syzkaller
 X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <00000000000011b2f00614076749@google.com>
-Subject: [syzbot] [bpf?] KMSAN: uninit-value in __bpf_strtoull
-From: syzbot <syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com>
+Message-ID: <0000000000000d7c8f0614076733@google.com>
+Subject: [syzbot] [bpf?] [net?] possible deadlock in sock_hash_delete_elem (2)
+From: syzbot <syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com>
 To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
-	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
-	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
-	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
-	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
+	daniel@iogearbox.net, davem@davemloft.net, edumazet@google.com, 
+	jakub@cloudflare.com, john.fastabend@gmail.com, kuba@kernel.org, 
+	linux-kernel@vger.kernel.org, netdev@vger.kernel.org, pabeni@redhat.com, 
+	syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
 
 Hello,
 
 syzbot found the following issue on:
 
-HEAD commit:    741e9d668aa5 Merge tag 'scsi-misc' of git://git.kernel.org..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=113721f1180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
-dashboard link: https://syzkaller.appspot.com/bug?extid=8ac8b7b2292ea867a162
+HEAD commit:    0740b6427e90 Merge branch 'bpf-arena-followups'
+git tree:       bpf
+console output: https://syzkaller.appspot.com/x/log.txt?x=11b90ac9180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
+dashboard link: https://syzkaller.appspot.com/bug?extid=ec941d6e24f633a59172
 compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-userspace arch: i386
 
 Unfortunately, I don't have any reproducer for this issue yet.
 
 Downloadable assets:
-disk image: https://storage.googleapis.com/syzbot-assets/7e1776e6e382/disk-741e9d66.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/69580881d554/vmlinux-741e9d66.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/65e4047a1117/bzImage-741e9d66.xz
+disk image: https://storage.googleapis.com/syzbot-assets/c9e6e9f97566/disk-0740b642.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/78476a588b62/vmlinux-0740b642.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/50cd6fab9ead/bzImage-0740b642.xz
 
 IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com
+Reported-by: syzbot+ec941d6e24f633a59172@syzkaller.appspotmail.com
 
-=====================================================
-BUG: KMSAN: uninit-value in __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
- __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
- __bpf_strtoll kernel/bpf/helpers.c:504 [inline]
- ____bpf_strtol kernel/bpf/helpers.c:525 [inline]
- bpf_strtol+0x7c/0x270 kernel/bpf/helpers.c:519
- ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
- __bpf_prog_run96+0xb5/0xe0 kernel/bpf/core.c:2236
+============================================
+WARNING: possible recursive locking detected
+6.8.0-syzkaller-05226-g0740b6427e90 #0 Not tainted
+--------------------------------------------
+syz-executor.4/13471 is trying to acquire lock:
+ffff888034bc90f8 (&htab->buckets[i].lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff888034bc90f8 (&htab->buckets[i].lock){+.-.}-{2:2}, at: sock_hash_delete_elem+0xb0/0x300 net/core/sock_map.c:939
+
+but task is already holding lock:
+ffff888063a77968 (&htab->buckets[i].lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ffff888063a77968 (&htab->buckets[i].lock){+.-.}-{2:2}, at: sock_hash_update_common+0x20c/0xa30 net/core/sock_map.c:1007
+
+other info that might help us debug this:
+ Possible unsafe locking scenario:
+
+       CPU0
+       ----
+  lock(&htab->buckets[i].lock);
+  lock(&htab->buckets[i].lock);
+
+ *** DEADLOCK ***
+
+ May be due to missing lock nesting notation
+
+5 locks held by syz-executor.4/13471:
+ #0: ffff888065685258 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: lock_sock include/net/sock.h:1671 [inline]
+ #0: ffff888065685258 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_sk_acquire net/core/sock_map.c:117 [inline]
+ #0: ffff888065685258 (sk_lock-AF_UNIX){+.+.}-{0:0}, at: sock_map_update_elem_sys+0x1cc/0x910 net/core/sock_map.c:575
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: sock_map_sk_acquire net/core/sock_map.c:118 [inline]
+ #1: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: sock_map_update_elem_sys+0x1d8/0x910 net/core/sock_map.c:575
+ #2: ffff888063a77968 (&htab->buckets[i].lock){+.-.}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #2: ffff888063a77968 (&htab->buckets[i].lock){+.-.}-{2:2}, at: sock_hash_update_common+0x20c/0xa30 net/core/sock_map.c:1007
+ #3: ffff88803bbbc290 (&psock->link_lock){+...}-{2:2}, at: spin_lock_bh include/linux/spinlock.h:356 [inline]
+ #3: ffff88803bbbc290 (&psock->link_lock){+...}-{2:2}, at: sock_map_del_link net/core/sock_map.c:145 [inline]
+ #3: ffff88803bbbc290 (&psock->link_lock){+...}-{2:2}, at: sock_map_unref+0xcc/0x5e0 net/core/sock_map.c:180
+ #4: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire include/linux/rcupdate.h:298 [inline]
+ #4: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: rcu_read_lock include/linux/rcupdate.h:750 [inline]
+ #4: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: __bpf_trace_run kernel/trace/bpf_trace.c:2380 [inline]
+ #4: ffffffff8e131920 (rcu_read_lock){....}-{1:2}, at: bpf_trace_run2+0x114/0x420 kernel/trace/bpf_trace.c:2420
+
+stack backtrace:
+CPU: 0 PID: 13471 Comm: syz-executor.4 Not tainted 6.8.0-syzkaller-05226-g0740b6427e90 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x1e7/0x2e0 lib/dump_stack.c:106
+ check_deadlock kernel/locking/lockdep.c:3062 [inline]
+ validate_chain+0x15c1/0x58e0 kernel/locking/lockdep.c:3856
+ __lock_acquire+0x1346/0x1fd0 kernel/locking/lockdep.c:5137
+ lock_acquire+0x1e4/0x530 kernel/locking/lockdep.c:5754
+ __raw_spin_lock_bh include/linux/spinlock_api_smp.h:126 [inline]
+ _raw_spin_lock_bh+0x35/0x50 kernel/locking/spinlock.c:178
+ spin_lock_bh include/linux/spinlock.h:356 [inline]
+ sock_hash_delete_elem+0xb0/0x300 net/core/sock_map.c:939
+ bpf_prog_2c29ac5cdc6b1842+0x42/0x46
  bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
  __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- bpf_test_run+0x43e/0xc30 net/bpf/test_run.c:423
- bpf_prog_test_run_xdp+0xeaa/0x1a40 net/bpf/test_run.c:1269
- bpf_prog_test_run+0x6b7/0xad0 kernel/bpf/syscall.c:4240
- __sys_bpf+0x6aa/0xd90 kernel/bpf/syscall.c:5649
+ bpf_prog_run include/linux/filter.h:664 [inline]
+ __bpf_trace_run kernel/trace/bpf_trace.c:2381 [inline]
+ bpf_trace_run2+0x204/0x420 kernel/trace/bpf_trace.c:2420
+ trace_kfree include/trace/events/kmem.h:94 [inline]
+ kfree+0x291/0x380 mm/slub.c:4396
+ sk_psock_free_link include/linux/skmsg.h:421 [inline]
+ sock_map_del_link net/core/sock_map.c:158 [inline]
+ sock_map_unref+0x3ac/0x5e0 net/core/sock_map.c:180
+ sock_hash_update_common+0x915/0xa30 net/core/sock_map.c:1030
+ sock_map_update_elem_sys+0x5a4/0x910 net/core/sock_map.c:581
+ map_update_elem+0x53a/0x6f0 kernel/bpf/syscall.c:1641
+ __sys_bpf+0x76f/0x810 kernel/bpf/syscall.c:5619
  __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
  __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
- __ia32_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5736
- do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
- __do_fast_syscall_32+0xba/0x120 arch/x86/entry/common.c:321
- do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
- do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
- entry_SYSENTER_compat_after_hwframe+0x7a/0x84
-
-Local variable stack created at:
- __bpf_prog_run96+0x45/0xe0 kernel/bpf/core.c:2236
- bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
- __bpf_prog_run include/linux/filter.h:657 [inline]
- bpf_prog_run_xdp include/net/xdp.h:514 [inline]
- bpf_test_run+0x43e/0xc30 net/bpf/test_run.c:423
-
-CPU: 0 PID: 11097 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-11339-g741e9d668aa5 #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-=====================================================
+ __x64_sys_bpf+0x7c/0x90 kernel/bpf/syscall.c:5736
+ do_syscall_64+0xfb/0x240
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x7f9112c7dda9
+Code: 28 00 00 00 75 05 48 83 c4 28 c3 e8 e1 20 00 00 90 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b0 ff ff ff f7 d8 64 89 01 48
+RSP: 002b:00007f9113a9f0c8 EFLAGS: 00000246 ORIG_RAX: 0000000000000141
+RAX: ffffffffffffffda RBX: 00007f9112dabf80 RCX: 00007f9112c7dda9
+RDX: 0000000000000020 RSI: 0000000020000180 RDI: 0000000000000002
+RBP: 00007f9112cca47a R08: 0000000000000000 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000000
+R13: 000000000000000b R14: 00007f9112dabf80 R15: 00007ffdf604c018
+ </TASK>
 
 
 ---
