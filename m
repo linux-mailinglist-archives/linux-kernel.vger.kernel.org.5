@@ -1,102 +1,164 @@
-Return-Path: <linux-kernel+bounces-107105-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107108-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id E486F87F78C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:39:55 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C89DE87F794
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:40:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 84B45B23257
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:39:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7B86D281C20
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:40:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 792DC50A78;
-	Tue, 19 Mar 2024 06:33:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA57554664;
+	Tue, 19 Mar 2024 06:34:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="K+fSXIPo"
-Received: from mail-lf1-f54.google.com (mail-lf1-f54.google.com [209.85.167.54])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="XrDxmQ5J"
+Received: from mail-oi1-f180.google.com (mail-oi1-f180.google.com [209.85.167.180])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 015F380BF4
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:33:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA45D53E3B;
+	Tue, 19 Mar 2024 06:34:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.180
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710829996; cv=none; b=qudY/9WJULIpY9UpGCHj5DnofYSzOOUjw+8s6+oEfIjdnj/KGWt7cnz27m/EAi6TkhJHVTBbEbNfKooGUmTfPPnOsEg0zC2UQDeqA+FcB5nylSeGN0vUfnBRE+/7HXpp6CcFz/heIpdrEFnvE9a7GDsE1pnQEbkdwzjPyJEFbyA=
+	t=1710830073; cv=none; b=iVBR0/IQp46w4aDtAH2qQil/sETLmn989C0bhNruqLK0tykAL3lmth4f3pUyaEUfCmEnvc1KCpob3OTBcO5G5k8fdmRNW4N6ujmOpdl5hvLt6LPJj+Nd/1f51oEQKXaslL3JdcSauD8IR4Aq8DM8xg17eqy0Wr6rnznn+O5AVZQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710829996; c=relaxed/simple;
-	bh=emvB+UPk4wGVsjn2XtVyzPHEDiFnOm03YX66S20HkhI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=MYy99dqUyL2uvGdpWvNijN/BsiDXJ654hHZcdn9ESIPPoXjBFKzu17baSNj81tZkMBpF8CbmwDo8dmSb1SE4FC5H9p/7wgAmDeA6Lyjqq8n1LxOPwnHGJLWhR0lFID+gKIc4V1zMUpryU5F420Ttd6RSGCxLFttuSvpoKB0KFYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=K+fSXIPo; arc=none smtp.client-ip=209.85.167.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lf1-f54.google.com with SMTP id 2adb3069b0e04-513d212f818so6146534e87.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:33:14 -0700 (PDT)
+	s=arc-20240116; t=1710830073; c=relaxed/simple;
+	bh=pRf8TvoYF8JNJ5Thdif3hhC2RUUwmwcP7kipJbjOdv8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=XeDJ/3MB43eRNwjGYgPmcItlt8H52PI87aB+7Im7Tel4oqctcFB6yc/dYbRfI29HXPqofkgBS+Mz3ncq6fYtKhEcUKTV1LG7+hpC9ld03g4VAyIXB1mBYEUuZnFFg3+yYgsQWTJYx0AIY/mzxRe0RRAF4RZQmDp4N7nvAJ1rw48=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=XrDxmQ5J; arc=none smtp.client-ip=209.85.167.180
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oi1-f180.google.com with SMTP id 5614622812f47-3c38d76384cso707240b6e.2;
+        Mon, 18 Mar 2024 23:34:30 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710829993; x=1711434793; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=DQLjuETvXpykXhqUOpejSGf3kPj5baBzqZF6hMzvPVE=;
-        b=K+fSXIPofMXhE+D1VC9CVIZ+GTPeAeO47c0IABKWvNBdGDYiUD0JB4Y2my1c2o2L2g
-         ghWpPMVEYY0+nsp8FkfPjSH8cWp6AG2NdIix+kGBqVpjq5hxE5aSGEXuqRQuSmr8c5pE
-         P1EYobquS9OITyncHRYAlBJ6ckDQgJYtbIi1YuSNNIT9VHRpJyLWt17hhhowBjktKPyT
-         iqURSmPx0Tj+BsVie0qrwvBR0jgMyeQAMcWYmtr+rf3m9+E/VHp8pvjZyP2lEwoqax56
-         6PUEgtOX34lqAeN7cXmI+XTh2/43leNRHG4wsppXZFYD/zOBEbD5uBSVWW+sqMtyHbFL
-         lWbw==
+        d=gmail.com; s=20230601; t=1710830070; x=1711434870; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=6i7aoJ1vHA+2Toojra4EO+vaFmcLOGaxt4dt9iW58AU=;
+        b=XrDxmQ5JYqZJ6izWvfhHfeyb69qoAtDh+4qSL7AsyAcgOFJkaUWvwQLaPZDTORHQIF
+         MiLf3swp9x4gRM9tX7uhHA9YFsanyfkfxnNBy4GQTcOAQmZrtCIGpxrnr784lt5h5nPz
+         X7NrW852brjeqNBqJaqdguCH7NjH4vP5Oa5TQhMNUAJIaD9lNchD5rzHvxWkjyzCafIU
+         MbkOnSKMZlqQPkNUqKDAuUglsz4/FpgqJjPfg9ooRkBmHW1a0HZ2li1Q7R29J7blre7m
+         l43ef1aiekLA80wW8HeBCay5opa4z4qAtth46J0sxluSYI89bsKjqva+ISuTO2f+vJ0b
+         eq5A==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710829993; x=1711434793;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=DQLjuETvXpykXhqUOpejSGf3kPj5baBzqZF6hMzvPVE=;
-        b=e7ZFGPeERzIxTSqUw698g6wdOKmNsLru08CL2Vplh/PbqsRB4QlexPJ9n0nUWN7eHP
-         BewY3IJ2OgOOfMaH0D5HsjQRMUBUJ+k83eUrXDbPLg8gPehQZQF717+VN5HkMlbvAwrv
-         GN9QBnEdJQ0VpsxZ7R/R4rFUSRi8kxs58+aAu+myBDVIXxNzHvkWMZLBZtt+IQiSI2Zl
-         /0kdRnnrUEYINvFzuF2cuc1StF3nNLkR9qaxCqV+ZLglxZe/maJkXii01p4Q/l5bamlq
-         WihI/OGLPyZo4vUTnXjF1XMCa8WyRjMnNMwBkYwiVo67QhKoBZrhRawkw0Oye7GuHjZi
-         tzNg==
-X-Forwarded-Encrypted: i=1; AJvYcCVllOe49qbe4RyiAXsmG37fFPSrJPctl6a1ED5X0PIDA6Q9guMjclzdg3z0FLlZ4KpkOQIV7kLZIo6URA1uARsg6eLC7PdehIR3oB4X
-X-Gm-Message-State: AOJu0YwGlPD+5apxBhyWpXAwr+Yxo8p1Ip1TOFZ/ku6/P8d+w9670g9L
-	fjTc1EKlQJUanMXjH2zeZntBiob8prK9J/gjVqPgL4JwCiKktyxl1NLozRF4K7g=
-X-Google-Smtp-Source: AGHT+IEkLz+CrD7kd9e1OQIXrqk34kVS2kjJ6pk4f2Nu6yVG5PdTdGqBmLTHCPeZZsJythZHkYBwPA==
-X-Received: by 2002:ac2:4da6:0:b0:511:674d:88c5 with SMTP id h6-20020ac24da6000000b00511674d88c5mr9820073lfe.13.1710829993013;
-        Mon, 18 Mar 2024 23:33:13 -0700 (PDT)
-Received: from localhost ([102.222.70.76])
-        by smtp.gmail.com with ESMTPSA id o23-20020a05600c511700b00413fea18735sm14220565wms.13.2024.03.18.23.33.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 23:33:12 -0700 (PDT)
-Date: Tue, 19 Mar 2024 09:33:08 +0300
-From: Dan Carpenter <dan.carpenter@linaro.org>
-To: Ayush Tiwari <ayushtiw0110@gmail.com>
-Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
-Subject: Re: [PATCH] staging: rtl8712: Rename blnPending to bln_pending
-Message-ID: <865b37f4-8139-4072-a320-855bfc3121f4@moroto.mountain>
-References: <Zfiz7YFKAqAOGsu5@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+        d=1e100.net; s=20230601; t=1710830070; x=1711434870;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=6i7aoJ1vHA+2Toojra4EO+vaFmcLOGaxt4dt9iW58AU=;
+        b=PVPKjKGCGH7T32i3kV4Csk5dsCJAqYdwWLIC8BHUYma8SA7HIjZIOes8ap4Fo01QYz
+         PGSNSA8Uh9W6Pjp6qW2jdCa5L4kOUWDrYT0XF/vmrhG8/FRsR+3PpNf9LtxSQX7I4tRC
+         HcLccX9zi4DGJz6ReQKhxkeeQOzb0CYgWcqelEMN2DavpRljC/+ez0pm2NiFJ+vvDI0x
+         3fNblLgVSiTIGvg8O+auzUHGMXNfV78A53NzfkRELNIHn+DM7SunMRWKgs9s4Fmd4lJJ
+         V6iIoN1tElH8P38FgcJb8uvaZf1Ip9WqyS27XfI2Anwf8tlfTNkGrpHpHpQv5sYFJx0R
+         lzPg==
+X-Forwarded-Encrypted: i=1; AJvYcCWJdzsZPJCs4c2x1DSogLkpiT5r7qhuYpM6NglO8MSGUmDoT/xjAlu/rR9tyi3jTN2TbiC3yTfVwojPXYn+wC2DJCqG0De+Ch6mxWiLsy4KRWTFXB7k96AVFfP1qqDyTZsiRfDp4MNqyo/p/uvdTtPg8OlmMAUKRzDdYbj4AF+5o0H5FQ==
+X-Gm-Message-State: AOJu0YwhImvD8/8vVYm3is8BWkio2bE+u/vpGJCaJ05RCxf1suC3yTJT
+	ehu/o59eoFSmZe186FDFmCpdIYu+0zA0bh5iRr9w+M///GkuKr7Q
+X-Google-Smtp-Source: AGHT+IGuQNKk/56j6/1OgRfV+KuiHjrbg9qcyLSSf4NVGqlYs9w0eVzrJxbIdhfaTJLPhN/H3r/twA==
+X-Received: by 2002:a05:6871:3403:b0:222:649a:a932 with SMTP id nh3-20020a056871340300b00222649aa932mr14307687oac.7.1710830069957;
+        Mon, 18 Mar 2024 23:34:29 -0700 (PDT)
+Received: from [172.16.116.58] ([103.15.228.94])
+        by smtp.gmail.com with ESMTPSA id p13-20020a62ab0d000000b006e53cc789c3sm8958908pff.107.2024.03.18.23.34.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 23:34:29 -0700 (PDT)
+Message-ID: <3ed8c487-544b-4d72-b1e0-edb5baa8119b@gmail.com>
+Date: Tue, 19 Mar 2024 12:04:11 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfiz7YFKAqAOGsu5@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 5/5] dts: ti: k3-am625-beagleplay: Add mikroBUS
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ open list <linux-kernel@vger.kernel.org>
+Cc: jkridner@beagleboard.org, robertcnelson@beagleboard.org,
+ lorforlinux@beagleboard.org, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+ Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
+ <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Vaishnav M A <vaishnav.a@ti.com>, Mark Brown <broonie@kernel.org>,
+ Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>,
+ "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+ "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+ Vaishnav M A <vaishnav@beagleboard.org>
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-6-ayushdevel1325@gmail.com>
+ <889fb174-076c-44d1-9c6f-c3b967cd01ea@linaro.org>
+From: Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <889fb174-076c-44d1-9c6f-c3b967cd01ea@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19, 2024 at 03:06:45AM +0530, Ayush Tiwari wrote:
-> Rename blnPending to bln_pending in r8712_cmd_thread() to address
-> checkpatch warning "Avoid Camelcase" and conform to the kernel coding
-> style.
-> 
-> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
-> ---
 
-What does bln_ mean?  I suspect that b means byte and we don't allow
-that sort of naming scheme.  But I don't know what ln means.  Also the
-type should be bool and we change 1/0 to true/false.
+On 3/19/24 11:29, Krzysztof Kozlowski wrote:
+> On 17/03/2024 20:37, Ayush Singh wrote:
+>> DONOTMERGE
+> Why? Explain then the purpose of this patch.
 
-regards,
-dan carpenter
+Well, it was suggested to have DONOTMERGE by Vaishnav in the patches 
+until dt bindings have been approved, since this patch touches different 
+subsystems. Here is the full context from v3:
+
+> The reasoning behind this is that these patches go in to separate  maintainer trees and without the bindings merged first the device tree changes cannot be validated, thus it is a usual practice to get the bindings and driver merged first and the device tree changes to go in the next cycle. Another alternative is you can point to your fork with  all the changes together.
+
+>> this patch depends on patch 1
+> How? I don't see any dependency.
+
+I think it is not allowed to have code in device tree unless a 
+corresponding dt-binding exists for the device. And thus every time the 
+dt-binding changes, this patch also needs to change.So I thought it is 
+dependent on patch 1.
+
+>> Add mikroBUS connector support for Beagleplay.
+>>
+>> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
+>> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+>> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+>> ---
+>>   .../arm64/boot/dts/ti/k3-am625-beagleplay.dts | 80 +++++++++++++++++--
+>>   1 file changed, 72 insertions(+), 8 deletions(-)
+>>
+>> diff --git a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+>> index a34e0df2ab86..e1dce1b80153 100644
+>> --- a/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+>> +++ b/arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts
+>> @@ -29,6 +29,7 @@ aliases {
+>>   		i2c3 = &main_i2c3;
+>>   		i2c4 = &wkup_i2c0;
+>>   		i2c5 = &mcu_i2c0;
+>> +		mikrobus0 = &mikrobus0;
+>>   		mmc0 = &sdhci0;
+>>   		mmc1 = &sdhci1;
+>>   		mmc2 = &sdhci2;
+>> @@ -230,6 +231,38 @@ simple-audio-card,codec {
+>>   		};
+>>   	};
+>>   
+>
+> Best regards,
+> Krzysztof
+
+
+Link: 
+https://lore.kernel.org/lkml/CALudOK5v_uCUffxHGKS-jA-DKLNV7xwmKkxJwjHaMWWgDdPDqA@mail.gmail.com/ 
+Patch v3
+
+
+Ayush Singh
 
 
