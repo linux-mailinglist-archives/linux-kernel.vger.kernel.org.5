@@ -1,57 +1,58 @@
-Return-Path: <linux-kernel+bounces-107555-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107556-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E51D87FE0F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:06:23 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DB51787FE12
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:06:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 73D3AB21969
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:06:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 885C6282D7B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:06:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A7307FBC1;
-	Tue, 19 Mar 2024 13:05:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D521C8061C;
+	Tue, 19 Mar 2024 13:06:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="iJjaQW4g"
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="H1IRijaY"
 Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7421D40854;
-	Tue, 19 Mar 2024 13:05:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1A94F4085D;
+	Tue, 19 Mar 2024 13:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853558; cv=none; b=KgDfZUzFTEf/+xD63h/BRYnq7k/b/QwCJcl9gHtU5ykKIH4EeqSjgEIcRtxU7K1DmNRaHNeWkFf+HZHCPDxdDPT437Tkfvsr3fS1HG5PPa2tIO6lf+LEhqKoudReoZzprafyX8N9vgwhss2QINbNswsQ3kdr7kOR1JmUhbCNADA=
+	t=1710853565; cv=none; b=MgYsVnXzotip71BgwUn+BPqTJJs6VFvZVUFHrl6h1IkPpbjKa+2/TrYbEPWKcmkTdolk01QgMbFRsoQVF1Losk3v4xfZRgSj8RPWptZhYp76NCTDlwjdusIM0FX0nGLJQbc3KoK2tfOGSK4wobZElYEKoAoOdAWQMsEG8jDBY2E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853558; c=relaxed/simple;
-	bh=VdqSfGB+h/sGfm1xuC2PyT3QkI3BNkLrs4O3AWSdhSA=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=exU3JWGH1TlAf1U/nqayM6wJ0yGNterg36YdNVA95f/bFXINXfFTemXGuEHlYse38lbTSaz9zYre5I11Qnf5OpF6RkTzwbY7ZcSxJDFlHG9jYQYgX2gA5O0lYiChkbhRwkeiMBzZE0AYaF/90xyRVeDC+bl1JnNz2YonxRsl1bg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=iJjaQW4g; arc=none smtp.client-ip=198.175.65.16
+	s=arc-20240116; t=1710853565; c=relaxed/simple;
+	bh=+S2MewHLlenRx3Semp3QRkK4+r3hJzwDF86OL9/JXV4=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=c23qfSzzEuNqVRbRcTnGhzvA+6jAChm47l0GO/IZMjXuK7K5vGuYV+YywpJJ4IdUYYnV2e/MY7FP3sAcY2ZJB6n2xuiJ/sJzmacYa7cwQhds8pWXmNLi3x+1Aevdffa8yXhZQEXDTrWvx6i43tEOsV4BqEyWeSdPJd02FmftplA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=H1IRijaY; arc=none smtp.client-ip=198.175.65.16
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
   d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710853556; x=1742389556;
-  h=from:to:cc:subject:date:message-id:mime-version:
-   content-transfer-encoding;
-  bh=VdqSfGB+h/sGfm1xuC2PyT3QkI3BNkLrs4O3AWSdhSA=;
-  b=iJjaQW4g3oFunMEJBWmTys7K16jyatqEr+BK6f/03VweqDdGh/tWtj/K
-   24Zti7LCOThwsaKvutOconG4Y678C6ENVswhjqfZ8a3+Qyd6t3FCwykWr
-   KtjvMq+RYIRveDJ/Igt0fQr1xU1FuiEslMpHX2SGZDqPOcJtgx3ZKlhyc
-   Wr4SCDMnhl+Ocrv5o1x9r3ufiz5ELAVvsuYSdRP1ggW2QGxgCd9T73W/B
-   Um+Zll7BZInDgmYV0egt1+SCcg8k2hP/M9S+uXA0sDUCgLZOuSh+H5Twu
-   h6HLfzF5kVEcee2M//547/cIWOCYl3AZZDVI6jvVMmRzH9T+J6eVpuV5V
-   g==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5842875"
+  t=1710853563; x=1742389563;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=+S2MewHLlenRx3Semp3QRkK4+r3hJzwDF86OL9/JXV4=;
+  b=H1IRijaYziPgzjUGPmsNqmJjaBwYjMq8Ljf/7pCAKW6H4ESta6Xa15qq
+   mF6Vx1PxHuBXaMiEDXQKiKK0fVXC7en0Sc/uzt82yDKGk7iEMqySxuyC0
+   a/sNZvFYq5c+i6m9mdRdP+M5X4LebzTC+PxyGbYK31x2khiltcVNjcBcE
+   2l9yiODn0tAAW9J7f3sY02FHTh0UOudi0dkAB20h978Nn/OXkx8nGlJXf
+   Tsxc2YJSWp4U3vAbFSAt34pJycikqAhr7rp9soWSX2tzipNni0GGVUovV
+   y6g92PlLoZ/xbkR7wQ4XrpMRmRbOlUiiUh5ukydNzcXmARUI7vWtrtMGE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5842882"
 X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="5842875"
+   d="scan'208";a="5842882"
 Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 06:05:56 -0700
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 06:06:03 -0700
 X-ExtLoop1: 1
 X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="44883155"
+   d="scan'208";a="44883169"
 Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmviesa001.fm.intel.com with ESMTP; 19 Mar 2024 06:05:48 -0700
+  by fmviesa001.fm.intel.com with ESMTP; 19 Mar 2024 06:05:55 -0700
 From: lakshmi.sowjanya.d@intel.com
 To: tglx@linutronix.de,
 	jstultz@google.com,
@@ -80,10 +81,12 @@ Cc: x86@kernel.org,
 	basavaraj.goudar@intel.com,
 	thejesh.reddy.t.r@intel.com,
 	lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v5 00/11] Add support for Intel PPS Generator
-Date: Tue, 19 Mar 2024 18:35:36 +0530
-Message-Id: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
+Subject: [PATCH v5 01/11] x86/tsc: Add base clock properties in clocksource structure
+Date: Tue, 19 Mar 2024 18:35:37 +0530
+Message-Id: <20240319130547.4195-2-lakshmi.sowjanya.d@intel.com>
 X-Mailer: git-send-email 2.35.3
+In-Reply-To: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
+References: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,108 +97,214 @@ Content-Transfer-Encoding: 8bit
 
 From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
 
-The goal of the PPS(Pulse Per Second) hardware/software is to generate a
-signal from the system on a wire so that some third-party hardware can
-observe that signal and judge how close the system's time is to another
-system or piece of hardware.
+Add base clock hardware abstraction in clocksource structure.
 
-Existing methods (like parallel ports) require software to flip a bit at
-just the right time to create a PPS signal. Many things can prevent
-software from doing this precisely. This (Timed I/O) method is better
-because software only "arms" the hardware in advance and then depends on
-the hardware to "fire" and flip the signal at just the right time.
+Add clocksource ID for x86 ART(Always Running Timer).
 
-To generate a PPS signal with this new hardware, the kernel wakes up
-twice a second, once for 1->0 edge and other for the 0->1 edge. It does
-this shortly (~10ms) before the actual change in the signal needs to be
-made. It computes the TSC value at which edge will happen, convert to a
-value hardware understands and program this value to Timed I/O hardware.
-The actual edge transition happens without any further action from the
-kernel.
+Co-developed-by: Thomas Gleixner <tglx@linutronix.de>
+Signed-off-by: Thomas Gleixner <tglx@linutronix.de>
+Co-developed-by: Christopher S. Hall <christopher.s.hall@intel.com>
+Signed-off-by: Christopher S. Hall <christopher.s.hall@intel.com>
+Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+---
+ arch/x86/kernel/tsc.c           | 42 +++++++++++++++++++--------------
+ include/linux/clocksource.h     | 27 +++++++++++++++++++++
+ include/linux/clocksource_ids.h |  1 +
+ 3 files changed, 52 insertions(+), 18 deletions(-)
 
-The result here is a signal coming out of the system that is roughly
-1,000 times more accurate than the old methods. If the system is heavily
-loaded, the difference in accuracy is larger in old methods.
-
-Application Interface:
-The API to use Timed I/O is very simple. It is enabled and disabled by
-writing a '1' or '0' value to the sysfs enable attribute associated with
-the Timed I/O PPS device. Each Timed I/O pin is represented by a PPS
-device. When enabled, a pulse-per-second(PPS) synchronized with the
-system clock is continuously produced on the Timed I/O pin, otherwise it
-is pulled low.
-
-The Timed I/O signal on the motherboard is enabled in the BIOS setup.
-
-References:
-https://en.wikipedia.org/wiki/Pulse-per-second_signal
-https://drive.google.com/file/d/1vkBRRDuELmY8I3FlfOZaEBp-DxLW6t_V/view
-https://youtu.be/JLUTT-lrDqw
-
-Patch 1 adds base clock properties in clocksource structure
-Patch 2 adds function to convert realtime to base clock
-Patch 3 - 7 removes reference to convert_art_to_tsc function across
-drivers
-Patch 8 removes the convert art to tsc functions which are no longer
-used
-Patch 9 adds the pps(pulse per second) generator tio driver to the pps
-subsystem.
-Patch 10 documentation and usage of the pps tio generator module.
-Patch 11 includes documentation for sysfs interface. 
-
-Please help to review the changes.
-
-Thanks in advance,
-Sowjanya
-
-Changes from v2:
- - Split patch 1 to remove the functions in later stages.
- - Include required headers in pps_gen_tio.
-
-Changes from v3:
- - Corrections in Documentation.
- - Introducing non-RFC version of the patch series.
-
-Changes from v4:
- - Setting id in ice_ptp
- - Modified conversion logic in convert_base_to_cs.
- - Included the usage of the APIs in the commit message of 2nd patch.
-
-Lakshmi Sowjanya D (6):
-  x86/tsc: Add base clock properties in clocksource structure
-  timekeeping: Add function to convert realtime to base clock
-  x86/tsc: Remove art to tsc conversion functions which are obsolete
-  pps: generators: Add PPS Generator TIO Driver
-  Documentation: driver-api: pps: Add Intel Timed I/O PPS generator
-  ABI: pps: Add ABI documentation for Intel TIO
-
-Thomas Gleixner (5):
-  e1000e: remove convert_art_to_tsc()
-  igc: remove convert_art_to_tsc()
-  stmmac: intel: remove convert_art_to_tsc()
-  ALSA: hda: remove convert_art_to_tsc()
-  ice/ptp: remove convert_art_to_tsc()
-
- .../ABI/testing/sysfs-platform-pps-tio        |   7 +
- Documentation/driver-api/pps.rst              |  22 ++
- arch/x86/include/asm/tsc.h                    |   3 -
- arch/x86/kernel/tsc.c                         |  92 ++-----
- drivers/net/ethernet/intel/e1000e/ptp.c       |   3 +-
- drivers/net/ethernet/intel/ice/ice_ptp.c      |   3 +-
- drivers/net/ethernet/intel/igc/igc_ptp.c      |   6 +-
- .../net/ethernet/stmicro/stmmac/dwmac-intel.c |   3 +-
- drivers/pps/generators/Kconfig                |  16 ++
- drivers/pps/generators/Makefile               |   1 +
- drivers/pps/generators/pps_gen_tio.c          | 245 ++++++++++++++++++
- include/linux/clocksource.h                   |  27 ++
- include/linux/clocksource_ids.h               |   1 +
- include/linux/timekeeping.h                   |   6 +
- kernel/time/timekeeping.c                     | 105 +++++++-
- sound/pci/hda/hda_controller.c                |   3 +-
- 16 files changed, 460 insertions(+), 83 deletions(-)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
- create mode 100644 drivers/pps/generators/pps_gen_tio.c
-
+diff --git a/arch/x86/kernel/tsc.c b/arch/x86/kernel/tsc.c
+index 5a69a49acc96..45bf2f6d0ffa 100644
+--- a/arch/x86/kernel/tsc.c
++++ b/arch/x86/kernel/tsc.c
+@@ -50,9 +50,9 @@ int tsc_clocksource_reliable;
+ 
+ static int __read_mostly tsc_force_recalibrate;
+ 
+-static u32 art_to_tsc_numerator;
+-static u32 art_to_tsc_denominator;
+-static u64 art_to_tsc_offset;
++static struct clocksource_base art_base_clk = {
++	.id    = CSID_X86_ART,
++};
+ static bool have_art;
+ 
+ struct cyc2ns {
+@@ -1074,7 +1074,7 @@ core_initcall(cpufreq_register_tsc_scaling);
+  */
+ static void __init detect_art(void)
+ {
+-	unsigned int unused[2];
++	unsigned int unused;
+ 
+ 	if (boot_cpu_data.cpuid_level < ART_CPUID_LEAF)
+ 		return;
+@@ -1089,13 +1089,14 @@ static void __init detect_art(void)
+ 	    tsc_async_resets)
+ 		return;
+ 
+-	cpuid(ART_CPUID_LEAF, &art_to_tsc_denominator,
+-	      &art_to_tsc_numerator, unused, unused+1);
++	cpuid(ART_CPUID_LEAF, &art_base_clk.denominator,
++	      &art_base_clk.numerator, &art_base_clk.freq_khz, &unused);
+ 
+-	if (art_to_tsc_denominator < ART_MIN_DENOMINATOR)
++	art_base_clk.freq_khz /= KHZ;
++	if (art_base_clk.denominator < ART_MIN_DENOMINATOR)
+ 		return;
+ 
+-	rdmsrl(MSR_IA32_TSC_ADJUST, art_to_tsc_offset);
++	rdmsrl(MSR_IA32_TSC_ADJUST, art_base_clk.offset);
+ 
+ 	/* Make this sticky over multiple CPU init calls */
+ 	setup_force_cpu_cap(X86_FEATURE_ART);
+@@ -1303,13 +1304,13 @@ struct system_counterval_t convert_art_to_tsc(u64 art)
+ {
+ 	u64 tmp, res, rem;
+ 
+-	rem = do_div(art, art_to_tsc_denominator);
++	rem = do_div(art, art_base_clk.denominator);
+ 
+-	res = art * art_to_tsc_numerator;
+-	tmp = rem * art_to_tsc_numerator;
++	res = art * art_base_clk.numerator;
++	tmp = rem * art_base_clk.numerator;
+ 
+-	do_div(tmp, art_to_tsc_denominator);
+-	res += tmp + art_to_tsc_offset;
++	do_div(tmp, art_base_clk.denominator);
++	res += tmp + art_base_clk.offset;
+ 
+ 	return (struct system_counterval_t) {
+ 		.cs_id	= have_art ? CSID_X86_TSC : CSID_GENERIC,
+@@ -1356,7 +1357,6 @@ struct system_counterval_t convert_art_ns_to_tsc(u64 art_ns)
+ }
+ EXPORT_SYMBOL(convert_art_ns_to_tsc);
+ 
+-
+ static void tsc_refine_calibration_work(struct work_struct *work);
+ static DECLARE_DELAYED_WORK(tsc_irqwork, tsc_refine_calibration_work);
+ /**
+@@ -1458,8 +1458,10 @@ static void tsc_refine_calibration_work(struct work_struct *work)
+ 	if (tsc_unstable)
+ 		goto unreg;
+ 
+-	if (boot_cpu_has(X86_FEATURE_ART))
++	if (boot_cpu_has(X86_FEATURE_ART)) {
+ 		have_art = true;
++		clocksource_tsc.base = &art_base_clk;
++	}
+ 	clocksource_register_khz(&clocksource_tsc, tsc_khz);
+ unreg:
+ 	clocksource_unregister(&clocksource_tsc_early);
+@@ -1484,8 +1486,10 @@ static int __init init_tsc_clocksource(void)
+ 	 * the refined calibration and directly register it as a clocksource.
+ 	 */
+ 	if (boot_cpu_has(X86_FEATURE_TSC_KNOWN_FREQ)) {
+-		if (boot_cpu_has(X86_FEATURE_ART))
++		if (boot_cpu_has(X86_FEATURE_ART)) {
+ 			have_art = true;
++			clocksource_tsc.base = &art_base_clk;
++		}
+ 		clocksource_register_khz(&clocksource_tsc, tsc_khz);
+ 		clocksource_unregister(&clocksource_tsc_early);
+ 
+@@ -1509,10 +1513,12 @@ static bool __init determine_cpu_tsc_frequencies(bool early)
+ 
+ 	if (early) {
+ 		cpu_khz = x86_platform.calibrate_cpu();
+-		if (tsc_early_khz)
++		if (tsc_early_khz) {
+ 			tsc_khz = tsc_early_khz;
+-		else
++		} else {
+ 			tsc_khz = x86_platform.calibrate_tsc();
++			clocksource_tsc.freq_khz = tsc_khz;
++		}
+ 	} else {
+ 		/* We should not be here with non-native cpu calibration */
+ 		WARN_ON(x86_platform.calibrate_cpu != native_calibrate_cpu);
+diff --git a/include/linux/clocksource.h b/include/linux/clocksource.h
+index 0ad8b550bb4b..66a033bff17c 100644
+--- a/include/linux/clocksource.h
++++ b/include/linux/clocksource.h
+@@ -21,6 +21,7 @@
+ #include <asm/div64.h>
+ #include <asm/io.h>
+ 
++struct clocksource_base;
+ struct clocksource;
+ struct module;
+ 
+@@ -48,6 +49,7 @@ struct module;
+  * @archdata:		Optional arch-specific data
+  * @max_cycles:		Maximum safe cycle value which won't overflow on
+  *			multiplication
++ * @freq_khz:		Clocksource frequency in khz.
+  * @name:		Pointer to clocksource name
+  * @list:		List head for registration (internal)
+  * @rating:		Rating value for selection (higher is better)
+@@ -70,6 +72,8 @@ struct module;
+  *			validate the clocksource from which the snapshot was
+  *			taken.
+  * @flags:		Flags describing special properties
++ * @base:		Hardware abstraction for clock on which a clocksource
++ *			is based
+  * @enable:		Optional function to enable the clocksource
+  * @disable:		Optional function to disable the clocksource
+  * @suspend:		Optional suspend function for the clocksource
+@@ -105,12 +109,14 @@ struct clocksource {
+ 	struct arch_clocksource_data archdata;
+ #endif
+ 	u64			max_cycles;
++	u32			freq_khz;
+ 	const char		*name;
+ 	struct list_head	list;
+ 	int			rating;
+ 	enum clocksource_ids	id;
+ 	enum vdso_clock_mode	vdso_clock_mode;
+ 	unsigned long		flags;
++	struct clocksource_base *base;
+ 
+ 	int			(*enable)(struct clocksource *cs);
+ 	void			(*disable)(struct clocksource *cs);
+@@ -306,4 +312,25 @@ static inline unsigned int clocksource_get_max_watchdog_retry(void)
+ 
+ void clocksource_verify_percpu(struct clocksource *cs);
+ 
++/**
++ * struct clocksource_base - hardware abstraction for clock on which a clocksource
++ *			is based
++ * @id:			Defaults to CSID_GENERIC. The id value is used for conversion
++ *			functions which require that the current clocksource is based
++ *			on a clocksource_base with a particular ID in certain snapshot
++ *			functions to allow callers to validate the clocksource from
++ *			which the snapshot was taken.
++ * @freq_khz:		Nominal frequency of the base clock in kHz
++ * @offset:		Offset between the base clock and the clocksource
++ * @numerator:		Numerator of the clock ratio between base clock and the clocksource
++ * @denominator:	Denominator of the clock ratio between base clock and the clocksource
++ */
++struct clocksource_base {
++	enum clocksource_ids	id;
++	u32			freq_khz;
++	u64			offset;
++	u32			numerator;
++	u32			denominator;
++};
++
+ #endif /* _LINUX_CLOCKSOURCE_H */
+diff --git a/include/linux/clocksource_ids.h b/include/linux/clocksource_ids.h
+index a4fa3436940c..2bb4d8c2f1b0 100644
+--- a/include/linux/clocksource_ids.h
++++ b/include/linux/clocksource_ids.h
+@@ -9,6 +9,7 @@ enum clocksource_ids {
+ 	CSID_X86_TSC_EARLY,
+ 	CSID_X86_TSC,
+ 	CSID_X86_KVM_CLK,
++	CSID_X86_ART,
+ 	CSID_MAX,
+ };
+ 
 -- 
 2.35.3
 
