@@ -1,168 +1,185 @@
-Return-Path: <linux-kernel+bounces-106979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2B7E387F63D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:00:51 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D32A087F640
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:02:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FAB11F22987
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:00:45 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 460101F228D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:02:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5257BB1E;
-	Tue, 19 Mar 2024 04:00:40 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B75777C082;
+	Tue, 19 Mar 2024 04:01:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TnEEmKM3"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="KwNvV2t7"
+Received: from esa5.fujitsucc.c3s2.iphmx.com (esa5.fujitsucc.c3s2.iphmx.com [68.232.159.76])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43EE47BB12
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 04:00:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710820839; cv=none; b=Do6xNKBzdlHGLhUVYTbXe46remRD+dcgx4D99L5lhy1GnmAMYAre1Ty1nMaUzJ6udvDC6CT098X+huRoA5jIBAHyiGqdZGlpygG9tC41OfJHhyNUVEFCnLbnToRHQcvndErnbvRuRBbJK7nnwbx8M47N7BY+CqOWLH+QSQhLC+Y=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710820839; c=relaxed/simple;
-	bh=em1tayWATecsjQCbVE06v1UJF8h/Yfzd2A6qPpmeTQE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=smqNUgwlSHEcimMbGeAIuQ9V/HkCeI7wvPt52B9k5Ex3wDiEDYTKEhXT6O5DO2FT8aLkjjiXCA72NcHf++Pv5Pirv+Sy9uJYjL5Amem4fpYslfb0rBw+XAkLDhKqCdG3e6NvlstbFgZ62KissDl6zVi11qNuCAS118Nx+jB1alA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TnEEmKM3; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710820836;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=VCuT+KF0CFKXEteYACtgcd0bLY6/wFRR3VLA/HmQm5k=;
-	b=TnEEmKM3BbG09jvLI6ExIqAMtyXcTx/Ha+OQZDrrcv7rZaZVWy9xq5lXjRLWegfAmZQNPf
-	pu58GP3HWMYNxnMP1axjvbSlE2Eqooz6JvhidEKH3j8eynS0++FtywgN79CKcyhCwkJ8Sn
-	cf2EHOCMtjn376BdRhHRJnZ2xTBeHdk=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-608-uhYCHd1lOYC1LAIgkUewmA-1; Tue, 19 Mar 2024 00:00:30 -0400
-X-MC-Unique: uhYCHd1lOYC1LAIgkUewmA-1
-Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 565D3852002;
-	Tue, 19 Mar 2024 04:00:28 +0000 (UTC)
-Received: from darkstar.users.ipa.redhat.com (unknown [10.72.116.87])
-	by smtp.corp.redhat.com (Postfix) with ESMTPS id 859973C20;
-	Tue, 19 Mar 2024 04:00:16 +0000 (UTC)
-Date: Tue, 19 Mar 2024 12:00:15 +0800
-From: Dave Young <dyoung@redhat.com>
-To: Ashish Kalra <Ashish.Kalra@amd.com>
-Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
-	rafael@kernel.org, peterz@infradead.org, adrian.hunter@intel.com,
-	sathyanarayanan.kuppuswamy@linux.intel.com,
-	elena.reshetova@intel.com, jun.nakajima@intel.com,
-	rick.p.edgecombe@intel.com, thomas.lendacky@amd.com,
-	seanjc@google.com, michael.roth@amd.com, kai.huang@intel.com,
-	bhe@redhat.com, kexec@lists.infradead.org,
-	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
-	kirill.shutemov@linux.intel.com, bdas@redhat.com,
-	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
-	jroedel@suse.de, Ard Biesheuvel <ardb@kernel.org>
-Subject: Re: [PATCH v2 1/3] efi/x86: skip efi_arch_mem_reserve() in case of
- kexec.
-Message-ID: <ZfkNzyGl4J1ZxaGj@darkstar.users.ipa.redhat.com>
-References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
- <cover.1710744412.git.ashish.kalra@amd.com>
- <7c2e6ae663da2e5eb41527f0d854f59a56b91ecd.1710744412.git.ashish.kalra@amd.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DE8C7BAFE;
+	Tue, 19 Mar 2024 04:01:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=68.232.159.76
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710820910; cv=fail; b=OM5+qeMXUEafNy1jYxPxg0+k73jxUFcgF/4E8adQBBf8IcUXfU7hMkCvGDLBpwOkDmBB6UlVB7WynztVM6POxIspSkrWUBNlKZECH7sjsLQuQNfB5VTzs0vc5ATGSe4RFqD7WPzjH8/X1GbII+AvWoFYo04Lb2id27jaNewhg2A=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710820910; c=relaxed/simple;
+	bh=HOav4htRFpyN8xHPpncWE8WGOWcgxUTR3m9ZVVLHeP4=;
+	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=HtidXklXPh7ZnKSh6VbibF1xD8jaqlmsxOroo3kARZVFrWZRx0udn18xNGJvg/5FQdRzX4ucMntrlq7KBb3XFxP89bF7h4DmCakpYJJV7Tly3AvjIztOmEpt9r1FH4CEWMV3lnYC46escqbiBhT5T8gtFvKM7HysbTTH6jPD6zY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=KwNvV2t7; arc=fail smtp.client-ip=68.232.159.76
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj1;
+  t=1710820908; x=1742356908;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-id:content-transfer-encoding:
+   mime-version;
+  bh=HOav4htRFpyN8xHPpncWE8WGOWcgxUTR3m9ZVVLHeP4=;
+  b=KwNvV2t71BGpdRuAhHRnWJzOg/5AVYOrNdv10pVsFc31Y+vtFMxEAcWf
+   vtBZSqHvn6exUIeeh7lcK1rgRoYdGDyh4lXbiFhgyfebiWt6sIMyKq2bg
+   2rwTndFLKbaVGqoBP96/iBhypSMcVKM7Wr+W+64Nb+Vzu/ehT2M73rsWJ
+   Bo6VfbzEvcqC6K15kD5MEVfoSV3naGD+ExhZW9BRiWoYBpdnR/Y4KRZLc
+   GXenVcyoq0dIObiGtfDXE3O7SCB4SUW8eS1JwC96VzS8r9MtEA8B+50RV
+   /YEOZl/H3w5kR9kUPHhCQAc+cYSY906Lnr5AA20lFJsLEcSLpE3vPdQ/X
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="114714800"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708354800"; 
+   d="scan'208";a="114714800"
+Received: from mail-os0jpn01lp2104.outbound.protection.outlook.com (HELO JPN01-OS0-obe.outbound.protection.outlook.com) ([104.47.23.104])
+  by ob1.fujitsucc.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 13:00:33 +0900
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TcNlOjZNg7hsjnDSEtJJ1FD2sr4EE1Q854EjO/qdmN2QWO+fGjn8OEGrpCKKD5tYpso04BM+mAi2v2/P7CXc/DrdQU4caxQ+NWi8XCAw8s+w9MBQuSf6krE+wDrgeP8fZE////RMCo3oMhVmY1KMIM2D65KjYv3Z7mEI7JAvGFtmAxszyiV/SuqvsoDTkL85gfQ67euDzOFG8vB1A/zA6eo0HZhzHCpL7ntDf0aaEkX2mqDIlmN3Cx9Dn7lT9/OJNk13L8gV32sOoAXBFXRvDiLODO98fZ7WVte4hAt3ujsX182oyTOnUdpXChrj0UETQIQmRmire8f0nXeBMdOEQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HOav4htRFpyN8xHPpncWE8WGOWcgxUTR3m9ZVVLHeP4=;
+ b=nj7U1112qedCGyefNAxUbeSyianeQj36D8M+MxBVcBT4e48QrcJrfCpH+PRAQN7XfUZMv6qL/zEzDS/4j37KSjqC+TFrgb0a517t/n6yT3b0HEn8Un9x5AowUowOwzZpXplKCetiznf7MRh40HbjPps6mRpK2y/km/xNHsAibfkmZickm9CIZZ/hVUnh3p4qj1OsOy6WDx+OGhCPTxTygUoOnXr8Ob/Tnfrnbp8uvPkH/7u3D3i+uoZ8VtY/QWcnEbMQ8/J1DEuc8wJoUlkZ1ktlR1nEIhsOZ0s+9Oy0LTp1uE76Mo6MZbVslDOFx6fzYcXqQZzhlczmO+1boad14g==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=fujitsu.com; dmarc=pass action=none header.from=fujitsu.com;
+ dkim=pass header.d=fujitsu.com; arc=none
+Received: from TYAPR01MB5818.jpnprd01.prod.outlook.com
+ (2603:1096:404:8059::10) by TYWPR01MB8479.jpnprd01.prod.outlook.com
+ (2603:1096:400:174::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Tue, 19 Mar
+ 2024 04:00:30 +0000
+Received: from TYAPR01MB5818.jpnprd01.prod.outlook.com
+ ([fe80::c52a:473a:a14f:7f0e]) by TYAPR01MB5818.jpnprd01.prod.outlook.com
+ ([fe80::c52a:473a:a14f:7f0e%3]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 04:00:30 +0000
+From: "Zhijian Li (Fujitsu)" <lizhijian@fujitsu.com>
+To: "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
+CC: Neil Armstrong <neil.armstrong@linaro.org>, Jessica Zhang
+	<quic_jesszhan@quicinc.com>, Sam Ravnborg <sam@ravnborg.org>, Maarten
+ Lankhorst <maarten.lankhorst@linux.intel.com>, Maxime Ripard
+	<mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>, David Airlie
+	<airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>, Helge Deller
+	<deller@gmx.de>, "linux-omap@vger.kernel.org" <linux-omap@vger.kernel.org>,
+	"linux-fbdev@vger.kernel.org" <linux-fbdev@vger.kernel.org>,
+	"dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>
+Subject: Re: [PATCH] drm,fbdev: td043mtea1: Convert sprintf() family to
+ sysfs_emit() family
+Thread-Topic: [PATCH] drm,fbdev: td043mtea1: Convert sprintf() family to
+ sysfs_emit() family
+Thread-Index: AQHaea+VGVvcfa54F06u5KyxHIAVcLE+cJSA
+Date: Tue, 19 Mar 2024 04:00:30 +0000
+Message-ID: <6ea07a1e-39ca-42d8-85fe-a03f388a8d2e@fujitsu.com>
+References: <20240319034310.1574349-1-lizhijian@fujitsu.com>
+In-Reply-To: <20240319034310.1574349-1-lizhijian@fujitsu.com>
+Accept-Language: en-US, zh-CN
+Content-Language: en-US
+X-MS-Has-Attach:
+X-MS-TNEF-Correlator:
+user-agent: Mozilla Thunderbird
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: TYAPR01MB5818:EE_|TYWPR01MB8479:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info:
+ vyLjDdCi9cfca6gHQhP77DU5/DIUdp4PMKv/vxqfv8sHokXW1lB41nfZP5SzfYzBZLLiq6dOhVSh4eqMuyXfkljF4ns0Y6Rm5CmHLwtLTLwZIeUPJaQauAT90mgizVkf5srfITG9DCIZ+bDCi6KXAn9a/jJ7M3fB+VMAmdpi7kyiEbqapBwKjVsg92fpSu0pQEZHgAib8pWlJJnhIPZhZk+cp0pORnQsTdCG98HrS7LZo7+djZTjCF3DqliOJjl/HMCExSt0JPX14w45b/tg6uLKwffzFANMHuaVxXT9kWuo9hYv1FN/P4TK1I41XkLfdfvmg5t7pitS+BY4/UdfqWX2TOAXG8PTTsyumXkHAy7WQg6ZjKhWxIKqUNCH1IjQtgLjBEly/CnTTvJNb34k81+PsgcbqEteo9kyVpF58cNUQyHdpbLM/XaofEgqgjy46DM1ARY39aLzak8G3yQeV+Z3sakV0VOdO0cx0xic2Qg8t1pzD8EfBAmJDxFH4TCXFOafnbTnWTKfnR+4GNprfdaV7k3Pe4lFr0Sylyu0HrGmbqLRVQxwmdh0hxuHLN/mtzUNscsRY8KgRtpOq7caT25BMzpoSs+4RMtJaPjIWYALtC/qX9ypdjix/Up+ToiQwsOtCN4PuaN4UPtTaQWopZ0Za5ppmIbf9KcSb+uoiAnqUIrZK75xVtWDqObNFe1CCtpsGclwBI7+G3gjmnmIiw==
+x-forefront-antispam-report:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:TYAPR01MB5818.jpnprd01.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(366007)(376005)(1580799018);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0:
+ =?utf-8?B?cnZMTysvMDF0UVJCVVhmMEdvNEFXUkZmUE5iMnB1MVN3SGlaQWNldkNVcG9K?=
+ =?utf-8?B?WHJjWmRGekNnVTF2R2tKaFU1QjY4bDJoUUpNSS9VdVdiWjRZampsR1BBcHFP?=
+ =?utf-8?B?SmdiRzlGd3IxUFk4RU95T1FZYnRmS3FRWEhJcXIzQW5VN1IxVnAvZzNGbHlI?=
+ =?utf-8?B?VjRYTHluaDJiRTlqc3pvbHFtR2t5UW1FU05UTm9SbGtackRocVAxS1pWWXM4?=
+ =?utf-8?B?UStRRno0OEpZZ3BkRmxYVExBWlJDQUJWc2poUjByWjl3M2NsaUFmL1BLOHFZ?=
+ =?utf-8?B?S3luTzJXcW5mUzFmL0ZUeTVlem43Vzh3QlJ1ZDhMMFpwbUJaZTNWa2Y2WU9n?=
+ =?utf-8?B?d0N4UkJta0tRMGRLenF6SDRkUS9NUjA2U29wK1Izb3hNOGhBUjl1RGhvR3ht?=
+ =?utf-8?B?M1RYWDdjTnNweXJOcjhMYmZ5VE9KNXhBNUVTbEUrbC9QQ3RHV3I2N0QzdTM0?=
+ =?utf-8?B?K1hUdGRHUEEweHV4WmR6ZkRTd0NiVnhPdEJPUWhZMmJacUxhM216QytwVFl0?=
+ =?utf-8?B?amZLeEgwQ0VFMC9BOHRlc3VqOFltRGFpMDd0TGhyelhaenBQam5oSGxaQTdn?=
+ =?utf-8?B?Z0pDM3dSZm9PY3lMdkJZZElUTC9IcUU2RlJSNmpXU0hZeUtxb3JQc2NsbzNu?=
+ =?utf-8?B?RURudzhodHppUi9hMlVXN2d5eTFtRTNFWnZ5QUJRWkVla1A4TnpNZDlGYU5v?=
+ =?utf-8?B?WTVpdGdiWm9oQ3dINW05Y2p4SGhFMWIyakR1ZWpXVnNtdlQ2T2FCRHIyOHA1?=
+ =?utf-8?B?cHBBZk9DL0xSWXF2b0xkUS85NHdBblhybGZiazFvQ3Y3TU1OOTdVQmFVdFpO?=
+ =?utf-8?B?OG85R0NiaWFvcHFoOGJLeW9pNnlYUHR0ZWQ5N3ZDZXJiWmtzTTVVSmVIcUdk?=
+ =?utf-8?B?bGtqRStVYnllbzlJUnF5aW5ObjV6anNLTEw4Yndqa1NKOW5ia3BmYWNzd0NO?=
+ =?utf-8?B?bThVY2d4amo5SlRLWTlGM0Jub0RLTlQ3cko3d0pRN09JcFg4blhKT1ZsY0k2?=
+ =?utf-8?B?RE1ScFErdjYzeEZxMEtteWdMNE1lelpzdHBaUVk2S1JjWVdSd3kwOVhZMitK?=
+ =?utf-8?B?V1lGQWs4ckFUZm9YN1h1RmxIQVlPVWY1ekZkcUFSR2pObTFGZFlnbkxQQmp3?=
+ =?utf-8?B?RG04anlaZHdYeS9YNEcvWm95VWJ5VHRRcGx6RGM4d3JlVmdKeWxkQTM0TUpQ?=
+ =?utf-8?B?TXdjTVZLbEp4d3hlNDFXYnFvUWM5ZFhia1ZSOWhjZ0NmSmJnQU52TVdRMUw3?=
+ =?utf-8?B?T2lNRTFOWTJLaVJlYklSbzc0UllqZExHcE9oWXRKc3JlK1dDWnpLV01vVzM3?=
+ =?utf-8?B?akxBOGpLYW1zUHdBYW5LeS9DWjJ2aElqWVBJYTcraW1ya3NWYlBZTTJBbkR2?=
+ =?utf-8?B?K0RrTzI0UmNHZTZVQ0NHSEZMOUtnNHZNZzZMVWpTVitlVmw3OVpRNTFhSDVV?=
+ =?utf-8?B?SDZjRjk5WjZIRlJSNVlqc0QwTUs2VHZwR3FuM252cEVCbnd4TDZHNXdrK0V6?=
+ =?utf-8?B?OWpNR0xiTk5SMkFEUFNUVC8rS2ViL2dQNUl3MUErdThmSDhWWnFSMmxiK3V0?=
+ =?utf-8?B?NER0cXZMM0xlNTZ4UVNTVkFxV3ZraTZiWERhNktNQ2RJbW5Rb21jc2VxYjNE?=
+ =?utf-8?B?cjA5dHhDZ3lBL05KRXdlMjY1VUNvNjhVVzFWUTBJbFlSeUtYN1pJcng1bkp1?=
+ =?utf-8?B?c25aOTFtaHhKNUhhVzFmN0NCa0tyUmJUUXRJRGVFdDNCSlIyM3dENmZoWUxt?=
+ =?utf-8?B?cVFObHF4VUlqak9XVlBjek5yTU9HVGJyaWJQUVdyMU5jYU5KUWx3ZFRvZUVQ?=
+ =?utf-8?B?aG9yNnZYaFpYWWtpWFlUc2prTjR5b2pDODJ6ZEg5aUJrNnFwMFRlMGI5RDFZ?=
+ =?utf-8?B?citOekFEenB5Z2s5RWRKZjVvQm0yNUdMcUZXb1lHd05keHJFVW9qUjZNbnVU?=
+ =?utf-8?B?WnlMOXA2YkRJUm5keGFxR3Rmbi9YY2cxQ1ZudmFLZEhzT04xRk5mWnlQTi9o?=
+ =?utf-8?B?S2h0Y0FjOEc0U2hwMVFVeHVIbHlrRVVodUUzSVcvOW9RNTZCZzdGUkY0WjJu?=
+ =?utf-8?B?L3Q2cVp5bUhVZkZvUHB5dUpZN1hKZWpNeFdhWXFTb3B4UTcwOC9vK0Z4enBl?=
+ =?utf-8?B?U1gxanA0SEpYM00wN0N6M2RwcUFLbk9MYTFpc3FKck5STFI2eXdqT094eXRs?=
+ =?utf-8?B?bUE9PQ==?=
+Content-Type: text/plain; charset="utf-8"
+Content-ID: <0F86E7AEB0A07948A90C92B7E3666436@jpnprd01.prod.outlook.com>
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <7c2e6ae663da2e5eb41527f0d854f59a56b91ecd.1710744412.git.ashish.kalra@amd.com>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0:
+	2MTbTOXkiBt1x5Kbsc9RYaAnOI1tZqCJrjZyd6HuZhmZDZCGTJqsRhO3vMkDHb/rwzz1VaiHzWuH1qaGLkeeir7JAFIljNGY9Ca2xMDJJNHrhf+iqd4HxRGKcEJbU/pqJAfQcwXzwykCZR0gKTrTA/MTmz97Enxrs5aS1tXn1j7aXUnwM4S/zuA5eNbOy1mW7pUulhe7GE+r+YB6LuNXk/VS2fDWwcD6kHCGEiWVX/WEdNkf7B85FuvQx1+OedlAYWur2SXzr2UHnN6aR2JvXGSDHwKu5v6pfagB2TZSMV8RfnWycR/13YMdgbS47UqiilRN0q3UHBlgRIEB6LrPDFa3XajQvCkwjN6iWlsEsPDTbZxPkpNM7vrKWwv0juBoFnYdTockM0Hmwl3KPOBQ10IMdQj+YzP/MKPNSQyKn0IOwLwOtwxN0ObsmSk8wLvj69O1LQE2YOXLGW+8GdOUGv78MKmSKSlQVB6NEyK/xrnrKVqjayWwr4bupoCi37lyHOC9Q7rxHxqSqrxMwUV/EopWrGQyQVoWVpVyLym1nlxGc5fXDbKUPx7u9NjRt5h0d3yA0y2Av75/olNWB/dS6+W3uvb/YKw2ik9iVy34vAT0qc0IaudtOULKwEpIMZfb
+X-OriginatorOrg: fujitsu.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: TYAPR01MB5818.jpnprd01.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 602e4ae1-5bdb-4ef8-b1f9-08dc47c91e57
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 04:00:30.2794
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: a19f121d-81e1-4858-a9d8-736e267fd4c7
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: +PhTsqUNVYYyyFIyp5Z3YY8btB+OjgXS2uupITwncXHQpAaLsHYqQQXxnxqWb9zrKDLWhsoXZMYK0AQ6U9W1Iw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: TYWPR01MB8479
 
-Hi,
-
-Added Ard in cc.
-
-On 03/18/24 at 07:02am, Ashish Kalra wrote:
-> From: Ashish Kalra <ashish.kalra@amd.com>
-> 
-> For kexec use case, need to use and stick to the EFI memmap passed
-> from the first kernel via boot-params/setup data, hence,
-> skip efi_arch_mem_reserve() during kexec.
-> 
-> Additionally during SNP guest kexec testing discovered that EFI memmap
-> is corrupted during chained kexec. kexec_enter_virtual_mode() during
-> late init will remap the efi_memmap physical pages allocated in
-> efi_arch_mem_reserve() via memboot & then subsequently cause random
-> EFI memmap corruption once memblock is freed/teared-down.
-> 
-> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
-> ---
->  arch/x86/platform/efi/quirks.c | 10 ++++++++++
->  1 file changed, 10 insertions(+)
-> 
-> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-> index f0cc00032751..d4562d074371 100644
-> --- a/arch/x86/platform/efi/quirks.c
-> +++ b/arch/x86/platform/efi/quirks.c
-> @@ -258,6 +258,16 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
->  	int num_entries;
->  	void *new;
->  
-> +	/*
-> +	 * For kexec use case, we need to use the EFI memmap passed from the first
-> +	 * kernel via setup data, so we need to skip this.
-> +	 * Additionally kexec_enter_virtual_mode() during late init will remap
-> +	 * the efi_memmap physical pages allocated here via memboot & then
-> +	 * subsequently cause random EFI memmap corruption once memblock is freed.
-
-Can you elaborate a bit about the corruption, is it reproducible without
-SNP?
-
-> +	 */
-> +	if (efi_setup)
-> +		return;
-> +
-
-How about checking the md attribute instead of checking the efi_setup,
-personally I feel it a bit better, something like below:
-
-diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
-index f0cc00032751..699332b075bb 100644
---- a/arch/x86/platform/efi/quirks.c
-+++ b/arch/x86/platform/efi/quirks.c
-@@ -255,15 +255,24 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
- 	struct efi_memory_map_data data = { 0 };
- 	struct efi_mem_range mr;
- 	efi_memory_desc_t md;
--	int num_entries;
-+	int num_entries, ret;
- 	void *new;
- 
--	if (efi_mem_desc_lookup(addr, &md) ||
--	    md.type != EFI_BOOT_SERVICES_DATA) {
-+	ret = efi_mem_desc_lookup(addr, &md);
-+	if (ret) {
- 		pr_err("Failed to lookup EFI memory descriptor for %pa\n", &addr);
- 		return;
- 	}
- 
-+	if (md.type != EFI_BOOT_SERVICES_DATA) {
-+		pr_err("Skil reserving non EFI Boot Service Data memory for %pa\n", &addr);
-+		return;
-+	}
-+
-+	/* Kexec copied the efi memmap from the 1st kernel, thus skip the case. */
-+	if (md.attribute & EFI_MEMORY_RUNTIME)
-+		return;
-+
- 	if (addr + size > md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT)) {
- 		pr_err("Region spans EFI memory descriptors, %pa\n", &addr);
- 		return;
-
+DQoNCk9uIDE5LzAzLzIwMjQgMTE6NDMsIExpIFpoaWppYW4gd3JvdGU6DQo+IGRpZmYgLS1naXQN
+Cj4gYS9kcml2ZXJzL3ZpZGVvL2ZiZGV2L29tYXAyL29tYXBmYi9kaXNwbGF5cy9wYW5lbC10cG8t
+dGQwNDNtdGVhMS5jDQo+IGIvZHJpdmVycy92aWRlby9mYmRldi9vbWFwMi9vbWFwZmIvZGlzcGxh
+eXMvcGFuZWwtdHBvLXRkMDQzbXRlYTEuYw0KPiBpbmRleCA0Nzc3ODljZmY4ZTAuLjA0MGExN2Ew
+NWJhYSAxMDA2NDQNCj4gLS0tIGEvZHJpdmVycy92aWRlby9mYmRldi9vbWFwMi9vbWFwZmIvZGlz
+cGxheXMvcGFuZWwtdHBvLXRkMDQzbXRlYTEuYw0KPiArKysgYi9kcml2ZXJzL3ZpZGVvL2ZiZGV2
+L29tYXAyL29tYXBmYi9kaXNwbGF5cy9wYW5lbC10cG8tdGQwNDNtdGVhMS5jDQo+IEBAIC0yMjgs
+MTQgKzIyOCwxMCBAQCBzdGF0aWMgc3NpemVfdCB0cG9fdGQwNDNfZ2FtbWFfc2hvdyhzdHJ1Y3Qg
+ZGV2aWNlDQo+ICpkZXYsDQo+ICAgCWludCByZXQ7DQo+ICAgCWludCBpOw0KPiAgIA0KPiAtCWZv
+ciAoaSA9IDA7IGkgPCBBUlJBWV9TSVpFKGRkYXRhLT5nYW1tYSk7IGkrKykgew0KPiAtCQlyZXQg
+PSBzbnByaW50ZihidWYgKyBsZW4sIFBBR0VfU0laRSAtIGxlbiwgIiV1ICIsDQo+IC0JCQkJZGRh
+dGEtPmdhbW1hW2ldKTsNCj4gLQkJaWYgKHJldCA8IDApDQo+IC0JCQlyZXR1cm4gcmV0Ow0KPiAt
+CQlsZW4gKz0gcmV0Ow0KPiAtCX0NCj4gLQlidWZbbGVuIC0gMV0gPSAnXG4nOw0KPiArCWZvciAo
+aSA9IDA7IGkgPCBBUlJBWV9TSVpFKGRkYXRhLT5nYW1tYSk7IGkrKykNCj4gKwkJbGVuID0gc3lz
+ZnNfZW1pdF9hdChidWYsIGxlbiwgIiV1ICIsIGRkYXRhLT5nYW1tYVtpXSk7DQoNCkl0IHNob3Vs
+ZCBiZQ0KCQlsZW4gKz0gc3lzZnNfZW1pdF9hdChidWYsIGxlbiwgIiV1ICIsIGRkYXRhLT5nYW1t
+YVtpXSk7DQoNCmp1c3QgcG9zdGVkIFYyIHRvIGZpeCB0aGlzLg0KDQoNClRoYW5rcw0KWmhpamlh
+bg0KDQo+ICsJaWYgKGxlbikNCj4gKwkJYnVmW2xlbiAtIDFdID0gJ1xuJzsNCj4gICA=
 
