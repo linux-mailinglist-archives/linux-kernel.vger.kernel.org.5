@@ -1,210 +1,179 @@
-Return-Path: <linux-kernel+bounces-107347-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107351-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8E2F87FB4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:57:33 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0248E87FB56
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:59:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7E9B01F2271F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:57:33 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7D0E8B21BCF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:58:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5282F8063E;
-	Tue, 19 Mar 2024 09:54:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A66E7E101;
+	Tue, 19 Mar 2024 09:55:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VuTCHN7X"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b="LxfUnZy3";
+	dkim=fail reason="signature verification failed" (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b="goFJTg40"
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (mail-be0deu01on2104.outbound.protection.outlook.com [40.107.127.104])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A96B7E11A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:54:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710842045; cv=none; b=QcqmoANskMDcmGLETRRKVcW9aCTOxMXXA8nmQ2P+ZwcDYlqHNALI6sRFUKJ6gy0iaKxg5PedHLm4MBDjR49BsX08g+7P5l772xRE0NmxYMCjfEfls72usUxNPyDwsTUoBe/B5+u9f6y+673iAzlo9Zox80uEkOaYty10gbpshKI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710842045; c=relaxed/simple;
-	bh=MQ9HHbdPS8+JI63xBWLs9D0CqR4PIpQVUXpwbFb8Yp0=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=p00B65vurtXptMFEeeG2/ZCkfUrIjiy6Beo1SJ9T2kuyKcMMxJu19Zt1c5vsdHt2QK4TtWn+2rS12ov3qSqlZHBtj9i2kY1aqIgeowKWJKMHp4m74unCEqnVh8VSMcHb2a391pNXxV6T7jnl0HzjK9ufINep+7ubnCdkWraWwkc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VuTCHN7X; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710842041;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=huubYUDUToyqq9krPzQhPuLvY5vBhK3/v+f/Pk52wRI=;
-	b=VuTCHN7X2/ayUGAUs55hxA6lLobiIE4XGdxOxNMCeoDjg4X6qpm+YaYGujV2Xt1sxNe5d3
-	vtlZB3zjR4m9quk8cLY5cUt7rbFmj/BM62JgVWuZC9slnEdPCo5uRX0TzztyY+gl/dhRFf
-	sFBMbsW+eJVKITXR+BoaTYkhOUiJL20=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-578-JIREjtCrPPy12nfWRGBZ2Q-1; Tue, 19 Mar 2024 05:53:58 -0400
-X-MC-Unique: JIREjtCrPPy12nfWRGBZ2Q-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a468895a00dso269456266b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:53:58 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710842037; x=1711446837;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=huubYUDUToyqq9krPzQhPuLvY5vBhK3/v+f/Pk52wRI=;
-        b=OccrXktYOz1kNcO/ic02cWOUWpjXuE2QxbslI4ovi7jrUC2VJ5FUWs0OJ92kHQxLbN
-         sK3oFsH7SaqfFQdt2sVutjjXq/bEpyJj0g5s9S+Ip2JvUw+BFCkPO+CKm8apsG7aMg0v
-         kiGRJCMIQvidJU0wCnJluqPvAmlBBRjzZX1zwx+BHIJLbvheO4yu1SLBLCYMkMde3vsE
-         TFjCDShmPDFsIQ0/+JjxSy/K9glWDxwKB7FvBJljGGUBU5f4DrTnFrJKFwOASd8N6PGa
-         okFsGJEVhS61Px4+vJcsKuECU9X0pFDSwSlBC6ApVLEBZPjUyJeJEV5sN+3wIlxDJqE3
-         JjfA==
-X-Forwarded-Encrypted: i=1; AJvYcCUeCqaiEB+9ScnolVx5soUnISdHX3jRC5EkO/Ow0aO+5KX5XFvfRMJx+21Oma1ImujW94EUu/vQBX15bWJ8Cb2mhg99eNTWlj2MYJEn
-X-Gm-Message-State: AOJu0YxgWuqLCY8P9JFX2Jz4wliXTeavwkAHOUH5vre94fFGab2Nvi/v
-	K/8m6XRZ1impc+FDjxVStTJR7bV0lQoxQVEdswutMOVOP+ifuskOoNXjXbpzEIkBwmBqRrOe37F
-	m36FRYVu1BMEo6JLJLWNNfeV1zVI3ENsxhLWlbtX8tFdGHuO/lfJoQ9+9FHSMFcMuZocdgIhSd0
-	AK1GkzMjAvPUW5Er+Q3cLtHUCpZgMs/IAg0HjP
-X-Received: by 2002:a17:906:c1c5:b0:a46:6faa:2b8 with SMTP id bw5-20020a170906c1c500b00a466faa02b8mr1279785ejb.68.1710842037239;
-        Tue, 19 Mar 2024 02:53:57 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IEi0AFEaSTgIutppuvHx8wkcKGVsW13LDh2HlG2CLXtPRG0kWeJmpUyYDwazcub07/XGqzu503Rc/iLvyeHG9c=
-X-Received: by 2002:a17:906:c1c5:b0:a46:6faa:2b8 with SMTP id
- bw5-20020a170906c1c500b00a466faa02b8mr1279769ejb.68.1710842036919; Tue, 19
- Mar 2024 02:53:56 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 959547E0E4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:55:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.127.104
+ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710842125; cv=fail; b=U8tj8iXjSK14+WNJ+atCjq4LFQVb/PeNvpnrfgCx7r6kwJd91QaCiHJPIOfwTwT3FyfQEFFMlCBkNjbYejDXX5Wen/DJvNEb7WUEmk1EOAOdrmEqVzKHPiGmEkm5gepHM9QYOFb8lyfdg4IiC8EK1gXlPPhRVtzCU4Z/VHsqR3Q=
+ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710842125; c=relaxed/simple;
+	bh=FLmUmyMPQP6e4752th6cNUVoZJ6S05NRQpuMeNY/vx4=;
+	h=From:To:CC:Subject:Date:Message-ID:Content-Type:MIME-Version; b=PxaQFNCYKmaRp5wX1sxPBITEHiDJQFWFt5xwAX4+bxAJJJ8OlQ8KHd14+tPVdhUmb5Ez165VE1Pd4hEXQBL+2SnjLq1/x5mEbEAB6WzoAqo37dicyR1CcjtIJEocEdnBmhjR+8eVJvcMYi6jK7QkUABvY5ILsxhEgew2rYXYfb8=
+ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iesy.com; spf=pass smtp.mailfrom=iesy.com; dkim=pass (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b=LxfUnZy3; dkim=fail (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b=goFJTg40 reason="signature verification failed"; arc=fail smtp.client-ip=40.107.127.104
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iesy.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iesy.com
+ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=fail;
+ b=SZcgXir09wHDHKmzEJWygSVPu3YQO9fXYibzE2cAddzfDEiJcpULl+63ICiVtPX6RGK9jGTZpJ+LS+7cHwTGY3PY1XN11Ap8/NEeNWy6NYT6WQuuwKpcS+DzY5Nf1bjyltBa2M24vTw5sUxTQGSveT0Q8y5cdqkApNmIwg8ta6HyUQoJ/CUIKEAAnRWJwbrT2a3PeH/Pn9Agz2fogUwbEPXzSmKjNaqXn92mG3h8nEWDAOrG5lPgnLYMacgONXsfjRCHbLw3/Dlecv1TJFKM5O3yJKff/MACqoQnMl86oob2BzQ9u3qfarWZy2fbm9oT1onPytMK68LRJtQKUXlYtA==
+ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=+d5sLvVEdGISAEPHWV+vAAz45eGs9R2X0isKTcifFug=;
+ b=gmYvH3s/81rBrLcZFQm0IE8wDkhHl7BSxw6NYC74SZTN7CD9BMNfsLP9bVIaZhWShqoEwUPcXEYZNGXyZ/8qPhF4mKvaZgo7/D2jTvBpvqOC70VGgsj+4uyxhgP4tpGiDVxKIvS2rbpxXI5d7fsHWD3iTQ4FY0Q6R3Ssdhl5YxSdLLqwUQAkZFutuKkY+KkdvFLFVxoOn+TslnGG5bsHlpK5bTe339E5dqRrasrPuAyXMZN5EvEACaFZ8W2ulrTNGbz5hirdNyx1YJ/7J1ZCYU7gcR3byv4JI9RhoRd0LhIDT0FZ5nUBpBNCX51et0EttgF5e/0kbtF304AwNLP1wQ==
+ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=fail (sender ip is
+ 20.79.220.33) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=iesy.com;
+ dmarc=none action=none header.from=iesy.com; dkim=fail (body hash did not
+ verify) header.d=iesy20.onmicrosoft.com; arc=fail (47)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=iesy20.onmicrosoft.com; s=selector1-iesy20-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=+d5sLvVEdGISAEPHWV+vAAz45eGs9R2X0isKTcifFug=;
+ b=LxfUnZy3na7SlSeNnwV1of/3df1SFSeM/2AB56IiUicX5cccEzQrdqn1Idiz17jwCnq+FGBGOzvMZfuikfoyJc0eBTeX5L+QyASQrP4/oNActoCa4joCfvTn0hr1dm7yt75GeB68ntR2Wx6OjcrK5KKCaZkPhXDAaeCYp9eKwbk=
+Received: from FR2P281CA0101.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:9c::7) by
+ BEUP281MB3593.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:9f::6) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.29; Tue, 19 Mar 2024 09:55:18 +0000
+Received: from FR1PEPF00000F0E.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:9c:cafe::45) by FR2P281CA0101.outlook.office365.com
+ (2603:10a6:d10:9c::7) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
+ Transport; Tue, 19 Mar 2024 09:55:18 +0000
+X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 20.79.220.33)
+ smtp.mailfrom=iesy.com; dkim=fail (body hash did not verify)
+ header.d=iesy20.onmicrosoft.com;dmarc=none action=none header.from=iesy.com;
+Received-SPF: Fail (protection.outlook.com: domain of iesy.com does not
+ designate 20.79.220.33 as permitted sender) receiver=protection.outlook.com;
+ client-ip=20.79.220.33; helo=de1-emailsignatures-cloud.codetwo.com;
+Received: from de1-emailsignatures-cloud.codetwo.com (20.79.220.33) by
+ FR1PEPF00000F0E.mail.protection.outlook.com (10.167.240.21) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 09:55:18 +0000
+Received: from DEU01-BE0-obe.outbound.protection.outlook.com (104.47.7.169) by de1-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 19 Mar 2024 09:55:16 +0000
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=aa6vuhBrO/bhxR41V4QhU3SOC9UoSRrZ2I3DMKac+p7teQTOg/9JFkRVFIrHQMsRIJsAOZO+lczP3qL5klbj8hKnQydjGCHpUWNQsgygYLP7yQmODIcdit1g3Ubm1WZ5o0i5VvaO24fjynNG0srOuQRl/Y2BMNyUGTa1PqjodQ7nDQAJP6i0cAc438Hx8d107EqvUmCpQOCiilJ6acAL8FLqyJfuynL12zoYA7u+v6y52YyddyD6Gk+MGrzJaFGI7z47x9YyjzrgmpiDZDwjhZ2hnVEODX8U0y4bWvF9Srzq/OPrjeDyEwbGn4jnWEwucY2NcFCq5WbMj1AldDqHkw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=HkHxqr/3Ru2tZlIEAaQM12Yl9f/NwXVwjLXLJ0Ow7TM=;
+ b=lFs3EoHmxAQk4fUupnz7GJ86LdpBNkWVh+MDWV/p8sEnitZD0sNQ4otZyu+OlY+3/sJS7Yj92eIYWiv50be+gh2LnYfFQP8LvtRpa7IXLyF5GaTGL6AWzhdqDpMYoVK3PyPOnlvdPVHe8xttn3c/NPHstY1WbPMuN064nV3pPol4JuWMMQ4fGD2g7nRRvbWvFW/MSwNdXcXYbmXF5FQIiFonx1Pgk/chGOKqfstjAZH9mIN9Eg9u4AWN05ad6Il3tELsEdvXiYppQC3gOqnGWCXpa9IWCOg85xjKFdcurOP7RmBpJYX9uXOI5y5uH7yhWwHuW3rONfQhBRD30wtwqw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=iesy.com; dmarc=pass action=none header.from=iesy.com;
+ dkim=pass header.d=iesy.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+ d=iesy20.onmicrosoft.com; s=selector1-iesy20-onmicrosoft-com;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=HkHxqr/3Ru2tZlIEAaQM12Yl9f/NwXVwjLXLJ0Ow7TM=;
+ b=goFJTg40pA4v+bkTx2y40K6c65jOy6Lm5X0xI6xOR7mXMDJgYxUqANS1o55Ep8SpbgVeGeESx00EbXAdu/vTUOAC2e2tVO/HcWcqwYMGYMipTi8OVr6Tz7fbUtX36k0kQcuu5w3bJJ3JOW5Emg3I7OKXPd+rrdT8YZt+jVaz3M8=
+Received: from FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:39::12)
+ by FRYP281MB2558.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:77::8) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Tue, 19 Mar
+ 2024 09:55:15 +0000
+Received: from FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::8af4:a741:edb6:e851]) by FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM
+ ([fe80::8af4:a741:edb6:e851%3]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 09:55:15 +0000
+From: Dominik Poggel <pog@iesy.com>
+To: robh+dt@kernel.org
+CC: Dominik Poggel <pog@iesy.com>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Heiko Stuebner <heiko@sntech.de>,
+	Tianling Shen <cnsztl@gmail.com>,
+	Chris Morgan <macromorgan@hotmail.com>,
+	Ondrej Jirman <megi@xff.cz>,
+	Andy Yan <andyshrk@163.com>,
+	devicetree@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org,
+	linux-rockchip@lists.infradead.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH 0/3] arm64: dts: rockchip: add support for iesy RPX30 SoM OSM-S
+Date: Tue, 19 Mar 2024 10:53:59 +0100
+Message-ID: <20240319095411.4112296-1-pog@iesy.com>
+X-Mailer: git-send-email 2.30.2
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain
+X-ClientProxiedBy: FR2P281CA0023.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:14::10) To FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM
+ (2603:10a6:d10:39::12)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240316113830.230718-1-ivecera@redhat.com>
-In-Reply-To: <20240316113830.230718-1-ivecera@redhat.com>
-From: Michal Schmidt <mschmidt@redhat.com>
-Date: Tue, 19 Mar 2024 10:53:45 +0100
-Message-ID: <CADEbmW3C5y4gFzRsNW-V_DTUZimxh_AT5Ohr-KH8R7DXz38EGg@mail.gmail.com>
-Subject: Re: [PATCH net v4] i40e: Enforce software interrupt during busy-poll exit
-To: Ivan Vecera <ivecera@redhat.com>
-Cc: netdev@vger.kernel.org, pawel.chmielewski@intel.com, 
-	aleksandr.loktionov@intel.com, Hugo Ferreira <hferreir@redhat.com>, 
-	Jesse Brandeburg <jesse.brandeburg@intel.com>, Tony Nguyen <anthony.l.nguyen@intel.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jacob Keller <jacob.e.keller@intel.com>, 
-	"moderated list:INTEL ETHERNET DRIVERS" <intel-wired-lan@lists.osuosl.org>, open list <linux-kernel@vger.kernel.org>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-TrafficTypeDiagnostic:
+	FR2P281MB2393:EE_|FRYP281MB2558:EE_|FR1PEPF00000F0E:EE_|BEUP281MB3593:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam-Untrusted: BCL:0;
+X-Microsoft-Antispam-Message-Info-Original:
+ M4NOsYH3WU48Sq6uU7aI6PXWrEdgIorLW+3BKU+fw2IApHATTSloxvHn3CfrYSkCbUA88g/zAtXvLXk0cQ4ZvGYV28fD+EjccRUmerS0O1JDHtz8l3ddPj/QxfB2HHWqSk7krXYRf7+zHzgtk91x6fqkwVBRR5PR6y65drq1pCcdhGVSx+vvJHy9H3RMF8NDau8HJrtarzCRsADciDQde9r1HUnoXl6ru/AuFxwZwKNNog1ZdgWn5IZS5A1FOYIcqThYW3Kqm2alOXASlpoXt7319wPGvA/AQtfiTRbliNG9mvC6qwZDVSbbUBIxBhHg97FBQQxmnmTbC4GyFiYPg0Ug/oZmLp7yzu7h5zw8WeDFH4QeNI9orpHgS9L0fVDMOHmfd9y05gefL0l9ocoLD3fhhny15WTTQZmrukn/Ne+FTztVqmbNximt2WajYHVKgyZ4uc9tHFmiAFxCpTUANOTNlggJ3JZTb63ITqar9ERPLZD+06EbJJ8mnAbdSlA1FEFzxW6lmA/UQISBhPfGJidXhjB+QmbxlPhk/BCsnnhLrqmGTcZhhZ8GiNKaSY6CYHXYjGhzHmM6o//aiFbsmt4LJScZ3FaIvtNXRNLtQJOd5DfoQ6d3LW8PagFDs7HduPwgp9djSoHIfksxx8InrakiVrE5ecqQ4cH9pwZh13qT/5wG6YWT9Z6JgPNJOse9+m0WF0tv4GrCaGyiPMm1LditoOtxPCLd+RiLni2VhEo=
+X-Forefront-Antispam-Report-Untrusted:
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(52116005)(366007)(38350700005);DIR:OUT;SFP:1102;
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: FRYP281MB2558
+X-CodeTwo-MessageID: 9ba82c68-768a-40fb-92a8-5a48e33bf570.20240319095516@de1-emailsignatures-cloud.codetwo.com
+X-CodeTwoProcessed: true
+X-EOPAttributedMessage: 0
+X-MS-Exchange-Transport-CrossTenantHeadersStripped:
+ FR1PEPF00000F0E.DEUP281.PROD.OUTLOOK.COM
+X-MS-PublicTrafficType: Email
+X-MS-Office365-Filtering-Correlation-Id: 8e351474-bcf5-4049-917d-08dc47faaef0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	OqEAIfS11SuR0YKj4TX7nbZrU/r15mPm9r9bwpXNBzdtmOkDtC4jAb9pF8Pa7AIlim9FgyTzzo9qayMW7euAPKqBvxwvJ27vnq6NfuqxBosqBu17e+fKU8CB3me6BAyhBttoQHtxJ/x57tiSHxcPDvvESB5icQOHmeru8+BSCM0UlHc8pb+ouXru9KSiSKNlhZxTewsn8GqS+IjYXcLCiy9t0DJ7uIw+hHeFpyF5A/V41ilECA6SAXT5n2Clf+SoMJ0/zPz8yUW25bgogKUXVkiNpZlFd4vMtkwqsLGRwsweLg4P5G/+ixiCK2vmtxG14dPL2bWzCi9u192ymj3o5NxVv11v5lsM8qknahY4vILq1hl0TxK5vGUoF+eVBdiTpq1ElFjKvcSvUijybW5Poou7utHRslQNdxqSVPq6DvsV42oMwvbaGVK04cbvhOBpVgAsergqPX7BT4SRkwDxhBqR6MvLxFytH8Lsz2qfRp8CfDvxCkOy7ujuEw2IyZ2PJCs8KtZ7pGELQPgoybrSBRavLnl6QoJ/TuMCgrYYT3rO6RejUyV/6CTcY9qe/vxtoxOUnaB/OgLKwUs/Q9zdTSZX/juwcQB7M1z/UX0aMwdxEx4xLNd7gIlAPlHipnE+gZlBSxAwl6iDfhe/dbjL1WFBn2xPG4F1KTHKYwV3pGTO5st3IQci7gk6goTCfe0fp825BnsrMqRlL8CjAqy2F4qom8KvSuJBUBf3C2+JA4z5heNojYpytkXMPS/rFAXx
+X-Forefront-Antispam-Report:
+	CIP:20.79.220.33;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:de1-emailsignatures-cloud.codetwo.com;PTR:de1-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(1800799015)(376005)(82310400014)(36860700004);DIR:OUT;SFP:1102;
+X-OriginatorOrg: iesy.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 09:55:18.2165
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 8e351474-bcf5-4049-917d-08dc47faaef0
+X-MS-Exchange-CrossTenant-Id: ace663fd-5672-464f-8169-8d373312f6bc
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ace663fd-5672-464f-8169-8d373312f6bc;Ip=[20.79.220.33];Helo=[de1-emailsignatures-cloud.codetwo.com]
+X-MS-Exchange-CrossTenant-AuthSource: FR1PEPF00000F0E.DEUP281.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEUP281MB3593
 
-On Sat, Mar 16, 2024 at 12:38=E2=80=AFPM Ivan Vecera <ivecera@redhat.com> w=
-rote:
-> As for ice bug fixed by commit b7306b42beaf ("ice: manage interrupts
-> during poll exit") followed by commit 23be7075b318 ("ice: fix software
-> generating extra interrupts") I'm seeing the similar issue also with
-> i40e driver.
->
-> In certain situation when busy-loop is enabled together with adaptive
-> coalescing, the driver occasionally misses that there are outstanding
-> descriptors to clean when exiting busy poll.
->
-> Try to catch the remaining work by triggering a software interrupt
-> when exiting busy poll. No extra interrupts will be generated when
-> busy polling is not used.
->
-> The issue was found when running sockperf ping-pong tcp test with
-> adaptive coalescing and busy poll enabled (50 as value busy_pool
-> and busy_read sysctl knobs) and results in huge latency spikes
-> with more than 100000us.
->
-> The fix is inspired from the ice driver and do the following:
-> 1) During napi poll exit in case of busy-poll (napo_complete_done()
->    returns false) this is recorded to q_vector that we were in busy
->    loop.
-> 2) Extends i40e_buildreg_itr() to be able to add an enforced software
->    interrupt into built value
-> 2) In i40e_update_enable_itr() enforces a software interrupt trigger
->    if we are exiting busy poll to catch any pending clean-ups
-> 3) Reuses unused 3rd ITR (interrupt throttle) index and set it to
->    20K interrupts per second to limit the number of these sw interrupts.
->
-> Test results
-> =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
-> Prior:
-> [root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 -=
--mps=3Dmax -t 120
-> sockperf: =3D=3D version #3.10-no.git =3D=3D
-> sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
->
-> [ 0] IP =3D 10.9.9.1        PORT =3D 11111 # TCP
-> sockperf: Warmup stage (sending a few dummy messages)...
-> sockperf: Starting test...
-> sockperf: Test end (interrupted by timer)
-> sockperf: Test ended
-> sockperf: [Total Run] RunTime=3D119.999 sec; Warm up time=3D400 msec; Sen=
-tMessages=3D2438563; ReceivedMessages=3D2438562
-> sockperf: =3D=3D=3D=3D=3D=3D=3D=3D=3D Printing statistics for Server No: =
-0
-> sockperf: [Valid Duration] RunTime=3D119.549 sec; SentMessages=3D2429473;=
- ReceivedMessages=3D2429473
-> sockperf: =3D=3D=3D=3D> avg-latency=3D24.571 (std-dev=3D93.297, mean-ad=
-=3D4.904, median-ad=3D1.510, siqr=3D1.063, cv=3D3.797, std-error=3D0.060, 9=
-9.0% ci=3D[24.417, 24.725])
-> sockperf: # dropped messages =3D 0; # duplicated messages =3D 0; # out-of=
--order messages =3D 0
-> sockperf: Summary: Latency is 24.571 usec
-> sockperf: Total 2429473 observations; each percentile contains 24294.73 o=
-bservations
-> sockperf: ---> <MAX> observation =3D 103294.331
-> sockperf: ---> percentile 99.999 =3D   45.633
-> sockperf: ---> percentile 99.990 =3D   37.013
-> sockperf: ---> percentile 99.900 =3D   35.910
-> sockperf: ---> percentile 99.000 =3D   33.390
-> sockperf: ---> percentile 90.000 =3D   28.626
-> sockperf: ---> percentile 75.000 =3D   27.741
-> sockperf: ---> percentile 50.000 =3D   26.743
-> sockperf: ---> percentile 25.000 =3D   25.614
-> sockperf: ---> <MIN> observation =3D   12.220
->
-> After:
-> [root@dell-per640-07 net]# sockperf ping-pong -i 10.9.9.1 --tcp -m 1000 -=
--mps=3Dmax -t 120
-> sockperf: =3D=3D version #3.10-no.git =3D=3D
-> sockperf[CLIENT] send on:sockperf: using recvfrom() to block on socket(s)
->
-> [ 0] IP =3D 10.9.9.1        PORT =3D 11111 # TCP
-> sockperf: Warmup stage (sending a few dummy messages)...
-> sockperf: Starting test...
-> sockperf: Test end (interrupted by timer)
-> sockperf: Test ended
-> sockperf: [Total Run] RunTime=3D119.999 sec; Warm up time=3D400 msec; Sen=
-tMessages=3D2400055; ReceivedMessages=3D2400054
-> sockperf: =3D=3D=3D=3D=3D=3D=3D=3D=3D Printing statistics for Server No: =
-0
-> sockperf: [Valid Duration] RunTime=3D119.549 sec; SentMessages=3D2391186;=
- ReceivedMessages=3D2391186
-> sockperf: =3D=3D=3D=3D> avg-latency=3D24.965 (std-dev=3D5.934, mean-ad=3D=
-4.642, median-ad=3D1.485, siqr=3D1.067, cv=3D0.238, std-error=3D0.004, 99.0=
-% ci=3D[24.955, 24.975])
-> sockperf: # dropped messages =3D 0; # duplicated messages =3D 0; # out-of=
--order messages =3D 0
-> sockperf: Summary: Latency is 24.965 usec
-> sockperf: Total 2391186 observations; each percentile contains 23911.86 o=
-bservations
-> sockperf: ---> <MAX> observation =3D  195.841
-> sockperf: ---> percentile 99.999 =3D   45.026
-> sockperf: ---> percentile 99.990 =3D   39.009
-> sockperf: ---> percentile 99.900 =3D   35.922
-> sockperf: ---> percentile 99.000 =3D   33.482
-> sockperf: ---> percentile 90.000 =3D   28.902
-> sockperf: ---> percentile 75.000 =3D   27.821
-> sockperf: ---> percentile 50.000 =3D   26.860
-> sockperf: ---> percentile 25.000 =3D   25.685
-> sockperf: ---> <MIN> observation =3D   12.277
->
-> Fixes: 0bcd952feec7 ("ethernet/intel: consolidate NAPI and NAPI exit")
-> Reported-by: Hugo Ferreira <hferreir@redhat.com>
-> Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
+Add dts files for SoM and baseboard featuring rockchip PX30 SoC
 
-Yes, I am OK with v4.
-Michal
+Add iesy GmbH to dt-bindings: vendor-prefixes
 
-> Signed-off-by: Ivan Vecera <ivecera@redhat.com>
+Add baseboard to dt-bindings: arm: rockchip
+
+Dominik Poggel (3):
+  arm64: dts: iesy: add support for iesy PX30 SoM OSM-S
+  dt-bindings: vendor-prefixes: add iesy
+  dt-bindings: arm: rockchip: add iesy RPX30 evaluation board
+
+ .../devicetree/bindings/arm/rockchip.yaml     |   5 +
+ .../devicetree/bindings/vendor-prefixes.yaml  |   2 +
+ arch/arm64/boot/dts/rockchip/Makefile         |   1 +
+ .../boot/dts/rockchip/px30-iesy-eva-mi-v2.dts | 682 ++++++++++++++++++
+ .../boot/dts/rockchip/px30-iesy-osm-sf.dtsi   | 362 ++++++++++
+ 5 files changed, 1052 insertions(+)
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-iesy-eva-mi-v2.dts
+ create mode 100644 arch/arm64/boot/dts/rockchip/px30-iesy-osm-sf.dtsi
+
+--=20
+2.44.0
 
 
