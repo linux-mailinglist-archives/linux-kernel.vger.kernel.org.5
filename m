@@ -1,210 +1,225 @@
-Return-Path: <linux-kernel+bounces-107414-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107417-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3A78A87FC1B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:48:55 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id EEBF687FC2B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:50:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DC16D28767F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:48:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 668741F224B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:50:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E94AE5810A;
-	Tue, 19 Mar 2024 10:48:45 +0000 (UTC)
-Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0BA17EF06;
+	Tue, 19 Mar 2024 10:49:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="DO0T/veh"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5334545940;
-	Tue, 19 Mar 2024 10:48:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4FCDB7E588;
+	Tue, 19 Mar 2024 10:49:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710845325; cv=none; b=oX0Q4GCeOhZBuYw8dA5Wn0mEdUFpr+kRzXd7iCmEetJ4MzzNYyifiTkVg1vvJgmYkq/cCHBX7ZhR2hlSz09Uo6/v0MGq983jFWhZloV9wtBLPf9Rl+6T23ddTMnKooG8yhSH4iGBWLXr+V35SbzwpSItZg5Sd3CNWuG/jtzecGw=
+	t=1710845375; cv=none; b=jZAm2bV2hTNz9wU3LUn3QbJ/fZ1Cy0Plu8yncZ/NM0/j9wSFhO/jADpvCfzpDcAm8flUQptOOGlxu1svFUxWMsv31KhxXpfurgVqGsHuTD9W8zARM6MQfpUPz4rP2n2JdSMj6Psjtg53WcmTL7Em2AJqb2J112pMk2M2AkxWxYI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710845325; c=relaxed/simple;
-	bh=AmY0S/XSTPSR4wg0dM/MbqWU3msGu1Ikv7x99ngue4U=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=V/hAlYCWolimWn/XBmIfED9GAT59wO2q1fb753LxzCd30fVqeuzVlkMhwNd5Cu0RTOxw2m+gCiMkDyf8XoaSweGGisZGtpmmmnqq3UYSgR5ijLyMYs2kPPu/HwUCU5r/LsBB69sap1VUo5ysX8Co+dYrGN4pzG7v8CePlppgRgA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.218.43
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a46cf8f649dso196717866b.3;
-        Tue, 19 Mar 2024 03:48:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710845321; x=1711450121;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=2Pf9ToHTFBlUcNvi0ccDec6bsbZdFOYxpbDdlfC2TV8=;
-        b=Ph6KgNnMhIDOwadnVXSMOABLgwMmZJznDWHDLC36J30dUeHRAp2ffvNjZhEiOUM4Ip
-         CjkuoZp3UF7e/yCwPEKvwMsysi9vzTl7mG7Ce4EW6cPZQbYLG4ZSB8rcthxIWDrxMyhV
-         KT5gIpJEk4ta1pC/gWqlXxzVmOLETadImkfXWbPy7/VruXR8ew5+HDdS5eGcUtxMmp1D
-         +KbXWqpzgAXNHxxbKa45Y4JKa3845uK/NmV9IdtbEwxXsc+sldd2XjITfN28Di6FK/oQ
-         zPaaacREPQ2aQTeUoBnmAZ9J0f5BGV2riGj68fKD8J4VWmSaW7BuH/WzkNKpzQYAfg/y
-         bZqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVkCRZWbGgaE/eF1gDKDyeCervssK5inoGL/Eu4dnku/ezoj94iJFg4QEDaJU2Nj78x3RBiJp3U9Sl+ds47v/rhbOj/uPXyXwz9J8y+e/cEcXmp3KfdQL6rn9mv121O4uNo29JjlSd73yl1af0=
-X-Gm-Message-State: AOJu0YwA5lU2pbKhck0fQefZV8XHNUUkTQLVdQ95bP6Js7YRxGnNtRRA
-	XF95pQ5n7HBzVg4wwuh0k8XitW93Lc2PR82xi9diTdr18QGGy50w
-X-Google-Smtp-Source: AGHT+IGuKBcD2QQQjVeFlvXngOSVaEvkMXfwiDGw4QgZ/UrAY/EfPNIFca1MM4+xo+QpvUeaIEoosw==
-X-Received: by 2002:a17:906:3e47:b0:a46:a71d:323a with SMTP id t7-20020a1709063e4700b00a46a71d323amr1396399eji.72.1710845321329;
-        Tue, 19 Mar 2024 03:48:41 -0700 (PDT)
-Received: from localhost (fwdproxy-lla-119.fbsv.net. [2a03:2880:30ff:77::face:b00c])
-        by smtp.gmail.com with ESMTPSA id l22-20020a1709067d5600b00a469e550472sm4108087ejp.60.2024.03.19.03.48.40
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 03:48:40 -0700 (PDT)
-From: Breno Leitao <leitao@debian.org>
-To: Kalle Valo <kvalo@kernel.org>,
-	Jeff Johnson <jjohnson@kernel.org>
-Cc: kuba@kernel.org,
-	keescook@chromium.org,
-	linux-wireless@vger.kernel.org (open list:NETWORKING DRIVERS (WIRELESS)),
-	ath10k@lists.infradead.org (open list:QUALCOMM ATHEROS ATH10K WIRELESS DRIVER),
-	linux-kernel@vger.kernel.org (open list)
-Subject: [PATCH] ath10k: allocate dummy net_device dynamically
-Date: Tue, 19 Mar 2024 03:47:52 -0700
-Message-ID: <20240319104754.2535294-1-leitao@debian.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710845375; c=relaxed/simple;
+	bh=+2+hlQeVCNe/+OvCDgO7BBlv6P43RD46BVGfCKuEOtM=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=HcTddbVFZbWLCpy92Ll+a7trWsvjJ2W3Ad9Da74vGo2uISAr+cvjM0+D424TMFUiazHve0VL8QydsA+Kwc4lUqEcQf6TvDVVDkiAfvRHc5Dk9c2fN5DVsKHUoydpxbaZLWcrGe5lC5PE/Bqz0/rkm1W8MD4DIHmVV1WVJoE447I=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=DO0T/veh; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279865.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42J6wnvW032363;
+	Tue, 19 Mar 2024 10:49:24 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=TXmOXKzV/bRduRmg70uERLPSV0dZISDGvpH1DiR0zGA=; b=DO
+	0T/vehIZQLRGbC5Dc1wJ29z2VnaRX+IZJ5eOFfLHASUU+o1qsP0GA2JtH+o+NsBi
+	d9flvb+2a7lrCnISDroGeb99Gw3q6V1SiqL+AtSiVNTtqd8a1t26mIwkIJWxMqMO
+	tpECqivvUHK6lnQ+1uT8T8kBSGFbPzM19fsqSOP6IdUpwtnk/UQUAO3r5IFKa1yz
+	83PawNcUpNEcDHCJNfj/mMiO5LL82oP4SLZ8i3MWTJYIh4QTVqDr+J2fef3PzNnw
+	1RRVUOhu+6RYgoLYMA/OlD+KdfRiYiOvJE/29IgkvZuaI4Skbr3zOLlrmK4srpqX
+	9cOW506tiqNTD+o9DO7Q==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy5ws0h34-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 10:49:24 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JAn3Jf014757
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 10:49:03 GMT
+Received: from [10.218.47.125] (10.80.80.8) by nalasex01b.na.qualcomm.com
+ (10.47.209.197) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 03:48:59 -0700
+Message-ID: <06ab4347-3ed0-432a-cc36-49837d8a28de@quicinc.com>
+Date: Tue, 19 Mar 2024 16:18:32 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101
+ Thunderbird/102.10.1
+Subject: Re: [PATCH v3] thermal/drivers/tsens: Add suspend to RAM support for
+ tsens
+To: Amit Kucheria <amitk@kernel.org>
+CC: Thara Gopinath <thara.gopinath@gmail.com>,
+        Bjorn Andersson
+	<andersson@kernel.org>,
+        Konrad Dybcio <konrad.dybcio@linaro.org>,
+        "Rafael J .
+ Wysocki" <rafael@kernel.org>,
+        Daniel Lezcano <daniel.lezcano@linaro.org>,
+        Zhang Rui <rui.zhang@intel.com>, Lukasz Luba <lukasz.luba@arm.com>,
+        <linux-pm@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <quic_manafm@quicinc.com>
+References: <20240227160928.2671-1-quic_priyjain@quicinc.com>
+ <CAHLCerModb=01WX=q6XU0XO8dr5EaSQ5RaBoFLFc_=vpOGAgaw@mail.gmail.com>
+Content-Language: en-US
+From: Priyansh Jain <quic_priyjain@quicinc.com>
+In-Reply-To: <CAHLCerModb=01WX=q6XU0XO8dr5EaSQ5RaBoFLFc_=vpOGAgaw@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
 Content-Transfer-Encoding: 8bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: M5ZQHBwoEQiAAhbIUMXytZ9qa59Mg8I-
+X-Proofpoint-GUID: M5ZQHBwoEQiAAhbIUMXytZ9qa59Mg8I-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ mlxlogscore=999 bulkscore=0 impostorscore=0 phishscore=0 spamscore=0
+ mlxscore=0 lowpriorityscore=0 adultscore=0 clxscore=1011 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403190083
 
-Embedding net_device into structures prohibits the usage of flexible
-arrays in the net_device structure. For more details, see the discussion
-at [1].
 
-Un-embed the net_device from struct ath10k by converting it
-into a pointer. Then use the leverage alloc_netdev() to allocate the
-net_device object at ath10k_core_create(). The free of the device occurs
-at ath10k_core_destroy().
 
-[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
+On 3/17/2024 1:37 AM, Amit Kucheria wrote:
+> On Tue, Feb 27, 2024 at 9:40 PM Priyansh Jain <quic_priyjain@quicinc.com> wrote:
+>>
+>> As part of suspend to RAM, tsens hardware will be turned off.
+>> While resume callback, re-initialize tsens hardware.
+>>
+>> Signed-off-by: Priyansh Jain <quic_priyjain@quicinc.com>
+>> ---
+>> V2 -> V3: Remove suspend callback & interrupt enablement part from
+>> resume callback.
+>> V1 -> V2: Update commit text to explain the necessity of this patch
+>>
+>>   drivers/thermal/qcom/tsens-v2.c |  1 +
+>>   drivers/thermal/qcom/tsens.c    | 40 +++++++++++++++++++++++++++++++++
+>>   drivers/thermal/qcom/tsens.h    |  6 +++++
+>>   3 files changed, 47 insertions(+)
+>>
+>> diff --git a/drivers/thermal/qcom/tsens-v2.c b/drivers/thermal/qcom/tsens-v2.c
+>> index 29a61d2d6ca3..0cb7301eca6e 100644
+>> --- a/drivers/thermal/qcom/tsens-v2.c
+>> +++ b/drivers/thermal/qcom/tsens-v2.c
+>> @@ -107,6 +107,7 @@ static const struct reg_field tsens_v2_regfields[MAX_REGFIELDS] = {
+>>   static const struct tsens_ops ops_generic_v2 = {
+>>          .init           = init_common,
+>>          .get_temp       = get_temp_tsens_valid,
+>> +       .resume         = tsens_resume_common,
+>>   };
+> 
+> Please add resume callbacks for the other tsens hardware too and make
+> sure that your reinit function handles them too.
+> 
+We have discussed internally on this and we think that if someone wants 
+to extend the support (and do the validation) of one of those old 
+platforms they can add the resume ops for that platform. There are many 
+versions of tsens hardware so we are bit skeptical to add reinit support
+for all these platforms with any validations(since S2R mode is not 
+enabled for all these older platforms so it is not possible to validate).
 
-Signed-off-by: Breno Leitao <leitao@debian.org>
----
- drivers/net/wireless/ath/ath10k/core.c | 10 ++++++++--
- drivers/net/wireless/ath/ath10k/core.h |  2 +-
- drivers/net/wireless/ath/ath10k/pci.c  |  2 +-
- drivers/net/wireless/ath/ath10k/sdio.c |  2 +-
- drivers/net/wireless/ath/ath10k/snoc.c |  4 ++--
- drivers/net/wireless/ath/ath10k/usb.c  |  2 +-
- 6 files changed, 14 insertions(+), 8 deletions(-)
-
-diff --git a/drivers/net/wireless/ath/ath10k/core.c b/drivers/net/wireless/ath/ath10k/core.c
-index 9ce6f49ab261..3736517002f6 100644
---- a/drivers/net/wireless/ath/ath10k/core.c
-+++ b/drivers/net/wireless/ath/ath10k/core.c
-@@ -3673,11 +3673,14 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 	INIT_WORK(&ar->set_coverage_class_work,
- 		  ath10k_core_set_coverage_class_work);
- 
--	init_dummy_netdev(&ar->napi_dev);
-+	ar->napi_dev = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
-+				    init_dummy_netdev);
-+	if (!ar->napi_dev)
-+		goto err_free_tx_complete;
- 
- 	ret = ath10k_coredump_create(ar);
- 	if (ret)
--		goto err_free_tx_complete;
-+		goto err_free_netdev;
- 
- 	ret = ath10k_debug_create(ar);
- 	if (ret)
-@@ -3687,6 +3690,8 @@ struct ath10k *ath10k_core_create(size_t priv_size, struct device *dev,
- 
- err_free_coredump:
- 	ath10k_coredump_destroy(ar);
-+err_free_netdev:
-+	free_netdev(ar->napi_dev);
- err_free_tx_complete:
- 	destroy_workqueue(ar->workqueue_tx_complete);
- err_free_aux_wq:
-@@ -3708,6 +3713,7 @@ void ath10k_core_destroy(struct ath10k *ar)
- 
- 	destroy_workqueue(ar->workqueue_tx_complete);
- 
-+	free_netdev(ar->napi_dev);
- 	ath10k_debug_destroy(ar);
- 	ath10k_coredump_destroy(ar);
- 	ath10k_htt_tx_destroy(&ar->htt);
-diff --git a/drivers/net/wireless/ath/ath10k/core.h b/drivers/net/wireless/ath/ath10k/core.h
-index c110d15528bd..26003b519574 100644
---- a/drivers/net/wireless/ath/ath10k/core.h
-+++ b/drivers/net/wireless/ath/ath10k/core.h
-@@ -1269,7 +1269,7 @@ struct ath10k {
- 	struct ath10k_per_peer_tx_stats peer_tx_stats;
- 
- 	/* NAPI */
--	struct net_device napi_dev;
-+	struct net_device *napi_dev;
- 	struct napi_struct napi;
- 
- 	struct work_struct set_coverage_class_work;
-diff --git a/drivers/net/wireless/ath/ath10k/pci.c b/drivers/net/wireless/ath/ath10k/pci.c
-index 5c34b156b4ff..558bec96ae40 100644
---- a/drivers/net/wireless/ath/ath10k/pci.c
-+++ b/drivers/net/wireless/ath/ath10k/pci.c
-@@ -3217,7 +3217,7 @@ static void ath10k_pci_free_irq(struct ath10k *ar)
- 
- void ath10k_pci_init_napi(struct ath10k *ar)
- {
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_pci_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_pci_napi_poll);
- }
- 
- static int ath10k_pci_init_irq(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/sdio.c b/drivers/net/wireless/ath/ath10k/sdio.c
-index 0ab5433f6cf6..e28f2fe1101b 100644
---- a/drivers/net/wireless/ath/ath10k/sdio.c
-+++ b/drivers/net/wireless/ath/ath10k/sdio.c
-@@ -2532,7 +2532,7 @@ static int ath10k_sdio_probe(struct sdio_func *func,
- 		return -ENOMEM;
- 	}
- 
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_sdio_napi_poll);
- 
- 	ath10k_dbg(ar, ATH10K_DBG_BOOT,
- 		   "sdio new func %d vendor 0x%x device 0x%x block 0x%x/0x%x\n",
-diff --git a/drivers/net/wireless/ath/ath10k/snoc.c b/drivers/net/wireless/ath/ath10k/snoc.c
-index 2c39bad7ebfb..0449b9ffc32d 100644
---- a/drivers/net/wireless/ath/ath10k/snoc.c
-+++ b/drivers/net/wireless/ath/ath10k/snoc.c
-@@ -935,7 +935,7 @@ static int ath10k_snoc_hif_start(struct ath10k *ar)
- 
- 	bitmap_clear(ar_snoc->pending_ce_irqs, 0, CE_COUNT_MAX);
- 
--	dev_set_threaded(&ar->napi_dev, true);
-+	dev_set_threaded(ar->napi_dev, true);
- 	ath10k_core_napi_enable(ar);
- 	ath10k_snoc_irq_enable(ar);
- 	ath10k_snoc_rx_post(ar);
-@@ -1253,7 +1253,7 @@ static int ath10k_snoc_napi_poll(struct napi_struct *ctx, int budget)
- 
- static void ath10k_snoc_init_napi(struct ath10k *ar)
- {
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_snoc_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_snoc_napi_poll);
- }
- 
- static int ath10k_snoc_request_irq(struct ath10k *ar)
-diff --git a/drivers/net/wireless/ath/ath10k/usb.c b/drivers/net/wireless/ath/ath10k/usb.c
-index 3c482baacec1..3b51b7f52130 100644
---- a/drivers/net/wireless/ath/ath10k/usb.c
-+++ b/drivers/net/wireless/ath/ath10k/usb.c
-@@ -1014,7 +1014,7 @@ static int ath10k_usb_probe(struct usb_interface *interface,
- 		return -ENOMEM;
- 	}
- 
--	netif_napi_add(&ar->napi_dev, &ar->napi, ath10k_usb_napi_poll);
-+	netif_napi_add(ar->napi_dev, &ar->napi, ath10k_usb_napi_poll);
- 
- 	usb_get_dev(dev);
- 	vendor_id = le16_to_cpu(dev->descriptor.idVendor);
--- 
-2.43.0
-
+Regards,
+Priyansh
+>>
+>>   struct tsens_plat_data data_tsens_v2 = {
+>> diff --git a/drivers/thermal/qcom/tsens.c b/drivers/thermal/qcom/tsens.c
+>> index 6d7c16ccb44d..396c1cd71351 100644
+>> --- a/drivers/thermal/qcom/tsens.c
+>> +++ b/drivers/thermal/qcom/tsens.c
+>> @@ -17,6 +17,7 @@
+>>   #include <linux/pm.h>
+>>   #include <linux/regmap.h>
+>>   #include <linux/slab.h>
+>> +#include <linux/suspend.h>
+>>   #include <linux/thermal.h>
+>>   #include "../thermal_hwmon.h"
+>>   #include "tsens.h"
+>> @@ -1193,6 +1194,45 @@ static int tsens_register_irq(struct tsens_priv *priv, char *irqname,
+>>          return ret;
+>>   }
+>>
+>> +#ifdef CONFIG_SUSPEND
+>> +static int tsens_reinit(struct tsens_priv *priv)
+>> +{
+>> +       unsigned long flags;
+>> +
+>> +       spin_lock_irqsave(&priv->ul_lock, flags);
+>> +
+>> +       /* in VER_0 TSENS need to be explicitly enabled */
+>> +       if (tsens_version(priv) == VER_0)
+>> +               regmap_field_write(priv->rf[TSENS_EN], 1);
+>> +
+>> +       /*
+>> +        * Re-enable the watchdog, unmask the bark.
+>> +        * Disable cycle completion monitoring
+>> +        */
+>> +       if (priv->feat->has_watchdog) {
+>> +               regmap_field_write(priv->rf[WDOG_BARK_MASK], 0);
+>> +               regmap_field_write(priv->rf[CC_MON_MASK], 1);
+>> +       }
+>> +
+>> +       /* Re-enable interrupts */
+>> +       if (tsens_version(priv) >= VER_0_1)
+>> +               tsens_enable_irq(priv);
+>> +
+>> +       spin_unlock_irqrestore(&priv->ul_lock, flags);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +int tsens_resume_common(struct tsens_priv *priv)
+>> +{
+>> +       if (pm_suspend_target_state == PM_SUSPEND_MEM)
+>> +               tsens_reinit(priv);
+>> +
+>> +       return 0;
+>> +}
+>> +
+>> +#endif /* !CONFIG_SUSPEND */
+>> +
+>>   static int tsens_register(struct tsens_priv *priv)
+>>   {
+>>          int i, ret;
+>> diff --git a/drivers/thermal/qcom/tsens.h b/drivers/thermal/qcom/tsens.h
+>> index cb637fa289ca..7a147d9d8544 100644
+>> --- a/drivers/thermal/qcom/tsens.h
+>> +++ b/drivers/thermal/qcom/tsens.h
+>> @@ -635,6 +635,12 @@ int init_common(struct tsens_priv *priv);
+>>   int get_temp_tsens_valid(const struct tsens_sensor *s, int *temp);
+>>   int get_temp_common(const struct tsens_sensor *s, int *temp);
+>>
+>> +#ifdef CONFIG_SUSPEND
+>> +int tsens_resume_common(struct tsens_priv *priv);
+>> +#else
+>> +#define tsens_resume_common            NULL
+>> +#endif
+>> +
+>>   /* TSENS target */
+>>   extern struct tsens_plat_data data_8960;
+>>
+>> --
+>> 2.17.1
+>>
 
