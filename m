@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-107307-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107308-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5DD587FAD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:36:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C6F6E87FAD7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:36:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 03F3A1C21753
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:36:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 04FB11C21BBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:36:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3F8A07E563;
-	Tue, 19 Mar 2024 09:35:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F0567E59E;
+	Tue, 19 Mar 2024 09:35:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="m8NiiWkI"
-Received: from mail-pl1-f170.google.com (mail-pl1-f170.google.com [209.85.214.170])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="WV0DW5gc"
+Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 272A17E0E5;
-	Tue, 19 Mar 2024 09:35:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 343697E0E5;
+	Tue, 19 Mar 2024 09:35:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710840934; cv=none; b=roiLtkZ+j78ovhhInCH/6WSPXe6WHMccX2raR0K3k7N/53FvXEIi2naJr6OGwe7zzvA8KM438cggVMBG2W04ZgzeXu8q5Vp33+wn7pW5RCQ11roWOfmVGC1SrnYt/EvUeLFL3OLrjKtvUF50XSCZuGGwhTVFf9X2VnsYkVdZ3YM=
+	t=1710840939; cv=none; b=McVrDqY9mBF07mrxCy1ZocOgNISxwFqPJPQIqnnTAVxaovFmrhUk3e9KnhAkOXP4a4LCzm9lT0GJOdN33r46zqDjG0gA/q7oqsQsYOX7qhAbwa1HOuM8aGpHWVKTdAViciQZRMVqSKHIegKJ9WlHcEBZGeodiftikMtmQ5bm5QM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710840934; c=relaxed/simple;
-	bh=B2St2jdTzgdL5ciZ8vjLkpMdfiPTA/dDEh0pYWYDhWg=;
+	s=arc-20240116; t=1710840939; c=relaxed/simple;
+	bh=cSwfBpuoJcFNSTaEm/gL66nsvv27NulapeoxSmeRZkc=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=n+s1tyGpMTIIzbByrLDE/oX9fRN+DxUGCyE8yFJCk5pZTyk85l1PomJCxIGfdDc99bEuUM9lRu+muRkZ4QaFBC06p3m+boZs+amwGsRPNm+2LEixWt21z8+bmcUVTC9tdznsQ2Z7aRBiIc+dM325pLMYOBnDOzuYJnfL30GPn0o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=m8NiiWkI; arc=none smtp.client-ip=209.85.214.170
+	 MIME-Version; b=ecHndU9xBDfaSx5+zfiQIvCOLn557g4cHal+erpBSpeqml0tBC1qKy832NkixymdaS/OtxlGCVcb8GldUCK+HdfzuxncAKDvndyYH5EwIy8dmezt7qKHN0hzDvfHm4IDk/taWpq9YUNg7+mK4rqOLNBhjqV/yTn/IXZci3szCE4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=WV0DW5gc; arc=none smtp.client-ip=209.85.214.173
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f170.google.com with SMTP id d9443c01a7336-1dc29f1956cso31368165ad.0;
-        Tue, 19 Mar 2024 02:35:32 -0700 (PDT)
+Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e0511a4383so234025ad.2;
+        Tue, 19 Mar 2024 02:35:37 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710840932; x=1711445732; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710840937; x=1711445737; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=e94g+9vzH11aUQZhgMcMoQcXNPU48KmdzBLfG1dsEIk=;
-        b=m8NiiWkIy9FQNnpzEhNvUNT4sTDXjRFnx17WYU+/Zz6/c3ZzjkeIjmDDfOARXfDlLG
-         6df+ejgLELUpHmvBgjjJVm+XKkNved96FYPdHtD3vgDHTdfqA18ozHlDEiVqR20jvYAU
-         ItueJwn2HbbLDv9UiFWBHQ47VplJYvdtkeq+yTyjJcTbOi27ay1Jpuvlb6XD15OAgL5s
-         voWiZnHuJWa4DzkxGRn40KrVfpRX6JjtEweYQpQe9Ou7eP6Egevti28xZA0Lm/mgWG1Q
-         j5L/0UYG8522v4sE8lxYzQWO8tSUxzN1lcdw08TC0dpvtHKkr2HHeieXEH5hKBu0Q0yI
-         zybg==
+        bh=O8lLJjV9sz++A3S70yTL0kgzPdOoYGF0BKRxiCCU5iY=;
+        b=WV0DW5gcpteBmC4VeO2zVpJYGERpeD5wYyuL9hDF9xv+RPHdsPKziDUwMQkqatF75+
+         /YI6Ba1CJQJ0eGKjM8XrrI9afgFnYhs59tkW5aXWxmlVwTetqxHLby076low6TZWwWoY
+         UBA6mCwL5/H4HohfW2k2yxcf4QFPfboWluHoDwx2MtSpSHkDRKqfoBAKXTC0m7/PceCC
+         VDenQQpru44x0qkADyRjf32v6Y9Fyg5mbI4tEWkLHmWCBdaIiXD3F2tPQdavseROe0iQ
+         RURF6bl1Q1hKpuIjMm6gJ1bb040NFdK6191khm1glwyNHri9zt8aCKy2XstNtORiuJV4
+         t/IA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710840932; x=1711445732;
+        d=1e100.net; s=20230601; t=1710840937; x=1711445737;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=e94g+9vzH11aUQZhgMcMoQcXNPU48KmdzBLfG1dsEIk=;
-        b=H0+syFwKuaIFV2BLtCDfe4+I56XQAt8up6OymKyrMtT3HAUI4oTeNLiZUr6tWd7Zhw
-         QUbx0cV6+jCYWQfcWDawbzGzkn4TA+5noKTj+KALcyZdYFGbVC5nsDSM6+MnFg2PlXNo
-         QY3T7xExFHxQr9rImV8t4tTtgNw4crYGL9CHSbAeDK+2rQ78yP74J8fhXa60jXrOsO4J
-         JGEhBhw/PFsn+QQH6MX1CPDAmdqz+Uj1R/poig3ZABp2Pe5LRM3G8rfhIy22ppIEbJFk
-         LLB7G+UaIGyehHd8eNnmmmgYDVpN+FdbpNrCNbw3W3e5isk3RDeLq8e22rti/AQ25q1/
-         sbrQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVXr5aWFxlQzbhhlM6ei0oMflMcjRoAgeFr3W7pV1rskTqv9YOPfZDflJqV2W6ri76kBMi+Z3FyUiQtsxhBVNKXeakf7iqgPJZ0K9e6P/5B1luzQ5YZtoe/t/IDBLyt1WoHpTnmIhc9kg==
-X-Gm-Message-State: AOJu0Yy2HZOYP3+XgMc9xZ20WeOdYzU/pVvd0kcPJAuN+3SDPUq1omta
-	8aMpZ7cNEAyIGCVWTWH+axuUhcjJ7yJ4WX/AFD2jlFTRiDI/h+hrqBdwOH2g00Y=
-X-Google-Smtp-Source: AGHT+IGRQerkxhBoo9SgQmB9rahSKXo6Kh9y5bn7m0LW33X3wWAr2V/9ZSigvft5pwucY8WqXpU8Zg==
-X-Received: by 2002:a17:902:ea08:b0:1db:55cc:d226 with SMTP id s8-20020a170902ea0800b001db55ccd226mr12398549plg.66.1710840932208;
-        Tue, 19 Mar 2024 02:35:32 -0700 (PDT)
+        bh=O8lLJjV9sz++A3S70yTL0kgzPdOoYGF0BKRxiCCU5iY=;
+        b=p2n8T5yVHZnQgKiZpUk5UJB1vkQN8ydUHAM2EVLwCiDLn6JPUfiYeoeGyeZliciKwm
+         2Qbvfq5ZPhKZb16+MGx5LQRK7lnf4n5Tygh3gjL8kJ4qX330qEVF2WdUaNTu14LhuJwP
+         eD9CbFPEg8USDQ6hGQ1D98BSwAH9dwa5ZWrcImEvtnlFIPMlQjCMSZgW8bfn0WhokKwi
+         0nwfRgNn2d1vVnoYRFzV6pCdzUmRbrHyKvyWvIKjswX7oIuWzO+RUmDB1Hn2IkLyYcli
+         45eIeZNFEsMyMqICBD+Df/wZTlugJKRDKgYNg1f0AmzJordoGeWfpxefmzPWTq7F4FQ2
+         Dz0g==
+X-Forwarded-Encrypted: i=1; AJvYcCVgmg38AntbQM9oNYRNztczS1f7DXpenpLG488/VP2k9U2kFZ2sbPmmjLq3uEbCbHZvHBsgrhdfrm21cfyMAxZwgrP7mdH22AAdRQr/HwrmfSLHWfaME2lmBHpkcLv9r27vrueVyII2rw==
+X-Gm-Message-State: AOJu0YweoDrfY+al3CC0Y5wYmaA57v+wd4D8a0Z6wJu3CfOJZKvHgTfr
+	RGffff/chEvcrkmqAHSXFDHJ95m2VBrbxHQMMN2aHXr3BVJATF6e
+X-Google-Smtp-Source: AGHT+IGMXcgzPbiRbAaZnXiJWR2s96AphzV/ePKBVZUQDbytucyVA3PArFmkTCYWRUbf042LO6gbGA==
+X-Received: by 2002:a17:902:cecc:b0:1dd:8bc5:afe3 with SMTP id d12-20020a170902cecc00b001dd8bc5afe3mr18719900plg.1.1710840937439;
+        Tue, 19 Mar 2024 02:35:37 -0700 (PDT)
 Received: from localhost.localdomain ([129.41.58.3])
-        by smtp.gmail.com with ESMTPSA id n5-20020a170903110500b001ddc0bc5934sm10942432plh.249.2024.03.19.02.35.27
+        by smtp.gmail.com with ESMTPSA id n5-20020a170903110500b001ddc0bc5934sm10942432plh.249.2024.03.19.02.35.32
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 02:35:31 -0700 (PDT)
+        Tue, 19 Mar 2024 02:35:37 -0700 (PDT)
 From: Manojkiran Eda <manojkiran.eda@gmail.com>
 To: patrick.rudolph@9elements.com,
 	chiawei_wang@aspeedtech.com,
@@ -86,9 +86,9 @@ Cc: robh+dt@kernel.org,
 	manojkiran.eda@gmail.com,
 	jk@codeconstruct.com.au,
 	openbmc@lists.ozlabs.org
-Subject: [PATCH v2 2/4] mtd: Replace module_init with subsys_initcall
-Date: Tue, 19 Mar 2024 15:04:03 +0530
-Message-Id: <20240319093405.39833-3-manojkiran.eda@gmail.com>
+Subject: [PATCH v2 3/4] ARM: dts: aspeed: Add eSPI node
+Date: Tue, 19 Mar 2024 15:04:04 +0530
+Message-Id: <20240319093405.39833-4-manojkiran.eda@gmail.com>
 X-Mailer: git-send-email 2.40.1
 In-Reply-To: <20240319093405.39833-1-manojkiran.eda@gmail.com>
 References: <20240319093405.39833-1-manojkiran.eda@gmail.com>
@@ -100,44 +100,76 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-While engaged in development on the espi kernel device driver[1],
-I noticed that the espi flash driver, utilizing the mtd subsystem,
-appears to initialize before the mtdcore subsystem registers the
-mtd_class. As a result, although the mtd device for espi is created,
-it does not populate within the /sys/class/mtd hierarchy.
-
-Given that mtd serves as a subsystem upon which numerous other drivers
-rely for infrastructure, it appears logical to adjust the module_init()
-call to an alternative priority initcall, subsys_initcall(), thereby
-ensuring that the mtd core subsystem is probed prior to the drivers
-utilizing its infrastructure.
-
-Although this adjustment alters the initialization ordering, there
-exists a slight risk of uncovering implicit initialization ordering
-issues. However, I believe it is preferable to prioritize it reasonably
-rather than having module_init() in order to maintain the exact old
-ordering.
-
-Link : [1] https://lore.kernel.org/openbmc/20240213-espi_driver-v1-1-92741c812843@gmail.com
+This commit adds eSPI to the device tree for aspeed 5/6th
+generation SoCs.
 
 Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
 ---
- drivers/mtd/mtdcore.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+ arch/arm/boot/dts/aspeed/aspeed-g5.dtsi | 19 +++++++++++++++++++
+ arch/arm/boot/dts/aspeed/aspeed-g6.dtsi | 20 ++++++++++++++++++++
+ 2 files changed, 39 insertions(+)
 
-diff --git a/drivers/mtd/mtdcore.c b/drivers/mtd/mtdcore.c
-index e451b28840d5..cc51c9fb2c1e 100644
---- a/drivers/mtd/mtdcore.c
-+++ b/drivers/mtd/mtdcore.c
-@@ -2560,7 +2560,7 @@ static void __exit cleanup_mtd(void)
- 	idr_destroy(&mtd_idr);
- }
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
+index 04f98d1dbb97..eaf7d82b6f46 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
++++ b/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
+@@ -343,6 +343,25 @@ sdhci1: sdhci@200 {
+ 					status = "disabled";
+ 				};
+ 			};
++			espi: espi@1e6ee000 {
++				compatible = "aspeed,ast2500-espi", "simple-mfd", "syscon";
++				reg = <0x1e6ee000 0x1000>;
++
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x0 0x1e6ee000 0x1000>;
++
++				espi_ctrl: espi-ctrl@0 {
++					compatible = "aspeed,ast2500-espi-ctrl";
++					reg = <0x0 0x800>,<0x0 0x4000000>;
++					reg-names = "espi_ctrl","espi_flash";
++					interrupts = <23>;
++					clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
++					status = "disabled";
++					pinctrl-names = "default";
++					pinctrl-0 = <&pinctrl_espi_default>;
++				};
++			};
  
--module_init(init_mtd);
-+subsys_initcall(init_mtd);
- module_exit(cleanup_mtd);
+ 			gpio: gpio@1e780000 {
+ 				#gpio-cells = <2>;
+diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+index c4d1faade8be..094e14442101 100644
+--- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
++++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+@@ -454,6 +454,26 @@ video: video@1e700000 {
+ 				status = "disabled";
+ 			};
  
- MODULE_LICENSE("GPL");
++			espi: espi@1e6ee000 {
++				compatible = "aspeed,ast2500-espi", "simple-mfd", "syscon";
++				reg = <0x1e6ee000 0x1000>;
++
++				#address-cells = <1>;
++				#size-cells = <1>;
++				ranges = <0x0 0x1e6ee000 0x1000>;
++
++				espi_ctrl: espi-ctrl@0 {
++					compatible = "aspeed,ast2500-espi-ctrl";
++					reg = <0x0 0x800>,<0x0 0x4000000>;
++					reg-names = "espi_ctrl","espi_flash";
++					interrupts = <23>;
++					clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
++					status = "disabled";
++					pinctrl-names = "default";
++					pinctrl-0 = <&pinctrl_espi_default>;
++				};
++			};
++
+ 			gpio0: gpio@1e780000 {
+ 				#gpio-cells = <2>;
+ 				gpio-controller;
 -- 
 2.40.1
 
