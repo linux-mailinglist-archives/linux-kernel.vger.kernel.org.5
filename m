@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-107400-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107401-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EA77587FBF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:44:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 630C987FBF4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:44:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BA72284654
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:44:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E37DE1F22D01
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:44:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E15A35811E;
-	Tue, 19 Mar 2024 10:44:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B3207E586;
+	Tue, 19 Mar 2024 10:44:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lBPvBDxZ"
-Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="lQVW28hu"
+Received: from mail-ej1-f43.google.com (mail-ej1-f43.google.com [209.85.218.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A7164F8A9
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:44:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 858485787B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710845067; cv=none; b=bqcnUnSGWnMAWBLD9TZcT77VAjAPGh5Xi65IruL9VuxZU6GODf5fg9FCj2Qldxx58C6W1qszZqmbTUdIJZAZ/0U3WX8mrCJxXdh1EBNDKHbRD+A7sxjsTAZPKYvS+nKGnEIlMIt/VuhibIDv2IVH/tfp3og0h2ONVbwYKybB2f0=
+	t=1710845069; cv=none; b=Rj3l+SfcFGv5ulqeh/YOdJxUDBjgbEfPYY9T18x6gjfLPDotf1Eh+1ebyfP7Q6eV8vLl1foJxdmDHXacWFhLsGJHY0S0TBrOtiDwkzFKVF3hAX2sUulWHKHbmN0epV7bBYTXycJ6ioOW9BDKQ19v1kxOB7HlXGI+x+ySvzIlIEc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710845067; c=relaxed/simple;
-	bh=KuDN4TsJpUA7qIqTogBLloXUjF1n1mIpLiEi18h60Bc=;
+	s=arc-20240116; t=1710845069; c=relaxed/simple;
+	bh=KzkEZj5kjdNgQUHGE9x0UalB7ACNVeen+2pef2ya1lM=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QYbmKsbidwhFs17nJEiTlQq+0wYLsxl/Ns7H9lHqGQfi4b8gcUEB1EJPm8iIX5736MqlasBUvRU4Im5ShwmFnMs25T3ltdbG4a7aF3en1x6zsoFvV4i90q6b6BdVb+Q1SRh1HRvejPL2ALJECSaC/PYPjJj9J77oiJBfr81kZK0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lBPvBDxZ; arc=none smtp.client-ip=209.85.218.47
+	 MIME-Version; b=MVB2KjCzPDTsNbV6AcWsPJ2BKsZdSHMLoFPlhBS601V95EAo2GetDL2eeJllPrhbfcjh3SzSLWqtgiM/LJmGLkLiwJH9K3358NYZIC8qQjCDYuKxO2Ir9Gs9WfKCXmvyat4SE2jGqrdZcvj1zByqyo3gn8Qgxfw3dWNZar8wBT0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=lQVW28hu; arc=none smtp.client-ip=209.85.218.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a468004667aso569411666b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:44:25 -0700 (PDT)
+Received: by mail-ej1-f43.google.com with SMTP id a640c23a62f3a-a44f2d894b7so631889866b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:44:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710845064; x=1711449864; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710845066; x=1711449866; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=KdmJkAnOt/DPnv0ghrf21igOWcX5RWrVVUPHV7j2y1Q=;
-        b=lBPvBDxZi58xvgqaL/4iuC4pJ6EdoA309xrZGfo/pijV+Hivx6OUckpj3pKywvgFbL
-         5+1yGpYY7L3BJxN+esTUbW1GnLNGKUBAP6ZsGSeHnbdxAxabRaXn+quvcPO9yKiOR7/J
-         xWkTeqm86BoI5B266aSu2/vLuvF1zBLRDVZJrnwq8Rd6OEf9Jg7i1FnBexj/Uz1wLu6K
-         4InAcG7mvke+q8tiFV4lvExZK0sKuO+HTR+62V1QWfRdkH8Qlax7K+ESMS7nX5FbutlS
-         GOyM8Me3CeyQ8DWrR1BVgpPbs1lfa9osL2jXyOiCnzggQ6pV+hxkFOJ5XmeJWOVOfiWU
-         L1bw==
+        bh=W2+B+/6TvQSh2U7p54Yz9mx2QZSgsrHUBHDYCmp6npA=;
+        b=lQVW28huyIKzG004ox8DNn0weA2iZK0mgyaTby9fhlcopC6QcveZQIAmtKxwcpZFdS
+         48+ueW0HelgBD4dPwPJcOlPaFipb0Rl7/pCFQBq0ysN32uFnhO3u9vygF6LGV5OUa4VU
+         32BGLWL7ruTTbQRy4R5uBq/8o1MYdy1I2DXKhZEzJkHT01TtQnKOQXRwpasb5wLRPZRE
+         oF4wFsYGjzs9z8zGgAC9iNtZEn/nWD2XPvt0bx8qqciQJqe5NDsPEV1Hop09E+C0IL7S
+         C8NCZpdUp6+CFv0uBO5NFcqSKdxpJDFmptwMwcftaGox/QJEz8sTnYp+fNkBtqK/qhx9
+         8cMA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710845064; x=1711449864;
+        d=1e100.net; s=20230601; t=1710845066; x=1711449866;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=KdmJkAnOt/DPnv0ghrf21igOWcX5RWrVVUPHV7j2y1Q=;
-        b=ePLtSGyDp9N3zzmc2drwv8VXow2iHCwppRTDqLa3gECfxCdVNNkZKWtQ1OxaD2kxu8
-         XdHKALz9qyrU8D0aaE/eVaSmaVBMi/9ROzx2OnuvYAWr1cm1+oz/YCimhQx7LcavnIvM
-         LrpytYzFJCUGvldoNOE7Sysg/LNn+9c+gsx8bUTFIq+yf4IMCbikR1uTmKPekTr/vUAc
-         miU1JxslKOxZ1NUo/vfKWO/XqXqJ3ahz8+PjBQil2xkJDPM1qNsuIPl4qU+8je0chDbE
-         vOStyqRQBXMZqP/VibH54mLlbDbE6+ryH7/RttZv/A/pgppgVvIr328s53Da9bm5Fakk
-         Yi/g==
-X-Forwarded-Encrypted: i=1; AJvYcCXb+hSQRgYl61M56wUMAJr07JoRaJmZK4XbtG4aP0/MimqOKrOSUEiD8hOesCvn4ECuzctme03oYdyek6r6VRDw4uOK0oEKejI61sJF
-X-Gm-Message-State: AOJu0YwIhVv0LOCsFVz8AgR7xYkhyXIrlslWsSq9cfrfMhJb8YN+i7rr
-	3ha+C3BGp3SQRlq343AbbpEvZoclX8dGxUgRJRSAKZJCWQ9a6Pm+
-X-Google-Smtp-Source: AGHT+IG7PuX41Vf/F1NEg49SK0Z8URKAy38lrXj4zNIU6IR7OlBypZ2i8PPydttdc/lAcG9C2UYgDg==
-X-Received: by 2002:a17:906:4944:b0:a46:2c48:664d with SMTP id f4-20020a170906494400b00a462c48664dmr9473452ejt.8.1710845063754;
-        Tue, 19 Mar 2024 03:44:23 -0700 (PDT)
+        bh=W2+B+/6TvQSh2U7p54Yz9mx2QZSgsrHUBHDYCmp6npA=;
+        b=ocSkSA45/oBqLw+7BW4Dfm+S5pl0FG6wp7D+pg4UJkYvku2QK6qpJ5n8LBK+oObB6x
+         20NMgapSmJh4w8K0FF3/sZ7zf+SGpBOWPjnTwk8j6VaiXcYpYihx5qpkJHFox0BLnLtn
+         sDCvNDVyhOLW/1wdx0tWp/IGK8RXoAZhhRgeiGz5ri6syXqeTUbcAA/ToYKwnTl1vuKY
+         eJcutURvRdQCLult0pD6ItP/5mHeTtVNbvA1gHaxSq19kq1ZLxnM4Qv6XsmJsB0Yk5sT
+         +/N3b8Lg9+poekOR2CC8J4QhjG9MAMGOWcUcv3hKExMvO8sfwZnxZgMDgWQ6y9ZOXdvt
+         tY+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCVBtFkp0F9auv8c5EWj8PZNGn8d2bPblJzWIV+ulQtmB/sZUJ2Kd/H52pqM5A+mI2S9mwQtyC6wCLPERMtw5tp3umP2BtUhM0oy0KKv
+X-Gm-Message-State: AOJu0YymfDbx8v2DTP4GyF0roqHodN4igvJWRgK9Dq484OBAWuCEScG+
+	OEQqRc+P3LxuPZAkdH//8xLBLIbCES0B5vjsei2HxJwsgs+106+Q
+X-Google-Smtp-Source: AGHT+IEPTzIUpYNUzp6JhPNvECH1uHKE5tlPkhdtd9O44FZ40Y1tIHuMv7goCbhPtlJCG1wAIvoZrg==
+X-Received: by 2002:a17:906:d8c:b0:a46:181f:c1c3 with SMTP id m12-20020a1709060d8c00b00a46181fc1c3mr9153255eji.70.1710845065901;
+        Tue, 19 Mar 2024 03:44:25 -0700 (PDT)
 Received: from 123000256IE.iskraemeco.si ([193.77.86.250])
         by smtp.gmail.com with ESMTPSA id bx21-20020a170906a1d500b00a4655976025sm5882342ejb.82.2024.03.19.03.44.23
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 03:44:23 -0700 (PDT)
+        Tue, 19 Mar 2024 03:44:24 -0700 (PDT)
 From: Uros Bizjak <ubizjak@gmail.com>
 To: x86@kernel.org,
 	linux-kernel@vger.kernel.org
@@ -78,9 +78,9 @@ Cc: Uros Bizjak <ubizjak@gmail.com>,
 	Ingo Molnar <mingo@kernel.org>,
 	Josh Poimboeuf <jpoimboe@redhat.com>,
 	Sean Christopherson <seanjc@google.com>
-Subject: [PATCH -tip 1/3] x86/asm: Remove %P operand modifier from altinstr asm templates
-Date: Tue, 19 Mar 2024 11:40:12 +0100
-Message-ID: <20240319104418.284519-2-ubizjak@gmail.com>
+Subject: [PATCH -tip 2/3] x86/asm: Use %c/%n instead of %P operand modifier in asm templates
+Date: Tue, 19 Mar 2024 11:40:13 +0100
+Message-ID: <20240319104418.284519-3-ubizjak@gmail.com>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240319104418.284519-1-ubizjak@gmail.com>
 References: <20240319104418.284519-1-ubizjak@gmail.com>
@@ -94,16 +94,11 @@ Content-Transfer-Encoding: 8bit
 
 The "P" asm operand modifier is a x86 target-specific modifier.
 
-For x86_64, when used with a symbol reference, the "%P" modifier
-emits "sym" instead of "sym(%rip)". This property is currently
-used to prevent %RIP-relative addressing in .altinstr sections.
+When used with a constant, the "P" modifier emits "cst" instead of
+"$cst". This property is currently used to emit the bare constant
+without all syntax-specific prefixes.
 
-%RIP-relative addresses are nowadays correctly handled in .altinstr
-sections, so remove %P operand modifier from altinstr asm templates.
-
-Also note that unlike GCC, clang emits %rip-relative symbol
-reference with "P" asm operand modifier, so the patch also unifies
-symbol handling with both compilers.
+The generic "c" resp. "n" operand modifier should be used instead.
 
 No functional changes intended.
 
@@ -117,70 +112,137 @@ Cc: Ingo Molnar <mingo@kernel.org>
 Cc: Josh Poimboeuf <jpoimboe@redhat.com>
 Cc: Sean Christopherson <seanjc@google.com>
 ---
- arch/x86/include/asm/apic.h          | 2 +-
- arch/x86/include/asm/processor.h     | 6 +++---
- arch/x86/include/asm/special_insns.h | 4 ++--
- 3 files changed, 6 insertions(+), 6 deletions(-)
+ arch/x86/boot/main.c               |  4 ++--
+ arch/x86/include/asm/alternative.h | 22 +++++++++++-----------
+ arch/x86/include/asm/atomic64_32.h |  2 +-
+ arch/x86/include/asm/cpufeature.h  |  2 +-
+ arch/x86/include/asm/irq_stack.h   |  2 +-
+ arch/x86/include/asm/uaccess.h     |  4 ++--
+ 6 files changed, 18 insertions(+), 18 deletions(-)
 
-diff --git a/arch/x86/include/asm/apic.h b/arch/x86/include/asm/apic.h
-index 94ce0f7c9d3a..fa2e4244654e 100644
---- a/arch/x86/include/asm/apic.h
-+++ b/arch/x86/include/asm/apic.h
-@@ -91,7 +91,7 @@ static inline void native_apic_mem_write(u32 reg, u32 v)
- {
- 	volatile u32 *addr = (volatile u32 *)(APIC_BASE + reg);
+diff --git a/arch/x86/boot/main.c b/arch/x86/boot/main.c
+index c4ea5258ab55..9049f390d834 100644
+--- a/arch/x86/boot/main.c
++++ b/arch/x86/boot/main.c
+@@ -119,8 +119,8 @@ static void init_heap(void)
+ 	char *stack_end;
  
--	alternative_io("movl %0, %P1", "xchgl %0, %P1", X86_BUG_11AP,
-+	alternative_io("movl %0, %1", "xchgl %0, %1", X86_BUG_11AP,
- 		       ASM_OUTPUT2("=r" (v), "=m" (*addr)),
- 		       ASM_OUTPUT2("0" (v), "m" (*addr)));
- }
-diff --git a/arch/x86/include/asm/processor.h b/arch/x86/include/asm/processor.h
-index 811548f131f4..438c0c8f596a 100644
---- a/arch/x86/include/asm/processor.h
-+++ b/arch/x86/include/asm/processor.h
-@@ -587,7 +587,7 @@ extern char			ignore_fpu_irq;
- # define BASE_PREFETCH		""
- # define ARCH_HAS_PREFETCH
- #else
--# define BASE_PREFETCH		"prefetcht0 %P1"
-+# define BASE_PREFETCH		"prefetcht0 %1"
- #endif
+ 	if (boot_params.hdr.loadflags & CAN_USE_HEAP) {
+-		asm("leal %P1(%%esp),%0"
+-		    : "=r" (stack_end) : "i" (-STACK_SIZE));
++		asm("leal %n1(%%esp),%0"
++		    : "=r" (stack_end) : "i" (STACK_SIZE));
+ 
+ 		heap_end = (char *)
+ 			((size_t)boot_params.hdr.heap_end_ptr + 0x200);
+diff --git a/arch/x86/include/asm/alternative.h b/arch/x86/include/asm/alternative.h
+index fcd20c6dc7f9..99432696b181 100644
+--- a/arch/x86/include/asm/alternative.h
++++ b/arch/x86/include/asm/alternative.h
+@@ -294,10 +294,10 @@ static inline int alternatives_text_reserved(void *start, void *end)
+  * Otherwise, if CPU has feature1, newinstr1 is used.
+  * Otherwise, oldinstr is used.
+  */
+-#define alternative_input_2(oldinstr, newinstr1, ft_flags1, newinstr2,	     \
+-			   ft_flags2, input...)				     \
+-	asm_inline volatile(ALTERNATIVE_2(oldinstr, newinstr1, ft_flags1,     \
+-		newinstr2, ft_flags2)					     \
++#define alternative_input_2(oldinstr, newinstr1, ft_flags1, newinstr2,	\
++			   ft_flags2, input...)				\
++	asm_inline volatile(ALTERNATIVE_2(oldinstr, newinstr1, ft_flags1, \
++		newinstr2, ft_flags2)					\
+ 		: : "i" (0), ## input)
+ 
+ /* Like alternative_input, but with a single output argument */
+@@ -307,7 +307,7 @@ static inline int alternatives_text_reserved(void *start, void *end)
+ 
+ /* Like alternative_io, but for replacing a direct call with another one. */
+ #define alternative_call(oldfunc, newfunc, ft_flags, output, input...)	\
+-	asm_inline volatile (ALTERNATIVE("call %P[old]", "call %P[new]", ft_flags) \
++	asm_inline volatile (ALTERNATIVE("call %c[old]", "call %c[new]", ft_flags) \
+ 		: output : [old] "i" (oldfunc), [new] "i" (newfunc), ## input)
  
  /*
-@@ -598,7 +598,7 @@ extern char			ignore_fpu_irq;
+@@ -316,12 +316,12 @@ static inline int alternatives_text_reserved(void *start, void *end)
+  * Otherwise, if CPU has feature1, function1 is used.
+  * Otherwise, old function is used.
   */
- static inline void prefetch(const void *x)
- {
--	alternative_input(BASE_PREFETCH, "prefetchnta %P1",
-+	alternative_input(BASE_PREFETCH, "prefetchnta %1",
- 			  X86_FEATURE_XMM,
- 			  "m" (*(const char *)x));
- }
-@@ -610,7 +610,7 @@ static inline void prefetch(const void *x)
-  */
- static __always_inline void prefetchw(const void *x)
- {
--	alternative_input(BASE_PREFETCH, "prefetchw %P1",
-+	alternative_input(BASE_PREFETCH, "prefetchw %1",
- 			  X86_FEATURE_3DNOWPREFETCH,
- 			  "m" (*(const char *)x));
- }
-diff --git a/arch/x86/include/asm/special_insns.h b/arch/x86/include/asm/special_insns.h
-index 2e9fc5c400cd..0ee2ba589492 100644
---- a/arch/x86/include/asm/special_insns.h
-+++ b/arch/x86/include/asm/special_insns.h
-@@ -182,8 +182,8 @@ static __always_inline void clflush(volatile void *__p)
+-#define alternative_call_2(oldfunc, newfunc1, ft_flags1, newfunc2, ft_flags2,   \
+-			   output, input...)				      \
+-	asm_inline volatile (ALTERNATIVE_2("call %P[old]", "call %P[new1]", ft_flags1,\
+-		"call %P[new2]", ft_flags2)				      \
+-		: output, ASM_CALL_CONSTRAINT				      \
+-		: [old] "i" (oldfunc), [new1] "i" (newfunc1),		      \
++#define alternative_call_2(oldfunc, newfunc1, ft_flags1, newfunc2, ft_flags2, \
++			   output, input...)				\
++	asm_inline volatile (ALTERNATIVE_2("call %c[old]", "call %c[new1]", ft_flags1, \
++		"call %c[new2]", ft_flags2)				\
++		: output, ASM_CALL_CONSTRAINT				\
++		: [old] "i" (oldfunc), [new1] "i" (newfunc1),		\
+ 		  [new2] "i" (newfunc2), ## input)
  
- static inline void clflushopt(volatile void *__p)
+ /*
+diff --git a/arch/x86/include/asm/atomic64_32.h b/arch/x86/include/asm/atomic64_32.h
+index 3486d91b8595..d510405e4e1d 100644
+--- a/arch/x86/include/asm/atomic64_32.h
++++ b/arch/x86/include/asm/atomic64_32.h
+@@ -24,7 +24,7 @@ typedef struct {
+ 
+ #ifdef CONFIG_X86_CMPXCHG64
+ #define __alternative_atomic64(f, g, out, in...) \
+-	asm volatile("call %P[func]" \
++	asm volatile("call %c[func]" \
+ 		     : out : [func] "i" (atomic64_##g##_cx8), ## in)
+ 
+ #define ATOMIC64_DECL(sym) ATOMIC64_DECL_ONE(sym##_cx8)
+diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+index a1273698fc43..fa938ed96506 100644
+--- a/arch/x86/include/asm/cpufeature.h
++++ b/arch/x86/include/asm/cpufeature.h
+@@ -169,7 +169,7 @@ extern void clear_cpu_cap(struct cpuinfo_x86 *c, unsigned int bit);
+ static __always_inline bool _static_cpu_has(u16 bit)
  {
--	alternative_io(".byte 0x3e; clflush %P0",
--		       ".byte 0x66; clflush %P0",
-+	alternative_io(".byte 0x3e; clflush %0",
-+		       ".byte 0x66; clflush %0",
- 		       X86_FEATURE_CLFLUSHOPT,
- 		       "+m" (*(volatile char __force *)__p));
+ 	asm goto(
+-		ALTERNATIVE_TERNARY("jmp 6f", %P[feature], "", "jmp %l[t_no]")
++		ALTERNATIVE_TERNARY("jmp 6f", %c[feature], "", "jmp %l[t_no]")
+ 		".pushsection .altinstr_aux,\"ax\"\n"
+ 		"6:\n"
+ 		" testb %[bitnum]," _ASM_RIP(%P[cap_byte]) "\n"
+diff --git a/arch/x86/include/asm/irq_stack.h b/arch/x86/include/asm/irq_stack.h
+index 798183867d78..b71ad173f877 100644
+--- a/arch/x86/include/asm/irq_stack.h
++++ b/arch/x86/include/asm/irq_stack.h
+@@ -100,7 +100,7 @@
  }
+ 
+ #define ASM_CALL_ARG0							\
+-	"call %P[__func]				\n"		\
++	"call %c[__func]				\n"		\
+ 	ASM_REACHABLE
+ 
+ #define ASM_CALL_ARG1							\
+diff --git a/arch/x86/include/asm/uaccess.h b/arch/x86/include/asm/uaccess.h
+index 237dc8cdd12b..0f9bab92a43d 100644
+--- a/arch/x86/include/asm/uaccess.h
++++ b/arch/x86/include/asm/uaccess.h
+@@ -78,7 +78,7 @@ extern int __get_user_bad(void);
+ 	int __ret_gu;							\
+ 	register __inttype(*(ptr)) __val_gu asm("%"_ASM_DX);		\
+ 	__chk_user_ptr(ptr);						\
+-	asm volatile("call __" #fn "_%P4"				\
++	asm volatile("call __" #fn "_%c4"				\
+ 		     : "=a" (__ret_gu), "=r" (__val_gu),		\
+ 			ASM_CALL_CONSTRAINT				\
+ 		     : "0" (ptr), "i" (sizeof(*(ptr))));		\
+@@ -177,7 +177,7 @@ extern void __put_user_nocheck_8(void);
+ 	__chk_user_ptr(__ptr);						\
+ 	__ptr_pu = __ptr;						\
+ 	__val_pu = __x;							\
+-	asm volatile("call __" #fn "_%P[size]"				\
++	asm volatile("call __" #fn "_%c[size]"				\
+ 		     : "=c" (__ret_pu),					\
+ 			ASM_CALL_CONSTRAINT				\
+ 		     : "0" (__ptr_pu),					\
 -- 
 2.44.0
 
