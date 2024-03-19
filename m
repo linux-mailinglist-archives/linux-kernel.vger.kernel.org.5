@@ -1,178 +1,147 @@
-Return-Path: <linux-kernel+bounces-107291-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107292-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 294EF87FA8A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:14:54 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A603787FA92
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:18:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 979871F21F14
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:14:53 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E58D28249A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:18:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DBB7D7C6E9;
-	Tue, 19 Mar 2024 09:14:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3BD6C7C6C1;
+	Tue, 19 Mar 2024 09:18:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="OOYuo7xg"
-Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Tr4nihV4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 95C7E65190;
-	Tue, 19 Mar 2024 09:14:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8085A65190
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:18:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710839686; cv=none; b=eh7f68tgkRuCOWWKDZplR2xINKyXxdzgyrdojN+3syFxucMjezEx1gzTzZPDhNvTsM6t4KA2GCgPrG2Os5d+F51FSyfSgnOkow9YM9UurW15mg2nxwV+MGgyY8j6Vs+TtBhQLxhyuPNVQsC9k6fqOrybLEuQC0a5n2kpQDlEcSo=
+	t=1710839884; cv=none; b=gmjh1xd9DNNLFntTq7w0FqlRFFOXme8cZzbA+UAMc4tx4iNjXpAn0tSMRIT/ZY4ZanqVdBFj6Uv8Yr+l2YIRnQ6W/fAcnT+iL2fcR+bmugqfzUN7wR5kFi4PkGVn+VJQYk7x519TLVi248PphtgtUlO2RfIARuiVE1HHf8X4pu4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710839686; c=relaxed/simple;
-	bh=oKHnxYKGFHqY7x5YC9ZamueUL9Sj4sEs0Sa6AGcm8aM=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=GTNNXzD7m+qM0j5hwfquqjfz1oRXGm03RKgeI5ynu0LXVgKM4ObSL0YcNL4Bhz092gGi2J2n4XRbA8GRI3kYOSOHbhC+ybtnYBiTspfZsJlBpEL5R7UFvc0Th/kkwbpgkxNyPbIj/FqWmoDm3RudJtiHe3df9qjbGK/1cr4s9Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=OOYuo7xg; arc=none smtp.client-ip=209.85.161.51
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a496fde460so1566481eaf.1;
-        Tue, 19 Mar 2024 02:14:44 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710839683; x=1711444483; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=jUlrU16CKjVYBjCaxlOI7ucHlYaMstrvh4yuHwavQzA=;
-        b=OOYuo7xgBOxHV/QdSQCatZkkxkhelgDmfFzbpWo6tixfD4KSeDh/8a6/RM8IZc5vqM
-         I6ELQc8LXR+2GIEbW2qLaQrwql1HTxhZgPQwL/Wjmv42nVexdQ/L9tYvi6Sra3gC17bt
-         RN364lWX1Yka+vfbabZGME1j+MVTtGLqLF9CysjFg7ZN+JcX+qVqk/NvDUWOSy5g8Mqv
-         7WcmkAmHm8bgDA8c90otkc6kqx6GLPQbJ8AlFEU0WuRiFobLFDqf/SBpx/skDVE3BKsv
-         4uNRbH059VeRG3ocIdsnCEGFmwPPTKKn866cNu/hHU7avIp4zqXjZ8kl55uy60CVFICD
-         CyGw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710839683; x=1711444483;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=jUlrU16CKjVYBjCaxlOI7ucHlYaMstrvh4yuHwavQzA=;
-        b=tWuOei+YehC+/UeQDoE/K88GYqpGhdMCt2gFGxQmHEeuQmJU6iesQEfzUU6tJ68mpe
-         A8jrdeP0INffC0TtVP/Z+uwjqA4r/bpWR3N4UyvfmMvdi7L3n5JHRCWgQ7xCsyajr8pm
-         2/5imOvEuTqmxBHSh378qAP5BvkOLWP/J9jB1oxofpF5z56/4d57hzL0z4RGgmblc+IQ
-         /PhlQaVMIMbxj5SDbLHhyIlCoid+A+RBKUYGRQwn8hvqgAr2i7PN11Gg/4aeIuGv4Szv
-         xcQkGUCVgXWEm1o7UGztYBW5PVh/5mhlNTwnYdPzFWwRWgFaMCGnb3RNOBF7J2o23fTM
-         HPng==
-X-Forwarded-Encrypted: i=1; AJvYcCVNg96d9JCbGimW7ueglrKgTEVjdHEPaAACW5oYvp6Iszhn5zdc24qc6cUAnvu++yu0etr4B3HET1yxNzf2/hZtz7SXLnPoKpLHCKcbTHMpHXlH/ly4GHKCGPwqpKvm8uBBTPEZJ4K3FMCUAqintw==
-X-Gm-Message-State: AOJu0YxGvpoSdM7MDMkdSz8TnzIiN6HwngIWEwjazMm7Hu/Xt8RmTHP9
-	psGEDjknSFGT0nf8MznWlfPnDAaYoaBH0edG6sM+JnT7AXWUrD63
-X-Google-Smtp-Source: AGHT+IF6ELn2l7Ncvy+BMZFxMSCUj511v3BuDr4pqJEkEQYzato7N/0c32U686IrQJVamhGfxjkW5Q==
-X-Received: by 2002:a05:6820:16a4:b0:5a1:b49b:f5c5 with SMTP id bc36-20020a05682016a400b005a1b49bf5c5mr13610234oob.9.1710839683614;
-        Tue, 19 Mar 2024 02:14:43 -0700 (PDT)
-Received: from pc-mac.company.local (014136220210.static.ctinets.com. [14.136.220.210])
-        by smtp.gmail.com with ESMTPSA id n9-20020a63ee49000000b005dc4f9cecdcsm8662051pgk.86.2024.03.19.02.14.39
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 02:14:43 -0700 (PDT)
-From: Chunxin Zang <spring.cxz@gmail.com>
-To: peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com
-Cc: yangchen11@lixiang.com,
-	zhouchunhua@lixiang.com,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	zangchunxin@lixiang.com,
-	Chunxin Zang <spring.cxz@gmail.com>
-Subject: [PATCH v2] perf evlist: Fix 'perf record -C xx' failed issue
-Date: Tue, 19 Mar 2024 17:14:29 +0800
-Message-Id: <20240319091429.2056555-1-spring.cxz@gmail.com>
-X-Mailer: git-send-email 2.34.1
+	s=arc-20240116; t=1710839884; c=relaxed/simple;
+	bh=ADlsmypvlr4K5Ss+djFQKD0ML+Ud9B5+9VJcMzQaWZM=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=sVFJagiSN90fNDJoxG0qSG7LbHT16x7u6Aa8KfBOxiQPIQyUKcMjP/mPORxkSa4++skW8iqAdnpvEdKwPqLmkyDjlnTChZsO2GZqgR2aBUfxzK8QKOqZfgZmanPJOTJebDKo/WWGC/kGNc1rd42a41/ppRA503Ue7B9BO6aitLI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Tr4nihV4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id A40AAC433C7;
+	Tue, 19 Mar 2024 09:18:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710839884;
+	bh=ADlsmypvlr4K5Ss+djFQKD0ML+Ud9B5+9VJcMzQaWZM=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=Tr4nihV4V8tirh0D7kC8aEprkQb2FJloB50BEVD1bCx1/RzA2nnZHq/gZoVzQdvYP
+	 +WzqoiA07ObLVHAiag4h45DlRu/KQme4WtYBPXpJO4HLbK1iRyUrbpYFY7yVr+W5Hq
+	 zKwWnpueNELxCphTUO/t2j/OcDwroe67zB0hl8hmyM2IUuQPXVbefhZgLx9fXZo/+6
+	 xcLifj+/KrFYNX1gdGLglM9X/1HwWPJAqLh7BqDgPQxKCaFoittyofr8NpEGnu1xh5
+	 V7PjaDJIDexJ43vO2uReI/CJjWI3BYSpSIDA6HB+WwGFS1upp4KSH+6VVJCt38w+Tu
+	 thYMPnYq5Bxyw==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id E4D09CE0D20; Tue, 19 Mar 2024 02:18:00 -0700 (PDT)
+Date: Tue, 19 Mar 2024 02:18:00 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Frederic Weisbecker <frederic@kernel.org>
+Cc: Thomas Gleixner <tglx@linutronix.de>,
+	LKML <linux-kernel@vger.kernel.org>, Ingo Molnar <mingo@kernel.org>,
+	Anna-Maria Behnsen <anna-maria@linutronix.de>
+Subject: Re: [PATCH 2/2] timers: Fix removed self-IPI on global timer's
+ enqueue in nohz_full
+Message-ID: <464f6be2-4a72-440d-be53-6a1035d56a4f@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240318230729.15497-1-frederic@kernel.org>
+ <20240318230729.15497-3-frederic@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318230729.15497-3-frederic@kernel.org>
 
-The cpu has 8 performance-cores and 8 efficient-cores on my pc.
-0-15 are performance-cores
-16-23 are 8 efficient-cores
+On Tue, Mar 19, 2024 at 12:07:29AM +0100, Frederic Weisbecker wrote:
+> While running in nohz_full mode, a task may enqueue a timer while the
+> tick is stopped. However the only places where the timer wheel,
+> alongside the timer migration machinery's decision, may reprogram the
+> next event accordingly with that new timer's expiry are the idle loop or
+> any IRQ tail.
+> 
+> However neither the idle task nor an interrupt may run on the CPU if it
+> resumes busy work in userspace for a long while in full dynticks mode.
+> 
+> To solve this, the timer enqueue path raises a self-IPI that will
+> re-evaluate the timer wheel on its IRQ tail. This asynchronous solution
+> avoids potential locking inversion.
+> 
+> This is supposed to happen both for local and global timers but commit:
+> 
+> 	b2cf7507e186 ("timers: Always queue timers on the local CPU")
+> 
+> broke the global timers case with removing the ->is_idle field handling
+> for the global base. As a result, global timers enqueue may go unnoticed
+> in nohz_full.
+> 
+> Fix this with restoring the idle tracking of the global timer's base,
+> allowing self-IPIs again on enqueue time.
 
-When I run "perf record -C xxx", the command fails if xxx all belong to
-performance cores or efficient cores
+Testing with the previous patch (1/2 in this series) reduced the number of
+problems by about an order of magnitude, down to two sched_tick_remote()
+instances and one enqueue_hrtimer() instance, very good!
 
-The results are as follows
+I have kicked off a test including this patch.  Here is hoping!  ;-)
 
-  # perf record -C 12
-  WARNING: A requested CPU in '12' is not supported by PMU 'cpu_atom' (CPUs 16-23) for event 'cycles:P'
-  Error:
-  The sys_perf_event_open() syscall returned with 22 (Invalid argument) for event (cpu_atom/cycles:P/).
-  /bin/dmesg | grep -i perf may provide additional information.
+							Thanx, Paul
 
-  # perf record -C 14-17
-  WARNING: A requested CPU in '14-17' is not supported by PMU 'cpu_atom' (CPUs 16-23) for event 'cycles:P'
-  WARNING: A requested CPU in '14-17' is not supported by PMU 'cpu_core' (CPUs 0-15) for event 'cycles:P'
-  ^C[ perf record: Woken up 1 times to write data ]
-
-The reason is that the cpu_map of 'cpu_atom'-evsel is empty, causing
-the sys_perf_event_open() result to fail.
-
-Changes in v2:
-- fix memory leak about 'intersect'
-
-Signed-off-by: Chunxin Zang <spring.cxz@gmail.com>
-Reviewed-by: Chen Yang <yangchen11@lixiang.com>
----
- tools/perf/util/evlist.c | 24 +++++++++++++++++-------
- 1 file changed, 17 insertions(+), 7 deletions(-)
-
-diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-index 55a300a0977b..babbde29341f 100644
---- a/tools/perf/util/evlist.c
-+++ b/tools/perf/util/evlist.c
-@@ -2499,7 +2499,7 @@ void evlist__check_mem_load_aux(struct evlist *evlist)
- void evlist__warn_user_requested_cpus(struct evlist *evlist, const char *cpu_list)
- {
- 	struct perf_cpu_map *user_requested_cpus;
--	struct evsel *pos;
-+	struct evsel *pos, *tmp;
- 
- 	if (!cpu_list)
- 		return;
-@@ -2508,18 +2508,28 @@ void evlist__warn_user_requested_cpus(struct evlist *evlist, const char *cpu_lis
- 	if (!user_requested_cpus)
- 		return;
- 
--	evlist__for_each_entry(evlist, pos) {
-+	evlist__for_each_entry_safe(evlist, tmp, pos) {
- 		struct perf_cpu_map *intersect, *to_test;
- 		const struct perf_pmu *pmu = evsel__find_pmu(pos);
- 
- 		to_test = pmu && pmu->is_core ? pmu->cpus : cpu_map__online();
- 		intersect = perf_cpu_map__intersect(to_test, user_requested_cpus);
--		if (!perf_cpu_map__equal(intersect, user_requested_cpus)) {
--			char buf[128];
-+		if (!intersect) {
-+			evlist__remove(evlist, pos);
-+			evsel__delete(pos);
-+			perf_cpu_map__put(intersect);
-+			continue;
-+		}
-+
-+		if (!perf_cpu_map__is_subset(user_requested_cpus, intersect)) {
-+			char buf_test[128];
-+			char buf_intersect[128];
- 
--			cpu_map__snprint(to_test, buf, sizeof(buf));
--			pr_warning("WARNING: A requested CPU in '%s' is not supported by PMU '%s' (CPUs %s) for event '%s'\n",
--				cpu_list, pmu ? pmu->name : "cpu", buf, evsel__name(pos));
-+			cpu_map__snprint(to_test, buf_test, sizeof(buf_test));
-+			cpu_map__snprint(intersect, buf_intersect, sizeof(buf_intersect));
-+			pr_warning("WARNING: A requested CPU '%s' in '%s' is not supported by "
-+				   "PMU '%s' (CPUs %s) for event '%s'\n", buf_intersect, cpu_list,
-+				   pmu ? pmu->name : "cpu", buf_test, evsel__name(pos));
- 		}
- 		perf_cpu_map__put(intersect);
- 	}
--- 
-2.34.1
-
+> Reported-by: Paul E. McKenney <paulmck@kernel.org>
+> Fixes: b2cf7507e186 ("timers: Always queue timers on the local CPU")
+> Signed-off-by: Frederic Weisbecker <frederic@kernel.org>
+> ---
+>  kernel/time/timer.c | 12 +++++++++++-
+>  1 file changed, 11 insertions(+), 1 deletion(-)
+> 
+> diff --git a/kernel/time/timer.c b/kernel/time/timer.c
+> index e69e75d3858c..dee29f1f5b75 100644
+> --- a/kernel/time/timer.c
+> +++ b/kernel/time/timer.c
+> @@ -642,7 +642,8 @@ trigger_dyntick_cpu(struct timer_base *base, struct timer_list *timer)
+>  	 * the base lock:
+>  	 */
+>  	if (base->is_idle) {
+> -		WARN_ON_ONCE(!(timer->flags & TIMER_PINNED));
+> +		WARN_ON_ONCE(!(timer->flags & TIMER_PINNED ||
+> +			       tick_nohz_full_cpu(base->cpu)));
+>  		wake_up_nohz_cpu(base->cpu);
+>  	}
+>  }
+> @@ -2292,6 +2293,13 @@ static inline u64 __get_next_timer_interrupt(unsigned long basej, u64 basem,
+>  		 */
+>  		if (!base_local->is_idle && time_after(nextevt, basej + 1)) {
+>  			base_local->is_idle = true;
+> +			/*
+> +			 * Global timers queued locally while running in a task
+> +			 * in nohz_full mode need a self-IPI to kick reprogramming
+> +			 * in IRQ tail.
+> +			 */
+> +			if (tick_nohz_full_cpu(base_local->cpu))
+> +				base_global->is_idle = true;
+>  			trace_timer_base_idle(true, base_local->cpu);
+>  		}
+>  		*idle = base_local->is_idle;
+> @@ -2364,6 +2372,8 @@ void timer_clear_idle(void)
+>  	 * path. Required for BASE_LOCAL only.
+>  	 */
+>  	__this_cpu_write(timer_bases[BASE_LOCAL].is_idle, false);
+> +	if (tick_nohz_full_cpu(smp_processor_id()))
+> +		__this_cpu_write(timer_bases[BASE_GLOBAL].is_idle, false);
+>  	trace_timer_base_idle(false, smp_processor_id());
+>  
+>  	/* Activate without holding the timer_base->lock */
+> -- 
+> 2.44.0
+> 
 
