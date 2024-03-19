@@ -1,187 +1,135 @@
-Return-Path: <linux-kernel+bounces-107355-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107350-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id AF29F87FB5E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:00:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3031187FB55
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:58:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E6D31F22621
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:00:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DF27B282D4A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:58:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B0E207F7D1;
-	Tue, 19 Mar 2024 09:56:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D39887E78B;
+	Tue, 19 Mar 2024 09:54:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b="0KpalkfO";
-	dkim=fail reason="signature verification failed" (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b="r1T9OLvp"
-Received: from DEU01-BE0-obe.outbound.protection.outlook.com (mail-be0deu01on2105.outbound.protection.outlook.com [40.107.127.105])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="QVpg6SZ+"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 231557F7CE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:56:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.127.105
-ARC-Seal:i=3; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710842200; cv=fail; b=ozHgnkRMUHYQaUXyxhB2mA16rXCeyEKsbfDBbnM3JyihDM2xwNQoqj+HpGNH6kAsW+GOpm4OcFW4KXqYAvrgTNfZhLxkLopHnSubX2vunclL89lCFjxymp9R5/QK5fqJV4NfWsmPKH2htuiupbiewkxS0rx1IIsmLEMGsrLM4TU=
-ARC-Message-Signature:i=3; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710842200; c=relaxed/simple;
-	bh=SftUslaHsqY8HGO3YhrDrJGlF/tU2RlUdzU760/6KF0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=F2rjENazj3L8zx2aSVcNmjEhDnE8toNTDiYiHelbHCTUU7Ht9oz8np3RwQPUc1rh0jasFw1kMsXPA3nUDQJ/zSUr499UkNxZQx/wOxtJoFvEgUC6l1Pbk7mskqY2dt+T2p10p3gi7k11o7C2dLjjPV9H11eezUS0Xqrbp+euZWI=
-ARC-Authentication-Results:i=3; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iesy.com; spf=pass smtp.mailfrom=iesy.com; dkim=pass (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b=0KpalkfO; dkim=fail (1024-bit key) header.d=iesy20.onmicrosoft.com header.i=@iesy20.onmicrosoft.com header.b=r1T9OLvp reason="signature verification failed"; arc=fail smtp.client-ip=40.107.127.105
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=iesy.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=iesy.com
-ARC-Seal: i=2; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=fail;
- b=lai4m9tYlPDqp1DexJu02J5vkxu2p4px6StaSnwhxPldHCaGBxNShDclwJPT1J0qyD0sDtFEjjUhmEAXSvJ/aA8ZuusUquF8+Ejha//oTlQ52TNZgk8+byd0mzKOB/oyxIxk8Svhi9BuQZlU2yota/m3j2dssc5bxtk2pTgqJUtkBBqVY1zMrX0TaQfp69ep1Tkc0CV+1PItI5q4TwdONHRBQRWAkNF1vz+hz1Cm3NEPZaqiegKBXA4c8XJd76R4ApnWIuJZVtTwxo3iROjI9c7LgtoVkNZOP11LFWtZNfBCaSJlFRNmZE7vgy4wCPMgwKwvza86TYiLP+aeq0zVLA==
-ARC-Message-Signature: i=2; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Qcm2tufEHCswe5/0BhmtkpeKGfTtdqAG/VOY759/Jdc=;
- b=n8Abz5CgyzB7Y7Dc62DmYSQDi9BiAOhMxVlen+tQYlXWIeMRwT0ePIFsmuQwPaQg0cchspDm3dY9VsBHSzT8zETxGMzyRUw22Mq3U4kP2fxB0ShkZ8INhcRHeA00R9BzPz394lGim62ZJMSmeQj7smjuWm4TVX9J1b+6aa13KlA0zXqheUumV62MoN8WTbd15PpeOCDzO/qt8AKPZNGDChb6xVAQvlMD1XvKNJIV5KMRsY9VMobO5wK+I+EVmRUTAkPO617Qc5Uh5SwgC0d4hHz9VUUsrZrCUh8DT59ZpYT6gJCUT/+oJY68zcI3EpOmCkivqGq5xVdTqDybTdNeJQ==
-ARC-Authentication-Results: i=2; mx.microsoft.com 1; spf=fail (sender ip is
- 20.79.220.33) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=iesy.com;
- dmarc=none action=none header.from=iesy.com; dkim=fail (body hash did not
- verify) header.d=iesy20.onmicrosoft.com; arc=fail (47)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=iesy20.onmicrosoft.com; s=selector1-iesy20-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Qcm2tufEHCswe5/0BhmtkpeKGfTtdqAG/VOY759/Jdc=;
- b=0KpalkfOqvnoufamsUT3+tBFJNBJRn4C+kBaxARfQliHdOujMHXCAeaVBkaUPpBkStEyFvBHBC+Cc4OARliBSmk7ORnEWIXe5paocX+XE1yLP0MU/nrs0NrI7hvLqM4G10wmgxYIgYXqWNU45uCGfnVb+Pv7OemEJUnALcujyCQ=
-Received: from BE1P281CA0080.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:78::7) by
- BE1P281MB3400.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:4a::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.28; Tue, 19 Mar 2024 09:56:35 +0000
-Received: from BE1PEPF0000056E.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:b10:78:cafe::a4) by BE1P281CA0080.outlook.office365.com
- (2603:10a6:b10:78::7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.13 via Frontend
- Transport; Tue, 19 Mar 2024 09:56:34 +0000
-X-MS-Exchange-Authentication-Results: spf=fail (sender IP is 20.79.220.33)
- smtp.mailfrom=iesy.com; dkim=fail (body hash did not verify)
- header.d=iesy20.onmicrosoft.com;dmarc=none action=none header.from=iesy.com;
-Received-SPF: Fail (protection.outlook.com: domain of iesy.com does not
- designate 20.79.220.33 as permitted sender) receiver=protection.outlook.com;
- client-ip=20.79.220.33; helo=de1-emailsignatures-cloud.codetwo.com;
-Received: from de1-emailsignatures-cloud.codetwo.com (20.79.220.33) by
- BE1PEPF0000056E.mail.protection.outlook.com (10.167.241.7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 09:56:34 +0000
-Received: from DEU01-FR2-obe.outbound.protection.outlook.com (104.47.11.169) by de1-emailsignatures-cloud.codetwo.com with CodeTwo SMTP Server (TLS12) via SMTP; Tue, 19 Mar 2024 09:56:32 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=JROeYmpXKzVNBc/1Q+qWkSIs7j5XCf+FmYSbyIkLc6hUNUwAHXvLOiP4GODYpGSfs3/QYa8aw0BCmaLpu48+cX8/HdwMuuxtWhiViZaNSSADzzZGXReap0OR6kEzd91U7BFA632oAxy/F006EBiV24mM9SEn0isV/Ou4W83Zrk4vmVWhDc6mtmJ8TMGgr++Tq2BphTcz64I7zQt4LB9p+YHVQxWBhqRoZf9IHyP4j1vznoOBIm7ENm4ifQHsl/g6uvdvscuFGjFNPcLeCz2noKiUs7DkoewLw1FWqiesz2zqlYBu4VtXHS67orTL2POFAQteLyNXvrQwi8xFihr8tg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=81GBsRSGPUJDqOX3Fq1EM8MeHwVfr+Kid8EzQf8Qk0A=;
- b=YIbrisl0vbqy8LjvIto3HYBB5T21k2G9Wh18ncICt4AGcoHZZskCEvC22UiMdP/g3lSVbQfJaT8H21VpNr1AJgMHNmqyx3kOwlKrRb88z05OkxXWKndrSnLzmB9DQlaOi/rYUPYpfXX372IuNtbz5cLxjJOfb2gP/hJ3x56QwG6YMBFIGY5OEgC0otyQMMDrxWbAamwKDfsN26szrZ2jYIZ+BV+WqaCaWpTbtCjV0tni5OzXQTe6ZEXtru/x6lJBZwBHuRNDcZNsiXH/PLA7u3WZORNXTsRnMjF95dRJD8sCFSe6pX2RjTF45n9lNQt8GTrsaY2UUFClD/i11UeEuw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=iesy.com; dmarc=pass action=none header.from=iesy.com;
- dkim=pass header.d=iesy.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=iesy20.onmicrosoft.com; s=selector1-iesy20-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=81GBsRSGPUJDqOX3Fq1EM8MeHwVfr+Kid8EzQf8Qk0A=;
- b=r1T9OLvpppXNhkDHp8pSyfiyz0hkJt18r2el5KHWBT15m43/uWvvQwFKFtnr74E646hCqGv1QtOCkWfkDmJSwewd+sGDS8Izwy82xo7FzLNtbMz5O691uc/oe8CaK1hUlV+fB3K7QXj+7e66gqNj6Vvst54n95CgFC/dfGmfVm0=
-Received: from FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM (2603:10a6:d10:39::12)
- by BEYP281MB3930.DEUP281.PROD.OUTLOOK.COM (2603:10a6:b10:b4::9) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.29; Tue, 19 Mar
- 2024 09:56:29 +0000
-Received: from FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM
- ([fe80::8af4:a741:edb6:e851]) by FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM
- ([fe80::8af4:a741:edb6:e851%3]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 09:56:29 +0000
-From: Dominik Poggel <pog@iesy.com>
-To: robh+dt@kernel.org
-CC: Dominik Poggel <pog@iesy.com>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Heiko Stuebner <heiko@sntech.de>,
-	Chris Morgan <macromorgan@hotmail.com>,
-	Tianling Shen <cnsztl@gmail.com>,
-	Andy Yan <andyshrk@163.com>,
-	Jagan Teki <jagan@edgeble.ai>,
-	Ondrej Jirman <megi@xff.cz>,
-	devicetree@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org,
-	linux-rockchip@lists.infradead.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH 3/3] dt-bindings: arm: rockchip: add iesy RPX30 evaluation board
-Date: Tue, 19 Mar 2024 10:54:02 +0100
-Message-ID: <20240319095411.4112296-4-pog@iesy.com>
-X-Mailer: git-send-email 2.30.2
-In-Reply-To: <20240319095411.4112296-1-pog@iesy.com>
-References: <20240319095411.4112296-1-pog@iesy.com>
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain
-X-ClientProxiedBy: AM0PR04CA0079.eurprd04.prod.outlook.com
- (2603:10a6:208:be::20) To FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM
- (2603:10a6:d10:39::12)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FF547E781
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:54:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710842078; cv=none; b=VdG7f5oJ4VMsy8ZE8nD50rr4Ux4wYEdddzaUtGKCVcPZcguUgVNVppsWS8Rox3JTux8OKqU8MQcByPBbMQPIPea0RbrVWv4zvG5NfF8FtzsE73SwLK2T7nMF/w6jBf5PAQZf1OBR3A4wax485LBbqWuf9gElsb8vO5e83F+d6KQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710842078; c=relaxed/simple;
+	bh=uNDPpDP7QY+YDybRpdn+O7fkHlUVRWgPRu7fk5G//RY=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=SVTTQleoWDbGKixateDQlBOiNGU3K26kEuqsQvrJvOCL0ry36qomgt1TzNYMnX/nNSFjuEbxdXxO3NNLraEDylEZkTFhZWquiagzTSdh5H1XALx5p8ZY/OuVdpTXyAHTw4y16epgbuEhiMk3sf4ehaJRLdO3JKGCIxlz6/6YaUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=QVpg6SZ+; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710842075;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Hib0zDgjX0wwE4G3s6Q4ROR6T+E9FLihqyZ1EtpwmMY=;
+	b=QVpg6SZ+HrL4CHeg0VnD09S8JWbqPp0P9jpc9NHerFJV72l2xJhqUkW+oHhh0aaX4wUQnD
+	tmOCXv0cZLmb5eIlwPEvWgtAq9Vd+lLzYZNGiex10MtAyTC856iqChOg5MT0XAGhYDEH83
+	W1CYiQDLzaddFDXRLk30kKhx2+ta9Bw=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-502-RjRN7pEAMvOcmi4-Fq7OTg-1; Tue, 19 Mar 2024 05:54:34 -0400
+X-MC-Unique: RjRN7pEAMvOcmi4-Fq7OTg-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a467a6d4e3eso250663866b.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:54:34 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710842073; x=1711446873;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Hib0zDgjX0wwE4G3s6Q4ROR6T+E9FLihqyZ1EtpwmMY=;
+        b=rVXMDNtixggp5eEDO9rRo69zde3szGrbU2lok9Ho2397ey+A5XdfWDPqsT2QX+HV5q
+         SaMuDwcfDso/ZSuakzOyw3NCbu1xwiIHLq3/bF0JTkl8XNaGDjEdHbrbe9KKIn2M7csJ
+         KO2KTeyiajaMp/HIh/VSqnytC25Ij7kxrZa7eY1TxaYYdjYo6OREBHTmKSmbeaM3mD54
+         2SgcdjYA1VH2xsT6hpgMWdj6Kv0CwyH1qiIhhYvCtskgutkP5iXWaaiYNGXhx/GxYK77
+         8SbCmOyXVlbD94rgdMH1A95T82o8WhB0QQD4uujTP/yGdO0fxw5YvtnTHYtCqpTePDlG
+         iskg==
+X-Forwarded-Encrypted: i=1; AJvYcCXhGySkCZNsduwO+8AKgR0m4N8HZ2kSOlJoMsm/cNlYB0rWY8vnhFv643NbsWQMqF7KsAi6oSmSij4kGMzLUqWr7RO17Gfxo70sYX2s
+X-Gm-Message-State: AOJu0Yw5fiGT2vhDehH+Y0P6CmeavKsgW2+K3560KhyrCgau8Hhsgw/i
+	jWbq1D709gONLpqMhy9QhGVJzinRpTivpgOtVvJyS+RNPy6zaKMjO4bF8G7wWuBNLdvtGURMFXT
+	mM8oZw1GQo9T9dDrl6pZCxjIPhb9U7fSngHB106n/mXehMxtkVEwzeLE1LQ9SZA43V6UF3ixVye
+	rpe1P4keHVFFZ/2JfM5vxSqDqVmB1kcSf+/leS+itAMhls58U=
+X-Received: by 2002:a17:906:2310:b0:a46:7e08:37e8 with SMTP id l16-20020a170906231000b00a467e0837e8mr1225437eja.53.1710842072873;
+        Tue, 19 Mar 2024 02:54:32 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG6BjyEnKy2Dpuf1Q6n6FNGZtdfuIfYcEAZFAZvpsZOgYjjHe0uXoAnkUBurhDlGn2w1OypmrxEZKsO7bB1uBs=
+X-Received: by 2002:a17:906:2310:b0:a46:7e08:37e8 with SMTP id
+ l16-20020a170906231000b00a467e0837e8mr1225428eja.53.1710842072689; Tue, 19
+ Mar 2024 02:54:32 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-TrafficTypeDiagnostic:
-	FR2P281MB2393:EE_|BEYP281MB3930:EE_|BE1PEPF0000056E:EE_|BE1P281MB3400:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam-Untrusted: BCL:0;
-X-Microsoft-Antispam-Message-Info-Original:
- 8kdmXsvPkMB3mIgL77SS3UiIYLOO5E8j8MfRSh5CpDB0KBJbfxNUNJZua7kmRzC3267UigxWPDgOdddR8aPkb7fOx524t3d2zXNWAcMxX93Fl8jhA1S76BU3v2RqibLqJEBw3qTd7gHuZTMC/EU7/CdD7O1GYFKbz6rT2iOZf/+dl6donNDaDTsVmNeDzbWH+PFR0/nTysVHFuHC2lbUXF/e7zNRkL1MW3DUIFEU6nfj5ZW8WguTIkh7lW3t46Yx8tjhh83q/HkrHrSFw4qSlHkpXIk0nsffxcEA6TTk298H72Ov/n2rAhnrHfosxCYuYDWHLS5DCCxKSbK1YVgSe2CTO3drsbeu+pSuc55Y310B/x+4/cHpr2Vc6eNH6h11TvoZZgRNOds6jV47GkgptwBYJ8Et/K5aivcxIoiWDqkDIJtzvB0Z++uczWIlWcRM7VFW0U9pliyEbu56YfU99jtDtugtGRauUEf5ReBc1bMtWwfWbzVN9fVrKu8p5bo3ex7OCJTirisC7oxMZNfdd/5pNMBS796ZFnHjr7t646VzDuvgCgnkZKW8/T14aO5yzEbrtqedG6g2dk4Iq2wRBFt5oMqYzF3Grs+OtzPRRvz1rwb+RUhqRXYg6lADD9FoFb2V6IhGw12nSAak8SC2qv+zw7ie96VLszaqLeg+qpH4qe3gVIZc1UciBd/yLctRnmRbLwwpYLExo8u4YVS4nVOqbFuxS7UMvR0qPbh6vuA=
-X-Forefront-Antispam-Report-Untrusted:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:FR2P281MB2393.DEUP281.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(52116005)(38350700005);DIR:OUT;SFP:1102;
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BEYP281MB3930
-X-CodeTwo-MessageID: 9a9a5561-ba58-4002-b48f-78967127a1cc.20240319095632@de1-emailsignatures-cloud.codetwo.com
-X-CodeTwoProcessed: true
-X-EOPAttributedMessage: 0
-X-MS-Exchange-Transport-CrossTenantHeadersStripped:
- BE1PEPF0000056E.DEUP281.PROD.OUTLOOK.COM
-X-MS-PublicTrafficType: Email
-X-MS-Office365-Filtering-Correlation-Id: cb19e226-2aa8-416f-34b7-08dc47fadc9c
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	8KoGuSVWkUXoltzDs/6Njf5St0XddPun9hmqBw4Jxwybuuven0DhzR+h8t4TwMz3QhsxU7RILwPI0f6NHoU9NspuS6KFzBiopt3eXErMmaatznXRm3h2oM2M+DMb8+rb1S7CSl6qys8JvEwkkalKnmi4tM36qlBNP0WHxq+01d/dwggH6g6EzBDC94mtBVyLaURdfWdZ18A3tfTDEi9+xCQMuEQnZmKQ/YpeeYp8uK9RIwKOakLlejvtdZahSr25ODJEYZMWjDBWCwQDwWdi275u2gfG3dGijmmce585XeayiVWTc4N6YLvYg2IK9Ua20y7g1Us6gNN9kBu/acDJyUprmhGADocwCVdHlfcjlh62qXgejntAKKa/XiAwcdjQxDiF3vaIaIF41o6CwEhy3rBkJOi5FIYtNEJaszexHQRtE5Ftojg2YFN5d0e6pzo6j3cveDbT6dMDnKAomOkE7jqwfCKmLks/h/dZ5Z0arJxnTn5+0Kgypuk5JMbAwf9FB1bGsNQCYptv2tMrCgZTtKGXMJQPTDXQoLmEhWzg3ZBadkivkMv3v9yGLb2T4bi0lrhfuoXY0Crryj1dwvEGxxJ+lqx22hslcS1JGAD45o+nYb0uFYIXbT3hFGdBURe5G2QUlB4DA/rdp4aAjXqctKyTI09JhZ73I3Qqx0IcZpxeW3k7sn5geiRZ6dw9mAOZ2Zz/GPhJRJ/aZCIasphnu4R+2ayN30Pkjyo3uy9CSaOMTF4BaQZ+YMa90p3TGAxA
-X-Forefront-Antispam-Report:
-	CIP:20.79.220.33;CTRY:DE;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:de1-emailsignatures-cloud.codetwo.com;PTR:de1-emailsignatures-cloud.codetwo.com;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(376005)(82310400014);DIR:OUT;SFP:1102;
-X-OriginatorOrg: iesy.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 09:56:34.7607
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: cb19e226-2aa8-416f-34b7-08dc47fadc9c
-X-MS-Exchange-CrossTenant-Id: ace663fd-5672-464f-8169-8d373312f6bc
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=ace663fd-5672-464f-8169-8d373312f6bc;Ip=[20.79.220.33];Helo=[de1-emailsignatures-cloud.codetwo.com]
-X-MS-Exchange-CrossTenant-AuthSource: BE1PEPF0000056E.DEUP281.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: BE1P281MB3400
+References: <20240318143058.287014-1-ivecera@redhat.com>
+In-Reply-To: <20240318143058.287014-1-ivecera@redhat.com>
+From: Michal Schmidt <mschmidt@redhat.com>
+Date: Tue, 19 Mar 2024 10:54:21 +0100
+Message-ID: <CADEbmW02H_6h6cdXher4Ua_ZzTduF_gF-b8ADRSamOms--HZbQ@mail.gmail.com>
+Subject: Re: [PATCH iwl-next 0/7] i40e: cleanups & refactors
+To: Ivan Vecera <ivecera@redhat.com>
+Cc: intel-wired-lan@lists.osuosl.org, "David S. Miller" <davem@davemloft.net>, 
+	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, 
+	Jesse Brandeburg <jesse.brandeburg@intel.com>, open list <linux-kernel@vger.kernel.org>, 
+	"open list:NETWORKING DRIVERS" <netdev@vger.kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
+	Richard Cochran <richardcochran@gmail.com>, Tony Nguyen <anthony.l.nguyen@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-add entry for iesy rpx30 evaluation board with iesy rpx30 OSM SF SoM
+On Mon, Mar 18, 2024 at 3:31=E2=80=AFPM Ivan Vecera <ivecera@redhat.com> wr=
+ote:
+>
+> This series do following:
+> Patch 1 - Removes write-only flags field from i40e_veb structure and
+>           from i40e_veb_setup() parameters
+> Patch 2 - Changes parameter of i40e_notify_client_of_l2_param_changes()
+>           and i40e_notify_client_of_netdev_close()
+> Patch 3 - Changes parameter of i40e_detect_recover_hung()
+> Patch 4 - Adds helper i40e_pf_get_main_vsi() to get main VSI and uses it
+>           in existing code
+> Patch 5 - Consolidates checks whether given VSI is the main one
+> Patch 6 - Adds helper i40e_pf_get_main_veb() to get main VEB and uses it
+>           in existing code
+> Patch 7 - Adds helper i40e_vsi_reconfig_tc() to reconfigure TC for
+>           particular and uses it to replace existing open-coded pieces
+>
+> Ivan Vecera (7):
+>   i40e: Remove flags field from i40e_veb
+>   i40e: Change argument of several client notification functions
+>   i40e: Change argument of i40e_detect_recover_hung()
+>   i40e: Add helper to access main VSI
+>   i40e: Consolidate checks whether given VSI is main
+>   i40e: Add helper to access main VEB
+>   i40e: Add and use helper to reconfigure TC for given VSI
+>
+>  drivers/net/ethernet/intel/i40e/i40e.h        |  29 ++-
+>  drivers/net/ethernet/intel/i40e/i40e_client.c |  28 +--
+>  drivers/net/ethernet/intel/i40e/i40e_ddp.c    |   3 +-
+>  .../net/ethernet/intel/i40e/i40e_debugfs.c    |  36 ++--
+>  .../net/ethernet/intel/i40e/i40e_ethtool.c    |  29 ++-
+>  drivers/net/ethernet/intel/i40e/i40e_main.c   | 199 ++++++++++--------
+>  drivers/net/ethernet/intel/i40e/i40e_ptp.c    |   6 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.c   |  16 +-
+>  drivers/net/ethernet/intel/i40e/i40e_txrx.h   |   2 +-
+>  .../ethernet/intel/i40e/i40e_virtchnl_pf.c    |  14 +-
+>  10 files changed, 210 insertions(+), 152 deletions(-)
 
-Signed-off-by: Dominik Poggel <pog@iesy.com>
----
- Documentation/devicetree/bindings/arm/rockchip.yaml | 5 +++++
- 1 file changed, 5 insertions(+)
-
-diff --git a/Documentation/devicetree/bindings/arm/rockchip.yaml b/Document=
-ation/devicetree/bindings/arm/rockchip.yaml
-index fcf7316ecd74..601aa1510856 100644
---- a/Documentation/devicetree/bindings/arm/rockchip.yaml
-+++ b/Documentation/devicetree/bindings/arm/rockchip.yaml
-@@ -565,6 +565,11 @@ properties:
-           - const: hugsun,x99
-           - const: rockchip,rk3399
-=20
-+      - description: iesy RPX30 Evaluation board with RPX30 OSM SF SoM
-+        items:
-+          - const: iesy,rpx30-eva-mi-v2
-+          - const: rockchip,px30
-+
-       - description: Indiedroid Nova SBC
-         items:
-           - const: indiedroid,nova
---=20
-2.44.0
+Series looks OK to me.
+Reviewed-by: Michal Schmidt <mschmidt@redhat.com>
 
 
