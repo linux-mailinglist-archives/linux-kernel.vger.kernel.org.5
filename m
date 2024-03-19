@@ -1,317 +1,112 @@
-Return-Path: <linux-kernel+bounces-107232-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107233-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4743E87F9B5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:27:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77A3387F9BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:28:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A15F1C21A9F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:27:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EBA67B20F5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:28:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32D354775;
-	Tue, 19 Mar 2024 08:27:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Vv39uHjK"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B4D1654775;
+	Tue, 19 Mar 2024 08:28:04 +0000 (UTC)
+Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D2653E3F;
-	Tue, 19 Mar 2024 08:27:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79B8854646;
+	Tue, 19 Mar 2024 08:28:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710836824; cv=none; b=nt7nTlhzHcvdAVTnu74yDI8v4B4x3o05meXCwlwTjFnM8ft5doDx+prfywJRTkxPcFHL+rTngbClIlx3yMfKPVLA0Y7XK+UTPGZ+etOyR/HLx5KM0EzBEFSvPzjfoPKNwU/UYJ0neUxrbJ84fh61QRJL0OPX8Y9p7PDqgh0PKwE=
+	t=1710836884; cv=none; b=OC90zfuAjNh4QsumhU7m1BIx69YCfv3c7a8qsdXVwbfKVv+awuZJBEntbtzmQ9tI1Hj8+uPi2gMVgyR3xAIHjMCeFzU6DetjN2wlRNXMopmQP6fK0ssdfXgK3w9dG0W1MEmLn+GNThcrYHycn/s5j8oaBqB7S5evwnCb9KQTyvw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710836824; c=relaxed/simple;
-	bh=Bq/AA70/5q9Dxb347nnOr2s8AeJGp1yWvsl0P7aV0QU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=E9pjagznUhhH+z9mYfCFaffIuwkJ1qRddHMD8FfO07thKqRim8inPneJ5t/fKt3e3/xaPDXm3ls1AUkf0gwTxEt4wUE53lB57IFG6ixham9i/ZLgH+GH3T+CK0kv7QTU8ifY5kJ8UDUw5jSENVC1NXnzBpLSm/ztAezD/a3PpP4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Vv39uHjK; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42J8QbiB090324;
-	Tue, 19 Mar 2024 03:26:37 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710836797;
-	bh=Oz20PFNHtij4CjpERCZKBDH6sdX95lWDbXHhrBALB3Y=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=Vv39uHjK3U/KoMzTdnafeFXWGNP57XS6IUbkMztSozHy0OQakUx8I1j1K8HD4dnJd
-	 tCg3CFq5eQBQQsMsr53lDr5lNuuIAs1WNHTk5iaPIQiF4dU4ziKFdPtp0TAGYtuMvG
-	 zArp4WiwB5tI3QUGBUh77iI3Qe7WNl7FjsVFAVYo=
-Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42J8Qbi1072590
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 19 Mar 2024 03:26:37 -0500
-Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
- (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
- Mar 2024 03:26:36 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
- (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 19 Mar 2024 03:26:36 -0500
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42J8QTSH052033;
-	Tue, 19 Mar 2024 03:26:30 -0500
-Message-ID: <6eff590b-3f4a-4824-95e7-b2a94656408b@ti.com>
-Date: Tue, 19 Mar 2024 13:56:29 +0530
+	s=arc-20240116; t=1710836884; c=relaxed/simple;
+	bh=PplFuH6P187QZMNovlUFyDka4tzkkIxOoBolhx3ybns=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=FfqzPqE/fgf+0w1SMxpWpKH4z1E4Lj6brtCZPqS6dkXNFbfpdU1vp34RMQ42ySvYs5+vR3Fs3fbDtbQIJ7YOODIAJco6tGwTOKIjIGTgdxWzrmFutJtV/lOGOCo/uVkSpgjI1KCHdlc6+PehNiEDKCSUSLo6Cv1ppaAu/aazMCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.128.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-m68k.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60cbcd04de9so49811727b3.2;
+        Tue, 19 Mar 2024 01:28:02 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710836880; x=1711441680;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=pnN5onYUcH4rVXEcE9RIGXi7PFLwq3zdoc8o9yqzKhg=;
+        b=VbvbXlI0hrI9HyicaUgHSPcH4Gl19QpYNZms80RQmrgIt4tddZl/7TKtlQBtYxMMiE
+         lgckhCmhejEINDASDsG7pFHmutUh0AEekVTgifcmNWJs2VhstzfEl7OSs8+12VeHpnou
+         K5HBQx6RCJ+snEkeRVPwVcXWKB4iyJtTkHWBPv8OHeDs445PZ6tKYLH8mBiEVwkdSRTv
+         RLj+GbCZ5MgZM7mI3nFX8lc8H9YEZgjdJdjaCpVtkBPJBGK0eu/jUl5/jTKJLdFo3U7P
+         2eOTlc0xvC/wGzBcM6dpDyuZsUFWWyFjXcYDlN/IATj85030y8f5ZzdaF6eOvyLwB4ca
+         2jZA==
+X-Forwarded-Encrypted: i=1; AJvYcCW7TbqJQssDGectoBMSR9vCCvO2zJq/qIKuu+QnzAz4Rp9k5hytKJEnCONP61G+TpjY2Ib7/6653+vAb8+xines3AXlRHk/frt7AOGJjytVU6rZPZryvKtC9KcXsUtN/DEiT0hjP+z01KCP1UMlgj5xOFN+AHaexBqK34lV+NJR8QPnZs0OWmPPgGgZ
+X-Gm-Message-State: AOJu0Yxikk3LsZV/qRFtMuH9sK/Ga58BzLuoNl3RGiAUwkR2USayjFxJ
+	qgJHe7535daOjg3G6eCNOuUJQ7d8ScvwR3BK2gyomQBOTHwh/MbKMakVp23PsmU=
+X-Google-Smtp-Source: AGHT+IFHyQRHnynvIrlaQQEDFXRD35laNBJIoimnuGsLaPmyErbzeeKg7jKx7s302b/+PbZbF/dQmg==
+X-Received: by 2002:a0d:e287:0:b0:609:fb34:4c52 with SMTP id l129-20020a0de287000000b00609fb344c52mr12395782ywe.21.1710836880115;
+        Tue, 19 Mar 2024 01:28:00 -0700 (PDT)
+Received: from mail-yb1-f181.google.com (mail-yb1-f181.google.com. [209.85.219.181])
+        by smtp.gmail.com with ESMTPSA id g1-20020a81ae41000000b00610351f6888sm1624929ywk.92.2024.03.19.01.27.59
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 01:27:59 -0700 (PDT)
+Received: by mail-yb1-f181.google.com with SMTP id 3f1490d57ef6-dc742543119so4714458276.0;
+        Tue, 19 Mar 2024 01:27:59 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCXguX3ueTAdURygJ5owXJZ9JJV6fUXAiOh+LSZJ6EaZS8xFHtHjrY6EA+wRb2QDG93tOp6agKkSeTyI1VuKBQ0xqEzHBDbOu6BD+C/pKHx6Coe1ieHO8H12cdlr+bR6ebNjE0fBELRGzDuPHKGS09B1/VbUEmBPvYvM8Vz5/ApGyppadm+ca6OOJQPi
+X-Received: by 2002:a25:a06:0:b0:dcb:e82c:f7d with SMTP id 6-20020a250a06000000b00dcbe82c0f7dmr9546267ybk.41.1710836879166;
+ Tue, 19 Mar 2024 01:27:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 3/5] greybus: Add mikroBUS manifest types
-Content-Language: en-US
-To: Ayush Singh <ayushdevel1325@gmail.com>,
-        open list
-	<linux-kernel@vger.kernel.org>
-CC: <jkridner@beagleboard.org>, <robertcnelson@beagleboard.org>,
-        <lorforlinux@beagleboard.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Derek Kiernan
-	<derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
-	<arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown
-	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Alex Elder
-	<elder@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS" <devicetree@vger.kernel.org>,
-        "moderated list:ARM/TEXAS INSTRUMENTS
- K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SPI
- SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM"
-	<greybus-dev@lists.linaro.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-4-ayushdevel1325@gmail.com>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <20240317193714.403132-4-ayushdevel1325@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+References: <20240318160731.33960-1-prabhakar.mahadev-lad.rj@bp.renesas.com> <20240318160731.33960-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+In-Reply-To: <20240318160731.33960-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+From: Geert Uytterhoeven <geert@linux-m68k.org>
+Date: Tue, 19 Mar 2024 09:27:47 +0100
+X-Gmail-Original-Message-ID: <CAMuHMdWJcTDULiC-3CUh2Q+q-9GLGTDZyf36UN1HAF8Ep+bNqQ@mail.gmail.com>
+Message-ID: <CAMuHMdWJcTDULiC-3CUh2Q+q-9GLGTDZyf36UN1HAF8Ep+bNqQ@mail.gmail.com>
+Subject: Re: [PATCH 1/2] dt-bindings: timer: renesas: ostm: Document Renesas
+ RZ/V2H(P) SoC
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Thomas Gleixner <tglx@linutronix.de>, 
+	Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Chris Brandt <chris.brandt@renesas.com>, Magnus Damm <magnus.damm@gmail.com>, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-arm-kernel@lists.infradead.org, linux-renesas-soc@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, 
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+On Mon, Mar 18, 2024 at 5:08=E2=80=AFPM Prabhakar <prabhakar.csengg@gmail.c=
+om> wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>
+> Document the General Timer Module (a.k.a OSTM) block on Renesas RZ/V2H(P)
+> ("R9A09G057") SoC, which is identical to the one found on the RZ/A1H and
+> RZ/G2L SoCs. Add the "renesas,r9a09g057-ostm" compatible string for the
+> RZ/V2H(P) SoC.
+>
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
+Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
-On 18/03/24 01:07, Ayush Singh wrote:
-> DONOTMERGE
-> 
+Gr{oetje,eeting}s,
 
-Why?
+                        Geert
 
-> mikroBUS addon boards allow using same mikroBUS connector for a wide
-> range of peripherals. It is also possible for the addon board not to use
-> all the pins in mikroBUS socket (marked by NC or Not Connected). This
-> would require the need to create an almost new overlays for each
-> permutation of the hardware.
-> 
-> To overcome this, a manifest format based on Greybus manifest
-> specification was created which allows describing mikroBUS addon boards.
-> The reason for choosing greybus manifest for the identifier is that so far
-> we discussed only about physical mikroBUS ports on the board, but we can
+--=20
+Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k=
+org
 
-you will need to reword the commit message properly in imperative mood, 
-here and in multiple other places.
-
-> also have mikroBUS ports on a remote microcontroller appearing on host
-> over greybus and there a device tree overlay solution does not work as the
-> standard identifier mechanism.
-> 
-> The patch introduces 3 new greybus descriptor types:
-> 1. mikrobus-descriptor:
->     Is a fixed-length descriptor (12 bytes), and the manifest shall have
->     precisely one mikroBUS descriptor. Each byte describes a configuration
->     of the corresponding pin on the mikroBUS addon board in a clockwise
->     direction starting from the PWM pin omitting power (VCC and ground)
->     pins as same as the default state of the pin.
->     There are mikroBUS addon boards that use some dedicated SPI, UART, PWM,
->     and I2C pins as GPIO pins, so it is necessary to redefine the default
->     pin configuration of that pins on the host system. Also, sometimes it is
->     required the pull-up on the host pin for correct functionality
-> 2. property-descriptor:
->     Are used to pass named properties or named GPIOs to the host. The host
->     system uses this information to properly configure specific board
->     drivers by passing the properties and GPIO name. There can be multiple
->     instances of property descriptors per add-on board manifest.
-> 3. device-descriptor:
->     Describes a device on the mikroBUS port. The device descriptor is a
->     fixed-length descriptor, and there can be multiple instances of device
->     descriptors in an add-on board manifest in cases where the add-on board
->     presents more than one device to the host.
-> 
-> New mikroBUS addon boards also sometimes contain a 1-wire EEPROM with
-> the mikroBUS manifest, thus enabling plug and play support.
-> 
-
-new mikroBUS sometimes contain an EEPROM? aren't these called Click ID 
-compliant add-on boards? there should be clarity in the commit message.
-
-
-> I have also created PR to add mikrobus descriptors in Greybus spec and I
-> think the old PR on manifesto by Vaishnav should also work. However,
-> both of these repositories seem to be inactive. I am guessing the
-> greybus mailing list can provide more information on how I should go
-> about these.
-
-Why is information like these inside the commit message, these go below 
-the tear line.
-
-
-> 
-> Here is a sample mikroBUS manifest:
-> ```
-> ;;
-> ; PRESSURE CLICK
-> ; https://www.mikroe.com/pressure-click
-> ; CONFIG_IIO_ST_PRESS
-> ;
-> ; Copyright 2020 BeagleBoard.org Foundation
-> ; Copyright 2020 Texas Instruments
-> ;
-> 
-> [manifest-header]
-> version-major = 0
-> version-minor = 1
-> 
-> [interface-descriptor]
-> vendor-string-id = 1
-> product-string-id = 2
-> 
-> [string-descriptor 1]
-> string = MIKROE
-> 
-> [string-descriptor 2]
-> string = Pressure
-> 
-> [mikrobus-descriptor]
-> pwm-state = 4
-> int-state = 1
-> rx-state = 7
-> tx-state = 7
-> scl-state = 6
-> sda-state = 6
-> mosi-state = 5
-> miso-state = 5
-> sck-state = 5
-> cs-state = 5
-> rst-state = 2
-> an-state = 1
-> 
-> [device-descriptor 1]
-> driver-string-id = 3
-> protocol = 0x3
-> reg = 0x5d
-> 
-> [string-descriptor 3]
-> string = lps331ap
-> ```
-> 
-> Link: https://www.mikroe.com/clickid ClickID
-> Link:
-> https://docs.beagleboard.org/latest/projects/beagleconnect/index.html
-> beagleconnect
-> Link: https://github.com/projectara/greybus-spec Greybus Spec
-> Link: https://github.com/projectara/greybus-spec/pull/4 Greybus Spec PR
-> Link: https://github.com/projectara/manifesto/pull/2 manifesto PR
-> 
-
-The manifesto PR might not be updated.
-
-Thanks and Regards,
-Vaishnav
-
-> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
-> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
-> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
-> ---
->   include/linux/greybus/greybus_manifest.h | 49 ++++++++++++++++++++++++
->   1 file changed, 49 insertions(+)
-> 
-> diff --git a/include/linux/greybus/greybus_manifest.h b/include/linux/greybus/greybus_manifest.h
-> index bef9eb2093e9..83241e19d9b3 100644
-> --- a/include/linux/greybus/greybus_manifest.h
-> +++ b/include/linux/greybus/greybus_manifest.h
-> @@ -23,6 +23,9 @@ enum greybus_descriptor_type {
->   	GREYBUS_TYPE_STRING		= 0x02,
->   	GREYBUS_TYPE_BUNDLE		= 0x03,
->   	GREYBUS_TYPE_CPORT		= 0x04,
-> +	GREYBUS_TYPE_MIKROBUS		= 0x05,
-> +	GREYBUS_TYPE_PROPERTY		= 0x06,
-> +	GREYBUS_TYPE_DEVICE		= 0x07,
->   };
->   
->   enum greybus_protocol {
-> @@ -151,6 +154,49 @@ struct greybus_descriptor_cport {
->   	__u8	protocol_id;	/* enum greybus_protocol */
->   } __packed;
->   
-> +/*
-> + * A mikrobus descriptor is used to describe the details
-> + * about the bus ocnfiguration for the add-on board
-> + * connected to the mikrobus port.
-> + */
-> +struct greybus_descriptor_mikrobus {
-> +	__u8 pin_state[12];
-> +} __packed;
-> +
-> +/*
-> + * A property descriptor is used to pass named properties
-> + * to device drivers through the unified device properties
-> + * interface under linux/property.h
-> + */
-> +struct greybus_descriptor_property {
-> +	__u8 length;
-> +	__u8 id;
-> +	__u8 propname_stringid;
-> +	__u8 type;
-> +	__u8 value[];
-> +} __packed;
-> +
-> +/*
-> + * A device descriptor is used to describe the
-> + * details required by a add-on board device
-> + * driver.
-> + */
-> +struct greybus_descriptor_device {
-> +	__u8 id;
-> +	__u8 driver_stringid;
-> +	__u8 protocol;
-> +	__u8 reg;
-> +	__le32 max_speed_hz;
-> +	__u8 irq;
-> +	__u8 irq_type;
-> +	__u8 mode;
-> +	__u8 prop_link;
-> +	__u8 gpio_link;
-> +	__u8 reg_link;
-> +	__u8 clock_link;
-> +	__u8 pad[1];
-> +} __packed;
-> +
->   struct greybus_descriptor_header {
->   	__le16	size;
->   	__u8	type;		/* enum greybus_descriptor_type */
-> @@ -164,6 +210,9 @@ struct greybus_descriptor {
->   		struct greybus_descriptor_interface	interface;
->   		struct greybus_descriptor_bundle	bundle;
->   		struct greybus_descriptor_cport		cport;
-> +		struct greybus_descriptor_mikrobus	mikrobus;
-> +		struct greybus_descriptor_property	property;
-> +		struct greybus_descriptor_device	device;
->   	};
->   } __packed;
->   
+In personal conversations with technical people, I call myself a hacker. Bu=
+t
+when I'm talking to journalists I just say "programmer" or something like t=
+hat.
+                                -- Linus Torvalds
 
