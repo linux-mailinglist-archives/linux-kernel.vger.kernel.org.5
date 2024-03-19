@@ -1,224 +1,158 @@
-Return-Path: <linux-kernel+bounces-107510-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107504-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1207D87FD7C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:23:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7E43187FD6A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:14:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 36A681C21E84
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:23:10 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 34E0C1F23123
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:14:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C8E9B7F7D7;
-	Tue, 19 Mar 2024 12:23:01 +0000 (UTC)
-Received: from mxct.zte.com.cn (mxct.zte.com.cn [58.251.27.85])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CAE2F7F7D7;
+	Tue, 19 Mar 2024 12:14:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dunT1Jo0"
+Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8E5907CF03;
-	Tue, 19 Mar 2024 12:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=58.251.27.85
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D4B467F48D
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:14:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710850981; cv=none; b=EADDZehyqJvo0tDoRi9px65FHMIufOHi92DCl53iJyI4KMVVWAKHmmu+5uPKl1oV/Upk4wsU9++spMbEJMHcJXwQIKRDQZ7jEg15kvlWaT3FZtxP8xk2COP+hnwkx0GqS0IV3u3B6N+Q2UjByd7AitsinmL59WsNWDM5Oif0zSE=
+	t=1710850482; cv=none; b=IX2k48vphNMn1GjkNDVSAGPBj9y9nFDQpfoHCZkzdm50CzlT86gBKDVbeKA2liH5JP3vOgvysQYNKlOgbfbfIXWvu+x+kPojrWP5EZe5Rrn0aoSuxWHIC0b/h+YBK+ER0D5pnnIXIqeML5NxfdgTk1tRTGxXabkcWG2RpbZBzh0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710850981; c=relaxed/simple;
-	bh=uCjFt+EN7lwVjnDEYYdMMqzK2Ho+1l7zaLyTOIID/uw=;
-	h=Date:Message-ID:Mime-Version:From:To:Cc:Subject:Content-Type; b=Mrw5YjkwP0hY1PIJ9IKjxJSydWalyOZ6UpZmVRjHksykOkSVkJPmvsVU5lSs5Ph40ptrk/yNZjYAfhC6OjE4WPDTkm8NryOW8Dq+Q6JF9PV0OgkRMp3ET97rIVb8oAtPBHDTf96V4HlhTFk71dNqOdp3shwZHiNkREDyA28jk9A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn; spf=pass smtp.mailfrom=zte.com.cn; arc=none smtp.client-ip=58.251.27.85
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=zte.com.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=zte.com.cn
-Received: from mxde.zte.com.cn (unknown [10.35.20.121])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxct.zte.com.cn (FangMail) with ESMTPS id 4TzVy92HcgzW8Z;
-	Tue, 19 Mar 2024 20:14:09 +0800 (CST)
-Received: from mxhk.zte.com.cn (unknown [192.168.250.138])
-	(using TLSv1.2 with cipher AECDH-AES256-SHA (256/256 bits))
-	(No client certificate requested)
-	by mxde.zte.com.cn (FangMail) with ESMTPS id 4TzVy41cP4zCPs3L;
-	Tue, 19 Mar 2024 20:14:04 +0800 (CST)
-Received: from mse-fl1.zte.com.cn (unknown [10.5.228.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mxhk.zte.com.cn (FangMail) with ESMTPS id 4TzVxv0qMxz4xPGL;
-	Tue, 19 Mar 2024 20:13:55 +0800 (CST)
-Received: from xaxapp03.zte.com.cn ([10.88.97.17])
-	by mse-fl1.zte.com.cn with SMTP id 42JCDnnN063621;
-	Tue, 19 Mar 2024 20:13:49 +0800 (+08)
-	(envelope-from xu.xin16@zte.com.cn)
-Received: from mapi (xaxapp03[null])
-	by mapi (Zmail) with MAPI id mid32;
-	Tue, 19 Mar 2024 20:13:52 +0800 (CST)
-Date: Tue, 19 Mar 2024 20:13:52 +0800 (CST)
-X-Zmail-TransId: 2afb65f98180ffffffffd4a-d0cf2
-X-Mailer: Zmail v1.0
-Message-ID: <202403192013525995034@zte.com.cn>
+	s=arc-20240116; t=1710850482; c=relaxed/simple;
+	bh=DTrJtl818Nj+9httlh6hfIBWoQDfBYmTo/eH9+osq+4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=QbyoWftVEgtJ+SZM+yJeT7DqjmglOCYqCGp1XgiyZX59AqOiU/l2AwPrUV94uFxPijLV8AOTdjsmER7fRRy7E1S8HZd/IWbnD79v4LLkDLkJ5k7BX28FF0kYu82jyAFUgJRTZchjhDiZzM6D2kU+zbUSLgkJquICtCGmPHAC2aU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dunT1Jo0; arc=none smtp.client-ip=209.85.208.182
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d28051376eso89656131fa.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:14:40 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710850479; x=1711455279; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=7nd5Y7izLBJDldTbb35fwj9cRl9SKfVhUGmU2MJJYt0=;
+        b=dunT1Jo0s8zlHYaFINTxJeAZOjJldYEDWNbe0raH5nnGDLgUwNbO2QJ4FK1BXTHLP4
+         ucTp0Fr8jYOtSz+0ucrYWYi9Iv1GQts+IIZSFWqHw+4/KY5Bd7YWNVZBFpa1ChuPmhl0
+         TykXVjw35yp6NFV09DLXLbAG5tWxAtl5FiJD7PZJCXkZ85+1Mwj3ROgLF6hujTgSdkuw
+         JQ9IFH3R90HVV3TJvd45Rf5ol6sALgfhRsAhjPu8uP3TeHAW3TeV3T4XqXFpe4TmHPyi
+         w6BczGdDAAHrOcjcP9gYaF2VI7mbGSXIoznCh6LBncPQGnW8iQZPidOZsSuJZ8kX/lQ2
+         uJ5A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710850479; x=1711455279;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:to:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=7nd5Y7izLBJDldTbb35fwj9cRl9SKfVhUGmU2MJJYt0=;
+        b=tn+Pk24BTVfTH65u6XLbiZEp+ukqPZfAq1vk0w0DAfYc6UvQnv0ZS1lSBjZ8dpUQjq
+         ZMFBZV8eLQV7rSaTY7QFZbtgwCFgDdNlafE2jjU+SjZSi63SdXBZ4elTV1pqTxFRsUep
+         axCDVkdiFT2PLQvEXeXiPrMzB0ezgnZs3T+1++xiXTkI98yicdGgrk2QHcfWbq6mUf7d
+         VWgeIw2e8FefV4cX0sraFgTAVOIH8/d4/g+/Hn44StwrgR7g14i3DVGNR9Av3WpwnoXC
+         JX+y7RuiBkFVueaWMLEJG/MyF9eBstCCmT6vYxD8yqINjqk/FO2XrW48N2sc6BDvoYzO
+         3sIQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVqOlAnbh2WqNnyKSI1autBxbxeXmWZwXlSCEHsjr0zRXVfe2U1NrridfKlEV+/a4UroG5gsgveWEgmoC1zm7UqbbSWM1BBRkbI7Vym
+X-Gm-Message-State: AOJu0YxJqCQlAUwVow7DV1lhxgpUy1fGdAmGMUvzdFhOc+XNFgafu6aB
+	vqka16TR+sqX/VF7bRsHxwLoL6P0eC/qKp7VEd1MsJlQuCxtQHSLByxdnnl7e0g=
+X-Google-Smtp-Source: AGHT+IELk8Z2Bi8mSbcZKQcK+ydAdCVwO1okne69LFng7T4+m8O/xPDrv9wK34LfOd0VxSWnKCsS8g==
+X-Received: by 2002:a2e:be91:0:b0:2d4:6bd6:b145 with SMTP id a17-20020a2ebe91000000b002d46bd6b145mr8570602ljr.51.1710850478973;
+        Tue, 19 Mar 2024 05:14:38 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id x25-20020a1709065ad900b00a466af74ef2sm6020849ejs.2.2024.03.19.05.14.37
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 05:14:38 -0700 (PDT)
+Message-ID: <35acf78b-1a0d-49d4-b9a2-4b946508f32b@linaro.org>
+Date: Tue, 19 Mar 2024 13:14:35 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-From: <xu.xin16@zte.com.cn>
-To: <edumazet@google.com>, <davem@davemloft.net>
-Cc: <rostedt@goodmis.org>, <mhiramat@kernel.org>, <dsahern@kernel.org>,
-        <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
-        <linux-trace-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
-        <yang.yang29@zte.com.cn>, <xu.xin16@zte.com.cn>,
-        <he.peilin@zte.com.cn>, <liu.chun2@zte.com.cn>,
-        <jiang.xuexin@zte.com.cn>, <zhang.yunkai@zte.com.cn>
-Subject: =?UTF-8?B?W1BBVENIIHYyXSBuZXQvaXB2NDogYWRkIHRyYWNlcG9pbnQgZm9yIGljbXBfc2VuZA==?=
-Content-Type: text/plain;
-	charset="UTF-8"
-X-MAIL:mse-fl1.zte.com.cn 42JCDnnN063621
-X-Fangmail-Gw-Spam-Type: 0
-X-Fangmail-Anti-Spam-Filtered: true
-X-Fangmail-MID-QID: 65F98190.000/4TzVy92HcgzW8Z
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 1/2] dt-bindings: hwmon: pmbus: adp1050 : add bindings
+To: Radu Sabau <radu.sabau@analog.com>, Jean Delvare <jdelvare@suse.com>,
+ Guenter Roeck <linux@roeck-us.net>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+ Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>, linux-hwmon@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-doc@vger.kernel.org, linux-i2c@vger.kernel.org
+References: <20240319113213.19083-1-radu.sabau@analog.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240319113213.19083-1-radu.sabau@analog.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Peilin He<he.peilin@zte.com.cn>
+On 19/03/2024 12:32, Radu Sabau wrote:
+> Add dt-bindings for adp1050 digital controller for isolated power supply
+> with pmbus interface voltage, current and temperature monitor.
+> 
+> Signed-off-by: Radu Sabau <radu.sabau@analog.com>
 
-Introduce a tracepoint for icmp_send, which can help users to get more
-detail information conveniently when icmp abnormal events happen.
+This is a friendly reminder during the review process.
 
-1. Giving an usecase example:
-=============================
-When an application experiences packet loss due to an unreachable UDP
-destination port, the kernel will send an exception message through the
-icmp_send function. By adding a trace point for icmp_send, developers or
-system administrators can obtain detailed information about the UDP
-packet loss, including the type, code, source address, destination address,
-source port, and destination port. This facilitates the trouble-shooting
-of UDP packet loss issues especially for those network-service
-applications.
+Nothing changed, absolutely nothing.
 
-2. Operation Instructions:
-==========================
-Switch to the tracing directory.
-        cd /sys/kernel/debug/tracing
-Filter for destination port unreachable.
-        echo "type==3 && code==3" > events/icmp/icmp_send/filter
-Enable trace event.
-        echo 1 > events/icmp/icmp_send/enable
+It seems my or other reviewer's previous comments were not fully
+addressed. Maybe the feedback got lost between the quotes, maybe you
+just forgot to apply it. Please go back to the previous discussion and
+either implement all requested changes or keep discussing them.
 
-3. Result View:
-================
- udp_client_erro-11370   [002] ...s.12   124.728002:
- icmp_send: icmp_send: type=3, code=3.
- From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=23
- skbaddr=00000000589b167a
+Thank you.
 
-v1->v2:
-Some fixes according to
-https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com/
-	1. adjust the trace_icmp_send() to more protocols than UDP.
-	2. move the calling of trace_icmp_send after sanity checks
-	   in __icmp_send().
+Best regards,
+Krzysztof
 
-Signed-off-by: Peilin He<he.peilin@zte.com.cn>
-Reviewed-by: xu xin <xu.xin16@zte.com.cn>
-Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
-Cc: Yang Yang <yang.yang29@zte.com.cn>
-Cc: Liu Chun <liu.chun2@zte.com.cn>
-Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
----
- include/trace/events/icmp.h | 64 +++++++++++++++++++++++++++++++++++++++++++++
- net/ipv4/icmp.c             |  4 +++
- 2 files changed, 68 insertions(+)
- create mode 100644 include/trace/events/icmp.h
-
-diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
-new file mode 100644
-index 000000000000..c3dc337be7bc
---- /dev/null
-+++ b/include/trace/events/icmp.h
-@@ -0,0 +1,64 @@
-+/* SPDX-License-Identifier: GPL-2.0 */
-+#undef TRACE_SYSTEM
-+#define TRACE_SYSTEM icmp
-+
-+#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
-+#define _TRACE_ICMP_H
-+
-+#include <linux/icmp.h>
-+#include <linux/tracepoint.h>
-+
-+TRACE_EVENT(icmp_send,
-+
-+		TP_PROTO(const struct sk_buff *skb, int type, int code),
-+
-+		TP_ARGS(skb, type, code),
-+
-+		TP_STRUCT__entry(
-+			__field(__u16, sport)
-+			__field(__u16, dport)
-+			__field(int, type)
-+			__field(int, code)
-+			__array(__u8, saddr, 4)
-+			__array(__u8, daddr, 4)
-+                	__field(const void *, skbaddr)
-+			__field(unsigned short, ulen)
-+		),
-+
-+		TP_fast_assign(
-+			struct iphdr *iph = ip_hdr(skb);
-+			int proto_4 = iph->protocol;
-+			__be32 *p32;
-+
-+			__entry->skbaddr = skb;
-+			__entry->type = type;
-+			__entry->code = code;
-+
-+			if (proto_4 == IPPROTO_UDP) {
-+				struct udphdr *uh = udp_hdr(skb);
-+				__entry->sport = ntohs(uh->source);
-+				__entry->dport = ntohs(uh->dest);
-+				__entry->ulen = ntohs(uh->len);
-+			} else {
-+				__entry->sport = 0;
-+				__entry->dport = 0;
-+				__entry->ulen = 0;
-+			}
-+
-+			p32 = (__be32 *) __entry->saddr;
-+			*p32 = iph->saddr;
-+
-+			p32 = (__be32 *) __entry->daddr;
-+			*p32 = iph->daddr;
-+		),
-+
-+		TP_printk("icmp_send: type=%d, code=%d. From %pI4:%u to %pI4:%u ulen=%d skbaddr=%p",
-+			__entry->type, __entry->code,
-+			__entry->saddr, __entry->sport, __entry->daddr,
-+			__entry->dport, __entry->ulen, __entry->skbaddr)
-+);
-+
-+#endif /* _TRACE_ICMP_H */
-+
-+/* This part must be outside protection */
-+#include <trace/define_trace.h>
-\ No newline at end of file
-diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
-index e63a3bf99617..21fb41257fe9 100644
---- a/net/ipv4/icmp.c
-+++ b/net/ipv4/icmp.c
-@@ -92,6 +92,8 @@
- #include <net/inet_common.h>
- #include <net/ip_fib.h>
- #include <net/l3mdev.h>
-+#define CREATE_TRACE_POINTS
-+#include <trace/events/icmp.h>
-
- /*
-  *	Build xmit assembly blocks
-@@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
- 		}
- 	}
-
-+	trace_icmp_send(skb_in, type, code);
-+
- 	/* Needed by both icmp_global_allow and icmp_xmit_lock */
- 	local_bh_disable();
-
--- 
-2.15.2
 
