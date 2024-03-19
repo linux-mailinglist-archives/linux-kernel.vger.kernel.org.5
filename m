@@ -1,317 +1,193 @@
-Return-Path: <linux-kernel+bounces-107318-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107298-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7762387FB00
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:42:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C408F87FAB2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:28:37 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A56C21C21BF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:42:37 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 556321F22323
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:28:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC3A7E58D;
-	Tue, 19 Mar 2024 09:41:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A668C7CF30;
+	Tue, 19 Mar 2024 09:28:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L6W15cES"
-Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nKjaR6uV"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4588A7E564
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29B4E50A6A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:28:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710841310; cv=none; b=LxxzAXvdRWx88Eh+X7xH4UfhtdTfLQTpbDccgghWcK4qcgxymDyauc8e0xh/a/pA6AmEv9BUzlTufY3JgJw8sRv7H+TZ/d2/Hf2RoZJkaGi4qQbPZoio5CNGymeMN45MoXhz0EP0YOAT3txIIFD/wWwtwUlYQk2wtmCcgTptHDU=
+	t=1710840507; cv=none; b=CDh01VbS/sN7TcdZByB6v90iNdijPjgXquO1lAbg5nDPXducxRCo7Q6ZbwKT3RJ/880WszF08xhU8Z+Mvk1ZJgWGjTmv7ifybuAQEq31VaBQVCL+hciCxjHNbZBb2/iZ7YUqFoDz8XEtmgrlq0aFSSz8wYcQNedAzfh3CfxGUdA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710841310; c=relaxed/simple;
-	bh=Q4MsXeGz7gjwSGkOMZ96Ds7ueS0MczucwPZ2yMN5ZlQ=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WBqn9OqwA/QRZjcF1+4noe+ZE3hS2WMRzPipfiry8Y5WA270w3HzRalSgVdKGdkHehE335fiOPmL8ZYXQMQqMzuonNkw7Y9IlWoMRV8TSm+KWFGrfpOEkCaH7fnxAvgr0HLPWlVID1Z3n7T73vYEM1RymzyLcCxXEz1DnTxSyVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L6W15cES; arc=none smtp.client-ip=209.85.210.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e73e8bdea2so890818b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:41:49 -0700 (PDT)
+	s=arc-20240116; t=1710840507; c=relaxed/simple;
+	bh=HjBuG9xd7AaXCYgSmfp2B7iX2Cs8p0FwGGbH/0NJwUw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=nz+P94eVnX9CzMoEDI9fGdwH0TKdjvrL0az5p5VSElCXJKVIv+T83rw+HBXERfa6C6gz74Ww+9jY538G/8Cd4t6WOrzS1RAgxmpiRwQ5lyYB3UogPOP2FDnb/Oemo38Pd+mJygDgOCtuh2Sf2dd3UJGX5h4bhx131nv+P6A62/s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nKjaR6uV; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a466a27d30aso687386966b.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:28:24 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710841308; x=1711446108; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=+IPrpGzoHpDGCt5ZLHs8DWvQZcRMV24wjwQMoVjv/9U=;
-        b=L6W15cESoM73hfcFlhUFEryUyBW6KiP8toxFpsdApH2pwoWtmiyb4NP3v91gsCmgip
-         3662Ds+zatXKoyIbhMdfIQ6QmwZsvhdwuNuDyeKaZVgZyNhXKZkOUoxneTaspgbtnAsX
-         Nbus7JgBHGWSkZOt6uS+HpYeFJ93mQ/8BVdXm8IqWKoDn1ewp1CuZ/Y/zYnuhWD5TP8j
-         Q36aOZadM+4eiKeA21lk5qYTinA9uuH2f59oiuuHO4gqTwR+FT3Hd1KkQT97GkYiUS49
-         EsGtT/hJKQrO++C4hc4xIIJAGVRrZCYBSsJVFbTYOKu4feVTgcwZwvIOAdQSkqEdW7s3
-         qudA==
+        d=linaro.org; s=google; t=1710840503; x=1711445303; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=kymKEteOVObESDNW5Fg6UlQetyaf6y6BwpOtbOdOW3o=;
+        b=nKjaR6uVayQjCag9YmkHKchRIjrb2InDky1mXIpEbFRH9jlRuazPVtxFYajQw4F374
+         BxoPjJkOIWknzIYDbpIJdpLcKrHdGSSJafZCKOWFgQjMQS0CeueY8FtJz5pAb0HoZ9D6
+         d77A76OKaiKhwPF5w6IyeJqR3pWEYNe1mWClolIHIjoTlx7lBE2jfUUfcrJp7rEgXclM
+         frFHFrc/CLj9I6p5fzLTzA/dGWZFP6li4uF6kOqFA/U+9XWrRqqgv2mgCXWj4txYATZZ
+         B3/j66BYQjl1hXmljtEAfEm7AxvBFAo+/x8IgmVvLUU+v2ETJtK74RidpsimKHLeybAC
+         FMcw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710841308; x=1711446108;
-        h=content-transfer-encoding:mime-version:reply-to:references
-         :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=+IPrpGzoHpDGCt5ZLHs8DWvQZcRMV24wjwQMoVjv/9U=;
-        b=Gx9ol9fMr40CKUefnhYyDqp8XwapQ3KkGbzHwkHCB+qIXaNzmpVSu6OAO0QS9tZu/B
-         m3OmahA1aVQWQePNFRoaC/O3MB+ZRybx9ERKk9ZeLd8IZVSaKT1tNTxkAmm9fTeCeWwK
-         xLhR0H8Qs3YpKZLNea6cAs/+SjkCaj11sFx/0tiEY7i4Vvvyf5XD6sk/YZaVVB+Z29gs
-         6ilmIIuj9QBNT84IT6Skl+TLGGUk0T6izLqs/1gaQAnOHkKVvaigHOsLiHAR6Z7QS5ND
-         beDI6gM9HXMFGuYh1cPr7vYpswQ6G3L/mow1/c8vmqIndLW/thWdEZjm/+WpsPAUO/yr
-         6/xw==
-X-Forwarded-Encrypted: i=1; AJvYcCXD/Z2XiUMI5MrZBn3XKzTILWyJMRvgMYR6C/8up2AJw1Dy+yPVt/7JCplS2cw/SXFC2e6fmCLM/g2SbZXGMPeJ8qbgKBAAEPK4vN0r
-X-Gm-Message-State: AOJu0Yx4db1Gq6O22Z1N0uVkLRCwmNLSTUS7Q5mNWQThGOb3vkB6uA1a
-	u+5oMYTn+6vqxs16nt56Gx8Sr387Wo9a4/ST2ip+QYq2NppEM0E6
-X-Google-Smtp-Source: AGHT+IH9clmpXo+eDYRjLfrDjT4vum1cmIxLp7ORYVYCH84rdbd4eGTduRgvmmpEsgUtIio/VDV/8g==
-X-Received: by 2002:a05:6a00:9389:b0:6e6:a1ff:3661 with SMTP id ka9-20020a056a00938900b006e6a1ff3661mr19465566pfb.31.1710841308559;
-        Tue, 19 Mar 2024 02:41:48 -0700 (PDT)
-Received: from KASONG-MB2.tencent.com ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id i185-20020a62c1c2000000b006e583a649b4sm9708761pfg.210.2024.03.19.02.41.46
-        (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 19 Mar 2024 02:41:48 -0700 (PDT)
-From: Kairui Song <ryncsn@gmail.com>
-To: linux-mm@kvack.org
-Cc: Andrew Morton <akpm@linux-foundation.org>,
-	Matthew Wilcox <willy@infradead.org>,
-	linux-kernel@vger.kernel.org,
-	Kairui Song <kasong@tencent.com>
-Subject: [PATCH 4/4] mm/filemap: optimize filemap folio adding
-Date: Tue, 19 Mar 2024 17:27:33 +0800
-Message-ID: <20240319092733.4501-5-ryncsn@gmail.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240319092733.4501-1-ryncsn@gmail.com>
-References: <20240319092733.4501-1-ryncsn@gmail.com>
-Reply-To: Kairui Song <kasong@tencent.com>
+        d=1e100.net; s=20230601; t=1710840503; x=1711445303;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kymKEteOVObESDNW5Fg6UlQetyaf6y6BwpOtbOdOW3o=;
+        b=nsXplkp72NzNz3hJlknfWz1TBfm7jk34lEcumW08z241rBEBABKoGIylsdYQ5oLf7S
+         e6Z2FXCHow5RGNJqRH/RMwftEdx7WQhTMOtXcllVEAfy8NmcCXttHyqkKMseg2Y6qDqM
+         DZctTyBnysuS9j53WA36EEDSe3p91bwp+8C+kEIGnBWyZ4guLL4KGqPJKUuqBocIxF50
+         Kf86gipEfuoKekUMrxWRXNDmzaK6akuBYS+iMkK/lBmMenvdhgNYOSdhaS3hOdW98DWB
+         tEyT23slWTeAXdExHINTvqYrKy53mT1EH8hslBcN5w9EPm5CntHWpmTplTBF6mSMsNm6
+         mT5w==
+X-Forwarded-Encrypted: i=1; AJvYcCWO+rS6dI7ZskEUeM7XlJ0SBEeTZgrPmeh9CcE0NBJHCn0U6DJogSPPSaQuBpEEainPFJRayfGQ5Iy42/pnqPoBBSvn1m0q0QFCRs4Q
+X-Gm-Message-State: AOJu0YxgEpRzhtC/v/oWBLXQzv2J6lmZQuIAFJXlIg0ju/bEJjqNCc9J
+	2dqYE8Bri2DeUc2n3IUBzwwZmytoE/kYM+ko0p+5rc8LbTD6avhYdhXFw19BgCU=
+X-Google-Smtp-Source: AGHT+IGOpC0whwjzVjMTL4s1NEti9lQQP192YRINNtx2TmmxGlmcu2J/vJb13KVgo2sM3979VaF1Gw==
+X-Received: by 2002:a17:907:7248:b0:a46:e4dc:25ab with SMTP id ds8-20020a170907724800b00a46e4dc25abmr623554ejc.47.1710840503538;
+        Tue, 19 Mar 2024 02:28:23 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id q21-20020a1709066b1500b00a46524d06afsm5784034ejr.8.2024.03.19.02.28.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 02:28:23 -0700 (PDT)
+Message-ID: <0ad56d9d-9ba4-40ff-9917-0b71bb530673@linaro.org>
+Date: Tue, 19 Mar 2024 10:28:21 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: hwmon: adc128d818: convert to dtschema
+To: Javier Carrasco <javier.carrasco.cruz@gmail.com>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318-adc128d818_dtschema-v1-1-d0af2caef145@gmail.com>
+ <de0b32b3-348a-4d42-89cd-df2c439b8009@linaro.org>
+ <beddae56-caef-4684-958b-d11ca0808055@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <beddae56-caef-4684-958b-d11ca0808055@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-From: Kairui Song <kasong@tencent.com>
+On 19/03/2024 08:01, Javier Carrasco wrote:
+> On 3/19/24 06:49, Krzysztof Kozlowski wrote:
+>> On 18/03/2024 21:12, Javier Carrasco wrote:
+>>> Convert adc128d818 bindings to dtschema to support validation.
+>>>
+>>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>>
+>> Thank you for your patch. There is something to discuss/improve.
+>>
+>>
+>>> +$id: http://devicetree.org/schemas/hwmon/ti,adc128d818.yaml#
+>>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>>> +
+>>> +title: Texas Instruments ADC128D818 ADC System Monitor With Temperature Sensor
+>>> +
+>>> +maintainers:
+>>> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>>> +
+>>> +description: |
+>>> +  The ADC128D818 is a 12-Bit, 8-Channel Analog to Digital Converter (ADC)
+>>> +  with a temperature sensor and an I2C interface.
+>>> +
+>>> +  Datasheets:
+>>> +    https://www.ti.com/product/ADC128D818
+>>> +
+>>> +properties:
+>>> +  compatible:
+>>> +    const: ti,adc128d818
+>>> +
+>>> +  reg:
+>>> +    maxItems: 1
+>>> +
+>>> +  ti,mode:
+>>
+>> You need | to preserve the formatting.
+>>
+> 
+> Thanks, I overlooked that. If I am not mistaken, 2 are still missing 
+> (ti,mode and vref-supply descriptions).
 
-Instead of doing multiple tree walks, do one optimism range check
-with lock hold, and exit if raced with another insertion. If a shadow
-exists, check it with a new xas_get_order helper before releasing the
-lock to avoid redundant tree walks for getting its order.
+No, although I commented in a bit wrong place. It should be in
+description of ti,mode. Not in vref-supply.
 
-Drop the lock and do the allocation only if a split is needed.
+> 
+> By the way, do you know why dtschema does not complain about that? If I 
+> place a '|' in a wrong place, it does complain, though.
 
-In the best case, it only need to walk the tree once. If it needs
-to alloc and split, 3 walks are issued (One for first ranced
-conflict check and order retrieving, one for the second check after
-allocation, one for the insert after split).
+This is formatting, there is no reason to complain. How would dtschema
+understand that you want or not want formatting?
 
-Testing with 4k pages, in an 8G cgroup, with 20G brd as block device:
-
-fio -name=cached --numjobs=16 --filename=/mnt/test.img \
-  --buffered=1 --ioengine=mmap --rw=randread --time_based \
-  --ramp_time=30s --runtime=5m --group_reporting
-
-Before:
-bw (  MiB/s): min=  790, max= 3665, per=100.00%, avg=2499.17, stdev=20.64, samples=8698
-iops        : min=202295, max=938417, avg=639785.81, stdev=5284.08, samples=8698
-
-After (+4%):
-bw (  MiB/s): min=  451, max= 3868, per=100.00%, avg=2599.83, stdev=23.39, samples=8653
-iops        : min=115596, max=990364, avg=665556.34, stdev=5988.20, samples=8653
-
-Test result with THP (do a THP randread then switch to 4K page in hope it
-issues a lot of splitting):
-
-fio -name=cached --numjobs=16 --filename=/mnt/test.img \
-  --buffered=1 --ioengine mmap -thp=1 --readonly \
-  --rw=randread --random_distribution=random \
-  --time_based --runtime=5m --group_reporting
-
-fio -name=cached --numjobs=16 --filename=/mnt/test.img \
-  --buffered=1 --ioengine mmap --readonly \
-  --rw=randread --random_distribution=random \
-  --time_based --runtime=5s --group_reporting
-
-Before:
-bw (  KiB/s): min=28071, max=62359, per=100.00%, avg=53542.44, stdev=179.77, samples=9520
-iops        : min= 7012, max=15586, avg=13379.39, stdev=44.94, samples=9520
-bw (  MiB/s): min= 2457, max= 6193, per=100.00%, avg=3923.21, stdev=82.48, samples=144
-iops        : min=629220, max=1585642, avg=1004340.78, stdev=21116.07, samples=144
-
-After (+-0.0%):
-bw (  KiB/s): min=30561, max=63064, per=100.00%, avg=53635.82, stdev=177.21, samples=9520
-iops        : min= 7636, max=15762, avg=13402.82, stdev=44.29, samples=9520
-bw (  MiB/s): min= 2449, max= 6145, per=100.00%, avg=3914.68, stdev=81.15, samples=144
-iops        : min=627106, max=1573156, avg=1002158.11, stdev=20774.77, samples=144
-
-The performance is better (+4%) for 4K cached read and unchanged for THP.
-
-Signed-off-by: Kairui Song <kasong@tencent.com>
----
- mm/filemap.c | 127 ++++++++++++++++++++++++++++++---------------------
- 1 file changed, 76 insertions(+), 51 deletions(-)
-
-diff --git a/mm/filemap.c b/mm/filemap.c
-index 6bbec8783793..c1484bcdbddb 100644
---- a/mm/filemap.c
-+++ b/mm/filemap.c
-@@ -848,12 +848,77 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
- }
- EXPORT_SYMBOL_GPL(replace_page_cache_folio);
- 
-+static int __split_add_folio_locked(struct xa_state *xas, struct folio *folio,
-+				    pgoff_t index, gfp_t gfp, void **shadowp)
-+{
-+	void *entry, *shadow, *alloced_shadow = NULL;
-+	int order, alloced_order = 0;
-+
-+	gfp &= GFP_RECLAIM_MASK;
-+	for (;;) {
-+		shadow = NULL;
-+		order = 0;
-+
-+		xas_for_each_conflict(xas, entry) {
-+			if (!xa_is_value(entry))
-+				return -EEXIST;
-+			shadow = entry;
-+		}
-+
-+		if (shadow) {
-+			if (shadow == xas_reload(xas)) {
-+				order = xas_get_order(xas);
-+				if (order && order > folio_order(folio)) {
-+					/* entry may have been split before we acquired lock */
-+					if (shadow != alloced_shadow || order != alloced_order)
-+						goto unlock;
-+					xas_split(xas, shadow, order);
-+					xas_reset(xas);
-+				}
-+				order = 0;
-+			}
-+			if (shadowp)
-+				*shadowp = shadow;
-+		}
-+
-+		xas_store(xas, folio);
-+		/* Success, return with mapping locked */
-+		if (!xas_error(xas))
-+			return 0;
-+unlock:
-+		/*
-+		 * Unlock path, if errored, return unlocked.
-+		 * If allocation needed, alloc and retry.
-+		 */
-+		xas_unlock_irq(xas);
-+		if (order) {
-+			if (unlikely(alloced_order))
-+				xas_destroy(xas);
-+			xas_split_alloc(xas, shadow, order, gfp);
-+			if (!xas_error(xas)) {
-+				alloced_shadow = shadow;
-+				alloced_order = order;
-+			}
-+			goto next;
-+		}
-+		/* xas_nomem result checked by xas_error below */
-+		xas_nomem(xas, gfp);
-+next:
-+		xas_lock_irq(xas);
-+		if (xas_error(xas))
-+			return xas_error(xas);
-+
-+		xas_reset(xas);
-+	}
-+}
-+
- noinline int __filemap_add_folio(struct address_space *mapping,
- 		struct folio *folio, pgoff_t index, gfp_t gfp, void **shadowp)
- {
- 	XA_STATE(xas, &mapping->i_pages, index);
- 	bool huge = folio_test_hugetlb(folio);
- 	long nr;
-+	int ret;
- 
- 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
- 	VM_BUG_ON_FOLIO(folio_test_swapbacked(folio), folio);
-@@ -863,70 +928,30 @@ noinline int __filemap_add_folio(struct address_space *mapping,
- 	xas_set_order(&xas, index, folio_order(folio));
- 	nr = folio_nr_pages(folio);
- 
--	gfp &= GFP_RECLAIM_MASK;
- 	folio_ref_add(folio, nr);
- 	folio->mapping = mapping;
- 	folio->index = xas.xa_index;
- 
--	do {
--		unsigned int order = xa_get_order(xas.xa, xas.xa_index);
--		void *entry, *old = NULL;
--
--		if (order > folio_order(folio)) {
--			xas_split_alloc(&xas, xa_load(xas.xa, xas.xa_index),
--					order, gfp);
--			if (xas_error(&xas))
--				goto error;
--		}
--		xas_lock_irq(&xas);
--		xas_for_each_conflict(&xas, entry) {
--			old = entry;
--			if (!xa_is_value(entry)) {
--				xas_set_err(&xas, -EEXIST);
--				goto unlock;
--			}
--		}
--
--		if (old) {
--			if (shadowp)
--				*shadowp = old;
--			/* entry may have been split before we acquired lock */
--			order = xa_get_order(xas.xa, xas.xa_index);
--			if (order > folio_order(folio)) {
--				/* How to handle large swap entries? */
--				BUG_ON(shmem_mapping(mapping));
--				xas_split(&xas, old, order);
--				xas_reset(&xas);
--			}
--		}
--
--		xas_store(&xas, folio);
--		if (xas_error(&xas))
--			goto unlock;
--
-+	xas_lock_irq(&xas);
-+	ret = __split_add_folio_locked(&xas, folio, index, gfp, shadowp);
-+	if (likely(!ret)) {
- 		mapping->nrpages += nr;
--
--		/* hugetlb pages do not participate in page cache accounting */
- 		if (!huge) {
- 			__lruvec_stat_mod_folio(folio, NR_FILE_PAGES, nr);
- 			if (folio_test_pmd_mappable(folio))
- 				__lruvec_stat_mod_folio(folio,
- 						NR_FILE_THPS, nr);
- 		}
--unlock:
- 		xas_unlock_irq(&xas);
--	} while (xas_nomem(&xas, gfp));
--
--	if (xas_error(&xas))
--		goto error;
-+		trace_mm_filemap_add_to_page_cache(folio);
-+	} else {
-+		xas_unlock_irq(&xas);
-+		folio->mapping = NULL;
-+		/* Leave page->index set: truncation relies upon it */
-+		folio_put_refs(folio, nr);
-+	}
- 
--	trace_mm_filemap_add_to_page_cache(folio);
--	return 0;
--error:
--	folio->mapping = NULL;
--	/* Leave page->index set: truncation relies upon it */
--	folio_put_refs(folio, nr);
--	return xas_error(&xas);
-+	return ret;
- }
- ALLOW_ERROR_INJECTION(__filemap_add_folio, ERRNO);
- 
--- 
-2.43.0
+Best regards,
+Krzysztof
 
 
