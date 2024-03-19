@@ -1,159 +1,168 @@
-Return-Path: <linux-kernel+bounces-107570-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107577-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3F2AB87FE41
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:12:08 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 479A687FE6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:15:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6245E1C20D68
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:12:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id F14831F2472F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:15:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B89D08062A;
-	Tue, 19 Mar 2024 13:10:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F3B9283CD0;
+	Tue, 19 Mar 2024 13:10:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BvImBKnT"
-Received: from mail-ot1-f42.google.com (mail-ot1-f42.google.com [209.85.210.42])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="OQUTd8Iv"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FC9958230
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:10:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 56BA183CAE;
+	Tue, 19 Mar 2024 13:10:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853808; cv=none; b=B0dt4VMf0QL9i/6VvJuIIq6FjM+6UPf+7/2IfM1D6AoAZkvUBd1PkQqQR+dG3J3E7+fn5aJQz5KZ9GNpLL+jlFkIZtv80q53BDaEffTyRApIXTOOb8j9ZXT7DYw0WCN8RmRcpzedgTbwN4g79XhACFxPoOW68Jqe+7bDEfbz3W0=
+	t=1710853820; cv=none; b=XzGRX+r/wUZwV7HfQhFiMPnwwjPPrbPq5w+Q/aT2dyR2eyu1jCIxckI+qdp0wfJ9UimVKuEWwmHVAahD3i/WHPJ3v5BCb3g6wLCltmgztFMXP3QDFTHgIHRn5lswLIhXWRmhImdr6Hsg416TDpY1X0cDkcjVirx+N/9YomsjFN4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853808; c=relaxed/simple;
-	bh=0dvYBcaS+GLzeeTigmUeacFy9DSO3NmaRo/kJjo+lH4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=k9faYMb4NP7JtqW8l4H63iDYObz1R0v14VAhMhppCQ/ZRxZ3qs7ncMd1cO32RbPJvwHtgRELi1qohQmG8xgUKVmIosW7wFSyxq3fWHgQ+Z8JfZGp2v0joWRg5Go9Y9H/yWAgChP0zXZCVUnEinwq70uF2yGbwVV3kwsPYpA83Vs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BvImBKnT; arc=none smtp.client-ip=209.85.210.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ot1-f42.google.com with SMTP id 46e09a7af769-6e67d42422aso2496940a34.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:10:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710853805; x=1711458605; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Iy9c4kHlPN+YL7k6cDR7TckwLJz+xP7Q/3HFbDS5m8c=;
-        b=BvImBKnTrAIdxq5vfS+0BnP6sMfhtXEYeTU3duURtXpNNhYud18Nkebeq/fwzcYjKw
-         xDJavSuRjHWt7x6aAAmNu4qeiOoXonlzVhhlcuYJb3BfofhNdQt+sSIwHbLHS871IAla
-         W1Ds0CFiFZX2CnJcd9jY6g3BdVf8/ZZrsaHtpqop4YMH0TR/b0Z5oHsmWbiHxR4hMHei
-         wFyQwfxR1ryCyZkcNWIcQuq5O/UWT2Zhe0apjsxQNigH//gdtMdYcKfqN/biZI5A3C0I
-         ItPrr22NJWh0k8ZToIa4DoLw+y97JCVTmiDa8iVjDuDGgr0yDSe2JFYs8FJKrbc3tcAD
-         gPaA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710853805; x=1711458605;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Iy9c4kHlPN+YL7k6cDR7TckwLJz+xP7Q/3HFbDS5m8c=;
-        b=naKHVhdyGoYHXvOrQlWsY4S2wfU26Za+ur86qwP79mjIoDYGtulxEs8BQTqpiauCGq
-         Jmjej+8x6GIOS3QZ8lQlt230Jp9lkEH1jX+d1d0eAjHg7sXIwD6dg1Ap1FgCy35WHanj
-         u4CwiAZmkGWWJjoFC4D5J9shc+hCXaIsuK1upkOtdiGzHQGmGGpLV8tQ6l0EZ6ffo8Ro
-         RQmM+VFol0NkkG5ZdhUq2s9EZlI/eEz+PUAIQnRqKYosHNoH8PZ5q5Lqri3yFwT8hg3B
-         66xOuNAJ5YhR2YGQOVSkHX6PuaKh++OMjAJqL/B+ZZW0z6lDnp0c+6J3rTKA8u7++VF0
-         uLRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXj3hsHFNVakrF0aGr1Z93WMfOG85A4b1aCm9tF2yyxTFpPwmCekppcu2lXR+VoJA/P8BKQxQ63U/f4KVm14a4jjp6GJ9LhNE/K3ceG
-X-Gm-Message-State: AOJu0Yz8IGPvgmUUKo++BgA8Lv3GvIHIvhoqimp+0wCvS34idAAU8JOw
-	FPxEoC7YZCZcC5kTh4J9wJoYmpfFZZla+R2syqK2j1OceW++vVsr2wBu7eD6q6NZEF7rm8F45UQ
-	JdpPQxCXoc39Egwd3MItKJbOrjg==
-X-Google-Smtp-Source: AGHT+IFFF7AeYVVcotB7GHVWIQf7SiS7SJH3uokS18F2NoVc3LEHuCO6ALkC70OMLpQYJnp0bJXOpfv5pNlkpfvuMbo=
-X-Received: by 2002:a05:6808:3843:b0:3c3:889b:9877 with SMTP id
- ej3-20020a056808384300b003c3889b9877mr8560204oib.37.1710853805539; Tue, 19
- Mar 2024 06:10:05 -0700 (PDT)
+	s=arc-20240116; t=1710853820; c=relaxed/simple;
+	bh=SpyapOi+YNjXiDlh3WYtvbhPHkpVL36i0qOTdjclph0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=KY5rSWrqv23AMwo+fKWDY/S1jtfV2TZ5VnbubpQOCgvT1U1OZDn5g9dUo/+L5dHAyLFtYDp4dUXosObMvm/g8QCQO+m3tBWiFyalpMFMWmdmadgfVeBIuhgYanFhdDeLcJlAPNBHBfKGyR8pnqzLtmKdVw0Vskl+oSwjG6avw4s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=OQUTd8Iv; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.1.105] (unknown [103.86.18.138])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1F756C80;
+	Tue, 19 Mar 2024 14:09:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710853788;
+	bh=SpyapOi+YNjXiDlh3WYtvbhPHkpVL36i0qOTdjclph0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=OQUTd8IvUiJQefhyc0KfsTRBDB2wMr4qpIRGCnB2T8ZQ+ZRzuKmi91XN77DNfsT7V
+	 CUoF8VZ9lWbnJHErxDD/O/swhh3/jXwuIPoyH9J3vzU38J1Z0kHsz4sF17YYEUjOZQ
+	 7V7XT1mcQUyE/q8ylxXtXoEEl3AIfX6Kks+4EEvk=
+Message-ID: <4bb01eb0-bf53-43f2-a488-7959aadacc3b@ideasonboard.com>
+Date: Tue, 19 Mar 2024 18:40:06 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319104418.284519-1-ubizjak@gmail.com>
-In-Reply-To: <20240319104418.284519-1-ubizjak@gmail.com>
-From: Brian Gerst <brgerst@gmail.com>
-Date: Tue, 19 Mar 2024 09:09:51 -0400
-Message-ID: <CAMzpN2iTU05j5R1L9=LhjDoQ9krOymzOWH9QHi50vq-fAaOM5w@mail.gmail.com>
-Subject: Re: [PATCH -tip 0/3] x86/asm: Use generic asm operand modifiers
- instead of %P in asm templates
-To: Uros Bizjak <ubizjak@gmail.com>
-Cc: x86@kernel.org, linux-kernel@vger.kernel.org, 
-	Andy Lutomirski <luto@kernel.org>, Denys Vlasenko <dvlasenk@redhat.com>, "H . Peter Anvin" <hpa@zytor.com>, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Ingo Molnar <mingo@kernel.org>, 
-	Josh Poimboeuf <jpoimboe@redhat.com>, Sean Christopherson <seanjc@google.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v3 0/2] media: i2c: Add imx283 camera sensor driver
+Content-Language: en-US
+To: linux-media@vger.kernel.org
+Cc: Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ willl will <will@willwhang.com>, Sakari Ailus
+ <sakari.ailus@linux.intel.com>, tomi.valkeinen@ideasonboard.com,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Hans Verkuil <hverkuil-cisco@xs4all.nl>,
+ open list <linux-kernel@vger.kernel.org>
+References: <20240313070705.91140-1-umang.jain@ideasonboard.com>
+From: Umang Jain <umang.jain@ideasonboard.com>
+In-Reply-To: <20240313070705.91140-1-umang.jain@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19, 2024 at 6:44=E2=80=AFAM Uros Bizjak <ubizjak@gmail.com> wro=
-te:
+Hello,
+
+Ping for review and also the streams API streams_mask issue mentioned 
+below.
+
+Is anyone interested in looking at this particular issue?
+
+On 13/03/24 12:36 pm, Umang Jain wrote:
+> Add a v4l2 subdevice driver for the Sony IMX283 image sensor.
+>    
+> The IMX283 is a 20MP Diagonal 15.86 mm (Type 1) CMOS Image Sensor with
+> Square Pixel for Color Cameras.
+>      
+> The following features are supported:
+> - Manual exposure an gain control support
+> - vblank/hblank/link freq control support
+> - Test pattern support control
+> - Arbitrary horizontal and vertical cropping
+> - Supported resolution:
+>     - 5472x3648 @ 20fps (SRGGB12)
+>     - 5472x3648 @ 25fps (SRGGB10)
+>     - 2736x1824 @ 50fps (SRGGB12)
 >
-> The "P" asm operand modifier is a x86 target-specific modifier.
+> The driver is tested on mainline branch v6.8-rc2 on IMX8MP Debix-SOM-A.
+> Additional testing has been done on RPi5 with the downstream BSP.
 >
-> For x86_64, when used with a symbol reference, the "P" modifier
-> emits "sym" instead of "sym(%rip)". When used with a constant, the
-> "P" modifier emits "cst" instead of "$cst". This property is used to
-> emit bare symbol references and bare constants without all
-> syntax-specific prefixes.
+> Changes in v3:
+> - fix headers includes
+> - Improve #define(s) readability
+> - Drop __func__ from error logs
+> - Use HZ_PER_MHZ instead of MEGA
+> - mdsel* variables should be u8
+> - Use container_of_const() instead of container_of()
+> - Use clamp() used of clamp_t variant
+> - Use streams API imx283_{enable|disable}_streams (**NOTE**)
+> - Properly fix PM runtime handling
+>    (pm_ptr(), DEFINE_RUNTIME_DEV_PM_OPS,
+>     imx283_runtime_suspend, imx283_runtime_resume)
+> - Fix format modifiers, signed-ness at various places
 >
-> The generic "c", "n" and "a" operand modifiers should be used instead.
-> The following table shows the modifiers supported by all targets and
-> their effects:
 >
-> Modifier    Description
-> -----------------------------------------------------------
-> 'c'         Require a constant operand and print the
->             constant expression with no punctuation.
-> 'n'         Like '%c' except that the value of the constant
->             is negated before printing.
-> 'a'         Substitute a memory reference, with the actual
->             operand treated as the address.  This may be
->             useful when outputting a "load address"
->             instruction, because often the assembler syntax
->             for such an instruction requires you to write
->             the operand as if it were a memory reference.
+> **NOTE**
+> There is streams mask issue, as no routes are defined with 1 pad:
+> For testing, I have the following applied locally:
+> ```
+> diff --git a/drivers/media/v4l2-core/v4l2-subdev.c b/drivers/media/v4l2-core/v4l2-subdev.c
+> index 4c6198c48dd6..38545d779620 100644
+> --- a/drivers/media/v4l2-core/v4l2-subdev.c
+> +++ b/drivers/media/v4l2-core/v4l2-subdev.c
+> @@ -2115,8 +2115,10 @@ int v4l2_subdev_enable_streams(struct v4l2_subdev *sd, u32 pad,
+>          if (pad >= sd->entity.num_pads)
+>                  return -EINVAL;
+>   
+> -       if (!streams_mask)
+> -               return 0;
+> +       if (!streams_mask) {
+> +               dev_err(sd->dev, "no streams mask, returning ....\n");
+> +               //return 0;
+> +       }
+>   
+>          /* Fallback on .s_stream() if .enable_streams() isn't available. */
+>          if (!sd->ops->pad || !sd->ops->pad->enable_streams)
+> ```
 >
-> Also note that unlike GCC, clang emits %rip-relative symbol
-> reference with "P" asm operand modifier, so the patch also unifies
-> symbol handling with both compilers.
+> changes in v2 (summary):
+> - Use u32 wherever possible
+> - Use MEGA macro instead of self defined MHZ() macro
+> - Properly refine regs using CCI
+> - Drop tracking of current mode. Shifted to infer from active state directly.
+>    (Laurent's review)
+> - Cont. from above: Pass the struct imx283_mode to functions whereever required.
+> - Remove unused comments
+> - Remove custom mutex. Use control handler one instead.
+> - Drop imx283_reset_colorspace() and inline
+> - Set colorspace field properly (drop _DEFAULTS)
+> - Use __maybe_unused for imx283_power_on() and imx283_power_off()
+> - Store controls  v4l2_ctrl handles for those required, not all.
+> - Drop imx283_free_controls(). Use v4l2_ctrl_handler_free
+> - fix reset-gpios handling and add it to DT schema
+> - fix data-lanes property in DT schema
+> - fix IMX283 Kconfig
+> - Remove unused macros
+> - Alphabetical case consistency
 >
-> No functional changes intended.
+> Kieran Bingham (1):
+>    media: i2c: Add imx283 camera sensor driver
 >
-> Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
-> Cc: Andy Lutomirski <luto@kernel.org>
-> Cc: Brian Gerst <brgerst@gmail.com>
-> Cc: Denys Vlasenko <dvlasenk@redhat.com>
-> Cc: H. Peter Anvin <hpa@zytor.com>
-> Cc: Linus Torvalds <torvalds@linux-foundation.org>
-> Cc: Ingo Molnar <mingo@kernel.org>
-> Cc: Josh Poimboeuf <jpoimboe@redhat.com>
-> Cc: Sean Christopherson <seanjc@google.com>
+> Umang Jain (1):
+>    media: dt-bindings: media: Add bindings for IMX283
 >
-> Uros Bizjak (3):
->   x86/asm: Remove %P operand modifier from altinstr asm templates
->   x86/asm: Use %c/%n instead of %P operand modifier in asm templates
->   x86/asm: Use %a instead of %P operand modifier in asm templates
->
->  arch/x86/boot/main.c                 |  4 ++--
->  arch/x86/include/asm/alternative.h   | 22 +++++++++++-----------
->  arch/x86/include/asm/apic.h          |  2 +-
->  arch/x86/include/asm/atomic64_32.h   |  2 +-
->  arch/x86/include/asm/cpufeature.h    |  4 ++--
->  arch/x86/include/asm/irq_stack.h     |  2 +-
->  arch/x86/include/asm/processor.h     |  6 +++---
->  arch/x86/include/asm/special_insns.h |  4 ++--
->  arch/x86/include/asm/uaccess.h       |  4 ++--
->  9 files changed, 25 insertions(+), 25 deletions(-)
->
-> --
-> 2.44.0
+>   .../bindings/media/i2c/sony,imx283.yaml       |  107 ++
+>   MAINTAINERS                                   |    9 +
+>   drivers/media/i2c/Kconfig                     |   10 +
+>   drivers/media/i2c/Makefile                    |    1 +
+>   drivers/media/i2c/imx283.c                    | 1596 +++++++++++++++++
+>   5 files changed, 1723 insertions(+)
+>   create mode 100644 Documentation/devicetree/bindings/media/i2c/sony,imx283.yaml
+>   create mode 100644 drivers/media/i2c/imx283.c
 >
 
-My one concern is does this work with older compilers?  Technically,
-GCC 5.1 is still supported.  I seem to recall some issues around these
-modifiers in the past, but don't remember any details.  Otherwise,
-it's a nice cleanup.
-
-
-Brian Gerst
 
