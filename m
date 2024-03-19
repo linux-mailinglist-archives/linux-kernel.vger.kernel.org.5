@@ -1,190 +1,101 @@
-Return-Path: <linux-kernel+bounces-108151-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108152-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 78B0D8806B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:25:39 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 05F018806B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9D1141C22282
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:25:38 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8AF2F282B7D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:27:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A31D44F200;
-	Tue, 19 Mar 2024 21:25:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD4483FB9F;
+	Tue, 19 Mar 2024 21:27:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="ggEPHDnS"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ETLrkllJ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009DC3C488
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:25:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A4E3FBAF;
+	Tue, 19 Mar 2024 21:27:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710883528; cv=none; b=jP+4PLsr7iyICWqTbX65WQqg17ANeagIS5KB4qq4CxwPQKOUbFRmnmIBC4b2ZMvChmNjss3KhLx2VYj0s0zMwJAUcdUNqP+ohYwp8zvFxw0m0GeD05Dh/6NpUUrCP3+UuB83l6Fls2oUmgZprHtum1tJxJWX2v8upBeS5lQSj84=
+	t=1710883660; cv=none; b=YwdcXAbA5dy/F64weP0uF2onX+rbaJIsjbV2sC5Z9hLC34TeYmipQcvdHs8knadkKj1TzyoDVrwXC6CWlzVGZirg0WZ2wC4rm/zJHKm4Ouze4okonsSoa4Ip1vnKy34jh18xvazPhIT8weFoS2IA4E3puvoV3nVJXoRoNpRnlvI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710883528; c=relaxed/simple;
-	bh=KkOVhzkgyAjCGaKaPgGzdIzZ47G+N0AsLX8VMEEZgzY=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=mOPB2UMFtay3l0khfOA9HEAr6LI5U4Nr3ZR05Po3hxochQL9ftA0MOKICnpTHMy+sV/mGZ4raonQxz7v8WQhSygarVYUcdrR04I7aKxf1/YphD/0UD1LxrgBcJj4NFbLKSzLhv1LoU0+V8MvpQXqvB4xmAqhu8cvPKWTyCJ8CY0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=ggEPHDnS; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710883525;
-	bh=KkOVhzkgyAjCGaKaPgGzdIzZ47G+N0AsLX8VMEEZgzY=;
-	h=From:Date:Subject:To:Cc:From;
-	b=ggEPHDnSvHmLhfPXwBmW9Z3T7bw22e94cgd83syTrmM3VLhFyM3/RrWqP74xE54/E
-	 /pLhe7dn8BQcqoUeUM7iqyqkfqlx6CAsC/nkej5clTijPYLgiIWsFENGZsWuK5ni3S
-	 riFcLD3OvrHVRW9GmzH8n4IRDG1METvsYgiWhTZZAw2HzFcAdE7pb5RYsfY1D8Qcfs
-	 bUBxlFfJnfvmUfCtMPu9THbP56l849MpACglAzwE/pf3kUVMJ8mT8sqS3wEAv6lN39
-	 NmmMR/zvCRjozAF9btke8UHih4msLUSSibuqFMmjPj+0rdYa4L6nNBiiQid2YPtdRA
-	 OafLCIyR0ufWw==
-Received: from [192.168.1.91] (zone.collabora.co.uk [167.235.23.81])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: nfraprado)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 3D0B437809D0;
-	Tue, 19 Mar 2024 21:25:24 +0000 (UTC)
-From: =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-Date: Tue, 19 Mar 2024 17:24:26 -0400
-Subject: [PATCH] scripts: Add utility to convert make's output into JSON
+	s=arc-20240116; t=1710883660; c=relaxed/simple;
+	bh=J4v9ZApewR4KTKdeCzuYPBqN731W4qTgXU6ViPQQrRo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=oGPW82fDMmH7/uRfbb+b6uZky5Du/atP7QmWMseVqqFsv5yGITohqlIeQRGZI50bIEc7HyZhkh9kxo7NdYME21VginBEtQIkqLLGnn4XQ2iZQ0JO8iCfmNtp/ZlBJO8oiWcLtVMsSsSoKd4KqpIXqwII8W8AmtM0SEmqDOHAeCY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ETLrkllJ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id D4590C433F1;
+	Tue, 19 Mar 2024 21:27:38 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710883659;
+	bh=J4v9ZApewR4KTKdeCzuYPBqN731W4qTgXU6ViPQQrRo=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ETLrkllJMkEObpmvmNGtcL88GJEHAhQlDubQhs7HJdxnlzDAViZ17evutL6QGKaxW
+	 gbUUREPTX890MeUpaOrRTI73rs1I31whS9cfqon3hOZvrWRSaRjXFjKimTKB5hOc/p
+	 HA6ZdYEQ0n1iyglYWc3btbyzCAARo4uMvQKLAvmkL0PMJneZV/yM8QDCMAAxItlMoT
+	 dpAazCExgxV18UUOFrw6mT9wkYrvZvNSFVmF9MlrcRj6hIRZ1FcJqTylxEe/adyPrC
+	 IZ9jzg3602EuqluGYbjvuMpz2hqnmRiFZip95Na1sDdGJUjAjhyGb96KuUsIzAbSmb
+	 tBeuvsClUzpkg==
+Date: Tue, 19 Mar 2024 14:27:37 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Alison Schofield <alison.schofield@intel.com>,
+	Beau Belgrave <beaub@linux.microsoft.com>,
+	Huang Yiwei <quic_hyiwei@quicinc.com>,
+	John Garry <john.g.garry@oracle.com>,
+	Randy Dunlap <rdunlap@infradead.org>,
+	Thorsten Blum <thorsten.blum@toblux.com>,
+	Vincent Donnefort <vdonnefort@google.com>,
+	linke li <lilinke99@qq.com>, llvm@lists.linux.dev
+Subject: Re: [GIT PULL v2] tracing: Updates for v6.9
+Message-ID: <20240319212737.GA2894766@dev-arch.thelio-3990X>
+References: <20240318113053.7f87ce7f@gandalf.local.home>
+ <CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com>
+ <20240319130653.0cfdaf6e@gandalf.local.home>
+ <20240319131333.504c93fc@gandalf.local.home>
+ <20240319210329.GA742040@dev-arch.thelio-3990X>
+ <CAHk-=wjJH_k5+h=3TOvLsGN-FOBNfLh_Ln_bZRLQV-oe9Gc5tw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 8bit
-Message-Id: <20240319-make-to-json-script-v1-1-621cc4d502cb@collabora.com>
-X-B4-Tracking: v=1; b=H4sIAIkC+mUC/x3MQQ5AMBBA0avIrE3S0mi4ilgUgyFa6YhIxN01l
- m/x/wNCkUmgyR6IdLFw8Ak6z2BYnJ8JeUyGQhVGlbrG3W2EZ8BVgkcZIh8n2spoVfaTNaOFVB6
- RJr7/a9u97wfA9/tLZQAAAA==
-To: Masahiro Yamada <masahiroy@kernel.org>, Rob Herring <robh@kernel.org>
-Cc: kernel@collabora.com, linux-kernel@vger.kernel.org, 
- =?utf-8?q?N=C3=ADcolas_F=2E_R=2E_A=2E_Prado?= <nfraprado@collabora.com>
-X-Mailer: b4 0.13.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <CAHk-=wjJH_k5+h=3TOvLsGN-FOBNfLh_Ln_bZRLQV-oe9Gc5tw@mail.gmail.com>
 
-The output from make isn't well suited for machines: reading it requires
-hardcoding details of the formatting of commands from make.
+On Tue, Mar 19, 2024 at 02:22:27PM -0700, Linus Torvalds wrote:
+> On Tue, 19 Mar 2024 at 14:03, Nathan Chancellor <nathan@kernel.org> wrote:
+> >
+> > For what it's worth, I applied that change and built ARCH=x86_64
+> > defconfig with LLVM 18.1.1 from [1] but it does not appear to help the
+> > instances of -Wstring-compare; in fact, it adds some additional warnings
+> > that I have not seen before. I have attached the full build log.
+> 
+> Hmm. I'm no longer seeing any problems with commit 24f5bb9f24ad
+> ("tracing: Just use strcmp() for testing __string() and __assign_str()
+> match").
+> 
+> But that's clang 17.0.6.
+> 
+> The patch that Steven sent out (and that I applied) is a bit different
+> from his "I'll change it to this" email, though. A couple of casts and
+> parentheses different.
+> 
+> So maybe current -git works for you?
 
-Add a script that parses the output from make and outputs it in a well
-structured format in JSON. This allows third party programs to parse the
-make output without caring about formatting details, which stay in the
-kernel tree.
+Ah, I did not notice your tree was updated, I was working off of
+b3603fcb79b1. Works for me here, thanks for letting me know.
 
-For a given command line from make's output:
-  DTC_CHK arch/arm64/boot/dts/actions/s700-cubieboard7.dtb
-
-where DTC_CHK is the command, arch/.../s700-cubieboard7.dtb is the
-target and any non-command lines that follow it are the command's
-output, the generated JSON output is in the format:
-[
-    ...,
-    {
-        "command": "DTC_CHK",
-        "target": "arch/arm64/boot/dts/actions/s700-cubieboard7.dtb",
-        "output": "<any following non-command lines>"
-    },
-    ...
-]
-
-This assumes the output from a command immediately follows it. If
-building with multiple jobs (`make -j`), the `--output-sync` argument
-also needs to be supplied to make in order for the output fields to be
-correctly set.
-
-For an example of the usage of this script, consider `make dtbs_check`
-generates a very long output in the following format:
-
-  DTC_CHK arch/arm64/boot/dts/arm/foundation-v8-psci.dtb
-  DTC_CHK arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dtb
-/tmp/kci/linux/arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dtb: thermal-zones: gpu0-thermal: 'trips' is a required property
-	from schema $id: http://devicetree.org/schemas/thermal/thermal-zones.yaml#
-/tmp/kci/linux/arch/arm64/boot/dts/allwinner/sun50i-a64-amarula-relic.dtb: thermal-zones: gpu1-thermal: 'trips' is a required property
-	from schema $id: http://devicetree.org/schemas/thermal/thermal-zones.yaml#
-  DTC_CHK arch/arm64/boot/dts/altera/socfpga_stratix10_socdk_nand.dtb
-
-With this output converted into JSON, it will be much simpler to
-identify that only the middle DTB in this example produces warnings. By
-extension, CIs will be able to more easily report which DTBs are
-currently producing warnings and which are not, and identify
-regressions.
-
-Signed-off-by: Nícolas F. R. A. Prado <nfraprado@collabora.com>
----
-Hi,
-I'm not sure which subsystem this script would be a part of, which is
-why I haven't added an entry in MAINTAINERS. Suggestions appreciated.
----
- scripts/make-to-json.py | 51 +++++++++++++++++++++++++++++++++++++++++++++++++
- 1 file changed, 51 insertions(+)
-
-diff --git a/scripts/make-to-json.py b/scripts/make-to-json.py
-new file mode 100755
-index 000000000000..7570134f6151
---- /dev/null
-+++ b/scripts/make-to-json.py
-@@ -0,0 +1,51 @@
-+#!/bin/env python
-+# SPDX-License-Identifier: GPL-2.0
-+# Copyright (c) 2024 Collabora Ltd
-+#
-+# Transform the output from make into JSON. This makes it easier for machines to
-+# parse.
-+#
-+# NOTE: This assumes the output from a command immediately follows it. If
-+# building with multiple jobs (`make -j`), make sure to also pass
-+# `--output-sync`.
-+#
-+# Command lines from make are in the format:
-+#   DTC_CHK arch/arm64/boot/dts/actions/s700-cubieboard7.dtb
-+#
-+# where DTC_CHK is the command, arch/.../s700-cubieboard7.dtb is the target and
-+# any non-command lines that follow it are the command's output.
-+#
-+# The JSON output is in the format:
-+# [
-+#     {
-+#         "command": "DTC_CHK",
-+#         "target": "arch/arm64/boot/dts/actions/s700-cubieboard7.dtb",
-+#         "output": ""
-+#     },
-+#     ...
-+# ]
-+
-+import json
-+import re
-+import sys
-+
-+make_cmd_re = re.compile(r"^  (?P<command>[A-Z0-9_.]{1,8}( \[M\])?) +(?P<target>.*)")
-+
-+make_output = []
-+step = {}
-+
-+for line in sys.stdin:
-+    match = make_cmd_re.match(line)
-+    if match:
-+        if step:
-+            make_output.append(step)  # save previous step, if any
-+        step = {}
-+        step["command"] = match.group("command")
-+        step["target"] = match.group("target")
-+        step["output"] = ""
-+    else:
-+        step["output"] += line
-+if step:
-+    make_output.append(step)  # save last step, if any
-+
-+json.dump(make_output, sys.stdout)
-
----
-base-commit: dad309222e4c3fc7f88b20ce725ce1e0eea07cc7
-change-id: 20240319-make-to-json-script-764103bf74d7
-
-Best regards,
--- 
-Nícolas F. R. A. Prado <nfraprado@collabora.com>
-
+Cheers,
+Nathan
 
