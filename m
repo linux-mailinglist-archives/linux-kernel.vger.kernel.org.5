@@ -1,133 +1,209 @@
-Return-Path: <linux-kernel+bounces-107673-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107674-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E26287FFE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:48:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD6B887FFE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:49:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id DE7851F23ACC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:48:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83091284A0B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:49:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D67C333998;
-	Tue, 19 Mar 2024 14:48:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D141CD09;
+	Tue, 19 Mar 2024 14:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="XnyHI78T"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UMcT+llI"
+Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7D4D01CD09
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:48:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D7FF9E0;
+	Tue, 19 Mar 2024 14:48:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710859688; cv=none; b=MIq2shl4guv1yqHfAeyfOBZcaqu2fMI6qt8HibMR1DU96ckDMmvE9KkP3eo13jYEVoM1yAEsEvSt1rNLurW3FKKpzleQW1hJxnpaoWFF+wfkMvTBle8+TiIH9VpC1hpuYC5Fda9PrnT4AunxsTty43vPUGZIc1dbq7w0XcE4erM=
+	t=1710859733; cv=none; b=LJUxyBG4g/HvuNsdMt0XB+xLlPyIx8bLHzpgU0k0x/k6bva97k2poTL/ihwsj5t4KqpCTIFSOgszcql/SlpBK//Cir4ZP7uXtYanuY+40egLu/fEYLSoP9SGl2oU31/boYz17Z0cPc6548LB9LyPv97hAdJnfknRQF+A/2M57pY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710859688; c=relaxed/simple;
-	bh=RlgzlVLtithqwcsBUwyF4k8tcSmUYR/TNIpOdEw5rIE=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=ZDvWgaN2/LZiXFSCE11XaKPxTpiO1rAOWdwFqfACqYY9lq5Hl5SbJeeWohN3NpiZ0k5MmhYjExUo/UBbFEfCtIzOdUsCHnuciAbYbFre1QlxACbhfFH9W1d/Rm9cmupntb4dDUJgyfesuojvjYPHGwp2N11AfM7fHesS5cp36Jk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=XnyHI78T; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710859685;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=KXPueMTAfrzqtSn8q0w7M4HgneSXU9ihcQnMvmzCGDA=;
-	b=XnyHI78Tb7J3wCI3q0N9vONZQX+ZGAlbTFXHP/ELPieHXB/i/powbdQ+GTpgU7Wl0UFsUm
-	aIsGlinspnwUrKJr9Sj+TdBCd0ax+km86UAo4eMO37dWBo+/aR3O46MPy2IKYdrllNKPSh
-	wipLTiSz4doAAou734t7fJXpXHOcf+g=
-Received: from mail-wr1-f71.google.com (mail-wr1-f71.google.com
- [209.85.221.71]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-614-jv9OiEu1MrWipEvV49qpuQ-1; Tue, 19 Mar 2024 10:48:03 -0400
-X-MC-Unique: jv9OiEu1MrWipEvV49qpuQ-1
-Received: by mail-wr1-f71.google.com with SMTP id ffacd0b85a97d-33ed3e8cf50so660983f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:48:02 -0700 (PDT)
+	s=arc-20240116; t=1710859733; c=relaxed/simple;
+	bh=Zby5V/77Gm6XNsPuHJHW0J+fsuKnn4DHWh14NNhYICA=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=QXpsry1PyLy3sd+Nm6sw0al2DLABEhz+V7I8pSuB6VeKtsX9oQ/508XVbqVcDESQcWNQ4CbUhS1gaziSYNmXjB4EnVlDtT9NRLeVA8aVWWcsXAEyyV8F8DEaSTwb791HFLZuMzs0VsY7bWcpK7oY3GsQR2yY5mAhQkTZTl95vLU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UMcT+llI; arc=none smtp.client-ip=209.85.167.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512f892500cso6281413e87.3;
+        Tue, 19 Mar 2024 07:48:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710859730; x=1711464530; darn=vger.kernel.org;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=fXxsIw2dDze0fvR7GTtibnbx0BcDg7yMq6vxLD+1Uxc=;
+        b=UMcT+llIUV3KQzxet4oE2rYstWlsoHktklYtDAKNOosizDOmgMbdLjRiQUdthDjORn
+         p3KDMurMwXye5OkB22WQ2JV2weUuXODt31GV4kiQ71IW0jsyqNa8U2PlwUM0OQEC7nS0
+         +n09IXoI0MnDELvQoNLCngZSF/vO3FepMyoRi/QBuqatQxRnEvpYDABoTQoCqnKqIip7
+         3XNinhM0gn1CbH/c2M9jQsZ057lELUGXYSM732hKigxXkSxfxDylq16625exUsDMhbKM
+         rOKINTGnpLPzyDoEHNma7PhLSjUlZfkGjRma9VfmgzlOKpjccdvMo1iVRr2PktHRLbsQ
+         1elg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710859682; x=1711464482;
-        h=mime-version:user-agent:content-transfer-encoding:autocrypt
-         :references:in-reply-to:date:cc:to:from:subject:message-id
+        d=1e100.net; s=20230601; t=1710859730; x=1711464530;
+        h=in-reply-to:content-transfer-encoding:content-disposition
+         :mime-version:references:message-id:subject:cc:to:date:from
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=KXPueMTAfrzqtSn8q0w7M4HgneSXU9ihcQnMvmzCGDA=;
-        b=Sh0NQ62TDn33Xd+eHsCyFdlc3fEtlny82HiJTIzDHEhr5Ty1I9EXTzdflAy7XCGAQG
-         HokgoDwJqGNlVDbx8MiEma+FAf/iSISlNI9XUomauFBCcHzNNqHizG8TBxp0DP6A5A65
-         Kk9/toVBP6iUPWJZvM6YNp8W8mwzSokPpRRmOlnP/C4iByKB90b74GJkGRrm5MPCPzOo
-         pQrg7fmqD+Fa+Nfy2l8ti8SfSfoR52nPQ1WVuAslO6NYdNRTElbr/VNIIg38UQtJ3rkc
-         JLVOFU43A1+VeNAukJwSA1N6LflBiF4gUcqLao1YgaSjCj0a1RZ5dlSpib7442pgrKSK
-         3nww==
-X-Forwarded-Encrypted: i=1; AJvYcCV4Q1yjQYvedqYh3pu5jTuVrxpjnV8Z4AQfFLgxV8NMPTWG9d4/313bxkW7yT1G4Z+qBJWKa9HMQvcRlavEuG1VeJZFq2aLbd8fO2wK
-X-Gm-Message-State: AOJu0YwacwPlBXlOdYIgTOfaB/K19IIyyEeT9q2VSqrG5AlwRPBcvL9+
-	UoFK0oQD7sFqm0xeuQ8SrkObd6nD+BCvuRV+ksQj/2JgpfEQWHCsTPYH1CT882tZ5ikiRDcFy93
-	hpqA/C8zK/jh5r7q+C6l/QzcRIlu6G5kYWgkqnmDMMsb7Bs2CwaLO0fqcK7Ze1w==
-X-Received: by 2002:a05:6000:e46:b0:33e:1eea:33b1 with SMTP id dy6-20020a0560000e4600b0033e1eea33b1mr2145178wrb.4.1710859681848;
-        Tue, 19 Mar 2024 07:48:01 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHz2dLu6HF+ySitErEIQT0qJwRS1DuKvf2sqJYNB0vl9GeXVKc6QbNcabXWDj4lK/jLNv4pHA==
-X-Received: by 2002:a05:6000:e46:b0:33e:1eea:33b1 with SMTP id dy6-20020a0560000e4600b0033e1eea33b1mr2145156wrb.4.1710859681487;
-        Tue, 19 Mar 2024 07:48:01 -0700 (PDT)
-Received: from gerbillo.redhat.com (146-241-224-202.dyn.eolo.it. [146.241.224.202])
-        by smtp.gmail.com with ESMTPSA id bo6-20020a056000068600b003418016b04csm3689253wrb.76.2024.03.19.07.47.59
+        bh=fXxsIw2dDze0fvR7GTtibnbx0BcDg7yMq6vxLD+1Uxc=;
+        b=tzitXwrFwkMA/Kg1qQOQ7xOEr1tUBQt+qUuN7l+pUbkLj5R8s7xcyPftnGTKOu9ryU
+         nhAx+aU7DnlgAWJpdg07Wvklshoyur/FSAWdLnkIBlkEAwKkxmw2hsOgPVyaspnKv53h
+         DevkCq5mKJUV80kzRHdFt4ii+X/pu1oMclvmtuHSNEm4Nb6LmutyvU7FTLmxL3blj6m5
+         nwU4m7e4Abw+XIa/ohx82alZtqvY1xX9FHL/XdppIWl5pMp2siWnxDefA5CliDXAQMya
+         rI70pnKeGyj18QKLIZj80UIaJentRgMRZFzISUpm7qKHN7Nm7oN3wRVLqg2s+o9JAiz3
+         hzWw==
+X-Forwarded-Encrypted: i=1; AJvYcCUJxaT6n3LgkMsLVt1GIJYiXBzOTk64zl9zoFmBt3HlUtaC+q+EAKvzXMBaZ4Kbew2+JY0eaSKheSyHDxA/HAuGY90tfZpHQ2534QTWSGCn8qCzSxU/bRoYpdelirqSrKrC
+X-Gm-Message-State: AOJu0YzxymzTwax5W82KUjhxSDLV6SqsEUAcji2E+nmhkEvUA3R/IfwC
+	8F5KsPU+DmsNxnToxhUKiM8R+r2nNIioh0rzT0vpXwWMzvqWoGQm
+X-Google-Smtp-Source: AGHT+IH2z5QwVEF7+nCESVqDzcYfrDiDm1LxllGl6VYzDYlwVMlWO0GP8DQpG8yAGDYsCt6wX1WfDw==
+X-Received: by 2002:a19:8c56:0:b0:515:7686:6068 with SMTP id i22-20020a198c56000000b0051576866068mr1717419lfj.55.1710859729662;
+        Tue, 19 Mar 2024 07:48:49 -0700 (PDT)
+Received: from pc636 (host-90-235-3-101.mobileonline.telia.com. [90.235.3.101])
+        by smtp.gmail.com with ESMTPSA id b11-20020a056512024b00b00513d4560aa3sm1766653lfo.170.2024.03.19.07.48.48
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 07:48:00 -0700 (PDT)
-Message-ID: <5a1e45fd0bb89faa906866b7525210f4aaecab2e.camel@redhat.com>
-Subject: Re: [PATCH] net: always initialize sysctl ownership
-From: Paolo Abeni <pabeni@redhat.com>
-To: Kuniyuki Iwashima <kuniyu@amazon.com>, linux@weissschuh.net
-Cc: davem@davemloft.net, dmitry.torokhov@gmail.com, ebiederm@xmission.com, 
-	edumazet@google.com, j.granados@samsung.com, kuba@kernel.org, 
-	linux-kernel@vger.kernel.org, mcgrof@kernel.org, netdev@vger.kernel.org
-Date: Tue, 19 Mar 2024 15:47:59 +0100
-In-Reply-To: <20240316003958.65385-1-kuniyu@amazon.com>
-References: <20240315-sysctl-net-ownership-v1-1-2b465555a292@weissschuh.net>
-	 <20240316003958.65385-1-kuniyu@amazon.com>
-Autocrypt: addr=pabeni@redhat.com; prefer-encrypt=mutual; keydata=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
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-User-Agent: Evolution 3.50.4 (3.50.4-1.fc39) 
+        Tue, 19 Mar 2024 07:48:49 -0700 (PDT)
+From: Uladzislau Rezki <urezki@gmail.com>
+X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
+Date: Tue, 19 Mar 2024 15:48:46 +0100
+To: Joel Fernandes <joel@joelfernandes.org>
+Cc: Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
+	frederic@kernel.org, boqun.feng@gmail.com, neeraj.iitr10@gmail.com,
+	rcu@vger.kernel.org, rostedt@goodmis.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for
+ synchronize_rcu() common case
+Message-ID: <ZfmlziaLw1bl4IjX@pc636>
+References: <ZflgfrjZSZdqrLLw@pc636>
+ <0B372386-9546-492E-930E-DC6C883F3B2B@joelfernandes.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <0B372386-9546-492E-930E-DC6C883F3B2B@joelfernandes.org>
 
-On Fri, 2024-03-15 at 17:39 -0700, Kuniyuki Iwashima wrote:
-> on Fri, 15 Mar 2024 17:20:31 +0100 Thomas Wei=C3=9Fschuh <linux@weissschu=
-h.net wrote:
->=20
-> > diff --git a/net/sysctl_net.c b/net/sysctl_net.c
-> > index 051ed5f6fc93..03e320ddacc9 100644
-> > --- a/net/sysctl_net.c
-> > +++ b/net/sysctl_net.c
-> > @@ -62,12 +62,10 @@ static void net_ctl_set_ownership(struct ctl_table_=
-header *head,
-> >  	kgid_t ns_root_gid;
-> > =20
-> >  	ns_root_uid =3D make_kuid(net->user_ns, 0);
-> > -	if (uid_valid(ns_root_uid))
-> > -		*uid =3D ns_root_uid;
-> > +	*uid =3D uid_valid(ns_root_uid) ? ns_root_uid : GLOBAL_ROOT_UID;
-> > =20
-> >  	ns_root_gid =3D make_kgid(net->user_ns, 0);
-> > -	if (gid_valid(ns_root_gid))
-> > -		*gid =3D ns_root_gid;
-> > +	*gid =3D gid_valid(ns_root_gid) ? ns_root_gid : GLOBAL_ROOT_GID;
-> >  }
->=20
-> How about setting the default in proc_sys_make_inode() instead ?
-> because the default value configured by new_inode() is not
+On Tue, Mar 19, 2024 at 10:29:59AM -0400, Joel Fernandes wrote:
+> 
+> 
+> > On Mar 19, 2024, at 5:53 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
+> > 
+> > ﻿On Mon, Mar 18, 2024 at 05:05:31PM -0400, Joel Fernandes wrote:
+> >> 
+> >> 
+> >>>> On Mar 18, 2024, at 2:58 PM, Uladzislau Rezki <urezki@gmail.com> wrote:
+> >>> 
+> >>> ﻿Hello, Joel!
+> >>> 
+> >>> Sorry for late checking, see below few comments:
+> >>> 
+> >>>> In the synchronize_rcu() common case, we will have less than
+> >>>> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+> >>>> is pointless just to free the last injected wait head since at that point,
+> >>>> all the users have already been awakened.
+> >>>> 
+> >>>> Introduce a new counter to track this and prevent the wakeup in the
+> >>>> common case.
+> >>>> 
+> >>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
+> >>>> ---
+> >>>> Rebased on paul/dev of today.
+> >>>> 
+> >>>> kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
+> >>>> kernel/rcu/tree.h |  1 +
+> >>>> 2 files changed, 32 insertions(+), 5 deletions(-)
+> >>>> 
+> >>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+> >>>> index 9fbb5ab57c84..bd29fe3c76bf 100644
+> >>>> --- a/kernel/rcu/tree.c
+> >>>> +++ b/kernel/rcu/tree.c
+> >>>> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+> >>>>   .ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+> >>>>   .srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+> >>>>       rcu_sr_normal_gp_cleanup_work),
+> >>>> +    .srs_cleanups_pending = ATOMIC_INIT(0),
+> >>>> };
+> >>>> 
+> >>>> /* Dump rcu_node combining tree at boot to verify correct setup. */
+> >>>> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> >>>>    * the done tail list manipulations are protected here.
+> >>>>    */
+> >>>>   done = smp_load_acquire(&rcu_state.srs_done_tail);
+> >>>> -    if (!done)
+> >>>> +    if (!done) {
+> >>>> +        /* See comments below. */
+> >>>> +        atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+> >>>>       return;
+> >>>> +    }
+> >>>> 
+> >>>>   WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+> >>>>   head = done->next;
+> >>>> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> >>>> 
+> >>>>       rcu_sr_put_wait_head(rcu);
+> >>>>   }
+> >>>> +
+> >>>> +    /* Order list manipulations with atomic access. */
+> >>>> +    atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+> >>>> }
+> >>>> 
+> >>>> /*
+> >>>> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+> >>>> */
+> >>>> static void rcu_sr_normal_gp_cleanup(void)
+> >>>> {
+> >>>> -    struct llist_node *wait_tail, *next, *rcu;
+> >>>> +    struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+> >>>>   int done = 0;
+> >>>> 
+> >>>>   wait_tail = rcu_state.srs_wait_tail;
+> >>>> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
+> >>>>           break;
+> >>>>   }
+> >>>> 
+> >>>> -    // concurrent sr_normal_gp_cleanup work might observe this update.
+> >>>> -    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+> >>>> +    /*
+> >>>> +     * Fast path, no more users to process. Remove the last wait head
+> >>>> +     * if no inflight-workers. If there are in-flight workers, let them
+> >>>> +     * remove the last wait head.
+> >>>> +     */
+> >>>> +    WARN_ON_ONCE(!rcu);
+> >>>> 
+> >>> This assumption is not correct. An "rcu" can be NULL in fact.
+> >> 
+> >> Hmm I could never trigger that. Are you saying that is true after Neeraj recent patch or something else?
+> >> Note, after Neeraj patch to handle the lack of heads availability, it could be true so I requested
+> >> him to rebase his patch on top of this one.
+> >> 
+> >> However I will revisit my patch and look for if it could occur but please let me know if you knew of a sequence of events to make it NULL.
+> >>> 
+> > I think we should agree on your patch first otherwise it becomes a bit
+> > messy or go with a Neeraj as first step and then work on youth. So, i
+> > reviewed this patch based on latest Paul's dev branch. I see that Neeraj
+> > needs further work.
+> 
+> You are right. So the only change is to drop the warning and those braces. Agreed?
+>
+Let me check a bit. Looks like correct but just in case.
 
-I also think that could be a better option, as the caller is already
-providing default values in some cases.
+>
+> I will resend the patch and we can discuss during tomorrow call as well.
+> 
+Good :)
 
-Cheers,
-
-Paolo
-
+--
+Uladzislau Rezki
 
