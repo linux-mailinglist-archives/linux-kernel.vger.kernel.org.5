@@ -1,91 +1,85 @@
-Return-Path: <linux-kernel+bounces-107902-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107903-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7D9788034C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:20:57 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2EE9880352
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:24:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBFD3B22074
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:20:54 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AE8401C227C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:24:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF7B19BDC;
-	Tue, 19 Mar 2024 17:20:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BFD251AACC;
+	Tue, 19 Mar 2024 17:24:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i7E5y/Pr"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="MpHKHX5A"
+Received: from mail-oi1-f179.google.com (mail-oi1-f179.google.com [209.85.167.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C49017C8B
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:20:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5D5AD18AE4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:24:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710868846; cv=none; b=qoHO+uD1u0RQg+/IjldAXdjnV+BhjN8LVnbng4ncB6dMy+mvSLVix+wYOIzW9iRbOlfznq7s7nPPW45bXz0SA9q6FJmxlXVVGLDpWj7mCJwD4vazsLeux07gh6SFixohuMI/dKJ1XTH0RYW0e4H8necWYLya/omdP0yyah6gHYc=
+	t=1710869059; cv=none; b=o4bc4we2Vzr5GxKBedGQSfuMKEZjMV1awzK7LWJzKBsQkzVSdfqF4X3ziBxzpam9FmrCfMcSO/H27D8+Kp1StsMPONJZc2fy9t07JgNAIxcFXPMoNFuUJYllVrJoFdsDo7AEOmfSfI10KHCEfa2FuB8lk/0jK1X+ZC5gTb0pci8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710868846; c=relaxed/simple;
-	bh=Vh9lCoaKMDmTBh3akSE8GiDLO339gYIbqJ18ntD/V64=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qTAvmrudiX0700Fgn2aoaidqL8u67dVjGZNSwUSYR6snrebCzgvSKn4o/+hgH/ScZUKiqLQuAg6aPZeYiaTVfeQH4P7sGUWK1I40GRvT337HIYF73f/cOx8J8vAceZMhw1912+J3tEGifFP/yRnfrGgTfvuihSdcsgSItA0RLwU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i7E5y/Pr; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710868844;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding;
-	bh=8ztau3JQ36amubeJuz0wWTtDljNmlC67km863EzzBpM=;
-	b=i7E5y/PrgFyQWjTSj1zwHOrTYwxa85LgunrISBwuCvMv5w5j77V+y+BAhc1G8lluRWyrGV
-	9F64VLgb+YyUpA7eHwum0Oew188+ScKWNDTvJLDvXvapsl5y2Pzl7Mel83zbutugead3eg
-	7/gGyjKsp/S3Qw3lFSrWzkFvdrWLG8k=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-489-j4iA9mOENiqRIbXi8tbOnw-1; Tue, 19 Mar 2024 13:20:41 -0400
-X-MC-Unique: j4iA9mOENiqRIbXi8tbOnw-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ec604d3b3so3927777f8f.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:20:41 -0700 (PDT)
+	s=arc-20240116; t=1710869059; c=relaxed/simple;
+	bh=e7yeIqUpzRjjdTvOBKM5mQZ7beBxblyQQJZNb13cJvs=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=P1quWwuU2zo7dR6LxPmV3bhribJ80yfe/2UmZLnvDeecI/HyNYKO9WLUKqFMWzY6vVYB9u0yjKYS5OyOyE3s13qiT+RJHcbWLBfm/fWtRb8eywusZHOnA4ek6k35+k1lIgqDBfknoCrh6nVDrEMLHpqQhbUHDSVyydZtzRs9Uh8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=MpHKHX5A; arc=none smtp.client-ip=209.85.167.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-oi1-f179.google.com with SMTP id 5614622812f47-3c39c55ef57so336504b6e.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:24:17 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1710869055; x=1711473855; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=nGf7OdIZL/0mVWg7rMGIh3EEFJoK6ZbRGH0lmn+lIjc=;
+        b=MpHKHX5A8reaZRm9sw+d1bMQpEoIavfB1xkO1dNgqIZzSAVrBV8BBPvKhEY7qc7Z+k
+         eJ/HMyHdZbqmrhDSNQDuL42MF1/4bR97UFEclaFOC4y6+s5hGf77zfrb3ZEZ9tFaTre/
+         h5gOe2xVYbH0l4IMpBZRpxvx2TDRBUQxENwsc=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710868841; x=1711473641;
+        d=1e100.net; s=20230601; t=1710869055; x=1711473855;
         h=content-transfer-encoding:mime-version:message-id:date:subject:cc
          :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=8ztau3JQ36amubeJuz0wWTtDljNmlC67km863EzzBpM=;
-        b=RoT0Z0nwNcvoLo3Z6wu72HmHA2fTS5W8zKXSKVf2n5rwHaORrIWl3Kx+gHUp+24npd
-         tfZXg7pB2AAUfc6LLePHA01TKYQfJEW96nrVoaammXL33ntfz1AYHzobrryeqveIxcpH
-         VnGZ/CbqmV9kUoDPHZFxpA/87I6wszpkGXw7mo9SZv6OK+H7LtaCS5H3c5uKxz2SuY1Y
-         fEXVpyGHU91V19znUcJq90cZFdZ9U1QiZku2wixawUPEJxt3d723697Ab9JYhkAH318w
-         wjGbUOwk3OCzd9AW4dYXZpIdanOo34DObCIs/buyaghHSHgExJrrmi/d94fGKcFFRIgW
-         YNUw==
-X-Forwarded-Encrypted: i=1; AJvYcCWaV6bFvxhIPXaLE565DuSFPnkAhLSDjWBsJCUn8okeW7LwVoBxKDgU2yVI85+NBjLB5OaU7T65xWKJtm3vyq/U+lnEuPFzfYzYZ/1E
-X-Gm-Message-State: AOJu0Yzlcd0f4HQFRIORrMaYUsUdSWfFAH17Uuwh+3GkutTZHP8cg/v3
-	/Cj5QlG6nh5rYNVzVjpsvuFEE6SEeMkLWhw2o04l92m1Q6za6yAVIEkjluqrOBJWIRDV0aUagf1
-	xzctQXe1Tn9sDCcyNCg3A22z+1FlhjNBSVTxdGwz3oP4Bwb91BIL14Q9SumMu
-X-Received: by 2002:adf:f483:0:b0:33e:7f5c:a75c with SMTP id l3-20020adff483000000b0033e7f5ca75cmr10435300wro.47.1710868840693;
-        Tue, 19 Mar 2024 10:20:40 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IFx2PQc7A0h2l5AD0StizMnjKmdjOFZhxuFssnLI/hnV0ZMoZOE2qNPVg/1en+Qbw0s7fX2rg==
-X-Received: by 2002:adf:f483:0:b0:33e:7f5c:a75c with SMTP id l3-20020adff483000000b0033e7f5ca75cmr10435275wro.47.1710868840241;
-        Tue, 19 Mar 2024 10:20:40 -0700 (PDT)
-Received: from klayman.redhat.com (net-2-34-30-89.cust.vodafonedsl.it. [2.34.30.89])
-        by smtp.gmail.com with ESMTPSA id g4-20020adfe404000000b0033dd2a7167fsm12804568wrm.29.2024.03.19.10.20.39
+        bh=nGf7OdIZL/0mVWg7rMGIh3EEFJoK6ZbRGH0lmn+lIjc=;
+        b=sZTKJ6FpM/kZXDfbx1iI8bd8lFnBeWSAI1AEj2/wWYz3vpyirs+MEbanYiGhLl9vzD
+         a+dB5i3ngmln3niyC9cDjh84NucjBm0US5HGPhQnbbb0Gw1zL8F6Hqh/QSeHolkqQTR7
+         bZDevXticSclaH959HUepZxJ+jls5GXPEjyxyiVEoVSNxVVXhV1J2I7rRw8nzS7oF3Nc
+         VaJtQzI8SwSe+lGhipy+grdIbNGOxiGr3nBle6/lzGvdw1sQnXaovMs/fCmcaJZZ8FQX
+         vBOkelsfmSHZvE1Tg+nCF9mpIwDfJvloXJBne5TGce9CXiP4q6xHzVFYtfToCkPe9IjX
+         jBiQ==
+X-Gm-Message-State: AOJu0Yxozc/2xZssOUC5U4tjAB9SuxikbuDS/80p0VuZofspQIK4l/ZY
+	DZwpy5/vUNEJUfLw7qNrguN0CPsoxRpd3qr4shkTPWcgSmC6lGLSi6JGZTD8TuRdn4RU6sYIHcG
+	u
+X-Google-Smtp-Source: AGHT+IGr+lA72U15DPRVE9LxkyBtJUHTWLbWUf55SlFl333j8vPBbZeMOCrcpSgj2WhhLDcnmke5Vw==
+X-Received: by 2002:a05:6808:2219:b0:3c2:bec:69d7 with SMTP id bd25-20020a056808221900b003c20bec69d7mr21116497oib.48.1710869055467;
+        Tue, 19 Mar 2024 10:24:15 -0700 (PDT)
+Received: from joelbox2.. (c-98-249-43-138.hsd1.va.comcast.net. [98.249.43.138])
+        by smtp.gmail.com with ESMTPSA id ch14-20020a05622a40ce00b00430dcca3fb5sm1624717qtb.16.2024.03.19.10.24.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 10:20:39 -0700 (PDT)
-From: Marco Pagani <marpagan@redhat.com>
-To: Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>,
-	Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>,
-	Jonathan Corbet <corbet@lwn.net>,
-	Alan Tull <atull@opensource.altera.com>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Cc: Marco Pagani <marpagan@redhat.com>,
-	linux-fpga@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] fpga: bridge: add owner module and take its refcount
-Date: Tue, 19 Mar 2024 18:20:24 +0100
-Message-ID: <20240319172026.76142-1-marpagan@redhat.com>
-X-Mailer: git-send-email 2.44.0
+        Tue, 19 Mar 2024 10:24:14 -0700 (PDT)
+From: "Joel Fernandes (Google)" <joel@joelfernandes.org>
+To: linux-kernel@vger.kernel.org,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Frederic Weisbecker <frederic@kernel.org>,
+	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Josh Triplett <josh@joshtriplett.org>,
+	Boqun Feng <boqun.feng@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>,
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+	Lai Jiangshan <jiangshanlai@gmail.com>,
+	Zqiang <qiang.zhang1211@gmail.com>
+Cc: urezki@gmail.com,
+	neeraj.iitr10@gmail.com,
+	rcu@vger.kernel.org
+Subject: [PATCH v3] rcu/tree: Reduce wake up for synchronize_rcu() common case
+Date: Tue, 19 Mar 2024 13:24:11 -0400
+Message-Id: <20240319172412.2083384-1-joel@joelfernandes.org>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,247 +88,120 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The current implementation of the fpga bridge assumes that the low-level
-module registers a driver for the parent device and uses its owner pointer
-to take the module's refcount. This approach is problematic since it can
-lead to a null pointer dereference while attempting to get the bridge if
-the parent device does not have a driver.
+In the synchronize_rcu() common case, we will have less than
+SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
+is pointless just to free the last injected wait head since at that point,
+all the users have already been awakened.
 
-To address this problem, add a module owner pointer to the fpga_bridge
-struct and use it to take the module's refcount. Modify the function for
-registering a bridge to take an additional owner module parameter and
-rename it to avoid conflicts. Use the old function name for a helper macro
-that automatically sets the module that registers the bridge as the owner.
-This ensures compatibility with existing low-level control modules and
-reduces the chances of registering a bridge without setting the owner.
+Introduce a new counter to track this and prevent the wakeup in the
+common case.
 
-Also, update the documentation to keep it consistent with the new interface
-for registering an fpga bridge.
-
-Other changes: opportunistically move put_device() from __fpga_bridge_get()
-to fpga_bridge_get() and of_fpga_bridge_get() to improve code clarity since
-the bridge device is taken in these functions.
-
-Fixes: 21aeda950c5f ("fpga: add fpga bridge framework")
-Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-Suggested-by: Xu Yilun <yilun.xu@intel.com>
-Signed-off-by: Marco Pagani <marpagan@redhat.com>
+Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
 ---
+v1->v2: Rebase on paul/dev
+v2->v3: Additional optimization for wait_tail->next == NULL case.
 
-v2:
-- Split out protection against races while taking the mod's refcount
----
- Documentation/driver-api/fpga/fpga-bridge.rst |  7 ++-
- drivers/fpga/fpga-bridge.c                    | 57 ++++++++++---------
- include/linux/fpga/fpga-bridge.h              | 10 +++-
- 3 files changed, 43 insertions(+), 31 deletions(-)
+ kernel/rcu/tree.c | 37 ++++++++++++++++++++++++++++++++-----
+ kernel/rcu/tree.h |  1 +
+ 2 files changed, 33 insertions(+), 5 deletions(-)
 
-diff --git a/Documentation/driver-api/fpga/fpga-bridge.rst b/Documentation/driver-api/fpga/fpga-bridge.rst
-index 604208534095..d831d5ab6b0d 100644
---- a/Documentation/driver-api/fpga/fpga-bridge.rst
-+++ b/Documentation/driver-api/fpga/fpga-bridge.rst
-@@ -6,9 +6,12 @@ API to implement a new FPGA bridge
+diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+index 9fbb5ab57c84..f06d13993478 100644
+--- a/kernel/rcu/tree.c
++++ b/kernel/rcu/tree.c
+@@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
+ 	.ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
+ 	.srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
+ 		rcu_sr_normal_gp_cleanup_work),
++	.srs_cleanups_pending = ATOMIC_INIT(0),
+ };
  
- * struct fpga_bridge - The FPGA Bridge structure
- * struct fpga_bridge_ops - Low level Bridge driver ops
--* fpga_bridge_register() - Create and register a bridge
-+* __fpga_bridge_register() - Create and register a bridge
- * fpga_bridge_unregister() - Unregister a bridge
- 
-+The helper macro ``fpga_bridge_register()`` automatically sets
-+the module that registers the bridge as the owner.
-+
- .. kernel-doc:: include/linux/fpga/fpga-bridge.h
-    :functions: fpga_bridge
- 
-@@ -16,7 +19,7 @@ API to implement a new FPGA bridge
-    :functions: fpga_bridge_ops
- 
- .. kernel-doc:: drivers/fpga/fpga-bridge.c
--   :functions: fpga_bridge_register
-+   :functions: __fpga_bridge_register
- 
- .. kernel-doc:: drivers/fpga/fpga-bridge.c
-    :functions: fpga_bridge_unregister
-diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
-index 79c473b3c7c3..8ef395b49bf8 100644
---- a/drivers/fpga/fpga-bridge.c
-+++ b/drivers/fpga/fpga-bridge.c
-@@ -55,33 +55,26 @@ int fpga_bridge_disable(struct fpga_bridge *bridge)
- }
- EXPORT_SYMBOL_GPL(fpga_bridge_disable);
- 
--static struct fpga_bridge *__fpga_bridge_get(struct device *dev,
-+static struct fpga_bridge *__fpga_bridge_get(struct device *bridge_dev,
- 					     struct fpga_image_info *info)
- {
- 	struct fpga_bridge *bridge;
--	int ret = -ENODEV;
- 
--	bridge = to_fpga_bridge(dev);
-+	bridge = to_fpga_bridge(bridge_dev);
- 
- 	bridge->info = info;
- 
--	if (!mutex_trylock(&bridge->mutex)) {
--		ret = -EBUSY;
--		goto err_dev;
--	}
-+	if (!mutex_trylock(&bridge->mutex))
-+		return ERR_PTR(-EBUSY);
- 
--	if (!try_module_get(dev->parent->driver->owner))
--		goto err_ll_mod;
-+	if (!try_module_get(bridge->br_ops_owner)) {
-+		mutex_unlock(&bridge->mutex);
-+		return ERR_PTR(-ENODEV);
+ /* Dump rcu_node combining tree at boot to verify correct setup. */
+@@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+ 	 * the done tail list manipulations are protected here.
+ 	 */
+ 	done = smp_load_acquire(&rcu_state.srs_done_tail);
+-	if (!done)
++	if (!done) {
++		/* See comments below. */
++		atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
+ 		return;
 +	}
  
- 	dev_dbg(&bridge->dev, "get\n");
+ 	WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
+ 	head = done->next;
+@@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
  
- 	return bridge;
--
--err_ll_mod:
--	mutex_unlock(&bridge->mutex);
--err_dev:
--	put_device(dev);
--	return ERR_PTR(ret);
- }
- 
- /**
-@@ -98,13 +91,18 @@ static struct fpga_bridge *__fpga_bridge_get(struct device *dev,
- struct fpga_bridge *of_fpga_bridge_get(struct device_node *np,
- 				       struct fpga_image_info *info)
- {
--	struct device *dev;
-+	struct fpga_bridge *bridge;
-+	struct device *bridge_dev;
- 
--	dev = class_find_device_by_of_node(&fpga_bridge_class, np);
--	if (!dev)
-+	bridge_dev = class_find_device_by_of_node(&fpga_bridge_class, np);
-+	if (!bridge_dev)
- 		return ERR_PTR(-ENODEV);
- 
--	return __fpga_bridge_get(dev, info);
-+	bridge = __fpga_bridge_get(bridge_dev, info);
-+	if (IS_ERR(bridge))
-+		put_device(bridge_dev);
+ 		rcu_sr_put_wait_head(rcu);
+ 	}
 +
-+	return bridge;
++	/* Order list manipulations with atomic access. */
++	atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
  }
- EXPORT_SYMBOL_GPL(of_fpga_bridge_get);
  
-@@ -125,6 +123,7 @@ static int fpga_bridge_dev_match(struct device *dev, const void *data)
- struct fpga_bridge *fpga_bridge_get(struct device *dev,
- 				    struct fpga_image_info *info)
- {
-+	struct fpga_bridge *bridge;
- 	struct device *bridge_dev;
- 
- 	bridge_dev = class_find_device(&fpga_bridge_class, NULL, dev,
-@@ -132,7 +131,11 @@ struct fpga_bridge *fpga_bridge_get(struct device *dev,
- 	if (!bridge_dev)
- 		return ERR_PTR(-ENODEV);
- 
--	return __fpga_bridge_get(bridge_dev, info);
-+	bridge = __fpga_bridge_get(bridge_dev, info);
-+	if (IS_ERR(bridge))
-+		put_device(bridge_dev);
-+
-+	return bridge;
- }
- EXPORT_SYMBOL_GPL(fpga_bridge_get);
- 
-@@ -146,7 +149,7 @@ void fpga_bridge_put(struct fpga_bridge *bridge)
- 	dev_dbg(&bridge->dev, "put\n");
- 
- 	bridge->info = NULL;
--	module_put(bridge->dev.parent->driver->owner);
-+	module_put(bridge->br_ops_owner);
- 	mutex_unlock(&bridge->mutex);
- 	put_device(&bridge->dev);
- }
-@@ -316,18 +319,19 @@ static struct attribute *fpga_bridge_attrs[] = {
- ATTRIBUTE_GROUPS(fpga_bridge);
- 
- /**
-- * fpga_bridge_register - create and register an FPGA Bridge device
-+ * __fpga_bridge_register - create and register an FPGA Bridge device
-  * @parent:	FPGA bridge device from pdev
-  * @name:	FPGA bridge name
-  * @br_ops:	pointer to structure of fpga bridge ops
-  * @priv:	FPGA bridge private data
-+ * @owner:	owner module containing the br_ops
-  *
-  * Return: struct fpga_bridge pointer or ERR_PTR()
+ /*
+@@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
   */
- struct fpga_bridge *
--fpga_bridge_register(struct device *parent, const char *name,
--		     const struct fpga_bridge_ops *br_ops,
--		     void *priv)
-+__fpga_bridge_register(struct device *parent, const char *name,
-+		       const struct fpga_bridge_ops *br_ops,
-+		       void *priv, struct module *owner)
+ static void rcu_sr_normal_gp_cleanup(void)
  {
- 	struct fpga_bridge *bridge;
- 	int id, ret;
-@@ -357,6 +361,7 @@ fpga_bridge_register(struct device *parent, const char *name,
+-	struct llist_node *wait_tail, *next, *rcu;
++	struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+ 	int done = 0;
  
- 	bridge->name = name;
- 	bridge->br_ops = br_ops;
-+	bridge->br_ops_owner = owner;
- 	bridge->priv = priv;
+ 	wait_tail = rcu_state.srs_wait_tail;
+@@ -1699,16 +1706,36 @@ static void rcu_sr_normal_gp_cleanup(void)
+ 			break;
+ 	}
  
- 	bridge->dev.groups = br_ops->groups;
-@@ -386,7 +391,7 @@ fpga_bridge_register(struct device *parent, const char *name,
+-	// concurrent sr_normal_gp_cleanup work might observe this update.
+-	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
++	/* Fast path, no more users to process. */
++	if (!wait_tail->next)
++		return;
++
++	/*
++	 * Fast path, no more users to process except putting the second last
++	 * wait head if no inflight-workers. If there are in-flight workers,
++	 * they will remove the last wait head.
++	 */
++	if (rcu_sr_is_wait_head(rcu) && rcu->next == NULL &&
++		/* Order atomic access with list manipulation. */
++		!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
++		wait_tail->next = NULL;
++		rcu_sr_put_wait_head(rcu);
++		smp_store_release(&rcu_state.srs_done_tail, wait_tail);
++		return;
++	}
++
++	/* Concurrent sr_normal_gp_cleanup work might observe this update. */
+ 	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
++	smp_store_release(&rcu_state.srs_done_tail, wait_tail);
  
- 	return ERR_PTR(ret);
+ 	/*
+ 	 * We schedule a work in order to perform a final processing
+ 	 * of outstanding users(if still left) and releasing wait-heads
+ 	 * added by rcu_sr_normal_gp_init() call.
+ 	 */
+-	queue_work(sync_wq, &rcu_state.srs_cleanup_work);
++	atomic_inc(&rcu_state.srs_cleanups_pending);
++	if (!queue_work(sync_wq, &rcu_state.srs_cleanup_work))
++		atomic_dec(&rcu_state.srs_cleanups_pending);
  }
--EXPORT_SYMBOL_GPL(fpga_bridge_register);
-+EXPORT_SYMBOL_GPL(__fpga_bridge_register);
  
- /**
-  * fpga_bridge_unregister - unregister an FPGA bridge
-diff --git a/include/linux/fpga/fpga-bridge.h b/include/linux/fpga/fpga-bridge.h
-index 223da48a6d18..94c4edd047e5 100644
---- a/include/linux/fpga/fpga-bridge.h
-+++ b/include/linux/fpga/fpga-bridge.h
-@@ -45,6 +45,7 @@ struct fpga_bridge_info {
-  * @dev: FPGA bridge device
-  * @mutex: enforces exclusive reference to bridge
-  * @br_ops: pointer to struct of FPGA bridge ops
-+ * @br_ops_owner: module containing the br_ops
-  * @info: fpga image specific information
-  * @node: FPGA bridge list node
-  * @priv: low level driver private date
-@@ -54,6 +55,7 @@ struct fpga_bridge {
- 	struct device dev;
- 	struct mutex mutex; /* for exclusive reference to bridge */
- 	const struct fpga_bridge_ops *br_ops;
-+	struct module *br_ops_owner;
- 	struct fpga_image_info *info;
- 	struct list_head node;
- 	void *priv;
-@@ -79,10 +81,12 @@ int of_fpga_bridge_get_to_list(struct device_node *np,
- 			       struct fpga_image_info *info,
- 			       struct list_head *bridge_list);
+ /*
+diff --git a/kernel/rcu/tree.h b/kernel/rcu/tree.h
+index bae7925c497f..affcb92a358c 100644
+--- a/kernel/rcu/tree.h
++++ b/kernel/rcu/tree.h
+@@ -420,6 +420,7 @@ struct rcu_state {
+ 	struct llist_node *srs_done_tail; /* ready for GP users. */
+ 	struct sr_wait_node srs_wait_nodes[SR_NORMAL_GP_WAIT_HEAD_MAX];
+ 	struct work_struct srs_cleanup_work;
++	atomic_t srs_cleanups_pending; /* srs inflight worker cleanups. */
+ };
  
-+#define fpga_bridge_register(parent, name, br_ops, priv) \
-+	__fpga_bridge_register(parent, name, br_ops, priv, THIS_MODULE)
- struct fpga_bridge *
--fpga_bridge_register(struct device *parent, const char *name,
--		     const struct fpga_bridge_ops *br_ops,
--		     void *priv);
-+__fpga_bridge_register(struct device *parent, const char *name,
-+		       const struct fpga_bridge_ops *br_ops, void *priv,
-+		       struct module *owner);
- void fpga_bridge_unregister(struct fpga_bridge *br);
- 
- #endif /* _LINUX_FPGA_BRIDGE_H */
-
-base-commit: b1a91ca25f15b6d7b311de4465854a5981dee3d3
+ /* Values for rcu_state structure's gp_flags field. */
 -- 
-2.44.0
+2.34.1
 
 
