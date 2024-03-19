@@ -1,97 +1,140 @@
-Return-Path: <linux-kernel+bounces-107704-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107703-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 45A54880078
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:24:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADD8880075
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:23:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBEA21F2275F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:24:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5641B1F22CD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:23:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF6C65BA8;
-	Tue, 19 Mar 2024 15:23:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05822657B3;
+	Tue, 19 Mar 2024 15:23:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rJdDexdM"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="nVOQqzWa"
+Received: from mail-pf1-f202.google.com (mail-pf1-f202.google.com [209.85.210.202])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF90E657D1;
-	Tue, 19 Mar 2024 15:23:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EE5E046BF
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:23:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.202
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710861817; cv=none; b=kL2HgKHYNQah3VCMKwkMX5cWZ6cM4PpXzqi9PltrpsmFjgz6X3/vM/vXWM2pPsMtenqpOIz3R86m0tX+EEKA7q9NJpI+Q/DK13AXl8h0QxiTXrnM/+jbO0KzRwIwUwQ3iQSleySsOiGoUF3cyf+TI1ng+7jChPLprnjI0YIsUQs=
+	t=1710861814; cv=none; b=fAUGU5/d5Ib+/MgLdRa9RLWnv/TaRK5SsJxdLoTvqpFa0Vlnjtd1FywrcbCztnLJbyuRYnJZnPw7cs8ptm5K8g9C20EXdRbk9VdZCQTaf+POsSF9INjMBpoJ6p2/n6qjOfUVTDyfxAlWBea9Rn93YEp8W6c2rPKq6fLGfm3b/78=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710861817; c=relaxed/simple;
-	bh=eAU/0bPyetc3NrXiJYE10ficvbSuecshK9WUGE4wdhs=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=H1YtznEs+Xun7qDr870rEr6OiCw7DMJRA/Ht3fDJZNKH3vk+n82S6fkCzFC4yiMICEZA7GYARqMCsh+xRVKjwnBissgeA4t/jovhaulAUZCmqiItT4SH9vX53zKKNo4n/Ina3CZDvEXqjvMc68E+/xMShXj8mH+WNootG+XwIuk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rJdDexdM; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7B676C433C7;
-	Tue, 19 Mar 2024 15:23:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710861816;
-	bh=eAU/0bPyetc3NrXiJYE10ficvbSuecshK9WUGE4wdhs=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=rJdDexdMrOwXd0bgFdkhF8OT0J+gNPZqiM8UobfHg54Qjy9iP0+J8rQgCYLaUPfxw
-	 hfZTlFS2628mCbkCg02Xlphf00GRoenVU4FFEnTiybeHodvtQjiN8BIJ4yp5bYEfzN
-	 TV1STfZoaythFEohRl76L0PKkia+u5QlL8rt/N4koP+hHjtfN5FpqEve71xduco0uo
-	 Jr5CGY6mOCEp/C+pK4sHmY7taR7NijajVrR9RQdsAOtRHVKHN4iC/I01XhbMlQ2G3G
-	 Y/Ug+nqgYGq0mdpalXlbyLMZiu9ba3732R8Dr7ibcOeg9PXcWbFljxaAHs3Rmj7MDL
-	 FSuPp8ZxdH1EA==
-From: Christian Brauner <brauner@kernel.org>
-To: ecryptfs@vger.kernel.org,
-	Brian Kubisiak <brian@kubisiak.com>
-Cc: Christian Brauner <brauner@kernel.org>,
-	code@tyhicks.com,
-	mhalcrow@us.ibm.com,
-	akpm@linux-foundation.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] ecryptfs: Fix buffer size for tag 66 packet
-Date: Tue, 19 Mar 2024 16:23:24 +0100
-Message-ID: <20240319-garten-faultiere-0961ff0b22de@brauner>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <5j2q56p6qkhezva6b2yuqfrsurmvrrqtxxzrnp3wqu7xrz22i7@hoecdztoplbl>
-References: <5j2q56p6qkhezva6b2yuqfrsurmvrrqtxxzrnp3wqu7xrz22i7@hoecdztoplbl>
+	s=arc-20240116; t=1710861814; c=relaxed/simple;
+	bh=fvMLAskbQvRvJxiELmO0vp9cYMo1W34F96QOg/1mTn8=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=jzbgvFtxROzpUV27LS7qBevCLXfcTF30adxc2gL90KZ1YciOnfDkjyBxUMChjkSk6bVqz2XM5KtBdTTQWlD/TIT9FSXbZYjORF/VW6iOFGD6DiLuzEklPaJeUN81rmbGyaDLBb5qmRRn20rnJRjX1pd7SYhO1XuQCeIOe/80fW4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=nVOQqzWa; arc=none smtp.client-ip=209.85.210.202
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--seanjc.bounces.google.com
+Received: by mail-pf1-f202.google.com with SMTP id d2e1a72fcca58-6e71495a60dso2874360b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:23:32 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710861812; x=1711466612; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=m3wqp23e+wwkLFeuG+pD7/YLX8aUj3W8gcgvpzMpJIA=;
+        b=nVOQqzWaX3vAqXf4rnc4cVieRgaOkyeRDp6Y+RlufRaVzyIjqDbRDINEYYUlmOCmEe
+         gqShrBLLg6t8ZdkJTtDDIp0Vi+BEVaiEngcj3GtyGQE+rMB99G8/xJT4OVaEXcT9vcV1
+         CrqaRGUmc7AEZLF5cbvIgZ4cV5Z+pb5jNutqcQL2N+n9Gzdgedb2O0S/KaNMVQ36okTH
+         VsZkfJs69XaKzGnJGR+YBqTsVSPx1WJ6hGwKAI/4PZomuZcJ93k7ryy8rwcHJknyvrfC
+         3SC019P0lK7TFr0dn6/NXsbTKLjXFSXntv2RqVbw+Er2lwa6wuxIMl1cm67HO0ufLSFf
+         GA+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710861812; x=1711466612;
+        h=content-transfer-encoding:cc:to:from:subject:message-id:references
+         :mime-version:in-reply-to:date:x-gm-message-state:from:to:cc:subject
+         :date:message-id:reply-to;
+        bh=m3wqp23e+wwkLFeuG+pD7/YLX8aUj3W8gcgvpzMpJIA=;
+        b=A6xp5Mpqbb7cVYg/4oWlNm8Ge2PMRRDgdpD+cYddW3qQcrQ1QxWzML/aWlR+bjPX8X
+         hwtlhih//G8AxrU8UTn3LfeQ9D1RWNnyMdSr4+VcDIIkeOmGjpNjNk05C//KSnxwvj6C
+         IdAY9C1VF/fgPfsNxPhXIuI8VfIpxPLrMI02heqFgPuTKYHMNi8dEfvYbTVkOvE8uruS
+         n7Y9Cm07SgTH8dOYQ2zJ/+3iDMkHBSCPWJQiRKtyrz8SwZEygahAf01SbBE1VUhd5HT7
+         StWO1BzrSZ8kgYqcqE46epd0LwxFR5NZN3SZ7O81MljhWvqDbGsjd2CZOLtFYlhVx52R
+         VnSw==
+X-Forwarded-Encrypted: i=1; AJvYcCWEnEkil5TQFmesIUEEFQhsB8cNjagibbqvYgJqHVz84p+J6u+SmAXfstdlDM9GHJRX1TAY+adhmlfWl+qmcj3LEPcFNz02bt0YGDN6
+X-Gm-Message-State: AOJu0YxDxjQSRQ9ILm3NKFTUzU8oUymLnFfxvdpBLrQGL1c2ZDuXyzGP
+	kRp01IZdWRv7GiEk/EPaSIgXMaZYhAnN8vs7gzeznfEY5I8DmPu3M/JVg7T1PVLjlt6uoY20R/E
+	1gg==
+X-Google-Smtp-Source: AGHT+IFhVAacehQIbFlkqUpsol9aRBbBhHsbv/C+HD5gV+HlsxvKUAzKRzn1stE6Bda0vRdAnqXCgU+OJwI=
+X-Received: from zagreus.c.googlers.com ([fda3:e722:ac3:cc00:7f:e700:c0a8:5c37])
+ (user=seanjc job=sendgmr) by 2002:a05:6a00:93a2:b0:6e7:4921:6acd with SMTP id
+ ka34-20020a056a0093a200b006e749216acdmr5230pfb.1.1710861812130; Tue, 19 Mar
+ 2024 08:23:32 -0700 (PDT)
+Date: Tue, 19 Mar 2024 08:23:30 -0700
+In-Reply-To: <33bcc5778e39780c6895ffa9f52f4b12cf83ad89.camel@infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
+Mime-Version: 1.0
+References: <0000000000005fa5cc0613f1cebd@google.com> <b7561e6d6d357fcd8ec1a1257aaf2f97d971061c.camel@infradead.org>
+ <ZfizYzC9-9Qo47tE@google.com> <33bcc5778e39780c6895ffa9f52f4b12cf83ad89.camel@infradead.org>
+Message-ID: <Zfmt8rxlF1ag1iA_@google.com>
+Subject: Re: [syzbot] [kvm?] WARNING in __kvm_gpc_refresh
+From: Sean Christopherson <seanjc@google.com>
+To: David Woodhouse <dwmw2@infradead.org>
+Cc: syzbot <syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com>, 
+	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, 
+	syzkaller-bugs@googlegroups.com, paul <paul@xen.org>
 Content-Type: text/plain; charset="utf-8"
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1229; i=brauner@kernel.org; h=from:subject:message-id; bh=eAU/0bPyetc3NrXiJYE10ficvbSuecshK9WUGE4wdhs=; b=owGbwMvMwCU28Zj0gdSKO4sYT6slMaT+XPsh/sq1VdldrI25nSdmn5eWuHLyXtHh7TeWmfyQL Be6s99Zt6OUhUGMi0FWTJHFod0kXG45T8Vmo0wNmDmsTCBDGLg4BWAiqa8YGZb++G6mcJuJ8ZW2 63fvoxG1i+/Mqe4KnJTnJvjzJas60wxGhiWrZy84HlJ/8K3HCzmDZ3F9reYLH4pqhr67/4DpbcW MT4wA
-X-Developer-Key: i=brauner@kernel.org; a=openpgp; fpr=4880B8C9BD0E5106FC070F4F7B3C391EFEA93624
-Content-Transfer-Encoding: 8bit
+Content-Transfer-Encoding: quoted-printable
 
-On Sun, 17 Mar 2024 07:46:00 -0700, Brian Kubisiak wrote:
-> The 'TAG 66 Packet Format' description is missing the cipher code and
-> checksum fields that are packed into the message packet. As a result,
-> the buffer allocated for the packet is 3 bytes too small and
-> write_tag_66_packet() will write up to 3 bytes past the end of the
-> buffer.
-> 
-> Fix this by increasing the size of the allocation so the whole packet
-> will always fit in the buffer.
-> 
-> [...]
+On Mon, Mar 18, 2024, David Woodhouse wrote:
+> On Mon, 2024-03-18 at 14:34 -0700, Sean Christopherson wrote:
+> > On Mon, Mar 18, 2024, David Woodhouse wrote:
+> > >=20
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Either gpa or uhva must=
+ be valid, but not both */
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (WARN_ON_ONCE(kvm_is_er=
+ror_gpa(gpa) =3D=3D kvm_is_error_hva(uhva)))
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
+> > >=20
+> > > Hm, that comment doesn't match the code. It says "not both", but the
+> > > code also catches the "neither" case. I think the gpa is in %rbx and
+> > > uhva is in %r12, so this is indeed the 'neither' case.
+> > >=20
+> > > Is it expected that we can end up with a cache marked active, but wit=
+h
+> > > the address not valid? Maybe through a race condition with deactive? =
+or
+> > > more likely than that?
+> >=20
+> > It's the darn PV system time MSR, which allows the guest to triggering =
+activation
+> > with any GPA value.=C2=A0 That results in the cache being marked active=
+ without KVM
+> > ever setting the GPA (or any other fields).=C2=A0 The fix I'm testing i=
+s to move the
+> > offset+len check up into activate() and refresh().
+>=20
+> Not sure I even want a gpc of length 1 to work at INVALID_GPA; I don't
+> think it's the offset+length check we want to be looking at?
+>=20
+> If we've activated the gpc with gpa=3D=3DINVALID_GPA, surely the right
 
-Applied to the vfs.misc branch of the vfs/vfs.git tree.
-Patches in the vfs.misc branch should appear in linux-next soon.
+This particular issue isn't due to activating with gpa=3D=3DINVALID_GPA, it=
+'s due to
+marking the gpc as active without actually activating it.  The offset+lengt=
+h
+check is simply what causes KVM to prematurely bail from activation.
 
-Please report any outstanding bugs that were missed during review in a
-new review to the original patch series allowing us to drop it.
+> thing to do is just let it fail (perhaps with an explicit check or just
+> letting the memslot lookup fail). After fixing that WARN_ON be
+>=20
+>    if (WARN_ON_ONCE(!kvm_is_error_gpa(gpa) && !kvm_is_error_hva(uhva)))
 
-It's encouraged to provide Acked-bys and Reviewed-bys even though the
-patch has now been applied. If possible patch trailers will be updated.
-
-Note that commit hashes shown below are subject to change due to rebase,
-trailer updates or similar. If in doubt, please check the listed branch.
-
-tree:   https://git.kernel.org/pub/scm/linux/kernel/git/vfs/vfs.git
-branch: vfs.misc
-
-[1/1] ecryptfs: Fix buffer size for tag 66 packet
-      https://git.kernel.org/vfs/vfs/c/616483acbd0b
+I really don't want to relax the sanity check, as I feel strongly that KVM =
+needs
+an invariant that an active cache is either GPA-based or HVA-based, i.e. th=
+at at
+least one of GPA or HVA is "valid".  In quotes because the GPA doesn't need=
+ to
+be fully validated, just something that doesn't trip kvm_is_error_gpa().
 
