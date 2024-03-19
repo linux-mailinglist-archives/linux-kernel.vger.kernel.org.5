@@ -1,187 +1,131 @@
-Return-Path: <linux-kernel+bounces-106920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106921-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 018A587F56D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:26:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id EC0A087F571
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:27:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3268D1C20283
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:26:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 186741C2130E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:27:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D9702657AC;
-	Tue, 19 Mar 2024 02:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E60EC6518F;
+	Tue, 19 Mar 2024 02:27:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="u+QpXFOH"
-Received: from mail-ej1-f45.google.com (mail-ej1-f45.google.com [209.85.218.45])
+	dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b="Yeobk/Hf"
+Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 525B6651B3
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DF7064CEC
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:27:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710815185; cv=none; b=GBT0EyHulrHbEra4qt3s07cUoSASaAQYNX/U/EoxdVeG5UccemOJcUVgOclMAs67/l2AeW2knbsx+/c7z5nR36GxFlvS8BQrBhlFA44ElBPGk5zkzEZv5y+LipRPQmOD8RS0cRfHG2Z8sPs9h1YNlLXcVQkaTw0SCd3PI81Zs1c=
+	t=1710815260; cv=none; b=CFU2cwyMSCTuOf2TIOA01ZB1PN0BA6pcFCqgVOqJyistwgg7q2z+3K4mqPLbH42mzyyf6MDndZ0WELyengr9jf/IBEqdxR2bMRSyNQx5FLhAAZmyU1ij9wasTOUKN42lOiY78JHdbWabX26DXtX1JVGsxj278c3Ecm86oHlnFVA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710815185; c=relaxed/simple;
-	bh=sggre/bwedm+SjhOnNs5oKMSJXt1Hx/MhvbnEbYdQRE=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ZJIn7nlB4Xr3aasn3ozpibIGKX7cwZp8cRdg6IKFTCIIEX+tQ6d3BgcGmLCT+sCoAz3qDpm2Bh22anoUszASsLncz5WvPessEPymH92ps61IDlnU42ZnCxL01yf65nZZ5XnXPfxfoj4GsgbQNbCMTsRLMUr+E8j98vc8HO4iWwE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=u+QpXFOH; arc=none smtp.client-ip=209.85.218.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-ej1-f45.google.com with SMTP id a640c23a62f3a-a467d8efe78so524230166b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:26:23 -0700 (PDT)
+	s=arc-20240116; t=1710815260; c=relaxed/simple;
+	bh=sP2e+6JEJh7rHz8Yoq24mQxbkis71cZ97nSr01L0O54=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=t0vioOPLDfW17tEYdJnKQ34DZDF2AtECxfCzqyeT8NpPdMNc4x/JY8LkFXouz2PgdM7KseiojOvT1WZOUvBv4gzW/HPKHVJfSVaa0LcZZZ2TopnzOpAm9j4vxLCj3cXtQ/NX9tXq9ZueKWmf+u74N1kU5brdrxkhK/8ndKkW0jA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com; spf=none smtp.mailfrom=pdp7.com; dkim=pass (2048-bit key) header.d=pdp7-com.20230601.gappssmtp.com header.i=@pdp7-com.20230601.gappssmtp.com header.b=Yeobk/Hf; arc=none smtp.client-ip=209.85.214.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pdp7.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=pdp7.com
+Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1deffa23bb9so22337545ad.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:27:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710815182; x=1711419982; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=9PVwebktWBWty2mBrf17cNCGtAzEMmWTbg3BNLwRbR4=;
-        b=u+QpXFOHxIIm2aA8ZtgDstbdEP0JytJobxygrcibELE2iSg42kVC3nIhORU+hQRdCR
-         g02IrjRD211Th2bTY7QgjIDz8/vvzyrWwbNp74QLJaFZFfbHDgcS2+5Tuoj0930kPNkf
-         c5x6ok0I/EMtikTXIe6THfEeU4JEvOhnoN+MkV1pV8QRt5gUoq42kfYXtxdB4JbDg8Mq
-         Ny7aNIrtG/saUzznCbyJGJp+gTdqkFow4k6LyzTqM8w2oRxnxSQ41Quu/jitkpJYs0uC
-         3GS4g2V6k/At4g57bbgqkF2rtgkVMB32SCqGrKB26kWQdo1HgPBZk0ytKK3VgS62qucq
-         Xqsw==
+        d=pdp7-com.20230601.gappssmtp.com; s=20230601; t=1710815258; x=1711420058; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=5aSzY2VJWDittzpsS5JFj/mmLGexq9XYEbkvVBzvnJA=;
+        b=Yeobk/Hf0XL3Ax61xcZQttm/BUQsRSsLfxbPgHnCzGbMyDutfh7X0WQbD7CbcJf7L/
+         wzsZxuIFAk2IBmmdNaSWPMiB+6WvNUFvySqgZesF/sTypX7ivjMbf8Y5eX8GFa1XiTPH
+         s2mwL+1vZsiXd3F+L1b+We9UVMESce9dKmAX5Ax0LEKDfg0uiX1eW0u46OxcUicNrTRK
+         +hBipN3fguNOfPExZSh+9Ep2nwPeAQvPqUKScYjfxw1XaYKOrVnsiR+g/ddtzlZhGX0B
+         945xDYeUG/FdP2SIy39Us37OWY760xKtoLQUF6GsRGdU0Xt35YYSAy+qMU5L47HdIvEC
+         r9og==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710815182; x=1711419982;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=9PVwebktWBWty2mBrf17cNCGtAzEMmWTbg3BNLwRbR4=;
-        b=mx/99YazDwqsrAfe6P7+tqdtQPtQLjcUoJ46kwznSVc1oeeNXJj/LXxH2xMiqtmarM
-         AJF9kvvjoNv28ozxD61zWvnANvRtGb8QAW4XnclIwhtI86Q7OMiB5DErTOMufoJnbNEc
-         vmxBAEQWb6Aqkeh9PA9RxnD7jUycg2PLK/JgtiM40ZgOCDYUXlr4JyEkTMRxCMpJjMYl
-         uBHnSj5PBu8Gvy+IL34JUTTfQ1sEC8+mli/nSB2Oek+vNrb7WmD+OgomNZmaM1M+08ww
-         SVaKN0ofn1hGF3k9Q8TZs7rvaSSzgJULHaWo2SsT1IhPQ1MwkQFTTeurUYEVOpZzNF3C
-         iJuw==
-X-Forwarded-Encrypted: i=1; AJvYcCVHMwcg9ZxbRpHsJ7NVBcMTNuc0aYiGYS7Frqc1CkZaoYAz5HTRgDU8QKf7zWZctp7yP8ANa5KXosDlo8fhs+QzbnY+axMxtAA/cNBy
-X-Gm-Message-State: AOJu0YwYyVmVdlqhrBrSAdhz+k/FobJCBay501bi7nPKbFAaUO6/MVxV
-	cNShiC48qtuUkkPCrXdAB3YimAVnW272sKsSUUWFUEi6Kui7ScrzfXck/vIKA0ZB2bQrq0EY6GN
-	AUyaXV/nz3/eJEpy20FU3VVXGR97It5CA9P5+
-X-Google-Smtp-Source: AGHT+IFu9/5+j8r+Fb4pBtW95+Cl0mFkAx99vWRUt0Y35XyzFmr6MbTbI8DsVSvg5VsvJGnE/Mvw9QqpeiGeWfWctas=
-X-Received: by 2002:a17:906:81c9:b0:a46:6958:c415 with SMTP id
- e9-20020a17090681c900b00a466958c415mr639887ejx.8.1710815181445; Mon, 18 Mar
- 2024 19:26:21 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710815258; x=1711420058;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=5aSzY2VJWDittzpsS5JFj/mmLGexq9XYEbkvVBzvnJA=;
+        b=hNYG43qzJ6Ldyixg+FPN+IEtrBXIEF7D5AHfLiDFeiNX5UNwty8E0mH9YmurBaVUuD
+         vUEZ70WPAyQqn1kTthYzIQNN0hu7nIFyUUicBHUWduy5MdRM4GvgG4k7nDEG/LvCR/pK
+         0ecjvQKLquJzRIA9dEh/hAkZH379ip2aN9bqTJ2AHBS0YmwurcSh9+cqWJv36aiFXO7D
+         rQiuHLRQZzZe578+RRo8euS1irq6REQQkd9mXO0x8EPBdJrCyK8Tt3ghgaGcAitvSi36
+         JtNsq6OjsbLlqQCWA4ViObKtMH+HC/pWfgXEd/bA77BDI6Q3tIQchr+Ju+UCp6L5ES8o
+         F3bA==
+X-Forwarded-Encrypted: i=1; AJvYcCUHcn9717zUMuKkqnZg/Igfe+BCEToN+MHUMfRFhW8OCasE6iSC0pbmCbj2GO3hs8v9cwfTXad4XKTqBMjWpxlr/IVz5W7n3TT/h/j5
+X-Gm-Message-State: AOJu0Yz+O5ohpWnT82oI+/+zP7vlW/pDXespCO+sD8R6Vr/1366Jszbq
+	qk8cViU0BYKNEMyh+KxGRXuHQobzlmsuwy5InrSPq1RfnbgYrJibY4EfakTCNRA=
+X-Google-Smtp-Source: AGHT+IFn1GD8CcESCvZXxz6GgRez+vUiJL1aI027U4ZrLO0sqXw9+T+YegJmcdj3OkfCqIw1NPTw+w==
+X-Received: by 2002:a17:902:ce81:b0:1dd:a8e2:60a4 with SMTP id f1-20020a170902ce8100b001dda8e260a4mr17768006plg.42.1710815257730;
+        Mon, 18 Mar 2024 19:27:37 -0700 (PDT)
+Received: from x1 ([2601:1c2:1800:a790:ca87:56ba:58b7:a676])
+        by smtp.gmail.com with ESMTPSA id t5-20020a170902e84500b001e02d9c05d8sm2323576plg.103.2024.03.18.19.27.36
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 19:27:36 -0700 (PDT)
+Date: Mon, 18 Mar 2024 19:27:34 -0700
+From: Drew Fustini <drew@pdp7.com>
+To: Sunil V L <sunilvl@ventanamicro.com>
+Cc: linux-riscv@lists.infradead.org, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org,
+	"Rafael J . Wysocki" <rafael@kernel.org>,
+	Len Brown <lenb@kernel.org>,
+	Paul Walmsley <paul.walmsley@sifive.com>,
+	Palmer Dabbelt <palmer@dabbelt.com>,
+	Albert Ou <aou@eecs.berkeley.edu>,
+	Viresh Kumar <viresh.kumar@linaro.org>,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Andrew Jones <ajones@ventanamicro.com>,
+	Atish Kumar Patra <atishp@rivosinc.com>,
+	Anup Patel <apatel@ventanamicro.com>
+Subject: Re: [PATCH v1 -next 0/3] RISC-V: ACPI: Enable CPPC based cpufreq
+ support
+Message-ID: <Zfj4FnG5vAPP55ri@x1>
+References: <20240208034414.22579-1-sunilvl@ventanamicro.com>
+ <ZfiKooxO88h1nj35@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240228013619.29758-1-quic_wcheng@quicinc.com>
- <20240228013619.29758-21-quic_wcheng@quicinc.com> <CANqn-rjTgHgzssxZiuwvTKzOS31wzjS4Y9G-XacZN4a7c82MaA@mail.gmail.com>
- <d97f635f-053b-70a7-5ffe-a1ae273091d1@quicinc.com> <CANqn-ring2uf=A-F7VuRwnJ--n=FtFzSddCmR-=nfxCGcFAF2g@mail.gmail.com>
- <0e9f0f2f-a404-3b76-3c52-9eca7594efa3@quicinc.com>
-In-Reply-To: <0e9f0f2f-a404-3b76-3c52-9eca7594efa3@quicinc.com>
-From: Albert Wang <albertccwang@google.com>
-Date: Tue, 19 Mar 2024 10:26:08 +0800
-Message-ID: <CANqn-rjMcncjZv9YNZJOZgFo0_ro9hk=TBSFrY9RfhE1Mi13qw@mail.gmail.com>
-Subject: Re: [PATCH v18 20/41] ALSA: usb-audio: qcom: Introduce QC USB SND
- offloading support
-To: Wesley Cheng <quic_wcheng@quicinc.com>
-Cc: srinivas.kandagatla@linaro.org, mathias.nyman@intel.com, perex@perex.cz, 
-	conor+dt@kernel.org, corbet@lwn.net, lgirdwood@gmail.com, 
-	andersson@kernel.org, krzysztof.kozlowski+dt@linaro.org, 
-	gregkh@linuxfoundation.org, Thinh.Nguyen@synopsys.com, broonie@kernel.org, 
-	bgoswami@quicinc.com, tiwai@suse.com, robh+dt@kernel.org, 
-	konrad.dybcio@linaro.org, linux-kernel@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-sound@vger.kernel.org, 
-	linux-usb@vger.kernel.org, linux-arm-msm@vger.kernel.org, 
-	linux-doc@vger.kernel.org, alsa-devel@alsa-project.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfiKooxO88h1nj35@x1>
 
-> We can discuss that offline and come up with an approach that is
-> reviewable by maintainers and the community.
+On Mon, Mar 18, 2024 at 11:40:34AM -0700, Drew Fustini wrote:
+> On Thu, Feb 08, 2024 at 09:14:11AM +0530, Sunil V L wrote:
+> > This series enables the support for "Collaborative Processor Performance
+> > Control (CPPC) on ACPI based RISC-V platforms. It depends on the
+> > encoding of CPPC registers as defined in RISC-V FFH spec [2].
+> > 
+> > CPPC is described in the ACPI spec [1]. RISC-V FFH spec required to
+> > enable this, is available at [2].
+> > 
+> > [1] - https://uefi.org/specs/ACPI/6.5/08_Processor_Configuration_and_Control.html#collaborative-processor-performance-control
+> > [2] - https://github.com/riscv-non-isa/riscv-acpi-ffh/releases/download/v1.0.0/riscv-ffh.pdf
+> > 
+> > The series is based on the LPI support series.
+> > Based-on: 20240118062930.245937-1-sunilvl@ventanamicro.com
+> > (https://lore.kernel.org/lkml/20240118062930.245937-1-sunilvl@ventanamicro.com/)
+> 
+> Should the https://github.com/vlsunil/qemu/tree/lpi_exp branch also be
+> used for this CPPC series too?
 
-Sure, looking forward to working together with you!
+I noticed the ventanamicro qemu repo has a dev-upstream branch [1] which
+contains 4bb6ba4d0fb9 ("riscv/virt: acpi: Enable CPPC - _CPC and _PSD").
+I've built that but I still see 'SBI CPPC extension NOT detected!!' in
+the Linux boot log.
+
+I'm using upstream opensbi. It seems that sbi_cppc_probe() fails because
+cppc_dev is not set. Nothing in the upstream opensbi repo seems to call
+sbi_cppc_set_device(), so I am uncertain how it is possible for it to
+work. Is there an opensbi branch I should be using?
 
 Thanks,
-Albert Wang
+Drew
 
-On Fri, Mar 15, 2024 at 4:57=E2=80=AFAM Wesley Cheng <quic_wcheng@quicinc.c=
-om> wrote:
->
-> Hi Albert
->
-> On 3/14/2024 3:29 AM, Albert Wang wrote:
-> > On Thu, Mar 14, 2024 at 3:18=E2=80=AFAM Wesley Cheng <quic_wcheng@quici=
-nc.com> wrote:
-> >>
-> >> Hi Albert,
-> >>
-> >> On 3/13/2024 1:03 AM, Albert Wang wrote:
-> >>> Hi Wesley,
-> >>>
-> >>> The suspend function `qc_usb_audio_offload_suspend()` looks to stop
-> >>> the traffic on the bus, so that the bus can be suspended. That allows
-> >>> the application processor(AP) to enter suspend. There is a subtle
-> >>> difference with our feature, which is to allow AP suspend with the
-> >>> Host and USB controller active to continue the audio offloading. We
-> >>> call this feature `allow AP suspend in playback`. So, I have some
-> >>> points to clarify with you:
-> >>
-> >> Yes, I'm aware of that feature also.
-> >>
-> >>> 1. Will the suspend flow `usb_audio_suspend() -->
-> >>> platform_ops->suspend_cb() --> qc_usb_audio_offload_suspend()` be
-> >>> called when offloading is active?
-> >>
-> >> It can be.  This is why in our case, we are going to issue the
-> >> disconnect event to the audio DSP to stop the session if it is current=
-ly
-> >> in one.
-> >>
-> >>> 2. As my understanding, the suspend function is to allow AP suspend
-> >>> when the offloading is IDLE, but it won't allow AP suspend when in
-> >>> playback or capture. Please correct me if anything is wrong.
-> >>
-> >> As mentioned above, it will let apps go into PM suspend after forcing
-> >> the audio stream to be idle.  We won't block PM suspend entry.
-> >>
-> > Right. Your design is to force the audio stream idle, or say, inform
-> > the audio DSP
-> > to stop the current offloading session first, then AP can go into PM
-> > suspend as usual.
-> > Then I can say the current design did not support the `allow AP
-> > suspend in playback`
-> > feature, right?
-> >
->
-> Correct, this series does not cover this mechanism.
->
-> >> Yes, I saw that patch as well.  I'll take a look once this series land=
-s
-> >> upstream.
-> >
-> > That patch is rejected and archived now. So we need to find another
-> > approach to do
-> > that, even based on your framework.
-> >
->
-> We can discuss that offline and come up with an approach that is
-> reviewable by maintainers and the community.
->
-> Thanks
-> Wesley Cheng
->
-> > Thanks,
-> > Albert
-> >
-> >
-> >>> 3. We would like to integrate the `allow AP suspend in playback`
-> >>> feature with your framework to become one upstream offload solution.
-> >>> Here is the patch:
-> >>> https://patchwork.kernel.org/project/linux-pm/patch/20240223143833.15=
-09961-1-guanyulin@google.com/
-> >>> .
-> >>
-> >> Yes, I saw that patch as well.  I'll take a look once this series land=
-s
-> >> upstream.
-> >>
-> >> Thanks
-> >> Wesley Cheng
+[1] https://github.com/ventanamicro/qemu/tree/dev-upstream
 
