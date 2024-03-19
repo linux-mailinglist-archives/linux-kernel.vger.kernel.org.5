@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-107720-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107721-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 58A158800BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:32:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12FDE8800C0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A5161C21D90
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:32:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 369C51C21FED
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:32:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14D57657DE;
-	Tue, 19 Mar 2024 15:31:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C2EA7657C4;
+	Tue, 19 Mar 2024 15:32:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sbzButig"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="HSqSmUf1"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10562657AE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:30:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35427651B1
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:32:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710862262; cv=none; b=idvGH0qMwOKKs1g9H/4VLSMBQolAuIJ8jvfCs16F/D03QpY7OYXGyRLossNvMGtgjviwzgLIxWIPcjOpZugTITPM1lKxLZlS4yTFXg4Kr20a9pytva/37kqIEV8w50IAKQpmFhi7tJoxqD21fMxfHGznTNybwRqGlZZZ01CllJ0=
+	t=1710862348; cv=none; b=CuxCqhY3Jp/F4A0cYRJ4lvlF0RY5FRXeS3LYb3YRlQLCOTRAlPX+CLHCDePe1/ZrVnqA5/4tQo+l8smcHUSY1JkloH8Xiymu5/fEZdTW37q6eYVKeNXSQr+6OdNb9rJiu3iSPefVGtPF6+42ByxypCjSkDaLIKo2/5q3kilV4lw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710862262; c=relaxed/simple;
-	bh=ktqOiIf2vX6ms3x4Pb84rEKpunt+i2pLnkE/N4THCu4=;
+	s=arc-20240116; t=1710862348; c=relaxed/simple;
+	bh=8el5b0ku76GSCLCtv0GaKB2j97sbDuSq9KU5iCRoZis=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=A09OTqIvBED8brZ1XJLvfISUJhWed2Lgp1TRmzMJqUotqIQ6pOHytaIP0ezUVA23OuU70y5sBD0mNOdJOEM5xnLQIhyq6Eo98H2A9k1YagTJC1b6pjR8/jrk2Cgx3b2P8C1It4t4f7kcj58lk5sfzwJ7pW8ypMh8EL8hyn1PXTg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sbzButig; arc=none smtp.client-ip=209.85.218.54
+	 In-Reply-To:Content-Type; b=rifGQJgPHt3fZCMLJQZpLodzjNwMzzLRVScHSMHOI8VPb+uDio+cTVhP2UlZFwf4Ap1EXb+GKmP0gOifMK+3+vJedw8+Fq2UJEWVTvB6i0TfhWZ+heT7T6S0Jb9SkHB3bv/m7AQBd1jm5P2IbHhANbshgkygM3yZDAYHJt8ngZc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=HSqSmUf1; arc=none smtp.client-ip=209.85.208.43
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a46d0a8399aso281823166b.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:30:59 -0700 (PDT)
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56a9f5694dcso2514714a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:32:25 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710862258; x=1711467058; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710862344; x=1711467144; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/c+2ErpgcfGcdm4HJ1BrOUXZszU/fAz1jd3932XKH9M=;
-        b=sbzButiguYawX/PTnfz6JzZWmojO86YfWtWyKr+HJsoqMExzAp+Dq6Tm1+gxGaDxpP
-         UW/jbyahAb1uyHeLi4HGCFa5JKUVLeg5y9BxUFZl4zWM7BtzpbjzXCthqpkcbYDApBpK
-         +2GXp9q3wZGVWgxT0HK6tMRueDKKTAdp5DF3idbKly6gK2S3nwG8AvrJ3/g6mvTt1Kgi
-         ssIKOX7DkCw1fV6KPz8ThfJa0YcErIlXWb8zDN9pW2+J3mtw5zX8Lm4ZnwLoTwZTnE39
-         s6jYuNqmQnH/GhghpEyzuYa3gQn7HZ+cKA1FCXevOhfXunJ5V0G0BXgDos42OjO/3XsZ
-         jA4Q==
+        bh=zGCyaLMf02ijHLm5O55hQliE3n2jRuqUVXctXO/9sQU=;
+        b=HSqSmUf14MAn360J0E94mRXEdrAuaqmq27ocM9BSyn+wZVnBQOS4gl55SGYrXFvlGO
+         rrCJMsQzAaz8U5j8+oTmXNqRQFaS7+ujhbO6I0ljPBaBhEVtCJvYKnChg9T2nLOY7xve
+         mZXwrS6vxq1zTy6Hiyst2lnyu9uqSK3IgGzb9fE8hlUtDlGzQ47e9iam/PXchbcnJmjD
+         hBs12NrO4r5gT1WxlkCDnznlAqNAvuNjkQkSBcAsd842YHs+Z3RMl/8lwFKaet1N7Re0
+         uC7/879BquNgZIRbykVDX/GYYG/VMNsOVIzXg7eb0UtBl8pBFgfwLHfMtRX8ahM1nU9g
+         ng0Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710862258; x=1711467058;
+        d=1e100.net; s=20230601; t=1710862344; x=1711467144;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=/c+2ErpgcfGcdm4HJ1BrOUXZszU/fAz1jd3932XKH9M=;
-        b=ZfRwquCD0UYZ7b3gd+aEgrsP5SjN8FZ5pEVmdpD+pVvHqPPZil5pP4SUA8ZkGnvYLE
-         zvFaevwhYytEjaDungAMN6bEPWfpGf4wUXM10+eW/Uooshun0qYUpZ8F30DMEY6QJBIl
-         KDi/BW1L9Dh4qOgZujxMkxzzyIUtTdTPs2K3csgMx5glsDiAb9yTm/goRj45eIXeVSKc
-         I7fWtXz9ooeZLCFHbs9oJG1Y6jVXI6jSrb5mXEYLWRuDNpSNS//4JBjDuNfDo7ej6mPn
-         D0bpm8w/xVm5k0aU2bE6y0LHnBxTlk1HZ+DnB11z3SIIESgj1zaj6TsazeCyENKSC8DO
-         8w0w==
-X-Forwarded-Encrypted: i=1; AJvYcCXWL7frBbpiyb8eS7zDIqlTxUtTp8/TufE1z81LhLzpxXKHE4WPzcQacp/473s3o6Jxm2u/7gtqfeOUHHk+CZ+3P77D1Vjk6o29f59Z
-X-Gm-Message-State: AOJu0YzOPmxwcD9RALOFCKLhtFZ4fztCpY0aAmIt1+021Fj2A6WqXVHv
-	0w/ovU5buP6+MN9hk9e5n/lgFLa+N1+qi+gi208HEzgcJW/k5dRo+U/h5fxcwqM=
-X-Google-Smtp-Source: AGHT+IGXNcwSwUCmjrj9NAfH9bf4h4u9nRzXsue9aZLoDTWOVyDlKNhDdR9ropC3DTcDOCMGv8FZPw==
-X-Received: by 2002:a17:906:80c4:b0:a46:a8b8:f4cf with SMTP id a4-20020a17090680c400b00a46a8b8f4cfmr2462482ejx.35.1710862258326;
-        Tue, 19 Mar 2024 08:30:58 -0700 (PDT)
+        bh=zGCyaLMf02ijHLm5O55hQliE3n2jRuqUVXctXO/9sQU=;
+        b=qj/JpLHK+bwXqdF6mECdK8wKjJjfkC2F8LGp0QaqcO726to8lItAlG8+v+jZadHZ8O
+         VA8yYVHGhvQTOw7mJiEM5oVD06qgJEP3LQSsWaJ328WnwC1yfPJ8OS3aJYUUWWVBwBvM
+         EknTqmv/gym8DoRsFYVjCnwbkmGfetEFGsQskLR40yIBZBABJEk1jwI0sEqBcfibyHka
+         BM0rw597BuUuLIUEqa9dQ4hiMMiuMS69VkKSCCHxK8jdYkVs3ZAu4/tux7GxKuezqhs7
+         tpH05g8JxKLbk24v1jj+TKaA5k3JlH1beJLx8zAGC4PW88OROXASgQ5QxOj26bjpriw8
+         3Czg==
+X-Forwarded-Encrypted: i=1; AJvYcCWo03aAjdabDkvEF7z6L1Xny8TkgADkThhwyqxvQO+kDAC9KhgTkggEor07bOh0o+km+WUvv51ZR2L23GcGnN1SZHsZ4yalxhx+lwiQ
+X-Gm-Message-State: AOJu0YztD4XK+crBBA7yoECep5Rz930XUk0TCaN1YdvPSw4+9V7uZUSW
+	tUISIiqaAMoTOaN0Mgx4tmMD1dA789o9shoVzqEgVnWYc4mDkQQRHdmBvKi/4nw=
+X-Google-Smtp-Source: AGHT+IF7N1mDC4fgf8qY9b9XCwDzluCYv2BhD/gXy823eH0CyQes7kVo7POByw46U5TsUotSOMfg4w==
+X-Received: by 2002:a17:906:ecf8:b0:a46:7c9c:10d0 with SMTP id qt24-20020a170906ecf800b00a467c9c10d0mr1653135ejb.23.1710862344297;
+        Tue, 19 Mar 2024 08:32:24 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id rf22-20020a1709076a1600b00a450b817705sm6221135ejc.154.2024.03.19.08.30.56
+        by smtp.gmail.com with ESMTPSA id dl19-20020a170907945300b00a44b90abb1dsm6116305ejc.110.2024.03.19.08.32.22
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 08:30:57 -0700 (PDT)
-Message-ID: <002f34fc-8d79-4915-be42-03c72b3ae4a4@linaro.org>
-Date: Tue, 19 Mar 2024 16:30:55 +0100
+        Tue, 19 Mar 2024 08:32:23 -0700 (PDT)
+Message-ID: <cc82a7e8-eadd-44d1-af08-2d7594006778@linaro.org>
+Date: Tue, 19 Mar 2024 16:32:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,7 +76,7 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 4/4] virt: vmgenid: add support for devicetree bindings
+Subject: Re: [PATCH v1 0/4] virt: vmgenid: Add devicetree bindings support
 To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
  robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
  sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com,
@@ -85,7 +85,6 @@ To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
 Cc: graf@amazon.de, dwmw@amazon.co.uk, bchalios@amazon.es,
  xmarcalx@amazon.co.uk
 References: <20240319143253.22317-1-sudanl@amazon.com>
- <20240319143253.22317-5-sudanl@amazon.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -132,203 +131,22 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319143253.22317-5-sudanl@amazon.com>
+In-Reply-To: <20240319143253.22317-1-sudanl@amazon.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 19/03/2024 15:32, Sudan Landge wrote:
-> Extend the vmgenid platform driver to support devicetree bindings.
-> With this support, hypervisors can send vmgenid notifications to
-> the virtual machine without the need to enable ACPI.
 > 
-> The bindings are located at:
-> - Documentation/devicetree/bindings/vmgenid/vmgenid.yaml
-> 
-> Signed-off-by: Sudan Landge <sudanl@amazon.com>
-> ---
->  drivers/virt/Kconfig   |  2 +-
->  drivers/virt/vmgenid.c | 90 +++++++++++++++++++++++++++++++++++++++---
->  2 files changed, 86 insertions(+), 6 deletions(-)
-> 
-> diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-> index 40129b6f0eca..4f33ee2f0372 100644
-> --- a/drivers/virt/Kconfig
-> +++ b/drivers/virt/Kconfig
-> @@ -16,7 +16,7 @@ if VIRT_DRIVERS
->  config VMGENID
->  	tristate "Virtual Machine Generation ID driver"
->  	default y
-> -	depends on ACPI
-> +	depends on (ACPI || OF)
->  	help
->  	  Say Y here to use the hypervisor-provided Virtual Machine Generation ID
->  	  to reseed the RNG when the VM is cloned. This is highly recommended if
-> diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-> index e82b344a9d61..96a3ff8ec05a 100644
-> --- a/drivers/virt/vmgenid.c
-> +++ b/drivers/virt/vmgenid.c
-> @@ -2,7 +2,7 @@
->  /*
->   * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
->   *
-> - * The "Virtual Machine Generation ID" is exposed via ACPI and changes when a
-> + * The "Virtual Machine Generation ID" is exposed via ACPI or DT and changes when a
->   * virtual machine forks or is cloned. This driver exists for shepherding that
->   * information to random.c.
->   */
-> @@ -12,6 +12,12 @@
->  #include <linux/acpi.h>
->  #include <linux/random.h>
->  #include <acpi/actypes.h>
-> +#include <linux/init.h>
-> +#include <linux/interrupt.h>
-> +#include <linux/io.h>
-> +#include <linux/of_address.h>
-> +#include <linux/of_device.h>
-> +#include <linux/of_irq.h>
->  #include <linux/platform_device.h>
->  
->  ACPI_MODULE_NAME("vmgenid");
-> @@ -21,6 +27,7 @@ enum { VMGENID_SIZE = 16 };
->  struct vmgenid_state {
->  	u8 *next_id;
->  	u8 this_id[VMGENID_SIZE];
-> +	unsigned int irq;
->  };
->  
->  static void vmgenid_notify(struct device *device)
-> @@ -42,6 +49,13 @@ static void vmgenid_acpi_handler(acpi_handle handle, u32 event, void *dev)
->  	vmgenid_notify(dev);
->  }
->  
-> +static irqreturn_t vmgenid_of_irq_handler(int irq, void *dev)
-> +{
-> +	vmgenid_notify(dev);
-> +
-> +	return IRQ_HANDLED;
-> +}
-> +
->  static int setup_vmgenid_state(struct vmgenid_state *state, u8 *next_id)
->  {
->  	if (IS_ERR(next_id))
-> @@ -98,6 +112,43 @@ static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
->  	return ret;
->  }
->  
-> +static int vmgenid_add_of(struct device *dev, struct vmgenid_state *state)
-> +{
-> +	struct resource res;
-> +	int ret = 0;
-> +
-> +	if (of_address_to_resource(dev->of_node, 0, &res)) {
-> +		dev_err(dev, "Failed to get resources from device tree");
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	if (!__request_mem_region(res.start, resource_size(&res),
-> +				  "vmgenid", IORESOURCE_EXCLUSIVE)) {
-> +		dev_err(dev, "Failed to request mem region");
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +	ret = setup_vmgenid_state(state, of_iomap(dev->of_node, 0));
-> +	if (ret)
-> +		goto out;
-> +
-> +	state->irq = irq_of_parse_and_map(dev->of_node, 0);
-> +	dev->driver_data = state;
-> +
-> +	if (request_irq(state->irq, vmgenid_of_irq_handler,
-> +			IRQF_SHARED, "vmgenid", dev) < 0) {
-> +		dev_err(dev, "request_irq failed");
-> +		dev->driver_data = NULL;
-> +		ret = -EINVAL;
-> +		goto out;
-> +	}
-> +
-> +out:
-> +	return ret;
-> +}
-> +
->  static int vmgenid_add(struct platform_device *pdev)
->  {
->  	struct vmgenid_state *state;
-> @@ -108,7 +159,10 @@ static int vmgenid_add(struct platform_device *pdev)
->  	if (!state)
->  		return -ENOMEM;
->  
-> -	ret = vmgenid_add_acpi(dev, state);
-> +	if (dev->of_node)
-> +		ret = vmgenid_add_of(dev, state);
-> +	else
-> +		ret = vmgenid_add_acpi(dev, state);
->  
->  	if (ret)
->  		devm_kfree(dev, state);
-> @@ -116,7 +170,30 @@ static int vmgenid_add(struct platform_device *pdev)
->  	return ret;
->  }
->  
-> -static const struct acpi_device_id vmgenid_ids[] = {
-> +static int vmgenid_remove(struct platform_device *pdev)
-> +{
-> +	struct vmgenid_state *state = NULL;
-> +
+> To check schema and syntax errors, the bindings file is verified with:
+> ```
+>   make dt_binding_check \
+>   DT_SCHEMA_FILES=Documentation/devicetree/bindings/vmgenid/vmgenid.yaml
+> ```
+> and the patches were verified with:
+> `scripts/checkpatch.pl --strict v1-000*`.
 
-How is this related to the patch? Removal is valid (or invalid)
-regardless your bind method.
-
-> +	if (!pdev)
-> +		return -EINVAL;
-> +
-> +	state = pdev->dev.driver_data;
-> +
-> +	if (state && pdev->dev.of_node)
-> +		free_irq(state->irq, &pdev->dev);
-> +
-> +	if (state)
-> +		devm_kfree(&pdev->dev, state);
-
-Why do you free devm memory? Which driver callback allocated it?
-
-> +
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id vmgenid_of_ids[] = {
-> +	{ .compatible = "linux,vmgenctr", },
-> +	{},
-> +};
-> +
-> +static const struct acpi_device_id vmgenid_acpi_ids[] = {
->  	{ "VMGENCTR", 0 },
->  	{ "VM_GEN_COUNTER", 0 },
->  	{ }
-> @@ -124,9 +201,11 @@ static const struct acpi_device_id vmgenid_ids[] = {
->  
->  static struct platform_driver vmgenid_plaform_driver = {
->  	.probe      = vmgenid_add,
-> +	.remove     = vmgenid_remove,
->  	.driver     = {
->  		.name   = "vmgenid",
-> -		.acpi_match_table = ACPI_PTR(vmgenid_ids),
-> +		.acpi_match_table = ACPI_PTR(vmgenid_acpi_ids),
-> +		.of_match_table = vmgenid_of_ids,
->  		.owner = THIS_MODULE,
->  	},
->  };
-> @@ -144,7 +223,8 @@ static void vmgenid_platform_device_exit(void)
->  module_init(vmgenid_platform_device_init)
->  module_exit(vmgenid_platform_device_exit)
->  
-> -MODULE_DEVICE_TABLE(acpi, vmgenid_ids);
-> +MODULE_DEVICE_TABLE(acpi, vmgenid_acpi_ids);
-> +MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
-
-MODULE_DEVICE_TABLE goes immediately after the table.
-
+BTW, if you insist on that and claim that this is a real hardware thing,
+please upstream your hardware DTS...
 
 Best regards,
 Krzysztof
