@@ -1,73 +1,74 @@
-Return-Path: <linux-kernel+bounces-107551-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107552-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BE47F87FE00
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:04:11 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A1CF87FE06
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:04:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E19241C21D23
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:04:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5EA351C20CCA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:04:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32C9A40BF0;
-	Tue, 19 Mar 2024 13:04:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93E453FBB9;
+	Tue, 19 Mar 2024 13:04:49 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QC/dNi7o"
-Received: from mail-pl1-f181.google.com (mail-pl1-f181.google.com [209.85.214.181])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="dAduItP0"
+Received: from mail-ed1-f43.google.com (mail-ed1-f43.google.com [209.85.208.43])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C5EE53BBC1;
-	Tue, 19 Mar 2024 13:04:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 73FFA3CF5E
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:04:46 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853442; cv=none; b=SpzweDjxoY5iXWp6SwZTFmCKsPjE9iOQFq1zA68gOn5zJJbfdJi08qPNqq22lM5nNVIAW/aLe57exovdAX3IbDDwxRo91JJyn0X60sMCRmIjaEBwQomFFz9KwOIV2DBkh0ZNlBdNTN4SoM1VNaH6CVtidRJ4mMBfeG/nDseEHPo=
+	t=1710853488; cv=none; b=Rw2y++SJMhJryPmbaFHt15DfdcWsMHqJwZqmROTMdaNjhyOfygEWtB42hhkCt1nJ/76yGCD/TyLr7aqQNMalx1JDPw7IyzWrOhf2R8agEVcyLVcObRj07QCA6Zjo/TCRTWEllT7dCSb3XVMfyMfg+NmNDkxPzVvbLmC3AyI9ckY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853442; c=relaxed/simple;
-	bh=QE/8lpIZPvfWqvPbW9p7F/jcV8d4DPm17U+lWFead+g=;
+	s=arc-20240116; t=1710853488; c=relaxed/simple;
+	bh=5j6LLU+T9lzh+ci9F+I5/exCIH4PR8lNUwTLg0hQ8YA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=oYbw035olBQLPjwCZ06Sg/9FaHpWz2QvF71WCpzf4wRaTSICnqWdXzFodew0LMhV6KA86Y8JX90firKGrKYr0XsZxJd/I/XYL+QzAskN5KlRyJ98nM+4T/otU6gfBmfhVQPG33gq34DxSSR8qI+oavOzlwkHsTT7cbLUcMWC5RY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QC/dNi7o; arc=none smtp.client-ip=209.85.214.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f181.google.com with SMTP id d9443c01a7336-1dedb92e540so34515245ad.0;
-        Tue, 19 Mar 2024 06:04:00 -0700 (PDT)
+	 In-Reply-To:Content-Type; b=phGjkQiAObweJ2zKS0AloGrDSjyGEMYRF0+mFAL+QxOkbFOCMmygBJk302l1hBbMHa81EYFFfyYEtJPZ86bUFv8ZIRhyl41NH+OyGRe/9fsojTtyJnQnJY2L1E1buWXq2ijf90NNBDls2UIi374lQ1CKUBfBEhoBKpiV/Kc+gLo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=dAduItP0; arc=none smtp.client-ip=209.85.208.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f43.google.com with SMTP id 4fb4d7f45d1cf-56829f41f81so7634286a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:04:46 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710853440; x=1711458240; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=TB3+Jx7RLucIKEs6eH+0Nj3AnIcH8F/JCvJNLp7YE6g=;
-        b=QC/dNi7o/tXtW0YWE3Se0mX0fOFIkoJwKlPbpmqxfpLQJLpeH8FpVjkEgodSlDSfiE
-         hgaJGz5naBE21qR6CwJq+4HzcU7iHYzTk38C6Bo0AA0mZiwxXjb8hdOdiKiK8OhH82Mh
-         P/9DgU5UL/x4XtuDQERvbIkEkMY2AbabiLSfyg3I09ZCFHgH/BN8P5a9GgFW610haRV3
-         XFFIJiHpKLhsUUcq5gaJXq5XXOIXDqZmslHimJSoBnm2rBhWP+1O6S3b/2DtuIug5gE9
-         GfsPYdGtrog5YcZm0n9NY/j4diFqGkdMzYuE+uYlnT0Cy6RMpVTNs6QKntTBFcTBLUhk
-         9qgQ==
+        d=linaro.org; s=google; t=1710853485; x=1711458285; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=fFuApKGpwwDDsLJ4XW84yYeMLnpQS/jszlc6/Bf+AOU=;
+        b=dAduItP0CEz9sAyWB02L57aPBtbF8tuextX5rf0Hl+c1xXhmtHgPxuucZwdBlfYwUO
+         r/w/Yts2KzWxZjnGJwGLOnuwpnlupNKvC157AFfpjcjkRSpqwRltMnKKbRmuZ2bKAj/Z
+         y9GRn4d0sRgDSsPapFgP4wbLDqe7p0XqEllRAVwumiG3fbCspzcDmMRNk7+MXHQ5gCDZ
+         FixfY0vZ59dKREvhmGERnTN0wX6ONkZ5C0SyajhQBAmuWON12RFh6Rkk1aPiet/pZy5b
+         5psogZFTR8zdxPd01TmxmoGTGjnDfOeuGLjmuuxULuA9fvrNI9wrRI2+Ko9GnY2AW0H+
+         Dmgw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710853440; x=1711458240;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=TB3+Jx7RLucIKEs6eH+0Nj3AnIcH8F/JCvJNLp7YE6g=;
-        b=FZM1expbIcR9Cc/wWgN0zmbCKYEiTIqM4EvYsg7x6kkKzRKwriixCVVtnqXoWn0P2j
-         8zAxLyzaadtF1J+fhdvCNVQC3CeVE6GE5GQtZR0CKZOO/S9qZJAuo9GxWksKd4znQPZC
-         rJtqv6bSPhxU3NGjpa80VcTo6Tou4Q03cN/bpzykoXVns3TKgIrnhZ4vDYoDLt5FzQf6
-         Hnq8MaL0tHGyotquujB1e8l5sz6NaM0Hc6KQnpdZGp3yWt9enDQNSJIJ9xm5UL/I5f6a
-         Xv19Res7UVTpdlqdfPGVRuEjcLf3g1DZlO7DDH7h29KDy+6GFLtlnT503UaVwUrtd6RE
-         Krvg==
-X-Forwarded-Encrypted: i=1; AJvYcCV1H/W61f+FuzPFfpMjpzynq9wv2/QjSwRi32B0XvAW+nKnu/DehL9VTWOssE2P3LZlCqrgY8nsXjSCY+CNF8Ranwgh+B510SVLPtm6dWqlTo/30K1POQ6Gr5H9bhP4yb6zE1yEdlVLQ+EsoQkK6ALovD7yBH6HJSZ2zAIlfGcAf1ZPbQ==
-X-Gm-Message-State: AOJu0YyIyIN0m8GoY6MHmemUIGEk2uMNFmEpGnJoJHC0VVkaDjotqlz0
-	zFYd+mCSWyLuLJGUhn+8XSHUUjNDyOlNbjUGXFCS/0M1E7NrtNWZ
-X-Google-Smtp-Source: AGHT+IHp9n/ieIqxsK6SNAifPecss5n/WcUXZF+7gmtGuEG/9nF1SdfwSwoEsfEnrazkiPBdUXRu0g==
-X-Received: by 2002:a17:903:2308:b0:1e0:119e:f925 with SMTP id d8-20020a170903230800b001e0119ef925mr3803743plh.26.1710853439734;
-        Tue, 19 Mar 2024 06:03:59 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id x8-20020aa79a48000000b006e685994cdesm9676540pfj.63.2024.03.19.06.03.51
+        d=1e100.net; s=20230601; t=1710853485; x=1711458285;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=fFuApKGpwwDDsLJ4XW84yYeMLnpQS/jszlc6/Bf+AOU=;
+        b=iQVVyP6V/jZV+2UCxVtf6U2mMmhXIE2vFkbU+SQa59e08Sr3qj9LBDSOvN0yiNG/+Y
+         AkIZh24CoJ2o8d1hRorLHaUjJhBdDUkwGxsgJb65V51CLJfHxCb0gMDbHXjF0u3+l+7s
+         Cm1efN3WN+6E0LAqDIReCoc9zU/Bnx9myhxfDzOuc72WbARgPGT3VP5elF/tu3dZvXTh
+         UACVq0aTavbCZ9Lc6OKX0xjsHvsxpxsGXCauV+LSGGp/IoTKzMJWP0TXHCIbO/p37HwK
+         sB1qAiw/HT1ibB49zKw3kcalTBraCtKLdHL8g2FrmohjJ+b4TC6iR+W78aNae+TZaBNo
+         XV6w==
+X-Forwarded-Encrypted: i=1; AJvYcCUVqmoRhwm1xLT1yGmFrYiJyYzl3QmRjnn1NIPHlm2AWNbHXs5QRAl1bQGGT2ID/vl4X09aS7IhSijfKB7AxQ7Pj1taQnlGs/0w8Rfk
+X-Gm-Message-State: AOJu0YwEvPhj+vZJ0ZKmYy8u/5xM5a5FRbm9gz9vlqLVrMmsUaY5sBlr
+	JdltYe1/+BM+oO6zDUguS9CLodUH8SwfQodUiY1gakTVcg9aVjxeb/nlk0Eq2Mc=
+X-Google-Smtp-Source: AGHT+IFYJHEDoCt4LkXaMh02VPj7VZ4POM3RoepzRqjS47BbdSZ2Rwi/itrj0ZFFo9svq2X1tRXafg==
+X-Received: by 2002:a17:906:bc94:b0:a46:bba6:b06a with SMTP id lv20-20020a170906bc9400b00a46bba6b06amr4192175ejb.12.1710853484826;
+        Tue, 19 Mar 2024 06:04:44 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id i22-20020a17090671d600b00a46d58fbc11sm1165263ejk.118.2024.03.19.06.04.42
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 06:03:59 -0700 (PDT)
-Message-ID: <81ec4156-8758-406e-876b-5acf13951d09@gmail.com>
-Date: Tue, 19 Mar 2024 18:33:39 +0530
+        Tue, 19 Mar 2024 06:04:44 -0700 (PDT)
+Message-ID: <51743788-3444-4817-864b-404205a06137@linaro.org>
+Date: Tue, 19 Mar 2024 14:04:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,164 +76,106 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
-Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- open list <linux-kernel@vger.kernel.org>
-Cc: jkridner@beagleboard.org, robertcnelson@beagleboard.org,
- lorforlinux@beagleboard.org, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
- <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+Subject: Re: [PATCH v3 2/4] dt-bindings: serial: renesas,scif: Validate
+ 'interrupts' and 'interrupt-names'
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
  Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Vaishnav M A <vaishnav.a@ti.com>, Mark Brown <broonie@kernel.org>,
- Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
- "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
- Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-2-ayushdevel1325@gmail.com>
- <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
- <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
- <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
- <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
- <CZXMK3W52AFO.1APK080GVJESK@kernel.org>
- <5a9b1cd9-05ec-4606-92b6-eadbc7af6202@gmail.com>
- <CZXPQZY8PUGE.QZM8XSOUNMT4@kernel.org>
-From: Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <CZXPQZY8PUGE.QZM8XSOUNMT4@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+ Jiri Slaby <jirislaby@kernel.org>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+ linux-kernel@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-serial@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240318172102.45549-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240318172102.45549-3-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <db13e305-adc4-4990-b9ec-b1cdcdad4406@linaro.org>
+ <010e4742-438f-413f-811f-a033ec104832@linaro.org>
+ <CA+V-a8txP39HJJrJcNqCUgw2NkdA3uSvBrbdSzw0bN6r5LpNaQ@mail.gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <CA+V-a8txP39HJJrJcNqCUgw2NkdA3uSvBrbdSzw0bN6r5LpNaQ@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 3/19/24 17:38, Michael Walle wrote:
-
-> On Tue Mar 19, 2024 at 12:36 PM CET, Ayush Singh wrote:
->>>> Regardless, this patch actually does not contain any code for EEPROM
->>>> support I have just mentioned it to give more context on why mikroBUS
->>>> manifest is the focus of this patch instead of DT overlay or something
->>>> else.
->>> Right, and I think this is the crux here. Why can't you use DT
->>> overlays? The manifest files, seem to be yet another hardware
->>> description (method) and we already have DT. Can't we have some kind
->>> of userspace helper that could translate them to DT overlays? That
->>> way, you could also handle the EEPROM vs non-EEPROM case, or have
->>> some other kind of method to load a DT overlay.
+On 19/03/2024 13:43, Lad, Prabhakar wrote:
+>>>> diff --git a/Documentation/devicetree/bindings/serial/renesas,scif.yaml b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+>>>> index af72c3420453..53f18e9810fd 100644
+>>>> --- a/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+>>>> +++ b/Documentation/devicetree/bindings/serial/renesas,scif.yaml
+>>>> @@ -82,38 +82,6 @@ properties:
+>>>>    reg:
+>>>>      maxItems: 1
+>>>>
+>>>> -  interrupts:
 >>>
->>> Admittedly, I've never worked with in-kernel overlays, but AFAIK
->>> they work with some subsystems.
->>>
->>> -michael
+>>> I don't understand what is happening with this patchset. Interrupts must
+>>> stay here. Where did you receive any different feedback?
 >>
->> So let me 1st go over 3 cases that the driver needs to support:
+>> Look how it is done:
+>> https://elixir.bootlin.com/linux/v6.8/source/Documentation/devicetree/bindings/ufs/qcom,ufs.yaml#L44
 >>
->> 1. Non EEPROM boards:
->>
->> Using overlays should be pretty similar to current solution. If the
->> manifest is converted to overlay in userspace, then we do not even need
->> to do manifest parsing, setting up spi, i2c etc in the kernel driver.
->>
->>
->> 2. EEPROM boards
->>
->> How do you propose handling these. If you are proposing storing dt
->> overlay in EEPROM, then this raises some questions regarding support
->> outside of Linux.
->>
->> The other option would be generating overlay from manifest in the kernel
->> driver, which I'm not sure is significantly better than registering the
->> i2c, spi, etc. interfaces separately using standard kernel APIs.
-> You did answer that yourself in (1): you could use a user space
-> helper to translate it to a DT overlay, I don't think this has to be
-> done in the kernel.
+> Thanks for the pointer, as the above binding doesn't have any
 
-I do not understand what you mean. For EEPROM supported boards, user 
-space is not involved. The driver can directly read the manifest from 
-add-on board and setup everything, so it is plug and play.
+Yeah, that's just an example to point you the concept: top level
+property comes with widest constraints (or widest matching items
+description) and each variant narrows the choice.
 
-The manual involvement of user space is only for non EEPROM boards since 
-we do not have a way to identify the board without the user needing to 
-provide the manifest.
+> description items as compared to our case, to clarify I have updated
+> the binding is below. Is this the correct approach?
+> 
+> option #1
+> ---------------
 
 
-> Also how do you know whether there is an EEPROM
-> or not?
+Yes, it looks correct.
 
-Set RST GPIO to low. clickID supported board will enter ID MODE, Then 
-check if CS line has a w1 gpio bus.
-
->> 3. Over Greybus
->>
->> It is quite important to have mikroBUS over greybus for BeagleConnect.
->> This is one of the major reasons why greybus manifest was chosen for the
->> manifest format.
->>
->> Also, it is important to note that mikroBUS manifest is being used since
->> 2020 now and thus manifests for a lot of boards (both supporting clickID
->> and not supporting it exist). So I would prefer using it, unless of
->> course there are strong reasons not to.
-> And also here, I'm not really familiar with greybus. Could you give
-> a more complex example? My concern is that some driver might need
-> additional properties from DT (or software nodes) to function
-> properly. It might not only be a node with a compatible string but
-> also more advanced bindings. How would that play together with this?
-> My gut feeling is that you can handle any missing properties
-> easier/better (eg. for existing modules) in user space. But maybe
-> that is already solved in/with greybus?
-
-Greybus is a communication protocol designed for modular electronic 
-devices. It allows different parts of a device to be hot plugged (added 
-or removed) while the device is still running. Greybus manifest is used 
-to describe the capabilities of a module in the greybus network. The 
-host then creates appropriate bidirectional unipro connections with the 
-module based on the cports described in the manifest. I have added a 
-link to lwn article that goes into more detail.
-
-BeagleConnect simply allows using greybus over any bidirectional 
-transport, instead of just Unipro.
-
-I cannot comment much about how greybus handles missing properties. 
-While greybus also works just in kernel space, greybus protocols are 
-inherently higher level than kernel driver, so it might have an easier 
-time with this.
-
-I have also added a link to eLInux page which provides rational for the 
-mikroBUS manifest. But the crux seems to be that dynamic overlays were 
-not well-supported back then. Also, the use of mikroBUS using greybus 
-subsystem was already used. Hence the mikroBUS driver.
-
-Greybus is not a big blocker from my perspective, since it is always 
-possible to introduce a new protocol for mikroBUS in Greybus spec. I 
-think as long as both EEPROM and non EEPROM boards can be supported by 
-mikroBUS driver and dt-bindings, are can be used outside of Linux (eg: 
-ZephyrRTOS, nuttx, etc), it is fine.
-
-> Here's a random one: the manifest [1] just lists the compatible
-> string apparently, but the actual DT binding has also reset-gpios,
-> some -supply and interrupt properties.
->
-> -michael
->
-> [1] https://github.com/MikroElektronika/click_id/blob/main/manifests/WEATHER-CLICK.mnfs
-
-
-Yes, the concern is valid. Support for validating the manifest is 
-nowhere near as good as devicetree overlays. But I think that would be a 
-problem with the device rather than the responsibility of the kernel. It 
-is up to the manufacturer to have valid manifests.
-
-
-Link: https://lwn.net/Articles/715955/ Greybus
-
-Link https://elinux.org/Mikrobus eLinux article
-
-
-Ayush Singh
+Best regards,
+Krzysztof
 
 
