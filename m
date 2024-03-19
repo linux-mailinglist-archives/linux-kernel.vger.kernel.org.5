@@ -1,113 +1,159 @@
-Return-Path: <linux-kernel+bounces-107212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107214-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 577F987F94E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:17:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 1700A87F95B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:18:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8938D1C21AEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:17:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 483CE1C21ADD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:18:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD77653E05;
-	Tue, 19 Mar 2024 08:17:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C6AAF53E25;
+	Tue, 19 Mar 2024 08:18:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b="WBIvI8xE"
-Received: from mail.alien8.de (mail.alien8.de [65.109.113.108])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="d5T5IDWc"
+Received: from NAM02-BN1-obe.outbound.protection.outlook.com (mail-bn1nam02on2061.outbound.protection.outlook.com [40.107.212.61])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 522A81D540;
-	Tue, 19 Mar 2024 08:17:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=65.109.113.108
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710836230; cv=none; b=nUlLMa/0Ra9zHLPwMrq+JmzQOB14qJdMQHqOafthO462BWVFTKYKE0xX/Ff4Dx7eDNDVHPRzHhOuowDYN7cZQRgXSrpyCDwRVtDqFn7skHHgryCnVssZGiOljwSX4SI8hThMa1upB/MNyCUhwPNDRnz219ixGcCz0h5E9YB6xGc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710836230; c=relaxed/simple;
-	bh=JX3TriMRwDRg/XX7TCeoNIZ9bpm+iVQCqeDjayF+/Ok=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=msyYHuZ9nfCVWQDUWo6QZu3qD/kEQeF42CdsHXhustRuI2GjOAVdvrPtiRuWQFv3gXW5Fx6RgJa3NJSHvyrCQV39y8pjelMabl8TqKJEkh7ePkKgxpZpbaO9+I3YP7h75lvYzgvUlqsy3ULmjipLVNZfOiY4I0I1zCQ8B0250nQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de; spf=pass smtp.mailfrom=alien8.de; dkim=pass (4096-bit key) header.d=alien8.de header.i=@alien8.de header.b=WBIvI8xE; arc=none smtp.client-ip=65.109.113.108
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=alien8.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=alien8.de
-Received: from localhost (localhost.localdomain [127.0.0.1])
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTP id 6227740E0140;
-	Tue, 19 Mar 2024 08:17:04 +0000 (UTC)
-X-Virus-Scanned: Debian amavisd-new at mail.alien8.de
-Authentication-Results: mail.alien8.de (amavisd-new); dkim=pass (4096-bit key)
-	header.d=alien8.de
-Received: from mail.alien8.de ([127.0.0.1])
-	by localhost (mail.alien8.de [127.0.0.1]) (amavisd-new, port 10026)
-	with ESMTP id y4YoWliEx1cB; Tue, 19 Mar 2024 08:17:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=alien8.de; s=alien8;
-	t=1710836220; bh=TlIidKXcofu8c4qhUsOCY438rBz+o9WrRYuZUIXu0+c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=WBIvI8xE9xXpGjNkgg3pL631YJcDaHfif+Ior2ssGtclusabrdKjm1+E9mxujNlyR
-	 L86PYRwCsETYPQ3ZAgYWOAo/KdXlHbltax60TVCMeMeDPb+t9R4iZFGAzIf+hnt+KC
-	 Lvy11KY2B9lLo9z0urPMXOM2l6+kMwGgH9bYVItXLiTuw3p8fYUDKXboju+Gn46wpI
-	 iHF1O3bQLjcFwzouWBNBAW10hxoLRH5Ol7o8FQplGx+G/JWpGy9ReBj1Sjj5o7SwRR
-	 CBx4/luprWk6o265foQa4D6RyMPUIiS/ztadCZlEVLAfFOfjZauyBHVXe4kRPAw5SR
-	 JOk9/H2yCYM8IQwvbnsiWJkRXjLQ78XTqLSy4+7nDsdbEexGMXlFcDpqM5RE7IK1QD
-	 4GeNc2mUTFOPh0TkAgQmmdxalCcF1aKAN5ZOAfdn4XuFKt81vUi7rFHlrCvJvg6/LX
-	 6qGSPeKkoFa2muEL0PE0d6xGvjrknvG04v4XJedkuOgblhChTz7r9JULtlw4LWi45O
-	 fn0zFQUMOJTuhtsDscqx+iERrlif9Wubq3ML7OZpZu1hH9eubiwLsckfOdnteg0d45
-	 CLUzhRlDo/9x4bxs7GZg1tdkOy6mCXzy8c5KCW8Yqo+1h/hhDSnLVJWfOQYteylhXg
-	 CyDGdzngsLcXUn+qoLSk/Mr8=
-Received: from zn.tnic (pd953021b.dip0.t-ipconnect.de [217.83.2.27])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (P-256) server-signature ECDSA (P-256) server-digest SHA256)
-	(No client certificate requested)
-	by mail.alien8.de (SuperMail on ZX Spectrum 128k) with ESMTPSA id 755FC40E016B;
-	Tue, 19 Mar 2024 08:16:46 +0000 (UTC)
-Date: Tue, 19 Mar 2024 09:16:40 +0100
-From: Borislav Petkov <bp@alien8.de>
-To: Kees Cook <keescook@chromium.org>
-Cc: tglx@linutronix.de, Guixiong Wei <weiguixiong@bytedance.com>,
-	jgross@suse.com, mingo@redhat.com, dave.hansen@linux.intel.com,
-	x86@kernel.org, hpa@zytor.com, peterz@infradead.org,
-	gregkh@linuxfoundation.org, tony.luck@intel.com,
-	adobriyan@gmail.com, linux-kernel@vger.kernel.org,
-	linux-hardening@vger.kernel.org
-Subject: Re: [PATCH] x86, relocs: Ignore relocations in .notes section on
- walk_relocs
-Message-ID: <20240319081640.GAZflJ6IBQ7TEKD2Ll@fat_crate.local>
-References: <20240317150547.24910-1-weiguixiong@bytedance.com>
- <171079804927.224083.15609364452504732018.b4-ty@chromium.org>
- <20240318215612.GDZfi4fG52DTgra51p@fat_crate.local>
- <202403181644.690285D3@keescook>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D23271D540;
+	Tue, 19 Mar 2024 08:18:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.212.61
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710836315; cv=fail; b=OoHAPIVACSwb/ooD1WraG+imWh7McNfLTxI3metFijRV7qE/mihZ0ew5btUZ1zI5vbRBjrKZ+tw0SF+4nZWAAKOJMDok2xY6deKWwmNedtoyiounKHYR3E/CkptQILq6kweqRwrbWRkTg/zTeYA5QIAlCh2G8P7xauiiUwgQtx8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710836315; c=relaxed/simple;
+	bh=8q3opw13EfRX9gjf6Mjx5FOKUZBNYUogO383nI7MolA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=DfHDBms219KJvG4jV6FfrvVMpl8F8e7uJuTHkpdklBCFGCIe06ZvqVbJgTFnhLDxfT9oNAsr7cyL9+uWuFGeLJMyprvF7OSDW251mGeR/ZD2Z0Hw3ibul1l7gUupk5pJ36hrH+rHYYMCqK1yC8/Mj14pYzUjCz0dyoEmoSbjE3c=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=d5T5IDWc; arc=fail smtp.client-ip=40.107.212.61
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gP71wYebfQtJOC8xLssMzc+0DU0TdGgF/zduFzdLWTfcUyqcws0vvlXTBt9aTXppELGn32uTfFNkiavZrNr8vO9y5vRdo0vSzF/8aNd022aZarb1qEQ6ryxVW1fj8sUgVK88C7ItFDLCWmlfLlX3Hjl4jTN48mCAZOOZ9P63ULcYEM9QovQWXsXzptuEhROrdMJQ0bK1pVei3GPKxbHvJ6IbMdryF8vvJAIJmKRrg/n5depAwLyWYznxAHv+49PBwxqJVqDd0lpl3Zee4uB68BazZzEsoEuccKDmDV7oe9R3sdeSSZYdNvHGEkM/sugm1jJvJuqPHWFxKgN72iyu9w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=AY6i4aW6ceZn/wIDRQ8rfbjoJabZ9FKtcX8e+N6fRAU=;
+ b=Z9Ct+0h0AavxxP7HOTCyOe2NxaFZrWrdKJwO4lw8aMlTEzH6zwAkYWV+BOW2/SIHOm5r/Lhxmgtwtna4CsIjfFoVFu4ONi3b7yjjaZtb6fnw+Wt3mSWMT+Jq5hW/I+jAQniUE3kSb9XH0vcMZRQg8FgaQCbKlV6xCf4/iv1lGw5kXtxlOQ1Ie4zVpTYrF7iLqD37FREeHAsc62dRfZfBphXLaMoZ87OIa4P8//EiPyHBc3f4y59zXK1MTbFQH2k/dU5xXcOTf/C5lR8+BA+8puNPnr9Svmnku/FGlJCb0RWUwDFjZvlwcwo73y2atJ0HhmpnJWDpK5y8KHyi5R0nOQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=vger.kernel.org smtp.mailfrom=amd.com;
+ dmarc=pass (p=quarantine sp=quarantine pct=100) action=none
+ header.from=amd.com; dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=AY6i4aW6ceZn/wIDRQ8rfbjoJabZ9FKtcX8e+N6fRAU=;
+ b=d5T5IDWc9qamzCiv+bycO7nxcD8iuMkIbNiOf4AQS+qN6/kDrJVrmsY5tvkg/3cSK0h+KFeCYjtM1jEBuvbla83uJsDonJdebggx75sQQc+gHzBSdoAV9JASdER1iR/YNHD+cXE4w/F1+nl6Q9NppZoUcZ/oGDgqT3NJNslVyuY=
+Received: from CY5PR10CA0025.namprd10.prod.outlook.com (2603:10b6:930:1c::22)
+ by MW4PR12MB5626.namprd12.prod.outlook.com (2603:10b6:303:169::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.19; Tue, 19 Mar
+ 2024 08:18:31 +0000
+Received: from CY4PEPF0000E9D3.namprd03.prod.outlook.com
+ (2603:10b6:930:1c:cafe::2e) by CY5PR10CA0025.outlook.office365.com
+ (2603:10b6:930:1c::22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27 via Frontend
+ Transport; Tue, 19 Mar 2024 08:18:31 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CY4PEPF0000E9D3.mail.protection.outlook.com (10.167.241.146) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 08:18:31 +0000
+Received: from sindhu.amdval.net (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Mar
+ 2024 03:18:25 -0500
+From: Sandipan Das <sandipan.das@amd.com>
+To: <linux-perf-users@vger.kernel.org>, <linux-kernel@vger.kernel.org>
+CC: <x86@kernel.org>, <peterz@infradead.org>, <mingo@kernel.org>,
+	<acme@kernel.org>, <namhyung@kernel.org>, <mark.rutland@arm.com>,
+	<alexander.shishkin@linux.intel.com>, <jolsa@kernel.org>,
+	<adrian.hunter@intel.com>, <tglx@linutronix.de>, <bp@alien8.de>,
+	<seanjc@google.com>, <pbonzini@redhat.com>, <eranian@google.com>,
+	<irogers@google.com>, <ravi.bangoria@amd.com>, <ananth.narayan@amd.com>,
+	<sandipan.das@amd.com>
+Subject: [PATCH v4 0/2] perf/x86/amd: Fix for LBR Freeze
+Date: Tue, 19 Mar 2024 13:48:15 +0530
+Message-ID: <cover.1710836172.git.sandipan.das@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <202403181644.690285D3@keescook>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY4PEPF0000E9D3:EE_|MW4PR12MB5626:EE_
+X-MS-Office365-Filtering-Correlation-Id: e0485b52-add4-4b4b-005b-08dc47ed29b0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	B2+k2Xcq/8Q7onYsZ0Cx496o0X1Yn2C2Hp193nE8eZ/YR99SN5WWTl64ur0J3uJ/sO1H7J2tmDOuEeM4K3UFH+4wFloyOYcgTyNsNmxTJ+Dxbx1rDV0tnek0R9rL3iE1jmjCLMox2ScOjqWad18St0e1CEewi5hmWWRoU0HtTl9m3wj1l3b/7HPzTeteC1pRyQUgXzX0pP8hIfngoHWCYbCzVs98VM1jmqAZUglF3c/Ym7xsUZy508liJAhI0W9YFYWzhEm2dL/WgtBsHdaouxuGjjUkl6vE+qwu8DFbhisV5kPq7+G2UXzLH9Gerrei/5NcOKINNJuJxDzQbwCv6GVIKTYdiy6pB3KM7zaMIZBIQXa3llIHNdFql3EjByj25autzOQXZK0T0UiWNwNwgEENsogr88qSZYfwQRq4nlcI2i168FLNNWNz159JzGCF96OjedgHY1dpOGb3xH5OAZ3Q2DyOEm6WxO3J1ET0Y5AaBhe4cG2NxsyeXQWDH8UP//bjITfK1XKGSric+GiHd2kMCgRZ0lQm9l1TW+LJQ2TJPhhMkvodsaj/zwfdFzU3e3rfl2vq24TpQOOWr+JLyEfq+VdtuUN/ShHEX0psuiIzVJ924GczS0CNCT24IPy2K0frd+P5dXxJxg8ArA44KYER760NqMOS4NfgshXAmaD0ipMIkg/OEkVSG9D4tZDVcmWm0hUsGJxaD2hT5u9xWg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(7416005)(376005)(1800799015)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 08:18:31.0739
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: e0485b52-add4-4b4b-005b-08dc47ed29b0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CY4PEPF0000E9D3.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW4PR12MB5626
 
-On Mon, Mar 18, 2024 at 04:45:45PM -0700, Kees Cook wrote:
-> The commit it refs to landed via -hardening,
+Contains a fix for usage of LBR Freeze.
 
-Yap, saw that. It should've gone through tip too as it is clearly a tip
-tree patch.
+Previous versions can be found at:
+v3: https://lore.kernel.org/all/cover.1706526029.git.sandipan.das@amd.com/
+v2: https://lore.kernel.org/all/cover.1704103399.git.sandipan.das@amd.com/
+v1: https://lore.kernel.org/all/cover.1702833179.git.sandipan.das@amd.com/
 
-> responsibility of landing this fix too. But it's fine to go via -tip
-> if you prefer?
+Changes in v4:
+ - Move scattered feature bits from CPUID 0x80000022[EAX] to a dedicated
+   word as suggested by Ingo.
+ - Remove patches that have been merged (patch 2 and 3 from v3).
 
-Yes, please. Just send a Reviewed-by and it'll get picked up.
+Changes in v3:
+ - As suggested by Boris, update the commit message of the first patch
+   with the reason behind making the LBR and PMC Freeze feature bit
+   visible in /proc/cpuinfo.
 
-Btw, while looking at that second patch, why does it have *three* Fixes:
-tags? I think it wants to fix only your
+Changes in v2:
+ - Make the LBR and PMC Freeze feature bit visible in /proc/cpuinfo. As
+   suggested by Stephane, this will be useful to determine if it is
+   feasible to perform kernel FDO on a system.
 
-aaa8736370db ("x86, relocs: Ignore relocations in .notes section")
+Sandipan Das (2):
+  x86/cpufeatures: Add dedicated feature word for CPUID leaf
+    0x80000022[EAX]
+  perf/x86/amd/lbr: Use freeze based on availability
 
-?
-
-Thx.
+ arch/x86/events/amd/core.c               |  4 ++--
+ arch/x86/events/amd/lbr.c                | 16 ++++++++++------
+ arch/x86/include/asm/cpufeature.h        |  7 +++++--
+ arch/x86/include/asm/cpufeatures.h       | 11 ++++++++---
+ arch/x86/include/asm/disabled-features.h |  3 ++-
+ arch/x86/include/asm/required-features.h |  3 ++-
+ arch/x86/kernel/cpu/common.c             |  3 +++
+ arch/x86/kernel/cpu/scattered.c          |  2 --
+ arch/x86/kvm/cpuid.c                     |  5 +----
+ arch/x86/kvm/reverse_cpuid.h             |  1 -
+ 10 files changed, 33 insertions(+), 22 deletions(-)
 
 -- 
-Regards/Gruss,
-    Boris.
+2.34.1
 
-https://people.kernel.org/tglx/notes-about-netiquette
 
