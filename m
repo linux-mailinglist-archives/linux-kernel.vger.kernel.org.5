@@ -1,213 +1,247 @@
-Return-Path: <linux-kernel+bounces-106885-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106886-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6FE2B87F4ED
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:27:15 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D5EC987F4EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:27:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5E4421C215CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:27:14 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 427D3B21885
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:27:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CC42ED29E;
-	Tue, 19 Mar 2024 01:27:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A88B460ED9;
+	Tue, 19 Mar 2024 01:27:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="WvymFvAW"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F5iVXtIv"
+Received: from mail-vk1-f181.google.com (mail-vk1-f181.google.com [209.85.221.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 108F3846D
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 01:27:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 12B9260B8C
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 01:27:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710811623; cv=none; b=LfMWHoP39eBbsReINx+c+raXnsiUmmBT236CESaiaS+5niBzdmPDC+NCczq5MRJzGlHup7ESBNN4otsAFBw5yd2XJD5Ltz82iZnvoXBVw9iPwYRsmordi7i/Sd7RxpGS/CrqyNhwv1s3NkY9xOf8lcMMuwcVMBzU9Xapj9jwWLI=
+	t=1710811648; cv=none; b=FBSlGx1bODPxS2Ks25fAX/BJrUJIPRG8BSv1bkCehlECn0YvjDij1muJBBOsdy87N8f63pB8szQimu1lY9Kz7zsvmZNPxn1zHg3bovtQ/RRVzzrVKb325m+zLVZS+fN439DTiogX9KiAaKN2gHZemFkhcC8nWw6BQRTrN4BZdj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710811623; c=relaxed/simple;
-	bh=uF1M09ZOHElrWt23+graGTrtLvlXtEJP/fROzFQdPf8=;
+	s=arc-20240116; t=1710811648; c=relaxed/simple;
+	bh=uIB1TjLnvqmRdTKmwcxhJJqOih7h4Sx+dQ6OUQfsg28=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=QNYO4tnFTYgt95f76IS3zx+2q3iV0IiO2j8ADsZdpQecOp82m8C8NYXTZWa+yzcqB7r76lRYFNN0YCzmmHerMVUYnqvtBmkztWtkpypIQbKN7l6Gy16xxWRVmLuJoTCLHTClZj6tbSvvlEDDla2wp15FyHunRehlm3DZjXz7LHk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=WvymFvAW; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-565c6cf4819so10446093a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:27:00 -0700 (PDT)
+	 To:Cc:Content-Type; b=Xj8QGVsvL/rLuw1cqy+4/OMIj1XqpBeri4PKPpZIfs5iH9TfEio20C5d2gZupNVYlV6fM47Lr33Ee4eRUc7w+J8Sq46ncYjA0bGecriXDxXnjccHlei1tcEITaF+CGpftVXC3s761A9zhJ3SAJea5lOIsTIx0OlyuUWs0KyV5zk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F5iVXtIv; arc=none smtp.client-ip=209.85.221.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vk1-f181.google.com with SMTP id 71dfb90a1353d-4d45bda6696so513290e0c.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 18:27:26 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1710811619; x=1711416419; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710811646; x=1711416446; darn=vger.kernel.org;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=YFSq6DTagALYbPcbIPuPh63ocgP8pwtxE9YIUg3PGiA=;
-        b=WvymFvAWtJ+EdPMGzeCRaH16xTdsoa4NE+LM08lNd5C79qCLs0H/Cz0F7uw6jqkhXq
-         cUi0TSAZrfXDjwqCWNWSmi9+kov0sgEkkvOmVEOCYOoStM15EsYIDcxq4Nf6ygZUbkL9
-         J06Gdt5z4Vz4g15NswGMna8l0ojUdRBlhhzDi448Rd3C9eJw3HkMoHCItu+a//Ssug4W
-         oyWBwk8v32NLA9TMj8HQv6AV4UtGjglWUxhIeaETnBJM68/snSHbLdT6syTz/rcxAwTQ
-         kINWQQM/DKdmlz+KnYrUBqvj+LNgskLpaaeEVmrwjL5su4cZnaQWcd8qNSISfc9fkbw1
-         G0UQ==
+        bh=liHKh9UomfodPROQWe+N5RWa9EoteCRQ0+hb5rxxprU=;
+        b=F5iVXtIv+DX2vfTpE8dsAuygjB+/wRogQG+t36h4kA3MSIB9jH0RKDZwz2kD8kSJKp
+         8vsyfr/OqlImdjuP5iBW0UlWWm1WPV+lIDcVnYT8PeE4MkQOk/zdS7TOtZM655rxIFyy
+         GFIXGIl7xNsuSGC62GrjEYxORXXM13ol6itNPfXlW7R9v5+ziNKeUEJKlRVwRpMgL3SH
+         BOW7CemVu4hdg6TLbtR8gNygpTL56RQknfqSlbQDUKoGsqh8hidvSFBYvnQjVI8+1mCG
+         WX8Y2T41KPoi+n5fox9xTdkMqN0cglBz3MP1Hd7W9wdqlxsdvBYECbNwk9znW7rLTD5d
+         HzFw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710811619; x=1711416419;
+        d=1e100.net; s=20230601; t=1710811646; x=1711416446;
         h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=YFSq6DTagALYbPcbIPuPh63ocgP8pwtxE9YIUg3PGiA=;
-        b=FAm1wciSyIQ3MtE3BZ/xFtgT4C2vHPa6l36yZ6GHenXXRXnQdDTjKKxR1I47XksJdF
-         aCWGc1056tDcvZK1KXXzuRSjJGhWYPv1ljgwZyp4U3X/Ro9JB6RHEkgQQB1m8NYTZNL9
-         0jM6in8axfD3q41DA6aToh4MLzP4VecawBjiDQVkdz2ZVsWkFlPgqNWgc35czxgNssfr
-         TnVtlyIviSrkKRIeNeSsPZ+6nRU3p6zIcrVLfCaK2epLoPXxKdMg2CQrmoW1xmKYQtew
-         Avl1EotkgeZ359wQEAvAklHu0eDZqyUWffRsLYGbCgx24RKN9HsZ+VvrqzYSCnDT0UIN
-         vlUw==
-X-Forwarded-Encrypted: i=1; AJvYcCU7O23kP2QJOCU+zfbFrI3+hlYixqv5eQcmI9+AFMyb71MdV70Tt613sWkIhVz8kBYsmrxMWctJ7FSBQoqRTe9zSCs4UwwpWP0TRK0j
-X-Gm-Message-State: AOJu0Yy2ou9bAA0Jw/uoCRvRHCJmmGfUVxU+G4w95+pHx2WW8/zkV/9+
-	Z6d8NKbCPiY8stgbDNNgDnGtCDWAtoY2V2A0ckLbWYcj0oKr2TPRL76uthOeWwQSC+4B7yheW4L
-	8GnaSCrHUqKj+stUPgFnDzHC9v6pku+Pns7sMfQ==
-X-Google-Smtp-Source: AGHT+IHdlISdIaT/ImAoSJpPeaXM5kRQ/Vqqlgzc8RUwbti7lxpVu6RejPXie1u1Hwn/85EmZ+Fd9ZqlSF6Hk1R0Nvs=
-X-Received: by 2002:a05:6402:388b:b0:566:59a2:7a10 with SMTP id
- fd11-20020a056402388b00b0056659a27a10mr1226565edb.1.1710811619408; Mon, 18
- Mar 2024 18:26:59 -0700 (PDT)
+        bh=liHKh9UomfodPROQWe+N5RWa9EoteCRQ0+hb5rxxprU=;
+        b=Bny8fg7mNz7UauLzuWRcdXLaCaFWOwmZ579kx+0JyD0IWYq9xAG8EN5VGOAJtDtRAI
+         3/Q7vdaFcLg8HE9t0kKG3P5Xne2yJuKS6SpJ7jpxjxtn8aFCOkG+XRADLPOIzEm1XPBu
+         naouKqE3d07XYmBRxRTegOghspVUvtlv9uliZ3NfFACrSVF+jnfoVIAyLjs3C/kFEIDW
+         85e/3oNQ1Q2TNaIhH6utrJxaFhrcDOim1xAXWCgqC1ErLD3aViL6I5JI03n7byue6y8g
+         x6jGM8nZ4k5qyZ8bYX0rfC05zPB16g1d5p03Odp8k5Ksnb9OFFXB2fFQK7d+On0hDEXr
+         jlAg==
+X-Forwarded-Encrypted: i=1; AJvYcCUGQG1owRA8uEPsp3w7MBaZurBwZToHsFNQZjOB1nul6yKDqtP75duGZW6CRWTFbstUTs0ASjedVdaWY4k7lxJmSDaDjj384g2dmbQl
+X-Gm-Message-State: AOJu0YxI4Ow3U8z5WdMXPvgJDPFtvzq22+I6njGy4cBHReDtfOnu1T+h
+	TXutLA2oO0zizXKYrYpEkViFqmuU5BUdSRXjdLnhJW+6CUwHLh6/P1XvvsvGSlkd5bb+qktCqCE
+	FY+2NMX1s/cFXwvzJIsu2AxRHeys=
+X-Google-Smtp-Source: AGHT+IE8u7rLbGf/ex12LCseAHxyxZIiMMv38tZ4HBuMZinr5pds0rWMUYFtd9WxRve+TrOaC20GP7HA/0Tv4L4gJEk=
+X-Received: by 2002:a67:e211:0:b0:474:c1aa:afe with SMTP id
+ g17-20020a67e211000000b00474c1aa0afemr1081256vsa.10.1710811645770; Mon, 18
+ Mar 2024 18:27:25 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <cover.1710525524.git.yan@cloudflare.com> <491d3af6c7d66dfb3b60b2f210f38e843dfe6ed2.1710525524.git.yan@cloudflare.com>
- <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop>
-In-Reply-To: <790ce7e7-a8fd-4d28-aaf3-1b991a898be2@paulmck-laptop>
-From: Yan Zhai <yan@cloudflare.com>
-Date: Mon, 18 Mar 2024 20:26:48 -0500
-Message-ID: <CAO3-PbqZ9L5XPAHhD3kojHJZ3RRHre_4AkTq=aERVtLD-SeJKw@mail.gmail.com>
-Subject: Re: [PATCH v4 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-To: paulmck@kernel.org
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>, 
-	Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>, 
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>, 
-	Daniel Borkmann <daniel@iogearbox.net>, Lorenzo Bianconi <lorenzo@kernel.org>, 
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>, 
-	Alexander Duyck <alexanderduyck@fb.com>, Hannes Frederic Sowa <hannes@stressinduktion.org>, 
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org, bpf@vger.kernel.org, 
-	kernel-team@cloudflare.com, Joel Fernandes <joel@joelfernandes.org>, 
-	=?UTF-8?B?VG9rZSBIw7hpbGFuZC1Kw7hyZ2Vuc2Vu?= <toke@redhat.com>, 
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>, Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com, 
-	Jesper Dangaard Brouer <hawk@kernel.org>
+References: <20240319010920.125192-1-21cnbao@gmail.com>
+In-Reply-To: <20240319010920.125192-1-21cnbao@gmail.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 19 Mar 2024 14:27:14 +1300
+Message-ID: <CAGsJ_4z1k9BQGPJvuXtXPQueokM-yu0nf7yQko6yjhj-0fgAnA@mail.gmail.com>
+Subject: Re: [PATCH v2] xtensa: remove redundant flush_dcache_page and
+ ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
+To: chris@zankel.net, jcmvbkbc@gmail.com, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, Guenter Roeck <linux@roeck-us.net>
+Cc: willy@infradead.org, dennis@kernel.org, alexghiti@rivosinc.com, 
+	Barry Song <v-songbaohua@oppo.com>, Huacai Chen <chenhuacai@loongson.cn>, 
+	Herbert Xu <herbert@gondor.apana.org.au>, kernel test robot <lkp@intel.com>
 Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On Sat, Mar 16, 2024 at 12:41=E2=80=AFAM Paul E. McKenney <paulmck@kernel.o=
-rg> wrote:
+On Tue, Mar 19, 2024 at 2:09=E2=80=AFPM Barry Song <21cnbao@gmail.com> wrot=
+e:
 >
-> On Fri, Mar 15, 2024 at 12:55:03PM -0700, Yan Zhai wrote:
-> > There are several scenario in network processing that can run
-> > extensively under heavy traffic. In such situation, RCU synchronization
-> > might not observe desired quiescent states for indefinitely long period=
-.
-> > Create a helper to safely raise the desired RCU quiescent states for
-> > such scenario.
-> >
-> > Currently the frequency is locked at HZ/10, i.e. 100ms, which is
-> > sufficient to address existing problems around RCU tasks. It's unclear
-> > yet if there is any future scenario for it to be further tuned down.
+> From: Barry Song <v-songbaohua@oppo.com>
 >
-> I suggest something like the following for the commit log:
+> xtensa's flush_dcache_page() can be a no-op sometimes. There is a
+> generic implementation for this case in include/asm-generic/
+> cacheflush.h.
+>  #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+>  static inline void flush_dcache_page(struct page *page)
+>  {
+>  }
 >
-> ------------------------------------------------------------------------
+>  #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+>  #endif
 >
-> When under heavy load, network processing can run CPU-bound for many tens
-> of seconds.  Even in preemptible kernels, this can block RCU Tasks grace
-> periods, which can cause trace-event removal to take more than a minute,
-> which is unacceptably long.
+> So remove the superfluous flush_dcache_page() definition, which also
+> helps silence potential build warnings complaining the page variable
+> passed to flush_dcache_page() is not used.
 >
-> This commit therefore creates a new helper function that passes
-> through both RCU and RCU-Tasks quiescent states every 100 milliseconds.
-> This hard-coded value suffices for current workloads.
+>    In file included from crypto/scompress.c:12:
+>    include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
+>    include/crypto/scatterwalk.h:76:30: warning: variable 'page' set but n=
+ot used [-Wunused-but-set-variable]
+>       76 |                 struct page *page;
+>          |                              ^~~~
+>    crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> >> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wunus=
+ed-variable]
+>      174 |                         struct page *dst_page =3D sg_page(req-=
+>dst);
+>          |
 >
-> ------------------------------------------------------------------------
+> The issue was originally reported on LoongArch by kernel test
+> robot (Huacai fixed it on LoongArch), then reported by Guenter
+> and me on xtensa.
 >
-> > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> > ---
-> > v3->v4: comment fixup
-> >
-> > ---
-> >  include/linux/rcupdate.h | 24 ++++++++++++++++++++++++
-> >  1 file changed, 24 insertions(+)
-> >
-> > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > index 0746b1b0b663..da224706323e 100644
-> > --- a/include/linux/rcupdate.h
-> > +++ b/include/linux/rcupdate.h
-> > @@ -247,6 +247,30 @@ do { \
-> >       cond_resched(); \
-> >  } while (0)
-> >
-> > +/**
-> > + * rcu_softirq_qs_periodic - Periodically report consolidated quiescen=
-t states
-> > + * @old_ts: last jiffies when QS was reported. Might be modified in th=
-e macro.
-> > + *
-> > + * This helper is for network processing in non-RT kernels, where ther=
-e could
-> > + * be busy polling threads that block RCU synchronization indefinitely=
-  In
-> > + * such context, simply calling cond_resched is insufficient, so give =
-it a
-> > + * stronger push to eliminate all potential blockage of all RCU types.
-> > + *
-> > + * NOTE: unless absolutely sure, this helper should in general be call=
-ed
-> > + * outside of bh lock section to avoid reporting a surprising QS to up=
-daters,
-> > + * who could be expecting RCU read critical section to end at local_bh=
-_enable().
-> > + */
+> This patch also removes lots of redundant macros which have
+> been defined by asm-generic/cacheflush.h.
 >
-> How about something like this for the kernel-doc comment?
->
-> /**
->  * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
->  * @old_ts: jiffies at start of processing.
->  *
->  * This helper is for long-running softirq handlers, such as those
->  * in networking.  The caller should initialize the variable passed in
->  * as @old_ts at the beginning of the softirq handler.  When invoked
->  * frequently, this macro will invoke rcu_softirq_qs() every 100
->  * milliseconds thereafter, which will provide both RCU and RCU-Tasks
->  * quiescent states.  Note that this macro modifies its old_ts argument.
->  *
->  * Note that although cond_resched() provides RCU quiescent states,
->  * it does not provide RCU-Tasks quiescent states.
->  *
->  * Because regions of code that have disabled softirq act as RCU
->  * read-side critical sections, this macro should be invoked with softirq
->  * (and preemption) enabled.
->  *
->  * This macro has no effect in CONFIG_PREEMPT_RT kernels.
->  */
->
-It would be more accurate this way, I like it. Thanks!
+> Cc: Huacai Chen <chenhuacai@loongson.cn>
+> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> Reported-by: kernel test robot <lkp@intel.com>
+> Closes: https://lore.kernel.org/oe-kbuild-all/202403091614.NeUw5zcv-lkp@i=
+ntel.com/
+> Reported-by: Barry Song <v-songbaohua@oppo.com>
+> Closes: https://lore.kernel.org/all/CAGsJ_4yDk1+axbte7FKQEwD7X2oxUCFrEc9M=
+5YOS1BobfDFXPA@mail.gmail.com/
+> Reported-by: Guenter Roeck <linux@roeck-us.net>
 
-Yan
+Hi Guenter,
+I am not a xtensa guy, so I will need your help for a full test. if
+turns out it is a too big(ambitious)
+fix, a minimal fix might be:
 
->                                                         Thanx, Paul
+diff --git a/arch/xtensa/include/asm/cacheflush.h
+b/arch/xtensa/include/asm/cacheflush.h
+index 38bcecb0e457..fdc692cf2b78 100644
+--- a/arch/xtensa/include/asm/cacheflush.h
++++ b/arch/xtensa/include/asm/cacheflush.h
+@@ -145,7 +145,7 @@ void local_flush_cache_page(struct vm_area_struct *vma,
+ #define flush_cache_vunmap(start,end)                  do { } while (0)
+
+ #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+-#define flush_dcache_page(page)                                do { } whil=
+e (0)
++#define flush_dcache_page(page)                                do {
+(void)(page); } while (0)
+
+ #define flush_icache_range local_flush_icache_range
+ #define flush_cache_page(vma, addr, pfn)               do { } while (0)
+
+
+> Closes: https://lore.kernel.org/all/aaa8b7d7-5abe-47bf-93f6-407942436472@=
+roeck-us.net/
+> Fixes: 77292bb8ca69 ("crypto: scomp - remove memcpy if sg_nents is 1 and =
+pages are lowmem")
+> Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> ---
+>  -v2: include asm-generic/cacheflush.h and remove lots of redundant macro=
+s
 >
-> > +#define rcu_softirq_qs_periodic(old_ts) \
-> > +do { \
-> > +     if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
-> > +         time_after(jiffies, (old_ts) + HZ / 10)) { \
-> > +             preempt_disable(); \
-> > +             rcu_softirq_qs(); \
-> > +             preempt_enable(); \
-> > +             (old_ts) =3D jiffies; \
-> > +     } \
-> > +} while (0)
-> > +
-> >  /*
-> >   * Infrastructure to implement the synchronize_() primitives in
-> >   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
-> > --
-> > 2.30.2
-> >
-> >
+>  arch/xtensa/include/asm/cacheflush.h | 24 ++++++++----------------
+>  1 file changed, 8 insertions(+), 16 deletions(-)
+>
+> diff --git a/arch/xtensa/include/asm/cacheflush.h b/arch/xtensa/include/a=
+sm/cacheflush.h
+> index 38bcecb0e457..a2b6bb5429f5 100644
+> --- a/arch/xtensa/include/asm/cacheflush.h
+> +++ b/arch/xtensa/include/asm/cacheflush.h
+> @@ -100,6 +100,10 @@ void flush_cache_range(struct vm_area_struct*, ulong=
+, ulong);
+>  void flush_icache_range(unsigned long start, unsigned long end);
+>  void flush_cache_page(struct vm_area_struct*,
+>                              unsigned long, unsigned long);
+> +#define flush_cache_all flush_cache_all
+> +#define flush_cache_range flush_cache_range
+> +#define flush_icache_range flush_icache_range
+> +#define flush_cache_page flush_cache_page
+>  #else
+>  #define flush_cache_all local_flush_cache_all
+>  #define flush_cache_range local_flush_cache_range
+> @@ -136,20 +140,7 @@ void local_flush_cache_page(struct vm_area_struct *v=
+ma,
+>
+>  #else
+>
+> -#define flush_cache_all()                              do { } while (0)
+> -#define flush_cache_mm(mm)                             do { } while (0)
+> -#define flush_cache_dup_mm(mm)                         do { } while (0)
+> -
+> -#define flush_cache_vmap(start,end)                    do { } while (0)
+> -#define flush_cache_vmap_early(start,end)              do { } while (0)
+> -#define flush_cache_vunmap(start,end)                  do { } while (0)
+> -
+> -#define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+> -#define flush_dcache_page(page)                                do { } wh=
+ile (0)
+> -
+>  #define flush_icache_range local_flush_icache_range
+> -#define flush_cache_page(vma, addr, pfn)               do { } while (0)
+> -#define flush_cache_range(vma, start, end)             do { } while (0)
+>
+>  #endif
+>
+> @@ -162,15 +153,14 @@ void local_flush_cache_page(struct vm_area_struct *=
+vma,
+>                 __invalidate_icache_range(start,(end) - (start));       \
+>         } while (0)
+>
+> -#define flush_dcache_mmap_lock(mapping)                        do { } wh=
+ile (0)
+> -#define flush_dcache_mmap_unlock(mapping)              do { } while (0)
+> -
+>  #if defined(CONFIG_MMU) && (DCACHE_WAY_SIZE > PAGE_SIZE)
+>
+>  extern void copy_to_user_page(struct vm_area_struct*, struct page*,
+>                 unsigned long, void*, const void*, unsigned long);
+>  extern void copy_from_user_page(struct vm_area_struct*, struct page*,
+>                 unsigned long, void*, const void*, unsigned long);
+> +#define copy_to_user_page copy_to_user_page
+> +#define copy_from_user_page copy_from_user_page
+>
+>  #else
+>
+> @@ -186,4 +176,6 @@ extern void copy_from_user_page(struct vm_area_struct=
+*, struct page*,
+>
+>  #endif
+>
+> +#include <asm-generic/cacheflush.h>
+> +
+>  #endif /* _XTENSA_CACHEFLUSH_H */
+> --
+> 2.34.1
+>
+
+Thanks
+Barry
 
