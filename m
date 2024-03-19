@@ -1,268 +1,190 @@
-Return-Path: <linux-kernel+bounces-107477-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107478-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 14F7687FD0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:40:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 71D9987FD15
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:42:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 385F51C21D85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:40:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A2020B217B7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:42:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AC3BF7F467;
-	Tue, 19 Mar 2024 11:40:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A27FE7F471;
+	Tue, 19 Mar 2024 11:42:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rr0g4cOT"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MY3NMmAx"
+Received: from mail-lj1-f172.google.com (mail-lj1-f172.google.com [209.85.208.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CF6961CD13;
-	Tue, 19 Mar 2024 11:40:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A1617E767;
+	Tue, 19 Mar 2024 11:42:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710848421; cv=none; b=VLOrs1xA8ddAa9GisPltFMUzQc4XtuDfursFLVW939m4cD/oxSkUJZso+QpCQG6DDRpUvUKupK4i1uQJj67T4q9GN3yeiqtLJAXbuf+9RwVh26HpxT+g5aqpx78VfDOAtP0vn9r8kw4Fgi5ENQLTZfUAhVKMjDihu7xq+k0PRXA=
+	t=1710848538; cv=none; b=MFmnY1K1EMYJypURcEu8gGLcji2vBRchB7kkA814fHteWmS57jPeuSl1Zwxy56+v+l8SLk7hk1nEXU1Sc7/5iqtuKFr6hXz4FbKmXICcSUOu+BZnVSNldmcUn2G6rIk/i9mLI96fnA+vmn3AlW/kyWb4yUEQ7Vbv7EfSIEeVcww=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710848421; c=relaxed/simple;
-	bh=8H1N8IVK0aMrxHwTIAJImeJ74R0FI5ahgx9a7aRkzlI=;
+	s=arc-20240116; t=1710848538; c=relaxed/simple;
+	bh=9mj4fImnckfhMvuhi27/rW5wPV2VrOkxeaCKbPhYXm4=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ap8sRU5WhOGtsLBMYnlWBjEceirnxBzME7PvF2obaKETXSdfVzP2uNN0huRS9lMYBQWHDXzd8WIAAFh9hY0w9KF6nJLlyJrldkuXFwWFWkHvMfH2/yv/suDegClIcCVHGcWpZk2BSsN9b4SlCzlIM5WDcEkC1vWhMOQdTTbE/EE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rr0g4cOT; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 5D2CAC43390;
-	Tue, 19 Mar 2024 11:40:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710848421;
-	bh=8H1N8IVK0aMrxHwTIAJImeJ74R0FI5ahgx9a7aRkzlI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rr0g4cOTM/CSNGme7kyGe9YRJCgDiU5moZndh7++L++nc2cojq3Ce2hRPMiA1iN/D
-	 hEv/OD8FeLqvCY1YCJCNcmhSvje+Gyoi2993zSyR40lIj6LY4AZDD55M4w9VIs3p7l
-	 ODgW5swUhQQoPf81DpKji4GDxGSvdnCkDxdfyjdjradptmAhw3EUhD1Nq9VVwaYYd8
-	 m71+oBXPUO9QT5uSeqpCUJ76Z208X8JJy1g86iFBrEyvbtIWXOfEH7uSjRddyq6jpR
-	 lS726NFVZn3RntMrxSz8EnN8K+3c4eLPELPWi25qWIo/xJ2o0PpTBDH5NFkCcJNNDD
-	 YWbwuHRvGPGSQ==
-Date: Tue, 19 Mar 2024 12:40:17 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
-	Paul Moore <paul@paul-moore.com>,
-	"Serge E . Hallyn" <serge@hallyn.com>,
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-	Shervin Oloumi <enlightened@chromium.org>,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2 1/2] landlock: Extend documentation for kernel support
-Message-ID: <Zfl5oT1amymvxjjL@debian>
-References: <20240227110550.3702236-1-mic@digikod.net>
- <Zd4OlL1G3t1D3TgC@google.com>
- <20240307.oxQuab5tho0u@digikod.net>
- <ZfgOf2dHBVT4WUcp@debian>
- <20240319.eeb8tajeiPee@digikod.net>
+	 Content-Type:Content-Disposition:In-Reply-To; b=X1m7J4WI6OXU7UkR0axb+RtNGyKNZX2xr92KZjol+HlZnM6PupDhWXqVYluWj9lQIpJgHKrOzTaxJjkn3lmEESVg/KUGZDg63i3LbLfUqjANHs4o6AQXilRSynDGI3ePY5JbVr4IPTZQYK3yY95byFd3eGVpIWZhvbUJRWon3co=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MY3NMmAx; arc=none smtp.client-ip=209.85.208.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-lj1-f172.google.com with SMTP id 38308e7fff4ca-2d228a132acso77085811fa.0;
+        Tue, 19 Mar 2024 04:42:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710848535; x=1711453335; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=elC/J+DQMSiEL3syNo73tLIm3C8p69Tr5sKldmaLKFo=;
+        b=MY3NMmAxr8rZQTPnAgJunQaB9h2UvICFML08N3A3CMq94G9Mqa5oDQTVInZYKZfwWF
+         uveJ7F/7Ia/0yxFZhQHiInFekyNnUaLlStNMbTeNKa1VEOvaQMf6fw5WjSufLZpwpS3h
+         agPE3CE/yg/4yXwcMW5H5+MIF5qNuNtrh5HPv8cIeDbTVMN0ZkL4AwOjGvuZGqRTOpC0
+         20GCf71T/NP82DDOqzsMZg8s2qpPOGCWhqyefhMd6EKi9EYqx/ASYuQc+BgPbfx6P+Yx
+         wsy5tF7G3q8EZeD5oXhtxThHamGhik6G1Jek84eayryW/ZhwGBueasl15Uh1cHYN1919
+         jh2w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710848535; x=1711453335;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=elC/J+DQMSiEL3syNo73tLIm3C8p69Tr5sKldmaLKFo=;
+        b=ktwKyYxtl5uDWPzUWLj3M+Cmlf8xH5OHOKecH9H4FBJ/hHcHCS2d8TugCRYndTzjRA
+         ELjn8NfNZpwKMGLELzaPgmB2jB1A6OtFCCCAasdsxFazQ/qpWDXuEqawf2cEC4Zi/mWv
+         ULWPWoXwkMK0wfsCsyGB5S5m6k0G8oganrL9JKbc8nVa8YVdZSK77OmnFJPcOgeh9+D8
+         s3iHeXKn5ea7D30EY6fsphydY1OkouVzBmmIrhQjVblyS4TalwGqUDOnb81iTVqSANWy
+         7oyUjIngr9v5dPO6Y8enTm5VijcgIsv3xk+uecPUux2fk4ADOAWZqhL7eUh1IWdva4Rn
+         dmsg==
+X-Forwarded-Encrypted: i=1; AJvYcCUO3qn1FTyeRhu1q8xlAOeRhAKSFQY5YXg/gTBdk+LX2HG5+wazVQ6aCj4TaBOv3RsE4scywiZidE56IIgZxZFpgmUR5fdwKXCUakFUZRcOiMFg1NRGhj8Gg/RDvNRlOSpy29VOiWUY6qw4bt73Irq7vMIz/yCfXzFzopzkdkuBJJYWQUrIB7CtDMgYkMTHki5ciR0H32rub1hlEES5DU2Zq3Btwx39BEbZ
+X-Gm-Message-State: AOJu0YxwnZEwnrRwDSSYzL1ihq4BIhSMzvKkPXLdJDZJ0PPPDMvW5j8c
+	mBbfdXd3uuQoYslDz+ZkIgfED7/BgJXDB3GPF9kjoo0ImxmAvPFH
+X-Google-Smtp-Source: AGHT+IEbPtInSnoxABuprHRsFDYGfrjvEEgi/PvCR0A0PjriWs8/Fs7e5VgS8xyyf1KxtbICUZUEPw==
+X-Received: by 2002:a2e:b8c2:0:b0:2d5:9bd4:4496 with SMTP id s2-20020a2eb8c2000000b002d59bd44496mr2105191ljp.50.1710848535069;
+        Tue, 19 Mar 2024 04:42:15 -0700 (PDT)
+Received: from mobilestation ([178.176.56.174])
+        by smtp.gmail.com with ESMTPSA id b4-20020a2e8944000000b002d449d1d509sm1851199ljk.70.2024.03.19.04.42.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 04:42:14 -0700 (PDT)
+Date: Tue, 19 Mar 2024 14:42:11 +0300
+From: Serge Semin <fancer.lancer@gmail.com>
+To: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Jingoo Han <jingoohan1@gmail.com>, 
+	Gustavo Pimentel <gustavo.pimentel@synopsys.com>, Lorenzo Pieralisi <lpieralisi@kernel.org>, 
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>, Rob Herring <robh@kernel.org>, 
+	Bjorn Helgaas <bhelgaas@google.com>, Marek Vasut <marek.vasut+renesas@gmail.com>, 
+	Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>, Kishon Vijay Abraham I <kishon@kernel.org>, 
+	linux-pci@vger.kernel.org, linux-kernel@vger.kernel.org, linux-renesas-soc@vger.kernel.org, 
+	linux-arm-msm@vger.kernel.org, mhi@lists.linux.dev, Siddharth Vadapalli <s-vadapalli@ti.com>, 
+	Frank Li <Frank.Li@nxp.com>
+Subject: Re: [PATCH v5 1/5] PCI: dwc: Refactor dw_pcie_edma_find_chip() API
+Message-ID: <kxcd3n4hb6c2bhksqvxql3gj6zr2my5moxx5mighk33dggspw5@wvt565ch6gm2>
+References: <20240318-dw-hdma-v5-0-f04c5cdde760@linaro.org>
+ <20240318-dw-hdma-v5-1-f04c5cdde760@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="lVXM4NhaC2HReP5T"
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240319.eeb8tajeiPee@digikod.net>
+In-Reply-To: <20240318-dw-hdma-v5-1-f04c5cdde760@linaro.org>
 
+On Mon, Mar 18, 2024 at 11:34:25AM +0530, Manivannan Sadhasivam wrote:
+> In order to add support for Hyper DMA (HDMA), let's refactor the existing
+> dw_pcie_edma_find_chip() API by moving the common code to separate
+> functions.
+> 
+> No functional change.
 
---lVXM4NhaC2HReP5T
-Content-Type: text/plain; protected-headers=v1; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
-Date: Tue, 19 Mar 2024 12:40:17 +0100
-From: Alejandro Colomar <alx@kernel.org>
-To: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>,
-	Paul Moore <paul@paul-moore.com>,
-	"Serge E . Hallyn" <serge@hallyn.com>,
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>,
-	Shervin Oloumi <enlightened@chromium.org>,
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-security-module@vger.kernel.org,
-	Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2 1/2] landlock: Extend documentation for kernel support
+No more notes from my side. Thanks!
+Reviewed-by: Serge Semin <fancer.lancer@gmail.com>
 
-Hi Micka=C3=ABl!
+-Serge(y)
 
-On Tue, Mar 19, 2024 at 11:46:34AM +0100, Micka=C3=ABl Sala=C3=BCn wrote:
-> On Mon, Mar 18, 2024 at 10:50:42AM +0100, Alejandro Colomar wrote:
-> > Hi Micka=C3=ABl, G=C3=BCnther,
-> >=20
-> > Sorry for the delay!
-> >=20
-> > On Thu, Mar 07, 2024 at 11:21:57AM +0100, Micka=C3=ABl Sala=C3=BCn wrot=
-e:
-> > > CCing Alejandro
-> > >=20
-> > > On Tue, Feb 27, 2024 at 05:32:20PM +0100, G=C3=BCnther Noack wrote:
-> > > > On Tue, Feb 27, 2024 at 12:05:49PM +0100, Micka=C3=ABl Sala=C3=BCn =
-wrote:
-> > > > > Extend the kernel support section with one subsection for build t=
-ime
-> > > > > configuration and another for boot time configuration.
-> > > > >=20
-> > > > > Extend the boot time subsection with a concrete example.
-> > > > >=20
-> > > > > Update the journalctl command to include the boot option.
-> > > > >=20
-> > > > > Cc: G=C3=BCnther Noack <gnoack@google.com>
-> > > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > > Signed-off-by: Micka=C3=ABl Sala=C3=BCn <mic@digikod.net>
-> > > > > ---
-> > > > >=20
-> > > > > Changes since v1:
-> > > > > * New patch, suggested by Kees Cook.
-> > > > > ---
-> > > > >  Documentation/userspace-api/landlock.rst | 57 ++++++++++++++++++=
-+++---
-> > > > >  1 file changed, 51 insertions(+), 6 deletions(-)
-> >=20
-> > [...]
-> >=20
-> > > > > +
-> > > > > +  lsm=3Dlandlock,lockdown,yama,integrity,apparmor
-> > > > > +
-> > > > > +After a reboot, we can check that Landlock is up and running by =
-looking at
-> > > > > +kernel logs:
-> > > > > +
-> > > > > +.. code-block:: console
-> > > > > +
-> > > > > +    # dmesg | grep landlock || journalctl -kb -g landlock
-> > > > > +    [    0.000000] Command line: [...] lsm=3Dlandlock,lockdown,y=
-ama,integrity,apparmor
-> > > > > +    [    0.000000] Kernel command line: [...] lsm=3Dlandlock,loc=
-kdown,yama,integrity,apparmor
-> > > > > +    [    0.000000] LSM: initializing lsm=3Dlockdown,capability,l=
-andlock,yama,integrity,apparmor
-> > > > > +    [    0.000000] landlock: Up and running.
-> > > > > +
-> > > > > +Note that according to the built time kernel configuration,
-> > > >=20
-> > > > s/built time/build time/
-> > > >                  ^
-> > >=20
-> > > OK
-> >=20
-> > Here, this should actually be "build-time" since it works as an
-> > adjective.
->=20
-> Thanks Alex but this was already merged:
-> https://git.kernel.org/torvalds/c/35e886e88c803920644c9d3abb45a9ecb7f1e761
->=20
-> Because I picked G=C3=BCnther's below suggestion, it should be good right?
-
-Yeah, it's a minor grammar mistake that is widespread elsewhere.  If you
-want to patch it, go ahead, if you want to keep it until next time you
-revise this text, it's not something that will significantly hurt the
-understanding of the text.
-
-See also: <https://www.grammar-monster.com/lessons/hyphens_in_compound_adje=
-ctives.htm>
-
-Have a lovely day!
-Alex
-
->=20
-> >=20
-> > >=20
-> > > >=20
-> > > > It feels like the phrase "according to" could be slightly more spec=
-ific here.
-> > > >=20
-> > > > To paraphrase Alejandro Colomar, "Note that" is usually redundant.
-> > > > https://lore.kernel.org/all/0aafcdd6-4ac7-8501-c607-9a24a98597d7@gm=
-ail.com/
-> > > >=20
-> > > > I'd suggest:
-> > > >=20
-> > > >   The kernel may be configured at build time to always load the ``l=
-ockdown`` and
-> > > >   ``capability`` LSMs.  In that case, these LSMs will appear at the=
- beginning of
-> > > >   the ``LSM: initializing`` log line as well, even if they are not =
-configured in
-> > > >   the boot loader.
-> >=20
-> > LGTM
-> >=20
-> > >=20
-> > > OK, I integrated your suggestion.  I guess `capability` is not really
-> > > considered an LSM but it would be too confusing and out of scope for =
-an
-> > > user documentation to explain that.
-> > >=20
-> > > >=20
-> > > > > +``lockdown,capability,`` may always stay at the beginning of the=
- ``LSM:
-> > > > > +initializing lsm=3D`` list even if they are not configured with =
-the bootloader,
-> > > >=20
-> > > > Nit: The man pages spell this in two words as "boot loader".
-> > >=20
-> > > OK, I'll use "boot loader" too.
-> > >=20
-> > > >=20
-> > > >=20
-> > > > > +which is OK.
-> > > > > +
-> > > > > +Network support
-> > > > > +---------------
-> > > > > +
-> > > > >  To be able to explicitly allow TCP operations (e.g., adding a ne=
-twork rule with
-> > > > >  ``LANDLOCK_ACCESS_NET_BIND_TCP``), the kernel must support TCP
-> > > > >  (``CONFIG_INET=3Dy``).  Otherwise, sys_landlock_add_rule() retur=
-ns an
-> > > > >=20
-> > > > > base-commit: b4007fd27206c478a4b76e299bddf4a71787f520
-> > > > > --=20
-> > > > > 2.44.0
-> > > > >=20
-> > > >=20
-> > > > Reviewed-by: G=C3=BCnther Noack <gnoack@google.com>
-> > >=20
-> > > Thanks!
-> >=20
-> > Reviewed-by: Alejandro Colomar <alx@kernel.org>
-> >=20
-> > Have a lovely day!
-> > Alex
-> >=20
-> > --=20
-> > <https://www.alejandro-colomar.es/>
-> > Looking for a remote C programming job at the moment.
->=20
->=20
-
---=20
-<https://www.alejandro-colomar.es/>
-Looking for a remote C programming job at the moment.
-
---lVXM4NhaC2HReP5T
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEE6jqH8KTroDDkXfJAnowa+77/2zIFAmX5eaEACgkQnowa+77/
-2zLeYxAAnJTAbKLQYz/5DxQmedRvL+W3k/fnLGakyKe+gmMvXAFsrAPRdPJqx+B/
-IrnjIXRGN9heqRpBuuq8BTxAFfnlapd5zatjGNMxD3f2VhlFjsH5WYj0fDj59+9d
-w8unSYIMyd/pvhxiSl9NvIzu/O7zWPFmDJ+mY+tLVzHkaQmZ/SO2X6U2DRW2d6F2
-25iJujYtmp6hQtANfVzJY7Qmufbp7GB4s83KuKd/IXqExlzLS7sG0H9mxHi0Ii3w
-2OOGZ7lVTk8yCCqAxlr9gNwgbbeHZ55DKPwUobBllhQr4tvbrbE09QXm6WgLK+Hk
-Tgsdw/MsviWRuWUztcSJjnqiEkAwSREB5EZXP/+QQqWCrbiTsdfJoVYvdz4uIUvg
-78/eE6vIW/iSliJe9MnXv8nCH3vJ3QsENV6S3HgeXAx6dlvy2r3gMul5VklSfztR
-4BWP3Usx42rOs33ielFDVPncJFYbFjIaNGvaraa6gWlott6YoYzaLetGK0pnUs78
-gTD1ZECDe2UuQGcoiEEH47U7Hg9uLYnAEfahXpE60kf555p4exQWoXs1r2pMmEzm
-ylWrd2TfmWV15CVCNpR1bK4AgAIiOel5FU+nYjAq9GoBeqThqjbwZlGhGWXY/Nlp
-cnJAH59ziEI8YPqdKq3BRglpzWldmGwCLQXvR1hQuyc1Dq6I6Bc=
-=5omu
------END PGP SIGNATURE-----
-
---lVXM4NhaC2HReP5T--
+> 
+> Suggested-by: Serge Semin <fancer.lancer@gmail.com>
+> Reviewed-by: Siddharth Vadapalli <s-vadapalli@ti.com>
+> Reviewed-by: Frank Li <Frank.Li@nxp.com>
+> Reviewed-by: Yoshihiro Shimoda <yoshihiro.shimoda.uh@renesas.com>
+> Signed-off-by: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+> ---
+>  drivers/pci/controller/dwc/pcie-designware.c | 37 ++++++++++++++++++++++------
+>  1 file changed, 30 insertions(+), 7 deletions(-)
+> 
+> diff --git a/drivers/pci/controller/dwc/pcie-designware.c b/drivers/pci/controller/dwc/pcie-designware.c
+> index 250cf7f40b85..e591c1cd1efb 100644
+> --- a/drivers/pci/controller/dwc/pcie-designware.c
+> +++ b/drivers/pci/controller/dwc/pcie-designware.c
+> @@ -880,7 +880,17 @@ static struct dw_edma_plat_ops dw_pcie_edma_ops = {
+>  	.irq_vector = dw_pcie_edma_irq_vector,
+>  };
+>  
+> -static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> +static void dw_pcie_edma_init_data(struct dw_pcie *pci)
+> +{
+> +	pci->edma.dev = pci->dev;
+> +
+> +	if (!pci->edma.ops)
+> +		pci->edma.ops = &dw_pcie_edma_ops;
+> +
+> +	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
+> +}
+> +
+> +static int dw_pcie_edma_find_mf(struct dw_pcie *pci)
+>  {
+>  	u32 val;
+>  
+> @@ -902,8 +912,6 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+>  
+>  	if (val == 0xFFFFFFFF && pci->edma.reg_base) {
+>  		pci->edma.mf = EDMA_MF_EDMA_UNROLL;
+> -
+> -		val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+>  	} else if (val != 0xFFFFFFFF) {
+>  		pci->edma.mf = EDMA_MF_EDMA_LEGACY;
+>  
+> @@ -912,12 +920,14 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+>  		return -ENODEV;
+>  	}
+>  
+> -	pci->edma.dev = pci->dev;
+> +	return 0;
+> +}
+>  
+> -	if (!pci->edma.ops)
+> -		pci->edma.ops = &dw_pcie_edma_ops;
+> +static int dw_pcie_edma_find_channels(struct dw_pcie *pci)
+> +{
+> +	u32 val;
+>  
+> -	pci->edma.flags |= DW_EDMA_CHIP_LOCAL;
+> +	val = dw_pcie_readl_dma(pci, PCIE_DMA_CTRL);
+>  
+>  	pci->edma.ll_wr_cnt = FIELD_GET(PCIE_DMA_NUM_WR_CHAN, val);
+>  	pci->edma.ll_rd_cnt = FIELD_GET(PCIE_DMA_NUM_RD_CHAN, val);
+> @@ -930,6 +940,19 @@ static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+>  	return 0;
+>  }
+>  
+> +static int dw_pcie_edma_find_chip(struct dw_pcie *pci)
+> +{
+> +	int ret;
+> +
+> +	dw_pcie_edma_init_data(pci);
+> +
+> +	ret = dw_pcie_edma_find_mf(pci);
+> +	if (ret)
+> +		return ret;
+> +
+> +	return dw_pcie_edma_find_channels(pci);
+> +}
+> +
+>  static int dw_pcie_edma_irq_verify(struct dw_pcie *pci)
+>  {
+>  	struct platform_device *pdev = to_platform_device(pci->dev);
+> 
+> -- 
+> 2.25.1
+> 
 
