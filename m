@@ -1,190 +1,110 @@
-Return-Path: <linux-kernel+bounces-107427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107413-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4B88B87FC57
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:56:26 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DFF5B87FC19
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:48:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0012428414B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:56:24 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 987FC287396
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:48:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93CCE7F485;
-	Tue, 19 Mar 2024 10:55:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B39A5787B;
+	Tue, 19 Mar 2024 10:47:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b="fLP8aoLq"
-Received: from smtp-42ab.mail.infomaniak.ch (smtp-42ab.mail.infomaniak.ch [84.16.66.171])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="lvl0muvH"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B13587E579
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:55:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=84.16.66.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B692857334;
+	Tue, 19 Mar 2024 10:47:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710845738; cv=none; b=Q5Ztrr6EH85+ygp+xQmpngkvyEuJqj2JSIbXrNPzkkKp6GUqdVz3YfHt1AafW5hmHuFwLWUW4kl6h6F2zYnGabaozBtaBbKR1GbpdKrZy5/XIwtjfrrKRpaawNsIoWsb85eA8088+A5xC4D/+meddquR20qEHU6uGGGaI7j9Kak=
+	t=1710845269; cv=none; b=LXnciQkcliL124PjJj2V8ckSxS+ZmTRNn/f8Dd7DaxcvXZDe4FiG3G4AO4dS5cEUHNyJSzTrxfJ1vT2R9T5BejyHsy5Hw7IbL99Jqs8s6B6nPMBHlhizILEIsToVRbZUlPdVOeljyqgRLrl748SD0tb+CIX6om+7B4drX9c5Z/g=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710845738; c=relaxed/simple;
-	bh=fENQjvqNGOJIElMLG83NAteDijrFr0EuoPVi3ck1bAQ=;
+	s=arc-20240116; t=1710845269; c=relaxed/simple;
+	bh=lLyP/BNdCfw25smEMvk1Cgty/ReQCY2rURxRYbjQZwI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=OFMhKGzWFEdVu5mgObCuvn8GjMrse+aOK3RDnUSXE0EoQHAs24U0IdeFHhMsiB1l4AY6aR/UxJ9K/X/y60hkqIkBTM9WlMFE72FZ5J3I07htg+nAM+RSf1R+f3av3GnDjSvtSDI6Wa8Dzu7RB0PCs0TVKBOz6XjBKkxetC0sh3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net; spf=pass smtp.mailfrom=digikod.net; dkim=pass (1024-bit key) header.d=digikod.net header.i=@digikod.net header.b=fLP8aoLq; arc=none smtp.client-ip=84.16.66.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=digikod.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=digikod.net
-Received: from smtp-4-0000.mail.infomaniak.ch (smtp-4-0000.mail.infomaniak.ch [10.7.10.107])
-	by smtp-4-3000.mail.infomaniak.ch (Postfix) with ESMTPS id 4TzT181pX4zLC8;
-	Tue, 19 Mar 2024 11:46:36 +0100 (CET)
-Received: from unknown by smtp-4-0000.mail.infomaniak.ch (Postfix) with ESMTPA id 4TzT171j29zlxf;
-	Tue, 19 Mar 2024 11:46:35 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=digikod.net;
-	s=20191114; t=1710845196;
-	bh=fENQjvqNGOJIElMLG83NAteDijrFr0EuoPVi3ck1bAQ=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=fLP8aoLqfwWxGvgT0LsfcIyzPHD/8iMS/MwlF2Wtg2OuMyi/eTKLveb3Wg61JyEnB
-	 mQEIliTADiOnC6WwkYzT3g9X+1A475sCVJIJp5cPychq2M3DrOG1K3HzN8jyJMRwts
-	 LbZmsVZgHJCVXOPPBUzCe7GF7aM4Znki8SobB/UQ=
-Date: Tue, 19 Mar 2024 11:46:34 +0100
-From: =?utf-8?Q?Micka=C3=ABl_Sala=C3=BCn?= <mic@digikod.net>
-To: Alejandro Colomar <alx@kernel.org>
-Cc: =?utf-8?Q?G=C3=BCnther?= Noack <gnoack@google.com>, 
-	Paul Moore <paul@paul-moore.com>, "Serge E . Hallyn" <serge@hallyn.com>, 
-	Konstantin Meskhidze <konstantin.meskhidze@huawei.com>, Shervin Oloumi <enlightened@chromium.org>, 
-	linux-hardening@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux-security-module@vger.kernel.org, Kees Cook <keescook@chromium.org>
-Subject: Re: [PATCH v2 1/2] landlock: Extend documentation for kernel support
-Message-ID: <20240319.eeb8tajeiPee@digikod.net>
-References: <20240227110550.3702236-1-mic@digikod.net>
- <Zd4OlL1G3t1D3TgC@google.com>
- <20240307.oxQuab5tho0u@digikod.net>
- <ZfgOf2dHBVT4WUcp@debian>
+	 Content-Type:Content-Disposition:In-Reply-To; b=qmJGu1siIBKgcPlLyEC5U+nBWDga6KaRlvq22ZwbO0kBG8wRQFOWG/HfOzpDVNX86WsPhQ1acjiziw5w05Qh4Z3dTRZ3YgX4m2KUS25Wvej/sz/IOTH0IZS5IPuBAlexc0N3SfyiNotANzCIUOnnUWxl2eyLYFBKHKPvy8IZwgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=lvl0muvH; arc=none smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710845268; x=1742381268;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=lLyP/BNdCfw25smEMvk1Cgty/ReQCY2rURxRYbjQZwI=;
+  b=lvl0muvHUBdaF+HYkX0lNUIxMgc01fXje8Myaf74ckQ9r+Q5Xpo8o/mu
+   gRr02UTmJtutRd5SBMAtv6EpAmLBfG0Cj2IHZZ0samk3mScruF7lDAZvs
+   vsr6Ablh7Ftcibja4b+5utLvBHmKGTmXIzrse9b9k/pargl4a4Im70cjU
+   mnqa7+J4qXFg5986Lf+ZreHP9DuUNiUk56EsE6rPGn5Qy2AwmczYtI8bs
+   TRjRDF10/ZEhck7U9wb/1C3ywQoJ4Ap0lPYmJ2scpxa+cfl1a2swPI9GO
+   ObAGKQd39GQkXIH5ih+nFpcqxE61IUWDKg9yBpmU5o+91MnxJahVKkeZ6
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="8648279"
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="8648279"
+Received: from orviesa001.jf.intel.com ([10.64.159.141])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 03:47:47 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="51206661"
+Received: from turnipsi.fi.intel.com (HELO kekkonen.fi.intel.com) ([10.237.72.44])
+  by smtpauth.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 03:47:46 -0700
+Received: from kekkonen.localdomain (localhost [127.0.0.1])
+	by kekkonen.fi.intel.com (Postfix) with SMTP id 6575C11F853;
+	Tue, 19 Mar 2024 12:47:42 +0200 (EET)
+Date: Tue, 19 Mar 2024 10:47:42 +0000
+From: Sakari Ailus <sakari.ailus@linux.intel.com>
+To: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: stable@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Wentong Wu <wentong.wu@intel.com>,
+	Dominik Brodowski <linux@dominikbrodowski.net>
+Subject: Re: [PATCH 1/1] mei: vsc: Unregister interrupt handler for system
+ suspend
+Message-ID: <ZfltTgGANYs9uix5@kekkonen.localdomain>
+References: <20240318080126.2813476-1-sakari.ailus@linux.intel.com>
+ <2024031915-manhole-winnings-43d4@gregkh>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <ZfgOf2dHBVT4WUcp@debian>
-X-Infomaniak-Routing: alpha
+In-Reply-To: <2024031915-manhole-winnings-43d4@gregkh>
 
-On Mon, Mar 18, 2024 at 10:50:42AM +0100, Alejandro Colomar wrote:
-> Hi Mickaël, Günther,
-> 
-> Sorry for the delay!
-> 
-> On Thu, Mar 07, 2024 at 11:21:57AM +0100, Mickaël Salaün wrote:
-> > CCing Alejandro
-> > 
-> > On Tue, Feb 27, 2024 at 05:32:20PM +0100, Günther Noack wrote:
-> > > On Tue, Feb 27, 2024 at 12:05:49PM +0100, Mickaël Salaün wrote:
-> > > > Extend the kernel support section with one subsection for build time
-> > > > configuration and another for boot time configuration.
-> > > > 
-> > > > Extend the boot time subsection with a concrete example.
-> > > > 
-> > > > Update the journalctl command to include the boot option.
-> > > > 
-> > > > Cc: Günther Noack <gnoack@google.com>
-> > > > Cc: Kees Cook <keescook@chromium.org>
-> > > > Signed-off-by: Mickaël Salaün <mic@digikod.net>
-> > > > ---
-> > > > 
-> > > > Changes since v1:
-> > > > * New patch, suggested by Kees Cook.
-> > > > ---
-> > > >  Documentation/userspace-api/landlock.rst | 57 +++++++++++++++++++++---
-> > > >  1 file changed, 51 insertions(+), 6 deletions(-)
-> 
-> [...]
-> 
-> > > > +
-> > > > +  lsm=landlock,lockdown,yama,integrity,apparmor
-> > > > +
-> > > > +After a reboot, we can check that Landlock is up and running by looking at
-> > > > +kernel logs:
-> > > > +
-> > > > +.. code-block:: console
-> > > > +
-> > > > +    # dmesg | grep landlock || journalctl -kb -g landlock
-> > > > +    [    0.000000] Command line: [...] lsm=landlock,lockdown,yama,integrity,apparmor
-> > > > +    [    0.000000] Kernel command line: [...] lsm=landlock,lockdown,yama,integrity,apparmor
-> > > > +    [    0.000000] LSM: initializing lsm=lockdown,capability,landlock,yama,integrity,apparmor
-> > > > +    [    0.000000] landlock: Up and running.
-> > > > +
-> > > > +Note that according to the built time kernel configuration,
-> > > 
-> > > s/built time/build time/
-> > >                  ^
-> > 
-> > OK
-> 
-> Here, this should actually be "build-time" since it works as an
-> adjective.
+Hi Greg,
 
-Thanks Alex but this was already merged:
-https://git.kernel.org/torvalds/c/35e886e88c803920644c9d3abb45a9ecb7f1e761
+On Tue, Mar 19, 2024 at 08:51:43AM +0100, Greg Kroah-Hartman wrote:
+> On Mon, Mar 18, 2024 at 10:01:26AM +0200, Sakari Ailus wrote:
+> > Unregister the MEI VSC interrupt handler before system suspend and
+> > re-register it at system resume time. This mirrors implementation of other
+> > MEI devices.
+> > 
+> > This patch fixes the bug that causes continuous stream of MEI VSC errors
+> > after system resume.
+> > 
+> > Fixes: 386a766c4169 ("mei: Add MEI hardware support for IVSC device")
+> > Cc: stable@vger.kernel.org # for 6.8
+> > Reported-by: Dominik Brodowski <linux@dominikbrodowski.net>
+> > Signed-off-by: Wentong Wu <wentong.wu@intel.com>
+> > Signed-off-by: Sakari Ailus <sakari.ailus@linux.intel.com>
+> > ---
+> >  drivers/misc/mei/platform-vsc.c | 17 ++++++-
+> >  drivers/misc/mei/vsc-tp.c       | 84 +++++++++++++++++++++++----------
+> >  drivers/misc/mei/vsc-tp.h       |  3 ++
+> >  3 files changed, 78 insertions(+), 26 deletions(-)
+> 
+> What is the git commit id of this in Linus's tree?
 
-Because I picked Günther's below suggestion, it should be good right?
+This one isn't in Linus's (or any other maintainer) tree yet.
 
-> 
-> > 
-> > > 
-> > > It feels like the phrase "according to" could be slightly more specific here.
-> > > 
-> > > To paraphrase Alejandro Colomar, "Note that" is usually redundant.
-> > > https://lore.kernel.org/all/0aafcdd6-4ac7-8501-c607-9a24a98597d7@gmail.com/
-> > > 
-> > > I'd suggest:
-> > > 
-> > >   The kernel may be configured at build time to always load the ``lockdown`` and
-> > >   ``capability`` LSMs.  In that case, these LSMs will appear at the beginning of
-> > >   the ``LSM: initializing`` log line as well, even if they are not configured in
-> > >   the boot loader.
-> 
-> LGTM
-> 
-> > 
-> > OK, I integrated your suggestion.  I guess `capability` is not really
-> > considered an LSM but it would be too confusing and out of scope for an
-> > user documentation to explain that.
-> > 
-> > > 
-> > > > +``lockdown,capability,`` may always stay at the beginning of the ``LSM:
-> > > > +initializing lsm=`` list even if they are not configured with the bootloader,
-> > > 
-> > > Nit: The man pages spell this in two words as "boot loader".
-> > 
-> > OK, I'll use "boot loader" too.
-> > 
-> > > 
-> > > 
-> > > > +which is OK.
-> > > > +
-> > > > +Network support
-> > > > +---------------
-> > > > +
-> > > >  To be able to explicitly allow TCP operations (e.g., adding a network rule with
-> > > >  ``LANDLOCK_ACCESS_NET_BIND_TCP``), the kernel must support TCP
-> > > >  (``CONFIG_INET=y``).  Otherwise, sys_landlock_add_rule() returns an
-> > > > 
-> > > > base-commit: b4007fd27206c478a4b76e299bddf4a71787f520
-> > > > -- 
-> > > > 2.44.0
-> > > > 
-> > > 
-> > > Reviewed-by: Günther Noack <gnoack@google.com>
-> > 
-> > Thanks!
-> 
-> Reviewed-by: Alejandro Colomar <alx@kernel.org>
-> 
-> Have a lovely day!
-> Alex
-> 
-> -- 
-> <https://www.alejandro-colomar.es/>
-> Looking for a remote C programming job at the moment.
+-- 
+Regards,
 
-
+Sakari Ailus
 
