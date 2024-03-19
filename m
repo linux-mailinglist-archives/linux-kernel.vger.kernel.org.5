@@ -1,251 +1,213 @@
-Return-Path: <linux-kernel+bounces-107370-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107372-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EDC0987FB91
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:13:24 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id AE9F687FB99
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:14:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C40D0B20FAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:13:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3918E282EF8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:14:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82D807E76A;
-	Tue, 19 Mar 2024 10:11:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="2L4okBV/"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 352427E593;
+	Tue, 19 Mar 2024 10:13:24 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 787227EEF5
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:11:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AEBFA7E567
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:13:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710843100; cv=none; b=jmGLHlxeICOiLzELVEX2g7mAAMZl40StgLFOwSPsV+Z4W5tK4V9gyKVDoSzL10VnmQpaE3jlpur/fFCdOtjNvCy562sItkjPV3MAQsOyva8VUxZSOIqggVI09fjZhxywAiMkizvxI1fqnu6y+15M02qsNE3jdVN1DYtlzmHz6DM=
+	t=1710843203; cv=none; b=XfJdcRude/Pbc7MXjIWHuHfGM9SmcjCKp9RxZDVw5ihUMCr7IW3o06yYXZlfzEtP3uq9m0cYhHZkOdD9gRKt4oWx8nBCsG55Rn48gceXDeml6DTkjcuP8z8adTnfJMpE8utTT8bsx7wdyCwFgiRS1BaQTZK29EODUbQYkv3sh5A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710843100; c=relaxed/simple;
-	bh=5drMRkc6cdhxzEXRuiFUG+ZazTN83pcjQOdgWR2Qpu8=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:References:
-	 In-Reply-To:To:Cc; b=FtOIEViSwI1fNtM46RngZ8xXI80Px6sThoS3YblvqMQRYiX8e2Eviubl4BBXenoAcJT3bDroe07O0okinX28k1/n3DntBWC2imxOhh9SfuEkKuepr0nxSkgrD4L6Psyytv0sSjnHu1l+fX6DekExcUrXoKeX0ulfYPy0TVOCrRg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=2L4okBV/; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-414612cfd82so8013975e9.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:11:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710843097; x=1711447897; darn=vger.kernel.org;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=SsfyZur1R0UqZb6MbuekND4ciUEpi+pLkRiJrw0UfQA=;
-        b=2L4okBV/HIMmYWOzGu8ss2pJ7eJ+J2QloEQbKLF4wmQSnyswQh/cf9XQdFFZ2ZQcPA
-         C7PFmfA2d2PMZTXk/mxmjH646sdPDEC39JuAmPFttqJdI2/z0b0Dir6iD4ryhYtbTz5f
-         NAUw/TIea+CM22yns/KEx095+vvlG/ug8WgD4aXjmAUpae8Rx0a4PF9uiuPJ1tfA1+il
-         Qd0d+DsVL+vvQ/RT1etfmi5ZM4QXrX9esVA0CM4xCcDeqG9LJIcs3mQj1EUZDWfV/o5Z
-         DxcMEWXMHPSUl88NqrF6O9QAnpVInQCQCnYdGFTJlHGnje5GFw/JmXUwWyWKaQIu6yU+
-         158A==
+	s=arc-20240116; t=1710843203; c=relaxed/simple;
+	bh=nGAGdpvdW20Osr3RxlFOnpoFW/e7JkxiDcGlxpHPrTQ=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=u0WYN5Rib+dc86Phj2+PDN9E0eh+HXuf0YMz8H4P8fiQaR0R75/M5lSkymmR05LCBfdZuDweXxf25F9OF9BB0g7UBkLGjuDiyMDMt4b/u3TTDk6wdevvnXncCWctnRTmfNAXRLV5Cvro4V9r+WSekN8tl6U9eh8Jl/WLX5B+ku4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cbf1ea053cso450641739f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:13:21 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710843097; x=1711447897;
-        h=cc:to:in-reply-to:references:message-id:content-transfer-encoding
-         :mime-version:subject:date:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=SsfyZur1R0UqZb6MbuekND4ciUEpi+pLkRiJrw0UfQA=;
-        b=qNsy4N/qZ+Y9y9JviqzY63IUVPTAbnKiVSKIvrr5TIlgO2zqcFitpF3G2MKOBwKouo
-         EayXiW06LwtWO0ie/MPk7gKDIbgYuY4XYHuud0PIl0vF9AamM+fBysPYcbtOtP/LTMI5
-         xbffyHex1ho1G6LNfLNPApQHe06blVnBx6vR8Mnr8ZsAopA/hzIjMZr9v723LDgGIGnl
-         a71wSzvVA1K+dmz78xXL5qcbmbFQUdTD40e5gXVXUn9Hyx7qxxIv9nBAjI9tXEH2WWvN
-         EkFUOr024Rhpbfnvz6ZudZoEfV+x8BCRWcG1c/lFsrrPW2R/svGRI4IdjcvPsb3IjFJ0
-         6MEw==
-X-Forwarded-Encrypted: i=1; AJvYcCW7SYmXnq3rO4ZeQY1KI+0hLoX0PyuQ7vTTeBHK/efnX84JXxrAqLlQJrpuEy2S8xL0Y2f7VHEC0VUB3ywnlQFM/ThvnsVRtICZl+Mb
-X-Gm-Message-State: AOJu0YyD2jmQPgsvE5b5w0rPFl7yTyqkZ63ZbBBDsh3kN8YRaCMiZLoW
-	Ucs7SWuqNkGy2nAcWMI8A6KZEp4zB5T4XIxl+ze1rq7n56KCblVs+6I+ZL5Ub38=
-X-Google-Smtp-Source: AGHT+IF36snA4qnITyiGndP/BqdVSGXnj6d0Gh72zGhEtdGy2zSoCJle1eukie7uxkg5AhI3BS2RBA==
-X-Received: by 2002:a05:600c:1395:b0:413:38c6:2c7a with SMTP id u21-20020a05600c139500b0041338c62c7amr1328419wmf.22.1710843096914;
-        Tue, 19 Mar 2024 03:11:36 -0700 (PDT)
-Received: from [192.168.1.63] ([2a02:842a:d52e:6101:6fd0:6c4:5d68:f0a5])
-        by smtp.gmail.com with ESMTPSA id je2-20020a05600c1f8200b004133072017csm21096384wmb.42.2024.03.19.03.11.35
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 03:11:36 -0700 (PDT)
-From: Julien Stephan <jstephan@baylibre.com>
-Date: Tue, 19 Mar 2024 11:11:28 +0100
-Subject: [PATCH v5 7/7] iio: adc: ad7380: add support for ad738x-4 4
- channels variants
+        d=1e100.net; s=20230601; t=1710843201; x=1711448001;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=yVWo3OW7v6RM8KpVjlOclZLMZCa5nPUC4vsLf0Mpl6Y=;
+        b=po+xJZRIX60/s3DF7hg4Zv5YhOFzwqoKZtWbH8AXpE4ktyoIYQfZoCAm73JMtTzSvT
+         NPINvIvdvqkQOvn2kI3eSqCTBQDQFgY1DDacLXFt+ARVoco64+dsm6XPvZ2uzX/pvoqk
+         P06IUuRyrEr3+ABge4xz6YrmK23+BsflNVIsgIsj0V4uF17towNtVpQR/77APm1h1L0G
+         0BgTLJ3Nk44VPTabksaG2m36eO0oNdgPgFyru0REGtU6aeQm3M35OhGg5QJzphvt9EKb
+         tzYc7sOBzfPCNotFd/93mBlRVkhU3/29aiIGpIsvERu9et5Renht8uZ9lc+OEohvbtzI
+         CiLQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVpwMpiMWuVaKPCUaqoU4o2ZsKwbze//PHAhy/FINOaPFyLq7eLcbdlRcMFHVo2n7f6n6D/VO3vtKw2uexaLWYD+rTAOigX6eQ7lWsw
+X-Gm-Message-State: AOJu0Yyxxywuu35egTt4YPYLa6z+Wy+Kr3vsyJJNVkhjloZ7VN4T4jar
+	mFuMmjt+9GTkr5kxpygXSqDqV4ts2eDHNusqlPn+87dSIH9gSlltglXNPbcyU9enrvssVqvP8rQ
+	2v8hoJLDyLEZXUSHpX1XzBA2kfug4qcY28kORy/RjK1iVbmxhw8xroKA=
+X-Google-Smtp-Source: AGHT+IFnYwDPpTN7Zf+grtyBlIIPEncHbUppHOcyRUbwdQF9ibbiDo8FPnl26e7BKuD66ggGekHqZ+eH8AquJ5YCpHnslbLSr5Xt
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240319-adding-new-ad738x-driver-v5-7-ce7df004ceb3@baylibre.com>
-References: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
-In-Reply-To: <20240319-adding-new-ad738x-driver-v5-0-ce7df004ceb3@baylibre.com>
-To: Lars-Peter Clausen <lars@metafoo.de>, 
- Michael Hennerich <Michael.Hennerich@analog.com>, 
- =?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>, 
- David Lechner <dlechner@baylibre.com>, Jonathan Cameron <jic23@kernel.org>, 
- Rob Herring <robh+dt@kernel.org>, 
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
- Conor Dooley <conor+dt@kernel.org>, Liam Girdwood <lgirdwood@gmail.com>, 
- Mark Brown <broonie@kernel.org>
-Cc: linux-iio@vger.kernel.org, devicetree@vger.kernel.org, 
- linux-kernel@vger.kernel.org, kernel test robot <lkp@intel.com>, 
- Julien Stephan <jstephan@baylibre.com>
-X-Mailer: b4 0.13.0
+X-Received: by 2002:a05:6638:3711:b0:47b:cbf1:9064 with SMTP id
+ k17-20020a056638371100b0047bcbf19064mr77340jav.0.1710843200902; Tue, 19 Mar
+ 2024 03:13:20 -0700 (PDT)
+Date: Tue, 19 Mar 2024 03:13:20 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000041ac86061400b95d@google.com>
+Subject: [syzbot] [jfs?] INFO: task hung in lmLogClose (3)
+From: syzbot <syzbot+c824290332add8067111@syzkaller.appspotmail.com>
+To: jfs-discussion@lists.sourceforge.net, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, shaggy@kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add support for ad7380/1/2/3-4 parts which are 4 channels
-variants from ad7380/1/2/3
+Hello,
 
-Signed-off-by: Julien Stephan <jstephan@baylibre.com>
+syzbot found the following issue on:
+
+HEAD commit:    707081b61156 Merge branch 'for-next/core', remote-tracking..
+git tree:       git://git.kernel.org/pub/scm/linux/kernel/git/arm64/linux.git for-kernelci
+console output: https://syzkaller.appspot.com/x/log.txt?x=126c764e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=caeac3f3565b057a
+dashboard link: https://syzkaller.appspot.com/bug?extid=c824290332add8067111
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: arm64
+syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=101e05be180000
+C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=151ec2a5180000
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/6cad68bf7532/disk-707081b6.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/1a27e5400778/vmlinux-707081b6.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/67dfc53755d0/Image-707081b6.gz.xz
+mounted in repro: https://storage.googleapis.com/syzbot-assets/e14a3937c758/mount_0.gz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+c824290332add8067111@syzkaller.appspotmail.com
+
+INFO: task syz-executor394:6204 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor394 state:D stack:0     pid:6204  tgid:6204  ppid:6201   flags:0x0000000c
+Call trace:
+ __switch_to+0x314/0x560 arch/arm64/kernel/process.c:553
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0x1498/0x24b4 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xb8/0x19c kernel/sched/core.c:6817
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6874
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:684
+ __mutex_lock kernel/locking/mutex.c:752 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+ lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
+ jfs_umount+0x274/0x360 fs/jfs/jfs_umount.c:114
+ jfs_put_super+0x90/0x188 fs/jfs/super.c:194
+ generic_shutdown_super+0x128/0x2b8 fs/super.c:641
+ kill_block_super+0x44/0x90 fs/super.c:1675
+ deactivate_locked_super+0xc4/0x12c fs/super.c:472
+ deactivate_super+0xe0/0x100 fs/super.c:505
+ cleanup_mnt+0x34c/0x3dc fs/namespace.c:1267
+ __cleanup_mnt+0x20/0x30 fs/namespace.c:1274
+ task_work_run+0x230/0x2e0 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ do_notify_resume+0x178/0x1f4 arch/arm64/kernel/entry-common.c:151
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:169 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:178 [inline]
+ el0_svc+0xac/0x168 arch/arm64/kernel/entry-common.c:713
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+INFO: task syz-executor394:6205 blocked for more than 143 seconds.
+      Not tainted 6.8.0-rc7-syzkaller-g707081b61156 #0
+"echo 0 > /proc/sys/kernel/hung_task_timeout_secs" disables this message.
+task:syz-executor394 state:D stack:0     pid:6205  tgid:6205  ppid:6201   flags:0x0000000c
+Call trace:
+ __switch_to+0x314/0x560 arch/arm64/kernel/process.c:553
+ context_switch kernel/sched/core.c:5400 [inline]
+ __schedule+0x1498/0x24b4 kernel/sched/core.c:6727
+ __schedule_loop kernel/sched/core.c:6802 [inline]
+ schedule+0xb8/0x19c kernel/sched/core.c:6817
+ schedule_preempt_disabled+0x18/0x2c kernel/sched/core.c:6874
+ __mutex_lock_common+0xbd8/0x21a0 kernel/locking/mutex.c:684
+ __mutex_lock kernel/locking/mutex.c:752 [inline]
+ mutex_lock_nested+0x2c/0x38 kernel/locking/mutex.c:804
+ lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
+ jfs_umount+0x274/0x360 fs/jfs/jfs_umount.c:114
+ jfs_put_super+0x90/0x188 fs/jfs/super.c:194
+ generic_shutdown_super+0x128/0x2b8 fs/super.c:641
+ kill_block_super+0x44/0x90 fs/super.c:1675
+ deactivate_locked_super+0xc4/0x12c fs/super.c:472
+ deactivate_super+0xe0/0x100 fs/super.c:505
+ cleanup_mnt+0x34c/0x3dc fs/namespace.c:1267
+ __cleanup_mnt+0x20/0x30 fs/namespace.c:1274
+ task_work_run+0x230/0x2e0 kernel/task_work.c:180
+ resume_user_mode_work include/linux/resume_user_mode.h:50 [inline]
+ do_notify_resume+0x178/0x1f4 arch/arm64/kernel/entry-common.c:151
+ exit_to_user_mode_prepare arch/arm64/kernel/entry-common.c:169 [inline]
+ exit_to_user_mode arch/arm64/kernel/entry-common.c:178 [inline]
+ el0_svc+0xac/0x168 arch/arm64/kernel/entry-common.c:713
+ el0t_64_sync_handler+0x84/0xfc arch/arm64/kernel/entry-common.c:730
+ el0t_64_sync+0x190/0x194 arch/arm64/kernel/entry.S:598
+
+Showing all locks held in the system:
+1 lock held by khungtaskd/29:
+ #0: ffff80008ee74ac0 (rcu_read_lock){....}-{1:2}, at: rcu_lock_acquire+0xc/0x44 include/linux/rcupdate.h:297
+2 locks held by getty/5927:
+ #0: ffff0000d2e810a0 (&tty->ldisc_sem){++++}-{0:0}, at: ldsem_down_read+0x3c/0x4c drivers/tty/tty_ldsem.c:340
+ #1: ffff800093fe02f0 (&ldata->atomic_read_lock){+.+.}-{3:3}, at: n_tty_read+0x41c/0x1228 drivers/tty/n_tty.c:2201
+2 locks held by syz-executor394/6202:
+ #0: ffff0000d98900e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff0000d98900e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff0000d98900e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:504
+ #1: ffff80008f2586e8 (jfs_log_mutex){+.+.}-{3:3}, at: lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
+1 lock held by syz-executor394/6203:
+ #0: ffff0000c25c00e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff0000c25c00e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff0000c25c00e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:504
+2 locks held by syz-executor394/6204:
+ #0: ffff0000d60740e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff0000d60740e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff0000d60740e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:504
+ #1: ffff80008f2586e8 (jfs_log_mutex){+.+.}-{3:3}, at: lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
+2 locks held by syz-executor394/6205:
+ #0: ffff0000d95420e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff0000d95420e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff0000d95420e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:504
+ #1: ffff80008f2586e8 (jfs_log_mutex){+.+.}-{3:3}, at: lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
+2 locks held by syz-executor394/6206:
+ #0: ffff0000d5cb80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock fs/super.c:56 [inline]
+ #0: ffff0000d5cb80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: __super_lock_excl fs/super.c:71 [inline]
+ #0: ffff0000d5cb80e0 (&type->s_umount_key#42){+.+.}-{3:3}, at: deactivate_super+0xd8/0x100 fs/super.c:504
+ #1: ffff80008f2586e8 (jfs_log_mutex){+.+.}-{3:3}, at: lmLogClose+0xc8/0x4d4 fs/jfs/jfs_logmgr.c:1444
+
+=============================================
+
+
+
 ---
- drivers/iio/adc/ad7380.c | 75 +++++++++++++++++++++++++++++++++++++++++++++++-
- 1 file changed, 74 insertions(+), 1 deletion(-)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/drivers/iio/adc/ad7380.c b/drivers/iio/adc/ad7380.c
-index 3aca41ce9a14..cf9d2ace5f20 100644
---- a/drivers/iio/adc/ad7380.c
-+++ b/drivers/iio/adc/ad7380.c
-@@ -8,6 +8,9 @@
-  * Datasheets of supported parts:
-  * ad7380/1 : https://www.analog.com/media/en/technical-documentation/data-sheets/AD7380-7381.pdf
-  * ad7383/4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7383-7384.pdf
-+ * ad7380-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7380-4.pdf
-+ * ad7381-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7381-4.pdf
-+ * ad7383/4-4 : https://www.analog.com/media/en/technical-documentation/data-sheets/ad7383-4-ad7384-4.pdf
-  */
- 
- #include <linux/bitfield.h>
-@@ -29,7 +32,7 @@
- #include <linux/iio/trigger_consumer.h>
- #include <linux/iio/triggered_buffer.h>
- 
--#define MAX_NUM_CHANNELS		2
-+#define MAX_NUM_CHANNELS		4
- /* 2.5V internal reference voltage */
- #define AD7380_INTERNAL_REF_MV		2500
- 
-@@ -106,27 +109,53 @@ static const struct iio_chan_spec name[] = {		\
- 	IIO_CHAN_SOFT_TIMESTAMP(2),			\
- }
- 
-+#define DEFINE_AD7380_4_CHANNEL(name, bits, diff)	\
-+static const struct iio_chan_spec name[] = {		\
-+	AD7380_CHANNEL(0, bits, diff),			\
-+	AD7380_CHANNEL(1, bits, diff),			\
-+	AD7380_CHANNEL(2, bits, diff),			\
-+	AD7380_CHANNEL(3, bits, diff),			\
-+	IIO_CHAN_SOFT_TIMESTAMP(4),			\
-+}
-+
- /* fully differential */
- DEFINE_AD7380_2_CHANNEL(ad7380_channels, 16, 1);
- DEFINE_AD7380_2_CHANNEL(ad7381_channels, 14, 1);
-+DEFINE_AD7380_4_CHANNEL(ad7380_4_channels, 16, 1);
-+DEFINE_AD7380_4_CHANNEL(ad7381_4_channels, 14, 1);
- /* pseudo differential */
- DEFINE_AD7380_2_CHANNEL(ad7383_channels, 16, 0);
- DEFINE_AD7380_2_CHANNEL(ad7384_channels, 14, 0);
-+DEFINE_AD7380_4_CHANNEL(ad7383_4_channels, 16, 0);
-+DEFINE_AD7380_4_CHANNEL(ad7384_4_channels, 14, 0);
- 
- static const char * const ad7380_2_channel_vcm_supplies[] = {
- 	"aina", "ainb",
- };
- 
-+static const char * const ad7380_4_channel_vcm_supplies[] = {
-+	"aina", "ainb", "ainc", "aind",
-+};
-+
- /* Since this is simultaneous sampling, we don't allow individual channels. */
- static const unsigned long ad7380_2_channel_scan_masks[] = {
- 	GENMASK(1, 0),
- 	0
- };
- 
-+static const unsigned long ad7380_4_channel_scan_masks[] = {
-+	GENMASK(3, 0),
-+	0
-+};
-+
- static const struct ad7380_timing_specs ad7380_timing = {
- 	.t_csh_ns = 10,
- };
- 
-+static const struct ad7380_timing_specs ad7380_4_timing = {
-+	.t_csh_ns = 20,
-+};
-+
- static const struct ad7380_chip_info ad7380_chip_info = {
- 	.name = "ad7380",
- 	.channels = ad7380_channels,
-@@ -163,6 +192,42 @@ static const struct ad7380_chip_info ad7384_chip_info = {
- 	.timing_specs = &ad7380_timing,
- };
- 
-+static const struct ad7380_chip_info ad7380_4_chip_info = {
-+	.name = "ad7380-4",
-+	.channels = ad7380_4_channels,
-+	.num_channels = ARRAY_SIZE(ad7380_4_channels),
-+	.available_scan_masks = ad7380_4_channel_scan_masks,
-+	.timing_specs = &ad7380_4_timing,
-+};
-+
-+static const struct ad7380_chip_info ad7381_4_chip_info = {
-+	.name = "ad7381-4",
-+	.channels = ad7381_4_channels,
-+	.num_channels = ARRAY_SIZE(ad7381_4_channels),
-+	.available_scan_masks = ad7380_4_channel_scan_masks,
-+	.timing_specs = &ad7380_4_timing,
-+};
-+
-+static const struct ad7380_chip_info ad7383_4_chip_info = {
-+	.name = "ad7383-4",
-+	.channels = ad7383_4_channels,
-+	.num_channels = ARRAY_SIZE(ad7383_4_channels),
-+	.vcm_supplies = ad7380_4_channel_vcm_supplies,
-+	.num_vcm_supplies = ARRAY_SIZE(ad7380_4_channel_vcm_supplies),
-+	.available_scan_masks = ad7380_4_channel_scan_masks,
-+	.timing_specs = &ad7380_4_timing,
-+};
-+
-+static const struct ad7380_chip_info ad7384_4_chip_info = {
-+	.name = "ad7384-4",
-+	.channels = ad7384_4_channels,
-+	.num_channels = ARRAY_SIZE(ad7384_4_channels),
-+	.vcm_supplies = ad7380_4_channel_vcm_supplies,
-+	.num_vcm_supplies = ARRAY_SIZE(ad7380_4_channel_vcm_supplies),
-+	.available_scan_masks = ad7380_4_channel_scan_masks,
-+	.timing_specs = &ad7380_4_timing,
-+};
-+
- struct ad7380_state {
- 	const struct ad7380_chip_info *chip_info;
- 	struct spi_device *spi;
-@@ -514,6 +579,10 @@ static const struct of_device_id ad7380_of_match_table[] = {
- 	{ .compatible = "adi,ad7381", .data = &ad7381_chip_info },
- 	{ .compatible = "adi,ad7383", .data = &ad7383_chip_info },
- 	{ .compatible = "adi,ad7384", .data = &ad7384_chip_info },
-+	{ .compatible = "adi,ad7380-4", .data = &ad7380_4_chip_info },
-+	{ .compatible = "adi,ad7381-4", .data = &ad7381_4_chip_info },
-+	{ .compatible = "adi,ad7383-4", .data = &ad7383_4_chip_info },
-+	{ .compatible = "adi,ad7384-4", .data = &ad7384_4_chip_info },
- 	{ }
- };
- 
-@@ -522,6 +591,10 @@ static const struct spi_device_id ad7380_id_table[] = {
- 	{ "ad7381", (kernel_ulong_t)&ad7381_chip_info },
- 	{ "ad7383", (kernel_ulong_t)&ad7383_chip_info },
- 	{ "ad7384", (kernel_ulong_t)&ad7384_chip_info },
-+	{ "ad7380-4", (kernel_ulong_t)&ad7380_4_chip_info },
-+	{ "ad7381-4", (kernel_ulong_t)&ad7381_4_chip_info },
-+	{ "ad7383-4", (kernel_ulong_t)&ad7383_4_chip_info },
-+	{ "ad7384-4", (kernel_ulong_t)&ad7384_4_chip_info },
- 	{ }
- };
- MODULE_DEVICE_TABLE(spi, ad7380_id_table);
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
--- 
-2.44.0
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
+If you want syzbot to run the reproducer, reply with:
+#syz test: git://repo/address.git branch-or-commit-hash
+If you attach or paste a git patch, syzbot will apply it before testing.
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
