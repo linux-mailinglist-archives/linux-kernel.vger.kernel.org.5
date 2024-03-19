@@ -1,435 +1,477 @@
-Return-Path: <linux-kernel+bounces-107686-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107687-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 04560880031
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:03:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 93B7C880035
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:04:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 858F91F2320A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:03:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 438172830BF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:04:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DABA651B3;
-	Tue, 19 Mar 2024 15:03:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0BB1E651AD;
+	Tue, 19 Mar 2024 15:04:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b="g3WYaxEz";
-	dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b="qJqPbol/"
-Received: from mx0b-00069f02.pphosted.com (mx0b-00069f02.pphosted.com [205.220.177.32])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="kskevKQH"
+Received: from mail-wm1-f43.google.com (mail-wm1-f43.google.com [209.85.128.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 310A42E82E;
-	Tue, 19 Mar 2024 15:03:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=205.220.177.32
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710860602; cv=fail; b=Z1f0mjMJYv94JKALTS1XKe4CfKkVhNsdJVhnai+xNOy1xOFrViZf6BfscDqZD7Zr/PEdHPrKJ/RBDn64PJT+3mCwXWVVOj/0XA2A+sdMoLwou/cEkfJrxmpckHS0iSLCBYI0M00oo1VFEEQVKHjm8Yq17wUAh7K+Ni4k++XORSI=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710860602; c=relaxed/simple;
-	bh=7BNc7OQBbUUc0Jfimd0r04Q1G028U6QPbRNvzXKYP1c=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=NWEXqScmn1omqbCnlAUPSDpnv+4cLPaGLM/BYjxAR+UWYYOUyxF8i0tIeW4b2ErMXc4xSoOa6aiUryO6l+kqcukLjWcDMM/qCw2HmF1nrY4lh/bWqbiED77UDfpu/TSd4CPvUe07+mPOG2DwPAAeAsVzqnyqa2QzYWObjlVsAYQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com; spf=pass smtp.mailfrom=oracle.com; dkim=pass (2048-bit key) header.d=oracle.com header.i=@oracle.com header.b=g3WYaxEz; dkim=pass (1024-bit key) header.d=oracle.onmicrosoft.com header.i=@oracle.onmicrosoft.com header.b=qJqPbol/; arc=fail smtp.client-ip=205.220.177.32
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=oracle.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=oracle.com
-Received: from pps.filterd (m0246630.ppops.net [127.0.0.1])
-	by mx0b-00069f02.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JAHf2s013476;
-	Tue, 19 Mar 2024 15:03:00 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=oracle.com; h=date : from : to : cc
- : subject : message-id : references : content-type : in-reply-to :
- mime-version; s=corp-2023-11-20;
- bh=+pwD33i7ZeDntEBIiXGnBBWOq78N+YuTEjqXYBmHKbo=;
- b=g3WYaxEzKiIGZrYo+WcwClqwrd4hazoD0pgfw/UxmlGDfcBVe0PfY2dljxRYsSEox1ui
- KhcJCf+q2J4gFYmu61uisM7Bzf4Hc4PleAkuS3ammgjI/BaXu3D34JFk2FXDrYi5qSQw
- nN38eDQGKmwTiPtnLpi8vb1iuxsjMh9igGexTSxhOZDXa4WoDe0CIerDpqVakB/VR/GI
- ZLuNn9TqasqxgdbgJKHNgmUpJLvieyeFPcnEDx1Ftd8hTuQHpANnVXMcF5GWghj9THCQ
- lKWlwcDx1ZBJZLXb59dPKiq5qJQs5I3lMTFnlsleWcXGoIi44Fe6AH0UBWXqHwiWCqq4 2A== 
-Received: from iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (iadpaimrmta03.appoci.oracle.com [130.35.103.27])
-	by mx0b-00069f02.pphosted.com (PPS) with ESMTPS id 3ww1udds3x-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 15:02:59 +0000
-Received: from pps.filterd (iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com [127.0.0.1])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (8.17.1.19/8.17.1.19) with ESMTP id 42JE2f3k028739;
-	Tue, 19 Mar 2024 15:02:58 GMT
-Received: from nam11-co1-obe.outbound.protection.outlook.com (mail-co1nam11lp2169.outbound.protection.outlook.com [104.47.56.169])
-	by iadpaimrmta03.imrmtpd1.prodappiadaev1.oraclevcn.com (PPS) with ESMTPS id 3ww1v6cbkr-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 15:02:58 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=GK9V7M5eHGy9W6gwUt4QThNWOJJelQvHAzi2arEESLWUX9zq+w0VHb64NRExqazcfCYSfDC46xq4pzDkV0+KmRjIvk606LkKsaEM19RorBGe15B9zCbYZSSlRDQLdcc6pd8Wwfg4zKXr2z71gwCvcdP/Q7sen30HYo1KIKoEYDfRfJ32/kOvKoy2U6jiTEzngIga/Z86+j0FbJOwP1a/CzhskMp1OxotiVfFZkGd6SVpMocD3qVaCnFW0G/wJVnqEi8KOhkWhmgPtm0lGoVO+v/KKmN/2RdqFGK/4ptMicjcv8vq4HVyzzF4mUMJEuqaQ8NUGCsBFHx0A7C+PI3bkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+pwD33i7ZeDntEBIiXGnBBWOq78N+YuTEjqXYBmHKbo=;
- b=PU0C75TLi4AcSq6vwPB6eFi8iAin0qUOhweWmEoX2LrEHoYS8ag113SH+1JKtyuqBRxdzUEUzMwQRjLvsL8KyDqY2C/OAUzjpjsY/Muai1M8P7GlXbZxfrTJ1f8j1VRhDABaXwDTpezkoYr3nBKxJiKVJfsG/vEyHzDz7FzSEWRQ/6bcp4gnjS8D1A9jq7C6RaDqE8vcxRb7cwX8eHzBE7SEfZEiZYjc9EWdkV4pDiGy86viRoheo8jOHd8Q7+WG8wpjQGt6ktERZYH4sonsMf17eB9LAc+7q18RmWGryOTAdfTPotXGOAnqmdkMkUQgRcM0J6hu+mQuPwG6Bbm5jg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=oracle.com; dmarc=pass action=none header.from=oracle.com;
- dkim=pass header.d=oracle.com; arc=none
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A3BD2914
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:04:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.43
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710860649; cv=none; b=Gn4hDBjWAB2dnCroLsCIald8+pDztMKcEHGNH25g+CvcNSZUTaUmMnktwmdjBrI4fURc0coib4ba2AM3O6PO6qQH2Lzs5GBRgak6qiMCbTtvsysot32haHFiyMUHuwZbNTpoLjdJFgBgoUC6PnuKTeHrq45Eum/vpJ8JKZDhjbk=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710860649; c=relaxed/simple;
+	bh=p4rjie4PlBjMzyA45UK47rjKMayDUL+/7n4tYUEUskg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DALxWkqCoFduqOvZpmyuBEj90nssOspP5ETAYrfTeDDnx8hLgHxUXFT4O+4QLQ6tBdXyERvcF9mL8/G3F+5/BE90QdbFO2MpPYqD9mMuXRWzy2aA/J9ZbVOens2OYRlUw6KPADxCx8xFB0Jj4a2EYzjecauXIUXZewl9Ym+NoWo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=kskevKQH; arc=none smtp.client-ip=209.85.128.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f43.google.com with SMTP id 5b1f17b1804b1-414645c349dso4706385e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:04:06 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
- d=oracle.onmicrosoft.com; s=selector2-oracle-onmicrosoft-com;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+pwD33i7ZeDntEBIiXGnBBWOq78N+YuTEjqXYBmHKbo=;
- b=qJqPbol/YMIppzF5i4Y6eoU/ZlKFw+3F2c3gnkfJ2Oj3mGr8fClPC9n+lPEiQ25fJiSb/ziaibPxEE5277ejVAnXQKOxA4OBjepwEKC71NnmQ66piIbGSEbyi4Cr9Ki0q3wUs28IP6zjRSXIQViH5RFKvsa3N4Zdz1nfNN8Lcho=
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com (2603:10b6:408:117::24)
- by CYXPR10MB7897.namprd10.prod.outlook.com (2603:10b6:930:da::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Tue, 19 Mar
- 2024 15:02:55 +0000
-Received: from BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ad12:a809:d789:a25b]) by BN0PR10MB5128.namprd10.prod.outlook.com
- ([fe80::ad12:a809:d789:a25b%4]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 15:02:55 +0000
-Date: Tue, 19 Mar 2024 11:02:52 -0400
-From: Chuck Lever <chuck.lever@oracle.com>
-To: Jeff Layton <jlayton@kernel.org>
-Cc: Neil Brown <neilb@suse.de>, Olga Kornievskaia <kolga@netapp.com>,
-        Dai Ngo <Dai.Ngo@oracle.com>, Tom Talpey <tom@talpey.com>,
-        Trond Myklebust <trond.myklebust@hammerspace.com>,
-        Anna Schumaker <anna@kernel.org>, linux-nfs@vger.kernel.org,
-        linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] nfsd: trivial GET_DIR_DELEGATION support
-Message-ID: <ZfmpHFMYFmnIiBD1@manet.1015granger.net>
-References: <20240318-nfs-gdd-trivial-v1-1-158924b9e00d@kernel.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318-nfs-gdd-trivial-v1-1-158924b9e00d@kernel.org>
-X-ClientProxiedBy: CH2PR07CA0061.namprd07.prod.outlook.com
- (2603:10b6:610:5b::35) To BN0PR10MB5128.namprd10.prod.outlook.com
- (2603:10b6:408:117::24)
+        d=gmail.com; s=20230601; t=1710860645; x=1711465445; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=PLvzWjzNWj19XjG/NLwNckq7ex0/hC6EP3dD2UDErZM=;
+        b=kskevKQH8yqa19gTGrwsZdn4ZZ2CYHvP4rsaKQgaEiNCr/LwtZL20ubFAQA8rjjzxP
+         84zDnjuaafr/O3JFXup6mNgj+otoEJPuNwGSFCDpdpNMARNf37WK47+7uKZWSVyTjKXk
+         ZvaUQt6gU6yBA8jzK+VTReVQT1IjJGr71kMZhx4xauYzucZS8ywchtqFZpPdFnQQW7P3
+         /3NxMId89OdTF/UyLKopQaR8yoPIJlg8/y6Lk2KrVKkxsOmoAsjwiySsnVs6GDCXYld5
+         zW7TAp3jeOOPvNlQCt5opRi+jBQzKnj9b5SpViplZNPOYkl6rY+k2SPW/qFe9qml+ytf
+         EVJw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710860645; x=1711465445;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PLvzWjzNWj19XjG/NLwNckq7ex0/hC6EP3dD2UDErZM=;
+        b=JkvBDTbewWMIvHKgQIEr8YqdDPV5z7klZvpyjB7kSb5bDeoHein1YJv57s7fc7U1m/
+         FwiQkEWCSH+VXUjOo7ct6G0QVoAOnZ6HxFFK8a2JDslZBViuqXEHz6XybOIVDHsw4+mo
+         g86itJ1KvltLYxQ8umwhyhD9WVVSzfo/2wRtNAvu3i/hFlm5rsNINLUdX0lqxz430QH8
+         roDVE75XvuaUiiIGpH1xh/oxLjTmjWXwwZorP0kYC+9C78CLpYEoHGaB99S5neBJDjdo
+         JJKHHyyu0Wn1NNveDHovZPDnSzRli2mZll/ysTz0LoZF3FojVGC4W/smsyf8uucwP1kc
+         APOQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXYnE8hJyUdOg/BY8cqwTTurWzuXyaNsZSCaRRYipIODtwnUCap+tAMzH+cUmhfOiVf8nkGKGV+bL+JU4k5Lrzb/tvH4qLTWVUjMkRH
+X-Gm-Message-State: AOJu0YyI+1+dwD7ttYnm5xRFxvdxdnei5PVG7uj2lho55D26Ltorh9vy
+	9WSM6RW7MZ1E90z/Dbi5E0v+AaB8fuCFiRmST9dfSkAGpNHTmh5O
+X-Google-Smtp-Source: AGHT+IH5c7WgrhCB9CotAuzJ8seyTtsIngDYlxysxfxkISfiZE2jPcB5TxWPGt05hcFKtorjApobfA==
+X-Received: by 2002:a05:6000:888:b0:33e:2d7b:c5a8 with SMTP id cs8-20020a056000088800b0033e2d7bc5a8mr2650743wrb.17.1710860645248;
+        Tue, 19 Mar 2024 08:04:05 -0700 (PDT)
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id t4-20020a0560001a4400b0033e756ed840sm12491654wry.47.2024.03.19.08.04.03
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 08:04:04 -0700 (PDT)
+Message-ID: <4f2d5b6a-a1ce-4cdb-bb17-55f19e8898d5@gmail.com>
+Date: Tue, 19 Mar 2024 16:04:03 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BN0PR10MB5128:EE_|CYXPR10MB7897:EE_
-X-MS-Office365-Filtering-Correlation-Id: 2a3350a4-7f6c-491f-0af8-08dc4825a86a
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: 
-	idcgqO/PZgYt7CVcAho+o9619+rd8eRQO3XWRI05LSKrOXEg+skKtJtAlOBJWnONyuCYVzO/D7miksqt3Wm+O6Q2KuGdKErmXe2G74xAELXkgu/bXIOvteDZYkgECygIW1rIRfuZuLB4BxX7KIngYywtWIOHYWpQTGcQcwyIjK6MaqftbkQss3y68CXrC2rYd7JWBem+7XTJ1a6N9U7HNHHh8XLlarRjmEa57w0MvOhID8J+YAF+Dhswf4lRaSmNkeB0If5yztUtEyQ2Qx2GtecZBVxO/9DxVWJKktaBdR/bgHDz1bYIus7FPi/925zFOo8zz8r/N8D/bS/c0sgpccE2lHUzHZOdEB0yczvmUonwdXkF2GSes/l8rf/+XhFeoSUebHbC1yCYinkQ8It9craoXFkglDI4VOq+uu1pYAHJ7JOGJaAyYiopX7305pCHCq1g79kkOS8Obxgj9VN6xdp4AMsREmpqN/ztK7768lSVWOVjK3CMqEBARX13He1TyED9s0SvvJXuq0PbN0tGYdoqzpZ80c8XSQDgLhwAzM68DFVYkwrS9bf2n29lM6RvvTpNRPJiWRCMh8uTjtPZvGxEqqYctOkcC4kIHDGGCcCQ3GsQZYcUgddViXCLbzvcULsy18SKYBudthsfIYb5+Y8EDckXJG5p0KSxRWrxuik=
-X-Forefront-Antispam-Report: 
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BN0PR10MB5128.namprd10.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: 
-	=?us-ascii?Q?BzE+nqL4Nc2Ysfiw8rOxvkYI+/pWmVqPOAtUxZiW8whzRxKhX2lsfelqE2LK?=
- =?us-ascii?Q?Wp4p+ilhftNZOe3QAA+xKtS4P3lFCgPrWMbjdFeBvQx4CZLAJ+7t7A8gDVDi?=
- =?us-ascii?Q?LI5V/heOTsrdswANLUIxlY0asz+pfU+bWEhuWgopk7H2ca6CP9I0/pLPK264?=
- =?us-ascii?Q?d9q64yLgZivtLduD1+Ka3GiRpqoN/3411mnakJ3XE2VykYo1pIELhpo/q1uk?=
- =?us-ascii?Q?ILl9LznG9T+Zydqli+sTTFcwCVZbBJM5JwOfcqUfsyVN+K4Ghof9rpADo+nH?=
- =?us-ascii?Q?ghAli+O0VGBhlUuzt6TDrm/PLKAksVJAa/vWPHYfGBCUTXO2QWc4OW/k+29l?=
- =?us-ascii?Q?AS/Fh03lJ9aVySGSfEQbmlTA8gNpVIu0kVRdpzm8RShu9FkOnFq40cVW0Jri?=
- =?us-ascii?Q?eV4i2VL3E682D6yD35Ku9LwagP5etq6zMwgomQmpUmOUvcfvg3Nwgl3/kRPZ?=
- =?us-ascii?Q?7ZjtWYwLzY1tTI84ozLnywofHpjfeu7a+JhqBoOFnugjiaVqqmiv59t+8YpJ?=
- =?us-ascii?Q?XRX8mrStnKjxY4LvXvGPXgkJ5jsKlYXBNqLX8q9E0B9IPN7PTzet+hClhc11?=
- =?us-ascii?Q?XTxvlLSY3Wc3ZI2VerMoJtkE94FTdT2bwGOQaXEHJYhQzohETtwHSJwFDvrr?=
- =?us-ascii?Q?NtdFKtxk3F+kegsoTkycSToY3ZAjpGu+4W4FP2OGqGcTpoD5D0DMNvgZxe8R?=
- =?us-ascii?Q?mjJTrW0l8e40t9OXnXLvYXTg1Vr5KNau4iY4HbE+cakupn4VrQ3vnXiDrOzy?=
- =?us-ascii?Q?/QvpqEDjXWfptlDw4G1EQf2hC+P2NSXV36IyPCv88vRmXrfO10qj3Ra3WRbj?=
- =?us-ascii?Q?N1xcZZ2E+sQGivohf3eXh9TWsjjeqASuzQDlyj7R5qrsdSi2eeX3jkUfsia3?=
- =?us-ascii?Q?vzkQGeM1ROSjS42neKKwPUhLC4PA/ZEVynRhWtWaHtGLDvfz+o5mzg8z8TTi?=
- =?us-ascii?Q?c5UgcGfRwE8PdbZEw+OghAj/y9eBZEtjrmUv3bhdWCUhSf19VTLgKbOQwhSS?=
- =?us-ascii?Q?D7svr3I+XSk6ls8gyygGxgLjunzuihEApS25/+t9+4bQSKRSd8YM+1u2Ff6r?=
- =?us-ascii?Q?emj+pP+yUcDCnelxyo7YKe7Ol/znPcU/+SnnvcUWR6Bh8IkyA/sap9F7/mcn?=
- =?us-ascii?Q?V+BBYbssVeIgEFax8QazBI20bmYuZOphgXQdSHeWYkwdZBQTo/Rb6jyQrYRB?=
- =?us-ascii?Q?JtSI9VAumhwpEL3XalSchK3Sm/ulFemh2WvRig48cgepoJ32DzqIV//O2WOQ?=
- =?us-ascii?Q?qv7cgQLPUT73d9+HyWY5DmC2D8MxIHGXbeSRc5jwEGOwDbE8Wia7GhwMsrLV?=
- =?us-ascii?Q?mZaPpa30prtNsKvI5Uai1/mEBJAKEUokrLzdprwLkkUgOH97LDnchZpLV67+?=
- =?us-ascii?Q?WO+28nlkS8QVahlr7F7h6OFovHnvEdd7zjFuMPG70sAyHtXfqt2MR0WhaX1L?=
- =?us-ascii?Q?AKI6AMvJjxt2ZdPjcI7gXQS0hZirRWTHds8rFWyV3kB/0tYXTu8A4OBWY2cE?=
- =?us-ascii?Q?Fkjblg/6LAjecHxvtDqN+Hcc13Kk5vjKKkyiVhMbScDFYRN6pCMP++9WXdfh?=
- =?us-ascii?Q?dUMCRctMzN62Opngc+MDUsdG/s7phMzzfyWGAtyqCA8t3QPuTDf1FXRpF35Y?=
- =?us-ascii?Q?hQ=3D=3D?=
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-ExternalHop-MessageData-0: 
-	9JtpsRuYrcoH+tBaOTsPFNxvPM4sBzvYdQ5eg+vpdtmnLRQ3dE4k8Ebzt9XhzS/qWhtxiKX0bmbchKkPwrGN/kDRK5VQW3+qaavQb7B9KU5hiKQvaJnJwIIanuMM/Gmp4cF3/++fKW3EvSY/TZ5uTU7WtiDIE+xOsz61+zVhjcOaDwy8QF/+ZwaSO36fLGGtk/a3LLbfCxrDVjYmmrQTxz6xW9H2BBD9Ng8HPKsOuOBrgxS+2wWYNuHnEPak7m5bmlb2I36ghCT4p+ZglCok9QSJ06q+KwmgJ+kGEv0xO0nVr4QE2MHsK934vLk3wLv72k4v/R5hTh6Npju91G8lZE+c3onS0sAqJPhvXLf+Q9KvVoFUuVvunZ9L9SI3/4FY4qGhXq3WKaMuF9kyLrHRTKsV/WmCuKgCS9/7RCOJWWeAQJLjTNZ7rH1O07xiJUjFDfuj762uTlXat6PCaukE2XWoizEg7ylhTXQIQmtTlOhKMbS9NMg3eUcSAxZcQxkX74zo4WM9DeEMpzbw+ua5YV27DbfJLg44ejKcSKw3omArBpmCkxKa6XCfuDJxvDJNEszkd9N3EjcnbB5Xb1Mn4h7/e8SlCtfP6j7XACBRKiM=
-X-OriginatorOrg: oracle.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 2a3350a4-7f6c-491f-0af8-08dc4825a86a
-X-MS-Exchange-CrossTenant-AuthSource: BN0PR10MB5128.namprd10.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 15:02:55.7790
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 4e2c6054-71cb-48f1-bd6c-3a9705aca71b
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 9nnvHOi16hpnevuui90BYqHabe/5XiGq89eZ4ypT8opNZPLgzC7W+z5t7gIZ0RG6yg9hEo//KFiEsAgFhsYVsg==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CYXPR10MB7897
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-19_04,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 adultscore=0 suspectscore=0
- malwarescore=0 spamscore=0 mlxscore=0 phishscore=0 mlxlogscore=614
- bulkscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403190114
-X-Proofpoint-GUID: BDKexg7P745vIxZHhw7f_H3jpJYM9Xon
-X-Proofpoint-ORIG-GUID: BDKexg7P745vIxZHhw7f_H3jpJYM9Xon
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: refactor code to reuse system information
+Content-Language: en-US
+To: Alex Deucher <alexdeucher@gmail.com>
+Cc: Sunil Khatri <sunil.khatri@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Hawking Zhang <Hawking.Zhang@amd.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>, Lijo Lazar <lijo.lazar@amd.com>
+References: <20240319123208.851901-1-sunil.khatri@amd.com>
+ <CADnq5_PW2ZQ8sP9NcX=f5QhHM-Ne=EQA7k9BKwwwZbgsRyV4-A@mail.gmail.com>
+ <8e36fae9-6501-435e-a01c-93990bef57f7@gmail.com>
+ <CADnq5_PRXnBVtUVk+7iTHr43KGTbbfHxCwB1jZPo-sGCadY5Qw@mail.gmail.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <CADnq5_PRXnBVtUVk+7iTHr43KGTbbfHxCwB1jZPo-sGCadY5Qw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 12:48:04PM -0400, Jeff Layton wrote:
-> This adds basic infrastructure for handing GET_DIR_DELEGATION calls from
-> clients, including the decoders and encoders. For now, the server side
-> always just returns that the  delegation is GDDR_UNAVAIL (and that we
-> won't call back).
-> 
-> Signed-off-by: Jeff Layton <jlayton@kernel.org>
-> ---
-> Please consider this for v6.10. Eventually clients may start sending
-> this operation, and it's better if we can return GDD4_UNAVAIL instead of
-> having to abort the whole compound.
+Am 19.03.24 um 15:59 schrieb Alex Deucher:
+> On Tue, Mar 19, 2024 at 10:56 AM Christian König
+> <ckoenig.leichtzumerken@gmail.com> wrote:
+>> Am 19.03.24 um 15:26 schrieb Alex Deucher:
+>>> On Tue, Mar 19, 2024 at 8:32 AM Sunil Khatri <sunil.khatri@amd.com> wrote:
+>>>> Refactor the code so debugfs and devcoredump can reuse
+>>>> the common information and avoid unnecessary copy of it.
+>>>>
+>>>> created a new file which would be the right place to
+>>>> hold functions which will be used between sysfs, debugfs
+>>>> and devcoredump.
+>>>>
+>>>> Cc: Christian König <christian.koenig@amd.com>
+>>>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>>>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>>>> ---
+>>>>    drivers/gpu/drm/amd/amdgpu/Makefile         |   2 +-
+>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu.h         |   1 +
+>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c | 151 ++++++++++++++++++++
+>>>>    drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c     | 118 +--------------
+>>>>    4 files changed, 157 insertions(+), 115 deletions(-)
+>>>>    create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>>>>
+>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
+>>>> index 4536c8ad0e11..05d34f4b18f5 100644
+>>>> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
+>>>> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+>>>> @@ -80,7 +80,7 @@ amdgpu-y += amdgpu_device.o amdgpu_doorbell_mgr.o amdgpu_kms.o \
+>>>>           amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
+>>>>           amdgpu_fw_attestation.o amdgpu_securedisplay.o \
+>>>>           amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
+>>>> -       amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o
+>>>> +       amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o amdgpu_devinfo.o
+>>>>
+>>>>    amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
+>>>>
+>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>>>> index 9c62552bec34..0267870aa9b1 100644
+>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>>>> @@ -1609,4 +1609,5 @@ extern const struct attribute_group amdgpu_vram_mgr_attr_group;
+>>>>    extern const struct attribute_group amdgpu_gtt_mgr_attr_group;
+>>>>    extern const struct attribute_group amdgpu_flash_attr_group;
+>>>>
+>>>> +int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info);
+>>>>    #endif
+>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>>>> new file mode 100644
+>>>> index 000000000000..d2c15a1dcb0d
+>>>> --- /dev/null
+>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>>>> @@ -0,0 +1,151 @@
+>>>> +// SPDX-License-Identifier: MIT
+>>>> +/*
+>>>> + * Copyright 2024 Advanced Micro Devices, Inc.
+>>>> + *
+>>>> + * Permission is hereby granted, free of charge, to any person obtaining a
+>>>> + * copy of this software and associated documentation files (the "Software"),
+>>>> + * to deal in the Software without restriction, including without limitation
+>>>> + * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+>>>> + * and/or sell copies of the Software, and to permit persons to whom the
+>>>> + * Software is furnished to do so, subject to the following conditions:
+>>>> + *
+>>>> + * The above copyright notice and this permission notice shall be included in
+>>>> + * all copies or substantial portions of the Software.
+>>>> + *
+>>>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+>>>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+>>>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+>>>> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+>>>> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+>>>> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+>>>> + * OTHER DEALINGS IN THE SOFTWARE.
+>>>> + *
+>>>> + */
+>>>> +
+>>>> +#include "amdgpu.h"
+>>>> +#include "amd_pcie.h"
+>>>> +
+>>>> +#include <drm/amdgpu_drm.h>
+>>>> +
+>>>> +int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info)
+>>> We can probably keep this in amdgpu_kms.c unless that file is getting
+>>> too big.  I don't think it warrants a new file at this point.  If you
+>>> do keep it in amdgpu_kms.c, I'd recommend renaming it to something
+>>> like amdgpu_kms_device_info() to keep the naming conventions.
+>> We should not be using this for anything new in the first place.
+>>
+>> A whole bunch of the stuff inside the devinfo structure has been
+>> deprecated because we found that putting everything into one structure
+>> was a bad idea.
+> It's a convenient way to collect a lot of useful information that we
+> want in the core dump.  Plus it's not going anywhere because we need
+> to keep compatibility in the IOCTL.
 
-Applied to my private "for 6.10" tree, which will become nfsd-next
-once the v6.9 merge window closes.
+Yeah and exactly that is what I'm strictly against. The devinfo wasn't 
+used for new stuff because we found that it is way to inflexible.
 
+That's why we have multiple separate IOCTLs for the memory and firmware 
+information for example.
 
-> ---
->  fs/nfsd/nfs4proc.c   | 30 +++++++++++++++++
->  fs/nfsd/nfs4xdr.c    | 91 ++++++++++++++++++++++++++++++++++++++++++++++++++--
->  fs/nfsd/xdr4.h       | 19 +++++++++++
->  include/linux/nfs4.h |  6 ++++
->  4 files changed, 144 insertions(+), 2 deletions(-)
-> 
-> diff --git a/fs/nfsd/nfs4proc.c b/fs/nfsd/nfs4proc.c
-> index 2927b1263f08..46b3d99c2786 100644
-> --- a/fs/nfsd/nfs4proc.c
-> +++ b/fs/nfsd/nfs4proc.c
-> @@ -2154,6 +2154,18 @@ nfsd4_verify(struct svc_rqst *rqstp, struct nfsd4_compound_state *cstate,
->  	return status == nfserr_same ? nfs_ok : status;
->  }
->  
-> +static __be32
-> +nfsd4_get_dir_delegation(struct svc_rqst *rqstp,
-> +			 struct nfsd4_compound_state *cstate,
-> +			 union nfsd4_op_u *u)
-> +{
-> +	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
-> +
-> +	/* FIXME: implement directory delegations */
-> +	gdd->gddrnf_status = GDD4_UNAVAIL;
-> +	return nfs_ok;
-> +}
-> +
->  #ifdef CONFIG_NFSD_PNFS
->  static const struct nfsd4_layout_ops *
->  nfsd4_layout_verify(struct svc_export *exp, unsigned int layout_type)
-> @@ -3082,6 +3094,18 @@ static u32 nfsd4_copy_notify_rsize(const struct svc_rqst *rqstp,
->  		* sizeof(__be32);
->  }
->  
-> +static u32 nfsd4_get_dir_delegation_rsize(const struct svc_rqst *rqstp,
-> +					  const struct nfsd4_op *op)
-> +{
-> +	return (op_encode_hdr_size +
-> +		1 /* gddr_status */ +
-> +		op_encode_verifier_maxsz +
-> +		op_encode_stateid_maxsz +
-> +		2 /* gddr_notification */ +
-> +		2 /* gddr_child_attributes */ +
-> +		2 /* gddr_dir_attributes */);
-> +}
-> +
->  #ifdef CONFIG_NFSD_PNFS
->  static u32 nfsd4_getdeviceinfo_rsize(const struct svc_rqst *rqstp,
->  				     const struct nfsd4_op *op)
-> @@ -3470,6 +3494,12 @@ static const struct nfsd4_operation nfsd4_ops[] = {
->  		.op_get_currentstateid = nfsd4_get_freestateid,
->  		.op_rsize_bop = nfsd4_only_status_rsize,
->  	},
-> +	[OP_GET_DIR_DELEGATION] = {
-> +		.op_func = nfsd4_get_dir_delegation,
-> +		.op_flags = OP_MODIFIES_SOMETHING,
-> +		.op_name = "OP_GET_DIR_DELEGATION",
-> +		.op_rsize_bop = nfsd4_get_dir_delegation_rsize,
-> +	},
->  #ifdef CONFIG_NFSD_PNFS
->  	[OP_GETDEVICEINFO] = {
->  		.op_func = nfsd4_getdeviceinfo,
-> diff --git a/fs/nfsd/nfs4xdr.c b/fs/nfsd/nfs4xdr.c
-> index fac938f563ad..369b85e42440 100644
-> --- a/fs/nfsd/nfs4xdr.c
-> +++ b/fs/nfsd/nfs4xdr.c
-> @@ -1732,6 +1732,40 @@ nfsd4_decode_free_stateid(struct nfsd4_compoundargs *argp,
->  	return nfsd4_decode_stateid4(argp, &free_stateid->fr_stateid);
->  }
->  
-> +static __be32
-> +nfsd4_decode_get_dir_delegation(struct nfsd4_compoundargs *argp,
-> +		union nfsd4_op_u *u)
-> +{
-> +	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
-> +	__be32 status;
-> +
-> +	memset(gdd, 0, sizeof(*gdd));
-> +
-> +	if (xdr_stream_decode_bool(argp->xdr, &gdd->gdda_signal_deleg_avail) < 0)
-> +		return nfserr_bad_xdr;
-> +
-> +	status = nfsd4_decode_bitmap4(argp, gdd->gdda_notification_types,
-> +				      ARRAY_SIZE(gdd->gdda_notification_types));
-> +	if (status)
-> +		return status;
-> +
-> +	status = nfsd4_decode_nfstime4(argp, &gdd->gdda_child_attr_delay);
-> +	if (status)
-> +		return status;
-> +
-> +	status = nfsd4_decode_nfstime4(argp, &gdd->gdda_dir_attr_delay);
-> +	if (status)
-> +		return status;
-> +
-> +	status = nfsd4_decode_bitmap4(argp, gdd->gdda_child_attributes,
-> +					ARRAY_SIZE(gdd->gdda_child_attributes));
-> +	if (status)
-> +		return status;
-> +
-> +	return nfsd4_decode_bitmap4(argp, gdd->gdda_dir_attributes,
-> +					ARRAY_SIZE(gdd->gdda_dir_attributes));
-> +}
-> +
->  #ifdef CONFIG_NFSD_PNFS
->  static __be32
->  nfsd4_decode_getdeviceinfo(struct nfsd4_compoundargs *argp,
-> @@ -2370,7 +2404,7 @@ static const nfsd4_dec nfsd4_dec_ops[] = {
->  	[OP_CREATE_SESSION]	= nfsd4_decode_create_session,
->  	[OP_DESTROY_SESSION]	= nfsd4_decode_destroy_session,
->  	[OP_FREE_STATEID]	= nfsd4_decode_free_stateid,
-> -	[OP_GET_DIR_DELEGATION]	= nfsd4_decode_notsupp,
-> +	[OP_GET_DIR_DELEGATION]	= nfsd4_decode_get_dir_delegation,
->  #ifdef CONFIG_NFSD_PNFS
->  	[OP_GETDEVICEINFO]	= nfsd4_decode_getdeviceinfo,
->  	[OP_GETDEVICELIST]	= nfsd4_decode_notsupp,
-> @@ -5002,6 +5036,59 @@ nfsd4_encode_device_addr4(struct xdr_stream *xdr,
->  	return nfserr_toosmall;
->  }
->  
-> +static __be32
-> +nfsd4_encode_get_dir_delegation(struct nfsd4_compoundres *resp, __be32 nfserr,
-> +				union nfsd4_op_u *u)
-> +{
-> +	struct nfsd4_get_dir_delegation *gdd = &u->get_dir_delegation;
-> +	struct xdr_stream *xdr = resp->xdr;
-> +	__be32 status = nfserr_resource;
-> +
-> +	switch(gdd->gddrnf_status) {
-> +	case GDD4_OK:
-> +		if (xdr_stream_encode_u32(xdr, GDD4_OK) != XDR_UNIT)
-> +			break;
-> +
-> +		status = nfsd4_encode_verifier4(xdr, &gdd->gddr_cookieverf);
-> +		if (status)
-> +			break;
-> +
-> +		status = nfsd4_encode_stateid4(xdr, &gdd->gddr_stateid);
-> +		if (status)
-> +			break;
-> +
-> +		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_notification[0], 0, 0);
-> +		if (status)
-> +			break;
-> +
-> +		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_child_attributes[0],
-> +						   gdd->gddr_child_attributes[1],
-> +						   gdd->gddr_child_attributes[2]);
-> +		if (status)
-> +			break;
-> +
-> +		status = nfsd4_encode_bitmap4(xdr, gdd->gddr_dir_attributes[0],
-> +						   gdd->gddr_dir_attributes[1],
-> +						   gdd->gddr_dir_attributes[2]);
-> +		break;
-> +	default:
-> +		/*
-> +		 * If we don't recognize the gddrnf_status value, just treat it
-> +		 * like unavail + no notification, but print a warning too.
-> +		 */
-> +		pr_warn("nfsd: bad gddrnf_status (%u)\n", gdd->gddrnf_status);
-> +		gdd->gddrnf_will_signal_deleg_avail = 0;
-> +		fallthrough;
-> +	case GDD4_UNAVAIL:
-> +		if (xdr_stream_encode_u32(xdr, GDD4_UNAVAIL) != XDR_UNIT)
-> +			break;
-> +
-> +		status = nfsd4_encode_bool(xdr, gdd->gddrnf_will_signal_deleg_avail);
-> +		break;
-> +	}
-> +	return status;
-> +}
-> +
->  static __be32
->  nfsd4_encode_getdeviceinfo(struct nfsd4_compoundres *resp, __be32 nfserr,
->  		union nfsd4_op_u *u)
-> @@ -5580,7 +5667,7 @@ static const nfsd4_enc nfsd4_enc_ops[] = {
->  	[OP_CREATE_SESSION]	= nfsd4_encode_create_session,
->  	[OP_DESTROY_SESSION]	= nfsd4_encode_noop,
->  	[OP_FREE_STATEID]	= nfsd4_encode_noop,
-> -	[OP_GET_DIR_DELEGATION]	= nfsd4_encode_noop,
-> +	[OP_GET_DIR_DELEGATION]	= nfsd4_encode_get_dir_delegation,
->  #ifdef CONFIG_NFSD_PNFS
->  	[OP_GETDEVICEINFO]	= nfsd4_encode_getdeviceinfo,
->  	[OP_GETDEVICELIST]	= nfsd4_encode_noop,
-> diff --git a/fs/nfsd/xdr4.h b/fs/nfsd/xdr4.h
-> index 415516c1b27e..446e72b0385e 100644
-> --- a/fs/nfsd/xdr4.h
-> +++ b/fs/nfsd/xdr4.h
-> @@ -518,6 +518,24 @@ struct nfsd4_free_stateid {
->  	stateid_t	fr_stateid;         /* request */
->  };
->  
-> +struct nfsd4_get_dir_delegation {
-> +	/* request */
-> +	u32			gdda_signal_deleg_avail;
-> +	u32			gdda_notification_types[1];
-> +	struct timespec64	gdda_child_attr_delay;
-> +	struct timespec64	gdda_dir_attr_delay;
-> +	u32			gdda_child_attributes[3];
-> +	u32			gdda_dir_attributes[3];
-> +	/* response */
-> +	u32			gddrnf_status;
-> +	nfs4_verifier		gddr_cookieverf;
-> +	stateid_t		gddr_stateid;
-> +	u32			gddr_notification[1];
-> +	u32			gddr_child_attributes[3];
-> +	u32			gddr_dir_attributes[3];
-> +	bool			gddrnf_will_signal_deleg_avail;
-> +};
-> +
->  /* also used for NVERIFY */
->  struct nfsd4_verify {
->  	u32		ve_bmval[3];        /* request */
-> @@ -797,6 +815,7 @@ struct nfsd4_op {
->  		struct nfsd4_reclaim_complete	reclaim_complete;
->  		struct nfsd4_test_stateid	test_stateid;
->  		struct nfsd4_free_stateid	free_stateid;
-> +		struct nfsd4_get_dir_delegation	get_dir_delegation;
->  		struct nfsd4_getdeviceinfo	getdeviceinfo;
->  		struct nfsd4_layoutget		layoutget;
->  		struct nfsd4_layoutcommit	layoutcommit;
-> diff --git a/include/linux/nfs4.h b/include/linux/nfs4.h
-> index ef8d2d618d5b..0d896ce296ce 100644
-> --- a/include/linux/nfs4.h
-> +++ b/include/linux/nfs4.h
-> @@ -701,6 +701,12 @@ enum state_protect_how4 {
->  	SP4_SSV		= 2
->  };
->  
-> +/* GET_DIR_DELEGATION non-fatal status codes */
-> +enum gddrnf4_status {
-> +	GDD4_OK		= 0,
-> +	GDD4_UNAVAIL	= 1
-> +};
-> +
->  enum pnfs_layouttype {
->  	LAYOUT_NFSV4_1_FILES  = 1,
->  	LAYOUT_OSD2_OBJECTS = 2,
-> 
-> ---
-> base-commit: c442a42363b2ce5c3eb2b0ff1e052ee956f0a29f
-> change-id: 20240318-nfs-gdd-trivial-19b6ca653841
-> 
-> Best regards,
-> -- 
-> Jeff Layton <jlayton@kernel.org>
-> 
+We should really *not* reuse that for the device core dumping.
 
--- 
-Chuck Lever
+Rather just use the same information from the different IPs and 
+subsystems directly. E.g. add a function to the VM, GFX etc for printing 
+out devcoredump infos.
+
+Christian.
+
+>
+> Alex
+>
+>> Regards,
+>> Christian.
+>>
+>>>> +{
+>>>> +       int ret;
+>>>> +       uint64_t vm_size;
+>>>> +       uint32_t pcie_gen_mask;
+>>>> +
+>>>> +       if (dev_info == NULL)
+>>>> +               return -EINVAL;
+>>>> +
+>>>> +       dev_info->device_id = adev->pdev->device;
+>>>> +       dev_info->chip_rev = adev->rev_id;
+>>>> +       dev_info->external_rev = adev->external_rev_id;
+>>>> +       dev_info->pci_rev = adev->pdev->revision;
+>>>> +       dev_info->family = adev->family;
+>>>> +       dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
+>>>> +       dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
+>>>> +       /* return all clocks in KHz */
+>>>> +       dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
+>>>> +       if (adev->pm.dpm_enabled) {
+>>>> +               dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
+>>>> +               dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
+>>>> +               dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
+>>>> +               dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
+>>>> +       } else {
+>>>> +               dev_info->max_engine_clock =
+>>>> +                       dev_info->min_engine_clock =
+>>>> +                               adev->clock.default_sclk * 10;
+>>>> +               dev_info->max_memory_clock =
+>>>> +                       dev_info->min_memory_clock =
+>>>> +                               adev->clock.default_mclk * 10;
+>>>> +               }
+>>>> +       dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
+>>>> +       dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
+>>>> +               adev->gfx.config.max_shader_engines;
+>>>> +       dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
+>>>> +       dev_info->ids_flags = 0;
+>>>> +       if (adev->flags & AMD_IS_APU)
+>>>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
+>>>> +       if (adev->gfx.mcbp)
+>>>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
+>>>> +       if (amdgpu_is_tmz(adev))
+>>>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
+>>>> +       if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
+>>>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
+>>>> +
+>>>> +       vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
+>>>> +       vm_size -= AMDGPU_VA_RESERVED_TOP;
+>>>> +
+>>>> +       /* Older VCE FW versions are buggy and can handle only 40bits */
+>>>> +       if (adev->vce.fw_version && adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
+>>>> +               vm_size = min(vm_size, 1ULL << 40);
+>>>> +
+>>>> +       dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
+>>>> +       dev_info->virtual_address_max = min(vm_size, AMDGPU_GMC_HOLE_START);
+>>>> +
+>>>> +       if (vm_size > AMDGPU_GMC_HOLE_START) {
+>>>> +               dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+>>>> +               dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
+>>>> +       }
+>>>> +       dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>>>> +       dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+>>>> +       dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>>>> +       dev_info->cu_active_number = adev->gfx.cu_info.number;
+>>>> +       dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+>>>> +       dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+>>>> +       memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
+>>>> +              sizeof(adev->gfx.cu_info.ao_cu_bitmap));
+>>>> +       memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
+>>>> +              sizeof(dev_info->cu_bitmap));
+>>>> +       dev_info->vram_type = adev->gmc.vram_type;
+>>>> +       dev_info->vram_bit_width = adev->gmc.vram_width;
+>>>> +       dev_info->vce_harvest_config = adev->vce.harvest_config;
+>>>> +       dev_info->gc_double_offchip_lds_buf =
+>>>> +               adev->gfx.config.double_offchip_lds_buf;
+>>>> +       dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
+>>>> +       dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
+>>>> +       dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
+>>>> +       dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
+>>>> +       dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
+>>>> +       dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
+>>>> +       dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
+>>>> +
+>>>> +       if (adev->family >= AMDGPU_FAMILY_NV)
+>>>> +               dev_info->pa_sc_tile_steering_override =
+>>>> +                       adev->gfx.config.pa_sc_tile_steering_override;
+>>>> +
+>>>> +       dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
+>>>> +
+>>>> +       /* Combine the chip gen mask with the platform (CPU/mobo) mask. */
+>>>> +       pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
+>>>> +       dev_info->pcie_gen = fls(pcie_gen_mask);
+>>>> +       dev_info->pcie_num_lanes =
+>>>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
+>>>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
+>>>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
+>>>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
+>>>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
+>>>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
+>>>> +
+>>>> +       dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
+>>>> +       dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
+>>>> +       dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
+>>>> +       dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
+>>>> +       dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
+>>>> +                                   adev->gfx.config.gc_gl1c_per_sa;
+>>>> +       dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
+>>>> +       dev_info->mall_size = adev->gmc.mall_size;
+>>>> +
+>>>> +
+>>>> +       if (adev->gfx.funcs->get_gfx_shadow_info) {
+>>>> +               struct amdgpu_gfx_shadow_info shadow_info;
+>>>> +
+>>>> +               ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
+>>>> +               if (!ret) {
+>>>> +                       dev_info->shadow_size = shadow_info.shadow_size;
+>>>> +                       dev_info->shadow_alignment = shadow_info.shadow_alignment;
+>>>> +                       dev_info->csa_size = shadow_info.csa_size;
+>>>> +                       dev_info->csa_alignment = shadow_info.csa_alignment;
+>>>> +               }
+>>>> +       }
+>>>> +       return ret;
+>>>> +}
+>>> As noted by Lijo, this should probably be a void function since we
+>>> want to populate as much information as we can and we can't break the
+>>> IOCTL interface.
+>>>
+>>> Alex
+>>>
+>>>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+>>>> index a66d47865e3b..24f775c68a51 100644
+>>>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+>>>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+>>>> @@ -850,125 +850,15 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+>>>>           }
+>>>>           case AMDGPU_INFO_DEV_INFO: {
+>>>>                   struct drm_amdgpu_info_device *dev_info;
+>>>> -               uint64_t vm_size;
+>>>> -               uint32_t pcie_gen_mask;
+>>>>
+>>>>                   dev_info = kzalloc(sizeof(*dev_info), GFP_KERNEL);
+>>>>                   if (!dev_info)
+>>>>                           return -ENOMEM;
+>>>>
+>>>> -               dev_info->device_id = adev->pdev->device;
+>>>> -               dev_info->chip_rev = adev->rev_id;
+>>>> -               dev_info->external_rev = adev->external_rev_id;
+>>>> -               dev_info->pci_rev = adev->pdev->revision;
+>>>> -               dev_info->family = adev->family;
+>>>> -               dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
+>>>> -               dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
+>>>> -               /* return all clocks in KHz */
+>>>> -               dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
+>>>> -               if (adev->pm.dpm_enabled) {
+>>>> -                       dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
+>>>> -                       dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
+>>>> -                       dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
+>>>> -                       dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
+>>>> -               } else {
+>>>> -                       dev_info->max_engine_clock =
+>>>> -                               dev_info->min_engine_clock =
+>>>> -                                       adev->clock.default_sclk * 10;
+>>>> -                       dev_info->max_memory_clock =
+>>>> -                               dev_info->min_memory_clock =
+>>>> -                                       adev->clock.default_mclk * 10;
+>>>> -               }
+>>>> -               dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
+>>>> -               dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
+>>>> -                       adev->gfx.config.max_shader_engines;
+>>>> -               dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
+>>>> -               dev_info->ids_flags = 0;
+>>>> -               if (adev->flags & AMD_IS_APU)
+>>>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
+>>>> -               if (adev->gfx.mcbp)
+>>>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
+>>>> -               if (amdgpu_is_tmz(adev))
+>>>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
+>>>> -               if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
+>>>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
+>>>> -
+>>>> -               vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
+>>>> -               vm_size -= AMDGPU_VA_RESERVED_TOP;
+>>>> -
+>>>> -               /* Older VCE FW versions are buggy and can handle only 40bits */
+>>>> -               if (adev->vce.fw_version &&
+>>>> -                   adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
+>>>> -                       vm_size = min(vm_size, 1ULL << 40);
+>>>> -
+>>>> -               dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
+>>>> -               dev_info->virtual_address_max =
+>>>> -                       min(vm_size, AMDGPU_GMC_HOLE_START);
+>>>> -
+>>>> -               if (vm_size > AMDGPU_GMC_HOLE_START) {
+>>>> -                       dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+>>>> -                       dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
+>>>> -               }
+>>>> -               dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>>>> -               dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+>>>> -               dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>>>> -               dev_info->cu_active_number = adev->gfx.cu_info.number;
+>>>> -               dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+>>>> -               dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+>>>> -               memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
+>>>> -                      sizeof(adev->gfx.cu_info.ao_cu_bitmap));
+>>>> -               memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
+>>>> -                      sizeof(dev_info->cu_bitmap));
+>>>> -               dev_info->vram_type = adev->gmc.vram_type;
+>>>> -               dev_info->vram_bit_width = adev->gmc.vram_width;
+>>>> -               dev_info->vce_harvest_config = adev->vce.harvest_config;
+>>>> -               dev_info->gc_double_offchip_lds_buf =
+>>>> -                       adev->gfx.config.double_offchip_lds_buf;
+>>>> -               dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
+>>>> -               dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
+>>>> -               dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
+>>>> -               dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
+>>>> -               dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
+>>>> -               dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
+>>>> -               dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
+>>>> -
+>>>> -               if (adev->family >= AMDGPU_FAMILY_NV)
+>>>> -                       dev_info->pa_sc_tile_steering_override =
+>>>> -                               adev->gfx.config.pa_sc_tile_steering_override;
+>>>> -
+>>>> -               dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
+>>>> -
+>>>> -               /* Combine the chip gen mask with the platform (CPU/mobo) mask. */
+>>>> -               pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
+>>>> -               dev_info->pcie_gen = fls(pcie_gen_mask);
+>>>> -               dev_info->pcie_num_lanes =
+>>>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
+>>>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
+>>>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
+>>>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
+>>>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
+>>>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
+>>>> -
+>>>> -               dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
+>>>> -               dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
+>>>> -               dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
+>>>> -               dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
+>>>> -               dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
+>>>> -                                           adev->gfx.config.gc_gl1c_per_sa;
+>>>> -               dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
+>>>> -               dev_info->mall_size = adev->gmc.mall_size;
+>>>> -
+>>>> -
+>>>> -               if (adev->gfx.funcs->get_gfx_shadow_info) {
+>>>> -                       struct amdgpu_gfx_shadow_info shadow_info;
+>>>> -
+>>>> -                       ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
+>>>> -                       if (!ret) {
+>>>> -                               dev_info->shadow_size = shadow_info.shadow_size;
+>>>> -                               dev_info->shadow_alignment = shadow_info.shadow_alignment;
+>>>> -                               dev_info->csa_size = shadow_info.csa_size;
+>>>> -                               dev_info->csa_alignment = shadow_info.csa_alignment;
+>>>> -                       }
+>>>> +               ret = amdgpu_device_info(adev, dev_info);
+>>>> +               if (!ret) {
+>>>> +                       kfree(dev_info);
+>>>> +                       return ret;
+>>>>                   }
+>>>>
+>>>>                   ret = copy_to_user(out, dev_info,
+>>>> --
+>>>> 2.34.1
+>>>>
+
 
