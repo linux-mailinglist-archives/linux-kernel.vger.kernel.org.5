@@ -1,178 +1,273 @@
-Return-Path: <linux-kernel+bounces-107328-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107332-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F400587FB1F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:52:29 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F1E4387FB28
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:53:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 49C69B2184C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:52:27 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 227E21C20BFD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:53:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B286E7D3F8;
-	Tue, 19 Mar 2024 09:52:19 +0000 (UTC)
-Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 41CED7D417;
+	Tue, 19 Mar 2024 09:53:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OGizSRYd"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A2B62548F9
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:52:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29A127D083;
+	Tue, 19 Mar 2024 09:53:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710841939; cv=none; b=PfqH24/PKSuYaf3BOny1Fe6gYpCL93ZJh0oLP8k+cjcfQHtouRj0+2VV3QN4Z8/miGCmM/d1A7/SjIrpRiYwZRJu/P3yrPn8vciMxO2FT0XcWR8Ex1FpSh1FkKfTGSgtNax22L+rJyN0+oUFy1/SPVGcejMN68Vhb9iExR5Z4Qk=
+	t=1710842009; cv=none; b=X101GlxGEzS86pcPvQ29m+3PTOZbSfTJWbYqPjD0NiaalDf9bwYtPwZGpfRq9+trVu6a4BeKDCnk4To5RKIBAaE4tMVG8hcUHWbr3qCcsXUvwQcM2iwvrcN9RqqJOBn/Kk8l5bmnBlJyu/bYLwxdLhlqQ8SpYe9hRKB9yUbOhh8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710841939; c=relaxed/simple;
-	bh=k9ED3JABZ9/AicJU9OpDJZpqgPKd5rQqK4qkYcWgpbM=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=R6FrtuTS40FT4eOcCqy4LMJdoaQuBgxc3ZRXL1RcEXLJLGCUsiZMX378+AeB76uT0axp0BGxdM5Sp9nmzA0bOIR33e5h5I0Sn1e0d1wz278rHQRVRt6we1rvrcM7gJEQcAlHzkSRMDK2KENpI3HLAZDrMJa3BwirIdzdqpLT9Eo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3684e275874so2303195ab.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:52:17 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710841937; x=1711446737;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=wgksWobu6Y4B5YtXN/SFJIBHO1gc/F7nv1xG78u++sk=;
-        b=eDEAG9CV7h3zzQt6W0IKumSJiJ59ZLiIVfZGnb1qN3sXDzvouedsoNlH1kKgjC0UDA
-         gZ7u2LzUMRTWJBeX0l6LvN3/R+bdvF8GaVb41xz+wMF4aJZRpQPWuFeupAjxWU/hUjG2
-         FYYq5kojw2sViidAwq11LZb0gIANEOaKpvYDv61vZl1V8Kbqc36SHKbQBdEgahj99aIz
-         hRILAjGUTy6eVw2WCYxlTsZW1WanCPU2ZQ3EMU6IIxvatYKyM6bx1ZcS7y8FzEgzFhwk
-         0l1cWLeHRzvYgDurQQ/k/pujCQBVVPuFks0BANLVQSfjakRMkQzVK31zZ3IeV8XO6xRV
-         jumA==
-X-Forwarded-Encrypted: i=1; AJvYcCXOvfAGFgRYsggYH0DhoVb5zJXHOvgp9ON0e8chWc1zgJK4PO6BSU8IZxiV88fer8DPHw3lthU8wp9X/R6xYpUhPUhCeOLcYdAvmXac
-X-Gm-Message-State: AOJu0YysHi2vqzUIV05kWG60fJDx9ftETWfsaPRsCkfxYRkh5+ySJxcX
-	MvHw+FY9hkymXGuf3eCkiJ8fDkQ8JycmB8xUXvuxxn6onia2skRH8T1Wf/9AwJzKOfmC1YL7gxB
-	BUF8GOvc6hRQQodogKI4LRepkouRQH3wEZXEpHQDX+XdO3/L/zlDFp6o=
-X-Google-Smtp-Source: AGHT+IG/wGs4aWlyM2S68c62kL+A3QQGcB9D+htUYVkg+wDZ/gF2SIPxTnc0Tf8OPyAnTxwviiqLVBAUZlbJ0S22lA0F8J5qX2Im
+	s=arc-20240116; t=1710842009; c=relaxed/simple;
+	bh=ai0U2zh0od3mIZWy2eSqdoVTkokovEgyzUxpISIiZ7Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=rXvZ8vxFlmBQD64RYl7EYJBG/tnvnYMHxdzpaiy6+p1rFvGRRoaS6Q4ZaKPs11stygWqxvZjVZtBDqgwfW2+7DD8elUQBR5rTHgTY1LSH8z5Y+F+eBzWeG3djGhTzXZ8ZiFl76BI22CgYucsBVyuosuHNJHNVYaU1B8GTRciFFo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OGizSRYd; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 320E8C43390;
+	Tue, 19 Mar 2024 09:53:16 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710842008;
+	bh=ai0U2zh0od3mIZWy2eSqdoVTkokovEgyzUxpISIiZ7Q=;
+	h=From:To:Cc:Subject:Date:From;
+	b=OGizSRYd4Dt2lxl4soBg5WoJ+adA/2jX4E2a5JOsSA9V9OZ4is/tXnnNlo9Y1tHQW
+	 K/vGAF2iFcOVfkpMeKFF3u6/RwBV0G1Gg+PYPkO4miEuzIcQZ2seSd2b1Hx20LKhsj
+	 CvEv99RJ4UUkgEGDABwEOgFmHMi5TgA3IaEdP/hv1iq1jc7f2zJ9zs8Jc11Y/oQgTf
+	 ABirlSDmm6oOoYx83oht/L71/YC1NdESe8b3jgviAUCn3gHX6AUupeH9SUVbNw0MK+
+	 ysie6fH0jEz65NWHe2vS1tE3p4hK7iT+/ysrJ7hXzy6tuOr6AVCJ2pvZr/Y5ylbTHP
+	 AadAssOLVrSEw==
+From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
+To: linux-serial@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org,
+	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
+	Al Cooper <alcooperx@gmail.com>,
+	Alexander Shiyan <shc_work@mail.ru>,
+	Alexandre Belloni <alexandre.belloni@bootlin.com>,
+	Alexandre Torgue <alexandre.torgue@foss.st.com>,
+	Alim Akhtar <alim.akhtar@samsung.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	"Aneesh Kumar K.V" <aneesh.kumar@kernel.org>,
+	AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
+	Baolin Wang <baolin.wang@linux.alibaba.com>,
+	Baruch Siach <baruch@tkos.co.il>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Claudiu Beznea <claudiu.beznea@tuxon.dev>,
+	"David S. Miller" <davem@davemloft.net>,
+	Fabio Estevam <festevam@gmail.com>,
+	Hammer Hsieh <hammerh0314@gmail.com>,
+	=?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
+	Christophe Leroy <christophe.leroy@csgroup.eu>,
+	Chunyan Zhang <zhang.lyra@gmail.com>,
+	Jerome Brunet <jbrunet@baylibre.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Kevin Hilman <khilman@baylibre.com>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+	Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>,
+	Laxman Dewangan <ldewangan@nvidia.com>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-arm-msm@vger.kernel.org,
+	"Maciej W. Rozycki" <macro@orcam.me.uk>,
+	Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>,
+	Martin Blumenstingl <martin.blumenstingl@googlemail.com>,
+	Matthias Brugger <matthias.bgg@gmail.com>,
+	Maxime Coquelin <mcoquelin.stm32@gmail.com>,
+	Michael Ellerman <mpe@ellerman.id.au>,
+	Michal Simek <michal.simek@amd.com>,
+	"Naveen N. Rao" <naveen.n.rao@linux.ibm.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Nicolas Ferre <nicolas.ferre@microchip.com>,
+	Nicholas Piggin <npiggin@gmail.com>,
+	Orson Zhai <orsonzhai@gmail.com>,
+	=?UTF-8?q?Pali=20Roh=C3=A1r?= <pali@kernel.org>,
+	Patrice Chotard <patrice.chotard@foss.st.com>,
+	Peter Korsgaard <jacmet@sunsite.dk>,
+	Richard Genoud <richard.genoud@gmail.com>,
+	Russell King <linux@armlinux.org.uk>,
+	Sascha Hauer <s.hauer@pengutronix.de>,
+	Shawn Guo <shawnguo@kernel.org>,
+	Stefani Seibold <stefani@seibold.net>,
+	Sumit Semwal <sumit.semwal@linaro.org>,
+	Taichi Sugaya <sugaya.taichi@socionext.com>,
+	Takao Orito <orito.takao@socionext.com>,
+	Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Timur Tabi <timur@kernel.org>,
+	Vineet Gupta <vgupta@kernel.org>
+Subject: [RFT 00/15] tty: serial: switch from circ_buf to kfifo
+Date: Tue, 19 Mar 2024 10:52:59 +0100
+Message-ID: <20240319095315.27624-1-jirislaby@kernel.org>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:3601:0:b0:368:4f35:92d8 with SMTP id
- d1-20020a923601000000b003684f3592d8mr51852ila.0.1710841936832; Tue, 19 Mar
- 2024 02:52:16 -0700 (PDT)
-Date: Tue, 19 Mar 2024 02:52:16 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e97f090614006d76@google.com>
-Subject: [syzbot] [mm?] possible deadlock in move_pages
-From: syzbot <syzbot+49056626fe41e01f2ba7@syzkaller.appspotmail.com>
-To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
 
-Hello,
+This series switches tty serial layer to use kfifo instead of circ_buf.
+Excerpt from the switching patch:
+"""
+Switch from struct circ_buf to proper kfifo. kfifo provides much better
+API, esp. when wrap-around of the buffer needs to be taken into account.
+Look at pl011_dma_tx_refill() or cpm_uart_tx_pump() changes for example.
 
-syzbot found the following issue on:
+Kfifo API can also fill in scatter-gather DMA structures, so it easier
+for that use case too. Look at lpuart_dma_tx() for example. Note that
+not all drivers can be converted to that (like atmel_serial), they
+handle DMA specially.
 
-HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09-36' ..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=160dc26e180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=4ffb854606e658d
-dashboard link: https://syzkaller.appspot.com/bug?extid=49056626fe41e01f2ba7
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
-syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=10f467b9180000
-C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=173b7ac9180000
+Note that usb-serial uses kfifo for TX for ages.
+"""
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-e5eb28f6.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/a5c7ad05d6b2/vmlinux-e5eb28f6.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/531cb1917612/bzImage-e5eb28f6.xz
+This is Request for Testing as I cannot test all the changes
+(obviously). So please test your HW's serial properly.
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+49056626fe41e01f2ba7@syzkaller.appspotmail.com
+And of course comments welcome.
 
-============================================
-WARNING: possible recursive locking detected
-6.8.0-syzkaller-09791-ge5eb28f6d1af #0 Not tainted
---------------------------------------------
-syz-executor258/5169 is trying to acquire lock:
-ffff88802a6d23d0 (&vma->vm_lock->lock){++++}-{3:3}, at: uffd_move_lock mm/userfaultfd.c:1447 [inline]
-ffff88802a6d23d0 (&vma->vm_lock->lock){++++}-{3:3}, at: move_pages+0xbab/0x4970 mm/userfaultfd.c:1583
+I will send this as PATCHes later, when -rc1 is out, at earliest.
 
-but task is already holding lock:
-ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: uffd_move_lock mm/userfaultfd.c:1445 [inline]
-ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: move_pages+0xb6f/0x4970 mm/userfaultfd.c:1583
+Cc: Al Cooper <alcooperx@gmail.com>
+Cc: Alexander Shiyan <shc_work@mail.ru>
+Cc: Alexandre Belloni <alexandre.belloni@bootlin.com>
+Cc: Alexandre Torgue <alexandre.torgue@foss.st.com>
+Cc: Alim Akhtar <alim.akhtar@samsung.com>
+Cc: Andrew Morton <akpm@linux-foundation.org>
+Cc: "Aneesh Kumar K.V" <aneesh.kumar@kernel.org>
+Cc: AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>
+Cc: Baolin Wang <baolin.wang@linux.alibaba.com>
+Cc: Baruch Siach <baruch@tkos.co.il>
+Cc: Bjorn Andersson <andersson@kernel.org>
+Cc: Claudiu Beznea <claudiu.beznea@tuxon.dev>
+Cc: "David S. Miller" <davem@davemloft.net>
+Cc: Fabio Estevam <festevam@gmail.com>
+Cc: Hammer Hsieh <hammerh0314@gmail.com>
+Cc: "Christian König" <christian.koenig@amd.com>
+Cc: Christophe Leroy <christophe.leroy@csgroup.eu>
+Cc: Chunyan Zhang <zhang.lyra@gmail.com>
+Cc: Jerome Brunet <jbrunet@baylibre.com>
+Cc: Jonathan Hunter <jonathanh@nvidia.com>
+Cc: Kevin Hilman <khilman@baylibre.com>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Kumaravel Thiagarajan <kumaravel.thiagarajan@microchip.com>
+Cc: Laxman Dewangan <ldewangan@nvidia.com>
+Cc: linux-arm-kernel@lists.infradead.org
+Cc: linux-arm-msm@vger.kernel.org
+Cc: "Maciej W. Rozycki" <macro@orcam.me.uk>
+Cc: Manivannan Sadhasivam <manivannan.sadhasivam@linaro.org>
+Cc: Martin Blumenstingl <martin.blumenstingl@googlemail.com>
+Cc: Matthias Brugger <matthias.bgg@gmail.com>
+Cc: Maxime Coquelin <mcoquelin.stm32@gmail.com>
+Cc: Michael Ellerman <mpe@ellerman.id.au>
+Cc: Michal Simek <michal.simek@amd.com>
+Cc: "Naveen N. Rao" <naveen.n.rao@linux.ibm.com>
+Cc: Neil Armstrong <neil.armstrong@linaro.org>
+Cc: Nicolas Ferre <nicolas.ferre@microchip.com>
+Cc: Nicholas Piggin <npiggin@gmail.com>
+Cc: Orson Zhai <orsonzhai@gmail.com>
+Cc: "Pali Rohár" <pali@kernel.org>
+Cc: Patrice Chotard <patrice.chotard@foss.st.com>
+Cc: Peter Korsgaard <jacmet@sunsite.dk>
+Cc: Richard Genoud <richard.genoud@gmail.com>
+Cc: Russell King <linux@armlinux.org.uk>
+Cc: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: Shawn Guo <shawnguo@kernel.org>
+Cc: Stefani Seibold <stefani@seibold.net>
+Cc: Sumit Semwal <sumit.semwal@linaro.org>
+Cc: Taichi Sugaya <sugaya.taichi@socionext.com>
+Cc: Takao Orito <orito.takao@socionext.com>
+Cc: Tharun Kumar P <tharunkumar.pasumarthi@microchip.com>
+Cc: Thierry Reding <thierry.reding@gmail.com>
+Cc: Timur Tabi <timur@kernel.org>
+Cc: Vineet Gupta <vgupta@kernel.org>
 
-other info that might help us debug this:
- Possible unsafe locking scenario:
+Jiri Slaby (SUSE) (15):
+  kfifo: drop __kfifo_dma_out_finish_r()
+  kfifo: introduce and use kfifo_skip_count()
+  kfifo: add kfifo_out_linear{,_ptr}()
+  kfifo: remove support for physically non-contiguous memory
+  kfifo: rename l to len_to_end in setup_sgl()
+  kfifo: pass offset to setup_sgl_buf() instead of a pointer
+  kfifo: add kfifo_dma_out_prepare_mapped()
+  kfifo: fix typos in kernel-doc
+  tty: 8250_dma: use dmaengine_prep_slave_sg()
+  tty: 8250_omap: use dmaengine_prep_slave_sg()
+  tty: msm_serial: use dmaengine_prep_slave_sg()
+  tty: serial: switch from circ_buf to kfifo
+  tty: atmel_serial: use single DMA mapping for TX
+  tty: atmel_serial: define macro for RX size
+  tty: atmel_serial: use single DMA mapping for RX
 
-       CPU0
-       ----
-  lock(&vma->vm_lock->lock);
-  lock(&vma->vm_lock->lock);
+ drivers/tty/serial/8250/8250_bcm7271.c  |  14 +--
+ drivers/tty/serial/8250/8250_core.c     |   3 +-
+ drivers/tty/serial/8250/8250_dma.c      |  31 +++--
+ drivers/tty/serial/8250/8250_exar.c     |   5 +-
+ drivers/tty/serial/8250/8250_mtk.c      |   2 +-
+ drivers/tty/serial/8250/8250_omap.c     |  48 +++++---
+ drivers/tty/serial/8250/8250_pci1xxxx.c |  50 ++++----
+ drivers/tty/serial/8250/8250_port.c     |  22 ++--
+ drivers/tty/serial/amba-pl011.c         |  46 +++-----
+ drivers/tty/serial/ar933x_uart.c        |  15 ++-
+ drivers/tty/serial/arc_uart.c           |   8 +-
+ drivers/tty/serial/atmel_serial.c       | 150 +++++++++++-------------
+ drivers/tty/serial/clps711x.c           |  12 +-
+ drivers/tty/serial/cpm_uart.c           |  20 ++--
+ drivers/tty/serial/digicolor-usart.c    |  12 +-
+ drivers/tty/serial/dz.c                 |  13 +-
+ drivers/tty/serial/fsl_linflexuart.c    |  17 +--
+ drivers/tty/serial/fsl_lpuart.c         |  39 +++---
+ drivers/tty/serial/icom.c               |  25 +---
+ drivers/tty/serial/imx.c                |  54 ++++-----
+ drivers/tty/serial/ip22zilog.c          |  26 ++--
+ drivers/tty/serial/jsm/jsm_cls.c        |  29 ++---
+ drivers/tty/serial/jsm/jsm_neo.c        |  38 ++----
+ drivers/tty/serial/max3100.c            |  14 +--
+ drivers/tty/serial/max310x.c            |  35 +++---
+ drivers/tty/serial/men_z135_uart.c      |  26 ++--
+ drivers/tty/serial/meson_uart.c         |  11 +-
+ drivers/tty/serial/milbeaut_usio.c      |  15 +--
+ drivers/tty/serial/msm_serial.c         | 114 +++++++++---------
+ drivers/tty/serial/mvebu-uart.c         |   8 +-
+ drivers/tty/serial/mxs-auart.c          |  23 +---
+ drivers/tty/serial/pch_uart.c           |  21 ++--
+ drivers/tty/serial/pic32_uart.c         |  15 ++-
+ drivers/tty/serial/pmac_zilog.c         |  24 ++--
+ drivers/tty/serial/qcom_geni_serial.c   |  36 +++---
+ drivers/tty/serial/rda-uart.c           |  17 +--
+ drivers/tty/serial/samsung_tty.c        |  54 +++++----
+ drivers/tty/serial/sb1250-duart.c       |  13 +-
+ drivers/tty/serial/sc16is7xx.c          |  40 +++----
+ drivers/tty/serial/sccnxp.c             |  16 ++-
+ drivers/tty/serial/serial-tegra.c       |  43 ++++---
+ drivers/tty/serial/serial_core.c        |  56 ++++-----
+ drivers/tty/serial/serial_port.c        |   2 +-
+ drivers/tty/serial/sh-sci.c             |  51 ++++----
+ drivers/tty/serial/sprd_serial.c        |  20 ++--
+ drivers/tty/serial/st-asc.c             |   4 +-
+ drivers/tty/serial/stm32-usart.c        |  52 ++++----
+ drivers/tty/serial/sunhv.c              |  35 +++---
+ drivers/tty/serial/sunplus-uart.c       |  16 +--
+ drivers/tty/serial/sunsab.c             |  30 ++---
+ drivers/tty/serial/sunsu.c              |  15 +--
+ drivers/tty/serial/sunzilog.c           |  27 ++---
+ drivers/tty/serial/tegra-tcu.c          |  10 +-
+ drivers/tty/serial/timbuart.c           |  17 ++-
+ drivers/tty/serial/uartlite.c           |  13 +-
+ drivers/tty/serial/ucc_uart.c           |  20 ++--
+ drivers/tty/serial/xilinx_uartps.c      |  20 ++--
+ drivers/tty/serial/zs.c                 |  13 +-
+ include/linux/kfifo.h                   | 143 ++++++++++++++++------
+ include/linux/serial_core.h             |  49 +++++---
+ lib/kfifo.c                             | 107 +++++++++--------
+ 61 files changed, 944 insertions(+), 960 deletions(-)
 
- *** DEADLOCK ***
+-- 
+2.44.0
 
- May be due to missing lock nesting notation
-
-2 locks held by syz-executor258/5169:
- #0: ffff888015086a20 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lock include/linux/mmap_lock.h:146 [inline]
- #0: ffff888015086a20 (&mm->mmap_lock){++++}-{3:3}, at: uffd_move_lock mm/userfaultfd.c:1438 [inline]
- #0: ffff888015086a20 (&mm->mmap_lock){++++}-{3:3}, at: move_pages+0x8df/0x4970 mm/userfaultfd.c:1583
- #1: ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: uffd_move_lock mm/userfaultfd.c:1445 [inline]
- #1: ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: move_pages+0xb6f/0x4970 mm/userfaultfd.c:1583
-
-stack backtrace:
-CPU: 2 PID: 5169 Comm: syz-executor258 Not tainted 6.8.0-syzkaller-09791-ge5eb28f6d1af #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_deadlock kernel/locking/lockdep.c:3062 [inline]
- validate_chain kernel/locking/lockdep.c:3856 [inline]
- __lock_acquire+0x20e6/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
- uffd_move_lock mm/userfaultfd.c:1447 [inline]
- move_pages+0xbab/0x4970 mm/userfaultfd.c:1583
- userfaultfd_move fs/userfaultfd.c:2008 [inline]
- userfaultfd_ioctl+0x5e1/0x60e0 fs/userfaultfd.c:2126
- vfs_ioctl fs/ioctl.c:51 [inline]
- __do_sys_ioctl fs/ioctl.c:904 [inline]
- __se_sys_ioctl fs/ioctl.c:890 [inline]
- __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:890
- do_syscall_x64 arch/x86/entry/common.c:52 [inline]
- do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
-RIP: 0033:0x7fd48da20329
-Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
-RSP: 002b:00007ffd1244f8e8 EFLAGS: 00000246 ORIG_RAX: 0000000000000010
-RAX: ffffffffffffffda RBX: 00007ffd1244fab8 RCX: 00007fd48da20329
-RDX: 00000000200000c0 RSI: 00000000c028aa05 RDI: 0000000000000003
-RBP: 00007fd48da93610 R08: 00007ffd1244fab8 R09: 00007ffd1244fab8
-R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
-R13: 00007ffd1244faa8 R14: 0000000000000001 R15: 0000000000000001
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want syzbot to run the reproducer, reply with:
-#syz test: git://repo/address.git branch-or-commit-hash
-If you attach or paste a git patch, syzbot will apply it before testing.
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
