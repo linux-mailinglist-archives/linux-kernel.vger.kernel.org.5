@@ -1,82 +1,158 @@
-Return-Path: <linux-kernel+bounces-107979-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107980-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8D3EE880462
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:08:57 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id F0421880464
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:09:46 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 1DA12B2431B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:08:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id ABBD82841E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:09:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D899D2C1A3;
-	Tue, 19 Mar 2024 18:08:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDAE12C19D;
+	Tue, 19 Mar 2024 18:09:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="p8+wG0uo"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="C0DENtvZ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 49251208C1;
-	Tue, 19 Mar 2024 18:08:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F05A52D046;
+	Tue, 19 Mar 2024 18:09:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871726; cv=none; b=oZRqaY04rhLypEXew5IStVVK8LiOGjzurn/1yiMiQ0Dr8mImYL4X3ObzVRmaUTTMCgtCAz9GktFZxjGKOuU7ra+9EeDlHTUapXnBKlaIGqGN/f0ifS/Eg5iRPJyK3BX03oBXwomOgIKDcry6D00cz2rIgAUj2UJvat3euzOxBIA=
+	t=1710871778; cv=none; b=rgabei+1QW4uifKHY/st4mygLiFU9euIr8PaEtyZ+4pUb/uzoTtTth0eLklLnsvl6YDJIpqktXZT67umogMhvI7sD4d08M88+YH0zkPOgEhXnu2qnjS0QCHN1GgmWHvcglNFymxspfnaE1axGLNxGnP68lvQFrDVBmz9NGXxGCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710871726; c=relaxed/simple;
-	bh=/TLTNjLRNuhiV0mSLNL2wHkFZhyXdWLHNCfTEJYuONs=;
+	s=arc-20240116; t=1710871778; c=relaxed/simple;
+	bh=ugoMpbER9K+KatX2IyLi4yOo5eMLV9vLE9hxz5xaacw=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Nhs4wt6szdz8gjuqRaEXdU9V430OuzUDsLS918IVYpU7qHeZzSrzdNnGcydCHXN5aFpge1/QLqSqKXPnRMOmy4MMbck1M5x4VxTTDPuEzgnAqG6GOaEj3tf2zu2HS05lo3ZVO1jLcSvrQXL8h6wR0EZb4fQVApPsSRB0OcrhhLI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=p8+wG0uo; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=xgQvZBrHztRTAZp16CLgbseSLdtWf7Q9SsKAjuSvgJI=; b=p8+wG0uomF7unG72AzIrt36aSJ
-	BYw0KiYaxuAzk0130AC7NRgxOFgbF1lOguMjoN7QhozQa/Clk2e5rGFgjPuB1FrrgacJexHlXYV4C
-	yxHbBxRf3OYrLuI6WRiBjiXpzNkpiGDM2dSePR5KqCrGubYkqPIlg3tUEf/Voy4ux8DBaJraMJjEq
-	i8wiZLYx8XH5FCioMIeMIohRBC+ewn2hIsz8LU5QwnBlK/suikfwVzd4pWIjn1kih+eQmHiYtecIW
-	eCVd5DPvWPnEJYNL5yne6nCtZMXm861+a6KLunxMlHp3LTeyiKOnFY3VbQgcsShLTQmV5/PWm3xEj
-	nrGgB6iw==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmdt9-00000002Ss5-1TtK;
-	Tue, 19 Mar 2024 18:08:39 +0000
-Date: Tue, 19 Mar 2024 18:08:39 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Gregory Price <gourry.memverge@gmail.com>
-Cc: linux-mm@kvack.org, linux-api@vger.kernel.org,
-	linux-arch@vger.kernel.org, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org, ying.huang@intel.com,
-	dan.j.williams@intel.com, honggyu.kim@sk.com, corbet@lwn.net,
-	arnd@arndb.de, luto@kernel.org, akpm@linux-foundation.org,
-	shuah@kernel.org, Gregory Price <gregory.price@memverge.com>
-Subject: Re: [RFC v3 3/3] ktest: sys_move_phys_pages ktest
-Message-ID: <ZfnUp7OAr6PFGAq_@casper.infradead.org>
-References: <20240319172609.332900-1-gregory.price@memverge.com>
- <20240319172609.332900-4-gregory.price@memverge.com>
- <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=ZTlRrwB7rgJDG6LLarSAlWtLpC6r+cfh9SlX8SCSIF9gWbaaHyxkQONI+07SANv+JbRWc8NCunGHM5KGI9TSDjvuAnBbgmke86l/z9XuATSdvyZQjLA2YBhAQLdm0JV3QLZ74RCrXQx3d+t9clWy0lyb3nzmLkD4YSftC9k42IY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=C0DENtvZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 84A60C433C7;
+	Tue, 19 Mar 2024 18:09:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710871777;
+	bh=ugoMpbER9K+KatX2IyLi4yOo5eMLV9vLE9hxz5xaacw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=C0DENtvZOR3Om08P/g36xouiKADw24Pko0NrJeElpXbj9buRZzo69E7ryPsyiP85Q
+	 qBDMY+TurVzuvj0YEVk2K4UxIEit8SYsMnF/JLcyocglQZF8LxTZHIzwppF693HT+V
+	 SHg/pB2tV4FmduLbo6sYidSdAND0F6OVRq0+/FXxIyqs1WMNO1hYzLnufDvIB4HUku
+	 OoyJAwJrCqNrMsziDA4A+1ksYPsD7j0Y/qKoHxzJfUFQ+hawtlhhEP3Hrj8yKxB5sx
+	 Y+HiQ3WqGe2mpFZlwQxwn6vdcdZtp/owmEZ2oDnyRFk7l1kXcaI2SSUckfoQlrqfzb
+	 zmLJOqkxIG4Pg==
+Date: Tue, 19 Mar 2024 15:09:32 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 22/23] perf annotate-data: Add a cache for global
+ variable types
+Message-ID: <ZfnU3DOZIPqlPhHf@x1>
+References: <20240319055115.4063940-1-namhyung@kernel.org>
+ <20240319055115.4063940-23-namhyung@kernel.org>
+ <CAM9d7cjhuxB_iWPPWgFxK1_oBaYqF=MgthV=EBG0HeyJ9-ONXg@mail.gmail.com>
+ <ZfnUUqWozFf55eyx@x1>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <ZfnUUqWozFf55eyx@x1>
 
-On Tue, Mar 19, 2024 at 05:52:46PM +0000, Matthew Wilcox wrote:
-> On Tue, Mar 19, 2024 at 01:26:09PM -0400, Gregory Price wrote:
-> > Implement simple ktest that looks up the physical address via
-> > /proc/self/pagemap and migrates the page based on that information.
+On Tue, Mar 19, 2024 at 03:07:19PM -0300, Arnaldo Carvalho de Melo wrote:
+> On Tue, Mar 19, 2024 at 11:05:04AM -0700, Namhyung Kim wrote:
+> > On Mon, Mar 18, 2024 at 10:56 PM Namhyung Kim <namhyung@kernel.org> wrote:
+> > >
+> > > They are often searched by many different places.  Let's add a cache
+> > > for them to reduce the duplicate DWARF access.
+> > >
+> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> > > ---
+> > >  tools/perf/util/annotate-data.c | 107 +++++++++++++++++++++++++++++++-
+> > >  tools/perf/util/annotate-data.h |   7 +++
+> > >  tools/perf/util/dso.c           |   2 +
+> > >  tools/perf/util/dso.h           |   6 +-
+> > >  4 files changed, 118 insertions(+), 4 deletions(-)
+> > >
+> > > diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+> > > index 633fe125fcd8..4b3184b7c799 100644
+> > > --- a/tools/perf/util/annotate-data.c
+> > > +++ b/tools/perf/util/annotate-data.c
+> > > @@ -433,6 +433,91 @@ static struct type_state_stack *findnew_stack_state(struct type_state *state,
+> > >         return stack;
+> > >  }
+> > >
+> > > +/* Maintain a cache for quick global variable lookup */
+> > > +struct global_var_entry {
+> > > +       struct rb_node node;
+> > > +       char *name;
+> > > +       u64 start;
+> > > +       u64 end;
+> > > +       u64 die_offset;
+> > > +};
+> > > +
+> > > +static int global_var_cmp(const void *_key, const struct rb_node *node)
+> > > +{
+> > > +       const u64 addr = (uintptr_t)_key;
+> > > +       struct global_var_entry *gvar;
+> > > +
+> > > +       gvar = rb_entry(node, struct global_var_entry, node);
+> > > +
+> > > +       if (gvar->start <= addr && addr < gvar->end)
+> > > +               return 0;
+> > > +       return gvar->start > addr ? -1 : 1;
+> > > +}
+> > > +
+> > > +static bool global_var_less(struct rb_node *node_a, const struct rb_node *node_b)
+> > > +{
+> > > +       struct global_var_entry *gvar_a, *gvar_b;
+> > > +
+> > > +       gvar_a = rb_entry(node_a, struct global_var_entry, node);
+> > > +       gvar_b = rb_entry(node_b, struct global_var_entry, node);
+> > > +
+> > > +       return gvar_a->start < gvar_b->start;
+> > > +}
+> > > +
+> > > +static struct global_var_entry *global_var__find(struct data_loc_info *dloc, u64 addr)
+> > > +{
+> > > +       struct dso *dso = map__dso(dloc->ms->map);
+> > > +       struct rb_node *node;
+> > > +
+> > > +       node = rb_find((void *)addr, &dso->global_vars, global_var_cmp);
+> > 
+> > It seems to cause a build error on 32-bit systems.  It needs one
+> > more cast to suppress the "pointer cast w/ different size" warning.
+> > 
+> >     node = rb_find(void *)(uintptr_tr)addr, ...);
+
+                               uintptr_t
 > 
-> What?  LOL.  No.
+> I can add that, to speed up the process, ok?
 
-Also, how is this v3 and the first one to land on linux-mm?
+Done
 
-https://lore.kernel.org/linux-mm/?q=move_phys_pages
-
-Also, where is the syscall itself?  The only thing here is the ktest.
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index 4b3184b7c79942b4..969e2f82079cdec5 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -469,7 +469,7 @@ static struct global_var_entry *global_var__find(struct data_loc_info *dloc, u64
+ 	struct dso *dso = map__dso(dloc->ms->map);
+ 	struct rb_node *node;
+ 
+-	node = rb_find((void *)addr, &dso->global_vars, global_var_cmp);
++	node = rb_find((void *)(uintptr_t)addr, &dso->global_vars, global_var_cmp);
+ 	if (node == NULL)
+ 		return NULL;
+ 
 
