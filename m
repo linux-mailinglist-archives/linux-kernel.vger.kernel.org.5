@@ -1,112 +1,142 @@
-Return-Path: <linux-kernel+bounces-107854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107853-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9702A880286
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:39:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id D2078880282
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:39:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2E1681F24D2D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:39:29 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6062852C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:39:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89522F9E5;
-	Tue, 19 Mar 2024 16:39:05 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE5E1118E;
+	Tue, 19 Mar 2024 16:38:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJY+9+pS"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8F1E1C8E1
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:39:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BF27470;
+	Tue, 19 Mar 2024 16:38:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710866345; cv=none; b=etBjj46pws2o0LAsaFz9P9N6mfomSMPH5pIv7Jx4cuNpe92wmomzksjVFL7XKnRa6cVc3ATN/60JTb3QLS/APtNOpXoP9pg0wH7e/O5dl4NDC0Ghqjxa/p0odVXnjJqlmvzAAkdHEdG23MPqm+xILFA70Z+9EGExLxjIJ6Cw7jw=
+	t=1710866331; cv=none; b=n7GEtrU6Dmlo+vxNWVdp0evU16q+28JCA7uVyOlR940fmSZeRF43tsc+Sr0g78mlPI5WYeHUv+wtGBBywkyGl7lBPqHDlnZCz6CDEtZoLb9VccB8WjFrpUehIY1Nd2cMgXMJWGq2ofq9HQ/oNKDkbsRIJUggQDNbTNd/Cz/rhPw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710866345; c=relaxed/simple;
-	bh=gOtdMVFyUxOjX7VK78TUlEAvDfLjmRn3AgHX7DpQsDg=;
+	s=arc-20240116; t=1710866331; c=relaxed/simple;
+	bh=dYsylaBpQOp3sMEqxBcd5E0VBO1SUJjmx6IkRhLuU/w=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=RnS5skjEOjkIfzg/6aoDzHj+JG7FH51tckz7Kfz8pFi7/N4Yj5uXDKFTEZSt4R357Dz3As/BHBtYG0LW28G3Sqo/ARklGDAn310yRVsza9KEoB6U2JprpypT+Ubhggu+2Z+283u4eBVbUuvg82SjnPqePAW6Ngw0W2wDmlYAsv4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rmcUH-0005aE-D9; Tue, 19 Mar 2024 17:38:53 +0100
-Received: from [2a0a:edc0:0:900:1d::77] (helo=ptz.office.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rmcUG-007JGe-La; Tue, 19 Mar 2024 17:38:52 +0100
-Received: from ukl by ptz.office.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <ukl@pengutronix.de>)
-	id 1rmcUG-008Tj5-1t;
-	Tue, 19 Mar 2024 17:38:52 +0100
-Date: Tue, 19 Mar 2024 17:38:52 +0100
-From: Uwe =?utf-8?Q?Kleine-K=C3=B6nig?= <u.kleine-koenig@pengutronix.de>
-To: Dimitri Fedrau <dima.fedrau@gmail.com>
-Cc: Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, linux-pwm@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2 3/3] pwm: mc33xs2410: add support for direct inputs
-Message-ID: <dwd6idyv2dvfih57sdfnr6cxztrx6gv3pwuy6rdopjw2lv2z6y@in2sn56t3x5k>
-References: <20240301111124.29283-1-dima.fedrau@gmail.com>
- <20240301111124.29283-4-dima.fedrau@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=cNmYiXpgMCopPBR1OZmHmHbyc9um6HsR5Rt85FMZ0MnvFXmR0QXGSalsKALDRuu0PxXxcIp4r7JwKwsQ/uBdpNFiVx3ZNk6EPqQrEJqAjtiDtJ5B+Z+5RbIdzzlZ7oWsDvuQHF4OykUsR9iliXa6dbAJ5b/Mb8gk6h0GZrW0P0w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJY+9+pS; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81801C43394;
+	Tue, 19 Mar 2024 16:38:50 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710866330;
+	bh=dYsylaBpQOp3sMEqxBcd5E0VBO1SUJjmx6IkRhLuU/w=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=pJY+9+pSarDhpFmWIuEdBfUThaZYx4IzquJlP5O64VzWFDoFioQINcZi4p+yopd6F
+	 ErebcMpVyh4KjLRkxscbDd7pdoed6R/I3g9++/WFyZQPcZ8z17rWY3gKGmaeCYZk64
+	 hn+/Y64HGirKPes9zYqyBKvE/jnlNtWaKjws6jjAhQ1G4V31ooEJqiMm4m0c33GZBa
+	 6NWaIKh5JXdu1eel98bZoLAH92veFrGvDHWgbuyrJSiSjmlVz95bjBEweJdwkSCB8T
+	 mVKrcpSYzfMonTbtZj6OW2xbxjp/3XC8WWfwU3MvA5UJx3oYj8gJ9VE339DdVziiOI
+	 X470z+WxwiZlg==
+Received: from johan by xi.lan with local (Exim 4.97.1)
+	(envelope-from <johan@kernel.org>)
+	id 1rmcUK-000000000ul-22u3;
+	Tue, 19 Mar 2024 17:38:57 +0100
+Date: Tue, 19 Mar 2024 17:38:56 +0100
+From: Johan Hovold <johan@kernel.org>
+To: Doug Anderson <dianders@chromium.org>
+Cc: Johan Hovold <johan+linaro@kernel.org>,
+	Marcel Holtmann <marcel@holtmann.org>,
+	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
+	Bjorn Andersson <andersson@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	cros-qcom-dts-watchers@chromium.org,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Johan Hedberg <johan.hedberg@gmail.com>,
+	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
+	Matthias Kaehlcke <mka@chromium.org>,
+	Rocky Liao <quic_rjliao@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
+	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
+	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
+	Nikita Travkin <nikita@trvn.ru>
+Subject: Re: [PATCH v3 3/5] Bluetooth: qca: fix device-address endianness
+Message-ID: <Zfm_oFLNgPHqJKtG@hovoldconsulting.com>
+References: <20240319152926.1288-1-johan+linaro@kernel.org>
+ <20240319152926.1288-4-johan+linaro@kernel.org>
+ <CAD=FV=WqwY07fMV-TuO8QMRnk555BJYEysv4urcugsELufHr4A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="sshteucfry4z3ncl"
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240301111124.29283-4-dima.fedrau@gmail.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: ukl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAD=FV=WqwY07fMV-TuO8QMRnk555BJYEysv4urcugsELufHr4A@mail.gmail.com>
 
+On Tue, Mar 19, 2024 at 09:10:38AM -0700, Doug Anderson wrote:
+> On Tue, Mar 19, 2024 at 8:30 AM Johan Hovold <johan+linaro@kernel.org> wrote:
+> >
+> > The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
+> > device address in big-endian order when setting it using the
+> > EDL_WRITE_BD_ADDR_OPCODE command.
+> >
+> > Presumably, this is the case for all non-ROME devices which all use the
+> > EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
+> > use a different command and expect the address in little-endian order).
+> >
+> > Reverse the little-endian address before setting it to make sure that
+> > the address can be configured using tools like btmgmt or using the
+> > 'local-bd-address' devicetree property.
+> >
+> > Note that this can potentially break systems with boot firmware which
+> > has started relying on the broken behaviour and is incorrectly passing
+> > the address via devicetree in big-endian order.
+> >
+> > Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
+> > Cc: stable@vger.kernel.org      # 5.1
+> > Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
+> > Cc: Matthias Kaehlcke <mka@chromium.org>
+> > Tested-by: Nikita Travkin <nikita@trvn.ru> # sc7180
+> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
+> > ---
+> >  drivers/bluetooth/btqca.c | 8 ++++++--
+> >  1 file changed, 6 insertions(+), 2 deletions(-)
+> 
+> Personally, I'd prefer it if you didn't break bisectability with your
+> series. As it is, if someone applies just the first 3 patches they'll
+> end up with broken Bluetooth.
 
---sshteucfry4z3ncl
-Content-Type: text/plain; charset=iso-8859-1
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+It doesn't break the build, but yes, the device address would be
+reversed for Trogdor machines for two commits and possible break any
+previous pairings. That's hardly something to worry about.
 
-Hello Dimitri,
+So I consider this to be acceptable for sake of clarity, and especially
+since these patches will be coming in from separate trees anyway.
 
-On Fri, Mar 01, 2024 at 12:11:24PM +0100, Dimitri Fedrau wrote:
-> Add support for direct inputs, which are used to directly turn-on or
-> turn-off the outputs. Direct inputs have the advantage over the SPI
-> controlled outputs that they aren't limited to the frequency steps.
-> Frequency resolution depends on the input signal, range is still
-> from 0.5Hz to 2.048kHz.
+> IMO the order should be:
+> 1. Binding (currently patch #1)
+> 2. Trogdor dt patch, which won't hurt on its own (currently patch #5)
+> 3. Bluetooth subsystem patch handling the quirk (currently patch #2)
+> 4. Qualcomm change to fix the endianness and handle the quirk squashed
+> into 1 patch (currently patch #3 + #4)
+> 
+> ..and the patch that changes the Qualcomm driver should make it
+> obvious that it depends on the trogdor DT patch in the change
+> description.
+> 
+> With patches #3 and #4 combined, feel free to add my Reviewed-by tag
+> as both patches look fine to me.
 
-I didn't make a big effort, but I fail to understand the concept here.
-I'll delay giving more feedback till the next review round for this
-driver. Maybe then the description is easier to grasp.
+I don't think it's worth spending more time and effort on this issue
+(which should have been caught and fixed years ago) for this.
 
-Best regards
-Uwe
-
---=20
-Pengutronix e.K.                           | Uwe Kleine-K=F6nig            |
-Industrial Linux Solutions                 | https://www.pengutronix.de/ |
-
---sshteucfry4z3ncl
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEP4GsaTp6HlmJrf7Tj4D7WH0S/k4FAmX5v5sACgkQj4D7WH0S
-/k61/Qf/earPR5mvVL8g/6x+RcAbaGizt7zmAhC5GqPYU+feD/35KUY7mDs+3dZ9
-2NhfAtkGBBXKGAbTlCftBSAq45tkCUtTZlIM0etBVKIVij0rsFkC/gN4pFxaVdSX
-nX086aiHC9JVaUgJA4JkPlif6XhRUn6UTo/R6bPzEzK1cE4WWk0wlAX1SXHcyoiI
-8POTK231Vdmgw1k3MptQm6cWZPtQJbTcWuYdQmGcdX032TdE1w27kOrNJH09p8L1
-TJcLhnUIUlQ5+/KWnnqk8j6aS9yfOTVyM6twTQdgw4F1n+0b5dtuWNDvslndB1JU
-o5izYSH8AFT+GTpAuN3ihO5OhkZ5jA==
-=l7tv
------END PGP SIGNATURE-----
-
---sshteucfry4z3ncl--
+Johan
 
