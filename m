@@ -1,74 +1,73 @@
-Return-Path: <linux-kernel+bounces-107010-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107011-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C9A4787F6AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:29:17 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CD57B87F6B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578B91F22198
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:29:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 585A1282599
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:29:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C7E446A5;
-	Tue, 19 Mar 2024 05:29:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7F3EF446A4;
+	Tue, 19 Mar 2024 05:29:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NTK0VcHb"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="WEVTIW1Z"
+Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F8A44365
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:29:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0381744362
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:29:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710826145; cv=none; b=BJpW4gnPAr7pZJedx/iqJ91MD2hq0QX9ccw1JazY/86mYnvUhB7LjCzTwTUYpaoTuHXiL3JGvcYwslxrQWimj2naE34rc0F4QTnpOHIJQFvfUgHjVLG+R9gApGeDjqouC7sCUh78DtSYZdLcfmzXfG4F0TnvrW9dH3M1GbjLPdk=
+	t=1710826174; cv=none; b=tCJufeGcP8FvYzM9aytlWcBYyB19QXYZ7FEn0nRForVAFQCeSj9EdgknpXR5bxooV+0bAQOgGwhqM6aM6TgncKl8bGCtPg08zElJaS/NMs1E2SIxN/A3CSP4NdQg7u7vcMvR5xmawjaazx9DKl4nClFpDWu+EIA/wTvCNgg0lBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710826145; c=relaxed/simple;
-	bh=K7QToXAAe5HyxCjtqBulr0uqK2YIIFTKc6WGJYf+b2Y=;
-	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
-	 In-Reply-To:Content-Type; b=gmMNhH2NF1yTKThNcF3/yZ/PWhzOHmJGyVQPiZwDV0Tvte6Xrj6+YPtTF7r/h2wyXqNyZbo7oR3nKPyGgTivOIKvgdr7eREBkJYcShVrKi/UXNu1cBhSBtEk5b/5OmBCc2W8ZwuUAi54EYcYMDUyMSrrNuNZS1yLpHDgTzB6ghw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NTK0VcHb; arc=none smtp.client-ip=209.85.208.41
+	s=arc-20240116; t=1710826174; c=relaxed/simple;
+	bh=l7RBkxmjxJoYz91WxiCi7AWgbpjf0fKv5r4bmOqY+pQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=T/+a/goXGYQFIQtQTYCDmfIXThDWme5ou/lbIOwvWtz8nWlSjxEyRVtvYqHZKVPMq9YYTHqU+HJmPsjlmdYJTLvBVdhkHBX/NY1oDpDxJ5Ld1ku7PgzpOGhUQ2D73xrjnq2VIatNR9KTEOMEseypJe4/E5b22EjsygZPSYHSAB0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=WEVTIW1Z; arc=none smtp.client-ip=209.85.208.48
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56b93b45779so343223a12.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:29:02 -0700 (PDT)
+Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56899d9bf52so6591784a12.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:29:32 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710826141; x=1711430941; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=6AQO/2Swa2FQ79FolhUdfxGgRssFDYSK6sxer+QvsoA=;
-        b=NTK0VcHb8M6pvduuIpM/E/bCQ7lwl3ItbNx+L82Wlmrs0MPhnF2h9njW9OcYY0N8iK
-         b+Nxyl9edlohbCzbIwdkJQz0tIiv06cLw21e6vGnOKvOx0eaSbiDZJO2IztYkXY/jd5R
-         mmtNde/o0Rdv07tpdvvVUFvZA2fm6FmGqJwZA8Dxc7+oQ65ZcXao+7uIePI+SnB9MldF
-         j5RiBWYyYE009YBDQuOoaFsy2X71JvUSzk4cub23cxLkehBeW5wwiGnFYQC2dEsoXPkH
-         Fy5wbDU8oFKunHfQTum2AClWf50cxgt2C3Tp7FlQda/4iXjyzKudpBbuMH09il37TFui
-         gGDw==
+        d=linaro.org; s=google; t=1710826171; x=1711430971; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=xKHEliEqTC7ISqV/v8jd5fGt4ywZc1dZKtC2VdYfoos=;
+        b=WEVTIW1ZGQLNfekDGFABTNI00sCbtrOB0er9ISoR3csnmFwz5yDq4AlEXSb5jaQv77
+         ymhncqLVkLxriOtYSSvzd4VIjemlhXl0nmWSZgaDHpfqYMNvf4G9PRtszNvXMcJuehcN
+         RqrbPHkoROpza5PbCv19MUMs78PR/FJRmTGHCZwea1PL3YRQzxGMdbKqEgbP9mjiizxF
+         FW+sdJNPxz6qMRuxg9FRWSpS4SN52c5FCwqpwKkn105qp6NlVpGlISo0AImL8ljsB1SQ
+         qXYuSLkidbK0rEUlDDNDe3vIldK3HWV8GSxW4tFL8mFiZD2xPTvSpi6TDoAf9NiZOkyA
+         tOgA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710826141; x=1711430941;
-        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
-         :from:content-language:subject:user-agent:mime-version:date
-         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=6AQO/2Swa2FQ79FolhUdfxGgRssFDYSK6sxer+QvsoA=;
-        b=ThC7GOdgro51dAByqOPX1zSBIPp0NsOSMY/zPydE3XclwjPhvir1VPacURFEsZTsRN
-         L/9LiuE3lzW8N2w7CbYisrlFyQD5rWZj8kNts6rj2yaGqkGLwN85DxlVN6XHAh2SErBJ
-         OEa6St+8OABjQfU9S3yKBz5092C8TqEqR2ILjkgRldu0A/EQIDHyXOxwn1kf6tj0Nocw
-         SnAS8U2/koXbmmh77JbOMEul/fQSV9lGMrauPsLXREqolK79IIlf8ifFdRQ/grcpwFLY
-         Oo9oYt+soWS/xntq1bKlEDK7kxsxaxJt5y5o4Kv3UYHD316y7V9rs1YCjHbWLhmLMFnc
-         7Myg==
-X-Forwarded-Encrypted: i=1; AJvYcCX5qznKLHRPAW23qnmUZvbPrdbzZ80S94VpKnifdxUCe6wGmjikMljRWueRQ62qGYYBQkJXFF40KwQcJSSdzkiAD2jMvWmLNrGgtPWr
-X-Gm-Message-State: AOJu0Yxxh+bahokaWzUoDbVizqoE/xviA2r0yOTOgQN8LnyWS4hb0P3A
-	MoA1wJkbLam2CPvwmUQwazT2shW3lFssC76R6tyJsNysclfkcR47p4xpfMa0+1w=
-X-Google-Smtp-Source: AGHT+IFZgAXTNnlTfgh9aF3DLthH2SfgbAvhGWgEWExYIZQitNtiYA6ypFizz++z4ACf/VZ8WTCslg==
-X-Received: by 2002:a05:6402:5418:b0:568:9e82:4899 with SMTP id ev24-20020a056402541800b005689e824899mr11081629edb.9.1710826141461;
-        Mon, 18 Mar 2024 22:29:01 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710826171; x=1711430971;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=xKHEliEqTC7ISqV/v8jd5fGt4ywZc1dZKtC2VdYfoos=;
+        b=F0mYyImrFJyc/rdRRUPnB4vDf+pSdgn/kY0mKgoLQR1mzp8Jst0nXYXlEGiTgaOCjZ
+         517jv9xJTckfGljSMJCybWL6560pUpVlZw2fTlxjFmsrC/cpzgnPF1Y2SfiIzm4Pt/u4
+         5Bsml+2JWCAxk1cU+9j3F8bYmCTqUvq14gl67avxDMGp0Wm31k07facEfO8+f6fHvXdC
+         VQjok/V/cNy40PcziSjvZnfAmRWTAxc2b5RmhYQwQQJ7sK7cwaddvZWehys7CmVy1hzC
+         gUgumRRWreu+WwGMnxdvCNNKmgSZvS+A+n/I2a3x7Bo5lwU1Ir4WMO2QYOjRIkK1+MmW
+         XkGw==
+X-Forwarded-Encrypted: i=1; AJvYcCXEHhqNyKL1WT6xRafYsrfBFj8qBdHj1K+ZRbOUUpxscNRU2QCYIYmborHOINF0sjV4lFGJu2Hrvw9wx3/HNiMvXzlnP1yJeTlilVMp
+X-Gm-Message-State: AOJu0YxaEWcFul8ZUot9LEXfga15PynXiSS/HGqRtZuLwcF8zzf6nnH1
+	dagt6+ary4kW/vAapBV0w1LB18BrhGlvE+zspdTzy4DNEfHMAKbgBCDHxxxD1BA=
+X-Google-Smtp-Source: AGHT+IEKpYVV36lgRETjPtbs7HuirBeYyoJ7eZTpbZjtWFDnO9cYEy/j6/tRJpO7peVPxd06zMFeSw==
+X-Received: by 2002:a05:6402:4288:b0:566:a526:21ea with SMTP id g8-20020a056402428800b00566a52621eamr1162198edc.33.1710826171466;
+        Mon, 18 Mar 2024 22:29:31 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id ev19-20020a056402541300b005689c2c6508sm5330103edb.70.2024.03.18.22.29.00
+        by smtp.gmail.com with ESMTPSA id ev19-20020a056402541300b005689c2c6508sm5330103edb.70.2024.03.18.22.29.30
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 22:29:00 -0700 (PDT)
-Message-ID: <f59d6389-1c7b-45f9-8b85-274dbbeb775a@linaro.org>
-Date: Tue, 19 Mar 2024 06:28:59 +0100
+        Mon, 18 Mar 2024 22:29:31 -0700 (PDT)
+Message-ID: <84923a4e-6c8e-45b7-b7a8-1a4deeb72347@linaro.org>
+Date: Tue, 19 Mar 2024 06:29:30 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -79,7 +78,6 @@ User-Agent: Mozilla Thunderbird
 Subject: Re: [PATCH v13 2/4] dt-bindings: remoteproc: add Tightly Coupled
  Memory (TCM) bindings
 Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
  mathieu.poirier@linaro.org, robh+dt@kernel.org,
  krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
@@ -89,7 +87,7 @@ Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
  Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 References: <20240311175926.1625180-1-tanmay.shah@amd.com>
  <20240311175926.1625180-3-tanmay.shah@amd.com>
- <d498d76e-b021-4cf7-adca-63f1cd3e1542@linaro.org>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
  cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
@@ -134,48 +132,37 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <d498d76e-b021-4cf7-adca-63f1cd3e1542@linaro.org>
+In-Reply-To: <20240311175926.1625180-3-tanmay.shah@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 12/03/2024 13:13, Krzysztof Kozlowski wrote:
-> On 11/03/2024 18:59, Tanmay Shah wrote:
->> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->>
->> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
->> UltraScale+ platform. It will help in defining TCM in device-tree
->> and make it's access platform agnostic and data-driven.
->>
->> Tightly-coupled memories(TCMs) are low-latency memory that provides
->> predictable instruction execution and predictable data load/store
->> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
->> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
->>
->> The TCM resources(reg, reg-names and power-domain) are documented for
->> each TCM in the R5 node. The reg and reg-names are made as required
->> properties as we don't want to hardcode TCM addresses for future
->> platforms and for zu+ legacy implementation will ensure that the
->> old dts w/o reg/reg-names works and stable ABI is maintained.
->>
->> It also extends the examples for TCM split and lockstep modes.
->>
->> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
->> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
->> ---
->>
->> Changes in v13:
->>   - Have power-domains property for lockstep case instead of
->>     keeping it flexible.
->>   - Add "items:" list in power-domains property
+On 11/03/2024 18:59, Tanmay Shah wrote:
+> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
 > 
+> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+> UltraScale+ platform. It will help in defining TCM in device-tree
+> and make it's access platform agnostic and data-driven.
 > 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> Tightly-coupled memories(TCMs) are low-latency memory that provides
+> predictable instruction execution and predictable data load/store
+> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+> 
+> The TCM resources(reg, reg-names and power-domain) are documented for
+> each TCM in the R5 node. The reg and reg-names are made as required
+> properties as we don't want to hardcode TCM addresses for future
+> platforms and for zu+ legacy implementation will ensure that the
+> old dts w/o reg/reg-names works and stable ABI is maintained.
+> 
+> It also extends the examples for TCM split and lockstep modes.
+> 
+> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+> ---
 
-And unreviewed. It turns out you now mix devices and bring incompatible
-programming models under one compatible. And this leads to problems in
-your further patches.
+I responded under my reviewed-tag, but to be clear, also here:
 
-NAK.
+This patch has is not ready. Please do not merge.
 
 Best regards,
 Krzysztof
