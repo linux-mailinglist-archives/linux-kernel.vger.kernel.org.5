@@ -1,293 +1,189 @@
-Return-Path: <linux-kernel+bounces-107356-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107357-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E02C387FB61
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:00:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id A24F387FB63
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:00:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5230F1F22791
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:00:23 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 171901F2278D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:00:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A05857FBA5;
-	Tue, 19 Mar 2024 09:56:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B5B0A7D414;
+	Tue, 19 Mar 2024 09:57:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="isdayeQ7"
-Received: from mail-ej1-f44.google.com (mail-ej1-f44.google.com [209.85.218.44])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="yF9nk5UJ"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2097.outbound.protection.outlook.com [40.107.94.97])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCEE17F7E9
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:56:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.44
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710842206; cv=none; b=ZCaqf+E7zOZlXuOaYJrSsL3DQjLBdne+APyYGtG1hJJskV5lZs5ZJz6gLAVg5O4LxLEFLG0ZA+QQAkg179Tz1fF5wKTEDT6Jlj283UIcjDue0s6Db4ul6HLC8oDRSXEXLYH2H1zLygyvvlTfXLQpGFhQ5mLqpyPSvXLe9LK1roI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710842206; c=relaxed/simple;
-	bh=sVmpa3YnHgH60lI6Y+lLRwChhU3YC6GAAXpvxJnulaM=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=kizzyX+/A7Ox6Vpjg+Uv3HddMtFWHAH308DH+CRWCc4zgC+yIOdyAXd6FVBFGvE8DQqvsnNXrRRmEAjxger64L3Il3JIZ499KW6xAGt05c8qF18wH+kqBhMMF8xnkqR08nIDRSqsKlFDAvkTOCBYqYGnLI7M+BgksuNsI2Rlgw0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=isdayeQ7; arc=none smtp.client-ip=209.85.218.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f44.google.com with SMTP id a640c23a62f3a-a467d8efe78so562093866b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:56:43 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710842202; x=1711447002; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=AS/cPgoMWn3JAoH60GCWZa9D3Pqyi0ONOw1eWx4Iybo=;
-        b=isdayeQ7YQ8tmcZLq47liWCvyBUU67lUnWOn8Ciu32Lo7IEY749vJ2e5Yx3LTBS5nl
-         Z7SjdXW2q/DiqrDWZ+jFugEhV6qZ9/3USJhbaFkKUBEqwD0zY2MpR+Uf+jbmneIYsvgd
-         4cLJ63uC5lIuaZEeBBp+OLlqfliBmXfzbrIAGD+3MsUjJBJs36o8VF3jrhewakfzPcQh
-         bvD5nUKjFclNQhhXuE9PZnHFAyu+5ugBZVPrCA+AYoXW6bhHzhSS3NxhUWHaoLLETG7L
-         I7qoZkzvoqpDNWcJZW4MCkaoB3LSpx6DIm7JXSDZQNhD3LnPPQLPXbM5y9mUie4QBZIT
-         qF/Q==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710842202; x=1711447002;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=AS/cPgoMWn3JAoH60GCWZa9D3Pqyi0ONOw1eWx4Iybo=;
-        b=kwr8S8c1cvKXfY/TKbSnB9gYuDDHlzNKFMNKvoY48Rg3i64QK87qBhzlIzt509ku5x
-         9Hpc0j1SRrNomR74oc3Ha+ghMGcPu9GBUBOxUE99ntvwNnf/zjL8ACro8Dk87ExS+IaI
-         nD1HVFCVkBzYf/JkvzTR+lCcA4xhLHdnbMJ+0OCziKrCPuVmSAdhk5fApKXS8Yh4/ApU
-         OGs4B5jXzjrB+0Ly27cbr4mzIFKvbUQaxuAK6Wpox6RwbhANBPzPDFDoEAzqHeOf+3yl
-         WhSnYj9SrE8qBQNBERLqCgt6RRM2/yRQk2TAf+B2KlsN429c9R70F5oFzjkL05L4nlie
-         UYkA==
-X-Forwarded-Encrypted: i=1; AJvYcCX1qQboSToCP0nZpnxbZ9bEHdTL1qRohlWPFUTaSe/du4bn/eM0zrcQc7Bn97E/NAgrK8zY7SdPBMTl6l4RQBAP0Syodg1DE2ud83tR
-X-Gm-Message-State: AOJu0YzkIhdvft/lhG79G/gZ9iVQJMGfWH901l3b6b+EKi8DFjjX0CBb
-	F3YS3MUPERUbsfWkwl9wDHK0mb6Ev9FABkTYIaWQ3jD9IF+K/v5hmSh9OVaQhpw=
-X-Google-Smtp-Source: AGHT+IH6QxuKQDs1dmD0MxMhAH0Rms/7V/LdF5xNvrXW4SyLdJchixR2Shz1zdbIqB9LOVFovu0V8g==
-X-Received: by 2002:a17:906:6817:b0:a46:bab3:e9e6 with SMTP id k23-20020a170906681700b00a46bab3e9e6mr1455041ejr.1.1710842202110;
-        Tue, 19 Mar 2024 02:56:42 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id jx25-20020a170907761900b00a4661f0f1e7sm5867045ejc.205.2024.03.19.02.56.39
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 02:56:41 -0700 (PDT)
-Message-ID: <bad5df79-e040-4868-9db6-701110894ea3@linaro.org>
-Date: Tue, 19 Mar 2024 10:56:39 +0100
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C27927D3FE;
+	Tue, 19 Mar 2024 09:57:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.97
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710842275; cv=fail; b=mOWtU6F/cmDbPvu/ebDVtImh5xP7Pbp3pXkVNAcNxETYgxBSKjsa/8Yi1qf82ySnuyXQt6GWgEMRCRF5znIjcDKobLIXgNmUge9HTXlMUTQI6pUbV3ZDAK52shP3RatfztvI2tYxJSFlypYOVoSEBiwPS5DyGjmxUX73fTjJgfY=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710842275; c=relaxed/simple;
+	bh=JT6ZcDzf2LsEdFspfvC3YuGNO/6l11GUgp1VxSJOxyY=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=fFF1KR7WErLYRmB0fIidBQin2YDCQPlJ+AOkWu0biZCjUo4OG0fB8WgaW3Od/25Bl+3p39VS096wd8kMn6DO7GUjUrsCkfIpgKOehd+NYzu9iQJZLI7Q68DkyOT/JNv34kmDlkMmmsQKRLScpf5dKM3+RjX49PpVqKIDJh7Q4kY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=yF9nk5UJ; arc=fail smtp.client-ip=40.107.94.97
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jUd1Y4kIWEHf1UkySIPyhEDVPTw40Dr4ZZGupxdBDTtgcXfbs6tOQAgY+FPJS1mOrbN2w08608bBhY+d6bvBnEH/A20HTs6Jiuj1vJEpMvQMiX/aloBKW+1rluSKhYEtLsBJvXd6xyo/7AqyFRuMBATqQh48zTvk8jrJKbF/nY8ckcDDKdV8jmsQgCyBvpqdRC3OK02BR0N4F0X2r3c5OsBPZqYTg58pHqY0gf1SiCIHfotdWIGwYr2QopJAXvdu/0LOPRaO3nGX1waPNwazTt30YMZiCTn13FPxWB/Jd7beVse0wEdLsdvbPPiPT3VjmPjB/dOrWBFJpXCyYAakSw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=tpccb4TZ1YsR6KWpBSoeWK251G+bnNq+QOaR9+z9260=;
+ b=QJAo1yURVw19yYSs3VY9ETb1zgZxmxm4Fd42SNrTbYrpzA03/jSPpqehTm8ik8axlz6j6GNRI39yLCNupYUS1zHQ3SCmn1HKkRnJwJVRFIilmLNAd0WOp/Ouj6zlhVAdnYStsWjoXWsAYNOOwte7vBAHpbfS0oQ14pqYjRvSry84pUh2T4fZCeChE+H1Zoxh+OTydIc+R5VjnO/i84PNW9isH2GfJRotJmtvMMfY+SM60hLUav8BToZX037est7sAxKEMu2REsfNsqnUwUwT66YcbSCR/I7245c4f6pepTjoUaioCxSTiXfZEnCkGQ/A2rSQUzO/M7fyglbMO8eQSw==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=tpccb4TZ1YsR6KWpBSoeWK251G+bnNq+QOaR9+z9260=;
+ b=yF9nk5UJyYyLkSRzSrqQOmfkU7jkVciOKs6kD3DT4cmyd7ER+JPYU9Wskql3IPpCfbVnjzhZafp+w1NjmtC5dghjL558SqIQXwB05ZySSLOCPRwZOFfl63T/sB4N95OKOpQ1ESFB6BmDsJKgUxCzICtpxRQDnZjxkd/l7ZR4k9Q=
+Received: from DS7PR12MB8252.namprd12.prod.outlook.com (2603:10b6:8:ee::7) by
+ IA0PR12MB9011.namprd12.prod.outlook.com (2603:10b6:208:488::8) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7386.30; Tue, 19 Mar 2024 09:57:51 +0000
+Received: from DS7PR12MB8252.namprd12.prod.outlook.com
+ ([fe80::d725:ec0f:5755:769b]) by DS7PR12MB8252.namprd12.prod.outlook.com
+ ([fe80::d725:ec0f:5755:769b%3]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 09:57:51 +0000
+Date: Tue, 19 Mar 2024 15:27:43 +0530
+From: "Gautham R. Shenoy" <gautham.shenoy@amd.com>
+To: Perry Yuan <perry.yuan@amd.com>
+Cc: rafael.j.wysocki@intel.com, Mario.Limonciello@amd.com,
+	viresh.kumar@linaro.org, Borislav.Petkov@amd.com, Ray.Huang@amd.com,
+	Alexander.Deucher@amd.com, Xinmei.Huang@amd.com,
+	oleksandr@natalenko.name, Xiaojian.Du@amd.com, Li.Meng@amd.com,
+	linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v9 5/8] cpufreq: amd-pstate: Bail out if
+ min/max/nominal_freq is 0
+Message-ID: <ZflhlzoGmWCkZjnn@BLR-5CG11610CF.amd.com>
+References: <cover.1710836407.git.perry.yuan@amd.com>
+ <884cab991815707eb10b720e6f72978cbb5e54f6.1710836407.git.perry.yuan@amd.com>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <884cab991815707eb10b720e6f72978cbb5e54f6.1710836407.git.perry.yuan@amd.com>
+X-ClientProxiedBy: MA1P287CA0009.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a00:35::17) To DS7PR12MB8252.namprd12.prod.outlook.com
+ (2603:10b6:8:ee::7)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 4/4] dt-bindings: aspeed: Add eSPI controller
-To: Manojkiran Eda <manojkiran.eda@gmail.com>, patrick.rudolph@9elements.com,
- chiawei_wang@aspeedtech.com, ryan_chen@aspeedtech.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- jk@codeconstruct.com.au, openbmc@lists.ozlabs.org
-References: <20240319093405.39833-1-manojkiran.eda@gmail.com>
- <20240319093405.39833-5-manojkiran.eda@gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319093405.39833-5-manojkiran.eda@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS7PR12MB8252:EE_|IA0PR12MB9011:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	bifZoVAyqd1NjAJUQt9mVOkNCXCsYNDr8/UKetL8vQQOZjQtSOht1ULZMqkTwzTGxayRPHKm8oRSg4ybh4101ticCU/sdQ6ERA0gQCgbXUEEkFvSac1zCN1CXoXIKWz9rh1H9T03k/iKKFYREdv4xXHk0xiMSOAakx8e/ZOQgiQEGDIIJYxfZtx4WHWtOH0ZWJ8tpWD++kohPLzot29Cf+A+KziiFMQfXCKGKJqDOfYtWadlF5gw4epmCweJ08vv1Kmh+LIF4mJtTUfrJFute9zwOhfqUit6vNET/xeiqZPsoq43u/oNkbe2864VK9tf+gAr2lNMjfV5UDVUSMRSSuUPFnC+OLYm02H7Tr2nGGxGOtcC0plhKfafkXl3t+o94iFulHR34Z03yUcNYAbxwU5RBhpJbT8beJXhvIir7RfFnFUuRjKjbJ4KZHru2gD4Ah2doqVizaEyAmV+yrZ8RlMpDRxWGAJ/ba6RND0CHXvjCsKtUsN1+zlv7eGGdYnL39aU9585xE3UMxMN46j7V7RK4JXOe4O+KVrxcH/wVmgbV1svt9Lz75I5GCOLE4en0c21Y1Ntn6NteCcwObM5ANkdtHitoNlRXGDOZLZANRbXRsXDtghq02RK2Q3P+thCCkZI+r+EERysiVap/Hf0Bn5a2k/aRTQcR84JG2aUWYA=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS7PR12MB8252.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?sc1VtjpRmo/cQ9LEL1smkLoV7bnCIDh8KN0VjRMTDswPGyUtnBPj+tSMBce0?=
+ =?us-ascii?Q?nTDU4bEc1r3HC0uPfdf0kfRWLKaa1GjF6sBG/BqBW8FZylHJvrIGotp0TKZL?=
+ =?us-ascii?Q?7NWbpAVEFMwUXAGlv/cep0iBLTBD6GfLUMWhxQDN736CBVHMU64jDuaVd7TA?=
+ =?us-ascii?Q?XE2u4QwZhCpjdWmcFL5r+mWVCcqggwYsCplfwkIe3Jr+1w5WP+cC7d7+xv+r?=
+ =?us-ascii?Q?YRzfzMu5fk1JEo8HC8VJoHTYMkwg0aA1wAwCnzXji9Pw3VsO6K9gN15iNSYi?=
+ =?us-ascii?Q?PMYiLIPf0h1k8/60TnbKu3fc6JuRlOPS7/wYJLxyalTzjW7k9FCgZhi+svCj?=
+ =?us-ascii?Q?RKhGmeN1tFiTC3BrPyl5rG3aWHwfMJxhfnTPV/1f/9WcIopm0gwZgvHiChz+?=
+ =?us-ascii?Q?kpUPTFEzUCS6IQYUsZY/HfeuRBObeSXbFjGwGpfWVpgRXdgtIGobovTl6qPp?=
+ =?us-ascii?Q?F+gz31+oRNUw5oHdTzoJNSpm1uqqlgpYm8jhfyxb2f4DG0JB7mL9oYTvWnLa?=
+ =?us-ascii?Q?EAzlQglmO83GIDpQSpjHVeEn3Mcqrw9KS2eLKeDlYjh2V1WeilggwXWCGMU3?=
+ =?us-ascii?Q?xGP5t5EozeAzI3XJDTwLyY7eQmmgwTg2feSxpfA+CNOechZUElaVfT3Mudxg?=
+ =?us-ascii?Q?QYdaWpUnfqHGVJtAV6Aoj8+aw1+vNJOqO+Hrf9u3r5XrJK/W+yDg5vuyTwTP?=
+ =?us-ascii?Q?DumXZ+I+TxO8QSKAOFSQjTHTWbPDWoPc6nFppLBuxCPIlkYkyVAlmdcJRpP2?=
+ =?us-ascii?Q?K1lRn7tx4WYSl9GnX88dg9OBXgD+toXeJ4J1nJDtFs/UbESz/TZPSBLE9w+5?=
+ =?us-ascii?Q?rYcMLREffnmes9RUp0lNtTSs+Vcn79QWrTT/WzBPNReKtKEf3RPEdMuPhYR1?=
+ =?us-ascii?Q?vPYlUOR653Z30Jgrb2CUmat+yuamoxQZRtRktrNqKndLUn+c/gOcaBxEgbWa?=
+ =?us-ascii?Q?/DyNabQ//1Vfy0+NdbgEz1NlBn20Xkgr5KVu9Lc124g6SVw5+IbWO27eh11d?=
+ =?us-ascii?Q?g89EJUftXYVrAsEEMDvEnTnJMH5KdlXYhlC1VjJfdkVCQrUjf1Yal0/Qp3DQ?=
+ =?us-ascii?Q?lFlCr/x1wcnBILchQlNEEEcA+vIRRfkY703J29NgZCXnq+42MrvP7cdNliCU?=
+ =?us-ascii?Q?7mXFVUEXiLmXLSSiVoXOZhpe/ntHeY2NDzmdE5qMEjadVkaqqIDbh2RLHD81?=
+ =?us-ascii?Q?whjwV3mccrA5rfjshOksmy8rpZQMlwVskcT8Q9SKJeaDcjrmeIT21z50LGmg?=
+ =?us-ascii?Q?cegq/OX7PONmwQ7mFLoYl2eSnYV8tUJF18zNK11bjWjwTVhHWQfeJkumNHPM?=
+ =?us-ascii?Q?ABb4BAkDsG7DXJ/8+jj9nrIAPhwOa0SRFsPVRQ2MEfuAWZ8LXaOmJ6qq//qU?=
+ =?us-ascii?Q?x8Mxi/E3XGDs0mBq/vKUve9jt1xI/j0UOYJplDWyV1FbilRVHydHHtT8E9YL?=
+ =?us-ascii?Q?l4N2ETr9UbREIvlPT0pHT3Lz5cpWafstJMS9lp8tJhceGxrzYfLYOTS/KNp2?=
+ =?us-ascii?Q?jFZZrgOMj/L/yLgBUVbyUja1L+XNgWpo0fbQC++FMFuIrw4N1v9KP7W4ja42?=
+ =?us-ascii?Q?DHmG2bbaI8CLc6D7iUCyPDP6rv7P7shoee7e4iFF?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 54be2efc-76fc-4b72-30aa-08dc47fb0a16
+X-MS-Exchange-CrossTenant-AuthSource: DS7PR12MB8252.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 09:57:51.4840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: uj78nqUgEJo8P6Lhp8CcO1vxXynHqdhOaP1Dsq8D/3icpRHb7baU0RNQNdsJItblleL5elyeJ+/jz6EaH7yvGw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA0PR12MB9011
 
-On 19/03/2024 10:34, Manojkiran Eda wrote:
-> This commit adds the device tree bindings for aspeed eSPI
-> controller.
-> 
-> Although aspeed eSPI hardware supports 4 different channels,
-> this commit only adds the support for flash channel, the
-> bindings for other channels could be upstreamed when the driver
-> support for those are added.
-> 
-> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
+Hello Perry,
+
+On Tue, Mar 19, 2024 at 04:28:40PM +0800, Perry Yuan wrote:
+> The amd-pstate driver cannot work when the min_freq, nominal_freq or
+> the max_freq is zero. When this happens it is prudent to error out
+> early on rather than waiting failing at the time of the governor
+> initialization.
+>
+
+This patch looks good to me.
+
+Reviewed-by: Gautham R. Shenoy <gautham.shenoy@amd.com>
+
+> Signed-off-by: Perry Yuan <perry.yuan@amd.com>
 > ---
->  .../bindings/soc/aspeed/aspeed,espi.yaml      | 94 +++++++++++++++++++
->  1 file changed, 94 insertions(+)
->  create mode 100644 Documentation/devicetree/bindings/soc/aspeed/aspeed,espi.yaml
+>  drivers/cpufreq/amd-pstate.c | 16 ++++++++++------
+>  1 file changed, 10 insertions(+), 6 deletions(-)
 > 
-> diff --git a/Documentation/devicetree/bindings/soc/aspeed/aspeed,espi.yaml b/Documentation/devicetree/bindings/soc/aspeed/aspeed,espi.yaml
-> new file mode 100644
-> index 000000000000..3d3ad528e3b3
-> --- /dev/null
-> +++ b/Documentation/devicetree/bindings/soc/aspeed/aspeed,espi.yaml
+> diff --git a/drivers/cpufreq/amd-pstate.c b/drivers/cpufreq/amd-pstate.c
+> index 132330b4942f..6708c436e1a2 100644
+> --- a/drivers/cpufreq/amd-pstate.c
+> +++ b/drivers/cpufreq/amd-pstate.c
+> @@ -839,9 +839,11 @@ static int amd_pstate_cpu_init(struct cpufreq_policy *policy)
+>  	nominal_freq = READ_ONCE(cpudata->nominal_freq);
+>  	lowest_nonlinear_freq = READ_ONCE(cpudata->lowest_nonlinear_freq);
+>  
+> -	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
+> -		dev_err(dev, "min_freq(%d) or max_freq(%d) value is incorrect\n",
+> -			min_freq, max_freq);
+> +	if (min_freq <= 0 || max_freq <= 0 ||
+> +	    nominal_freq <= 0 || min_freq > max_freq) {
+> +		dev_err(dev,
+> +			"min_freq(%d) or max_freq(%d) or nominal_freq (%d) value is incorrect\n",
+> +			min_freq, max_freq, nominal_freq);
+>  		ret = -EINVAL;
+>  		goto free_cpudata1;
+>  	}
+> @@ -1299,9 +1301,11 @@ static int amd_pstate_epp_cpu_init(struct cpufreq_policy *policy)
+>  	max_freq = READ_ONCE(cpudata->max_freq);
+>  	nominal_freq = READ_ONCE(cpudata->nominal_freq);
+>  	lowest_nonlinear_freq = READ_ONCE(cpudata->lowest_nonlinear_freq);
+> -	if (min_freq < 0 || max_freq < 0 || min_freq > max_freq) {
+> -		dev_err(dev, "min_freq(%d) or max_freq(%d) value is incorrect\n",
+> -				min_freq, max_freq);
+> +	if (min_freq <= 0 || max_freq <= 0 ||
+> +	    nominal_freq <= 0 || min_freq > max_freq) {
+> +		dev_err(dev,
+> +			"min_freq(%d) or max_freq(%d) or nominal_freq(%d) value is incorrect\n",
+> +			min_freq, max_freq, nominal_freq);
+>  		ret = -EINVAL;
+>  		goto free_cpudata1;
+>  	}
+> -- 
+> 2.34.1
+>
 
-Why Rob's comments got ignored?
-
-This is not a soc component.
-
-> @@ -0,0 +1,94 @@
-> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> +# # Copyright (c) 2024 IBM Corporation.
-> +# # Copyright (c) 2021 Aspeed Technology Inc.
-> +%YAML 1.2
-> +---
-> +$id: http://devicetree.org/schemas/soc/aspeed/aspeed,espi.yaml#
-> +$schema: http://devicetree.org/meta-schemas/core.yaml#
-> +
-> +title: Aspeed eSPI Controller
-> +
-> +maintainers:
-> +  - Manojkiran Eda <manojkiran.eda@gmail.com>
-> +  - Patrick Rudolph <patrick.rudolph@9elements.com>
-> +  - Chia-Wei Wang <chiawei_wang@aspeedtech.com>
-> +  - Ryan Chen <ryan_chen@aspeedtech.com>
-> +
-> +description:
-> +  Aspeed eSPI controller implements a device side eSPI endpoint device
-> +  supporting the flash channel.
-
-Explain what is eSPI.
-
-> +
-> +properties:
-> +  compatible:
-> +    items:
-> +      - enum:
-> +          - aspeed,ast2500-espi
-> +          - aspeed,ast2600-espi
-> +      - const: simple-mfd
-
-
-That's not simple-mfd. You have driver for this. Drop.
-
-> +      - const: syscon
-
-That's not syscon. Why do you have ranges then? Where is any explanation
-of hardware which would justify such combination?
-
-> +
-> +  reg:
-> +    maxItems: 1
-> +
-> +  "#address-cells":
-> +    const: 1
-> +
-> +  "#size-cells":
-> +    const: 1
-> +
-> +  ranges: true
-> +
-> +patternProperties:
-> +  "^espi-ctrl@[0-9a-f]+$":
-> +    type: object
-> +
-> +    description: Controls the flash channel of eSPI hardware
-
-That explains nothing. Unless you wanted to use here MTD bindings.
-
-This binding did not improve much. I don't understand why this is not
-SPI (nothing in commit msg, nothing in description), what is eSPI, why
-do you need child device, what are other children (commit msg is quite
-vague here). Why there is no MTD bindings here?
-
-All this looks like crafted for your driver, instead of using existing
-DT bindings like SPI or MTD/NAND. This is a strong no-go.
-
-> +
-> +    properties:
-> +      compatible:
-> +        items:
-
-No items, just use enum.
-
-> +          - enum:
-> +              - aspeed,ast2500-espi-ctrl
-> +              - aspeed,ast2600-espi-ctrl
-> +
-> +      interrupts:
-> +        maxItems: 1
-> +
-> +      clocks:
-> +        maxItems: 1
-> +
-> +    required:
-> +      - compatible
-> +      - interrupts
-> +      - clocks
-> +
-> +required:
-> +  - compatible
-> +  - reg
-> +  - "#address-cells"
-> +  - "#size-cells"
-> +  - ranges
-> +
-> +additionalProperties: false
-> +
-> +examples:
-> +  - |
-> +    #include <dt-bindings/interrupt-controller/arm-gic.h>
-> +    #include <dt-bindings/clock/ast2600-clock.h>
-> +
-> +    espi: espi@1e6ee000 {
-> +        compatible = "aspeed,ast2600-espi", "simple-mfd", "syscon";
-> +        reg = <0x1e6ee000 0x1000>;
-> +
-> +        #address-cells = <1>;
-> +        #size-cells = <1>;
-> +        ranges = <0x0 0x1e6ee000 0x1000>;
-> +
-> +        espi_ctrl: espi-ctrl@0 {
-> +            compatible = "aspeed,ast2600-espi-ctrl";
-> +            reg = <0x0 0x800>,<0x0 0x4000000>;
-
-Fix your style in DTS. There is always a space after ','.
-
-> +            reg-names = "espi_ctrl","espi_flash";
-> +            interrupts = <GIC_SPI 42 IRQ_TYPE_LEVEL_HIGH>;
-> +            clocks = <&syscon ASPEED_CLK_GATE_ESPICLK>;
-> +        };
-> +    };
-
-Best regards,
-Krzysztof
-
+--
+Thanks and Regards
+gautham.
 
