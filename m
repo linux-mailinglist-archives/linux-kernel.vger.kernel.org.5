@@ -1,392 +1,177 @@
-Return-Path: <linux-kernel+bounces-107646-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107644-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id EFEC987FF92
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:26:48 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3FDF787FF8B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:26:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A3E6B28468E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:26:47 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id AA7A21F23E00
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:26:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A89C980634;
-	Tue, 19 Mar 2024 14:26:19 +0000 (UTC)
-Received: from rtg-sunil-navi33.amd.com (unknown [165.204.156.251])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DCCF81AB7;
+	Tue, 19 Mar 2024 14:26:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="pYBWP/LO"
+Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2133.outbound.protection.outlook.com [40.107.243.133])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4892D8174C
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:26:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=165.204.156.251
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710858378; cv=none; b=BDax8yqWtNBrerEZgiHvRd2svObWzrzwVPoK3Zgx2vJhF7Ck9bdjIc/3qc5RoQQ5cCnTRFKx4YfDaYQ26S5tDwoVbaoOB9Zxh4h2+3BV1GSkqNg8HoNUJPqatPV8VhyA4I6/8J47eldpAHzCumew6WCvMNeyCUNoKQ79IN6MeUY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710858378; c=relaxed/simple;
-	bh=0fHhnvqcuVskM9fpFuXPugFuWgGZNoQn/T23Bfw4/Ks=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=TwxW6k7DBENHabz65zh0zKUHzw5DCapoV+KoddR1pSVDNxExb84hS7DaTyoGNAy6dR2Xu1O1SCfLS69Ge688Pl6QGB7z3dkU8cY1bsFli6FCnovYySFq/fUt1Wj18BQXYgQel+/0Eb3Q8vPpPg+EUdDSqSuqQ8QQ+mIwavbUcTo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com; arc=none smtp.client-ip=165.204.156.251
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=rtg-sunil-navi33.amd.com
-Received: from rtg-sunil-navi33.amd.com (localhost [127.0.0.1])
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Debian-22ubuntu3) with ESMTP id 42JEQ6p3893772;
-	Tue, 19 Mar 2024 19:56:06 +0530
-Received: (from sunil@localhost)
-	by rtg-sunil-navi33.amd.com (8.15.2/8.15.2/Submit) id 42JEQ6ew893771;
-	Tue, 19 Mar 2024 19:56:06 +0530
-From: Sunil Khatri <sunil.khatri@amd.com>
-To: Alex Deucher <alexander.deucher@amd.com>,
-        =?UTF-8?q?Christian=20K=C3=B6nig?= <christian.koenig@amd.com>,
-        Shashank Sharma <shashank.sharma@amd.com>
-Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
-        linux-kernel@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
-        Felix Kuehling <Felix.Kuehling@amd.com>,
-        Lijo Lazar <lijo.lazar@amd.com>, Sunil Khatri <sunil.khatri@amd.com>
-Subject: [PATCH v2] drm/amdgpu: refactor code to reuse system information
-Date: Tue, 19 Mar 2024 19:55:52 +0530
-Message-Id: <20240319142552.893674-1-sunil.khatri@amd.com>
-X-Mailer: git-send-email 2.34.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 19F963BBD4;
+	Tue, 19 Mar 2024 14:26:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.133
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710858368; cv=fail; b=swtwbFeq6gXP9X988X1ioAvLdwLz5mSpvyEQ5TxUIOboFTW/RkMpCAlsCT77UAsXCutM6NJyQup+yZNxXpOqKYVVK2F/ZXcoEBytQT51xYVxuF34nVDOG5an1m/DyWCUhgBg4vouGm8WCXpYUn3TTA8e7b43wv+FzC38w9sAekA=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710858368; c=relaxed/simple;
+	bh=c1yHo/rslxZ4a7VM2c7tYsMh7HDymuoBYwYmdoTt96A=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=DnGM3M2d8eSuFaPg/kFyRrRWvPqWOQdD0wQCHtI5hRb9L2RZJ9NQxBYqE72yHMLPvSo0V0SY0xHzmFQCoLTJHndCQSTXMBndFlTq+VlGt46DCb/s3j1L8ObpDuGcaX2JS6wqWY9JMc7k8Nx8VCOmOD9aATVmlpfrQhfOK7yNOy0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=pYBWP/LO; arc=fail smtp.client-ip=40.107.243.133
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=D6Mnws2FRQbV35ljQbJS1DvzVhmAbxkGt9swco6p30H8xeeOsKGjJ8lPcqIyI6k3hVWhRHRQWcrn/ywIDjPR/jfz9wakjUT3jR8YOPuAOwnLDoWAWtDjkYa3upjqLCvW+dkQ4RgeVdFFOW+GcKu6V/hJqT7ErOfXt3Bn1ykKsI3VEGFe7R+J6qEVw35u4eHKoKJ0JhM5BO/uIxqLQ31+kXzQSAyVpBZcYVUTmGXx2mzSX6X9foHFV2RuYJM9QGhjJH4kzPDacHKqXda0YFIOSQ1dSKkS7Z6Hc7xGCoZsn1DGAKKgRaBdwHe1SQ18HOuJUmoABIMpILNK0rY7xxP6Dg==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=1Qn19pTdajoaYoKQKKj6XWFsvxA90ru+ajjkRxTc5Ys=;
+ b=BCzJqCxyTe3pt3wijK8Xh4NbjdVGBz17lDYiWSdMhf6/t2nDnVMzmUO3qsorXkFm+P/Oth9DitIDXCYF8vcUiEr+2FzTkrGMK68zydLCo6TKZ3NGqDiXRJRrOv+JePY2tf2EKjPVhpFgARYLVkwRx0WKgpetL5oZnzmWtmQvjgO/buZTRUxKjgGBXG9PZSB0Y4ACq6DtKqtmuTgulWXtgDVUtj2DcR2vduIfMx6wyXenHW5beJEf9v/GCYV66Sv7+UykkaaD70Y62aci6FNkB8WdjHYrEdOwY2yjJ5HV8bAdruN5E5v8K8F9XYESRum8NRiBd/tLC9Hxyh9UWcvcag==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
+ dkim=pass header.d=nvidia.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=1Qn19pTdajoaYoKQKKj6XWFsvxA90ru+ajjkRxTc5Ys=;
+ b=pYBWP/LOdf66LQxzii/SmTi1CS/7w86T++nNP0C52pdTv3sN9bYaTkcoDDuQ4eG3uP/xdzIgpPHBNJVeHIlvN/kiyJlOAnRPMy4vHeXoj/3Kn0vVsxngeswoLPBoUmSXb7uk3K0mni7OVbapN0eaG4SHYmwE3LTpLjwrakbvVWkeEh1UIUT3SMSbDkqyJPqR7lm5ekASUFEtKbO6Pu5a4W5OPaesfdMcMOOGPDwEtrgRfLwKOckSGg8bzp9CQ/aIUGFWq0rHu2NoJgP3/gY/urWCCS/quE6wtCjbjuz5smSuzDcZgSv1XjMt5+7Arbh9iUB6HrHnwLD5RIyEVphKzA==
+Received: from CY5PR12MB6179.namprd12.prod.outlook.com (2603:10b6:930:24::22)
+ by SA1PR12MB5640.namprd12.prod.outlook.com (2603:10b6:806:23e::9) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 19 Mar
+ 2024 14:26:02 +0000
+Received: from CY5PR12MB6179.namprd12.prod.outlook.com
+ ([fe80::b93d:10a3:632:c543]) by CY5PR12MB6179.namprd12.prod.outlook.com
+ ([fe80::b93d:10a3:632:c543%4]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 14:26:02 +0000
+Date: Tue, 19 Mar 2024 16:25:57 +0200
+From: Ido Schimmel <idosch@nvidia.com>
+To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
+Cc: Hangbin Liu <liuhangbin@gmail.com>, netdev@vger.kernel.org,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [BUG] selftests/net: test_vxlan_mdb.sh: 84 out of 642 tests
+ [FAIL]
+Message-ID: <ZfmgdVUmy-DgNklu@shredder>
+References: <5bb50349-196d-4892-8ed2-f37543aa863f@alu.unizg.hr>
+ <Zfe2cGv_EWFAZXAJ@Laptop-X1>
+ <f005453c-c7cf-4e1d-b266-ffe1cf8fc79e@alu.unizg.hr>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f005453c-c7cf-4e1d-b266-ffe1cf8fc79e@alu.unizg.hr>
+X-ClientProxiedBy: LO4P123CA0532.GBRP123.PROD.OUTLOOK.COM
+ (2603:10a6:600:2c5::14) To CY5PR12MB6179.namprd12.prod.outlook.com
+ (2603:10b6:930:24::22)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CY5PR12MB6179:EE_|SA1PR12MB5640:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	pSiVh5gLOpVhVGgd8IOft1GDfaEqZYLvjbGz2ZKMYKuFnbrbe2vxuzMjCcCG3ZVTuBtENGTawYYizFnaq+DLlF0DZosJg2b/loQZFQnTKW9y1X/ZaK8gbbUP2kV78y0aV6EcIg+TXyzB8LvJ8SSdf5VGAKKFoNitokIUgMhkhWQbyUfC9EDmMBvxZFnbhcidPr1e5Kidf52WTx1Dhthl3h2jftVDKbJOP4OEE947/5Fla7jJaQUug9fQwz6TBQmeTIhINNYX4UHwaKSjDw+/e5nRBE71Z/NxUvx4WI4kbCirMIW0XerXdcfH8oBxIaKGXQ4Slm/d/rF/udUjNvWXKCO/cKs4k7+kJy1qVocrNYCvcw3LDdtQU1ZePC/GMuZyaCrNKr6J75p3ClTGwKO8/BG5peo6wY1E/XrfRwD7G/IzT6mjDniAOWevebIjvCmPuw3xgAfDaBjeQ9eavwz0F9HN2ip6Sebzt1uMYSBSc5ByisreCgX6x3iCy2hIUzmzOwoEZwYKNwo9tl0YLjJI2xgr5SbJmbcBeLWIC5SgbuTyE4jEjZQFAdAvfjYSKnQrASuFpaflTmDJPUzvILQmN1IzybwtafXfay+cPB2aejnyqkT32taG7uUUFEqnTMhBQTId9ZlvN/m09HbnP11VFb3Mex/oIo5bNQfmnKQV1vc=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:CY5PR12MB6179.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(376005)(366007)(7416005);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?LMCppPAfgH8RQ0aBP9WZTas0SURrJ5As0osHByNW3XVHNrxZYO1SdzrQzCY0?=
+ =?us-ascii?Q?kMT71djVRc0YJbJY6JipXjgydWa/DGWgFsUv1F6ZwSxUSSIBuUPtHY8vl00t?=
+ =?us-ascii?Q?wYhvHQFYuI+2Vd9vCc0ODqlH9pSu03ta2RU+IVdABKo3JyGjUjiSZt5RImiW?=
+ =?us-ascii?Q?XAPp+/SByaWdCVl0KI1rLKHtyxrAoD3O7qorT7Dgh0EFfBwkYXGraBRsOnAF?=
+ =?us-ascii?Q?dArvcT1zxuyn/GDvFMNpTynMoHu2WyAGvo42Pmus+WmRMXLmvGAL/owtbvlQ?=
+ =?us-ascii?Q?4SNgVGzn7LqvrDay7RmKclYP9OdYv52NlypOTYoYr9nnazdGPIX4qnFhYVL3?=
+ =?us-ascii?Q?PY2gRIjlRhfPt6HmdlG8QMb08rQNf+BnzukbpBQx8sKxSahd/gKx+Y1udeCR?=
+ =?us-ascii?Q?vhv8bqb3JXTd1O3NawFyNU1V4iqeQQgMGecxW6PzhFSSorW1Iot5I6S/nUcG?=
+ =?us-ascii?Q?nkmT4JV1dH5RI7YuR1AiNB1FntvNou7zlazNsgv+fVakGK9sQ8eb0FDBP4oP?=
+ =?us-ascii?Q?tcmGOgScE5yV5apdNpYZwI1Wkz2ZliW9syj5uLD5evp42uxqqU359gyjxjeU?=
+ =?us-ascii?Q?6ep6qUeR8ptejh3lSGknSdD5G1wjSnLEE1pAhvBnqaHqztPGczbPrmxBkWIS?=
+ =?us-ascii?Q?WHrf5sT06eRXaaxEY01/00ACX2f+zlUaMnGp09/g2ZHf8/insl91aAyyTmV/?=
+ =?us-ascii?Q?KFeHZrb6SGTwRL2K+4NEFsaRP22bd6yn/aqBYLAXlucGLgA7xlNsRWNGl7hw?=
+ =?us-ascii?Q?nFRjVOJ00dvt+rW+1TaysNybExgth5dm9HLzPU1ZXyKBfbGVWXmv5oOnkbzv?=
+ =?us-ascii?Q?JqAS/7SQNce8Wjw36E0XtlvlXvBV/heTx2ScmlIKGO9fTyqJpmINgfeDu2JR?=
+ =?us-ascii?Q?GTcAf/o6oWv3ii6pDln5eI69IYBkFH8JHOAoV/axZXEBjQIqsTALEhZzN++p?=
+ =?us-ascii?Q?ytXxFGYuxwsU/s0Gh/jLDyW0o2z1noMxFolDLaMGNT5wqY9THRWqWoQMnR/c?=
+ =?us-ascii?Q?wQxxzsiVMzk/dRmjCu3ej4tExQ63c8OiSqtMRiRzJRjRwsNoXfzXRHKBWOk+?=
+ =?us-ascii?Q?+EMtFplkPEmCNySm7M/uaI2vlWwJZ9BWhfzb/lcrrf7Hpfszc5PWxev0neWA?=
+ =?us-ascii?Q?TkS4BCq64OLDqrgq/bDKkFrtM1FVGSp0iqQzaHUCLU/dIgOVTB8w1Y6+AABW?=
+ =?us-ascii?Q?QPnXzgwayM7RV7/5WWlTKTmUgYLi9pEtibhz3ATFMFhegS2Ouc9huJpX16dO?=
+ =?us-ascii?Q?vpoviNAixC91NNxys7KUevM5aqPYnDD/qMsz1Vf6rlrtaHH1zVgPKicOXY9K?=
+ =?us-ascii?Q?DUyngiL+QfVamc3gWyWx22B3wA9MnHzWChFPfnH33VUsyVs6gUxU3X+o56rl?=
+ =?us-ascii?Q?V5TnBCcI+LFVfSYuSKSZejFTSlvtqm3d4utNHJT1SFmnN13+DY+2U0pLKKwv?=
+ =?us-ascii?Q?4q0hfyYymdqYVpK1Bnc7DQGLd5IJFUEzNEfmDc1coGTfmdKv2J/7k9yBFVeX?=
+ =?us-ascii?Q?joqU/7S05badADdZPGV1o4/thvWlOm8+zRuDxkG+B91wAnjj6IoldP/sz87N?=
+ =?us-ascii?Q?48ExkKmcyME8nxlOnYcZuCM19XAOnjd1sXA0cjbg?=
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 75b2571d-eb41-40b4-8331-08dc482080d6
+X-MS-Exchange-CrossTenant-AuthSource: CY5PR12MB6179.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 14:26:01.9064
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Xuirl9XAOkvlnvLmPAEN9RTb+WU0434hEPC52kNjAJ3BFvyBIL6rDX1hI4yd9NMvCvE4kD0NInjq0xfwgiZZpQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA1PR12MB5640
 
-Refactor the code so debugfs and devcoredump can reuse
-the common information and avoid unnecessary copy of it.
+On Tue, Mar 19, 2024 at 06:05:16AM +0100, Mirsad Todorovac wrote:
+> On 3/18/24 04:35, Hangbin Liu wrote:
+> > On Sun, Mar 17, 2024 at 12:19:12AM +0100, Mirsad Todorovac wrote:
+> > > Hi,
+> > > 
+> > > While running kselftest on vanilla torvalds tree kernel commit v6.8-11167-g4438a810f396,
+> > > the test suite reported a number of errors.
+> > > 
+> > > I was using the latest iproute2-next suite on an Ubuntu 22.04 LTS box.
+> > > 
+> > > # Tests passed: 558
+> > > # Tests failed:  84
+> > > not ok 90 selftests: net: test_vxlan_mdb.sh # exit=1
+> > 
+> > FYI, I tested with 6.8 kernel with net tree. All passed.
+> > 
+> > Data path: MDB torture test - IPv6 overlay / IPv6 underlay
+> > ----------------------------------------------------------
+> > TEST: Torture test                                                  [ OK ]
+> > 
+> > Tests passed: 642
+> > Tests failed:   0
+> > 
+> > # uname -r
+> > 6.8.0-virtme
+> > 
+> > Thanks
+> > Hangbin
+> 
+> Hi, Hangbin,
+> 
+> I am running an Ubuntu 22.04 LTS configuration.
 
-created a new file which would be the right place to
-hold functions which will be used between ioctl, debugfs
-and devcoredump.
+Didn't get your first mail for some reason. Anyway, it might be related
+to the fact that Ubuntu is using an old version of libnet:
 
-Cc: Christian König <christian.koenig@amd.com>
-Cc: Alex Deucher <alexander.deucher@amd.com>
-Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
----
- drivers/gpu/drm/amd/amdgpu/Makefile         |   2 +-
- drivers/gpu/drm/amd/amdgpu/amdgpu.h         |   1 +
- drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c | 151 ++++++++++++++++++++
- drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c     | 118 +--------------
- 4 files changed, 157 insertions(+), 115 deletions(-)
- create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+https://launchpad.net/ubuntu/+source/libnet
 
-diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
-index 4536c8ad0e11..05d34f4b18f5 100644
---- a/drivers/gpu/drm/amd/amdgpu/Makefile
-+++ b/drivers/gpu/drm/amd/amdgpu/Makefile
-@@ -80,7 +80,7 @@ amdgpu-y += amdgpu_device.o amdgpu_doorbell_mgr.o amdgpu_kms.o \
- 	amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
- 	amdgpu_fw_attestation.o amdgpu_securedisplay.o \
- 	amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
--	amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o
-+	amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o amdgpu_devinfo.o
- 
- amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
- 
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-index 9c62552bec34..0267870aa9b1 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
-@@ -1609,4 +1609,5 @@ extern const struct attribute_group amdgpu_vram_mgr_attr_group;
- extern const struct attribute_group amdgpu_gtt_mgr_attr_group;
- extern const struct attribute_group amdgpu_flash_attr_group;
- 
-+int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info);
- #endif
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
-new file mode 100644
-index 000000000000..fdcbc1984031
---- /dev/null
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
-@@ -0,0 +1,151 @@
-+// SPDX-License-Identifier: MIT
-+/*
-+ * Copyright 2024 Advanced Micro Devices, Inc.
-+ *
-+ * Permission is hereby granted, free of charge, to any person obtaining a
-+ * copy of this software and associated documentation files (the "Software"),
-+ * to deal in the Software without restriction, including without limitation
-+ * the rights to use, copy, modify, merge, publish, distribute, sublicense,
-+ * and/or sell copies of the Software, and to permit persons to whom the
-+ * Software is furnished to do so, subject to the following conditions:
-+ *
-+ * The above copyright notice and this permission notice shall be included in
-+ * all copies or substantial portions of the Software.
-+ *
-+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
-+ * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
-+ * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
-+ * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
-+ * OTHER DEALINGS IN THE SOFTWARE.
-+ *
-+ */
-+
-+#include "amdgpu.h"
-+#include "amd_pcie.h"
-+
-+#include <drm/amdgpu_drm.h>
-+
-+int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info)
-+{
-+	int ret;
-+	uint64_t vm_size;
-+	uint32_t pcie_gen_mask;
-+
-+	if (dev_info == NULL)
-+		return -EINVAL;
-+
-+	dev_info->device_id = adev->pdev->device;
-+	dev_info->chip_rev = adev->rev_id;
-+	dev_info->external_rev = adev->external_rev_id;
-+	dev_info->pci_rev = adev->pdev->revision;
-+	dev_info->family = adev->family;
-+	dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
-+	dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
-+	/* return all clocks in KHz */
-+	dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
-+	if (adev->pm.dpm_enabled) {
-+		dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
-+		dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
-+		dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
-+		dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
-+	} else {
-+		dev_info->max_engine_clock =
-+			dev_info->min_engine_clock =
-+				adev->clock.default_sclk * 10;
-+		dev_info->max_memory_clock =
-+			dev_info->min_memory_clock =
-+				adev->clock.default_mclk * 10;
-+		}
-+	dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
-+	dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
-+		adev->gfx.config.max_shader_engines;
-+	dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
-+	dev_info->ids_flags = 0;
-+	if (adev->flags & AMD_IS_APU)
-+		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
-+	if (adev->gfx.mcbp)
-+		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
-+	if (amdgpu_is_tmz(adev))
-+		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
-+	if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
-+		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
-+
-+	vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
-+	vm_size -= AMDGPU_VA_RESERVED_TOP;
-+
-+	/* Older VCE FW versions are buggy and can handle only 40bits */
-+	if (adev->vce.fw_version && adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
-+		vm_size = min(vm_size, 1ULL << 40);
-+
-+	dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
-+	dev_info->virtual_address_max = min(vm_size, AMDGPU_GMC_HOLE_START);
-+
-+	if (vm_size > AMDGPU_GMC_HOLE_START) {
-+		dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
-+		dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
-+	}
-+	dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
-+	dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
-+	dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
-+	dev_info->cu_active_number = adev->gfx.cu_info.number;
-+	dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
-+	dev_info->ce_ram_size = adev->gfx.ce_ram_size;
-+	memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
-+	       sizeof(adev->gfx.cu_info.ao_cu_bitmap));
-+	memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
-+	       sizeof(dev_info->cu_bitmap));
-+	dev_info->vram_type = adev->gmc.vram_type;
-+	dev_info->vram_bit_width = adev->gmc.vram_width;
-+	dev_info->vce_harvest_config = adev->vce.harvest_config;
-+	dev_info->gc_double_offchip_lds_buf =
-+		adev->gfx.config.double_offchip_lds_buf;
-+	dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
-+	dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
-+	dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
-+	dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
-+	dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
-+	dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
-+	dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
-+
-+	if (adev->family >= AMDGPU_FAMILY_NV)
-+		dev_info->pa_sc_tile_steering_override =
-+			adev->gfx.config.pa_sc_tile_steering_override;
-+
-+	dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
-+
-+	/* Combine the chip gen mask with the platform (CPU/mobo) mask. */
-+	pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
-+	dev_info->pcie_gen = fls(pcie_gen_mask);
-+	dev_info->pcie_num_lanes =
-+		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
-+		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
-+		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
-+		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
-+		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
-+		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
-+
-+	dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
-+	dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
-+	dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
-+	dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
-+	dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
-+				    adev->gfx.config.gc_gl1c_per_sa;
-+	dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
-+	dev_info->mall_size = adev->gmc.mall_size;
-+
-+
-+	if (adev->gfx.funcs->get_gfx_shadow_info) {
-+		struct amdgpu_gfx_shadow_info shadow_info;
-+
-+		ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
-+		if (!ret) {
-+			dev_info->shadow_size = shadow_info.shadow_size;
-+			dev_info->shadow_alignment = shadow_info.shadow_alignment;
-+			dev_info->csa_size = shadow_info.csa_size;
-+			dev_info->csa_alignment = shadow_info.csa_alignment;
-+		}
-+	}
-+	return 0;
-+}
-diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-index a66d47865e3b..c924ba14f9a4 100644
---- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-+++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
-@@ -850,125 +850,15 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
- 	}
- 	case AMDGPU_INFO_DEV_INFO: {
- 		struct drm_amdgpu_info_device *dev_info;
--		uint64_t vm_size;
--		uint32_t pcie_gen_mask;
- 
- 		dev_info = kzalloc(sizeof(*dev_info), GFP_KERNEL);
- 		if (!dev_info)
- 			return -ENOMEM;
- 
--		dev_info->device_id = adev->pdev->device;
--		dev_info->chip_rev = adev->rev_id;
--		dev_info->external_rev = adev->external_rev_id;
--		dev_info->pci_rev = adev->pdev->revision;
--		dev_info->family = adev->family;
--		dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
--		dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
--		/* return all clocks in KHz */
--		dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
--		if (adev->pm.dpm_enabled) {
--			dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
--			dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
--			dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
--			dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
--		} else {
--			dev_info->max_engine_clock =
--				dev_info->min_engine_clock =
--					adev->clock.default_sclk * 10;
--			dev_info->max_memory_clock =
--				dev_info->min_memory_clock =
--					adev->clock.default_mclk * 10;
--		}
--		dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
--		dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
--			adev->gfx.config.max_shader_engines;
--		dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
--		dev_info->ids_flags = 0;
--		if (adev->flags & AMD_IS_APU)
--			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
--		if (adev->gfx.mcbp)
--			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
--		if (amdgpu_is_tmz(adev))
--			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
--		if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
--			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
--
--		vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
--		vm_size -= AMDGPU_VA_RESERVED_TOP;
--
--		/* Older VCE FW versions are buggy and can handle only 40bits */
--		if (adev->vce.fw_version &&
--		    adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
--			vm_size = min(vm_size, 1ULL << 40);
--
--		dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
--		dev_info->virtual_address_max =
--			min(vm_size, AMDGPU_GMC_HOLE_START);
--
--		if (vm_size > AMDGPU_GMC_HOLE_START) {
--			dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
--			dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
--		}
--		dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
--		dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
--		dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
--		dev_info->cu_active_number = adev->gfx.cu_info.number;
--		dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
--		dev_info->ce_ram_size = adev->gfx.ce_ram_size;
--		memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
--		       sizeof(adev->gfx.cu_info.ao_cu_bitmap));
--		memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
--		       sizeof(dev_info->cu_bitmap));
--		dev_info->vram_type = adev->gmc.vram_type;
--		dev_info->vram_bit_width = adev->gmc.vram_width;
--		dev_info->vce_harvest_config = adev->vce.harvest_config;
--		dev_info->gc_double_offchip_lds_buf =
--			adev->gfx.config.double_offchip_lds_buf;
--		dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
--		dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
--		dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
--		dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
--		dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
--		dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
--		dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
--
--		if (adev->family >= AMDGPU_FAMILY_NV)
--			dev_info->pa_sc_tile_steering_override =
--				adev->gfx.config.pa_sc_tile_steering_override;
--
--		dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
--
--		/* Combine the chip gen mask with the platform (CPU/mobo) mask. */
--		pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
--		dev_info->pcie_gen = fls(pcie_gen_mask);
--		dev_info->pcie_num_lanes =
--			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
--			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
--			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
--			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
--			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
--			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
--
--		dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
--		dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
--		dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
--		dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
--		dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
--					    adev->gfx.config.gc_gl1c_per_sa;
--		dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
--		dev_info->mall_size = adev->gmc.mall_size;
--
--
--		if (adev->gfx.funcs->get_gfx_shadow_info) {
--			struct amdgpu_gfx_shadow_info shadow_info;
--
--			ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
--			if (!ret) {
--				dev_info->shadow_size = shadow_info.shadow_size;
--				dev_info->shadow_alignment = shadow_info.shadow_alignment;
--				dev_info->csa_size = shadow_info.csa_size;
--				dev_info->csa_alignment = shadow_info.csa_alignment;
--			}
-+		ret = amdgpu_device_info(adev, dev_info);
-+		if (ret == -EINVAL) {
-+			kfree(dev_info);
-+			return ret;
- 		}
- 
- 		ret = copy_to_user(out, dev_info,
--- 
-2.34.1
+I remember fixing similar issues in the past:
 
+https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/commit/?id=cb034948ac292da82cc0e6bc1340f81be36e117d
+
+Will look into it today or later this week.
 
