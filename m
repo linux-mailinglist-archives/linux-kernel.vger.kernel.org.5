@@ -1,149 +1,136 @@
-Return-Path: <linux-kernel+bounces-108096-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108097-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 709458805E4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:12:51 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3809E8805E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:13:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9AB4B21C7A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:12:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id CBD7F1F23502
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:13:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14F2E55C34;
-	Tue, 19 Mar 2024 20:12:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2C78959B76;
+	Tue, 19 Mar 2024 20:13:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="JjEYKWp8"
-Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="V7i4Sz+K"
+Received: from mx0a-0031df01.pphosted.com (mx0a-0031df01.pphosted.com [205.220.168.131])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E22F559B76
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:12:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E4DC45F860;
+	Tue, 19 Mar 2024 20:13:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.168.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710879152; cv=none; b=V0E8ATJHBAciIVIZa1b0P9LcoBHM89a22CMmfeXGe3xS614crgJsHOaouslvQ/pQggct49Bfxc9gGEfb52cpPxxcWtFuK9Y12oPqhW5V4zHiLyp+C8zBlLg94oX+ItW1dhNP9w8AOn2YLSiDD3hiVLeuOfG5YGFWrWJiqG1s0Aw=
+	t=1710879190; cv=none; b=ldtPOyH0RralXh0Z8+vbs2JY2kVWx+NMOJepFNqM2wFULBvQ7+buOLkfqdc6ETfOKh16AsYFeiHyDmjxDBgjZPC3l7RT6IXxFjmoO+1aTDVBitnKVkKlxYRrz9iXNJmiTZKmolnPvwmtvwGhXB++I05cJ3fVgIC9CyrDq+SWKZ4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710879152; c=relaxed/simple;
-	bh=8yaxvB6bUHYBs0zmT9Eiw6XjDqKFmwedLMjHxHXfPnw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SvkLLioKMUQRRthGjBtUIJ79HVCxMGXWZcfPlJquYB2wbOyLYjlrbapR7SkKmj2F/mB2m1dP2/euCFTSYUMktRtKTLWRPORvfHcS9R3xFH/obhXky8aD4VV3rBkNvtzu6aAg2GZXDl/xJ5sb4fp6jS97FW2mVnI2EAFoQlCkFuU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=JjEYKWp8; arc=none smtp.client-ip=209.85.214.176
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1deddb82b43so45725ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:12:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710879150; x=1711483950; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=tX+TNd0OCISuOTBPfi7a9IeALZq1DpePFpW0ki49zWs=;
-        b=JjEYKWp81VZOTPRz0O/AMmHTVGm4LIpxhFNIeDMFRQP7e/5X07nVeEUGvZNXpn7IvL
-         yvHRBSTbEfPC0c+Ky+BisAcCJ5uvAb9gM+rD8x1MIFlT2J439LaVihpxlP085HJRaLWJ
-         phihvpIW/R1CNY1vxIV2yVUWRzfpTfRcpONLXGc247catvviBgsNeCpMhm+KwYpbcRdC
-         g/TviK3v2rDZ3fsSVMgFRpj/wwjMn8TLu8MuIRoQxebUZdvYnsjiQi4aM7m3lDyIXJzt
-         zmudB+54e6KBliUG3zdJ3cgQ91LA5NB7fY1zwiP6PrEwHyI8W9lve3IyBm3DTrLFMG5F
-         cJRQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710879150; x=1711483950;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=tX+TNd0OCISuOTBPfi7a9IeALZq1DpePFpW0ki49zWs=;
-        b=pyc2V8P/YEfIPg8OVxErrRYvbySYqeTuEdCDsaHGvrb5Xn9uWmxK+4hPy4MTjAc/Mj
-         epCmVpkK/yxDmSt/tkpIx6FtCY77JZocds8qjcE8opwco+hKDghRjjVXaHstImX7zRKo
-         Fj9RqJOw74mdZb9186LW5CsCOCCS3rSayrYbuth9C8HmQH2VofAl6NCJR4TrDnuaYh+P
-         GhgV6LoRaRFkJ9Y1jdS+FPTO86+slXTZudVF8wi52EaKOEA2iTRDx0rFot5iiyuzX3Vb
-         u4f3I+rlQXUhcbdDv0kRCxSRHU2JBqK+zip77xUcOch4hdeCEt+npYQlwFMR0eTVpGpf
-         PhXA==
-X-Forwarded-Encrypted: i=1; AJvYcCUpYmSXOfRl7ZKaB1KBVvw+JF9uyWAwbCVXrD5Ag74vaSo2izHZAJwxhhzCoCkC59Oc4Ad7Uuh7NS6PJZyLbIVaFmUcrPN7Aj9xjSmI
-X-Gm-Message-State: AOJu0Yz2O0+Yv360pdzjfFB81Yr9IeK1bKe2o/lzzTsTdD6rJ0r9f7nZ
-	s9buls+oQag08IodkJ+JAzqntHA1s9uOQ6wKJdpJ31jmzQBq6s1DuX2YzgaLktpuw1FPZ4wv+vU
-	NP0ke69Fslpk4P4uC6IDQiYyHDf8j0iFrhoov
-X-Google-Smtp-Source: AGHT+IGbGf1RVMK7axLEkZqDasCPpcTykPmTPG7Mu7HWubRQke5co6hu1xILc3epPRWgfZ6F1xPBBZC5XffRHd5YKKQ=
-X-Received: by 2002:a17:902:d508:b0:1e0:e16:dcc0 with SMTP id
- b8-20020a170902d50800b001e00e16dcc0mr10873plg.13.1710879149903; Tue, 19 Mar
- 2024 13:12:29 -0700 (PDT)
+	s=arc-20240116; t=1710879190; c=relaxed/simple;
+	bh=XSo6Qp5+TTIpAtv1z79spgUBfLtasygSqClrv/83aWw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=WOig6C3vMD0XD7gGs0jtR1ZMItN84oMSUQ99/FR2eBJcwjdk3aldPF8w/GYNgX1BJ1wpnBhKC+jmo+nzvxCNIvIWJ3LjnHWFUHnh5FrMX7yZeujVtbrQdB9Y2YwJr455NhQ7G93boE4nYHhccRPGFHhxAyAS9bV6hrwsm/Bt6us=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=V7i4Sz+K; arc=none smtp.client-ip=205.220.168.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279866.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JJh5Vx008725;
+	Tue, 19 Mar 2024 20:12:41 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=fmu5THVSphdCzmExKKVkeaiKTgxaANSNFePOX3S7iuw=; b=V7
+	i4Sz+KcchDCEHBZspLgAEOXU+KnHuiJZT0xDDlGpF9brzF27UbCuFY+4c0KauPS1
+	yYpJtkm5x0+k0/mqNQ2SxJ5yjcMakV8wiM+NLOfngWv9B1SZ7aNfaddrWjJVXSyn
+	gylXSXfmPKewOFBRBMI+9wLFdxOKTqHZXn5v06Bz8wVLmb3ijAi/qpqd/J7eNcWT
+	cEYE/0oBdBzrVV5FnM6LV70W/NX1zhtOffQ27ENuus3XpVOkQJSaZSBA9y4l8/4p
+	UOcKZ7ZRb5CSoxPuhXr68dAA38sRYjysjWvGK8kieX8+J+UWVhknfNAqQrRRVmSm
+	+nVY7m1ud48wjQBugRJA==
+Received: from nasanppmta01.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wye5n8jsn-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 20:12:40 +0000 (GMT)
+Received: from nasanex01a.na.qualcomm.com (nasanex01a.na.qualcomm.com [10.52.223.231])
+	by NASANPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JKCexf025944
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 20:12:40 GMT
+Received: from [10.110.98.255] (10.80.80.8) by nasanex01a.na.qualcomm.com
+ (10.52.223.231) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 13:12:36 -0700
+Message-ID: <e008b2aa-8a36-44af-ad57-f5cd9658bb4f@quicinc.com>
+Date: Tue, 19 Mar 2024 13:12:35 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319180005.246930-1-visitorckw@gmail.com> <20240319180005.246930-13-visitorckw@gmail.com>
-In-Reply-To: <20240319180005.246930-13-visitorckw@gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 19 Mar 2024 13:12:18 -0700
-Message-ID: <CAP-5=fVcBAxt8Mw72=NCJPRJfjDaJcqk4rjbadgouAEAHz_q1A@mail.gmail.com>
-Subject: Re: [PATCH 12/13] lib min_heap: Add min_heap_sift_up()
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
+Content-Language: en-US
+To: Martin KaFai Lau <martin.lau@linux.dev>
+CC: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, <kernel@quicinc.com>,
+        "David S. Miller" <davem@davemloft.net>,
+        Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
+        Paolo Abeni <pabeni@redhat.com>, <netdev@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, Andrew Halaney
+	<ahalaney@redhat.com>,
+        Martin KaFai Lau <martin.lau@kernel.org>, bpf
+	<bpf@vger.kernel.org>,
+        Daniel Borkmann <daniel@iogearbox.net>,
+        "Alexei
+ Starovoitov" <ast@kernel.org>,
+        Andrii Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+ <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+ <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
+ <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
+ <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
+ <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
+ <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
+ <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
+ <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
+ <65f35e00a83c0_2132294f5@willemb.c.googlers.com.notmuch>
+ <e270b646-dae0-41cf-9ef8-e991738b9c57@quicinc.com>
+ <8d245f5a-0c75-4634-9513-3d420eb2c88f@linux.dev>
+ <d10254cc-a908-4d81-98d2-2eed715e521f@quicinc.com>
+ <66ad9e5b-0126-476e-bf0f-6a33f446c976@quicinc.com>
+ <5b1d5758-3510-47c5-97e9-2edc5112d046@linux.dev>
+From: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+In-Reply-To: <5b1d5758-3510-47c5-97e9-2edc5112d046@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nasanex01a.na.qualcomm.com (10.52.223.231)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-GUID: VMrYGObpInr61SalXL7s6H01AGPAuPip
+X-Proofpoint-ORIG-GUID: VMrYGObpInr61SalXL7s6H01AGPAuPip
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-19_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0 adultscore=0
+ spamscore=0 priorityscore=1501 bulkscore=0 lowpriorityscore=0
+ malwarescore=0 clxscore=1015 mlxlogscore=876 mlxscore=0 suspectscore=0
+ impostorscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403190155
 
-On Tue, Mar 19, 2024 at 11:01=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.co=
-m> wrote:
->
-> Add min_heap_sift_up() to sift up the element at index 'idx' in the
-> heap.
 
-Normally sift up is used to implement the min heap but isn't part of
-the API, eg. there is a sift up in min_heap_push. Should min_heapify
-be renamed to min_heap_sift_down to align with this name?
 
-Thanks,
-Ian
-
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-> ---
->  include/linux/min_heap.h | 20 ++++++++++++++++++++
->  1 file changed, 20 insertions(+)
->
-> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> index ce085137fce7..586965977104 100644
-> --- a/include/linux/min_heap.h
-> +++ b/include/linux/min_heap.h
-> @@ -199,6 +199,26 @@ bool __min_heap_push(struct __min_heap *heap, const =
-void *element, size_t elem_s
->  #define min_heap_push(_heap, _element, _func, _args)   \
->         __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_hea=
-p), _func, _args)
->
-> +/* Sift up ith element from the heap, O(log2(nr)). */
-> +static __always_inline
-> +void __min_heap_sift_up(struct __min_heap *heap, size_t elem_size, size_=
-t idx,
-> +               const struct min_heap_callbacks *func, void *args)
-> +{
-> +       void *data =3D heap->data;
-> +       size_t parent;
-> +
-> +       while (idx) {
-> +               parent =3D (idx - 1) / 2;
-> +               if (func->less(data + parent * elem_size, data + idx * el=
-em_size, args))
-> +                       break;
-> +               func->swp(data + parent * elem_size, data + idx * elem_si=
-ze, args);
-> +               idx =3D parent;
-> +       }
-> +}
-> +
-> +#define min_heap_sift_up(_heap, _idx, _func, _args)    \
-> +       __min_heap_sift_up(&(_heap)->heap, __minheap_obj_size(_heap), _id=
-x, _func, _args)
-> +
->  /* Remove ith element from the heap, O(log2(nr)). */
->  static __always_inline
->  bool __min_heap_del(struct __min_heap *heap, size_t elem_size, size_t id=
-x,
-> --
-> 2.34.1
->
+On 3/19/2024 12:46 PM, Martin KaFai Lau wrote:
+> On 3/18/24 12:02 PM, Abhishek Chauhan (ABC) wrote:
+>>>>>>> I think the "struct inet_frag_queue" also needs a new "user_delivery_time"
+>>>>>>> field. "mono_delivery_time" is already in there.
+>>>> [ ... ]
+>>>>
+>> Martin, Do we really need to add user_delivery_time as part of inet_frag_queue struct? I was wondering why is this required since we are using tstamp_type:2 to
+>> distinguish between timestamp anyway .
+> 
+> 
+> The context for this was before combining mono_delivery_time:1 and user_delivery_time:1 into tstamp_type:2. No need to add user_delivery_time to inet_frag_queue because it is combined into tstamp_type:2. If mono_delivery_time:1 is replaced with tstamp_type:2 in sk_buff, the same should be done in inet_frag_queue.
+> 
+Thats what i was planning to do. This is more or like the patch 3 - when brings in the changes of two bits. 
+Thanks Martin for clarification. 
+> 
 
