@@ -1,145 +1,221 @@
-Return-Path: <linux-kernel+bounces-106961-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106962-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8509A87F60A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:29:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id C656687F60D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:33:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0D4A9B215CB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:29:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1472B21698
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:33:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D30CE7BB12;
-	Tue, 19 Mar 2024 03:29:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="oS8przDC"
-Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D067BB1B;
+	Tue, 19 Mar 2024 03:33:27 +0000 (UTC)
+Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7EC072F5B;
-	Tue, 19 Mar 2024 03:29:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB857BAEE
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:33:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710818948; cv=none; b=F+NMy3H7DApw0Q9oxeMk9AJyW5pjp0ryyZGZK6TKBO6PcRQo1GF9pPntUbSSVIRYRp3eHJgY/kpAhSvVP7ylwKn+mtgHB9FwYSSSL4lcnFfr7BrGCV/6jJBbEisxxKDS6+hOguxKmcKOZ2/GTsVc5hmbykUOabsL2AbdNF6EWPk=
+	t=1710819207; cv=none; b=cpqlbL23JXIgozgB1uEDuFe0PgE+cTgHjl5NgB4JpzYMGs81ESMmYAs2ssx3ggwRYsHN09tpRfzHNaQm8A1JAVzyRYbuKhD87mWkMWMKcM0HLBDVh90wUJu2GCOKv2LypnSP5knjTkDsHTk+oAXP09ComtcbcU2amTYLpM8eTYE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710818948; c=relaxed/simple;
-	bh=Od381JPSUKH8+MmNmWOHeI2X3X/5qdlT2/DqpZ7NYcc=;
-	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=kV3c8zdXQFPvvsZ2fkVp9SjoaeeAoqqbTWs9b/KNC3EXHhQlJLNYfT13va+4uMZS4a0dp/GjG/dnr64bdc2Ik4LKHjdZG2wzl0khC4wMf1HCC01odKg5lV0kGkExWvugYuTDCVTjhnUsZaa0u4Dmj6rR4Wu4khIhw8vCOEwOo64=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=oS8przDC; arc=none smtp.client-ip=205.220.180.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42J2wwp5017456;
-	Tue, 19 Mar 2024 03:29:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
-	from:to:cc:subject:date:message-id:mime-version:content-type; s=
-	qcppdkim1; bh=fe3ESbcgZSyVaQBbKQU/1/nK/Zh67/3lPiSBxhcDGXM=; b=oS
-	8przDCtFSJAZ349r1SjBXE9yVgTCjHx19PCVTXGou9yR8g6qP1XkZDxxKbtVy0h4
-	gtFBTyBm+/+6GO1CroUyxna58hSnTKv8ResJ/wHPU3XRW2l2CnmrtMWOaMXl2LFE
-	R+713GrMi8podvZ3jn/Zr+RgZCFgA8XTfgLdvBkHhcKyWLxtjnQdrOTBXOYlgHob
-	mi+uTqseQXRafk83wgA2tFr1US9f8fQ2MRRzEjXCliEImMIMq9DK7U5x9YojekCh
-	Cl2E8reupUhVxBdw43Ax7jzH0TdqodGLaoTEp/EoEmuEe+zZ9EotrMhQofoEPcFe
-	NZo0d13bppRj4G3drEWw==
-Received: from nasanppmta02.qualcomm.com (i-global254.qualcomm.com [199.106.103.254])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy2cjr1j6-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 03:29:00 +0000 (GMT)
-Received: from nasanex01c.na.qualcomm.com (nasanex01c.na.qualcomm.com [10.45.79.139])
-	by NASANPPMTA02.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42J3SxVp004003
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 03:28:59 GMT
-Received: from hu-lxu5-sha.qualcomm.com (10.80.80.8) by
- nasanex01c.na.qualcomm.com (10.45.79.139) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Mon, 18 Mar 2024 20:28:54 -0700
-From: Ling Xu <quic_lxu5@quicinc.com>
-To: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <robh+dt@kernel.org>,
-        <krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>
-CC: <quic_lxu5@quicinc.com>, <quic_ekangupt@quicinc.com>, <kernel@quicinc.com>,
-        <linux-arm-msm@vger.kernel.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>
-Subject: [PATCH v2] arm64: dts: qcom: sm8650: Add three missing fastrpc-compute-cb nodes
-Date: Tue, 19 Mar 2024 08:58:16 +0530
-Message-ID: <20240319032816.27070-1-quic_lxu5@quicinc.com>
-X-Mailer: git-send-email 2.17.1
+	s=arc-20240116; t=1710819207; c=relaxed/simple;
+	bh=foU7Dh8htpgGcaSBFSwvBOAYFXfZVzC57V6NEB1PYeI=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ky6xsl3vITFI2tqShuN4D37b/RPdc3oCwDEAISdChxTEuJbFrorsXZyt2TPTScUTl3wH56Qf/Jpzp4dHgZ+VvMTSGfexmjio8pzn46dqw+rrsxY+IwTeC+G+9PusehjlvR2lI8mBgO5LyO9JyiICWBz2XhbswC9cWRkwXI2AYIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-366999e233aso24596045ab.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:33:24 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710819203; x=1711424003;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Csjh0lxNo0sPgq8PGq+TzcEtEY7UHn0bf829ioXWN0c=;
+        b=WEM5gnnUfHrQcBDzxz8Baop0OlqTm3gSUjwwraOOVI4kVy9FCU+t2r6qJpQj4tv8cD
+         b+os9CFaivV43OREvcuumFyxfUUkTg02hCGI0n51KSZtRMebUlO2J/h2WprMlHuhV6vc
+         W/AEaecNL+Fr4x2VOEwImLbuHDohA9XiizEALcX4CiwiQOaF3TvQgpBgkK0PnbpxL8yC
+         a9Bxv2NemR0pDdfxc9WY8mnQPU7XCgXU4woG2vxXt9IvUn0W5Gn72zSfnGtqd/j99xkE
+         n1XbbjKc74+cQnBO/zNqehHjPgmYaA3s0uzWnr8EXPSO6VFAZ7erR6REHHObuadZxbCV
+         uMDQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWfjmgSmavc/qJ8TQOk5V1Ir13WMxnejeHWX2hIXdzjBcvhS0OX2N9wkV4WofoGajJLP2Up9pz+bW3/21HwoOXFM9XZ5DttIaI7ZUqs
+X-Gm-Message-State: AOJu0Yz0TQ3JPyquon0UvfINkpg4MBbwnqGd/zNU8yuLUYwEfmduVD8n
+	LW0ds5tp/qpfVsCblz2IWKg0E47lMCrTvYlM8mSQmrtdTXWVVXyNHOJL4o1wBdynKb58k2E+Tb2
+	ap7q7TtNlSbPfT4dhn/S34eLc+0e4/2TarMaOY2kC+FXbhBGhBBAQQ/M=
+X-Google-Smtp-Source: AGHT+IHCxtljGz0UAMsiGPWn/AccGbvldt5Q9YBlfC9M01nPa2qg+X1j8BikjRevWbkLwxSWbIWGJA2tNIdFANltpQFhwgUeAouO
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
- nasanex01c.na.qualcomm.com (10.45.79.139)
-X-QCInternal: smtphost
-X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-ORIG-GUID: BjTA4MaFWz41SJLpLdPHaw2fpt9pZsAo
-X-Proofpoint-GUID: BjTA4MaFWz41SJLpLdPHaw2fpt9pZsAo
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015
- impostorscore=0 lowpriorityscore=0 mlxlogscore=585 suspectscore=0
- mlxscore=0 phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.19.0-2403140001 definitions=main-2403190025
+X-Received: by 2002:a05:6e02:1d97:b0:366:97fc:b9cf with SMTP id
+ h23-20020a056e021d9700b0036697fcb9cfmr91886ila.0.1710819203707; Mon, 18 Mar
+ 2024 20:33:23 -0700 (PDT)
+Date: Mon, 18 Mar 2024 20:33:23 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000e981c10613fb227e@google.com>
+Subject: [syzbot] [xfs?] possible deadlock in xfs_qm_dqfree_one
+From: syzbot <syzbot+b44399433a41aaed7a9f@syzkaller.appspotmail.com>
+To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
+	syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-Add three missing cDSP fastrpc compute-cb nodes for the SM8650 SoC.
+Hello,
 
-Signed-off-by: Ling Xu <quic_lxu5@quicinc.com>
+syzbot found the following issue on:
+
+HEAD commit:    906a93befec8 Merge tag 'efi-fixes-for-v6.9-1' of git://git..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=12d6ea6e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=5206351398500a90
+dashboard link: https://syzkaller.appspot.com/bug?extid=b44399433a41aaed7a9f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-906a93be.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/f096ab7eaede/vmlinux-906a93be.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/52e0859d6157/bzImage-906a93be.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+b44399433a41aaed7a9f@syzkaller.appspotmail.com
+
+======================================================
+WARNING: possible circular locking dependency detected
+6.8.0-syzkaller-11405-g906a93befec8 #0 Not tainted
+------------------------------------------------------
+kswapd0/109 is trying to acquire lock:
+ffff888022fc0958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
+
+but task is already holding lock:
+ffffffff8d930be0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x19a0 mm/vmscan.c:6782
+
+which lock already depends on the new lock.
+
+
+the existing dependency chain (in reverse order) is:
+
+-> #1 (fs_reclaim){+.+.}-{0:0}:
+       __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
+       fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3712
+       might_alloc include/linux/sched/mm.h:312 [inline]
+       slab_pre_alloc_hook mm/slub.c:3746 [inline]
+       slab_alloc_node mm/slub.c:3827 [inline]
+       kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
+       radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
+       radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
+       __radix_tree_create lib/radix-tree.c:613 [inline]
+       radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
+       xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
+       xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
+       xfs_qm_scall_setqlim+0x172/0x1980 fs/xfs/xfs_qm_syscalls.c:300
+       xfs_fs_set_dqblk+0x166/0x1e0 fs/xfs/xfs_quotaops.c:267
+       quota_setquota+0x4c5/0x5f0 fs/quota/quota.c:310
+       do_quotactl+0xb03/0x13e0 fs/quota/quota.c:802
+       __do_sys_quotactl fs/quota/quota.c:961 [inline]
+       __se_sys_quotactl fs/quota/quota.c:917 [inline]
+       __x64_sys_quotactl+0x1b4/0x440 fs/quota/quota.c:917
+       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+       do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+       entry_SYSCALL_64_after_hwframe+0x6d/0x75
+
+-> #0 (&qinf->qi_tree_lock){+.+.}-{3:3}:
+       check_prev_add kernel/locking/lockdep.c:3134 [inline]
+       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+       validate_chain kernel/locking/lockdep.c:3869 [inline]
+       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+       lock_acquire kernel/locking/lockdep.c:5754 [inline]
+       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+       xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
+       xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
+       do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
+       shrink_slab+0x18a/0x1310 mm/shrinker.c:662
+       shrink_one+0x493/0x7c0 mm/vmscan.c:4774
+       shrink_many mm/vmscan.c:4835 [inline]
+       lru_gen_shrink_node mm/vmscan.c:4935 [inline]
+       shrink_node+0x231f/0x3a80 mm/vmscan.c:5894
+       kswapd_shrink_node mm/vmscan.c:6704 [inline]
+       balance_pgdat+0x9a0/0x19a0 mm/vmscan.c:6895
+       kswapd+0x5ea/0xb90 mm/vmscan.c:7164
+       kthread+0x2c1/0x3a0 kernel/kthread.c:388
+       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+
+other info that might help us debug this:
+
+ Possible unsafe locking scenario:
+
+       CPU0                    CPU1
+       ----                    ----
+  lock(fs_reclaim);
+                               lock(&qinf->qi_tree_lock);
+                               lock(fs_reclaim);
+  lock(&qinf->qi_tree_lock);
+
+ *** DEADLOCK ***
+
+1 lock held by kswapd0/109:
+ #0: ffffffff8d930be0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x19a0 mm/vmscan.c:6782
+
+stack backtrace:
+CPU: 3 PID: 109 Comm: kswapd0 Not tainted 6.8.0-syzkaller-11405-g906a93befec8 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+Call Trace:
+ <TASK>
+ __dump_stack lib/dump_stack.c:88 [inline]
+ dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+ check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
+ check_prev_add kernel/locking/lockdep.c:3134 [inline]
+ check_prevs_add kernel/locking/lockdep.c:3253 [inline]
+ validate_chain kernel/locking/lockdep.c:3869 [inline]
+ __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
+ lock_acquire kernel/locking/lockdep.c:5754 [inline]
+ lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+ __mutex_lock_common kernel/locking/mutex.c:608 [inline]
+ __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
+ xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
+ xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
+ do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
+ shrink_slab+0x18a/0x1310 mm/shrinker.c:662
+ shrink_one+0x493/0x7c0 mm/vmscan.c:4774
+ shrink_many mm/vmscan.c:4835 [inline]
+ lru_gen_shrink_node mm/vmscan.c:4935 [inline]
+ shrink_node+0x231f/0x3a80 mm/vmscan.c:5894
+ kswapd_shrink_node mm/vmscan.c:6704 [inline]
+ balance_pgdat+0x9a0/0x19a0 mm/vmscan.c:6895
+ kswapd+0x5ea/0xb90 mm/vmscan.c:7164
+ kthread+0x2c1/0x3a0 kernel/kthread.c:388
+ ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
+
+
 ---
-* v1->v2: Lowercase hex
-  v1: https://lore.kernel.org/linux-arm-msm/20240314063334.31942-1-quic_lxu5@quicinc.com/
----
----
- arch/arm64/boot/dts/qcom/sm8650.dtsi | 32 ++++++++++++++++++++++++++++
- 1 file changed, 32 insertions(+)
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-diff --git a/arch/arm64/boot/dts/qcom/sm8650.dtsi b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-index ba72d8f38420..57158e4606b1 100644
---- a/arch/arm64/boot/dts/qcom/sm8650.dtsi
-+++ b/arch/arm64/boot/dts/qcom/sm8650.dtsi
-@@ -5084,6 +5084,38 @@
- 							 <&apps_smmu 0x19c8 0x0>;
- 						dma-coherent;
- 					};
-+
-+					/* note: secure cb9 in downstream */
-+
-+					compute-cb@10 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <12>;
-+
-+						iommus = <&apps_smmu 0x196c 0x0>,
-+							 <&apps_smmu 0x0c0c 0x20>,
-+							 <&apps_smmu 0x19cc 0x0>;
-+						dma-coherent;
-+					};
-+
-+					compute-cb@11 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <13>;
-+
-+						iommus = <&apps_smmu 0x196d 0x0>,
-+							 <&apps_smmu 0x0c0d 0x20>,
-+							 <&apps_smmu 0x19cd 0x0>;
-+						dma-coherent;
-+					};
-+
-+					compute-cb@12 {
-+						compatible = "qcom,fastrpc-compute-cb";
-+						reg = <14>;
-+
-+						iommus = <&apps_smmu 0x196e 0x0>,
-+							 <&apps_smmu 0x0c0e 0x20>,
-+							 <&apps_smmu 0x19ce 0x0>;
-+						dma-coherent;
-+					};
- 				};
- 			};
- 		};
--- 
-2.17.1
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
