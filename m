@@ -1,169 +1,306 @@
-Return-Path: <linux-kernel+bounces-106868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D794587F4B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:40:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BA9B87F4BD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:47:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 122CB1C2158E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:40:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6C9341C21405
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:47:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 87BF5A29;
-	Tue, 19 Mar 2024 00:40:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3338A29;
+	Tue, 19 Mar 2024 00:46:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Fe4grokg"
-Received: from NAM11-DM6-obe.outbound.protection.outlook.com (mail-dm6nam11on2100.outbound.protection.outlook.com [40.107.223.100])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="AhoOWS/u"
+Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BC553D69;
-	Tue, 19 Mar 2024 00:40:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.223.100
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710808804; cv=fail; b=EC3pngoDNwWWnhbjaUQ/xcIofsr4UYvx5vqGVpiTq7iFgFhvA2m1dzJ6KvZzBF3TsJPgm8R/fRSp5gKsYgzDbcu1JL6N5+xi/Hdl9PfzETwWmt64ZumMfOnaWCyeggtSC/FjlNrvn+FAvITp0yld+ihW1EU9IO+BwQnDytvsagw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710808804; c=relaxed/simple;
-	bh=SxItKw6n2HbvXmCdnEuuBPO/QOsJqWeOnL+Q3AJRl0I=;
-	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=U5PYSRqVEUHl3qIE/QCNDNrGcqKtvO21WQA56Ajaw7nknz2sZN5WyvEjrHqLvOaKrrQxjoo9nXXuDZW6roRPviz9HUOD1V4sT1HQ8WAgYwYUGFQF/mee6hxG46nUEjGJZFzaNGAVEBO7pw1zMWw3WxYNxuzzSnVRoztgOfbtFCM=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Fe4grokg; arc=fail smtp.client-ip=40.107.223.100
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=cFaSRIIU+VU0BTT/CuzR75HhMUuJDP0g8CIH+Fin1bOW0qFOg3BZira58vUUQB0IVMLHuY/6oOEduRm0/x/cLIuSpSYgzKZ96h4UDiVIlRqlf8cL0E+KotBwAnM10jFFj2iYj1QLn1JJK09HvZdpjXh3E45Il58jGi9srN5lwirmfrLT9lFiZRtYMiDla6T1X7u7U+QfU164hs45fqSLyUW2LBGQVzZmjTVD2KLFtRCEZD7JK3M7gqIsST8YtyrQTYU4WHQBetxIxeSSTLuPxMx+/CiFVRn0TGGZy8iOswSjpXC4uW9T9r8o+CQeUgy4kU/UpnGqC/ufyLxbaxQVwQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Vu5Y66atNVdZuesX/ozTf0VWFMfcao1ATyEOEQHDDNo=;
- b=SbeFhovUFXzEAWFCzl/S8E3n9NR8rJnzKM7ePHVPU9mkwuv91lmmsv2k4cS9DixV37uQsosGC9jTZu92dNpLT/s6WzAfLcYZeb10TopgcnlEZfIM2cd5lkA0bkFAKXTBPle+YuIX5gDVCo5scE6/4FEtDSkn9AI2ApzutgeWoJgVaYq2S34gB20O7heiCG9d+po7Upx6aBW7xCjd+O1/lETBPcGGfnpn2LCR6MScSLO4YBK7rkp50Ha00nAMDdlUy2EkhqKPol56LKCKJTH/IH8l+DHxei0puJFYvu+jSPnQyqM+HWq8HKDXiatLALCzaRNUIn3tbu2PLNQ4T9BAaw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Vu5Y66atNVdZuesX/ozTf0VWFMfcao1ATyEOEQHDDNo=;
- b=Fe4grokgysFJl6AeUJqQ/fHMcrMJw2Ti7FeCPRphaImTojEMJDahhTIludWNS+KwqyiLzcMIAZ8yu+ds/S5hr3QkM4u16eVtHTERqhIK4uKzLLvVT7PicUlCqRBD+HyxLz5DBq6rMmDMgBii+cNJaK8BrKPQHcRAa0xL3A8qb3s=
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
- by DS7PR12MB6189.namprd12.prod.outlook.com (2603:10b6:8:9a::17) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Tue, 19 Mar
- 2024 00:39:59 +0000
-Received: from BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::8b3e:57e8:d574:309a]) by BL1PR12MB5874.namprd12.prod.outlook.com
- ([fe80::8b3e:57e8:d574:309a%4]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 00:39:59 +0000
-Message-ID: <fe7f271c-1e16-4aff-8d72-4c9e9b2bc2b2@amd.com>
-Date: Mon, 18 Mar 2024 19:39:56 -0500
-User-Agent: Mozilla Thunderbird Beta
-Subject: Re: [PATCH 1/3] dt-bindings: remoteproc: add Versal platform support
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- andersson@kernel.org, mathieu.poirier@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- michal.simek@amd.com, ben.levinsky@amd.com
-Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
-References: <20240315211533.1996543-1-tanmay.shah@amd.com>
- <20240315211533.1996543-2-tanmay.shah@amd.com>
- <b81d86b4-eb3c-4996-bbe6-32a8bc1de028@linaro.org>
-Content-Language: en-US
-From: Tanmay Shah <tanmay.shah@amd.com>
-In-Reply-To: <b81d86b4-eb3c-4996-bbe6-32a8bc1de028@linaro.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SN7PR04CA0175.namprd04.prod.outlook.com
- (2603:10b6:806:125::30) To BL1PR12MB5874.namprd12.prod.outlook.com
- (2603:10b6:208:396::17)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 109F5A34;
+	Tue, 19 Mar 2024 00:46:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710809213; cv=none; b=SNqhekX+zcKUwji0ih78AxdBiPJHdwyfzigUW64Kv7CNgkidRuzmezOdTPUZnVz3xugNZCceIXx9y4as76Xf8WRR4sni+R4kkul5xcI5kKDbzuI7PYDpBE+/DWjr3QmYmIr2Ux6nlVgg3Dvv5J/gHjqv89UBtREo5qiCqYAr1U4=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710809213; c=relaxed/simple;
+	bh=F57r67A1pl7pEtVuK37wwQEd/A7wxOn9FOZPSBRSwB8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=uwo2FIGcGgQBlKSNTaD7ckMGAvIZ+bufsLOdkZeowv0caGUBv/Vg7p+RicV+4H58sCXxPuDPEviG14fpyqmsWl0W4IhUhmuKp4r/Elt22rqqkIsYJLmXrtPxl5R+yGqriBHgSw3ELG8ZhgxQEsot7IglFpWnPsLHdzBI6XHcT6c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=AhoOWS/u; arc=none smtp.client-ip=209.85.215.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-5d81b08d6f2so4002923a12.0;
+        Mon, 18 Mar 2024 17:46:51 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710809211; x=1711414011; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=EjEMCCW1c1Px24P8oKOq8kx+pFZ93LBk8LEdii5izfs=;
+        b=AhoOWS/umygKcJwl91aGnfiqlLN/2vFMrP+T8uZM2GRS2j0WmOYm+U2z5R0OVxOrou
+         vG5F26KIp8mekoUHJGHhLOWqCag/mc6Cmt+RRFFoHmBUcBVzIocq7HChBt+GD3OdjvqI
+         31i9CaiIMeVtqJZ3L0sEXhcLL0Wo3TxJE43a7+bvNGnSN4Nsar3imnHtHjmqFcjEWlFT
+         2uE4uiBgMDFQJZpRxBtZSq7GL+waq3dgzuFN2PEeDNPZN35c4jOabf9+BsB1enjbe3dV
+         mZbeOJbgTc+WegSIuMopLd4sAD/HLsBXwqdntXisuntPCUhu4aWz8hgCphFBOsqTOkmq
+         p0VQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710809211; x=1711414011;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=EjEMCCW1c1Px24P8oKOq8kx+pFZ93LBk8LEdii5izfs=;
+        b=E1mfuyHmhZwAz+Z5CvzpEEkNLL4B0YbPdiyCGavyhJWYxLvqhUfA6cZkHDQ6vAZv+U
+         HxyAR3gXR5HhqcOOT52WJ5amwGpDPZXSM+Vh2QfGb8k5Ie/7k9X8SC/494kZ2H3TfsNt
+         Pb413LTa72I5vyUEbSLlaomDRSBOCVOR/FSplvy9C3t3CRDdrgmca2Xz/c49FcrymuAW
+         19wPWS6T6RTqHDVgRbb69L8/aBo+RgkaxfbbLkv2R1SeBDMr5LrP57UvvDqXdLHVt0q1
+         pBlc4f161jDjz3bBjPwhzmd2p0UnKfejiFGGlo+xZpgvfk0ApwWJ/b4Pl39/ALOohROq
+         6x7w==
+X-Forwarded-Encrypted: i=1; AJvYcCVRpaGK42KanHGUit7hKflybS5c8HJt9Z/gXDAQU09qgW5vu6pUjj8RyxrHjD3D1pkuzhPSmHTBpRtzEI27WLNwGlUKtbQDLKmAPtRCXyUJya45Mu0ZRli+wxch53AudxleeXnJYclShOlzXBMtV2fr1Zx9C+ONR0rSsVGm8sPZg41trNHKfEgW
+X-Gm-Message-State: AOJu0YwKu/PoPFC65FxdiLheh42qWecCRAN+HafToa6iw80QGsws5e26
+	qgNJysTO82OzsU8EG/Zivdntn/Hihu0PX+fkY+pBSiSTlbqjw+L7giVwmF71
+X-Google-Smtp-Source: AGHT+IEEGfj1yEeiLgflaQdMDDUqa1AXEmOMueS1c1+sZSozyjSdkxlrhu3MhCy7IfdLKw8unXiCKw==
+X-Received: by 2002:a17:90a:420a:b0:29b:36a8:4742 with SMTP id o10-20020a17090a420a00b0029b36a84742mr11291099pjg.13.1710809211210;
+        Mon, 18 Mar 2024 17:46:51 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id l5-20020a170902e2c500b001db8145a1a2sm9932093plc.274.2024.03.18.17.46.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 17:46:50 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <13640a07-7395-4521-9c5d-748599202361@roeck-us.net>
+Date: Mon, 18 Mar 2024 17:46:48 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|DS7PR12MB6189:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	higlTmK10Yyi8BxWAXgW5QaLsIB4UN9bCOB5f0FtemfJBdvOlZTqdmrll/Sx2h/yz2TCDXADh516fStfiYgk/DlwMHeK1KqkytDofu/OWElL7A0yPjRtexY49qs/GVq4eiz5XLzPlmrPEJlNwe4n9uIrrZ7qMHEVs1afq9w/AYHBkGtqyXq1i/pO8pjMaYB0diSIGhLTJ4EBQxKBoZTnGF583CiRfAu2PjJeWgWs7Ftr1Kw4IUd0ix2jxZkumQOJGsQ7at9J3juEnCpJiF2I5lGwSftBVYlR9SU54MhTv2oj+8fjkni8YgXQf0/8JT0F5pM01ahcOFt8enGmOcOdWFNNCXkh1h9Al3HnrVGwHro+RnvcvDY3MGIsbHvhHdLkEdO6hT8uFFszmhpru777RKHjN2VycYOhFFX/k+o/RkWcJVk9heAcUin2MvuaA4sS53jBnOasf0wuP80yJ0z6kZZZ2AcYW7W+gSyWcfwSraGuHk0RcG7Ur9XU5/zNzLIt7/stuY6wqHj1nIEjhCjL9qe/sycW+YAhpCtq5X8CxzA/UxA10DRnk184w5qvWlWAQ3eYsJbuDGUhqfPuUbXmf835PyuTk35LiJfLt3yZ+kI88Wm4z2AaAYFCeDeD112fTq2CZhgYi2O+95qaiZMrAF/FQKC9pL2YMruRUHETZHg=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(1800799015)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?UWFVeFBmZ0VteUt6VnphZmtxTElsbE5DOHZTVHVpa2ozeEZ0R0RFbzBSMXYr?=
- =?utf-8?B?VGhDS2lCOVpQZWYyWEx2QjBwVDVHMXZIbTJ1RjgxMEpMTWc5elB2ZitSb3JO?=
- =?utf-8?B?cUEwcHp3Z2hPSUVWUGF6UzFDanJVZHZBMXgzQyt1Z0srQkc2TFdQdHpSTDdN?=
- =?utf-8?B?VWVwdTN0QjRmcDBHZzFBUzdGSVRscHpRL0wrNmVjb3ZXc2NTNGlkYTZOWXUy?=
- =?utf-8?B?amhjNGlWVHJ6S3lOblg5amRaL0RjWWRucE0zMXMvNUlxUEY5YzBMbnNjM0JI?=
- =?utf-8?B?V1FRcVAxclU4WnUwQ01wenJ6dXRUeW5KTzg3SW9FZjljNFQ1RkJFSm8zNm1y?=
- =?utf-8?B?M2drWk5pS3p4RlVrNlFvMzM1ZG9CVnphdm02azdYQTI4djZJT3FxWHpUckJa?=
- =?utf-8?B?YWJEbmNPZ29VU0JTZ09MNHNhUVhxY013OEFZS25aZ3FOeHhQS3g2UCtCWHBS?=
- =?utf-8?B?L3hFY3MxT0VMOGJuUUdjR2YwUVV1Rjk1V2ZvTjVuZlc2ZzN0aFY2TFpjc1oz?=
- =?utf-8?B?L3JyanZIZ1lRZXJBM2VEZWhXSmxkaHMwUzZLbkpSR1dOaEtlVFdwOE5ZYzdm?=
- =?utf-8?B?R0YyMzVBSENuWS81V25DODBPVlpURXA3TTNIeGo5K1ZadmMySVBnNzVRZGdF?=
- =?utf-8?B?VTFPYnEyY0ZzTFEzeThQL09XY3h4U1YyY2lBQlY5bndjS0k4WWpBWVg0eHRu?=
- =?utf-8?B?MXVXNDBtdzJUUTRVU2hOTjR3b3FMT0VtWXZTbWsyWWp2UE9zY3piTTFqZUp2?=
- =?utf-8?B?MjRxZENJc0UwSzJTRnpER1VzS3hQQ0FvRHFBa1ZHSmtxcm9PaytqVnBTZW9T?=
- =?utf-8?B?REo1cnhQeW1ZcFc5ODZUSWFpWjFndTRuRHRVUVorcjlubEphZ01mbXoxYWlY?=
- =?utf-8?B?VUNzY0N4ZVd6K0FoeW03b0YwWE93RjkrdjFPQ3JnTnBVZ2tHdUxyM3h5YU5k?=
- =?utf-8?B?Mlk1MG1LN29OUFV3S01oOEQyNTFoSDdLS1M5enExWCtVc213K2p3NXppNEJF?=
- =?utf-8?B?L0tvQVp2aU5rNk1paXhVQmw0VHFSSWVhTFcvYTFxVmIrMGxsaXgvT3ZjTVRm?=
- =?utf-8?B?bkRHZFFyQm5VV0ZQYmNvS0MzTTR2TjJDQlVpeFQxdTVsZzZ5S3JlMFZFQ0VZ?=
- =?utf-8?B?NHRsYXBrQklLN1h6UTlJRGErV3hHOXhVVjFSU3RQemFYbmxaTEZDRmVQT0k3?=
- =?utf-8?B?bk9QMFZBVWpRZ2ZQS1FVSWg1bFlCR2hJZ1Zobzg5NDJSeVY1aWhRZ1VYRFdh?=
- =?utf-8?B?eWZiMkFiTDJiOUc5TmtlSXRNalV3cXo1S2RTRkE0SmdybzN2enBNdkhZck11?=
- =?utf-8?B?eUlKd09IWWN4Ulp2R2I0c0Q0Rm5aTlFpT3V4ZStsREUzTDJMUzhkbUlGTTE2?=
- =?utf-8?B?Q2Njbm42bUNYK3BKSGNHeUs5dmFsemZpU0J3UUQ2QzRncnR5cVN6N3owcUFl?=
- =?utf-8?B?RVlhY2NQZzVpaGNRQlU3R05SUm1McUdTTTRxT3ZwOHNyOTlTbkRHdEkraG9D?=
- =?utf-8?B?c05GTWMwVitFY0RlNVh3ZFZJTjE5YXVrcUtRUGErUVdCL2xaTGM3OG1CTGhi?=
- =?utf-8?B?RnovbG5qMmRycHEwWHZqN0Z1MGwwNW5EdHZmRDBhWWQydng0eEUwWUY0VWFN?=
- =?utf-8?B?RkpFWkdxL3VBTUNsZXBrbjdsbCtxZXNGajRGMmFKQnZJakU2KzRCY21DbCtE?=
- =?utf-8?B?cmpvZVJRMEduZWwvZ3NRUFVxalJoSjZ0U241MSt0Tm9SZ29KRk5pa1RVTkhv?=
- =?utf-8?B?ZTZSS21vQWtYRGs4L25mbHp1c1pxYWI4RTM2SXBneDBXZ0hxMnEwLzRSaVdG?=
- =?utf-8?B?cmNCY0JlV1hRVW1nVXZzS2xwaDJFcVB0YmZ6YXM4Z2o4TFFsakFxUnBFTHBC?=
- =?utf-8?B?VXZhT1IwMUsycThHWTB4YmxtOFVqWmZPSUxCRHRKSFZtNE8rQTFhVFVQcWU4?=
- =?utf-8?B?UDhEODFjdkNwUFhCOG5FUkxYSzh6eDRVdnlzMlBYV05ONVB5d2RwT094UENE?=
- =?utf-8?B?N1dFaC82SmZ1VHBHRVVuNFRyTkc2UGFxdW14MDdqKzdpVCs1K3YzcXU1cnZD?=
- =?utf-8?B?OEprdUxBWllNek0weVJibmpic3Jzc1ZqSnQ3U1FKUXl3SUx6M2RxUzQyYkI3?=
- =?utf-8?Q?4Z3V3CbxrPnEe2/ur35lKgk+9?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c7f57223-58ea-4d50-7c18-08dc47ad1b2c
-X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 00:39:59.1562
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: U1IVlIQl3tCktj5Lkuoq3KY7XcnjS4LKnmwHTvcwSRZaZia23+MgZ9pc7p0JFxAs
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DS7PR12MB6189
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drivers: watchdog: ast2600 support bootstatus
+Content-Language: en-US
+To: Peter Yin <peteryin.openbmc@gmail.com>, patrick@stwcx.xyz,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Joel Stanley <joel@jms.id.au>,
+ Andrew Jeffery <andrew@codeconstruct.com.au>,
+ Wim Van Sebroeck <wim@linux-watchdog.org>, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-aspeed@lists.ozlabs.org,
+ linux-kernel@vger.kernel.org, linux-watchdog@vger.kernel.org
+References: <20240318055219.3460121-1-peteryin.openbmc@gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240318055219.3460121-1-peteryin.openbmc@gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-
-
-On 3/17/24 1:50 PM, Krzysztof Kozlowski wrote:
-> On 15/03/2024 22:15, Tanmay Shah wrote:
->> AMD-Xilinx Versal platform is successor of ZynqMP platform. Real-time
->> Processor Unit R5 cluster IP on Versal is same as of ZynqMP Platform.
->> Only difference is power-domains ID needed by power management firmware.
->> Hence, keeping the compatible property same as of zynqmp node.
->> 
->> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+On 3/17/24 22:52, Peter Yin wrote:
+> Add WDIOF_EXTERN1 and WDIOF_CARDRESET bootstatus in ast2600
 > 
-> There is no binding change, so NAK. Platform is not being added to
-> examples. You changed nothing in  Versal support...
-
-Thanks for reviews.
-
-Okay got it. That means I don't really need to add anything related to Versal.
-I will get rid of patch that says "Versal support". Looks like it's not needed
-at all.
-
-Thanks.
-
+> Regarding the AST2600 specification, the WDTn Timeout Status Register
+> (WDT10) has bit 1 reserved. To verify the second boot source,
+> we need to check SEC14 bit 12 and bit 13.
+> The bits 8-23 in the WDTn Timeout Status Register are the Watchdog
+> Event Count, which we can use to verify WDIOF_EXTERN1.
 > 
-> Best regards,
-> Krzysztof
+> Signed-off-by: Peter Yin <peteryin.openbmc@gmail.com>
+
+You'll have to separate dts and yaml file changes from driver changes.
+
+> ---
+> Change log:
 > 
+> v1 -> v2
+>    - Add comment and support WDIOF_CARDRESET in ast2600
+> 
+> v1
+>    - Patch 0001 - Add WDIOF_EXTERN1 bootstatus
+> ---
+>   arch/arm/boot/dts/aspeed/aspeed-g6.dtsi |  8 ++---
+>   drivers/watchdog/aspeed_wdt.c           | 45 ++++++++++++++++++++++---
+>   2 files changed, 44 insertions(+), 9 deletions(-)
+> 
+> diff --git a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+> index e0b44498269f..23ae7f0430e9 100644
+> --- a/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+> +++ b/arch/arm/boot/dts/aspeed/aspeed-g6.dtsi
+> @@ -556,24 +556,24 @@ uart5: serial@1e784000 {
+>   
+>   			wdt1: watchdog@1e785000 {
+>   				compatible = "aspeed,ast2600-wdt";
+> -				reg = <0x1e785000 0x40>;
+> +				reg = <0x1e785000 0x40>, <0x1e6f2000 0x20>;
+>   			};
+>   
+>   			wdt2: watchdog@1e785040 {
+>   				compatible = "aspeed,ast2600-wdt";
+> -				reg = <0x1e785040 0x40>;
+> +				reg = <0x1e785040 0x40>, <0x1e6f2000 0x020>;
+>   				status = "disabled";
+>   			};
+>   
+>   			wdt3: watchdog@1e785080 {
+>   				compatible = "aspeed,ast2600-wdt";
+> -				reg = <0x1e785080 0x40>;
+> +				reg = <0x1e785080 0x40>, <0x1e6f2000 0x020>;
+>   				status = "disabled";
+>   			};
+>   
+>   			wdt4: watchdog@1e7850c0 {
+>   				compatible = "aspeed,ast2600-wdt";
+> -				reg = <0x1e7850C0 0x40>;
+> +				reg = <0x1e7850C0 0x40>, <0x1e6f2000 0x020>;
+>   				status = "disabled";
+>   			};
+>   
+> diff --git a/drivers/watchdog/aspeed_wdt.c b/drivers/watchdog/aspeed_wdt.c
+> index b4773a6aaf8c..65118e461130 100644
+> --- a/drivers/watchdog/aspeed_wdt.c
+> +++ b/drivers/watchdog/aspeed_wdt.c
+> @@ -33,6 +33,7 @@ struct aspeed_wdt {
+>   	void __iomem		*base;
+>   	u32			ctrl;
+>   	const struct aspeed_wdt_config *cfg;
+> +	void __iomem		*sec_base;
+>   };
+>   
+>   static const struct aspeed_wdt_config ast2400_config = {
+> @@ -82,6 +83,15 @@ MODULE_DEVICE_TABLE(of, aspeed_wdt_of_table);
+>   #define WDT_RESET_MASK1		0x1c
+>   #define WDT_RESET_MASK2		0x20
+>   
+> +/*
+> + * Only Ast2600 support
+> + */
+> +#define   WDT_EVENT_COUNTER_MASK	(0xFFF << 8)
+> +#define   WDT_SECURE_ENGINE_STATUS	(0x14)
+> +#define   ABR_IMAGE_SOURCE		BIT(12)
+> +#define   ABR_IMAGE_SOURCE_SPI		BIT(13)
+> +#define   SECOND_BOOT_ENABLE		BIT(14)
+> +
+>   /*
+>    * WDT_RESET_WIDTH controls the characteristics of the external pulse (if
+>    * enabled), specifically:
+> @@ -313,6 +323,7 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+>   	const char *reset_type;
+>   	u32 duration;
+>   	u32 status;
+> +	u32 sec_st;
+>   	int ret;
+>   
+>   	wdt = devm_kzalloc(dev, sizeof(*wdt), GFP_KERNEL);
+> @@ -330,6 +341,12 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+>   	if (IS_ERR(wdt->base))
+>   		return PTR_ERR(wdt->base);
+>   
+> +	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
+> +		wdt->sec_base = devm_platform_ioremap_resource(pdev, 1);
+> +		if (IS_ERR(wdt->sec_base))
+> +			return PTR_ERR(wdt->sec_base);
+> +	}
+> +
+>   	wdt->wdd.info = &aspeed_wdt_info;
+>   
+>   	if (wdt->cfg->irq_mask) {
+> @@ -459,12 +476,30 @@ static int aspeed_wdt_probe(struct platform_device *pdev)
+>   	}
+>   
+>   	status = readl(wdt->base + WDT_TIMEOUT_STATUS);
+> -	if (status & WDT_TIMEOUT_STATUS_BOOT_SECONDARY) {
+> -		wdt->wdd.bootstatus = WDIOF_CARDRESET;
+>   
+> -		if (of_device_is_compatible(np, "aspeed,ast2400-wdt") ||
+> -		    of_device_is_compatible(np, "aspeed,ast2500-wdt"))
+> -			wdt->wdd.groups = bswitch_groups;
+> +	if (of_device_is_compatible(np, "aspeed,ast2600-wdt")) {
+> +		/*
+> +		 * The WDTn Timeout Status Register bit 1 is reserved.
+> +		 * To verify the second boot source,
+> +		 * we need to check SEC14 bit 12 and bit 13.
+> +		 */
+> +		sec_st = readl(wdt->sec_base + WDT_SECURE_ENGINE_STATUS);
+> +		if( sec_st & SECOND_BOOT_ENABLE)
+> +			if (sec_st & ABR_IMAGE_SOURCE ||
+> +			    sec_st & ABR_IMAGE_SOURCE_SPI)
+
+I am sure that checkpatch as something to say here. Either case, I would very
+much prefer a single if() statement such as
+
+		if (sec_st & SECOND_BOOT_ENABLE &&
+		    sec_st & (ABR_IMAGE_SOURCE | ABR_IMAGE_SOURCE_SPI))
+
+> +				wdt->wdd.bootstatus |= WDIOF_CARDRESET;
+> +
+> +		/*
+> +		 * To check Watchdog Event Count for WDIOF_EXTERN1
+> +		 */
+> +		if (status & WDT_EVENT_COUNTER_MASK) {
+> +			wdt->wdd.bootstatus |= WDIOF_EXTERN1;
+> +		}
+
+Unnecessary { }
+
+.. but does this really indicate that there was a reset due to some event ?
+This reads three 8-bit counters. Wouldn't it make more sense to check bit 0
+instead ?
+
+I am also not sure if reading the watchdog status from WDT_SECURE_ENGINE_STATUS
+adds any value over the status reported in the watchdog status register.
+You'll have to explain why the added complexity is necessary or even adds
+value.
+
+Never mind, though ...
+
+Looking into the datasheets, the current code is quite completely wrong anyway.
+Bit 1 of the status register indicates on ast2500 if the boot was from the second
+boot source. It does not indicate that the most recent reset was triggered by
+the watchdog. The code should just be changed to set WDIOF_CARDRESET if bit 0
+of the status register is set. The boot source is out of scope for the watchdog
+status bits.
+
+Thanks,
+Guenter
 
 
