@@ -1,108 +1,168 @@
-Return-Path: <linux-kernel+bounces-106978-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106979-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B931587F63C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:58:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2B7E387F63D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:00:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E8F101C21864
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:58:56 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8FAB11F22987
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:00:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 970767C0A1;
-	Tue, 19 Mar 2024 03:58:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA5257BB1E;
+	Tue, 19 Mar 2024 04:00:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="keAe1F3R"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TnEEmKM3"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D981A7C082;
-	Tue, 19 Mar 2024 03:58:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43EE47BB12
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 04:00:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710820722; cv=none; b=egIgQUS3Qlog8vtGOESlPVooaQitU2Wg4vS/SRN2AJZN9Zvp8uUNSfglh/7vNI5Pxmn0TEldBpX0UHjZGbELlDZSPKIvGxe5tPlnixqBv9cx2z8Nqhu7gU/OfQr09CJwOvfE7NmAGf2z9n7KBu4nTo+6E3VYZAqALd52QQG3JSc=
+	t=1710820839; cv=none; b=Do6xNKBzdlHGLhUVYTbXe46remRD+dcgx4D99L5lhy1GnmAMYAre1Ty1nMaUzJ6udvDC6CT098X+huRoA5jIBAHyiGqdZGlpygG9tC41OfJHhyNUVEFCnLbnToRHQcvndErnbvRuRBbJK7nnwbx8M47N7BY+CqOWLH+QSQhLC+Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710820722; c=relaxed/simple;
-	bh=mN37mmNJoVPK7QQbBgzp74gamlmqhD1FiCj4eiKeAF4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=P8LiEJ2OE9XcnJmcsj2kwd/M6xbhCt0pf+eFMLgySZWSlNBDv6T4k1rqcwc/l6/Tn5fcJYdFehIsHgasnhktcd+WmSJP8Te57Xye/Ml9+G5p8OWLUJWDSmVvTQmUvV6LdS9JTgfiPypUqOkAlrDTVGxZ0t3muGaVJwxp4ohOAow=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=keAe1F3R; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 83C8CC43399;
-	Tue, 19 Mar 2024 03:58:42 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710820722;
-	bh=mN37mmNJoVPK7QQbBgzp74gamlmqhD1FiCj4eiKeAF4=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=keAe1F3RmmMP7Tie2NPjB+RHrEJqCcgRIqxePZoFdX+JZqG6E6EtVp1t0FF1W/3Gd
-	 2X4R/WXDYSBc2QOf9COgXT09ZHWEAsSuQr78UDso0juuyjzWgHwN9mLdr4VenzNl2E
-	 xLdqrdKG/B92gDxbtqLmGvqYEdUbKQs9csRJ4KGbo7ZyKL1qm4H9N9QLT0J+SwyBMJ
-	 /48VU9ImizfiBbW9o6GCsOC6S0BWPKOaD9DN9tjcEkaB0RIMVPjdP0woOrdA07+Vh5
-	 IGpVL3rNrQh8/UEHHzX7KNXONvCid8eps1A8QRs0UASlCMv0Y6whnMla0XYtnlesr9
-	 vL5J1poDQDfCw==
-Received: by mail-lj1-f179.google.com with SMTP id 38308e7fff4ca-2d094bc2244so68493201fa.1;
-        Mon, 18 Mar 2024 20:58:42 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCX5+IYnkBL/n9/KUZ/HSKaG4XVKc+GF0M8yqZ2XqbPmI9HmLWX4OPaDRHpfw2fb3lPhmwiU/WTRX6DKRIdaF/iCQtc2+JZwlnSUIRdexIvHa3qRhLCET9n8GxJt+a9rombzpp1MCGaQPg==
-X-Gm-Message-State: AOJu0YyjJIntTgYkfUS83lLdK+azSqzafoy8AWhWDLa6XmGN989N81LW
-	5tjTujVKol3ELsLrDsVEde0qXDwxczEFsDyfAUbHC17LPd1u934o1LDlQrGsG0Dn8aj65TFwAwN
-	lLFWOU/13PejT4ZQrr2xTlk2AcIw=
-X-Google-Smtp-Source: AGHT+IFd2NGeNInZNlqtCpeiOvr1bD0MueLHfLC9SzxOiRd+5Xj4+sNLruulsJoDVw+pvqZy8NDOCch016Rg+/64beM=
-X-Received: by 2002:a2e:9092:0:b0:2d4:8db2:f79c with SMTP id
- l18-20020a2e9092000000b002d48db2f79cmr771170ljg.50.1710820720895; Mon, 18 Mar
- 2024 20:58:40 -0700 (PDT)
+	s=arc-20240116; t=1710820839; c=relaxed/simple;
+	bh=em1tayWATecsjQCbVE06v1UJF8h/Yfzd2A6qPpmeTQE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=smqNUgwlSHEcimMbGeAIuQ9V/HkCeI7wvPt52B9k5Ex3wDiEDYTKEhXT6O5DO2FT8aLkjjiXCA72NcHf++Pv5Pirv+Sy9uJYjL5Amem4fpYslfb0rBw+XAkLDhKqCdG3e6NvlstbFgZ62KissDl6zVi11qNuCAS118Nx+jB1alA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TnEEmKM3; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710820836;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=VCuT+KF0CFKXEteYACtgcd0bLY6/wFRR3VLA/HmQm5k=;
+	b=TnEEmKM3BbG09jvLI6ExIqAMtyXcTx/Ha+OQZDrrcv7rZaZVWy9xq5lXjRLWegfAmZQNPf
+	pu58GP3HWMYNxnMP1axjvbSlE2Eqooz6JvhidEKH3j8eynS0++FtywgN79CKcyhCwkJ8Sn
+	cf2EHOCMtjn376BdRhHRJnZ2xTBeHdk=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-608-uhYCHd1lOYC1LAIgkUewmA-1; Tue, 19 Mar 2024 00:00:30 -0400
+X-MC-Unique: uhYCHd1lOYC1LAIgkUewmA-1
+Received: from smtp.corp.redhat.com (int-mx01.intmail.prod.int.rdu2.redhat.com [10.11.54.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 565D3852002;
+	Tue, 19 Mar 2024 04:00:28 +0000 (UTC)
+Received: from darkstar.users.ipa.redhat.com (unknown [10.72.116.87])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 859973C20;
+	Tue, 19 Mar 2024 04:00:16 +0000 (UTC)
+Date: Tue, 19 Mar 2024 12:00:15 +0800
+From: Dave Young <dyoung@redhat.com>
+To: Ashish Kalra <Ashish.Kalra@amd.com>
+Cc: tglx@linutronix.de, mingo@redhat.com, dave.hansen@linux.intel.com,
+	rafael@kernel.org, peterz@infradead.org, adrian.hunter@intel.com,
+	sathyanarayanan.kuppuswamy@linux.intel.com,
+	elena.reshetova@intel.com, jun.nakajima@intel.com,
+	rick.p.edgecombe@intel.com, thomas.lendacky@amd.com,
+	seanjc@google.com, michael.roth@amd.com, kai.huang@intel.com,
+	bhe@redhat.com, kexec@lists.infradead.org,
+	linux-coco@lists.linux.dev, linux-kernel@vger.kernel.org,
+	kirill.shutemov@linux.intel.com, bdas@redhat.com,
+	vkuznets@redhat.com, dionnaglaze@google.com, anisinha@redhat.com,
+	jroedel@suse.de, Ard Biesheuvel <ardb@kernel.org>
+Subject: Re: [PATCH v2 1/3] efi/x86: skip efi_arch_mem_reserve() in case of
+ kexec.
+Message-ID: <ZfkNzyGl4J1ZxaGj@darkstar.users.ipa.redhat.com>
+References: <20240227212452.3228893-1-kirill.shutemov@linux.intel.com>
+ <cover.1710744412.git.ashish.kalra@amd.com>
+ <7c2e6ae663da2e5eb41527f0d854f59a56b91ecd.1710744412.git.ashish.kalra@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315024435.350013-1-chenhuacai@loongson.cn>
-In-Reply-To: <20240315024435.350013-1-chenhuacai@loongson.cn>
-From: Guo Ren <guoren@kernel.org>
-Date: Tue, 19 Mar 2024 11:58:29 +0800
-X-Gmail-Original-Message-ID: <CAJF2gTTjt+wcmbgZm-2WHNM+_3pMy7=BPYVy8B22M9qZZnuZWA@mail.gmail.com>
-Message-ID: <CAJF2gTTjt+wcmbgZm-2WHNM+_3pMy7=BPYVy8B22M9qZZnuZWA@mail.gmail.com>
-Subject: Re: [PATCH] LoongArch: Select ARCH_HAS_CURRENT_STACK_POINTER in Kconfig
-To: Huacai Chen <chenhuacai@loongson.cn>
-Cc: Arnd Bergmann <arnd@arndb.de>, Huacai Chen <chenhuacai@kernel.org>, loongarch@lists.linux.dev, 
-	linux-arch@vger.kernel.org, Xuefeng Li <lixuefeng@loongson.cn>, 
-	Xuerui Wang <kernel@xen0n.name>, Jiaxun Yang <jiaxun.yang@flygoat.com>, 
-	linux-kernel@vger.kernel.org, loongson-kernel@lists.loongnix.cn
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <7c2e6ae663da2e5eb41527f0d854f59a56b91ecd.1710744412.git.ashish.kalra@amd.com>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.1
 
-On Fri, Mar 15, 2024 at 10:45=E2=80=AFAM Huacai Chen <chenhuacai@loongson.c=
-n> wrote:
->
-> LoongArch has implemented the current_stack_pointer macro, so select
-> ARCH_HAS_CURRENT_STACK_POINTER in Kconfig. This will let it be used in
-> non-arch places (like HARDENED_USERCOPY).
->
-> Signed-off-by: Huacai Chen <chenhuacai@loongson.cn>
+Hi,
+
+Added Ard in cc.
+
+On 03/18/24 at 07:02am, Ashish Kalra wrote:
+> From: Ashish Kalra <ashish.kalra@amd.com>
+> 
+> For kexec use case, need to use and stick to the EFI memmap passed
+> from the first kernel via boot-params/setup data, hence,
+> skip efi_arch_mem_reserve() during kexec.
+> 
+> Additionally during SNP guest kexec testing discovered that EFI memmap
+> is corrupted during chained kexec. kexec_enter_virtual_mode() during
+> late init will remap the efi_memmap physical pages allocated in
+> efi_arch_mem_reserve() via memboot & then subsequently cause random
+> EFI memmap corruption once memblock is freed/teared-down.
+> 
+> Signed-off-by: Ashish Kalra <ashish.kalra@amd.com>
 > ---
->  arch/loongarch/Kconfig | 1 +
->  1 file changed, 1 insertion(+)
->
-> diff --git a/arch/loongarch/Kconfig b/arch/loongarch/Kconfig
-> index f90949aa7cda..277d00acd581 100644
-> --- a/arch/loongarch/Kconfig
-> +++ b/arch/loongarch/Kconfig
-> @@ -15,6 +15,7 @@ config LOONGARCH
->         select ARCH_ENABLE_THP_MIGRATION if TRANSPARENT_HUGEPAGE
->         select ARCH_HAS_ACPI_TABLE_UPGRADE      if ACPI
->         select ARCH_HAS_CPU_FINALIZE_INIT
-> +       select ARCH_HAS_CURRENT_STACK_POINTER
->         select ARCH_HAS_FORTIFY_SOURCE
->         select ARCH_HAS_KCOV
->         select ARCH_HAS_NMI_SAFE_THIS_CPU_OPS
-> --
-> 2.43.0
->
-Yep, you forgot that.
+>  arch/x86/platform/efi/quirks.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+> index f0cc00032751..d4562d074371 100644
+> --- a/arch/x86/platform/efi/quirks.c
+> +++ b/arch/x86/platform/efi/quirks.c
+> @@ -258,6 +258,16 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
+>  	int num_entries;
+>  	void *new;
+>  
+> +	/*
+> +	 * For kexec use case, we need to use the EFI memmap passed from the first
+> +	 * kernel via setup data, so we need to skip this.
+> +	 * Additionally kexec_enter_virtual_mode() during late init will remap
+> +	 * the efi_memmap physical pages allocated here via memboot & then
+> +	 * subsequently cause random EFI memmap corruption once memblock is freed.
 
-Reviewed-by: Guo Ren <guoren@kernel.org>
+Can you elaborate a bit about the corruption, is it reproducible without
+SNP?
 
---=20
-Best Regards
- Guo Ren
+> +	 */
+> +	if (efi_setup)
+> +		return;
+> +
+
+How about checking the md attribute instead of checking the efi_setup,
+personally I feel it a bit better, something like below:
+
+diff --git a/arch/x86/platform/efi/quirks.c b/arch/x86/platform/efi/quirks.c
+index f0cc00032751..699332b075bb 100644
+--- a/arch/x86/platform/efi/quirks.c
++++ b/arch/x86/platform/efi/quirks.c
+@@ -255,15 +255,24 @@ void __init efi_arch_mem_reserve(phys_addr_t addr, u64 size)
+ 	struct efi_memory_map_data data = { 0 };
+ 	struct efi_mem_range mr;
+ 	efi_memory_desc_t md;
+-	int num_entries;
++	int num_entries, ret;
+ 	void *new;
+ 
+-	if (efi_mem_desc_lookup(addr, &md) ||
+-	    md.type != EFI_BOOT_SERVICES_DATA) {
++	ret = efi_mem_desc_lookup(addr, &md);
++	if (ret) {
+ 		pr_err("Failed to lookup EFI memory descriptor for %pa\n", &addr);
+ 		return;
+ 	}
+ 
++	if (md.type != EFI_BOOT_SERVICES_DATA) {
++		pr_err("Skil reserving non EFI Boot Service Data memory for %pa\n", &addr);
++		return;
++	}
++
++	/* Kexec copied the efi memmap from the 1st kernel, thus skip the case. */
++	if (md.attribute & EFI_MEMORY_RUNTIME)
++		return;
++
+ 	if (addr + size > md.phys_addr + (md.num_pages << EFI_PAGE_SHIFT)) {
+ 		pr_err("Region spans EFI memory descriptors, %pa\n", &addr);
+ 		return;
+
 
