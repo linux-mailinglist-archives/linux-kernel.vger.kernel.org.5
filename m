@@ -1,183 +1,230 @@
-Return-Path: <linux-kernel+bounces-107176-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107177-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7135A87F878
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:36:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5E85287F87C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E5821C21A07
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:36:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163AC282D3E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8812537E0;
-	Tue, 19 Mar 2024 07:36:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539463BBCA;
+	Tue, 19 Mar 2024 07:37:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TntvpOXS"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfG5B1PL"
+Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B893BBCA
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:36:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4E7535C2;
+	Tue, 19 Mar 2024 07:36:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710833803; cv=none; b=CXPKnKOv8AUqKCH9S21DXju1B6Fir0WfO18xoyautUlmp0aQG/H3uoIOnuGmUlDscytxrvRBVkN0ZR2Fa42w8qpXjKVrQTDWAnwUCOvpJwyVwDWydObVDuKETVzFGoiGx4cNguh01bDgjfo1tlVExLmNtfNE/xEz3L/C6xy3QQU=
+	t=1710833820; cv=none; b=F+GC7/WODCsr1abN9TbQOd0bd/OnzK91OrWa56MMqBN5G8QbZvP1cLnscWWEYd5lyLMtHEse7oagPoym6W6PFURKD2vm4OK5G2Hx2b5kLcjY/DB67yKRb7pNMzUrmGpu6SQMF3uyj3J0ybISqS39lJajWbqnYCM0gC67ke6v5bI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710833803; c=relaxed/simple;
-	bh=rPNTGp/Tn8oSnoxZozZdnWDR8B4Ksv7q1cBV0qnDa3I=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QaR278J8hb3nV4tFVBB4vZeoB7PNQXWH/VeTP2Pp4BWhoN9pMwnJZ0DpkwPl3gS6DXi1BOLGHQLrMpfGslqDXbA33wxJaFL/qKQk0HRvwt/6BY6J/0tpXBSYIarvVA8d4mxhtnAvIIzGew1WN4eMwW6Zj4vT9J9o9yH+TKerFAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TntvpOXS; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710833799;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=EKg9GvJFLNWkRSN6sgPN6hHh5dCxAIK5VhU/j1vuYMU=;
-	b=TntvpOXS4bqP1n7TkEpsn+FdgQ+/1nf1jwQRm8/XTPCMTAEK5FegNEP7xMpMNqeiI/BGWZ
-	QSwAoCQHnGZwbqT42xThBdfvmKJCrh6XbYrqADcn5dEAr14qbDM1/5HtCvV7EzUInXqhkP
-	LO9qfsp4jp4SZe+3cVdQ3FrhdfbET9E=
-Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
- [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-529-h7ssjVrQP4-UJwO6AJV8pg-1; Tue, 19 Mar 2024 03:36:37 -0400
-X-MC-Unique: h7ssjVrQP4-UJwO6AJV8pg-1
-Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ed44cb765so1935586f8f.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:36:37 -0700 (PDT)
+	s=arc-20240116; t=1710833820; c=relaxed/simple;
+	bh=aYKF8fYK6GaqBm60AFe1ecR/BiZetgHAp/vvF6kUymI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=ixNKueJste0b1mmQ/ssfG1BpPI+4mBmFvPEWqp6fCY5Gl4owdboDdn7X6U8srNFdAVrpTe4H2lbyhue8mDlZ3S40iiCIgBMWwtHSHyvG8jvwcVYBBVIM/QqRcGL1ZMYHptjwtUdYOepHTskyYTAOFirdWzWTmVgjv+okgxmibyM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZfG5B1PL; arc=none smtp.client-ip=209.85.161.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5a47abe2ff7so2037603eaf.0;
+        Tue, 19 Mar 2024 00:36:58 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710833818; x=1711438618; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=YHCJlZjtshIG0jJom0kvx9m2BM/FXwZE6cIGEiQKBVE=;
+        b=ZfG5B1PL4StmrktOo8YojQGwRetO0eVwjmZvwo2IH250g1VVli4QfP84bsGNIwY6Cw
+         pAYsym+mVZZDamX6W++oNNIej7Ay8JfXfiI6N2bXOuG898QPofL8/Zhju1Pei2uTBoup
+         ym8elF3acUdzD+e80plXy+xFGs8MYPNleIkMO2qE0DfxUWhclYcLhRl8U3xL6t0S+XoB
+         KgdrGdBlxbqoxDlyr5vQT9ezDV3vUiMl5YndfRmNXi9TW6qhZtqObp9r3byU5oBneK/0
+         VpJY2ltedVNHzQiEFVrm8fZhkIta3TeS8NZ3MYUNPDu4C5p/d10lo2m6m6L9ALlRIZkI
+         FADQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710833796; x=1711438596;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=EKg9GvJFLNWkRSN6sgPN6hHh5dCxAIK5VhU/j1vuYMU=;
-        b=KpazYq38jfvTOXFd86QWecfAuoxot/3iOJb+scByMF+t/3jMvcU+vxHACW9CKBSYN5
-         o22jMk2or6dWRVrlfOIzRWeXZ0482O8f5MsnGZ4z/dAwLEjpxVTIDja1Ak3O+/Wg46bI
-         rNcpBaF+rraciv6mbjhy7xmehUsd3jA5a/e86763YwxfdTZcD4yHD/OnI85n7gqvEmoX
-         UIfP2S2eTUNAJmM6V82b8FhEYrE1ILXnZHXV14iC/oX4dlCBxwKPBqOMTiRFlB/cug/1
-         Kzhexra0idaPEpt+ueI252maVuOBKVdZBfXBxXzrHzDjfWFd4LlTH1H0El3JJf5EW7Dl
-         IDng==
-X-Forwarded-Encrypted: i=1; AJvYcCXcpr4opzt/Pfg7pBSR8rT83bUrpqOfXlsi7Y3pdKLuHK634FUiZGjE+IT6JTjkB7lWO9L/Pw4RQBKpt7LdAZAT+k8x+Xe+smzauS/X
-X-Gm-Message-State: AOJu0Yw1eUZZJPMHebmDkzx1COZQg95JEstWtnJz2QDJPbzIW9p3mY/F
-	NN4R3MLyVHOEq6z4+V5CoT1fdd9TVG/DRSslI9Z+N5Dcq84+RmiFGx4UpHE/FlLpf/Y4y02eHES
-	m+hmBE9Zd087k6fZGnYLugGo5INtW/cuQIPEwM1uW410vEmBKH8CFnbI3QVrCMw==
-X-Received: by 2002:a05:6000:e4a:b0:341:80fc:4913 with SMTP id dy10-20020a0560000e4a00b0034180fc4913mr2202829wrb.67.1710833796207;
-        Tue, 19 Mar 2024 00:36:36 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHfMIhZzBmKNSSWXzIOXaRHlk22Ags3JFIXiJkum6UNSmNtxg7G6yImmY6QTGuvptfpS2dsfg==
-X-Received: by 2002:a05:6000:e4a:b0:341:80fc:4913 with SMTP id dy10-20020a0560000e4a00b0034180fc4913mr2202813wrb.67.1710833795615;
-        Tue, 19 Mar 2024 00:36:35 -0700 (PDT)
-Received: from redhat.com ([2.52.6.254])
-        by smtp.gmail.com with ESMTPSA id f1-20020a5d4dc1000000b0033e99b7cfa8sm6483794wru.13.2024.03.19.00.36.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 00:36:35 -0700 (PDT)
-Date: Tue, 19 Mar 2024 03:36:31 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Will Deacon <will@kernel.org>
-Cc: Gavin Shan <gshan@redhat.com>, virtualization@lists.linux.dev,
-	linux-kernel@vger.kernel.org, jasowang@redhat.com,
-	xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Message-ID: <20240319033016-mutt-send-email-mst@kernel.org>
-References: <20240314074923.426688-1-gshan@redhat.com>
- <20240318165924.GA1824@willie-the-truck>
+        d=1e100.net; s=20230601; t=1710833818; x=1711438618;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=YHCJlZjtshIG0jJom0kvx9m2BM/FXwZE6cIGEiQKBVE=;
+        b=djBq2SIyDUDDexBY0mTTH8gSTg7ZQX8qXmxmPExj9K8p2C1boLnMyIFrZsXh6ohn/x
+         U9GH62TkyRaMvz3Vjd49mgHQgj2SAe3SD1fKIF7wPHgRgB+9+eonBcvmOJAACvKgCIyd
+         5l4bncdays9tCjiK0SdxLzD+3kO8deJ4Uhrv6jCI1xTdj3sPgOw86ZL9X3RsLajEixg4
+         03NJkZlnERERk3g1TjZ1GLhIV2s/LgOQY76KJpGNK+Spljk1kOiyL+I5vI+dH47QTmHc
+         vM55JGThYjRI52G4Z0CWukS6hNfsMVa62K72qaeVqODalL3rUu7YX4NBt0Sj5B84xaW6
+         fpkw==
+X-Forwarded-Encrypted: i=1; AJvYcCVFGEaxH13tYFHjZrKZKYV1U+q17Fs95WjlPxejviWoPd+JeY+urLqk5EMH7fZbmb/ENfXVbIA5AJFYU7FCovmlon4Z77Xa0jzE7LDuodMBLp7Cs6ocn+KYvBwAS5ZaRjM5YIcejBGtM5rQVeuODQ+o9p1FOhboFcEyLFd0rHoEYAdPIw==
+X-Gm-Message-State: AOJu0YxtRYy7kp3eMrIOz4AiG5sPUV0FpmrViBC3wobo7fuFtLEPNyiU
+	uAzbgiu+Y6ZaAu2MJr75eXl8lvpCFK9x8H3pSUmwb2jNrIgcQWpK
+X-Google-Smtp-Source: AGHT+IHjuPClKQPIBso0PeBaQRxcjfszD2QnTuP0HROvRIimQAr/wBK/UV5WSm8hqR9OEWW0N8sFWw==
+X-Received: by 2002:a05:6358:4319:b0:17e:69fd:e8cc with SMTP id r25-20020a056358431900b0017e69fde8ccmr8283727rwc.21.1710833817767;
+        Tue, 19 Mar 2024 00:36:57 -0700 (PDT)
+Received: from [172.16.116.58] ([103.15.228.94])
+        by smtp.gmail.com with ESMTPSA id e15-20020aa7980f000000b006e6988c64a5sm9100478pfl.208.2024.03.19.00.36.49
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 00:36:57 -0700 (PDT)
+Message-ID: <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
+Date: Tue, 19 Mar 2024 13:06:39 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318165924.GA1824@willie-the-truck>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Michael Walle <mwalle@kernel.org>, open list <linux-kernel@vger.kernel.org>
+Cc: jkridner@beagleboard.org, robertcnelson@beagleboard.org,
+ lorforlinux@beagleboard.org, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+ Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
+ Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
+ <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
+ Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+ Vaishnav M A <vaishnav.a@ti.com>, Mark Brown <broonie@kernel.org>,
+ Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
+ "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
+ <devicetree@vger.kernel.org>,
+ "moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE"
+ <linux-arm-kernel@lists.infradead.org>,
+ "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
+ "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
+ Vaishnav M A <vaishnav@beagleboard.org>
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-2-ayushdevel1325@gmail.com>
+ <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
+ <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
+ <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
+From: Ayush Singh <ayushdevel1325@gmail.com>
+In-Reply-To: <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 04:59:24PM +0000, Will Deacon wrote:
-> On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
-> > The issue is reported by Yihuang Yu who have 'netperf' test on
-> > NVidia's grace-grace and grace-hopper machines. The 'netperf'
-> > client is started in the VM hosted by grace-hopper machine,
-> > while the 'netperf' server is running on grace-grace machine.
-> > 
-> > The VM is started with virtio-net and vhost has been enabled.
-> > We observe a error message spew from VM and then soft-lockup
-> > report. The error message indicates the data associated with
-> > the descriptor (index: 135) has been released, and the queue
-> > is marked as broken. It eventually leads to the endless effort
-> > to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
-> > and soft-lockup. The stale index 135 is fetched from the available
-> > ring and published to the used ring by vhost, meaning we have
-> > disordred write to the available ring element and available index.
-> > 
-> >   /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
-> >   -accel kvm -machine virt,gic-version=host                            \
-> >      :                                                                 \
-> >   -netdev tap,id=vnet0,vhost=on                                        \
-> >   -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
-> > 
-> >   [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
-> > 
-> > Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
-> > virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
-> > ARM64. It should work for other architectures, but performance loss is
-> > expected.
-> > 
-> > Cc: stable@vger.kernel.org
-> > Reported-by: Yihuang Yu <yihyu@redhat.com>
-> > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> > ---
-> >  drivers/virtio/virtio_ring.c | 12 +++++++++---
-> >  1 file changed, 9 insertions(+), 3 deletions(-)
-> > 
-> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > index 49299b1f9ec7..7d852811c912 100644
-> > --- a/drivers/virtio/virtio_ring.c
-> > +++ b/drivers/virtio/virtio_ring.c
-> > @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> >  	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
-> >  	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
-> >  
-> > -	/* Descriptors and available array need to be set before we expose the
-> > -	 * new available array entries. */
-> > -	virtio_wmb(vq->weak_barriers);
-> > +	/*
-> > +	 * Descriptors and available array need to be set before we expose
-> > +	 * the new available array entries. virtio_wmb() should be enough
-> > +	 * to ensuere the order theoretically. However, a stronger barrier
-> > +	 * is needed by ARM64. Otherwise, the stale data can be observed
-> > +	 * by the host (vhost). A stronger barrier should work for other
-> > +	 * architectures, but performance loss is expected.
-> > +	 */
-> > +	virtio_mb(false);
-> >  	vq->split.avail_idx_shadow++;
-> >  	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
-> >  						vq->split.avail_idx_shadow);
-> 
-> Replacing a DMB with a DSB is _very_ unlikely to be the correct solution
-> here, especially when ordering accesses to coherent memory.
-> 
-> In practice, either the larger timing different from the DSB or the fact
-> that you're going from a Store->Store barrier to a full barrier is what
-> makes things "work" for you. Have you tried, for example, a DMB SY
-> (e.g. via __smb_mb()).
-> 
-> We definitely shouldn't take changes like this without a proper
-> explanation of what is going on.
-> 
-> Will
+On 3/19/24 11:28, Krzysztof Kozlowski wrote:
 
-Just making sure: so on this system, how do
-smp_wmb() and wmb() differ? smb_wmb is normally for synchronizing
-with kernel running on another CPU and we are doing something
-unusual in virtio when we use it to synchronize with host
-as opposed to the guest - e.g. CONFIG_SMP is special cased
-because of this:
+> On 18/03/2024 18:20, Ayush Singh wrote:
+>> On 3/18/24 17:52, Michael Walle wrote:
+>>
+>>> On Sun Mar 17, 2024 at 8:37 PM CET, Ayush Singh wrote:
+>>>> Add DT bindings for mikroBUS interface. MikroBUS is an open standard
+>>>> developed by MikroElektronika for connecting add-on boards to
+>>>> microcontrollers or microprocessors.
+>>>>
+>>>> mikroBUS is a connector and does not have a controller. Instead the
+>>>> software is responsible for identification of board and setting up /
+>>>> registering uart, spi, i2c, pwm and other buses. Thus it needs a way to
+>>>> get uart, spi, i2c, pwm and gpio controllers / adapters.
+>>>>
+>>>> A mikroBUS addon board is free to leave some of the pins unused which
+>>>> are marked as NC or Not Connected.
+>>>>
+>>>> Some of the pins might need to be configured as GPIOs deviating from their
+>>>> reserved purposes Eg: SHT15 Click where the SCL and SDA Pins need to be
+>>>> configured as GPIOs for the driver (drivers/hwmon/sht15.c) to work.
+>>>>
+>>>> For some add-on boards the driver may not take care of some additional
+>>>> signals like reset/wake-up/other. Eg: ENC28J60 click where the reset line
+>>>> (RST pin on the mikrobus port) needs to be pulled high.
+>>>>
+>>>> Here's the list of pins in mikroBUS connector:
+>>>> Analog - AN
+>>>> Reset - RST
+>>>> SPI Chip Select - CS
+>>>> SPI Clock - SCK
+>>>> SPI Master Input Slave Output - MISO
+>>>> SPI Master Output Slave Input - MOSI
+>>>> VCC-3.3V power - +3.3V
+>>>> Reference Ground - GND
+>>>> PWM - PWM output
+>>>> INT - Hardware Interrupt
+>>>> RX - UART Receive
+>>>> TX - UART Transmit
+>>>> SCL - I2C Clock
+>>>> SDA - I2C Data
+>>>> +5V - VCC-5V power
+>>>> GND - Reference Ground
+>>>>
+>>>> Additionally, some new mikroBUS boards contain 1-wire EEPROM that contains
+>>>> a manifest to describe the addon board to provide plug and play
+>>>> capabilities.
+>>>>
+>>>> Link: https://www.mikroe.com/mikrobus
+>>>> Link:
+>>>> https://download.mikroe.com/documents/standards/mikrobus/mikrobus-standard-specification-v200.pdf
+>>>> mikroBUS specification
+>>>> Link: https://www.mikroe.com/sht1x-click SHT15 Click
+>>>> Link: https://www.mikroe.com/eth-click ENC28J60 Click
+>>>> Link: https://www.mikroe.com/clickid ClickID
+>>>>
+>>>> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
+>>>> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+>>>> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+>>>> ---
+>>>>    .../connector/mikrobus-connector.yaml         | 113 ++++++++++++++++++
+>>> See also
+>>> https://lore.kernel.org/r/YmFo+EntwxIsco%2Ft@robh.at.kernel.org/
+>>>
+>>> Looks like this proposal doesn't have the subnodes. How do you
+>>> attach a kernel driver to it's spi port for example? Only through
+>>> the manifest files?
+>>>
+>>> -michael
+>>
+>> So I looked at the Patch, and it seems the approach of fundamentally
+>> different than this PR. So, let me try to explain what this patch set
+>> does for an add-on board using SPI.
+>>
+>> The device tree defines the SPI controller associated with mikroBUS SPI
+>> pins. The driver on match queries and takes a reference to the SPI
+>> controller but does nothing with it. Once a mikroBUS add-on board is
+>> detected (by passing manifest using sysfs or reading from 1-wire
+>> EEPROM), the driver parses the manifest, and if it detects an SPI device
+> As I understood Mikrobus does not have EEPROM.
 
-#define virt_wmb() do { kcsan_wmb(); __smp_wmb(); } while (0)
+mikroBUS add-on boards do not need to have EEPROM, but they can have it. 
+Simply put, EEPROM is not part of mikroBUS specification, but you will 
+find a lot (especially newer) addon boards with support for EEPROM manifest.
 
-Note __smp_wmb not smp_wmb which would be a NOP on UP.
+Regardless, this patch actually does not contain any code for EEPROM 
+support I have just mentioned it to give more context on why mikroBUS 
+manifest is the focus of this patch instead of DT overlay or something 
+else.
+
+>> in manifest, it registers SPI device along with setting properties such
+>> as `chip_select`, `max_speed_hz`, `mode`, etc., which are defined in the
+>> manifest. On board removal, it unregisters the SPI device and waits for
+>> a new mikroBUS board to be detected again.
+> You explained drivers, not hardware for DT.
 
 
--- 
-MST
+Yes, I was replying to the question posed by Michael. Since this happens 
+in the driver and not in the devicetree, I needed to explain the working 
+of the driver:
+
+
+ > How do you attach a kernel driver to it's spi port for example?
+
+
+For more hardware side, the bindings are for mikrobus connector rather 
+than for any addon board. Thus, while an addon board might not use some 
+of the pins, the connector still needs to have all the pins and 
+associated controllers.
+
+>> It is also possible for SPI not to be used by a device, in which case,
+>> no SPI device is registered to the controller. It is also possible that
+>> the SPI pins will be used as normal GPIOs. Everything is identified from
+>> the manifest.
+>
+> Best regards,
+> Krzysztof
+>
+
+Ayush Singh
 
 
