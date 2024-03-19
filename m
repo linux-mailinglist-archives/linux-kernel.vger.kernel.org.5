@@ -1,180 +1,174 @@
-Return-Path: <linux-kernel+bounces-108103-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108104-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 922738805FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:17:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3693A8805FD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:18:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 843B81C226F6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:17:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC52A284BFA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:18:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE43C5917F;
-	Tue, 19 Mar 2024 20:17:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D5565A0FA;
+	Tue, 19 Mar 2024 20:18:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="e5DVOuPP"
-Received: from mail-yb1-f182.google.com (mail-yb1-f182.google.com [209.85.219.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="HXP9LcCQ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 53FAB58138
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:17:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.182
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710879432; cv=none; b=uFOJo/k9ZLvvgUtz5pnqsQ2Qvl2TXVcciPTn+xm0cPvxliAKZx8pCHJoLc2WX/0U05E3Xe6L7qe341JYZQgWtC5QbjjVZqdt5y2Pj3DzQe8I8iytDVhA5ZTRgiruHuUta2zuGZrrliurFvf0HROBq747TaTN/+WEeD+YZlHg2MA=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710879432; c=relaxed/simple;
-	bh=fia7gnVGNYqtKozcVJDTNzlXpptiYQrxgCj9++vzkSk=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=IGeo/uH0RQFmAgCmmqOnkVbrPrC8hklctQLbEFCArzqIPyguYX1Yw91kjKrmaOuBFL/1UWvOkygKVjaoX5uQAHsnQYso+3kBC2m4E7VmO8Ry+m67pB359r2NVmmVpS3z5vCvNPIzdZL0YCzfFmsLnqx3+w64ir5iCySmk+tfNfI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=e5DVOuPP; arc=none smtp.client-ip=209.85.219.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-yb1-f182.google.com with SMTP id 3f1490d57ef6-dc74435c428so5591893276.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:17:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710879429; x=1711484229; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=ntBkxE8u7HkxjCR8+UuIisU7oJnwNIoRXftVVWpOYDk=;
-        b=e5DVOuPPBmmMbERjafcVqFQ/cS0pXJz/HWAopf6gtZKimG6fxKwLuuKrQ8yOi7aGgP
-         DXFCncMt4C3px1WPs06Zi/5f48zBPbT1DdddrZyJPpjK5sUA1IY2Rj8UZ8hwWnWyyfhs
-         LSfXJlJtxMVc+G+lmMYOEBeGThjAent0CIFxGuawCItGiZBohtcYFpMvnPnOpigLunkL
-         PcL0tzoExBychOTem2l/a0dTekgYYp+6D01DKDR3xxmY1hNjemlQFsynhOvO7TzKNMEN
-         3iZEyQWKp3YALdzMP3S//lSiOjxCHKsmg/xDfaIkIUrz2o/uavK4AabYLHaDrZ8Zd5Jz
-         cxyA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710879429; x=1711484229;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=ntBkxE8u7HkxjCR8+UuIisU7oJnwNIoRXftVVWpOYDk=;
-        b=DEJqlxX2i/7OuEoD63i2Ar3zyCqGoQUrLYSnGBZV5/0PQ43wwDySpOyYQUkzOxukbu
-         L6s1RGWr6JqZuW4//r2/hobpp/EZBsztIUYPwtsDN0cQdGg8GFOTFB/d5TbCRgi3zHDw
-         OkuYOgDxpid+C43OrKS42TJMj9LIFmjy+cqnrZ1qH+LzoChYBmUOY4tWJAuQOzk3PqmM
-         7tlYxdkQFO19arEVcVxb3672wWbNTqA1mdBraq3a6qcT4z/P2hUNo6dNCFfDrgsS92cp
-         HiQqOnDfd4hHugGDx+LYWbnPfou0QCLU8AsiF7Ui0IW6rle/Mo/tVXO6dDd6Q0as5Da4
-         bxSg==
-X-Forwarded-Encrypted: i=1; AJvYcCVEpmbvWaHGqFXgo+T3C5SG8ez1FT2UgGcDctm1GPuk1Mk5ljlQ6Oqn3c1i7fadDPS4TKSe8WSQskwDvJKwotdwQl+zv1x3RHH11kn9
-X-Gm-Message-State: AOJu0YxM0e4MxJRlGX7Di4w3KoogxKFjW2Hd+IC4ulfzD6vC6a1x1IwH
-	SJoVVpcXPa1jvj67hR2P9wln3d565PzvwtFW4eoN4VXWDa1QhfjYDJDR1oYAj7s7RSSRf7O1pZ6
-	d3QwZ/UxG3DZrElAuirSjQwB/3nrCMTHuXDhVGIq31I8FFV3StJU=
-X-Google-Smtp-Source: AGHT+IEC/8S1XzuUKIBHjwDEDs8hk7UZGlIr94dUBwWzeRONeAMI2NjyFhWsw04j3Py1cbxTRJVG16YKQF+I2sp93wo=
-X-Received: by 2002:a25:c8c5:0:b0:dcc:1c6c:430d with SMTP id
- y188-20020a25c8c5000000b00dcc1c6c430dmr40218ybf.12.1710879429158; Tue, 19 Mar
- 2024 13:17:09 -0700 (PDT)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2091CAB2;
+	Tue, 19 Mar 2024 20:18:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710879499; cv=fail; b=mxVF7l7hQGQ1lbjwuGnhToHnwyXvOOs4ZKrJyJFUsHk+n51eeG5VKxEy2Svm98Hyf7jNYIG9HZ/Lxs9Wa76waHGXH7wvJZ7022ryBp+DWCOGYg9xjmHI8HhtX/ydIK8AgXKmT3MHpj/b2egVaHmagPdlzzCueauek7xJrdSYOB8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710879499; c=relaxed/simple;
+	bh=VY8Za2+C8jXIZsKFt8+GDo0qzCd94bCWqF0A+YqBC14=;
+	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=ioiTH6OgHMxrslLFuPLHGiI5FCM6OzqYG5nz3uRcXnIDJ/a3qZ8hXjgtiT+zbyyBPYoZBTHwATegjK++gQbMRVaX6wqUfTVzjWpr/0KuonyqiaGmS4fp+UT1h5q4gC/QS7rgkKvsaQsqT8pEV5yxRGT2jwxW+6LumyH+03IfCs4=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=HXP9LcCQ; arc=fail smtp.client-ip=192.198.163.13
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710879498; x=1742415498;
+  h=date:from:to:cc:subject:message-id:references:
+   in-reply-to:mime-version;
+  bh=VY8Za2+C8jXIZsKFt8+GDo0qzCd94bCWqF0A+YqBC14=;
+  b=HXP9LcCQo3bIxO4ZnauGRpQl+WdREArg+adRYkqel1b0cdRYcIhUiDB4
+   kOwy4Ec3TmLzPoZd5nZSYMI/8lyrVqwuseZ7rJXT0/66S8aeYDpS/FKpO
+   jTebJ50CdKDiWohusJzcn8ix9I7JC9GVf3AHYuZnt7he5gp6GaEDRoNvm
+   9C8FZJvYQPpMAXLabb9qnk0UO1NpHG3IMdAk0WtABxV7AfwBvwB3fwKSk
+   aa0QrSzRZ3TnH8d8FZZCXb9Z8bMjnAEFBEwZ1ScborhsFj05zUQFA7DHo
+   1u29zYYuIVQ0N2eqe2ancsB+3eHy9zPZNexc2xUgX0FLtOWmnVr20Sz/B
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="8722442"
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="8722442"
+Received: from fmviesa009.fm.intel.com ([10.60.135.149])
+  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 13:18:16 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="13925207"
+Received: from orsmsx603.amr.corp.intel.com ([10.22.229.16])
+  by fmviesa009.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Mar 2024 13:18:16 -0700
+Received: from orsmsx611.amr.corp.intel.com (10.22.229.24) by
+ ORSMSX603.amr.corp.intel.com (10.22.229.16) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Mar 2024 13:18:15 -0700
+Received: from orsmsx602.amr.corp.intel.com (10.22.229.15) by
+ ORSMSX611.amr.corp.intel.com (10.22.229.24) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Mar 2024 13:18:14 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx602.amr.corp.intel.com (10.22.229.15) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 13:18:14 -0700
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (104.47.73.40) by
+ edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 19 Mar 2024 13:18:14 -0700
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=gNkRw8pvJDFsw91TGgdcZzq5u4psA7JFFp88qP5imHxe3y5ZYdU8cgwV4d/f712I1BjbLWPXMi7yGBrT2R6Nubvxv4PwSKVbKenTrEFzZutVtxoDgGeIVIvvkxlWygPIl0TOBUVDs0yNuifTDkeZ20jCDrGrcbqk32gc4Gc+OWoJFKikGLcM/3w9Uzlm/bSqS/e6eoLDnVOxCCKRTqZiORDts1F01YpV0RWnYXEh6ET9032KeCA4+sNOdowzP21OEFV5zdxILoVPyk/aonqgZYmXlLpp2HhGtpEAZEnBgdAy5wvY0u9mmgh1nffjjYkTd1HRXPFvlxnRzHROjlU9mw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VY8Za2+C8jXIZsKFt8+GDo0qzCd94bCWqF0A+YqBC14=;
+ b=IMtJ4xovD7U4TRB/6Jqg1LOOnOh/lUaa2TPSWk8Em+F/ya/jp+clA3vMlKZmloG8p7jo6BY3+w1ITAiRf286QEMQJ14dacEae91RpQ1KJ5kqT7+mzUdOEGtlNdf5yLoKql9XpVyrr5X/Vexs22hsEBatlZjcBATfNnrTng8gL66yFmBdJ3STeHqT3m/ZTtwJHJs6kbtXh2C9iR/+NoiKhOId8RRGu/Zg0zOYtNamYwPRGz2JDH0dD+7IobPAFCy2VtGqnkpcM3A1Riis0iOi9QASeUAM1SMLdSoB/iuttOmJGoTXueWc+hjP8hjU3CnrOpvOeR61XA0zHctRseGW6Q==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=intel.com;
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
+ by PH0PR11MB4888.namprd11.prod.outlook.com (2603:10b6:510:32::22) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Tue, 19 Mar
+ 2024 20:18:13 +0000
+Received: from PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
+ ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7409.010; Tue, 19 Mar 2024
+ 20:18:13 +0000
+Date: Tue, 19 Mar 2024 13:18:10 -0700
+From: Dan Williams <dan.j.williams@intel.com>
+To: Robert Richter <rrichter@amd.com>, "Rafael J. Wysocki" <rafael@kernel.org>
+CC: Dave Hansen <dave.hansen@linux.intel.com>, Dan Williams
+	<dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>,
+	<linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-cxl@vger.kernel.org>, Robert Richter <rrichter@amd.com>, Len Brown
+	<lenb@kernel.org>
+Subject: RE: [PATCH v2 2/3] ACPI/NUMA: Print CXL Early Discovery Table (CEDT)
+Message-ID: <65f9f3027ea4e_7702a29462@dwillia2-xfh.jf.intel.com.notmuch>
+References: <20240319120026.2246389-1-rrichter@amd.com>
+ <20240319120026.2246389-3-rrichter@amd.com>
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240319120026.2246389-3-rrichter@amd.com>
+X-ClientProxiedBy: MW4PR04CA0207.namprd04.prod.outlook.com
+ (2603:10b6:303:86::32) To PH8PR11MB8107.namprd11.prod.outlook.com
+ (2603:10b6:510:256::6)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319111432.1.I521dad0693cc24fe4dd14cba0c7048d94f5b6b41@changeid>
- <CAA8EJpq-NjmYkWHAVsuP5jA_Z7Xx0jCiqEDgU-0ni9BCg7Opuw@mail.gmail.com> <2fa9a262-de60-2c1e-9ac3-1e478ec65bb8@quicinc.com>
-In-Reply-To: <2fa9a262-de60-2c1e-9ac3-1e478ec65bb8@quicinc.com>
-From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Date: Tue, 19 Mar 2024 22:16:58 +0200
-Message-ID: <CAA8EJpqg+Di7PH2bmQ6uMidD3MhQ+N7w-1MWWEOBrH5DbsWSTA@mail.gmail.com>
-Subject: Re: [PATCH] drm/dp: Clarify that wait_hpd_asserted() is not optional
- for panels
-To: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Cc: Douglas Anderson <dianders@chromium.org>, dri-devel@lists.freedesktop.org, 
-	linux-tegra@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>, 
-	Jonathan Hunter <jonathanh@nvidia.com>, Thierry Reding <thierry.reding@gmail.com>, 
-	Ankit Nautiyal <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
-	David Airlie <airlied@gmail.com>, Imre Deak <imre.deak@intel.com>, 
-	Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|PH0PR11MB4888:EE_
+X-MS-Office365-Filtering-Correlation-Id: 4fbb2ba5-945d-47ac-1cde-08dc4851b416
+X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info: nMyY5Jw+zlypfyzdO4p0Xf12hPi0YoSs/RTSKrQUSFdTXH8ogT9ZDmtEKdHYhOMcKhugPNAsHlAibqvS/KVWSaoV3E/mu8LBvrLiM742PFFHBWgcaOmIaYjpzHL9UtzZglBTSZvP6bUxBXnypqxRB8cDuwK4iNd0L6Ilvw8rVybRdGGZ+QHc/aBrXlx+QVAaPQ9sQuUxV60tIL3pfn+RusGVf67FRYav0pqbySPIfv11vkd8KtVAkqCcnnfwEoCzarSUzNyWbaMt1iZ1Qb0NWBHFlLmQtjkljWj6ErNLoNoWh3m15A7eMo720Ab6xWB/iDxbofvP13PJ8zn2vlDKAv2347MEqlPn5mlWikLFFqyn9G/C8+9vDN00cuKIogrrA4VXVpTUklH6jTyf1Y7UVduEXNAtutDon5s2VN78A4v/qwnM/x74lF1Qdg15bdpmG/VbO3Amid1U+ijy715pRN37kg6E9mEVRN+kwAe7wm+lMGjOcvkDMFaIswFoF3V7/JBHGP1pLl/KkF2wu4mHjFLeAAlnZtBRROkal4vnvQkXwR7QsE6itM4Hod4d4VArHto/M5lPiyO20r4OkFZHNHDZ2L0V6c11u2sXsSZilCCP5R0IYQgxsM64QWVJXXLfO/QGGJUca7e0dxuAGIcHDoW6zTEOdXjaOO5xo75ywYE=
+X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(1800799015)(376005);DIR:OUT;SFP:1101;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?w9zz6uacAuabDoy7zmWJda1Sz0tZ25KXs8v3bTQxFBaQItN0xa16oGyLd7qg?=
+ =?us-ascii?Q?IIGx1ZT9NYgnf5mRH24oGKgVmYr8Er8iDp/n7aW7Ihh+e5znvLaXykEpJYTq?=
+ =?us-ascii?Q?AjILoqRQGT5/iXQ21mhBvnAC2yE5mzr2AvVWA0sD7nL0QOHW6/BOWF+cSf9n?=
+ =?us-ascii?Q?Lky9B6RnZZxshDc7RB7zKbZgypzF99JX08BjVZyDoPByWxKLiy7xjmEALgt2?=
+ =?us-ascii?Q?rR0Vm6WSUFdX1l8TUVdCz+i6FzroNEpOPuurrzepdjok+knKnFhrVO0FilDi?=
+ =?us-ascii?Q?4yB7Xn+ju+w1f+g3tHd237tJitzSTNMwAw9evWObGd5nRo5RcY49upwOg7HD?=
+ =?us-ascii?Q?a+m0rjfFvQnfHcPI/OAfI6QcuRms4ICiUMyBmgH1YgkJmmzN/G8cXT2O8KgQ?=
+ =?us-ascii?Q?e0jb7OPXEy5f30tlTTfdlU/XRaAD8sBSAPEUyNuzSN0KTyll5sF//2Yq8ddJ?=
+ =?us-ascii?Q?sEtK5JBVpd6Fh7KbuzJs9EXzsDnWJyHDyjkzTRiBRaq291PTFzT/yPYRdt+Q?=
+ =?us-ascii?Q?bw+Bef+P76XYsih4kCwXxlP1Y8yBAFl6aZzfQeyhxYnWL9qNmEFYH2Qeswg0?=
+ =?us-ascii?Q?Owp3JA4CaPx8JTg0Hq/+cREDtLsc1mUuMgKEAU6wR78SM6dfFFSU/6TUhyO0?=
+ =?us-ascii?Q?3iJPz/wNM32GY4fAmluUfWh3SI41YEaHBOq6+cadsO4ugpLp7ccm+AnqrutI?=
+ =?us-ascii?Q?PdEjSIL/fvYYYIMMePoPaLQgG7aRB4gX4PDDDHviNO+kcw2lJid/E/9c/IQm?=
+ =?us-ascii?Q?ielgecZRgNAC7+aBOtIp9A7mDCHZKivD3JACqrQCeRsgnLzl2K3DKbGBydqo?=
+ =?us-ascii?Q?2y5CCL29iNdcf//hrZVO+Du700Gh8zSlPfF+9nTlb1RbWNytL74LPqe0mFx6?=
+ =?us-ascii?Q?6xMgH831A6djH6iZah9F+OkJ3HW3ZnRJRJKsiBYgvuu/pbLi+K+PXBK94L3p?=
+ =?us-ascii?Q?MnCxsP2vWTi/1htNT+ZY1AAyh0ZtcIq8gm6QuVFIvBvYOpdnNuM7fBSh5CaM?=
+ =?us-ascii?Q?dIGDnPdWWEUxq+D9NLQQlmk+a7KCpS5yZ5ajbJcyl63axm3m9SAQ9NggKjRl?=
+ =?us-ascii?Q?y9LqhUvBXEjjWmjQURXSpcO3P8mQrBWSdai7286q0pdeBHTqTz+QuD4CMGmS?=
+ =?us-ascii?Q?kjionpIpCEkRuy/ZQ5HQACJlkO4DVHjiqZXfEg+jpDwpFfzUdzwvLFYjQtO4?=
+ =?us-ascii?Q?s4HJn7al0xcMZuNJXKms7duW+Cl4Iz1lYNSudzJzTv06i0zYPkEi6ZILY4PB?=
+ =?us-ascii?Q?waYSRKnSQmBVcoDfR3Y8mG+tR0WAGzQqyg4HjYi2+Ln8Iw9OEGzy/iCHroZ6?=
+ =?us-ascii?Q?G5Lu+YQbIe+vSqS+Z86KJuoaLmKwdJ06vTifd/WZOg5bv9ulF2NrKobeiE9k?=
+ =?us-ascii?Q?ztnfx8ytHxVno0XnSZhoWgbdo92HRPtaYGICO0V1Ai0UhVT2hiltARKxTYOU?=
+ =?us-ascii?Q?e5Qm4xPWvuI26FdopR8m7on7Ib84gELBZFL8i1swqi3eswz3nVUf3nFMOmg7?=
+ =?us-ascii?Q?txow0pxciLvobPSw9bofBDLTgnC/t4ZNnTDcgwooHGFb0K1S7haqFGPqPJ9q?=
+ =?us-ascii?Q?yNZV3Goufqn/efMB6x62kcUcCRSvAJzm8g2qba9SHIizBZKreVI/kS8qQdIY?=
+ =?us-ascii?Q?fg=3D=3D?=
+X-MS-Exchange-CrossTenant-Network-Message-Id: 4fbb2ba5-945d-47ac-1cde-08dc4851b416
+X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 20:18:13.1758
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: I3z6kloExsXhEqBhjkbXNpuBK6aKJc8zUXLRn9wUtYR3eErJ1216MIGxz+1Ti0Ngm6Edlz5dsFeb1FYDqqPHAwhFOPkOdhvJrPW1l2Pr6dY=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR11MB4888
+X-OriginatorOrg: intel.com
 
-On Tue, 19 Mar 2024 at 21:02, Abhinav Kumar <quic_abhinavk@quicinc.com> wrote:
->
->
->
-> On 3/19/2024 11:35 AM, Dmitry Baryshkov wrote:
-> > On Tue, 19 Mar 2024 at 20:15, Douglas Anderson <dianders@chromium.org> wrote:
-> >>
-> >> In response to my patch removing the "wait for HPD" logic at the
-> >> beginning of the MSM DP transfer() callback [1], we had some debate
-> >> about what the "This is an optional function" meant in the
-> >> documentation of the wait_hpd_asserted() callback. Let's clarify.
-> >>
-> >> As talked about in the MSM DP patch [1], before wait_hpd_asserted()
-> >> was introduced there was no great way for panel drivers to wait for
-> >> HPD in the case that the "built-in" HPD signal was used. Panel drivers
-> >> could only wait for HPD if a GPIO was used. At the time, we ended up
-> >> just saying that if we were using the "built-in" HPD signal that DP
-> >> AUX controllers needed to wait for HPD themselves at the beginning of
-> >> their transfer() callback. The fact that the wait for HPD at the
-> >> beginning of transfer() was awkward/problematic was the whole reason
-> >> wait_hpd_asserted() was added.
-> >>
-> >> Let's make it obvious that if a DP AUX controller implements
-> >> wait_hpd_asserted() that they don't need a loop waiting for HPD at the
-> >> start of their transfer() function. We'll still allow DP controllers
-> >> to work the old way but mark it as deprecated.
-> >>
-> >> [1] https://lore.kernel.org/r/20240315143621.v2.3.I535606f6d4f7e3e5588bb75c55996f61980183cd@changeid
-> >>
-> >> Signed-off-by: Douglas Anderson <dianders@chromium.org>
-> >> ---
-> >> I would consider changing the docs to say that implementing
-> >> wait_hpd_asserted() is actually _required_ for any DP controllers that
-> >> want to support eDP panels parented on the DP AUX bus. The issue is
-> >> that one DP controller (tegra/dpaux.c, found by looking for those that
-> >> include display/drm_dp_aux_bus.h) does populate the DP AUX bus but
-> >> doesn't implement wait_hpd_asserted(). I'm actually not sure how/if
-> >> this work on tegra since I also don't see any delay loop for HPD in
-> >> tegra's transfer() callback. For now, I've left wait_hpd_asserted() as
-> >> optional and described the old/deprecated way things used to work
-> >> before wait_hpd_asserted().
-> >>
-> >>   include/drm/display/drm_dp_helper.h | 8 +++++++-
-> >>   1 file changed, 7 insertions(+), 1 deletion(-)
-> >>
-> >> diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-> >> index a62fcd051d4d..b170efa1f5d2 100644
-> >> --- a/include/drm/display/drm_dp_helper.h
-> >> +++ b/include/drm/display/drm_dp_helper.h
-> >> @@ -422,7 +422,13 @@ struct drm_dp_aux {
-> >>           * @wait_hpd_asserted: wait for HPD to be asserted
-> >>           *
-> >>           * This is mainly useful for eDP panels drivers to wait for an eDP
-> >> -        * panel to finish powering on. This is an optional function.
-> >> +        * panel to finish powering on. It is optional for DP AUX controllers
-> >> +        * to implement this function but required for DP AUX endpoints (panel
-> >> +        * drivers) to call it after powering up but before doing AUX transfers.
-> >> +        * If a DP AUX controller does not implement this function then it
-> >> +        * may still support eDP panels that use the AUX controller's built-in
-> >> +        * HPD signal by implementing a long wait for HPD in the transfer()
-> >> +        * callback, though this is deprecated.
-> >
-> > It doesn't cover a valid case when the panel driver handles HPD signal
-> > on its own.
-> >
->
-> This doc is only for wait_for_hpd_asserted(). If panel driver handles
-> HPD signal on its own, this will not be called. Do we need a doc for that?
+Robert Richter wrote:
+> The CEDT contains similar entries as the SRAT. For diagnostic reasons
+> print the CEDT same style as the SRAT.
 
-This comment declares that this callback must be called by the panel
-driver: '...but required for DP AUX endpoints [...] to call it after
-powering up but before doing AUX transfers.'
-
-If we were to follow documentation changes from this patch, we'd have
-to patch panel-edp to always call wait_for_hpd_asserted, even if HPD
-GPIO is used. However this is not correct from my POV.
-
-> >>           *
-> >>           * This function will efficiently wait for the HPD signal to be
-> >>           * asserted. The `wait_us` parameter that is passed in says that we
-> >> --
-> >> 2.44.0.291.gc1ea87d7ee-goog
-> >>
-> >
-> >
-
-
-
--- 
-With best wishes
-Dmitry
+How about move this to pr_debug()? We have lived without this for a
+significant amount of time and it is not clear that CXL debug scenarios
+have been hampered by not having this in the log by default.
 
