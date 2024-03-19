@@ -1,163 +1,117 @@
-Return-Path: <linux-kernel+bounces-106986-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 34BFB87F652
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:19:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id D038B87F65E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:25:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61BFC1C21AC2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:19:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9E791C21D9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:25:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7338B7C090;
-	Tue, 19 Mar 2024 04:19:05 +0000 (UTC)
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86877C092;
+	Tue, 19 Mar 2024 04:24:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mdpkWybJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7DA1D540;
-	Tue, 19 Mar 2024 04:19:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D0B5F544;
+	Tue, 19 Mar 2024 04:24:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710821945; cv=none; b=WkOFD5zH5wUTpKtFpTKDIvF1djCTbIoeWSbBVgN5/p2zrKKA2jeFdDCdmVKImgih3N5qmrixflUQpao8wHEYh5o1Tca+hF9EmgmQ2uRLb8QwSUzAv3NPj8gcC1mXQdUxdMy/pIf5C0jxm78zxR1RmuNaW8tcp15j5BdgtFO9yIM=
+	t=1710822294; cv=none; b=E3O24uuruA7HrZUOkpJKbnjH2dP6lflJEfTR/gJnkxQJyrK6dBeV3TBzCHw0o4nwDpvuCYIvfXGGAjUZRL+KyWb43drVecgYJWjok+vUlZNejADtImtgkUsvi2Z5o7DjWYnQufNJmWsniRTKxh+kn+SWtMscfMbKrnpafX0JcRU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710821945; c=relaxed/simple;
-	bh=exHMqg7ickwwb5Rk29OIXejwQmnRJaOjOa7LfvyI65M=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=SqomxxDPgU2JTT6jzBkb3wpZA/dsn+urdM6UrgeGjvdIYye8RUE4o4sTAttK0WPbHzAzjYHIY5nIX7Yg8lXMrMVlvDv7vYLTtPGZcLjSdukptb95QfH5OIp81h0fE9st90vKQx4QXGG81GtKMubtP+wpzlXmb10PcrSB3dhL3TU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e6ca2ac094so4629046b3a.0;
-        Mon, 18 Mar 2024 21:19:02 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710821942; x=1711426742;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=jgW4DmXI0kNiY/rl9Qkr5feefQ8+Vq38v1bD2ufKIVI=;
-        b=kHSALl5bI+Qte9CJczvwjqepgT/l6/yA4iuqaGq4dx7QRvWcvjBTaTTp6MZCiHzZkf
-         EFhnjxZaTLp6M5lJClhFp28RRt+1IZuNlYYMBKiCTxB1tvPI+VR4YwLE56GFleXdJ9mA
-         t3EiFUw7O93NJIsRggqmI9sz/hfWtOWRasej5gv9EYRqSoq2hDy7ZMSZh/tlisD0cVkN
-         YPGlqy4jMpLVghRRLqGzDHfiICkcVCamWwsCbWzd+vBHdM5G4MKPu/N1wZav6FXcCjq0
-         o+X52mX9R5NfQiWR2vQ/6/YU4UHhAxyV7gLNHoNzZCWNtE6j1LvjdrbrujOIc97Nvd06
-         WKvw==
-X-Forwarded-Encrypted: i=1; AJvYcCUvx+pzIZJkYgiBDGjP6MXZV+/5rW8uTaxFWbOA2K/YkqHIKzqo/wr+5jXpZWWCGWJdNvpwXuz2pSEXUSkcgXTR3llftaXEWxR7IikjQitwdmCFfYPkSxvhGiwlcJlsIvNeVg/CYyv85SL/Pcb8ugU59GS0/tFRd0CtkE7iUaz2ttkzyw==
-X-Gm-Message-State: AOJu0YwROynF9mB7iZlfnoUJwFi/h5yzQBijbS1ocei/HGL33vs7UCTU
-	mO8E+OSB/M/aRSiWFYOZC1n3+OovSkntKDEqalqfp2W1ftq92uVB/1fwgpJi6ALfJVVyOB8mlG5
-	fpxYCCOlSDCIsnmCbpAKU0H2OuqI=
-X-Google-Smtp-Source: AGHT+IFXLjhVkx7WgKBhbzRCSxQWGWWgaBadHRVGM50RAHgFRsU1xXuP336jq2Ijh9SBYvYnOKxkauqh2VsoLKHG8yA=
-X-Received: by 2002:a05:6a21:3390:b0:1a3:5465:f98 with SMTP id
- yy16-20020a056a21339000b001a354650f98mr1713631pzb.44.1710821941646; Mon, 18
- Mar 2024 21:19:01 -0700 (PDT)
+	s=arc-20240116; t=1710822294; c=relaxed/simple;
+	bh=8COTqAO78HYhmDSxjg8TTpsRSgxaVPz9po3QmqxHMyA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=rRAEJtSrAVT4IjZXpTrYx2KyeEEUzxIBd1kCur7Ujr2meEYCEJCzHvRAPo/WcHjTAmMNoZq24ZiA8Pu8x1utJw45WZdvrB92UCtFCvUv50gYch6dHBDNZn/aOL+G4rIfwjPVidpR/+MO1nlgAl6GNFuBDc/DDw/9cb4lOXKYLFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mdpkWybJ; arc=none smtp.client-ip=192.198.163.8
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710822292; x=1742358292;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=8COTqAO78HYhmDSxjg8TTpsRSgxaVPz9po3QmqxHMyA=;
+  b=mdpkWybJg0oQLh7VDqqnVeY7ZQ9Uxi7u+g5so/ZLpXEf1Z6mjJeECiQD
+   eZg0iQEh0G8QpaE5J58xhP7cYJwJeRp+Yv3h4bokXpjlbQ9BLQevEdsqD
+   LHmwMi8Icnmu8GHUNHJVXCMrBWoEsKGfkZLBx4HBI8YJMaZdHeY91zTLy
+   Fd6ZWufro/6Mzbs3dD257ltfS2/ZPr/75aQ7dwFRGxVX/AXy3BieYoQ3w
+   jJfrOmMPRu+Sm4CJAjJm0YXbHwwf8INKIl4dh6bxpBBh7x2+7GdVbo+VB
+   CX3xgVllAzXrNxO4rqNVWqeYzzUO22JF427Xj5Vo8oJH7w2ap7JhNv/pf
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="23174513"
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="23174513"
+Received: from orviesa007.jf.intel.com ([10.64.159.147])
+  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 21:24:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
+   d="scan'208";a="14146453"
+Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
+  by orviesa007.jf.intel.com with ESMTP; 18 Mar 2024 21:24:47 -0700
+Date: Tue, 19 Mar 2024 12:20:15 +0800
+From: Xu Yilun <yilun.xu@linux.intel.com>
+To: Charles Perry <charles.perry@savoirfairelinux.com>
+Cc: mdf@kernel.org, avandiver@markem-imaje.com, bcody@markem-imaje.com,
+	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>, Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Michal Simek <michal.simek@amd.com>, linux-fpga@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH v5 1/3] fpga: xilinx-spi: extract a common driver core
+Message-ID: <ZfkSf6QG5nIY0zpx@yilunxu-OptiPlex-7050>
+References: <20240313225746.489253-1-charles.perry@savoirfairelinux.com>
+ <20240313225746.489253-2-charles.perry@savoirfairelinux.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240202234057.2085863-1-irogers@google.com> <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
- <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
- <CAM9d7cgbxHZoaq4ZLCda-6TW5A+b+-8dSrRApk+AjcTVNC5hNA@mail.gmail.com> <Zfi0IJV-OKwyDK0r@x1>
-In-Reply-To: <Zfi0IJV-OKwyDK0r@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Mon, 18 Mar 2024 21:18:50 -0700
-Message-ID: <CAM9d7cj+AzPwH8pjG+_HGfmMSMJm6XjkTgxRBWHNW4LF+XJomw@mail.gmail.com>
-Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
-	James Clark <james.clark@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
-	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
-	Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
-	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
-	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
-	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
-	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
-	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
-	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
-	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
-	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
-	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
-	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
-	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
-	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
-	Leo Yan <leo.yan@linux.dev>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313225746.489253-2-charles.perry@savoirfairelinux.com>
 
-On Mon, Mar 18, 2024 at 2:37=E2=80=AFPM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Thu, Mar 07, 2024 at 03:47:00PM -0800, Namhyung Kim wrote:
-> > Hi Ian,
-> >
-> > Sorry for the late reply.
-> >
-> > On Fri, Feb 16, 2024 at 5:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
-rg> wrote:
-> > >
-> > > On Wed, Feb 14, 2024 at 2:03=E2=80=AFPM Ian Rogers <irogers@google.co=
-m> wrote:
-> > > >
-> > > > On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.c=
-om> wrote:
-> > > > >
-> > > > > Rename and clean up the use of libperf CPU map functions particul=
-arly
-> > > > > focussing on perf_cpu_map__empty that may return true for maps
-> > > > > containing CPUs but also with an "any CPU"/dummy value.
-> > > > >
-> > > > > perf_cpu_map__nr is also troubling in that iterating an empty CPU=
- map
-> > > > > will yield the "any CPU"/dummy value. Reduce the appearance of so=
-me
-> > > > > calls to this by using the perf_cpu_map__for_each_cpu macro.
-> > > > >
-> > > > > v3: Address handling of "any" is arm-spe/cs-etm patch.
-> > > > > v2: 6 patches were merged by Arnaldo. New patch added ensure empt=
-y
-> > > > >     maps are allocated as NULL (suggested by James Clark). Hopefu=
-lly a
-> > > > >     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
-> > > > >
-> > > > > Ian Rogers (8):
-> > > > >   libperf cpumap: Add any, empty and min helpers
-> > > > >   libperf cpumap: Ensure empty cpumap is NULL from alloc
-> > > > >   perf arm-spe/cs-etm: Directly iterate CPU maps
-> > > > >   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is=
-_empty
-> > > > >     use
-> > > > >   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_em=
-pty
-> > > > >   perf arm64 header: Remove unnecessary CPU map get and put
-> > > > >   perf stat: Remove duplicate cpus_map_matched function
-> > > > >   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
-> > > >
-> > > > Ping. Thanks,
-> > > > Ian
->
-> > > Adrian and James, are you ok with this now?
->
-> > I think James is fine now and the Intel-pt part seems straight-forward
-> > so I'd like to merge this change.  Please tell me if you have any conce=
-rns.
->
-> Namhyung,
->
->         I noticed this hasn't been merged and applies cleanly, so I'm
-> adding it to perf-tools-next, from your comment above can I take it as
-> an Acked-by or even Reviewed-by?
+> +/**
+> + * struct xilinx_fpga_core - interface between the driver and the core manager
+> + *                           of Xilinx 7 Series FPGA manager
+> + * @dev:       device node
+> + * @write:     write callback of the driver
+> + * @prog_b:    PROGRAM_B gpio descriptor
+> + * @init_b:    INIT_B gpio descriptor
+> + * @done:      DONE gpio descriptor
 
-Oh, I thought I did it already, but I probably missed pushing it. :(
+Please re-check the Documentation again:
+"Structure fields that are inside a private: area are not listed in the generated output documentation"
 
-Sure you can add it,  I'll do that for the sake of b4.
+> + */
+> +struct xilinx_fpga_core {
+> +/* public: */
+> +	struct device *dev;
+> +	int (*write)(struct xilinx_fpga_core *core, const char *buf,
+> +		     size_t count);
+> +/* private: handled by xilinx-core */
+> +	struct gpio_desc *prog_b;
+> +	struct gpio_desc *init_b;
+> +	struct gpio_desc *done;
+> +};
+> +
+[...]
+> -
+>  static int xilinx_spi_probe(struct spi_device *spi)
+>  {
+> -	struct xilinx_spi_conf *conf;
+> -	struct fpga_manager *mgr;
+> +	struct xilinx_fpga_core *conf;
 
-Acked-by: Namhyung Kim <namhyung@kernel.org>
+Why do you name it conf? Maybe "core" is better?
 
 Thanks,
-Namhyung
+Yilun
 
