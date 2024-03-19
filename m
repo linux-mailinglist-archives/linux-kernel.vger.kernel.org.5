@@ -1,273 +1,287 @@
-Return-Path: <linux-kernel+bounces-107656-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107657-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id D7F2987FFAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:34:28 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C21A187FFB1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:34:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 4F7F2B21C70
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:34:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E54EB1C21A86
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:34:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1470765BAA;
-	Tue, 19 Mar 2024 14:33:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 919B126AE4;
+	Tue, 19 Mar 2024 14:34:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b="ch96fTbI"
-Received: from smtp-fw-52003.amazon.com (smtp-fw-52003.amazon.com [52.119.213.152])
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="nEiwXxFW"
+Received: from mout.gmx.net (mout.gmx.net [212.227.15.15])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5CCCF26AE4;
-	Tue, 19 Mar 2024 14:33:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=52.119.213.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 52EF11CFB6;
+	Tue, 19 Mar 2024 14:34:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.15.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710858814; cv=none; b=GZmnIjQn9dSs6I/JaoXcvbOOb9c06kvHL2/kKKJU/0AW3txUeU2WKGjTPURz9JEkzn0jeid0GE6cRZYh7mZCpfQ4RymXuLNzvhib407recQJUEb8+hLsViA5bPATvjiL9SRVSINDeMLPMam9PxJszJTPpBG2bP8Alg68Nw2eB7c=
+	t=1710858855; cv=none; b=Fjp/PxkMA8CZcQN23xj6w5RtCnucHwMh0IYdaqrp5zwwg05rZnLecgiscmSAeaTtyrqflZ8aswXQ2CXvr+bZxunDaj/jxG8yyZy2qc48cfPp4DC/HrQOm61268r+3S40/5kJ66LOBLUr3/uub3j35YvpiKr4m2tol0W0+xpDTzI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710858814; c=relaxed/simple;
-	bh=N7UI4zhlk6TZ7w4PYAIRYUE3isb2Sqb8ySQ7KSf3r74=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=KOnC9lPykxfFPwU68v9BmcL8xJWosvDH815miY6KHOTt1/rgVP7mINHsguCZfmZm1RqmI+XeHoL4G3oPu8Hm5EkfwgTH50snR4Oo6y51Sdg5hshhwoevBOYDRwWGwCJJHntrx7mBGATrrJZTmPPxT8ygQxZRfXp1ujBw2kJXCso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com; spf=pass smtp.mailfrom=amazon.co.uk; dkim=pass (1024-bit key) header.d=amazon.com header.i=@amazon.com header.b=ch96fTbI; arc=none smtp.client-ip=52.119.213.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amazon.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=amazon.co.uk
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=amazon.com; i=@amazon.com; q=dns/txt; s=amazon201209;
-  t=1710858812; x=1742394812;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=3PKGxBWhjhu5SQFumdItpK7yL651FBVQmfMVf/J3HOQ=;
-  b=ch96fTbIo+IsF9cO//VJB/KqZRUZQTmDQUjspu4EHZKLfUtI3gpa/hW2
-   DtgmqHOX7y4qiMzqcaxlyJJuKoPXGzNHZn6NsgmVEt4SpzXKCf3BS+g8q
-   e2ucNlhL5a2HCJJaoJCPbT7OzgKgkhaCBwNmhag/WaWJ/VY2xhSGbkYKc
-   U=;
-X-IronPort-AV: E=Sophos;i="6.07,137,1708387200"; 
-   d="scan'208";a="645831400"
-Received: from iad12-co-svc-p1-lb1-vlan3.amazon.com (HELO smtpout.prod.us-east-1.prod.farcaster.email.amazon.dev) ([10.43.8.6])
-  by smtp-border-fw-52003.iad7.amazon.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 14:33:30 +0000
-Received: from EX19MTAEUA002.ant.amazon.com [10.0.17.79:61740]
- by smtpin.naws.eu-west-1.prod.farcaster.email.amazon.dev [10.0.27.165:2525] with esmtp (Farcaster)
- id bcba8cb4-9acf-49d4-8b36-e70ba6ccbf47; Tue, 19 Mar 2024 14:33:29 +0000 (UTC)
-X-Farcaster-Flow-ID: bcba8cb4-9acf-49d4-8b36-e70ba6ccbf47
-Received: from EX19D036EUC002.ant.amazon.com (10.252.61.191) by
- EX19MTAEUA002.ant.amazon.com (10.252.50.124) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 19 Mar 2024 14:33:28 +0000
-Received: from bcd074994f7f.amazon.com (10.106.83.11) by
- EX19D036EUC002.ant.amazon.com (10.252.61.191) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1258.28; Tue, 19 Mar 2024 14:33:23 +0000
-From: Sudan Landge <sudanl@amazon.com>
-To: <tytso@mit.edu>, <Jason@zx2c4.com>, <robh+dt@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<sudanl@amazon.com>, <sathyanarayanan.kuppuswamy@linux.intel.com>,
-	<thomas.lendacky@amd.com>, <dan.j.williams@intel.com>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>
-CC: <graf@amazon.de>, <dwmw@amazon.co.uk>, <bchalios@amazon.es>,
-	<xmarcalx@amazon.co.uk>
-Subject: [PATCH v1 4/4] virt: vmgenid: add support for devicetree bindings
-Date: Tue, 19 Mar 2024 14:32:53 +0000
-Message-ID: <20240319143253.22317-5-sudanl@amazon.com>
-X-Mailer: git-send-email 2.39.3 (Apple Git-146)
-In-Reply-To: <20240319143253.22317-1-sudanl@amazon.com>
-References: <20240319143253.22317-1-sudanl@amazon.com>
+	s=arc-20240116; t=1710858855; c=relaxed/simple;
+	bh=AbUm5Pq0aF1FAM5ZWdeBptHKFLNal1zLQvqxvR9sTv4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:References:From:
+	 In-Reply-To:Content-Type; b=EBgb18X04d6UJrki76DcDPzSzsbRyZj9J7olMMq4DUn35fOur3WR7UY157nafLipfAzJsHFCoNssBia7+0TPR/SVP4Euo1B9JEJwc7hi5gyj0XFqJjncJQPU0ql9D/xr6EPmZdfmCuRJdBKli+PYDOKkFMNRkbgTlvTRFkCUxEQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=nEiwXxFW; arc=none smtp.client-ip=212.227.15.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710858832; x=1711463632; i=w_armin@gmx.de;
+	bh=F78XrSS29LDfIBktWQ4yECtNVi044MB1Oc4ATjgKoMA=;
+	h=X-UI-Sender-Class:Date:Subject:To:References:From:In-Reply-To;
+	b=nEiwXxFWykavWnWCUNrRi6NMJEB/XusSZpiw+Fxwd5hr2ZuL8+E128PMalS82gyW
+	 l2HqL4Y2V/ldVBj34pBNd32cdScwPtQ+4l5pPakF02DePz5vCVL4dWPLE53a6VqYP
+	 Aihm5fVq28FX86PSvW1pHw+Ge+zrjIQQjImMjsILnOGmhJCaPl4kmTv5Hb250XsZh
+	 NCdah9LvG92yyTHOB7/KzZfPhbkiQM/bbtjMM87jdMN89dyxYf0EOJxwN1S9a3QGa
+	 UWhCRnSTaQfF7g9SuGK8Jbv2XSCHqvKfEA6aNNXttC1u6v0JBqskqMV7XWQBWV9XH
+	 tyX8aZG1wTGDvuHQrw==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx004
+ [212.227.17.190]) with ESMTPSA (Nemesis) id 1MacOW-1rBbtS2WPC-00cBAi; Tue, 19
+ Mar 2024 15:33:52 +0100
+Message-ID: <40bfa65d-4c4d-47cd-a0fb-a85c47fdd4c0@gmx.de>
+Date: Tue, 19 Mar 2024 15:33:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-ClientProxiedBy: EX19D046UWA004.ant.amazon.com (10.13.139.76) To
- EX19D036EUC002.ant.amazon.com (10.252.61.191)
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v9] platform/x86: add lenovo wmi camera button driver
+To: Ai Chao <aichao@kylinos.cn>, hdegoede@redhat.com,
+ ilpo.jarvinen@linux.intel.com, linux-kernel@vger.kernel.org,
+ platform-driver-x86@vger.kernel.org
+References: <20240319021407.15769-1-aichao@kylinos.cn>
+Content-Language: en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <20240319021407.15769-1-aichao@kylinos.cn>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: quoted-printable
+X-Provags-ID: V03:K1:YYfavhpn4u/mx2K5C4qXwy+NltiFhlMZO7gDAduL+wDP2R9xQ68
+ 6g5LWNPKdXQBgNl4UMiJ8bbs4Fjo4Swn/BkgOZhBiH/++y99Yo9plfcZ/1owc8XXl57fkoc
+ r8EyKRIih4jGGmYi0GmjCT2qo9imf7pZuNwpfY1kdcD+FJVG/hWV4gmUv/diP/jMvUFmIkQ
+ 8vGMgae34WnPeiGO5egEg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:DWvF/XYCkxs=;QNNMjAu1JQGZXQRzyJ/wSQ56tV4
+ +n9TLrLDpZGOYfDXX55Tam3xzF3JU/DWzENxxxWJTn6Daogw9tclYnrlG1KzqsKT1Xd6kGYzA
+ S/0j7anXHeqdgQBVIVWl5V7WroW3X7I3XOIBMYau4T+NWgmmGchpenbD+SXzJla1OTgRm+STU
+ Wf1eLUO77ibIqncLqyW3fDs67l6NG1Uug7rJCQ07x9uHpP0fwVfOyJ2Mm3W+1eHEA9tJBG1/1
+ JFNAdbauoPC2bl4CPyUhqe3n1Pka/CfumBQRou9G7edts+/9iYKFpTf8MMxrpGj4CM94XVj9i
+ AGH6BYKcHPEC1dtHCH3JzWQJ/oi/rptR4BWbiOpvxG+IEeNIk8cTwdbnLMFwhQ7SdzS3K6iKx
+ VaIWji5yjphXDBhfKxFk3KLJ7TuLePuECKZrp5bxteqXkVGHOMCdEf3GyBkub9oMc9RiUJP6L
+ HkK4SlQLmkq3U/U4FT9NtjeBKvt7lrtMgdMGjkra5NyvefJzk7DHbdlgG3xYNi+iOIEIfm7VC
+ 203dLf4aAAzKG5RFjexUpfeMqGXElteOnGkEaQBrb8T3M77XYTyHn6yWNJ82su2BhbsTFF1Ty
+ N4PAVI+7pnHzD0di1OojF4eFR9CAw4NxA1L3kx/H4HcqI3rwbLwbK6OanIYgjBI3NbbFceXfq
+ BPXlobG/fzqd5HEob8sZVLSaKbrTWjRH/GjIQsTVk0s71hdOHtfUUrRg1oZAXWnGeM64zdGBf
+ 21fbI9ciV6bg9ZrhC3EExw6wkyLvXxnlt/GWWpr9RcxDsq6bz3LoBks5vq/11AQKg+QrLXYkz
+ +F8GO4zFrixvDdEBQv614ScPoxFIox/1n2/fSkm3/x5n4=
 
-Extend the vmgenid platform driver to support devicetree bindings.
-With this support, hypervisors can send vmgenid notifications to
-the virtual machine without the need to enable ACPI.
+Am 19.03.24 um 03:14 schrieb Ai Chao:
 
-The bindings are located at:
-- Documentation/devicetree/bindings/vmgenid/vmgenid.yaml
+> Add lenovo generic wmi driver to support camera button.
+> The Camera button is a GPIO device. This driver receives ACPI notifyi
+> when the camera button is switched on/off. This driver is used in
+> Lenovo A70, it is a Computer integrated machine.
+>
+> Signed-off-by: Ai Chao <aichao@kylinos.cn>
+> ---
+> v9: Add mutex for wmi notify.
+> v8: Dev_deb convert to dev_err.
+> v7: Add dev_dbg and remove unused dev in struct.
+> v6: Modify SW_CAMERA_LENS_COVER to KEY_CAMERA_ACCESS_ENABLE/KEY_CAMERA_A=
+CCESS_DISABLE.
+> v5: Remove camera button groups, modify KEY_CAMERA to SW_CAMERA_LENS_COV=
+ER.
+> v4: Remove lenovo_wmi_input_setup, move camera_mode into struct lenovo_w=
+mi_priv.
+> v3: Remove lenovo_wmi_remove function.
+> v2: Adjust GPL v2 to GPL, adjust sprintf to sysfs_emit.
+>
+>   drivers/platform/x86/Kconfig             |  12 +++
+>   drivers/platform/x86/Makefile            |   1 +
+>   drivers/platform/x86/lenovo-wmi-camera.c | 112 +++++++++++++++++++++++
+>   3 files changed, 125 insertions(+)
+>   create mode 100644 drivers/platform/x86/lenovo-wmi-camera.c
+>
+> diff --git a/drivers/platform/x86/Kconfig b/drivers/platform/x86/Kconfig
+> index bdd302274b9a..9506a455b547 100644
+> --- a/drivers/platform/x86/Kconfig
+> +++ b/drivers/platform/x86/Kconfig
+> @@ -1001,6 +1001,18 @@ config INSPUR_PLATFORM_PROFILE
+>   	To compile this driver as a module, choose M here: the module
+>   	will be called inspur-platform-profile.
+>
+> +config LENOVO_WMI_CAMERA
+> +	tristate "Lenovo WMI Camera Button driver"
+> +	depends on ACPI_WMI
+> +	depends on INPUT
+> +	help
+> +	  This driver provides support for Lenovo camera button. The Camera
+> +	  button is a GPIO device. This driver receives ACPI notify when the
+> +	  camera button is switched on/off.
+> +
+> +	  To compile this driver as a module, choose M here: the module
+> +	  will be called lenovo-wmi-camera.
+> +
+>   source "drivers/platform/x86/x86-android-tablets/Kconfig"
+>
+>   config FW_ATTR_CLASS
+> diff --git a/drivers/platform/x86/Makefile b/drivers/platform/x86/Makefi=
+le
+> index 1de432e8861e..217e94d7c877 100644
+> --- a/drivers/platform/x86/Makefile
+> +++ b/drivers/platform/x86/Makefile
+> @@ -66,6 +66,7 @@ obj-$(CONFIG_SENSORS_HDAPS)	+=3D hdaps.o
+>   obj-$(CONFIG_THINKPAD_ACPI)	+=3D thinkpad_acpi.o
+>   obj-$(CONFIG_THINKPAD_LMI)	+=3D think-lmi.o
+>   obj-$(CONFIG_YOGABOOK)		+=3D lenovo-yogabook.o
+> +obj-$(CONFIG_LENOVO_WMI_CAMERA)	+=3D lenovo-wmi-camera.o
+>
+>   # Intel
+>   obj-y				+=3D intel/
+> diff --git a/drivers/platform/x86/lenovo-wmi-camera.c b/drivers/platform=
+/x86/lenovo-wmi-camera.c
+> new file mode 100644
+> index 000000000000..820a52588caf
+> --- /dev/null
+> +++ b/drivers/platform/x86/lenovo-wmi-camera.c
+> @@ -0,0 +1,112 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Lenovo WMI Camera Button Driver
+> + *
+> + * Author: Ai Chao <aichao@kylinos.cn>
+> + * Copyright (C) 2024 KylinSoft Corporation.
+> + */
+> +
+> +#include <linux/acpi.h>
+> +#include <linux/device.h>
+> +#include <linux/input.h>
+> +#include <linux/module.h>
+> +#include <linux/mutex.h>
+> +#include <linux/wmi.h>
+> +
+> +#define WMI_LENOVO_CAMERABUTTON_EVENT_GUID "50C76F1F-D8E4-D895-0A3D-62F=
+4EA400013"
+> +
+> +struct lenovo_wmi_priv {
+> +	struct input_dev *idev;
+> +	struct mutex notify_lock;	/* lenovo wmi notify lock */
+> +};
+> +
+> +enum {
+> +	SW_CAMERA_OFF	=3D 0,
+> +	SW_CAMERA_ON	=3D 1,
+> +};
+> +
+> +static void lenovo_wmi_notify(struct wmi_device *wdev, union acpi_objec=
+t *obj)
+> +{
+> +	struct lenovo_wmi_priv *priv =3D dev_get_drvdata(&wdev->dev);
+> +	unsigned int keycode;
+> +	u8 camera_mode;
+> +
+> +	mutex_lock(&priv->notify_lock);
+> +	if (obj->type !=3D ACPI_TYPE_BUFFER) {
+> +		dev_err(&wdev->dev, "Bad response type %u\n", obj->type);
+> +		goto out_unlock;
+> +	}
+> +
+> +	if (obj->buffer.length !=3D 1) {
+> +		dev_err(&wdev->dev, "Invalid buffer length %u\n", obj->buffer.length)=
+;
+> +		goto out_unlock;
+> +	}
+> +
+> +	/* obj->buffer.pointer[0] is camera mode:
+> +	 *      0 camera close
+> +	 *      1 camera open
+> +	 */
+> +	camera_mode =3D obj->buffer.pointer[0];
+> +	if (camera_mode > SW_CAMERA_ON) {
+> +		dev_err(&wdev->dev, "Unknown camera mode %u\n", camera_mode);
+> +		goto out_unlock;
+> +	}
+> +
 
-Signed-off-by: Sudan Landge <sudanl@amazon.com>
----
- drivers/virt/Kconfig   |  2 +-
- drivers/virt/vmgenid.c | 90 +++++++++++++++++++++++++++++++++++++++---
- 2 files changed, 86 insertions(+), 6 deletions(-)
+Hi,
 
-diff --git a/drivers/virt/Kconfig b/drivers/virt/Kconfig
-index 40129b6f0eca..4f33ee2f0372 100644
---- a/drivers/virt/Kconfig
-+++ b/drivers/virt/Kconfig
-@@ -16,7 +16,7 @@ if VIRT_DRIVERS
- config VMGENID
- 	tristate "Virtual Machine Generation ID driver"
- 	default y
--	depends on ACPI
-+	depends on (ACPI || OF)
- 	help
- 	  Say Y here to use the hypervisor-provided Virtual Machine Generation ID
- 	  to reseed the RNG when the VM is cloned. This is highly recommended if
-diff --git a/drivers/virt/vmgenid.c b/drivers/virt/vmgenid.c
-index e82b344a9d61..96a3ff8ec05a 100644
---- a/drivers/virt/vmgenid.c
-+++ b/drivers/virt/vmgenid.c
-@@ -2,7 +2,7 @@
- /*
-  * Copyright (C) 2022 Jason A. Donenfeld <Jason@zx2c4.com>. All Rights Reserved.
-  *
-- * The "Virtual Machine Generation ID" is exposed via ACPI and changes when a
-+ * The "Virtual Machine Generation ID" is exposed via ACPI or DT and changes when a
-  * virtual machine forks or is cloned. This driver exists for shepherding that
-  * information to random.c.
-  */
-@@ -12,6 +12,12 @@
- #include <linux/acpi.h>
- #include <linux/random.h>
- #include <acpi/actypes.h>
-+#include <linux/init.h>
-+#include <linux/interrupt.h>
-+#include <linux/io.h>
-+#include <linux/of_address.h>
-+#include <linux/of_device.h>
-+#include <linux/of_irq.h>
- #include <linux/platform_device.h>
- 
- ACPI_MODULE_NAME("vmgenid");
-@@ -21,6 +27,7 @@ enum { VMGENID_SIZE = 16 };
- struct vmgenid_state {
- 	u8 *next_id;
- 	u8 this_id[VMGENID_SIZE];
-+	unsigned int irq;
- };
- 
- static void vmgenid_notify(struct device *device)
-@@ -42,6 +49,13 @@ static void vmgenid_acpi_handler(acpi_handle handle, u32 event, void *dev)
- 	vmgenid_notify(dev);
- }
- 
-+static irqreturn_t vmgenid_of_irq_handler(int irq, void *dev)
-+{
-+	vmgenid_notify(dev);
-+
-+	return IRQ_HANDLED;
-+}
-+
- static int setup_vmgenid_state(struct vmgenid_state *state, u8 *next_id)
- {
- 	if (IS_ERR(next_id))
-@@ -98,6 +112,43 @@ static int vmgenid_add_acpi(struct device *dev, struct vmgenid_state *state)
- 	return ret;
- }
- 
-+static int vmgenid_add_of(struct device *dev, struct vmgenid_state *state)
-+{
-+	struct resource res;
-+	int ret = 0;
-+
-+	if (of_address_to_resource(dev->of_node, 0, &res)) {
-+		dev_err(dev, "Failed to get resources from device tree");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	if (!__request_mem_region(res.start, resource_size(&res),
-+				  "vmgenid", IORESOURCE_EXCLUSIVE)) {
-+		dev_err(dev, "Failed to request mem region");
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	ret = setup_vmgenid_state(state, of_iomap(dev->of_node, 0));
-+	if (ret)
-+		goto out;
-+
-+	state->irq = irq_of_parse_and_map(dev->of_node, 0);
-+	dev->driver_data = state;
-+
-+	if (request_irq(state->irq, vmgenid_of_irq_handler,
-+			IRQF_SHARED, "vmgenid", dev) < 0) {
-+		dev_err(dev, "request_irq failed");
-+		dev->driver_data = NULL;
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+out:
-+	return ret;
-+}
-+
- static int vmgenid_add(struct platform_device *pdev)
- {
- 	struct vmgenid_state *state;
-@@ -108,7 +159,10 @@ static int vmgenid_add(struct platform_device *pdev)
- 	if (!state)
- 		return -ENOMEM;
- 
--	ret = vmgenid_add_acpi(dev, state);
-+	if (dev->of_node)
-+		ret = vmgenid_add_of(dev, state);
-+	else
-+		ret = vmgenid_add_acpi(dev, state);
- 
- 	if (ret)
- 		devm_kfree(dev, state);
-@@ -116,7 +170,30 @@ static int vmgenid_add(struct platform_device *pdev)
- 	return ret;
- }
- 
--static const struct acpi_device_id vmgenid_ids[] = {
-+static int vmgenid_remove(struct platform_device *pdev)
-+{
-+	struct vmgenid_state *state = NULL;
-+
-+	if (!pdev)
-+		return -EINVAL;
-+
-+	state = pdev->dev.driver_data;
-+
-+	if (state && pdev->dev.of_node)
-+		free_irq(state->irq, &pdev->dev);
-+
-+	if (state)
-+		devm_kfree(&pdev->dev, state);
-+
-+	return 0;
-+}
-+
-+static const struct of_device_id vmgenid_of_ids[] = {
-+	{ .compatible = "linux,vmgenctr", },
-+	{},
-+};
-+
-+static const struct acpi_device_id vmgenid_acpi_ids[] = {
- 	{ "VMGENCTR", 0 },
- 	{ "VM_GEN_COUNTER", 0 },
- 	{ }
-@@ -124,9 +201,11 @@ static const struct acpi_device_id vmgenid_ids[] = {
- 
- static struct platform_driver vmgenid_plaform_driver = {
- 	.probe      = vmgenid_add,
-+	.remove     = vmgenid_remove,
- 	.driver     = {
- 		.name   = "vmgenid",
--		.acpi_match_table = ACPI_PTR(vmgenid_ids),
-+		.acpi_match_table = ACPI_PTR(vmgenid_acpi_ids),
-+		.of_match_table = vmgenid_of_ids,
- 		.owner = THIS_MODULE,
- 	},
- };
-@@ -144,7 +223,8 @@ static void vmgenid_platform_device_exit(void)
- module_init(vmgenid_platform_device_init)
- module_exit(vmgenid_platform_device_exit)
- 
--MODULE_DEVICE_TABLE(acpi, vmgenid_ids);
-+MODULE_DEVICE_TABLE(acpi, vmgenid_acpi_ids);
-+MODULE_DEVICE_TABLE(of, vmgenid_of_ids);
- MODULE_DESCRIPTION("Virtual Machine Generation ID");
- MODULE_LICENSE("GPL v2");
- MODULE_AUTHOR("Jason A. Donenfeld <Jason@zx2c4.com>");
--- 
-2.40.1
+can you move the call to mutex_lock() to this line please?
+The ACPI object parsing code does not have to be protected by the mutex,
+just the key input sequence.
 
+> +	keycode =3D (camera_mode =3D=3D SW_CAMERA_ON ?
+> +		   KEY_CAMERA_ACCESS_ENABLE : KEY_CAMERA_ACCESS_DISABLE);
+> +	input_report_key(priv->idev, keycode, 1);
+> +	input_sync(priv->idev);
+> +	input_report_key(priv->idev, keycode, 0);
+> +	input_sync(priv->idev);
+> +
+> +out_unlock:
+> +	mutex_unlock(&priv->notify_lock);
+> +}
+> +
+> +static int lenovo_wmi_probe(struct wmi_device *wdev, const void *contex=
+t)
+> +{
+> +	struct lenovo_wmi_priv *priv;
+> +
+> +	priv =3D devm_kzalloc(&wdev->dev, sizeof(*priv), GFP_KERNEL);
+> +	if (!priv)
+> +		return -ENOMEM;
+> +
+> +	dev_set_drvdata(&wdev->dev, priv);
+> +
+> +	mutex_init(&priv->notify_lock);
 
+Please note that mutex_destroy() should be called when removing the driver
+or when an error occurred during probe.
+
+Other than those two issues, the driver looks fine.
+
+Thanks,
+Armin Wolf
+
+> +	priv->idev =3D devm_input_allocate_device(&wdev->dev);
+> +	if (!priv->idev)
+> +		return -ENOMEM;
+> +
+> +	priv->idev->name =3D "Lenovo WMI Camera Button";
+> +	priv->idev->phys =3D "wmi/input0";
+> +	priv->idev->id.bustype =3D BUS_HOST;
+> +	priv->idev->dev.parent =3D &wdev->dev;
+> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_ENABLE);
+> +	input_set_capability(priv->idev, EV_KEY, KEY_CAMERA_ACCESS_DISABLE);
+> +
+> +	return input_register_device(priv->idev);
+> +}
+> +
+> +static const struct wmi_device_id lenovo_wmi_id_table[] =3D {
+> +	{ .guid_string =3D WMI_LENOVO_CAMERABUTTON_EVENT_GUID },
+> +	{  }
+> +};
+> +
+> +static struct wmi_driver lenovo_wmi_driver =3D {
+> +	.driver =3D {
+> +		.name =3D "lenovo-wmi-camera",
+> +		.probe_type =3D PROBE_PREFER_ASYNCHRONOUS,
+> +	},
+> +	.id_table =3D lenovo_wmi_id_table,
+> +	.no_singleton =3D true,
+> +	.probe =3D lenovo_wmi_probe,
+> +	.notify =3D lenovo_wmi_notify,
+> +};
+> +
+> +module_wmi_driver(lenovo_wmi_driver);
+> +
+> +MODULE_DEVICE_TABLE(wmi, lenovo_wmi_id_table);
+> +MODULE_AUTHOR("Ai Chao <aichao@kylinos.cn>");
+> +MODULE_DESCRIPTION("Lenovo WMI Camera Button Driver");
+> +MODULE_LICENSE("GPL");
 
