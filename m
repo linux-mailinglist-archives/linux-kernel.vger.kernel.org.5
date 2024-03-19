@@ -1,48 +1,48 @@
-Return-Path: <linux-kernel+bounces-107735-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107736-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1BFC58800FA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:46:42 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 311038800F9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:46:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id B1116B22C80
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:46:39 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E0F7B283986
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:46:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 525E081AB4;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5262581AB5;
 	Tue, 19 Mar 2024 15:46:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AYoEadP+"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDwpXITz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD892E400;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AE30657AD;
 	Tue, 19 Mar 2024 15:46:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710863173; cv=none; b=AjcWNPjBxK+bsVpUTtPqtnx9I/6KAzfeXUfnA3Wup47L7GL2yuhWmL5DhvwU34EqECiPLbHFa4GO7Y0yJrXS+LcWSocItqBkRqLCWEvm5XrTS4b9kn8jMCbceDSiMH+/SFwKzm5iXYzB+doySCrkYsWaq5hfhdI79O+Qfsey624=
+	t=1710863173; cv=none; b=tUjI39Tai9YQfqEGc10dXP46UgPZ5FXwIJC+yhH526251fZryXNUQj7vPDdq6/Za24J3OqatX+wy09zD0W6cqTvjmMK3v7VnbTGpGckQZ2x+uf+tyllnkElomaa73ZUHPtOSmaDJBhs6kmU0uLNYDn2iez3yiQFpSHvpRhoJNyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710863173; c=relaxed/simple;
-	bh=pd6u63f7QKmzAlsvJyOlOlrn80eFLOYslxGeKqxNvYw=;
+	bh=71GoqhGH8N8bnYtZsq9ijp622SfqGqj12oKJWg3VC74=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=naNoGSkTYbOuWZmH2V+u4XYfv9sPRYuvicyOuAatoGKNF9ZjS8y9WtA0UHvKYPjT8q5LklHV/rJxpet0HDYg+28UVfS0BPOIF/ks10GpfUwzWlYnn5hWbYw4O+zyl11ar62KgAzBKdm97pM8zgidF25VRIC27ycDNtei2qqiBKM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AYoEadP+; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3FBB1C43394;
+	 MIME-Version; b=TcTP2qPNdllX5k3Yzn+ucmuUE9Itmx067gASSvujHiFv45pFJLH+A9AohIa5+QU/Xi58kwriJnMk0XZm2Tjp134OuThuW65qt7syANTbtUYoMJNjcxBIcJGBJSN1lgvpyYMT4tQxfaS644YbXHgLhrHVq5AjUxn4b+7fqLNy96E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDwpXITz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3B12BC433F1;
 	Tue, 19 Mar 2024 15:46:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710863173;
-	bh=pd6u63f7QKmzAlsvJyOlOlrn80eFLOYslxGeKqxNvYw=;
+	bh=71GoqhGH8N8bnYtZsq9ijp622SfqGqj12oKJWg3VC74=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=AYoEadP+Vi9xy8UPK80v19Sx5CBhULXg7DUaeWSBD1YcjvT9Gc7s8lE05390dPPRM
-	 VId9psPr15oh2Q9E+DHnmLlM5eEmcKrPJc9FX3RGu/RRzedznIy6/9K47EbQ9Mbjys
-	 VaeTzpjwN9/ULvyB4Ks+F6XxabSw3iA/6WXwzrumo31df1AZszM7ATOTb7HEv3xWnc
-	 ZzfrwjOAzZJeGog6wAfdIL9oMw7m1Je1IHhBkn663t2W04sVeF/CoQ8f+Z9qKpLDx9
-	 XTPq9DbIRWy1eWFT+gAIpffbkkah+Uu9/Nag5OaLzIB1RJaXC+wvjpQWHEBu68RLxq
-	 xOQRRRalxZR0g==
+	b=FDwpXITzgKpJYpScRM4cJlp8JdccJ61kLQnExKuxUbGRi3xpVwvEiFUhKz5MoQBBY
+	 IOvfBRWJ2ZAGTm2uk5U4G9wFRkMyCudQTWi5Dwbg+0fw7IGEb/eMQOiFzOQ3sJ8gWl
+	 MD735TzjhiMaTEFXt/25AYj/8RB3r4Kx1wCCTdjhXCzsmRJanXWYiMZe/Y4la76Nk4
+	 XhkOiGTG0xq17xMARVI3+SM3SU2Q9Gix/LEOXKbom4XLhR7Yq5cmzMPYnhd4HDonMf
+	 4kINiBELTVNk4g6BJHCT3j9zuklxE6E423+9xUZSizgVImeDqrp6XUkLrIxlda370p
+	 LiMRwkt1VLsBQ==
 Received: from johan by xi.lan with local (Exim 4.97.1)
 	(envelope-from <johan+linaro@kernel.org>)
-	id 1rmbfQ-000000000eV-1bvU;
+	id 1rmbfQ-000000000eX-1tKc;
 	Tue, 19 Mar 2024 16:46:20 +0100
 From: Johan Hovold <johan+linaro@kernel.org>
 To: Marcel Holtmann <marcel@holtmann.org>,
@@ -52,9 +52,9 @@ Cc: Zhengping Jiang <jiangzp@google.com>,
 	linux-kernel@vger.kernel.org,
 	Johan Hovold <johan+linaro@kernel.org>,
 	stable@vger.kernel.org
-Subject: [PATCH 1/2] Bluetooth: qca: fix NULL-deref on non-serdev suspend
-Date: Tue, 19 Mar 2024 16:46:10 +0100
-Message-ID: <20240319154611.2492-2-johan+linaro@kernel.org>
+Subject: [PATCH 2/2] Bluetooth: qca: fix NULL-deref on non-serdev setup
+Date: Tue, 19 Mar 2024 16:46:11 +0100
+Message-ID: <20240319154611.2492-3-johan+linaro@kernel.org>
 X-Mailer: git-send-email 2.43.2
 In-Reply-To: <20240319154611.2492-1-johan+linaro@kernel.org>
 References: <20240319154611.2492-1-johan+linaro@kernel.org>
@@ -70,34 +70,33 @@ Qualcomm ROME controllers can be registered from the Bluetooth line
 discipline and in this case the HCI UART serdev pointer is NULL.
 
 Add the missing sanity check to prevent a NULL-pointer dereference when
-wakeup() is called for a non-serdev controller during suspend.
+setup() is called for a non-serdev controller.
 
-Just return true for now to restore the original behaviour and address
-the crash with pre-6.2 kernels, which do not have commit e9b3e5b8c657
-("Bluetooth: hci_qca: only assign wakeup with serial port support") that
-causes the crash to happen already at setup() time.
-
-Fixes: c1a74160eaf1 ("Bluetooth: hci_qca: Add device_may_wakeup support")
-Cc: stable@vger.kernel.org      # 5.13
+Fixes: e9b3e5b8c657 ("Bluetooth: hci_qca: only assign wakeup with serial port support")
+Cc: stable@vger.kernel.org      # 6.2
+Cc: Zhengping Jiang <jiangzp@google.com>
 Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
 ---
- drivers/bluetooth/hci_qca.c | 3 +++
- 1 file changed, 3 insertions(+)
+ drivers/bluetooth/hci_qca.c | 6 ++++--
+ 1 file changed, 4 insertions(+), 2 deletions(-)
 
 diff --git a/drivers/bluetooth/hci_qca.c b/drivers/bluetooth/hci_qca.c
-index c73481c57741..84f728943962 100644
+index 84f728943962..6a69a7f9ef64 100644
 --- a/drivers/bluetooth/hci_qca.c
 +++ b/drivers/bluetooth/hci_qca.c
-@@ -1672,6 +1672,9 @@ static bool qca_wakeup(struct hci_dev *hdev)
- 	struct hci_uart *hu = hci_get_drvdata(hdev);
- 	bool wakeup;
- 
-+	if (!hu->serdev)
-+		return true;
-+
- 	/* BT SoC attached through the serial bus is handled by the serdev driver.
- 	 * So we need to use the device handle of the serdev driver to get the
- 	 * status of device may wakeup.
+@@ -1960,8 +1960,10 @@ static int qca_setup(struct hci_uart *hu)
+ 		qca_debugfs_init(hdev);
+ 		hu->hdev->hw_error = qca_hw_error;
+ 		hu->hdev->cmd_timeout = qca_cmd_timeout;
+-		if (device_can_wakeup(hu->serdev->ctrl->dev.parent))
+-			hu->hdev->wakeup = qca_wakeup;
++		if (hu->serdev) {
++			if (device_can_wakeup(hu->serdev->ctrl->dev.parent))
++				hu->hdev->wakeup = qca_wakeup;
++		}
+ 	} else if (ret == -ENOENT) {
+ 		/* No patch/nvm-config found, run with original fw/config */
+ 		set_bit(QCA_ROM_FW, &qca->flags);
 -- 
 2.43.2
 
