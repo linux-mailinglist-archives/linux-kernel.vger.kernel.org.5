@@ -1,70 +1,63 @@
-Return-Path: <linux-kernel+bounces-106935-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106936-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DBF1F87F5AE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:51:07 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id B145187F5B1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:51:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C1BB1F21FC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:51:07 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 6772E1F220FE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:51:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 526027D3F6;
-	Tue, 19 Mar 2024 02:49:03 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B7AC7E779;
+	Tue, 19 Mar 2024 02:49:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="mUeDGdX/"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q/r1uwwQ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 880697E572;
-	Tue, 19 Mar 2024 02:49:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 47B377BAF0;
+	Tue, 19 Mar 2024 02:49:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710816542; cv=none; b=Tclwbv2t7purSFM54l20f/UvH0OmhsVlPpE189kKMbyyZhecLH4ij46xdq6RNMAaL9zmCxBjeqfQ9yKQMAiI+6NptHnvDHXreTKG84OUWjiR0QZu+yQkimU3X4ifjOM/reIDWAvtQEfnJ4vrww1WoAuv1AY30gq0TisGYex0/UA=
+	t=1710816543; cv=none; b=cKY7suJxt/ZdwkAcdlQsinZ1n6ZQjZ5bb0iuYUER3ZB9feWWhPKu4onnuKf6ZmVCLmwz6PvBc8x582XPFRvVkuBHXSK3IcrvEzvdcpQzg8KCIiVj4VKuGEaKqYSBT75A2KQk9XZh03GJrpqtgRaUSryPvKBgd3VIH2AakvcxGIc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710816542; c=relaxed/simple;
-	bh=duyIFh111GdgY8uZhIwil5LxGThPSh0MWa2ewQJ7/Yw=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=pP9Qoz8lSnkJUmP3lBGBMSI87gferyFyGXXIZLFr2L6YtHbntpqvPxaCPe+fd+ef83eSFJPjlKb/pUqE5xnUHFfMyu+JZWJlyQIAtyy8kFMXabZJMven6A1TA6nHfI3fF3CunFj91P1X4hyy/zyuPNHCZzPT3GGDH88jw1v8Klo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=mUeDGdX/; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B8B76C43399;
-	Tue, 19 Mar 2024 02:49:00 +0000 (UTC)
+	s=arc-20240116; t=1710816543; c=relaxed/simple;
+	bh=HzlUhnnLmQm0ZZXswW9c61kZl9mt/Or/ep++Uk+xdMk=;
+	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=oIdZ8cqhKYGFgdjYDWSKXPhgueNqmkEyH+pvPTqS/xVn+gPe1k7DTcRuWRRQsJ1dbIlm6qH/KqI4veQGP77ba9MLdvNV6uGi2a6nvJygPWzrGv3v+QarV311wWXHyB+VrGEO3oXxpuXw+MwgyN8UeIvhbbZKX/lg9qZsRywj+U8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q/r1uwwQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4A2C8C433B2;
+	Tue, 19 Mar 2024 02:49:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710816542;
-	bh=duyIFh111GdgY8uZhIwil5LxGThPSh0MWa2ewQJ7/Yw=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=mUeDGdX/hQcftX6GXGW+/Al/Q1MKvq9Dp2QePCbjF9SdlaTC4uf85IOFJHIhJYnNW
-	 eyvK3cGo/FP5KRhsR4COq2aiTsbcFINiEQxrsWY20A655RFXGWmtGrSLYpR5NU/7Du
-	 tpoRSqYvQ80uacKoZeEa4ieqRsGEOnh+P4kMuFo2neMiov1ugr6GfSiA7Lptpz1pON
-	 o/XXq3W2NzT2bor2VNvJs5zLjbn5kTlfkIHji1ebk8Opj5XpIHPKR885q6sK5POqJD
-	 Y/TU7veb59xUnHtbOQuaH5OsV2XD0c2HoBpW6qYO4lfOyNWhlGgOgNpRXL0fgaOpVL
-	 RpwJa8ODI1pAw==
+	s=k20201202; t=1710816543;
+	bh=HzlUhnnLmQm0ZZXswW9c61kZl9mt/Or/ep++Uk+xdMk=;
+	h=From:To:Subject:Date:In-Reply-To:References:From;
+	b=Q/r1uwwQvvMrzlCQeRU2AlU9mSzCAnaeK0Oj/xkpbsxX2HhVQsMixyFgR8ZyzuptU
+	 +rVcXTwXqqao1ucOlzJSBMwRFS+SvPxyyL3TtwqqJ1XviaClw7S8B1FM0jR/ExcoOW
+	 rF3jdWmhgI824P8VjhsJJwyHLp4j2BRaibvoxaf4ECo4W3V1L2lA4+gXw8zDlcn46a
+	 +FDofjAiYAC4n9pftu0FboKNgpdImXHqZN1Z9Pcm4hNlPHScDHJjtJN0cjYErR1OJv
+	 cqztviIbxHMcgKSOp3Z5UNfPHpCw4xMnpzJ1XsW4Zf2ML18ZC7Rqo6vilEtolDpH3+
+	 lKJ78EBxvJbKQ==
 From: Bjorn Andersson <andersson@kernel.org>
-To: "Rafael J. Wysocki" <rafael@kernel.org>,
-	Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Zhang Rui <rui.zhang@intel.com>,
-	Lukasz Luba <lukasz.luba@arm.com>,
+To: Konrad Dybcio <konrad.dybcio@linaro.org>,
 	Rob Herring <robh@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Thara Gopinath <thara.gopinath@gmail.com>,
-	Amit Kucheria <amitk@kernel.org>,
-	Konrad Dybcio <konrad.dybcio@linaro.org>
-Cc: Marijn Suijten <marijn.suijten@somainline.org>,
+	Catalin Marinas <catalin.marinas@arm.com>,
+	Will Deacon <will@kernel.org>,
 	linux-arm-msm@vger.kernel.org,
-	linux-pm@vger.kernel.org,
 	devicetree@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	stable@vger.kernel.org,
-	Loic Poulain <loic.poulain@linaro.org>
-Subject: Re: (subset) [PATCH v2 0/3] QCM2290 LMH
-Date: Mon, 18 Mar 2024 21:48:33 -0500
-Message-ID: <171081652641.198276.6279515600086976748.b4-ty@kernel.org>
+	linux-arm-kernel@lists.infradead.org,
+	Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Subject: Re: (subset) [PATCH 1/3] arm64: dts: qcom: x1e80100: correct SWR1 pack mode
+Date: Mon, 18 Mar 2024 21:48:34 -0500
+Message-ID: <171081652641.198276.2261139023071151604.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240308-topic-rb1_lmh-v2-0-bac3914b0fe3@linaro.org>
-References: <20240308-topic-rb1_lmh-v2-0-bac3914b0fe3@linaro.org>
+In-Reply-To: <20240227142725.625561-1-krzysztof.kozlowski@linaro.org>
+References: <20240227142725.625561-1-krzysztof.kozlowski@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,17 +68,16 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Sat, 09 Mar 2024 14:15:01 +0100, Konrad Dybcio wrote:
-> Wire up LMH on QCM2290 and fix a bad bug while at it.
-> 
-> P1-2 for thermal, P3 for qcom
+On Tue, 27 Feb 2024 15:27:23 +0100, Krzysztof Kozlowski wrote:
+> Correct the SWR1 Soundwire controller port block pack mode to match
+> reference code.  Not sure if this has any impact.
 > 
 > 
 
 Applied, thanks!
 
-[3/3] arm64: dts: qcom: qcm2290: Add LMH node
-      commit: 7d6d561fa934594faf359f6fffee0e2dd59f8110
+[3/3] arm64: defconfig: enable reset-gpio driver as module
+      commit: cf30987a9ae9a8a430f957f8516b2092f6bab29d
 
 Best regards,
 -- 
