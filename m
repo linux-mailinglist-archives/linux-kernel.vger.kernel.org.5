@@ -1,163 +1,143 @@
-Return-Path: <linux-kernel+bounces-108186-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108185-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 265D188073A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:18:19 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 312C8880737
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:17:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 81E071F23355
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:18:18 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 910EB2819A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:17:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9D1625FDA5;
-	Tue, 19 Mar 2024 22:17:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8A25A5FBA4;
+	Tue, 19 Mar 2024 22:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JCTKrsZK"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="gFiTuutF";
+	dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b="sGyI9Shg"
+Received: from mailrelay2-1.pub.mailoutpod2-cph3.one.com (mailrelay2-1.pub.mailoutpod2-cph3.one.com [46.30.211.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 36FD05FBB7;
-	Tue, 19 Mar 2024 22:17:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5830059B77
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:17:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.30.211.177
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710886655; cv=none; b=s662XMxvTn0Tpc/Cf2wXJpFr4v2IabOU+I+nN5HPxQQkaSScUSXLQ/SUnFbCRxrr3oBQimI4ohSoJi3yDvzgdDe8E9ZchfVx8OyHTeflzNQNHWgJWiC7TZFtc32G8c+ed8CHOOoPoYb89heoCuOvqpvLdKBDbStVq1cR4u9i6yg=
+	t=1710886651; cv=none; b=AGUNuHroKh17HL7R1XM8GeBFV7nzKrRcwEK2+oL4zj8LnzmbkNyVEHQaJahaal+SlxMs/igTrTJaWsJd6JcAf8UGqULUJnVbnqbPq9jigs8YaJQGk8MJloLyzp8zCpslNjD9jPf22lQlV7iJfj1KW8KfoiA27zEoZvjgMZuTWk8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710886655; c=relaxed/simple;
-	bh=MSyuiyO4jmisLWsBYvLWyrUhMbTgIpdQwkeBbREycr0=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=Eum64JkXaq5g/EOqjr1/qk2x9amoGW34+Jy47kuW3sDb67BEqAsFbKAuA2CIyF1/XOBVEHWd1VpAYtD5oNnESPgnmRGHg9+5bGX1x0DLPL/NyfEk0pVNhk42sZCmxaBkqF22SEYqVVW1w+axFvZXReAnxzifz8Ui3VXehopAhDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JCTKrsZK; arc=none smtp.client-ip=209.85.208.48
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56ba6c83805so736489a12.0;
-        Tue, 19 Mar 2024 15:17:33 -0700 (PDT)
+	s=arc-20240116; t=1710886651; c=relaxed/simple;
+	bh=Cu6YYeq/2XeoSQ689tlnEMX24gA8Vo52A8XVPrbfWew=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=nhmayOFEukV4cK5Rs8szUO3ruUn/X8++kvideKbAc6BOMfBXKoOuVTT/XPo0ajg4IQmA8t3vRCjccy3OZ7R18FfEmY3j5awICB1zNVQmaFspiLX7IUimNN8QT8aZTOuFJylwJMVe+aVF428HLnxOIb4rTGn3/55zNH3YS4jiPZk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org; spf=none smtp.mailfrom=ravnborg.org; dkim=pass (2048-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=gFiTuutF; dkim=permerror (0-bit key) header.d=ravnborg.org header.i=@ravnborg.org header.b=sGyI9Shg; arc=none smtp.client-ip=46.30.211.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ravnborg.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ravnborg.org
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710886652; x=1711491452; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=5Glc2nUqM/BurNgNXCvp8j1tF0pWkjpc6BBQBi0GM1U=;
-        b=JCTKrsZKUW3P76nz1XVi7Glq7qO116IxI96LHuDz0N5tu/0swH6eR52SOfBnQbYuIZ
-         EDbSNqm8E1qNCdYvFsbv3gZ+H/76zcxYhKcUYbZ0CWh5MpbDSEy/OmJDrac2KsdzQ4qy
-         bl2UjrNy6aeQmNUN1db60p44TYRTN6cZV+ClxGOrfiJgVDjHlrXCv6EH6+fxbWR3sSbL
-         2j3cIfWSYFc3wLljxUPmdSSLAqIi5LJpzfdOH3uoo0/SP7PTol4bf0DYG50RrCHKW9fp
-         RSpKCDokm2Hj4aagcA+cTquIpRkGgDFGNhaHNk+22mQPrvh1Xmqfl0DlYjTLOgrjarL8
-         XOBQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710886652; x=1711491452;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=5Glc2nUqM/BurNgNXCvp8j1tF0pWkjpc6BBQBi0GM1U=;
-        b=u9pDjS7xcc54vzH/36eEfSttPgxSg19bmn4Qjnru74hIq2i3NKM7SlRT6EwwpBJWIh
-         hxOtLdDyODkF6F28kDB6MFOzNDUSyt++a68o4nA1aD685Cf7Ez+UT+gLhlNbBgP4rcZq
-         GuF0ytM06UxtYVbIAW5DZyA6WaI8X2ks4S1D5iXqNl+PfRgejDpsW0oOq/E/ehPHQgGX
-         2ulVoeOJv147OtSKroqA72XM0VJA3yUkK1GjTuUOXpWanGJyobOTsZp7/zsJL0b5yYi8
-         ZUlhV2jDx+I2AI7P19tlKzYbTSOSwbJ2zNKHipYe4ye6aAmUtsvlih4L8CksIb6aRJDz
-         fVCA==
-X-Forwarded-Encrypted: i=1; AJvYcCXxCNMyO1xfR7PswtMhL94PO1rJHxwqMO2U1xMvGGkhzwV2QAlxgO+yz2vilwbpqgxTr7Uoq3Q5oKFYof6F0yao9oDz5xw7riHHFwki98yIbeb6piGnVUJGiC/qhuwaskjZYOVUwebHD6zAotdjvIr1q504GGAXRZnUb5jGSIQ/TK3yeGX16w==
-X-Gm-Message-State: AOJu0Ywj7AfR/Sc3qJ30h1cQ0e3t/MtlCZl5MDBiEvdnDmzCCIO7AS4L
-	uprqIirbYVfSXKMYSgZ0ycAaOZxDC8A1ykNdjUBrpjFNEM4ha3nV
-X-Google-Smtp-Source: AGHT+IEPQjrvDT+CC4URF2EPJejTjlUefXMm1fTxdH71dVxYAWNGE7W7xRjizfT2T9gpX4uUsGr5cA==
-X-Received: by 2002:a05:6402:378f:b0:565:dd87:9811 with SMTP id et15-20020a056402378f00b00565dd879811mr11940867edb.5.1710886652527;
-        Tue, 19 Mar 2024 15:17:32 -0700 (PDT)
-Received: from bhlegrsu.conti.de ([2a02:908:2525:6ea0::11c2])
-        by smtp.googlemail.com with ESMTPSA id n13-20020a05640204cd00b00569aed32c32sm2761182edw.75.2024.03.19.15.17.31
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 15:17:32 -0700 (PDT)
-From: Wadim Mueller <wafgo01@gmail.com>
-To: 
-Cc: Wadim Mueller <wafgo01@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-	Jiri Slaby <jirislaby@kernel.org>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Chester Lin <chester62515@gmail.com>,
-	=?UTF-8?q?Andreas=20F=C3=A4rber?= <afaerber@suse.de>,
-	Matthias Brugger <mbrugger@suse.com>,
-	NXP S32 Linux Team <s32@nxp.com>,
-	Tim Harvey <tharvey@gateworks.com>,
-	Alexander Stein <alexander.stein@ew.tq-group.com>,
-	Gregor Herburger <gregor.herburger@ew.tq-group.com>,
-	Marek Vasut <marex@denx.de>,
-	Hugo Villeneuve <hvilleneuve@dimonoff.com>,
-	Joao Paulo Goncalves <joao.goncalves@toradex.com>,
-	Markus Niebel <Markus.Niebel@ew.tq-group.com>,
-	Marco Felsch <m.felsch@pengutronix.de>,
-	Matthias Schiffer <matthias.schiffer@tq-group.com>,
-	Stefan Wahren <stefan.wahren@chargebyte.com>,
-	Bjorn Helgaas <bhelgaas@google.com>,
-	Josua Mayer <josua@solid-run.com>,
-	Philippe Schenker <philippe.schenker@toradex.com>,
-	Li Yang <leoyang.li@nxp.com>,
-	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-serial@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: [PATCH v2 2/2] dt-bindings: arm: fsl: Document missing s32g3 board
-Date: Tue, 19 Mar 2024 23:16:10 +0100
-Message-Id: <20240319221614.56652-3-wafgo01@gmail.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240319221614.56652-1-wafgo01@gmail.com>
-References: <20240319221614.56652-1-wafgo01@gmail.com>
+	d=ravnborg.org; s=rsa2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=2FvB7B4OmmOJN0vg9gCAXa7QKYXongHRRCXDXkAKEOQ=;
+	b=gFiTuutFnmDe76dVyDDi9Ov4M9j/iuGhawez/R4SqW9SxATUbf5z0yk3MJNAXWmuzMVaQBlOTZNSR
+	 WDlEcv3rsmPD12q7Rg6jeSe6HOH1zvpMxuiR2OHPm5kwnbBZHrnXoddQ+zpsjYJQsKnT3lGBUNSN9Z
+	 QAJa46ykhtWMez/vETZ2eniB6aApdGMwepB7lhx5mJBR6dOBaFXP/PiZZSynR3rMxvkq6JXBfPLck8
+	 iKF/RK4aLytUxIl/zgWFWviiSi4YjqNYUmWOhBmvc8Mgg2I/U5VRsyZIVzw48yCMsHlQ70Hi8aYDgY
+	 01ag0khMWi+htjuyTmAAsVvbzV6EkTw==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed;
+	d=ravnborg.org; s=ed2;
+	h=in-reply-to:content-type:mime-version:references:message-id:subject:cc:to:
+	 from:date:from;
+	bh=2FvB7B4OmmOJN0vg9gCAXa7QKYXongHRRCXDXkAKEOQ=;
+	b=sGyI9ShgAdpuzllQOIi+YqSHtlQIhem6BUJEe9VZYbZ2nt7whROncfJovtB+DTsNQA/TrmweoNEsG
+	 Rs6oViyDg==
+X-HalOne-ID: 4d1aed18-e63e-11ee-b023-b520e3c7e1da
+Received: from ravnborg.org (2-105-2-98-cable.dk.customer.tdc.net [2.105.2.98])
+	by mailrelay2.pub.mailoutpod2-cph3.one.com (Halon) with ESMTPSA
+	id 4d1aed18-e63e-11ee-b023-b520e3c7e1da;
+	Tue, 19 Mar 2024 22:16:16 +0000 (UTC)
+Date: Tue, 19 Mar 2024 23:16:15 +0100
+From: Sam Ravnborg <sam@ravnborg.org>
+To: Koakuma <koachan@protonmail.com>
+Cc: "sparclinux@vger.kernel.org" <sparclinux@vger.kernel.org>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	"davem@davemloft.net" <davem@davemloft.net>,
+	"ndesaulniers@google.com" <ndesaulniers@google.com>,
+	"arnd@arndb.de" <arnd@arndb.de>
+Subject: Re: [sparc] Use of -fcall-used-* flags in Makefile?
+Message-ID: <20240319221615.GA379167@ravnborg.org>
+References: <JAYB7uS-EdLABTR4iWZdtFOVa5MvlKosIrD_cKTzgeozCOGRM7lhxeLigFB1g3exX445I_W5VKB-tAzl2_G1zCVJRQjp67ODfsSqiZWOZ9o=@protonmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <JAYB7uS-EdLABTR4iWZdtFOVa5MvlKosIrD_cKTzgeozCOGRM7lhxeLigFB1g3exX445I_W5VKB-tAzl2_G1zCVJRQjp67ODfsSqiZWOZ9o=@protonmail.com>
 
-The nxp, s32g399a-rdb3 board is not documented.
+Hi Koakuma,
 
- * Add entry for S32G3 based boards with nxp,s32g399a-rdb3 item
- * Add nxp,s32g3-linflexuart documentation
+On Sat, Mar 16, 2024 at 02:59:42PM +0000, Koakuma wrote:
+> Hello, first time poster so apologies if I posted to the wrong list.
+> 
+> Anyone knows why the SPARC makefiles (arch/sparc/Makefile and
+> arch/sparc/vdso/Makefile) set `-fcall-used-g5` and  `-fcall-used-g7`
+> in their CFLAGS?
 
-Signed-off-by: Wadim Mueller <wafgo01@gmail.com>
----
- Documentation/devicetree/bindings/arm/fsl.yaml              | 6 ++++++
- .../devicetree/bindings/serial/fsl,s32-linflexuart.yaml     | 3 +++
- 2 files changed, 9 insertions(+)
+sparc32 uses:
+-fcall-used-g5 -fcall-used-g7
 
-diff --git a/Documentation/devicetree/bindings/arm/fsl.yaml b/Documentation/devicetree/bindings/arm/fsl.yaml
-index 228dcc5c7d6f..23bf1d7f95b1 100644
---- a/Documentation/devicetree/bindings/arm/fsl.yaml
-+++ b/Documentation/devicetree/bindings/arm/fsl.yaml
-@@ -1503,6 +1503,12 @@ properties:
-               - nxp,s32g274a-rdb2
-           - const: nxp,s32g2
- 
-+      - description: S32G3 based Boards
-+        items:
-+          - enum:
-+              - nxp,s32g399a-rdb3
-+          - const: nxp,s32g3
-+
-       - description: S32V234 based Boards
-         items:
-           - enum:
-diff --git a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
-index 7a105551fa6a..f8eb92c9a8d9 100644
---- a/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
-+++ b/Documentation/devicetree/bindings/serial/fsl,s32-linflexuart.yaml
-@@ -25,6 +25,9 @@ properties:
-       - items:
-           - const: nxp,s32g2-linflexuart
-           - const: fsl,s32v234-linflexuart
-+      - items:
-+          - const: nxp,s32g3-linflexuart
-+          - const: fsl,s32v234-linflexuart
- 
-   reg:
-     maxItems: 1
--- 
-2.25.1
 
+sparc64 uses:
+-ffixed-g4 -ffixed-g5 -fcall-used-g7
+
+
+For sparc64:
+
+-ffixed-g4 is added because sparc64 uses the g4 register to hold the
+pointer to the current task. See:
+
+    arch/sparc/include/asm/current.h line 18.
+
+
+g2, g5, g7 all have their specific use or assumptions.
+
+From arch/sparc/include/asm/ttable.h: 
+
+ * Further note that we cannot use the g2, g4, g5, and g7 alternate
+ * globals in the spill routines, check out the save instruction in
+ * arch/sparc64/kernel/etrap.S to see what I mean about g2, and
+ * g4/g5 are the globals which are preserved by etrap processing
+ * for the caller of it.  The g7 register is the return pc for
+ * etrap.  Finally, g6 is the current thread register so we cannot
+ * us it in the spill handlers either.  Most of these rules do not
+ * apply to fill processing, only g6 is not usable.
+ */
+
+
+Looking at https://github.com/gcc-mirror/gcc/blob/master/gcc/config/sparc/sparc.h
+I read that:
+
+   On v9 systems:
+   g1,g5 are free to use as temporaries, and are free to use between calls
+   ...
+   g6-g7 are reserved for the operating system (or application in
+   embedded case).
+
+Based on the above I would assume gcc do not change behaviour with or
+without -fcall-used-g7.
+
+I do not have a sparc64 system at my hands - and for this qemu may not
+cut it. But it would be super if someone with a working sparc64 target
+could verify if the kernel could be built and works without
+-fcall-used-g7.
+
+
+For sparc32 the above file says:
+
+    g5 through g7 are reserved for the operating system.
+
+So again - it looks like -fcall-used-g5 -fcall-used-g7 should have no
+effect here and verification on a real target would be nice.
+
+	Sam
 
