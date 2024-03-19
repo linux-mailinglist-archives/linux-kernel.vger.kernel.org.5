@@ -1,155 +1,215 @@
-Return-Path: <linux-kernel+bounces-108195-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108196-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 046FF880752
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:36:38 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 30163880755
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:42:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 97D981F2369A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:36:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77B0CB2201D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 508703A1A8;
-	Tue, 19 Mar 2024 22:36:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3371D3EA8D;
+	Tue, 19 Mar 2024 22:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b="X9Zc7U4W";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="iqj+FAs6"
-Received: from flow1-smtp.messagingengine.com (flow1-smtp.messagingengine.com [103.168.172.136])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAezIUfv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A758ED8;
-	Tue, 19 Mar 2024 22:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.136
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650D5125CB;
+	Tue, 19 Mar 2024 22:42:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710887789; cv=none; b=r9Z5OdHbn/pDebCIeX1f91nDGV5Rwjw/+JKWTtdIpJAHAN04CUD9gugBLpXyh0YtY60FmKwjRQMnOs4F6QoIX+h6SHxIlzbft0iORqIkTD1M7X8So3iXPf6dAvfMFUXEUC5t+gAFuJ9UoSfMMgcvSx9YEDj0aVGIwVCxcff2rFg=
+	t=1710888128; cv=none; b=hXapvOXtTnsqjCGrvJaq0HBb5igO0jKW3J4l8gaKi4U/b5VMiGv58GFl8D3GJUZzNpcOwEKHPitZUUiT3LRaindydtKciHWxU8TLWzI9HGZT/5KZkNduE7Sl9Jjqs4Jm8R2KnNFhEIQiRrnIInmH7NQSsokSpfVHOD/cLL0fT9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710887789; c=relaxed/simple;
-	bh=wJcM7mcOqxwIvAfOf3Qrh1f4JmqCIIjuKwe6Ozy0d1U=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=R072tFBZIDkQzdkLFvfLDPM4Epyj4bf7ZdOOGJyFTbZ5D5HKLp/IfMm014uAMr+9xYK9eWJPDz5Pnr2wr+lhv3CtFFwlygi0Q1GMHm6akE3PZc7S3W9+tIQFyKmhXab3lpUUKl6OydcoxrJFI8Z0cO2SD/O8s4F6VLlIH7Xy1Fs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se; spf=pass smtp.mailfrom=ragnatech.se; dkim=pass (2048-bit key) header.d=ragnatech.se header.i=@ragnatech.se header.b=X9Zc7U4W; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=iqj+FAs6; arc=none smtp.client-ip=103.168.172.136
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=ragnatech.se
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ragnatech.se
-Received: from compute1.internal (compute1.nyi.internal [10.202.2.41])
-	by mailflow.nyi.internal (Postfix) with ESMTP id E82EA200380;
-	Tue, 19 Mar 2024 18:36:22 -0400 (EDT)
-Received: from mailfrontend1 ([10.202.2.162])
-  by compute1.internal (MEProxy); Tue, 19 Mar 2024 18:36:22 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ragnatech.se; h=
-	cc:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm1; t=1710887782;
-	 x=1710891382; bh=bFbDxvQwIQcOv1ec4LJKXFtxm4eFHE4KoGHZHelhA30=; b=
-	X9Zc7U4W5scGteYdS3QtOcvQuiOE15+oyFD59O3Z7XlywrsMj0Cms2u/hHbLXshr
-	CSGaCG5uAJ9jubCRnBNl1i1z+u2b1yTxPSEEHulms25kqrniEWYZjzYandKEIXpY
-	HszTDneUUj53t6KWvf/ZTZU8YW0BtVILTYFx/Fe1YDOEqM7IzFAUW36K+ExGXhSQ
-	X6O7ERSu+kbsOgS+Zon4y+JF1w8ymMLSqAFVTWIH+zy5o7ehViGuUyyDpQXnmByh
-	3Mxbe8rfjXlKMVbZDkP2qBEHeySc+QgG/s0V/g5rvbGIaZ7UXwHffXVLe02VL44G
-	m6e7/Iz6Rb2fs/Tw22+U0A==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=i80c9496c.fm2; t=
-	1710887782; x=1710891382; bh=bFbDxvQwIQcOv1ec4LJKXFtxm4eFHE4KoGH
-	ZHelhA30=; b=iqj+FAs63u+TaJEu11mxF9duTElpyzXXYCbZBhGvvo1hafuGC23
-	3AWISz4K7PpoJAAtbGGuo2ALppIufmxqvDBB4vgr6qnTReQbK0t37gVwocE8TpEL
-	ZrSEgwHSpa3YgZ3syazd9+ndBuVV+NAzL9F3r7tbECuKvMEBPwiwmot3kOeNFsXy
-	czdWVTBweGzUZBN2/gS1K4WW0yOLvH2Ge7duuSPxlu//JJk8Jl+QDn8dtCkBByEE
-	DOXjZe85DLAcBPlL5zCVASQygLSG/hJQTCmFOjFcEJsn2Av8t6h57OahVKy45eJj
-	DLpYj3xGhKzDSoWGUyJxV8dw31FhjOMBa9g==
-X-ME-Sender: <xms:ZRP6ZaHkCNFZsukIir-cpf4ZEHDKpqEg9-uunI37wD1Bk4FeU5YeIg>
-    <xme:ZRP6ZbUalKicHNPriLWJIJsnbfXjiLt2GqyBC70q5PjTGHEDRKEppTcjrajf9tr1V
-    r-dB02a_n5xSCk2-V0>
-X-ME-Received: <xmr:ZRP6ZUJVSmONchuZoQGu4CvnbzdwylKOwM8zQZd9ziG4fqPp2xm1KRnRywFmrO7bpVptkoNvnnK1vxKZ2C-ZRXgZ-rfVal8>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrleduucetufdoteggodetrfdotffvucfrrh
-    hofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgenuceurghi
-    lhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmnecujfgurh
-    epfffhvfevuffkfhggtggugfgjsehtkeertddttdejnecuhfhrohhmpefpihhklhgrshcu
-    ufpnuggvrhhluhhnugcuoehnihhklhgrshdrshhouggvrhhluhhnugdorhgvnhgvshgrsh
-    esrhgrghhnrghtvggthhdrshgvqeenucggtffrrghtthgvrhhnpeefhfellefhffejgfef
-    udfggeejlefhveehieekhfeulefgtdefueehffdtvdelieenucevlhhushhtvghrufhiii
-    gvpedtnecurfgrrhgrmhepmhgrihhlfhhrohhmpehnihhklhgrshdrshhouggvrhhluhhn
-    ugdorhgvnhgvshgrshesrhgrghhnrghtvggthhdrshgv
-X-ME-Proxy: <xmx:ZhP6ZUEF-yi8tL-sYwWt7OosLjwr5uLbaIRXwySGUrEdH3AjS17t2g>
-    <xmx:ZhP6ZQVnyWusD7KN0R90KQ-ZAc0EDtT9JrO-oQCqX-Uob93goKNklw>
-    <xmx:ZhP6ZXP30aZFuFMwJmWqRf7RMt4KXxJqqhixvbg2Qb1UCGMKZ2x9uQ>
-    <xmx:ZhP6ZX0_WfbRU0V1jU4e13J6v1xTBpax4RIQYNMxtVVh8dxjDymmjA>
-    <xmx:ZhP6ZZPEmw_xQB4WzjYfHf_T63B0tH2Ybrqmp0S3ypvq7_ZxkPRQuKMww18>
-Feedback-ID: i80c9496c:Fastmail
-Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
- 19 Mar 2024 18:36:21 -0400 (EDT)
-Date: Tue, 19 Mar 2024 23:36:18 +0100
-From: Niklas =?utf-8?Q?S=C3=B6derlund?= <niklas.soderlund+renesas@ragnatech.se>
-To: Geert Uytterhoeven <geert+renesas@glider.be>
-Cc: Daniel Lezcano <daniel.lezcano@linaro.org>,
-	Thomas Gleixner <tglx@linutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Laurent Pinchart <laurent.pinchart+renesas@ideasonboard.com>,
-	devicetree@vger.kernel.org, linux-renesas-soc@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 0/3] dt-bindings: timer: renesas,tmu: Add more SoC
- families
-Message-ID: <20240319223618.GB3438308@ragnatech.se>
-References: <cover.1710862701.git.geert+renesas@glider.be>
+	s=arc-20240116; t=1710888128; c=relaxed/simple;
+	bh=3k8Qz8Bs43OFLNKtX+4DNpyATuOJaHuSGtFlxYyLjX0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ruM0EEdySkMovuIyknNtlsWl+NH/QfInxhPqHVZAjTMs0hW95JS1lUTR0/vp4jBCm2LD4KFQq1wfzZNRbdSJjIrvSxOpaYRRFtyRBcwbqboRBz/cGm0B5vYlKh/AtpPZBlf4onCUBXMCWotJFiaxG6V2Q0Vv5/bG1nqHxXMBQYI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAezIUfv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB87CC433F1;
+	Tue, 19 Mar 2024 22:42:07 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710888127;
+	bh=3k8Qz8Bs43OFLNKtX+4DNpyATuOJaHuSGtFlxYyLjX0=;
+	h=From:To:Cc:Subject:Date:From;
+	b=tAezIUfvhlaM6VSRzdNrZjhumJKNe0MXgmknrwX4Y8j/6BGuOae2p/AxQAU+aI7V5
+	 p6wqo6+zeN/eaWmQMyv5CD8WNH6WyVvmZaABErV9mZz5oaduwKJElIl+RPYhbb2sKk
+	 gh/Fplugu2DbIlDP6evHR8XkoyNkpgR/vVws3etnjG8prvOGlFLwwSU5i5w0nZ9qBC
+	 zD0euNHvrbog0JuIZgRzcwkPZU+nGeDGAJnbrUcoGm9dPSx2lgI0MIY9Sm9j8J9ZO/
+	 a25cbe1+61Kwl3ZR9NjtQ4vPefC1Rs7Sg7F6G+/EjrR8yw2AoYJswkGfaMlCcZ6Wqa
+	 woVVyNRnjyGQw==
+From: Andrii Nakryiko <andrii@kernel.org>
+To: bpf@vger.kernel.org,
+	peterz@infradead.org,
+	mingo@redhat.com
+Cc: linux-kernel@vger.kernel.org,
+	jolsa@kernel.org,
+	song@kernel.org,
+	Andrii Nakryiko <andrii@kernel.org>
+Subject: [PATCH bpf-next] perf, amd: support capturing LBR from software events
+Date: Tue, 19 Mar 2024 15:42:06 -0700
+Message-ID: <20240319224206.1612000-1-andrii@kernel.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-In-Reply-To: <cover.1710862701.git.geert+renesas@glider.be>
 
-Hi Geert,
+[0] added ability to capture LBR (Last Branch Records) on Intel CPUs
+from inside BPF program at pretty much any arbitrary point. This is
+extremely useful capability that allows to figure out otherwise
+hard-to-debug problems, because LBR is now available based on some
+application-defined conditions, not just hardware-supported events.
 
-Thanks for your work.
+retsnoop ([1]) is one such tool that takes a huge advantage of this
+functionality and has proved to be an extremely useful tool in
+practice.
 
-On 2024-03-19 16:46:02 +0100, Geert Uytterhoeven wrote:
-> 	Hi all,
-> 
-> This patch series documents support for the Timer Unit (TMU) on the
-> R-Mobile APE6 SoC, and on various SoCs from the RZ/G1 and R-Car Gen2
-> family.
-> 
-> Feel free to squash together if deemed more appropriate.
+Now, AMD Zen4 CPUs got support for similar LBR functionality, but
+necessary wiring inside the kernel is not yet setup. This patch seeks to
+rectify this and follows a similar approach to the original patch [0]
+for Intel CPUs.
 
-I prefer them split. In either case, split or squashed for the whole 
-set.
+Given LBR can be set up to capture any indirect jumps, it's critical to
+minimize indirect jumps on the way to requesting LBR from BPF program,
+so we split amd_pmu_lbr_disable_all() into a wrapper with some generic
+conditions vs always-inlined __amd_pmu_lbr_disable() called directly
+from BPF subsystem (through perf_snapshot_branch_stack static call).
 
-Reviewed-by: Niklas Söderlund <niklas.soderlund+renesas@ragnatech.se>
+Now that it's possible to capture LBR on AMD CPU from BPF at arbitrary
+point, there is no reason to artificially limit this feature to sampling
+events. So corresponding check is removed. AFAIU, there is no
+correctness implications of doing this (and it was possible to bypass
+this check by just setting perf_event's sample_period to 1 anyways, so
+it doesn't guard all that much).
 
-> 
-> Thanks for your comments!
-> 
-> Geert Uytterhoeven (3):
->   dt-bindings: timer: renesas,tmu: Add R-Mobile APE6 support
->   dt-bindings: timer: renesas,tmu: Add RZ/G1 support
->   dt-bindings: timer: renesas,tmu: Add R-Car Gen2 support
-> 
->  .../devicetree/bindings/timer/renesas,tmu.yaml       | 12 ++++++++++++
->  1 file changed, 12 insertions(+)
-> 
-> -- 
-> 2.34.1
-> 
-> Gr{oetje,eeting}s,
-> 
-> 						Geert
-> 
-> --
-> Geert Uytterhoeven -- There's lots of Linux beyond ia32 -- geert@linux-m68k.org
-> 
-> In personal conversations with technical people, I call myself a hacker. But
-> when I'm talking to journalists I just say "programmer" or something like that.
-> 							    -- Linus Torvalds
+This was tested on AMD Bergamo CPU and worked well when utilized from
+the aforementioned retsnoop tool.
 
+  [0] https://lore.kernel.org/bpf/20210910183352.3151445-2-songliubraving@fb.com/
+  [1] https://github.com/anakryiko/retsnoop
+
+Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
+---
+ arch/x86/events/amd/core.c   | 29 ++++++++++++++++++++++++++++-
+ arch/x86/events/amd/lbr.c    | 11 +----------
+ arch/x86/events/perf_event.h | 11 +++++++++++
+ 3 files changed, 40 insertions(+), 11 deletions(-)
+
+diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
+index 69a3b02e50bb..fef661230acc 100644
+--- a/arch/x86/events/amd/core.c
++++ b/arch/x86/events/amd/core.c
+@@ -619,7 +619,7 @@ static void amd_pmu_cpu_dead(int cpu)
+ 	}
+ }
+ 
+-static inline void amd_pmu_set_global_ctl(u64 ctl)
++static __always_inline void amd_pmu_set_global_ctl(u64 ctl)
+ {
+ 	wrmsrl(MSR_AMD64_PERF_CNTR_GLOBAL_CTL, ctl);
+ }
+@@ -879,6 +879,29 @@ static int amd_pmu_handle_irq(struct pt_regs *regs)
+ 	return amd_pmu_adjust_nmi_window(handled);
+ }
+ 
++static int amd_pmu_v2_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
++{
++	struct cpu_hw_events *cpuc;
++	unsigned long flags;
++
++	/* must not have branches... */
++	local_irq_save(flags);
++	amd_pmu_core_disable_all();
++	__amd_pmu_lbr_disable();
++	/*            ... until here */
++
++	cpuc = this_cpu_ptr(&cpu_hw_events);
++
++	amd_pmu_lbr_read();
++	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
++	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
++
++	amd_pmu_v2_enable_all(0);
++	local_irq_restore(flags);
++
++	return cnt;
++}
++
+ static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+@@ -1415,6 +1438,10 @@ static int __init amd_core_pmu_init(void)
+ 		static_call_update(amd_pmu_branch_reset, amd_pmu_lbr_reset);
+ 		static_call_update(amd_pmu_branch_add, amd_pmu_lbr_add);
+ 		static_call_update(amd_pmu_branch_del, amd_pmu_lbr_del);
++
++		/* only support branch_stack snapshot on perfmon v2 */
++		if (x86_pmu.handle_irq == amd_pmu_v2_handle_irq)
++			static_call_update(perf_snapshot_branch_stack, amd_pmu_v2_snapshot_branch_stack);
+ 	} else if (!amd_brs_init()) {
+ 		/*
+ 		 * BRS requires special event constraints and flushing on ctxsw.
+diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
+index eb31f850841a..c34f8d0048e0 100644
+--- a/arch/x86/events/amd/lbr.c
++++ b/arch/x86/events/amd/lbr.c
+@@ -308,10 +308,6 @@ int amd_pmu_lbr_hw_config(struct perf_event *event)
+ {
+ 	int ret = 0;
+ 
+-	/* LBR is not recommended in counting mode */
+-	if (!is_sampling_event(event))
+-		return -EINVAL;
+-
+ 	ret = amd_pmu_lbr_setup_filter(event);
+ 	if (!ret)
+ 		event->attach_state |= PERF_ATTACH_SCHED_CB;
+@@ -410,16 +406,11 @@ void amd_pmu_lbr_enable_all(void)
+ void amd_pmu_lbr_disable_all(void)
+ {
+ 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
+-	u64 dbg_ctl, dbg_extn_cfg;
+ 
+ 	if (!cpuc->lbr_users || !x86_pmu.lbr_nr)
+ 		return;
+ 
+-	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
+-	rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
+-
+-	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
+-	wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
++	__amd_pmu_lbr_disable();
+ }
+ 
+ __init int amd_pmu_lbr_init(void)
+diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
+index fb56518356ec..4dddf0a7e81e 100644
+--- a/arch/x86/events/perf_event.h
++++ b/arch/x86/events/perf_event.h
+@@ -1329,6 +1329,17 @@ void amd_pmu_lbr_enable_all(void);
+ void amd_pmu_lbr_disable_all(void);
+ int amd_pmu_lbr_hw_config(struct perf_event *event);
+ 
++static __always_inline void __amd_pmu_lbr_disable(void)
++{
++	u64 dbg_ctl, dbg_extn_cfg;
++
++	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
++	rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
++
++	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
++	wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
++}
++
+ #ifdef CONFIG_PERF_EVENTS_AMD_BRS
+ 
+ #define AMD_FAM19H_BRS_EVENT 0xc4 /* RETIRED_TAKEN_BRANCH_INSTRUCTIONS */
 -- 
-Kind Regards,
-Niklas Söderlund
+2.43.0
+
 
