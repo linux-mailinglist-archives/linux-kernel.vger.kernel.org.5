@@ -1,155 +1,179 @@
-Return-Path: <linux-kernel+bounces-107601-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107602-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 29A5687FEF7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:40:55 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79D7F87FEFB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:41:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4CEA51C22BD8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:40:54 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7B79B23857
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:41:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71C818060A;
-	Tue, 19 Mar 2024 13:40:47 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 61A118004F;
+	Tue, 19 Mar 2024 13:41:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HNys9iGe";
-	dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b="HNys9iGe"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="bLfDnbn3"
+Received: from mail-pl1-f175.google.com (mail-pl1-f175.google.com [209.85.214.175])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E147A2B9A3
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:40:44 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 008D62B9A3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:41:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.175
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710855646; cv=none; b=mQMQYE+CEaipGt0i3Sm3zz+MAIWc9EanoqSFkAAMppNHXL1vYTC3eMEpL0XI4/OwGMcxa6I0AyjfPccFIqlua3dxXuCNEs+wa99a87+qeUlxJTu8OrMk+kn4e5eiaE4ZMPiyBZLtBHgVUw7OZIdiuStglDPG7lI/eiHwbfgdzBE=
+	t=1710855688; cv=none; b=aA8JUPyD9Q1/Fnkcdu802DhJoEKcginj6itb1vGC54uboBGKF/dShc0oPnvo8cdHS1mVoriWNfQBIQ6vRrbdQt9EwKCB6WEBc439yu7WaDS6paGbhjbKyxI8/Deoj65R2x4bIuliUkXfUdr49tH0GSdkgmoiTiuyLVzUbcyFtmE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710855646; c=relaxed/simple;
-	bh=63oP/O63tle25p4dXnRwpLxRWoEsPPqahgfFN+0CMCE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=or4dB8IFwCrQ+FXB+Uivk9HWLP4VKlFldwPoTkHg6QOvuataDNd4hangspoq+03jkThrrgEkBdUYL5A1PCjWMV/nIHNC8SG/Ms7jFhr7F9LgdkNmfajhgkWl8woYKddecBfQwCuWLmKmhQV1LlEtaYRk296ihyg0kRwKZe/Chhg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HNys9iGe; dkim=pass (1024-bit key) header.d=suse.com header.i=@suse.com header.b=HNys9iGe; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [10.150.64.97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 1F5495D714;
-	Tue, 19 Mar 2024 13:40:43 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710855643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gPnsq29Wc/buvWIEmuCObK4jFQyJYrkPVaoqmvReZ3g=;
-	b=HNys9iGe2SR/wFIjkvSlF8NHw/ARy1KUUGVVXmmib3rYzIqtQMQgy7Tc/LDPFq57vSrfqP
-	4AePwczBpK/GQevULP+7L6FytLrElZJcjZUf6qUhw9mMAKz3hd4FPqV6z+1qIRh4/AONiG
-	IeKogcEvtKvKAtvAoXV+EkA8cw09sEc=
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.com; s=susede1;
-	t=1710855643; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=gPnsq29Wc/buvWIEmuCObK4jFQyJYrkPVaoqmvReZ3g=;
-	b=HNys9iGe2SR/wFIjkvSlF8NHw/ARy1KUUGVVXmmib3rYzIqtQMQgy7Tc/LDPFq57vSrfqP
-	4AePwczBpK/GQevULP+7L6FytLrElZJcjZUf6qUhw9mMAKz3hd4FPqV6z+1qIRh4/AONiG
-	IeKogcEvtKvKAtvAoXV+EkA8cw09sEc=
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id C4F0C136A5;
-	Tue, 19 Mar 2024 13:40:42 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id AIUdLdqV+WWraQAAD6G6ig
-	(envelope-from <mhocko@suse.com>); Tue, 19 Mar 2024 13:40:42 +0000
-Date: Tue, 19 Mar 2024 14:40:34 +0100
-From: Michal Hocko <mhocko@suse.com>
-To: Barry Song <21cnbao@gmail.com>
-Cc: liuhailong@oppo.com, akpm@linux-foundation.org, nathan@kernel.org,
-	ndesaulniers@google.com, trix@redhat.com, linux-mm@kvack.org,
-	linux-kernel@vger.kernel.org, llvm@lists.linux.dev,
-	surenb@google.com, zhaoyang.huang@unisoc.com,
-	quic_charante@quicinc.com, yuzhao@google.com
-Subject: Re: [PATCH v2] Revert "mm: skip CMA pages when they are not
- available"
-Message-ID: <ZfmV0uEMgZ2Dzdnm@tiehlicka>
-References: <20240314141516.31747-1-liuhailong@oppo.com>
- <20240315081803.2223-1-liuhailong@oppo.com>
- <ZflTCY-Oaxm0U70u@tiehlicka>
- <CAGsJ_4w0EHuAwvSFuqUsMO-bLjJwCmN_qjL6NuA043-4rgfgsQ@mail.gmail.com>
+	s=arc-20240116; t=1710855688; c=relaxed/simple;
+	bh=I2Bft1gTAELIt+NlJwNPw+KuZGb/cW9fyLb6r2g3/QM=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=QOpkH78XdjDVF95bN0juZa7vpU/74K32AQSz9RjKfJtxofqF4SBzlfAYVumJ5IDyo5rOp6cO4hsfYuS6OgWsXtWmm/nLqOm3Sb7KpQ7fYonLEADhK++aL9T+gox1n/WbXpQB6mivHIxWdGBxZ8FG6oqWl9yR23WrgTEHNfud/yQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=bLfDnbn3; arc=none smtp.client-ip=209.85.214.175
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-pl1-f175.google.com with SMTP id d9443c01a7336-1dddbe47ac1so36736215ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:41:26 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710855686; x=1711460486; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=QkH9co6nduiKcJJYKmYutH4boWdY0DvPoemwdNHxcDM=;
+        b=bLfDnbn3i7wLGp3G/6YGgZfIwu6R7syNWNQlnWHi0SD2plA+Ba+0I6LeIG4zSSJ3yW
+         VLyU5J7FQVzke0Sn3XSacpezbXNyLNA+ZuxcI5rQrZ6s8FYjQZ1WxefWSUtsULMgY64y
+         u3K6wTRC0rQWM3WZvBEaX+va+d6MhHq4SpCLAjYxnrBsM50TAMMgrmzuSfJy5gfJ1ZQ4
+         /YIyz8dNv8YaHlYzimeNgLXSzf54nr/He+f6HxeP2u2tSIGBkYs8vf/UqIM4vsH/dGli
+         XUav7y9V9iXyISN3ZOGHbWGzEx+91OhDd8ggtnI/DjD1/D2HqxbLTOYSEfAS8RrU+0dj
+         fW+Q==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710855686; x=1711460486;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=QkH9co6nduiKcJJYKmYutH4boWdY0DvPoemwdNHxcDM=;
+        b=EJlnFNNtHpLh9xLY6ppOn3ktno1KB/N5sUQ4DxescgT+vp6/dcUKuxmFV43VrRmscW
+         beUL4+5JukRvVRbjshPIZaJ/dMtVI67xSiC5x8ACyLXTRw1eFbI87E9c+pLcQ6htrL8W
+         GMi0Lc0qLAXlemHz34xZlqVAmbrpMPGegHuvT4GxjirbXco6+OU2FiwCG3WaDXcDYKru
+         iKj1Vp+JmMtDRyRdhx2N/ZR+AuqhGfRSOMCA9q004QbT5X/BHowEEeBu3AYgPIH6crDM
+         NhS9EK7WXNvYfapulKdYZqMzFx4cqbiuX1fwQs8/BHpWy4bELIXrBhwZJl6ImmXo2HMI
+         fqhw==
+X-Forwarded-Encrypted: i=1; AJvYcCVYugKK7Jx7zblZHagLhgbx2pBSP89f6L1kF/vI7hyL9mWl3SHWaC+BjyNdQ3cjcSIRNXlxbns7Dz0B+gnHGJuUdYK8Hf5NkxAtknD3
+X-Gm-Message-State: AOJu0YyGJv5Ft95O6OJS1t2ythfjtoZoHrakeI7cxFu68tnZDZBLIieL
+	15R+QD+7juTzD79lOq0b/r0xr1ouQphKlHbdV61hFDpjHGwwdDtmOv848yNgpuCwQ+CgxXk9i3k
+	hi3jgCxZ9xSOXvPWVvmKqvKmfrN242tfR4oNXcA==
+X-Google-Smtp-Source: AGHT+IEAbi0auRWgIpSpp8odJgiWiLOLp0RBR9BR3RBs5ux9Mb65HmgLxN0vr1fSWZK37iYVFCgfrwQjcZWrsLKnr5s=
+X-Received: by 2002:a17:903:2387:b0:1e0:3620:375d with SMTP id
+ v7-20020a170903238700b001e03620375dmr3235503plh.17.1710855686271; Tue, 19 Mar
+ 2024 06:41:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAGsJ_4w0EHuAwvSFuqUsMO-bLjJwCmN_qjL6NuA043-4rgfgsQ@mail.gmail.com>
-Authentication-Results: smtp-out2.suse.de;
-	none
-X-Spam-Level: 
-X-Spam-Score: -0.82
-X-Spamd-Result: default: False [-0.82 / 50.00];
-	 ARC_NA(0.00)[];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 FROM_HAS_DN(0.00)[];
-	 TO_DN_SOME(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_SIGNED(0.00)[suse.com:s=susede1];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 RCPT_COUNT_TWELVE(0.00)[13];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.com:email];
-	 FREEMAIL_TO(0.00)[gmail.com];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 MID_RHS_NOT_FQDN(0.50)[];
-	 RCVD_TLS_ALL(0.00)[];
-	 BAYES_HAM(-0.02)[54.42%]
-X-Spam-Flag: NO
+References: <20240228161018.14253-1-huschle@linux.ibm.com> <5a32e8e1-67cf-4296-a655-f0fc35dc880a@arm.com>
+ <ZfL/hROYxQudcTuX@DESKTOP-2CCOB1S.> <66c4286e-deaf-44a0-be62-0928529ae73f@arm.com>
+ <4b25ab45b762e64b9df09d4d12d8289f@linux.ibm.com>
+In-Reply-To: <4b25ab45b762e64b9df09d4d12d8289f@linux.ibm.com>
+From: Vincent Guittot <vincent.guittot@linaro.org>
+Date: Tue, 19 Mar 2024 14:41:14 +0100
+Message-ID: <CAKfTPtDyrsnq-CSFo+upzdOJpuH=JkRzSALad-OL29OvqkK2dg@mail.gmail.com>
+Subject: Re: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
+To: Tobias Huschle <huschle@linux.ibm.com>
+Cc: Luis Machado <luis.machado@arm.com>, linux-kernel@vger.kernel.org, mingo@redhat.com, 
+	peterz@infradead.org, juri.lelli@redhat.com, dietmar.eggemann@arm.com, 
+	rostedt@goodmis.org, bsegall@google.com, mgorman@suse.de, bristot@redhat.com, 
+	vschneid@redhat.com, sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com, 
+	linuxppc-dev@lists.ozlabs.org, nd <nd@arm.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue 19-03-24 19:09:18, Barry Song wrote:
-> On Tue, Mar 19, 2024 at 4:56 PM Michal Hocko <mhocko@suse.com> wrote:
+On Tue, 19 Mar 2024 at 10:08, Tobias Huschle <huschle@linux.ibm.com> wrote:
+>
+> On 2024-03-18 15:45, Luis Machado wrote:
+> > On 3/14/24 13:45, Tobias Huschle wrote:
+> >> On Fri, Mar 08, 2024 at 03:11:38PM +0000, Luis Machado wrote:
+> >>> On 2/28/24 16:10, Tobias Huschle wrote:
+> >>>>
+> >>>> Questions:
+> >>>> 1. The kworker getting its negative lag occurs in the following
+> >>>> scenario
+> >>>>    - kworker and a cgroup are supposed to execute on the same CPU
+> >>>>    - one task within the cgroup is executing and wakes up the
+> >>>> kworker
+> >>>>    - kworker with 0 lag, gets picked immediately and finishes its
+> >>>>      execution within ~5000ns
+> >>>>    - on dequeue, kworker gets assigned a negative lag
+> >>>>    Is this expected behavior? With this short execution time, I
+> >>>> would
+> >>>>    expect the kworker to be fine.
+> >>>
+> >>> That strikes me as a bit odd as well. Have you been able to determine
+> >>> how a negative lag
+> >>> is assigned to the kworker after such a short runtime?
+> >>>
+> >>
+> >> I did some more trace reading though and found something.
+> >>
+> >> What I observed if everything runs regularly:
+> >> - vhost and kworker run alternating on the same CPU
+> >> - if the kworker is done, it leaves the runqueue
+> >> - vhost wakes up the kworker if it needs it
+> >> --> this means:
+> >>   - vhost starts alone on an otherwise empty runqueue
+> >>   - it seems like it never gets dequeued
+> >>     (unless another unrelated task joins or migration hits)
+> >>   - if vhost wakes up the kworker, the kworker gets selected
+> >>   - vhost runtime > kworker runtime
+> >>     --> kworker gets positive lag and gets selected immediately next
+> >> time
+> >>
+> >> What happens if it does go wrong:
+> >> From what I gather, there seem to be occasions where the vhost either
+> >> executes suprisingly quick, or the kworker surprinsingly slow. If
+> >> these
+> >> outliers reach critical values, it can happen, that
+> >>    vhost runtime < kworker runtime
+> >> which now causes the kworker to get the negative lag.
+> >>
+> >> In this case it seems like, that the vhost is very fast in waking up
+> >> the kworker. And coincidentally, the kworker takes, more time than
+> >> usual
+> >> to finish. We speak of 4-digit to low 5-digit nanoseconds.
+> >>
+> >> So, for these outliers, the scheduler extrapolates that the kworker
+> >> out-consumes the vhost and should be slowed down, although in the
+> >> majority
+> >> of other cases this does not happen.
 > >
-> > On Fri 15-03-24 16:18:03, liuhailong@oppo.com wrote:
-> > > From: "Hailong.Liu" <liuhailong@oppo.com>
-> > >
-> > > This reverts
-> > > commit b7108d66318a ("Multi-gen LRU: skip CMA pages when they are not eligible")
-> > > commit 5da226dbfce3 ("mm: skip CMA pages when they are not available")
-> > >
-> > > skip_cma may cause system not responding. if cma pages is large in lru_list
-> > > and system is in lowmemory, many tasks would direct reclaim and waste
-> > > cpu time to isolate_lru_pages and return.
-> > >
-> > > Test this patch on android-5.15 8G device
-> > > reproducer:
-> > > - cma_declare_contiguous 3G pages
-> > > - set /proc/sys/vm/swappiness 0 to enable direct_reclaim reclaim file
-> > >   only.
-> > > - run a memleak process in userspace
+> > Thanks for providing the above details Tobias. It does seem like EEVDF
+> > is strict
+> > about the eligibility checks and making tasks wait when their lags are
+> > negative, even
+> > if just a little bit as in the case of the kworker.
 > >
-> > Does this represent a sane configuration? CMA memory is unusable for
-> > kernel allocations and memleak process is also hard to reclaim due to
-> > swap suppression. Isn't such a system doomed to struggle to reclaim any
-> > memory? Btw. how does the same setup behave with the regular LRU
-> > implementation? My guess would be that it would struggle as well.
-> 
-> I assume the regular LRU implementation you are talking about is the LRU
-> without skip_cma()?
+> > There was a patch to disable the eligibility checks
+> > (https://lore.kernel.org/lkml/20231013030213.2472697-1-youssefesmat@chromium.org/),
+> > which would make EEVDF more like EVDF, though the deadline comparison
+> > would
+> > probably still favor the vhost task instead of the kworker with the
+> > negative lag.
+> >
+> > I'm not sure if you tried it, but I thought I'd mention it.
+>
+> Haven't seen that one yet. Unfortunately, it does not help to ignore the
+> eligibility.
+>
+> I'm inclined to rather propose propose a documentation change, which
+> describes that tasks should not rely on woken up tasks being scheduled
+> immediately.
 
-No, I mean standard LRU reclaim implementation rather than MGLRU.
+Where do you see such an assumption ? Even before eevdf, there were
+nothing that ensures such behavior. When using CFS (legacy or eevdf)
+tasks, you can't know if the newly wakeup task will run 1st or not
 
--- 
-Michal Hocko
-SUSE Labs
+
+>
+> Changing things in the code to address for the specific scenario I'm
+> seeing seems to mostly create unwanted side effects and/or would require
+> the definition of some magic cut-off values.
+>
+>
 
