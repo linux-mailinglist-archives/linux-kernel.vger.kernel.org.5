@@ -1,152 +1,178 @@
-Return-Path: <linux-kernel+bounces-107501-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107502-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6F44387FD5D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:08:02 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BC7187FD60
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:08:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B0F5281FC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:08:01 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B62C4281AD1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:08:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6450B7F7FE;
-	Tue, 19 Mar 2024 12:07:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 63CE57F7C7;
+	Tue, 19 Mar 2024 12:08:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="w455ev9a"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="S/6qC1AN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D957F7F7E8;
-	Tue, 19 Mar 2024 12:07:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 84E197F486;
+	Tue, 19 Mar 2024 12:08:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710850058; cv=none; b=qZamf7Ce9IKgWMvZQGXuoHayqyrZaBuM/pl3Rd/a26tMTktPVolgUskHXypF0Mj1ErmwJmq4mJ23amoGL6+FX04jNCNEW8B7URwPGTEJDCrMNeniIMNv3nXQe+rKifuNkKO712k8mILFT7+jcYNIbcP6KKsW06FzHiC0lWTaLKs=
+	t=1710850121; cv=none; b=TXsO3dkkdWqsM7OJSMT+DXa9Iu6J5WJp5+D8IX2cfC/SCZG6Slj7zbf/Lt6FOELln7y81k53hHje5nVztDPnouIOtblTjmTGGlK5L3jraobRh9sqHkhqgFq+v7sqWTQrH8Xl9Jqdt3c3ZzaGxCdoGpOEaMQ7J0euf3PTxntmyac=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710850058; c=relaxed/simple;
-	bh=cPXOCxN/qj5MNkfZA46Nw70sJLBoN3u3hI5FpL/THBY=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=HwUPGPvoRvtfq8Es+QhuvOV+oGRWyr2ow4rpVayRY5dRMgK+XHHvI/v3SFx9/3bxZ5Lsxkc0QSTQKqrKKw3nyqIZCCYYX4eV5RN/phoLDl5WedOMI9x0vYHvwkYfdOlGN23/nxep6+zgtGs/jXwLo0NtX76s1A0S0oQ4NXbV5qg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=w455ev9a; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0035.itg.ti.com ([10.64.41.0])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42JC7IZ9100949;
-	Tue, 19 Mar 2024 07:07:18 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710850038;
-	bh=lMgFu7XIMey/lHmBEVhgEJNMBOcUUdu7IfwteAPw/qo=;
-	h=Date:From:To:CC:Subject:References:In-Reply-To;
-	b=w455ev9am1AokC27j+mHA6YYLzG6eJFVO89yAaqLHkYWCrwjsJPFlUQtGT48hkhpQ
-	 QcoT49OyZyReLLt5210mlM6B3TAGZgYnDEsWUQPAPS7xHI1xf9ZAqiIjJ8DVRbuwDj
-	 teolUBmZJI+c6fwnCSVdkxCvu0RABtYEY+AJo7dE=
-Received: from DFLE115.ent.ti.com (dfle115.ent.ti.com [10.64.6.36])
-	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42JC7Iav131031
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 19 Mar 2024 07:07:18 -0500
-Received: from DFLE113.ent.ti.com (10.64.6.34) by DFLE115.ent.ti.com
- (10.64.6.36) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
- Mar 2024 07:07:18 -0500
-Received: from lelvsmtp6.itg.ti.com (10.180.75.249) by DFLE113.ent.ti.com
- (10.64.6.34) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 19 Mar 2024 07:07:18 -0500
-Received: from localhost (uda0133052.dhcp.ti.com [128.247.81.232])
-	by lelvsmtp6.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42JC7HcP032285;
-	Tue, 19 Mar 2024 07:07:17 -0500
-Date: Tue, 19 Mar 2024 07:07:17 -0500
-From: Nishanth Menon <nm@ti.com>
-To: Francesco Dolcini <francesco@dolcini.it>
-CC: Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
-        Rob Herring <robh+dt@kernel.org>,
-        Krzysztof Kozlowski
-	<krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley <conor+dt@kernel.org>,
-        Francesco Dolcini <francesco.dolcini@toradex.com>,
-        <linux-arm-kernel@lists.infradead.org>, <devicetree@vger.kernel.org>,
-        <linux-kernel@vger.kernel.org>,
-        =?utf-8?Q?Jo=C3=A3o_Paulo_Silva_Gon=C3=A7alves?= <joao.goncalves@toradex.com>
-Subject: Re: [PATCH v1] arm64: dts: ti: verdin-am62: use SD1 CD as GPIO
-Message-ID: <20240319120717.e2p65ricusxuz3wm@subatomic>
-References: <20240312144956.40211-1-francesco@dolcini.it>
+	s=arc-20240116; t=1710850121; c=relaxed/simple;
+	bh=hnSVsLiLejS2+H2QkSYnP/1VC+dBGjS25lGVUBroTNM=;
+	h=Content-Type:Date:Message-Id:Subject:Cc:From:To:References:
+	 In-Reply-To; b=Jn1OSnbl2ewGkFOupkk44HNM/dvIvOEJOMb89mcDnkCRv1uiXHbzrpIRa4AeAupzAfvIH9/BntqyLRVZPspFDtaY6T16NLn5FbQbbloe4fIwSS+p6Dt2guVBW/txnqoWxMDad0dgwmkjXz0Y1E3QepMHl1aOYGaIx6ULQD5kvOU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=S/6qC1AN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id CF96AC433C7;
+	Tue, 19 Mar 2024 12:08:40 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710850121;
+	bh=hnSVsLiLejS2+H2QkSYnP/1VC+dBGjS25lGVUBroTNM=;
+	h=Date:Subject:Cc:From:To:References:In-Reply-To:From;
+	b=S/6qC1ANHMIvVNMlBpY/FEIfzg21ybAe6BjNnNSWe8VX2Vi9A9XudWvAdNx8j3uzE
+	 03fdkU/dTxYfY0WC10r3RaK90sK8IRwKczX5EcXA6TkbvCdm0ZyVrnCBtVmzF5/l1N
+	 OFYILoRBkXVG3NdZP7iKDcLTKEX1q/32L1nNVy+0adleyZttizwpNd6uemATz4pUgw
+	 72rca3a2DSz5SzoAiDwOKYbSd/+ukCpCNZVRdudSoUIznilfrnizhX8RXqAJRvChP6
+	 M7S4iIIqDRjikI/KpbcctbztXR6V+Fxo23LkHwnyRJilvGAZ1nYFph1dBYdlirp6ZX
+	 UqHT4RLzgE+hQ==
+Content-Type: multipart/signed;
+ boundary=c332393a90d01da165088274218ef3aba6b575ac7f9169419f630293fb78;
+ micalg=pgp-sha256; protocol="application/pgp-signature"
+Date: Tue, 19 Mar 2024 13:08:33 +0100
+Message-Id: <CZXPQZY8PUGE.QZM8XSOUNMT4@kernel.org>
+Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
+Cc: <jkridner@beagleboard.org>, <robertcnelson@beagleboard.org>,
+ <lorforlinux@beagleboard.org>, "Rob Herring" <robh@kernel.org>, "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>, "Conor Dooley"
+ <conor+dt@kernel.org>, "Nishanth Menon" <nm@ti.com>, "Vignesh Raghavendra"
+ <vigneshr@ti.com>, "Tero Kristo" <kristo@kernel.org>, "Derek Kiernan"
+ <derek.kiernan@amd.com>, "Dragan Cvetic" <dragan.cvetic@amd.com>, "Arnd
+ Bergmann" <arnd@arndb.de>, "Greg Kroah-Hartman"
+ <gregkh@linuxfoundation.org>, "Vaishnav M A" <vaishnav.a@ti.com>, "Mark
+ Brown" <broonie@kernel.org>, "Johan Hovold" <johan@kernel.org>, "Alex
+ Elder" <elder@kernel.org>, "open list:OPEN FIRMWARE AND FLATTENED DEVICE
+ TREE BINDINGS" <devicetree@vger.kernel.org>, "moderated list:ARM/TEXAS
+ INSTRUMENTS K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>, "open
+ list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>, "moderated list:GREYBUS
+ SUBSYSTEM" <greybus-dev@lists.linaro.org>, "Vaishnav M A"
+ <vaishnav@beagleboard.org>
+From: "Michael Walle" <mwalle@kernel.org>
+To: "Ayush Singh" <ayushdevel1325@gmail.com>, "Krzysztof Kozlowski"
+ <krzysztof.kozlowski@linaro.org>, "open list"
+ <linux-kernel@vger.kernel.org>
+X-Mailer: aerc 0.16.0
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-2-ayushdevel1325@gmail.com>
+ <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
+ <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
+ <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
+ <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
+ <CZXMK3W52AFO.1APK080GVJESK@kernel.org>
+ <5a9b1cd9-05ec-4606-92b6-eadbc7af6202@gmail.com>
+In-Reply-To: <5a9b1cd9-05ec-4606-92b6-eadbc7af6202@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <20240312144956.40211-1-francesco@dolcini.it>
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-On 15:49-20240312, Francesco Dolcini wrote:
-> From: Francesco Dolcini <francesco.dolcini@toradex.com>
-> 
-> TI SDHCI IP has a hardware debounce timer of 1 second as described in
-> commit 7ca0f166f5b2 ("mmc: sdhci_am654: Add workaround for card detect
-> debounce timer"), because of this the boot time increases of up to 1
-> second.
-> 
-> Workaround the issue the same way that is done on
-> arch/arm64/boot/dts/ti/k3-am625-beagleplay.dts, using the SD1 CD as
-> GPIO.
-> 
-> Suggested-by: Nishanth Menon <nm@ti.com>
-> Reported-by: João Paulo Silva Gonçalves <joao.goncalves@toradex.com>
-> Closes: https://lore.kernel.org/all/0e81af80de3d55e72f79af83fa5db87f5c9938f8.camel@toradex.com/
-> Signed-off-by: Francesco Dolcini <francesco.dolcini@toradex.com>
-> ---
->  arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi | 12 ++++++++++--
->  1 file changed, 10 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-> index e8d8857ad51f..a9bf2c17f95a 100644
-> --- a/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-> +++ b/arch/arm64/boot/dts/ti/k3-am62-verdin.dtsi
-> @@ -457,6 +457,13 @@ AM62X_IOPAD(0x01c4, PIN_INPUT, 7) /* (B14) SPI0_D1.GPIO1_19 */ /* SODIMM 161 */
->  		>;
->  	};
->  
-> +	/* Verdin SD_1_CD# as GPIO */
-> +	pinctrl_sd1_cd_gpio: main-gpio1-48-default-pins {
-> +		pinctrl-single,pins = <
-> +			AM62X_IOPAD(0x240, PIN_INPUT_PULLUP, 7) /* (D17) MMC1_SDCD.GPIO1_48 */ /* SODIMM 84 */
-> +		>;
-> +	};
-> +
->  	/* Verdin DSI_1_INT# (pulled-up as active-low) */
->  	pinctrl_dsi1_int: main-gpio1-49-default-pins {
->  		pinctrl-single,pins = <
-> @@ -571,7 +578,6 @@ AM62X_IOPAD(0x230, PIN_INPUT,        0) /* (A22) MMC1_DAT0 */ /* SODIMM 80 */
->  			AM62X_IOPAD(0x22c, PIN_INPUT,        0) /* (B21) MMC1_DAT1 */ /* SODIMM 82 */
->  			AM62X_IOPAD(0x228, PIN_INPUT,        0) /* (C21) MMC1_DAT2 */ /* SODIMM 70 */
->  			AM62X_IOPAD(0x224, PIN_INPUT,        0) /* (D22) MMC1_DAT3 */ /* SODIMM 72 */
-> -			AM62X_IOPAD(0x240, PIN_INPUT_PULLUP, 0) /* (D17) MMC1_SDCD */ /* SODIMM 84 */
->  		>;
->  	};
->  
-> @@ -1441,8 +1447,10 @@ &sdhci0 {
->  /* Verdin SD_1 */
->  &sdhci1 {
->  	pinctrl-names = "default";
-> -	pinctrl-0 = <&pinctrl_sdhci1>;
-> +	pinctrl-0 = <&pinctrl_sdhci1>, <&pinctrl_sd1_cd_gpio>;
-> +	cd-gpios = <&main_gpio1 48 GPIO_ACTIVE_LOW>;
->  	disable-wp;
-> +	ti,fails-without-test-cd;
->  	vmmc-supply = <&reg_sdhc1_vmmc>;
->  	vqmmc-supply = <&reg_sdhc1_vqmmc>;
->  	status = "disabled";
+--c332393a90d01da165088274218ef3aba6b575ac7f9169419f630293fb78
+Mime-Version: 1.0
+Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
 
-Minor style comment based on recently added https://docs.kernel.org/devicetree/bindings/dts-coding-style.html#order-of-properties-in-device-node
+On Tue Mar 19, 2024 at 12:36 PM CET, Ayush Singh wrote:
+> >> Regardless, this patch actually does not contain any code for EEPROM
+> >> support I have just mentioned it to give more context on why mikroBUS
+> >> manifest is the focus of this patch instead of DT overlay or something
+> >> else.
+> > Right, and I think this is the crux here. Why can't you use DT
+> > overlays? The manifest files, seem to be yet another hardware
+> > description (method) and we already have DT. Can't we have some kind
+> > of userspace helper that could translate them to DT overlays? That
+> > way, you could also handle the EEPROM vs non-EEPROM case, or have
+> > some other kind of method to load a DT overlay.
+> >
+> > Admittedly, I've never worked with in-kernel overlays, but AFAIK
+> > they work with some subsystems.
+> >
+> > -michael
+>
+>
+> So let me 1st go over 3 cases that the driver needs to support:
+>
+> 1. Non EEPROM boards:
+>
+> Using overlays should be pretty similar to current solution. If the=20
+> manifest is converted to overlay in userspace, then we do not even need=
+=20
+> to do manifest parsing, setting up spi, i2c etc in the kernel driver.
+>
+>
+> 2. EEPROM boards
+>
+> How do you propose handling these. If you are proposing storing dt=20
+> overlay in EEPROM, then this raises some questions regarding support=20
+> outside of Linux.
+>
+> The other option would be generating overlay from manifest in the kernel=
+=20
+> driver, which I'm not sure is significantly better than registering the=
+=20
+> i2c, spi, etc. interfaces separately using standard kernel APIs.
 
-ti,fails-without-test-cd comes after vqmmc-supply and above status.
+You did answer that yourself in (1): you could use a user space
+helper to translate it to a DT overlay, I don't think this has to be
+done in the kernel. Also how do you know whether there is an EEPROM
+or not?
 
--- 
-Regards,
-Nishanth Menon
-Key (0xDDB5849D1736249D) / Fingerprint: F8A2 8693 54EB 8232 17A3  1A34 DDB5 849D 1736 249D
+> 3. Over Greybus
+>
+> It is quite important to have mikroBUS over greybus for BeagleConnect.=20
+> This is one of the major reasons why greybus manifest was chosen for the=
+=20
+> manifest format.
+>
+> Also, it is important to note that mikroBUS manifest is being used since=
+=20
+> 2020 now and thus manifests for a lot of boards (both supporting clickID=
+=20
+> and not supporting it exist). So I would prefer using it, unless of=20
+> course there are strong reasons not to.
+
+And also here, I'm not really familiar with greybus. Could you give
+a more complex example? My concern is that some driver might need
+additional properties from DT (or software nodes) to function
+properly. It might not only be a node with a compatible string but
+also more advanced bindings. How would that play together with this?
+My gut feeling is that you can handle any missing properties
+easier/better (eg. for existing modules) in user space. But maybe
+that is already solved in/with greybus?
+
+Here's a random one: the manifest [1] just lists the compatible
+string apparently, but the actual DT binding has also reset-gpios,
+some -supply and interrupt properties.
+
+-michael
+
+[1] https://github.com/MikroElektronika/click_id/blob/main/manifests/WEATHE=
+R-CLICK.mnfs
+
+--c332393a90d01da165088274218ef3aba6b575ac7f9169419f630293fb78
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iIgEABYIADAWIQQCnWSOYTtih6UXaxvNyh2jtWxG+wUCZfmAQRIcbXdhbGxlQGtl
+cm5lbC5vcmcACgkQzcodo7VsRvssqgEA04NYkPfPrSqNNIGZGNCkWoEFhm0cSpD1
+0kMsQQMcLz8BAMO9O7XV3ER/VGUaI2mQh9OOZ4XJDT0M2vanXUGYPBMA
+=d2XY
+-----END PGP SIGNATURE-----
+
+--c332393a90d01da165088274218ef3aba6b575ac7f9169419f630293fb78--
 
