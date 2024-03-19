@@ -1,102 +1,118 @@
-Return-Path: <linux-kernel+bounces-108077-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108078-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id E19B68805A2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:46:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5225F8805A3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:47:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DCE1284823
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:46:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E6FA7B22D17
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:47:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C21443B2BB;
-	Tue, 19 Mar 2024 19:46:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0A7DA5786B;
+	Tue, 19 Mar 2024 19:46:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uSjosQNn"
-Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ZbTrDy6z"
+Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3173B298
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:46:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEF48548F3
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:46:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710877599; cv=none; b=bG5qwBVoymxJlPNM/5OQlfcZX6W8FmDvI40LM99aEnVSRAp41XaDQ3prLizB7OIcvtNlIDF0nq3z2vrn53mG+vjnF9sqsAdSDxOxaVAROTETtPWrx+rLklCd+T+gbjd4DLGe5i4uLjbR8TCq+hhtBHjbxpSq0IpVobc0HB2tY0M=
+	t=1710877610; cv=none; b=HM4Mgo9A5+TmLokEA6d6vJQwylhqGkUQxUvNvC8yDpwRvm2V1qEVFS+iy2w/DVHE0+LjR9ACBYucFnFv11IJXD4GlON2nMSWMlSRSzv9mp9wQm5vjn0IrCGIkwLyJLFhFjS9OjkP1ehc9o95zeBuc0yW/I5dQ7ehfN9IAAEkBuQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710877599; c=relaxed/simple;
-	bh=kXd2i+AOWYw8mNhkzMSPRsJ1BAfSMk5UbmtyY1hKQ4g=;
+	s=arc-20240116; t=1710877610; c=relaxed/simple;
+	bh=uARbC43Fd5cjd7/ChKeWZqD3QYJNFx8lQiitP0+TrZ8=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cZyHVFEH1583JcXK9GcG8ENaTc4cqsggOML6nmcuzTbWF7WCumcOC6YJX+z5S0ouXNampNPQp68gK1UbxkdsMdUayzdL4zEcE5qgCbnQMNP9dVzD4m52FoMAmCKQXjKQ1OB4bqjvDjhf5QrFTJ9Lgehq0twtXU43p2+BSO2qRxc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uSjosQNn; arc=none smtp.client-ip=95.215.58.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Message-ID: <5b1d5758-3510-47c5-97e9-2edc5112d046@linux.dev>
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710877595;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=+GT3KW1575UJ01KouvR9HZva7hTJApu0idB1GvqPOVU=;
-	b=uSjosQNnzCRjKn06REIRfbqr6tgrO2Qo7zhAniZ0awIiRTtfyEWuK2Hyi3ndgcrNlR3s+w
-	ZZLB/PTPqMx6mhyh1DRVV0unlZHqRqMg2r379g286Z/TbO9uUPvq8ttVj2HDOUzKivnUYi
-	XHBwD6NqJEhyHn5e/0kAGO1a08uXSn8=
-Date: Tue, 19 Mar 2024 12:46:26 -0700
+	 In-Reply-To:Content-Type; b=NieM4sC+ep/dPqHmcLOiWACOQo6TJhPAXjG7D2iV5MS1qMCOTBBnC9zSdJxQfg38n0+LxE9AX7uGLT7TjJv7G7MPA+qeJzUYkmcAr4nPYhYuh+qg3RgXgpv0J07H5D8fNaWRzx6cbi/2Git5SGA9uDKn80A6ZdUMPUugqhdijEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ZbTrDy6z; arc=none smtp.client-ip=209.85.210.179
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e6ade6a66aso5251369b3a.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:46:48 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710877608; x=1711482408; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=EEfqQMYpHT+mLEEWMqpipCvQSl9ONp1yIz4RNp/cJvo=;
+        b=ZbTrDy6zMXZWWLIFlTSkhl+226s0Z+XIF5v80kyGhB3oIubzyO+5Lu1JJ0f3ftcZLe
+         vToUIUUJ6PXXHbaT/+dR0T/aaJ0OPumH+hhZbEio8hSaXKhf+i+Av6P6Gq1gqlVNFFje
+         5qDvuzeQVmEY/Vk2pbakzq33IJM5XVo9L66thn/cqN3riztAsVKSivzUji5jJxIyv+tP
+         g4quBH2VlqgQWOPwdjStE0iszupVVTSBoDu67K5fT0azqjd749pWV0F4HsbmmeitTf80
+         nDjYY9ah8BEZjIy7CrpaVH3rN57+xi1qKZaQlehnfehl0AjMItkEcdLp5oGYPdp/5miu
+         Q/sw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710877608; x=1711482408;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=EEfqQMYpHT+mLEEWMqpipCvQSl9ONp1yIz4RNp/cJvo=;
+        b=KeKc9RrQ2ozXtYEfFe+qMf+iiILGjjONiQlb9ETSuMkCX/dxxLjzCe5fcbmwVOdyFy
+         XBbM4yjIbyq30vF3+b+jFgQtTdepwsNxbmQRBavntqhQ/h7J+FAdhHeNTA00/U3Iy3KL
+         fNZaMyiLCpiIDxgaequ1c8er7PylwHt3gztjUXXar00ToAx5h7fZxztRHzlfpt/9EYV1
+         UYKWwDZnaqfdqwyFvQp9ONQXUMJ45Ugtmf1Tp5jy3ZNcFlV/D+f5av25o45IO438b62Q
+         k20wGOv8nqHc3oOcKA+/Dgy2FtjxO1bJ+jX0rN2m/Vi5zqiWyri9OscepGENTeTCwfcO
+         +Iug==
+X-Forwarded-Encrypted: i=1; AJvYcCWcN7kVv4MoGafy4YIL8JNVM2Y+js1Kt6J0fV9mV+gW+47O0VAcl6PIzqtQGH1sWQdQcXRXHBGySik11uOS03EP+GfKt5AzsqI6E+FR
+X-Gm-Message-State: AOJu0YxI8LzL9qJZVTELQTYEQsQBZ9y3fQ+PZmZdPymdzsvnCG45aMte
+	6I9ZmuWTZE3ogBsi4nxQk+RwBLdTKetQAsPaoSsveZiov6Q8xZsdfezDidPXJAQ=
+X-Google-Smtp-Source: AGHT+IHhNrRvQWeD27wPMAcbezsog+p7JKwlthEaikJqnF6LIE09EOJOnc2q/lrvDHUVUDG6NBVGhw==
+X-Received: by 2002:a05:6a20:2042:b0:1a3:529a:9cd1 with SMTP id x2-20020a056a20204200b001a3529a9cd1mr9477350pzx.43.1710877608154;
+        Tue, 19 Mar 2024 12:46:48 -0700 (PDT)
+Received: from ?IPV6:2601:647:4180:9630::546? ([2601:647:4180:9630::546])
+        by smtp.gmail.com with ESMTPSA id v14-20020aa799ce000000b006da96503d9fsm10149006pfi.109.2024.03.19.12.46.47
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 12:46:47 -0700 (PDT)
+Message-ID: <37249973-fa73-401e-b5eb-7fd13fc38996@rivosinc.com>
+Date: Tue, 19 Mar 2024 12:46:46 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
- for userspace tstamp packets
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] riscv: use KERN_INFO in do_trap
 Content-Language: en-US
-To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
-Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, kernel@quicinc.com,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
- Andrew Halaney <ahalaney@redhat.com>,
- Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
- Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
- Andrii Nakryiko <andrii@kernel.org>
-References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
- <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
- <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
- <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
- <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
- <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
- <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
- <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
- <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
- <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
- <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
- <65f35e00a83c0_2132294f5@willemb.c.googlers.com.notmuch>
- <e270b646-dae0-41cf-9ef8-e991738b9c57@quicinc.com>
- <8d245f5a-0c75-4634-9513-3d420eb2c88f@linux.dev>
- <d10254cc-a908-4d81-98d2-2eed715e521f@quicinc.com>
- <66ad9e5b-0126-476e-bf0f-6a33f446c976@quicinc.com>
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Martin KaFai Lau <martin.lau@linux.dev>
-In-Reply-To: <66ad9e5b-0126-476e-bf0f-6a33f446c976@quicinc.com>
+To: Andreas Schwab <schwab@suse.de>, linux-riscv@lists.infradead.org
+Cc: Conor Dooley <conor@kernel.org>, Palmer Dabbelt <palmer@dabbelt.com>,
+ Yunhui Cui <cuiyunhui@bytedance.com>, =?UTF-8?B?QmrDtnJuIFTDtnBlbA==?=
+ <bjorn@rivosinc.com>, linux-kernel@vger.kernel.org
+References: <mvmy1aegrhm.fsf@suse.de>
+From: Atish Patra <atishp@rivosinc.com>
+In-Reply-To: <mvmy1aegrhm.fsf@suse.de>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
-X-Migadu-Flow: FLOW_OUT
 
-On 3/18/24 12:02 PM, Abhishek Chauhan (ABC) wrote:
->>>>>> I think the "struct inet_frag_queue" also needs a new "user_delivery_time"
->>>>>> field. "mono_delivery_time" is already in there.
->>> [ ... ]
->>>
-> Martin, Do we really need to add user_delivery_time as part of inet_frag_queue struct? I was wondering why is this required since we are using tstamp_type:2 to
-> distinguish between timestamp anyway .
+On 3/19/24 08:40, Andreas Schwab wrote:
+> Print the instruction dump with info instead of emergency level.  The
+> unhandled signal message is only for informational purpose.
+> 
+> Fixes: b8a03a634129 ("riscv: add userland instruction dump to RISC-V splats")
+> Signed-off-by: Andreas Schwab <schwab@suse.de>
+> Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+> ---
+> v2: clarify commit message
+> ---
+>   arch/riscv/kernel/traps.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
+> 
+> diff --git a/arch/riscv/kernel/traps.c b/arch/riscv/kernel/traps.c
+> index a1b9be3c4332..142f5f5168fb 100644
+> --- a/arch/riscv/kernel/traps.c
+> +++ b/arch/riscv/kernel/traps.c
+> @@ -121,7 +121,7 @@ void do_trap(struct pt_regs *regs, int signo, int code, unsigned long addr)
+>   		print_vma_addr(KERN_CONT " in ", instruction_pointer(regs));
+>   		pr_cont("\n");
+>   		__show_regs(regs);
+> -		dump_instr(KERN_EMERG, regs);
+> +		dump_instr(KERN_INFO, regs);
+>   	}
+>   
+>   	force_sig_fault(signo, code, (void __user *)addr);
 
-
-The context for this was before combining mono_delivery_time:1 and 
-user_delivery_time:1 into tstamp_type:2. No need to add user_delivery_time to 
-inet_frag_queue because it is combined into tstamp_type:2. If 
-mono_delivery_time:1 is replaced with tstamp_type:2 in sk_buff, the same should 
-be done in inet_frag_queue.
-
-
+Reviewed-by: Atish Patra <atishp@rivosinc.com>
 
