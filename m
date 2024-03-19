@@ -1,161 +1,442 @@
-Return-Path: <linux-kernel+bounces-108126-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108125-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0BBD388065A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:59:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D99F880658
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:59:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BB8B4282EC5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:59:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C28861F229B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:59:02 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90C4A3FBB3;
-	Tue, 19 Mar 2024 20:58:55 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8997B3D3BB;
+	Tue, 19 Mar 2024 20:58:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="LrPMDPN7"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="ED5W4v/c"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2807E3EA77
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:58:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B85293BBF9
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:58:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710881934; cv=none; b=W4q5eeE9PrGvENSTXuLdphzzvcrpcWsdOEbyFnRRNrQdQNSO/i/5ys0gXFagHWZb3OOt+vak4aXz2d2A+ZPt88tN06HyG79XO1NZ72uaVh3j3Y0rt0TkXiDnGPwzicS6CKdukxYUWKicZ9ppOTovANBgkkLbzup/r1h6g/yF00E=
+	t=1710881930; cv=none; b=H5GG85vHViMc0WDMz7dV1n/eG5iwFLcm7f0x3UGIsAnNwh6vx32hIpM8swD+rSorkLGehRBvA3xrstPCXcNaPP+dZzsV5Y3GqQamRljs1kSqYhIXjWIfhYEzsg4SQuhi0gT+QnRhA/kYs9qZv2Kw54eBZnVDaQy5t6NkrhOsXaY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710881934; c=relaxed/simple;
-	bh=1zsj+M/d9chbnwHl1CpZYf7kzFLbX8aqGDVZhE8fT8w=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=teOv6helOhoP3ZJsK5PTU3Z9eCAMG5eF3uev2tZq0BCJ/kyLRBbg3D8dQCZ/vBxC7xNsptO09ZySJlqomkZ2LSW+poOYA3wYV8MRRc5s2IM0txsS2YDFz5dUA5hCiCwkcSlMfU/1Eg7vTb4UBUc31SwTu0XEheafx9hUr/MqOUM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=LrPMDPN7; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6b22af648so216154b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:58:52 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710881932; x=1711486732; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=yvO6Pb0Q30VcXTFiNcwxiPMuBmsILWnZccwRus/VuqA=;
-        b=LrPMDPN7DIHXep07bfHUFLuHf1xZ97oc+2uTzmanCYnIsFfF8xq1jgMAbC0/EsKYv0
-         FOoAfBba067OrayLKyJoYuuj1uVMOMf8igxUSLkcKZq1i6u+88ON58gU4j++AUdwBhnQ
-         9A6XcIyl8Q3NdayUvP+pqBnfOMLT/xOMFrXwc=
+	s=arc-20240116; t=1710881930; c=relaxed/simple;
+	bh=60VH6wTVAhbIh2+4rpdf4V9I7FPqfy1Csf27xVA2VY4=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gENTqvYT72msOHzNpjDOE7mGxBNuxEuX9x0EsjLZNDktDU8K0bybISKsyEXe5QacmCRBiog5Kn4xukA20ePm5xew6xzNizo/V/J15BqDvxa7gt9o32324sjuFoUCX8HrUIUOuP1rir97NY9EoySAT36HQK92f4VKfl1GN68CuyU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=ED5W4v/c; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710881927;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=aw4CAFO6Wqj2dIx4BnJGs/0QTMjsyniynhBTgij4GLQ=;
+	b=ED5W4v/coFfS+DqHHoDv+DiCZGrQvR7guc920bS5M8uUIUkW22RR3v8TDJL1NiLCIdeyC9
+	eolylFvGqhwL3UJt3SH1kZ/CJVAiqu4O1nmVhXxBZsEbqNQO8YJumT579DXISaLhGOBNe0
+	MT3VSh6GOiPPoPIvNKlsuzVd/qtjLmw=
+Received: from mail-wr1-f69.google.com (mail-wr1-f69.google.com
+ [209.85.221.69]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-383-H0jX2TPMOZCucuyATXkiEg-1; Tue, 19 Mar 2024 16:58:46 -0400
+X-MC-Unique: H0jX2TPMOZCucuyATXkiEg-1
+Received: by mail-wr1-f69.google.com with SMTP id ffacd0b85a97d-33e4397540bso3646299f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:58:45 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710881932; x=1711486732;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=yvO6Pb0Q30VcXTFiNcwxiPMuBmsILWnZccwRus/VuqA=;
-        b=HbnjRWPWzpKlR4nKVf7Y1F3Sdyx4we/H8ooPb4k2VhCfDzHtgpmfSBRcgjfXOIiu+1
-         ghtl4obaCx4M5UFtlBRxEhoUVqNfsuyK8sLqcdTJtZjI4s8Rz/1IOrCeELBS6MccyoPI
-         X2nO3Z08yxjPmLXj8T9Zvv6MhkQVIAtSjRC7sLue9Cyuv0nAixDGcJx+X/7jURq/GyC6
-         nVeci3jhBEWFu2F5H5RErHp7bvirUIve4ZKzeHsp67QuS2xlxGpZhw157sB190Z6sUjR
-         1LMxXE4Ve5K9c3uHJmGrvXl3pbvolVUXo2QMvXE4YXPC2h/Q8QloKJscnT23CeH85Q8O
-         AIMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCV/2ZXtPxDLGh8rgZHbwYftwNmkqErhZa86aX6o2rt8unZDbhZ1tPXi+rnWYMGjd5xHchg7SXA0Jlodve9eqq+kw73gkrhNIy5fgrkB
-X-Gm-Message-State: AOJu0YypS2H+1+rVSByFhZi+nQBbsuWgMUYrPi3Psa8W85qNbP/EG3AC
-	RQrNqcNKhVCYZXbBLGRlL1zpq37QRWGUADzArzhSeXrMh9E5adoAzxqDUYffcQ==
-X-Google-Smtp-Source: AGHT+IGaxQlsWiVI/mJV/nB+Mp2IICAlnHIViegR1Fkm5V0vh3BgrBRwfRrC08WiUB3qWRSrGBNuQA==
-X-Received: by 2002:a17:903:234f:b0:1df:f818:8936 with SMTP id c15-20020a170903234f00b001dff8188936mr836476plh.21.1710881932430;
-        Tue, 19 Mar 2024 13:58:52 -0700 (PDT)
-Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:f4b6:c22b:c130:6c79])
-        by smtp.gmail.com with ESMTPSA id z6-20020a170903018600b001dde2c3fea5sm11800110plg.50.2024.03.19.13.58.51
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 13:58:51 -0700 (PDT)
-From: Douglas Anderson <dianders@chromium.org>
-To: dri-devel@lists.freedesktop.org,
-	Abhinav Kumar <quic_abhinavk@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: linux-tegra@vger.kernel.org,
-	Mikko Perttunen <mperttunen@nvidia.com>,
-	Thierry Reding <thierry.reding@gmail.com>,
-	Jonathan Hunter <jonathanh@nvidia.com>,
-	Douglas Anderson <dianders@chromium.org>,
-	Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
-	Daniel Vetter <daniel@ffwll.ch>,
-	David Airlie <airlied@gmail.com>,
-	Imre Deak <imre.deak@intel.com>,
-	Jani Nikula <jani.nikula@intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v2] drm/dp: Clarify that wait_hpd_asserted() is not optional for panels
-Date: Tue, 19 Mar 2024 13:58:39 -0700
-Message-ID: <20240319135836.v2.1.I521dad0693cc24fe4dd14cba0c7048d94f5b6b41@changeid>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+        d=1e100.net; s=20230601; t=1710881925; x=1711486725;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=aw4CAFO6Wqj2dIx4BnJGs/0QTMjsyniynhBTgij4GLQ=;
+        b=RRw6wAKCSMK3DGNq6U9E8eh0LMOfuLC6A5d2w/m81ElTYicfTx4C3YRSKKSAVl/nQY
+         umNxiEZgcqigxHjlsP3rs734Reeg+prO8y+s4aHIUojCpDarEZM+E0+MXg/hJH/pIMNw
+         xz4Aiauib0F8cGKFw3WU36P0lXA7+pdN10TrpE0R2n1adnE12d+TptR3WRD2o5vsQHvM
+         PXPNnp2Q6LUuPetRqOOxDAgynaXXDZYtyZz+d+GvcdNWcIj+XqPiToTLodHc/6RTn9Lr
+         2p1zA4Lbo1jzR8goH9tpjH0V1SKpGkpyqcSYYmYbCIRb/eVH8zKqSE1gT0HdwCA+xbEm
+         X6+w==
+X-Forwarded-Encrypted: i=1; AJvYcCUJSBNhGSvSf7q6+4lT7XvIY7nt1ye3Gf0JCdfo4gPjdKMIJ7p3WEBgXAUQhLZhbpNbM9VaNMNCZBmIdvuGRkmB5/Xbb3kEmNQJUEaH
+X-Gm-Message-State: AOJu0YwDrnz14rkeKhvri/eOsa0h2kk722n6gy3FjTnoXw6QNW0LJiym
+	Hx1qosAbF3tYBtKT+UHhacpbUFwmHFyhlbVyAPnSYfVwxuvvhBGZAVsMQSMc5F3ylebIzlXHKWK
+	4fQnWL1XiE2unlMF05s8T7Xx3SflZ8xLou6AHP5RLgPpOL9Y0fqXkwAn2fD5BfA==
+X-Received: by 2002:adf:e708:0:b0:33e:d470:dbcc with SMTP id c8-20020adfe708000000b0033ed470dbccmr9844645wrm.5.1710881924916;
+        Tue, 19 Mar 2024 13:58:44 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGNgV0Jd3n+91MW2TdlvsXixvHXRenMR4gVoaDo0wQSeZj3lrenyS1pJM0kmM2IqWU1nLazBg==
+X-Received: by 2002:adf:e708:0:b0:33e:d470:dbcc with SMTP id c8-20020adfe708000000b0033ed470dbccmr9844627wrm.5.1710881924498;
+        Tue, 19 Mar 2024 13:58:44 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id u8-20020a056000038800b0033ec9007bacsm8905422wrf.20.2024.03.19.13.58.42
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 13:58:43 -0700 (PDT)
+Message-ID: <f003ce3e-12d0-42fd-84a9-ebb3baac3860@redhat.com>
+Date: Tue, 19 Mar 2024 21:58:41 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 2/3] KVM: selftests: aarch64: Introduce
+ pmu_event_filter_test
+Content-Language: en-US
+To: Shaoqin Huang <shahuang@redhat.com>, Oliver Upton
+ <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>,
+ kvmarm@lists.linux.dev
+Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
+ James Morse <james.morse@arm.com>, Suzuki K Poulose
+ <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
+ linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
+ linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+References: <20240229065625.114207-1-shahuang@redhat.com>
+ <20240229065625.114207-3-shahuang@redhat.com>
+From: Eric Auger <eauger@redhat.com>
+In-Reply-To: <20240229065625.114207-3-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-In response to my patch removing the "wait for HPD" logic at the
-beginning of the MSM DP transfer() callback [1], we had some debate
-about what the "This is an optional function" meant in the
-documentation of the wait_hpd_asserted() callback. Let's clarify.
+Hi Shaoqin,
 
-As talked about in the MSM DP patch [1], before wait_hpd_asserted()
-was introduced there was no great way for panel drivers to wait for
-HPD in the case that the "built-in" HPD signal was used. Panel drivers
-could only wait for HPD if a GPIO was used. At the time, we ended up
-just saying that if we were using the "built-in" HPD signal that DP
-AUX controllers needed to wait for HPD themselves at the beginning of
-their transfer() callback. The fact that the wait for HPD at the
-beginning of transfer() was awkward/problematic was the whole reason
-wait_hpd_asserted() was added.
+On 2/29/24 07:56, Shaoqin Huang wrote:
+> Introduce pmu_event_filter_test for arm64 platforms. The test configures
+> PMUv3 for a vCPU, and sets different pmu event filters for the vCPU, and
+> check if the guest can see those events which user allow and can't use
+> those events which use deny.
+> 
+> This test refactor the create_vpmu_vm() and make it a wrapper for
+> __create_vpmu_vm(), which allows some extra init code before
+> KVM_ARM_VCPU_PMU_V3_INIT.
+> 
+> And this test use the KVM_ARM_VCPU_PMU_V3_FILTER attribute to set the
+> pmu event filter in KVM. And choose to filter two common event
+> branches_retired and instructions_retired, and let the guest to check if
+> it see the right pmceid register.
+> 
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
+> ---
+>  tools/testing/selftests/kvm/Makefile          |   1 +
+>  .../kvm/aarch64/pmu_event_filter_test.c       | 287 ++++++++++++++++++
+>  2 files changed, 288 insertions(+)
+>  create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> 
+> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
+> index 492e937fab00..732ca5f8bfc0 100644
+> --- a/tools/testing/selftests/kvm/Makefile
+> +++ b/tools/testing/selftests/kvm/Makefile
+> @@ -147,6 +147,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
+>  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
+>  TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
+>  TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
+> +TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
+>  TEST_GEN_PROGS_aarch64 += aarch64/psci_test
+>  TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
+>  TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
+> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> new file mode 100644
+> index 000000000000..2dd8ea418f47
+> --- /dev/null
+> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> @@ -0,0 +1,287 @@
+> +
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * pmu_event_filter_test - Test user limit pmu event for guest.
+> + *
+> + * Copyright (c) 2023 Red Hat, Inc.
+> + *
+> + * This test checks if the guest only see the limited pmu event that userspace
+> + * sets, if the guest can use those events which user allow, and if the guest
+> + * can't use those events which user deny.
+> + * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
+> + * is supported on the host.
+> + */
+> +#include <kvm_util.h>
+> +#include <processor.h>
+> +#include <vgic.h>
+> +#include <vpmu.h>
+> +#include <test_util.h>
+> +#include <perf/arm_pmuv3.h>
+> +
+> +struct pmu_common_event_ids {
+> +	uint64_t pmceid0;
+> +	uint64_t pmceid1;
+> +} max_pmce, expected_pmce;
+> +
+> +struct vpmu_vm {
+> +	struct kvm_vm *vm;
+> +	struct kvm_vcpu *vcpu;
+> +	int gic_fd;
+> +};
+> +
+> +static struct vpmu_vm vpmu_vm;
+> +
+> +#define FILTER_NR 10
+> +
+> +struct test_desc {
+> +	const char *name;
+> +	struct kvm_pmu_event_filter filter[FILTER_NR];
+> +};
+> +
+> +#define __DEFINE_FILTER(base, num, act)		\
+> +	((struct kvm_pmu_event_filter) {	\
+> +		.base_event	= base,		\
+> +		.nevents	= num,		\
+> +		.action		= act,		\
+> +	})
+> +
+> +#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
+> +
+> +static void guest_code(void)
+> +{
+> +	uint64_t pmceid0 = read_sysreg(pmceid0_el0);
+> +	uint64_t pmceid1 = read_sysreg(pmceid1_el0);
+> +
+> +	GUEST_ASSERT_EQ(expected_pmce.pmceid0, pmceid0);
+> +	GUEST_ASSERT_EQ(expected_pmce.pmceid1, pmceid1);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void guest_get_pmceid(void)
+> +{
+> +	max_pmce.pmceid0 = read_sysreg(pmceid0_el0);
+> +	max_pmce.pmceid1 = read_sysreg(pmceid1_el0);
+> +
+> +	GUEST_DONE();
+> +}
+> +
+> +static void run_vcpu(struct kvm_vcpu *vcpu)
+> +{
+> +	struct ucall uc;
+> +
+> +	while (1) {
+> +		vcpu_run(vcpu);
+> +		switch (get_ucall(vcpu, &uc)) {
+> +		case UCALL_DONE:
+> +			return;
+> +		case UCALL_ABORT:
+> +			REPORT_GUEST_ASSERT(uc);
+> +			break;
+> +		default:
+> +			TEST_FAIL("Unknown ucall %lu", uc.cmd);
+> +		}
+> +	}
+> +}
+> +
+> +static void set_pmce(struct pmu_common_event_ids *pmce, int action, int event)
+> +{
+> +	int base = 0;
+> +	uint64_t *pmceid = NULL;
+> +
+> +	if (event >= 0x4000) {
+> +		event -= 0x4000;
+> +		base = 32;
+> +	}
+> +
+> +	if (event >= 0 && event <= 0x1F) {
+> +		pmceid = &pmce->pmceid0;
+> +	} else if (event >= 0x20 && event <= 0x3F) {
+> +		event -= 0x20;
+> +		pmceid = &pmce->pmceid1;
+> +	} else {
+> +		return;
+> +	}
+> +
+> +	event += base;
+> +	if (action == KVM_PMU_EVENT_ALLOW)
+> +		*pmceid |= BIT(event);
+> +	else
+> +		*pmceid &= ~BIT(event);
+> +}
+> +
+> +static void prepare_expected_pmce(struct kvm_pmu_event_filter *filter)
+> +{
+> +	struct pmu_common_event_ids pmce_mask = { ~0, ~0 };
+> +	bool first_filter = true;
+> +
+> +	while (filter && filter->nevents != 0) {
+isn't filter->nevents != 0 sufficient?
+> +		if (first_filter) {
+> +			if (filter->action == KVM_PMU_EVENT_ALLOW)
+> +				memset(&pmce_mask, 0, sizeof(pmce_mask));
+> +			first_filter = false;
+> +		}
+> +
+> +		set_pmce(&pmce_mask, filter->action, filter->base_event);
+> +		filter++;
+> +	}
+> +
+> +	expected_pmce.pmceid0 = max_pmce.pmceid0 & pmce_mask.pmceid0;
+> +	expected_pmce.pmceid1 = max_pmce.pmceid1 & pmce_mask.pmceid1;
+> +}
+> +
+> +static void pmu_event_filter_init(struct kvm_pmu_event_filter *filter)
+> +{
+> +	while (filter && filter->nevents != 0) {
+> +		kvm_device_attr_set(vpmu_vm.vcpu->fd,
+> +				    KVM_ARM_VCPU_PMU_V3_CTRL,
+> +				    KVM_ARM_VCPU_PMU_V3_FILTER,
+> +				    filter);
+> +		filter++;
+> +	}
+> +}
+> +
+> +#define GICD_BASE_GPA	0x8000000ULL
+> +#define GICR_BASE_GPA	0x80A0000ULL
+I think Oliver suggested to move those defines to GIC headers?
+> +
+> +/* Create a VM that has one vCPU with PMUv3 configured. */
+> +static void create_vpmu_vm_with_filter(void *guest_code,
+> +				       struct kvm_pmu_event_filter *filter)
+> +{
+> +	uint64_t irq = 23;
+> +
+> +	/* The test creates the vpmu_vm multiple times. Ensure a clean state */
+> +	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
+> +
+> +	vpmu_vm.vm = vm_create(1);
+> +	vpmu_vm.vcpu = vm_vcpu_add_with_vpmu(vpmu_vm.vm, 0, guest_code);
+> +	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
+> +					GICD_BASE_GPA, GICR_BASE_GPA);
+> +	__TEST_REQUIRE(vpmu_vm.gic_fd >= 0,
+> +		       "Failed to create vgic-v3, skipping");
+> +
+> +	pmu_event_filter_init(filter);
+> +
+> +	/* Initialize vPMU */
+> +	vpmu_set_irq(vpmu_vm.vcpu, irq);
+> +	vpmu_init(vpmu_vm.vcpu);
+> +}
+> +
+> +static void create_vpmu_vm(void *guest_code)
+> +{
+> +	create_vpmu_vm_with_filter(guest_code, NULL);
+> +}
+> +
+> +static void destroy_vpmu_vm(void)
+> +{
+> +	close(vpmu_vm.gic_fd);
+> +	kvm_vm_free(vpmu_vm.vm);
+> +}
+> +
+> +static void run_test(struct test_desc *t)
+> +{
+> +	pr_info("Test: %s\n", t->name);
+> +
+> +	create_vpmu_vm_with_filter(guest_code, t->filter);
+> +	prepare_expected_pmce(t->filter);
+> +	sync_global_to_guest(vpmu_vm.vm, expected_pmce);
+> +
+> +	run_vcpu(vpmu_vm.vcpu);
+> +
+> +	destroy_vpmu_vm();
+> +}
+> +
+> +static struct test_desc tests[] = {
+> +	{
+> +		.name = "without_filter",
+> +		.filter = {
+> +			{ 0 }
+> +		},
+> +	},
+> +	{
+> +		.name = "member_allow_filter",
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 0),
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_INST_RETIRED, 0),
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_BR_RETIRED, 0),
+> +			{ 0 },
+> +		},
+> +	},
+> +	{
+> +		.name = "member_deny_filter",
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 1),
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_INST_RETIRED, 1),
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_BR_RETIRED, 1),
+> +			{ 0 },
+> +		},
+> +	},
+> +	{
+> +		.name = "not_member_deny_filter",
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 1),
+> +			{ 0 },
+> +		},
+> +	},
+> +	{
+> +		.name = "not_member_allow_filter",
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 0),
+> +			{ 0 },
+> +		},
+> +	},
+> +	{
+> +		.name = "deny_chain_filter",
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CHAIN, 1),
+> +			{ 0 },
+> +		},
+> +	},
+> +	{
+> +		.name = "deny_cpu_cycles_filter",
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CPU_CYCLES, 1),
+> +			{ 0 },
+> +		},
+> +	},
+> +	{
+> +		.name = "cancle_filter",
+cancel
+> +		.filter = {
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CPU_CYCLES, 0),
+> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CPU_CYCLES, 1),
+> +		},
+> +	},
+> +	{ 0 }
+> +};
+> +
+> +static void run_tests(void)
+> +{
+> +	struct test_desc *t;
+> +
+> +	for (t = &tests[0]; t->name; t++)
+> +		run_test(t);
+> +}
+> +
+> +static bool kvm_pmu_support_events(void)
+> +{
+> +	create_vpmu_vm(guest_get_pmceid);
+> +
+> +	memset(&max_pmce, 0, sizeof(max_pmce));
+> +	sync_global_to_guest(vpmu_vm.vm, max_pmce);
+> +	run_vcpu(vpmu_vm.vcpu);
+> +	sync_global_from_guest(vpmu_vm.vm, max_pmce);
+> +	destroy_vpmu_vm();
+> +
+> +	return max_pmce.pmceid0 &
+> +	       (ARMV8_PMUV3_PERFCTR_BR_RETIRED |
+> +	       ARMV8_PMUV3_PERFCTR_INST_RETIRED |
+> +	       ARMV8_PMUV3_PERFCTR_CHAIN);
+I understood Oliver suggested to use sysfs to know if te events were
+supported and to use KVM_ARM_VCPU_PMU_V3_SET_PMU. On my end I am fine
+with your method though.
 
-Let's make it obvious that if a DP AUX controller implements
-wait_hpd_asserted() that they don't need a loop waiting for HPD at the
-start of their transfer() function. We'll still allow DP controllers
-to work the old way but mark it as deprecated.
+Thanks
 
-[1] https://lore.kernel.org/r/20240315143621.v2.3.I535606f6d4f7e3e5588bb75c55996f61980183cd@changeid
-
-Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
-Signed-off-by: Douglas Anderson <dianders@chromium.org>
----
-I would consider changing the docs to say that implementing
-wait_hpd_asserted() is actually _required_ for any DP controllers that
-want to support eDP panels parented on the DP AUX bus. The issue is
-that one DP controller (tegra/dpaux.c, found by looking for those that
-include display/drm_dp_aux_bus.h) does populate the DP AUX bus but
-doesn't implement wait_hpd_asserted(). I'm actually not sure how/if
-this work on tegra since I also don't see any delay loop for HPD in
-tegra's transfer() callback. For now, I've left wait_hpd_asserted() as
-optional and described the old/deprecated way things used to work
-before wait_hpd_asserted().
-
-Changes in v2:
-- Make it clear that panels don't need to call if HPD is a GPIO.
-
- include/drm/display/drm_dp_helper.h | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
-
-diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
-index a62fcd051d4d..6c6a96496df6 100644
---- a/include/drm/display/drm_dp_helper.h
-+++ b/include/drm/display/drm_dp_helper.h
-@@ -422,7 +422,18 @@ struct drm_dp_aux {
- 	 * @wait_hpd_asserted: wait for HPD to be asserted
- 	 *
- 	 * This is mainly useful for eDP panels drivers to wait for an eDP
--	 * panel to finish powering on. This is an optional function.
-+	 * panel to finish powering on. It is optional for DP AUX controllers
-+	 * to implement this function. It is required for DP AUX endpoints
-+	 * (panel drivers) to call this function after powering up but before
-+	 * doing AUX transfers unless the DP AUX endpoint driver knows that
-+	 * we're not using the AUX controller's HPD. One example of the panel
-+	 * driver not needing to call this is if HPD is hooked up to a GPIO
-+	 * that the panel driver can read directly.
-+	 *
-+	 * If a DP AUX controller does not implement this function then it
-+	 * may still support eDP panels that use the AUX controller's built-in
-+	 * HPD signal by implementing a long wait for HPD in the transfer()
-+	 * callback, though this is deprecated.
- 	 *
- 	 * This function will efficiently wait for the HPD signal to be
- 	 * asserted. The `wait_us` parameter that is passed in says that we
--- 
-2.44.0.291.gc1ea87d7ee-goog
+Eric
+> +}
+> +
+> +int main(void)
+> +{
+> +	TEST_REQUIRE(kvm_has_cap(KVM_CAP_ARM_PMU_V3));
+> +	TEST_REQUIRE(kvm_pmu_support_events());
+> +
+> +	run_tests();
+> +}
 
 
