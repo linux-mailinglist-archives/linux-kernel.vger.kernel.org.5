@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-107528-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107529-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2659E87FDB3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:41:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 246CA87FDB5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:42:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D51C8283F5A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:41:45 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E1363B22B11
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:42:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B2C58AC3;
-	Tue, 19 Mar 2024 12:41:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4B3D5A4C7;
+	Tue, 19 Mar 2024 12:42:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nFntdR8y"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NfZOqev7"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B815357887
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:41:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2A52056B7F
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:42:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710852101; cv=none; b=KXO7ZkH9xWpWey1/IRbZ3K7YP4roV4ZfO7Jcl7vubh1KcfR6Xj6lYZrDKeJemreit0CdYbCfuIAaPRX0sJuePwKoe7UlnzrHM/6Qbj72RHxiiABDOd1vN6ldSMc/pHjOcnCUOpKAaUTn8+JZkQbz8RqOpfhY6h1gqMCn6XhTOX4=
+	t=1710852151; cv=none; b=Oh3EWO0xugjqXFta0IOKOO1m/qHrjPwl0gpWXRqbwyOrIagGkRHweu3/wyrtKbM0QBedNxq62KKq7BzvpmBx8sqpeSWzG20xOST9lQvmW3DfpU3Lmr59n39GbvConAM/qQUGHvu/07O017RaIrMsDBKhrQ/1z4K7GQ7iKa3GqI8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710852101; c=relaxed/simple;
-	bh=hM8r6yFmotnR0mFSU8U2fTayNop/8yRKTITbazIdVnU=;
+	s=arc-20240116; t=1710852151; c=relaxed/simple;
+	bh=VwTqLRrw8UyvGBzeCJ+IMnGZEL6ICI6/WzUnSNK09gI=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NbXUxS6yGBYaLbPNCXwYgWqnZ5mwdqfKow5h/yVKVW7YmKENKn3FscrYWf16flaosEL6pMnHp+ZkVZB7rodxO0lM7TLtpaK44gAvGO6yhZ1VM4Q4mfQQ1QxL6aQZ6ElefMDGCvWROJUjrVIAjXDDflJCXZO8RBo65nQ+1MIJvvE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nFntdR8y; arc=none smtp.client-ip=209.85.208.42
+	 In-Reply-To:Content-Type; b=AUZiKt/H73zoPMEHtTARJUaiyACeIFawtLxqgxAC0P051UjSKAHlrhZ1/e01C37e0F4hvrq1VZT4ZtnW97fIUbfNHOeDWwWVSbQAfUu8XiQq/0dAy/+qGN76bVwjqwqgz+/Y1Wpuvsz1T7xYnUb3Rvc2ZVkd0/ODm8IqIall90k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NfZOqev7; arc=none smtp.client-ip=209.85.208.41
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5687feeb1feso4328976a12.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:41:39 -0700 (PDT)
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56899d9bf52so7083181a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:42:29 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710852098; x=1711456898; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710852148; x=1711456948; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=2JeFFmAxQgbjmIs+LQfatAmJVmrtvNfVCmg3meqBwCk=;
-        b=nFntdR8ynv3F5r1iPLG3WWB22C9Ml09YoizXWNNsP+hDxNIrFfB4NeRh2uM8Dkw0aA
-         9Aq3DagKLkWgVVzh8Xubu/7RtvZ2uOfGeSwXjQqz0GP2nGTHQwzqU/XImTlURv0mJYd/
-         Y+65pyCOTuZIGwLDoPJ64TfZKD4tPQr2+NNshJHRoSywHtzNy6/3X9r/G3LqWQz1BXJ2
-         7U3KtdAk6x+0aXqlPJ2lNCPNLQSbXhMxVOZotXwunGdYhhzkaPxqQxe8KQZs3Auqel4x
-         uDHIJBQp9svgG95taBmHqsAa9nY5iu4Amd9+pbBnjrLFrPtMtsZr2utOishoKw+r4Yk1
-         eoRA==
+        bh=aTCcKrDyZV/VE20k5CxghomHj3uJ8QFCRB9EkJC2C6M=;
+        b=NfZOqev7NxBSGMiAtQE02zY+U9yfeeyPjOm6wpSYZ+rpjDMHf8M62q20nDUhFbs/OW
+         hWZj7ApVtKgjfC/3yIxDyo57VVRPLMoviZsvjQd7qBKnw16MPKLClKVAyOwi6Bm9eXHj
+         0M8zLKhDLVfwRnTVdgw2iCC3vQKuDLGQGefZHnKgCD7Xe01chXT3JC5bdIyvyQLQZsqv
+         lMf29QS/5tapBb+07g+EoilAGFY3zdpm7owRRgkuo1B+Eeksz920Lv5uplkqvb514xzT
+         wEic5nZSumIK9h4GQW5Qe0NgQJNPuBNfOGynVKj+nIGZU7JEeW2B1EgP1IVmtoihNdFV
+         L/sw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710852098; x=1711456898;
+        d=1e100.net; s=20230601; t=1710852148; x=1711456948;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=2JeFFmAxQgbjmIs+LQfatAmJVmrtvNfVCmg3meqBwCk=;
-        b=GvEdv7FA6IoDY8gdSOm6VtcYG+r4W9Vq1wyHgzjFO9Dlt8gyW51r0CAD8NptS4b5fU
-         5uds4VNJu4F/yQ/VDryHMuEIq/Q1tC6Qh7zAC0Nxw4QKrz24vul/WfWvVxSXcgk16exO
-         WTKXdbF/faxzsh6NTaGJX2b8AD7mjHeLLrlSD/MGUpfT0/PVhc+bI1zglEwvpNbrMmph
-         r6RbBPSEy9S4kAMp44yQgtS1yn9A75ouL7QaLQi9MpOxcGpdMCbECsOsaPpo5s/Axvn9
-         FJgimg0ejx+RR877uZjyS0Pe7UPzbY2k1wYFSHXhGOKIgXFCv8G9GRpy8hyZ2+gqeV67
-         Bz8g==
-X-Forwarded-Encrypted: i=1; AJvYcCXuLWlXuwiHl8cP4fd4ZR0hwiCPhI9h6XTo7sosMb/rfLe9qVdJdlD5jXdwOKmOi0/u2ao736FXYzivsUPjPrk8zGXIZPvrmbNpTCS0
-X-Gm-Message-State: AOJu0YwuuuFWR37cz0QtQyeaLSpfIJ8FK//KSNrQHf6mkfPQmTEOA1bR
-	ijZo/FlfL1CKwHkXYAge01HfDL76CZ1ofIYmUAvPzWN4KwrdSzN/hAUf3RwdANE=
-X-Google-Smtp-Source: AGHT+IGuIcDbiRk7X0Snu8UKVjYYfiyxcuD3N8LmYYzKcnRENPQjhqfN6c00Srof0ur67+i4Oz1ssg==
-X-Received: by 2002:a05:6402:5d0:b0:565:6e34:da30 with SMTP id n16-20020a05640205d000b005656e34da30mr10171630edx.21.1710852098184;
-        Tue, 19 Mar 2024 05:41:38 -0700 (PDT)
+        bh=aTCcKrDyZV/VE20k5CxghomHj3uJ8QFCRB9EkJC2C6M=;
+        b=P6ZWp1lyXKEQx2Vm1wjITowmHfqbjbp8eKOrmEusZ2GLhKKBoL399KpdtYiu5jiAuM
+         czIJZn1TnFLSWVD0q+VzmeOCi5JXV+lbM5iDnsEcLHJ2VexMY79IrIiACJ60YPzD0RrN
+         8WP9bViSWTxWEaQ0yRcOqpXgRQFEvnDksDJaG0V2g9Obh7N+jbA2f1fl6l0co4Eq6Itb
+         96fCMSHLUjTkoQfPeOHKUKtGq60S5vEHrfGFyWEqnQou+MrxTLcJ38eDiaFUoZmuwbi0
+         HT0EHzqUeZrrCKZIV9rgaNgj9vU32242wyo7CMUu1VrSnkcI78QZUJGV4ah8OK3cBg7D
+         3EXA==
+X-Forwarded-Encrypted: i=1; AJvYcCW+DZvlNvcOzyBFUaXf4y4VR2jSDQBa3KX8E0fOKWzFKVbiJKIRHfGdFxwswHTBOrYoJpmHt3fC/UFsFj/8hRX0iifd49tYqGUM4EQc
+X-Gm-Message-State: AOJu0Yy4p9dyHNki0gClHA1rL9xeuEhb/qbE1E6ZhG5Uc17SrmjVzu3F
+	guqaYVMS9avXMnbEGnh0HAu7qQvpIKWGdpPPBb8jLWyLtUaXKlcSXCybe9YYRtw=
+X-Google-Smtp-Source: AGHT+IHcG/0AcklTyrIjXvHAHx/CFXgKd5Zd8KREBD0avXzjH7Ps2xKivaQv32xOCsJiS8g0t4Fq7g==
+X-Received: by 2002:a17:906:794:b0:a46:da57:6ee4 with SMTP id l20-20020a170906079400b00a46da576ee4mr1535310ejc.73.1710852148534;
+        Tue, 19 Mar 2024 05:42:28 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id v25-20020aa7dbd9000000b00568c3c54613sm3507510edt.31.2024.03.19.05.41.34
+        by smtp.gmail.com with ESMTPSA id ml16-20020a170906cc1000b00a4666866d02sm6060270ejb.97.2024.03.19.05.42.26
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 05:41:37 -0700 (PDT)
-Message-ID: <2e992e97-b526-411b-99ed-29099da2bf0b@linaro.org>
-Date: Tue, 19 Mar 2024 13:41:32 +0100
+        Tue, 19 Mar 2024 05:42:28 -0700 (PDT)
+Message-ID: <b43f6dd8-221d-40b1-bbc9-d5f778fe1954@linaro.org>
+Date: Tue, 19 Mar 2024 13:42:26 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,19 +76,16 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/3] dt-bindings: vendor-prefixes: add iesy
+Subject: Re: [PATCH 1/3] arm64: dts: iesy: add support for iesy PX30 SoM OSM-S
 To: Dominik Poggel <pog@iesy.com>, robh+dt@kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Jernej Skrabec <jernej.skrabec@gmail.com>,
- Chris Morgan <macromorgan@hotmail.com>, Sebastian Reichel <sre@kernel.org>,
- Hugo Villeneuve <hvilleneuve@dimonoff.com>,
- Linus Walleij <linus.walleij@linaro.org>, Tianling Shen <cnsztl@gmail.com>,
+ Tianling Shen <cnsztl@gmail.com>, Chris Morgan <macromorgan@hotmail.com>,
  Ondrej Jirman <megi@xff.cz>, Andy Yan <andyshrk@163.com>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
 References: <20240319095411.4112296-1-pog@iesy.com>
- <20240319095411.4112296-3-pog@iesy.com>
+ <20240319095411.4112296-2-pog@iesy.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -135,32 +132,39 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319095411.4112296-3-pog@iesy.com>
+In-Reply-To: <20240319095411.4112296-2-pog@iesy.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 19/03/2024 10:54, Dominik Poggel wrote:
-> Add iesy GmbH
+> This adds support for the iesy SoM px30-iesy-osm-sf and the matching
+> evalboard px30-iesy-eva-mi V2.XX.
 > 
 > Signed-off-by: Dominik Poggel <pog@iesy.com>
-> ---
->  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
->  1 file changed, 2 insertions(+)
-> 
-> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> index 04505cb0b640..ffb2abb5edc2 100644
-> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
-> @@ -656,6 +656,8 @@ patternProperties:
->      description: International Business Machines (IBM)
->    "^icplus,.*":
->      description: IC Plus Corp.
-> +  "^iesy,.*":
-> +    description: iesy GmbH
 
-Just look at the code and its placement. Wrong order.
 
-Also, all bindings come *BEFORE* users.
+> +
+> +	/* BB138a: MAX9867ETJ+ audio codec */
+> +	max9867-sound {
+> +		compatible = "simple-audio-card";
+> +		simple-audio-card,name = "rockchip,max9867-codec";
+> +		simple-audio-card,format = "i2s";
+> +
+> +		simple-audio-card,widgets =
+> +			"Speaker", "Jack",
+> +			"Microphone", "Mic";
+> +		simple-audio-card,routing =
+> +			"Jack", "LOUT",
+> +			"Jack", "ROUT",
+> +			"Mic", "DMICL",
+> +			"Mic", "DMICR";
+> +
+> +		simple-audio-card,frame-master = <&cpudai>;
+> +		simple-audio-card,bitclock-master = <&cpudai>;
+> +
+> +		status = "okay";
+
+One more: Drop it. The same applies in all other places when not needed.
 
 Best regards,
 Krzysztof
