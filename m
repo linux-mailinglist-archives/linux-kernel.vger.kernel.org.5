@@ -1,435 +1,206 @@
-Return-Path: <linux-kernel+bounces-108142-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108143-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 05A07880690
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:09:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDEF0880696
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:10:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBD271C21E50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:09:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40C0E1F22CC7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:10:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C3D8E3D0D2;
-	Tue, 19 Mar 2024 21:08:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4BF753D965;
+	Tue, 19 Mar 2024 21:10:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="WcwLSMOb"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="BrMm7b+p"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B44C24F889
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B2C883C485
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:10:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710882538; cv=none; b=p4Uqvq68tTE2Lim0QVMLkQpYRawdoDtmC1u0f8HWXINxhiNrtnR+XvRsA8AYMeAiBFLxA7pfpSNulOo3akkmUKYjwT/WBg4SNciIhA0QXraNOSFMLHd/iIl6Jd2t2Uw6z+9MF5orMyWUxHTqkZfb7VI7Wq9KIFEnIfX1b91eNqs=
+	t=1710882639; cv=none; b=UTW15vienlx3hQVxFE2+stsosL2kxl+wY9WeOFdZqzgt3QofxWq15NX1lU6bF9DeaIJkbwpySQxhrZJCZA4470tLnFUdJHEU+yCvbCUa/y/OK+MDQt9hBjFB5TAArZnvap4IKNx2+LgG2xENjq6tKACSj802g8YxKXVZVQFOPcA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710882538; c=relaxed/simple;
-	bh=5nGNfcxBrP+5QaQ6VA2Mc5gGslMBt7K0yrM8ebhuqjo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=XvQf7Y8QZ+NjdVwpjPjPNjXsf6vvlElqo1LphYrjgw6Naktb3GWtf8mz5wobgwM522D7boa/KsmwO6i4D+T+dgBdzz4OR8u0kQOxTTeo7QmTwWfeHeeTpb2Yoh6tpWVBvrb43rC1jsff/n0HhlCooKDkrewvIIOB0K2ljf2dUFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=WcwLSMOb; arc=none smtp.client-ip=170.10.129.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710882535;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Ir844MiELycfzO0ieT/ny2MZXcBF3MWLnOIfhQ/CQlQ=;
-	b=WcwLSMObPgef2K7cVWeOXl2DRABvRC28SUA0kceplIP3+ksMeFoIXAr0OxgUTkJLB69Zw7
-	HqWtoBydPZe5VQYFUOsXlM/tyfKSKF+N2zoXpYHti9bYAyfrKiAnkHKfgrP50fWd0ld+PW
-	LgYj0eGUfb4C9Ua6CXZ4Tu/mFlDOkQs=
-Received: from mail-lj1-f199.google.com (mail-lj1-f199.google.com
- [209.85.208.199]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-265-d5vra5QzM3OuhwvUo2jaDw-1; Tue, 19 Mar 2024 17:08:54 -0400
-X-MC-Unique: d5vra5QzM3OuhwvUo2jaDw-1
-Received: by mail-lj1-f199.google.com with SMTP id 38308e7fff4ca-2d47e55dfd1so46915831fa.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:08:53 -0700 (PDT)
+	s=arc-20240116; t=1710882639; c=relaxed/simple;
+	bh=Bg5O22U75rqlMnX/ePS1zsGUIyjtYU5uXFU+wKROdF0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MOqwhCB2HDyAbnA5OboGV+g3qe4PIRDxdIdZZIP5+M+B2zGa3nQcfMBTYI/UwHBhKZjoTjyxh5Qy6nlEdqJ5TzEjQhwJNRdhbphyhCDdhNE+Mb9+90Mz/a0EWXNFhSG/4forCIfWuI8tjDNXZ5Z/lmFBPlu104gTAZw4v3vA7Nw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=BrMm7b+p; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56890b533aaso6846060a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:10:37 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710882636; x=1711487436; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=OXyTHdBINJAGv5SDzujCKegsUk6ZlTJU8rXZcTRQcWI=;
+        b=BrMm7b+pPY7gBn2+/DxekGmJpA++PAtwN++AgCi4JvZIczPsYFKAkAKMAtHOwsi+OK
+         6wzLPFm8J11iRtGyMWdIQ/ZfCH9z9OmT4vhF+VneGjhj36mljoVVYTEpIVazjTTZeqzZ
+         ff9buetMPWFk6wRJdyNx5f9acC+TOPXjhgfwP6fiaEklblVk8BBa1hhVhhp9qtyraidE
+         O8/RXJWxBuMyqIQm89MsBAMK+jEXEfE6a7oQGNokKbmdiyAbkcYcuwAmR/pkEXFxL+OT
+         FjycS8bAMWdA0MX2sApUkQfM01T362u/FY9V4CUysPpHYLJ8YwLNbvLJnlWPJFvRCcps
+         1aAw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710882532; x=1711487332;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=Ir844MiELycfzO0ieT/ny2MZXcBF3MWLnOIfhQ/CQlQ=;
-        b=Fkj+86cpMuEfNhwRpsH2LANlWNeP9W39tpThKBwBKPMmx5xghnMvRncvKVpJEYIdK8
-         /sYpbjRBOqkI4IKk5KKnCO7bXi4PY+/VgIWuzR9apw7GeUa6plvx5/RRUaI+hYyVE0Y9
-         031VyG6x536s1QLLvpIhUiqO22Ek49Uw5a+3QfSXL9K4t1LECqmYlEIs12yZIXYd56CL
-         hCeXOc0tflESDgQNznnUtNyEk7W+YCvVJOHJoDI0onMDm55ZBOkcBmNkRrOmbvN1t3Oh
-         6EkYG7uw/ou7kY+A3kL9sCdb2ba6Yq0ka2A8181K1iTw6EL9Crzmf3aXkp0Yjg3+Inzs
-         dYCQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVBK9G2lku7d33iS5pSUu0iNjGQhUab5YoexrLLeyhT3a/+cRAZnNLHk94UCnibB9W9Cz/KnvstGiZuLoL0lB849oOnjUJAj0CINrNQ
-X-Gm-Message-State: AOJu0YxY+yMrC6qjFd7ENGpPHo+rXgBXrGLBYkeOXFRzQSE1Ypo+YxC9
-	w0yBCs810N9J+QYn6wOXrWTrqL0gYrhk3alnHMos9VYUF45DxGLTgBbukqyj25nbbP38fXG9Cdn
-	ulHWKbuK2tQ7+KNKb/z/lXoapt7lPFfFLUfy79VQ1v49lA1K+gjrD/Bz1A22oHA==
-X-Received: by 2002:a2e:350d:0:b0:2d4:ae2f:cd0 with SMTP id z13-20020a2e350d000000b002d4ae2f0cd0mr2228643ljz.43.1710882532652;
-        Tue, 19 Mar 2024 14:08:52 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IHDFsUVhvhKYbegDfgVzJN3MoD5TmQs5uCcJncswZr2XYtYk0dByCpKhVkPxpLo/AhaE4H8rQ==
-X-Received: by 2002:a2e:350d:0:b0:2d4:ae2f:cd0 with SMTP id z13-20020a2e350d000000b002d4ae2f0cd0mr2228631ljz.43.1710882532258;
-        Tue, 19 Mar 2024 14:08:52 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
-        by smtp.gmail.com with ESMTPSA id w14-20020a05600c474e00b004146973e473sm37657wmo.7.2024.03.19.14.08.50
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 14:08:51 -0700 (PDT)
-Message-ID: <8f48a54b-f174-4cc6-a220-ae3aa12fef86@redhat.com>
-Date: Tue, 19 Mar 2024 22:08:49 +0100
+        d=1e100.net; s=20230601; t=1710882636; x=1711487436;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=OXyTHdBINJAGv5SDzujCKegsUk6ZlTJU8rXZcTRQcWI=;
+        b=XSCDIPFB6oTYnvWlawJlqwyq+HtpRH5Jo5pl2xgoJOlJlXryPfkXO11h69zruojkTv
+         PIkN1hI1A5hdGytvsHBt0YVb21/6Nlsjp9EkvhcpYiiPPTgHLoecdT5y5iwOEIVEpFMk
+         qERN4da7w5FKEOGMKZpZcvPG5E9qhjQmWQQ1ioIyZCnC+sqdti+96Yc/DKpcY22CCxqd
+         9jvKYff8POSHb0+iOM69nR9I4nAJw9gsVILwBUWSTqhFgY7lL+GpiWkNZADWvI3TyHGC
+         o2OFJulRkqj+m2vadUcNvRV/f5XEzPN7Hv7jdVMVHXIRu4BVfqF2Y4ZunW8OqR/XP963
+         U2qg==
+X-Forwarded-Encrypted: i=1; AJvYcCUxmiOf2IvfK0FupjOOzjPwhDBT+J4cwbV8Ui2wnc+LckmDePwJrDEAzS/V1ABahlnxYXfgAJuoTV6dV8hQmql0V/vJLX+90Ju8bFHY
+X-Gm-Message-State: AOJu0YzyIiBayc6ltlWzq5QkVZAofw0Ar7UvSB/uAymBQ9WXoTMAx34i
+	SdX3mfifaq9KREym0MxX5EQvfo1PFU56Mmwlo0ipA0h9XDztxHCTLzJre+ajMvRSmWgDvlnlYyl
+	JYibzv/leXtSpqobrNbKqfM9ARlf7q72sKu/R
+X-Google-Smtp-Source: AGHT+IGZHztom/M+JF3mlrAUh1Z4cKu8I7AIhJ/SwhbjcbH/ma1t+dETJuBHN07scTHpDNQJBFnGGFxqx2fwYUfODPE=
+X-Received: by 2002:a05:6402:4313:b0:56b:989d:bdce with SMTP id
+ m19-20020a056402431300b0056b989dbdcemr2132942edc.24.1710882635868; Tue, 19
+ Mar 2024 14:10:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 2/3] KVM: selftests: aarch64: Introduce
- pmu_event_filter_test
-Content-Language: en-US
-To: Shaoqin Huang <shahuang@redhat.com>, Oliver Upton
- <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>,
- kvmarm@lists.linux.dev
-Cc: Paolo Bonzini <pbonzini@redhat.com>, Shuah Khan <shuah@kernel.org>,
- James Morse <james.morse@arm.com>, Suzuki K Poulose
- <suzuki.poulose@arm.com>, Zenghui Yu <yuzenghui@huawei.com>,
- linux-kernel@vger.kernel.org, kvm@vger.kernel.org,
- linux-kselftest@vger.kernel.org, linux-arm-kernel@lists.infradead.org
-References: <20240229065625.114207-1-shahuang@redhat.com>
- <20240229065625.114207-3-shahuang@redhat.com>
-From: Eric Auger <eauger@redhat.com>
-In-Reply-To: <20240229065625.114207-3-shahuang@redhat.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240318-strncpy-drivers-soc-qcom-cmd-db-c-v2-1-8f6ebf1bd891@google.com>
+ <ag7oslzfcuiyuehxq5n5jth4adrhel4xafby5whxsvyybbm6dc@6rtwaolbmm45>
+In-Reply-To: <ag7oslzfcuiyuehxq5n5jth4adrhel4xafby5whxsvyybbm6dc@6rtwaolbmm45>
+From: Justin Stitt <justinstitt@google.com>
+Date: Tue, 19 Mar 2024 14:10:23 -0700
+Message-ID: <CAFhGd8rdd=qmAmax27gvExZ5sweC=porkS6dW3RJh7NV1ydjSw@mail.gmail.com>
+Subject: Re: [PATCH v2] soc: qcom: cmd-db: replace deprecated strncpy with strtomem
+To: Bjorn Andersson <andersson@kernel.org>
+Cc: Konrad Dybcio <konrad.dybcio@linaro.org>, linux-arm-msm@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
+Hi,
 
+On Mon, Mar 18, 2024 at 8:37=E2=80=AFPM Bjorn Andersson <andersson@kernel.o=
+rg> wrote:
+>
+> On Mon, Mar 18, 2024 at 10:49:23PM +0000, Justin Stitt wrote:
+> > strncpy() is deprecated for use on NUL-terminated destination strings
+> > [1] and as such we should prefer more robust and less ambiguous string
+> > interfaces.
+> >
+>
+> I don't mind changing the strncpy() in this function, but I don't think
+> this problem description adequately describes the problem you're
+> solving.
+>
+> If the motivation is that we want 0 users of strncpy() in the kernel,
+> then say so.
 
-On 2/29/24 07:56, Shaoqin Huang wrote:
-> Introduce pmu_event_filter_test for arm64 platforms. The test configures
-> PMUv3 for a vCPU, and sets different pmu event filters for the vCPU, and
-> check if the guest can see those events which user allow and can't use
-> those events which use deny.
-> 
-> This test refactor the create_vpmu_vm() and make it a wrapper for
-> __create_vpmu_vm(), which allows some extra init code before
-> KVM_ARM_VCPU_PMU_V3_INIT.
-> 
-> And this test use the KVM_ARM_VCPU_PMU_V3_FILTER attribute to set the
-> pmu event filter in KVM. And choose to filter two common event
-> branches_retired and instructions_retired, and let the guest to check if
-> it see the right pmceid register.
-> 
-> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
-> ---
->  tools/testing/selftests/kvm/Makefile          |   1 +
->  .../kvm/aarch64/pmu_event_filter_test.c       | 287 ++++++++++++++++++
->  2 files changed, 288 insertions(+)
->  create mode 100644 tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-> 
-> diff --git a/tools/testing/selftests/kvm/Makefile b/tools/testing/selftests/kvm/Makefile
-> index 492e937fab00..732ca5f8bfc0 100644
-> --- a/tools/testing/selftests/kvm/Makefile
-> +++ b/tools/testing/selftests/kvm/Makefile
-> @@ -147,6 +147,7 @@ TEST_GEN_PROGS_aarch64 += aarch64/arch_timer
->  TEST_GEN_PROGS_aarch64 += aarch64/debug-exceptions
->  TEST_GEN_PROGS_aarch64 += aarch64/hypercalls
->  TEST_GEN_PROGS_aarch64 += aarch64/page_fault_test
-> +TEST_GEN_PROGS_aarch64 += aarch64/pmu_event_filter_test
->  TEST_GEN_PROGS_aarch64 += aarch64/psci_test
->  TEST_GEN_PROGS_aarch64 += aarch64/set_id_regs
->  TEST_GEN_PROGS_aarch64 += aarch64/smccc_filter
-> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-> new file mode 100644
-> index 000000000000..2dd8ea418f47
-> --- /dev/null
-> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
-> @@ -0,0 +1,287 @@
-> +
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * pmu_event_filter_test - Test user limit pmu event for guest.
-> + *
-> + * Copyright (c) 2023 Red Hat, Inc.
-> + *
-> + * This test checks if the guest only see the limited pmu event that userspace
-> + * sets, if the guest can use those events which user allow, and if the guest
-> + * can't use those events which user deny.
-> + * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
-> + * is supported on the host.
-> + */
-> +#include <kvm_util.h>
-> +#include <processor.h>
-> +#include <vgic.h>
-> +#include <vpmu.h>
-> +#include <test_util.h>
-> +#include <perf/arm_pmuv3.h>
-> +
-> +struct pmu_common_event_ids {
-> +	uint64_t pmceid0;
-> +	uint64_t pmceid1;
-> +} max_pmce, expected_pmce;
-> +
-> +struct vpmu_vm {
-> +	struct kvm_vm *vm;
-> +	struct kvm_vcpu *vcpu;
-> +	int gic_fd;
-> +};
-> +
-> +static struct vpmu_vm vpmu_vm;
-> +
-> +#define FILTER_NR 10
-> +
-> +struct test_desc {
-> +	const char *name;
-> +	struct kvm_pmu_event_filter filter[FILTER_NR];
-> +};
-> +
-> +#define __DEFINE_FILTER(base, num, act)		\
-> +	((struct kvm_pmu_event_filter) {	\
-> +		.base_event	= base,		\
-> +		.nevents	= num,		\
-> +		.action		= act,		\
-> +	})
-> +
-> +#define DEFINE_FILTER(base, act) __DEFINE_FILTER(base, 1, act)
-that's a pity you are never exercising filters with more than 1 events.
+Fair. You caught me in a bad case of "copy pasting this blurb into all
+my patches". You are right though, the true motivation here is to rid
+the kernel of strncpy.
 
-Eric
-> +
-> +static void guest_code(void)
-> +{
-> +	uint64_t pmceid0 = read_sysreg(pmceid0_el0);
-> +	uint64_t pmceid1 = read_sysreg(pmceid1_el0);
-> +
-> +	GUEST_ASSERT_EQ(expected_pmce.pmceid0, pmceid0);
-> +	GUEST_ASSERT_EQ(expected_pmce.pmceid1, pmceid1);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void guest_get_pmceid(void)
-> +{
-> +	max_pmce.pmceid0 = read_sysreg(pmceid0_el0);
-> +	max_pmce.pmceid1 = read_sysreg(pmceid1_el0);
-> +
-> +	GUEST_DONE();
-> +}
-> +
-> +static void run_vcpu(struct kvm_vcpu *vcpu)
-> +{
-> +	struct ucall uc;
-> +
-> +	while (1) {
-> +		vcpu_run(vcpu);
-> +		switch (get_ucall(vcpu, &uc)) {
-> +		case UCALL_DONE:
-> +			return;
-> +		case UCALL_ABORT:
-> +			REPORT_GUEST_ASSERT(uc);
-> +			break;
-> +		default:
-> +			TEST_FAIL("Unknown ucall %lu", uc.cmd);
-> +		}
-> +	}
-> +}
-> +
-> +static void set_pmce(struct pmu_common_event_ids *pmce, int action, int event)
-> +{
-> +	int base = 0;
-> +	uint64_t *pmceid = NULL;
-> +
-> +	if (event >= 0x4000) {
-> +		event -= 0x4000;
-> +		base = 32;
-> +	}
-> +
-> +	if (event >= 0 && event <= 0x1F) {
-> +		pmceid = &pmce->pmceid0;
-> +	} else if (event >= 0x20 && event <= 0x3F) {
-> +		event -= 0x20;
-> +		pmceid = &pmce->pmceid1;
-> +	} else {
-> +		return;
-> +	}
-> +
-> +	event += base;
-> +	if (action == KVM_PMU_EVENT_ALLOW)
-> +		*pmceid |= BIT(event);
-> +	else
-> +		*pmceid &= ~BIT(event);
-> +}
-> +
-> +static void prepare_expected_pmce(struct kvm_pmu_event_filter *filter)
-> +{
-> +	struct pmu_common_event_ids pmce_mask = { ~0, ~0 };
-> +	bool first_filter = true;
-> +
-> +	while (filter && filter->nevents != 0) {
-> +		if (first_filter) {
-> +			if (filter->action == KVM_PMU_EVENT_ALLOW)
-> +				memset(&pmce_mask, 0, sizeof(pmce_mask));
-> +			first_filter = false;
-> +		}
-> +
-> +		set_pmce(&pmce_mask, filter->action, filter->base_event);
-> +		filter++;
-> +	}
-> +
-> +	expected_pmce.pmceid0 = max_pmce.pmceid0 & pmce_mask.pmceid0;
-> +	expected_pmce.pmceid1 = max_pmce.pmceid1 & pmce_mask.pmceid1;
-> +}
-> +
-> +static void pmu_event_filter_init(struct kvm_pmu_event_filter *filter)
-> +{
-> +	while (filter && filter->nevents != 0) {
-> +		kvm_device_attr_set(vpmu_vm.vcpu->fd,
-> +				    KVM_ARM_VCPU_PMU_V3_CTRL,
-> +				    KVM_ARM_VCPU_PMU_V3_FILTER,
-> +				    filter);
-> +		filter++;
-> +	}
-> +}
-> +
-> +#define GICD_BASE_GPA	0x8000000ULL
-> +#define GICR_BASE_GPA	0x80A0000ULL
-> +
-> +/* Create a VM that has one vCPU with PMUv3 configured. */
-> +static void create_vpmu_vm_with_filter(void *guest_code,
-> +				       struct kvm_pmu_event_filter *filter)
-> +{
-> +	uint64_t irq = 23;
-> +
-> +	/* The test creates the vpmu_vm multiple times. Ensure a clean state */
-> +	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
-> +
-> +	vpmu_vm.vm = vm_create(1);
-> +	vpmu_vm.vcpu = vm_vcpu_add_with_vpmu(vpmu_vm.vm, 0, guest_code);
-> +	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
-> +					GICD_BASE_GPA, GICR_BASE_GPA);
-> +	__TEST_REQUIRE(vpmu_vm.gic_fd >= 0,
-> +		       "Failed to create vgic-v3, skipping");
-> +
-> +	pmu_event_filter_init(filter);
-> +
-> +	/* Initialize vPMU */
-> +	vpmu_set_irq(vpmu_vm.vcpu, irq);
-> +	vpmu_init(vpmu_vm.vcpu);
-> +}
-> +
-> +static void create_vpmu_vm(void *guest_code)
-> +{
-> +	create_vpmu_vm_with_filter(guest_code, NULL);
-> +}
-> +
-> +static void destroy_vpmu_vm(void)
-> +{
-> +	close(vpmu_vm.gic_fd);
-> +	kvm_vm_free(vpmu_vm.vm);
-> +}
-> +
-> +static void run_test(struct test_desc *t)
-> +{
-> +	pr_info("Test: %s\n", t->name);
-> +
-> +	create_vpmu_vm_with_filter(guest_code, t->filter);
-> +	prepare_expected_pmce(t->filter);
-> +	sync_global_to_guest(vpmu_vm.vm, expected_pmce);
-> +
-> +	run_vcpu(vpmu_vm.vcpu);
-> +
-> +	destroy_vpmu_vm();
-> +}
-> +
-> +static struct test_desc tests[] = {
-> +	{
-> +		.name = "without_filter",
-> +		.filter = {
-> +			{ 0 }
-> +		},
-> +	},
-> +	{
-> +		.name = "member_allow_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 0),
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_INST_RETIRED, 0),
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_BR_RETIRED, 0),
-> +			{ 0 },
-> +		},
-> +	},
-> +	{
-> +		.name = "member_deny_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 1),
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_INST_RETIRED, 1),
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_BR_RETIRED, 1),
-> +			{ 0 },
-> +		},
-> +	},
-> +	{
-> +		.name = "not_member_deny_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 1),
-> +			{ 0 },
-> +		},
-> +	},
-> +	{
-> +		.name = "not_member_allow_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_SW_INCR, 0),
-> +			{ 0 },
-> +		},
-> +	},
-> +	{
-> +		.name = "deny_chain_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CHAIN, 1),
-> +			{ 0 },
-> +		},
-> +	},
-> +	{
-> +		.name = "deny_cpu_cycles_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CPU_CYCLES, 1),
-> +			{ 0 },
-> +		},
-> +	},
-> +	{
-> +		.name = "cancle_filter",
-> +		.filter = {
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CPU_CYCLES, 0),
-> +			DEFINE_FILTER(ARMV8_PMUV3_PERFCTR_CPU_CYCLES, 1),
-> +		},
-> +	},
-> +	{ 0 }
-> +};
-> +
-> +static void run_tests(void)
-> +{
-> +	struct test_desc *t;
-> +
-> +	for (t = &tests[0]; t->name; t++)
-> +		run_test(t);
-> +}
-> +
-> +static bool kvm_pmu_support_events(void)
-> +{
-> +	create_vpmu_vm(guest_get_pmceid);
-> +
-> +	memset(&max_pmce, 0, sizeof(max_pmce));
-> +	sync_global_to_guest(vpmu_vm.vm, max_pmce);
-> +	run_vcpu(vpmu_vm.vcpu);
-> +	sync_global_from_guest(vpmu_vm.vm, max_pmce);
-> +	destroy_vpmu_vm();
-> +
-> +	return max_pmce.pmceid0 &
-> +	       (ARMV8_PMUV3_PERFCTR_BR_RETIRED |
-> +	       ARMV8_PMUV3_PERFCTR_INST_RETIRED |
-> +	       ARMV8_PMUV3_PERFCTR_CHAIN);
-> +}
-> +
-> +int main(void)
-> +{
-> +	TEST_REQUIRE(kvm_has_cap(KVM_CAP_ARM_PMU_V3));
-> +	TEST_REQUIRE(kvm_pmu_support_events());
-> +
-> +	run_tests();
-> +}
+>
+> > @query is already marked as __nonstring and doesn't need to be
+> > NUL-terminated.
+>
+> You're not wrong, but in the event that strlen(id) < sizeof(ent->id) the
+> destination should be NUL-padded - exactly one of the well known,
+> normally unwanted, effects of strncpy(). strtomem() does explicitly not
+> do this.
+>
+> > Since @id is a string, we can use the self-describing
+> > string API strtomem().
+>
+> "self-describing"?
+>
 
+In the sense that its name matches its functionality:
+
+strncpy    =3D=3D=3D string to string copy, bounded by n
+
+strtomem =3D=3D=3D string to memory buffer
+
+strncpy technically does the latter functionality as well but it may
+not be obvious in all cases that the destination buffer is not a
+string. Granted, in this case, it is extremely obvious what the
+behavior is because query is marked nonstring.
+
+> >
+> > Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#st=
+rncpy-on-nul-terminated-strings [1]
+> > Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en=
+html [2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+> > ---
+> > Changes in v2:
+> > - use strtomem instead of memcpy (thanks Kees)
+> > - Link to v1: https://lore.kernel.org/r/20240314-strncpy-drivers-soc-qc=
+om-cmd-db-c-v1-1-70f5d5e70732@google.com
+> > ---
+> > Note: build-tested only.
+> >
+> > Found with: $ rg "strncpy\("
+> > ---
+> >  drivers/soc/qcom/cmd-db.c | 9 ++-------
+> >  1 file changed, 2 insertions(+), 7 deletions(-)
+> >
+> > diff --git a/drivers/soc/qcom/cmd-db.c b/drivers/soc/qcom/cmd-db.c
+> > index a5fd68411bed..d05f35d175bd 100644
+> > --- a/drivers/soc/qcom/cmd-db.c
+> > +++ b/drivers/soc/qcom/cmd-db.c
+> > @@ -141,18 +141,13 @@ static int cmd_db_get_header(const char *id, cons=
+t struct entry_header **eh,
+> >       const struct rsc_hdr *rsc_hdr;
+> >       const struct entry_header *ent;
+> >       int ret, i, j;
+> > -     u8 query[sizeof(ent->id)] __nonstring;
+> > +     u8 query[sizeof(ent->id)] __nonstring =3D { 0 };
+> >
+> >       ret =3D cmd_db_ready();
+> >       if (ret)
+> >               return ret;
+> >
+> > -     /*
+> > -      * Pad out query string to same length as in DB. NOTE: the output
+> > -      * query string is not necessarily '\0' terminated if it bumps up
+> > -      * against the max size. That's OK and expected.
+> > -      */
+> > -     strncpy(query, id, sizeof(query));
+> > +     strtomem(query, id);
+>
+> query needs to be NUL-padded to sizeof(ent->id) bytes (like strncpy
+> does), something you recognized by adding the zero-initialization above.
+> But why split this requirement across two non-adjacent lines? Isn't this
+> what strtomem_pad() is supposed to do?
+
+Yes, strtomem_pad() will accomplish this task. I'll send a v3 fixing
+up the commit log and use the pad version.
+
+>
+> Regards,
+> Bjorn
+>
+> >
+> >       for (i =3D 0; i < MAX_SLV_ID; i++) {
+> >               rsc_hdr =3D &cmd_db_header->header[i];
+> >
+> > ---
+> > base-commit: fe46a7dd189e25604716c03576d05ac8a5209743
+> > change-id: 20240314-strncpy-drivers-soc-qcom-cmd-db-c-284f3abaabb8
+> >
+> > Best regards,
+> > --
+> > Justin Stitt <justinstitt@google.com>
+> >
+
+Thanks
+Justin
 
