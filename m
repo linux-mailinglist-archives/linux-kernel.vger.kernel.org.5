@@ -1,189 +1,164 @@
-Return-Path: <linux-kernel+bounces-107868-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107869-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7AC0A8802C2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:54:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1374C8802C4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:54:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2DAA32838CC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:54:30 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE8B2283B71
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:54:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2060411CA9;
-	Tue, 19 Mar 2024 16:54:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7ED3811723;
+	Tue, 19 Mar 2024 16:54:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GxEk8weW"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rxi6F/fE"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 567FE107A8;
-	Tue, 19 Mar 2024 16:54:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B275AFC11;
+	Tue, 19 Mar 2024 16:54:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710867261; cv=none; b=D/CqupUI+qx3NsSGe7mjQ70Rn1yBSx33exe5vUTv7yl1gLCwUgrKbJZe6orVf8U7hSK4YpaiUXy2N27XDkhTn+pl8cIHP9SKOSUfg56tQ1cHOp6CSKj0sEaxeWr57hotr+wdyf2nrPEknbmBlSlm02ATyxO7Zy4bXEPYME6PckA=
+	t=1710867272; cv=none; b=fcdWJxpTIVItoS5t95tE/N6F2BV8o3DQlazIjjVIFHuoeK8LUSCdRLdSmDk2POUAwAdP6WvpQSicV7lULBt5PjWt7cVaKHCIsgvNbzudi2VXwNZWNXh/adTuCzRLEBnE36Qxk7T3/+81Ij0a9pe6xGA4ShHmsFcsupK76WgTqkI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710867261; c=relaxed/simple;
-	bh=lsmWXqc/oG1VFxbUIqmk9BpXGRBnQwV/KmX9HD+0fNg=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=geKKnZ5SzVfZY/lDT0g88MEd7GyzJXdGOrqjYNbZ51k1Fwm+3upLRlg7szDSSVhNFjXvg3brPRGd7HWrI0NSfpvvpIAg7OU5rmFteqeLUDAd1tb8sdnM0+n1jJO9MmvkZ8JcZitZxwR7la70kvBYIjG6YtTzfsSY400XHUhHhv0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GxEk8weW; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7C378C43390;
-	Tue, 19 Mar 2024 16:54:20 +0000 (UTC)
+	s=arc-20240116; t=1710867272; c=relaxed/simple;
+	bh=AX86/uApYODY1eC2g52++zk0AHcfVOmzwn1mtmShqm0=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=Xzw5Ds5Qq6uxsGPbt1BItwbVCXFOsR6LIcVW/WUWGI4EEcdHfLiid74v2Wa7Lzp6vWBwl75ZqHvrFXYkIb2v2nTuZyat8ABE5bcE2IPOxo1W2d+yaZ1LK/ls0ZdlIe+bSmRvnagzxOPJNiwdPhPF5Qimx8A9sc/nwets7FYPhfg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rxi6F/fE; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 57404C433C7;
+	Tue, 19 Mar 2024 16:54:32 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710867260;
-	bh=lsmWXqc/oG1VFxbUIqmk9BpXGRBnQwV/KmX9HD+0fNg=;
-	h=From:Date:Subject:To:Cc:From;
-	b=GxEk8weWJTxTmRDFmrAtiD+yNaVWypG9b8AgrzDImxrX/+JFpI4JXHN9Km/9R5XQx
-	 3EP7pZJdncQAJOIF2+4GafbEXAzqAyt0VCAr3rnJ1XkxuvNXG7sjxTuVj0lSvCfGB+
-	 UAzP3TRy/oqKO50q1xES15ZnNCxdhqdSKae/hoaVAECPPlrCtBnmTqjiImevf8HwiR
-	 jx+0Z50kPlmcY+dwv3MFoh9JOZQN2kmI8FqeemuYkjCTxxZhmSbyOhHEL9KPgAPlMg
-	 P8FK/6TBpHRzuFEcUFGKe0Eoub1l0ett0FE5DuP8JgQ14q69UfsWCmuJpNjQCY9Ebg
-	 RlChbzcfrBYdg==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Tue, 19 Mar 2024 12:54:06 -0400
-Subject: [PATCH RFC] fuse: require FUSE drivers to opt-in for local file
- leases
+	s=k20201202; t=1710867272;
+	bh=AX86/uApYODY1eC2g52++zk0AHcfVOmzwn1mtmShqm0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=rxi6F/fEVU5bctBaJV8eFes6+BIUxhQCW9pTS3hKs6tAuASEIhmtK++dy76bjCYh0
+	 y7ZOtD27O4Ascoi2WwNSwWf8TPrrcgZsLP2O1pZg1Cf+bdDeFGhtKW1LttuwTbq4+e
+	 UCmrSP8Y/+P3wtomLv3UIGkuBHkHck4mE9XiBaaRsQZ+VHvlpb9FqdtqxP6aAEklm2
+	 AeiB2gjkbVVvcpxAl54waZSkq3JJ21MvYhVAtfTKbQgBIPDlKHyJtmiELiwafwy0Y/
+	 irjBwqnBA/prQicVVvho4m5xf6BRTVaTXPoF/g50axeopnstK7Ub+pzUQr844fe0tp
+	 Pw/Bt6g81wizA==
+Date: Tue, 19 Mar 2024 11:54:30 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>,
+	Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	PCI <linux-pci@vger.kernel.org>,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20240319165430.GA1233494@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240319-setlease-v1-1-4ce5a220e85d@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAC3D+WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDY0NL3eLUkpzUxOJU3eRUY8O0JAtzc/MkAyWg8oKi1LTMCrBR0UpBbs5
- KsbW1AMMzpSlfAAAA
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=4024; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=lsmWXqc/oG1VFxbUIqmk9BpXGRBnQwV/KmX9HD+0fNg=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl+cM8IwbAtLw42Ucy+GwU7TzsHITwfQ3Wm6Onk
- 6YHXx80r4yJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZfnDPAAKCRAADmhBGVaC
- FcDmD/4jgJ0rpBqYOEn92ALtNI6m8pHHu9fpJfPIuXKbxCWP9A3dmGTWpN45tRGnzrkntcq091j
- 3mBIaUFllKcLjFgqkzEkCn5zdrYgY75dPLjZcyduX/Mzb5oqf1vHtE15cojIIgNNJo2qSd/xuQD
- rA78DQxhYFFreMd1a3j2bUw/CCYDADTiq+7sdrrZCt5xBmdTimuyAkbDeAvIxEwaVRYgc+IMiot
- 702XQVNvEDmsq2ho3uSOa4jjc9TNQjrRYJGn024N18cHb9gSfGA4G1lSe0/xtqIC3NbmkIzR5K2
- jK64cHgj3AEuTNEKtMAWBPZVh2YS9OMKaSs4H12vP2ZLM9YErcOyhq5fpcBS7fziMnMF3C5CrN7
- wZokDOvmwDpys7IsqWMLnt7zikknJy8p/shAtOREiLkxxFkRHxiWxpH7Xetl1vCrjaeplPQHWHd
- YgpMZAOpNwViXI6BGVAy7RJbKC5gNUiFYbGpu6/LysEkCNu5y0hc5hX3lG3A1S01AsTEG79sj9C
- SCX8S1Hyi/Ac/vVg4kqmkAqpebGSqtdgvnemWrg1PWZT4SYBdsz5kbFk85ar6e+D/kjw0pbSEEj
- 0QSXOg/rsewCBCJi5M3IRtk8X/CayEbOLsHzIfGOU1IVclxirZuak2rlGdTVIoQVGsv4zSVVWwh
- aa3wiid+ec2rxtg==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240319173404.019b424a@bootlin.com>
 
-Traditionally, we've allowed people to set leases on FUSE inodes.  Some
-FUSE drivers are effectively local filesystems and should be fine with
-kernel-internal lease support. But others are backed by a network server
-that may have multiple clients, or may be backed by something non-file
-like entirely.
+On Tue, Mar 19, 2024 at 05:34:04PM +0100, Herve Codina wrote:
+> On Tue, 19 Mar 2024 10:25:13 -0500
+> Bjorn Helgaas <helgaas@kernel.org> wrote:
+> > On Fri, Dec 15, 2023 at 02:52:07PM +0100, Herve Codina wrote:
+> > > On Mon, 4 Dec 2023 07:59:09 -0600
+> > > Rob Herring <robh@kernel.org> wrote:  
+> > > > On Mon, Dec 4, 2023 at 6:43 AM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > > > On Fri, 1 Dec 2023 16:26:45 -0600
+> > > > > Rob Herring <robh@kernel.org> wrote:  
+> > > > > > On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > > > > ...  
+> > 
+> > > > > > --- a/drivers/pci/of.c
+> > > > > > +++ b/drivers/pci/of.c
+> > > > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> > > > > >                 return 0;
+> > > > > >
+> > > > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
+> > > > > > +       if (!node && pci_is_bridge(dev))
+> > > > > > +               of_pci_make_dev_node(dev);
+> > > > > >         if (!node)
+> > > > > >                 return 0;    
+> > > > >
+> > > > > Maybe it is too early.
+> > > > > of_pci_make_dev_node() creates a node and fills some properties based on
+> > > > > some already set values available in the PCI device such as its struct resource
+> > > > > values.
+> > > > > We need to have some values set by the PCI infra in order to create our DT node
+> > > > > with correct values.    
+> > > > 
+> > > > Indeed, that's probably the issue I'm having. In that case,
+> > > > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+> > > > device_add().
+> > > > 
+> > > > I think modifying sysfs after device_add() is going to race with
+> > > > userspace. Userspace is notified of a new device, and then the of_node
+> > > > link may or may not be there when it reads sysfs. Also, not sure if
+> > > > we'll need DT modaliases with PCI devices, but they won't work if the
+> > > > DT node is not set before device_add().  
+> > > 
+> > > DECLARE_PCI_FIXUP_HEADER is too early as well as doing the DT node creation
+> > > just before the device_add() call.
+> > > Indeed, in order to fill the DT properties, resources need to be assigned
+> > > (needed for the 'ranges' property used for addresses translation).
+> > > The resources assignment is done after the call to device_add().  
+> > 
+> > Do we need to know the actual address *value* before creating the
+> > sysfs file, or is it enough to know that the file should *exist*, even
+> > if the value may be changed later?
+> 
+> I think, the problematic file is 'of_node'.
+> This file is a symlink present in the device directory pointing to the
+> node in a device-tree subdir.
+> 
+> How can we create this of_node symlink without having the device-tree
+> subdir available ?
+> 
+> > > Some PCI sysfs files are already created after adding the device by the
+> > > pci_create_sysfs_dev_files() call:
+> > >   https://elixir.bootlin.com/linux/v6.6/source/drivers/pci/bus.c#L347
+> > > 
+> > > Is it really an issue to add the of_node link to sysfs on an already
+> > > present device ?  
+> > 
+> > Yes, I think this would be an issue.  We've been trying to get rid of
+> > pci_create_sysfs_dev_files() altogether because there's a long history
+> > of race issues related to it:
+> > 
+> >   https://lore.kernel.org/r/1271099285.9831.13.camel@localhost/ WARNING: at fs/sysfs/dir.c:451 sysfs_add_one: sysfs: cannot create duplicate filename '/devices/pci0000:00/0000:00:01.0/slot'
+> >   https://lore.kernel.org/r/19461.26166.427857.612983@pilspetsen.it.uu.se/ [2.6.35-rc1 regression] sysfs: cannot create duplicate filename ... XVR-600 related?
+> >   https://lore.kernel.org/r/20200716110423.xtfyb3n6tn5ixedh@pali/ PCI: Race condition in pci_create_sysfs_dev_files
+> >   https://lore.kernel.org/r/m3eebg9puj.fsf@t19.piap.pl/ PCI: Race condition in pci_create_sysfs_dev_files (can't boot)
+> >   https://bugzilla.kernel.org/show_bug.cgi?id=215515 sysfs: cannot create duplicate filename '.../0000:e0'
+> > 
+> > And several previous attempts to fix them:
+> > 
+> >   https://lore.kernel.org/r/4469eba2-188b-aab7-07d1-5c77313fc42f@gmail.com/ Guard pci_create_sysfs_dev_files with atomic value
+> >   https://lore.kernel.org/r/20230316103036.1837869-1-alexander.stein@ew.tq-group.com PCI/sysfs: get rid of pci_sysfs_init late_initcall
+> >   https://lore.kernel.org/r/1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com/ PCI/sysfs: Fix race in pci sysfs creation
+> 
+> I am not sure we are facing in the same kind of issues.
+> The ones you mentioned are related to some sysfs duplication.
+> In the of_node case, the issue (if any) is that the symlink will be created
+> after the other device's file. Not sure that it can lead to some file
+> duplication.
 
-Have the filesytem driver to set a fuse_conn flag to indicate whether it
-wants support for local, in-kernel leases. If the flag is unset (the
-default), then setlease attempts will fail with -EINVAL, indicating that
-leases aren't supported on that inode.
+It sounds different and maybe not a problem.  I saw
+pci_create_sysfs_dev_files() and was afraid you planned to add
+something there when we're trying to remove it.
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-This is only tested for compilation, but it's fairly straightforward.
-Having the FUSE drivers opt-out of this support might be more
-backward-compatible, but that is a bit more dangerous. I'd rather driver
-maintainer consciously opt-in.
----
- fs/fuse/file.c            | 11 +++++++++++
- fs/fuse/fuse_i.h          |  3 +++
- fs/fuse/inode.c           |  4 +++-
- include/uapi/linux/fuse.h |  1 +
- 4 files changed, 18 insertions(+), 1 deletion(-)
-
-diff --git a/fs/fuse/file.c b/fs/fuse/file.c
-index a56e7bffd000..3d9aef376783 100644
---- a/fs/fuse/file.c
-+++ b/fs/fuse/file.c
-@@ -3298,6 +3298,16 @@ static ssize_t fuse_copy_file_range(struct file *src_file, loff_t src_off,
- 	return ret;
- }
- 
-+static int fuse_setlease(struct file *file, int arg,
-+			 struct file_lease **flp, void **priv)
-+{
-+	struct fuse_conn *fc = get_fuse_conn(file_inode(file));
-+
-+	if (fc->local_leases)
-+		return generic_setlease(file, arg, flp, priv);
-+	return -EINVAL;
-+}
-+
- static const struct file_operations fuse_file_operations = {
- 	.llseek		= fuse_file_llseek,
- 	.read_iter	= fuse_file_read_iter,
-@@ -3317,6 +3327,7 @@ static const struct file_operations fuse_file_operations = {
- 	.poll		= fuse_file_poll,
- 	.fallocate	= fuse_file_fallocate,
- 	.copy_file_range = fuse_copy_file_range,
-+	.setlease	= fuse_setlease,
- };
- 
- static const struct address_space_operations fuse_file_aops  = {
-diff --git a/fs/fuse/fuse_i.h b/fs/fuse/fuse_i.h
-index b24084b60864..2909788bf69f 100644
---- a/fs/fuse/fuse_i.h
-+++ b/fs/fuse/fuse_i.h
-@@ -860,6 +860,9 @@ struct fuse_conn {
- 	/** Passthrough support for read/write IO */
- 	unsigned int passthrough:1;
- 
-+	/** Opt-in to local kernel lease support */
-+	unsigned int local_leases:1;
-+
- 	/** Maximum stack depth for passthrough backing files */
- 	int max_stack_depth;
- 
-diff --git a/fs/fuse/inode.c b/fs/fuse/inode.c
-index 3a5d88878335..6958c7690e68 100644
---- a/fs/fuse/inode.c
-+++ b/fs/fuse/inode.c
-@@ -1330,6 +1330,8 @@ static void process_init_reply(struct fuse_mount *fm, struct fuse_args *args,
- 			}
- 			if (flags & FUSE_NO_EXPORT_SUPPORT)
- 				fm->sb->s_export_op = &fuse_export_fid_operations;
-+			if (flags & FUSE_LOCAL_LEASES)
-+				fc->local_leases = 1;
- 		} else {
- 			ra_pages = fc->max_read / PAGE_SIZE;
- 			fc->no_lock = 1;
-@@ -1377,7 +1379,7 @@ void fuse_send_init(struct fuse_mount *fm)
- 		FUSE_HANDLE_KILLPRIV_V2 | FUSE_SETXATTR_EXT | FUSE_INIT_EXT |
- 		FUSE_SECURITY_CTX | FUSE_CREATE_SUPP_GROUP |
- 		FUSE_HAS_EXPIRE_ONLY | FUSE_DIRECT_IO_ALLOW_MMAP |
--		FUSE_NO_EXPORT_SUPPORT | FUSE_HAS_RESEND;
-+		FUSE_NO_EXPORT_SUPPORT | FUSE_HAS_RESEND | FUSE_LOCAL_LEASES;
- #ifdef CONFIG_FUSE_DAX
- 	if (fm->fc->dax)
- 		flags |= FUSE_MAP_ALIGNMENT;
-diff --git a/include/uapi/linux/fuse.h b/include/uapi/linux/fuse.h
-index d08b99d60f6f..76322808159d 100644
---- a/include/uapi/linux/fuse.h
-+++ b/include/uapi/linux/fuse.h
-@@ -463,6 +463,7 @@ struct fuse_file_lock {
- #define FUSE_PASSTHROUGH	(1ULL << 37)
- #define FUSE_NO_EXPORT_SUPPORT	(1ULL << 38)
- #define FUSE_HAS_RESEND		(1ULL << 39)
-+#define FUSE_LOCAL_LEASES	(1ULL << 40)
- 
- /* Obsolete alias for FUSE_DIRECT_IO_ALLOW_MMAP */
- #define FUSE_DIRECT_IO_RELAX	FUSE_DIRECT_IO_ALLOW_MMAP
-
----
-base-commit: 0a7b0acecea273c8816f4f5b0e189989470404cf
-change-id: 20240319-setlease-ce31fb8777b0
-
-Best regards,
--- 
-Jeff Layton <jlayton@kernel.org>
-
+Bjorn
 
