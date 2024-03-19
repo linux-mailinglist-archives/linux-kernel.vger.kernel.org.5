@@ -1,142 +1,114 @@
-Return-Path: <linux-kernel+bounces-107853-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D2078880282
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:39:06 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3C2B288028F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:41:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8B6062852C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:39:05 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id B88E228552B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:41:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DEE5E1118E;
-	Tue, 19 Mar 2024 16:38:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAD4A111B1;
+	Tue, 19 Mar 2024 16:41:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pJY+9+pS"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b="Bjc+xpQA"
+Received: from mail-ed1-f50.google.com (mail-ed1-f50.google.com [209.85.208.50])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10BF27470;
-	Tue, 19 Mar 2024 16:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B7A69F50D
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:41:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710866331; cv=none; b=n7GEtrU6Dmlo+vxNWVdp0evU16q+28JCA7uVyOlR940fmSZeRF43tsc+Sr0g78mlPI5WYeHUv+wtGBBywkyGl7lBPqHDlnZCz6CDEtZoLb9VccB8WjFrpUehIY1Nd2cMgXMJWGq2ofq9HQ/oNKDkbsRIJUggQDNbTNd/Cz/rhPw=
+	t=1710866473; cv=none; b=pAaEvDNxxzEkg+qWg5JwM6VeU6bQdCIv0Yi3b3dEYAYy94KOk9+XQsUptqQwNa5xs2l5B5Kc8V3L8jh8HuchJpo1NZxFKvb1V+Q1TI8/ge+bGkYbvKNnE9W1zNOOwKJva2zY4uMMUAbZAu7JSSea5R70s7KXMYa3/uthCdch8v0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710866331; c=relaxed/simple;
-	bh=dYsylaBpQOp3sMEqxBcd5E0VBO1SUJjmx6IkRhLuU/w=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cNmYiXpgMCopPBR1OZmHmHbyc9um6HsR5Rt85FMZ0MnvFXmR0QXGSalsKALDRuu0PxXxcIp4r7JwKwsQ/uBdpNFiVx3ZNk6EPqQrEJqAjtiDtJ5B+Z+5RbIdzzlZ7oWsDvuQHF4OykUsR9iliXa6dbAJ5b/Mb8gk6h0GZrW0P0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pJY+9+pS; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81801C43394;
-	Tue, 19 Mar 2024 16:38:50 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710866330;
-	bh=dYsylaBpQOp3sMEqxBcd5E0VBO1SUJjmx6IkRhLuU/w=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=pJY+9+pSarDhpFmWIuEdBfUThaZYx4IzquJlP5O64VzWFDoFioQINcZi4p+yopd6F
-	 ErebcMpVyh4KjLRkxscbDd7pdoed6R/I3g9++/WFyZQPcZ8z17rWY3gKGmaeCYZk64
-	 hn+/Y64HGirKPes9zYqyBKvE/jnlNtWaKjws6jjAhQ1G4V31ooEJqiMm4m0c33GZBa
-	 6NWaIKh5JXdu1eel98bZoLAH92veFrGvDHWgbuyrJSiSjmlVz95bjBEweJdwkSCB8T
-	 mVKrcpSYzfMonTbtZj6OW2xbxjp/3XC8WWfwU3MvA5UJx3oYj8gJ9VE339DdVziiOI
-	 X470z+WxwiZlg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan@kernel.org>)
-	id 1rmcUK-000000000ul-22u3;
-	Tue, 19 Mar 2024 17:38:57 +0100
-Date: Tue, 19 Mar 2024 17:38:56 +0100
-From: Johan Hovold <johan@kernel.org>
-To: Doug Anderson <dianders@chromium.org>
-Cc: Johan Hovold <johan+linaro@kernel.org>,
-	Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	cros-qcom-dts-watchers@chromium.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-	Matthias Kaehlcke <mka@chromium.org>,
-	Rocky Liao <quic_rjliao@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org, netdev@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	Nikita Travkin <nikita@trvn.ru>
-Subject: Re: [PATCH v3 3/5] Bluetooth: qca: fix device-address endianness
-Message-ID: <Zfm_oFLNgPHqJKtG@hovoldconsulting.com>
-References: <20240319152926.1288-1-johan+linaro@kernel.org>
- <20240319152926.1288-4-johan+linaro@kernel.org>
- <CAD=FV=WqwY07fMV-TuO8QMRnk555BJYEysv4urcugsELufHr4A@mail.gmail.com>
+	s=arc-20240116; t=1710866473; c=relaxed/simple;
+	bh=nRp7+YyTBHw31NX7xj7EtsXhg3dkAR+p6w1ZMt+sOEU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ThEpqmgwh85lGDivYXOnw1GbijIkET8zgTgFNC7ANOMoAyn1Dcr6FhulTKQMdkgphbhmzfnXCc6/sY0QBYN5xhOcsZ4LmkFG7TnWAS/l7XadJNGxcqoT+JOmuFUtAL8Ph4fYHdTYepw0yhKUv7jyRjoKOLWCqh7KHbyTrsCesKU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu; spf=pass smtp.mailfrom=szeredi.hu; dkim=pass (1024-bit key) header.d=szeredi.hu header.i=@szeredi.hu header.b=Bjc+xpQA; arc=none smtp.client-ip=209.85.208.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=szeredi.hu
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=szeredi.hu
+Received: by mail-ed1-f50.google.com with SMTP id 4fb4d7f45d1cf-56ba72fffd6so328591a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:41:11 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=szeredi.hu; s=google; t=1710866470; x=1711471270; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=931BN8XdKyOBXgviRQCefbI6odUP2QsuOngK2FvcTOs=;
+        b=Bjc+xpQAwY3z3fbUSs5mWFZqOgAsXiWOfTt2fETf32xVt5LGMFFT8BlXOVa1nShF4e
+         u3hKGCc3sXooS8tjsd1KJrhLeAY0AsQHmlDDydrwglGH1JSvNWnPALsWFn98NxkI4Uc4
+         VoScTVzsNWKZM++T29YZIQ9ySLCKZz1WGzusQ=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710866470; x=1711471270;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=931BN8XdKyOBXgviRQCefbI6odUP2QsuOngK2FvcTOs=;
+        b=WMF8QSaeNIhg0cydB/CHLdiFZbJAdJyzkcDrOH+vNzUwmwXfrFlrllEw5FJ4pZpiCA
+         +XwNbjOTRFCXgyTxnbO8CUndGAWYZ2bUUhcQIju0ZB7C9U+sKFzat3PeP+ggZIv1AgcM
+         I2PGrxhQL2Chlb5UFSb5MaQVZvgTPWoE2tYFsepqiccz4m+YOmSYTypG7E2bLhLk7na7
+         S48pY03VDwaNM3Q0C2zgCHed3HtpnvEfRduaBDDk3U79gD3erI7k03FRQM3FsjpoSFFd
+         kHSa62CoSmYpFaT4ZKldFt9llcxbNUMTTah3133UdT/4Gr/+w+85bkV29Dpiz4ABYB44
+         Ir8A==
+X-Forwarded-Encrypted: i=1; AJvYcCW4oOEmyMaabWIGENkzyyR7zlXPIk9WUJltZ+rejgCQFs9RjgCksQB3NB2qU2q7Ha8QzAEK9ilaGjhgO/rmIPDP3xdUlI26IwSOZc0a
+X-Gm-Message-State: AOJu0Yy4g5sccUOtQ20MCKDD6qhkpwzGET4kjiTpmaPmOl6hUVc/yOEW
+	o8bawI9FvZsdy9VxJE2IyRksmgazhn7QUp3KShdMsa13yxYOqq/duqK4OJ5QOF+NAsTFrlURsqg
+	iD52/H/ZyY3K7MfFHLX5jvNkHdL9geIkpXWDjBgFpOuVtRtVAyzg=
+X-Google-Smtp-Source: AGHT+IFDeEEaIOtSBG5DGppYGHWRw4rXZqpgILKwzYCMW4SSXhcYWj+KFRDuw5xeuXxFLrQ0w0/J7Jaydr+ESekL/l8=
+X-Received: by 2002:a17:906:70c9:b0:a46:6bb8:1ec4 with SMTP id
+ g9-20020a17090670c900b00a466bb81ec4mr8429584ejk.76.1710866470240; Tue, 19 Mar
+ 2024 09:41:10 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAD=FV=WqwY07fMV-TuO8QMRnk555BJYEysv4urcugsELufHr4A@mail.gmail.com>
+References: <1668172.1709764777@warthog.procyon.org.uk> <ZelGX3vVlGfEZm8H@casper.infradead.org>
+ <1831809.1709807788@warthog.procyon.org.uk> <CAJfpegv8X0PY7PvxEF=zEwRbdZ7yZZcwB80iDO+XLverognx+g@mail.gmail.com>
+ <651179.1710857687@warthog.procyon.org.uk> <CAJfpegsUYUwp2YNnCE3ZP+JtL0whgQ=3+wcsBABGXH9MjXC0zA@mail.gmail.com>
+In-Reply-To: <CAJfpegsUYUwp2YNnCE3ZP+JtL0whgQ=3+wcsBABGXH9MjXC0zA@mail.gmail.com>
+From: Miklos Szeredi <miklos@szeredi.hu>
+Date: Tue, 19 Mar 2024 17:40:58 +0100
+Message-ID: <CAJfpegsCBEm11OHS8bfQdgossOgofPcYhLTFtw7_+T66iBvznw@mail.gmail.com>
+Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
+To: David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>, Trond Myklebust <trond.myklebust@hammerspace.com>, 
+	Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, Christian Brauner <brauner@kernel.org>, 
+	Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, 
+	netfs@lists.linux.dev, v9fs@lists.linux.dev, linux-afs@lists.infradead.org, 
+	ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org, 
+	linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-On Tue, Mar 19, 2024 at 09:10:38AM -0700, Doug Anderson wrote:
-> On Tue, Mar 19, 2024 at 8:30 AM Johan Hovold <johan+linaro@kernel.org> wrote:
-> >
-> > The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
-> > device address in big-endian order when setting it using the
-> > EDL_WRITE_BD_ADDR_OPCODE command.
-> >
-> > Presumably, this is the case for all non-ROME devices which all use the
-> > EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
-> > use a different command and expect the address in little-endian order).
-> >
-> > Reverse the little-endian address before setting it to make sure that
-> > the address can be configured using tools like btmgmt or using the
-> > 'local-bd-address' devicetree property.
-> >
-> > Note that this can potentially break systems with boot firmware which
-> > has started relying on the broken behaviour and is incorrectly passing
-> > the address via devicetree in big-endian order.
-> >
-> > Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
-> > Cc: stable@vger.kernel.org      # 5.1
-> > Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-> > Cc: Matthias Kaehlcke <mka@chromium.org>
-> > Tested-by: Nikita Travkin <nikita@trvn.ru> # sc7180
-> > Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
-> > ---
-> >  drivers/bluetooth/btqca.c | 8 ++++++--
-> >  1 file changed, 6 insertions(+), 2 deletions(-)
-> 
-> Personally, I'd prefer it if you didn't break bisectability with your
-> series. As it is, if someone applies just the first 3 patches they'll
-> end up with broken Bluetooth.
+On Tue, 19 Mar 2024 at 17:13, Miklos Szeredi <miklos@szeredi.hu> wrote:
+>
+> On Tue, 19 Mar 2024 at 15:15, David Howells <dhowells@redhat.com> wrote:
+>
+> > What particular usage case of invalidate_inode_pages2() are you thinking of?
+>
+> FUSE_NOTIFY_INVAL_INODE will trigger invalidate_inode_pages2_range()
+> to clean up the cache.
+>
+> The server is free to discard writes resulting from this invalidation
+> and delay reads in the region until the invalidation finishes.  This
+> would no longer work with your change, since the mapping could
+> silently be reinstated between the writeback and the removal from the
+> cache due to the page being unlocked/relocked.
 
-It doesn't break the build, but yes, the device address would be
-reversed for Trogdor machines for two commits and possible break any
-previous pairings. That's hardly something to worry about.
+This would also matter if a distributed filesystem wanted to implement
+coherence even if there are mmaps.   I.e. a client could get exclusive
+access to a region by issuing FUSE_NOTIFY_INVAL_INODE on all other
+clients and blocking reads.  With your change this would fail.
 
-So I consider this to be acceptable for sake of clarity, and especially
-since these patches will be coming in from separate trees anyway.
+Again, this is purely theoretical, and without a way to differentiate
+between the read-only and write cases it has limited usefulness.
+Adding leases to fuse (which I plan to do) would make this much more
+useful.
 
-> IMO the order should be:
-> 1. Binding (currently patch #1)
-> 2. Trogdor dt patch, which won't hurt on its own (currently patch #5)
-> 3. Bluetooth subsystem patch handling the quirk (currently patch #2)
-> 4. Qualcomm change to fix the endianness and handle the quirk squashed
-> into 1 patch (currently patch #3 + #4)
-> 
-> ..and the patch that changes the Qualcomm driver should make it
-> obvious that it depends on the trogdor DT patch in the change
-> description.
-> 
-> With patches #3 and #4 combined, feel free to add my Reviewed-by tag
-> as both patches look fine to me.
-
-I don't think it's worth spending more time and effort on this issue
-(which should have been caught and fixed years ago) for this.
-
-Johan
+Thanks,
+Miklos
 
