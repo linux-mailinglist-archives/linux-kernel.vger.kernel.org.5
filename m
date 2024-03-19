@@ -1,140 +1,274 @@
-Return-Path: <linux-kernel+bounces-107609-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107610-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A804387FF15
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:51:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 674A487FF1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:53:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E32E01C22392
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:50:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 853DC1C22296
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:53:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93ADC81722;
-	Tue, 19 Mar 2024 13:50:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 959D181731;
+	Tue, 19 Mar 2024 13:53:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CBg2Lxga"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="ZdXJ+IUo"
+Received: from mx1.sberdevices.ru (mx1.sberdevices.ru [37.18.73.165])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D59B75A4CF;
-	Tue, 19 Mar 2024 13:50:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC4B680BFD;
+	Tue, 19 Mar 2024 13:53:14 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=37.18.73.165
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710856253; cv=none; b=bCRVbXGkjWNwfza+gkXoBvfSVGde79RtcYsISMlPv38/mFqt9/G62fFa0xgeZRZxmtneEkJY7Qy1/1FVR0yrcd0BQ77cftDuspel6nLs/FIzi2mV7ZstwCRh5WolQN2XTgSghLeOMcOCukmhGMRd8M0oWqh0TIJwjI5VCYwMn40=
+	t=1710856400; cv=none; b=YnbwmPywisBQPMi0F7R9IPfzTFmeqw833TjG+IFLYiJefq0YBBWEZUp6reGTfs3IbKrIGTnxxOJx+o8I2EM+5AV4MRgQOlE7jiPmtQR/W0/oCy61TY7VnelDiSmO7vI+MnLSSu0SZNi67aV5oqleE2P1h9kByF24g8ruu/PEj24=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710856253; c=relaxed/simple;
-	bh=RMD2TqeN8sIrMbrfSJeIajNKs9E7CG3wfOneEMWdgrc=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=mU+xZz/Us1HkhGB2JdGcG3FswO70uyZ5/ZNlhFxQbyWr9D2BD8fYlYzqpNJf2KrcdVDVe9cmCnrh3Sr9Ngh6P7e5u00vlaRhLfaLhNqtp+DV1VrlwhNUBUYSQd0AKNEgJa3+HlFcJ2U/l6yMqOFi9BXI5KK46IbR1flr/QY4fr8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CBg2Lxga; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C405BC433C7;
-	Tue, 19 Mar 2024 13:50:52 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710856253;
-	bh=RMD2TqeN8sIrMbrfSJeIajNKs9E7CG3wfOneEMWdgrc=;
-	h=From:Date:Subject:To:Cc:From;
-	b=CBg2LxgasrRtebq44WV3KNB+YfPww8Q1gDbkafeYtTEarPfEXUgJXAGiSj9xMRQFO
-	 KA2wvX5B8ajnLM7Ft/KHzTdDxkAKiqBHIMBxKaDnHcpBwY7WcjAEzPs28aJBpv+vI9
-	 acFzJKZoENB4NF3cDJZxsruVrp72xW64oxZdLRaKmoSeAAvVEwwFbpYlZxdfgZb5Xn
-	 0ZndJ37zUEMGc3kNDz7La+Cie+xfTd6hkPvGwftrYvT6riyEBFqLbYcVuLQxlG01/8
-	 C6QQE9DjcH49VL3I/CjD+79+R6KrooAWHvsdGjtMRdimEAH7+NPJoZOnXbtzKaJ0k2
-	 h5N8SWOam6u7g==
-From: Eric Van Hensbergen <ericvh@kernel.org>
-Date: Tue, 19 Mar 2024 13:50:32 +0000
-Subject: [PATCH] fs/9p: fix uninitialized values during inode evict
+	s=arc-20240116; t=1710856400; c=relaxed/simple;
+	bh=OXZgPwWPdTNaxtMnH4myg+ToziRSNnXvhkwXx1ZufmU=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=M/8P5/w41ZhMAOV4Ao35XkNBYUaPLpnh59pm4ubf7gkptaZaCm7JzpL9lZSS4CLwPHxOBpFnC+yw3x+6C7QIXa3/FPeeIE9+WdqZcWA9l9C9h8Umqj6KGN1JpOgPUYWtG2kQdH5OF3HaOp2DqGsqeQ/2nk6EekG8Kzsc2qIztTA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=salutedevices.com; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=ZdXJ+IUo; arc=none smtp.client-ip=37.18.73.165
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=salutedevices.com
+Received: from p-infra-ksmg-sc-msk01 (localhost [127.0.0.1])
+	by mx1.sberdevices.ru (Postfix) with ESMTP id 0957D10000A;
+	Tue, 19 Mar 2024 16:53:12 +0300 (MSK)
+DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 0957D10000A
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
+	s=mail; t=1710856392;
+	bh=cMQFR177UDppiHHa9pB9nbmCdpBrIycSstEw9RoGTQI=;
+	h=Date:From:To:Subject:Message-ID:MIME-Version:Content-Type:From;
+	b=ZdXJ+IUoxafVJmHArgilqIq/xR+cA8woWE5N9r6qzBMaWFunn7syOsKx8qLG8PS9j
+	 vQ83YE4Sbd4e2GyM/LXFVj5CQEzYiLvCcu31GAteRYOud+OnUBzC23Uf/Xqzn91k3G
+	 ST/k5QpvS04ZBnytrGLzHPs3ec/4lGwCGF1I6Z0yPqQCyvYoG1ITUtXLW7gjQFLDOv
+	 oH3k8K5Ak8eAwJJDsOFfN4BFtfd2MH2RBk9JpLmvU0nmCx8BeYg+zHF8roQ5tmlLJ6
+	 CW/G29alyisg1jGq+assolGMSWPgFNCYosGKMcHu2B9G5KWPNSyYdnYJtcU7RobrrC
+	 IKjlAIup7GSgw==
+Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by mx1.sberdevices.ru (Postfix) with ESMTPS;
+	Tue, 19 Mar 2024 16:53:11 +0300 (MSK)
+Received: from localhost (100.64.160.123) by p-i-exch-sc-m02.sberdevices.ru
+ (172.16.192.103) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 16:53:11 +0300
+Date: Tue, 19 Mar 2024 16:53:11 +0300
+From: Dmitry Rokosov <ddrokosov@salutedevices.com>
+To: Jerome Brunet <jbrunet@baylibre.com>
+CC: Jan Dakinevich <jan.dakinevich@salutedevices.com>, Neil Armstrong
+	<neil.armstrong@linaro.org>, Michael Turquette <mturquette@baylibre.com>,
+	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
+	<conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman
+	<khilman@baylibre.com>, Martin Blumenstingl
+	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
+	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
+	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
+	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
+	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
+	<kernel@salutedevices.com>
+Subject: Re: [PATCH 01/25] clk: meson: a1: restrict an amount of 'hifi_pll'
+ params
+Message-ID: <20240319135311.xjpgkvgyczq4eymi@CAB-WSD-L081021>
+References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
+ <20240314232201.2102178-2-jan.dakinevich@salutedevices.com>
+ <1j8r2jj24k.fsf@starbuckisacylon.baylibre.com>
+ <cbfd9c66-cca5-49f5-9468-43710c48518e@salutedevices.com>
+ <1jedc7hlg4.fsf@starbuckisacylon.baylibre.com>
+ <d4cfef9e-3cae-4f1a-90b3-33d5707596f9@salutedevices.com>
+ <1jsf0mfwwg.fsf@starbuckisacylon.baylibre.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240319-fix-evict-uninitialized-value-v1-1-cfc35424a171@kernel.org>
-X-B4-Tracking: v=1; b=H4sIACeY+WUC/x2MwQqDMBAFf0X23IUkBkr8ldLDotv2gcSSqIjiv
- 7t4HJiZg6oWaKWuOajoioopG/hHQ/1P8lcZgzEFF6JrfeIPNjavn3nJyJghI3YdeJVxUZanROd
- jCj4lsse/qAX3//U+zwsOFrbjbwAAAA==
-To: Latchesar Ionkov <lucho@ionkov.net>, 
- Dominique Martinet <asmadeus@codewreck.org>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc: v9fs@lists.linux.dev, linux-kernel@vger.kernel.org, 
- syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com, 
- Eric Van Hensbergen <ericvh@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=2017; i=ericvh@kernel.org;
- h=from:subject:message-id; bh=RMD2TqeN8sIrMbrfSJeIajNKs9E7CG3wfOneEMWdgrc=;
- b=owEBbQKS/ZANAwAKAYj/1ftKX/+YAcsmYgBl+Zg8EaKoJxkoNOdZQwjUAUlF2ousaxjANM5Ju
- 54AJp7fVd6JAjMEAAEKAB0WIQSWlvDRlqWQmKTK0VGI/9X7Sl//mAUCZfmYPAAKCRCI/9X7Sl//
- mJ3gEACjuK5YGANuJRru6zub/UowgSYVonrxakqBCFrzGsv0Kq3OrVsYabdgczL6qApxF8BOTmD
- 7yE/1SRzuBoDvR43vDlhlEyBNFAqbTEwMculhdhOpLS3FLVcmtLQgNu0sJzdpVeXuvsyBS2A/DP
- kcVfpm7ZfWi5nrVh4rkdwqUafMcFJvPGShXQNJ3StnIHn6Tj9UspFF1LBo7nk7jLY/qhUDLFPx2
- NeybP8WsyDct/VGIynkLiEt84r1Rb40TBajlntxP9RgtFpTp4jwlpC/6izJnnoEylrWkmq+FjHD
- ygNQsPBfrCCC8SyxSxOcJ8BIOF4bAvEQHZMSuFYuZ16beKaEd/DO43789OBp0XziPCfvFq+usGq
- iuz3srXvdkkld/3ec7Uan2rjGydCzQHg+JI1DIDdrEeZnErZMliuY7sO/ikqbbNRmzbhlHfM/EI
- 7MuDlz/hqBUeLsG3D8gSnOTGrCqgA9SXsBDtgY7srXXTqU3Y4SPOGHgYWJr/Q4/oiuDbuBTlr+c
- 35Nq3HmnfFpv0L8pZGHK38A1VDfR55xyvinq1L+255ZEVHAUg+D54TjsriXe2dZ31ZIQ4FAl5lo
- nMo+ZoQ7YJuyFM0Wl3vptvR60jPjX3PUhx5RIysrGWOFwM8TW0tQGN+hOb2NlYTN5MIGONplWMf
- CCcnKg4x0QGl1ug==
-X-Developer-Key: i=ericvh@kernel.org; a=openpgp;
- fpr=9696F0D196A59098A4CAD15188FFD5FB4A5FFF98
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <1jsf0mfwwg.fsf@starbuckisacylon.baylibre.com>
+User-Agent: NeoMutt/20220415
+X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
+ p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
+X-KSMG-Rule-ID: 10
+X-KSMG-Message-Action: clean
+X-KSMG-AntiSpam-Lua-Profiles: 184265 [Mar 19 2024]
+X-KSMG-AntiSpam-Version: 6.1.0.4
+X-KSMG-AntiSpam-Envelope-From: ddrokosov@salutedevices.com
+X-KSMG-AntiSpam-Rate: 0
+X-KSMG-AntiSpam-Status: not_detected
+X-KSMG-AntiSpam-Method: none
+X-KSMG-AntiSpam-Auth: dkim=none
+X-KSMG-AntiSpam-Info: LuaCore: 10 0.3.10 53c821b925e16276b831986eabc71d60ab82ee60, {Tracking_uf_ne_domains}, {Track_E25351}, {Tracking_from_domain_doesnt_match_to}, lore.kernel.org:7.1.1;127.0.0.199:7.1.2;d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;smtp.sberdevices.ru:5.0.1,7.1.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: s, ApMailHostAddress: 100.64.160.123
+X-MS-Exchange-Organization-SCL: -1
+X-KSMG-AntiSpam-Interceptor-Info: scan successful
+X-KSMG-AntiPhishing: Clean, bases: 2024/03/19 13:26:00
+X-KSMG-LinksScanning: Clean, bases: 2024/03/19 13:26:00
+X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/19 01:36:00 #24282057
+X-KSMG-AntiVirus-Status: Clean, skipped
 
-If an iget fails due to not being able to retrieve information
-from the server then the inode structure is only partially
-initialized.  When the inode gets evicted, references to
-uninitialized structures (like fscache cookies) were being
-made.
+On Tue, Mar 19, 2024 at 09:21:27AM +0100, Jerome Brunet wrote:
+> 
+> On Tue 19 Mar 2024 at 01:35, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+> 
+> > On 3/18/24 13:17, Jerome Brunet wrote:
+> >> 
+> >> On Sun 17 Mar 2024 at 17:17, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+> >> 
+> >>> On 3/15/24 11:58, Jerome Brunet wrote:
+> >>>>
+> >>>> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
+> >>>>
+> >>>>> Existing values were insufficient to produce accurate clock for audio
+> >>>>> devices. New values are safe and most suitable to produce 48000Hz sample
+> >>>>> rate.
+> >>>>
+> >>>> The hifi pll is not about 48k only. I see no reason to restrict the PLL
+> >>>> to a single setting.
+> >>>>> You've provided no justification why the PLL driver can't reach the same
+> >>>> setting for 48k. The setting below is just the crude part. the fine
+> >>>> tuning is done done with the frac parameter so I doubt this provides a
+> >>>> more accurate rate.
+> >>>>
+> >>>
+> >>> You are right, it is not about 48k only. However, there are two issues.
+> >>>
+> >>> First, indeed, I could just extend the range of multipliers to 1..255.
+> >> 
+> >> Why 1..255 ? This is not what I'm pointing out
+> >> 
+> >> According to the datasheet - the range is 32 - 64, as currently
+> >> set in the driver.
+> >> 
+> >
+> > Could you point where in the doc the range 32..64 is documented?
+> > Documentation that I have may be not so complete, but I don't see there
+> > any mention about it.
+> >
+> > Anyway, range 32..64 of multipliers is not enough to produce accurate
+> > clock, and a need 128 for 48kHz.
+> 
+> A1 datasheet v0.4 - Section 7.6.3.2
+> 
+> >
+> >> The change you have provided request a multipler of 128/5 = 25,6
+> >> If you put assigned-rate = 614400000 in DT, I see no reason can find the
+> >> same solution on its own.
+> >> 
+> >
+> > The reasoning is following. I don't know why 32..64 range was declared
+> > for this clock, and whether it would be safe to extend it and include
+> > 128, which is required for 48kHz. But I know, that multiplier=128 is
+> > safe and works fine (together divider=5).
+> 
+> You have not answer my remark.
+> Mainline does not do everything like the AML SDK does. Saying you are
+> copying it because you know it works (in your opinion) is not good
+> enough.
+> 
+> I'm telling you that your hack is not necessary and so far, you have not
+> demonstrated that it is.
+> 
+> Also the multiplier range in m/n, not m alone.
+> 
+> >
+> >>> But I am unsure if hifi_pll is able to handle whole range of
+> >>> mulptipliers. The value 128 is taken from Amlogic's branch, and I am
+> >>> pretty sure that it works.
+> >> 
+> >>>
+> >>> Second, unfortunately frac parameter currently doesn't work. When frac
+> >>> is used enabling of hifi_pll fails in meson_clk_pll_wait_lock(). I see
+> >>> it when try to use 44100Hz and multipliers' range is set to 1..255. So,
+> >>> support of other rates than 48k requires extra effort.
+> >> 
+> >> Then your change is even more problematic because it certainly does not
+> >> disable frac ... which you say is broken.
+> >> 
+> >> That parameter should be removed with a proper comment explaining why
+> >> you are disabling it. That type a limitation / known issue should be
+> >> mentionned in your change.
+> >> 
+> >
+> > Handling of frac should not be removed, it should be fixed to achieve
+> > another rates. But that is not the goal of this commit.
+> 
+> You argued that frac was broken and that was partly why you introduced
+> this work around. I'm telling you this approach is incorrect.
+> 
+> So either :
+> * Remove frac for now, until it is fixed, because it is broken and add
+>   comment clearly explaining that quirk.
+> * Or fix it now.
+> 
+> Your choice.
+> 
+> >
+> >
+> >>>
+> >>>>>
+> >>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
+> >>>>> ---
+> >>>>>  drivers/clk/meson/a1-pll.c | 8 ++++----
+> >>>>>  1 file changed, 4 insertions(+), 4 deletions(-)
+> >>>>>
+> >>>>> diff --git a/drivers/clk/meson/a1-pll.c b/drivers/clk/meson/a1-pll.c
+> >>>>> index 4325e8a6a3ef..00e06d03445b 100644
+> >>>>> --- a/drivers/clk/meson/a1-pll.c
+> >>>>> +++ b/drivers/clk/meson/a1-pll.c
+> >>>>> @@ -74,9 +74,9 @@ static struct clk_regmap fixed_pll = {
+> >>>>>  	},
+> >>>>>  };
+> >>>>>  
+> >>>>> -static const struct pll_mult_range hifi_pll_mult_range = {
+> >>>>> -	.min = 32,
+> >>>>> -	.max = 64,
+> >>>>> +static const struct pll_params_table hifi_pll_params_table[] = {
+> >>>>> +	PLL_PARAMS(128, 5),
+> >>>>> +	{ },
+> >>>>>  };
+> >>>>>  
+> >>>>>  static const struct reg_sequence hifi_init_regs[] = {
+> >>>>> @@ -124,7 +124,7 @@ static struct clk_regmap hifi_pll = {
+> >>>>>  			.shift   = 6,
+> >>>>>  			.width   = 1,
+> >>>>>  		},
+> >>>>> -		.range = &hifi_pll_mult_range,
+> >>>>> +		.table = hifi_pll_params_table,
+> >>>>>  		.init_regs = hifi_init_regs,
+> >>>>>  		.init_count = ARRAY_SIZE(hifi_init_regs),
+> >>>>>  	},
+> >>>>
+> >>>>
+> >> 
+> >> 
+> 
+> 
+> -- 
+> Jerome
 
-This patch checks for a bad_inode before doing anything other
-than clearing the inode from the cache.  Since the inode is
-bad, it shouldn't have any state associated with it that needs
-to be written back (and there really isn't a way to complete
-those anyways).
+BTW, here Amlogic already mentioned all possible output audio rates for
+which hifipll can be used:
 
-Reported-by: syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com
-Signed-off-by: Eric Van Hensbergen <ericvh@kernel.org>
----
- fs/9p/vfs_inode.c | 16 ++++++++++------
- 1 file changed, 10 insertions(+), 6 deletions(-)
+https://lore.kernel.org/all/1569411888-98116-1-git-send-email-jian.hu@amlogic.com/T/#md7083b4f851ab97dfce43f8f6a3b266eb49ed329
 
-diff --git a/fs/9p/vfs_inode.c b/fs/9p/vfs_inode.c
-index 360a5304ec03..b01b1bbf2493 100644
---- a/fs/9p/vfs_inode.c
-+++ b/fs/9p/vfs_inode.c
-@@ -344,17 +344,21 @@ void v9fs_evict_inode(struct inode *inode)
- 	struct v9fs_inode __maybe_unused *v9inode = V9FS_I(inode);
- 	__le32 __maybe_unused version;
- 
--	truncate_inode_pages_final(&inode->i_data);
-+	if (!is_bad_inode(inode)) {
-+		truncate_inode_pages_final(&inode->i_data);
- 
--	version = cpu_to_le32(v9inode->qid.version);
--	netfs_clear_inode_writeback(inode, &version);
-+		version = cpu_to_le32(v9inode->qid.version);
-+		netfs_clear_inode_writeback(inode, &version);
- 
--	clear_inode(inode);
--	filemap_fdatawrite(&inode->i_data);
-+		clear_inode(inode);
-+		filemap_fdatawrite(&inode->i_data);
- 
- #ifdef CONFIG_9P_FSCACHE
--	fscache_relinquish_cookie(v9fs_inode_cookie(v9inode), false);
-+		if (v9fs_inode_cookie(v9inode))
-+			fscache_relinquish_cookie(v9fs_inode_cookie(v9inode), false);
- #endif
-+	} else
-+		clear_inode(inode);
- }
- 
- struct inode *v9fs_fid_iget(struct super_block *sb, struct p9_fid *fid)
+```
+The audio working frequency are 44.1khz, 48khz and 192khz.
 
----
-base-commit: acade3ac5c19d3e1a6e4934ab250b192dc787675
-change-id: 20240319-fix-evict-uninitialized-value-a7a401492199
+614.4M can meet the three frequency.
 
-Best regards,
+after the hifi pll, there are two dividers in Audio clock.
+
+614.4M/3200 = 192khz
+
+614.4M/12800 = 48khz
+
+614,4M/13932 = 44.0999khz
+```
+
 -- 
-Eric Van Hensbergen <ericvh@kernel.org>
-
+Thank you,
+Dmitry
 
