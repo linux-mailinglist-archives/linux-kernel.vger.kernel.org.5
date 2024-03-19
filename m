@@ -1,481 +1,243 @@
-Return-Path: <linux-kernel+bounces-106848-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106849-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C24A87F475
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:18:30 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CD2687F477
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:19:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 749BBB2114D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:18:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DBDF8B21083
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0504A34;
-	Tue, 19 Mar 2024 00:18:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EECE06AC0;
+	Tue, 19 Mar 2024 00:19:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="DDtJ+Tk5"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="V3y9L2q7"
+Received: from mail-ua1-f41.google.com (mail-ua1-f41.google.com [209.85.222.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8765E4A09;
-	Tue, 19 Mar 2024 00:18:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6C9DC4A09
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:19:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710807496; cv=none; b=HIBa2qFumgrNoNKojV8vpJ5ZzR0OwdWCK8aMadSJFG1HZZFTsQGN7/C/X7liwQ8Tj+QIrsSx2UrmyjD+X9lMnvGuJP9iTgBjG3M/q44W4B1t2bBnIRuQvvJ15hjJ7jpFJCJmb3dxgY+HBIIIgnhBXsQ9v878RGobpk7enztCj08=
+	t=1710807550; cv=none; b=nqnQgtR8GHcKB95MqVwN2c+DTk+ZUYOoTkI5nynZtXovySj+3Hf5wdUzpizXifozc7+6eRkrKs8IP3ItMYv1mtmc77sllHIfsnuwJ6wDSvyH9h66BG4WwW8z/tBm6OYviiKyV7nA8VLDq4r4Sh6GtPznLpIFORfKjws39Uz90LE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710807496; c=relaxed/simple;
-	bh=UAYpoHcWcQe9/rLPtIFT63asfW6UKK+Elm4RdEaNxTE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=abfbNtZZEKiIQe/Qv4w6GuO9pW1YHtmZpSxDS2tzJgsHqbHf55eiZMt0JKeVV9kel082h0+kuw3bpwDzEfbtM20Bweb21loyJcbo9GTVm5g6hWdgl/fIHmhRoFQETjMHwEFmqHAPW6ZtaIvgWvvfSW+ZL/v2gDmdJbse+ubSUBQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=DDtJ+Tk5; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 1C12212000B;
-	Tue, 19 Mar 2024 03:18:01 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 1C12212000B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710807481;
-	bh=3CLMhNNaDDm1yv/GR1O/EHQ4c1Xvk7kXFEmA957KZEA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=DDtJ+Tk5zAZdRboRgVtghD3Sep3PDPMl213tPim4pA5thBWFSzpTgfW7Ie96FEuDK
-	 UvZT75/X2IffNDUPSVwRflCKLGke3522LLWG7Slzv8RzxAi5H4YwzqhaA/mPM5qHgu
-	 DX0xPQAbnLo1nrEDzHZ5WCG60HjtAaKnQ9Dq5i9R7DE8ebUutVQ9Y5rBn5hT3IF0dw
-	 m3ia+MUUs5g4YVFIxCkwu4XVaFf7Ze8onwvySXAYOgK1bxzkdsOUPSVruy5Q1lifzI
-	 jXkSRkCJnxvU9bWFv6ZzyrBmbVbxEt+cbP0+ipK6PrdTWmIM4QNfLC0m02TNV9z5B/
-	 aEIsDzQMqCCuw==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 19 Mar 2024 03:18:00 +0300 (MSK)
-Received: from [172.28.224.29] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Mar 2024 03:18:00 +0300
-Message-ID: <340ee66a-da5d-4fd5-95a6-ea22839df988@salutedevices.com>
-Date: Tue, 19 Mar 2024 03:17:14 +0300
+	s=arc-20240116; t=1710807550; c=relaxed/simple;
+	bh=MGFoZXzRG8bw5cDzmzUxF4ww0BFMu1SLRorXiHcJrOg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cPwM5dplW1PjHuerjS/MkpKn/znGVouuSzL2p2YAtKnvmuSdk1tlIlsNToTnHikdR4gneJbtqOfZUokIkXUaRleO4irDpanW6+JU1or/wTO0yyKqXBRpSUZHQ7/H3Aj/QlOeePB2ln01y9ja205A62oBPN4WxRp1plXyRkChMgw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=V3y9L2q7; arc=none smtp.client-ip=209.85.222.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f41.google.com with SMTP id a1e0cc1a2514c-7db36dbd474so1932331241.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 17:19:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710807547; x=1711412347; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cm60JN4zn2i0OoCzg391A+FGu8cENfkGRcA7bzuvGiE=;
+        b=V3y9L2q7TpVAFb70RSPp9lsw9y2CNt4yGC+hOP1deWKXJjivu2Nb1hn1h7ZeqEoGul
+         /3cxObhs42R2xRafiJJ0fXYPfyPIkDyrBDLQbIeBboK69PPs3hYFaVFOlXxOF+MCsUZx
+         MnJ5Yx5JJIUi92XSAcTOaBP7dMNDA6v5dTUUhcq8G3vCfHJPHGQ1Q1MAg2N5Zv8wMNvD
+         uKZFwaVG/52izspmabP0JyBbUTNOBMgBmEv0cTCCIUNWvUe8Hidepxdwk3JmxW+wCpm9
+         aNiL/K9iJXTaf7PPtevrevo6wtwJjWIauloFvj1XZDfweUWObgqoO3FyVOn+23weFcGN
+         +7pg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710807547; x=1711412347;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cm60JN4zn2i0OoCzg391A+FGu8cENfkGRcA7bzuvGiE=;
+        b=lVoxcZNGp5HauUMROgPn2w3+iy8E/bHcSKCpZ/wRVK0E3LZLtJXezBG2GSYfCrL2r8
+         9z1oxwS2R0gFMl/krlKHl4MpJ4ze4ryePRMUjO1EQp4X+Bk1SgwW6EvHTLBC0Bv4Cteu
+         u+mVlRDD+84VDl3LWHLrmPFcV2U9io3zH1t7vj4CiPtUTbtOHEbc0Q9+FuxMQ+y5M5ss
+         7BD/fvVOb6ySA4V7bfACwHMRSr2pbX6DRFaTJBlETGfmaJyq3oCJpRPdJrB4c+iaA7xQ
+         YpsogxBq0zjiyFRcnErP9sOEPY4xe4BAbu5jWzJnU//M8QhhBdbyXSqPfaAU8/2e5Lu/
+         re2A==
+X-Forwarded-Encrypted: i=1; AJvYcCXX0i4DHWzk3+qVDBzrIv0facV0aoUpI5wavY4CT1lOxmzgSSPY3Q7qsMMoTNGovZ4pfTUIkO60R1pOjqkCvz7gjbJrpejenKb3saoY
+X-Gm-Message-State: AOJu0Yythli0E94A/LA9H1znBK/IQ29DL77/0d6yjR15m90HzN5cg6fz
+	eI5lSS0ljmmH7UzuTQ6A8NXdfutIiOVycy+0gboNd5VehSPNqPTcbkGEpKpjWLLByrim3qT9OWb
+	9/N3m5OC0k6Epoe3oB0YwXOxb++M=
+X-Google-Smtp-Source: AGHT+IHKYvWifb/X1cQpIthmLo4QDQbWakAQsLUny45KC/LIhxm/8QQUaaNhK7+ziC7F+41yQbnf2mnrkRU4yOoCj6M=
+X-Received: by 2002:a67:f14d:0:b0:475:fd25:3c6 with SMTP id
+ t13-20020a67f14d000000b00475fd2503c6mr8981354vsm.35.1710807546363; Mon, 18
+ Mar 2024 17:19:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 12/25] ASoC: meson: t9015: add support for A1 SoC family
-Content-Language: en-US
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: Neil Armstrong <neil.armstrong@linaro.org>, Michael Turquette
-	<mturquette@baylibre.com>, Stephen Boyd <sboyd@kernel.org>, Rob Herring
-	<robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>,
-	Kevin Hilman <khilman@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-	<kernel@salutedevices.com>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-13-jan.dakinevich@salutedevices.com>
- <1j5xxjhktd.fsf@starbuckisacylon.baylibre.com>
-From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <1j5xxjhktd.fsf@starbuckisacylon.baylibre.com>
+References: <20240318234706.95347-1-21cnbao@gmail.com> <ZfjV5VUcz_KUZm-x@google.com>
+In-Reply-To: <ZfjV5VUcz_KUZm-x@google.com>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 19 Mar 2024 13:18:54 +1300
+Message-ID: <CAGsJ_4wN8ObnqdtkJsJavv076f63WjdoUSV3OvA26TYvQdEYmA@mail.gmail.com>
+Subject: Re: [PATCH v2] mm: zswap: fix kernel BUG in sg_init_one
+To: Yosry Ahmed <yosryahmed@google.com>
+Cc: hannes@cmpxchg.org, nphamcs@gmail.com, akpm@linux-foundation.org, 
+	chrisl@kernel.org, v-songbaohua@oppo.com, linux-mm@kvack.org, 
+	linux-kernel@vger.kernel.org, ira.weiny@intel.com, 
+	syzbot+adbc983a1588b7805de3@syzkaller.appspotmail.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m01.sberdevices.ru (172.16.192.107) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184250 [Mar 18 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 10 0.3.10 53c821b925e16276b831986eabc71d60ab82ee60, {Tracking_smtp_not_equal_from}, {Tracking_uf_ne_domains}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;salutedevices.com:7.1.1;smtp.sberdevices.ru:7.1.1,5.0.1;git.kernel.org:7.1.1;100.64.160.123:7.1.2, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean, bases: 2024/03/18 22:54:00
-X-KSMG-LinksScanning: Clean, bases: 2024/03/18 22:54:00
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/18 21:41:00 #24279760
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Transfer-Encoding: quoted-printable
 
+On Tue, Mar 19, 2024 at 1:01=E2=80=AFPM Yosry Ahmed <yosryahmed@google.com>=
+ wrote:
+>
+> On Tue, Mar 19, 2024 at 12:47:06PM +1300, Barry Song wrote:
+> > From: Barry Song <v-songbaohua@oppo.com>
+> >
+> > sg_init_one() relies on linearly mapped low memory for the safe
+> > utilization of virt_to_page(). Otherwise, we trigger a kernel
+> > BUG,
+> >
+> > kernel BUG at include/linux/scatterlist.h:187!
+> > Internal error: Oops - BUG: 0 [#1] PREEMPT SMP ARM
+> > Modules linked in:
+> > CPU: 0 PID: 2997 Comm: syz-executor198 Not tainted 6.8.0-syzkaller #0
+> > Hardware name: ARM-Versatile Express
+> > PC is at sg_set_buf include/linux/scatterlist.h:187 [inline]
+> > PC is at sg_init_one+0x9c/0xa8 lib/scatterlist.c:143
+> > LR is at sg_init_table+0x2c/0x40 lib/scatterlist.c:128
+> > Backtrace:
+> > [<807e16ac>] (sg_init_one) from [<804c1824>] (zswap_decompress+0xbc/0x2=
+08 mm/zswap.c:1089)
+> >  r7:83471c80 r6:def6d08c r5:844847d0 r4:ff7e7ef4
+> > [<804c1768>] (zswap_decompress) from [<804c4468>] (zswap_load+0x15c/0x1=
+98 mm/zswap.c:1637)
+> >  r9:8446eb80 r8:8446eb80 r7:8446eb84 r6:def6d08c r5:00000001 r4:844847d=
+0
+> > [<804c430c>] (zswap_load) from [<804b9644>] (swap_read_folio+0xa8/0x498=
+ mm/page_io.c:518)
+> >  r9:844ac800 r8:835e6c00 r7:00000000 r6:df955d4c r5:00000001 r4:def6d08=
+c
+> > [<804b959c>] (swap_read_folio) from [<804bb064>] (swap_cluster_readahea=
+d+0x1c4/0x34c mm/swap_state.c:684)
+> >  r10:00000000 r9:00000007 r8:df955d4b r7:00000000 r6:00000000 r5:00100c=
+ca
+> >  r4:00000001
+> > [<804baea0>] (swap_cluster_readahead) from [<804bb3b8>] (swapin_readahe=
+ad+0x68/0x4a8 mm/swap_state.c:904)
+> >  r10:df955eb8 r9:00000000 r8:00100cca r7:84476480 r6:00000001 r5:000000=
+00
+> >  r4:00000001
+> > [<804bb350>] (swapin_readahead) from [<8047cde0>] (do_swap_page+0x200/0=
+xcc4 mm/memory.c:4046)
+> >  r10:00000040 r9:00000000 r8:844ac800 r7:84476480 r6:00000001 r5:000000=
+00
+> >  r4:df955eb8
+> > [<8047cbe0>] (do_swap_page) from [<8047e6c4>] (handle_pte_fault mm/memo=
+ry.c:5301 [inline])
+> > [<8047cbe0>] (do_swap_page) from [<8047e6c4>] (__handle_mm_fault mm/mem=
+ory.c:5439 [inline])
+> > [<8047cbe0>] (do_swap_page) from [<8047e6c4>] (handle_mm_fault+0x3d8/0x=
+12b8 mm/memory.c:5604)
+> >  r10:00000040 r9:842b3900 r8:7eb0d000 r7:84476480 r6:7eb0d000 r5:835e6c=
+00
+> >  r4:00000254
+> > [<8047e2ec>] (handle_mm_fault) from [<80215d28>] (do_page_fault+0x148/0=
+x3a8 arch/arm/mm/fault.c:326)
+> >  r10:00000007 r9:842b3900 r8:7eb0d000 r7:00000207 r6:00000254 r5:7eb0d9=
+b4
+> >  r4:df955fb0
+> > [<80215be0>] (do_page_fault) from [<80216170>] (do_DataAbort+0x38/0xa8 =
+arch/arm/mm/fault.c:558)
+> >  r10:7eb0da7c r9:00000000 r8:80215be0 r7:df955fb0 r6:7eb0d9b4 r5:000002=
+07
+> >  r4:8261d0e0
+> > [<80216138>] (do_DataAbort) from [<80200e3c>] (__dabt_usr+0x5c/0x60 arc=
+h/arm/kernel/entry-armv.S:427)
+> > Exception stack(0xdf955fb0 to 0xdf955ff8)
+> > 5fa0:                                     00000000 00000000 22d5f800 00=
+08d158
+> > 5fc0: 00000000 7eb0d9a4 00000000 00000109 00000000 00000000 7eb0da7c 7e=
+b0da3c
+> > 5fe0: 00000000 7eb0d9a0 00000001 00066bd4 00000010 ffffffff
+> >  r8:824a9044 r7:835e6c00 r6:ffffffff r5:00000010 r4:00066bd4
+> > Code: 1a000004 e1822003 e8860094 e89da8f0 (e7f001f2)
+> > ---[ end trace 0000000000000000 ]---
+> > ----------------
+> > Code disassembly (best guess):
+> >    0: 1a000004        bne     0x18
+> >    4: e1822003        orr     r2, r2, r3
+> >    8: e8860094        stm     r6, {r2, r4, r7}
+> >    c: e89da8f0        ldm     sp, {r4, r5, r6, r7, fp, sp, pc}
+> > * 10: e7f001f2        udf     #18 <-- trapping instruction
+> >
+> > Consequently, we have two choices: either employ kmap_to_page() alongsi=
+de
+> > sg_set_page(), or resort to copying high memory contents to a temporary
+> > buffer residing in low memory. However, considering the introduction
+> > of the WARN_ON_ONCE in commit ef6e06b2ef870 ("highmem: fix kmap_to_page=
+()
+> > for kmap_local_page() addresses"), which specifically addresses high
+> > memory concerns, it appears that memcpy remains the sole viable
+> > option.
+> >
+> > Reported-and-tested-by: syzbot+adbc983a1588b7805de3@syzkaller.appspotma=
+il.com
+> > Closes: https://lore.kernel.org/all/000000000000bbb3d80613f243a6@google=
+com/
+> > Fixes: 270700dd06ca ("mm/zswap: remove the memcpy if acomp is not sleep=
+able")
+> > Signed-off-by: Barry Song <v-songbaohua@oppo.com>
+> > ---
+> >  -v2:
+> >    add comments according to Yosry
+> >
+> >  mm/zswap.c | 14 ++++++++++++--
+> >  1 file changed, 12 insertions(+), 2 deletions(-)
+> >
+> > diff --git a/mm/zswap.c b/mm/zswap.c
+> > index 9dec853647c8..dbd9f745fa8f 100644
+> > --- a/mm/zswap.c
+> > +++ b/mm/zswap.c
+> > @@ -1080,7 +1080,17 @@ static void zswap_decompress(struct zswap_entry =
+*entry, struct page *page)
+> >       mutex_lock(&acomp_ctx->mutex);
+> >
+> >       src =3D zpool_map_handle(zpool, entry->handle, ZPOOL_MM_RO);
+> > -     if (acomp_ctx->is_sleepable && !zpool_can_sleep_mapped(zpool)) {
+> > +     /*
+> > +      * If zpool_map_handle is atomic, we cannot reliably utilize its =
+mapped buffer
+> > +      * to do crypto_acomp_decompress() which might sleep. In such cas=
+es, we must
+> > +      * resort to copying the buffer to a temporary one.
+> > +      * Meanwhile, zpool_map_handle() might return a non-linearly mapp=
+ed buffer,
+> > +      * such as a kmap address of high memory or even ever a vmap addr=
+ess.
+> > +      * However, sg_init_one is only equipped to handle linearly mappe=
+d low memory.
+> > +      * In such cases, we also must copy the buffer to a temporary and=
+ lowmem one.
+> > +      */
+>
+> Can I interest you in something simpler? :)
+>
+>         /*
+>          * There are two cases where we cannot directly use the pointer r=
+eturned
+>          * by zpool_map_handle() during decompression and use a buffer in=
+stead:
+>          * 1. zpool_map_handle() is atomic but crypto_acomp_decompress() =
+is not.
+>          * 2. The pointer is not in the direct map, so it cannot be used =
+by
+>          * sg_init_one().
+>          */
+>
+> Whether you take it or not, feel free to add:
 
+I prefer to retain my version as it focuses more on the explanation
+of why something occurs :-)
 
-On 3/18/24 13:46, Jerome Brunet wrote:
-> 
-> On Fri 15 Mar 2024 at 02:21, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-> 
->> A1's internal codec is very close to t9015. The main difference, that it
->> has ADC. This commit introduces support for capturing from it.
-> 
-> This is mis-leading.
-> 
-> It does not look like the change is A1 specific but rather a extension
-> of the support for t9015. It also mixes several different topics like line
-> configuration, capture support, etc ...
-> 
-First, it is not only extentsion. Some bits are changed comparing to
-existing t9015, so new compatible string is still required.
+>
+> Acked-by: Yosry Ahmed <yosryahmed@google.com>
 
-Second, I don't know anything about about ADC in t9015 on other SoCs and
-even don't sure that it exist there (may be I am inattentive, but I'm
-unable to find audio input pin on sm1/g12a's pinout).
-
-> Again, the t9015 changes should be a separated series from the rest, and
-> there should be one patch per topic.
-> 
-> As Mark, if something is meant to be configured based on the HW layout,
-> then there a good change a kcontrol is not appropriate, and this should
-> rather be part of the platform description, like DT.
-> 
-> It was also suggested here:
-> https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/sound/soc/meson/t9015.c?h=v6.8#n298
-> 
-
-Ok. By the way, on a1 LINEOUT_CFG would have another value.
-
->>
->> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->> ---
->>  sound/soc/meson/t9015.c | 259 ++++++++++++++++++++++++++++++++++++++++
->>  1 file changed, 259 insertions(+)
->>
->> diff --git a/sound/soc/meson/t9015.c b/sound/soc/meson/t9015.c
->> index 48f6767bd858..365955bfeb78 100644
->> --- a/sound/soc/meson/t9015.c
->> +++ b/sound/soc/meson/t9015.c
->> @@ -19,16 +19,33 @@
->>  #define  LOLP_EN	3
->>  #define  DACR_EN	4
->>  #define  DACL_EN	5
->> +#define  ADCR_EN	6
->> +#define  ADCL_EN	7
->> +#define  PGAR_ZCD_EN	8
->> +#define  PGAL_ZCD_EN	9
->> +#define  PGAR_EN	10
->> +#define  PGAL_EN	11
->> +#define  ADCR_INV	16
->> +#define  ADCL_INV	17
->> +#define  ADCR_SRC	18
->> +#define  ADCL_SRC	19
->>  #define  DACR_INV	20
->>  #define  DACL_INV	21
->>  #define  DACR_SRC	22
->>  #define  DACL_SRC	23
->> +#define  ADC_DEM_EN	26
->> +#define  ADC_FILTER_MODE 28
->> +#define  ADC_FILTER_EN	29
->>  #define  REFP_BUF_EN	BIT(12)
->>  #define  BIAS_CURRENT_EN BIT(13)
->>  #define  VMID_GEN_FAST	BIT(14)
->>  #define  VMID_GEN_EN	BIT(15)
->>  #define  I2S_MODE	BIT(30)
->>  #define VOL_CTRL0	0x04
->> +#define  PGAR_VC	0
->> +#define  PGAL_VC	8
->> +#define  ADCR_VC	16
->> +#define  ADCL_VC	24
->>  #define  GAIN_H		31
->>  #define  GAIN_L		23
->>  #define VOL_CTRL1	0x08
->> @@ -46,6 +63,28 @@
->>  #define  LOLN_POL	8
->>  #define  LOLP_POL	12
->>  #define POWER_CFG	0x10
->> +#define LINEIN_CFG	0x14
->> +#define  MICBIAS_LEVEL	0
->> +#define  MICBIAS_EN	3
->> +#define  PGAR_CTVMN	8
->> +#define  PGAR_CTVMP	9
->> +#define  PGAL_CTVMN	10
->> +#define  PGAL_CTVMP	11
->> +#define  PGAR_CTVIN	12
->> +#define  PGAR_CTVIP	13
->> +#define  PGAL_CTVIN	14
->> +#define  PGAL_CTVIP	15
->> +
->> +#define PGAR_MASK	(BIT(PGAR_CTVMP) | BIT(PGAR_CTVMN) | \
->> +			 BIT(PGAR_CTVIP) | BIT(PGAR_CTVIN))
->> +#define PGAR_DIFF	(BIT(PGAR_CTVIP) | BIT(PGAR_CTVIN))
->> +#define PGAR_POSITIVE	(BIT(PGAR_CTVIP) | BIT(PGAR_CTVMN))
->> +#define PGAR_NEGATIVE	(BIT(PGAR_CTVIN) | BIT(PGAR_CTVMP))
->> +#define PGAL_MASK	(BIT(PGAL_CTVMP) | BIT(PGAL_CTVMN) | \
->> +			 BIT(PGAL_CTVIP) | BIT(PGAL_CTVIN))
->> +#define PGAL_DIFF	(BIT(PGAL_CTVIP) | BIT(PGAL_CTVIN))
->> +#define PGAL_POSITIVE	(BIT(PGAL_CTVIP) | BIT(PGAL_CTVMN))
->> +#define PGAL_NEGATIVE	(BIT(PGAL_CTVIN) | BIT(PGAL_CTVMP))
->>  
->>  struct t9015 {
->>  	struct regulator *avdd;
->> @@ -103,6 +142,31 @@ static struct snd_soc_dai_driver t9015_dai = {
->>  	.ops = &t9015_dai_ops,
->>  };
->>  
->> +static struct snd_soc_dai_driver a1_t9015_dai = {
->> +	.name = "t9015-hifi",
->> +	.playback = {
->> +		.stream_name = "Playback",
->> +		.channels_min = 1,
->> +		.channels_max = 2,
->> +		.rates = SNDRV_PCM_RATE_8000_96000,
->> +		.formats = (SNDRV_PCM_FMTBIT_S8 |
->> +			    SNDRV_PCM_FMTBIT_S16_LE |
->> +			    SNDRV_PCM_FMTBIT_S20_LE |
->> +			    SNDRV_PCM_FMTBIT_S24_LE),
->> +	},
->> +	.capture = {
->> +		.stream_name = "Capture",
->> +		.channels_min = 1,
->> +		.channels_max = 2,
->> +		.rates = SNDRV_PCM_RATE_8000_96000,
->> +		.formats = (SNDRV_PCM_FMTBIT_S8 |
->> +			    SNDRV_PCM_FMTBIT_S16_LE |
->> +			    SNDRV_PCM_FMTBIT_S20_LE |
->> +			    SNDRV_PCM_FMTBIT_S24_LE),
->> +	},
->> +	.ops = &t9015_dai_ops,
->> +};
->> +
->>  static const DECLARE_TLV_DB_MINMAX_MUTE(dac_vol_tlv, -9525, 0);
->>  
->>  static const char * const ramp_rate_txt[] = { "Fast", "Slow" };
->> @@ -179,6 +243,166 @@ static const struct snd_soc_dapm_route t9015_dapm_routes[] = {
->>  	{ "LOLP", NULL, "Left+ Driver",  },
->>  };
->>  
->> +static const char * const a1_right_driver_txt[] = { "None", "Right DAC",
->> +	"Left DAC Inverted" };
->> +static const unsigned int a1_right_driver_values[] = { 0, 2, 4 };
->> +
->> +static const char * const a1_left_driver_txt[] = { "None", "Left DAC",
->> +	"Right DAC Inverted" };
->> +static const unsigned int a1_left_driver_values[] = { 0, 2, 4 };
->> +
->> +static SOC_VALUE_ENUM_SINGLE_DECL(a1_right_driver, LINEOUT_CFG, 12, 0x7,
->> +				  a1_right_driver_txt, a1_right_driver_values);
->> +static SOC_VALUE_ENUM_SINGLE_DECL(a1_left_driver, LINEOUT_CFG, 4, 0x7,
->> +				  a1_left_driver_txt, a1_left_driver_values);
->> +
->> +static const struct snd_kcontrol_new a1_right_driver_mux =
->> +	SOC_DAPM_ENUM("Right Driver+ Source", a1_right_driver);
->> +static const struct snd_kcontrol_new a1_left_driver_mux =
->> +	SOC_DAPM_ENUM("Left Driver+ Source", a1_left_driver);
->> +
->> +static const DECLARE_TLV_DB_MINMAX_MUTE(a1_adc_vol_tlv, -29625, 0);
->> +static const DECLARE_TLV_DB_MINMAX_MUTE(a1_adc_pga_vol_tlv, -1200, 0);
->> +
->> +static const char * const a1_adc_right_txt[] = { "Right", "Left" };
->> +static SOC_ENUM_SINGLE_DECL(a1_adc_right, BLOCK_EN, ADCR_SRC, a1_adc_right_txt);
->> +
->> +static const char * const a1_adc_left_txt[] = { "Left", "Right" };
->> +static SOC_ENUM_SINGLE_DECL(a1_adc_left, BLOCK_EN, ADCL_SRC, a1_adc_left_txt);
->> +
->> +static const struct snd_kcontrol_new a1_adc_right_mux =
->> +	SOC_DAPM_ENUM("ADC Right Source", a1_adc_right);
->> +static const struct snd_kcontrol_new a1_adc_left_mux =
->> +	SOC_DAPM_ENUM("ADC Left Source", a1_adc_left);
->> +
->> +static const char * const a1_adc_filter_mode_txt[] = { "Voice", "HiFi"};
->> +static SOC_ENUM_SINGLE_DECL(a1_adc_filter_mode, BLOCK_EN, ADC_FILTER_MODE,
->> +			    a1_adc_filter_mode_txt);
->> +
->> +static const char * const a1_adc_mic_bias_level_txt[] = { "2.0V", "2.1V",
->> +	"2.3V", "2.5V", "2.8V" };
->> +static const unsigned int a1_adc_mic_bias_level_values[] = { 0, 1, 2, 3, 7 };
->> +static SOC_VALUE_ENUM_SINGLE_DECL(a1_adc_mic_bias_level,
->> +				  LINEIN_CFG, MICBIAS_LEVEL, 0x7,
->> +				  a1_adc_mic_bias_level_txt,
->> +				  a1_adc_mic_bias_level_values);
->> +
->> +static const char * const a1_adc_pga_txt[] = { "None", "Differential",
->> +	"Positive", "Negative" };
->> +static const unsigned int a1_adc_pga_right_values[] = { 0, PGAR_DIFF,
->> +	PGAR_POSITIVE, PGAR_NEGATIVE };
->> +static const unsigned int a1_adc_pga_left_values[] = { 0, PGAL_DIFF,
->> +	PGAL_POSITIVE, PGAL_NEGATIVE };
->> +
->> +static SOC_VALUE_ENUM_SINGLE_DECL(a1_adc_pga_right, LINEIN_CFG, 0, PGAR_MASK,
->> +				  a1_adc_pga_txt, a1_adc_pga_right_values);
->> +static SOC_VALUE_ENUM_SINGLE_DECL(a1_adc_pga_left, LINEIN_CFG, 0, PGAL_MASK,
->> +				  a1_adc_pga_txt, a1_adc_pga_left_values);
->> +
->> +static const struct snd_kcontrol_new a1_adc_pga_right_mux =
->> +	SOC_DAPM_ENUM("ADC PGA Right Source", a1_adc_pga_right);
->> +static const struct snd_kcontrol_new a1_adc_pga_left_mux =
->> +	SOC_DAPM_ENUM("ADC PGA Left Source", a1_adc_pga_left);
->> +
->> +static const struct snd_kcontrol_new a1_t9015_snd_controls[] = {
->> +	/* Volume Controls */
->> +	SOC_ENUM("Playback Channel Mode", mono_enum),
->> +	SOC_SINGLE("Playback Switch", VOL_CTRL1, DAC_SOFT_MUTE, 1, 1),
->> +	SOC_DOUBLE_TLV("Playback Volume", VOL_CTRL1, DACL_VC, DACR_VC,
->> +		       0xff, 0, dac_vol_tlv),
->> +
->> +	/* Ramp Controls */
->> +	SOC_ENUM("Ramp Rate", ramp_rate_enum),
->> +	SOC_SINGLE("Volume Ramp Switch", VOL_CTRL1, VC_RAMP_MODE, 1, 0),
->> +	SOC_SINGLE("Mute Ramp Switch", VOL_CTRL1, MUTE_MODE, 1, 0),
->> +	SOC_SINGLE("Unmute Ramp Switch", VOL_CTRL1, UNMUTE_MODE, 1, 0),
->> +
->> +	/* ADC Controls */
->> +	SOC_DOUBLE_TLV("ADC Volume", VOL_CTRL0, ADCL_VC, ADCR_VC,
->> +		       0x7f, 0, a1_adc_vol_tlv),
->> +	SOC_SINGLE("ADC Filter Switch", BLOCK_EN, ADC_FILTER_EN, 1, 0),
->> +	SOC_ENUM("ADC Filter Mode", a1_adc_filter_mode),
->> +	SOC_SINGLE("ADC Mic Bias Switch", LINEIN_CFG, MICBIAS_EN, 1, 0),
->> +	SOC_ENUM("ADC Mic Bias Level", a1_adc_mic_bias_level),
->> +	SOC_SINGLE("ADC DEM Switch", BLOCK_EN, ADC_DEM_EN, 1, 0),
->> +	SOC_DOUBLE_TLV("ADC PGA Volume", VOL_CTRL0, PGAR_VC, PGAL_VC,
->> +		       0x1f, 0, a1_adc_pga_vol_tlv),
->> +	SOC_DOUBLE("ADC PGA Zero Cross-detection Switch", BLOCK_EN,
->> +		   PGAL_ZCD_EN, PGAR_ZCD_EN, 1, 0),
->> +};
->> +
->> +static const struct snd_soc_dapm_widget a1_t9015_dapm_widgets[] = {
->> +	SND_SOC_DAPM_AIF_IN("Right IN", NULL, 0, SND_SOC_NOPM, 0, 0),
->> +	SND_SOC_DAPM_AIF_IN("Left IN", NULL, 0, SND_SOC_NOPM, 0, 0),
->> +	SND_SOC_DAPM_MUX("Right DAC Sel", SND_SOC_NOPM, 0, 0,
->> +			 &t9015_right_dac_mux),
->> +	SND_SOC_DAPM_MUX("Left DAC Sel", SND_SOC_NOPM, 0, 0,
->> +			 &t9015_left_dac_mux),
->> +	SND_SOC_DAPM_DAC("Right DAC", NULL, BLOCK_EN, DACR_EN, 0),
->> +	SND_SOC_DAPM_DAC("Left DAC",  NULL, BLOCK_EN, DACL_EN, 0),
->> +	SND_SOC_DAPM_MUX("Right+ Driver Sel", SND_SOC_NOPM, 0, 0,
->> +			 &a1_right_driver_mux),
->> +	SND_SOC_DAPM_MUX("Left+ Driver Sel", SND_SOC_NOPM, 0, 0,
->> +			 &a1_left_driver_mux),
->> +	SND_SOC_DAPM_OUT_DRV("Right+ Driver", BLOCK_EN, LORP_EN, 0, NULL, 0),
->> +	SND_SOC_DAPM_OUT_DRV("Left+ Driver",  BLOCK_EN, LOLP_EN, 0, NULL, 0),
->> +	SND_SOC_DAPM_OUTPUT("LORP"),
->> +	SND_SOC_DAPM_OUTPUT("LOLP"),
->> +
->> +	SND_SOC_DAPM_INPUT("ADC IN Right"),
->> +	SND_SOC_DAPM_INPUT("ADC IN Left"),
->> +	SND_SOC_DAPM_MUX("ADC PGA Right Sel", SND_SOC_NOPM, 0, 0,
->> +			 &a1_adc_pga_right_mux),
->> +	SND_SOC_DAPM_MUX("ADC PGA Left Sel", SND_SOC_NOPM, 0, 0,
->> +			 &a1_adc_pga_left_mux),
->> +	SND_SOC_DAPM_PGA("ADC PGA Right", BLOCK_EN, PGAR_EN, 0, NULL, 0),
->> +	SND_SOC_DAPM_PGA("ADC PGA Left", BLOCK_EN, PGAL_EN, 0, NULL, 0),
->> +	SND_SOC_DAPM_ADC("ADC Right", NULL, BLOCK_EN, ADCR_EN, 0),
->> +	SND_SOC_DAPM_ADC("ADC Left", NULL, BLOCK_EN, ADCL_EN, 0),
->> +	SND_SOC_DAPM_MUX("ADC Right Sel", SND_SOC_NOPM, 0, 0, &a1_adc_right_mux),
->> +	SND_SOC_DAPM_MUX("ADC Left Sel", SND_SOC_NOPM, 0, 0, &a1_adc_left_mux),
->> +	SND_SOC_DAPM_AIF_OUT("ADC OUT Right", NULL, 0, SND_SOC_NOPM, 0, 0),
->> +	SND_SOC_DAPM_AIF_OUT("ADC OUT Left", NULL, 0, SND_SOC_NOPM, 0, 0),
->> +};
->> +
->> +static const struct snd_soc_dapm_route a1_t9015_dapm_routes[] = {
->> +	{ "Right IN", NULL, "Playback" },
->> +	{ "Left IN", NULL, "Playback" },
->> +	{ "Right DAC Sel", "Right", "Right IN" },
->> +	{ "Right DAC Sel", "Left", "Left IN" },
->> +	{ "Left DAC Sel", "Right", "Right IN" },
->> +	{ "Left DAC Sel", "Left", "Left IN" },
->> +	{ "Right DAC", NULL, "Right DAC Sel" },
->> +	{ "Left DAC", NULL, "Left DAC Sel" },
->> +	{ "Right+ Driver Sel", "Right DAC", "Right DAC" },
->> +	{ "Right+ Driver Sel", "Left DAC Inverted", "Right DAC" },
->> +	{ "Left+ Driver Sel", "Left DAC", "Left DAC" },
->> +	{ "Left+ Driver Sel", "Right DAC Inverted", "Left DAC" },
->> +	{ "Right+ Driver", NULL, "Right+ Driver Sel" },
->> +	{ "Left+ Driver", NULL, "Left+ Driver Sel" },
->> +	{ "LORP", NULL, "Right+ Driver", },
->> +	{ "LOLP", NULL, "Left+ Driver", },
->> +
->> +	{ "ADC PGA Right Sel", "Differential", "ADC IN Right" },
->> +	{ "ADC PGA Right Sel", "Positive", "ADC IN Right" },
->> +	{ "ADC PGA Right Sel", "Negative", "ADC IN Right" },
->> +	{ "ADC PGA Left Sel", "Differential", "ADC IN Left" },
->> +	{ "ADC PGA Left Sel", "Positive", "ADC IN Left" },
->> +	{ "ADC PGA Left Sel", "Negative", "ADC IN Left" },
->> +	{ "ADC PGA Right", NULL, "ADC PGA Right Sel" },
->> +	{ "ADC PGA Left", NULL, "ADC PGA Left Sel" },
->> +	{ "ADC Right", NULL, "ADC PGA Right" },
->> +	{ "ADC Left", NULL, "ADC PGA Left" },
->> +	{ "ADC Right Sel", "Right", "ADC Right" },
->> +	{ "ADC Right Sel", "Left", "ADC Left" },
->> +	{ "ADC Left Sel", "Right", "ADC Right" },
->> +	{ "ADC Left Sel", "Left", "ADC Left" },
->> +	{ "ADC OUT Right", NULL, "ADC Right Sel" },
->> +	{ "ADC OUT Left", NULL, "ADC Left Sel" },
->> +	{ "Capture", NULL, "ADC OUT Right" },
->> +	{ "Capture", NULL, "ADC OUT Left" },
->> +};
->> +
->>  static int t9015_set_bias_level(struct snd_soc_component *component,
->>  				enum snd_soc_bias_level level)
->>  {
->> @@ -241,6 +465,18 @@ static int t9015_component_probe(struct snd_soc_component *component)
->>  	return 0;
->>  }
->>  
->> +static int a1_t9015_component_probe(struct snd_soc_component *component)
->> +{
->> +	/*
->> +	 * This configuration was stealed from original Amlogic's driver to
->> +	 * reproduce the behavior of the driver more accurately. However, it is
->> +	 * not known for certain what it actually affects.
->> +	 */
->> +	snd_soc_component_write(component, POWER_CFG, 0x00010000);
->> +
->> +	return 0;
->> +}
->> +
->>  static const struct snd_soc_component_driver t9015_codec_driver = {
->>  	.probe			= t9015_component_probe,
->>  	.set_bias_level		= t9015_set_bias_level,
->> @@ -254,6 +490,19 @@ static const struct snd_soc_component_driver t9015_codec_driver = {
->>  	.endianness		= 1,
->>  };
->>  
->> +static const struct snd_soc_component_driver a1_t9015_codec_driver = {
->> +	.probe			= a1_t9015_component_probe,
->> +	.set_bias_level		= t9015_set_bias_level,
->> +	.controls		= a1_t9015_snd_controls,
->> +	.num_controls		= ARRAY_SIZE(a1_t9015_snd_controls),
->> +	.dapm_widgets		= a1_t9015_dapm_widgets,
->> +	.num_dapm_widgets	= ARRAY_SIZE(a1_t9015_dapm_widgets),
->> +	.dapm_routes		= a1_t9015_dapm_routes,
->> +	.num_dapm_routes	= ARRAY_SIZE(a1_t9015_dapm_routes),
->> +	.suspend_bias_off	= 1,
->> +	.endianness		= 1,
->> +};
->> +
->>  static int t9015_probe(struct platform_device *pdev)
->>  {
->>  	struct device *dev = &pdev->dev;
->> @@ -315,11 +564,21 @@ static const struct t9015_match_data t9015_match_data = {
->>  	.max_register = POWER_CFG,
->>  };
->>  
->> +static const struct t9015_match_data a1_t9015_match_data = {
->> +	.component_drv = &a1_t9015_codec_driver,
->> +	.dai_drv = &a1_t9015_dai,
->> +	.max_register = LINEIN_CFG,
->> +};
->> +
->>  static const struct of_device_id t9015_ids[] __maybe_unused = {
->>  	{
->>  		.compatible = "amlogic,t9015",
->>  		.data = &t9015_match_data,
->>  	},
->> +	{
->> +		.compatible = "amlogic,t9015-a1",
->> +		.data = &a1_t9015_match_data,
->> +	},
->>  	{ }
->>  };
->>  MODULE_DEVICE_TABLE(of, t9015_ids);
-> 
-> 
-
--- 
-Best regards
-Jan Dakinevich
+Thanks!
 
