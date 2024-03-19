@@ -1,202 +1,439 @@
-Return-Path: <linux-kernel+bounces-107660-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107661-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4593787FFB8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:36:59 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 86B5387FFBB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:37:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A97A71F260B0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:36:58 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A99D51C22A1B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:37:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9CD7208BA;
-	Tue, 19 Mar 2024 14:36:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 18E1D200D5;
+	Tue, 19 Mar 2024 14:37:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b="kdPV7B8o"
-Received: from mout01.posteo.de (mout01.posteo.de [185.67.36.65])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="iPpfjvOf"
+Received: from mail-wm1-f45.google.com (mail-wm1-f45.google.com [209.85.128.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CE4091CD09
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:36:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.67.36.65
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE2E123A8
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:37:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710859010; cv=none; b=ODI15VX2zshHvEzTgDmX2IU/HBskFnBmdlVWemd/Gq6CJcNaWaMopKB7kuNqN2ZjqhTRY+YnAQAnLD3BpogynB8T6r+2Z5dG8tujJ+S10lSz3GDxBl4LPuGxdDPdfSY5hRPUL/s2M5zkZdpoq7MOC/Mk5OJ4KMedQjASd++i8eU=
+	t=1710859061; cv=none; b=gLiiNtGPhI/Bdfu7xvxs/dGrGxAu9wIL4B4JEVD5gxpqhjl3iu3MHEIsP+dKcJXPP0pgqXozwyKcNM88YsWb5QkQxIzdnNCZf7EMcwVEjO7G9Mvw14c21/coc+QNPWl19sSF6WNFH/Bt9V5CN3yHxrJoeAUW0RCYGLef1L9RNCM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710859010; c=relaxed/simple;
-	bh=aHOwznPUczTGmDgYQBLLfOi/SdumXUHjOnnmumsSba0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Vrq+j9IH/+lxg1g+1CBzHm49K6Yt8HDUvDxdpIWPwBNAg6h3fnyhwDBF6YnX4c9liQ40W8RgNbjaVmEsSQyzBiUau7fhubJGeAX3rsMSxmHscophZDt/9vMDuRZlKKimkiwUHt3m0bGzsftfIMsTaDQ4fOaXiUYnixMHXZyAQHU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net; spf=pass smtp.mailfrom=posteo.net; dkim=pass (2048-bit key) header.d=posteo.net header.i=@posteo.net header.b=kdPV7B8o; arc=none smtp.client-ip=185.67.36.65
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=posteo.net
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=posteo.net
-Received: from submission (posteo.de [185.67.36.169]) 
-	by mout01.posteo.de (Postfix) with ESMTPS id ACA7E24002A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:36:46 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=posteo.net; s=2017;
-	t=1710859006; bh=aHOwznPUczTGmDgYQBLLfOi/SdumXUHjOnnmumsSba0=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:
-	 Content-Transfer-Encoding:From;
-	b=kdPV7B8o+Q9yyQ2WaknBeSFHeBYsx67LSH0+RJ98fLpxrtglcPk4MToE9+3ABcn7o
-	 LwanZ3rsNg5OWOd4zNVcsoWaHaZ2Oj9j6D5q4GzgTFwvKEn5K+1opSdJoRb/FRnT5y
-	 FNO70EoQq21r68lolJ5hM3QwZ3cmjH1qXD8bDYkB3nR7B9YPXZqtGQW+4AXA1Qae5i
-	 xbCDcpSvrYQCl770/z2KvnTPVvFdsr/imZPHQZdM1NbMNA4d2DzZ3y9CyDi1r2KN5y
-	 /LdYkQ9b/LiBYlhr7w7b3v4bG+EPn+eNlVHFIXb9tIdXvpllO/8aIKWpUwqCqqPkii
-	 EhwWp7TRCndcg==
-Received: from customer (localhost [127.0.0.1])
-	by submission (posteo.de) with ESMTPSA id 4TzZ6d09LVz6txd;
-	Tue, 19 Mar 2024 15:36:40 +0100 (CET)
-From: Anne Macedo <retpolanne@posteo.net>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Namhyung Kim <namhyung@kernel.org>
-Cc: Anne Macedo <retpolanne@posteo.net>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@redhat.com>,
-	Mark Rutland <mark.rutland@arm.com>,
-	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
-	Jiri Olsa <jolsa@kernel.org>,
-	Ian Rogers <irogers@google.com>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	linux-perf-users@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH v4] perf lock contention: skip traceiter functions
-Date: Tue, 19 Mar 2024 14:36:26 +0000
-Message-Id: <20240319143629.3422590-1-retpolanne@posteo.net>
+	s=arc-20240116; t=1710859061; c=relaxed/simple;
+	bh=P9MDvIOgg/67Pl/OXHAHiUnUqERLvYjviI+TvGLgBPg=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=CI9MCCJZmWi12ZYg8nAX7NqB96IrmLz8c1FgHJwa7y+WLXp3m4MLG5L9NA17rB+Oo4Cn+M3qaChILoJ0njLQv66H9tsie5Sqw1/mbFOoyQXttdWsy8j/29+/yjZ8lEgxbed3JiAQpRwVLeY1bPoQeQeDXIE8mgYa8mlscHbQ93o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=iPpfjvOf; arc=none smtp.client-ip=209.85.128.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wm1-f45.google.com with SMTP id 5b1f17b1804b1-4146703fd2dso4154765e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:37:39 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710859058; x=1711463858; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=w+Hx3jTBckzxRZcHDR1qc6kCjKl3puLO+lxfjqol3eo=;
+        b=iPpfjvOfA5YKxSgUmdnelDRVOmwWuHaIHziqOCefgGb9E/SIM8UbALqjmxb4TqZSw7
+         aDc2+tlpoBn/N6Hu881R6qWRWKiNB8zjXdbafpr4Mp7fD7oojpMLrV+lj3thsqTLEIs1
+         jSfVNkP+rrXlbWtVg5Roz5RhPSj0d38RlE1BF33l8GfaxZc9XLmmboMxjVKUQKI9qL1i
+         fgqqpBVZazvxGaUiLrYqsm3FD98DszByq7alRUGgZVKVSPIr4crNLSBehnXL38n/UlP0
+         yK39+Ao5uGYMRtu5shofX+buCxBc6WsnKI6Y41Tr5/YRH5/fqdYLp5/1m6HzDaBThg3o
+         p+Iw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710859058; x=1711463858;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=w+Hx3jTBckzxRZcHDR1qc6kCjKl3puLO+lxfjqol3eo=;
+        b=RUKLRtaPMIgCy3Syr5JROIVEFqJBvaSrggOORzRZquNWdt6+csgkbjPqn5HK8QUcCh
+         nZv+5sBplQDULjYvzeEjMMd4GqPAqoek/HOhUuxLa+CAMfsh6FTtSOtXKSUDqXld8Prm
+         yY0r97Dxk4xwkc/tI4AY9j/Q5PJeEJ2kEedF5lzftVbK+uUhttL1qbXkrP0/EcEdrYjl
+         rtddZtT919jHXQTCQl2lHSvB2o5LNIOzzX/awrVUCtjii99ek1OpYzwP1S0AUZ9ixHkK
+         1B6f4S9e7yMTLe+aL66p4r8HDKzrUJ1fQau/sOe0VpAO0/HrpPXVCkPtp3palvwhcC1P
+         mhdw==
+X-Forwarded-Encrypted: i=1; AJvYcCW7wh2EiN+kt+HCQjl8ahv0MaydhT0Z7k+CXExGA6KNwPO+kZmHWv0C9JNYIxwU6hGYz2HDu7KIzpqLKRFp2eoFjgjzrKgutTNju0r6
+X-Gm-Message-State: AOJu0YxAJw2hHqzSq1G9HEkM92YZaBsRKjVn05a4nIq9PmmROrIc1W3T
+	y5AJXgifOGnLXsbtrvC7Yt9m2CYFzOIZGTYstJ+fm7EIj6DbgZE+HnefUdpCbio=
+X-Google-Smtp-Source: AGHT+IELvq0C88sFRzGmyuh8MH6rLuGL4gnbWO8FSO3NWeBXCEdDRjR0wUIIMN1G7VcLEN1S+3gKzg==
+X-Received: by 2002:a05:600c:46cd:b0:412:f015:6fa6 with SMTP id q13-20020a05600c46cd00b00412f0156fa6mr2058495wmo.28.1710859057679;
+        Tue, 19 Mar 2024 07:37:37 -0700 (PDT)
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id d8-20020a05600c3ac800b0041462a42c82sm3043208wms.17.2024.03.19.07.37.36
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 07:37:37 -0700 (PDT)
+Message-ID: <5c5882f9-e1c2-46c7-82fc-5fe903ac6616@gmail.com>
+Date: Tue, 19 Mar 2024 15:37:34 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2] drm/amdgpu: refactor code to reuse system information
+Content-Language: en-US
+To: Sunil Khatri <sunil.khatri@amd.com>,
+ Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Shashank Sharma <shashank.sharma@amd.com>
+Cc: amd-gfx@lists.freedesktop.org, dri-devel@lists.freedesktop.org,
+ linux-kernel@vger.kernel.org, Hawking Zhang <Hawking.Zhang@amd.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>, Lijo Lazar <lijo.lazar@amd.com>
+References: <20240319142552.893674-1-sunil.khatri@amd.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <20240319142552.893674-1-sunil.khatri@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 8bit
 
-The perf lock contention program currently shows the caller of the locks
-as __traceiter_contention_begin+0x??. This caller can be ignored, as it is
-from the traceiter itself. Instead, it should show the real callers for
-the locks.
+Am 19.03.24 um 15:25 schrieb Sunil Khatri:
+> Refactor the code so debugfs and devcoredump can reuse
+> the common information and avoid unnecessary copy of it.
+>
+> created a new file which would be the right place to
+> hold functions which will be used between ioctl, debugfs
+> and devcoredump.
 
-When fiddling with the --stack-skip parameter, the actual callers for
-the locks start to show up. However, just ignore the
-__traceiter_contention_begin and the __traceiter_contention_end symbols
-so the actual callers will show up.
+Ok, taking a closer look that is certainly not a good idea.
 
-Before this patch is applied:
+The devinfo structure was just created because somebody thought that 
+mixing all that stuff into one structure would be a good idea.
 
-sudo perf lock con -a -b -- sleep 3
- contended   total wait     max wait     avg wait         type   caller
+We have pretty much deprecated that approach and should *really* not 
+change anything here any more.
 
-         8      2.33 s       2.28 s     291.18 ms     rwlock:W   __traceiter_contention_begin+0x44
-         4      2.33 s       2.28 s     582.35 ms     rwlock:W   __traceiter_contention_begin+0x44
-         7    140.30 ms     46.77 ms     20.04 ms     rwlock:W   __traceiter_contention_begin+0x44
-         2     63.35 ms     33.76 ms     31.68 ms        mutex   trace_contention_begin+0x84
-         2     46.74 ms     46.73 ms     23.37 ms     rwlock:W   __traceiter_contention_begin+0x44
-         1     13.54 us     13.54 us     13.54 us        mutex   trace_contention_begin+0x84
-         1      3.67 us      3.67 us      3.67 us      rwsem:R   __traceiter_contention_begin+0x44
+Regards,
+Christian.
 
-Before this patch is applied - using --stack-skip 5
-
-sudo perf lock con --stack-skip 5 -a -b -- sleep 3
- contended   total wait     max wait     avg wait         type   caller
-
-         2      2.24 s       2.24 s       1.12 s      rwlock:W   do_epoll_wait+0x5a0
-         4      1.65 s     824.21 ms    412.08 ms     rwlock:W   do_exit+0x338
-         2    824.35 ms    824.29 ms    412.17 ms     spinlock   get_signal+0x108
-         2    824.14 ms    824.14 ms    412.07 ms     rwlock:W   release_task+0x68
-         1     25.22 ms     25.22 ms     25.22 ms        mutex   cgroup_kn_lock_live+0x58
-         1     24.71 us     24.71 us     24.71 us     spinlock   do_exit+0x44
-         1     22.04 us     22.04 us     22.04 us      rwsem:R   lock_mm_and_find_vma+0xb0
-
-After this patch is applied:
-
-sudo ./perf lock con -a -b -- sleep 3
- contended   total wait     max wait     avg wait         type   caller
-
-         4      4.13 s       2.07 s       1.03 s      rwlock:W   release_task+0x68
-         2      2.07 s       2.07 s       1.03 s      rwlock:R   mm_update_next_owner+0x50
-         2      2.07 s       2.07 s       1.03 s      rwlock:W   do_exit+0x338
-         1     41.56 ms     41.56 ms     41.56 ms        mutex   cgroup_kn_lock_live+0x58
-         2     36.12 us     18.83 us     18.06 us     rwlock:W   do_exit+0x338
-
-changes since v3:
-
-- remove dummy value and assume machine->traceiter and machine->trace
-have zero address
-
-changes since v2:
-
-- add dummy value to machine->traceiter and machine->trace to make
-necessary checks, fixing possible null pointer access
-
-changes since v1:
-
-- consider trace_contention and __traceiter_contention functions as
-optional (i.e. check if sym is null to avoid segfault)
-
-changes since v0:
-
-- skip trace_contention functions
-- use sym->end instead of __traceiter_contention_end for text_end
-
-Signed-off-by: Anne Macedo <retpolanne@posteo.net>
----
- tools/perf/util/machine.c | 24 ++++++++++++++++++++++++
- tools/perf/util/machine.h |  2 +-
- 2 files changed, 25 insertions(+), 1 deletion(-)
-
-diff --git a/tools/perf/util/machine.c b/tools/perf/util/machine.c
-index 527517db3182..5eb9044bc223 100644
---- a/tools/perf/util/machine.c
-+++ b/tools/perf/util/machine.c
-@@ -3266,6 +3266,17 @@ bool machine__is_lock_function(struct machine *machine, u64 addr)
- 
- 		sym = machine__find_kernel_symbol_by_name(machine, "__lock_text_end", &kmap);
- 		machine->lock.text_end = map__unmap_ip(kmap, sym->start);
-+
-+		sym = machine__find_kernel_symbol_by_name(machine, "__traceiter_contention_begin", &kmap);
-+		if (sym) {
-+			machine->traceiter.text_start = map__unmap_ip(kmap, sym->start);
-+			machine->traceiter.text_end = map__unmap_ip(kmap, sym->end);
-+		}
-+		sym = machine__find_kernel_symbol_by_name(machine, "trace_contention_begin", &kmap);
-+		if (sym) {
-+			machine->trace.text_start = map__unmap_ip(kmap, sym->start);
-+			machine->trace.text_end = map__unmap_ip(kmap, sym->end);
-+		}
- 	}
- 
- 	/* failed to get kernel symbols */
-@@ -3280,5 +3291,18 @@ bool machine__is_lock_function(struct machine *machine, u64 addr)
- 	if (machine->lock.text_start <= addr && addr < machine->lock.text_end)
- 		return true;
- 
-+	/* traceiter functions currently don't have their own section
-+	 * but we consider them lock functions
-+	 */
-+	if (machine->traceiter.text_start != 0) {
-+		if (machine->traceiter.text_start <= addr && addr < machine->traceiter.text_end)
-+			return true;
-+	}
-+
-+	if (machine->trace.text_start != 0) {
-+		if (machine->trace.text_start <= addr && addr < machine->trace.text_end)
-+			return true;
-+	}
-+
- 	return false;
- }
-diff --git a/tools/perf/util/machine.h b/tools/perf/util/machine.h
-index e28c787616fe..4312f6db6de0 100644
---- a/tools/perf/util/machine.h
-+++ b/tools/perf/util/machine.h
-@@ -49,7 +49,7 @@ struct machine {
- 	struct {
- 		u64	  text_start;
- 		u64	  text_end;
--	} sched, lock;
-+	} sched, lock, traceiter, trace;
- 	pid_t		  *current_tid;
- 	size_t		  current_tid_sz;
- 	union { /* Tool specific area */
--- 
-2.39.2
+>
+> Cc: Christian König <christian.koenig@amd.com>
+> Cc: Alex Deucher <alexander.deucher@amd.com>
+> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+> ---
+>   drivers/gpu/drm/amd/amdgpu/Makefile         |   2 +-
+>   drivers/gpu/drm/amd/amdgpu/amdgpu.h         |   1 +
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c | 151 ++++++++++++++++++++
+>   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c     | 118 +--------------
+>   4 files changed, 157 insertions(+), 115 deletions(-)
+>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>
+> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
+> index 4536c8ad0e11..05d34f4b18f5 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
+> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+> @@ -80,7 +80,7 @@ amdgpu-y += amdgpu_device.o amdgpu_doorbell_mgr.o amdgpu_kms.o \
+>   	amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
+>   	amdgpu_fw_attestation.o amdgpu_securedisplay.o \
+>   	amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
+> -	amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o
+> +	amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o amdgpu_devinfo.o
+>   
+>   amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
+>   
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> index 9c62552bec34..0267870aa9b1 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+> @@ -1609,4 +1609,5 @@ extern const struct attribute_group amdgpu_vram_mgr_attr_group;
+>   extern const struct attribute_group amdgpu_gtt_mgr_attr_group;
+>   extern const struct attribute_group amdgpu_flash_attr_group;
+>   
+> +int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info);
+>   #endif
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+> new file mode 100644
+> index 000000000000..fdcbc1984031
+> --- /dev/null
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+> @@ -0,0 +1,151 @@
+> +// SPDX-License-Identifier: MIT
+> +/*
+> + * Copyright 2024 Advanced Micro Devices, Inc.
+> + *
+> + * Permission is hereby granted, free of charge, to any person obtaining a
+> + * copy of this software and associated documentation files (the "Software"),
+> + * to deal in the Software without restriction, including without limitation
+> + * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+> + * and/or sell copies of the Software, and to permit persons to whom the
+> + * Software is furnished to do so, subject to the following conditions:
+> + *
+> + * The above copyright notice and this permission notice shall be included in
+> + * all copies or substantial portions of the Software.
+> + *
+> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+> + * OTHER DEALINGS IN THE SOFTWARE.
+> + *
+> + */
+> +
+> +#include "amdgpu.h"
+> +#include "amd_pcie.h"
+> +
+> +#include <drm/amdgpu_drm.h>
+> +
+> +int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info)
+> +{
+> +	int ret;
+> +	uint64_t vm_size;
+> +	uint32_t pcie_gen_mask;
+> +
+> +	if (dev_info == NULL)
+> +		return -EINVAL;
+> +
+> +	dev_info->device_id = adev->pdev->device;
+> +	dev_info->chip_rev = adev->rev_id;
+> +	dev_info->external_rev = adev->external_rev_id;
+> +	dev_info->pci_rev = adev->pdev->revision;
+> +	dev_info->family = adev->family;
+> +	dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
+> +	dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
+> +	/* return all clocks in KHz */
+> +	dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
+> +	if (adev->pm.dpm_enabled) {
+> +		dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
+> +		dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
+> +		dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
+> +		dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
+> +	} else {
+> +		dev_info->max_engine_clock =
+> +			dev_info->min_engine_clock =
+> +				adev->clock.default_sclk * 10;
+> +		dev_info->max_memory_clock =
+> +			dev_info->min_memory_clock =
+> +				adev->clock.default_mclk * 10;
+> +		}
+> +	dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
+> +	dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
+> +		adev->gfx.config.max_shader_engines;
+> +	dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
+> +	dev_info->ids_flags = 0;
+> +	if (adev->flags & AMD_IS_APU)
+> +		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
+> +	if (adev->gfx.mcbp)
+> +		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
+> +	if (amdgpu_is_tmz(adev))
+> +		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
+> +	if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
+> +		dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
+> +
+> +	vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
+> +	vm_size -= AMDGPU_VA_RESERVED_TOP;
+> +
+> +	/* Older VCE FW versions are buggy and can handle only 40bits */
+> +	if (adev->vce.fw_version && adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
+> +		vm_size = min(vm_size, 1ULL << 40);
+> +
+> +	dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
+> +	dev_info->virtual_address_max = min(vm_size, AMDGPU_GMC_HOLE_START);
+> +
+> +	if (vm_size > AMDGPU_GMC_HOLE_START) {
+> +		dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+> +		dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
+> +	}
+> +	dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+> +	dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+> +	dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+> +	dev_info->cu_active_number = adev->gfx.cu_info.number;
+> +	dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+> +	dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+> +	memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
+> +	       sizeof(adev->gfx.cu_info.ao_cu_bitmap));
+> +	memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
+> +	       sizeof(dev_info->cu_bitmap));
+> +	dev_info->vram_type = adev->gmc.vram_type;
+> +	dev_info->vram_bit_width = adev->gmc.vram_width;
+> +	dev_info->vce_harvest_config = adev->vce.harvest_config;
+> +	dev_info->gc_double_offchip_lds_buf =
+> +		adev->gfx.config.double_offchip_lds_buf;
+> +	dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
+> +	dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
+> +	dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
+> +	dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
+> +	dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
+> +	dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
+> +	dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
+> +
+> +	if (adev->family >= AMDGPU_FAMILY_NV)
+> +		dev_info->pa_sc_tile_steering_override =
+> +			adev->gfx.config.pa_sc_tile_steering_override;
+> +
+> +	dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
+> +
+> +	/* Combine the chip gen mask with the platform (CPU/mobo) mask. */
+> +	pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
+> +	dev_info->pcie_gen = fls(pcie_gen_mask);
+> +	dev_info->pcie_num_lanes =
+> +		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
+> +		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
+> +		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
+> +		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
+> +		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
+> +		adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
+> +
+> +	dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
+> +	dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
+> +	dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
+> +	dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
+> +	dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
+> +				    adev->gfx.config.gc_gl1c_per_sa;
+> +	dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
+> +	dev_info->mall_size = adev->gmc.mall_size;
+> +
+> +
+> +	if (adev->gfx.funcs->get_gfx_shadow_info) {
+> +		struct amdgpu_gfx_shadow_info shadow_info;
+> +
+> +		ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
+> +		if (!ret) {
+> +			dev_info->shadow_size = shadow_info.shadow_size;
+> +			dev_info->shadow_alignment = shadow_info.shadow_alignment;
+> +			dev_info->csa_size = shadow_info.csa_size;
+> +			dev_info->csa_alignment = shadow_info.csa_alignment;
+> +		}
+> +	}
+> +	return 0;
+> +}
+> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> index a66d47865e3b..c924ba14f9a4 100644
+> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+> @@ -850,125 +850,15 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+>   	}
+>   	case AMDGPU_INFO_DEV_INFO: {
+>   		struct drm_amdgpu_info_device *dev_info;
+> -		uint64_t vm_size;
+> -		uint32_t pcie_gen_mask;
+>   
+>   		dev_info = kzalloc(sizeof(*dev_info), GFP_KERNEL);
+>   		if (!dev_info)
+>   			return -ENOMEM;
+>   
+> -		dev_info->device_id = adev->pdev->device;
+> -		dev_info->chip_rev = adev->rev_id;
+> -		dev_info->external_rev = adev->external_rev_id;
+> -		dev_info->pci_rev = adev->pdev->revision;
+> -		dev_info->family = adev->family;
+> -		dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
+> -		dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
+> -		/* return all clocks in KHz */
+> -		dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
+> -		if (adev->pm.dpm_enabled) {
+> -			dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
+> -			dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
+> -			dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
+> -			dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
+> -		} else {
+> -			dev_info->max_engine_clock =
+> -				dev_info->min_engine_clock =
+> -					adev->clock.default_sclk * 10;
+> -			dev_info->max_memory_clock =
+> -				dev_info->min_memory_clock =
+> -					adev->clock.default_mclk * 10;
+> -		}
+> -		dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
+> -		dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
+> -			adev->gfx.config.max_shader_engines;
+> -		dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
+> -		dev_info->ids_flags = 0;
+> -		if (adev->flags & AMD_IS_APU)
+> -			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
+> -		if (adev->gfx.mcbp)
+> -			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
+> -		if (amdgpu_is_tmz(adev))
+> -			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
+> -		if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
+> -			dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
+> -
+> -		vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
+> -		vm_size -= AMDGPU_VA_RESERVED_TOP;
+> -
+> -		/* Older VCE FW versions are buggy and can handle only 40bits */
+> -		if (adev->vce.fw_version &&
+> -		    adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
+> -			vm_size = min(vm_size, 1ULL << 40);
+> -
+> -		dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
+> -		dev_info->virtual_address_max =
+> -			min(vm_size, AMDGPU_GMC_HOLE_START);
+> -
+> -		if (vm_size > AMDGPU_GMC_HOLE_START) {
+> -			dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+> -			dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
+> -		}
+> -		dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+> -		dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+> -		dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+> -		dev_info->cu_active_number = adev->gfx.cu_info.number;
+> -		dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+> -		dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+> -		memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
+> -		       sizeof(adev->gfx.cu_info.ao_cu_bitmap));
+> -		memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
+> -		       sizeof(dev_info->cu_bitmap));
+> -		dev_info->vram_type = adev->gmc.vram_type;
+> -		dev_info->vram_bit_width = adev->gmc.vram_width;
+> -		dev_info->vce_harvest_config = adev->vce.harvest_config;
+> -		dev_info->gc_double_offchip_lds_buf =
+> -			adev->gfx.config.double_offchip_lds_buf;
+> -		dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
+> -		dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
+> -		dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
+> -		dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
+> -		dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
+> -		dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
+> -		dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
+> -
+> -		if (adev->family >= AMDGPU_FAMILY_NV)
+> -			dev_info->pa_sc_tile_steering_override =
+> -				adev->gfx.config.pa_sc_tile_steering_override;
+> -
+> -		dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
+> -
+> -		/* Combine the chip gen mask with the platform (CPU/mobo) mask. */
+> -		pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
+> -		dev_info->pcie_gen = fls(pcie_gen_mask);
+> -		dev_info->pcie_num_lanes =
+> -			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
+> -			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
+> -			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
+> -			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
+> -			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
+> -			adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
+> -
+> -		dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
+> -		dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
+> -		dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
+> -		dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
+> -		dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
+> -					    adev->gfx.config.gc_gl1c_per_sa;
+> -		dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
+> -		dev_info->mall_size = adev->gmc.mall_size;
+> -
+> -
+> -		if (adev->gfx.funcs->get_gfx_shadow_info) {
+> -			struct amdgpu_gfx_shadow_info shadow_info;
+> -
+> -			ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
+> -			if (!ret) {
+> -				dev_info->shadow_size = shadow_info.shadow_size;
+> -				dev_info->shadow_alignment = shadow_info.shadow_alignment;
+> -				dev_info->csa_size = shadow_info.csa_size;
+> -				dev_info->csa_alignment = shadow_info.csa_alignment;
+> -			}
+> +		ret = amdgpu_device_info(adev, dev_info);
+> +		if (ret == -EINVAL) {
+> +			kfree(dev_info);
+> +			return ret;
+>   		}
+>   
+>   		ret = copy_to_user(out, dev_info,
 
 
