@@ -1,343 +1,238 @@
-Return-Path: <linux-kernel+bounces-107624-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107625-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6834287FF4B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:05:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D106587FF51
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:07:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 8B5DE1C224CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:05:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 552D52831EE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:07:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5DB1281746;
-	Tue, 19 Mar 2024 14:05:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 09DE08173D;
+	Tue, 19 Mar 2024 14:07:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CB559RHO"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="QboZVeOC"
+Received: from mail-pl1-f172.google.com (mail-pl1-f172.google.com [209.85.214.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 568517D3EA;
-	Tue, 19 Mar 2024 14:05:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 691517D3EA;
+	Tue, 19 Mar 2024 14:07:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710857120; cv=none; b=O3jB8jp0mRAfBTxZzIdh/CbLLw53iitpu5c8wBJ65wUXg/xUKCe9PTkpp5YgK4v7jqq2tdV4rpTZhZD5NBM/lB0DvSr+BmcLaAK2G5YGgKnsCDuoQ52hcSGsgpUjdMdGTEKUQKFzqrez94MAc2aMG+NOmTvlwQvCWlYWMFE+e50=
+	t=1710857230; cv=none; b=lgKV2KPlYuNhe8GRFVYFZPWeuBTE2gKG4h0GFXc4OcnpYJZ1tSG8bAfpIbLz123nR3SXIyPt+n0GMr8TkuLoCCYc4L/VgRYZMRv9IQLZGkePEdxBR8Ob1uVWQCil3hwejzPnDnP3j41MhMtiID+IcZK+9JrYtPNRuBXLDvm4wUI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710857120; c=relaxed/simple;
-	bh=A3OBWupXAPJhB+00pELDv4wUixrLARkkrZPDw2jcyuc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=i6iQnfT22cv7WcOszWWolDhtCd2IMkWSRXvvmm8A1J1CL7uuAR1r8FAgMwO3T0yd9zWx+OVAwsYXYNm41iRAxRxq+q6PF42yyy8/XUQrexWmwHXCaxe+xp3Ye/z7CW9bs+PB6phHD4r7dIUqT40+QjpVV33m/nvU/S7WOEbIVSs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CB559RHO; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 65210C433F1;
-	Tue, 19 Mar 2024 14:05:19 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710857119;
-	bh=A3OBWupXAPJhB+00pELDv4wUixrLARkkrZPDw2jcyuc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CB559RHOyVE9o0r7yTnaNBLXpgrGhnr63Q193jVaxIDfzfpFX0JrudTFglwkJovKe
-	 MITkHjmXP+qq3y0JEVsJX8xDMllNHGDfq5XJXQRgrW04gtXKWmkDGBFQ7CgyNQ5hO5
-	 sxfUG0uk3dgPvhrNXnOmmKAxivaoZl5qC9sQggsMrJeyk+3o9CySW1vgkqJ+txO1b2
-	 5+NWfmwhRLaSnQ2xQV0x9rtSCLS2KA82qGyI17j88VOxTNflb3DHF9CLBjCaB70jEE
-	 EpBT6cT8CXn7WOT0A/iW39XBscWozp1dY0smfcg7W4BD8BxBWlTN1+aLUkoGMtBFXj
-	 gOdlP+bwbc3qQ==
-Date: Tue, 19 Mar 2024 11:05:16 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 08/23] perf annotate-data: Add debug messages
-Message-ID: <ZfmbnBBn5qqzQd5D@x1>
-References: <20240319055115.4063940-1-namhyung@kernel.org>
- <20240319055115.4063940-9-namhyung@kernel.org>
+	s=arc-20240116; t=1710857230; c=relaxed/simple;
+	bh=pRuZMlLOvOCtBUHG6gDGRpdoz38rFmiYXsWOnKTa1PU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=hkANvn8X3LGw0gNq/bnRmzNgRKEGiEGNsVRRQKAdKDHewMMMPh8qqXl84Icg70AApDSQsJHgz2g0NpPvhUTzXJ7lF75N6sFRoACa9ZGrQDThisxvjEnJZEgjrKc/cJHYOI9cDUAfV9Q6eqghv/YOhhFuv9RRZiBOBessA99/qvU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=QboZVeOC; arc=none smtp.client-ip=209.85.214.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f172.google.com with SMTP id d9443c01a7336-1df01161b39so28765475ad.3;
+        Tue, 19 Mar 2024 07:07:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710857228; x=1711462028; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=RREg2igfyHsUB9UVUQWGd5w14ea5dynh8ZqR2r9I7Ow=;
+        b=QboZVeOCY6lcYOu5uJ77SU999TKl1rEuEH3h2LOUSJCEo1bhZQTS8Rhfmvrbhvg7Mm
+         DtGiSOuDgxiD1ToAriNvR1O2wj9SoiewQVcVFJOAF7ZIGR3xGSNJHHo4nb4qcUVz4aWW
+         MupASjjrhO06/Ou8C9JNiHwVJbPLvSxV1uL+4HeY170pLfpLG1bUOCS2NQ4pr/yjhwYn
+         RcECzY68axfjd/DSfviSexaN+JOGkA+41TBsr9Q8V7Nh/raed41eKjinStFGemzDAB99
+         /tFkJIqkFE16PQz9K1smTn/aL4K1xYIKEJ1LxEqVSH6sXgTFW7YtbZI++JIMSUaaUZjg
+         Ji1A==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710857228; x=1711462028;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=RREg2igfyHsUB9UVUQWGd5w14ea5dynh8ZqR2r9I7Ow=;
+        b=SS+NOLh7BT4lLK6/zb0mVXB/o7E7Xd2DNc9PtwPvC67D+13ZUhIPSXYiJnBfwJBYKX
+         3yeai6f7QBcZsxzQCFo+jBpKubSGnpzNuKGmZ/TwwpHO0oQw9EZuFdx3EyGXdEWTk7oW
+         TLukC75L1DBAHS04B+n5ddAj2RK6n51vL9p6k3dXa/tYO6D3TZmyw3bg0jdsDwihAhPC
+         FNHTG9uP7ee6U8XL68emrgtsQsa/RDeeNhAsQ5rOTp4vQ0DKRkM5+pCR8OBox2wQdjrL
+         vdW9D08SBw0Hr+Ds5Db4s5jxF7f24nRLtcTVNEG9NgJ8XHONU+7ezZ8N4mGTwCAaMBTt
+         4uSQ==
+X-Forwarded-Encrypted: i=1; AJvYcCXupOJ+tNN1K7VBU70R45Z/cn/p0n3uaAXKjHTkBvw028OSLiBvg8C8/Y+LXgKYezOBp1MF0bTRhiDr/eXGgHR+u9jwq102FymxhCGxGvLerMwgRqrDthJYgAf8au+jPNd+F5DLINpwkFnyTmw=
+X-Gm-Message-State: AOJu0YySTBL9Ftdekve0kB8V7dcZdCa5Xfh8Xcoo+EQvMQq4rC/o0fy7
+	MQr5JJBdsUjcYcKNXf8/FcchmFSeO1DCqXWNL9mY8qAglpGWu7cP
+X-Google-Smtp-Source: AGHT+IEXfyZYvUe4BW5f4SBetB2P3H5AzqMYAtH46gSwzFC4nX3Ud7Wc30Tvvd4cJoM83cmWFvH7cw==
+X-Received: by 2002:a17:903:244c:b0:1e0:444:5f55 with SMTP id l12-20020a170903244c00b001e004445f55mr12945718pls.47.1710857226659;
+        Tue, 19 Mar 2024 07:07:06 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id jj4-20020a170903048400b001dd4b1fb72csm11433192plb.189.2024.03.19.07.07.05
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 07:07:06 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <8e4c2d5a-9f28-4946-b69d-63f5af3bc3da@roeck-us.net>
+Date: Tue, 19 Mar 2024 07:07:04 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319055115.4063940-9-namhyung@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] watchdog: xilinx_wwdt: Add check for timeout limit and
+ set maximum value if exceeded
+Content-Language: en-US
+To: Harini T <harini.t@amd.com>, michal.simek@amd.com,
+ srinivas.neeli@amd.com, shubhrajyoti.datta@amd.com
+Cc: srinivas.goud@amd.com, wim@linux-watchdog.org,
+ linux-watchdog@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-kernel@vger.kernel.org, git@amd.com
+References: <20240319111219.21094-1-harini.t@amd.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <20240319111219.21094-1-harini.t@amd.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 10:51:00PM -0700, Namhyung Kim wrote:
-> Add a new debug option "type-profile" to enable the detailed info during
-> the type analysis especially for instruction tracking.  You can use this
-> before the command name like 'report' or 'annotate'.
+On 3/19/24 04:12, Harini T wrote:
+> Current implementation fails to verify if the user input such as timeout
+> or closed window percentage exceeds the maximum value that the hardware
+> supports.
 > 
->   $ perf --debug type-profile annotate --data-type
-
-Tested-by: Arnaldo Carvalho de Melo <acme@redhat.com>
-
-First get some memory events:
-
-  $ perf mem record ls
-
-Then, without data-type profiling debug:
-
-  $ perf annotate --data-type | head
-  Annotate type: 'struct rtld_global' in /usr/lib64/ld-linux-x86-64.so.2 (1 samples):
-  ============================================================================
-      samples     offset       size  field
-            1          0       4336  struct rtld_global  {
-            0          0          0      struct link_namespaces*        _dl_ns;
-            0       2560          8      size_t _dl_nns;
-            0       2568         40      __rtld_lock_recursive_t        _dl_load_lock {
-            0       2568         40          pthread_mutex_t    mutex {
-            0       2568         40              struct __pthread_mutex_s       __data {
-            0       2568          4                  int        __lock;
-  $
-
-And with only data-type profiling:
-
-  $ perf --debug type-profile annotate --data-type | head
-  -----------------------------------------------------------
-  find_data_type_die [1e67] for reg13873052 (PC) offset=0x150e2 in dl_main
-  CU die offset: 0x29cd3
-  found PC-rel by addr=0x34020 offset=0x20
-  -----------------------------------------------------------
-  find_data_type_die [2e] for reg12 offset=0 in __GI___readdir64
-  CU die offset: 0x137a45
-  frame base: cfa=1 fbreg=-1
-  found "__futex" in scope=2/2 (die: 0x137ad5) 0(reg12) type=int (die:2a)
-  -----------------------------------------------------------
-  find_data_type_die [52] for reg5 offset=0 in __memmove_avx_unaligned_erms
-  CU die offset: 0x1124ed
-  no variable found
-  Annotate type: 'struct rtld_global' in /usr/lib64/ld-linux-x86-64.so.2 (1 samples):
-  ============================================================================
-      samples     offset       size  field
-            1          0       4336  struct rtld_global  {
-            0          0          0      struct link_namespaces*        _dl_ns;
-            0       2560          8      size_t _dl_nns;
-            0       2568         40      __rtld_lock_recursive_t        _dl_load_lock {
-            0       2568         40          pthread_mutex_t    mutex {
-            0       2568         40              struct __pthread_mutex_s       __data {
-            0       2568          4                  int        __lock;
-  $
- 
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> Maximum timeout is derived based on input clock frequency.
+> If the user input timeout exceeds the maximum timeout supported, limit
+> the timeout to maximum supported value.
+> Limit the close and open window percent to hardware supported value.
+> 
+> Signed-off-by: Harini T <harini.t@amd.com>
 > ---
->  tools/perf/util/annotate-data.c | 74 +++++++++++++++++++++++++++++----
->  tools/perf/util/debug.c         |  3 ++
->  tools/perf/util/debug.h         |  1 +
->  3 files changed, 71 insertions(+), 7 deletions(-)
+>   drivers/watchdog/xilinx_wwdt.c | 30 +++++++++++++++++++++++++++++-
+>   1 file changed, 29 insertions(+), 1 deletion(-)
 > 
-> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-> index ff81d164aa57..f482ccfdaa91 100644
-> --- a/tools/perf/util/annotate-data.c
-> +++ b/tools/perf/util/annotate-data.c
-> @@ -23,6 +23,29 @@
->  #include "symbol.h"
->  #include "symbol_conf.h"
->  
-> +#define pr_debug_dtp(fmt, ...)					\
-> +do {								\
-> +	if (debug_type_profile)					\
-> +		pr_info(fmt, ##__VA_ARGS__);			\
-> +	else							\
-> +		pr_debug3(fmt, ##__VA_ARGS__);			\
-> +} while (0)
+> diff --git a/drivers/watchdog/xilinx_wwdt.c b/drivers/watchdog/xilinx_wwdt.c
+> index d271e2e8d6e2..86e2edc4f3c7 100644
+> --- a/drivers/watchdog/xilinx_wwdt.c
+> +++ b/drivers/watchdog/xilinx_wwdt.c
+> @@ -36,6 +36,12 @@
+>   
+>   #define XWWDT_CLOSE_WINDOW_PERCENT	50
+>   
+> +/* Maximum count value of each 32 bit window */
+> +#define XWWDT_MAX_COUNT_WINDOW		GENMASK(31, 0)
 > +
-> +static void pr_debug_type_name(Dwarf_Die *die)
-> +{
-> +	struct strbuf sb;
-> +	char *str;
+> +/* Maximum count value of closed and open window combined*/
+> +#define XWWDT_MAX_COUNT_WINDOW_COMBINED GENMASK_ULL(32, 1)
 > +
-> +	if (!debug_type_profile && verbose < 3)
-> +		return;
+>   static int wwdt_timeout;
+>   static int closed_window_percent;
+>   
+> @@ -73,6 +79,24 @@ static int xilinx_wwdt_start(struct watchdog_device *wdd)
+>   	/* Calculate timeout count */
+>   	time_out = xdev->freq * wdd->timeout;
+>   	closed_timeout = div_u64(time_out * xdev->close_percent, 100);
 > +
-> +	strbuf_init(&sb, 32);
-> +	die_get_typename_from_type(die, &sb);
-> +	str = strbuf_detach(&sb, NULL);
-> +	pr_info(" type=%s (die:%lx)\n", str, (long)dwarf_dieoffset(die));
-> +	free(str);
-> +}
+> +	if (time_out > XWWDT_MAX_COUNT_WINDOW) {
+> +		u64 min_close_timeout = time_out - XWWDT_MAX_COUNT_WINDOW;
+> +		u64 max_close_timeout = XWWDT_MAX_COUNT_WINDOW;
 > +
->  /*
->   * Compare type name and size to maintain them in a tree.
->   * I'm not sure if DWARF would have information of a single type in many
-> @@ -201,7 +224,7 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset,
->  
->  	/* Get the type of the variable */
->  	if (die_get_real_type(var_die, type_die) == NULL) {
-> -		pr_debug("variable has no type\n");
-> +		pr_debug_dtp("variable has no type\n");
->  		ann_data_stat.no_typeinfo++;
->  		return -1;
->  	}
-> @@ -215,7 +238,7 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset,
->  		if ((dwarf_tag(type_die) != DW_TAG_pointer_type &&
->  		     dwarf_tag(type_die) != DW_TAG_array_type) ||
->  		    die_get_real_type(type_die, type_die) == NULL) {
-> -			pr_debug("no pointer or no type\n");
-> +			pr_debug_dtp("no pointer or no type\n");
->  			ann_data_stat.no_typeinfo++;
->  			return -1;
->  		}
-> @@ -223,14 +246,15 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset,
->  
->  	/* Get the size of the actual type */
->  	if (dwarf_aggregate_size(type_die, &size) < 0) {
-> -		pr_debug("type size is unknown\n");
-> +		pr_debug_dtp("type size is unknown\n");
->  		ann_data_stat.invalid_size++;
->  		return -1;
->  	}
->  
->  	/* Minimal sanity check */
->  	if ((unsigned)offset >= size) {
-> -		pr_debug("offset: %d is bigger than size: %" PRIu64 "\n", offset, size);
-> +		pr_debug_dtp("offset: %d is bigger than size: %"PRIu64"\n",
-> +			     offset, size);
->  		ann_data_stat.bad_offset++;
->  		return -1;
->  	}
-> @@ -251,6 +275,19 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
->  	int fb_offset = 0;
->  	bool is_fbreg = false;
->  	u64 pc;
-> +	char buf[64];
-> +
-> +	if (dloc->op->multi_regs)
-> +		snprintf(buf, sizeof(buf), " or reg%d", dloc->op->reg2);
-> +	else if (dloc->op->reg1 == DWARF_REG_PC)
-> +		snprintf(buf, sizeof(buf), " (PC)");
-> +	else
-> +		buf[0] = '\0';
-> +
-> +	pr_debug_dtp("-----------------------------------------------------------\n");
-> +	pr_debug_dtp("%s [%"PRIx64"] for reg%d%s offset=%#x in %s\n",
-> +		     __func__, dloc->ip - dloc->ms->sym->start,
-> +		     dloc->op->reg1, buf, dloc->op->offset, dloc->ms->sym->name);
->  
->  	/*
->  	 * IP is a relative instruction address from the start of the map, as
-> @@ -261,7 +298,7 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
->  
->  	/* Get a compile_unit for this address */
->  	if (!find_cu_die(dloc->di, pc, &cu_die)) {
-> -		pr_debug("cannot find CU for address %" PRIx64 "\n", pc);
-> +		pr_debug_dtp("cannot find CU for address %"PRIx64"\n", pc);
->  		ann_data_stat.no_cuinfo++;
->  		return -1;
->  	}
-> @@ -269,12 +306,17 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
->  	reg = loc->reg1;
->  	offset = loc->offset;
->  
-> +	pr_debug_dtp("CU die offset: %#lx\n", (long)dwarf_dieoffset(&cu_die));
-> +
->  	if (reg == DWARF_REG_PC) {
->  		if (die_find_variable_by_addr(&cu_die, dloc->var_addr, &var_die,
->  					      &offset)) {
->  			ret = check_variable(&var_die, type_die, offset,
->  					     /*is_pointer=*/false);
->  			dloc->type_offset = offset;
-> +
-> +			pr_debug_dtp("found PC-rel by addr=%#"PRIx64" offset=%#x\n",
-> +				     dloc->var_addr, offset);
->  			goto out;
->  		}
->  
-> @@ -310,6 +352,9 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
->  			default:
->  				break;
->  			}
-> +
-> +			pr_debug_dtp("frame base: cfa=%d fbreg=%d\n",
-> +				     dloc->fb_cfa, fbreg);
->  		}
->  	}
->  
-> @@ -334,6 +379,19 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
->  		/* Found a variable, see if it's correct */
->  		ret = check_variable(&var_die, type_die, offset,
->  				     reg != DWARF_REG_PC && !is_fbreg);
-> +		if (ret == 0) {
-> +			pr_debug_dtp("found \"%s\" in scope=%d/%d (die: %#lx) ",
-> +				     dwarf_diename(&var_die), i+1, nr_scopes,
-> +				     (long)dwarf_dieoffset(&scopes[i]));
-> +			if (reg == DWARF_REG_PC)
-> +				pr_debug_dtp("%#x(PC) offset=%#x", loc->offset, offset);
-> +			else if (reg == DWARF_REG_FB || is_fbreg)
-> +				pr_debug_dtp("%#x(reg%d) stack fb_offset=%#x offset=%#x",
-> +					     loc->offset, reg, fb_offset, offset);
-> +			else
-> +				pr_debug_dtp("%#x(reg%d)", loc->offset, reg);
-> +			pr_debug_type_name(type_die);
+> +		if (closed_timeout > max_close_timeout) {
+> +			dev_info(xilinx_wwdt_wdd->parent,
+> +				 "Closed window cannot be set to %d%%. Using maximum supported value.\n",
+> +				 xdev->close_percent);
+> +			closed_timeout = max_close_timeout;
+> +		} else if (closed_timeout < min_close_timeout) {
+> +			dev_info(xilinx_wwdt_wdd->parent,
+> +				 "Closed window cannot be set to %d%%. Using minimum supported value.\n",
+> +				 xdev->close_percent);
+> +			closed_timeout = min_close_timeout;
 > +		}
->  		dloc->type_offset = offset;
->  		goto out;
->  	}
-> @@ -343,8 +401,10 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
->  		goto retry;
->  	}
->  
-> -	if (ret < 0)
-> +	if (ret < 0) {
-> +		pr_debug_dtp("no variable found\n");
->  		ann_data_stat.no_var++;
 > +	}
->  
->  out:
->  	free(scopes);
-> @@ -373,7 +433,7 @@ struct annotated_data_type *find_data_type(struct data_loc_info *dloc)
->  
->  	dloc->di = debuginfo__new(dso->long_name);
->  	if (dloc->di == NULL) {
-> -		pr_debug("cannot get the debug info\n");
-> +		pr_debug_dtp("cannot get the debug info\n");
->  		return NULL;
->  	}
->  
-> diff --git a/tools/perf/util/debug.c b/tools/perf/util/debug.c
-> index c39ee0fcb8cf..d633d15329fa 100644
-> --- a/tools/perf/util/debug.c
-> +++ b/tools/perf/util/debug.c
-> @@ -41,6 +41,7 @@ static int redirect_to_stderr;
->  int debug_data_convert;
->  static FILE *_debug_file;
->  bool debug_display_time;
-> +int debug_type_profile;
->  
->  FILE *debug_file(void)
->  {
-> @@ -231,6 +232,7 @@ static struct sublevel_option debug_opts[] = {
->  	{ .name = "data-convert",	.value_ptr = &debug_data_convert },
->  	{ .name = "perf-event-open",	.value_ptr = &debug_peo_args },
->  	{ .name = "kmaps",		.value_ptr = &debug_kmaps },
-> +	{ .name = "type-profile",	.value_ptr = &debug_type_profile },
->  	{ .name = NULL, }
->  };
->  
-> @@ -270,6 +272,7 @@ int perf_quiet_option(void)
->  	redirect_to_stderr = 0;
->  	debug_peo_args = 0;
->  	debug_kmaps = 0;
-> +	debug_type_profile = 0;
->  
->  	return 0;
->  }
-> diff --git a/tools/perf/util/debug.h b/tools/perf/util/debug.h
-> index 35a7a5ae762e..a4026d1fd6a3 100644
-> --- a/tools/perf/util/debug.h
-> +++ b/tools/perf/util/debug.h
-> @@ -14,6 +14,7 @@ extern int debug_peo_args;
->  extern bool quiet, dump_trace;
->  extern int debug_ordered_events;
->  extern int debug_data_convert;
-> +extern int debug_type_profile;
->  
->  #ifndef pr_fmt
->  #define pr_fmt(fmt) fmt
-> -- 
-> 2.44.0.291.gc1ea87d7ee-goog
-> 
+> +
+>   	open_timeout = time_out - closed_timeout;
+>   	wdd->min_hw_heartbeat_ms = xdev->close_percent * 10 * wdd->timeout;
+>   
+> @@ -132,6 +156,7 @@ static int xwwdt_probe(struct platform_device *pdev)
+>   {
+>   	struct watchdog_device *xilinx_wwdt_wdd;
+>   	struct device *dev = &pdev->dev;
+> +	unsigned int max_hw_heartbeat;
+>   	struct xwwdt_device *xdev;
+>   	struct clk *clk;
+>   	int ret;
+> @@ -157,9 +182,11 @@ static int xwwdt_probe(struct platform_device *pdev)
+>   	if (!xdev->freq)
+>   		return -EINVAL;
+>   
+> +	max_hw_heartbeat = div64_u64(XWWDT_MAX_COUNT_WINDOW_COMBINED, xdev->freq);
+> +
+>   	xilinx_wwdt_wdd->min_timeout = XWWDT_MIN_TIMEOUT;
+>   	xilinx_wwdt_wdd->timeout = XWWDT_DEFAULT_TIMEOUT;
+> -	xilinx_wwdt_wdd->max_hw_heartbeat_ms = 1000 * xilinx_wwdt_wdd->timeout;
+> +	xilinx_wwdt_wdd->max_hw_heartbeat_ms = 1000 * max_hw_heartbeat;
+>   
+>   	if (closed_window_percent == 0 || closed_window_percent >= 100)
+>   		xdev->close_percent = XWWDT_CLOSE_WINDOW_PERCENT;
+> @@ -167,6 +194,7 @@ static int xwwdt_probe(struct platform_device *pdev)
+>   		xdev->close_percent = closed_window_percent;
+>   
+>   	watchdog_init_timeout(xilinx_wwdt_wdd, wwdt_timeout, &pdev->dev);
+> +	xilinx_wwdt_wdd->timeout = min_not_zero(xilinx_wwdt_wdd->timeout, max_hw_heartbeat);
+
+I have not tried to understand the rest of the code, but this is just wrong.
+The whole point of having max_hw_heartbeat_ms is to make the actual timeout
+independent of the maximum hardware timeout.
+
+As for the rest of the changes, max_hw_heartbeat_ms should be set to the
+maximum hardware timeout. Similar, the minimum timeout should be set
+to the minimum timeout possible. As such, the checks added above should
+not be necessary. Something looks wrong, but I won't spend time trying to
+understand this because, again, limiting the actual timeout to
+max_hw_heartbeat is just wrong.
+
+Guenter
+
+>   	spin_lock_init(&xdev->spinlock);
+>   	watchdog_set_drvdata(xilinx_wwdt_wdd, xdev);
+>   	watchdog_set_nowayout(xilinx_wwdt_wdd, 1);
+
 
