@@ -1,183 +1,206 @@
-Return-Path: <linux-kernel+bounces-108038-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108039-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D727988051F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:51:21 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9B15880522
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:52:58 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5FF28B22145
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:51:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EC79284B6F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:52:57 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 77A5139FCF;
-	Tue, 19 Mar 2024 18:51:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3223A1C7;
+	Tue, 19 Mar 2024 18:52:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="vuSmIBYW"
-Received: from NAM12-DM6-obe.outbound.protection.outlook.com (mail-dm6nam12on2122.outbound.protection.outlook.com [40.107.243.122])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NiAdxI3R"
+Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 924C1EBB;
-	Tue, 19 Mar 2024 18:51:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.243.122
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710874268; cv=fail; b=VBkyWhL2W5WUqnBfZkEAMUZdXGcJOhfc+eFgj7axFJ1VBNNYQyK95qSO3ZTKY/WfV2YzLuEpJYm9m+dgn6GOJc/9vSNWypj4qTcW+H+yMVTvCAleTN6W/EZJmrtgVIer02ylxaToe+rTSKKI7CbECmE6+HpS8/XNHZUAZFwYBrk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710874268; c=relaxed/simple;
-	bh=/PuzUM1k5YyQLZsvd5SehDquP3jJ46PpO6Ei+P9+Rtg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=ZwPCWXraNWAqxg+5ZJl+VgmZOOk7N7gFb5IDs7oZAM2heZBKGR654TayM3mLEbDzgJ5w9fZdIWRGgYjRt/ernmBrw7/0/D27cVLSLgWQMBaiunL4CT0p74x1eKAJJSmUhomA7KrRrVJM0/cOR+ZhIfwgiAt8O8Vf6LtVctkG6MQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=vuSmIBYW; arc=fail smtp.client-ip=40.107.243.122
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=fe7rJQeECXXvvUIP1qNfM6pTNUvqWCbUnL9yDKUo1t5y3nz9LoXl2njRoQg6BYQqC1xGFXW4JX2UCzDbUC8rDh0MW/Eobqr/L1L17Dhuul+SSEAyjyy0JUTBotySXuS2O1Pa2W9U6Ihdp9nfllzbI8C2c0F1bKQJNNbtUUeXeLhoz7TzExR3eRAXSp2k9sLxpTwL1FppYIYgiBPn8K7FYRS8lfvgHs/KkgHmkH2PNeoMd0y4cNQUTPpjO3VZBI/XNXfD/nwy2v+/YbwJRaDTB7Re+pYCxIzRuW9C/9u+uNCVli8iUWslpc5wCmkgi+BpWbJnd9lFYmjIBwE7n2G+jw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=/WTX3q7QwB9onNtwcX5ACYitLJFLZ4jZbOxilS0O8/s=;
- b=crIvq0fcyVf5lyY7hOevvdlXMf2kclGC97lB667UfJayivt7cw6pN2oU5eJOk9vZiOSzMfAY6vcdG/+tYhdHb9PNcUymCxEbEiXA7W0KNNzIaIwJkiH0t6saZr9u36cF87A0ei04UP392SeqznVCs5Lec6yf8uOjOUv04vtd8ZOHoHPcVT4EaPUOykxA/KDyLZs5xNvTyjfxu9tlFsOxOu5PaWVzL0Wo6rez3pg1HQjsPIN351Kcrvwl4SSgMFQPOXXT1bnKX/W/fClEmEWRtoW8tfQ27+QVGWZaDe7nIulfHtqCAdohyYC2ZUCN15yrNjKRB3189+alHDYkC+azCA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=/WTX3q7QwB9onNtwcX5ACYitLJFLZ4jZbOxilS0O8/s=;
- b=vuSmIBYWGvqKGOUXx35HkMFxSEfBUZXl560QQypt4v+3/bDU2a3+Dicq+51JZf/cdCpuWSCvcr0DKw1EiFEvTwIBOYYkvVokHf8REzuQduzbxHZfzRwLgMGOYOGOOSMXBuEaoq81pWZ83kOn9Ss790t5V1DG4OW/nzrOAipAwsE=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by SA3PR17MB7177.namprd17.prod.outlook.com (2603:10b6:806:39d::16) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7362.36; Tue, 19 Mar
- 2024 18:51:02 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b%5]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 18:51:02 +0000
-Date: Tue, 19 Mar 2024 14:50:54 -0400
-From: Gregory Price <gregory.price@memverge.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ying.huang@intel.com, dan.j.williams@intel.com, honggyu.kim@sk.com,
-	corbet@lwn.net, arnd@arndb.de, luto@kernel.org,
-	akpm@linux-foundation.org, shuah@kernel.org
-Subject: Re: [RFC v3 3/3] ktest: sys_move_phys_pages ktest
-Message-ID: <Zfnejn+G9kfoqb6T@memverge.com>
-References: <20240319172609.332900-1-gregory.price@memverge.com>
- <20240319172609.332900-4-gregory.price@memverge.com>
- <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
- <ZfnWCRwcZJ4KBmSH@memverge.com>
- <ZfnXcbd3h3Rj4IIS@casper.infradead.org>
- <ZfnaMa6x/O68ENsP@memverge.com>
- <Zfnbn8H4O9neZhcm@casper.infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <Zfnbn8H4O9neZhcm@casper.infradead.org>
-X-ClientProxiedBy: SJ0PR13CA0164.namprd13.prod.outlook.com
- (2603:10b6:a03:2c7::19) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3895E3A1A0
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:52:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710874370; cv=none; b=BSN7+8MwGoMMp1C/io7AvSJzW2c1WgRNW6hykd+Is7RVTa8cFkMSVk4c7SMpsE3he9yz+UNKvkYcWHYFjKLAxJDcrJqegWuwlBXUeM59IQuEUqJESxK1GbLLqZIJhHwDg440DScDCCLg9C+KZ2urth2iT/DPi6dHONtOX1PkfmQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710874370; c=relaxed/simple;
+	bh=YMcf1Teo8N+R/9ZvYJv0wCzFSJ96kGfhKVa3+RWP2jU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=qKEZz/01km5Y3jWTm5WwrVPO7i65akkL8xyWUdtrmKvpdsItTwYiZhIhxFn2xELVCS99TJ5omQ/CrTnrnD7WEwkndaG9h0WA/XlrjqeN3tsFQWwEu/f46SthjFAmjh5tMN7dKBa9FXLVwUv3sRLASJJLOXTYBtc+mVFo+XivF4Y=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=NiAdxI3R; arc=none smtp.client-ip=209.85.160.177
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
+Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42f4b66dc9eso33748981cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:52:47 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=joelfernandes.org; s=google; t=1710874367; x=1711479167; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=1XUbhEyXj+LZKWhZV1EwZUqlvpAwRJXLMFfCduNSBoQ=;
+        b=NiAdxI3R+3Kkwz524Vw1H+1/F7ch7U9MtS1MtpjhEc9K00KecpRtFOcMtaQRhcKqHm
+         XDPin6DbTy5G3GwV/W0K/abG6fY1MsNtlBnXkIWel42FCU4pJFORz0U+9sKs2uPaDP8B
+         8AtLetiQ8uH0a4XQ+nQkIfPmAmptKbsX9MoFI=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710874367; x=1711479167;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=1XUbhEyXj+LZKWhZV1EwZUqlvpAwRJXLMFfCduNSBoQ=;
+        b=BCRBvX9GiKXyjH9SQoqOfOkgebyZo9marAqyogG7jn5yRvF2s/eTbkiCGzSWEo101P
+         AUivr/pfAoeQwRJzlz4ufn835O1Vpjgw9A68S0CMJuBNofC4Wnz1HNUlaVWywDQaHX9F
+         ycwxXBSejakDs1YbPKHHY1sxXwVsbkJXnOCqGFfCZ+Z5319Q9x7UfMAdCPmoBu/J4zxN
+         VwnQQfMf31HEN123dcqAaV5Dd6gHU7IMwTU4O5vI4YJy1Rga4DOEtRbBpkJd2zgirJ27
+         Q8Uv7flOdkaXIuCvK45lrzyNSTjtFZJrFcmgA0e2XoZjlHheF0SNuFP1+40+rdmxZ9qw
+         sKPQ==
+X-Gm-Message-State: AOJu0YxIbXppEvTalnuO46ndU2ucm825xAAjuZl6yv3iTAbrItqX7ZJA
+	F2Pd4EhEUuu6hbuPcEBLaFM0mPixP+uijqRl4bE/qPBbBoi4mcswznfwahObNEE=
+X-Google-Smtp-Source: AGHT+IH3roedALtUoDYZYwUKRo1yXZlB7D7+GpCtks4d7ueMNUsFAfMTp37hQ/KjfmjMwDBav4yU9g==
+X-Received: by 2002:ac8:5756:0:b0:42e:ef7c:29a2 with SMTP id 22-20020ac85756000000b0042eef7c29a2mr3580446qtx.29.1710874366920;
+        Tue, 19 Mar 2024 11:52:46 -0700 (PDT)
+Received: from [10.5.0.2] ([185.195.59.198])
+        by smtp.gmail.com with ESMTPSA id bq23-20020a05622a1c1700b00430d1c9bfebsm2676718qtb.43.2024.03.19.11.52.45
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 11:52:46 -0700 (PDT)
+Message-ID: <1f7821ce-c036-4824-bb22-6d171714babf@joelfernandes.org>
+Date: Tue, 19 Mar 2024 14:52:43 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|SA3PR17MB7177:EE_
-X-MS-Office365-Filtering-Correlation-Id: c4870b15-7b25-4d32-4322-08dc48458661
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	seSGTCTiEpH5/doWd9SSVGxsfpqW7UHJ4kZ1Pg/sJ1eLFO1xp14ZkxrOMTGQRxn1y24hivg5xfl4i/s/tCW5i55U6YmXx5afQy0RIuj22FczORtkr1BJHwVFR2jh9rUYL4f44RDJIlhfFHYCm6Gxb08cEGh3rzOL8jrmpNXSIoHHNR6AtDjAWeHismUP+xxsyqFJiJighcUFJTVMPD/g/IZ9t97PZ0svFgv178UzdjyTVFmKE5qcgGXA3Jo79KG0rBygaIlUoKtzxRjhbG9rzDzggy+L6A+D4upU1M3iEBu40chnc7+K/l2IXCFb4PvzyO1W6NwZe0UNaeb0hiJJ4MfVi6HEyIq+nrH98V2MaZOm0AoSi+i9sed+AWh6dQcXfHBr71wEvIRM0B3qbkj4gQaMJ1Ws2RTeJyeHH9vJSZrvpcniT9j52zJMJu7c/nqPm6VndaKqxM+eRGAUf7FKBFZaR+MObJcvvXoOHeGOowCa1p3UntEZZ9o/ww+AayFofMvlgzamKD0OS4AzGsrRmPrbqSyIL0khTT8Y83Muy45boBm2xiA4qJtFOX+5qtjXUp7L4Ii+1tVeSaA6MZwyeX2EebruSsBz2F3YTexrvnel3LfpJ86C9CMVBKDkAHU0jzlXPVoY/iwR2FP+q8werMIf34WwWg742y3D1noVxqo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015)(7416005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?/MYQAc2ddPMLW1cZvnx8S2kgUjxE3wrRsvq+qHu6D8iGNWSIWQW2jq07j4UQ?=
- =?us-ascii?Q?q4s2Sm5unSGFK7qHZ0j4nZvGuJ41eJqrOJC4gdybI0qGQ034T2cO9mLx9ukg?=
- =?us-ascii?Q?5xqWtfajoJhU9csz2+Oy8+yvDmUGPm3OfqRe+VirflpE26dF7tfn1VbcZncV?=
- =?us-ascii?Q?a2+2pluGwkDnPAE8yoe2CBgLFsFnQ1RNMn2zzVFwZ98UalpkfAHgGTCmCl6P?=
- =?us-ascii?Q?dGa1CP6lJ1EzmfOC5n6BKuIK2GkSOMB5zf9HrfUGsEEq5Xz+yaBdDh0fBf2E?=
- =?us-ascii?Q?LvOJdeGY0BvaTOEkUVGztgICSnXN3L+QIISsMHxo4jiOD/WrAbueEpf8HEVU?=
- =?us-ascii?Q?Uuk+3sr65V6WLxSDNkEDxcCaiIHVX+TOKoGzhUb/eebaeV5hD5o/JZlyiu4T?=
- =?us-ascii?Q?0hxVFOlA3vvci9CbBPHS016DMarjvgZ8YgRJ7GMQ4lfex8wzPVuH1/hFBuYR?=
- =?us-ascii?Q?knf5RyPkvnThiVQ2Xxqv3cEZ9dhkCSrrD8NJs2tzcSTXSc2j7iyQs6KlmUDr?=
- =?us-ascii?Q?aBelklDanI3ZJSJAzOYEWGFYgp4MvgxixuX0Z1XoMksuUIm9H1wmiHxauc4Q?=
- =?us-ascii?Q?NoSb7mib/3mlIJXi5thBOBoB7405OJZLfX6DFlEcYQ21hvDmPM4mnSR5B6iF?=
- =?us-ascii?Q?rGCEA2PSsMa8GCSQlSRU6jmgFkg1wM7/WemSQ5lwVhQZaKyjqiUHk7p7chXD?=
- =?us-ascii?Q?4yg+AOggfG8m8bwmWZWpKDixgMdLHPFDDss0GsEJth2uBMTlJF2d0RMR4J9f?=
- =?us-ascii?Q?Xy5s4vvX/MZ0XzxRWmcMJdR0oqVms9LsiH4S5IPaM1OhFQrqTQz46FZlR5RI?=
- =?us-ascii?Q?n8PHkF+lNReOUrvQFfEdwC6iESkHb0mL2lYhVa0/nGqF1zIP+j5cn0BhOtoZ?=
- =?us-ascii?Q?3zSsDRz9TpWq068a7i7YLjM/Lc+lhmFVO1cLSx1wmSnDaWwFUFktVdZCmq7w?=
- =?us-ascii?Q?VCOPamLo5G9Sx5wjgU4iwPlopdNT2zZytcNERx+fhwQDnEVrzyG7886ORSQZ?=
- =?us-ascii?Q?hD5pBrCUJlPWSZcvv3v4Gb00c61sPrh8eX/5GO6MrTl73yrWmF+S4SU22cK5?=
- =?us-ascii?Q?pglySVaIF0p7d4LNuRowdVqFAY1UA9MREl+7sJ6x8CICmbr+AvGNzkUXTDSJ?=
- =?us-ascii?Q?8V+aFottxahXpn7aMCJzG01F5o9JN4fZSf1o0YLHdASeecteFzgrQwZvaWnZ?=
- =?us-ascii?Q?weqNpW/T53rBDeCtQTqjfCwiumDDEgAKD0/UxTX10pDS+oP6TwoLMKNQdUsS?=
- =?us-ascii?Q?6Om66ME0BHGxgsDP5wyV5ReCUekjNfAe78k1dzIEuVwdu/c25no2LsgV0UDx?=
- =?us-ascii?Q?ZJwpwWeWa3wC8yx/yPo4x6EH9n+bR0xTlQXvx4Kw+gfCc8cmriSdFE3ElQAN?=
- =?us-ascii?Q?OCCjvFg3W53e8kwseJn9VnrTlxCuxw9SoV+UCUPAL0lwLc38R+/nCXJLHBqx?=
- =?us-ascii?Q?7BsbQBzdPE0a9zQNOKA/mfSjPeGvUb1zsUFeLgi0Yxbr2wKVxhVrSvqbDzNf?=
- =?us-ascii?Q?ruR3VFjkyhUAT8XMjmEsfqqf5+Fn073/Kclox379trjLKF7HQpLWQY5gj/or?=
- =?us-ascii?Q?+X3oLElQ3NJteLDQvkCWXRm+mVN4xY5vaOM1wBIaz0nLz/WctR8AaQvOQ1wr?=
- =?us-ascii?Q?WQ=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c4870b15-7b25-4d32-4322-08dc48458661
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 18:51:02.5495
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: MBS+WBmKaID8keRI2JQX8J4i4rsstmTA9GWas9FJa0fJqgRkRte2Aw2n6IdenSri2pbCMh/fmxRfCrXyKoUOys4CibkasX2S10irwaGhX+Q=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SA3PR17MB7177
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for
+ synchronize_rcu() common case
+Content-Language: en-US
+To: Uladzislau Rezki <urezki@gmail.com>
+Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
+ neeraj.iitr10@gmail.com, rcu@vger.kernel.org, rostedt@goodmis.org,
+ "Paul E. McKenney" <paulmck@kernel.org>,
+ Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
+ Josh Triplett <josh@joshtriplett.org>,
+ Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
+ Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
+References: <ZflgfrjZSZdqrLLw@pc636>
+ <0B372386-9546-492E-930E-DC6C883F3B2B@joelfernandes.org>
+ <ZfmlziaLw1bl4IjX@pc636> <20240319160252.GA186534@joelbox2>
+ <CAEXW_YTVNb_NpM8bY4KU60tvd0s-iVQ0AZs1s+LFk-Ux51++6Q@mail.gmail.com>
+ <ZfnKv1K85Nkwy7p4@pc638.lan>
+ <8f221ab6-6d34-4c3b-a6a7-6c1de405000a@joelfernandes.org>
+ <851d8642-807c-481a-91e9-8b744c24913d@joelfernandes.org>
+ <Zfnbc83lU6t8nIao@pc636>
+From: Joel Fernandes <joel@joelfernandes.org>
+In-Reply-To: <Zfnbc83lU6t8nIao@pc636>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19, 2024 at 06:38:23PM +0000, Matthew Wilcox wrote:
-> > The syscall design is mostly being posted right now to collaborate via
-> > public channels, but if the idea is so fundamentally offensive then i'll
-> > drop it and relay the opinion accordingly.
-> 
-> The syscall design is wrong.  Exposing physical addresses to userspace
-> is never the right answer.  Think rowhammer.
-> 
 
-1) The syscall does not expose physical addresses information, it
-   consumes it.
 
-2) The syscall does not allow the user to select target physical address
-   only the target node. Now, that said, if source-pages are zeroed on
-   migration, that's definitely a concern.  I did not see this to be the
-   case, however, and the frequency of write required to make use of
-   that for rowhammer seems to be a mitigating factor.
+On 3/19/2024 2:37 PM, Uladzislau Rezki wrote:
+> On Tue, Mar 19, 2024 at 01:33:11PM -0400, Joel Fernandes wrote:
 
-3) there exist 4 interfaces which do expose physical address information
-   - /proc/pid/pagemap
-   - perf / IBS and PEBs
-   - zoneinfo
-   - /sys/kerne/mm/page_idle (PFNs)
+>>> On 3/19/2024 1:26 PM, Uladzislau Rezki wrote:
 
-4) The syscall requires CAP_SYS_ADMIN because these other sources
-   require the same, though as v1/v2 discussed there could be an
-   argument for CAP_SYS_NIDE.
+>>>>>>>>>>>> /*
+>>>>>>>>>>>> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
+>>>>>>>>>>>> */
+>>>>>>>>>>>> static void rcu_sr_normal_gp_cleanup(void)
+>>>>>>>>>>>> {
+>>>>>>>>>>>> -    struct llist_node *wait_tail, *next, *rcu;
+>>>>>>>>>>>> +    struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
+>>>>>>>>>>>>   int done = 0;
+>>>>>>>>>>>>
+>>>>>>>>>>>>   wait_tail = rcu_state.srs_wait_tail;
+>>>>>>>>>>>> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
+>>>>>>>>>>>>           break;
+>>>>>>>>>>>>   }
+>>>>>>>>>>>>
+>>>>>>>>>>>> -    // concurrent sr_normal_gp_cleanup work might observe this update.
+>>>>>>>>>>>> -    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
+>>>>>>>>>>>> +    /*
+>>>>>>>>>>>> +     * Fast path, no more users to process. Remove the last wait head
+>>>>>>>>>>>> +     * if no inflight-workers. If there are in-flight workers, let them
+>>>>>>>>>>>> +     * remove the last wait head.
+>>>>>>>>>>>> +     */
+>>>>>>>>>>>> +    WARN_ON_ONCE(!rcu);
+>>>>>>>>>>>>
+>>>>>>>>>>> This assumption is not correct. An "rcu" can be NULL in fact.
+>>>>>>>>>>
+>>>>>>>>>> Hmm I could never trigger that. Are you saying that is true after Neeraj recent patch or something else?
+>>>>>>>>>> Note, after Neeraj patch to handle the lack of heads availability, it could be true so I requested
+>>>>>>>>>> him to rebase his patch on top of this one.
+>>>>>>>>>>
+>>>>>>>>>> However I will revisit my patch and look for if it could occur but please let me know if you knew of a sequence of events to make it NULL.
+>>>>>>>>>>>
+>>>>>>>>> I think we should agree on your patch first otherwise it becomes a bit
+>>>>>>>>> messy or go with a Neeraj as first step and then work on youth. So, i
+>>>>>>>>> reviewed this patch based on latest Paul's dev branch. I see that Neeraj
+>>>>>>>>> needs further work.
+>>>>>>>>
+>>>>>>>> You are right. So the only change is to drop the warning and those braces. Agreed?
+>>>>>>>>
+>>>>>>> Let me check a bit. Looks like correct but just in case.
+>>>>>>>
+>>>>>>
+>>>>>> Thanks. I was also considering improving it for the rcu == NULL case, as
+>>>>>> below. I will test it more before re-sending.
+>>>>>>
+>>>>>> On top of my patch:
+>>>>>>
+>>>>>> ---8<-----------------------
+>>>>>>
+>>>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>>>>> index 0df659a878ee..a5ef844835d4 100644
+>>>>>> --- a/kernel/rcu/tree.c
+>>>>>> +++ b/kernel/rcu/tree.c
+>>>>>> @@ -1706,15 +1706,18 @@ static void rcu_sr_normal_gp_cleanup(void)
+>>>>>>                         break;
+>>>>>>         }
+>>>>>>
+>>>>>> +
+>>>>>> +       /* Last head stays. No more processing to do. */
+>>>>>> +       if (!rcu)
+>>>>>> +               return;
+>>>>>> +
+>>>>>
+>>>>> Ugh, should be "if (!wait_head->next)"  instead of "if (!rcu)".  But
+>>>>> in any case, the original patch except the warning should hold.
+>>>>> Still, I am testing the above diff now.
+>>>>>
+>>>>>  - Joel
+>>>>>
+>>>> Just in case, it is based on your patch:
+>>>>
+>>>> <snip>
+>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
+>>>> index bd29fe3c76bf..98546afe7c21 100644
+>>>> --- a/kernel/rcu/tree.c
+>>>> +++ b/kernel/rcu/tree.c
+>>>> @@ -1711,29 +1711,25 @@ static void rcu_sr_normal_gp_cleanup(void)
+>>>>  	 * if no inflight-workers. If there are in-flight workers, let them
+>>>>  	 * remove the last wait head.
+>>>>  	 */
+>>>> -	WARN_ON_ONCE(!rcu);
+>>>> -	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
+>>>> -
+>>>> -	if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next == NULL &&
+>>>> -		/* Order atomic access with list manipulation. */
+>>>> -		!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
+>>>> +	if (wait_tail->next && rcu_sr_is_wait_head(wait_tail->next) && !wait_tail->next->next &&
+>>>> +			!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
+>>>
+>>>
+>>> Yes this also works. But also if wait_tail->next == NULL, then you do not need
+>>> to queue worker for that case as well. I sent this as v3.
+>>>
+>> Sorry, I see you did add that later in the patch ;-). I think we have converged
+>> on the final patch then, give or take the use of 'rcu' versus 'wait_tail->next'.
+>>
+> Just combine all parts into one place and resend :)
 
-> I'm vehemently opposed to all of the bullshit around CXL.  However, if you
-> are going to propose something, it should be based around an abstraction.
-> Say "We have 8 pools of memory.  This VMA is backed by memory from pools
-> 3 & 6.  The relative hotness of the 8 pools are <vector>.  The quantities
-> of memory in the 8 ppols are <vector>".  And then you can say "migrate
-> this range of memory to pool 2".
-> 
-> That's just an initial response to the idea.  I refuse to invest a
-> serious amount of time in a dead-end idea like CXL memory pooling.
+Yes sir ;)
 
-Who said anything about pools? Local memory expanders are capable of
-hosting hotness tracking offload.
+ - Joel
 
-~Gregory
 
