@@ -1,205 +1,315 @@
-Return-Path: <linux-kernel+bounces-106865-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106863-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3CCC987F4AF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:36:22 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 614DE87F4A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:35:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A8FBA1F24227
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:36:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 81BCD1C216C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:35:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4741BA40;
-	Tue, 19 Mar 2024 00:36:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0B25EA5F;
+	Tue, 19 Mar 2024 00:35:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b="LhUwNjh/"
-Received: from mx1.sberdevices.ru (mx2.sberdevices.ru [45.89.224.132])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="G3C4LgSr"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AFE6846D;
-	Tue, 19 Mar 2024 00:36:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.89.224.132
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AE3948465;
+	Tue, 19 Mar 2024 00:35:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710808566; cv=none; b=gRNxgh0cpuH82xw6s3rW+mZeZo55cMceTGogBBSzJkWnOoZEtX9qLQ35ojwbLcDpTKMb1af5JhKfifYM8gJq/vcbE3nzQde9WILBrTkxxJHJTsXraDcm0k9T6Slw9D+2eVoDdpaZ5V+hVpxOly6wQhYNJP1rooAfQmTLQYmU5qs=
+	t=1710808531; cv=none; b=sJiFhsLXRusDG5z4NlDb6tXEA5DAKdT1xpnFtKHzOYoFs1zjxu+O6j57G/oC23Bvm5FxK4Icb/dMu929ekOuL1wsZ3iCg7cNrkVDWWlkB6d0DtmblcjVgJzsZTl70sZC5Ll21nIRWquJ89qnITxEShhin9myCCKu732pcqYLJF8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710808566; c=relaxed/simple;
-	bh=D/vU+aKG4bOtngerNGs+IR+QCiFa7x2M/xMzsX6g700=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=AgP4pApJjOVuPBLyoSNxeZRXkyN57XnBbvT9zQsR9zhcdpUdCEUQI5nmuScjPRnRlCONu0uqJ33sw2oQmlYfTDqIVmleNYb6mcZBYEZMUU2V/Wcp8w8AYesDs16gxl1uIiYjnkYO5F1TBnStZiaTrcD+je0QUPjgeujyo6omJPA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com; spf=pass smtp.mailfrom=sberdevices.ru; dkim=pass (2048-bit key) header.d=salutedevices.com header.i=@salutedevices.com header.b=LhUwNjh/; arc=none smtp.client-ip=45.89.224.132
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=salutedevices.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sberdevices.ru
-Received: from p-infra-ksmg-sc-msk02 (localhost [127.0.0.1])
-	by mx1.sberdevices.ru (Postfix) with ESMTP id 152E012000B;
-	Tue, 19 Mar 2024 03:36:01 +0300 (MSK)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mx1.sberdevices.ru 152E012000B
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=salutedevices.com;
-	s=mail; t=1710808561;
-	bh=IAxjzQO549n6P/EQrOvtcZd9jtdlj6D3hmWwNuQy9Rs=;
-	h=Message-ID:Date:MIME-Version:Subject:To:From:Content-Type:From;
-	b=LhUwNjh/OPWvv6aoHqGKCaLkSsX7rh/W4H5kTq+ISfFzLcpWhp+Ixak1WHXuZMoAn
-	 oi5/gc+Xs6S/D2j6sR5tFiITakeVQH2W4B79cxb2D+C+rquGbGizqg9RK1W6aZOPfG
-	 FJEF8yZgA3mU63iaxki34WK5J2uGPvBrab+XHgkJMiDwlt/C8kFsetQ6O0hf13ybS9
-	 T/kfuLb3ILNWrGLd7ppHPAyPZNCBFiCXZ1JR2/ArFCtuf/1HQya6fU6mSYMXYGFvuF
-	 cyXEncC2vfCBUI25XWeGfePQ1BL3KCpmNCWvW6HcaOoy0d4ceiK8ugMK71vlyH3gVB
-	 /bbVz/B4p2NaA==
-Received: from smtp.sberdevices.ru (p-i-exch-sc-m02.sberdevices.ru [172.16.192.103])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by mx1.sberdevices.ru (Postfix) with ESMTPS;
-	Tue, 19 Mar 2024 03:36:00 +0300 (MSK)
-Received: from [172.28.224.29] (100.64.160.123) by
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Mar 2024 03:36:00 +0300
-Message-ID: <3d8f23ce-1864-4cef-9895-209aff599bfa@salutedevices.com>
-Date: Tue, 19 Mar 2024 03:35:14 +0300
+	s=arc-20240116; t=1710808531; c=relaxed/simple;
+	bh=evt/QjjewDa5FyHkyULrULdNpk3hc17dFGup/YxaVVE=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ufHfjdC+LHL5wX0Qd4kNa6NF37p7R0jVrsgm5ScNk/WXWFlBnBUcFixddNSiolJ9buFK1/GSuVEA2sk6teAb27IhYMbWc3JqEf/4IfTJKqiJcc2hVtCUuyKFDLFcBINvhgLRmfOdi4r/7c/ffpDHro+r0X0sW0PxeY/jgoXA6Wg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=G3C4LgSr; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 0614F480;
+	Tue, 19 Mar 2024 01:34:59 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710808500;
+	bh=evt/QjjewDa5FyHkyULrULdNpk3hc17dFGup/YxaVVE=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=G3C4LgSr6TPfDOFVC1xkw6FIzkOyvHyt+X0wjg6d1WuuatSGibUEmxq6m8DoqBAkD
+	 F8tLyiV37TUekoASi3EGXifXz64wLX5nHt/UrArTJArUMrf1Ys0oAaVWkDhuO57//N
+	 N/4Cfk77ApWqTJYzr+Nr92IRGMNdxDcT7Ys/g2To=
+Date: Tue, 19 Mar 2024 02:35:23 +0200
+From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
+To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	Thomas Zimmermann <tzimmermann@suse.de>,
+	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
+	Michal Simek <michal.simek@amd.com>,
+	Andrzej Hajda <andrzej.hajda@intel.com>,
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
+	Jernej Skrabec <jernej.skrabec@gmail.com>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Mauro Carvalho Chehab <mchehab@kernel.org>,
+	dri-devel@lists.freedesktop.org,
+	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-media@vger.kernel.org
+Subject: Re: [PATCH v2 5/8] drm: xlnx: zynqmp_dpsub: Set input live format
+Message-ID: <20240319003523.GW13682@pendragon.ideasonboard.com>
+References: <20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com>
+ <20240312-dp-live-fmt-v2-5-a9c35dc5c50d@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 13/25] ASoC: dt-bindings: meson: axg-pdm: document
- 'sysrate' property
-Content-Language: en-US
-To: Jerome Brunet <jbrunet@baylibre.com>
-CC: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, Neil Armstrong
-	<neil.armstrong@linaro.org>, Michael Turquette <mturquette@baylibre.com>,
-	Stephen Boyd <sboyd@kernel.org>, Rob Herring <robh@kernel.org>, Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, Philipp Zabel <p.zabel@pengutronix.de>, Kevin Hilman
-	<khilman@baylibre.com>, Martin Blumenstingl
-	<martin.blumenstingl@googlemail.com>, Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, Linus Walleij <linus.walleij@linaro.org>,
-	Jaroslav Kysela <perex@perex.cz>, Takashi Iwai <tiwai@suse.com>,
-	<linux-amlogic@lists.infradead.org>, <linux-clk@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <alsa-devel@alsa-project.org>,
-	<linux-sound@vger.kernel.org>, <linux-gpio@vger.kernel.org>,
-	<kernel@salutedevices.com>
-References: <20240314232201.2102178-1-jan.dakinevich@salutedevices.com>
- <20240314232201.2102178-14-jan.dakinevich@salutedevices.com>
- <ca80caab-2664-4797-a222-e14537eea440@linaro.org>
- <1jil1nhjwd.fsf@starbuckisacylon.baylibre.com>
- <6feba9ff-8bbf-4494-93f0-732679bc4032@salutedevices.com>
- <1j1q87hkq2.fsf@starbuckisacylon.baylibre.com>
-From: Jan Dakinevich <jan.dakinevich@salutedevices.com>
-In-Reply-To: <1j1q87hkq2.fsf@starbuckisacylon.baylibre.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: p-i-exch-sc-m02.sberdevices.ru (172.16.192.103) To
- p-i-exch-sc-m02.sberdevices.ru (172.16.192.103)
-X-KSMG-Rule-ID: 10
-X-KSMG-Message-Action: clean
-X-KSMG-AntiSpam-Lua-Profiles: 184250 [Mar 18 2024]
-X-KSMG-AntiSpam-Version: 6.1.0.4
-X-KSMG-AntiSpam-Envelope-From: YVDakinevich@sberdevices.ru
-X-KSMG-AntiSpam-Rate: 0
-X-KSMG-AntiSpam-Status: not_detected
-X-KSMG-AntiSpam-Method: none
-X-KSMG-AntiSpam-Auth: dkim=none
-X-KSMG-AntiSpam-Info: LuaCore: 10 0.3.10 53c821b925e16276b831986eabc71d60ab82ee60, {Tracking_smtp_not_equal_from}, {Tracking_bl_eng_cat, c15}, {Tracking_from_domain_doesnt_match_to}, d41d8cd98f00b204e9800998ecf8427e.com:7.1.1;sberdevices.ru:7.1.1,5.0.1;127.0.0.199:7.1.2;smtp.sberdevices.ru:7.1.1,5.0.1;100.64.160.123:7.1.2;salutedevices.com:7.1.1, FromAlignment: n, {Tracking_smtp_domain_mismatch}, {Tracking_smtp_domain_2level_mismatch}, {Tracking_white_helo}, ApMailHostAddress: 100.64.160.123
-X-MS-Exchange-Organization-SCL: -1
-X-KSMG-AntiSpam-Interceptor-Info: scan successful
-X-KSMG-AntiPhishing: Clean
-X-KSMG-LinksScanning: Clean
-X-KSMG-AntiVirus: Kaspersky Secure Mail Gateway, version 2.0.1.6960, bases: 2024/03/18 21:41:00 #24279760
-X-KSMG-AntiVirus-Status: Clean, skipped
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240312-dp-live-fmt-v2-5-a9c35dc5c50d@amd.com>
 
+Hi Anatoliy,
 
+Thank you for the patch.
 
-On 3/18/24 13:55, Jerome Brunet wrote:
+On Tue, Mar 12, 2024 at 05:55:02PM -0700, Anatoliy Klymenko wrote:
+> Program live video input format according to selected media bus format.
 > 
-> On Sun 17 Mar 2024 at 18:52, Jan Dakinevich <jan.dakinevich@salutedevices.com> wrote:
-> 
->> On 3/15/24 13:22, Jerome Brunet wrote:
->>>
->>> On Fri 15 Mar 2024 at 11:00, Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org> wrote:
->>>
->>>> On 15/03/2024 00:21, Jan Dakinevich wrote:
->>>>> This option allow to redefine the rate of DSP system clock.
->>>>
->>>> And why is it suitable for bindings? Describe the hardware, not what you
->>>> want to do in the driver.
->>>>
->>>>>
->>>>> Signed-off-by: Jan Dakinevich <jan.dakinevich@salutedevices.com>
->>>>> ---
->>>>>  Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml | 4 ++++
->>>>>  1 file changed, 4 insertions(+)
->>>>>
->>>>> diff --git a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->>>>> index df21dd72fc65..d2f23a59a6b6 100644
->>>>> --- a/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->>>>> +++ b/Documentation/devicetree/bindings/sound/amlogic,axg-pdm.yaml
->>>>> @@ -40,6 +40,10 @@ properties:
->>>>>    resets:
->>>>>      maxItems: 1
->>>>>  
->>>>> +  sysrate:
->>>>> +    $ref: /schemas/types.yaml#/definitions/uint32
->>>>> +    description: redefine rate of DSP system clock
->>>>
->>>> No vendor prefix, so is it a generic property? Also, missing unit
->>>> suffix, but more importantly I don't understand why this is a property
->>>> of hardware.
->>>
->>> +1.
->>>
->>> The appropriate way to set rate of the clock before the driver take over
->>> is 'assigned-rate', if you need to customize this for different
->>> platform.
->>>
->>
->> It would be great, but it doesn't work. Below, is what I want to see:
->>
->> 	assigned-clocks =
->> 		<&clkc_audio AUD2_CLKID_PDM_SYSCLK_SEL>,
->> 		<&clkc_audio AUD2_CLKID_PDM_SYSCLK_DIV>;
->> 	assigned-clock-parents =
->> 		<&clkc_pll CLKID_FCLK_DIV3>,
->> 		<0>;
->> 	assigned-clock-rates =
->> 		<0>,
->> 		<256000000>;
->>
->> But regardles of this declaration, PDM's driver unconditionally sets
->> sysclk'rate to 250MHz and throws away everything that was configured
->> before, reparents audio2_pdm_sysclk_mux to hifi_pll and changes
->> hifi_pll's rate.
->>
->> This value 250MHz is declared here:
->>
->> static const struct axg_pdm_cfg axg_pdm_config = {
->> 	.filters = &axg_default_filters,
->> 	.sys_rate = 250000000,
->> };
->>
->> The property 'sysrate' is intended to redefine hardcoded 'sys_rate'
->> value in 'axg_pdm_config'.
-> 
-> What is stopping you from removing that from the driver and adding
-> assigned-rate to 250M is the existing platform ?
-> 
+> In the bridge mode of operation, DPSUB is connected to FPGA CRTC which
+> almost certainly supports a single media bus format as its output. Expect
+> this to be delivered via the new bridge atomic state. Program DPSUB
+> registers accordingly.
 
-Ok, in next version I will try to remove this unconditional setting of
-rate that spoils my clock hierarchy.
+No line breaks within paragraphs. Add a blank line if you want to
+paragraphs, remove the line break otherwise.
 
->>
->>> Then you don't have to deal with it in the device driver.
->>>
->>>>
->>>> Best regards,
->>>> Krzysztof
->>>
->>>
+> Update zynqmp_disp_layer_set_format() API to fit both live and non-live
+> layer types.
 > 
+> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
+> ---
+>  drivers/gpu/drm/xlnx/zynqmp_disp.c | 93 +++++++++++++++++++++++++++++++-------
+>  drivers/gpu/drm/xlnx/zynqmp_disp.h |  2 +-
+>  drivers/gpu/drm/xlnx/zynqmp_dp.c   | 13 ++++--
+>  drivers/gpu/drm/xlnx/zynqmp_kms.c  |  2 +-
+>  4 files changed, 87 insertions(+), 23 deletions(-)
+> 
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> index dd48fa60fa9a..0cacd597f4b8 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
+> @@ -383,7 +383,7 @@ static const struct zynqmp_disp_format avbuf_live_fmts[] = {
+>  				  ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_RGB,
+>  		.sf		= scaling_factors_666,
+>  	}, {
+> -		.bus_fmt	= MEDIA_BUS_FMT_UYVY8_1X24,
+> +		.bus_fmt	= MEDIA_BUS_FMT_RBG888_1X24,
+
+Does this belong to a previous patch ?
+
+>  		.buf_fmt	= ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_BPC_8 |
+>  				  ZYNQMP_DISP_AV_BUF_LIVE_CONFIG_FMT_RGB,
+>  		.sf		= scaling_factors_888,
+> @@ -433,19 +433,28 @@ static void zynqmp_disp_avbuf_set_format(struct zynqmp_disp *disp,
+>  					 const struct zynqmp_disp_format *fmt)
+>  {
+>  	unsigned int i;
+> -	u32 val;
+> +	u32 val, reg;
+>  
+> -	val = zynqmp_disp_avbuf_read(disp, ZYNQMP_DISP_AV_BUF_FMT);
+> -	val &= zynqmp_disp_layer_is_video(layer)
+> -	    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
+> -	    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
+> -	val |= fmt->buf_fmt;
+> -	zynqmp_disp_avbuf_write(disp, ZYNQMP_DISP_AV_BUF_FMT, val);
+> +	layer->disp_fmt = fmt;
+> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_NONLIVE) {
+> +		reg = ZYNQMP_DISP_AV_BUF_FMT;
+> +		val = zynqmp_disp_avbuf_read(disp, ZYNQMP_DISP_AV_BUF_FMT);
+> +		val &= zynqmp_disp_layer_is_video(layer)
+> +		    ? ~ZYNQMP_DISP_AV_BUF_FMT_NL_VID_MASK
+> +		    : ~ZYNQMP_DISP_AV_BUF_FMT_NL_GFX_MASK;
+> +		val |= fmt->buf_fmt;
+> +	} else {
+> +		reg = zynqmp_disp_layer_is_video(layer)
+> +		    ? ZYNQMP_DISP_AV_BUF_LIVE_VID_CONFIG
+> +		    : ZYNQMP_DISP_AV_BUF_LIVE_GFX_CONFIG;
+> +		val = fmt->buf_fmt;
+> +	}
+> +	zynqmp_disp_avbuf_write(disp, reg, val);
+>  
+>  	for (i = 0; i < ZYNQMP_DISP_AV_BUF_NUM_SF; i++) {
+> -		unsigned int reg = zynqmp_disp_layer_is_video(layer)
+> -				 ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
+> -				 : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
+> +		reg = zynqmp_disp_layer_is_video(layer)
+> +		    ? ZYNQMP_DISP_AV_BUF_VID_COMP_SF(i)
+> +		    : ZYNQMP_DISP_AV_BUF_GFX_COMP_SF(i);
+>  
+>  		zynqmp_disp_avbuf_write(disp, reg, fmt->sf[i]);
+>  	}
+> @@ -984,23 +993,73 @@ void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer)
+>  	zynqmp_disp_blend_layer_disable(layer->disp, layer);
+>  }
+>  
+> +struct zynqmp_disp_bus_to_drm {
+> +	u32 bus_fmt;
+> +	u32 drm_fmt;
+> +};
+> +
+> +/**
+> + * zynqmp_disp_reference_drm_format - Get reference DRM format corresponding
+> + * to the given media bus format.
+> + * @bus_format: Media bus format
+> + *
+> + * Map media bus format to some DRM format that represents the same color space
+> + * and chroma subsampling as the @bus_format video signal. These DRM format
+> + * properties are required to program the blender.
+> + *
+> + * Return: DRM format code corresponding to @bus_format
+> + */
+> +static u32 zynqmp_disp_reference_drm_format(u32 bus_format)
+> +{
+> +	static const struct zynqmp_disp_bus_to_drm format_map[] = {
+> +		{
+> +			.bus_fmt = MEDIA_BUS_FMT_RGB666_1X18,
+> +			.drm_fmt = DRM_FORMAT_RGB565,
+> +		}, {
+> +			.bus_fmt = MEDIA_BUS_FMT_RBG888_1X24,
+> +			.drm_fmt = DRM_FORMAT_RGB888,
+> +		}, {
+> +			.bus_fmt = MEDIA_BUS_FMT_UYVY8_1X16,
+> +			.drm_fmt = DRM_FORMAT_YUV422,
+> +		}, {
+> +			.bus_fmt = MEDIA_BUS_FMT_VUY8_1X24,
+> +			.drm_fmt = DRM_FORMAT_YUV444,
+> +		}, {
+> +			.bus_fmt = MEDIA_BUS_FMT_UYVY10_1X20,
+> +			.drm_fmt = DRM_FORMAT_P210,
+> +		},
+
+Hmmmm... Looking at this, I think you should have both bus_fmt and
+drm_fmt in zynqmp_disp_format. It seems it would simplify the code flow
+and make things more readable. If you would like me to give it a try,
+please let me know.
+
+> +	};
+> +	unsigned int i;
+> +
+> +	for (i = 0; i < ARRAY_SIZE(format_map); ++i)
+> +		if (format_map[i].bus_fmt == bus_format)
+> +			return format_map[i].drm_fmt;
+> +
+> +	return DRM_FORMAT_INVALID;
+> +}
+> +
+>  /**
+>   * zynqmp_disp_layer_set_format - Set the layer format
+>   * @layer: The layer
+> - * @info: The format info
+> + * @drm_or_bus_format: DRM or media bus format
+>   *
+>   * Set the format for @layer to @info. The layer must be disabled.
+>   */
+>  void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
+> -				  const struct drm_format_info *info)
+> +				  u32 drm_or_bus_format)
+>  {
+>  	unsigned int i;
+>  
+> -	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, info->format);
+> -	layer->drm_fmt = info;
+> -
+> +	layer->disp_fmt = zynqmp_disp_layer_find_format(layer, drm_or_bus_format);
+>  	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
+>  
+> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
+> +		drm_or_bus_format = zynqmp_disp_reference_drm_format(drm_or_bus_format);
+> +
+> +	layer->drm_fmt = drm_format_info(drm_or_bus_format);
+> +	if (!layer->drm_fmt)
+> +		return;
+> +
+>  	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
+>  		return;
+>  
+> @@ -1008,7 +1067,7 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
+>  	 * Set pconfig for each DMA channel to indicate they're part of a
+>  	 * video group.
+>  	 */
+> -	for (i = 0; i < info->num_planes; i++) {
+> +	for (i = 0; i < layer->drm_fmt->num_planes; i++) {
+>  		struct zynqmp_disp_layer_dma *dma = &layer->dmas[i];
+>  		struct xilinx_dpdma_peripheral_config pconfig = {
+>  			.video_group = true,
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.h b/drivers/gpu/drm/xlnx/zynqmp_disp.h
+> index 88c285a12e23..9f9a5f50ffbc 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.h
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.h
+> @@ -55,7 +55,7 @@ u32 *zynqmp_disp_layer_formats(struct zynqmp_disp_layer *layer,
+>  void zynqmp_disp_layer_enable(struct zynqmp_disp_layer *layer);
+>  void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer);
+>  void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
+> -				  const struct drm_format_info *info);
+> +				  u32 drm_or_bus_format);
+>  int zynqmp_disp_layer_update(struct zynqmp_disp_layer *layer,
+>  			     struct drm_plane_state *state);
+>  
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index a0d169ac48c0..fc6b1d783c28 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1281,7 +1281,8 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
+>  {
+>  	enum zynqmp_dpsub_layer_id layer_id;
+>  	struct zynqmp_disp_layer *layer;
+> -	const struct drm_format_info *info;
+> +	struct drm_bridge_state *bridge_state;
+> +	u32 bus_fmt;
+>  
+>  	if (dp->dpsub->connected_ports & BIT(ZYNQMP_DPSUB_PORT_LIVE_VIDEO))
+>  		layer_id = ZYNQMP_DPSUB_LAYER_VID;
+> @@ -1291,10 +1292,14 @@ static void zynqmp_dp_disp_enable(struct zynqmp_dp *dp,
+>  		return;
+>  
+>  	layer = dp->dpsub->layers[layer_id];
+> +	bridge_state = drm_atomic_get_new_bridge_state(old_bridge_state->base.state,
+> +						       old_bridge_state->bridge);
+> +	if (WARN_ON(!bridge_state))
+> +		return;
+> +
+> +	bus_fmt = bridge_state->input_bus_cfg.format;
+> +	zynqmp_disp_layer_set_format(layer, bus_fmt);
+>  
+> -	/* TODO: Make the format configurable. */
+> -	info = drm_format_info(DRM_FORMAT_YUV422);
+> -	zynqmp_disp_layer_set_format(layer, info);
+>  	zynqmp_disp_layer_enable(layer);
+>  
+>  	if (layer_id == ZYNQMP_DPSUB_LAYER_GFX)
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.c b/drivers/gpu/drm/xlnx/zynqmp_kms.c
+> index bf9fba01df0e..d96b3f3f2e3a 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_kms.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_kms.c
+> @@ -111,7 +111,7 @@ static void zynqmp_dpsub_plane_atomic_update(struct drm_plane *plane,
+>  		if (old_state->fb)
+>  			zynqmp_disp_layer_disable(layer);
+>  
+> -		zynqmp_disp_layer_set_format(layer, new_state->fb->format);
+> +		zynqmp_disp_layer_set_format(layer, new_state->fb->format->format);
+>  	}
+>  
+>  	zynqmp_disp_layer_update(layer, new_state);
 > 
 
 -- 
-Best regards
-Jan Dakinevich
+Regards,
+
+Laurent Pinchart
 
