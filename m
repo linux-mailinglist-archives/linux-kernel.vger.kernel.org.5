@@ -1,89 +1,113 @@
-Return-Path: <linux-kernel+bounces-107727-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107953-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 94F108800CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:36:30 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2576A8803FB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:54:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C74701C214F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:36:29 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 905E01F246B2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:54:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3DF998120F;
-	Tue, 19 Mar 2024 15:36:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F64C2C19B;
+	Tue, 19 Mar 2024 17:54:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b="HSlj6oIm"
-Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
+	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="fiSQBkCC"
+Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 76A51657BA
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:36:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B0125569
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:54:28 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710862573; cv=none; b=p/aRmCWjHl4pdMjtbx6EN7VprKYZ5BJR5dDdDm0jWH0AsNM/niMuYnKuBh7G6fekQP0lK3OJsWPWqGmXJAeD5PpK0XzidwVi3Zj3EY4BTEKZ8SM7ksEgyfW6Koyx7lIaEtUnvRP1wrHdX71Hq8CiUhqv8PwoIGPe6SB+9W60zio=
+	t=1710870870; cv=none; b=s+lo/RXCzuoFCwP/UqN5vs9RNffHL73tK0VJmTDY/XXICl9bchLAjoqZkr3JGdRepNh/Piw2GSZrBrOBSkPKd/n+26XphCm2yDjcfYHrQuhB6KPnLVHec/H7H63ADHHyg1noPpYAis8RvGxA9Ou/jAiNemoaMPGNk3FSn/+rvao=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710862573; c=relaxed/simple;
-	bh=evXLw/ER1O/WAyPO8SELAcnS1lMZtXHdsbrDNdBK37o=;
+	s=arc-20240116; t=1710870870; c=relaxed/simple;
+	bh=Ao9hwGJl4g/w2wap7dwa291kK0JPcDjzl89BAK46zVI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=P/tzqgMozNXlxXc3jFMtLYVvRSPe1XPBvU4zUC7Vn5ZyZlJ3BhEVZYgdrHzCMceJuJKzwfayEKu8ashCgFjDq8/UQpG2bFz7KSjCUg7tx+hng5pvNiZnM9kKKDCFK1xZuHNrxgosvlgBuxmqqZDNt717+o9jL+MXiQKHrNOgT0Q=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch; spf=none smtp.mailfrom=ffwll.ch; dkim=pass (1024-bit key) header.d=ffwll.ch header.i=@ffwll.ch header.b=HSlj6oIm; arc=none smtp.client-ip=209.85.208.42
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ffwll.ch
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ffwll.ch
-Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-568c6e65d09so319314a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:36:11 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=rlcqCx4Z6NjIOcR2RdkzbZwJaLmG/XKopeq+Auo9ht3wIKFSh6zed9sX9iR9pUeftQG9bWCvXObaTMxQWCaREHPUt8+Sd/q5I8324fgtKu+LHSdfrBcnTPYzr7HeRIecDfVwWoEkmVjPPKt5xU6WHHNVc2w6w9DbnB3MND4jTDU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=fiSQBkCC; arc=none smtp.client-ip=209.85.210.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
+Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e673ffbd79so3220302a34.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:54:28 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ffwll.ch; s=google; t=1710862570; x=1711467370; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=oMRrzjOPzthVrfn6KYAeeCpTeFZ11+LfDjNaDwcFwcY=;
-        b=HSlj6oImhLeo1ZDYD3cWCqweHgBg3RcWVApqKG5REuwU5pUfUkcnzUgnj/uQ/cUcHQ
-         S7Ols5Gxz1mPpsOCZh89CwNHyyiQHf/QjQqdSoDJaeVae/YMDW/DR2XR6NR1lGKCpuYZ
-         se6LinJxWEvFgHvEDIMgWcKroPa3ZtFZEfSOA=
+        d=ziepe.ca; s=google; t=1710870867; x=1711475667; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=D7H3WfkclcieHpBg89GTkZxaS3r7II1qq9xezXi0hVM=;
+        b=fiSQBkCCoYVMvJ7hKOIWrIUIQtWnudcxCwuRJ3SDAmfcoUJ3LKW/OSOt0XJv0ppBom
+         r1b7EUVzGEU34UNgXl0Xub2wg6VFMC2Ly8xIcAY78NHYVcXijpAahLq3KrnWiEfepI+P
+         K3bumXlIk6qPY69qQGjZxTur6D4Xb2RFW85NT0G9m4KZ2ko8G/knkqvxD72SooihwK+Z
+         WaMPr00ehDA2unHvbCRW9HCn68HsloTpQ5rMYa4Uyj9mIfkuCzQfSnPQejaSEhgNZfAo
+         vO51olQglynGFY2d82cFKRUtHCtTWvMs7dccTYup7df0Q48rdZL147340AdvneF3HcRw
+         D7dA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710862570; x=1711467370;
-        h=in-reply-to:content-disposition:mime-version:references
-         :mail-followup-to:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=oMRrzjOPzthVrfn6KYAeeCpTeFZ11+LfDjNaDwcFwcY=;
-        b=JXXHmDnIO0vWZzoZFLeFUSIQj1Nu56rWt5M1Tw/UjCUe5jtTzL6IMGjrmZ87euAQfI
-         NUmTrjz3AEhlAxcbU+25kD0an8ZZ7roWcJzhq+d9ZfLCG0Y2XZYnPJU5ATTWdKMp7Dkc
-         rkm+fSDdsfTminTy/khPB8Pu6VeWwAp00k12GG9fZ3Eo5+cjpMbAGdvL79u335AxSwCB
-         NtxE8y9aeKEZCeUXnunKcfFXB57yb44NFbpQPBbx+WxDHPU6EF0MAxoS/xMm74Vq3sQQ
-         Dy4e5achXz8X7ykmjaggoEwcDCeBQz7ubyuZD4pjFruqPfb6IHIDmOWVzDiilqy6bYyz
-         1Rxw==
-X-Forwarded-Encrypted: i=1; AJvYcCWDlCybPT5lT1Q2/j5csYNDJFqF3QHMm0xLLE+Of+m/yadtGbhTrrV4Wox3tSGyoaVcdyLPQrGCZhrIIyg9gSbRo6HwoR22urrdsMvX
-X-Gm-Message-State: AOJu0YykinYCkWBfDNqvOZcT+9KMwG6s6579Qdsh4aCYWNgAX/NwsU/o
-	Oh6bYYIi+GhIMv9Fe+YUhL5e+Mi/WF4xAZNyqUydwuASnS68QZSegj9VqLVAWag=
-X-Google-Smtp-Source: AGHT+IGqka02G9xZBUIJYUnMVsGDttJH1Lg5gp0y4iikQkmbEHNnKV4dqr/YUk062oXDQf+NP19rXg==
-X-Received: by 2002:a05:6402:388b:b0:568:a65c:7aff with SMTP id fd11-20020a056402388b00b00568a65c7affmr1747003edb.4.1710862569608;
-        Tue, 19 Mar 2024 08:36:09 -0700 (PDT)
-Received: from phenom.ffwll.local ([2a02:168:57f4:0:efd0:b9e5:5ae6:c2fa])
-        by smtp.gmail.com with ESMTPSA id f23-20020a170906049700b00a3efa4e033asm6220139eja.151.2024.03.19.08.36.08
+        d=1e100.net; s=20230601; t=1710870867; x=1711475667;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=D7H3WfkclcieHpBg89GTkZxaS3r7II1qq9xezXi0hVM=;
+        b=DGiY6DARn5G4xMIa/Ste3u/GqyEr+imhL2P4SvxOVjFdEEHcpNL1ySJ7RB1t9dX/OL
+         n7r29R/I/rK/4Dgtx5OXEKF3Qmx1ExkbARvIG6LmT32pJ5/EXoa3KH7XDvR/V7oU3Mpu
+         CohrGKM2b2hSEtm1bCPFEBijD3iPGaJD/qraYZtHkDYaSBzYgZUXvXnrNIIJ2EVmV54C
+         /FaHdOzCyi5TLrrh1FsvSv35C3D/7DWUONEziQgwynusO3H5BVdLDtSMAQJ8G03QIFru
+         1v3nrac8Qb2mUfRZefusiunUDqEiKvfg+kVISwGhXtHwkyZQHWyP89PKfUx7qU8mE1Py
+         ZW+Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXSNwXuzULtKrNt0arha3ajW/8iyOdONf7xIHj+GdU3p1A/T3cPamIEj6/moRVMbPtQZKP4csenePK/ZcejugtO7+ckCxn9swaMACNp
+X-Gm-Message-State: AOJu0YyIPhJ2B/tAOCvXxeeSI1H1QD8UgqbqDUf7fF1+jfzgN2v+FbkA
+	X221VC+eJ6dNnWInHcTYHUIc52DWSt8oEgj7qIztpFfk4AWV5f1+4R+0+fRdcK0=
+X-Google-Smtp-Source: AGHT+IFEKHu8FJxVRb4YxsELWM46dNSxNuN3njm0tBeD+R+fEyp1j8c0yaDa2gTZMCaYT5fxKBzgBQ==
+X-Received: by 2002:a05:6870:d20e:b0:222:99cb:2215 with SMTP id g14-20020a056870d20e00b0022299cb2215mr3580439oac.28.1710870867581;
+        Tue, 19 Mar 2024 10:54:27 -0700 (PDT)
+Received: from ziepe.ca ([12.97.180.36])
+        by smtp.gmail.com with ESMTPSA id gh11-20020a056638698b00b00477716fcbb8sm2429986jab.40.2024.03.19.10.54.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 08:36:08 -0700 (PDT)
-Date: Tue, 19 Mar 2024 16:36:06 +0100
-From: Daniel Vetter <daniel@ffwll.ch>
-To: Maxime Ripard <mripard@kernel.org>
-Cc: Sebastian Wick <sebastian.wick@redhat.com>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v2] drm: Document requirements for driver-specific KMS
- props in new drivers
-Message-ID: <Zfmw5qjlQmiWRDIV@phenom.ffwll.local>
-Mail-Followup-To: Maxime Ripard <mripard@kernel.org>,
-	Sebastian Wick <sebastian.wick@redhat.com>,
-	David Airlie <airlied@gmail.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	Jonathan Corbet <corbet@lwn.net>, dri-devel@lists.freedesktop.org,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org
-References: <20240311155904.323488-1-sebastian.wick@redhat.com>
- <20240314-portable-pragmatic-weasel-7dd91e@houat>
+        Tue, 19 Mar 2024 10:54:26 -0700 (PDT)
+Received: from jgg by wakko with local (Exim 4.95)
+	(envelope-from <jgg@ziepe.ca>)
+	id 1rmbVk-001elO-4L;
+	Tue, 19 Mar 2024 12:36:20 -0300
+Date: Tue, 19 Mar 2024 12:36:20 -0300
+From: Jason Gunthorpe <jgg@ziepe.ca>
+To: Christoph Hellwig <hch@lst.de>
+Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Message-ID: <20240319153620.GB66976@ziepe.ca>
+References: <20240306154328.GM9225@ziepe.ca>
+ <20240306162022.GB28427@lst.de>
+ <20240306174456.GO9225@ziepe.ca>
+ <20240306221400.GA8663@lst.de>
+ <20240307000036.GP9225@ziepe.ca>
+ <20240307150505.GA28978@lst.de>
+ <20240307210116.GQ9225@ziepe.ca>
+ <20240308164920.GA17991@lst.de>
+ <20240308202342.GZ9225@ziepe.ca>
+ <20240309161418.GA27113@lst.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -92,33 +116,85 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314-portable-pragmatic-weasel-7dd91e@houat>
-X-Operating-System: Linux phenom 6.6.11-amd64 
+In-Reply-To: <20240309161418.GA27113@lst.de>
 
-On Thu, Mar 14, 2024 at 11:20:09AM +0100, Maxime Ripard wrote:
-> On Mon, Mar 11, 2024 at 04:58:58PM +0100, Sebastian Wick wrote:
-> > When extending support for a driver-specific KMS property to additional
-> > drivers, we should apply all the requirements for new properties and
-> > make sure the semantics are the same and documented.
+On Sat, Mar 09, 2024 at 05:14:18PM +0100, Christoph Hellwig wrote:
+> On Fri, Mar 08, 2024 at 04:23:42PM -0400, Jason Gunthorpe wrote:
+> > > The DMA API callers really need to know what is P2P or not for
+> > > various reasons.  And they should generally have that information
+> > > available, either from pin_user_pages that needs to special case
+> > > it or from the in-kernel I/O submitter that build it from P2P and
+> > > normal memory.
 > > 
-> > v2: devs of the driver which introduced property shall help and ack
-> > 
-> > Signed-off-by: Sebastian Wick <sebastian.wick@redhat.com>
+> > I think that is a BIO thing. RDMA just calls with FOLL_PCI_P2PDMA and
+> > shoves the resulting page list into in a scattertable. It never checks
+> > if any returned page is P2P - it has no reason to care. dma_map_sg()
+> > does all the work.
 > 
-> Acked-by: Maxime Ripard <mripard@kernel.org>
-> 
-> We probably want to have Dave or Sima ack on that one too
+> Right now it does, but that's not really a good interface.  If we have
+> a pin_user_pages variant that only pins until the next relevant P2P
+> boundary and tells you about we can significantly simplify the overall
+> interface.
 
-Yeah that's a good idea and defacto how we handled this - additional users
-of anything (whether library or uapi or whatever) get to clean up an
-existing mess if it's too bad. But for uapi it's good to be really
-explicit and document that.
+Sorry for the delay, I was away..
 
-Acked-by: Daniel Vetter <daniel.vetter@ffwll.ch>
+I kind of understand your thinking on the DMA side, but I don't see
+how this is good for users of the API beyond BIO.
 
-Cheers, Sima
--- 
-Daniel Vetter
-Software Engineer, Intel Corporation
-http://blog.ffwll.ch
+How will this make RDMA better? We have one MR, the MR has pages, the
+HW doesn't care about the SW distinction of p2p, swiotlb, direct,
+encrypted, iommu, etc. It needs to create one HW page list for
+whatever user VA range was given.
+
+Or worse, whatever thing is inside a DMABUF from a DRM
+driver. DMABUF's can have a (dynamic!) mixture of P2P and regular
+AFAIK based on the GPU's migration behavior.
+
+Or triple worse, ODP can dynamically change on a page by page basis
+the type depending on what hmm_range_fault() returns.
+
+So I take it as a requirement that RDMA MUST make single MR's out of a
+hodgepodge of page types. RDMA MRs cannot be split. Multiple MR's are
+not a functional replacement for a single MR.
+
+Go back to the start of what are we trying to do here:
+ 1) Make a DMA API that can support hmm_range_fault() users in a
+    sensible and performant way
+ 2) Make a DMA API that can support RDMA MR's backed by DMABUF's, and
+    user VA's without restriction
+ 3) Allow to remove scatterlist from BIO paths
+ 4) Provide a DMABUF API that is not scatterlist that can feed into
+    the new DMA API - again supporting DMABUF's hodgepodge of types.
+
+I'd like to do all of these things. I know 3 is your highest priority,
+but it is my lowest :)
+
+So, if the new API can only do uniformity I immediately loose #1 -
+hmm_range_fault() can't guarentee anything, so it looses the IOVA
+optimization that Leon's patches illustrate.
+
+For uniformity #2 probably needs multiple DMA API "transactions". This
+is doable, but it is less performant than one "transaction".
+
+#3 is perfectly happy because BIO already creates uniformity
+
+#4 is like #2, there is not guarenteed uniformity inside DMABUF so
+every DMABUF importer needs to take some complexity to deal with
+it. There are many DMABUF importers so this feels like a poor API
+abstraction if we force everyone there to take on complexity.
+
+So I'm just not seeing why this would be better. I think Leon's series
+shows the cost of non-uniformity support is actually pretty
+small. Still, we could do better, if the caller can optionally
+indicate it knows it has uniformity then that can be optimized futher.
+
+I'd like to find something that works well for all of the above, and I
+think abstracting non-uniformity at the API level is important for the
+above reasons.
+
+Can we tweak what Leon has done to keep the hmm_range_fault support
+and non-uniformity for RDMA but add a uniformity optimized flow for
+BIO?
+
+Jason
 
