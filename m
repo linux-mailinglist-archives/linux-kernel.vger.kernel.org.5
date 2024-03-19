@@ -1,121 +1,135 @@
-Return-Path: <linux-kernel+bounces-108099-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108100-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71A108805EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:13:56 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 65E9F8805F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:14:35 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5D1CEB21BC0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:13:53 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 1882E1F235E9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:14:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 36F685FB9C;
-	Tue, 19 Mar 2024 20:13:48 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2B3855F860;
+	Tue, 19 Mar 2024 20:14:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="gtAnEDUV"
-Received: from mail-pl1-f173.google.com (mail-pl1-f173.google.com [209.85.214.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="W/9TEUv5"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29F705FB90
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:13:45 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 663CB59B76;
+	Tue, 19 Mar 2024 20:14:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710879227; cv=none; b=HIA0nUsPLKN9gm0ULugxnleKGXqXi4cs2Fm5of2wMwYolqhn/eGHnGeCzC4R2noFkBjbvn9+inzQSnTsi4Q3Y0Galp4jQlGW9UgRw2+3Q0q20q5p7WI5kJ9Oi3jn+cD8eGmYgEb1stif3Idzjwpys8IIO00FyWyy+hANKZF4Vrc=
+	t=1710879266; cv=none; b=V0n1qSW33E7Ay6L+H6XTsRh1rtCt3Yfs+j8PMcxb+lEnGFdwlU1IHkV6ksGlZrzFD/xxqjJaqVy4n3GLJzLPqxn9MV0q2upF59C31ZqUiuvEGi+zwr8YUPhY0HdPfUDvSd1j7dRwd5G84ctw4hLoNZolK6NbYGan0QZpTe6zhlw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710879227; c=relaxed/simple;
-	bh=TEI1l16U8O229iRg+bnRlquzTRC42x/8zMW3wG5XbLs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=tsVaTKpj9JM+moY6NfNcIWp7X+mQmvb++2xuczidKNxbVE96MyMHFunmmVPquQVG+IEzuvvLlDeun4rLryeG8YFGqfdlzo075UHp4wXBwmcx5LBTMZQE1lbXVZdyKgaB1j4U2SkWN/j9VaAVWYLuJG6srkOtaLBlD0FvKXVeo0U=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=gtAnEDUV; arc=none smtp.client-ip=209.85.214.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f173.google.com with SMTP id d9443c01a7336-1e058b9e479so28105ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:13:45 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710879225; x=1711484025; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=61E5NQ6/YcOhVh/0k2iDBO7WpqpNwA0nbieT/ua9ouc=;
-        b=gtAnEDUVnZvHgfuPvOALSV92laz8czMB1cfJmNpfaAI3SDF8yI8PpIvoIB8wspgUSY
-         5w0y9kN4RgfF7ReI8e8vf1xrpiVTr17eG083oEne+DYTGEmE3qgXtLu/7Ad3h+kW1gPX
-         GaL5y0w+oY/C33fvFIQYF30A396dqMPN2qPiGBAs5sjCkxnV2Y//egkHXxm/fJGBrhdf
-         dVx0alJ9xtYq+nY2azq325TtMfdnKGeP6rsk6yUV/UwKP91IqIs2bgxXabJsNoAZbrI4
-         hbursat8QPTCctysg1URfQUtJoyMy7Oc3+xw9D8pgDaTrccOhuEab4eNJr7jzdEgQiLA
-         Vuqg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710879225; x=1711484025;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=61E5NQ6/YcOhVh/0k2iDBO7WpqpNwA0nbieT/ua9ouc=;
-        b=Jj3Rdau73jdmWCxE5fCuN2IMSGgwUjmc3t7lLpEMi/th+7Gbkmpz5jqZ6xN3ynDXeb
-         eR/SGdOigGr9rmsPlPZh7APsmSQeO1YthSGGBcWhOpaJU9LVKYayRoKX4N++lx3l9mmy
-         vU+6ulmYu+kgqp3SH2wR9CsysEgnSF1BscVpYxGUUIGUp8jJ3jpR6Kp3AnVvEC8U/z3k
-         v+kKtcMmCDs1duudE/ZY15nnKc9bmiSF+KSpNONmUVcbaOKBonIkRHDNMDdaO3GftzZj
-         7d5efhuXJi2tzK0jvR1YUv9kC8tF++ZUvBIy7zv5zfMPDQfYlnrg4XMJL+EYtU5cCIzk
-         NI3A==
-X-Forwarded-Encrypted: i=1; AJvYcCW+jebecL8D4cf5lTGfEzj8/mxv3xaAd0b0c1rzWYuXRnMiMAtrEAwe4xFl6KWylQ19PmoVaYW8dVw7UDq49UbO9HUjDFO636QJTvqb
-X-Gm-Message-State: AOJu0Yy4tq4JPVtR3gY7yrUwKjPZdKIvrp7SOckPxjzdeRrzGSVQtAPX
-	CDjxSTL5lnRI4QO6EYgfJPTTNiaK/LWsw6+HLNIwzSEZeyMiqF5wVMrd5F6qZzRi9TbxiitJlfJ
-	t52BYZWJwHZnSheIzp7UDZ2JtmFsEqbNfPixy
-X-Google-Smtp-Source: AGHT+IFREg9SwBdMDFnHH3n5tmN6yW8u/tyc7IrpIagXi7ukyBFEM1dN3wdN7uqPHmnG3vaEtYonkph3M4qPe2lMJDA=
-X-Received: by 2002:a17:902:f691:b0:1de:f0f0:90aa with SMTP id
- l17-20020a170902f69100b001def0f090aamr68484plg.26.1710879225101; Tue, 19 Mar
- 2024 13:13:45 -0700 (PDT)
+	s=arc-20240116; t=1710879266; c=relaxed/simple;
+	bh=ebwK4AewbvdYrlguygz1sCJD50ZNfG7LlT4UwBmSljg=;
+	h=Mime-Version:Content-Type:Date:Message-Id:Cc:Subject:From:To:
+	 References:In-Reply-To; b=WIgQ7+0oi9TWbrShXSmnuC0tdhNmKo3kWPuWEfse7WgJ7wnC0bBPEzC0M0PyQ5AxbkvmmH5VXmOpou1PTGFJVm8arys5LzbEpsoM8G+aTcpKIISJepMCueVYJZB+9l6ZtXCat5SdY5jRSFhAt6BVxJQ2Df6ieEkZyNty72H2WO8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=W/9TEUv5; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E9564C433F1;
+	Tue, 19 Mar 2024 20:14:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710879265;
+	bh=ebwK4AewbvdYrlguygz1sCJD50ZNfG7LlT4UwBmSljg=;
+	h=Date:Cc:Subject:From:To:References:In-Reply-To:From;
+	b=W/9TEUv5ynQeNhTOcfb5QoEObpcmBWvia6XYBn0FLbNSN3hZv63Qpb76WuNoxliWu
+	 APAX8cfWjuIvY/SXyvxtMV2Jabbfy6oxq7Kbv5Na95o4QEZYAANhu94OUfwsVRm33q
+	 8Y+aMTZSYeRXnDPFMz0RXPxHQ8hWgALaTRknAIo32VfpVxdbGy9OIE6Tv+s9vPXBaN
+	 TcusYv4E4tuHh7P6CM3EPeMN10G86kGWqSQ0eBtTzu1ztpqVbDoaBmQsrTlT3HNzcc
+	 G82rAYsI8jkHMnOp1IZaQHEGMn5oIP79MibfDT7NlNg9jonJPf5QS8kTy3L5dzf8Lg
+	 81PaAeOqG5ckQ==
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-References: <20240319180005.246930-1-visitorckw@gmail.com> <20240319180005.246930-4-visitorckw@gmail.com>
-In-Reply-To: <20240319180005.246930-4-visitorckw@gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 19 Mar 2024 13:13:33 -0700
-Message-ID: <CAP-5=fUy=m2_f7jKO_kn4+onto5As2fUwrcNBtKEh8uObsNvYA@mail.gmail.com>
-Subject: Re: [PATCH 03/13] bcachefs: Fix typo
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Mime-Version: 1.0
 Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=UTF-8
+Date: Tue, 19 Mar 2024 22:14:22 +0200
+Message-Id: <CZY02YNBTGYQ.3KG8NLH8X3RQE@kernel.org>
+Cc: "keyrings@vger.kernel.org" <keyrings@vger.kernel.org>,
+ "linux-crypto@vger.kernel.org" <linux-crypto@vger.kernel.org>,
+ "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+ "lvc-project@linuxtesting.org" <lvc-project@linuxtesting.org>, "Sergey
+ Shtylyov" <s.shtylyov@omp.ru>
+Subject: Re: [PATCH] KEYS: prevent NULL pointer dereference in
+ find_asymmetric_key()
+From: "Jarkko Sakkinen" <jarkko@kernel.org>
+To: "Roman Smirnov" <r.smirnov@omp.ru>, "David Howells"
+ <dhowells@redhat.com>, "Herbert Xu" <herbert@gondor.apana.org.au>, "David
+ S. Miller" <davem@davemloft.net>, "Andrew Zaborowski"
+ <andrew.zaborowski@intel.com>
+X-Mailer: aerc 0.15.2
+References: <20240315103320.18754-1-r.smirnov@omp.ru>
+ <CZX9T3TU6YU0.3JE9M7M3ENUE0@kernel.org>
+ <b5f21d1175c142efb52e68a24bc4165a@omp.ru>
+In-Reply-To: <b5f21d1175c142efb52e68a24bc4165a@omp.ru>
 
-On Tue, Mar 19, 2024 at 11:00=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.co=
-m> wrote:
+On Tue Mar 19, 2024 at 4:44 PM EET, Roman Smirnov wrote:
+> On Tue, 19 Mar 2024 01:39:00 +0200 Jarkko Sakkinen wrote:
+> > On Fri Mar 15, 2024 at 12:33 PM EET, Roman Smirnov wrote:
+> > > With the current code, in case all NULLs are passed in id_{0,1,2},
+> >=20
+> > "current code" is not unambigious reference of any part of the kernel
+> > tree. Please just write down the function name instead.
+> >=20
+> > > the kernel will first print out a WARNING and then have an oops
+> > > because id_2 gets dereferenced anyway.
+> >=20
+> > Would be more exact":
+> >=20
+> > s/print out a WARNING/emit WARN/
 >
-> Replace 'utiility' with 'utility'.
+> Okay, I'll prepare a second version of the patch.
 >
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+> > > Note that WARN_ON() is also considered harmful by Greg Kroah-
+> > > Hartman since it causes the Android kernels to panic as they
+> > > get booted with the panic_on_warn option.
+> >=20
+> > Despite full respect to Greg, and agreeing what he had said about
+> > the topic (which you are lacking lore link meaning that in all
+> > cases the current description is incomplete), the only thing that
+> > should be documented should be that since WARN_ON() can emit
+> > panic when panic_on_warn is set in the *kernel command-line*
+> > (not "option") this condition should be relaxed.
+>
+> Here's a link to the discussion:
+> https://lore.kernel.org/all/2024011213-situated-augmented-64a4@gregkh/
+> From the context, I thought WARN_ON() would be better removed.
 
-Reviewed-by: Ian Rogers <irogers@google.com>
+Not sure what you are trying to claim here that goes against what I
+just said.
 
-Thanks,
-Ian
+>
+> > >
+> > > Found by Linux Verification Center (linuxtesting.org) with Svace.
+> >=20
+> > I'm not sure if this should be part of the commit message.
+>
+> I have already submitted patches with this line, some have been
+> accepted. It is important for the Linux Verification Center to mark
+> patches as closing issues found with Svace.
+>
+> > >
+> > > Fixes: 7d30198ee24f ("keys: X.509 public key issuer lookup without AK=
+ID")
+> > > Suggested-by: Sergey Shtylyov <s.shtylyov@omp.ru>
+> >=20
+> > Should be reported-by.
+>
+> The suggested-by tag belongs to Sergey because he suggested the fix,
+> subject/description of the patch. The tag reported-by belongs to
+> Svace tool.
 
-> ---
->  fs/bcachefs/util.c | 2 +-
->  1 file changed, 1 insertion(+), 1 deletion(-)
+1. I did not see any reported-by tags in this which is requirement.
+2. Who did find the issue using that tool? I don't put reported-by to
+   GDB even if I use that find the bug.
 >
-> diff --git a/fs/bcachefs/util.c b/fs/bcachefs/util.c
-> index 216fadf16928..f5a16ad65424 100644
-> --- a/fs/bcachefs/util.c
-> +++ b/fs/bcachefs/util.c
-> @@ -1,6 +1,6 @@
->  // SPDX-License-Identifier: GPL-2.0
->  /*
-> - * random utiility code, for bcache but in theory not specific to bcache
-> + * random utility code, for bcache but in theory not specific to bcache
->   *
->   * Copyright 2010, 2011 Kent Overstreet <kent.overstreet@gmail.com>
->   * Copyright 2012 Google, Inc.
-> --
-> 2.34.1
->
+> Thank you for the reply.
+
+
+BR, Jarkko
 
