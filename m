@@ -1,201 +1,256 @@
-Return-Path: <linux-kernel+bounces-107710-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107711-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D6F988008E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:28:10 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BD4F6880090
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:28:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 317511C2203E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:28:09 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E07D91C2203E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:28:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C38808120F;
-	Tue, 19 Mar 2024 15:27:45 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 446DA651BE;
+	Tue, 19 Mar 2024 15:28:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b="SzBE4zCi"
-Received: from mailout2.w1.samsung.com (mailout2.w1.samsung.com [210.118.77.12])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sc7ahwSe"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D42765BAA;
-	Tue, 19 Mar 2024 15:27:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.118.77.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5FB1224B33
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:28:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710862064; cv=none; b=V2qP5VmsoAG6hLkR/Vi7JOyagX8XFdfkymZ8Y+42rFJ1XhRHQK1oVi2UfO5vfkpC7QnbsVkCqmwB6MPdwSR8x18/D5iM9v9DCakcQ9iCAknQ6ouVA37CRhrX3J2sGDL2n23T0Xubr77hdUfKFItJKbYh0TOM7KEacbe1ZkBb2ps=
+	t=1710862098; cv=none; b=HG/JZcImqYj3lxbf16pwg8ndoo9gc6WAYd5mWIXWiMsvBnNpjzSHiRfIytx1g9tRdPEIh9/+JQdN9sgMPXIBelJ/5R9LV/jvv9AMNt5uWSZWJVWbuvPxUfZPwV13jfIsq8twtxP2ZjudwRQV1kn6wbj7nhWllNTv+xp7O4VuBaM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710862064; c=relaxed/simple;
-	bh=yYxBMzxQS7ecwoKcaBzTn6vMn/9fgHsyovHqn5/3m+0=;
-	h=Date:From:To:CC:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition:In-Reply-To:References; b=MrV4fz/LiUe0rSeueHcYNltFK4+Byo/ZLeO2lfZsRUy9UqB2klMs7ngpega8yrsltq2lbKpGQnmKoLxCG2ByRtQPZJhne3SusWl9QLtzXmws7e+MBxBLFapmvjH7Paa54fql+YlqkQj+v6xl7v1snUeT47B9+9/iLyM/y2249bA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com; spf=pass smtp.mailfrom=samsung.com; dkim=pass (1024-bit key) header.d=samsung.com header.i=@samsung.com header.b=SzBE4zCi; arc=none smtp.client-ip=210.118.77.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=samsung.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=samsung.com
-Received: from eucas1p2.samsung.com (unknown [182.198.249.207])
-	by mailout2.w1.samsung.com (KnoxPortal) with ESMTP id 20240319152740euoutp02fd9bfab4df50fc1f7a4746cda7d5f3d8~_M-qsezTM1709817098euoutp02N;
-	Tue, 19 Mar 2024 15:27:40 +0000 (GMT)
-DKIM-Filter: OpenDKIM Filter v2.11.0 mailout2.w1.samsung.com 20240319152740euoutp02fd9bfab4df50fc1f7a4746cda7d5f3d8~_M-qsezTM1709817098euoutp02N
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=samsung.com;
-	s=mail20170921; t=1710862060;
-	bh=KNm5LklWUS6y5OIUd+Sm7HGhI9RSGs9Fb5MNw0hjbVs=;
-	h=Date:From:To:CC:Subject:In-Reply-To:References:From;
-	b=SzBE4zCibmzfjvPIniMWqeO96g+5FfZcC28uZQ3p53lccy58sItDhjMDu1ArWo7M6
-	 hhbtRq+srshLz6RVy4gGtvnnmUF6NaZr55aix5NTHqxuZlSIqRwhPYzpZrdinxHRA4
-	 oEubkmlCv15s1YkQ1JZhvl8t+RFleYfYAdXtxQZ4=
-Received: from eusmges2new.samsung.com (unknown [203.254.199.244]) by
-	eucas1p1.samsung.com (KnoxPortal) with ESMTP id
-	20240319152739eucas1p13a1ad0d4835fab35656e1f6d630874be~_M-qbwIFl0787807878eucas1p1Q;
-	Tue, 19 Mar 2024 15:27:39 +0000 (GMT)
-Received: from eucas1p2.samsung.com ( [182.198.249.207]) by
-	eusmges2new.samsung.com (EUCPMTA) with SMTP id DB.C6.09814.BEEA9F56; Tue, 19
-	Mar 2024 15:27:39 +0000 (GMT)
-Received: from eusmtrp2.samsung.com (unknown [182.198.249.139]) by
-	eucas1p2.samsung.com (KnoxPortal) with ESMTPA id
-	20240319152739eucas1p2c682dc27730e0e3fc1df20accf9bfedb~_M-qEaj4F2786127861eucas1p2h;
-	Tue, 19 Mar 2024 15:27:39 +0000 (GMT)
-Received: from eusmgms2.samsung.com (unknown [182.198.249.180]) by
-	eusmtrp2.samsung.com (KnoxPortal) with ESMTP id
-	20240319152739eusmtrp24a101f41f9382a5e14f49430fd1135d4~_M-qDv38R0702807028eusmtrp2R;
-	Tue, 19 Mar 2024 15:27:39 +0000 (GMT)
-X-AuditID: cbfec7f4-711ff70000002656-63-65f9aeeb203d
-Received: from eusmtip1.samsung.com ( [203.254.199.221]) by
-	eusmgms2.samsung.com (EUCPMTA) with SMTP id 67.8C.10702.BEEA9F56; Tue, 19
-	Mar 2024 15:27:39 +0000 (GMT)
-Received: from CAMSVWEXC02.scsc.local (unknown [106.1.227.72]) by
-	eusmtip1.samsung.com (KnoxPortal) with ESMTPA id
-	20240319152739eusmtip19975b532bb181731861131d0be6c0ec2~_M-p4LJcP1890018900eusmtip1m;
-	Tue, 19 Mar 2024 15:27:39 +0000 (GMT)
-Received: from localhost (106.210.248.248) by CAMSVWEXC02.scsc.local
-	(2002:6a01:e348::6a01:e348) with Microsoft SMTP Server (TLS) id 15.0.1497.2;
-	Tue, 19 Mar 2024 15:27:38 +0000
-Date: Tue, 19 Mar 2024 16:27:36 +0100
-From: Joel Granados <j.granados@samsung.com>
-To: Thomas =?utf-8?Q?Wei=C3=9Fschuh?= <linux@weissschuh.net>
-CC: "Eric W. Biederman" <ebiederm@xmission.com>, Luis Chamberlain
-	<mcgrof@kernel.org>, Kees Cook <keescook@chromium.org>,
-	<linux-kernel@vger.kernel.org>, <linux-fsdevel@vger.kernel.org>
-Subject: Re: [PATCH 3/4] sysctl: drop now unnecessary out-of-bounds check
-Message-ID: <20240319152736.mpgpahyyoiaryucn@joelS2.panther.com>
+	s=arc-20240116; t=1710862098; c=relaxed/simple;
+	bh=Iebj8IQWBTDSyQOcN8l27jVQbNugY8Umi0XfChxI060=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=JjUEkATAvyjhovO7vYi4mJTgsHER+R21vXNXH/w5MMNzCs//ftOlIKyNibCQtQexTAF7ZPEIFjEHQgKLp9MZWAZ5Idvut+FFaWw69nPQBE0sR6I09AStdMvDmBE3/ekdywUYOr/TpYWjmJtGsiz3U3xOO1pvVwTWXmXPQY74+OM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sc7ahwSe; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563c595f968so7154514a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:28:16 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710862094; x=1711466894; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=Uw3yViolL256D4KpZ/VNe3q1jCT/oeAJQE+OzIT+f9c=;
+        b=sc7ahwSeFLVgvg3AWckEjSPyMlZT2xaSCGY3/VkuI9x3wxJALClLvDidKytFJb1CXY
+         1xaEZ49DMri2opJ3G8ikTdbcRg8glAyjPzEbzCXCxwUU32H8QZunY25S5ix1XDCBCiM5
+         niR0GYxMFsD+nG5ElELjxCIVdKlFXlfx0TVCYKGxm4SEH87A2cfv+MvocK2rjtIdTWb/
+         RzPAEWn15w+8uZVavNGmVmmGwnk6w9WeAwMvXAYKXP89pdyTuLtv5vmYzDIgLIdGL3Od
+         6FZ1qw2jxgIBFYe6OOKecJZDsIhPWh7ElqSQD25aSg8vh3SP5s5MvtD9380HpsC1S2EV
+         tuvg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710862094; x=1711466894;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Uw3yViolL256D4KpZ/VNe3q1jCT/oeAJQE+OzIT+f9c=;
+        b=YGOgabwB00ctGAOxzwbKYdfS5pAES1QYlAZhMZC1jDAvesfj/yDFGa29RfxAb/eDwL
+         tFsImc+o5GoOIKTlugoZ44j1ANpnqOMOtVPj6tbPidH4EcCduK1th9CCpyma8dBttPkE
+         5jRylbv++EolnhvdAKbOzUVW3sTikVM+sRGOCqcFrQ00FPbF178oyQz/QeAgocdqDgFY
+         udtlwNy85Ic8WihCbRJI4l8ZNGuqSASthDEBCK3uK/DZ5oBoCPMyhS89Jzqmz73ZJ2XT
+         mbQTiuYaMfmtGVBM6qTsOiqi4nXwpYkUCOqS80KcJ2liHe3yJaYjgbTjs+QLSj4fzt8T
+         4ZZA==
+X-Forwarded-Encrypted: i=1; AJvYcCUcOUnh5nbgW0Aoe7UX6Lb4JwAWodWMb23kwm+Y8EjiMUi8GPMWPj1vPXlyyjirpGKBICqumCDkOtPkHVTuBZjJAuaLyJUaX150/vy4
+X-Gm-Message-State: AOJu0Yy3lQAaKC9QEOEwyK1Oz2K0lhDQpeU1lG1usMogqMpw8wfqgapl
+	ToS40G0qhN1zRxWioF42iVGtEaVViqlBRVinPEScQM2fucvJwIVIWvr/Ns36nr8=
+X-Google-Smtp-Source: AGHT+IF7Mn55tuJjB5sm1mYK+MpMA1+6VQ2Ca0a6t3Dpj8QQx0mBwM7GMKkkizUXQTiG6BR8sjxbqw==
+X-Received: by 2002:a17:906:c14e:b0:a46:a786:8c8c with SMTP id dp14-20020a170906c14e00b00a46a7868c8cmr5971856ejc.77.1710862094598;
+        Tue, 19 Mar 2024 08:28:14 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id e25-20020a170906845900b00a4652efd795sm6232497ejy.83.2024.03.19.08.28.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 08:28:14 -0700 (PDT)
+Message-ID: <ba8418ab-2829-416c-8e20-414f7818cab9@linaro.org>
+Date: Tue, 19 Mar 2024 16:28:12 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg="pgp-sha512";
-	protocol="application/pgp-signature"; boundary="nlgf7jyuw2vaaq5p"
-Content-Disposition: inline
-In-Reply-To: <20240222-sysctl-empty-dir-v1-3-45ba9a6352e8@weissschuh.net>
-X-ClientProxiedBy: CAMSVWEXC01.scsc.local (2002:6a01:e347::6a01:e347) To
-	CAMSVWEXC02.scsc.local (2002:6a01:e348::6a01:e348)
-X-Brightmail-Tracker: H4sIAAAAAAAAA2WSe1BMYRjGfXvOnnMq2xynHV5lmCm3Qa2osQgRY80w0zA0jEs7OqpRW84W
-	lVtRqLAhQ2mEjGgps6XcjZ1RohSlCyY0ctmVsJU9xbKnsy4z/vt9z/M+873PNx+FMdVSdypS
-	E8dyGnWUJ+GMl1fydd7mYp6dXKGbqvxZnkoqazKjlTdvVePKhut5hLLf+laibMnqQIGE6kTy
-	Y1xlKEonVBbDSJUus5JUZRv34sHSVc4BYWxU5GaWU8wOdY44e7AEi7UwCbobVXgyOkRnICcK
-	aD+40MZLMpAzxdDnEejMPBIP3Qj6aq0Ox4KgrMBA/o6k8X1S0ShEsPdVE/Fn6t4uKyZMMfQV
-	BBePLhIYp8eAsTyPEJigJ0HdxxcDM3I6AC70WkghjNG3EOS+zx+4wo1eBN92t0oFltGB0G84
-	Tog8BKpz3uACY3QCWJ/22XXKzh5QaKME2cke1d9IkYqbekHz7QJC5O3woOzZQB2gdU5wJqsE
-	icZ8eFIivIDAbmCqKnPUHAE/r+U7AkcQ3LF9JsWDHsG5lB5HYiakNr5xJObCkduZUmEjoF2h
-	pXOIuKgrHC4/homyDPbtYcTpsaBv+4hnIa/cf6rl/lMt9281UfaBlqPZ/8sT4dxpMybyLCgu
-	7sJPIbIIDWPjtdHhrHaKht3io1VHa+M14T7rY6INyP7DHtqquq+iQtMXHyOSUMiIRtvD7Zf1
-	9cgd18RoWE+5jHThWUYWpk5MYrmYdVx8FKs1Ig8K9xwmGxM2imXocHUcu5FlY1nutyuhnNyT
-	JUFJCX47Fi/gvpbkDz9gZTqo+ubgzYN+dBd0hibwE7GuIl/r3S/ticdmNjQ1tZJ1Wq9ePgid
-	b7eO3Fa6ZN30xB5vcpppRry3f+m7K+M3ZS9dkTbulaG29rqp4BETEhR7enVD2LLLvpFtZ/y8
-	3z2YKlfw01rXfMoZ93JGVD9TalK/trhqBp/St5/IT6xOd0+bL8+LUWzhl55cc9G8drl1uH9c
-	46Fvj/ajgM7nKo63pUgUwUm9i6e0ztsgx+d9r3fpiq3pDsw6flAf0bh1JTlidSWzSjHUvHuh
-	raIrpHmO24eIfT0uRTWSjFF1FbD15Y/Bl9I5/KxHTmhvB5HqX7Ez537IMk9cG6H2nYBxWvUv
-	tS0Vp9wDAAA=
-X-Brightmail-Tracker: H4sIAAAAAAAAA+NgFnrCIsWRmVeSWpSXmKPExsVy+t/xu7qv1/1MNTh0Q8Li/7YWdosz3bkW
-	e/aeZLG4vGsOm8XvH8+YLG5MeMrowOYxu+Eii8emVZ1sHp83yXn0dx9j95hyqJ0lgDVKz6Yo
-	v7QkVSEjv7jEVina0MJIz9DSQs/IxFLP0Ng81srIVEnfziYlNSezLLVI3y5BL2NK/zW2go9C
-	FednOjYw9gt0MXJySAiYSLT+/MUKYgsJLGWUmPxNFiIuI7Hxy1VWCFtY4s+1LrYuRi6gmo+M
-	Ev/Pv2SGcLYySvx9epcRpIpFQFXi0LY5bCA2m4COxPk3d5hBbBEBG4mV3z6zgzQwC+xllJj1
-	Yj47SEJYwFPie/NNsBW8Ag4SvzfNgFpxm1FizoTzLBAJQYmTM5+A2cwCZRLHX30GsjmAbGmJ
-	5f84QMKcQHNW726EOlVZ4vq+xWwQdq3E57/PGCcwCs9CMmkWkkmzECZBhHUkdm69w4YhrC2x
-	bOFrZgjbVmLduvcsCxjZVzGKpJYW56bnFhvpFSfmFpfmpesl5+duYgRG8bZjP7fsYFz56qPe
-	IUYmDsZDjCpAnY82rL7AKMWSl5+XqiTCy879M1WINyWxsiq1KD++qDQntfgQoykwGCcyS4km
-	5wPTS15JvKGZgamhiZmlgamlmbGSOK9nQUeikEB6YklqdmpqQWoRTB8TB6dUA1PyMu2p+brF
-	TdO9zOr2M1UlzpXoCnrxfjdHyasj57MC008Ye0wMcD6+5+qNOwp9++u8vt0uXq5zU+zV7U1a
-	Sc2Pme2vJtnND2eTnNA8o+rF0+BPnrHBZXYTi96eW6Upo7GnKYBx7a1fUwsv6Wfz73m62fTp
-	k3cTf95VXtamFqN9qfJU+02WnbtcYllu7n51g0c68/Bhvs+7spnW2wdyT5LcXGkzl2WOmMUz
-	98NuPLPPBy49XmN+8OSRthv75ghlBWz6euBNeHHnD51Zp/XuBm8p/ZbMeHjRMvvsu6EhArEd
-	r0+cYb+We9hlxrmy0JOthREunrerz+kdrS53thRMDnuy6ef2x80PbpRG82smSCgosRRnJBpq
-	MRcVJwIADc9RmXcDAAA=
-X-CMS-MailID: 20240319152739eucas1p2c682dc27730e0e3fc1df20accf9bfedb
-X-Msg-Generator: CA
-X-RootMTR: 20240222070824eucas1p2e176acc2f85f341f388a900eb35f7fa0
-X-EPHeader: CA
-CMS-TYPE: 201P
-X-CMS-RootMailID: 20240222070824eucas1p2e176acc2f85f341f388a900eb35f7fa0
-References: <20240222-sysctl-empty-dir-v1-0-45ba9a6352e8@weissschuh.net>
-	<CGME20240222070824eucas1p2e176acc2f85f341f388a900eb35f7fa0@eucas1p2.samsung.com>
-	<20240222-sysctl-empty-dir-v1-3-45ba9a6352e8@weissschuh.net>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v1 3/4] dt-bindings: Add bindings for vmgenid
+To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
+ robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com,
+ dan.j.williams@intel.com, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+Cc: graf@amazon.de, dwmw@amazon.co.uk, bchalios@amazon.es,
+ xmarcalx@amazon.co.uk
+References: <20240319143253.22317-1-sudanl@amazon.com>
+ <20240319143253.22317-4-sudanl@amazon.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240319143253.22317-4-sudanl@amazon.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
---nlgf7jyuw2vaaq5p
-Content-Type: text/plain; charset="iso-8859-1"
-Content-Disposition: inline
-Content-Transfer-Encoding: quoted-printable
+On 19/03/2024 15:32, Sudan Landge wrote:
+> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
+> ("virt: vmgenid: notify RNG of VM fork and supply generation ID"), as an
+> ACPI only device.
 
-On Thu, Feb 22, 2024 at 08:07:38AM +0100, Thomas Wei=DFschuh wrote:
-> The type field is now part of the header so
-> sysctl_is_perm_empty_ctl_header() can safely be executed even without
-> any ctl_tables.
+That's not a valid rationale. Second today... we do not add things to
+bindings just because someone added some crazy or not crazy idea to Linux.
 
-Only comments on the commit message.
-1. Can you please put this and your 4/4 patch together. Since 4/4 comes
-   is a result of this 3/4 patch, then they can be in one.
-2. Please re-write the commit message to state what you did: Something
-   like : "Remove the now unneeded check for ctl_table_size; it is safe
-   to do so as it is now part of ctl_table_header.
-3. Remember to mention the removal of the sentinel when you merge 3/4
-   and 4/4
+Bindings represent the hardware.
 
->=20
-> Signed-off-by: Thomas Wei=DFschuh <linux@weissschuh.net>
+Please come with real rationale. Even if this is accepted, above reason
+is just wrong and will be used as an excuse to promote more crap into
+bindings.
+
+
+A nit, subject: drop second/last, redundant "bindings". The
+"dt-bindings" prefix is already stating that these are bindings.
+See also:
+https://elixir.bootlin.com/linux/v6.7-rc8/source/Documentation/devicetree/bindings/submitting-patches.rst#L18
+
+Please use subject prefixes matching the subsystem. You can get them for
+example with `git log --oneline -- DIRECTORY_OR_FILE` on the directory
+your patch is touching.
+
+> 
+> Add a devicetree binding support for vmgenid so that hypervisors
+> can support vmgenid without the need to support ACPI.
+
+Devicetree is not for virtual platforms. Virtual platform can define
+whatever interface they want (virtio, ACPI, "VTree" (just invented now)).
+
+> 
+> Signed-off-by: Sudan Landge <sudanl@amazon.com>
 > ---
->  fs/proc/proc_sysctl.c | 3 +--
->  1 file changed, 1 insertion(+), 2 deletions(-)
->=20
-> diff --git a/fs/proc/proc_sysctl.c b/fs/proc/proc_sysctl.c
-> index fde7a2f773f0..4cdf98c6a9a4 100644
-> --- a/fs/proc/proc_sysctl.c
-> +++ b/fs/proc/proc_sysctl.c
-> @@ -232,8 +232,7 @@ static int insert_header(struct ctl_dir *dir, struct =
-ctl_table_header *header)
->  		return -EROFS;
-> =20
->  	/* Am I creating a permanently empty directory? */
-> -	if (header->ctl_table_size > 0 &&
-> -	    sysctl_is_perm_empty_ctl_header(header)) {
-> +	if (sysctl_is_perm_empty_ctl_header(header)) {
->  		if (!RB_EMPTY_ROOT(&dir->root))
->  			return -EINVAL;
->  		sysctl_set_perm_empty_ctl_header(dir_h);
->=20
-> --=20
-> 2.43.2
->=20
+>  .../devicetree/bindings/vmgenid/vmgenid.yaml  | 57 +++++++++++++++++++
 
---=20
+No, you do not get your own hardware subsystem. Use existing ones.
 
-Joel Granados
+>  MAINTAINERS                                   |  1 +
+>  2 files changed, 58 insertions(+)
+>  create mode 100644 Documentation/devicetree/bindings/vmgenid/vmgenid.yaml
+> 
+> diff --git a/Documentation/devicetree/bindings/vmgenid/vmgenid.yaml b/Documentation/devicetree/bindings/vmgenid/vmgenid.yaml
+> new file mode 100644
+> index 000000000000..17773aa96f8b
+> --- /dev/null
+> +++ b/Documentation/devicetree/bindings/vmgenid/vmgenid.yaml
+> @@ -0,0 +1,57 @@
+> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
+> +%YAML 1.2
+> +---
+> +$id: http://devicetree.org/schemas/vmgenid/vmgenid.yaml#
+> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+> +
+> +title: Virtual Machine Generation Counter ID device.
 
---nlgf7jyuw2vaaq5p
-Content-Type: application/pgp-signature; name="signature.asc"
+Titles are not sentences. Drop full stop.
 
------BEGIN PGP SIGNATURE-----
+> +
+> +maintainers:
+> +  - Jason A. Donenfeld <Jason@zx2c4.com>
+> +
+> +description: |+
 
-iQGzBAABCgAdFiEErkcJVyXmMSXOyyeQupfNUreWQU8FAmX5rucACgkQupfNUreW
-QU/CEwv/XMjKtYlwmQtmbNIX6XHAb/Vylqr2p/XkMeSmWICOxe+59VJGKyhVLY76
-e6z9IRpS42qH+fkx7DeP4KRDa5PuYX6UsFbhYEqXIJT6ep+Sji2XdRkRCxfVjvzc
-P4iAejyZEcmFEMuEQ2oVhaAk0E1ZaMCrNe1hyvJ5xZzBCSOZv700Upasd0y9HTOW
-CiG+x54R93+zLzzEROpRNqRYkObDzZJ8HWoHe2DZGNKRRtgkeNPG5kkE+mRsq0Dr
-AuepdMyISHtBY6FdxIcpj2bAZxfGjOO21KU28bmgtBDngu+OMhFYfApRUlJ4R3Rk
-WAOkq67ttnCkx857TRVWb0MpIjUlVs/a3J7LnoC8CLQ2CpgEJ4L71L7cJEs7h6af
-CbdkWp+fjZW7C4N5HyhgXGbDYiQAYNvKjrAF5q/g0L+YztU8VxTJiCdrIMjhWEdA
-9ooECsSlozx2evuTDn+WdmSnZbZmdxzhLMgTgQ4nVnNJxi13D0zGuHV129k63UD+
-b1wVpBpU
-=a/Sv
------END PGP SIGNATURE-----
+Drop |+
 
---nlgf7jyuw2vaaq5p--
+> +  Firmwares or hypervisors can use this devicetree to describe
+> +  interrupts and the shared resources to inject a Virtual Machine Generation
+> +  counter.
+> +
+> +properties:
+> +  compatible:
+> +    const: linux,vmgenctr
+> +
+> +  "#interrupt-cells":
+> +    const: 3
+> +    description: |
+> +      The 1st cell is the interrupt type.
+> +      The 2nd cell contains the interrupt number for the interrupt type.
+> +      The 3rd cell is for trigger type and level flags.
+> +
+> +  interrupt-controller: true
+> +
+> +  reg:
+> +    description: |
+> +      specifies the base physical address and
+> +      size of the regions in memory which holds the VMGenID counter.
+> +    maxItems: 1
+> +
+> +  interrupts:
+> +    description: |
+> +      interrupt used to notify that a new VMGenID counter is available.
+> +      The interrupt should be Edge triggered.
+> +    maxItems: 1
+> +
+> +required:
+> +  - compatible
+> +  - reg
+> +  - interrupts
+> +
+> +additionalProperties: false
+> +
+> +examples:
+> +  - |
+> +    vmgenid@80000000 {
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+No generic name? Kind of, because *it is not a real thing*.
+
+
+
+Best regards,
+Krzysztof
+
 
