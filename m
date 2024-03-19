@@ -1,157 +1,146 @@
-Return-Path: <linux-kernel+bounces-107706-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107707-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7A9F5880080
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:25:02 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E46A6880084
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:25:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E44CFB20DB6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:24:59 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A0C44283080
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:25:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FE55657AF;
-	Tue, 19 Mar 2024 15:24:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 71890657B6;
+	Tue, 19 Mar 2024 15:25:16 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r1L4cwO5"
-Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gNW3A9Xt"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 254B6651B1
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:24:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B08CB651AD;
+	Tue, 19 Mar 2024 15:25:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710861891; cv=none; b=MMTpa3QOjjbD1LohIAjECLDx4Gzaev/b2uwqt7LMFwluMWxndIxN63Z0Wx4CN6a1Qsu5PQzJaszKqSZPeI43YXEU7ghN5OSbRSQH0RrYYgxYGeP0s9OB/CygQLWe0Yx5+YGtS2RI7Hlu+accgxx6nt9H1JjpeM+JMIhgdMD6yk4=
+	t=1710861915; cv=none; b=CBdvskjl6ILtvfURp+HTeQHxoVoNj+Z6NXOJvE0+DZLNebTFVCP9p754f3W4TAs5qOG/etiE1vMq2IZCWZgPzhJTQ++mIj8F3wgVDAavzW2O6gKoyjsbGRyHCrMb0HZEcx37LREBF0fjcSpcJOPluZOT0JOGWyRGflvLNmwilog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710861891; c=relaxed/simple;
-	bh=lIytFHbbynF0ymPcC7goQip8SDsqtONTI2YWA6WZ5Ao=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tB+cZo8Kb598ANwlGRqQU6p90s3Xt83tK0tODaSPRFQHGbGTgaQgNkXzM6b+dsfXKOGgGqFbeCkpKyIha1dXtOt/PeIon3H7UluRQRbad7oWFDglRYLBqlOFbrBz6DD9wsAVhbgO3mHMqFWlpuFP36elByYjcLMeDDVAz3g8+Gw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r1L4cwO5; arc=none smtp.client-ip=209.85.218.46
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46aaf6081fso414352266b.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:24:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710861888; x=1711466688; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=kOmnXFbjjE4szNevNMFXZKUt1lQSXyLP1LD1PrVAQ2E=;
-        b=r1L4cwO5/yDUu/LQnkqLrTxC9nOybOjZEc0eXPzxFSuRSFCA9najUxc5cIlDKdiH0g
-         N5STwFDzhp58D88edjb1ymfmu6kLO2yQgrE7mZWoApgCQOXbgkMJiIJM/S8+IEoDMM33
-         mIXHns6Lik3A7iL8bCcsL8pX5Dnn5eLxSvRlv8SClRTQ0gkgJ3LIy9zrMbaLzVgkpW9/
-         TMSnG8MikJnGMAE8p3poZc1IqoWnxmJtmERHMka1QH39YUpegj7Ypp8eq/DVY3VbX16w
-         auCkyxzumdCrh842LwuYK/5MH6jLdlqoRFX9V9HMjQhrzT3hUIDAUu4dosrS748fbfgC
-         uT1A==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710861888; x=1711466688;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=kOmnXFbjjE4szNevNMFXZKUt1lQSXyLP1LD1PrVAQ2E=;
-        b=XbkhcMsCZyJUZHpE1dOvLGGhQjsyyHf1fGgIHhS13ZKzy2XRktFOn4x5yYNcycqgKZ
-         9f/r1fai5nqgDIJAM+9u4fyquY+HFW3aECU8GKYBqPJt6EBm3XWVZ35mW1P9TDtyw6zu
-         7DYll9IhwBP3+RX2+39lVRA8SxZFjRKvj3AHwedFDVPFqI/zhRf17Zmy5VVzj8RKQtVX
-         mx3jkawEqmfB/WTbkCBmpEw95+XtG0t5rit3oZnh/NeqzPvvx5OQhyhcX5+Wvh0tHMLI
-         q3jomTY1Zboukc/i+PC+G1zdemp/HdSmOkLvtkQE7vXnHpLKT/KgnMRWMXOJ+i8q/jCM
-         tKTw==
-X-Forwarded-Encrypted: i=1; AJvYcCWoTLNNr563K1zbJBOSt4tGByVeTkzrzzt63JhCbxlkQziiaPpQHuSkSIjQInndZxX7L5TRr0gMnB3eH/JG8izZ7qEvbY6+kA15ZQ+I
-X-Gm-Message-State: AOJu0YwtquUsWLn2HW9+RDCmpJr/DxKhIYc2uDkDjEto9Il7062XdrP2
-	qJWPxp913n9S0netqEcJGcCw8c2/5zy4XUa+9Aw3D8zH4L/UTpmrEmfw9f0hFVE=
-X-Google-Smtp-Source: AGHT+IHTYuFBC+LcDF+FXQ6e2/Worpo6eNOG9VEW5amG72ngZAdrH+oLoVookfNEjJvS4++i5dQt+Q==
-X-Received: by 2002:a17:906:b7d3:b0:a46:c8e6:b825 with SMTP id fy19-20020a170906b7d300b00a46c8e6b825mr1790305ejb.26.1710861888426;
-        Tue, 19 Mar 2024 08:24:48 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id dt22-20020a170906b79600b00a4669f6c2e2sm6149478ejb.44.2024.03.19.08.24.46
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 08:24:47 -0700 (PDT)
-Message-ID: <23692c07-98bd-477d-b244-bba14c50352c@linaro.org>
-Date: Tue, 19 Mar 2024 16:24:44 +0100
+	s=arc-20240116; t=1710861915; c=relaxed/simple;
+	bh=XgC+oIhFKtNDAik4l1Rt4yEt/LCvYMBQQFsAEqu4RWY=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition:In-Reply-To; b=MfApuk8iTsxJ0+mla1jcvLm+YdWuUsXPW041mHEuqQVqr3Zk/eFclJ2ai3VG150DBZEwJ/sZrIYIAF9kr3O39IsR0jvMfjT9oDcHbXB1TK7QKXZcbCzo3/UVtcrw87hC4dWeB+De4mGh7e439xMfbex8cbu9OLzhl3Q4xA64f0E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gNW3A9Xt; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id E1445C433F1;
+	Tue, 19 Mar 2024 15:25:14 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710861915;
+	bh=XgC+oIhFKtNDAik4l1Rt4yEt/LCvYMBQQFsAEqu4RWY=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:From;
+	b=gNW3A9XtthFbAruB4DGpESZNAV1KN7mmlGxyiZZhLekabuNokSizuQkGZV6m12yhX
+	 1aQeojCjTR+MblE2ZDWyqK6rS9/4vvZ8hFBkvmKInBQpuVZ1BdU0kSAYTbe4xe2GgP
+	 SyLuUeGLKpnezme4H8RyzHbyt3CYoJAvNF7SVxYBKf5CRnnrU8jC/9ykJzzmKf7MwD
+	 iqn+Gavfvn2TETe4YmigKmDmiJhoZUnr1rcxbCDm7ysQLf1KW0/sIXrfThdlIklqKx
+	 PwWA/TfLYmjZp+ZA3YjWlBfohdtpp7TYFsPE0mnuTOYht8IwvuL0IizcJii6QISu4h
+	 RXYl3H3Re8uXA==
+Date: Tue, 19 Mar 2024 10:25:13 -0500
+From: Bjorn Helgaas <helgaas@kernel.org>
+To: Herve Codina <herve.codina@bootlin.com>
+Cc: Rob Herring <robh@kernel.org>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	"Rafael J. Wysocki" <rafael@kernel.org>,
+	Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou <lizhi.hou@amd.com>,
+	Max Zhen <max.zhen@amd.com>, Sonal Santan <sonal.santan@amd.com>,
+	Stefano Stabellini <stefano.stabellini@xilinx.com>,
+	Jonathan Cameron <Jonathan.Cameron@huawei.com>,
+	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
+	PCI <linux-pci@vger.kernel.org>,
+	Allan Nielsen <allan.nielsen@microchip.com>,
+	Horatiu Vultur <horatiu.vultur@microchip.com>,
+	Steen Hegelund <steen.hegelund@microchip.com>,
+	Thomas Petazzoni <thomas.petazzoni@bootlin.com>,
+	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kwilczynski@kernel.org>
+Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
+Message-ID: <20240319152513.GA1227721@bhelgaas>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v1 0/4] virt: vmgenid: Add devicetree bindings support
-To: Sudan Landge <sudanl@amazon.com>, tytso@mit.edu, Jason@zx2c4.com,
- robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
- sathyanarayanan.kuppuswamy@linux.intel.com, thomas.lendacky@amd.com,
- dan.j.williams@intel.com, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Cc: graf@amazon.de, dwmw@amazon.co.uk, bchalios@amazon.es,
- xmarcalx@amazon.co.uk
-References: <20240319143253.22317-1-sudanl@amazon.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
- cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
- JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
- gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
- J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
- NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
- BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
- vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
- Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
- TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
- S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
- m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
- HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
- XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
- mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
- v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
- cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
- rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
- qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
- aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
- gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
- dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
- NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
- hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
- oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
- H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
- yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
- 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
- 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
- +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
- FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
- 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
- DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
- oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
- 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
- Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
- qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
- /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
- qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
- EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
- KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
- fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319143253.22317-1-sudanl@amazon.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20231215145207.0cf098e5@bootlin.com>
 
-On 19/03/2024 15:32, Sudan Landge wrote:
-> This small series of patches aims to add devicetree bindings support for
-> the Virtual Machine Generation ID (vmgenid) driver.
+[+cc Krzysztof]
+
+On Fri, Dec 15, 2023 at 02:52:07PM +0100, Herve Codina wrote:
+> On Mon, 4 Dec 2023 07:59:09 -0600
+> Rob Herring <robh@kernel.org> wrote:
+> > On Mon, Dec 4, 2023 at 6:43 AM Herve Codina <herve.codina@bootlin.com> wrote:
+> > > On Fri, 1 Dec 2023 16:26:45 -0600
+> > > Rob Herring <robh@kernel.org> wrote:
+> > > > On Thu, Nov 30, 2023 at 10:57 AM Herve Codina <herve.codina@bootlin.com> wrote:  
+> > > > ...
+
+> > > > --- a/drivers/pci/of.c
+> > > > +++ b/drivers/pci/of.c
+> > > > @@ -31,6 +31,8 @@ int pci_set_of_node(struct pci_dev *dev)
+> > > >                 return 0;
+> > > >
+> > > >         node = of_pci_find_child_device(dev->bus->dev.of_node, dev->devfn);
+> > > > +       if (!node && pci_is_bridge(dev))
+> > > > +               of_pci_make_dev_node(dev);
+> > > >         if (!node)
+> > > >                 return 0;  
+> > >
+> > > Maybe it is too early.
+> > > of_pci_make_dev_node() creates a node and fills some properties based on
+> > > some already set values available in the PCI device such as its struct resource
+> > > values.
+> > > We need to have some values set by the PCI infra in order to create our DT node
+> > > with correct values.  
+> > 
+> > Indeed, that's probably the issue I'm having. In that case,
+> > DECLARE_PCI_FIXUP_HEADER should work. That's later, but still before
+> > device_add().
+> > 
+> > I think modifying sysfs after device_add() is going to race with
+> > userspace. Userspace is notified of a new device, and then the of_node
+> > link may or may not be there when it reads sysfs. Also, not sure if
+> > we'll need DT modaliases with PCI devices, but they won't work if the
+> > DT node is not set before device_add().
 > 
-> Virtual Machine Generation ID driver was introduced in commit af6b54e2b5ba
-> ("virt: vmgenid: notify RNG of VM fork and supply generation ID") as an
-> ACPI only device.
-> We would like to extend vmgenid to support devicetree bindings because:
-> 1. A device should not be defined as an ACPI or DT only device.
+> DECLARE_PCI_FIXUP_HEADER is too early as well as doing the DT node creation
+> just before the device_add() call.
+> Indeed, in order to fill the DT properties, resources need to be assigned
+> (needed for the 'ranges' property used for addresses translation).
+> The resources assignment is done after the call to device_add().
 
-Virtual stuff is not a device, so your first assumption or rationale is
-not correct.
+Do we need to know the actual address *value* before creating the
+sysfs file, or is it enough to know that the file should *exist*, even
+if the value may be changed later?
 
-Virtual stuff can be ACPI only, because DT is not for Virtual stuff.
+> Some PCI sysfs files are already created after adding the device by the
+> pci_create_sysfs_dev_files() call:
+>   https://elixir.bootlin.com/linux/v6.6/source/drivers/pci/bus.c#L347
+> 
+> Is it really an issue to add the of_node link to sysfs on an already
+> present device ?
 
+Yes, I think this would be an issue.  We've been trying to get rid of
+pci_create_sysfs_dev_files() altogether because there's a long history
+of race issues related to it:
 
-Best regards,
-Krzysztof
+  https://lore.kernel.org/r/1271099285.9831.13.camel@localhost/ WARNING: at fs/sysfs/dir.c:451 sysfs_add_one: sysfs: cannot create duplicate filename '/devices/pci0000:00/0000:00:01.0/slot'
+  https://lore.kernel.org/r/19461.26166.427857.612983@pilspetsen.it.uu.se/ [2.6.35-rc1 regression] sysfs: cannot create duplicate filename ... XVR-600 related?
+  https://lore.kernel.org/r/20200716110423.xtfyb3n6tn5ixedh@pali/ PCI: Race condition in pci_create_sysfs_dev_files
+  https://lore.kernel.org/r/m3eebg9puj.fsf@t19.piap.pl/ PCI: Race condition in pci_create_sysfs_dev_files (can't boot)
+  https://bugzilla.kernel.org/show_bug.cgi?id=215515 sysfs: cannot create duplicate filename '.../0000:e0'
 
+And several previous attempts to fix them:
+
+  https://lore.kernel.org/r/4469eba2-188b-aab7-07d1-5c77313fc42f@gmail.com/ Guard pci_create_sysfs_dev_files with atomic value
+  https://lore.kernel.org/r/20230316103036.1837869-1-alexander.stein@ew.tq-group.com PCI/sysfs: get rid of pci_sysfs_init late_initcall
+  https://lore.kernel.org/r/1702093576-30405-1-git-send-email-ssengar@linux.microsoft.com/ PCI/sysfs: Fix race in pci sysfs creation
+
+Bjorn
 
