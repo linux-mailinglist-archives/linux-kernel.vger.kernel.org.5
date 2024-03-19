@@ -1,173 +1,183 @@
-Return-Path: <linux-kernel+bounces-108136-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108137-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCD64880682
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:05:12 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id BCE1E880686
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:07:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7CD5C1F22907
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:05:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 346D71F228EC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:07:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF2E83D3BB;
-	Tue, 19 Mar 2024 21:05:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB4053CF63;
+	Tue, 19 Mar 2024 21:07:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="CHWo2JRh"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="VDJCz5Ty"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 058142B9D3;
-	Tue, 19 Mar 2024 21:05:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A395E3CF58
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:06:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710882302; cv=none; b=Ut/tJdlySVcVNNFn7Fe4Gk9AqZaRJ/c+JrLKuLbHNqVzeZfCxN5AouleGP1P8hW4JW+j1S6dZgP9ATY1rIHumYlFy/QlYwHaVY//GOj41dGxQQDXza/13kqieYbwDcEFVTcAJzT5lVj2tJYaAqAfSNR/nrusDBavXm9un+X/990=
+	t=1710882421; cv=none; b=i1NG7x+vwyTiXXCS1ZH4Zoy68O/EZy2Re5P6xhySQDoXrhYdmEh0Cl5cSJ9OLtUQ6zsiSJfneZeYOrnthBpgErM8JgZH1GpczdHzvldxgGw5w0hwswlE1jBEl+vd+4bjNw8WFakkuOy9OjZ6JMiM6bSY6DbV4WflGhXFuC6QmCs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710882302; c=relaxed/simple;
-	bh=YmZGbVxoRW7YnePQKU5vsbz57//dRcnqGNgy8+/fRcI=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=gKz7ASf/AT38+QnDlM2UP9Ka9GwHVI2XFEnr3vHrGJvDfIJd5h67iuoGpE9hj5DNuArQPsiIbtwfiBcptWPozFtLyaPLaVrn+7pRX3u/wI2yY8BxVRfoURg3midOa3OXAco7PPixJi6+uQfzxJiX61AMM2eAJLMbKfBIUZXVl28=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=CHWo2JRh; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 86706C433C7;
-	Tue, 19 Mar 2024 21:05:01 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710882301;
-	bh=YmZGbVxoRW7YnePQKU5vsbz57//dRcnqGNgy8+/fRcI=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=CHWo2JRhDHujPTlYvoxmw07C9p9v9Sku5GC9j0j7zQUaY3aCgoT0nXs4/Nmp7K39K
-	 xbCyhfGtXJt2BNPh47hhuH864j0+qM1p9pKce0n11xdgI1MX1iH79R/xBuIfa8xiLn
-	 PBRD+ANLDorKzNh0Hslx84biVT/ewCxZt2pTFqTTjGvAOg+kaAXg9Hf4DEDRAwi2VH
-	 1xOY1eAQBgFCEune673i8/Ji3e4lpor+0HylmPI8S5eqKeKsdqtw6K7Ms7JFKnHMgX
-	 NA8eSYuSd4GgHRH3R1PDNw/q+YCqAdp+OGDQRB1NnKu6JSp4GI9UO/h72R8cq4rJhu
-	 H9xft/X16q0qA==
-Date: Tue, 19 Mar 2024 14:05:01 -0700
-From: "Darrick J. Wong" <djwong@kernel.org>
-To: Zhang Yi <yi.zhang@huaweicloud.com>
-Cc: linux-xfs@vger.kernel.org, linux-fsdevel@vger.kernel.org,
-	linux-kernel@vger.kernel.org, hch@infradead.org, brauner@kernel.org,
-	david@fromorbit.com, tytso@mit.edu, jack@suse.cz,
-	yi.zhang@huawei.com, chengzhihao1@huawei.com, yukuai3@huawei.com
-Subject: Re: [PATCH v3 7/9] iomap: use a new variable to handle the written
- bytes in iomap_write_iter()
-Message-ID: <20240319210501.GL1927156@frogsfrogsfrogs>
-References: <20240319011102.2929635-1-yi.zhang@huaweicloud.com>
- <20240319011102.2929635-8-yi.zhang@huaweicloud.com>
+	s=arc-20240116; t=1710882421; c=relaxed/simple;
+	bh=p3CVVv7j8KqfxO3Oc3YIg4XiUxGaF43J1xHbfkpZWUY=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=NCeBV5yxVrrtdlBVsbokl/k8Fr76n5tG8nBX1rhGbfRN/tUyakTWI3vVVYC8s3v4a506sPOzUATcLxuZNyAgki/FLs76qL2OOkjJSdm7HrPn2w1RMisxhcC4/l1y2oFTshi8enoR66k9CHXjapEUbtFlJahT0RiFa/Io7wP8eyE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=VDJCz5Ty; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710882417;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=7qoGIHh6upwj5gPJ9J4YHu4wJ6ui1GNstsfCG9nUc0E=;
+	b=VDJCz5Tynnr2Xh5kNuxMOSfalhvGJ3W3kd5n4gg5Km3HBNVuxmUL9xCIZbL3RNK2wd18hh
+	eZioHpnHA9BfGYTcuxW3RbiFRFOIOKmxtcBe4CErce+MvpXFtM6mxgbPsCKzQRzafC/utK
+	Pq2q+vQktK8NzqN5H7X8KGg5dkRas/g=
+Received: from mail-wm1-f71.google.com (mail-wm1-f71.google.com
+ [209.85.128.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-686-cfOe8Z7OPsiA2tjnBTTAUA-1; Tue, 19 Mar 2024 17:06:56 -0400
+X-MC-Unique: cfOe8Z7OPsiA2tjnBTTAUA-1
+Received: by mail-wm1-f71.google.com with SMTP id 5b1f17b1804b1-41407fd718dso19869765e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:06:55 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710882415; x=1711487215;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=7qoGIHh6upwj5gPJ9J4YHu4wJ6ui1GNstsfCG9nUc0E=;
+        b=JPfOVacx2OiVPTuQLB1jq8V8jjzCL8JrFPQv1VqC0cNVW702mHDtiDdB3MM0ZLndgM
+         MnfIDppMR2wQSeC+X955x1tamiXB8dX/i2mTuDOd1PHLCiWFAArJGLOJEbxhJ6AM3tI/
+         Ja7GsXuSzLgEKLpZV3vTckWeQlU8+GQp5Eis7iVmgBbPy93siJPbNfdCv9ekkhajfrvY
+         QB+R0AOofIn2yiaekwGSNXuZZXzkHD6Q8S0wlNt0yaxcsJTPIH2jAZEJyvvanY6iP3oG
+         nlvb29QIweRRc8F/JPnNCqQJdSwcSvtuhnEEeenEPDRb6Yhzyi5rDyAB/hQo0RWTBD/j
+         mFDg==
+X-Forwarded-Encrypted: i=1; AJvYcCV0m0t3pVJUGct9jOYRCmVlbUbx1eL9z18bqGma1Kth+4FpxNUP1FaHPBGhhh2r13EVikLi0w6Aa8NBe1VAri2kffbnqc61KvqJiL8f
+X-Gm-Message-State: AOJu0YzmW8T6WCjoOiYPFHyGY3icdZH64t9JnjK1+12zdI9ND6YWV76A
+	vJ+JM6tTKUKOSDjHmKrv1g/W23LVaTibFqxtL32DUMUuKgfF6kBjyy7KPdC+L/PaCa0RzeLwiFU
+	KgXdtdjkFqZsQ7fvyV4bb35Fv4HyP/sM0wY+feO3Apqfsvn6lnhfN2fT6dTpvBw==
+X-Received: by 2002:a05:6000:18c5:b0:33e:d865:422 with SMTP id w5-20020a05600018c500b0033ed8650422mr2390560wrq.29.1710882414865;
+        Tue, 19 Mar 2024 14:06:54 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IGYgibdY4jILLn+6ByyeP7Lg3sS+wv/bar0zDxWizyxRfyam0sxSD5OLYa520B4VKgbg/WBtw==
+X-Received: by 2002:a05:6000:18c5:b0:33e:d865:422 with SMTP id w5-20020a05600018c500b0033ed8650422mr2390545wrq.29.1710882414365;
+        Tue, 19 Mar 2024 14:06:54 -0700 (PDT)
+Received: from ?IPV6:2a01:e0a:59e:9d80:527b:9dff:feef:3874? ([2a01:e0a:59e:9d80:527b:9dff:feef:3874])
+        by smtp.gmail.com with ESMTPSA id n8-20020a5d6608000000b0033e45930f35sm13213779wru.6.2024.03.19.14.06.51
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 14:06:53 -0700 (PDT)
+Message-ID: <a60e1025-f093-4285-9d27-dab48bb64bcd@redhat.com>
+Date: Tue, 19 Mar 2024 22:06:50 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319011102.2929635-8-yi.zhang@huaweicloud.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v5 3/3] KVM: selftests: aarch64: Add invalid filter test
+ in pmu_event_filter_test
+Content-Language: en-US
+To: Shaoqin Huang <shahuang@redhat.com>, Oliver Upton
+ <oliver.upton@linux.dev>, Marc Zyngier <maz@kernel.org>,
+ kvmarm@lists.linux.dev
+Cc: James Morse <james.morse@arm.com>,
+ Suzuki K Poulose <suzuki.poulose@arm.com>, Zenghui Yu
+ <yuzenghui@huawei.com>, Paolo Bonzini <pbonzini@redhat.com>,
+ Shuah Khan <shuah@kernel.org>, linux-arm-kernel@lists.infradead.org,
+ kvm@vger.kernel.org, linux-kselftest@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240229065625.114207-1-shahuang@redhat.com>
+ <20240229065625.114207-4-shahuang@redhat.com>
+From: Eric Auger <eauger@redhat.com>
+In-Reply-To: <20240229065625.114207-4-shahuang@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19, 2024 at 09:11:00AM +0800, Zhang Yi wrote:
-> From: Zhang Yi <yi.zhang@huawei.com>
+
+
+On 2/29/24 07:56, Shaoqin Huang wrote:
+> Add the invalid filter test which sets the filter beyond the event
+> space and sets the invalid action to double check if the
+> KVM_ARM_VCPU_PMU_V3_FILTER will return the expected error.
 > 
-> In iomap_write_iter(), the status variable used to receive the return
-> value from iomap_write_end() is confusing, replace it with a new written
-> variable to represent the written bytes in each cycle, no logic changes.
-> 
-> Signed-off-by: Zhang Yi <yi.zhang@huawei.com>
-> Reviewed-by: Christoph Hellwig <hch@lst.de>
-
-Looks good,
-Reviewed-by: Darrick J. Wong <djwong@kernel.org>
-
---D
-
+> Signed-off-by: Shaoqin Huang <shahuang@redhat.com>
 > ---
->  fs/iomap/buffered-io.c | 33 +++++++++++++++++----------------
->  1 file changed, 17 insertions(+), 16 deletions(-)
+>  .../kvm/aarch64/pmu_event_filter_test.c       | 38 +++++++++++++++++++
+>  1 file changed, 38 insertions(+)
 > 
-> diff --git a/fs/iomap/buffered-io.c b/fs/iomap/buffered-io.c
-> index e9112dc78d15..291648c61a32 100644
-> --- a/fs/iomap/buffered-io.c
-> +++ b/fs/iomap/buffered-io.c
-> @@ -851,7 +851,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  	loff_t length = iomap_length(iter);
->  	size_t chunk = PAGE_SIZE << MAX_PAGECACHE_ORDER;
->  	loff_t pos = iter->pos;
-> -	ssize_t written = 0;
-> +	ssize_t total_written = 0;
->  	long status = 0;
->  	struct address_space *mapping = iter->inode->i_mapping;
->  	unsigned int bdp_flags = (iter->flags & IOMAP_NOWAIT) ? BDP_ASYNC : 0;
-> @@ -862,6 +862,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  		size_t offset;		/* Offset into folio */
->  		size_t bytes;		/* Bytes to write to folio */
->  		size_t copied;		/* Bytes copied from user */
-> +		size_t written;		/* Bytes have been written */
->  
->  		bytes = iov_iter_count(i);
->  retry:
-> @@ -906,7 +907,7 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  			flush_dcache_folio(folio);
->  
->  		copied = copy_folio_from_iter_atomic(folio, offset, bytes, i);
-> -		status = iomap_write_end(iter, pos, bytes, copied, folio);
-> +		written = iomap_write_end(iter, pos, bytes, copied, folio);
->  
->  		/*
->  		 * Update the in-memory inode size after copying the data into
-> @@ -916,22 +917,22 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  		 * unlock and release the folio.
->  		 */
->  		old_size = iter->inode->i_size;
-> -		if (pos + status > old_size) {
-> -			i_size_write(iter->inode, pos + status);
-> +		if (pos + written > old_size) {
-> +			i_size_write(iter->inode, pos + written);
->  			iter->iomap.flags |= IOMAP_F_SIZE_CHANGED;
->  		}
-> -		__iomap_put_folio(iter, pos, status, folio);
-> +		__iomap_put_folio(iter, pos, written, folio);
->  
->  		if (old_size < pos)
->  			pagecache_isize_extended(iter->inode, old_size, pos);
-> -		if (status < bytes)
-> -			iomap_write_failed(iter->inode, pos + status,
-> -					   bytes - status);
-> -		if (unlikely(copied != status))
-> -			iov_iter_revert(i, copied - status);
-> +		if (written < bytes)
-> +			iomap_write_failed(iter->inode, pos + written,
-> +					   bytes - written);
-> +		if (unlikely(copied != written))
-> +			iov_iter_revert(i, copied - written);
->  
->  		cond_resched();
-> -		if (unlikely(status == 0)) {
-> +		if (unlikely(written == 0)) {
->  			/*
->  			 * A short copy made iomap_write_end() reject the
->  			 * thing entirely.  Might be memory poisoning
-> @@ -945,17 +946,17 @@ static loff_t iomap_write_iter(struct iomap_iter *iter, struct iov_iter *i)
->  				goto retry;
->  			}
->  		} else {
-> -			pos += status;
-> -			written += status;
-> -			length -= status;
-> +			pos += written;
-> +			total_written += written;
-> +			length -= written;
->  		}
->  	} while (iov_iter_count(i) && length);
->  
->  	if (status == -EAGAIN) {
-> -		iov_iter_revert(i, written);
-> +		iov_iter_revert(i, total_written);
->  		return -EAGAIN;
->  	}
-> -	return written ? written : status;
-> +	return total_written ? total_written : status;
+> diff --git a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> index 2dd8ea418f47..86714345ee97 100644
+> --- a/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> +++ b/tools/testing/selftests/kvm/aarch64/pmu_event_filter_test.c
+> @@ -8,6 +8,7 @@
+>   * This test checks if the guest only see the limited pmu event that userspace
+>   * sets, if the guest can use those events which user allow, and if the guest
+>   * can't use those events which user deny.
+> + * It also checks that setting invalid filter ranges return the expected error.
+>   * This test runs only when KVM_CAP_ARM_PMU_V3, KVM_ARM_VCPU_PMU_V3_FILTER
+>   * is supported on the host.
+>   */
+> @@ -262,6 +263,41 @@ static void run_tests(void)
+>  		run_test(t);
 >  }
 >  
->  ssize_t
-> -- 
-> 2.39.2
-> 
-> 
+> +static void test_invalid_filter(void)
+> +{
+> +	struct kvm_pmu_event_filter invalid;
+> +	int ret;
+> +
+> +	pr_info("Test: test_invalid_filter\n");
+> +
+> +	memset(&vpmu_vm, 0, sizeof(vpmu_vm));
+> +
+> +	vpmu_vm.vm = vm_create(1);
+> +	vpmu_vm.vcpu = vm_vcpu_add_with_vpmu(vpmu_vm.vm, 0, guest_code);
+> +	vpmu_vm.gic_fd = vgic_v3_setup(vpmu_vm.vm, 1, 64,
+> +					GICD_BASE_GPA, GICR_BASE_GPA);
+> +	__TEST_REQUIRE(vpmu_vm.gic_fd >= 0,
+> +		       "Failed to create vgic-v3, skipping");
+> +
+> +	/* The max event number is (1 << 16), set a range largeer than it. */the event space is 16b on ARMv8.1 and 10b on ARMv8.0, set a range larger
+than 16
+s/largeer/larger
+> +	invalid = __DEFINE_FILTER(BIT(15), BIT(15) + 1, 0);
+> +	ret = __kvm_device_attr_set(vpmu_vm.vcpu->fd, KVM_ARM_VCPU_PMU_V3_CTRL,
+> +				    KVM_ARM_VCPU_PMU_V3_FILTER, &invalid);
+> +	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter range "
+> +		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
+> +		    ret, errno);
+> +
+> +	/* Set the Invalid action. */
+s/the/an
+> +	invalid = __DEFINE_FILTER(0, 1, 3);
+> +	ret = __kvm_device_attr_set(vpmu_vm.vcpu->fd, KVM_ARM_VCPU_PMU_V3_CTRL,
+> +				    KVM_ARM_VCPU_PMU_V3_FILTER, &invalid);
+> +	TEST_ASSERT(ret && errno == EINVAL, "Set Invalid filter action "
+> +		    "ret = %d, errno = %d (expected ret = -1, errno = EINVAL)",
+> +		    ret, errno);
+> +
+> +	destroy_vpmu_vm();
+> +}
+> +
+>  static bool kvm_pmu_support_events(void)
+>  {
+>  	create_vpmu_vm(guest_get_pmceid);
+> @@ -284,4 +320,6 @@ int main(void)
+>  	TEST_REQUIRE(kvm_pmu_support_events());
+>  
+>  	run_tests();
+> +
+> +	test_invalid_filter();
+>  }
+Besides Reviewed-by: Eric Auger <eric.auger@redhat.com>
+
+Eric
+
 
