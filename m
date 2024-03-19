@@ -1,39 +1,60 @@
-Return-Path: <linux-kernel+bounces-107723-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107724-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 057548800C6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:34:36 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4CD188800C8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:35:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 379AF1C22062
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:34:35 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7C9E11C21F87
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:35:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA242657BA;
-	Tue, 19 Mar 2024 15:34:29 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A815D62818
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:34:26 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3D827657BA;
+	Tue, 19 Mar 2024 15:35:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UCBrQRex"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D20C062818
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:35:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710862469; cv=none; b=SfuAxiC2a7driJk8615wZV7URqgJKDl1zoNFEDL3VQM7i3Gy6V6baFjkt6+lnJIVwpF6Tj85mqCOSOXBOlfqm2fSuZvMSPyRm+R4Zwu1JVpVWYswKkt3FH+S1CwPVy7Z7Ke1FJDwQDtFwwFJ5oGl11h/BOKGn7T2R/gQUqrPU64=
+	t=1710862529; cv=none; b=WE7gXNmTbOB8c8BFM2Sx+X0Qzm5kcWzi8+quTWoxZkTiuG85NqnrBCEebdUDVGXZSCcxjCP/4IsZLtNZnv3wWHlfYR5Akqlvh9bFf5yNnyc1YVymgoU+1IvZepxSN2kY6SduaGJEoo6mPtfkmHms+jqtHdXpzjLYc/IE6blRjCw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710862469; c=relaxed/simple;
-	bh=2zIx223pHdeo5JZhKCcDLIzNBieISMOnQ0KJcW4Y2rw=;
+	s=arc-20240116; t=1710862529; c=relaxed/simple;
+	bh=4jp40Xof18diM6c7MgxIyUriMqgrk7eSdZm+iU5lWEA=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=DBEjF9vDWL3MyY1oPbrcBodxLCqxxZig9xppGf4FmbGGnBaIRDEK5nkRXYK1BCsJHbOSulkEkMOdVaww5DaMn1JdabQsPuyNVQ5AI8Drbj5DsmBDfVQxnTRFOK3Xb9/krgAaMAneE3Mw+XBX270FEXnZcJs3Bo6197D9ZrQbn2A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6B45106F;
-	Tue, 19 Mar 2024 08:35:00 -0700 (PDT)
-Received: from [192.168.178.6] (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C1723F762;
-	Tue, 19 Mar 2024 08:34:22 -0700 (PDT)
-Message-ID: <37be0494-7e38-4275-b6eb-62a2eb2f6d46@arm.com>
-Date: Tue, 19 Mar 2024 16:34:16 +0100
+	 In-Reply-To:Content-Type; b=KyDuckEZO5jVoBroXxOjloS2x1yRNX/eRyv0YKfFcK0jLVuQzA3w5FUU7XnuLxLbTHtXQiGW3yzhqwpNjmBFJkb8nuQbL8cxi4LCLuuBxQFHQJqqUZqljOLOyEhor4plGwEN5ncaIEuwK7JMpsvsS3sLsis0EsObE4lYv7XKBoY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UCBrQRex; arc=none smtp.client-ip=198.175.65.19
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710862528; x=1742398528;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=4jp40Xof18diM6c7MgxIyUriMqgrk7eSdZm+iU5lWEA=;
+  b=UCBrQRexhN0gDB2sKHK2sVbs4i9gJwSWk20Jva/v0sdYix4nG8gzEC0B
+   yHQsg3Ygdeymlk/W783lrmSVMbaT5GIscQm8kxD3TlOsewZzzLs9mFviI
+   Hiimjmr+pqI8SCcGwi3MZH3e1Rg3eo9ooexWvrnJaSTW4VsXa0UNfJU2p
+   n9Dhds1uE0J5+u1HwyKDWKBfI9wrh5oN6hIfhuWpqPQkfg6WkBoZM3v+M
+   wiLYYQgVBvvhPvY+YmrcCY9mwpbBjKLR3KTUekYDGns54zSC2nNdylKl2
+   BJikzzb8AxRRSq89YAmCHDEk2IyOvvjudtPF0FpuSnmPXmV6jy3tCnjkC
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5607712"
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="5607712"
+Received: from fmviesa005.fm.intel.com ([10.60.135.145])
+  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 08:35:27 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="18304219"
+Received: from akiruban-mobl.amr.corp.intel.com (HELO [10.213.182.233]) ([10.213.182.233])
+  by fmviesa005-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 08:35:25 -0700
+Message-ID: <34f404cd-a12d-4ffa-9398-72de3be244b3@linux.intel.com>
+Date: Tue, 19 Mar 2024 10:35:25 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -41,81 +62,132 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH v2 1/7] Revert "sched/uclamp: Set max_spare_cap_cpu
- even if max_spare_cap is 0"
+Subject: Re: [PATCH v11] ASoc: tas2783: Add tas2783 codec driver
 Content-Language: en-US
-To: Hongyan Xia <hongyan.xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
- Peter Zijlstra <peterz@infradead.org>,
- Vincent Guittot <vincent.guittot@linaro.org>,
- Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
- Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
- Daniel Bristot de Oliveira <bristot@redhat.com>,
- Valentin Schneider <vschneid@redhat.com>
-Cc: Qais Yousef <qyousef@layalina.io>,
- Morten Rasmussen <morten.rasmussen@arm.com>,
- Lukasz Luba <lukasz.luba@arm.com>,
- Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org,
- David Dai <davidai@google.com>, Saravana Kannan <saravanak@google.com>
-References: <cover.1706792708.git.hongyan.xia2@arm.com>
- <b29e7df921ce07c2c2dbbde390e234d162756c42.1706792708.git.hongyan.xia2@arm.com>
-From: Dietmar Eggemann <dietmar.eggemann@arm.com>
-In-Reply-To: <b29e7df921ce07c2c2dbbde390e234d162756c42.1706792708.git.hongyan.xia2@arm.com>
+To: Shenghao Ding <shenghao-ding@ti.com>, broonie@kernel.org
+Cc: andriy.shevchenko@linux.intel.com, lgirdwood@gmail.com, perex@perex.cz,
+ 13916275206@139.com, alsa-devel@alsa-project.org,
+ linux-kernel@vger.kernel.org, liam.r.girdwood@intel.com,
+ bard.liao@intel.com, mengdong.lin@intel.com,
+ yung-chuan.liao@linux.intel.com, kevin-lu@ti.com, tiwai@suse.de,
+ baojun.xu@ti.com, soyer@irl.hu, Baojun.Xu@fpt.com, navada@ti.com
+References: <20240319135811.186-1-shenghao-ding@ti.com>
+From: Pierre-Louis Bossart <pierre-louis.bossart@linux.intel.com>
+In-Reply-To: <20240319135811.186-1-shenghao-ding@ti.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 01/02/2024 14:11, Hongyan Xia wrote:
-> From: Hongyan Xia <Hongyan.Xia2@arm.com>
-> 
-> That commit creates further problems because 0 spare capacity can be
-> either a real indication that the CPU is maxed out, or the CPU is
-> UCLAMP_MAX throttled, but we end up giving all of them a chance which
-> can results in bogus energy calculations. It also tends to schedule
-> tasks on the same CPU and requires load balancing patches. Sum
-> aggregation solves these problems and this patch is not needed.
-> 
-> This reverts commit 6b00a40147653c8ea748e8f4396510f252763364.
 
-I assume you did this revert especially for the 'Scenario 5: 8 tasks
-with UCLAMP_MAX of 120' testcase?
+> +static bool tas2783_readable_register(struct device *dev,
+> +	unsigned int reg)
+> +{
+> +	switch (reg) {
+> +	/* Page 0 */
+> +	case 0x8000 ... 0x807F:
+> +		return true;
+> +	default:
+> +		return false;
 
-IMHO, the issue is especially visible in compute_energy()'s busy_time
-computation with a valid destination CPU (dst_cpu >= 0). I.e. when we
-have to add performance domain (pd) and task busy time.
+so only the registers in 0x8000..807F are readable. That's the usual
+non-SDCA vendor-specific areas ...
 
-find_energy_efficient_cpu() (feec())
 
- for each pd
-  for each cpu in pd
+> +static const struct regmap_config tasdevice_regmap = {
+> +	.reg_bits = 32,
+> +	.val_bits = 8,
+> +	.readable_reg = tas2783_readable_register,
+> +	.volatile_reg = tas2783_volatile_register,
+> +	.max_register = 0x44ffffff,
 
-   set {prev_,max}_spare_cap
+... but here you show support for a much larger register set in SDCA space.
 
- bail if prev_ and max_spare_cap < 0 (was == 0 before )
+I am having a hard-time believing that none of these SDCA registers are
+readable?
 
- {base_,prev_,cur_}energy = compute_energy
+> +static void tas2783_calibration(struct tasdevice_priv *tas_dev)
+> +{
+> +	efi_guid_t efi_guid = EFI_GUID(0x1f52d2a1, 0xbb3a, 0x457d, 0xbc,
+> +			0x09, 0x43, 0xa3, 0xf4, 0x31, 0x0a, 0x92);
+> +	static efi_char16_t efi_name[] = L"CALI_DATA";
+> +	struct calibration_data cali_data;
+> +	unsigned int *tmp_val;
+> +	unsigned int crc;
+> +	efi_status_t status;
+> +
+> +	cali_data.total_sz = 0;
+> +
+> +	status = efi.get_variable(efi_name, &efi_guid, NULL,
+> +		&cali_data.total_sz, NULL);
+> +	if (status == EFI_BUFFER_TOO_SMALL
+> +		&& cali_data.total_sz < TAS2783_MAX_CALIDATA_SIZE) {
+> +		status = efi.get_variable(efi_name, &efi_guid, NULL,
+> +			&cali_data.total_sz,
+> +			cali_data.data);
+> +		dev_dbg(tas_dev->dev, "%s: cali get %lx bytes result:%ld\n",
+> +			__func__, cali_data.total_sz, status);
+> +	}
+> +	if (status != 0) {
+> +		/* Failed got calibration data from EFI. */
+> +		dev_dbg(tas_dev->dev, "No calibration data in UEFI.");
+> +		return;
+> +	}
+> +
+> +	tmp_val = (unsigned int *)cali_data.data;
+> +
+> +	/* Check Calibrated Data V1 */
+> +	crc = crc32(~0, cali_data.data, TAS2783_CALIDATAV1_BYTE_SIZE) ^ ~0;
+> +	if (crc == tmp_val[TAS2783_CALIDATAV1_CRC32_INDX]) {
+> +		/* Date and time of when calibration was done. */
+> +		tas2783_apply_calibv1(tas_dev, tmp_val);
+> +		dev_dbg(tas_dev->dev, "V1: %ptTs",
 
-So with the patch we potentially compute energy for a saturated PD
-according:
+Is this really needed/helpful?
 
- compute_energy()
+> +			&tmp_val[TAS2783_CALIDATAV1_TIMESTAMP_INDX]);
+> +		return;
+> +	}
+> +
+> +	/* Check Calibrated Data V2 */
+> +	if (tmp_val[0] == 2783) {
+> +		const struct calibdatav2_info calib_info = {
+> +			.number_of_devices = tmp_val[1],
+> +			.crc32_indx = 3 + tmp_val[1] * 6,
+> +			.byt_sz = 12 + tmp_val[1] * 24,
+> +			.cali_data = &tmp_val[3]
+> +		};
+> +
+> +		if (calib_info.number_of_devices > TAS2783_MAX_DEV_NUM ||
+> +			calib_info.number_of_devices == 0) {
+> +			dev_dbg(tas_dev->dev, "No dev in calibrated data V2.");
 
-  if (dst_cpu >= 0)
-   busy_time = min(eenv->pd_cap, eenv->busy_time + eenv->task_busy_time)
-                   <----(a)--->  <--------------(b)------------------->
+the log is not aligned with the first condition where you have too many
+devices.
 
-  energy = em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap)
+It's not clear why it's not an error.
 
-If (b) > (a) then we're saturated and 'energy' is bogus.
+> +			return;
+> +		}
+> +		crc = crc32(~0, cali_data.data, calib_info.byt_sz)
+> +			^ ~0;
+> +		if (crc == tmp_val[calib_info.crc32_indx]) {
+> +			tas2783_apply_calibv2(tas_dev, &calib_info);
+> +			dev_dbg(tas_dev->dev, "V2: %ptTs",
 
-The way to fix this is up for discussion:
+same, is this needed?
+> +				&tmp_val[TAS2783_CALIDATAV2_TIMESTAMP_INDX]);
+> +		} else {
+> +			dev_dbg(tas_dev->dev,
+> +				"V2: CRC 0x%08x not match 0x%08x\n",
+> +				crc, tmp_val[calib_info.crc32_indx]);
 
-(1) feec() returning prev_cpu
-(2) feec() returning -1 (forcing wakeup into sis() -> sic())
-(3) using uclamped values for task and rq utilization
+is this not an error?
 
-None of those have immediately given the desired task placement on
-mainline (2 tasks on each of the 4 little CPUs and no task on the 2 big
-CPUs on my [l B B l l l] w/ CPU capacities = [446 1024 1024 446 446 446]
-machine) you can achieve with uclamp sum aggregation.
+> +		}
+> +	} else {
+> +		dev_err(tas_dev->dev, "Non-2783 chip\n");
+> +	}
+> +}
 
-[...]
+the error level seem inconsistent and it's not clear why errors are ignored?
+
 
