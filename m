@@ -1,60 +1,62 @@
-Return-Path: <linux-kernel+bounces-106944-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106945-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id BDD3687F5CE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:53:35 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BDABB87F5D1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:53:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 74F141F217C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:53:35 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 5D84B1F22127
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:53:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6189680050;
-	Tue, 19 Mar 2024 02:49:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F66F80618;
+	Tue, 19 Mar 2024 02:49:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="YQNkPu1q"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B0ICEEM3"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A18677C081;
-	Tue, 19 Mar 2024 02:49:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D2D28005B;
+	Tue, 19 Mar 2024 02:49:14 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710816553; cv=none; b=mQIbE4LmyCAt/9dvyCEjuxxbcWxWUc20qXwjuHXodI6H/ekL7lBxPQ8+z0NfMFlYs8DBbRFSmeHkHsU8/8ku7wv+PfxyEaNLPp0/y1AzcsXCZ26qu7mS6itnKzF5m2SKCcImM4JlAz4baP/4IeyrWY2Aa0N+ID6+FjBSGqkb29k=
+	t=1710816554; cv=none; b=YlJwuL2XzAHhtvVFZLe70aQyAvqe/tkzisPQER/7UBH2j1RbaM2jAn7lX9U8wLcsFu7Z/XLgiIB+iMmq6kScGb2J9W4lnwUcdPs+ds/7FdhWtRTsLE0u+eORGLUegWrPvTFNJPEVZCwXy70ASFkGt6OMuSHkU0ml/PH1bwKcS9U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710816553; c=relaxed/simple;
-	bh=bSoSY6e13V4D8ibnGrrdnIenwv/P+RnDcwR+fU6ad3A=;
+	s=arc-20240116; t=1710816554; c=relaxed/simple;
+	bh=2tFuWnCqJ1f9F16g0fJd1rgcXieGZrc4i3FbwJsi6LA=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cq1ae43pC8OMn7aeDymXs+r1mWphPt08pG4V0aR6FaZvCOhYsCE4mdzYhstH/P54V8xA04xnh041s3Ms/pbIQ+110D6dKC5TqfRWHjajBrAy/yBnsQAiHqk6lcC6pjXwtJDVKkpWzkVsvLCjLBjDYl02yXPUQ/l6shnZfGRHCsk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=YQNkPu1q; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CC376C433F1;
-	Tue, 19 Mar 2024 02:49:12 +0000 (UTC)
+	 MIME-Version:Content-Type; b=WiaCQTfVpjj9kmNQ65N7Gu1nXvMiNhCmBjjVb4Cbb+DrxO7PIRVzBw/Ly5W8lm4kezb0TlBMLr3OEAblAPakRIZFlHpZhr7BgQo/bEWzpd2uwBj6q4O+MiUzHO2Hgh7z/9eiQVUB5+7E3190oJPl+QofSqkjYauYbdmImpuMGbk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B0ICEEM3; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B1ED5C433C7;
+	Tue, 19 Mar 2024 02:49:13 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710816553;
-	bh=bSoSY6e13V4D8ibnGrrdnIenwv/P+RnDcwR+fU6ad3A=;
+	s=k20201202; t=1710816554;
+	bh=2tFuWnCqJ1f9F16g0fJd1rgcXieGZrc4i3FbwJsi6LA=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=YQNkPu1qNaD/xg3ytqnFZEt7p8Ohw/vlkwO6aqE3qrD9UXo5GbJwat6BE/Pm6c3h7
-	 btMXjX1XgpBHR3qigdcnqIQMl9xx9APMU8srPrtCntN9so82Ig1CXlFsARwzhwSoyR
-	 G9H1IMuTJLtR4K7EnamawktQ2OjnZAmjCNXuSD1lcw6JXo/gTaVBYILcaNg0Iz6oCf
-	 h/y4MMEr+wm8yTWQmUS94QeEcRydBLCwTiZtDAwDOwuMvs1JZ0Vn8IWZ9z0GUaG10v
-	 ZWgJH97XvRz/YYeEnD1qdh/UgMvtaAy9p04TeLp0O9J5h9rds62CYfJcpPemK9iNqp
-	 h47qtLOE1ndow==
+	b=B0ICEEM3rAYmrXTV8kDrLfX+ra2TRo2zGqwPUXB324rdEnMbFnpHYMOPoRev2B1x+
+	 +wdmLTJ9iQV5FD0c8Ccf3Ij6Lf6VVR8Psn75ao8feAtw3ZR3/tjA06VWxrj67x0WDy
+	 /ZniF9a0RSFQM2QCRCz4CksbSCj04gTu+RFhBnzMCdqVWvcwjGNNkJ/OB3Pku7pxYA
+	 7dtAtpNwofNf7Y+TJxq4U89OMnkeg+Y3Oh7GOhqWR1O5+yZd9A/oxj5jJfZyyZeqoj
+	 1ESBUpOuuPbs+F/7ZgSM8NUfshg3dWk0KPFJkupDsg7BHulhRBcKZu5pJDK4tLeiPP
+	 RiMmFL+1VY8HQ==
 From: Bjorn Andersson <andersson@kernel.org>
 To: Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Rob Herring <robh@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
 	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
 	Conor Dooley <conor+dt@kernel.org>,
-	Bjorn Andersson <quic_bjorande@quicinc.com>
+	Neil Armstrong <neil.armstrong@linaro.org>,
+	Elliot Berman <quic_eberman@quicinc.com>
 Cc: linux-arm-msm@vger.kernel.org,
 	devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] arm64: dts: qcom: qcs6490-rb3gen2: Name the regulators
-Date: Mon, 18 Mar 2024 21:48:43 -0500
-Message-ID: <171081652642.198276.13237735078804683087.b4-ty@kernel.org>
+	linux-kernel@vger.kernel.org,
+	Patrick Daly <quic_pdaly@quicinc.com>
+Subject: Re: [PATCH] arm64: dts: qcom: sm8650: Add missing reserved memory for chipinfo
+Date: Mon, 18 Mar 2024 21:48:44 -0500
+Message-ID: <171081652657.198276.11190224591325228423.b4-ty@kernel.org>
 X-Mailer: git-send-email 2.43.0
-In-Reply-To: <20240227-rb3gen2-regulator-names-v1-1-63ceb845dcc8@quicinc.com>
-References: <20240227-rb3gen2-regulator-names-v1-1-63ceb845dcc8@quicinc.com>
+In-Reply-To: <20240304-sm8650-missing-chipinfo-region-v1-1-8a0b41dd8308@quicinc.com>
+References: <20240304-sm8650-missing-chipinfo-region-v1-1-8a0b41dd8308@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,18 +67,15 @@ Content-Type: text/plain; charset="utf-8"
 Content-Transfer-Encoding: 8bit
 
 
-On Tue, 27 Feb 2024 09:39:54 -0800, Bjorn Andersson wrote:
-> Without explicitly specifying names for the regualtors they are named
-> based on the DeviceTree node name. This results in multiple regulators
-> with the same name, making debug prints and regulator_summary inpossible
-> to reason about.
+On Mon, 04 Mar 2024 14:41:15 -0800, Elliot Berman wrote:
+> Add missing reserved memory for chipinfo region.
 > 
 > 
 
 Applied, thanks!
 
-[1/1] arm64: dts: qcom: qcs6490-rb3gen2: Name the regulators
-      commit: 6e995a1b53444d09f7707f4f79b752213343b05c
+[1/1] arm64: dts: qcom: sm8650: Add missing reserved memory for chipinfo
+      commit: 9b1e891179cacd12aa77d27a2c00b75fdbef4823
 
 Best regards,
 -- 
