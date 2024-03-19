@@ -1,53 +1,67 @@
-Return-Path: <linux-kernel+bounces-107479-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107480-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9C90D87FD19
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:45:15 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2CAC487FD1E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:45:49 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5E679283B39
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:45:14 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5DEBD1C21AE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:45:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 162AF7F46B;
-	Tue, 19 Mar 2024 11:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ffo2jhky"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5046B1CD13;
-	Tue, 19 Mar 2024 11:45:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E9177F471;
+	Tue, 19 Mar 2024 11:45:44 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 765A51CD13
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:45:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710848706; cv=none; b=jI4LUcwpQNUnBlRTINzPfP+s+1WIZRi7oyQTSkIGhoxFlD7sf6C2xPCbaT7rpn7+agYxFJQ96WRhSkv/6R0+jkzbD50L9iSAnmHdaDHZWwATDBTqqhAwEtuh0ZeDcDOnK4OikUsIGToB3tsU1x0oIQMx/SSrArfVAqq97z+igWU=
+	t=1710848744; cv=none; b=hhdkHWOO1Qb6Bvi5JB5HEtyqQL1wCOWfekhU/4qclKt+jtdWViq+3ZreUbBRhqdk+Lt7JKAKHQ7NjBmcGKBcyI85LOUK1qpL4e314gq/YZVYqhLQz59j3Di/NPYNUFXaBrM4TVXoRQOWNU92gIQrM6QkHh+OpPXdpw/ZoKKRHgs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710848706; c=relaxed/simple;
-	bh=AxeUdPNBYbJRx9HhDpzLSa8ehsc5hQeqodbcV9lhIAc=;
+	s=arc-20240116; t=1710848744; c=relaxed/simple;
+	bh=+pqyA3fJ6tcbDlL7z/QlW0zjx2SAHzb+A9tHoI6tAZM=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NipV6QAOrOX1TT1AWxn01Wth7VaOIeeOY5Q8Nv+TcHjoA/HzAmpbkivlSa+CdQHtpCKmMK8np1FIHC7b7lWOmLuErw/OB1YfYS2+Fe17paJd45y2Ci9fK22NZgYES3jcF8CkZ1SLoWk5EkbW34tOlpfk1nR3wBDySuWcpjHqyC8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ffo2jhky; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id A28A5C433C7;
-	Tue, 19 Mar 2024 11:45:04 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710848706;
-	bh=AxeUdPNBYbJRx9HhDpzLSa8ehsc5hQeqodbcV9lhIAc=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=ffo2jhkyfV9prHAtrirt0gjJCvn0tvOAo6ghM0orDW42E4rKJNCgHhdZCJpk8PB/X
-	 alUe5f1yLMv08OzLRokbVIsa2J2U6Ja8MzoQTpzvKmtlYZkI5IWOl/B7wD/KhTg23o
-	 MYgtoVHrOxWQ9IYH+sfxtw8KMM/s7RDW8sdw4VPKJM8Rp5+kuNZs5Mw/59a02ZmREL
-	 JkQYmCG3pxsE+7pleApScDFLb0EcyjSvZAvrtme76JNejc3Sxzq5Wu71ocHMe3/nkn
-	 y8utWiPxwFOStbWoFchjIyFHqYiQAHrsZNaK04bZgb+k93lpT1N1wew0AMNdeceR4j
-	 U5RN34DwsUBaQ==
-Date: Tue, 19 Mar 2024 12:45:01 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: linux-ide@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, stable@vger.kernel.org,
-	dlemoal@kernel.org, hdegoede@redhat.com, cryptearth@googlemail.com
-Subject: Re: [PATCH] ahci: asm1064: asm1166: don't limit reported ports
-Message-ID: <Zfl6vVKtGpC7-z1w@ryzen>
-References: <20240313214650.2165-1-conikost@gentoo.org>
+	 Content-Type:Content-Disposition:In-Reply-To; b=HZA+AhL6dVXgNHK9I94Yr7Awt8//ltKkCaHxeIKQniDy97UwelcCnR+buCSN9dk1t74YChZI/EMXYw1qpaGuAz5SRkAIu7g3m3yjnRFyqXHZYK//viR1DdUvDW3L1UJ09WqDcNjfyWxK9bl6purnGAM7FTjom117HS+u35vWilo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 4B7A2106F;
+	Tue, 19 Mar 2024 04:46:14 -0700 (PDT)
+Received: from FVFF77S0Q05N (unknown [10.57.70.223])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 66DDA3F67D;
+	Tue, 19 Mar 2024 04:45:34 -0700 (PDT)
+Date: Tue, 19 Mar 2024 11:45:15 +0000
+From: Mark Rutland <mark.rutland@arm.com>
+To: "Paul E. McKenney" <paulmck@kernel.org>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de,
+	peterz@infradead.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
+	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+	krypton@ulrich-teichert.org, David.Laight@aculab.com,
+	richard@nod.at, jon.grimm@amd.com, bharata@amd.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Tasks RCU, ftrace, and trampolines (was: Re: [PATCH 00/30]
+ PREEMPT_AUTO: support lazy rescheduling)
+Message-ID: <Zfl6y-NLuwbmyyL8@FVFF77S0Q05N>
+References: <2b735ba4-8081-4ddb-9397-4fe83143d97f@paulmck-laptop>
+ <20240221131901.69c80c47@gandalf.local.home>
+ <8f30ecd8-629b-414e-b6ea-b526b265b592@paulmck-laptop>
+ <20240221151157.042c3291@gandalf.local.home>
+ <53020731-e9a9-4561-97db-8848c78172c7@paulmck-laptop>
+ <ZddtKszRH5Ak5tZ7@FVFF77S0Q05N>
+ <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
+ <Zdh8CdrtbL9LgOLG@FVFF77S0Q05N>
+ <5641c2f4-3453-4b04-ab0d-db9e5b464b9c@paulmck-laptop>
+ <91437fa8-c192-4a71-8073-bdd9c3889926@paulmck-laptop>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -56,70 +70,57 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240313214650.2165-1-conikost@gentoo.org>
+In-Reply-To: <91437fa8-c192-4a71-8073-bdd9c3889926@paulmck-laptop>
 
-On Wed, Mar 13, 2024 at 10:46:50PM +0100, Conrad Kostecki wrote:
-> Previously, patches have been added to limit the reported count of SATA
-> ports for asm1064 and asm1166 SATA controllers, as those controllers do
-> report more ports than physical having.
-> 
-> Unfortunately, this causes trouble for users, which are using SATA
-> controllers, which provide more ports through SATA PMP
-> (Port-MultiPlier) and are now not any more recognized.
-> 
-> This happens, as asm1064 and 1166 are handling SATA PMP transparently,
-> so all non-physical ports needs to be enabled to use that feature.
-> 
-> This patch reverts both patches for asm1064 and asm1166, so old
-> behavior is restored and SATA PMP will work again, so all physical and
-> non-physical ports will work again.
-> 
-> Fixes: 0077a504e1a4 ("ahci: asm1166: correct count of reported ports")
-> Fixes: 9815e3961754 ("ahci: asm1064: correct count of reported ports")
-> Cc: stable@vger.kernel.org
-> Reported-by: Matt <cryptearth@googlemail.com>
-> Signed-off-by: Conrad Kostecki <conikost@gentoo.org>
-> ---
->  drivers/ata/ahci.c | 13 -------------
->  1 file changed, 13 deletions(-)
-> 
-> diff --git a/drivers/ata/ahci.c b/drivers/ata/ahci.c
-> index 78570684ff68..562302e2e57c 100644
-> --- a/drivers/ata/ahci.c
-> +++ b/drivers/ata/ahci.c
-> @@ -669,19 +669,6 @@ MODULE_PARM_DESC(mobile_lpm_policy, "Default LPM policy for mobile chipsets");
->  static void ahci_pci_save_initial_config(struct pci_dev *pdev,
->  					 struct ahci_host_priv *hpriv)
->  {
-> -	if (pdev->vendor == PCI_VENDOR_ID_ASMEDIA) {
-> -		switch (pdev->device) {
-> -		case 0x1166:
-> -			dev_info(&pdev->dev, "ASM1166 has only six ports\n");
-> -			hpriv->saved_port_map = 0x3f;
-> -			break;
-> -		case 0x1064:
-> -			dev_info(&pdev->dev, "ASM1064 has only four ports\n");
-> -			hpriv->saved_port_map = 0xf;
-> -			break;
-> -		}
-> -	}
-> -
->  	if (pdev->vendor == PCI_VENDOR_ID_JMICRON && pdev->device == 0x2361) {
->  		dev_info(&pdev->dev, "JMB361 has only one port\n");
->  		hpriv->saved_port_map = 1;
-> -- 
-> 2.44.0
-> 
+Hi Paul,
 
-I took the liberty to add additional information in the commit message.
+On Fri, Mar 01, 2024 at 05:16:33PM -0800, Paul E. McKenney wrote:
+> The networking NAPI code ends up needing special help to avoid starving
+> Tasks RCU grace periods [1].  I am therefore revisiting trying to make
+> Tasks RCU directly detect trampoline usage, but without quite as much
+> need to identify specific trampolines...
+> 
+> I am putting this information in a Google document for future
+> reference [2].
+> 
+> Thoughts?
 
-Applied:
-https://git.kernel.org/pub/scm/linux/kernel/git/libata/linux.git/commit/?id=6cd8adc3e18960f6e59d797285ed34ef473cc896
+Sorry for the long delay! I've been looking into this general area over the
+last couple of weeks due to the latent bugs I mentioned in:
 
-..and already sent to Linus:
-https://lore.kernel.org/linux-ide/20240319113758.197709-1-cassel@kernel.org/T/#u
+  https://lore.kernel.org/lkml/Zenx_Q0UiwMbSAdP@FVFF77S0Q05N/
 
+I was somewhat hoping that staring at the code for long enough would result in
+an ephinany (and a nice simple-to-backport solution for the latent issues), but
+so far that has eluded me.
 
-Kind regards,
-Niklas
+I believe some of those cases will need to use synchronize_rcu_tasks() and we
+might be able to make some structural changes to minimize the number of times
+we'd need to synchronize (e.g. having static ftrace call ops->func from the ops
+pointer, so we can switch ops+func atomically), but those look pretty invasive
+so far.
+
+I haven't been able to come up with "a precise and completely reliable way to
+determine whether the current preemption occurred within a trampoline". Since
+preemption might occur within a trampoline's callee that eventually returns
+back to the trampoline, I believe that'll either depend on having a reliable
+stacktrace or requiring the trampoline to dynamically register/unregister
+somewhere around calling other functions. That, and we do also care about those
+callees themselves, and it's not just about the trampolines...
+
+On arm64, we kinda have "permanent trampolines", as our
+DYNAMIC_FTRACE_WILL_CALL_OPS implementation uses a common trampoline. However,
+that will tail-call direct functions (and those could also be directly called
+from ftrace callsites), so we don't have a good way of handling those without a
+change to the direct func calling convention.
+
+I assume that permanent trampolines wouldn't be an option on architectures
+where trampolines are a spectre mitigation.
+
+Mark.
+
+> 								Thanx, Paul
+> 
+> [1] https://lore.kernel.org/all/Zd4DXTyCf17lcTfq@debian.debian/
+> [2] https://docs.google.com/document/d/1kZY6AX-AHRIyYQsvUX6WJxS1LsDK4JA2CHuBnpkrR_U/edit?usp=sharing
 
