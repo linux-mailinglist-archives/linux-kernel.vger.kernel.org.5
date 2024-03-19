@@ -1,62 +1,87 @@
-Return-Path: <linux-kernel+bounces-107690-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107691-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBEE688003D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:09:10 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5A6FE880041
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:09:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1B84D1C21CDE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:09:10 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id EF851B20F1D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:09:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B69B0657AC;
-	Tue, 19 Mar 2024 15:09:00 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 340BB657D9;
+	Tue, 19 Mar 2024 15:09:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b="DizG0a9m"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 110FD6519D
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:08:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4337C657C7
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:09:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710860940; cv=none; b=H16TNF2LtQjDuboec3346gzqcg4KnVvLMCHLg/vAPyUeMSCOll2Q1VqZC5u+7AeCrQ1KtR8KVnuvR04NjnaJs3aqvTLue/3QJQo6TL5QSORZk2tr1FhjBC7GFK9LMy4wdmrcNIgYATupGXz1d27ufqWCdh8kFy2xiwsPuU5rzow=
+	t=1710860944; cv=none; b=b8ulvYsiw4s0BJaV5lnFhUoWRoBiqVb61xQFdto3UFaB1VEb+xcr6O4IqpgCC4zWOWbYXtKZiLt5RoSlRrIuuUx23ian8GtZkTevrBHUGsuo29DJ7Lb/bA/8lX2NLaQpp0Nc7X0o2QXQACyOafdq0+hO5vxkemk9SQv/VY40Oyg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710860940; c=relaxed/simple;
-	bh=pWmA2TjVOlEO2nDeuR5LcVwVNFWlctcOHf43FvjyzdM=;
+	s=arc-20240116; t=1710860944; c=relaxed/simple;
+	bh=AduthGbtQ503NWc/iPovz6pKbBm8npo69sGP7oQmalc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=UqdZFRy9mA4xG7N4VIVDG5XjfC9dUgm8rZV4+rUe4+CgOTsIYjrfwcX+QNbFcteFxey7NdccpZz8mMTgkQyKgwKCv6c7cmIrUEUi9anCiEZ6ZLRcElYDED8KSnRu7j+gT00ofKQXWieuRohfqC3mBPjn2r1ArGw7R34GzjNltVU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rmb59-0000Nj-9F; Tue, 19 Mar 2024 16:08:51 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rmb58-007Ifk-GO; Tue, 19 Mar 2024 16:08:50 +0100
-Received: from sha by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <sha@pengutronix.de>)
-	id 1rmb58-0074Jh-1M;
-	Tue, 19 Mar 2024 16:08:50 +0100
-Date: Tue, 19 Mar 2024 16:08:50 +0100
-From: Sascha Hauer <s.hauer@pengutronix.de>
-To: Pavel Begunkov <asml.silence@gmail.com>
-Cc: netdev@vger.kernel.org, kernel@pengutronix.de,
-	linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
-	Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
- TIF_NOTIFY_SIGNAL
-Message-ID: <ZfmqgvKqBtKr54Li@pengutronix.de>
-References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
- <7b82679f-9b69-4568-a61d-03eb1e4afc18@gmail.com>
- <ZfgvNjWP8OYMIa3Y@pengutronix.de>
- <0a556650-9627-48ee-9707-05d7cab33f0f@gmail.com>
- <Zflt3EVf744LOA6i@pengutronix.de>
- <bfc6afa9-501f-40b6-929a-3aa8c0298265@gmail.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=oQcZbEU84hjCDfWLCnSr2oXqeHD1l0EwL3lAS/YkNwt+nPe0+OfttFU6WqDp4cNEmO5kwSZC+S0yyhmxtIpczi1wctaSby13IVEXQf5GNwsECQYp04TfN1xXIkXSDtqwLr0M92Sv4zEG/Baknp3L37El3jNNr1XUN9Jm1MECxRo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com; spf=pass smtp.mailfrom=suse.com; dkim=pass (2048-bit key) header.d=suse.com header.i=@suse.com header.b=DizG0a9m; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=suse.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56ba6c83805so254656a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:09:01 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=suse.com; s=google; t=1710860940; x=1711465740; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=8vVW1HzP6IOcVuRYdPUYojDY6rzYnYjkQOqlmjORT00=;
+        b=DizG0a9mRs2JYkrg7/n/6oZ7h0KsYJtZDVNmIjG1y2muDmfjm69wWeqfGQKECndFay
+         mDqR5a6vgZGdr3cr1FLB3ONUqH2ct1wP3xtZB+F0CkEDhOW1ioLOYyNZ5NAvmMab7e+7
+         YnFjgAim086t6DnN7ApNjZpXiaJmkc/JYtocW5VjhxulmuNPTNB1XkvO+I2jMjVejeXc
+         HFBt7UuXEwoHVeheGPaFRXP4+CQJVtliiGRM5zbBG3a3j8ovy/lcqTWGkLfyPSDrMnAm
+         iox0tVRbms2FEL2dseEslYJjTRyup3aYJNfhG8Q7q3PAM2iUJPWKnvKAElejpV4t/Xsh
+         HUtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710860940; x=1711465740;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=8vVW1HzP6IOcVuRYdPUYojDY6rzYnYjkQOqlmjORT00=;
+        b=Apz6vRM45zk90D0BJQZiaRuUOIBE4ZC8SAQO7JGtDoKXx5U7qc9ULx3rHKq8GrgYTr
+         WksGMgxtp/O44eN1ZowRg8qzeykId3rVLeGlKxR/F3u9Bpps3Y8A9a3ljFTIlOQVHRUf
+         b2Yv8flnxdBAcGIPpHANgLvmoxhjrvRIHu7zaSRMM+WU4LrEZhm7Wz5l1Rjq3RHN76UU
+         mlqtde/OfGb03dgjXYZgietIU7elTWFBVCvomB1bfGp/ZaWWaJnAZdXEGhxHv5eyY/TB
+         40DWbv5XBh1kMJQtUsusGn+Z50yUjE3qUHTSrspuANCTlPsv4Kw0e4zrkoVMEAJGedYx
+         OGaw==
+X-Forwarded-Encrypted: i=1; AJvYcCUgkvyR/O/a/87cYlyMh56LtLAqNp7EKeJ3NoBc1eNmIf8BraG0s3Z64dZqsZUE9VtwLSckMpOrZgtlP09DBLxfsaxGbohVJ3fSE/hI
+X-Gm-Message-State: AOJu0YxHly343B4cQPcdR5dJdiMzoGbbgrK9AM/FuiOrgy6qvPXfZ7T6
+	YZrg8r+YYxnMpFLvL9ULsyzcykBZrYoG0mI46nJ3hkBSik7i36fDToaONgi8qkxp1Ev4tnLs02z
+	M
+X-Google-Smtp-Source: AGHT+IEU4aA3OJtwbmANEftZa3Y1K8Y1Av3UtRZT7xLYjrH5u09EsLG01f4jd+nbMYggdaVPSMdzDg==
+X-Received: by 2002:a17:906:3105:b0:a46:13a9:b78e with SMTP id 5-20020a170906310500b00a4613a9b78emr10602241ejx.2.1710860940584;
+        Tue, 19 Mar 2024 08:09:00 -0700 (PDT)
+Received: from alley (nat2.prg.suse.com. [195.250.132.146])
+        by smtp.gmail.com with ESMTPSA id d15-20020a170906344f00b00a46e07cd1fcsm809541ejb.133.2024.03.19.08.08.59
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 08:09:00 -0700 (PDT)
+Date: Tue, 19 Mar 2024 16:08:58 +0100
+From: Petr Mladek <pmladek@suse.com>
+To: Geert Uytterhoeven <geert+renesas@glider.be>
+Cc: Chris Down <chris@chrisdown.name>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Andy Shevchenko <andriy.shevchenko@linux.intel.com>,
+	Jessica Yu <jeyu@kernel.org>, Steven Rostedt <rostedt@goodmis.org>,
+	John Ogness <john.ogness@linutronix.de>,
+	Sergey Senozhatsky <senozhatsky@chromium.org>,
+	Jason Baron <jbaron@akamai.com>, Jim Cromie <jim.cromie@gmail.com>,
+	Ilya Dryomov <idryomov@gmail.com>, Xiubo Li <xiubli@redhat.com>,
+	Jeff Layton <jlayton@kernel.org>, linux-kernel@vger.kernel.org,
+	ceph-devel@vger.kernel.org
+Subject: Re: [PATCH 0/4] printk_index: Fix false positives
+Message-ID: <ZfmqihpAyrhPn-7P@alley>
+References: <cover.1709127473.git.geert+renesas@glider.be>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -65,110 +90,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <bfc6afa9-501f-40b6-929a-3aa8c0298265@gmail.com>
-X-Sent-From: Pengutronix Hildesheim
-X-URL: http://www.pengutronix.de/
-X-Accept-Language: de,en
-X-Accept-Content-Type: text/plain
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: sha@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <cover.1709127473.git.geert+renesas@glider.be>
 
-On Tue, Mar 19, 2024 at 01:55:21PM +0000, Pavel Begunkov wrote:
-> On 3/19/24 10:50, Sascha Hauer wrote:
-> > On Mon, Mar 18, 2024 at 01:19:19PM +0000, Pavel Begunkov wrote:
-> > > On 3/18/24 12:10, Sascha Hauer wrote:
-> > > > On Fri, Mar 15, 2024 at 05:02:05PM +0000, Pavel Begunkov wrote:
-> > > > > On 3/15/24 10:01, Sascha Hauer wrote:
-> > > > > > It can happen that a socket sends the remaining data at close() time.
-> > > > > > With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
-> > > > > > out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
-> > > > > > current task. This flag has been set in io_req_normal_work_add() by
-> > > > > > calling task_work_add().
-> > > > > 
-> > > > > The entire idea of task_work is to interrupt syscalls and let io_uring
-> > > > > do its job, otherwise it wouldn't free resources it might be holding,
-> > > > > and even potentially forever block the syscall.
-> > > > > 
-> > > > > I'm not that sure about connect / close (are they not restartable?),
-> > > > > but it doesn't seem to be a good idea for sk_stream_wait_memory(),
-> > > > > which is the normal TCP blocking send path. I'm thinking of some kinds
-> > > > > of cases with a local TCP socket pair, the tx queue is full as well
-> > > > > and the rx queue of the other end, and io_uring has to run to receive
-> > > > > the data.
-> > > 
-> > > There is another case, let's say the IO is done via io-wq
-> > > (io_uring's worker thread pool) and hits the waiting. Now the
-> > > request can't get cancelled, which is done by interrupting the
-> > > task with TIF_NOTIFY_SIGNAL. User requested request cancellations
-> > > is one thing, but we'd need to check if io_uring can ever be closed
-> > > in this case.
-> > > 
-> > > 
-> > > > > If interruptions are not welcome you can use different io_uring flags,
-> > > > > see IORING_SETUP_COOP_TASKRUN and/or IORING_SETUP_DEFER_TASKRUN.
-> > > > 
-> > > > I tried with different combinations of these flags. For example
-> > > > IORING_SETUP_TASKRUN_FLAG | IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
-> > > > makes the issue less likely, but nevertheless it still happens.
-> > > > 
-> > > > However, reading the documentation of these flags, they shall provide
-> > > > hints to the kernel for optimizations, but it should work without these
-> > > > flags, right?
-> > > 
-> > > That's true, and I guess there are other cases as well, like
-> > > io-wq and perhaps even a stray fput.
-> > > 
-> > > 
-> > > > > Maybe I'm missing something, why not restart your syscall?
-> > > > 
-> > > > The problem comes with TLS. Normally with synchronous encryption all
-> > > > data on a socket is written during write(). When asynchronous
-> > > > encryption comes into play, then not all data is written during write(),
-> > > > but instead the remaining data is written at close() time.
-> > > 
-> > > Was it considered to do the final cleanup in workqueue
-> > > and only then finalising the release?
-> > 
-> > No, but I don't really understand what you mean here. Could you
-> > elaborate?
+On Wed 2024-02-28 15:00:01, Geert Uytterhoeven wrote:
+> 	Hi all,
 > 
-> The suggestion is instead of executing the release and that final
-> flush off of the context you're in, namely userspace task,
-> you can spin up a kernel task (they're not getting any signals)
-> and execute it from there.
+> When printk-indexing is enabled, each printk() invocation emits a
+> pi_entry structure, containing the format string and other information
+> related to its location in the kernel sources.  This is even true when
+> the printk() is protected by an always-false check, as is typically the
+> case for debug messages: while the actual code to print the message is
+> optimized out by the compiler, the pi_entry structure is still emitted.
+> Hence when debugging is disabled, this leads to the inclusion in the
+> index of lots of printk formats that cannot be emitted by the current
+> kernel.
 > 
-> void deferred_release_fn(struct work_struct *work)
-> {
-> 	do_release();
-> 	...
-> }
+> This series fixes that for the common debug helpers under include/.
+> It reduces the size of an arm64 defconfig kernel with
+> CONFIG_PRINTK_INDEX=y by ca. 1.5 MiB, or 28% of the overhead of
+> enabling CONFIG_PRINTK_INDEX=y.
 > 
-> struct work_struct work;
-> INIT_WORK(&work, deferred_release_fn);
-> queue_work(system_unbound_wq, &work);
+> Notes:
+>   - netdev_(v)dbg() and netif_(v)dbg() are not affected, as
+>     net{dev,if}_printk() do not implement printk-indexing, except
+>     for the single global internal instance of __netdev_printk().
+>   - This series fixes only debug code in global header files under
+>     include/.  There are more cases to fix in subsystem-specific header
+>     files and in sources files.
 > 
+> Thanks for your comments!
 > 
-> There is a catch. Even though close() is not obliged to close
-> the file / socket immediately, but it still not nice when you
-> drop the final ref but port and other bits are not released
-> until some time after. So, you might want to wait for that
-> deferred release to complete before returning to the
-> userspace.
+> Geert Uytterhoeven (4):
+>   printk: Let no_printk() use _printk()
+>   dev_printk: Add and use dev_no_printk()
+>   dyndbg: Use *no_printk() helpers
+>   ceph: Use no_printk() helper
 > 
-> I'm assuming it's fine to run it by a kernel task since
-> IIRC fput might delay release to it anyway, but it's better
-> to ask net maintainers. In theory it shouldn't need
-> mm,fs,etc that user task would hold.
+>  include/linux/ceph/ceph_debug.h | 18 +++++++-----------
+>  include/linux/dev_printk.h      | 25 +++++++++++++------------
+>  include/linux/dynamic_debug.h   |  4 ++--
+>  include/linux/printk.h          |  2 +-
+>  4 files changed, 23 insertions(+), 26 deletions(-)
 
-Ok, I'll have a look into it. Thanks for your input.
+The whole series looks good to me:
 
-Sascha
+Reviewed-by: Petr Mladek <pmladek@suse.com>
 
--- 
-Pengutronix e.K.                           |                             |
-Steuerwalder Str. 21                       | http://www.pengutronix.de/  |
-31137 Hildesheim, Germany                  | Phone: +49-5121-206917-0    |
-Amtsgericht Hildesheim, HRA 2686           | Fax:   +49-5121-206917-5555 |
+I am going take it via printk tree for 6.10.
+
+I am sorry that I haven't looked at it in time before the merge
+window for 6.9. I have been snowed under various tasks. The changes
+are not complicated. But they also are not critical to be pushed
+an expedite way.
+
+Best Regards,
+Petr
 
