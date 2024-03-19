@@ -1,255 +1,160 @@
-Return-Path: <linux-kernel+bounces-107613-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107614-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 71C2F87FF23
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:56:55 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCB0C87FF24
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:57:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE47CB21C98
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:56:52 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0AC2C1C222AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:57:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62748172E;
-	Tue, 19 Mar 2024 13:56:44 +0000 (UTC)
-Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3EAB88175E;
+	Tue, 19 Mar 2024 13:56:54 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="ch5Zsya+"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8B981216
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:56:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7783581723;
+	Tue, 19 Mar 2024 13:56:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710856604; cv=none; b=cb3+ILSMjz/bLesc3x7buYBa3I/+H3Hl5yWrtv+4j+jsvWTTIonPBihQowUjcHU58E/3xx5cYpcAiaq8+J+GPgEEb41dnETParsJNJjCJ1OM/1qYvz3Ko/EIzxvATANxEx9KJlQ0IFHxnXTwUVPg7mmsxRU/0ZVyrYjjpETpAGg=
+	t=1710856613; cv=none; b=cjUex/c91y10p92mw1uj6Ln5lf1VeAoRD6dwY9OHKXYIDN3lwltGH3VBHZaOCcVzxaWvRyezQkHMeYJJlFOCfab6CMNCl6fOa+9oAecReSqACS2/wk4LkBzCBuu1dtkvfrY10Vob+21SikDAieWSsuQt5U8z/V+6rUxx9Breszg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710856604; c=relaxed/simple;
-	bh=SiSKHuFwh9lLOtDAXnJW9R6P2jVsOoCWB+Gw3+hldUg=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=FDoLWMsuNHxSjKn5AMgjb2eBUWW4OcpZd7N/QCj1xQZl+EIm0k9E5nVsTu5z7/zEhbp0JkvhQhxpKctIo1H9JR4as8fvzqNtFJL0DjTUsS0UmDWDkW6V4v3a80wqcJyWHddVEoZWxq0lP7kJxxZJUElCbfX1/WKPJvql6KlHlEA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbfd4781fcso376756739f.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:56:42 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710856602; x=1711461402;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=G9TLtr2LXddztPLvauUkkgcrDfwPnuzScqtnLmCwUfs=;
-        b=rWs9LSOFGVcKhr3HsUiPBFCTFRtvgfr4R5BMSc41cQD/7BbRkeJnOItN9fJo3NzgiD
-         AWYluhjWeFPIJGAkuXuTeLXVOLfMmH+VTsezmcIYjRlXEPwi+oNxPoi+xoJbhUYhzN1d
-         w69DJFygcvo2IKfFUcZKeSEU1tmRvKo7E2+LuNV13SV7MJK68s3hQyqTqudUbqNza/RV
-         FOLb2sZZwSUqVhmjffgCguDqQaVkVp5XI+iAtSMzKw5ip57tpB+Nz/+EZsVc5R9+V5QD
-         BZApEdsdgwYf34czZ0mrVy55CM1Hj8LZ8gZVM240JNF3v0n6TSDse4keGbJyhiJfWFWB
-         wAVg==
-X-Gm-Message-State: AOJu0YzPeeyUc5ToZu/f65XqfaGsS/bZBNkGA+YRBXZkSCIcdkHv2Ox9
-	QTMmTceRC7BL03M4FgcjE/aqONWlurQ15gndfb0KQ6QWBH8bu7+y8S18/h7kCpG++EA8yr8NTmL
-	sQ16+dAHv0HCa33I7gb+AXF+wUA9NY40qUrkEAyJ8hk7V6yDUXyDrfcnTpQ==
-X-Google-Smtp-Source: AGHT+IGyYV88jGflZZU+zKAPhICTypPZEU4mYkuEDAyUxNRJLQ1fV9oO/ZvKHWpn/zm5ztV6SkU4QOi8qBaqbrnsj6ck3+40nI0Q
+	s=arc-20240116; t=1710856613; c=relaxed/simple;
+	bh=zQhmes04v8tUm/xzjy2k9kNoN/vXxtT9NCn33lWyVYU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=efEgXmSbbaUDgL2GacrHYPad28rRJJQKcpxtctd8S8lqVZcXnLP5XeIGjqUczGX/sNFt3K4KU6GMRCOtlm0wx4/5ZjtxF2t0UguzOOlmbNPQzLB2pHNoEAahpZ3p6WzpmKPi6luWTho07g6PwHrSq8NCGgnug07UKSPUz2k6DLY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=ch5Zsya+; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 81F76C433F1;
+	Tue, 19 Mar 2024 13:56:52 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710856613;
+	bh=zQhmes04v8tUm/xzjy2k9kNoN/vXxtT9NCn33lWyVYU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=ch5Zsya+u7bOY7LV/CR2lCTEtD3jHIGBzI+4G6E2fzBgRLgMka+uTcbHhWT1XTwvo
+	 Pulu43JG/akiPWtxY+NbLGfwTvYjQEQ1Q+dr6EBODtRim1jVjoWc/5B6d9YW36S/9f
+	 9wrnweSIT77Kr/VFOQomB8pBk9HI3f/z0ZCA9+0er9X790sDjXsnE2jggGjsJ3Dwac
+	 VybIcIeBGxbkFS89yQWRYgdDDR9Nm5Afn62xChfhRMmkK4/iBGwpJMmBRitaDC8G51
+	 Ndm2ZiAvOftrIxbpn4fMndc3Ez7rGzUfu72Vi4E8mHkpZA/VavWdB6S4FdSpBDuvMP
+	 S2zx6+wZoi52A==
+Date: Tue, 19 Mar 2024 10:56:49 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 04/23] perf dwarf-aux: Add die_find_func_rettype()
+Message-ID: <ZfmZobDmVFxEQ6hU@x1>
+References: <20240319055115.4063940-1-namhyung@kernel.org>
+ <20240319055115.4063940-5-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6638:8923:b0:474:ed8f:ffa8 with SMTP id
- jc35-20020a056638892300b00474ed8fffa8mr69278jab.4.1710856601948; Tue, 19 Mar
- 2024 06:56:41 -0700 (PDT)
-Date: Tue, 19 Mar 2024 06:56:41 -0700
-In-Reply-To: <0000000000002750950613c53e72@google.com>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <0000000000000563d3061403d83d@google.com>
-Subject: Re: [syzbot] Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
-From: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
-To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319055115.4063940-5-namhyung@kernel.org>
 
-For archival purposes, forwarding an incoming command email to
-linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
-
-***
-
-Subject: Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
-Author: eric.vanhensbergen@linux.dev
-
-#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git b4/fix-evict-uninitialized-value
-
-March 16, 2024 at 6:15 AM, "syzbot" <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com> wrote:
-> 
-> Hello,
-> 
-> syzbot found the following issue on:
-> 
-> HEAD commit: 66a27abac311 Merge tag 'powerpc-6.9-1' of git://git.kernel..
-> 
-> git tree: upstream
-> 
-> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147b32a5180000
-> 
-> kernel config: https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
-> 
-> dashboard link: https://syzkaller.appspot.com/bug?extid=eb83fe1cce5833cd66a0
-> 
-> compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> 
-> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=12598006180000
-> 
-> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=105d8aa5180000
-> 
-> Downloadable assets:
-> 
-> disk image: https://storage.googleapis.com/syzbot-assets/37968fa0451e/disk-66a27aba.raw.xz
-> 
-> vmlinux: https://storage.googleapis.com/syzbot-assets/5b288c5c3088/vmlinux-66a27aba.xz
-> 
-> kernel image: https://storage.googleapis.com/syzbot-assets/792ddbf8146d/bzImage-66a27aba.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> 
-> Reported-by: syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com
-> 
-> =====================================================
-> 
-> BUG: KMSAN: uninit-value in fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
-> 
-> BUG: KMSAN: uninit-value in v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
-> 
->  fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
-> 
->  v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
-> 
->  evict+0x3ae/0xa60 fs/inode.c:667
-> 
->  iput_final fs/inode.c:1741 [inline]
-> 
->  iput+0x9ca/0xe10 fs/inode.c:1767
-> 
->  iget_failed+0x15e/0x180 fs/bad_inode.c:248
-> 
->  v9fs_fid_iget_dotl+0x375/0x570 fs/9p/vfs_inode_dotl.c:96
-> 
->  v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
-> 
->  v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
-> 
->  legacy_get_tree+0x114/0x290 fs/fs_context.c:662
-> 
->  vfs_get_tree+0xa7/0x570 fs/super.c:1779
-> 
->  do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
-> 
->  path_mount+0x742/0x1f20 fs/namespace.c:3679
-> 
->  do_mount fs/namespace.c:3692 [inline]
-> 
->  __do_sys_mount fs/namespace.c:3898 [inline]
-> 
->  __se_sys_mount+0x725/0x810 fs/namespace.c:3875
-> 
->  __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
-> 
->  do_syscall_64+0xd5/0x1f0
-> 
->  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> Uninit was created at:
-> 
->  __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
-> 
->  __alloc_pages_node include/linux/gfp.h:238 [inline]
-> 
->  alloc_pages_node include/linux/gfp.h:261 [inline]
-> 
->  alloc_slab_page mm/slub.c:2175 [inline]
-> 
->  allocate_slab mm/slub.c:2338 [inline]
-> 
->  new_slab+0x2de/0x1400 mm/slub.c:2391
-> 
->  ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
-> 
->  __slab_alloc mm/slub.c:3610 [inline]
-> 
->  __slab_alloc_node mm/slub.c:3663 [inline]
-> 
->  slab_alloc_node mm/slub.c:3835 [inline]
-> 
->  kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
-> 
->  alloc_inode_sb include/linux/fs.h:3089 [inline]
-> 
->  v9fs_alloc_inode+0x62/0x130 fs/9p/vfs_inode.c:228
-> 
->  alloc_inode+0x86/0x460 fs/inode.c:261
-> 
->  iget_locked+0x2bf/0xee0 fs/inode.c:1280
-> 
->  v9fs_fid_iget_dotl+0x7f/0x570 fs/9p/vfs_inode_dotl.c:62
-> 
->  v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
-> 
->  v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
-> 
->  legacy_get_tree+0x114/0x290 fs/fs_context.c:662
-> 
->  vfs_get_tree+0xa7/0x570 fs/super.c:1779
-> 
->  do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
-> 
->  path_mount+0x742/0x1f20 fs/namespace.c:3679
-> 
->  do_mount fs/namespace.c:3692 [inline]
-> 
->  __do_sys_mount fs/namespace.c:3898 [inline]
-> 
->  __se_sys_mount+0x725/0x810 fs/namespace.c:3875
-> 
->  __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
-> 
->  do_syscall_64+0xd5/0x1f0
-> 
->  entry_SYSCALL_64_after_hwframe+0x6d/0x75
-> 
-> CPU: 1 PID: 5014 Comm: syz-executor406 Not tainted 6.8.0-syzkaller-11136-g66a27abac311 #0
-> 
-> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-> 
-> =====================================================
-> 
+On Mon, Mar 18, 2024 at 10:50:56PM -0700, Namhyung Kim wrote:
+> The die_find_func_rettype() is to find a debug entry for the given
+> function name and sets the type information of the return value.  By
+> convention, it'd return the pointer to the type die (should be the
+> same as the given mem_die argument) if found, or NULL otherwise.
+> 
+> Cc: Masami Hiramatsu <mhiramat@kernel.org>
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 > ---
+>  tools/perf/util/dwarf-aux.c | 43 +++++++++++++++++++++++++++++++++++++
+>  tools/perf/util/dwarf-aux.h |  4 ++++
+>  2 files changed, 47 insertions(+)
 > 
-> This report is generated by a bot. It may contain errors.
-> 
-> See https://goo.gl/tpsmEJ for more information about syzbot.
-> 
-> syzbot engineers can be reached at syzkaller@googlegroups.com.
-> 
-> syzbot will keep track of this issue. See:
-> 
-> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-> 
-> If the report is already addressed, let syzbot know by replying with:
-> 
-> #syz fix: exact-commit-title
-> 
-> If you want syzbot to run the reproducer, reply with:
-> 
-> #syz test: git://repo/address.git branch-or-commit-hash
-> 
-> If you attach or paste a git patch, syzbot will apply it before testing.
-> 
-> If you want to overwrite report's subsystems, reply with:
-> 
-> #syz set subsystems: new-subsystem
-> 
-> (See the list of subsystem names on the web dashboard)
-> 
-> If the report is a duplicate of another one, reply with:
-> 
-> #syz dup: exact-subject-of-another-report
-> 
-> If you want to undo deduplication, reply with:
-> 
-> #syz undup
->
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index cd9364d296b6..9080119a258c 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -696,6 +696,49 @@ Dwarf_Die *die_find_inlinefunc(Dwarf_Die *sp_die, Dwarf_Addr addr,
+>  	return die_mem;
+>  }
+>  
+> +static int __die_find_func_rettype_cb(Dwarf_Die *die_mem, void *data)
+> +{
+> +	const char *func_name;
+> +
+> +	if (dwarf_tag(die_mem) != DW_TAG_subprogram)
+> +		return DIE_FIND_CB_SIBLING;
+> +
+> +	func_name = dwarf_diename(die_mem);
+> +	if (func_name && !strcmp(func_name, data))
+> +		return DIE_FIND_CB_END;
+> +
+> +	return DIE_FIND_CB_SIBLING;
+> +}
+> +
+> +/**
+> + * die_find_func_rettype - Search a return type of function
+> + * @cu_die: a CU DIE
+> + * @name: target function name
+> + * @die_mem: a buffer for result DIE
+> + *
+> + * Search a non-inlined function which matches to @name and stores the
+> + * return type of the function to @die_mem and returns it if found.
+> + * Returns NULL if failed.  Note that it doesn't needs to find a
+> + * definition of the function, so it doesn't match with address.
+> + * Most likely, it can find a declaration at the top level.  Thus the
+> + * callback function continues to sibling entries only.
+> + */
+> +Dwarf_Die *die_find_func_rettype(Dwarf_Die *cu_die, const char *name,
+> +				 Dwarf_Die *die_mem)
+> +{
+> +	Dwarf_Die tmp_die;
+> +
+> +	cu_die = die_find_child(cu_die, __die_find_func_rettype_cb,
+> +				(void *)name, &tmp_die);
+> +	if (!cu_die)
+> +		return NULL;
+> +
+> +	if (die_get_real_type(&tmp_die, die_mem) == NULL)
+> +		return NULL;
+
+
+Here you check die_get_real_type() return, may I go and do the same for
+the previous patch to address my review comment?
+
+- Arnaldo
+
+> +
+> +	return die_mem;
+> +}
+> +
+>  struct __instance_walk_param {
+>  	void    *addr;
+>  	int	(*callback)(Dwarf_Die *, void *);
+> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> index 16c916311bc0..b0f25fbf9668 100644
+> --- a/tools/perf/util/dwarf-aux.h
+> +++ b/tools/perf/util/dwarf-aux.h
+> @@ -94,6 +94,10 @@ Dwarf_Die *die_find_top_inlinefunc(Dwarf_Die *sp_die, Dwarf_Addr addr,
+>  Dwarf_Die *die_find_inlinefunc(Dwarf_Die *sp_die, Dwarf_Addr addr,
+>  			       Dwarf_Die *die_mem);
+>  
+> +/* Search a non-inlined function by name and returns its return type */
+> +Dwarf_Die *die_find_func_rettype(Dwarf_Die *sp_die, const char *name,
+> +				 Dwarf_Die *die_mem);
+> +
+>  /* Walk on the instances of given DIE */
+>  int die_walk_instances(Dwarf_Die *in_die,
+>  		       int (*callback)(Dwarf_Die *, void *), void *data);
+> -- 
+> 2.44.0.291.gc1ea87d7ee-goog
 
