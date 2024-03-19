@@ -1,101 +1,126 @@
-Return-Path: <linux-kernel+bounces-107188-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107189-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E710487F8D4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:04:13 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id DF01087F8D6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:04:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 24ED71C2189E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:04:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7D3B11F225E0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:04:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7C30A53805;
-	Tue, 19 Mar 2024 08:03:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="E/EBz4TP"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84A2154665;
+	Tue, 19 Mar 2024 08:04:08 +0000 (UTC)
+Received: from SHSQR01.spreadtrum.com (mx1.unisoc.com [222.66.158.135])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A8EF5537E4;
-	Tue, 19 Mar 2024 08:03:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9416650249;
+	Tue, 19 Mar 2024 08:04:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=222.66.158.135
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710835436; cv=none; b=lLpbG/r1KlsBsRl8GF3HScK+D1iPjvCktQUwbeEt3xGhci9Z4GiRJApUSzrzBR9yfKp6/aTyYGYnWhsJHYlRRFc2m9B7UOUZi0k4bnu+aVbbMOpvlRV7QalhPjWpnCWkBAGp3lqrncdNmj+hbVy67hscHAOfWmxNLctAi0orumA=
+	t=1710835448; cv=none; b=LVTWwgj8dzI5780xZI0zhoiY5rW9bXgNUDPz0LWY+CdfN8f1LNCGOkOoJPP5lDK9f0srrZqOjiH6e2WNDhBTikCROl9qlv9FoHnAvuyxjmqMQJLvD5fncIHLJkkBR3tNvl3jqWQLIsvZx5vAOBJvMIWpccRnw0z7m3CTxVnHc1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710835436; c=relaxed/simple;
-	bh=5pMIwSL+oFaceFU0q+VQ+fxw61PUaymJCTKh5tTE8EM=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ufFmRhevwMl345ve92GFkt44CTxKQhkK+Df6Z1Xc709zjsfcOgOLH/XrmBy43z+hd4uXVdScxnk8EZrRY3XbjI1NeJ7YcgtkXF4pISzcWbTIUPRo2rmofEeM8YdnNxYL2uGt1HpJK+fkQJoZh6XBwPQdgR0it3ohyO6a6Q84Ktw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=E/EBz4TP; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id B9AADC433F1;
-	Tue, 19 Mar 2024 08:03:49 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
-	s=korg; t=1710835436;
-	bh=5pMIwSL+oFaceFU0q+VQ+fxw61PUaymJCTKh5tTE8EM=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=E/EBz4TP05UV76e4ihRit4qedT8ItYeorbvPeugThFfi2vX7De3TcITjKglIRY95g
-	 pJ/Y5enNynI/uF0nTfb6yYOtekimQnUsV0TOLka5xF7KbGrOFd/ntpt2LkEtbaosGG
-	 Hdwbs8A4i7UQhNFQgQVinlNIVhnyLYoMgbvlwD6o=
-Date: Tue, 19 Mar 2024 09:01:32 +0100
-From: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: Marco Pagani <marpagan@redhat.com>, Moritz Fischer <mdf@kernel.org>,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>, Jonathan Corbet <corbet@lwn.net>,
-	Alan Tull <atull@opensource.altera.com>,
-	linux-kernel@vger.kernel.org, linux-doc@vger.kernel.org,
-	linux-fpga@vger.kernel.org
-Subject: Re: [PATCH v6] fpga: manager: add owner module and take its refcount
-Message-ID: <2024031906-radish-handbrake-93b4@gregkh>
-References: <20240305192926.84886-1-marpagan@redhat.com>
- <ZfkOvXslEjgU+fc1@yilunxu-OptiPlex-7050>
+	s=arc-20240116; t=1710835448; c=relaxed/simple;
+	bh=jPagy+6Vtiqf4ADTxsQnEjlQZkWSGwoCZ/usyF4Bckg=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=nc/iAIaaGhyUt7gN51AVXlzGocW3MSqTW4IvAe8BzyktfZKg1/WyT68CaGQk0g1uCTl3c1rJ/x+JuuVOVt3t89KsYMR8JqJDQTy3Gl2xIWpUburM4dCsEwLSja/HCyNLVUSolw5eWLmA9HZ47nD/KBlvQAgMXSnfcD9etnINL1s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com; spf=pass smtp.mailfrom=unisoc.com; arc=none smtp.client-ip=222.66.158.135
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=unisoc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=unisoc.com
+Received: from dlp.unisoc.com ([10.29.3.86])
+	by SHSQR01.spreadtrum.com with ESMTP id 42J826Dn062112;
+	Tue, 19 Mar 2024 16:02:06 +0800 (+08)
+	(envelope-from Xuewen.Yan@unisoc.com)
+Received: from SHDLP.spreadtrum.com (bjmbx01.spreadtrum.com [10.0.64.7])
+	by dlp.unisoc.com (SkyGuard) with ESMTPS id 4TzPKg1K50z2LJNYK;
+	Tue, 19 Mar 2024 16:00:39 +0800 (CST)
+Received: from BJ10918NBW01.spreadtrum.com (10.0.73.73) by
+ BJMBX01.spreadtrum.com (10.0.64.7) with Microsoft SMTP Server (TLS) id
+ 15.0.1497.23; Tue, 19 Mar 2024 16:02:04 +0800
+From: Xuewen Yan <xuewen.yan@unisoc.com>
+To: <rafael@kernel.org>, <viresh.kumar@linaro.org>
+CC: <ke.wang@unisoc.com>, <linux-pm@vger.kernel.org>,
+        <linux-kernel@vger.kernel.org>, <xuewen.yan94@gmail.com>,
+        <di.shen@unisoc.com>
+Subject: [PATCH] cpufreq: Use a smaller freq for the policy->max when verify
+Date: Tue, 19 Mar 2024 16:01:53 +0800
+Message-ID: <20240319080153.3263-1-xuewen.yan@unisoc.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfkOvXslEjgU+fc1@yilunxu-OptiPlex-7050>
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: SHCAS01.spreadtrum.com (10.0.1.201) To
+ BJMBX01.spreadtrum.com (10.0.64.7)
+X-MAIL:SHSQR01.spreadtrum.com 42J826Dn062112
 
-On Tue, Mar 19, 2024 at 12:04:13PM +0800, Xu Yilun wrote:
-> On Tue, Mar 05, 2024 at 08:29:26PM +0100, Marco Pagani wrote:
-> > The current implementation of the fpga manager assumes that the low-level
-> > module registers a driver for the parent device and uses its owner pointer
-> > to take the module's refcount. This approach is problematic since it can
-> > lead to a null pointer dereference while attempting to get the manager if
-> > the parent device does not have a driver.
-> > 
-> > To address this problem, add a module owner pointer to the fpga_manager
-> > struct and use it to take the module's refcount. Modify the functions for
-> > registering the manager to take an additional owner module parameter and
-> > rename them to avoid conflicts. Use the old function names for helper
-> > macros that automatically set the module that registers the manager as the
-> > owner. This ensures compatibility with existing low-level control modules
-> > and reduces the chances of registering a manager without setting the owner.
-> > 
-> > Also, update the documentation to keep it consistent with the new interface
-> > for registering an fpga manager.
-> > 
-> > Other changes: opportunistically move put_device() from __fpga_mgr_get() to
-> > fpga_mgr_get() and of_fpga_mgr_get() to improve code clarity since the
-> > manager device is taken in these functions.
-> > 
-> > Fixes: 654ba4cc0f3e ("fpga manager: ensure lifetime with of_fpga_mgr_get")
-> > Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
-> > Suggested-by: Xu Yilun <yilun.xu@intel.com>
-> > Signed-off-by: Marco Pagani <marpagan@redhat.com>
-> 
-> Acked-by: Xu Yilun <yilun.xu@intel.com>
-> 
-> Will apply to v6.9-rc1
+When driver use the cpufreq_frequency_table_verify() as the
+cpufreq_driver->verify's callback. It may cause the policy->max
+bigger than the freq_qos's max freq.
 
-It is way too late for -rc1, sorry, this needs to wait for the next
-release.
+Just as follow:
 
-thanks,
+unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_available_frequencies
+614400 768000 988000 1228800 1469000 1586000 1690000 1833000 2002000 2093000
 
-greg k-h
+unisoc:/sys/devices/system/cpu/cpufreq/policy0 # echo 1900000 > scaling_max_freq
+unisoc:/sys/devices/system/cpu/cpufreq/policy0 # echo 1900000 > scaling_min_freq
+unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_max_freq
+2002000
+unisoc:/sys/devices/system/cpu/cpufreq/policy0 # cat scaling_min_freq
+2002000
+
+When user set the qos_min and qos_max as the same value, and the value
+is not in the freq-table, the above scenario will occur.
+
+This is because in cpufreq_frequency_table_verify() func, when it can not
+find the freq in table, it will change the policy->max to be a bigger freq,
+as above, because there is no 1.9G in the freq-table, the policy->max would
+be set to 2.002G. As a result, the cpufreq_policy->max is bigger than the
+user's qos_max. This is unreasonable.
+
+So use a smaller freq when can not find the freq in fre-table, to prevent
+the policy->max exceed the qos's max freq.
+
+Signed-off-by: Xuewen Yan <xuewen.yan@unisoc.com>
+---
+ drivers/cpufreq/freq_table.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/drivers/cpufreq/freq_table.c b/drivers/cpufreq/freq_table.c
+index c4d4643b6ca6..1d98b8cf1688 100644
+--- a/drivers/cpufreq/freq_table.c
++++ b/drivers/cpufreq/freq_table.c
+@@ -70,7 +70,7 @@ int cpufreq_frequency_table_verify(struct cpufreq_policy_data *policy,
+ 				   struct cpufreq_frequency_table *table)
+ {
+ 	struct cpufreq_frequency_table *pos;
+-	unsigned int freq, next_larger = ~0;
++	unsigned int freq, prev_smaller = 0;
+ 	bool found = false;
+ 
+ 	pr_debug("request for verification of policy (%u - %u kHz) for cpu %u\n",
+@@ -86,12 +86,12 @@ int cpufreq_frequency_table_verify(struct cpufreq_policy_data *policy,
+ 			break;
+ 		}
+ 
+-		if ((next_larger > freq) && (freq > policy->max))
+-			next_larger = freq;
++		if ((prev_smaller < freq) && (freq <= policy->max))
++			prev_smaller = freq;
+ 	}
+ 
+ 	if (!found) {
+-		policy->max = next_larger;
++		policy->max = prev_smaller;
+ 		cpufreq_verify_within_cpu_limits(policy);
+ 	}
+ 
+-- 
+2.25.1
+
 
