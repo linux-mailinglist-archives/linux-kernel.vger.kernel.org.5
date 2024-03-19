@@ -1,133 +1,102 @@
-Return-Path: <linux-kernel+bounces-107498-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107499-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 325C787FD51
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:04:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id BADB787FD57
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:06:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 63E0B1C21DAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:04:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 74CC7282958
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:06:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 560E77F7E8;
-	Tue, 19 Mar 2024 12:04:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 92C067F499;
+	Tue, 19 Mar 2024 12:06:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="neRnQCxX"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="OhbfgXul"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 001917EEEA;
-	Tue, 19 Mar 2024 12:04:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC49F7CF03;
+	Tue, 19 Mar 2024 12:06:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710849878; cv=none; b=oNonPs2bfqBHfNOQNNIvGArzMCOdpNQCC/msg3yvc/AVudqVb+HLlcLDz04hH6IwSlhiuyyV38QJlzx9nm1oDsW1FZ+XK7AyMxbifZe8TLNdkkeY0BWrPU7PidXfyFRBj9Lf6sx8gYpq9zc9dFiErRokiHQbhLd/0853Z2g6Vog=
+	t=1710849990; cv=none; b=ZPTSNKGSJAdsw81kq8yQrvnVOzn3/cF9FTx/fNh9yt53syq4qX5ydIqJykAgiBOpInHhuz7J10MSRq8QJCFyOJZ8XbpsYtSQ8feE6uS/XEVZK4UkiOPCRAnRKaOeknsa4He/WK0PY6nEIIF9Eu8A/7MY7TcdWzf+3xQtLvslgqA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710849878; c=relaxed/simple;
-	bh=2whijhBAm4dx6QwkeeGpNsVaN2Kx4eOfqHixS++YrtA=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=ELuxscNUJyCYsZPPXlhHv96vKJB8tbR7s5dMc3j/6zLUXdFH0tL2F1g7C0y7N9nIMtgVr+bAc9LQlwg2l2/353w6Tzxc0lowgG7E+2gnkq+uyrM9ljTCuucVZJD2eg+5fkPfuHBSqM822TTSirAgum/y/C0s4pAmvj3nfRewhNg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=neRnQCxX; arc=none smtp.client-ip=209.85.208.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d41d1bedc9so95113291fa.3;
-        Tue, 19 Mar 2024 05:04:36 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710849875; x=1711454675; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=IN3wN3yRolVo19T+AVLYl3UCmMVfUc/5cyFO6aotwr0=;
-        b=neRnQCxX95jGvRifRf8JpVO0QYJk3uibDJ2sOv534maQ8vPtpp2KKvrUe1QEmFsCWE
-         kDD7mtSrXA+QRUM/19GjSsc+hHHfQNmv1tD9RJfGd8ZNN/Rm0kLQ8BqFyPxwn2iLEjZd
-         buhjnalX9MzmjC1+W8HAfW7rHr5OkuKv1HCJ9di3AQW0nUCrzqxcVu3QoZ/zDQlLXvJn
-         3jeXDmarmHP/jRfDm6OQghvLlntioQdfcptRcxrK1CJ6TFF2LvWdHUOlcYwGiNyGiVz8
-         8YNPDXi/nP8Z+YfjdIb0aOJttQXNTqltholb3fJd+SnUUvPr6OYrdsCcCdANVZSS3V4d
-         OUXA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710849875; x=1711454675;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=IN3wN3yRolVo19T+AVLYl3UCmMVfUc/5cyFO6aotwr0=;
-        b=s+nX+BeHSYtxG4zbnqdPfIbGkyGijwQfrZKJbFcNEaoSf4VMCXq3zhpWvZm8GwT7ai
-         OxjeB7qI9pzVVXQZNmhaAJVK0hEyltu91PeVjbb2hTQUUb2hpITKpJTu/NaRFsJqViq7
-         K5BFGlAiPMHOBiq3p1hmiBOs0UwXkgXTSQneLXvUVPSKr+A+dFv0dVQ35izMhTQI+eIc
-         J6MSPdECUaDwZgkMnpmlvyYsyOp/9HS1TEQtShWfT5EfNGrTGuWz4nNJk8FAg+ggpFXO
-         hezaYpyI6ffhmJYSfytsqhFw7NfeSGORYBfn52wypPjahhPDcNBUx2IpSpqNyDOIsJQ/
-         0kxw==
-X-Forwarded-Encrypted: i=1; AJvYcCXHRa6kn4KNZN0tThEkuNBcpxzgjGCeYG+xtANnTHsifviSM/113PzM00fxzN8wzLqFKm+GQPAdNe8tVefKG2T+IN0/kQI5ykOfzjfUpVsK1J2M0MIJ6PnaKG1a6+9aS0/C
-X-Gm-Message-State: AOJu0YyF6hnBmYHavZtlJiWdb8vU2WK4MCzr4e0+hyD1SvryxT9q6rJr
-	jp9Tiwcrqmg75KMExDnS/7Im1mFaMJSV1CMXqXVesEIHAowT/3EXa+0h+WKBgwQM9Q==
-X-Google-Smtp-Source: AGHT+IEhOOYjcdGfgitwor41R2Ak270M2lC5BoeDuwljNKRdjdoEA5HsuucUaxu5WJnx4+4kYgD4/g==
-X-Received: by 2002:a2e:a412:0:b0:2d4:6893:24e1 with SMTP id p18-20020a2ea412000000b002d4689324e1mr6883968ljn.50.1710849874999;
-        Tue, 19 Mar 2024 05:04:34 -0700 (PDT)
-Received: from linguini.. ([62.96.37.222])
-        by smtp.gmail.com with ESMTPSA id f23-20020a170906049700b00a4588098c5esm5989722eja.132.2024.03.19.05.04.33
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 05:04:34 -0700 (PDT)
-From: Mikhail Malyshev <mike.malyshev@gmail.com>
-To: alex.williamson@redhat.com,
-	jgg@ziepe.ca,
-	yi.l.liu@intel.com,
-	kevin.tian@intel.com,
-	tglx@linutronix.de,
-	reinette.chatre@intel.com,
-	stefanha@redhat.com
-Cc: abhsahu@nvidia.com,
-	kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Mikhail Malyshev <mike.malyshev@gmail.com>
-Subject: [PATCH 1/1] vfio/pci: Reenable runtime PM for dynamically unbound devices
-Date: Tue, 19 Mar 2024 12:04:10 +0000
-Message-Id: <20240319120410.1477713-2-mike.malyshev@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240319120410.1477713-1-mike.malyshev@gmail.com>
-References: <20240319120410.1477713-1-mike.malyshev@gmail.com>
+	s=arc-20240116; t=1710849990; c=relaxed/simple;
+	bh=bKAtYoJBSuOHQQgagWmINKfaNalyupmW9O/fQEj1bpU=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=udAZpKio6v/Sg9sCqMCkqaUSpa1fcqIp8IBjB7uZkNq9YTog5gKckdkMyvqVWrijUfut2R9VvBmVE/G9nn0AqFjaLqavhKF+2JeOseUmzIQotouIG2gTOP/i0Nolui4j46UyxypVZJfzUOzj8L9EXMj/eTqGVQm3ihTCMb6g1T8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=OhbfgXul; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 1C8EEC433C7;
+	Tue, 19 Mar 2024 12:06:27 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710849990;
+	bh=bKAtYoJBSuOHQQgagWmINKfaNalyupmW9O/fQEj1bpU=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=OhbfgXulU9Vp/bUvWbaxfDXAhUEcinY86e4TwFGgQJ6blxtPoaurjvKQ0SnYRRWtQ
+	 kuR11qwDUoedyVx8C+mpDPig/xhGx3aoImViOGVVeceWhsF3+KG/UL6CwLnAIcTu0B
+	 ZtAJEn4LqNwQdJ5ENR7imp+3TVYEX+QLH//T3fI0jjsaTzjCS9DLN7DvtNUZ0KS8MU
+	 gftWI4E4vRvavKX+lvaoXMnNrDWi+mtNooOjDTawtwgfzBrsg8qREx+DSuyG7929S8
+	 R7zRfxQoFDPq8kHRtPGsAq4g64oYJRyMvB7PpfmrHX7KBEt2NArekMXI3WgMOCVGBx
+	 8LpY1IZfFpsXA==
+Date: Tue, 19 Mar 2024 12:06:25 +0000
+From: Simon Horman <horms@kernel.org>
+To: Francesco Valla <valla.francesco@gmail.com>
+Cc: Oliver Hartkopp <socketcan@hartkopp.net>,
+	Marc Kleine-Budde <mkl@pengutronix.de>,
+	"David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	fabio@redaril.me, linux-can@vger.kernel.org, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 1/1] Documentation: networking: document CAN ISO-TP
+Message-ID: <20240319120625.GI185808@kernel.org>
+References: <20240313223445.87170-1-valla.francesco@gmail.com>
+ <20240313223445.87170-2-valla.francesco@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240313223445.87170-2-valla.francesco@gmail.com>
 
-When a device is unbound from its driver it may call pm_runtime_disable()
-in its ->remove() callback. When such device is bound to vfio-pci driver
-VFIO framework should reenable runtime PM before calling pm_runtime_xxx
-functions.
+On Wed, Mar 13, 2024 at 11:34:31PM +0100, Francesco Valla wrote:
+> Document basic concepts, APIs and behaviour of the CAN ISO-TP (ISO
+> 15765-2) stack.
+> 
+> Signed-off-by: Francesco Valla <valla.francesco@gmail.com>
 
-The problem was introduced by
-commit 7ab5e10eda02 ("vfio/pci: Move the unused device into low power state
- with runtime PM")
+Hi Francesco,
 
-Signed-off-by: Mikhail Malyshev <mike.malyshev@gmail.com>
----
- drivers/vfio/pci/vfio_pci_core.c | 10 ++++++++++
- 1 file changed, 10 insertions(+)
+As it looks like there will be a v2 of this patchset
+please consider running checkpatch.pl --codespell
+and addressing the warnings it reports.
 
-diff --git a/drivers/vfio/pci/vfio_pci_core.c b/drivers/vfio/pci/vfio_pci_core.c
-index 1cbc990d42e0..05c25ee66ee1 100644
---- a/drivers/vfio/pci/vfio_pci_core.c
-+++ b/drivers/vfio/pci/vfio_pci_core.c
-@@ -2258,6 +2258,16 @@ int vfio_pci_core_register_device(struct vfio_pci_core_device *vdev)
- 	vfio_pci_set_power_state(vdev, PCI_D0);
- 
- 	dev->driver->pm = &vfio_pci_core_pm_ops;
-+
-+	/*
-+	 * If the device was previously associated with a driver, the
-+	 * driver might have invoked pm_runtime_disable in its remove()
-+	 * callback. We must re-enable runtime PM here to ensure the
-+	 * device can be managed.
-+	 */
-+	if (!pm_runtime_enabled(dev))
-+		pm_runtime_enable(dev);
-+
- 	pm_runtime_allow(dev);
- 	if (!disable_idle_d3)
- 		pm_runtime_put(dev);
--- 
-2.34.1
+..
 
+> +Transport protocol and associated frame types
+> +---------------------------------------------
+> +
+> +When transmitting data using the ISO-TP protocol, the payload can either fit
+> +inside one single CAN message or not, also considering the overhead the protocol
+> +is generating and the optional extended addressing. In the first case, the data
+> +is transmitted at once using a so-called Single Frame (SF). In the second case,
+> +ISO-TP defines a multi-frame protocol, in which the sender asks (through a First
+> +Frame - FF) to the receiver the maximum supported size of a macro data block
+> +(``blocksize``) and the minimum time time between the single CAN messages
+> +composing such block (``stmin``). Once these informations have been received,
+
+nit: Once this information has
+
+> +the sender starts to send frames containing fragments of the data payload
+> +(called Consecutive Frames - CF), stopping after every ``blocksize``-sized block
+> +to wait confirmation from the receiver (which should then send a Flow Control
+> +frame - FC - to inform the sender about its availability to receive more data).
+> +
+
+..
 
