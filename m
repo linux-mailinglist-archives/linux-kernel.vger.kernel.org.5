@@ -1,159 +1,168 @@
-Return-Path: <linux-kernel+bounces-108226-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108227-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EE592880810
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:10:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D3DB880813
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:13:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A2C2F284CC1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:10:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 612D91C2252E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:13:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1822C5FB8B;
-	Tue, 19 Mar 2024 23:10:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b="c/QF7TMa"
-Received: from mail-yb1-f178.google.com (mail-yb1-f178.google.com [209.85.219.178])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A1145EE67;
+	Tue, 19 Mar 2024 23:13:19 +0000 (UTC)
+Received: from mail-io1-f72.google.com (mail-io1-f72.google.com [209.85.166.72])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA81A4F889
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:10:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72CBB4F889
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:13:17 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.72
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710889816; cv=none; b=iBHr6R6ucJa2me6kh08ZPkpEPDQZxe24jE7rP+RLmkuERNDpsx/8Zu5+nP1XcZx3vIMS8WNZQXW9Vmtuqg/KOp3Yoz7/uKWVFxZFwg2l3MzC7ZP2u4wAb4SIpE0a6DQn6EJfb8wTA8iF37nWqla66aWpd5tnW+vPuGBWfZ6tvM8=
+	t=1710889999; cv=none; b=Dmd64y3x6FrgDieCyd0ce5xN9ji5L/W+iV03U0uaU3RmAt0Xqu/ZSZQWqwCnXYqgVN4MbIUEoYqhitPif/p+/2LWFimoVqOR1o/yjJsDol+b7MU+EDQh/NqJz0tkKdK35cNesDsyiguoXqbBkBc47UtuY2DbAAzLPvtnOnlqPqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710889816; c=relaxed/simple;
-	bh=n2hwhhpCp+wrS8iH5XBuAd5W5hKp1kphMF+/gXoFfXA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=EKa5ZxW9tK/4d2gv9Dx51FnV2rZAj3Lnr8//9iCVVquNwEc+gfB+3itovNiXHqgT6nocAE8bzBhKJRiqP8KHGNuN+2FP5DH9ngOyZNH94GE6b/SoqTlGnKIF7+NGBnsIba48iuR6BeQi23oiE3QgTeXGCGgX6iztadW4jbbpGM8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com; spf=pass smtp.mailfrom=paul-moore.com; dkim=pass (2048-bit key) header.d=paul-moore.com header.i=@paul-moore.com header.b=c/QF7TMa; arc=none smtp.client-ip=209.85.219.178
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=paul-moore.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=paul-moore.com
-Received: by mail-yb1-f178.google.com with SMTP id 3f1490d57ef6-dcc84ae94c1so5563866276.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:10:13 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=paul-moore.com; s=google; t=1710889813; x=1711494613; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C+dHH9ODplRPDsF7SLLanW1hsK5MRMZ53v3XJwlytqw=;
-        b=c/QF7TMaLp6yUZO44kvhv4DltTfXDhHCHdYZxZY51HjneZ14x8gZrL+qr+oql8uVnL
-         HJWKL9ghAvhcw+W2Fqk1teId9IpRR4NDF9ty3xv8puyvLZIPq0F8+To4fHZU5Y3uPU46
-         ISrYhRw//mbf/dUE7Pwcw1k3HYujLXanZv/1W4JekHu+LCO2dPElFLsbRMYaG9m/4Q/p
-         Ma8LeMFPZ4zEnxN1JxfdQJ324TBJGpHfT9Umt5B+vDPGdDCZTuofMYxS54iQ6MqaOpL8
-         FJFv0SfoWFso7z3O6fb9536wLzo1J3YElC6/Wb0W9dEbyhz+xyeXDh0k94z8bubCsnoI
-         RPIA==
+	s=arc-20240116; t=1710889999; c=relaxed/simple;
+	bh=ywBYzBrkUhBsN9VB1sz/IcoiP+lgQFciVYNoPMWclOU=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=PN/zRrc7ILuWrkkJdF0BjFFXWj/ARYf3pjryfG7KHzo8FnQti6OGozhSjlulNlXC/S4UVt+aA3nq3vvqU+7vB+hJnVHNWVu0GHrr4ZA/8volaR6GhI6ILo0FV5t+EFcSzBecMIvAlk1q9SkrUlWUEGoPA236B40jwTxzMS+5hGs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.72
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f72.google.com with SMTP id ca18e2360f4ac-7cc0370e9b0so433031039f.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:13:17 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710889813; x=1711494613;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C+dHH9ODplRPDsF7SLLanW1hsK5MRMZ53v3XJwlytqw=;
-        b=U1aeZ2UcyYkRDVF4cIn18fz1tahS0APEt/NsXItGyNfDTHxtsWxD7Go3cXqAQnKzX4
-         AsZi3M8FFXTzA8ctHIn28vxRIcaZhxggEr1Gzv3O5n+TWHRgNEvK2a9Pzp3A+ktL8SKd
-         wnFY8hYSLgINs5ZCKnmbvks7EUb/1Rft4QQlcCMMY2zn265I4iOfXB7t9iboZogq7fFZ
-         r0u8umsz+tUHsCs/Hg7WCksL3GTAxWiC1UFF77ZJi/fnXkZkTEw/pwWrKaNjCPi3GmqO
-         31AddNIq++uw+oKUxeeg5xnpTsRiFAtcd3kvqDz2CuLYVvjRYXzKWJJCNqfPxjnjyvGT
-         h8EA==
-X-Forwarded-Encrypted: i=1; AJvYcCXCIJLyPoaly7Y5DlvE4mUNE4tEc+WADYGsLiYVGr3EtitNdgusEAml9OjMS+pa/o+Gvjp/FdxT5bxvLnNAb9bCpylVMNsqn1dSyF7s
-X-Gm-Message-State: AOJu0YwzRj7qp3VlMNeTijHOoUwldB1Jk6wC4pu+4GnQhpoK2MUaExEo
-	2uJTzyZJND22L8JhyEf8rfsm7KfROxGCW1NSVYC/JNJ5fdpvqc5b8dAJmsj7SsyqA3YoEYNB9tP
-	CwwJMiEUqbLHaGT8H7KD4RBHfVqV+Q53wDW/9
-X-Google-Smtp-Source: AGHT+IG3Yh4bbfa1wN00q4KaF6p48afEQKOxM8IY1af14YL2d/7MolgsUvabXrQz8hWdkCEJDKcZlgNSYZvMusHk3aM=
-X-Received: by 2002:a25:a547:0:b0:dc6:cf96:2956 with SMTP id
- h65-20020a25a547000000b00dc6cf962956mr14662766ybi.44.1710889812886; Tue, 19
- Mar 2024 16:10:12 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710889996; x=1711494796;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=pNwq2yvmuLqPxZhfo+md7mufJiXYN4G9OrLBY7Pb9kE=;
+        b=N10ASma6HOft66BRzPL8VgM5mThlm4IKCumG6Jhn2nBW1wqaJVhfv2dC9bEsY1WtEZ
+         lrDNU63QBcv+HkoiREcWOp5XKOi6+xn5mn1HDbcqUqBBGHJmDoypONR20QjdXRcEyMfE
+         LsqG7QX6V+jN7p4Hyz1uoodmgt5as9eictTD7bFXze91Ej4RqzBJ7Rpvz3tIyTffHDpJ
+         z5hkuyBrNEcERI7Hr5UPOofh0UH5cVM3MGwMTYa0CV50Of5JreSZQ0R80caTIZmTwygu
+         i3Fl2qf/8Dm0AlzRouRl/xw0czxPRVTnLmp61PV+/vV21dBHwRckUhgd5tTMZu0PWYLx
+         3/qg==
+X-Forwarded-Encrypted: i=1; AJvYcCVryenmSrji6TCtin42vPpDIKalpSMCDXyNylpCklmBKulU/0TkLai0eyPgI1/d7MEfK6/u4EGAQ8i+Vrpwq369Qe/rq9RiLR2bveyO
+X-Gm-Message-State: AOJu0YxINc6kCpL5OFZeUt63gaY4v5UM2emNcSaNR3H1NiCNJOi/6GGK
+	B8Mg8tdQbLvy3G10Z45Xy49SQV1rwN/YFqymDpsTT+ac40Tyw0WmE66vy6zeTRqSj1xm9bJlgtL
+	8xZh80UARp2HTNRbKm1TwFQh0FLlQoihlcu0BL6Wj7BRFruESFW9GFLs=
+X-Google-Smtp-Source: AGHT+IHtJF3RCy7b6rMglGfuOs7QYrk3r4tjEkafAIQ5+oM8e0YxazwW93+EplzfZl002uGHQgTcqOf5ElnQTZEapTEFwy4Z986t
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240315181032.645161-1-cgzones@googlemail.com>
- <20240315181032.645161-2-cgzones@googlemail.com> <CAHC9VhRkawYWQN0UY2R68Qn4pRijpXgu97YOr6XPA7Ls0-zQcA@mail.gmail.com>
- <5368DC74-41CF-4450-AF6F-FFB51EFCCF99@kernel.org>
-In-Reply-To: <5368DC74-41CF-4450-AF6F-FFB51EFCCF99@kernel.org>
-From: Paul Moore <paul@paul-moore.com>
-Date: Tue, 19 Mar 2024 19:10:02 -0400
-Message-ID: <CAHC9VhTpTbVL4=tchR3Bpcfe0Hsijf5XJ6wsEvU7cu8eUy_iDA@mail.gmail.com>
-Subject: Re: [RFC PATCH 1/2] lsm: introduce new hook security_vm_execstack
-To: Kees Cook <kees@kernel.org>
-Cc: =?UTF-8?Q?Christian_G=C3=B6ttsche?= <cgzones@googlemail.com>, 
-	linux-security-module@vger.kernel.org, Eric Biederman <ebiederm@xmission.com>, 
-	Kees Cook <keescook@chromium.org>, Alexander Viro <viro@zeniv.linux.org.uk>, 
-	Christian Brauner <brauner@kernel.org>, Jan Kara <jack@suse.cz>, James Morris <jmorris@namei.org>, 
-	"Serge E. Hallyn" <serge@hallyn.com>, Khadija Kamran <kamrankhadijadj@gmail.com>, 
-	Andrii Nakryiko <andrii@kernel.org>, Casey Schaufler <casey@schaufler-ca.com>, 
-	Alexei Starovoitov <ast@kernel.org>, Ondrej Mosnacek <omosnace@redhat.com>, 
-	Roberto Sassu <roberto.sassu@huawei.com>, Alfred Piccioni <alpic@google.com>, 
-	John Johansen <john.johansen@canonical.com>, linux-mm@kvack.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org
+X-Received: by 2002:a05:6638:2043:b0:476:e7e9:7528 with SMTP id
+ t3-20020a056638204300b00476e7e97528mr205980jaj.4.1710889996694; Tue, 19 Mar
+ 2024 16:13:16 -0700 (PDT)
+Date: Tue, 19 Mar 2024 16:13:16 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000080c82706140b9e5d@google.com>
+Subject: [syzbot] [mm?] upstream test error: WARNING: refcount bug in __reset_page_owner
+From: syzbot <syzbot+ed0599ef4b473503bc7f@syzkaller.appspotmail.com>
+To: akpm@linux-foundation.org, linux-kernel@vger.kernel.org, 
+	linux-mm@kvack.org, syzkaller-bugs@googlegroups.com
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Fri, Mar 15, 2024 at 11:24=E2=80=AFPM Kees Cook <kees@kernel.org> wrote:
-> On March 15, 2024 1:22:39 PM PDT, Paul Moore <paul@paul-moore.com> wrote:
-> >On Fri, Mar 15, 2024 at 2:10=E2=80=AFPM Christian G=C3=B6ttsche
-> ><cgzones@googlemail.com> wrote:
-> >>
-> >> Add a new hook guarding instantiations of programs with executable
-> >> stack.  They are being warned about since commit 47a2ebb7f505 ("execve=
-:
-> >> warn if process starts with executable stack").  Lets give LSMs the
-> >> ability to control their presence on a per application basis.
-> >>
-> >> Signed-off-by: Christian G=C3=B6ttsche <cgzones@googlemail.com>
-> >> ---
-> >>  fs/exec.c                     |  4 ++++
-> >>  include/linux/lsm_hook_defs.h |  1 +
-> >>  include/linux/security.h      |  6 ++++++
-> >>  security/security.c           | 13 +++++++++++++
-> >>  4 files changed, 24 insertions(+)
-> >
-> >Looking at the commit referenced above, I'm guessing the existing
-> >security_file_mprotect() hook doesn't catch this?
-> >
-> >> diff --git a/fs/exec.c b/fs/exec.c
-> >> index 8cdd5b2dd09c..e6f9e980c6b1 100644
-> >> --- a/fs/exec.c
-> >> +++ b/fs/exec.c
-> >> @@ -829,6 +829,10 @@ int setup_arg_pages(struct linux_binprm *bprm,
-> >>         BUG_ON(prev !=3D vma);
-> >>
-> >>         if (unlikely(vm_flags & VM_EXEC)) {
-> >> +               ret =3D security_vm_execstack();
-> >> +               if (ret)
-> >> +                       goto out_unlock;
-> >> +
-> >>                 pr_warn_once("process '%pD4' started with executable s=
-tack\n",
-> >>                              bprm->file);
-> >>         }
-> >
-> >Instead of creating a new LSM hook, have you considered calling the
-> >existing security_file_mprotect() hook?  The existing LSM controls
-> >there may not be a great fit in this case, but I'd like to hear if
-> >you've tried that, and if you have, what made you decide a new hook
-> >was the better option?
->
-> Also, can't MDWE handle this already?
-> https://git.kernel.org/linus/b507808ebce23561d4ff8c2aa1fb949fe402bc61
+Hello,
 
-It looks like it, but that doesn't mean there isn't also value in an
-associated LSM hook as the LSM hook would admins and security policy
-developers/analysts to incorporate this as part of the system's
-security policy.  It's great that we have all of these cool knobs that
-we can play with independent of each other, but sometimes you really
-want a single unified security policy that you can look at, analyze,
-and reason about.
+syzbot found the following issue on:
 
-Regardless, my previous comments still stand, I'd like to hear
-verification that the existing security_file_mprotect() hook is not
-sufficient, and if its current placement is lacking, why calling it
-from a second location wasn't practical and required the creation of a
-new LSM hook.
+HEAD commit:    b3603fcb79b1 Merge tag 'dlm-6.9' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=1592fc6e180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=31004b74814b38f5
+dashboard link: https://syzkaller.appspot.com/bug?extid=ed0599ef4b473503bc7f
+compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
 
---=20
-paul-moore.com
+Downloadable assets:
+disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-b3603fcb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ca4b48e6ac47/vmlinux-b3603fcb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/8132c089f924/bzImage-b3603fcb.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+ed0599ef4b473503bc7f@syzkaller.appspotmail.com
+
+------------[ cut here ]------------
+refcount_t: decrement hit 0; leaking memory.
+WARNING: CPU: 0 PID: 5185 at lib/refcount.c:31 refcount_warn_saturate+0x1ed/0x210 lib/refcount.c:31
+Modules linked in:
+CPU: 0 PID: 5185 Comm: syz-fuzzer Not tainted 6.8.0-syzkaller-11567-gb3603fcb79b1 #0
+Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
+RIP: 0010:refcount_warn_saturate+0x1ed/0x210 lib/refcount.c:31
+Code: 8b e8 67 58 d5 fc 90 0f 0b 90 90 e9 c3 fe ff ff e8 f8 7f 12 fd c6 05 f2 f0 0c 0b 01 90 48 c7 c7 40 a6 6e 8b e8 44 58 d5 fc 90 <0f> 0b 90 90 e9 a0 fe ff ff 48 89 ef e8 c2 f2 6e fd e9 44 fe ff ff
+RSP: 0018:ffffc90003eaf570 EFLAGS: 00010282
+RAX: 0000000000000000 RBX: 0000000000000000 RCX: ffffffff8150eb39
+RDX: ffff8880202a0000 RSI: ffffffff8150eb46 RDI: 0000000000000001
+RBP: ffff88801e884acc R08: 0000000000000001 R09: 0000000000000000
+R10: 0000000000000000 R11: 0000000000000001 R12: ffff88801e884acc
+R13: 0000000000000000 R14: 00000000015601ea R15: ffff88801587b4d8
+FS:  0000000000000000(0000) GS:ffff88802c200000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: 000000c000955000 CR3: 000000000d57a000 CR4: 0000000000350ef0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ __refcount_dec include/linux/refcount.h:336 [inline]
+ refcount_dec include/linux/refcount.h:351 [inline]
+ dec_stack_record_count mm/page_owner.c:215 [inline]
+ __reset_page_owner+0x2ea/0x370 mm/page_owner.c:253
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1141 [inline]
+ free_unref_page_prepare+0x527/0xb10 mm/page_alloc.c:2347
+ free_unref_folios+0x256/0xad0 mm/page_alloc.c:2536
+ folios_put_refs+0x49c/0x750 mm/swap.c:1034
+ free_pages_and_swap_cache+0x25b/0x4b0 mm/swap_state.c:329
+ __tlb_batch_free_encoded_pages+0xf9/0x290 mm/mmu_gather.c:136
+ tlb_batch_pages_flush mm/mmu_gather.c:149 [inline]
+ tlb_flush_mmu_free mm/mmu_gather.c:366 [inline]
+ tlb_flush_mmu mm/mmu_gather.c:373 [inline]
+ tlb_finish_mmu+0x168/0x7b0 mm/mmu_gather.c:465
+ exit_mmap+0x3da/0xb90 mm/mmap.c:3280
+ __mmput+0x12a/0x4d0 kernel/fork.c:1345
+ mmput+0x62/0x70 kernel/fork.c:1367
+ exit_mm kernel/exit.c:569 [inline]
+ do_exit+0x999/0x2c10 kernel/exit.c:865
+ do_group_exit+0xd3/0x2a0 kernel/exit.c:1027
+ get_signal+0x25c3/0x2670 kernel/signal.c:2911
+ arch_do_signal_or_restart+0x90/0x7e0 arch/x86/kernel/signal.c:310
+ exit_to_user_mode_loop kernel/entry/common.c:105 [inline]
+ exit_to_user_mode_prepare include/linux/entry-common.h:328 [inline]
+ __syscall_exit_to_user_mode_work kernel/entry/common.c:201 [inline]
+ syscall_exit_to_user_mode+0x14a/0x2a0 kernel/entry/common.c:212
+ do_syscall_64+0xe2/0x260 arch/x86/entry/common.c:89
+ entry_SYSCALL_64_after_hwframe+0x6d/0x75
+RIP: 0033:0x46dfbd
+Code: Unable to access opcode bytes at 0x46df93.
+RSP: 002b:00007ffe04a96580 EFLAGS: 00000206 ORIG_RAX: 0000000000000023
+RAX: 0000000000000000 RBX: 000000c000040198 RCX: 000000000046dfbd
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 00007ffe04a96580
+RBP: 00007ffe04a96590 R08: 0000000000000000 R09: 000000000000000a
+R10: a0761d6478bd642f R11: 0000000000000206 R12: 000000c000040000
+R13: 0000000000000002 R14: 0000000002419dc0 R15: 0000000000000000
+ </TASK>
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
