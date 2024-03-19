@@ -1,57 +1,55 @@
-Return-Path: <linux-kernel+bounces-108187-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108188-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1FCB588073C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:20:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D24B88073F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:23:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C0E98B21624
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:20:17 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B80C21F22FB9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:23:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3169751C5B;
-	Tue, 19 Mar 2024 22:20:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C517E5A0E5;
+	Tue, 19 Mar 2024 22:23:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="l1Bv3Q9O"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=gmx.li header.i=thomas.kuehne@gmx.li header.b="tVnB1lC9"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8542B4F889
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:20:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2E10C51C5B;
+	Tue, 19 Mar 2024 22:23:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710886810; cv=none; b=lTguwL/BY8dj3rH8MtnrU3hAVfjK83ifx70ZwtckTlY1O5YMP0WVP0PscKPxdkkNflM/ocBImX+luQG+V1MVLMfLGjV55giw5dcMeYO4nC0wz5DguuIZZDs8Z6EY0LvsGZ3Zk/hnfYpvV0rQbNdobPb4i1dKHIYWVDBBzWVOWVw=
+	t=1710886987; cv=none; b=Kn5jQGrRDWOsqUohDJpGa/wyjtCFMs3mh0YbWgc/sEbeBXXu+ycfqfROTWROVQKHQVNOSA0n4DZbeuKRzOb8oO2rNaZcwq88Hv2nzrBCsYySofqawCmkyRDA0jWBaeUaQve6RX/M9Y2coKAolcKGwF96x4bfDM/5FyPVL2CMESo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710886810; c=relaxed/simple;
-	bh=jFW/66QaU6CAHywCWFFJMkt6vYCQmKXCckS48E1mFi0=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=FQ4IACOtptMVocBUDaYcORwEFyzkUKzUeFSzKZfvIjncSX/gWO0UX2RrvuhSyqtUxSCL+gVQPPwX6gAdrsWoJO8PxxbLLFSUQW64LGWUuY/ooCaNzqkEnUoMPN8DqaH7SRTCMTVJ8IT3jjMU4Z+4NfAosw//XGaY8c73M3mZ2es=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=l1Bv3Q9O; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=SKvPkFmK+oZX/ahAFGgHvLNEelgSfIBv198c1OD915o=; b=l1Bv3Q9OeLvJmrbDatOGg2pNGL
-	H3nbqRnimgXFDFeSf0JZa0Gvl1b4OhLxOyIahR2KTZFb8XLEEKGgIm5dKhLu9uVqhHLKyWoZDnXG0
-	Ubsgfx8oQxG/Q+3hgctVziqG0oAMc+WiDXZcpY8fWLcAgP8pvcQOTUpO+cC+wp0XL424QLiAGEwEp
-	L7nHpUaECOrvOwjF4fuMfls6KiLNFy53uyqZuX4lyekaIEEkx8mhCU2U8guP72ppGTpQnP7qNBBh9
-	ot1QJWASrUMHaUTPRJD6FRyRUzOc8M85kACm1IIphjNusnWiwxUdRoU5KSeevLGmgob/VGdyb6rfX
-	XlEl0TlA==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmhoL-00000002spj-2boa;
-	Tue, 19 Mar 2024 22:19:57 +0000
-Date: Tue, 19 Mar 2024 22:19:57 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Kairui Song <kasong@tencent.com>
-Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH 4/4] mm/filemap: optimize filemap folio adding
-Message-ID: <ZfoPjUyPiXpFSxA4@casper.infradead.org>
-References: <20240319092733.4501-1-ryncsn@gmail.com>
- <20240319092733.4501-5-ryncsn@gmail.com>
+	s=arc-20240116; t=1710886987; c=relaxed/simple;
+	bh=Fmol6iXLZOVChPokUhuktqes1qyFzQxgTiZHmF7oYJc=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=gtzJ9EEfSNA3M7Fr/SgqhCf+J2hLb6Ahp1JsrC3k/v30IA4VsE/noyge644v2zGmESy0m/Oq1BDTgIOVsuxnFcWKae9zWGRcikqN2PcNvs7CRZk7/ivt9/tg+FWz0mBTHBNnNbcVW8y0VXrc5JN7DFDzSK+00oK6XZPFLdWYDeU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.li; spf=pass smtp.mailfrom=gmx.li; dkim=pass (2048-bit key) header.d=gmx.li header.i=thomas.kuehne@gmx.li header.b=tVnB1lC9; arc=none smtp.client-ip=212.227.17.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.li
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.li
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.li;
+	s=s31663417; t=1710886983; x=1711491783; i=thomas.kuehne@gmx.li;
+	bh=i48cImo9t+BdT//pMNbETc/yaDKl4mj4URnyodDYANk=;
+	h=X-UI-Sender-Class:Date:From:To:Cc:Subject;
+	b=tVnB1lC9KBOl8bSrs8pF6NE2nWNJ0gM3L6tUo6iWxWbWtUnQinPl2WHzXnmxTIJi
+	 N6tK7Bz8AmyAg0hDHiO6F8TSS6WheICawoPgIOtp4yOjwB9Cdn0CPgRVzS3fND9kQ
+	 A2TE0MfWx6mgwYE2SgXNhrfzFnGthvlLIGWYgMvHEzlNBCKBwRqo2wldoSnLSrH5T
+	 K9T0kreapooq1Omdwt9LBAi+qLVxJspNdMyf5J0tRytvZ2AFWWs6w5ksemMi6tgic
+	 jPTYJjixq7pfAywUJiMkC+6mZ3CkcRgJuGv+OM+bdvTHGtdkU4Ha+h33arkwmGkaE
+	 slnIyTrYGm+RL2i6HQ==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from black ([2.59.122.5]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N6KUT-1qh1GI0ooL-016iFW; Tue, 19
+ Mar 2024 23:23:03 +0100
+Date: Tue, 19 Mar 2024 22:23:54 +0000
+From: Thomas Kuehne <thomas.kuehne@gmx.li>
+To: linux-input@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: hid-debug: add missing evdev and usage codes
+Message-ID: <ZfoQegWDHee5EFaY@black>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -60,156 +58,130 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240319092733.4501-5-ryncsn@gmail.com>
+X-Provags-ID: V03:K1:InAFh9DOFtvezkgwLcfMhJ7uYzH0KSiu4QqOEb+YF0kEscdzKAu
+ p1kJW4l4WpHpKVRuPxE8xt7p5iUo1Yu6Rbk9laGM2FZhZaCveBrFPf23JfvSkuMeEcWoUQY
+ dHJMqgXn0Whj0qx4kCTkoQqiVfbqN74hK2F3GLGKAUpnCQCOWMClRMsElzXygup4b9bBx64
+ VH9CbqTEGLZ42DNqEphHA==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:4vYloEEGFbo=;eNI6RZl0X7jTjS5um6GIkIWxBMx
+ iPBSt3VLqWtX8PljVhfKm4y1TaVrYeePFFid0FRvJ6+cT4Rk+N4HPIDzeSAwuqLH29R/mZE/D
+ 2qvGdTM8OxMMr7YtDJ5UYr3PEgrU3wxeMQeZEmvdwfFN53McHRxI994hSCdZt30uUgtnPRBdz
+ eektCA8TdzxEUEXbLk5HWTUh1IeZt9k8NrohIDU9QMEkNbZgN69sYjMZaGpu4BwqDRjRJE3fC
+ FcgvAZk+46CYo+wQ+uYvuN7fK/4K9yQNxasliOiJPKZUcPE+3uNdJQqxOJAsJvVtK4RtpDS44
+ 7IDTf++6YR54PpcO2WMmNHVyb8N+7p7cfPcgtskRJe8QNJm7WO2k8u2qkcYPoSdlfzHnzitP3
+ 8OCf3MBJ4or57C6S6GHtJNnSlDlNwPhMjb9JMupob43v69+UrHPncGGNHj0QUVov8/z8QnIjB
+ dR0BpfB8AV6EAUpP+dmJaYx2bz8I9eLjvc/qwXSFMMxPLRjJyyuxu+wuXE8U1WtioCsKuc7hO
+ iAWwZc2azrjI6VCZycwEmLi5Rznbh8lzfgizYUAcq5E0ijpZuImIrnYcme2o3gLJakI/H57iP
+ JqDm03TmoH0kAYv1xzEJc/4JjLAA1q5KZL6ZAheewTvmPpbwExCO6cbgSbb9KUF+nz71u4wnw
+ ibcqUd5JzcU9eRlbBbNycZpEooyi6/IRm69gqNXebplQ/46l0+skLEb8+9d4ceHZWV1yNoPBC
+ Os1WhRlTdMewQP4ktAVaiHmo+kE8qJ7oYfLFE5TEPUBeAriT1qyuL5fj/NOh90aeBywICggSy
+ XHATrXWVjjXWaMQVZi11w8E66GhY0T5V/2+ldmQ9qjwnM=
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 05:27:33PM +0800, Kairui Song wrote:
-> From: Kairui Song <kasong@tencent.com>
-> 
-> Instead of doing multiple tree walks, do one optimism range check
-> with lock hold, and exit if raced with another insertion. If a shadow
-> exists, check it with a new xas_get_order helper before releasing the
-> lock to avoid redundant tree walks for getting its order.
-> 
-> Drop the lock and do the allocation only if a split is needed.
-> 
-> In the best case, it only need to walk the tree once. If it needs
-> to alloc and split, 3 walks are issued (One for first ranced
-> conflict check and order retrieving, one for the second check after
-> allocation, one for the insert after split).
-> 
-> Testing with 4k pages, in an 8G cgroup, with 20G brd as block device:
-> 
-> fio -name=cached --numjobs=16 --filename=/mnt/test.img \
->   --buffered=1 --ioengine=mmap --rw=randread --time_based \
->   --ramp_time=30s --runtime=5m --group_reporting
-> 
-> Before:
-> bw (  MiB/s): min=  790, max= 3665, per=100.00%, avg=2499.17, stdev=20.64, samples=8698
-> iops        : min=202295, max=938417, avg=639785.81, stdev=5284.08, samples=8698
-> 
-> After (+4%):
-> bw (  MiB/s): min=  451, max= 3868, per=100.00%, avg=2599.83, stdev=23.39, samples=8653
-> iops        : min=115596, max=990364, avg=665556.34, stdev=5988.20, samples=8653
-> 
-> Test result with THP (do a THP randread then switch to 4K page in hope it
-> issues a lot of splitting):
-> 
-> fio -name=cached --numjobs=16 --filename=/mnt/test.img \
->   --buffered=1 --ioengine mmap -thp=1 --readonly \
->   --rw=randread --random_distribution=random \
->   --time_based --runtime=5m --group_reporting
-> 
-> fio -name=cached --numjobs=16 --filename=/mnt/test.img \
->   --buffered=1 --ioengine mmap --readonly \
->   --rw=randread --random_distribution=random \
->   --time_based --runtime=5s --group_reporting
-> 
-> Before:
-> bw (  KiB/s): min=28071, max=62359, per=100.00%, avg=53542.44, stdev=179.77, samples=9520
-> iops        : min= 7012, max=15586, avg=13379.39, stdev=44.94, samples=9520
-> bw (  MiB/s): min= 2457, max= 6193, per=100.00%, avg=3923.21, stdev=82.48, samples=144
-> iops        : min=629220, max=1585642, avg=1004340.78, stdev=21116.07, samples=144
-> 
-> After (+-0.0%):
-> bw (  KiB/s): min=30561, max=63064, per=100.00%, avg=53635.82, stdev=177.21, samples=9520
-> iops        : min= 7636, max=15762, avg=13402.82, stdev=44.29, samples=9520
-> bw (  MiB/s): min= 2449, max= 6145, per=100.00%, avg=3914.68, stdev=81.15, samples=144
-> iops        : min=627106, max=1573156, avg=1002158.11, stdev=20774.77, samples=144
-> 
-> The performance is better (+4%) for 4K cached read and unchanged for THP.
-> 
-> Signed-off-by: Kairui Song <kasong@tencent.com>
-> ---
->  mm/filemap.c | 127 ++++++++++++++++++++++++++++++---------------------
->  1 file changed, 76 insertions(+), 51 deletions(-)
-> 
-> diff --git a/mm/filemap.c b/mm/filemap.c
-> index 6bbec8783793..c1484bcdbddb 100644
-> --- a/mm/filemap.c
-> +++ b/mm/filemap.c
-> @@ -848,12 +848,77 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
->  }
->  EXPORT_SYMBOL_GPL(replace_page_cache_folio);
->  
-> +static int __split_add_folio_locked(struct xa_state *xas, struct folio *folio,
-> +				    pgoff_t index, gfp_t gfp, void **shadowp)
 
-I don't love the name of this function.  Splitting is a rare thing that
-it does.  I'd suggest it's more filemap_store().
+Hid-debug's rdesc output for a game controller contained a few question
+marks and numeric IDs instead of the expected descriptive names.
 
-> +{
-> +	void *entry, *shadow, *alloced_shadow = NULL;
-> +	int order, alloced_order = 0;
-> +
-> +	gfp &= GFP_RECLAIM_MASK;
-> +	for (;;) {
-> +		shadow = NULL;
-> +		order = 0;
-> +
-> +		xas_for_each_conflict(xas, entry) {
-> +			if (!xa_is_value(entry))
-> +				return -EEXIST;
-> +			shadow = entry;
-> +		}
-> +
-> +		if (shadow) {
-> +			if (shadow == xas_reload(xas)) {
+This happens because hid-debug's mapping data is missing a few HID
+usages supported by hid-input.
 
-Why do you need the xas_reload here?
+Add missing codes for LEDs, simulator axis and gamepad buttons.
 
-> +				order = xas_get_order(xas);
-> +				if (order && order > folio_order(folio)) {
-> +					/* entry may have been split before we acquired lock */
-> +					if (shadow != alloced_shadow || order != alloced_order)
-> +						goto unlock;
-> +					xas_split(xas, shadow, order);
-> +					xas_reset(xas);
-> +				}
-> +				order = 0;
-> +			}
+Signed-off-by: Thomas Kuehne <thomas.kuehne@gmx.li>
+=2D--
+ drivers/hid/hid-debug.c | 31 ++++++++++++++++++++++++++++++-
+ 1 file changed, 30 insertions(+), 1 deletion(-)
 
-I don't think this is right.  I think we can end up skipping a split
-and storing a folio into a slot which is of greater order than the folio
-we're storing.
+diff --git a/drivers/hid/hid-debug.c b/drivers/hid/hid-debug.c
+index 7dd83ec74f8..67216a52fd2 100644
+=2D-- a/drivers/hid/hid-debug.c
++++ b/drivers/hid/hid-debug.c
+@@ -103,6 +103,9 @@ static const struct hid_usage_entry hid_usage_table[] =
+=3D {
+       {0, 0xbd, "FlareRelease"},
+       {0, 0xbe, "LandingGear"},
+       {0, 0xbf, "ToeBrake"},
++      {0, 0xc4, "Accelerator"},
++      {0, 0xc5, "Brake"},
++      {0, 0xc8, "Steering"},
+   {  6, 0, "GenericDeviceControls" },
+       {0, 0x20, "BatteryStrength" },
+       {0, 0x21, "WirelessChannel" },
+@@ -118,7 +121,12 @@ static const struct hid_usage_entry hid_usage_table[]=
+ =3D {
+       {0, 0x03, "ScrollLock"},
+       {0, 0x04, "Compose"},
+       {0, 0x05, "Kana"},
++      {0, 0x09, "Mute"},
++      {0, 0x19, "MessageWaiting"},
++      {0, 0x27, "StandBy"},
+       {0, 0x4b, "GenericIndicator"},
++      {0, 0x4c, "SystemSuspend"},
++      {0, 0x4d, "ExternalPowerConnected"},
+   {  9, 0, "Button" },
+   { 10, 0, "Ordinal" },
+   { 12, 0, "Consumer" },
+@@ -995,6 +1003,26 @@ static const char *keys[KEY_MAX + 1] =3D {
+ 	[KEY_MACRO22] =3D "Macro22", [KEY_MACRO23] =3D "Macro23", [KEY_MACRO24] =
+=3D "Macro24",
+ 	[KEY_MACRO25] =3D "Macro25", [KEY_MACRO26] =3D "Macro26", [KEY_MACRO27] =
+=3D "Macro27",
+ 	[KEY_MACRO28] =3D "Macro28", [KEY_MACRO29] =3D "Macro29", [KEY_MACRO30] =
+=3D "Macro30",
++	[BTN_TRIGGER_HAPPY1] =3D "TriggerHappy1", [BTN_TRIGGER_HAPPY2] =3D "Trig=
+gerHappy2",
++	[BTN_TRIGGER_HAPPY3] =3D "TriggerHappy3", [BTN_TRIGGER_HAPPY4] =3D "Trig=
+gerHappy4",
++	[BTN_TRIGGER_HAPPY5] =3D "TriggerHappy5", [BTN_TRIGGER_HAPPY6] =3D "Trig=
+gerHappy6",
++	[BTN_TRIGGER_HAPPY7] =3D "TriggerHappy7", [BTN_TRIGGER_HAPPY8] =3D "Trig=
+gerHappy8",
++	[BTN_TRIGGER_HAPPY9] =3D "TriggerHappy9", [BTN_TRIGGER_HAPPY10] =3D "Tri=
+ggerHappy10",
++	[BTN_TRIGGER_HAPPY11] =3D "TriggerHappy11", [BTN_TRIGGER_HAPPY12] =3D "T=
+riggerHappy12",
++	[BTN_TRIGGER_HAPPY13] =3D "TriggerHappy13", [BTN_TRIGGER_HAPPY14] =3D "T=
+riggerHappy14",
++	[BTN_TRIGGER_HAPPY15] =3D "TriggerHappy15", [BTN_TRIGGER_HAPPY16] =3D "T=
+riggerHappy16",
++	[BTN_TRIGGER_HAPPY17] =3D "TriggerHappy17", [BTN_TRIGGER_HAPPY18] =3D "T=
+riggerHappy18",
++	[BTN_TRIGGER_HAPPY19] =3D "TriggerHappy19", [BTN_TRIGGER_HAPPY20] =3D "T=
+riggerHappy20",
++	[BTN_TRIGGER_HAPPY21] =3D "TriggerHappy21", [BTN_TRIGGER_HAPPY22] =3D "T=
+riggerHappy22",
++	[BTN_TRIGGER_HAPPY23] =3D "TriggerHappy23", [BTN_TRIGGER_HAPPY24] =3D "T=
+riggerHappy24",
++	[BTN_TRIGGER_HAPPY25] =3D "TriggerHappy25", [BTN_TRIGGER_HAPPY26] =3D "T=
+riggerHappy26",
++	[BTN_TRIGGER_HAPPY27] =3D "TriggerHappy27", [BTN_TRIGGER_HAPPY28] =3D "T=
+riggerHappy28",
++	[BTN_TRIGGER_HAPPY29] =3D "TriggerHappy29", [BTN_TRIGGER_HAPPY30] =3D "T=
+riggerHappy30",
++	[BTN_TRIGGER_HAPPY31] =3D "TriggerHappy31", [BTN_TRIGGER_HAPPY32] =3D "T=
+riggerHappy32",
++	[BTN_TRIGGER_HAPPY33] =3D "TriggerHappy33", [BTN_TRIGGER_HAPPY34] =3D "T=
+riggerHappy34",
++	[BTN_TRIGGER_HAPPY35] =3D "TriggerHappy35", [BTN_TRIGGER_HAPPY36] =3D "T=
+riggerHappy36",
++	[BTN_TRIGGER_HAPPY37] =3D "TriggerHappy37", [BTN_TRIGGER_HAPPY38] =3D "T=
+riggerHappy38",
++	[BTN_TRIGGER_HAPPY39] =3D "TriggerHappy39", [BTN_TRIGGER_HAPPY40] =3D "T=
+riggerHappy40",
+ };
 
-> +			if (shadowp)
-> +				*shadowp = shadow;
-> +		}
-> +
-> +		xas_store(xas, folio);
-> +		/* Success, return with mapping locked */
-> +		if (!xas_error(xas))
-> +			return 0;
-> +unlock:
-> +		/*
-> +		 * Unlock path, if errored, return unlocked.
-> +		 * If allocation needed, alloc and retry.
-> +		 */
-> +		xas_unlock_irq(xas);
-> +		if (order) {
-> +			if (unlikely(alloced_order))
-> +				xas_destroy(xas);
-> +			xas_split_alloc(xas, shadow, order, gfp);
-> +			if (!xas_error(xas)) {
-> +				alloced_shadow = shadow;
-> +				alloced_order = order;
-> +			}
-> +			goto next;
-> +		}
-> +		/* xas_nomem result checked by xas_error below */
-> +		xas_nomem(xas, gfp);
-> +next:
-> +		xas_lock_irq(xas);
-> +		if (xas_error(xas))
-> +			return xas_error(xas);
-> +
-> +		xas_reset(xas);
-> +	}
-> +}
+ static const char *relatives[REL_MAX + 1] =3D {
+@@ -1041,7 +1069,8 @@ static const char *leds[LED_MAX + 1] =3D {
+ 	[LED_SCROLLL] =3D "ScrollLock",	[LED_COMPOSE] =3D "Compose",
+ 	[LED_KANA] =3D "Kana",		[LED_SLEEP] =3D "Sleep",
+ 	[LED_SUSPEND] =3D "Suspend",	[LED_MUTE] =3D "Mute",
+-	[LED_MISC] =3D "Misc",
++	[LED_MISC] =3D "Misc",		[LED_MAIL] =3D "Mail",
++	[LED_CHARGING] =3D "Charging",
+ };
 
-Splitting this out into a different function while changing the logic
-really makes this hard to review ;-(
+ static const char *repeats[REP_MAX + 1] =3D {
+=2D-
+2.40.1
 
-I don't object to splitting the function, but maybe two patches; one
-to move the logic and a second to change it?
 
