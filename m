@@ -1,146 +1,252 @@
-Return-Path: <linux-kernel+bounces-107648-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107649-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9B87787FF9A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:28:29 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id B0CC787FF9C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:28:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 55E46284243
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:28:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6759F2845B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:28:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6158881AB0;
-	Tue, 19 Mar 2024 14:28:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89C8B81ABD;
+	Tue, 19 Mar 2024 14:28:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b="HY7OCI+1"
-Received: from mail-ot1-f41.google.com (mail-ot1-f41.google.com [209.85.210.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="fqy/iEfT"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9761981746
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:28:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DE8E81AA7;
+	Tue, 19 Mar 2024 14:28:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710858502; cv=none; b=TH+lZPk7Omq++3+Dcrci+B2H2nxUXHF/6Ye37eN+2qMyGBtzNQiJ7MAl1Tte/BhjqdiAAX26dFvkQA+6OGtfRW1y1iPLnv73fHB8RkJONcFxh6nFCUfjhOyETCMnB+tnC0vJNn7FGeNB14RHk+9EJF4izM4WT6AqgN2sr2OpNO4=
+	t=1710858519; cv=none; b=eTe54tKnEjWFjfk09LdZGWo27l6KJXr8H9RlKMGLvK1b2DtHQbofqUhEoK+ZLGGJPB58FzVSECk8pPRvBYGTI4V5PKAuLrk6gXNkQV/szUe+015UAP4nI+L7e6iGbxz4md0L4uaFZKWjiQxN6rLe6C60D+RF/0FRfWNS1E2AmgU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710858502; c=relaxed/simple;
-	bh=9GbFcOTWiKjScp+RpCHlH4Fi1wgrk546bJ/iYw8wQ0Y=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=WpRtAIKYCir32QTzBgeZOh1ok2QHUqIcrtACp+HYYUvsflhmGdmCdol08aLYddI91JZ6uOTswHwvHhEndpGLiq95aHJWsu3Xzgxwf/FS6/VKJXIMzR8O0X0c6LcqLhdCn3wTBs8P7lbR26soZQw3jc9Tbrfa++yORM1L51wpBsQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com; spf=pass smtp.mailfrom=baylibre.com; dkim=pass (2048-bit key) header.d=baylibre-com.20230601.gappssmtp.com header.i=@baylibre-com.20230601.gappssmtp.com header.b=HY7OCI+1; arc=none smtp.client-ip=209.85.210.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=baylibre.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=baylibre.com
-Received: by mail-ot1-f41.google.com with SMTP id 46e09a7af769-6e696ee8fa3so864235a34.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:28:19 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=baylibre-com.20230601.gappssmtp.com; s=20230601; t=1710858498; x=1711463298; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=DabY1J15YwNFzBEyYpS0eyo0GUzWeUGxiUlnH1vBQRc=;
-        b=HY7OCI+1Mq5r0FYYqEJr2W96YA3DXtbLCStSfqeRGe/O8uPxCBcSp5DFvd9gLRfy5W
-         JXbhYXCXNStVKo+igBhOFNwRtwTVgjBtjPiAh+t6jiKS/GBeRteorfdOKZXVQUUB7dQ8
-         IzyNGBIGsYodBVMygFxfJPm4m9jSWsaxEIKRayxRLhIfnKQ7oB3fMSDaYAmfcduU4ND/
-         6/McSeLrmtF77oGNG8+FNsgHTgxXU6qy7Oj4TNAL3dkiU9XWC1R/6jZF01eYWriT5nfk
-         9ywPoGmfZsmfc9cqAkRRFotcyvs3VgCyofZ0kfFYjveCModMWM4k7EDmNA8AprLUwc+Z
-         4ccg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710858498; x=1711463298;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=DabY1J15YwNFzBEyYpS0eyo0GUzWeUGxiUlnH1vBQRc=;
-        b=dHX1cjTbGo7AUiCZeSZ0gYNipJY1dV1G2kPsXg+RmFNg9KKMw2NjN3P+DqVf1AOeNQ
-         d+YZWPc5AXT6AkB3oMIJ0w1cG67dvPAlstzUPfIwBPVpTzhH1iq105OTnC2AdoLvEEna
-         MhbMx3mBmDa1dUN3Cy3rQCoMvjOTnTKhrGSuO8UBLY8L5xbHQ0t+nWv04SqBfoyZSOBp
-         GbWMlcs+huVGv3Mp65u/cBt5Mzxd/xmDmFDguU59mysQerpbgblMMOPFfj8fwhZiFn+o
-         eRGwD9lCOFOEDlFR+tGllJ72ClW8mTy9NiGajbJZ8WlORbelFov5L3BWhE0mvrhERwyD
-         hYpA==
-X-Forwarded-Encrypted: i=1; AJvYcCXBmNn/yDniK00a25SmUugcUznxErBY6wqaGX5RrAlkJbwx4g2pfBG0lFs8ilvDfKQrz6fWaxFM0mnvWbIL1sx2exerJ90LMklxbXWq
-X-Gm-Message-State: AOJu0Yywt4mkittu7p8FDL/Zzi6ugiqWY2Idv7ZMD1Lpv750WBSrd/1h
-	7toJQ9KweyYT1K3/lTCwO9VxxD1T7U9Z+coSd/XFZx58U2ED8wAlmJPHz7/L7us=
-X-Google-Smtp-Source: AGHT+IEe4rJIgkiBbhM6357gOOrXF6hRB0FJnB/1BJObpwDPwM9T+fl+h9ubcUOONq6hH3bZfIL73g==
-X-Received: by 2002:a05:6870:7252:b0:221:403c:f942 with SMTP id y18-20020a056870725200b00221403cf942mr866594oaf.26.1710858498692;
-        Tue, 19 Mar 2024 07:28:18 -0700 (PDT)
-Received: from freyr.lechnology.com (ip98-183-112-25.ok.ok.cox.net. [98.183.112.25])
-        by smtp.gmail.com with ESMTPSA id ee12-20020a0568306f0c00b006e69a8c809csm427402otb.62.2024.03.19.07.28.17
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 07:28:17 -0700 (PDT)
-From: David Lechner <dlechner@baylibre.com>
-To: Jonathan Cameron <jic23@kernel.org>
-Cc: David Lechner <dlechner@baylibre.com>,
-	Michael Hennerich <michael.hennerich@analog.com>,
-	=?utf-8?q?Nuno_S=C3=A1?= <nuno.sa@analog.com>,
-	linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Andy Shevchenko <andy.shevchenko@gmail.com>
-Subject: [PATCH v2] iio: adc: ad7944: simplify adi,spi-mode property parsing
-Date: Tue, 19 Mar 2024 09:27:45 -0500
-Message-ID: <20240319-ad7944-cleanups-v2-1-50e77269351b@baylibre.com>
-X-Mailer: git-send-email 2.43.2
+	s=arc-20240116; t=1710858519; c=relaxed/simple;
+	bh=Dl20teuF0LcyaprwKl4zkyFxg7kNAs+oNxyc1Ln7iF0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=XqykYqyVAs1d8p1eZotIFD7oHl572HmvrCSzmNFpPRxr5L2REso7MBjPpksE5DT0vAtoxEtKb9PD94SH441L5H4+euCpUlJ9lq59BjksWxG10dobFANflGkTXQ3mIzxs9pMWfs+W9s/AgKlrc9DGOk+PkZ7OeaZnowiOi12d42c=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=fqy/iEfT; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353728.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JEQcbe023407;
+	Tue, 19 Mar 2024 14:28:19 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=VXexiXBKopZYjzbOhqUXZ+UbaH9CdHlMt8VeoGUFPvg=;
+ b=fqy/iEfTzbQskEzrVIId4HL6XZ6YWk71MpEnqFsLWw5zDCtDKRKwrPomfpqr733jz8CS
+ 5I22Lk76Hgo+BO+qeuki5BMjWLSAeH+USslSYaN9Gi2CJgUBqet4Mta1/sgI+mpQTgOT
+ 8+h8YiqppzwUSQ5zQjfdI9QTpwAbCm1ks37Y3VWxF2zMIsNlX2Xl+FMZS0+SFEP3Z7wp
+ J+OLC0537DGRE2h9bJq8JkiG93Wge8tK/J69+dLdvdEOV/e9bgHpgk/xei1wfYxN3Ifu
+ f7/W+QUqyUbQDaybSHhH6FGUZ6q1PxAk7xRGD8FLiyHpU2dZ2ygROv7HfRH1eBjolnwo Ww== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyb39rnqj-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 14:28:18 +0000
+Received: from m0353728.ppops.net (m0353728.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JESIhi027738;
+	Tue, 19 Mar 2024 14:28:18 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyb39rnqf-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 14:28:18 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JCbUFY019843;
+	Tue, 19 Mar 2024 14:28:17 GMT
+Received: from smtprelay04.fra02v.mail.ibm.com ([9.218.2.228])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykftet-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 14:28:17 +0000
+Received: from smtpav04.fra02v.mail.ibm.com (smtpav04.fra02v.mail.ibm.com [10.20.54.103])
+	by smtprelay04.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JESBdY17367448
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Mar 2024 14:28:13 GMT
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 9B8A82004E;
+	Tue, 19 Mar 2024 14:28:11 +0000 (GMT)
+Received: from smtpav04.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id AACA920043;
+	Tue, 19 Mar 2024 14:28:09 +0000 (GMT)
+Received: from li-c6426e4c-27cf-11b2-a85c-95d65bc0de0e.in.ibm.com (unknown [9.204.206.66])
+	by smtpav04.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Mar 2024 14:28:09 +0000 (GMT)
+From: Gautam Menghani <gautam@linux.ibm.com>
+To: mpe@ellerman.id.au, npiggin@gmail.com, christophe.leroy@csgroup.eu,
+        aneesh.kumar@kernel.org, naveen.n.rao@linux.ibm.com
+Cc: Gautam Menghani <gautam@linux.ibm.com>, linuxppc-dev@lists.ozlabs.org,
+        kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
+        Vaibhav Jain <vaibhav@linux.ibm.com>
+Subject: [PATCH] arch/powerpc/kvm: Add support for reading VPA counters for pseries guests
+Date: Tue, 19 Mar 2024 19:58:04 +0530
+Message-ID: <20240319142807.95547-1-gautam@linux.ibm.com>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-X-Mailer: b4 0.12.4
 Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-GUID: J8x6r8YAIRMIrqFXNi6zJfskGvl25iTG
+X-Proofpoint-ORIG-GUID: OPxV9XhGccYgCGoYTruZ4lgh7ZSTpv4V
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-19_04,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 bulkscore=0
+ adultscore=0 priorityscore=1501 suspectscore=0 lowpriorityscore=0
+ clxscore=1011 phishscore=0 mlxlogscore=999 impostorscore=0 malwarescore=0
+ spamscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403190109
 
-This simplifies the adi,spi-mode property parsing by using
-device_property_match_property_string() instead of two separate
-functions. Also, the error return value is now more informative
-in cases where there was problem parsing the property.
+PAPR hypervisor has introduced three new counters in the VPA area of
+LPAR CPUs for KVM L2 guest (see [1] for terminology) observability - 2
+for context switches from host to guest and vice versa, and 1 counter
+for getting the total time spent inside the KVM guest. Add a tracepoint
+that enables reading the counters for use by ftrace/perf. Note that this
+tracepoint is only available for nestedv2 API (i.e, KVM on PowerVM).
 
-Suggested-by: Andy Shevchenko <andy.shevchenko@gmail.com>
-Signed-off-by: David Lechner <dlechner@baylibre.com>
+[1] Terminology:
+a. L1 refers to the VM (LPAR) booted on top of PAPR hypervisor
+b. L2 refers to the KVM guest booted on top of L1.
+
+Signed-off-by: Vaibhav Jain <vaibhav@linux.ibm.com>
+Signed-off-by: Gautam Menghani <gautam@linux.ibm.com>
 ---
-Changes in v2:
-- Reorder error path to avoid else statement
-- Link to v1: https://lore.kernel.org/r/20240318-ad7944-cleanups-v1-1-0cbb0349a14f@baylibre.com
----
- drivers/iio/adc/ad7944.c | 17 +++++++++--------
- 1 file changed, 9 insertions(+), 8 deletions(-)
+ arch/powerpc/include/asm/kvm_host.h |  5 +++++
+ arch/powerpc/include/asm/lppaca.h   | 11 ++++++++---
+ arch/powerpc/kvm/book3s_hv.c        | 20 ++++++++++++++++++++
+ arch/powerpc/kvm/trace_hv.h         | 24 ++++++++++++++++++++++++
+ 4 files changed, 57 insertions(+), 3 deletions(-)
 
-diff --git a/drivers/iio/adc/ad7944.c b/drivers/iio/adc/ad7944.c
-index d5ec6b5a41c7..261a3f645fd8 100644
---- a/drivers/iio/adc/ad7944.c
-+++ b/drivers/iio/adc/ad7944.c
-@@ -366,7 +366,6 @@ static int ad7944_probe(struct spi_device *spi)
- 	struct ad7944_adc *adc;
- 	bool have_refin = false;
- 	struct regulator *ref;
--	const char *str_val;
- 	int ret;
+diff --git a/arch/powerpc/include/asm/kvm_host.h b/arch/powerpc/include/asm/kvm_host.h
+index 8abac5321..26d7bb4b9 100644
+--- a/arch/powerpc/include/asm/kvm_host.h
++++ b/arch/powerpc/include/asm/kvm_host.h
+@@ -847,6 +847,11 @@ struct kvm_vcpu_arch {
+ 	gpa_t nested_io_gpr;
+ 	/* For nested APIv2 guests*/
+ 	struct kvmhv_nestedv2_io nestedv2_io;
++
++	/* For VPA counters having context switch and guest run time info (in ns) */
++	u64 l1_to_l2_cs;
++	u64 l2_to_l1_cs;
++	u64 l2_runtime;
+ #endif
  
- 	indio_dev = devm_iio_device_alloc(dev, sizeof(*adc));
-@@ -382,16 +381,18 @@ static int ad7944_probe(struct spi_device *spi)
+ #ifdef CONFIG_KVM_BOOK3S_HV_EXIT_TIMING
+diff --git a/arch/powerpc/include/asm/lppaca.h b/arch/powerpc/include/asm/lppaca.h
+index 61ec2447d..bda6b86b9 100644
+--- a/arch/powerpc/include/asm/lppaca.h
++++ b/arch/powerpc/include/asm/lppaca.h
+@@ -62,7 +62,8 @@ struct lppaca {
+ 	u8	donate_dedicated_cpu;	/* Donate dedicated CPU cycles */
+ 	u8	fpregs_in_use;
+ 	u8	pmcregs_in_use;
+-	u8	reserved8[28];
++	u8	l2_accumul_cntrs_enable;  /* Enable usage of counters for KVM guest */
++	u8	reserved8[27];
+ 	__be64	wait_state_cycles;	/* Wait cycles for this proc */
+ 	u8	reserved9[28];
+ 	__be16	slb_count;		/* # of SLBs to maintain */
+@@ -92,9 +93,13 @@ struct lppaca {
+ 	/* cacheline 4-5 */
  
- 	adc->timing_spec = chip_info->timing_spec;
+ 	__be32	page_ins;		/* CMO Hint - # page ins by OS */
+-	u8	reserved12[148];
++	u8	reserved12[28];
++	volatile __be64 l1_to_l2_cs_tb;
++	volatile __be64 l2_to_l1_cs_tb;
++	volatile __be64 l2_runtime_tb;
++	u8 reserved13[96];
+ 	volatile __be64 dtl_idx;	/* Dispatch Trace Log head index */
+-	u8	reserved13[96];
++	u8	reserved14[96];
+ } ____cacheline_aligned;
  
--	if (device_property_read_string(dev, "adi,spi-mode", &str_val) == 0) {
--		ret = sysfs_match_string(ad7944_spi_modes, str_val);
--		if (ret < 0)
--			return dev_err_probe(dev, -EINVAL,
--					     "unsupported adi,spi-mode\n");
-+	ret = device_property_match_property_string(dev, "adi,spi-mode",
-+						    ad7944_spi_modes,
-+						    ARRAY_SIZE(ad7944_spi_modes));
-+	if (ret < 0) {
-+		if (ret != -EINVAL)
-+			return dev_err_probe(dev, ret,
-+					     "getting adi,spi-mode property failed\n");
+ #define lppaca_of(cpu)	(*paca_ptrs[cpu]->lppaca_ptr)
+diff --git a/arch/powerpc/kvm/book3s_hv.c b/arch/powerpc/kvm/book3s_hv.c
+index 2b04eba90..b94461b5f 100644
+--- a/arch/powerpc/kvm/book3s_hv.c
++++ b/arch/powerpc/kvm/book3s_hv.c
+@@ -4092,6 +4092,7 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	unsigned long msr, i;
+ 	int trap;
+ 	long rc;
++	struct lppaca *lp = get_lppaca();
  
--		adc->spi_mode = ret;
--	} else {
- 		/* absence of adi,spi-mode property means default mode */
- 		adc->spi_mode = AD7944_SPI_MODE_DEFAULT;
+ 	io = &vcpu->arch.nestedv2_io;
+ 
+@@ -4107,6 +4108,17 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
+ 	kvmppc_gse_put_u64(io->vcpu_run_input, KVMPPC_GSID_LPCR, lpcr);
+ 
+ 	accumulate_time(vcpu, &vcpu->arch.in_guest);
++
++	/* Reset the guest host context switch timing */
++	if (unlikely(trace_kvmppc_vcpu_exit_cs_time_enabled())) {
++		lp->l2_accumul_cntrs_enable = 1;
++		lp->l1_to_l2_cs_tb = 0;
++		lp->l2_to_l1_cs_tb = 0;
++		lp->l2_runtime_tb = 0;
 +	} else {
-+		adc->spi_mode = ret;
- 	}
++		lp->l2_accumul_cntrs_enable = 0;
++	}
++
+ 	rc = plpar_guest_run_vcpu(0, vcpu->kvm->arch.lpid, vcpu->vcpu_id,
+ 				  &trap, &i);
  
- 	if (adc->spi_mode == AD7944_SPI_MODE_CHAIN)
+@@ -4133,6 +4145,14 @@ static int kvmhv_vcpu_entry_nestedv2(struct kvm_vcpu *vcpu, u64 time_limit,
+ 
+ 	timer_rearm_host_dec(*tb);
+ 
++	/* Record context switch and guest_run_time data */
++	if (unlikely(trace_kvmppc_vcpu_exit_cs_time_enabled())) {
++		vcpu->arch.l1_to_l2_cs = tb_to_ns(be64_to_cpu(lp->l1_to_l2_cs_tb));
++		vcpu->arch.l2_to_l1_cs = tb_to_ns(be64_to_cpu(lp->l2_to_l1_cs_tb));
++		vcpu->arch.l2_runtime = tb_to_ns(be64_to_cpu(lp->l2_runtime_tb));
++		trace_kvmppc_vcpu_exit_cs_time(vcpu);
++	}
++
+ 	return trap;
+ }
+ 
+diff --git a/arch/powerpc/kvm/trace_hv.h b/arch/powerpc/kvm/trace_hv.h
+index 8d57c8428..10b8f6e5a 100644
+--- a/arch/powerpc/kvm/trace_hv.h
++++ b/arch/powerpc/kvm/trace_hv.h
+@@ -491,6 +491,30 @@ TRACE_EVENT(kvmppc_run_vcpu_enter,
+ 	TP_printk("VCPU %d: tgid=%d", __entry->vcpu_id, __entry->tgid)
+ );
+ 
++TRACE_EVENT(kvmppc_vcpu_exit_cs_time,
++	TP_PROTO(struct kvm_vcpu *vcpu),
++
++	TP_ARGS(vcpu),
++
++	TP_STRUCT__entry(
++		__field(int,		vcpu_id)
++		__field(__u64,		l1_to_l2_cs_ns)
++		__field(__u64,		l2_to_l1_cs_ns)
++		__field(__u64,		l2_runtime_ns)
++	),
++
++	TP_fast_assign(
++		__entry->vcpu_id  = vcpu->vcpu_id;
++		__entry->l1_to_l2_cs_ns = vcpu->arch.l1_to_l2_cs;
++		__entry->l2_to_l1_cs_ns = vcpu->arch.l2_to_l1_cs;
++		__entry->l2_runtime_ns = vcpu->l2_runtime;
++	),
++
++	TP_printk("VCPU %d: l1_to_l2_cs_time=%llu-ns l2_to_l1_cs_time=%llu-ns l2_runtime=%llu-ns",
++		__entry->vcpu_id,  __entry->l1_to_l2_cs_ns,
++		__entry->l2_to_l1_cs_ns, __entry->l2_runtime_ns)
++);
++
+ TRACE_EVENT(kvmppc_run_vcpu_exit,
+ 	TP_PROTO(struct kvm_vcpu *vcpu),
+ 
+-- 
+2.43.2
 
----
-base-commit: 1446d8ef48196409f811c25071b2cc510a49fc60
-change-id: 20240318-ad7944-cleanups-9f95a7c598b6
 
