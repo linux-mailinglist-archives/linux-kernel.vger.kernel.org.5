@@ -1,118 +1,248 @@
-Return-Path: <linux-kernel+bounces-107299-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107300-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 09D2987FAB9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:31:27 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2B0487FABD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:32:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B577D1F22304
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:31:26 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 78C132828D5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:32:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 626067CF18;
-	Tue, 19 Mar 2024 09:31:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 21D177D088;
+	Tue, 19 Mar 2024 09:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="lYIHsT0V"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="jUT1bPQC"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2241D51C28
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:31:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 680CE7CF07
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:31:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710840679; cv=none; b=pJsaXLJ6xO9f+2wMYEMzkNAUPtK8HJuK4mr/+0vqO4H2z0GJ77Tqrkn5nLe5mN+HDHFCQrjxBEjI6nVQp0OMs7iGb+Qpao/XZ8HcV6XrTFVznBW4qvBxlDCDyhSOGQe3BRPDVlB69eZ4+5vFiewUtJsdP2yqEycD9s4rRFxyaeY=
+	t=1710840704; cv=none; b=G6wjZ9B6H4aTAWNKJmMGihs3A35QGsDp+yd/sIiBnjUxqxkNd1UPP+vBGvhQCvm7d9sisPvl44L7QPX7QSLaH6zTfxGP57J4dwQ16+DzOopTZlpfiIKDuW7kEFHvcPdBjjAwtYalOlOBaQ8PlyjiCj/wLAfeHrgYKIKVzzEnbMw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710840679; c=relaxed/simple;
-	bh=SY1uQyt8vSR2v8hUPxa5exu6uGYaOX8KaWkKj+cinQ0=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PSlwo9H73C9HS1h6TQ2Os0ssJW1G6ifI7Famb1p1VrB1mbckwZgz4dQd+6fuzHLhFt48EotRSDszk1gSEbPunddp89Ew/Nw6tuR3N1j7tB15S+aSTEs7aahYlHYmwiq4XRiivSCFcNsTRCgqLxwKxE3TwyGvnpAi/n/rf+Vbzvc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=lYIHsT0V; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: 6d0cc3a0e5d311ee935d6952f98a51a9-20240319
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=VQki1eI8SVL7vuknmmrJsXB51tDn6Ie+ozgQSfZSEjw=;
-	b=lYIHsT0V9fBsEoJX7/h7vSysOBHnUiQ3MGSiKFaIyaULp3g2ClQzTPNq4ld9dl39Or2Zw8Ki5Tlh5n2F3eMCO5cd+HRH8NdVJZIg/DEHce/yCsjQYmV3XjJvn86h8w9SxKuRLYKJVfHKVXzT4KE4zWyplE0UAOc7/Vcaq95NzeY=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:83c72e98-dede-4092-a416-a30ed9b27c0c,IP:0,U
-	RL:0,TC:0,Content:-5,EDM:0,RT:1,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:-4
-X-CID-META: VersionHash:6f543d0,CLOUDID:26d02c85-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
-	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 50,UGT
-X-CID-BAS: 50,UGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR
-X-UUID: 6d0cc3a0e5d311ee935d6952f98a51a9-20240319
-Received: from mtkmbs13n2.mediatek.inc [(172.21.101.108)] by mailgw02.mediatek.com
-	(envelope-from <guoyong.wang@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1627979646; Tue, 19 Mar 2024 17:31:12 +0800
-Received: from mtkmbs13n2.mediatek.inc (172.21.101.108) by
- mtkmbs10n2.mediatek.inc (172.21.101.183) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 19 Mar 2024 17:31:10 +0800
-Received: from mbjsdccf07.gcn.mediatek.inc (10.15.20.246) by
- mtkmbs13n2.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 19 Mar 2024 17:31:09 +0800
-From: Guoyong Wang <guoyong.wang@mediatek.com>
-To: "Jason A . Donenfeld" <Jason@zx2c4.com>, Theodore Ts'o <tytso@mit.edu>,
-	Tejun Heo <tj@kernel.org>, Lai Jiangshan <jiangshanlai@gmail.com>, "Matthias
- Brugger" <matthias.bgg@gmail.com>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: <linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<linux-mediatek@lists.infradead.org>, <wsd_upstream@mediatek.com>, "Guoyong
- Wang" <guoyong.wang@mediatek.com>
-Subject: Re: [PATCH] random: Fix the issue of '_might_sleep' function running in an atomic contex
-Date: Tue, 19 Mar 2024 17:30:55 +0800
-Message-ID: <20240319093055.3252-1-guoyong.wang@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <Zfidal8CEZStp3R7@zx2c4.com>
-References: <Zfidal8CEZStp3R7@zx2c4.com>
+	s=arc-20240116; t=1710840704; c=relaxed/simple;
+	bh=REPKP76FKYRIlT2nLlBWQvO1u9WaatIZi9nkolGnRgc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=sCVuokRoxAvIEiFbRRmu556r3OexdbEbY7ev8UVFmPI/Zodl9hhdntmc6yh0yYZ+1jOEj5Gsk7GtcRC2e/0vb1Pe6ilNqqp8rtQ6oSuSsrXQfzCiwFeTntYugGOiy5T1vA6hRrTXiXLp+ii/UzLueSg3lDCZZQY9jPZbZ4BTk6E=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=jUT1bPQC; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so6696031a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:31:42 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710840701; x=1711445501; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=vqXt6FNYM7+WhScgMZhAmJx3W1Xg1L9EnIDuPxpSMk8=;
+        b=jUT1bPQCayn4OpGvnCzmnQT5RpERsenBMvc6inpH4sHWN/XAPxNr/iqZAI5iY/Nrks
+         rwecNqYWi9txltTA8y7QBV7oRjIoMvke3Rqedx26fscf503Gcf5GKRrs40Vxg6lrmWL6
+         cEyIlbafJTsgnOjxNkvifzegjRCIOAgMFNOMxVhVzPcdTUFmz3+ecxa6oZDOoqmr3CaE
+         nXUsbiQjUzsUANH1oLraoh4NAvdK7Fo5OQjSH4gvFJ0LFWfVg18RaPjZXVero0k8oWFO
+         OBUZ2uGlfhQRX0jrKDQJTF+Jrv1+dU9zvBaKF0sAK+0qZgaIIRNiQSOjY3D0rjGcODTF
+         IuIA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710840701; x=1711445501;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=vqXt6FNYM7+WhScgMZhAmJx3W1Xg1L9EnIDuPxpSMk8=;
+        b=dl3RTE2VVRkO/+Hw8gZJ202zRKH86DPTqmLb9cJoDpXtRDG5a7aqZwUDVjaX36aimQ
+         0ComECsAg0rP0qGfdCN4lpL/1jc23MS+NY9uoFx4MxQCIqCN3F3RirtTt329UyIUuXrU
+         gJylY5i1FrKwJvosEIK5iZewkQ+y6WOB3Pqnb1NxCqDI8VO90danx4H2g37DjTHHT1Dd
+         ntWHmiCDHXmERzlzsAqdjTlN4UvZaaJVVcczNsM8/8aqmXWljevFkO94UbgHvgGisDXY
+         DYcdIZs0gOCUUw5RmM1v/CZMxt0BPI6QZDLAWc5cKAgi3t2o1FAx2QqOkNIcn2ijSse2
+         /bbg==
+X-Forwarded-Encrypted: i=1; AJvYcCXKVTDJP5mNMuAcIEpF7JhT0eCV/mLwn+Q4w1ouSxwbUh+k+YY7yATs/ajVvqFOXqylhyUHfTWUrcnvNNFdTOMKynYBsbt3fHVrj0SY
+X-Gm-Message-State: AOJu0YxPxh+AW+I2s8pot015P6jDhxN+/eb2p90kHwC5d5V3zGJYwIiB
+	Cx8miuRcX16vDAyFx9OEcWVGEYC/88n/H14s5dr1uJoT0lvZpKj9IytcsWrbO84=
+X-Google-Smtp-Source: AGHT+IHDKQKMxRW9umwUH256VRLPVuzmLJipnN6Ucqw+yjw+b5IxQV0P9OFyO2GVuWCiNBDxIeL/pA==
+X-Received: by 2002:a17:906:ef0c:b0:a46:c01b:7e2c with SMTP id f12-20020a170906ef0c00b00a46c01b7e2cmr4320148ejs.75.1710840700830;
+        Tue, 19 Mar 2024 02:31:40 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id g17-20020a17090670d100b00a46a04d7dc4sm3944468ejk.61.2024.03.19.02.31.38
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 02:31:40 -0700 (PDT)
+Message-ID: <8caabb1a-dfba-48d5-a794-a26d0286bad2@linaro.org>
+Date: Tue, 19 Mar 2024 10:31:38 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-TM-AS-Product-Ver: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-AS-Result: No-10--2.984400-8.000000
-X-TMASE-MatchedRID: scwq2vQP8OFq0U6EhO9EE97SWiiWSV/1jLOy13Cgb4+qvcIF1TcLYHG3
-	IDkkj7AXYYnmnL3l3X94CDdDyzWksYoNUbXqhOogEdFsavUQKAeVq+okl1rYD4m3+evajL3wMTM
-	ELdGCO1o7+AqDyYkkE7zhRZbj1fFhMRXV8lvz/l2GuzokAQvW7hLXa2P1m93zpbyIsT/ya8HwgB
-	OtAk1RzXjz1W+ftiuwTkPoEKaGtfHN81HPMxpUIJ4CIKY/Hg3AGdQnQSTrKGPZs3HUcS/scCq2r
-	l3dzGQ1rmN9FZqI8KahkbtarVEBrUNxfO5fJyW5aZTIZgj8uzW+tXmB1d47djB5zPBa/PuxMGNP
-	4LoAdn2LY5R/XxIRza5kCR6qopRbE1GeEHxFMW90BNB20+SxH7f8mJY57oZddJaBDYald1mHO0t
-	VYDV4T0MMprcbiest
-X-TM-AS-User-Approved-Sender: No
-X-TM-AS-User-Blocked-Sender: No
-X-TMASE-Result: 10--2.984400-8.000000
-X-TMASE-Version: SMEX-14.0.0.3152-9.1.1006-23728.005
-X-TM-SNTS-SMTP: D8CB58CF87B07B83D4FF05979176682EBF85968089EDCB2E320408EFDFA00B6C2000:8
-X-MTK: N
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for
+ raspberrypi,rp1-cfe
+To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Naushir Patuck
+ <naush@raspberrypi.com>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
+ <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
+ <3834dd0a-6dd0-45b1-8b9c-0c840aaf8cf2@linaro.org>
+ <22225e92-803d-4aaa-b75f-cfd1d7d8c279@ideasonboard.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzTRLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnp5c3p0b2Yua296bG93c2tpQGxpbmFyby5vcmc+wsGUBBMBCgA+FiEE
+ m9B+DgxR+NWWd7dUG5NDfTtBYpsFAmI+BxMCGwMFCRRfreEFCwkIBwIGFQoJCAsCBBYCAwEC
+ HgECF4AACgkQG5NDfTtBYptgbhAAjAGunRoOTduBeC7V6GGOQMYIT5n3OuDSzG1oZyM4kyvO
+ XeodvvYv49/ng473E8ZFhXfrre+c1olbr1A8pnz9vKVQs9JGVa6wwr/6ddH7/yvcaCQnHRPK
+ mnXyP2BViBlyDWQ71UC3N12YCoHE2cVmfrn4JeyK/gHCvcW3hUW4i5rMd5M5WZAeiJj3rvYh
+ v8WMKDJOtZFXxwaYGbvFJNDdvdTHc2x2fGaWwmXMJn2xs1ZyFAeHQvrp49mS6PBQZzcx0XL5
+ cU9ZjhzOZDn6Apv45/C/lUJvPc3lo/pr5cmlOvPq1AsP6/xRXsEFX/SdvdxJ8w9KtGaxdJuf
+ rpzLQ8Ht+H0lY2On1duYhmro8WglOypHy+TusYrDEry2qDNlc/bApQKtd9uqyDZ+rx8bGxyY
+ qBP6bvsQx5YACI4p8R0J43tSqWwJTP/R5oPRQW2O1Ye1DEcdeyzZfifrQz58aoZrVQq+innR
+ aDwu8qDB5UgmMQ7cjDSeAQABdghq7pqrA4P8lkA7qTG+aw8Z21OoAyZdUNm8NWJoQy8m4nUP
+ gmeeQPRc0vjp5JkYPgTqwf08cluqO6vQuYL2YmwVBIbO7cE7LNGkPDA3RYMu+zPY9UUi/ln5
+ dcKuEStFZ5eqVyqVoZ9eu3RTCGIXAHe1NcfcMT9HT0DPp3+ieTxFx6RjY3kYTGLOwU0EVUNc
+ NAEQAM2StBhJERQvgPcbCzjokShn0cRA4q2SvCOvOXD+0KapXMRFE+/PZeDyfv4dEKuCqeh0
+ hihSHlaxTzg3TcqUu54w2xYskG8Fq5tg3gm4kh1Gvh1LijIXX99ABA8eHxOGmLPRIBkXHqJY
+ oHtCvPc6sYKNM9xbp6I4yF56xVLmHGJ61KaWKf5KKWYgA9kfHufbja7qR0c6H79LIsiYqf92
+ H1HNq1WlQpu/fh4/XAAaV1axHFt/dY/2kU05tLMj8GjeQDz1fHas7augL4argt4e+jum3Nwt
+ yupodQBxncKAUbzwKcDrPqUFmfRbJ7ARw8491xQHZDsP82JRj4cOJX32sBg8nO2N5OsFJOcd
+ 5IE9v6qfllkZDAh1Rb1h6DFYq9dcdPAHl4zOj9EHq99/CpyccOh7SrtWDNFFknCmLpowhct9
+ 5ZnlavBrDbOV0W47gO33WkXMFI4il4y1+Bv89979rVYn8aBohEgET41SpyQz7fMkcaZU+ok/
+ +HYjC/qfDxT7tjKXqBQEscVODaFicsUkjheOD4BfWEcVUqa+XdUEciwG/SgNyxBZepj41oVq
+ FPSVE+Ni2tNrW/e16b8mgXNngHSnbsr6pAIXZH3qFW+4TKPMGZ2rZ6zITrMip+12jgw4mGjy
+ 5y06JZvA02rZT2k9aa7i9dUUFggaanI09jNGbRA/ABEBAAHCwXwEGAEKACYCGwwWIQSb0H4O
+ DFH41ZZ3t1Qbk0N9O0FimwUCYDzvagUJFF+UtgAKCRAbk0N9O0Fim9JzD/0auoGtUu4mgnna
+ oEEpQEOjgT7l9TVuO3Qa/SeH+E0m55y5Fjpp6ZToc481za3xAcxK/BtIX5Wn1mQ6+szfrJQ6
+ 59y2io437BeuWIRjQniSxHz1kgtFECiV30yHRgOoQlzUea7FgsnuWdstgfWi6LxstswEzxLZ
+ Sj1EqpXYZE4uLjh6dW292sO+j4LEqPYr53hyV4I2LPmptPE9Rb9yCTAbSUlzgjiyyjuXhcwM
+ qf3lzsm02y7Ooq+ERVKiJzlvLd9tSe4jRx6Z6LMXhB21fa5DGs/tHAcUF35hSJrvMJzPT/+u
+ /oVmYDFZkbLlqs2XpWaVCo2jv8+iHxZZ9FL7F6AHFzqEFdqGnJQqmEApiRqH6b4jRBOgJ+cY
+ qc+rJggwMQcJL9F+oDm3wX47nr6jIsEB5ZftdybIzpMZ5V9v45lUwmdnMrSzZVgC4jRGXzsU
+ EViBQt2CopXtHtYfPAO5nAkIvKSNp3jmGxZw4aTc5xoAZBLo0OV+Ezo71pg3AYvq0a3/oGRG
+ KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
+ fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <22225e92-803d-4aaa-b75f-cfd1d7d8c279@ideasonboard.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, 18 Mar 2024 21:00:42 +0100, Jason A. Donenfeld wrote:
-> I'm wondering, though, rather than introducing a second function, maybe
-> execute_in_process_context() should just gain a `&& !in_atomic()`.
-> That'd make things a bit simpler.  
+On 19/03/2024 07:46, Tomi Valkeinen wrote:
+>>> +  reg:
+>>> +    items:
+>>> +      - description: CSI-2 registers
+>>> +      - description: D-PHY registers
+>>> +      - description: MIPI CFG (a simple top-level mux) registers
+>>> +      - description: FE registers
+>>> +
+>>> +  interrupts:
+>>> +    maxItems: 1
+>>> +
+>>> +  clocks:
+>>> +    maxItems: 1
+>>> +
+>>> +  port:
+>>> +    $ref: /schemas/graph.yaml#/$defs/port-base
+>>> +    additionalProperties: false
+>>> +    description: CSI-2 RX Port
+>>
+>> Only one port, so there is nothing to output to?
+> 
+> The CFE has DMA, so it writes to memory. But no other outputs.
 
-> However, I'm pretty sure in_atomic() isn't actually a reliable way of
-> determining that, depending on config. So maybe this should just call
-> the worker always (if system_wq isn't null).
+You still might have some sort of pipeline, e.g. some post processing
+block. But if this is end block, then I guess it's fine.
 
-> Alternatively, any chance the call to add_input_randomness() could be
-> moved outside the spinlock, or does this not look possible?
+> 
+>>> +
+>>> +    properties:
+>>> +      endpoint:
+>>> +        $ref: video-interfaces.yaml#
+>>> +        unevaluatedProperties: false
+>>> +
+>>> +        properties:
+>>> +          data-lanes:
+>>> +            minItems: 1
+>>> +            maxItems: 4
+>>> +
+>>> +          clock-lanes:
+>>> +            maxItems: 1
+>>> +
+>>> +          clock-noncontinuous: true
+>>
+>> Drop
+> 
+> Hmm, I saw this used in multiple other bindings, and thought it means 
+> the property is allowed and copied it here.
+> 
+> If that's not the case, does this mean all the properties from 
+> video-interfaces.yaml are allowed (even invalid ones, like pclk-sample)?
 
-Hi Jason,
+Yes, that's the meaning of unevaluatedProperties you have a bit above.
 
-Thanks for your suggestions. 
+> 
+>>> +
+>>> +        required:
+>>> +          - clock-lanes
+>>> +          - data-lanes
+>>> +
+>>> +required:
+>>> +  - compatible
+>>> +  - reg
+>>> +  - interrupts
+>>> +  - clocks
+>>> +
+>>> +additionalProperties: false
+>>> +
+>>> +examples:
+>>> +  - |
+>>> +    #include <dt-bindings/clock/rp1.h>
+>>> +    #include <dt-bindings/interrupt-controller/irq.h>
+>>> +    #include <dt-bindings/mfd/rp1.h>
+>>> +
+>>> +    rpi1 {
+>>
+>> soc
+> 
+> That should actually be "rp1", not "rpi1". rp1 is the co-processor on 
+> which the cfe is located, so it doesn't reside in the soc itself. But 
 
-I am inclined to accept your second suggestion. My reluctance to accept 
-the first is due to the concern that "&& !in_atomic()" could potentially 
-alter the original meaning of the 'execute_in_process_context' interface. 
-Regarding the third suggestion, modifying the logic associated with 'input' 
-is not recommended.
+Where is the co-processor located?
+
+> perhaps that's not relevant, and "soc" is just a generic container that 
+> should always be used?
+
+Does not have to be soc, but rp1 is not generic.
+
+Node names should be generic. See also an explanation and list of
+examples (not exhaustive) in DT specification:
+https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+
+
+
+
+Best regards,
+Krzysztof
+
 
