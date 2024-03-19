@@ -1,131 +1,139 @@
-Return-Path: <linux-kernel+bounces-108028-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108029-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 12D458804FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:38:49 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34C77880501
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:42:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A79C21F232D9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:38:48 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3F236B2143E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:42:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C120D3987B;
-	Tue, 19 Mar 2024 18:38:31 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69F453987D;
+	Tue, 19 Mar 2024 18:42:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="IOf0HdNd"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="gpCpHlIb"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E7EA3A1D8;
-	Tue, 19 Mar 2024 18:38:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A59382C690;
+	Tue, 19 Mar 2024 18:42:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710873511; cv=none; b=CNSCrTFp/KCo62aS0hGd0Iu2bAiu4EBq9d3Meo/rpjRntyJTeprSYCYyrzB+6Ilnad1HFgXMx2cueNO35L6AjmISA5FnBJRWsSQx1N5z47v6skSTgO2pdpx7SKR232QgXRtyJJJnVaEEUIgNbbW8jWJleFpplThBrv320t7QhtA=
+	t=1710873725; cv=none; b=lgT52/UY3k+09pZWGqc0O5GfP2RXxv5VvLHqNiosvzI5lFJ3wmjl+bzI9XYFj7Sr6mNEEGyHD5u52sOnm8ojc0qa93sl9xpZ32vdKaZSYACYK53VE1jLkE21JPWgpdFJ/36F9wUQoZq+xb9hkyu6Yx1SpgDW39Ni9ItA55IBUqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710873511; c=relaxed/simple;
-	bh=GXwswoYv9U8DBj4pX6EMIE6f8CmqCoXFdq9sUHFNXfo=;
+	s=arc-20240116; t=1710873725; c=relaxed/simple;
+	bh=/Xdo3nItTl5sMcBffTOyaNJrd79EpP5bGPedf1unGSA=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Ohle9ZofCXkwjot+1REHo9sAYj/v+c2EwdUVsF4EmAP3J8+Sr5Q/E9LoeUwgJW1dgNHho9lGgnBTfBgvENvziYf4MADvatuegZdAQd1MSzbRJi2JfHqECuBGCa2NZeYlug2e8R+61asNsd0JxRg+3gJf1SROhd2OdcLLZm9e2LM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=IOf0HdNd; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
-	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=ZnTbSyQ+3b0Xe1n8vMeKEDDL3zu+pgv6P5ioGToOLWc=; b=IOf0HdNdfe2DRHA61K6l5rZVg2
-	bdPnLbBdeu7eicia0t7lJUpSvZj0snFu1o2hiqWFmclJVRbor6nLsw4Jr7kw6XNBLAPuXew+qB7aH
-	ZdqTOsNZSRiAIKuH8958G7nz6Zs1aPO0AGUQJZcqAO700H3GCaCIR7U2MklhSN8Taws10z+zB6c3t
-	0Eh26oPqUam4oZR7oLPxcj/N3CA1+YCHB8REn0R0eXpLDMEC/EYNBsIECTb1XICSKXix0XxMunAQv
-	E1mV9DVakUrE/Z93KPA4beNtqaWgCDHLC7WzVNsv49LbNAHZrP4FJ+Wl3JnTUUEz2qnSRYOiP19UC
-	cYPFIjuQ==;
-Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmeLv-00000002W4q-1oCi;
-	Tue, 19 Mar 2024 18:38:23 +0000
-Date: Tue, 19 Mar 2024 18:38:23 +0000
-From: Matthew Wilcox <willy@infradead.org>
-To: Gregory Price <gregory.price@memverge.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ying.huang@intel.com, dan.j.williams@intel.com, honggyu.kim@sk.com,
-	corbet@lwn.net, arnd@arndb.de, luto@kernel.org,
-	akpm@linux-foundation.org, shuah@kernel.org
-Subject: Re: [RFC v3 3/3] ktest: sys_move_phys_pages ktest
-Message-ID: <Zfnbn8H4O9neZhcm@casper.infradead.org>
-References: <20240319172609.332900-1-gregory.price@memverge.com>
- <20240319172609.332900-4-gregory.price@memverge.com>
- <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
- <ZfnWCRwcZJ4KBmSH@memverge.com>
- <ZfnXcbd3h3Rj4IIS@casper.infradead.org>
- <ZfnaMa6x/O68ENsP@memverge.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=nObDhreRQglCZEGmB5+bbvrQeFmgb0sL+Hbj4vRCLtg+0SjrAKwDRAq41rqBn12zcmPzyos6HZ0dJ0xF1KX4FJpF8FEEUP8OHdwWYyytESlAolBxn0lKeF70wAFbfAb3M4Zia/B+o94LuLIlCXXD59SLtjHLtOmKTUNgYt2UX3U=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=gpCpHlIb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42EFBC433C7;
+	Tue, 19 Mar 2024 18:42:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710873725;
+	bh=/Xdo3nItTl5sMcBffTOyaNJrd79EpP5bGPedf1unGSA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=gpCpHlIbdzMeUzAQj0R9Dd63LUg2B8fV6shgM8BsPWL8WNCK2ZzhCdiS5Qy50m6+o
+	 qAVh9yXmzUgpH/q908cwHMoKzYX4wVR57IzrSiBzz6WkKBoSqArJTZhQmpda7/WGI9
+	 uOgGATTIYZ+u69a7N4xZZhoHLC9Lo9YcHmPfZZ7L3kI16r8M+Mb817M/YXPTNbY72/
+	 lHvoC1EO78OvuYNODy66ib4kUH7CyGztsQ9U5AdYG9fxBW714VDPO3K4gS+MHSyZ82
+	 qS33KTUcTUkHrL/98s8uOOO+m0pcxoKIOQZn7s0jWTrr6QpwH6ahbGxN3FHfJBbk/+
+	 0aJmkG6x3vb8g==
+Date: Tue, 19 Mar 2024 15:42:00 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Jonathan Cameron <Jonathan.Cameron@huawei.com>
+Cc: Andy Shevchenko <andy.shevchenko@gmail.com>,
+	David Lechner <dlechner@baylibre.com>,
+	Jonathan Cameron <jic23@kernel.org>,
+	Michael Hennerich <michael.hennerich@analog.com>,
+	Nuno =?iso-8859-1?Q?S=E1?= <nuno.sa@analog.com>,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2] iio: adc: ad7944: Add support for "3-wire mode"
+Message-ID: <ZfnceCKWLmbkWIgb@x1>
+References: <20240314-mainline-ad7944-3-wire-mode-v2-1-d469da0705d2@baylibre.com>
+ <ZfX5jynjW4M9pvw1@surfacebook.localdomain>
+ <20240318124041.0000032d@Huawei.com>
+ <CAHp75VeQcvuEy4V6-+3PeWTZJ9=Qae0AiiNB93OOw3wuc-uh3A@mail.gmail.com>
+ <20240318142923.000042f4@Huawei.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <ZfnaMa6x/O68ENsP@memverge.com>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240318142923.000042f4@Huawei.com>
 
-On Tue, Mar 19, 2024 at 02:32:17PM -0400, Gregory Price wrote:
-> On Tue, Mar 19, 2024 at 06:20:33PM +0000, Matthew Wilcox wrote:
-> > On Tue, Mar 19, 2024 at 02:14:33PM -0400, Gregory Price wrote:
-> > > On Tue, Mar 19, 2024 at 05:52:46PM +0000, Matthew Wilcox wrote:
-> > > > On Tue, Mar 19, 2024 at 01:26:09PM -0400, Gregory Price wrote:
-> > > > > Implement simple ktest that looks up the physical address via
-> > > > > /proc/self/pagemap and migrates the page based on that information.
-> > > > 
-> > > > What?  LOL.  No.
-> > > > 
-> > > 
-> > > Certainly the test is stupid and requires admin, but I could not
-> > > come up an easier test to demonstrate the concept - and the docs
-> > > say to include a test with all syscall proposals.
-> > > 
-> > > Am I missing something else important?
-> > > (stupid question: of course I am, but alas I must ask it)
+On Mon, Mar 18, 2024 at 02:29:23PM +0000, Jonathan Cameron wrote:
+> On Mon, 18 Mar 2024 15:09:32 +0200
+> Andy Shevchenko <andy.shevchenko@gmail.com> wrote:
+> 
+> > On Mon, Mar 18, 2024 at 2:41 PM Jonathan Cameron
+> > <Jonathan.Cameron@huawei.com> wrote:
+> > > > >  struct ad7944_adc {
+> > > > >     struct spi_device *spi;
+> > > > > +   enum ad7944_spi_mode spi_mode;
+> > > > >     /* Chip-specific timing specifications. */
+> > > > >     const struct ad7944_timing_spec *timing_spec;
+> > > > >     /* GPIO connected to CNV pin. */
+> > > > > @@ -58,6 +75,9 @@ struct ad7944_adc {
+> > > > >      } sample __aligned(IIO_DMA_MINALIGN);
+> > > > >  };  
+> > > >
+> > > > Have you run `pahole` to see if there is a better place for a new member?  
+> > >
+> > > I know this matters for structures where we see lots of them, but do we actually
+> > > care for one offs?  Whilst it doesn't matter here I'd focus much more
+> > > on readability and like parameter grouping for cases like this than wasting
+> > > a few bytes.  
 > > 
-> > It's not that the test is stupid.  It's the concept that's stupid.
+> > This is _also_ true, but think more about cache line contamination.
+> > Even not-so-important bytes may decrease the performance. In some
+> > cases it's tolerable, in some it is not (high-speed ADC). In general I
+> > assume that the developer has to understand many aspects of the
+> > software and cache line contamination may be last but definitely not
+> > least.
+> > 
 > 
-> Ok i'll bite.
+> Not totally sure what you are covering with contamination as many aspects
+> around caches and that's not really a standard term for any of them (as
+> far as I know).
 > 
-> The 2 major ways page-hotness is detected right now is page-faults
-> (induced or otherwise) and things like IBS/PEBS.
+> It's part of a multi cacheline allocation anyway (because it's tacked on the
+> end of the iio device struct, so fairly unlikely to share with other allocations
+> and definitely not on ARM because of the trailing __aligned(IIO_DMA_MINALIGN)
+> elements.
 > 
-> page-faults cause overhead, and IBS/PEBS actually miss upwards of ~66%
-> of all traffic (if you want the details i can dig up the presentation,
-> but TL;DR: prefetcher traffic is missed entirely).
-> 
-> so OCP folks have been proposing hotness-tracking offloaded to the
-> memory devices themselves:
-> 
-> https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
-> 
-> (it's come along further than this white paper, but i need to dig up
-> the new information).
-> 
-> These devices are incapable of providing virtual addressing information,
-> and doing reverse lookups of addresses is inordinately expensive from
-> user space.  This leaves: Do it all in a kernel task, or give user space
-> an an interface to operate on data provided by the device.
-> 
-> The syscall design is mostly being posted right now to collaborate via
-> public channels, but if the idea is so fundamentally offensive then i'll
-> drop it and relay the opinion accordingly.
+> If it matters more locally, then pahole is more likely to push you to pack
 
-The syscall design is wrong.  Exposing physical addresses to userspace
-is never the right answer.  Think rowhammer.
+You mean 'pahole --reorganize', right? Yeah, I need to take into account
+explicit __attribute__((__aligned__)) at the start of cachelines as a
+hint that the fields in a cacheline can't be moved outside of that
+cacheline or plain leave that cacheline members alone, as-is.
 
-I'm vehemently opposed to all of the bullshit around CXL.  However, if you
-are going to propose something, it should be based around an abstraction.
-Say "We have 8 pools of memory.  This VMA is backed by memory from pools
-3 & 6.  The relative hotness of the 8 pools are <vector>.  The quantities
-of memory in the 8 ppols are <vector>".  And then you can say "migrate
-this range of memory to pool 2".
+I also need to get perf's data-type profiling as an input for 'pahole
+--reorganize', with that we may take into account the existing
+__aligned__ markings and combine it with what we get from data-type
+profiling.
 
-That's just an initial response to the idea.  I refuse to invest a
-serious amount of time in a dead-end idea like CXL memory pooling.
+- Arnaldo
+
+> things together in a fashion that makes false sharing and similar perf issues
+> more likely if you are grouping things for packing purposes rather than
+> logical groups.
+> 
+> If you just mean cache pressure then fair enough if we squeeze everything into
+> one cacheline and that doesn't cause false sharing.
+> 'Maybe' this will fit on x86. On Arm64 it's not going to
+> make any difference, just moving the padding around a bit within the line.
+> 
+> So I'd argue premature optimization for a small, one off, structure.
+> 
+> Jonathan
+> 
+> 
+> 
 
