@@ -1,161 +1,292 @@
-Return-Path: <linux-kernel+bounces-107990-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107992-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1576188048B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:16:34 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5F1CF880493
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:18:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BFD64284513
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:16:32 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D84C11F24182
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:18:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 82569364D4;
-	Tue, 19 Mar 2024 18:16:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9981136120;
+	Tue, 19 Mar 2024 18:17:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="OQx9v96W"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2114.outbound.protection.outlook.com [40.107.101.114])
+	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="GKaLwTF9"
+Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2088.outbound.protection.outlook.com [40.107.244.88])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 43B2E2D052;
-	Tue, 19 Mar 2024 18:16:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.114
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A31A12E64F;
+	Tue, 19 Mar 2024 18:17:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.88
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710872170; cv=fail; b=AeL7KA4KlSyDT0FClWZD+hqPGVVeIkgULTNF+iJrSbpyr7GWlMEhFQrONGmllZLin9UDAIRq19T2VfdcCFHVzCtbTfcaqxYS4u9VXe3aiI/aYmguu6JlRDWZBUul5CzTq7GDPCVbnQmwf0Plw2pV0kkWZzGlTF9+X1ad5Iyy4iw=
+	t=1710872277; cv=fail; b=aEMXwBlBpB56wi6ibNfe5L7vrswMZvUeGE8K5j6aJP4DESDr9wrhMa9MvEOOZqDHADuImwvRyV4hI86gW9IeA2tEEZuBasZkYz3aym5CTGjWuc27W+mjW13n8ymeDRLGggChATXwk6TT1fR0FWYq1pqOyYbPLUIVmZPEaVm4umU=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710872170; c=relaxed/simple;
-	bh=4tNJlZ/AdebjAtXjFlpO3okVK3ruYqxPqcoBlGW1JDk=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=YssSegRVoUMaQuzQqJejY/VB2KYuEIKn9tgRcEIOQau8Wrmwk1UVrnnmZMZ1xz6kVOQ6bT0GANj3TJ+mpXQZGnwfwTtD44zQPGXD6Bg542swnCAkIfLUhi29+48tOpG/dWXiiX8yu+5QKSHAM3/cs7XChqMs1V6qV7Ey+eDoZ4s=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=OQx9v96W; arc=fail smtp.client-ip=40.107.101.114
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+	s=arc-20240116; t=1710872277; c=relaxed/simple;
+	bh=h4Krzm1+TNELF4M9dY0bs5QajCD+Q+64XYwzs09GLPA=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=jw8Bd2KGjMFQR0LcZy3mGwQsp1ZbNDxJQ1VWuhQZZgXeNOVH15bMn5/PsMzsijIbvLbFZeAKedkJEf7gTEcm+2ddvc37EAjbX5WxmWPyEMJWNvQ4F1Lb1tVIuS4O+ffCnpKwjaUQp/hOAbdBhLjohyvFhTn6blvRsLIP912Ou24=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=GKaLwTF9; arc=fail smtp.client-ip=40.107.244.88
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=MOrGuy70ylpBREr5VUzuhbTnXdxr4cWuabFEXZllJ1XRsHai3nXpB0TyXVI64XDG2uG3Z8MSZPzmGk81P3Bzf7mwa/inybR5kXvAS1QuHlWqmQ0avNgN+g/TkcKHPnog6aaplcGD0KzoVRysU3SGW/JuVxK2XhFzTBU4PmjYxDv72Q0A8DUAAQWfbW2TsbPjv0OYX0NuqTpAv45d09tLzXaEPsjddvQ1H/SBAJXcvqqBSmIgt2ALN+SCGmt+/RPZjddLCcbt1hdsaJLJcz/udjf8Q0vz/iAAhLMe2aIXokAnOHk8TGBnUOuCpHutikooQ2XwHVUkuLfRkYrptaNszg==
+ b=iIlwHrpD+RRj6oOdUFeVN11h+8ps7MnZedfnPMhn+D/vYZteYfO8RyJEmKfcujRzgZmkdyEAdMqJKrXlLRN9RuLWtwpytCAb/EDpfpK2CBKX2kaDiJsZe9QbYmClQG5/dMcWyaZ960dlh9GxCO+TcMv04rVi8LYWhAHVD+UooG60A+z/gd8E5/9M/UxpC2Xei7LldTU09woUEsn2c1CynT7kS2zayLtdr0qj9qaak+hFT/93w4qc3LIYYe9SifGCENPEVNd0kxrzF9ZSauX66WD6y046Js6aoPuaX42gmMqyz3WDr3f7jY87Q5oZh7DygeDNXQU4quDlboS/W5UhbQ==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+bMIMlXWXYXaynI7EDwKoAfujpoSi7+wJYSi1W6XL3s=;
- b=WSQMlivp2+/Mq0PyLMLor+iSEzQSlUmYwe1rQWXErq5319j4DGzfJqPTm6lgmwDZf65Gy/YbcmR6HmuSoVz43EgzNzr6N3vjgYai7pJNR4U8MJN1IgfUL/ajp613tJW64JMiJS6pFu81HsAwI3yBrLu66eJiPkCIYbbYj32BIrmnTu7ZvQ40FetBlzzIRKscNes3nKj5TXuC+WPhBaTuo1FE8GBBshVYdEqFuXbe8Ekbu5p7piYXI4N1Fej+NfxuFOI1/yTeDOjgSHG09mqX0FbjQgHIPjDY3SDgTyelPWEhEIFweO7kwilrgU2m0lrmrbvGvMWCv6fmUfl5ZP1LHg==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ bh=V6nkhFPhzqBVe5rhqTVNK5BrMMJOm93N4h46BtjjUrM=;
+ b=ZSKYTGPVbOrA0Qo20aTE4vp6bs45fgCHpWWQK1G/n5TQqEDwkegpK5GY7FnmoqL8QSbIjrFwtFcoDROxFXUzkMvrHSG8G4Vc+yg6pqgXkAGpCi04Oq6zNv9IuVDBxYBvB0WcJUX2PBSx3MmypuEIemMVBCXdXfMVV9qSMK6Cxe1z3jAVJZfNDw+nG3EZDtQS/gNPIQwuFfH/L/OMZptGE23fdCiSDMhUJcP30UFWO2Y8LXFzWIdxyLz76BVfuOks+nBYHkWMBb1KnhgobGUShNnOqPV7RLjE1b8CKZUzjM0zL7kPJw93t2JodDQDqLNBJsietvXtxG4gkky8oTacDA==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 216.228.118.233) smtp.rcpttodomain=davemloft.net smtp.mailfrom=nvidia.com;
+ dmarc=pass (p=reject sp=reject pct=100) action=none header.from=nvidia.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
  s=selector2;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+bMIMlXWXYXaynI7EDwKoAfujpoSi7+wJYSi1W6XL3s=;
- b=OQx9v96W2095W2ohQbbJlpy8tJyxrE809aOd3+dAR2ghyvhZBkYBNvHPMqot8aLGMOsr9DWOhHCmFMdzRxapGCDzVQ+VGqsn/gc/3jM1HrnA3DidjVPLpP5JK3guZ2o59WT3ZhpoaQzXCMY8ElIyuZIsskpbYdlVFEhckbvg67o=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by PH0PR17MB5770.namprd17.prod.outlook.com (2603:10b6:510:111::21) with
+ bh=V6nkhFPhzqBVe5rhqTVNK5BrMMJOm93N4h46BtjjUrM=;
+ b=GKaLwTF9OijTwQuCz6h1+/IAzzthcAZNqOsPD7EBqIRTJ6uEd7ZKrPzYZax6DsVVPNUviHjDULuWkvwy8LzUH36gLfXD3zLJDDj2KyI9DYxdJ8uUvZVJbKgbk9srNKqLaQv/rsDGfH5yrBZzHpoZIxHR9HEmQwQBnTOZFylWF6X6eKb66icvZNUAW5m1kJkn+41txZi3qr3E7LeAGp2V6ifI/0QFODnOeD8BlFVb72qhJvvYj4ATUhted0+rqWjI827aqOBnl5W68L/V1q1fbuJ+5vvFzuzae6CbRYldC1pPpVhRd5LMTU3LtBB6i8GJF2IhsY193WSZ/cDt3x522A==
+Received: from CH0P221CA0007.NAMP221.PROD.OUTLOOK.COM (2603:10b6:610:11c::23)
+ by MN0PR12MB6152.namprd12.prod.outlook.com (2603:10b6:208:3c4::21) with
  Microsoft SMTP Server (version=TLS1_2,
  cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Tue, 19 Mar
- 2024 18:16:07 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b%5]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 18:16:05 +0000
-Date: Tue, 19 Mar 2024 14:16:01 -0400
-From: Gregory Price <gregory.price@memverge.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ying.huang@intel.com, dan.j.williams@intel.com, honggyu.kim@sk.com,
-	corbet@lwn.net, arnd@arndb.de, luto@kernel.org,
-	akpm@linux-foundation.org, shuah@kernel.org
-Subject: Re: [RFC v3 3/3] ktest: sys_move_phys_pages ktesty
-Message-ID: <ZfnWYcFLLVyP2Ng8@memverge.com>
-References: <20240319172609.332900-1-gregory.price@memverge.com>
- <20240319172609.332900-4-gregory.price@memverge.com>
- <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
- <ZfnUp7OAr6PFGAq_@casper.infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfnUp7OAr6PFGAq_@casper.infradead.org>
-X-ClientProxiedBy: BYAPR03CA0028.namprd03.prod.outlook.com
- (2603:10b6:a02:a8::41) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+ 2024 18:17:47 +0000
+Received: from CH1PEPF0000A34B.namprd04.prod.outlook.com
+ (2603:10b6:610:11c:cafe::a3) by CH0P221CA0007.outlook.office365.com
+ (2603:10b6:610:11c::23) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28 via Frontend
+ Transport; Tue, 19 Mar 2024 18:17:47 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.118.233)
+ smtp.mailfrom=nvidia.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=nvidia.com;
+Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
+ 216.228.118.233 as permitted sender) receiver=protection.outlook.com;
+ client-ip=216.228.118.233; helo=mail.nvidia.com; pr=C
+Received: from mail.nvidia.com (216.228.118.233) by
+ CH1PEPF0000A34B.mail.protection.outlook.com (10.167.244.10) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 18:17:47 +0000
+Received: from drhqmail203.nvidia.com (10.126.190.182) by mail.nvidia.com
+ (10.127.129.6) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Mar
+ 2024 11:17:35 -0700
+Received: from drhqmail202.nvidia.com (10.126.190.181) by
+ drhqmail203.nvidia.com (10.126.190.182) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1258.12; Tue, 19 Mar 2024 11:17:34 -0700
+Received: from vdi.nvidia.com (10.127.8.9) by mail.nvidia.com (10.126.190.181)
+ with Microsoft SMTP Server id 15.2.1258.12 via Frontend Transport; Tue, 19
+ Mar 2024 11:17:33 -0700
+From: David Thompson <davthompson@nvidia.com>
+To: <davem@davemloft.net>, <edumazet@google.com>, <kuba@kernel.org>,
+	<pabeni@redhat.com>, <u.kleine-koenig@pengutronix.de>, <leon@kernel.org>
+CC: <asmaa@nvidia.com>, <netdev@vger.kernel.org>,
+	<linux-kernel@vger.kernel.org>, David Thompson <davthompson@nvidia.com>
+Subject: [PATCH net v2] mlxbf_gige: call request_irq() after NAPI initialized
+Date: Tue, 19 Mar 2024 14:17:32 -0400
+Message-ID: <20240319181732.12878-1-davthompson@nvidia.com>
+X-Mailer: git-send-email 2.30.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-NV-OnPremToCloud: ExternallySecured
+X-EOPAttributedMessage: 0
 X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|PH0PR17MB5770:EE_
-X-MS-Office365-Filtering-Correlation-Id: ad9f5aab-7606-4876-969c-08dc4840a4a7
+X-MS-TrafficTypeDiagnostic: CH1PEPF0000A34B:EE_|MN0PR12MB6152:EE_
+X-MS-Office365-Filtering-Correlation-Id: 45b57108-a52b-4fa2-1d3a-08dc4840e12f
 X-MS-Exchange-SenderADCheck: 1
 X-MS-Exchange-AntiSpam-Relay: 0
 X-Microsoft-Antispam: BCL:0;
 X-Microsoft-Antispam-Message-Info:
-	NTRLrF2RlueaN5US+RM6IjCchL8QoduRkJLqIYb2yI1BK7MwAXRO8lVvms7wlDKxktPrZT+uHwaVxL4gnSpH6CaK4KNA5j8CCfN+LKIJOht2+d2KXcl4en5LGl4Znmuq16LxbxFlOtmW0HGqRLFZWbtJbxbpi/Ohfu9ECVi0GGd18vWeXiqGPix3fL8PriuJAq8Ts9pfpjCx6EYQ16+PYLAWSSAlFUKlfUNxliTI7ryXJ5vCWzJCedjsQlNUUC9RIAtfTwIw8zYSY+IykepvagVGUUUUEMvUitNEfgB6s+TLeb458BakV3d8SJadgnglwYeJppTUCFj/UqT/i/OflmFNVE4N0p+q1DghpQfCadhZv6VsmoSI8yBVKCNnhnz6DXFrbdPFJJLbSK8v4wPK0+LbuX7t6CS9T+qauC1NpLsh4efIZyforZzH6Y/1TasUvsJCSr6MwFmY8o8r7bimpXsq/g9b1uskS5MEJRVo8FJwhtiKmCTFLE4GzjMD3YpykMDw5EfAwWbpSuweRRBSgMdyxAmsfudiHGmuZI/kvoXkTtjrOSthKWmxtq6alQEhkhWl3wNgnigkvGCxHd8yZ+usha2m7K2hRmRoAIsuhy8=
+	iJSjf7I5SaCU+kdPO0EUTtm3iV+QR9ko8EQnXT5KqIp2NiYORp5nl9he1R/t2n0QcB8ZijWaNPMmjKYLUjWCIOncBzYk5OKcE/ZjhNTSZ2C7s4C5zLfUXUJeoscbrqtBTOo09+2qD8bxONMpZQfnK8i4wMj1RYZ9M7lRmr5Qk00HT3COoMl5taxOFWgjS6MEhqnkgx+BNqj/jvttjtDRPVc3EGwk00+0xPZ4ZDMNuDsrdBhEb04q+EIom0NjB+XLz8uSE0wEcd3JJXO7KAICkQKt8pwgYZxNgcEiXnPAzlMYBT8VPBRP3YRbFSKtD991fQXy/ttEBsH+acXxoLQlA6m6/5p+Iw9Cu9ls0XTyqauauM7d2LyNNOwkbRhI6vwlg2JQ+7bo9wUpmCphADAomki8Ho1ed2HlLUVZz2NV5+fwLQl5LcOzHI5k8De7X9WOgFcg4U//XL5S2pNTxoWFavqCCOMdfnVZru5rethMLI7CLKgi1T7NKVmpWoTBgBJqxP/e3ZyEHZURKhLSAn8gdAm+Cjwe3qOvjQRI4YsCjcv6tj6/uaQXlCL8jYXfTIPoLWrM3Gsy3nQb0ZkUgX4VeO1JqKPFP1omRl97yR4EipMkUkMnXketPS7jZjxw8SKy4q72B34nU1GGyL+GMF5u9yfk7iysbP5eCQhLuqVDcLn5ujEVfax6RqOiQiDJKt4PKSXL059EgJqMIg/ztcKZT28s66aJSXExTJCQHbPbthCqAFqaNKWzzHNh87QFqZw5
 X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?OVRQb0TbK1TfuZLCotMt++VInKqP3M3H30w0Lprd46rxQoMe2kJ8Oa4y12BP?=
- =?us-ascii?Q?wUzwNOqJRiWOl2/+YjvNLq94qtkAk40aAUg4kllozEmo0kP6DnLMSOBZJ8XS?=
- =?us-ascii?Q?4KcmR8MTiy9tf6zfkJMHQ1cbJ4N6el5G/DVeuSxl+LLJTiEmPGdNc1yTEhIZ?=
- =?us-ascii?Q?SULO4Zs7ZFRuRrMM8ZOWV8U+RmU8WiokdgFsaGJ33NknbNtoPsw8K2kBEwn+?=
- =?us-ascii?Q?DbFcJfdosszLu+8DgUX7W5bDhKKhfBM0AYVCri8XxTkxHoZR+PXdoOe3hTmE?=
- =?us-ascii?Q?PDMb7NPbNQoVZXnAL6DUnHNV6LYkYiZ3WDMDF7/UXeh8sN+6G88UlhFOiM1G?=
- =?us-ascii?Q?kK8OJpzyMWllGh0SFj1mpF6+4vVNKX3rhjXSnVIfJoWFnQA1gtBQloikfMIL?=
- =?us-ascii?Q?Y4J1WyBy0pe3sNnMJrUw6BHMvo1JppcsYyOJ1xB9goKW2OUyaM/vhFhP+c0j?=
- =?us-ascii?Q?82ZjaeZyUQ621nMyuws7O3czbfct/OOw1WEOOvddo1pmUyMqORhikBAiYNpP?=
- =?us-ascii?Q?TjsiTFCbeQhm8QrK7DBfBiBvnzd6+VirEk0BTJAox6YzmXLLun6OwYh03OOg?=
- =?us-ascii?Q?Y+PdX+p2uPV3dBk7nXnOtoNKYhhc9n0lrxYlIme2tB41RbShqyknkk+UYw1K?=
- =?us-ascii?Q?F/zcgkvOMYufpdDHHcMZYW8x96IY1cDco4QvgmJhDVqcLa9f+EO3uUylKNvb?=
- =?us-ascii?Q?DS/HcEi07pfk6fa67AQ0nBdexYpVCDH0U+rWS5i6YSHPH2HTsYinJdTPvg73?=
- =?us-ascii?Q?F4O7q/AJiinVA4JXRZCSVKR79jzKA3+keLHK4Bw85TWQ+KYyZ6+AyPfZ6Y9D?=
- =?us-ascii?Q?NyZioKk0JMwg0t50jB5A66/W91awlivqV2sOqtwjQeXXGdSTHKJUmORH2Y9V?=
- =?us-ascii?Q?YvWCeNmDzCvkoXThGgAfXVRFumUblhOi/zIhBB2ENGk6TsYa76bdlRnKBTS1?=
- =?us-ascii?Q?JJaYeuWvBtDnBUC06TQoJPlleE7EylNL5aikE3GUxkJ6EmNLBoHEgPjG3voW?=
- =?us-ascii?Q?EFOSZa7qq3na7buLxINeIlobuzRpnwNsX2Rc/J/Ymcjl3nciKk+TnYlcrvjo?=
- =?us-ascii?Q?omsxw0SwCfYymEr3f/biIMzqoZTv3LJ0Lo0Zppj2aobxZMz53+Yw91Lw50LK?=
- =?us-ascii?Q?OQLRLaJ9ahMh0sG2Ff5Y+HxFhClRlcYCG6s5NFjiTOEVObOH5fHOiIspQs69?=
- =?us-ascii?Q?eK1TjnSueYMooxwZyOsJ+ro9hwnydnzfZcxD85gmhVxLi+aq10kqrznR3VA9?=
- =?us-ascii?Q?ItXrt0kBDisH/UnusSyPoblA5lplAO/yFo1UeYH8+DOR3qNaJsNc1tM8U4c9?=
- =?us-ascii?Q?lnXD45+iDlcgrimotaCtzwiA6YrOFZCXPe2mIwUXKr8g3ws8c22mZsvyHM73?=
- =?us-ascii?Q?y4mtcSb4jP/piKQcHuhxOR+lssp35iF4fvuI9rIJhStRGJ5vuS5uUL47c2hn?=
- =?us-ascii?Q?kyOwG6h/QIftMmEI8CFlqsHzBLKVtwEQ2xMF0IW7IzxoVXNW+slLqi3mz6yc?=
- =?us-ascii?Q?fyuzVgE0hD8g9xe2s8NvcCL2RUVvCJVzEnmFgn2vIY86zRYuMX5noePVA8PI?=
- =?us-ascii?Q?x+KRp4pM/bv4dmkibjX7Zex1ZWagBeoTLfS2RAw+juG5M6hLtrGyOnP1yxBR?=
- =?us-ascii?Q?Qg=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: ad9f5aab-7606-4876-969c-08dc4840a4a7
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 18:16:05.9139
+	CIP:216.228.118.233;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc7edge2.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(36860700004)(82310400014)(376005);DIR:OUT;SFP:1101;
+X-OriginatorOrg: Nvidia.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 18:17:47.1273
  (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: zZkuOYtliYnwTKZ650n3g7X56xcW0TLqj/K6O5DHb/5hupeIAxYYI9oam4Bz/Yqvp5aSxfvmcYKLRCRsvWDRXHwX8ajIhN9joI5M72t5Y6k=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR17MB5770
+X-MS-Exchange-CrossTenant-Network-Message-Id: 45b57108-a52b-4fa2-1d3a-08dc4840e12f
+X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.118.233];Helo=[mail.nvidia.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CH1PEPF0000A34B.namprd04.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR12MB6152
 
-On Tue, Mar 19, 2024 at 06:08:39PM +0000, Matthew Wilcox wrote:
-> On Tue, Mar 19, 2024 at 05:52:46PM +0000, Matthew Wilcox wrote:
-> > On Tue, Mar 19, 2024 at 01:26:09PM -0400, Gregory Price wrote:
-> > > Implement simple ktest that looks up the physical address via
-> > > /proc/self/pagemap and migrates the page based on that information.
-> > 
-> > What?  LOL.  No.
-> 
-> Also, how is this v3 and the first one to land on linux-mm?
-> 
-> https://lore.kernel.org/linux-mm/?q=move_phys_pages
-> 
-> Also, where is the syscall itself?  The only thing here is the ktest.
->
+The mlxbf_gige driver encounters a NULL pointer exception in
+mlxbf_gige_open() when kdump is enabled.  The sequence to reproduce
+the exception is as follows:
+a) enable kdump
+b) trigger kdump via "echo c > /proc/sysrq-trigger"
+c) kdump kernel executes
+d) kdump kernel loads mlxbf_gige module
+e) the mlxbf_gige module runs its open() as the
+   the "oob_net0" interface is brought up
+f) mlxbf_gige module will experience an exception
+   during its open(), something like:
 
-OH, I see the confusion now.
+     Unable to handle kernel NULL pointer dereference at virtual address 0000000000000000
+     Mem abort info:
+       ESR = 0x0000000086000004
+       EC = 0x21: IABT (current EL), IL = 32 bits
+       SET = 0, FnV = 0
+       EA = 0, S1PTW = 0
+       FSC = 0x04: level 0 translation fault
+     user pgtable: 4k pages, 48-bit VAs, pgdp=00000000e29a4000
+     [0000000000000000] pgd=0000000000000000, p4d=0000000000000000
+     Internal error: Oops: 0000000086000004 [#1] SMP
+     CPU: 0 PID: 812 Comm: NetworkManager Tainted: G           OE     5.15.0-1035-bluefield #37-Ubuntu
+     Hardware name: https://www.mellanox.com BlueField-3 SmartNIC Main Card/BlueField-3 SmartNIC Main Card, BIOS 4.6.0.13024 Jan 19 2024
+     pstate: 80400009 (Nzcv daif +PAN -UAO -TCO -DIT -SSBS BTYPE=--)
+     pc : 0x0
+     lr : __napi_poll+0x40/0x230
+     sp : ffff800008003e00
+     x29: ffff800008003e00 x28: 0000000000000000 x27: 00000000ffffffff
+     x26: ffff000066027238 x25: ffff00007cedec00 x24: ffff800008003ec8
+     x23: 000000000000012c x22: ffff800008003eb7 x21: 0000000000000000
+     x20: 0000000000000001 x19: ffff000066027238 x18: 0000000000000000
+     x17: ffff578fcb450000 x16: ffffa870b083c7c0 x15: 0000aaab010441d0
+     x14: 0000000000000001 x13: 00726f7272655f65 x12: 6769675f6662786c
+     x11: 0000000000000000 x10: 0000000000000000 x9 : ffffa870b0842398
+     x8 : 0000000000000004 x7 : fe5a48b9069706ea x6 : 17fdb11fc84ae0d2
+     x5 : d94a82549d594f35 x4 : 0000000000000000 x3 : 0000000000400100
+     x2 : 0000000000000000 x1 : 0000000000000000 x0 : ffff000066027238
+     Call trace:
+      0x0
+      net_rx_action+0x178/0x360
+      __do_softirq+0x15c/0x428
+      __irq_exit_rcu+0xac/0xec
+      irq_exit+0x18/0x2c
+      handle_domain_irq+0x6c/0xa0
+      gic_handle_irq+0xec/0x1b0
+      call_on_irq_stack+0x20/0x2c
+      do_interrupt_handler+0x5c/0x70
+      el1_interrupt+0x30/0x50
+      el1h_64_irq_handler+0x18/0x2c
+      el1h_64_irq+0x7c/0x80
+      __setup_irq+0x4c0/0x950
+      request_threaded_irq+0xf4/0x1bc
+      mlxbf_gige_request_irqs+0x68/0x110 [mlxbf_gige]
+      mlxbf_gige_open+0x5c/0x170 [mlxbf_gige]
+      __dev_open+0x100/0x220
+      __dev_change_flags+0x16c/0x1f0
+      dev_change_flags+0x2c/0x70
+      do_setlink+0x220/0xa40
+      __rtnl_newlink+0x56c/0x8a0
+      rtnl_newlink+0x58/0x84
+      rtnetlink_rcv_msg+0x138/0x3c4
+      netlink_rcv_skb+0x64/0x130
+      rtnetlink_rcv+0x20/0x30
+      netlink_unicast+0x2ec/0x360
+      netlink_sendmsg+0x278/0x490
+      __sock_sendmsg+0x5c/0x6c
+      ____sys_sendmsg+0x290/0x2d4
+      ___sys_sendmsg+0x84/0xd0
+      __sys_sendmsg+0x70/0xd0
+      __arm64_sys_sendmsg+0x2c/0x40
+      invoke_syscall+0x78/0x100
+      el0_svc_common.constprop.0+0x54/0x184
+      do_el0_svc+0x30/0xac
+      el0_svc+0x48/0x160
+      el0t_64_sync_handler+0xa4/0x12c
+      el0t_64_sync+0x1a4/0x1a8
+     Code: bad PC value
+     ---[ end trace 7d1c3f3bf9d81885 ]---
+     Kernel panic - not syncing: Oops: Fatal exception in interrupt
+     Kernel Offset: 0x2870a7a00000 from 0xffff800008000000
+     PHYS_OFFSET: 0x80000000
+     CPU features: 0x0,000005c1,a3332a5a
+     Memory Limit: none
+     ---[ end Kernel panic - not syncing: Oops: Fatal exception in interrupt ]---
 
-There were two other versions, and I have experienced this delivery
-failure before, i'm not sure why the other commits have not been delivered.
+The exception happens because there is a pending RX interrupt before the
+call to request_irq(RX IRQ) executes.  Then, the RX IRQ handler fires
+immediately after this request_irq() completes. The RX IRQ handler runs
+"napi_schedule()" before NAPI is fully initialized via "netif_napi_add()"
+and "napi_enable()", both which happen later in the open() logic.
 
-Let me look into this.
+The logic in mlxbf_gige_open() has been re-ordered so that the
+request_irq() calls execute after NAPI is fully initialized.
 
-~Gregory
+Also, the logic in mlxbf_gige_open() was missing a call to phy_stop()
+in the error path, so that has been added.
+
+Fixes: f92e1869d74e ("Add Mellanox BlueField Gigabit Ethernet driver")
+Signed-off-by: David Thompson <davthompson@nvidia.com>
+Reviewed-by: Asmaa Mnebhi <asmaa@nvidia.com>
+---
+v2
+- re-worded commit message and subject for clarity
+- updated commit message to mention that phy_stop() was added
+  to the error path in mlxbf_gige_open()
+---
+ .../mellanox/mlxbf_gige/mlxbf_gige_main.c     | 21 ++++++++++++-------
+ 1 file changed, 14 insertions(+), 7 deletions(-)
+
+diff --git a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
+index 3d09fa54598f..77134ca92938 100644
+--- a/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
++++ b/drivers/net/ethernet/mellanox/mlxbf_gige/mlxbf_gige_main.c
+@@ -139,13 +139,10 @@ static int mlxbf_gige_open(struct net_device *netdev)
+ 	control |= MLXBF_GIGE_CONTROL_PORT_EN;
+ 	writeq(control, priv->base + MLXBF_GIGE_CONTROL);
+ 
+-	err = mlxbf_gige_request_irqs(priv);
+-	if (err)
+-		return err;
+ 	mlxbf_gige_cache_stats(priv);
+ 	err = mlxbf_gige_clean_port(priv);
+ 	if (err)
+-		goto free_irqs;
++		return err;
+ 
+ 	/* Clear driver's valid_polarity to match hardware,
+ 	 * since the above call to clean_port() resets the
+@@ -157,7 +154,7 @@ static int mlxbf_gige_open(struct net_device *netdev)
+ 
+ 	err = mlxbf_gige_tx_init(priv);
+ 	if (err)
+-		goto free_irqs;
++		goto phy_deinit;
+ 	err = mlxbf_gige_rx_init(priv);
+ 	if (err)
+ 		goto tx_deinit;
+@@ -166,6 +163,10 @@ static int mlxbf_gige_open(struct net_device *netdev)
+ 	napi_enable(&priv->napi);
+ 	netif_start_queue(netdev);
+ 
++	err = mlxbf_gige_request_irqs(priv);
++	if (err)
++		goto napi_deinit;
++
+ 	/* Set bits in INT_EN that we care about */
+ 	int_en = MLXBF_GIGE_INT_EN_HW_ACCESS_ERROR |
+ 		 MLXBF_GIGE_INT_EN_TX_CHECKSUM_INPUTS |
+@@ -182,11 +183,17 @@ static int mlxbf_gige_open(struct net_device *netdev)
+ 
+ 	return 0;
+ 
++napi_deinit:
++	netif_stop_queue(netdev);
++	napi_disable(&priv->napi);
++	netif_napi_del(&priv->napi);
++	mlxbf_gige_rx_deinit(priv);
++
+ tx_deinit:
+ 	mlxbf_gige_tx_deinit(priv);
+ 
+-free_irqs:
+-	mlxbf_gige_free_irqs(priv);
++phy_deinit:
++	phy_stop(phydev);
+ 	return err;
+ }
+ 
+-- 
+2.30.1
+
 
