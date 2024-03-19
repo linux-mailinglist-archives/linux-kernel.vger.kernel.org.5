@@ -1,224 +1,163 @@
-Return-Path: <linux-kernel+bounces-107016-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107017-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64AD587F6C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:38:31 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5BC6987F6C7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:40:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id AF4E9B21BAD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:38:28 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1272A2825FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:40:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710CF446CF;
-	Tue, 19 Mar 2024 05:38:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F262245940;
+	Tue, 19 Mar 2024 05:40:17 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="SM3ensT+"
-Received: from NAM10-BN7-obe.outbound.protection.outlook.com (mail-bn7nam10on2096.outbound.protection.outlook.com [40.107.92.96])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="VIXD8swa"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7CEF042062;
-	Tue, 19 Mar 2024 05:38:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.92.96
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710826699; cv=fail; b=IXICsw+HCLWBOfoQxuZj4DGzy9TQt+Q1wfOrLC9wrw2SCM3Bne1Ec0fV2sLQ1SO/taQSL9J9lfVcyoSmwbdHqi3gusCbbL09WfZRZ44JmuKAUSqSnCBHOJAl9ntU9h1gY2J0t4dgqE1ZArhElOIbyMTAAMijhdvYliddNNPtfKo=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710826699; c=relaxed/simple;
-	bh=w0BFYVF2z0LDeL81a/Khft9Sq2DMWvRmiAwY/fuYGvc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=FIm9VOTrSfEDj7UK8UjXiioFhsnXc6OyGfN0iYXMJ6n3mfe39l0mYJHxSDEv9imtybfe1FQoH08Sn/ZTKTSwcDIuO5/xIDTpSKoX81cgRCY1AVAvzHOnw96kZm03iwaJkuWMGU3KISwIBAGZJmiTQsU9dL7NzbEURMcSPWL6mPQ=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=SM3ensT+; arc=fail smtp.client-ip=40.107.92.96
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=C6CKnechRzRfpMRuYCbugaknN38uA15YrQw2jUrLxeBUzVPvEZJRPHyngblUcXoqToql3FAtbUZP/8PdvWaxTheqf8Ip3LiN9K5/GZwjK63y4v0bwMqeeI9LhJHkh8CGhmng1OJ3UDAoiq3eWnDuvVOksdanrFh9YooGbRnzEFPiKpyxjLSZh7n8o9XJT9t3c5xmkEj/Ypg4jcMYz1acu7RYoaZL2t7YyJeTjIItIbQenDtI+I0Xxm5RIWQs00Xd/s0//KzkmDV1JxmfobWGf18LKiJkV50JqKjGKBHV/wwmqAj1iBki8wlXPG7yDmQGF2WWc2i4BNI2biB+OKWkkw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=Okk7p/qibxt1pFVKbHOIjHkKUqne06BOVmglraMveSI=;
- b=OkHsHzdiZaGFaeAidAHYGq9FV7X/CqQRCvSRoVW8cNjgQLAAnkeWLIcxjBkWLXSralc3DKQIV8RD20g76jTC8c0R1ieKdQAdCtfNia+hNvb9Ad+C35yD2k5pCxdpi/U7aJtAubtkGJVBgHw28wf5vNb/ZnG5jOXUucuKbDFTgY4L3ZFp65dRj+H0weYhKGWenBTRR40dtSiw1+MF62YaOvIwsXlEfxzQO3wa/En07Gh+gKcvJap7qMF7u3BuU949HGS7cyi6al8CIg56sk8njmnjp9a70GQ61C/P4seLEcQTyqpgYXhO7MwAvSCw9kp4sRjXRtH6r3gWRGNUC0XDkQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
- header.d=amd.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=Okk7p/qibxt1pFVKbHOIjHkKUqne06BOVmglraMveSI=;
- b=SM3ensT+qF9pBRVhWDlWbcI8+KAKDviMuz8edZzt30ryTW/Z0aRuisxtlUlcT3fsrYuSXoAAQIfFb/CofOj6FkSb5dGEuU+7hIDrjOoD0jP52G6h1/RSzG7dGsC9qPhkSwSVG6D2ucY4uyp14TevGzzce9n65at2GXcFsaWfm5s=
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com (2603:10b6:a03:540::10)
- by DM4PR12MB5723.namprd12.prod.outlook.com (2603:10b6:8:5e::9) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.27; Tue, 19 Mar 2024 05:38:15 +0000
-Received: from SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::e7a:5022:4b7d:ade1]) by SJ2PR12MB8690.namprd12.prod.outlook.com
- ([fe80::e7a:5022:4b7d:ade1%7]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 05:38:14 +0000
-Date: Tue, 19 Mar 2024 13:37:53 +0800
-From: Huang Rui <ray.huang@amd.com>
-To: "Rafael J. Wysocki" <rafael@kernel.org>
-Cc: "Yuan, Perry" <Perry.Yuan@amd.com>,
-	"Limonciello, Mario" <Mario.Limonciello@amd.com>,
-	"Shenoy, Gautham Ranjal" <gautham.shenoy@amd.com>,
-	"rafael.j.wysocki@intel.com" <rafael.j.wysocki@intel.com>,
-	"viresh.kumar@linaro.org" <viresh.kumar@linaro.org>,
-	"Petkov, Borislav" <Borislav.Petkov@amd.com>,
-	"Deucher, Alexander" <Alexander.Deucher@amd.com>,
-	"Huang, Shimmer" <Shimmer.Huang@amd.com>,
-	"Du, Xiaojian" <Xiaojian.Du@amd.com>,
-	"Meng, Li (Jassmine)" <Li.Meng@amd.com>,
-	"linux-pm@vger.kernel.org" <linux-pm@vger.kernel.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v8 0/8] AMD Pstate Fixes And Enhancements
-Message-ID: <ZfkksfgB9cIUkWlu@amd.com>
-References: <cover.1710754409.git.perry.yuan@amd.com>
- <CAJZ5v0iQnJCVX0kHNxtOWLcnTXRRjR1HZ6m4CFhKZcQVp1SbEA@mail.gmail.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAJZ5v0iQnJCVX0kHNxtOWLcnTXRRjR1HZ6m4CFhKZcQVp1SbEA@mail.gmail.com>
-X-ClientProxiedBy: SI1PR02CA0039.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::9) To SJ2PR12MB8690.namprd12.prod.outlook.com
- (2603:10b6:a03:540::10)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A5F4446A1
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:40:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710826817; cv=none; b=XZT1UQ4AnFDYOpWCOnfRZhQ2vcL3iv/1rYU4yEFkJdN8OdoMXM7jGnXf8aEAs2K7+DU8qGwZh56FGwbVnaA0333du7crYaBuYIGJemQlacMlXd72mzP1kB0CSgxWgCOz5Atbdc+Hjs3S2U5mJ48jLnAUN1hyAbzrw3+3Bkkpre0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710826817; c=relaxed/simple;
+	bh=HH/JZhkydY05sA0Nccb/eagFi3pmvPYtnU/rWasXdWQ=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=gOEhaM9QLEsqIXZ7dYtFP5c3kClv7SsPdBR/7+OGOqwE/KuBbzMnl71wLOLf8cmfRYl6g2DV+j/JZkoCQEFVStW44xSRdhy/g39+ot73JBnsM5H5eoTP6HfDvzO0DoaYPeoAZi24U/Yn8GTcLCjWaOdV/EtH+vjrsUzK9Dfl/4A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=VIXD8swa; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46dec5d00cso29051966b.0
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:40:15 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710826814; x=1711431614; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=Yg5l6ONBUvmCbF22a3St9SgW/zyEI2z95zA2tWCdR08=;
+        b=VIXD8swaeZK/g3+zVGABZJFtqd+JElbBGoRe1gKPE8Hswn0vZX8IeflxVeC6qh6at3
+         om+s4lvaqvVb+aIeHaIhMkzIbvltIulTMz9PQNnwwGTbabSrYyi8vGHXPtwuWx/em0ig
+         ywwSoz0PFIujGm+Jp11dMmL39OABbhOoAs14YX6RH2z9D+fwmlQRxaO5sIYZZTben0y7
+         Xdi8eHjxqnBpM4joz4ibyXUEqwztW23wqEddRbPbVrBlJzNi84lcvbray39iGU9KwtnY
+         WzPqwlfEbnLunxrLtVI8DPFe4rYTtUq9qJgc54hLBAD0CgvqJCAWqxek4dnZfstCnQXR
+         0qZA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710826814; x=1711431614;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Yg5l6ONBUvmCbF22a3St9SgW/zyEI2z95zA2tWCdR08=;
+        b=k7kim7H95ThcQc9Pe5jiBR6gx8awj3VRTavlULP4gFT4FEeHSdqw6FBI+ybXm71E7t
+         toMxKv7rc1ibYSN/GnqgmshCV2/DytPhI91Spar8iSocVZEbTDOyRi5pXr1pPOv34kRK
+         Ev8+4LFzTvs4jFfR7YXTDbZaZfNbs0sdtaIy/Td9/L6m2b3g42VBSDmELqLF1E9Hxoeq
+         ceeiEm2TTALGrhgPu1ohN5WUjGLjGoLMkLUULfB78j/wu/Z2CQuVn0d/XeKmI6BHwDmO
+         rxsVOMAPCUU7beKukxJdNZOj+11oOh7VOhgnr6J5TGgwSGbC0yYUVB4jNCu+1+ZWHpgj
+         BmPA==
+X-Forwarded-Encrypted: i=1; AJvYcCV+R/WjZ3SSVQSJIX8wiHPQMKLSpj+5y8o0HHmbsNOeZ9opSQXU+/plqxOX/rPYpZKERhdm2QsJoO/92xJwBmlaVd9g1giDebmwU2aK
+X-Gm-Message-State: AOJu0YxnJSNeW3AaT2a+W+Gigwq82E/HbSOkaIxlpKTISB5UkgZ9qElK
+	M6Nbz7dO4w/O/Lw0ytej6nFv+5qs2TNcR4COiGcUOUE9htwQu7l0eUpzI6YlBY4=
+X-Google-Smtp-Source: AGHT+IE2UEluGxpI/Kr3fxuhDBB7SjJ8zSFCQ8tPfMeJQ9Vksmge4NDVty9dQTk2HEYyTgJ6q4yADw==
+X-Received: by 2002:a17:907:c283:b0:a45:84e7:b265 with SMTP id tk3-20020a170907c28300b00a4584e7b265mr12092832ejc.7.1710826813767;
+        Mon, 18 Mar 2024 22:40:13 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id sd9-20020a170906ce2900b00a4628cacad4sm5622163ejb.195.2024.03.18.22.40.12
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 22:40:13 -0700 (PDT)
+Message-ID: <2fbb3c68-568d-40f5-9f48-139db9a1d7f9@linaro.org>
+Date: Tue, 19 Mar 2024 06:40:11 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ2PR12MB8690:EE_|DM4PR12MB5723:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	BsmZvUnsGoqYAmyAaRNl6aCh0NiSQ5/R7c7CzQ992BfQ2QyraoMQ6Uz7SOV4aoKYMn7tRI4sTt6myhnRaK18lFX1TPCtRDWzqCvQzgBPSUTO1vgOxQ7Z2wq1GlHvHNwOvuJzaMN7GL91qcH42KTMeR7WQsjqVisx/t/xE5QxHXrJh7IYx3uaL1Uxx6ez+T0rbTQ8hcNbnWJPhnCTw2rhhzOUapWsTq/IFHFJw+x4zg2xxM5gx08paakTF5Jx+v2BZKIzlPk8644GKMiv7OGFD8mgfPs+sYt234KhcycuZcI9DxcPw2yQCPGNNAHxL0gJvczcS4cKjz8aF1y9kJb3hMXgvFFjjSSQW1rKU/Qaq6zr9MPkW6afVuFGtTg1AP42XTp2Ur3PWT25a9kOMeUXaAStebLjm6B4K3lV9f1hBk2jUX6qJL53M4oti6dPZaJk2elX6tbh4ChdoTTcdTbjm0EZkRWxIm0lTfUldHfvi2GOWjhdOhe31x/5T6adM/sgR7B6Msojq9tv6sNTYRkipHrcLPDzOr4F6sjmBeXB6dMT9HghKm/sZzHeH1rd9HU9OWatZ8mO0KoIsiJjSqRe8f3tZew43pjsgJAe+HXMoGo=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ2PR12MB8690.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?d1JFUERjRUZ0MUpsL1U2MDVMVGZRVUdZZnNCNGJIMVdQY0I2RmNMak1BTVFi?=
- =?utf-8?B?S0hkcGJvQzUvM0hsb1lrOEU4cjhuaWxWR0tHUjIrNTVtYkhYYWZQR3pvbWxk?=
- =?utf-8?B?UmdtMVdqNFJYa0piZ2NzL0FDRmZSaFRqWmNqZk51aWxtL1QzdVVnZUc1RGVI?=
- =?utf-8?B?UG9EVTk2L3J1VVVMcXRyYUlrS0JiYmYzMXRYZUxZMlUzWEF3NGUwdnpVaWVp?=
- =?utf-8?B?NEJKOUFoaGtXQVdhbkJxZlk5NWJSb3RzaGpvQ3o5c1JBRjcvdEpDQk5talBY?=
- =?utf-8?B?MVJWT1pmTTRhQ1VacTA2Tlg0RGRkSHJRRjc4d2thUUFnc3o4QittWDE4ZkRp?=
- =?utf-8?B?dHZ3MkE1REpMdHVLeW1aTFhBNUR2bUpiRVNPc1NVRzhNYitsS1k2OWp4U2ds?=
- =?utf-8?B?SHZHNlhMeTh4eDdvZHpYdnUvVUtPNnFZM21mSFBMbWhUWGQ1ZzJwcy9TclJF?=
- =?utf-8?B?RlVGZzZ3SVZNN0QrTGNrUzlJUWdOR0thK2hWRjIzdWR6dDAvOVVVV01kNHpo?=
- =?utf-8?B?dkhabzdVcU5yQTU2SVBZNGZkODdKWlFWNkgyTGkrUTFkTS9sRWx5QmtCOGs3?=
- =?utf-8?B?eDVnYlpTekNyVmk2UmJtMVJRam5USHNUckVqanNkVUdOWnpvOUlLdFNCUmcv?=
- =?utf-8?B?cUhiUk81dUhxQ0FOZHdkVTlUL0VDN3pqUXdFUW4vaXdpZDBCd1A0d3FGUDU5?=
- =?utf-8?B?MXB1MmlXU3BUV1RjZ2FCTXVUTjNhdGtYVmpNdkNxcnNKSlMwM2xwaUNFaHVQ?=
- =?utf-8?B?RURXNlg0bEh0MGxhQWE3Wkl1azduK2RCUnZXSG5rbVdxZlMwSlpCcnhRYU12?=
- =?utf-8?B?cU1TZGY4ZU15U09DcEc5OGlEcVJNVks2VklvS1gvbDR5V21FdXhEckpQTFo3?=
- =?utf-8?B?bG1kaUJpbkNnU1JvUmUvT1NhazBPdFhNV2pSZ21YSVF5eVgrc1FjY1JYbEhy?=
- =?utf-8?B?b3VuOGs3bE5yMnZEN3FxSDh6YXMvS1V0d3Rlb1d2VTVYaXFQRTdTcnNtWGZ2?=
- =?utf-8?B?U0Nja2JIRXJ0Rk41VGRDM0NOSi80Q0k2ZWdXakRYMXE3OGp6cXBsZDZTQmFw?=
- =?utf-8?B?MXVCQWZwNXJMdVlkSzkvUUdaSFJ5UksvVW9BbXZNZXdwUXVYMm56RjZncSs3?=
- =?utf-8?B?ZEF5Mk8wclRQaXp2aW83MExNOU1TSXp6WDJvVUpoM3duMG52YmNoTy94R0RU?=
- =?utf-8?B?aWdWNlVFM2MxOUI0N21hdUhTeFNKWmlqREpMQW9scDNuNDhUQjFHVy9ITEdx?=
- =?utf-8?B?VGZiZERqTzkxRW1oQXMveXNZSGxubW93OU80aUxPQWFvM21pQWl6MWdJczR5?=
- =?utf-8?B?Y0xxNTNQWXByRUNtM1ZSbmJZYm9DTVZWR3BsUlI1SnBEUy9TazgyKzRpRXNL?=
- =?utf-8?B?TE9KZHltV3hheVE0SWNSQWtRNzVFcThLQlF2SEt3L201NjE3ODZpczBNR1c4?=
- =?utf-8?B?OGtJNUlUOG10UUo1V2dodTN1QkRjc2lnOVFGM3hmRG5QNGNuSlBEZTRXcWlZ?=
- =?utf-8?B?dFBXRzFuMEpaRys2b201ZjhMd1FwajA4NWtDaEkyRlVqd2lmV1d3Y1dhcytN?=
- =?utf-8?B?ZGx4dWtxdTV3WHVlUk5TWHJGeEYwb2ErcW5lb2Q1cHk1cUo2Q1dEZGZWNVhO?=
- =?utf-8?B?Y0pGejU2OWV6QkQrajczcDBmRTVEVitjRnkrL2JyN284T0dVbGhUbEVEa29n?=
- =?utf-8?B?T3BBZG04WWZUMmNKdzYxR1U0Z0Jld3lZOWgrOXZtRmRFbHRHMlZYZTRZNytK?=
- =?utf-8?B?cVpCbTZLNEw2L1ZNejZIMFlGeks3cVZWZ00zTUp1ckZJZVNTakN0Mi9ZOFdq?=
- =?utf-8?B?Nkx4Z2E3aGJndFAvWkxYMHFRNWR5UDlsdmllYmFscGJCRUFKOFU4bU4yY1FG?=
- =?utf-8?B?QkptSmttamlDMmludWRzYy9xN2JDSzlGV2hzeGR1U1A0bFAyNmkxUzVwTzNw?=
- =?utf-8?B?WEd6emIvNElWOExJSENpVERWaGZYanY4dTNNeVBJU1dHNGtlc3kzd29LV0w2?=
- =?utf-8?B?S2lTdVJrWVpLM1Y3TFRvRzA1RlYwL000a1kxYmhrV1JpN1JzMzhFRFdxVDVB?=
- =?utf-8?B?RkFxeGJEdUhLdWUvU250SFRvWTlZRTJzM0oyN2VzSDBvck03aUZDVnA2QVlB?=
- =?utf-8?Q?3bxpVdlbQrCIT64SmpDL4H6v0?=
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: f6a19b3c-ce3b-4f02-3017-08dc47d6c59b
-X-MS-Exchange-CrossTenant-AuthSource: SJ2PR12MB8690.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 05:38:14.6874
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: 1AIaxCTABz+la8MRP5/mi/mN1uoraKUXbqT/LjkgQtOtZOeVxMwnda7lLdmf+XRwebRy8QqknjX71Jdbs9LImA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM4PR12MB5723
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/3] dt-bindings: remoteproc: add Versal platform support
+Content-Language: en-US
+To: Tanmay Shah <tanmay.shah@amd.com>, Conor Dooley <conor@kernel.org>
+Cc: andersson@kernel.org, mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com,
+ linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240315211533.1996543-1-tanmay.shah@amd.com>
+ <20240315211533.1996543-2-tanmay.shah@amd.com>
+ <20240317-overturn-frozen-b152dc552a2f@spud>
+ <1197b7f7-c43b-4ae6-b914-9e3f547810bb@amd.com>
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <1197b7f7-c43b-4ae6-b914-9e3f547810bb@amd.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 08:49:55PM +0800, Rafael J. Wysocki wrote:
-> On Mon, Mar 18, 2024 at 10:48 AM Perry Yuan <perry.yuan@amd.com> wrote:
-> >
-> > The patch series adds some fixes and enhancements to the AMD pstate
-> > driver.
-> > It enables CPPC v2 for certain processors in the family 17H, as
-> > requested
-> > by TR40 processor users who expect improved performance and lower system
-> > temperature.
-> >
-> > Additionally, it fixes the initialization of nominal_freq for each
-> > cpudata
-> > and changes latency and delay values to be read from platform firmware
-> > firstly
-> > for more accurate timing.
-> >
-> > A new quirk is also added for legacy processors that lack CPPC
-> > capabilities which caused the pstate driver to fail loading.
-> >
-> > Testing done with one APU system while cpb boost on:
-> >
-> > amd_pstate_lowest_nonlinear_freq:1701000
-> > amd_pstate_max_freq:3501000
-> > cpuinfo_max_freq:3501000
-> > cpuinfo_min_freq:400000
-> > scaling_cur_freq:3084836
-> > scaling_max_freq:3501000
-> > scaling_min_freq:400000
-> >
-> > analyzing CPU 6:
-> >   driver: amd-pstate-epp
-> >   CPUs which run at the same hardware frequency: 6
-> >   CPUs which need to have their frequency coordinated by software: 6
-> >   maximum transition latency:  Cannot determine or is not supported.
-> >   hardware limits: 400 MHz - 3.50 GHz
-> >   available cpufreq governors: performance powersave
-> >   current policy: frequency should be within 400 MHz and 3.50 GHz.
-> >                   The governor "powersave" may decide which speed to use
-> >                   within this range.
-> >   current CPU frequency: Unable to call hardware
-> >   current CPU frequency: 3.50 GHz (asserted by call to kernel)
-> >   boost state support:
-> >     Supported: yes
-> >     Active: yes
-> >     AMD PSTATE Highest Performance: 255. Maximum Frequency: 3.50 GHz.
-> >     AMD PSTATE Nominal Performance: 204. Nominal Frequency: 2.80 GHz.
-> >     AMD PSTATE Lowest Non-linear Performance: 124. Lowest Non-linear Frequency: 1.70 GHz.
-> >     AMD PSTATE Lowest Performance: 30. Lowest Frequency: 400 MHz.
-> >
-> > If someone would like to test this patchset, it would need to apply
-> > another patchset on top of this in case of some unexpected issue found.
-> >
-> > https://lore.kernel.org/lkml/cover.1707297581.git.perry.yuan@amd.com/
-> > It implements the amd pstate cpb boost feature
-> > the below patch link is old version, please apply the latest version
-> > while you start the testing work.
-> >
-> > I would greatly appreciate any feedbacks.
+On 19/03/2024 01:37, Tanmay Shah wrote:
+> Hello,
 > 
-> There are missing changelogs and S-o-b tags in a few messages in this series.
+> Thanks for reviews, please find my comments below.
 > 
-> Overall, I would like someone, preferably at AMD, to take
-> responsibility for the amd-pstate driver, review patches modifying it
-> and ACK the approved ones.
+> On 3/17/24 9:50 AM, Conor Dooley wrote:
+>> On Fri, Mar 15, 2024 at 02:15:31PM -0700, Tanmay Shah wrote:
+>>> AMD-Xilinx Versal platform is successor of ZynqMP platform. Real-time
+>>> Processor Unit R5 cluster IP on Versal is same as of ZynqMP Platform.
+>>
+>>> Only difference is power-domains ID needed by power management firmware.
+>>> Hence, keeping the compatible property same as of zynqmp node.
+>>
+>> No, don't be lazy. Add a compatible with a fallback please.
 > 
-> Huang Rui, who is listed in MAINTAINERS as the official maintainer of
-> it, does not seem to be interested in it any more.
-> 
-> Can this be addressed, please?
+> It's same IP on different platform. I am not sure how adding compatible string
+> adds value. I will refactor this series based on other comments provided.
 
-Hi Rafael,
+Judging by your other thread, it would add value. Also writing bindings
+asks you for this.
 
-Sorry, I was occupied by other task a couple of months ago. I will talk
-with AMD colleagues and figure out the way to make sure the amd-pstate
-patches will be actively reviewed and tested. Will give you the feedback.
+Best regards,
+Krzysztof
 
-Thanks,
-Ray
 
