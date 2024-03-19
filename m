@@ -1,190 +1,183 @@
-Return-Path: <linux-kernel+bounces-107009-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107010-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id B103887F6AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:29:02 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id C9A4787F6AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:29:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C20A81C21832
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:29:01 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 578B91F22198
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:29:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A80E3446A5;
-	Tue, 19 Mar 2024 05:28:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D6C7E446A5;
+	Tue, 19 Mar 2024 05:29:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b="k4dXykRg"
-Received: from ms11p00im-qufo17281301.me.com (ms11p00im-qufo17281301.me.com [17.58.38.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="NTK0VcHb"
+Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8BFF042062
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:28:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=17.58.38.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 38F8A44365
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:29:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710826133; cv=none; b=VD6wLun5tZqnoLGN726PRjPER3pQWTk17b9pqcFXN0bdIWmKoPyb5KNzwxsiXXNYkKP7XxRaKe80zpvtXT/tUmWYK5/4OGxiL11AaOwh6vZovbdU+NxlZOPhXqB3MU6bjtrAd5LL1g8JbnBgapXqzgia06bRwzyYoMZiTIdCZEo=
+	t=1710826145; cv=none; b=BJpW4gnPAr7pZJedx/iqJ91MD2hq0QX9ccw1JazY/86mYnvUhB7LjCzTwTUYpaoTuHXiL3JGvcYwslxrQWimj2naE34rc0F4QTnpOHIJQFvfUgHjVLG+R9gApGeDjqouC7sCUh78DtSYZdLcfmzXfG4F0TnvrW9dH3M1GbjLPdk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710826133; c=relaxed/simple;
-	bh=GQ69sst6KtWZRI9xIfR8OlxbHRzyV2W310g5+1K6fxg=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=W4Sj3SibBOTbAoUCaUVYlmbZE2n2FhlhvCU65RYmS9OQ7JfYmAowhT8ctrTaEmtyKab2d/3YIS6xF2RooaduPhjg+lNSjMJkj0T/M1bTC3JAvjGsdvt09GyXpQ42EfhAwGU8ABMrvpned9BwGgnBo+J5zII4tWHiOXv4Zvh28hM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com; spf=pass smtp.mailfrom=me.com; dkim=pass (2048-bit key) header.d=me.com header.i=@me.com header.b=k4dXykRg; arc=none smtp.client-ip=17.58.38.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=me.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=me.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=me.com; s=1a1hai;
-	t=1710826129; bh=jtDAYiiHKEo7z1XIeH+DbE76nJx6PwjxTaWNlxP+9zo=;
-	h=Content-Type:Mime-Version:Subject:From:Date:Message-Id:To;
-	b=k4dXykRgixbyPj5jQHYrHy0Oyj/E+OVV9OpR33I95R43Jtb7zwE4xphgzFNEN5rLK
-	 3ZmtWQUzHd6vCOcWexL+Wos3ZV3RzRb4c0OGzuMsY7epNElCLfcCvByXuzDA6zuxZd
-	 5MAIRcEDa5u9KE7abEPH7EQA1L9pgvZcInSf1N6S8mFwEz75HkqEO/c/E+jSODuO1p
-	 pJSgRWIwzZgWFnHjrFrCFN7A9+tYWtksglCjzHi70XNls9c3uwQ4b25R50hn/lA3dc
-	 hP8SkSOr3AmOWaFNXf8mSC6XR18CH6G7BYnQjEcmjPgEPEfy5cUuofm6+QHw6L2C4x
-	 eIoCmvXuAuhvQ==
-Received: from smtpclient.apple (ms11p00im-dlb-asmtpmailmevip.me.com [17.57.154.19])
-	by ms11p00im-qufo17281301.me.com (Postfix) with ESMTPSA id D0D40CC0180;
-	Tue, 19 Mar 2024 05:28:47 +0000 (UTC)
-Content-Type: text/plain;
-	charset=utf-8
+	s=arc-20240116; t=1710826145; c=relaxed/simple;
+	bh=K7QToXAAe5HyxCjtqBulr0uqK2YIIFTKc6WGJYf+b2Y=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=gmMNhH2NF1yTKThNcF3/yZ/PWhzOHmJGyVQPiZwDV0Tvte6Xrj6+YPtTF7r/h2wyXqNyZbo7oR3nKPyGgTivOIKvgdr7eREBkJYcShVrKi/UXNu1cBhSBtEk5b/5OmBCc2W8ZwuUAi54EYcYMDUyMSrrNuNZS1yLpHDgTzB6ghw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=NTK0VcHb; arc=none smtp.client-ip=209.85.208.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56b93b45779so343223a12.1
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:29:02 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710826141; x=1711430941; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=6AQO/2Swa2FQ79FolhUdfxGgRssFDYSK6sxer+QvsoA=;
+        b=NTK0VcHb8M6pvduuIpM/E/bCQ7lwl3ItbNx+L82Wlmrs0MPhnF2h9njW9OcYY0N8iK
+         b+Nxyl9edlohbCzbIwdkJQz0tIiv06cLw21e6vGnOKvOx0eaSbiDZJO2IztYkXY/jd5R
+         mmtNde/o0Rdv07tpdvvVUFvZA2fm6FmGqJwZA8Dxc7+oQ65ZcXao+7uIePI+SnB9MldF
+         j5RiBWYyYE009YBDQuOoaFsy2X71JvUSzk4cub23cxLkehBeW5wwiGnFYQC2dEsoXPkH
+         Fy5wbDU8oFKunHfQTum2AClWf50cxgt2C3Tp7FlQda/4iXjyzKudpBbuMH09il37TFui
+         gGDw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710826141; x=1711430941;
+        h=content-transfer-encoding:in-reply-to:autocrypt:references:cc:to
+         :from:content-language:subject:user-agent:mime-version:date
+         :message-id:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=6AQO/2Swa2FQ79FolhUdfxGgRssFDYSK6sxer+QvsoA=;
+        b=ThC7GOdgro51dAByqOPX1zSBIPp0NsOSMY/zPydE3XclwjPhvir1VPacURFEsZTsRN
+         L/9LiuE3lzW8N2w7CbYisrlFyQD5rWZj8kNts6rj2yaGqkGLwN85DxlVN6XHAh2SErBJ
+         OEa6St+8OABjQfU9S3yKBz5092C8TqEqR2ILjkgRldu0A/EQIDHyXOxwn1kf6tj0Nocw
+         SnAS8U2/koXbmmh77JbOMEul/fQSV9lGMrauPsLXREqolK79IIlf8ifFdRQ/grcpwFLY
+         Oo9oYt+soWS/xntq1bKlEDK7kxsxaxJt5y5o4Kv3UYHD316y7V9rs1YCjHbWLhmLMFnc
+         7Myg==
+X-Forwarded-Encrypted: i=1; AJvYcCX5qznKLHRPAW23qnmUZvbPrdbzZ80S94VpKnifdxUCe6wGmjikMljRWueRQ62qGYYBQkJXFF40KwQcJSSdzkiAD2jMvWmLNrGgtPWr
+X-Gm-Message-State: AOJu0Yxxh+bahokaWzUoDbVizqoE/xviA2r0yOTOgQN8LnyWS4hb0P3A
+	MoA1wJkbLam2CPvwmUQwazT2shW3lFssC76R6tyJsNysclfkcR47p4xpfMa0+1w=
+X-Google-Smtp-Source: AGHT+IFZgAXTNnlTfgh9aF3DLthH2SfgbAvhGWgEWExYIZQitNtiYA6ypFizz++z4ACf/VZ8WTCslg==
+X-Received: by 2002:a05:6402:5418:b0:568:9e82:4899 with SMTP id ev24-20020a056402541800b005689e824899mr11081629edb.9.1710826141461;
+        Mon, 18 Mar 2024 22:29:01 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id ev19-20020a056402541300b005689c2c6508sm5330103edb.70.2024.03.18.22.29.00
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 22:29:00 -0700 (PDT)
+Message-ID: <f59d6389-1c7b-45f9-8b85-274dbbeb775a@linaro.org>
+Date: Tue, 19 Mar 2024 06:28:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3774.500.171.1.1\))
-Subject: Re: [PATCH] rust: init: remove impl Zeroable for Infallible
-From: Laine Taffin Altman <alexanderaltman@me.com>
-In-Reply-To: <ZfkW8rwpdRc_hJBU@Boquns-Mac-mini.home>
-Date: Mon, 18 Mar 2024 22:28:35 -0700
-Cc: Benno Lossin <benno.lossin@proton.me>,
- Miguel Ojeda <ojeda@kernel.org>,
- Alex Gaynor <alex.gaynor@gmail.com>,
- Wedson Almeida Filho <wedsonaf@gmail.com>,
- Gary Guo <gary@garyguo.net>,
- =?utf-8?Q?Bj=C3=B6rn_Roy_Baron?= <bjorn3_gh@protonmail.com>,
- Andreas Hindborg <a.hindborg@samsung.com>,
- Alice Ryhl <aliceryhl@google.com>,
- Martin Rodriguez Reboredo <yakoyoku@gmail.com>,
- stable@vger.kernel.org,
- rust-for-linux@vger.kernel.org,
- lkml <linux-kernel@vger.kernel.org>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <3FBC841A-968E-4AC5-83F0-E906C7EE85C3@me.com>
-References: <20240313230713.987124-1-benno.lossin@proton.me>
- <Zfh5DYkxNAm-mY_9@boqun-archlinux>
- <93FD9491-7E2D-4324-8443-0884B7CFC6EF@me.com>
- <ZfkW8rwpdRc_hJBU@Boquns-Mac-mini.home>
-To: Boqun Feng <boqun.feng@gmail.com>
-X-Mailer: Apple Mail (2.3774.500.171.1.1)
-X-Proofpoint-GUID: JV1TEgZWRV4Q51EWUDIrXol7s29j4YsT
-X-Proofpoint-ORIG-GUID: JV1TEgZWRV4Q51EWUDIrXol7s29j4YsT
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=notspam policy=default score=0 spamscore=0 malwarescore=0 phishscore=0
- bulkscore=0 mlxscore=0 mlxlogscore=999 adultscore=0 suspectscore=0
- clxscore=1015 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.19.0-2308100000 definitions=main-2403190041
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v13 2/4] dt-bindings: remoteproc: add Tightly Coupled
+ Memory (TCM) bindings
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
+ Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+References: <20240311175926.1625180-1-tanmay.shah@amd.com>
+ <20240311175926.1625180-3-tanmay.shah@amd.com>
+ <d498d76e-b021-4cf7-adca-63f1cd3e1542@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <d498d76e-b021-4cf7-adca-63f1cd3e1542@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Mar 18, 2024, at 9:39=E2=80=AFPM, Boqun Feng <boqun.feng@gmail.com> =
-wrote:
-> On Mon, Mar 18, 2024 at 08:17:07PM -0700, Laine Taffin Altman wrote:
->> On Mar 18, 2024, at 10:25=E2=80=AFAM, Boqun Feng =
-<boqun.feng@gmail.com> wrote:
->>> On Wed, Mar 13, 2024 at 11:09:37PM +0000, Benno Lossin wrote:
->>>> From: Laine Taffin Altman <alexanderaltman@me.com>
->>>>=20
->>>> It is not enough for a type to be a ZST to guarantee that zeroed =
-memory
->>>> is a valid value for it; it must also be inhabited. Creating a =
-value of
->>>> an uninhabited type, ZST or no, is immediate UB.
->>>> Thus remove the implementation of `Zeroable` for `Infallible`, =
-since
->>>> that type is not inhabited.
->>>>=20
->>>> Cc: stable@vger.kernel.org
->>>> Fixes: 38cde0bd7b67 ("rust: init: add `Zeroable` trait and =
-`init::zeroed` function")
->>>> Closes: https://github.com/Rust-for-Linux/pinned-init/pull/13
->>>> Signed-off-by: Laine Taffin Altman <alexanderaltman@me.com>
->>>> Signed-off-by: Benno Lossin <benno.lossin@proton.me>
->>>=20
->>> I think either in the commit log or in the code comment, there =
-better be
->>> a link or explanation on "(un)inhabited type". The rest looks good =
-to
->>> me.
->>=20
->> Would the following be okay for that purpose?
->>=20
->> A type is inhabited if at least one valid value of that type exists; =
-a
->> type is uninhabited if no valid values of that type exist.  The terms
->> "inhabited" and "uninhabited" in this sense originate in type theory,
->> a branch of mathematics.
->>=20
->> In Rust, producing an invalid value of any type is immediate =
-undefined
->> behavior (UB); this includes via zeroing memory.  Therefore, since an
->> uninhabited type has no valid values, producing any values at all for
->> it is UB.
->>=20
->> The Rust standard library type `core::convert::Infallible` is
->> uninhabited, by virtue of having been declared as an enum with no
->> cases, which always produces uninhabited types in Rust.  Thus, remove
->> the implementation of `Zeroable` for `Infallible`, thereby avoiding
->> the UB.
->>=20
->=20
-> Yeah, this works for me. Thanks!
+On 12/03/2024 13:13, Krzysztof Kozlowski wrote:
+> On 11/03/2024 18:59, Tanmay Shah wrote:
+>> From: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>>
+>> Introduce bindings for TCM memory address space on AMD-xilinx Zynq
+>> UltraScale+ platform. It will help in defining TCM in device-tree
+>> and make it's access platform agnostic and data-driven.
+>>
+>> Tightly-coupled memories(TCMs) are low-latency memory that provides
+>> predictable instruction execution and predictable data load/store
+>> timing. Each Cortex-R5F processor contains two 64-bit wide 64 KB memory
+>> banks on the ATCM and BTCM ports, for a total of 128 KB of memory.
+>>
+>> The TCM resources(reg, reg-names and power-domain) are documented for
+>> each TCM in the R5 node. The reg and reg-names are made as required
+>> properties as we don't want to hardcode TCM addresses for future
+>> platforms and for zu+ legacy implementation will ensure that the
+>> old dts w/o reg/reg-names works and stable ABI is maintained.
+>>
+>> It also extends the examples for TCM split and lockstep modes.
+>>
+>> Signed-off-by: Radhey Shyam Pandey <radhey.shyam.pandey@amd.com>
+>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+>> ---
+>>
+>> Changes in v13:
+>>   - Have power-domains property for lockstep case instead of
+>>     keeping it flexible.
+>>   - Add "items:" list in power-domains property
+> 
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 
-Great!  Should it be re-sent or can the new wording be incorporated upon =
-merge?
+And unreviewed. It turns out you now mix devices and bring incompatible
+programming models under one compatible. And this leads to problems in
+your further patches.
 
-Thank,
-Laine
+NAK.
 
->=20
-> Regards,
-> Boqun
->=20
->> Thanks,
->> Laine
->>=20
->>>=20
->>> Reviewed-by: Boqun Feng <boqun.feng@gmail.com>
->>>=20
->>> Regards,
->>> Boqun
->>>=20
->>>> ---
->>>> rust/kernel/init.rs | 4 ++--
->>>> 1 file changed, 2 insertions(+), 2 deletions(-)
->>>>=20
->>>> diff --git a/rust/kernel/init.rs b/rust/kernel/init.rs
->>>> index 424257284d16..538e03cfc84a 100644
->>>> --- a/rust/kernel/init.rs
->>>> +++ b/rust/kernel/init.rs
->>>> @@ -1292,8 +1292,8 @@ macro_rules! impl_zeroable {
->>>>    i8, i16, i32, i64, i128, isize,
->>>>    f32, f64,
->>>>=20
->>>> -    // SAFETY: These are ZSTs, there is nothing to zero.
->>>> -    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, =
-Infallible, (),
->>>> +    // SAFETY: These are inhabited ZSTs, there is nothing to zero =
-and a valid value exists.
->>>> +    {<T: ?Sized>} PhantomData<T>, core::marker::PhantomPinned, (),
->>>>=20
->>>>    // SAFETY: Type is allowed to take any value, including all =
-zeros.
->>>>    {<T>} MaybeUninit<T>,
->>>>=20
->>>> base-commit: 768409cff6cc89fe1194da880537a09857b6e4db
->>>> --=20
->>>> 2.42.0
->>>>=20
->>>>=20
->>>>=20
->>=20
+Best regards,
+Krzysztof
 
 
