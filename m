@@ -1,158 +1,146 @@
-Return-Path: <linux-kernel+bounces-107544-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107545-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id AA39F87FDEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:58:50 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8A10C87FDEC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:59:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 159A8B210C8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:58:48 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 40D141F2280E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:59:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99F440865;
-	Tue, 19 Mar 2024 12:58:37 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="Z3OFpBnA"
-Received: from mail-yw1-f169.google.com (mail-yw1-f169.google.com [209.85.128.169])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2FEFC38FA6;
+	Tue, 19 Mar 2024 12:58:47 +0000 (UTC)
+Received: from mail-oo1-f53.google.com (mail-oo1-f53.google.com [209.85.161.53])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 453E83C08E
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:58:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3C5D53C08E;
+	Tue, 19 Mar 2024 12:58:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853116; cv=none; b=LyDNF9RbGvYtE8ZENU/pHTPDfQ/VkT88NvlSXSiiyIYtSNK1+n65iG4RFs9aIA2Jv9HQRFHL/HAQMt+9+DnhOPrDemYYNpbsQRZ8bwGh0bYu5GH+kafaBfz8u47Lfbg2/YBJqNemyKlZccpQxDgyVOGZC2H1ZOEk4BcRDbrYzg4=
+	t=1710853126; cv=none; b=kEdoQOrwHPhjPw8Jfg9nYXCMm/SSx+pWeguduR52ilw54cYYbhXKgB3cK0aazAIszMs01ZYfh4k/6TTwYSg38g3c729uJ4GN47VnTMm1OdGB3JQKMWbobR0826gahrKVdGDimeYNROGBhXaGjOuL47qUG/sUtCpjaplME+jcXlQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853116; c=relaxed/simple;
-	bh=BU86mkt/Ka5CMfIKuRWwdKPasrg+HQf2iS085pqvClQ=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ArSxE3Z523sXhk4SZ7zmTXM1AolhXcs0mcdJioZd+5nQHftS1wj1SNc8JViqUFjpiHV0FKXiUbYEwcI9H7oqtyqTxzTPJvyRhQ5OcOl7F9PaL9mkyMQZ2MNJGN207+XXbNif1Wu83zCPZtNBZtUsYqoPRKomEe5Lpd9Y6QRrXJQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=Z3OFpBnA; arc=none smtp.client-ip=209.85.128.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
-Received: by mail-yw1-f169.google.com with SMTP id 00721157ae682-60a434ea806so59510417b3.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:58:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1710853113; x=1711457913; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=JBD2QIEr5rKcJqehTbPK3gKFjK6RT89LdsFIyo3OZSo=;
-        b=Z3OFpBnAavwZPNt+ZEPSTWdWwZyRpXuG3N8RY/FkG4IlnRedB4iZoChMKaftZzRz01
-         qt0nCyqaJhOvJNWuG4tx8D+W9Coooj5joMv+UUdG/dFqdm/2qYx9G8/5xYB8ghrZvlw5
-         Isji4Pysc81Dle0DvWvGoR11gqBSpcsc6FbEX7R0uqW/NH2ThjO6INqD+LhmUEEB6r0q
-         I1efuJonc7m7LRD1G8OSQtn5Hj0kQGwHp/O/NIrUWewtZEhvXngiiavYfh/VBb8AKcOF
-         hml4NmuCg1R4x/w3Xvda5YwENS3BKUsEcRaayA2AGnZIZ85VSspbgz19mCts0+b/Kxzt
-         a7pQ==
+	s=arc-20240116; t=1710853126; c=relaxed/simple;
+	bh=bDGVu2ht54DNJY9D61w97Glx7t+GS1mjdPbvuhX2RKU=;
+	h=MIME-Version:From:Date:Message-ID:Subject:To:Cc:Content-Type; b=p27TdvpHt6IHt+Ql+jBf9WrExB5BLyV0UIcc4BMxl7+c90YBT6JhtrQcOoJVqzO6kWH5MF2b659FrLkJ2XQq7PibEU9qPYZ6DIFPcIab0NdtVSv8PEKNautCo6gG/KpAIz8imYObKA2Etmsj2B3zJHXnbSZUiw9OoyTggoo2zdQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.161.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-oo1-f53.google.com with SMTP id 006d021491bc7-5a4e0859b65so11494eaf.0;
+        Tue, 19 Mar 2024 05:58:44 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710853113; x=1711457913;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
+        d=1e100.net; s=20230601; t=1710853124; x=1711457924;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
          :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=JBD2QIEr5rKcJqehTbPK3gKFjK6RT89LdsFIyo3OZSo=;
-        b=AyXxdlkbVO9CWF/OYV0MRZVYR0pojLRuGFPbJUVyvIuLxC/51EJp+uWN40kfDXLndk
-         Kp9tOy31Agnu4luUjZ3kIVbrOrqmAEri71/WvUOqG8dqbkPnCRYQSGEbAU1Z/trNfapC
-         zidEX0c2dn4wzfIyKbY+MkdOLRE/k7ZNoQs+81BGAUo0wCt61FVb0ZO/aiNG2tBRKfg/
-         f4mGTapfPVGKv047gU5H2hRbwkTWYwMyj91xMQClxAytJihKkNRvv7AV179O+EzscYZD
-         6TcapdyVOb2XJACcgeErPsSIBFGJ1lA6FCCrVnLauuRoYo8uNSOOrVsfeWWhjWC9f0p8
-         RSkQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXxHc1HdZ9YBPhk8BOo8LWJ28n39ZvyxUFstpbcINkVYeTpjXGIghaf5F6HMXhljQVkgTOMnA4dcUn7vyJ8ls0o7brnRQt0ghaMuxVs
-X-Gm-Message-State: AOJu0YwUpYqS7Ev9/kXLIGC0RZtZ4Mb8NPM5iHcFfYfoRbfiBrpbzIFp
-	Ak7vBClL3vNHBbRnCw4VTTeSPD23Pqe4pbCsfrAIsTqbagoa1K1OEEDu+TvwA9KpmuTl6IurqSW
-	njBT4kRVq6g6+qwSAsVlsaO8pKzYxcWGUOKwx/g==
-X-Google-Smtp-Source: AGHT+IFvOcuO4OJJA1ZvGKt3d4wULBOkk2d61EBXmybZlxtEuOaN4dke+s6TRNw/Gpy3hehkpZ0dwMeQ4BRR8a5tdfM=
-X-Received: by 2002:a0d:efc3:0:b0:60d:547:bc38 with SMTP id
- y186-20020a0defc3000000b0060d0547bc38mr12960286ywe.0.1710853113341; Tue, 19
- Mar 2024 05:58:33 -0700 (PDT)
+        bh=kVedSuy1YaJHE6kqXfvwlKhYz6NEiCNUxLQc9igH1PY=;
+        b=Bu+U2HQ+YJXGlSOG0w94ed3+OMs31Z8DyzMinPDk2OJpwxItR3yI+yHqrZrzk9LZwv
+         q6eIXdprLeW8v195s1naIzxuhPtO2DmL8i2cpU6Js5vhNRAQuvir21e9DJUjHugjwuJA
+         +IKmY6WUcppxxXz5Z8ADbB4PDGNKgmSkCFoIBzjt0SAxWO2h+up7x7qRFX7esJPAh9U2
+         ySlFsVPAVRweCRvyMHag2oYyRRC3vSZTOY5OM3IOgfcEpxqhikA5cPvfXeNC19XpOm6F
+         7y16djEvJ7iC0uFC/q/prMQ8ePW1WmkUWKQLeHk52ao5bhPDAEcGJEDL8f+jegZLg+Th
+         mGoA==
+X-Forwarded-Encrypted: i=1; AJvYcCUAK/EEKS5qAL9Af1gkUqTnJnCzXkgimgtPwxRzSWNxPVPhFaxq86J1kLLFr0TLn02L0dOwM0h2dydF9czbe3JpHfquLslYJ4VOBg6P
+X-Gm-Message-State: AOJu0YxqwenieNYrafrrlf7bbRBadRDMOti/e7SqE8WS+jgj6Fr3WYtZ
+	LiGYN19HBQZKFxFHW/SMk/z+TqI9GIciTwIj92bqpvKPxQdSY5Kd2zNozoATqUutyRfqq+fvG5H
+	hdQdoenGtd2Ocr6uXfOFaT2y2W3U=
+X-Google-Smtp-Source: AGHT+IHUaNKZWYRgiZaX9fAuFEFaoobcM3pxAzz8lLMeRycqVfpgjD+vzJ9MAn8uUJNY3yQv1dX8DHno4IbptehmE+c=
+X-Received: by 2002:a05:6820:b95:b0:5a4:7790:61b4 with SMTP id
+ eg21-20020a0568200b9500b005a4779061b4mr2110542oob.0.1710853124158; Tue, 19
+ Mar 2024 05:58:44 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
- <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com> <eb854c43-1e92-4c19-bfd3-1bde94924319@linaro.org>
- <f97faeb9-8a6b-47c6-9317-daca88257802@ideasonboard.com> <30430e0e-70de-4831-97ad-974e350a2e54@ideasonboard.com>
- <5ca1d005-1beb-47ec-943a-9358ae3c6704@linaro.org> <CAEmqJPp7uGYe993L+ujth2mfRy66s8-S9FNxPY7vwkrboDq9yg@mail.gmail.com>
- <89d459dd-cc8c-4780-a56a-809e24343e69@linaro.org>
-In-Reply-To: <89d459dd-cc8c-4780-a56a-809e24343e69@linaro.org>
-From: Naushir Patuck <naush@raspberrypi.com>
-Date: Tue, 19 Mar 2024 12:57:57 +0000
-Message-ID: <CAEmqJPrLP3j37Kcj0mX23x00p=gWuxZPNSUTRGNkcEqsUJ2MjQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for raspberrypi,rp1-cfe
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham@ideasonboard.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+From: "Rafael J. Wysocki" <rafael@kernel.org>
+Date: Tue, 19 Mar 2024 13:58:32 +0100
+Message-ID: <CAJZ5v0jjQ90P=+oQKdA2VY-8r0QAXjXfq50UMRDs6=XbcJ7R_A@mail.gmail.com>
+Subject: [GIT PULL] More power management updates for v6.9-rc1
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Linux PM <linux-pm@vger.kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 19 Mar 2024 at 12:21, Krzysztof Kozlowski
-<krzysztof.kozlowski@linaro.org> wrote:
->
-> On 19/03/2024 13:06, Naushir Patuck wrote:
-> > Hi,
-> >
-> > On Tue, 19 Mar 2024 at 09:32, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 19/03/2024 08:00, Tomi Valkeinen wrote:
-> >>> On 19/03/2024 08:48, Tomi Valkeinen wrote:
-> >>>> On 19/03/2024 08:23, Krzysztof Kozlowski wrote:
-> >>>>> On 18/03/2024 16:49, Tomi Valkeinen wrote:
-> >>>>>> Add DT bindings for raspberrypi,rp1-cfe.
-> >>>>>>
-> >>>>>> Signed-off-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-> >>>>>> ---
-> >>>>>>   .../bindings/media/raspberrypi,rp1-cfe.yaml        | 103
-> >>>>>> +++++++++++++++++++++
-> >>>>>>   1 file changed, 103 insertions(+)
-> >>>>>>
-> >>>>>> diff --git
-> >>>>>> a/Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.yaml
-> >>>>>> b/Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.yaml
-> >>>>>> new file mode 100644
-> >>>>>> index 000000000000..7b2beeaaab0e
-> >>>>>> --- /dev/null
-> >>>>>> +++ b/Documentation/devicetree/bindings/media/raspberrypi,rp1-cfe.yaml
-> >>>>>> @@ -0,0 +1,103 @@
-> >>>>>> +# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
-> >>>>>> +%YAML 1.2
-> >>>>>> +---
-> >>>>>> +$id: http://devicetree.org/schemas/media/raspberrypi,rp1-cfe.yaml#
-> >>>>>
-> >>>>> Use compatible as filename.
-> >>>>
-> >>>> Ah, indeed. I changed the compatible quite late, adding the "rpi5" as
-> >>>> versioning, and missed changing the file name.
-> >>>>
-> >>>> I'll rename.
-> >>>
-> >>> Actually, maybe it's better to have two compatibles,
-> >>> "raspberrypi,rp1-cfe" as the generic one, and "raspberrypi,rpi5-rp1-cfe"
-> >>> (or something similar) for RaspberryPi 5.
-> >>>
-> >>> And I'm not sure if the "rp1" part is relevant there, would
-> >>> "raspberrypi,cfe" be just as fine? Naush?
-> >>
-> >> See writing bindings. Compatibles should be SoC specific. In some cases
-> >> generic fallbacks make sense, in some note. But don't just choose
-> >> "generic fallback" because you want. Provide rationale.
-> >
-> > If the compatible is SoC specific, I suppose "raspberrypi,rp1-cfe"
-> > would be the correct string.
->
-> Sure, but then please think what if rp1 is on Rpi6, called exactly the
-> same (rp1), with some minor differences? Could it be?
+Hi Linus,
 
-Yes, this is definitely possible.  In such cases, I would expect the
-hardware to have a version register that would be queried by the
-driver to adjust for minor differences, and the compatible string
-remains the same.  Does that seem reasonable?
+Please pull from the tag
+
+ git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm.git \
+ pm-6.9-rc1-2
+
+with top-most commit a6d6590917ec352270bd3e3c040240aab31f2e90
+
+ Merge branches 'pm-em', 'pm-powercap' and 'pm-sleep'
+
+on top of commit 07abb19a9b201c11e4367e8a428be7235b6dbd0d
+
+ Merge tag 'pm-6.9-rc1' of
+git://git.kernel.org/pub/scm/linux/kernel/git/rafael/linux-pm
+
+to receive more power management updates for 6.9-rc1.
+
+These update the Energy Model to make it prevent errors due to power
+unit mismatches, fix a typo in power management documentation,
+convert one driver to using a platform remove callback returning void,
+address two cpufreq issues (one in the core and one in the DT driver),
+and enable boost support in the SCMI cpufreq driver.
+
+Specifics:
+
+ - Modify the Energy Model code to bail out and complain if the unit of
+   power is not uW to prevent errors due to unit mismatches (Lukasz Luba).
+
+ - Make the intel_rapl platform driver use a remove callback returning
+   void (Uwe Kleine-K=C3=B6nig).
+
+ - Fix typo in the suspend and interrupts document (Saravana Kannan).
+
+ - Make per-policy boost flags actually take effect on platforms using
+   cpufreq_boost_set_sw() (Sibi Sankar).
+
+ - Enable boost support in the SCMI cpufreq driver (Sibi Sankar).
+
+ - Make the DT cpufreq driver use zalloc_cpumask_var() for allocating
+   cpumasks to avoid using uninitialized memory (Marek Szyprowski).
+
+Thanks!
+
+
+---------------
+
+Lukasz Luba (1):
+      PM: EM: Force device drivers to provide power in uW
+
+Marek Szyprowski (1):
+      cpufreq: dt: always allocate zeroed cpumask
+
+Saravana Kannan (1):
+      Documentation: power: Fix typo in suspend and interrupts doc
+
+Sibi Sankar (3):
+      cpufreq: Fix per-policy boost behavior on SoCs using
+cpufreq_boost_set_sw()
+      firmware: arm_scmi: Add support for marking certain frequencies as tu=
+rbo
+      cpufreq: scmi: Enable boost support
+
+Uwe Kleine-K=C3=B6nig (1):
+      powercap: intel_rapl: Convert to platform remove callback returning v=
+oid
+
+---------------
+
+ Documentation/power/suspend-and-interrupts.rst |  2 +-
+ drivers/cpufreq/cpufreq-dt.c                   |  2 +-
+ drivers/cpufreq/cpufreq.c                      | 18 ++++++++++++------
+ drivers/cpufreq/freq_table.c                   |  2 +-
+ drivers/cpufreq/scmi-cpufreq.c                 | 20 +++++++++++++++++++-
+ drivers/firmware/arm_scmi/perf.c               |  3 +++
+ drivers/powercap/intel_rapl_msr.c              |  5 ++---
+ kernel/power/energy_model.c                    | 11 +++++++++++
+ 8 files changed, 50 insertions(+), 13 deletions(-)
 
