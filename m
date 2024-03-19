@@ -1,73 +1,47 @@
-Return-Path: <linux-kernel+bounces-107079-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107081-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B807887F749
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:27:37 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0BE5787F751
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:30:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 46FBB1F226C0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:27:37 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 57EF4B2170F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:30:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D60B7BAEE;
-	Tue, 19 Mar 2024 06:27:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0547F7C0B5;
+	Tue, 19 Mar 2024 06:30:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b="C4b7QSIJ"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="T2zk/TEV"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3E4F74594E
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:27:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6E49665190;
+	Tue, 19 Mar 2024 06:30:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710829649; cv=none; b=jxVh35ziJo+7h0vJkjhtSOpwQZW4Bi7SfqsXjy2UIaPTSsYgz+BOSzhAjm/kXr08Fs9U7z4G9KBgdaqP2eyU1hNzEATwflV1OPa2G5woOczGzg2M99NnjPeWugt5SOMl9Lz0Kkpq+mhpNUQdjSlmSRIk7NpN1DIjK8M10XRmCpg=
+	t=1710829805; cv=none; b=R3/p8CvD827TE70ZQ9OdzEnGzNFYSawj5/CaVvpTD/eFUKmSmJa4kt6QapNUxki7DXKbiLp1slvU+9D191URle3g1BS0Ucnz1T5zQqvHbF4nzT4UrrEHPUQGI/1s4JmjPFobHuwNVAYxsseWLJ5+s1otlk5jEWbktue45nUaPiM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710829649; c=relaxed/simple;
-	bh=s9Npf4BnVmi7B3XVY1acshbD50GVpEXc7ci83JbHTts=;
+	s=arc-20240116; t=1710829805; c=relaxed/simple;
+	bh=IlB5SC8elaxZxZ7jC3HSF6c2qr46rgiI44EFyJKcBPw=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Xr1DK0VqJCC7HG+1nmvfnz9x65+baMigvES/DujWFvLiLLEo07EYLDnRWEoc6kJmkOQCs5NZetwRfbRHCMI0WP6BgkxeiSyK+na67Jckt9FK0q8pHkQGY3Lms4Xu+/+mMM8UEjefzouMpG4WyyIJKX5eYvBjR+QqCfpyJmYoA84=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com; spf=pass smtp.mailfrom=shopee.com; dkim=pass (2048-bit key) header.d=shopee.com header.i=@shopee.com header.b=C4b7QSIJ; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=shopee.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=shopee.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1dee27acf7aso33357855ad.2
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:27:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=shopee.com; s=shopee.com; t=1710829647; x=1711434447; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Oac/H665Upn99d/GW4a2mZh9auV+zuFrhXx9xokbC9M=;
-        b=C4b7QSIJ78Zs8OVIIjlKyBd+fwzTYS7foHjt+5R8NNGM46UJnrOTBPVGEuK2WnFhfi
-         j1nnMIov6ASNUVSI1lenVjQoCk5m/O84Qp0hWFM1yITHvGzt5itz0boYu6OWaE0uIlOk
-         pa7CYLYQyEtG6xA3TDWTUbxqxbJTmUHt3a2XhCHKcjE2ATd0te9VgXq31TR4vLFycWp0
-         xfu+/A1nr34dkcq8oVz3VEswVwNq6S8vK+zUGS3fTVUmUyF2yolBX5Wk8YAc5Ccy3bNp
-         FlUn1jxFrP5QvIJDompiBE2BA2S3I5+9hn44fCccNRSn26Xu0bZQ6+IUvZzZF0E/TAiI
-         DBOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710829647; x=1711434447;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to:subject
-         :user-agent:mime-version:date:message-id:x-gm-message-state:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=Oac/H665Upn99d/GW4a2mZh9auV+zuFrhXx9xokbC9M=;
-        b=VIZ7FgMcZ9Im082pFSs2SFYAoQ832uOLuy8Zi3SanXx8ixZJLCzwJgzosLV2bLAxDS
-         X6v3B8TJVDlMegr1eCjfOeBpWZprVGmK6VrRp+OlYfTEb16yQG/xmvu+hzDTuiPm2A0l
-         6v9icQxTnceRtS3dbr9HAMcLUnegfr848BR1XEmo5MbaLe/D1maZxVNzU3VUUYEqt+nL
-         TdYRYIZXLxTlaI/t12vNnxT6TkbSL3973Xs9Oho4ZgXq60AAYe1yg5thP23tWV6flQxY
-         ry2QPxDQJDbRUi0ygrG344ZtalOPtKOQpZ9Hr5DyBBtzcm5h3h4BLZY6k4rDwfEiHdVY
-         erzw==
-X-Forwarded-Encrypted: i=1; AJvYcCUm4oqC96QZNrfVp5b21HbAhEk60LgW9kkYvLajvNnanXxHUiNEPRx5QpQXgwpjl2zBcuqLg00yc+EOSx39rX8+VVAUpjQDPWN5LVEY
-X-Gm-Message-State: AOJu0YxMxeMtc/jm0Zao5gH+AltlOcBeS7UMEJm/FZXd0HTIP8dFpkbj
-	qZGii7JexzZ1KYm6sLeU+QXE8A9RQv8GhOaV58njAb3iy/hXJVSyVcl0A4uPkos=
-X-Google-Smtp-Source: AGHT+IE+FTHrD+f7KT3cSLTSqyat6zpyuVkiZgNrpvtXJduzhveRWd079fxz4nWY4nbOn6e8qn9uUA==
-X-Received: by 2002:a17:902:f80f:b0:1dd:96ca:e1ae with SMTP id ix15-20020a170902f80f00b001dd96cae1aemr12208125plb.69.1710829647650;
-        Mon, 18 Mar 2024 23:27:27 -0700 (PDT)
-Received: from [10.54.24.74] (static-ip-148-99-134-202.rev.dyxnet.com. [202.134.99.148])
-        by smtp.gmail.com with ESMTPSA id m5-20020a170902db8500b001dd5b86d809sm10416953pld.279.2024.03.18.23.27.22
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 23:27:27 -0700 (PDT)
-Message-ID: <ed992a7f-7b1d-415d-8d90-1fbb8b619a8c@shopee.com>
-Date: Tue, 19 Mar 2024 14:27:20 +0800
+	 In-Reply-To:Content-Type; b=tiJyHDjnGZP2f0UTbCkfS6jxp14qkWZRh8NOyxOZXmFVdHVD5HM3oPEBOiORYjh3auMTDiBALIn7z0HFUxbdVk+pef6IO2j9+6MkpwjOfBQoYCRS3yi45XoEtiGXk+/auKHB/jCtFLD6nR1aRVucb/gWClUOpt7DiGI9TtYRL3k=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=T2zk/TEV; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 28C44480;
+	Tue, 19 Mar 2024 07:29:34 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710829775;
+	bh=IlB5SC8elaxZxZ7jC3HSF6c2qr46rgiI44EFyJKcBPw=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=T2zk/TEVPl9lQ1LQ49Mw8Z8Zp8wh9ByIzkg6GBAaskM6rL9AfWIF2spIGOWMC6Kwn
+	 XD6sSUsGqoZnZ5mLza5kU47IKh2LciNXsAooFaXillAtkrpW/YahrY4echgMLvHxOz
+	 K/ZmBfp4LpLqA/ZEL8PJhw++saH9pW0NZsp0eczE=
+Message-ID: <fcea0340-68f0-4a16-9b47-4d9eb91ffb1a@ideasonboard.com>
+Date: Tue, 19 Mar 2024 08:29:57 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,95 +49,126 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v5 1/2] x86/resctrl: Rename pseudo_lock_event.h to trace.h
-To: Reinette Chatre <reinette.chatre@intel.com>, james.morse@arm.com
-Cc: fenghua.yu@intel.com, babu.moger@amd.com, tglx@linutronix.de,
- mingo@redhat.com, bp@alien8.de, dave.hansen@linux.intel.com, hpa@zytor.com,
- peternewman@google.com, x86@kernel.org, linux-kernel@vger.kernel.org,
- corbet@lwn.net, linux-doc@vger.kernel.org
-References: <20240308074132.409107-1-haifeng.xu@shopee.com>
- <20240308074132.409107-2-haifeng.xu@shopee.com>
- <f1fd3dbf-a4a3-419e-9092-ff7f9302c874@intel.com>
-From: Haifeng Xu <haifeng.xu@shopee.com>
-In-Reply-To: <f1fd3dbf-a4a3-419e-9092-ff7f9302c874@intel.com>
-Content-Type: text/plain; charset=UTF-8
+Subject: Re: [PATCH 0/4] media: raspberrypi: Support RPi5's CFE
+Content-Language: en-US
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org, Naushir Patuck
+ <naush@raspberrypi.com>, Laurent Pinchart
+ <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
+ <28754b32-35c7-4285-a610-3e101da41047@linaro.org>
+ <c6526c63-3e8d-46f3-abc2-3cc513617161@ideasonboard.com>
+ <0c1820fb-fbc0-4aae-b0d4-b5bb5c996377@linaro.org>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <0c1820fb-fbc0-4aae-b0d4-b5bb5c996377@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
+On 19/03/2024 08:23, Krzysztof Kozlowski wrote:
+> On 19/03/2024 07:21, Tomi Valkeinen wrote:
+>> Hi,
+>>
+>> On 19/03/2024 08:05, Krzysztof Kozlowski wrote:
+>>> On 18/03/2024 16:49, Tomi Valkeinen wrote:
+>>>> This series adds support to the CFE hardware block on RaspberryPi 5. The
+>>>> CFE (Camera Front End) contains a CSI-2 receiver and Front End, a small
+>>>> ISP.
+>>>>
+>>>> This series is currently based on multiple other serieses:
+>>>>
+>>>> - Sakari's "[PATCH v8 00/38] Generic line based metadata support, internal
+>>>>     pads" for metadata support
+>>>> - Laurent's "[PATCH 00/15] media: Add driver for the Raspberry Pi <5
+>>>>     CSI-2 receiver" for a few new pixel formats and imx219 (for testing).
+>>>> - Jacopo's "[PATCH v5 0/9] media: raspberrypi: Add support for PiSP Back
+>>>>     End" for some shared uapi headers.
+>>>>
+>>>> And to run this, one of course needs the basic RPi5 kernel support plus
+>>>> relevant dts changes to enable the cfe and camera.
+>>>
+>>> Which makes it impossible to merge. Please work on decoupling.
+>>
+>> Yes, it's not for merging as I wrote: "So at the moment we cannot merge
+>> this driver, but hopefully the dependencies will get merged before the
+>> reviews on this one are done."
+>>
+>> I believe Sakari's and Jacopo's serieses should be very close to
+>> merging, and those should satisfy the needs of the driver itself.
+>>
+>> The DT bindings example uses a header from RPi5 base support series, and
+>> if merging the base support seems to take a long time, I guess I could
+>> drop the include and just use numbers instead for RP1_INT_MIPI0 and
+>> RP1_CLK_MIPI0_CFG. And change those back later when the base support is
+>> merged.
+> 
+> The problem is that your patches cannot be tested by automated tools.
 
+Yes, I understand. I will send testable and mergeable patches when the 
+dependencies are in, and until that this series is do-not-merge. But as 
+reviews sometimes take a very long time, I think it's better to start 
+sooner than later.
 
-On 2024/3/14 06:46, Reinette Chatre wrote:
-> Hi Haifeng,
-> 
-> On 3/7/2024 11:41 PM, Haifeng Xu wrote:
->> Now only pseudo-locking part uses tracepoints to do event tracking, but
->> other parts of resctrl may need new tracepoints. It is unnecessary to
->> create separate header files and define CREATE_TRACE_POINTS in different
->> c files which fragments the resctrl tracing.
->>
->> Therefore, give the resctrl tracepoint header file a generic name to
->> support its use for tracepoints that are not specific to pseudo-locking.
->>
->> No functional change.
->>
->> Signed-off-by: Haifeng Xu <haifeng.xu@shopee.com>
->> Suggested-by: Reinette Chatre <reinette.chatre@intel.com>
->> ---
->>  arch/x86/kernel/cpu/resctrl/pseudo_lock.c                   | 2 +-
->>  .../x86/kernel/cpu/resctrl/{pseudo_lock_event.h => trace.h} | 6 +++---
->>  2 files changed, 4 insertions(+), 4 deletions(-)
->>  rename arch/x86/kernel/cpu/resctrl/{pseudo_lock_event.h => trace.h} (88%)
->>
->> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->> index 884b88e25141..492c8e28c4ce 100644
->> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->> +++ b/arch/x86/kernel/cpu/resctrl/pseudo_lock.c
->> @@ -31,7 +31,7 @@
->>  #include "internal.h"
->>  
->>  #define CREATE_TRACE_POINTS
->> -#include "pseudo_lock_event.h"
->> +#include "trace.h"
->>  
->>  /*
->>   * The bits needed to disable hardware prefetching varies based on the
->> diff --git a/arch/x86/kernel/cpu/resctrl/pseudo_lock_event.h b/arch/x86/kernel/cpu/resctrl/trace.h
->> similarity index 88%
->> rename from arch/x86/kernel/cpu/resctrl/pseudo_lock_event.h
->> rename to arch/x86/kernel/cpu/resctrl/trace.h
->> index 428ebbd4270b..ed5c66b8ab0b 100644
->> --- a/arch/x86/kernel/cpu/resctrl/pseudo_lock_event.h
->> +++ b/arch/x86/kernel/cpu/resctrl/trace.h
->> @@ -2,7 +2,7 @@
->>  #undef TRACE_SYSTEM
->>  #define TRACE_SYSTEM resctrl
->>  
->> -#if !defined(_TRACE_PSEUDO_LOCK_H) || defined(TRACE_HEADER_MULTI_READ)
->> +#if !defined(_TRACE_RESCTRL_H) || defined(TRACE_HEADER_MULTI_READ)
->>  #define _TRACE_PSEUDO_LOCK_H
-> 
-> The above #define should match the new name also.
+Is there a way to mark a series as "don't bother testing" for automated 
+tools? RFC in the subject? I considered making this RFC, but I felt the 
+patches themselves are not RFC quality. I've also seen DNI 
+(do-not-integrate) used somewhere, but I'm not sure that's universally 
+understood.
 
-Sorry, I forgot to replace it with 'RESCTRL' in this version.
-Thanks for pointing that out!
-> 
->>  
->>  #include <linux/tracepoint.h>
->> @@ -35,9 +35,9 @@ TRACE_EVENT(pseudo_lock_l3,
->>  	    TP_printk("hits=%llu miss=%llu",
->>  		      __entry->l3_hits, __entry->l3_miss));
->>  
->> -#endif /* _TRACE_PSEUDO_LOCK_H */
->> +#endif /* _TRACE_RESCTRL_H */
->>  
->>  #undef TRACE_INCLUDE_PATH
->>  #define TRACE_INCLUDE_PATH .
->> -#define TRACE_INCLUDE_FILE pseudo_lock_event
->> +#define TRACE_INCLUDE_FILE trace
->>  #include <trace/define_trace.h>
-> 
-> The rest looks good.
-> 
-> Thank you.
-> 
-> Reinette
+  Tomi
+
 
