@@ -1,221 +1,407 @@
-Return-Path: <linux-kernel+bounces-106962-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106963-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C656687F60D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:33:43 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id A9ED487F614
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:36:17 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F1472B21698
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:33:40 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C996A1C21A63
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 97D067BB1B;
-	Tue, 19 Mar 2024 03:33:27 +0000 (UTC)
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com [209.85.166.197])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 843E07BB14;
+	Tue, 19 Mar 2024 03:36:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="daJ82FT6"
+Received: from mail-il1-f173.google.com (mail-il1-f173.google.com [209.85.166.173])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6FB857BAEE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:33:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.197
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 989357BAE5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:36:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.173
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710819207; cv=none; b=cpqlbL23JXIgozgB1uEDuFe0PgE+cTgHjl5NgB4JpzYMGs81ESMmYAs2ssx3ggwRYsHN09tpRfzHNaQm8A1JAVzyRYbuKhD87mWkMWMKcM0HLBDVh90wUJu2GCOKv2LypnSP5knjTkDsHTk+oAXP09ComtcbcU2amTYLpM8eTYE=
+	t=1710819366; cv=none; b=kgV8F3YuWUfE9dxBNVK6v97JjzNv3APEA4Iux3ZShXxNXvi+r6lZThkoRtNlSEi7LdM3QDoen9gweecSb1bhKxQCRoKB4lE+o1iBpjdvbmGcUdhN8MlT2UMChY2k7B1WDBN8HUpiCJDiTATtAgjA4LBuuKHQT1Xbe9TOxkmrlUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710819207; c=relaxed/simple;
-	bh=foU7Dh8htpgGcaSBFSwvBOAYFXfZVzC57V6NEB1PYeI=;
-	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=ky6xsl3vITFI2tqShuN4D37b/RPdc3oCwDEAISdChxTEuJbFrorsXZyt2TPTScUTl3wH56Qf/Jpzp4dHgZ+VvMTSGfexmjio8pzn46dqw+rrsxY+IwTeC+G+9PusehjlvR2lI8mBgO5LyO9JyiICWBz2XhbswC9cWRkwXI2AYIc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.197
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-366999e233aso24596045ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:33:24 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710819203; x=1711424003;
-        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+	s=arc-20240116; t=1710819366; c=relaxed/simple;
+	bh=IqCk3wWDwH0nNe+9317xIgOiS7c6KsfAuF3R1+vLskw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=UdFJfT4zobNxUweLElWlpjskS3hfZmWvn5VJmsB0ev+9eBhNlpaCkfIuoT7LqdEWXTZIPQleaGhdKd6Om8u1OlzE9pdWZg+uviwkSdMDiLAS4kaRi6q8GR/YD5mr7CpE6Y9hdBFLLqC8BNCe5/AcxVKAmJcVzo2OWXmsSTia914=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=daJ82FT6; arc=none smtp.client-ip=209.85.166.173
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
+Received: by mail-il1-f173.google.com with SMTP id e9e14a558f8ab-36847cd960fso2001645ab.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 20:36:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=sifive.com; s=google; t=1710819364; x=1711424164; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=Csjh0lxNo0sPgq8PGq+TzcEtEY7UHn0bf829ioXWN0c=;
-        b=WEM5gnnUfHrQcBDzxz8Baop0OlqTm3gSUjwwraOOVI4kVy9FCU+t2r6qJpQj4tv8cD
-         b+os9CFaivV43OREvcuumFyxfUUkTg02hCGI0n51KSZtRMebUlO2J/h2WprMlHuhV6vc
-         W/AEaecNL+Fr4x2VOEwImLbuHDohA9XiizEALcX4CiwiQOaF3TvQgpBgkK0PnbpxL8yC
-         a9Bxv2NemR0pDdfxc9WY8mnQPU7XCgXU4woG2vxXt9IvUn0W5Gn72zSfnGtqd/j99xkE
-         n1XbbjKc74+cQnBO/zNqehHjPgmYaA3s0uzWnr8EXPSO6VFAZ7erR6REHHObuadZxbCV
-         uMDQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWfjmgSmavc/qJ8TQOk5V1Ir13WMxnejeHWX2hIXdzjBcvhS0OX2N9wkV4WofoGajJLP2Up9pz+bW3/21HwoOXFM9XZ5DttIaI7ZUqs
-X-Gm-Message-State: AOJu0Yz0TQ3JPyquon0UvfINkpg4MBbwnqGd/zNU8yuLUYwEfmduVD8n
-	LW0ds5tp/qpfVsCblz2IWKg0E47lMCrTvYlM8mSQmrtdTXWVVXyNHOJL4o1wBdynKb58k2E+Tb2
-	ap7q7TtNlSbPfT4dhn/S34eLc+0e4/2TarMaOY2kC+FXbhBGhBBAQQ/M=
-X-Google-Smtp-Source: AGHT+IHCxtljGz0UAMsiGPWn/AccGbvldt5Q9YBlfC9M01nPa2qg+X1j8BikjRevWbkLwxSWbIWGJA2tNIdFANltpQFhwgUeAouO
+        bh=PoILBoe//KVPW1Y8tmEvAG+XkFT1iDwcYoIgG3ixCPU=;
+        b=daJ82FT65L2/X87VE2YsdGm0iX3rgUQoYgsc5FPpX5fS/PhEskdehATrB0zPEmBmtq
+         j7dn1naBvvh4uBMKlohGuubjEmwpoAsfY/dDyMZIwxNn1CizDkmGewVh8WK4pBy1Nr1F
+         Ck79OFG/UcY0H3NMz6tl8QxsE/HIGfAgQvHqQQfn7GpSexSv1gBHrfkg9WHUx3/BIaQ1
+         Jsw2Q6SprrXmsf/ZaTj+m/2nufaY1AgSAa1PxhmPFiQzpBoWF2Tldqy2OILed9WhrOjX
+         vqdj9dI8zXisJCl8kBmH3nOqPdzSof/A7juwuZ1UCN+KLZ/rLXLZzWerjHTAXQSzTNVy
+         5CWg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710819364; x=1711424164;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=PoILBoe//KVPW1Y8tmEvAG+XkFT1iDwcYoIgG3ixCPU=;
+        b=S1x3eP7uBtzrtlMK6rT1NDITiyDCDa0J3v1nkx99+4798/HhFAjJMs7S2XMSoShrTJ
+         k+S21x6dWyUNlDp/fY383CvAOkFHDoY/onfW7dZTt6bmGLuRJP6O2tCUu/E9f4t+g3S5
+         rFPn/bgWRFeT7aLrauXi7VXHA+krwKwv4aaBkniak/HXOjPY1y9IbN1YoVMxCY5qEU6j
+         6aE852YFNnv1PYYjwQnT3UF9SdrabP8jbKyLwJA7yg4FF0fSn4DSKr1aYWPOChb3H9Um
+         OLpEO15jSAfMTR4Ur4rUo7CcngkkdCDV4cv9ilQ4fz2myKSGOReRRNc/piy0FsabTAPX
+         ibzA==
+X-Forwarded-Encrypted: i=1; AJvYcCUGOFCNMyXSdP94HkLmYomil2wsccP1h7n3cf/6EIoLzyNyi3rxefTF2XJC4VuaFpmaxEAH4ij95+u2WKNja56BzfJ8QC59jZUZUh5W
+X-Gm-Message-State: AOJu0YwXwuCZ4/bKH0SvFR5B2+hOx+xXJOS70fEojGWQbIzj/GntKWyU
+	dHzfhDR3nUVFpHS2yO4pmykoD7lkT6bm7WuKacVeLLdNJXX6vYL0HVLhzi+lADI=
+X-Google-Smtp-Source: AGHT+IGUnS9HGEO7xlGdfqCPY6g7i3+V8E6dv/rN+WqWNaVT/dUYtdS3/p5LTDvg5Jpl5hA4qWwf1g==
+X-Received: by 2002:a6b:d917:0:b0:7ce:f8fc:e096 with SMTP id r23-20020a6bd917000000b007cef8fce096mr545938ioc.9.1710819363721;
+        Mon, 18 Mar 2024 20:36:03 -0700 (PDT)
+Received: from [100.64.0.1] ([136.226.86.189])
+        by smtp.gmail.com with ESMTPSA id t27-20020a6b5f1b000000b007cbf94d8698sm2336618iob.4.2024.03.18.20.36.02
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Mon, 18 Mar 2024 20:36:03 -0700 (PDT)
+Message-ID: <6d901851-ad57-4ba0-8503-076a0d3e430c@sifive.com>
+Date: Mon, 18 Mar 2024 22:36:01 -0500
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a05:6e02:1d97:b0:366:97fc:b9cf with SMTP id
- h23-20020a056e021d9700b0036697fcb9cfmr91886ila.0.1710819203707; Mon, 18 Mar
- 2024 20:33:23 -0700 (PDT)
-Date: Mon, 18 Mar 2024 20:33:23 -0700
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000e981c10613fb227e@google.com>
-Subject: [syzbot] [xfs?] possible deadlock in xfs_qm_dqfree_one
-From: syzbot <syzbot+b44399433a41aaed7a9f@syzkaller.appspotmail.com>
-To: chandan.babu@oracle.com, djwong@kernel.org, linux-fsdevel@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, linux-xfs@vger.kernel.org, 
-	syzkaller-bugs@googlegroups.com
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 4/4] dmaengine: add driver for Sophgo CV18XX/SG200X
+ dmamux
+Content-Language: en-US
+To: Inochi Amaoto <inochiama@outlook.com>
+Cc: Jisheng Zhang <jszhang@kernel.org>, Liu Gui <kenneth.liu@sophgo.com>,
+ Jingbao Qiu <qiujingbao.dlmu@gmail.com>, dlan@gentoo.org,
+ dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Chen Wang <unicorn_wang@outlook.com>,
+ Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt
+ <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>
+References: <IA1PR20MB49536DED242092A49A69CEB6BB2D2@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <IA1PR20MB49533E6C8C18337E5F6519D0BB2D2@IA1PR20MB4953.namprd20.prod.outlook.com>
+From: Samuel Holland <samuel.holland@sifive.com>
+In-Reply-To: <IA1PR20MB49533E6C8C18337E5F6519D0BB2D2@IA1PR20MB4953.namprd20.prod.outlook.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-Hello,
+On 2024-03-18 1:38 AM, Inochi Amaoto wrote:
+> Sophgo CV18XX/SG200X use DW AXI CORE with a multiplexer for remapping
+> its request lines. The multiplexer supports at most 8 request lines.
+> 
+> Add driver for Sophgo CV18XX/SG200X DMA multiplexer.
+> 
+> Signed-off-by: Inochi Amaoto <inochiama@outlook.com>
+> ---
+>  drivers/dma/Kconfig         |   9 ++
+>  drivers/dma/Makefile        |   1 +
+>  drivers/dma/cv1800-dmamux.c | 232 ++++++++++++++++++++++++++++++++++++
+>  3 files changed, 242 insertions(+)
+>  create mode 100644 drivers/dma/cv1800-dmamux.c
+> 
+> diff --git a/drivers/dma/Kconfig b/drivers/dma/Kconfig
+> index 002a5ec80620..cb31520b9f86 100644
+> --- a/drivers/dma/Kconfig
+> +++ b/drivers/dma/Kconfig
+> @@ -546,6 +546,15 @@ config PLX_DMA
+>  	  These are exposed via extra functions on the switch's
+>  	  upstream port. Each function exposes one DMA channel.
+> 
+> +config SOPHGO_CV1800_DMAMUX
+> +	tristate "Sophgo CV1800/SG2000 series SoC DMA multiplexer support"
+> +	depends on MFD_SYSCON
+> +	depends on ARCH_SOPHGO
+> +	help
+> +	  Support for the DMA multiplexer on Sophgo CV1800/SG2000
+> +	  series SoCs.
+> +	  Say Y here if your board have this soc.
+> +
+>  config STE_DMA40
+>  	bool "ST-Ericsson DMA40 support"
+>  	depends on ARCH_U8500
+> diff --git a/drivers/dma/Makefile b/drivers/dma/Makefile
+> index dfd40d14e408..7465f249ee47 100644
+> --- a/drivers/dma/Makefile
+> +++ b/drivers/dma/Makefile
+> @@ -67,6 +67,7 @@ obj-$(CONFIG_PPC_BESTCOMM) += bestcomm/
+>  obj-$(CONFIG_PXA_DMA) += pxa_dma.o
+>  obj-$(CONFIG_RENESAS_DMA) += sh/
+>  obj-$(CONFIG_SF_PDMA) += sf-pdma/
+> +obj-$(CONFIG_SOPHGO_CV1800_DMAMUX) += cv1800-dmamux.o
+>  obj-$(CONFIG_STE_DMA40) += ste_dma40.o ste_dma40_ll.o
+>  obj-$(CONFIG_STM32_DMA) += stm32-dma.o
+>  obj-$(CONFIG_STM32_DMAMUX) += stm32-dmamux.o
+> diff --git a/drivers/dma/cv1800-dmamux.c b/drivers/dma/cv1800-dmamux.c
+> new file mode 100644
+> index 000000000000..b41c39f2e338
+> --- /dev/null
+> +++ b/drivers/dma/cv1800-dmamux.c
+> @@ -0,0 +1,232 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +/*
+> + * Copyright (C) 2023 Inochi Amaoto <inochiama@outlook.com>
+> + */
+> +
+> +#include <linux/bitops.h>
+> +#include <linux/module.h>
+> +#include <linux/of_dma.h>
+> +#include <linux/of_address.h>
+> +#include <linux/of_platform.h>
+> +#include <linux/platform_device.h>
+> +#include <linux/regmap.h>
+> +#include <linux/spinlock.h>
+> +#include <linux/mfd/syscon.h>
+> +
+> +#include <soc/sophgo/cv1800-sysctl.h>
+> +#include <dt-bindings/dma/cv1800-dma.h>
+> +
+> +#define DMAMUX_NCELLS			3
+> +#define MAX_DMA_MAPPING_ID		DMA_SPI_NOR1
+> +#define MAX_DMA_CPU_ID			DMA_CPU_C906_1
+> +#define MAX_DMA_CH_ID			7
+> +
+> +#define DMAMUX_INTMUX_REGISTER_LEN	4
+> +#define DMAMUX_NR_CH_PER_REGISTER	4
+> +#define DMAMUX_BIT_PER_CH		8
+> +#define DMAMUX_CH_MASk			GENMASK(5, 0)
+> +#define DMAMUX_INT_BIT_PER_CPU		10
+> +#define DMAMUX_CH_UPDATE_BIT		BIT(31)
+> +
+> +#define DMAMUX_CH_SET(chid, val) \
+> +	(((val) << ((chid) * DMAMUX_BIT_PER_CH)) | DMAMUX_CH_UPDATE_BIT)
+> +#define DMAMUX_CH_MASK(chid) \
+> +	DMAMUX_CH_SET(chid, DMAMUX_CH_MASk)
+> +
+> +#define DMAMUX_INT_BIT(chid, cpuid) \
+> +	BIT((cpuid) * DMAMUX_INT_BIT_PER_CPU + (chid))
+> +#define DMAMUX_INTEN_BIT(cpuid) \
+> +	DMAMUX_INT_BIT(8, cpuid)
+> +#define DMAMUX_INT_CH_BIT(chid, cpuid) \
+> +	(DMAMUX_INT_BIT(chid, cpuid) | DMAMUX_INTEN_BIT(cpuid))
+> +#define DMAMUX_INT_MASK(chid) \
+> +	(DMAMUX_INT_BIT(chid, DMA_CPU_A53) | \
+> +	 DMAMUX_INT_BIT(chid, DMA_CPU_C906_0) | \
+> +	 DMAMUX_INT_BIT(chid, DMA_CPU_C906_1))
+> +#define DMAMUX_INT_CH_MASK(chid, cpuid) \
+> +	(DMAMUX_INT_MASK(chid) | DMAMUX_INTEN_BIT(cpuid))
+> +
+> +struct cv1800_dmamux_data {
+> +	struct dma_router	dmarouter;
+> +	struct regmap		*regmap;
+> +	spinlock_t		lock;
+> +	DECLARE_BITMAP(used_chans, MAX_DMA_CH_ID);
+> +	DECLARE_BITMAP(mapped_peripherals, MAX_DMA_MAPPING_ID);
+> +};
+> +
+> +struct cv1800_dmamux_map {
+> +	unsigned int channel;
+> +	unsigned int peripheral;
+> +	unsigned int cpu;
+> +};
+> +
+> +static void cv1800_dmamux_free(struct device *dev, void *route_data)
+> +{
+> +	struct cv1800_dmamux_data *dmamux = dev_get_drvdata(dev);
+> +	struct cv1800_dmamux_map *map = route_data;
+> +	u32 regoff = map->channel % DMAMUX_NR_CH_PER_REGISTER;
+> +	u32 regpos = map->channel / DMAMUX_NR_CH_PER_REGISTER;
+> +	unsigned long flags;
+> +
+> +	spin_lock_irqsave(&dmamux->lock, flags);
+> +
+> +	regmap_update_bits(dmamux->regmap,
+> +			   regpos + CV1800_SDMA_DMA_CHANNEL_REMAP0,
+> +			   DMAMUX_CH_MASK(regoff),
+> +			   DMAMUX_CH_UPDATE_BIT);
+> +
+> +	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
+> +			   DMAMUX_INT_CH_MASK(map->channel, map->cpu),
+> +			   DMAMUX_INTEN_BIT(map->cpu));
+> +
+> +	clear_bit(map->channel, dmamux->used_chans);
+> +	clear_bit(map->peripheral, dmamux->mapped_peripherals);
+> +
+> +	spin_unlock_irqrestore(&dmamux->lock, flags);
+> +
+> +	kfree(map);
+> +}
+> +
+> +static void *cv1800_dmamux_route_allocate(struct of_phandle_args *dma_spec,
+> +					  struct of_dma *ofdma)
+> +{
+> +	struct platform_device *pdev = of_find_device_by_node(ofdma->of_node);
+> +	struct cv1800_dmamux_data *dmamux = platform_get_drvdata(pdev);
+> +	struct cv1800_dmamux_map *map;
+> +	unsigned long flags;
+> +	unsigned int chid, devid, cpuid;
+> +	u32 regoff, regpos;
+> +
+> +	if (dma_spec->args_count != DMAMUX_NCELLS) {
+> +		dev_err(&pdev->dev, "invalid number of dma mux args\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	chid = dma_spec->args[0];
+> +	devid = dma_spec->args[1];
+> +	cpuid = dma_spec->args[2];
+> +	dma_spec->args_count -= 2;
+> +
+> +	if (chid > MAX_DMA_CH_ID) {
+> +		dev_err(&pdev->dev, "invalid channel id: %u\n", chid);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	if (devid > MAX_DMA_MAPPING_ID) {
+> +		dev_err(&pdev->dev, "invalid device id: %u\n", devid);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	if (cpuid > MAX_DMA_CPU_ID) {
+> +		dev_err(&pdev->dev, "invalid cpu id: %u\n", cpuid);
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	dma_spec->np = of_parse_phandle(ofdma->of_node, "dma-masters", 0);
+> +	if (!dma_spec->np) {
+> +		dev_err(&pdev->dev, "can't get dma master\n");
+> +		return ERR_PTR(-EINVAL);
+> +	}
+> +
+> +	map = kzalloc(sizeof(*map), GFP_KERNEL);
+> +	if (!map)
+> +		return ERR_PTR(-ENOMEM);
+> +
+> +	map->channel = chid;
+> +	map->peripheral = devid;
+> +	map->cpu = cpuid;
+> +
+> +	regoff = chid % DMAMUX_NR_CH_PER_REGISTER;
+> +	regpos = chid / DMAMUX_NR_CH_PER_REGISTER;
+> +
+> +	spin_lock_irqsave(&dmamux->lock, flags);
+> +
+> +	if (test_and_set_bit(devid, dmamux->mapped_peripherals)) {
+> +		dev_err(&pdev->dev, "already used device mapping: %u\n", devid);
+> +		goto failed;
+> +	}
+> +
+> +	if (test_and_set_bit(chid, dmamux->used_chans)) {
+> +		clear_bit(devid, dmamux->mapped_peripherals);
+> +		dev_err(&pdev->dev, "already used channel id: %u\n", chid);
+> +		goto failed;
+> +	}
+> +
+> +	regmap_set_bits(dmamux->regmap,
+> +			regpos + CV1800_SDMA_DMA_CHANNEL_REMAP0,
+> +			DMAMUX_CH_SET(regoff, devid));
+> +
+> +	regmap_update_bits(dmamux->regmap, CV1800_SDMA_DMA_INT_MUX,
+> +			   DMAMUX_INT_CH_MASK(chid, cpuid),
+> +			   DMAMUX_INT_CH_BIT(chid, cpuid));
+> +
+> +	spin_unlock_irqrestore(&dmamux->lock, flags);
+> +
+> +	dev_info(&pdev->dev, "register channel %u for req %u (cpu %u)\n",
+> +		 chid, devid, cpuid);
+> +
+> +	return map;
+> +
+> +failed:
+> +	spin_unlock_irqrestore(&dmamux->lock, flags);
+> +	dev_err(&pdev->dev, "already used channel id: %u\n", chid);
 
-syzbot found the following issue on:
+This error is already logged above.
 
-HEAD commit:    906a93befec8 Merge tag 'efi-fixes-for-v6.9-1' of git://git..
-git tree:       upstream
-console output: https://syzkaller.appspot.com/x/log.txt?x=12d6ea6e180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=5206351398500a90
-dashboard link: https://syzkaller.appspot.com/bug?extid=b44399433a41aaed7a9f
-compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils for Debian) 2.40
+> +	return ERR_PTR(-EBUSY);
+> +}
+> +
+> +static int cv1800_dmamux_probe(struct platform_device *pdev)
+> +{
+> +	struct device *dev = &pdev->dev;
+> +	struct device_node *mux_node = dev->of_node;
+> +	struct cv1800_dmamux_data *data;
+> +	struct device *parent = dev->parent;
+> +	struct device_node *dma_master;
+> +	struct regmap *map = NULL;
+> +
+> +	if (!parent)
+> +		return -ENODEV;
+> +
+> +	map = device_node_to_regmap(parent->of_node);
+> +	if (IS_ERR(map))
+> +		return PTR_ERR(map);
+> +
+> +	dma_master = of_parse_phandle(mux_node, "dma-masters", 0);
+> +	if (!dma_master) {
+> +		dev_err(dev, "invalid dma-requests property\n");
 
-Unfortunately, I don't have any reproducer for this issue yet.
+This error message doesn't match the property the code looks at.
 
-Downloadable assets:
-disk image (non-bootable): https://storage.googleapis.com/syzbot-assets/7bc7510fe41f/non_bootable_disk-906a93be.raw.xz
-vmlinux: https://storage.googleapis.com/syzbot-assets/f096ab7eaede/vmlinux-906a93be.xz
-kernel image: https://storage.googleapis.com/syzbot-assets/52e0859d6157/bzImage-906a93be.xz
+> +		return -ENODEV;
+> +	}
+> +	of_node_put(dma_master);
+> +
+> +	data = devm_kmalloc(dev, sizeof(*data), GFP_KERNEL);
+> +	if (!data)
+> +		return -ENOMEM;
+> +
+> +	spin_lock_init(&data->lock);
+> +	data->regmap = map;
+> +	data->dmarouter.dev = dev;
+> +	data->dmarouter.route_free = cv1800_dmamux_free;
+> +
+> +	platform_set_drvdata(pdev, data);
+> +
+> +	return of_dma_router_register(mux_node,
+> +				      cv1800_dmamux_route_allocate,
+> +				      &data->dmarouter);
+> +}
+> +
+> +static const struct of_device_id cv1800_dmamux_ids[] = {
+> +	{ .compatible = "sophgo,cv1800-dmamux", },
+> +	{ }
+> +};
+> +MODULE_DEVICE_TABLE(of, cv1800_dmamux_ids);
+> +
+> +static struct platform_driver cv1800_dmamux_driver = {
+> +	.driver = {
+> +		.name = "fsl-raideng",
 
-IMPORTANT: if you fix the issue, please add the following tag to the commit:
-Reported-by: syzbot+b44399433a41aaed7a9f@syzkaller.appspotmail.com
+copy-paste error?
 
-======================================================
-WARNING: possible circular locking dependency detected
-6.8.0-syzkaller-11405-g906a93befec8 #0 Not tainted
-------------------------------------------------------
-kswapd0/109 is trying to acquire lock:
-ffff888022fc0958 (&qinf->qi_tree_lock){+.+.}-{3:3}, at: xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
+> +		.of_match_table = cv1800_dmamux_ids,
+> +	},
+> +	.probe = cv1800_dmamux_probe,
+> +};
+> +module_platform_driver(cv1800_dmamux_driver);
 
-but task is already holding lock:
-ffffffff8d930be0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x19a0 mm/vmscan.c:6782
+This driver can be built as an unloadable module, so it needs a .remove_new
+function calling at least of_dma_controller_free().
 
-which lock already depends on the new lock.
+Regards,
+Samuel
 
+> +
+> +MODULE_AUTHOR("Inochi Amaoto <inochiama@outlook.com>");
+> +MODULE_DESCRIPTION("Sophgo CV1800/SG2000 Series Soc DMAMUX driver");
+> +MODULE_LICENSE("GPL");
+> --
+> 2.44.0
+> 
+> 
+> _______________________________________________
+> linux-riscv mailing list
+> linux-riscv@lists.infradead.org
+> http://lists.infradead.org/mailman/listinfo/linux-riscv
 
-the existing dependency chain (in reverse order) is:
-
--> #1 (fs_reclaim){+.+.}-{0:0}:
-       __fs_reclaim_acquire mm/page_alloc.c:3698 [inline]
-       fs_reclaim_acquire+0x102/0x160 mm/page_alloc.c:3712
-       might_alloc include/linux/sched/mm.h:312 [inline]
-       slab_pre_alloc_hook mm/slub.c:3746 [inline]
-       slab_alloc_node mm/slub.c:3827 [inline]
-       kmem_cache_alloc+0x4f/0x320 mm/slub.c:3852
-       radix_tree_node_alloc.constprop.0+0x7c/0x350 lib/radix-tree.c:276
-       radix_tree_extend+0x1a2/0x4d0 lib/radix-tree.c:425
-       __radix_tree_create lib/radix-tree.c:613 [inline]
-       radix_tree_insert+0x499/0x630 lib/radix-tree.c:712
-       xfs_qm_dqget_cache_insert.constprop.0+0x38/0x2c0 fs/xfs/xfs_dquot.c:826
-       xfs_qm_dqget+0x182/0x4a0 fs/xfs/xfs_dquot.c:901
-       xfs_qm_scall_setqlim+0x172/0x1980 fs/xfs/xfs_qm_syscalls.c:300
-       xfs_fs_set_dqblk+0x166/0x1e0 fs/xfs/xfs_quotaops.c:267
-       quota_setquota+0x4c5/0x5f0 fs/quota/quota.c:310
-       do_quotactl+0xb03/0x13e0 fs/quota/quota.c:802
-       __do_sys_quotactl fs/quota/quota.c:961 [inline]
-       __se_sys_quotactl fs/quota/quota.c:917 [inline]
-       __x64_sys_quotactl+0x1b4/0x440 fs/quota/quota.c:917
-       do_syscall_x64 arch/x86/entry/common.c:52 [inline]
-       do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
-       entry_SYSCALL_64_after_hwframe+0x6d/0x75
-
--> #0 (&qinf->qi_tree_lock){+.+.}-{3:3}:
-       check_prev_add kernel/locking/lockdep.c:3134 [inline]
-       check_prevs_add kernel/locking/lockdep.c:3253 [inline]
-       validate_chain kernel/locking/lockdep.c:3869 [inline]
-       __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
-       lock_acquire kernel/locking/lockdep.c:5754 [inline]
-       lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
-       __mutex_lock_common kernel/locking/mutex.c:608 [inline]
-       __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
-       xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
-       xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
-       do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
-       shrink_slab+0x18a/0x1310 mm/shrinker.c:662
-       shrink_one+0x493/0x7c0 mm/vmscan.c:4774
-       shrink_many mm/vmscan.c:4835 [inline]
-       lru_gen_shrink_node mm/vmscan.c:4935 [inline]
-       shrink_node+0x231f/0x3a80 mm/vmscan.c:5894
-       kswapd_shrink_node mm/vmscan.c:6704 [inline]
-       balance_pgdat+0x9a0/0x19a0 mm/vmscan.c:6895
-       kswapd+0x5ea/0xb90 mm/vmscan.c:7164
-       kthread+0x2c1/0x3a0 kernel/kthread.c:388
-       ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
-       ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
-
-other info that might help us debug this:
-
- Possible unsafe locking scenario:
-
-       CPU0                    CPU1
-       ----                    ----
-  lock(fs_reclaim);
-                               lock(&qinf->qi_tree_lock);
-                               lock(fs_reclaim);
-  lock(&qinf->qi_tree_lock);
-
- *** DEADLOCK ***
-
-1 lock held by kswapd0/109:
- #0: ffffffff8d930be0 (fs_reclaim){+.+.}-{0:0}, at: balance_pgdat+0x166/0x19a0 mm/vmscan.c:6782
-
-stack backtrace:
-CPU: 3 PID: 109 Comm: kswapd0 Not tainted 6.8.0-syzkaller-11405-g906a93befec8 #0
-Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debian-1.16.2-1 04/01/2014
-Call Trace:
- <TASK>
- __dump_stack lib/dump_stack.c:88 [inline]
- dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
- check_noncircular+0x31a/0x400 kernel/locking/lockdep.c:2187
- check_prev_add kernel/locking/lockdep.c:3134 [inline]
- check_prevs_add kernel/locking/lockdep.c:3253 [inline]
- validate_chain kernel/locking/lockdep.c:3869 [inline]
- __lock_acquire+0x2478/0x3b30 kernel/locking/lockdep.c:5137
- lock_acquire kernel/locking/lockdep.c:5754 [inline]
- lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
- __mutex_lock_common kernel/locking/mutex.c:608 [inline]
- __mutex_lock+0x175/0x9c0 kernel/locking/mutex.c:752
- xfs_qm_dqfree_one+0x6f/0x1a0 fs/xfs/xfs_qm.c:1654
- xfs_qm_shrink_scan+0x25c/0x3f0 fs/xfs/xfs_qm.c:531
- do_shrink_slab+0x44f/0x1160 mm/shrinker.c:435
- shrink_slab+0x18a/0x1310 mm/shrinker.c:662
- shrink_one+0x493/0x7c0 mm/vmscan.c:4774
- shrink_many mm/vmscan.c:4835 [inline]
- lru_gen_shrink_node mm/vmscan.c:4935 [inline]
- shrink_node+0x231f/0x3a80 mm/vmscan.c:5894
- kswapd_shrink_node mm/vmscan.c:6704 [inline]
- balance_pgdat+0x9a0/0x19a0 mm/vmscan.c:6895
- kswapd+0x5ea/0xb90 mm/vmscan.c:7164
- kthread+0x2c1/0x3a0 kernel/kthread.c:388
- ret_from_fork+0x45/0x80 arch/x86/kernel/process.c:147
- ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
- </TASK>
-
-
----
-This report is generated by a bot. It may contain errors.
-See https://goo.gl/tpsmEJ for more information about syzbot.
-syzbot engineers can be reached at syzkaller@googlegroups.com.
-
-syzbot will keep track of this issue. See:
-https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
-
-If the report is already addressed, let syzbot know by replying with:
-#syz fix: exact-commit-title
-
-If you want to overwrite report's subsystems, reply with:
-#syz set subsystems: new-subsystem
-(See the list of subsystem names on the web dashboard)
-
-If the report is a duplicate of another one, reply with:
-#syz dup: exact-subject-of-another-report
-
-If you want to undo deduplication, reply with:
-#syz undup
 
