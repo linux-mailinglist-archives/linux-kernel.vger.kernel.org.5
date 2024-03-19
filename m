@@ -1,221 +1,323 @@
-Return-Path: <linux-kernel+bounces-107666-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107667-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4A63687FFCD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:42:03 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CAAFC87FFD0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:42:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B60DA1F24034
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:42:02 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EF01A1C22AAB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:42:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 20FEE41A88;
-	Tue, 19 Mar 2024 14:41:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EBFBE41A88;
+	Tue, 19 Mar 2024 14:42:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b="dWo1Vcu7"
-Received: from relay8-d.mail.gandi.net (relay8-d.mail.gandi.net [217.70.183.201])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="vBB0dGcV"
+Received: from NAM10-DM6-obe.outbound.protection.outlook.com (mail-dm6nam10on2125.outbound.protection.outlook.com [40.107.93.125])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EF2C0200BF;
-	Tue, 19 Mar 2024 14:41:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.201
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710859313; cv=none; b=RpJLp+wxyavKxFBAAOlfJnw+ITCeSvXwzzoSLqzEkWF/b9pEARa900+Em8Fn6K2u3pFkS2/lY8Tt8k8NR4NEGG/I3OHQndEXjzgWLmRhbZp0QraUfvGnbySx6m+nvgg9HpzoQsFwngJkntbJf470OeF9JnWSqFsGzeH7y5hq490=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710859313; c=relaxed/simple;
-	bh=H86jgSj39Vt5eZQa4Li5R+8zowtHYkyrFgx+9QNPBdg=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=U4So/z6ahM1aKmsarLjk6xNSwMM22apsfNujRDzr4akcRU8QTRYJFt1DSNUs1nSlW7a5OYmP94IhQkjJ8TObvbcSodCM6zi4XpzUkUdIj3DpAYDBPlGhQfzNsH02xmPuSjn987TRi068D9GUV4Bg8Iah/2BdIzSJgQGLiomHwOk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com; spf=pass smtp.mailfrom=bootlin.com; dkim=pass (2048-bit key) header.d=bootlin.com header.i=@bootlin.com header.b=dWo1Vcu7; arc=none smtp.client-ip=217.70.183.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=bootlin.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=bootlin.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id C43671BF207;
-	Tue, 19 Mar 2024 14:41:40 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=bootlin.com; s=gm1;
-	t=1710859301;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=6pzJKG5CLK//p9ZCz9khgVEAQ5zvuh1yAWK/ALunBpk=;
-	b=dWo1Vcu7aXPfdW4r+i1v7PMuMcPoEaDJJZ/kN2+CkLQf6f8e+pPsH+Q2UNnYZuxCK1SHoi
-	Jv/bV9kuZmT6snZRjmg5zrYMOqEk8fWY38pHWT+DqjYD3qKCh8lAhW0yx8uV7RqT8XvVVz
-	wce9oaumtggWtBp47/ahEDKKuU6+QUpQRyQQh13TwpIQyy0faEajFeTCZwRB0vNvbHsC1F
-	w2eN4ZSy6BB9mrRXzA9IYNhof8chsicphGvpdAp2YQeTi0nwxG2Y2I7fA8wi+VwmZraaAB
-	ETYSndIISoy/ePrtwbF9rNxNizZPK3GXBs3WlIE8G6b1LmCnZsuwC5ARwMUkPg==
-Date: Tue, 19 Mar 2024 15:41:39 +0100
-From: Herve Codina <herve.codina@bootlin.com>
-To: Rob Herring <robh@kernel.org>
-Cc: Greg Kroah-Hartman <gregkh@linuxfoundation.org>, "Rafael J. Wysocki"
- <rafael@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>, Lizhi Hou
- <lizhi.hou@amd.com>, Max Zhen <max.zhen@amd.com>, Sonal Santan
- <sonal.santan@amd.com>, Stefano Stabellini <stefano.stabellini@xilinx.com>,
- Jonathan Cameron <Jonathan.Cameron@huawei.com>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>, PCI
- <linux-pci@vger.kernel.org>, Allan Nielsen <allan.nielsen@microchip.com>,
- Horatiu Vultur <horatiu.vultur@microchip.com>, Steen Hegelund
- <steen.hegelund@microchip.com>, Thomas Petazzoni
- <thomas.petazzoni@bootlin.com>
-Subject: Re: [PATCH v2 0/2] Attach DT nodes to existing PCI devices
-Message-ID: <20240319154139.03058bf3@bootlin.com>
-In-Reply-To: <20231214153122.07e99a5a@bootlin.com>
-References: <20231130165700.685764-1-herve.codina@bootlin.com>
-	<CAL_JsqJvt6FpXK+FgAwE8xN3G5Z23Ktq=SEY-K7VA7nM5XgZRg@mail.gmail.com>
-	<20231204134335.3ded3d46@bootlin.com>
-	<CAL_JsqLtCS3otZ1sfiPEWwrWB4dyNpu4e0xANWJriCEUYr+4Og@mail.gmail.com>
-	<20231204163014.4da383f2@bootlin.com>
-	<CAL_JsqJJ64513pyQggU71agTzawNWPpm6ZpWMB6e0zu-tWL8yw@mail.gmail.com>
-	<20231205090452.7c601eb5@bootlin.com>
-	<CAL_Jsq+je7+9ATR=B6jXHjEJHjn24vQFs4Tvi9=vhDeK9n42Aw@mail.gmail.com>
-	<20231208094840.01d74fec@bootlin.com>
-	<20231214153122.07e99a5a@bootlin.com>
-Organization: Bootlin
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D05A54273;
+	Tue, 19 Mar 2024 14:42:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.93.125
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710859328; cv=fail; b=skaZq9fEpiCmOSeXEL0OVnlUnkzXD2ENTlNf5SWckxDlRXy6bKbpriL92xCE19R2CfIeT0Sj9N8CvzaPg8wkPximrPTTMgDkKgMd4OD1JYC1KbXUl9pMHkpYXIlicAJAGlPTDiH3Evqa/Im/ni42Iz+y1T8k5EQPmwM4J2z3DZ4=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710859328; c=relaxed/simple;
+	bh=Cztm7QnUnik7MNVOft05S+bYhGlHwmkGMTzFuo3/mhg=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=Kzu7eZ0NanjQ9X3PgetfTspGvx5V4j6z5HGBAKby0mLpGMKeuLuevXFlEl6SCdI1Vt9GAPkg7p0cHOEhX6ebV19C+KFX2dsWgqFxv8fUmzNDmrYUOvlOvbdRwlq1eXh5HvB5fuUKhAsorRkPXUjZqMBavufTVZV+xkbLEAD67CM=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=vBB0dGcV; arc=fail smtp.client-ip=40.107.93.125
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LHJTR6qykadVHexekJog9i4YQzYKYpnT8uNlVn5q1uM2LqkZ7OHHat8hf7Zcckf3PxWn4SeXvyzeI1QaBuqcMb14LZ84iBZ1KEB7h9iW17pPVX1Webd99UJttSAUcMU4TDVcyDHqhtEh037bqOP71yP7GkWX/O4PedWX49QYlZTN35/pTian/m2q7E2vyuXjinsJTyzSeyYr+RCRKEPdJj3HLpf6CXR0MzNjeYJ3W+wRzP3ZM4GTVymYqfi2B3p/zihNsM7EgjdW1OxzqtEO8WOfZkNeiLtUeQW8Z4qiHk+uejW6uRM8Kz4P+IHLneN6tFQybPN1n2Y2XAURNw76iw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=jdE6emH0Icx0Zk3pe4canEW6+8+styr077KgwYNrK/M=;
+ b=GszXx+59GjU6JznIwF3STT17/5d92zGi//3om8WuAHlFbE/PvaGOBAbG5to6ME4zNP3Kn3XxWhN37K7hUoR0vLgxNVGSvpdVkQIgq3Lb2df+VB4bBxQ96CAbTArjB38seNM6XPtjuigPYRZsTbkxAOcoEUh7NIj8OjmIJO6fd7gUk0+sRzCVe7Abr5U44S5Vck2e0tw3E6juRqUBwqyJ9p1OvpJcKjiQXYgNWZqnLgg98foSn81E/TM0NNd2QZ1Yhy6UzJ0NEXBVqTQ+U73RuAP/oQ5NVlYp017CdBT3ny6m/OUhzxGXAJn1GoVXcyJWFdAHsXq3OZiM2oDQyuBMPQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=jdE6emH0Icx0Zk3pe4canEW6+8+styr077KgwYNrK/M=;
+ b=vBB0dGcVJpQ1YYeYRwG6FFUo3ZK+T83a6q+bAZqOUx24DJ3BuNUGl5D5hp5WUiK3xM18L8z0dJZqZIRJIbWWQN51b91oOyg7pgIAWDD3UOuSEpJTmH74lqUkTJkQ7q8U0puKdJXayoxNx5R7v86ejYwbaVr9DH+EYujAUX6uWs0=
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com (2603:10b6:208:396::17)
+ by PH8PR12MB6747.namprd12.prod.outlook.com (2603:10b6:510:1c3::15) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Tue, 19 Mar
+ 2024 14:42:04 +0000
+Received: from BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::8b3e:57e8:d574:309a]) by BL1PR12MB5874.namprd12.prod.outlook.com
+ ([fe80::8b3e:57e8:d574:309a%4]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 14:42:04 +0000
+Message-ID: <d112481b-4331-4c0c-9775-407ac4a601fb@amd.com>
+Date: Tue, 19 Mar 2024 09:42:01 -0500
+User-Agent: Mozilla Thunderbird Beta
+Subject: Re: [PATCH 2/3] dt-bindings: remoteproc: add Versal-NET platform
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ andersson@kernel.org, mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240315211533.1996543-1-tanmay.shah@amd.com>
+ <20240315211533.1996543-3-tanmay.shah@amd.com>
+ <3ca1c419-d185-4318-92ed-3c4e40dcf5bb@linaro.org>
+ <14be0aa6-49b7-4342-9ca6-750c30c8e1e9@amd.com>
+ <b1320ddf-bacb-41e3-9709-e90df18cc1e3@linaro.org>
+Content-Language: en-US
+From: Tanmay Shah <tanmay.shah@amd.com>
+In-Reply-To: <b1320ddf-bacb-41e3-9709-e90df18cc1e3@linaro.org>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: DS7PR06CA0021.namprd06.prod.outlook.com
+ (2603:10b6:8:2a::23) To BL1PR12MB5874.namprd12.prod.outlook.com
+ (2603:10b6:208:396::17)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: herve.codina@bootlin.com
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: BL1PR12MB5874:EE_|PH8PR12MB6747:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	lyRk1IUpAP4ezoXCfjMEX+YuUuCZ1Nrwst7bjFzQHesK2eZQ8mMyjzL9Z9xFfy8mu+bW4e9liJVeT0EV+BVz/LhTH5rlqsPOrhG6w2Jw0U9lKOKdmn1diL89Cvw9eMSwo9bdgLUejulHy9aTsaiNMLoRq+KGVnrXSU9gy8AeLvezV9rnvx3qx8h8Kbu2mRpRRazGEZFSd695aqD/7fSYX6AhD0VENrAY2dAL6biBGzMIWeE4pOKJAJN0XqF/3iD9dpGCFKoyvA19RimeO6sQSCQZ0iONmeQL+lYTIgdXAqkD6gxXJFoKhSGRS5oNTaUL7zVXkZoG2zR7VOsnCs00HTpX/ioeTdFnInhy9l911dXp/1rS9X4FpLWTk8IfvSGzwImFyPzeZkog74MD0iiTe/jB8CYlqNac6/FPa06+/9/myHaz6fF7W6/6EFeZ4PnpGNvyZ46B2jh0ldBK6zjurg3D8acP84ddEZDsu1PqOJ6pJTKhDs+Uu/E3i+BpDxyVw1Ug2QC9eH/0SoTz3T9Lj9A6RONXdLpSXVpSUNbDe2p+tU5d0Iwu6cS2DsOCrZ0lmdojD1Hgf95tV6RlzHML508qyZQcsKkzrBrewDo9FLPSETU0m09jv6Nig7lQdNdGSuhc/1VcoiqiWBNkeAXpEPSZOoyXCCaDRClVZMlqLlI=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:BL1PR12MB5874.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?VEtWSlpucnprYUhpWlJJdzFMUnNUbnE5K2VtY2VDalRmSHhnVkhKVFpsdCtv?=
+ =?utf-8?B?a0JySi9WU252dGlVMnozZEpJWm5iZG9QVmVlY1gzRUN2dCtBYU5WOXFQS29H?=
+ =?utf-8?B?REl0TjZDSkpLN2hJQ24xNHoyWVpueW1QMkR0Y0l5aC9JYnIzb3hSdFBmc2dw?=
+ =?utf-8?B?SEx0QVNHWmpYSWJTempYWUtMTVNKcnZCM0RRa1Ewa04rcENEMSt2REJwcytq?=
+ =?utf-8?B?QzJoMVdzV0lJTFVmTmxDaCttcXJvaE5OdUZORnVFMWlPVGxkMjVOMWJPdmZT?=
+ =?utf-8?B?UllWOGNmTVhRY002QmpqSEJZRDB2U3AzaWtJRTV5ZnRma2g3dnZSUlRramRD?=
+ =?utf-8?B?OEZIVDBGb1lhZ2pHQ0g3OEI0OVA5NHUxM1NyejEvWjJ6VnpyVmQ4ZitTVVZm?=
+ =?utf-8?B?SUxTYndzSXdBM1RpVW9aM3ExaWxMQ0R6bkcrV3NOUTVIZmV1Y0l2aGl6NFBX?=
+ =?utf-8?B?Lzh3QnZhWllYQTYxd2d4cGdIZGRSdFhHZW1ZYXBYSm9FYTlobzJ1NnBiZmhj?=
+ =?utf-8?B?U0tUNDgvbHZnRURxdHQ4ZHQwZGEvTlJOYTAxcGdXWnZtQThPOVJnSnlJUnhS?=
+ =?utf-8?B?WHhJQ3NRbFRrUDhTa0FPTjdkTTdqcDB4Yk1yREEwMGNjUTh5VFYwSVhpM2U0?=
+ =?utf-8?B?cHVkTmMzdk43WGIwMFN0UGlxOHlYcURrRTVRUnlYeXpMZVl3M0lUaXRreGl6?=
+ =?utf-8?B?M3VPNVVYdTkvalp0MmdScXVIa2dlcTl1Wkg0bit2UUdzek53dnJ3SGI2Y0M4?=
+ =?utf-8?B?NWxRcEFBTFo4dmEzR3VuWTR0eVY4R1YwR2JoTmk2VUt5SGhnM3hHK3ltc1p1?=
+ =?utf-8?B?Y0NXODdKOHREam9yMlp1UHk0cXRJRFFlQ3F2ajRIdVhYZGFQTUw0d0ZMK0xV?=
+ =?utf-8?B?N3RTRWJNd3JHWWlsS0cyOTRwdjQ3bVpCaEh3VURuVU1jNVU0SmlXNUlFVktm?=
+ =?utf-8?B?aGhTa0JrN2VEcEZoUUZyVVZUZmFsR25IN1BSVFJDbUg1UWE3SEJMNnhsWDN1?=
+ =?utf-8?B?N3BaZ0xqMVBjQUNJbEhibEtROFl4RnhvRTRpSlQ1aXNYQnlmRXhqYUZ1US9h?=
+ =?utf-8?B?dWxuY2VYZ2hpMkxmbS9oS3cyQWJxOXRyYnlwa1R1T2tsdW9LeWVzMDdRalV0?=
+ =?utf-8?B?S3N0TXRaZm9DVHF5bmRBTmJSZ0Vnd1hsVlBjc1VFQzhXQ0h1aFExUFBtUFQx?=
+ =?utf-8?B?a0o1R0t3d3ByVnNLS04wQkVCaEZ5N0Y0Z2Yvd2Rzd0NXdGgxOGE3NmdqUFFi?=
+ =?utf-8?B?c1g4YWU1cnovVG1WeG5kWG9KbFNwRjNYbEdaRENVbTlVeXdJYm54NjlGRU8x?=
+ =?utf-8?B?OXJlTVZncXVzVVNCeGNjSmw4dFpkbjVPYUYyKzBRS3pRQXFKcTFnQmdBK1Uz?=
+ =?utf-8?B?TUcxM0ZIYVJLdnZ4czMrdXdLelN3T2JHMmpPUzBLZWdlS2RlbHdyWmFrbjZT?=
+ =?utf-8?B?NDVGbWxYM0xhWEFOd3NoSldrcVJpeW1tSS90Z1NYQWFOamV1ZC94UWovakN2?=
+ =?utf-8?B?aUZSMjBOOXp6YTNtY3ZWc0ppa3dyRndvQ00xaFFHdlJuajhwWHlaQmpUSU1J?=
+ =?utf-8?B?SENSbHdIS0VsVWlXamtHeXJZd0JkcDVrcHlwczNkeWNnb2ZGUHZCVEIvMkZ4?=
+ =?utf-8?B?S1pwMHJ1WENMekZETHNHZ2NTb1hTNzNSb2oxc0FEdlFKVENHbDZSU0d3ajBT?=
+ =?utf-8?B?Y0Z0SGRVMFI0TWdzS0NMNnZHdGh5Vno1UDdjRE8vUDk1ZC9vemhpSjk2WXBS?=
+ =?utf-8?B?OVpaMXJubG50aVJVWmtPMVRDRFM3WnlhS2tEeFJWUnU0bUJaSGV3Tlc0SE9x?=
+ =?utf-8?B?SVE0SHNWOGUyaVBzd1FWQUtYdEVCNy9xcEZ5bnhPT3dkeGVUMFZQZFZWWkRF?=
+ =?utf-8?B?VllPWGMvYXUvWVZLZllVM3RDUHNiY0hzUkxjaFdSa3F3TXhXMkl2NzFjMEkz?=
+ =?utf-8?B?ZlZieHBIQUNoVmxCMlpUWjNuem40VmorS3NJSzh3Qy84VVQ4WWlYazdZaDBJ?=
+ =?utf-8?B?WmpINVFnYlFVd0x2azlwV21HRjdyUVpxTW43OGptdS84OWhyNENpNVlGRG1T?=
+ =?utf-8?B?NzVUVWhsTTlmQzlJcXVYQnNNemZadUJtaFlJdXdQaU0vbE5XOTF1OFJtRVlo?=
+ =?utf-8?Q?zLLK4p6BzlYiWz3xhwHp3fFIb?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 169397ac-ef4b-4f8f-1534-08dc4822be99
+X-MS-Exchange-CrossTenant-AuthSource: BL1PR12MB5874.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 14:42:04.5418
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: YiybOsVZDnpVBiL2kbwh9h8trDLsLYETZp4DcrC29urQWSheC/RcGGdxwYCm8k1U
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH8PR12MB6747
 
-Hi Rob,
 
-On Thu, 14 Dec 2023 15:31:22 +0100
-Herve Codina <herve.codina@bootlin.com> wrote:
 
-> > > 
-> > > But you don't. The logic to find the interrupt parent is walk up the
-> > > parent nodes until you find 'interrupt-parent' or
-> > > '#interrupt-controller' (and interrupt-map always has
-> > > #interrupt-controller). So your overlay just needs 'interrupts = <1>'
-> > > for INTA and it should all just work.    
-> > 
-> > Yes, I tried some stuffs in that way...  
-> > > 
-> > > That of course implies that we need interrupt properties in all the
-> > > bridges which I was hoping to avoid. In the ACPI case, for DT
-> > > interrupt parsing to work, we're going to need to end up in an
-> > > 'interrupt-controller' node somewhere. I think the options are either    
-> > 
-> > ... and I went up to that point.
-> > Further more with that way, we need to update the addr value retrieved
-> > from the device requesting the interrupt.
-> >   https://elixir.bootlin.com/linux/latest/source/drivers/of/irq.c#L343
-> > Indeed, with the current 'interrupt-map' at bridges level, a addr value
-> > update is needed at the PCI device level if the interrupt is requested
-> > from some PCI device children.
-> > This is were my (not so good) interrupt-ranges property could play a
-> > role.
-> >   
-> > > we walk interrupt-map properties up to the host bridge which then
-> > > points to something or the PCI device is the interrupt controller. I
-> > > think the PCI device is the right place. How the downstream interrupts    
-> > 
-> > Agree, the PCI device seems to be the best candidate.
-> >   
-> > > are routed to PCI interrupts are defined by the device. That would
-> > > work the same way for both DT and ACPI. If you are concerned about
-> > > implementing in each driver needing this, some library functions can
-> > > mitigate that.
-> > > 
-> > > I'm trying to play around with the IRQ domains and get this to work,
-> > > but not having any luck yet.    
-> >   
+On 3/19/24 12:30 AM, Krzysztof Kozlowski wrote:
+> On 19/03/2024 01:51, Tanmay Shah wrote:
+>> Hello Krzysztof,
+>> 
+>> Thanks for reviews. Please find my comments below.
+>> 
+>> On 3/17/24 1:53 PM, Krzysztof Kozlowski wrote:
+>>> On 15/03/2024 22:15, Tanmay Shah wrote:
+>>>> AMD-Xilinx Versal-NET platform is successor of Versal platform. It
+>>>> contains multiple clusters of cortex-R52 real-time processing units.
+>>>> Each cluster contains two cores of cortex-R52 processors. Each cluster
+>>>> can be configured in lockstep mode or split mode.
+>>>>
+>>>> Each R52 core is assigned 128KB of TCM memory. ATCM memory is 64KB, BTCM
+>>>> and CTCM memoreis are 32KB each. Each TCM memory has its own dedicated
+>>>> power-domain that needs to be requested before using it.
+>>>>
+>>>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
+>>>> ---
+>>>>  .../remoteproc/xlnx,zynqmp-r5fss.yaml         | 220 +++++++++++++++---
+>>>>  1 file changed, 184 insertions(+), 36 deletions(-)
+>>>>
+>>>> diff --git a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>> index 711da0272250..55654ee02eef 100644
+>>>> --- a/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>> +++ b/Documentation/devicetree/bindings/remoteproc/xlnx,zynqmp-r5fss.yaml
+>>>> @@ -18,7 +18,9 @@ description: |
+>>>>  
+>>>>  properties:
+>>>>    compatible:
+>>>> -    const: xlnx,zynqmp-r5fss
+>>>> +    enum:
+>>>> +      - xlnx,zynqmp-r5fss
+>>>> +      - xlnx,versal-net-r52fss
+>>>>  
+>>>>    "#address-cells":
+>>>>      const: 2
+>>>> @@ -64,7 +66,9 @@ patternProperties:
+>>>>  
+>>>>      properties:
+>>>>        compatible:
+>>>> -        const: xlnx,zynqmp-r5f
+>>>> +        enum:
+>>>> +          - xlnx,zynqmp-r5f
+>>>> +          - xlnx,versal-net-r52f
+>>>>  
+>>>>        reg:
+>>>>          minItems: 1
+>>>> @@ -135,9 +139,11 @@ required:
+>>>>  allOf:
+>>>>    - if:
+>>>>        properties:
+>>>> -        xlnx,cluster-mode:
+>>>> -          enum:
+>>>> -            - 1
+>>>> +        compatible:
+>>>> +          contains:
+>>>> +            enum:
+>>>> +              - xlnx,versal-net-r52fss
+>>>
+>>> Why do you touch these lines?
+>>>
+>>>> +
+>>>>      then:
+>>>>        patternProperties:
+>>>>          "^r5f@[0-9a-f]+$":
+>>>> @@ -149,16 +155,14 @@ allOf:
+>>>>                items:
+>>>>                  - description: ATCM internal memory
+>>>>                  - description: BTCM internal memory
+>>>> -                - description: extra ATCM memory in lockstep mode
+>>>> -                - description: extra BTCM memory in lockstep mode
+>>>> +                - description: CTCM internal memory
+>>>>  
+>>>>              reg-names:
+>>>>                minItems: 1
+>>>>                items:
+>>>> -                - const: atcm0
+>>>> -                - const: btcm0
+>>>> -                - const: atcm1
+>>>> -                - const: btcm1
+>>>> +                - const: atcm
+>>>> +                - const: btcm
+>>>> +                - const: ctcm
+>>>>  
+>>>>              power-domains:
+>>>>                minItems: 2
+>>>> @@ -166,33 +170,70 @@ allOf:
+>>>>                  - description: RPU core power domain
+>>>>                  - description: ATCM power domain
+>>>>                  - description: BTCM power domain
+>>>> -                - description: second ATCM power domain
+>>>> -                - description: second BTCM power domain
+>>>> +                - description: CTCM power domain
+>>>>  
+>>>>      else:
+>>>> -      patternProperties:
+>>>> -        "^r5f@[0-9a-f]+$":
+>>>> -          type: object
+>>>> -
+>>>> -          properties:
+>>>> -            reg:
+>>>> -              minItems: 1
+>>>> -              items:
+>>>> -                - description: ATCM internal memory
+>>>> -                - description: BTCM internal memory
+>>>> -
+>>>> -            reg-names:
+>>>> -              minItems: 1
+>>>> -              items:
+>>>> -                - const: atcm0
+>>>> -                - const: btcm0
+>>>> -
+>>>> -            power-domains:
+>>>> -              minItems: 2
+>>>> -              items:
+>>>> -                - description: RPU core power domain
+>>>> -                - description: ATCM power domain
+>>>> -                - description: BTCM power domain
+>>>> +      allOf:
+>>>> +        - if:
+>>>> +            properties:
+>>>> +              xlnx,cluster-mode:
+>>>> +                enum:
+>>>> +                  - 1
+>>>
+>>> Whatever you did here, is not really readable. You have now multiple
+>>> if:then:if:then embedded.
+>> 
+>> For ZynqMP platform, TCM can be configured differently in lockstep mode
+>> and split mode.
+>> 
+>> For Versal-NET no such configuration is available, but new CTCM memory
+>> is added.
+>> 
+>> So, I am trying to achieve following representation of TCM for both:
+>> 
+>> if: versal-net compatible
+>> then:
+>>   ATCM - 64KB
+>>   BTCM - 32KB
+>>   CTCM - 32KB
+>> 
+>> else: (ZynqMP compatible)
+>>   if:
+>>     xlnx,cluster-mode (lockstep mode)
+>>   then:
+>>     ATCM0 - 64KB
+>>     BTCM0 - 64KB
+>>     ATCM1 - 64KB
+>>     BTCM1 - 64KB
+>>   else: (split mode)
+>>     ATCM0 - 64KB
+>>     BTCM0 - 64KB
+>> 
+>> 
+>> If bindings are getting complicated, does it make sense to introduce
+>> new file for Versal-NET bindings? Let me know how you would like me
+>> to proceed.
 > 
-> Got some piece of code creating an interrupt controller at PCI device level.
-> To have it working, '#interrupt-cell = <1>' and 'interrupt-controller'
-> properties need to be set in the PCI device DT node.
+> All this is broken in your previous patchset, but now we nicely see.
 > 
-> I can set them when the PCI device DT node is created (add them in
-> of_pci_add_properties()) but as this interrupt controller is specific to the
-> PCI device driver (it needs to be created after the pci_enable_device() call
-> and will probably be device specific with MSI), it would make sense to have
-> these properties set by the PCI device driver itself or in the overlay it
-> applies.
-> 
-> But these properties creation done by the device driver itself (or the
-> overlay) lead to memory leaks.
-> Indeed, we cannot add properties to an existing node without memory
-> leaks. When a property is removed, the property is not freed but moved
-> to the node->deadprops list (of_remove_property()).
-> The properties present in the list will be free once the node itself is
-> removed.
-> In our use-case, the node (PCI device node) is not removed when the driver
-> is removed and probe again (rmmod/insmod).
-> 
-> Do you have any opinion about the '#interrupt-cell' and
-> 'interrupt-controller' properties creation:
-> 
-> - Created by of_pci_add_properties():
->   No mem leak but done outside the specific device driver itself and done for
->   all PCI devices.
->   Maybe the driver will not create the interrupt controller, maybe it will
->   prefer an other value for '#interrupt-cell', maybe it will handle MSI and
->   will need to set other properties, ... All of these are device specific.
-> 
-> - Created by the device driver itself (or the overlay it applies):
->   The mem leak is present. Any idea about a way to fix that or at least having
->   a fix for some properties ?
->   I was thinking about avoiding to export properties (of_find_property()) and
->   so avoid references properties or introducing refcount on properties but
->   these modifications touch a lot of drivers and subsystems and are subject
->   to errors.
->   That's said, checking a property presence based on its name can be done without
->   exporting the property, as well as getting a single value. Iterating over array
->   values need some more complicated code.
+> No, this does not work like this. You do not have entirely different
+> programming models in one device, don't you?
 > 
 
-I revive this quite old topic.
+I don't understand what do you mean? Programming model is same. Only number
+of TCMs are changing based on configuration and platform. I can certainly
+list different compatible for different platforms as requested. But other than
+that not sure what needs to be fixed.
 
-The primary goal of this series was to avoid a struct device duplication due
-to the insertion of DT nodes related to PCI devices.
-The series added the sysfs of_node symlink once the device is visible from
-sysfs.
-You proposed to create the DT node earlier, DECLARE_PCI_FIXUP_EARLY() instead
-of DECLARE_PCI_FIXUP_FINAL() in order to have it set before the device_add()
-call.
-This raised some new issues because the DT node creation needs some information
-set by the PCI core. DECLARE_PCI_FIXUP_HEADER() was the new candidate.
-Issues were still present.
-The 'ranges' property is needed and information needed for its computation
-are set by the PCI core after the device_add() call.
 
-At this point the discussion continued also on interrupts with the idea to
-add the 'interrupt-controller' property in the PCI device node in order to
-bypass all the interrupt mapping done in DT nodes.
-Indeed, in order to have a working DT mapping, an 'interrupt-parent' phandle
-is needed at some points and will be problematic with ACPI.
+> 
+> Best regards,
+> Krzysztof
+> 
 
-On my side I've got a piece of code to consider the PCI device as an interrup
-controller. This work with the 'interrupt-controller' property.
-
-The question raised:
-Which part of code set the interrupt-controller property ?
-- DT node creation:
-  Common to all PCI devices even if the interrupt are not handled by the PCI
-  device driver. Also '#interrupt-cells' is really device specific.
-- Added by the PCI device driver itself
-  Seems the good place but we enter in overlay memleak issues
-
-What is your opinion related to the best candidate for the
-'interrupt-controller' and '#interrupt-cells' property creation ?
-
-Back to the of_node link addition to sysfs.
-Is it really an issue to add it on an already present device ?
-If so, is it acceptable (not tested on my side) to create the of_node link
-to an empty node before the device_add() call and then fill this node later
-when needed information are set by the PCI core ?
-
-With your answers, I hope to move forward on these topics.
-Best regards,
-Hervé
-
--- 
-Hervé Codina, Bootlin
-Embedded Linux and Kernel engineering
-https://bootlin.com
 
