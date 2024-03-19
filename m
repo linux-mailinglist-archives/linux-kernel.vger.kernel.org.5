@@ -1,185 +1,102 @@
-Return-Path: <linux-kernel+bounces-108076-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108077-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8139988059E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:46:33 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E19B68805A2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:46:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0F46A283C4F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:46:32 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9DCE1284823
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:46:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B2A3A1C7;
-	Tue, 19 Mar 2024 19:46:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C21443B2BB;
+	Tue, 19 Mar 2024 19:46:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="ouxU6D/P"
-Received: from mail-pf1-f182.google.com (mail-pf1-f182.google.com [209.85.210.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="uSjosQNn"
+Received: from out-170.mta1.migadu.com (out-170.mta1.migadu.com [95.215.58.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D85E39FD6
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:46:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7C3173B298
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 19:46:37 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710877585; cv=none; b=mmhiUDvPElwLBR5ffxI16q86b6nVL28/cCi3nSf82GQptDZhGo0z0SOAKK/R/X/sQl9R8tKjPa6CX1wtos5XbGRIOtyT0X3g8oqwomDx50bTl9aosSB1JqVsBT3b8pdf+iHPpmOnZzQNc6CRCpeb880W6vsL/FGbrIkr8z1ThW8=
+	t=1710877599; cv=none; b=bG5qwBVoymxJlPNM/5OQlfcZX6W8FmDvI40LM99aEnVSRAp41XaDQ3prLizB7OIcvtNlIDF0nq3z2vrn53mG+vjnF9sqsAdSDxOxaVAROTETtPWrx+rLklCd+T+gbjd4DLGe5i4uLjbR8TCq+hhtBHjbxpSq0IpVobc0HB2tY0M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710877585; c=relaxed/simple;
-	bh=E0laA+maX+3WM1LAyUqrdePpnPI8sjcd5w4HIpjLOas=;
+	s=arc-20240116; t=1710877599; c=relaxed/simple;
+	bh=kXd2i+AOWYw8mNhkzMSPRsJ1BAfSMk5UbmtyY1hKQ4g=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=cZgBiFnJLOdD2yUQYBWOE5kmTGI8yS2UJsmlgD+v+pretXJyVslkvvex1OGOrKXVJWx2JRDiiIIRYRgScGimjkbW+C0xxrcTRqzcxpgv64NeV/s6B8qqaUfwOq8ZHhb5yxPRw3UDggXK+tGIaNKwWsYZo2ZzE1iAw4tsxmMZa48=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=ouxU6D/P; arc=none smtp.client-ip=209.85.210.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
-Received: by mail-pf1-f182.google.com with SMTP id d2e1a72fcca58-6e6fb9a494aso3294055b3a.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:46:22 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710877582; x=1711482382; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=2KQUlQtO0GZQ94WgTKWt7iDIjBKiCX2QYDYayr502WQ=;
-        b=ouxU6D/PMlDYIeusihbrYssUUTSyxio6DXaFkt9aMmSqyZGXrooq7iEkWde1p0wI6U
-         mpA2NP46BTRyj2CBsAk0R2AS9hj61VAm8stOUTeIS8u2hqxiYqBo6klOnL07Xvaxt6eu
-         F+8CSOrRsYd8hAEOP7WF6eKRCYsFMfuCqQT69LOK1kSsQitr4/U6Hzk3Y7dHqm7EqSp2
-         OV31i/wSVLF/67h/2yTdGmvKqY6+107BjEtyW7CGShQt34BXTIR3amgplkuO9dx6915u
-         iTDVAYZa3OMwrjvUD4K0k8mjqtBacot1tIDD/e0W0WMU+8Odz+8nYoiH++8rIfqfjzqo
-         sYPQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710877582; x=1711482382;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=2KQUlQtO0GZQ94WgTKWt7iDIjBKiCX2QYDYayr502WQ=;
-        b=KMOnfuBs1cIX+utd4/PrPMhGev+hMWDfCy2ipvUB+GPhi8btsEPUz2PRhWYXC3ddgg
-         KjEUcj2CCBf4ioEZeMpNN3mhBU29QsiEYYe+eYyOLZWJ4fP2x6P0Z3oUGDUWbJ6cd5Is
-         mrT+cTRpjWcuC7eidrx1yK2a19z3A/sH+fWIWPtQH1wV7TePJV5CH70/QcRaaFo79HjH
-         6wckk+xwa9Ml+alkTI674YkitVDLocHDszKRqhB15K86t11BxEDPKE8bLdQmbKUXIYnE
-         nQs5UV/slXEicS7jqP5/zeHajIDf8B5n6wacFL90QolKS2GJgZQeK3h+umgz+/sxKeV+
-         zX6A==
-X-Forwarded-Encrypted: i=1; AJvYcCU4eN07KF2SuuHQgr/wIN88y6/9M6ph4XgDWm9tMkXRm4FCJ7tbZdEY7GzGQsiDSMjgpYKYzwLLeV70IG/UUIaXGQu/ci0RKrIu0G7/
-X-Gm-Message-State: AOJu0YyxJUyY7Qd0G9HXUWDwSz24pChqX4LAJsnZuO+OLye2wmJfHabn
-	mQ2kWaTBDGBFGTCi7hBg7vKrKv+dOsEus0PBMJFCGg0HZmKNVS7GOKWnd116lpk=
-X-Google-Smtp-Source: AGHT+IH6Fr5ZQEaEEHnSwEVcf9F4d8R5mfhqSyj3jB2/xuGnf1ofBEDsSI4KPtl9LfuHjq/4erJvMg==
-X-Received: by 2002:a05:6a20:d045:b0:1a3:579f:2c5c with SMTP id hv5-20020a056a20d04500b001a3579f2c5cmr9441879pzb.53.1710877582405;
-        Tue, 19 Mar 2024 12:46:22 -0700 (PDT)
-Received: from ?IPV6:2601:647:4180:9630::546? ([2601:647:4180:9630::546])
-        by smtp.gmail.com with ESMTPSA id v14-20020aa799ce000000b006da96503d9fsm10149006pfi.109.2024.03.19.12.46.21
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 12:46:22 -0700 (PDT)
-Message-ID: <7d69fac0-4cd1-4db6-b19f-fb5a418549ab@rivosinc.com>
-Date: Tue, 19 Mar 2024 12:46:20 -0700
+	 In-Reply-To:Content-Type; b=cZyHVFEH1583JcXK9GcG8ENaTc4cqsggOML6nmcuzTbWF7WCumcOC6YJX+z5S0ouXNampNPQp68gK1UbxkdsMdUayzdL4zEcE5qgCbnQMNP9dVzD4m52FoMAmCKQXjKQ1OB4bqjvDjhf5QrFTJ9Lgehq0twtXU43p2+BSO2qRxc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=uSjosQNn; arc=none smtp.client-ip=95.215.58.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Message-ID: <5b1d5758-3510-47c5-97e9-2edc5112d046@linux.dev>
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710877595;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+GT3KW1575UJ01KouvR9HZva7hTJApu0idB1GvqPOVU=;
+	b=uSjosQNnzCRjKn06REIRfbqr6tgrO2Qo7zhAniZ0awIiRTtfyEWuK2Hyi3ndgcrNlR3s+w
+	ZZLB/PTPqMx6mhyh1DRVV0unlZHqRqMg2r379g286Z/TbO9uUPvq8ttVj2HDOUzKivnUYi
+	XHBwD6NqJEhyHn5e/0kAGO1a08uXSn8=
+Date: Tue, 19 Mar 2024 12:46:26 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] riscv: dmi: Add SMBIOS/DMI support
+Subject: Re: [PATCH net-next v4] net: Re-use and set mono_delivery_time bit
+ for userspace tstamp packets
 Content-Language: en-US
-To: Haibo Xu <haibo1.xu@intel.com>, linux-kernel@vger.kernel.org,
- linux-riscv@lists.infradead.org, linux-efi@vger.kernel.org
-Cc: aou@eecs.berkeley.edu, palmer@dabbelt.com, paul.walmsley@sifive.com,
- xiaobo55x@gmail.com, ardb@kernel.org
-References: <20240318020916.1299190-1-haibo1.xu@intel.com>
-From: Atish Patra <atishp@rivosinc.com>
-In-Reply-To: <20240318020916.1299190-1-haibo1.xu@intel.com>
+To: "Abhishek Chauhan (ABC)" <quic_abchauha@quicinc.com>
+Cc: Willem de Bruijn <willemdebruijn.kernel@gmail.com>, kernel@quicinc.com,
+ "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
+ Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+ netdev@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Andrew Halaney <ahalaney@redhat.com>,
+ Martin KaFai Lau <martin.lau@kernel.org>, bpf <bpf@vger.kernel.org>,
+ Daniel Borkmann <daniel@iogearbox.net>, Alexei Starovoitov <ast@kernel.org>,
+ Andrii Nakryiko <andrii@kernel.org>
+References: <20240301201348.2815102-1-quic_abchauha@quicinc.com>
+ <2a4cb416-5d95-459d-8c1c-3fb225240363@linux.dev>
+ <65f16946cd33e_344ff1294fc@willemb.c.googlers.com.notmuch>
+ <28282905-065a-4233-a0a2-53aa9b85f381@linux.dev>
+ <65f2004e65802_3d1e792943e@willemb.c.googlers.com.notmuch>
+ <0dff8f05-e18d-47c8-9f19-351c44ea8624@linux.dev>
+ <e5da91bc-5827-4347-ab38-36c92ae2dfa2@quicinc.com>
+ <65f21d65820fc_3d934129463@willemb.c.googlers.com.notmuch>
+ <bc037db4-58bb-4861-ac31-a361a93841d3@linux.dev>
+ <65f2c81fc7988_3ee61729465@willemb.c.googlers.com.notmuch>
+ <5692ddb3-9558-4440-a7bf-47fcc47401ed@linux.dev>
+ <65f35e00a83c0_2132294f5@willemb.c.googlers.com.notmuch>
+ <e270b646-dae0-41cf-9ef8-e991738b9c57@quicinc.com>
+ <8d245f5a-0c75-4634-9513-3d420eb2c88f@linux.dev>
+ <d10254cc-a908-4d81-98d2-2eed715e521f@quicinc.com>
+ <66ad9e5b-0126-476e-bf0f-6a33f446c976@quicinc.com>
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Martin KaFai Lau <martin.lau@linux.dev>
+In-Reply-To: <66ad9e5b-0126-476e-bf0f-6a33f446c976@quicinc.com>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Migadu-Flow: FLOW_OUT
 
-On 3/17/24 19:09, Haibo Xu wrote:
-> Enable the dmi driver for riscv which would allow access the
-> SMBIOS info through some userspace file(/sys/firmware/dmi/*).
-> 
-> The change was based on that of arm64 and has been verified
-> by dmidecode tool.
-> 
-> Signed-off-by: Haibo Xu <haibo1.xu@intel.com>
-> ---
-> Changes since v1
->    - Change to use memremap/memunmap for dmi_(early)_remap/unmap
->      definition(suggested by Ard)
->    - Minor clean up for comments (Ard)
-> ---
->   arch/riscv/Kconfig                   | 11 +++++++++++
->   arch/riscv/include/asm/dmi.h         | 24 ++++++++++++++++++++++++
->   drivers/firmware/efi/riscv-runtime.c | 13 +++++++++++++
->   3 files changed, 48 insertions(+)
->   create mode 100644 arch/riscv/include/asm/dmi.h
-> 
-> diff --git a/arch/riscv/Kconfig b/arch/riscv/Kconfig
-> index 8ebafe337eac..3639151cb4ef 100644
-> --- a/arch/riscv/Kconfig
-> +++ b/arch/riscv/Kconfig
-> @@ -952,6 +952,17 @@ config EFI
->   	  allow the kernel to be booted as an EFI application. This
->   	  is only useful on systems that have UEFI firmware.
->   
-> +config DMI
-> +	bool "Enable support for SMBIOS (DMI) tables"
-> +	depends on EFI
-> +	default y
-> +	help
-> +	  This enables SMBIOS/DMI feature for systems.
-> +
-> +	  This option is only useful on systems that have UEFI firmware.
-> +	  However, even with this option, the resultant kernel should
-> +	  continue to boot on existing non-UEFI platforms.
-> +
->   config CC_HAVE_STACKPROTECTOR_TLS
->   	def_bool $(cc-option,-mstack-protector-guard=tls -mstack-protector-guard-reg=tp -mstack-protector-guard-offset=0)
->   
-> diff --git a/arch/riscv/include/asm/dmi.h b/arch/riscv/include/asm/dmi.h
-> new file mode 100644
-> index 000000000000..ca7cce557ef7
-> --- /dev/null
-> +++ b/arch/riscv/include/asm/dmi.h
-> @@ -0,0 +1,24 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * Copyright (C) 2024 Intel Corporation
-> + *
-> + * based on arch/arm64/include/asm/dmi.h
-> + *
-> + * This file is subject to the terms and conditions of the GNU General Public
-> + * License.  See the file "COPYING" in the main directory of this archive
-> + * for more details.
-> + */
-> +
-> +#ifndef __ASM_DMI_H
-> +#define __ASM_DMI_H
-> +
-> +#include <linux/io.h>
-> +#include <linux/slab.h>
-> +
-> +#define dmi_early_remap(x, l)		memremap(x, l, MEMREMAP_WB)
-> +#define dmi_early_unmap(x, l)		memunmap(x)
-> +#define dmi_remap(x, l)			memremap(x, l, MEMREMAP_WB)
-> +#define dmi_unmap(x)			memunmap(x)
-> +#define dmi_alloc(l)			kzalloc(l, GFP_KERNEL)
-> +
-> +#endif
-> diff --git a/drivers/firmware/efi/riscv-runtime.c b/drivers/firmware/efi/riscv-runtime.c
-> index 09525fb5c240..c3bfb9e77e02 100644
-> --- a/drivers/firmware/efi/riscv-runtime.c
-> +++ b/drivers/firmware/efi/riscv-runtime.c
-> @@ -152,3 +152,16 @@ void arch_efi_call_virt_teardown(void)
->   {
->   	efi_virtmap_unload();
->   }
-> +
-> +static int __init riscv_dmi_init(void)
-> +{
-> +	/*
-> +	 * On riscv, DMI depends on UEFI, and dmi_setup() needs to
-> +	 * be called early because dmi_id_init(), which is an arch_initcall
-> +	 * itself, depends on dmi_scan_machine() having been called already.
-> +	 */
-> +	dmi_setup();
-> +
-> +	return 0;
-> +}
-> +core_initcall(riscv_dmi_init);
+On 3/18/24 12:02 PM, Abhishek Chauhan (ABC) wrote:
+>>>>>> I think the "struct inet_frag_queue" also needs a new "user_delivery_time"
+>>>>>> field. "mono_delivery_time" is already in there.
+>>> [ ... ]
+>>>
+> Martin, Do we really need to add user_delivery_time as part of inet_frag_queue struct? I was wondering why is this required since we are using tstamp_type:2 to
+> distinguish between timestamp anyway .
 
-Reviewed-by: Atish Patra <atishp@rivosinc.com>
+
+The context for this was before combining mono_delivery_time:1 and 
+user_delivery_time:1 into tstamp_type:2. No need to add user_delivery_time to 
+inet_frag_queue because it is combined into tstamp_type:2. If 
+mono_delivery_time:1 is replaced with tstamp_type:2 in sk_buff, the same should 
+be done in inet_frag_queue.
+
+
 
