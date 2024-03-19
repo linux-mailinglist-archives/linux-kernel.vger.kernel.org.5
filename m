@@ -1,118 +1,148 @@
-Return-Path: <linux-kernel+bounces-107430-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107432-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id D878687FC66
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:57:47 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id BACF587FC6B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:58:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 8CB89282492
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:57:46 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3299B1F22DBA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:58:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 940127EEE6;
-	Tue, 19 Mar 2024 10:56:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D26F27F483;
+	Tue, 19 Mar 2024 10:56:56 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b="fQWUHAgT"
-Received: from SLXP216CU001.outbound.protection.outlook.com (mail-koreacentralazon11020002.outbound.protection.outlook.com [52.101.154.2])
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="JxeJm6i2"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC3F77E571;
-	Tue, 19 Mar 2024 10:56:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=52.101.154.2
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F07C97E10C
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:56:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=198.175.65.16
 ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710845788; cv=fail; b=f5BYBMRbsayrKCqNAKg4C+sNYxqWhVEd+ww/GHOKJvthJmVF8uP4Kkg88iAFRUDvQDBMtTKi6fVg/u1GY35MCaFPk4G4cGflGvLYkHapkaySrjBmDG9armP3i6bvRlcJnyn3Oc4A3y6MLWXXJl5IgjU8nsk03tAbpcaer8D9xwA=
+	t=1710845815; cv=fail; b=OuzrcIlnqFj0iuor5K/UNe/R6ug8uktC6iqapdHOQk+qP7eVdyRl4HDGA/c6AbNW6/wF+9H7QAMtd1F4XSSf7Gf4zBJC4EASUKj6QZd+FXDSYybgzO14y4wfWGM3/Q3Bz+/q0Ss4ypBQ/cGx5BkIFeskmwAyuyBY2eoMjpOHfWg=
 ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710845788; c=relaxed/simple;
-	bh=6dhviL0r4xWC6QlrDXKWXOiwTNF6aXqw+SGJklWV/C0=;
+	s=arc-20240116; t=1710845815; c=relaxed/simple;
+	bh=nYsjYSe48Cq8Mkz9vsfXe05B7weuzw++Y3zTuzpYsKk=;
 	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=gfTBGcV8FzPO63BerV80cMLmgwRBmCvHur9Xk5mYsqGFbnNNSTXHla6QeEqMIvAQg2ChwACj8xoY7Qz9iXJ+kd/hv8du4ocV09vIAr1z731+dTiITCuA2wtFqPMsC3m8jW/6g/HxIurEuMMsVkI+oYsdMsYJtZyGdvYt24AdatU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com; spf=pass smtp.mailfrom=chipsnmedia.com; dkim=pass (1024-bit key) header.d=chipsnmedia.com header.i=@chipsnmedia.com header.b=fQWUHAgT; arc=fail smtp.client-ip=52.101.154.2
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=chipsnmedia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chipsnmedia.com
+	 Content-Type:MIME-Version; b=KtjPH8AwO2QACBmZuLP3nuHyMS2rJrO8Z0NZJjXms6nMJIlT6e+W715oIPZnj1iczvORTDkEUMMZ49SNW+hIeYob1j0AKp6ENx/PWoyfIS0p8/hz7OdMVKh/FTjPdFygDjgIb5p3a7sv7vKfLXaHoOazV1zkUENMByM6nVaNIE8=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=JxeJm6i2; arc=fail smtp.client-ip=198.175.65.16
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710845812; x=1742381812;
+  h=from:to:cc:subject:date:message-id:references:
+   in-reply-to:content-transfer-encoding:mime-version;
+  bh=nYsjYSe48Cq8Mkz9vsfXe05B7weuzw++Y3zTuzpYsKk=;
+  b=JxeJm6i29Yy83NoJ6uZdx/Smbv8laGIUUhhIoGd9kxC59JwcFqWlwkaa
+   2FZg1qGIuDNSZXJm9QFCuI/hBju2t+VUYTMSo3XZStNT2SpqHTNuLMokK
+   cOqBPPYpadWMMVdPCguKNFhK/FkQhf4KoPhSXNNMZSaypd79I2RMJG/9w
+   1az/Zu5Eo1efUUS+bxn9gShPCokOLNw2zCCkMISJMlz0DkgQUu65Rw1xZ
+   zRcV8an2Un3EcyXxH8yoCSsSOC10WPDEtsrC4a1NtTKLpftN7UpGAb9Rz
+   jGQVIvXbejpDkxRFvCWBsvFMBG9Tyy+ogQFFIsqaMg/OyDhMUnLe6Njje
+   w==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5827568"
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="5827568"
+Received: from fmviesa003.fm.intel.com ([10.60.135.143])
+  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 03:56:51 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
+   d="scan'208";a="18346465"
+Received: from orsmsx601.amr.corp.intel.com ([10.22.229.14])
+  by fmviesa003.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Mar 2024 03:56:50 -0700
+Received: from orsmsx610.amr.corp.intel.com (10.22.229.23) by
+ ORSMSX601.amr.corp.intel.com (10.22.229.14) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Tue, 19 Mar 2024 03:56:49 -0700
+Received: from ORSEDG602.ED.cps.intel.com (10.7.248.7) by
+ orsmsx610.amr.corp.intel.com (10.22.229.23) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 03:56:49 -0700
+Received: from NAM12-BN8-obe.outbound.protection.outlook.com (104.47.55.169)
+ by edgegateway.intel.com (134.134.137.103) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.1.2507.35; Tue, 19 Mar 2024 03:56:49 -0700
 ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=nn73V8RIIdTzmQl7CS45NAW5eGUqY4RQEZZFLqVnLPjdNpk4YaT2CekJj6i5rr8NQF/cOq26de09Ds4yeWBARVC8TcIidb8BDbm+YzgsXpyKMuz7diLaxjN3xUWHUHxjqzKSFyrYsuzhRBIWUfGvdcl4lOrRVsgbMK8jf61334U7HriayMFeCMUtYHEUU3wWv3/QrgFkNxapwYPZ0deVzMWdyw3gsAMGFIVM/Xg5nG+QuVbkg9YHnGp9f9z5O0ZRHtkTksYw24NqG43BpyVYl+H6rgezQxwgiFzih+GDQ9EF7JW/kSEvj7Hl6Dao5t88tjjrExvaRcTqLsnffAos6A==
+ b=BaHF75plz76kK0zs4jJrUrnT0HJMe5cnpjb5PUX3gfc4MQC1V9soRvGlRDxtWOoR0L+0sRDkQxczTby8dBHhO7GEey+O6QtbhmTBz3cxA/cJ3wAV7k8OWZR27s10ahGxlDczFib6Qe3PfNmranfCAso4jphuuaUpgD3r/lCDgTirwqr2xSSnRZWRs9x1WvWrfC8MoUku/IxTpsu7bsP0v6QiE9S332NWUExLstMqgYH1t5SX0ARbvtqV/bzx9vIefkHXCmFqQBbdNSzLdb3mXHgo7W9t333dPBcud0/qMGsLPKy9U+KsJZUZFOtrTtXebMgGoH7Rw1wiM/eUWbgxmg==
 ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
  s=arcselector9901;
  h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=yEWvRhnZqb+rmnr5Gw9p4lb2OYDvEo5spr9OuPj35IU=;
- b=XdT76UDWPcj9drcU6YAQ8C+Ety5l4vUd4qwTWde24kZqYGq/Elo3zuYGaW4i9Ll9qls3GIEijzbQ5xlEyKEj8OUPf04ud8RsjTrhEenPX5ZdUgLwt4LmnE6/HM5wV1iTT5tL5799FuGJQUk2ymVsN+bvtUVC98jzpVbTK5/XjIrqg4XdbCPXNUDbBZo2iAduJwgtRzJ250QqJg6s6ouuJJ1so0yfAwuBBQHw/PPa5P4pUUOlT/cMo6hKt9cuDaJO+YtGD65v/S9vGkFfqM6opTpngybMWcjyHzHTx7HYDXRRBjcthfEBmOXiGDY0SLtl0dbUhe30T6ClYyIJnKXBqg==
+ bh=ELawWIgEjMQ8vzDwdbAOZf5AesXynglPXTs8JkXXkNs=;
+ b=Nh8iIQ2KLea2cY8579X3x3Eryzs5j/ghn/N1bQ+2baIOg72SXxZZ/cVnAtmgiYzY8IspyqTItJUsASjLFUk+AqKrbgMbAg1GBYojHAz1hJgHH9k0g4tHsOQqJNapoIDuEngQMCm7Wlm9XQbUSuMjK1tBxpZoudU+8cAuGCIB/85QictxOd3N7OEYDayEyixgHNskVLk9Vsbqqr33rSp3e6seXAAy7KRSndREH90wNy3PlgF6HGz7jWkDiB7xIz/EU/qnPsC13EPMSDzEefcqnDsN0JCzMElqmubLIjkqkRgi5elrysQlEjiv7hFTFtNITysc27wY5lVV41ix4f6FOg==
 ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=chipsnmedia.com; dmarc=pass action=none
- header.from=chipsnmedia.com; dkim=pass header.d=chipsnmedia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=chipsnmedia.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=yEWvRhnZqb+rmnr5Gw9p4lb2OYDvEo5spr9OuPj35IU=;
- b=fQWUHAgTNH4ZaE+o4lXFGQb9xA6JBU0MvWEiORcAGRUVnMkmlfblqrvQH3V+frW26NFdCU5gqjvmM8PVMaeu85g7PedgGWqqfHHXDGcPTh6aTVx5aEq35+atFa5q8KZScVl5P5iqTN9fQVM+9bgI1RlkmMNSIpYhdbZ8hA7p4ug=
-Received: from SL2P216MB1246.KORP216.PROD.OUTLOOK.COM (2603:1096:101:a::9) by
- PU4P216MB1486.KORP216.PROD.OUTLOOK.COM (2603:1096:301:cd::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.28; Tue, 19 Mar 2024 10:56:22 +0000
-Received: from SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
- ([fe80::5b8:35f1:821f:4f57]) by SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
- ([fe80::5b8:35f1:821f:4f57%2]) with mapi id 15.20.7386.017; Tue, 19 Mar 2024
- 10:56:22 +0000
-From: Nas Chung <nas.chung@chipsnmedia.com>
-To: Ivan Bornyakov <brnkv.i1@gmail.com>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, Rob Herring <robh@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley
-	<conor+dt@kernel.org>, "linux-media@vger.kernel.org"
-	<linux-media@vger.kernel.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, "devicetree@vger.kernel.org"
-	<devicetree@vger.kernel.org>, jackson.lee <jackson.lee@chipsnmedia.com>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>
-Subject: RE: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
-Thread-Topic: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
-Thread-Index: AQHaeUKgZLecalKvxU2rcLnTilDrELE+3QHQ
-Date: Tue, 19 Mar 2024 10:56:22 +0000
-Message-ID:
- <SL2P216MB1246F7FA7E95896AA2409C90FB2C2@SL2P216MB1246.KORP216.PROD.OUTLOOK.COM>
-References: <20240318144225.30835-1-brnkv.i1@gmail.com>
- <20240318144225.30835-6-brnkv.i1@gmail.com>
-In-Reply-To: <20240318144225.30835-6-brnkv.i1@gmail.com>
-Accept-Language: ko-KR, en-US
-Content-Language: ko-KR
+ smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
+ dkim=pass header.d=intel.com; arc=none
+Received: from MW5PR11MB5907.namprd11.prod.outlook.com (2603:10b6:303:1a1::13)
+ by CO1PR11MB4948.namprd11.prod.outlook.com (2603:10b6:303:9b::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Tue, 19 Mar
+ 2024 10:56:42 +0000
+Received: from MW5PR11MB5907.namprd11.prod.outlook.com
+ ([fe80::bcbf:4501:30f4:843b]) by MW5PR11MB5907.namprd11.prod.outlook.com
+ ([fe80::bcbf:4501:30f4:843b%4]) with mapi id 15.20.7409.010; Tue, 19 Mar 2024
+ 10:56:42 +0000
+From: "Prasad, Aravinda" <aravinda.prasad@intel.com>
+To: SeongJae Park <sj@kernel.org>
+CC: "damon@lists.linux.dev" <damon@lists.linux.dev>, "linux-mm@kvack.org"
+	<linux-mm@kvack.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, "s2322819@ed.ac.uk" <s2322819@ed.ac.uk>,
+	"Kumar, Sandeep4" <sandeep4.kumar@intel.com>, "Huang, Ying"
+	<ying.huang@intel.com>, "Hansen, Dave" <dave.hansen@intel.com>, "Williams,
+ Dan J" <dan.j.williams@intel.com>, "Subramoney, Sreenivas"
+	<sreenivas.subramoney@intel.com>, "Kervinen, Antti"
+	<antti.kervinen@intel.com>, "Kanevskiy, Alexander"
+	<alexander.kanevskiy@intel.com>
+Subject: RE: [PATCH v2 0/3] mm/damon: Profiling enhancements for DAMON
+Thread-Topic: [PATCH v2 0/3] mm/damon: Profiling enhancements for DAMON
+Thread-Index: AQHaeTeYeVMaFIFnV0yMrKTBAlKavbE+h/4AgABRr6A=
+Date: Tue, 19 Mar 2024 10:56:42 +0000
+Message-ID: <MW5PR11MB5907F44D802C298E8182A1B6F22C2@MW5PR11MB5907.namprd11.prod.outlook.com>
+References: <20240318132848.82686-1-aravinda.prasad@intel.com>
+ <20240319052054.100167-1-sj@kernel.org>
+In-Reply-To: <20240319052054.100167-1-sj@kernel.org>
+Accept-Language: en-US
+Content-Language: en-US
 X-MS-Has-Attach:
 X-MS-TNEF-Correlator:
 x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SL2P216MB1246:EE_|PU4P216MB1486:EE_
+x-ms-traffictypediagnostic: MW5PR11MB5907:EE_|CO1PR11MB4948:EE_
+x-ld-processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
 x-ms-exchange-senderadcheck: 1
 x-ms-exchange-antispam-relay: 0
 x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- LbJ+0UzG1p74K8RuD3tp4nx31qcpDFr+j6qnPauihPOBFSdi9ggO0eTniCfmXlnP8dg9XondcqOsINWexLdsfekv0CChbmSAROdLz/g7j0R33FeoY9reZ/LExpweflP7WlCyr3NhGkX45qRQrlKTz8JcbeF/nH7sIK87Z1GA50ZJ2wsEyF6t6xzjUN9oLyDMLsgkYgKZ4FGO40CQI+AQXFemfUUPlRKQVQE9z4A3UN/9YTvEn2SIJgRm+LcJhqJFmLHXtENDRZjxePMSdYD9JIxKTBANgKfbiVEP6OCsq0s3A2XCtdCuwA7DV46+h3p/mwPp1j5LSUtumt4lb92Z8JjKxwsqxdPOUlHKmZ9q5aOihpIspOwTgZyCjmXd+5a2OEttOuAUND7rZ85dxFoUpV8m+9nvcTLt6d0EdIKIy+HyVEmRzehHJY4Qtv0WW1j7sDZ+bPSGLEHbUxno5RMvO6wdg/NlWWizTAcoTr/ABXUPkvaM9zi0V1DKzcS4w1d3I3CImQ9YX9SMjd/IpLtIJJIPxsmNZineVKH4ZXzmxmI/+9JsTtDpe2wMfdIOVyoyeFLxkS+HXCgfDKU/+vATUQqqKzrYaZFFIsG3sTCcY+fO34EX8KUCXChPwx9jKnBzF2qlA2u12SNNffIGb2Y2qvI7ZeGzxnRicDlWCK1F8A0=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SL2P216MB1246.KORP216.PROD.OUTLOOK.COM;PTR:;CAT:NONE;SFS:(13230031)(376005)(366007)(1800799015);DIR:OUT;SFP:1102;
+x-microsoft-antispam-message-info: JBgiRSOwetJgtydZT/VBVBTeympJbjN4oSOhJbl9/CWlNBYggpa6c2CHQIP3N9POXRiI9RhqeCMOs5ERNpGJyDtEIVTvAMGEuELRzHTnmd0TIUjY8fI4PQORRWobQLEDkf3ajSq9kpDH0FH5co9GAfPt11yzPfY6lDXEIfCoBzn/5+pBp1l3OFDIVY+0MD9M+hBSn4CcDT7ydlZPKkShf67UP92eaQmaX84Sz0Zy8YFSJ12fcnPXRjOs18smWiGSzTZLmTsnS+BlJ4NwBvxNndZKhxGwV5hx+rvYEuzR5gY/NZpR8m+KStAaSoHbly3CSdil44szJ/7w/49yDEOxsyNZfjS0rqhw1mXvGhqj4jJN557tMpYbqswnTI8wzdpQe1z/pjA+f7MS60yyQYPUaAs16KrRdvar/gyZkpdOPtQXVtertfdW8NOrrozsRAmNtj03BCfChwem+wKn2bE8jgOsJVmWoZ/j5lljt4UNpql95Gp9K/scPSEquPxv/u/0+TiXDj7XWNPG7XWRsZqAow9ok5lhmIhaBWTOdTY14WQQ7I6+jTGXyP5Q0eSI4HDwf9bW8hvIynv7Ib5qWVhO6v133eogtCLccBbjg3+HE4dY+L376ubvqcuCr8Givdby
+x-forefront-antispam-report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MW5PR11MB5907.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007);DIR:OUT;SFP:1102;
 x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?uOHawIdD5Ok6s+6IrT8R9/mQbORGGtdHFp0OsT+ByWTIYB49+mn8uSsq8fZT?=
- =?us-ascii?Q?2qi5lBWOU/hXviOOG6SHlZHhlHeg5uWg5g5IR4E6NNL+fvNw8vYG9Rq1fwhg?=
- =?us-ascii?Q?teB2O2sfXML5kW2SAI+AeaOy5xih3+wFesfjM+LQ0+Ls6UWAx2+xBeW2y9In?=
- =?us-ascii?Q?FYg9te/AfZcnQYn8Sy046MOiX76letaKJfQB+xR65qKB+gOC89cqzihz+o+N?=
- =?us-ascii?Q?I/CJ/4o1iOr+19smbziZ4604rwMyLoJ/E2MF/VcYqtZJa7EzF4Q8rVS35cwb?=
- =?us-ascii?Q?/uIUc+eOQ4elBin3AxUIjd9xe62u1hEAWTEULnmvHnpZyG3X3fcb81qtJf8Q?=
- =?us-ascii?Q?s/TZet/T7X2FYojLCAMlOZnY4HrIu+4exHribS6QGqy+4fXClco49rVLO7IE?=
- =?us-ascii?Q?CYh8RbHqjKLtkQsvTnup7n+FnSvCmCvmgRNgJ0z0IXpz+N+jVd9B1WJ6FxWu?=
- =?us-ascii?Q?a2139jNwNSsVbY9/4GOBfI8hBIIPFn2RdA61wA4rKGKxV28bGLS2RASIBh/v?=
- =?us-ascii?Q?deXfptiRKr7FO4sbSi4jRbGybUiCfIQPhjJzpNcpNqCwwhpN4BdY+tcgIN0A?=
- =?us-ascii?Q?lm5GBeDddRh5fkpU4qrPsSAZ9XWWjw0MU6Mnegc9JWXi8OKc62fyP7CqYPR4?=
- =?us-ascii?Q?12ibsNokRBcOiU8Qb41KMd7kXnTK51kWe1BlqhrFbu9vmsAo+WaIn3f8M188?=
- =?us-ascii?Q?ZR/zmzwql+u6WKAJZ6qk0SSleUUsNEjQgzYl5BO1JDGIdzIPYcyTJl7dxbWN?=
- =?us-ascii?Q?OOSNHQD//5omqXF7DaQQaprfV4GLGdezZ7DZf5Vzn144nafmQbalz+OAJbTI?=
- =?us-ascii?Q?f2Yn8JvjQVAnxCOiQGIXML6zCVS49svqk/dW1dCPLgQwnzFPU8W3HH2Al6qM?=
- =?us-ascii?Q?zZs2bRnCdANkvSh30qvp2sbfB3zWEpLIPCdUeRN4AcsGUdlPfltVQVmwGc+1?=
- =?us-ascii?Q?kkUhr/YkPQAfMCT8SaYWdg6FoS4ZvNuwWFpfacZP+a+r2j3NjiPQkKmbUYUr?=
- =?us-ascii?Q?emnhcGTqYeZRnKsdZveP2Y7coxnWesIWKNg0jNASH1I83efltvH6CPGQ5icE?=
- =?us-ascii?Q?wFd9p8yY69WgYr1975RO1FQS3vkLgJfD1lMfygOpDFLQolisTbVUOGz4HEuL?=
- =?us-ascii?Q?ldkDNs366IFjIi2T8uEf2qzQV25yJ+uN+FERABXKZWWNdwLoAXqrjtYf5Tfv?=
- =?us-ascii?Q?tjfWlzgHBa7eWTtaBw+vqTKx0YRS0jspu6nO3RD2rgQKtQBhzbWLCl6PxJvo?=
- =?us-ascii?Q?Mc+e0MF9dd3qsnIUXR6u4x+/8BlJizF5sKcqtQ3qSOrhvjRqd3mE2ykC03rM?=
- =?us-ascii?Q?krT2BkClat6KJ0cMhFglx/gFe9vFIRT+OKroS8x8jHaegty6QSbkeXJ/tT0D?=
- =?us-ascii?Q?WatQ9/XR5fKbASCE2KXKkJffaFqv9aCddrqH48Ky+Halzy573N64PEakDPHn?=
- =?us-ascii?Q?oMoiQ3vay/NIe36hEWCmXCw+h2dQ3+pvNdJC+UIn7fIoF5JZWSNJzQNwH3uP?=
- =?us-ascii?Q?b39nlxCoqDq0Iznj7Pgg2KkQVtTOaOjmqFqGTeO/1v0TVkaf/MRzQ5+Hjnxc?=
- =?us-ascii?Q?LTW3Xzg8powMFQiXrHfMy8hRImh7jcZklwrLUZOl?=
+x-ms-exchange-antispam-messagedata-0: =?us-ascii?Q?WG2FOibTLTNKbBbf7+nkJVE3jncr+RDbGRB6ipG3RT+nuO+1MCNwHInCYo3O?=
+ =?us-ascii?Q?kd4Abwp1/WKXmclWtaKVMNIp1B2nizUgTBxtHeOW3mIRdRJzSVumibopmNr5?=
+ =?us-ascii?Q?uFqpGFA9W6TSyjGKpY8/fzY42rVqTVgUEGiniAGqiyr/X/JjSPYnGF0LMadk?=
+ =?us-ascii?Q?Y4TjY3zTZeP2+A7DatymQ0RPgdPsOsFF3FQeJJX7HKOExk9vD5tHUdUQ/e0n?=
+ =?us-ascii?Q?JDwnchU+9h+SeHxaSeGzCYUkaOu9uB19ZqDEKeFzpWG6kEyFWcNB3H2uzYsl?=
+ =?us-ascii?Q?hsTHoK0ncgZ/TCNNuW8wFwFf/Ur7QugXTlc1tctnYQmcsPM1UjysUfycaxyX?=
+ =?us-ascii?Q?AzOsTXmvwvKCNnLu2sn9m8ayhVVEalHbd0or8V0AOAC5xNlqYmuVkt3jkr5F?=
+ =?us-ascii?Q?ta9+ZsUhYjpUTG0sbHE+89SgG2CUUCqYlfbh0FT4smhn3+024sWeNYnXJq30?=
+ =?us-ascii?Q?4z/3mA4vVbOhz1GhmIVre3zCCNZV7rFLH5hsD4BGmhyNovbOxT0Qn/l2FyAv?=
+ =?us-ascii?Q?+EoLuSB/F63sxD8Sim3S6jBu7H9dpFL4bQ5CmzVLfXvCmasMZ69WYQAvamLS?=
+ =?us-ascii?Q?JPPWTgHQ3hjlu73gHisxRhw5MJKv92Xkjf/mkAog7doo1N7UY/9ikOpNGHFd?=
+ =?us-ascii?Q?dAsAFt8bZhitDJR/Z9744kwISjas79Obx5ox0R/MG5mx7O1t5u8zl6N3PIJV?=
+ =?us-ascii?Q?+Z/nvgYOfUvLairpmtOJtlX4ufH40NmTWtpGG2r+WVXkTsEN9o/xeDw9yaQH?=
+ =?us-ascii?Q?FUiPhZc21Le6WME0Vul8sPH6aOjr/BIgk7ACVdCb56f/wc6o7GRYR56ZIgEH?=
+ =?us-ascii?Q?y5HfPNImFsQWDYdMEJncCPsta6HUkAmuTjXLmQGW50jzVS1A2S+JnBwWVETL?=
+ =?us-ascii?Q?N3+dcq6mE0YcqjgNrAB3HIbwTdRQ1wwllXYVhXX9svRFCca04on7qIXdL9p8?=
+ =?us-ascii?Q?4CuAbRtbqacV7DgpRoRvGVbELcFV1jirDDTQZw2HDvMx8JL71yAhrhaFo4QK?=
+ =?us-ascii?Q?pjgCBSLTzcjr6HgOuZF5UdRzTCTpeNxABY5t5BYZebiO9ZwyEWhrjJtLAxo8?=
+ =?us-ascii?Q?GSCFRbhwzLub1gdZxXJdFgcXvgVnXn5DR7SO0ovMNGxemwqI34Bu9g0c4Piy?=
+ =?us-ascii?Q?ZDQJuGCIJUZVPAfF+P3YLH1Q1eTuMsOqkgCEKX2dPbJn3fc6Sy8NJUQiSU6o?=
+ =?us-ascii?Q?6RwfomSapBhbz/zqlZslnHfb9Enf9ehOOaF03+2DD7IbhtOZGOUR/HUlGTDk?=
+ =?us-ascii?Q?Bs2XjOXK16+4a2w2XbqPcKfTHfWQuvfSGxVh4u86I6E6jGXucv+Jx+q6bvGF?=
+ =?us-ascii?Q?hUOJK1mAHFeKG16fZ4yLWPR0Tt3QBAtSPQxRc/pTQvSf5oLaZ/4Z7XZZ6O9J?=
+ =?us-ascii?Q?l9SGYoPnZV7wyeIV+AgwpO7+O5ZXGMz99r5BTQ3d30iOF/LDg3Ioc39sImMs?=
+ =?us-ascii?Q?KfULCRZ0vQbVAfaNLgbN4brnoNcfKvc+LQ0jpz8j8EpXNJA7tqdo4aDICk94?=
+ =?us-ascii?Q?srTezN8xQMi5PoFVYuxcX2R9ziq9gXCZZvAyhP4DP3Wi6a8xGBdviloph3+t?=
+ =?us-ascii?Q?VGADSdJrWSrFoaeXhtN2na1qnOipOZZNK1JyJyU+?=
 Content-Type: text/plain; charset="us-ascii"
 Content-Transfer-Encoding: quoted-printable
 Precedence: bulk
@@ -121,212 +151,205 @@ List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: chipsnmedia.com
 X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SL2P216MB1246.KORP216.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-Network-Message-Id: 6b6bcc3a-2b0f-4784-5069-08dc48033728
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 10:56:22.7075
+X-MS-Exchange-CrossTenant-AuthSource: MW5PR11MB5907.namprd11.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 199eda8a-c28b-4960-dbbe-08dc480342cb
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 10:56:42.1971
  (UTC)
 X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 4d70c8e9-142b-4389-b7f2-fa8a3c68c467
+X-MS-Exchange-CrossTenant-id: 46c98d88-e344-4ed4-8496-4ed7712e255d
 X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: 99KcoM/A+n6/XtdOeXn8Oi44ymZlTFJbLBdSiRFRbOms1UaCore+VQFErIXbb6IAGrM9IrmfCEi9IHtUJB7mml7G5CJ2Vj+HhbuQ/Erf26Y=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PU4P216MB1486
+X-MS-Exchange-CrossTenant-userprincipalname: Z0I89CnRtne+0duoTlng1YRWvWU+bHjpCTDZ1pDOF682t9ib5njurUtTFLVzwWFYT2lDIGN3C+kQRKYeXhlJy03Sk8h7eCy9fRTsFblPYaE=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4948
+X-OriginatorOrg: intel.com
 
-Hi, Ivan.
 
->-----Original Message-----
->From: Ivan Bornyakov <brnkv.i1@gmail.com>
->Sent: Monday, March 18, 2024 11:42 PM
->To: Nas Chung <nas.chung@chipsnmedia.com>; jackson.lee
-><jackson.lee@chipsnmedia.com>; Mauro Carvalho Chehab <mchehab@kernel.org>
->Cc: Ivan Bornyakov <brnkv.i1@gmail.com>; Philipp Zabel
-><p.zabel@pengutronix.de>; Rob Herring <robh@kernel.org>; Krzysztof
->Kozlowski <krzysztof.kozlowski+dt@linaro.org>; Conor Dooley
-><conor+dt@kernel.org>; linux-media@vger.kernel.org; linux-
->kernel@vger.kernel.org; devicetree@vger.kernel.org
->Subject: [PATCH 5/6] media: chips-media: wave5: refine SRAM usage
->
->Allocate SRAM memory on module probe, free on remove. There is no need
->to allocate on device open, free on close, the memory is the same every
->time.
 
-If there is no decoder/encoder instance, driver don't need to allocate SRAM=
- memory.
-The main reason of allocating the memory in open() is to allow other module=
+> -----Original Message-----
+> From: SeongJae Park <sj@kernel.org>
+> Sent: Tuesday, March 19, 2024 10:51 AM
+> To: Prasad, Aravinda <aravinda.prasad@intel.com>
+> Cc: damon@lists.linux.dev; linux-mm@kvack.org; sj@kernel.org; linux-
+> kernel@vger.kernel.org; s2322819@ed.ac.uk; Kumar, Sandeep4
+> <sandeep4.kumar@intel.com>; Huang, Ying <ying.huang@intel.com>;
+> Hansen, Dave <dave.hansen@intel.com>; Williams, Dan J
+> <dan.j.williams@intel.com>; Subramoney, Sreenivas
+> <sreenivas.subramoney@intel.com>; Kervinen, Antti
+> <antti.kervinen@intel.com>; Kanevskiy, Alexander
+> <alexander.kanevskiy@intel.com>
+> Subject: Re: [PATCH v2 0/3] mm/damon: Profiling enhancements for DAMON
+>=20
+> Hi Aravinda,
+>=20
+>=20
+> Thank you for posting this new revision!
+>=20
+> I remember I told you that I don't see a high level significant problems =
+on on
+> the reply to the previous revision of this patch[1], but I show a concern=
+ now.
+> Sorry for not raising this earlier, but let me explain my humble concerns=
+ before
+> being even more late.
+
+Sure, no problem. We can discuss. I will get back to you with a detailed no=
+te.
+
+Regards,
+Aravinda
+
+>=20
+> On Mon, 18 Mar 2024 18:58:45 +0530 Aravinda Prasad
+> <aravinda.prasad@intel.com> wrote:
+>=20
+> > DAMON randomly samples one or more pages in every region and tracks
+> > accesses to them using the ACCESSED bit in PTE (or PMD for 2MB pages).
+> > When the region size is large (e.g., several GBs), which is common for
+> > large footprint applications, detecting whether the region is accessed
+> > or not completely depends on whether the pages that are actively
+> > accessed in the region are picked during random sampling.
+> > If such pages are not picked for sampling, DAMON fails to identify the
+> > region as accessed. However, increasing the sampling rate or
+> > increasing the number of regions increases CPU overheads of kdamond.
+>=20
+> DAMON uses sampling because it considers a region as accessed if a portio=
+n of
+> the region that big enough to be detected via sampling is all accessed.  =
+If a
+> region is having some pages that really accessed but the proportion is to=
+o
+> small to be found via sampling, I think DAMON could say the overall acces=
 s to
-use more SRAM memory, if wave5 is not working.
+> the region is only modest and could even be ignored.  In my humble opinio=
+n,
+> this fits with the definition of DAMON region: A memory address range tha=
+t
+> constructed with pages having similar access frequency.
 
->
->Also use gen_pool_size() to determine SRAM memory size to be allocated
->instead of separate "sram-size" DT property to reduce duplication.
->
->Signed-off-by: Ivan Bornyakov <brnkv.i1@gmail.com>
->---
-> .../platform/chips-media/wave5/wave5-helper.c |  3 ---
-> .../platform/chips-media/wave5/wave5-vdi.c    | 21 ++++++++++---------
-> .../chips-media/wave5/wave5-vpu-dec.c         |  2 --
-> .../chips-media/wave5/wave5-vpu-enc.c         |  2 --
-> .../platform/chips-media/wave5/wave5-vpu.c    | 12 +++++------
-> .../platform/chips-media/wave5/wave5-vpuapi.h |  1 -
-> 6 files changed, 16 insertions(+), 25 deletions(-)
->
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-helper.c
->b/drivers/media/platform/chips-media/wave5/wave5-helper.c
->index 8433ecab230c..ec710b838dfe 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-helper.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-helper.c
->@@ -29,9 +29,6 @@ void wave5_cleanup_instance(struct vpu_instance *inst)
-> {
-> 	int i;
->
->-	if (list_is_singular(&inst->list))
->-		wave5_vdi_free_sram(inst->dev);
->-
-> 	for (i =3D 0; i < inst->fbc_buf_count; i++)
-> 		wave5_vpu_dec_reset_framebuffer(inst, i);
->
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->index 3809f70bc0b4..ee671f5a2f37 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vdi.c
->@@ -174,16 +174,19 @@ int wave5_vdi_allocate_array(struct vpu_device
->*vpu_dev, struct vpu_buf *array,
-> void wave5_vdi_allocate_sram(struct vpu_device *vpu_dev)
-> {
-> 	struct vpu_buf *vb =3D &vpu_dev->sram_buf;
->+	dma_addr_t daddr;
->+	void *vaddr;
->+	size_t size;
->
->-	if (!vpu_dev->sram_pool || !vpu_dev->sram_size)
->+	if (!vpu_dev->sram_pool || vb->vaddr)
-> 		return;
->
->-	if (!vb->vaddr) {
->-		vb->size =3D vpu_dev->sram_size;
->-		vb->vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, vb->size,
->-					       &vb->daddr);
->-		if (!vb->vaddr)
->-			vb->size =3D 0;
->+	size =3D gen_pool_size(vpu_dev->sram_pool);
->+	vaddr =3D gen_pool_dma_alloc(vpu_dev->sram_pool, size, &daddr);
->+	if (vaddr) {
->+		vb->vaddr =3D vaddr;
->+		vb->daddr =3D daddr;
->+		vb->size =3D size;
-> 	}
->
-> 	dev_dbg(vpu_dev->dev, "%s: sram daddr: %pad, size: %zu, vaddr:
->0x%p\n",
->@@ -197,9 +200,7 @@ void wave5_vdi_free_sram(struct vpu_device *vpu_dev)
-> 	if (!vb->size || !vb->vaddr)
-> 		return;
->
->-	if (vb->vaddr)
->-		gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr,
->-			      vb->size);
->+	gen_pool_free(vpu_dev->sram_pool, (unsigned long)vb->vaddr, vb-
->>size);
->
-> 	memset(vb, 0, sizeof(*vb));
-> }
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->index aa0401f35d32..84dbe56216ad 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-dec.c
->@@ -1854,8 +1854,6 @@ static int wave5_vpu_open_dec(struct file *filp)
-> 		goto cleanup_inst;
-> 	}
->
->-	wave5_vdi_allocate_sram(inst->dev);
->-
-> 	return 0;
->
-> cleanup_inst:
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->index 8bbf9d10b467..86ddcb82443b 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu-enc.c
->@@ -1727,8 +1727,6 @@ static int wave5_vpu_open_enc(struct file *filp)
-> 		goto cleanup_inst;
-> 	}
->
->-	wave5_vdi_allocate_sram(inst->dev);
->-
-> 	return 0;
->
-> cleanup_inst:
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->index f3ecadefd37a..2a0a70dd7062 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vpu.c
->@@ -178,16 +178,11 @@ static int wave5_vpu_probe(struct platform_device
->*pdev)
-> 		return ret;
-> 	}
->
->-	ret =3D of_property_read_u32(pdev->dev.of_node, "sram-size",
->-				   &dev->sram_size);
->-	if (ret) {
->-		dev_warn(&pdev->dev, "sram-size not found\n");
->-		dev->sram_size =3D 0;
->-	}
->-
 
-Required SRAM size is different from each wave5 product.
-And, SoC vendor also can configure the different SRAM size
-depend on target SoC specification even they use the same wave5 product.
-
-Thanks.
-Nas.
-
-> 	dev->sram_pool =3D of_gen_pool_get(pdev->dev.of_node, "sram", 0);
-> 	if (!dev->sram_pool)
-> 		dev_warn(&pdev->dev, "sram node not found\n");
->+	else
->+		wave5_vdi_allocate_sram(dev);
->
-> 	dev->product_code =3D wave5_vdi_read_register(dev,
->VPU_PRODUCT_CODE_REGISTER);
-> 	ret =3D wave5_vdi_init(&pdev->dev);
->@@ -259,6 +254,8 @@ static int wave5_vpu_probe(struct platform_device
->*pdev)
-> err_clk_dis:
-> 	clk_bulk_disable_unprepare(dev->num_clks, dev->clks);
->
->+	wave5_vdi_free_sram(dev);
->+
-> 	return ret;
-> }
->
->@@ -275,6 +272,7 @@ static void wave5_vpu_remove(struct platform_device
->*pdev)
-> 	v4l2_device_unregister(&dev->v4l2_dev);
-> 	wave5_vdi_release(&pdev->dev);
-> 	ida_destroy(&dev->inst_ida);
->+	wave5_vdi_free_sram(dev);
-> }
->
-> static const struct wave5_match_data ti_wave521c_data =3D {
->diff --git a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->index fa62a85080b5..8d88381ac55e 100644
->--- a/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->+++ b/drivers/media/platform/chips-media/wave5/wave5-vpuapi.h
->@@ -749,7 +749,6 @@ struct vpu_device {
-> 	struct vpu_attr attr;
-> 	struct vpu_buf common_mem;
-> 	u32 last_performance_cycles;
->-	u32 sram_size;
-> 	struct gen_pool *sram_pool;
-> 	struct vpu_buf sram_buf;
-> 	void __iomem *vdb_register;
->--
->2.44.0
-
+>=20
+> >
+> > This patch proposes profiling different levels of the
+> > application\u2019s page table tree to detect whether a region is
+> > accessed or not. This patch set is based on the observation that, when
+> > the accessed bit for a page is set, the accessed bits at the higher
+> > levels of the page table tree (PMD/PUD/PGD) corresponding to the path
+> > of the page table walk are also set. Hence, it is efficient to check
+> > the accessed bits at the higher levels of the page table tree to
+> > detect whether a region is accessed or not. For example, if the access
+> > bit for a PUD entry is set, then one or more pages in the 1GB PUD
+> > subtree is accessed as each PUD entry covers 1GB mapping. Hence,
+> > instead of sampling thousands of 4K/2M pages to detect accesses in a
+> > large region, sampling at the higher level of page table tree is faster=
+ and
+> efficient.
+>=20
+> Due to the above reason, I concern this could result in making DAMON
+> monitoring results be inaccurately biased to report more than real access=
+es.
+>=20
+> >
+> > This patch set is based on 6.8-rc5 kernel (commit: f48159f8,
+> > mm-unstable
+> > tree)
+> >
+> > Changes since v1 [1]
+> > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> >
+> >  - Added support for 5-level page table tree
+> >  - Split the patch to mm infrastructure changes and DAMON enhancements
+> >  - Code changes as per comments on v1
+> >  - Added kerneldoc comments
+> >
+> > [1] https://lkml.org/lkml/2023/12/15/272
+> >
+> > Evaluation:
+> >
+> > - MASIM benchmark with 1GB, 10GB, 100GB footprint with 10% hot data
+> >   and 5TB with 10GB hot data.
+> > - DAMON: 5ms sampling, 200ms aggregation interval. Rest all
+> >   parameters set to default value.
+> > - DAMON+PTP: Page table profiling applied to DAMON with the above
+> >   parameters.
+> >
+> > Profiling efficiency in detecting hot data:
+> >
+> > Footprint	1GB	10GB	100GB	5TB
+> > ---------------------------------------------
+> > DAMON		>90%	<50%	 ~0%	  0%
+> > DAMON+PTP	>90%	>90%	>90%	>90%
+>=20
+> Sampling interval is the time interval that assumed to be large enough fo=
+r the
+> workload to make meaningful amount of accesses within the interval.  Henc=
+e,
+> meaningful amount of sampling interval depends on the workload's
+> characteristic and system's memory bandwidth.
+>=20
+> Here, the size of the hot memory region is about 100MB, 1GB, 10GB, and
+> 10GB for the four cases, respectively.  And you set the sampling interval=
+ as
+> 5ms.  Let's assume the system can access, say, 50 GB per second, and henc=
+e it
+> could be able to access only up to 250 MB per 5ms.  So, in case of 1GB an=
+d
+> footprint, all hot memory region would be accessed while DAMON is waiting
+> for next sampling interval.  Hence, DAMON would be able to see most
+> accesses via sampling.  But for 100GB footprint case, only 250MB / 10GB =
+=3D
+> about 2.5% of the hot memory region would be accessed between the
+> sampling interval.  DAMON cannot see whole accesses, and hence the
+> precision could be low.
+>=20
+> I don't know exact memory bandwith of the system, but to detect the 10 GB
+> hot region with 5ms sampling interval, the system should be able to acces=
+s
+> 2GB memory per millisecond, or about 2TB memory per second.  I think
+> systems of such memory bandwidth is not that common.
+>=20
+> I show you also explored a configuration setting the aggregation interval
+> higher.  But because each sampling checks only access between the samplin=
+g
+> interval, that might not help in this setup.  I'm wondering if you also e=
+xplored
+> increasing sampling interval.
+>=20
+> Sorry again for finding this concern not early enough.  But I think we ma=
+y need
+> to discuss about this first.
+>=20
+> [1] https://lkml.kernel.org/r/20231215201159.73845-1-sj@kernel.org
+>=20
+>=20
+> Thanks,
+> SJ
+>=20
+>=20
+> >
+> > CPU overheads (in billion cycles) for kdamond:
+> >
+> > Footprint	1GB	10GB	100GB	5TB
+> > ---------------------------------------------
+> > DAMON		1.15	19.53	3.52	9.55
+> > DAMON+PTP	0.83	 3.20	1.27	2.55
+> >
+> > A detailed explanation and evaluation can be found in the arXiv paper:
+> > https://arxiv.org/pdf/2311.10275.pdf
+> >
+> >
+> > Aravinda Prasad (3):
+> >   mm/damon: mm infrastructure support
+> >   mm/damon: profiling enhancement
+> >   mm/damon: documentation updates
+> >
+> >  Documentation/mm/damon/design.rst |  42 ++++++
+> >  arch/x86/include/asm/pgtable.h    |  20 +++
+> >  arch/x86/mm/pgtable.c             |  28 +++-
+> >  include/linux/mmu_notifier.h      |  36 +++++
+> >  include/linux/pgtable.h           |  79 ++++++++++
+> >  mm/damon/vaddr.c                  | 233 ++++++++++++++++++++++++++++--
+> >  6 files changed, 424 insertions(+), 14 deletions(-)
+> >
+> > --
+> > 2.21.3
 
