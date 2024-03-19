@@ -1,129 +1,132 @@
-Return-Path: <linux-kernel+bounces-108213-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108449-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id EBA1A88078D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:55:13 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36E13880AB2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:35:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C33BB22677
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:55:11 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6DC72839A4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:35:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441C65F870;
-	Tue, 19 Mar 2024 22:54:27 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9A1BF17BD3;
+	Wed, 20 Mar 2024 05:35:26 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jY1wvw3L"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="eYly9WZP"
+Received: from mail-io1-f53.google.com (mail-io1-f53.google.com [209.85.166.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E682753E32;
-	Tue, 19 Mar 2024 22:54:24 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 80D781428E;
+	Wed, 20 Mar 2024 05:35:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710888866; cv=none; b=L7RXpiFPgYBNbVniWNk5hsilju9wjApy53dHnnexJU7h2uafQIpXqdhl1eElrHnsNGz6q8KAF587MEedmIGZRB20YtwqaqKeuwFysbrBQWNi3nBDJRMC654mai+VCzhypIP5CfoXZdc50UjfQAQJ+25GPA1nQVvaoIC4EEvdyNM=
+	t=1710912925; cv=none; b=S79FeBfjLRkvwuUK+0Cep55D7mQVA5jZtX49hIy0XzB9fVgC+Xv6Xh6EfCZYNQfwVIDgU1jHHJ04m3Jk+piPIWHBooXF0FghC2QZH+ogqsmIbcEs3ltG+HjReN01JmDkXJcdNIJ03348JiEQ2R9KAmvHs3U/EZT+8TSmkrDqwSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710888866; c=relaxed/simple;
-	bh=Zw0wFjaCCBKcsQ3lyAv39YK7/EhhTT/4dEmwP8X6S6c=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Mime-Version; b=i7Jfa9dTtrUPpP3GuDe9y8CWS7rCZ6fIZ9wKFpxO/sHeanAZWeAXnKBz6f1tXvixLJbT3s209XZsz+FVRFD2XMNbLXOTqUPuR5k5LD1sf1w6lHCCBKrNj0GKZkXh2cM/ieB2NGar0jY1j/65nl2iK09xMJMQFlv3cXG6ZP8UlEg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jY1wvw3L; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JMb9wE031810;
-	Tue, 19 Mar 2024 22:54:10 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=UPiXAnbTN6L5PI02UmJo2if2jAmAhdesNCVcfgA2zUM=;
- b=jY1wvw3LZBSUlB3Zu4cZQrrZR/SRFbiSyJMOQ2KI4UJ65cetG2q5yNQ8b3pwcOfmR5Zc
- o0OTQCWp1jUWqFhBIJfDa3sEH3HwftOoza6vyLniJ4RwfiU85UHj/sMCStap1s3+Odly
- ur2N5teg1eq/dtKi3LvPvaGhNEgva6bSI3hgpbMjY9BfLiJe7aQqvqYqS89JoQ3HjeG6
- EQveICjPwaq6XDxQT3pCREYVPni1GRKNZecSb1Gu9com42cX4VaaUdANenasWWAm9SVe
- xI6VhH6MPJWtHnsJn+M7Bc7iI8Gq/47ivlm19vQ8C8dXhLCtfLjJIFR+XDbI0nGxuqCN TA== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wykner0se-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 22:54:09 +0000
-Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JMs9a0023630;
-	Tue, 19 Mar 2024 22:54:09 GMT
-Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wykner0rg-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 22:54:09 +0000
-Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JKWN7D019843;
-	Tue, 19 Mar 2024 22:51:46 GMT
-Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
-	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykjaw9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 22:51:46 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JMphMd48366168
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 22:51:46 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id D2DE45805E;
-	Tue, 19 Mar 2024 22:51:43 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id B71315805B;
-	Tue, 19 Mar 2024 22:51:42 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.80.83])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Mar 2024 22:51:42 +0000 (GMT)
-Message-ID: <90c306c957d0502332bda154ff60f21206c57a3c.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 04/10] evm: Use the metadata inode to calculate
- metadata hash
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-unionfs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, roberto.sassu@huawei.com, amir73il@gmail.com,
-        brauner@kernel.org, miklos@szeredi.hu
-Date: Tue, 19 Mar 2024 18:51:42 -0400
-In-Reply-To: <20240223172513.4049959-5-stefanb@linux.ibm.com>
-References: <20240223172513.4049959-1-stefanb@linux.ibm.com>
-	 <20240223172513.4049959-5-stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
+	s=arc-20240116; t=1710912925; c=relaxed/simple;
+	bh=ldkBIpP1iQ2aO/IzaLnzxa3HL6kC7m3EDYC2KyM3Mps=;
+	h=Message-ID:From:To:Cc:Date:Subject; b=OcqHHE0svn57CoXtvWTmGsZNJQVUNm0v8dP+d8PlK3x/ulfyKUDP9i0FN9M4U7yfYHDFQDYkdjrSECKq+DCHnrFYFxzJWsqR51RhYtgR9VaSyHdhRnpLRwWMVwW+lduHhKA3ORyMj9ZatQ4f08OS4AUhAU36LFJgrRXhThJIwDg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=eYly9WZP; arc=none smtp.client-ip=209.85.166.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f53.google.com with SMTP id ca18e2360f4ac-7cc01644f51so178715039f.2;
+        Tue, 19 Mar 2024 22:35:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710912924; x=1711517724; darn=vger.kernel.org;
+        h=subject:date:cc:to:from:message-id:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=cdzaMW1y8chZwthZH4ERyUEDxEvHFRT3urSQfaKxNec=;
+        b=eYly9WZP+FeSBhqspLuJ/REtpPmOc4LWlVOq7Iko7pqHvgCbLC3IQQ5JNCilVh3PCz
+         AeerY5qlgqs79KxV7m+UhTqphy+IncdDiaLd+/PuK0djLjWKpoUKEFizznLe2oJFSWW6
+         j2CbF3nR7EkP9jZ9Gctf+chwZgTRxZrhvSnCt9B1al4icuCGlP7EUWY9NRYo6Br4G5+4
+         UbXEcor30vphyLlMpaCjK8JDAFcxMigDPz5yj8I6GfqzMV7ACjqNGXSI0wRcDTBT0Owb
+         uhjeycpld6R6uNdGrdvvkFgrT2499kBHdLUf7o2TbBDXxlZXBuSRrxlSwCNQBXdAwSUS
+         M5yA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710912924; x=1711517724;
+        h=subject:date:cc:to:from:message-id:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=cdzaMW1y8chZwthZH4ERyUEDxEvHFRT3urSQfaKxNec=;
+        b=eAcFTyFMN3iScvoh5T4ncDt6e/xv0nIrDd4emeomUDb7aFwqiAUoaUnhnp2G9VtSvC
+         exi96HMl5bhD+RCkVYVY4w9bEGHIzRHneNgqoXTaA+/sPw6omZHTG+wjNF09YHZDyadA
+         Z4eZqD3z4N9nLd+d4JTbZAFM2G+IuKpTz//kRlq8JUe8rIWpo/Nqb5VNF9yc0xt2GiVz
+         0AhEgiE8NK7PwMwuzNTvd5/v58X8YfK04BFyUoR5tcneCr/dyiuUcfzy9bJaZN0gRX+z
+         XEW2oU2ZWWQgIcH94nudggJfyzWy0UJRk9fV+mTErhPqghbsdh4eD3OF8ynBDdVQBXY4
+         5pAQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUgYpo+iPYHL1Hst50sXAmLRpXT1k/0tUTig4gKdUnCq4GvQ+R5ld6CSDdceMWDG+uNfaWjcPmuWmbVjuEuZTNSzaFV0fo3pfI8Poa/
+X-Gm-Message-State: AOJu0YzrBmUPf6rOaG19fTwCe4WlJeJtVK/UvlPYdC0ojjM4lVVcUr7/
+	IMJJsuwwAXlez468MiIP7qij87f8v1mv1iwZNmA1GKqZfHk3aZoS
+X-Google-Smtp-Source: AGHT+IG9TmyAa6Gnq24FoX6mBn6doGEL9SzpbRHMACexCR5sHZfMAO83l9bHXVdDLtPIjeBOMZYnQQ==
+X-Received: by 2002:a5d:984e:0:b0:7cf:15be:6834 with SMTP id p14-20020a5d984e000000b007cf15be6834mr1105012ios.4.1710912923728;
+        Tue, 19 Mar 2024 22:35:23 -0700 (PDT)
+Received: from ?IPV6:2001:470:42c4:101:9af9:b18f:3f69:51be? ([2001:470:42c4:101:9af9:b18f:3f69:51be])
+        by smtp.gmail.com with ESMTPSA id q6-20020a5d9f06000000b007cc6af6686esm1679597iot.30.2024.03.19.22.35.23
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 22:35:23 -0700 (PDT)
+Message-ID: <65fa759b.5d0a0220.fe5f7.1fa0@mx.google.com>
+From: Sam Edwards <cfsworks@gmail.com>
+X-Google-Original-From: Sam Edwards <sam@turingpi.com>
+To: Gregory CLEMENT <gregory.clement@bootlin.com>, Andi Shyti <andi.shyti@kernel.org>
+Cc: linux-i2c@vger.kernel.org, linux-kernel@vger.kernel.org
+Date: Tue, 19 Mar 2024 16:51:51 -0600
+Subject: [RESEND v2 RFC 1/5] i2c: mv64xxx: Clear bus errors before transfer
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 5Zi3e-dch-Cmc6HxFR8xW8RPa7Dkk5af
-X-Proofpoint-GUID: n6_iUU2o2Ul3baH8kv2cZtmKSbtj9pZ1
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-19_09,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
- priorityscore=1501 malwarescore=0 mlxlogscore=760 bulkscore=0
- impostorscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0
- clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403190176
 
-On Fri, 2024-02-23 at 12:25 -0500, Stefan Berger wrote:
-> Changes to file attributes (mode bits, uid, gid) on the lower layer are
-> not taken into account when d_backing_inode() is used when a file is
-> accessed on the overlay layer and this file has not yet been copied up.
-> This is because d_backing_inode() does not return the real inode of the
-> lower layer but instead returns the backing inode which in this case
-> holds wrong file attributes. Further, when CONFIG_OVERLAY_FS_METACOPY is
-> enabled and a copy-up is triggered due to file metadata changes, then
-> the metadata are held by the backing inode while the data are still held
-> by the real inode. Therefore, use d_inode(d_real(dentry, D_REAL_METADATA))
-> to get to the file's metadata inode and use it to calculate the metadata
-> hash with.
-> 
-> Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
-> Acked-by: Amir Goldstein <amir73il@gmail.com>
+The MV64XXX hardware can act as either a bus controller or target
+device. In order to protect target devices from a glitching bus
+(apparently), the core listens on the lines even when idle and moves the
+hardware FSM to the "BUS_ERR" state if an invalid transition is
+detected. The hardware then does not exit this state until reset.
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+This feature is actually counterproductive when using the hardware as a
+controller (as this driver does): we do not actually *care* what
+happened on the bus previously, as long as it's ready for use when the
+new transfer starts. However, the controller will remember a previous
+glitch and trip up the driver after it attempts to send the start
+command. The driver logs and error and resets the controller, recovering
+from the BUS_ERR state, but not without erroring back the transfer with
+errno EAGAIN. Clients generally do not handle this gracefully.
+
+This is easily fixed by checking for the BUS_ERR condition upfront and
+issuing the hardware reset before beginning the transfer. This patch
+does NOT also call i2c_recover_bus(): the assumption is that the bus is
+fine, just the hardware is upset; if the bus is also in a bad state,
+this should not pass silently.
+
+Signed-off-by: Sam Edwards <sam@turingpi.com>
+---
+ drivers/i2c/busses/i2c-mv64xxx.c | 6 ++++++
+ 1 file changed, 6 insertions(+)
+
+diff --git a/drivers/i2c/busses/i2c-mv64xxx.c b/drivers/i2c/busses/i2c-mv64xxx.c
+index fd8403b07fa6..cfc16909fba3 100644
+--- a/drivers/i2c/busses/i2c-mv64xxx.c
++++ b/drivers/i2c/busses/i2c-mv64xxx.c
+@@ -753,6 +753,7 @@ mv64xxx_i2c_xfer_core(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
+ {
+ 	struct mv64xxx_i2c_data *drv_data = i2c_get_adapdata(adap);
+ 	int rc, ret = num;
++	u32 status;
+ 
+ 	rc = pm_runtime_resume_and_get(&adap->dev);
+ 	if (rc)
+@@ -762,6 +763,11 @@ mv64xxx_i2c_xfer_core(struct i2c_adapter *adap, struct i2c_msg msgs[], int num)
+ 	drv_data->msgs = msgs;
+ 	drv_data->num_msgs = num;
+ 
++	/* Calm down the hardware if it was upset by a bus glitch while idle */
++	status = readl(drv_data->reg_base + drv_data->reg_offsets.status);
++	if (status == MV64XXX_I2C_STATUS_BUS_ERR)
++		mv64xxx_i2c_hw_init(drv_data);
++
+ 	if (mv64xxx_i2c_can_offload(drv_data) && !drv_data->atomic)
+ 		rc = mv64xxx_i2c_offload_xfer(drv_data);
+ 	else
+-- 
+2.43.2
 
 
