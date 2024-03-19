@@ -1,251 +1,372 @@
-Return-Path: <linux-kernel+bounces-107752-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107816-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id B38E8880146
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:57:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8173A88020E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:23:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E3DF1F23CD3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:57:48 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A5CB61C22EE6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:23:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0393180618;
-	Tue, 19 Mar 2024 15:57:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1C16D81ADB;
+	Tue, 19 Mar 2024 16:16:01 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="FiPiC2Cm"
-Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
+	dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b="cBIDENnM"
+Received: from out203-205-221-191.mail.qq.com (out203-205-221-191.mail.qq.com [203.205.221.191])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A0DD657BE;
-	Tue, 19 Mar 2024 15:57:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9ED3D81ABB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:15:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=203.205.221.191
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710863857; cv=none; b=uMfBHwrvOhNQUfk+4AVpFpZv83mX0f3OM61ZLqOjg4WEOEkHWg3o8IPf/VYoOMhOvCdCXIaEbkFwGMKMXrJ1Svjo2q65k2cxDR8TqagxP+RQyEGXk6GAwFCzaCNdRpzWAskAj461Qiiz2RCA+KFMLgqNsFVM7cW2mnStKIjiO5c=
+	t=1710864960; cv=none; b=GY7e1fGxNdPazkWiB37TdOaFA4m5qksmTIo4YeM/Qr4BrGTJfDOGlmj57jEmjsjlg0OICGhupFon5VRH94eHq1bQz/X8vmouKG/QCdkZ37wwdSiBLCw4y9hflBnOho8uIuzxqNwIyLDSRqpZKGLOsYVe11uhMXVpvzZ2YJA4/wg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710863857; c=relaxed/simple;
-	bh=J5iLX9r+OXm0BHNs30o1O2m+uW0ux1ewSKvY64f4v/w=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:MIME-Version; b=c+3MTbAgbg2B3MlOjknOaAOSIb3AGq9ws6jVZYRRgBN7AQpZfaLVl66Rysjqhv3/DJO1FKIXz7WTJMyF5wCha9n6EaD8BCpWYRZhqmTdzlulp0mM+QwLxKrXl+YyRzQvn1+bL5avoZyaT29u9wwhHRieULpwXvQ3Qh7VYnUR0hk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=casper.srs.infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=FiPiC2Cm; arc=none smtp.client-ip=90.155.50.34
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=casper.srs.infradead.org
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=infradead.org; s=casper.20170209; h=MIME-Version:Content-Type:References:
-	In-Reply-To:Date:Cc:To:From:Subject:Message-ID:Sender:Reply-To:
-	Content-Transfer-Encoding:Content-ID:Content-Description;
-	bh=J5iLX9r+OXm0BHNs30o1O2m+uW0ux1ewSKvY64f4v/w=; b=FiPiC2Cm8NXbh1ZdwFySiMxQNW
-	burz2OkpWdRiaEpWHM7dOYoYRupNS2D/hVJJ1/rGT1pB7BeMCi22NKdlQRCiAks/TlOPq9RfA2rRk
-	kIMsjrPVXzNTpfkRKDSQcqBiNezgsypcTkgZV2FuaBgKbLhuIY5Y9WhfJwiTmuKPzKJIQ9KxvW+iF
-	AqlKP5+mlGxPEskBFq/MivnJY2gsjYY0lKciszQXve19qo6fM0HYkNd7GmHnRm/z+r2EFvMdn1yEF
-	T+kZZG5+WtdkzlhV/y51FdQG63gRDWieQigxvMbL7ewXGYoF0/zFUrOcw/ylWniCg7TISmwL5pf0R
-	r1z6x6lw==;
-Received: from [2001:8b0:10b:5:8879:b0f0:4282:ed8] (helo=u3832b3a9db3152.ant.amazon.com)
-	by casper.infradead.org with esmtpsa (Exim 4.97.1 #2 (Red Hat Linux))
-	id 1rmbqF-00000002Fkz-1E0a;
-	Tue, 19 Mar 2024 15:57:32 +0000
-Message-ID: <dce1e4ce98446660905398e9a4c2afc49596a34c.camel@infradead.org>
-Subject: Re: [syzbot] [kvm?] WARNING in __kvm_gpc_refresh
-From: David Woodhouse <dwmw2@infradead.org>
-To: Sean Christopherson <seanjc@google.com>
-Cc: syzbot <syzbot+106a4f72b0474e1d1b33@syzkaller.appspotmail.com>, 
-	kvm@vger.kernel.org, linux-kernel@vger.kernel.org, pbonzini@redhat.com, 
-	syzkaller-bugs@googlegroups.com, paul <paul@xen.org>
-Date: Tue, 19 Mar 2024 15:57:30 +0000
-In-Reply-To: <Zfmt8rxlF1ag1iA_@google.com>
-References: <0000000000005fa5cc0613f1cebd@google.com>
-	 <b7561e6d6d357fcd8ec1a1257aaf2f97d971061c.camel@infradead.org>
-	 <ZfizYzC9-9Qo47tE@google.com>
-	 <33bcc5778e39780c6895ffa9f52f4b12cf83ad89.camel@infradead.org>
-	 <Zfmt8rxlF1ag1iA_@google.com>
-Content-Type: multipart/signed; micalg="sha-256"; protocol="application/pkcs7-signature";
-	boundary="=-qHYKURByT8NhYd+d56Rd"
-User-Agent: Evolution 3.44.4-0ubuntu2 
+	s=arc-20240116; t=1710864960; c=relaxed/simple;
+	bh=MQwq3CaKFobz/Og+FyJkBLflAT+jCfZ/jcxb/K41MAY=;
+	h=Message-ID:From:To:Cc:Subject:Date:MIME-Version; b=TIDXkTrzyi/zbOSTF1LXEO15fmFoPIjyRtAzoGEk9fo5pwAlx6I5/S/1pClsElMepjj4P2kMN6rM4C6nHiV1IcHjhUZSZwceinLasaLbZkyhb3AOS/Djp0RHWz4Wx4W+008YwklNkjRDG33bQyWG8KP/P0i2rBMn3a60K3GB4pg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com; spf=pass smtp.mailfrom=foxmail.com; dkim=pass (1024-bit key) header.d=foxmail.com header.i=@foxmail.com header.b=cBIDENnM; arc=none smtp.client-ip=203.205.221.191
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=foxmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=foxmail.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=foxmail.com;
+	s=s201512; t=1710864949;
+	bh=fwstqXNrz8sY5tQtk9MdOqROTvTakp2tAFmoCiSvqDs=;
+	h=From:To:Cc:Subject:Date;
+	b=cBIDENnMtYV2oQ6R1iwcTp6EN1EAfCach3I8e1MLZPl3t3W4pDhalvegm+WtGWI49
+	 uMCNqxyWYS1j4g/DptiF4u+sqpcBNmmeAp2vplmcagBRONXxV3OQlyZGDp7oZGlPfv
+	 7ICqwRDANWD/VgkqW9J/TPw00nONND128YNrqkZA=
+Received: from localhost.localdomain ([2409:8a60:2a60:b160:1774:d6f7:f5f5:b6a])
+	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
+	id E8996A1C; Tue, 19 Mar 2024 23:58:09 +0800
+X-QQ-mid: xmsmtpt1710863889tsixp1msu
+Message-ID: <tencent_0D6ABA209A4980742DE6003FBFE7FE2A3207@qq.com>
+X-QQ-XMAILINFO: OZZSS56D9fAjJx2XFB9CPVqNM2/4Sxeta/bYS5Nf960ywqFXKQQtZpe/1Ub5sH
+	 Z8oTDc2Gdjz4phxaPWEcl2KqRPj3ugBceSY18RteibdfMOLWdYLWnDPrK6TFLKVekjBE/hVLwH8C
+	 jRjv3nGMJZfv5ronxCEnaLthKXF10AaiRYL7CDQ/PxMogKpEDTnWkX8QnpqP0Luj9/hXMsvBVbAP
+	 Vsf9kClTEpsnBcbqVaNFcsIjzItWqHWhfL143bMXgHQJvhcdeiZPCT6OvzYUjPIS6SauCoxYCjtO
+	 P0fQ48wP7mCwF8M9m2pKUx5/AUA00DVW6Au7ubptgdCHWeMdWJ2LEwxkxyU3iIn/riQ/HAs7Ahtp
+	 oT6LgqLGqzGigbKLg7XG27y/5mtcqVCgB7FRG0wzWV0KiVtcUDbYSDM575VpmsbF/StHrX2QxVVn
+	 raxZYtMA6whSH667/vEfRnY42F2gBpzjLiND7cb5ze7Uox+T1WNG1xTHLerb73DQGc9kVgSRc0t1
+	 e98zgjqxf67H/tWtmV8NqhFJJPbgLQpyyc76SXHg03pMaK88qBjDybMH1rucG9Cqcpiotb4cmMMj
+	 Ows3y4kWLbl3vROzOXg8vlxtli9/JSamZAFgcucRRKOUhkSZFpfUire3jYmsQeqIExoghiCZnqEA
+	 nNzEFUoicZiCya8tRdPJegC8dtvE9H9O5qdpA6/afQh93O61Xe4XfkgSyPRYDyYGc9ZFtcpmqcGQ
+	 8Kj73cqOgBNlvje969scq05Z7ippwRiFU6tPQN39lo3Qlt2ri1/C9/Xd264M9dYMhR3IjG1fjpRt
+	 wKTIHm4odZ5IKYsV6nUkUrweM8pPDoKU7cuiVnOyD11S+md2f4L5J7cf0ihRqr9AbWBoaNqxbLiI
+	 5dcCuvLYIL96wSd7Gu5qvwoecD6al9fi/Es8xDdS5ntseeMGLY+HR75jGTF4XRiMnZ0pCPAKOCoZ
+	 zp3GzW4PE+fQaUqnWQcXeaKAfJ2adPO9wRPjekAXh03iajRJNUSmITFdo5m3TMlDfvABKgoidH5b
+	 19Jc/M9+5+HxE9b+UN
+X-QQ-XMRINFO: NS+P29fieYNw95Bth2bWPxk=
+From: wenyang.linux@foxmail.com
+To: "Eric W . Biederman" <ebiederm@xmission.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Joel Granados <j.granados@samsung.com>,
+	Christian Brauner <brauner@kernel.org>
+Cc: Dave Young <dyoung@redhat.com>,
+	Wen Yang <wenyang.linux@foxmail.com>,
+	Iurii Zaikin <yzaikin@google.com>,
+	linux-kernel@vger.kernel.org
+Subject: [RESEND PATCH v2 1/9] sysctl: support encoding values directly in the table entry
+Date: Tue, 19 Mar 2024 23:57:42 +0800
+X-OQ-MSGID: <26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com>
+X-Mailer: git-send-email 2.25.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-SRS-Rewrite: SMTP reverse-path rewritten from <dwmw2@infradead.org> by casper.infradead.org. See http://www.infradead.org/rpr.html
+Content-Transfer-Encoding: 8bit
 
+From: Wen Yang <wenyang.linux@foxmail.com>
 
---=-qHYKURByT8NhYd+d56Rd
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Eric pointed out:
+- by turning .extra1 and .extra2 into longs instead of keeping them as
+  pointers and needing constants to be pointed at somewhere.
+- The only people I can see who find a significant benefit by consolidating
+  all of the constants into one place are people who know how to stomp
+  kernel memory.
 
-On Tue, 2024-03-19 at 08:23 -0700, Sean Christopherson wrote:
-> On Mon, Mar 18, 2024, David Woodhouse wrote:
-> > On Mon, 2024-03-18 at 14:34 -0700, Sean Christopherson wrote:
-> > > On Mon, Mar 18, 2024, David Woodhouse wrote:
-> > > >=20
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* Either gpa or uhva mu=
-st be valid, but not both */
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (WARN_ON_ONCE(kvm_is_=
-error_gpa(gpa) =3D=3D kvm_is_error_hva(uhva)))
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 return -EINVAL;
-> > > >=20
-> > > > Hm, that comment doesn't match the code. It says "not both", but th=
-e
-> > > > code also catches the "neither" case. I think the gpa is in %rbx an=
-d
-> > > > uhva is in %r12, so this is indeed the 'neither' case.
-> > > >=20
-> > > > Is it expected that we can end up with a cache marked active, but w=
-ith
-> > > > the address not valid? Maybe through a race condition with deactive=
-? or
-> > > > more likely than that?
-> > >=20
-> > > It's the darn PV system time MSR, which allows the guest to triggerin=
-g activation
-> > > with any GPA value.=C2=A0 That results in the cache being marked acti=
-ve without KVM
-> > > ever setting the GPA (or any other fields).=C2=A0 The fix I'm testing=
- is to move the
-> > > offset+len check up into activate() and refresh().
-> >=20
-> > Not sure I even want a gpc of length 1 to work at INVALID_GPA; I don't
-> > think it's the offset+length check we want to be looking at?
-> >=20
-> > If we've activated the gpc with gpa=3D=3DINVALID_GPA, surely the right
->=20
-> This particular issue isn't due to activating with gpa=3D=3DINVALID_GPA, =
-it's due to
-> marking the gpc as active without actually activating it.=C2=A0 The offse=
-t+length
-> check is simply what causes KVM to prematurely bail from activation.
+This patch supports encoding values directly in table entries through the
+following work:
+- extra1/extra2 and min/max are placed in one union to ensure that the
+  previous code is not broken, then we have time to remove unnecessary
+  extra1/extra2 progressively;
+- since type only has two states, use one bit to represent it;
+- two bits were used to represent the information of the above union( 0:
+  using extra1/extra2, 1: using min, 2: using max, 3: using both min/max);
+- added some helper macros.
 
-Ah, right. Yes, that makes more sense now; thanks.
+Suggested-by: Eric W. Biederman <ebiederm@xmission.com>
+Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+Cc: Luis Chamberlain <mcgrof@kernel.org>
+Cc: Kees Cook <keescook@chromium.org>
+Cc: Joel Granados <j.granados@samsung.com>
+Cc: Eric W. Biederman <ebiederm@xmission.com>
+Cc: Christian Brauner <brauner@kernel.org>
+Cc: Iurii Zaikin <yzaikin@google.com>
+Cc: linux-kernel@vger.kernel.org
+---
+ include/linux/sysctl.h | 108 ++++++++++++++++++++++++++++++++++++++---
+ kernel/sysctl.c        |  61 +++++++++++++++++------
+ 2 files changed, 148 insertions(+), 21 deletions(-)
 
-> > thing to do is just let it fail (perhaps with an explicit check or just
-> > letting the memslot lookup fail). After fixing that WARN_ON be
-> >=20
-> > =C2=A0=C2=A0 if (WARN_ON_ONCE(!kvm_is_error_gpa(gpa) && !kvm_is_error_h=
-va(uhva)))
->=20
-> I really don't want to relax the sanity check, as I feel strongly that KV=
-M needs
-> an invariant that an active cache is either GPA-based or HVA-based, i.e. =
-that at
-> least one of GPA or HVA is "valid".=C2=A0 In quotes because the GPA doesn=
-'t need to
-> be fully validated, just something that doesn't trip kvm_is_error_gpa().
+diff --git a/include/linux/sysctl.h b/include/linux/sysctl.h
+index ee7d33b89e9e..1ba980219e40 100644
+--- a/include/linux/sysctl.h
++++ b/include/linux/sysctl.h
+@@ -61,6 +61,25 @@ extern const int sysctl_vals[];
+ 
+ extern const unsigned long sysctl_long_vals[];
+ 
++#define	SYSCTL_NUMERIC_NEG_ONE			((long)-1)
++#define	SYSCTL_NUMERIC_ZERO			(0L)
++#define	SYSCTL_NUMERIC_ONE			(1L)
++#define	SYSCTL_NUMERIC_TWO			(2L)
++#define	SYSCTL_NUMERIC_THREE			(3L)
++#define	SYSCTL_NUMERIC_FOUR			(4L)
++#define	SYSCTL_NUMERIC_ONE_HUNDRED		(100L)
++#define	SYSCTL_NUMERIC_TWO_HUNDRED		(200L)
++#define	SYSCTL_NUMERIC_THREE_HUNDRED		(300L)
++#define	SYSCTL_NUMERIC_FIVE_HUNDRED		(500L)
++#define	SYSCTL_NUMERIC_ONE_THOUSAND		(1000L)
++#define	SYSCTL_NUMERIC_TWO_THOUSAND		(2000L)
++#define	SYSCTL_NUMERIC_THREE_THOUSAND		(3000L)
++#define	SYSCTL_NUMERIC_16K			(16384L)
++#define	SYSCTL_NUMERIC_U8_MAX			((long)U8_MAX)
++#define	SYSCTL_NUMERIC_U16_MAX			((long)U16_MAX)
++#define	SYSCTL_NUMERIC_INT_MAX			((long)INT_MAX)
++#define	SYSCTL_NUMERIC_LONG_MAX			(LONG_MAX)
++
+ typedef int proc_handler(struct ctl_table *ctl, int write, void *buffer,
+ 		size_t *lenp, loff_t *ppos);
+ 
+@@ -131,6 +150,18 @@ static inline void *proc_sys_poll_event(struct ctl_table_poll *poll)
+ #define DEFINE_CTL_TABLE_POLL(name)					\
+ 	struct ctl_table_poll name = __CTL_TABLE_POLL_INITIALIZER(name)
+ 
++enum {
++	SYSCTL_TABLE_TYPE_DEFAULT,
++	SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
++};
++
++enum {
++	SYSCTL_TABLE_EXTRA_PTR,
++	SYSCTL_TABLE_EXTRA_LONG_INIT_MIN,
++	SYSCTL_TABLE_EXTRA_LONG_INIT_MAX,
++	SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX
++};
++
+ /* A sysctl table is an array of struct ctl_table: */
+ struct ctl_table {
+ 	const char *procname;		/* Text ID for /proc/sys, or zero */
+@@ -138,20 +169,39 @@ struct ctl_table {
+ 	int maxlen;
+ 	umode_t mode;
+ 	/**
+-	 * enum type - Enumeration to differentiate between ctl target types
++	 * type - Indicates to differentiate between ctl target types
+ 	 * @SYSCTL_TABLE_TYPE_DEFAULT: ctl target with no special considerations
+ 	 * @SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY: Used to identify a permanently
+ 	 *                                       empty directory target to serve
+ 	 *                                       as mount point.
+ 	 */
+-	enum {
+-		SYSCTL_TABLE_TYPE_DEFAULT,
+-		SYSCTL_TABLE_TYPE_PERMANENTLY_EMPTY
+-	} type;
++	u8 type:1;
++
++	/**
++	 * extra_flags
++	 * @SYSCTL_TABLE_EXTRA_PTR: flag indicating that this uses extra1/extra2.
++	 * @SYSCTL_TABLE_EXTRA_LONG_INIT_MIN: flag indicating that this uses min/max
++					      and min has been initialized.
++	 * @SYSCTL_TABLE_EXTRA_LONG_INIT_MAX: flag indicating that this uses min/max
++					      and max has been initialized.
++	 * @SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX: flag indicating that this uses min/max
++						 and both have been initialized.
++	 *
++	 */
++	u8 extra_flags:2;
++	union {
++		struct {
++			void *extra1;
++			void *extra2;
++		};
++		struct {
++			long min;
++			long max;
++		};
++	};
++
+ 	proc_handler *proc_handler;	/* Callback for text formatting */
+ 	struct ctl_table_poll *poll;
+-	void *extra1;
+-	void *extra2;
+ } __randomize_layout;
+ 
+ struct ctl_node {
+@@ -213,6 +263,50 @@ struct ctl_table_root {
+ #define register_sysctl(path, table)	\
+ 	register_sysctl_sz(path, table, ARRAY_SIZE(table))
+ 
++#define CTL_TABLE_ENTRY(_name, _data, _len, _mode, _func)		      \
++	{								      \
++		.procname = _name,					      \
++		.data = _data,						      \
++		.maxlen = _len,						      \
++		.mode = _mode,						      \
++		.proc_handler = _func,					      \
++		.extra_flags = SYSCTL_TABLE_EXTRA_PTR,			      \
++	}
++
++#define CTL_TABLE_ENTRY_MIN(_name, _data, _len, _mode, _func, _min)	      \
++	{								      \
++		.procname = _name,					      \
++		.data = _data,						      \
++		.maxlen = _len,						      \
++		.mode = _mode,						      \
++		.proc_handler = _func,					      \
++		.min = _min,						      \
++		.extra_flags = SYSCTL_TABLE_EXTRA_LONG_INIT_MIN,	      \
++	}
++
++#define CTL_TABLE_ENTRY_MAX(_name, _data, _len, _mode, _func, _max)	      \
++	{								      \
++		.procname = _name,					      \
++		.data = _data,						      \
++		.maxlen = _len,						      \
++		.mode = _mode,						      \
++		.proc_handler = _func,					      \
++		.max = _max,						      \
++		.extra_flags = SYSCTL_TABLE_EXTRA_LONG_INIT_MAX,	      \
++	}
++
++#define CTL_TABLE_ENTRY_MINMAX(_name, _data, _len, _mode, _func, _min, _max)  \
++	{								      \
++		.procname = _name,					      \
++		.data = _data,						      \
++		.maxlen = _len,						      \
++		.mode = _mode,						      \
++		.proc_handler = _func,					      \
++		.min = _min,						      \
++		.max = _max,						      \
++		.extra_flags = SYSCTL_TABLE_EXTRA_LONG_INIT_MINMAX,	      \
++	}
++
+ #ifdef CONFIG_SYSCTL
+ 
+ void proc_sys_poll_notify(struct ctl_table_poll *poll);
+diff --git a/kernel/sysctl.c b/kernel/sysctl.c
+index 157f7ce2942d..144c441236ab 100644
+--- a/kernel/sysctl.c
++++ b/kernel/sysctl.c
+@@ -822,6 +822,20 @@ struct do_proc_dointvec_minmax_conv_param {
+ 	int *max;
+ };
+ 
++static void do_int_conv_param_init(const struct ctl_table *table,
++		struct do_proc_dointvec_minmax_conv_param *param)
++{
++	if (table->extra_flags == SYSCTL_TABLE_EXTRA_PTR) {
++		param->min = table->extra1;
++		param->max = table->extra2;
++	} else {
++		param->min = (table->extra_flags & SYSCTL_TABLE_EXTRA_LONG_INIT_MIN) ?
++			(int *)&table->min : NULL;
++		param->max = (table->extra_flags & SYSCTL_TABLE_EXTRA_LONG_INIT_MAX) ?
++			(int *)&table->max : NULL;
++	}
++}
++
+ static int do_proc_dointvec_minmax_conv(bool *negp, unsigned long *lvalp,
+ 					int *valp,
+ 					int write, void *data)
+@@ -867,10 +881,9 @@ static int do_proc_dointvec_minmax_conv(bool *negp, unsigned long *lvalp,
+ int proc_dointvec_minmax(struct ctl_table *table, int write,
+ 		  void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-	struct do_proc_dointvec_minmax_conv_param param = {
+-		.min = (int *) table->extra1,
+-		.max = (int *) table->extra2,
+-	};
++	struct do_proc_dointvec_minmax_conv_param param;
++
++	do_int_conv_param_init(table, &param);
+ 	return do_proc_dointvec(table, write, buffer, lenp, ppos,
+ 				do_proc_dointvec_minmax_conv, &param);
+ }
+@@ -889,6 +902,20 @@ struct do_proc_douintvec_minmax_conv_param {
+ 	unsigned int *max;
+ };
+ 
++static void do_uint_conv_param_init(const struct ctl_table *table,
++		struct do_proc_douintvec_minmax_conv_param *param)
++{
++	if (table->extra_flags == SYSCTL_TABLE_EXTRA_PTR) {
++		param->min = table->extra1;
++		param->max = table->extra2;
++	} else {
++		param->min = (table->extra_flags & SYSCTL_TABLE_EXTRA_LONG_INIT_MIN) ?
++			(unsigned int *)&table->min : NULL;
++		param->max = (table->extra_flags & SYSCTL_TABLE_EXTRA_LONG_INIT_MAX) ?
++			(unsigned int *)&table->max : NULL;
++	}
++}
++
+ static int do_proc_douintvec_minmax_conv(unsigned long *lvalp,
+ 					 unsigned int *valp,
+ 					 int write, void *data)
+@@ -936,10 +963,9 @@ static int do_proc_douintvec_minmax_conv(unsigned long *lvalp,
+ int proc_douintvec_minmax(struct ctl_table *table, int write,
+ 			  void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-	struct do_proc_douintvec_minmax_conv_param param = {
+-		.min = (unsigned int *) table->extra1,
+-		.max = (unsigned int *) table->extra2,
+-	};
++	struct do_proc_douintvec_minmax_conv_param param;
++
++	do_uint_conv_param_init(table, &param);
+ 	return do_proc_douintvec(table, write, buffer, lenp, ppos,
+ 				 do_proc_douintvec_minmax_conv, &param);
+ }
+@@ -1038,8 +1064,16 @@ static int __do_proc_doulongvec_minmax(void *data, struct ctl_table *table,
+ 	}
+ 
+ 	i = data;
+-	min = table->extra1;
+-	max = table->extra2;
++	if (table->extra_flags == SYSCTL_TABLE_EXTRA_PTR) {
++		min = table->extra1;
++		max = table->extra2;
++	} else {
++		min = (table->extra_flags & SYSCTL_TABLE_EXTRA_LONG_INIT_MIN) ?
++			&table->min : NULL;
++		max = (table->extra_flags & SYSCTL_TABLE_EXTRA_LONG_INIT_MAX) ?
++			&table->max : NULL;
++	}
++
+ 	vleft = table->maxlen / sizeof(unsigned long);
+ 	left = *lenp;
+ 
+@@ -1274,10 +1308,9 @@ int proc_dointvec_jiffies(struct ctl_table *table, int write,
+ int proc_dointvec_ms_jiffies_minmax(struct ctl_table *table, int write,
+ 			  void *buffer, size_t *lenp, loff_t *ppos)
+ {
+-	struct do_proc_dointvec_minmax_conv_param param = {
+-		.min = (int *) table->extra1,
+-		.max = (int *) table->extra2,
+-	};
++	struct do_proc_dointvec_minmax_conv_param param;
++
++	do_int_conv_param_init(table, &param);
+ 	return do_proc_dointvec(table, write, buffer, lenp, ppos,
+ 			do_proc_dointvec_ms_jiffies_minmax_conv, &param);
+ }
+-- 
+2.25.1
 
-Agreed.
-
---=-qHYKURByT8NhYd+d56Rd
-Content-Type: application/pkcs7-signature; name="smime.p7s"
-Content-Disposition: attachment; filename="smime.p7s"
-Content-Transfer-Encoding: base64
-
-MIAGCSqGSIb3DQEHAqCAMIACAQExDzANBglghkgBZQMEAgEFADCABgkqhkiG9w0BBwEAAKCCEkQw
-ggYQMIID+KADAgECAhBNlCwQ1DvglAnFgS06KwZPMA0GCSqGSIb3DQEBDAUAMIGIMQswCQYDVQQG
-EwJVUzETMBEGA1UECBMKTmV3IEplcnNleTEUMBIGA1UEBxMLSmVyc2V5IENpdHkxHjAcBgNVBAoT
-FVRoZSBVU0VSVFJVU1QgTmV0d29yazEuMCwGA1UEAxMlVVNFUlRydXN0IFJTQSBDZXJ0aWZpY2F0
-aW9uIEF1dGhvcml0eTAeFw0xODExMDIwMDAwMDBaFw0zMDEyMzEyMzU5NTlaMIGWMQswCQYDVQQG
-EwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYD
-VQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50
-aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKC
-AQEAyjztlApB/975Rrno1jvm2pK/KxBOqhq8gr2+JhwpKirSzZxQgT9tlC7zl6hn1fXjSo5MqXUf
-ItMltrMaXqcESJuK8dtK56NCSrq4iDKaKq9NxOXFmqXX2zN8HHGjQ2b2Xv0v1L5Nk1MQPKA19xeW
-QcpGEGFUUd0kN+oHox+L9aV1rjfNiCj3bJk6kJaOPabPi2503nn/ITX5e8WfPnGw4VuZ79Khj1YB
-rf24k5Ee1sLTHsLtpiK9OjG4iQRBdq6Z/TlVx/hGAez5h36bBJMxqdHLpdwIUkTqT8se3ed0PewD
-ch/8kHPo5fZl5u1B0ecpq/sDN/5sCG52Ds+QU5O5EwIDAQABo4IBZDCCAWAwHwYDVR0jBBgwFoAU
-U3m/WqorSs9UgOHYm8Cd8rIDZsswHQYDVR0OBBYEFAnA8vwL2pTbX/4r36iZQs/J4K0AMA4GA1Ud
-DwEB/wQEAwIBhjASBgNVHRMBAf8ECDAGAQH/AgEAMB0GA1UdJQQWMBQGCCsGAQUFBwMCBggrBgEF
-BQcDBDARBgNVHSAECjAIMAYGBFUdIAAwUAYDVR0fBEkwRzBFoEOgQYY/aHR0cDovL2NybC51c2Vy
-dHJ1c3QuY29tL1VTRVJUcnVzdFJTQUNlcnRpZmljYXRpb25BdXRob3JpdHkuY3JsMHYGCCsGAQUF
-BwEBBGowaDA/BggrBgEFBQcwAoYzaHR0cDovL2NydC51c2VydHJ1c3QuY29tL1VTRVJUcnVzdFJT
-QUFkZFRydXN0Q0EuY3J0MCUGCCsGAQUFBzABhhlodHRwOi8vb2NzcC51c2VydHJ1c3QuY29tMA0G
-CSqGSIb3DQEBDAUAA4ICAQBBRHUAqznCFfXejpVtMnFojADdF9d6HBA4kMjjsb0XMZHztuOCtKF+
-xswhh2GqkW5JQrM8zVlU+A2VP72Ky2nlRA1GwmIPgou74TZ/XTarHG8zdMSgaDrkVYzz1g3nIVO9
-IHk96VwsacIvBF8JfqIs+8aWH2PfSUrNxP6Ys7U0sZYx4rXD6+cqFq/ZW5BUfClN/rhk2ddQXyn7
-kkmka2RQb9d90nmNHdgKrwfQ49mQ2hWQNDkJJIXwKjYA6VUR/fZUFeCUisdDe/0ABLTI+jheXUV1
-eoYV7lNwNBKpeHdNuO6Aacb533JlfeUHxvBz9OfYWUiXu09sMAviM11Q0DuMZ5760CdO2VnpsXP4
-KxaYIhvqPqUMWqRdWyn7crItNkZeroXaecG03i3mM7dkiPaCkgocBg0EBYsbZDZ8bsG3a08LwEsL
-1Ygz3SBsyECa0waq4hOf/Z85F2w2ZpXfP+w8q4ifwO90SGZZV+HR/Jh6rEaVPDRF/CEGVqR1hiuQ
-OZ1YL5ezMTX0ZSLwrymUE0pwi/KDaiYB15uswgeIAcA6JzPFf9pLkAFFWs1QNyN++niFhsM47qod
-x/PL+5jR87myx5uYdBEQkkDc+lKB1Wct6ucXqm2EmsaQ0M95QjTmy+rDWjkDYdw3Ms6mSWE3Bn7i
-5ZgtwCLXgAIe5W8mybM2JzCCBhQwggT8oAMCAQICEQDGvhmWZ0DEAx0oURL6O6l+MA0GCSqGSIb3
-DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVyMRAwDgYD
-VQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNlY3RpZ28g
-UlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBMB4XDTIyMDEwNzAw
-MDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJARYTZHdtdzJAaW5mcmFkZWFkLm9y
-ZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3GpC2bomUqk+91wLYBzDMcCj5C9m6
-oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZHh7htyAkWYVoFsFPrwHounto8xTsy
-SSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT9YgcBqKCo65pTFmOnR/VVbjJk4K2
-xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNjP+qDrh0db7PAjO1D4d5ftfrsf+kd
-RR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy2U+eITZ5LLE5s45mX2oPFknWqxBo
-bQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3BgBEmfsYWlBXO8rVXfvPgLs32VdV
-NZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/7auNVRmPB3v5SWEsH8xi4Bez2V9U
-KxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmdlFYhAflWKQ03Ufiu8t3iBE3VJbc2
-5oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9aelIl6vtbhMA+l0nfrsORMa4kobqQ5
-C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMBAAGjggHMMIIByDAfBgNVHSMEGDAW
-gBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeDMcimo0oz8o1R1Nver3ZVpSkwDgYD
-VR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYwFAYIKwYBBQUHAwQGCCsGAQUFBwMC
-MEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYBBQUHAgEWF2h0dHBzOi8vc2VjdGln
-by5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9jcmwuc2VjdGlnby5jb20vU2VjdGln
-b1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1haWxDQS5jcmwwgYoGCCsGAQUFBwEB
-BH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdvLmNvbS9TZWN0aWdvUlNBQ2xpZW50
-QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAjBggrBgEFBQcwAYYXaHR0cDovL29j
-c3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5mcmFkZWFkLm9yZzANBgkqhkiG9w0B
-AQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQvQ/fzPXmtR9t54rpmI2TfyvcKgOXp
-qa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvIlSPrzIB4Z2wyIGQpaPLlYflrrVFK
-v9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9ChWFfgSXvrWDZspnU3Gjw/rMHrGnql
-Htlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0whpBtXdyDjzBtQTaZJ7zTT/vlehc/
-tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9IzCCBhQwggT8oAMCAQICEQDGvhmW
-Z0DEAx0oURL6O6l+MA0GCSqGSIb3DQEBCwUAMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3Jl
-YXRlciBNYW5jaGVzdGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0
-ZWQxPjA8BgNVBAMTNVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJl
-IEVtYWlsIENBMB4XDTIyMDEwNzAwMDAwMFoXDTI1MDEwNjIzNTk1OVowJDEiMCAGCSqGSIb3DQEJ
-ARYTZHdtdzJAaW5mcmFkZWFkLm9yZzCCAiIwDQYJKoZIhvcNAQEBBQADggIPADCCAgoCggIBALQ3
-GpC2bomUqk+91wLYBzDMcCj5C9m6oZaHwvmIdXftOgTbCJXADo6G9T7BBAebw2JV38EINgKpy/ZH
-h7htyAkWYVoFsFPrwHounto8xTsySSePMiPlmIdQ10BcVSXMUJ3Juu16GlWOnAMJY2oYfEzmE7uT
-9YgcBqKCo65pTFmOnR/VVbjJk4K2xE34GC2nAdUQkPFuyaFisicc6HRMOYXPuF0DuwITEKnjxgNj
-P+qDrh0db7PAjO1D4d5ftfrsf+kdRR4gKVGSk8Tz2WwvtLAroJM4nXjNPIBJNT4w/FWWc/5qPHJy
-2U+eITZ5LLE5s45mX2oPFknWqxBobQZ8a9dsZ3dSPZBvE9ZrmtFLrVrN4eo1jsXgAp1+p7bkfqd3
-BgBEmfsYWlBXO8rVXfvPgLs32VdVNZxb/CDWPqBsiYv0Hv3HPsz07j5b+/cVoWqyHDKzkaVbxfq/
-7auNVRmPB3v5SWEsH8xi4Bez2V9UKxfYCnqsjp8RaC2/khxKt0A552Eaxnz/4ly/2C7wkwTQnBmd
-lFYhAflWKQ03Ufiu8t3iBE3VJbc25oMrglj7TRZrmKq3CkbFnX0fyulB+kHimrt6PIWn7kgyl9ae
-lIl6vtbhMA+l0nfrsORMa4kobqQ5C5rveVgmcIad67EDa+UqEKy/GltUwlSh6xy+TrK1tzDvAgMB
-AAGjggHMMIIByDAfBgNVHSMEGDAWgBQJwPL8C9qU21/+K9+omULPyeCtADAdBgNVHQ4EFgQUzMeD
-Mcimo0oz8o1R1Nver3ZVpSkwDgYDVR0PAQH/BAQDAgWgMAwGA1UdEwEB/wQCMAAwHQYDVR0lBBYw
-FAYIKwYBBQUHAwQGCCsGAQUFBwMCMEAGA1UdIAQ5MDcwNQYMKwYBBAGyMQECAQEBMCUwIwYIKwYB
-BQUHAgEWF2h0dHBzOi8vc2VjdGlnby5jb20vQ1BTMFoGA1UdHwRTMFEwT6BNoEuGSWh0dHA6Ly9j
-cmwuc2VjdGlnby5jb20vU2VjdGlnb1JTQUNsaWVudEF1dGhlbnRpY2F0aW9uYW5kU2VjdXJlRW1h
-aWxDQS5jcmwwgYoGCCsGAQUFBwEBBH4wfDBVBggrBgEFBQcwAoZJaHR0cDovL2NydC5zZWN0aWdv
-LmNvbS9TZWN0aWdvUlNBQ2xpZW50QXV0aGVudGljYXRpb25hbmRTZWN1cmVFbWFpbENBLmNydDAj
-BggrBgEFBQcwAYYXaHR0cDovL29jc3Auc2VjdGlnby5jb20wHgYDVR0RBBcwFYETZHdtdzJAaW5m
-cmFkZWFkLm9yZzANBgkqhkiG9w0BAQsFAAOCAQEAyW6MUir5dm495teKqAQjDJwuFCi35h4xgnQv
-Q/fzPXmtR9t54rpmI2TfyvcKgOXpqa7BGXNFfh1JsqexVkIqZP9uWB2J+uVMD+XZEs/KYNNX2PvI
-lSPrzIB4Z2wyIGQpaPLlYflrrVFKv9CjT2zdqvy2maK7HKOQRt3BiJbVG5lRiwbbygldcALEV9Ch
-WFfgSXvrWDZspnU3Gjw/rMHrGnqlHtlyebp3pf3fSS9kzQ1FVtVIDrL6eqhTwJxe+pXSMMqFiN0w
-hpBtXdyDjzBtQTaZJ7zTT/vlehc/tDuqZwGHm/YJy883Ll+GP3NvOkgaRGWEuYWJJ6hFCkXYjyR9
-IzGCBMcwggTDAgEBMIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVz
-dGVyMRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMT
-NVNlY3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEA
-xr4ZlmdAxAMdKFES+jupfjANBglghkgBZQMEAgEFAKCCAeswGAYJKoZIhvcNAQkDMQsGCSqGSIb3
-DQEHATAcBgkqhkiG9w0BCQUxDxcNMjQwMzE5MTU1NzMwWjAvBgkqhkiG9w0BCQQxIgQgN5OAgChW
-NOzXFkWLNQ9Xa8fdZEtD9ioBkC7s0zD9Dw0wgb0GCSsGAQQBgjcQBDGBrzCBrDCBljELMAkGA1UE
-BhMCR0IxGzAZBgNVBAgTEkdyZWF0ZXIgTWFuY2hlc3RlcjEQMA4GA1UEBxMHU2FsZm9yZDEYMBYG
-A1UEChMPU2VjdGlnbyBMaW1pdGVkMT4wPAYDVQQDEzVTZWN0aWdvIFJTQSBDbGllbnQgQXV0aGVu
-dGljYXRpb24gYW5kIFNlY3VyZSBFbWFpbCBDQQIRAMa+GZZnQMQDHShREvo7qX4wgb8GCyqGSIb3
-DQEJEAILMYGvoIGsMIGWMQswCQYDVQQGEwJHQjEbMBkGA1UECBMSR3JlYXRlciBNYW5jaGVzdGVy
-MRAwDgYDVQQHEwdTYWxmb3JkMRgwFgYDVQQKEw9TZWN0aWdvIExpbWl0ZWQxPjA8BgNVBAMTNVNl
-Y3RpZ28gUlNBIENsaWVudCBBdXRoZW50aWNhdGlvbiBhbmQgU2VjdXJlIEVtYWlsIENBAhEAxr4Z
-lmdAxAMdKFES+jupfjANBgkqhkiG9w0BAQEFAASCAgCO7OFmgjmG0Mk+cosB0r2p5V3GvIbPi9KF
-6WqfIFTwU+JqS/R0sULnnpIoth0U6uE0J5JESQkwBAV0+DTXyTsDusX2Izert/sHuwstSacKJ9wU
-e2FZDFGF04DUuiarByYrwBQ3b9E15RPNBsXGnKl883IJUuQSO9GbgHb4Rv4/3Qm2uTLYJoEPmnk2
-7l5z1Qm9d4h2GTkByAw9KV7iOF5051WYuYDmsMgsxBIOLO7Zau9yormZTTVqTGQi1BARR880xb3q
-uVaTooRmZgD5Y4Kio2tBN10S+zsVh4LDKKPl8CZjCtvkZ2EqDmUQFBESx2CGJjtiWEJfYpKMuU85
-Y3qlkq9f0j4zrYhjbjq5CpHGEKSYI3SL76CAPffOI2PkphP+11mrYdhYM1Cr5GfKLZdO0Am9mepY
-dToZyaKiqBa2xU1e8rpE2Iu/LCcncsRDU88aRASqXQySMp3HVCKLyR/AkuB4W09kJVU11po8t9GK
-aihSgZPCUXcks+Ds21m1oRY1Wg7tcNd+apYB5UHjb4+6aZUiuzq68zOZzBd9hB9Yr4/O9/9ciyCc
-lFt4T0Xn4rTl6oXH7dXBaEkiVRKqovDhrork29d46VewhgNNqBJW1PnbKeGnJ3ud3QoxTc+nR2AF
-8GhITZAwjxp+cEjZg84toGUMf3gx5CZ3EP+BjC/V2gAAAAAAAA==
-
-
---=-qHYKURByT8NhYd+d56Rd--
 
