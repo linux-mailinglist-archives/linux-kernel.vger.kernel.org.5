@@ -1,115 +1,166 @@
-Return-Path: <linux-kernel+bounces-107742-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107744-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 93E2D880112
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:49:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id BBE62880119
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:50:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 495ED1F21C2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:49:26 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE2A01C21905
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:50:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BDED5657D4;
-	Tue, 19 Mar 2024 15:49:17 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 028ED657CC;
+	Tue, 19 Mar 2024 15:50:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LEw8RiMv"
-Received: from mail-wm1-f47.google.com (mail-wm1-f47.google.com [209.85.128.47])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="GhsftalN"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 668AF46BF
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:49:15 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.47
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D36E651BB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:50:25 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710863357; cv=none; b=jN7Q/BzOpWQHCeQ1eNk1+UBhGGlj/1PHy7j7QDLtVvcVm8ds8BgkvwqwKZLPiwAOYyZgsLPvQwElOYLt7ftV0it1YZBMpGQiKD6f/zQTkGRMk5RfWp3NfjYAj5pZEDUyozE2niM4rECYgedc3s1eGdLgnRXUBwyYpoo4TUzmDQE=
+	t=1710863426; cv=none; b=HHNBDlW+EKYVQh29xQyuha3MQUCOKRab2ZwsebsI4otVM6ilHpoMpzgA2PCOrXwNcoSS567ab8xakiDyOkkans+OxIpvU+ExlamhHdvUuFOMRCqftdw1xeMrdAxUqfBla+ck1i9otvNqMdoeXF0IrdbBWc0SamQPtbcI6KMRaqY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710863357; c=relaxed/simple;
-	bh=2pyYCimS//Qq6yBYv8hqGm6lMX6inWdKtpT/73DHq4o=;
-	h=From:To:Cc:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=fRaPGGAEXdeBVSXdMeXigqQqeIW07GBC4iK2//GHNqb0MG47lGUaQcfC/7TxJyv4hMXNG6JwTWf7WExxa+x//GnSR0KnKv9a+7kKSKWKUZdIRVeUKRKFgIZkvuTtaP7f8j8PoMn7iwRK+K71L3yLaPifjm9xnx7SsMuO2+QTibE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LEw8RiMv; arc=none smtp.client-ip=209.85.128.47
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f47.google.com with SMTP id 5b1f17b1804b1-41467d697a2so3679065e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:49:15 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710863354; x=1711468154; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=ADtjyGn0eFpMcL5tcHRmk098Oppmok1FxnjO4slrBOM=;
-        b=LEw8RiMvdDcBWTPLnVUdK8ELyXyE/23UjjnhNp+OpukaMJKXO4ZwyGoyV2bgw051Ft
-         83ztXeLP6s4v+IRQdlx12l2hkxyyyZfj0v7th6Vt179yOdoYiKZp14t09kd4fuTyKnKa
-         T6F6DTB/nD24RhuO3L1RGJTG/h6wAybvolK9n01CiT+FmJARu/AFfgvMFyra+JMXty3e
-         dhVF2gfeiNMHvSyBQ0mZ4y11plAVMjgSNlHpUfPGO6ZExsfU45on6dnMewWkihYMHaQy
-         iz5TxrkErQAjtMyH8w26zVxjNv4+LoRiIHETviM9h68Zt0XIw5gnJoBna/4StYr+wKGv
-         b4Zw==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710863354; x=1711468154;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=ADtjyGn0eFpMcL5tcHRmk098Oppmok1FxnjO4slrBOM=;
-        b=MtGggNs3YxsXhPHVicsiL/l2fl/paRrKGMH3rWizNjWsdsepaCdli9C10ggkXDkBuu
-         vftf5XVU2Mxp1ko7xToRBGXCgOs3UT1i041ZPmt/i6O/LhtOs5JrXb0bRLVi4dDjUPy3
-         MrvOXheluA5P6KnOAr69KrAmIMydbyKG/sIgDVLaFaMunRAWlXQf8/1WFvP88YPUiN6J
-         JwRhH59y+yuLiJPW/g8VWYl30bs8OlFkKMgK4QfBZttA+4IvgoPkQYgiboo6jvwha4JO
-         neFaiLpL4hh192XqWRepEaalY+KT1Upu/mLg+iVOJf+aEspSKjIVXsrI4U3NQTIbaau6
-         0N5g==
-X-Forwarded-Encrypted: i=1; AJvYcCX/XCEcgh4OYeV/l+S3+Lc3wIeIIDKfQyiaO3yeUrkbMpxACrDP0zHnLBoDfCHpstHv3jq3RpgkCwAlphdcOPclv1OPwrmEUif6qA/p
-X-Gm-Message-State: AOJu0YwEHOtPKPogbq7bW47CPvUlMuLyF3Z0zSY7jd7wtgbRl7714V1f
-	LHh9OCgB0R6MB1QjrF5PF+CGlOXyT367CtQgq+/VS7a48I0O9/21wolY+RAQN/w=
-X-Google-Smtp-Source: AGHT+IHrOnj4CaHghcEG+9l8AS5c9AIXpcElhpR8lUv76uiBOgUiYCWAhhNkUgilfTUHBoAMu3DNnA==
-X-Received: by 2002:a05:600c:82c9:b0:413:e956:6893 with SMTP id eo9-20020a05600c82c900b00413e9566893mr14388206wmb.41.1710863353717;
-        Tue, 19 Mar 2024 08:49:13 -0700 (PDT)
-Received: from arrakeen.starnux.net ([2a01:e0a:982:cbb0:8261:5fff:fe11:bdda])
-        by smtp.gmail.com with ESMTPSA id m9-20020a05600c3b0900b00413ebaf0055sm18742915wms.7.2024.03.19.08.49.12
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 08:49:13 -0700 (PDT)
-From: Neil Armstrong <neil.armstrong@linaro.org>
-To: quic_jesszhan@quicinc.com, sam@ravnborg.org, 
- maarten.lankhorst@linux.intel.com, mripard@kernel.org, tzimmermann@suse.de, 
- airlied@gmail.com, daniel@ffwll.ch, robh@kernel.org, 
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org, 
- thierry.reding@gmail.com, Nathan Morrisson <nmorrisson@phytec.com>
-Cc: w.egorov@phytec.de, dri-devel@lists.freedesktop.org, 
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
- upstream@lists.phytec.de
-In-Reply-To: <20240318161708.1415484-1-nmorrisson@phytec.com>
-References: <20240318161708.1415484-1-nmorrisson@phytec.com>
-Subject: Re: [PATCH 0/2] Add POWERTIP PH128800T006-ZHC01 panel
-Message-Id: <171086335278.3926836.15356889496427917031.b4-ty@linaro.org>
-Date: Tue, 19 Mar 2024 16:49:12 +0100
+	s=arc-20240116; t=1710863426; c=relaxed/simple;
+	bh=apyBLSMY17l5k6YmL7tgRw2duWfuFRcprZhgOcvDx3U=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=hn7+hZgUoQjZs33SS+jYGUf1i9Xlt9DGkfxHkdQLEw8AJOwG1WcGTbobfQwDIYrrQhEmUnfKGe/Gttpp5i4sGoPcv7z9I5sKDikiSfpzq0OP/fzzO4zLAP3WtiHt4tBgOHayQkyc1RZJKIt3Pgh9ymjhICj56WlFUD6DypqofCA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=GhsftalN; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 749F8C43390;
+	Tue, 19 Mar 2024 15:50:23 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710863425;
+	bh=apyBLSMY17l5k6YmL7tgRw2duWfuFRcprZhgOcvDx3U=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=GhsftalN+s41C0DoGW2lRZ49nObKvR14d7JIS8aFWR3rzkuY2+Zpu6QTzkRkCDGiV
+	 D8vwJOePyyu65N3VDgupFhy1/U/JqfI1I0oFo5YftYtp8LwboRYl0OD0xbH5IOSIq+
+	 5AuBuACNWUmCc9vmgoONrHeDDNdQkDd17u7+6yeylmST3y4pTYrE5E7f77np/rN7Tb
+	 dum6Ntxc1qsM20Ra+kbucPT4ORsI8QJ7UQVkOZDG1kCeJadUlW8c12K9WSJka5dZQD
+	 NjwEFpKTJQuYe8jKAmV5R480Sta75swVTBGOo8Mn/FTrKu1aHj5G8vrv6w8iTLx3Xl
+	 RpnOyaP5pxPRg==
+Date: Tue, 19 Mar 2024 17:49:19 +0200
+From: Mike Rapoport <rppt@kernel.org>
+To: Baoquan He <bhe@redhat.com>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
+Subject: Re: [PATCH 2/6] x86: remove memblock_find_dma_reserve()
+Message-ID: <Zfmz_1sbbvSWMj9C@kernel.org>
+References: <20240318142138.783350-1-bhe@redhat.com>
+ <20240318142138.783350-3-bhe@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.4
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240318142138.783350-3-bhe@redhat.com>
 
-Hi,
+Hi Baoquan,
 
-On Mon, 18 Mar 2024 09:17:06 -0700, Nathan Morrisson wrote:
-> Add the device tree bindings, timings, and compatible string for the
-> POWERTIP PH128800T006-ZHC01 panel.
+On Mon, Mar 18, 2024 at 10:21:34PM +0800, Baoquan He wrote:
+> This is not needed any more.
+
+I'd swap this and the first patch, so that the first patch would remove
+memblock_find_dma_reserve() and it's changelog will explain why it's not
+needed and then the second patch will simply drop unused set_dma_reserve()
+
+> Signed-off-by: Baoquan He <bhe@redhat.com>
+> ---
+>  arch/x86/include/asm/pgtable.h |  1 -
+>  arch/x86/kernel/setup.c        |  2 --
+>  arch/x86/mm/init.c             | 45 ----------------------------------
+>  3 files changed, 48 deletions(-)
 > 
-> Nathan Morrisson (2):
->   dt-bindings: display: simple: Add POWERTIP PH128800T-006-ZHC01 panel
->   drm/panel: simple: Add POWERTIP PH128800T006-ZHC01 panel entry
+> diff --git a/arch/x86/include/asm/pgtable.h b/arch/x86/include/asm/pgtable.h
+> index 315535ffb258..cefc7a84f7a4 100644
+> --- a/arch/x86/include/asm/pgtable.h
+> +++ b/arch/x86/include/asm/pgtable.h
+> @@ -1200,7 +1200,6 @@ static inline int pgd_none(pgd_t pgd)
+>  extern int direct_gbpages;
+>  void init_mem_mapping(void);
+>  void early_alloc_pgt_buf(void);
+> -extern void memblock_find_dma_reserve(void);
+>  void __init poking_init(void);
+>  unsigned long init_memory_mapping(unsigned long start,
+>  				  unsigned long end, pgprot_t prot);
+> diff --git a/arch/x86/kernel/setup.c b/arch/x86/kernel/setup.c
+> index 3e1e96efadfe..5aa00938051f 100644
+> --- a/arch/x86/kernel/setup.c
+> +++ b/arch/x86/kernel/setup.c
+> @@ -1106,8 +1106,6 @@ void __init setup_arch(char **cmdline_p)
+>  	 */
+>  	arch_reserve_crashkernel();
+>  
+> -	memblock_find_dma_reserve();
+> -
+>  	if (!early_xdbc_setup_hardware())
+>  		early_xdbc_register_console();
+>  
+> diff --git a/arch/x86/mm/init.c b/arch/x86/mm/init.c
+> index 5209549e8192..615f0bf4bda6 100644
+> --- a/arch/x86/mm/init.c
+> +++ b/arch/x86/mm/init.c
+> @@ -990,51 +990,6 @@ void __init free_initrd_mem(unsigned long start, unsigned long end)
+>  }
+>  #endif
+>  
+> -/*
+> - * Calculate the precise size of the DMA zone (first 16 MB of RAM),
+> - * and pass it to the MM layer - to help it set zone watermarks more
+> - * accurately.
+> - *
+> - * Done on 64-bit systems only for the time being, although 32-bit systems
+> - * might benefit from this as well.
+> - */
+> -void __init memblock_find_dma_reserve(void)
+> -{
+> -#ifdef CONFIG_X86_64
+> -	u64 nr_pages = 0, nr_free_pages = 0;
+> -	unsigned long start_pfn, end_pfn;
+> -	phys_addr_t start_addr, end_addr;
+> -	int i;
+> -	u64 u;
+> -
+> -	/*
+> -	 * Iterate over all memory ranges (free and reserved ones alike),
+> -	 * to calculate the total number of pages in the first 16 MB of RAM:
+> -	 */
+> -	nr_pages = 0;
+> -	for_each_mem_pfn_range(i, MAX_NUMNODES, &start_pfn, &end_pfn, NULL) {
+> -		start_pfn = min(start_pfn, MAX_DMA_PFN);
+> -		end_pfn   = min(end_pfn,   MAX_DMA_PFN);
+> -
+> -		nr_pages += end_pfn - start_pfn;
+> -	}
+> -
+> -	/*
+> -	 * Iterate over free memory ranges to calculate the number of free
+> -	 * pages in the DMA zone, while not counting potential partial
+> -	 * pages at the beginning or the end of the range:
+> -	 */
+> -	nr_free_pages = 0;
+> -	for_each_free_mem_range(u, NUMA_NO_NODE, MEMBLOCK_NONE, &start_addr, &end_addr, NULL) {
+> -		start_pfn = min_t(unsigned long, PFN_UP(start_addr), MAX_DMA_PFN);
+> -		end_pfn   = min_t(unsigned long, PFN_DOWN(end_addr), MAX_DMA_PFN);
+> -
+> -		if (start_pfn < end_pfn)
+> -			nr_free_pages += end_pfn - start_pfn;
+> -	}
+> -#endif
+> -}
+> -
+>  void __init zone_sizes_init(void)
+>  {
+>  	unsigned long max_zone_pfns[MAX_NR_ZONES];
+> -- 
+> 2.41.0
 > 
-> [...]
-
-Thanks, Applied to https://gitlab.freedesktop.org/drm/misc/kernel.git (drm-misc-next)
-
-[1/2] dt-bindings: display: simple: Add POWERTIP PH128800T-006-ZHC01 panel
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/3b2304cfeddd141523cb50cc1a3ba7624b865011
-[2/2] drm/panel: simple: Add POWERTIP PH128800T006-ZHC01 panel entry
-      https://gitlab.freedesktop.org/drm/misc/kernel/-/commit/fd6aa8f2dcb7236e511c1a58d82c2a178170e6ff
 
 -- 
-Neil
-
+Sincerely yours,
+Mike.
 
