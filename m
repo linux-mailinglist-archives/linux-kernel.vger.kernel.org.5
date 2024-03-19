@@ -1,153 +1,152 @@
-Return-Path: <linux-kernel+bounces-107987-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107988-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DDDF880480
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:14:59 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 9311A880483
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:15:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id AC52C1F2332A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:14:58 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 482681F23CED
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:15:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35EDA2C6B8;
-	Tue, 19 Mar 2024 18:14:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8788D2C6A4;
+	Tue, 19 Mar 2024 18:15:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="lYGTjT/L"
-Received: from NAM04-MW2-obe.outbound.protection.outlook.com (mail-mw2nam04on2116.outbound.protection.outlook.com [40.107.101.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="lwvabqTY"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DDFDC2C19F;
-	Tue, 19 Mar 2024 18:14:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.101.116
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710872088; cv=fail; b=F3AFIKfzjNrISlf1P6ZE6Q2GwWaVxXNH/wPerAcy24dj5hoVyl3sSTg3HaOax6+EiP+TgwwLG7bU4+sPD5JfrbDpHIdxrUDqwR7urkxOvwDVtcjBqCXi5y8n+V+b1rvS9ZXR0M3bRnZryxJJc5gBmZS+w/DQUDn3V9fR4am+A8E=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710872088; c=relaxed/simple;
-	bh=S5M+lYzrq90CuSjU5+pq2WdavrRQT8w2rE4m2MqMqkY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=euab6eL1diDIByTF4y0aDqQsCjBkqIYB11XdTZqclTcJhuj1AdYEil3C4PpXJ0qLBB99dICsHx6JoD4+B5FPgwdJ+MbTLr0XkH/ABItfeTFblMBMwXH6BO1pobR0DYo8bIZYCj9lttppRVw7DDnH3pDdTAPaIpX2aChE/RXf4Jc=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=lYGTjT/L; arc=fail smtp.client-ip=40.107.101.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YZqWN4HCCBF2iM/Ja50o+aqYMhBcolUNPwdNaQvMJginG2NcYXfS5OZm/ZXs5D2l7PSzeBbPJhnnH6vnnhbA4SBJaiBXmogpMM3BKOLvelhhu0K2POCktdED3HaaV/Gd+S1j40Ns2XYd/+D6GzWx+O91SzVfBxoRga48dnHdVCiITYLf5KJuIAaqX4+1TS4o/DvlxfScNcyNMU30nNEiVfU+g2Zf1ypgSyyC2HKK9gFuXsFOQ9EJBJWfEezd+i+8u3qLFsb538GUc4qdDuDTMdtQUrOQrxD378h9HdK0o7ZceNAMYVbBA7WYKwcB+yLs69xKfF/zWSzTK+iNLaY8jA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=szrqnx704GXn/hElzy7hXBwP+q0DUw7WxgkZguMT65s=;
- b=ULFAR5WiJwhb+U+uq7Y4T30owKrrZ5QwasYsuqOMALlaSsWKOfp6DoO7htUyrvradsTvO2Swr8IUFZYqFXG/94QiaZ0kRPfV+I10SMlBFyzdomj4q6TiFjz7OfEn98HR0Mu1ic3lFL9myRz9Hby821eM50DYTOsrpL7WnkMqlySp8dW6mwIkMT58oqSfPehRxiM5qcmhM3ZGfDkONLsjiyI8y336w7RazFhc/iFRH2RBIYhuZqZW42R6nkojzG+0AJpYPcZB1VWDESywUOQ1o6jsDnqjY9QNRarmenYfVjX8kwcK8WUkdCTcJILidUnsPuxvUOMXuSFmJ3tuR+fheQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=szrqnx704GXn/hElzy7hXBwP+q0DUw7WxgkZguMT65s=;
- b=lYGTjT/Lom04OcHrENx3nV3ZRPTp6Cd6f7edaAp8ybfgqoaln29CicJGU4rVryNWJpd0nlMX/rn+AXR96IyXFQVG4uY/hNy3+OyNevZUrT2g+yKoSfiinT9Wf5THU5OW+88oI1ppMczOtUm3VrcJGwEtQ6quV/B5HM6v/I0iuLk=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by PH0PR17MB5770.namprd17.prod.outlook.com (2603:10b6:510:111::21) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Tue, 19 Mar
- 2024 18:14:41 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b%5]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 18:14:41 +0000
-Date: Tue, 19 Mar 2024 14:14:33 -0400
-From: Gregory Price <gregory.price@memverge.com>
-To: Matthew Wilcox <willy@infradead.org>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	ying.huang@intel.com, dan.j.williams@intel.com, honggyu.kim@sk.com,
-	corbet@lwn.net, arnd@arndb.de, luto@kernel.org,
-	akpm@linux-foundation.org, shuah@kernel.org
-Subject: Re: [RFC v3 3/3] ktest: sys_move_phys_pages ktest
-Message-ID: <ZfnWCRwcZJ4KBmSH@memverge.com>
-References: <20240319172609.332900-1-gregory.price@memverge.com>
- <20240319172609.332900-4-gregory.price@memverge.com>
- <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
-X-ClientProxiedBy: SJ0PR03CA0079.namprd03.prod.outlook.com
- (2603:10b6:a03:331::24) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C7BAB2E64F
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:15:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710872108; cv=none; b=ZjQAx7EY0gRyBRG/SfRJLwUpFefW2X0VAMU2DsPNVvwF3osOAcutIhi6O1BH4ULEEC4uMMf/0Xo/HxKptbZpuUA3ZGUXRd0+dJGY86KC6/murJv8VOTVm5fps3Fh3+drEBhFzT7aA7GnxmcrYxIuq0lInC2C0vqwx4IEezIOCY8=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710872108; c=relaxed/simple;
+	bh=RZ6lEH7cyONfShml37mNV7nkIh1YCuPRnlSy8js1sI0=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=B48pomqlWkt+tI/gIkpIaCQztibBFdNNxxv3pAEmJuEVdXZ+wC7EXYkUAg2b+0PJKX4HwRhN2i/qFQTUitP5O+g/DAaYkoYV9gg1tqKXOFHzy47I25k5gy/TBx8ZXhQ1X1kCUT7wBg3KmdxAgYLdb5I2cZe/FPtZ87+ppFSP5wk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=lwvabqTY; arc=none smtp.client-ip=209.85.210.181
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e6aa5c5a6fso5630413b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:15:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=chromium.org; s=google; t=1710872105; x=1711476905; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KcaIci4ngfZq5XN/VP6t9YI7Rpj+hyL5AivE9QQ6SzY=;
+        b=lwvabqTYB2uGZDeXat4J1UARbEGbLbcCygKCe1JN4eJSYR9c3EDQzySbscjs8pcQp7
+         k3Yzf0FzsSZ7DZfMS59Siy+IglMN/nua7OnC6WC3rj+RIATSKYNSMlnaHtonD6gORBi/
+         sKmU5zDFtM0rqku4yEUhxDgjd2l3e98l1dNk4=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710872105; x=1711476905;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KcaIci4ngfZq5XN/VP6t9YI7Rpj+hyL5AivE9QQ6SzY=;
+        b=k5fAo1+YvS956i9fuD19elQ7oeN1Ro8jOGzGPjc7J0ywjkM7ky25kLkm5n+S6AABy9
+         jp/ap1o7gK3nsgRi31PBohtKBigWcZc5Caf7L2qlepfSv9pJB/ci/8OFBgMMgwTeoXcm
+         9Q4aemH2s90oarmIUEDW/HltK6OUoX8weqLgZDpIodHbH3n2dhDHyGUt2JzAuPf0YAur
+         1AzBgO6GSYTKQUHnjliS3HhTbqNAN19fJVnMU7qBXhqiB6is501Kd0qWOsvx3320mQSI
+         qx7doqaRx7PEJdQ8c9Tjj1uV1m7brEuQfMfd8TRF2lNA8JLUUHvoqAJTVhXklt9lK51X
+         XzCg==
+X-Forwarded-Encrypted: i=1; AJvYcCXen4iwDHGCnv7hVoipSsN8KGV9CTWa9g+R4MMN+jdoSxaV+JaKGP7de5EnsQ3URxIiZhhyxfhtO0WzKpvEKvkiYJwm7fAb2JNehMU/
+X-Gm-Message-State: AOJu0Yxzsq2BImQFMRlrTEDwOKwcKjC4CO/yK2bZPH7je5bsH1yaS/kV
+	c+wUiVLWpnKGp0LczmcGMpoXWF/eYoie5U6QGfSy/pYljZQeVWDTaXi5MMCmMw==
+X-Google-Smtp-Source: AGHT+IEs6V5enK1CZTIHXPiZ4R0PlFu96HG0HOwGdMnSOtSkC4CyugyccnZjk5x2k8W9wrz8gR8SPg==
+X-Received: by 2002:a05:6a20:1594:b0:1a3:6817:1b02 with SMTP id h20-20020a056a20159400b001a368171b02mr5885140pzj.55.1710872105015;
+        Tue, 19 Mar 2024 11:15:05 -0700 (PDT)
+Received: from dianders.sjc.corp.google.com ([2620:15c:9d:2:f4b6:c22b:c130:6c79])
+        by smtp.gmail.com with ESMTPSA id by24-20020a056a02059800b005e49bf50ff9sm8176006pgb.0.2024.03.19.11.15.03
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 11:15:04 -0700 (PDT)
+From: Douglas Anderson <dianders@chromium.org>
+To: dri-devel@lists.freedesktop.org,
+	Abhinav Kumar <quic_abhinavk@quicinc.com>,
+	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Cc: linux-tegra@vger.kernel.org,
+	Mikko Perttunen <mperttunen@nvidia.com>,
+	Jonathan Hunter <jonathanh@nvidia.com>,
+	Thierry Reding <thierry.reding@gmail.com>,
+	Douglas Anderson <dianders@chromium.org>,
+	Ankit Nautiyal <ankit.k.nautiyal@intel.com>,
+	Daniel Vetter <daniel@ffwll.ch>,
+	David Airlie <airlied@gmail.com>,
+	Imre Deak <imre.deak@intel.com>,
+	Jani Nikula <jani.nikula@intel.com>,
+	Maxime Ripard <mripard@kernel.org>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] drm/dp: Clarify that wait_hpd_asserted() is not optional for panels
+Date: Tue, 19 Mar 2024 11:14:35 -0700
+Message-ID: <20240319111432.1.I521dad0693cc24fe4dd14cba0c7048d94f5b6b41@changeid>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|PH0PR17MB5770:EE_
-X-MS-Office365-Filtering-Correlation-Id: 67a6d935-87d2-499c-3e3f-08dc4840724e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	rqOkvhnaOxXLYSN6KP/Z9Dy6H9em6t1Mjl9e/9Ci0acdRKFAi8xN+QmsWUAPU1+1sIqBXaIfAkS9eKpGx8Oaj5c9YCZz+FuPQSp5UiSP70qnKIOu9dNeQuInTE8gV+QUMEM9Lzr96yIhYc5FZDNtYBfyt5ZJDBcYUYkzuwJjgh5w/Sp+5VjcINGHt5kPiu9GimsLv1BMU0pVlhB2s9zrfVO2K7fqixV6up8WR7YOaVeG09b6ww8FyxH0eDmeLnfCIqg21XuPhMyLDkU5OzRF//zpQ9Em5o9DTPNs44j1mR5pg/3Lb6mXP25PNfxYlM2oSOehOzmrKHFjDIAtECaz2ZCNQrIgosi/2ca8NJKxCetHHZCeXRhasusXDKLqCSbRK+j2QCMnBKDmrlytTosfw5jEyw8HAgcBCLSADGxp2tCzfkh40ysV62wxNlXt4O7c2GlnXGbpuxNeCTSQff+wLHKaI1Pd+DXWoQh/mYhbD2jMM24cu8Tq+yU/Aq/Ydoy5lwRDRsi4o8KgdavMLAr5Gd5S7jOwl3L9fS1zz0ApZcqZ19ats2W4HWUJzFTYKyNJdi0vOLHW77NpS6u4tAHN1peIYGxsO61b1jQlLdq7x0jVKXiyM8DNQA1LmgWhWM7laTFtZFjUAyV3ozEs5Hlo2pvY78W9uuNrddsQAwWyRXs=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?CF3+lZBrS6227smP0thPuLFTE6BUAYHeOtJLDBPvYXHkMd5QPoq3FzYayych?=
- =?us-ascii?Q?jNRpKV/sScEQ95edWusb9aTGdmfa+3d5xz+fK/uWL7GihvGofz6m7YYC9BIC?=
- =?us-ascii?Q?JHdE/NcClMh7xxJ3RdjEf1LYOApNEoWnRIZp8MIl0cz/KQ3VbbvILvo3wNAx?=
- =?us-ascii?Q?8KWOxcKoofBLoXxkFZcyjYwCehmuSFZZCc6q7EEnt1rw93pp9i9uPNTdX/Ah?=
- =?us-ascii?Q?eWyHx9XKlLJFi0gk3mafr/mkqXL6FkZGmKOqrYdB8g7eJ34v3AVUVv6qY4BV?=
- =?us-ascii?Q?A2i8Blis9foQY5MH51xNAEizaBW4FC1df0gjQAM5q/wPRVKZaaWGUAlJZNjf?=
- =?us-ascii?Q?WfahoKAOKO5DCrNXvpbquGT0YlxTYOgVvwbFbHf3M9jlfhxfPW2PwToB68lR?=
- =?us-ascii?Q?Z8hsm3qItNY3tjjkVRULV4wq/sGskHnuJZc6qkALrKL6/7n1+p+Mt62+3Laz?=
- =?us-ascii?Q?frwX+vnMQ1Gm6/cVgIHtj75lMdbDpN7XD+aLQ27TvFaSo1Un8QrdbovYrxcq?=
- =?us-ascii?Q?6811He4tiq+KcMFm7IklW9bXo7JSOX4VKvMCjH/jTkpnk0DLfK9W+uBgEgzt?=
- =?us-ascii?Q?43o7P8TnX+Wg4bGFuotuUQb56qL1vLrNpDYZdWFqv7bDiwsASsICPT1YRpjC?=
- =?us-ascii?Q?2RBZTmqqQGwLTe0w5tI8WeEptwPhMNmmlBO1MD/MzJTutLK2XnshVzvdqguD?=
- =?us-ascii?Q?OobFDD3YTU661NuFkO+y5LSrB6xc0byUdIbBjD9Qk4XF3Bqsz5kH5uK48eAp?=
- =?us-ascii?Q?Yms5Rj5/McwFNYtYPcodVVrMUZ8X9Lt6kgJtGPyD6d8Mf3j/sxeo4lXzxC7v?=
- =?us-ascii?Q?Dwx3ZkrN4orByVfR51/jNpiOBvLePMCDiEX+S9lsEE8b7ZpN46dcb4vq731D?=
- =?us-ascii?Q?Z/A5CiWZgJnCxQcUl6tghZciCQnsQgJeyjT4kYjjt/ptd8lbB5FWvZEcmWUN?=
- =?us-ascii?Q?r2CRxfnBvAwbVM36xtvJjb1ZKk6Cz4eMxHQi9CSUmACdSLpX96cJJuvNgOpT?=
- =?us-ascii?Q?Z9nqh7i1CxfUO3g2C6sifbPT5g+kiswsvPI038CEl9JM4taEGeEfqz9ZrUqa?=
- =?us-ascii?Q?i7p/sK70HdCpUpkfkdVoJeRl2eEtj9eot16rFILgcE5zlLxOFUMrF7NkjiHS?=
- =?us-ascii?Q?BohNx/yi9SXPtRr39SdRDk5CgwLu1kvNaR9vDefCiIxKCrZUbENn5M2qVnM9?=
- =?us-ascii?Q?6lD3amVw9jpgk2tkQ7NufnJiAVt5tCqS2CTLMJgIYJN5IneUYTz8cB0hHoZr?=
- =?us-ascii?Q?JQBbwnVh7U1QeNvAqcCkAjht1Od/XiABPoP9my75Zrmqg1hCK2MyOMSlF99r?=
- =?us-ascii?Q?6uBxKAryuMSEsvltYSqh2EYeBqSKQOivsn+OidufWjtXaSFY2083ySCHIFPT?=
- =?us-ascii?Q?qPJ8GX+LM9oJ7NwRnh3ev5UICnBGOrN48LlDj3BOTsB3HDu204za1kcT5Lcn?=
- =?us-ascii?Q?QLfpfCnhuLADIcpPB3Nij/56f3u1x5pKIqVz+wbKY2GXNXsiT+f/Q6cImKHW?=
- =?us-ascii?Q?3DkoqhHTQky0W55rlbMQGcMxTaj9uI7gkOwyRWJTUUrZR8e4a/wrzOuXC4vi?=
- =?us-ascii?Q?I9xNw0myQqLMAhMQ6WFL/o6S/04ubcc4EhPjPl6uUiqZpQPy5S7D3MVxKTYu?=
- =?us-ascii?Q?5g=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 67a6d935-87d2-499c-3e3f-08dc4840724e
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 18:14:41.4679
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: /8nVSJ5rV//08lUlccoeZyPi8ErwXcXr1+ZgxB615mMc8GGtwPwL86X9owx8s8UgJNs63c2RFJThOvafvRv4Vd6cak73P086qxhMikYl42U=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR17MB5770
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 19, 2024 at 05:52:46PM +0000, Matthew Wilcox wrote:
-> On Tue, Mar 19, 2024 at 01:26:09PM -0400, Gregory Price wrote:
-> > Implement simple ktest that looks up the physical address via
-> > /proc/self/pagemap and migrates the page based on that information.
-> 
-> What?  LOL.  No.
-> 
+In response to my patch removing the "wait for HPD" logic at the
+beginning of the MSM DP transfer() callback [1], we had some debate
+about what the "This is an optional function" meant in the
+documentation of the wait_hpd_asserted() callback. Let's clarify.
 
-Certainly the test is stupid and requires admin, but I could not
-come up an easier test to demonstrate the concept - and the docs
-say to include a test with all syscall proposals.
+As talked about in the MSM DP patch [1], before wait_hpd_asserted()
+was introduced there was no great way for panel drivers to wait for
+HPD in the case that the "built-in" HPD signal was used. Panel drivers
+could only wait for HPD if a GPIO was used. At the time, we ended up
+just saying that if we were using the "built-in" HPD signal that DP
+AUX controllers needed to wait for HPD themselves at the beginning of
+their transfer() callback. The fact that the wait for HPD at the
+beginning of transfer() was awkward/problematic was the whole reason
+wait_hpd_asserted() was added.
 
-Am I missing something else important?
-(stupid question: of course I am, but alas I must ask it)
+Let's make it obvious that if a DP AUX controller implements
+wait_hpd_asserted() that they don't need a loop waiting for HPD at the
+start of their transfer() function. We'll still allow DP controllers
+to work the old way but mark it as deprecated.
 
-~Gregory
+[1] https://lore.kernel.org/r/20240315143621.v2.3.I535606f6d4f7e3e5588bb75c55996f61980183cd@changeid
+
+Signed-off-by: Douglas Anderson <dianders@chromium.org>
+---
+I would consider changing the docs to say that implementing
+wait_hpd_asserted() is actually _required_ for any DP controllers that
+want to support eDP panels parented on the DP AUX bus. The issue is
+that one DP controller (tegra/dpaux.c, found by looking for those that
+include display/drm_dp_aux_bus.h) does populate the DP AUX bus but
+doesn't implement wait_hpd_asserted(). I'm actually not sure how/if
+this work on tegra since I also don't see any delay loop for HPD in
+tegra's transfer() callback. For now, I've left wait_hpd_asserted() as
+optional and described the old/deprecated way things used to work
+before wait_hpd_asserted().
+
+ include/drm/display/drm_dp_helper.h | 8 +++++++-
+ 1 file changed, 7 insertions(+), 1 deletion(-)
+
+diff --git a/include/drm/display/drm_dp_helper.h b/include/drm/display/drm_dp_helper.h
+index a62fcd051d4d..b170efa1f5d2 100644
+--- a/include/drm/display/drm_dp_helper.h
++++ b/include/drm/display/drm_dp_helper.h
+@@ -422,7 +422,13 @@ struct drm_dp_aux {
+ 	 * @wait_hpd_asserted: wait for HPD to be asserted
+ 	 *
+ 	 * This is mainly useful for eDP panels drivers to wait for an eDP
+-	 * panel to finish powering on. This is an optional function.
++	 * panel to finish powering on. It is optional for DP AUX controllers
++	 * to implement this function but required for DP AUX endpoints (panel
++	 * drivers) to call it after powering up but before doing AUX transfers.
++	 * If a DP AUX controller does not implement this function then it
++	 * may still support eDP panels that use the AUX controller's built-in
++	 * HPD signal by implementing a long wait for HPD in the transfer()
++	 * callback, though this is deprecated.
+ 	 *
+ 	 * This function will efficiently wait for the HPD signal to be
+ 	 * asserted. The `wait_us` parameter that is passed in says that we
+-- 
+2.44.0.291.gc1ea87d7ee-goog
+
 
