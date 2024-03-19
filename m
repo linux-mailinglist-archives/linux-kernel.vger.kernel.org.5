@@ -1,185 +1,157 @@
-Return-Path: <linux-kernel+bounces-107323-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107326-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 11E2887FB12
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:50:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 56A7887FB19
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:51:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 59EC8B2178C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:50:17 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A9D81C21BED
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:51:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A5CB7D3E2;
-	Tue, 19 Mar 2024 09:50:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD1467D41D;
+	Tue, 19 Mar 2024 09:51:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="oUM2x827"
-Received: from mail-ej1-f54.google.com (mail-ej1-f54.google.com [209.85.218.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="QmBDf7cd"
+Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0A3BB1E536
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:50:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5077E7D098;
+	Tue, 19 Mar 2024 09:51:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710841808; cv=none; b=tO+yeeAwyvWtq1Qtu04uFLKPjEgZqx0SSITqdQpItudmgXkXRXs6VNS146aZKZTeuLfUhbCN0+fdrM/He4EzpQq9R9wCsYP6KIaVoJKCrhv6uj+kj8yOpx3OKqPm/ttHqk4SDc2zojTTuux4BHzuFeCtfGWAZPrSWF6uwAe/lU8=
+	t=1710841869; cv=none; b=lsdrqsHcnW6faZeWpdQIjy9bjd97ksC53WX6kJ5wBRyD1652WveF4+eHG2yP05LEEReK/f7dNTgZ+K3R6a01FJIBFT08YXqbFUuZsM6KIRLKZcXwLcaRmnk8ZoXbNf0R3zF4ElR3XjW5XeDFF5r1Dzd57JwyXQGZAAGAKZ+jX8U=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710841808; c=relaxed/simple;
-	bh=tw6VpL6uUbF1l8qk/1ld/s+lWnYJuW351zygV2v0NuA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=OX3fy7iAUtEA89IYT5g0iLmJcr/kjLN1vZ85CcPP8rHFGcO2ii5UxcR4IsGpFRF5UkHIV6IhTAmEnUZ0aMbPp6V2zTxX//G+8/fmYawZpTfv2Vik/U1YiTZ6rdDlBAmrrlglwbzqizkaBVIvtGWEem1Un16RiT9gxGTZc2WJpjo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=oUM2x827; arc=none smtp.client-ip=209.85.218.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ej1-f54.google.com with SMTP id a640c23a62f3a-a450bedffdfso645072366b.3
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:50:06 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710841805; x=1711446605; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=/3djFcV85FlUlQbj3yunmUo0E6cySmtvMQYg/G6jYmk=;
-        b=oUM2x827h7PPer2IKdaeiZLAfCi1uemooXhxJMJef+UkaWn/Ej9EtXQTB5z4MLsT7S
-         a7u5+DIJ4ey6iTDJdZRQD3krXSSbhHDYXlGt8W8ue6Fmx9f4CZBuvcCVAZF2hAh4uHhm
-         KvbpgazJoldKym/JgVC80RF/DVwbjw8vcR1g4xfMU9WydLKsP0YI297ZJlLWgq5yyJzW
-         CCMehCU7si+OZaJBuySmOzuL7RL1PH1vhhRvWqMBgUuobA//xfIRb5amVN/7niAH95s6
-         lD2K2zClMppZYtoVQpBGuCKFkzbcAY1Sl+5LIsnjkeUbtOKoQDp8iKd/6cgj0l3/ZHqn
-         BoUA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710841805; x=1711446605;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from
-         :content-language:references:cc:to:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/3djFcV85FlUlQbj3yunmUo0E6cySmtvMQYg/G6jYmk=;
-        b=fvw2Q9NjUqIf3u7UjrB0AOShZ2014KUOWVoN4lHlVg1RBv7KuJQkhLzvkA9NkFd/e8
-         k6WwQdpov74uQs0s1v5wQZu7NPkGXC1jtWkKyKSxf8lz2nMcVNk508sbIm6dilY0ROAb
-         ZrrBcmgw2jN+LClN9PUb7/0CUrvWnRmAl/dg95RSPYqb8HPIqcgRBVrTcNvPQwmMKMK4
-         FQFJdqiRGeoPrydWsVHm89LpyrfbmJsP7svqkkJvLQ2xmKucb2MPmZRafi6mV7XmnSuH
-         jomR1ywet0OM4Xte8eb08pmeU7cWi3uA8vJvIcnrLonRFOI6vFjJ5lSsGivMXwt7te1G
-         pslg==
-X-Forwarded-Encrypted: i=1; AJvYcCU8fk5x3T1Qyfv7Kz39hifTsn8ScBPewylQxJV4v9G4igKtVXbt3jZRJR5rbMc6+3Nea6o+ceuPXkaQHb4sKqef5p5rZiWi19hIvYAY
-X-Gm-Message-State: AOJu0YyAJpzpO1KvS7lWlZJ7ydkgRkc/9xg+gueWIwW0rJ38k5BCm9gs
-	VD3+NLLa3h86utuEPYtGtTlCwmsiGX/ek3u2HikarP+qexLRrWsxuga+tokFUwI=
-X-Google-Smtp-Source: AGHT+IHub3GerXpEi0+h2eEzC/rsUiII/Qbh7o0i096OhIsOQOgoPcmYiKDyB+SU92D5RtOm8jHkvA==
-X-Received: by 2002:a17:906:5913:b0:a46:9cc5:c3b4 with SMTP id h19-20020a170906591300b00a469cc5c3b4mr5464869ejq.76.1710841805472;
-        Tue, 19 Mar 2024 02:50:05 -0700 (PDT)
-Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id v15-20020a1709061dcf00b00a46cf83216csm1345710ejh.120.2024.03.19.02.50.03
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 02:50:05 -0700 (PDT)
-Message-ID: <b238d70e-0361-4f3c-ae6a-4e6497b95d75@linaro.org>
-Date: Tue, 19 Mar 2024 10:50:02 +0100
+	s=arc-20240116; t=1710841869; c=relaxed/simple;
+	bh=0spjMsQPlJTDmjGtorWPzWT87tD+gg4/0qmis1bJQ3U=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=h+SJ4wcehIu/+DPoqA3EU/xapFOMadXlhnYGyfT6gZDuFL1WOeG/5rK9WcyCFl5CCt66BxBJNdmDMcFqrfXOz15YP0aZnLhXQKbCK/8oOvqK2JH3iBNYqBqJpaFdf7mxxr9ow/j/SikWJzZBkqTM1jNs5iFdOfijhIi4rAdQUgk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=QmBDf7cd; arc=none smtp.client-ip=148.163.158.5
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42J9B0G6003146;
+	Tue, 19 Mar 2024 09:51:02 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
+ : date : message-id : mime-version : content-transfer-encoding; s=pp1;
+ bh=kfFT1P/IgpeSJp39XAmKjKLqlIuz1wFwnZS2Gt96AvU=;
+ b=QmBDf7cdoRrNMAKh67Jqt6V2KPs8+RXh2dJGBZKMJJ401R58aj10Di44yX8/0FGcqkfd
+ WUoAglFmUV+mM1RkSPS6mwajLkMDC8KsaVcLYqvwzVe8O3+YrtGkSd937GXu83vqTsa/
+ SjHVokQfXHGy8a8wZVQ1S+vFp/URc8L4wW1PCHkFShDwCFjVZedKVmCRDHz0Kr/XK+Qj
+ ObYCkPVroS4sFDszPLZM2UbEGeaBMgDZLrPDjZqQ/3WphQ/Jrn4MvHZxgywtTPKWj/zy
+ uXSk7dJt5gqzD/zqZnJEHdDUvgQjjDF0hHBKZG29VA1N+JVnS/QNkwE6rHQXrkvsCY7i eQ== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy74u8jtu-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 09:51:02 +0000
+Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42J9p15R024490;
+	Tue, 19 Mar 2024 09:51:01 GMT
+Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy74u8jtr-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 09:51:01 +0000
+Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42J73Fcg017190;
+	Tue, 19 Mar 2024 09:51:01 GMT
+Received: from smtprelay05.fra02v.mail.ibm.com ([9.218.2.225])
+	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrt6u1k-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 09:51:00 +0000
+Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
+	by smtprelay05.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42J9otlJ48955860
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Mar 2024 09:50:57 GMT
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 8A4BC20040;
+	Tue, 19 Mar 2024 09:50:55 +0000 (GMT)
+Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id 523F620043;
+	Tue, 19 Mar 2024 09:50:55 +0000 (GMT)
+Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
+	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Mar 2024 09:50:55 +0000 (GMT)
+From: Thomas Richter <tmricht@linux.ibm.com>
+To: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
+        acme@kernel.org, irogers@google.com, namhyung@kernel.org
+Cc: svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
+        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
+Subject: [PATCH 1/2] perf report: Fix PAI counter names for s390 virtual machines
+Date: Tue, 19 Mar 2024 10:50:42 +0100
+Message-Id: <20240319095043.857594-1-tmricht@linux.ibm.com>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 3/4] ARM: dts: aspeed: Add eSPI node
-To: Manojkiran Eda <manojkiran.eda@gmail.com>, patrick.rudolph@9elements.com,
- chiawei_wang@aspeedtech.com, ryan_chen@aspeedtech.com,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
- linux-mtd@lists.infradead.org
-Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
- conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
- miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
- jk@codeconstruct.com.au, openbmc@lists.ozlabs.org
-References: <20240319093405.39833-1-manojkiran.eda@gmail.com>
- <20240319093405.39833-4-manojkiran.eda@gmail.com>
-Content-Language: en-US
-From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
- 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
- D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319093405.39833-4-manojkiran.eda@gmail.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: WGk10ZOD1v8jBIM4hO6cgv0zJwkMzaUB
+X-Proofpoint-GUID: YhFx5wsQgtIVvoJ6XEY-ZCitFLebkiVL
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 clxscore=1011 mlxscore=0
+ mlxlogscore=999 impostorscore=0 spamscore=0 bulkscore=0 suspectscore=0
+ priorityscore=1501 phishscore=0 adultscore=0 malwarescore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403190075
 
-On 19/03/2024 10:34, Manojkiran Eda wrote:
-> This commit adds eSPI to the device tree for aspeed 5/6th
-> generation SoCs.
-> 
-> Signed-off-by: Manojkiran Eda <manojkiran.eda@gmail.com>
-> ---
->  arch/arm/boot/dts/aspeed/aspeed-g5.dtsi | 19 +++++++++++++++++++
->  arch/arm/boot/dts/aspeed/aspeed-g6.dtsi | 20 ++++++++++++++++++++
->  2 files changed, 39 insertions(+)
-> 
-> diff --git a/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi b/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
-> index 04f98d1dbb97..eaf7d82b6f46 100644
-> --- a/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
-> +++ b/arch/arm/boot/dts/aspeed/aspeed-g5.dtsi
-> @@ -343,6 +343,25 @@ sdhci1: sdhci@200 {
->  					status = "disabled";
->  				};
->  			};
-> +			espi: espi@1e6ee000 {
+s390 introduced Processor Activity Instrumentation (PAI) counter
+facility on LPAR and virtual machines z/VM for models 3931 and 3932.
+These counters are stored as raw data in the perf.data file and are
+displayed with command
 
-spi or syscon
+ # ./perf report -i /tmp//perfout-635468 -D | grep Counter
+	Counter:007 <unknown> Value:0x00000000000186a0
+	Counter:032 <unknown> Value:0x0000000000000001
+	Counter:032 <unknown> Value:0x0000000000000001
+	Counter:032 <unknown> Value:0x0000000000000001
+ #
 
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
+However on z/VM virtual machines, the counter names are not retrieved
+from the PMU and are shown as '<unknown>'.
+This is caused by the CPU string saved in the mapfile.csv for this
+machine:
 
+   ^IBM.393[12].*3\.7.[[:xdigit:]]+$,3,cf_z16,core
 
-> +				compatible = "aspeed,ast2500-espi", "simple-mfd", "syscon";
-> +				reg = <0x1e6ee000 0x1000>;
-> +
-> +				#address-cells = <1>;
-> +				#size-cells = <1>;
-> +				ranges = <0x0 0x1e6ee000 0x1000>;
-> +
-> +				espi_ctrl: espi-ctrl@0 {
+This string contains the CPU Measurement facility first and second
+version number and authorization level (3\.7.[[:xdigit:]]+).
+These numbers do not apply to the PAI counter facility.
+In fact they can be omitted.
+Shorten the CPU identification string for this machine to manufacturer
+and model. This is sufficient for all PMU devices.
 
-What is this device? If parent is espi, then what is this?
+Output after:
+ # ./perf report -i /tmp//perfout-635468 -D | grep Counter
+	Counter:007 km_aes_128 Value:0x00000000000186a0
+	Counter:032 kma_gcm_aes_256 Value:0x0000000000000001
+	Counter:032 kma_gcm_aes_256 Value:0x0000000000000001
+	Counter:032 kma_gcm_aes_256 Value:0x0000000000000001
+ #
 
-Where is the binding?
+Fixes: b539deafbadb ("perf report: Add s390 raw data interpretation for PAI counters")
 
+Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
+Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
+---
+ tools/perf/pmu-events/arch/s390/mapfile.csv | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-Best regards,
-Krzysztof
+diff --git a/tools/perf/pmu-events/arch/s390/mapfile.csv b/tools/perf/pmu-events/arch/s390/mapfile.csv
+index a918e1af77a5..b22648d12751 100644
+--- a/tools/perf/pmu-events/arch/s390/mapfile.csv
++++ b/tools/perf/pmu-events/arch/s390/mapfile.csv
+@@ -5,4 +5,4 @@ Family-model,Version,Filename,EventType
+ ^IBM.296[45].*[13]\.[1-5].[[:xdigit:]]+$,1,cf_z13,core
+ ^IBM.390[67].*[13]\.[1-5].[[:xdigit:]]+$,3,cf_z14,core
+ ^IBM.856[12].*3\.6.[[:xdigit:]]+$,3,cf_z15,core
+-^IBM.393[12].*3\.7.[[:xdigit:]]+$,3,cf_z16,core
++^IBM.393[12].*$,3,cf_z16,core
+-- 
+2.44.0
 
 
