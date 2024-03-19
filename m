@@ -1,129 +1,114 @@
-Return-Path: <linux-kernel+bounces-106992-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106991-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DD5687F665
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:26:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 85A5187F664
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86211F234F5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:26:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE61F28330B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:26:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6CDDC7C0BA;
-	Tue, 19 Mar 2024 04:26:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 24E387C09F;
+	Tue, 19 Mar 2024 04:26:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="ZTAFK3kI"
-Received: from out-180.mta1.migadu.com (out-180.mta1.migadu.com [95.215.58.180])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FteKm17Y"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A53217C0BE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 04:26:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=95.215.58.180
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5E84E1EB4A;
+	Tue, 19 Mar 2024 04:26:20 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710822384; cv=none; b=UQtpsyfKMj4k1vidUS6bGNxRP50hvYhaMS/siVGzJpEsP2UHTW4WrblYSqmbPYbef26YlQtITun24z2A1+IVwB3JJQFomEQ1G4rlGneLbMEK+nqKLPzTsPeGAlyEOjzMG0XQ44UB1eBAsBxkkCIGGFnpc2LAbeZ0s943fcWfc8g=
+	t=1710822380; cv=none; b=cGkYnLa9yuviJtsTN6YOWIYDlmHWqj3blym0NuN74uyfZLaU+nxCYm4XVecXOcbmjsu2vqEtUAulESiscIPxAWmE1JcYWj4eM/d3SyNhb1kMuXRF76uZD4m2M+UwsOXlSjt6QFERP8b14xCsWYuKrm7VIiYPa5IHQnPh2t0c0kE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710822384; c=relaxed/simple;
-	bh=u02e9JnhtgF01wLoGi9eloHZoYbmUfQfrlrPML9EgIU=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=Dl0Ijahw1cpLwcvo7hsZs+tLSlCr4WjRO5+IzRYrQbGKkG+9h1NlNMTqYQLR8KorY10mFraC9HZ7r8ddVa9mc/ck87AujZxX6FfDfDPIiF3duCFwnWCbwYICiglU2N4tZj0K0p0AivtdZefhUGLNEsw98BQ29zBOUs/YJTfIEOY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=ZTAFK3kI; arc=none smtp.client-ip=95.215.58.180
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-Content-Type: text/plain;
-	charset=us-ascii
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710822380;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=kgOYrA8AEdh1woTHtD2vW3ca3PCtrZkdcZD77qbWikM=;
-	b=ZTAFK3kIV8AKtSNFLFj4r5t0E2RLRk79ahMgFgMUh3jepMgCaS/mVJWw+RNCCrBHBN52gG
-	NXM8ti3nDdYB1W5KBlYW6GIieZZXNfTfpKEBYqCv/yKV1dd9Ool2dQxzcp3DvEWHCDX49h
-	rpX1jczrZg5j7IQxr3uyYzwVPdmEh3E=
+	s=arc-20240116; t=1710822380; c=relaxed/simple;
+	bh=7YsqkSV+GX//QtAFw7d+Mxcy/m0PnlisLWiaD6Nw7hE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=l9FJAWEvMNsUk/eWwaCaQPndQtcb9OM9TGUBU8XfLsLzIE0gWQE3A387aQqcX9UAyVnPXnEZH3kE0F1+stl/ndMe6OxPRg9L/EUprEz/WBOPolNnkTTg4BhwrP7MT5s9nN/SgbZsITP9snLFskEomAGZaw4jThkvVnrY4iI2hIc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FteKm17Y; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 38D08C433F1;
+	Tue, 19 Mar 2024 04:26:17 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710822379;
+	bh=7YsqkSV+GX//QtAFw7d+Mxcy/m0PnlisLWiaD6Nw7hE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FteKm17YcI2Wyy0h3Q5fsC9sYrYdXiGwO54OtbwFBxpYSk3RnEFZVu2wNvFrSIm+L
+	 oAGKi55toxtg7KcD76hsriJ2AJfI55DKcMGLFfE3rfDNx+lFKKymd+FAqW9NzdBL1n
+	 zXFxJIinK/fAV/ArbS/yGpgpHPtWEuWjy4ZuVWqnWLi5jCTGLHLZnzhAa9XEARCwhr
+	 jyp8b684PI32PtdhqEgtf+K94qaHcoCuAUirR70rkJQFpzaICYZpf0fFgq+u7V9ZnW
+	 6hYyklDYX/3yeCy3/3wGNjf01LqC6BK2iXef9SL2xVhZbJQK/IRzCxM3wzE3qc92Sw
+	 NzGdjw6O/NiKw==
+Date: Tue, 19 Mar 2024 13:26:13 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org,
+ rostedt@goodmis.org, bpf@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org
+Subject: Re: [PATCH v2 0/3] uprobes: two common case speed ups
+Message-Id: <20240319132613.0d393d6b0d4f6197c6e2ed03@kernel.org>
+In-Reply-To: <20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
+References: <20240318181728.2795838-1-andrii@kernel.org>
+	<20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 Mime-Version: 1.0
-Subject: Re: [PATCH v2 05/14] mm/sparc: Change pXd_huge() behavior to exclude
- swap entries
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-From: Muchun Song <muchun.song@linux.dev>
-In-Reply-To: <20240318200404.448346-6-peterx@redhat.com>
-Date: Tue, 19 Mar 2024 12:25:39 +0800
-Cc: LKML <linux-kernel@vger.kernel.org>,
- Linux-MM <linux-mm@kvack.org>,
- Andrew Morton <akpm@linux-foundation.org>,
- x86@kernel.org,
- Mike Rapoport <rppt@kernel.org>,
- Matthew Wilcox <willy@infradead.org>,
- sparclinux@vger.kernel.org,
- Jason Gunthorpe <jgg@nvidia.com>,
- linuxppc-dev@lists.ozlabs.org,
- Christophe Leroy <christophe.leroy@csgroup.eu>,
- linux-arm-kernel@lists.infradead.org,
- "David S . Miller" <davem@davemloft.net>,
- Andreas Larsson <andreas@gaisler.com>
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <744C19CB-4AE0-472B-ABD8-2064EB04FDA0@linux.dev>
-References: <20240318200404.448346-1-peterx@redhat.com>
- <20240318200404.448346-6-peterx@redhat.com>
-To: Peter Xu <peterx@redhat.com>
-X-Migadu-Flow: FLOW_OUT
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
+
+On Tue, 19 Mar 2024 13:20:57 +0900
+Masami Hiramatsu (Google) <mhiramat@kernel.org> wrote:
+
+> Hi,
+> 
+> On Mon, 18 Mar 2024 11:17:25 -0700
+> Andrii Nakryiko <andrii@kernel.org> wrote:
+> 
+> > This patch set implements two speed ups for uprobe/uretprobe runtime execution
+> > path for some common scenarios: BPF-only uprobes (patches #1 and #2) and
+> > system-wide (non-PID-specific) uprobes (patch #3). Please see individual
+> > patches for details.
+> 
+> This series looks good to me. Let me pick it on probes/for-next.
+
+Ah, and 
+
+Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+
+for this series.
+
+> 
+> Thanks!
+> 
+> > 
+> > v1->v2:
+> >   - rebased onto trace/core branch of tracing tree, hopefully I guessed right;
+> >   - simplified user_cpu_buffer usage further (Oleg Nesterov);
+> >   - simplified patch #3, just moved speculative check outside of lock (Oleg);
+> >   - added Reviewed-by from Jiri Olsa.
+> > 
+> > Andrii Nakryiko (3):
+> >   uprobes: encapsulate preparation of uprobe args buffer
+> >   uprobes: prepare uprobe args buffer lazily
+> >   uprobes: add speculative lockless system-wide uprobe filter check
+> > 
+> >  kernel/trace/trace_uprobe.c | 103 +++++++++++++++++++++---------------
+> >  1 file changed, 59 insertions(+), 44 deletions(-)
+> > 
+> > -- 
+> > 2.43.0
+> > 
+> 
+> 
+> -- 
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
 
-
-> On Mar 19, 2024, at 04:03, peterx@redhat.com wrote:
->=20
-> From: Peter Xu <peterx@redhat.com>
->=20
-> Please refer to the previous patch on the reasoning for x86.  Now =
-sparc is
-> the only architecture that will allow swap entries to be reported as
-> pXd_huge().  After this patch, all architectures should forbid swap =
-entries
-> in pXd_huge().
->=20
-> Cc: David S. Miller <davem@davemloft.net>
-> Cc: Andreas Larsson <andreas@gaisler.com>
-> Cc: sparclinux@vger.kernel.org
-> Signed-off-by: Peter Xu <peterx@redhat.com>
-> ---
-> arch/sparc/mm/hugetlbpage.c | 6 ++----
-> 1 file changed, 2 insertions(+), 4 deletions(-)
->=20
-> diff --git a/arch/sparc/mm/hugetlbpage.c b/arch/sparc/mm/hugetlbpage.c
-> index b432500c13a5..d31c2cec35c9 100644
-> --- a/arch/sparc/mm/hugetlbpage.c
-> +++ b/arch/sparc/mm/hugetlbpage.c
-> @@ -409,14 +409,12 @@ pte_t huge_ptep_get_and_clear(struct mm_struct =
-*mm, unsigned long addr,
->=20
-> int pmd_huge(pmd_t pmd)
-> {
-> - 	return !pmd_none(pmd) &&
-> - 	(pmd_val(pmd) & (_PAGE_VALID|_PAGE_PMD_HUGE)) !=3D _PAGE_VALID;
-> + 	return pmd_leaf(pmd);;
-
-There is a redundant semicolon in the end.
-
-Thanks.
-
-> }
->=20
-> int pud_huge(pud_t pud)
-> {
-> - 	return !pud_none(pud) &&
-> - 	(pud_val(pud) & (_PAGE_VALID|_PAGE_PUD_HUGE)) !=3D _PAGE_VALID;
-> + 	return pud_leaf(pud);
-> }
->=20
-> static void hugetlb_free_pte_range(struct mmu_gather *tlb, pmd_t *pmd,
-> --=20
-> 2.44.0
->=20
-
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
