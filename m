@@ -1,118 +1,94 @@
-Return-Path: <linux-kernel+bounces-108163-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108164-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 075948806F1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:57:19 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E3D4C8806F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:57:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 900EA1F22890
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:57:18 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 83AED1F2298A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:57:32 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6AD5B4F20E;
-	Tue, 19 Mar 2024 21:57:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 376D05A11C;
+	Tue, 19 Mar 2024 21:57:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="Wh4M8w03"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.19])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="idKWMn/e"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A07C3D387;
-	Tue, 19 Mar 2024 21:57:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.19
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 72D5657880
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:57:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710885429; cv=none; b=WyOxXDW1mqF29lA1QqbsV7+FCPPbAlfofsck+8pWClcUCWcrWOClRj8ubRekF6yduIyla8HKWFBI5VmIb7RDtlH0m+94Z5m2b54dIHqrRvbZkQv4VQU7Shn1+wVu25TdJ8QPqgNHTMdAxJT8xvHDHUhboEFd9C7pRCN6/rvH8vQ=
+	t=1710885439; cv=none; b=Ca/uLwUOzyGTtpg56AbFXV8R2SE1JqpMQ7GyeTOhhSJ1nqadMlzAqY1G3U9iQXARR7Up37wSir2nJi5cM08sapx+JunnI07aEwimXRUIfuJsrkEL56LRXOjEjpiRyznCSo1nd4Hu0y84x5AbLarYBzJHKBS6Km9b5V4800gNUnU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710885429; c=relaxed/simple;
-	bh=5mBUpRoiE0B5lVQmV9kib3iinYq0hyV/9hyB8jsp1fs=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=huZbmI9pkVMiGauBbMLAqvFN4pAz+4D9g6gE5b/SMTtRsrZitVuYnQPJjYCxNa0u9zbPw96v6OEB47dy3qQx+dK+c5A9KWQLI2A0mikQY1m+4esvuttzb+nzjIs0/INTKFfdIqTwwiCeMiU6j1WKOgDAQHHN/1ok6lfbGRjQj5g=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=Wh4M8w03; arc=none smtp.client-ip=198.175.65.19
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710885427; x=1742421427;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=5mBUpRoiE0B5lVQmV9kib3iinYq0hyV/9hyB8jsp1fs=;
-  b=Wh4M8w03gTMolTOaLq8Cn3dIoMlbFnfEPZvgZlzdVcaRkJJYkwQ9W9qH
-   rj8C4+jZCppJ5Dk8prygElIIDWWr8RsOae7UjeiRXgVm26px+R1UWkOVk
-   0Amv0NVtyWOJfKIp5Moa3x5XUoewo6X6SmQe0bVUilpPY9D1K9m/GnOs+
-   Ojmj3paUbAk/gn6WlvJHo49w1A4heGOh3qRkwECLYDocrHpgdMlwlWy2E
-   eqpAptzvyMxPYGXQzWkKmph3KhmNXthafWonSS2KLlr06MHJybBc48tQU
-   FY49g9FFYt5dqcSSm3IYkVQZSZdRM4x29EfFeUTpEq86y9Holo2c/tE+A
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5654419"
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="5654419"
-Received: from orviesa008.jf.intel.com ([10.64.159.148])
-  by orvoesa111.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 14:57:07 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,138,1708416000"; 
-   d="scan'208";a="14607660"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa008-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 14:57:07 -0700
-Date: Tue, 19 Mar 2024 14:57:06 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: Sean Christopherson <seanjc@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org,
-	linux-kernel@vger.kernel.org, isaku.yamahata@gmail.com,
-	Paolo Bonzini <pbonzini@redhat.com>, erdemaktas@google.com,
-	Sagi Shahar <sagis@google.com>, Kai Huang <kai.huang@intel.com>,
-	chen.bo@intel.com, hang.yuan@intel.com, tina.zhang@intel.com,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [PATCH v19 098/130] KVM: TDX: Add a place holder to handle TDX
- VM exit
-Message-ID: <20240319215706.GB1994522@ls.amr.corp.intel.com>
-References: <cover.1708933498.git.isaku.yamahata@intel.com>
- <88920c598dcb55c15219642f27d0781af6d0c044.1708933498.git.isaku.yamahata@intel.com>
- <ZfSJIDOJzGJ4lPjX@google.com>
+	s=arc-20240116; t=1710885439; c=relaxed/simple;
+	bh=A8FNOyGnsGiesx6nzHXmBTBc6TfNILcr784GdYp8ZZ0=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=GTvdp8kF76mO+IPWQT4Tu9x00vpeLKBnf9jU1jAN9lUGoBDUSsr3zmludx+x5Pob0A2g6iBsT2xQz+2K7zX2PRQ+HWttSGDXfY19RH+XlyZg9SIlvm6gzjmPy2qLzslZuJ3/UkoHPV3tBQ5ZsLnZQVktnjKV63gkC4PSatOmjnA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=idKWMn/e; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 97EC9C433F1;
+	Tue, 19 Mar 2024 21:57:18 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linux-foundation.org;
+	s=korg; t=1710885439;
+	bh=A8FNOyGnsGiesx6nzHXmBTBc6TfNILcr784GdYp8ZZ0=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=idKWMn/eP1B7F1JXGEqwQszSFmL6pNAXt9Zn6QmME3QN1UoRYmGcUzzrHKYQ0us7R
+	 mVIaug2Pc0KwIKXRHHZftj1Oe6H8pxLywU5gN5Bbj5B0ZI/0zuBrlnik1MBoPcZW2P
+	 6Kl7fnyqhqKD+/fB/MrOC/dRPy1Nfq3IGckVUXVY=
+Date: Tue, 19 Mar 2024 14:57:18 -0700
+From: Andrew Morton <akpm@linux-foundation.org>
+To: wenyang.linux@foxmail.com
+Cc: Steven Rostedt <rostedt@goodmis.org>, Ingo Molnar <mingo@kernel.org>,
+ Oleg Nesterov <oleg@redhat.com>, Mathieu Desnoyers
+ <mathieu.desnoyers@efficios.com>, Masami Hiramatsu <mhiramat@kernel.org>,
+ Christian Brauner <brauner@kernel.org>, Mel Gorman
+ <mgorman@techsingularity.net>, Peter Zijlstra <peterz@infradead.org>,
+ linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3] exit: move trace_sched_process_exit earlier in
+ do_exit()
+Message-Id: <20240319145718.2bfb0d526ff441c8b37eab09@linux-foundation.org>
+In-Reply-To: <tencent_277EBFCF545587D4FD41EF932AE972CC6708@qq.com>
+References: <tencent_277EBFCF545587D4FD41EF932AE972CC6708@qq.com>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZfSJIDOJzGJ4lPjX@google.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Fri, Mar 15, 2024 at 10:45:04AM -0700,
-Sean Christopherson <seanjc@google.com> wrote:
+On Sun, 10 Mar 2024 13:25:29 +0800 wenyang.linux@foxmail.com wrote:
 
-> On Mon, Feb 26, 2024, isaku.yamahata@intel.com wrote:
-> > +int tdx_handle_exit(struct kvm_vcpu *vcpu, fastpath_t fastpath)
-> > +{
-> > +	union tdx_exit_reason exit_reason = to_tdx(vcpu)->exit_reason;
-> > +
-> > +	/* See the comment of tdh_sept_seamcall(). */
-> > +	if (unlikely(exit_reason.full == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_SEPT)))
-> > +		return 1;
-> > +
-> > +	/*
-> > +	 * TDH.VP.ENTRY checks TD EPOCH which contend with TDH.MEM.TRACK and
-> > +	 * vcpu TDH.VP.ENTER.
-> > +	 */
-> > +	if (unlikely(exit_reason.full == (TDX_OPERAND_BUSY | TDX_OPERAND_ID_TD_EPOCH)))
-> > +		return 1;
-> > +
-> > +	if (unlikely(exit_reason.full == TDX_SEAMCALL_UD)) {
-> > +		kvm_spurious_fault();
-> > +		/*
-> > +		 * In the case of reboot or kexec, loop with TDH.VP.ENTER and
-> > +		 * TDX_SEAMCALL_UD to avoid unnecessarily activity.
-> > +		 */
-> > +		return 1;
+> From: Wen Yang <wenyang.linux@foxmail.com>
 > 
-> No.  This is unnecessarily risky.  KVM_BUG_ON() and exit to userspace.  The
-> response to "SEAMCALL faulted" should never be, "well, let's try again!".
-> 
-> Also, what about #GP on SEAMCALL?  In general, the error handling here seems
-> lacking.
+> Currently coredump_task_exit() takes some time to wait for the generation
+> of the dump file. But if the user-space wants to receive a notification
+> as soon as possible it maybe inconvenient.
 
-As I replied at [1], let me revise error handling in general TDX KVM code.
-[1] https://lore.kernel.org/kvm/cover.1708933498.git.isaku.yamahata@intel.com/T/#macc431c87676995d65ddcd8de632261a2dedc525
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+If userspace is awaiting this notification to say "it's now OK to read
+the dump file" then it could break things?
+
+> Move trace_sched_process_exit() earlier in do_exit().
+> This way a user-space monitor could detect the exits and
+> potentially make some preparations in advance.
+> 
+> Oleg initially proposed this suggestion, and Steven further provided some
+> detailed suggestions, and Mathieu carefully checked the historical code
+> and said:
+> : I've checked with Matthew Khouzam (maintainer of Trace Compass)
+> : which care about this tracepoint, and we have not identified any
+> : significant impact of moving it on its model of the scheduler, other
+> : than slightly changing its timing.
+> : I've also checked quickly in lttng-analyses and have not found
+> : any code that care about its specific placement.
+> : So I would say go ahead and move it earlier in do_exit(), it's
+> : fine by me.
+
+I'm not seeing a clear need for this change.  "maybe inconveniant" is
+quite thin.  Please fully describe what motivated you to work on this?
+
 
