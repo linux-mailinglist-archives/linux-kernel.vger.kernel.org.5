@@ -1,257 +1,211 @@
-Return-Path: <linux-kernel+bounces-107160-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107173-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7397687F855
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:26:34 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2334C87F86D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:32:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 788C91C21629
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:26:33 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE1BD282A41
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:32:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 917BB52F95;
-	Tue, 19 Mar 2024 07:26:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="DtIH2p0W"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.9])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 89099535D2;
+	Tue, 19 Mar 2024 07:32:29 +0000 (UTC)
+Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AC2851C36;
-	Tue, 19 Mar 2024 07:26:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.9
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710833182; cv=fail; b=i+YUC1k+uT6gUJqwpInYCgbUHp8zhOLxnu6cu2o5i7fqil+nSAZ7avsAWAhYN6SJUM2NTwbX6P3Mpe11uYPTKuMDcM5LT+MoH9CiEVPLp4LGZiIQ3P5llKdwVtEKdUs3OWhCgB+u1QYBrr+pHFnAc56cecKBg4U+xFUlcGV8B0I=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710833182; c=relaxed/simple;
-	bh=dMYFL7LBB782/XOg/WSIWVVmCpMPNiv/CvyIU9SojZc=;
-	h=Message-ID:Date:Subject:To:CC:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=uNAlKX/PgctttvIHJ9Dwixc6hBMkRxJ/4phD6mYIJRn60HRIy2YjtkhggHHdeUHIGtGx19ezii8wAfiNuUHt39I93eSNn/sqwnkORl2TIdjRmauqihVZwWidrOaKXSfwU0H82O1/SMjELh6AxrwXIQRc8wZ3L4gstnXC08esI1A=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=DtIH2p0W; arc=fail smtp.client-ip=192.198.163.9
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710833180; x=1742369180;
-  h=message-id:date:subject:to:cc:references:from:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=dMYFL7LBB782/XOg/WSIWVVmCpMPNiv/CvyIU9SojZc=;
-  b=DtIH2p0WUe6GE6Q8gZNbpZjjt/KOwr1ZdKpqwuhTuou6a3wEe9ot+LfM
-   3pyJmBlMvn3NsfTl/1dDYLIgLgoBzuYZmGroKSZgqokauM2Va0ppFwhH5
-   BJgaVMOXLGyMVEadb6/7S9gtba0ccxNGkVQkYM0dW9Zb0dAk3B58vPKAR
-   qv36+7X2WeBZ6DsOSPRykl5d3JOLK4NJ2oNr42frciwouNBHTzkXXdLDr
-   UvDAJFje7sRQdYrrTTwXvpOYfq3oNsJcqPAYbf24Yxlf1CNha3Au7yISA
-   s5JTwBmGOvYuuvN7KzhLsPKSs0puVT38LWsyTTJiC56S+8YoCtOOB7+hr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="16411840"
-X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
-   d="scan'208";a="16411840"
-Received: from orviesa010.jf.intel.com ([10.64.159.150])
-  by fmvoesa103.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 00:26:19 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,136,1708416000"; 
-   d="scan'208";a="13613181"
-Received: from fmsmsx602.amr.corp.intel.com ([10.18.126.82])
-  by orviesa010.jf.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Mar 2024 00:26:18 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx602.amr.corp.intel.com (10.18.126.82) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Mar 2024 00:26:17 -0700
-Received: from fmsmsx612.amr.corp.intel.com (10.18.126.92) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Mar 2024 00:26:16 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx612.amr.corp.intel.com (10.18.126.92) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 00:26:16 -0700
-Received: from NAM04-BN8-obe.outbound.protection.outlook.com (104.47.74.40) by
- edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Mar 2024 00:26:16 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=YYNgQ/fwnM3cSxu4AepjCavhKpJ0klPytcAqLojAkzxU4Fc/AxVExW4jxHwEoxwUVqJBniD7TzuYDMExIaMJy7z8HXNzhPen/Ka6bYdQxRBmX136l33wFT4xPzNHI6SOmXgxOd8amjyERa37O5b5uGppm7uH+eKhQaUSOEl/DRwNU9kEXVC4K2KcQ1uASxuwBxAp6oWEN6ArOZfHNmCpuhf6d1OLJAshEYJScx0TQeMG91hAfShM1EDbH16paJx6rBNXyoJIYP3BAi2x3pmRj5+J7Ak6T5QgDmEiLvcVkL8QB+zZjZ5Fr0vXa0sEsztI7x+toFYC79TDe+5LykCfLA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=7h3EbF8DLFIc9cfhEui1ZaFsSAwp4SJoh/17kPTQvec=;
- b=VH0UzkLr67ZEFxsiIIhnL+PP2Vxk+mEToa+epmKvr9sraUb1468N9v8jeKykx3rQ5+UxC5ScizOSy2YzMCg1+JLuk1epTh8jwFvjZnkqP2G+pApTjgY0EwJoFoddNLtlzcb625jGT6CrLrtohAt+9yUL1iW5Didf6x6bnXkb1fd+4cCNfZcbmcoZxxoqSfP6v35H/YgQlCtOGtyxrsGENJCB178UIFF49LtRLcwOpRS5RrXNkdgMvtQ5dPceeCi3dJOAlgzHHXdnX1fxG77CERKiQFjMJL5JuSxlwIwQmHX6T5SgaRSOTEzskfDdCcUerY5uiI0MSitQSVxU21ilVw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com (2603:10b6:8:141::20)
- by DM3PR11MB8716.namprd11.prod.outlook.com (2603:10b6:0:43::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12; Tue, 19 Mar
- 2024 07:26:14 +0000
-Received: from DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::b1f5:9d1f:f510:d54c]) by DS0PR11MB7529.namprd11.prod.outlook.com
- ([fe80::b1f5:9d1f:f510:d54c%3]) with mapi id 15.20.7409.009; Tue, 19 Mar 2024
- 07:26:14 +0000
-Message-ID: <13645a9f-239a-46c9-bde2-a1d5c365df4f@intel.com>
-Date: Tue, 19 Mar 2024 15:29:39 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/8] iommu: Introduce a replace API for device pasid
-Content-Language: en-US
-To: Jason Gunthorpe <jgg@nvidia.com>
-CC: Baolu Lu <baolu.lu@linux.intel.com>, "Tian, Kevin" <kevin.tian@intel.com>,
-	"joro@8bytes.org" <joro@8bytes.org>, "alex.williamson@redhat.com"
-	<alex.williamson@redhat.com>, "robin.murphy@arm.com" <robin.murphy@arm.com>,
-	"cohuck@redhat.com" <cohuck@redhat.com>, "eric.auger@redhat.com"
-	<eric.auger@redhat.com>, "nicolinc@nvidia.com" <nicolinc@nvidia.com>,
-	"kvm@vger.kernel.org" <kvm@vger.kernel.org>, "mjrosato@linux.ibm.com"
-	<mjrosato@linux.ibm.com>, "chao.p.peng@linux.intel.com"
-	<chao.p.peng@linux.intel.com>, "yi.y.sun@linux.intel.com"
-	<yi.y.sun@linux.intel.com>, "peterx@redhat.com" <peterx@redhat.com>,
-	"jasowang@redhat.com" <jasowang@redhat.com>,
-	"shameerali.kolothum.thodi@huawei.com"
-	<shameerali.kolothum.thodi@huawei.com>, "lulu@redhat.com" <lulu@redhat.com>,
-	"suravee.suthikulpanit@amd.com" <suravee.suthikulpanit@amd.com>,
-	"iommu@lists.linux.dev" <iommu@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>,
-	"linux-kselftest@vger.kernel.org" <linux-kselftest@vger.kernel.org>, "Duan,
- Zhenzhong" <zhenzhong.duan@intel.com>, "joao.m.martins@oracle.com"
-	<joao.m.martins@oracle.com>, "Zeng, Xin" <xin.zeng@intel.com>, "Zhao, Yan Y"
-	<yan.y.zhao@intel.com>
-References: <20231127063428.127436-1-yi.l.liu@intel.com>
- <20231127063428.127436-2-yi.l.liu@intel.com>
- <20240115171950.GL734935@nvidia.com>
- <c831bf5e-f623-402d-9347-8718987d1610@intel.com>
- <BN9PR11MB52766161477C2540969C83568C242@BN9PR11MB5276.namprd11.prod.outlook.com>
- <585423de-9173-4c97-b596-71e1564d8b4e@intel.com>
- <87a2be0d-6a24-4ca8-be30-35287072dda4@linux.intel.com>
- <749b23c7-ab0e-42b4-9992-e1867fc7d4d7@intel.com>
- <20240318165247.GD5825@nvidia.com>
-From: Yi Liu <yi.l.liu@intel.com>
-In-Reply-To: <20240318165247.GD5825@nvidia.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-ClientProxiedBy: SI1PR02CA0036.apcprd02.prod.outlook.com
- (2603:1096:4:1f6::20) To DS0PR11MB7529.namprd11.prod.outlook.com
- (2603:10b6:8:141::20)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4975051C54
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:32:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710833549; cv=none; b=I3sNs8Yoni0+3iL7Tp2kZKnA55M/hKHqZwqkGQmKFt/9McLNNpTfU6vWlactall9mRLQ/Fs2+IhxF4F2QramjRS76VvwnrJZHNnQb318TWDZqEVpMwy3L8iSlY1oxnvb9FyxM9xWGF+JovyuSPMzeUTgH5i+d9TZjCeiKJ+LIfY=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710833549; c=relaxed/simple;
+	bh=fM8b5BONzl3KHXKqi6T1sJNfHNHYDATISMJco+12l30=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=edo05ys+RMdMXr0zGEAJqvoXpRdtv2ucEFIPYX7Ver/Mrc8HY+tzz2xW/62D7c5WW1OPdN5y0xNUMfy9sjMqCpJhRYk8ep391CyKeHYXAXd+qkzHv7n9o5GzD61iLXLa7+aHgoLvmzNDn7n/7MGBefnoXMajCGNdeaqz94oj6y8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3684bab43f1so2399135ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:32:27 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710833546; x=1711438346;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=lpJI/dUiyAUj0ZRZXORjk07fOpq7S0lZ4mGTlfqGclI=;
+        b=UrAv5z1aJ2s3hYXP53FHFttJCqiINcty96kKvZH67vOaXRAB64CP4PFkMEkAOH9zhg
+         a5F0ia2ck86ewGY681PgR+nDI85s7b4am/u3V7KHISjBlLDn8+EyVCOFp2Q/ARNvtho4
+         2BI/JxDPCbIioQWZyhiflmcdgQg33VpZLKKh2l0ErG5Hkaj5GRcNhqMRtkro6wZAafTF
+         PEbaoRJwDdOT+qn0ksLfL9BSCR169VBLQYc/x2shkI2bsle91d3ILthXZxGuDWFqMpt6
+         E1Jx4I13F3iiyma23lcH/kptUMNhaxgw4384K68pVLekusbBCajLolN3xXPbtrp8mTdi
+         zJWQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUvUqJ+x6dg/OqrhwfSJrrEGtjmQPXJOLCGi0uSRESB0Tw6zgoLb4FbkaxZx4jSJv8hnyXRkcY8E4gBkYXRCJnhLYANxZMpe2iK/KqD
+X-Gm-Message-State: AOJu0YxqTVLFhHx6ABpjXBIzZBA4FUVlwvXxGePDGCh5dXI7KJ25DiJg
+	T81H2kgNUo0koZlErQLRffGXQv09qIIaqYqHGH30aqYefWwDUx4+S4A8Qa25xD9WXBUlVDnQMvk
+	rvklLDPODnI8Ql33i6qgJyHiRZYlGtFp+E329Qm7UeBNqmbN1V8EzHs0=
+X-Google-Smtp-Source: AGHT+IE+ZlYLz10zOpKR58boMADWNQHygAcmVqjRorobrK5oQX21n0zfDhT7/ufpYOfZuBHbZxdXAkdy6sB3YWqwmwV9GUpzbhoi
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS0PR11MB7529:EE_|DM3PR11MB8716:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: pZg6x+nB4hFwTCg7ETuXzyNG6r4kPcobAkssJc08YvNqqb5TXucFQrBEieFfNWGfdCS2u9sN0DChwaw/NWRwgiaZrY32YYcucKpu6SV34h4hhRGziwoCYbG79p0WKgU118d7vXmSvpeO1ADwTeZ52W2V2VlZ4NbMf0clPEjuspsK2o+vxDlDPFeQXPpAyXggMmbhLM7JmCCkhY1LkoFoWSE6t4y2K5Wbksf7Am3IRI5Njgq5cCuxSuL/oRwH1dy0A53sE+S/ja9mONuK5rhW4kHBW7J/f5jZfhPeJywULaiq6G3oLM0Us82K6Y8cbOCrMLXV9x9KCvk9S47p2RqRUfhzthyuBTHtZXpUsVRvo2CiCIpIXGHBe89pEHlQNx8+KxPYUUEhb0Gcxewc5nrFCSda8UvPjlsExOMiNqoOY0I0F3e1gmxl9tJ8uyXjkOTfPtUd//O4OmnTlxKOPvbsgrEB9Y6icRyKExL5p9G8Vy5rp7gL3Ylz0FTLLgenZpLM6IET2OUPRZek23UtUst6jCoXW990PUvPy+/6hRirhBKF8ty9YBmVqx207pvfqgZ2uD/tMnUFagJ+I4zNtPWpa2oIRbl4QFunbihRfFyyvSM=
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DS0PR11MB7529.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(1800799015)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?utf-8?B?RXZISUtvcDVWR3JYYnBJY1NyZTdZSVkzaGNXeDJJNlRrQlQwaFN0by93bWtI?=
- =?utf-8?B?ZGJDTTNzK0lDakVPNFBwa0NpMkNzTU1UYkVZVm9FdmpUdHh0YjRpWjJ0Mjcz?=
- =?utf-8?B?cWovdGQ2RDBmc2JCbUgxeDFQcUd1ckNEanluKzgzYy9mZFFnQm12ZTY1V1NW?=
- =?utf-8?B?MjNJbDZHTDlRalVCcllyL2tKT3M4RS9Eb3AwQnQ0bE95ZUdpeVNsSy94dFlw?=
- =?utf-8?B?OUJQQnB5R0VWcElIN3JKSCtLK0U0ZG5ZZ0x1UGtTbUpqL1A3WHo0Q2RLVyt2?=
- =?utf-8?B?YkQ3TnlhWVNnRVovcFJadHl4YzJJLzhpaTNOckZnbDBXWldUSnhnZ2FjQzdz?=
- =?utf-8?B?clJ1R1JLWTkyNDI3eUtGUzlTVXFyWkFEbEo4NFVGMkZ1dE41RjVCdElMRGdP?=
- =?utf-8?B?VytKRC9HTnJob3M1azIrSVA0VWtVVHpSV3NGWkRMYjk5SUpIUmlWVitlWWhK?=
- =?utf-8?B?VGVmQ3M2UCtiWXE3eVIxcGhYU2EvTThCWFU4UHVFbENWRzF5eEg1YlE5dXJm?=
- =?utf-8?B?MDJCb1ZFVVc4RHpkbDJpdHdkaFpVS245d2VsclZKTEkvQnIxVmRoNzNYd0hK?=
- =?utf-8?B?QlJmSHhiMnJ4MUh3L3pFWVhaenJJaHdmZ3V4NkUxVmpOdzd1U2tTZTAwQVNh?=
- =?utf-8?B?N1ZJZTZ3YnpORlhJVWg3TCt3UlR3NlgwLzNhVFpFZkp6c2lLUUV5cnB1QTI3?=
- =?utf-8?B?RDFaVVh5czBPR2NlWXJaTC9FMzBMRm14TnRzUVNjSHBYdFpNMXZsS25xemNy?=
- =?utf-8?B?c0R6Y01kbEFiT0lsRzVpUUlhaFlZb3g5WUpIRGlyU0tNL0doR0toRVVSWFNK?=
- =?utf-8?B?TGtSNWdkQm1FWC8rQmRlSFhTMVUwb2U3UU5XOS83Y1Q1VXo5ZHF3YUhUK2Vp?=
- =?utf-8?B?bXJkMUJPakoxRnlxMG11Yjc1UWRiVnZoOVNXOUZaRTNpTGsrbUdjYS9RYUFV?=
- =?utf-8?B?VlVHOG9QeWhkbHM5S2I1VlhqeHlRVWltbUpYT21Vcjc5VUx2Qzhpa09uT2Rv?=
- =?utf-8?B?MHFQOTJ1VmJOSUF0cFQxRnEwcTdtU1VlTnNZSWdHNTJEQU9oRnhTdXlWQ2dB?=
- =?utf-8?B?clpWdlJDdjdWaUZqV2ZIQjVmWXZZcjhNR0RhcTNjcjJ4R2R2eG8wWGQzUy9I?=
- =?utf-8?B?ZGMvK0NKQ0lXNmJrRU83eFo0WTlJb1RqTytScU9jRTM1VlUwZGw1TElUcS9K?=
- =?utf-8?B?Q0RFUWdhTTRndFAzMkF5Wkl4YkFaWW54QWNKdlZLT3NUWnZCaW1ZdFEreFN1?=
- =?utf-8?B?cU93WlNXQnp2UHc3c3hpdHNtUVJ0RWdMS2dpR2ZWaU5XbDYvaWhYNUl5TS9O?=
- =?utf-8?B?MHhydlpoN3AvQXg1Umt0cmhwUXlGTVZhUUxoa2pxR1dIMElUd0dEcGl5Rmds?=
- =?utf-8?B?Y2dydUJ3V29vRW1FSG41SlVWaXZKWjhGUFl6Y0VkNmhEYTdOc0hkOFZHL1p3?=
- =?utf-8?B?cFRveVZFTEszWVNidjZ2WFNUM2hWaHc1QWJUL3V5TkRiSHlBdWFaQ2pNVExB?=
- =?utf-8?B?Rm5pRmNsdVJlYlA4cXNjZlBKY1U5SnpWcHU2QmFxUEVqWTRTTERoUFZORHBP?=
- =?utf-8?B?Z2RLSHJEN2JVME9CRXEyQzRUNVU4dUxiai80cGY2L0g1SThtTDdrSXpSNW1U?=
- =?utf-8?B?NlhSeXB3U2ppdmdZTStlOWY4RUNVaUpsR1hVWTFQTDRLVGttbmpIZW1HWmxL?=
- =?utf-8?B?Nk1JY0lmRlhicW5rZE1FcVlzT0RWNWJJNWxaYWk2ZGZIYUxITmQwWStxM3Zq?=
- =?utf-8?B?bWVRb1RBWjVIMlhPTzB2SUFEMXdrNDZOS3ovSkY5VmViUzJVY3NrYi9PSWla?=
- =?utf-8?B?Y3pXZm9zNGdzYy9tQmt0c0ptQzBrWmVWalNaN3hIYjVGaE1ORUlHRFhNcmRN?=
- =?utf-8?B?U3pRTDk2TDh2bUsrZll2ZUZsUExBajZGckRWUVhzWVpRaDJSb2Ezdnh6a3Q3?=
- =?utf-8?B?RFRubUtKQXV6dEovSEhZYjZtbXpYdEVQbTVtMzJsQm1hMnY1STlrTWFOa2xv?=
- =?utf-8?B?eHhDbG1POXdxOU1SM2d6YXNJMnNBVGlRMXNoaUhiSG95bDJZeHNYQmJTMkxM?=
- =?utf-8?B?bXRtTnVtcDZnT2praGdYenVUUUx5UDlxRzV4cGR0d25IcElqTkM5OEtWR3pr?=
- =?utf-8?Q?QYNYv1N2OO52X8jlrqnEfbe6K?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 981f377f-ffb6-48f8-66e5-08dc47e5dc04
-X-MS-Exchange-CrossTenant-AuthSource: DS0PR11MB7529.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 07:26:14.7220
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: viGh7nzSSe8htbeQUFxcaCtwxXaRGJ6/Xb7sv9Q7BVpd3j4At49pEwtebxYvJ5vxUMUcS5XUNBqBg/ik5Fq1+g==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: DM3PR11MB8716
-X-OriginatorOrg: intel.com
+X-Received: by 2002:a05:6e02:502:b0:366:b7c0:9c72 with SMTP id
+ d2-20020a056e02050200b00366b7c09c72mr253023ils.3.1710833546542; Tue, 19 Mar
+ 2024 00:32:26 -0700 (PDT)
+Date: Tue, 19 Mar 2024 00:32:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <000000000000cfd4800613fe79b1@google.com>
+Subject: [syzbot] [virtualization?] upstream boot error: WARNING: refcount bug
+ in __free_pages_ok
+From: syzbot <syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com>
+To: jasowang@redhat.com, linux-kernel@vger.kernel.org, mst@redhat.com, 
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev, 
+	xuanzhuo@linux.alibaba.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 2024/3/19 00:52, Jason Gunthorpe wrote:
-> On Wed, Mar 13, 2024 at 04:11:41PM +0800, Yi Liu wrote:
-> 
->> yes. how about your opinion? @Jason. I noticed the set_dev_pasid callback
->> and pasid_array update is under the group->lock, so update it should be
->> fine to adjust the order to update pasid_array after set_dev_pasid returns.
-> 
-> Yes, it makes some sense
-> 
-> But, also I would like it very much if we just have the core pass in
-> the actual old domain as a an addition function argument.
+Hello,
 
-ok, this works too. For normal attach, just pass in a NULL old domain.
+syzbot found the following issue on:
 
-> I think we have some small mistakes in multi-device group error
-> unwinding for remove because the global xarray can't isn't actually
-> going to be correct in all scenarios.
+HEAD commit:    b3603fcb79b1 Merge tag 'dlm-6.9' of git://git.kernel.org/p..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=10f04c81180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=fcb5bfbee0a42b54
+dashboard link: https://syzkaller.appspot.com/bug?extid=70f57d8a3ae84934c003
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
 
-do you mean the __iommu_remove_group_pasid() call in the below function?
-Currently, it is called when __iommu_set_group_pasid() failed. However,
-__iommu_set_group_pasid() may need to do remove itself when error happens,
-so the helper can be more self-contained. Or you mean something else?
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/43969dffd4a6/disk-b3603fcb.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/ef48ab3b378b/vmlinux-b3603fcb.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/728f5ff2b6fe/bzImage-b3603fcb.xz
 
-int iommu_attach_device_pasid(struct iommu_domain *domain,
-			      struct device *dev, ioasid_t pasid)
-{
-	/* Caller must be a probed driver on dev */
-	struct iommu_group *group = dev->iommu_group;
-	void *curr;
-	int ret;
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com
 
-	if (!domain->ops->set_dev_pasid)
-		return -EOPNOTSUPP;
+Key type pkcs7_test registered
+Block layer SCSI generic (bsg) driver version 0.4 loaded (major 239)
+io scheduler mq-deadline registered
+io scheduler kyber registered
+io scheduler bfq registered
+input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+ACPI: button: Power Button [PWRF]
+input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+ACPI: button: Sleep Button [SLPF]
+ioatdma: Intel(R) QuickData Technology Driver 5.00
+ACPI: \_SB_.LNKC: Enabled at IRQ 11
+virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKD: Enabled at IRQ 10
+virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+ACPI: \_SB_.LNKB: Enabled at IRQ 10
+virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+N_HDLC line discipline registered with maxframe=4096
+Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+Non-volatile memory driver v1.3
+Linux agpgart interface v0.103
+ACPI: bus type drm_connector registered
+[drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+[drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+Console: switching to colour frame buffer device 128x48
+platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+usbcore: registered new interface driver udl
+brd: module loaded
+loop: module loaded
+zram: Added device: zram0
+null_blk: disk nullb0 created
+null_blk: module loaded
+Guest personality initialized and is inactive
+VMCI host device registered (name=vmci, major=10, minor=118)
+Initialized host personality
+usbcore: registered new interface driver rtsx_usb
+usbcore: registered new interface driver viperboard
+usbcore: registered new interface driver dln2
+usbcore: registered new interface driver pn533_usb
+nfcsim 0.2 initialized
+usbcore: registered new interface driver port100
+usbcore: registered new interface driver nfcmrvl
+Loading iSCSI transport class v2.0-870.
+virtio_scsi virtio0: 1/0/0 default/read/poll queues
+------------[ cut here ]------------
+refcount_t: decrement hit 0; leaking memory.
+WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+Modules linked in:
+CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-syzkaller-11567-gb3603fcb79b1 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+RIP: 0010:refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+Code: b2 00 00 00 e8 57 d4 f2 fc 5b 5d c3 cc cc cc cc e8 4b d4 f2 fc c6 05 0c f9 ef 0a 01 90 48 c7 c7 a0 5d 1e 8c e8 b7 75 b5 fc 90 <0f> 0b 90 90 eb d9 e8 2b d4 f2 fc c6 05 e9 f8 ef 0a 01 90 48 c7 c7
+RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
+RAX: 76f86e452fcad900 RBX: ffff8880210d2aec RCX: ffff888016ac8000
+RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+RBP: 0000000000000004 R08: ffffffff8157ffe2 R09: fffffbfff1c396e0
+R10: dffffc0000000000 R11: fffffbfff1c396e0 R12: ffffea000502cdc0
+R13: ffffea000502cdc8 R14: 1ffffd4000a059b9 R15: 0000000000000000
+FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+CR2: ffff88823ffff000 CR3: 000000000e132000 CR4: 00000000003506f0
+DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+Call Trace:
+ <TASK>
+ reset_page_owner include/linux/page_owner.h:25 [inline]
+ free_pages_prepare mm/page_alloc.c:1141 [inline]
+ __free_pages_ok+0xc54/0xd80 mm/page_alloc.c:1270
+ make_alloc_exact+0xa3/0xf0 mm/page_alloc.c:4829
+ vring_alloc_queue drivers/virtio/virtio_ring.c:319 [inline]
+ vring_alloc_queue_split+0x20a/0x600 drivers/virtio/virtio_ring.c:1108
+ vring_create_virtqueue_split+0xc6/0x310 drivers/virtio/virtio_ring.c:1158
+ vring_create_virtqueue+0xca/0x110 drivers/virtio/virtio_ring.c:2683
+ setup_vq+0xe9/0x2d0 drivers/virtio/virtio_pci_legacy.c:131
+ vp_setup_vq+0xbf/0x330 drivers/virtio/virtio_pci_common.c:189
+ vp_find_vqs_msix+0x8b2/0xc80 drivers/virtio/virtio_pci_common.c:331
+ vp_find_vqs+0x4c/0x4e0 drivers/virtio/virtio_pci_common.c:408
+ virtio_find_vqs include/linux/virtio_config.h:233 [inline]
+ virtscsi_init+0x8db/0xd00 drivers/scsi/virtio_scsi.c:887
+ virtscsi_probe+0x3ea/0xf60 drivers/scsi/virtio_scsi.c:945
+ virtio_dev_probe+0x991/0xaf0 drivers/virtio/virtio.c:311
+ really_probe+0x29e/0xc50 drivers/base/dd.c:658
+ __driver_probe_device+0x1a2/0x3e0 drivers/base/dd.c:800
+ driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+ __driver_attach+0x45f/0x710 drivers/base/dd.c:1216
+ bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:368
+ bus_add_driver+0x347/0x620 drivers/base/bus.c:673
+ driver_register+0x23a/0x320 drivers/base/driver.c:246
+ virtio_scsi_init+0x65/0xe0 drivers/scsi/virtio_scsi.c:1083
+ do_one_initcall+0x248/0x880 init/main.c:1238
+ do_initcall_level+0x157/0x210 init/main.c:1300
+ do_initcalls+0x3f/0x80 init/main.c:1316
+ kernel_init_freeable+0x435/0x5d0 init/main.c:1548
+ kernel_init+0x1d/0x2b0 init/main.c:1437
+ ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+ ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+ </TASK>
 
-	if (!group)
-		return -ENODEV;
 
-	if (!dev_has_iommu(dev) || dev_iommu_ops(dev) != domain->owner)
-		return -EINVAL;
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
 
-	mutex_lock(&group->mutex);
-	curr = xa_cmpxchg(&group->pasid_array, pasid, NULL, domain, GFP_KERNEL);
-	if (curr) {
-		ret = xa_err(curr) ? : -EBUSY;
-		goto out_unlock;
-	}
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
 
-	ret = __iommu_set_group_pasid(domain, group, pasid);
-	if (ret) {
-		__iommu_remove_group_pasid(group, pasid);
-		xa_erase(&group->pasid_array, pasid);
-	}
-out_unlock:
-	mutex_unlock(&group->mutex);
-	return ret;
-}
-EXPORT_SYMBOL_GPL(iommu_attach_device_pasid);
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
 
-https://github.com/torvalds/linux/blob/b3603fcb79b1036acae10602bffc4855a4b9af80/drivers/iommu/iommu.c#L3376
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
 
--- 
-Regards,
-Yi Liu
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
