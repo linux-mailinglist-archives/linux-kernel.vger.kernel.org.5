@@ -1,115 +1,166 @@
-Return-Path: <linux-kernel+bounces-107643-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107645-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0615A87FF83
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:25:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F19087FF8F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:26:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BE7AD284631
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:25:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 067242845A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:26:30 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A8A2C8175E;
-	Tue, 19 Mar 2024 14:25:44 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB7C81ADA;
+	Tue, 19 Mar 2024 14:26:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="ZsdNFS5C"
+Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C013A45946
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:25:41 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F43281AAE
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:26:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710858344; cv=none; b=h6kEU4DXMwDWUWBeRYX2NlBuaPRPM0JozagrIYdM6Gj4WJA972xlTPvyoSCBuiJ//S7A6oDKDEVR4YdVeOy/P+oh3BOQv4hGnrfwPCQqiZrLNbWa/LRR5zUU9FJQCkyxwcKox5klKcPH2gNCUwqa9vSAvkf39oeC8HzddCa1wMI=
+	t=1710858370; cv=none; b=rf5VfzWFQ8rQ9deKROnoilFxfxV+uUdmrIYVOj/GT78V7fN6Q93/cNBZoAxnVbVhpUDzvYryXFHFAZr3b0kaN86dFfzENCQGjP0JYTwJizmH+mbGQa0OgpShAAPq2Pu+XrXDyKkQpDh3QcapPW7oDLJ/x68xdAz0wSAzv9quHJM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710858344; c=relaxed/simple;
-	bh=eGwfpMd0oNEabAjNEboBF9e49KppvUpp7hnrvMiBFTg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=u3h0g/NNkWDJcqdEfy5NxYhnbt0zkTuxNEwxvluonswMaowxo1E40jKI1XJ4oNQJHBjT6xAjHnJa8h4mSMtRjM9WDTVl3H8bd3I1GWwrIea2IQGx1rbqnsBKVEvI0c8gFcLRFhyXhHXihqXrPhFpOA6r+T3gNLqKWkDzHdKUUso=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rmaP8-0005J6-K9; Tue, 19 Mar 2024 15:25:26 +0100
-Received: from [2a0a:edc0:0:b01:1d::7b] (helo=bjornoya.blackshift.org)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mkl@pengutronix.de>)
-	id 1rmaP6-007IDU-OJ; Tue, 19 Mar 2024 15:25:24 +0100
-Received: from pengutronix.de (unknown [172.20.34.65])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange ECDHE (prime256v1) server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(Client did not present a certificate)
-	(Authenticated sender: mkl-all@blackshift.org)
-	by smtp.blackshift.org (Postfix) with ESMTPSA id 5F8B22A7ABA;
-	Tue, 19 Mar 2024 14:25:24 +0000 (UTC)
-Date: Tue, 19 Mar 2024 15:25:24 +0100
-From: Marc Kleine-Budde <mkl@pengutronix.de>
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: linux-can@vger.kernel.org, netdev@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Wolfgang Grandegger <wg@grandegger.com>, 
-	"David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>, 
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>
-Subject: Re: [PATCH net-next v1 1/1] can: mcp251x: Fix up includes
-Message-ID: <20240319-chewing-aptitude-db56f0a3fc32-mkl@pengutronix.de>
-References: <20240318193410.178163-1-andriy.shevchenko@linux.intel.com>
+	s=arc-20240116; t=1710858370; c=relaxed/simple;
+	bh=/ai7rsRCGQJwbmMN9+0MqsXjffyEnlQWeJfS3vA+etg=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=ByJRSQ2tnxFHy0vw7rhNLOL304KXnsU20PmL+fFR5Qs1mWZ1pgRMENFdACK6n4h3WuWoNQ/NU8GTZPFMWjJph1iKd5KCSx06E51uXe+5ESleSmYnDgUlM91zXM2To5yA6t9h9+CA8SQpm3zox3MKmsj5S31MdxAHMrzIecktEoI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=ZsdNFS5C; arc=none smtp.client-ip=209.85.160.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
+Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42a9c21f9ecso27935481cf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:26:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710858367; x=1711463167; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/ai7rsRCGQJwbmMN9+0MqsXjffyEnlQWeJfS3vA+etg=;
+        b=ZsdNFS5CLyanYiKD/6naRKyWF4Gbq8HpwvdVEw9eYRwZda4V7tEQGBWn/s/rEhB/D2
+         aEQOUclwi9HR0MWvHnH8A/qVKgak0BidZvvaHTm1tSnBi+6RWQX9HuMZ9pHaVfgNXY29
+         /NKJrUKNWPMdE5ii1+3913bG1SNGZ51Ezo1j0d71fmxhEMLo0YUMn6ogQM7QGe5UAzJy
+         qWrj9V8UapEswmU28CIJNmWdY8eModaKriQIx9MB6EEXgOGpbhp9bgtr77DQWa/xPhmU
+         mwcOYKvdlXZ8eMa0U6nRdvln4jaDxsaVwEyMcuuZk0LlLIkRsvukTMiS/gPrVUO1ewcE
+         Znfg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710858367; x=1711463167;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=/ai7rsRCGQJwbmMN9+0MqsXjffyEnlQWeJfS3vA+etg=;
+        b=ba0Aed95p5S5yq4ETGR6KX14aprMmI93XxecF1sKDm0hMMLA5LZy5tkc1S8ZfxKZ60
+         mPIuO1zaxrh0EPNzsk/HUQb2jlTPhCfLHvy1N0l0yXRDP560vJp3Wjp+6wfRm2qFA1jx
+         E4MoC5rozb+up6pQ3DiAtZYCVCQw5ex8ybV7NiJY0l3fjG+52bMPWuK7pDcmjNHNB+7A
+         kJKjFVURcvFG3Bz/UAeAJmecM7Pte0VLkCNJRbkz7IQg83vYI4VVZrHiOaebvN7MGJWo
+         ScONU0+n/L/cwZD6xF7q1NQZ1sVsNj8XIPwRVvYebZk7ieIUSMCiHV9n0h/oNqGaR2S5
+         ewuA==
+X-Forwarded-Encrypted: i=1; AJvYcCWGZGrRoUvc4NCz4mMXMPQr26QOWXDbtO/s30gWB2FdFNIEHWSVgZT20fPyosuB57qWzJNsMFbZlq9nVU0Cnl8io9zthqYKXHau8ciS
+X-Gm-Message-State: AOJu0YyKbwlhobCXv8FJJ/ZH5HxnRZKFSjlsNd1Ri14WykvfODS5HS0z
+	UtZjQ4HzwHtPI7pelHcOkETn4YYNwDSE7anZaa9qazlUWE9giFaXHC9qJurAx7Ys4puyukQOlH0
+	fz+5VL6bcj3FmBRuGfxnuvAcYvrpjMa6OPEgwQQ==
+X-Google-Smtp-Source: AGHT+IFo9PiCBqdDBB0vvJuRxgnxergt1C9KVhjkk/hjChR3zfOYA2+Oj1/6ln63mQWAtnarjsG0RvDWTC/dvSg3Wa4=
+X-Received: by 2002:a05:622a:1991:b0:430:ef64:8637 with SMTP id
+ u17-20020a05622a199100b00430ef648637mr1164760qtc.15.1710858367665; Tue, 19
+ Mar 2024 07:26:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha512;
-	protocol="application/pgp-signature"; boundary="k3ivyy72aisdcy5u"
-Content-Disposition: inline
-In-Reply-To: <20240318193410.178163-1-andriy.shevchenko@linux.intel.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mkl@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
-
-
---k3ivyy72aisdcy5u
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
+References: <20240220214558.3377482-1-souravpanda@google.com>
+ <20240220214558.3377482-2-souravpanda@google.com> <CA+CK2bAM4Xe7BT3TFZT-+3qQTFGgkYBiYY=oVkdqMN8gyJg_0g@mail.gmail.com>
+In-Reply-To: <CA+CK2bAM4Xe7BT3TFZT-+3qQTFGgkYBiYY=oVkdqMN8gyJg_0g@mail.gmail.com>
+From: Pasha Tatashin <pasha.tatashin@soleen.com>
+Date: Tue, 19 Mar 2024 10:25:30 -0400
+Message-ID: <CA+CK2bCwi0yU_jX8qKCBMUnTeqoDYc65z7GKd5uEKcpkPAn4MA@mail.gmail.com>
+Subject: Re: [PATCH v9 1/1] mm: report per-page metadata information
+To: akpm@linux-foundation.org
+Cc: Sourav Panda <souravpanda@google.com>, corbet@lwn.net, gregkh@linuxfoundation.org, 
+	rafael@kernel.org, mike.kravetz@oracle.com, muchun.song@linux.dev, 
+	rppt@kernel.org, david@redhat.com, rdunlap@infradead.org, 
+	chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com, 
+	bhelgaas@google.com, ivan@cloudflare.com, yosryahmed@google.com, 
+	hannes@cmpxchg.org, shakeelb@google.com, kirill.shutemov@linux.intel.com, 
+	wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz, 
+	Liam.Howlett@oracle.com, surenb@google.com, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
+	willy@infradead.org, weixugc@google.com
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: quoted-printable
 
-On 18.03.2024 21:34:10, Andy Shevchenko wrote:
-> This driver is including the legacy GPIO header <linux/gpio.h>
-> but the only thing it is using from that header is the wrong
-> define for GPIOF_DIR_OUT.
->=20
-> Fix it up by using GPIO_LINE_DIRECTION_* macros respectively.
->=20
-> Signed-off-by: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+On Wed, Mar 13, 2024 at 6:40=E2=80=AFPM Pasha Tatashin
+<pasha.tatashin@soleen.com> wrote:
+>
+> On Tue, Feb 20, 2024 at 4:46=E2=80=AFPM Sourav Panda <souravpanda@google.=
+com> wrote:
+> >
+> > Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
+> > to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
+> > to /proc/meminfo. This information can be used by users to see how
+> > much memory is being used by per-page metadata, which can vary
+> > depending on build configuration, machine architecture, and system
+> > use.
+> >
+> > Per-page metadata is the amount of memory that Linux needs in order to
+> > manage memory at the page granularity. The majority of such memory is
+> > used by "struct page" and "page_ext" data structures. In contrast to
+> > most other memory consumption statistics, per-page metadata might not
+> > be included in MemTotal. For example, MemTotal does not include membloc=
+k
+> > allocations but includes buddy allocations. In this patch, exported
+> > field nr_memmap in /sys/devices/system/node/nodeN/vmstat would
+> > exclusively track buddy allocations while nr_memmap_boot would
+> > exclusively track memblock allocations. Furthermore, Memmap in
+> > /proc/meminfo would exclusively track buddy allocations allowing it to
+> > be compared against MemTotal.
+> >
+> > This memory depends on build configurations, machine architectures, and
+> > the way system is used:
+> >
+> > Build configuration may include extra fields into "struct page",
+> > and enable / disable "page_ext"
+> > Machine architecture defines base page sizes. For example 4K x86,
+> > 8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
+> > overhead is smaller on machines with larger page sizes.
+> > System use can change per-page overhead by using vmemmap
+> > optimizations with hugetlb pages, and emulated pmem devdax pages.
+> > Also, boot parameters can determine whether page_ext is needed
+> > to be allocated. This memory can be part of MemTotal or be outside
+> > MemTotal depending on whether the memory was hot-plugged, booted with,
+> > or hugetlb memory was returned back to the system.
+> >
+> > Utility for userspace:
+> >
+> > Application Optimization: Depending on the kernel version and command
+> > line options, the kernel would relinquish a different number of pages
+> > (that contain struct pages) when a hugetlb page is reserved (e.g., 0, 6
+> > or 7 for a 2MB hugepage). The userspace application would want to know
+> > the exact savings achieved through page metadata deallocation without
+> > dealing with the intricacies of the kernel.
+> >
+> > Observability: Struct page overhead can only be calculated on-paper at
+> > boot time (e.g., 1.5% machine capacity). Beyond boot once hugepages are
+> > reserved or memory is hotplugged, the computation becomes complex.
+> > Per-page metrics will help explain part of the system memory overhead,
+> > which shall help guide memory optimizations and memory cgroup sizing.
+> >
+> > Debugging: Tracking the changes or absolute value in struct pages can
+> > help detect anomalies as they can be correlated with other metrics in
+> > the machine (e.g., memtotal, number of huge pages, etc).
+> >
+> > page_ext overheads: Some kernel features such as page_owner
+> > page_table_check that use page_ext can be optionally enabled via kernel
+> > parameters. Having the total per-page metadata information helps users
+> > precisely measure impact.
 
-No need to resend, added to linux-can-next.
+Hi Andrew,
 
-Thanks,
-Marc
+Can you please give this patch another look, does it require more
+reviews before you can take it in?
 
---=20
-Pengutronix e.K.                 | Marc Kleine-Budde          |
-Embedded Linux                   | https://www.pengutronix.de |
-Vertretung N=C3=BCrnberg              | Phone: +49-5121-206917-129 |
-Amtsgericht Hildesheim, HRA 2686 | Fax:   +49-5121-206917-9   |
-
---k3ivyy72aisdcy5u
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iQEzBAABCgAdFiEEUEC6huC2BN0pvD5fKDiiPnotvG8FAmX5oFAACgkQKDiiPnot
-vG+OeQgAiQRhzAhHeegYdxVcGWd+6wrHYIv3QSMgYZRbA7op7g6PHEuVb7u/eefb
-5E4hOPrkpJdjtvsPw4STB1UvC9lqbySKFRUBoijiLQBlF0c6JPhiUaBTVDbPl6Wq
-hZMvhQZGctyGXeYK/MZPaij5YOA7Srcg2ohus74B8qJYq2nWSeKmHUNsAikSTr4k
-6pK0rZxcICr8CmTaGnCLt1yJwOlZW0A2gK021XFSkgLd7wJ2PnDO4avoL6UjWDd3
-VkpL78Y3JHbrO7JiSngQUY5ESqdS7piQArHRyzvgRsYTA2dcpddOK1nhH24vCrCa
-7kUv96lZJC3+bhbkXKlT8fh7TZUErQ==
-=d6sj
------END PGP SIGNATURE-----
-
---k3ivyy72aisdcy5u--
+Thank you,
+Pasha
 
