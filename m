@@ -1,146 +1,149 @@
-Return-Path: <linux-kernel+bounces-107132-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107134-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4D74787F7EF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:01:20 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 28DBD87F804
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:03:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045F31F21D8C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:01:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 574171C218E4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:03:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B61351C36;
-	Tue, 19 Mar 2024 07:01:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B57F537E1;
+	Tue, 19 Mar 2024 07:03:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TSq7LqoK"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="NOzqJoaY"
+Received: from mailgw01.mediatek.com (unknown [60.244.123.138])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D395550A83;
-	Tue, 19 Mar 2024 07:01:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71A5A51004;
+	Tue, 19 Mar 2024 07:03:10 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=60.244.123.138
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710831674; cv=none; b=X8HnsDmZ3k5YJkLG5dpGP56kCAAN2JaIk0lvBGpX6dbsw7kMLMZ8Qt2rxUoCXMV7ukwRO3SVCtTq1rfL0SXHDBRZl7AS554QVavcAO3anQEhroQ7mvSJ+c0G5Opu9jZySYjXypwD+RGCcbqsGhN0KICwFeSBR6xr2oIJemizjt8=
+	t=1710831792; cv=none; b=o9mM2ljE8DRFaau08T+xWwoz3u1UEmQKGzvuqxApp+HRLQ7TYNmAM/19Dt7b3eseghx1dcW2Cvs3Z4ymODR2CunYx0gAOoem0wb7Y0RDfRuH5fqui+fVUdepiuD+4y2llpD+4f36qxh7pz7TCTBLbxe/PlQSxXKtQHWNeyJ5lUU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710831674; c=relaxed/simple;
-	bh=sN8BoodaqauJ68zryAbxJ0C8GsgzpHYXpPUW40HgJlo=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=Cb5HCzegGET22O9+RSZ4+Dd5txi1uxCXypT+VyVGR0sLdkvY4lHHgReIVGS0t39SbWQqE/7ppALn06Qqa8+RYAWhvmsQIS1o3AFEWbF+VkrtBtpEtyClyi1S4TVOUW8jyBDTdmYsNsSPwHb6CIIbO+FB5w0EnJh4S7CCi1Wb7qA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TSq7LqoK; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56a0c0a7ebcso2209048a12.1;
-        Tue, 19 Mar 2024 00:01:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710831671; x=1711436471; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=rZOnTWy9RHjbWwjvoVyhSRxJR11wBBKA3nUrGVF4HNc=;
-        b=TSq7LqoKz8S+0nIoDUCJANyMGPxc+k3aoKoW9x3Pye1D5OvMkQpTjrFR6/maWxOa2U
-         zLEQxyU/wc7srCRAKpfQ085oEqStW72lgs+F63eaumwNHrCMuP3xESQpbfarcgKPBW8C
-         gY8EzjIGcVZTQ3NW6oAnxqdYlLjLn6sjgib6Fm6Fdna6w5sAXoBBA1fa3DiNgna9uywy
-         05B2UsUQ5c9zV8bVlObaXmMfLxH0URTAniqoOUGPV++/ntDJyhDPC4bvsm6TCS+AqjHL
-         0m1O2tDjhXbeGm4Ip90CYqiHcsO3qQ5CwP6mFd/utYZ3FItpHc3Ajj/zflMuli26Vj1g
-         P4oQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710831671; x=1711436471;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=rZOnTWy9RHjbWwjvoVyhSRxJR11wBBKA3nUrGVF4HNc=;
-        b=c7p16q2+RA5x4IB58GCG6p23ncr1q03/spwechMbmlHJihEPX1zED/zMzZET2Vf3J8
-         qk+nn2s6B3PMC81I86yzcMm4hqCqjceZIfohhZDRllxsjoPnArP22uA5+q/0zKIp0/Z0
-         aQNQGlzvM/F+72ptWNIV1sxc1QvrdXpfIdU03LMYib2H0tVrmcjflApGFIqEVwgXf3gk
-         vciCROP5aHUF2Y/3F0oV03hri/WMbRaOvgvVwS/ckfvR5/P4AVNd7pPvZiC94QofWc0y
-         KWTGgpZv3+3g+BhjCNQfEkGmmpbA8dcXUJBNo9woanunQeIflsn2UTYeH+EIyBbfQZLU
-         fPeg==
-X-Forwarded-Encrypted: i=1; AJvYcCVrk8W3PGvmZ9f2pux3TBoJ4IbwcdnZI1Vi2jiggMli5O7bIdis3Bs1XW2vAtCiisA8BzuBb00mWFiijWvAvt3/KivtDO/SRAPSeNskxk3OYqAwj1OTl/8ef59RLEJgU+I9xsb1qMy8qQ==
-X-Gm-Message-State: AOJu0Yy1bks/g9NkaK3MsrwZiI1cyCJOjAn7PWc4Y0HlkArbyHAPUU8H
-	vrdH/2m4BDPH17bLBiG0nC2ZdoT05fzSVe4WvTuuBBDcJ75BA2Cn
-X-Google-Smtp-Source: AGHT+IEKjUdvOW2dgHw0zuQMmiemMW5SAp18zSrs0INd37VhbEvkMXBKDvubgQjvdJa4FYRTfYe88g==
-X-Received: by 2002:a17:907:c283:b0:a45:84e7:b265 with SMTP id tk3-20020a170907c28300b00a4584e7b265mr12235982ejc.7.1710831669473;
-        Tue, 19 Mar 2024 00:01:09 -0700 (PDT)
-Received: from ?IPV6:2a02:8389:41cf:e200:5922:bab2:b36:7e61? (2a02-8389-41cf-e200-5922-bab2-0b36-7e61.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:5922:bab2:b36:7e61])
-        by smtp.gmail.com with ESMTPSA id jx25-20020a170907761900b00a4661f0f1e7sm5682269ejc.205.2024.03.19.00.01.08
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 00:01:08 -0700 (PDT)
-Message-ID: <beddae56-caef-4684-958b-d11ca0808055@gmail.com>
-Date: Tue, 19 Mar 2024 08:01:06 +0100
+	s=arc-20240116; t=1710831792; c=relaxed/simple;
+	bh=kMFVJS0mwaelbOKmlq0njw8ctU1/N3lf+fxys1Y9ZqE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=IMb0BKrzQ482eA7RhFclAGXLRJzfLd7Gy6Bs7fdAgiVMzn7kvUIidE7Ju2gzibxrif/VzLiE55aCIvyFd5YboY6vXymsgLaGng15O4JFRsClsi6LkV8WEDGsEJLbbV747e9oPwWEuHN54Q7npn232/9TP7jy6jXiEC2CkurSC1Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=NOzqJoaY; arc=none smtp.client-ip=60.244.123.138
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
+X-UUID: b8b93d66e5be11eeb8927bc1f75efef4-20240319
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
+	h=Content-Type:MIME-Version:Message-ID:Date:Subject:CC:To:From; bh=EYOFrIPj763jT3PLRcGM0ZquAZ54oz4DX2bz2jRJwIg=;
+	b=NOzqJoaYD0glVemcO98kmk7rjBVtRt4i8gruD4EErhnteiPf8iqcOJZbDZiqSVRuvV1VmeSz7UU70R7uXHf9FBGr7RpDRMeFzUGQ9D2BudIOizZHgg4NEHZH0FMv9H0LV3oRmbsBGOLiht26xPwratN/RzlDo6d+so8RV+2YUxg=;
+X-CID-P-RULE: Release_Ham
+X-CID-O-INFO: VERSION:1.1.37,REQID:bcb19b6d-8a66-4aca-a5b3-bcebfa572858,IP:0,U
+	RL:0,TC:0,Content:0,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTION:
+	release,TS:0
+X-CID-META: VersionHash:6f543d0,CLOUDID:d5850f00-c26b-4159-a099-3b9d0558e447,B
+	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
+	RL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,
+	SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
+X-CID-BVR: 0
+X-CID-BAS: 0,_,0,_
+X-CID-FACTOR: TF_CID_SPAM_SNR
+X-UUID: b8b93d66e5be11eeb8927bc1f75efef4-20240319
+Received: from mtkmbs10n2.mediatek.inc [(172.21.101.183)] by mailgw01.mediatek.com
+	(envelope-from <shawn.sung@mediatek.com>)
+	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
+	with ESMTP id 613645592; Tue, 19 Mar 2024 15:03:00 +0800
+Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
+ mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.26; Tue, 19 Mar 2024 15:02:58 +0800
+Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
+ mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
+ 15.2.1118.26 via Frontend Transport; Tue, 19 Mar 2024 15:02:58 +0800
+From: Shawn Sung <shawn.sung@mediatek.com>
+To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
+	<angelogioacchino.delregno@collabora.com>
+CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
+	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
+	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
+	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
+	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
+	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
+	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
+	<shawn.sung@mediatek.corp-partner.google.com>
+Subject: [PATCH v2 00/14] Rename mtk_drm_* to mtk_*
+Date: Tue, 19 Mar 2024 15:02:43 +0800
+Message-ID: <20240319070257.6443-1-shawn.sung@mediatek.com>
+X-Mailer: git-send-email 2.18.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] dt-bindings: hwmon: adc128d818: convert to dtschema
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
- Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>
-Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240318-adc128d818_dtschema-v1-1-d0af2caef145@gmail.com>
- <de0b32b3-348a-4d42-89cd-df2c439b8009@linaro.org>
-Content-Language: en-US, de-AT
-From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-In-Reply-To: <de0b32b3-348a-4d42-89cd-df2c439b8009@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Type: text/plain
+X-MTK: N
 
-On 3/19/24 06:49, Krzysztof Kozlowski wrote:
-> On 18/03/2024 21:12, Javier Carrasco wrote:
->> Convert adc128d818 bindings to dtschema to support validation.
->>
->> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
-> 
-> Thank you for your patch. There is something to discuss/improve.
-> 
-> 
->> +$id: http://devicetree.org/schemas/hwmon/ti,adc128d818.yaml#
->> +$schema: http://devicetree.org/meta-schemas/core.yaml#
->> +
->> +title: Texas Instruments ADC128D818 ADC System Monitor With Temperature Sensor
->> +
->> +maintainers:
->> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
->> +
->> +description: |
->> +  The ADC128D818 is a 12-Bit, 8-Channel Analog to Digital Converter (ADC)
->> +  with a temperature sensor and an I2C interface.
->> +
->> +  Datasheets:
->> +    https://www.ti.com/product/ADC128D818
->> +
->> +properties:
->> +  compatible:
->> +    const: ti,adc128d818
->> +
->> +  reg:
->> +    maxItems: 1
->> +
->> +  ti,mode:
-> 
-> You need | to preserve the formatting.
-> 
+From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
 
-Thanks, I overlooked that. If I am not mistaken, 2 are still missing 
-(ti,mode and vref-supply descriptions).
+Rename some unnecessary  "mtk_drm_*" to "mtk_*" because:
+- Lower the matches when searching the native drm_* codes
+- Reduce the code
 
-By the way, do you know why dtschema does not complain about that? If I 
-place a '|' in a wrong place, it does complain, though.
+Changes in v2:
+- Sort header files alphabetically
+- Seperate patches for renaming .c files to avoid conflicts
 
-> With this:
-> 
-> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
-> 
-> Best regards,
-> Krzysztof
-> 
+Hsiao Chien Sung (14):
+  drm/mediatek: Rename "mtk_drm_crtc" to "mtk_crtc"
+  drm/mediatek: Rename "mtk_drm_ddp_comp" to "mtk_ddp_comp"
+  drm/mediatek: Rename "mtk_drm_plane" to "mtk_plane"
+  drm/mediatek: Rename "mtk_drm_gem" to "mtk_gem"
+  drm/mediatek: Rename "mtk_drm_hdmi" to "mtk_hdmi"
+  drm/mediatek: Rename files "mtk_drm_crtc.h" to "mtk_crtc.h"
+  drm/mediatek: Rename files "mtk_drm_crtc.c" to "mtk_crtc.c"
+  drm/mediatek: Rename files "mtk_drm_ddp_comp.h" to "mtk_ddp_comp.h"
+  drm/mediatek: Rename files "mtk_drm_ddp_comp.c" to "mtk_ddp_comp.c"
+  drm/mediatek: Rename files "mtk_drm_plane.h" to "mtk_plane.h"
+  drm/mediatek: Rename files "mtk_drm_plane.c" to "mtk_plane.c"
+  drm/mediatek: Rename files "mtk_drm_gem.h" to "mtk_gem.h"
+  drm/mediatek: Rename files "mtk_drm_gem.c" to "mtk_gem.c"
+  drm/mediatek: Rename mtk_ddp_comp functions
 
-Best regards,
-Javier Carrasco
+ drivers/gpu/drm/mediatek/Makefile             |  12 +-
+ .../mediatek/{mtk_drm_crtc.c => mtk_crtc.c}   | 213 +++++++++---------
+ drivers/gpu/drm/mediatek/mtk_crtc.h           |  28 +++
+ .../{mtk_drm_ddp_comp.c => mtk_ddp_comp.c}    |  51 +++--
+ .../{mtk_drm_ddp_comp.h => mtk_ddp_comp.h}    |   9 +-
+ drivers/gpu/drm/mediatek/mtk_disp_aal.c       |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ccorr.c     |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_color.c     |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_drv.h       |   2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_gamma.c     |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_merge.c     |   2 +-
+ drivers/gpu/drm/mediatek/mtk_disp_ovl.c       |   4 +-
+ .../gpu/drm/mediatek/mtk_disp_ovl_adaptor.c   |   4 +-
+ drivers/gpu/drm/mediatek/mtk_disp_rdma.c      |   4 +-
+ drivers/gpu/drm/mediatek/mtk_dpi.c            |   4 +-
+ drivers/gpu/drm/mediatek/mtk_drm_crtc.h       |  30 ---
+ drivers/gpu/drm/mediatek/mtk_drm_drv.c        |  32 +--
+ drivers/gpu/drm/mediatek/mtk_drm_drv.h        |   4 +-
+ drivers/gpu/drm/mediatek/mtk_dsi.c            |   6 +-
+ drivers/gpu/drm/mediatek/mtk_ethdr.c          |   4 +-
+ .../drm/mediatek/{mtk_drm_gem.c => mtk_gem.c} |  65 +++---
+ .../drm/mediatek/{mtk_drm_gem.h => mtk_gem.h} |  23 +-
+ drivers/gpu/drm/mediatek/mtk_hdmi.c           |  14 +-
+ drivers/gpu/drm/mediatek/mtk_padding.c        |   4 +-
+ .../mediatek/{mtk_drm_plane.c => mtk_plane.c} |  26 +--
+ .../mediatek/{mtk_drm_plane.h => mtk_plane.h} |   4 +-
+ 26 files changed, 275 insertions(+), 286 deletions(-)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_crtc.c => mtk_crtc.c} (82%)
+ create mode 100644 drivers/gpu/drm/mediatek/mtk_crtc.h
+ rename drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.c => mtk_ddp_comp.c} (94%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_ddp_comp.h => mtk_ddp_comp.h} (98%)
+ delete mode 100644 drivers/gpu/drm/mediatek/mtk_drm_crtc.h
+ rename drivers/gpu/drm/mediatek/{mtk_drm_gem.c => mtk_gem.c} (76%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_gem.h => mtk_gem.h} (62%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_plane.c => mtk_plane.c} (94%)
+ rename drivers/gpu/drm/mediatek/{mtk_drm_plane.h => mtk_plane.h} (95%)
+
+--
+2.18.0
+
 
