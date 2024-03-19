@@ -1,263 +1,180 @@
-Return-Path: <linux-kernel+bounces-107604-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107605-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 812D487FF00
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:43:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id CA07A87FF01
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:43:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36D80283116
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:43:19 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 35349282B79
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:43:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632958004F;
-	Tue, 19 Mar 2024 13:43:12 +0000 (UTC)
-Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B848D8061F;
+	Tue, 19 Mar 2024 13:43:33 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="VLeeeXAa"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE19F2B9A3;
-	Tue, 19 Mar 2024 13:43:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E373980601;
+	Tue, 19 Mar 2024 13:43:32 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710855791; cv=none; b=QElO1ro5KKjDiWOByXCa1sY5H1b5ggKK0mM/LCvR267eIPWhgwiNhF1MexdwqVCg0rL0JRKG4fNbuSmOKiqtLZgq8lRxnFhUaXhS+Cf+cD6tuitTkdqhPVrvQwKUJIcEJg72/1z/hsRW8+whK98b+pXxos9KALRGJjo1kR5WBTQ=
+	t=1710855813; cv=none; b=tGraBs1jLY9/JLefztiQEJUDPttIb5SBgvkyMEQXdw3cZmbwlGRRZYcPfe33rkq3kmoK9qfxkgV89UAf2gjcGYmDNYgygBdkPK18Q0eOI4i4Yp18j6k0qIwHlY8RJgvT+YKH0fPJD4egR3HxbaabDOl6yFhNVXocbqtCToULMqc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710855791; c=relaxed/simple;
-	bh=WiMdARSt5/lB+0Mj4JwQzBZi0dW5Rc1+tnx2BDCH/jw=;
-	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ocZ8UW2R3vj2f0ieDhnq7y76d4uguP4yNmEoLq91n4ZlpsktfKqVQPCxf+Nze1jLjIanO3fi5WkAD8m2YZFNHBUXEeLjFT6Abv3jke+Pksv76aPENA4u+uziksPJMWvEovxZ3wyzJNI4T7R66dMnKL5LkBI2It7/ZguoRFQsvgs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.18.186.231])
-	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TzXw66VT8z67byW;
-	Tue, 19 Mar 2024 21:42:30 +0800 (CST)
-Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
-	by mail.maildlp.com (Postfix) with ESMTPS id D76BF1400D4;
-	Tue, 19 Mar 2024 21:42:59 +0800 (CST)
-Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
- (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 19 Mar
- 2024 13:42:59 +0000
-Date: Tue, 19 Mar 2024 13:42:58 +0000
-From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
-To: Sean Anderson <sean.anderson@linux.dev>
-CC: Jonathan Cameron <jic23@kernel.org>, "O'Griofa, Conall"
-	<conall.ogriofa@amd.com>, "linux-iio@vger.kernel.org"
-	<linux-iio@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
-	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
-Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_channels in
- scan_mask
-Message-ID: <20240319134258.0000574d@Huawei.com>
-In-Reply-To: <7ddf8d4a-5b68-432d-93c1-ff270403cb60@linux.dev>
-References: <20240311162800.11074-1-sean.anderson@linux.dev>
-	<20240314154824.37150a54@jic23-huawei>
-	<a9ed95ec-aafe-49f6-93dd-c94c73620de2@linux.dev>
-	<DM6PR12MB4217EAA1049F815F234EE6D18B282@DM6PR12MB4217.namprd12.prod.outlook.com>
-	<3b481539-0c9c-4110-ad03-bd252e80efb0@linux.dev>
-	<20240316133627.5d2bf585@jic23-huawei>
-	<7ee83f15-88fc-4530-84b7-b8ee31663dbc@linux.dev>
-	<20240318152446.00001345@Huawei.com>
-	<7ddf8d4a-5b68-432d-93c1-ff270403cb60@linux.dev>
-Organization: Huawei Technologies Research and Development (UK) Ltd.
-X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
+	s=arc-20240116; t=1710855813; c=relaxed/simple;
+	bh=CYKpUSoyIN982RAd9PT7IWWxc/kQtgWF+GoaKirqFkw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=HPFg0fibjSEcqbDmfOyEeEixrdXkUalUoUGx3TImeai0yzW7VUOKt8kaCRBrtHqril8fLGXKDQVfVcK801CRYaPK9be7J3g/Dr/OTeetqNEFVzr11oqi1d9KR6Al698J568KlI0L3UkWaT2emalSfaNCJ19yOdqp9qSibhYAPZM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=VLeeeXAa; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id EB205C433F1;
+	Tue, 19 Mar 2024 13:43:31 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710855812;
+	bh=CYKpUSoyIN982RAd9PT7IWWxc/kQtgWF+GoaKirqFkw=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=VLeeeXAapwzjPw69WzvV5X8GYDrtRA/KhDF4hXDeAH8iXeSNXb6gi6zQwxBiGdhJF
+	 MAWTX7E33tWGq0dZiKtpDaPYR6ibCjA6G7YyLZ2ZWj3U6caa9c8qpLLHdQDyK5LsiN
+	 YpwTnV6idbc+yz8+CIobxp5BG83x4jw9szGEwNMgieR5/BfvRQbemMY9vg3pJRvpbz
+	 Gd43S85qiTPpwr4iL2rFM0UrjoaLfVx/wOkN/AWxGe7AQUqfCd7rJMY9G5ZyD3b58d
+	 rrZtb7yJdG0qCE6FU1fenr+5tvKE1kf/UJ013FxwYO5o1pJNxTqCpjtnWKDPVel+zP
+	 tY1dN8+tEzboA==
+Date: Tue, 19 Mar 2024 10:43:29 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Namhyung Kim <namhyung@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
+Subject: Re: [PATCH 01/23] perf dwarf-aux: Remove unused pc argument
+Message-ID: <ZfmWgbkApCMoeWHm@x1>
+References: <20240319055115.4063940-1-namhyung@kernel.org>
+ <20240319055115.4063940-2-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
-X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
- lhrpeml500005.china.huawei.com (7.191.163.240)
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319055115.4063940-2-namhyung@kernel.org>
 
-On Mon, 18 Mar 2024 11:28:49 -0400
-Sean Anderson <sean.anderson@linux.dev> wrote:
+On Mon, Mar 18, 2024 at 10:50:53PM -0700, Namhyung Kim wrote:
+> It's not used, let's get rid of it.
 
-> On 3/18/24 11:24, Jonathan Cameron wrote:
-> > On Mon, 18 Mar 2024 11:18:43 -0400
-> > Sean Anderson <sean.anderson@linux.dev> wrote:
-> >  =20
-> >> On 3/16/24 09:36, Jonathan Cameron wrote: =20
-> >> > On Fri, 15 Mar 2024 13:47:40 -0400
-> >> > Sean Anderson <sean.anderson@linux.dev> wrote:
-> >> >    =20
-> >> >> Hi Conall,
-> >> >>=20
-> >> >> On 3/15/24 09:18, O'Griofa, Conall wrote:   =20
-> >> >> > [AMD Official Use Only - General]
-> >> >> >=20
-> >> >> > Hi,
-> >> >> >=20
-> >> >> > I think there was a fix for this issue applied to the version tha=
-t was running on 5.15 that didn't seem to make it into the upstream driver.
-> >> >> > Please see link for reference https://github.com/Xilinx/linux-xln=
-x/commit/608426961f16ab149b1b699f1c35f7ad244c0720
-> >> >> >=20
-> >> >> > I think a similar fix to the above patch is may be beneficial?   =
-  =20
-> >> >>=20
-> >> >> These patches look functionally identical to me.   =20
-> >> >=20
-> >> > Because there are no channels with scan index between
-> >> > 22 * 2 + 16 (that patch) and 22 * 3 (your patch) that is
-> >> > the effect is indeed the same. But given the issues is the
-> >> > 64 limit on maximum scan index, 22 * 3 =3D 66 is an ugly value
-> >> > to compare with.
-> >> >=20
-> >> > I'm still very against the use of scan_index for anything other
-> >> > than scan indices (which is why partly how this bug wasn't noticed
-> >> > in the first palce). So the check should be scan_index !=3D -1
-> >> > and uses of those values elsewhere in the driver should be fixed
-> >> > (which looks simple to do from a quick glance at the code).   =20
-> >>=20
-> >> OK, so how do the sysfs files get named then? =20
-> >=20
-> > Using channel and channel2 as appropriate (+ index and modified
-> > which change the meaning of channel2) - scan_index never had
-> > anything to do with sysfs file names - just the value in
-> > bufferX/in_xyz_scan_index =20
->=20
-> I tried to prototype setting scan_index to -1, but when registering chann=
-els I saw
->=20
-> [    1.637049] iio iio:device0: tried to double register : in_voltage_raw
-> [    1.637245] xilinx-ams ffa50000.ams: Failed to register sysfs interfac=
-es
-> [    1.637433] xilinx-ams: probe of ffa50000.ams failed with error -16
->=20
-> And AIUI .channel is filled in by ams_parse_firmware.
+I looked for data->pc, there is usage somewhere else, but not via
+__die_find_var_addr_cb() nor match_var_offset().
 
-Is indexed set for the channel?  Check it at the point of calling
-devm_iio_device_register() as the code that builds the channels in this
-driver is complex, so maybe it's getting overwritten?
+I think renaming:
 
-There might be a core bug somewhere, but there are other drivers using
--1 scan index without hitting this problem so my first instinct is
-something is getting wrongly set in the driver.
+  struct find_var_data data;
 
-Jonathan
+to:
 
->=20
-> --Sean
->=20
-> >>=20
-> >> --Sean
-> >>  =20
-> >> >>=20
-> >> >> --Sean
-> >> >>    =20
-> >> >> >> -----Original Message-----
-> >> >> >> From: Sean Anderson <sean.anderson@linux.dev>
-> >> >> >> Sent: Thursday, March 14, 2024 5:30 PM
-> >> >> >> To: Jonathan Cameron <jic23@kernel.org>
-> >> >> >> Cc: linux-iio@vger.kernel.org; O'Griofa, Conall <conall.ogriofa@=
-amd.com>;
-> >> >> >> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.o=
-rg; Lars-Peter
-> >> >> >> Clausen <lars@metafoo.de>
-> >> >> >> Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_cha=
-nnels in
-> >> >> >> scan_mask
-> >> >> >>
-> >> >> >> Caution: This message originated from an External Source. Use pr=
-oper caution
-> >> >> >> when opening attachments, clicking links, or responding.
-> >> >> >>
-> >> >> >>
-> >> >> >> On 3/14/24 11:48, Jonathan Cameron wrote:     =20
-> >> >> >> > On Mon, 11 Mar 2024 12:28:00 -0400
-> >> >> >> > Sean Anderson <sean.anderson@linux.dev> wrote:
-> >> >> >> >     =20
-> >> >> >> >> ams_enable_channel_sequence constructs a "scan_mask" for all =
-the PS
-> >> >> >> >> and PL channels. This works out fine, since scan_index for th=
-ese
-> >> >> >> >> channels is less than 64. However, it also includes the
-> >> >> >> >> ams_ctrl_channels, where scan_index is greater than 64, trigg=
-ering
-> >> >> >> >> undefined behavior. Since we don't need these channels anyway=
-, just     =20
-> >> >> >> exclude them.     =20
-> >> >> >> >>
-> >> >> >> >> Fixes: d5c70627a794 ("iio: adc: Add Xilinx AMS driver")
-> >> >> >> >> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>     =20
-> >> >> >> >
-> >> >> >> > Hi Sean,
-> >> >> >> >
-> >> >> >> > I'd ideally like to understand why we have channels with such =
-large
-> >> >> >> > scan indexes.  Those values should only be used for buffered c=
-apture.
-> >> >> >> > It feels like they are being abused here.  Can we set them to =
--1
-> >> >> >> > instead and check based on that?
-> >> >> >> > For a channel, a scan index of -1 means it can't be captured v=
-ia the
-> >> >> >> > buffered interfaces but only accessed via sysfs reads.
-> >> >> >> > I think that's what we have here?     =20
-> >> >> >>
-> >> >> >> From what I can tell, none of the channels support buffered read=
-s. And we can't
-> >> >> >> nai=CC=88vely convert the scan_index to -1, since that causes sy=
-sfs naming conflicts
-> >> >> >> (not to mention the compatibility break).
-> >> >> >>     =20
-> >> >> >> >
-> >> >> >> > I just feel like if we leave these as things stand, we will ge=
-t bitten
-> >> >> >> > by similar bugs in the future.  At least with -1 it should be =
-obvious why!     =20
-> >> >> >>
-> >> >> >> There are just as likely to be bugs confusing the PL/PS subdevic=
-es...
-> >> >> >>
-> >> >> >> FWIW I had no trouble identifying the channels involved with thi=
-s bug.
-> >> >> >>
-> >> >> >> --Sean
-> >> >> >>     =20
-> >> >> >> > Jonathan
-> >> >> >> >
-> >> >> >> >     =20
-> >> >> >> >> ---
-> >> >> >> >>
-> >> >> >> >>  drivers/iio/adc/xilinx-ams.c | 8 ++++++--
-> >> >> >> >>  1 file changed, 6 insertions(+), 2 deletions(-)
-> >> >> >> >>
-> >> >> >> >> diff --git a/drivers/iio/adc/xilinx-ams.c
-> >> >> >> >> b/drivers/iio/adc/xilinx-ams.c index a55396c1f8b2..4de7ce598e=
-4d
-> >> >> >> >> 100644
-> >> >> >> >> --- a/drivers/iio/adc/xilinx-ams.c
-> >> >> >> >> +++ b/drivers/iio/adc/xilinx-ams.c
-> >> >> >> >> @@ -414,8 +414,12 @@ static void ams_enable_channel_sequence(=
-struct
-> >> >> >> >> iio_dev *indio_dev)
-> >> >> >> >>
-> >> >> >> >>      /* Run calibration of PS & PL as part of the sequence */
-> >> >> >> >>      scan_mask =3D BIT(0) | BIT(AMS_PS_SEQ_MAX);
-> >> >> >> >> -    for (i =3D 0; i < indio_dev->num_channels; i++)
-> >> >> >> >> -            scan_mask |=3D BIT_ULL(indio_dev->channels[i].sc=
-an_index);
-> >> >> >> >> +    for (i =3D 0; i < indio_dev->num_channels; i++) {
-> >> >> >> >> +            const struct iio_chan_spec *chan =3D
-> >> >> >> >> + &indio_dev->channels[i];
-> >> >> >> >> +
-> >> >> >> >> +            if (chan->scan_index < AMS_CTRL_SEQ_BASE)
-> >> >> >> >> +                    scan_mask |=3D BIT_ULL(chan->scan_index);
-> >> >> >> >> +    }
-> >> >> >> >>
-> >> >> >> >>      if (ams->ps_base) {
-> >> >> >> >>              /* put sysmon in a soft reset to change the sequ=
-ence */     =20
-> >> >> >> >     =20
-> >> >>    =20
-> >> >    =20
-> >>=20
-> >>  =20
-> >  =20
->=20
+  struct find_var_data var;
 
+And:
+
+  struct find_scope_data data;
+
+to:
+
+  struct find_scope_data scope;
+
+Helps with grepping for 'data->pc', but that can be left for later.
+
+Reviewed-by: Arnaldo Carvalho de Melo <acme@redhat.com>
+
+- Arnaldo
+ 
+> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+> ---
+>  tools/perf/util/annotate-data.c | 4 ++--
+>  tools/perf/util/dwarf-aux.c     | 7 ++-----
+>  tools/perf/util/dwarf-aux.h     | 6 ++----
+>  3 files changed, 6 insertions(+), 11 deletions(-)
+> 
+> diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+> index 30c4d19fcf11..59ce5f4f4a40 100644
+> --- a/tools/perf/util/annotate-data.c
+> +++ b/tools/perf/util/annotate-data.c
+> @@ -263,7 +263,7 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
+>  	offset = loc->offset;
+>  
+>  	if (reg == DWARF_REG_PC) {
+> -		if (die_find_variable_by_addr(&cu_die, pc, addr, &var_die, &offset)) {
+> +		if (die_find_variable_by_addr(&cu_die, addr, &var_die, &offset)) {
+>  			ret = check_variable(&var_die, type_die, offset,
+>  					     /*is_pointer=*/false);
+>  			loc->offset = offset;
+> @@ -312,7 +312,7 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
+>  	/* Search from the inner-most scope to the outer */
+>  	for (i = nr_scopes - 1; i >= 0; i--) {
+>  		if (reg == DWARF_REG_PC) {
+> -			if (!die_find_variable_by_addr(&scopes[i], pc, addr,
+> +			if (!die_find_variable_by_addr(&scopes[i], addr,
+>  						       &var_die, &offset))
+>  				continue;
+>  		} else {
+> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
+> index 2791126069b4..e84d0d6a7750 100644
+> --- a/tools/perf/util/dwarf-aux.c
+> +++ b/tools/perf/util/dwarf-aux.c
+> @@ -1456,7 +1456,6 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+>  /**
+>   * die_find_variable_by_addr - Find variable located at given address
+>   * @sc_die: a scope DIE
+> - * @pc: the program address to find
+>   * @addr: the data address to find
+>   * @die_mem: a buffer to save the resulting DIE
+>   * @offset: the offset in the resulting type
+> @@ -1464,12 +1463,10 @@ static int __die_find_var_addr_cb(Dwarf_Die *die_mem, void *arg)
+>   * Find the variable DIE located at the given address (in PC-relative mode).
+>   * This is usually for global variables.
+>   */
+> -Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+> -				     Dwarf_Addr addr, Dwarf_Die *die_mem,
+> -				     int *offset)
+> +Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr addr,
+> +				     Dwarf_Die *die_mem, int *offset)
+>  {
+>  	struct find_var_data data = {
+> -		.pc = pc,
+>  		.addr = addr,
+>  	};
+>  	Dwarf_Die *result;
+> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
+> index 85dd527ae1f7..9973801a20c1 100644
+> --- a/tools/perf/util/dwarf-aux.h
+> +++ b/tools/perf/util/dwarf-aux.h
+> @@ -146,9 +146,8 @@ Dwarf_Die *die_find_variable_by_reg(Dwarf_Die *sc_die, Dwarf_Addr pc, int reg,
+>  				    Dwarf_Die *die_mem);
+>  
+>  /* Find a (global) variable located in the 'addr' */
+> -Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr pc,
+> -				     Dwarf_Addr addr, Dwarf_Die *die_mem,
+> -				     int *offset);
+> +Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die, Dwarf_Addr addr,
+> +				     Dwarf_Die *die_mem, int *offset);
+>  
+>  #else /*  HAVE_DWARF_GETLOCATIONS_SUPPORT */
+>  
+> @@ -170,7 +169,6 @@ static inline Dwarf_Die *die_find_variable_by_reg(Dwarf_Die *sc_die __maybe_unus
+>  }
+>  
+>  static inline Dwarf_Die *die_find_variable_by_addr(Dwarf_Die *sc_die __maybe_unused,
+> -						   Dwarf_Addr pc __maybe_unused,
+>  						   Dwarf_Addr addr __maybe_unused,
+>  						   Dwarf_Die *die_mem __maybe_unused,
+>  						   int *offset __maybe_unused)
+> -- 
+> 2.44.0.291.gc1ea87d7ee-goog
+> 
 
