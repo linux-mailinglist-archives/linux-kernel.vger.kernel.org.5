@@ -1,160 +1,129 @@
-Return-Path: <linux-kernel+bounces-106846-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106847-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C19B087F467
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:13:15 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id CCC1287F469
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:15:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6236BB20CA9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:13:13 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 598C81F21C37
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:15:13 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6693FA29;
-	Tue, 19 Mar 2024 00:13:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7771A38;
+	Tue, 19 Mar 2024 00:15:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="d8BJZS8i"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="JWIKtc9+"
+Received: from mail-ej1-f47.google.com (mail-ej1-f47.google.com [209.85.218.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FA083D69;
-	Tue, 19 Mar 2024 00:12:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6AC2E7EB;
+	Tue, 19 Mar 2024 00:15:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710807181; cv=none; b=oeK8oKXW7dRIWuEV8aeswDSjZL1RXtFsU5LKrPyi1/K3pM7C8IjCfc6NpRKspLszPrtfUbr4O9dgIAoZK5QIBch97XzibUrWdxfORpYc7Tzosy2UFB8P9sS+jMLhBaNWrTr2XiogT/CTGin3Hk3PwRZEBEGA83gtWTLToOtbhFI=
+	t=1710807302; cv=none; b=HGXgOLsghnxipFqw2dujGRDNrwqpFLbrivGvGdPHDrnVHxwsfwbp5MznhF11r67CQ5ITFbIMu0y+nHN9wXMC801vIXhZGy882lP6/VFBvvZtQima6Tu0lNdDRB30RvfmmHxtU33KgP9+hZ/YNrNsA5FpMxmfbFhUFOSFK2cP2LQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710807181; c=relaxed/simple;
-	bh=cJWPjHKoew1CHYHZkQVjW2vYHS+pGQpJZuRRjf5H9x4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=goiMQfv7JErsm5sJ9svL0Z28wFKkoVuPzxXng4KfKgLkiO9zozlfy6W20bUuG2K9uuxm1DAqcPdyLQC87jLzjN+qKv7AmT+XiORXZ8eGueWnBIdFsymW8NNdzPyAhwFTMCJw9IE//gk7xgJLfM9kTCtj7f8rJWFfYZTzi0CwKgg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=d8BJZS8i; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from pendragon.ideasonboard.com (81-175-209-231.bb.dnainternet.fi [81.175.209.231])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 9361A480;
-	Tue, 19 Mar 2024 01:12:31 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710807151;
-	bh=cJWPjHKoew1CHYHZkQVjW2vYHS+pGQpJZuRRjf5H9x4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=d8BJZS8iGJKZLVolj7pGRGn48j9q6lDP9SSCup0/hbbzaOQB9ES1z7zUegweh/+O9
-	 KSI35JwNdPa4FPVBnUBTSMV1ABPNyT33vrycN65BrvNuw//jfx/VPIqUlU3hlPd8Sq
-	 dsjbTKQhuorbCoxcGGU8yyI07/EcoeSPVtTr7dRM=
-Date: Tue, 19 Mar 2024 02:12:55 +0200
-From: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-To: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-Cc: Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	David Airlie <airlied@gmail.com>, Daniel Vetter <daniel@ffwll.ch>,
-	Michal Simek <michal.simek@amd.com>,
-	Andrzej Hajda <andrzej.hajda@intel.com>,
-	Neil Armstrong <neil.armstrong@linaro.org>,
-	Robert Foss <rfoss@kernel.org>, Jonas Karlman <jonas@kwiboo.se>,
-	Jernej Skrabec <jernej.skrabec@gmail.com>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Mauro Carvalho Chehab <mchehab@kernel.org>,
-	dri-devel@lists.freedesktop.org,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-media@vger.kernel.org
-Subject: Re: [PATCH v2 4/8] drm: xlnx: zynqmp_dpsub: Minimize usage of global
- flag
-Message-ID: <20240319001255.GV13682@pendragon.ideasonboard.com>
-References: <20240312-dp-live-fmt-v2-0-a9c35dc5c50d@amd.com>
- <20240312-dp-live-fmt-v2-4-a9c35dc5c50d@amd.com>
+	s=arc-20240116; t=1710807302; c=relaxed/simple;
+	bh=Xml8UrA+/N9DI1sriDiEA3m1U8/jThWp7kGRn7KX/W8=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=oHnS+OcSI1S4YiFUXzxDvsyvA7Id3xutcwGW7SfTkuiDyG4KL1bGjCoqSAdLrNs7iFu0SgQQXQzqlYLlopjddzH+/Qcngmxpy8hrSho+wa9y/tIQ00+LFj3+zJ3aY5Hd152MSUcpDruS3BmljosKb1Z7ubU1Y32ZmE88LBzdvFY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=JWIKtc9+; arc=none smtp.client-ip=209.85.218.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f47.google.com with SMTP id a640c23a62f3a-a46cf8f649dso140536566b.3;
+        Mon, 18 Mar 2024 17:15:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710807299; x=1711412099; darn=vger.kernel.org;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id:from:to
+         :cc:subject:date:message-id:reply-to;
+        bh=5g8p3IqxgARfKYTGktm7aut6cdCT60gi+hlyJV5ViYE=;
+        b=JWIKtc9+v6qs5pn6mlGt2C0b9Tp7fXAUPJzrYiS54FQjXvSph6RsVubdYRN3kSa67h
+         XsJphIWilsfbb0shYONdC9MwJNO1ne/bXXJSoL1PrhtMCQiOfCifN5jFqLQXm7xaC03p
+         FDoIZLv7Y7NTTbhOVUcijalnJ69yXE/yuK3FqAhbWTUfGDN5qF5ymZp+YDNueFa8bQBM
+         0+hwcHPz9nl7HpqpEYlAy0Jm0y2IdVFpFX0KfQr3YpdQxFsuijlGSggDIzhAvF13bpsO
+         8VB/u4rqZrC48dgXTDi+1vJJJk5hqw5r9cXWQcuQpPSskznNhTGVnZ67d7yveZNsYrV5
+         1wOQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710807299; x=1711412099;
+        h=mime-version:user-agent:content-transfer-encoding:autocrypt
+         :references:in-reply-to:date:cc:to:from:subject:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=5g8p3IqxgARfKYTGktm7aut6cdCT60gi+hlyJV5ViYE=;
+        b=QoZVeVTxYswgfuEFHhILjdNoKGYdPMN01V7pJBg8FU9it7otZ54SlAPe/YatYhOtXX
+         4C8nYpc8HmrXe4dvv3Nnl9XzTloLU209R7z5cVqnmCKswPcfNqodDmA4ih+tCSj5dbc4
+         RkOMc71Cu4ZvdQiWbWRf38X7r1jn7QCzQs4URucy5bpJ64FX4FtQ+eg8cDwr3GlBb28D
+         PwlCsE27fplLN/52kFaN5YuZkA4Rxfc2SNk584eVpRDI3CAh+kThiyt58uUNCZn/SVvH
+         ahl+Njqm0Kn+FybDiNnBOVXfjkYoTNgYxuAt91GzQAlL9sTJr75UZxHuElZ/hAoEjghk
+         WiBg==
+X-Forwarded-Encrypted: i=1; AJvYcCVtpf0Gsv5kf25X3QTuWJs6B5UYEedqU76byYrY15wSEwnhK41UN03JZpyC7lEFOmpjyGR/75xsErJlsUQk1bHaMQzClN8OzjG1SOVOAOMrsMZmUCb18hdYSwBtBfx4R5eXVtK9UwRQrBhWD+OC
+X-Gm-Message-State: AOJu0YwWntR9lQkQhIuBpWXVqU48nPxq6a0txkYrfBQYZ2czZl4zkT7v
+	zZEZbN7lJZo91SnvYYvuMR1+SMuXawuSxMXqH4B9h1Gr6u1K9skr
+X-Google-Smtp-Source: AGHT+IEqaXjurhuhSHzFitnnwvEJbQxx8vRt7Mfz+RXSuN+q4PXsUtc9PE6WTppBGjFIoLgo8rTQeA==
+X-Received: by 2002:a17:907:7886:b0:a46:aaaa:4220 with SMTP id ku6-20020a170907788600b00a46aaaa4220mr572354ejc.32.1710807298480;
+        Mon, 18 Mar 2024 17:14:58 -0700 (PDT)
+Received: from [192.168.6.255] ([5.1.5.0])
+        by smtp.gmail.com with ESMTPSA id o12-20020a170906358c00b00a46cffe6d06sm802577ejb.42.2024.03.18.17.14.56
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Mon, 18 Mar 2024 17:14:57 -0700 (PDT)
+Message-ID: <89e76fa5834bd34ef94761bcbc987a1be245b261.camel@gmail.com>
+Subject: Re: [PATCH bpf-next v4 6/6] selftests/bpf: add sleepable timer tests
+From: Eduard Zingerman <eddyz87@gmail.com>
+To: Benjamin Tissoires <bentiss@kernel.org>, Alexei Starovoitov
+ <ast@kernel.org>,  Daniel Borkmann <daniel@iogearbox.net>, Andrii Nakryiko
+ <andrii@kernel.org>, Martin KaFai Lau <martin.lau@linux.dev>,  Song Liu
+ <song@kernel.org>, Yonghong Song <yonghong.song@linux.dev>, John Fastabend
+ <john.fastabend@gmail.com>, KP Singh <kpsingh@kernel.org>, Stanislav
+ Fomichev <sdf@google.com>, Hao Luo <haoluo@google.com>, Jiri Olsa
+ <jolsa@kernel.org>,  Mykola Lysenko <mykolal@fb.com>, Shuah Khan
+ <shuah@kernel.org>
+Cc: bpf@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	linux-kselftest@vger.kernel.org
+Date: Tue, 19 Mar 2024 02:14:56 +0200
+In-Reply-To: <20240315-hid-bpf-sleepable-v4-6-5658f2540564@kernel.org>
+References: <20240315-hid-bpf-sleepable-v4-0-5658f2540564@kernel.org>
+	 <20240315-hid-bpf-sleepable-v4-6-5658f2540564@kernel.org>
+Autocrypt: addr=eddyz87@gmail.com; prefer-encrypt=mutual; keydata=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
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.50.3 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <20240312-dp-live-fmt-v2-4-a9c35dc5c50d@amd.com>
 
-Hi Anatoliy,
+On Fri, 2024-03-15 at 15:29 +0100, Benjamin Tissoires wrote:
+> bpf_experimental.h and ../bpf_testmod/bpf_testmod_kfunc.h are both
+> including vmlinux.h, which is not compatible with including time.h
+> or bpf_tcp_helpers.h.
+>=20
+> So prevent vmlinux.h to be included, and override the few missing
+> types.
+>=20
+> Signed-off-by: Benjamin Tissoires <bentiss@kernel.org>
 
-Thank you for the patch.
+[...]
 
-On Tue, Mar 12, 2024 at 05:55:01PM -0700, Anatoliy Klymenko wrote:
-> Avoid usage of global zynqmp_dpsub.dma_enabled flag in DPSUB layer
-> context. This flag signals whether the driver runs in DRM CRTC or DRM
-> bridge mode, assuming that all display layers share the same live or
-> non-live mode of operation. Using per-layer mode instead of global flag
-> will siplify future support of the hybrid scenario.
+> @@ -6,6 +6,14 @@
+>  #include <bpf/bpf_helpers.h>
+>  #include "bpf_tcp_helpers.h"
+> =20
+> +#define __VMLINUX_H__
+> +#define u32 __u32
+> +#define u64 __u64
+> +#include "bpf_experimental.h"
+> +struct prog_test_member1;
+> +#include "../bpf_testmod/bpf_testmod_kfunc.h"
+> +#undef __VMLINUX_H__
 
-s/siplify/simplify/
+Tbh, this looks very ugly.
+Would it be possible to create a new tests file sleepable_timer.c
+and include bpf_experimental.h there, skipping time.h?
+It appears that for the new tests the only necessary definition from
+time.h is CLOCK_MONOTONIC.
 
-> Signed-off-by: Anatoliy Klymenko <anatoliy.klymenko@amd.com>
-> ---
->  drivers/gpu/drm/xlnx/zynqmp_disp.c | 11 ++++-------
->  1 file changed, 4 insertions(+), 7 deletions(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index af851190f447..dd48fa60fa9a 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -975,7 +975,7 @@ void zynqmp_disp_layer_disable(struct zynqmp_disp_layer *layer)
->  {
->  	unsigned int i;
->  
-> -	if (layer->disp->dpsub->dma_enabled) {
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_NONLIVE) {
->  		for (i = 0; i < layer->drm_fmt->num_planes; i++)
->  			dmaengine_terminate_sync(layer->dmas[i].chan);
->  	}
-> @@ -1001,7 +1001,7 @@ void zynqmp_disp_layer_set_format(struct zynqmp_disp_layer *layer,
->  
->  	zynqmp_disp_avbuf_set_format(layer->disp, layer, layer->disp_fmt);
->  
-> -	if (!layer->disp->dpsub->dma_enabled)
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
->  		return;
->  
->  	/*
-> @@ -1039,7 +1039,7 @@ int zynqmp_disp_layer_update(struct zynqmp_disp_layer *layer,
->  	const struct drm_format_info *info = layer->drm_fmt;
->  	unsigned int i;
->  
-> -	if (!layer->disp->dpsub->dma_enabled)
-> +	if (layer->mode == ZYNQMP_DPSUB_LAYER_LIVE)
->  		return 0;
-
-The above changes look nice.
-
->  
->  	for (i = 0; i < info->num_planes; i++) {
-> @@ -1089,7 +1089,7 @@ static void zynqmp_disp_layer_release_dma(struct zynqmp_disp *disp,
->  {
->  	unsigned int i;
->  
-> -	if (!layer->info || !disp->dpsub->dma_enabled)
-> +	if (!layer->info)
-
-This, however, doesn't seem right, as this function is called
-unconditionally from the remove path. The change below seems weird too.
-If I'm missing something, it should at least be explained in the commit
-message.
-
->  		return;
->  
->  	for (i = 0; i < layer->info->num_channels; i++) {
-> @@ -1132,9 +1132,6 @@ static int zynqmp_disp_layer_request_dma(struct zynqmp_disp *disp,
->  	unsigned int i;
->  	int ret;
->  
-> -	if (!disp->dpsub->dma_enabled)
-> -		return 0;
-> -
->  	for (i = 0; i < layer->info->num_channels; i++) {
->  		struct zynqmp_disp_layer_dma *dma = &layer->dmas[i];
->  		char dma_channel_name[16];
-> 
-
--- 
-Regards,
-
-Laurent Pinchart
 
