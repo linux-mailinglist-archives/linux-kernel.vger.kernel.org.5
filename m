@@ -1,110 +1,151 @@
-Return-Path: <linux-kernel+bounces-107870-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107873-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 846338802C9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:56:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 46CB68802D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:00:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3A5DD1F236BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:56:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81D31F2259E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:00:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0C61BC49;
-	Tue, 19 Mar 2024 16:56:13 +0000 (UTC)
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6A694179BF;
+	Tue, 19 Mar 2024 16:59:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=fastmail.fm header.i=@fastmail.fm header.b="0u9/fpcI";
+	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="lrNIPM4x"
+Received: from fhigh8-smtp.messagingengine.com (fhigh8-smtp.messagingengine.com [103.168.172.159])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9D09218EC0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:56:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 698FC1118E;
+	Tue, 19 Mar 2024 16:59:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.159
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710867372; cv=none; b=ADSy52U4qg75oHJ+tiIPqYPAHyAQXmPnI22JjqsuarQBggmLJFhKlJayvetTC/55SmrmGe7iR6sXnn9ks/AmcTOCKa9u9jd5TWP19ri2kWsvzIcj8r3GuCpW3OxwNfEenYHkN1FtkGVOGxuvnMFp9TTf4wwIhrA1/Pb0yN4Acyc=
+	t=1710867590; cv=none; b=cbrqfawiaPDJOumImTYUGOhyDTd6Totzd5pLDLxWl1h2LFmrCASZB2ZZc2HuEg0roKn5U+qnskUaifWfASWYb5CsuUoQGQS/jC2auTeCEvPy9YIjdyufLl13Vb13FYqbdI3pAHB/l938aOH7Ib4BmUZHhtT1E63+LlI8mZNIfT4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710867372; c=relaxed/simple;
-	bh=shhA6J6IcnJOSAhU1RZmsl4eapiTt7sfthNIV7XitGo=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PF2DehjFNsuujV2I0oFmxdqlRIhDKxvP5X8vpQcKX7in/fVla0fmtidz9BOsyjkvR8jyTFvzsDNaDl3dWDGthKmiuzN333uesKkQmsUZbrwdvOvA+DY3HwKedo1eOkoJM1FFl+iNpWVfHKDduXLYzNZRZnMXp3FjVLPIMn1ZXHY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id DB314C433C7;
-	Tue, 19 Mar 2024 16:56:10 +0000 (UTC)
-Date: Tue, 19 Mar 2024 12:58:33 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: Linus Torvalds <torvalds@linux-foundation.org>
-Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu
- <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Alison Schofield <alison.schofield@intel.com>, Beau Belgrave
- <beaub@linux.microsoft.com>, Huang Yiwei <quic_hyiwei@quicinc.com>, John
- Garry <john.g.garry@oracle.com>, Randy Dunlap <rdunlap@infradead.org>,
- Thorsten Blum <thorsten.blum@toblux.com>, Vincent Donnefort
- <vdonnefort@google.com>, linke li <lilinke99@qq.com>
-Subject: Re: [GIT PULL v2] tracing: Updates for v6.9
-Message-ID: <20240319125833.30098a37@gandalf.local.home>
-In-Reply-To: <CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com>
-References: <20240318113053.7f87ce7f@gandalf.local.home>
-	<CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710867590; c=relaxed/simple;
+	bh=TPYwpJrngVJym4yY5SzYj0P5kZ+FMMniYM2lAo+nnhI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=VO+ahk80UR8HHCy8r8La9dAtuzltYDny1OZdJ1muhMHrlMoFCvLZAG6JjwBu4HN53O5efHOWmlW5fF5izkglVozXTJ7xnK2OGi1hZhAs6d0S5amOwgnTW5emDwACBoKKid4DFmmh7ik3O9Z6t6pH3liOXYf3ANNTtqIzcb/eYzw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.fm; spf=pass smtp.mailfrom=fastmail.fm; dkim=pass (2048-bit key) header.d=fastmail.fm header.i=@fastmail.fm header.b=0u9/fpcI; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=lrNIPM4x; arc=none smtp.client-ip=103.168.172.159
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=fastmail.fm
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fastmail.fm
+Received: from compute3.internal (compute3.nyi.internal [10.202.2.43])
+	by mailfhigh.nyi.internal (Postfix) with ESMTP id 8750E1140101;
+	Tue, 19 Mar 2024 12:59:47 -0400 (EDT)
+Received: from mailfrontend2 ([10.202.2.163])
+  by compute3.internal (MEProxy); Tue, 19 Mar 2024 12:59:47 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=fastmail.fm; h=
+	cc:cc:content-transfer-encoding:content-type:content-type:date
+	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to; s=fm2; t=1710867587;
+	 x=1710953987; bh=cHdFUwNUaNtHseK/mzgvFDOdmo7eBJ0OS3s8iO/q7R0=; b=
+	0u9/fpcIJQPoY0zpSCSJ6gTPGTGnlb3KOcQLJQwVoFNWumffgMIIO56GHh0ukM4I
+	PWYbUjIJOaDdaZZ3BKwmOQIybUPlcppqssGdWvfDmEfRO1C+EhqIHG5qLORrYn1o
+	qq6MWOx/cN4EvD9Wu/N9lFNoUoWXO1uo9Aa+Py8FP7yFheRD3pvRA4a6VyaWd+Rb
+	yqy2xrgqf+UftdQXAjWZorzwEthFH1X4bUPGo5GhF13V1yLhgioycWUwQLGTQ1BP
+	E4Jc5iJ4+9kAOv2HXWSWAp1Xxj+FuEJ9YkgfYRN2bwlUe96iq7tSRA01cR+2list
+	hQl6u6AbGGgsmn8nPUK2xQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	messagingengine.com; h=cc:cc:content-transfer-encoding
+	:content-type:content-type:date:date:feedback-id:feedback-id
+	:from:from:in-reply-to:in-reply-to:message-id:mime-version
+	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
+	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710867587; x=
+	1710953987; bh=cHdFUwNUaNtHseK/mzgvFDOdmo7eBJ0OS3s8iO/q7R0=; b=l
+	rNIPM4xpEKf2RZpW1L6EY8hMPyl0jjOpe1MzAtqVxSww7hjUNwG+igvOnMrB2vKD
+	uk5/6o9swhOhRdTEBhPQFfKaj2tVsMMNPM5/dnt4AMFILolNuIwVeOnWY2ciHnyf
+	WN58rRHTp6Mo14sWlR8R0Yap+DaTkJMfaGFljXx5ENWroxZPgRr3/BmE6e0bNba7
+	U2BXvYFY+eiV8fi8BFz5gTGNoHm4orSK7Gja3/QQsrhR0aTgZOUVC7b3Yuj2UBry
+	8bn/qTnv6kojC+Hzm+5xruFjYzL6RIr66kh6rlkc/RP1JlEFJydP1JVI4wkb4yEL
+	1eKgP3HUkQNAR3pU7X/Cg==
+X-ME-Sender: <xms:gsT5ZcZAHXxbcYEsXh2kFe2XEGrKSbNqGQBdQc-OzhXhZ7TWuh1B9Q>
+    <xme:gsT5ZXaUJNPxGEC-EGUIISLXOzYax5A6JWwRmGSgMLewfoFfXMLfjJvPstAyL2Oiy
+    4ZRT7XKSrQL8SE0>
+X-ME-Received: <xmr:gsT5ZW-SHey_qu8C_n65vo9NmpDxAoNNWHaiCuCOvvihVmXqK7X5lJfVjYvTCYCktg6McJZf_WNCST2JODi6EI6tUlu4y9gsfgZw7W-x_DDDaaeQ2BvN>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrledtgdejtdcutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpefkffggfgfuvfevfhfhjggtgfesthejredttddvjeenucfhrhhomhepuegvrhhn
+    ugcuufgthhhusggvrhhtuceosggvrhhnugdrshgthhhusggvrhhtsehfrghsthhmrghilh
+    drfhhmqeenucggtffrrghtthgvrhhnpeevhffgvdeltddugfdtgfegleefvdehfeeiveej
+    ieefveeiteeggffggfeulefgjeenucevlhhushhtvghrufhiiigvpedtnecurfgrrhgrmh
+    epmhgrihhlfhhrohhmpegsvghrnhgurdhstghhuhgsvghrthesfhgrshhtmhgrihhlrdhf
+    mh
+X-ME-Proxy: <xmx:gsT5ZWp_Xp8g-XeIUTn3R3XwcTxPEI87lEYYuBopKtA1ZW2yuelMCA>
+    <xmx:gsT5ZXpAsV-4kCS8ULBvaHC4sBvy5j1Au1FZfetCOl79nYNNGA7CyQ>
+    <xmx:gsT5ZUSsxLu4tR4TgEBX3FnVK8rJNxhJI8Q-5dX6YQnrD8gAnJxrrg>
+    <xmx:gsT5ZXoC0N7zIHK-a-_46_RtZYXB5rwZGTfRRa9OZt-BiFUrc2fU6g>
+    <xmx:g8T5ZeelEAZbKzgWvJSrQWBb4nfdzh9IQCPESFVTj-2G0oAdFX45Qg>
+Feedback-ID: id8a24192:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 19 Mar 2024 12:59:44 -0400 (EDT)
+Message-ID: <63e67db9-7425-4928-afb2-cbe7cc6232bb@fastmail.fm>
+Date: Tue, 19 Mar 2024 17:59:42 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
+To: Miklos Szeredi <miklos@szeredi.hu>, David Howells <dhowells@redhat.com>
+Cc: Matthew Wilcox <willy@infradead.org>,
+ Trond Myklebust <trond.myklebust@hammerspace.com>,
+ Christoph Hellwig <hch@lst.de>, Andrew Morton <akpm@linux-foundation.org>,
+ Alexander Viro <viro@zeniv.linux.org.uk>,
+ Christian Brauner <brauner@kernel.org>, Jeff Layton <jlayton@kernel.org>,
+ linux-mm@kvack.org, linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
+ v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
+ ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
+ linux-nfs@vger.kernel.org, linux-kernel@vger.kernel.org
+References: <1668172.1709764777@warthog.procyon.org.uk>
+ <ZelGX3vVlGfEZm8H@casper.infradead.org>
+ <1831809.1709807788@warthog.procyon.org.uk>
+ <CAJfpegv8X0PY7PvxEF=zEwRbdZ7yZZcwB80iDO+XLverognx+g@mail.gmail.com>
+ <651179.1710857687@warthog.procyon.org.uk>
+ <CAJfpegsUYUwp2YNnCE3ZP+JtL0whgQ=3+wcsBABGXH9MjXC0zA@mail.gmail.com>
+ <CAJfpegsCBEm11OHS8bfQdgossOgofPcYhLTFtw7_+T66iBvznw@mail.gmail.com>
+Content-Language: en-US, de-DE, fr
+From: Bernd Schubert <bernd.schubert@fastmail.fm>
+In-Reply-To: <CAJfpegsCBEm11OHS8bfQdgossOgofPcYhLTFtw7_+T66iBvznw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Mar 2024 09:23:10 -0700
-Linus Torvalds <torvalds@linux-foundation.org> wrote:
 
-> On Mon, 18 Mar 2024 at 08:28, Steven Rostedt <rostedt@goodmis.org> wrote:
-> >
-> > - Added checks to make sure that the source of __string() is also the
-> >   source of __assign_str() so that it can be safely removed in the next
-> >   merge window.  
-> 
-> Aargh.
-> 
-> I didn't notice this initially, because it doesn't happen with gcc (or
-> maybe not with allmodconfig), but with clang I get
-> 
->     CC [M]  net/sunrpc/sched.o
->   In file included from net/sunrpc/sched.c:31:
->   In file included from ./include/trace/events/sunrpc.h:2524:
->   In file included from ./include/trace/define_trace.h:102:
->   In file included from ./include/trace/trace_events.h:419:
->   include/trace/events/sunrpc.h:707:4: error: result of comparison
-> against a string literal is unspecified (use an explicit string
-> comparison function instead) [-Werror,-Wstring-compare]
-> 
-> and then about 250 lines ot messy "explanations" for how it was
-> expanded because it happens on line 709 too in the same macro, and it
-> ends up being three macros deep or something.
-> 
-> So no, this all needs to be re-done. That
-> 
->                 WARN_ON_ONCE(__builtin_constant_p(src) ?                \
->                              strcmp((src), __data_offsets.dst##_ptr_) : \
->                              (src) != __data_offsets.dst##_ptr_);       \
-> 
-> does *NOT* work.
-> 
-> Also, looking at that __assign_str() macro, it seems literally insane.
-> On the next line it will do
-> 
->                 memcpy(__str__, __data_offsets.dst##_ptr_ ? :           \
->                        EVENT_NULL_STR, __len__);                        \
-> 
-> so now it checks "__data_offsets.dst##_ptr_" for NULL - but that's one
-> line after it just did that strcmp on it.
-> 
-> WTF?
-> 
-> This code is completely bogus.
 
-The WARN_ON_ONCE() was added separately and missed that we do now allow it
-to be NULL.
+On 3/19/24 17:40, Miklos Szeredi wrote:
+> On Tue, 19 Mar 2024 at 17:13, Miklos Szeredi <miklos@szeredi.hu> wrote:
+>>
+>> On Tue, 19 Mar 2024 at 15:15, David Howells <dhowells@redhat.com> wrote:
+>>
+>>> What particular usage case of invalidate_inode_pages2() are you thinking of?
+>>
+>> FUSE_NOTIFY_INVAL_INODE will trigger invalidate_inode_pages2_range()
+>> to clean up the cache.
+>>
+>> The server is free to discard writes resulting from this invalidation
+>> and delay reads in the region until the invalidation finishes.  This
+>> would no longer work with your change, since the mapping could
+>> silently be reinstated between the writeback and the removal from the
+>> cache due to the page being unlocked/relocked.
+> 
+> This would also matter if a distributed filesystem wanted to implement
+> coherence even if there are mmaps.   I.e. a client could get exclusive
+> access to a region by issuing FUSE_NOTIFY_INVAL_INODE on all other
+> clients and blocking reads.  With your change this would fail.
+> 
+> Again, this is purely theoretical, and without a way to differentiate
+> between the read-only and write cases it has limited usefulness.
+> Adding leases to fuse (which I plan to do) would make this much more
+> useful.
 
-I'll fix that.
+Thanks Miklos! Fyi, we are actually planning to extend fuse
+notifications from inode to page ranges.
 
--- Steve
+
+Thanks,
+Bernd
 
