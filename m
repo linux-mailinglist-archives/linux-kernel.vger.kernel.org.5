@@ -1,140 +1,141 @@
-Return-Path: <linux-kernel+bounces-108235-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108236-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0D4EE88082D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:27:27 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 30712880832
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:33:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 94037284626
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:27:25 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id DD1AB283DBD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:33:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 65BBF5FB97;
-	Tue, 19 Mar 2024 23:27:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 79FD65FB8E;
+	Tue, 19 Mar 2024 23:33:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="MILY0DzQ"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="TeaMfJv4"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 009DD5FB87;
-	Tue, 19 Mar 2024 23:27:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C17201D52D
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:33:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710890839; cv=none; b=cjHke/n+MKFDnFFkz/Cb4WW+oZTJYXBeF6X7IO7wtLLfZLU1/AHG4R7Shw8wzqvo+TA7uDggVJLwGIRuNGq00dY3fm7ePDYwJIewNoQAqMhHQvlwguq5Mw49r+TcqU5NK2ZH0OQSSgdX8+tECJhB1cYijocX5iFqWllk7f3aCME=
+	t=1710891201; cv=none; b=td61kcswKYqd0rWawAbxyh0tg2BZvgW5tunglVQaq9SPEw0Vw5w5s6Sdcki8pXB2b0dwJbSieGQ7HaBbDZzppwweUW6z30+0D5n42nA3xpMQTpanXs8ToLJ+BApVS0kQc12BUPJLbwOJcfl3Wt+WA5w9R4DeVeRrA+GYa7tITd4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710890839; c=relaxed/simple;
-	bh=n9hJKPDTxTJEfGF00HWBydZQG0tQd8kHTr6mql/7gpY=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Mime-Version; b=cMH0CZ9/Z6fof50dgcETM501kLBxLhvKcCRB3cMj4zFGyJiTvyfAwmiSpR5FLAleK68tbEXCuPAyZKFsqNUaHesd/vpAKPKg5wbXD2uDhddU3wYlcYKbQhVFmuh6VF4fiZt+LstpVVzdFOzX5TKYzflxPtqTod7o9nDP+sf2x0s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=MILY0DzQ; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353725.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JNBJDE005139;
-	Tue, 19 Mar 2024 23:27:04 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=KT4mNfO5o+rkVdaLLiWXiMPJK6QQlVazM68bG532oFk=;
- b=MILY0DzQUbBH/Zzhy4xhDfxLRNsWgXsRgdzYoSo7RaXJMMSk4QJ78CtyIzWJdxPZX11E
- 7Mg8YDJf0gI04d9A3g6iZRo88sryRfn+SjBCax2r5aK5IXKb1iIlUjcZIZrIRSBqEtPo
- EKeTknIISJalWuve5+ZxUY+GpLDxuKoAdVTU8942YZCXGO6vol5QnrT8c3R4RlOYI3/x
- O0jVWP9e/YFvPNuDNdSL3lJ+ZJ/u7GsvfIir3A3zqoAwiTXg/3drPaAbXdPXfdizqc/s
- WKlCANpbo763pV4s/aCAhIQ1noOGYdNhBNICBoQ5uFh46Oa7IYMpQhEXfMhASPHgUxhK EQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyhffga22-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 23:27:03 +0000
-Received: from m0353725.ppops.net (m0353725.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JNR3te027009;
-	Tue, 19 Mar 2024 23:27:03 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyhffga21-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 23:27:03 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JKRFYe002815;
-	Tue, 19 Mar 2024 23:27:02 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2jajb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 23:27:02 +0000
-Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JNQxjR21496396
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 23:27:02 GMT
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id A0A675805C;
-	Tue, 19 Mar 2024 23:26:59 +0000 (GMT)
-Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 66EDC58058;
-	Tue, 19 Mar 2024 23:26:58 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.80.83])
-	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Mar 2024 23:26:58 +0000 (GMT)
-Message-ID: <7f4a9464a5582e7f1b0feb180bb198b44bb278c0.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 08/10] evm: Enforce signatures on unsupported
- filesystem for EVM_INIT_X509
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-unionfs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, roberto.sassu@huawei.com, amir73il@gmail.com,
-        brauner@kernel.org, miklos@szeredi.hu
-Date: Tue, 19 Mar 2024 19:26:57 -0400
-In-Reply-To: <20240223172513.4049959-9-stefanb@linux.ibm.com>
-References: <20240223172513.4049959-1-stefanb@linux.ibm.com>
-	 <20240223172513.4049959-9-stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
+	s=arc-20240116; t=1710891201; c=relaxed/simple;
+	bh=4ZxSGXZ55yPyytrthEFK3xMPNqPoa7iYlBUKFWVCHaw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=gndmZ9DL7Yrq2wvP5Thm8XO51gSzpO4vWEIoreBacdbYyetdj/pzc+bF2+eJKyAL9ywu0yYBZMjIeMyZ9k6Meqr23lgeIF3E41pUrIK1bvbmHHsT7IGO5AyQgGtIuhq9dj1qFyJzMIXHoPVbAxefHh7MxLwW8XC7D4Wc7ejqd04=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=TeaMfJv4; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 135C4C433C7;
+	Tue, 19 Mar 2024 23:33:21 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710891201;
+	bh=4ZxSGXZ55yPyytrthEFK3xMPNqPoa7iYlBUKFWVCHaw=;
+	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
+	b=TeaMfJv4Q3QXcDAvLdtGyyjEF1IpApNH1P9v8ptg3/bHYdlzN0lQP1OkoqwjuUuDN
+	 PPrjwPEE6Sp3Uidmtk6nNMMfJN4GKXZWWFkJ1k8k5jFZwb90dsbjvqkk9KAMYmh7x9
+	 srp7QGAEa2U0EF3sjkolO7d2xUSkP8vd3cO+4lo2PK/cH7SW8wPPT/ElsDiFgKPQKw
+	 CxHrK2wYTZUd0OGMh2DQI9vIkZNfxw4GyRXOEWn+mtHFqNHXyvYP9fQk1ZtJjHQAwz
+	 dUVtBd9eEqLOueJEMVyvwHDc4BxMq2ymr3p+tB7ur+GAKjc69wCCgKs32lsnaAIZ43
+	 zXYeoR/UiSg5g==
+Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
+	id EBC2DCE2880; Tue, 19 Mar 2024 16:33:18 -0700 (PDT)
+Date: Tue, 19 Mar 2024 16:33:18 -0700
+From: "Paul E. McKenney" <paulmck@kernel.org>
+To: Mark Rutland <mark.rutland@arm.com>
+Cc: Steven Rostedt <rostedt@goodmis.org>,
+	Ankur Arora <ankur.a.arora@oracle.com>,
+	linux-kernel@vger.kernel.org, tglx@linutronix.de,
+	peterz@infradead.org, torvalds@linux-foundation.org,
+	akpm@linux-foundation.org, luto@kernel.org, bp@alien8.de,
+	dave.hansen@linux.intel.com, hpa@zytor.com, mingo@redhat.com,
+	juri.lelli@redhat.com, vincent.guittot@linaro.org,
+	willy@infradead.org, mgorman@suse.de, jpoimboe@kernel.org,
+	jgross@suse.com, andrew.cooper3@citrix.com, bristot@kernel.org,
+	mathieu.desnoyers@efficios.com, glaubitz@physik.fu-berlin.de,
+	anton.ivanov@cambridgegreys.com, mattst88@gmail.com,
+	krypton@ulrich-teichert.org, David.Laight@aculab.com,
+	richard@nod.at, jon.grimm@amd.com, bharata@amd.com,
+	boris.ostrovsky@oracle.com, konrad.wilk@oracle.com
+Subject: Re: Tasks RCU, ftrace, and trampolines (was: Re: [PATCH 00/30]
+ PREEMPT_AUTO: support lazy rescheduling)
+Message-ID: <920d4364-52e3-4aaa-9026-0755b65dbf11@paulmck-laptop>
+Reply-To: paulmck@kernel.org
+References: <20240221131901.69c80c47@gandalf.local.home>
+ <8f30ecd8-629b-414e-b6ea-b526b265b592@paulmck-laptop>
+ <20240221151157.042c3291@gandalf.local.home>
+ <53020731-e9a9-4561-97db-8848c78172c7@paulmck-laptop>
+ <ZddtKszRH5Ak5tZ7@FVFF77S0Q05N>
+ <1ec4dc29-8868-4d82-8c5e-c17ad025bc22@paulmck-laptop>
+ <Zdh8CdrtbL9LgOLG@FVFF77S0Q05N>
+ <5641c2f4-3453-4b04-ab0d-db9e5b464b9c@paulmck-laptop>
+ <91437fa8-c192-4a71-8073-bdd9c3889926@paulmck-laptop>
+ <Zfl6y-NLuwbmyyL8@FVFF77S0Q05N>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: MV5-4AaJmUZr_ILvF1ZFbSmYl5l6Ejj4
-X-Proofpoint-GUID: cDOQUTGmD65oKLSwel36uzjFzk1A7WtH
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-19_09,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
- priorityscore=1501 bulkscore=0 lowpriorityscore=0 mlxscore=0
- malwarescore=0 mlxlogscore=999 clxscore=1015 spamscore=0 phishscore=0
- suspectscore=0 impostorscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2403140000 definitions=main-2403190180
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <Zfl6y-NLuwbmyyL8@FVFF77S0Q05N>
 
-On Fri, 2024-02-23 at 12:25 -0500, Stefan Berger wrote:
-> Unsupported filesystems currently do not enforce any signatures. Add
-> support for signature enforcement of the "original" and "portable &
-> immutable" signatures when EVM_INIT_X509 is enabled.
+On Tue, Mar 19, 2024 at 11:45:15AM +0000, Mark Rutland wrote:
+> Hi Paul,
 > 
-> The "original" signature type contains filesystem specific metadata.
-> Thus it cannot be copied up and verified. However with EVM_INIT_X509
-> and EVM_ALLOW_METADATA_WRITES enabled, the "original" file signature
-> may be written.
+> On Fri, Mar 01, 2024 at 05:16:33PM -0800, Paul E. McKenney wrote:
+> > The networking NAPI code ends up needing special help to avoid starving
+> > Tasks RCU grace periods [1].  I am therefore revisiting trying to make
+> > Tasks RCU directly detect trampoline usage, but without quite as much
+> > need to identify specific trampolines...
+> > 
+> > I am putting this information in a Google document for future
+> > reference [2].
+> > 
+> > Thoughts?
 > 
-> When EVM_ALLOW_METADATA_WRITES is not set or once it is removed from
-> /sys/kernel/security/evm by setting EVM_INIT_HMAC for example, it is not
-> possible to write or remove xattrs on the overlay filesystem.
-
-This paragraph is currently correct, but at some point EVM_ALLOW_METADATA_WRITES
-will be deprecated.  Refer to commit 1434c6a1d32a ("evm: Deprecate
-EVM_ALLOW_METADATA_WRITES").
-
-Mimi
-
+> Sorry for the long delay! I've been looking into this general area over the
+> last couple of weeks due to the latent bugs I mentioned in:
 > 
-> This change still prevents EVM from writing HMAC signatures on
-> unsupported filesystem when EVM_INIT_HMAC is enabled.
+>   https://lore.kernel.org/lkml/Zenx_Q0UiwMbSAdP@FVFF77S0Q05N/
 > 
-> Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> I was somewhat hoping that staring at the code for long enough would result in
+> an ephinany (and a nice simple-to-backport solution for the latent issues), but
+> so far that has eluded me.
+> 
+> I believe some of those cases will need to use synchronize_rcu_tasks() and we
+> might be able to make some structural changes to minimize the number of times
+> we'd need to synchronize (e.g. having static ftrace call ops->func from the ops
+> pointer, so we can switch ops+func atomically), but those look pretty invasive
+> so far.
+> 
+> I haven't been able to come up with "a precise and completely reliable way to
+> determine whether the current preemption occurred within a trampoline". Since
+> preemption might occur within a trampoline's callee that eventually returns
+> back to the trampoline, I believe that'll either depend on having a reliable
+> stacktrace or requiring the trampoline to dynamically register/unregister
+> somewhere around calling other functions. That, and we do also care about those
+> callees themselves, and it's not just about the trampolines...
+> 
+> On arm64, we kinda have "permanent trampolines", as our
+> DYNAMIC_FTRACE_WILL_CALL_OPS implementation uses a common trampoline. However,
+> that will tail-call direct functions (and those could also be directly called
+> from ftrace callsites), so we don't have a good way of handling those without a
+> change to the direct func calling convention.
+> 
+> I assume that permanent trampolines wouldn't be an option on architectures
+> where trampolines are a spectre mitigation.
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+Thank you for checking!  I placed a pointer to this email in the document
+and updated the relevant sections accordingly.
 
-
+> Mark.
+> 
+> > 								Thanx, Paul
+> > 
+> > [1] https://lore.kernel.org/all/Zd4DXTyCf17lcTfq@debian.debian/
+> > [2] https://docs.google.com/document/d/1kZY6AX-AHRIyYQsvUX6WJxS1LsDK4JA2CHuBnpkrR_U/edit?usp=sharing
 
