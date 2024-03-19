@@ -1,230 +1,191 @@
-Return-Path: <linux-kernel+bounces-107177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5E85287F87C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:37:06 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7664787F883
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 163AC282D3E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:37:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A1EA1F215BE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 539463BBCA;
-	Tue, 19 Mar 2024 07:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32382537F2;
+	Tue, 19 Mar 2024 07:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="ZfG5B1PL"
-Received: from mail-oo1-f49.google.com (mail-oo1-f49.google.com [209.85.161.49])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="XYmddN3v"
+Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2020.outbound.protection.outlook.com [40.92.103.20])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BB4E7535C2;
-	Tue, 19 Mar 2024 07:36:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.49
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710833820; cv=none; b=F+GC7/WODCsr1abN9TbQOd0bd/OnzK91OrWa56MMqBN5G8QbZvP1cLnscWWEYd5lyLMtHEse7oagPoym6W6PFURKD2vm4OK5G2Hx2b5kLcjY/DB67yKRb7pNMzUrmGpu6SQMF3uyj3J0ybISqS39lJajWbqnYCM0gC67ke6v5bI=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710833820; c=relaxed/simple;
-	bh=aYKF8fYK6GaqBm60AFe1ecR/BiZetgHAp/vvF6kUymI=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ixNKueJste0b1mmQ/ssfG1BpPI+4mBmFvPEWqp6fCY5Gl4owdboDdn7X6U8srNFdAVrpTe4H2lbyhue8mDlZ3S40iiCIgBMWwtHSHyvG8jvwcVYBBVIM/QqRcGL1ZMYHptjwtUdYOepHTskyYTAOFirdWzWTmVgjv+okgxmibyM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=ZfG5B1PL; arc=none smtp.client-ip=209.85.161.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oo1-f49.google.com with SMTP id 006d021491bc7-5a47abe2ff7so2037603eaf.0;
-        Tue, 19 Mar 2024 00:36:58 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710833818; x=1711438618; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=YHCJlZjtshIG0jJom0kvx9m2BM/FXwZE6cIGEiQKBVE=;
-        b=ZfG5B1PL4StmrktOo8YojQGwRetO0eVwjmZvwo2IH250g1VVli4QfP84bsGNIwY6Cw
-         pAYsym+mVZZDamX6W++oNNIej7Ay8JfXfiI6N2bXOuG898QPofL8/Zhju1Pei2uTBoup
-         ym8elF3acUdzD+e80plXy+xFGs8MYPNleIkMO2qE0DfxUWhclYcLhRl8U3xL6t0S+XoB
-         KgdrGdBlxbqoxDlyr5vQT9ezDV3vUiMl5YndfRmNXi9TW6qhZtqObp9r3byU5oBneK/0
-         VpJY2ltedVNHzQiEFVrm8fZhkIta3TeS8NZ3MYUNPDu4C5p/d10lo2m6m6L9ALlRIZkI
-         FADQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710833818; x=1711438618;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=YHCJlZjtshIG0jJom0kvx9m2BM/FXwZE6cIGEiQKBVE=;
-        b=djBq2SIyDUDDexBY0mTTH8gSTg7ZQX8qXmxmPExj9K8p2C1boLnMyIFrZsXh6ohn/x
-         U9GH62TkyRaMvz3Vjd49mgHQgj2SAe3SD1fKIF7wPHgRgB+9+eonBcvmOJAACvKgCIyd
-         5l4bncdays9tCjiK0SdxLzD+3kO8deJ4Uhrv6jCI1xTdj3sPgOw86ZL9X3RsLajEixg4
-         03NJkZlnERERk3g1TjZ1GLhIV2s/LgOQY76KJpGNK+Spljk1kOiyL+I5vI+dH47QTmHc
-         vM55JGThYjRI52G4Z0CWukS6hNfsMVa62K72qaeVqODalL3rUu7YX4NBt0Sj5B84xaW6
-         fpkw==
-X-Forwarded-Encrypted: i=1; AJvYcCVFGEaxH13tYFHjZrKZKYV1U+q17Fs95WjlPxejviWoPd+JeY+urLqk5EMH7fZbmb/ENfXVbIA5AJFYU7FCovmlon4Z77Xa0jzE7LDuodMBLp7Cs6ocn+KYvBwAS5ZaRjM5YIcejBGtM5rQVeuODQ+o9p1FOhboFcEyLFd0rHoEYAdPIw==
-X-Gm-Message-State: AOJu0YxtRYy7kp3eMrIOz4AiG5sPUV0FpmrViBC3wobo7fuFtLEPNyiU
-	uAzbgiu+Y6ZaAu2MJr75eXl8lvpCFK9x8H3pSUmwb2jNrIgcQWpK
-X-Google-Smtp-Source: AGHT+IHjuPClKQPIBso0PeBaQRxcjfszD2QnTuP0HROvRIimQAr/wBK/UV5WSm8hqR9OEWW0N8sFWw==
-X-Received: by 2002:a05:6358:4319:b0:17e:69fd:e8cc with SMTP id r25-20020a056358431900b0017e69fde8ccmr8283727rwc.21.1710833817767;
-        Tue, 19 Mar 2024 00:36:57 -0700 (PDT)
-Received: from [172.16.116.58] ([103.15.228.94])
-        by smtp.gmail.com with ESMTPSA id e15-20020aa7980f000000b006e6988c64a5sm9100478pfl.208.2024.03.19.00.36.49
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 00:36:57 -0700 (PDT)
-Message-ID: <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
-Date: Tue, 19 Mar 2024 13:06:39 +0530
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7852030A;
+	Tue, 19 Mar 2024 07:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.103.20
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710834064; cv=fail; b=Bfv5PDMsLc8hE/3aVP4ks78B+tkZ3suypGNVcknRaj2a+DTatpygbvQWpbUkPHQUx/LWOI1OZQ+B/GDN3mTM3zwN0WqFG3yaZxKywVJkT0beSXMv3r71RUrdB1A/kT81KsHgsqn7zUgi/2kXNBsOA+59HeXb347B+Y+Surmlrcw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710834064; c=relaxed/simple;
+	bh=tSQUtTX8fh38Go3RUODerRSlpoPFUFwcCJZSuhrWiGk=;
+	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=dAgZinpfok90Mzt0qkftC/jN6t47L/WOXN8ZHHcqqmQBvc8dE1oWmpsBlMvQggZnxKgalAlF6sOqZdYcS2uTOGRLvZ7GFdLXgHRp5Yth37f2WNstdpcvKyxQpTf29+ifBzFOtIyXS9SIo/jM/eg31dGOM8qRXJCbtpUsPPI+PpY=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=XYmddN3v; arc=fail smtp.client-ip=40.92.103.20
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=KKIrV+94bQOX5HMuKYXkTWS9EkWYaN9Q9hF0NV9StgAxWAb6qJZFWz22WqU2cRATB58Dnmz72+ps6h3zxmxZl0Yk9UhDd7ixOMRZz/uAG5BizIymOqX0qzJwRrnadatRTyLZA8ddkUOG+Sdp69OI1nMqoOIWio8V/PfDWUX9NY3A7lrUW/+8qVUxQHa9D2FAKU9y9zxCZ0urSsjEtKoLYOj4Aexek7riclAyRhz6LOKK8ZlxwaTO8UQaS8xXiEbZZ0kmfWoBfeypZtjXJNG5TEHzoo1sMikIo4Twe3KbH/oi8IYxQocKU8p+wtqkDrbhpDh/HJtx19tQzhmGVF/UQQ==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=gONtz0GRW7/gri2iNvD60/GuVLuc01EbZ7qvr5+H8ZA=;
+ b=bnoNsst9RGZmF3i/NUt4lTjSHGPQ9TySRz+mT7XrEjPIKMO4mZGxEk0lBoHUu5RSe1+iLUbkVIhFeSvNahzYhF1hxQGHHwIu7h5wiquq9OrjF219VQyW4czMxQcN0UW2oBAVjNdR0QenUct/ZPNt53B5o1Ax96j5GLcmjChWcT2E+V57Q3UCJTtMHLokqxVQExt4dMlR7OU5o/i20vNcuSFHfjGxZtnTGt9i3ft+QE47LVpqPNIV+ou7nEcFLW+p+2EhTZClf68VAvtHmEbwBiQnYHRLxcoIlv0WVQbOCw52irNCrUkh7hmc7KwMG8h0x46f9As5rRUL7jnYfxawvQ==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
+ dkim=none; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
+ s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=gONtz0GRW7/gri2iNvD60/GuVLuc01EbZ7qvr5+H8ZA=;
+ b=XYmddN3vMPeoPkMSIgvV6JGtkwd6RZHm2GSB6TMIuFocNDDe+LILt03mys9NO/VeDmUyAhjH7RFH2x5iUqBsDghzt43p0fQixX6CBbLy8Tc9Tm3e1RSo8hFlyG4htYaNnBsso+bFtSpxEC8azWRvCfd8cdpVNkYFFocek2MgfHHLO3TF7gBirXvHze5mqo7bf4N2dVws0vy2VlIHVT+yvNSgRat007Y7P0NrzQYVs4y45CjhTy7Pl1imt1irPwCLbe4G8epRzDFiTkQ91Aw7P0+dNe+DRDHxvw/55CCEOhaNugOKlpCYX0Y2e6jp3WtCd+9p/P9l/HPq0cEPqvSPEA==
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
+ by PNXP287MB0031.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:c0::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.29; Tue, 19 Mar
+ 2024 07:40:51 +0000
+Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::1bd4:64d4:daf5:ae42]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ ([fe80::1bd4:64d4:daf5:ae42%3]) with mapi id 15.20.7386.023; Tue, 19 Mar 2024
+ 07:40:51 +0000
+Message-ID:
+ <MA0P287MB28227C169B0DFB16B1AC762DFE2C2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
+Date: Tue, 19 Mar 2024 15:40:46 +0800
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v11 4/5] clk: sophgo: Add SG2042 clock driver
+To: Stephen Boyd <sboyd@kernel.org>, Chen Wang <unicornxw@gmail.com>,
+ aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
+ devicetree@vger.kernel.org, guoren@kernel.org, haijiao.liu@sophgo.com,
+ inochiama@outlook.com, jszhang@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org,
+ linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
+ mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
+ richardcochran@gmail.com, robh+dt@kernel.org, samuel.holland@sifive.com,
+ xiaoguang.xing@sophgo.com
+References: <cover.1708397315.git.unicorn_wang@outlook.com>
+ <d7c74c2cfa410850c044ff2879720db06c2f8272.1708397315.git.unicorn_wang@outlook.com>
+ <47a83f766c85481b73c6e6dd3759d4d9.sboyd@kernel.org>
+From: Chen Wang <unicorn_wang@outlook.com>
+In-Reply-To: <47a83f766c85481b73c6e6dd3759d4d9.sboyd@kernel.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-TMN: [A3Cr4AZvhbYTRJRmg1jpqPysGDLJNTXQ]
+X-ClientProxiedBy: SI2PR02CA0038.apcprd02.prod.outlook.com
+ (2603:1096:4:196::22) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+ (2603:1096:a01:138::5)
+X-Microsoft-Original-Message-ID:
+ <d00faf47-80b2-4e2c-ad65-00654a95d5ef@outlook.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
-Content-Language: en-US
-To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Michael Walle <mwalle@kernel.org>, open list <linux-kernel@vger.kernel.org>
-Cc: jkridner@beagleboard.org, robertcnelson@beagleboard.org,
- lorforlinux@beagleboard.org, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
- Vignesh Raghavendra <vigneshr@ti.com>, Tero Kristo <kristo@kernel.org>,
- Derek Kiernan <derek.kiernan@amd.com>, Dragan Cvetic
- <dragan.cvetic@amd.com>, Arnd Bergmann <arnd@arndb.de>,
- Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
- Vaishnav M A <vaishnav.a@ti.com>, Mark Brown <broonie@kernel.org>,
- Johan Hovold <johan@kernel.org>, Alex Elder <elder@kernel.org>,
- "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE BINDINGS"
- <devicetree@vger.kernel.org>,
- "moderated list:ARM/TEXAS INSTRUMENTS K3 ARCHITECTURE"
- <linux-arm-kernel@lists.infradead.org>,
- "open list:SPI SUBSYSTEM" <linux-spi@vger.kernel.org>,
- "moderated list:GREYBUS SUBSYSTEM" <greybus-dev@lists.linaro.org>,
- Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-2-ayushdevel1325@gmail.com>
- <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
- <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
- <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
-From: Ayush Singh <ayushdevel1325@gmail.com>
-In-Reply-To: <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-MS-Exchange-MessageSentRepresentingType: 1
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PNXP287MB0031:EE_
+X-MS-Office365-Filtering-Correlation-Id: 5c0f22a8-1f3e-4c6a-cddc-08dc47e7e4f8
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	s1PYnEZFe7P1mfvb1a12viYf1xdlNFl/dqoBt4VNO9IQ+QdXgSVvqSiIaSdbM7moeRZlS4RPOPjm1WHLiZ6aIaZIjH0rMIuX0YHM7Bca8ADB824Tvbt9CZfSMny1uQ1G4iU4FWZZ763HDMUjpaDTjOJr9t8Z6w518ziZjAh/00hRU76x4IqWG0RmtJjOfr9zohMZz3teD1mplVIqKu4Jb81oCN6BFqJQB6xy4iZEUKG8axVsdjvI5GgOr73+cpBd6oGmwxxajoLgvlTPwI8x8WpCOwjb6H0wQqX6HEp28BThfAdw+TnJJ1+s08Ueta+5ps9yb7AAroXyM/LrAWPXoY/jzNRM9qHgQYdlWScXD+dGWX6vBXgMBumN2j2pY/XGNrkgEY1RR3tk1ATtVrGiusr7ZZeEUvuzqfD9y0XZ+nnAcLbiT/zRAY6Iiz4qMJA0avSFPZt05qlalhO7wDXRQQArC2juHnkYt1BDIROy+k3zerYv8XRSyYnW7mWQTrpNBuhaA/Bh46xNHFDo7JhW9I/2FKmgIQVqKAi5CFaq5Nmv4g7wax+F+j97bOXueCr2
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Mk1VTW9JOVd3ZUJiMFBobWNvOHZ6T3BaK1BFb1Q1bS9lYUh5WW9iMmc4eXhC?=
+ =?utf-8?B?dE1jZUtuTUFCdm9oSStlUzFHbjhZR3c5SWM5dEdUeUMvb0tmdHMxSnNpK1pi?=
+ =?utf-8?B?bDJlUmVicGpvQnQwMnQ5VWN4Q1NPU1NZak5zUnBlZGVuZ0hMVDJtcEp3OGYx?=
+ =?utf-8?B?YTRaUmpueXZZZFBpSXI1TmJPV2t0dEtLaWY5QmtqNlY3UlJvbWp1NTB3eEJI?=
+ =?utf-8?B?TTVSUEY4dWwrdFlicDBvTEhrLzlMKzNZMWNDTHNNY1lVZDQrZ2hQSTUxTi8r?=
+ =?utf-8?B?R1JRQUN5S2luT3NoMy9vQ1RzbTl4NGE2SmtHelVQbyt4TDk1bHVEWnNvWmJO?=
+ =?utf-8?B?cU1LcG0wTWlwRnNiOS9EMDZhWHJVNnZnNU5IMzAxZjlobnlvN2hHdlVJUzla?=
+ =?utf-8?B?OG9yK0RwbEVaRzd4NkdIT1J5UTJCVFZvNnBRYlJzU1h0WFVwQlpHdFRraERo?=
+ =?utf-8?B?eHltNzJweFN4dDQyMlVMdnhSd1dBMUJyNEpTNlpTTVVVekJ3WmEzVHV1Qk5E?=
+ =?utf-8?B?N3ZpV244UzV5Wm50UytDc2lPajZ1SEQ3Uis2d2hoSGtQYUpBd3FzckNOcDZP?=
+ =?utf-8?B?MTJrME5oTjdIODlrMHpCdU1peWx3ejJEL0dSak82K0hvRWg1VFgyZ1BXd1JX?=
+ =?utf-8?B?VUo5c2phRnYwbTZubG10Mm9FMi9sbnp3aWhoRXRUQks2Zi9oeHVqUjFFeVRH?=
+ =?utf-8?B?UTdoTFVaWHhpc2E2cWRUb2c4UVZjbjBEcGQyc0JqUnNXWnNuL2l5WWxlZ09F?=
+ =?utf-8?B?OG5NZGY0dnNJMTNZSUlpUDROVkwzWlpnSkZhTWxod2V4cXhGSDJReVhFSUF6?=
+ =?utf-8?B?QXJnT3VDbS9MdEtKaEgxYnNVM1M1Z0JuUnVvbVY2TXMra3g5VW0yYnR0UVVa?=
+ =?utf-8?B?S1lJU2wvUTN1dHZHbmpHV05ScmVjRjYxTW5vUThDdTlObGQrNVlxSHAwa0hZ?=
+ =?utf-8?B?UndyNFZ1T3VpYXVhakdaY2M1dU5tVXRIMGI4dnZKTFkxdFVYbWllSk9TcVdw?=
+ =?utf-8?B?MUQreURLYnB1b0VuR0xtam16RmJiYUU1UlVSOGtMTUdFeFNTNk9pTnQ1cTda?=
+ =?utf-8?B?bUxxUThKNGZNNzRHdlgwRkJ6K2k2cmloWWlOLy95ZVdVVTdFMFN5cVNacVNJ?=
+ =?utf-8?B?dTRUZld5QnVFNDdPZG5HT2tYdjNQd3JNN3FIaWxTbkhTeWZTQXBuUzYxdW4y?=
+ =?utf-8?B?cHk2dUczOEJTYStMVWJSNHY3NWNxOFR1bXdJVTlGRUxERWlSZmlQUndDb2sv?=
+ =?utf-8?B?QzdqMnN2VS9DLy9RcjhSSmFIMmdhL2dFYzhSR3lmNmRsbmxsdjZ2UTBaWHFq?=
+ =?utf-8?B?Qk5JL1FPQWtOOUoyZHdqVDB6V1IrNW81SmN3cUxPNUlQZnZMVFV6cWs5YnZI?=
+ =?utf-8?B?VW04dUVsOHRaZTFEc1V2WVhLZlIzaXZOOWh5RHNKTk03Q2h0MzljQUJ6RmlJ?=
+ =?utf-8?B?eERNS0NaajM3UzBwdmNIckhDZTBpZnBocVlYOU5LaWJMTGFmdmdKNU9UdS9G?=
+ =?utf-8?B?ZjhvVkVaUE43bnpIbCtod3RFdU9lUzN5bnNPZXVtU3IvbUQyQUtuVm1QRFgx?=
+ =?utf-8?B?UmZ0ODZIRGc0L1UxZ2Y5WmFPbDJOTERiZm1JUm5JTUxxRVM2WVNjc3AvNjBC?=
+ =?utf-8?B?VEd0NHdLSlZZWWlRZVIwVDRHck0xQkk1N0tncThFUWNDKzJDWk5HVjVmQmtU?=
+ =?utf-8?Q?q2MVy0Z3ThqSM7DwgwXO?=
+X-OriginatorOrg: outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: 5c0f22a8-1f3e-4c6a-cddc-08dc47e7e4f8
+X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 07:40:50.0948
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
+X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
+	00000000-0000-0000-0000-000000000000
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PNXP287MB0031
 
-On 3/19/24 11:28, Krzysztof Kozlowski wrote:
+Thank you Stephen for your carefully check and comments, I will improve 
+the code according to your inputs.
 
-> On 18/03/2024 18:20, Ayush Singh wrote:
->> On 3/18/24 17:52, Michael Walle wrote:
->>
->>> On Sun Mar 17, 2024 at 8:37 PM CET, Ayush Singh wrote:
->>>> Add DT bindings for mikroBUS interface. MikroBUS is an open standard
->>>> developed by MikroElektronika for connecting add-on boards to
->>>> microcontrollers or microprocessors.
->>>>
->>>> mikroBUS is a connector and does not have a controller. Instead the
->>>> software is responsible for identification of board and setting up /
->>>> registering uart, spi, i2c, pwm and other buses. Thus it needs a way to
->>>> get uart, spi, i2c, pwm and gpio controllers / adapters.
->>>>
->>>> A mikroBUS addon board is free to leave some of the pins unused which
->>>> are marked as NC or Not Connected.
->>>>
->>>> Some of the pins might need to be configured as GPIOs deviating from their
->>>> reserved purposes Eg: SHT15 Click where the SCL and SDA Pins need to be
->>>> configured as GPIOs for the driver (drivers/hwmon/sht15.c) to work.
->>>>
->>>> For some add-on boards the driver may not take care of some additional
->>>> signals like reset/wake-up/other. Eg: ENC28J60 click where the reset line
->>>> (RST pin on the mikrobus port) needs to be pulled high.
->>>>
->>>> Here's the list of pins in mikroBUS connector:
->>>> Analog - AN
->>>> Reset - RST
->>>> SPI Chip Select - CS
->>>> SPI Clock - SCK
->>>> SPI Master Input Slave Output - MISO
->>>> SPI Master Output Slave Input - MOSI
->>>> VCC-3.3V power - +3.3V
->>>> Reference Ground - GND
->>>> PWM - PWM output
->>>> INT - Hardware Interrupt
->>>> RX - UART Receive
->>>> TX - UART Transmit
->>>> SCL - I2C Clock
->>>> SDA - I2C Data
->>>> +5V - VCC-5V power
->>>> GND - Reference Ground
->>>>
->>>> Additionally, some new mikroBUS boards contain 1-wire EEPROM that contains
->>>> a manifest to describe the addon board to provide plug and play
->>>> capabilities.
->>>>
->>>> Link: https://www.mikroe.com/mikrobus
->>>> Link:
->>>> https://download.mikroe.com/documents/standards/mikrobus/mikrobus-standard-specification-v200.pdf
->>>> mikroBUS specification
->>>> Link: https://www.mikroe.com/sht1x-click SHT15 Click
->>>> Link: https://www.mikroe.com/eth-click ENC28J60 Click
->>>> Link: https://www.mikroe.com/clickid ClickID
->>>>
->>>> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
->>>> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
->>>> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
->>>> ---
->>>>    .../connector/mikrobus-connector.yaml         | 113 ++++++++++++++++++
->>> See also
->>> https://lore.kernel.org/r/YmFo+EntwxIsco%2Ft@robh.at.kernel.org/
->>>
->>> Looks like this proposal doesn't have the subnodes. How do you
->>> attach a kernel driver to it's spi port for example? Only through
->>> the manifest files?
->>>
->>> -michael
->>
->> So I looked at the Patch, and it seems the approach of fundamentally
->> different than this PR. So, let me try to explain what this patch set
->> does for an add-on board using SPI.
->>
->> The device tree defines the SPI controller associated with mikroBUS SPI
->> pins. The driver on match queries and takes a reference to the SPI
->> controller but does nothing with it. Once a mikroBUS add-on board is
->> detected (by passing manifest using sysfs or reading from 1-wire
->> EEPROM), the driver parses the manifest, and if it detects an SPI device
-> As I understood Mikrobus does not have EEPROM.
+I have some additional explanations for two of these points.
 
-mikroBUS add-on boards do not need to have EEPROM, but they can have it. 
-Simply put, EEPROM is not part of mikroBUS specification, but you will 
-find a lot (especially newer) addon boards with support for EEPROM manifest.
+On 2024/3/9 10:11, Stephen Boyd wrote:
 
-Regardless, this patch actually does not contain any code for EEPROM 
-support I have just mentioned it to give more context on why mikroBUS 
-manifest is the focus of this patch instead of DT overlay or something 
-else.
+[......]
 
->> in manifest, it registers SPI device along with setting properties such
->> as `chip_select`, `max_speed_hz`, `mode`, etc., which are defined in the
->> manifest. On board removal, it unregisters the SPI device and waits for
->> a new mikroBUS board to be detected again.
-> You explained drivers, not hardware for DT.
-
-
-Yes, I was replying to the question posed by Michael. Since this happens 
-in the driver and not in the devicetree, I needed to explain the working 
-of the driver:
-
-
- > How do you attach a kernel driver to it's spi port for example?
-
-
-For more hardware side, the bindings are for mikrobus connector rather 
-than for any addon board. Thus, while an addon board might not use some 
-of the pins, the connector still needs to have all the pins and 
-associated controllers.
-
->> It is also possible for SPI not to be used by a device, in which case,
->> no SPI device is registered to the controller. It is also possible that
->> the SPI pins will be used as normal GPIOs. Everything is identified from
->> the manifest.
+>> +
+>> +/*
+>> + * Below array is the total combination lists of POSTDIV1 and POSTDIV2
+>> + * for example:
+>> + * postdiv1_2[0] = {2, 4, 8}
+>> + *           ==> div1 = 2, div2 = 4 , div1 * div2 = 8
+>> + * And POSTDIV_RESULT_INDEX point to 3rd element in the array
+>> + */
+>> +#define        POSTDIV_RESULT_INDEX    2
+>> +static int postdiv1_2[][3] = {
+> const? And move it to the function scope.
 >
-> Best regards,
-> Krzysztof
->
+>> +       {2, 4,  8}, {3, 3,  9}, {2, 5, 10}, {2, 6, 12},
+>> +       {2, 7, 14}, {3, 5, 15}, {4, 4, 16}, {3, 6, 18},
+>> +       {4, 5, 20}, {3, 7, 21}, {4, 6, 24}, {5, 5, 25},
+>> +       {4, 7, 28}, {5, 6, 30}, {5, 7, 35}, {6, 6, 36},
+>> +       {6, 7, 42}, {7, 7, 49}
+> It may be better to make it a struct with named members because I have
+> no idea what each element means.
+I plan to add some comments to explain the meaning of this array member. 
+This array is only used in this function, and I think it is somewhat 
+unnecessary to define a structure specifically for it. Adding some 
+comments will help everyone understand better.
 
-Ayush Singh
+[......]
+
+>> +
+>> +/*
+>> + * Common data of clock-controller
+>> + * Note: this structure will be used both by clkgen & sysclk.
+>> + * @iobase: base address of clock-controller
+>> + * @regmap: base address of clock-controller for pll, just due to PLL uses
+>> + *  regmap while others use iomem.
+>> + * @lock: clock register access lock
+>> + * @onecell_data: used for adding providers.
+>> + */
+>> +struct sg2042_clk_data {
+>> +       void __iomem *iobase;
+> Why not use a regmap for the iobase as well?
+I plan to unify it as iomem. Anyway, just use one method should be fine.
+
+[......]
 
 
