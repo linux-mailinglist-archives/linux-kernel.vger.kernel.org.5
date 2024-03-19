@@ -1,106 +1,125 @@
-Return-Path: <linux-kernel+bounces-106914-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106915-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 32AD787F55C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:20:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E1C687F55D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:20:56 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6B5CB1C215B7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:20:22 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8D3521F21DC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:20:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9E03E64CE1;
-	Tue, 19 Mar 2024 02:20:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 979D864CFC;
+	Tue, 19 Mar 2024 02:20:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b="1OU6lEyn"
-Received: from mail-pj1-f50.google.com (mail-pj1-f50.google.com [209.85.216.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="Da6vR1Q2"
+Received: from NAM04-DM6-obe.outbound.protection.outlook.com (mail-dm6nam04on2062.outbound.protection.outlook.com [40.107.102.62])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D9BE2F22
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:20:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.216.50
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710814814; cv=none; b=SA+Ce75jIdvrT6T/YtRkJJN8g10JE4aduyraHbQ0S8+GHCEjTva8nvbBFLVFtven0OhI3tbcMg3C753wD7AYJJmAfsTx5Fzrc9wTzjT7qWr5kmlgR4JgiNSq+nDcrORy2vYf2pKM7Nc1Sy15T7j2Xbt+FArfITql8NorvZ3K+qY=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710814814; c=relaxed/simple;
-	bh=NkB88W5odC1JOVEAvvKJhHDlY4baHLv2+zt6C5wYeU4=;
-	h=From:To:In-Reply-To:References:Subject:Message-Id:Date:
-	 MIME-Version:Content-Type; b=TbPsTo07Sz0lC5U4kdbQ9vEjluRcUr7zTtL2hYL3UE4rvDu/05l9ejf6MqjaAkKkRjZ+VCgipHr1r2ixk9SozLbKbAapfhb5VoGYcjvX7POV0v1/HAHWqZiVH+wuqOgFVqEfg5PYgLfa8tHUDQHEAnF1DauTH3WNfac5WhZ6Qwo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk; spf=pass smtp.mailfrom=kernel.dk; dkim=pass (2048-bit key) header.d=kernel-dk.20230601.gappssmtp.com header.i=@kernel-dk.20230601.gappssmtp.com header.b=1OU6lEyn; arc=none smtp.client-ip=209.85.216.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kernel.dk
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kernel.dk
-Received: by mail-pj1-f50.google.com with SMTP id 98e67ed59e1d1-29df844539bso911870a91.1
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 19:20:12 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=kernel-dk.20230601.gappssmtp.com; s=20230601; t=1710814812; x=1711419612; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=k6rINp0way2lyVv3peFrobuPlDokerF7vmkwEfe9Xuo=;
-        b=1OU6lEyngpVvbebxokTite4Ph3MAyg/wB+BWB1xnerJHDGHuqVSmwTWUkFNQNUUxBG
-         JvbEWeArhs8oT4FEu2brMF/V7suKaHvx/CRmH9NtxERYfYQRQizTevL8040l9Xxhukmx
-         9F5aTFkr9B2Roo2ODvzlzMtJi3uhXUTJlGTVVg7aLUe4prZgXvr9BL0T+89CvBMY3pw0
-         gbrSCqJkmSRMhqosmcA8CXT4pZO38Jb3/mfD/TPY/Fx0oxegW4oSJihHi4JjB9AaSjlJ
-         /rltEE1BfT4DCLcf0htIUgj96YMs9FDCtHx1v5GezzYmOW5PWh+H8KVvvET3pMEJzVdA
-         OtsQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710814812; x=1711419612;
-        h=content-transfer-encoding:mime-version:date:message-id:subject
-         :references:in-reply-to:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=k6rINp0way2lyVv3peFrobuPlDokerF7vmkwEfe9Xuo=;
-        b=WfSmincfBfxFVEbvSAsF3uRoBqbP0dXHkBAYuXNtpaV30UOLPd6EQzjUuT5ou+sIPW
-         PpIIiIYfZQr2k9Xil7IbHh/oa6JPEDRPHqWEPR7A2pm38mQqS0f817r7di+BsKBqdMg2
-         2ZfBaerbRleqfoH5QpI4MEZNyu3I4aeR5+LpB/AYK6HmSH9zFTzCT6mO4RExKh81D9L3
-         x8ip8ciZySfKIkcoCHxL6jA74TEOzvBEZb5eFQVxDOp/ok07+mUYhpWBVPGYWn/w5oA6
-         GAEejVamhpG4e26JGK1YbMF3jajWY5X38IzNB8ezUquZNiU+zfXgQMzWfaY2dcSPD/Pe
-         1QMQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXfC2ICVsIgsx3cd4wrjNLtWF+M0/X6pat+jtQlA+XqbR7709FOcsWTyYKWPPzc4CWBEIV9uWiWjQ+3LbFfOKWFbtJ71UtWUyrQVPx4
-X-Gm-Message-State: AOJu0YxgENYSpyWGMV8AtqNx8AA40Ze5UGL8wKOmlPeme75EBjQWmsAA
-	ZopigWVztAUwyvRrEB7tCMPUqT+17prJICAPNRxP1AuRvjVp9Q0z31oWvC6TB3OonOR/32nfTrg
-	a
-X-Google-Smtp-Source: AGHT+IGW+uH6FebClXKqGEQc72uKT7oc9xlJzngrxaJXnCi2iuB+/iW70vvT7zCn43lAmJr8Fpz5+w==
-X-Received: by 2002:a05:6a21:9982:b0:1a3:713d:1059 with SMTP id ve2-20020a056a21998200b001a3713d1059mr1022446pzb.4.1710814811772;
-        Mon, 18 Mar 2024 19:20:11 -0700 (PDT)
-Received: from [127.0.0.1] ([198.8.77.194])
-        by smtp.gmail.com with ESMTPSA id z3-20020a170903018300b001e00295e3dbsm3062473plg.149.2024.03.18.19.20.10
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 19:20:11 -0700 (PDT)
-From: Jens Axboe <axboe@kernel.dk>
-To: Denis Efremov <efremov@linux.com>, linux-block@vger.kernel.org, 
- linux-kernel@vger.kernel.org, Yufeng Wang <wangyufeng@kylinos.cn>
-In-Reply-To: <20240319014219.7812-1-wangyufeng@kylinos.cn>
-References: <20240319014219.7812-1-wangyufeng@kylinos.cn>
-Subject: Re: [PATCH v2] floppy: remove duplicated code in redo_fd_request()
-Message-Id: <171081481063.643317.5474387504952434927.b4-ty@kernel.dk>
-Date: Mon, 18 Mar 2024 20:20:10 -0600
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFD922F22;
+	Tue, 19 Mar 2024 02:20:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.102.62
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710814845; cv=fail; b=s2Bxz63zUIkFhR9efNSqMl0keyMYisz4fPlO54lmOhBWK7VEYbBsMkopvIsKjB+XFPiQM2/Df/x/QSo+EHnIQYfVtkkqFGzfJRyUeUAPtYTQUcOlWVzm0qERKiuuK/Px6HMzyhlJQx81WwhGqI7PJj5ziwnNpiaBXP4hEu8Tmqk=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710814845; c=relaxed/simple;
+	bh=+khUKGfXQen+a38sKPctDDxPM9ezfjgPgJEdG5pt5ek=;
+	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=mlv5lw30cBOAEy2yq3ln9Dm3NmfLgDMmEF7pahW3vT6lG+zRXlZ4srSx1Cy1Kc/up1LfafYgDa5hdQGRc29D2Iiv6SVMzHGRp43k0DWVcWHXiKECxvayD8gjOzg+1l27uPf3JHrf0ScFa7zhsWOQZobu071zaQ3FwF/KdzFZ5TA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=Da6vR1Q2; arc=fail smtp.client-ip=40.107.102.62
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=jbZ3B7pH0VxTcRxc+pPHa/pMDLqSNSZNdWJ5dCu/qyGFHtCze3X4iA3IA0cHkWckrl02HvsDZqBQtAHUFakeRsP181tb8GdN0ivfDz3dorVRXnEBIwW2r4DLA41Ahl0TqtWbYqI6K2d8erXMvLaf59EB7JPD/fLF90nn9EWlI/N17PSX2vZOwh2dUTnnDGrYNqlY6k6Grcsinf3QSgm09TxIPBC+RizSTsNwFzjK8VHZbZwJtZBSrf9LGFKjEgu1f7lzyqEZISQ1mA2rwIQSS0lyTmFf9VpH6fiFSqlVFWi63d+sjyKuz1ucY3MSmqMAPP2Z9SNd5OBebK911mNecA==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=pCGBWhaJLTQIcgHtad4SNj/ZQjLSHt2y3C8uKyVIVXI=;
+ b=hLgxJCiwlhf4XY2Ps+2QLK3Y/kIoFWRDpIYKRjjBraWDmxX7oZ0sFvPcIzO6tfws90LR+YBH7DmtUlqZr7PXt/ejRSWRpJ1u8nCwqAV/6wWkbb4EQ+wpPoNlbPL5jb4GPuPopppC2H6qtct/u2USLmh031DTISsC29RQTEg6O42tiF1Rmp3A4+gG51v9bq/wVeosLu5FV99nBumXPNqky9SvDVmdpsHdXzkzATc5Tr4YAhnh9xWLpkqUXIRhT6FrQBNAN4VC8R2mbbChyKkUwWqljP0OK/Q9PCV1IlOm8BX63BNyZU8HctKXatGoc9NQ5eVEwoZnZx85dkx/XIJRQg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=pCGBWhaJLTQIcgHtad4SNj/ZQjLSHt2y3C8uKyVIVXI=;
+ b=Da6vR1Q25kaPgfnXZZlpKAhtFtFOMMBzk2q4iSfsO2ngd8SfwAmn7NShLrXoOZMcBEGpM9EnYbNoLw/7tYfRcBdIIuVfUwTz1xGmSx52sdIgC2eeN6BH/7e4eh1+3GWn41Id79fBhFwbs5qopsdFNJdyrzgOB9rbHpRzwqDJmm4=
+Received: from CH2PR19CA0025.namprd19.prod.outlook.com (2603:10b6:610:4d::35)
+ by PH0PR12MB8799.namprd12.prod.outlook.com (2603:10b6:510:28e::6) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Tue, 19 Mar
+ 2024 02:20:39 +0000
+Received: from DS2PEPF0000343F.namprd02.prod.outlook.com
+ (2603:10b6:610:4d:cafe::d6) by CH2PR19CA0025.outlook.office365.com
+ (2603:10b6:610:4d::35) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26 via Frontend
+ Transport; Tue, 19 Mar 2024 02:20:39 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ DS2PEPF0000343F.mail.protection.outlook.com (10.167.18.42) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 02:20:38 +0000
+Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Mon, 18 Mar
+ 2024 21:20:37 -0500
+Date: Mon, 18 Mar 2024 21:20:20 -0500
+From: Michael Roth <michael.roth@amd.com>
+To: Paolo Bonzini <pbonzini@redhat.com>
+CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
+	<isaku.yamahata@intel.com>, <seanjc@google.com>, Dave Hansen
+	<dave.hansen@linux.intel.com>
+Subject: Re: [PATCH v4 00/15] KVM: SEV: allow customizing VMSA features
+Message-ID: <20240319022020.jrhlpovgwwqu5dzj@amd.com>
+References: <20240318233352.2728327-1-pbonzini@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-X-Mailer: b4 0.12.5-dev-2aabd
+Content-Type: text/plain; charset="us-ascii"
+Content-Disposition: inline
+In-Reply-To: <20240318233352.2728327-1-pbonzini@redhat.com>
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: DS2PEPF0000343F:EE_|PH0PR12MB8799:EE_
+X-MS-Office365-Filtering-Correlation-Id: 30c82c0d-0cdf-4f36-edc1-08dc47bb2b47
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	YDqeST5hQCCcAurz2Klwqz47OA0VCX2dYaTEKDFQlNN7HxyncbPUCQYfc6vtfg6WW51A9ZfibJ9m+PHrC/LgcJOCYk6wOSNTzZbvINMjItQ9g9mRtkV/X23AK1eNJ2r1JKOcXGortuDpBFwWrbORsKo1YGLkvMgwJxMytNODKplZ+hI/CiWqbWYZ37GKATTeqLO+dYz1d0ua445Qlga4MrRYtpyPGbljo8TmDbf7OnxZOZG5CZoi2j+0USk4Uq2y6Ohn29SphXTdItN56g/Ex51L8wZYEQYVwmxfA/XHcnbagIkr53yDEgWI2a+4Z/LWj+tRYLPS02k0L2nzvva0usSylXmKt+h8gpld/XGcLbz2757VAakQKw2l2CcjSb4xdbBBQmzp9Y+QGo70w2EWmIz2LTWF1IYfhRlV1af0Cp3He8sQFPGa520pvEoLtbgCNjE2sGWH/fPf+PoT0EPkgxoPxPX3ELpacTqZwyp110XMkiASJh3qDfAvyiAbwqKvpyHSl8crMl56lAbg12Lu4OzqMyo3TtD4WWmWG5pJeto99hQlT8vsnemSOYKHEL3kMrFcR7+WbREjDaf3olYKqvXpM5aLDrrjmtQV0OUaR82YyYKnqUq7NPwZVGRmzR5RbI3dHdI7/VAcKxaz6lfGBHo3KYY99Q87aA9NSjMvlGttLY6aqdztoriOXOvcz4kVLhCZY99VaF4dt7l6CRx3dg==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(82310400014)(36860700004)(376005)(1800799015);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 02:20:38.7546
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: 30c82c0d-0cdf-4f36-edc1-08dc47bb2b47
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	DS2PEPF0000343F.namprd02.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH0PR12MB8799
 
-
-On Tue, 19 Mar 2024 09:42:19 +0800, Yufeng Wang wrote:
-> duplicated code in redo_fd_request(),
-> unlock_fdc() function has the same code "do_floppy = NULL" inside.
+On Mon, Mar 18, 2024 at 07:33:37PM -0400, Paolo Bonzini wrote:
 > 
-> 
+> The idea is that SEV SNP will only ever support KVM_SEV_INIT2.  I have
+> placed patches for QEMU to support this new API at branch sevinit2 of
+> https://gitlab.com/bonzini/qemu.
 
-Applied, thanks!
+I don't see any references to KVM_SEV_INIT2 in the sevinit2 branch. Has
+everything been pushed already?
 
-[1/1] floppy: remove duplicated code in redo_fd_request()
-      commit: 50171b8667733146f139c773d8f00866ceb4cee4
-
-Best regards,
--- 
-Jens Axboe
-
-
-
+-Mike
 
