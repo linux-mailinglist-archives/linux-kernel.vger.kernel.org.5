@@ -1,142 +1,151 @@
-Return-Path: <linux-kernel+bounces-107396-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107399-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 131BD87FBEB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:40:18 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FE8D87FBF2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:44:34 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 85FEEB2137E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:40:15 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0CCAE2845EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:44:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBFF657870;
-	Tue, 19 Mar 2024 10:40:05 +0000 (UTC)
-Received: from mail-il1-f199.google.com (mail-il1-f199.google.com [209.85.166.199])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B1F356444;
+	Tue, 19 Mar 2024 10:44:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Q0/icrU+"
+Received: from mail-ed1-f49.google.com (mail-ed1-f49.google.com [209.85.208.49])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D2A41A84
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:40:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.199
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5EB74CE08
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:44:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710844805; cv=none; b=aDpgcdvMJIGzLnf5T5g6lRRcYDkg9EwvYBRrsiTfEcw4Gqs/0sLAw9+Vz1dD2bf8tkNRWYrXQ4vQHRahr10CJcv9LnULGxvBEYRmka6Y4oiOO5QZD6jtklKBfEMwjza89ktF4P9vaOlXiAs8/qTHBnMk5vH4fcJEgHV6mjE9XEc=
+	t=1710845066; cv=none; b=jab+5xtTO4zb51w/WGFejw5u0v7sR+2LX4oqPOLYkMd2WUIaMkPZbG2DnKaAKcmgr1rWEtzJhDh/GEwyNl6Stu/zmaMLCt64wEAdtVkZ/jNM93/IHTEn1ap7d2mb4a9mgqP3aP0+rJBjRJ70kmTtxk4K61+Z1k40XdpX8YzE1JY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710844805; c=relaxed/simple;
-	bh=YDzUh/eQl+mEnGxwe5Gug0b7tbo2rKGScA/OLfLsBeo=;
-	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
-	 Content-Type; b=Ynt6N4x9TPXiGLeXbL36ugtdsEBuSg1E+CsmferseDnf8HruuUoDwFP0UEI/EsgqlfNZdAAeDE52cMjNiRc3plmZAGAyFS0V0+WQTKa/AhIZKdmCJWhHMWHYwPBPFt+UGt654GFS+F28XQcYiqaC+3yqLo6npRA0j/lPEWJ8XDw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.199
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
-Received: by mail-il1-f199.google.com with SMTP id e9e14a558f8ab-3668ce654dcso45228455ab.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:40:03 -0700 (PDT)
+	s=arc-20240116; t=1710845066; c=relaxed/simple;
+	bh=7LhSr5+k+GBVSUTqtH/lpjLZtcZyDsWwQPJKp5P9d9w=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=SYk8IAcUNXO2sbnv4e6xs7UTsf8eSgLCvwfaeNKt+8cBT6tnFFcDwZW6FLkydqFpSVPK0cno9dketPi+18T9Ls5ph1YmMrjW8rE3r7rAPhxYgdxKTTO0RnDTjUCBbDzJToa3LvdFhxjkAlvdIW6ospEmwXLhshMgjD3nfnr/0R8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Q0/icrU+; arc=none smtp.client-ip=209.85.208.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f49.google.com with SMTP id 4fb4d7f45d1cf-568a53d2ce0so6431813a12.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:44:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710845063; x=1711449863; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=hKApB2VQZ41H14nOfmTeU37ZbkewUvI4J/KbtvIHGSo=;
+        b=Q0/icrU+JRwARSbDm8WiC0DToeZdO3ReZrJtPUVIBLmXM0oUvM0rlm50Eu2VO1MY7q
+         KWdwp+CUfNSYWrm/Nl4Hre83IFh6cyqk5PR500WT0bqLkurSpcPer6QKdsVA822CTYtA
+         qy3/2i6O3sUWFLNZiaT9z0p7i6yKGqyNvul1EdtSo1fv8Hyo4ZFammi+CUM2EcvUrNiu
+         q8omMh3/gQjTGCdXP7xlFJq8qyGDQ211icCKG/0BXQfy0F++LhjkZUZKcgPGArPHz091
+         M2rtwytC2Swm1qsTeT6yWQv3wbvCAVF9rrYme8CTxTFuB/SHW7mg/K30uymdE+3ljvVa
+         keYA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710844803; x=1711449603;
-        h=to:from:subject:message-id:in-reply-to:date:mime-version
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=cP3VvSaVvmQglW2lPvq1ZHeDi+uTFdnhbYpShcSJcJE=;
-        b=RhNWexAcqj0M2450cgKAL+ehNEf+2C2ZwNNa9t7cpJfM4t1FDVdPsKpFui8fOSxV57
-         04oJVnU+vHu1mWEZP3OWg18hsWDv+9ooEj5OoU8Q4rVWggn/iZCqMZuV12nELsLse96v
-         HxpdClAdjSWf/ATm6bR/Dhg8UZ3DGAVGnXbhiHI38ZI9smxoZ0l+JKUEe3elJIXPL+/Q
-         ySMwK2QjbqeOjICY3AnpLlFphCpgly9vJJcGXDfMhMiyqD17WgfIZpx41guHGMYkANTK
-         4s/ffWfOeGrIYBCsSkM/ej3YXav6ui+zGU+LAy4J7ctpjD9um2V2HLtv6gR/DJ/ME5Fp
-         zPqw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnledGx/CPJTiKDey1ZXQLhEzvvXVqK5Vh64QUVmOrBXE+4xk0oeQLAi756H7UNF0KqrjU8DaNn+DpXVG1wRDui3gU/R/WYH25U3SK
-X-Gm-Message-State: AOJu0YyD5y9cIoMjtJQkC/ewB/jsjbnvtaHvKA6z1pTQlr3sBlyRnzbg
-	+EhANNE4XraiwZFxughQIOtLoFzYFnbpXltkMfUx0TWVptp/uVDh5FJS9Z41sKFQQXgR8c+i8zL
-	8oJavHoZgfOwWTn2Fdd+gB6qCChUs+AOMCdhpxW4QlRgTw5lQ/VTmLRY=
-X-Google-Smtp-Source: AGHT+IFvsG5IdN9U7xP8X/k7Ypy7CjsO9580BstBbgc142+jM/jkuItQhABSrMzWqAurMfaURsFZoIxDt80B92I2eh947/VIKpm9
+        d=1e100.net; s=20230601; t=1710845063; x=1711449863;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=hKApB2VQZ41H14nOfmTeU37ZbkewUvI4J/KbtvIHGSo=;
+        b=RV8hI6YSFEfRwKjHUl6eneIcb8NBrgy34WQwLKOzOjcRWJE+4L9gdFhBiD5fHSIVSs
+         u+uywwK7JrdVj52feW3I5ybKGv8LI+jPaOEsEqDCbKbaEMEYjstq3l3gDlgPyjIgEvBL
+         VNjEIbn6gTZTjndmfbG4C0JsHeSOjZH3Ojv32MyHxPetyP74qKV7KcB5jZVW2Fshn97/
+         Fwm0qkAmDpJZaUWmH+aFTRiz9V1furV33pigM8yfJgHEE7Liyd9XuJV97gss75L52VS8
+         TbzraWEcO4C3jaIz/f0yRnNIYuY0oJ5hpaBTgDiCd5/Cx3vzJIdEnE6gm3oVdAmQ4dIc
+         Nspw==
+X-Forwarded-Encrypted: i=1; AJvYcCWljsQBjGe3wr9rNwknZLEB7leLddYtwby9suU35W+LPl3T2TKok4O1HUoPqYLqEkjdEfeksV+BOMlRT4SU8bfGybyGn9UaH0axxGyH
+X-Gm-Message-State: AOJu0YwP8rJXtv+lm/5v3WkdNsbmSqzzNqasWXn9r1wXTUvqQaVCtSVV
+	ngMKbLWO2gsWfECHIdEEJbAw9/pssbyAFrAIlsCStr2tB8k//qDZTGY+v5g0Vec=
+X-Google-Smtp-Source: AGHT+IFiOg2Ym/6DOZ9i+B7WKNVM7xgwYC1wSyMGcyKbuxBnwRN+BbqAM7drQIZ6fTBB8U8bda1AEA==
+X-Received: by 2002:a17:906:40d0:b0:a46:5d40:eb97 with SMTP id a16-20020a17090640d000b00a465d40eb97mr8593785ejk.70.1710845062948;
+        Tue, 19 Mar 2024 03:44:22 -0700 (PDT)
+Received: from 123000256IE.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id bx21-20020a170906a1d500b00a4655976025sm5882342ejb.82.2024.03.19.03.44.21
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 03:44:22 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Andy Lutomirski <luto@kernel.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Denys Vlasenko <dvlasenk@redhat.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	Josh Poimboeuf <jpoimboe@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Subject: [PATCH -tip 0/3] x86/asm: Use generic asm operand modifiers instead of %P in asm templates
+Date: Tue, 19 Mar 2024 11:40:11 +0100
+Message-ID: <20240319104418.284519-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Received: by 2002:a92:cda7:0:b0:368:4274:71c4 with SMTP id
- g7-20020a92cda7000000b00368427471c4mr177919ild.3.1710844803105; Tue, 19 Mar
- 2024 03:40:03 -0700 (PDT)
-Date: Tue, 19 Mar 2024 03:40:03 -0700
-In-Reply-To: <m27chy8qz8.fsf@Charalamposs-MacBook-Pro.local.mail-host-address-is-not-set>
-X-Google-Appengine-App-Id: s~syzkaller
-X-Google-Appengine-App-Id-Alias: syzkaller
-Message-ID: <000000000000c15e4306140118c9@google.com>
-Subject: Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
-From: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
-To: asmadeus@codewreck.org, charmitro@posteo.net, ericvh@kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	linux_oss@crudebyte.com, lucho@ionkov.net, syzkaller-bugs@googlegroups.com, 
-	v9fs@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-Hello,
+The "P" asm operand modifier is a x86 target-specific modifier.
 
-syzbot has tested the proposed patch but the reproducer is still triggering an issue:
-KMSAN: uninit-value in v9fs_evict_inode
+For x86_64, when used with a symbol reference, the "P" modifier
+emits "sym" instead of "sym(%rip)". When used with a constant, the
+"P" modifier emits "cst" instead of "$cst". This property is used to
+emit bare symbol references and bare constants without all
+syntax-specific prefixes.
 
-=====================================================
-BUG: KMSAN: uninit-value in v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
- v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
- evict+0x3ae/0xa60 fs/inode.c:667
- iput_final fs/inode.c:1741 [inline]
- iput+0x9ca/0xe10 fs/inode.c:1767
- iget_failed+0x15e/0x180 fs/bad_inode.c:248
- v9fs_fid_iget_dotl+0x375/0x570 fs/9p/vfs_inode_dotl.c:96
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1797
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+The generic "c", "n" and "a" operand modifiers should be used instead.
+The following table shows the modifiers supported by all targets and
+their effects:
 
-Uninit was created at:
- __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
- __alloc_pages_node include/linux/gfp.h:238 [inline]
- alloc_pages_node include/linux/gfp.h:261 [inline]
- alloc_slab_page mm/slub.c:2175 [inline]
- allocate_slab mm/slub.c:2338 [inline]
- new_slab+0x2de/0x1400 mm/slub.c:2391
- ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
- __slab_alloc mm/slub.c:3610 [inline]
- __slab_alloc_node mm/slub.c:3663 [inline]
- slab_alloc_node mm/slub.c:3835 [inline]
- kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
- alloc_inode_sb include/linux/fs.h:3089 [inline]
- v9fs_alloc_inode+0x62/0x130 fs/9p/vfs_inode.c:228
- alloc_inode+0x86/0x460 fs/inode.c:261
- iget_locked+0x2bf/0xee0 fs/inode.c:1280
- v9fs_fid_iget_dotl+0x7f/0x570 fs/9p/vfs_inode_dotl.c:62
- v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
- v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
- legacy_get_tree+0x114/0x290 fs/fs_context.c:662
- vfs_get_tree+0xa7/0x570 fs/super.c:1797
- do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
- path_mount+0x742/0x1f20 fs/namespace.c:3679
- do_mount fs/namespace.c:3692 [inline]
- __do_sys_mount fs/namespace.c:3898 [inline]
- __se_sys_mount+0x725/0x810 fs/namespace.c:3875
- __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
- do_syscall_64+0xd5/0x1f0
- entry_SYSCALL_64_after_hwframe+0x6d/0x75
+Modifier    Description
+-----------------------------------------------------------
+'c'         Require a constant operand and print the
+            constant expression with no punctuation.
+'n'         Like '%c' except that the value of the constant
+            is negated before printing.
+'a'         Substitute a memory reference, with the actual
+            operand treated as the address.  This may be
+            useful when outputting a "load address"
+            instruction, because often the assembler syntax
+            for such an instruction requires you to write
+            the operand as if it were a memory reference.
 
-CPU: 1 PID: 5499 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-11567-gb3603fcb79b1-dirty #0
-Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
-=====================================================
+Also note that unlike GCC, clang emits %rip-relative symbol
+reference with "P" asm operand modifier, so the patch also unifies
+symbol handling with both compilers.
 
+No functional changes intended.
 
-Tested on:
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+Cc: Sean Christopherson <seanjc@google.com>
 
-commit:         b3603fcb Merge tag 'dlm-6.9' of git://git.kernel.org/p..
-git tree:       https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git master
-console output: https://syzkaller.appspot.com/x/log.txt?x=175f8006180000
-kernel config:  https://syzkaller.appspot.com/x/.config?x=d08e4cfe8c38e605
-dashboard link: https://syzkaller.appspot.com/bug?extid=eb83fe1cce5833cd66a0
-compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-patch:          https://syzkaller.appspot.com/x/patch.diff?x=1250b481180000
+Uros Bizjak (3):
+  x86/asm: Remove %P operand modifier from altinstr asm templates
+  x86/asm: Use %c/%n instead of %P operand modifier in asm templates
+  x86/asm: Use %a instead of %P operand modifier in asm templates
+
+ arch/x86/boot/main.c                 |  4 ++--
+ arch/x86/include/asm/alternative.h   | 22 +++++++++++-----------
+ arch/x86/include/asm/apic.h          |  2 +-
+ arch/x86/include/asm/atomic64_32.h   |  2 +-
+ arch/x86/include/asm/cpufeature.h    |  4 ++--
+ arch/x86/include/asm/irq_stack.h     |  2 +-
+ arch/x86/include/asm/processor.h     |  6 +++---
+ arch/x86/include/asm/special_insns.h |  4 ++--
+ arch/x86/include/asm/uaccess.h       |  4 ++--
+ 9 files changed, 25 insertions(+), 25 deletions(-)
+
+-- 
+2.44.0
 
 
