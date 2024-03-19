@@ -1,215 +1,138 @@
-Return-Path: <linux-kernel+bounces-108196-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108197-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 30163880755
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:42:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 958D988075A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:45:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 77B0CB2201D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:42:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2937D2841EA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:45:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3371D3EA8D;
-	Tue, 19 Mar 2024 22:42:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DBF93C6AC;
+	Tue, 19 Mar 2024 22:45:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tAezIUfv"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="yIBlYZZM"
+Received: from mail-yw1-f178.google.com (mail-yw1-f178.google.com [209.85.128.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 650D5125CB;
-	Tue, 19 Mar 2024 22:42:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B5B23381AD
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:45:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710888128; cv=none; b=hXapvOXtTnsqjCGrvJaq0HBb5igO0jKW3J4l8gaKi4U/b5VMiGv58GFl8D3GJUZzNpcOwEKHPitZUUiT3LRaindydtKciHWxU8TLWzI9HGZT/5KZkNduE7Sl9Jjqs4Jm8R2KnNFhEIQiRrnIInmH7NQSsokSpfVHOD/cLL0fT9U=
+	t=1710888312; cv=none; b=qQgJC+OyeN1chFYPc0tcEUHYVEaZSg7uLOsZrNA0scdnW1zOzhf6MFwkwvzq7ojFtOqJWtZmINguqCF04/LKJQfr8ybgVzD1pNejuCzSqiNbB0RGzEuexokv7V5cwyiZyzhzY05dFLBJtaX7JkLMaO77zCa9h7dO/Sds4j5gi8E=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710888128; c=relaxed/simple;
-	bh=3k8Qz8Bs43OFLNKtX+4DNpyATuOJaHuSGtFlxYyLjX0=;
-	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=ruM0EEdySkMovuIyknNtlsWl+NH/QfInxhPqHVZAjTMs0hW95JS1lUTR0/vp4jBCm2LD4KFQq1wfzZNRbdSJjIrvSxOpaYRRFtyRBcwbqboRBz/cGm0B5vYlKh/AtpPZBlf4onCUBXMCWotJFiaxG6V2Q0Vv5/bG1nqHxXMBQYI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tAezIUfv; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB87CC433F1;
-	Tue, 19 Mar 2024 22:42:07 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710888127;
-	bh=3k8Qz8Bs43OFLNKtX+4DNpyATuOJaHuSGtFlxYyLjX0=;
-	h=From:To:Cc:Subject:Date:From;
-	b=tAezIUfvhlaM6VSRzdNrZjhumJKNe0MXgmknrwX4Y8j/6BGuOae2p/AxQAU+aI7V5
-	 p6wqo6+zeN/eaWmQMyv5CD8WNH6WyVvmZaABErV9mZz5oaduwKJElIl+RPYhbb2sKk
-	 gh/Fplugu2DbIlDP6evHR8XkoyNkpgR/vVws3etnjG8prvOGlFLwwSU5i5w0nZ9qBC
-	 zD0euNHvrbog0JuIZgRzcwkPZU+nGeDGAJnbrUcoGm9dPSx2lgI0MIY9Sm9j8J9ZO/
-	 a25cbe1+61Kwl3ZR9NjtQ4vPefC1Rs7Sg7F6G+/EjrR8yw2AoYJswkGfaMlCcZ6Wqa
-	 woVVyNRnjyGQw==
-From: Andrii Nakryiko <andrii@kernel.org>
-To: bpf@vger.kernel.org,
-	peterz@infradead.org,
-	mingo@redhat.com
-Cc: linux-kernel@vger.kernel.org,
-	jolsa@kernel.org,
-	song@kernel.org,
-	Andrii Nakryiko <andrii@kernel.org>
-Subject: [PATCH bpf-next] perf, amd: support capturing LBR from software events
-Date: Tue, 19 Mar 2024 15:42:06 -0700
-Message-ID: <20240319224206.1612000-1-andrii@kernel.org>
-X-Mailer: git-send-email 2.43.0
+	s=arc-20240116; t=1710888312; c=relaxed/simple;
+	bh=jczcFVTaYhGigMO8m6XsP7+Z2CSGS4dJUSBbeEtzhR4=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=MHi68DOmQkCnrh4l4S7xMYikdy1xdrllHOTbHnBkWAZOTLXlxytoWkslVv93BJeOnW02wrI8losm5mv9nYagbTdAJk3oma1ZKqTfYPrw+tMvrMRGBK6jVZq3w+WFzdxVMQLQ/Xswizr195kRctQ+52Qt5C49C0InqsyFpAGMc9Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=yIBlYZZM; arc=none smtp.client-ip=209.85.128.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-yw1-f178.google.com with SMTP id 00721157ae682-609eb3e5a56so65894117b3.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:45:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710888309; x=1711493109; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=pQqzWk+vG/Yifue6kYN9pL804kvE+CAcl3rI2SerYrg=;
+        b=yIBlYZZMV6Q3gUNAJCZ2qSB7wSaIJIqshyYXH22z6UKWpyzJeqMMV74xKwwKaYTXQp
+         recwe1GOCV6QPZzFodDtBbfuQc1pdc8yKAzmIMenkXfSzCyqU+Lww4rdqrXIMzXhosqa
+         4Ax3MRjWGPD4TzINZA3YJN96Cs7poEcMmmt3Mmyc3WTWAiBn60DKSdgqgOCfqTk5Qr/T
+         6jX8OBI25o/5oC+DXD8UYcu8EFpUXFCo0Gq7npcL51opQEj1kg5fKE9d2jEcEnn9+t/U
+         xg6o5Y15o7Mgc8LLphRJtjRvSQu0CXWdaDEyQfChQGe1dJcdD9VBs9fGE5p3cDVH2CPX
+         l8zg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710888309; x=1711493109;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=pQqzWk+vG/Yifue6kYN9pL804kvE+CAcl3rI2SerYrg=;
+        b=dUZNscEMSBadJzSLapICbmJH1ARqaWTRZ3QVIMqDH8QSK8hlN/QShqiXb9BfKeC8au
+         kgIY48mK140yXLUv81Zu0jFcNfIAV8toKCKgT+eT8VyHUEysPPGTr7f9P2OP9FxVs9AF
+         GvIKOgkfJpyWCKjR7vJ1CHA67P+jLlLocBnzSp7mgBYZiRdkbBJ4Hu++qCNVjHg/M0P9
+         kNM6dZS8g03EELAv0Z1pqPm1uWK/zPIiIQjMw6NiuT5uMNFBk890JljkP5/3tGcXh51o
+         KQ6wo2VZBqdScsIX1EYnbubCXJWIpSJH0Qe6pySZ4hyvZyvgYmzemWoq9Gs/XLE6uJeH
+         sBcg==
+X-Forwarded-Encrypted: i=1; AJvYcCVRtaZCkaDHaNsOF4cC49hxoEaiv3BVd9dKWpd1CFtVVucEk3Em81e6RdwrkV5uHLDP3GggwymNgzIUrT0LQ+RbcDu6N/AEnvrqJeBy
+X-Gm-Message-State: AOJu0YxZl5NJTHJT0HDvpemqa0tyE1zF6PlPYJcqaH3r+VcCVKSiIDp3
+	Xdh3pEXjzEQ0Bak2XlTOKK9qhGVxNDY242Ed3a06AifnHc/JHrru4R1dgY3mOLn9oTV7g7Dgm5B
+	RfAl9OsL07ELz9OAwAwrxaOeiOxVE865YL5swbg==
+X-Google-Smtp-Source: AGHT+IHAZs2FKAPJJSOuCRtpl8N3osuzygCJ/ew0ONS2Wfx9/D47o8Y7hTNZXigpA+m4BsbEswZ9ChA4+j+EbdZMdiI=
+X-Received: by 2002:a25:abcc:0:b0:dc6:b088:e742 with SMTP id
+ v70-20020a25abcc000000b00dc6b088e742mr15020800ybi.8.1710888308713; Tue, 19
+ Mar 2024 15:45:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240319135836.v2.1.I521dad0693cc24fe4dd14cba0c7048d94f5b6b41@changeid>
+In-Reply-To: <20240319135836.v2.1.I521dad0693cc24fe4dd14cba0c7048d94f5b6b41@changeid>
+From: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
+Date: Wed, 20 Mar 2024 00:44:57 +0200
+Message-ID: <CAA8EJpoCu5+KPJEeCSRLCgSQmTNxNsVCfP=9e4mtFaqADuuKBg@mail.gmail.com>
+Subject: Re: [PATCH v2] drm/dp: Clarify that wait_hpd_asserted() is not
+ optional for panels
+To: Douglas Anderson <dianders@chromium.org>
+Cc: dri-devel@lists.freedesktop.org, Abhinav Kumar <quic_abhinavk@quicinc.com>, 
+	linux-tegra@vger.kernel.org, Mikko Perttunen <mperttunen@nvidia.com>, 
+	Thierry Reding <thierry.reding@gmail.com>, Jonathan Hunter <jonathanh@nvidia.com>, 
+	Ankit Nautiyal <ankit.k.nautiyal@intel.com>, Daniel Vetter <daniel@ffwll.ch>, 
+	David Airlie <airlied@gmail.com>, Imre Deak <imre.deak@intel.com>, 
+	Jani Nikula <jani.nikula@intel.com>, Maxime Ripard <mripard@kernel.org>, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-[0] added ability to capture LBR (Last Branch Records) on Intel CPUs
-from inside BPF program at pretty much any arbitrary point. This is
-extremely useful capability that allows to figure out otherwise
-hard-to-debug problems, because LBR is now available based on some
-application-defined conditions, not just hardware-supported events.
+On Tue, 19 Mar 2024 at 22:58, Douglas Anderson <dianders@chromium.org> wrote:
+>
+> In response to my patch removing the "wait for HPD" logic at the
+> beginning of the MSM DP transfer() callback [1], we had some debate
+> about what the "This is an optional function" meant in the
+> documentation of the wait_hpd_asserted() callback. Let's clarify.
+>
+> As talked about in the MSM DP patch [1], before wait_hpd_asserted()
+> was introduced there was no great way for panel drivers to wait for
+> HPD in the case that the "built-in" HPD signal was used. Panel drivers
+> could only wait for HPD if a GPIO was used. At the time, we ended up
+> just saying that if we were using the "built-in" HPD signal that DP
+> AUX controllers needed to wait for HPD themselves at the beginning of
+> their transfer() callback. The fact that the wait for HPD at the
+> beginning of transfer() was awkward/problematic was the whole reason
+> wait_hpd_asserted() was added.
+>
+> Let's make it obvious that if a DP AUX controller implements
+> wait_hpd_asserted() that they don't need a loop waiting for HPD at the
+> start of their transfer() function. We'll still allow DP controllers
+> to work the old way but mark it as deprecated.
+>
+> [1] https://lore.kernel.org/r/20240315143621.v2.3.I535606f6d4f7e3e5588bb75c55996f61980183cd@changeid
+>
+> Reviewed-by: Abhinav Kumar <quic_abhinavk@quicinc.com>
+> Signed-off-by: Douglas Anderson <dianders@chromium.org>
+> ---
+> I would consider changing the docs to say that implementing
+> wait_hpd_asserted() is actually _required_ for any DP controllers that
+> want to support eDP panels parented on the DP AUX bus. The issue is
+> that one DP controller (tegra/dpaux.c, found by looking for those that
+> include display/drm_dp_aux_bus.h) does populate the DP AUX bus but
+> doesn't implement wait_hpd_asserted(). I'm actually not sure how/if
+> this work on tegra since I also don't see any delay loop for HPD in
+> tegra's transfer() callback. For now, I've left wait_hpd_asserted() as
+> optional and described the old/deprecated way things used to work
+> before wait_hpd_asserted().
+>
+> Changes in v2:
+> - Make it clear that panels don't need to call if HPD is a GPIO.
+>
+>  include/drm/display/drm_dp_helper.h | 13 ++++++++++++-
+>  1 file changed, 12 insertions(+), 1 deletion(-)
 
-retsnoop ([1]) is one such tool that takes a huge advantage of this
-functionality and has proved to be an extremely useful tool in
-practice.
+Reviewed-by: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
 
-Now, AMD Zen4 CPUs got support for similar LBR functionality, but
-necessary wiring inside the kernel is not yet setup. This patch seeks to
-rectify this and follows a similar approach to the original patch [0]
-for Intel CPUs.
 
-Given LBR can be set up to capture any indirect jumps, it's critical to
-minimize indirect jumps on the way to requesting LBR from BPF program,
-so we split amd_pmu_lbr_disable_all() into a wrapper with some generic
-conditions vs always-inlined __amd_pmu_lbr_disable() called directly
-from BPF subsystem (through perf_snapshot_branch_stack static call).
-
-Now that it's possible to capture LBR on AMD CPU from BPF at arbitrary
-point, there is no reason to artificially limit this feature to sampling
-events. So corresponding check is removed. AFAIU, there is no
-correctness implications of doing this (and it was possible to bypass
-this check by just setting perf_event's sample_period to 1 anyways, so
-it doesn't guard all that much).
-
-This was tested on AMD Bergamo CPU and worked well when utilized from
-the aforementioned retsnoop tool.
-
-  [0] https://lore.kernel.org/bpf/20210910183352.3151445-2-songliubraving@fb.com/
-  [1] https://github.com/anakryiko/retsnoop
-
-Signed-off-by: Andrii Nakryiko <andrii@kernel.org>
----
- arch/x86/events/amd/core.c   | 29 ++++++++++++++++++++++++++++-
- arch/x86/events/amd/lbr.c    | 11 +----------
- arch/x86/events/perf_event.h | 11 +++++++++++
- 3 files changed, 40 insertions(+), 11 deletions(-)
-
-diff --git a/arch/x86/events/amd/core.c b/arch/x86/events/amd/core.c
-index 69a3b02e50bb..fef661230acc 100644
---- a/arch/x86/events/amd/core.c
-+++ b/arch/x86/events/amd/core.c
-@@ -619,7 +619,7 @@ static void amd_pmu_cpu_dead(int cpu)
- 	}
- }
- 
--static inline void amd_pmu_set_global_ctl(u64 ctl)
-+static __always_inline void amd_pmu_set_global_ctl(u64 ctl)
- {
- 	wrmsrl(MSR_AMD64_PERF_CNTR_GLOBAL_CTL, ctl);
- }
-@@ -879,6 +879,29 @@ static int amd_pmu_handle_irq(struct pt_regs *regs)
- 	return amd_pmu_adjust_nmi_window(handled);
- }
- 
-+static int amd_pmu_v2_snapshot_branch_stack(struct perf_branch_entry *entries, unsigned int cnt)
-+{
-+	struct cpu_hw_events *cpuc;
-+	unsigned long flags;
-+
-+	/* must not have branches... */
-+	local_irq_save(flags);
-+	amd_pmu_core_disable_all();
-+	__amd_pmu_lbr_disable();
-+	/*            ... until here */
-+
-+	cpuc = this_cpu_ptr(&cpu_hw_events);
-+
-+	amd_pmu_lbr_read();
-+	cnt = min_t(unsigned int, cnt, x86_pmu.lbr_nr);
-+	memcpy(entries, cpuc->lbr_entries, sizeof(struct perf_branch_entry) * cnt);
-+
-+	amd_pmu_v2_enable_all(0);
-+	local_irq_restore(flags);
-+
-+	return cnt;
-+}
-+
- static int amd_pmu_v2_handle_irq(struct pt_regs *regs)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
-@@ -1415,6 +1438,10 @@ static int __init amd_core_pmu_init(void)
- 		static_call_update(amd_pmu_branch_reset, amd_pmu_lbr_reset);
- 		static_call_update(amd_pmu_branch_add, amd_pmu_lbr_add);
- 		static_call_update(amd_pmu_branch_del, amd_pmu_lbr_del);
-+
-+		/* only support branch_stack snapshot on perfmon v2 */
-+		if (x86_pmu.handle_irq == amd_pmu_v2_handle_irq)
-+			static_call_update(perf_snapshot_branch_stack, amd_pmu_v2_snapshot_branch_stack);
- 	} else if (!amd_brs_init()) {
- 		/*
- 		 * BRS requires special event constraints and flushing on ctxsw.
-diff --git a/arch/x86/events/amd/lbr.c b/arch/x86/events/amd/lbr.c
-index eb31f850841a..c34f8d0048e0 100644
---- a/arch/x86/events/amd/lbr.c
-+++ b/arch/x86/events/amd/lbr.c
-@@ -308,10 +308,6 @@ int amd_pmu_lbr_hw_config(struct perf_event *event)
- {
- 	int ret = 0;
- 
--	/* LBR is not recommended in counting mode */
--	if (!is_sampling_event(event))
--		return -EINVAL;
--
- 	ret = amd_pmu_lbr_setup_filter(event);
- 	if (!ret)
- 		event->attach_state |= PERF_ATTACH_SCHED_CB;
-@@ -410,16 +406,11 @@ void amd_pmu_lbr_enable_all(void)
- void amd_pmu_lbr_disable_all(void)
- {
- 	struct cpu_hw_events *cpuc = this_cpu_ptr(&cpu_hw_events);
--	u64 dbg_ctl, dbg_extn_cfg;
- 
- 	if (!cpuc->lbr_users || !x86_pmu.lbr_nr)
- 		return;
- 
--	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
--	rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
--
--	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
--	wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
-+	__amd_pmu_lbr_disable();
- }
- 
- __init int amd_pmu_lbr_init(void)
-diff --git a/arch/x86/events/perf_event.h b/arch/x86/events/perf_event.h
-index fb56518356ec..4dddf0a7e81e 100644
---- a/arch/x86/events/perf_event.h
-+++ b/arch/x86/events/perf_event.h
-@@ -1329,6 +1329,17 @@ void amd_pmu_lbr_enable_all(void);
- void amd_pmu_lbr_disable_all(void);
- int amd_pmu_lbr_hw_config(struct perf_event *event);
- 
-+static __always_inline void __amd_pmu_lbr_disable(void)
-+{
-+	u64 dbg_ctl, dbg_extn_cfg;
-+
-+	rdmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg);
-+	rdmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl);
-+
-+	wrmsrl(MSR_AMD_DBG_EXTN_CFG, dbg_extn_cfg & ~DBG_EXTN_CFG_LBRV2EN);
-+	wrmsrl(MSR_IA32_DEBUGCTLMSR, dbg_ctl & ~DEBUGCTLMSR_FREEZE_LBRS_ON_PMI);
-+}
-+
- #ifdef CONFIG_PERF_EVENTS_AMD_BRS
- 
- #define AMD_FAM19H_BRS_EVENT 0xc4 /* RETIRED_TAKEN_BRANCH_INSTRUCTIONS */
 -- 
-2.43.0
-
+With best wishes
+Dmitry
 
