@@ -1,169 +1,112 @@
-Return-Path: <linux-kernel+bounces-108005-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108027-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7B1248804B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:23:18 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0A5798804F7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:38:10 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 373B4285252
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:23:17 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C292D2842A7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:38:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 627E7383A0;
-	Tue, 19 Mar 2024 18:22:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E4BE839FD7;
+	Tue, 19 Mar 2024 18:37:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rDbrMCe1"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6D905374F2;
-	Tue, 19 Mar 2024 18:22:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	dkim=pass (2048-bit key) header.d=orange.fr header.i=@orange.fr header.b="hiaq+oF0"
+Received: from msa.smtpout.orange.fr (msa-208.smtpout.orange.fr [193.252.23.208])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13A2639ACC
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:37:48 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.252.23.208
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710872577; cv=none; b=T4mcEM87yWFbiKAZS5lMd2ySxnwVxkwAUznMg1cg8LEvyocbjKny0p3v2le1aGiZDGbrk0VC6zINZwNOswQh8DfWLQiX1VvyPAwOmY3u0pTHzwn/2zBKKk1iVC7CR97cKeKjlGPiZCLLBXLJ4UAdadNkq38APdtAQZzqnt6RFE0=
+	t=1710873471; cv=none; b=XR8D7KtMxSE6cPe+adfAaAuDpyvHOrHF+yhYlYLakFilt/5Wwmtx+KTAl1r8J9ziCVZf1BpwsUGOjMMEf8f0ESEe3oAmQvL2DLlUmu8pO0qzBe/cwRWY5iStWM0ZJz+jBWOAa3tvcf/vubZkYcRAa6lB1sOpE9tRE9OJ5BMz/dQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710872577; c=relaxed/simple;
-	bh=T/xW9xACdijAKdAsTAcfOoYLNSPzlFzEkZf6uy18UYw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=jH7CBn+z7OeRnSxRlO0mqKc4uYaaEdMyqN5AjFBQqf1op1g7EQR5SkOSF/4jRQ7+7gUU12j5NGpGVSZLyH1LAvR14mJ43pkNHRzH/D41RK7AmXGMMe5COLfYCEXDJ8N4/9+3q6MJQLgS19syldlOZQEBSUYGrQdWEsXC96xVtao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rDbrMCe1; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id CBCB6C43390;
-	Tue, 19 Mar 2024 18:22:54 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710872576;
-	bh=T/xW9xACdijAKdAsTAcfOoYLNSPzlFzEkZf6uy18UYw=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=rDbrMCe1KWxt3v/BQGVS9s1d03mwvHYcCBlT2CGLZelWwqbOd4jcvfiEpUbmnti9u
-	 x2ThGrn9ImJQ+iQXzvdCo0i0xRcwl22auO9S8+/URavirztZprUPknHUQTqNoov63g
-	 4NMMkghdb207xs1Fig/CIXKZ8buqdnXSg9IHr8KzuTB/8Wt+stdfsEfLGjpZpUKbp+
-	 6V5HQWcP0TOboD6EyHmdyAx8G3vFBETm99hdEJ7o0QUhC1bdygmUR+Y/iMx4mkuZl2
-	 9H9Wb0DoxAukmvXYqIFwKFV3POZ1g4Qb7whpPQGMtRmYxEb8kTLjRg61/POb5e8KHw
-	 coNmgm7TQ5n8Q==
-Date: Tue, 19 Mar 2024 18:22:51 +0000
-From: Will Deacon <will@kernel.org>
-To: Gavin Shan <gshan@redhat.com>
-Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	mst@redhat.com, jasowang@redhat.com, xuanzhuo@linux.alibaba.com,
-	yihyu@redhat.com, shan.gavin@gmail.com,
-	linux-arm-kernel@lists.infradead.org,
-	Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Message-ID: <20240319182251.GB3121@willie-the-truck>
-References: <20240314074923.426688-1-gshan@redhat.com>
- <20240318165924.GA1824@willie-the-truck>
- <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
+	s=arc-20240116; t=1710873471; c=relaxed/simple;
+	bh=7GcSqlNA9db0TU+PtWJBvIPc33uOUli4tM8yo1e7qb8=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=kZYNyJTFS8ycl7PQA67Wzwro4Y+qnrV6ISA/XFvg0R2Vq4/t6GNVkRd7gSgfWUymJMuo/T5hfMG5m2ZIQQo7hW0YdunbyAgU3ucC98npj0ahc69+fl3zhXfjqlBJtyorZKLOMgspMAVPjuujk0iYlOpaBZsCQhg7561MaKgB1zY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=orange.fr; spf=pass smtp.mailfrom=orange.fr; dkim=pass (2048-bit key) header.d=orange.fr header.i=@orange.fr header.b=hiaq+oF0; arc=none smtp.client-ip=193.252.23.208
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=orange.fr
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=orange.fr
+Received: from jules-desktop.dynamic.ziggo.nl ([84.105.71.69])
+	by smtp.orange.fr with ESMTPA
+	id meK0rHRJYX7HUmeKArj0ew; Tue, 19 Mar 2024 19:36:35 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=orange.fr;
+	s=t20230301; t=1710873395;
+	bh=qXNQkp6Qc32Utj5LOnG0LI21fIJd6XSTE2Y5kLhNc5E=;
+	h=From:To:Subject:Date:Message-Id:MIME-Version;
+	b=hiaq+oF0Tq7obWAaO4gvkQsq/4OWbegQ0vbWg3tzqE/1pHRkJBG3X0ZgXcyhFJDhh
+	 MiZL45e+QcVrotSA0VCnzoMunOqhQevFLwRw1VB8t6KTRNxdzYkcOE1CS7XbZKIQNi
+	 6UcTj0VBuRqtfLlZjza28E7lHWsebxnIwhUPsAS/839JbeEzpjkyi0/XuBF+uFHATe
+	 Al0nvKRAFA/X2I9f3AdeWbIdqkyA+K4VyXgoZ2Q0k4+GZhApyZ7xrGe5vrweRsMGUD
+	 /wzPv3Rev85vn0kQxliK2B+k2aQZWFzV3KpC3z+UkngY7VX5GmxHsZOnOTzTHV2fEa
+	 0Mrh0SNxeta6w==
+X-ME-Helo: jules-desktop.dynamic.ziggo.nl
+X-ME-Auth: anVsZXMubm9pcmFudEBvcmFuZ2UuZnI=
+X-ME-Date: Tue, 19 Mar 2024 19:36:35 +0100
+X-ME-IP: 84.105.71.69
+From: Jules Noirant <jules.noirant@orange.fr>
+To: jkosina@suse.com
+Cc: bentiss@kernel.org,
+	jkosina@suse.cz,
+	Jules Noirant <jules.noirant@orange.fr>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	linux-usb@vger.kernel.org,
+	linux-input@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH] HID: hid-pidff: stop all effects before enabling actuators
+Date: Tue, 19 Mar 2024 19:24:43 +0100
+Message-Id: <20240319182443.18161-1-jules.noirant@orange.fr>
+X-Mailer: git-send-email 2.40.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
-User-Agent: Mutt/1.10.1 (2018-07-13)
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 19, 2024 at 02:59:23PM +1000, Gavin Shan wrote:
-> On 3/19/24 02:59, Will Deacon wrote:
-> > On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
-> > > The issue is reported by Yihuang Yu who have 'netperf' test on
-> > > NVidia's grace-grace and grace-hopper machines. The 'netperf'
-> > > client is started in the VM hosted by grace-hopper machine,
-> > > while the 'netperf' server is running on grace-grace machine.
-> > > 
-> > > The VM is started with virtio-net and vhost has been enabled.
-> > > We observe a error message spew from VM and then soft-lockup
-> > > report. The error message indicates the data associated with
-> > > the descriptor (index: 135) has been released, and the queue
-> > > is marked as broken. It eventually leads to the endless effort
-> > > to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
-> > > and soft-lockup. The stale index 135 is fetched from the available
-> > > ring and published to the used ring by vhost, meaning we have
-> > > disordred write to the available ring element and available index.
-> > > 
-> > >    /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
-> > >    -accel kvm -machine virt,gic-version=host                            \
-> > >       :                                                                 \
-> > >    -netdev tap,id=vnet0,vhost=on                                        \
-> > >    -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
-> > > 
-> > >    [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
-> > > 
-> > > Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
-> > > virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
-> > > ARM64. It should work for other architectures, but performance loss is
-> > > expected.
-> > > 
-> > > Cc: stable@vger.kernel.org
-> > > Reported-by: Yihuang Yu <yihyu@redhat.com>
-> > > Signed-off-by: Gavin Shan <gshan@redhat.com>
-> > > ---
-> > >   drivers/virtio/virtio_ring.c | 12 +++++++++---
-> > >   1 file changed, 9 insertions(+), 3 deletions(-)
-> > > 
-> > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> > > index 49299b1f9ec7..7d852811c912 100644
-> > > --- a/drivers/virtio/virtio_ring.c
-> > > +++ b/drivers/virtio/virtio_ring.c
-> > > @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
-> > >   	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
-> > >   	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
-> > > -	/* Descriptors and available array need to be set before we expose the
-> > > -	 * new available array entries. */
-> > > -	virtio_wmb(vq->weak_barriers);
-> > > +	/*
-> > > +	 * Descriptors and available array need to be set before we expose
-> > > +	 * the new available array entries. virtio_wmb() should be enough
-> > > +	 * to ensuere the order theoretically. However, a stronger barrier
-> > > +	 * is needed by ARM64. Otherwise, the stale data can be observed
-> > > +	 * by the host (vhost). A stronger barrier should work for other
-> > > +	 * architectures, but performance loss is expected.
-> > > +	 */
-> > > +	virtio_mb(false);
-> > >   	vq->split.avail_idx_shadow++;
-> > >   	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
-> > >   						vq->split.avail_idx_shadow);
-> > 
-> > Replacing a DMB with a DSB is _very_ unlikely to be the correct solution
-> > here, especially when ordering accesses to coherent memory.
-> > 
-> > In practice, either the larger timing different from the DSB or the fact
-> > that you're going from a Store->Store barrier to a full barrier is what
-> > makes things "work" for you. Have you tried, for example, a DMB SY
-> > (e.g. via __smb_mb()).
-> > 
-> > We definitely shouldn't take changes like this without a proper
-> > explanation of what is going on.
-> > 
-> 
-> Thanks for your comments, Will.
-> 
-> Yes, DMB should work for us. However, it seems this instruction has issues on
-> NVidia's grace-hopper. It's hard for me to understand how DMB and DSB works
-> from hardware level. I agree it's not the solution to replace DMB with DSB
-> before we fully understand the root cause.
-> 
-> I tried the possible replacement like below. __smp_mb() can avoid the issue like
-> __mb() does. __ndelay(10) can avoid the issue, but __ndelay(9) doesn't.
-> 
-> static inline int virtqueue_add_split(struct virtqueue *_vq, ...)
-> {
->     :
->         /* Put entry in available array (but don't update avail->idx until they
->          * do sync). */
->         avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
->         vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
-> 
->         /* Descriptors and available array need to be set before we expose the
->          * new available array entries. */
->         // Broken: virtio_wmb(vq->weak_barriers);
->         // Broken: __dma_mb();
->         // Work:   __mb();
->         // Work:   __smp_mb();
+Some PID compliant devices automatically play effects after boot (i.e.
+autocenter spring) that prevent the rendering of other effects since
+it is done outside of the kernel driver.
 
-It's pretty weird that __dma_mb() is "broken" but __smp_mb() "works". How
-confident are you in that result?
+This makes sure all the effects currently played are stopped after
+resetting the device.
+It brings compatibility to the Brunner CLS-P joystick.
 
-Will
+Signed-off-by: Jules Noirant <jules.noirant@orange.fr>
+---
+ drivers/hid/usbhid/hid-pidff.c | 9 +++++++--
+ 1 file changed, 7 insertions(+), 2 deletions(-)
+
+diff --git a/drivers/hid/usbhid/hid-pidff.c b/drivers/hid/usbhid/hid-pidff.c
+index 3b4ee21cd..aade18f9e 100644
+--- a/drivers/hid/usbhid/hid-pidff.c
++++ b/drivers/hid/usbhid/hid-pidff.c
+@@ -109,8 +109,9 @@ static const u8 pidff_pool[] = { 0x80, 0x83, 0xa9 };
+ /* Special field key tables used to put special field keys into arrays */
+ 
+ #define PID_ENABLE_ACTUATORS	0
+-#define PID_RESET		1
+-static const u8 pidff_device_control[] = { 0x97, 0x9a };
++#define PID_STOP_ALL_EFFECTS	1
++#define PID_RESET		2
++static const u8 pidff_device_control[] = { 0x97, 0x99, 0x9a };
+ 
+ #define PID_CONSTANT	0
+ #define PID_RAMP	1
+@@ -1157,6 +1158,10 @@ static void pidff_reset(struct pidff_device *pidff)
+ 	hid_hw_request(hid, pidff->reports[PID_DEVICE_CONTROL], HID_REQ_SET_REPORT);
+ 	hid_hw_wait(hid);
+ 
++	pidff->device_control->value[0] = pidff->control_id[PID_STOP_ALL_EFFECTS];
++	hid_hw_request(hid, pidff->reports[PID_DEVICE_CONTROL], HID_REQ_SET_REPORT);
++	hid_hw_wait(hid);
++
+ 	pidff->device_control->value[0] =
+ 		pidff->control_id[PID_ENABLE_ACTUATORS];
+ 	hid_hw_request(hid, pidff->reports[PID_DEVICE_CONTROL], HID_REQ_SET_REPORT);
+-- 
+2.40.1
+
 
