@@ -1,64 +1,64 @@
-Return-Path: <linux-kernel+bounces-107094-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107106-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6855A87F778
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:35:22 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 774EB87F78E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:40:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1B4EE280209
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:35:21 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CADA6B232AD
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:40:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8D2F17D3E4;
-	Tue, 19 Mar 2024 06:32:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C7DDE51C5F;
+	Tue, 19 Mar 2024 06:33:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="OakVmdOt"
-Received: from esa4.hc1455-7.c3s2.iphmx.com (esa4.hc1455-7.c3s2.iphmx.com [68.232.139.117])
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="Zl35M1oK"
+Received: from esa7.hc1455-7.c3s2.iphmx.com (esa7.hc1455-7.c3s2.iphmx.com [139.138.61.252])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CCB29537FC;
-	Tue, 19 Mar 2024 06:32:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.139.117
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C13A851C36;
+	Tue, 19 Mar 2024 06:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=139.138.61.252
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710829956; cv=none; b=czOfmgnDJbsi601T1DNuzWUDNGIhs3nu6YXa9of1eJrUfkuv6wf4nvjN2qaY3QOJwMwEwh4m1n243ZMosob5cLx/x0ik9C4HzLJLf/UCBFClR/upRe8zc+R5OHwldWZVpjpEbxcKUmqawEXG3aDP00lgBlp29+WsuDQnL4GY1/Q=
+	t=1710830018; cv=none; b=DT7C4zyqAyV3c62Xpn6AkweJt4Kuy/wcAgbZvwaqH/ZMVV72OAIzUEPzEPJ0ed+P4piodr0pS4kgXN+XKdwDVTGIbH4KH9aGA7YlrhXHqZzpvhCLP1gD03uUHddmiLXjoVa/yhXJ6uY08s18DfP0gbwNNL+/xe+bZEEMxIHgpBk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710829956; c=relaxed/simple;
-	bh=g/F/uSB80Kmdz2xmcZ9fhA6lsdgQP0M3skp+uddabjw=;
+	s=arc-20240116; t=1710830018; c=relaxed/simple;
+	bh=3fjkbwm+GFV0zHVgXSIa+B2drODRTgvxYFA/fjRfZIY=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=q+zNO7BmQ8sYf/Rc8n0tKg7YT2oQ9H4OW8WgaygOLgdtadWnngtgZHMJ2sTdck7oOOASoL7CyasvDu54lbF3iElMaDKzcyB8l1JDe/r2pGT6l18G17J60wg8Krn7rXTmn6BZEa0lf4Pxwvr2fDYb66lAKX8EZO9mlhx6zny3Heg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=OakVmdOt; arc=none smtp.client-ip=68.232.139.117
+	 MIME-Version; b=Ra1ZdydvPWPKG9QFA5cqTxCF2rN2N4N+LBp/9w5xEUOEcU1HD+zK0aLmBbBZcsDdf8yfqfCN/WZ/fsFN1QfbU/yHmU2Ai5bfRfFK60F5Rlby5+PV9kwofr2C5a/iod1QjzEJbyZwx8FrNLJRNd8ZK4XALbI9GcPEHke9co1G/uM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=Zl35M1oK; arc=none smtp.client-ip=139.138.61.252
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
 DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
   d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
-  t=1710829954; x=1742365954;
+  t=1710830015; x=1742366015;
   h=from:to:cc:subject:date:message-id:in-reply-to:
    references:mime-version:content-transfer-encoding;
-  bh=g/F/uSB80Kmdz2xmcZ9fhA6lsdgQP0M3skp+uddabjw=;
-  b=OakVmdOteelyhTVYj+N8DiKtv96F4lbN+qIvWOEr9mBBuypCcQmBVHLb
-   dWNuJLI8erE9DL2ZCsivQjkvQHaghft1fQ6xk6KI07Mvon2iAxj7OvZhz
-   WN1QJS1bE59M8OcQj8fgddf32CvDfQumeUmYBvIO+LzueDon5NHCboR2B
-   XICC3O7tbiOtnMvRmxpCbG2Z+GN3TSSl7gZNp+ec8hUB7xbeI0E1QGq2E
-   vZi5hokg6lKi5mQKk/2anGpX5sT1gQM0VyEwO2wfVn9ZwHRDO/euwCp7m
-   TFMW77Z3QApnM1KVV2Qa5aytqcJ5Ifm5DOmb5RyasRZbTW6svmLTsGAau
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="152971378"
+  bh=3fjkbwm+GFV0zHVgXSIa+B2drODRTgvxYFA/fjRfZIY=;
+  b=Zl35M1oK6JmuNgiKVn5BAhMvjsuzGi/7ZNI3nlXlDP2n0lyy37rmURYx
+   y64nYDd71dN/cpINuLbCGr27529tJSpgsUVY7PNe6bi69OOvObhen71aD
+   O8UlOGTLddFpfp0/on+yTjWCb2MCoIPYITL1XOis+z7XJuPQE1hffDraa
+   25+aROxXdZz8WBWWctZs4Dk22zKPGDw2EJ3wgX7d+3GwX3bNwmtkgLPQd
+   X1H4wRSWD1YSKTl31UUF2OGQkd9cbWPDFnt06/MeDf+ecjyrcgZ5YPcyn
+   yZzCKzWBxEk0snjIv/10qUP8whBgbuHMu5wE/HX/PoZH+L7o6beh9w1fG
+   g==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="131490898"
 X-IronPort-AV: E=Sophos;i="6.07,136,1708354800"; 
-   d="scan'208";a="152971378"
-Received: from unknown (HELO oym-r4.gw.nic.fujitsu.com) ([210.162.30.92])
-  by esa4.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 15:32:24 +0900
-Received: from oym-m2.gw.nic.fujitsu.com (oym-nat-oym-m2.gw.nic.fujitsu.com [192.168.87.59])
-	by oym-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id F167B141218;
-	Tue, 19 Mar 2024 15:32:21 +0900 (JST)
-Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
-	by oym-m2.gw.nic.fujitsu.com (Postfix) with ESMTP id 310D9BF4B8;
+   d="scan'208";a="131490898"
+Received: from unknown (HELO yto-r2.gw.nic.fujitsu.com) ([218.44.52.218])
+  by esa7.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 15:32:24 +0900
+Received: from yto-m4.gw.nic.fujitsu.com (yto-nat-yto-m4.gw.nic.fujitsu.com [192.168.83.67])
+	by yto-r2.gw.nic.fujitsu.com (Postfix) with ESMTP id 39084C6814;
+	Tue, 19 Mar 2024 15:32:22 +0900 (JST)
+Received: from kws-ab4.gw.nic.fujitsu.com (kws-ab4.gw.nic.fujitsu.com [192.51.206.22])
+	by yto-m4.gw.nic.fujitsu.com (Postfix) with ESMTP id 75891D7B8E;
 	Tue, 19 Mar 2024 15:32:21 +0900 (JST)
 Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
-	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id BE4C420093269;
-	Tue, 19 Mar 2024 15:32:20 +0900 (JST)
+	by kws-ab4.gw.nic.fujitsu.com (Postfix) with ESMTP id 0E5C7228824;
+	Tue, 19 Mar 2024 15:32:21 +0900 (JST)
 Received: from localhost.localdomain (unknown [10.167.226.45])
-	by edo.cn.fujitsu.com (Postfix) with ESMTP id 4AE611A006D;
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 917DA1A006E;
 	Tue, 19 Mar 2024 14:32:20 +0800 (CST)
 From: Li Zhijian <lizhijian@fujitsu.com>
 To: linux-kernel@vger.kernel.org
@@ -66,9 +66,9 @@ Cc: Li Zhijian <lizhijian@fujitsu.com>,
 	"James E.J. Bottomley" <jejb@linux.ibm.com>,
 	"Martin K. Petersen" <martin.petersen@oracle.com>,
 	linux-scsi@vger.kernel.org
-Subject: [PATCH v2 02/25] scsi: aic94xx: Convert sprintf() family to sysfs_emit() family
-Date: Tue, 19 Mar 2024 14:31:09 +0800
-Message-Id: <20240319063132.1588443-2-lizhijian@fujitsu.com>
+Subject: [PATCH v2 03/25] scsi: arcmsr: Convert sprintf() family to sysfs_emit() family
+Date: Tue, 19 Mar 2024 14:31:10 +0800
+Message-Id: <20240319063132.1588443-3-lizhijian@fujitsu.com>
 X-Mailer: git-send-email 2.31.1
 In-Reply-To: <20240319063132.1588443-1-lizhijian@fujitsu.com>
 References: <20240319063132.1588443-1-lizhijian@fujitsu.com>
@@ -83,13 +83,13 @@ X-TM-AS-GCONF: 00
 X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28260.005
 X-TM-AS-User-Approved-Sender: Yes
 X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28260.005
-X-TMASE-Result: 10--7.640100-10.000000
-X-TMASE-MatchedRID: pfKaEBrCt3IbO59FK9BdmJiHtCNYjckMjkDrBOJwwnQ8JmmJxjOaQXVX
+X-TMASE-Result: 10--11.184600-10.000000
+X-TMASE-MatchedRID: yLHOPqhdQyUbO59FK9BdmJiHtCNYjckMjkDrBOJwwnQ8JmmJxjOaQXVX
 	Q3/qdw5yDiqGKKMcNgRhoUIS5GGeEs1HQN/TlJ3ZOIQ9GP2P2u/iwxLjNbuPBWO0yVK/5LmcQiM
-	ingSlKoKMx5HzfQifbPE41045MrHXFDCN/1eC4ASdVNZaI2n6/8E5XPQnBzGXq8KsbROd9VSArq
-	oIZrVn15fzUkBpc0721RVFWxUguUH+0jQufZU6FIDCiwMF64/BEOqYpzM+g1kYiM67YVe6ChhBv
-	WgZlX+84vM1YF6AJbbCCfuIMF6xLSAHAopEd76vphClXDiKKk8nzRrxP+Bp1zE3Xi452DCPieKR
-	5xnjQ+4nnWiTJUlIYg==
+	ingSlKoKMx5HzfQifbPE41045MrHXFDCN/1eC4ASdVNZaI2n6/8E5XPQnBzGXq8KsbROd9VSD3F
+	7iC1Qm2iWQSYYFGzuMEi2pD9yuITpE/E3DK2t5CrNE9DxPih7lWQ3R4k5PTnAN76LiU8zntm9FC
+	Qm2VpcRrmwoem/bBUiEVUa6bapFqJH0YXYnbGozFEUknJ/kEl7dB/CxWTRRu25FeHtsUoHuUoKW
+	kqZNnE74Q9Cm69pQ6j+lD9KVs8ryIfUnPwjOTEo2RRIMOrvjaQ==
 X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
 Per filesystems/sysfs.rst, show() should only use sysfs_emit()
@@ -115,54 +115,123 @@ This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
 Split them per subsystem so that the maintainer can review it easily
 [1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
 ---
- drivers/scsi/aic94xx/aic94xx_init.c | 13 ++++++-------
- 1 file changed, 6 insertions(+), 7 deletions(-)
+ drivers/scsi/arcmsr/arcmsr_attr.c | 40 ++++++++-----------------------
+ 1 file changed, 10 insertions(+), 30 deletions(-)
 
-diff --git a/drivers/scsi/aic94xx/aic94xx_init.c b/drivers/scsi/aic94xx/aic94xx_init.c
-index 8a3340d8d7ad..39d1617834de 100644
---- a/drivers/scsi/aic94xx/aic94xx_init.c
-+++ b/drivers/scsi/aic94xx/aic94xx_init.c
-@@ -264,8 +264,7 @@ static ssize_t asd_show_dev_rev(struct device *dev,
+diff --git a/drivers/scsi/arcmsr/arcmsr_attr.c b/drivers/scsi/arcmsr/arcmsr_attr.c
+index baeb5e795690..3dfbe771e8b9 100644
+--- a/drivers/scsi/arcmsr/arcmsr_attr.c
++++ b/drivers/scsi/arcmsr/arcmsr_attr.c
+@@ -258,9 +258,7 @@ static ssize_t
+ arcmsr_attr_host_driver_version(struct device *dev,
  				struct device_attribute *attr, char *buf)
  {
- 	struct asd_ha_struct *asd_ha = dev_to_asd_ha(dev);
--	return snprintf(buf, PAGE_SIZE, "%s\n",
--			asd_dev_rev[asd_ha->revision_id]);
-+	return sysfs_emit(buf, "%s\n", asd_dev_rev[asd_ha->revision_id]);
- }
- static DEVICE_ATTR(aic_revision, S_IRUGO, asd_show_dev_rev, NULL);
- 
-@@ -273,7 +272,7 @@ static ssize_t asd_show_dev_bios_build(struct device *dev,
- 				       struct device_attribute *attr,char *buf)
- {
- 	struct asd_ha_struct *asd_ha = dev_to_asd_ha(dev);
--	return snprintf(buf, PAGE_SIZE, "%d\n", asd_ha->hw_prof.bios.bld);
-+	return sysfs_emit(buf, "%d\n", asd_ha->hw_prof.bios.bld);
- }
- static DEVICE_ATTR(bios_build, S_IRUGO, asd_show_dev_bios_build, NULL);
- 
-@@ -281,7 +280,7 @@ static ssize_t asd_show_dev_pcba_sn(struct device *dev,
- 				    struct device_attribute *attr, char *buf)
- {
- 	struct asd_ha_struct *asd_ha = dev_to_asd_ha(dev);
--	return snprintf(buf, PAGE_SIZE, "%s\n", asd_ha->hw_prof.pcba_sn);
-+	return sysfs_emit(buf, "%s\n", asd_ha->hw_prof.pcba_sn);
- }
- static DEVICE_ATTR(pcba_sn, S_IRUGO, asd_show_dev_pcba_sn, NULL);
- 
-@@ -452,9 +451,9 @@ static ssize_t asd_show_update_bios(struct device *dev,
- 	if (asd_ha->bios_status != FLASH_IN_PROGRESS)
- 		asd_ha->bios_status = FLASH_OK;
- 
--	return snprintf(buf, PAGE_SIZE, "status=%x %s\n",
--			flash_error_table[i].err_code,
--			flash_error_table[i].reason);
-+	return sysfs_emit(buf, "status=%x %s\n",
-+			  flash_error_table[i].err_code,
-+			  flash_error_table[i].reason);
+-	return snprintf(buf, PAGE_SIZE,
+-			"%s\n",
+-			ARCMSR_DRIVER_VERSION);
++	return sysfs_emit(buf, "%s\n", ARCMSR_DRIVER_VERSION);
  }
  
- static DEVICE_ATTR(update_bios, S_IRUGO|S_IWUSR,
+ static ssize_t
+@@ -270,9 +268,7 @@ arcmsr_attr_host_driver_posted_cmd(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			atomic_read(&acb->ccboutstandingcount));
++	return sysfs_emit(buf, "%4d\n", atomic_read(&acb->ccboutstandingcount));
+ }
+ 
+ static ssize_t
+@@ -282,9 +278,7 @@ arcmsr_attr_host_driver_reset(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->num_resets);
++	return sysfs_emit(buf, "%4d\n", acb->num_resets);
+ }
+ 
+ static ssize_t
+@@ -294,9 +288,7 @@ arcmsr_attr_host_driver_abort(struct device *dev,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->num_aborts);
++	return sysfs_emit(buf, "%4d\n", acb->num_aborts);
+ }
+ 
+ static ssize_t
+@@ -306,9 +298,7 @@ arcmsr_attr_host_fw_model(struct device *dev, struct device_attribute *attr,
+ 	struct Scsi_Host *host = class_to_shost(dev);
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+-	return snprintf(buf, PAGE_SIZE,
+-			"%s\n",
+-			acb->firm_model);
++	return sysfs_emit(buf, "%s\n", acb->firm_model);
+ }
+ 
+ static ssize_t
+@@ -319,9 +309,7 @@ arcmsr_attr_host_fw_version(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 			(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%s\n",
+-			acb->firm_version);
++	return sysfs_emit(buf, "%s\n", acb->firm_version);
+ }
+ 
+ static ssize_t
+@@ -332,9 +320,7 @@ arcmsr_attr_host_fw_request_len(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_request_len);
++	return sysfs_emit(buf, "%4d\n", acb->firm_request_len);
+ }
+ 
+ static ssize_t
+@@ -345,9 +331,7 @@ arcmsr_attr_host_fw_numbers_queue(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_numbers_queue);
++	return sysfs_emit(buf, "%4d\n", acb->firm_numbers_queue);
+ }
+ 
+ static ssize_t
+@@ -358,9 +342,7 @@ arcmsr_attr_host_fw_sdram_size(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_sdram_size);
++	return sysfs_emit(buf, "%4d\n", acb->firm_sdram_size);
+ }
+ 
+ static ssize_t
+@@ -371,9 +353,7 @@ arcmsr_attr_host_fw_hd_channels(struct device *dev,
+ 	struct AdapterControlBlock *acb =
+ 		(struct AdapterControlBlock *) host->hostdata;
+ 
+-	return snprintf(buf, PAGE_SIZE,
+-			"%4d\n",
+-			acb->firm_hd_channels);
++	return sysfs_emit(buf, "%4d\n", acb->firm_hd_channels);
+ }
+ 
+ static DEVICE_ATTR(host_driver_version, S_IRUGO, arcmsr_attr_host_driver_version, NULL);
 -- 
 2.29.2
 
