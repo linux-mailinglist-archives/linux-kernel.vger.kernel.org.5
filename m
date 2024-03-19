@@ -1,215 +1,185 @@
-Return-Path: <linux-kernel+bounces-108019-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108022-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 63E358804DB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:31:23 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 911818804E2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:32:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE724B2214B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:31:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 19B2E1F20FD5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:32:42 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7BD5839FDA;
-	Tue, 19 Mar 2024 18:31:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E404C39ACD;
+	Tue, 19 Mar 2024 18:32:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pfjDOKf1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BoyQKkry";
-	dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b="pfjDOKf1";
-	dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b="BoyQKkry"
-Received: from smtp-out2.suse.de (smtp-out2.suse.de [195.135.223.131])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="OMIOPYp/"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2103.outbound.protection.outlook.com [40.107.94.103])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 025E339AFD
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:31:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.131
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710873063; cv=none; b=rrhgY/Rxj5z0TSZu31sDXjFGZ59+PvCOf19LyLlFJ14lRWPsTJkjqqu5wQlxPBBJ7UMuuWQM1vMPhwq8QARKOs5HadNiITXcV0Q/Sd8ccBabwp6sOMWLbm3j2bJHsvjocZ5jYlFdW9amHelh3nMk27xY/sZhupIA6KbYBrMdkyg=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710873063; c=relaxed/simple;
-	bh=qGQrjhl3pdfcRNgDLGE+gYvkhJuPThiXBxTUsgf3JTY=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=dEXc3rd6boJSZQFgnze2hmihSfVSaDKsaW/cPHNyI3bzdVhtSEGxR+bz234atu9NwMDkLVFQVvCkNZ7Gf7GYyq5dhxwXxU6NAx6xN2tVkKxURbZGNVjq8/5DnhSxrDuM7T5qPy3MJiDnBPY90qJHbsGjYHvS3AaSBY6AfQfdzcc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de; spf=pass smtp.mailfrom=suse.de; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pfjDOKf1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BoyQKkry; dkim=pass (1024-bit key) header.d=suse.de header.i=@suse.de header.b=pfjDOKf1; dkim=permerror (0-bit key) header.d=suse.de header.i=@suse.de header.b=BoyQKkry; arc=none smtp.client-ip=195.135.223.131
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=suse.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.de
-Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by smtp-out2.suse.de (Postfix) with ESMTPS id 45A201F796;
-	Tue, 19 Mar 2024 18:31:00 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710873060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBBDN69VSXz+frM1TA/lUSR1pRpjSQYoj51jkyNzGIg=;
-	b=pfjDOKf1uxzUNJ613z2gjhyKrzyrDuE8LKyTAT5UQm6rAtbuXqpqdP8UBZJz6l1MH5xLTy
-	smF3WyK1+vBwfEdlPS6dnAELJcWwm1rgYNOA4mM8HwzcOocBjHNKE06257PIzdqNEpzNqF
-	LRSAAF5lzHrFo/Hxb6eW4NNICqTXaJU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710873060;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBBDN69VSXz+frM1TA/lUSR1pRpjSQYoj51jkyNzGIg=;
-	b=BoyQKkryctPqM+pUgEPoLlD4178P6d2phPz0yy86fhQEV6syMeGv4jT7b9hWlsYTd8Nmyf
-	SCesS3h7e8TtulCA==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.de; s=susede2_rsa;
-	t=1710873060; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBBDN69VSXz+frM1TA/lUSR1pRpjSQYoj51jkyNzGIg=;
-	b=pfjDOKf1uxzUNJ613z2gjhyKrzyrDuE8LKyTAT5UQm6rAtbuXqpqdP8UBZJz6l1MH5xLTy
-	smF3WyK1+vBwfEdlPS6dnAELJcWwm1rgYNOA4mM8HwzcOocBjHNKE06257PIzdqNEpzNqF
-	LRSAAF5lzHrFo/Hxb6eW4NNICqTXaJU=
-DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.de;
-	s=susede2_ed25519; t=1710873060;
-	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
-	 mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qBBDN69VSXz+frM1TA/lUSR1pRpjSQYoj51jkyNzGIg=;
-	b=BoyQKkryctPqM+pUgEPoLlD4178P6d2phPz0yy86fhQEV6syMeGv4jT7b9hWlsYTd8Nmyf
-	SCesS3h7e8TtulCA==
-Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id A91941376B;
-	Tue, 19 Mar 2024 18:30:59 +0000 (UTC)
-Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
-	by imap1.dmz-prg2.suse.org with ESMTPSA
-	id wBWfJuPZ+WUcTwAAD6G6ig
-	(envelope-from <osalvador@suse.de>); Tue, 19 Mar 2024 18:30:59 +0000
-From: Oscar Salvador <osalvador@suse.de>
-To: Andrew Morton <akpm@linux-foundation.org>
-Cc: linux-kernel@vger.kernel.org,
-	linux-mm@kvack.org,
-	Michal Hocko <mhocko@suse.com>,
-	Vlastimil Babka <vbabka@suse.cz>,
-	Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Oscar Salvador <osalvador@suse.de>
-Subject: [PATCH v2 2/2] mm,page_owner: Fix accounting of pages when migrating
-Date: Tue, 19 Mar 2024 19:32:12 +0100
-Message-ID: <20240319183212.17156-3-osalvador@suse.de>
-X-Mailer: git-send-email 2.44.0
-In-Reply-To: <20240319183212.17156-1-osalvador@suse.de>
-References: <20240319183212.17156-1-osalvador@suse.de>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6EA3B34CDE;
+	Tue, 19 Mar 2024 18:32:30 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.103
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710873151; cv=fail; b=SKaGCfAEGvyBEj7e9G4mY3equexzxW2j9SP9h1nTWEh7nyXkyMJnBL/nuLSeHALBnLqBRQPujEqBXXKqh6GxO5VgXFcAVxzs+zZxGgErA5T3KBqYzYRdFedoM7w98DBMlml1EZMMI7UIgt6paz3ww4GI3CcAREVNk1RdrZBs9Y8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710873151; c=relaxed/simple;
+	bh=RRTfdJQPZ2HCw9RNKPTG8xZSUZd5nC1zd3KsafreWDc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
+	 Content-Disposition:In-Reply-To:MIME-Version; b=MICjqDM7UyBqlm/0s88HZ09/YnYPP0gJ17vQ9gFW377K8+jdHSYPT6xeG/qbPEgvB03MT2ygs6Y8Sg6yEZ4ho7WDqc20UqdC32DZ3USdZ3WYyX+KdzkRjF72p8Cjde9GChnuR12Ni2dcQM7inqFeh5mgiRyC5xQL6X+a2EqQFmU=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=OMIOPYp/; arc=fail smtp.client-ip=40.107.94.103
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=TWt4PXJF6UUt5CVhnSxsNoEIjFIblmR2xcPXsilqLgscy/L7Qu3k7jYkll/gyAyAAyg298SzgOBNilViyucNEBwEHus5a9LbV8zeHHpe8bOdM2LPMujJFzfGpAcOIFKXPxI9n+ozW0ZXVxOXtt/q5WUYD3Nl0/6yl4AJkkrAlxYx/TwoeU3MPu7b1BjIYfXDdMLePgJ1aCVN9bIhWVre+D35nIMUi7BGiPcnb1Rr3KeC8OEo4r3/CaCwKj9qRcqrHg9hFrkoij8SisDvsvRKIlY7UXQw97Vlxh3oW5icQ673LL/fi4VFZs69J8Hpqp4QP62S7q4kU+o7b+GW5KVaWw==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=GYMuZTB9pewRuqGpdMNm7ZNfIRvs2hgMd3nrqSLo3xU=;
+ b=YrPk3wl4CJdjprgeZ3WPvjUb7xxy0Znlk0uSDGN/c7U38mo2f6jwuevFjg2hWSOTswK6mYdjNRq1dHa2H8/QHh4jK+WqwCBoWC5q7fuU77czNZsvlghOnNxRZfY76gfruEBCOfnukICfqOSHkm42fBs5sOxG6b8+uvJybzJZ6oWjFys2wJGy0MkMFA7MSwKTPVgmiRG77aMaItfHtCtqAAznufR2N+CX53ksfpAMgXgEoQB0Ooq2kTIpjcStipyNF38ce32Ra1WiZeN6c0bA7x9q5I8agqvoG5p3HSl6AhewKrivLcV+jB35HAQwRmd5aeElModqJYYG1RQaW76C3A==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
+ dkim=pass header.d=memverge.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
+ s=selector2;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=GYMuZTB9pewRuqGpdMNm7ZNfIRvs2hgMd3nrqSLo3xU=;
+ b=OMIOPYp/vdDykG7Hq3GOW4gue2HRGdvEIuoeMzczrFHyR477YPQNYJM3TbxJuwLVt09LAthyrEgZxQubHf/F4uIvXm8+1b+nXR4K8C6GgqlA7qkO30lFFI8Ckl0FttAY3nzF1ylR30l+uuPw9ebYRJm1jX3/sguqKS61dVFTCKY=
+Authentication-Results: dkim=none (message not signed)
+ header.d=none;dmarc=none action=none header.from=memverge.com;
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
+ by CH3PR17MB6241.namprd17.prod.outlook.com (2603:10b6:610:143::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Tue, 19 Mar
+ 2024 18:32:26 +0000
+Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::6657:814f:5df0:bb5b]) by SJ0PR17MB5512.namprd17.prod.outlook.com
+ ([fe80::6657:814f:5df0:bb5b%5]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 18:32:26 +0000
+Date: Tue, 19 Mar 2024 14:32:17 -0400
+From: Gregory Price <gregory.price@memverge.com>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
+	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
+	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
+	ying.huang@intel.com, dan.j.williams@intel.com, honggyu.kim@sk.com,
+	corbet@lwn.net, arnd@arndb.de, luto@kernel.org,
+	akpm@linux-foundation.org, shuah@kernel.org
+Subject: Re: [RFC v3 3/3] ktest: sys_move_phys_pages ktest
+Message-ID: <ZfnaMa6x/O68ENsP@memverge.com>
+References: <20240319172609.332900-1-gregory.price@memverge.com>
+ <20240319172609.332900-4-gregory.price@memverge.com>
+ <ZfnQ7n_7cZvk9BkC@casper.infradead.org>
+ <ZfnWCRwcZJ4KBmSH@memverge.com>
+ <ZfnXcbd3h3Rj4IIS@casper.infradead.org>
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfnXcbd3h3Rj4IIS@casper.infradead.org>
+X-ClientProxiedBy: SJ0PR13CA0209.namprd13.prod.outlook.com
+ (2603:10b6:a03:2c3::34) To SJ0PR17MB5512.namprd17.prod.outlook.com
+ (2603:10b6:a03:394::19)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Spam-Level: ***
-X-Spamd-Bar: +++
-Authentication-Results: smtp-out2.suse.de;
-	dkim=pass header.d=suse.de header.s=susede2_rsa header.b=pfjDOKf1;
-	dkim=pass header.d=suse.de header.s=susede2_ed25519 header.b=BoyQKkry
-X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
-X-Spamd-Result: default: False [3.48 / 50.00];
-	 RCVD_VIA_SMTP_AUTH(0.00)[];
-	 RECEIVED_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:106:10:150:64:167:received];
-	 TO_DN_SOME(0.00)[];
-	 R_MISSING_CHARSET(2.50)[];
-	 BROKEN_CONTENT_TYPE(1.50)[];
-	 R_RATELIMIT(0.00)[to_ip_from(RLdcskf45ysppnb91ss91phck9)];
-	 RCVD_COUNT_THREE(0.00)[3];
-	 DKIM_TRACE(0.00)[suse.de:+];
-	 MX_GOOD(-0.01)[];
-	 RCPT_COUNT_SEVEN(0.00)[10];
-	 NEURAL_HAM_SHORT(-0.20)[-1.000];
-	 FROM_EQ_ENVFROM(0.00)[];
-	 MIME_TRACE(0.00)[0:+];
-	 BAYES_HAM(-0.01)[46.42%];
-	 ARC_NA(0.00)[];
-	 R_DKIM_ALLOW(-0.20)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 FROM_HAS_DN(0.00)[];
-	 FREEMAIL_ENVRCPT(0.00)[gmail.com];
-	 TO_MATCH_ENVRCPT_ALL(0.00)[];
-	 MIME_GOOD(-0.10)[text/plain];
-	 NEURAL_HAM_LONG(-1.00)[-1.000];
-	 DKIM_SIGNED(0.00)[suse.de:s=susede2_rsa,suse.de:s=susede2_ed25519];
-	 MID_CONTAINS_FROM(1.00)[];
-	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.de:dkim,suse.de:email];
-	 FUZZY_BLOCKED(0.00)[rspamd.com];
-	 FREEMAIL_CC(0.00)[vger.kernel.org,kvack.org,suse.com,suse.cz,google.com,gmail.com,i-love.sakura.ne.jp,suse.de];
-	 RCVD_TLS_ALL(0.00)[]
-X-Spam-Score: 3.48
-X-Rspamd-Queue-Id: 45A201F796
-X-Spam-Flag: NO
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|CH3PR17MB6241:EE_
+X-MS-Office365-Filtering-Correlation-Id: a2dc5df7-9846-447e-3a28-08dc4842ecc6
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	Q3d6POV+OzkubII/tyaKvEsMaWZLsNnjgLD9spJWyx+zYbysafJm8DK19mQ+wwQg6HHtBVIaGYvEyWmRRiZpkCZiGmeQ85pMOHL12p+3ZsJcanddFghIb6z2Jewc+s1TbMiufo45DoA21ecVOcQpdGAzoA513fnr50hFsDQ0C73yHswSjS6SL9BKU4uTW0yzcBS2QCLVWC8R9BXNGIG0QxZCz/2T0ZexzDtK8oT1eR3RTuBFsPOGTB0OQCPqNhUSEipntR3hprASe8vO/FzPCS9tb2cEpvPTnnEeVhBeuBlKnb/m0aRvzLZEwzT4OiOD8rMCO1RjAjKTC+EksoON/eVlE1eieAOEogULvgH1jgQlenhdec9QEUu7zujCYs4g+EuLgIrQMUVKSOsMPa0fO9MyefhUjX8bF7feWjZTizYDQ+F6Fy19v7aGlsYPKLlAue/eDtbDLt17qWoHfLPwOfkYQhod61breICZ/pKrEe+/fiAke2G/P25ogA8+KK9gDHjHeETwftrhWTOsPUx5BoFFQESWUm6BbMIIpxnBqCda16SVxAIkfMn7GvaHko1u0aILFvKiUylmMFGSMAvHyBcQG5meGnsRtGXqG5hy57s=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?us-ascii?Q?Op609ko6MWsmhA78P7+5bOSgdqfbk2oC6xZYeuolw8HPRcMrxrA5jgne91zZ?=
+ =?us-ascii?Q?bCgEYts/AvSfhjejvkPSi55zKOMgbCwLP1NKzqr5AfPkWehjtVldiIdzr0GX?=
+ =?us-ascii?Q?kHcfAhjnnO/NMS6GTwjC4NqyEYbfIy0vGJ+balICYbqm6gYcJfeMqAQiGbnk?=
+ =?us-ascii?Q?ZnWDMaC86VQcMQq/TsMnvfPsOApzx/GiYPuUKPy48vWMqCQdXkE/+zsgUd6T?=
+ =?us-ascii?Q?7huA8MImlsn8SnPCThsBZASbv/GXl60o2uWHGhHBfYOsC4+Vl9zCWMy3LNho?=
+ =?us-ascii?Q?31LTPmQ+tOaWeuH9Lc4Zj0bsIr8uG9RsB4OVFpyAQzJMrOLgaFKnJ/xAFuWq?=
+ =?us-ascii?Q?gj0/EXcMgqBA8DVa74JNRrtWpqGtJOUgb+PYu6SW6G1XXIg3/HYkyjqIR3Wn?=
+ =?us-ascii?Q?hSb83jVClAK0FqFxx3azoZVA+yCVqXf9e6kzz7/HTi2qlwVRukKFVQepSjtI?=
+ =?us-ascii?Q?WE1xC2qOZWAAEAdqcdJ1G7FGtkgdcyLC13wfwA6C69/4d4sdupvsyTlRMR9w?=
+ =?us-ascii?Q?m5U12EtIGhVIlffRM6j50yhSmOJSvfGj3nbumvsm7GFwb8qRpk5ScZ0ogo9T?=
+ =?us-ascii?Q?Gw8XVwM+RBt85vZNYd19F4InSzg4axTlFlPyphkzJYtPrE8e8X1CBDSrcc8/?=
+ =?us-ascii?Q?kbwgd4+WboEl0LXp1HJ8kQfNcssNdxxafDw2eohSj4j53YD4Jn89t4eW5V2h?=
+ =?us-ascii?Q?JZnmMVWcA5cvk80XfGrtPTF3MudjDU4lqOo0sNyXv73Zg/73nsI6oO2sKBwI?=
+ =?us-ascii?Q?K1xsvGZFMITb9WkWcCYdi6v06ZQHqsM+UCSrH7THRBEvnfPaVDoLQj/tXyAR?=
+ =?us-ascii?Q?RlDVsu8mbV/JsMDTvV9DyTxQ1+mk1W71geQfBTrPtn+GMujHvqOCltM37uzY?=
+ =?us-ascii?Q?8BHkY8fUcRy0xZ3eWuocQj/sAzdBAaKUW/x7mXuiqW9GxuRucfu0L9cAHDSO?=
+ =?us-ascii?Q?KYMNFRfD6xA+V8E/lla/C9FPhtgQVhYglOoGA147JCoWF3y/1xrj19Jx3C9n?=
+ =?us-ascii?Q?75SkFXUltkx+i1wnvZJsExWeVpMoPDfG3ucFw1S+B4Uk/Gwd2nfD47r6ejoR?=
+ =?us-ascii?Q?1BJVY/TsgEq8M30O3h3DGdKzZXh5bO9l0y95ZqwNE+zN+uT5o3w/QA9ACh8R?=
+ =?us-ascii?Q?e6pX4Y2Z9U387lEgOXQ+AtIJOH1TIwMttZLMYzFaIGDStbd/JgrkPTssZaTo?=
+ =?us-ascii?Q?AD9tci6aDqO8WlMd37ChkgmLDBBJ4uZRC3DlnmHjC9qbH3F0piEh7idpF7pj?=
+ =?us-ascii?Q?aV02+FXunf9kaBrnL0RfGi11XpEhnFPS4Ai5iZ/oH5G2GMtjGykvBDEcPD9P?=
+ =?us-ascii?Q?RiJS8QFzw6NoTeasxhk5BYXOXvEDElxVfn+OgJH5y3AP4MIA46tWedDtnTS8?=
+ =?us-ascii?Q?l/fZ1F5zXf3ERPJp7kCXjRt6q/nXjQha5lMjAt1KInYtLhKYkCdnlNbVbsQy?=
+ =?us-ascii?Q?SEGPdHlqHK4jNQXLuHL1h0QHmVFleCI/fpU9YpkUwZGgYq2gjZ0PtbqmzJBm?=
+ =?us-ascii?Q?U34CImzhTgm9gP9t8u95RvsG7ezuBkK6l5aD7v9jRccGpormwQPz2NmydAjM?=
+ =?us-ascii?Q?FZq1Ux4JYgRYD2uZTR69R6N5psfntGpEZc+d4fFGLEP3JYLZKfvEcx6zh2U5?=
+ =?us-ascii?Q?OA=3D=3D?=
+X-OriginatorOrg: memverge.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: a2dc5df7-9846-447e-3a28-08dc4842ecc6
+X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 18:32:25.8840
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: yYLxySmzOpQiptwxMEWtFPcFzm735g4X8+nw+TSXisvY6J2djBl9EZ9IubbrPTS4JwfzUi4HqSDMKg6tEO6pO8x6G34/EIvlmn3ZXobhK6E=
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH3PR17MB6241
 
-Upon migration, new allocated pages are being given the handle of the old
-pages. This is problematic because it means that for the stack which
-allocated the old page, we will be substracting the old page + the new one
-when that page is freed, creating an accounting imbalance.
+On Tue, Mar 19, 2024 at 06:20:33PM +0000, Matthew Wilcox wrote:
+> On Tue, Mar 19, 2024 at 02:14:33PM -0400, Gregory Price wrote:
+> > On Tue, Mar 19, 2024 at 05:52:46PM +0000, Matthew Wilcox wrote:
+> > > On Tue, Mar 19, 2024 at 01:26:09PM -0400, Gregory Price wrote:
+> > > > Implement simple ktest that looks up the physical address via
+> > > > /proc/self/pagemap and migrates the page based on that information.
+> > > 
+> > > What?  LOL.  No.
+> > > 
+> > 
+> > Certainly the test is stupid and requires admin, but I could not
+> > come up an easier test to demonstrate the concept - and the docs
+> > say to include a test with all syscall proposals.
+> > 
+> > Am I missing something else important?
+> > (stupid question: of course I am, but alas I must ask it)
+> 
+> It's not that the test is stupid.  It's the concept that's stupid.
 
-Fix this by adding a new migrate_handle in the page_owner struct, and
-record the handle that allocated the new page in __folio_copy_owner().
-Upon freeing, we check whether we have a migrate_handle, and if we do,
-we use migrate_handle for dec_stack_record_count(), which will
-subtract those pages from its right handle.
+Ok i'll bite.
 
-Fixes: 217b2119b9e2 ("mm,page_owner: implement the tracking of the stacks count")
-Signed-off-by: Oscar Salvador <osalvador@suse.de>
----
- mm/page_owner.c | 13 ++++++++++++-
- 1 file changed, 12 insertions(+), 1 deletion(-)
+The 2 major ways page-hotness is detected right now is page-faults
+(induced or otherwise) and things like IBS/PEBS.
 
-diff --git a/mm/page_owner.c b/mm/page_owner.c
-index 2613805cb665..1a7d0d1dc640 100644
---- a/mm/page_owner.c
-+++ b/mm/page_owner.c
-@@ -27,6 +27,7 @@ struct page_owner {
- 	gfp_t gfp_mask;
- 	depot_stack_handle_t handle;
- 	depot_stack_handle_t free_handle;
-+	depot_stack_handle_t migrate_handle;
- 	u64 ts_nsec;
- 	u64 free_ts_nsec;
- 	char comm[TASK_COMM_LEN];
-@@ -240,7 +241,15 @@ void __reset_page_owner(struct page *page, unsigned short order)
- 		return;
- 
- 	page_owner = get_page_owner(page_ext);
--	alloc_handle = page_owner->handle;
-+	/*
-+	 * If this page was allocated for migration purposes, its handle doesn't
-+	 * reference the stack it was allocated from, so make sure to use the
-+	 * migrate_handle in order to subtract it from the right stack.
-+	 */
-+	if (!page_owner->migrate_handle)
-+		alloc_handle = page_owner->handle;
-+	else
-+		alloc_handle = page_owner->migrate_handle;
- 
- 	handle = save_stack(GFP_NOWAIT | __GFP_NOWARN);
- 	for (i = 0; i < (1 << order); i++) {
-@@ -277,6 +286,7 @@ static inline void __set_page_owner_handle(struct page_ext *page_ext,
- 		page_owner->handle = handle;
- 		page_owner->order = order;
- 		page_owner->gfp_mask = gfp_mask;
-+		page_owner->migrate_handle = 0;
- 		page_owner->last_migrate_reason = -1;
- 		page_owner->pid = current->pid;
- 		page_owner->tgid = current->tgid;
-@@ -358,6 +368,7 @@ void __folio_copy_owner(struct folio *newfolio, struct folio *old)
- 	new_page_owner->gfp_mask = old_page_owner->gfp_mask;
- 	new_page_owner->last_migrate_reason =
- 		old_page_owner->last_migrate_reason;
-+	new_page_owner->migrate_handle = new_page_owner->handle;
- 	new_page_owner->handle = old_page_owner->handle;
- 	new_page_owner->pid = old_page_owner->pid;
- 	new_page_owner->tgid = old_page_owner->tgid;
--- 
-2.44.0
+page-faults cause overhead, and IBS/PEBS actually miss upwards of ~66%
+of all traffic (if you want the details i can dig up the presentation,
+but TL;DR: prefetcher traffic is missed entirely).
 
+so OCP folks have been proposing hotness-tracking offloaded to the
+memory devices themselves:
+
+https://www.opencompute.org/documents/ocp-cms-hotness-tracking-requirements-white-paper-pdf-1
+
+(it's come along further than this white paper, but i need to dig up
+the new information).
+
+These devices are incapable of providing virtual addressing information,
+and doing reverse lookups of addresses is inordinately expensive from
+user space.  This leaves: Do it all in a kernel task, or give user space
+an an interface to operate on data provided by the device.
+
+The syscall design is mostly being posted right now to collaborate via
+public channels, but if the idea is so fundamentally offensive then i'll
+drop it and relay the opinion accordingly.
+
+~Gregory
 
