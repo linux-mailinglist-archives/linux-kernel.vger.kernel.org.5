@@ -1,206 +1,160 @@
-Return-Path: <linux-kernel+bounces-107320-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107321-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id AEB6287FB05
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:43:52 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3482A87FB07
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:44:25 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 68B9D281DEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:43:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id C7930B219B3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:44:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 90FF37D095;
-	Tue, 19 Mar 2024 09:43:42 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 638FC7D3E4;
+	Tue, 19 Mar 2024 09:44:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="can44KZ3"
-Received: from mail-oi1-f175.google.com (mail-oi1-f175.google.com [209.85.167.175])
+	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="L8QflLpl"
+Received: from mail-ua1-f50.google.com (mail-ua1-f50.google.com [209.85.222.50])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 616C47C0B2;
-	Tue, 19 Mar 2024 09:43:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 766EC7CF39
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:44:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.50
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710841421; cv=none; b=IoeEeWZpGfH8YPBXLjd3Unc71Xymw+PRC8mByLquXHUrBZ7W9ytnq5xdipfUWNkUgFyIuMEtE+F9VxlNlyJRheH8Jrmp5nT740WTXLe1oJOdzJur0LLtvM8tpIeS0WqSJl+6S/wJpMUWiwJ7jLeaUIJ+5Fy6RRHQrZr91XbS6xg=
+	t=1710841451; cv=none; b=p8ZsPinQyDjoN1d+lQKq3sPyyivGkPD7+hQx8gXKojViQBBPW0eN/sjL6KbMOzcE5DHCiKibfagyDVKc0nZ86h+dKFf8uneiFtiI8q9C6AcbIGGHlkdVNSZ8UnaGXj4bxmN4JQzWTvwUamgnL8kAQYQ+h3mlI19dc+PBNGZX6XE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710841421; c=relaxed/simple;
-	bh=tZrMPUpSUEU7+/wAovQ4fuYqq0PFfpqDVV8cAoNm9So=;
-	h=Content-Type:Mime-Version:Subject:From:In-Reply-To:Date:Cc:
-	 Message-Id:References:To; b=iJY4yZz24Y54d7d5VnYKFmni5VhulWvpHxE4R05URTV0hyefylSTKIYPB3auNrlV1kWXaEXv3kNoOOvu1VvhjP8vH7AlMFzGYeypzfQ4pyVaNjQglhiwQRukiwDPrefEK1EK/1GbqZfgw0vVCIwVanyDG285VUI5YIeISV2V/Gk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=can44KZ3; arc=none smtp.client-ip=209.85.167.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f175.google.com with SMTP id 5614622812f47-3c39bc142edso87060b6e.0;
-        Tue, 19 Mar 2024 02:43:40 -0700 (PDT)
+	s=arc-20240116; t=1710841451; c=relaxed/simple;
+	bh=K7dtrPof1myHFZzVXEfpBube4p7ne5/TRvoxTuThrgs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=XY57srAnh+c7Sfv6nTAuvWvtWnwxPS5pJ/YL52o06i+Hn2Nl6GoAxvanU9RQ2DQPGQjwtplJa9rOL3FN1pJbg4i/eFBYgP8STGuzjPe2whEyfJG3Jzv/g9W2VVdxxc2678yf6B8ElmwXLYT49anP7GrRMXvhYuBjAhhYX5VXli0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=L8QflLpl; arc=none smtp.client-ip=209.85.222.50
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
+Received: by mail-ua1-f50.google.com with SMTP id a1e0cc1a2514c-7e096ab9287so145019241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:44:09 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710841419; x=1711446219; darn=vger.kernel.org;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=C45NETgBBINnVz5gYFapJ2sUx+OVUwgq5wHBDlDkcP8=;
-        b=can44KZ3pqSt3jZru6STF8PUcz2X6BIlvxIiIyJfXrOhm05eWuW2EgP2qxGdQa1IwZ
-         N0erq+Cg6Tj+fzTFVZJswUtbLwpTVZH5F8heuKA7gHdDcJcICTtDPUCFQK1OJ2FPGXWN
-         gzdDZOehuPLKKiqcN5T0MabwZ1WwCYoabr54RI7S6rTD7Ca+LGBJRf4XCGyBntJVRDHr
-         /+y15TjJm9oL6TKWaIfMBIhNNbNRLBuVq75P+oFtKzY9wgxdWSQCHQgMzclIOeb93rCp
-         eVJRvTnPR3MSwIEZ927+3bInFoGzOOOL4uU1zUL8sNsmG9jjj6HJZLM2Pq3UlYZOGFtW
-         Ez1w==
+        d=chromium.org; s=google; t=1710841448; x=1711446248; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=PjhFfrCCtfd6iQXKxWQJyRMtTzL2WM41bcwqi12J3Jk=;
+        b=L8QflLpl0/STWUpC/KoP2WBuozCTtDfUSvEuTSDJyRw6HfeaVBtp7zk7nV4c6KQjKa
+         8w+B0tyxf2eWlp56ZWh4UIjzzbpxi2ZSAP7jAsMCb39LdBtwzMGtKZ7Ug2X1jXYqVwyy
+         LkHRdA/LBxK/ADh4cPpt2UxWK5E4KIIRFawls=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710841419; x=1711446219;
-        h=to:references:message-id:content-transfer-encoding:cc:date
-         :in-reply-to:from:subject:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=C45NETgBBINnVz5gYFapJ2sUx+OVUwgq5wHBDlDkcP8=;
-        b=jKXJnc8hWnpg3bffqDyCT194QMUYcSzJVf5mHnLu5ZdcA9xFSZwd+6riPLxop0qyJD
-         PJPz+FVvfuAOL9YtwNzMoBkdlGd/W6QM6W5r9cKdj3CkeBzvuR2heWsg3VRxbcQZ5jqG
-         FTPMwYnKwXHalMP/I3uxVMQkxblorACFuDfflhAOZEF2a0SHsNtC1sZRHgxHVqVMkZEv
-         +CkLDAQp7ALvjAzVEg5xhV5M6/f3FMeNAKq9wtmvxe3AWRzL1WlNpIDmrJVyzlfuBzbM
-         eWfuSfM/kf8C8XbIVgZAemJQlYWSwRqT9l6qE9ab268QFZ1jfREQa+X4liUMqXwRNum4
-         w3YQ==
-X-Forwarded-Encrypted: i=1; AJvYcCW4CBBuJZQ+cgLiuMqAmf8JKxcDpH3GSWawKiIH1yEYzLZMgvx2CgXX2eUF1RAcX2CRNnyuuxQlr85ZPFwXY1+tnD4G8djYo2t8KCnlLdicYpsybv+lSE/8tTW0VCgq/zim7tXLeCRZLjMUlKedOQ==
-X-Gm-Message-State: AOJu0Yx9wYSYDdAeDYS34Bow2eRuRYVJSlbs/5vupjt11B/U3u01DVFd
-	8/pTxeEZ88InyO9BrfDgpZLysEQhUJfyMk2xUdVZg6wb5CYD/hmdcBnayPax99fFBQ==
-X-Google-Smtp-Source: AGHT+IEmWzEJuZYtdWV3gIS7NqMrntxS9uTnpBN85AAIikIEd2okw0k8r5PwtShsCUhdKgfok78zhQ==
-X-Received: by 2002:a05:6808:bcb:b0:3c1:e580:12a with SMTP id o11-20020a0568080bcb00b003c1e580012amr17999141oik.38.1710841419376;
-        Tue, 19 Mar 2024 02:43:39 -0700 (PDT)
-Received: from smtpclient.apple (174.137.59.200.16clouds.com. [174.137.59.200])
-        by smtp.gmail.com with ESMTPSA id y125-20020a62ce83000000b006e6b2ba1577sm9737576pfg.138.2024.03.19.02.43.32
-        (version=TLS1_2 cipher=ECDHE-ECDSA-AES128-GCM-SHA256 bits=128/128);
-        Tue, 19 Mar 2024 02:43:38 -0700 (PDT)
-Content-Type: text/plain;
-	charset=us-ascii
+        d=1e100.net; s=20230601; t=1710841448; x=1711446248;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=PjhFfrCCtfd6iQXKxWQJyRMtTzL2WM41bcwqi12J3Jk=;
+        b=AjORP1rCLl5pzrRTjtJ1qVic9kl/hneuLEUwZcl3smjP+BkYDRlA3URXi9SarEINwt
+         NX+6B/41j5kE41dICqEoE4ZzD/F1eaLz1SfmDKfTcTlSi/XVBLfBdbaXHiHyHRzLoEUv
+         OKaBnGTzkKZUqx1L3zUOR/4sEa27Ok0UJQxswMrgKjj+9UAPBb84Ep6EIVVzAo5e/pAi
+         4yQAOmEYgO9N+iyVtzVMkXyVElYmACk0uF/gGT2Nu2DhsVF/VNhZA5sshTBWNhZYdPvw
+         MNE6ftF6T25nl8T7y5GItr/K0CSGA3Xqzfrora2QMhYsqzvUSca8Zq8S1Ms9eOfcDd+5
+         6h3g==
+X-Forwarded-Encrypted: i=1; AJvYcCWbbUmrpKX09zJrzmtWmfAkqPed8LmTSR/ocHst4ZYLeGUwv/RN7S9bJuuwXKr4HN79OkWuuseVChGnsQxGaWqBjJhrvksrclKcz5r0
+X-Gm-Message-State: AOJu0YyGofVUF1W1NKmRFuWs3GxAq5NGW8bgKdqBDmLcDmxggHtjdDKD
+	/B7eQNArruxa/UYUVoUJIvj4674UkRb+nj76EJmcAqwDV/BDxp8Jjw3qcsVKHnt3O3n0wKnbjYc
+	=
+X-Google-Smtp-Source: AGHT+IFLn99CGv4sdrAuE5UL2gt0hPKmOGUXMqFOOn4D4NKQJgGiAEDtULrsMjW+XEVnzxPTn7/YlQ==
+X-Received: by 2002:a05:6122:2804:b0:4c0:25db:3618 with SMTP id en4-20020a056122280400b004c025db3618mr1798002vkb.0.1710841448024;
+        Tue, 19 Mar 2024 02:44:08 -0700 (PDT)
+Received: from mail-vk1-f176.google.com (mail-vk1-f176.google.com. [209.85.221.176])
+        by smtp.gmail.com with ESMTPSA id k24-20020a056122107800b004d405b8328csm1285536vko.37.2024.03.19.02.44.06
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 02:44:07 -0700 (PDT)
+Received: by mail-vk1-f176.google.com with SMTP id 71dfb90a1353d-4d42ac6a0bcso1560080e0c.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:44:06 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCVNwBwHsF8Wk6g3LbCdg7Iq9T2MUUQuMcyKMrWfdSSHL2lJiXKceC4/aVuuIucVuHjW0NdWi3OuqojiAqavvZhW/BFvk0OX5l//waio
+X-Received: by 2002:a05:6122:4a88:b0:4d3:39c3:717c with SMTP id
+ fa8-20020a0561224a8800b004d339c3717cmr1832304vkb.1.1710841446521; Tue, 19 Mar
+ 2024 02:44:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0 (Mac OS X Mail 16.0 \(3731.700.6\))
-Subject: Re: [PATCH v2] perf evlist: Fix 'perf record -C xx' failed issue
-From: Chunxin Zang <spring.cxz@gmail.com>
-In-Reply-To: <20240319091429.2056555-1-spring.cxz@gmail.com>
-Date: Tue, 19 Mar 2024 17:43:17 +0800
-Cc: yangchen11@lixiang.com,
- Jerry Zhou <zhouchunhua@lixiang.com>,
- linux-perf-users@vger.kernel.org,
- linux-kernel@vger.kernel.org
-Content-Transfer-Encoding: quoted-printable
-Message-Id: <9B585813-A300-4793-AC65-8C69086508CE@gmail.com>
-References: <20240319091429.2056555-1-spring.cxz@gmail.com>
-To: Peter Zijlstra <peterz@infradead.org>,
- mingo@redhat.com,
- acme@kernel.org,
- Namhyung Kim <namhyung@kernel.org>,
- mark.rutland@arm.com,
- alexander.shishkin@linux.intel.com,
- jolsa@kernel.org,
- irogers@google.com,
- adrian.hunter@intel.com
-X-Mailer: Apple Mail (2.3731.700.6)
+MIME-Version: 1.0
+References: <eb4f7f29a94231c5fa404f7492dba8e7fd9fbb23.1686746422.git.soyer@irl.hu>
+ <088902f67634fb0931da7b045e05afe5c8197cdc.1700505816.git.soyer@irl.hu>
+In-Reply-To: <088902f67634fb0931da7b045e05afe5c8197cdc.1700505816.git.soyer@irl.hu>
+From: Ricardo Ribalda <ribalda@chromium.org>
+Date: Tue, 19 Mar 2024 10:43:52 +0100
+X-Gmail-Original-Message-ID: <CANiDSCsXeuNLHSGhqYjkRoyhgW6MZo1xufONbYdm42OcRrj2ng@mail.gmail.com>
+Message-ID: <CANiDSCsXeuNLHSGhqYjkRoyhgW6MZo1xufONbYdm42OcRrj2ng@mail.gmail.com>
+Subject: Re: [PATCH v2 RESEND] media: uvcvideo: uvc_ctrl_get_rel_speed: use 0
+ as default
+To: Gergo Koteles <soyer@irl.hu>
+Cc: Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
-Sorry, I'm a little out of it, maybe because I didn't sleep at noon. =
-This version is deprecated, v1 is correct.
+Hi Gergo
 
-v1: =
-https://lore.kernel.org/linux-kernel/20240319084022.2036296-1-spring.cxz@g=
-mail.com/T/#u
+I missed sending the reviewed-by sorry :)
 
-Best wishes
-Chunxin
+Btw, do you still have access to the device? Could you tell me what
+you get from  and UVC_GET_MAX, UVC_GET_MIN for
+UVC_CT_PANTILT_RELATIVE_CONTROL and UVC_CT_ZOOM_RELATIVE_CONTROL ?
 
+Thanks!
 
-> On Mar 19, 2024, at 17:14, Chunxin Zang <spring.cxz@gmail.com> wrote:
->=20
-> The cpu has 8 performance-cores and 8 efficient-cores on my pc.
-> 0-15 are performance-cores
-> 16-23 are 8 efficient-cores
->=20
-> When I run "perf record -C xxx", the command fails if xxx all belong =
-to
-> performance cores or efficient cores
->=20
-> The results are as follows
->=20
->  # perf record -C 12
->  WARNING: A requested CPU in '12' is not supported by PMU 'cpu_atom' =
-(CPUs 16-23) for event 'cycles:P'
->  Error:
->  The sys_perf_event_open() syscall returned with 22 (Invalid argument) =
-for event (cpu_atom/cycles:P/).
->  /bin/dmesg | grep -i perf may provide additional information.
->=20
->  # perf record -C 14-17
->  WARNING: A requested CPU in '14-17' is not supported by PMU =
-'cpu_atom' (CPUs 16-23) for event 'cycles:P'
->  WARNING: A requested CPU in '14-17' is not supported by PMU =
-'cpu_core' (CPUs 0-15) for event 'cycles:P'
->  ^C[ perf record: Woken up 1 times to write data ]
->=20
-> The reason is that the cpu_map of 'cpu_atom'-evsel is empty, causing
-> the sys_perf_event_open() result to fail.
->=20
-> Changes in v2:
-> - fix memory leak about 'intersect'
->=20
-> Signed-off-by: Chunxin Zang <spring.cxz@gmail.com>
-> Reviewed-by: Chen Yang <yangchen11@lixiang.com>
+On Mon, 20 Nov 2023 at 19:53, Gergo Koteles <soyer@irl.hu> wrote:
+>
+> Devices with pan/tilt controls but without pan/tilt speed controls
+> return 1 for the default value of V4L2_CID_PAN_SPEED or
+> V4L2_CID_TILT_SPEED. For these controls, the value of 1 means a
+> move and that's not a good default.
+>
+> Currently, for these controls the UVC_GET_DEF query returns
+> bPanSpeed or bTiltSpeed of CT_PANTILT_RELATIVE_CONTROL.
+>
+> According to the UVC 1.5 specification, the default value of bPanSpeed
+> or bTiltSpeed should be 1 if the pan/tilt control doesn't support
+> speed control.
+>
+> "If the control does not support speed control for the Tilt control,
+> it will return the value 1 in this field for all these requests."
+>
+> This patch modifies the uvc_ctrl_get_rel_speed to return hardcoded 0
+> for UVC_GET_DEF query, because that's the stop or don't move value
+> for these V4L2 controls.
+>
+> Previous discussion
+> Link: https://lore.kernel.org/all/CAP_ceTy6XVmvTTAmvCp1YU2wxHwXqnarm69Yaz8K4FmpJqYxAg@mail.gmail.com/
+>
+> Signed-off-by: Gergo Koteles <soyer@irl.hu>
+Reviewed-by: Ricardo Ribalda <ribalda@chromium.org>
 > ---
-> tools/perf/util/evlist.c | 24 +++++++++++++++++-------
-> 1 file changed, 17 insertions(+), 7 deletions(-)
->=20
-> diff --git a/tools/perf/util/evlist.c b/tools/perf/util/evlist.c
-> index 55a300a0977b..babbde29341f 100644
-> --- a/tools/perf/util/evlist.c
-> +++ b/tools/perf/util/evlist.c
-> @@ -2499,7 +2499,7 @@ void evlist__check_mem_load_aux(struct evlist =
-*evlist)
-> void evlist__warn_user_requested_cpus(struct evlist *evlist, const =
-char *cpu_list)
-> {
-> struct perf_cpu_map *user_requested_cpus;
-> - struct evsel *pos;
-> + struct evsel *pos, *tmp;
->=20
-> if (!cpu_list)
-> return;
-> @@ -2508,18 +2508,28 @@ void evlist__warn_user_requested_cpus(struct =
-evlist *evlist, const char *cpu_lis
-> if (!user_requested_cpus)
-> return;
->=20
-> - evlist__for_each_entry(evlist, pos) {
-> + evlist__for_each_entry_safe(evlist, tmp, pos) {
-> struct perf_cpu_map *intersect, *to_test;
-> const struct perf_pmu *pmu =3D evsel__find_pmu(pos);
->=20
-> to_test =3D pmu && pmu->is_core ? pmu->cpus : cpu_map__online();
-> intersect =3D perf_cpu_map__intersect(to_test, user_requested_cpus);
-> - if (!perf_cpu_map__equal(intersect, user_requested_cpus)) {
-> - char buf[128];
-> + if (!intersect) {
-> + evlist__remove(evlist, pos);
-> + evsel__delete(pos);
-> + perf_cpu_map__put(intersect);
-> + continue;
-> + }
-> +
-> + if (!perf_cpu_map__is_subset(user_requested_cpus, intersect)) {
-> + char buf_test[128];
-> + char buf_intersect[128];
->=20
-> - cpu_map__snprint(to_test, buf, sizeof(buf));
-> - pr_warning("WARNING: A requested CPU in '%s' is not supported by PMU =
-'%s' (CPUs %s) for event '%s'\n",
-> - cpu_list, pmu ? pmu->name : "cpu", buf, evsel__name(pos));
-> + cpu_map__snprint(to_test, buf_test, sizeof(buf_test));
-> + cpu_map__snprint(intersect, buf_intersect, sizeof(buf_intersect));
-> + pr_warning("WARNING: A requested CPU '%s' in '%s' is not supported =
-by "
-> +   "PMU '%s' (CPUs %s) for event '%s'\n", buf_intersect, cpu_list,
-> +   pmu ? pmu->name : "cpu", buf_test, evsel__name(pos));
-> }
-> perf_cpu_map__put(intersect);
-> }
-> --=20
-> 2.34.1
->=20
+>  drivers/media/usb/uvc/uvc_ctrl.c | 3 ++-
+>  1 file changed, 2 insertions(+), 1 deletion(-)
+>
+> diff --git a/drivers/media/usb/uvc/uvc_ctrl.c b/drivers/media/usb/uvc/uvc_ctrl.c
+> index 5e9d3da862dd..e131958c0930 100644
+> --- a/drivers/media/usb/uvc/uvc_ctrl.c
+> +++ b/drivers/media/usb/uvc/uvc_ctrl.c
+> @@ -444,9 +444,10 @@ static s32 uvc_ctrl_get_rel_speed(struct uvc_control_mapping *mapping,
+>                 return -data[first+1];
+>         case UVC_GET_MAX:
+>         case UVC_GET_RES:
+> +               return data[first+1];
+>         case UVC_GET_DEF:
+>         default:
+> -               return data[first+1];
+> +               return 0;
+>         }
+>  }
+>
+>
+> base-commit: be9aac187433af6abba5fcc2e73d91d0794ba360
+> --
+> 2.42.0
+>
+>
 
+
+-- 
+Ricardo Ribalda
 
