@@ -1,274 +1,183 @@
-Return-Path: <linux-kernel+bounces-107612-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107617-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C8D7187FF22
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:55:19 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id DCCF487FF2F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:58:41 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 564AC1F22804
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:55:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54DE8B25A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:58:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BD94E81732;
-	Tue, 19 Mar 2024 13:55:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE65381741;
+	Tue, 19 Mar 2024 13:58:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tWPNg9A4"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gA9LlWVZ"
+Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D817C2E400;
-	Tue, 19 Mar 2024 13:55:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6887280612;
+	Tue, 19 Mar 2024 13:58:23 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710856507; cv=none; b=MeiqPEv1fL+Rrg1cHBxyhkGZ1lXXcpT2E72mfpfp5Tnrd8xXqB8B+6o0V4Sd3Dc2P0ay47oLMoOI/YvBPD9tC8uPeX3YinA9bXgaavfrg7Ef3zWzA4hpA5RZ0g5fNMMrBtDEzs0ZRm2vxjY6ZM7OhR8Eq6png805fLfnIFqacaE=
+	t=1710856705; cv=none; b=aTdhVn7cqtXGrln29sgunxufHn4geWTq1A9y58v44HBM+NTEh8RKRcaAQiw6KcJOuriBFrpTfqoDgGaMprxFrk2upa6OE+DMVAwXL4XpQ5RnU7nR2PPzq305888aw0BHmCBby2KgbXyTLqrSrDj8tFs/3HuxTRW1v+Mzq0urTdo=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710856507; c=relaxed/simple;
-	bh=qziAJaseZHHgfgm21J4PRkLv2UKbDlCmE6GZg/0BK1g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=NUAg5awQq1rmG+UKpgrUdmq6gvfSB9Z84mdjMFY4Dh79WiY5+bTonGOKcwyyGVDEt/XTXpPk+jYC6LyxIDs39BkSkb19eAIyLPq+8sfHhoiP4O3q6gIltNaOaGu2mofGsSLg9l1DXxnA0/QbcV+2BTbh8r7rvJl2M3T3PmAuWFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tWPNg9A4; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BC7C8C433F1;
-	Tue, 19 Mar 2024 13:55:05 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710856506;
-	bh=qziAJaseZHHgfgm21J4PRkLv2UKbDlCmE6GZg/0BK1g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tWPNg9A4HBB2oCD+wGaOqNo/cah8AyDCWs7/bizzcEvjo7Svh5mbHNPlwSPDi80QA
-	 plo8ZeKf8IneRTw5cYArX/uf+Uxg4oHz+Q/dGx14ExBKx9KdIb0GD+DNPx1HHuoqx7
-	 2uyFMbgPk0E0a4KU1mZ39f2gBH+/r1ZdtTRm/N7LcEg7YCocUI9sLKAPWt0iKkMK0P
-	 coms6jRpXWdfFc6c2D8rdeRsaBi67abiytuKECq7vj7I/2V3SgBKKTPW/HPWv+Ojew
-	 +OLFC4Juar6rwkJmO0jlGRep6V4Tyyeda3X3L+dhHJoYs/qW7Ce1OH8yDMRAiBhRky
-	 X3KOkrho0+mNQ==
-Date: Tue, 19 Mar 2024 10:55:02 -0300
-From: Arnaldo Carvalho de Melo <acme@kernel.org>
-To: Namhyung Kim <namhyung@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org, linux-trace-devel@vger.kernel.org
-Subject: Re: [PATCH 03/23] perf dwarf-aux: Handle type transfer for memory
- access
-Message-ID: <ZfmZNp1DaKYZCwyf@x1>
-References: <20240319055115.4063940-1-namhyung@kernel.org>
- <20240319055115.4063940-4-namhyung@kernel.org>
+	s=arc-20240116; t=1710856705; c=relaxed/simple;
+	bh=OVjzTOVyPNf+wcJag2OMOZeywBVyZAixmPWNMf44ywE=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=BvMBvmFlW4ghtLWSdv+tgMIOG0Y3WPe5wSGYknWs1xMdTmx3GpDwVisj5A+DRapqop9wkTdO6eAre/4hMzBkOEEP0Wjn18+cdr0a1V57/bk025Lm3YTnvwzyzMNdCixNnsqfB/ba/poVLqJQT5ooDIqXCSSe0fKvkk7tYi1d42M=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gA9LlWVZ; arc=none smtp.client-ip=209.85.218.53
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46ba938de0so334499966b.3;
+        Tue, 19 Mar 2024 06:58:23 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710856702; x=1711461502; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hT6iTN2em5tEDaXXNgOGojNNtDEqq+qxwwOncA5QWiE=;
+        b=gA9LlWVZyGCsmS+uJIkcDWbQY2I8R+n5/zso4RHlxOFXsurfeD2zi/q2abdAgxeSrt
+         WxLddZcyFnBOnBNgnK0/sBLbgLmwriTE/1k+d0X36ErZyGcSE0R8S9HdzxG9IjGKz9Ly
+         51gaUOVqc6FZlSDoURTpJjHSsoFrXcvbJhmZlkjT0Qgi/gpwSGWfKMY5bzA4vUmIVtHe
+         8k4IWfhD3UvYjp1FQQMru1M/gLRzCkCyCJXxX/GJPFsxzt9nHZcsWAOocChym8Pvqd20
+         TtQONv+Udhfcc9nx7+1nhrqPlMrrN7tav/wbqcjsi9ZL2mqEJMcxQQ0w+E22kBzhM8ng
+         XgtQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710856702; x=1711461502;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hT6iTN2em5tEDaXXNgOGojNNtDEqq+qxwwOncA5QWiE=;
+        b=uNCJSonoXBFcLCCtqJERC08tEhzOlWbksyTws552eP/45uA+e8F0iXI5qHRWhjvjuM
+         biuNYr/ZrXr73yerNjiJJ3GoXdtyrrU6AM1gWSwspq+dwqh4iHrCuCIzRua3faPsoLTH
+         XtXWg2aO/r/Q8rXonU/kHDAAi8uFd4mRq7MLVL8VazgDl9ZtL1jhDQLynhsP4ybrmIf1
+         QTRtCiayxPeBIynB+yDf7gVg0SMFKuMpSQ5Gghp72LFxSSUs4ZPuCPjLvLlMWkEDO9yI
+         VgT+dUNZXrSizKwDIPX3LzF0SBpVl0C8Z2Vq1IfBMyOzB5gGp/sqn/ecEWqbqcTQHukD
+         4vyA==
+X-Forwarded-Encrypted: i=1; AJvYcCXCAMCVm6p8I3ZD4nAr5vVIHlTzz/hLHWXEB7ZEqVdLFnNasdu1AvV1DNC8xv7vuRQlinVfymN4gX1H07CvLXlWtAZsDEupXYRXTYwVDPm20r1d9qt5BZWpbZPUIm0Nz2UGYFw0VRc=
+X-Gm-Message-State: AOJu0YwNH/2OpZNc39LVQ+FIIogx7b3VPdjJpqKMrSgy0yV97q9w7jUV
+	Oa4UyEt8wMS6jzY9SH25fWSc7HsF7d3pu+uFQuJUvWA1KLamyA8D
+X-Google-Smtp-Source: AGHT+IE/NwSPtsSi0jKx8EbIMiFVN10KYe5MqHlLvrRVHJsjGi/XcSI8TG9Jtyecsw/wz4C82ew/BQ==
+X-Received: by 2002:a17:906:d8c:b0:a46:181f:c1c3 with SMTP id m12-20020a1709060d8c00b00a46181fc1c3mr9487236eji.70.1710856701481;
+        Tue, 19 Mar 2024 06:58:21 -0700 (PDT)
+Received: from [192.168.8.100] ([148.252.146.160])
+        by smtp.gmail.com with ESMTPSA id mb1-20020a170906eb0100b00a46d6e51a6asm1130574ejb.40.2024.03.19.06.58.20
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 06:58:21 -0700 (PDT)
+Message-ID: <bfc6afa9-501f-40b6-929a-3aa8c0298265@gmail.com>
+Date: Tue, 19 Mar 2024 13:55:21 +0000
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240319055115.4063940-4-namhyung@kernel.org>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
+ TIF_NOTIFY_SIGNAL
+To: Sascha Hauer <s.hauer@pengutronix.de>
+Cc: netdev@vger.kernel.org, kernel@pengutronix.de,
+ linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
+ Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
+References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
+ <7b82679f-9b69-4568-a61d-03eb1e4afc18@gmail.com>
+ <ZfgvNjWP8OYMIa3Y@pengutronix.de>
+ <0a556650-9627-48ee-9707-05d7cab33f0f@gmail.com>
+ <Zflt3EVf744LOA6i@pengutronix.de>
+Content-Language: en-US
+From: Pavel Begunkov <asml.silence@gmail.com>
+In-Reply-To: <Zflt3EVf744LOA6i@pengutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Mon, Mar 18, 2024 at 10:50:55PM -0700, Namhyung Kim wrote:
-> We want to track type states as instructions are executed.  Each
-> instruction can access compound types like struct or union and load/
-> store its members to a different location.
+On 3/19/24 10:50, Sascha Hauer wrote:
+> On Mon, Mar 18, 2024 at 01:19:19PM +0000, Pavel Begunkov wrote:
+>> On 3/18/24 12:10, Sascha Hauer wrote:
+>>> On Fri, Mar 15, 2024 at 05:02:05PM +0000, Pavel Begunkov wrote:
+>>>> On 3/15/24 10:01, Sascha Hauer wrote:
+>>>>> It can happen that a socket sends the remaining data at close() time.
+>>>>> With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
+>>>>> out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
+>>>>> current task. This flag has been set in io_req_normal_work_add() by
+>>>>> calling task_work_add().
+>>>>
+>>>> The entire idea of task_work is to interrupt syscalls and let io_uring
+>>>> do its job, otherwise it wouldn't free resources it might be holding,
+>>>> and even potentially forever block the syscall.
+>>>>
+>>>> I'm not that sure about connect / close (are they not restartable?),
+>>>> but it doesn't seem to be a good idea for sk_stream_wait_memory(),
+>>>> which is the normal TCP blocking send path. I'm thinking of some kinds
+>>>> of cases with a local TCP socket pair, the tx queue is full as well
+>>>> and the rx queue of the other end, and io_uring has to run to receive
+>>>> the data.
+>>
+>> There is another case, let's say the IO is done via io-wq
+>> (io_uring's worker thread pool) and hits the waiting. Now the
+>> request can't get cancelled, which is done by interrupting the
+>> task with TIF_NOTIFY_SIGNAL. User requested request cancellations
+>> is one thing, but we'd need to check if io_uring can ever be closed
+>> in this case.
+>>
+>>
+>>>> If interruptions are not welcome you can use different io_uring flags,
+>>>> see IORING_SETUP_COOP_TASKRUN and/or IORING_SETUP_DEFER_TASKRUN.
+>>>
+>>> I tried with different combinations of these flags. For example
+>>> IORING_SETUP_TASKRUN_FLAG | IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
+>>> makes the issue less likely, but nevertheless it still happens.
+>>>
+>>> However, reading the documentation of these flags, they shall provide
+>>> hints to the kernel for optimizations, but it should work without these
+>>> flags, right?
+>>
+>> That's true, and I guess there are other cases as well, like
+>> io-wq and perhaps even a stray fput.
+>>
+>>
+>>>> Maybe I'm missing something, why not restart your syscall?
+>>>
+>>> The problem comes with TLS. Normally with synchronous encryption all
+>>> data on a socket is written during write(). When asynchronous
+>>> encryption comes into play, then not all data is written during write(),
+>>> but instead the remaining data is written at close() time.
+>>
+>> Was it considered to do the final cleanup in workqueue
+>> and only then finalising the release?
 > 
-> The die_deref_ptr_type() is to find a type of memory access with a
-> pointer variable.  If it points to a compound type like struct, the
-> target memory is a member in the struct.  The access will happen
-> with an offset indicating which member it refers.  Let's follow the
-> DWARF info to figure out the type of the pointer target.
-> 
-> For example, say we have the following code.
-> 
->   struct foo {
->     int a;
->     int b;
->   };
-> 
->   struct foo *p = malloc(sizeof(*p));
->   p->b = 0;
-> 
-> The last pointer access should produce x86 asm like below:
-> 
->   mov  0x0, 4(%rbx)
-> 
-> And we know %rbx register has a pointer to struct foo.  Then offset 4
-> should return the debug info of member 'b'.
-> 
-> Also variables of compound types can be accessed directly without a
-> pointer.  The die_get_member_type() is to handle a such case.
-> 
-> Acked-by: Masami Hiramatsu (Google) <mhiramat@kernel.org>
-> Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> ---
->  tools/perf/util/dwarf-aux.c | 110 ++++++++++++++++++++++++++++++++++++
->  tools/perf/util/dwarf-aux.h |   6 ++
->  2 files changed, 116 insertions(+)
-> 
-> diff --git a/tools/perf/util/dwarf-aux.c b/tools/perf/util/dwarf-aux.c
-> index 785aa7a3d725..cd9364d296b6 100644
-> --- a/tools/perf/util/dwarf-aux.c
-> +++ b/tools/perf/util/dwarf-aux.c
-> @@ -1838,3 +1838,113 @@ int die_get_scopes(Dwarf_Die *cu_die, Dwarf_Addr pc, Dwarf_Die **scopes)
->  	*scopes = data.scopes;
->  	return data.nr;
->  }
-> +
-> +static int __die_find_member_offset_cb(Dwarf_Die *die_mem, void *arg)
-> +{
-> +	Dwarf_Die type_die;
-> +	Dwarf_Word size, loc;
-> +	Dwarf_Word offset = (long)arg;
-> +	int tag = dwarf_tag(die_mem);
-> +
-> +	if (tag != DW_TAG_member)
-> +		return DIE_FIND_CB_SIBLING;
-> +
-> +	/* Unions might not have location */
-> +	if (die_get_data_member_location(die_mem, &loc) < 0)
-> +		loc = 0;
-> +
-> +	if (offset == loc)
-> +		return DIE_FIND_CB_END;
-> +
-> +	die_get_real_type(die_mem, &type_die);
+> No, but I don't really understand what you mean here. Could you
+> elaborate?
 
-Don't we have to check that the type_die was initialized? From what I
-can see there is the possibility it isn't:
+The suggestion is instead of executing the release and that final
+flush off of the context you're in, namely userspace task,
+you can spin up a kernel task (they're not getting any signals)
+and execute it from there.
 
-  Dwarf_Die type_die;
-  die_get_real_type(die_mem, &type_die);
-        do {
-                vr_die = __die_get_real_type(vr_die, die_mem);
-        } while (vr_die && dwarf_tag(vr_die) == DW_TAG_typedef);
-        
-        return vr_die;
+void deferred_release_fn(struct work_struct *work)
+{
+	do_release();
+	...
+}
 
-    static Dwarf_Die *__die_get_real_type(Dwarf_Die *vr_die, Dwarf_Die *die_mem)
+struct work_struct work;
+INIT_WORK(&work, deferred_release_fn);
+queue_work(system_unbound_wq, &work);
 
-        do {
-                vr_die = die_get_type(vr_die, die_mem);
-                if (!vr_die)
-                        break;
 
-   Dwarf_Die *die_get_type(Dwarf_Die *vr_die, Dwarf_Die *die_mem)
+There is a catch. Even though close() is not obliged to close
+the file / socket immediately, but it still not nice when you
+drop the final ref but port and other bits are not released
+until some time after. So, you might want to wait for that
+deferred release to complete before returning to the
+userspace.
 
-        Dwarf_Attribute attr;
+I'm assuming it's fine to run it by a kernel task since
+IIRC fput might delay release to it anyway, but it's better
+to ask net maintainers. In theory it shouldn't need
+mm,fs,etc that user task would hold.
 
-        if (dwarf_attr_integrate(vr_die, DW_AT_type, &attr) &&
-            dwarf_formref_die(&attr, die_mem))
-                return die_mem;
-        else
-                return NULL;
-  } 
-
-> +	if (dwarf_aggregate_size(&type_die, &size) < 0)
-> +		size = 0;
-> +
-> +	if (loc < offset && offset < (loc + size))
-> +		return DIE_FIND_CB_END;
-> +
-> +	return DIE_FIND_CB_SIBLING;
-> +}
-> +
-> +/**
-> + * die_get_member_type - Return type info of struct member
-> + * @type_die: a type DIE
-> + * @offset: offset in the type
-> + * @die_mem: a buffer to save the resulting DIE
-> + *
-> + * This function returns a type of a member in @type_die where it's located at
-> + * @offset if it's a struct.  For now, it just returns the first matching
-> + * member in a union.  For other types, it'd return the given type directly
-> + * if it's within the size of the type or NULL otherwise.
-> + */
-> +Dwarf_Die *die_get_member_type(Dwarf_Die *type_die, int offset,
-> +			       Dwarf_Die *die_mem)
-> +{
-> +	Dwarf_Die *member;
-> +	Dwarf_Die mb_type;
-> +	int tag;
-> +
-> +	tag = dwarf_tag(type_die);
-> +	/* If it's not a compound type, return the type directly */
-> +	if (tag != DW_TAG_structure_type && tag != DW_TAG_union_type) {
-> +		Dwarf_Word size;
-> +
-> +		if (dwarf_aggregate_size(type_die, &size) < 0)
-> +			size = 0;
-> +
-> +		if ((unsigned)offset >= size)
-> +			return NULL;
-> +
-> +		*die_mem = *type_die;
-> +		return die_mem;
-> +	}
-> +
-> +	mb_type = *type_die;
-> +	/* TODO: Handle union types better? */
-> +	while (tag == DW_TAG_structure_type || tag == DW_TAG_union_type) {
-> +		member = die_find_child(&mb_type, __die_find_member_offset_cb,
-> +					(void *)(long)offset, die_mem);
-> +		if (member == NULL)
-> +			return NULL;
-> +
-> +		if (die_get_real_type(member, &mb_type) == NULL)
-> +			return NULL;
-> +
-> +		tag = dwarf_tag(&mb_type);
-> +
-> +		if (tag == DW_TAG_structure_type || tag == DW_TAG_union_type) {
-> +			Dwarf_Word loc;
-> +
-> +			/* Update offset for the start of the member struct */
-> +			if (die_get_data_member_location(member, &loc) == 0)
-> +				offset -= loc;
-> +		}
-> +	}
-> +	*die_mem = mb_type;
-> +	return die_mem;
-> +}
-> +
-> +/**
-> + * die_deref_ptr_type - Return type info for pointer access
-> + * @ptr_die: a pointer type DIE
-> + * @offset: access offset for the pointer
-> + * @die_mem: a buffer to save the resulting DIE
-> + *
-> + * This function follows the pointer in @ptr_die with given @offset
-> + * and saves the resulting type in @die_mem.  If the pointer points
-> + * a struct type, actual member at the offset would be returned.
-> + */
-> +Dwarf_Die *die_deref_ptr_type(Dwarf_Die *ptr_die, int offset,
-> +			      Dwarf_Die *die_mem)
-> +{
-> +	Dwarf_Die type_die;
-> +
-> +	if (dwarf_tag(ptr_die) != DW_TAG_pointer_type)
-> +		return NULL;
-> +
-> +	if (die_get_real_type(ptr_die, &type_die) == NULL)
-> +		return NULL;
-> +
-> +	return die_get_member_type(&type_die, offset, die_mem);
-> +}
-> diff --git a/tools/perf/util/dwarf-aux.h b/tools/perf/util/dwarf-aux.h
-> index cd171b06fd4c..16c916311bc0 100644
-> --- a/tools/perf/util/dwarf-aux.h
-> +++ b/tools/perf/util/dwarf-aux.h
-> @@ -144,6 +144,12 @@ struct die_var_type {
->  	int offset;
->  };
->  
-> +/* Return type info of a member at offset */
-> +Dwarf_Die *die_get_member_type(Dwarf_Die *type_die, int offset, Dwarf_Die *die_mem);
-> +
-> +/* Return type info where the pointer and offset point to */
-> +Dwarf_Die *die_deref_ptr_type(Dwarf_Die *ptr_die, int offset, Dwarf_Die *die_mem);
-> +
->  #ifdef HAVE_DWARF_GETLOCATIONS_SUPPORT
->  
->  /* Get byte offset range of given variable DIE */
-> -- 
-> 2.44.0.291.gc1ea87d7ee-goog
+-- 
+Pavel Begunkov
 
