@@ -1,166 +1,220 @@
-Return-Path: <linux-kernel+bounces-107645-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107638-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4F19087FF8F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:26:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id B735987FF7A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:23:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 067242845A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:26:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id DC7AA1C22C53
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:23:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1DB7C81ADA;
-	Tue, 19 Mar 2024 14:26:11 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="ZsdNFS5C"
-Received: from mail-qt1-f169.google.com (mail-qt1-f169.google.com [209.85.160.169])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D904F81AAD;
+	Tue, 19 Mar 2024 14:23:29 +0000 (UTC)
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F43281AAE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:26:08 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6323781721;
+	Tue, 19 Mar 2024 14:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710858370; cv=none; b=rf5VfzWFQ8rQ9deKROnoilFxfxV+uUdmrIYVOj/GT78V7fN6Q93/cNBZoAxnVbVhpUDzvYryXFHFAZr3b0kaN86dFfzENCQGjP0JYTwJizmH+mbGQa0OgpShAAPq2Pu+XrXDyKkQpDh3QcapPW7oDLJ/x68xdAz0wSAzv9quHJM=
+	t=1710858209; cv=none; b=LvcdfSr1RAkE+AIAQUYt9AlFe0XgZ8/vZljYLkjYlYVEBIErjcYd74bX+QDB9fldcKTNrsyYwfg+8U5gC6Wtan0ZuiWOO6Grc27uIJVcCpFJeOQNrDDaF7GN4pZmALrd5oFLA0X0Yo7aD8T3doiGH5H9cpuNpBVudikIOidCI4M=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710858370; c=relaxed/simple;
-	bh=/ai7rsRCGQJwbmMN9+0MqsXjffyEnlQWeJfS3vA+etg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=ByJRSQ2tnxFHy0vw7rhNLOL304KXnsU20PmL+fFR5Qs1mWZ1pgRMENFdACK6n4h3WuWoNQ/NU8GTZPFMWjJph1iKd5KCSx06E51uXe+5ESleSmYnDgUlM91zXM2To5yA6t9h9+CA8SQpm3zox3MKmsj5S31MdxAHMrzIecktEoI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=ZsdNFS5C; arc=none smtp.client-ip=209.85.160.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f169.google.com with SMTP id d75a77b69052e-42a9c21f9ecso27935481cf.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:26:08 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710858367; x=1711463167; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=/ai7rsRCGQJwbmMN9+0MqsXjffyEnlQWeJfS3vA+etg=;
-        b=ZsdNFS5CLyanYiKD/6naRKyWF4Gbq8HpwvdVEw9eYRwZda4V7tEQGBWn/s/rEhB/D2
-         aEQOUclwi9HR0MWvHnH8A/qVKgak0BidZvvaHTm1tSnBi+6RWQX9HuMZ9pHaVfgNXY29
-         /NKJrUKNWPMdE5ii1+3913bG1SNGZ51Ezo1j0d71fmxhEMLo0YUMn6ogQM7QGe5UAzJy
-         qWrj9V8UapEswmU28CIJNmWdY8eModaKriQIx9MB6EEXgOGpbhp9bgtr77DQWa/xPhmU
-         mwcOYKvdlXZ8eMa0U6nRdvln4jaDxsaVwEyMcuuZk0LlLIkRsvukTMiS/gPrVUO1ewcE
-         Znfg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710858367; x=1711463167;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=/ai7rsRCGQJwbmMN9+0MqsXjffyEnlQWeJfS3vA+etg=;
-        b=ba0Aed95p5S5yq4ETGR6KX14aprMmI93XxecF1sKDm0hMMLA5LZy5tkc1S8ZfxKZ60
-         mPIuO1zaxrh0EPNzsk/HUQb2jlTPhCfLHvy1N0l0yXRDP560vJp3Wjp+6wfRm2qFA1jx
-         E4MoC5rozb+up6pQ3DiAtZYCVCQw5ex8ybV7NiJY0l3fjG+52bMPWuK7pDcmjNHNB+7A
-         kJKjFVURcvFG3Bz/UAeAJmecM7Pte0VLkCNJRbkz7IQg83vYI4VVZrHiOaebvN7MGJWo
-         ScONU0+n/L/cwZD6xF7q1NQZ1sVsNj8XIPwRVvYebZk7ieIUSMCiHV9n0h/oNqGaR2S5
-         ewuA==
-X-Forwarded-Encrypted: i=1; AJvYcCWGZGrRoUvc4NCz4mMXMPQr26QOWXDbtO/s30gWB2FdFNIEHWSVgZT20fPyosuB57qWzJNsMFbZlq9nVU0Cnl8io9zthqYKXHau8ciS
-X-Gm-Message-State: AOJu0YyKbwlhobCXv8FJJ/ZH5HxnRZKFSjlsNd1Ri14WykvfODS5HS0z
-	UtZjQ4HzwHtPI7pelHcOkETn4YYNwDSE7anZaa9qazlUWE9giFaXHC9qJurAx7Ys4puyukQOlH0
-	fz+5VL6bcj3FmBRuGfxnuvAcYvrpjMa6OPEgwQQ==
-X-Google-Smtp-Source: AGHT+IFo9PiCBqdDBB0vvJuRxgnxergt1C9KVhjkk/hjChR3zfOYA2+Oj1/6ln63mQWAtnarjsG0RvDWTC/dvSg3Wa4=
-X-Received: by 2002:a05:622a:1991:b0:430:ef64:8637 with SMTP id
- u17-20020a05622a199100b00430ef648637mr1164760qtc.15.1710858367665; Tue, 19
- Mar 2024 07:26:07 -0700 (PDT)
+	s=arc-20240116; t=1710858209; c=relaxed/simple;
+	bh=Xmo2x6S5V7/NQhmCgDANew9z2mao2c7yl6NKCnwOGZQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=t/uNy1GdFLg3+OtSXbWFjS9cKGADb9IGFbuaygI17fte583yxAPgi09+wYdf5xWApbnXIoxerKxZ67oTEcGGGjofVULyLe1CoxX6wDmcpABmQf9Ves1dI3AshOsmXrAg+74JtejgENMqfIZTB2wASVZ0zgcZqtUxmdbtn4ApY2Q=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7976FC433F1;
+	Tue, 19 Mar 2024 14:23:27 +0000 (UTC)
+Date: Tue, 19 Mar 2024 10:25:49 -0400
+From: Steven Rostedt <rostedt@goodmis.org>
+To: <xu.xin16@zte.com.cn>
+Cc: <edumazet@google.com>, <davem@davemloft.net>, <mhiramat@kernel.org>,
+ <dsahern@kernel.org>, <kuba@kernel.org>, <linux-kernel@vger.kernel.org>,
+ <linux-trace-kernel@vger.kernel.org>, <netdev@vger.kernel.org>,
+ <yang.yang29@zte.com.cn>, <he.peilin@zte.com.cn>, <liu.chun2@zte.com.cn>,
+ <jiang.xuexin@zte.com.cn>, <zhang.yunkai@zte.com.cn>
+Subject: Re: [PATCH v2] net/ipv4: add tracepoint for icmp_send
+Message-ID: <20240319102549.7f7f6f53@gandalf.local.home>
+In-Reply-To: <202403192013525995034@zte.com.cn>
+References: <202403192013525995034@zte.com.cn>
+X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240220214558.3377482-1-souravpanda@google.com>
- <20240220214558.3377482-2-souravpanda@google.com> <CA+CK2bAM4Xe7BT3TFZT-+3qQTFGgkYBiYY=oVkdqMN8gyJg_0g@mail.gmail.com>
-In-Reply-To: <CA+CK2bAM4Xe7BT3TFZT-+3qQTFGgkYBiYY=oVkdqMN8gyJg_0g@mail.gmail.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 19 Mar 2024 10:25:30 -0400
-Message-ID: <CA+CK2bCwi0yU_jX8qKCBMUnTeqoDYc65z7GKd5uEKcpkPAn4MA@mail.gmail.com>
-Subject: Re: [PATCH v9 1/1] mm: report per-page metadata information
-To: akpm@linux-foundation.org
-Cc: Sourav Panda <souravpanda@google.com>, corbet@lwn.net, gregkh@linuxfoundation.org, 
-	rafael@kernel.org, mike.kravetz@oracle.com, muchun.song@linux.dev, 
-	rppt@kernel.org, david@redhat.com, rdunlap@infradead.org, 
-	chenlinxuan@uniontech.com, yang.yang29@zte.com.cn, tomas.mudrunka@gmail.com, 
-	bhelgaas@google.com, ivan@cloudflare.com, yosryahmed@google.com, 
-	hannes@cmpxchg.org, shakeelb@google.com, kirill.shutemov@linux.intel.com, 
-	wangkefeng.wang@huawei.com, adobriyan@gmail.com, vbabka@suse.cz, 
-	Liam.Howlett@oracle.com, surenb@google.com, linux-kernel@vger.kernel.org, 
-	linux-fsdevel@vger.kernel.org, linux-doc@vger.kernel.org, linux-mm@kvack.org, 
-	willy@infradead.org, weixugc@google.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Wed, Mar 13, 2024 at 6:40=E2=80=AFPM Pasha Tatashin
-<pasha.tatashin@soleen.com> wrote:
->
-> On Tue, Feb 20, 2024 at 4:46=E2=80=AFPM Sourav Panda <souravpanda@google.=
-com> wrote:
-> >
-> > Adds two new per-node fields, namely nr_memmap and nr_memmap_boot,
-> > to /sys/devices/system/node/nodeN/vmstat and a global Memmap field
-> > to /proc/meminfo. This information can be used by users to see how
-> > much memory is being used by per-page metadata, which can vary
-> > depending on build configuration, machine architecture, and system
-> > use.
-> >
-> > Per-page metadata is the amount of memory that Linux needs in order to
-> > manage memory at the page granularity. The majority of such memory is
-> > used by "struct page" and "page_ext" data structures. In contrast to
-> > most other memory consumption statistics, per-page metadata might not
-> > be included in MemTotal. For example, MemTotal does not include membloc=
-k
-> > allocations but includes buddy allocations. In this patch, exported
-> > field nr_memmap in /sys/devices/system/node/nodeN/vmstat would
-> > exclusively track buddy allocations while nr_memmap_boot would
-> > exclusively track memblock allocations. Furthermore, Memmap in
-> > /proc/meminfo would exclusively track buddy allocations allowing it to
-> > be compared against MemTotal.
-> >
-> > This memory depends on build configurations, machine architectures, and
-> > the way system is used:
-> >
-> > Build configuration may include extra fields into "struct page",
-> > and enable / disable "page_ext"
-> > Machine architecture defines base page sizes. For example 4K x86,
-> > 8K SPARC, 64K ARM64 (optionally), etc. The per-page metadata
-> > overhead is smaller on machines with larger page sizes.
-> > System use can change per-page overhead by using vmemmap
-> > optimizations with hugetlb pages, and emulated pmem devdax pages.
-> > Also, boot parameters can determine whether page_ext is needed
-> > to be allocated. This memory can be part of MemTotal or be outside
-> > MemTotal depending on whether the memory was hot-plugged, booted with,
-> > or hugetlb memory was returned back to the system.
-> >
-> > Utility for userspace:
-> >
-> > Application Optimization: Depending on the kernel version and command
-> > line options, the kernel would relinquish a different number of pages
-> > (that contain struct pages) when a hugetlb page is reserved (e.g., 0, 6
-> > or 7 for a 2MB hugepage). The userspace application would want to know
-> > the exact savings achieved through page metadata deallocation without
-> > dealing with the intricacies of the kernel.
-> >
-> > Observability: Struct page overhead can only be calculated on-paper at
-> > boot time (e.g., 1.5% machine capacity). Beyond boot once hugepages are
-> > reserved or memory is hotplugged, the computation becomes complex.
-> > Per-page metrics will help explain part of the system memory overhead,
-> > which shall help guide memory optimizations and memory cgroup sizing.
-> >
-> > Debugging: Tracking the changes or absolute value in struct pages can
-> > help detect anomalies as they can be correlated with other metrics in
-> > the machine (e.g., memtotal, number of huge pages, etc).
-> >
-> > page_ext overheads: Some kernel features such as page_owner
-> > page_table_check that use page_ext can be optionally enabled via kernel
-> > parameters. Having the total per-page metadata information helps users
-> > precisely measure impact.
+On Tue, 19 Mar 2024 20:13:52 +0800 (CST)
+<xu.xin16@zte.com.cn> wrote:
 
-Hi Andrew,
+> From: Peilin He<he.peilin@zte.com.cn>
+> 
+> Introduce a tracepoint for icmp_send, which can help users to get more
+> detail information conveniently when icmp abnormal events happen.
+> 
+> 1. Giving an usecase example:
+> =============================
+> When an application experiences packet loss due to an unreachable UDP
+> destination port, the kernel will send an exception message through the
+> icmp_send function. By adding a trace point for icmp_send, developers or
+> system administrators can obtain detailed information about the UDP
+> packet loss, including the type, code, source address, destination address,
+> source port, and destination port. This facilitates the trouble-shooting
+> of UDP packet loss issues especially for those network-service
+> applications.
+> 
+> 2. Operation Instructions:
+> ==========================
+> Switch to the tracing directory.
+>         cd /sys/kernel/debug/tracing
 
-Can you please give this patch another look, does it require more
-reviews before you can take it in?
+FYI, that directory is obsolete. Please always reference /sys/kernel/tracing.
 
-Thank you,
-Pasha
+> Filter for destination port unreachable.
+>         echo "type==3 && code==3" > events/icmp/icmp_send/filter
+> Enable trace event.
+>         echo 1 > events/icmp/icmp_send/enable
+> 
+> 3. Result View:
+> ================
+>  udp_client_erro-11370   [002] ...s.12   124.728002:
+>  icmp_send: icmp_send: type=3, code=3.
+>  From 127.0.0.1:41895 to 127.0.0.1:6666 ulen=23
+>  skbaddr=00000000589b167a
+> 
+> v1->v2:
+> Some fixes according to
+> https://lore.kernel.org/all/CANn89iL-y9e_VFpdw=sZtRnKRu_tnUwqHuFQTJvJsv-nz1xPDw@mail.gmail.com/
+> 	1. adjust the trace_icmp_send() to more protocols than UDP.
+> 	2. move the calling of trace_icmp_send after sanity checks
+> 	   in __icmp_send().
+> 
+> Signed-off-by: Peilin He<he.peilin@zte.com.cn>
+> Reviewed-by: xu xin <xu.xin16@zte.com.cn>
+> Reviewed-by: Yunkai Zhang <zhang.yunkai@zte.com.cn>
+> Cc: Yang Yang <yang.yang29@zte.com.cn>
+> Cc: Liu Chun <liu.chun2@zte.com.cn>
+> Cc: Xuexin Jiang <jiang.xuexin@zte.com.cn>
+> ---
+>  include/trace/events/icmp.h | 64 +++++++++++++++++++++++++++++++++++++++++++++
+>  net/ipv4/icmp.c             |  4 +++
+>  2 files changed, 68 insertions(+)
+>  create mode 100644 include/trace/events/icmp.h
+> 
+> diff --git a/include/trace/events/icmp.h b/include/trace/events/icmp.h
+> new file mode 100644
+> index 000000000000..c3dc337be7bc
+> --- /dev/null
+> +++ b/include/trace/events/icmp.h
+> @@ -0,0 +1,64 @@
+> +/* SPDX-License-Identifier: GPL-2.0 */
+> +#undef TRACE_SYSTEM
+> +#define TRACE_SYSTEM icmp
+> +
+> +#if !defined(_TRACE_ICMP_H) || defined(TRACE_HEADER_MULTI_READ)
+> +#define _TRACE_ICMP_H
+> +
+> +#include <linux/icmp.h>
+> +#include <linux/tracepoint.h>
+> +
+> +TRACE_EVENT(icmp_send,
+> +
+> +		TP_PROTO(const struct sk_buff *skb, int type, int code),
+> +
+> +		TP_ARGS(skb, type, code),
+> +
+> +		TP_STRUCT__entry(
+> +			__field(__u16, sport)
+> +			__field(__u16, dport)
+> +			__field(int, type)
+> +			__field(int, code)
+> +			__array(__u8, saddr, 4)
+> +			__array(__u8, daddr, 4)
+> +                	__field(const void *, skbaddr)
+> +			__field(unsigned short, ulen)
+
+Note, to prevent holes, I usually suggest pointers and longs go first,
+followed by ints, and then end with char.
+
+                	__field(const void *, skbaddr)
+			__field(int, type)
+			__field(int, code)
+			__array(__u8, saddr, 4)
+			__array(__u8, daddr, 4)
+			__field(__u16, sport)
+			__field(__u16, dport)
+			__field(unsigned short, ulen)
+
+-- Steve
+
+
+> +		),
+> +
+> +		TP_fast_assign(
+> +			struct iphdr *iph = ip_hdr(skb);
+> +			int proto_4 = iph->protocol;
+> +			__be32 *p32;
+> +
+> +			__entry->skbaddr = skb;
+> +			__entry->type = type;
+> +			__entry->code = code;
+> +
+> +			if (proto_4 == IPPROTO_UDP) {
+> +				struct udphdr *uh = udp_hdr(skb);
+> +				__entry->sport = ntohs(uh->source);
+> +				__entry->dport = ntohs(uh->dest);
+> +				__entry->ulen = ntohs(uh->len);
+> +			} else {
+> +				__entry->sport = 0;
+> +				__entry->dport = 0;
+> +				__entry->ulen = 0;
+> +			}
+> +
+> +			p32 = (__be32 *) __entry->saddr;
+> +			*p32 = iph->saddr;
+> +
+> +			p32 = (__be32 *) __entry->daddr;
+> +			*p32 = iph->daddr;
+> +		),
+> +
+> +		TP_printk("icmp_send: type=%d, code=%d. From %pI4:%u to %pI4:%u ulen=%d skbaddr=%p",
+> +			__entry->type, __entry->code,
+> +			__entry->saddr, __entry->sport, __entry->daddr,
+> +			__entry->dport, __entry->ulen, __entry->skbaddr)
+> +);
+> +
+> +#endif /* _TRACE_ICMP_H */
+> +
+> +/* This part must be outside protection */
+> +#include <trace/define_trace.h>
+> \ No newline at end of file
+> diff --git a/net/ipv4/icmp.c b/net/ipv4/icmp.c
+> index e63a3bf99617..21fb41257fe9 100644
+> --- a/net/ipv4/icmp.c
+> +++ b/net/ipv4/icmp.c
+> @@ -92,6 +92,8 @@
+>  #include <net/inet_common.h>
+>  #include <net/ip_fib.h>
+>  #include <net/l3mdev.h>
+> +#define CREATE_TRACE_POINTS
+> +#include <trace/events/icmp.h>
+> 
+>  /*
+>   *	Build xmit assembly blocks
+> @@ -672,6 +674,8 @@ void __icmp_send(struct sk_buff *skb_in, int type, int code, __be32 info,
+>  		}
+>  	}
+> 
+> +	trace_icmp_send(skb_in, type, code);
+> +
+>  	/* Needed by both icmp_global_allow and icmp_xmit_lock */
+>  	local_bh_disable();
+> 
+
 
