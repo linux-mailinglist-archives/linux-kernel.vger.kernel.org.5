@@ -1,70 +1,71 @@
-Return-Path: <linux-kernel+bounces-108115-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108116-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5D78588062F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:44:48 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 74A98880633
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:45:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 117B42831A6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:44:47 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 98B621C21A99
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:45:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB57A3BBF0;
-	Tue, 19 Mar 2024 20:44:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 890FE3FBAF;
+	Tue, 19 Mar 2024 20:44:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Kq7ykimC"
-Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="WjVndhal"
+Received: from mail-qt1-f178.google.com (mail-qt1-f178.google.com [209.85.160.178])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B23C3FB01
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:44:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B7803BBFA
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:44:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710881078; cv=none; b=arHMnLhoinZfRaqFle/vwS9idfk6bctwtZz5feELESVYGF0vwyCCTs/uw1PfX28oma4Ilm+Wrc3rPcw7zL03fWWDcU2h95EGycjkYhqz8Gtc+lLFv7AA9kw1fXGi4hN3o25VgHIV/32Gyw8YJAZchZkSun+yK+LPTKx6k7fP54Y=
+	t=1710881080; cv=none; b=suORAGIHF6F7CPhkWpZ9fZimcBTBQLSqqHiSZzAnmWNlx9XbGROtOWBCx+cESO0yh0fqEHr35O1aKgqV2K9pQhlYEaNN7W2P2a49yNdo3azJ9E4RyCwUwpWk4s3Xj0xj2olOmhH2fLCmwp7AP6TihINIqjJUj8wfXgEOFQpm8o0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710881078; c=relaxed/simple;
-	bh=oDe0geSLnuuk7SkmacOCsc3JgCu2wt8IttTF3ksVRbM=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=KTpqhvN+ol7CI428uWzkC4sQx/x6UzOrLq/RXUIEunHjHWsP8FAHCy5+lxaEmwOgozvqVPk3v/+FiRJmSll36wPysl5AAd36hCL6g/5jCNk9F+nOsYtRvJsclxfnZeDUFvloqQPfe9tkihjBj54kWaAksHqeUOGlEwsJjpj/hI4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Kq7ykimC; arc=none smtp.client-ip=209.85.222.45
+	s=arc-20240116; t=1710881080; c=relaxed/simple;
+	bh=ZAThU7X8Id0Ifv3iZYWLGZRQ2drhENDwE2HLxuCty7Y=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=H6CYV4BLNJy0agQauQz9apFogO3aOlHKYtQk4NzTeW0OuORG7H9xvAPo0hVhQg4WMBqXmSsm5hFSVs2nnV4j/X+UlrSrpdJIVK8Bqwd1nA/8yiSno3jip741IezkHqP1necxMrA9Z/96u4KI5moRDKazQq6qzpS2rO8uY1YT/Xc=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=WjVndhal; arc=none smtp.client-ip=209.85.160.178
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
-Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7db36dbd474so2335206241.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:44:36 -0700 (PDT)
+Received: by mail-qt1-f178.google.com with SMTP id d75a77b69052e-42ee23c64e3so24450311cf.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:44:38 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cloudflare.com; s=google09082023; t=1710881075; x=1711485875; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=CAhSTGhRiyAljzZj3105Ft8eQ+XhumjX9hGBP4lMS0I=;
-        b=Kq7ykimCVSVgRZprjjbeAGcbmlICfOrK99qy29rYBetPxdIWMDxLf/rNZ07Vs2dFZ4
-         5ua/HKgOtvLuHwMt6KElJ3jqLIK3fD3xwQNBbrfgYh543fhnrxCDL8cqzt3d+5a33Xpd
-         xfDiuqACl8ZGyvqzW6GnnWlEUlkf6P+Zf08M6QqQ99z4HZHLaKY3PSxnOo8FY5cB+iy7
-         tNt8E/mzBPtmipvnCtNp39E8uejOzKxB9WwVGlhYW/0dAOwviSlpylNPhshdkHPsrHKK
-         n3O5lrZ278IH9iqwD9KtLTdKUXG52amhS/F3NQTGyhwc48XKRBdcfTciOQ1lm8zNkZRP
-         3rmQ==
+        d=cloudflare.com; s=google09082023; t=1710881078; x=1711485878; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=DhzHlt2GgEWWpszDk+jfUxmmnOotOx21FcVTcjSCNeQ=;
+        b=WjVndhalYYr9Sz1PTyICYsAXuaQju457TgXB1vmBCskifqLPojR0+IxYYPcOaWTQiZ
+         +zafvpQZtkBi3IUAhY3AG0eu3kpeIWb9MXwoz35NJOXpqhBesEBB7mutauHACMAsBbfk
+         OKD5k9teYFOPQVUqTZYQBjaVnWCz2wd2FJcC8tZk7rm51R29g/6zFEDlx2pjQzaUVdrd
+         8qZJz/7dnkPOg0F7NjMlJQ1ZpYn44Jw1rpnILbQbIRRzxvPnS0SXA0k9zFZvEI49utBX
+         vz8U577AqGnSyi0rgWLgOqGU01YUtw7y1HRYRiE8Pte5WKITOWmAlDY9vMn+xpumFWgS
+         6mAA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710881075; x=1711485875;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=CAhSTGhRiyAljzZj3105Ft8eQ+XhumjX9hGBP4lMS0I=;
-        b=UaUApbc0BffPmvxpDscPzaAh/r3eBGrim8IAfZHCOIgFLtw2bTh1CO7PwmqztWt3sW
-         nO2kjI1e5FN315qvC/RFXAaQfP7giRSC8TFfK0a0JlyR1uqc5EPbMX0kfA8RbJXDvO9T
-         jbeoRZ8y8LxEcNE1Xl8Zcoll9hdpY9bMDQsFz+mTAl4mJ/098wc0xp1CjJtRr8281Qld
-         IhtGklOp3dKx+RpbJ4L8/55aiqetWHG1YBGrBagsHWsu52cWMijZDEsM+1upWJzJ6Jy2
-         6O1IUIJbVoH+gm15gIfpxpjLymviuT0aNEbgzPRAqNWvV5CJh9Z/fWfYe38nTJD9Upxh
-         ccEA==
-X-Forwarded-Encrypted: i=1; AJvYcCV4HN8qvDxI7ln+v9fCUcx8P8ofaDeRN9+g6eHTNmHKGjaemJRg0X9N0I41sKE8rr1Piagog3ve1CZfLB5hsC4kFvPpKZuoC3ANJIfg
-X-Gm-Message-State: AOJu0Yxjho0GdLJmc18sHs5J0Ac9TcDmtZ/5Owj6C8S7czEAYvDMDQh0
-	5/eB2Szp/8+RnnB3cMl0HOqxQL8+akoqlduwtZKtkKwBmdNy+9NbnkX5K6BkKwQ=
-X-Google-Smtp-Source: AGHT+IFlFOB52SjxLdszQJJGneeQ+QorWaR6FhjitWP4enqBl+GDAaETy/cEnPLd6J2B8sy5tqEo8g==
-X-Received: by 2002:a05:6102:3a48:b0:475:48c5:c4fc with SMTP id c8-20020a0561023a4800b0047548c5c4fcmr12142626vsu.24.1710881074319;
-        Tue, 19 Mar 2024 13:44:34 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710881078; x=1711485878;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=DhzHlt2GgEWWpszDk+jfUxmmnOotOx21FcVTcjSCNeQ=;
+        b=elaqa14LX+RBDmy48FWFbxfiZ0du60NM7+rLbYWHe80YnQaEbDE8rhoevMtkyrWp8y
+         Eur19zO7VUmKmK7fkSyyjtw9x697gjKiQVr3JntjQIRfQC5plKhc9ATURSAxZPqeKtqw
+         lMPPXj0yGS6vpNWWm3ddB7GXrgBFQ+kE7G22CVVBgV0ygLgQ+oLYc1IVfM0dK0THsosj
+         QNN6pPQ0oERv8RDgPxGllx+4DX2+P6sUyajsL74MRjGMdBqMq8b8KBcsxO9yU7obEYYt
+         muuHX/yxH5JaiuvCUxrWluMz2zOJiOOe82gKlqy7VMqcytEL/XBgiZEzM93WAkcHTjPh
+         x+qA==
+X-Forwarded-Encrypted: i=1; AJvYcCUOvLyFQWQAYaYW96Q3RwNkf6JnMiV8zjNhvCzKIW3Uu1SrvtfzR7xY8IWvfv7DMaNOqqwRHJIpIN/zIfnAlGQe/pcNPAu+FO6RXpdA
+X-Gm-Message-State: AOJu0YwZMM9YFVf2t//8/HC+e1IxnX+t0V/gJejiMkQw2rbMkDxex/l/
+	kEg7n2Hi7Hj1jBVFoVLLWH413jOyfNRHmKo27UR63JZ6GIu5juqQ3BibKSw68no=
+X-Google-Smtp-Source: AGHT+IE0UM9LxDtJtc5S/HyOTxf5CvZO+23gx12ZhJ+rAVD9OduvA+dRZqVWHTNHXmdvPaVSKpTvmg==
+X-Received: by 2002:a05:622a:1746:b0:430:eeba:b30 with SMTP id l6-20020a05622a174600b00430eeba0b30mr2430930qtk.43.1710881077371;
+        Tue, 19 Mar 2024 13:44:37 -0700 (PDT)
 Received: from debian.debian ([2a09:bac5:7a49:1cd2::2df:49])
-        by smtp.gmail.com with ESMTPSA id a9-20020a0ce349000000b006916003c53asm6621478qvm.27.2024.03.19.13.44.32
+        by smtp.gmail.com with ESMTPSA id i13-20020a05622a08cd00b00430eecd29c5sm790856qte.63.2024.03.19.13.44.35
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 13:44:33 -0700 (PDT)
-Date: Tue, 19 Mar 2024 13:44:30 -0700
+        Tue, 19 Mar 2024 13:44:36 -0700 (PDT)
+Date: Tue, 19 Mar 2024 13:44:34 -0700
 From: Yan Zhai <yan@cloudflare.com>
 To: netdev@vger.kernel.org
 Cc: "David S. Miller" <davem@davemloft.net>,
@@ -84,8 +85,9 @@ Cc: "David S. Miller" <davem@davemloft.net>,
 	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
 	Jesper Dangaard Brouer <hawk@kernel.org>,
 	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: [PATCH v5 net 0/3] Report RCU QS for busy network kthreads
-Message-ID: <cover.1710877680.git.yan@cloudflare.com>
+Subject: [PATCH v5 net 1/3] rcu: add a helper to report consolidated flavor QS
+Message-ID: <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
+References: <cover.1710877680.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -94,66 +96,70 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <cover.1710877680.git.yan@cloudflare.com>
 
-This changeset fixes a common problem for busy networking kthreads.
-These threads, e.g. NAPI threads, typically will do:
+When under heavy load, network processing can run CPU-bound for many
+tens of seconds. Even in preemptible kernels (non-RT kernel), this can
+block RCU Tasks grace periods, which can cause trace-event removal to
+take more than a minute, which is unacceptably long.
 
-* polling a batch of packets
-* if there are more work, call cond_resched() to allow scheduling
-* continue to poll more packets when rx queue is not empty
+This commit therefore creates a new helper function that passes through
+both RCU and RCU-Tasks quiescent states every 100 milliseconds. This
+hard-coded value suffices for current workloads.
 
-We observed this being a problem in production, since it can block RCU
-tasks from making progress under heavy load. Investigation indicates
-that just calling cond_resched() is insufficient for RCU tasks to reach
-quiescent states. This also has the side effect of frequently clearing
-the TIF_NEED_RESCHED flag on voluntary preempt kernels. As a result,
-schedule() will not be called in these circumstances, despite schedule()
-in fact provides required quiescent states. This at least affects NAPI
-threads, napi_busy_loop, and also cpumap kthread.
+Suggested-by: Paul E. McKenney <paulmck@kernel.org>
+Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
+Signed-off-by: Yan Zhai <yan@cloudflare.com>
+---
+v4->v5: adjusted kernel docs and commit message
+v3->v4: kernel docs error
 
-By reporting RCU QSes in these kthreads periodically before cond_resched, the
-blocked RCU waiters can correctly progress. Instead of just reporting QS for
-RCU tasks, these code share the same concern as noted in the commit
-d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt when safe").
-So report a consolidated QS for safety.
-
-It is worth noting that, although this problem is reproducible in
-napi_busy_loop, it only shows up when setting the polling interval to as high
-as 2ms, which is far larger than recommended 50us-100us in the documentation.
-So napi_busy_loop is left untouched.
-
-Lastly, this does not affect RT kernels, which does not enter the scheduler
-through cond_resched(). Without the mentioned side effect, schedule() will
-be called time by time, and clear the RCU task holdouts.
-
-V4: https://lore.kernel.org/bpf/cover.1710525524.git.yan@cloudflare.com/
-V3: https://lore.kernel.org/lkml/20240314145459.7b3aedf1@kernel.org/t/
-V2: https://lore.kernel.org/bpf/ZeFPz4D121TgvCje@debian.debian/
-V1: https://lore.kernel.org/lkml/Zd4DXTyCf17lcTfq@debian.debian/#t
-
-changes since v4:
- * polished comments and docs for the RCU helper as Paul McKenney suggested
-
-changes since v3:
- * fixed kernel-doc errors
-
-changes since v2:
- * created a helper in rcu header to abstract the behavior
- * fixed cpumap kthread in addition
-
-changes since v1:
- * disable preemption first as Paul McKenney suggested
-
-Yan Zhai (3):
-  rcu: add a helper to report consolidated flavor QS
-  net: report RCU QS on threaded NAPI repolling
-  bpf: report RCU QS in cpumap kthread
-
+---
  include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
- kernel/bpf/cpumap.c      |  3 +++
- net/core/dev.c           |  3 +++
- 3 files changed, 37 insertions(+)
+ 1 file changed, 31 insertions(+)
 
+diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
+index 16f519914415..17d7ed5f3ae6 100644
+--- a/include/linux/rcupdate.h
++++ b/include/linux/rcupdate.h
+@@ -247,6 +247,37 @@ do { \
+ 	cond_resched(); \
+ } while (0)
+ 
++/**
++ * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
++ * @old_ts: jiffies at start of processing.
++ *
++ * This helper is for long-running softirq handlers, such as NAPI threads in
++ * networking. The caller should initialize the variable passed in as @old_ts
++ * at the beginning of the softirq handler. When invoked frequently, this macro
++ * will invoke rcu_softirq_qs() every 100 milliseconds thereafter, which will
++ * provide both RCU and RCU-Tasks quiescent states. Note that this macro
++ * modifies its old_ts argument.
++ *
++ * Because regions of code that have disabled softirq act as RCU read-side
++ * critical sections, this macro should be invoked with softirq (and
++ * preemption) enabled.
++ *
++ * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
++ * have more chance to invoke schedule() calls and provide necessary quiescent
++ * states. As a contrast, calling cond_resched() only won't achieve the same
++ * effect because cond_resched() does not provide RCU-Tasks quiescent states.
++ */
++#define rcu_softirq_qs_periodic(old_ts) \
++do { \
++	if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
++	    time_after(jiffies, (old_ts) + HZ / 10)) { \
++		preempt_disable(); \
++		rcu_softirq_qs(); \
++		preempt_enable(); \
++		(old_ts) = jiffies; \
++	} \
++} while (0)
++
+ /*
+  * Infrastructure to implement the synchronize_() primitives in
+  * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
 -- 
 2.30.2
 
