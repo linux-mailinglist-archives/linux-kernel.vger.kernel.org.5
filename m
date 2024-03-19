@@ -1,146 +1,175 @@
-Return-Path: <linux-kernel+bounces-107620-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107622-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id C483F87FF39
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:59:41 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7CFDD87FF46
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:04:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E9967B26103
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:59:38 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id F3993B214F8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:04:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A99C68174F;
-	Tue, 19 Mar 2024 13:58:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7173A8174F;
+	Tue, 19 Mar 2024 14:04:00 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="PXEXeHqV"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2134.outbound.protection.outlook.com [40.107.244.134])
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="oY53iuOU"
+Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4A44B2E400;
-	Tue, 19 Mar 2024 13:58:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.134
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710856738; cv=fail; b=lE19b9tUrb3J3ihzXfR58KWAZ6RWCNQMaHcpf37CjgtUeuqxN/Ka6dUBYo9sG8ANWwSOzEI/bb8wy7WgMeoz07dxmybvYAEiQJnrtTc5QfiFBnVtOtLydY2Os0rSJS4a6t4SXVDUyz3JEcHN4xvG7ODeEFH3VgYjX5j+V5WZhzk=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710856738; c=relaxed/simple;
-	bh=CV+PABi84XLG6lRivGe+LIk8p5M16ej0zvvhE85Xzwg=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=M17b+c06dZHmdm04ZTQtOuGXwHoaO8rrNoqaUwSIL98owQfJOV5qzcvD6J/XN6glpIH7WCvtZ7tRoeMXAWuTyvqGQylT/zmpviKLxiqG2ioZcSw77p5jBLRdIqgPNdggPXXdvN1x+TyPYh6tIHjU/7TF1WgSmkjnV7eOxiEjTmU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=PXEXeHqV; arc=fail smtp.client-ip=40.107.244.134
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=FEpvXggE4kNP8MnIvWBtFDZ0RhOFAF0HzQ1AC9cjut0Ffi+E9F0+0YW+27wLr7O3tCXVMwNPdnk0DNdp9BkB91Us+SP0knmI041sj0cjaUPJv651iyRgmOHnq1lMV4/ALGF36yUTZV+0dvsrVa2DHe31V1IuDdVaE+4qJfI7ppS2sUhuguvvMCmZ6m0KBoRccr2hibiI4DCZ/ipMLTjNPhhJnPH2D7pExlXcreR87EtIQ0UQbIunDzoKhK0hdZwyrdHFtRSaKt2ta5VBZMtvJbViTSIqn7pdUT19mjZgtTqqJEAiUqk8OhqSbs/5i4PX79bKirZCL8HUbWginm71Sw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=soINAdAabQmCoWQcZPyan8WqO6U+tYsCxg5eaKQdhSY=;
- b=TUVEbvVi5stIlg+QTXM2DYJ5nBvcejRv+BxO0sGIqcaTfhO9nfqBddSJjp4MjXFkOS9r2apt6iEJRjIpukB0QBSvoMfMUWxlRCFQsqLgnxGYuTUR+DTdF8dMxxDe059nHxmVd8j+8wkcwk7aRJTC+nerwU6xchI7Lks9bjuJQOgkHXerNTT2cesNiH6KPPt+paCCgfdNkW340cPBt/Dy9qes4wzQO5AReIaJpYkxMQpgCLg5yBePvzHmZhvYrZc1NZ5VB3T8qvBRo4eiqmsD61JYpgsPI5o/COd4BorQ8iRzx9Nucn6tS6vo31eBil9x6IO4+kYmDA3atFGyHls9BA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=soINAdAabQmCoWQcZPyan8WqO6U+tYsCxg5eaKQdhSY=;
- b=PXEXeHqV4yaS6MHEhT8HlVqGrp1vc+isk6XjPWXs5tqWSYQHxhh4FmWtZiWaz9sXKN409ZlP1tUYXlId0DBoQX+XF0foshXTFrI/Gm8SK/OC3mdhA7aBCrxXEXeKY+yDVG7wmmFy528fc08XID3NIP1droLtzXk3abCF+9K336sW2d7+zjDFVepkLvSvFe5pHqD+FcCCwUwIAuqQs4AOV1/LSFhsbikvhEMYBp3Q5zVgy/4GJBAhbMTQn8bkvFQSx9k+1vOqqMFpX3IUViKzwg8wp0hr5s3NwgtMw7smzijBoX02vgHWZa7gf9i8EuPCW18COilYTrx1bLyTazidhw==
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by CY5PR12MB6131.namprd12.prod.outlook.com (2603:10b6:930:25::10) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Tue, 19 Mar
- 2024 13:58:54 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 13:58:54 +0000
-Date: Tue, 19 Mar 2024 10:58:52 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Mirsad Todorovac <mirsad.todorovac@alu.unizg.hr>
-Cc: iommu@lists.linux.dev, Kevin Tian <kevin.tian@intel.com>,
-	Shuah Khan <shuah@kernel.org>, linux-kselftest@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [BUG] seltests/iommu: runaway ./iommufd consuming 99% CPU after
- a failed assert()
-Message-ID: <20240319135852.GA393211@nvidia.com>
-References: <0d5c3b29-fc5b-41d9-9556-5ce94262dac8@alu.unizg.hr>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <0d5c3b29-fc5b-41d9-9556-5ce94262dac8@alu.unizg.hr>
-X-ClientProxiedBy: SA1P222CA0118.NAMP222.PROD.OUTLOOK.COM
- (2603:10b6:806:3c5::6) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 374352E400;
+	Tue, 19 Mar 2024 14:03:58 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710857039; cv=none; b=G5KYBIiLOZeYUi/iXHDwWU+TfaH3xpIX57LNbTNCGDi5Zp7UzvKVbIWk3/cPs6aLGLriX9Zqz7KW8Xzy7D/KXdAHIxLQW7Qcy5uoE9Bb22kpdo2+JVrGgkkWk8sawWCeBACsRo1RissBvpYSV6aj+Y88FpeAr3ht1GR2Wk6CJfw=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710857039; c=relaxed/simple;
+	bh=A6u0zf6zkyvIBB6bB5G5ap2zNeorlqoksH2AJuDLOB0=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=lEkjLJF4dQV4Wbg8GF5ozpHRAdI6mn68HxAZIiZJDcM3FJS51z00KtGomKyORRy8Do4C9fNXvnv1XqGQyLlOwfU5M/rloWU7/pvY+GYUcsYTPHe1RKC4YSnpXZ3RwytWbgSMQ6HsnvZ1KuxLcbqgHwYh9Z+7M71J+WAJQNvXaB8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=oY53iuOU; arc=none smtp.client-ip=213.167.242.64
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
+Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 497B8480;
+	Tue, 19 Mar 2024 15:03:28 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
+	s=mail; t=1710857009;
+	bh=A6u0zf6zkyvIBB6bB5G5ap2zNeorlqoksH2AJuDLOB0=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=oY53iuOUsvbOSB2Gdhr6s3p3inDWth4vJ5dcXuzmr/+i5X0TO8sk9gAL7PERc1cC5
+	 OfdTv0RIniRviwVt74GBUYiv0EXGRAHAmYzV/rM7/sINi36Qy2THIV74lttBiHVZDA
+	 G9uVQV+EstYok1dTWCat02xZ2OE4bP1riY7NCvU8=
+Message-ID: <0401eb0f-0172-4371-9a16-f51b6b885b55@ideasonboard.com>
+Date: Tue, 19 Mar 2024 16:03:52 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|CY5PR12MB6131:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	zbrnOyQEX2Dsqf+nn2ic6nbrrICCyqaA+scwK3WEupz7Lc6/LtCcWMAF1sHa9cUuU2O/TnESDgXvZWIFbn/8gZM2nKWns2IlOJilTR3/a5wMJfvEwq8k2He02BY+x0bfbt2Tw4XSWS7Cy3enzTHYtPYyfywjTKmaqcsCIa7hw/icqBswnHiI6kstwe8skw8OkhXQJiys+qQ5jXvJYn5l7RkzMnZ4PMZSMH/3i2Rd4fWo5Z70JH3FvibIOvGKignCJYBBNWx/Q2j6HX8jCN1mV7UvXP+xwbNP60LlBow+yHJ8iAK5ACUDiBspBog6XSOHBSSGndmMqPPnjAJ6KhDUoqpfJMqBEk3PcRtKK4KAKc1ez5vyBaBJgxNRk2gWlsfneUBPhdI+2L592nfij2leBa4OJyQPyl2Rx3t3ywsJYu2nCs1ZFeOqkjn4CQ2vSC4HPfgeLayKulJTWt7HrDAPUNmsd+GCIKL3YS3MP37e/OISqtFVFeJizGPlf6u0qIfeHqh/CqschZ9m+G86DuZ7kY2hbSHWtUW/7lPpacynhW0Npi4cEbYmUq1Nf0bE//GYp4iKIjAJoF2Tar1UaC7Tuk9RwoKUzJXW04GPfKdHabyoWLBa2e/o22xgz0XEwCBy4qJPEwQcgJzMIwfJjqqjhBx57A0t2Y0EFl1poTGqBSA=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(376005);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?avlX5AQoelfxEEd8tdPsDDdUCOT/e4wPWzFQd7KWsNaC7tZLTrC2lMXgOVEL?=
- =?us-ascii?Q?sAwjmyUhZjE9bgZEyWgVN6Qok/JkXDHJ3h6mPQfydx+wY6HlqV5dJIXh0nFW?=
- =?us-ascii?Q?umla0hDsggKwPZXg4yzuyIwfz9kKVoA+qi4EmVGKtHEFYc11eG1gurgIGx8k?=
- =?us-ascii?Q?wfWhsREb7fZmkWNDp8g1DklEon02ujmRqaoOio9PsCv1TDqtrSI5jIVe5s76?=
- =?us-ascii?Q?swf4UUuVOaN4BxC5DWU9jW9L7f9iajuOCjvkUZlPg2mGKsyKlyD5+KU+IX7u?=
- =?us-ascii?Q?ZAD7N2QXY0H+Bh1oSUIrZaW8mrUkmpRU/isgkjQjVFLP2vKgFgpnmbsoJ8xR?=
- =?us-ascii?Q?LE0np1IBppik3mvZrkEt4Uc+ejSMsZGQGzwhuQCoFEvDVtQ7gW50fkBw8tBz?=
- =?us-ascii?Q?ptTDUg/Zg5+xqAVEf5a2h90nRgV1jdMZu4psMbKzTMp2WSDGJaH3t1TKvCp0?=
- =?us-ascii?Q?WFYSX9h6D1NXUb3YK5HAXQIGq0dgr82bR2q4n8/Ry6zAaacFWhWZasR7cAeU?=
- =?us-ascii?Q?lwmfSG8NIYenXx5c+SwKCNNXgRWhSF7MLophLMbmOIbjYeqvXOVkKWoDOu6R?=
- =?us-ascii?Q?FCEJf9SWQUOhZSqCxzlumypwTkxblSBDwmallmk0CL+t/qYmmQi5aFLC5QN6?=
- =?us-ascii?Q?DAPo1oaNFyA+ko6juoXhffnmnX58XwPHWK4cCrYaTI5l77U7p5M6Lw3YohlU?=
- =?us-ascii?Q?BKIwmMCn9+FbNNOqocz8tvwU9r753Kv2YT72Pts6ch44BnuYuuK7t4vCN2+e?=
- =?us-ascii?Q?Megj/J38piI1ArUOzK8tAfg+9HwPFI9/Mmj+u6E2FmGk+0YysBf6WfGknOu/?=
- =?us-ascii?Q?HzdPRVH1x1bVVSWl8vj7+MnuKa5jIfAFY7hKe+I1WN4whqTNll1WMO26xl2d?=
- =?us-ascii?Q?azRYfKavOz8XU2onvmzYFFe4ZdJVFWGVbQIsVcWHOZkEiXIFUZgG7h7oJG4L?=
- =?us-ascii?Q?AxyNbCJn/l8st7cMsAqxJdlTfxn1p19jxH8tS0ipo+05Lb4HHl4rV6sq6p38?=
- =?us-ascii?Q?PpZtU0bswL55bBYtuQPhFtXZHtlAMBq/MOSit5QYoYXj3KYs0QKH9hrlMZit?=
- =?us-ascii?Q?BDF8tyT/ifSkb13iYCoTMwcwhVsfWF9YL01cNXcE/Ii9sB6oOoBiit3Ol6g2?=
- =?us-ascii?Q?2ruEAeSdA8rZoPI8Vugfi+WwjkrxbArpgmpg5pTxSU+rkjO20pBh7uz4njYM?=
- =?us-ascii?Q?gkUCaQdgR2EajDJTs9UjiPYPLd/X49pBw3crZ5vt9eSv+2MPgq2mYYRWyWsS?=
- =?us-ascii?Q?07gkHi/hJKyoRfJfVu4hqUs/7JaBEaFSxp6JkQfhttehsyqCo+lUbECk6knY?=
- =?us-ascii?Q?P8LPdAoTXvO3Xp2ZQ/5Zr5rZbNBvcn25G5sSXVFBJMkjkWiBAgWFz4WalXso?=
- =?us-ascii?Q?fI1djHx/QDi/Vh5i6zc+bHITaLkkJVlbncuFhq11+tcs9PDG1IVr7fKARpQO?=
- =?us-ascii?Q?H86yxXavcwlFoITaoL3NqS05nMcrAl3fjcxRTvDUpFRMlF09vKMjjAEOD17i?=
- =?us-ascii?Q?kTHH12TjskuoaZrtx6DZos4iHdsPwx3NaXOC1wgLIoZT/YBWOjwPMACYAWWB?=
- =?us-ascii?Q?2UREegnU6dum0mNf0Xk29cyHwrjIcCXBNEI9tWza?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 544b48b2-411d-4f31-1f10-08dc481cb6c6
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 13:58:54.3725
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: aThy+QjTBArT6DhWNI1KYOBq32SB7i34as+cXUszfI/5M4QvSnNRXhipVJqNmwoP
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CY5PR12MB6131
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for
+ raspberrypi,rp1-cfe
+Content-Language: en-US
+To: Naushir Patuck <naush@raspberrypi.com>,
+ Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: linux-media@vger.kernel.org, linux-kernel@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-rpi-kernel@lists.infradead.org,
+ linux-arm-kernel@lists.infradead.org,
+ Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
+ Sakari Ailus <sakari.ailus@linux.intel.com>,
+ Jacopo Mondi <jacopo.mondi@ideasonboard.com>,
+ Kieran Bingham <kieran.bingham@ideasonboard.com>,
+ Mauro Carvalho Chehab <mchehab@kernel.org>,
+ Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>,
+ Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>,
+ Florian Fainelli <florian.fainelli@broadcom.com>,
+ Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
+ <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com>
+ <eb854c43-1e92-4c19-bfd3-1bde94924319@linaro.org>
+ <f97faeb9-8a6b-47c6-9317-daca88257802@ideasonboard.com>
+ <30430e0e-70de-4831-97ad-974e350a2e54@ideasonboard.com>
+ <5ca1d005-1beb-47ec-943a-9358ae3c6704@linaro.org>
+ <CAEmqJPp7uGYe993L+ujth2mfRy66s8-S9FNxPY7vwkrboDq9yg@mail.gmail.com>
+ <89d459dd-cc8c-4780-a56a-809e24343e69@linaro.org>
+ <CAEmqJPrLP3j37Kcj0mX23x00p=gWuxZPNSUTRGNkcEqsUJ2MjQ@mail.gmail.com>
+ <9d238cd6-0e11-4775-bc00-7df50f0a6638@linaro.org>
+ <CAEmqJPoVFRUBRnuvRaeWg6vxDaNMzdFzgj2_Gi5bxh5nacdmDw@mail.gmail.com>
+From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
+Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
+ 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
+In-Reply-To: <CAEmqJPoVFRUBRnuvRaeWg6vxDaNMzdFzgj2_Gi5bxh5nacdmDw@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 12, 2024 at 07:35:40AM +0100, Mirsad Todorovac wrote:
-> Hi,
+On 19/03/2024 15:05, Naushir Patuck wrote:
+> On Tue, 19 Mar 2024 at 13:02, Krzysztof Kozlowski
+> <krzysztof.kozlowski@linaro.org> wrote:
+>>
+>> On 19/03/2024 13:57, Naushir Patuck wrote:
+>>>>>>
+>>>>>> See writing bindings. Compatibles should be SoC specific. In some cases
+>>>>>> generic fallbacks make sense, in some note. But don't just choose
+>>>>>> "generic fallback" because you want. Provide rationale.
+>>>>>
+>>>>> If the compatible is SoC specific, I suppose "raspberrypi,rp1-cfe"
+>>>>> would be the correct string.
+>>>>
+>>>> Sure, but then please think what if rp1 is on Rpi6, called exactly the
+>>>> same (rp1), with some minor differences? Could it be?
+>>>
+>>> Yes, this is definitely possible.  In such cases, I would expect the
+>>> hardware to have a version register that would be queried by the
+>>> driver to adjust for minor differences, and the compatible string
+>>> remains the same.  Does that seem reasonable?
+>>
+>> The "would expect" is concerning. The register(s) must be there already,
+>> with proper value.
+>>
 > 
-> (This is verified on the second test box.)
-> 
-> In the most recent 6.8.0 release of torvalds tree kernel with selftest configs on,
-> process ./iommufd appears to consume 99% of a CPU core for quote a while in an
-> endless loop:
+> A version register already exists in the current hardware, so we will
+> update it to identify future hardware revisions.
 
-There is a "bug" in the ksefltest framework where if you call a
-kselftest assertion from the setup/teardown it infinite loops
+But that's a version register for the FE block, not for the whole 
+module, right? Are you suggesting that you'll make sure the FE version 
+will be changed every time anything in the bigger CFE block is changed, 
+and thus the FE version would also reflect the whole CFE version?
 
-The fix I know is to replace kselftest assertions with normal assert()
+Can there be versions without the FE block, with just the CSI-2 parts?
 
-But I don't see an obvious thing here saying you are hitting that..
+Also, I'm still wondering about the RP1 part there in the compatible 
+string. Is it necessary? The CFE is located in the RP1 co-processor, but 
+is that relevant?
 
-Jason
+Is there a versioning for the whole RP1 chip? Maybe it's going to the 
+wrong direction if we use the board/SoC for this compatible name, as 
+it's actually the RP1 where the CFE is located in, not the SoC.
+
+  Tomi
+
 
