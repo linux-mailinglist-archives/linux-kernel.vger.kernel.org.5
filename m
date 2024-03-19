@@ -1,238 +1,294 @@
-Return-Path: <linux-kernel+bounces-108102-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108101-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 528E28805F7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:16:31 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 21E2C8805F5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:16:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 5B1CB1C228B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:16:30 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 12B8C1C22518
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:16:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F0F4D5FB8C;
-	Tue, 19 Mar 2024 20:16:15 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5A45258100;
+	Tue, 19 Mar 2024 20:16:13 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="YcOiZRjR"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="soel3TAg"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7F355786B;
-	Tue, 19 Mar 2024 20:16:12 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=192.198.163.13
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710879375; cv=fail; b=ukn/TVvsBuFtp7Kq5fxBz3jXDg2sfik3jJ0BUL1V1kclMyXlIXq8J/UXc4QpvVSpKG2t5DE9MUAVPtueCmndNBHJdh3GxUiOC62q0o45WqdEg00pbb1S3KIYwmdout9f1zwJs9npp0TXcAEBhcyDRjMQkOqPkNmxYzxiWV2cHu0=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710879375; c=relaxed/simple;
-	bh=mvw3tSyFm1GERF6Em4XhqmGMIJeG9Cc5f/K7h3ZqDqI=;
-	h=Date:From:To:CC:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Da8yDaqE41GyU5ypD+l0qPWWroaBL6T3y16b6jyt2DTEtsVP6G8ejIYtYKwt5uIPkFn1ZHOmklnko0F4XfiWHYch3Opkx0PNdwW9K3jAp4Q6uok1CoSl6p7yPzOZ4XweBK634ivIUF4jJ02eqh+lttvMQ2YIh+WLAtevJ3UMXAA=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=YcOiZRjR; arc=fail smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710879372; x=1742415372;
-  h=date:from:to:cc:subject:message-id:references:
-   in-reply-to:mime-version;
-  bh=mvw3tSyFm1GERF6Em4XhqmGMIJeG9Cc5f/K7h3ZqDqI=;
-  b=YcOiZRjRQUVaycjuTFPn7CVsujp4u10dBr7gyYI49r0/KqMLkkFEH+oP
-   tDhnSjgqgCA5pVDruFZA2cR4iHcehtmbiFSLzdZ5I/E3dJYxrb+ikeYSY
-   PgXp1Vws6IDI6l11xuaWTp3CPDr+HL940NqcWDfPSWpprZNSy6oJyVQle
-   M2xRnuPPFj4paYZdUEt/brLML2CHvHXXtrliN6icc1mGruY3AOyrZIJBJ
-   dnWXyVLk7uRxfTzcwiEIV5dsSVjFjcU0e5j52YIzUVJWM+b7Pdf/7STqd
-   Cs3TYpoeZ+DLQyafEhIA98pUOCmraH3PNHN4FiFJ8YvnhV3m/E2ejDkSa
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="8722130"
-X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="8722130"
-Received: from fmviesa008.fm.intel.com ([10.60.135.148])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 13:15:55 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="13994943"
-Received: from fmsmsx601.amr.corp.intel.com ([10.18.126.81])
-  by fmviesa008.fm.intel.com with ESMTP/TLS/AES256-GCM-SHA384; 19 Mar 2024 13:15:55 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx601.amr.corp.intel.com (10.18.126.81) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Mar 2024 13:15:55 -0700
-Received: from fmsmsx611.amr.corp.intel.com (10.18.126.91) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Tue, 19 Mar 2024 13:15:54 -0700
-Received: from FMSEDG603.ED.cps.intel.com (10.1.192.133) by
- fmsmsx611.amr.corp.intel.com (10.18.126.91) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35 via Frontend Transport; Tue, 19 Mar 2024 13:15:54 -0700
-Received: from NAM10-MW2-obe.outbound.protection.outlook.com (104.47.55.101)
- by edgegateway.intel.com (192.55.55.68) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.1.2507.35; Tue, 19 Mar 2024 13:15:54 -0700
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=EJWdgRGAHJhCrIGc+KaQAySYv07q6GYjq9gEdeF8v9IyjtXLRB6I+UUp8lI2eToJJHTPBOOvlpF3Jts4u40M7XF4h8SycDzPKRdXcEBFqzWnlTvvPfx/1C1fW408EBYlBY7IuniUAcM0SngQllpYFHboFAEEiXGAJX/MAsUg6xFh++WaOM/DILQxPf+fl/vqtEPfwduGFbE0XKuE332rn6bXurDuZVd1QqDvgDUg3GCcJxXRooSXK7lCWsd8Tp2Hps42cGLc5ZkupZ/+5UdU0pgUV0pYnW9c17ULdr3fYVNccIpbHU8WIL6RSzVb1wecW419o39Hiy38WXDp0FURTQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+zAFDayZ2iIaLGdAIqehMMkJGNuq8AtikF2gyU9KtyE=;
- b=Ca8Dy0dc7aItxlNzwhUty8VIpd6FvOU6ynNWO1mOuMiVYWX304skdq0kbSR/zEz8UmLyho3W6r7f00GVb2P1OdwLYrtWUV65W63jRmI3If/vfPkbrq/aKOEQO81+8aTO5revMkF21K+Ngscj2pWTikhs4IQxC9M2s6oel2iLpcZJlm80Yvhoqt06n84FJ2UkTccCBjSqQMuwvPNAyli7QBL+WPwQCe5ip1IIKPXSHwpRwTm3KLxRxWSpekMIVW9QL0Dz+4CG3OmQ3BSf67TfR4TJbtijCmOKMMKkIC5IZzSyI5sRjgqTZFl2fx5I6DRFFiBhExFXOhunpsAdeiZQjQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=intel.com; dmarc=pass action=none header.from=intel.com;
- dkim=pass header.d=intel.com; arc=none
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=intel.com;
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com (2603:10b6:510:256::6)
- by MN0PR11MB6133.namprd11.prod.outlook.com (2603:10b6:208:3cb::15) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.10; Tue, 19 Mar
- 2024 20:15:51 +0000
-Received: from PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71]) by PH8PR11MB8107.namprd11.prod.outlook.com
- ([fe80::82fd:75df:40d7:ed71%4]) with mapi id 15.20.7409.010; Tue, 19 Mar 2024
- 20:15:50 +0000
-Date: Tue, 19 Mar 2024 13:15:48 -0700
-From: Dan Williams <dan.j.williams@intel.com>
-To: Robert Richter <rrichter@amd.com>, "Rafael J. Wysocki"
-	<rafael@kernel.org>, Dave Hansen <dave.hansen@linux.intel.com>, "Andy
- Lutomirski" <luto@kernel.org>, Peter Zijlstra <peterz@infradead.org>, "Thomas
- Gleixner" <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, "Borislav
- Petkov" <bp@alien8.de>, <x86@kernel.org>, Dan Williams
-	<dan.j.williams@intel.com>, Alison Schofield <alison.schofield@intel.com>
-CC: <linux-acpi@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
-	<linux-cxl@vger.kernel.org>, Robert Richter <rrichter@amd.com>, Derick Marks
-	<derick.w.marks@intel.com>, "H. Peter Anvin" <hpa@zytor.com>
-Subject: RE: [PATCH v2 1/3] x86/numa: Fix SRAT lookup of CFMWS ranges with
- numa_fill_memblks()
-Message-ID: <65f9f2741e607_7702a294f7@dwillia2-xfh.jf.intel.com.notmuch>
-References: <20240319120026.2246389-1-rrichter@amd.com>
- <20240319120026.2246389-2-rrichter@amd.com>
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240319120026.2246389-2-rrichter@amd.com>
-X-ClientProxiedBy: MW4PR04CA0130.namprd04.prod.outlook.com
- (2603:10b6:303:84::15) To PH8PR11MB8107.namprd11.prod.outlook.com
- (2603:10b6:510:256::6)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 927125917F
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:16:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710879372; cv=none; b=dgCfpA7J5PDbrU4QJznVNcpdf6t3BDKu7oWP6YSUBsbcDieBlyAQcn1+1X9OJRiGuff0i0QKRL/dOgW2/GldZmKiGhEkbg6jNpvbI9sXJJBIhNXvzOAdPg4P2p4NbyOYx4a0uG7AQLN+9WZYaz6YuKjNmGmcAE5GC2Wwb55lQgA=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710879372; c=relaxed/simple;
+	bh=JH5cQFGXpVzCafFtwHE30FzVNGmyj3B3iU12y4lR8bI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=laMqAhcyUBAEa3HrfypJL02wEC76i4IKPlDhpyvN2eB34x+nmEz4NTVm9FJQuqOt5S1d0A0HUYbpnCDxaWJv0DJO0YCPD/ayaC/CGww/R+Txy7oPnVsaC/XV7ePj1Cw26N9KvBa6a9+PXyZIIftIx/WJ/GLRjRQPb9blKz9gstI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=soel3TAg; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1dee917abd5so6135ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:16:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710879369; x=1711484169; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=mnC/PClOUbpATx/wYZn6KxT6pkLtTGwMS8zyLcU4BoM=;
+        b=soel3TAgJKAZ3ZC0ka8yrxuwT7F6FKSQ5JsrPGQmAfE5sTw3apeOLj7TtWFMiEE4B3
+         K6YYX1aFNKZj3wOnavMeqc4WljMB1Z3/Xbl6xLbzgZA1GKIbLUBr51R+po0VvKFiYmj7
+         hUu+KLHLh8/UITB9P0OE0GzSwKx+GCZuLpVDPvcrvvnW+BPD2P2kL0IhWFkfjCnqcxeR
+         B5Qs24K1IcpOKyRHGyWsG6i2BgJsyA2qTFxHGmI41MKq5Jh9nJTg1BT+izKVBCtZsZcF
+         RCpo2ExU+71Y0gmDmOPKsycC2NVig/OGXVcikmB5V5TkXJXHLZcbZpslXHlvBMXVEDTZ
+         x9hA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710879369; x=1711484169;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=mnC/PClOUbpATx/wYZn6KxT6pkLtTGwMS8zyLcU4BoM=;
+        b=p1IwV4qJFdeueLRGP26ssfBVzNQgLXsztjdiqkrqMaStRdMmzrUaLzCAZE6NCxTD+G
+         kYdZFpBGdiI3UKC4b0p6TOBwEo3fsDdxF5aTuzKdgeUtKTHu2lKsQw7+MG68r9kbC+74
+         glkWyd8Zb9DJr5FJSj3+oqwRxdP7BAD+9uoucS1Zv2rh0WvnkVUb2Igh1foZksSsahGM
+         hFfAIlGeDbbr1Ym8vPG4Hv4Mg8YpfSIXjLLU9Jrm3EP2xe7v1HPVrtcisKV2644qF8qK
+         FXoSQSTym3fVChGeZLP9h3Obuw4SDiTbW4/B2j3p22+X3tOh631x7f581uqLQRLQvPMD
+         GR6A==
+X-Forwarded-Encrypted: i=1; AJvYcCVe2POll8nA49+p/qnOcDMqDH1VcegqScgDP5X3gJH21P5aAn/4V6yv7zvCY6frACNeer0XrBQvqc7WqUnNLaGTuCrZufsBJXnmuRYF
+X-Gm-Message-State: AOJu0YxKwQGpUW24lBgK0T+KUCEIBc0LA0xekbx6rXKsbG1A8w4IHpFm
+	7gMoo7kFLhGcCgy19s3h35weVQ5Who1BFdDIJY1uwOOhPSvLZp0dr3ksoWbMmjPZ74DYFBdrc1o
+	1lfdks2Re0bog75DqcYy/fNeyPSqtQ8MAF9H7
+X-Google-Smtp-Source: AGHT+IFtEN2l8gbs+mGTRyAO6FTcwds4VZNdiQhf6GQmhYMVguy4Vukog9e5rZI9dQ62/M+ZzNCttn5AH6TiIrKzXTo=
+X-Received: by 2002:a17:902:6502:b0:1dd:8d29:868e with SMTP id
+ b2-20020a170902650200b001dd8d29868emr13761plk.1.1710879368541; Tue, 19 Mar
+ 2024 13:16:08 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PH8PR11MB8107:EE_|MN0PR11MB6133:EE_
-X-MS-Office365-Filtering-Correlation-Id: 9af34b62-48e4-4e4d-1012-08dc48515f48
-X-LD-Processed: 46c98d88-e344-4ed4-8496-4ed7712e255d,ExtAddr
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info: OEVHtiqG1Jdn5zx0R3cl3zu7xXPqVB7FwFFmPyOPyO5LL6qOoianPzLkkeLioFOkPf6WqEKX+jEF2kk0Bwx+QnB2cSMwh4n9QbyMj/pFYqBd77znDqvrgt7FXfpSUIBQYRDaqvtllFlV1cgLa+QxEFPB7xqsnWSklDB3P91Pfjm23JxHitG6zUqdKwZ/SRCHBIi6YJr1PGNnLT5zo1QhhGPLgtHptK0kwZY0vqEEnDbBUmLgzN3E15MXac/Sztj1rH487sWyEcfq9z9Krvs+WYD7mFH4FARQGZJ5OPSUdUthQIiF3DG8Wr+M5KtB/fjp7vKxZKdBaAZUSsISvZlr3zSk9nMigv4vpzL0exx79efmsF9YS+9EVp26CSoqofwp8JHOUTKiRJo9G49bOKl3TI/H9e1x91Z/PoHCvt2vJEu0rjdqPcFRU2qYhd+iGpYD4RF8kAiKJUlpRqMFWe4sLzohBndTx0oONLO7LyJH4ss5GEbGf0bQjNE/hZJQJjDSpZH3JDaSchnW90lcjMEgMAPNR+25VHVCT4yar/YPbSpCi8XWEuzBWHpydE2HjuHOf48f+itAabFagssJ0jFChdzv6qLmaKxeMcas+SlfTTF47dsDfXo0Lqhruie5l5FXqDJ8no43YZfbNddZ1jBs7Hh+XU0J7wrX2eFVWCMS65r7vRzZW7UMMh7o6s+1FkLqBuH8IXAWD3J9KefGKV6CIw==
-X-Forefront-Antispam-Report: CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PH8PR11MB8107.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(376005)(366007)(1800799015)(921011);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0: =?us-ascii?Q?X1YNcYlFn93d8Gg4B8B2pubNClrV9zO5ONBSPCYrFRR6Db0pKpaddhOq+0cw?=
- =?us-ascii?Q?B5b1xPLYASPzI0JJUASomJjvOr7NC3SV5qxhB/vOQJUqAvbF/mdnh/GR2Ma0?=
- =?us-ascii?Q?U+0bSJcDprCjhGHg5J6LeLlyJOYYQ6GqbZvoN4HhmTSvmDMXFjq1aKZoADFK?=
- =?us-ascii?Q?lZ/Xue9Dlgyg6t/v/fbJb3B7gG56mD+F24tOWSmkZ/+aMYX9lbpcladZwvlA?=
- =?us-ascii?Q?vf9UkRE3CXkRvvlquWOyaKl/IZ0cOCv8hROPqn5JP+O1NqUdiabBxMw81eVh?=
- =?us-ascii?Q?jOQ1/44TCneHEEGEYkfru8CerwgdsC6XFn6iUQCiJl5PhmwbRGfp8lF0suYe?=
- =?us-ascii?Q?dBNUmIwAWYr3znKYhuPB7mKZZ0gIYzrvJoEJ0m4ky9p42OybzARA69ElagrY?=
- =?us-ascii?Q?16TF8vYQW5uieVwrPXv0fxWo25L9GSnU/VETtlVo9ou2F3kJz9lTYBCCiteq?=
- =?us-ascii?Q?s0XGYLGMrdXn5AasuaGAavN57/3ZswCxfRZUhC0x06EHL+RaekO/yE6A0wQf?=
- =?us-ascii?Q?85hUyWE2VWXqmNTs1IwCj9I3Nrl0UqEG9wEC0wcdDN5j95LjbVFnB3EM75S/?=
- =?us-ascii?Q?mNMwv2AeR1WeO/4wC+HV2xaXQX84V0VZ9tb1Fvpo7U0JdmwwcNL1wOONC3Kg?=
- =?us-ascii?Q?oiqGcxB1hnJK2EBJDGwz7gfi76Ix8+jiV0oLPVy1ms+NW1sz9/r1HFWRimGe?=
- =?us-ascii?Q?WiAGuxtlem/iG2k1JXxWWcZkgI8z8K7L2AQtwKrboLvhEGLjn4tTUj9rqoLn?=
- =?us-ascii?Q?GqJftUpet68eU9M0nJ+saJ4wWNh1I+XliHVKh7COneFaJFklJn00C95dR6Cn?=
- =?us-ascii?Q?UOs1+gPY9uRUtVn92klGSaJIbQ0KiPcgUY7vocauTxDj8zdsOrvBqY/FSjsI?=
- =?us-ascii?Q?zwjYa1Rx+vgE4Dw8wzC+OZPsuneLqr0RGAx55euAskP+Y4dAF1aK6koRXLPa?=
- =?us-ascii?Q?Urnv7APXXVpXQmmR/Y5pGH6wFvdobllqUbdIalue2uGW7UXqjNvKm7D17fpX?=
- =?us-ascii?Q?0OvU4Aq1hAKshoybrufp6KJN3Rm+5rmF600zFCWYbkEWfCcFxF64kDdTiwZ6?=
- =?us-ascii?Q?SEhi9uSQHry5KKGwnyFldJkWUr0by3lkg1I+Qpz4hu6Ps1uqUpoNtO3QX1bY?=
- =?us-ascii?Q?sby1KnND+HAIgfeqD04B82ZoR3HZmQC229V4O1JOXKStGSITu7U6/X1tI/6p?=
- =?us-ascii?Q?SCtBQ1S4vxIomdpqsO+ocu67KCKmhyuvdZd0CUyfm4VA4nRDcTFVNLUmkuwH?=
- =?us-ascii?Q?sTppauSZntHQpzXZoWt+SNS2bejPA+t7REcElKeRx+x85hcaKj0ogO3JOG3u?=
- =?us-ascii?Q?EJ9WLztQQfuQxX/6sPiTAHEd3Fzx74C4VtzTJG3+iPVuZjow8gQBrvWEt4Ij?=
- =?us-ascii?Q?Lj0xS1Y1PBj8MY3Ac5K2tc1HoZ5uJ5gonJJ7tH8nsvWGYq6eqb9UKIioL7kD?=
- =?us-ascii?Q?0PyrBbTS7ZB9yJZOSv2ta0qc5fFr+MxOojHMoU+jg2pfxl7aR3Nu84bfXCEi?=
- =?us-ascii?Q?OmcKPv3IMlKYKnyyX0O8mIO9ur9LW/VN6dOGl0PXTTzk8q0V5ITs+rcXbkpU?=
- =?us-ascii?Q?XLoP/UyVCUuW79+UNe1cmYEmE0DsGvDsY3RZsL4+vT38sUQreU7T/+uyiWnM?=
- =?us-ascii?Q?7A=3D=3D?=
-X-MS-Exchange-CrossTenant-Network-Message-Id: 9af34b62-48e4-4e4d-1012-08dc48515f48
-X-MS-Exchange-CrossTenant-AuthSource: PH8PR11MB8107.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 20:15:50.9153
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 46c98d88-e344-4ed4-8496-4ed7712e255d
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: a/Z2gaJMznAJCBiJgLFR87Fixh8kbkxUa2Rp8MUrJAG6SI7EfSgaVDa2aC2rH9inqxTzmlZRICNnc2DGvhWMhuIm/GS7jzrOyNZ9rfhfk10=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MN0PR11MB6133
-X-OriginatorOrg: intel.com
+References: <ZfnULIn3XKDq0bpc@x1>
+In-Reply-To: <ZfnULIn3XKDq0bpc@x1>
+From: Ian Rogers <irogers@google.com>
+Date: Tue, 19 Mar 2024 13:15:57 -0700
+Message-ID: <CAP-5=fXtwu285_=dLVT5NDP5Ck=3OV0kTBn68p9=mFjjFniRkA@mail.gmail.com>
+Subject: Re: [PATCH 1/1] perf beauty: Introduce scraper script for 'clone'
+ syscall 'flags' argument
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Adrian Hunter <adrian.hunter@intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Namhyung Kim <namhyung@kernel.org>, 
+	Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-Robert Richter wrote:
-> For configurations that have the kconfig option NUMA_KEEP_MEMINFO
-> disabled, the SRAT lookup done with numa_fill_memblks() fails
-> returning NUMA_NO_MEMBLK (-1). An existing SRAT memory range cannot be
-> found for a CFMWS address range. This causes the addition of a
-> duplicate numa_memblk with a different node id and a subsequent page
-> fault and kernel crash during boot.
-> 
-> numa_fill_memblks() is implemented and used in the init section only.
-> The option NUMA_KEEP_MEMINFO is only for the case when NUMA data will
-> be used outside of init. So fix the SRAT lookup by moving
-> numa_fill_memblks() out of the NUMA_KEEP_MEMINFO block to make it
-> always available in the init section.
-> 
-> Note that the issue was initially introduced with [1]. But since
-> phys_to_target_node() was originally used that returned the valid node
-> 0, an additional numa_memblk was not added. Though, the node id was
-> wrong too.
-> 
-> [1] fd49f99c1809 ("ACPI: NUMA: Add a node and memblk for each CFMWS not in SRAT")
-> 
-> Fixes: 8f1004679987 ("ACPI/NUMA: Apply SRAT proximity domain to entire CFMWS window")
-> Cc: Derick Marks <derick.w.marks@intel.com>
-> Cc: Dan Williams <dan.j.williams@intel.com>
-> Cc: Alison Schofield <alison.schofield@intel.com>
-> Signed-off-by: Robert Richter <rrichter@amd.com>
+On Tue, Mar 19, 2024 at 11:06=E2=80=AFAM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
+>
+> It was using the first variation on producing a string representation
+> for a binary flag, one that used the copy of uapi/linux/sched.h with
+> preprocessor tricks that had to be updated everytime a new flag was
+> introduced.
+>
+> Use the more recent scraper script + strarray + strarray__scnprintf_flags=
+() combo.
+>
+>   $ tools/perf/trace/beauty/clone.sh | head -5
+>   static const char *clone_flags[] =3D {
+>         [ilog2(0x00000100) + 1] =3D "VM",
+>         [ilog2(0x00000200) + 1] =3D "FS",
+>         [ilog2(0x00000400) + 1] =3D "FILES",
+>         [ilog2(0x00000800) + 1] =3D "SIGHAND",
+>   $
+>
+> Now we can move uapi/linux/sched.h from tools/include/, that is used for
+> building perf to the scrap only directory tools/perf/trace/beauty/include=
+.
+
+nit: scrape?
+
+Reviewed-by: Ian Rogers <irogers@google.com>
+
+Thanks,
+Ian
+
+> Cc: Adrian Hunter <adrian.hunter@intel.com>
+> Cc: Ian Rogers <irogers@google.com>
+> Cc: Jiri Olsa <jolsa@kernel.org>
+> Cc: Namhyung Kim <namhyung@kernel.org>
+> Signed-off-by: Arnaldo Carvalho de Melo <acme@redhat.com>
 > ---
->  arch/x86/mm/numa.c | 4 ++--
->  1 file changed, 2 insertions(+), 2 deletions(-)
-> 
-> diff --git a/arch/x86/mm/numa.c b/arch/x86/mm/numa.c
-> index 65e9a6e391c0..ce84ba86e69e 100644
-> --- a/arch/x86/mm/numa.c
-> +++ b/arch/x86/mm/numa.c
-> @@ -929,6 +929,8 @@ int memory_add_physaddr_to_nid(u64 start)
->  }
->  EXPORT_SYMBOL_GPL(memory_add_physaddr_to_nid);
->  
-> +#endif
+>  tools/perf/Makefile.perf                      | 14 ++++--
+>  tools/perf/check-headers.sh                   |  2 +-
+>  tools/perf/trace/beauty/clone.c               | 46 ++-----------------
+>  tools/perf/trace/beauty/clone.sh              | 17 +++++++
+>  .../trace/beauty}/include/uapi/linux/sched.h  |  0
+>  5 files changed, 34 insertions(+), 45 deletions(-)
+>  create mode 100755 tools/perf/trace/beauty/clone.sh
+>  rename tools/{ =3D> perf/trace/beauty}/include/uapi/linux/sched.h (100%)
+>
+> diff --git a/tools/perf/Makefile.perf b/tools/perf/Makefile.perf
+> index f5654d06e31385b7..ccd2dcbc64f720d2 100644
+> --- a/tools/perf/Makefile.perf
+> +++ b/tools/perf/Makefile.perf
+> @@ -485,13 +485,20 @@ x86_arch_asm_dir :=3D $(srctree)/tools/arch/x86/inc=
+lude/asm/
+>
+>  beauty_outdir :=3D $(OUTPUT)trace/beauty/generated
+>  beauty_ioctl_outdir :=3D $(beauty_outdir)/ioctl
+> -drm_ioctl_array :=3D $(beauty_ioctl_outdir)/drm_ioctl_array.c
+> -drm_hdr_dir :=3D $(srctree)/tools/include/uapi/drm
+> -drm_ioctl_tbl :=3D $(srctree)/tools/perf/trace/beauty/drm_ioctl.sh
+>
+>  # Create output directory if not already present
+>  $(shell [ -d '$(beauty_ioctl_outdir)' ] || mkdir -p '$(beauty_ioctl_outd=
+ir)')
+>
+> +clone_flags_array :=3D $(beauty_outdir)/clone_flags_array.c
+> +clone_flags_tbl :=3D $(srctree)/tools/perf/trace/beauty/clone.sh
 > +
->  static int __init cmp_memblk(const void *a, const void *b)
+> +$(clone_flags_array): $(beauty_uapi_linux_dir)/sched.h $(clone_flags_tbl=
+)
+> +       $(Q)$(SHELL) '$(clone_flags_tbl)' $(beauty_uapi_linux_dir) > $@
+> +
+> +drm_ioctl_array :=3D $(beauty_ioctl_outdir)/drm_ioctl_array.c
+> +drm_hdr_dir :=3D $(srctree)/tools/include/uapi/drm
+> +drm_ioctl_tbl :=3D $(srctree)/tools/perf/trace/beauty/drm_ioctl.sh
+> +
+>  $(drm_ioctl_array): $(drm_hdr_dir)/drm.h $(drm_hdr_dir)/i915_drm.h $(drm=
+_ioctl_tbl)
+>         $(Q)$(SHELL) '$(drm_ioctl_tbl)' $(drm_hdr_dir) > $@
+>
+> @@ -765,6 +772,7 @@ build-dir   =3D $(or $(__build-dir),.)
+>
+>  prepare: $(OUTPUT)PERF-VERSION-FILE $(OUTPUT)common-cmds.h archheaders \
+>         arm64-sysreg-defs \
+> +       $(clone_flags_array) \
+>         $(drm_ioctl_array) \
+>         $(fadvise_advice_array) \
+>         $(fsconfig_arrays) \
+> diff --git a/tools/perf/check-headers.sh b/tools/perf/check-headers.sh
+> index 859cd6f35b0ac9b1..413c9b747216020f 100755
+> --- a/tools/perf/check-headers.sh
+> +++ b/tools/perf/check-headers.sh
+> @@ -15,7 +15,6 @@ FILES=3D(
+>    "include/uapi/linux/kvm.h"
+>    "include/uapi/linux/in.h"
+>    "include/uapi/linux/perf_event.h"
+> -  "include/uapi/linux/sched.h"
+>    "include/uapi/linux/seccomp.h"
+>    "include/uapi/linux/vhost.h"
+>    "include/linux/bits.h"
+> @@ -93,6 +92,7 @@ BEAUTY_FILES=3D(
+>    "include/uapi/linux/fs.h"
+>    "include/uapi/linux/mount.h"
+>    "include/uapi/linux/prctl.h"
+> +  "include/uapi/linux/sched.h"
+>    "include/uapi/linux/usbdevice_fs.h"
+>    "include/uapi/sound/asound.h"
+>  )
+> diff --git a/tools/perf/trace/beauty/clone.c b/tools/perf/trace/beauty/cl=
+one.c
+> index f4db894e0af6d14b..c9fa8f7e82b909fb 100644
+> --- a/tools/perf/trace/beauty/clone.c
+> +++ b/tools/perf/trace/beauty/clone.c
+> @@ -7,52 +7,16 @@
+>
+>  #include "trace/beauty/beauty.h"
+>  #include <linux/kernel.h>
+> +#include <linux/log2.h>
+>  #include <sys/types.h>
+> -#include <uapi/linux/sched.h>
+> +#include <sched.h>
+>
+>  static size_t clone__scnprintf_flags(unsigned long flags, char *bf, size=
+_t size, bool show_prefix)
 >  {
->  	const struct numa_memblk *ma = *(const struct numa_memblk **)a;
-> @@ -1001,5 +1003,3 @@ int __init numa_fill_memblks(u64 start, u64 end)
->  	}
->  	return 0;
->  }
+> -       const char *prefix =3D "CLONE_";
+> -       int printed =3D 0;
+> +#include "trace/beauty/generated/clone_flags_array.c"
+> +       static DEFINE_STRARRAY(clone_flags, "CLONE_");
+>
+> -#define        P_FLAG(n) \
+> -       if (flags & CLONE_##n) { \
+> -               printed +=3D scnprintf(bf + printed, size - printed, "%s%=
+s%s", printed ? "|" : "", show_prefix ? prefix : "", #n); \
+> -               flags &=3D ~CLONE_##n; \
+> -       }
 > -
-> -#endif
-
-Does this achieve the goal without an additional hunk like this?
-
-diff --git a/arch/x86/include/asm/sparsemem.h b/arch/x86/include/asm/sparsemem.h
-index 1be13b2dfe8b..1aaa447ef24b 100644
---- a/arch/x86/include/asm/sparsemem.h
-+++ b/arch/x86/include/asm/sparsemem.h
-@@ -37,9 +37,9 @@ extern int phys_to_target_node(phys_addr_t start);
- #define phys_to_target_node phys_to_target_node
- extern int memory_add_physaddr_to_nid(u64 start);
- #define memory_add_physaddr_to_nid memory_add_physaddr_to_nid
-+#endif
- extern int numa_fill_memblks(u64 start, u64 end);
- #define numa_fill_memblks numa_fill_memblks
--#endif
- #endif /* __ASSEMBLY__ */
- 
- #endif /* _ASM_X86_SPARSEMEM_H */
+> -       P_FLAG(VM);
+> -       P_FLAG(FS);
+> -       P_FLAG(FILES);
+> -       P_FLAG(SIGHAND);
+> -       P_FLAG(PIDFD);
+> -       P_FLAG(PTRACE);
+> -       P_FLAG(VFORK);
+> -       P_FLAG(PARENT);
+> -       P_FLAG(THREAD);
+> -       P_FLAG(NEWNS);
+> -       P_FLAG(SYSVSEM);
+> -       P_FLAG(SETTLS);
+> -       P_FLAG(PARENT_SETTID);
+> -       P_FLAG(CHILD_CLEARTID);
+> -       P_FLAG(DETACHED);
+> -       P_FLAG(UNTRACED);
+> -       P_FLAG(CHILD_SETTID);
+> -       P_FLAG(NEWCGROUP);
+> -       P_FLAG(NEWUTS);
+> -       P_FLAG(NEWIPC);
+> -       P_FLAG(NEWUSER);
+> -       P_FLAG(NEWPID);
+> -       P_FLAG(NEWNET);
+> -       P_FLAG(IO);
+> -       P_FLAG(CLEAR_SIGHAND);
+> -       P_FLAG(INTO_CGROUP);
+> -#undef P_FLAG
+> -
+> -       if (flags)
+> -               printed +=3D scnprintf(bf + printed, size - printed, "%s%=
+#x", printed ? "|" : "", flags);
+> -
+> -       return printed;
+> +       return strarray__scnprintf_flags(&strarray__clone_flags, bf, size=
+, show_prefix, flags);
+>  }
+>
+>  size_t syscall_arg__scnprintf_clone_flags(char *bf, size_t size, struct =
+syscall_arg *arg)
+> diff --git a/tools/perf/trace/beauty/clone.sh b/tools/perf/trace/beauty/c=
+lone.sh
+> new file mode 100755
+> index 0000000000000000..18b6c0d75693721d
+> --- /dev/null
+> +++ b/tools/perf/trace/beauty/clone.sh
+> @@ -0,0 +1,17 @@
+> +#!/bin/sh
+> +# SPDX-License-Identifier: LGPL-2.1
+> +
+> +if [ $# -ne 1 ] ; then
+> +       beauty_uapi_linux_dir=3Dtools/perf/trace/beauty/include/uapi/linu=
+x/
+> +else
+> +       beauty_uapi_linux_dir=3D$1
+> +fi
+> +
+> +linux_sched=3D${beauty_uapi_linux_dir}/sched.h
+> +
+> +printf "static const char *clone_flags[] =3D {\n"
+> +regex=3D'^[[:space:]]*#[[:space:]]*define[[:space:]]+CLONE_([^_]+[[:alnu=
+m:]_]+)[[:space:]]+(0x[[:xdigit:]]+)[[:space:]]*.*'
+> +grep -E $regex ${linux_sched} | \
+> +       sed -r "s/$regex/\2 \1/g"       | \
+> +       xargs printf "\t[ilog2(%s) + 1] =3D \"%s\",\n"
+> +printf "};\n"
+> diff --git a/tools/include/uapi/linux/sched.h b/tools/perf/trace/beauty/i=
+nclude/uapi/linux/sched.h
+> similarity index 100%
+> rename from tools/include/uapi/linux/sched.h
+> rename to tools/perf/trace/beauty/include/uapi/linux/sched.h
+> --
+> 2.44.0
+>
 
