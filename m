@@ -1,163 +1,83 @@
-Return-Path: <linux-kernel+bounces-107866-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107867-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCDD08802BA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:52:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 69F0D8802BB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:52:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 75036285C60
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:52:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B4C31F23697
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:52:24 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BAD73210E6;
-	Tue, 19 Mar 2024 16:52:10 +0000 (UTC)
-Received: from relay4-d.mail.gandi.net (relay4-d.mail.gandi.net [217.70.183.196])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4B172224D0;
+	Tue, 19 Mar 2024 16:52:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b="wD95Toxi"
+Received: from casper.infradead.org (casper.infradead.org [90.155.50.34])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35AA0208D0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:52:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.196
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A8E2208D4
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:52:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=90.155.50.34
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710867130; cv=none; b=RPgygpGYSBjOdjnxogqLdgtxAFrF9CbjqZ+4JEVFnYdawNCawUlXA9216TsfLleXLCv3yIhfCYFERrDrB+oZolciwBmUxamfr6rXFbudlaI82Iz86c2g45ljGpNA7MLrr9hy8eh8iYWr8m61tuyED90SLocHcdWFW4TE/2WBOk8=
+	t=1710867130; cv=none; b=c4BIOn1vku8kVFxx0tjWUSDL0g/ZqPvFcDhYb6+FPntzmDFjZteTBsb3Mt87b8zxmyhKqZMV4mwy0mZD2SZxowj5X44d00g3gOLBJ4Hnb7OS/891JXjF784R2WxtuE9/2awv2aGzhvNNVt3TNywaTegKdlVvcygqL/WO1iprdFI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710867130; c=relaxed/simple;
-	bh=NBq5fLIj7FPk154JFi6u2xDwt6s8Dxfvu1J7YpM4Dmg=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nr8OG1z59UiARQ4tsfy4cav8DfD9BI3qUt7mzH+8L7REzElDT9sSMpDykKyxmYxPfFlcNt25TWnol+aHSSGIU9HyAzahl7jN0VHXt2UiNucyyFILDodyjWQZ383TKbhHFXhNtdDFBIAoHtusZe/tbBGRXEA422Enk9+xw+TLHaY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr; spf=pass smtp.mailfrom=ghiti.fr; arc=none smtp.client-ip=217.70.183.196
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ghiti.fr
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ghiti.fr
-Received: by mail.gandi.net (Postfix) with ESMTPSA id E4B1FE0004;
-	Tue, 19 Mar 2024 16:51:54 +0000 (UTC)
-Message-ID: <b5624bba-9917-421b-8ef0-4515d442f80b@ghiti.fr>
-Date: Tue, 19 Mar 2024 17:51:54 +0100
+	bh=U32m0SI2gfRENrFvT0P56oJ6rRLJh2vh1fMh73Zm0gw=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=eVPCmd5ENChCxzE70I7Cl0NixffkJfxW8dllX4WgbEM44dtBZ+DSPTW9q/QnCl5n0Q4+mzrbme4wqzTrQsKMwPIFUHCwqjXwm53a9wxDPFVIV8+C0yM6ggVV3PPZvMU0WxSeLJtY0+9M3p32qZwVjtHlyYFmjX2oZpKu4F+3UXs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org; spf=none smtp.mailfrom=infradead.org; dkim=pass (2048-bit key) header.d=infradead.org header.i=@infradead.org header.b=wD95Toxi; arc=none smtp.client-ip=90.155.50.34
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=infradead.org
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=infradead.org
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
+	d=infradead.org; s=casper.20170209; h=In-Reply-To:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:Sender:Reply-To:
+	Content-Transfer-Encoding:Content-ID:Content-Description;
+	bh=KizDvAs4Yj6RxJgCz75yX4yH1t6QiF+D0on+mjFBcMY=; b=wD95Toxi1mDsNY0oD6zGhWEqfA
+	yR53icSHH734mg06hn3pofuf2It8H0/ljVmyc8VHn+6XWTokNP+4yiQ1vx23/U0AOUX38+kkKPpkE
+	SiLb8NYFoZjcUXns5b8dAdi1G7wdigyDJSemyHlICDV/Du92a4dY/4EGtt950HQgQI44WrK7QNXXS
+	NSeIUljFahH2pYbnISnSPy1p6oXxSzy36iTTqGuBCL6hIMhEKORNWV3pzCwAmK6UzHz5Q1XVVeX5m
+	if039kC4j5ZITVbAwjF4WIimhaTPx+qTuN+K7Gn8RPpLLpbuX/q5MopitPqIBnxYu61nbtfDlMMOu
+	DcIl/XRQ==;
+Received: from willy by casper.infradead.org with local (Exim 4.97.1 #2 (Red Hat Linux))
+	id 1rmch0-00000002LeJ-0ltl;
+	Tue, 19 Mar 2024 16:52:02 +0000
+Date: Tue, 19 Mar 2024 16:52:02 +0000
+From: Matthew Wilcox <willy@infradead.org>
+To: Kairui Song <kasong@tencent.com>
+Cc: linux-mm@kvack.org, Andrew Morton <akpm@linux-foundation.org>,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 3/4] lib/xarray: introduce a new helper xas_get_order
+Message-ID: <ZfnCsredzl7hcbI1@casper.infradead.org>
+References: <20240319092733.4501-1-ryncsn@gmail.com>
+ <20240319092733.4501-4-ryncsn@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] riscv: Define TASK_SIZE_MAX for __access_ok()
-Content-Language: en-US
-To: Samuel Holland <samuel.holland@sifive.com>,
- Alexandre Ghiti <alexghiti@rivosinc.com>
-Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org,
- Albert Ou <aou@eecs.berkeley.edu>, Andrew Morton
- <akpm@linux-foundation.org>, Charlie Jenkins <charlie@rivosinc.com>,
- Guo Ren <guoren@kernel.org>, Jisheng Zhang <jszhang@kernel.org>,
- Kemeng Shi <shikemeng@huaweicloud.com>,
- "Matthew Wilcox (Oracle)" <willy@infradead.org>,
- "Mike Rapoport (IBM)" <rppt@kernel.org>,
- Paul Walmsley <paul.walmsley@sifive.com>, Xiao Wang <xiao.w.wang@intel.com>,
- Yangyu Chen <cyy@cyyself.name>, linux-kernel@vger.kernel.org
-References: <20240313180010.295747-1-samuel.holland@sifive.com>
- <CAHVXubjLWZkjSapnsWJzimWg_2swEy7tQ-DQ6ri8yMk8-Qsc-A@mail.gmail.com>
- <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
-From: Alexandre Ghiti <alex@ghiti.fr>
-In-Reply-To: <88de4a1a-047e-4be9-b5b0-3e53434dc022@sifive.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 8bit
-X-GND-Sasl: alex@ghiti.fr
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319092733.4501-4-ryncsn@gmail.com>
 
-Hi  Samuel,
+On Tue, Mar 19, 2024 at 05:27:32PM +0800, Kairui Song wrote:
+> From: Kairui Song <kasong@tencent.com>
+> 
+> It can be used after xas_load to check the order of loaded entries.
+> Compared to xa_get_order, it saves an XA_STATE and avoid a rewalk.
+> 
+> Signed-off-by: Kairui Song <kasong@tencent.com>
 
-On 18/03/2024 22:29, Samuel Holland wrote:
-> Hi Alex,
->
-> On 2024-03-18 3:50 PM, Alexandre Ghiti wrote:
->> On Wed, Mar 13, 2024 at 7:00 PM Samuel Holland
->> <samuel.holland@sifive.com> wrote:
->>> TASK_SIZE_MAX should be set to the largest userspace address under any
->>> runtime configuration. This optimizes the check in __access_ok(), which
->>> no longer needs to compute the current value of TASK_SIZE. It is still
->>> safe because addresses between TASK_SIZE and TASK_SIZE_MAX are invalid
->>> at the hardware level.
->>>
->>> This removes about half of the references to pgtable_l[45]_enabled.
->>>
->>> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
->>> ---
->>>
->>>   arch/riscv/include/asm/pgtable-64.h | 1 +
->>>   arch/riscv/include/asm/pgtable.h    | 1 +
->>>   2 files changed, 2 insertions(+)
->>>
->>> diff --git a/arch/riscv/include/asm/pgtable-64.h b/arch/riscv/include/asm/pgtable-64.h
->>> index b99bd66107a6..a677ef3c0fe2 100644
->>> --- a/arch/riscv/include/asm/pgtable-64.h
->>> +++ b/arch/riscv/include/asm/pgtable-64.h
->>> @@ -17,6 +17,7 @@ extern bool pgtable_l5_enabled;
->>>   #define PGDIR_SHIFT_L4  39
->>>   #define PGDIR_SHIFT_L5  48
->>>   #define PGDIR_SIZE_L3   (_AC(1, UL) << PGDIR_SHIFT_L3)
->>> +#define PGDIR_SIZE_L5   (_AC(1, UL) << PGDIR_SHIFT_L5)
->>>
->>>   #define PGDIR_SHIFT     (pgtable_l5_enabled ? PGDIR_SHIFT_L5 : \
->>>                  (pgtable_l4_enabled ? PGDIR_SHIFT_L4 : PGDIR_SHIFT_L3))
->>> diff --git a/arch/riscv/include/asm/pgtable.h b/arch/riscv/include/asm/pgtable.h
->>> index 6066822e7396..2032f8ac5fc5 100644
->>> --- a/arch/riscv/include/asm/pgtable.h
->>> +++ b/arch/riscv/include/asm/pgtable.h
->>> @@ -867,6 +867,7 @@ static inline pte_t pte_swp_clear_exclusive(pte_t pte)
->>>   #ifdef CONFIG_64BIT
->>>   #define TASK_SIZE_64   (PGDIR_SIZE * PTRS_PER_PGD / 2)
->>>   #define TASK_SIZE_MIN  (PGDIR_SIZE_L3 * PTRS_PER_PGD / 2)
->>> +#define TASK_SIZE_MAX  (PGDIR_SIZE_L5 * PTRS_PER_PGD / 2)
->>>
->>>   #ifdef CONFIG_COMPAT
->>>   #define TASK_SIZE_32   (_AC(0x80000000, UL))
->>> --
->>> 2.43.1
->>>
->> I think you also need to change the check in handle_page_fault() by
->> using TASK_SIZE_MAX instead of TASK_SIZE, otherwise the fixup can't
->> happen (https://elixir.bootlin.com/linux/latest/source/arch/riscv/mm/fault.c#L273).
-> It is not necessary to change that check in fault.c unless we expect to handle
-> exceptions (outside of userspace access routines) for addresses between
-> TASK_SIZE and TASK_SIZE_MAX.
+Brilliant; yes.  I was just looking at this the other day and wondering
+why I hadn't done this.
 
+Acked-by: Matthew Wilcox (Oracle) <willy@infradead.org>
 
-Which I think could be the case if some code is only using the "new" 
-access_ok() without the uaccess routines (which is wrong yes, but such 
-code is at the origin of this check).
+> +EXPORT_SYMBOL(xas_get_order);
 
-
-> It looks like the call to fixup_exception() [added
-> in 416721ff05fd ("riscv, mm: Perform BPF exhandler fixup on page fault")] is
-> only intended to catch null pointer dereferences. So making the change wouldn't
-> have any functional impact, but it would still be a valid optimization.
->
->> Or I was wondering if it would not be better to do like x86 and use an
->> alternative, it would be more correct (even though I believe your
->> solution works)
->> https://elixir.bootlin.com/linux/latest/source/arch/x86/include/asm/page_64.h#L82.
-> What would be the benefit of using an alternative? Any access to an address
-> between TASK_SIZE and TASK_SIZE_MAX is guaranteed to generate a page fault, so
-> the only benefit I see is returning -EFAULT slightly faster at the cost of
-> applying a few hundred alternatives at boot. But it's possible I'm missing
-> something.
-
-
-The use of alternatives allows to return right away if the buffer is 
-beyond the usable user address space, and it's not just "slightly 
-faster" for some cases (a very large buffer with only a few bytes being 
-beyond the limit or someone could fault-in all the user pages and fail 
-very late...etc). access_ok() is here to guarantee that such situations 
-don't happen, so actually it makes more sense to use an alternative to 
-avoid that.
-
-
-Alex
-
-
-> Regards,
-> Samuel
->
->
-> _______________________________________________
-> linux-riscv mailing list
-> linux-riscv@lists.infradead.org
-> http://lists.infradead.org/mailman/listinfo/linux-riscv
+We don't have a module user yet, so I'd hold off on this.  It's an
+unusual thing to want to do, and we may never have a modular user.
+Also, xas functions are EXPORT_SYMBOL_GPL, not EXPORT_SYMBOL.
 
