@@ -1,46 +1,46 @@
-Return-Path: <linux-kernel+bounces-108200-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108201-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BCE32880767
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:51:53 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id BD61888076F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:52:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EEB0F1C22566
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:51:52 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 6814EB21E5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:52:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 501BE5F860;
-	Tue, 19 Mar 2024 22:51:43 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 590995FBB5;
+	Tue, 19 Mar 2024 22:51:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="Bs7PSUBU"
-Received: from out-178.mta0.migadu.com (out-178.mta0.migadu.com [91.218.175.178])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="WzPmELvW"
+Received: from out-176.mta0.migadu.com (out-176.mta0.migadu.com [91.218.175.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8132A3FBAF
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:51:40 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.178
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B508D57339
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:51:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710888702; cv=none; b=rATBKQJGjG/DK58KLoT6aB9i2KLlqOoEe4W2bBH9+nIyVdKuIwiMrjRB10YNn7wwg/rQ6Xsa+oMxXg3lIOVSrP7sKPGrof0e1mbd9plP6lAP/65jZGvECn6L90ZTbnhxYrZNyDBsCAx1YEqXI84vdxJO7basnZEAbDLZ8YYHWqc=
+	t=1710888704; cv=none; b=FI6XR2K3rYFvjFc/D0WAge3Bf7a3vVniFB09GWAKci8O8Xxn4YTsJNfgwNXd1nD0P3G7rWjIkmIAxlJvfOMVA2hU0pd+IGwovJU5AP+Zk9d4Wh1SgCqijW3hHwTjPt+82ZCVVgMHLdf7l31C3jL8rS/TuevK1nAb5Mv39iAvsVs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710888702; c=relaxed/simple;
-	bh=4ZwdW+R5TLFHqhi0Xkvjk7VMbIqajRCxXjjSRZz6IfM=;
+	s=arc-20240116; t=1710888704; c=relaxed/simple;
+	bh=TKYth13OUvG2X5xH4dCFIl7vaPaJEU/aW43tlNEYL/Q=;
 	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=gxY0bmOHR5CH7kmNI5XdjyfJ0/3HAPvMqvG7qnN2nM7pGW6YsK4VwthJsNSQBfbpUIcD5cwLkumPu0jiKpFdHBJvYQU6xiSDiBn9zlh2vUd+fuHF1dI/sraCTvJ/PKkCXKciDQ9NgjRdBfxRBh6aqpLNaRrWWQLoCA10zad5f5Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=Bs7PSUBU; arc=none smtp.client-ip=91.218.175.178
+	 MIME-Version; b=E07+p1xqkh6+8q5eog2IYCEnzsvT0xA30bLWO6G+kKfpJIxmIdzm3b4vVMlB/eG2xErRcfq0ZzJxAfGLb+JFztu8LUsSeJEJPA+e5035noowRq1Jk7bM+dTFy59pJRHpVhuPNaCmDlitbVuTqAj9RtRM9lyHV3BuV6CFVDGSwdM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=WzPmELvW; arc=none smtp.client-ip=91.218.175.176
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
 X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710888698;
+	t=1710888700;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:
 	 content-transfer-encoding:content-transfer-encoding:
 	 in-reply-to:in-reply-to:references:references;
-	bh=8Xw8Fntem9pkDBQcyshBBdVCFOeEC0CMZHCoG76llOU=;
-	b=Bs7PSUBUIXrXkjTLE5WLdo6LBfa+uEoI75OrXRWCzQEJzQWGrvLZV/TqLZwFcIM5/3C6Kr
-	WhNIc6WRlC3f/Qp7g7mWDP9mHc5QftM0oOYTMGy/oUUp/iJYJaJUddUY2cdab4qgKxytkH
-	CjAhzCa1wtms7/Drx2Y5nhVOoV5dGO0=
+	bh=JeaHRXKBzw1bfVIToXZ4TgPxAvKCcRBCRPJibCEPmqo=;
+	b=WzPmELvWu+EfQEuP1EnSILJcOb+DN1FUQIpjCHt16IjHlipGJ2mWcnH7RTEnAOtKBxtSCy
+	Xoa5CdyBskDo1e3VOAwksGCeDeLkkrrEgk+HSIFfm8pePlwQdg8AuMedNW16shiiNfQ74u
+	wXRXNmj6rivfKKROKioZJfczu0lISzU=
 From: Sean Anderson <sean.anderson@linux.dev>
 To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
 	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
@@ -53,9 +53,9 @@ Cc: Michal Simek <michal.simek@amd.com>,
 	Daniel Vetter <daniel@ffwll.ch>,
 	linux-arm-kernel@lists.infradead.org,
 	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH v2 1/8] drm: xlnx: Fix kerneldoc
-Date: Tue, 19 Mar 2024 18:51:14 -0400
-Message-Id: <20240319225122.3048400-2-sean.anderson@linux.dev>
+Subject: [PATCH v2 2/8] drm: zynqmp_dp: Downgrade log level for aux retries message
+Date: Tue, 19 Mar 2024 18:51:15 -0400
+Message-Id: <20240319225122.3048400-3-sean.anderson@linux.dev>
 In-Reply-To: <20240319225122.3048400-1-sean.anderson@linux.dev>
 References: <20240319225122.3048400-1-sean.anderson@linux.dev>
 Precedence: bulk
@@ -67,65 +67,31 @@ MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 X-Migadu-Flow: FLOW_OUT
 
-Fix a few errors in the kerneldoc. Mostly this addresses missing/renamed
-members.
+Enable this message for verbose debugging only as it is otherwise
+printed after every AUX message, quickly filling the log buffer.
 
 Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 ---
 
-Changes in v2:
-- New
+(no changes since v1)
 
- drivers/gpu/drm/xlnx/zynqmp_disp.c  | 6 +++---
- drivers/gpu/drm/xlnx/zynqmp_dpsub.h | 1 +
- drivers/gpu/drm/xlnx/zynqmp_kms.h   | 4 ++--
- 3 files changed, 6 insertions(+), 5 deletions(-)
+ drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-index 407bc07cec69..f79bf3fb8110 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-@@ -128,9 +128,9 @@ struct zynqmp_disp_layer {
-  * struct zynqmp_disp - Display controller
-  * @dev: Device structure
-  * @dpsub: Display subsystem
-- * @blend.base: Register I/O base address for the blender
-- * @avbuf.base: Register I/O base address for the audio/video buffer manager
-- * @audio.base: Registers I/O base address for the audio mixer
-+ * @blend: Register I/O base address for the blender
-+ * @avbuf: Register I/O base address for the audio/video buffer manager
-+ * @audio: Registers I/O base address for the audio mixer
-  * @layers: Layers (planes)
-  */
- struct zynqmp_disp {
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_dpsub.h b/drivers/gpu/drm/xlnx/zynqmp_dpsub.h
-index 09ea01878f2a..b18554467e9c 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_dpsub.h
-+++ b/drivers/gpu/drm/xlnx/zynqmp_dpsub.h
-@@ -53,6 +53,7 @@ enum zynqmp_dpsub_format {
-  * @drm: The DRM/KMS device data
-  * @bridge: The DP encoder bridge
-  * @disp: The display controller
-+ * @layers: Video and graphics layers
-  * @dp: The DisplayPort controller
-  * @dma_align: DMA alignment constraint (must be a power of 2)
-  */
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_kms.h b/drivers/gpu/drm/xlnx/zynqmp_kms.h
-index 01be96b00e3f..cb13c6b8008e 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_kms.h
-+++ b/drivers/gpu/drm/xlnx/zynqmp_kms.h
-@@ -22,9 +22,9 @@
- struct zynqmp_dpsub;
+diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+index a0606fab0e22..98a32e6a0459 100644
+--- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
++++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+@@ -1006,7 +1006,7 @@ zynqmp_dp_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+ 					       msg->buffer, msg->size,
+ 					       &msg->reply);
+ 		if (!ret) {
+-			dev_dbg(dp->dev, "aux %d retries\n", i);
++			dev_vdbg(dp->dev, "aux %d retries\n", i);
+ 			return msg->size;
+ 		}
  
- /**
-- * struct zynqmp_dpsub - ZynqMP DisplayPort Subsystem DRM/KMS data
-+ * struct zynqmp_dpsub_drm - ZynqMP DisplayPort Subsystem DRM/KMS data
-  * @dpsub: Backpointer to the DisplayPort subsystem
-- * @drm: The DRM/KMS device
-+ * @dev: The DRM/KMS device
-  * @planes: The DRM planes
-  * @crtc: The DRM CRTC
-  * @encoder: The dummy DRM encoder
 -- 
 2.35.1.1320.gc452695387.dirty
 
