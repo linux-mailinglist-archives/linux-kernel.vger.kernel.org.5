@@ -1,191 +1,244 @@
-Return-Path: <linux-kernel+bounces-107178-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107179-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7664787F883
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:41:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 32EF687F884
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:41:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0A1EA1F215BE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:41:14 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id A3DF11F212AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:41:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 32382537F2;
-	Tue, 19 Mar 2024 07:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5CD53E1F;
+	Tue, 19 Mar 2024 07:41:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b="XYmddN3v"
-Received: from IND01-BMX-obe.outbound.protection.outlook.com (mail-bmxind01olkn2020.outbound.protection.outlook.com [40.92.103.20])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="EeGGze5w"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5A7852030A;
-	Tue, 19 Mar 2024 07:41:02 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.92.103.20
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710834064; cv=fail; b=Bfv5PDMsLc8hE/3aVP4ks78B+tkZ3suypGNVcknRaj2a+DTatpygbvQWpbUkPHQUx/LWOI1OZQ+B/GDN3mTM3zwN0WqFG3yaZxKywVJkT0beSXMv3r71RUrdB1A/kT81KsHgsqn7zUgi/2kXNBsOA+59HeXb347B+Y+Surmlrcw=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710834064; c=relaxed/simple;
-	bh=tSQUtTX8fh38Go3RUODerRSlpoPFUFwcCJZSuhrWiGk=;
-	h=Message-ID:Date:Subject:To:References:From:In-Reply-To:
-	 Content-Type:MIME-Version; b=dAgZinpfok90Mzt0qkftC/jN6t47L/WOXN8ZHHcqqmQBvc8dE1oWmpsBlMvQggZnxKgalAlF6sOqZdYcS2uTOGRLvZ7GFdLXgHRp5Yth37f2WNstdpcvKyxQpTf29+ifBzFOtIyXS9SIo/jM/eg31dGOM8qRXJCbtpUsPPI+PpY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com; spf=pass smtp.mailfrom=outlook.com; dkim=pass (2048-bit key) header.d=outlook.com header.i=@outlook.com header.b=XYmddN3v; arc=fail smtp.client-ip=40.92.103.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=outlook.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=outlook.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=KKIrV+94bQOX5HMuKYXkTWS9EkWYaN9Q9hF0NV9StgAxWAb6qJZFWz22WqU2cRATB58Dnmz72+ps6h3zxmxZl0Yk9UhDd7ixOMRZz/uAG5BizIymOqX0qzJwRrnadatRTyLZA8ddkUOG+Sdp69OI1nMqoOIWio8V/PfDWUX9NY3A7lrUW/+8qVUxQHa9D2FAKU9y9zxCZ0urSsjEtKoLYOj4Aexek7riclAyRhz6LOKK8ZlxwaTO8UQaS8xXiEbZZ0kmfWoBfeypZtjXJNG5TEHzoo1sMikIo4Twe3KbH/oi8IYxQocKU8p+wtqkDrbhpDh/HJtx19tQzhmGVF/UQQ==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=gONtz0GRW7/gri2iNvD60/GuVLuc01EbZ7qvr5+H8ZA=;
- b=bnoNsst9RGZmF3i/NUt4lTjSHGPQ9TySRz+mT7XrEjPIKMO4mZGxEk0lBoHUu5RSe1+iLUbkVIhFeSvNahzYhF1hxQGHHwIu7h5wiquq9OrjF219VQyW4czMxQcN0UW2oBAVjNdR0QenUct/ZPNt53B5o1Ax96j5GLcmjChWcT2E+V57Q3UCJTtMHLokqxVQExt4dMlR7OU5o/i20vNcuSFHfjGxZtnTGt9i3ft+QE47LVpqPNIV+ou7nEcFLW+p+2EhTZClf68VAvtHmEbwBiQnYHRLxcoIlv0WVQbOCw52irNCrUkh7hmc7KwMG8h0x46f9As5rRUL7jnYfxawvQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=none; dmarc=none;
- dkim=none; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=outlook.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=gONtz0GRW7/gri2iNvD60/GuVLuc01EbZ7qvr5+H8ZA=;
- b=XYmddN3vMPeoPkMSIgvV6JGtkwd6RZHm2GSB6TMIuFocNDDe+LILt03mys9NO/VeDmUyAhjH7RFH2x5iUqBsDghzt43p0fQixX6CBbLy8Tc9Tm3e1RSo8hFlyG4htYaNnBsso+bFtSpxEC8azWRvCfd8cdpVNkYFFocek2MgfHHLO3TF7gBirXvHze5mqo7bf4N2dVws0vy2VlIHVT+yvNSgRat007Y7P0NrzQYVs4y45CjhTy7Pl1imt1irPwCLbe4G8epRzDFiTkQ91Aw7P0+dNe+DRDHxvw/55CCEOhaNugOKlpCYX0Y2e6jp3WtCd+9p/P9l/HPq0cEPqvSPEA==
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM (2603:1096:a01:138::5)
- by PNXP287MB0031.INDP287.PROD.OUTLOOK.COM (2603:1096:c01:c0::5) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.29; Tue, 19 Mar
- 2024 07:40:51 +0000
-Received: from MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::1bd4:64d4:daf5:ae42]) by MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- ([fe80::1bd4:64d4:daf5:ae42%3]) with mapi id 15.20.7386.023; Tue, 19 Mar 2024
- 07:40:51 +0000
-Message-ID:
- <MA0P287MB28227C169B0DFB16B1AC762DFE2C2@MA0P287MB2822.INDP287.PROD.OUTLOOK.COM>
-Date: Tue, 19 Mar 2024 15:40:46 +0800
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v11 4/5] clk: sophgo: Add SG2042 clock driver
-To: Stephen Boyd <sboyd@kernel.org>, Chen Wang <unicornxw@gmail.com>,
- aou@eecs.berkeley.edu, chao.wei@sophgo.com, conor@kernel.org,
- devicetree@vger.kernel.org, guoren@kernel.org, haijiao.liu@sophgo.com,
- inochiama@outlook.com, jszhang@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, linux-clk@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-riscv@lists.infradead.org,
- mturquette@baylibre.com, palmer@dabbelt.com, paul.walmsley@sifive.com,
- richardcochran@gmail.com, robh+dt@kernel.org, samuel.holland@sifive.com,
- xiaoguang.xing@sophgo.com
-References: <cover.1708397315.git.unicorn_wang@outlook.com>
- <d7c74c2cfa410850c044ff2879720db06c2f8272.1708397315.git.unicorn_wang@outlook.com>
- <47a83f766c85481b73c6e6dd3759d4d9.sboyd@kernel.org>
-From: Chen Wang <unicorn_wang@outlook.com>
-In-Reply-To: <47a83f766c85481b73c6e6dd3759d4d9.sboyd@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TMN: [A3Cr4AZvhbYTRJRmg1jpqPysGDLJNTXQ]
-X-ClientProxiedBy: SI2PR02CA0038.apcprd02.prod.outlook.com
- (2603:1096:4:196::22) To MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
- (2603:1096:a01:138::5)
-X-Microsoft-Original-Message-ID:
- <d00faf47-80b2-4e2c-ad65-00654a95d5ef@outlook.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E9CFD40867
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:41:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710834067; cv=none; b=TJu3cPYWLM+WbpB3iUw677LZqo/Oq4nMe8/QPxMv54fzyGh/w3Hu71AQaue8jJ1kYFR6NgH549bTv2T7VGy6AQbgaM/YpzcTuDt9THx/KwfV3IkEc65NgLrLAmPPMaGzOniJZ1S0YfWY9p7C0ije8+iMoJcFaCI6gcdL3+RaQzI=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710834067; c=relaxed/simple;
+	bh=L6v/e3hc3O97w6Of+sr+1mZ9A0O2gW7ICktHCGMGtXk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JXJR4NJ4ewxBYegFdgSXdt/4fCSVO0bPPJUzUWEQjpChODl27G0DoJvpt7HOlwL9bQWTi7/coV2PUJa6f+AJdPoOCzVGSfQ7s1Z2SHnLxC6QyZ1NTCav3c8wdRfo8KJd2AcYwNIFk1LLuas9rfguMMcoyxtgTmsvilX1MQ+gr/w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=EeGGze5w; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710834061;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=9RzP8tE2eheTmebxSsJyDqkAO/vBP6NM+C+Cj/2DDuo=;
+	b=EeGGze5wIDXvETltn1ReuoinkvR9YzlgoSW9jwMi4klySwAmJFihBzoNbb/eCfpnt4GPWN
+	AnUb4zqXW99Dl4JmwVf87Me4EEk/kWlSp3u3cVx8QMhMBjv3HShyzdmscTKIYF3bZQfePb
+	m1R9nCld1OT0Xq5z1MA3j2dKRPCps/g=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-320-XvjgjsMxOk69B_gf2gLzNg-1; Tue, 19 Mar 2024 03:40:59 -0400
+X-MC-Unique: XvjgjsMxOk69B_gf2gLzNg-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-41408ff5eabso15170415e9.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:40:58 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710834058; x=1711438858;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=9RzP8tE2eheTmebxSsJyDqkAO/vBP6NM+C+Cj/2DDuo=;
+        b=XP4G/i3YWOWRsHM/UMeMaGlrUvU02lgBFRWGQEIeSVx8lUz66Xnv3Qsz/LmFbWbw1u
+         sRF14i2mVsSAE4sl8nJBU4+hQMLyQ+AVYUrtutDUja9EDNhs8JHRUSblWd4AS6V/M6oO
+         vB5YaRSK79izU7xhutHqrB/nakvYpg0hHoBrSByb/bvnxHSwfuqSyp1qhC4BEElphiWD
+         IGTx1fHVd8TGIIvvCCgxrye7Ju/SdtTKXZiStz1b4MDufmgKneA1t/1iXjq/I2MQseEp
+         s1jwsO7EVkyN/cuyaX0R4DMJgmAqX99lTpyMJsiz3/jZ77ORC2phjj/EiUnfcezD0eKv
+         W2Sg==
+X-Forwarded-Encrypted: i=1; AJvYcCUkklqCnhMt5ZuOwKZH/vLIbQr/oSzWFaoH8T1d6L0LjbgE03U7GpNaKpokM+LmxwZM6GGsYSoO9Z4EJYA8Kxhh0TKU8xGUU+A8sxHL
+X-Gm-Message-State: AOJu0YzxhOyitb2Q8uRzDgxVH0ff0N5FjgcceHXXJ8g+Qofcp5+iWQhe
+	o+i7Vfm6noaSP6R6zcXUP66NsqlFW+WHBgwKEj5hgRZwFVP5qicitileXYDx62sBTsAJSYYuSyb
+	WwS62VaptztxovaSdrQSQDPc7JuLeewYhV4hK4ZYnGu+/gnSPayqPSV/CxFPF9w==
+X-Received: by 2002:a05:600c:2947:b0:414:c63:b9de with SMTP id n7-20020a05600c294700b004140c63b9demr1465898wmd.14.1710834057948;
+        Tue, 19 Mar 2024 00:40:57 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IEo19mA0SO3SQk6jcZouUynHghUzsVPYVkDrsKYiV9jA1mvYkHmaWDbHLmj7jCwuhHE9oXumg==
+X-Received: by 2002:a05:600c:2947:b0:414:c63:b9de with SMTP id n7-20020a05600c294700b004140c63b9demr1465874wmd.14.1710834057402;
+        Tue, 19 Mar 2024 00:40:57 -0700 (PDT)
+Received: from redhat.com ([2.52.6.254])
+        by smtp.gmail.com with ESMTPSA id s9-20020a05600c45c900b00413e79344b7sm17320227wmo.19.2024.03.19.00.40.55
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 00:40:56 -0700 (PDT)
+Date: Tue, 19 Mar 2024 03:40:53 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: syzbot <syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com>
+Cc: jasowang@redhat.com, linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com, virtualization@lists.linux.dev,
+	xuanzhuo@linux.alibaba.com, Paolo Bonzini <pbonzini@redhat.com>,
+	Stefan Hajnoczi <stefanha@redhat.com>
+Subject: Re: [syzbot] [virtualization?] upstream boot error: WARNING:
+ refcount bug in __free_pages_ok
+Message-ID: <20240319033941-mutt-send-email-mst@kernel.org>
+References: <000000000000cfd4800613fe79b1@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-Exchange-MessageSentRepresentingType: 1
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: MA0P287MB2822:EE_|PNXP287MB0031:EE_
-X-MS-Office365-Filtering-Correlation-Id: 5c0f22a8-1f3e-4c6a-cddc-08dc47e7e4f8
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	s1PYnEZFe7P1mfvb1a12viYf1xdlNFl/dqoBt4VNO9IQ+QdXgSVvqSiIaSdbM7moeRZlS4RPOPjm1WHLiZ6aIaZIjH0rMIuX0YHM7Bca8ADB824Tvbt9CZfSMny1uQ1G4iU4FWZZ763HDMUjpaDTjOJr9t8Z6w518ziZjAh/00hRU76x4IqWG0RmtJjOfr9zohMZz3teD1mplVIqKu4Jb81oCN6BFqJQB6xy4iZEUKG8axVsdjvI5GgOr73+cpBd6oGmwxxajoLgvlTPwI8x8WpCOwjb6H0wQqX6HEp28BThfAdw+TnJJ1+s08Ueta+5ps9yb7AAroXyM/LrAWPXoY/jzNRM9qHgQYdlWScXD+dGWX6vBXgMBumN2j2pY/XGNrkgEY1RR3tk1ATtVrGiusr7ZZeEUvuzqfD9y0XZ+nnAcLbiT/zRAY6Iiz4qMJA0avSFPZt05qlalhO7wDXRQQArC2juHnkYt1BDIROy+k3zerYv8XRSyYnW7mWQTrpNBuhaA/Bh46xNHFDo7JhW9I/2FKmgIQVqKAi5CFaq5Nmv4g7wax+F+j97bOXueCr2
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?Mk1VTW9JOVd3ZUJiMFBobWNvOHZ6T3BaK1BFb1Q1bS9lYUh5WW9iMmc4eXhC?=
- =?utf-8?B?dE1jZUtuTUFCdm9oSStlUzFHbjhZR3c5SWM5dEdUeUMvb0tmdHMxSnNpK1pi?=
- =?utf-8?B?bDJlUmVicGpvQnQwMnQ5VWN4Q1NPU1NZak5zUnBlZGVuZ0hMVDJtcEp3OGYx?=
- =?utf-8?B?YTRaUmpueXZZZFBpSXI1TmJPV2t0dEtLaWY5QmtqNlY3UlJvbWp1NTB3eEJI?=
- =?utf-8?B?TTVSUEY4dWwrdFlicDBvTEhrLzlMKzNZMWNDTHNNY1lVZDQrZ2hQSTUxTi8r?=
- =?utf-8?B?R1JRQUN5S2luT3NoMy9vQ1RzbTl4NGE2SmtHelVQbyt4TDk1bHVEWnNvWmJO?=
- =?utf-8?B?cU1LcG0wTWlwRnNiOS9EMDZhWHJVNnZnNU5IMzAxZjlobnlvN2hHdlVJUzla?=
- =?utf-8?B?OG9yK0RwbEVaRzd4NkdIT1J5UTJCVFZvNnBRYlJzU1h0WFVwQlpHdFRraERo?=
- =?utf-8?B?eHltNzJweFN4dDQyMlVMdnhSd1dBMUJyNEpTNlpTTVVVekJ3WmEzVHV1Qk5E?=
- =?utf-8?B?N3ZpV244UzV5Wm50UytDc2lPajZ1SEQ3Uis2d2hoSGtQYUpBd3FzckNOcDZP?=
- =?utf-8?B?MTJrME5oTjdIODlrMHpCdU1peWx3ejJEL0dSak82K0hvRWg1VFgyZ1BXd1JX?=
- =?utf-8?B?VUo5c2phRnYwbTZubG10Mm9FMi9sbnp3aWhoRXRUQks2Zi9oeHVqUjFFeVRH?=
- =?utf-8?B?UTdoTFVaWHhpc2E2cWRUb2c4UVZjbjBEcGQyc0JqUnNXWnNuL2l5WWxlZ09F?=
- =?utf-8?B?OG5NZGY0dnNJMTNZSUlpUDROVkwzWlpnSkZhTWxod2V4cXhGSDJReVhFSUF6?=
- =?utf-8?B?QXJnT3VDbS9MdEtKaEgxYnNVM1M1Z0JuUnVvbVY2TXMra3g5VW0yYnR0UVVa?=
- =?utf-8?B?S1lJU2wvUTN1dHZHbmpHV05ScmVjRjYxTW5vUThDdTlObGQrNVlxSHAwa0hZ?=
- =?utf-8?B?UndyNFZ1T3VpYXVhakdaY2M1dU5tVXRIMGI4dnZKTFkxdFVYbWllSk9TcVdw?=
- =?utf-8?B?MUQreURLYnB1b0VuR0xtam16RmJiYUU1UlVSOGtMTUdFeFNTNk9pTnQ1cTda?=
- =?utf-8?B?bUxxUThKNGZNNzRHdlgwRkJ6K2k2cmloWWlOLy95ZVdVVTdFMFN5cVNacVNJ?=
- =?utf-8?B?dTRUZld5QnVFNDdPZG5HT2tYdjNQd3JNN3FIaWxTbkhTeWZTQXBuUzYxdW4y?=
- =?utf-8?B?cHk2dUczOEJTYStMVWJSNHY3NWNxOFR1bXdJVTlGRUxERWlSZmlQUndDb2sv?=
- =?utf-8?B?QzdqMnN2VS9DLy9RcjhSSmFIMmdhL2dFYzhSR3lmNmRsbmxsdjZ2UTBaWHFq?=
- =?utf-8?B?Qk5JL1FPQWtOOUoyZHdqVDB6V1IrNW81SmN3cUxPNUlQZnZMVFV6cWs5YnZI?=
- =?utf-8?B?VW04dUVsOHRaZTFEc1V2WVhLZlIzaXZOOWh5RHNKTk03Q2h0MzljQUJ6RmlJ?=
- =?utf-8?B?eERNS0NaajM3UzBwdmNIckhDZTBpZnBocVlYOU5LaWJMTGFmdmdKNU9UdS9G?=
- =?utf-8?B?ZjhvVkVaUE43bnpIbCtod3RFdU9lUzN5bnNPZXVtU3IvbUQyQUtuVm1QRFgx?=
- =?utf-8?B?UmZ0ODZIRGc0L1UxZ2Y5WmFPbDJOTERiZm1JUm5JTUxxRVM2WVNjc3AvNjBC?=
- =?utf-8?B?VEd0NHdLSlZZWWlRZVIwVDRHck0xQkk1N0tncThFUWNDKzJDWk5HVjVmQmtU?=
- =?utf-8?Q?q2MVy0Z3ThqSM7DwgwXO?=
-X-OriginatorOrg: outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 5c0f22a8-1f3e-4c6a-cddc-08dc47e7e4f8
-X-MS-Exchange-CrossTenant-AuthSource: MA0P287MB2822.INDP287.PROD.OUTLOOK.COM
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 07:40:50.0948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 84df9e7f-e9f6-40af-b435-aaaaaaaaaaaa
-X-MS-Exchange-CrossTenant-RMS-PersistedConsumerOrg:
-	00000000-0000-0000-0000-000000000000
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PNXP287MB0031
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <000000000000cfd4800613fe79b1@google.com>
 
-Thank you Stephen for your carefully check and comments, I will improve 
-the code according to your inputs.
+On Tue, Mar 19, 2024 at 12:32:26AM -0700, syzbot wrote:
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit:    b3603fcb79b1 Merge tag 'dlm-6.9' of git://git.kernel.org/p..
+> git tree:       upstream
+> console output: https://syzkaller.appspot.com/x/log.txt?x=10f04c81180000
+> kernel config:  https://syzkaller.appspot.com/x/.config?x=fcb5bfbee0a42b54
+> dashboard link: https://syzkaller.appspot.com/bug?extid=70f57d8a3ae84934c003
+> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> Downloadable assets:
+> disk image: https://storage.googleapis.com/syzbot-assets/43969dffd4a6/disk-b3603fcb.raw.xz
+> vmlinux: https://storage.googleapis.com/syzbot-assets/ef48ab3b378b/vmlinux-b3603fcb.xz
+> kernel image: https://storage.googleapis.com/syzbot-assets/728f5ff2b6fe/bzImage-b3603fcb.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> Reported-by: syzbot+70f57d8a3ae84934c003@syzkaller.appspotmail.com
+> 
+> Key type pkcs7_test registered
+> Block layer SCSI generic (bsg) driver version 0.4 loaded (major 239)
+> io scheduler mq-deadline registered
+> io scheduler kyber registered
+> io scheduler bfq registered
+> input: Power Button as /devices/LNXSYSTM:00/LNXPWRBN:00/input/input0
+> ACPI: button: Power Button [PWRF]
+> input: Sleep Button as /devices/LNXSYSTM:00/LNXSLPBN:00/input/input1
+> ACPI: button: Sleep Button [SLPF]
+> ioatdma: Intel(R) QuickData Technology Driver 5.00
+> ACPI: \_SB_.LNKC: Enabled at IRQ 11
+> virtio-pci 0000:00:03.0: virtio_pci: leaving for legacy driver
+> ACPI: \_SB_.LNKD: Enabled at IRQ 10
+> virtio-pci 0000:00:04.0: virtio_pci: leaving for legacy driver
+> ACPI: \_SB_.LNKB: Enabled at IRQ 10
+> virtio-pci 0000:00:06.0: virtio_pci: leaving for legacy driver
+> virtio-pci 0000:00:07.0: virtio_pci: leaving for legacy driver
+> N_HDLC line discipline registered with maxframe=4096
+> Serial: 8250/16550 driver, 4 ports, IRQ sharing enabled
+> 00:03: ttyS0 at I/O 0x3f8 (irq = 4, base_baud = 115200) is a 16550A
+> 00:04: ttyS1 at I/O 0x2f8 (irq = 3, base_baud = 115200) is a 16550A
+> 00:05: ttyS2 at I/O 0x3e8 (irq = 6, base_baud = 115200) is a 16550A
+> 00:06: ttyS3 at I/O 0x2e8 (irq = 7, base_baud = 115200) is a 16550A
+> Non-volatile memory driver v1.3
+> Linux agpgart interface v0.103
+> ACPI: bus type drm_connector registered
+> [drm] Initialized vgem 1.0.0 20120112 for vgem on minor 0
+> [drm] Initialized vkms 1.0.0 20180514 for vkms on minor 1
+> Console: switching to colour frame buffer device 128x48
+> platform vkms: [drm] fb0: vkmsdrmfb frame buffer device
+> usbcore: registered new interface driver udl
+> brd: module loaded
+> loop: module loaded
+> zram: Added device: zram0
+> null_blk: disk nullb0 created
+> null_blk: module loaded
+> Guest personality initialized and is inactive
+> VMCI host device registered (name=vmci, major=10, minor=118)
+> Initialized host personality
+> usbcore: registered new interface driver rtsx_usb
+> usbcore: registered new interface driver viperboard
+> usbcore: registered new interface driver dln2
+> usbcore: registered new interface driver pn533_usb
+> nfcsim 0.2 initialized
+> usbcore: registered new interface driver port100
+> usbcore: registered new interface driver nfcmrvl
+> Loading iSCSI transport class v2.0-870.
+> virtio_scsi virtio0: 1/0/0 default/read/poll queues
+> ------------[ cut here ]------------
+> refcount_t: decrement hit 0; leaking memory.
+> WARNING: CPU: 0 PID: 1 at lib/refcount.c:31 refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+> Modules linked in:
+> CPU: 0 PID: 1 Comm: swapper/0 Not tainted 6.8.0-syzkaller-11567-gb3603fcb79b1 #0
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+> RIP: 0010:refcount_warn_saturate+0xfa/0x1d0 lib/refcount.c:31
+> Code: b2 00 00 00 e8 57 d4 f2 fc 5b 5d c3 cc cc cc cc e8 4b d4 f2 fc c6 05 0c f9 ef 0a 01 90 48 c7 c7 a0 5d 1e 8c e8 b7 75 b5 fc 90 <0f> 0b 90 90 eb d9 e8 2b d4 f2 fc c6 05 e9 f8 ef 0a 01 90 48 c7 c7
+> RSP: 0000:ffffc90000066e18 EFLAGS: 00010246
+> RAX: 76f86e452fcad900 RBX: ffff8880210d2aec RCX: ffff888016ac8000
+> RDX: 0000000000000000 RSI: 0000000000000000 RDI: 0000000000000000
+> RBP: 0000000000000004 R08: ffffffff8157ffe2 R09: fffffbfff1c396e0
+> R10: dffffc0000000000 R11: fffffbfff1c396e0 R12: ffffea000502cdc0
+> R13: ffffea000502cdc8 R14: 1ffffd4000a059b9 R15: 0000000000000000
+> FS:  0000000000000000(0000) GS:ffff8880b9400000(0000) knlGS:0000000000000000
+> CS:  0010 DS: 0000 ES: 0000 CR0: 0000000080050033
+> CR2: ffff88823ffff000 CR3: 000000000e132000 CR4: 00000000003506f0
+> DR0: 0000000000000000 DR1: 0000000000000000 DR2: 0000000000000000
+> DR3: 0000000000000000 DR6: 00000000fffe0ff0 DR7: 0000000000000400
+> Call Trace:
+>  <TASK>
+>  reset_page_owner include/linux/page_owner.h:25 [inline]
+>  free_pages_prepare mm/page_alloc.c:1141 [inline]
+>  __free_pages_ok+0xc54/0xd80 mm/page_alloc.c:1270
+>  make_alloc_exact+0xa3/0xf0 mm/page_alloc.c:4829
+>  vring_alloc_queue drivers/virtio/virtio_ring.c:319 [inline]
+>  vring_alloc_queue_split+0x20a/0x600 drivers/virtio/virtio_ring.c:1108
+>  vring_create_virtqueue_split+0xc6/0x310 drivers/virtio/virtio_ring.c:1158
+>  vring_create_virtqueue+0xca/0x110 drivers/virtio/virtio_ring.c:2683
+>  setup_vq+0xe9/0x2d0 drivers/virtio/virtio_pci_legacy.c:131
+>  vp_setup_vq+0xbf/0x330 drivers/virtio/virtio_pci_common.c:189
+>  vp_find_vqs_msix+0x8b2/0xc80 drivers/virtio/virtio_pci_common.c:331
+>  vp_find_vqs+0x4c/0x4e0 drivers/virtio/virtio_pci_common.c:408
+>  virtio_find_vqs include/linux/virtio_config.h:233 [inline]
+>  virtscsi_init+0x8db/0xd00 drivers/scsi/virtio_scsi.c:887
+>  virtscsi_probe+0x3ea/0xf60 drivers/scsi/virtio_scsi.c:945
+>  virtio_dev_probe+0x991/0xaf0 drivers/virtio/virtio.c:311
+>  really_probe+0x29e/0xc50 drivers/base/dd.c:658
+>  __driver_probe_device+0x1a2/0x3e0 drivers/base/dd.c:800
+>  driver_probe_device+0x50/0x430 drivers/base/dd.c:830
+>  __driver_attach+0x45f/0x710 drivers/base/dd.c:1216
+>  bus_for_each_dev+0x239/0x2b0 drivers/base/bus.c:368
+>  bus_add_driver+0x347/0x620 drivers/base/bus.c:673
+>  driver_register+0x23a/0x320 drivers/base/driver.c:246
+>  virtio_scsi_init+0x65/0xe0 drivers/scsi/virtio_scsi.c:1083
+>  do_one_initcall+0x248/0x880 init/main.c:1238
+>  do_initcall_level+0x157/0x210 init/main.c:1300
+>  do_initcalls+0x3f/0x80 init/main.c:1316
+>  kernel_init_freeable+0x435/0x5d0 init/main.c:1548
+>  kernel_init+0x1d/0x2b0 init/main.c:1437
+>  ret_from_fork+0x4b/0x80 arch/x86/kernel/process.c:147
+>  ret_from_fork_asm+0x1a/0x30 arch/x86/entry/entry_64.S:243
+>  </TASK>
+> 
 
-I have some additional explanations for two of these points.
+I think I saw this already and also with virtio scsi. virtio
+core does not seem to be doing anything special here,
+Cc virtio scsi maintainers.
 
-On 2024/3/9 10:11, Stephen Boyd wrote:
 
-[......]
-
->> +
->> +/*
->> + * Below array is the total combination lists of POSTDIV1 and POSTDIV2
->> + * for example:
->> + * postdiv1_2[0] = {2, 4, 8}
->> + *           ==> div1 = 2, div2 = 4 , div1 * div2 = 8
->> + * And POSTDIV_RESULT_INDEX point to 3rd element in the array
->> + */
->> +#define        POSTDIV_RESULT_INDEX    2
->> +static int postdiv1_2[][3] = {
-> const? And move it to the function scope.
->
->> +       {2, 4,  8}, {3, 3,  9}, {2, 5, 10}, {2, 6, 12},
->> +       {2, 7, 14}, {3, 5, 15}, {4, 4, 16}, {3, 6, 18},
->> +       {4, 5, 20}, {3, 7, 21}, {4, 6, 24}, {5, 5, 25},
->> +       {4, 7, 28}, {5, 6, 30}, {5, 7, 35}, {6, 6, 36},
->> +       {6, 7, 42}, {7, 7, 49}
-> It may be better to make it a struct with named members because I have
-> no idea what each element means.
-I plan to add some comments to explain the meaning of this array member. 
-This array is only used in this function, and I think it is somewhat 
-unnecessary to define a structure specifically for it. Adding some 
-comments will help everyone understand better.
-
-[......]
-
->> +
->> +/*
->> + * Common data of clock-controller
->> + * Note: this structure will be used both by clkgen & sysclk.
->> + * @iobase: base address of clock-controller
->> + * @regmap: base address of clock-controller for pll, just due to PLL uses
->> + *  regmap while others use iomem.
->> + * @lock: clock register access lock
->> + * @onecell_data: used for adding providers.
->> + */
->> +struct sg2042_clk_data {
->> +       void __iomem *iobase;
-> Why not use a regmap for the iobase as well?
-I plan to unify it as iomem. Anyway, just use one method should be fine.
-
-[......]
+> ---
+> This report is generated by a bot. It may contain errors.
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> #syz fix: exact-commit-title
+> 
+> If you want to overwrite report's subsystems, reply with:
+> #syz set subsystems: new-subsystem
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> #syz undup
 
 
