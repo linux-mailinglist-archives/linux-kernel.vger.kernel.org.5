@@ -1,135 +1,201 @@
-Return-Path: <linux-kernel+bounces-107826-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107827-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 16235880228
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:26:22 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 48C0C88022A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:26:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47D7E1C22FC9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:26:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B49811F248F2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:26:38 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998DE85268;
-	Tue, 19 Mar 2024 16:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8116385284;
+	Tue, 19 Mar 2024 16:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jehr51D2"
-Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="jvEmWCxW"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.14])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F56085265;
-	Tue, 19 Mar 2024 16:19:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C9897657C3;
+	Tue, 19 Mar 2024 16:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.14
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710865175; cv=none; b=FUMGnHXhrZrcKslYGUUO8sIGsOT6KSy8QTnbyfjKMxj4dE4eNvpeQ14jur/DNHlUkEB5qfplqFbY6KzisAJ0y/9uEEV8+Z0ZZnV40n1F9Ek+VC7p1frnZtGuhyYBVGOgx4q7kN5Hl3tXe4ZHuSmB3dOy6v/CpDfEV7XI7q1sWDQ=
+	t=1710865246; cv=none; b=VB4LXfhc2QvbLkj/Lb5X6nlkxJ4wM/TU3aUYj0ppnjVJElNXOXtkij9Sses/kw7kYQ3KTJc6LVzAI1aGdqWj3CTJxrW6hA1qMlPY37nDt9ZSER3VbCyvymP754PNNLlNW/5ENHiuH1OKo263f3lOyVCSgOEneJJJXoxX4i2cuUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710865175; c=relaxed/simple;
-	bh=VFaRQas0gSrfP0qC172CcOje6IBtZpzaLgn68X7typs=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=avnVmbZOoVzlTYA3F7z5fS3qoWCfd9uB6Kwr263wlKO4FHPU8iE7GL23Z4kf07dnCtSu30XmYKPWfK8iDuZlvsErHPjUK+9q9HyzsmlS6xNTTM6y/8AEs8/oAxroZpixib9jFqL/FVVk+DF/CZuGftkgzkQBmkyE3mu56Ql3WSM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jehr51D2; arc=none smtp.client-ip=209.85.214.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1def142ae7bso39071395ad.3;
-        Tue, 19 Mar 2024 09:19:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710865171; x=1711469971; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Epr0Xv4Q3hfU6xbN2E2KtYBZZdf7JymwhQQwouieY7s=;
-        b=jehr51D2+XSPEUdph5sP1wCoe2sw8uZWkb9J0eQRrjyyKzveMA0oLS/w+JP/tX4Wi5
-         S7zc883Fg5Lr1LI8+Dq5aWTv3x1Q5xJC/XiO6rfvIjalmLOFK8Ll5qt2xumc76Hyp0D9
-         UciDCjCTsUV9gYDw8NOmWT+nOiuClhMjZKvRc30IQiuSr8D0W9oVbMImD7HF3jhstBHx
-         vjoJz4skasY2zMIsn3525jTYcB5JpGNvRI4HrYSv3fSeOnrHnCh3UGsQ1+bKboSPGtlA
-         K8Uwu247TDHxLzqUQKOOBp3ut4RCkIBogsSa5B2xARyApps9M/33v8nxDhKbHRhaHzZJ
-         VOqA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710865171; x=1711469971;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=Epr0Xv4Q3hfU6xbN2E2KtYBZZdf7JymwhQQwouieY7s=;
-        b=cRbNDCJKXENyv5l4MlI7uUsB4H1796ntuUn6Cqmc6RRpr4eGycQxwYq7ggx4U+3Wg8
-         JxEaSAcSeM7hWu0OdhZvV9ozR9FJzkpcUM0PZmyUeg/rSDRFmyJmzKr8OcxRrhlK7BW/
-         KR5voC6Xx9sdC1XcCoiP0oZLV7lYhuLhMdfoBLI0vF8SGUTVwxf/PZjS1/4pNImTP0PI
-         L8XjqHF3BVhG049MH0ds3FJKCzHTZoQak2KQPcrM/3o/cHw74coKnK8olyrHg0yqzxy9
-         1Pzh8h9BddseRAnW73eC8crpjkYG/ikrVxej5iV93dSmt4hqWoNCpDpDZcT5SCF2c6cI
-         kwxA==
-X-Forwarded-Encrypted: i=1; AJvYcCUYnUUi5Ze7gFWmPxXtfgQzjkVNjKtg+6i1yK4uNTJ6ByjbNPMndj5pYG22hVkBcjT5B7npRktATq/3GagtPhFLDMC076AjdKU0NDXIZNa35VuDm+L8Pewuzi6Y1YexuguOLHti2Oy3IoP0AjiOTnWQMDYnqAlF5/nHgJOsNYPE2pBXqL0v
-X-Gm-Message-State: AOJu0YzVb3YPk3vzH3myUM1RNAvDIV69JVvFagFf/nEpl22tS8OjU/mv
-	nI29m8/r/j3joQfx8MJbHN1T/wpEutAQejExYaz2LuLWUsUUxOMnqJuhM7HSiAI0sd3SXGrXNSl
-	k6tnmbH00FdAttsBwg9YWtBE85IF8lfCh
-X-Google-Smtp-Source: AGHT+IGFjpRbnCDyRCQ1z3277NWH9fPOrpACKz4p44EkTlkRUxbeqzQQ5mQ1iMoSUIughS59YHq7ZIPUJGj7zKNSrLA=
-X-Received: by 2002:a17:903:1c9:b0:1de:f32d:f5ba with SMTP id
- e9-20020a17090301c900b001def32df5bamr15251700plh.42.1710865171367; Tue, 19
- Mar 2024 09:19:31 -0700 (PDT)
+	s=arc-20240116; t=1710865246; c=relaxed/simple;
+	bh=maiGrk6h7z4RLEGDRsY+uLsYguYLp2lmoogaMSSzcK4=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=btI3sn9z3Hqzz37pevIRHTFeM2Htx+iFVQEFHQKdCF0cpAR/Tbh+cBPNh5Z7Eu40cwbMvLV+qcBdISfkHI6fi0I0bkHL5bFWXJbpSWUNL38y+B/9zNPMD/vLAhM3ZTr0+TVuBnWsattfYmvfxXGZB/4xlhvpuPTYhi8Dii1OnKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=jvEmWCxW; arc=none smtp.client-ip=192.198.163.14
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710865245; x=1742401245;
+  h=message-id:subject:from:to:cc:date:in-reply-to:
+   references:content-transfer-encoding:mime-version;
+  bh=maiGrk6h7z4RLEGDRsY+uLsYguYLp2lmoogaMSSzcK4=;
+  b=jvEmWCxWDLA2FYvd841i/F0tdGJFgcr+pKpnglxwLPzevD3scOPVp++W
+   l7RYlsYvU2IAAMtv80SlxIaYbD7qi7yE1B3HX0iNX+QEclHaDmtnYe34+
+   /PW7lEqqR5/fhtBMc+WnYSXWVPCkqFWZrEsPkM7C6+b/MU2AMAjilkvRc
+   5txhVAwdqK26ozGRZeWmyjMFeU92khsUbmeRzcMn3L9p6GaMctOsUUHne
+   8Oghanri+SsIAOMeBKHL9l8cZ2gmSd+xpXo8Xg0MEAzZaziNfu35Aiw1z
+   Ro3fsMHZCTXChPtJ/ry574VqZLlugOcP+PTuQSpTP7/ApuYapC7kVf7G/
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5958745"
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="5958745"
+Received: from fmviesa008.fm.intel.com ([10.60.135.148])
+  by fmvoesa108.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 09:20:43 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="13925891"
+Received: from spandruv-desk1.amr.corp.intel.com ([10.209.55.117])
+  by fmviesa008-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 09:20:43 -0700
+Message-ID: <a2bdac6a8914a76ed122438547f3697611299c0f.camel@linux.intel.com>
+Subject: Re: [PATCH] thermal: intel: int340x_thermal: replace deprecated
+ strncpy with strscpy
+From: srinivas pandruvada <srinivas.pandruvada@linux.intel.com>
+To: "Rafael J. Wysocki" <rafael@kernel.org>, Justin Stitt
+	 <justinstitt@google.com>
+Cc: Daniel Lezcano <daniel.lezcano@linaro.org>, Zhang Rui
+ <rui.zhang@intel.com>,  Lukasz Luba <lukasz.luba@arm.com>,
+ linux-pm@vger.kernel.org, linux-kernel@vger.kernel.org, 
+ linux-hardening@vger.kernel.org
+Date: Tue, 19 Mar 2024 09:20:26 -0700
+In-Reply-To: <CAJZ5v0j=cYbqyfi6y45hnu+Y_tvMGYb9p6d=kpsOA0AsxBoy3g@mail.gmail.com>
+References: 
+	<20240318-strncpy-drivers-thermal-intel-int340x_thermal-acpi_thermal_rel-c-v1-1-08839fbf737a@google.com>
+	 <CAJZ5v0j=cYbqyfi6y45hnu+Y_tvMGYb9p6d=kpsOA0AsxBoy3g@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.48.4 (3.48.4-1.fc38) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318181728.2795838-1-andrii@kernel.org> <20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
-In-Reply-To: <20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
-From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
-Date: Tue, 19 Mar 2024 09:19:19 -0700
-Message-ID: <CAEf4BzaFfQeD8TY7pXEyX4h5UeAg0HZpx8psJF=Z6GJmr3VF5w@mail.gmail.com>
-Subject: Re: [PATCH v2 0/3] uprobes: two common case speed ups
-To: Masami Hiramatsu <mhiramat@kernel.org>
-Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
-	rostedt@goodmis.org, bpf@vger.kernel.org, mathieu.desnoyers@efficios.com, 
-	linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 9:21=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
-rg> wrote:
->
-> Hi,
->
-> On Mon, 18 Mar 2024 11:17:25 -0700
-> Andrii Nakryiko <andrii@kernel.org> wrote:
->
-> > This patch set implements two speed ups for uprobe/uretprobe runtime ex=
-ecution
-> > path for some common scenarios: BPF-only uprobes (patches #1 and #2) an=
-d
-> > system-wide (non-PID-specific) uprobes (patch #3). Please see individua=
-l
-> > patches for details.
->
-> This series looks good to me. Let me pick it on probes/for-next.
+On Tue, 2024-03-19 at 12:39 +0100, Rafael J. Wysocki wrote:
+> On Mon, Mar 18, 2024 at 11:36=E2=80=AFPM Justin Stitt
+> <justinstitt@google.com> wrote:
+> >=20
+> > strncpy() is deprecated for use on NUL-terminated destination
+> > strings
+> > [1] and as such we should prefer more robust and less ambiguous
+> > string
+> > interfaces.
+> >=20
+> > psvt->limit.string can only be 8 bytes so let's use the appropriate
+> > size
+> > macro ACPI_LIMIT_STR_MAX_LEN.
+> >=20
+> > Neither psvt->limit.string or psvt_user[i].limit.string requires
+> > the
+> > NUL-padding behavior that strncpy() provides as they have both been
+> > filled with NUL-bytes prior to the string operation.
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memset(&psvt->limit, 0, sizeof(u64));
+> > and
+> > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 psvt_user =3D kzalloc(psvt_len, GFP_KE=
+RNEL);
+> >=20
+> > Let's use `strscpy` [2] due to the fact that it guarantees
+> > NUL-termination on the destination buffer without unnecessarily
+> > NUL-padding.
+> >=20
+> > Link:
+> > https://www.kernel.org/doc/html/latest/process/deprecated.html#strncpy-=
+on-nul-terminated-strings
+> > =C2=A0[1]
+> > Link:
+> > https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.en.html
+> > =C2=A0[2]
+> > Link: https://github.com/KSPP/linux/issues/90
+> > Cc: linux-hardening@vger.kernel.org
+> > Signed-off-by: Justin Stitt <justinstitt@google.com>
+>=20
+> Srinivas, any objections?
+No
 
-Great, at least I guessed the Git repo right, if not the branch.
-Thanks for pulling it in! I assume some other uprobe-related follow up
-patches should be based on probes/for-next as well, right?
+Reviewed-by: Srinivas Pandruvada <srinivas.pandruvada@linux.intel.com>
 
->
-> Thanks!
->
-> >
-> > v1->v2:
-> >   - rebased onto trace/core branch of tracing tree, hopefully I guessed=
- right;
-> >   - simplified user_cpu_buffer usage further (Oleg Nesterov);
-> >   - simplified patch #3, just moved speculative check outside of lock (=
-Oleg);
-> >   - added Reviewed-by from Jiri Olsa.
-> >
-> > Andrii Nakryiko (3):
-> >   uprobes: encapsulate preparation of uprobe args buffer
-> >   uprobes: prepare uprobe args buffer lazily
-> >   uprobes: add speculative lockless system-wide uprobe filter check
-> >
-> >  kernel/trace/trace_uprobe.c | 103 +++++++++++++++++++++---------------
-> >  1 file changed, 59 insertions(+), 44 deletions(-)
-> >
+>=20
+> > ---
+> > Note: build-tested only.
+> >=20
+> > Found with: $ rg "strncpy\("
+> > ---
+> > =C2=A0drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c | 4 ++--
+> > =C2=A01 file changed, 2 insertions(+), 2 deletions(-)
+> >=20
+> > diff --git
+> > a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
+> > b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
+> > index dc519a665c18..4b4a4d63e61f 100644
+> > --- a/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
+> > +++ b/drivers/thermal/intel/int340x_thermal/acpi_thermal_rel.c
+> > @@ -309,7 +309,7 @@ static int acpi_parse_psvt(acpi_handle handle,
+> > int *psvt_count, struct psvt **ps
+> >=20
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (knob->type =3D=3D ACPI_TYPE_STRING) {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 memse=
+t(&psvt->limit, 0, sizeof(u64));
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strncpy(psv=
+t->limit.string, psvt_ptr-
+> > >limit.str_ptr, knob->string.length);
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strscpy(psv=
+t->limit.string, psvt_ptr-
+> > >limit.str_ptr, ACPI_LIMIT_STR_MAX_LEN);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 } else {
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 psvt-=
+>limit.integer =3D psvt_ptr-
+> > >limit.integer;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 }
+> > @@ -468,7 +468,7 @@ static int fill_psvt(char __user *ubuf)
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 psvt_user[i].unlimit_coeff =3D
+> > psvts[i].unlimit_coeff;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 psvt_user[i].control_knob_type =3D
+> > psvts[i].control_knob_type;
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 if (psvt_user[i].control_knob_type =3D=3D
+> > ACPI_TYPE_STRING)
+> > -=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strncpy(psv=
+t_user[i].limit.string,
+> > psvts[i].limit.string,
+> > +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 strscpy(psv=
+t_user[i].limit.string,
+> > psvts[i].limit.string,
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ACPI_LIMIT_STR_MAX_LEN);
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0 else
+> > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
+=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 psvt_=
+user[i].limit.integer =3D
+> > psvts[i].limit.integer;
+> >=20
+> > ---
+> > base-commit: bf3a69c6861ff4dc7892d895c87074af7bc1c400
+> > change-id: 20240318-strncpy-drivers-thermal-intel-int340x_thermal-
+> > acpi_thermal_rel-c-17070c1e42f3
+> >=20
+> > Best regards,
 > > --
-> > 2.43.0
-> >
->
->
-> --
-> Masami Hiramatsu (Google) <mhiramat@kernel.org>
+> > Justin Stitt <justinstitt@google.com>
+> >=20
+
 
