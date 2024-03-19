@@ -1,69 +1,71 @@
-Return-Path: <linux-kernel+bounces-106854-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106855-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 80BF187F48A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:29:44 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 026DD87F48C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 01:29:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0B3871F21A02
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:29:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 30F461C21AF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 00:29:50 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BA340A29;
-	Tue, 19 Mar 2024 00:29:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A474315CB;
+	Tue, 19 Mar 2024 00:29:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="YUYDS3E7"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="MpnpzWOy"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 71947363;
-	Tue, 19 Mar 2024 00:29:35 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 618A7368;
+	Tue, 19 Mar 2024 00:29:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710808177; cv=none; b=Ra9BSkkrQ5haBLlfxBEQJWPw5eFCwDTM340IZR4p4Bfbv8DSJuLGeNTsyGacZwvuOsaLvryf1nCKwmN0tfx19KyrLlt79yR4joIWUb9PDptHfZbxiAC0JVE0O3xeb3alu+LFgD6VYtItdFSpALUD1bk7EBZjxaX1Ky5Bkfh7V9o=
+	t=1710808178; cv=none; b=MvfuEhA5tAsry4LgFWgB5447JorRv/b3rOffywV4G/eCNVSYmLSt75c7EjkfIk0JJGUt5CAmKfghLlr3u6o40JsEA/iq7R5c5EPXWr7VTqO7No+4TnOFO6FemqzwpWqHaywZWICn55jO3r9rzQYecOdHaX5Z8FBclN+I57McATQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710808177; c=relaxed/simple;
-	bh=7SQMhToJXVIevHGRudA6WrEHyve1h3fUPRthLx3mW1c=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=cJAhTA1jrcg4MMVVqqZA2vzYD8Sg5y7uNbLSxFlGA9F3i6oiylzjTVH9f3b0tVteoUdh34pc/ZMVb249WmkWuNqIzxMuBtrwIk48FujcR6fboyaCx4mNLNui4wUtIbJs50vJ4z9kUglg0VraUG2Fmy7oP9DhN9BR5gvbKS8NUOI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=YUYDS3E7; arc=none smtp.client-ip=209.85.208.52
+	s=arc-20240116; t=1710808178; c=relaxed/simple;
+	bh=6Ouxyk1MFE8oPL5EtYMsLRqOrNWjyubaatGPHGKRHrs=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=gHnuEE8EuhRJfUaLIjtfwIWkSuyl+Ml5HsXOYJZW33ICCPgoYKsNWX9N+2BeHGX8vtys85j5JDpkNtcKqdQEAdb8LvwXss1/9VZ5nuM7UQETxC4FXNXG/5kC4b6GesFf3SMtNrvfHQoIZCIOp/OrUWZy2qZfK8xdh6fUTwQj0D0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=MpnpzWOy; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56b95eb687fso66280a12.3;
-        Mon, 18 Mar 2024 17:29:35 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a465ddc2c09so341981666b.2;
+        Mon, 18 Mar 2024 17:29:36 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710808174; x=1711412974; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=zrKFOJwh3FiWFz8PnJclBgTo8T3TCygx+u8PGzuODoQ=;
-        b=YUYDS3E7k04ovhh4Igmol9MKAK+7JRpKve9/HbZDyI/Ii0szUfNyuLDp2Ax5JG8CJM
-         52gj02gO0HTPSYyYo319U41t6wdkYTRKiG+sQVTPA73oiMsJCnCSnhRriY40mIe1OjaI
-         rgmOExbOxz8tcNP+JRqYyTvsK8IkV6JqwTEzNhNJEbwMoP9NYanm0vpgb3vcHP/1zCH1
-         UqaDxKHikjCWZgkqUta0lWlbwKafa0JoBynwvC8qNjO/dScTe5HOl+2JEOyZoDwAOIRl
-         PwVebmPG9UCwR3xNoQjNmVdOWI8ZUkTd+d2f/nmaTOn96rGTAIgDdjsozUrxYhEFVQJm
-         eLog==
+        d=gmail.com; s=20230601; t=1710808175; x=1711412975; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=6laUTApqd01ANpCuz0jrMfAwGjaFU1xJS3mFm+uw6r0=;
+        b=MpnpzWOyh9LrXoELJrwGZQDn7WunxM1jXoDxLOHQ1ypxRN2CiHOurDzruJoHWpzlqx
+         SHovbWwmQ0ik4sh1CncbtMLB7Uae/2jDCStau0MNbv6dlu57y+Lr7QPspEJ1k+3/6iMu
+         rpQvaGVXYe67UgLkBPgHNSv+KjyMqHO6y7LT6t8p5Fz6V/WiRinBasrMeAxjovkElVjP
+         og5taLeNYzGOgLxEOzDCpFnTqaW8WWZMBPdQpcq882Wag8omI137edJcvLVZoTeZxCpA
+         sqcGtqtj43v4r9DdkN74B8He/GAuyLdn6P+t5lABKe8jBWdoxOMpz/jKjvtQJ8CH5rRx
+         fD/w==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710808174; x=1711412974;
-        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
-         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=zrKFOJwh3FiWFz8PnJclBgTo8T3TCygx+u8PGzuODoQ=;
-        b=rMmsk2poWStIuFTsp0sJkgmI205FXj9o3W0ZYHLPmzsAf9hpozdiFexc3jMFjtE5iF
-         EEBC7ZGwVTJLCs7MnR29iGFRP4RkBBX9jT1RQBkLXAC7jmRyCcozaY4PFCBaewX5ftuN
-         4mMXUHXoaD8vh7dm7/obiz5lMSMMf/yoMX5kQj0KpxjmI/tTUfCpcvIbfc8CT1puJaF7
-         YXUvVlVG+dpP7KGBfr7ymuEK0fG18DhDO5Fs5K/jsZokmnx91S1izpZYp1kmLFiKzRE0
-         KtXyW05sTowPPgBUloIkPY29fL76ehF/+X23tw+p3O464oeqYHTskfOi7of8uCIhzh9x
-         2G1w==
-X-Forwarded-Encrypted: i=1; AJvYcCWA8E0lGAJfaIeZ8nGV7RBuPXhUmbY7FlhZEcXNqluD2D2oHkDTNmK0eIGk3nc5kadDk1APrTNze8WqsFx/JSUTCW/wjzDWhnmiXXv5AhQz1VAPyw12dv9k8vM+vrSMA8yaBXzg0Avm
-X-Gm-Message-State: AOJu0YwkLnFWjeUcVu4YVS+ClBeIjl7qL/leU5j7VkjVxhu0U6PnGIHN
-	ktyKtREkD4pEkb69C49mdOxLnPNT3Gh7jvVbWPaSng+/78cgXLEQ
-X-Google-Smtp-Source: AGHT+IEK3rOMctA1l8OyKcfeERlG+g5vtHULcdOeNylbLFbhwyYvU3kzATfpnZSg996ud9Xa7si3mA==
-X-Received: by 2002:a05:6402:ea9:b0:566:a357:d535 with SMTP id h41-20020a0564020ea900b00566a357d535mr7980265eda.27.1710808173330;
-        Mon, 18 Mar 2024 17:29:33 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710808175; x=1711412975;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=6laUTApqd01ANpCuz0jrMfAwGjaFU1xJS3mFm+uw6r0=;
+        b=mTvp85T7CTzk1eI1M2We96We9fmMAaIkCGUakpLFt3xfQTdXvQktjUWjpZIVdls46k
+         2m2zQuRc9uNGr2P9UIYPkbYmpGpv5pYZJVcZ9XTkT6ckiyIg/InrWwrQqypXfaexx2fH
+         PRHl/fgkgtOAP8g9x70Wn/h2QhB54KZ3rZIlBkLSHTjgIo/8B1262YcglJLY8qW6bN5W
+         MeOR3R+zE62buLDx26SBIMHSu8sPWHn8360heLfFB1yfpHyj52fcqJSYnfUIbc+usY9n
+         h0CQ2NhLRbG+9Y0FHUlzqSe+XsF0XA8jIGAag7uqZmJfyqUT3+/ceWqNjZJmdT+zMguZ
+         QW7Q==
+X-Forwarded-Encrypted: i=1; AJvYcCXwNQnplkmHtIFohDDlkTD8agdy6k+sh/akXG5GUh8F4iMQbwY3p30KGRQLmjl1Hf2fQ0jyIhF1OgT34RSBoGNkszOIfI1QBppOrv4vut8AzGkuuku/A2rXYlbILn0Lbj6OYNRM0KIw
+X-Gm-Message-State: AOJu0YxBbs/XR51DqhxnIk74H/Tg8flEzbdw/l+b55RQ9UO4NL0qilVJ
+	U0lZa+hlEttNMorQcoDkWanixXvFFRvZWnCUXmPyErMDegPTYw2tw/EKp5eFUYWicug0
+X-Google-Smtp-Source: AGHT+IEngGGUNsKhXEFBVV+MUi3yyf+vCtFDkIwVlSbHJ/mp+l7HrM2+CHFIE8wUj93ibSoJjoIGpQ==
+X-Received: by 2002:a05:6402:4146:b0:568:abe3:52b2 with SMTP id x6-20020a056402414600b00568abe352b2mr8218087eda.23.1710808174727;
+        Mon, 18 Mar 2024 17:29:34 -0700 (PDT)
 Received: from localhost.localdomain ([2a04:ee41:82:7577:8c96:c55f:eab0:860])
-        by smtp.gmail.com with ESMTPSA id co24-20020a0564020c1800b00568c613570dsm2700227edb.79.2024.03.18.17.29.32
+        by smtp.gmail.com with ESMTPSA id co24-20020a0564020c1800b00568c613570dsm2700227edb.79.2024.03.18.17.29.33
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 17:29:32 -0700 (PDT)
+        Mon, 18 Mar 2024 17:29:34 -0700 (PDT)
 From: Vasileios Amoiridis <vassilisamir@gmail.com>
 To: jic23@kernel.org
 Cc: lars@metafoo.de,
@@ -79,10 +81,12 @@ Cc: lars@metafoo.de,
 	linux-iio@vger.kernel.org,
 	linux-kernel@vger.kernel.org,
 	Vasileios Amoiridis <vassilisamir@gmail.com>
-Subject: [PATCH v3 0/6] Series to add triggered buffer support to BMP280 driver
-Date: Tue, 19 Mar 2024 01:29:19 +0100
-Message-Id: <20240319002925.2121016-1-vassilisamir@gmail.com>
+Subject: [PATCH v3 1/6] iio: pressure: BMP280 core driver headers sorting
+Date: Tue, 19 Mar 2024 01:29:20 +0100
+Message-Id: <20240319002925.2121016-2-vassilisamir@gmail.com>
 X-Mailer: git-send-email 2.25.1
+In-Reply-To: <20240319002925.2121016-1-vassilisamir@gmail.com>
+References: <20240319002925.2121016-1-vassilisamir@gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -91,49 +95,46 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Changes in v3:
+Sort headers in alphabetical order.
 
-Patch 2: Add guard(mutex) as per request {read/write}_raw() functions.
+Signed-off-by: Vasileios Amoiridis <vassilisamir@gmail.com>
+---
+ drivers/iio/pressure/bmp280-core.c | 16 ++++++++--------
+ 1 file changed, 8 insertions(+), 8 deletions(-)
 
-Patch 3: Patch 2 of v2. Added IIO return value as per request.
-
-Patch 4: Patch 3 of v2.
-
-Patch 5: Patch 4 of v2.
-
-Patch 6: Completely different approach from v2. Instead of leveraging the
-functionality of the read_*() functions for the oneshot capture, burst reads
-were used in order to read all the values in one single read operation. This
-minimizes the number of accesses to the device to just 1 time, which all the
-values are being read. Different buffer_handler() functions were implemented
-for the different "families" of sensors because there were a lot of differences
-in the register configuration and read operation for different sensors.
-
-BMP085 and BMP180 have a very well defined read operation that is kept in the
-buffer_handler(). There is no option for a burst read in these sensors.
-
-BM(P/E)2xx, BMP3xx, and BMP5xx have their own buffer_handler() functions.
-Registers, endianess and compensation formulas are different in each one of
-those 3 categories which doesn't allow for a more generic buffer_handler().
-
-[v2] https://lore.kernel.org/linux-iio/20240313174007.1934983-1-vassilisamir@gmail.com
-[v1] https://lore.kernel.org/linux-iio/20240303165300.468011-1-vassilisamir@gmail.com
-
-Vasileios Amoiridis (6):
-  iio: pressure: BMP280 core driver headers sorting
-  iio: pressure: Introduce new cleanup routines to BMP280 driver *_raw()
-    functions
-  iio: pressure: Generalize read_{temp/press/humid}() functions
-  iio: pressure: Add SCALE and RAW values for channels
-  iio: pressure: Add timestamp and scan_masks for BMP280 driver
-  iio: pressure: Add triggered buffer support for BMP280 driver
-
- drivers/iio/pressure/Kconfig       |   2 +
- drivers/iio/pressure/bmp280-core.c | 727 +++++++++++++++++++++--------
- drivers/iio/pressure/bmp280-spi.c  |   8 +-
- drivers/iio/pressure/bmp280.h      |  28 +-
- 4 files changed, 570 insertions(+), 195 deletions(-)
-
+diff --git a/drivers/iio/pressure/bmp280-core.c b/drivers/iio/pressure/bmp280-core.c
+index fe8734468ed3..871b2214121b 100644
+--- a/drivers/iio/pressure/bmp280-core.c
++++ b/drivers/iio/pressure/bmp280-core.c
+@@ -27,20 +27,20 @@
+ 
+ #include <linux/bitops.h>
+ #include <linux/bitfield.h>
+-#include <linux/device.h>
+-#include <linux/module.h>
+-#include <linux/nvmem-provider.h>
+-#include <linux/regmap.h>
++#include <linux/completion.h>
+ #include <linux/delay.h>
+-#include <linux/iio/iio.h>
+-#include <linux/iio/sysfs.h>
++#include <linux/device.h>
+ #include <linux/gpio/consumer.h>
+-#include <linux/regulator/consumer.h>
+ #include <linux/interrupt.h>
+ #include <linux/irq.h> /* For irq_get_irq_data() */
+-#include <linux/completion.h>
++#include <linux/module.h>
++#include <linux/nvmem-provider.h>
+ #include <linux/pm_runtime.h>
+ #include <linux/random.h>
++#include <linux/regmap.h>
++#include <linux/regulator/consumer.h>
++
++#include <linux/iio/iio.h>
+ 
+ #include <asm/unaligned.h>
+ 
 -- 
 2.25.1
 
