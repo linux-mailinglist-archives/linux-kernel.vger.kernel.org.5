@@ -1,118 +1,109 @@
-Return-Path: <linux-kernel+bounces-108144-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108145-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E77BC88069C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:16:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5821F8806A5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:19:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 7C71C284034
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:16:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DD0FEB219E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:19:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 238064084B;
-	Tue, 19 Mar 2024 21:16:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0A9D3FE2A;
+	Tue, 19 Mar 2024 21:19:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b="MHv/Y2Jf"
-Received: from relay7-d.mail.gandi.net (relay7-d.mail.gandi.net [217.70.183.200])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JzyODQU1"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 785353FBB0;
-	Tue, 19 Mar 2024 21:16:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.70.183.200
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 15A2F3BBF1;
+	Tue, 19 Mar 2024 21:19:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710882993; cv=none; b=XQqvA5oBc2h+pm6faiewRGvj5zu27sTFifEJPZ//nCdQKq/rDXr+eDhbD2sVg/8YhQNkwWSbOpQ6cRDYf7gFc5VDkUk2M/4agdiF1slu9FhB2jvIb5rYGIYCq8bjFl/EKRIvDmB08hsKpY7s9VTG84vdDIvBpbfCtN1BhJDXpVY=
+	t=1710883177; cv=none; b=bw8FR/0Zr7SDxnNzQ3Z9/SaEvo2QeYMYolBMkrWh0DN9i7KO6lUiW8q9jrP7B7XeAzxq91USwQ1ENYE5yunXvaWTTBkqMrEhbB9YiGUxGLk10xZY0IXtxUvKBIfHYdq2DOeDAiqxm/wzYth7IA9ZR4AmX8Gwn2ngA7MrSM/mpZ8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710882993; c=relaxed/simple;
-	bh=hVggVZ7F4YoaEhM4q8btxqhfFXmKM3YgpzpWHw+WR8U=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lGVLs7ONGKXbMNFvaR33VDcEgD8Nombiqh3z2m+eQAKiiNJL4pos6DaKYVU6bsOeJR/kMop2DoRclWBC5c6CAl6vM4eCF9or4OenoD5TN05xfgeLuXr+OxfjkNy0OVOsg8qUy2uyGxNlGWsGYRSvHjzk/pwZmjENeM71WwHVvjE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com; spf=pass smtp.mailfrom=arinc9.com; dkim=pass (2048-bit key) header.d=arinc9.com header.i=@arinc9.com header.b=MHv/Y2Jf; arc=none smtp.client-ip=217.70.183.200
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arinc9.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arinc9.com
-Received: by mail.gandi.net (Postfix) with ESMTPSA id 8A37D20003;
-	Tue, 19 Mar 2024 21:16:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=arinc9.com; s=gm1;
-	t=1710882988;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=9s4X5Gi14fiprbPp/n09JkrAb3WJPWZ0M3os7Ylh/ek=;
-	b=MHv/Y2Jf/gg5YRz9Xg02A3Uy/+L3ntSL/gPAF2UzYbGmc/qP7PHY7VuKl1zed85n+N0kdQ
-	1o1k/QGe5GsBCSlsu39mtGksj8tLqwlnJ7WHeuYmJUOTLN8UP0ukvtN7f4FqZXg/Wv8AKZ
-	mkWevzKGdbH9d1/Kjo5b6aQL2Fa88IJLQZwGG6TRvf8issssdzTBXSnOVcorW02H6rKQl4
-	W8teqzjihbMWP1A90re1PyZwbcQn5VgYA5ceHRdyq2N8AnXB104IBNYkdxUa96gkkknxog
-	fBwi1pMb8vaeKS9pQFCxNaQI2NRAfJjGt4aRoqOV43X4DOwUGW9EY4V5n6pisA==
-Message-ID: <3c6ccef9-8654-49ba-88d9-d39e99d2b7b1@arinc9.com>
-Date: Wed, 20 Mar 2024 00:16:02 +0300
+	s=arc-20240116; t=1710883177; c=relaxed/simple;
+	bh=79CWEMlA4zaqq7JEqpKb90rcREJ71jz1otGzcHVGLgc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Oi3z2fK5fAhK06UJtFvuKMgzchmNrBShXqK0VEmPNWd8CBP58OcnndqsJ4ccia1h6/rzvwS8BIvv7H2J65s++Fu4t0Wt97WngGHhc/TczIbdSfQrJK0VLdvQltSBUTukqAv5pZ0lk/mWEKYOrowZ/Rjp+SmLUEPz08LNK3lS5E8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JzyODQU1; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 42B7EC433C7;
+	Tue, 19 Mar 2024 21:19:36 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710883176;
+	bh=79CWEMlA4zaqq7JEqpKb90rcREJ71jz1otGzcHVGLgc=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=JzyODQU18EmHBrOISgdTe4W569PTH/WOvvvG7bQDTGVw78lxq1dpecCm/vNBYgsGP
+	 buB7zrXB8qwFY9jzW8l9jwr0JeOgBY7JTA1SVAaCmwCZOC9zvO77PVn6B/faWpdoUB
+	 fwAF1tvpuXKhF04US+PR4ePwMtQtdcltx47ntvx7q78Ih8zSlpzTdMTAUP/j7GgI11
+	 llkDUHvBUEKLPLDejSYIIdD0FaiJudn5I47LkX45+eglQ6hrABPzCqGfjjfKpswlhC
+	 e3Uz+5lstZVdH2QFVTP+e5tHLaoFh7Hvqt0xKcQPCicPDm/oavxDzpjE7thiMwEFOV
+	 qmvoOkYW8/I8g==
+Date: Tue, 19 Mar 2024 22:19:32 +0100
+From: Andi Shyti <andi.shyti@kernel.org>
+To: "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, 
+	Geert Uytterhoeven <geert+renesas@glider.be>, Chris Brandt <chris.brandt@renesas.com>, 
+	Rob Herring <robh+dt@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
+	Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>, 
+	Wolfram Sang <wsa+renesas@sang-engineering.com>, linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org, 
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org, 
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>, Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH 1/5] dt-bindings: i2c: renesas,riic: Update comment for
+ fallback string
+Message-ID: <eqtj4hpmdqhtftdtpvt7r7iwrkzga365p4ao5kuteovb2behxz@frmyzxemkfwm>
+References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240308172726.225357-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <aee88f81-0b8a-4f57-9dab-b4d13db47abe@linaro.org>
+ <CA+V-a8s9OaZ7_RXGjkZYpNS7879ku-aXJ+AvsfgvuTZshyWd5A@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 0/3] Fix EEE support for MT7531 and MT7988 SoC switch
-To: Daniel Golle <daniel@makrotopia.org>, Andrew Lunn <andrew@lunn.ch>
-Cc: DENG Qingfang <dqfext@gmail.com>, Sean Wang <sean.wang@mediatek.com>,
- Florian Fainelli <f.fainelli@gmail.com>, Vladimir Oltean
- <olteanv@gmail.com>, "David S. Miller" <davem@davemloft.net>,
- Eric Dumazet <edumazet@google.com>, Jakub Kicinski <kuba@kernel.org>,
- Paolo Abeni <pabeni@redhat.com>, Matthias Brugger <matthias.bgg@gmail.com>,
- AngeloGioacchino Del Regno <angelogioacchino.delregno@collabora.com>,
- =?UTF-8?Q?Ren=C3=A9_van_Dorst?= <opensource@vdorst.com>,
- Russell King <linux@armlinux.org.uk>,
- SkyLake Huang <SkyLake.Huang@mediatek.com>,
- Heiner Kallweit <hkallweit1@gmail.com>,
- Bartel Eerdekens <bartel.eerdekens@constell8.be>, mithat.guner@xeront.com,
- erkin.bozoglu@xeront.com, netdev@vger.kernel.org,
- linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-mediatek@lists.infradead.org
-References: <20240318-for-net-mt7530-fix-eee-for-mt7531-mt7988-v>
- <ZfnYkuzuvwLepIfC@makrotopia.org>
- <00ec9779-19ce-4005-83f0-f4abf37350fc@arinc9.com>
- <6cb585f6-6da8-45a2-a28b-2fb556f95672@lunn.ch>
- <Zfn1DxkEa3u-f7l2@makrotopia.org>
-Content-Language: en-US
-From: =?UTF-8?B?QXLEsW7DpyDDnE5BTA==?= <arinc.unal@arinc9.com>
-In-Reply-To: <Zfn1DxkEa3u-f7l2@makrotopia.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
-X-Spam-Flag: yes
-X-Spam-Level: **************************
-X-GND-Spam-Score: 400
-X-GND-Status: SPAM
-X-GND-Sasl: arinc.unal@arinc9.com
+In-Reply-To: <CA+V-a8s9OaZ7_RXGjkZYpNS7879ku-aXJ+AvsfgvuTZshyWd5A@mail.gmail.com>
 
-On 19.03.2024 23:26, Daniel Golle wrote:
-> On Tue, Mar 19, 2024 at 08:38:03PM +0100, Andrew Lunn wrote:
->>> I would argue that EEE advertisement on the PHY should be enabled by
->>> default.
->>
->> That is an open question at the moment. For some use cases, it can add
->> extra delay and jitter which can cause problems. I've heard people
->> doing PTP don't like EEE for example.
-> 
-> MediaTek consumer-grade hardware doesn't support PTP and hence that
-> quite certainly won't ever be an issue with all switch ICs supported
-> by the mt7530 driver.
-> 
-> I'd rather first change the (configuration) default in OpenWrt (which
-> is arguable the way most people are using this hardware), also because
-> that will be more visible/obvious for users. Or even just make EEE
-> configurable in the LuCI web-UI as a first step so users start playing
-> with it.
-> 
-> After all, I also have a hard time imagining that MediaTek disabled
-> EEE in their downstream driver for no reason:
-> 
-> https://git01.mediatek.com/plugins/gitiles/openwrt/feeds/mtk-openwrt-feeds/+/24091177a18ba7f2dd8d928a8f5b27b14df46b16
+Hi Prabhakar,
 
-Are you saying this to indicate that we shouldn't remove that from
-mediatek-ge? If so, I've already explained that there'd be no practical
-change in removing it as both MT7530 and MT7531 switches enable EEE
-advertisement after mediatek-ge.
+On Sat, Mar 09, 2024 at 11:05:40PM +0000, Lad, Prabhakar wrote:
+> On Sat, Mar 9, 2024 at 11:58 AM Krzysztof Kozlowski
+> > On 08/03/2024 18:27, Prabhakar wrote:
+> > > With the fallback string being utilized by multiple other SoCs, this
+> > > patch updates the comment for the generic compatible string.
+> > >
+> > > Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> > > Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+> >
+> > Really, you review a comment change? Internally?
+> >
+> > Is this some sort of company policy? Are these even true reviews?
+> >
+> Yes this patch was reviewed internally and it's "real". Unfortunately
+> I cannot share the repo externally where this review was done but I
+> can assure it was reviewed. As this is not a single patch all the
+> patches in this series were internally reviewed. Is it bad to review a
+> comment change?
+> BTW what makes you think I have added fake review tags?
 
-Arınç
+I don't believe Krzysztof is questioning the validity of your
+offline reviews, but the community is unaware of what happens
+in your closed environment.
+
+If you submit a patch with the r-b tag, it holds little
+significance for me since I haven't witnessed the review process
+myself. However, you are, of course, free to include it; I have
+no objections to that.
+
+My suggestion is for Fabrizio to publicly express his review on
+this mailing list, which would add more value to the time he
+spent reviewing your patch.
+
+By the way, there are other companies that do this.
+
+Andi
 
