@@ -1,180 +1,186 @@
-Return-Path: <linux-kernel+bounces-107599-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107600-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 47A3C87FEF3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:39:01 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id C1CC887FEF5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:39:33 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C78081F25D4C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:39:00 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 4CAD81F25C74
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:39:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6ED3E80609;
-	Tue, 19 Mar 2024 13:38:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7011D80612;
+	Tue, 19 Mar 2024 13:39:28 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="mzde1d0o"
-Received: from NAM12-BN8-obe.outbound.protection.outlook.com (mail-bn8nam12on2128.outbound.protection.outlook.com [40.107.237.128])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b="P1OqbeGV"
+Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D5D711CD07
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:38:50 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.237.128
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710855532; cv=fail; b=urEqdNKOlTRlLM4ubrgvSwZR/YyTQmiUz86g3KhMuJhka41SaKgBQ5Rqva7Fi8DPpRlDJoiOvvjBdoowM1JIky1zfvIsYSuwwPQP78twp3Tc+f7b/Vnn2qzIo2pJnQ9nK4lCnq/HcJI4ZN0ReALf+lD32OCxSpaVVOqZsUdBQPc=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710855532; c=relaxed/simple;
-	bh=mpUfP2K7IHHm+5RX74S8ATcf264koPdo4htRnkiWpIU=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Vb1QK30wM5bSN3SNYH9PnQGCf/sfo4zdplFsTzJZosrQoSGQuW1GwvVmHVZwp/UzSr5OAwOJU9iugDUUYsSESYmrwRo+VKL83nGWGi8Ug4JEsPKjbsKCt1+UjA5Xt9hS1pzW/Sc3L1aaQwnI8PGmU2t/d25189gOKcOrLFL73Ws=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=mzde1d0o; arc=fail smtp.client-ip=40.107.237.128
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=SZ/3/yAWHt/IXUkPDdjJ0w5TSjhWxlbUYvtvvywrXPbFYmq09aE7qX82gywCzQvS4azzjrUWCZJYN7I+EOSduHstOfk/wrQdvil22wIp/QzC783cgpilXt2ykS8fU0pQ8dzj0qXLnksM2oWd6Q3YxT52/VNrREugjYAJ71bB18p621CICdVPpifZ5ooTCyw6CDki+/FM8B9/oVzgSlCkARXVtR7M2rXH+uspOdXsexaqUBve775+4Q6qzui6R4/UZ6J7fFa0Vc0gr//2WoQQPyTHgJXJVKoxL9L7TepFUADaBnyy8EHJfhoP1TWJYoNHdMqTUqoKv3RCkTUFiVu6Ew==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=DH+JDqodS13IY22lxMv+aOkK4H1uljpUqO2cCONdaWw=;
- b=djtg2CPb20+pXySI7QcYWPYEFVzG1SqTgWjR0Xt8MpLw0YyhNPRYfNTijJKjFniPU9uIWs4gt7NijzB01/RJwIaxnq4jtT1r6KSPNNfSCM6HJpGoMoeZF6SHIwMB9qfHgwMnByMQKw/X9rPJI4Zlp4J/vLmJuil+os2ESRJgxnK9XVolaorNUftM8Zimf7ql2tJHQLlYk1YPJW9LNQhB29kSXPyuQWOf2YJbL2qZxPpv7Eo6CR5fADv5eHubfKVVbLa74wlhqLG7oiZ8NWXl1neVzD2ekbGbis2UNsdkPGgV/YJbcnxOEm1Hau6XnKEw6FITzyle4iwkxHKxwwc9bA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nvidia.com; dmarc=pass action=none header.from=nvidia.com;
- dkim=pass header.d=nvidia.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=DH+JDqodS13IY22lxMv+aOkK4H1uljpUqO2cCONdaWw=;
- b=mzde1d0o5xezmOjdZtXC/lmeU7EDEgNG4iUNsvGrUifYVZ5HNuPafE1XIvOaIpzYKY1jyWpA5AkDYEH0cPnXG8Y/OyVPmKTcfApPHOqfpVoLynWQnAD0DPTfQew5Gr+yz6UeoNMp+eZuvZj2gBrfy4i1zJHIK3+cq35yDvS9I80DpfqaEv56T/lARMVcCATa2FsvqVpFxJQ1GIb33hH8Q92aKvMmDyzTk8nmLiwRuPhCkTU8sQpyaG/irqSdLhkI6XufL2gUkB1u2emeh2dlKyapla0tXRl7brHnfQ5nm9HyBn3VUklkEovG2/73yw1Vb/pB96ax6ziv4mDaj3cqkA==
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com (2603:10b6:5:1c7::26)
- by PH7PR12MB5734.namprd12.prod.outlook.com (2603:10b6:510:1e1::6) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Tue, 19 Mar
- 2024 13:38:46 +0000
-Received: from DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222]) by DM6PR12MB3849.namprd12.prod.outlook.com
- ([fe80::6aec:dbca:a593:a222%5]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 13:38:46 +0000
-Date: Tue, 19 Mar 2024 10:38:44 -0300
-From: Jason Gunthorpe <jgg@nvidia.com>
-To: Ankit Agrawal <ankita@nvidia.com>
-Cc: Catalin Marinas <catalin.marinas@arm.com>,
-	"maz@kernel.org" <maz@kernel.org>,
-	"oliver.upton@linux.dev" <oliver.upton@linux.dev>,
-	"will@kernel.org" <will@kernel.org>,
-	Aniket Agashe <aniketa@nvidia.com>, Neo Jia <cjia@nvidia.com>,
-	Kirti Wankhede <kwankhede@nvidia.com>,
-	"Tarun Gupta (SW-GPU)" <targupta@nvidia.com>,
-	Vikram Sethi <vsethi@nvidia.com>, Andy Currid <acurrid@nvidia.com>,
-	Alistair Popple <apopple@nvidia.com>,
-	John Hubbard <jhubbard@nvidia.com>, Dan Williams <danw@nvidia.com>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"kvmarm@lists.linux.dev" <kvmarm@lists.linux.dev>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH v1 1/2] KVM: arm64: determine memory type from VMA
-Message-ID: <20240319133844.GA159172@nvidia.com>
-References: <ZR7hKYU1Wj+VTqpO@arm.com>
- <20231005165458.GM682044@nvidia.com>
- <ZSVe0nb02S4kz5D2@arm.com>
- <20231010150502.GM3952@nvidia.com>
- <ZSWHkvhutlnvVLUZ@arm.com>
- <20231010182328.GS3952@nvidia.com>
- <ZSbfUNLwDkaYL4ts@arm.com>
- <20231011183839.GC3952@nvidia.com>
- <ZSgb0WBSsXHHYJT0@arm.com>
- <SA1PR12MB7199AB860E0C76B80B421C66B0252@SA1PR12MB7199.namprd12.prod.outlook.com>
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <SA1PR12MB7199AB860E0C76B80B421C66B0252@SA1PR12MB7199.namprd12.prod.outlook.com>
-X-ClientProxiedBy: SA1PR03CA0024.namprd03.prod.outlook.com
- (2603:10b6:806:2d3::25) To DM6PR12MB3849.namprd12.prod.outlook.com
- (2603:10b6:5:1c7::26)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D1F9780607
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:39:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710855567; cv=none; b=eWrlGxkp9i4YUnpZommC/lC7qM9SIoGLPA9ehRr6yiSD0ZiZFuuYoTpFj38TeVQ+qHDMyQGkanBBpqpY3gjsSloOeGimWHTltOUhER0vsmQfJegtapMgLHFRvPwPiEGl9+dVeE7yZixLE2TKI//Eb1LVV5tLZR7LxrEakMMqwjo=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710855567; c=relaxed/simple;
+	bh=sGGyhg7qmrAF3VEJNWEaHGwkum60h1VaoacXAoOTovk=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=JsBNQSAs0mFMr94c2jEtO2DmKe6ynBtBwQoNXCYuImtG1VtnyDeixajQtUscmBbKnwlczDrv4rxEGUVlOj7t260Q/W35AReAWvHv7HJQ+g94G26pdfLU8IBE++OzDWPErk3iwxLx+xbYTRRZr6xbEavS8PJxZDmo/oAr7q0OCvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com; spf=pass smtp.mailfrom=ventanamicro.com; dkim=pass (2048-bit key) header.d=ventanamicro.com header.i=@ventanamicro.com header.b=P1OqbeGV; arc=none smtp.client-ip=209.85.208.52
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ventanamicro.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ventanamicro.com
+Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-568107a9ff2so6680820a12.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:39:24 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=ventanamicro.com; s=google; t=1710855563; x=1711460363; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=4zAsS/uNen1I904a04qYYT/TYDmbVxX/Uth0W4MlTuw=;
+        b=P1OqbeGVx/LNo6k00aDeY0qqnZbyhwxJi/H5vPs6blh9cklngarVGr+2Kzw4IJuh70
+         IHsav1HSdeXmJmu0MgqJNAyJGChxVzybXBLcOlvptlhZHQaaQvVdZ52/dvfBzaca6rFx
+         rXk/Te8lH7/NwcnTOYnJZbXrAdHziu2G9JLPHlfCU275a4W5kUqRNvEQaVw0KSkN//PB
+         2A283x3TDCPoPcbPlYs3h4CrcbcazIDpje6gu0cmDePzxJAjBabTvgxyMthK3BKVEOyH
+         ckEnLuasQGtvjUmZiXrwXmtg9NZvsfsryVW38m5mjRVOZKFiehQ6WPw5Dya2bb30S343
+         p0BQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710855563; x=1711460363;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=4zAsS/uNen1I904a04qYYT/TYDmbVxX/Uth0W4MlTuw=;
+        b=d2JMHE9BhjXZUheK763DKgKTdhbfYNKhVlFyKrelce9o2fRIQkbMbRQrSLjZ4ozVfF
+         8hnhcWmeQ5rNOb3g2f/HZ0wZ9WFjpLd0MRu9eIAh4o//jS8im/koT8PzEkcgbtNKIMel
+         CnnueUEVmTu6uM+bWONLfkmhHMVdNaZUPEjpcHq/g7gAijPTiOSPgl6DOSFlxd0wxA3L
+         aAj/JeOJUnbf28d2hbzG84yy+iUglsQiNhZj3+exuO+DHy/NirrfD+KKCzuqynsJRJLj
+         fly/fkTpuYuVk+w6hS3IKZRddVhqfkBmuEy89Arl8lH4eNkCEMeRgCOZKkOccknalLWd
+         tpEQ==
+X-Forwarded-Encrypted: i=1; AJvYcCVAMdSkgNfHeW5ccCMaAML79kyc3P2JGKlBknczsZAPtX549CMCQo+g/2QOZ8AgYc3dvj89FXl3vnal5HC3YSboKZ4Y66k1MhywFwhT
+X-Gm-Message-State: AOJu0YyYVbZKj78YyuPofTtnnslGQFecUzWqvK1eFO5x29+WUAQXnrej
+	P6o7HU6jkGSVLx/oVVz25D9zii75ve3qXwp/at2wlhWtBkOpzIi4G7leyKCMJ0Q=
+X-Google-Smtp-Source: AGHT+IHVRMJgWhA6FUGYuB3YQ2YkT+vT6+CMMifWJKwecbxw4bHQrbgtLR+eeZnyMUCHzJq6zdMjMg==
+X-Received: by 2002:a05:6402:5516:b0:568:1248:9f49 with SMTP id fi22-20020a056402551600b0056812489f49mr11014066edb.18.1710855562942;
+        Tue, 19 Mar 2024 06:39:22 -0700 (PDT)
+Received: from localhost (2001-1ae9-1c2-4c00-20f-c6b4-1e57-7965.ip6.tmcz.cz. [2001:1ae9:1c2:4c00:20f:c6b4:1e57:7965])
+        by smtp.gmail.com with ESMTPSA id er27-20020a056402449b00b00568d2518105sm2756561edb.12.2024.03.19.06.39.22
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 06:39:22 -0700 (PDT)
+Date: Tue, 19 Mar 2024 14:39:21 +0100
+From: Andrew Jones <ajones@ventanamicro.com>
+To: Conor Dooley <conor@kernel.org>
+Cc: Atish Patra <atishp@rivosinc.com>, 
+	Inochi Amaoto <inochiama@outlook.com>, Qingfang Deng <dqfext@gmail.com>, 
+	Paul Walmsley <paul.walmsley@sifive.com>, Palmer Dabbelt <palmer@dabbelt.com>, 
+	Albert Ou <aou@eecs.berkeley.edu>, Atish Patra <atishp@atishpatra.org>, 
+	Anup Patel <anup@brainfault.org>, Will Deacon <will@kernel.org>, 
+	Mark Rutland <mark.rutland@arm.com>, Conor Dooley <conor.dooley@microchip.com>, 
+	Heiko Stuebner <heiko@sntech.de>, Guo Ren <guoren@kernel.org>, linux-riscv@lists.infradead.org, 
+	linux-kernel@vger.kernel.org, linux-arm-kernel@lists.infradead.org
+Subject: Re: [PATCH] perf: RISC-V: fix IRQ detection on T-Head C908
+Message-ID: <20240319-3e72d732cbf2fcf1cb81f968@orel>
+References: <20240311063018.1886757-1-dqfext@gmail.com>
+ <IA1PR20MB4953ECC3E32E95303872CD14BB242@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <CALW65jZ+q8sDiRKgsRL9n+939HNUCnkKuO=YJjHB5Js=WYQeOg@mail.gmail.com>
+ <20240312-evil-resource-66370b68b9b4@spud>
+ <IA1PR20MB4953CE8999960BA71B46DE6CBB2A2@IA1PR20MB4953.namprd20.prod.outlook.com>
+ <20240315-73aa13079ef83a4559869084@orel>
+ <2de56d8b-bc78-428b-9c09-4729b269fa41@rivosinc.com>
+ <20240318-such-animal-bf33de12dc3a@spud>
+ <4bdaaff1-13ec-48c2-b165-6a8255784aef@rivosinc.com>
+ <20240319-worry-video-66589b3ed8ae@spud>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DM6PR12MB3849:EE_|PH7PR12MB5734:EE_
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	nl9L4OvG9rqHxoW9XWltK1sJrB9TcwIfzCZwlok5NYaGv1JKtIdaVFH9FH3JuelnRnPCgRWiikdfGUpS7zOc96SaQjGp4aGtW36gxHkUq8S2AS5ExtkrM72NV/Lqfg8akAGQxsEErpYfCaCcAbnl8G+z6imma5F2mWbUb4w31yJNXAbjW0A4+pD2Cx7Ahczj6xz0aljCtm3io8HzUxyCO8Er11GKGfLQPcKBTI9I7qi6JOjYUjDk7kElJOWoPJQdnHcoAD5zHRHN30naTE8wNxZcSDZQt918udzm8pqEXik/AlaZeH82Qdl+XsLkr6eleQu5w5pLMuNdo41S0/QP8B8iG1BmBZybjobshcwerIBcpftvG/BlM/ZCIisFBuDYi/460t7vNmMoKEaCNQfD+SyeRdf4OnfpYvPcnk+o0LtPU1N1cQXEqnr4d4QI4TwYv9j7BC+QdKI8RMyIlE4stinLn4/EOF8jvlQ+SLDrvHqepT+iUy4ZU57/OA8mi5dSywDDcVInuMj9pdbIp7GWKDeXexOTmVA67T6S/Vg/rONUbYDdulvTIhgQ8XQFhnsM4aMR1njHZziwvrtcEkX6DsA6feWudTP3Ljl5hpYPEnu6Qaq8JK6QSk2jHMp5UvUCGBwbtJn2WOUWP7bVslvX8SBRTgx2BxBw8cjwRQwKaY0=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:DM6PR12MB3849.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?utf-8?B?WlNXMnRtRkVwYTI1b3AzT3p6VEJSWHFRdTRqQ3cwTlFlL0FKSi8zTFg5aGM4?=
- =?utf-8?B?aGRlWXEraTduQ2NLT1I4Z1pqRTg4Y1M3clZSNGJQNkNIbzhFeTdTQXd4Nkkz?=
- =?utf-8?B?MEcva1NJbi93V1g3b1hIY3dBVFdkVHpiV0NHU2N5UHJ1YlVFNEF1ZFZHUlhV?=
- =?utf-8?B?M3YrYk1nV3M1OGVlSDdsdW1Kc1AzL1NYREdTdkJIak1PTlo5ejY4MHNtakFi?=
- =?utf-8?B?QUhSbVd0M3ZJR3BGMVBJVG5pa1JDMkVFK1VZeTRZTDdwZ2xlaGdIUG9RT3Zn?=
- =?utf-8?B?RDdIUjVKMkNtL0lZaHZYaHA3ZEJDdTBsV0hIOStwd2pIb0M5bzdxaEZuNkFZ?=
- =?utf-8?B?REFJWDlWWDIyTXZaaWpaRS9LQUx5MVAydEFZTGdYcmpsK2REY0NRTjJmajEy?=
- =?utf-8?B?ckVYVVhISWZQRmhlM0QzUlMyaitLeStUSjZBeTllMmswZDVLOW8xbzY5ZHJD?=
- =?utf-8?B?Y1NHbHFOejFEaUdLSzJyWHU4YlRhUjZsalA4WnAvWTJJL2lsN2dSb0pLc0Er?=
- =?utf-8?B?UllpY3ZlZ0tkUzEycDBsVEZXUGFVb3oxcUx4aGYydHYzdFpuRFBXS1ZjdExS?=
- =?utf-8?B?bFpxSlBtSUhYeEJTdVBIWWNtdFlybS8vRXl2VkZCTVNDRVlvcXRCMzhPVFNH?=
- =?utf-8?B?N0JORW5nQkNzbkN2K3FyQjVxT0M0am1JQ2JVaCtXZHBjSkE0enF1YllSaExp?=
- =?utf-8?B?TjBwOVNsN2gyMmZDdEZjL1FKQWZDd09WbGJTRlA2RlptOFpxaHRpSGZkOFFz?=
- =?utf-8?B?bjB1c1c0elppN1BSd1F6cHJIVzNkemlxOVdYcm1mMndEUG15S1E0QmFhWFc2?=
- =?utf-8?B?djlNNHdlTXBGUjhMbTFtRVIySmt2aENWamVIRGV6bTdQQnVRM2dlUmdSaHBP?=
- =?utf-8?B?VE05NHNzNXc1UDVHcEU0WDdlY2Z6NVRyWGxTSnhHR3VkL2ZpYStTSW54alI3?=
- =?utf-8?B?YUcwWlF2ZWk3UzR1UE9tSlhkL3RGa2xqOFB6SjNlTis2NDhheXU2cnNhWWMy?=
- =?utf-8?B?ZWh5bUNIYVhQajl0SXpjMitWRkRKbUw1aWpsQXVTTFBoUjErRHZmZ1BuLzJP?=
- =?utf-8?B?eDc3UytSUDlycGxmVncwVEhIZHRtK0ZiOTg5VmY2aEdCSFA5Y0UvakVocnpj?=
- =?utf-8?B?aXZtNnhOczJXVjJBcFJlUGJGYmRrU3BRbzk5dDNjd3hzblRwZFlCVE0zUG90?=
- =?utf-8?B?aGdDWHU0RFYxd0VNZUNUdHNnYmcrQm1VNUJZRDM3bjBRdXRodlhxVUdTVFQ2?=
- =?utf-8?B?SCs1Y1hVR05GaFlzZjlLMXNCUnpwVi91UURJQXphRUQ2NVp0SVIrMVVPbjdL?=
- =?utf-8?B?bitwUDdGVDVuU09RQXhqQnE2cG5OcjltYnh4VXJMTTRoMkIzZzl1eGQzTEpk?=
- =?utf-8?B?Tzg4T3hid2dPRmRBVmI0b1BNTlhCWklPTjVqOVJuckxrcmh3b3BiT0xESWtx?=
- =?utf-8?B?MUxjQ0VIR3ltTGxSUTJrajVxNjZTRWNSNW5uVTRwVkcyZnViNENJSnZmbVlS?=
- =?utf-8?B?YWl6eXNXZTlKTE9pWGJTeHFvSENVOGhVQmlBZVJLd0dxbjZER1N0anJ2VnZo?=
- =?utf-8?B?UDhnbFZuS3liSmR6RzgyZjZqTWpGQStjM1lvUThWV0NpWU0yUm5xbVJLZ2Na?=
- =?utf-8?B?Qko2NHlxMXp1NEFFVFhtNGhiaWZoOUhQWllrdC9MeThWalFZV1dsd3pMcFFJ?=
- =?utf-8?B?Sy80aTdQRkd4c2NpTXVSMkdmTlY3SjJUTVZvWisyVE15bGlwVXlzc1p5V25w?=
- =?utf-8?B?SGFma0c1NS90ZVBRNllJV1RYWHhUQm84L2NlTWgwMlkvcVZGZmdRUXd1SDNU?=
- =?utf-8?B?eXdvQzZmRFpOWXF0WHlsOG05Tlo4QjlsQXlucGJEWHlEYWRvTVY5cWpHR3ZB?=
- =?utf-8?B?akZJUEV4cURPRFVyRmxzcU5JNFUwQlVBS0dVMXdMMXV1d1EvNlBpQkw0RUNT?=
- =?utf-8?B?ajhLWjhtaVFQUHUxYWpSbjgyV2NIZm5ZTSt3YWd3ZjRlbm9vcmlrdnRiVkFp?=
- =?utf-8?B?SjFXZ054T0c0R3dTRG8vSitBOWhITEUxOXRWaUZ1ZWxHQWdOeFBxV1g2amQ5?=
- =?utf-8?B?TFU0YVVwb1MxckJVd0Z1RXpVdkdmL0VoQ3IyYTJHME9jRTNJOEJkMUs3UFFy?=
- =?utf-8?Q?wAIfEYScl14fmN/s2NI0PhQWP?=
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: cba0a24a-ff33-430d-6724-08dc4819e6be
-X-MS-Exchange-CrossTenant-AuthSource: DM6PR12MB3849.namprd12.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 13:38:46.4066
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: GRznsRzWrcgQyd+MPWEqIRIfkUOc6IG0trIkihqZa3jrcWG3uW9Ivr+ZDpIFkMDf
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: PH7PR12MB5734
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319-worry-video-66589b3ed8ae@spud>
 
-On Sun, Mar 10, 2024 at 03:49:36AM +0000, Ankit Agrawal wrote:
-> Bringing this to the fore.
+On Tue, Mar 19, 2024 at 09:06:34AM +0000, Conor Dooley wrote:
+> On Mon, Mar 18, 2024 at 05:48:13PM -0700, Atish Patra wrote:
+> > On 3/18/24 16:48, Conor Dooley wrote:
+> > > On Mon, Mar 18, 2024 at 03:46:54PM -0700, Atish Patra wrote:
 > 
-> >> Where does that leave us for this patch? We check the VM_MTE_ALLOWED
-> >> and check for ZONE_MOVABLE struct pages as one of the conditions for
-> >> NORMAL?
-> >
-> > I think we should keep it as simple as possible and, looking at it
-> > again, maybe even ignore vm_page_prot. Two questions though:
-> >
-> > 1. Does VM_IO imply vm_page_prot never having MT_NORMAL or
-> >    MT_NORMAL_TAGGED?
+> > > > For 2.b, either we can start defining pseudo extensions or adding
+> > > > vendor/arch/impid checks.
+> > > > 
+> > > > @Conor: You seems to prefer the earlier approach instead of adding the
+> > > > checks. Care to elaborate why do you think that's a better method compared
+> > > > to a simple check ?
+> > > 
+> > > Because I don't think that describing these as "errata" in the first
+> > > place is even accurate. This is not a case of a vendor claiming they
+> > > have Sscofpmf support but the implementation is flawed. As far as I
+> > > understand, this is a vendor creating a useful feature prior to the
+> > > creation of a standard extension.
+> > > A bit of a test for this could be "If the standard extension never
+> > > existed, would this be considered a new feature or an implementation
+> > > issue". I think this is pretty clearly in the former camp.
+> > > 
+> > 
+> > So we have 3 cases.
+> > 
+> > 1. Pseudo extension: An vendor extension designed and/or implemented before
+> > the standard RVI extension was ratified but do not violate any standard
+> > encoding space.
 
-Drivers do crazy things, so I would not be surprised if something in
-the tree does this (wrong) thing. We can check the pgprot in the vma
-as well as the VM_IO to make the decision.
+The vendor should name these extensions themselves.
 
-> > 2. Do all I/O ranges (side-effects, non-RAM) mapped into a guest (and
-> >   which end up in user_mem_abort()) imply VM_IO?
+> > 
+> > 2. Erratas: An genuine bug/design issue in the expected behavior from a
+> > standard RVI extension (including violating standard encoding space)
 
-Yes, this is definately true for VFIO.
+More on this below, but I think vendors should name these too.
 
-Jason
+> > 
+> > 3. Vendor extension: A new or a variant of standard RVI extension which is
+> > different enough from standard extension.
+> > 
+> > IMO, the line between #2 and #1 may get blurry as we going forward because
+> > of the sheer number of small extensions RVI is comping up with (which is a
+> > problem as well).
+
+The line between #1 and #2 is blurry because the only difference is the
+original intentions. The end result is that a vendor has implemented
+something that resembles a standard extension, but is not the same as the
+standard extension.
+
+> 
+> Aye, I think some of that is verging on ridiculous.
+> 
+> > Just to clarify: I am not too worried about this particular case as we know
+> > that T-head's implementation predates the Sscofpmf extension.
+> > But once we define a standard mechanism for this kind of situation, vendor
+> > may start to abuse it.
+> 
+> How do you envisage it being abused by a vendor?
+> Pre-dating the standard extension does make this one fairly clear-cut,
+> but are you worried about people coming along and claiming to implement
+> XConorSscofpmf instead of Sscofpmf rather than suffer the "shame" of a
+> broken implementation?
+
+Other than the concern of the ballooning bitmap, I'd prefer this approach.
+If a vendor has implemented some extension which happens to be "almost
+Sscofpmf", then whether it was implemented before the Sscofpmf spec
+existed, or after, isn't really important. What's important is that it's
+only "almost Sscofpmf" and not _exactly_ Sscofpmf, which means it should
+not use the Sscofpmf extension name. Since vendors are allowed to create
+their own XVendor names, then that shouldn't be a problem. Indeed, the
+abuse concern seems to be in the opposite direction, that vendors will
+try to pass off almost-standard extensions as standard extensions by
+trying to get workarounds into Linux. Maybe Linux policy should be to
+simply reject workarounds to extensions, requiring vendors to create new
+names instead.
+
+> All this stuff is going to be pretty case-by-case (to begin with at
+> least) so I'm not too worried about that sort of abuse.
+
+Case-by-case is reasonable, since it's probably too strict to always
+require new names. We can consider each proposed workaround as they
+come, but it's a slippery slope once workarounds are accepted.
+
+Thanks,
+drew
 
