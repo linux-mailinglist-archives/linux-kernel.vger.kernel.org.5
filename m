@@ -1,115 +1,116 @@
-Return-Path: <linux-kernel+bounces-107747-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107748-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5ABF880133
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:54:05 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id AB292880135
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:54:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 545DF1F24203
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:54:05 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3FE771F241B0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:54:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9C4717FBAB;
-	Tue, 19 Mar 2024 15:53:56 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 91B5E65BA5;
+	Tue, 19 Mar 2024 15:54:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="GScfsn32"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.12])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="gcYDTijV"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0D1B657BA;
-	Tue, 19 Mar 2024 15:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.12
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4296B657BA
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:54:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710863635; cv=none; b=G04vhY9UJNVW0tNSufJnmp5K49JWhyjKdYvqzHq+//ANkGeEqpeD7MG+JVqGbIvNNGdzr7O+4V9x87rErZJzTEIcghj66enNTUeN9on0ouOilKaH50d4W4s6QyL6YLBl4QO0G/zlZ3HZ0+mlykurIw2OXGC19Dzo8gCQw5exFio=
+	t=1710863642; cv=none; b=WbQOdlfOphRVg3WOJrrPqV2YESRqcfdHtYJS6SAKjW0mDha1WIn5wnsChb1UUe7vL0kgEQHCQtTbL34hMc+Pvv6JACZ6I4HYXci9mjQeuRvK6Eem81XhIRPwd4iOIyUApkdJw+4TtfZApK+NPbrgmvTgr7PhQNWtJ4QQEpZiWDk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710863635; c=relaxed/simple;
-	bh=D66pzCkZRuPyCkuZKMTlMhx9uq+3LFhreBlF96tdz/A=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=lDj3rHRXiWwyEsTjw4mjzMKMm5j2SRbjpGXk8S1GUlw0Fs+2mBB9J4A6nI1T/9B8U6bAHu/k+Rk9IBN77eQWUYhGwyWX+Ed+s47A/4CYS0an1FK6QToEEj7X4tPbhPD9xKz48JjSvyxqspE5kIAshmAtWUgeQjs0IenuY+6MuGk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=GScfsn32; arc=none smtp.client-ip=198.175.65.12
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710863633; x=1742399633;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=D66pzCkZRuPyCkuZKMTlMhx9uq+3LFhreBlF96tdz/A=;
-  b=GScfsn32RY1amNVD0t0ZO3QEAeu0tAwvzx0tcIv6ee8MJFE2rTtLjuuS
-   UX2uglOYflKuodLZQUbfX9tX3X/EReYRWFvl8+ZCCKDy8EQLBlSSAKFkD
-   IVHnZ8FrIjYOQQ816vSRJl4J+hN2cGcgdZ2z/4ssJTreAnmnquAz/EBh1
-   2biqdWZFFHbx0pOC7tx8clXr19tdoKXy3lqzisTMdKNm/gpHcXqDv4jho
-   9HeSNNSoH0S4A9HZIo2UF1V/Xe8fAhxBwh8W5AxSahuY6DHI8SuSRspzJ
-   o+jna+8xohW7GfQ67UjUURcpe6X+jZTy3p/2WfLK5oGsN8KnhhBMVb7Um
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="17192077"
-X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="17192077"
-Received: from orviesa006.jf.intel.com ([10.64.159.146])
-  by orvoesa104.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 08:53:50 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="14234456"
-Received: from ls.sc.intel.com (HELO localhost) ([172.25.112.31])
-  by orviesa006-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 08:53:51 -0700
-Date: Tue, 19 Mar 2024 08:53:49 -0700
-From: Isaku Yamahata <isaku.yamahata@intel.com>
-To: David Matlack <dmatlack@google.com>
-Cc: isaku.yamahata@intel.com, kvm@vger.kernel.org, isaku.yamahata@gmail.com,
-	linux-kernel@vger.kernel.org,
-	Sean Christopherson <seanjc@google.com>,
-	Paolo Bonzini <pbonzini@redhat.com>,
-	Michael Roth <michael.roth@amd.com>,
-	Federico Parola <federico.parola@polito.it>,
-	isaku.yamahata@linux.intel.com
-Subject: Re: [RFC PATCH 5/8] KVM: x86/mmu: Introduce kvm_mmu_map_page() for
- prepopulating guest memory
-Message-ID: <20240319155349.GE1645738@ls.amr.corp.intel.com>
-References: <cover.1709288671.git.isaku.yamahata@intel.com>
- <7b7dd4d56249028aa0b84d439ffdf1b79e67322a.1709288671.git.isaku.yamahata@intel.com>
- <ZekMnStRy1WwF2eb@google.com>
+	s=arc-20240116; t=1710863642; c=relaxed/simple;
+	bh=paSWeKBIFxB+F/AXMlOAQl6P1bEPAiBsLyGlr2J3chs=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=K/5WOjljey+/fJXZ0X+68rwUfaYvv8Eo7QnQcj3jF86cXkxEgX4fnuqvzGm4hRilaZACSjlp2uERNOsuK6tpSeY40itbB4QlBCPLQpopl22NyuAEfbN15hOww6Si8h+QKirMMJN8cmSAW70iDpQMu+lds7VhyRyFr3uDII6QhI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=gcYDTijV; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710863640;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=Ko9D6jNCbeVAgprQATdARtgHSvmfZlnh+pwV+XTC6LU=;
+	b=gcYDTijVM6RpkRLGRAL5e2N6YQchIZjHELMa+Q4Rj7yxyY3mFMiHRIqdA1XYC/EmZ2HxRo
+	k4h+/IP71TX9bTbQpVnraQq/t0EixYAgciGAMpQrWYGYYlUnkjvDLBUg0tf/trCuHw3sle
+	sXT8lYH9LEs+4Q9F2ZpYgn6uyPy0rpY=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-616-zfuj1Uq-N6GFgh1hIK-5Tw-1; Tue, 19 Mar 2024 11:53:55 -0400
+X-MC-Unique: zfuj1Uq-N6GFgh1hIK-5Tw-1
+Received: from smtp.corp.redhat.com (int-mx03.intmail.prod.int.rdu2.redhat.com [10.11.54.3])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 6784D800266;
+	Tue, 19 Mar 2024 15:53:55 +0000 (UTC)
+Received: from [10.22.10.159] (unknown [10.22.10.159])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id F06D01121306;
+	Tue, 19 Mar 2024 15:53:54 +0000 (UTC)
+Message-ID: <9b4f3dac-779a-4eef-945b-3ca1455c0dfe@redhat.com>
+Date: Tue, 19 Mar 2024 11:53:50 -0400
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-In-Reply-To: <ZekMnStRy1WwF2eb@google.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] Locking: Let PREEMPT_RT compile again with new rwsem
+ asserts.
+Content-Language: en-US
+To: Sebastian Andrzej Siewior <bigeasy@linutronix.de>,
+ Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+ Ingo Molnar <mingo@redhat.com>, Peter Zijlstra <peterz@infradead.org>,
+ Thomas Gleixner <tglx@linutronix.de>, Will Deacon <will@kernel.org>,
+ Clark Williams <williams@redhat.com>
+References: <20240319070550.ws_uO21-@linutronix.de>
+ <ZfmVPid-d7cpf6Yt@casper.infradead.org>
+ <20240319141506.DUd9NKl4@linutronix.de>
+From: Waiman Long <longman@redhat.com>
+In-Reply-To: <20240319141506.DUd9NKl4@linutronix.de>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.3
 
-On Wed, Mar 06, 2024 at 04:38:53PM -0800,
-David Matlack <dmatlack@google.com> wrote:
 
-> On 2024-03-01 09:28 AM, isaku.yamahata@intel.com wrote:
-> > diff --git a/arch/x86/kvm/mmu/mmu.c b/arch/x86/kvm/mmu/mmu.c
-> > index e4cc7f764980..7d5e80d17977 100644
-> > --- a/arch/x86/kvm/mmu/mmu.c
-> > +++ b/arch/x86/kvm/mmu/mmu.c
-> > @@ -4659,6 +4659,36 @@ int kvm_tdp_page_fault(struct kvm_vcpu *vcpu, struct kvm_page_fault *fault)
-> >  	return direct_page_fault(vcpu, fault);
-> >  }
-> >  
-> > +int kvm_mmu_map_page(struct kvm_vcpu *vcpu, gpa_t gpa, u32 error_code,
-> > +		     u8 max_level, u8 *goal_level)
-> > +{
-> > +	struct kvm_page_fault fault = KVM_PAGE_FAULT_INIT(vcpu, gpa, error_code,
-> > +							  false, max_level);
-> > +	int r;
-> > +
-> > +	r = __kvm_mmu_do_page_fault(vcpu, &fault);
-> 
-> If TDP is disabled __kvm_mmu_do_page_fault() will interpret @gpa as a
-> GVA no? And if the vCPU is in guest-mode __kvm_mmu_do_page_fault() will
-> interpret gpa as a nGPA right?
+On 3/19/24 10:15, Sebastian Andrzej Siewior wrote:
+> On 2024-03-19 13:38:06 [+0000], Matthew Wilcox wrote:
+>> On Tue, Mar 19, 2024 at 08:05:50AM +0100, Sebastian Andrzej Siewior wrote:
+>>> -static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
+>>> +static __always_inline bool rwsem_held_write(const struct rw_semaphore *sem)
+>> The locking maintainers were very clear that this predicate Should Not
+>> Exist.  It encourages people to write bad code.  Assertions only!
+> What do you refer to? The inline vs __always_inline or
+> rwsem_held_write() should not exists and it should invoke directly
+> rw_base_is_write_locked()?
 
-Just to close the discussion.
-As we discussed at [1], I'd lie to restrict the API to TDP MMU only
-(with the next version).  If vCPU is in guest-mode or legacy MMU mode, it will
-get error.
+Just merge rwsem_held_write() into rwsem_assert_held_write_nolockdep() 
+and we should be all set.
 
-[1] https://lore.kernel.org/kvm/ZekQFdPlU7RDVt-B@google.com/
--- 
-Isaku Yamahata <isaku.yamahata@intel.com>
+Cheers,
+Longman
+
+>>>   {
+>>> -	rw_base_assert_held_write(sem);
+>>> +	return rw_base_is_write_locked(&sem->rwbase);
+>>> +}
+>>> +
+>>> +static __always_inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
+>>> +{
+>>> +	WARN_ON(!rwsem_held_write(sem));
+>>>   }
+>>>   
+>>>   static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
+> Sebastian
+>
+
 
