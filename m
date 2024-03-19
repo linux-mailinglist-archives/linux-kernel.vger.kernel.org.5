@@ -1,265 +1,182 @@
-Return-Path: <linux-kernel+bounces-107435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id CBB4087FC77
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:59:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 91DE787FC7C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:01:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 817172826C7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:59:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 183C31F2301B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:01:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F297CF03;
-	Tue, 19 Mar 2024 10:59:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3AF1B7E56F;
+	Tue, 19 Mar 2024 11:01:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="LHNulDAQ"
-Received: from mail-wm1-f49.google.com (mail-wm1-f49.google.com [209.85.128.49])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="RCxZDADs"
+Received: from mail-vs1-f47.google.com (mail-vs1-f47.google.com [209.85.217.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 928885810A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:59:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.49
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E422A7CF03;
+	Tue, 19 Mar 2024 11:01:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.217.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710845947; cv=none; b=BAsU4CDi17QY2hBcGlLgpROHSf3enSwqrol6b/H5gqEe+0gZtDxZnF1GyxFFeMccnwyJdmIaBhT/jarKz+nKTYpce7jxe61/MrJWAvLrphRv83d9+x8klHSnwb381XQrtHbWbiz073vQc7iCtW5Fg/5LQyB2dD9LCxcT1VboTrQ=
+	t=1710846069; cv=none; b=TRtUsG8fGsx6acjNk8q4xk+Iy2zXstY3POPn+yxh7A6bBY0Cemm9vG5w3B1EtDHwb9n/GfrjftJ9zD//7wBAhD5sswXp0FyFTiyrR6u7PafoH6C2WZobY9wUlXg4tx8G4VpKL5T32gaqV8q34N9p4h4u3temZBOXRanWVNrrN1w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710845947; c=relaxed/simple;
-	bh=eSyOUTrKm2w+4kPW3KKzkhjBFUJbNXkStK/tdlKIsKc=;
-	h=Message-ID:Date:MIME-Version:From:Subject:To:Cc:References:
-	 In-Reply-To:Content-Type; b=kGrBjRbzVrhX4NBt0OqX8q/lusc6QG2zDGE34NSg5lie2POVR7YSaD88xIooI4FmCZUOLzvsDp1egeGJVHetFMeUtUqwXnLmcHVKXH9MUpVQDfeuWC4hUJzunPKTrpsaqbARy7tl8LrDPMoAw7Q0zW2VAyuowDpWwDTRVE3EvgQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=LHNulDAQ; arc=none smtp.client-ip=209.85.128.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-wm1-f49.google.com with SMTP id 5b1f17b1804b1-41463132ab1so4854945e9.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 03:59:05 -0700 (PDT)
+	s=arc-20240116; t=1710846069; c=relaxed/simple;
+	bh=V8dQ99e5Y9M3LuuWQ364Upo7u+6yPLvJxT/d6XYPtps=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=cdWB+kgfqTpx3RtTPb9fW3vRjSXO/ae0Jb7f6gEAImamI50WzA7Kq/S7b0lHV7jPPCIk68RXvutvpLzSFF3VVk18uXD3kQLQmUkelDrPSeH6jD50vS64Te9VegL3qWzs6MkH1483CwnCNj7lzvU5XtBjZYSavrWRptx9bwa46ac=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=RCxZDADs; arc=none smtp.client-ip=209.85.217.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-vs1-f47.google.com with SMTP id ada2fe7eead31-47689bdbc5aso606317137.2;
+        Tue, 19 Mar 2024 04:01:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710845944; x=1711450744; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=URJxdgqVlqoDNrXeeXOTq1SfTWACq8g8yW2+lxzoe5c=;
-        b=LHNulDAQTB32q3f4KTjkBu/EzroYQ9LCKmCzqk1qUH/OwvZ5iLff7JxpdId1lF3kC7
-         DFP17tF2bdcgV/VDnnrPZs+siPNhrf+PN4G3/S+UpM09EYbOtDe9+pwp1gpDcnE3+q4T
-         lEhUxK2GeUcwPCN3GfQDeu0oHEGxzaGCgmeZa6mDYlGovuErfpQg0Ex2a1HCai3BU5l/
-         7MZp1678o8Tuqx1b+VsEff4ZNiH1CoabKvI5m5DseZqBljBU+F92veJu2eHqrx+x2D0t
-         lIlCbBM9FzTfZloQOCD4fsMMPEOoU1x673234NTDLCUhrFZidsqOk5pc9I5S0JlRhqiz
-         A1CQ==
+        d=gmail.com; s=20230601; t=1710846067; x=1711450867; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=kOBLKV0xQ7AJ5900qlJ5sX84DjfeTGhfWKoI9iiPc1I=;
+        b=RCxZDADs9AbGFvwhC7zk35begld1yZDA/yz5VmOC3bB1ckFfC5zP+y2PyYj2Jf01ua
+         d/dIfxG8Cb2+/gOODYoaQxExxhuFSlCfX0y8Rl+P9okqy7Tj1RaxDpquuKSNB90KIzY9
+         ZYqKAhCF5oot8jl++udKjf1CFq/dc0kjsMZaQ9auw652vzOYUo7cUMWlJfkBizV4sE9K
+         H6jtdAPqDulqNruMQ2Bj+RkOODXUnTkukPCjhriBehPzzxrk068ex7odu/9JJP0Na5r0
+         2HIUN73NA1fzaaXmlDkkiWExowUOLTBc7aTH8g3iJ0Q7zaUXmQ5/I9enUuEsChzL0vb5
+         MZJg==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710845944; x=1711450744;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt
-         :references:cc:to:content-language:subject:reply-to:from:user-agent
-         :mime-version:date:message-id:x-gm-message-state:from:to:cc:subject
-         :date:message-id:reply-to;
-        bh=URJxdgqVlqoDNrXeeXOTq1SfTWACq8g8yW2+lxzoe5c=;
-        b=FOJNCQUT829E0gDZT7N5TAbgayBQ0qNO39JeSuZJ4675xV7N4MjQbDWSSfCIvnhXEm
-         tc497YF84xGdhsPRckIzYdYvCVF9p7V6o6Di/YHiJNUugkBUeHJGQt3tTQUVkNc7e01Y
-         MbW4/QgUgOul3MCUky/+qp1UJryQGlQE2x5ql/GPhtReN0C+j3fEtzlXFiXcsxiLzesO
-         W7yq1aNDjGViUMz43Qne9fYIpYwNqT7au8DBcgyIgsIxXg6UdKuDsak3MH4NbM4jeU07
-         wykLLJ57LT9ZiA957pFbgrqcbjZAMCccw3SUihmhQeI4XKyOsV0mqMP+9vvOXhUnVF2B
-         pXMw==
-X-Forwarded-Encrypted: i=1; AJvYcCVSB2k15AIdvU+i4kEh01UPiFmU3eL9LE9lEeeVjQCLU+O+urOcxxHt2slYjhO4/6E9eqGaSr9tZNyeBYf6G339F2tTWlGB1zLYxuyH
-X-Gm-Message-State: AOJu0YwIx5GUBC/g8EgyRRVIhpzuqIYFCoaxTsJGfvYOLp17N/5dagfm
-	yUSBSUG7ap7OkoRmcyq7IU+/7XU2V40t3h2dSI+FENdzb2lQDdyvBTkAZ2qWgw0=
-X-Google-Smtp-Source: AGHT+IHTw+fqjT9qtXiOHeC9NT/dqyCAEtCiF1WiSTroO3VvPAOY+LweBAb87o715igho5oYJxZGcw==
-X-Received: by 2002:adf:f5d1:0:b0:33e:7650:58b4 with SMTP id k17-20020adff5d1000000b0033e765058b4mr9601797wrp.27.1710845943516;
-        Tue, 19 Mar 2024 03:59:03 -0700 (PDT)
-Received: from ?IPV6:2a01:e0a:982:cbb0:2fcf:6f16:3b3b:da8e? ([2a01:e0a:982:cbb0:2fcf:6f16:3b3b:da8e])
-        by smtp.gmail.com with ESMTPSA id l4-20020adfe584000000b0033e91509224sm12093815wrm.22.2024.03.19.03.59.02
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 03:59:03 -0700 (PDT)
-Message-ID: <85d67f3f-2b01-44c0-ace3-5e7cb48a9431@linaro.org>
-Date: Tue, 19 Mar 2024 11:59:02 +0100
+        d=1e100.net; s=20230601; t=1710846067; x=1711450867;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=kOBLKV0xQ7AJ5900qlJ5sX84DjfeTGhfWKoI9iiPc1I=;
+        b=W7mvPuqngiqR5ZILZUUhYHzLMmSqrHqP7i8fX+I7Np4zryApYSy9KNTI3Ra/LkKDYR
+         /WJ257YVjEZZt8U2d9UwRMoqr9TueJVV4A3KliwOoiIqzdG6Hab0Hb3RsG1Hl7yr+N4C
+         iHgTOdpjmdHHWTXHUpMnFnyz6VO5x0t/IooA+Jtb9iGDN8ja+zTjg5sfT/V07KNuYHc5
+         8093HHNC5G/jAEqZXv3X9wpDeXpRUVM7oHWyZIr0x9QZB5cUfDRgUKuDe3EiAf0Kp40G
+         3Z/v0Y9ffaH9FILqqAuiwocH66nj3p46T9XlDoGaYoWBW1c5e8G5MqbVgnuuFZLZ6Hz6
+         ISGA==
+X-Forwarded-Encrypted: i=1; AJvYcCVjVkq6D4OvqZbzBLya2BG35XQCtZrKlqY2CszYEBwYwv02wVCzKcQ1PFuHWMAO544rD57VtGkN7qe9OhyVCKj34E6uWWM7P2kFiCTs42ASZeohA45lVhGts6bNb4BvPgwSvKpHb5y4OY3a
+X-Gm-Message-State: AOJu0Yyu/b5vPbh18cy9aUHUBGxWPwYW8pavMt+CZl11y0f0Q+U0g97i
+	Y/azMqzcIKPx2QPZDZ+ePdVe6AZAuUNBsx45J45Aut7fh1npb8ZCH4DZRUrRH8CqDgdFMfmFIqr
+	fKqosKSbq8UmeE8AFhnG6j55Qdro=
+X-Google-Smtp-Source: AGHT+IGdbW0VUwa9qosaiw9cgqJN6DwQC54NdjZWWS92EGosoQQuO0RaG4psVVbqF4D15bN7RBb5MF2n462s5LhYXB8=
+X-Received: by 2002:a67:f296:0:b0:473:1a3e:57ce with SMTP id
+ m22-20020a67f296000000b004731a3e57cemr11704297vsk.27.1710846066747; Tue, 19
+ Mar 2024 04:01:06 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-From: Neil Armstrong <neil.armstrong@linaro.org>
-Reply-To: neil.armstrong@linaro.org
-Subject: Re: [PATCH 3/7] phy: qcom: qmp-pcie: register second optional PHY AUX
- clock
-Content-Language: en-US, fr
-To: Dmitry Baryshkov <dmitry.baryshkov@linaro.org>
-Cc: Bjorn Andersson <andersson@kernel.org>,
- Konrad Dybcio <konrad.dybcio@linaro.org>, Vinod Koul <vkoul@kernel.org>,
- Kishon Vijay Abraham I <kishon@kernel.org>, Rob Herring <robh@kernel.org>,
- Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
- Conor Dooley <conor+dt@kernel.org>, linux-arm-msm@vger.kernel.org,
- linux-phy@lists.infradead.org, devicetree@vger.kernel.org,
- linux-kernel@vger.kernel.org
-References: <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-0-926d7a4ccd80@linaro.org>
- <20240319-topic-sm8x50-upstream-pcie-1-phy-aux-clk-v1-3-926d7a4ccd80@linaro.org>
- <CAA8EJpoJ0rUd8aY6xpXyL3Obg66XtOebso_AUUxKmg1CWNykJA@mail.gmail.com>
-Autocrypt: addr=neil.armstrong@linaro.org; keydata=
- xsBNBE1ZBs8BCAD78xVLsXPwV/2qQx2FaO/7mhWL0Qodw8UcQJnkrWmgTFRobtTWxuRx8WWP
- GTjuhvbleoQ5Cxjr+v+1ARGCH46MxFP5DwauzPekwJUD5QKZlaw/bURTLmS2id5wWi3lqVH4
- BVF2WzvGyyeV1o4RTCYDnZ9VLLylJ9bneEaIs/7cjCEbipGGFlfIML3sfqnIvMAxIMZrvcl9
- qPV2k+KQ7q+aXavU5W+yLNn7QtXUB530Zlk/d2ETgzQ5FLYYnUDAaRl+8JUTjc0CNOTpCeik
- 80TZcE6f8M76Xa6yU8VcNko94Ck7iB4vj70q76P/J7kt98hklrr85/3NU3oti3nrIHmHABEB
- AAHNKk5laWwgQXJtc3Ryb25nIDxuZWlsLmFybXN0cm9uZ0BsaW5hcm8ub3JnPsLAkQQTAQoA
- OwIbIwULCQgHAwUVCgkICwUWAgMBAAIeAQIXgBYhBInsPQWERiF0UPIoSBaat7Gkz/iuBQJk
- Q5wSAhkBAAoJEBaat7Gkz/iuyhMIANiD94qDtUTJRfEW6GwXmtKWwl/mvqQtaTtZID2dos04
- YqBbshiJbejgVJjy+HODcNUIKBB3PSLaln4ltdsV73SBcwUNdzebfKspAQunCM22Mn6FBIxQ
- GizsMLcP/0FX4en9NaKGfK6ZdKK6kN1GR9YffMJd2P08EO8mHowmSRe/ExAODhAs9W7XXExw
- UNCY4pVJyRPpEhv373vvff60bHxc1k/FF9WaPscMt7hlkbFLUs85kHtQAmr8pV5Hy9ezsSRa
- GzJmiVclkPc2BY592IGBXRDQ38urXeM4nfhhvqA50b/nAEXc6FzqgXqDkEIwR66/Gbp0t3+r
- yQzpKRyQif3OwE0ETVkGzwEIALyKDN/OGURaHBVzwjgYq+ZtifvekdrSNl8TIDH8g1xicBYp
- QTbPn6bbSZbdvfeQPNCcD4/EhXZuhQXMcoJsQQQnO4vwVULmPGgtGf8PVc7dxKOeta+qUh6+
- SRh3vIcAUFHDT3f/Zdspz+e2E0hPV2hiSvICLk11qO6cyJE13zeNFoeY3ggrKY+IzbFomIZY
- 4yG6xI99NIPEVE9lNBXBKIlewIyVlkOaYvJWSV+p5gdJXOvScNN1epm5YHmf9aE2ZjnqZGoM
- Mtsyw18YoX9BqMFInxqYQQ3j/HpVgTSvmo5ea5qQDDUaCsaTf8UeDcwYOtgI8iL4oHcsGtUX
- oUk33HEAEQEAAcLAXwQYAQIACQUCTVkGzwIbDAAKCRAWmrexpM/4rrXiB/sGbkQ6itMrAIfn
- M7IbRuiSZS1unlySUVYu3SD6YBYnNi3G5EpbwfBNuT3H8//rVvtOFK4OD8cRYkxXRQmTvqa3
- 3eDIHu/zr1HMKErm+2SD6PO9umRef8V82o2oaCLvf4WeIssFjwB0b6a12opuRP7yo3E3gTCS
- KmbUuLv1CtxKQF+fUV1cVaTPMyT25Od+RC1K+iOR0F54oUJvJeq7fUzbn/KdlhA8XPGzwGRy
- 4zcsPWvwnXgfe5tk680fEKZVwOZKIEuJC3v+/yZpQzDvGYJvbyix0lHnrCzq43WefRHI5XTT
- QbM0WUIBIcGmq38+OgUsMYu4NzLu7uZFAcmp6h8g
-Organization: Linaro Developer Services
-In-Reply-To: <CAA8EJpoJ0rUd8aY6xpXyL3Obg66XtOebso_AUUxKmg1CWNykJA@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240222081135.173040-1-21cnbao@gmail.com> <20240308121139.GA116548@cmpxchg.org>
+In-Reply-To: <20240308121139.GA116548@cmpxchg.org>
+From: Barry Song <21cnbao@gmail.com>
+Date: Tue, 19 Mar 2024 19:00:55 +0800
+Message-ID: <CAGsJ_4wSSvVxPb7eJqewqM1My7y+yT1hNZC0s04G=mD06tq4=g@mail.gmail.com>
+Subject: Re: [PATCH v6 0/2] zswap: remove the memcpy if acomp is not sleepable
+To: Johannes Weiner <hannes@cmpxchg.org>, Tom Zanussi <tom.zanussi@linux.intel.com>, 
+	herbert@gondor.apana.org.au
+Cc: akpm@linux-foundation.org, davem@davemloft.net, 
+	linux-crypto@vger.kernel.org, linux-mm@kvack.org, nphamcs@gmail.com, 
+	yosryahmed@google.com, zhouchengming@bytedance.com, chriscli@google.com, 
+	chrisl@kernel.org, ddstreet@ieee.org, linux-kernel@vger.kernel.org, 
+	sjenning@redhat.com, vitaly.wool@konsulko.com, 
+	Barry Song <v-songbaohua@oppo.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 19/03/2024 11:55, Dmitry Baryshkov wrote:
-> On Tue, 19 Mar 2024 at 12:45, Neil Armstrong <neil.armstrong@linaro.org> wrote:
->>
->> The PCIe Gen4x2 PHY found in the SM8[456]50 SoCs have a second clock,
->> add the code to register it for PHYs configs that sets a aux_clock_rate.
->>
->> In order to get the right clock, add qmp_pcie_clk_hw_get() which uses
->> the newly introduced QMP_PCIE_PIPE_CLK & QMP_PCIE_PHY_AUX_CLK clock
->> IDs and also supports the legacy bindings by returning the PIPE clock.
->>
->> Signed-off-by: Neil Armstrong <neil.armstrong@linaro.org>
->> ---
->>   drivers/phy/qualcomm/phy-qcom-qmp-pcie.c | 70 ++++++++++++++++++++++++++++++++
->>   1 file changed, 70 insertions(+)
->>
->> diff --git a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> index 079b3e306489..2d05226ae200 100644
->> --- a/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> +++ b/drivers/phy/qualcomm/phy-qcom-qmp-pcie.c
->> @@ -22,6 +22,8 @@
->>   #include <linux/reset.h>
->>   #include <linux/slab.h>
->>
->> +#include <dt-bindings/phy/phy-qcom-qmp.h>
->> +
->>   #include "phy-qcom-qmp-common.h"
->>
->>   #include "phy-qcom-qmp.h"
->> @@ -2389,6 +2391,9 @@ struct qmp_phy_cfg {
->>
->>          /* QMP PHY pipe clock interface rate */
->>          unsigned long pipe_clock_rate;
->> +
->> +       /* QMP PHY AUX clock interface rate */
->> +       unsigned long aux_clock_rate;
->>   };
->>
->>   struct qmp_pcie {
->> @@ -2420,6 +2425,7 @@ struct qmp_pcie {
->>          int mode;
->>
->>          struct clk_fixed_rate pipe_clk_fixed;
->> +       struct clk_fixed_rate aux_clk_fixed;
->>   };
->>
->>   static inline void qphy_setbits(void __iomem *base, u32 offset, u32 val)
->> @@ -3681,6 +3687,62 @@ static int phy_pipe_clk_register(struct qmp_pcie *qmp, struct device_node *np)
->>          return devm_clk_hw_register(qmp->dev, &fixed->hw);
->>   }
->>
->> +/*
->> + * Register a fixed rate PHY aux clock.
->> + *
->> + * The <s>_phy_aux_clksrc generated by PHY goes to the GCC that gate
->> + * controls it. The <s>_phy_aux_clk coming out of the GCC is requested
->> + * by the PHY driver for its operations.
->> + * We register the <s>_phy_aux_clksrc here. The gcc driver takes care
->> + * of assigning this <s>_phy_aux_clksrc as parent to <s>_phy_aux_clk.
->> + * Below picture shows this relationship.
->> + *
->> + *         +---------------+
->> + *         |   PHY block   |<<---------------------------------------------+
->> + *         |               |                                               |
->> + *         |   +-------+   |                      +-----+                  |
->> + *   I/P---^-->|  PLL  |---^--->phy_aux_clksrc--->| GCC |--->phy_aux_clk---+
->> + *    clk  |   +-------+   |                      +-----+
->> + *         +---------------+
->> + */
->> +static int phy_aux_clk_register(struct qmp_pcie *qmp, struct device_node *np)
->> +{
->> +       struct clk_fixed_rate *fixed = &qmp->aux_clk_fixed;
->> +       struct clk_init_data init = { };
->> +       int ret;
->> +
->> +       ret = of_property_read_string_index(np, "clock-output-names", 1, &init.name);
->> +       if (ret) {
->> +               dev_err(qmp->dev, "%pOFn: No clock-output-names index 1\n", np);
->> +               return ret;
->> +       }
->> +
->> +       init.ops = &clk_fixed_rate_ops;
->> +
->> +       fixed->fixed_rate = qmp->cfg->aux_clock_rate;
->> +       fixed->hw.init = &init;
->> +
->> +       return devm_clk_hw_register(qmp->dev, &fixed->hw);
->> +}
->> +
->> +static struct clk_hw *qmp_pcie_clk_hw_get(struct of_phandle_args *clkspec, void *data)
->> +{
->> +       struct qmp_pcie *qmp = data;
->> +
->> +       /* Support legacy bindings */
->> +       if (!clkspec->args_count)
->> +               return &qmp->pipe_clk_fixed.hw;
->> +
->> +       switch (clkspec->args[0]) {
->> +       case QMP_PCIE_PIPE_CLK:
->> +               return &qmp->pipe_clk_fixed.hw;
->> +       case QMP_PCIE_PHY_AUX_CLK:
->> +               return &qmp->aux_clk_fixed.hw;
->> +       }
->> +
->> +       return ERR_PTR(-EINVAL);
->> +}
-> 
-> Can we use of_clk_hw_onecell_get() instead? I think it even should be
-> possible to use onecell for both cases, it will look at the first arg,
-> which will be 0 in case of #clock-cells equal to 0.
+On Fri, Mar 8, 2024 at 8:11=E2=80=AFPM Johannes Weiner <hannes@cmpxchg.org>=
+ wrote:
+>
+> On Thu, Feb 22, 2024 at 09:11:33PM +1300, Barry Song wrote:
+> > From: Barry Song <v-songbaohua@oppo.com>
+> >
+> > In zswap, if we use zsmalloc, we cannot sleep while we map the
+> > compressed memory, so we copy it to a temporary buffer. By
+> > knowing the alg won't sleep can help zswap to avoid the
+> > memcpy.
+> > Thus we introduce an API in crypto to expose if acomp is async,
+> > and zswap can use it to decide if it can remove copying to the
+> > tmp buffer.
+> >
+> > -v6:
+> >  * add acked-by of Herbert, Thanks!
+> >  * remove patch 3/3 from the series, as that one will go
+> >    through crypto
+> >
+> > Barry Song (2):
+> >   crypto: introduce: acomp_is_async to expose if comp drivers might
+> >     sleep
+> >   mm/zswap: remove the memcpy if acomp is not sleepable
+> >
+> >  include/crypto/acompress.h | 6 ++++++
+> >  mm/zswap.c                 | 6 ++++--
+> >  2 files changed, 10 insertions(+), 2 deletions(-)
+>
+> Acked-by: Johannes Weiner <hannes@cmpxchg.org>
+>
+> Looks good to me.
+>
+> One small question: why cache is_sleepable in zswap instead of
+> checking acomp_is_async() directly? It doesn't look expensive.
 
-Let me investigate if it's possible
+Thank you, Johannes. Your question sparked an idea for me. Drivers, such as
+drivers/crypto/intel/iaa/iaa_crypto_main.c, have the capability to dynamica=
+lly
+switch between synchronous and asynchronous modes. Consequently, they
+also have the opportunity to dynamically modify cra_flags. This means that
+we may not require the cache. right now, iaa always has an ASYNC flag and
+needs a memcpy. If we can dynamically change the flag, the iaa platform mig=
+ht
+be able to further remove a memcpy in zswap if sync mode is set for it.
 
-> 
->> +
->>   static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np)
->>   {
->>          int ret;
->> @@ -3689,6 +3751,14 @@ static int qmp_pcie_register_clocks(struct qmp_pcie *qmp, struct device_node *np
->>          if (ret)
->>                  return ret;
->>
->> +       if (qmp->cfg->aux_clock_rate) {
->> +               ret = phy_aux_clk_register(qmp, np);
->> +               if (ret)
->> +                       return ret;
->> +
->> +               return devm_of_clk_add_hw_provider(qmp->dev, qmp_pcie_clk_hw_get, qmp);
->> +       }
->> +
->>          return devm_of_clk_add_hw_provider(qmp->dev, of_clk_hw_simple_get,
->>                                             &qmp->pipe_clk_fixed.hw);
->>   }
->>
->> --
->> 2.34.1
->>
->>
-> 
-> 
+/*
+ * The iaa crypto driver supports three 'sync' methods determining how
+ * compressions and decompressions are performed:
+ *
+ * - sync:      the compression or decompression completes before
+ *              returning.  This is the mode used by the async crypto
+ *              interface when the sync mode is set to 'sync' and by
+ *              the sync crypto interface regardless of setting.
+ *
+ * - async:     the compression or decompression is submitted and returns
+ *              immediately.  Completion interrupts are not used so
+ *              the caller is responsible for polling the descriptor
+ *              for completion.  This mode is applicable to only the
+ *              async crypto interface and is ignored for anything
+ *              else.
+ *
+ * - async_irq: the compression or decompression is submitted and
+ *              returns immediately.  Completion interrupts are
+ *              enabled so the caller can wait for the completion and
+ *              yield to other threads.  When the compression or
+ *              decompression completes, the completion is signaled
+ *              and the caller awakened.  This mode is applicable to
+ *              only the async crypto interface and is ignored for
+ *              anything else.
+ *
+ * These modes can be set using the iaa_crypto sync_mode driver
+ * attribute.
+ */
 
+But it seems we will get lots of synchronized issues particularly when we a=
+re
+changing the mode by sysfs.
+
+static ssize_t sync_mode_store(struct device_driver *driver,
+      const char *buf, size_t count)
+{
+           ...
+}
+
+I don't have any iaa hardware. But I'd like to ask if this can interest Tom=
+, the
+maintainer of INTEL IAA CRYPTO DRIVER to have a go :-)
+
++Tom Zanussi
+
+Thanks
+Barry
 
