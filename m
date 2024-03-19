@@ -1,118 +1,170 @@
-Return-Path: <linux-kernel+bounces-107844-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107846-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 96ACB880267
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:34:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id C1ABF88026B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:35:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 510FE283A92
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:34:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 617A81F24BE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:35:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7659CC8E1;
-	Tue, 19 Mar 2024 16:34:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 52F381CD24;
+	Tue, 19 Mar 2024 16:35:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B3VV3E+E"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="h6FVrGfW"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B729313ACC;
-	Tue, 19 Mar 2024 16:34:48 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C440B1774A
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:35:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710866088; cv=none; b=Bd81Pu7CEdJVHVZRCNghocgV0byb3/hBtfwpu9JZ9geO5ATxt9L5skkDqB6JZPGAWJlNdDwCi9hIkyPpCg6arJ3/pkYAs8MIR08h/S5xR13rsXDEeL/8LHV3CwNuBBHfTrfzOIfXcbMCVChSU3oJNNaSc2Nngtb/Xjs1ylJiOVQ=
+	t=1710866111; cv=none; b=qVCzmWT44cULB8hZ5a3MtZE4lh+rFCRZVsxaHrB8IdPUrmk+ss0mEluTeQ41Ot0ZZ7kMmKm2Td/BfP+kYIA1dWXpBCnOV3ZbMAcamPDYfwQoRFCBVS+xsjmMYaIhKTsxX/lCGO4XeqrvVDLbDu0H1Ap1mOv2SQzUPV1B46x90Q8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710866088; c=relaxed/simple;
-	bh=sWcrpcQ7SA215oarYW2cTrDgksU/Injyvl3jW9oqqF0=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=lbrCkkV+3LCPTZQSODep+SpWdUmVF8SwrF7YhSgh2co5jABgF/7RjWpP6FWeQXxPgj64emP5rWN+BC7NYsnzl8+8Bsc0Qs0WBkffLdbacId7Up8+EN8Py6I5ZwF9JTaK4UvT370o9qEVMki2r60COqoQMzZ0gWl2UyFH3kn75Ug=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B3VV3E+E; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8DEB3C433F1;
-	Tue, 19 Mar 2024 16:34:47 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710866088;
-	bh=sWcrpcQ7SA215oarYW2cTrDgksU/Injyvl3jW9oqqF0=;
-	h=From:Date:Subject:To:Cc:From;
-	b=B3VV3E+E6rCPFhQr++KfCfRo/HbfUXQUEe05clvlMeoH3yJDRhSM+lJmtDAFOSwh/
-	 OgbWM5px5egmIZb6whE/3aO+HFflY8Oqecy7VgvBNGZEtZNNsvoNiZDYsv97Chweu7
-	 nZZkpMi0VrLuG+/ZvyaM3/tBj3b6I5vFjY5Ts97sKZ10Azu6vMvyorOUeSng8I5F4o
-	 Ndzq/o6DbfYrIbOkprxWcFCMOIuJNNLuyw0Fhtzq/PI70daie79wsLPkHkTW5XLHKy
-	 AZl1yQs3tGAkq8ziok0IpW3JB9itZd02Rin5iVh5h5zYqUhJ8A0qtAlivVAqT2OehQ
-	 wABmUmUbCWlrw==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Tue, 19 Mar 2024 12:34:45 -0400
-Subject: [PATCH] 9p: explicitly deny setlease attempts
+	s=arc-20240116; t=1710866111; c=relaxed/simple;
+	bh=DZcIdpEYDtyvpBwX6sQ+oG1Juy4yZCi8Pkp/MZRvJbk=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version:Content-Type; b=CE9GCJgPZje6FCqHlcLlnDpZC3fDQDWsxxG5ivr7NzoaoeVtMmSTtTXDCQC4RGjGm+x31uTAf5w5PPBuwMuiq2Yfppqj8PFzcxc61g1ItKmMXzb2k62xdbyAjBqrJa6D1DpgQvkRmyKfpudvuH9/GZPLzksE8m9zMnajO0VnUiM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=h6FVrGfW; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710866108;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=1A6JplVJpKt9d5YjCUp/W/cMYHIdnlJlDtDSH3FwDD4=;
+	b=h6FVrGfWxVPkWu7n6uoklpntkzb9RckC3oP5xUzPwKqRLAVL5VHdHQvcP8pUo2JgXaNrGy
+	PwLu6me8Edx225oHQi48yz4AgH2qvmF/yREJRAVN6PmdIiBhzst94TLcuR4e2RIRH1kh9S
+	n6Pf47SCKHZ3dR4VT/31KMe49nqDG7o=
+Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
+ [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-433-WmWgR7J4PviBPQvXQR9ICQ-1; Tue, 19 Mar 2024 12:35:03 -0400
+X-MC-Unique: WmWgR7J4PviBPQvXQR9ICQ-1
+Received: from smtp.corp.redhat.com (int-mx04.intmail.prod.int.rdu2.redhat.com [10.11.54.4])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 19A9A1801DB9;
+	Tue, 19 Mar 2024 16:35:02 +0000 (UTC)
+Received: from fedora.redhat.com (unknown [10.45.225.95])
+	by smtp.corp.redhat.com (Postfix) with ESMTP id 1C1FE2024517;
+	Tue, 19 Mar 2024 16:35:01 +0000 (UTC)
+From: Vitaly Kuznetsov <vkuznets@redhat.com>
+To: kvm@vger.kernel.org,
+	Paolo Bonzini <pbonzini@redhat.com>,
+	Sean Christopherson <seanjc@google.com>
+Cc: Daan De Meyer <daan.j.demeyer@gmail.com>,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH RFC not-to-be-merged] KVM: SVM: Workaround overly strict CR3 check by Hyper-V
+Date: Tue, 19 Mar 2024 17:34:56 +0100
+Message-ID: <20240319163456.133942-1-vkuznets@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240319-setlease-v1-1-8532bdd2b74a@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAKS++WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDY0NL3eLUkpzUxOJU3eRUY8O0JAtzc/MkAyWg8oKi1LTMCrBR0bG1tQA
- swUHSWgAAAA==
-To: Eric Van Hensbergen <ericvh@kernel.org>, 
- Latchesar Ionkov <lucho@ionkov.net>, 
- Dominique Martinet <asmadeus@codewreck.org>, 
- Christian Schoenebeck <linux_oss@crudebyte.com>
-Cc: v9fs@lists.linux.dev, linux-kernel@vger.kernel.org, 
- linux-fsdevel@vger.kernel.org, Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1165; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=sWcrpcQ7SA215oarYW2cTrDgksU/Injyvl3jW9oqqF0=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl+b6nqBqEx9lnOPjWB/2aQcCJxobhEnUDWaCQR
- wzZHtSfQZuJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZfm+pwAKCRAADmhBGVaC
- FaJqEAC9PNA8wJ0oiNV1JvvkQYYnoDcC8XMd5mxTHnh7uIfiXtH5ZwGDuZDlKkkeqkb3o+25Yhb
- 7ZiICO3zhHg+l/uiXKGpQH4cr3f/W50lMxe/qHGW9qKCE+BoXKpdl07FLYGxr6k6UlDKjhsq9hh
- STultKHcg3elPBdG07knAoDDZROLb/2gayvaKYk6uUypR+4aGbgsN+CsXDUUARJ/bdvhMouTN9f
- L+bKRu4hEbDToxNE/kh36921HT6Jw8yTvA9FMwH6kOYiJCfjMeiSYWribW9K00+fn9XtqlMZpRT
- Bt5KwAJvYWl2TJN0BjICxQjC9Ydygt77doc567ZrJ6PRsCs2xoa4VNxw9RTg0ffbZQFMeK3hO8d
- 4G0cHVY5aP4LztoZLJCjL+ul+B9D2Yy4Eq3UnFZFsEMdusjZsH6Fqb+cNTxq4yefMRD98zhgzDM
- V8WwUNFgFMtwglw+DNeMgtoyHttlTy2CooYyqFqCgMWnyW17cpaPajKzF/ILCNex7jC6c/6cMDR
- Xzzy75Eq2E04zK4g3TR0Rvng/re9SbC9yERqtQK5y4b2+XtArJBpm4Xccwe5L/LmWktUJb+bo0r
- nGuMFqWiM1uH2GIjCaLw1GKwramMF0jxqZ+b4mbWYZ4f4GsRpR7kjYPTqude2D1N7n4XjFPv4bE
- lNb0Q5QUxjZKUzA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
+Content-Type: text/plain
+Content-Transfer-Encoding: 8bit
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.4
 
-9p is a remote network protocol, and it doesn't support asynchronous
-notifications from the server. Ensure that we don't hand out any leases
-since we can't guarantee they'll be broken when a file's contents
-change.
+Failing VMRUNs (immediate #VMEXIT with error code VMEXIT_INVALID) for KVM
+guests on top of Hyper-V are observed when KVM does SMM emulation. The root
+cause of the problem appears to be an overly strict CR3 VMCB check done by
+Hyper-V. Here's an example of a CR state which triggers the failure:
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
+ kvm_amd: vmpl: 0   cpl: 0   efer: 0000000000001000
+ kvm_amd: cr0: 0000000000050032 cr2: ffff92dcf8601000
+ kvm_amd: cr3: 0000000100232003 cr4: 0000000000000040
+
+CR3 value may look a bit weird as it has non-zero PCID bits set as well as
+non-zero bits in the upper half but the processor is not in long
+mode. This, however, is a valid state upon entering SMM from a long mode
+context with PCID enabled and should not be causing VMEXIT_INVALID. APM
+says that VMEXIT_INVALID is triggered when "Any MBZ bit of CR3 is
+set.". In CR3 format the only MBZ bits are those above MAXPHYADDR, the rest
+is just "Reserved".
+
+Place a temporary workaround in KVM to avoid putting problematic CR3
+values into VMCB when KVM runs on top of Hyper-V. Enable CR3 READ/WRITE
+intercepts to make sure guest is not observing side-effects of the
+mangling. Also, do not overwrite 'vcpu->arch.cr3' with mangled 'save.cr3'
+value when CR3 intercepts are enabled (and thus a possible CR3 update from
+the guest would change 'vcpu->arch.cr3' instantly).
+
+The workaround is only needed until Hyper-V gets fixed.
+
+Reported-by: Daan De Meyer <daan.j.demeyer@gmail.com>
+Signed-off-by: Vitaly Kuznetsov <vkuznets@redhat.com>
 ---
- fs/9p/vfs_file.c | 2 ++
- 1 file changed, 2 insertions(+)
+- The patch serves mostly documentational purposes, I don't expect it to
+be merged to the mainline. Hyper-V *is* supposed to get fixed but the
+timeline is unclear at this point. As Azure is a fairly popular platform
+for running nested KVM, it is possible that the bug will get discovered
+again (running OVMF based guest is a good starting point!).
+---
+ arch/x86/kvm/svm/svm.c | 30 +++++++++++++++++++++++++++++-
+ 1 file changed, 29 insertions(+), 1 deletion(-)
 
-diff --git a/fs/9p/vfs_file.c b/fs/9p/vfs_file.c
-index abdbbaee5184..348cc90bf9c5 100644
---- a/fs/9p/vfs_file.c
-+++ b/fs/9p/vfs_file.c
-@@ -520,6 +520,7 @@ const struct file_operations v9fs_file_operations = {
- 	.splice_read = v9fs_file_splice_read,
- 	.splice_write = iter_file_splice_write,
- 	.fsync = v9fs_file_fsync,
-+	.setlease = simple_nosetlease,
- };
+diff --git a/arch/x86/kvm/svm/svm.c b/arch/x86/kvm/svm/svm.c
+index 272d5ed37ce7..6ff7cbcb5cac 100644
+--- a/arch/x86/kvm/svm/svm.c
++++ b/arch/x86/kvm/svm/svm.c
+@@ -41,6 +41,7 @@
+ #include <asm/traps.h>
+ #include <asm/reboot.h>
+ #include <asm/fpu/api.h>
++#include <asm/hypervisor.h>
  
- const struct file_operations v9fs_file_operations_dotl = {
-@@ -534,4 +535,5 @@ const struct file_operations v9fs_file_operations_dotl = {
- 	.splice_read = v9fs_file_splice_read,
- 	.splice_write = iter_file_splice_write,
- 	.fsync = v9fs_file_fsync_dotl,
-+	.setlease = simple_nosetlease,
- };
-
----
-base-commit: 0a7b0acecea273c8816f4f5b0e189989470404cf
-change-id: 20240319-setlease-ce31fb8777b0
-
-Best regards,
+ #include <trace/events/ipi.h>
+ 
+@@ -3497,7 +3498,7 @@ static int svm_handle_exit(struct kvm_vcpu *vcpu, fastpath_t exit_fastpath)
+ 	if (!sev_es_guest(vcpu->kvm)) {
+ 		if (!svm_is_intercept(svm, INTERCEPT_CR0_WRITE))
+ 			vcpu->arch.cr0 = svm->vmcb->save.cr0;
+-		if (npt_enabled)
++		if (npt_enabled && !svm_is_intercept(svm, INTERCEPT_CR3_WRITE))
+ 			vcpu->arch.cr3 = svm->vmcb->save.cr3;
+ 	}
+ 
+@@ -4264,6 +4265,33 @@ static void svm_load_mmu_pgd(struct kvm_vcpu *vcpu, hpa_t root_hpa,
+ 		cr3 = root_hpa;
+ 	}
+ 
++#if IS_ENABLED(CONFIG_HYPERV)
++	/*
++	 * Workaround an issue in Hyper-V hypervisor where 'reserved' bits are treated
++	 * as MBZ failing VMRUN.
++	 */
++	if (hypervisor_is_type(X86_HYPER_MS_HYPERV) && likely(npt_enabled)) {
++		unsigned long cr3_unmod = cr3;
++
++		/*
++		 * Bits MAXPHYADDR:63 are MBZ but bits 32:MAXPHYADDR-1 are just 'reserved'
++		 * in !long mode.
++		 */
++		if (!is_long_mode(vcpu))
++			cr3 &= ~rsvd_bits(32, cpuid_maxphyaddr(vcpu) - 1);
++
++		if (!kvm_is_cr4_bit_set(vcpu, X86_CR4_PCIDE))
++			cr3 &= ~X86_CR3_PCID_MASK;
++
++		if (cr3 != cr3_unmod && !svm_is_intercept(svm, INTERCEPT_CR3_READ)) {
++			svm_set_intercept(svm, INTERCEPT_CR3_READ);
++			svm_set_intercept(svm, INTERCEPT_CR3_WRITE);
++		} else if (cr3 == cr3_unmod && svm_is_intercept(svm, INTERCEPT_CR3_READ)) {
++			svm_clr_intercept(svm, INTERCEPT_CR3_READ);
++			svm_clr_intercept(svm, INTERCEPT_CR3_WRITE);
++		}
++	}
++#endif
+ 	svm->vmcb->save.cr3 = cr3;
+ 	vmcb_mark_dirty(svm->vmcb, VMCB_CR);
+ }
 -- 
-Jeff Layton <jlayton@kernel.org>
+2.44.0
 
 
