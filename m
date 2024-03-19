@@ -1,190 +1,139 @@
-Return-Path: <linux-kernel+bounces-107831-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107832-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3346B880238
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:27:58 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id B317688023B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:28:18 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id B33261F24853
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:27:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 63C2E1F24A3D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:28:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5CC4785C44;
-	Tue, 19 Mar 2024 16:23:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E2D8A81AC6;
+	Tue, 19 Mar 2024 16:23:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b="KeohA///"
-Received: from EUR04-HE1-obe.outbound.protection.outlook.com (mail-he1eur04on2082.outbound.protection.outlook.com [40.107.7.82])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="GrOisRmg"
+Received: from mail-lf1-f51.google.com (mail-lf1-f51.google.com [209.85.167.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6A3208287C;
-	Tue, 19 Mar 2024 16:23:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.7.82
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710865385; cv=fail; b=mMU3O5BZHPpwKPLJ7GYHfUk7WrTHh/W8ao253il0oaWI5gcki4JYh4NDCebSCczr2UsG2jw4Y/YeY2O+OrxRUwLDCQ+fiwYC1uyWvGiC7Nn9LoXrl1aWnSpcnlpUHePDgjuf8bwj1AwbG6udtcqSoLMfWe7uh06SfL1CnGreH+w=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710865385; c=relaxed/simple;
-	bh=rpgsL+rID3pr44STmdJrAj1rGp2VEmwyFZlPt/lu/3s=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=Uh1eSgtBgHjIv4AAJ9jWwr8PffU7lzFzK2zPLrVlPWH6p7MUPpN35QkbvwBCurHsc8jiO5e+lPs6NiCE0U8iEkZWS2JhmPcepKDvIxirRItFYDv4sfIESg2N8NBvWflzKEPr8xsAFSzR5BDjCWFhLRcHec7Dma2s85cYwNleCzY=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com; spf=pass smtp.mailfrom=nxp.com; dkim=pass (1024-bit key) header.d=nxp.com header.i=@nxp.com header.b=KeohA///; arc=fail smtp.client-ip=40.107.7.82
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=nxp.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=nxp.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=anD54fRmvNYpM6aHhVn4nl/pqTvECgOd+r+V/0CN1wHd2tH2famrEKH/0GXEcza8Cubw8hqAXGz3RLjbICudr2ovYvAhBjaj+gz5VngN6MX27lNz0faHtybq8bAV54yeg6D1EZPESOBwwlMz/Ui2QhTzuGdu1Z52dnvFINcW/m2CX+2EDnWOoDqDeBURZ03ZF2wbXfhncobBm3hSmWRaiJ1+pr7jgkC5ckfurJg7VqWUtLV4LNUM/+RoNY7KLkT8m+RpcTXmOgQuHFsPijDiQaHX0MuHNKO6a/s6IHV0jKeP0MBt4FA9HFjIOEKqWuuZ2YOkFOZPvdOLP+c/xMZGvw==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=8qbIXjLq2Z91+0q2l2MmdMVF7cmMMhg12CLE9S7GmcQ=;
- b=FTGM44rj8NGGY5zuIL25J9ac8XeFEXi+VNuae4wrSfqL3hGAya+z7WJGYf+06pnykqded5r14uTXMsZFV/2xbrdFrtSKy+V3ACaJBlJi4cm+UhVcJP7jzLeAsONVSA4k2V1Rg9QiSOZrlkh5EZex6gadU2osCfBr9sgb1mQFxufsoi+7gLFICcPMe7nyDIr4Nu4qhAA2bk0CAYR12ELXo4P7Ue/5Zty+PaXfIEq1WZgH9bVjUGWgrtO09j3+g9DbXi5Vq/Zg60UCZ9BTieAL0NvZsqE0hYA3JWVU0Dxh4BineQmubBugBRtz7vF+H6oV+DIvUVXIzin1IqS5+IxqXw==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=nxp.com; dmarc=pass action=none header.from=nxp.com; dkim=pass
- header.d=nxp.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=nxp.com; s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=8qbIXjLq2Z91+0q2l2MmdMVF7cmMMhg12CLE9S7GmcQ=;
- b=KeohA///g5P8QvicvEWJKc9D0zjPuYxhJvVMISd2xgQmwt/qS/jqXBDWiGl/EZ9Lmi3N2Mq1AKUOxLRPGcFgRe7V/rKot6/hTx52REKAJUANyiWL4K/yO4HI59AI/hOIFtBpTbVH6CHrsMVba7P7S17QLvt/G+1vH7R5gFI5Mt0=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=nxp.com;
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com (2603:10a6:102:240::14)
- by AM9PR04MB8097.eurprd04.prod.outlook.com (2603:10a6:20b:3e9::18) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Tue, 19 Mar
- 2024 16:23:00 +0000
-Received: from PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6]) by PAXPR04MB9642.eurprd04.prod.outlook.com
- ([fe80::3168:91:27c6:edf6%3]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
- 16:23:00 +0000
-Date: Tue, 19 Mar 2024 12:22:51 -0400
-From: Frank Li <Frank.li@nxp.com>
-To: Richard Zhu <hongxing.zhu@nxp.com>,
-	Lucas Stach <l.stach@pengutronix.de>,
-	Lorenzo Pieralisi <lpieralisi@kernel.org>,
-	Krzysztof =?utf-8?Q?Wilczy=C5=84ski?= <kw@linux.com>,
-	Rob Herring <robh@kernel.org>, Bjorn Helgaas <bhelgaas@google.com>,
-	Shawn Guo <shawnguo@kernel.org>,
-	Sascha Hauer <s.hauer@pengutronix.de>,
-	Pengutronix Kernel Team <kernel@pengutronix.de>,
-	Fabio Estevam <festevam@gmail.com>,
-	NXP Linux Team <linux-imx@nxp.com>,
-	Philipp Zabel <p.zabel@pengutronix.de>,
-	Liam Girdwood <lgirdwood@gmail.com>,
-	Mark Brown <broonie@kernel.org>, manivannan.sadhasivam@linaro.org
-Cc: linux-pci@vger.kernel.org, imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org,
-	bpf@vger.kernel.org
-Subject: Re: [PATCH v2 0/6] PCI: imx6: rename\clean up and add lut
- information for imx95
-Message-ID: <Zfm720fz9NE0fD/P@lizhi-Precision-Tower-5810>
-References: <20240304-pci2_upstream-v2-0-ad07c5eb6d67@nxp.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240304-pci2_upstream-v2-0-ad07c5eb6d67@nxp.com>
-X-ClientProxiedBy: SJ0PR13CA0110.namprd13.prod.outlook.com
- (2603:10b6:a03:2c5::25) To PAXPR04MB9642.eurprd04.prod.outlook.com
- (2603:10a6:102:240::14)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E02BA657D1
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:23:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.51
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710865412; cv=none; b=g7Evx/zW+pDndl54h7Co0407/0YjrQNnBkic/rWZRTJPPlK0eY73d0JAHgUMgrgr1OEzCVl5T6urpU2NddeMKX5v3ywQiWgZbfnQZZ4IWVTJnuSSVd5YjvIyjhRR1VMVaVFO7RQgnpVgzMdgVUGfHMFj7w4NL9MCLZttLd12vG0=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710865412; c=relaxed/simple;
+	bh=vTNZLb5s5LBffVjG1LWSaRwOwHNVROAI7vdgF5MIcH8=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=j+2YMq/v35WUg/47AltFa+vE8I5Uv2lWabndv/uw1GBNO4yYqrXkSl2quqQO8s5rznV3PODLpc0Na4PYQnFdmrO2aNiZ3+E/uARD7dv9nORGaGBDM2HzsV8EA0BRs7W+zVCaofFWaYjT6V4SsJ/EtRyRNaJd0qjy1Q0ayiPtx+s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=GrOisRmg; arc=none smtp.client-ip=209.85.167.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-lf1-f51.google.com with SMTP id 2adb3069b0e04-513ccc70a6dso9895448e87.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:23:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linux-foundation.org; s=google; t=1710865408; x=1711470208; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=SLVaY8B/wtZ4RzbuufUnY+AWNsyVScU0e2XfqjI4X2w=;
+        b=GrOisRmgpLq28jjCX2otsiDX4mZODRxenpfkIag5sasNQSxIMqNuidhagLrFR3so6b
+         A5JsZKsOTmjg9aLdUXspL8fD9dVjFcbb4+2jC59E9Q8/jnJE0k50KyYHktWrIZMqPWhq
+         dh7X4p7KbYa3/bi2v1vwwp1CAnG313EpIJEFo=
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710865408; x=1711470208;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=SLVaY8B/wtZ4RzbuufUnY+AWNsyVScU0e2XfqjI4X2w=;
+        b=LUosSErUNCsnZ4L5Vqw3GTFYFq/ZaN24NHP/xcN3kaumE4Paaoa3NY7jyGvnoekXYE
+         fS+V69SWHs4S2npMsbyxbXDe3Lpb79dD7AmONFONTlycgIez7cm/KwDHlo3gpgjYCI5K
+         MuLneHWgM6wNbcaJZbYpehM1IDxBxL7Km45XX7ugosiuqR4ng87kYwzhN9yDar2zjQv+
+         +mjvXFEYzs+3LmBhzxCWdP093Cr6e1t5L8IAxM3AaPhU5LsSYHrynAiuXrp1h30hYVNo
+         bzxR+jev1ofwMw/vEj1rtxNsZTBZeokTdeidZadztznAEmXBPtoPX86QsZ/fd6hm/oCn
+         BTzQ==
+X-Gm-Message-State: AOJu0YzB9hDbY5WRFESjkaUjPFnfl1cw6xzcGaXfn+NLPIvPmWxjH7u+
+	q8BeR0zVgRggMoEzDL81/+D4RT4MwQIqP3OA8linjyI1FUzwa1CGHU9Hn5DBIwYcymfPLKLBinB
+	NGGquSw==
+X-Google-Smtp-Source: AGHT+IE3XBZL95xDoURtx/T5deUJVETtMh+6OHjPMNUoqIQvSe2ENU1eJ9uTK8dhK2HQr0IZvul0Bg==
+X-Received: by 2002:a05:6512:45a:b0:513:ebb5:d9b0 with SMTP id y26-20020a056512045a00b00513ebb5d9b0mr4624821lfk.52.1710865407883;
+        Tue, 19 Mar 2024 09:23:27 -0700 (PDT)
+Received: from mail-lf1-f43.google.com (mail-lf1-f43.google.com. [209.85.167.43])
+        by smtp.gmail.com with ESMTPSA id g20-20020a19ee14000000b005131cafecc0sm1989182lfb.25.2024.03.19.09.23.27
+        for <linux-kernel@vger.kernel.org>
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 09:23:27 -0700 (PDT)
+Received: by mail-lf1-f43.google.com with SMTP id 2adb3069b0e04-513e6777af4so4531730e87.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:23:27 -0700 (PDT)
+X-Received: by 2002:ac2:499e:0:b0:513:e8a0:2d85 with SMTP id
+ f30-20020ac2499e000000b00513e8a02d85mr6295586lfl.44.1710865406739; Tue, 19
+ Mar 2024 09:23:26 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: PAXPR04MB9642:EE_|AM9PR04MB8097:EE_
-X-MS-Office365-Filtering-Correlation-Id: c08ee5b4-6872-4554-87df-08dc4830d83e
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	CO5GYmVAQuSVa/AnfJwpV84AXWQMpzkbCpkx+OsSgk3c7D+mDOscUUPEt+vXoyE5HgZnIuyjd2brbc5NHw/93EgpnCf1Rl5zLWq9G4RIM/+uMfjVoeGA8jSsV/Cu+uTIznzzutbDPuXs/RXnH1vZkPskeVU+b/e0Gw7ZLuerNWXWbr69EHlihz93BehszUA7Rwpu6dDUHrTTOjrFK55Nj2EAjgUwr/tA1LpRJkMAtuS3CQ05tyMNTYFPqLjayL08ae6o37hJtDfryA5/e+YCzugmak7ejZCME4zt/u8U1DT8msTHP370szMBOvxw8RMx9lC+4mP1KWlgrJrVXus17TluiII/MBedk4EI6RmjZbH8e05E5t9av8ceS+wDB1UC0tUBJjaZGUebq/2vUv13eVbHqc+E/gSwts+X1u/+EbRnqnaC1ySNMG/jGdlygScvwhn+YTCGMDKiz5m/qfpXNKXYEC+ZP0Y3AEY8UIPW7on6+knHfbSxcKQOhoLi6OReVkPmWZjORJgcm9TbC+VcYRu2Jj1gmXTBX5BvkWc4hXjIFfsyrjtoZI+twBETIBjS+AjcJNljgZr3kQKETsr7TFRdbEtcQ1o4r5ndY+u16Sa26OdRvWglfgJb+2kvVJscM0pH5d5qgDnwgGk2e+FLocnMHHru26h2b60V9vkSAB+QcLIPz+Vr97/ZvmY0ISlv
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:PAXPR04MB9642.eurprd04.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(7416005)(52116005)(376005)(1800799015)(921011)(38350700005);DIR:OUT;SFP:1101;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?EENKrxG7kfQpRBIjzPe2m8mTOODnIFlGdeQEVY2kNSFR+RgmExAGbdwxB+3B?=
- =?us-ascii?Q?pZb+GIz7yGIzXJC58GLv5GynTsXRwU/8g4fPH+XBpb9INn8c4Prqq5zJDUVP?=
- =?us-ascii?Q?z51BzSqko3owQo1NfoKSPFcuoo0wrC7V0NiWbNClKdje+m6a5RZWqFJw6ayW?=
- =?us-ascii?Q?5jq51ErlnxTlO9/e6dA8qRhMycx0nSnDEllY5vs5aI9I4i/BXi7d8erX4viY?=
- =?us-ascii?Q?NorqGWpq8BokFFIDEMe7yWZrgUD39nx6+99Zz/HcGKuuP7Q/jvazM8/gkSz9?=
- =?us-ascii?Q?inCWvZzy3VptJeVRt0kP2+xM8JLRyizzN2fEL4K8z4xP93JHzsWzZ21A5W7B?=
- =?us-ascii?Q?lh1wmFhwiHPe0g4N9diQfH4p3fsCLj5ug2IxV9GN+SKPan+TeZpxONkcmKJ6?=
- =?us-ascii?Q?BOA6r3p9tw+jFp8AcxUFr8ZdJR7VcjvVmlaA/vU8gF8uyz3/o+F7G99NpYPS?=
- =?us-ascii?Q?AQbEtQeCVnJtvaXEQLtC/xFVix+a3RrK6LCdr3gsYz3xcUWrwe0ejF/E+YX5?=
- =?us-ascii?Q?BRuVBq00FZZKdJvps7YmRYqhFa3CQFZdFCEbB79hO33BKw6yCmb7zBVo1Iih?=
- =?us-ascii?Q?qsELpOrrb+WWai5NwvJV8SzEg2I7SV+mBWeTaQwXbprCUfu02eRxKR//k58N?=
- =?us-ascii?Q?+izIlwTH+xYpuNlBakPX7Nu+cSBAP5PwQp8ubZg/ikbHu009ZLJngYWaR8Bm?=
- =?us-ascii?Q?jN05RCEjNRYmSEveStcqsAmNwRdW4TlIEngQy6acDqnJTsbNkg7mOt2yVplw?=
- =?us-ascii?Q?pFr0Fuz7wn8m+kVs1vlOBeDVzXnYuI+7gUzqMDQQXBComSnt7M0zaaKbAE7M?=
- =?us-ascii?Q?BluxCI8bTUd0ihl6SMwNg7x3wnmIjYxQXOjJjo+FP44Jt0xcj8O5S2xZZuYp?=
- =?us-ascii?Q?iMaw+FE6jZNTQQ3ZV368PBK7YsU1oqm09YgC0SUrIYWqFvpsTDRs6u917Twq?=
- =?us-ascii?Q?HjmJ682PrZm0DXCO0p+Ytj2RVOUu4JNCH4hfBJpZjJhAxtXNKiTFijXUNfVi?=
- =?us-ascii?Q?8qOd7PFOeyaX76JEsXYgKQC1IHN9nPtjtgAQ2Tejf10gkNaEmSDQkohlblor?=
- =?us-ascii?Q?PhQz15x443RfLvXo69kwNcP1grEF9cIyE0YcsRilwwywRhX8S6vIpyQW+Zh6?=
- =?us-ascii?Q?SowlaGh2VY8Z/tclU7tsaZkeLT7dvfozwlncfrcgxVdTdnPWCgOKiyZy885L?=
- =?us-ascii?Q?EK2W+dyM/bzl5tI+1Hp3KfCFYohmPq1ZNnJsQLbTlYsiEfDE3dMAbsohj8Qw?=
- =?us-ascii?Q?FfLFPZqxSlYl/agdo6JpMPMhxSJ6s/m9SVHXzw6+o/28FNKpcQnJyY27C+tl?=
- =?us-ascii?Q?/3Pn6mPGwoK2UJ43Q1oVaZkmWTc5eR5dppZ/IhdJam9kF8O11yrmfMQTvCVP?=
- =?us-ascii?Q?o1dmb+BpCDNSRaGPzaeIIGItj1RMFKC5Rn6WXxP0bI+pRJ448OxBYpfuuiIy?=
- =?us-ascii?Q?cIStG+/iarsqX0N41hKmii35VsGwG3iDLiFZ+fgORGBp+L4cizzwbTNrjX85?=
- =?us-ascii?Q?sRNKeILjqix/jDad+BbHkb7nmB0l4I0PovBI9IY6/xRcJvvbXNAr5b8NZ2r1?=
- =?us-ascii?Q?Ocn06FvO3T+OTYMZlKIzebs3vPL13U2jAqXj2FUw?=
-X-OriginatorOrg: nxp.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c08ee5b4-6872-4554-87df-08dc4830d83e
-X-MS-Exchange-CrossTenant-AuthSource: PAXPR04MB9642.eurprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 16:23:00.4948
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 686ea1d3-bc2b-4c6f-a92c-d99c5c301635
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: TIEv5XfViNhuWlLwlMliytldMzzwMtW2pl0J1X7LkLa7kHOZBpE7vjh0w+WEtah2/L5DzeOvujH2KH3NpVOFDA==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: AM9PR04MB8097
+References: <20240318113053.7f87ce7f@gandalf.local.home>
+In-Reply-To: <20240318113053.7f87ce7f@gandalf.local.home>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 19 Mar 2024 09:23:10 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com>
+Message-ID: <CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com>
+Subject: Re: [GIT PULL v2] tracing: Updates for v6.9
+To: Steven Rostedt <rostedt@goodmis.org>
+Cc: LKML <linux-kernel@vger.kernel.org>, Masami Hiramatsu <mhiramat@kernel.org>, 
+	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
+	Alison Schofield <alison.schofield@intel.com>, Beau Belgrave <beaub@linux.microsoft.com>, 
+	Huang Yiwei <quic_hyiwei@quicinc.com>, John Garry <john.g.garry@oracle.com>, 
+	Randy Dunlap <rdunlap@infradead.org>, Thorsten Blum <thorsten.blum@toblux.com>, 
+	Vincent Donnefort <vdonnefort@google.com>, linke li <lilinke99@qq.com>
+Content-Type: text/plain; charset="UTF-8"
 
-On Mon, Mar 04, 2024 at 03:25:05PM -0500, Frank Li wrote:
-> imx6 actaully for all imx chips (imx6*, imx7*, imx8*, imx9*). To avoid     
-> confuse, rename all imx6_* to imx_*, IMX6_* to IMX_*. pci-imx6.c to        
-> pci-imx.c to avoid confuse.                                                
-> 
-> Using callback to reduce switch case for core reset and refclk.            
-> 
-> Add imx95 iommux and its stream id information.                            
-> 
-> Base on linux-pci/controller/imx
-> 
-> Signed-off-by: Frank Li <Frank.Li@nxp.com>
+On Mon, 18 Mar 2024 at 08:28, Steven Rostedt <rostedt@goodmis.org> wrote:
+>
+> - Added checks to make sure that the source of __string() is also the
+>   source of __assign_str() so that it can be safely removed in the next
+>   merge window.
 
-Add manivannan to TO list.
+Aargh.
 
-@mani:
-	Could you please help review these patches? 
+I didn't notice this initially, because it doesn't happen with gcc (or
+maybe not with allmodconfig), but with clang I get
 
-Frank
+    CC [M]  net/sunrpc/sched.o
+  In file included from net/sunrpc/sched.c:31:
+  In file included from ./include/trace/events/sunrpc.h:2524:
+  In file included from ./include/trace/define_trace.h:102:
+  In file included from ./include/trace/trace_events.h:419:
+  include/trace/events/sunrpc.h:707:4: error: result of comparison
+against a string literal is unspecified (use an explicit string
+comparison function instead) [-Werror,-Wstring-compare]
 
-> ---
-> Changes in v2:
-> - remove file to 'pcie-imx.c'
-> - keep CONFIG unchange.
-> - Link to v1: https://lore.kernel.org/r/20240227-pci2_upstream-v1-0-b952f8333606@nxp.com
-> 
-> ---
-> Frank Li (6):
->       PCI: imx6: Rename imx6_* with imx_*
->       PCI: imx6: Rename pci-imx6.c to pcie-imx.c
->       MAINTAINERS: pci: imx: update imx6* to imx* since rename driver file
->       PCI: imx: Simplify switch-case logic by involve set_ref_clk callback
->       PCI: imx: Simplify switch-case logic by involve core_reset callback
->       PCI: imx: Config look up table(LUT) to support MSI ITS and IOMMU for i.MX95
-> 
->  MAINTAINERS                                        |    4 +-
->  drivers/pci/controller/dwc/Makefile                |    2 +-
->  .../pci/controller/dwc/{pci-imx6.c => pcie-imx.c}  | 1115 +++++++++++---------
->  3 files changed, 647 insertions(+), 474 deletions(-)
-> ---
-> base-commit: 0a580c33494a7d293ff0d34cf4db4af107070ccf
-> change-id: 20240227-pci2_upstream-0cdd19a15163
-> 
-> Best regards,
-> -- 
-> Frank Li <Frank.Li@nxp.com>
-> 
+and then about 250 lines ot messy "explanations" for how it was
+expanded because it happens on line 709 too in the same macro, and it
+ends up being three macros deep or something.
+
+So no, this all needs to be re-done. That
+
+                WARN_ON_ONCE(__builtin_constant_p(src) ?                \
+                             strcmp((src), __data_offsets.dst##_ptr_) : \
+                             (src) != __data_offsets.dst##_ptr_);       \
+
+does *NOT* work.
+
+Also, looking at that __assign_str() macro, it seems literally insane.
+On the next line it will do
+
+                memcpy(__str__, __data_offsets.dst##_ptr_ ? :           \
+                       EVENT_NULL_STR, __len__);                        \
+
+so now it checks "__data_offsets.dst##_ptr_" for NULL - but that's one
+line after it just did that strcmp on it.
+
+WTF?
+
+This code is completely bogus.
+
+               Linus
 
