@@ -1,144 +1,125 @@
-Return-Path: <linux-kernel+bounces-107579-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107581-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E128387FE7E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:18:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 235C787FE89
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:20:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9BBBB28426B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:18:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 405D9284200
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:20:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 55EB980020;
-	Tue, 19 Mar 2024 13:18:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DC7D78062F;
+	Tue, 19 Mar 2024 13:19:43 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b="SJdGJMfS"
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [208.88.110.44])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="zx7C/jNz"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EA8F35A782;
-	Tue, 19 Mar 2024 13:18:16 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=208.88.110.44
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3B1413FBB9;
+	Tue, 19 Mar 2024 13:19:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710854300; cv=none; b=f55MNtyrAN2JW+DBqQOjhfzNrsgCIv9y0rkqlFlMGgbThLpyisasfwx/nW4EDPbc0uTi3FNI3PjDzDheRfmRuy9+c/3mBw4vSZZ/nHYwCMWBm52nxKdonWThGLXpcQEuu+1xLcnRHgrikCswTEHLwaqVX5waujDQCfAqWACcQ+U=
+	t=1710854383; cv=none; b=jVWqLblXaKqmOPntMsbVKGd3TFnSoYEef2W7ZKs6t0wxTXZviggtJTUGX8aSn93oH0+Tm9afdrFqJWlsaWwkle/gGggQIzsFd1MXUfCZLbvXCe8cejcM4TUW1lFc6ufyitESp3r128YP+8LjdjOnZdknDLOegg3Z5dmB0d1KrSQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710854300; c=relaxed/simple;
-	bh=RR0UkwWsm9OdmDGh3lOnlD7zBWisNdtOai4hXsNHFOk=;
-	h=Date:From:To:Cc:Message-ID:In-Reply-To:References:Subject:
-	 MIME-Version:Content-Type; b=dEegX4EVuG8hW9ZfAVWWlJpA99xFf0+w6sGvbgH0391oGBhHTWlf3JhLBESdwtLY2yecHzX3L67eXi1q9BcJlwNd9j0LAR2Z9XRigoKFWvPnikaXFf4DgYgD2EkrhvFjy5XqO/3nvs3wBHYFkdjORpUT0vDxa8ppJRelO0RK8hY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com; spf=pass smtp.mailfrom=savoirfairelinux.com; dkim=pass (2048-bit key) header.d=savoirfairelinux.com header.i=@savoirfairelinux.com header.b=SJdGJMfS; arc=none smtp.client-ip=208.88.110.44
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=savoirfairelinux.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=savoirfairelinux.com
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 777579C0760;
-	Tue, 19 Mar 2024 09:18:15 -0400 (EDT)
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10032)
- with ESMTP id a_6GA9s-CbIi; Tue, 19 Mar 2024 09:18:14 -0400 (EDT)
-Received: from localhost (localhost [127.0.0.1])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id B99AD9C2CD7;
-	Tue, 19 Mar 2024 09:18:14 -0400 (EDT)
-DKIM-Filter: OpenDKIM Filter v2.10.3 mail.savoirfairelinux.com B99AD9C2CD7
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-	d=savoirfairelinux.com; s=DFC430D2-D198-11EC-948E-34200CB392D2;
-	t=1710854294; bh=5NKRHP1QMpxeSgJzCg5KTSkhGY8m7eqimBDOmXZzCLo=;
-	h=Date:From:To:Message-ID:MIME-Version;
-	b=SJdGJMfSRh5WdHCGswWdQRFF4PVrxtImtEsTGzei+w/QPMSKnvQqCoGuZWzXzR2Fe
-	 fB+QURY728WBm53LR19tDhwhESEa3MstokJ546DyRtbFAtw4bVSz/ZWwlo6GqJcx3Q
-	 OAJnT1s2NJ+K/JlT3rVsbPtgp2bS+ffKXP68acObQbMRA6Jj4++mhhwDzCIjDkFftH
-	 V6NlKRaEaSq78ob2fOkyTmsnzFwTAuUUON1iJ8FHTu/GyteR9ANqTGXqLcCgOZRF+k
-	 gPtxQpaTxg9stn8zuIVjsm8ZdEMyDvyhRlW0ibNTXO1uFRaAVRCpjNkm09hjnKkWYp
-	 qhhMDJF0r1nqQ==
-X-Virus-Scanned: amavis at mail.savoirfairelinux.com
-Received: from mail.savoirfairelinux.com ([127.0.0.1])
- by localhost (mail.savoirfairelinux.com [127.0.0.1]) (amavis, port 10026)
- with ESMTP id heRr1KKMJ06R; Tue, 19 Mar 2024 09:18:14 -0400 (EDT)
-Received: from mail.savoirfairelinux.com (mail.savoirfairelinux.com [192.168.48.237])
-	by mail.savoirfairelinux.com (Postfix) with ESMTP id 8891C9C0760;
-	Tue, 19 Mar 2024 09:18:14 -0400 (EDT)
-Date: Tue, 19 Mar 2024 09:18:14 -0400 (EDT)
-From: Charles Perry <charles.perry@savoirfairelinux.com>
-To: Xu Yilun <yilun.xu@linux.intel.com>
-Cc: mdf <mdf@kernel.org>, Allen VANDIVER <avandiver@markem-imaje.com>, 
-	Brian CODY <bcody@markem-imaje.com>, hao wu <hao.wu@intel.com>, 
-	yilun xu <yilun.xu@intel.com>, Tom Rix <trix@redhat.com>, 
-	Rob Herring <robh+dt@kernel.org>, 
-	krzysztof kozlowski+dt <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, 
-	Michal Simek <michal.simek@amd.com>, 
-	linux-fpga <linux-fpga@vger.kernel.org>, 
-	devicetree <devicetree@vger.kernel.org>, 
-	linux-kernel <linux-kernel@vger.kernel.org>, 
-	linux-arm-kernel <linux-arm-kernel@lists.infradead.org>
-Message-ID: <2023855820.1872598.1710854294497.JavaMail.zimbra@savoirfairelinux.com>
-In-Reply-To: <ZfkSf6QG5nIY0zpx@yilunxu-OptiPlex-7050>
-References: <20240313225746.489253-1-charles.perry@savoirfairelinux.com> <20240313225746.489253-2-charles.perry@savoirfairelinux.com> <ZfkSf6QG5nIY0zpx@yilunxu-OptiPlex-7050>
-Subject: Re: [PATCH v5 1/3] fpga: xilinx-spi: extract a common driver core
+	s=arc-20240116; t=1710854383; c=relaxed/simple;
+	bh=xGfGEg1NmOvDoMhIZ7MT4PvjgibSCw62ywA9sT5WeYI=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=lheua8Y7GRwbF9TcW60lYV1rGc5Yr0+4j52RkDurCmpvs1RIKm2dQiZNVYAjvx3PO8mpW6JKbn4pu5iKvL1OLYnsOAJuXo0bPr8x9z1+xXv4JsGXyFaad0MlOZnMyKKMtvqgBZBpSviqUMDIRqdUdiatDj5bIk39/RtHjKvU9pQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=zx7C/jNz; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=eM2s0jFpcVvcghsG7scph+n4U/V5mjD2JNZH/KutU6g=; b=zx7C/jNz9btddQyTivtDBwDUVR
+	wThOKRIKBW0/HQS2lbMkEAhKDJt9OMw4V/j17nNBI5cTJ2nlK+5rjQVEJSq927K8tiyb02nRnONh2
+	gJzRZloQ7xupKPMbHyvXAnmJcXxt6cBbfbvUb6uz/6HfS5htJAliKZNYaw/stjpVGFvw=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rmZN9-00AhnS-Kf; Tue, 19 Mar 2024 14:19:19 +0100
+Date: Tue, 19 Mar 2024 14:19:19 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban.Veerasooran@microchip.com
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
+	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v3 08/12] net: ethernet: oa_tc6: implement
+ transmit path to transfer tx ethernet frames
+Message-ID: <96dd422f-0bf9-411d-8cc2-5755c1e60e27@lunn.ch>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-9-Parthiban.Veerasooran@microchip.com>
+ <208fb61b-4740-46bf-8c70-29ab59cbb965@lunn.ch>
+ <f9d8a18c-b1fe-450c-a5ca-d91f96793a04@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Transfer-Encoding: 7bit
-X-Mailer: Zimbra 8.8.15_GA_4581 (ZimbraWebClient - FF120 (Linux)/8.8.15_GA_4581)
-Thread-Topic: fpga: xilinx-spi: extract a common driver core
-Thread-Index: tkWcNpo3mWp8g/EUE0xd2oh6sbVbuw==
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <f9d8a18c-b1fe-450c-a5ca-d91f96793a04@microchip.com>
 
-
-On Mar 19, 2024, at 12:20 AM, Xu Yilun yilun.xu@linux.intel.com wrote:
->> +/**
->> + * struct xilinx_fpga_core - interface between the driver and the core manager
->> + *                           of Xilinx 7 Series FPGA manager
->> + * @dev:       device node
->> + * @write:     write callback of the driver
->> + * @prog_b:    PROGRAM_B gpio descriptor
->> + * @init_b:    INIT_B gpio descriptor
->> + * @done:      DONE gpio descriptor
+On Tue, Mar 19, 2024 at 12:54:30PM +0000, Parthiban.Veerasooran@microchip.com wrote:
+> Hi Andrew,
 > 
-> Please re-check the Documentation again:
-> "Structure fields that are inside a private: area are not listed in the
-> generated output documentation"
+> On 07/03/24 10:38 pm, Andrew Lunn wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> >> @@ -55,6 +77,14 @@
+> >>                                                (OA_TC6_CTRL_MAX_REGISTERS *\
+> >>                                                OA_TC6_CTRL_REG_VALUE_SIZE) +\
+> >>                                                OA_TC6_CTRL_IGNORED_SIZE)
+> >> +#define OA_TC6_CHUNK_PAYLOAD_SIZE            64
+> >> +#define OA_TC6_DATA_HEADER_SIZE                      4
+> >> +#define OA_TC6_CHUNK_SIZE                    (OA_TC6_DATA_HEADER_SIZE +\
+> >> +                                             OA_TC6_CHUNK_PAYLOAD_SIZE)
+> >> +#define OA_TC6_TX_SKB_QUEUE_SIZE             100
+> > 
+> > So you keep up to 100 packets in a queue. If use assume typical MTU
+> > size packets, that is 1,238,400 bits. At 10Mbps, that is 120ms of
+> > traffic. That is quite a lot of latency when a high priority packet is
+> > added to the tail of the queue and needs to wait for all the other
+> > packets to be sent first.
+> > 
+> > Chunks are 64 bytes. So in practice, you only ever need two
+> > packets. You need to be able to fill a chunk with the final part of
+> > one packet, and the beginning of the next. So i would try using a much
+> > smaller queue size. That will allow Linux queue disciplines to give
+> > you the high priority packets first which you send with low latency.
+> Thanks for the detailed explanation. If I understand you correctly,
 > 
-
-I did generate the documentation for that struct and saw that the
-private fields are indeed removed. This hinted me into thinking that
-I should keep the private kernel-doc, because it's the generator job
-to remove those. Looking again at the kernel-doc.rst example on that
-topic, I understand that this is not the case, will fix.
-
->> + */
->> +struct xilinx_fpga_core {
->> +/* public: */
->> +	struct device *dev;
->> +	int (*write)(struct xilinx_fpga_core *core, const char *buf,
->> +		     size_t count);
->> +/* private: handled by xilinx-core */
->> +	struct gpio_desc *prog_b;
->> +	struct gpio_desc *init_b;
->> +	struct gpio_desc *done;
->> +};
->> +
-> [...]
->> -
->>  static int xilinx_spi_probe(struct spi_device *spi)
->>  {
->> -	struct xilinx_spi_conf *conf;
->> -	struct fpga_manager *mgr;
->> +	struct xilinx_fpga_core *conf;
+> 1. The tx skb queue size (OA_TC6_TX_SKB_QUEUE_SIZE) should be 2 to avoid 
+> the latency when a high priority packet added.
 > 
-> Why do you name it conf? Maybe "core" is better?
-> 
-> Thanks,
-> Yilun
+> 2. Need to implement the handling part of the below case,
+> In case if one packet ends in a chunk and that chunk still having some 
+> space left to accommodate some bytes from the next packet if available 
+> from network layer.
 
-Yes, I changed the type but not the name.
+This second part is clearly an optimisation. If you have lots of full
+MTU packets, 1514 bytes, they take around 24 chunks. Having the last
+chunk only 1/2 full does not waste too much bandwidth. But if you are
+carrying lots of small packets, say voice, 130 bytes, the wasted
+bandwidth starts to add up. But is there a use case for 10Mbps of
+small packets? I doubt it.
 
-Thank you for the review,
-Charles
+So if you don't have the ability to combine two packets into one
+chunk, i would do that later. Lets get the basics merged first, it can
+be optimised later.
 
-
-
+	Andrew
 
