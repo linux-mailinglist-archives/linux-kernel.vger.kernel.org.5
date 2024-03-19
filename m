@@ -1,147 +1,102 @@
-Return-Path: <linux-kernel+bounces-107630-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107631-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5A10F87FF61
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:15:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 36BFA87FF64
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:15:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 14D922854F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:15:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E6C5B285478
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:15:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0D0C981AAD;
-	Tue, 19 Mar 2024 14:15:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CA98481755;
+	Tue, 19 Mar 2024 14:15:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="RtvmcyL4"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="wmiLTtQJ";
+	dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b="sAPXVYcL"
+Received: from galois.linutronix.de (Galois.linutronix.de [193.142.43.55])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id ADD7881728
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:14:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAEEF81748
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:15:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=193.142.43.55
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710857701; cv=none; b=JR77aWTSDS9u11uf2BaQwnY+yJvDSE2+mgxragQNe/WSXE7hp4NA2rmNu4/Am7Ag4DdROk8RDOZeoKpC3UrtU3xfcC9corB7kDlp5MfIp6S+cFtYadge4iWjq9wdPYn2IXZSG3x/kGpyxSn44YLAANgfI/Jkb3qXPfwxE3ckKJo=
+	t=1710857710; cv=none; b=hm28KLHUNVMi8ANG4JTrOM6IxjjJKs340O4Rt6yUBhfVuAmAw+lUcTecinFamK27sE0E/rdn6Hhmyr8zE/wf0/0DkVh8NVIC+Cdo5eOk7RsdEgOGXgl46hnLqveCOBmmzOnXat6Ekea9j3OTo2wgObiYnt1mqiX1tpUJcxwNQdE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710857701; c=relaxed/simple;
-	bh=xkAb1InU9RoZkNjiU+AcuFfqyRq8G3AqX8f6uQ9VC8Q=;
-	h=From:In-Reply-To:References:To:Cc:Subject:MIME-Version:
-	 Content-Type:Date:Message-ID; b=gwxgpg4nt8UNCDGhXUmJ7UcIcCxLjZLG7EpcHFEqKvGPEzjk+Hn4RhvbCkjc9Fyizyg9FjCSlkWG6yZt5FEvbIXAEjqCna+zPED06u9zjT7HYJVnoDmOMlTgy54fmTPZ85OCFvaY/RNLPAbwiHtD9y1JhR0aaCXOYYGQp4XrZR0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=RtvmcyL4; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710857698;
+	s=arc-20240116; t=1710857710; c=relaxed/simple;
+	bh=sXw/hen6coo9Y4mQg0v3PJdb45MkVSydX+eSXvbsNOQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=P8qtDrLdRvPT/OAO4I7xWlttczhVPa4aiNSvEeUjVF7JR/cGJcg8tbF7CDGGgido0lVvSJwkqrzeQUZpNa72MIbOjtQUNic1WbwO1PD/05MT9xMinHWgD+XC7B31ZJLbNpk3gW6c6+Oq8xpEfPEn94vmls8EcRkvJp7G57/sFwo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de; spf=pass smtp.mailfrom=linutronix.de; dkim=pass (2048-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=wmiLTtQJ; dkim=permerror (0-bit key) header.d=linutronix.de header.i=@linutronix.de header.b=sAPXVYcL; arc=none smtp.client-ip=193.142.43.55
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linutronix.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linutronix.de
+Date: Tue, 19 Mar 2024 15:15:06 +0100
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020; t=1710857706;
 	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
 	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
 	 in-reply-to:in-reply-to:references:references;
-	bh=tO0V8aj/5qg/fr51DKNlXHyJU/GLErDbNftb0tj9j8Q=;
-	b=RtvmcyL4kzI30IanKwMzmLkflj0sG042jvnU7holnqxmexELP7MxHJeDyH+CiHgVXrWJGB
-	pp+H3run3aSqbtOrP8WXieOQcLYaMK5Gx9x0X4nKKLQnIOwUcWeWg6OU7EA48R2zZYSuZg
-	Yc/zWnfO4Jjimyw24NhDy2Z9zlHj82I=
-Received: from mimecast-mx02.redhat.com (mimecast-mx02.redhat.com
- [66.187.233.88]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-368--eOoKW_BP26pSFwrkb5TTQ-1; Tue, 19 Mar 2024 10:14:56 -0400
-X-MC-Unique: -eOoKW_BP26pSFwrkb5TTQ-1
-Received: from smtp.corp.redhat.com (int-mx10.intmail.prod.int.rdu2.redhat.com [10.11.54.10])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 5463C101CF81;
-	Tue, 19 Mar 2024 14:14:55 +0000 (UTC)
-Received: from warthog.procyon.org.uk (unknown [10.42.28.146])
-	by smtp.corp.redhat.com (Postfix) with ESMTP id 58E25492BD0;
-	Tue, 19 Mar 2024 14:14:52 +0000 (UTC)
-Organization: Red Hat UK Ltd. Registered Address: Red Hat UK Ltd, Amberley
-	Place, 107-111 Peascod Street, Windsor, Berkshire, SI4 1TE, United
-	Kingdom.
-	Registered in England and Wales under Company Registration No. 3798903
-From: David Howells <dhowells@redhat.com>
-In-Reply-To: <CAJfpegv8X0PY7PvxEF=zEwRbdZ7yZZcwB80iDO+XLverognx+g@mail.gmail.com>
-References: <CAJfpegv8X0PY7PvxEF=zEwRbdZ7yZZcwB80iDO+XLverognx+g@mail.gmail.com> <1668172.1709764777@warthog.procyon.org.uk> <ZelGX3vVlGfEZm8H@casper.infradead.org> <1831809.1709807788@warthog.procyon.org.uk>
-To: Miklos Szeredi <miklos@szeredi.hu>
-Cc: dhowells@redhat.com, Matthew Wilcox <willy@infradead.org>,
-    Trond Myklebust <trond.myklebust@hammerspace.com>,
-    Christoph Hellwig <hch@lst.de>,
-    Andrew Morton <akpm@linux-foundation.org>,
-    Alexander Viro <viro@zeniv.linux.org.uk>,
-    Christian Brauner <brauner@kernel.org>,
-    Jeff Layton <jlayton@kernel.org>, linux-mm@kvack.org,
-    linux-fsdevel@vger.kernel.org, netfs@lists.linux.dev,
-    v9fs@lists.linux.dev, linux-afs@lists.infradead.org,
-    ceph-devel@vger.kernel.org, linux-cifs@vger.kernel.org,
-    linux-nfs@vger.kernel.org, devel@lists.orangefs.org,
-    linux-kernel@vger.kernel.org
-Subject: Re: [RFC PATCH] mm: Replace ->launder_folio() with flush and wait
+	bh=pJN0PTyH0UKoPFa7kTYFWKIZEIxZksQ2C3Toyqp2Wnk=;
+	b=wmiLTtQJqCc+rjcXTU23R8Pfq8MoQ2XY8xBpT4qhA7qyU5PbOG9FsD0dagLI0BXjP8H4cN
+	JdTp6UOarDNSPEDDSQB0bjWOp3ChSsw76zAmUpAH45NSRiQkkuyLgh29BAaVYbQ+UlmFrZ
+	sWCu8uMM3IPX3UF0QA3RAIFsU1clrS43szRWO7COZjzfqhPpJT4m1VZOTVuAPnINHVWkop
+	4/AptIa7trdgFxf9zq2IXWBl6NRCSmEbuJZZp7KkUW/VFI29lggrJrSXpxXNIa0fc6+CR3
+	ZH2mVS1gu7AIS5NzScaN7A13pb6BWuNmq2yKGhMhV4cUjTsXGr+qWuNPoT+bJQ==
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=linutronix.de;
+	s=2020e; t=1710857706;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=pJN0PTyH0UKoPFa7kTYFWKIZEIxZksQ2C3Toyqp2Wnk=;
+	b=sAPXVYcL2PqmbaXWIkv4+xx/IqtaHQrE3Sar6jJuP2HFGUFHTv3ZIUzgrhvcKJuhat3VAK
+	t5KVaPfC7tm9OFDQ==
+From: Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+To: Matthew Wilcox <willy@infradead.org>
+Cc: linux-kernel@vger.kernel.org, Boqun Feng <boqun.feng@gmail.com>,
+	Ingo Molnar <mingo@redhat.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Waiman Long <longman@redhat.com>, Will Deacon <will@kernel.org>,
+	Clark Williams <williams@redhat.com>
+Subject: Re: [PATCH] Locking: Let PREEMPT_RT compile again with new rwsem
+ asserts.
+Message-ID: <20240319141506.DUd9NKl4@linutronix.de>
+References: <20240319070550.ws_uO21-@linutronix.de>
+ <ZfmVPid-d7cpf6Yt@casper.infradead.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-ID: <651178.1710857687.1@warthog.procyon.org.uk>
-Date: Tue, 19 Mar 2024 14:14:47 +0000
-Message-ID: <651179.1710857687@warthog.procyon.org.uk>
-X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.10
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <ZfmVPid-d7cpf6Yt@casper.infradead.org>
 
-Miklos Szeredi <miklos@szeredi.hu> wrote:
-
-> >  (2) invalidate_inode_pages2() is used in some places to effect
-> >      invalidation of the pagecache in the case where the server tells us
-> >      that a third party modified the server copy of a file.  What the
-> >      right behaviour should be here, I'm not sure, but at the moment, any
-> >      dirty data will get laundered back to the server.  Possibly it should
-> >      be simply invalidated locally or the user asked how they want to
-> >      handle the divergence.
+On 2024-03-19 13:38:06 [+0000], Matthew Wilcox wrote:
+> On Tue, Mar 19, 2024 at 08:05:50AM +0100, Sebastian Andrzej Siewior wrote:
+> > -static inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
+> > +static __always_inline bool rwsem_held_write(const struct rw_semaphore *sem)
 > 
-> Skipping ->launder_page will mean there's a window where the data
-> *will* be lost, AFAICS.
-> 
-> Of course concurrent cached writes on different hosts against the same
-> region (the size of which depends on how the caching is done) will
-> conflict.
+> The locking maintainers were very clear that this predicate Should Not
+> Exist.  It encourages people to write bad code.  Assertions only!
 
-Indeed.  Depending on when you're using invalidate_inode_pages2() and co. and
-what circumstances you're using it for, you *are* going to suffer data loss.
+What do you refer to? The inline vs __always_inline or
+rwsem_held_write() should not exists and it should invoke directly
+rw_base_is_write_locked()?
 
-For instance, if you have dirty data on the local host and get an invalidation
-notification from the server: if you write just your dirty data back, you may
-corrupt the file on the server, losing the third party changes; if you write
-back your entire copy of the file, you might avoid corrupting the file, but
-completely obliterate the third party changes; if you discard your changes,
-you lose those instead, but save the third party changes.
+> >  {
+> > -	rw_base_assert_held_write(sem);
+> > +	return rw_base_is_write_locked(&sem->rwbase);
+> > +}
+> > +
+> > +static __always_inline void rwsem_assert_held_write_nolockdep(const struct rw_semaphore *sem)
+> > +{
+> > +	WARN_ON(!rwsem_held_write(sem));
+> >  }
+> >  
+> >  static __always_inline int rwsem_is_contended(struct rw_semaphore *sem)
 
-I'm working towards supporting disconnected operation where I'll need to add
-some sort of user interaction mechanism that will allow the user to say how
-they want to handle this.
-
-> But if concurrent writes are to different regions, then they shouldn't
-> be lost, no?  Without the current ->launder_page thing I don't see how
-> that could be guaranteed.
-
-Define "different regions".  If they're not on the same folios, then why would
-they be lost by simply flushing the data before doing the invalidation?  If
-they are on different parts of the same folio, all the above still apply when
-you flush the whole folio.
-
-Now, you can mitigate the latter case by keeping track of which bytes changed,
-but that still allows you to corrupt the file by writing back just your
-particular changes.
-
-And then there's the joker in the deck: mmap.  The main advantage of
-invalidate_inode_pages2() is that it forcibly unmaps the page before
-laundering it.  However, this doesn't prevent you then corrupting the upstream
-copy by writing the changes back.
-
-What particular usage case of invalidate_inode_pages2() are you thinking of?
-
-DIO read/write can only be best effort: flush, invalidate then do the DIO
-which may bring the buffers back in because they're mmapped.  In which case
-doing a flush and a non-laundering invalidate that leaves dirty pages in place
-ought to be fine.
-
-David
-
+Sebastian
 
