@@ -1,183 +1,255 @@
-Return-Path: <linux-kernel+bounces-107617-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107613-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DCCF487FF2F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:58:41 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 71C2F87FF23
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:56:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 54DE8B25A99
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:58:39 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BE47CB21C98
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:56:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE65381741;
-	Tue, 19 Mar 2024 13:58:25 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gA9LlWVZ"
-Received: from mail-ej1-f53.google.com (mail-ej1-f53.google.com [209.85.218.53])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id C62748172E;
+	Tue, 19 Mar 2024 13:56:44 +0000 (UTC)
+Received: from mail-io1-f69.google.com (mail-io1-f69.google.com [209.85.166.69])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6887280612;
-	Tue, 19 Mar 2024 13:58:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BA8B981216
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:56:42 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.69
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710856705; cv=none; b=aTdhVn7cqtXGrln29sgunxufHn4geWTq1A9y58v44HBM+NTEh8RKRcaAQiw6KcJOuriBFrpTfqoDgGaMprxFrk2upa6OE+DMVAwXL4XpQ5RnU7nR2PPzq305888aw0BHmCBby2KgbXyTLqrSrDj8tFs/3HuxTRW1v+Mzq0urTdo=
+	t=1710856604; cv=none; b=cb3+ILSMjz/bLesc3x7buYBa3I/+H3Hl5yWrtv+4j+jsvWTTIonPBihQowUjcHU58E/3xx5cYpcAiaq8+J+GPgEEb41dnETParsJNJjCJ1OM/1qYvz3Ko/EIzxvATANxEx9KJlQ0IFHxnXTwUVPg7mmsxRU/0ZVyrYjjpETpAGg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710856705; c=relaxed/simple;
-	bh=OVjzTOVyPNf+wcJag2OMOZeywBVyZAixmPWNMf44ywE=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=BvMBvmFlW4ghtLWSdv+tgMIOG0Y3WPe5wSGYknWs1xMdTmx3GpDwVisj5A+DRapqop9wkTdO6eAre/4hMzBkOEEP0Wjn18+cdr0a1V57/bk025Lm3YTnvwzyzMNdCixNnsqfB/ba/poVLqJQT5ooDIqXCSSe0fKvkk7tYi1d42M=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gA9LlWVZ; arc=none smtp.client-ip=209.85.218.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ej1-f53.google.com with SMTP id a640c23a62f3a-a46ba938de0so334499966b.3;
-        Tue, 19 Mar 2024 06:58:23 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710856702; x=1711461502; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=hT6iTN2em5tEDaXXNgOGojNNtDEqq+qxwwOncA5QWiE=;
-        b=gA9LlWVZyGCsmS+uJIkcDWbQY2I8R+n5/zso4RHlxOFXsurfeD2zi/q2abdAgxeSrt
-         WxLddZcyFnBOnBNgnK0/sBLbgLmwriTE/1k+d0X36ErZyGcSE0R8S9HdzxG9IjGKz9Ly
-         51gaUOVqc6FZlSDoURTpJjHSsoFrXcvbJhmZlkjT0Qgi/gpwSGWfKMY5bzA4vUmIVtHe
-         8k4IWfhD3UvYjp1FQQMru1M/gLRzCkCyCJXxX/GJPFsxzt9nHZcsWAOocChym8Pvqd20
-         TtQONv+Udhfcc9nx7+1nhrqPlMrrN7tav/wbqcjsi9ZL2mqEJMcxQQ0w+E22kBzhM8ng
-         XgtQ==
+	s=arc-20240116; t=1710856604; c=relaxed/simple;
+	bh=SiSKHuFwh9lLOtDAXnJW9R6P2jVsOoCWB+Gw3+hldUg=;
+	h=MIME-Version:Date:In-Reply-To:Message-ID:Subject:From:To:
+	 Content-Type; b=FDoLWMsuNHxSjKn5AMgjb2eBUWW4OcpZd7N/QCj1xQZl+EIm0k9E5nVsTu5z7/zEhbp0JkvhQhxpKctIo1H9JR4as8fvzqNtFJL0DjTUsS0UmDWDkW6V4v3a80wqcJyWHddVEoZWxq0lP7kJxxZJUElCbfX1/WKPJvql6KlHlEA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.69
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-io1-f69.google.com with SMTP id ca18e2360f4ac-7cbfd4781fcso376756739f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:56:42 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710856702; x=1711461502;
-        h=content-transfer-encoding:in-reply-to:from:content-language
-         :references:cc:to:subject:user-agent:mime-version:date:message-id
+        d=1e100.net; s=20230601; t=1710856602; x=1711461402;
+        h=to:from:subject:message-id:in-reply-to:date:mime-version
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=hT6iTN2em5tEDaXXNgOGojNNtDEqq+qxwwOncA5QWiE=;
-        b=uNCJSonoXBFcLCCtqJERC08tEhzOlWbksyTws552eP/45uA+e8F0iXI5qHRWhjvjuM
-         biuNYr/ZrXr73yerNjiJJ3GoXdtyrrU6AM1gWSwspq+dwqh4iHrCuCIzRua3faPsoLTH
-         XtXWg2aO/r/Q8rXonU/kHDAAi8uFd4mRq7MLVL8VazgDl9ZtL1jhDQLynhsP4ybrmIf1
-         QTRtCiayxPeBIynB+yDf7gVg0SMFKuMpSQ5Gghp72LFxSSUs4ZPuCPjLvLlMWkEDO9yI
-         VgT+dUNZXrSizKwDIPX3LzF0SBpVl0C8Z2Vq1IfBMyOzB5gGp/sqn/ecEWqbqcTQHukD
-         4vyA==
-X-Forwarded-Encrypted: i=1; AJvYcCXCAMCVm6p8I3ZD4nAr5vVIHlTzz/hLHWXEB7ZEqVdLFnNasdu1AvV1DNC8xv7vuRQlinVfymN4gX1H07CvLXlWtAZsDEupXYRXTYwVDPm20r1d9qt5BZWpbZPUIm0Nz2UGYFw0VRc=
-X-Gm-Message-State: AOJu0YwNH/2OpZNc39LVQ+FIIogx7b3VPdjJpqKMrSgy0yV97q9w7jUV
-	Oa4UyEt8wMS6jzY9SH25fWSc7HsF7d3pu+uFQuJUvWA1KLamyA8D
-X-Google-Smtp-Source: AGHT+IE/NwSPtsSi0jKx8EbIMiFVN10KYe5MqHlLvrRVHJsjGi/XcSI8TG9Jtyecsw/wz4C82ew/BQ==
-X-Received: by 2002:a17:906:d8c:b0:a46:181f:c1c3 with SMTP id m12-20020a1709060d8c00b00a46181fc1c3mr9487236eji.70.1710856701481;
-        Tue, 19 Mar 2024 06:58:21 -0700 (PDT)
-Received: from [192.168.8.100] ([148.252.146.160])
-        by smtp.gmail.com with ESMTPSA id mb1-20020a170906eb0100b00a46d6e51a6asm1130574ejb.40.2024.03.19.06.58.20
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 06:58:21 -0700 (PDT)
-Message-ID: <bfc6afa9-501f-40b6-929a-3aa8c0298265@gmail.com>
-Date: Tue, 19 Mar 2024 13:55:21 +0000
+        bh=G9TLtr2LXddztPLvauUkkgcrDfwPnuzScqtnLmCwUfs=;
+        b=rWs9LSOFGVcKhr3HsUiPBFCTFRtvgfr4R5BMSc41cQD/7BbRkeJnOItN9fJo3NzgiD
+         AWYluhjWeFPIJGAkuXuTeLXVOLfMmH+VTsezmcIYjRlXEPwi+oNxPoi+xoJbhUYhzN1d
+         w69DJFygcvo2IKfFUcZKeSEU1tmRvKo7E2+LuNV13SV7MJK68s3hQyqTqudUbqNza/RV
+         FOLb2sZZwSUqVhmjffgCguDqQaVkVp5XI+iAtSMzKw5ip57tpB+Nz/+EZsVc5R9+V5QD
+         BZApEdsdgwYf34czZ0mrVy55CM1Hj8LZ8gZVM240JNF3v0n6TSDse4keGbJyhiJfWFWB
+         wAVg==
+X-Gm-Message-State: AOJu0YzPeeyUc5ToZu/f65XqfaGsS/bZBNkGA+YRBXZkSCIcdkHv2Ox9
+	QTMmTceRC7BL03M4FgcjE/aqONWlurQ15gndfb0KQ6QWBH8bu7+y8S18/h7kCpG++EA8yr8NTmL
+	sQ16+dAHv0HCa33I7gb+AXF+wUA9NY40qUrkEAyJ8hk7V6yDUXyDrfcnTpQ==
+X-Google-Smtp-Source: AGHT+IGyYV88jGflZZU+zKAPhICTypPZEU4mYkuEDAyUxNRJLQ1fV9oO/ZvKHWpn/zm5ztV6SkU4QOi8qBaqbrnsj6ck3+40nI0Q
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: Do not break out of sk_stream_wait_memory() with
- TIF_NOTIFY_SIGNAL
-To: Sascha Hauer <s.hauer@pengutronix.de>
-Cc: netdev@vger.kernel.org, kernel@pengutronix.de,
- linux-kernel@vger.kernel.org, Paolo Abeni <pabeni@redhat.com>,
- Jens Axboe <axboe@kernel.dk>, io-uring@vger.kernel.org
-References: <20240315100159.3898944-1-s.hauer@pengutronix.de>
- <7b82679f-9b69-4568-a61d-03eb1e4afc18@gmail.com>
- <ZfgvNjWP8OYMIa3Y@pengutronix.de>
- <0a556650-9627-48ee-9707-05d7cab33f0f@gmail.com>
- <Zflt3EVf744LOA6i@pengutronix.de>
-Content-Language: en-US
-From: Pavel Begunkov <asml.silence@gmail.com>
-In-Reply-To: <Zflt3EVf744LOA6i@pengutronix.de>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+X-Received: by 2002:a05:6638:8923:b0:474:ed8f:ffa8 with SMTP id
+ jc35-20020a056638892300b00474ed8fffa8mr69278jab.4.1710856601948; Tue, 19 Mar
+ 2024 06:56:41 -0700 (PDT)
+Date: Tue, 19 Mar 2024 06:56:41 -0700
+In-Reply-To: <0000000000002750950613c53e72@google.com>
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <0000000000000563d3061403d83d@google.com>
+Subject: Re: [syzbot] Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
+From: syzbot <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com>
+To: linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com
+Content-Type: text/plain; charset="UTF-8"
 
-On 3/19/24 10:50, Sascha Hauer wrote:
-> On Mon, Mar 18, 2024 at 01:19:19PM +0000, Pavel Begunkov wrote:
->> On 3/18/24 12:10, Sascha Hauer wrote:
->>> On Fri, Mar 15, 2024 at 05:02:05PM +0000, Pavel Begunkov wrote:
->>>> On 3/15/24 10:01, Sascha Hauer wrote:
->>>>> It can happen that a socket sends the remaining data at close() time.
->>>>> With io_uring and KTLS it can happen that sk_stream_wait_memory() bails
->>>>> out with -512 (-ERESTARTSYS) because TIF_NOTIFY_SIGNAL is set for the
->>>>> current task. This flag has been set in io_req_normal_work_add() by
->>>>> calling task_work_add().
->>>>
->>>> The entire idea of task_work is to interrupt syscalls and let io_uring
->>>> do its job, otherwise it wouldn't free resources it might be holding,
->>>> and even potentially forever block the syscall.
->>>>
->>>> I'm not that sure about connect / close (are they not restartable?),
->>>> but it doesn't seem to be a good idea for sk_stream_wait_memory(),
->>>> which is the normal TCP blocking send path. I'm thinking of some kinds
->>>> of cases with a local TCP socket pair, the tx queue is full as well
->>>> and the rx queue of the other end, and io_uring has to run to receive
->>>> the data.
->>
->> There is another case, let's say the IO is done via io-wq
->> (io_uring's worker thread pool) and hits the waiting. Now the
->> request can't get cancelled, which is done by interrupting the
->> task with TIF_NOTIFY_SIGNAL. User requested request cancellations
->> is one thing, but we'd need to check if io_uring can ever be closed
->> in this case.
->>
->>
->>>> If interruptions are not welcome you can use different io_uring flags,
->>>> see IORING_SETUP_COOP_TASKRUN and/or IORING_SETUP_DEFER_TASKRUN.
->>>
->>> I tried with different combinations of these flags. For example
->>> IORING_SETUP_TASKRUN_FLAG | IORING_SETUP_SINGLE_ISSUER | IORING_SETUP_DEFER_TASKRUN
->>> makes the issue less likely, but nevertheless it still happens.
->>>
->>> However, reading the documentation of these flags, they shall provide
->>> hints to the kernel for optimizations, but it should work without these
->>> flags, right?
->>
->> That's true, and I guess there are other cases as well, like
->> io-wq and perhaps even a stray fput.
->>
->>
->>>> Maybe I'm missing something, why not restart your syscall?
->>>
->>> The problem comes with TLS. Normally with synchronous encryption all
->>> data on a socket is written during write(). When asynchronous
->>> encryption comes into play, then not all data is written during write(),
->>> but instead the remaining data is written at close() time.
->>
->> Was it considered to do the final cleanup in workqueue
->> and only then finalising the release?
+For archival purposes, forwarding an incoming command email to
+linux-kernel@vger.kernel.org, syzkaller-bugs@googlegroups.com.
+
+***
+
+Subject: Re: [syzbot] [v9fs?] KMSAN: uninit-value in v9fs_evict_inode
+Author: eric.vanhensbergen@linux.dev
+
+#syz test: git://git.kernel.org/pub/scm/linux/kernel/git/ericvh/v9fs.git b4/fix-evict-uninitialized-value
+
+March 16, 2024 at 6:15 AM, "syzbot" <syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com> wrote:
 > 
-> No, but I don't really understand what you mean here. Could you
-> elaborate?
-
-The suggestion is instead of executing the release and that final
-flush off of the context you're in, namely userspace task,
-you can spin up a kernel task (they're not getting any signals)
-and execute it from there.
-
-void deferred_release_fn(struct work_struct *work)
-{
-	do_release();
-	...
-}
-
-struct work_struct work;
-INIT_WORK(&work, deferred_release_fn);
-queue_work(system_unbound_wq, &work);
-
-
-There is a catch. Even though close() is not obliged to close
-the file / socket immediately, but it still not nice when you
-drop the final ref but port and other bits are not released
-until some time after. So, you might want to wait for that
-deferred release to complete before returning to the
-userspace.
-
-I'm assuming it's fine to run it by a kernel task since
-IIRC fput might delay release to it anyway, but it's better
-to ask net maintainers. In theory it shouldn't need
-mm,fs,etc that user task would hold.
-
--- 
-Pavel Begunkov
+> Hello,
+> 
+> syzbot found the following issue on:
+> 
+> HEAD commit: 66a27abac311 Merge tag 'powerpc-6.9-1' of git://git.kernel..
+> 
+> git tree: upstream
+> 
+> console+strace: https://syzkaller.appspot.com/x/log.txt?x=147b32a5180000
+> 
+> kernel config: https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
+> 
+> dashboard link: https://syzkaller.appspot.com/bug?extid=eb83fe1cce5833cd66a0
+> 
+> compiler: Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+> 
+> syz repro: https://syzkaller.appspot.com/x/repro.syz?x=12598006180000
+> 
+> C reproducer: https://syzkaller.appspot.com/x/repro.c?x=105d8aa5180000
+> 
+> Downloadable assets:
+> 
+> disk image: https://storage.googleapis.com/syzbot-assets/37968fa0451e/disk-66a27aba.raw.xz
+> 
+> vmlinux: https://storage.googleapis.com/syzbot-assets/5b288c5c3088/vmlinux-66a27aba.xz
+> 
+> kernel image: https://storage.googleapis.com/syzbot-assets/792ddbf8146d/bzImage-66a27aba.xz
+> 
+> IMPORTANT: if you fix the issue, please add the following tag to the commit:
+> 
+> Reported-by: syzbot+eb83fe1cce5833cd66a0@syzkaller.appspotmail.com
+> 
+> =====================================================
+> 
+> BUG: KMSAN: uninit-value in fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
+> 
+> BUG: KMSAN: uninit-value in v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
+> 
+>  fscache_relinquish_cookie include/linux/fscache.h:307 [inline]
+> 
+>  v9fs_evict_inode+0x109/0x130 fs/9p/vfs_inode.c:356
+> 
+>  evict+0x3ae/0xa60 fs/inode.c:667
+> 
+>  iput_final fs/inode.c:1741 [inline]
+> 
+>  iput+0x9ca/0xe10 fs/inode.c:1767
+> 
+>  iget_failed+0x15e/0x180 fs/bad_inode.c:248
+> 
+>  v9fs_fid_iget_dotl+0x375/0x570 fs/9p/vfs_inode_dotl.c:96
+> 
+>  v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
+> 
+>  v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
+> 
+>  legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+> 
+>  vfs_get_tree+0xa7/0x570 fs/super.c:1779
+> 
+>  do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+> 
+>  path_mount+0x742/0x1f20 fs/namespace.c:3679
+> 
+>  do_mount fs/namespace.c:3692 [inline]
+> 
+>  __do_sys_mount fs/namespace.c:3898 [inline]
+> 
+>  __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+> 
+>  __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+> 
+>  do_syscall_64+0xd5/0x1f0
+> 
+>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> 
+> Uninit was created at:
+> 
+>  __alloc_pages+0x9d6/0xe70 mm/page_alloc.c:4598
+> 
+>  __alloc_pages_node include/linux/gfp.h:238 [inline]
+> 
+>  alloc_pages_node include/linux/gfp.h:261 [inline]
+> 
+>  alloc_slab_page mm/slub.c:2175 [inline]
+> 
+>  allocate_slab mm/slub.c:2338 [inline]
+> 
+>  new_slab+0x2de/0x1400 mm/slub.c:2391
+> 
+>  ___slab_alloc+0x1184/0x33d0 mm/slub.c:3525
+> 
+>  __slab_alloc mm/slub.c:3610 [inline]
+> 
+>  __slab_alloc_node mm/slub.c:3663 [inline]
+> 
+>  slab_alloc_node mm/slub.c:3835 [inline]
+> 
+>  kmem_cache_alloc_lru+0x6d7/0xbe0 mm/slub.c:3864
+> 
+>  alloc_inode_sb include/linux/fs.h:3089 [inline]
+> 
+>  v9fs_alloc_inode+0x62/0x130 fs/9p/vfs_inode.c:228
+> 
+>  alloc_inode+0x86/0x460 fs/inode.c:261
+> 
+>  iget_locked+0x2bf/0xee0 fs/inode.c:1280
+> 
+>  v9fs_fid_iget_dotl+0x7f/0x570 fs/9p/vfs_inode_dotl.c:62
+> 
+>  v9fs_get_inode_from_fid fs/9p/v9fs.h:230 [inline]
+> 
+>  v9fs_mount+0xc02/0x12b0 fs/9p/vfs_super.c:142
+> 
+>  legacy_get_tree+0x114/0x290 fs/fs_context.c:662
+> 
+>  vfs_get_tree+0xa7/0x570 fs/super.c:1779
+> 
+>  do_new_mount+0x71f/0x15e0 fs/namespace.c:3352
+> 
+>  path_mount+0x742/0x1f20 fs/namespace.c:3679
+> 
+>  do_mount fs/namespace.c:3692 [inline]
+> 
+>  __do_sys_mount fs/namespace.c:3898 [inline]
+> 
+>  __se_sys_mount+0x725/0x810 fs/namespace.c:3875
+> 
+>  __x64_sys_mount+0xe4/0x150 fs/namespace.c:3875
+> 
+>  do_syscall_64+0xd5/0x1f0
+> 
+>  entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> 
+> CPU: 1 PID: 5014 Comm: syz-executor406 Not tainted 6.8.0-syzkaller-11136-g66a27abac311 #0
+> 
+> Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+> 
+> =====================================================
+> 
+> ---
+> 
+> This report is generated by a bot. It may contain errors.
+> 
+> See https://goo.gl/tpsmEJ for more information about syzbot.
+> 
+> syzbot engineers can be reached at syzkaller@googlegroups.com.
+> 
+> syzbot will keep track of this issue. See:
+> 
+> https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> 
+> If the report is already addressed, let syzbot know by replying with:
+> 
+> #syz fix: exact-commit-title
+> 
+> If you want syzbot to run the reproducer, reply with:
+> 
+> #syz test: git://repo/address.git branch-or-commit-hash
+> 
+> If you attach or paste a git patch, syzbot will apply it before testing.
+> 
+> If you want to overwrite report's subsystems, reply with:
+> 
+> #syz set subsystems: new-subsystem
+> 
+> (See the list of subsystem names on the web dashboard)
+> 
+> If the report is a duplicate of another one, reply with:
+> 
+> #syz dup: exact-subject-of-another-report
+> 
+> If you want to undo deduplication, reply with:
+> 
+> #syz undup
+>
 
