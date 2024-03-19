@@ -1,223 +1,214 @@
-Return-Path: <linux-kernel+bounces-107145-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107148-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4769C87F820
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:06:05 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0C82687F824
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:07:39 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id EEA9E2825DC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:06:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AE356282664
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:07:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 253AF7E76B;
-	Tue, 19 Mar 2024 07:03:19 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id BCDC551C54;
+	Tue, 19 Mar 2024 07:05:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b="O3vRcqqK"
-Received: from mailgw02.mediatek.com (unknown [210.61.82.184])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K/jA0ZbM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 61F635465D;
-	Tue, 19 Mar 2024 07:03:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=210.61.82.184
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5805251C39
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:05:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710831796; cv=none; b=sdWQTsT9auPrlUmlh+nsv4u0Y6k6rQpYgKEBRnLE0oJBHkICpvSJoXBIcELQW0eal+Kf6pNSulO98NbnS9uMYOC95SQ1w9qlAUeo5NK0p31tZD+gp+2Sn+EQaGrOip6f/PUMHRk3Y9+hD3yAF+egVuBVuxrNgp405/eRTgDO+LU=
+	t=1710831905; cv=none; b=h9ofyfJKNGhbOMgvMnW6sg1Pjjb475sQ8r2GtT9U0gwH7mHYUue1KAbTBwCgmm1foQp32xunq9+zypB9GyRLvTZ9QBpnXzFfL+wKV+tLf5EwaHMkQUb/179DBvMd3SNfPaigL5fw0ue0Kn0b483CJhx9Nm/ZyO5/cCzjLvGeeXs=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710831796; c=relaxed/simple;
-	bh=J8PAlSvS6S+W1VRK68CambaGaXTQwsBaBwUnbIpWu58=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=eTvb96tsYZMUrYqKWJizI2MF80DBck14Nd74lH3WMcUqWnXpz/npeXi7ezsxF/WI7ANBX4Uxx71duHReP3KSi09FhZwnaaEMXZ3i74a1zVouLe/IAnpe+4smpbt3M4OpYXtcv4S4oT1gkqGoWSYrgtnS1B9RrhJ0VrvIAKCyRDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com; spf=pass smtp.mailfrom=mediatek.com; dkim=pass (1024-bit key) header.d=mediatek.com header.i=@mediatek.com header.b=O3vRcqqK; arc=none smtp.client-ip=210.61.82.184
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=mediatek.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=mediatek.com
-X-UUID: b9efb8a4e5be11ee935d6952f98a51a9-20240319
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=mediatek.com; s=dk;
-	h=Content-Type:MIME-Version:References:In-Reply-To:Message-ID:Date:Subject:CC:To:From; bh=o1k/aUAzB2fs9zIPVErc6M8VvXwK6zQtTbz3WRA0EkE=;
-	b=O3vRcqqKw5azpNflvfhNTexNdDpsHy/rVoUSL7UrYucjhdGhGqb313uf92igao359eO/qq4eek7cKxvi5Z47DPTE6qsTHA3qQI53U/XKw5Hcc9qpBtm+dPgssgaYL5LWKm0u2LsqBPq2klesI09DSbk4cIvML+hfYPzRuRTqnXk=;
-X-CID-P-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:f2fd29c6-6267-46b4-812e-709bc9e8cb8d,IP:0,U
-	RL:0,TC:0,Content:-25,EDM:0,RT:0,SF:0,FILE:0,BULK:0,RULE:Release_Ham,ACTIO
-	N:release,TS:-25
-X-CID-META: VersionHash:6f543d0,CLOUDID:62f02a85-8d4f-477b-89d2-1e3bdbef96d1,B
-	ulkID:nil,BulkQuantity:0,Recheck:0,SF:102,TC:nil,Content:0,EDM:-3,IP:nil,U
-	RL:11|1,File:nil,RT:nil,Bulk:nil,QS:nil,BEC:nil,COL:0,OSI:0,OSA:0,AV:0,LES
-	:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0
-X-CID-BAS: 0,_,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_ULN
-X-UUID: b9efb8a4e5be11ee935d6952f98a51a9-20240319
-Received: from mtkmbs14n2.mediatek.inc [(172.21.101.76)] by mailgw02.mediatek.com
-	(envelope-from <shawn.sung@mediatek.com>)
-	(Generic MTA with TLSv1.2 ECDHE-RSA-AES256-GCM-SHA384 256/256)
-	with ESMTP id 1905259890; Tue, 19 Mar 2024 15:03:02 +0800
-Received: from mtkmbs13n1.mediatek.inc (172.21.101.193) by
- mtkmbs13n1.mediatek.inc (172.21.101.193) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.26; Tue, 19 Mar 2024 15:03:01 +0800
-Received: from mtksdccf07.mediatek.inc (172.21.84.99) by
- mtkmbs13n1.mediatek.inc (172.21.101.73) with Microsoft SMTP Server id
- 15.2.1118.26 via Frontend Transport; Tue, 19 Mar 2024 15:03:00 +0800
-From: Shawn Sung <shawn.sung@mediatek.com>
-To: Chun-Kuang Hu <chunkuang.hu@kernel.org>, AngeloGioacchino Del Regno
-	<angelogioacchino.delregno@collabora.com>
-CC: Philipp Zabel <p.zabel@pengutronix.de>, David Airlie <airlied@gmail.com>,
-	Daniel Vetter <daniel@ffwll.ch>, Matthias Brugger <matthias.bgg@gmail.com>,
-	Sumit Semwal <sumit.semwal@linaro.org>, =?UTF-8?q?Christian=20K=C3=B6nig?=
-	<christian.koenig@amd.com>, <dri-devel@lists.freedesktop.org>,
-	<linux-mediatek@lists.infradead.org>, <linux-kernel@vger.kernel.org>,
-	<linux-arm-kernel@lists.infradead.org>, <linux-media@vger.kernel.org>,
-	<linaro-mm-sig@lists.linaro.org>, Hsiao Chien Sung
-	<shawn.sung@mediatek.corp-partner.google.com>
-Subject: [PATCH v2 14/14] drm/mediatek: Rename mtk_ddp_comp functions
-Date: Tue, 19 Mar 2024 15:02:57 +0800
-Message-ID: <20240319070257.6443-15-shawn.sung@mediatek.com>
-X-Mailer: git-send-email 2.18.0
-In-Reply-To: <20240319070257.6443-1-shawn.sung@mediatek.com>
-References: <20240319070257.6443-1-shawn.sung@mediatek.com>
+	s=arc-20240116; t=1710831905; c=relaxed/simple;
+	bh=Ndfh/nh824nN5WcyANy2Uoh6V4Gixx5ZzpqNUelrwP0=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=AhsuPxF/rKKmoF2NpvIomokfmmm8mkA9IcaisD7Ko85scMkJBmv7v+tRZYkkRHdtEQi32melrTIKEwIDbCa9d1nVREaZ8eNrZ2RUmBxgLqZK37G2WGML7nxfLXaUdVnIzWHeOUUeOUM4ZPOWAnOsRWayENZQ+iUDE21wwztAL/4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K/jA0ZbM; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710831903;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=msk7w1tinlaWzEk2KKg0h88gDmDQY/OKdF9U/8feTqI=;
+	b=K/jA0ZbMCsDDlqzV9Qj/YlPqWmn9yY1P+ZEUpaDjG7n26mKp8KipB1+FQHVXYdU8oXE28W
+	cdP9okj5alIBpmRzSF3RuIFr+K8V6BeM7pESp3N/wmCAaiG8SewSlIHIZBft4zu6GHQfMQ
+	pmD6/1iwvhMxmV9J/HjMLFdFW3amAzk=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-259-2AmQmwVhPlKvNhjnZUiD3A-1; Tue, 19 Mar 2024 03:05:01 -0400
+X-MC-Unique: 2AmQmwVhPlKvNhjnZUiD3A-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4140edcb197so10942685e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:05:01 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710831900; x=1711436700;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=msk7w1tinlaWzEk2KKg0h88gDmDQY/OKdF9U/8feTqI=;
+        b=bL6C99JR0t8BAwwzmAZ2MLEzmaGiB43iGU8zN3Hktc74OFBMxkNfZSk8tE6faPSlPb
+         FClwRuH+93YFRHLbAZXnx1g44uqA+hmeCVVZEbFn6gYafBmxEs33Sh/QgNo/0k/Knk5v
+         CfPwVRd+pLdaNw+KMhqVSgP52vV/LLddkdicMOglriKVxHoAWW8EnaaAOjnleHRhieZl
+         XOhrNeBM8V3VBN/4WeATkE2LzrVu4hERCDYSfJbM9K47NzCgp95jTuEiApQPtJLj2PpH
+         S1IvzZnzJFwNwNrBN2ZrHNJOEug12wEi+lWPVQiTTg5irWTD5Oyoem69UPrTl4ZwAtQ3
+         V6/g==
+X-Forwarded-Encrypted: i=1; AJvYcCUW0M8tEEbbRRv/3dxdavqA/9ClexSx4fuKSQ8u5ZB/r2+tLaRuaUI16phUQxoL1ImAc7gmd6ZnIO8mCRD9n1+nArKJnB/y0zSXjfu5
+X-Gm-Message-State: AOJu0YylFjazN0Wo5x6pj39NMCoA/PtFqHQ3taj+oABrrfqMExYMBz5Q
+	SAIKRSqhYby7yi7VcV9ZTmS96OoP61vbHETo4AbmKr/s11cKohqi0WC8RTNsZNXyFr6e/UPXzsD
+	4UqwgrC+mPBd2QlsU3u6X9FpTOVuVb14j+gCsBYjAeu4owdSMjMME4gHuxON7yQ==
+X-Received: by 2002:a05:600c:4eca:b0:414:1e0:2afa with SMTP id g10-20020a05600c4eca00b0041401e02afamr8358557wmq.3.1710831900156;
+        Tue, 19 Mar 2024 00:05:00 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHz4xz32UCYWB9lnqEcxFh5GXgSTBxzG1zltbsajW5LUv/qBjfGkKiOalU52s/Yd0zHsKkWFA==
+X-Received: by 2002:a05:600c:4eca:b0:414:1e0:2afa with SMTP id g10-20020a05600c4eca00b0041401e02afamr8358522wmq.3.1710831899535;
+        Tue, 19 Mar 2024 00:04:59 -0700 (PDT)
+Received: from redhat.com ([2.52.6.254])
+        by smtp.gmail.com with ESMTPSA id w9-20020a05600c474900b0041408af4b34sm9695750wmo.10.2024.03.19.00.04.57
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 00:04:59 -0700 (PDT)
+Date: Tue, 19 Mar 2024 03:04:55 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Gavin Shan <gshan@redhat.com>
+Cc: Will Deacon <will@kernel.org>, virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org, jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com,
+	linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
+Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
+Message-ID: <20240319030148-mutt-send-email-mst@kernel.org>
+References: <20240314074923.426688-1-gshan@redhat.com>
+ <20240318165924.GA1824@willie-the-truck>
+ <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
+ <20240319020905-mutt-send-email-mst@kernel.org>
+ <20240319020949-mutt-send-email-mst@kernel.org>
+ <6b829cfc-9cbe-42eb-9935-62d2cf5fbcc4@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain
-X-MTK: N
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <6b829cfc-9cbe-42eb-9935-62d2cf5fbcc4@redhat.com>
 
-From: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
+On Tue, Mar 19, 2024 at 04:54:15PM +1000, Gavin Shan wrote:
+> On 3/19/24 16:10, Michael S. Tsirkin wrote:
+> > On Tue, Mar 19, 2024 at 02:09:34AM -0400, Michael S. Tsirkin wrote:
+> > > On Tue, Mar 19, 2024 at 02:59:23PM +1000, Gavin Shan wrote:
+> > > > On 3/19/24 02:59, Will Deacon wrote:
+> [...]
+> > > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > > > > index 49299b1f9ec7..7d852811c912 100644
+> > > > > > --- a/drivers/virtio/virtio_ring.c
+> > > > > > +++ b/drivers/virtio/virtio_ring.c
+> > > > > > @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+> > > > > >    	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> > > > > >    	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+> > > > > > -	/* Descriptors and available array need to be set before we expose the
+> > > > > > -	 * new available array entries. */
+> > > > > > -	virtio_wmb(vq->weak_barriers);
+> > > > > > +	/*
+> > > > > > +	 * Descriptors and available array need to be set before we expose
+> > > > > > +	 * the new available array entries. virtio_wmb() should be enough
+> > > > > > +	 * to ensuere the order theoretically. However, a stronger barrier
+> > > > > > +	 * is needed by ARM64. Otherwise, the stale data can be observed
+> > > > > > +	 * by the host (vhost). A stronger barrier should work for other
+> > > > > > +	 * architectures, but performance loss is expected.
+> > > > > > +	 */
+> > > > > > +	virtio_mb(false);
+> > > > > >    	vq->split.avail_idx_shadow++;
+> > > > > >    	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+> > > > > >    						vq->split.avail_idx_shadow);
+> > > > > 
+> > > > > Replacing a DMB with a DSB is _very_ unlikely to be the correct solution
+> > > > > here, especially when ordering accesses to coherent memory.
+> > > > > 
+> > > > > In practice, either the larger timing different from the DSB or the fact
+> > > > > that you're going from a Store->Store barrier to a full barrier is what
+> > > > > makes things "work" for you. Have you tried, for example, a DMB SY
+> > > > > (e.g. via __smb_mb()).
+> > > > > 
+> > > > > We definitely shouldn't take changes like this without a proper
+> > > > > explanation of what is going on.
+> > > > > 
+> > > > 
+> > > > Thanks for your comments, Will.
+> > > > 
+> > > > Yes, DMB should work for us. However, it seems this instruction has issues on
+> > > > NVidia's grace-hopper. It's hard for me to understand how DMB and DSB works
+> > > > from hardware level. I agree it's not the solution to replace DMB with DSB
+> > > > before we fully understand the root cause.
+> > > > 
+> > > > I tried the possible replacement like below. __smp_mb() can avoid the issue like
+> > > > __mb() does. __ndelay(10) can avoid the issue, but __ndelay(9) doesn't.
+> > > > 
+> > > > static inline int virtqueue_add_split(struct virtqueue *_vq, ...)
+> > > > {
+> > > >      :
+> > > >          /* Put entry in available array (but don't update avail->idx until they
+> > > >           * do sync). */
+> > > >          avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> > > >          vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+> > > > 
+> > > >          /* Descriptors and available array need to be set before we expose the
+> > > >           * new available array entries. */
+> > > >          // Broken: virtio_wmb(vq->weak_barriers);
+> > > >          // Broken: __dma_mb();
+> > > >          // Work:   __mb();
+> > > >          // Work:   __smp_mb();
+> > 
+> > Did you try __smp_wmb ? And wmb?
+> > 
+> 
+> virtio_wmb(false) is equivalent to __smb_wmb(), which is broken.
+> 
+> __wmb() works either. No issue found with it.
 
-Rename functions of mtk_ddp_comp:
-- To align the naming rule
-- To reduce the code size
+Oh interesting. So how do smp_mb() and wmb() disassemble on this
+platform? Can you please check?
 
-Reviewed-by: AngeloGiaocchino Del Regno <angelogioacchino.delregno@collabora.com>
-Reviewed-by: CK Hu <ck.hu@mediatek.com>
-Signed-off-by: Hsiao Chien Sung <shawn.sung@mediatek.corp-partner.google.com>
----
- drivers/gpu/drm/mediatek/mtk_ddp_comp.c | 45 ++++++++++++++-----------
- drivers/gpu/drm/mediatek/mtk_ddp_comp.h |  3 +-
- drivers/gpu/drm/mediatek/mtk_dpi.c      |  2 +-
- drivers/gpu/drm/mediatek/mtk_dsi.c      |  2 +-
- 4 files changed, 28 insertions(+), 24 deletions(-)
 
-diff --git a/drivers/gpu/drm/mediatek/mtk_ddp_comp.c b/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
-index c3441508f452f..17b0364112922 100644
---- a/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
-+++ b/drivers/gpu/drm/mediatek/mtk_ddp_comp.c
-@@ -497,10 +497,10 @@ static const struct mtk_ddp_comp_match mtk_ddp_matches[DDP_COMPONENT_DRM_ID_MAX]
- 	[DDP_COMPONENT_WDMA1]		= { MTK_DISP_WDMA,		1, NULL },
- };
- 
--static bool mtk_drm_find_comp_in_ddp(struct device *dev,
--				     const unsigned int *path,
--				     unsigned int path_len,
--				     struct mtk_ddp_comp *ddp_comp)
-+static bool mtk_ddp_comp_find(struct device *dev,
-+			      const unsigned int *path,
-+			      unsigned int path_len,
-+			      struct mtk_ddp_comp *ddp_comp)
- {
- 	unsigned int i;
- 
-@@ -514,10 +514,10 @@ static bool mtk_drm_find_comp_in_ddp(struct device *dev,
- 	return false;
- }
- 
--static unsigned int mtk_drm_find_comp_in_ddp_conn_path(struct device *dev,
--						       const struct mtk_drm_route *routes,
--						       unsigned int num_routes,
--						       struct mtk_ddp_comp *ddp_comp)
-+static unsigned int mtk_ddp_comp_find_in_route(struct device *dev,
-+					       const struct mtk_drm_route *routes,
-+					       unsigned int num_routes,
-+					       struct mtk_ddp_comp *ddp_comp)
- {
- 	int ret;
- 	unsigned int i;
-@@ -554,26 +554,31 @@ int mtk_ddp_comp_get_id(struct device_node *node,
- 	return -EINVAL;
- }
- 
--unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
--						struct device *dev)
-+unsigned int mtk_find_possible_crtcs(struct drm_device *drm, struct device *dev)
- {
- 	struct mtk_drm_private *private = drm->dev_private;
- 	unsigned int ret = 0;
- 
--	if (mtk_drm_find_comp_in_ddp(dev, private->data->main_path, private->data->main_len,
--				     private->ddp_comp))
-+	if (mtk_ddp_comp_find(dev,
-+			      private->data->main_path,
-+			      private->data->main_len,
-+			      private->ddp_comp))
- 		ret = BIT(0);
--	else if (mtk_drm_find_comp_in_ddp(dev, private->data->ext_path,
--					  private->data->ext_len, private->ddp_comp))
-+	else if (mtk_ddp_comp_find(dev,
-+				   private->data->ext_path,
-+				   private->data->ext_len,
-+				   private->ddp_comp))
- 		ret = BIT(1);
--	else if (mtk_drm_find_comp_in_ddp(dev, private->data->third_path,
--					  private->data->third_len, private->ddp_comp))
-+	else if (mtk_ddp_comp_find(dev,
-+				   private->data->third_path,
-+				   private->data->third_len,
-+				   private->ddp_comp))
- 		ret = BIT(2);
- 	else
--		ret = mtk_drm_find_comp_in_ddp_conn_path(dev,
--							 private->data->conn_routes,
--							 private->data->num_conn_routes,
--							 private->ddp_comp);
-+		ret = mtk_ddp_comp_find_in_route(dev,
-+						 private->data->conn_routes,
-+						 private->data->num_conn_routes,
-+						 private->ddp_comp);
- 
- 	return ret;
- }
-diff --git a/drivers/gpu/drm/mediatek/mtk_ddp_comp.h b/drivers/gpu/drm/mediatek/mtk_ddp_comp.h
-index ba985206fdd24..26236691ce4c2 100644
---- a/drivers/gpu/drm/mediatek/mtk_ddp_comp.h
-+++ b/drivers/gpu/drm/mediatek/mtk_ddp_comp.h
-@@ -326,8 +326,7 @@ static inline void mtk_ddp_comp_encoder_index_set(struct mtk_ddp_comp *comp)
- 
- int mtk_ddp_comp_get_id(struct device_node *node,
- 			enum mtk_ddp_comp_type comp_type);
--unsigned int mtk_drm_find_possible_crtc_by_comp(struct drm_device *drm,
--						struct device *dev);
-+unsigned int mtk_find_possible_crtcs(struct drm_device *drm, struct device *dev);
- int mtk_ddp_comp_init(struct device_node *comp_node, struct mtk_ddp_comp *comp,
- 		      unsigned int comp_id);
- enum mtk_ddp_comp_type mtk_ddp_comp_get_type(unsigned int comp_id);
-diff --git a/drivers/gpu/drm/mediatek/mtk_dpi.c b/drivers/gpu/drm/mediatek/mtk_dpi.c
-index fbf63e0441337..bfe8653005dbf 100644
---- a/drivers/gpu/drm/mediatek/mtk_dpi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dpi.c
-@@ -805,7 +805,7 @@ static int mtk_dpi_bind(struct device *dev, struct device *master, void *data)
- 		return ret;
- 	}
- 
--	dpi->encoder.possible_crtcs = mtk_drm_find_possible_crtc_by_comp(drm_dev, dpi->dev);
-+	dpi->encoder.possible_crtcs = mtk_find_possible_crtcs(drm_dev, dpi->dev);
- 
- 	ret = drm_bridge_attach(&dpi->encoder, &dpi->bridge, NULL,
- 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
-diff --git a/drivers/gpu/drm/mediatek/mtk_dsi.c b/drivers/gpu/drm/mediatek/mtk_dsi.c
-index e29c37fb5be09..67239606adbfc 100644
---- a/drivers/gpu/drm/mediatek/mtk_dsi.c
-+++ b/drivers/gpu/drm/mediatek/mtk_dsi.c
-@@ -836,7 +836,7 @@ static int mtk_dsi_encoder_init(struct drm_device *drm, struct mtk_dsi *dsi)
- 		return ret;
- 	}
- 
--	dsi->encoder.possible_crtcs = mtk_drm_find_possible_crtc_by_comp(drm, dsi->host.dev);
-+	dsi->encoder.possible_crtcs = mtk_find_possible_crtcs(drm, dsi->host.dev);
- 
- 	ret = drm_bridge_attach(&dsi->encoder, &dsi->bridge, NULL,
- 				DRM_BRIDGE_ATTACH_NO_CONNECTOR);
--- 
-2.18.0
+> > > >          // Work:   __ndelay(100);
+> > > >          // Work:   __ndelay(10);
+> > > >          // Broken: __ndelay(9);
+> > > > 
+> > > >         vq->split.avail_idx_shadow++;
+> > > >          vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+> > > >                                                  vq->split.avail_idx_shadow);
+> > > 
+> > > What if you stick __ndelay here?
+> > 
+> > And keep virtio_wmb above?
+> > 
+> 
+> The result has been shared through a separate reply.
+> 
+> > > 
+> > > >          vq->num_added++;
+> > > > 
+> > > >          pr_debug("Added buffer head %i to %p\n", head, vq);
+> > > >          END_USE(vq);
+> > > >          :
+> > > > }
+> > > > 
+> > > > I also tried to measure the consumed time for various barrier-relative instructions using
+> > > > ktime_get_ns() which should have consumed most of the time. __smb_mb() is slower than
+> > > > __smp_wmb() but faster than __mb()
+> > > > 
+> > > >      Instruction           Range of used time in ns
+> > > >      ----------------------------------------------
+> > > >      __smp_wmb()           [32  1128032]
+> > > >      __smp_mb()            [32  1160096]
+> > > >      __mb()                [32  1162496]
+> > > > 
+> 
+> Thanks,
+> Gavin
 
 
