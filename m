@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-107931-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 747A38803B8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:42:31 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C2ABD8803AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:41:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2B395282633
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:42:30 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 216A8B23947
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:41:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABF753A1C5;
-	Tue, 19 Mar 2024 17:40:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 62FF52D046;
+	Tue, 19 Mar 2024 17:40:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kg6EpTfe"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="dk7P2Hf8"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE19536AE1;
-	Tue, 19 Mar 2024 17:40:28 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A7752C18E;
+	Tue, 19 Mar 2024 17:40:22 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710870031; cv=none; b=JFaQcYgvkU9JwTah/4zkNS8GDMT/KK8o0JJDgTYJVMClDivTTulfzFpHszpPaafZD3DYPoSXIO0llj5s4NHRkFKtf4skj5dKIbC5/s69JYFnXae7OmN94z4Vlawhc6jJ6i8CGMQq0qrF4n8eiArxqCLfgpfy11NZrdccNDOUs3w=
+	t=1710870024; cv=none; b=trnPTTk28IkAOKLGX9gUfucdbqoH1lxLP9ginlpaRrTplD2rixU/lNN/6x1EUbf8Q0KaW7vINxn5QfX0ZChjsu8iNcqj3BIqp3jRpqbVvwQeg5wsuds2i41MQQY9r5iQwf9R+GSf953TQJofdYM0MNB/eqS/2jLjULsqQmV0KxM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710870031; c=relaxed/simple;
-	bh=wlee2WB3MtaUnRpFrWgXrdcHHfqn5kD4wRHaD8o5jRk=;
+	s=arc-20240116; t=1710870024; c=relaxed/simple;
+	bh=VQy79CkjoHVeZ9BxMFQxO1btQrj4MV7NPSSxA4DzKR0=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=LHoFjNHlIOnKbTZ0TV2K8Oj8HX/gTyPlKZBv9G8KY1aOFZRrVn0KtDFGpiOlui373uHI+qJXPec4usj+Bv2z+aqJK8Jdv3iYbveDXqZ3mAaFJQ2y26bJLaB0gavDYEtQBI/xUN8vTZSFBSrtb8PVNrj0+W+dbGFBqIyrDhWLVS8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kg6EpTfe; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=k1MpFwFS3j8cTeVJA6Uqpv9LHtWUyIU72ZGAVgz/yp/ZomhtQBjN8RqN4TAH1WRqc/pF3yEaxO503wyU7gHMsURiDK1pFvlcK6cyyUsZVAfab5yw+xoE+LPKKDVB3QT4y1YoLIzzI7wYBjQelUyzzlO/Bm+gkfv7nqXsUsHSTFw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=dk7P2Hf8; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
-Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JHHBto031553;
-	Tue, 19 Mar 2024 17:40:21 GMT
+Received: from pps.filterd (m0279873.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JHGiXk019772;
+	Tue, 19 Mar 2024 17:40:16 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=HlS77nqXdMDK3soh2cAsauh3G9/Mba3AVZon/1FZkAA=; b=kg
-	6EpTfe+Edd8/Q/wQtH4EjFGjRvRfkv7bUPTrvMpp+qUKmEnal+YAX5cf9tFrmIVw
-	ZCjRECRh7Tq0KwRWz6YUUqfFUOXfIMYupcTsycaOrj4QaMCbstfZg83aMGm2u6bI
-	JSLBiBPjocoIMJlXMTysBsr2R7E/fttnUp8yzGyg0aP37rzT2xm+65mvDlsSmdj4
-	yugRbTbtEKgKmk72f6XleC4rN8CjN1ld70iR1ny2870K6I6uiC4Vg8eNRcVEgA68
-	VmihdivDxgW2ozSk2Pifgiov+HFW44jvn41CJJPdRssEyMBvxWDEh3dq5rvjoPfR
-	ovMPINhj7MRqcNFQ4amQ==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy2e9hxr1-1
+	qcppdkim1; bh=lxLlFVtPL1yGi2/OsBW3dTTq/ewlpfE0h6/ALQjWiZQ=; b=dk
+	7P2Hf8cm/HCIcRrdRe9iR+x50t0PSpHeEaDJyJTsYazdrIATdMBiQqoSI3IK2I2g
+	Dsv0xc3x/y/SPFvApsjmXN2y/q0jzmsabO6JJh0IAq16BkauQhZQQJljxPQrSQhZ
+	FBgFt2i8xQWUkpHQLwGDe/VKgcrY6PRvmRWOGNj0kLcx4o3I0Wrn14R+6fFzFTui
+	ePa4f1F8JaEl25Tzngxo64esC7pflieyPM4l4M2pwPMoxm7Ghll1eRXT72vsGd+4
+	7G5ziJe/rTqL/BBerZmbwC0QxVlaEvqVk0PPOmtaqExWJ9isol7lrZtzKJmfrDkI
+	H1hMWZBpYFdgZTJtAghA==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy4gf9rht-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 17:40:20 +0000 (GMT)
+	Tue, 19 Mar 2024 17:40:16 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JHeC2D021072
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JHeFXi021059
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 17:40:12 GMT
+	Tue, 19 Mar 2024 17:40:15 GMT
 Received: from grosikop.eu.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Mar 2024 10:40:09 -0700
+ 15.2.1118.40; Tue, 19 Mar 2024 10:40:12 -0700
 From: Gjorgji Rosikopulos <quic_grosikop@quicinc.com>
 To: <rfoss@kernel.org>, <todor.too@gmail.com>, <bryan.odonoghue@linaro.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -62,9 +62,9 @@ To: <rfoss@kernel.org>, <todor.too@gmail.com>, <bryan.odonoghue@linaro.org>,
 CC: <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <laurent.pinchart@ideasonboard.com>,
         <hverkuil-cisco@xs4all.nl>, <quic_hariramp@quicinc.com>
-Subject: [PATCH v2 3/8] media: qcom: camss: Attach formats to CSID resources
-Date: Tue, 19 Mar 2024 19:39:30 +0200
-Message-ID: <20240319173935.481-4-quic_grosikop@quicinc.com>
+Subject: [PATCH v2 4/8] media: qcom: camss: Attach formats to CSIPHY resources
+Date: Tue, 19 Mar 2024 19:39:31 +0200
+Message-ID: <20240319173935.481-5-quic_grosikop@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240319173935.481-1-quic_grosikop@quicinc.com>
 References: <20240319173935.481-1-quic_grosikop@quicinc.com>
@@ -80,1378 +80,398 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: n65vmBGewf-LgRVgklIZZaXJLd7y2Zbi
-X-Proofpoint-ORIG-GUID: n65vmBGewf-LgRVgklIZZaXJLd7y2Zbi
+X-Proofpoint-GUID: 1AXUEOB-KGMi_Us_i7bU2i9mwaM3DNh_
+X-Proofpoint-ORIG-GUID: 1AXUEOB-KGMi_Us_i7bU2i9mwaM3DNh_
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-19_07,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 impostorscore=0 clxscore=1015
- mlxlogscore=999 suspectscore=0 spamscore=0 bulkscore=0 phishscore=0
- malwarescore=0 adultscore=0 lowpriorityscore=0 mlxscore=0
- priorityscore=1501 classifier=spam adjust=0 reason=mlx scancount=1
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 priorityscore=1501
+ suspectscore=0 clxscore=1015 bulkscore=0 adultscore=0 malwarescore=0
+ phishscore=0 impostorscore=0 lowpriorityscore=0 spamscore=0
+ mlxlogscore=999 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2403140001 definitions=main-2403190133
 
 From: Radoslav Tsvetkov <quic_rtsvetko@quicinc.com>
 
-Following the example of VFE, move all formats of the decoder
-to camss-csid.c and attach them to the subdevices resources.
+Following the example of VFE and CSID, attach the CSIPHY
+formats to the subdevices resources.
 
 Signed-off-by: Radoslav Tsvetkov <quic_rtsvetko@quicinc.com>
 ---
- .../platform/qcom/camss/camss-csid-4-1.c      | 132 +----
- .../platform/qcom/camss/camss-csid-4-7.c      | 160 +-----
- .../platform/qcom/camss/camss-csid-gen2.c     | 164 +-----
- .../media/platform/qcom/camss/camss-csid.c    | 474 +++++++++++++++++-
- .../media/platform/qcom/camss/camss-csid.h    |  24 +-
- drivers/media/platform/qcom/camss/camss.c     |  51 +-
- 6 files changed, 522 insertions(+), 483 deletions(-)
+ .../media/platform/qcom/camss/camss-csiphy.c  | 60 ++++++++-----------
+ .../media/platform/qcom/camss/camss-csiphy.h  | 17 +++++-
+ drivers/media/platform/qcom/camss/camss.c     | 54 +++++++++++------
+ 3 files changed, 77 insertions(+), 54 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-4-1.c b/drivers/media/platform/qcom/camss/camss-csid-4-1.c
-index dd49a40e6a70..c95861420502 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-4-1.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-4-1.c
-@@ -45,128 +45,6 @@
- #define CAMSS_CSID_TG_DT_n_CGG_1(n)	(0x0b0 + 0xc * (n))
- #define CAMSS_CSID_TG_DT_n_CGG_2(n)	(0x0b4 + 0xc * (n))
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.c b/drivers/media/platform/qcom/camss/camss-csiphy.c
+index f26ddf1af9d4..2f7361dfd461 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.c
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.c
+@@ -24,12 +24,7 @@
  
--static const struct csid_format csid_formats[] = {
--	{
--		MEDIA_BUS_FMT_UYVY8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_VYUY8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_YUYV8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_YVYU8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_Y10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
+ #define MSM_CSIPHY_NAME "msm_csiphy"
+ 
+-struct csiphy_format {
+-	u32 code;
+-	u8 bpp;
 -};
 -
- static void csid_configure_stream(struct csid_device *csid, u8 enable)
- {
- 	struct csid_testgen_config *tg = &csid->testgen;
-@@ -174,7 +52,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 
- 	if (enable) {
- 		struct v4l2_mbus_framefmt *input_format;
--		const struct csid_format *format;
-+		const struct csid_format_info *format;
- 		u8 vc = 0; /* Virtual Channel 0 */
- 		u8 cid = vc * 4; /* id of Virtual Channel and Data Type set */
- 		u8 dt_shift;
-@@ -184,7 +62,8 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 			u32 num_lines, num_bytes_per_line;
- 
- 			input_format = &csid->fmt[MSM_CSID_PAD_SRC];
--			format = csid_get_fmt_entry(csid->formats, csid->nformats,
-+			format = csid_get_fmt_entry(csid->res->formats->formats,
-+						    csid->res->formats->nformats,
- 						    input_format->code);
- 			num_bytes_per_line = input_format->width * format->bpp * format->spp / 8;
- 			num_lines = input_format->height;
-@@ -211,7 +90,8 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 			struct csid_phy_config *phy = &csid->phy;
- 
- 			input_format = &csid->fmt[MSM_CSID_PAD_SINK];
--			format = csid_get_fmt_entry(csid->formats, csid->nformats,
-+			format = csid_get_fmt_entry(csid->res->formats->formats,
-+						    csid->res->formats->nformats,
- 						    input_format->code);
- 
- 			val = phy->lane_cnt - 1;
-@@ -311,8 +191,6 @@ static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
- 
- static void csid_subdev_init(struct csid_device *csid)
- {
--	csid->formats = csid_formats;
--	csid->nformats = ARRAY_SIZE(csid_formats);
- 	csid->testgen.modes = csid_testgen_modes;
- 	csid->testgen.nmodes = CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN1;
- }
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-4-7.c b/drivers/media/platform/qcom/camss/camss-csid-4-7.c
-index 6b26e036294e..08578a143688 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-4-7.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-4-7.c
-@@ -44,156 +44,6 @@
- #define CAMSS_CSID_TG_DT_n_CGG_1(n)	(0x0b8 + 0xc * (n))
- #define CAMSS_CSID_TG_DT_n_CGG_2(n)	(0x0bc + 0xc * (n))
- 
--static const struct csid_format csid_formats[] = {
--	{
--		MEDIA_BUS_FMT_UYVY8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_VYUY8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_YUYV8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_YVYU8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_Y10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--};
--
- static void csid_configure_stream(struct csid_device *csid, u8 enable)
- {
- 	struct csid_testgen_config *tg = &csid->testgen;
-@@ -203,7 +53,7 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 
- 	if (enable) {
- 		struct v4l2_mbus_framefmt *input_format;
--		const struct csid_format *format;
-+		const struct csid_format_info *format;
- 		u8 vc = 0; /* Virtual Channel 0 */
- 		u8 cid = vc * 4; /* id of Virtual Channel and Data Type set */
- 		u8 dt_shift;
-@@ -213,7 +63,8 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 			u32 num_bytes_per_line, num_lines;
- 
- 			input_format = &csid->fmt[MSM_CSID_PAD_SRC];
--			format = csid_get_fmt_entry(csid->formats, csid->nformats,
-+			format = csid_get_fmt_entry(csid->res->formats->formats,
-+						    csid->res->formats->nformats,
- 						    input_format->code);
- 			num_bytes_per_line = input_format->width * format->bpp * format->spp / 8;
- 			num_lines = input_format->height;
-@@ -240,7 +91,8 @@ static void csid_configure_stream(struct csid_device *csid, u8 enable)
- 			struct csid_phy_config *phy = &csid->phy;
- 
- 			input_format = &csid->fmt[MSM_CSID_PAD_SINK];
--			format = csid_get_fmt_entry(csid->formats, csid->nformats,
-+			format = csid_get_fmt_entry(csid->res->formats->formats,
-+						    csid->res->formats->nformats,
- 						    input_format->code);
- 
- 			val = phy->lane_cnt - 1;
-@@ -387,8 +239,6 @@ static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
- 
- static void csid_subdev_init(struct csid_device *csid)
- {
--	csid->formats = csid_formats;
--	csid->nformats = ARRAY_SIZE(csid_formats);
- 	csid->testgen.modes = csid_testgen_modes;
- 	csid->testgen.nmodes = CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN1;
- }
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index b11de4797cca..eb5dabe2639a 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -176,163 +176,6 @@
- #define		TPG_COLOR_BOX_CFG_MODE		0
- #define		TPG_COLOR_BOX_PATTERN_SEL	2
- 
--static const struct csid_format csid_formats[] = {
--	{
--		MEDIA_BUS_FMT_UYVY8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_VYUY8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_YUYV8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_YVYU8_1X16,
--		DATA_TYPE_YUV422_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		2,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_Y8_1X8,
--		DATA_TYPE_RAW_8BIT,
--		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
--		8,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_Y10_1X10,
--		DATA_TYPE_RAW_10BIT,
--		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
--		10,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB12_1X12,
--		DATA_TYPE_RAW_12BIT,
--		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
--		12,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SBGGR14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGBRG14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SGRBG14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--	{
--		MEDIA_BUS_FMT_SRGGB14_1X14,
--		DATA_TYPE_RAW_14BIT,
--		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
--		14,
--		1,
--	},
--};
--
- static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
- {
- 	struct csid_testgen_config *tg = &csid->testgen;
-@@ -341,8 +184,9 @@ static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
- 	u8 lane_cnt = csid->phy.lane_cnt;
- 	/* Source pads matching RDI channels on hardware. Pad 1 -> RDI0, Pad 2 -> RDI1, etc. */
- 	struct v4l2_mbus_framefmt *input_format = &csid->fmt[MSM_CSID_PAD_FIRST_SRC + vc];
--	const struct csid_format *format = csid_get_fmt_entry(csid->formats, csid->nformats,
--							      input_format->code);
-+	const struct csid_format_info *format = csid_get_fmt_entry(csid->res->formats->formats,
-+								   csid->res->formats->nformats,
-+								   input_format->code);
- 
- 	if (!lane_cnt)
- 		lane_cnt = 4;
-@@ -612,8 +456,6 @@ static u32 csid_src_pad_code(struct csid_device *csid, u32 sink_code,
- 
- static void csid_subdev_init(struct csid_device *csid)
- {
--	csid->formats = csid_formats;
--	csid->nformats = ARRAY_SIZE(csid_formats);
- 	csid->testgen.modes = csid_testgen_modes;
- 	csid->testgen.nmodes = CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN2;
- }
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.c b/drivers/media/platform/qcom/camss/camss-csid.c
-index d1a22e07fdb6..5b23f5b8746d 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid.c
-@@ -45,6 +45,450 @@ const char * const csid_testgen_modes[] = {
- 	NULL
+-static const struct csiphy_format csiphy_formats_8x16[] = {
++static const struct csiphy_format_info formats_8x16[] = {
+ 	{ MEDIA_BUS_FMT_UYVY8_1X16, 8 },
+ 	{ MEDIA_BUS_FMT_VYUY8_1X16, 8 },
+ 	{ MEDIA_BUS_FMT_YUYV8_1X16, 8 },
+@@ -49,7 +44,7 @@ static const struct csiphy_format csiphy_formats_8x16[] = {
+ 	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
  };
  
-+static const struct csid_format_info formats_4_1[] = {
-+	{
-+		MEDIA_BUS_FMT_UYVY8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_VYUY8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_YUYV8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_YVYU8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_Y10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+};
-+
-+static const struct csid_format_info formats_4_7[] = {
-+	{
-+		MEDIA_BUS_FMT_UYVY8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_VYUY8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_YUYV8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_YVYU8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_Y10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+};
-+
-+static const struct csid_format_info formats_gen2[] = {
-+	{
-+		MEDIA_BUS_FMT_UYVY8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_VYUY8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_YUYV8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_YVYU8_1X16,
-+		DATA_TYPE_YUV422_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		2,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_Y8_1X8,
-+		DATA_TYPE_RAW_8BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_8_BIT,
-+		8,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_Y10_1X10,
-+		DATA_TYPE_RAW_10BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_10_BIT,
-+		10,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB12_1X12,
-+		DATA_TYPE_RAW_12BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_12_BIT,
-+		12,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SBGGR14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGBRG14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SGRBG14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+	{
-+		MEDIA_BUS_FMT_SRGGB14_1X14,
-+		DATA_TYPE_RAW_14BIT,
-+		DECODE_FORMAT_UNCOMPRESSED_14_BIT,
-+		14,
-+		1,
-+	},
-+};
-+
-+const struct csid_formats csid_formats_4_1 = {
-+	.nformats = ARRAY_SIZE(formats_4_1),
-+	.formats = formats_4_1
-+};
-+
-+const struct csid_formats csid_formats_4_7 = {
-+	.nformats = ARRAY_SIZE(formats_4_7),
-+	.formats = formats_4_7
-+};
-+
-+const struct csid_formats csid_formats_gen2 = {
-+	.nformats = ARRAY_SIZE(formats_gen2),
-+	.formats = formats_gen2
-+};
-+
- u32 csid_find_code(u32 *codes, unsigned int ncodes,
- 		   unsigned int match_format_idx, u32 match_code)
- {
-@@ -65,9 +509,9 @@ u32 csid_find_code(u32 *codes, unsigned int ncodes,
- 	return codes[0];
- }
+-static const struct csiphy_format csiphy_formats_8x96[] = {
++static const struct csiphy_format_info formats_8x96[] = {
+ 	{ MEDIA_BUS_FMT_UYVY8_1X16, 8 },
+ 	{ MEDIA_BUS_FMT_VYUY8_1X16, 8 },
+ 	{ MEDIA_BUS_FMT_YUYV8_1X16, 8 },
+@@ -73,7 +68,7 @@ static const struct csiphy_format csiphy_formats_8x96[] = {
+ 	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
+ };
  
--const struct csid_format *csid_get_fmt_entry(const struct csid_format *formats,
--					     unsigned int nformats,
--					     u32 code)
-+const struct csid_format_info *csid_get_fmt_entry(const struct csid_format_info *formats,
-+						  unsigned int nformats,
-+						  u32 code)
+-static const struct csiphy_format csiphy_formats_sdm845[] = {
++static const struct csiphy_format_info formats_sdm845[] = {
+ 	{ MEDIA_BUS_FMT_UYVY8_1X16, 8 },
+ 	{ MEDIA_BUS_FMT_VYUY8_1X16, 8 },
+ 	{ MEDIA_BUS_FMT_YUYV8_1X16, 8 },
+@@ -98,6 +93,21 @@ static const struct csiphy_format csiphy_formats_sdm845[] = {
+ 	{ MEDIA_BUS_FMT_Y10_1X10, 10 },
+ };
+ 
++const struct csiphy_formats csiphy_formats_8x16 = {
++	.nformats = ARRAY_SIZE(formats_8x16),
++	.formats = formats_8x16
++};
++
++const struct csiphy_formats csiphy_formats_8x96 = {
++	.nformats = ARRAY_SIZE(formats_8x96),
++	.formats = formats_8x96
++};
++
++const struct csiphy_formats csiphy_formats_sdm845 = {
++	.nformats = ARRAY_SIZE(formats_sdm845),
++	.formats = formats_sdm845
++};
++
+ /*
+  * csiphy_get_bpp - map media bus format to bits per pixel
+  * @formats: supported media bus formats array
+@@ -106,7 +116,7 @@ static const struct csiphy_format csiphy_formats_sdm845[] = {
+  *
+  * Return number of bits per pixel
+  */
+-static u8 csiphy_get_bpp(const struct csiphy_format *formats,
++static u8 csiphy_get_bpp(const struct csiphy_format_info *formats,
+ 			 unsigned int nformats, u32 code)
  {
  	unsigned int i;
- 
-@@ -87,12 +531,12 @@ const struct csid_format *csid_get_fmt_entry(const struct csid_format *formats,
- static int csid_set_clock_rates(struct csid_device *csid)
- {
- 	struct device *dev = csid->camss->dev;
--	const struct csid_format *fmt;
-+	const struct csid_format_info *fmt;
- 	s64 link_freq;
+@@ -131,7 +141,7 @@ static int csiphy_set_clock_rates(struct csiphy_device *csiphy)
  	int i, j;
  	int ret;
  
--	fmt = csid_get_fmt_entry(csid->formats, csid->nformats,
-+	fmt = csid_get_fmt_entry(csid->res->formats->formats, csid->res->formats->nformats,
- 				 csid->fmt[MSM_CSIPHY_PAD_SINK].code);
- 	link_freq = camss_get_link_freq(&csid->subdev.entity, fmt->bpp,
- 					csid->phy.lane_cnt);
-@@ -301,12 +745,12 @@ static void csid_try_format(struct csid_device *csid,
- 	case MSM_CSID_PAD_SINK:
+-	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
++	u8 bpp = csiphy_get_bpp(csiphy->res->formats->formats, csiphy->res->formats->nformats,
+ 				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
+ 	u8 num_lanes = csiphy->cfg.csi2->lane_cfg.num_data;
+ 
+@@ -244,7 +254,7 @@ static int csiphy_stream_on(struct csiphy_device *csiphy)
+ 	struct csiphy_config *cfg = &csiphy->cfg;
+ 	s64 link_freq;
+ 	u8 lane_mask = csiphy->res->hw_ops->get_lane_mask(&cfg->csi2->lane_cfg);
+-	u8 bpp = csiphy_get_bpp(csiphy->formats, csiphy->nformats,
++	u8 bpp = csiphy_get_bpp(csiphy->res->formats->formats, csiphy->res->formats->nformats,
+ 				csiphy->fmt[MSM_CSIPHY_PAD_SINK].code);
+ 	u8 num_lanes = csiphy->cfg.csi2->lane_cfg.num_data;
+ 	u8 val;
+@@ -350,12 +360,12 @@ static void csiphy_try_format(struct csiphy_device *csiphy,
+ 	case MSM_CSIPHY_PAD_SINK:
  		/* Set format on sink pad */
  
--		for (i = 0; i < csid->nformats; i++)
--			if (fmt->code == csid->formats[i].code)
-+		for (i = 0; i < csid->res->formats->nformats; i++)
-+			if (fmt->code == csid->res->formats->formats[i].code)
+-		for (i = 0; i < csiphy->nformats; i++)
+-			if (fmt->code == csiphy->formats[i].code)
++		for (i = 0; i < csiphy->res->formats->nformats; i++)
++			if (fmt->code == csiphy->res->formats->formats[i].code)
  				break;
  
  		/* If not found, use UYVY as default */
--		if (i >= csid->nformats)
-+		if (i >= csid->res->formats->nformats)
+-		if (i >= csiphy->nformats)
++		if (i >= csiphy->res->formats->nformats)
  			fmt->code = MEDIA_BUS_FMT_UYVY8_1X16;
  
  		fmt->width = clamp_t(u32, fmt->width, 1, 8191);
-@@ -330,12 +774,12 @@ static void csid_try_format(struct csid_device *csid,
- 			/* Test generator is enabled, set format on source */
- 			/* pad to allow test generator usage */
+@@ -392,10 +402,10 @@ static int csiphy_enum_mbus_code(struct v4l2_subdev *sd,
+ 	struct v4l2_mbus_framefmt *format;
  
--			for (i = 0; i < csid->nformats; i++)
--				if (csid->formats[i].code == fmt->code)
-+			for (i = 0; i < csid->res->formats->nformats; i++)
-+				if (csid->res->formats->formats[i].code == fmt->code)
- 					break;
- 
- 			/* If not found, use UYVY as default */
--			if (i >= csid->nformats)
-+			if (i >= csid->res->formats->nformats)
- 				fmt->code = MEDIA_BUS_FMT_UYVY8_1X16;
- 
- 			fmt->width = clamp_t(u32, fmt->width, 1, 8191);
-@@ -363,10 +807,10 @@ static int csid_enum_mbus_code(struct v4l2_subdev *sd,
- 	struct csid_device *csid = v4l2_get_subdevdata(sd);
- 
- 	if (code->pad == MSM_CSID_PAD_SINK) {
--		if (code->index >= csid->nformats)
-+		if (code->index >= csid->res->formats->nformats)
+ 	if (code->pad == MSM_CSIPHY_PAD_SINK) {
+-		if (code->index >= csiphy->nformats)
++		if (code->index >= csiphy->res->formats->nformats)
  			return -EINVAL;
  
--		code->code = csid->formats[code->index].code;
-+		code->code = csid->res->formats->formats[code->index].code;
+-		code->code = csiphy->formats[code->index].code;
++		code->code = csiphy->res->formats->formats[code->index].code;
  	} else {
- 		if (csid->testgen_mode->cur.val == 0) {
- 			struct v4l2_mbus_framefmt *sink_fmt;
-@@ -380,10 +824,10 @@ static int csid_enum_mbus_code(struct v4l2_subdev *sd,
- 			if (!code->code)
- 				return -EINVAL;
- 		} else {
--			if (code->index >= csid->nformats)
-+			if (code->index >= csid->res->formats->nformats)
- 				return -EINVAL;
+ 		if (code->index > 0)
+ 			return -EINVAL;
+@@ -566,24 +576,6 @@ int msm_csiphy_subdev_init(struct camss *camss,
+ 	csiphy->cfg.combo_mode = 0;
+ 	csiphy->res = &res->csiphy;
  
--			code->code = csid->formats[code->index].code;
-+			code->code = csid->res->formats->formats[code->index].code;
- 		}
- 	}
+-	switch (camss->res->version) {
+-	case CAMSS_8x16:
+-		csiphy->formats = csiphy_formats_8x16;
+-		csiphy->nformats = ARRAY_SIZE(csiphy_formats_8x16);
+-		break;
+-	case CAMSS_8x96:
+-	case CAMSS_660:
+-		csiphy->formats = csiphy_formats_8x96;
+-		csiphy->nformats = ARRAY_SIZE(csiphy_formats_8x96);
+-		break;
+-	case CAMSS_845:
+-	case CAMSS_8250:
+-	case CAMSS_8280XP:
+-		csiphy->formats = csiphy_formats_sdm845;
+-		csiphy->nformats = ARRAY_SIZE(csiphy_formats_sdm845);
+-		break;
+-	}
+-
+ 	/* Memory */
  
-diff --git a/drivers/media/platform/qcom/camss/camss-csid.h b/drivers/media/platform/qcom/camss/camss-csid.h
-index 8d2971aa9ef8..0e385d17c250 100644
---- a/drivers/media/platform/qcom/camss/camss-csid.h
-+++ b/drivers/media/platform/qcom/camss/camss-csid.h
-@@ -67,7 +67,7 @@ enum csid_testgen_mode {
- 	CSID_PAYLOAD_MODE_NUM_SUPPORTED_GEN2 = 9, /* excluding disabled */
+ 	csiphy->base = devm_platform_ioremap_resource_byname(pdev, res->reg[0]);
+diff --git a/drivers/media/platform/qcom/camss/camss-csiphy.h b/drivers/media/platform/qcom/camss/camss-csiphy.h
+index 7bd68129ca49..47f0b6b09eba 100644
+--- a/drivers/media/platform/qcom/camss/camss-csiphy.h
++++ b/drivers/media/platform/qcom/camss/camss-csiphy.h
+@@ -42,6 +42,16 @@ struct csiphy_config {
+ 	struct csiphy_csi2_cfg *csi2;
  };
  
--struct csid_format {
-+struct csid_format_info {
- 	u32 code;
- 	u8 data_type;
- 	u8 decode_format;
-@@ -75,6 +75,11 @@ struct csid_format {
- 	u8 spp; /* bus samples per pixel */
- };
- 
-+struct csid_formats {
-+	unsigned int nformats;
-+	const struct csid_format_info *formats;
++struct csiphy_format_info {
++	u32 code;
++	u8 bpp;
 +};
 +
- struct csid_testgen_config {
- 	enum csid_testgen_mode mode;
- 	const char * const*modes;
-@@ -152,6 +157,7 @@ struct csid_hw_ops {
- struct csid_subdev_resources {
- 	bool is_lite;
- 	const struct csid_hw_ops *hw_ops;
-+	const struct csid_formats *formats;
- };
- 
- struct csid_device {
-@@ -172,8 +178,6 @@ struct csid_device {
- 	struct v4l2_mbus_framefmt fmt[MSM_CSID_PADS_NUM];
- 	struct v4l2_ctrl_handler ctrls;
- 	struct v4l2_ctrl *testgen_mode;
--	const struct csid_format *formats;
--	unsigned int nformats;
- 	const struct csid_subdev_resources *res;
- };
- 
-@@ -193,16 +197,16 @@ u32 csid_find_code(u32 *codes, unsigned int ncode,
- 		   unsigned int match_format_idx, u32 match_code);
- 
- /*
-- * csid_get_fmt_entry - Find csid_format entry with matching format code
-- * @formats: Array of format csid_format entries
-+ * csid_get_fmt_entry - Find csid_format_info entry with matching format code
-+ * @formats: Array of format csid_format_info entries
-  * @nformats: Length of @nformats array
-  * @code: Desired format code
-  *
-  * Return formats[0] on failure to find code
-  */
--const struct csid_format *csid_get_fmt_entry(const struct csid_format *formats,
--					     unsigned int nformats,
--					     u32 code);
-+const struct csid_format_info *csid_get_fmt_entry(const struct csid_format_info *formats,
-+						  unsigned int nformats,
-+						  u32 code);
- 
- int msm_csid_subdev_init(struct camss *camss, struct csid_device *csid,
- 			 const struct camss_subdev_resources *res, u8 id);
-@@ -216,6 +220,10 @@ void msm_csid_get_csid_id(struct media_entity *entity, u8 *id);
- 
- extern const char * const csid_testgen_modes[];
- 
-+extern const struct csid_formats csid_formats_4_1;
-+extern const struct csid_formats csid_formats_4_7;
-+extern const struct csid_formats csid_formats_gen2;
++struct csiphy_formats {
++	unsigned int nformats;
++	const struct csiphy_format_info *formats;
++};
 +
- extern const struct csid_hw_ops csid_ops_4_1;
- extern const struct csid_hw_ops csid_ops_4_7;
- extern const struct csid_hw_ops csid_ops_gen2;
+ struct csiphy_device;
+ 
+ struct csiphy_hw_ops {
+@@ -65,6 +75,7 @@ struct csiphy_hw_ops {
+ 
+ struct csiphy_subdev_resources {
+ 	const struct csiphy_hw_ops *hw_ops;
++	const struct csiphy_formats *formats;
+ };
+ 
+ struct csiphy_device {
+@@ -83,8 +94,6 @@ struct csiphy_device {
+ 	struct csiphy_config cfg;
+ 	struct v4l2_mbus_framefmt fmt[MSM_CSIPHY_PADS_NUM];
+ 	const struct csiphy_subdev_resources *res;
+-	const struct csiphy_format *formats;
+-	unsigned int nformats;
+ };
+ 
+ struct camss_subdev_resources;
+@@ -98,6 +107,10 @@ int msm_csiphy_register_entity(struct csiphy_device *csiphy,
+ 
+ void msm_csiphy_unregister_entity(struct csiphy_device *csiphy);
+ 
++extern const struct csiphy_formats csiphy_formats_8x16;
++extern const struct csiphy_formats csiphy_formats_8x96;
++extern const struct csiphy_formats csiphy_formats_sdm845;
++
+ extern const struct csiphy_hw_ops csiphy_ops_2ph_1_0;
+ extern const struct csiphy_hw_ops csiphy_ops_3ph_1_0;
+ 
 diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
-index f3242d2d9807..2a232ad8fc5a 100644
+index 2a232ad8fc5a..c2d21bfc52f5 100644
 --- a/drivers/media/platform/qcom/camss/camss.c
 +++ b/drivers/media/platform/qcom/camss/camss.c
-@@ -84,7 +84,8 @@ static const struct camss_subdev_resources csid_res_8x16[] = {
- 		.interrupt = { "csid0" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_1
-+			.hw_ops = &csid_ops_4_1,
-+			.formats = &csid_formats_4_1
+@@ -45,7 +45,8 @@ static const struct camss_subdev_resources csiphy_res_8x16[] = {
+ 		.interrupt = { "csiphy0" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_2ph_1_0
++			.hw_ops = &csiphy_ops_2ph_1_0,
++			.formats = &csiphy_formats_8x16
  		}
  	},
  
-@@ -105,7 +106,8 @@ static const struct camss_subdev_resources csid_res_8x16[] = {
- 		.interrupt = { "csid1" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_1
-+			.hw_ops = &csid_ops_4_1,
-+			.formats = &csid_formats_4_1
- 		}
- 	},
- };
-@@ -218,7 +220,8 @@ static const struct camss_subdev_resources csid_res_8x96[] = {
- 		.interrupt = { "csid0" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
- 		}
- 	},
- 
-@@ -239,7 +242,8 @@ static const struct camss_subdev_resources csid_res_8x96[] = {
- 		.interrupt = { "csid1" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
- 		}
- 	},
- 
-@@ -260,7 +264,8 @@ static const struct camss_subdev_resources csid_res_8x96[] = {
- 		.interrupt = { "csid2" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
- 		}
- 	},
- 
-@@ -281,7 +286,8 @@ static const struct camss_subdev_resources csid_res_8x96[] = {
- 		.interrupt = { "csid3" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
+@@ -61,7 +62,8 @@ static const struct camss_subdev_resources csiphy_res_8x16[] = {
+ 		.interrupt = { "csiphy1" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_2ph_1_0
++			.hw_ops = &csiphy_ops_2ph_1_0,
++			.formats = &csiphy_formats_8x16
  		}
  	}
  };
-@@ -430,7 +436,8 @@ static const struct camss_subdev_resources csid_res_660[] = {
- 		.interrupt = { "csid0" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
+@@ -165,7 +167,8 @@ static const struct camss_subdev_resources csiphy_res_8x96[] = {
+ 		.interrupt = { "csiphy0" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_8x96
  		}
  	},
  
-@@ -454,7 +461,8 @@ static const struct camss_subdev_resources csid_res_660[] = {
- 		.interrupt = { "csid1" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
+@@ -181,7 +184,8 @@ static const struct camss_subdev_resources csiphy_res_8x96[] = {
+ 		.interrupt = { "csiphy1" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_8x96
  		}
  	},
  
-@@ -478,7 +486,8 @@ static const struct camss_subdev_resources csid_res_660[] = {
- 		.interrupt = { "csid2" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
- 		}
- 	},
- 
-@@ -502,7 +511,8 @@ static const struct camss_subdev_resources csid_res_660[] = {
- 		.interrupt = { "csid3" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_4_7
-+			.hw_ops = &csid_ops_4_7,
-+			.formats = &csid_formats_4_7
+@@ -197,7 +201,8 @@ static const struct camss_subdev_resources csiphy_res_8x96[] = {
+ 		.interrupt = { "csiphy2" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_8x96
  		}
  	}
  };
-@@ -691,7 +701,8 @@ static const struct camss_subdev_resources csid_res_845[] = {
- 		.interrupt = { "csid0" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+@@ -374,7 +379,8 @@ static const struct camss_subdev_resources csiphy_res_660[] = {
+ 		.interrupt = { "csiphy0" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_8x96
  		}
  	},
  
-@@ -715,7 +726,8 @@ static const struct camss_subdev_resources csid_res_845[] = {
- 		.interrupt = { "csid1" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+@@ -392,7 +398,8 @@ static const struct camss_subdev_resources csiphy_res_660[] = {
+ 		.interrupt = { "csiphy1" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_8x96
  		}
  	},
  
-@@ -740,7 +752,8 @@ static const struct camss_subdev_resources csid_res_845[] = {
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
- 			.is_lite = true,
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+@@ -410,7 +417,8 @@ static const struct camss_subdev_resources csiphy_res_660[] = {
+ 		.interrupt = { "csiphy2" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_8x96
  		}
  	}
  };
-@@ -925,7 +938,8 @@ static const struct camss_subdev_resources csid_res_8250[] = {
- 		.interrupt = { "csid0" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+@@ -609,7 +617,8 @@ static const struct camss_subdev_resources csiphy_res_845[] = {
+ 		.interrupt = { "csiphy0" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
  		}
  	},
- 	/* CSID1 */
-@@ -941,7 +955,8 @@ static const struct camss_subdev_resources csid_res_8250[] = {
- 		.interrupt = { "csid1" },
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+ 
+@@ -631,7 +640,8 @@ static const struct camss_subdev_resources csiphy_res_845[] = {
+ 		.interrupt = { "csiphy1" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
  		}
  	},
- 	/* CSID2 */
-@@ -957,7 +972,8 @@ static const struct camss_subdev_resources csid_res_8250[] = {
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
- 			.is_lite = true,
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+ 
+@@ -653,7 +663,8 @@ static const struct camss_subdev_resources csiphy_res_845[] = {
+ 		.interrupt = { "csiphy2" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
  		}
  	},
- 	/* CSID3 */
-@@ -973,7 +989,8 @@ static const struct camss_subdev_resources csid_res_8250[] = {
- 		.type = CAMSS_SUBDEV_TYPE_CSID,
- 		.csid = {
- 			.is_lite = true,
--			.hw_ops = &csid_ops_gen2
-+			.hw_ops = &csid_ops_gen2,
-+			.formats = &csid_formats_gen2
+ 
+@@ -675,7 +686,8 @@ static const struct camss_subdev_resources csiphy_res_845[] = {
+ 		.interrupt = { "csiphy3" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
+ 		}
+ 	}
+ };
+@@ -854,7 +866,8 @@ static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 		.interrupt = { "csiphy0" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
+ 		}
+ 	},
+ 	/* CSIPHY1 */
+@@ -867,7 +880,8 @@ static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 		.interrupt = { "csiphy1" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
+ 		}
+ 	},
+ 	/* CSIPHY2 */
+@@ -880,7 +894,8 @@ static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 		.interrupt = { "csiphy2" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
+ 		}
+ 	},
+ 	/* CSIPHY3 */
+@@ -893,7 +908,8 @@ static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 		.interrupt = { "csiphy3" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
+ 		}
+ 	},
+ 	/* CSIPHY4 */
+@@ -906,7 +922,8 @@ static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 		.interrupt = { "csiphy4" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
+ 		}
+ 	},
+ 	/* CSIPHY5 */
+@@ -919,7 +936,8 @@ static const struct camss_subdev_resources csiphy_res_8250[] = {
+ 		.interrupt = { "csiphy5" },
+ 		.type = CAMSS_SUBDEV_TYPE_CSIPHY,
+ 		.csiphy = {
+-			.hw_ops = &csiphy_ops_3ph_1_0
++			.hw_ops = &csiphy_ops_3ph_1_0,
++			.formats = &csiphy_formats_sdm845
  		}
  	}
  };
