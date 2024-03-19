@@ -1,74 +1,74 @@
-Return-Path: <linux-kernel+bounces-107526-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107528-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9ABCF87FDAF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:41:14 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2659E87FDB3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:41:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 147071F2377C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:41:14 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D51C8283F5A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:41:45 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8E958206;
-	Tue, 19 Mar 2024 12:41:08 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 42B2C58AC3;
+	Tue, 19 Mar 2024 12:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="r7QeFPdw"
-Received: from mail-lj1-f182.google.com (mail-lj1-f182.google.com [209.85.208.182])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="nFntdR8y"
+Received: from mail-ed1-f42.google.com (mail-ed1-f42.google.com [209.85.208.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94C4B18EAB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:41:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B815357887
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 12:41:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710852067; cv=none; b=WThcoSJKx4g6hBVDcWEFvhpvBJQPS2lrZaSHYEe6LX4BoOS6Ft7MWWWNmWQCdqgVfcYbUNvpyVvN87p4D+t1augDPMl6/KesHrlv6t8f+M0W0Ai6NXIDsfhd+zYJeBah45yyjvGs+9zXdxKPRkJQj75Boi38zz2Ph7DgxzrrD1I=
+	t=1710852101; cv=none; b=KXO7ZkH9xWpWey1/IRbZ3K7YP4roV4ZfO7Jcl7vubh1KcfR6Xj6lYZrDKeJemreit0CdYbCfuIAaPRX0sJuePwKoe7UlnzrHM/6Qbj72RHxiiABDOd1vN6ldSMc/pHjOcnCUOpKAaUTn8+JZkQbz8RqOpfhY6h1gqMCn6XhTOX4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710852067; c=relaxed/simple;
-	bh=WkOk8giop+8VWt64Cm2hJuHGbWjATQz+Bza7RRp6Pzg=;
+	s=arc-20240116; t=1710852101; c=relaxed/simple;
+	bh=hM8r6yFmotnR0mFSU8U2fTayNop/8yRKTITbazIdVnU=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=H/e2t3LlinFqz2bnK4U6FGFwYgLkVdVNMm0fIxOxRzm59uoqESOU2kFrwWA97DDvN4IIqYzShWnoMN0UkKg4EtVtJHJytLzk3Y/O6gpMpi/hYHJZGDm20LTLwBKq+WuK85NvRM6VmpsQpps8uoDWKIcJtvpuyfvA/qBD3n16S90=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=r7QeFPdw; arc=none smtp.client-ip=209.85.208.182
+	 In-Reply-To:Content-Type; b=NbXUxS6yGBYaLbPNCXwYgWqnZ5mwdqfKow5h/yVKVW7YmKENKn3FscrYWf16flaosEL6pMnHp+ZkVZB7rodxO0lM7TLtpaK44gAvGO6yhZ1VM4Q4mfQQ1QxL6aQZ6ElefMDGCvWROJUjrVIAjXDDflJCXZO8RBo65nQ+1MIJvvE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=nFntdR8y; arc=none smtp.client-ip=209.85.208.42
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-lj1-f182.google.com with SMTP id 38308e7fff4ca-2d28051376eso90222931fa.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:41:03 -0700 (PDT)
+Received: by mail-ed1-f42.google.com with SMTP id 4fb4d7f45d1cf-5687feeb1feso4328976a12.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:41:39 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710852062; x=1711456862; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710852098; x=1711456898; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:from:to:cc:subject:date:message-id:reply-to;
-        bh=WRBSPouyZNepIb9OSrcHdTHsgsddW1COazPCcrBFhTo=;
-        b=r7QeFPdwNqsdyOX0OvlT0GYgR/GObAz++q4PFTCUKI3r/KAVEmSiuu7rcg9aS3vEGq
-         l2ASwHATlsDu7rb3FZ4ii4+9Q0qNFgIrom/9uCFiXDQoYFQ3vDuKoafO8yyjl2iHFcoZ
-         dk/zdi5VlVxLgyWhi5ViwoDrm96Vg5Phf7Zw44JXZxfA6v84bClxY6L9WgbXIfX4fEyH
-         E3Ipb9qa0L6YEbjRlC4/tYMcZWwocTvT+sFw1OFL+lAc8uxvptdP/NIwGz0Ks0olIQQL
-         gmd5VWsswlzEtU5IJsOY6c85Wbb/8YxBc2UVSitQIAvMRwdffhd7leDLTg020VVyVyoS
-         kxIA==
+        bh=2JeFFmAxQgbjmIs+LQfatAmJVmrtvNfVCmg3meqBwCk=;
+        b=nFntdR8ynv3F5r1iPLG3WWB22C9Ml09YoizXWNNsP+hDxNIrFfB4NeRh2uM8Dkw0aA
+         9Aq3DagKLkWgVVzh8Xubu/7RtvZ2uOfGeSwXjQqz0GP2nGTHQwzqU/XImTlURv0mJYd/
+         Y+65pyCOTuZIGwLDoPJ64TfZKD4tPQr2+NNshJHRoSywHtzNy6/3X9r/G3LqWQz1BXJ2
+         7U3KtdAk6x+0aXqlPJ2lNCPNLQSbXhMxVOZotXwunGdYhhzkaPxqQxe8KQZs3Auqel4x
+         uDHIJBQp9svgG95taBmHqsAa9nY5iu4Amd9+pbBnjrLFrPtMtsZr2utOishoKw+r4Yk1
+         eoRA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710852062; x=1711456862;
+        d=1e100.net; s=20230601; t=1710852098; x=1711456898;
         h=content-transfer-encoding:in-reply-to:autocrypt:from
          :content-language:references:cc:to:subject:user-agent:mime-version
          :date:message-id:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=WRBSPouyZNepIb9OSrcHdTHsgsddW1COazPCcrBFhTo=;
-        b=M52z30HNrT60sH55Iln1TiJFsI9kWDr0uKX8gURlX5CiVfnN4acJEEtofDPkn4TDHr
-         tOmFFDxsuwgpqtx+TqsrkM4W2bMADG2wgDfGTQDF2Iuke5a+un5/1dW17BKW7uXrtt0e
-         Q5bTBwcEfBEeXn2yyqlBUKZjHdulv0YEfRxzfXxSrOi1/DNOyD8zM6pxOKdl7eQ+qEhP
-         RdVkeDMNa/lRRhTEhrpDO8oqXeT60rbFVHm9JIKbBVvZ/RTljAeXFoHyZ9GWEzpGpE7r
-         RlP1xfRUBBkdNDKcl9KWy4KaeMuAxuAlQzIvqBjGTGs/ZteCZlxvdEQbfWZm6yEU9EID
-         sy8g==
-X-Forwarded-Encrypted: i=1; AJvYcCWrlJZjcXN3CIn61H4b12PMz+HT5G2FREinYMC4zh4tCHrUamgDZDftREvEfM/9l/llSaLzmxxZXYsiatsFEDbVFh1sRotynvtvmJes
-X-Gm-Message-State: AOJu0YxI4aKWsmy9NwSaJaiYvIN9rt1CwseKLI1edJOHbTXviprmUCmj
-	KnbniE4MRQ9y6CX3NmgeJKiPwaHqRxpAP0X27TBrFDXl9nrJtnUsQZeiML0aQNs=
-X-Google-Smtp-Source: AGHT+IHPsKr2x23kpUt5J7PZSHeRCwMXElORiE7lYuIw03+E+HKHRgPVb2cj8DNTcJx1R9oGY2SEYw==
-X-Received: by 2002:a2e:b8cb:0:b0:2d4:aa55:72db with SMTP id s11-20020a2eb8cb000000b002d4aa5572dbmr6019143ljp.19.1710852061747;
-        Tue, 19 Mar 2024 05:41:01 -0700 (PDT)
+        bh=2JeFFmAxQgbjmIs+LQfatAmJVmrtvNfVCmg3meqBwCk=;
+        b=GvEdv7FA6IoDY8gdSOm6VtcYG+r4W9Vq1wyHgzjFO9Dlt8gyW51r0CAD8NptS4b5fU
+         5uds4VNJu4F/yQ/VDryHMuEIq/Q1tC6Qh7zAC0Nxw4QKrz24vul/WfWvVxSXcgk16exO
+         WTKXdbF/faxzsh6NTaGJX2b8AD7mjHeLLrlSD/MGUpfT0/PVhc+bI1zglEwvpNbrMmph
+         r6RbBPSEy9S4kAMp44yQgtS1yn9A75ouL7QaLQi9MpOxcGpdMCbECsOsaPpo5s/Axvn9
+         FJgimg0ejx+RR877uZjyS0Pe7UPzbY2k1wYFSHXhGOKIgXFCv8G9GRpy8hyZ2+gqeV67
+         Bz8g==
+X-Forwarded-Encrypted: i=1; AJvYcCXuLWlXuwiHl8cP4fd4ZR0hwiCPhI9h6XTo7sosMb/rfLe9qVdJdlD5jXdwOKmOi0/u2ao736FXYzivsUPjPrk8zGXIZPvrmbNpTCS0
+X-Gm-Message-State: AOJu0YwuuuFWR37cz0QtQyeaLSpfIJ8FK//KSNrQHf6mkfPQmTEOA1bR
+	ijZo/FlfL1CKwHkXYAge01HfDL76CZ1ofIYmUAvPzWN4KwrdSzN/hAUf3RwdANE=
+X-Google-Smtp-Source: AGHT+IGuIcDbiRk7X0Snu8UKVjYYfiyxcuD3N8LmYYzKcnRENPQjhqfN6c00Srof0ur67+i4Oz1ssg==
+X-Received: by 2002:a05:6402:5d0:b0:565:6e34:da30 with SMTP id n16-20020a05640205d000b005656e34da30mr10171630edx.21.1710852098184;
+        Tue, 19 Mar 2024 05:41:38 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id dn21-20020a17090794d500b00a465ee3d2cesm5971565ejc.218.2024.03.19.05.40.59
+        by smtp.gmail.com with ESMTPSA id v25-20020aa7dbd9000000b00568c3c54613sm3507510edt.31.2024.03.19.05.41.34
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 05:41:01 -0700 (PDT)
-Message-ID: <b4f4f8e3-9832-4789-b4fb-beeeeb5c859e@linaro.org>
-Date: Tue, 19 Mar 2024 13:40:58 +0100
+        Tue, 19 Mar 2024 05:41:37 -0700 (PDT)
+Message-ID: <2e992e97-b526-411b-99ed-29099da2bf0b@linaro.org>
+Date: Tue, 19 Mar 2024 13:41:32 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -76,16 +76,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 1/3] arm64: dts: iesy: add support for iesy PX30 SoM OSM-S
+Subject: Re: [PATCH 2/3] dt-bindings: vendor-prefixes: add iesy
 To: Dominik Poggel <pog@iesy.com>, robh+dt@kernel.org
 Cc: Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
  Conor Dooley <conor+dt@kernel.org>, Heiko Stuebner <heiko@sntech.de>,
- Tianling Shen <cnsztl@gmail.com>, Chris Morgan <macromorgan@hotmail.com>,
+ Jernej Skrabec <jernej.skrabec@gmail.com>,
+ Chris Morgan <macromorgan@hotmail.com>, Sebastian Reichel <sre@kernel.org>,
+ Hugo Villeneuve <hvilleneuve@dimonoff.com>,
+ Linus Walleij <linus.walleij@linaro.org>, Tianling Shen <cnsztl@gmail.com>,
  Ondrej Jirman <megi@xff.cz>, Andy Yan <andyshrk@163.com>,
- devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
- linux-rockchip@lists.infradead.org, linux-kernel@vger.kernel.org
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-rockchip@lists.infradead.org
 References: <20240319095411.4112296-1-pog@iesy.com>
- <20240319095411.4112296-2-pog@iesy.com>
+ <20240319095411.4112296-3-pog@iesy.com>
 Content-Language: en-US
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
@@ -132,228 +135,32 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <20240319095411.4112296-2-pog@iesy.com>
+In-Reply-To: <20240319095411.4112296-3-pog@iesy.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
 On 19/03/2024 10:54, Dominik Poggel wrote:
-> This adds support for the iesy SoM px30-iesy-osm-sf and the matching
-> evalboard px30-iesy-eva-mi V2.XX.
+> Add iesy GmbH
 > 
 > Signed-off-by: Dominik Poggel <pog@iesy.com>
 > ---
->  arch/arm64/boot/dts/rockchip/Makefile         |   1 +
->  .../boot/dts/rockchip/px30-iesy-eva-mi-v2.dts | 624 ++++++++++++++++++
->  .../boot/dts/rockchip/px30-iesy-osm-sf.dtsi   | 346 ++++++++++
->  3 files changed, 971 insertions(+)
->  create mode 100644 arch/arm64/boot/dts/rockchip/px30-iesy-eva-mi-v2.dts
->  create mode 100644 arch/arm64/boot/dts/rockchip/px30-iesy-osm-sf.dtsi
+>  Documentation/devicetree/bindings/vendor-prefixes.yaml | 2 ++
+>  1 file changed, 2 insertions(+)
 > 
-> diff --git a/arch/arm64/boot/dts/rockchip/Makefile b/arch/arm64/boot/dts/rockchip/Makefile
-> index f906a868b71a..a46234ccbe15 100644
-> --- a/arch/arm64/boot/dts/rockchip/Makefile
-> +++ b/arch/arm64/boot/dts/rockchip/Makefile
-> @@ -3,6 +3,7 @@ dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-evb.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-engicam-px30-core-ctouch2.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-engicam-px30-core-ctouch2-of10.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-engicam-px30-core-edimm2.2.dtb
-> +dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-iesy-eva-mi-v2.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += px30-ringneck-haikou.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-evb.dtb
->  dtb-$(CONFIG_ARCH_ROCKCHIP) += rk3308-roc-cc.dtb
-> diff --git a/arch/arm64/boot/dts/rockchip/px30-iesy-eva-mi-v2.dts b/arch/arm64/boot/dts/rockchip/px30-iesy-eva-mi-v2.dts
-> new file mode 100644
-> index 000000000000..be1d709bbab0
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/rockchip/px30-iesy-eva-mi-v2.dts
-> @@ -0,0 +1,624 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Device Tree for iesy RPX30 EVA-MI V2.xx (Eval Kit)
-> + *
-> + * Copyright (c) 2022 iesy GmbH
-> + */
-> +
-> +/dts-v1/;
-> +#include <dt-bindings/input/input.h>
-> +#include <dt-bindings/net/mscc-phy-vsc8531.h>
-> +#include "px30-iesy-osm-sf.dtsi"
-> +
-> +/ {
-> +	model = "iesy RPX30 EVA-MI V2.xx (Eval Kit)";
-> +	compatible = "iesy,rpx30-eva-mi-v2", "rockchip,px30";
-> +
-> +	leds {
-> +		compatible = "gpio-leds";
-> +
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&pinctrl_leds_bb138>;
-> +
-> +		/* BB138a: green user led (LD4) */
-> +		led@0 {
+> diff --git a/Documentation/devicetree/bindings/vendor-prefixes.yaml b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> index 04505cb0b640..ffb2abb5edc2 100644
+> --- a/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> +++ b/Documentation/devicetree/bindings/vendor-prefixes.yaml
+> @@ -656,6 +656,8 @@ patternProperties:
+>      description: International Business Machines (IBM)
+>    "^icplus,.*":
+>      description: IC Plus Corp.
+> +  "^iesy,.*":
+> +    description: iesy GmbH
 
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
+Just look at the code and its placement. Wrong order.
 
-> +			label = "USER_LED_00";
-> +			gpios = <&gpio3 RK_PA0 GPIO_ACTIVE_LOW>;
-> +			linux,default-trigger = "heartbeat";
-> +		};
-> +
-> +		/* BB138a: yellow user led (LD9)) */
-> +		led@1 {
-> +			label = "USER_LED_01";
-> +			gpios = <&gpio3 RK_PA1 GPIO_ACTIVE_LOW>;
-> +			default-state = "off";
-> +		};
-> +	};
-> +
-> +	/* BB138a: MAX9867ETJ+ audio codec */
-> +	max9867-sound {
-
-sound {
-
-Node names should be generic. See also an explanation and list of
-examples (not exhaustive) in DT specification:
-https://devicetree-specification.readthedocs.io/en/latest/chapter2-devicetree-basics.html#generic-names-recommendation
-
-
-> +		compatible = "simple-audio-card";
-> +		simple-audio-card,name = "rockchip,max9867-codec";
-> +		simple-audio-card,format = "i2s";
-> +
-> +		simple-audio-card,widgets =
-> +			"Speaker", "Jack",
-> +			"Microphone", "Mic";
-> +		simple-audio-card,routing =
-> +			"Jack", "LOUT",
-> +			"Jack", "ROUT",
-> +			"Mic", "DMICL",
-> +			"Mic", "DMICR";
-> +
-> +		simple-audio-card,frame-master = <&cpudai>;
-> +		simple-audio-card,bitclock-master = <&cpudai>;
-> +
-> +		status = "okay";
-> +
-> +		cpudai: simple-audio-card,cpu {
-> +			sound-dai = <&i2s1_2ch>;
-> +			dai-tdm-slot-num = <1>;
-> +			dai-tdm-slot-width = <16>;
-> +		};
-> +
-> +		simple-audio-card,codec {
-> +			sound-dai = <&max9867>;
-> +			clocks = <&cru SCLK_I2S1_OUT>;
-> +		};
-> +	};
-> +
-> +	/* regulator for USB OTG port */
-> +	usb_a_vbus_regulator: regulator@1 {
-
-Not a bus.
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "usb_a_vbus_regulator";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio3 RK_PC0 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +	};
-> +
-> +	/* regulator for USB host port */
-> +	usb_b_vbus_regulator: regulator@2 {
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "usb_b_vbus_regulator";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		gpio = <&gpio3 RK_PC3 GPIO_ACTIVE_HIGH>;
-> +		enable-active-high;
-> +		regulator-always-on;
-> +		regulator-boot-on;
-> +	};
-> +
-> +	user-buttons {
-> +		compatible = "gpio-keys";
-> +		#address-cells = <1>;
-> +		#size-cells = <0>;
-
-It does not look like you tested the DTS against bindings. Please run
-`make dtbs_check W=1` (see
-Documentation/devicetree/bindings/writing-schema.rst or
-https://www.linaro.org/blog/tips-and-tricks-for-validating-devicetree-sources-with-the-devicetree-schema/
-for instructions).
-
-You are repeating the same mistakes we fixed long time ago. This means
-you started work from some downstream or old DTS. Don't. It's a waste of
-time, also mine to tell you that we fixed all this.
-
-Please start from scratch from upstream DTS and test your code before
-sending.
-
-..
-
-..
-
-> +/ {
-> +	aliases {
-> +		mmc0 = &emmc;
-> +		mmc1 = &sdmmc;
-> +		mmc2 = &sdio;
-> +	};
-> +
-> +	chosen {
-> +		bootargs = "earlycon=uart8250,mmio32,0xff160000 console=ttyFIQ0 rw root=PARTUUID=614e0000-0000 rootwait";
-
-That's not correct bootargs. earlyocon is debugging, so drop from
-mainline code. console goes to stdout property.
-root/PARTUIID is obviously not correct. My PARTUIID is different.
-
-Drop entire chosen.
-
-> +	};
-> +
-> +	fiq-debugger {
-> +		compatible = "rockchip,fiq-debugger";
-
-Undocumented. Please run scripts/checkpatch.pl and fix reported
-warnings. Some warnings can be ignored, but the code here looks like it
-needs a fix. Feel free to get in touch if the warning is not clear.
-
-You MUST run checkpatch on your submissions. All of them.
-
-> +		rockchip,serial-id = <2>;
-> +		rockchip,wake-irq = <0>;
-> +		/* If enable uart uses irq instead of fiq */
-> +		rockchip,irq-mode-enable = <1>;
-> +		rockchip,baudrate = <115200>;  /* Only 115200 and 1500000 */
-> +		interrupts = <GIC_SPI 127 IRQ_TYPE_LEVEL_LOW>;
-> +		pinctrl-names = "default";
-> +		pinctrl-0 = <&uart2m1_xfer>;
-> +		status = "okay";
-
-Why? Was it disabled anywhere? Anyway, that's not even hardware.
-
-I am not going to review the rest. Please read submitting patches and
-carefully follow it. Run all standard tests on your code before sending
-patches. There is no point in reviewer telling you something which
-automated tools tell.
+Also, all bindings come *BEFORE* users.
 
 Best regards,
 Krzysztof
