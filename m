@@ -1,166 +1,317 @@
-Return-Path: <linux-kernel+bounces-107231-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107232-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E580287F9AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:26:33 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4743E87F9B5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:27:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 72C251F21833
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:26:33 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A15F1C21A9F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:27:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D87C07BB1E;
-	Tue, 19 Mar 2024 08:26:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B32D354775;
+	Tue, 19 Mar 2024 08:27:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b="nxW7vnoV"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2077.outbound.protection.outlook.com [40.107.220.77])
+	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="Vv39uHjK"
+Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4606954665;
-	Tue, 19 Mar 2024 08:26:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.77
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710836771; cv=fail; b=LXVfWfhW9xLCBF4w/FvdANv59mR4Ye+AMJk15OQxngsczw+EmEmEqk9eEpvEyDMeyUBPhD4xFrKifDNMUn8cy7FdIft0sX3Fy1Prv63tjIcsk2L6DpbcsVmIqrkka6JMFB0S0hWmPri1K1nrqKNgdTqfP+wj553xmoaw68RCmK4=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710836771; c=relaxed/simple;
-	bh=2ea7PFlPtsjVnKhciQqch9qj4zaom+swrZD7gMp1WWY=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=CuOdgjoGNxiipN3uuWmSJXu3/P6SioECNSOx2ff1rRUgYYS7eF2nGsUfIFs7CLjXGeGBvumvrNE0sZpA3Jbs3wXaKxesMKJ7PAnqp0vhgDjq2mcvv1RpcRcRbgj3w01d98NZmhTCX/1XirJL/kLxmYu97X5Z2yHePpgHCBY5eTs=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com; spf=fail smtp.mailfrom=nvidia.com; dkim=pass (2048-bit key) header.d=Nvidia.com header.i=@Nvidia.com header.b=nxW7vnoV; arc=fail smtp.client-ip=40.107.220.77
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=nvidia.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=nvidia.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=Jtlx1XEKazELo0CTzgfpD0IizoDBHzwfZdcy2ec6bp5gZYPMB8BshaVCV4D8XsiGaQVOslnOUP9G+jh1qgUXdpfHRwsDfrcWK4sY0cYl44Xy6Snn9Xy7GNuoQWJesIeIp5Q7Ftz48AIHuh8qXodKw5bz2P2b3OTGhujQewv7Py4rlKcNedFQ/Aga9gWVTNmP/71p0Ko5RlDLARLz9r6cMq9XAdoWX/U7CQLl7jeGJnWN9lPMYSO1cbymX9rjwH0tAqHJXaogszwfUxR2ZXdbGpk4TAgVzxUJQVV0pMLilZw0Xno9zOgxo30pqlvGOLeOoFWkR6tRfyOpByrIguve+w==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=9u7gXRvUv+gVV93rB1g9dDr3bPDesAfv6yvoR32J1Cs=;
- b=nYx2g13BQZFNwM1Q3XqYF/+I78wYTMUrLpVGXV9QEpqoAHjkEtkH2Pl8qi5IBjFRKN8H5UXH+1Ze3lOSyIoEXTxcb3scb8v+ywdHJgVGmHItjQfSY9ckV2KvVMjvxipHW584BCI3BFqou40WmrZqkpRZuEsP8mspduvKv8s2IicIXwMSWE3eTK/I6C/K52j4qEJknABhN8IJFlQlvOV/askiVvimAF5deMisP3euD91bNJMA3z191M4yWAygygNG0NIkMe7vdJm5Dm7K7EZCFQ7LWsRAnuk3F0U7azRKRUKYsPL6SqINoCFnGYtUduXOgrngDiOh1kWQYYjwmJcD+Q==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 216.228.117.160) smtp.rcpttodomain=gondor.apana.org.au
- smtp.mailfrom=nvidia.com; dmarc=pass (p=reject sp=reject pct=100) action=none
- header.from=nvidia.com; dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=Nvidia.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=9u7gXRvUv+gVV93rB1g9dDr3bPDesAfv6yvoR32J1Cs=;
- b=nxW7vnoVnw0IYXPI3hxvWcF9qLYgOtme2BC0XuwE5E8EZGdr2/pdtgmWd5G2fafe6iyzUsvDqpojGyiU1XA5/8UcT8M72PtMwqJSFgqC1MYH9WcXYX/5elH9qD/QY0HwPS4mb3p/F4P58qDUFk/tjt9VQVUFOkF2smEo5CSoxunW1f4sz3UKHse4EDV3yyIevP5EoqBg9JfXvJ9qAzwtrL7j31mO0e0OZiuM8rAXzMY0BTZUPaudz1frvbq1em1wzv4Dlyn1+/We1Y3VmpWR+K09FuV3RJIaAlcq8cYuJ2Re0OYNcCu23nQoNSIhKqoxwCq8HnA5CwTOGMnf/Vmk5w==
-Received: from PR0P264CA0178.FRAP264.PROD.OUTLOOK.COM (2603:10a6:100:1c::22)
- by LV2PR12MB6013.namprd12.prod.outlook.com (2603:10b6:408:171::13) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26; Tue, 19 Mar
- 2024 08:26:06 +0000
-Received: from SA2PEPF00001504.namprd04.prod.outlook.com
- (2603:10a6:100:1c:cafe::90) by PR0P264CA0178.outlook.office365.com
- (2603:10a6:100:1c::22) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.26 via Frontend
- Transport; Tue, 19 Mar 2024 08:26:05 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 216.228.117.160)
- smtp.mailfrom=nvidia.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=nvidia.com;
-Received-SPF: Pass (protection.outlook.com: domain of nvidia.com designates
- 216.228.117.160 as permitted sender) receiver=protection.outlook.com;
- client-ip=216.228.117.160; helo=mail.nvidia.com; pr=C
-Received: from mail.nvidia.com (216.228.117.160) by
- SA2PEPF00001504.mail.protection.outlook.com (10.167.242.36) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 08:26:04 +0000
-Received: from rnnvmail202.nvidia.com (10.129.68.7) by mail.nvidia.com
- (10.129.200.66) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.41; Tue, 19 Mar
- 2024 01:25:44 -0700
-Received: from rnnvmail204.nvidia.com (10.129.68.6) by rnnvmail202.nvidia.com
- (10.129.68.7) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1258.12; Tue, 19 Mar
- 2024 01:25:44 -0700
-Received: from BUILDSERVER-IO-L4T.nvidia.com (10.127.8.14) by mail.nvidia.com
- (10.129.68.6) with Microsoft SMTP Server id 15.2.1258.12 via Frontend
- Transport; Tue, 19 Mar 2024 01:25:39 -0700
-From: Akhil R <akhilrajeev@nvidia.com>
-To: <herbert@gondor.apana.org.au>, <davem@davemloft.net>, <robh@kernel.org>,
-	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
-	<thierry.reding@gmail.com>, <jonathanh@nvidia.com>,
-	<catalin.marinas@arm.com>, <will@kernel.org>, <mperttunen@nvidia.com>,
-	<airlied@gmail.com>, <daniel@ffwll.ch>, <linux-crypto@vger.kernel.org>,
-	<devicetree@vger.kernel.org>, <linux-tegra@vger.kernel.org>,
-	<linux-kernel@vger.kernel.org>, <linux-arm-kernel@lists.infradead.org>,
-	<dri-devel@lists.freedesktop.org>
-CC: Akhil R <akhilrajeev@nvidia.com>
-Subject: [PATCH v6 5/5] arm64: tegra: Add Tegra Security Engine DT nodes
-Date: Tue, 19 Mar 2024 13:53:06 +0530
-Message-ID: <20240319082306.34716-6-akhilrajeev@nvidia.com>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240319082306.34716-1-akhilrajeev@nvidia.com>
-References: <20240319082306.34716-1-akhilrajeev@nvidia.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 09D2653E3F;
+	Tue, 19 Mar 2024 08:27:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710836824; cv=none; b=nt7nTlhzHcvdAVTnu74yDI8v4B4x3o05meXCwlwTjFnM8ft5doDx+prfywJRTkxPcFHL+rTngbClIlx3yMfKPVLA0Y7XK+UTPGZ+etOyR/HLx5KM0EzBEFSvPzjfoPKNwU/UYJ0neUxrbJ84fh61QRJL0OPX8Y9p7PDqgh0PKwE=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710836824; c=relaxed/simple;
+	bh=Bq/AA70/5q9Dxb347nnOr2s8AeJGp1yWvsl0P7aV0QU=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=E9pjagznUhhH+z9mYfCFaffIuwkJ1qRddHMD8FfO07thKqRim8inPneJ5t/fKt3e3/xaPDXm3ls1AUkf0gwTxEt4wUE53lB57IFG6ixham9i/ZLgH+GH3T+CK0kv7QTU8ifY5kJ8UDUw5jSENVC1NXnzBpLSm/ztAezD/a3PpP4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=Vv39uHjK; arc=none smtp.client-ip=198.47.23.248
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
+Received: from fllv0035.itg.ti.com ([10.64.41.0])
+	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42J8QbiB090324;
+	Tue, 19 Mar 2024 03:26:37 -0500
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
+	s=ti-com-17Q1; t=1710836797;
+	bh=Oz20PFNHtij4CjpERCZKBDH6sdX95lWDbXHhrBALB3Y=;
+	h=Date:Subject:To:CC:References:From:In-Reply-To;
+	b=Vv39uHjK3U/KoMzTdnafeFXWGNP57XS6IUbkMztSozHy0OQakUx8I1j1K8HD4dnJd
+	 tCg3CFq5eQBQQsMsr53lDr5lNuuIAs1WNHTk5iaPIQiF4dU4ziKFdPtp0TAGYtuMvG
+	 zArp4WiwB5tI3QUGBUh77iI3Qe7WNl7FjsVFAVYo=
+Received: from DFLE105.ent.ti.com (dfle105.ent.ti.com [10.64.6.26])
+	by fllv0035.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42J8Qbi1072590
+	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Tue, 19 Mar 2024 03:26:37 -0500
+Received: from DFLE101.ent.ti.com (10.64.6.22) by DFLE105.ent.ti.com
+ (10.64.6.26) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
+ Mar 2024 03:26:36 -0500
+Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DFLE101.ent.ti.com
+ (10.64.6.22) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
+ Frontend Transport; Tue, 19 Mar 2024 03:26:36 -0500
+Received: from [10.24.69.142] ([10.24.69.142])
+	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42J8QTSH052033;
+	Tue, 19 Mar 2024 03:26:30 -0500
+Message-ID: <6eff590b-3f4a-4824-95e7-b2a94656408b@ti.com>
+Date: Tue, 19 Mar 2024 13:56:29 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-NVConfidentiality: public
-Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
-X-NV-OnPremToCloud: ExternallySecured
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SA2PEPF00001504:EE_|LV2PR12MB6013:EE_
-X-MS-Office365-Filtering-Correlation-Id: 74dc497e-b727-4b0d-cbda-08dc47ee3806
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	oHKVZmiGoS9RYNWqa8WQBd2diwLfoS40WvEFnrrOCTRRCX4zp/z95z4iVaN36LCz8uyF6sXE3L2BU81ghM5dN3g9/f446gwejvQpprrfugphZ/CtNTn0mz7alpOvnXomuRBeMOFDCAUBoFN4KERIHT1luFV9AWg6qDnl8MRL1jJaGzwIRwaIGNkfI3WbjC/hijuWPKjNGyljKd0Q0ee89/QeL/5e43utIgaG91hihHk1NKflksUDcwmwyLoLXts5Exjj3ljZjwsqOFRneXDoXHNcHvqbwOqk5x1zB64BbH1Rsvb1QRqkmYu6tPA+r/NB2F7uLqPXsiBthO700TceCobtRqJialrZucpS3RlcnNBwvZvjNQjzoiU1/5G6lrqo+CmCHPHYLDjCWMFDIOZMqot9k9VBYrk/fTCUBnpH4+/DsqiyCyOWlK8Dg2f+Uiefk/xMAzBkig+ZOvCUkIq3U2PLW37YCAcJmJuBwLYsA7wwn1qDaIUj0BpKV2zEXRiBvMoi+9Y1vnc7jNMshOVy2XhfkRUMdBeCq2CFF6rPNPaufpnDEzxAk+g/6KiMNe6V/r0Yh0hrC4Io/6OHyIONlNpYyG30yG565Gpw0M+1WIFb4OUbSAlSiWwSmPESC9bcZrW/Krf6tJt5qbJMynvlt5y0qSO7xDQekeYTCd0LrIVKz76Vy3+42NVTmNOSMYxRQO4dhjspIPwR+NiHUPPCrPT4YRRS/4SjGUZ7u3o++VIEG+BgV1qGpGhEc+4NlkNeXE5FZx8OfLKCNzLzbUyHXw==
-X-Forefront-Antispam-Report:
-	CIP:216.228.117.160;CTRY:US;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:mail.nvidia.com;PTR:dc6edge1.nvidia.com;CAT:NONE;SFS:(13230031)(1800799015)(7416005)(82310400014)(376005)(36860700004)(921011);DIR:OUT;SFP:1101;
-X-OriginatorOrg: Nvidia.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 08:26:04.6119
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 74dc497e-b727-4b0d-cbda-08dc47ee3806
-X-MS-Exchange-CrossTenant-Id: 43083d15-7273-40c1-b7db-39efd9ccc17a
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=43083d15-7273-40c1-b7db-39efd9ccc17a;Ip=[216.228.117.160];Helo=[mail.nvidia.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	SA2PEPF00001504.namprd04.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: LV2PR12MB6013
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 3/5] greybus: Add mikroBUS manifest types
+Content-Language: en-US
+To: Ayush Singh <ayushdevel1325@gmail.com>,
+        open list
+	<linux-kernel@vger.kernel.org>
+CC: <jkridner@beagleboard.org>, <robertcnelson@beagleboard.org>,
+        <lorforlinux@beagleboard.org>, Rob Herring <robh@kernel.org>,
+        Krzysztof
+ Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
+        Vignesh Raghavendra
+	<vigneshr@ti.com>,
+        Tero Kristo <kristo@kernel.org>,
+        Derek Kiernan
+	<derek.kiernan@amd.com>,
+        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
+	<arnd@arndb.de>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Mark Brown
+	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
+        Alex Elder
+	<elder@kernel.org>,
+        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
+ BINDINGS" <devicetree@vger.kernel.org>,
+        "moderated list:ARM/TEXAS INSTRUMENTS
+ K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
+        "open list:SPI
+ SUBSYSTEM" <linux-spi@vger.kernel.org>,
+        "moderated list:GREYBUS SUBSYSTEM"
+	<greybus-dev@lists.linaro.org>,
+        Vaishnav M A <vaishnav@beagleboard.org>
+References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
+ <20240317193714.403132-4-ayushdevel1325@gmail.com>
+From: Vaishnav Achath <vaishnav.a@ti.com>
+In-Reply-To: <20240317193714.403132-4-ayushdevel1325@gmail.com>
+Content-Type: text/plain; charset="UTF-8"; format=flowed
+Content-Transfer-Encoding: 7bit
+X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
 
-Add device tree nodes for Tegra AES and HASH engines.
 
-Signed-off-by: Akhil R <akhilrajeev@nvidia.com>
----
- arch/arm64/boot/dts/nvidia/tegra234.dtsi | 16 ++++++++++++++++
- 1 file changed, 16 insertions(+)
 
-diff --git a/arch/arm64/boot/dts/nvidia/tegra234.dtsi b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-index 78cbfdd98dd1..f2e2d8d6845b 100644
---- a/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-+++ b/arch/arm64/boot/dts/nvidia/tegra234.dtsi
-@@ -4406,6 +4406,22 @@ nvdec@15480000 {
- 				 */
- 				status = "disabled";
- 			};
-+
-+			crypto@15820000 {
-+				compatible = "nvidia,tegra234-se-aes";
-+				reg = <0x00 0x15820000 0x00 0x10000>;
-+				clocks = <&bpmp TEGRA234_CLK_SE>;
-+				iommus = <&smmu_niso1 TEGRA234_SID_SES_SE1>;
-+				dma-coherent;
-+			};
-+
-+			crypto@15840000 {
-+				compatible = "nvidia,tegra234-se-hash";
-+				reg = <0x00 0x15840000 0x00 0x10000>;
-+				clocks = <&bpmp TEGRA234_CLK_SE>;
-+				iommus = <&smmu_niso1 TEGRA234_SID_SES_SE2>;
-+				dma-coherent;
-+			};
- 		};
- 
- 		pcie@140a0000 {
--- 
-2.43.2
+On 18/03/24 01:07, Ayush Singh wrote:
+> DONOTMERGE
+> 
 
+Why?
+
+> mikroBUS addon boards allow using same mikroBUS connector for a wide
+> range of peripherals. It is also possible for the addon board not to use
+> all the pins in mikroBUS socket (marked by NC or Not Connected). This
+> would require the need to create an almost new overlays for each
+> permutation of the hardware.
+> 
+> To overcome this, a manifest format based on Greybus manifest
+> specification was created which allows describing mikroBUS addon boards.
+> The reason for choosing greybus manifest for the identifier is that so far
+> we discussed only about physical mikroBUS ports on the board, but we can
+
+you will need to reword the commit message properly in imperative mood, 
+here and in multiple other places.
+
+> also have mikroBUS ports on a remote microcontroller appearing on host
+> over greybus and there a device tree overlay solution does not work as the
+> standard identifier mechanism.
+> 
+> The patch introduces 3 new greybus descriptor types:
+> 1. mikrobus-descriptor:
+>     Is a fixed-length descriptor (12 bytes), and the manifest shall have
+>     precisely one mikroBUS descriptor. Each byte describes a configuration
+>     of the corresponding pin on the mikroBUS addon board in a clockwise
+>     direction starting from the PWM pin omitting power (VCC and ground)
+>     pins as same as the default state of the pin.
+>     There are mikroBUS addon boards that use some dedicated SPI, UART, PWM,
+>     and I2C pins as GPIO pins, so it is necessary to redefine the default
+>     pin configuration of that pins on the host system. Also, sometimes it is
+>     required the pull-up on the host pin for correct functionality
+> 2. property-descriptor:
+>     Are used to pass named properties or named GPIOs to the host. The host
+>     system uses this information to properly configure specific board
+>     drivers by passing the properties and GPIO name. There can be multiple
+>     instances of property descriptors per add-on board manifest.
+> 3. device-descriptor:
+>     Describes a device on the mikroBUS port. The device descriptor is a
+>     fixed-length descriptor, and there can be multiple instances of device
+>     descriptors in an add-on board manifest in cases where the add-on board
+>     presents more than one device to the host.
+> 
+> New mikroBUS addon boards also sometimes contain a 1-wire EEPROM with
+> the mikroBUS manifest, thus enabling plug and play support.
+> 
+
+new mikroBUS sometimes contain an EEPROM? aren't these called Click ID 
+compliant add-on boards? there should be clarity in the commit message.
+
+
+> I have also created PR to add mikrobus descriptors in Greybus spec and I
+> think the old PR on manifesto by Vaishnav should also work. However,
+> both of these repositories seem to be inactive. I am guessing the
+> greybus mailing list can provide more information on how I should go
+> about these.
+
+Why is information like these inside the commit message, these go below 
+the tear line.
+
+
+> 
+> Here is a sample mikroBUS manifest:
+> ```
+> ;;
+> ; PRESSURE CLICK
+> ; https://www.mikroe.com/pressure-click
+> ; CONFIG_IIO_ST_PRESS
+> ;
+> ; Copyright 2020 BeagleBoard.org Foundation
+> ; Copyright 2020 Texas Instruments
+> ;
+> 
+> [manifest-header]
+> version-major = 0
+> version-minor = 1
+> 
+> [interface-descriptor]
+> vendor-string-id = 1
+> product-string-id = 2
+> 
+> [string-descriptor 1]
+> string = MIKROE
+> 
+> [string-descriptor 2]
+> string = Pressure
+> 
+> [mikrobus-descriptor]
+> pwm-state = 4
+> int-state = 1
+> rx-state = 7
+> tx-state = 7
+> scl-state = 6
+> sda-state = 6
+> mosi-state = 5
+> miso-state = 5
+> sck-state = 5
+> cs-state = 5
+> rst-state = 2
+> an-state = 1
+> 
+> [device-descriptor 1]
+> driver-string-id = 3
+> protocol = 0x3
+> reg = 0x5d
+> 
+> [string-descriptor 3]
+> string = lps331ap
+> ```
+> 
+> Link: https://www.mikroe.com/clickid ClickID
+> Link:
+> https://docs.beagleboard.org/latest/projects/beagleconnect/index.html
+> beagleconnect
+> Link: https://github.com/projectara/greybus-spec Greybus Spec
+> Link: https://github.com/projectara/greybus-spec/pull/4 Greybus Spec PR
+> Link: https://github.com/projectara/manifesto/pull/2 manifesto PR
+> 
+
+The manifesto PR might not be updated.
+
+Thanks and Regards,
+Vaishnav
+
+> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
+> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
+> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
+> ---
+>   include/linux/greybus/greybus_manifest.h | 49 ++++++++++++++++++++++++
+>   1 file changed, 49 insertions(+)
+> 
+> diff --git a/include/linux/greybus/greybus_manifest.h b/include/linux/greybus/greybus_manifest.h
+> index bef9eb2093e9..83241e19d9b3 100644
+> --- a/include/linux/greybus/greybus_manifest.h
+> +++ b/include/linux/greybus/greybus_manifest.h
+> @@ -23,6 +23,9 @@ enum greybus_descriptor_type {
+>   	GREYBUS_TYPE_STRING		= 0x02,
+>   	GREYBUS_TYPE_BUNDLE		= 0x03,
+>   	GREYBUS_TYPE_CPORT		= 0x04,
+> +	GREYBUS_TYPE_MIKROBUS		= 0x05,
+> +	GREYBUS_TYPE_PROPERTY		= 0x06,
+> +	GREYBUS_TYPE_DEVICE		= 0x07,
+>   };
+>   
+>   enum greybus_protocol {
+> @@ -151,6 +154,49 @@ struct greybus_descriptor_cport {
+>   	__u8	protocol_id;	/* enum greybus_protocol */
+>   } __packed;
+>   
+> +/*
+> + * A mikrobus descriptor is used to describe the details
+> + * about the bus ocnfiguration for the add-on board
+> + * connected to the mikrobus port.
+> + */
+> +struct greybus_descriptor_mikrobus {
+> +	__u8 pin_state[12];
+> +} __packed;
+> +
+> +/*
+> + * A property descriptor is used to pass named properties
+> + * to device drivers through the unified device properties
+> + * interface under linux/property.h
+> + */
+> +struct greybus_descriptor_property {
+> +	__u8 length;
+> +	__u8 id;
+> +	__u8 propname_stringid;
+> +	__u8 type;
+> +	__u8 value[];
+> +} __packed;
+> +
+> +/*
+> + * A device descriptor is used to describe the
+> + * details required by a add-on board device
+> + * driver.
+> + */
+> +struct greybus_descriptor_device {
+> +	__u8 id;
+> +	__u8 driver_stringid;
+> +	__u8 protocol;
+> +	__u8 reg;
+> +	__le32 max_speed_hz;
+> +	__u8 irq;
+> +	__u8 irq_type;
+> +	__u8 mode;
+> +	__u8 prop_link;
+> +	__u8 gpio_link;
+> +	__u8 reg_link;
+> +	__u8 clock_link;
+> +	__u8 pad[1];
+> +} __packed;
+> +
+>   struct greybus_descriptor_header {
+>   	__le16	size;
+>   	__u8	type;		/* enum greybus_descriptor_type */
+> @@ -164,6 +210,9 @@ struct greybus_descriptor {
+>   		struct greybus_descriptor_interface	interface;
+>   		struct greybus_descriptor_bundle	bundle;
+>   		struct greybus_descriptor_cport		cport;
+> +		struct greybus_descriptor_mikrobus	mikrobus;
+> +		struct greybus_descriptor_property	property;
+> +		struct greybus_descriptor_device	device;
+>   	};
+>   } __packed;
+>   
 
