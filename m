@@ -1,198 +1,156 @@
-Return-Path: <linux-kernel+bounces-107284-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107285-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 222B887FA66
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:09:38 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E16287FA68
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:10:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C8BD82822F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:09:36 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BA0D41F2157C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:10:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 478577E767;
-	Tue, 19 Mar 2024 09:08:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="SaXvhvnU"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CFEBD7C6CC;
+	Tue, 19 Mar 2024 09:09:53 +0000 (UTC)
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4DDA27E583
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:08:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8D9717C090;
+	Tue, 19 Mar 2024 09:09:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710839312; cv=none; b=CRPKCNKjSu1S+jMoh8uLofS75CldC3gdcDbl4jT+7Uf8hhlx5oFA0eInQlqZMCuRXRSeSZ14xV6io/PZRSGjC+ccpvBjmlRUKQLPPIGYbrPGrBwsH5aCv2+G+SSzH2I/ZllbZ+bYAiOO5wvr957dSvrI6CdKfvrZmhin+sF9C9M=
+	t=1710839393; cv=none; b=lnrzWZ64ZZy/wUQp1xbJo250mQsucfBlMGTO7oTjdSiSXipeN1czsAHR+dhEiQAJ0Q8Fov3mq/vCSCRqrQaDJGBU3Dpah3stdYxhqr+wHxkoD8VbZ5zOszLqujJ7YqC8CDqBM+8Yq8hvlxUwug98N+F8jLiUCbJ7LaxwDJ+Gdjw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710839312; c=relaxed/simple;
-	bh=GJPWIAqExu7dk4QR5nLqPJij1LLLsrMi+OMgqffGMb8=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:Message-ID:
-	 Content-Type:MIME-Version; b=byNDxYG5IRmYLZaX8eF9cqWoWEy87cwHPsQAcZrUbpf7Bw/y8y53KbLfAliZe1VkaUCJAhAU9ZW4FDnmcxu/aC5B9345Svr+eRdTM3pDIUAJ2ikTIZV1aK5xJucqQ4dvzODG+vgT189QuYNPNRf4tfWNXGRwBr/lUjkNMIy923o=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=SaXvhvnU; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0360072.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42J92R6A029460;
-	Tue, 19 Mar 2024 09:08:08 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : in-reply-to : references : message-id : content-type :
- content-transfer-encoding : mime-version; s=pp1;
- bh=S99aALjqHdt5vxeAAk7T9rQZ0KYFIS8P38QG1M9RXxs=;
- b=SaXvhvnUCT0OOqT6Gb4lY5BqV8t/2YFNoZXuxiNN+XUsFLi1DBJRgkIoarmRIIYfxvgL
- 2AUJhyg5/zhwrUvMC8Q3phAXnKDFktWXmhe5ukqR5mNskGgTgAVBbozIlgQGOLaox687
- iMbi4AwwzX4qtWxDDbJBEd/CJAaDHNrv6fmR5I9RXiClNJSoii8q8MMuE7x19+A1jY6q
- PR0X4op9S9EqM5e8HCQFuBAR7aGXBl1cgGWiENF+ssBzWFAAa5AMwWYZ80L8Q0jqSsGB
- i0jL51+mbHKyXXobZx8ZOvYxqmnRdfqIYpQCLnuLZf9s08XdgDAcwQ643ZVcLj16zjpu ZQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy7qhr16e-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 09:08:07 +0000
-Received: from m0360072.ppops.net (m0360072.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42J96v1a006375;
-	Tue, 19 Mar 2024 09:08:07 GMT
-Received: from ppma23.wdc07v.mail.ibm.com (5d.69.3da9.ip4.static.sl-reverse.com [169.61.105.93])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy7qhr164-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 09:08:06 +0000
-Received: from pps.filterd (ppma23.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma23.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42J8U23i011615;
-	Tue, 19 Mar 2024 09:08:06 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma23.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wwq8kx792-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 09:08:06 +0000
-Received: from smtpav04.dal12v.mail.ibm.com (smtpav04.dal12v.mail.ibm.com [10.241.53.103])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42J9835j44106156
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 09:08:05 GMT
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 7982858063;
-	Tue, 19 Mar 2024 09:08:03 +0000 (GMT)
-Received: from smtpav04.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E0F8758065;
-	Tue, 19 Mar 2024 09:08:02 +0000 (GMT)
-Received: from ltc.linux.ibm.com (unknown [9.5.196.140])
-	by smtpav04.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Mar 2024 09:08:02 +0000 (GMT)
-Date: Tue, 19 Mar 2024 10:08:02 +0100
-From: Tobias Huschle <huschle@linux.ibm.com>
-To: Luis Machado <luis.machado@arm.com>
-Cc: linux-kernel@vger.kernel.org, mingo@redhat.com, peterz@infradead.org,
-        juri.lelli@redhat.com, vincent.guittot@linaro.org,
-        dietmar.eggemann@arm.com, rostedt@goodmis.org, bsegall@google.com,
-        mgorman@suse.de, bristot@redhat.com, vschneid@redhat.com,
-        sshegde@linux.vnet.ibm.com, srikar@linux.vnet.ibm.com,
-        linuxppc-dev@lists.ozlabs.org, nd <nd@arm.com>
-Subject: Re: [RFC] sched/eevdf: sched feature to dismiss lag on wakeup
-In-Reply-To: <66c4286e-deaf-44a0-be62-0928529ae73f@arm.com>
-References: <20240228161018.14253-1-huschle@linux.ibm.com>
- <5a32e8e1-67cf-4296-a655-f0fc35dc880a@arm.com>
- <ZfL/hROYxQudcTuX@DESKTOP-2CCOB1S.>
- <66c4286e-deaf-44a0-be62-0928529ae73f@arm.com>
-Message-ID: <4b25ab45b762e64b9df09d4d12d8289f@linux.ibm.com>
-X-Sender: huschle@linux.ibm.com
-Content-Type: text/plain; charset=US-ASCII;
- format=flowed
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: WDxQaEywQuysNpKZbGQ-CLMB-p-6-mbS
-X-Proofpoint-GUID: cadWNAtsfNUd71EnJPbC7SXTnV4Ucb6I
-Content-Transfer-Encoding: 7bit
-X-Proofpoint-UnRewURL: 0 URL was un-rewritten
+	s=arc-20240116; t=1710839393; c=relaxed/simple;
+	bh=EtRYh4nV23koP1b34l5lWPqF+hq36pBImX3IxMAQF2Q=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=KMP9akXTpnSwBYpzB0X/UWxIWXgOTPwZCiuTLkG5O8RpfGtZUu1uNuxE+/UfwUCnlqHeHd4N2/KcN+iaVcakY6zhpxGSpI6PX1njaK1TWPJzEyCTLROvHgaPQ/3U8ZAg5TZBi40SYBDuSd7PVBEDzxUn3ui7Nzc8JfyFDMZwFVw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=debian.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-5658082d2c4so6665555a12.1;
+        Tue, 19 Mar 2024 02:09:51 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710839390; x=1711444190;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=fWbPYIc2yreZZU4F6NEHsTtZafoo5/fHquHKdIa0meg=;
+        b=a8NHquA82k4IPFrcAtVJHWyAE5UnHcTNVlNfax6HtTWwS5KqeIvyOMqyzrtJrWaNy5
+         Cw6u1Frx3IfeLt4HuZ0OrZFBpDzHp/K718Bj0KesV6PcNb6vDmUiO4c7YhtE4lBaouBZ
+         WO8dyBeYF7f9Q95AAZFlTBVmZKStkos/Lw1TrNB2YXUwAP6OiIDrwxyIb6YyxHZ7ap+L
+         ibbazkaKBr4JG4xVM6f7bBBmBbRhCmcEWvOdHE8rCJil4KRTaOpAH9YCqi/cneLHfnOR
+         fa5GjeB5WNuTpZwAzW+p2HJMWU4jjy8RPFFXpHYbvXExxsNpi2h4tjBoYERwF7ZJbOzP
+         D63A==
+X-Forwarded-Encrypted: i=1; AJvYcCWpubn5Zhp5nHCTBvW8yMZ4mf3p4R6ZyglUakG2OIhR7GYETU0FFjprKDZdJGDUVE/EJgqb/gnO6ab7n7LfPbywwuSM0MjsQXe87dD5juy0yvDmkPcIeJ2SE6WRnsygyswU5UE7DJn69A==
+X-Gm-Message-State: AOJu0YxGqM+MmCu5LSqvdZ65pX54FTu1qPYK1GlzWetpmhftXsXqUrfz
+	e94TWMBY6BIx3sISeovj6JR5J2uWFGEOpO8vLDRdSJxk0i/ChXKW
+X-Google-Smtp-Source: AGHT+IFxZOCf+I3ipaGM55sXiVF5KsEpokvnA+T6qrwCWyl9Ob3DhQFUnTKhKs12GIPDUiJos3ZazA==
+X-Received: by 2002:a17:907:724f:b0:a46:70d1:dda6 with SMTP id ds15-20020a170907724f00b00a4670d1dda6mr10642514ejc.28.1710839389806;
+        Tue, 19 Mar 2024 02:09:49 -0700 (PDT)
+Received: from localhost (fwdproxy-lla-003.fbsv.net. [2a03:2880:30ff:3::face:b00c])
+        by smtp.gmail.com with ESMTPSA id z10-20020a170906714a00b00a46c39e6a47sm1846660ejj.148.2024.03.19.02.09.49
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 02:09:49 -0700 (PDT)
+From: Breno Leitao <leitao@debian.org>
+To: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>,
+	Jason Gunthorpe <jgg@ziepe.ca>,
+	Leon Romanovsky <leon@kernel.org>
+Cc: kuba@kernel.org,
+	keescook@chromium.org,
+	linux-rdma@vger.kernel.org (open list:HFI1 DRIVER),
+	linux-kernel@vger.kernel.org (open list)
+Subject: [PATCH v4] IB/hfi1: allocate dummy net_device dynamically
+Date: Tue, 19 Mar 2024 02:09:43 -0700
+Message-ID: <20240319090944.2021309-1-leitao@debian.org>
+X-Mailer: git-send-email 2.43.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- clxscore=1011 priorityscore=1501 impostorscore=0 suspectscore=0
- mlxlogscore=998 phishscore=0 spamscore=0 adultscore=0 bulkscore=0
- malwarescore=0 mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403190070
+Content-Transfer-Encoding: 8bit
 
-On 2024-03-18 15:45, Luis Machado wrote:
-> On 3/14/24 13:45, Tobias Huschle wrote:
->> On Fri, Mar 08, 2024 at 03:11:38PM +0000, Luis Machado wrote:
->>> On 2/28/24 16:10, Tobias Huschle wrote:
->>>> 
->>>> Questions:
->>>> 1. The kworker getting its negative lag occurs in the following 
->>>> scenario
->>>>    - kworker and a cgroup are supposed to execute on the same CPU
->>>>    - one task within the cgroup is executing and wakes up the 
->>>> kworker
->>>>    - kworker with 0 lag, gets picked immediately and finishes its
->>>>      execution within ~5000ns
->>>>    - on dequeue, kworker gets assigned a negative lag
->>>>    Is this expected behavior? With this short execution time, I 
->>>> would
->>>>    expect the kworker to be fine.
->>> 
->>> That strikes me as a bit odd as well. Have you been able to determine 
->>> how a negative lag
->>> is assigned to the kworker after such a short runtime?
->>> 
->> 
->> I did some more trace reading though and found something.
->> 
->> What I observed if everything runs regularly:
->> - vhost and kworker run alternating on the same CPU
->> - if the kworker is done, it leaves the runqueue
->> - vhost wakes up the kworker if it needs it
->> --> this means:
->>   - vhost starts alone on an otherwise empty runqueue
->>   - it seems like it never gets dequeued
->>     (unless another unrelated task joins or migration hits)
->>   - if vhost wakes up the kworker, the kworker gets selected
->>   - vhost runtime > kworker runtime
->>     --> kworker gets positive lag and gets selected immediately next 
->> time
->> 
->> What happens if it does go wrong:
->> From what I gather, there seem to be occasions where the vhost either
->> executes suprisingly quick, or the kworker surprinsingly slow. If 
->> these
->> outliers reach critical values, it can happen, that
->>    vhost runtime < kworker runtime
->> which now causes the kworker to get the negative lag.
->> 
->> In this case it seems like, that the vhost is very fast in waking up
->> the kworker. And coincidentally, the kworker takes, more time than 
->> usual
->> to finish. We speak of 4-digit to low 5-digit nanoseconds.
->> 
->> So, for these outliers, the scheduler extrapolates that the kworker
->> out-consumes the vhost and should be slowed down, although in the 
->> majority
->> of other cases this does not happen.
-> 
-> Thanks for providing the above details Tobias. It does seem like EEVDF 
-> is strict
-> about the eligibility checks and making tasks wait when their lags are
-> negative, even
-> if just a little bit as in the case of the kworker.
-> 
-> There was a patch to disable the eligibility checks
-> (https://lore.kernel.org/lkml/20231013030213.2472697-1-youssefesmat@chromium.org/),
-> which would make EEVDF more like EVDF, though the deadline comparison 
-> would
-> probably still favor the vhost task instead of the kworker with the
-> negative lag.
-> 
-> I'm not sure if you tried it, but I thought I'd mention it.
+Embedding net_device into structures prohibits the usage of flexible
+arrays in the net_device structure. For more details, see the discussion
+at [1].
 
-Haven't seen that one yet. Unfortunately, it does not help to ignore the 
-eligibility.
+Un-embed the net_device from struct hfi1_netdev_rx by converting it
+into a pointer. Then use the leverage alloc_netdev() to allocate the
+net_device object at hfi1_alloc_rx().
 
-I'm inclined to rather propose propose a documentation change, which 
-describes that tasks should not rely on woken up tasks being scheduled 
-immediately.
+[1] https://lore.kernel.org/all/20240229225910.79e224cf@kernel.org/
 
-Changing things in the code to address for the specific scenario I'm 
-seeing seems to mostly create unwanted side effects and/or would require 
-the definition of some magic cut-off values.
+Signed-off-by: Breno Leitao <leitao@debian.org>
+Acked-by: Dennis Dalessandro <dennis.dalessandro@cornelisnetworks.com>
 
+---
+Changelog
+
+v2:
+	* Free struct hfi1_netdev_rx allocation if alloc_netdev() fails
+	* Pass zero as the private size for alloc_netdev().
+	* Remove wrong reference for iwl in the comments
+
+v3:
+	* Re-worded the comment, by removing the first paragraph.
+
+v4:
+	* Fix the changelog format
+---
+ drivers/infiniband/hw/hfi1/netdev.h    |  2 +-
+ drivers/infiniband/hw/hfi1/netdev_rx.c | 10 ++++++++--
+ 2 files changed, 9 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/infiniband/hw/hfi1/netdev.h b/drivers/infiniband/hw/hfi1/netdev.h
+index 8aa074670a9c..07c8f77c9181 100644
+--- a/drivers/infiniband/hw/hfi1/netdev.h
++++ b/drivers/infiniband/hw/hfi1/netdev.h
+@@ -49,7 +49,7 @@ struct hfi1_netdev_rxq {
+  *		When 0 receive queues will be freed.
+  */
+ struct hfi1_netdev_rx {
+-	struct net_device rx_napi;
++	struct net_device *rx_napi;
+ 	struct hfi1_devdata *dd;
+ 	struct hfi1_netdev_rxq *rxq;
+ 	int num_rx_q;
+diff --git a/drivers/infiniband/hw/hfi1/netdev_rx.c b/drivers/infiniband/hw/hfi1/netdev_rx.c
+index 720d4c85c9c9..cd6e78e257ef 100644
+--- a/drivers/infiniband/hw/hfi1/netdev_rx.c
++++ b/drivers/infiniband/hw/hfi1/netdev_rx.c
+@@ -188,7 +188,7 @@ static int hfi1_netdev_rxq_init(struct hfi1_netdev_rx *rx)
+ 	int i;
+ 	int rc;
+ 	struct hfi1_devdata *dd = rx->dd;
+-	struct net_device *dev = &rx->rx_napi;
++	struct net_device *dev = rx->rx_napi;
+ 
+ 	rx->num_rx_q = dd->num_netdev_contexts;
+ 	rx->rxq = kcalloc_node(rx->num_rx_q, sizeof(*rx->rxq),
+@@ -360,7 +360,12 @@ int hfi1_alloc_rx(struct hfi1_devdata *dd)
+ 	if (!rx)
+ 		return -ENOMEM;
+ 	rx->dd = dd;
+-	init_dummy_netdev(&rx->rx_napi);
++	rx->rx_napi = alloc_netdev(0, "dummy", NET_NAME_UNKNOWN,
++				   init_dummy_netdev);
++	if (!rx->rx_napi) {
++		kfree(rx);
++		return -ENOMEM;
++	}
+ 
+ 	xa_init(&rx->dev_tbl);
+ 	atomic_set(&rx->enabled, 0);
+@@ -374,6 +379,7 @@ void hfi1_free_rx(struct hfi1_devdata *dd)
+ {
+ 	if (dd->netdev_rx) {
+ 		dd_dev_info(dd, "hfi1 rx freed\n");
++		free_netdev(dd->netdev_rx->rx_napi);
+ 		kfree(dd->netdev_rx);
+ 		dd->netdev_rx = NULL;
+ 	}
+-- 
+2.43.0
 
 
