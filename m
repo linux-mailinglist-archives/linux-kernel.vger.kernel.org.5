@@ -1,198 +1,157 @@
-Return-Path: <linux-kernel+bounces-107353-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107325-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id A8BF587FB5B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:59:32 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id E7C8487FB18
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:51:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id D9DD81C21C78
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:59:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 99BF8282856
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:51:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B1F607F46B;
-	Tue, 19 Mar 2024 09:56:10 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EA0D27D095;
+	Tue, 19 Mar 2024 09:51:07 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="JUYBjJRF"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="O8wgMAwZ"
+Received: from mail-ej1-f49.google.com (mail-ej1-f49.google.com [209.85.218.49])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 700747D3FB;
-	Tue, 19 Mar 2024 09:56:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 631687D083
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:51:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.49
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710842169; cv=none; b=RQrI5vX6oCDPLx+q4zs2neD8DDhScOf7TZ7IjRhWvJeK0vw48kUWYiO1qjrSZWP37jTTq/UdxrYEY9aITAo3UAo+LilyqyzH0GRP6m9RhLv9+XXqsI8lTUFSmk11+M9F+UCF0QoFH9Dx+++EKSTz5Fuf/PR9ah2hAEB/RdUitbw=
+	t=1710841867; cv=none; b=E5urFxc1TWvtrTo+et3Hwb/Sqrpe+2cd64VINaeEMs9EAD1j8Mkpl+F2gQypySB2joKloyIcmK5F0qy4CYyHyMfCxZFbMIJfeRj8+OGemx+LAvwesMubKf1rqMjX4UnmXPvQiGVNdyEi+X04iT0Pgv7O2GoP4ub5tq0vPaVPKHI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710842169; c=relaxed/simple;
-	bh=6Q1YQ9YaWQnSUaD6gx/UktQdUNdjrS2tZjoZqNG5yTs=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=R6Gg/VLxguN48rf/dHJsWwRCqGrSgOptcFYFjNFv/il2jaHVxhL6ddNPdFQ9BWZKFp/sUSb8K9Jr46KuvCsChQM6UkEuE0Vl1c8ifOFpYsuGmD34+05KaJFhZGhFW46JKQI2CWzzbSO6jYGAdQnhrofyiwRrho9IfGgFnZcJwkU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=JUYBjJRF; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42J9WUW7021788;
-	Tue, 19 Mar 2024 09:56:03 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=from : to : cc : subject
- : date : message-id : in-reply-to : references : mime-version :
- content-transfer-encoding; s=pp1;
- bh=QpOwfZ/YlyW8DcF4PsTBwqDZqHcO+DL5JJeLS2rz8Qs=;
- b=JUYBjJRFTJR2vEHdQ6gUNfiUqzapIMrWfqKSaH7WlJknGSCD/VjXI/lWNlgTK0ExMvb1
- LO6y9K2aePFNK9tkX5RR0FU/Z1uJnHttTgKwJwqfPNeiGsDMhANcQBhplTuqERGnYKnj
- 8xgPA7RzXrXKzHM7CHFdk1wQ7fpjqfkI/ULNL+EauU4nVfzq4CeGS4m8BS1X4JDzjfMu
- cUor2NgIzTwdmtv6TNsA8WZvkZt2chj8HDmhOS/ocJEqn0AhEU4OnCin8ZGQY3mZJpjV
- eX2U6vI9GlVFRCOZK68RaMbe4eybdO0McUism3fgJ7Ztr+8ccHOip61P6bD0p0NDcFyB jQ== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy85n83ya-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 09:56:03 +0000
-Received: from m0353724.ppops.net (m0353724.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42J9u2k8005123;
-	Tue, 19 Mar 2024 09:56:02 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy85n83y9-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 09:56:02 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42J7Jvla017231;
-	Tue, 19 Mar 2024 09:51:02 GMT
-Received: from smtprelay06.fra02v.mail.ibm.com ([9.218.2.230])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrt6u1r-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 09:51:02 +0000
-Received: from smtpav03.fra02v.mail.ibm.com (smtpav03.fra02v.mail.ibm.com [10.20.54.102])
-	by smtprelay06.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42J9ouJp25297416
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 09:50:58 GMT
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 958AB2005A;
-	Tue, 19 Mar 2024 09:50:56 +0000 (GMT)
-Received: from smtpav03.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5E38020043;
-	Tue, 19 Mar 2024 09:50:56 +0000 (GMT)
-Received: from tuxmaker.boeblingen.de.ibm.com (unknown [9.152.85.9])
-	by smtpav03.fra02v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Mar 2024 09:50:56 +0000 (GMT)
-From: Thomas Richter <tmricht@linux.ibm.com>
-To: linux-kernel@vger.kernel.org, linux-perf-users@vger.kernel.org,
-        acme@kernel.org, irogers@google.com, namhyung@kernel.org
-Cc: svens@linux.ibm.com, gor@linux.ibm.com, sumanthk@linux.ibm.com,
-        hca@linux.ibm.com, Thomas Richter <tmricht@linux.ibm.com>
-Subject: [PATCH 2/2] perf list: do not print metrics on s390 zvm systems
-Date: Tue, 19 Mar 2024 10:50:43 +0100
-Message-Id: <20240319095043.857594-2-tmricht@linux.ibm.com>
-X-Mailer: git-send-email 2.40.1
-In-Reply-To: <20240319095043.857594-1-tmricht@linux.ibm.com>
-References: <20240319095043.857594-1-tmricht@linux.ibm.com>
+	s=arc-20240116; t=1710841867; c=relaxed/simple;
+	bh=88XzjhFNhn70mBpqUdKgpf7ppYNiFhAhyQuqQQPS+u8=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=clmJk2IIgctJpLBdGVIR2B8MbPksgOBHT82TPSdNM1K03XJuHfHZNTEQiNH9oCs8IHxVFyGjxtsEy3cVDcCRLWo6P/YDlnEBKMbPC4NSqeQbCOrYbaVYCmCKwn6ep6v9RyYUaoFTOSlOiJI1o4hYJ141i9t7Rfokknp7kkbBxdw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=O8wgMAwZ; arc=none smtp.client-ip=209.85.218.49
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-ej1-f49.google.com with SMTP id a640c23a62f3a-a468004667aso562585066b.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:51:05 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710841864; x=1711446664; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:from:to:cc:subject:date:message-id:reply-to;
+        bh=88XzjhFNhn70mBpqUdKgpf7ppYNiFhAhyQuqQQPS+u8=;
+        b=O8wgMAwZunwn+kq5K65kO7LtwfoT+UElhUQfbXIzLmzI4GqgK6hzqS93IF9qqRK1TS
+         tM+RAI2/S+jHkAYazSth0TLF2z05UpnMdw5vt9lJAFzqYi9Dd6pU3nL5BnZy+NSg6H08
+         hC/rfnUAXh8hpLR7jE6M6Qcst89QGuweJl0s0bhDKazM0bNNJkahn/hulcMzQfWuxpig
+         2G7bTmjIwF+QlXhAH0o6ELE16iqSiaJ+iQalWX9UK9Q1Migqr8X4DyBd4QZj8fLQPNoR
+         JCeZjfNc9tqslyIeyIsBfuebU11xhQCzZa3zXdUwQRnFym3H9TJdBNxTkgqJi22C6CJT
+         En7w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710841864; x=1711446664;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from
+         :content-language:references:cc:to:subject:user-agent:mime-version
+         :date:message-id:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=88XzjhFNhn70mBpqUdKgpf7ppYNiFhAhyQuqQQPS+u8=;
+        b=tRYHAlDNgYsk46zrNtyx27RZbXClibmBvbox70A7mgSg967zh8OZA0NXCXvH2bHuQL
+         yUDzCcplBYB8f+dA6m0IbwY4aJ8u67PuPBLKfzRGbrdQ0bniESvkvIV63CcBN+BnvzMQ
+         +EjL2BfuHy4Islb4v/ztfNG5Q8TJUNauN8+S4yL3hX+ZjF735Mn682UwlodUz6L6Rb7M
+         A8OiJ+G9EjAXi/3oiNWInNzBpVDHRPnZ3BZD/mRQ+n5JR12RGjFcP1vR+kTasyazDU4/
+         dwFDhweSgIjTecBpl2HzEps2H8rxI8c4ej8uxzoayZ/Lo8iAeuNFjGMimLnKhsrh0u9u
+         pvRQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWJ8ZXAyJrMGrs00SsvRyXLvwO2Mx+ci1E0w4szSpou8U+cwcpsYdlWPPBxSXlSAtl9GgftznvtsyEbHCrpwE5ZoiaGiGakFOUXbXJH
+X-Gm-Message-State: AOJu0Yzv5EvQMX+pe43PfcIVCl1rXswS3l9hXhoVHbsLgXotfbSZ9QbU
+	Zhn7mIFmqmqHhDRFsKZURG2gq1sQu+0gsBrKvt2atFJWgHZfLbGGcL9rqSV5JBM=
+X-Google-Smtp-Source: AGHT+IGMWUF80taYTEDTOvULqZp7oGhfy7/aDj3puVhQ4h04RejN43TJV4t5HfEmZUlTmjGVjWE83Q==
+X-Received: by 2002:a17:906:1b15:b0:a46:cc49:2fd8 with SMTP id o21-20020a1709061b1500b00a46cc492fd8mr2387192ejg.67.1710841863797;
+        Tue, 19 Mar 2024 02:51:03 -0700 (PDT)
+Received: from [192.168.1.20] ([178.197.222.97])
+        by smtp.gmail.com with ESMTPSA id dk16-20020a170907941000b00a469f043d7fsm4005091ejc.41.2024.03.19.02.51.01
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 02:51:03 -0700 (PDT)
+Message-ID: <4e3fbff7-6edc-4196-bc72-1095f14d0dfa@linaro.org>
+Date: Tue, 19 Mar 2024 10:51:00 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: UcUxdN1hkDnoEjw-dYDpE_aJfsQIKbNq
-X-Proofpoint-GUID: 2jVV7YqfoNoE154-d1m7KTWv6n0pjF5h
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 adultscore=0
- mlxlogscore=999 spamscore=0 suspectscore=0 phishscore=0 impostorscore=0
- priorityscore=1501 clxscore=1015 malwarescore=0 bulkscore=0
- lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403190076
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v2 2/4] mtd: Replace module_init with subsys_initcall
+To: Manojkiran Eda <manojkiran.eda@gmail.com>, patrick.rudolph@9elements.com,
+ chiawei_wang@aspeedtech.com, ryan_chen@aspeedtech.com,
+ devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+ linux-aspeed@lists.ozlabs.org, linux-kernel@vger.kernel.org,
+ linux-mtd@lists.infradead.org
+Cc: robh+dt@kernel.org, krzysztof.kozlowski+dt@linaro.org,
+ conor+dt@kernel.org, joel@jms.id.au, andrew@codeconstruct.com.au,
+ miquel.raynal@bootlin.com, richard@nod.at, vigneshr@ti.com,
+ jk@codeconstruct.com.au, openbmc@lists.ozlabs.org
+References: <20240319093405.39833-1-manojkiran.eda@gmail.com>
+ <20240319093405.39833-3-manojkiran.eda@gmail.com>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
+ 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
+ D2GYIS41Kv4Isx2dEFh+/Q==
+In-Reply-To: <20240319093405.39833-3-manojkiran.eda@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On s390 z/VM virtual machines command perf list also displays metrics:
+On 19/03/2024 10:34, Manojkiran Eda wrote:
+> While engaged in development on the espi kernel device driver[1],
+> I noticed that the espi flash driver, utilizing the mtd subsystem,
+> appears to initialize before the mtdcore subsystem registers the
 
- # ./perf list | grep -A 20 'Metric Groups:'
- Metric Groups:
+NAK
 
- No_group:
-  cpi
-       [Cycles per Instruction]
-  est_cpi
-       [Estimated Instruction Complexity CPI infinite Level 1]
-  finite_cpi
-       [Cycles per Instructions from Finite cache/memory]
-  l1mp
-       [Level One Miss per 100 Instructions]
-  l2p
-       [Percentage sourced from Level 2 cache]
-  l3p
-       [Percentage sourced from Level 3 on same chip cache]
-  l4lp
-       [Percentage sourced from Level 4 Local cache on same book]
-  l4rp
-       [Percentage sourced from Level 4 Remote cache on different book]
-  memp
-       [Percentage sourced from memory]
-  ....
- #
+You incorrectly ordered your call, so now to fix this you incorrectly
+re-order rest of kernel. No. Fix your code to handle modules, probe
+deferrals and device links.
 
-This is not correct, on s390 z/VM virtual machines the referenced
-CPU Counter Measurement facility does not exist. The command
 
- # ./perf stat -M cpi -- true
- event syntax error: '{CPU_CYCLES/metric-id=CPU_CYCLES/.....'
-                       \___ Bad event or PMU
 
- Unable to find PMU or event on a PMU of 'CPU_CYCLES'
-
- event syntax error: '{CPU_CYCLES/metric-id=CPU_CYCLES/...'
-                       \___ Cannot find PMU `CPU_CYCLES'.
-			    Missing kernel support?
- #
-
-fails.
-
-Perf list should not display the metrics when the referenced
-CPU Counter Measurement PMU is not available.
-
-Output after:
- # ./perf list | grep -A 20 'Metric Groups:'
- #
-
-Fixes: 7f76b3113068 ("perf list: Add IBM z16 event description for s390")
-Signed-off-by: Thomas Richter <tmricht@linux.ibm.com>
-Acked-by: Sumanth Korikkar <sumanthk@linux.ibm.com>
----
- tools/perf/arch/s390/util/pmu.c | 17 +++++++++++++++++
- 1 file changed, 17 insertions(+)
-
-diff --git a/tools/perf/arch/s390/util/pmu.c b/tools/perf/arch/s390/util/pmu.c
-index 886c30e001fa..2dc27acc860c 100644
---- a/tools/perf/arch/s390/util/pmu.c
-+++ b/tools/perf/arch/s390/util/pmu.c
-@@ -8,6 +8,7 @@
- #include <string.h>
- 
- #include "../../../util/pmu.h"
-+#include "../../../util/pmus.h"
- 
- #define	S390_PMUPAI_CRYPTO	"pai_crypto"
- #define	S390_PMUPAI_EXT		"pai_ext"
-@@ -20,3 +21,19 @@ void perf_pmu__arch_init(struct perf_pmu *pmu)
- 	    !strcmp(pmu->name, S390_PMUCPUM_CF))
- 		pmu->selectable = true;
- }
-+
-+const struct pmu_metrics_table *pmu_metrics_table__find(void)
-+{
-+	struct perf_pmu *pmu;
-+
-+	/*
-+	 * Metrics defined on events from PMU cpum_cf aren't supported
-+	 * on z/VM. Make sure the PMU exists and return NULL if that
-+	 * PMU cannot be found.
-+	 */
-+	pmu = perf_pmus__find("cpum_cf");
-+	if (pmu)
-+		return perf_pmu__find_metrics_table(pmu);
-+
-+	return NULL;
-+}
--- 
-2.44.0
+Best regards,
+Krzysztof
 
 
