@@ -1,298 +1,313 @@
-Return-Path: <linux-kernel+bounces-108239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 601B1880844
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:40:30 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0CBBB880848
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:48:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id BB2AEB2203C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:40:27 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 70858B220B6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:48:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D69EB5FBAC;
-	Tue, 19 Mar 2024 23:40:18 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468295FBAC;
+	Tue, 19 Mar 2024 23:48:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="HmVYeLv4";
-	dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b="F6PXSarI"
-Received: from rcdn-iport-3.cisco.com (rcdn-iport-3.cisco.com [173.37.86.74])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="NDklg0bK"
+Received: from mail-wr1-f41.google.com (mail-wr1-f41.google.com [209.85.221.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D3EE05FB90;
-	Tue, 19 Mar 2024 23:40:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=173.37.86.74
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710891617; cv=fail; b=A7z/XMe2Yer6Ygh+7FSoULclsiPaxSpN4pEf6UGBPg7lb+EstLCtAik88oFfSPyM4fs/4KvVgWLX3s7EKyOVRcC9KKJbbKPeqUTFkxrQt1TypQ/viNLbeEQREGp4Xdk1RuR7+ihjx8HDGfow3UO2N1UTUNHuV9P/u5XsGZERJio=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710891617; c=relaxed/simple;
-	bh=s5C6aqf/+84IG+lYk8pzSUrWTfC3KyY69u2VWnYA9u0=;
-	h=From:To:CC:Subject:Date:Message-ID:References:In-Reply-To:
-	 Content-Type:MIME-Version; b=VONh4nhjSQNaBJ49EMVPWee1VdYwULmkH3WRJyl1EvxwYlEezvpktzGYw8g+RFu705bW6BdqWhwvkiCzgCncLeb4IDdIPFkWEbFodAOxJxI5n7nc984754b+3gLRHbkb8g6XYj4X+xbbjTpKhA1ErmeV/l6Z+znHH2wTPifxWrU=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com; spf=pass smtp.mailfrom=cisco.com; dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b=HmVYeLv4; dkim=pass (1024-bit key) header.d=cisco.com header.i=@cisco.com header.b=F6PXSarI; arc=fail smtp.client-ip=173.37.86.74
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cisco.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cisco.com
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54A0E5FBA2
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:48:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.41
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710892083; cv=none; b=kubMumRplPqEl0Nbm+HgM31qJiVKezBcGqrDKMMyJ/yMv1Hj9Ityj54jMyPpvU/Y4Lt77ZKo7P/GC5bnl92F8vLZnsAI2qVvTwhQ934u3Fz+MXbxTfGDDsRp+zueIIGejCn4dnUrCqvNETZ+UuS2pKCRPx89/9nO7yHkhHaRrSc=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710892083; c=relaxed/simple;
+	bh=En7Zm9vveSmFCSyC51DiaULzkk+aQO3WBk1q2xCUNuU=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=d96v2xQ6VagUFqDWtwe7GFn1iHsKDmvb1YfSrtfUxRTPc6c67qEPFeGNWQh8xK3AJTSPAvR0PKcOK7ofdOC8uNRha3+enl+16c2QMU27e1FmBD8N7H8SXu3MUdwfDFycaPdDoCTm1aC23ykmG6tlA9qF0U2RlFNH0DF9tCMa9xA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=NDklg0bK; arc=none smtp.client-ip=209.85.221.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
+Received: by mail-wr1-f41.google.com with SMTP id ffacd0b85a97d-3416df43cabso1633850f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:48:01 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-  d=cisco.com; i=@cisco.com; l=2823; q=dns/txt; s=iport;
-  t=1710891615; x=1712101215;
-  h=from:to:cc:subject:date:message-id:references:
-   in-reply-to:content-transfer-encoding:mime-version;
-  bh=+7KhkR9WL/g+fy5VJLletwhDlLGs3uEk/QDyC7GIOIg=;
-  b=HmVYeLv46wREIAJgSELSFPXJmM1KNYGR7DfDxdISSQNXfmKsK0r4LgCj
-   Uuu9HsqZp+2MRb4ViRmCvOP89qpWU4f++IpL/u/bGvy0A7akWS8J0DgZK
-   C8TgWxz6Yaf+RgmkgOfUEYXJf5fiK/Tk9mHJ1P/kbnU7tHm+zKMg5IydX
-   8=;
-X-CSE-ConnectionGUID: ITqhX0PzSgOP8BkdKNXfrQ==
-X-CSE-MsgGUID: jEF6u2iYRkCIzKPL30YY/Q==
-X-IPAS-Result: =?us-ascii?q?A0ARAABZIfplmJ1dJa1aHAEBAQEBAQcBARIBAQQEAQFAJ?=
- =?us-ascii?q?YEWBwEBCwGBZlJ6AoEFEkgEiB0DhE5fiGsDngeBJQNWDwEBAQ0BATsJBAEBh?=
- =?us-ascii?q?QYCiAICJjQJDgECAgIBAQEBAwIDAQEBAQEBAQEGAQEFAQEBAgEHBRQBAQEBA?=
- =?us-ascii?q?QEBAR4ZBRAOJ4VsDYZOAQEBAQMSFRMGAQE3AQ8CAQgYHhAxJQIEAQ0FCBqCX?=
- =?us-ascii?q?gGCXwMBEKEqAYFAAoooeIEBM4EBggoBAQYEBbJ4AwaBSAGIJQGKMScbgg2BF?=
- =?us-ascii?q?UJ5gW8+gmECgWKEEoIvgheDEimSYIZ7hSZUfxwDgQUEWg0FFhAeNxEQEw0DC?=
- =?us-ascii?q?G4dAjE6AwUDBDIKEgwLHwUSQgNDBkkLAwIaBQMDBIEuBQ0aAhAaBgwmAwMSS?=
- =?us-ascii?q?QIQFAM4AwMGAwoxMFVBDFADZB8yCTwPDBoCGxQNJCMCLD4DCQoQAhYDHRYEM?=
- =?us-ascii?q?BEJCyYDKgY2AhIMBgYGXSAWCQQlAwgEA1IDIHIRAwQaBAsHeIICgT0EE0cQg?=
- =?us-ascii?q?TQGihwMgwwCBSMqgU4pgREYggADRB1AAwttPTUGDhsFBB8BgRkFomwBgl8Bg?=
- =?us-ascii?q?Q4sUIFDATQvoiyjAwqEEowLlVMXqi8umDEgjVCVOYUrAgQCBAUCDgEBBoFkO?=
- =?us-ascii?q?oFbcBWDIhIBPxkPjiAZH4NChRSKZXgCATgCBwsBAQMJimgBAQ?=
-IronPort-PHdr: A9a23:14HXyh2f1Mx2wOp5smDPY1BlVkEcU/3cNwoR7N8gk71RN/nl9JX5N
- 0uZ7vJo3xfFXoTevupNkPGe87vhVmoJ/YubvTgcfYZNWR4IhYRenwEpDMOfT0yuBPXrdCc9W
- s9FUQwt5Gm1ZHBcA922fFjOuju35D8WFA/4MF92L/7pG4rbjOy81vu5/NvYZAAbzDa4aKl5e
- Q2/th6Z9tFDm4ZgJ60tghfIuS5OfOJbhCtkcFmShB37oMy3+fZe
-IronPort-Data: A9a23:7HAXI67pGJbjSipQKKVEHAxRtB7HchMFZxGqfqrLsTDasY5as4F+v
- mpLXWrTM/rfamr1KY10b9u+9hkB7cLWnNZiGVFrripnZn8b8sCt6fZ1gavT04J+CuWZESqLO
- u1HMoGowPgcFyKa/lH1dOG58RGQ7InQLpLkEunIJyttcgFtTSYlmHpLlvUw6mJSqYDR7zil5
- 5Wq/KUzBHf/g2QoajlNuvrYwP9SlK2aVA0w7wRWic9j5Dcyp1FNZLoDKKe4KWfPQ4U8NoZWk
- M6akdlVVkuAl/scIovNfoTTKyXmcZaOVeS6sUe6boD56vR0SoPe5Y5gXBYUQR8/ZzxkBLmdw
- v0V3XC7YV9B0qEhBI3xXjEAexySM5Gq95fmHWG/gZSr3XbJVEO86fZiL2cGM5chr7Mf7WFmr
- ZT0KRgXZRyFwumx2r/+FK9nh98oK4/gO4Z3VnNIlG6CS615B8GYBfyXure03x9o7ixKNfXXf
- dYYbTNsRB/BeBZIfFwQDfrSmc/y3iKgL2QJ8wr9Sawf4UX9khEr0YnXM/H0aP+yYZ4Nr3ffn
- zeTl4j+KkpHbIPEk2XtHmiXruvOmz7rHZkZD7yQ6PFnmhuQy3YVBRlQUkG0ydG9i0ijS5dcJ
- lYS9y4Gs6c/7gqoQ8P7Uhn+p2SL1iPwQPJKGOE8rQqK0KeRvUCSB3MPSXhKb9lOWNIKqSIC9
- 2OQn+OxPS5Uv5qtGVie+pSynT2oAH1ARYMdXhMsQQwA6tjlhYg8iBPTU9pueJJZaPWrQ1kcJ
- BjU9kADa6UvsCId60msEbn6b9+EvJPFSEs+4R/aGzzj5QJib4njbIutgbQ60RqiBNjHJrVil
- CFY8yR70AzoJcrQ/MBqaL5QdIxFH97fbFXhbadHRvHNDQiF9X+5Zpx36zpjPkpvOctsUWa2O
- ReD5lgJu8MLYCvCgUpLj2SZVpRCIU/ISISNaxwoRoYmjmVZLVbYrH80OSZ8IUiyzhBEfV4D1
- WezKpv0Ui1AVsyLPRK9RvwW1vcw1zsiyGbIDZH9xFLP7FZtTCD9dFvxC3PXNrpRxPrd+G39q
- o8PX+PUkE83eLOlPUHqHXs7cApiwY4TX86m8qS6t4erf2JbJY3WI6aKkeN8KtM7xvQ9eyWh1
- ijVZ3K0AWHX3BXvAQ6LcXtkLrjoWP5CQbgTZETA4X7AN6AfXLuS
-IronPort-HdrOrdr: A9a23:OI3gwq8PmAbVQTT1MDZuk+Gddr1zdoMgy1knxilNoENuA6+lfp
- GV/MjziyWUtN9IYgBQpTnhAsW9qXO1z+8N3WBjB8bTYOCAghrnEGgC1/qs/9SEIVydygcz79
- YcT0ETMqyWMbE+t7eF3ODaKadg/DDkytHVuQ629R4EJm8aDtAF0+46MHflLqQcfng/OXNNLu
- vn2iMxnUvaRZ14VLXcOlA1G8L4i5ngkpXgbRQaBxghxjWvoFqTgoLSIlyz5DtbdylA74sD3A
- H+/jAR4J/Nj9iLjjvnk0PD5ZVfn9XsjvFZAtaXt8QTIjLwzi61eYVIQdS5zXMIidDqzGxvvM
- jHoh8mMcg2wWjWZHuJrRzk3BSl+Coy6kXl1USTjRLY0I7ErXMBeo98bLBiA1zkAnkbzZdBOW
- VwrjukXq9sfFf9deLGloD1vl9R5xGJSDEZ4J0uZjRkIPkjgflq3MwiFIc/KuZcIMo8g7pXSt
- VGHYXS4u1bfkidaG2ctm5zwMa0VnB2BRueRFMe0/blmQS+sUoJh3fw/vZv1Uso5dY4Ud1J9u
- 7EOqNnmPVHSdIXd7t0AKMETdGsAmLATBrQOCbKSG6XWJ0vKjbIsdr68b817OaldNgBy4Yzgo
- 3IVBdduXQpc0zjBMWS1NlA8wzLQm+6QTPxo/suqqRRq/n5Xv7mICeDQFchn4+ppOgeGNTSX7
- KpNJdfE5bYXCLT8EZyrnvDsrVpWA4juZcuy6MGsnq107b2FrE=
-X-Talos-CUID: 9a23:z27sDGFVdJD0JbMzqmJGyFcUKpgdYEbS60+ACUy0KkBZRqesHAo=
-X-Talos-MUID: 9a23:QM6DnwjpICZuqJh1uaHiQsMpNupGvbn0CXE3kr4nqeq8EXcoCgbatWHi
-X-IronPort-Anti-Spam-Filtered: true
-Received: from rcdn-core-6.cisco.com ([173.37.93.157])
-  by rcdn-iport-3.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 23:39:04 +0000
-Received: from alln-opgw-5.cisco.com (alln-opgw-5.cisco.com [173.37.147.253])
-	by rcdn-core-6.cisco.com (8.15.2/8.15.2) with ESMTPS id 42JNd44D012870
-	(version=TLSv1.2 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 23:39:04 GMT
-X-CSE-ConnectionGUID: KUCraE4yQZq061IGFnoA1w==
-X-CSE-MsgGUID: dCmb38NXTO2u4Ah3kv2tMw==
-Authentication-Results: alln-opgw-5.cisco.com; dkim=pass (signature verified) header.i=@cisco.com; spf=Pass smtp.mailfrom=kartilak@cisco.com; dmarc=pass (p=reject dis=none) d=cisco.com
-X-IronPort-AV: E=Sophos;i="6.07,138,1708387200"; 
-   d="scan'208";a="5948531"
-Received: from mail-mw2nam12lp2040.outbound.protection.outlook.com (HELO NAM12-MW2-obe.outbound.protection.outlook.com) ([104.47.66.40])
-  by alln-opgw-5.cisco.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 23:39:04 +0000
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=XPutBX6mnxs+1dCwbf8pJ9zvCjjITQQgW7XIvtjWL9S2mVMg4DyqUNMmls3PPhQ6lgCwbmpxliCAYyQCF9SbF3MUbtbYyG1bBVzWMVEKTkZJ0XWt+v9pITR/9evpvkteBh2zAMZc+QjCT6nUmJNs8f1R+t5ET7MAt6NJQVDaqXbhc11pTllRAJT98GIvrC4eISbP0TDyJ+rU9OM1aQjGNCdk0UkaJn5FUe4nagRK47ik79bIJ+XZitvkqb+o9nmdDEMsjNQOEm5iMfQs/H5Hp8QJRdfY4shzfFd5NFDGi1j6yBETGxWPuPYZSodnWTkC4yRFGSyvvvzYzT2lmy+xUA==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=+7KhkR9WL/g+fy5VJLletwhDlLGs3uEk/QDyC7GIOIg=;
- b=QeV04NFxcRXY2zK7NzRLgLemyaEgtxEDUOaY7dNO/DNDFhobRalEwJCG2EcaOYPySkPj2XRvC9segtckyxa86qPFfqO38kjAZKyGbLy9tGvQfg85oCSC9ex/iBT3pbHPg07zXOZz2ivhcuO2UwIhSr4Arv3ietj/BC5PuP6VlgFy44ijW6075YdewJ9wg6j2U+LoKguojsu2lcUD0eGoLfvpdHWlw90+7rahJ+uTyu6y7QjUFD098XRjE2CollfC9aspHnCc7ZfiAqf5ihPheZcKJOqi0rarfrW1aP7LOG62t/t5KwLpsxhp0I0IYKKjtpoAEmvXBGyHu2QI1qDgRQ==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=cisco.com; dmarc=pass action=none header.from=cisco.com;
- dkim=pass header.d=cisco.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=cisco.com;
- s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=+7KhkR9WL/g+fy5VJLletwhDlLGs3uEk/QDyC7GIOIg=;
- b=F6PXSarIlVpvnmxKd2E6ZDtjU52I+uTVyqGJBtv7zqZZf/csZ1vR4PrWMIhirBh6WnfiZj1tI1SqdXfREhK5QXxnfdDAeSapex67dcTDLETCproLCrHOrS1/WMzScr9pf8pylEBopsI3RPTg8V3ZwdGF7gVKPreAM2Fp5Li81co=
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com (2603:10b6:a03:42c::19)
- by CO1PR11MB4900.namprd11.prod.outlook.com (2603:10b6:303:9e::8) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11; Tue, 19 Mar
- 2024 23:39:02 +0000
-Received: from SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::db54:936f:ac82:4516]) by SJ0PR11MB5896.namprd11.prod.outlook.com
- ([fe80::db54:936f:ac82:4516%4]) with mapi id 15.20.7409.010; Tue, 19 Mar 2024
- 23:39:02 +0000
-From: "Karan Tilak Kumar (kartilak)" <kartilak@cisco.com>
-To: Li Zhijian <lizhijian@fujitsu.com>,
-        "linux-kernel@vger.kernel.org"
-	<linux-kernel@vger.kernel.org>
-CC: "Sesidhar Baddela (sebaddel)" <sebaddel@cisco.com>,
-        "James E.J. Bottomley"
-	<jejb@linux.ibm.com>,
-        "Martin K. Petersen" <martin.petersen@oracle.com>,
-        "linux-scsi@vger.kernel.org" <linux-scsi@vger.kernel.org>
-Subject: RE: [PATCH v2 12/25] scsi: snic: Convert sprintf() family to
- sysfs_emit() family
-Thread-Topic: [PATCH v2 12/25] scsi: snic: Convert sprintf() family to
- sysfs_emit() family
-Thread-Index: AQHaecc+MkuUcRMBh0aVAdlHnrVgVrE/t/wQ
-Date: Tue, 19 Mar 2024 23:39:02 +0000
-Message-ID:
- <SJ0PR11MB5896A8AF663BFF279C8077E7C32C2@SJ0PR11MB5896.namprd11.prod.outlook.com>
-References: <20240319063132.1588443-1-lizhijian@fujitsu.com>
- <20240319063132.1588443-12-lizhijian@fujitsu.com>
-In-Reply-To: <20240319063132.1588443-12-lizhijian@fujitsu.com>
-Accept-Language: en-US
-Content-Language: en-US
-X-MS-Has-Attach:
-X-MS-TNEF-Correlator:
-x-ms-publictraffictype: Email
-x-ms-traffictypediagnostic: SJ0PR11MB5896:EE_|CO1PR11MB4900:EE_
-x-ms-office365-filtering-correlation-id: 16177d37-7a62-4f3a-4c41-08dc486dc211
-x-ms-exchange-senderadcheck: 1
-x-ms-exchange-antispam-relay: 0
-x-microsoft-antispam: BCL:0;
-x-microsoft-antispam-message-info:
- RE/ewd7lHE6hZvOAhG8WXjf7mbiZtmuQUQ0vCCmI+l3SyGwqCE1hXdBFcDu60kJTB38RykJyAZLI5oYVsyrDz4+z/28/l3Bzk/ftWUJRMp+AM4/CNB5BnGGEYHbyqXUQfOBrkt/hWSbfI72FPWX/uU/50/gFeZcVQG730wMbNdvGEja+/AaZhozUHR6V4w6d8piqQZ/CMnAcFY3/xF8TEkHpssrY7/OId3QVNruS/EV/LX4trsh+LlwDw4veZD0go5bFpl9vrRVQc2p61RnoY7r1KGWY/gPC61IgabB9i2khTlvlORNt60RCkh0DF/xBszRi/4U8LMW3/2lL7rNVFTcG5FXLhxQIHRPjadRJWfB9CaEJZd5FTBOyRWdHgZDIwiLMeefwEH6EkmVCbGpag7/9VQldkNoo8RMoo7E4otcByH2YQZHpmTbTXBGcmgOlYdUvBVg/TFHNITYXfIc8QnQZV/xJshpSHAWegnYkbvrhuhTxl/QBCUAPFK7tTlwEbu7Y6jF4q00gpcTy4fcN54XKGAF0KGOQsXFSIaYDiEJe4VxQvrUVuZoqRj62aBCv26hFjYnz3REu7Wzhw9eoQIhDQ5/ekobfk0UQif5CHKHaYo0fx9YbazbBDBa8mar5NvUgR23ujEP1+bdwEg3dUD1iGzS/3VwbUIUcKkRTXuQ=
-x-forefront-antispam-report:
- CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR11MB5896.namprd11.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(376005)(1800799015)(366007)(38070700009);DIR:OUT;SFP:1101;
-x-ms-exchange-antispam-messagedata-chunkcount: 1
-x-ms-exchange-antispam-messagedata-0:
- =?us-ascii?Q?rYVtiZClPquLuLBLvdmI8y/QwjBxM2qdqMTkwJPMfIeMB9w8aI4DJZdycWXH?=
- =?us-ascii?Q?VnBS9sKNkrKoLHVPQvWcBrplk/3D3WoeBd3GK5wyySX7EIUFwd4a9HuCUqSX?=
- =?us-ascii?Q?g3OH+9i1/6bq0tILLKF9ANYAawtkJ4+6vtP3e47X+OKNAE08sRdbYsfoiM6B?=
- =?us-ascii?Q?OXxpEFX4LzYf2SaWCL04cz/TZFb38PrQn238E2dsCika6BkADl8YKeS8UF4p?=
- =?us-ascii?Q?da73iNu2x9Ossd6ALXHAKGlQPbpO8pIJBL8AahWbjg5qGoOtsHAAuaGTzimH?=
- =?us-ascii?Q?0WKrME8ICenDeJHNcCP32FXicbog46vvh8w96AH5PUaxD2puFgOvqqF5O5jR?=
- =?us-ascii?Q?L3cfSldvMdOSUzBk9ecuXTywUcjy6WhDWK9fiwmKgpW74kPtxVEeJNV6usOZ?=
- =?us-ascii?Q?+o0nOeHdpAD5viuTohRz8HQzFOMK1djntxCSuypHFK+/2/8WBe1E7n17340c?=
- =?us-ascii?Q?PMeN0tAsLj7QJOFNnRwdSS/d/otktsrjrob6EQwZ9ivrMmdPIj8UlTcxV5Ol?=
- =?us-ascii?Q?o7i8YefA4SThxVZ8GSL+KcjyHM9fDr07bSEgM6lzcBmHmFY6w0Dohebb9Egr?=
- =?us-ascii?Q?KagZUsMV/88kaHNat0SHeaZxWbezmhCnb348+nKJPewkRxTFe1VQofQrFH+j?=
- =?us-ascii?Q?V+xr1qrkJ5Opw2DdxWsKCEshpyZboheMTL9sdISuk/tpq9VEW5sGQPN6Z5CT?=
- =?us-ascii?Q?pjBFlgAHyQwlcH/3gVDS6esNbEaZUF0R/3qOESPyd/msn/piRZQ/PcwxGE2h?=
- =?us-ascii?Q?rh0yinmobL80SmTxpzHf/kYbzgc/A/KTw1hlcIMH/wFfqUTNM6HsttYboMqD?=
- =?us-ascii?Q?oGbBTWnWtEtoKy6q9L6+KDYUX3a7O02DeOS+BT4HHb4vpA8zXSo5QVhh4Iu1?=
- =?us-ascii?Q?bmKqLzRLg/DFhFTxlPYCntbQsFo3GX02G40rLCfXzkCFxy9MemhQ6moMQuaO?=
- =?us-ascii?Q?ABV1YSXBc/44ci5JMYs13XnqHGQQSwENdX1Z2K2QFCuLtZH+pEcSGCONetxA?=
- =?us-ascii?Q?aEcq6PgxbiRIBAVDeET+lN0qk9PmDgEEmimGNKVC79aIrDQMR8ywo7KJl4cq?=
- =?us-ascii?Q?mWnU+veLoxvA1/8YOtzvhX2ve4baMFGpCrqtYMfsoVYOKBhlmu7GldzpHpWn?=
- =?us-ascii?Q?62P1cdIXZh3iWjqNOAvbAUQ6fSFZKbVoz5bIH3BJYJwFttAYVFuGoHhtc5sd?=
- =?us-ascii?Q?W2D5ZoezWHnqoJu3p7qhAxTqDIWnYPXpgPV7sxcoDSrgHGvlYjv9fmZxVScN?=
- =?us-ascii?Q?iiZuwxnpwtO5XfVC0GdsiGjvcIIeqcX6Q9mikvocLs+aCOW7Z6LZdprCM6pp?=
- =?us-ascii?Q?/FPxUSpo0hDnR0FUFTD/J45qogzY2DBryTFoF1sEkDkTh0Y7oCdwXFbseDJ0?=
- =?us-ascii?Q?a8EzpmhP81nA4t5nO45gGIdWWf5C2/rIWy2ADTjk9DCqDCP3zLWTfaknlCPQ?=
- =?us-ascii?Q?t+L9DMF4mPjCOnbjJXwdhxuiOYclZGIDyILwmcJtcQYopAPagWq7Rc9BnW6/?=
- =?us-ascii?Q?sEUXOzN9vc/yt0HyMlH8rWUCDPDIWmvOR47Z0q3cys44piHuYvpTA96anKu7?=
- =?us-ascii?Q?5W7NhhTP+tsskjzWjYV2gbkM9NAEbvZayG5fml4N3/B0GKnqVD8A96rokeBJ?=
- =?us-ascii?Q?Wa3xWM50n3lYWOWAnVokm2P6rBv8+YHT/omScLbd8A+O?=
-Content-Type: text/plain; charset="us-ascii"
-Content-Transfer-Encoding: quoted-printable
+        d=google.com; s=20230601; t=1710892079; x=1711496879; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=lF+vHPHEf9YeLahZZShgwv2v9ZcnZC7w66VWnUTwgHE=;
+        b=NDklg0bKaPo6IwIW46UYrO0adGIlnREDWWomQKOgAY6apY3gc31gl/VzMmSD75O81D
+         SF96Pm1nR22C+EIxv55ZmBvLMJJnN9tvI3pMGtcDuLIdW0y/umkwIyBEX2ZdOhS0CYmX
+         F90MVpnpv1wOI1yq7Hak4hYIqGucVTCR0TdbOZ8s8OVCaKXDf0SHnoqTjbydAzj4wvg9
+         NV9anTOTnzrP12bEOL8WeObwkr2LGoe2jM4giV+CF6i/aLl+CuRWnq+tKB9yxJvtaTdL
+         5x6MO9cVdzsStxCIADByOhdBVK1/bfVmxRZqXHHszJHa3CZ1GJ/HKy9kCIIpyDwzihJk
+         1TSw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710892079; x=1711496879;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=lF+vHPHEf9YeLahZZShgwv2v9ZcnZC7w66VWnUTwgHE=;
+        b=PoyvLxK4WoivUnkIfHUEBgkQ4dOvW+6kvsLy3H1e/+IXyNakHu+dBrYlmGui68xSnd
+         9Lh8ojMiFyFPZQ2NCoq30PGiCXT/oDX+2WjTXQKtChFFclHY5Sfgu8HMUc+7/5s4B049
+         S48aBBoMdtX8NB0yDgaF1FS4QOYHscR7uaqOxOD80YD1D3biGS4BG8PyOpLPHyGajKSK
+         m/z9hLy/phAOHd+h5T6IZ+WDS4LfhHhDj1mD2PBL3rkd+cW0+22rPJ3a5E61ahT2drH+
+         FOpumNBNXWQXV5TcO784UsEPlIOZTTukEGbTwXY9574ShHUfXsb9L1fyH1rJhV0wrqyG
+         OWKw==
+X-Forwarded-Encrypted: i=1; AJvYcCU+bvfv1OAGd6zGjKYgLWgYlGJT4YDbL1PaaocwQ2aPotvI9ZI83eMjWcdbotNv076mKOvB2+POnbGNxj5DLTgRyxCNnEaFjaUOYPw7
+X-Gm-Message-State: AOJu0YwpvAPX9AolB3dS+x0xUudfpkUoK1/cjkqKdiiZ99H9gpvXuaSB
+	CRD8CvnVp6zRaZCx2je3kbzeaDqZ7iEYOC0h9Ktcvbr80C1Wn2iD62+Vmc6Wzpc3y25KgeK9FPb
+	QRTn1ELCV2ru0fAir8ZudGCoDRz0fD3oedV7p
+X-Google-Smtp-Source: AGHT+IF9YKylMKz4B+jT2x2r5YCy/s9u9lrBYM1Z3JFq6TC7eET5atpYROjdVKvqda5/Md5JxqQTtWIgnHCaKm8cIWQ=
+X-Received: by 2002:a05:6000:d04:b0:33d:8c86:e859 with SMTP id
+ dt4-20020a0560000d0400b0033d8c86e859mr10469946wrb.60.1710892079417; Tue, 19
+ Mar 2024 16:47:59 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-OriginatorOrg: cisco.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR11MB5896.namprd11.prod.outlook.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: 16177d37-7a62-4f3a-4c41-08dc486dc211
-X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 23:39:02.4149
- (UTC)
-X-MS-Exchange-CrossTenant-fromentityheader: Hosted
-X-MS-Exchange-CrossTenant-id: 5ae1af62-9505-4097-a69a-c1553ef7840e
-X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
-X-MS-Exchange-CrossTenant-userprincipalname: hcHQEWLTy8HeiMAwxO149VTGYYIZRSypZeshxqql5sWULDFEToDwn2rUUrTiHD05Elj6PW4Zp2tVEu2tnCxvGw==
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: CO1PR11MB4900
-X-Outbound-SMTP-Client: 173.37.147.253, alln-opgw-5.cisco.com
-X-Outbound-Node: rcdn-core-6.cisco.com
+References: <000000000000e97f090614006d76@google.com> <b2a158a7-e0f1-42dc-9620-1d1d511d566f@redhat.com>
+ <CA+EESO7zV9+yh-M23L_-e5SFUMptSoucBqOWvhoD_yVY4kXK5w@mail.gmail.com>
+In-Reply-To: <CA+EESO7zV9+yh-M23L_-e5SFUMptSoucBqOWvhoD_yVY4kXK5w@mail.gmail.com>
+From: Lokesh Gidra <lokeshgidra@google.com>
+Date: Tue, 19 Mar 2024 16:47:47 -0700
+Message-ID: <CA+EESO61dygnJyDLbXi=mf7H44+XTv+dQrkssJFaWpZrO8n1xw@mail.gmail.com>
+Subject: Re: [syzbot] [mm?] possible deadlock in move_pages
+To: David Hildenbrand <david@redhat.com>
+Cc: syzbot <syzbot+49056626fe41e01f2ba7@syzkaller.appspotmail.com>, 
+	linux-kernel@vger.kernel.org, linux-mm@kvack.org, 
+	syzkaller-bugs@googlegroups.com, Suren Baghdasaryan <surenb@google.com>, 
+	akpm@linux-foundation.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Monday, March 18, 2024 11:31 PM, Li Zhijian <lizhijian@fujitsu.com> wrot=
-e:
+On Tue, Mar 19, 2024 at 10:24=E2=80=AFAM Lokesh Gidra <lokeshgidra@google.c=
+om> wrote:
 >
-> Per filesystems/sysfs.rst, show() should only use sysfs_emit() or sysfs_e=
-mit_at() when formatting the value to be returned to user space.
->
-> coccinelle complains that there are still a couple of functions that use =
-snprintf(). Convert them to sysfs_emit().
->
-> sprintf() and scnprintf() will be converted as well if they have.
->
-> Generally, this patch is generated by
-> make coccicheck M=3D<path/to/file> MODE=3Dpatch \ COCCI=3Dscripts/coccine=
-lle/api/device_attr_show.cocci
->
-> No functional change intended
->
-> CC: Karan Tilak Kumar <kartilak@cisco.com>
-> CC: Sesidhar Baddela <sebaddel@cisco.com>
-> CC: "James E.J. Bottomley" <jejb@linux.ibm.com>
-> CC: "Martin K. Petersen" <martin.petersen@oracle.com>
-> CC: linux-scsi@vger.kernel.org
-> Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
-> ---
-> This is a part of the work "Fix coccicheck device_attr_show warnings"[1] =
-Split them per subsystem so that the maintainer can review it easily [1] ht=
-tps://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
-> ---
-> drivers/scsi/snic/snic_attrs.c | 11 +++++------
-> 1 file changed, 5 insertions(+), 6 deletions(-)
->
-> diff --git a/drivers/scsi/snic/snic_attrs.c b/drivers/scsi/snic/snic_attr=
-s.c index 3ddbdbc3ded1..48bf82d042b4 100644
-> --- a/drivers/scsi/snic/snic_attrs.c
-> +++ b/drivers/scsi/snic/snic_attrs.c
-> @@ -13,7 +13,7 @@ snic_show_sym_name(struct device *dev,  {
-> struct snic *snic =3D shost_priv(class_to_shost(dev));
->
-> -     return snprintf(buf, PAGE_SIZE, "%s\n", snic->name);
-> +     return sysfs_emit(buf, "%s\n", snic->name);
-> }
->
-> static ssize_t
-> @@ -23,8 +23,7 @@ snic_show_state(struct device *dev,  {
-> struct snic *snic =3D shost_priv(class_to_shost(dev));
->
-> -     return snprintf(buf, PAGE_SIZE, "%s\n",
-> -                     snic_state_str[snic_get_state(snic)]);
-> +     return sysfs_emit(buf, "%s\n", snic_state_str[snic_get_state(snic)]=
-);
-> }
->
-> static ssize_t
-> @@ -32,7 +31,7 @@ snic_show_drv_version(struct device *dev,
-> struct device_attribute *attr,
-> char *buf)
-> {
-> -     return snprintf(buf, PAGE_SIZE, "%s\n", SNIC_DRV_VERSION);
-> +     return sysfs_emit(buf, "%s\n", SNIC_DRV_VERSION);
-> }
->
-> static ssize_t
-> @@ -45,8 +44,8 @@ snic_show_link_state(struct device *dev,
-> if (snic->config.xpt_type =3D=3D SNIC_DAS)
-> snic->link_status =3D svnic_dev_link_status(snic->vdev);
->
-> -     return snprintf(buf, PAGE_SIZE, "%s\n",
-> -                     (snic->link_status) ? "Link Up" : "Link Down");
-> +     return sysfs_emit(buf, "%s\n",
-> +                       (snic->link_status) ? "Link Up" : "Link Down");
-> }
->
-> static DEVICE_ATTR(snic_sym_name, S_IRUGO, snic_show_sym_name, NULL);
-> --
-> 2.29.2
->
->
+> On Tue, Mar 19, 2024 at 6:37=E2=80=AFAM David Hildenbrand <david@redhat.c=
+om> wrote:
+> >
+> > On 19.03.24 10:52, syzbot wrote:
+> > > Hello,
+> > >
+> > > syzbot found the following issue on:
+> > >
+> > > HEAD commit:    e5eb28f6d1af Merge tag 'mm-nonmm-stable-2024-03-14-09=
+-36' ..
+> > > git tree:       upstream
+> > > console output: https://syzkaller.appspot.com/x/log.txt?x=3D160dc26e1=
+80000
+> > > kernel config:  https://syzkaller.appspot.com/x/.config?x=3D4ffb85460=
+6e658d
+> > > dashboard link: https://syzkaller.appspot.com/bug?extid=3D49056626fe4=
+1e01f2ba7
+> > > compiler:       gcc (Debian 12.2.0-14) 12.2.0, GNU ld (GNU Binutils f=
+or Debian) 2.40
+> > > syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=3D10f467b=
+9180000
+> > > C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=3D173b7ac91=
+80000
+> > >
+> > > Downloadable assets:
+> > > disk image (non-bootable): https://storage.googleapis.com/syzbot-asse=
+ts/7bc7510fe41f/non_bootable_disk-e5eb28f6.raw.xz
+> > > vmlinux: https://storage.googleapis.com/syzbot-assets/a5c7ad05d6b2/vm=
+linux-e5eb28f6.xz
+> > > kernel image: https://storage.googleapis.com/syzbot-assets/531cb19176=
+12/bzImage-e5eb28f6.xz
+> > >
+> > > IMPORTANT: if you fix the issue, please add the following tag to the =
+commit:
+> > > Reported-by: syzbot+49056626fe41e01f2ba7@syzkaller.appspotmail.com
+> > >
+> > > =3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=
+=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D=3D
+> > > WARNING: possible recursive locking detected
+> > > 6.8.0-syzkaller-09791-ge5eb28f6d1af #0 Not tainted
+> > > --------------------------------------------
+> > > syz-executor258/5169 is trying to acquire lock:
+> > > ffff88802a6d23d0 (&vma->vm_lock->lock){++++}-{3:3}, at: uffd_move_loc=
+k mm/userfaultfd.c:1447 [inline]
+> > > ffff88802a6d23d0 (&vma->vm_lock->lock){++++}-{3:3}, at: move_pages+0x=
+bab/0x4970 mm/userfaultfd.c:1583
+> > >
+> > > but task is already holding lock:
+> > > ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: uffd_move_loc=
+k mm/userfaultfd.c:1445 [inline]
+> > > ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: move_pages+0x=
+b6f/0x4970 mm/userfaultfd.c:1583
+> > >
+> > > other info that might help us debug this:
+> > >   Possible unsafe locking scenario:
+> > >
+> > >         CPU0
+> > >         ----
+> > >    lock(&vma->vm_lock->lock);
+> > >    lock(&vma->vm_lock->lock);
+> > >
+> > >   *** DEADLOCK ***
+> > >
+> > >   May be due to missing lock nesting notation
+> > >
+> > > 2 locks held by syz-executor258/5169:
+> > >   #0: ffff888015086a20 (&mm->mmap_lock){++++}-{3:3}, at: mmap_read_lo=
+ck include/linux/mmap_lock.h:146 [inline]
+> > >   #0: ffff888015086a20 (&mm->mmap_lock){++++}-{3:3}, at: uffd_move_lo=
+ck mm/userfaultfd.c:1438 [inline]
+> > >   #0: ffff888015086a20 (&mm->mmap_lock){++++}-{3:3}, at: move_pages+0=
+x8df/0x4970 mm/userfaultfd.c:1583
+> > >   #1: ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: uffd_mo=
+ve_lock mm/userfaultfd.c:1445 [inline]
+> > >   #1: ffff88802a6d2580 (&vma->vm_lock->lock){++++}-{3:3}, at: move_pa=
+ges+0xb6f/0x4970 mm/userfaultfd.c:1583
+> > >
+> > > stack backtrace:
+> > > CPU: 2 PID: 5169 Comm: syz-executor258 Not tainted 6.8.0-syzkaller-09=
+791-ge5eb28f6d1af #0
+> > > Hardware name: QEMU Standard PC (Q35 + ICH9, 2009), BIOS 1.16.2-debia=
+n-1.16.2-1 04/01/2014
+> > > Call Trace:
+> > >   <TASK>
+> > >   __dump_stack lib/dump_stack.c:88 [inline]
+> > >   dump_stack_lvl+0x116/0x1f0 lib/dump_stack.c:114
+> > >   check_deadlock kernel/locking/lockdep.c:3062 [inline]
+> > >   validate_chain kernel/locking/lockdep.c:3856 [inline]
+> > >   __lock_acquire+0x20e6/0x3b30 kernel/locking/lockdep.c:5137
+> > >   lock_acquire kernel/locking/lockdep.c:5754 [inline]
+> > >   lock_acquire+0x1b1/0x540 kernel/locking/lockdep.c:5719
+> > >   down_read+0x9a/0x330 kernel/locking/rwsem.c:1526
+> > >   uffd_move_lock mm/userfaultfd.c:1447 [inline]
+> > >   move_pages+0xbab/0x4970 mm/userfaultfd.c:1583
+> > >   userfaultfd_move fs/userfaultfd.c:2008 [inline]
+> > >   userfaultfd_ioctl+0x5e1/0x60e0 fs/userfaultfd.c:2126
+> > >   vfs_ioctl fs/ioctl.c:51 [inline]
+> > >   __do_sys_ioctl fs/ioctl.c:904 [inline]
+> > >   __se_sys_ioctl fs/ioctl.c:890 [inline]
+> > >   __x64_sys_ioctl+0x193/0x220 fs/ioctl.c:890
+> > >   do_syscall_x64 arch/x86/entry/common.c:52 [inline]
+> > >   do_syscall_64+0xd2/0x260 arch/x86/entry/common.c:83
+> > >   entry_SYSCALL_64_after_hwframe+0x6d/0x75
+> > > RIP: 0033:0x7fd48da20329
+> > > Code: 48 83 c4 28 c3 e8 37 17 00 00 0f 1f 80 00 00 00 00 48 89 f8 48 =
+89 f7 48 89 d6 48 89 ca 4d 89 c2 4d 89 c8 4c 8b 4c 24 08 0f 05 <48> 3d 01 f=
+0 ff ff 73 01 c3 48 c7 c1 b8 ff ff ff f7 d8 64 89 01 48
+> > > RSP: 002b:00007ffd1244f8e8 EFLAGS: 00000246 ORIG_RAX: 000000000000001=
+0
+> > > RAX: ffffffffffffffda RBX: 00007ffd1244fab8 RCX: 00007fd48da20329
+> > > RDX: 00000000200000c0 RSI: 00000000c028aa05 RDI: 0000000000000003
+> > > RBP: 00007fd48da93610 R08: 00007ffd1244fab8 R09: 00007ffd1244fab8
+> > > R10: 0000000000000000 R11: 0000000000000246 R12: 0000000000000001
+> > > R13: 00007ffd1244faa8 R14: 0000000000000001 R15: 0000000000000001
+> > >   </TASK>
+> > >
+> > >
+> > > ---
+> > > This report is generated by a bot. It may contain errors.
+> > > See https://goo.gl/tpsmEJ for more information about syzbot.
+> > > syzbot engineers can be reached at syzkaller@googlegroups.com.
+> > >
+> > > syzbot will keep track of this issue. See:
+> > > https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+> > >
+> > > If the report is already addressed, let syzbot know by replying with:
+> > > #syz fix: exact-commit-title
+> > >
+> > > If you want syzbot to run the reproducer, reply with:
+> > > #syz test: git://repo/address.git branch-or-commit-hash
+> > > If you attach or paste a git patch, syzbot will apply it before testi=
+ng.
+> > >
+> > > If you want to overwrite report's subsystems, reply with:
+> > > #syz set subsystems: new-subsystem
+> > > (See the list of subsystem names on the web dashboard)
+> > >
+> > > If the report is a duplicate of another one, reply with:
+> > > #syz dup: exact-subject-of-another-report
+> > >
+> > > If you want to undo deduplication, reply with:
+> > > #syz undup
+> > >
+> >
+> > Possibly
+> >
+> > commit 867a43a34ff8a38772212045262b2c9b77807ea3
+> > Author: Lokesh Gidra <lokeshgidra@google.com>
+> > Date:   Thu Feb 15 10:27:56 2024 -0800
+> >
+> >      userfaultfd: use per-vma locks in userfaultfd operations
+> >
+> >      All userfaultfd operations, except write-protect, opportunisticall=
+y use
+> >      per-vma locks to lock vmas.  On failure, attempt again inside mmap=
+_lock
+> >      critical section.
+> >
+> >      Write-protect operation requires mmap_lock as it iterates over mul=
+tiple
+> >      vmas.
+> >
+> > and
+> >
+> > commit 5e4c24a57b0c126686534b5b159a406c5dd02400
+> > Author: Lokesh Gidra <lokeshgidra@google.com>
+> > Date:   Thu Feb 15 10:27:54 2024 -0800
+> >
+> >      userfaultfd: protect mmap_changing with rw_sem in userfaulfd_ctx
+> >
+> >      Increments and loads to mmap_changing are always in mmap_lock crit=
+ical
+> >      section.  This ensures that if userspace requests event notificati=
+on for
+> >      non-cooperative operations (e.g.  mremap), userfaultfd operations =
+don't
+> >      occur concurrently.
+> >
+> >      This can be achieved by using a separate read-write semaphore in
+> >      userfaultfd_ctx such that increments are done in write-mode and lo=
+ads in
+> >      read-mode, thereby eliminating the dependency on mmap_lock for thi=
+s
+> >      purpose.
+> >
+> >      This is a preparatory step before we replace mmap_lock usage with =
+per-vma
+> >      locks in fill/move ioctls.
+> >
+> > might responsible.
+> >
+I tried reproducing the issue with the provided reproducer locally and
+with few additional checks:
 
-Reviewed-by: Karan Tilak Kumar <kartilak@cisco.com>
+down_read(&(*dst_vmap)->vm_lock->lock);
+if (*dst_vmap !=3D *src_vmap) {
+            BUG_ON((*src_vmap)->vm_lock =3D=3D (*dst_vmap)->vm_lock);
+            BUG_ON(&(*src_vmap)->vm_lock->lock =3D=3D &(*dst_vmap)->vm_lock=
+->lock);
+            BUG_ON(rwsem_is_locked(&(*src_vmap)->vm_lock->lock));
+            down_read(&(*src_vmap)->vm_lock->lock);
+}
 
-Regards,
-Karan
+None of the BUG_ONs are causing pani but the following down_read() is
+reporting the deadlock as above. Even if I change the if condition to
+
+if (&(*dst_vmap)->vm_lock->lock !=3D &(*src_vmap)->vm_lock->lock)
+
+I still get the deadlock trace. Possibly a bug in lockdep?
+
+
+
+
+> > CCin Lokesh
+>
+> Thanks for looping me in. Taking a look.
+> >
+> > --
+> > Cheers,
+> >
+> > David / dhildenb
+> >
 
