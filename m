@@ -1,124 +1,126 @@
-Return-Path: <linux-kernel+bounces-107567-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107561-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6704387FE35
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:10:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5656D87FE23
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:08:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 079E11F22AEA
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:10:47 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id DA7C1B2210B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:08:33 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3054F82D9D;
-	Tue, 19 Mar 2024 13:07:16 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD11F81AB5;
+	Tue, 19 Mar 2024 13:06:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="M3t41Hbk"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.16])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="dIiK6hiS"
+Received: from mail-oo1-f51.google.com (mail-oo1-f51.google.com [209.85.161.51])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 07BFF7E591;
-	Tue, 19 Mar 2024 13:07:14 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.16
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7210A81AAB
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:06:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.161.51
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710853635; cv=none; b=tBswZYjkHoIYLPexqvyGrs67ZQyWCh+PZODIj4LPluEJ4G5TGbNL9EQVoY9uPP7bBXx/w6JbtBpr875fkgmY75ql1WsWNMReI/RRL/mYMN9e/2bUGdfak4KttQTIVx1fy3grY+XivQOililn77/OT/3f3QB7ujaWLXiLvJP5eMo=
+	t=1710853598; cv=none; b=FOdZrmpL3xaNoRzP9225Dzk5aX6tW5EsefefpTGt6cAUFgkynG6hcdixdiY6ftdCGYI7cGeUwT1lKJ91rfRJFC8xfgmwbjMnSsXWG1SUDJs6dRb9mN2MZXrlRg59q6+2ZcOy5Za+kzedwniRUASKOZCbGIpYV8r2HMDjDoD1f8s=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710853635; c=relaxed/simple;
-	bh=h5RpRwAivJEkMgOQGPSE31O4QbdHWmr5WM+YPfbxP60=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=XF9FnYII9uAxAU5jSWoPSB751XohFzdZKF4zM0uKbSgPlXWkrFCc01Ct+EOEVTbhlG2T7rxH9KpV8nvibuvelYZIgA4bYQmIQH2B0WUVCMxkVBd2Zs+hrFm+c2rwu7YSQIPfg5WMpuu9npazxWfJyu3/cQRHrfNNODMd7POKX0w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=M3t41Hbk; arc=none smtp.client-ip=198.175.65.16
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710853634; x=1742389634;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=h5RpRwAivJEkMgOQGPSE31O4QbdHWmr5WM+YPfbxP60=;
-  b=M3t41Hbkzhuc/B4cIzSMoiD+DuUu5gIOLSOWj6Z/CDuPiAwCfh/ddUT4
-   ozSUhgisTPIkwNAUUBs9xlB5do8BDXviTVBr39RJFNgDOa/kiGH/lcHBL
-   AXRmSmYTdphPaKrDMHe37S5VtUPbuGFIpNNWCmrCs826CLDb1ReUcXVRY
-   EhiXrgFasjrS599QTWv2yHjg3LzeniqlTsUfr1K99FK4RqR2hYkhdszP6
-   7z2tQYpHw5ZNOcgGfuRfEb5vnS/mTulNy6ErMYLl3hMDj3sUIIkOsOw20
-   G1ydO7fXam9i/S89f/bVh3ODrdHLNNtpcw6umISXq/cTAOi0lwuQuUPuT
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="5843148"
-X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="5843148"
-Received: from fmviesa001.fm.intel.com ([10.60.135.141])
-  by orvoesa108.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 06:07:14 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
-   d="scan'208";a="44883266"
-Received: from inlubt0316.iind.intel.com ([10.191.20.213])
-  by fmviesa001.fm.intel.com with ESMTP; 19 Mar 2024 06:07:06 -0700
-From: lakshmi.sowjanya.d@intel.com
-To: tglx@linutronix.de,
-	jstultz@google.com,
-	giometti@enneenne.com,
-	corbet@lwn.net,
-	linux-kernel@vger.kernel.org
-Cc: x86@kernel.org,
-	netdev@vger.kernel.org,
-	linux-doc@vger.kernel.org,
-	intel-wired-lan@lists.osuosl.org,
-	andriy.shevchenko@linux.intel.com,
-	eddie.dong@intel.com,
-	christopher.s.hall@intel.com,
-	jesse.brandeburg@intel.com,
-	davem@davemloft.net,
-	alexandre.torgue@foss.st.com,
-	joabreu@synopsys.com,
-	mcoquelin.stm32@gmail.com,
-	perex@perex.cz,
-	linux-sound@vger.kernel.org,
-	anthony.l.nguyen@intel.com,
-	peter.hilber@opensynergy.com,
-	pandith.n@intel.com,
-	mallikarjunappa.sangannavar@intel.com,
-	subramanian.mohan@intel.com,
-	basavaraj.goudar@intel.com,
-	thejesh.reddy.t.r@intel.com,
-	lakshmi.sowjanya.d@intel.com
-Subject: [PATCH v5 11/11] ABI: pps: Add ABI documentation for Intel TIO
-Date: Tue, 19 Mar 2024 18:35:47 +0530
-Message-Id: <20240319130547.4195-12-lakshmi.sowjanya.d@intel.com>
-X-Mailer: git-send-email 2.35.3
-In-Reply-To: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
-References: <20240319130547.4195-1-lakshmi.sowjanya.d@intel.com>
+	s=arc-20240116; t=1710853598; c=relaxed/simple;
+	bh=iFwpR9R7RZZeceWMUF41RxivvYImNs6l8Lwq8or5egI=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=kf44aiJwGNp9sJaCmCGr4lniIQidRDpeqm1pqBwZVFysoZbhnEc1iNOpZ+ifLvflimvGv0Jx9V8Zjvhm0x+p2qgkgsaebtgdxFgDActMiPDy6CtRv1A9oXOjIHy5Smwm1dzqcwCdzGvM84HG5F5v/nPUbz9hEgfmI3/QJGzx0s8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=dIiK6hiS; arc=none smtp.client-ip=209.85.161.51
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
+Received: by mail-oo1-f51.google.com with SMTP id 006d021491bc7-5a46ebc0f49so1997281eaf.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:06:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=raspberrypi.com; s=google; t=1710853595; x=1711458395; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=qWQmoFTqSmJhXM5+bL76nUjgEzlqyYQgelxWMRXy8Ng=;
+        b=dIiK6hiSnaRhVWOMXh9IgaA4caxDXontuV687CQUa+WN3xyM0Rk3EsD+JJDnM11WQb
+         FSLValr/YHzJuOIaHyLmfxW/br2Fc2br/WLs06nnrbx8dI8WcplTF8xuAYJaQFY0ZiR9
+         Yo36qWyYJS9D5iQvHNrpI89FACBGtAVSjRYL6VezwIhRtBajsdO7SBO4+v/ynNKzzdTm
+         OxGvGCd6c1xBSO7xGPwsheVXHvoOSO4S90GE6Zt9xta2/zLnFh1zQcoCMQLTR4pfInWX
+         XFo7KRcmG0EXqKj2hSZPlJ1GY7MJXe0iNAm56Um8cLrp9SZ2TcbEOh341pE5EI0uf+HS
+         arbQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710853595; x=1711458395;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=qWQmoFTqSmJhXM5+bL76nUjgEzlqyYQgelxWMRXy8Ng=;
+        b=tqfrE5nchUDCMymVdcX1m0oRhYMgGmpPR8gVodJaMo7PVhkIfFweySGXYxMqhaCcb+
+         /6EzU4KThib/DfsJGqBwvKrWL3YK8l0XSdLh9yA5ewykeP3im7T0FQmxHkikQWCDSbaQ
+         4eKBlXjoa9toai3w++3u4Pr/d46N8o1QlKeEhEnjZ9aZ1T9rei5qsSbl0B+wfuCRhT9f
+         6e6eiYeakG8sbj8blYg1OGH4+svlfiIy3wMg7bwXClHpekp59ka8fqXlnSG4Zuvxq9BZ
+         LTmvgclFEtuceZr6JwBmnD5WswrHxbsnxuNIr+y6TervnCXGWBFlV6AwxzYl1a+fQ0aj
+         ECMg==
+X-Forwarded-Encrypted: i=1; AJvYcCW3Ed/6w9yWW+0gcrByXus3/0ce9GPlS16fdt1HIpa6Q6zoO29IL919BfT1RZ9gd0JOgXNVsVB2rH0ItGjNyuEfX+eznzgPl+XyScnI
+X-Gm-Message-State: AOJu0Yy7KCJr0LV+52hXU3j7jFRnkQcOb79jKgZdN6yOGcB24G0PyXBr
+	9IOgE+LSQPfYbpBf0AnL+xGJFBLZtmcQB4YMrfDb8yVfEImXraQ/3yKy/6QBheCl6G5ql1/Q7ZJ
+	XgSStIYOZIaoXM7SrT/QDh1T2fOKQjFOPykXcnA==
+X-Google-Smtp-Source: AGHT+IH3b3a+/tMGFlUi3v6nRTbIFl0E8v2mS/C2QE82azOisrsdw64JHJ4uQYcHiIPKJCLl570m8xpxERqaK0CKzQ4=
+X-Received: by 2002:a05:6358:5e0d:b0:17e:b64b:e0f6 with SMTP id
+ q13-20020a0563585e0d00b0017eb64be0f6mr2588285rwn.30.1710853595605; Tue, 19
+ Mar 2024 06:06:35 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
+ <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com> <eb854c43-1e92-4c19-bfd3-1bde94924319@linaro.org>
+ <f97faeb9-8a6b-47c6-9317-daca88257802@ideasonboard.com> <30430e0e-70de-4831-97ad-974e350a2e54@ideasonboard.com>
+ <5ca1d005-1beb-47ec-943a-9358ae3c6704@linaro.org> <CAEmqJPp7uGYe993L+ujth2mfRy66s8-S9FNxPY7vwkrboDq9yg@mail.gmail.com>
+ <89d459dd-cc8c-4780-a56a-809e24343e69@linaro.org> <CAEmqJPrLP3j37Kcj0mX23x00p=gWuxZPNSUTRGNkcEqsUJ2MjQ@mail.gmail.com>
+ <9d238cd6-0e11-4775-bc00-7df50f0a6638@linaro.org>
+In-Reply-To: <9d238cd6-0e11-4775-bc00-7df50f0a6638@linaro.org>
+From: Naushir Patuck <naush@raspberrypi.com>
+Date: Tue, 19 Mar 2024 13:05:59 +0000
+Message-ID: <CAEmqJPoVFRUBRnuvRaeWg6vxDaNMzdFzgj2_Gi5bxh5nacdmDw@mail.gmail.com>
+Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for raspberrypi,rp1-cfe
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+Cc: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>, linux-media@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
+	linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
+	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
+	Sakari Ailus <sakari.ailus@linux.intel.com>, Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
+	Kieran Bingham <kieran.bingham@ideasonboard.com>, 
+	Mauro Carvalho Chehab <mchehab@kernel.org>, 
+	Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>, Rob Herring <robh+dt@kernel.org>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
+	Florian Fainelli <florian.fainelli@broadcom.com>, 
+	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
+Content-Type: text/plain; charset="UTF-8"
 
-From: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
+On Tue, 19 Mar 2024 at 13:02, Krzysztof Kozlowski
+<krzysztof.kozlowski@linaro.org> wrote:
+>
+> On 19/03/2024 13:57, Naushir Patuck wrote:
+> >>>>
+> >>>> See writing bindings. Compatibles should be SoC specific. In some cases
+> >>>> generic fallbacks make sense, in some note. But don't just choose
+> >>>> "generic fallback" because you want. Provide rationale.
+> >>>
+> >>> If the compatible is SoC specific, I suppose "raspberrypi,rp1-cfe"
+> >>> would be the correct string.
+> >>
+> >> Sure, but then please think what if rp1 is on Rpi6, called exactly the
+> >> same (rp1), with some minor differences? Could it be?
+> >
+> > Yes, this is definitely possible.  In such cases, I would expect the
+> > hardware to have a version register that would be queried by the
+> > driver to adjust for minor differences, and the compatible string
+> > remains the same.  Does that seem reasonable?
+>
+> The "would expect" is concerning. The register(s) must be there already,
+> with proper value.
+>
 
-Document sysfs interface for Intel Timed I/O PPS driver.
+A version register already exists in the current hardware, so we will
+update it to identify future hardware revisions.
 
-Signed-off-by: Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
----
- Documentation/ABI/testing/sysfs-platform-pps-tio | 7 +++++++
- 1 file changed, 7 insertions(+)
- create mode 100644 Documentation/ABI/testing/sysfs-platform-pps-tio
-
-diff --git a/Documentation/ABI/testing/sysfs-platform-pps-tio b/Documentation/ABI/testing/sysfs-platform-pps-tio
-new file mode 100644
-index 000000000000..b9b8c97a7840
---- /dev/null
-+++ b/Documentation/ABI/testing/sysfs-platform-pps-tio
-@@ -0,0 +1,7 @@
-+What:		/sys/devices/platform/INTCxxxx/enable
-+Date:		March 2024
-+KernelVersion	6.9
-+Contact:	Lakshmi Sowjanya D <lakshmi.sowjanya.d@intel.com>
-+Description:
-+		(RW) Enable or disable PPS TIO generator output, read to
-+		see the status of hardware (Enabled/Disabled).
--- 
-2.35.3
-
+Regards,
+Naush
 
