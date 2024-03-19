@@ -1,96 +1,142 @@
-Return-Path: <linux-kernel+bounces-107921-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107935-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 037EE880391
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:37:49 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 874AA8803C5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:44:01 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 63A94B219AD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:37:46 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B93CC1C22B05
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:44:00 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E80141E4B1;
-	Tue, 19 Mar 2024 17:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id CBDDA2BAE9;
+	Tue, 19 Mar 2024 17:41:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="rQf9nojb"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DFF1134CB;
-	Tue, 19 Mar 2024 17:37:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0FF962943F;
+	Tue, 19 Mar 2024 17:40:59 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710869858; cv=none; b=s6TMmKYb9GrWV12952m4Bu82tJmudPdtgQLWR4Ii3TRTpDO6uvFcBbwkM7X5eWa46aIQra6eV/qdM+xJf48kdRncC9iCcUHh8v0b49ZGsAwLRxuTtJm/Myb+h43iyB0KJ9vuAUjUjbihdM5VBr+dVi1r608gl2BvJYOfgQMa9Mg=
+	t=1710870060; cv=none; b=r0j/IKuvDCX/Q9vpJSdwqLO8Tdx5fwqp5FSwrRckMre0hAl1sA31epsLNhBCq4zj+SgGbOh2kWxLMcoj4zo8/QO8jjqDfpLC1ggGAgnucdfts/zwOpUlla6tll6NaI0JHQtL/VOSnp1PqANVmc7z1rB8Shv4mkif1oHig72q5tw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710869858; c=relaxed/simple;
-	bh=rtuC/HT4xKteBC22K8GZi/JtBVYuPqSZjhgqWpvb4Zo=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type; b=uD0c5XV10W4qWdEcx6OQMcMQrO6smbcKdIURBwLsDYN3L4/0StS6TTJOYBO3bJDGW8MPkhYJSF7AVlXmlKG0FB7xmg6VSEEv1Ia9Wh4d/IBsxqP2ltqcT9hmBNw5ZH5M5yZUzOcuopghZq0HIga6+CPo9WWQ9arfiXh7lwJc5+c=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 6B9B7C433C7;
-	Tue, 19 Mar 2024 17:37:37 +0000 (UTC)
-Date: Tue, 19 Mar 2024 13:39:59 -0400
-From: Steven Rostedt <rostedt@goodmis.org>
-To: LKML <linux-kernel@vger.kernel.org>, Linux Trace Kernel
- <linux-trace-kernel@vger.kernel.org>
-Cc: Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers
- <mathieu.desnoyers@efficios.com>, Linus Torvalds
- <torvalds@linux-foundation.org>
-Subject: [PATCH] tracing: Just use strcmp() for testing __string() and
- __assign_str() match
-Message-ID: <20240319133959.349f5082@gandalf.local.home>
-X-Mailer: Claws Mail 3.19.1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
+	s=arc-20240116; t=1710870060; c=relaxed/simple;
+	bh=CKyJcdGuzJfzYC3Io1ni1ArcNYE/b8UBL4slLPFHKpA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=q5sTB4fMGcqZxUcP99nX6Nu7CCrOokF0MIMcFS18oQtbIf0CZnZ0+mTAtt0ENCJvW+Q8XEpfhTb6KQ/Cr6ouhz/RbrC1NLeC9v6wafWWYFP0gC4PEwhLAbVF2BtGWkDVi4da+JYnf1uwYeiZx2OQCzWnbmhaNxhAXgWmiZ/6yKw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=rQf9nojb; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 80489C433F1;
+	Tue, 19 Mar 2024 17:40:57 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710870059;
+	bh=CKyJcdGuzJfzYC3Io1ni1ArcNYE/b8UBL4slLPFHKpA=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=rQf9nojbPOW4HrNNylLWnDlZHkF50T40x4EQZuDXubNIO8+PqbyWowceYtbysCw98
+	 WJw0kczvcycOc5DO5OGOwcVsIkA/RZV83q++gFRsIt9a+fox615mRI9giMzh92xIEp
+	 L5ZVem6qySpvk8ZYPecckBjBZBnKB4STaIx78c5oypwY/IbIDUc/bMBTv8Wbgzgr9m
+	 laGIBrNX2D4KWT0cCAlpDUD6BDKcVzbLuNxTGUw6lgAogcZID7C5Ks/dM1doVn2e6/
+	 aWmepWf7vklvJuHia+JJJ+SKMEbu2SYlCGIb3JZTUv/L77BLN2k4pgEHLXTlOsTrXb
+	 YZwArHTx5mqRQ==
+Date: Tue, 19 Mar 2024 17:40:55 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Huacai Chen <chenhuacai@kernel.org>
+Cc: Keguang Zhang <keguang.zhang@gmail.com>, Vinod Koul <vkoul@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org,
+	dmaengine@vger.kernel.org, devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v6 0/2] Add support for Loongson1 DMA
+Message-ID: <20240319-trimester-manhole-3bd092f3343f@spud>
+References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
+ <CAAhV-H6aGS6VXGzkqWTyxL7bGw=KdjmnRZj7SpwrV5hT6XQcpg@mail.gmail.com>
+ <CAJhJPsVSM-8VA604p2Vr58QJEp+Tg72YTTntnip64Ejz=0aQng@mail.gmail.com>
+ <CAAhV-H5TR=y_AmbF6QMJmoS0BhfB=K7forMg0-b2YWm7trktjA@mail.gmail.com>
+ <20240318-average-likely-6a55c18db7bb@spud>
+ <CAAhV-H4oMoPt7WwWc7wbxy-ShNQ8dPkuTAuvSEGAPBKvkkn24w@mail.gmail.com>
+ <20240318-saxophone-sudden-ce0df3a953a8@spud>
+ <CAJhJPsXKZr7XDC-i1O_tpcgGE9c0yk7S9Qjnpk7hrU0evAJ+FQ@mail.gmail.com>
+ <CAAhV-H5Gm6mACV4smxDB=BJvLr8C1AmgY=mMqfNYOOxEUBhqFA@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="zXRSty4a3vyseasR"
+Content-Disposition: inline
+In-Reply-To: <CAAhV-H5Gm6mACV4smxDB=BJvLr8C1AmgY=mMqfNYOOxEUBhqFA@mail.gmail.com>
 
-From: "Steven Rostedt (Google)" <rostedt@goodmis.org>
 
-As __assign_str() no longer uses its "src" parameter, there's a check to
-make sure nothing depends on it being different than what was passed to
-__string(). It originally just compared the pointer passed to __string()
-with the pointer passed into __assign_str() via the "src" parameter. But
-there's a couple of outliers that just pass in a quoted string constant,
-where comparing the pointers is UB to the compiler, as the compiler is
-free to create multiple copies of the same string constant.
+--zXRSty4a3vyseasR
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-Instead, just use strcmp(). It may slow down the trace event, but this
-will eventually be removed.
+On Tue, Mar 19, 2024 at 10:40:54AM +0800, Huacai Chen wrote:
+> On Tue, Mar 19, 2024 at 10:32=E2=80=AFAM Keguang Zhang <keguang.zhang@gma=
+il.com> wrote:
+> >
+> > On Mon, Mar 18, 2024 at 11:42=E2=80=AFPM Conor Dooley <conor@kernel.org=
+> wrote:
+> > >
+> > > On Mon, Mar 18, 2024 at 10:26:51PM +0800, Huacai Chen wrote:
+> > > > Hi, Conor,
+> > > >
+> > > > On Mon, Mar 18, 2024 at 7:28=E2=80=AFPM Conor Dooley <conor@kernel.=
+org> wrote:
+> > > > >
+> > > > > On Mon, Mar 18, 2024 at 03:31:59PM +0800, Huacai Chen wrote:
+> > > > > > On Mon, Mar 18, 2024 at 10:08=E2=80=AFAM Keguang Zhang <keguang=
+=2Ezhang@gmail.com> wrote:
+> > > > > > >
+> > > > > > > Hi Huacai,
+> > > > > > >
+> > > > > > > > Hi, Keguang,
+> > > > > > > >
+> > > > > > > > Sorry for the late reply, there is already a ls2x-apb-dma d=
+river, I'm
+> > > > > > > > not sure but can they share the same code base? If not, can=
+ rename
+> > > > > > > > this driver to ls1x-apb-dma for consistency?
+> > > > > > >
+> > > > > > > There are some differences between ls1x DMA and ls2x DMA, suc=
+h as
+> > > > > > > registers and DMA descriptors.
+> > > > > > > I will rename it to ls1x-apb-dma.
+> > > > > > OK, please also rename the yaml file to keep consistency.
+> > > > >
+> > > > > No, the yaml file needs to match the (one of the) compatible stri=
+ngs.
+> > > > OK, then I think we can also rename the compatible strings, if poss=
+ible.
+> > >
+> > > If there are no other types of dma controller on this device, I do not
+> > > see why would we add "apb" into the compatible as there is nothing to
+> > > differentiate this controller from.
+> >
+> > That's true. 1A/1B/1C only have one APB DMA.
+> > Should I keep the compatible "ls1b-dma" and "ls1c-dma"?
+> The name "apbdma" comes from the user manual, "exchange data between
+> memory and apb devices", at present there are two drivers using this
+> naming: tegra20-apb-dma.c and ls2x-apb-dma.c.
 
-Also, fix the issue of passing NULL to strcmp() by adding a WARN_ON() to
-make sure that both "src" and the pointer saved in __string() are either
-both NULL or have content, and then checking if "src" is not NULL before
-performing the strcmp().
+I think it's unnessesary but I won't stand in your way.
 
-Link: https://lore.kernel.org/all/CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com/
+--zXRSty4a3vyseasR
+Content-Type: application/pgp-signature; name="signature.asc"
 
-Fixes: b1afefa62ca9 ("tracing: Use strcmp() in __assign_str() WARN_ON() check")
-Reported-by: Linus Torvalds <torvalds@linux-foundation.org>
-Signed-off-by: Steven Rostedt (Google) <rostedt@goodmis.org>
----
- include/trace/stages/stage6_event_callback.h | 5 ++---
- 1 file changed, 2 insertions(+), 3 deletions(-)
+-----BEGIN PGP SIGNATURE-----
 
-diff --git a/include/trace/stages/stage6_event_callback.h b/include/trace/stages/stage6_event_callback.h
-index 83da83a0c14f..3690e677263f 100644
---- a/include/trace/stages/stage6_event_callback.h
-+++ b/include/trace/stages/stage6_event_callback.h
-@@ -35,9 +35,8 @@
- 	do {								\
- 		char *__str__ = __get_str(dst);				\
- 		int __len__ = __get_dynamic_array_len(dst) - 1;		\
--		WARN_ON_ONCE(__builtin_constant_p(src) ?		\
--			     strcmp((src), __data_offsets.dst##_ptr_) :	\
--			     (src) != __data_offsets.dst##_ptr_);	\
-+		WARN_ON_ONCE(!(void *)(src) != !(void *)__data_offsets.dst##_ptr_); \
-+		WARN_ON_ONCE((src) && strcmp((src), __data_offsets.dst##_ptr_)); \
- 		memcpy(__str__, __data_offsets.dst##_ptr_ ? :		\
- 		       EVENT_NULL_STR, __len__);			\
- 		__str__[__len__] = '\0';				\
--- 
-2.43.0
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfnOJwAKCRB4tDGHoIJi
+0nvrAQDhZVVmZ6duvOR3gVQKirxCEc7beNbKbw7KypGCx1HM8QD/flL3O4geYnwx
+Q4s8Sg0+lo7D1opd2SceXluRzmFuBQc=
+=+H9t
+-----END PGP SIGNATURE-----
 
+--zXRSty4a3vyseasR--
 
