@@ -1,54 +1,54 @@
-Return-Path: <linux-kernel+bounces-107337-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107338-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6A9F087FB35
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:55:03 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id DDF5087FB37
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:55:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 0C3791F22715
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:55:03 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 999CC282C31
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:55:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0FFE5548F9;
-	Tue, 19 Mar 2024 09:53:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 28BCD7D419;
+	Tue, 19 Mar 2024 09:53:40 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="NHqJJWvg"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aKrLC7xz"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50FF57EF0D;
-	Tue, 19 Mar 2024 09:53:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 702F57F478;
+	Tue, 19 Mar 2024 09:53:39 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710842017; cv=none; b=rchGV3iWOt1M3L/GhH8dbdk+XBoLU2+pbuw0vdaL+2aPi9OBHY59Sv9mLlc1V3hPUtNBe7R+8vA6+CW9U+RVFw2sU6Lw64f+21SbVxcO+HXJ1w2ku25+rvQaxlPknla6zd3U+0xxFOWZ7BQMjrWxPLrCZMuBXhpoC/RBL6ZzOOw=
+	t=1710842019; cv=none; b=G4UT9JNqM6tavv8W5EQgnarkcKXMJ1om3tD9e2njDO32zyWfQdIzE7S6puA+MM5GMWD+LDLizsVQEF2j2KfDPlOnTwz7h968t0GKn4FtNHMUZJVnRGlGaFZlg64hiB8yjhKsIQnZ7EutuYL7U4I0k2J2o1SjDBp08w3dk+I8Kj0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710842017; c=relaxed/simple;
-	bh=eLFz8uhtcnkr+mmr2mJCW7abChfFurz5pgm0LRWZQB4=;
+	s=arc-20240116; t=1710842019; c=relaxed/simple;
+	bh=tJF+08Wovvyo19kq87yZF22HcvtylXgBS1IrMhly7rU=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Zo8rikIAeGC6T2KThSFk/wlM30I6ypydKAOx/XNMyvKaGvITRxoL0mmOUu6IxfsLy8Y6wehNEpJ6etd8h81Whg94l1N+flJmA30StzpgN45ado/KcA1zyBxVaCv19XK7hv8l3ZRGO0hzUa1Qzrvqlgw2E65PN4LG9CGlAYEs8uw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=NHqJJWvg; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id D3E2BC43390;
-	Tue, 19 Mar 2024 09:53:35 +0000 (UTC)
+	 MIME-Version; b=Ril/tK4to1LeZxo3erETRYeKXPtzNxg8SwFtAENI134k7fhxlq89qmFM2AuInqWohsFUe7F0Wdgsx1yxxEUv89dK/xP17gFDNVPY4P9sCezfPH5gv67MGz4L6XWA39NaOJsXG9rRwiZ85wtDPTYNTcwz5ooYYfGVGIWoV85+95w=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aKrLC7xz; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 98082C433C7;
+	Tue, 19 Mar 2024 09:53:37 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710842017;
-	bh=eLFz8uhtcnkr+mmr2mJCW7abChfFurz5pgm0LRWZQB4=;
+	s=k20201202; t=1710842018;
+	bh=tJF+08Wovvyo19kq87yZF22HcvtylXgBS1IrMhly7rU=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=NHqJJWvgG/Ta6pLiACZEFm17+bQhvOQdA7Nbh87/2cIGfLxrHJF/0MLxyFm8Z8MY/
-	 2zZqmJV1n5CLU0R9b38C1aRrQaUNrBQtdTT8wwi7Kv+OvwIY0E3JSGsR/iSP+Qu6f3
-	 poQjo72mqGCmCRWWUUxJGKFO6neiiQj/VAa0nss1ZpusTi0zsNjTRs5LIpPDiJHtOn
-	 8iPnf9cT6VOxiBTypwaqKeCXMPrmJye1TZOmCPfiMZiG3K1IONjpnzGudq6IhdazX0
-	 xUaBRIs9G5av4WsL9gpibAs+bYzDndZmeRrcNXj1CNjv8714aMH7KuW/WAMZpW4C3P
-	 Gtb/P4t6pocJw==
+	b=aKrLC7xz2TJJmN/mIG3bxdvMRDPbIbOw7EiQNSbQ+B2bJMMpvGhl+O9iiaIZG1p0H
+	 M4MHFCXbEbSQztibJAlK7G+iuRygXRDeXbVQnVrfLTLzMVCcNSnladHvnrDB8ZoE5C
+	 v5wFcATQEeWyxZFrqtmvzsAzRGQh1AhXYmpB7Z5bE6MnofUCmxeDKrQ6odsimsgZKn
+	 O45UprjL8scm9EhmMO9ns0ELcsN+/v4UUzdVP0hug1EzduLt4TWSG2OOBBf5D8QP+k
+	 Bc9f55krPq6/YUFSqe3QhdyX7f300OtSMalVMnvCDZ7XLxYPvmAx8Kq07Dhoj73OAa
+	 tdlQCVKRuH+TQ==
 From: "Jiri Slaby (SUSE)" <jirislaby@kernel.org>
 To: linux-serial@vger.kernel.org
 Cc: linux-kernel@vger.kernel.org,
 	"Jiri Slaby (SUSE)" <jirislaby@kernel.org>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	Stefani Seibold <stefani@seibold.net>
-Subject: [RFT 04/15] kfifo: remove support for physically non-contiguous memory
-Date: Tue, 19 Mar 2024 10:53:04 +0100
-Message-ID: <20240319095315.27624-6-jirislaby@kernel.org>
+	Stefani Seibold <stefani@seibold.net>,
+	Andrew Morton <akpm@linux-foundation.org>
+Subject: [RFT 05/15] kfifo: rename l to len_to_end in setup_sgl()
+Date: Tue, 19 Mar 2024 10:53:05 +0100
+Message-ID: <20240319095315.27624-7-jirislaby@kernel.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240319095315.27624-1-jirislaby@kernel.org>
 References: <20240319095315.27624-1-jirislaby@kernel.org>
@@ -60,81 +60,42 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-First, there is no such user. The only user of this interface is
-caam_rng_fill_async() and that uses kfifo_alloc() -> kmalloc().
-
-Second, the implementation does not allow anything else than direct
-mapping and kmalloc() (due to virt_to_phys()), anyway.
-
-Therefore, there is no point in having this dead (and complex) code in
-the kernel.
-
-Note the setup_sgl_buf() function now boils down to simple sg_set_buf().
-That is called twice from setup_sgl() to take care of kfifo buffer
-wrap-around.
-
-setup_sgl_buf() will be extended shortly, so keeping it in place.
+So that one can make any sense of the name.
 
 Signed-off-by: Jiri Slaby (SUSE) <jirislaby@kernel.org>
-Cc: Andrew Morton <akpm@linux-foundation.org>
 Cc: Stefani Seibold <stefani@seibold.net>
+Cc: Andrew Morton <akpm@linux-foundation.org>
 ---
- lib/kfifo.c | 38 +++++---------------------------------
- 1 file changed, 5 insertions(+), 33 deletions(-)
+ lib/kfifo.c | 8 ++++----
+ 1 file changed, 4 insertions(+), 4 deletions(-)
 
 diff --git a/lib/kfifo.c b/lib/kfifo.c
-index a36bfdbdb17d..d5830960ab87 100644
+index d5830960ab87..61e35550aea5 100644
 --- a/lib/kfifo.c
 +++ b/lib/kfifo.c
-@@ -305,43 +305,15 @@ int __kfifo_to_user(struct __kfifo *fifo, void __user *to,
- }
- EXPORT_SYMBOL(__kfifo_to_user);
- 
--static int setup_sgl_buf(struct scatterlist *sgl, void *buf,
--		int nents, unsigned int len)
-+static unsigned int setup_sgl_buf(struct scatterlist *sgl, void *buf,
-+				  int nents, unsigned int len)
+@@ -321,7 +321,7 @@ static unsigned int setup_sgl(struct __kfifo *fifo, struct scatterlist *sgl,
  {
--	int n;
+ 	unsigned int size = fifo->mask + 1;
+ 	unsigned int esize = fifo->esize;
 -	unsigned int l;
--	unsigned int off;
--	struct page *page;
--
--	if (!nents)
-+	if (!nents || !len)
- 		return 0;
++	unsigned int len_to_end;
+ 	unsigned int n;
  
--	if (!len)
--		return 0;
-+	sg_set_buf(sgl, buf, len);
+ 	off &= fifo->mask;
+@@ -330,10 +330,10 @@ static unsigned int setup_sgl(struct __kfifo *fifo, struct scatterlist *sgl,
+ 		size *= esize;
+ 		len *= esize;
+ 	}
+-	l = min(len, size - off);
++	len_to_end = min(len, size - off);
  
--	n = 0;
--	page = virt_to_page(buf);
--	off = offset_in_page(buf);
--	l = 0;
--
--	while (len >= l + PAGE_SIZE - off) {
--		struct page *npage;
--
--		l += PAGE_SIZE;
--		buf += PAGE_SIZE;
--		npage = virt_to_page(buf);
--		if (page_to_phys(page) != page_to_phys(npage) - l) {
--			sg_set_page(sgl, page, l - off, off);
--			sgl = sg_next(sgl);
--			if (++n == nents || sgl == NULL)
--				return n;
--			page = npage;
--			len -= l - off;
--			l = off = 0;
--		}
--	}
--	sg_set_page(sgl, page, len, off);
--	return n + 1;
-+	return 1;
+-	n = setup_sgl_buf(sgl, fifo->data + off, nents, l);
+-	n += setup_sgl_buf(sgl + n, fifo->data, nents - n, len - l);
++	n = setup_sgl_buf(sgl, fifo->data + off, nents, len_to_end);
++	n += setup_sgl_buf(sgl + n, fifo->data, nents - n, len - len_to_end);
+ 
+ 	return n;
  }
- 
- static unsigned int setup_sgl(struct __kfifo *fifo, struct scatterlist *sgl,
 -- 
 2.44.0
 
