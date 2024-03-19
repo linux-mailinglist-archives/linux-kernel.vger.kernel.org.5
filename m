@@ -1,152 +1,263 @@
-Return-Path: <linux-kernel+bounces-107603-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107604-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D932E87FEFD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:42:52 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 812D487FF00
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:43:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 441DB1F22DA3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:42:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 36D80283116
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:43:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 16CD58061E;
-	Tue, 19 Mar 2024 13:42:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="KCnALScf"
-Received: from NAM12-MW2-obe.outbound.protection.outlook.com (mail-mw2nam12on2049.outbound.protection.outlook.com [40.107.244.49])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 632958004F;
+	Tue, 19 Mar 2024 13:43:12 +0000 (UTC)
+Received: from frasgout.his.huawei.com (frasgout.his.huawei.com [185.176.79.56])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 788548004F;
-	Tue, 19 Mar 2024 13:42:39 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.244.49
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710855761; cv=fail; b=Fw4j3tFiwzNSqXEdQd8NRswHSEODjD/r+3lRbBm9jDL2Rpoh1T8ulZjluQAbSthX8ajYZumz/uaWe9BHSd7u/Q9WuoVzbsCXfOi8Cuig13NOz9UwQt+dlU4bUBgDcAfo6OcSDPyKTQZ36c4YIrWdNDIU/8KhzHBKirF2pq8zrlg=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710855761; c=relaxed/simple;
-	bh=shCkLJOM0r/jTvQoNFLIBEDNP5L7Yiah5m2af36FRn0=;
-	h=Date:From:To:CC:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=aY1lqPS6UW2LSUbJAAcARK+VPaOPRMr6O1gaJ55MXfz3jp5hH8situsf0c9CpkDUmw80YWyx097MP0tECTVD/pA2o50WGaIPx6UJbkH2obFarVdIhSaF5XA71HWfpIfe7mUnDRrBOJwz/FhjGdRiVpWJI3M5HO7MIOOVfivKBRI=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=KCnALScf; arc=fail smtp.client-ip=40.107.244.49
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
-Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BAlohNwekp4gueBnCoqYlDiE8GPH7TD/9lpbz2+pBiAUWUeGMBcHst7wmj4tp9JiBvCFIyfLeb4zixvFQVVEw4QHqXK8KeeoqmVa/Vsc6rTyqsp1fdE7sXDRPhY/bU3fSlttyjwWbTHUzOuBYFglRAfxy2KhIDQ9xlIzAjYHN7M+p8TIGZE/7KSKw5sP1gh2UYUkgZAOqOAN+WaKBGzXlqto4+RCIP3XHjpPMq9PO48NdSmdcNrh2wg+utGSEpyFUSb3cI+t32/f8frb2B39maggy/CZZp46MfJBkq6Lgl08qY8oHn5tYTrMd0IS/pCQlCK3siLNiYZNZcyvr5O+wg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=TE4MleOWZ+7YHedAEqbKhFO3BCPTbI7uAmUr6d1gOZ8=;
- b=M+Dczfln2JyjJzLVwdAoZ9gFjiwlumR019jU0Z8ZKms+8E9hmAFxhaACKKmuCP0UNp7SXxMq2VB39yFoY/Rg/NRkA2HuTm3uHZ6zElcUjsn8tzERnRtOW+VNg4MvlKX0BC0kGKoiXt/keUQ5sE+N8KKaUx91JpTiGCksO68ooTP8N2R+NXmlXeWaPMIcfSzQrZlSASDbRluLUC2Za4DL6n4aqRLA92OAnf+rGSamVCZ6D3wvwZv3io2icT4gRATi92LY2Lkw9dozE9nK6R46149LZU1wUAz8vi4+z0bhiQygPb966Cpo2MZSZvvxdW4nv27dDvYa4VJaIrVksTR1FA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
- 165.204.84.17) smtp.rcpttodomain=redhat.com smtp.mailfrom=amd.com; dmarc=pass
- (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
- dkim=none (message not signed); arc=none (0)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=TE4MleOWZ+7YHedAEqbKhFO3BCPTbI7uAmUr6d1gOZ8=;
- b=KCnALScfHWT7RkXGRBBE3AFn7Xb1hcmA5e12Cvt7sDLep//+bF2+vRxak0HFYsKbCbM5iSv71VqtSufSLhXPMfIme65jdDvmIR8f4UZxg6Gnjc4Dk0m6s4aS9Oa4QRa22xRq8loqI/Ay33FYqGxnH+3xByTFNbftwf59gfSzctI=
-Received: from DM6PR13CA0016.namprd13.prod.outlook.com (2603:10b6:5:bc::29) by
- SJ2PR12MB8954.namprd12.prod.outlook.com (2603:10b6:a03:541::7) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.20.7386.26; Tue, 19 Mar 2024 13:42:37 +0000
-Received: from DS1PEPF0001709B.namprd05.prod.outlook.com
- (2603:10b6:5:bc:cafe::30) by DM6PR13CA0016.outlook.office365.com
- (2603:10b6:5:bc::29) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.11 via Frontend
- Transport; Tue, 19 Mar 2024 13:42:37 +0000
-X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
- smtp.mailfrom=amd.com; dkim=none (message not signed)
- header.d=none;dmarc=pass action=none header.from=amd.com;
-Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
- 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
- client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
-Received: from SATLEXMB04.amd.com (165.204.84.17) by
- DS1PEPF0001709B.mail.protection.outlook.com (10.167.18.105) with Microsoft
- SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 13:42:37 +0000
-Received: from localhost (10.180.168.240) by SATLEXMB04.amd.com
- (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Mar
- 2024 08:42:36 -0500
-Date: Tue, 19 Mar 2024 08:42:19 -0500
-From: Michael Roth <michael.roth@amd.com>
-To: Paolo Bonzini <pbonzini@redhat.com>
-CC: <linux-kernel@vger.kernel.org>, <kvm@vger.kernel.org>,
-	<isaku.yamahata@intel.com>, <seanjc@google.com>, Dave Hansen
-	<dave.hansen@linux.intel.com>
-Subject: Re: [PATCH v4 09/15] KVM: SEV: sync FPU and AVX state at
- LAUNCH_UPDATE_VMSA time
-Message-ID: <20240319134219.evphel2bmyopdz75@amd.com>
-References: <20240318233352.2728327-1-pbonzini@redhat.com>
- <20240318233352.2728327-10-pbonzini@redhat.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DE19F2B9A3;
+	Tue, 19 Mar 2024 13:43:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.176.79.56
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710855791; cv=none; b=QElO1ro5KKjDiWOByXCa1sY5H1b5ggKK0mM/LCvR267eIPWhgwiNhF1MexdwqVCg0rL0JRKG4fNbuSmOKiqtLZgq8lRxnFhUaXhS+Cf+cD6tuitTkdqhPVrvQwKUJIcEJg72/1z/hsRW8+whK98b+pXxos9KALRGJjo1kR5WBTQ=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710855791; c=relaxed/simple;
+	bh=WiMdARSt5/lB+0Mj4JwQzBZi0dW5Rc1+tnx2BDCH/jw=;
+	h=Date:From:To:CC:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ocZ8UW2R3vj2f0ieDhnq7y76d4uguP4yNmEoLq91n4ZlpsktfKqVQPCxf+Nze1jLjIanO3fi5WkAD8m2YZFNHBUXEeLjFT6Abv3jke+Pksv76aPENA4u+uziksPJMWvEovxZ3wyzJNI4T7R66dMnKL5LkBI2It7/ZguoRFQsvgs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=185.176.79.56
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=Huawei.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
+Received: from mail.maildlp.com (unknown [172.18.186.231])
+	by frasgout.his.huawei.com (SkyGuard) with ESMTP id 4TzXw66VT8z67byW;
+	Tue, 19 Mar 2024 21:42:30 +0800 (CST)
+Received: from lhrpeml500005.china.huawei.com (unknown [7.191.163.240])
+	by mail.maildlp.com (Postfix) with ESMTPS id D76BF1400D4;
+	Tue, 19 Mar 2024 21:42:59 +0800 (CST)
+Received: from localhost (10.202.227.76) by lhrpeml500005.china.huawei.com
+ (7.191.163.240) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 19 Mar
+ 2024 13:42:59 +0000
+Date: Tue, 19 Mar 2024 13:42:58 +0000
+From: Jonathan Cameron <Jonathan.Cameron@Huawei.com>
+To: Sean Anderson <sean.anderson@linux.dev>
+CC: Jonathan Cameron <jic23@kernel.org>, "O'Griofa, Conall"
+	<conall.ogriofa@amd.com>, "linux-iio@vger.kernel.org"
+	<linux-iio@vger.kernel.org>, "linux-arm-kernel@lists.infradead.org"
+	<linux-arm-kernel@lists.infradead.org>, "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>, Lars-Peter Clausen <lars@metafoo.de>
+Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_channels in
+ scan_mask
+Message-ID: <20240319134258.0000574d@Huawei.com>
+In-Reply-To: <7ddf8d4a-5b68-432d-93c1-ff270403cb60@linux.dev>
+References: <20240311162800.11074-1-sean.anderson@linux.dev>
+	<20240314154824.37150a54@jic23-huawei>
+	<a9ed95ec-aafe-49f6-93dd-c94c73620de2@linux.dev>
+	<DM6PR12MB4217EAA1049F815F234EE6D18B282@DM6PR12MB4217.namprd12.prod.outlook.com>
+	<3b481539-0c9c-4110-ad03-bd252e80efb0@linux.dev>
+	<20240316133627.5d2bf585@jic23-huawei>
+	<7ee83f15-88fc-4530-84b7-b8ee31663dbc@linux.dev>
+	<20240318152446.00001345@Huawei.com>
+	<7ddf8d4a-5b68-432d-93c1-ff270403cb60@linux.dev>
+Organization: Huawei Technologies Research and Development (UK) Ltd.
+X-Mailer: Claws Mail 4.1.0 (GTK 3.24.33; x86_64-w64-mingw32)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset="us-ascii"
-Content-Disposition: inline
-In-Reply-To: <20240318233352.2728327-10-pbonzini@redhat.com>
-X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
- (10.181.40.145)
-X-EOPAttributedMessage: 0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: DS1PEPF0001709B:EE_|SJ2PR12MB8954:EE_
-X-MS-Office365-Filtering-Correlation-Id: 467fc3a0-6bd1-46ad-fe31-08dc481a7081
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	d4sP/oVARyXSXReeDx1dzBdOs/1rX1MtyCGZHgbH+bR6mPWmrsuj8jfzDn1HPoPYvmiqB4benmgnnBzpcHEqjXWfA2ChXyae53MKv5oYR9yYPOt/tRLnLGSLCZItNK3gcFa5RmfQNCf8kb3uivdhs+3HsJGPhTK/1vEUA3Jy/IHrzk1z8HQoY454kKIiKXYoaNQFDx/I/zJL3TAPDnyViHEAKvfw7R71BJFbeeeZFbjkAHUuWTlrwY5geeHCXINkVvJEEotFdJ/HQ3SBAyCWnZhoGperTaM4oVgb3hFmuhldrq+ocKv94+Q3JdsfPAkuAh6o85l47VSq5+M7DFALElqlxg21+HpRrQXm/zYuAevG+0B4OwV8bv9nXFJ78XrC2yonvQMVjxFiJMnExtYFBAZHwp0RrozfcyUR/CdkqozMI4RW+jplQbwD/Qs/Jidp+U54SEdsCGWottWrXmCaqj0ZR25oTbAQdg+VfEH/SD+jlZEO3NWsJGTutEB0rGhzSfSddG2w7qce6JuZg+hrtLUZ8MtFBiph3nZ6m4sYgnzBNKogw2m07dGeTuXiPyPhZgVGVaZPh3qD2UNqrTVauvDXJtjYkPtVsF24/EbnPwhQLrRlY3+Tpn6+S0GTaq5wyDG+jFmTrZTgzgEKY3HfxXEpto6BELMWXPfkmB9uSoh5I9UT1TSsTOb3ARWLL0nqTofhPVeRg+692ndHPgx1cHtCoQ07wrhCzJQvzTCrnRTRcoQZAghUYWIyx/o12D5I
-X-Forefront-Antispam-Report:
-	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(376005)(1800799015)(82310400014)(36860700004);DIR:OUT;SFP:1101;
-X-OriginatorOrg: amd.com
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 13:42:37.2747
- (UTC)
-X-MS-Exchange-CrossTenant-Network-Message-Id: 467fc3a0-6bd1-46ad-fe31-08dc481a7081
-X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
-X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
-X-MS-Exchange-CrossTenant-AuthSource:
-	DS1PEPF0001709B.namprd05.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Anonymous
-X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ2PR12MB8954
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+X-ClientProxiedBy: lhrpeml500003.china.huawei.com (7.191.162.67) To
+ lhrpeml500005.china.huawei.com (7.191.163.240)
 
-On Mon, Mar 18, 2024 at 07:33:46PM -0400, Paolo Bonzini wrote:
-> SEV-ES allows passing custom contents for x87, SSE and AVX state into the VMSA.
-> Allow userspace to do that with the usual KVM_SET_XSAVE API and only mark
-> FPU contents as confidential after it has been copied and encrypted into
-> the VMSA.
-> 
-> Since the XSAVE state for AVX is the first, it does not need the
-> compacted-state handling of get_xsave_addr().  However, there are other
-> parts of XSAVE state in the VMSA that currently are not handled, and
-> the validation logic of get_xsave_addr() is pointless to duplicate
-> in KVM, so move get_xsave_addr() to public FPU API; it is really just
-> a facility to operate on XSAVE state and does not expose any internal
-> details of arch/x86/kernel/fpu.
-> 
-> Cc: Dave Hansen <dave.hansen@linux.intel.com>
-> Signed-off-by: Paolo Bonzini <pbonzini@redhat.com>
-> ---
->  arch/x86/include/asm/fpu/api.h |  3 +++
->  arch/x86/kernel/fpu/xstate.h   |  2 --
->  arch/x86/kvm/svm/sev.c         | 36 ++++++++++++++++++++++++++++++++++
->  arch/x86/kvm/svm/svm.c         |  8 --------
->  4 files changed, 39 insertions(+), 10 deletions(-)
-> 
-> diff --git a/arch/x86/include/asm/fpu/api.h b/arch/x86/include/asm/fpu/api.h
-> index a2be3aefff9f..f86ad3335529 100644
-> --- a/arch/x86/include/asm/fpu/api.h
-> +++ b/arch/x86/include/asm/fpu/api.h
-> @@ -143,6 +143,9 @@ extern void fpstate_clear_xstate_component(struct fpstate *fps, unsigned int xfe
->  
->  extern u64 xstate_get_guest_group_perm(void);
->  
-> +extern void *get_xsave_addr(struct xregs_state *xsave, int xfeature_nr);
+On Mon, 18 Mar 2024 11:28:49 -0400
+Sean Anderson <sean.anderson@linux.dev> wrote:
 
-I get a linker error if I don't add an EXPORT_SYMBOL_GPL(get_xsave_addr)
+> On 3/18/24 11:24, Jonathan Cameron wrote:
+> > On Mon, 18 Mar 2024 11:18:43 -0400
+> > Sean Anderson <sean.anderson@linux.dev> wrote:
+> >  =20
+> >> On 3/16/24 09:36, Jonathan Cameron wrote: =20
+> >> > On Fri, 15 Mar 2024 13:47:40 -0400
+> >> > Sean Anderson <sean.anderson@linux.dev> wrote:
+> >> >    =20
+> >> >> Hi Conall,
+> >> >>=20
+> >> >> On 3/15/24 09:18, O'Griofa, Conall wrote:   =20
+> >> >> > [AMD Official Use Only - General]
+> >> >> >=20
+> >> >> > Hi,
+> >> >> >=20
+> >> >> > I think there was a fix for this issue applied to the version tha=
+t was running on 5.15 that didn't seem to make it into the upstream driver.
+> >> >> > Please see link for reference https://github.com/Xilinx/linux-xln=
+x/commit/608426961f16ab149b1b699f1c35f7ad244c0720
+> >> >> >=20
+> >> >> > I think a similar fix to the above patch is may be beneficial?   =
+  =20
+> >> >>=20
+> >> >> These patches look functionally identical to me.   =20
+> >> >=20
+> >> > Because there are no channels with scan index between
+> >> > 22 * 2 + 16 (that patch) and 22 * 3 (your patch) that is
+> >> > the effect is indeed the same. But given the issues is the
+> >> > 64 limit on maximum scan index, 22 * 3 =3D 66 is an ugly value
+> >> > to compare with.
+> >> >=20
+> >> > I'm still very against the use of scan_index for anything other
+> >> > than scan indices (which is why partly how this bug wasn't noticed
+> >> > in the first palce). So the check should be scan_index !=3D -1
+> >> > and uses of those values elsewhere in the driver should be fixed
+> >> > (which looks simple to do from a quick glance at the code).   =20
+> >>=20
+> >> OK, so how do the sysfs files get named then? =20
+> >=20
+> > Using channel and channel2 as appropriate (+ index and modified
+> > which change the meaning of channel2) - scan_index never had
+> > anything to do with sysfs file names - just the value in
+> > bufferX/in_xyz_scan_index =20
+>=20
+> I tried to prototype setting scan_index to -1, but when registering chann=
+els I saw
+>=20
+> [    1.637049] iio iio:device0: tried to double register : in_voltage_raw
+> [    1.637245] xilinx-ams ffa50000.ams: Failed to register sysfs interfac=
+es
+> [    1.637433] xilinx-ams: probe of ffa50000.ams failed with error -16
+>=20
+> And AIUI .channel is filled in by ams_parse_firmware.
 
--Mike
+Is indexed set for the channel?  Check it at the point of calling
+devm_iio_device_register() as the code that builds the channels in this
+driver is complex, so maybe it's getting overwritten?
+
+There might be a core bug somewhere, but there are other drivers using
+-1 scan index without hitting this problem so my first instinct is
+something is getting wrongly set in the driver.
+
+Jonathan
+
+>=20
+> --Sean
+>=20
+> >>=20
+> >> --Sean
+> >>  =20
+> >> >>=20
+> >> >> --Sean
+> >> >>    =20
+> >> >> >> -----Original Message-----
+> >> >> >> From: Sean Anderson <sean.anderson@linux.dev>
+> >> >> >> Sent: Thursday, March 14, 2024 5:30 PM
+> >> >> >> To: Jonathan Cameron <jic23@kernel.org>
+> >> >> >> Cc: linux-iio@vger.kernel.org; O'Griofa, Conall <conall.ogriofa@=
+amd.com>;
+> >> >> >> linux-arm-kernel@lists.infradead.org; linux-kernel@vger.kernel.o=
+rg; Lars-Peter
+> >> >> >> Clausen <lars@metafoo.de>
+> >> >> >> Subject: Re: [PATCH] iio: xilinx-ams: Don't include ams_ctrl_cha=
+nnels in
+> >> >> >> scan_mask
+> >> >> >>
+> >> >> >> Caution: This message originated from an External Source. Use pr=
+oper caution
+> >> >> >> when opening attachments, clicking links, or responding.
+> >> >> >>
+> >> >> >>
+> >> >> >> On 3/14/24 11:48, Jonathan Cameron wrote:     =20
+> >> >> >> > On Mon, 11 Mar 2024 12:28:00 -0400
+> >> >> >> > Sean Anderson <sean.anderson@linux.dev> wrote:
+> >> >> >> >     =20
+> >> >> >> >> ams_enable_channel_sequence constructs a "scan_mask" for all =
+the PS
+> >> >> >> >> and PL channels. This works out fine, since scan_index for th=
+ese
+> >> >> >> >> channels is less than 64. However, it also includes the
+> >> >> >> >> ams_ctrl_channels, where scan_index is greater than 64, trigg=
+ering
+> >> >> >> >> undefined behavior. Since we don't need these channels anyway=
+, just     =20
+> >> >> >> exclude them.     =20
+> >> >> >> >>
+> >> >> >> >> Fixes: d5c70627a794 ("iio: adc: Add Xilinx AMS driver")
+> >> >> >> >> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>     =20
+> >> >> >> >
+> >> >> >> > Hi Sean,
+> >> >> >> >
+> >> >> >> > I'd ideally like to understand why we have channels with such =
+large
+> >> >> >> > scan indexes.  Those values should only be used for buffered c=
+apture.
+> >> >> >> > It feels like they are being abused here.  Can we set them to =
+-1
+> >> >> >> > instead and check based on that?
+> >> >> >> > For a channel, a scan index of -1 means it can't be captured v=
+ia the
+> >> >> >> > buffered interfaces but only accessed via sysfs reads.
+> >> >> >> > I think that's what we have here?     =20
+> >> >> >>
+> >> >> >> From what I can tell, none of the channels support buffered read=
+s. And we can't
+> >> >> >> nai=CC=88vely convert the scan_index to -1, since that causes sy=
+sfs naming conflicts
+> >> >> >> (not to mention the compatibility break).
+> >> >> >>     =20
+> >> >> >> >
+> >> >> >> > I just feel like if we leave these as things stand, we will ge=
+t bitten
+> >> >> >> > by similar bugs in the future.  At least with -1 it should be =
+obvious why!     =20
+> >> >> >>
+> >> >> >> There are just as likely to be bugs confusing the PL/PS subdevic=
+es...
+> >> >> >>
+> >> >> >> FWIW I had no trouble identifying the channels involved with thi=
+s bug.
+> >> >> >>
+> >> >> >> --Sean
+> >> >> >>     =20
+> >> >> >> > Jonathan
+> >> >> >> >
+> >> >> >> >     =20
+> >> >> >> >> ---
+> >> >> >> >>
+> >> >> >> >>  drivers/iio/adc/xilinx-ams.c | 8 ++++++--
+> >> >> >> >>  1 file changed, 6 insertions(+), 2 deletions(-)
+> >> >> >> >>
+> >> >> >> >> diff --git a/drivers/iio/adc/xilinx-ams.c
+> >> >> >> >> b/drivers/iio/adc/xilinx-ams.c index a55396c1f8b2..4de7ce598e=
+4d
+> >> >> >> >> 100644
+> >> >> >> >> --- a/drivers/iio/adc/xilinx-ams.c
+> >> >> >> >> +++ b/drivers/iio/adc/xilinx-ams.c
+> >> >> >> >> @@ -414,8 +414,12 @@ static void ams_enable_channel_sequence(=
+struct
+> >> >> >> >> iio_dev *indio_dev)
+> >> >> >> >>
+> >> >> >> >>      /* Run calibration of PS & PL as part of the sequence */
+> >> >> >> >>      scan_mask =3D BIT(0) | BIT(AMS_PS_SEQ_MAX);
+> >> >> >> >> -    for (i =3D 0; i < indio_dev->num_channels; i++)
+> >> >> >> >> -            scan_mask |=3D BIT_ULL(indio_dev->channels[i].sc=
+an_index);
+> >> >> >> >> +    for (i =3D 0; i < indio_dev->num_channels; i++) {
+> >> >> >> >> +            const struct iio_chan_spec *chan =3D
+> >> >> >> >> + &indio_dev->channels[i];
+> >> >> >> >> +
+> >> >> >> >> +            if (chan->scan_index < AMS_CTRL_SEQ_BASE)
+> >> >> >> >> +                    scan_mask |=3D BIT_ULL(chan->scan_index);
+> >> >> >> >> +    }
+> >> >> >> >>
+> >> >> >> >>      if (ams->ps_base) {
+> >> >> >> >>              /* put sysmon in a soft reset to change the sequ=
+ence */     =20
+> >> >> >> >     =20
+> >> >>    =20
+> >> >    =20
+> >>=20
+> >>  =20
+> >  =20
+>=20
+
 
