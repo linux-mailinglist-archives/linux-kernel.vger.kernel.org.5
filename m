@@ -1,261 +1,242 @@
-Return-Path: <linux-kernel+bounces-107395-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107394-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 9BB4A87FBE8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:37:26 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3D83887FBE5
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:37:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 764691C220EC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:37:25 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 60C3F1C2215A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:37:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 909B57E564;
-	Tue, 19 Mar 2024 10:37:01 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 186C05474B;
+	Tue, 19 Mar 2024 10:36:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="GyegJSBd"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="JmypF+uO"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2130.outbound.protection.outlook.com [40.107.94.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7B9A655C3C;
-	Tue, 19 Mar 2024 10:36:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710844620; cv=none; b=XEN3ekU2rGhaG7TPMk8WOVJoTClwECksDtnDFyzymoXhTywN1aoGETjsrikOpjcfZPqfJNAXFZshgBMtGMgHKDgyTsA1jmIhMfTn4weSK8nYFEAk1lboQDJsB10cMHswHKLkgm98iN3nA0D/rMWZdruunwsvEMpqgHdkgMq3vzc=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710844620; c=relaxed/simple;
-	bh=mGctuonGgrj/mW/NYRMJLbhJEWslrS7zVEwK8aHOuCw=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=VhxTwSEEq+FG1qgJNXY+qBaUBqI7jSykGGibTUWSVjqB2xmc+Yg7K6cXKXMFjnn4EuOHcH6MRxItcCRrBEQWqPsKPzAL2KglQTIHl+mEwaJgkiDftGmaPgyLw3mdbS7ssCnFd03bm9jRmBAKmlmIq0RBkdYIsqZWBkDZssX+wEc=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=GyegJSBd; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353722.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42J92QTk004438;
-	Tue, 19 Mar 2024 10:36:46 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=date : from : to : cc :
- subject : message-id : references : mime-version : content-type :
- in-reply-to; s=pp1; bh=B8+KhgXOB0lAYx60bbFxRx9Im3wx7n/N2fAX73+k61o=;
- b=GyegJSBdFJs20ZnrIN+wJ04TrbEyXcpYBuE8bAgvQl0e/KqU+MY/RnCeNSQlggU9YoyN
- iRI6JvbBfitbMAFjASdYLHjkpnYdwco13oYHBiFONJHZ0HzKrObhZFf869RFigxmZJPt
- MK6snIT92xQ5h7V5INx9DwRf+d2PWeBBV76ivgRDFgYhdCx9tx1UdyEby34o1TEToO5/
- +quZrGWhgLPiVZvaFzLS300QpnJF1CA56nLqAeO6A61/ndgknoP5dQ1kmp8Mr/DHB+ai
- Wj9VWJmBtQJqkMKrYdcng2NTRG3/aI/8f/qgswTDr6ejrncnCQZ4Vnw2ODuyq53vPsFd yw== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy7qmrghx-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 10:36:46 +0000
-Received: from m0353722.ppops.net (m0353722.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JAYU8u019894;
-	Tue, 19 Mar 2024 10:36:45 GMT
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wy7qmrghu-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 10:36:45 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42J9oMJJ017194;
-	Tue, 19 Mar 2024 10:36:45 GMT
-Received: from smtprelay02.fra02v.mail.ibm.com ([9.218.2.226])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrt71m2-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 10:36:44 +0000
-Received: from smtpav06.fra02v.mail.ibm.com (smtpav06.fra02v.mail.ibm.com [10.20.54.105])
-	by smtprelay02.fra02v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JAafcM41550198
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 10:36:43 GMT
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 3F81720040;
-	Tue, 19 Mar 2024 10:36:41 +0000 (GMT)
-Received: from smtpav06.fra02v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 5F47B2004F;
-	Tue, 19 Mar 2024 10:36:38 +0000 (GMT)
-Received: from li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com (unknown [9.109.253.82])
-	by smtpav06.fra02v.mail.ibm.com (Postfix) with ESMTPS;
-	Tue, 19 Mar 2024 10:36:38 +0000 (GMT)
-Date: Tue, 19 Mar 2024 16:06:35 +0530
-From: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-To: Jan Kara <jack@suse.cz>
-Cc: Baokun Li <libaokun1@huawei.com>, linux-ext4@vger.kernel.org,
-        tytso@mit.edu, adilger.kernel@dilger.ca, ritesh.list@gmail.com,
-        adobriyan@gmail.com, linux-kernel@vger.kernel.org, yi.zhang@huawei.com,
-        yangerkun@huawei.com, stable@vger.kernel.org
-Subject: Re: [PATCH v3 4/9] ext4: fix slab-out-of-bounds in
- ext4_mb_find_good_group_avg_frag_lists()
-Message-ID: <Zflqs3riUr6dGWLn@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
-References: <20240314140906.3064072-1-libaokun1@huawei.com>
- <20240314140906.3064072-5-libaokun1@huawei.com>
- <Zfg19s2+fn9QYnUQ@li-bb2b2a4c-3307-11b2-a85c-8fa5c3a69313.ibm.com>
- <20240318152509.5tdmkojnhd3gqxqu@quack3>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1CD4F1E498;
+	Tue, 19 Mar 2024 10:36:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.130
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710844616; cv=fail; b=WWTJ0Dkl3ttRS21VicID4KFAiuJfpuO63KlC6gF8CyD89QiokZaXUBcUOHjmKHNwDyjsJ4JuKcNC9AIQohlXzIY04X/D96YlvZ0xl5PBLEkzFtPTEBj36UBMxU0KWzQAl9CQxx0nO08/oq54XgVfAJ+h4FL0PSHE1UEEOMrT3D8=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710844616; c=relaxed/simple;
+	bh=sBwy+nFsUrnUsTNxhXRNTkNUAQZ+sJTCUhZCr6/qdPs=;
+	h=Message-ID:Date:Subject:To:Cc:References:From:In-Reply-To:
+	 Content-Type:MIME-Version; b=LrOKySUdWEJy02qMJikPhhp+UftgCW81C23TgstLzbq8ZZtzvaKhynPmx+UrQn+/nc8FgE9BmRDZ2gSJBu/3hpz6sEeMcul9NWMnSNdHPVZD+QgytaVETepC6V/P3KpDx/jJpc22ybFO8G219HHP5XKrdhoQmuM3CGTaRj8urh0=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=JmypF+uO; arc=fail smtp.client-ip=40.107.94.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=LM4I4fQTMsdsnjPoElOuaUQQDrlDiAFcWtP6An3d7XTszEs8T64n4FQ4c21ssVEYNdSivh6WjDa62xTts+6FpOEUnoIUZQeiGcjzXBMjSoUn0/IbkowQnZrKCIOmGTrUZueXGu1Wb3zpkPTznUUUwp5Hw6qC+AsYpIF7TT8cSgbPKW0cendYkBfCRQSEXnM+K4cdk/aHGLtfVyrpFlAmvLvTDZJZ2GJLO2kuDLQSrMLNyxkZXUvHyQV9996KA99QF21lUgqN/ZamToxO0aIoLi8hxGipYiu6mDubj6WNCdjgk2i9C3zM21JKQiysxL65zDNkiI8chMhq+SNg0oSb4g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=Dz43jIkMKiT10QP6Uh0f3lmSrSYzn3EiTzVd6GCIeB8=;
+ b=Ds7S/5/IUKZYJUyT4NAruYLjSs9ksXox+zZm/neca/alvKe2ExBXNhV78bPYWTbgA3jEBQ5V/BH5jSEHMjJ5El5lsmGGVWf1ndAxaatVGvFXa8SrMKEr6R/bAUjtl91wozdYF0NrWQdGuT0WMKd++ZD2pxg9vfYF+h4AvJ6UhMCaRngIJx+pMT3cQEMjqVpNSZy4FDOqUCJ2Y2Y/frZPWdj0+awAhABm75AlMTYXFEU6zEyVJBOqqSOiMWtVGo1arzUIcFNlVI7ACNBONoKOBVCDqiTeIYysjf1HUQtAEjsadcUv/7QBNg0voBTlP+Pv62Se5M92GI6lCaBzRv+QCg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=amd.com; dmarc=pass action=none header.from=amd.com; dkim=pass
+ header.d=amd.com; arc=none
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=Dz43jIkMKiT10QP6Uh0f3lmSrSYzn3EiTzVd6GCIeB8=;
+ b=JmypF+uOHg6u1DQp+dj5f0B6+wII5JLk7efDiLsAAcRe5JhbI9fziAmUgt5v5p5/1g2a4tLoUzwn9PHKsGRX/iE923C+/tkafQV+BUI+O9SJKhPwZo068l1OZKDXcRI64q8oDD1tYSk8vyEx4SfrtCQyR/j9INWDgESi8Y7ZWFs=
+Received: from MN0PR12MB5713.namprd12.prod.outlook.com (2603:10b6:208:370::18)
+ by IA1PR12MB8077.namprd12.prod.outlook.com (2603:10b6:208:3f4::12) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.27; Tue, 19 Mar
+ 2024 10:36:51 +0000
+Received: from MN0PR12MB5713.namprd12.prod.outlook.com
+ ([fe80::6783:2c77:d369:41e8]) by MN0PR12MB5713.namprd12.prod.outlook.com
+ ([fe80::6783:2c77:d369:41e8%3]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 10:36:51 +0000
+Message-ID: <67908fc3-b8a9-4a05-a1ff-2e56be2a6568@amd.com>
+Date: Tue, 19 Mar 2024 16:06:40 +0530
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] x86/cpufeatures: Add dedicated feature word for
+ CPUID leaf 0x80000022[EAX]
+To: Ingo Molnar <mingo@kernel.org>
+Cc: linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org,
+ x86@kernel.org, peterz@infradead.org, acme@kernel.org, namhyung@kernel.org,
+ mark.rutland@arm.com, alexander.shishkin@linux.intel.com, jolsa@kernel.org,
+ adrian.hunter@intel.com, tglx@linutronix.de, bp@alien8.de,
+ seanjc@google.com, pbonzini@redhat.com, eranian@google.com,
+ irogers@google.com, ravi.bangoria@amd.com, ananth.narayan@amd.com
+References: <cover.1710836172.git.sandipan.das@amd.com>
+ <846eebace0aea3a600b81b06bddd0024e5ac1350.1710836172.git.sandipan.das@amd.com>
+ <ZflmU+H2Lt2I0VOq@gmail.com>
+Content-Language: en-US
+From: Sandipan Das <sandipan.das@amd.com>
+In-Reply-To: <ZflmU+H2Lt2I0VOq@gmail.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
+X-ClientProxiedBy: PN3PR01CA0182.INDPRD01.PROD.OUTLOOK.COM
+ (2603:1096:c01:be::18) To MN0PR12MB5713.namprd12.prod.outlook.com
+ (2603:10b6:208:370::18)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318152509.5tdmkojnhd3gqxqu@quack3>
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: P_CCjEgNLiVYFwOyN9fvGEpt6O4f7w8q
-X-Proofpoint-ORIG-GUID: oh2ivtND1E1sShnlKIonyFatVwNS8jpY
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 malwarescore=0 bulkscore=0
- impostorscore=0 adultscore=0 priorityscore=1501 lowpriorityscore=0
- mlxlogscore=999 suspectscore=0 clxscore=1015 spamscore=0 phishscore=0
- mlxscore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403190081
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: MN0PR12MB5713:EE_|IA1PR12MB8077:EE_
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	sXF3eO24IEtCjCm2dIuSSKtCe2W1N2rNAjXeBrmb6GvPjjajdzZgTy3OKwAkHJyci52hG87sPOlNpdNcJ7azftEQSUxsvgr0rKraGMYlgRpcBrsC5nRIIjTaZv3s1xjfyZbTXjqmlqyNAYvwUbAMBlsQvntBuFCkBKdAwFmrRt8Rd11eiDg/jv1bkUXKBDnebcK2T2+unNCAzEMxFFkORNx3HHUJ2Z8dJCuk1P7bEN7iPeMLAXoJ8ySg/o3+SQaEgXIiGHlIVsojzVko5V8k9VCCp8AcB8am7Tfc5KB5MvjrbLiKZAFTTMk8guMjFx/ubJlp4m5oVfVZw0FjrWHHFWoEat0lnXnuYtOfCwFUep9MB3GWhUJnvCUwJC3FQ59Y2keWjcFvt7F6dCTBTEcuFkf9MA1Fofg11CQ3bA934nOLICPO/L0vX59smdIB3QPVLSdZZDOdbShV9Z+d3FmEgA+7QSmHAwoDPeI1Fp5IwyyHZbuLBRFKFkqgat4lKSnhO6Knlvm7H5/aKWGyQR22FQW5vm8nBoWdPgp8FPiFE2wQVQlPXps1sQTgROOnzkxNtkiA51G/AKrOxQq4k5qWokdCqgFIZg7xt/esOPlyBK8JOV1VizKmzQpp1swaglGfRD4Kc0ElD8wsakjAzFAcIDUeGacFHDSCet/c5sXy7es=
+X-Forefront-Antispam-Report:
+	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:MN0PR12MB5713.namprd12.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(7416005)(1800799015)(376005)(366007);DIR:OUT;SFP:1102;
+X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
+X-MS-Exchange-AntiSpam-MessageData-0:
+	=?utf-8?B?Rll2R0FvQ1FjalcrSUpaQjM1VXlZUnJoY0pVc3JvanFOVGdSdjBoZWlNR1NM?=
+ =?utf-8?B?clNOUmxLV2xuMmhBelBZWTdJT1ZhTGhkVGJBdTc0SWludUhrYjJnajQ4K2hP?=
+ =?utf-8?B?Y2RhZGQrL1hsTE5lN3VMM3lZdHc1S0J1VklZTVp6TmM2MGNvUUFQS3hRTkY1?=
+ =?utf-8?B?MFJBMHNidlNyYUZDYTFOWlRuc29QNU96SmlYVUt4aTRhMDJ4L3gzTFlBZ0lo?=
+ =?utf-8?B?YUFnQ25JTTNGblBmbTRYbUJvZFJVL0JNR1MzQjdxS1VzcnFPR2QycU5makZw?=
+ =?utf-8?B?MUovOW56eGVjQ2Q0UmpWYnFmZUFzOFMvYUtXTEZvaWJJZlFZWWV5N01WWUJl?=
+ =?utf-8?B?UzkrVkJGeXhBeFJ0VjkrcWluUG03LzlMWVlmOEF2cEVtTzQ3ck05Tkh3NWxv?=
+ =?utf-8?B?d2dvR3VZcDFKRnN5ekJ1V0xuSWZRUGxuY3YwUFpIMml3WjMrVm5wSzFkdy8z?=
+ =?utf-8?B?NWVsSjNrc1NOYW8xVHFqeFI0bHRadkZRTU8xN1Fzb3Bob0ZmaHEvK0E2SEdK?=
+ =?utf-8?B?K3RDUndIWS9vMFNxYVJqZ0ZNMXR2WlB6SlVtbG9FWlMyQ0hVWmlNaitEOTNy?=
+ =?utf-8?B?b3RMS29JZzdseFRUYm5YZEtHdGVPVHc2YjQxcGpLTEszMytrMEdlSHVSVlBt?=
+ =?utf-8?B?bDZrSGpXVWlSamlCczZRKy9YYTJkcGhnYXYxWVNkN0pZQ2NXQ2tsQWlWTlFU?=
+ =?utf-8?B?b0Jvd3NSemhYbnNiWmw3Rm9kbzdnZkNYOTFiNEhNbkt5UmE3U2VIbkdqQjUz?=
+ =?utf-8?B?RlZnVjNkNG9oNnl2dnRubUw5dFN5Q2hzUlprRUhIWXVFbUx3S3hCWDdWbE5r?=
+ =?utf-8?B?VkoycFcwMnpRdkpJcmFpdkt3Q2YzRFRmK1d4K0FQOVhUSXFsbEFnWWY0cWp2?=
+ =?utf-8?B?T0lFcUVkMUxHSHRXOXdrdFhVc09PU1JzbHpyOFNYWWFJL244ZER4bFhPYVNL?=
+ =?utf-8?B?SDduWUdNME4vMG5zNSs0bEV4TFdjUGtPMExTR3cyMFkyMkxxVno0U2pta3pK?=
+ =?utf-8?B?dk8ydkYzNnJkb0ZzYm5nQmZPTUV3VFg1UFo3QkZ0SWI5MTY5a3M1cWZ6QkQx?=
+ =?utf-8?B?QWFVYXpBYkYwZFppVUE2NXNJWGFoZnBDODJkenZmNEJkclNXOUdJTUltRFFZ?=
+ =?utf-8?B?aEpOSzY5VSt3M3J5NVljYlRHSDdObENwNmd5UWxLakxQUFB4UTZOSkpsWWo5?=
+ =?utf-8?B?UjFRc0M4RDJmdzdINEtNRU42R2pLUkVVek9qd2F2K0dnbjJxTk16bFV4dXdt?=
+ =?utf-8?B?d1dpZy91SGQ5cmtrZ1YvVXRReVRENENnYXRqdEFTcll3cE5ENysyNGFLYmhr?=
+ =?utf-8?B?Y3grUmRJRE54VUFFOGZ3Q3NKNkh5Tjlyd3pWN2lsaDhheFFrQWU5T3hlY09W?=
+ =?utf-8?B?V1QzSEFqWkhKbjZETm1RcElKUGZoaWZUNHVZQkd6K215R29MRzJ4ckMvWjN4?=
+ =?utf-8?B?NUI1VnBFWndRTWVYVTFtdTlId200WmRxVVlSYkVnYkprd2M2dldEZ1o5bC9X?=
+ =?utf-8?B?c1A2M2xsc0VBbTZsU0cvMUlQWndTcUJKUTRTVTFEenVCeXk5dmoybk9mY3Y0?=
+ =?utf-8?B?UWY1c1licVVlMEdMM3VQTGNIOHM0TkZHbldFQ0U0WWhFVzBSU214ME1HSkhO?=
+ =?utf-8?B?UnloeG51MFIvcjFnZmpZcWtiQWtLVXlQWkVxZmNCZURZNFZ4UW5qemd3Ni9B?=
+ =?utf-8?B?RndVV0luMHVhcGszcWcwK1BaVGV5REh1RnBCZEhWRXRDNnIvQkVvZWNWRlFD?=
+ =?utf-8?B?NURWZ0VZSTd5RG43ZXNJWHZmaUt2QTRCTVNaaVFnZEp4VFJJNFFwYXRIZU1q?=
+ =?utf-8?B?RkhwMU5yOEpveWlLT3NTOXJrYVZOSk1IQmdhRit4aGQwME5BTG5rUXpUdzlD?=
+ =?utf-8?B?VnRHc2ZaekUvOGNHcnU2ODUwdWM1c2I0Mm1EUE84REJWVHF0TWZRcGVyU2tR?=
+ =?utf-8?B?Q0Jvb0gyY1NxYnNXa0JhZjZPRDA5Rjd0M2t0L3NRRWIvZ2lTM09ZT1J1VVZm?=
+ =?utf-8?B?SHRzRlZxN3BNR01FZFNyZjg2bHZMVzN2STRsNUFkVEpsN1Q3emVZOTNJMjNn?=
+ =?utf-8?B?aFpJbk5vZXhoU0RKZGxlRDBKL2FWc1BGK3pyMWpBSzBudUJKR1h4dmZTenQ4?=
+ =?utf-8?Q?gHAYsK7XcCQ+O8GO0+4G/UENV?=
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: e95e03eb-a194-4fd1-c383-08dc48007d03
+X-MS-Exchange-CrossTenant-AuthSource: MN0PR12MB5713.namprd12.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 10:36:51.7298
+ (UTC)
+X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-MailboxType: HOSTED
+X-MS-Exchange-CrossTenant-UserPrincipalName: Hy6FqBL22gCJPjXDQGa8H/cJd3dfiB7FBhYos3rb5Zl8lWijYPN4+RTajjp2uV5/e9XBwUy8ArOqmOTOFQpWcw==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: IA1PR12MB8077
 
-On Mon, Mar 18, 2024 at 04:25:09PM +0100, Jan Kara wrote:
-> On Mon 18-03-24 18:09:18, Ojaswin Mujoo wrote:
-> > On Thu, Mar 14, 2024 at 10:09:01PM +0800, Baokun Li wrote:
-> > > We can trigger a slab-out-of-bounds with the following commands:
-> > > 
-> > >     mkfs.ext4 -F /dev/$disk 10G
-> > >     mount /dev/$disk /tmp/test
-> > >     echo 2147483647 > /sys/fs/ext4/$disk/mb_group_prealloc
-> > >     echo test > /tmp/test/file && sync
-> > > 
-> > > ==================================================================
-> > > BUG: KASAN: slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-> > > Read of size 8 at addr ffff888121b9d0f0 by task kworker/u2:0/11
-> > > CPU: 0 PID: 11 Comm: kworker/u2:0 Tainted: GL 6.7.0-next-20240118 #521
-> > > Call Trace:
-> > >  dump_stack_lvl+0x2c/0x50
-> > >  kasan_report+0xb6/0xf0
-> > >  ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-> > >  ext4_mb_regular_allocator+0x19e9/0x2370 [ext4]
-> > >  ext4_mb_new_blocks+0x88a/0x1370 [ext4]
-> > >  ext4_ext_map_blocks+0x14f7/0x2390 [ext4]
-> > >  ext4_map_blocks+0x569/0xea0 [ext4]
-> > >  ext4_do_writepages+0x10f6/0x1bc0 [ext4]
-> > > [...]
-> > > ==================================================================
-> > > 
-> > > The flow of issue triggering is as follows:
-> > > 
-> > > // Set s_mb_group_prealloc to 2147483647 via sysfs
-> > > ext4_mb_new_blocks
-> > >   ext4_mb_normalize_request
-> > >     ext4_mb_normalize_group_request
-> > >       ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc
-> > >   ext4_mb_regular_allocator
-> > >     ext4_mb_choose_next_group
-> > >       ext4_mb_choose_next_group_best_avail
-> > >         mb_avg_fragment_size_order
-> > >           order = fls(len) - 2 = 29
-> > >         ext4_mb_find_good_group_avg_frag_lists
-> > >           frag_list = &sbi->s_mb_avg_fragment_size[order]
-> > >           if (list_empty(frag_list)) // Trigger SOOB!
-> > > 
-> > > At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
-> > > but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
-> > > to be triggered by an attempt to access an element at index 29.
-> > > 
-> > > Add a new attr_id attr_clusters_in_group with values in the range
-> > > [0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
-> > > that type to fix the issue. In addition avoid returning an order
-> > > from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
-> > > and reduce some useless loops.
-> > > 
-> > > Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
-> > > CC: stable@vger.kernel.org
-> > > Signed-off-by: Baokun Li <libaokun1@huawei.com>
-> > > Reviewed-by: Jan Kara <jack@suse.cz>
-> > > ---
-> > >  fs/ext4/mballoc.c |  4 ++++
-> > >  fs/ext4/sysfs.c   | 13 ++++++++++++-
-> > >  2 files changed, 16 insertions(+), 1 deletion(-)
-> > > 
-> > > diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-> > > index 12b3f196010b..48afe5aa228c 100644
-> > > --- a/fs/ext4/mballoc.c
-> > > +++ b/fs/ext4/mballoc.c
-> > > @@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
-> > >     return 0;
-> > >   if (order == MB_NUM_ORDERS(sb))
-> > >     order--;
-> > > + if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
-> > > +   order = MB_NUM_ORDERS(sb) - 1;
-> > 
-> > Hey Baokun,
-> > 
-> > Thanks for fixing this. This patch looks good to me, feel free to add:
-> > 
-> > Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
-> > 
-> > my comments after this are less about the patch and more about some
-> > thoughts on the working of average fragment lists.
-> > 
-> > So going through the v2 and this patch got me thinking about what really
-> > is going to happen when a user tries to allocate 32768 blocks which is also 
-> > the maximum value we could have in say ac->ac_g_ex.fe_len.
-> > 
-> > When this happens, ext4_mb_regular_allocator() will directly set the
-> > criteria as CR_GOAL_LEN_FAST. Now, we'll follow:
-> > 
-> > ext4_mb_choose_next_group_goal_fast()
-> >   for (i=mb_avg_fragment_size_order(); i < MB_NUM_ORDERS; i++) { .. }
-> > 
-> > Here, mb_avg_fragment_siz_order() will do something like:
-> > 
-> >   order = fls(32768) - 2 = 14
-> >   ...
-> >   if (order == MB_NUM_ORDERS(sb))
-> >     order--;
-> > 
-> >   return order;
-> > 
-> > And we'll look in the fragment list[13] and since none of the groups
-> > there would have 32768 blocks free (since we dont track it here) we'll
-> > unnecessarily traverse the full list before falling to CR_BEST_AVAIL_LEN
-> > (this will become a noop due to the way order and min_order
-> > are calculated) and eventually to CR_GOAL_LEN_SLOW where we might get
-> > something or end up splitting.
+On 3/19/2024 3:47 PM, Ingo Molnar wrote:
 > 
-> Yeah, agreed this looks a bit suboptimal. I'm just not 100% sure whether
-> we'll ever generate a request to allocate 32768 blocks - that would need
-> verification with tracing - because I have some vague recollection I once
-> arrived at conclusion this is not possible.
-
-Ahh, right! I see the following line in mpage_add_bh_to_extent():
-
-	/* Don't go larger than mballoc is willing to allocate */
-	if (map->m_len >= MAX_WRITEPAGES_EXTENT_LEN)
-		return false;
-
-Where MAX_WRITEPAGES_EXTENT_LEN is 2048 ie 8MB on 4k filesystem. As pointed out
-by your comment there, it seems to come from the fact that we have some restrictions 
-in ext4_mb_normalize_range() which don't allow us to go beyond 8MB length. I think
-I was also looking at that code sometime back and it really needs some rework, I'll 
-try to test a few things out.
-
-So yep, in the usual paths we shouldn't be sending a request as big as 32768 blocks
-but it's still possible with group prealloc with s_mb_group_prealloc set to 32768.
-
-Anyways, thanks for pointing this out, I'll try to look into the code path more to see
-how we can optimize it better and maybe if we can lift the 2048 block restriction.
-
-Regards,
-ojaswin
-
+> * Sandipan Das <sandipan.das@amd.com> wrote:
 > 
-> > I think something more optimal would be to:
-> > 
-> > 1. Add another entry to average fragment lists for completely empty
-> > groups. (As a sidenote i think we should use something like MB_NUM_FRAG_ORDER
-> > instead of MB_NUM_ORDERS in calculating limits related to average
-> > fragment lists since the NUM_ORDERS seems to be the buddy max order ie
-> > 8192 blocks only valid for CR_POWER2 and shouldn't really limit the
-> > fragment size lists)
+>> Move the existing scattered performance monitoring related feature bits
+>> from CPUID leaf 0x80000022[EAX] into a dedicated word since additional
+>> bits will be defined from the same leaf in the future. This includes
+>> X86_FEATURE_PERFMON_V2 and X86_FEATURE_AMD_LBR_V2.
+>>
+>> Signed-off-by: Sandipan Das <sandipan.das@amd.com>
+>> ---
+>>  arch/x86/include/asm/cpufeature.h        |  7 +++++--
+>>  arch/x86/include/asm/cpufeatures.h       | 10 +++++++---
+>>  arch/x86/include/asm/disabled-features.h |  3 ++-
+>>  arch/x86/include/asm/required-features.h |  3 ++-
+>>  arch/x86/kernel/cpu/common.c             |  3 +++
+>>  arch/x86/kernel/cpu/scattered.c          |  2 --
+>>  arch/x86/kvm/cpuid.c                     |  5 +----
+>>  arch/x86/kvm/reverse_cpuid.h             |  1 -
+>>  8 files changed, 20 insertions(+), 14 deletions(-)
+>>
+>> diff --git a/arch/x86/include/asm/cpufeature.h b/arch/x86/include/asm/cpufeature.h
+>> index a1273698fc43..68dd27d60748 100644
+>> --- a/arch/x86/include/asm/cpufeature.h
+>> +++ b/arch/x86/include/asm/cpufeature.h
+>> @@ -33,6 +33,7 @@ enum cpuid_leafs
+>>  	CPUID_7_EDX,
+>>  	CPUID_8000_001F_EAX,
+>>  	CPUID_8000_0021_EAX,
+>> +	CPUID_8000_0022_EAX,
 > 
-> I guess the thinking was that you can never get larger than
-> 1<<(MB_NUM_ORDERS-1) chunk from mballoc so there's no point to keep
-> fragment lists of such chunks?
+>>  #define X86_FEATURE_SYSCALL32		( 3*32+14) /* "" syscall in IA32 userspace */
+>>  #define X86_FEATURE_SYSENTER32		( 3*32+15) /* "" sysenter in IA32 userspace */
+>>  #define X86_FEATURE_REP_GOOD		( 3*32+16) /* REP microcode works well */
+>> -#define X86_FEATURE_AMD_LBR_V2		( 3*32+17) /* AMD Last Branch Record Extension Version 2 */
+>> +/* FREE!				( 3*32+17) */
+>>  #define X86_FEATURE_CLEAR_CPU_BUF	( 3*32+18) /* "" Clear CPU buffers using VERW */
+>>  #define X86_FEATURE_ACC_POWER		( 3*32+19) /* AMD Accumulated Power Mechanism */
+>>  #define X86_FEATURE_NOPL		( 3*32+20) /* The NOPL (0F 1F) instructions */
+>> @@ -209,7 +209,7 @@
+>>  #define X86_FEATURE_SSBD		( 7*32+17) /* Speculative Store Bypass Disable */
+>>  #define X86_FEATURE_MBA			( 7*32+18) /* Memory Bandwidth Allocation */
+>>  #define X86_FEATURE_RSB_CTXSW		( 7*32+19) /* "" Fill RSB on context switches */
+>> -#define X86_FEATURE_PERFMON_V2		( 7*32+20) /* AMD Performance Monitoring Version 2 */
+>> +/* FREE!				( 7*32+20) */
+>>  #define X86_FEATURE_USE_IBPB		( 7*32+21) /* "" Indirect Branch Prediction Barrier enabled */
+>>  #define X86_FEATURE_USE_IBRS_FW		( 7*32+22) /* "" Use IBRS during runtime firmware calls */
+>>  #define X86_FEATURE_SPEC_STORE_BYPASS_DISABLE	( 7*32+23) /* "" Disable Speculative Store Bypass. */
+>> @@ -459,6 +459,10 @@
+>>  #define X86_FEATURE_IBPB_BRTYPE		(20*32+28) /* "" MSR_PRED_CMD[IBPB] flushes all branch type predictions */
+>>  #define X86_FEATURE_SRSO_NO		(20*32+29) /* "" CPU is not affected by SRSO */
+>>  
+>> +/* AMD-defined performance monitoring features, CPUID level 0x80000022 (EAX), word 21 */
+>> +#define X86_FEATURE_PERFMON_V2		(21*32+ 0) /* AMD Performance Monitoring Version 2 */
+>> +#define X86_FEATURE_AMD_LBR_V2		(21*32+ 1) /* AMD Last Branch Record Extension Version 2 */
 > 
-> 								Honza
-> -- 
-> Jan Kara <jack@suse.com>
-> SUSE Labs, CR
+> Thank you! I presume you tested both patches on the relevant system 
+> with the X86_FEATURE_AMD_LBR_PMC_FREEZE bug?
+> 
+
+Yes, I tested them on systems which don't support freeze.
+
+When kernel branches are captured on such systems, the records mostly
+point to amd_pmu_lbr_read() and native_read_msr() which are called to
+read the branch record MSRs. This is the expected result since LBR
+does not stop recording branches after a PMC overflow.
+
+E.g.
+
+# To display the perf.data header info, please use --header/--header-only options.
+#
+#
+# Total Lost Samples: 0
+#
+# Samples: 190K of event 'ex_ret_brn_tkn'
+# Event count (approx.): 190144
+#
+# Overhead  Command  Source Shared Object  Source Symbol                Target Symbol                Basic Block Cycles
+# ........  .......  ....................  ...........................  ...........................  ..................
+#
+    24.98%  branchy  [kernel.kallsyms]     [k] amd_pmu_lbr_read         [k] amd_pmu_lbr_read         -
+    12.49%  branchy  [kernel.kallsyms]     [k] amd_pmu_lbr_read         [k] native_read_msr          -
+    12.49%  branchy  [kernel.kallsyms]     [k] native_read_msr          [k] native_read_msr          -
+    12.49%  branchy  [kernel.kallsyms]     [k] srso_alias_safe_ret      [k] amd_pmu_lbr_read         -
+    12.49%  branchy  [kernel.kallsyms]     [k] srso_alias_safe_ret      [k] srso_alias_safe_ret      -
+    12.49%  branchy  [kernel.kallsyms]     [k] srso_alias_return_thunk  [k] srso_alias_return_thunk  -
+     6.25%  branchy  [kernel.kallsyms]     [k] native_read_msr          [k] srso_alias_return_thunk  -
+     6.25%  branchy  [kernel.kallsyms]     [k] srso_alias_return_thunk  [k] srso_alias_safe_ret      -
+     0.02%  perf-ex  [kernel.kallsyms]     [k] amd_pmu_lbr_read         [k] amd_pmu_lbr_read         -
+     0.01%  perf-ex  [kernel.kallsyms]     [k] amd_pmu_lbr_read         [k] native_read_msr          -
+     0.01%  perf-ex  [kernel.kallsyms]     [k] native_read_msr          [k] native_read_msr          -
+     0.01%  perf-ex  [kernel.kallsyms]     [k] srso_alias_safe_ret      [k] amd_pmu_lbr_read         -
+     0.01%  perf-ex  [kernel.kallsyms]     [k] srso_alias_safe_ret      [k] srso_alias_safe_ret      -
+     0.01%  perf-ex  [kernel.kallsyms]     [k] srso_alias_return_thunk  [k] srso_alias_return_thunk  -
+     0.00%  perf-ex  [kernel.kallsyms]     [k] native_read_msr          [k] srso_alias_return_thunk  -
+     0.00%  perf-ex  [kernel.kallsyms]     [k] srso_alias_return_thunk  [k] srso_alias_safe_ret      -
+
+
 
