@@ -1,85 +1,79 @@
-Return-Path: <linux-kernel+bounces-107068-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107070-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 133DA87F725
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:14:44 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 48EE187F72A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:17:44 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3616E1C21CA0
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:14:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7A8451C21AAE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:17:43 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 349EB59B73;
-	Tue, 19 Mar 2024 06:14:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D8ED4597B;
+	Tue, 19 Mar 2024 06:17:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="Ng/vnWhW"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="Av3aHhJN"
+Received: from mail-wr1-f45.google.com (mail-wr1-f45.google.com [209.85.221.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B73D14595A
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:14:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0610F4EB5D
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 06:17:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710828876; cv=none; b=NMVSc/H9qJt2WFpiQlLHPDataY7ntvAA8GDQvpcdOiIPzEWArk4gg+Z5xEPmEnTlMAkCAQbtuRqit/0tuW5xmHZwksKVV4v5G4qqEnJl2hHX4Q8+EfIJuLc6yA66lU1hqjP9F47Nc4zzYM5D5wZJKKq3nuGcvGdRuiyIk8Xt+vU=
+	t=1710829051; cv=none; b=aGp41tBPUKpEb01lCaZPYK5ERI8M3rGV7HDET9kuwcg6z6a7roqy3qiDmYBgBkCu8ba3im9lyfhcAXu2dP3TIj3HXizmQRLhXWzfmPfsuJ1pDRARJR8XSG2h+ZIhi3h4qkoj/6ZSd0zOeLBcgL9DELxUELM7n9O5BqWjmro+ACc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710828876; c=relaxed/simple;
-	bh=v2pKD6xIQbKNmcB1pUgXdy2M1Ktb7FP3Z2rqu9Hj1HQ=;
+	s=arc-20240116; t=1710829051; c=relaxed/simple;
+	bh=QQLxq5dEZDeApbmB/Lkx6MXuL7gadJz/3NlJEViXU8o=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=F0iFKGcgDjb69SgxiEM2TzdLJTiHxNo0wQajhUfPbOe0zm/vXBUjqFzwKIJE+p56J6hvOndla8sBVCmAJ430rjl3mm2bLhTVYulExdioXw8AYB9Bx1yn7tUxt80A7G5MHBwqT5DpEuoF5IJTIpVJWYaO/sfzRkbvayrvtTTfU/4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=Ng/vnWhW; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710828873;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=Nd2WnTQpqJ6t/rcAd5QrbY0+YyvvOiz3e4ifplxSCyk=;
-	b=Ng/vnWhWEfyK3s+vccIs/p5zODkm6UZhs0IX1BRPA047qAbOx17BFwnwgNTOC2zxA49E7T
-	uV2kOKtc5JEW/SeVGKsfYSUKusz1Iev32LL3WI4TqmizmQFwK/ilY/u2elHBWX7zeBg7Io
-	tym3iEsjC9yas6YiXBKLnpSq9TORKEE=
-Received: from mail-ej1-f70.google.com (mail-ej1-f70.google.com
- [209.85.218.70]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-464-ov18ZZMkOSWiDAsGOnGvlQ-1; Tue, 19 Mar 2024 02:14:32 -0400
-X-MC-Unique: ov18ZZMkOSWiDAsGOnGvlQ-1
-Received: by mail-ej1-f70.google.com with SMTP id a640c23a62f3a-a46e26556a2so8373766b.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:14:31 -0700 (PDT)
+	 Content-Type:Content-Disposition:In-Reply-To; b=H5ok/HDyf4KtPUffn+tUbd4U3MVVrHWa5sYzn4baeMLNce/WOPGI5z8xTIEyVhtP1N3mlQ1m5sYcx8iRk1HU4uscl+n6RRJOtg1RHs3Cyr++rU23KJHkZ74VqOaoLcVkBfTukEf83zySTCZlqm8QSFpWscWyMTn+V5p754cq2EE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=Av3aHhJN; arc=none smtp.client-ip=209.85.221.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
+Received: by mail-wr1-f45.google.com with SMTP id ffacd0b85a97d-33ed7ba1a42so1784175f8f.2
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 23:17:29 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=linaro.org; s=google; t=1710829048; x=1711433848; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
+        bh=7NxyLAPBD0uYaEFsJsCLCqoFa7u1wfvFPNUDw78rj08=;
+        b=Av3aHhJNCQawdMQQai4qNPACRYGCK2p1hwW9mZlvVIkkTkME0b8+s2o/DnRI+Z4BpO
+         8nreut+frpFQRQAwr0wyXCSD1y4ccYzxZfDJp+HUfXtB6IuX5Qox60+N1SR9lHwf+sul
+         wJBoux7ECkxx7wvdet7DTYM/PVJU6VCg0eGmMbNUe97OEqxuEMVElnVawYswLddvqAlt
+         e9w48jaDL3HKIaGdkPUMCR1evaoISDel2ZoyfDDaC4aByLaAfOpXaI5f6TAdE2iRbluQ
+         U7POapYx4XPbZIifCTzCmzc4tti6H2mfjT7rU32Z29aqGzNLcw2ed5LSu+DutMn99Rh5
+         LyQQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710828871; x=1711433671;
+        d=1e100.net; s=20230601; t=1710829048; x=1711433848;
         h=in-reply-to:content-disposition:mime-version:references:message-id
          :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=Nd2WnTQpqJ6t/rcAd5QrbY0+YyvvOiz3e4ifplxSCyk=;
-        b=ekDRXkk5bVwvYo/mNvNITr0Yy8AtFafU6gx42h+ZeSIpcHn8ZYBFykTGP01jh61bBz
-         uPaF0B0jApHqDDdm00xf3wPKPHDuP+iLJfsK1dff1Gr++BRplL6RIasdTLP0XrQxbOAo
-         thjlYTkuf2PvE544Ye7ssnhf3psZENRrh1pAFWXaDL9oBq1A8uTiKf7l7MlCAnblbmyt
-         2hXabvFi3fJ7j6KYpxK47t9Zbi3lntVa6YASJy0B/kDEAs0SLbb71WqsJ5cwiytZdMYi
-         QJuvcQ40jX7/YgggAGsSfTUavhBeUccAv0C4zBxK+zNWveSRNTBLYq/LGOPwcnlOdH96
-         YoNw==
-X-Forwarded-Encrypted: i=1; AJvYcCW+h+C8rnsOrNj0sYTZ7cbkZCkXFMrjnEB8aElNN4at02xpAVihiF15qKJFZAlh9KjkfQAmJdy8yCqwZ2W0xrgH8eTWFsGCXh2jJI4z
-X-Gm-Message-State: AOJu0YxPQ4fVdtY31KZQURbvZzJVtvWLJeLJfeMSplSTFGvLmG1LeQ7k
-	l94RqLLrNBcU8Gti0tjG0DwOWU9pViN177zc/G7oTG2eh5jDK8IMJ/yz2uJwMFsMzsWu5IZ9FOD
-	ep18c8WyoXNrCjtSPpVQqofhlr+0yzt1uBOfG8uTvK+XKls4qKfLdtIkF9Jxdlg==
-X-Received: by 2002:a17:907:7a93:b0:a46:74fe:904f with SMTP id mm19-20020a1709077a9300b00a4674fe904fmr10682762ejc.26.1710828870987;
-        Mon, 18 Mar 2024 23:14:30 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGo/SmdwOaw3x3Vaq0MJ5ceF64rXJYjddl/AfDh1pN5ip0sZk4YZOLeNTJ1ec6BERFY/yXtfQ==
-X-Received: by 2002:a17:907:7a93:b0:a46:74fe:904f with SMTP id mm19-20020a1709077a9300b00a4674fe904fmr10682741ejc.26.1710828870515;
-        Mon, 18 Mar 2024 23:14:30 -0700 (PDT)
-Received: from redhat.com ([2a02:14f:175:ca2b:adb0:2501:10a9:c4b2])
-        by smtp.gmail.com with ESMTPSA id gf8-20020a170906e20800b00a46d9966ff8sm567031ejb.147.2024.03.18.23.14.28
+        bh=7NxyLAPBD0uYaEFsJsCLCqoFa7u1wfvFPNUDw78rj08=;
+        b=AvoE4QHzkxinI0pPMSW0E/EB+bGtzEp9yGEm67j+wMr+JeEKDuLcvv1xjKjodOUWz4
+         Mdqd6UUAdO9sTnU4dunh3lcHQsxSHe9hva9iyL2tlvJSoKLVPFYk2/VCr9wjeqYef4U1
+         1pZTx3dIJphHClFTPubVyAyS6nb37GmkvZt0FK6rfM1mel4gFRr/EKsXZwSF/zdfnaay
+         3QL05SDEvgoWiTn8KtLK0k2qsGcpaeKRpo4lDYI7TkzOfojmTEpAq6xas1OomkO2/6DU
+         rDq9mh4rj8f1URO4O5atOC9iFH9lj8Z9kcVrJYUpDOJsejI5Do4j2SGIi4i3CF4Pwu45
+         g43w==
+X-Forwarded-Encrypted: i=1; AJvYcCXwTa1Xu1j9A0eD/1mfuViJc4Vjk74vLHP3xzN0Aw3arMwfhIAPe3agmHnh83q87/kI6asRF2kvAuJ+aoxmaAAkXjui4rh2glZgqkd7
+X-Gm-Message-State: AOJu0YxbIHy41BNDiklKrYqAH1jNe6aCERcj4YEG9kykJWwZ4eI2SXcA
+	Dr1W2Jaw5vasSm9ce4P/x/hjMJ4zvjiAwlhtky1YHUgp8f1AbBVgAIkcsTHW5kg=
+X-Google-Smtp-Source: AGHT+IHxChfQOs9Mp8LF/ggHgGIqPNQKjvXFOMYn+smQajFfFmtbcaa0DsoWP2SsJGfEiulLyAko/w==
+X-Received: by 2002:adf:f606:0:b0:33e:cfff:a05d with SMTP id t6-20020adff606000000b0033ecfffa05dmr1111932wrp.59.1710829047915;
+        Mon, 18 Mar 2024 23:17:27 -0700 (PDT)
+Received: from localhost ([102.222.70.76])
+        by smtp.gmail.com with ESMTPSA id n8-20020a5d6608000000b0033e45930f35sm11520855wru.6.2024.03.18.23.17.26
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Mon, 18 Mar 2024 23:14:29 -0700 (PDT)
-Date: Tue, 19 Mar 2024 02:14:26 -0400
-From: "Michael S. Tsirkin" <mst@redhat.com>
-To: Gavin Shan <gshan@redhat.com>
-Cc: virtualization@lists.linux.dev, linux-kernel@vger.kernel.org,
-	jasowang@redhat.com, xuanzhuo@linux.alibaba.com, yihyu@redhat.com,
-	shan.gavin@gmail.com
-Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
-Message-ID: <20240319021136-mutt-send-email-mst@kernel.org>
-References: <20240314074923.426688-1-gshan@redhat.com>
+        Mon, 18 Mar 2024 23:17:27 -0700 (PDT)
+Date: Tue, 19 Mar 2024 09:17:20 +0300
+From: Dan Carpenter <dan.carpenter@linaro.org>
+To: Ayush Tiwari <ayushtiw0110@gmail.com>
+Cc: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev, outreachy@lists.linux.dev
+Subject: Re: [PATCH v6] staging: greybus: Constify gb_audio_module_type
+Message-ID: <9ef61ce3-6f14-4292-9364-903bc52c250d@moroto.mountain>
+References: <ZfiQsZBrHfImIJfc@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -88,79 +82,23 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240314074923.426688-1-gshan@redhat.com>
+In-Reply-To: <ZfiQsZBrHfImIJfc@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 
-On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
-> The issue is reported by Yihuang Yu who have 'netperf' test on
-> NVidia's grace-grace and grace-hopper machines. The 'netperf'
-> client is started in the VM hosted by grace-hopper machine,
-> while the 'netperf' server is running on grace-grace machine.
+On Tue, Mar 19, 2024 at 12:36:25AM +0530, Ayush Tiwari wrote:
+> Constify static struct kobj_type gb_audio_module_type to prevent
+> modification of data shared across many instances and to address the
+> checkpatch warning that "gb_audio_module_type" should be const. The
+> "gb_audio_module_type" struct is only used in one place:
+> err = kobject_init_and_add(&m->kobj, &gb_audio_module_type, NULL, ...
+> so checkpatch is correct that it can be made const.
 > 
-> The VM is started with virtio-net and vhost has been enabled.
-> We observe a error message spew from VM and then soft-lockup
-> report. The error message indicates the data associated with
-> the descriptor (index: 135) has been released, and the queue
-> is marked as broken. It eventually leads to the endless effort
-> to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
-> and soft-lockup. The stale index 135 is fetched from the available
-> ring and published to the used ring by vhost, meaning we have
-> disordred write to the available ring element and available index.
-> 
->   /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
->   -accel kvm -machine virt,gic-version=host                            \
->      :                                                                 \
->   -netdev tap,id=vnet0,vhost=on                                        \
->   -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
-> 
->   [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
-> 
-> Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
-> virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
-> ARM64. It should work for other architectures, but performance loss is
-> expected.
-> 
-> Cc: stable@vger.kernel.org
-> Reported-by: Yihuang Yu <yihyu@redhat.com>
-> Signed-off-by: Gavin Shan <gshan@redhat.com>
-> ---
->  drivers/virtio/virtio_ring.c | 12 +++++++++---
->  1 file changed, 9 insertions(+), 3 deletions(-)
-> 
-> diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
-> index 49299b1f9ec7..7d852811c912 100644
-> --- a/drivers/virtio/virtio_ring.c
-> +++ b/drivers/virtio/virtio_ring.c
-> @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
->  	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
->  	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
->  
-> -	/* Descriptors and available array need to be set before we expose the
-> -	 * new available array entries. */
-> -	virtio_wmb(vq->weak_barriers);
-> +	/*
-> +	 * Descriptors and available array need to be set before we expose
-> +	 * the new available array entries. virtio_wmb() should be enough
-> +	 * to ensuere the order theoretically. However, a stronger barrier
-> +	 * is needed by ARM64. Otherwise, the stale data can be observed
-> +	 * by the host (vhost). A stronger barrier should work for other
-> +	 * architectures, but performance loss is expected.
-> +	 */
-> +	virtio_mb(false);
->  	vq->split.avail_idx_shadow++;
->  	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
->  						vq->split.avail_idx_shadow);
+> Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
 
+Thanks!
 
+Reviewed-by: Dan Carpenter <dan.carpenter@linaro.org>
 
-Something else to try, is to disassemble the code and check the compiler is not broken.
-
-It also might help to replace assigment above with WRITE_ONCE -
-it's technically always has been the right thing to do, it's just a big
-change (has to be done everywhere if done at all) so we never bothered
-and we never hit a compiler that would split or speculate stores ...
-
-
-> -- 
-> 2.44.0
+regards,
+dan carpenter
 
 
