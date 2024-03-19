@@ -1,309 +1,196 @@
-Return-Path: <linux-kernel+bounces-108230-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108231-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id D03DA880823
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:23:18 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 12259880824
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 00:23:26 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 479E31F22C41
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:23:18 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3F0981C20D3B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:23:25 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8F1975FB8E;
-	Tue, 19 Mar 2024 23:23:10 +0000 (UTC)
-Received: from foss.arm.com (foss.arm.com [217.140.110.172])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 94EF840862;
-	Tue, 19 Mar 2024 23:23:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6B3815FBAA;
+	Tue, 19 Mar 2024 23:23:11 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="DpZsMoc0"
+Received: from mail-ua1-f43.google.com (mail-ua1-f43.google.com [209.85.222.43])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 02DD65A4E9
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 23:23:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.43
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710890590; cv=none; b=SLDBYAmmMqNC40hkq5fxddUc68nyTBdWjNm5fRXj8pRjuae8GUP7NxmJ+tUJntyRkf0nSw7NLfODxarYJN3Ub4evYd7Ad+IuegpMbAuBDhOfb2/95ZquLN4WknGpVaEqGDrty5Bt02S9pF1EJzFJwU3K6okHCEJm452kixqO6T4=
+	t=1710890590; cv=none; b=CBkS5+eY1R1p8uATbh5Hi1gI0TKKi89/BID29CWIJpVG1eii3888sYbvmjgGuEqFtkw0eUgWRPdHmMt9Iz/Rq8+83dPyiwfCtQzHWwSSlLKjGnPAQPth4I4WE2shw5TSXC3Yn6IlVsMKr0gdqGbGNjvu22EizFdF3hmxGQx+Ytk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710890590; c=relaxed/simple;
-	bh=yrlZMq/8a6OpqwAjP+SPbR0zmWdd7MeQKJCj93VHfLU=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Xao9wYSmkERbbSkP12wl3l7hac0+1EYsKhPrtNvzC4lHCgDjItqjYcaWmIKvw84wG5RL2iBPvfjKN4cDvzjrT6OlAV9m/XSBnIRjTtEjgLUNPzMtfncToAYzHe0WuQh0NlXrosgPyw1PECC5LPOZVAUJ/xK4sTSADJWxna3LkNE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
-Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
-	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 614F2106F;
-	Tue, 19 Mar 2024 16:23:36 -0700 (PDT)
-Received: from minigeek.lan (unknown [172.31.20.19])
-	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5E4263F67D;
-	Tue, 19 Mar 2024 16:22:59 -0700 (PDT)
-Date: Tue, 19 Mar 2024 23:22:36 +0000
-From: Andre Przywara <andre.przywara@arm.com>
-To: Kamil Kasperski <ressetkk@gmail.com>
-Cc: Rob Herring <robh@kernel.org>, Krzysztof Kozlowski
- <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>,
- Chen-Yu Tsai <wens@csie.org>, Jernej Skrabec <jernej.skrabec@gmail.com>,
- Samuel Holland <samuel@sholland.org>, Maxime Ripard <mripard@kernel.org>,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- linux-arm-kernel@lists.infradead.org, linux-sunxi@lists.linux.dev
-Subject: Re: [PATCH v4 3/3] arm64: dts: allwinner: h616: add support for T95
- tv boxes
-Message-ID: <20240319232236.07007592@minigeek.lan>
-In-Reply-To: <20240319-add-t95-axp313-support-v4-3-6204b6d23229@gmail.com>
-References: <20240319-add-t95-axp313-support-v4-0-6204b6d23229@gmail.com>
-	<20240319-add-t95-axp313-support-v4-3-6204b6d23229@gmail.com>
-Organization: Arm Ltd.
-X-Mailer: Claws Mail 4.2.0 (GTK 3.24.31; x86_64-slackware-linux-gnu)
+	bh=MnNt/VMa4IT3l390prhhkwK9TVqN7CpO5cntvcTaBgk=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=vA1vUvrmiCSNQB5ED+UxrBSc24jqY7tfzLphw2tCiEE3T0+KdRtuRVFGu0gKzlGqvVDXwBzOP6dDu+KXkIm7u/g14O817bOvwMsQEh6B4emPPPSnrAS1pSV4fXrNoItE33HB3T2yenvt1IeUcpHmYfVNk/zq8ilcnS45kqHdJXw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=DpZsMoc0; arc=none smtp.client-ip=209.85.222.43
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ua1-f43.google.com with SMTP id a1e0cc1a2514c-7e05d6871ddso1001518241.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:23:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710890588; x=1711495388; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=U+4A2h4w8QtM3WAY0aEieq/AhMxGRQzY01tqgJ4WnAs=;
+        b=DpZsMoc0nRjGQibYws/iVrUM4CRW97yv8TjlsT4or26ZAD29tGDLqQ00L9LRqf3U2F
+         re1FNHqSN1g40B5uKAfClbk4oT6TCIQcXBJbu9Us/NhPnQy5Qo5JDE9+QPKz570U5fsT
+         vgcaMn1zZMdJ7zx3u7qnJN7upQT98kTncpR4+35OMrfRqRwXjx8vioX9A5m8m6MWHpDt
+         W4Liepgj0untQ5N3fwcMa8IaIPqtoXdtstlRdgHuLXOXZRH65k3kAkE6IKq+6GVRlZv7
+         eWB6yqnrSC4gk+DpG0Kp9ZumzXTdPqlHdgmEM6AIPD6upZDHgk71azJ+4Qxg/W8djNEs
+         AmKg==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710890588; x=1711495388;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=U+4A2h4w8QtM3WAY0aEieq/AhMxGRQzY01tqgJ4WnAs=;
+        b=cDN0sLLjvlEg9U7JDMFq0OzvtUChEVG+2Z+xui20FHoyknnrKDzdvlsVEQh2zqTdEP
+         sWL+gdf1CDj47r/DLotFkAq3Il9n1BxP4f18q66LcvOxXz5NKk25ikd4Ema3Nn3FdvvK
+         u0EBMHwbyJeVr4moDauBYmzG97YZNg5KxJwqHF7SX1WvuFrOIP7b1gEIaSqSryxlD0GA
+         4ZUazy6vM+pOdWw94pLyIIY7v1FW2hguHL1iJIY6EDhZhE+lUKDN771eF7zQxSctWp8z
+         umItwQ8z8v6uOC05DjdUh4xVl3dSlTg+LeDPXAezSLze8kZTiE37sNmQQcctXUnK3PA/
+         fmDw==
+X-Forwarded-Encrypted: i=1; AJvYcCUqjJUuq21FbPx+SSpIEUpHtfSR2g8lX5p9efOKPjgG3afGHjCgsQ6jrUhniCbaOAqt3O1QTieXOe07HBIEply6pJbP25fwcwpfwrbN
+X-Gm-Message-State: AOJu0Yy6iYcEWtOYas9VFfLkuIUeCGmyuuskCQH0KZI4xdxkY77E76j5
+	KdMncsYtofiD0S+Rtg3RZSWyrb9CkrYvSVFuZhvAEj9qO8QNqmpip/Zs+zUqdxC5/Z0EcD2MdaW
+	0xF/kkUwzd6JSS0dDndeRvdIjdWs=
+X-Google-Smtp-Source: AGHT+IG5rctB0llwIo0GxGvsXkoh6DmicO9LzjhUhH/8A0CECOcs4CyrgDjHtQfqFbyC0rs54BmgDo0qStMr6LYxpro=
+X-Received: by 2002:a05:6102:3126:b0:476:396:486c with SMTP id
+ f6-20020a056102312600b004760396486cmr10709817vsh.15.1710890587752; Tue, 19
+ Mar 2024 16:23:07 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: 7bit
+References: <20240319010920.125192-1-21cnbao@gmail.com> <CAGsJ_4z1k9BQGPJvuXtXPQueokM-yu0nf7yQko6yjhj-0fgAnA@mail.gmail.com>
+ <ce352c9c-2052-4a23-809a-ef4cc9b7169c@roeck-us.net>
+In-Reply-To: <ce352c9c-2052-4a23-809a-ef4cc9b7169c@roeck-us.net>
+From: Barry Song <21cnbao@gmail.com>
+Date: Wed, 20 Mar 2024 12:22:56 +1300
+Message-ID: <CAGsJ_4xOSjmA5c_b2M+_EM9eZkna7ePTV=MSvgOrt-VYvPEO3g@mail.gmail.com>
+Subject: Re: [PATCH v2] xtensa: remove redundant flush_dcache_page and
+ ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE macros
+To: Guenter Roeck <linux@roeck-us.net>
+Cc: chris@zankel.net, jcmvbkbc@gmail.com, akpm@linux-foundation.org, 
+	linux-kernel@vger.kernel.org, willy@infradead.org, dennis@kernel.org, 
+	alexghiti@rivosinc.com, Barry Song <v-songbaohua@oppo.com>, 
+	Huacai Chen <chenhuacai@loongson.cn>, Herbert Xu <herbert@gondor.apana.org.au>, 
+	kernel test robot <lkp@intel.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 19 Mar 2024 18:50:24 +0100
-Kamil Kasperski <ressetkk@gmail.com> wrote:
+On Wed, Mar 20, 2024 at 3:18=E2=80=AFAM Guenter Roeck <linux@roeck-us.net> =
+wrote:
+>
+> On 3/18/24 18:27, Barry Song wrote:
+> > On Tue, Mar 19, 2024 at 2:09=E2=80=AFPM Barry Song <21cnbao@gmail.com> =
+wrote:
+> >>
+> >> From: Barry Song <v-songbaohua@oppo.com>
+> >>
+> >> xtensa's flush_dcache_page() can be a no-op sometimes. There is a
+> >> generic implementation for this case in include/asm-generic/
+> >> cacheflush.h.
+> >>   #ifndef ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE
+> >>   static inline void flush_dcache_page(struct page *page)
+> >>   {
+> >>   }
+> >>
+> >>   #define ARCH_IMPLEMENTS_FLUSH_DCACHE_PAGE 0
+> >>   #endif
+> >>
+> >> So remove the superfluous flush_dcache_page() definition, which also
+> >> helps silence potential build warnings complaining the page variable
+> >> passed to flush_dcache_page() is not used.
+> >>
+> >>     In file included from crypto/scompress.c:12:
+> >>     include/crypto/scatterwalk.h: In function 'scatterwalk_pagedone':
+> >>     include/crypto/scatterwalk.h:76:30: warning: variable 'page' set b=
+ut not used [-Wunused-but-set-variable]
+> >>        76 |                 struct page *page;
+> >>           |                              ^~~~
+> >>     crypto/scompress.c: In function 'scomp_acomp_comp_decomp':
+> >>>> crypto/scompress.c:174:38: warning: unused variable 'dst_page' [-Wun=
+used-variable]
+> >>       174 |                         struct page *dst_page =3D sg_page(=
+req->dst);
+> >>           |
+> >>
+> >> The issue was originally reported on LoongArch by kernel test
+> >> robot (Huacai fixed it on LoongArch), then reported by Guenter
+> >> and me on xtensa.
+> >>
+> >> This patch also removes lots of redundant macros which have
+> >> been defined by asm-generic/cacheflush.h.
+> >>
+> >> Cc: Huacai Chen <chenhuacai@loongson.cn>
+> >> Cc: Herbert Xu <herbert@gondor.apana.org.au>
+> >> Reported-by: kernel test robot <lkp@intel.com>
+> >> Closes: https://lore.kernel.org/oe-kbuild-all/202403091614.NeUw5zcv-lk=
+p@intel.com/
+> >> Reported-by: Barry Song <v-songbaohua@oppo.com>
+> >> Closes: https://lore.kernel.org/all/CAGsJ_4yDk1+axbte7FKQEwD7X2oxUCFrE=
+c9M5YOS1BobfDFXPA@mail.gmail.com/
+> >> Reported-by: Guenter Roeck <linux@roeck-us.net>
+> >
+> > Hi Guenter,
+> > I am not a xtensa guy, so I will need your help for a full test. if
+> > turns out it is a too big(ambitious)
+>
+> I sent a Tested-by: tag to your patch. As far as my testing goes, it work=
+s fine,
+> and I added your patch to my "testing" branch (which tries to be buildabl=
+e
+> and testable for all architectures).
 
-Hi Kamil,
+Thank you very much, Guenter. It would be nice if xtensa can leverage
+the common cacheflush.h just like other architectures.
 
-> Add dtsi file for T95 tv boxes and add initial support for T95 5G AXP313A
-> variant with a board name H616-T95MAX-AXP313A-v3.0 Internal storage is not
-> accessible due to lack of support for H616 NAND controller.
-> 
-> Signed-off-by: Kamil Kasperski <ressetkk@gmail.com>
+>
+> > fix, a minimal fix might be:
+> >
+>
+> FWIW, I think a minimal fix would have been to mark the variable as __may=
+be_unused,
 
-thanks for the changes, looks good now, although a bit minimal ;-)
+I am not quite sure we want this as the point is that drivers should
+be independent of
+architectural differences.
 
-Reviewed-by: Andre Przywara <andre.przywara@arm.com>
+The driver code, for itself, seems quite innocent,
 
-Please can you wait till the -rc1 release on Sunday, and send a rebased
-version next week? There is a small merge conflict in the dts Makefile
-as of now.
+struct page *dst_page =3D sg_page(req->dst);
 
-Cheers,
-Andre
+for (i =3D 0; i < nr_pages; i++)
+            flush_dcache_page(dst_page + i);
 
+The only problem is that xtensa's flush_dcache_page is a macro and
+doesn't use the "page"
+parameter.
+if we re-use the inline function in common cacheflush.h, it won't be a prob=
+lem.
 
-> ---
->  arch/arm64/boot/dts/allwinner/Makefile             |   1 +
->  arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi | 109 +++++++++++++++++++++
->  .../dts/allwinner/sun50i-h616-t95max-axp313.dts    |  84 ++++++++++++++++
->  3 files changed, 194 insertions(+)
-> 
-> diff --git a/arch/arm64/boot/dts/allwinner/Makefile b/arch/arm64/boot/dts/allwinner/Makefile
-> index 21149b346a60..294921f12b73 100644
-> --- a/arch/arm64/boot/dts/allwinner/Makefile
-> +++ b/arch/arm64/boot/dts/allwinner/Makefile
-> @@ -42,6 +42,7 @@ dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h6-tanix-tx6-mini.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-cb1-manta.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-bigtreetech-pi.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-orangepi-zero2.dtb
-> +dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-t95max-axp313.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h616-x96-mate.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-longanpi-3h.dtb
->  dtb-$(CONFIG_ARCH_SUNXI) += sun50i-h618-orangepi-zero2w.dtb
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi
-> new file mode 100644
-> index 000000000000..4c02408733bc
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95.dtsi
-> @@ -0,0 +1,109 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2024 Kamil Kasperski <ressetkk@gmail.com>
-> + *
-> + * Common DT nodes for H616-based T95 TV boxes
-> + * There are two versions reported with different PMIC variants.
-> + */
-> +
-> +#include "sun50i-h616.dtsi"
-> +
-> +#include <dt-bindings/gpio/gpio.h>
-> +#include <dt-bindings/interrupt-controller/arm-gic.h>
-> +
-> +/ {
-> +	aliases {
-> +		ethernet1 = &sdio_wifi;
-> +		serial0 = &uart0;
-> +	};
-> +
-> +	chosen {
-> +		stdout-path = "serial0:115200n8";
-> +	};
-> +
-> +	reg_vcc5v: vcc5v {
-> +		/* board wide 5V supply directly from the DC input */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-5v";
-> +		regulator-min-microvolt = <5000000>;
-> +		regulator-max-microvolt = <5000000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	reg_vcc3v3: vcc3v3 {
-> +		/* discrete 3.3V regulator */
-> +		compatible = "regulator-fixed";
-> +		regulator-name = "vcc-3v3";
-> +		regulator-min-microvolt = <3300000>;
-> +		regulator-max-microvolt = <3300000>;
-> +		regulator-always-on;
-> +	};
-> +
-> +	wifi_pwrseq: pwrseq {
-> +		compatible = "mmc-pwrseq-simple";
-> +		clocks = <&rtc CLK_OSC32K_FANOUT>;
-> +		clock-names = "ext_clock";
-> +		pinctrl-0 = <&x32clk_fanout_pin>;
-> +		pinctrl-names = "default";
-> +		reset-gpios = <&pio 6 18 GPIO_ACTIVE_LOW>; /* PG18 */
-> +	};
-> +};
-> +
-> +&ehci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ehci2 {
-> +	status = "okay";
-> +};
-> +
-> +&ir {
-> +	status = "okay";
-> +};
-> +
-> +&mmc0 {
-> +	cd-gpios = <&pio 8 16 GPIO_ACTIVE_LOW>;	/* PI16 */
-> +	bus-width = <4>;
-> +	status = "okay";
-> +};
-> +
-> +&mmc1 {
-> +	mmc-pwrseq = <&wifi_pwrseq>;
-> +	bus-width = <4>;
-> +	non-removable;
-> +	status = "okay";
-> +
-> +	sdio_wifi: wifi@1 {
-> +		reg = <1>;
-> +	};
-> +};
-> +
-> +&ohci0 {
-> +	status = "okay";
-> +};
-> +
-> +&ohci2 {
-> +	status = "okay";
-> +};
-> +
-> +&uart0 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart0_ph_pins>;
-> +	status = "okay";
-> +};
-> +
-> +&uart1 {
-> +	pinctrl-names = "default";
-> +	pinctrl-0 = <&uart1_pins>, <&uart1_rts_cts_pins>;
-> +	uart-has-rtscts;
-> +	status = "okay";
-> +};
-> +
-> +&usbotg {
-> +	dr_mode = "host";	/* USB A type receptable */
-> +	status = "okay";
-> +};
-> +
-> +&usbphy {
-> +	status = "okay";
-> +};
-> diff --git a/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts
-> new file mode 100644
-> index 000000000000..08a6b4fcc235
-> --- /dev/null
-> +++ b/arch/arm64/boot/dts/allwinner/sun50i-h616-t95max-axp313.dts
-> @@ -0,0 +1,84 @@
-> +// SPDX-License-Identifier: (GPL-2.0+ OR MIT)
-> +/*
-> + * Copyright (C) 2024 Kamil Kasperski <ressetkk@gmail.com>
-> + *
-> + * Configuration for T95 TV box with board label H616-T95MAX-AXP313A-v3.0
-> + */
-> +
-> +/dts-v1/;
-> +
-> +#include "sun50i-h616-t95.dtsi"
-> +
-> +/ {
-> +	model = "T95 5G (AXP313)";
-> +	compatible = "t95,t95max-axp313", "allwinner,sun50i-h616";
-> +};
-> +
-> +&mmc0 {
-> +	vmmc-supply = <&reg_dldo1>;
-> +};
-> +
-> +&mmc1 {
-> +	vmmc-supply = <&reg_dldo1>;
-> +	vqmmc-supply = <&reg_aldo1>;
-> +};
-> +
-> +&r_i2c {
-> +	status = "okay";
-> +
-> +	axp313: pmic@36 {
-> +		compatible = "x-powers,axp313a";
-> +		reg = <0x36>;
-> +		#interrupt-cells = <1>;
-> +		interrupt-controller;
-> +
-> +		vin1-supply = <&reg_vcc5v>;
-> +		vin2-supply = <&reg_vcc5v>;
-> +		vin3-supply = <&reg_vcc5v>;
-> +
-> +		regulators {
-> +			reg_aldo1: aldo1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <1800000>;
-> +				regulator-max-microvolt = <1800000>;
-> +				regulator-name = "vcc1v8";
-> +			};
-> +
-> +			reg_dldo1: dldo1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <3300000>;
-> +				regulator-max-microvolt = <3300000>;
-> +				regulator-name = "vcc3v3";
-> +			};
-> +
-> +			reg_dcdc1: dcdc1 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <810000>;
-> +				regulator-max-microvolt = <990000>;
-> +				regulator-name = "vdd-gpu-sys";
-> +			};
-> +
-> +			reg_dcdc2: dcdc2 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <810000>;
-> +				regulator-max-microvolt = <1100000>;
-> +				regulator-name = "vdd-cpu";
-> +			};
-> +
-> +			reg_dcdc3: dcdc3 {
-> +				regulator-always-on;
-> +				regulator-min-microvolt = <1500000>;
-> +				regulator-max-microvolt = <1500000>;
-> +				regulator-name = "vdd-dram";
-> +			};
-> +		};
-> +	};
-> +};
-> +
-> +&pio {
-> +	vcc-pc-supply = <&reg_aldo1>;
-> +	vcc-pf-supply = <&reg_dldo1>;
-> +	vcc-pg-supply = <&reg_aldo1>;
-> +	vcc-ph-supply = <&reg_dldo1>;
-> +	vcc-pi-supply = <&reg_dldo1>;
-> +};
-> 
+> but as others have pointed out it would be nice if there would be a guida=
+nce
+> about optional API functions like this one that specifies if it may be
+> implemented as macro and, if so, how it has to handle unused variables.
 
+I agree. personally I like this and will have a go in
+Documentation/process/coding-style.rst
+and see others' opinions.
+
+>
+> Thanks,
+> Guenter
+
+Thanks
+Barry
 
