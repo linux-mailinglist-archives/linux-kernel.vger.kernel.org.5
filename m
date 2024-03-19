@@ -1,163 +1,146 @@
-Return-Path: <linux-kernel+bounces-107131-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107132-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB73587F7EB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:01:04 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D74787F7EF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:01:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A19D91F21EA5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:01:04 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 045F31F21D8C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:01:20 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F20CD51028;
-	Tue, 19 Mar 2024 07:00:56 +0000 (UTC)
-Received: from mailgw.kylinos.cn (mailgw.kylinos.cn [124.126.103.232])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3B61351C36;
+	Tue, 19 Mar 2024 07:01:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TSq7LqoK"
+Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C0D664F5EC;
-	Tue, 19 Mar 2024 07:00:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=124.126.103.232
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D395550A83;
+	Tue, 19 Mar 2024 07:01:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710831656; cv=none; b=gnPUPTjbyq90Ih3QjZs2CeDb15cr7vnkg3V+OteRqY8J6IgL30NU3G9u3tCtMmU+brfmTkyYJcoz99wkhI5dt5NbP+70JfX0ohASQxbxvjR99tLY7GtxsaVVZJECSFvZvNm8T2zZHCdgq+XVMYK3M9Ntk+86FUQVpO+SLFxx/YI=
+	t=1710831674; cv=none; b=X8HnsDmZ3k5YJkLG5dpGP56kCAAN2JaIk0lvBGpX6dbsw7kMLMZ8Qt2rxUoCXMV7ukwRO3SVCtTq1rfL0SXHDBRZl7AS554QVavcAO3anQEhroQ7mvSJ+c0G5Opu9jZySYjXypwD+RGCcbqsGhN0KICwFeSBR6xr2oIJemizjt8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710831656; c=relaxed/simple;
-	bh=tUqugGhnzmKLC5uc/exByF6cTzqCXWZ72NMJkUYyDxk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=MSB8KVyCulSvmzHleRECkZuiofvRv5AajnjLC5TgKXONodIfvQWiunQ3WGpDo+Y/V7AqKc6q/zqDj6U9NW046QVmATbkv1A4OvLtl1GyCiMZBLSHdxCOaoJ5r7Bv7W8syE/3+qpx3jPM0ae3uGbAvOHqgY+P92l9R11O3mChDnw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn; spf=pass smtp.mailfrom=kylinos.cn; arc=none smtp.client-ip=124.126.103.232
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=kylinos.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=kylinos.cn
-X-UUID: d594a38d692e451d94d343be03155d9f-20240319
-X-CID-O-RULE: Release_Ham
-X-CID-RULE: Release_Ham
-X-CID-O-INFO: VERSION:1.1.37,REQID:beb606c7-d216-4ac0-baea-d8109f633bf2,IP:20,
-	URL:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTI
-	ON:release,TS:5
-X-CID-INFO: VERSION:1.1.37,REQID:beb606c7-d216-4ac0-baea-d8109f633bf2,IP:20,UR
-	L:0,TC:0,Content:0,EDM:0,RT:0,SF:-15,FILE:0,BULK:0,RULE:Release_Ham,ACTION
-	:release,TS:5
-X-CID-META: VersionHash:6f543d0,CLOUDID:a7aa9190-e2c0-40b0-a8fe-7c7e47299109,B
-	ulkID:240319150042DHVTFL00,BulkQuantity:0,Recheck:0,SF:38|24|17|19|44|66|1
-	02,TC:nil,Content:0,EDM:-3,IP:-2,URL:0,File:nil,RT:nil,Bulk:nil,QS:nil,BEC
-	:nil,COL:0,OSI:0,OSA:0,AV:0,LES:1,SPR:NO,DKR:0,DKP:0,BRR:0,BRE:0
-X-CID-BVR: 0,NGT
-X-CID-BAS: 0,NGT,0,_
-X-CID-FACTOR: TF_CID_SPAM_SNR,TF_CID_SPAM_FAS,TF_CID_SPAM_FSD,TF_CID_SPAM_FSI
-X-UUID: d594a38d692e451d94d343be03155d9f-20240319
-X-User: aichao@kylinos.cn
-Received: from localhost.localdomain [(112.64.161.44)] by mailgw
-	(envelope-from <aichao@kylinos.cn>)
-	(Generic MTA)
-	with ESMTP id 1500074276; Tue, 19 Mar 2024 15:00:40 +0800
-From: Ai Chao <aichao@kylinos.cn>
-To: justin.ernst@hpe.com,
-	hdegoede@redhat.com,
-	ilpo.jarvinen@linux.intel.com,
-	platform-driver-x86@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Cc: Ai Chao <aichao@kylinos.cn>
-Subject: [PATCH v1] platform/x86: uv_sysfs: use sysfs_emit() instead of sprintf()
-Date: Tue, 19 Mar 2024 15:00:38 +0800
-Message-Id: <20240319070038.309683-1-aichao@kylinos.cn>
-X-Mailer: git-send-email 2.25.1
+	s=arc-20240116; t=1710831674; c=relaxed/simple;
+	bh=sN8BoodaqauJ68zryAbxJ0C8GsgzpHYXpPUW40HgJlo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=Cb5HCzegGET22O9+RSZ4+Dd5txi1uxCXypT+VyVGR0sLdkvY4lHHgReIVGS0t39SbWQqE/7ppALn06Qqa8+RYAWhvmsQIS1o3AFEWbF+VkrtBtpEtyClyi1S4TVOUW8jyBDTdmYsNsSPwHb6CIIbO+FB5w0EnJh4S7CCi1Wb7qA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TSq7LqoK; arc=none smtp.client-ip=209.85.208.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56a0c0a7ebcso2209048a12.1;
+        Tue, 19 Mar 2024 00:01:12 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710831671; x=1711436471; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=rZOnTWy9RHjbWwjvoVyhSRxJR11wBBKA3nUrGVF4HNc=;
+        b=TSq7LqoKz8S+0nIoDUCJANyMGPxc+k3aoKoW9x3Pye1D5OvMkQpTjrFR6/maWxOa2U
+         zLEQxyU/wc7srCRAKpfQ085oEqStW72lgs+F63eaumwNHrCMuP3xESQpbfarcgKPBW8C
+         gY8EzjIGcVZTQ3NW6oAnxqdYlLjLn6sjgib6Fm6Fdna6w5sAXoBBA1fa3DiNgna9uywy
+         05B2UsUQ5c9zV8bVlObaXmMfLxH0URTAniqoOUGPV++/ntDJyhDPC4bvsm6TCS+AqjHL
+         0m1O2tDjhXbeGm4Ip90CYqiHcsO3qQ5CwP6mFd/utYZ3FItpHc3Ajj/zflMuli26Vj1g
+         P4oQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710831671; x=1711436471;
+        h=content-transfer-encoding:in-reply-to:from:content-language
+         :references:cc:to:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=rZOnTWy9RHjbWwjvoVyhSRxJR11wBBKA3nUrGVF4HNc=;
+        b=c7p16q2+RA5x4IB58GCG6p23ncr1q03/spwechMbmlHJihEPX1zED/zMzZET2Vf3J8
+         qk+nn2s6B3PMC81I86yzcMm4hqCqjceZIfohhZDRllxsjoPnArP22uA5+q/0zKIp0/Z0
+         aQNQGlzvM/F+72ptWNIV1sxc1QvrdXpfIdU03LMYib2H0tVrmcjflApGFIqEVwgXf3gk
+         vciCROP5aHUF2Y/3F0oV03hri/WMbRaOvgvVwS/ckfvR5/P4AVNd7pPvZiC94QofWc0y
+         KWTGgpZv3+3g+BhjCNQfEkGmmpbA8dcXUJBNo9woanunQeIflsn2UTYeH+EIyBbfQZLU
+         fPeg==
+X-Forwarded-Encrypted: i=1; AJvYcCVrk8W3PGvmZ9f2pux3TBoJ4IbwcdnZI1Vi2jiggMli5O7bIdis3Bs1XW2vAtCiisA8BzuBb00mWFiijWvAvt3/KivtDO/SRAPSeNskxk3OYqAwj1OTl/8ef59RLEJgU+I9xsb1qMy8qQ==
+X-Gm-Message-State: AOJu0Yy1bks/g9NkaK3MsrwZiI1cyCJOjAn7PWc4Y0HlkArbyHAPUU8H
+	vrdH/2m4BDPH17bLBiG0nC2ZdoT05fzSVe4WvTuuBBDcJ75BA2Cn
+X-Google-Smtp-Source: AGHT+IEKjUdvOW2dgHw0zuQMmiemMW5SAp18zSrs0INd37VhbEvkMXBKDvubgQjvdJa4FYRTfYe88g==
+X-Received: by 2002:a17:907:c283:b0:a45:84e7:b265 with SMTP id tk3-20020a170907c28300b00a4584e7b265mr12235982ejc.7.1710831669473;
+        Tue, 19 Mar 2024 00:01:09 -0700 (PDT)
+Received: from ?IPV6:2a02:8389:41cf:e200:5922:bab2:b36:7e61? (2a02-8389-41cf-e200-5922-bab2-0b36-7e61.cable.dynamic.v6.surfer.at. [2a02:8389:41cf:e200:5922:bab2:b36:7e61])
+        by smtp.gmail.com with ESMTPSA id jx25-20020a170907761900b00a4661f0f1e7sm5682269ejc.205.2024.03.19.00.01.08
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 00:01:08 -0700 (PDT)
+Message-ID: <beddae56-caef-4684-958b-d11ca0808055@gmail.com>
+Date: Tue, 19 Mar 2024 08:01:06 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] dt-bindings: hwmon: adc128d818: convert to dtschema
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+ Rob Herring <robh@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>
+Cc: linux-hwmon@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318-adc128d818_dtschema-v1-1-d0af2caef145@gmail.com>
+ <de0b32b3-348a-4d42-89cd-df2c439b8009@linaro.org>
+Content-Language: en-US, de-AT
+From: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+In-Reply-To: <de0b32b3-348a-4d42-89cd-df2c439b8009@linaro.org>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 7bit
 
-Follow the advice in Documentation/filesystems/sysfs.rst:
-show() should only use sysfs_emit() or sysfs_emit_at() when formatting
-the value to be returned to user space.
+On 3/19/24 06:49, Krzysztof Kozlowski wrote:
+> On 18/03/2024 21:12, Javier Carrasco wrote:
+>> Convert adc128d818 bindings to dtschema to support validation.
+>>
+>> Signed-off-by: Javier Carrasco <javier.carrasco.cruz@gmail.com>
+> 
+> Thank you for your patch. There is something to discuss/improve.
+> 
+> 
+>> +$id: http://devicetree.org/schemas/hwmon/ti,adc128d818.yaml#
+>> +$schema: http://devicetree.org/meta-schemas/core.yaml#
+>> +
+>> +title: Texas Instruments ADC128D818 ADC System Monitor With Temperature Sensor
+>> +
+>> +maintainers:
+>> +  - Javier Carrasco <javier.carrasco.cruz@gmail.com>
+>> +
+>> +description: |
+>> +  The ADC128D818 is a 12-Bit, 8-Channel Analog to Digital Converter (ADC)
+>> +  with a temperature sensor and an I2C interface.
+>> +
+>> +  Datasheets:
+>> +    https://www.ti.com/product/ADC128D818
+>> +
+>> +properties:
+>> +  compatible:
+>> +    const: ti,adc128d818
+>> +
+>> +  reg:
+>> +    maxItems: 1
+>> +
+>> +  ti,mode:
+> 
+> You need | to preserve the formatting.
+> 
 
-Signed-off-by: Ai Chao <aichao@kylinos.cn>
----
- drivers/platform/x86/uv_sysfs.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+Thanks, I overlooked that. If I am not mistaken, 2 are still missing 
+(ti,mode and vref-supply descriptions).
 
-diff --git a/drivers/platform/x86/uv_sysfs.c b/drivers/platform/x86/uv_sysfs.c
-index 38d1b692d3c0..3f6d52dea5c9 100644
---- a/drivers/platform/x86/uv_sysfs.c
-+++ b/drivers/platform/x86/uv_sysfs.c
-@@ -129,22 +129,22 @@ static ssize_t hub_location_show(struct uv_bios_hub_info *hub_info, char *buf)
- 
- static ssize_t hub_partition_show(struct uv_bios_hub_info *hub_info, char *buf)
- {
--	return sprintf(buf, "%d\n", hub_info->f.fields.this_part);
-+	return sysfs_emit(buf, "%d\n", hub_info->f.fields.this_part);
- }
- 
- static ssize_t hub_shared_show(struct uv_bios_hub_info *hub_info, char *buf)
- {
--	return sprintf(buf, "%d\n", hub_info->f.fields.is_shared);
-+	return sysfs_emit(buf, "%d\n", hub_info->f.fields.is_shared);
- }
- static ssize_t hub_nasid_show(struct uv_bios_hub_info *hub_info, char *buf)
- {
- 	int cnode = get_obj_to_cnode(hub_info->id);
- 
--	return sprintf(buf, "%d\n", ordinal_to_nasid(cnode));
-+	return sysfs_emit(buf, "%d\n", ordinal_to_nasid(cnode));
- }
- static ssize_t hub_cnode_show(struct uv_bios_hub_info *hub_info, char *buf)
- {
--	return sprintf(buf, "%d\n", get_obj_to_cnode(hub_info->id));
-+	return sysfs_emit(buf, "%d\n", get_obj_to_cnode(hub_info->id));
- }
- 
- struct hub_sysfs_entry {
-@@ -304,12 +304,12 @@ struct uv_port {
- 
- static ssize_t uv_port_conn_hub_show(struct uv_bios_port_info *port, char *buf)
- {
--	return sprintf(buf, "%d\n", port->conn_id);
-+	return sysfs_emit(buf, "%d\n", port->conn_id);
- }
- 
- static ssize_t uv_port_conn_port_show(struct uv_bios_port_info *port, char *buf)
- {
--	return sprintf(buf, "%d\n", port->conn_port);
-+	return sysfs_emit(buf, "%d\n", port->conn_port);
- }
- 
- struct uv_port_sysfs_entry {
-@@ -470,7 +470,7 @@ static ssize_t uv_pci_location_show(struct uv_pci_top_obj *top_obj, char *buf)
- 
- static ssize_t uv_pci_iio_stack_show(struct uv_pci_top_obj *top_obj, char *buf)
- {
--	return sprintf(buf, "%d\n", top_obj->iio_stack);
-+	return sysfs_emit(buf, "%d\n", top_obj->iio_stack);
- }
- 
- static ssize_t uv_pci_ppb_addr_show(struct uv_pci_top_obj *top_obj, char *buf)
-@@ -480,7 +480,7 @@ static ssize_t uv_pci_ppb_addr_show(struct uv_pci_top_obj *top_obj, char *buf)
- 
- static ssize_t uv_pci_slot_show(struct uv_pci_top_obj *top_obj, char *buf)
- {
--	return sprintf(buf, "%d\n", top_obj->slot);
-+	return sysfs_emit(buf, "%d\n", top_obj->slot);
- }
- 
- struct uv_pci_top_sysfs_entry {
-@@ -725,13 +725,13 @@ static void pci_topology_exit(void)
- static ssize_t partition_id_show(struct kobject *kobj,
- 			struct kobj_attribute *attr, char *buf)
- {
--	return sprintf(buf, "%ld\n", sn_partition_id);
-+	return sysfs_emit(buf, "%ld\n", sn_partition_id);
- }
- 
- static ssize_t coherence_id_show(struct kobject *kobj,
- 			struct kobj_attribute *attr, char *buf)
- {
--	return sprintf(buf, "%ld\n", sn_coherency_id);
-+	return sysfs_emit(buf, "%ld\n", sn_coherency_id);
- }
- 
- static ssize_t uv_type_show(struct kobject *kobj,
--- 
-2.25.1
+By the way, do you know why dtschema does not complain about that? If I 
+place a '|' in a wrong place, it does complain, though.
 
+> With this:
+> 
+> Reviewed-by: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
+> 
+> Best regards,
+> Krzysztof
+> 
+
+Best regards,
+Javier Carrasco
 
