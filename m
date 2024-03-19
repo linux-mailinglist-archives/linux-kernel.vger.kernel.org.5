@@ -1,80 +1,80 @@
-Return-Path: <linux-kernel+bounces-107317-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107318-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 424CD87FAFF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:42:27 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7762387FB00
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:42:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 9AE8DB21913
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:42:24 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A56C21C21BF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:42:37 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A4C007D095;
-	Tue, 19 Mar 2024 09:41:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DFC3A7E58D;
+	Tue, 19 Mar 2024 09:41:51 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="klM9Doxj"
-Received: from mail-oi1-f172.google.com (mail-oi1-f172.google.com [209.85.167.172])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="L6W15cES"
+Received: from mail-pf1-f181.google.com (mail-pf1-f181.google.com [209.85.210.181])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5493A7E108
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:41:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.172
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4588A7E564
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 09:41:49 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.181
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710841308; cv=none; b=T/55pWJz9TB8CBoSEKW9S9MQ60yFzlxFYmgySj/bgz0SCoIgwu9ET9GN/UGH/wq10bKmaQkxzfgfTyr+qZE0Rm6RELmX7DApuDRxkHMNeYo7nkZlo4TLJ2WKkzL68NwFz7dAYqfvd5dbnG6Svf6tHsurEkYF5ZXtIFirxj59C9k=
+	t=1710841310; cv=none; b=LxxzAXvdRWx88Eh+X7xH4UfhtdTfLQTpbDccgghWcK4qcgxymDyauc8e0xh/a/pA6AmEv9BUzlTufY3JgJw8sRv7H+TZ/d2/Hf2RoZJkaGi4qQbPZoio5CNGymeMN45MoXhz0EP0YOAT3txIIFD/wWwtwUlYQk2wtmCcgTptHDU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710841308; c=relaxed/simple;
-	bh=mVMJQpmryZm4Ru99nD32KvjTOYfibZ/pE4Lu/SnCZ2o=;
+	s=arc-20240116; t=1710841310; c=relaxed/simple;
+	bh=Q4MsXeGz7gjwSGkOMZ96Ds7ueS0MczucwPZ2yMN5ZlQ=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=CKZydMT0E1XkOIjBifwKIN1rI1V5xFfoLdGYEyQcUOLR9no5qckqY86KGCtHF+waGRq0UIzJLQROwZ/BmaIsHsOI/CgCCtxdiA+tdUvosRYNHrRPBbyLB9UCyvuTTC1Wnvwl2f+DS9mj5l8sOF+e2yNwHj1wLo9hSy+dMMQ0qss=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=klM9Doxj; arc=none smtp.client-ip=209.85.167.172
+	 MIME-Version; b=WBqn9OqwA/QRZjcF1+4noe+ZE3hS2WMRzPipfiry8Y5WA270w3HzRalSgVdKGdkHehE335fiOPmL8ZYXQMQqMzuonNkw7Y9IlWoMRV8TSm+KWFGrfpOEkCaH7fnxAvgr0HLPWlVID1Z3n7T73vYEM1RymzyLcCxXEz1DnTxSyVU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=L6W15cES; arc=none smtp.client-ip=209.85.210.181
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-oi1-f172.google.com with SMTP id 5614622812f47-3c38f4e18eeso768850b6e.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:41:47 -0700 (PDT)
+Received: by mail-pf1-f181.google.com with SMTP id d2e1a72fcca58-6e73e8bdea2so890818b3a.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 02:41:49 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710841306; x=1711446106; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710841308; x=1711446108; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:from:to:cc:subject
          :date:message-id:reply-to;
-        bh=XqzN+wWZGV0/ntTi34b/frY6opMs0aB0oKSPnzSGTOk=;
-        b=klM9DoxjF2Ehc7z0FLxAU/zfbaQjuRtkTMcp55NoMe/z/GPD0ocTygxKmwM7wLQhxT
-         rtyN87Mrpo7HVA3DKBbMYFvImpeBt92+RKo+T+3509S3OzsruVZgMfQmHCj5qJXq1igK
-         tvFLQFr1XnvaDgOs19AMsfaJqs4t/3bom58CuDsDsWWnZWTxf2+AdZeqMYMsGlTVF+cM
-         5xspbkap/EGedOiGWsdsVqs9al5NXVsGfNQolgLkohanRsVdN59ylHRH9C+25T2RLOYX
-         +GgbEw16cYJJRwKMFQQZMAh3rEk+3Bhjg4O5vxc1OcSoGg6zjmv9yqgx5Z3a6mcZb+gm
-         HjoQ==
+        bh=+IPrpGzoHpDGCt5ZLHs8DWvQZcRMV24wjwQMoVjv/9U=;
+        b=L6W15cESoM73hfcFlhUFEryUyBW6KiP8toxFpsdApH2pwoWtmiyb4NP3v91gsCmgip
+         3662Ds+zatXKoyIbhMdfIQ6QmwZsvhdwuNuDyeKaZVgZyNhXKZkOUoxneTaspgbtnAsX
+         Nbus7JgBHGWSkZOt6uS+HpYeFJ93mQ/8BVdXm8IqWKoDn1ewp1CuZ/Y/zYnuhWD5TP8j
+         Q36aOZadM+4eiKeA21lk5qYTinA9uuH2f59oiuuHO4gqTwR+FT3Hd1KkQT97GkYiUS49
+         EsGtT/hJKQrO++C4hc4xIIJAGVRrZCYBSsJVFbTYOKu4feVTgcwZwvIOAdQSkqEdW7s3
+         qudA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710841306; x=1711446106;
+        d=1e100.net; s=20230601; t=1710841308; x=1711446108;
         h=content-transfer-encoding:mime-version:reply-to:references
          :in-reply-to:message-id:date:subject:cc:to:from:x-gm-message-state
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=XqzN+wWZGV0/ntTi34b/frY6opMs0aB0oKSPnzSGTOk=;
-        b=Z1Ofm+62QLdL8VRfTHCPKSLvjW/KuBlDRU55kGrRCDwVx2FEQaxRvJ6kwP//PpxZYu
-         r4VFkE/MJEM/yjNRix+8eu/ju0FJA2bW4RPDyUSjGq4muRcDh5YErCOBCakKeH6nJhS+
-         Pe7U4IFioh2G7uEwRUzBhhhV0bOBQvCSo+3FIovwK7/dhD2sGgb7C1pyu1cZfVJbqpGw
-         2xw7FOb+vVGxHw1KA836QCktIMKXKwVkeb0omc3LaeA80Vg+r3RCLs3NEjuAEitRYM2Z
-         X3TzVEzoU9xg5aQxPl/LxDJcZwbtgGAx8xG2XRpldy8XgIevz7/sqAEmYFSuI5WwLPVV
-         x9ug==
-X-Forwarded-Encrypted: i=1; AJvYcCW3XhJAk3WqqmazW28y/hcXfXTipOq+BlwXK5+tJGyX3rNaJsTMpIxJ0RcExdQ0GYaj1QoIkx6t5QO7LHr2Pwz548+AlFPLdbcHU9Mx
-X-Gm-Message-State: AOJu0Yyc7BgR3NRPROVpcnGc55j6j4HUSV86EXRo6TABrxu9XHF7qa+0
-	cukYSYLAZHcldKq1MQwo5+n279sHPx5DnH/4c1l8GXjjDbVd12P1
-X-Google-Smtp-Source: AGHT+IFpWzLUcgwPhIA7GrafY8so+K48aVsYG/cukRTuKwm2t4oZkaJoNlfObveyt98ye1pVmlIUsQ==
-X-Received: by 2002:a05:6808:180b:b0:3c3:82c3:ddcc with SMTP id bh11-20020a056808180b00b003c382c3ddccmr2678100oib.31.1710841306463;
-        Tue, 19 Mar 2024 02:41:46 -0700 (PDT)
+        bh=+IPrpGzoHpDGCt5ZLHs8DWvQZcRMV24wjwQMoVjv/9U=;
+        b=Gx9ol9fMr40CKUefnhYyDqp8XwapQ3KkGbzHwkHCB+qIXaNzmpVSu6OAO0QS9tZu/B
+         m3OmahA1aVQWQePNFRoaC/O3MB+ZRybx9ERKk9ZeLd8IZVSaKT1tNTxkAmm9fTeCeWwK
+         xLhR0H8Qs3YpKZLNea6cAs/+SjkCaj11sFx/0tiEY7i4Vvvyf5XD6sk/YZaVVB+Z29gs
+         6ilmIIuj9QBNT84IT6Skl+TLGGUk0T6izLqs/1gaQAnOHkKVvaigHOsLiHAR6Z7QS5ND
+         beDI6gM9HXMFGuYh1cPr7vYpswQ6G3L/mow1/c8vmqIndLW/thWdEZjm/+WpsPAUO/yr
+         6/xw==
+X-Forwarded-Encrypted: i=1; AJvYcCXD/Z2XiUMI5MrZBn3XKzTILWyJMRvgMYR6C/8up2AJw1Dy+yPVt/7JCplS2cw/SXFC2e6fmCLM/g2SbZXGMPeJ8qbgKBAAEPK4vN0r
+X-Gm-Message-State: AOJu0Yx4db1Gq6O22Z1N0uVkLRCwmNLSTUS7Q5mNWQThGOb3vkB6uA1a
+	u+5oMYTn+6vqxs16nt56Gx8Sr387Wo9a4/ST2ip+QYq2NppEM0E6
+X-Google-Smtp-Source: AGHT+IH9clmpXo+eDYRjLfrDjT4vum1cmIxLp7ORYVYCH84rdbd4eGTduRgvmmpEsgUtIio/VDV/8g==
+X-Received: by 2002:a05:6a00:9389:b0:6e6:a1ff:3661 with SMTP id ka9-20020a056a00938900b006e6a1ff3661mr19465566pfb.31.1710841308559;
+        Tue, 19 Mar 2024 02:41:48 -0700 (PDT)
 Received: from KASONG-MB2.tencent.com ([43.132.141.21])
-        by smtp.gmail.com with ESMTPSA id i185-20020a62c1c2000000b006e583a649b4sm9708761pfg.210.2024.03.19.02.41.44
+        by smtp.gmail.com with ESMTPSA id i185-20020a62c1c2000000b006e583a649b4sm9708761pfg.210.2024.03.19.02.41.46
         (version=TLS1_3 cipher=TLS_CHACHA20_POLY1305_SHA256 bits=256/256);
-        Tue, 19 Mar 2024 02:41:46 -0700 (PDT)
+        Tue, 19 Mar 2024 02:41:48 -0700 (PDT)
 From: Kairui Song <ryncsn@gmail.com>
 To: linux-mm@kvack.org
 Cc: Andrew Morton <akpm@linux-foundation.org>,
 	Matthew Wilcox <willy@infradead.org>,
 	linux-kernel@vger.kernel.org,
 	Kairui Song <kasong@tencent.com>
-Subject: [PATCH 3/4] lib/xarray: introduce a new helper xas_get_order
-Date: Tue, 19 Mar 2024 17:27:32 +0800
-Message-ID: <20240319092733.4501-4-ryncsn@gmail.com>
+Subject: [PATCH 4/4] mm/filemap: optimize filemap folio adding
+Date: Tue, 19 Mar 2024 17:27:33 +0800
+Message-ID: <20240319092733.4501-5-ryncsn@gmail.com>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240319092733.4501-1-ryncsn@gmail.com>
 References: <20240319092733.4501-1-ryncsn@gmail.com>
@@ -89,114 +89,228 @@ Content-Transfer-Encoding: 8bit
 
 From: Kairui Song <kasong@tencent.com>
 
-It can be used after xas_load to check the order of loaded entries.
-Compared to xa_get_order, it saves an XA_STATE and avoid a rewalk.
+Instead of doing multiple tree walks, do one optimism range check
+with lock hold, and exit if raced with another insertion. If a shadow
+exists, check it with a new xas_get_order helper before releasing the
+lock to avoid redundant tree walks for getting its order.
+
+Drop the lock and do the allocation only if a split is needed.
+
+In the best case, it only need to walk the tree once. If it needs
+to alloc and split, 3 walks are issued (One for first ranced
+conflict check and order retrieving, one for the second check after
+allocation, one for the insert after split).
+
+Testing with 4k pages, in an 8G cgroup, with 20G brd as block device:
+
+fio -name=cached --numjobs=16 --filename=/mnt/test.img \
+  --buffered=1 --ioengine=mmap --rw=randread --time_based \
+  --ramp_time=30s --runtime=5m --group_reporting
+
+Before:
+bw (  MiB/s): min=  790, max= 3665, per=100.00%, avg=2499.17, stdev=20.64, samples=8698
+iops        : min=202295, max=938417, avg=639785.81, stdev=5284.08, samples=8698
+
+After (+4%):
+bw (  MiB/s): min=  451, max= 3868, per=100.00%, avg=2599.83, stdev=23.39, samples=8653
+iops        : min=115596, max=990364, avg=665556.34, stdev=5988.20, samples=8653
+
+Test result with THP (do a THP randread then switch to 4K page in hope it
+issues a lot of splitting):
+
+fio -name=cached --numjobs=16 --filename=/mnt/test.img \
+  --buffered=1 --ioengine mmap -thp=1 --readonly \
+  --rw=randread --random_distribution=random \
+  --time_based --runtime=5m --group_reporting
+
+fio -name=cached --numjobs=16 --filename=/mnt/test.img \
+  --buffered=1 --ioengine mmap --readonly \
+  --rw=randread --random_distribution=random \
+  --time_based --runtime=5s --group_reporting
+
+Before:
+bw (  KiB/s): min=28071, max=62359, per=100.00%, avg=53542.44, stdev=179.77, samples=9520
+iops        : min= 7012, max=15586, avg=13379.39, stdev=44.94, samples=9520
+bw (  MiB/s): min= 2457, max= 6193, per=100.00%, avg=3923.21, stdev=82.48, samples=144
+iops        : min=629220, max=1585642, avg=1004340.78, stdev=21116.07, samples=144
+
+After (+-0.0%):
+bw (  KiB/s): min=30561, max=63064, per=100.00%, avg=53635.82, stdev=177.21, samples=9520
+iops        : min= 7636, max=15762, avg=13402.82, stdev=44.29, samples=9520
+bw (  MiB/s): min= 2449, max= 6145, per=100.00%, avg=3914.68, stdev=81.15, samples=144
+iops        : min=627106, max=1573156, avg=1002158.11, stdev=20774.77, samples=144
+
+The performance is better (+4%) for 4K cached read and unchanged for THP.
 
 Signed-off-by: Kairui Song <kasong@tencent.com>
 ---
- include/linux/xarray.h |  6 ++++++
- lib/xarray.c           | 49 ++++++++++++++++++++++++++----------------
- 2 files changed, 37 insertions(+), 18 deletions(-)
+ mm/filemap.c | 127 ++++++++++++++++++++++++++++++---------------------
+ 1 file changed, 76 insertions(+), 51 deletions(-)
 
-diff --git a/include/linux/xarray.h b/include/linux/xarray.h
-index cb571dfcf4b1..d9d479334c9e 100644
---- a/include/linux/xarray.h
-+++ b/include/linux/xarray.h
-@@ -1548,6 +1548,7 @@ void xas_create_range(struct xa_state *);
- 
- #ifdef CONFIG_XARRAY_MULTI
- int xa_get_order(struct xarray *, unsigned long index);
-+int xas_get_order(struct xa_state *xas);
- void xas_split(struct xa_state *, void *entry, unsigned int order);
- void xas_split_alloc(struct xa_state *, void *entry, unsigned int order, gfp_t);
- #else
-@@ -1556,6 +1557,11 @@ static inline int xa_get_order(struct xarray *xa, unsigned long index)
- 	return 0;
+diff --git a/mm/filemap.c b/mm/filemap.c
+index 6bbec8783793..c1484bcdbddb 100644
+--- a/mm/filemap.c
++++ b/mm/filemap.c
+@@ -848,12 +848,77 @@ void replace_page_cache_folio(struct folio *old, struct folio *new)
  }
+ EXPORT_SYMBOL_GPL(replace_page_cache_folio);
  
-+static inline int xas_get_order(struct xa_state *xas)
++static int __split_add_folio_locked(struct xa_state *xas, struct folio *folio,
++				    pgoff_t index, gfp_t gfp, void **shadowp)
 +{
-+	return 0;
++	void *entry, *shadow, *alloced_shadow = NULL;
++	int order, alloced_order = 0;
++
++	gfp &= GFP_RECLAIM_MASK;
++	for (;;) {
++		shadow = NULL;
++		order = 0;
++
++		xas_for_each_conflict(xas, entry) {
++			if (!xa_is_value(entry))
++				return -EEXIST;
++			shadow = entry;
++		}
++
++		if (shadow) {
++			if (shadow == xas_reload(xas)) {
++				order = xas_get_order(xas);
++				if (order && order > folio_order(folio)) {
++					/* entry may have been split before we acquired lock */
++					if (shadow != alloced_shadow || order != alloced_order)
++						goto unlock;
++					xas_split(xas, shadow, order);
++					xas_reset(xas);
++				}
++				order = 0;
++			}
++			if (shadowp)
++				*shadowp = shadow;
++		}
++
++		xas_store(xas, folio);
++		/* Success, return with mapping locked */
++		if (!xas_error(xas))
++			return 0;
++unlock:
++		/*
++		 * Unlock path, if errored, return unlocked.
++		 * If allocation needed, alloc and retry.
++		 */
++		xas_unlock_irq(xas);
++		if (order) {
++			if (unlikely(alloced_order))
++				xas_destroy(xas);
++			xas_split_alloc(xas, shadow, order, gfp);
++			if (!xas_error(xas)) {
++				alloced_shadow = shadow;
++				alloced_order = order;
++			}
++			goto next;
++		}
++		/* xas_nomem result checked by xas_error below */
++		xas_nomem(xas, gfp);
++next:
++		xas_lock_irq(xas);
++		if (xas_error(xas))
++			return xas_error(xas);
++
++		xas_reset(xas);
++	}
 +}
 +
- static inline void xas_split(struct xa_state *xas, void *entry,
- 		unsigned int order)
+ noinline int __filemap_add_folio(struct address_space *mapping,
+ 		struct folio *folio, pgoff_t index, gfp_t gfp, void **shadowp)
  {
-diff --git a/lib/xarray.c b/lib/xarray.c
-index 39f07bfc4dcc..88fbea481e1b 100644
---- a/lib/xarray.c
-+++ b/lib/xarray.c
-@@ -1750,39 +1750,52 @@ void *xa_store_range(struct xarray *xa, unsigned long first,
- EXPORT_SYMBOL(xa_store_range);
+ 	XA_STATE(xas, &mapping->i_pages, index);
+ 	bool huge = folio_test_hugetlb(folio);
+ 	long nr;
++	int ret;
  
- /**
-- * xa_get_order() - Get the order of an entry.
-- * @xa: XArray.
-- * @index: Index of the entry.
-+ * xas_get_order() - Get the order of an loaded entry after xas_load.
-+ * @xas: XArray operation state.
-+ *
-+ * Called after xas_load, the xas should not be in an error state.
-  *
-  * Return: A number between 0 and 63 indicating the order of the entry.
-  */
--int xa_get_order(struct xarray *xa, unsigned long index)
-+int xas_get_order(struct xa_state *xas)
- {
--	XA_STATE(xas, xa, index);
--	void *entry;
- 	int order = 0;
+ 	VM_BUG_ON_FOLIO(!folio_test_locked(folio), folio);
+ 	VM_BUG_ON_FOLIO(folio_test_swapbacked(folio), folio);
+@@ -863,70 +928,30 @@ noinline int __filemap_add_folio(struct address_space *mapping,
+ 	xas_set_order(&xas, index, folio_order(folio));
+ 	nr = folio_nr_pages(folio);
  
--	rcu_read_lock();
--	entry = xas_load(&xas);
+-	gfp &= GFP_RECLAIM_MASK;
+ 	folio_ref_add(folio, nr);
+ 	folio->mapping = mapping;
+ 	folio->index = xas.xa_index;
+ 
+-	do {
+-		unsigned int order = xa_get_order(xas.xa, xas.xa_index);
+-		void *entry, *old = NULL;
 -
--	if (!entry)
--		goto unlock;
+-		if (order > folio_order(folio)) {
+-			xas_split_alloc(&xas, xa_load(xas.xa, xas.xa_index),
+-					order, gfp);
+-			if (xas_error(&xas))
+-				goto error;
+-		}
+-		xas_lock_irq(&xas);
+-		xas_for_each_conflict(&xas, entry) {
+-			old = entry;
+-			if (!xa_is_value(entry)) {
+-				xas_set_err(&xas, -EEXIST);
+-				goto unlock;
+-			}
+-		}
 -
--	if (!xas.xa_node)
--		goto unlock;
-+	if (!xas->xa_node)
-+		return 0;
- 
- 	for (;;) {
--		unsigned int slot = xas.xa_offset + (1 << order);
-+		unsigned int slot = xas->xa_offset + (1 << order);
- 
- 		if (slot >= XA_CHUNK_SIZE)
- 			break;
--		if (!xa_is_sibling(xas.xa_node->slots[slot]))
-+		if (!xa_is_sibling(xas->xa_node->slots[slot]))
- 			break;
- 		order++;
- 	}
- 
--	order += xas.xa_node->shift;
+-		if (old) {
+-			if (shadowp)
+-				*shadowp = old;
+-			/* entry may have been split before we acquired lock */
+-			order = xa_get_order(xas.xa, xas.xa_index);
+-			if (order > folio_order(folio)) {
+-				/* How to handle large swap entries? */
+-				BUG_ON(shmem_mapping(mapping));
+-				xas_split(&xas, old, order);
+-				xas_reset(&xas);
+-			}
+-		}
+-
+-		xas_store(&xas, folio);
+-		if (xas_error(&xas))
+-			goto unlock;
+-
++	xas_lock_irq(&xas);
++	ret = __split_add_folio_locked(&xas, folio, index, gfp, shadowp);
++	if (likely(!ret)) {
+ 		mapping->nrpages += nr;
+-
+-		/* hugetlb pages do not participate in page cache accounting */
+ 		if (!huge) {
+ 			__lruvec_stat_mod_folio(folio, NR_FILE_PAGES, nr);
+ 			if (folio_test_pmd_mappable(folio))
+ 				__lruvec_stat_mod_folio(folio,
+ 						NR_FILE_THPS, nr);
+ 		}
 -unlock:
-+	order += xas->xa_node->shift;
-+	return order;
-+}
-+EXPORT_SYMBOL(xas_get_order);
-+
-+/**
-+ * xa_get_order() - Get the order of an entry.
-+ * @xa: XArray.
-+ * @index: Index of the entry.
-+ *
-+ * Return: A number between 0 and 63 indicating the order of the entry.
-+ */
-+int xa_get_order(struct xarray *xa, unsigned long index)
-+{
-+	XA_STATE(xas, xa, index);
-+	int order = 0;
-+	void *entry;
-+
-+	rcu_read_lock();
-+	entry = xas_load(&xas);
-+	if (entry)
-+		order = xas_get_order(&xas);
- 	rcu_read_unlock();
+ 		xas_unlock_irq(&xas);
+-	} while (xas_nomem(&xas, gfp));
+-
+-	if (xas_error(&xas))
+-		goto error;
++		trace_mm_filemap_add_to_page_cache(folio);
++	} else {
++		xas_unlock_irq(&xas);
++		folio->mapping = NULL;
++		/* Leave page->index set: truncation relies upon it */
++		folio_put_refs(folio, nr);
++	}
  
- 	return order;
+-	trace_mm_filemap_add_to_page_cache(folio);
+-	return 0;
+-error:
+-	folio->mapping = NULL;
+-	/* Leave page->index set: truncation relies upon it */
+-	folio_put_refs(folio, nr);
+-	return xas_error(&xas);
++	return ret;
+ }
+ ALLOW_ERROR_INJECTION(__filemap_add_folio, ERRNO);
+ 
 -- 
 2.43.0
 
