@@ -1,209 +1,158 @@
-Return-Path: <linux-kernel+bounces-107674-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107675-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CD6B887FFE6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:49:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E69587FFE8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:50:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 83091284A0B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:49:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3067A1C218A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:50:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 98D141CD09;
-	Tue, 19 Mar 2024 14:48:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F21C56776;
+	Tue, 19 Mar 2024 14:50:20 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="UMcT+llI"
-Received: from mail-lf1-f41.google.com (mail-lf1-f41.google.com [209.85.167.41])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="K+kczf6W"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 03D7FF9E0;
-	Tue, 19 Mar 2024 14:48:51 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 704DF208B0
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:50:18 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710859733; cv=none; b=LJUxyBG4g/HvuNsdMt0XB+xLlPyIx8bLHzpgU0k0x/k6bva97k2poTL/ihwsj5t4KqpCTIFSOgszcql/SlpBK//Cir4ZP7uXtYanuY+40egLu/fEYLSoP9SGl2oU31/boYz17Z0cPc6548LB9LyPv97hAdJnfknRQF+A/2M57pY=
+	t=1710859819; cv=none; b=mnff6Ac99yzlYTghZ6jmF2689BH6+7KdiI8qWvIMzpf80jRY3AH2TRfYL9L77CSurDDYrcTCeKnRAMzuP3J9B7KrvxbDmF8JuhGqvMklNJw7ilpruvBIf8vYbMyzX50cat8V7QBFhi6cxfIX3DjzCxMlcWqJkZeBqSzjjUd0zCI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710859733; c=relaxed/simple;
-	bh=Zby5V/77Gm6XNsPuHJHW0J+fsuKnn4DHWh14NNhYICA=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=QXpsry1PyLy3sd+Nm6sw0al2DLABEhz+V7I8pSuB6VeKtsX9oQ/508XVbqVcDESQcWNQ4CbUhS1gaziSYNmXjB4EnVlDtT9NRLeVA8aVWWcsXAEyyV8F8DEaSTwb791HFLZuMzs0VsY7bWcpK7oY3GsQR2yY5mAhQkTZTl95vLU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=UMcT+llI; arc=none smtp.client-ip=209.85.167.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f41.google.com with SMTP id 2adb3069b0e04-512f892500cso6281413e87.3;
-        Tue, 19 Mar 2024 07:48:51 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710859730; x=1711464530; darn=vger.kernel.org;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from:from:to
-         :cc:subject:date:message-id:reply-to;
-        bh=fXxsIw2dDze0fvR7GTtibnbx0BcDg7yMq6vxLD+1Uxc=;
-        b=UMcT+llIUV3KQzxet4oE2rYstWlsoHktklYtDAKNOosizDOmgMbdLjRiQUdthDjORn
-         p3KDMurMwXye5OkB22WQ2JV2weUuXODt31GV4kiQ71IW0jsyqNa8U2PlwUM0OQEC7nS0
-         +n09IXoI0MnDELvQoNLCngZSF/vO3FepMyoRi/QBuqatQxRnEvpYDABoTQoCqnKqIip7
-         3XNinhM0gn1CbH/c2M9jQsZ057lELUGXYSM732hKigxXkSxfxDylq16625exUsDMhbKM
-         rOKINTGnpLPzyDoEHNma7PhLSjUlZfkGjRma9VfmgzlOKpjccdvMo1iVRr2PktHRLbsQ
-         1elg==
+	s=arc-20240116; t=1710859819; c=relaxed/simple;
+	bh=9Or02ADRX8u+teHk/fSbctDIgcqOyiCVTsoWY9rQI2A=;
+	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=rpyUHHfRq6ztOBgSwZPUeuKgoZ1G6Wc9VsDa7FPcfzCsViChuuztuloL5UbAxUnrSddoXdqINGg9PjP9INDpGzrh7o5cyBPPg0q2bWanhtphzlIOAnVyjnF7eyhYzfbdqNAqLUgZ/HhEU0dwm7w22b0HPeqwkdf3smqN0UWRfU8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=K+kczf6W; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710859817;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rQVEbtTOwcCbdEEQDCGW8gxi2FS5l5Frw2gE9pER4XY=;
+	b=K+kczf6WxjRNyGBWfs0EuukM3dRbY698RRwq+Iai0dUExPy/MUC5o2s00EnNZhpE6wxJf9
+	LLud0nvPQ5+fh+JWMpCFJzOidB6sotyoTIHBoMKFCg+csMvagzEFHEaCqY3BH0yg+DjQjf
+	/dN5jW/YU06VHLfS7fzurPw+gH7blh0=
+Received: from mail-oa1-f71.google.com (mail-oa1-f71.google.com
+ [209.85.160.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-41-ZUVGYaOnNxyczbvUAVODsQ-1; Tue, 19 Mar 2024 10:50:16 -0400
+X-MC-Unique: ZUVGYaOnNxyczbvUAVODsQ-1
+Received: by mail-oa1-f71.google.com with SMTP id 586e51a60fabf-221bd0d2bf6so7232712fac.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:50:15 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710859730; x=1711464530;
-        h=in-reply-to:content-transfer-encoding:content-disposition
-         :mime-version:references:message-id:subject:cc:to:date:from
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=fXxsIw2dDze0fvR7GTtibnbx0BcDg7yMq6vxLD+1Uxc=;
-        b=tzitXwrFwkMA/Kg1qQOQ7xOEr1tUBQt+qUuN7l+pUbkLj5R8s7xcyPftnGTKOu9ryU
-         nhAx+aU7DnlgAWJpdg07Wvklshoyur/FSAWdLnkIBlkEAwKkxmw2hsOgPVyaspnKv53h
-         DevkCq5mKJUV80kzRHdFt4ii+X/pu1oMclvmtuHSNEm4Nb6LmutyvU7FTLmxL3blj6m5
-         nwU4m7e4Abw+XIa/ohx82alZtqvY1xX9FHL/XdppIWl5pMp2siWnxDefA5CliDXAQMya
-         rI70pnKeGyj18QKLIZj80UIaJentRgMRZFzISUpm7qKHN7Nm7oN3wRVLqg2s+o9JAiz3
-         hzWw==
-X-Forwarded-Encrypted: i=1; AJvYcCUJxaT6n3LgkMsLVt1GIJYiXBzOTk64zl9zoFmBt3HlUtaC+q+EAKvzXMBaZ4Kbew2+JY0eaSKheSyHDxA/HAuGY90tfZpHQ2534QTWSGCn8qCzSxU/bRoYpdelirqSrKrC
-X-Gm-Message-State: AOJu0YzxymzTwax5W82KUjhxSDLV6SqsEUAcji2E+nmhkEvUA3R/IfwC
-	8F5KsPU+DmsNxnToxhUKiM8R+r2nNIioh0rzT0vpXwWMzvqWoGQm
-X-Google-Smtp-Source: AGHT+IH2z5QwVEF7+nCESVqDzcYfrDiDm1LxllGl6VYzDYlwVMlWO0GP8DQpG8yAGDYsCt6wX1WfDw==
-X-Received: by 2002:a19:8c56:0:b0:515:7686:6068 with SMTP id i22-20020a198c56000000b0051576866068mr1717419lfj.55.1710859729662;
-        Tue, 19 Mar 2024 07:48:49 -0700 (PDT)
-Received: from pc636 (host-90-235-3-101.mobileonline.telia.com. [90.235.3.101])
-        by smtp.gmail.com with ESMTPSA id b11-20020a056512024b00b00513d4560aa3sm1766653lfo.170.2024.03.19.07.48.48
+        d=1e100.net; s=20230601; t=1710859815; x=1711464615;
+        h=content-transfer-encoding:mime-version:references:in-reply-to
+         :message-id:subject:cc:to:from:date:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=rQVEbtTOwcCbdEEQDCGW8gxi2FS5l5Frw2gE9pER4XY=;
+        b=ISsQ+d5W0izugcZYOUmMNfi+05KO+/9AfN33fTfpcrmeqOrXJ7A5NSmfKPrVFXw1Vk
+         32jLIvJxWa1V6iCwLdWxV3zaYulZ5BvX1MmNnl+3mW+Cgq4t6y126F8mPguzB5b9idp0
+         YOecDqgPIe+o2ZCUW8uE5LdGr5nAWRry3xQKYCL5pZB1C0gkwdzaudy54qnKnJDgPj8x
+         AASoKWL50OYlNvkoJRGp3C/JNZxPD0fIy4t8Xs/Uk7pAw6FuWKvr7yO0kJ8YfsZ6w9Go
+         7wixE7V2XvtZ4LN+PDTRlf7MMPeElBhTkULTsk3vd0/1xc+dCE6t7+IAHRejNeJRxIkt
+         u5TQ==
+X-Forwarded-Encrypted: i=1; AJvYcCV2i8EmYp75FcwwwaWRwZ6dD4E/py1/VGqJbewR+56XDLwDUA3SacQYLX75Ow1YzwEVuTjxt0ZOAJsetJDdDVFmVmU5Va5KkiMo+fQr
+X-Gm-Message-State: AOJu0Yz852gYPgWwvRu4x948BlwUo/y3AP9+D6OL1jz8Pg+ex7u69xZk
+	o1dsbb2HD7EzU7gcJkufDHb17Cwypt4Ny7p1YDPTal4MlyU2XA6Jztq1kJqkfG0g83NUXJKImc+
+	VrQraJN1pfKqbGeWI/tvO4o1P7W8oei1qoN1NYXFF/xGCJ0BnEMY79nJmVMff4g==
+X-Received: by 2002:a05:6870:4345:b0:221:c9ef:3e with SMTP id x5-20020a056870434500b00221c9ef003emr16362033oah.13.1710859815381;
+        Tue, 19 Mar 2024 07:50:15 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IG95zfhgakQbD+IW3Q6yfYsnzRgRRliSdgUB3UoL9l6r9IzAM8N4q69arDelFugd9JQVbllDA==
+X-Received: by 2002:a05:6870:4345:b0:221:c9ef:3e with SMTP id x5-20020a056870434500b00221c9ef003emr16362019oah.13.1710859815111;
+        Tue, 19 Mar 2024 07:50:15 -0700 (PDT)
+Received: from redhat.com ([38.15.36.11])
+        by smtp.gmail.com with ESMTPSA id g18-20020a02c552000000b00474fd401b8fsm2885461jaj.34.2024.03.19.07.50.14
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 07:48:49 -0700 (PDT)
-From: Uladzislau Rezki <urezki@gmail.com>
-X-Google-Original-From: Uladzislau Rezki <urezki@pc636>
-Date: Tue, 19 Mar 2024 15:48:46 +0100
-To: Joel Fernandes <joel@joelfernandes.org>
-Cc: Uladzislau Rezki <urezki@gmail.com>, linux-kernel@vger.kernel.org,
-	frederic@kernel.org, boqun.feng@gmail.com, neeraj.iitr10@gmail.com,
-	rcu@vger.kernel.org, rostedt@goodmis.org,
-	"Paul E. McKenney" <paulmck@kernel.org>,
-	Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
-	Josh Triplett <josh@joshtriplett.org>,
-	Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
-	Lai Jiangshan <jiangshanlai@gmail.com>,
-	Zqiang <qiang.zhang1211@gmail.com>
-Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for
- synchronize_rcu() common case
-Message-ID: <ZfmlziaLw1bl4IjX@pc636>
-References: <ZflgfrjZSZdqrLLw@pc636>
- <0B372386-9546-492E-930E-DC6C883F3B2B@joelfernandes.org>
+        Tue, 19 Mar 2024 07:50:14 -0700 (PDT)
+Date: Tue, 19 Mar 2024 08:50:11 -0600
+From: Alex Williamson <alex.williamson@redhat.com>
+To: Mikhail Malyshev <mike.malyshev@gmail.com>
+Cc: jgg@ziepe.ca, yi.l.liu@intel.com, kevin.tian@intel.com,
+ tglx@linutronix.de, reinette.chatre@intel.com, stefanha@redhat.com,
+ abhsahu@nvidia.com, kvm@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 0/1] Reenable runtime PM for dynamically unbound devices
+Message-ID: <20240319085011.2da113ae.alex.williamson@redhat.com>
+In-Reply-To: <20240319120410.1477713-1-mike.malyshev@gmail.com>
+References: <20240319120410.1477713-1-mike.malyshev@gmail.com>
+X-Mailer: Claws Mail 4.2.0 (GTK 3.24.41; x86_64-redhat-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
-Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <0B372386-9546-492E-930E-DC6C883F3B2B@joelfernandes.org>
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19, 2024 at 10:29:59AM -0400, Joel Fernandes wrote:
-> 
-> 
-> > On Mar 19, 2024, at 5:53 AM, Uladzislau Rezki <urezki@gmail.com> wrote:
-> > 
-> > ﻿On Mon, Mar 18, 2024 at 05:05:31PM -0400, Joel Fernandes wrote:
-> >> 
-> >> 
-> >>>> On Mar 18, 2024, at 2:58 PM, Uladzislau Rezki <urezki@gmail.com> wrote:
-> >>> 
-> >>> ﻿Hello, Joel!
-> >>> 
-> >>> Sorry for late checking, see below few comments:
-> >>> 
-> >>>> In the synchronize_rcu() common case, we will have less than
-> >>>> SR_MAX_USERS_WAKE_FROM_GP number of users per GP. Waking up the kworker
-> >>>> is pointless just to free the last injected wait head since at that point,
-> >>>> all the users have already been awakened.
-> >>>> 
-> >>>> Introduce a new counter to track this and prevent the wakeup in the
-> >>>> common case.
-> >>>> 
-> >>>> Signed-off-by: Joel Fernandes (Google) <joel@joelfernandes.org>
-> >>>> ---
-> >>>> Rebased on paul/dev of today.
-> >>>> 
-> >>>> kernel/rcu/tree.c | 36 +++++++++++++++++++++++++++++++-----
-> >>>> kernel/rcu/tree.h |  1 +
-> >>>> 2 files changed, 32 insertions(+), 5 deletions(-)
-> >>>> 
-> >>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
-> >>>> index 9fbb5ab57c84..bd29fe3c76bf 100644
-> >>>> --- a/kernel/rcu/tree.c
-> >>>> +++ b/kernel/rcu/tree.c
-> >>>> @@ -96,6 +96,7 @@ static struct rcu_state rcu_state = {
-> >>>>   .ofl_lock = __ARCH_SPIN_LOCK_UNLOCKED,
-> >>>>   .srs_cleanup_work = __WORK_INITIALIZER(rcu_state.srs_cleanup_work,
-> >>>>       rcu_sr_normal_gp_cleanup_work),
-> >>>> +    .srs_cleanups_pending = ATOMIC_INIT(0),
-> >>>> };
-> >>>> 
-> >>>> /* Dump rcu_node combining tree at boot to verify correct setup. */
-> >>>> @@ -1642,8 +1643,11 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> >>>>    * the done tail list manipulations are protected here.
-> >>>>    */
-> >>>>   done = smp_load_acquire(&rcu_state.srs_done_tail);
-> >>>> -    if (!done)
-> >>>> +    if (!done) {
-> >>>> +        /* See comments below. */
-> >>>> +        atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
-> >>>>       return;
-> >>>> +    }
-> >>>> 
-> >>>>   WARN_ON_ONCE(!rcu_sr_is_wait_head(done));
-> >>>>   head = done->next;
-> >>>> @@ -1666,6 +1670,9 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> >>>> 
-> >>>>       rcu_sr_put_wait_head(rcu);
-> >>>>   }
-> >>>> +
-> >>>> +    /* Order list manipulations with atomic access. */
-> >>>> +    atomic_dec_return_release(&rcu_state.srs_cleanups_pending);
-> >>>> }
-> >>>> 
-> >>>> /*
-> >>>> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
-> >>>> */
-> >>>> static void rcu_sr_normal_gp_cleanup(void)
-> >>>> {
-> >>>> -    struct llist_node *wait_tail, *next, *rcu;
-> >>>> +    struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
-> >>>>   int done = 0;
-> >>>> 
-> >>>>   wait_tail = rcu_state.srs_wait_tail;
-> >>>> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
-> >>>>           break;
-> >>>>   }
-> >>>> 
-> >>>> -    // concurrent sr_normal_gp_cleanup work might observe this update.
-> >>>> -    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
-> >>>> +    /*
-> >>>> +     * Fast path, no more users to process. Remove the last wait head
-> >>>> +     * if no inflight-workers. If there are in-flight workers, let them
-> >>>> +     * remove the last wait head.
-> >>>> +     */
-> >>>> +    WARN_ON_ONCE(!rcu);
-> >>>> 
-> >>> This assumption is not correct. An "rcu" can be NULL in fact.
-> >> 
-> >> Hmm I could never trigger that. Are you saying that is true after Neeraj recent patch or something else?
-> >> Note, after Neeraj patch to handle the lack of heads availability, it could be true so I requested
-> >> him to rebase his patch on top of this one.
-> >> 
-> >> However I will revisit my patch and look for if it could occur but please let me know if you knew of a sequence of events to make it NULL.
-> >>> 
-> > I think we should agree on your patch first otherwise it becomes a bit
-> > messy or go with a Neeraj as first step and then work on youth. So, i
-> > reviewed this patch based on latest Paul's dev branch. I see that Neeraj
-> > needs further work.
-> 
-> You are right. So the only change is to drop the warning and those braces. Agreed?
->
-Let me check a bit. Looks like correct but just in case.
+On Tue, 19 Mar 2024 12:04:09 +0000
+Mikhail Malyshev <mike.malyshev@gmail.com> wrote:
 
->
-> I will resend the patch and we can discuss during tomorrow call as well.
+> When trying to run a VM with PCI passthrough of intel-eth-pci ETH device
+> QEMU fails with "Permission denied" error. This happens only if
+> intel-eth-pci driver is dynamically unbound from the device using
+> "echo -n $DEV > /sys/bus/pci/drivers/stmmac/unbind" command. If
+> "vfio-pci.ids=..." is used to bind the device to vfio-pci driver and the
+> device is never probed by intel-eth-pci driver the problem does not occur.
 > 
-Good :)
+> When intel-eth-pci driver is dynamically unbound from the device
+> .remove()
+>   intel_eth_pci_remove()
+>     stmmac_dvr_remove()
+>       pm_runtime_disable();
 
---
-Uladzislau Rezki
+Why isn't the issue in intel-eth-pci?
+
+For example stmmac_dvr_remove() does indeed call pm_runtime_disable()
+unconditionally, but stmmac_dvr_probe() only conditionally calls
+pm_runtime_enable() with logic like proposed here for vfio-pci.  Isn't
+it this conditional enabling which causes an unbalanced disable depth
+that's the core of the problem?
+
+It doesn't seem like it should be the responsibility of the next driver
+to correct the state from the previous driver.  You've indicated that
+the device works with vfio-pci if there's no previous driver, so
+clearly intel-eth-pci isn't leaving the device in the same runtime pm
+state that it found it.  Thanks,
+
+Alex
+
+> Later when QEMU tries to get the device file descriptor by calling
+> VFIO_GROUP_GET_DEVICE_FD ioctl pm_runtime_resume_and_get returns -EACCES.
+> It happens because dev->power.disable_depth == 1 .
+> 
+> vfio_group_fops_unl_ioctl(VFIO_GROUP_GET_DEVICE_FD)
+>   vfio_group_ioctl_get_device_fd()
+>     vfio_device_open()
+>       ret = device->ops->open_device()
+>         vfio_pci_open_device()
+>           vfio_pci_core_enable()
+>               ret = pm_runtime_resume_and_get();
+> 
+> This behavior was introduced by
+> commit 7ab5e10eda02 ("vfio/pci: Move the unused device into low power state with runtime PM")
+> 
+> This may be the case for any driver calling pm_runtime_disable() in its
+> .remove() callback.
+> 
+> The case when a runtime PM may be disable for a device is not handled so we
+> call pm_runtime_enable() in vfio_pci_core_register_device to re-enable it.
+> 
+> Mikhail Malyshev (1):
+>   vfio/pci: Reenable runtime PM for dynamically unbound devices
+> 
+>  drivers/vfio/pci/vfio_pci_core.c | 10 ++++++++++
+>  1 file changed, 10 insertions(+)
+> 
+> --
+> 2.34.1
+> 
+
 
