@@ -1,145 +1,161 @@
-Return-Path: <linux-kernel+bounces-108114-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108115-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21D52880629
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:43:44 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5D78588062F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:44:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3CED6B22391
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:43:40 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 117B42831A6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:44:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1F4083BBEC;
-	Tue, 19 Mar 2024 20:43:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EB57A3BBF0;
+	Tue, 19 Mar 2024 20:44:38 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="AEOo/Twb"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b="Kq7ykimC"
+Received: from mail-ua1-f45.google.com (mail-ua1-f45.google.com [209.85.222.45])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5DFB23BB38;
-	Tue, 19 Mar 2024 20:43:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B23C3FB01
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:44:36 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.45
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710881012; cv=none; b=BhrSns6OtNDtOwNcZ/dShwiO1r8tEW0L9HB00GBZ9F3pimYq4L+CsYkHdPbF/s0tZVlP6pwJJagndt1WLxfdhuSWBdWLWaCZxD+UGYT3q5c/lasshW0c095is2kI0R7K1P5Do4LsGoySeUmJXZYQmO8w27d6ECGPG1ASO9OM8tI=
+	t=1710881078; cv=none; b=arHMnLhoinZfRaqFle/vwS9idfk6bctwtZz5feELESVYGF0vwyCCTs/uw1PfX28oma4Ilm+Wrc3rPcw7zL03fWWDcU2h95EGycjkYhqz8Gtc+lLFv7AA9kw1fXGi4hN3o25VgHIV/32Gyw8YJAZchZkSun+yK+LPTKx6k7fP54Y=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710881012; c=relaxed/simple;
-	bh=l66zTaS3iIbt2drJxrv68MnYKqMvhoTk3Lhw/r+aN4c=;
-	h=Mime-Version:Content-Type:Date:Message-Id:From:To:Cc:Subject:
-	 References:In-Reply-To; b=tHxv7Q99Y5Gt+s/f0a0Xr3PQ/g4WDQpCL+Xf1lSSMsaWQCcVkb81nSpdMR2MSJT3tsxfE5UIGS4f2LUK5X+9b3rfjXG7XtDaykV30mw8p+mu4XU2Ox6XCIk/2YPW+QHeR5yWUsH6hUJNzmv3CrNwIeLZKkk8M0yJgIdpkJdroMs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=AEOo/Twb; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 594D7C433C7;
-	Tue, 19 Mar 2024 20:43:30 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710881011;
-	bh=l66zTaS3iIbt2drJxrv68MnYKqMvhoTk3Lhw/r+aN4c=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=AEOo/Twb8QSdW4k0JLHhm5FEwLyp3cQ6wBQiX5jNMTs/IKhv+IjED535s2nSyBelk
-	 17x+figjKpuFFOvnarfQrIyB/nvvtfrIFXyl0XqtdHekLhgCvYjqIj1IqVW0rog693
-	 rYfNfL5j18iCzOFmPp2K7R0IqpkXKVy5ZI5UWXfWU//ja+D6U/MaN9OKZXQqrT6m8O
-	 WvRByrE+Avn8ceIttRVhNJ0J+EhymnLZFBe7J/I/MtqeQfa8iFgNzJqVNoVUTKK53d
-	 T/+p8HPOaAViEF7DdqAVcM6a5mpu/3e2uWl+utEiUM93YLy5gsWFccKNvOOc+2qYsh
-	 0NbdCJvGAY8gA==
+	s=arc-20240116; t=1710881078; c=relaxed/simple;
+	bh=oDe0geSLnuuk7SkmacOCsc3JgCu2wt8IttTF3ksVRbM=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=KTpqhvN+ol7CI428uWzkC4sQx/x6UzOrLq/RXUIEunHjHWsP8FAHCy5+lxaEmwOgozvqVPk3v/+FiRJmSll36wPysl5AAd36hCL6g/5jCNk9F+nOsYtRvJsclxfnZeDUFvloqQPfe9tkihjBj54kWaAksHqeUOGlEwsJjpj/hI4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com; spf=pass smtp.mailfrom=cloudflare.com; dkim=pass (2048-bit key) header.d=cloudflare.com header.i=@cloudflare.com header.b=Kq7ykimC; arc=none smtp.client-ip=209.85.222.45
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=cloudflare.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cloudflare.com
+Received: by mail-ua1-f45.google.com with SMTP id a1e0cc1a2514c-7db36dbd474so2335206241.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:44:36 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=cloudflare.com; s=google09082023; t=1710881075; x=1711485875; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=CAhSTGhRiyAljzZj3105Ft8eQ+XhumjX9hGBP4lMS0I=;
+        b=Kq7ykimCVSVgRZprjjbeAGcbmlICfOrK99qy29rYBetPxdIWMDxLf/rNZ07Vs2dFZ4
+         5ua/HKgOtvLuHwMt6KElJ3jqLIK3fD3xwQNBbrfgYh543fhnrxCDL8cqzt3d+5a33Xpd
+         xfDiuqACl8ZGyvqzW6GnnWlEUlkf6P+Zf08M6QqQ99z4HZHLaKY3PSxnOo8FY5cB+iy7
+         tNt8E/mzBPtmipvnCtNp39E8uejOzKxB9WwVGlhYW/0dAOwviSlpylNPhshdkHPsrHKK
+         n3O5lrZ278IH9iqwD9KtLTdKUXG52amhS/F3NQTGyhwc48XKRBdcfTciOQ1lm8zNkZRP
+         3rmQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710881075; x=1711485875;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=CAhSTGhRiyAljzZj3105Ft8eQ+XhumjX9hGBP4lMS0I=;
+        b=UaUApbc0BffPmvxpDscPzaAh/r3eBGrim8IAfZHCOIgFLtw2bTh1CO7PwmqztWt3sW
+         nO2kjI1e5FN315qvC/RFXAaQfP7giRSC8TFfK0a0JlyR1uqc5EPbMX0kfA8RbJXDvO9T
+         jbeoRZ8y8LxEcNE1Xl8Zcoll9hdpY9bMDQsFz+mTAl4mJ/098wc0xp1CjJtRr8281Qld
+         IhtGklOp3dKx+RpbJ4L8/55aiqetWHG1YBGrBagsHWsu52cWMijZDEsM+1upWJzJ6Jy2
+         6O1IUIJbVoH+gm15gIfpxpjLymviuT0aNEbgzPRAqNWvV5CJh9Z/fWfYe38nTJD9Upxh
+         ccEA==
+X-Forwarded-Encrypted: i=1; AJvYcCV4HN8qvDxI7ln+v9fCUcx8P8ofaDeRN9+g6eHTNmHKGjaemJRg0X9N0I41sKE8rr1Piagog3ve1CZfLB5hsC4kFvPpKZuoC3ANJIfg
+X-Gm-Message-State: AOJu0Yxjho0GdLJmc18sHs5J0Ac9TcDmtZ/5Owj6C8S7czEAYvDMDQh0
+	5/eB2Szp/8+RnnB3cMl0HOqxQL8+akoqlduwtZKtkKwBmdNy+9NbnkX5K6BkKwQ=
+X-Google-Smtp-Source: AGHT+IFlFOB52SjxLdszQJJGneeQ+QorWaR6FhjitWP4enqBl+GDAaETy/cEnPLd6J2B8sy5tqEo8g==
+X-Received: by 2002:a05:6102:3a48:b0:475:48c5:c4fc with SMTP id c8-20020a0561023a4800b0047548c5c4fcmr12142626vsu.24.1710881074319;
+        Tue, 19 Mar 2024 13:44:34 -0700 (PDT)
+Received: from debian.debian ([2a09:bac5:7a49:1cd2::2df:49])
+        by smtp.gmail.com with ESMTPSA id a9-20020a0ce349000000b006916003c53asm6621478qvm.27.2024.03.19.13.44.32
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 13:44:33 -0700 (PDT)
+Date: Tue, 19 Mar 2024 13:44:30 -0700
+From: Yan Zhai <yan@cloudflare.com>
+To: netdev@vger.kernel.org
+Cc: "David S. Miller" <davem@davemloft.net>,
+	Eric Dumazet <edumazet@google.com>,
+	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
+	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
+	Daniel Borkmann <daniel@iogearbox.net>,
+	Lorenzo Bianconi <lorenzo@kernel.org>,
+	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
+	Alexander Duyck <alexanderduyck@fb.com>,
+	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
+	bpf@vger.kernel.org, kernel-team@cloudflare.com,
+	Joel Fernandes <joel@joelfernandes.org>,
+	"Paul E. McKenney" <paulmck@kernel.org>,
+	Toke =?utf-8?Q?H=C3=B8iland-J=C3=B8rgensen?= <toke@redhat.com>,
+	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
+	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
+	Jesper Dangaard Brouer <hawk@kernel.org>,
+	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
+Subject: [PATCH v5 net 0/3] Report RCU QS for busy network kthreads
+Message-ID: <cover.1710877680.git.yan@cloudflare.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-Content-Transfer-Encoding: quoted-printable
-Content-Type: text/plain; charset=UTF-8
-Date: Tue, 19 Mar 2024 22:43:28 +0200
-Message-Id: <CZY0P8Z9MKWI.UDXUUC9BD43U@kernel.org>
-From: "Jarkko Sakkinen" <jarkko@kernel.org>
-To: "Jarkko Sakkinen" <jarkko@kernel.org>, "James Bottomley"
- <James.Bottomley@HansenPartnership.com>, <linux-kernel@vger.kernel.org>
-Cc: "Jason Gunthorpe" <jgg@ziepe.ca>, "Mimi Zohar" <zohar@linux.ibm.com>,
- "Peter Huewe" <peterhuewe@gmx.de>, <linux-integrity@vger.kernel.org>
-Subject: Re: [PATCH] MAINTAINERS: Update W's for KEYS/KEYRINGS_INTEGRITY and
- TPM DEVICE RIVER
-X-Mailer: aerc 0.15.2
-References: <20240226062245.2279635-1-jarkko@kernel.org>
- <eaa5107ac4f982b6fd6e80b522643a591e719dc9.camel@HansenPartnership.com>
- <CZEWILFMZ5L1.2TCZXVS7GTDKZ@suppilovahvero>
- <3bae009a24a55902d93e4055ecd13f9f54cdbb37.camel@HansenPartnership.com>
- <CZG2JXJ83L7K.32PU7BZTQNHLV@kernel.org>
-In-Reply-To: <CZG2JXJ83L7K.32PU7BZTQNHLV@kernel.org>
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 
-On Tue Feb 27, 2024 at 8:22 PM EET, Jarkko Sakkinen wrote:
-> On Mon Feb 26, 2024 at 12:11 PM EET, James Bottomley wrote:
-> > On Mon, 2024-02-26 at 11:26 +0200, Jarkko Sakkinen wrote:
-> > > On Mon Feb 26, 2024 at 8:49 AM EET, James Bottomley wrote:
-> > > > On Mon, 2024-02-26 at 08:22 +0200, Jarkko Sakkinen wrote:
-> > > > > Add TPM driver test suite URL to the MAINTAINERS files and move
-> > > > > the
-> > > > > wiki
-> > > > > URL to more appropriate location.
-> > > > >=20
-> > > > > Link: https://gitlab.com/jarkkojs/linux-tpmdd-test
-> > > > > Link: https://kernsec.org/wiki/index.php/Linux_Kernel_Integrity
-> > > > > Cc: Jason Gunthorpe <jgg@ziepe.ca>
-> > > > > Cc: Mimi Zohar <zohar@linux.ibm.com>
-> > > > > Cc: Peter Huewe <peterhuewe@gmx.de>
-> > > > > Cc: linux-integrity@vger.kernel.org
-> > > > > Signed-off-by: Jarkko Sakkinen <jarkko@kernel.org>
-> > > > > ---
-> > > > > =C2=A0MAINTAINERS | 3 ++-
-> > > > > =C2=A01 file changed, 2 insertions(+), 1 deletion(-)
-> > > > >=20
-> > > > > diff --git a/MAINTAINERS b/MAINTAINERS
-> > > > > index bf77be03fb2b..6380c1109b86 100644
-> > > > > --- a/MAINTAINERS
-> > > > > +++ b/MAINTAINERS
-> > > > > @@ -11947,6 +11947,7 @@ M:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Mim=
-i Zohar <zohar@linux.ibm.com>
-> > > > > =C2=A0L:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0linux-integrity@vger.kernel=
-org
-> > > > > =C2=A0L:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0keyrings@vger.kernel.org
-> > > > > =C2=A0S:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0Supported
-> > > > > +W:=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0https://kernsec.org/wiki/index.p=
-hp/inux_Kernel_Integrity
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 ^
-> > > > =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=
-=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
-=C2=A0=C2=A0=C2=A0=C2=A0 Missing L
-> > > >=20
-> > > > James
-> > >=20
-> > > Thanks! I'll fixup that.
-> > >=20
-> > > "linux-tpmdd-test" is the suite that I'm using to test your patch
-> > > set. It has swtpm integrated. I wonder if there was easy to way to
-> > > tweak swtpm to emulate "interposer", i.e. reset its state while it is
-> > > running (preferably not by restarting it).
-> >
-> > The way I do it is to use a qemu patch
-> >
-> > https://lore.kernel.org/qemu-devel/20231004184219.6594-1-jejb@linux.ibm=
-com/
-> >
-> > which allows qemu to connect to the mssim (or ibmswtpm2) TPM over an
-> > inet socket which means I can execute TPM commands from the host (like
-> > resetting the TPM) as well as the guest and snoop the TPM traffic.
->
-> To which exact and most recent possible QEMU version I can apply that
-> cleanly?
->
-> My build configuration builds both QEMU and swtpm [1] for every build so
-> I could pick that patch, copy it to board/qemu/patches/qemu, and set the
-> version in the BuildRoot configuration appropriately.
->
-> [1]
-> https://gitlab.com/jarkkojs/linux-tpmdd-test/-/tree/main/package/libtpms
-> https://gitlab.com/jarkkojs/linux-tpmdd-test/-/tree/main/package/swtpm
+This changeset fixes a common problem for busy networking kthreads.
+These threads, e.g. NAPI threads, typically will do:
 
-Friendly ping. Still looking forward to test.
+* polling a batch of packets
+* if there are more work, call cond_resched() to allow scheduling
+* continue to poll more packets when rx queue is not empty
 
-I cannot recall exact review comments for v7 but what I can recall is
-that they were cosmetic.
+We observed this being a problem in production, since it can block RCU
+tasks from making progress under heavy load. Investigation indicates
+that just calling cond_resched() is insufficient for RCU tasks to reach
+quiescent states. This also has the side effect of frequently clearing
+the TIF_NEED_RESCHED flag on voluntary preempt kernels. As a result,
+schedule() will not be called in these circumstances, despite schedule()
+in fact provides required quiescent states. This at least affects NAPI
+threads, napi_busy_loop, and also cpumap kthread.
 
-BR, Jarkko
+By reporting RCU QSes in these kthreads periodically before cond_resched, the
+blocked RCU waiters can correctly progress. Instead of just reporting QS for
+RCU tasks, these code share the same concern as noted in the commit
+d28139c4e967 ("rcu: Apply RCU-bh QSes to RCU-sched and RCU-preempt when safe").
+So report a consolidated QS for safety.
+
+It is worth noting that, although this problem is reproducible in
+napi_busy_loop, it only shows up when setting the polling interval to as high
+as 2ms, which is far larger than recommended 50us-100us in the documentation.
+So napi_busy_loop is left untouched.
+
+Lastly, this does not affect RT kernels, which does not enter the scheduler
+through cond_resched(). Without the mentioned side effect, schedule() will
+be called time by time, and clear the RCU task holdouts.
+
+V4: https://lore.kernel.org/bpf/cover.1710525524.git.yan@cloudflare.com/
+V3: https://lore.kernel.org/lkml/20240314145459.7b3aedf1@kernel.org/t/
+V2: https://lore.kernel.org/bpf/ZeFPz4D121TgvCje@debian.debian/
+V1: https://lore.kernel.org/lkml/Zd4DXTyCf17lcTfq@debian.debian/#t
+
+changes since v4:
+ * polished comments and docs for the RCU helper as Paul McKenney suggested
+
+changes since v3:
+ * fixed kernel-doc errors
+
+changes since v2:
+ * created a helper in rcu header to abstract the behavior
+ * fixed cpumap kthread in addition
+
+changes since v1:
+ * disable preemption first as Paul McKenney suggested
+
+Yan Zhai (3):
+  rcu: add a helper to report consolidated flavor QS
+  net: report RCU QS on threaded NAPI repolling
+  bpf: report RCU QS in cpumap kthread
+
+ include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
+ kernel/bpf/cpumap.c      |  3 +++
+ net/core/dev.c           |  3 +++
+ 3 files changed, 37 insertions(+)
+
+-- 
+2.30.2
+
+
 
