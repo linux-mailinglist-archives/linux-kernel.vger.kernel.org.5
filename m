@@ -1,67 +1,86 @@
-Return-Path: <linux-kernel+bounces-107175-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107176-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3DB9487F876
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:36:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7135A87F878
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:36:50 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id D38801F23E12
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:36:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 9E5821C21A07
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 07:36:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 08C5D535DE;
-	Tue, 19 Mar 2024 07:35:59 +0000 (UTC)
-Received: from metis.whiteo.stw.pengutronix.de (metis.whiteo.stw.pengutronix.de [185.203.201.7])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D8812537E0;
+	Tue, 19 Mar 2024 07:36:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="TntvpOXS"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CFB533BBCA
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:35:56 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=185.203.201.7
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26B893BBCA
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:36:39 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710833758; cv=none; b=c5MWAiJ+uQ5ef4At2SaKFxe1LHJ0/eX/eLIOUzo80OqqiJ0ZWR6OuPale65r0tNbjGhBNYlxJ/tPwVHdQm4JsJbgZKmS1V5SXgb0elQBNOf8eVymbsyvGIKCFFyCSQE7z0iDxkBBmfwieZoZ28eiNPNc+qDSG9O9oNvxIZZFAMo=
+	t=1710833803; cv=none; b=CXPKnKOv8AUqKCH9S21DXju1B6Fir0WfO18xoyautUlmp0aQG/H3uoIOnuGmUlDscytxrvRBVkN0ZR2Fa42w8qpXjKVrQTDWAnwUCOvpJwyVwDWydObVDuKETVzFGoiGx4cNguh01bDgjfo1tlVExLmNtfNE/xEz3L/C6xy3QQU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710833758; c=relaxed/simple;
-	bh=vm5nYin+aHdpGbz/mHFO3XKOCe/Z41lh/7ifOtVhpOY=;
+	s=arc-20240116; t=1710833803; c=relaxed/simple;
+	bh=rPNTGp/Tn8oSnoxZozZdnWDR8B4Ksv7q1cBV0qnDa3I=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=PuRj96biIOoyXYfDtJLgpOSdWE9el/zKDFVKw9p5bGL8ItIK89ACLK36LS4Mdggvl1CLlvcK+odyG9lz8YxyZsPyLeLzy0AdihywpnZuTCOlAyqrbW3UCiTpLhojTiPq8jAHjROM8fRrrOIrPxH+Au2XhfqfKIkNE3H0yYuzN/0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de; spf=pass smtp.mailfrom=pengutronix.de; arc=none smtp.client-ip=185.203.201.7
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=pengutronix.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=pengutronix.de
-Received: from drehscheibe.grey.stw.pengutronix.de ([2a0a:edc0:0:c01:1d::a2])
-	by metis.whiteo.stw.pengutronix.de with esmtps (TLS1.3:ECDHE_RSA_AES_256_GCM_SHA384:256)
-	(Exim 4.92)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rmU0b-0000V1-2T; Tue, 19 Mar 2024 08:35:41 +0100
-Received: from [2a0a:edc0:2:b01:1d::c5] (helo=pty.whiteo.stw.pengutronix.de)
-	by drehscheibe.grey.stw.pengutronix.de with esmtps  (TLS1.3) tls TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384
-	(Exim 4.94.2)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rmU0a-007EFT-8X; Tue, 19 Mar 2024 08:35:40 +0100
-Received: from mfe by pty.whiteo.stw.pengutronix.de with local (Exim 4.96)
-	(envelope-from <mfe@pengutronix.de>)
-	id 1rmU0a-006xyd-0T;
-	Tue, 19 Mar 2024 08:35:40 +0100
-Date: Tue, 19 Mar 2024 08:35:40 +0100
-From: Marco Felsch <m.felsch@pengutronix.de>
-To: Peng Fan <peng.fan@nxp.com>
-Cc: "S.J. Wang" <shengjiu.wang@nxp.com>,
-	"abelvesa@kernel.org" <abelvesa@kernel.org>,
-	"mturquette@baylibre.com" <mturquette@baylibre.com>,
-	"sboyd@kernel.org" <sboyd@kernel.org>,
-	"shawnguo@kernel.org" <shawnguo@kernel.org>,
-	"s.hauer@pengutronix.de" <s.hauer@pengutronix.de>,
-	"kernel@pengutronix.de" <kernel@pengutronix.de>,
-	"festevam@gmail.com" <festevam@gmail.com>,
-	dl-linux-imx <linux-imx@nxp.com>,
-	"shengjiu.wang@gmail.com" <shengjiu.wang@gmail.com>,
-	"linux-clk@vger.kernel.org" <linux-clk@vger.kernel.org>,
-	"linux-arm-kernel@lists.infradead.org" <linux-arm-kernel@lists.infradead.org>,
-	"linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power saving
-Message-ID: <20240319073540.2zvwq7fvft3h6mbr@pengutronix.de>
-References: <1710743811-1698-1-git-send-email-shengjiu.wang@nxp.com>
- <DU0PR04MB941745611C0FE10E847C4B25882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=QaR278J8hb3nV4tFVBB4vZeoB7PNQXWH/VeTP2Pp4BWhoN9pMwnJZ0DpkwPl3gS6DXi1BOLGHQLrMpfGslqDXbA33wxJaFL/qKQk0HRvwt/6BY6J/0tpXBSYIarvVA8d4mxhtnAvIIzGew1WN4eMwW6Zj4vT9J9o9yH+TKerFAE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=TntvpOXS; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710833799;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=EKg9GvJFLNWkRSN6sgPN6hHh5dCxAIK5VhU/j1vuYMU=;
+	b=TntvpOXS4bqP1n7TkEpsn+FdgQ+/1nf1jwQRm8/XTPCMTAEK5FegNEP7xMpMNqeiI/BGWZ
+	QSwAoCQHnGZwbqT42xThBdfvmKJCrh6XbYrqADcn5dEAr14qbDM1/5HtCvV7EzUInXqhkP
+	LO9qfsp4jp4SZe+3cVdQ3FrhdfbET9E=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-529-h7ssjVrQP4-UJwO6AJV8pg-1; Tue, 19 Mar 2024 03:36:37 -0400
+X-MC-Unique: h7ssjVrQP4-UJwO6AJV8pg-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ed44cb765so1935586f8f.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 00:36:37 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710833796; x=1711438596;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=EKg9GvJFLNWkRSN6sgPN6hHh5dCxAIK5VhU/j1vuYMU=;
+        b=KpazYq38jfvTOXFd86QWecfAuoxot/3iOJb+scByMF+t/3jMvcU+vxHACW9CKBSYN5
+         o22jMk2or6dWRVrlfOIzRWeXZ0482O8f5MsnGZ4z/dAwLEjpxVTIDja1Ak3O+/Wg46bI
+         rNcpBaF+rraciv6mbjhy7xmehUsd3jA5a/e86763YwxfdTZcD4yHD/OnI85n7gqvEmoX
+         UIfP2S2eTUNAJmM6V82b8FhEYrE1ILXnZHXV14iC/oX4dlCBxwKPBqOMTiRFlB/cug/1
+         Kzhexra0idaPEpt+ueI252maVuOBKVdZBfXBxXzrHzDjfWFd4LlTH1H0El3JJf5EW7Dl
+         IDng==
+X-Forwarded-Encrypted: i=1; AJvYcCXcpr4opzt/Pfg7pBSR8rT83bUrpqOfXlsi7Y3pdKLuHK634FUiZGjE+IT6JTjkB7lWO9L/Pw4RQBKpt7LdAZAT+k8x+Xe+smzauS/X
+X-Gm-Message-State: AOJu0Yw1eUZZJPMHebmDkzx1COZQg95JEstWtnJz2QDJPbzIW9p3mY/F
+	NN4R3MLyVHOEq6z4+V5CoT1fdd9TVG/DRSslI9Z+N5Dcq84+RmiFGx4UpHE/FlLpf/Y4y02eHES
+	m+hmBE9Zd087k6fZGnYLugGo5INtW/cuQIPEwM1uW410vEmBKH8CFnbI3QVrCMw==
+X-Received: by 2002:a05:6000:e4a:b0:341:80fc:4913 with SMTP id dy10-20020a0560000e4a00b0034180fc4913mr2202829wrb.67.1710833796207;
+        Tue, 19 Mar 2024 00:36:36 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IHfMIhZzBmKNSSWXzIOXaRHlk22Ags3JFIXiJkum6UNSmNtxg7G6yImmY6QTGuvptfpS2dsfg==
+X-Received: by 2002:a05:6000:e4a:b0:341:80fc:4913 with SMTP id dy10-20020a0560000e4a00b0034180fc4913mr2202813wrb.67.1710833795615;
+        Tue, 19 Mar 2024 00:36:35 -0700 (PDT)
+Received: from redhat.com ([2.52.6.254])
+        by smtp.gmail.com with ESMTPSA id f1-20020a5d4dc1000000b0033e99b7cfa8sm6483794wru.13.2024.03.19.00.36.33
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 00:36:35 -0700 (PDT)
+Date: Tue, 19 Mar 2024 03:36:31 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Will Deacon <will@kernel.org>
+Cc: Gavin Shan <gshan@redhat.com>, virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org, jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com
+Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
+Message-ID: <20240319033016-mutt-send-email-mst@kernel.org>
+References: <20240314074923.426688-1-gshan@redhat.com>
+ <20240318165924.GA1824@willie-the-truck>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -70,208 +89,95 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <DU0PR04MB941745611C0FE10E847C4B25882D2@DU0PR04MB9417.eurprd04.prod.outlook.com>
-X-SA-Exim-Connect-IP: 2a0a:edc0:0:c01:1d::a2
-X-SA-Exim-Mail-From: mfe@pengutronix.de
-X-SA-Exim-Scanned: No (on metis.whiteo.stw.pengutronix.de); SAEximRunCond expanded to false
-X-PTX-Original-Recipient: linux-kernel@vger.kernel.org
+In-Reply-To: <20240318165924.GA1824@willie-the-truck>
 
-On 24-03-18, Peng Fan wrote:
-> > Subject: [PATCH] clk: imx: imx8mp: Add pm_runtime support for power
-> > saving
+On Mon, Mar 18, 2024 at 04:59:24PM +0000, Will Deacon wrote:
+> On Thu, Mar 14, 2024 at 05:49:23PM +1000, Gavin Shan wrote:
+> > The issue is reported by Yihuang Yu who have 'netperf' test on
+> > NVidia's grace-grace and grace-hopper machines. The 'netperf'
+> > client is started in the VM hosted by grace-hopper machine,
+> > while the 'netperf' server is running on grace-grace machine.
 > > 
-> > Add pm_runtime support for power saving. In pm runtime suspend state the
-> > registers will be reseted, so add registers save in pm runtime suspend and
-> > restore them in pm runtime resume.
-
-We had similar patches in our downstream repo but didn't upstream yet
-since there was an clk-handing issue. IIRC the issue was regarding the
-global clock-prepare lock and a circular dependency on it. Is this
-resolved now?
-
-Regards,
-  Marco
-
-> > Signed-off-by: Shengjiu Wang <shengjiu.wang@nxp.com>
-> 
-> Reviewed-by: Peng Fan <peng.fan@nxp.com>
+> > The VM is started with virtio-net and vhost has been enabled.
+> > We observe a error message spew from VM and then soft-lockup
+> > report. The error message indicates the data associated with
+> > the descriptor (index: 135) has been released, and the queue
+> > is marked as broken. It eventually leads to the endless effort
+> > to fetch free buffer (skb) in drivers/net/virtio_net.c::start_xmit()
+> > and soft-lockup. The stale index 135 is fetched from the available
+> > ring and published to the used ring by vhost, meaning we have
+> > disordred write to the available ring element and available index.
+> > 
+> >   /home/gavin/sandbox/qemu.main/build/qemu-system-aarch64              \
+> >   -accel kvm -machine virt,gic-version=host                            \
+> >      :                                                                 \
+> >   -netdev tap,id=vnet0,vhost=on                                        \
+> >   -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0 \
+> > 
+> >   [   19.993158] virtio_net virtio1: output.0:id 135 is not a head!
+> > 
+> > Fix the issue by replacing virtio_wmb(vq->weak_barriers) with stronger
+> > virtio_mb(false), equivalent to replaced 'dmb' by 'dsb' instruction on
+> > ARM64. It should work for other architectures, but performance loss is
+> > expected.
+> > 
+> > Cc: stable@vger.kernel.org
+> > Reported-by: Yihuang Yu <yihyu@redhat.com>
+> > Signed-off-by: Gavin Shan <gshan@redhat.com>
 > > ---
-> >  drivers/clk/imx/clk-imx8mp-audiomix.c | 99 ++++++++++++++++++++++++++-
-> >  1 file changed, 96 insertions(+), 3 deletions(-)
+> >  drivers/virtio/virtio_ring.c | 12 +++++++++---
+> >  1 file changed, 9 insertions(+), 3 deletions(-)
 > > 
-> > diff --git a/drivers/clk/imx/clk-imx8mp-audiomix.c b/drivers/clk/imx/clk-
-> > imx8mp-audiomix.c
-> > index 55ed211a5e0b..d2bf53e2aacf 100644
-> > --- a/drivers/clk/imx/clk-imx8mp-audiomix.c
-> > +++ b/drivers/clk/imx/clk-imx8mp-audiomix.c
-> > @@ -7,10 +7,12 @@
-> > 
-> >  #include <linux/clk-provider.h>
-> >  #include <linux/device.h>
-> > +#include <linux/io.h>
-> >  #include <linux/mod_devicetable.h>
-> >  #include <linux/module.h>
-> >  #include <linux/of.h>
-> >  #include <linux/platform_device.h>
-> > +#include <linux/pm_runtime.h>
-> > 
-> >  #include <dt-bindings/clock/imx8mp-clock.h>
-> > 
-> > @@ -18,6 +20,7 @@
-> > 
-> >  #define CLKEN0			0x000
-> >  #define CLKEN1			0x004
-> > +#define EARC			0x200
-> >  #define SAI1_MCLK_SEL		0x300
-> >  #define SAI2_MCLK_SEL		0x304
-> >  #define SAI3_MCLK_SEL		0x308
-> > @@ -26,6 +29,12 @@
-> >  #define SAI7_MCLK_SEL		0x314
-> >  #define PDM_SEL			0x318
-> >  #define SAI_PLL_GNRL_CTL	0x400
-> > +#define SAI_PLL_FDIVL_CTL0	0x404
-> > +#define SAI_PLL_FDIVL_CTL1	0x408
-> > +#define SAI_PLL_SSCG_CTL	0x40C
-> > +#define SAI_PLL_MNIT_CTL	0x410
-> > +#define IPG_LP_CTRL		0x504
-> > +#define REGS_NUM		16
-> > 
-> >  #define SAIn_MCLK1_PARENT(n)						\
-> >  static const struct clk_parent_data					\
-> > @@ -182,13 +191,65 @@ static struct clk_imx8mp_audiomix_sel sels[] = {
-> >  	CLK_SAIn(7)
-> >  };
-> > 
-> > +struct clk_imx8mp_audiomix_regs {
-> > +	u32 regs_num;
-> > +	u32 regs_off[];
-> > +};
-> > +
-> > +static const struct clk_imx8mp_audiomix_regs audiomix_regs = {
-> > +	.regs_num = REGS_NUM,
-> > +	.regs_off = {
-> > +		CLKEN0,
-> > +		CLKEN1,
-> > +		EARC,
-> > +		SAI1_MCLK_SEL,
-> > +		SAI2_MCLK_SEL,
-> > +		SAI3_MCLK_SEL,
-> > +		SAI5_MCLK_SEL,
-> > +		SAI6_MCLK_SEL,
-> > +		SAI7_MCLK_SEL,
-> > +		PDM_SEL,
-> > +		SAI_PLL_GNRL_CTL,
-> > +		SAI_PLL_FDIVL_CTL0,
-> > +		SAI_PLL_FDIVL_CTL1,
-> > +		SAI_PLL_SSCG_CTL,
-> > +		SAI_PLL_MNIT_CTL,
-> > +		IPG_LP_CTRL
-> > +	},
-> > +};
-> > +
-> > +struct clk_imx8mp_audiomix_drvdata {
-> > +	void __iomem *base;
-> > +	u32 regs_save[REGS_NUM];
-> > +};
-> > +
-> > +static void clk_imx8mp_audiomix_save_restore(struct device *dev, bool
-> > +save) {
-> > +	struct clk_imx8mp_audiomix_drvdata *drvdata =
-> > dev_get_drvdata(dev);
-> > +	void __iomem *base = drvdata->base;
-> > +	int i;
-> > +
-> > +	if (save) {
-> > +		for (i = 0; i < audiomix_regs.regs_num; i++)
-> > +			drvdata->regs_save[i] = readl(base +
-> > audiomix_regs.regs_off[i]);
-> > +	} else {
-> > +		for (i = 0; i < audiomix_regs.regs_num; i++)
-> > +			writel(drvdata->regs_save[i], base +
-> > audiomix_regs.regs_off[i]);
-> > +	}
-> > +}
-> > +
-> >  static int clk_imx8mp_audiomix_probe(struct platform_device *pdev)  {
-> > +	struct clk_imx8mp_audiomix_drvdata *drvdata;
-> >  	struct clk_hw_onecell_data *priv;
-> >  	struct device *dev = &pdev->dev;
-> >  	void __iomem *base;
-> >  	struct clk_hw *hw;
-> > -	int i;
-> > +	int i, ret;
-> > +
-> > +	drvdata = devm_kzalloc(dev, sizeof(*drvdata), GFP_KERNEL);
-> > +	if (!drvdata)
-> > +		return -ENOMEM;
-> > 
-> >  	priv = devm_kzalloc(dev,
-> >  			    struct_size(priv, hws,
-> > IMX8MP_CLK_AUDIOMIX_END), @@ -202,6 +263,9 @@ static int
-> > clk_imx8mp_audiomix_probe(struct platform_device *pdev)
-> >  	if (IS_ERR(base))
-> >  		return PTR_ERR(base);
-> > 
-> > +	drvdata->base = base;
-> > +	dev_set_drvdata(dev, drvdata);
-> > +
-> >  	for (i = 0; i < ARRAY_SIZE(sels); i++) {
-> >  		if (sels[i].num_parents == 1) {
-> >  			hw = devm_clk_hw_register_gate_parent_data(dev,
-> > @@ -257,10 +321,38 @@ static int clk_imx8mp_audiomix_probe(struct
-> > platform_device *pdev)
-> >  	if (IS_ERR(hw))
-> >  		return PTR_ERR(hw);
-> > 
-> > -	return devm_of_clk_add_hw_provider(&pdev->dev,
-> > of_clk_hw_onecell_get,
-> > -					   priv);
-> > +	ret = devm_of_clk_add_hw_provider(&pdev->dev,
-> > of_clk_hw_onecell_get,
-> > +					  priv);
-> > +	if (ret)
-> > +		return ret;
-> > +
-> > +	pm_runtime_enable(&pdev->dev);
-> > +	clk_imx8mp_audiomix_save_restore(&pdev->dev, true);
-> > +
-> > +	return 0;
-> >  }
-> > 
-> > +static int clk_imx8mp_audiomix_runtime_suspend(struct device *dev) {
-> > +	clk_imx8mp_audiomix_save_restore(dev, true);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static int clk_imx8mp_audiomix_runtime_resume(struct device *dev) {
-> > +	clk_imx8mp_audiomix_save_restore(dev, false);
-> > +
-> > +	return 0;
-> > +}
-> > +
-> > +static const struct dev_pm_ops clk_imx8mp_audiomix_pm_ops = {
-> > +	SET_RUNTIME_PM_OPS(clk_imx8mp_audiomix_runtime_suspend,
-> > +			   clk_imx8mp_audiomix_runtime_resume, NULL)
-> > +	SET_NOIRQ_SYSTEM_SLEEP_PM_OPS(pm_runtime_force_suspend,
-> > +				      pm_runtime_force_resume)
-> > +};
-> > +
-> >  static const struct of_device_id clk_imx8mp_audiomix_of_match[] = {
-> >  	{ .compatible = "fsl,imx8mp-audio-blk-ctrl" },
-> >  	{ /* sentinel */ }
-> > @@ -272,6 +364,7 @@ static struct platform_driver
-> > clk_imx8mp_audiomix_driver = {
-> >  	.driver = {
-> >  		.name = "imx8mp-audio-blk-ctrl",
-> >  		.of_match_table = clk_imx8mp_audiomix_of_match,
-> > +		.pm = &clk_imx8mp_audiomix_pm_ops,
-> >  	},
-> >  };
-> > 
-> > --
-> > 2.34.1
+> > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > index 49299b1f9ec7..7d852811c912 100644
+> > --- a/drivers/virtio/virtio_ring.c
+> > +++ b/drivers/virtio/virtio_ring.c
+> > @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+> >  	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> >  	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+> >  
+> > -	/* Descriptors and available array need to be set before we expose the
+> > -	 * new available array entries. */
+> > -	virtio_wmb(vq->weak_barriers);
+> > +	/*
+> > +	 * Descriptors and available array need to be set before we expose
+> > +	 * the new available array entries. virtio_wmb() should be enough
+> > +	 * to ensuere the order theoretically. However, a stronger barrier
+> > +	 * is needed by ARM64. Otherwise, the stale data can be observed
+> > +	 * by the host (vhost). A stronger barrier should work for other
+> > +	 * architectures, but performance loss is expected.
+> > +	 */
+> > +	virtio_mb(false);
+> >  	vq->split.avail_idx_shadow++;
+> >  	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+> >  						vq->split.avail_idx_shadow);
 > 
+> Replacing a DMB with a DSB is _very_ unlikely to be the correct solution
+> here, especially when ordering accesses to coherent memory.
 > 
+> In practice, either the larger timing different from the DSB or the fact
+> that you're going from a Store->Store barrier to a full barrier is what
+> makes things "work" for you. Have you tried, for example, a DMB SY
+> (e.g. via __smb_mb()).
 > 
+> We definitely shouldn't take changes like this without a proper
+> explanation of what is going on.
+> 
+> Will
+
+Just making sure: so on this system, how do
+smp_wmb() and wmb() differ? smb_wmb is normally for synchronizing
+with kernel running on another CPU and we are doing something
+unusual in virtio when we use it to synchronize with host
+as opposed to the guest - e.g. CONFIG_SMP is special cased
+because of this:
+
+#define virt_wmb() do { kcsan_wmb(); __smp_wmb(); } while (0)
+
+Note __smp_wmb not smp_wmb which would be a NOP on UP.
+
+
+-- 
+MST
+
 
