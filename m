@@ -1,139 +1,165 @@
-Return-Path: <linux-kernel+bounces-108044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108049-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4697688052C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:56:30 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F511880539
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:04:40 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id EF7951F2471E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:56:29 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BBE2B1C22CE0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:04:39 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id ABE8C39FCF;
-	Tue, 19 Mar 2024 18:56:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D2F5539FE4;
+	Tue, 19 Mar 2024 19:04:29 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="a93kvzT8"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kRc6YG2S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5dZwg4br";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="kRc6YG2S";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="5dZwg4br"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DFAAF39AD5;
-	Tue, 19 Mar 2024 18:56:17 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F6A52B9CF;
+	Tue, 19 Mar 2024 19:04:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710874581; cv=none; b=rQa53qnjLQFez06A76qjjofggp+ZhPHAlG8WdCsW/ON63swYvWf9u2zUA53Y5CG2JfV91FXlduLwz9tH2jaeNQhiH1/1DoX2I8sirS/cb++5KqDj3QzPgmXZDw2Nb9NRkKDR802MspDBeh1t9z+3UqZm9AuLTl6QBxnf8Hfuidc=
+	t=1710875069; cv=none; b=cn5Yo3V9GLM87u4p65xhpBpexOADqQZuKTmxSJeBodqUW6MLy3ym7lvvi/VvuIAsS6q/tccEVRoxp4nN37NFqvtx/hHkUL3Go58Xa25Z84HZzemKQGc5iGBOWisFA9qf4m3WND7pxOqW92HMKBn7CHEHNO+/n4A1QnKf2tiZvhg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710874581; c=relaxed/simple;
-	bh=DdYQb2a+xcV5YeF7/xy5cNg5XH3bFTlzk6qS9cbOnPk=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=ZMIoHsz/DmbqUJTEHBoZVUv0NJzZ/0maAnwLKUXOQn2hK8R0W/9tnQfZ6WZYH1L03FUlpi0ezquD7dg/d3boQkI2dBrwjhWdg4kbpnUPt9Zl6qKkb52YJZyS9KW5qOaeHPfP8XzkuZ4PtQVVAdcQq2mhunAQbkbey76/zlE3VbM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=a93kvzT8; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JIp7SW009331;
-	Tue, 19 Mar 2024 18:56:01 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=sErdNKpGwdXCXGL6HoHiUJZ1yPwMRBR6HoPdLoOlibI=;
- b=a93kvzT8SWMsT1tfXJiXqNMoT63RCIiTWe3f7f5Wmqe2bJSN/XE8iJfYmkqh1iozjXT9
- yETbLFjlPLB+FjBSJN3OxEaG+huppqHONy7R7N1+O2CUM5l/4PXJfI3aGG1Ix2CPQ5cs
- ZW2FJpad8E34U3liKr4bM5YXr2phdW7gxDyrGKTwWgrkfStJh5vnp+2s1Gx1qiiOojv1
- Lk46OqIJw5nCKwcJ1UEgVFgu53A/21ovuIZ55w6VQ4CLdRpmAM6b1XOCGsUu1MxEPaoM
- hOmMxqTeViQTQGtPlBUeb2gjpziwyB3DTis9rwQuXl/GVVdvb4ViW6LKFlAPAnPe1Zmb vw== 
-Received: from ppma22.wdc07v.mail.ibm.com (5c.69.3da9.ip4.static.sl-reverse.com [169.61.105.92])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyfuwg2ts-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 18:56:00 +0000
-Received: from pps.filterd (ppma22.wdc07v.mail.ibm.com [127.0.0.1])
-	by ppma22.wdc07v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JIcIeL015829;
-	Tue, 19 Mar 2024 18:56:00 GMT
-Received: from smtprelay05.dal12v.mail.ibm.com ([172.16.1.7])
-	by ppma22.wdc07v.mail.ibm.com (PPS) with ESMTPS id 3wwp501qgb-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 18:56:00 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay05.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JItvpD19726910
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 18:55:59 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 2D9AA5804B;
-	Tue, 19 Mar 2024 18:55:57 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id E1F3258067;
-	Tue, 19 Mar 2024 18:55:55 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Mar 2024 18:55:55 +0000 (GMT)
-Message-ID: <026ad747-eb04-44e6-9c1e-cb1a56a6e0e3@linux.ibm.com>
-Date: Tue, 19 Mar 2024 14:55:55 -0400
+	s=arc-20240116; t=1710875069; c=relaxed/simple;
+	bh=1pjcoLPclLzjr/spIkeBg9aX2MPdr/BpKaruYoQCPz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=ut2VRqoHomVB5QIU16BOfnRhImEWLLiXLDg8D0BRF1scDmVmGBdUzFLtnuRXP9jes75SDS22mz/hp0CZ3qd/JrHnUBmCK6t28ZtQRVHclpiUnOk170BLAhRlSXYxq2JAtgsUNzYSyIZOCF+kKnf04W1FRXdCaa+GeK6sJZ9bdco=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kRc6YG2S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5dZwg4br; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=kRc6YG2S; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=5dZwg4br; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 39E552269E;
+	Tue, 19 Mar 2024 19:04:25 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710875065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m62pe4FrwAX4W2HKydm4w3ADTQa0VQzYozY1M6lUmqg=;
+	b=kRc6YG2SeImuplw8mrkrbKl3wl1XvxFbvIG60cqI4+KqpBclNfMzGjFu1uivSlc4BL1dhR
+	L3aM/VziCWSBbfMzgl3oAf8Sn/HUE6d8eVY5I196h68y/LOEc6yk384iD5dl5MbBsu4TSM
+	f51s6sLUFWGeRqdJHfsPE3BHOuXs64I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710875065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m62pe4FrwAX4W2HKydm4w3ADTQa0VQzYozY1M6lUmqg=;
+	b=5dZwg4brtsInmvMmSkeb9afo9JrrV1Kb0M5/7ZEg/HEXIwm0yAevAC3aHkhbBGGEcGpUS9
+	VqWluK7WGnw5D3AQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710875065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m62pe4FrwAX4W2HKydm4w3ADTQa0VQzYozY1M6lUmqg=;
+	b=kRc6YG2SeImuplw8mrkrbKl3wl1XvxFbvIG60cqI4+KqpBclNfMzGjFu1uivSlc4BL1dhR
+	L3aM/VziCWSBbfMzgl3oAf8Sn/HUE6d8eVY5I196h68y/LOEc6yk384iD5dl5MbBsu4TSM
+	f51s6sLUFWGeRqdJHfsPE3BHOuXs64I=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710875065;
+	h=from:from:reply-to:reply-to:date:date:message-id:message-id:to:to:
+	 cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=m62pe4FrwAX4W2HKydm4w3ADTQa0VQzYozY1M6lUmqg=;
+	b=5dZwg4brtsInmvMmSkeb9afo9JrrV1Kb0M5/7ZEg/HEXIwm0yAevAC3aHkhbBGGEcGpUS9
+	VqWluK7WGnw5D3AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 1C9361376B;
+	Tue, 19 Mar 2024 19:04:25 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id xgzGBrnh+WWTWQAAD6G6ig
+	(envelope-from <dsterba@suse.cz>); Tue, 19 Mar 2024 19:04:25 +0000
+Date: Tue, 19 Mar 2024 19:57:11 +0100
+From: David Sterba <dsterba@suse.cz>
+To: Maximilian Heyne <mheyne@amazon.de>
+Cc: stable@vger.kernel.org, Chris Mason <clm@fb.com>,
+	Josef Bacik <josef@toxicpanda.com>, David Sterba <dsterba@suse.com>,
+	Filipe Manana <fdmanana@suse.com>, Qu Wenruo <wqu@suse.com>,
+	linux-btrfs@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH 4.19 5.4 5.15] btrfs: defrag: fix memory leak in
+ btrfs_ioctl_defrag
+Message-ID: <20240319185711.GA14596@suse.cz>
+Reply-To: dsterba@suse.cz
+References: <20240319170055.17942-1-mheyne@amazon.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v6 00/13] Add support for NIST P521 to ecdsa
-Content-Language: en-US
-To: Jarkko Sakkinen <jarkko@kernel.org>, Lukas Wunner <lukas@wunner.de>,
-        Stefan Berger <stefanb@linux.vnet.ibm.com>
-Cc: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net,
-        linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br,
-        bbhushan2@marvell.com
-References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
- <ZfiMhi9D2Rhh89BI@wunner.de>
- <d02eda40-2d3a-43a2-a3a9-cb79055acda7@linux.ibm.com>
- <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: 79g6SWib6schXeCJA2BReBDbIz_Nh0sw
-X-Proofpoint-GUID: 79g6SWib6schXeCJA2BReBDbIz_Nh0sw
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-19_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxscore=0 lowpriorityscore=0
- suspectscore=0 adultscore=0 clxscore=1015 malwarescore=0 impostorscore=0
- phishscore=0 spamscore=0 bulkscore=0 mlxlogscore=533 priorityscore=1501
- classifier=spam adjust=0 reason=mlx scancount=1 engine=8.12.0-2403140000
- definitions=main-2403190143
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240319170055.17942-1-mheyne@amazon.de>
+User-Agent: Mutt/1.5.23.1-rc1 (2014-03-12)
+X-Spam-Score: -2.81
+X-Rspamd-Server: rspamd1.dmz-prg2.suse.org
+X-Spam-Flag: NO
+X-Spamd-Result: default: False [-2.81 / 50.00];
+	 HAS_REPLYTO(0.30)[dsterba@suse.cz];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 TO_DN_SOME(0.00)[];
+	 REPLYTO_ADDR_EQ_FROM(0.00)[];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[9];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_MATCH_FROM(0.00)[];
+	 BAYES_HAM(-0.10)[65.16%];
+	 ARC_NA(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 RCVD_DKIM_ARC_DNSWL_HI(-1.00)[];
+	 FROM_HAS_DN(0.00)[];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 MIME_GOOD(-0.10)[text/plain];
+	 DNSWL_BLOCKED(0.00)[2a07:de40:b281:106:10:150:64:167:received];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 RCVD_IN_DNSWL_HI(-0.50)[2a07:de40:b281:104:10:150:64:97:from];
+	 RCVD_TLS_ALL(0.00)[];
+	 RBL_SPAMHAUS_BLOCKED_OPENRESOLVER(0.00)[2a07:de40:b281:104:10:150:64:97:from]
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=kRc6YG2S;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=5dZwg4br
+X-Rspamd-Queue-Id: 39E552269E
 
-
-
-On 3/19/24 14:22, Jarkko Sakkinen wrote:
-> On Tue Mar 19, 2024 at 12:42 AM EET, Stefan Berger wrote:
->>
->>
->> On 3/18/24 14:48, Lukas Wunner wrote:
->>> On Tue, Mar 12, 2024 at 02:36:05PM -0400, Stefan Berger wrote:
->>>> This series adds support for the NIST P521 curve to the ecdsa module
->>>> to enable signature verification with it.
->>>
->>> v6 of this series is still
->>>
->>> Tested-by: Lukas Wunner <lukas@wunner.de>
->>
->> Thanks.
+On Tue, Mar 19, 2024 at 05:00:55PM +0000, Maximilian Heyne wrote:
+> Prior to commit c853a5783ebe ("btrfs: allocate
+> btrfs_ioctl_defrag_range_args on stack") range is allocated on the heap
+> and must be freed. However, commit 173431b274a9 ("btrfs: defrag: reject
+> unknown flags of btrfs_ioctl_defrag_range_args") didn't take care of
+> this when it was backported to kernel < 5.15.
 > 
-> This has been discussed before in LKML but generally tested-by for
-> series does not have semantical meaning.
+> Add a kfree on the error path for stable kernels that lack
+> commit c853a5783ebe ("btrfs: allocate btrfs_ioctl_defrag_range_args on
+> stack").
 > 
-> Please apply only for patches that were tested.
+> This bug was discovered and resolved using Coverity Static Analysis
+> Security Testing (SAST) by Synopsys, Inc.
 
-Ok, I will remove the Tested-by tag.
+Good catch, thanks.
 
-However, patch 4/13, that only changes a comment, can also be tested in 
-so far as to check whether the code is correct as-is for the tests that 
-'I' ran and no further modifications are needed for NIST P521. In this 
-case it would mean that a single subtraction of 'n' from res.x seems 
-sufficient and existing code is good as described by the modified comment.
-
-> 
-> BR, Jarkko
-> 
+The affected versions are as you say 4.19, 5.4, 5.15, the fixup is
+sufficient and minimal fix, c853a5783ebe is reasonably safe for backport
+too.
 
