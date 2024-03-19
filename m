@@ -1,133 +1,94 @@
-Return-Path: <linux-kernel+bounces-106927-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106928-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8158487F585
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:41:16 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8DC4987F58F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:49:03 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 7FB411C2175F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:41:15 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2C4DD1F220CF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:49:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0DD9A7BAEC;
-	Tue, 19 Mar 2024 02:41:07 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 173917BAF3;
+	Tue, 19 Mar 2024 02:48:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Dsm3ozNn"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="IG5zdsIZ"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3A5FF33FE;
-	Tue, 19 Mar 2024 02:41:05 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4F2BE2F5B;
+	Tue, 19 Mar 2024 02:48:53 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710816066; cv=none; b=a5QgEmxMUYTxQZKIul/MyLF5K8TRhxv4O/mk8U9FuHCxSF+ksMlrrWepYS55+bkq4vBk5FW4PpjPxBLPiZ5kpMqWw0yyyTyFn26g3Xa5u8HUb5ZvKN1NLAGtlVewAtPtn7Epw0mHD8xD04KGn+NyzP/q0qgpF68dOXh+678KJgQ=
+	t=1710816533; cv=none; b=X3F++CTKihYSveJkOOb4+sHnLXyQ+/CtBzDTjVvgvcgZSIZkI0PUaGue3Uxfv6lQhIUwOci2+cPYkuA5u+GLc+5letHaP/7c+d1N0AMIjTakG3b4w2JIM3ByBukX5rEh1OegDQHtHrkL1LH2MnRamXm9wi0dUOnR56/GIwBLWg4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710816066; c=relaxed/simple;
-	bh=3ub4ncvqYvXyiNVjOCBt4ba6/O87K2dqhXmuWt7lj4c=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VnzLbYG5ku19+Othy5Ugz0ODC5/CXyRbmXPHLmS25Y+XLT1o4PHUfPEYUiwDVDkEHiPfLsMm6qcMCDMd+lp3mm0RcfYan8JPBqHgNNNQRdXf76YSjAd8NFTxasOXZeSRjMyjhyNpHBFNBEto/Nl5Bgw38EGkd8d6Zx+nDtc9KkM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Dsm3ozNn; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id BE420C43399;
-	Tue, 19 Mar 2024 02:41:05 +0000 (UTC)
+	s=arc-20240116; t=1710816533; c=relaxed/simple;
+	bh=4rp6U6D3ReHZ7lag5OzPj59vocZIj1ntskliq0WLj+8=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=i/NNiZu3F0juGH6JBUEXCjD1Z+q2MO9/nS0/a/b8Mp19TkpOQewH4kIpBYLx4TEfTHov106y6ZaUhVmf9xZK/OcOFyar53mO7i4ukdkHgTU7q85v53LY1ilweprKvmpfG/H7KYK1YMaz+xpUJ7iFg3UO22TstWaGSL5dIiwfBSY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=IG5zdsIZ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 185DDC433F1;
+	Tue, 19 Mar 2024 02:48:52 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710816065;
-	bh=3ub4ncvqYvXyiNVjOCBt4ba6/O87K2dqhXmuWt7lj4c=;
-	h=References:In-Reply-To:From:Date:Subject:To:Cc:From;
-	b=Dsm3ozNngtqNbRPQU4pz65ZAyGsxlfuf1a9Pjc4UzHb9kkq+kbMKnfypQ5HMlEt+k
-	 vQFRMJN4AekNBUzy/XxZyAknNgr55M2FyffxcSxMC4a7I1bv3t8x1tIrwVC6iY6usv
-	 cbTf0VwcSwexkvKDpiAp24pmZp9npKSUbjIl9jb384RoSheOIX7umNVfg8emqkOL53
-	 XQdkDaFKaohbjf7oNP59NalRf/uysHzH540pXRmEd1/i1T2MJGyTpBusQUuyuW16ZK
-	 ugUr7vXxq1PHgFP3jCHgzfAKoHO9IVPBGuerFN90xP/QXUS3Ved8WV4dcM/y9FNeF7
-	 bsCO1FbA0wdbw==
-Received: by mail-lf1-f46.google.com with SMTP id 2adb3069b0e04-513d3e57518so5365189e87.3;
-        Mon, 18 Mar 2024 19:41:05 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCWc0tlZ4JdhBx2D8ghnNG5nacbCZ9YC7Q8etr5P6KBnerdPseFZhyuYZ/hmLJIlasNSvljJjjHHQaB5+BWq0CyVUjiX67JA7CPQyBzgoctqG/ZOaHorEu4107SZ449u8a/ssJ7iboVCyK+SO6cGtr75WbF7ZdFM02tO/vlPWbgVJbOXtBaPPW+ry01cgMwqUH8c8FQ0PSp6MzOl/LLbOOk=
-X-Gm-Message-State: AOJu0YyTo1xlEm2qUo7oTSNeZhP+frLOhxuIINSw4Kqj+0DpI/TTS7F1
-	H/U8q2tZllr1cN6cW3sSdsmaFkoKxBsRPwi5ZCYEbpTrel9abmJ4uuNVQFwLtERBJjOAsoEtqfS
-	nfXA0mBBlSQexHoBR98dA3lgQZjo=
-X-Google-Smtp-Source: AGHT+IGV97VjOSsYVFgOZWmkNKgxKdHut2PXg2d4iYsFbh+2T05kimd5E/BwkdwGxnlPNv4kX7fg1f2FWwe7xmsCqPM=
-X-Received: by 2002:ac2:5f91:0:b0:513:c9a4:5ee5 with SMTP id
- r17-20020ac25f91000000b00513c9a45ee5mr8911556lfe.30.1710816064094; Mon, 18
- Mar 2024 19:41:04 -0700 (PDT)
+	s=k20201202; t=1710816532;
+	bh=4rp6U6D3ReHZ7lag5OzPj59vocZIj1ntskliq0WLj+8=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=IG5zdsIZt4dTjSh58ACohiPqUyUjGaf2Ykv9IrbIkTpsf71gCztr7DtR61n8M85UO
+	 vEmc9uJIgR0ObJ6k71WCIwHWqRFwuma+BrbLrZeKu7HJDbTRt0/u6Vft1HTIN2fNon
+	 GaIZnLpjuEvD5/d0/7is+LQmTkzf21LSkW4Z+hiihLQIKqgx5pgdtam2HWMbTpE4od
+	 caJJjK6ubUL7sgOixy92TtaI0nUPc/hJ/0IKbUrFR1tKe7JWJoSk7KWxSQG4q+Dfcl
+	 nZh45svrRp7NMbdQcTMczmI68OSfEZl8mh52EVXBdyocJ038K5PPujLGkZDz0ib1XB
+	 Yypibz/nRxYRQ==
+From: Bjorn Andersson <andersson@kernel.org>
+To: Andy Gross <agross@kernel.org>,
+	Konrad Dybcio <konrad.dybcio@linaro.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Rob Herring <robh@kernel.org>,
+	Abel Vesa <abel.vesa@linaro.org>
+Cc: linux-arm-msm@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 0/4] arm64: dts: qcom: x1e80100: Add support for eUSB2 repeaters
+Date: Mon, 18 Mar 2024 21:48:25 -0500
+Message-ID: <171081652654.198276.11595014135787145536.b4-ty@kernel.org>
+X-Mailer: git-send-email 2.43.0
+In-Reply-To: <20240222-x1e80100-dts-smb2360-v3-0-85a691d4f68a@linaro.org>
+References: <20240222-x1e80100-dts-smb2360-v3-0-85a691d4f68a@linaro.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
- <CAAhV-H6aGS6VXGzkqWTyxL7bGw=KdjmnRZj7SpwrV5hT6XQcpg@mail.gmail.com>
- <CAJhJPsVSM-8VA604p2Vr58QJEp+Tg72YTTntnip64Ejz=0aQng@mail.gmail.com>
- <CAAhV-H5TR=y_AmbF6QMJmoS0BhfB=K7forMg0-b2YWm7trktjA@mail.gmail.com>
- <20240318-average-likely-6a55c18db7bb@spud> <CAAhV-H4oMoPt7WwWc7wbxy-ShNQ8dPkuTAuvSEGAPBKvkkn24w@mail.gmail.com>
- <20240318-saxophone-sudden-ce0df3a953a8@spud> <CAJhJPsXKZr7XDC-i1O_tpcgGE9c0yk7S9Qjnpk7hrU0evAJ+FQ@mail.gmail.com>
-In-Reply-To: <CAJhJPsXKZr7XDC-i1O_tpcgGE9c0yk7S9Qjnpk7hrU0evAJ+FQ@mail.gmail.com>
-From: Huacai Chen <chenhuacai@kernel.org>
-Date: Tue, 19 Mar 2024 10:40:54 +0800
-X-Gmail-Original-Message-ID: <CAAhV-H5Gm6mACV4smxDB=BJvLr8C1AmgY=mMqfNYOOxEUBhqFA@mail.gmail.com>
-Message-ID: <CAAhV-H5Gm6mACV4smxDB=BJvLr8C1AmgY=mMqfNYOOxEUBhqFA@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add support for Loongson1 DMA
-To: Keguang Zhang <keguang.zhang@gmail.com>
-Cc: Conor Dooley <conor@kernel.org>, Vinod Koul <vkoul@kernel.org>, Rob Herring <robh@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, Mar 19, 2024 at 10:32=E2=80=AFAM Keguang Zhang <keguang.zhang@gmail=
-com> wrote:
->
-> On Mon, Mar 18, 2024 at 11:42=E2=80=AFPM Conor Dooley <conor@kernel.org> =
-wrote:
-> >
-> > On Mon, Mar 18, 2024 at 10:26:51PM +0800, Huacai Chen wrote:
-> > > Hi, Conor,
-> > >
-> > > On Mon, Mar 18, 2024 at 7:28=E2=80=AFPM Conor Dooley <conor@kernel.or=
-g> wrote:
-> > > >
-> > > > On Mon, Mar 18, 2024 at 03:31:59PM +0800, Huacai Chen wrote:
-> > > > > On Mon, Mar 18, 2024 at 10:08=E2=80=AFAM Keguang Zhang <keguang.z=
-hang@gmail.com> wrote:
-> > > > > >
-> > > > > > Hi Huacai,
-> > > > > >
-> > > > > > > Hi, Keguang,
-> > > > > > >
-> > > > > > > Sorry for the late reply, there is already a ls2x-apb-dma dri=
-ver, I'm
-> > > > > > > not sure but can they share the same code base? If not, can r=
-ename
-> > > > > > > this driver to ls1x-apb-dma for consistency?
-> > > > > >
-> > > > > > There are some differences between ls1x DMA and ls2x DMA, such =
-as
-> > > > > > registers and DMA descriptors.
-> > > > > > I will rename it to ls1x-apb-dma.
-> > > > > OK, please also rename the yaml file to keep consistency.
-> > > >
-> > > > No, the yaml file needs to match the (one of the) compatible string=
-s.
-> > > OK, then I think we can also rename the compatible strings, if possib=
-le.
-> >
-> > If there are no other types of dma controller on this device, I do not
-> > see why would we add "apb" into the compatible as there is nothing to
-> > differentiate this controller from.
->
-> That's true. 1A/1B/1C only have one APB DMA.
-> Should I keep the compatible "ls1b-dma" and "ls1c-dma"?
-The name "apbdma" comes from the user manual, "exchange data between
-memory and apb devices", at present there are two drivers using this
-naming: tegra20-apb-dma.c and ls2x-apb-dma.c.
 
-Huacai
+On Thu, 22 Feb 2024 16:19:18 +0200, Abel Vesa wrote:
+> The X1E80100 platform comes with a v7 SPMI arbiter, which means it
+> implements two separate buses. The boards using this platform come with
+> 3 instances of SMB2360 PMIC which implement a eUSB2 repeater.
+> 
+> This patchset relies on the support added by this patchset:
+> https://lore.kernel.org/all/20240222-spmi-multi-master-support-v6-0-bc34ea9561da@linaro.org/
+> 
+> [...]
 
->
-> --
-> Best regards,
->
-> Keguang Zhang
+Applied, thanks!
+
+[1/4] arm64: dts: qcom: x1e80100: Add SPMI support
+      commit: 53fdae5e086b699a66c6927395fa66c0116ec7ac
+[2/4] arm64: dts: qcom: x1e80100: Add dedicated pmic dtsi
+      commit: 3298d47894b0f30a42a4f93c36dae4838f638dba
+[3/4] arm64: dts: qcom: x1e80100-crd: Add repeater nodes
+      commit: 3930056f30d374967746876e01e8dca10fbc7ff9
+[4/4] arm64: dts: qcom: x1e80100-qcp: Add repeater nodes
+      commit: 04124220d8ce77409a5fa8cdea75dc2be999c932
+
+Best regards,
+-- 
+Bjorn Andersson <andersson@kernel.org>
 
