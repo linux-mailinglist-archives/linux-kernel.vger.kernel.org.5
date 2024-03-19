@@ -1,117 +1,99 @@
-Return-Path: <linux-kernel+bounces-106988-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106987-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id D038B87F65E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:25:03 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5528A87F655
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:21:15 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E9E791C21D9C
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:25:02 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id E3DE91F21D25
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:21:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B86877C092;
-	Tue, 19 Mar 2024 04:24:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35CC57C092;
+	Tue, 19 Mar 2024 04:21:04 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="mdpkWybJ"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.8])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="FDtTeaUv"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 50D0B5F544;
-	Tue, 19 Mar 2024 04:24:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.8
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7235D7BB1C;
+	Tue, 19 Mar 2024 04:21:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710822294; cv=none; b=E3O24uuruA7HrZUOkpJKbnjH2dP6lflJEfTR/gJnkxQJyrK6dBeV3TBzCHw0o4nwDpvuCYIvfXGGAjUZRL+KyWb43drVecgYJWjok+vUlZNejADtImtgkUsvi2Z5o7DjWYnQufNJmWsniRTKxh+kn+SWtMscfMbKrnpafX0JcRU=
+	t=1710822063; cv=none; b=C2TbSoT7oi5cIYsrqvCyveNE04pGd8fBsjiyp7+ULZs2M3GdxxaLyTydC5CmEXvSxm51SotUoOfk4yCkpdI5P5mZ0unoSW69IIdl6puvPMSxHmyneRnTtnaTIDCvcJwdbkTtANGVMrT24GP95McpRtRAXZnzkvLgIXQdq7wTZxI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710822294; c=relaxed/simple;
-	bh=8COTqAO78HYhmDSxjg8TTpsRSgxaVPz9po3QmqxHMyA=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rRAEJtSrAVT4IjZXpTrYx2KyeEEUzxIBd1kCur7Ujr2meEYCEJCzHvRAPo/WcHjTAmMNoZq24ZiA8Pu8x1utJw45WZdvrB92UCtFCvUv50gYch6dHBDNZn/aOL+G4rIfwjPVidpR/+MO1nlgAl6GNFuBDc/DDw/9cb4lOXKYLFw=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=mdpkWybJ; arc=none smtp.client-ip=192.198.163.8
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710822292; x=1742358292;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=8COTqAO78HYhmDSxjg8TTpsRSgxaVPz9po3QmqxHMyA=;
-  b=mdpkWybJg0oQLh7VDqqnVeY7ZQ9Uxi7u+g5so/ZLpXEf1Z6mjJeECiQD
-   eZg0iQEh0G8QpaE5J58xhP7cYJwJeRp+Yv3h4bokXpjlbQ9BLQevEdsqD
-   LHmwMi8Icnmu8GHUNHJVXCMrBWoEsKGfkZLBx4HBI8YJMaZdHeY91zTLy
-   Fd6ZWufro/6Mzbs3dD257ltfS2/ZPr/75aQ7dwFRGxVX/AXy3BieYoQ3w
-   jJfrOmMPRu+Sm4CJAjJm0YXbHwwf8INKIl4dh6bxpBBh7x2+7GdVbo+VB
-   CX3xgVllAzXrNxO4rqNVWqeYzzUO22JF427Xj5Vo8oJH7w2ap7JhNv/pf
-   Q==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="23174513"
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="23174513"
-Received: from orviesa007.jf.intel.com ([10.64.159.147])
-  by fmvoesa102.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 18 Mar 2024 21:24:51 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,135,1708416000"; 
-   d="scan'208";a="14146453"
-Received: from yilunxu-optiplex-7050.sh.intel.com (HELO localhost) ([10.239.159.165])
-  by orviesa007.jf.intel.com with ESMTP; 18 Mar 2024 21:24:47 -0700
-Date: Tue, 19 Mar 2024 12:20:15 +0800
-From: Xu Yilun <yilun.xu@linux.intel.com>
-To: Charles Perry <charles.perry@savoirfairelinux.com>
-Cc: mdf@kernel.org, avandiver@markem-imaje.com, bcody@markem-imaje.com,
-	Wu Hao <hao.wu@intel.com>, Xu Yilun <yilun.xu@intel.com>,
-	Tom Rix <trix@redhat.com>, Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	Michal Simek <michal.simek@amd.com>, linux-fpga@vger.kernel.org,
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-arm-kernel@lists.infradead.org
-Subject: Re: [PATCH v5 1/3] fpga: xilinx-spi: extract a common driver core
-Message-ID: <ZfkSf6QG5nIY0zpx@yilunxu-OptiPlex-7050>
-References: <20240313225746.489253-1-charles.perry@savoirfairelinux.com>
- <20240313225746.489253-2-charles.perry@savoirfairelinux.com>
+	s=arc-20240116; t=1710822063; c=relaxed/simple;
+	bh=EFq7mIqWfl+BjiP6nOSsSBppaKo1QaSeIi0ksZ/ZTFE=;
+	h=Date:From:To:Cc:Subject:Message-Id:In-Reply-To:References:
+	 Mime-Version:Content-Type; b=SK9zw2jGPfJvLiKujWDwP9H+rIJ1SrVfaE2/Y/3jYi2mvd19PeHCxwYM2zXv0UKy2ex50aBqJjiDtZsWn7Svv5X04Uxs4qtT2XL4g8sGkSS3QpMhrOymYllBB7rPUpMwZnxoIeAZtofvWJzTt1TSJgZqi8+qVHtAzkDTKinn0PI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=FDtTeaUv; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 4D003C433F1;
+	Tue, 19 Mar 2024 04:21:01 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710822063;
+	bh=EFq7mIqWfl+BjiP6nOSsSBppaKo1QaSeIi0ksZ/ZTFE=;
+	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
+	b=FDtTeaUvL7WF1Pnnna4HQWDXaRFsPsVf9iuGsGGEuguwiRz0uisp/Fkyvdzv33vuY
+	 8uDgcqdqb/JtpZJVVvjBHqR/99YAoIf5yxmXq1ezwUUpJI8OgXzyvS+fUjpuhydNsS
+	 uBnhz24tyjg6d6kdiq3N9W+Goj7brXfzL/EoaUdrK9YO5/7HgiCV9+iXOYAOTpR0Q6
+	 ddEbl+5QwuPSaH5wvCD+Zz/uO+ib/7XmkT3zG3xKKY0aD7jqbvb1XSY110ktRc9VYi
+	 LM1JLJjLZidac3ZaGXCnoYy+o9YYxbPl3R5zT5x8z/OJAYRUks+ijxTZnsjDBR2syA
+	 MPkYG1Bw3YpIw==
+Date: Tue, 19 Mar 2024 13:20:57 +0900
+From: Masami Hiramatsu (Google) <mhiramat@kernel.org>
+To: Andrii Nakryiko <andrii@kernel.org>
+Cc: linux-trace-kernel@vger.kernel.org, rostedt@goodmis.org,
+ bpf@vger.kernel.org, mathieu.desnoyers@efficios.com,
+ linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org
+Subject: Re: [PATCH v2 0/3] uprobes: two common case speed ups
+Message-Id: <20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
+In-Reply-To: <20240318181728.2795838-1-andrii@kernel.org>
+References: <20240318181728.2795838-1-andrii@kernel.org>
+X-Mailer: Sylpheed 3.8.0beta1 (GTK+ 2.24.33; x86_64-pc-linux-gnu)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240313225746.489253-2-charles.perry@savoirfairelinux.com>
+Mime-Version: 1.0
+Content-Type: text/plain; charset=US-ASCII
+Content-Transfer-Encoding: 7bit
 
-> +/**
-> + * struct xilinx_fpga_core - interface between the driver and the core manager
-> + *                           of Xilinx 7 Series FPGA manager
-> + * @dev:       device node
-> + * @write:     write callback of the driver
-> + * @prog_b:    PROGRAM_B gpio descriptor
-> + * @init_b:    INIT_B gpio descriptor
-> + * @done:      DONE gpio descriptor
+Hi,
 
-Please re-check the Documentation again:
-"Structure fields that are inside a private: area are not listed in the generated output documentation"
+On Mon, 18 Mar 2024 11:17:25 -0700
+Andrii Nakryiko <andrii@kernel.org> wrote:
 
-> + */
-> +struct xilinx_fpga_core {
-> +/* public: */
-> +	struct device *dev;
-> +	int (*write)(struct xilinx_fpga_core *core, const char *buf,
-> +		     size_t count);
-> +/* private: handled by xilinx-core */
-> +	struct gpio_desc *prog_b;
-> +	struct gpio_desc *init_b;
-> +	struct gpio_desc *done;
-> +};
-> +
-[...]
-> -
->  static int xilinx_spi_probe(struct spi_device *spi)
->  {
-> -	struct xilinx_spi_conf *conf;
-> -	struct fpga_manager *mgr;
-> +	struct xilinx_fpga_core *conf;
+> This patch set implements two speed ups for uprobe/uretprobe runtime execution
+> path for some common scenarios: BPF-only uprobes (patches #1 and #2) and
+> system-wide (non-PID-specific) uprobes (patch #3). Please see individual
+> patches for details.
 
-Why do you name it conf? Maybe "core" is better?
+This series looks good to me. Let me pick it on probes/for-next.
 
-Thanks,
-Yilun
+Thanks!
+
+> 
+> v1->v2:
+>   - rebased onto trace/core branch of tracing tree, hopefully I guessed right;
+>   - simplified user_cpu_buffer usage further (Oleg Nesterov);
+>   - simplified patch #3, just moved speculative check outside of lock (Oleg);
+>   - added Reviewed-by from Jiri Olsa.
+> 
+> Andrii Nakryiko (3):
+>   uprobes: encapsulate preparation of uprobe args buffer
+>   uprobes: prepare uprobe args buffer lazily
+>   uprobes: add speculative lockless system-wide uprobe filter check
+> 
+>  kernel/trace/trace_uprobe.c | 103 +++++++++++++++++++++---------------
+>  1 file changed, 59 insertions(+), 44 deletions(-)
+> 
+> -- 
+> 2.43.0
+> 
+
+
+-- 
+Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
