@@ -1,1066 +1,129 @@
-Return-Path: <linux-kernel+bounces-108208-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108213-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8452A88077A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:53:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id EBA1A88078D
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:55:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A6AC2836A9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:53:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7C33BB22677
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:55:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 86BB7605DC;
-	Tue, 19 Mar 2024 22:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 441C65F870;
+	Tue, 19 Mar 2024 22:54:27 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="aXlKUmNE"
-Received: from out-174.mta0.migadu.com (out-174.mta0.migadu.com [91.218.175.174])
+	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="jY1wvw3L"
+Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 35A2E605AB
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:51:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E682753E32;
+	Tue, 19 Mar 2024 22:54:24 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710888717; cv=none; b=YI3FciTt/ERKC4WJScDmwj1uLCdr6un0ZTJhA5ei3ARrTzwXseV9qllNlWNm4Lk870vRIVu7cA6qCa0WTITP7IBRUvnGD4HHG/r13oobl2FX01ltHgGNfCFmUAaJHAyYKs+9HS55ozEfNYBm0mbRy0IlBBmT/PJWHCdLS+soCL8=
+	t=1710888866; cv=none; b=L7RXpiFPgYBNbVniWNk5hsilju9wjApy53dHnnexJU7h2uafQIpXqdhl1eElrHnsNGz6q8KAF587MEedmIGZRB20YtwqaqKeuwFysbrBQWNi3nBDJRMC654mai+VCzhypIP5CfoXZdc50UjfQAQJ+25GPA1nQVvaoIC4EEvdyNM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710888717; c=relaxed/simple;
-	bh=uS/TEu4mlEh7JMubqkGlcBNV6ORyyxA0s3Yd70BcriU=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=j6zlnOUL9pAeYEuBhZJCSPEU0fGXfyML8ShNTXVsnq5tjEKOga5uO7e/qjZV07CFpyHBRB1VjDitUrI1qL/aNImB6ZGSGLsGKEgr9t4Vg8sohFy+AF++xf0M2UH5vqVJ92zPHKkPVRDwxALuicnQoZew0eadvYQF2YXozAd2XXI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=aXlKUmNE; arc=none smtp.client-ip=91.218.175.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
-X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
-	t=1710888713;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references;
-	bh=y22O06N/upOAnq/QBgaT5/qealPw+o4hUVRg08G+D1M=;
-	b=aXlKUmNE6D74UEHTw2cy9/9ceq4xeRfP/jeOEnvXWUNHady58ztrFA/rMfWSXWcIBxb8pe
-	giVpKTwnQEDWCwhAcEnCLOPm2ZzSvLkfCsA5euwcS+q/wtZi1bLZ2Ts/17+wbBNGzPAFVR
-	tX8f9q67OfO6VsMe0fxx1srfmx0vNs8=
-From: Sean Anderson <sean.anderson@linux.dev>
-To: Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
-	Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
-	Maxime Ripard <mripard@kernel.org>,
-	Thomas Zimmermann <tzimmermann@suse.de>,
-	dri-devel@lists.freedesktop.org
-Cc: Michal Simek <michal.simek@amd.com>,
-	David Airlie <airlied@gmail.com>,
-	linux-kernel@vger.kernel.org,
-	Daniel Vetter <daniel@ffwll.ch>,
-	linux-arm-kernel@lists.infradead.org,
-	Sean Anderson <sean.anderson@linux.dev>
-Subject: [PATCH v2 8/8] drm: zynqmp_dp: Add debugfs interface for compliance testing
-Date: Tue, 19 Mar 2024 18:51:21 -0400
-Message-Id: <20240319225122.3048400-9-sean.anderson@linux.dev>
-In-Reply-To: <20240319225122.3048400-1-sean.anderson@linux.dev>
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
+	s=arc-20240116; t=1710888866; c=relaxed/simple;
+	bh=Zw0wFjaCCBKcsQ3lyAv39YK7/EhhTT/4dEmwP8X6S6c=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:Mime-Version; b=i7Jfa9dTtrUPpP3GuDe9y8CWS7rCZ6fIZ9wKFpxO/sHeanAZWeAXnKBz6f1tXvixLJbT3s209XZsz+FVRFD2XMNbLXOTqUPuR5k5LD1sf1w6lHCCBKrNj0GKZkXh2cM/ieB2NGar0jY1j/65nl2iK09xMJMQFlv3cXG6ZP8UlEg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=jY1wvw3L; arc=none smtp.client-ip=148.163.156.1
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
+Received: from pps.filterd (m0356517.ppops.net [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JMb9wE031810;
+	Tue, 19 Mar 2024 22:54:10 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
+ from : to : cc : date : in-reply-to : references : content-type :
+ mime-version : content-transfer-encoding; s=pp1;
+ bh=UPiXAnbTN6L5PI02UmJo2if2jAmAhdesNCVcfgA2zUM=;
+ b=jY1wvw3LZBSUlB3Zu4cZQrrZR/SRFbiSyJMOQ2KI4UJ65cetG2q5yNQ8b3pwcOfmR5Zc
+ o0OTQCWp1jUWqFhBIJfDa3sEH3HwftOoza6vyLniJ4RwfiU85UHj/sMCStap1s3+Odly
+ ur2N5teg1eq/dtKi3LvPvaGhNEgva6bSI3hgpbMjY9BfLiJe7aQqvqYqS89JoQ3HjeG6
+ EQveICjPwaq6XDxQT3pCREYVPni1GRKNZecSb1Gu9com42cX4VaaUdANenasWWAm9SVe
+ xI6VhH6MPJWtHnsJn+M7Bc7iI8Gq/47ivlm19vQ8C8dXhLCtfLjJIFR+XDbI0nGxuqCN TA== 
+Received: from pps.reinject (localhost [127.0.0.1])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wykner0se-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 22:54:09 +0000
+Received: from m0356517.ppops.net (m0356517.ppops.net [127.0.0.1])
+	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JMs9a0023630;
+	Tue, 19 Mar 2024 22:54:09 GMT
+Received: from ppma13.dal12v.mail.ibm.com (dd.9e.1632.ip4.static.sl-reverse.com [50.22.158.221])
+	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wykner0rg-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 22:54:09 +0000
+Received: from pps.filterd (ppma13.dal12v.mail.ibm.com [127.0.0.1])
+	by ppma13.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JKWN7D019843;
+	Tue, 19 Mar 2024 22:51:46 GMT
+Received: from smtprelay07.dal12v.mail.ibm.com ([172.16.1.9])
+	by ppma13.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwqykjaw9-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 22:51:46 +0000
+Received: from smtpav02.wdc07v.mail.ibm.com (smtpav02.wdc07v.mail.ibm.com [10.39.53.229])
+	by smtprelay07.dal12v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JMphMd48366168
+	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
+	Tue, 19 Mar 2024 22:51:46 GMT
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id D2DE45805E;
+	Tue, 19 Mar 2024 22:51:43 +0000 (GMT)
+Received: from smtpav02.wdc07v.mail.ibm.com (unknown [127.0.0.1])
+	by IMSVA (Postfix) with ESMTP id B71315805B;
+	Tue, 19 Mar 2024 22:51:42 +0000 (GMT)
+Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.80.83])
+	by smtpav02.wdc07v.mail.ibm.com (Postfix) with ESMTP;
+	Tue, 19 Mar 2024 22:51:42 +0000 (GMT)
+Message-ID: <90c306c957d0502332bda154ff60f21206c57a3c.camel@linux.ibm.com>
+Subject: Re: [PATCH v3 04/10] evm: Use the metadata inode to calculate
+ metadata hash
+From: Mimi Zohar <zohar@linux.ibm.com>
+To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
+        linux-security-module@vger.kernel.org, linux-unionfs@vger.kernel.org
+Cc: linux-kernel@vger.kernel.org, paul@paul-moore.com, jmorris@namei.org,
+        serge@hallyn.com, roberto.sassu@huawei.com, amir73il@gmail.com,
+        brauner@kernel.org, miklos@szeredi.hu
+Date: Tue, 19 Mar 2024 18:51:42 -0400
+In-Reply-To: <20240223172513.4049959-5-stefanb@linux.ibm.com>
+References: <20240223172513.4049959-1-stefanb@linux.ibm.com>
+	 <20240223172513.4049959-5-stefanb@linux.ibm.com>
+Content-Type: text/plain; charset="UTF-8"
+X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-Migadu-Flow: FLOW_OUT
+Mime-Version: 1.0
+Content-Transfer-Encoding: 7bit
+X-TM-AS-GCONF: 00
+X-Proofpoint-ORIG-GUID: 5Zi3e-dch-Cmc6HxFR8xW8RPa7Dkk5af
+X-Proofpoint-GUID: n6_iUU2o2Ul3baH8kv2cZtmKSbtj9pZ1
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-19_09,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishscore=0
+ priorityscore=1501 malwarescore=0 mlxlogscore=760 bulkscore=0
+ impostorscore=0 mlxscore=0 lowpriorityscore=0 spamscore=0 suspectscore=0
+ clxscore=1015 adultscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.12.0-2403140000 definitions=main-2403190176
 
-Add a debugfs interface for exercising the various test modes supported
-by the DisplayPort controller. This allows performing compliance
-testing, or performing signal integrity measurements on a failing link.
-At the moment, we do not support sink-driven link quality testing,
-although such support would be fairly easy to add.
+On Fri, 2024-02-23 at 12:25 -0500, Stefan Berger wrote:
+> Changes to file attributes (mode bits, uid, gid) on the lower layer are
+> not taken into account when d_backing_inode() is used when a file is
+> accessed on the overlay layer and this file has not yet been copied up.
+> This is because d_backing_inode() does not return the real inode of the
+> lower layer but instead returns the backing inode which in this case
+> holds wrong file attributes. Further, when CONFIG_OVERLAY_FS_METACOPY is
+> enabled and a copy-up is triggered due to file metadata changes, then
+> the metadata are held by the backing inode while the data are still held
+> by the real inode. Therefore, use d_inode(d_real(dentry, D_REAL_METADATA))
+> to get to the file's metadata inode and use it to calculate the metadata
+> hash with.
+> 
+> Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
+> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> Acked-by: Amir Goldstein <amir73il@gmail.com>
 
-Additionally, add some debugfs files for ignoring AUX errors and HPD
-events, as this can allow testing with equipment that cannot emulate a
-DPRX.
-
-Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
----
-
-Changes in v2:
-- Document debugfs files
-- Add ignore_aux_errors and ignore_hpd debugfs files to replace earlier
-  implicit functionality
-- Attempt to fix unreproducable, spurious build warning
-
- Documentation/gpu/drivers.rst    |   1 +
- Documentation/gpu/zynqmp.rst     | 149 +++++++
- MAINTAINERS                      |   1 +
- drivers/gpu/drm/xlnx/zynqmp_dp.c | 675 ++++++++++++++++++++++++++++++-
- 4 files changed, 823 insertions(+), 3 deletions(-)
- create mode 100644 Documentation/gpu/zynqmp.rst
-
-diff --git a/Documentation/gpu/drivers.rst b/Documentation/gpu/drivers.rst
-index b899cbc5c2b4..187201aedbe5 100644
---- a/Documentation/gpu/drivers.rst
-+++ b/Documentation/gpu/drivers.rst
-@@ -22,6 +22,7 @@ GPU Driver Documentation
-    afbc
-    komeda-kms
-    panfrost
-+   zynqmp
- 
- .. only::  subproject and html
- 
-diff --git a/Documentation/gpu/zynqmp.rst b/Documentation/gpu/zynqmp.rst
-new file mode 100644
-index 000000000000..4173a79972a2
---- /dev/null
-+++ b/Documentation/gpu/zynqmp.rst
-@@ -0,0 +1,149 @@
-+.. SPDX-License-Identifier: GPL-2.0+
-+
-+===============================================
-+Xilinx ZynqMP Ultrascale+ DisplayPort Subsystem
-+===============================================
-+
-+This subsystem handles DisplayPort video and audio output on the ZynqMP. It
-+supports in-memory framebuffers with the DisplayPort DMA controller
-+(xilinx-dpdma), as well as "live" video and audio from the programmable logic
-+(PL). This subsystem can perform several transformations, including color space
-+conversion, alpha blending, and audio mixing, although not all features are
-+currently supported.
-+
-+debugfs
-+-------
-+
-+To support debugging and compliance testing, several test modes can be enabled
-+though debugfs. The following files in /sys/kernel/debug/dri/X/DP-1/test/
-+control the DisplayPort test modes:
-+
-+active:
-+        Writing a 1 to this file will activate test mode, and writing a 0 will
-+        deactivate test mode. Writing a 1 or 0 when the test mode is already
-+        active/inactive will re-activate/re-deactivate test mode. When test
-+        mode is inactive, changes made to other files will have no (immediate)
-+        effect, although the settings will be saved for when test mode is
-+        activated. When test mode is active, changes made to other files will
-+        apply immediately.
-+
-+custom:
-+        Custom test pattern value
-+
-+downspread:
-+        Enable/disable clock downspreading (spread-spectrum clocking) by
-+        writing 1/0
-+
-+enhanced:
-+        Enable/disable enhanced framing
-+
-+ignore_aux_errors:
-+        Ignore AUX errors when set to 1. Writes to this file take effect
-+        immediately (regardless of whether test mode is active) and affect all
-+        AUX transfers.
-+
-+ignore_hpd:
-+        Ignore hotplug events (such as cable removals or monitor link
-+        retraining requests) when set to 1. Writes to this file take effect
-+        immediately (regardless of whether test mode is active).
-+
-+laneX_preemphasis:
-+        Preemphasis from 0 (lowest) to 2 (most) for lane X
-+
-+laneX_swing:
-+        Voltage swing from 0 (lowest) to 3 (most) for lane X
-+
-+lanes:
-+        Number of lanes to use (1, 2, or 4)
-+
-+pattern:
-+        Test pattern. May be one of:
-+
-+                video
-+                        Use regular video input
-+
-+                symbol-error
-+                        Symbol error measurement pattern
-+
-+                prbs7
-+                        Output of the PRBS7 (x^7 + x^6 + 1) polynomial
-+
-+                80bit-custom
-+                        A custom 80-bit pattern
-+
-+                cp2520
-+                        HBR2 compliance eye pattern
-+
-+                tps1
-+                        Link training symbol pattern TPS1 (/D10.2/)
-+
-+                tps2
-+                        Link training symbol pattern TPS2
-+
-+                tps3
-+                        Link training symbol pattern TPS3 (for HBR2)
-+
-+rate:
-+        Rate in hertz. One of
-+
-+                * 5400000000 (HBR2)
-+                * 2700000000 (HBR)
-+                * 1620000000 (RBR)
-+
-+You can dump the displayport test settings with the following command::
-+
-+        for prop in /sys/kernel/debug/dri/1/DP-1/test/*; do
-+                printf '%-17s ' ${prop##*/}
-+                if [ ${prop##*/} = custom ]; then
-+                        hexdump -C $prop | head -1
-+                else
-+                        cat $prop
-+                fi
-+        done
-+
-+The output could look something like::
-+
-+        active            1
-+        custom            00000000  00 00 00 00 00 00 00 00  00 00                    |..........|
-+        downspread        0
-+        enhanced          1
-+        ignore_aux_errors 1
-+        ignore_hpd        1
-+        lane0_preemphasis 0
-+        lane0_swing       3
-+        lane1_preemphasis 0
-+        lane1_swing       3
-+        lanes             2
-+        pattern           prbs7
-+        rate              1620000000
-+
-+The recommended test procedure is to connect the board to a monitor,
-+configure test mode, activate test mode, and then disconnect the cable
-+and connect it to your test equipment of choice. For example, one
-+sequence of commands could be::
-+
-+        echo 1 > /sys/kernel/debug/dri/1/DP-1/test/enhanced
-+        echo tps1 > /sys/kernel/debug/dri/1/DP-1/test/pattern
-+        echo 1620000000 > /sys/kernel/debug/dri/1/DP-1/test/rate
-+        echo 1 > /sys/kernel/debug/dri/1/DP-1/test/ignore_aux_errors
-+        echo 1 > /sys/kernel/debug/dri/1/DP-1/test/ignore_hpd
-+        echo 1 > /sys/kernel/debug/dri/1/DP-1/test/active
-+
-+at which point the cable could be disconnected from the monitor.
-+
-+Internals
-+---------
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_disp.h
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_dpsub.h
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_kms.h
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_disp.c
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_dp.c
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_dpsub.c
-+
-+.. kernel-doc:: drivers/gpu/drm/xlnx/zynqmp_kms.c
-diff --git a/MAINTAINERS b/MAINTAINERS
-index 8d1052fa6a69..78680180aefc 100644
---- a/MAINTAINERS
-+++ b/MAINTAINERS
-@@ -7305,6 +7305,7 @@ L:	dri-devel@lists.freedesktop.org
- S:	Maintained
- T:	git git://anongit.freedesktop.org/drm/drm-misc
- F:	Documentation/devicetree/bindings/display/xlnx/
-+F:	Documentation/gpu/zynqmp.rst
- F:	drivers/gpu/drm/xlnx/
- 
- DRM GPU SCHEDULER
-diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-index 6e04dcf61e19..6a84a96544e5 100644
---- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-+++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-@@ -18,7 +18,9 @@
- #include <drm/drm_modes.h>
- #include <drm/drm_of.h>
- 
-+#include <linux/bitfield.h>
- #include <linux/clk.h>
-+#include <linux/debugfs.h>
- #include <linux/delay.h>
- #include <linux/device.h>
- #include <linux/io.h>
-@@ -50,6 +52,7 @@ MODULE_PARM_DESC(power_on_delay_ms, "DP power on delay in msec (default: 4)");
- #define ZYNQMP_DP_LANE_COUNT_SET			0x4
- #define ZYNQMP_DP_ENHANCED_FRAME_EN			0x8
- #define ZYNQMP_DP_TRAINING_PATTERN_SET			0xc
-+#define ZYNQMP_DP_LINK_QUAL_PATTERN_SET			0x10
- #define ZYNQMP_DP_SCRAMBLING_DISABLE			0x14
- #define ZYNQMP_DP_DOWNSPREAD_CTL			0x18
- #define ZYNQMP_DP_SOFTWARE_RESET			0x1c
-@@ -63,6 +66,9 @@ MODULE_PARM_DESC(power_on_delay_ms, "DP power on delay in msec (default: 4)");
- 							 ZYNQMP_DP_SOFTWARE_RESET_STREAM3 | \
- 							 ZYNQMP_DP_SOFTWARE_RESET_STREAM4 | \
- 							 ZYNQMP_DP_SOFTWARE_RESET_AUX)
-+#define ZYNQMP_DP_COMP_PATTERN_80BIT_1			0x20
-+#define ZYNQMP_DP_COMP_PATTERN_80BIT_2			0x24
-+#define ZYNQMP_DP_COMP_PATTERN_80BIT_3			0x28
- 
- /* Core enable registers */
- #define ZYNQMP_DP_TRANSMITTER_ENABLE			0x80
-@@ -206,6 +212,7 @@ MODULE_PARM_DESC(power_on_delay_ms, "DP power on delay in msec (default: 4)");
- #define ZYNQMP_DP_TX_PHY_POWER_DOWN_LANE_2		BIT(2)
- #define ZYNQMP_DP_TX_PHY_POWER_DOWN_LANE_3		BIT(3)
- #define ZYNQMP_DP_TX_PHY_POWER_DOWN_ALL			0xf
-+#define ZYNQMP_DP_TRANSMIT_PRBS7			0x230
- #define ZYNQMP_DP_PHY_PRECURSOR_LANE_0			0x23c
- #define ZYNQMP_DP_PHY_PRECURSOR_LANE_1			0x240
- #define ZYNQMP_DP_PHY_PRECURSOR_LANE_2			0x244
-@@ -273,6 +280,69 @@ struct zynqmp_dp_config {
- 	u8 bpp;
- };
- 
-+/**
-+ * enum test_pattern - Test patterns for test testing
-+ * @TEST_VIDEO: Use regular video input
-+ * @TEST_SYMBOL_ERROR: Symbol error measurement pattern
-+ * @TEST_PRBS7: Output of the PRBS7 (x^7 + x^6 + 1) polynomial
-+ * @TEST_80BIT_CUSTOM: A custom 80-bit pattern
-+ * @TEST_CP2520: HBR2 compliance eye pattern
-+ * @TEST_TPS1: Link training symbol pattern TPS1 (/D10.2/)
-+ * @TEST_TPS2: Link training symbol pattern TPS2
-+ * @TEST_TPS3: Link training symbol pattern TPS3 (for HBR2)
-+ */
-+enum test_pattern {
-+	TEST_VIDEO,
-+	TEST_TPS1,
-+	TEST_TPS2,
-+	TEST_TPS3,
-+	TEST_SYMBOL_ERROR,
-+	TEST_PRBS7,
-+	TEST_80BIT_CUSTOM,
-+	TEST_CP2520,
-+};
-+
-+static const char *const test_pattern_str[] = {
-+	[TEST_VIDEO] = "video",
-+	[TEST_TPS1] = "tps1",
-+	[TEST_TPS2] = "tps2",
-+	[TEST_TPS3] = "tps3",
-+	[TEST_SYMBOL_ERROR] = "symbol-error",
-+	[TEST_PRBS7] = "prbs7",
-+	[TEST_80BIT_CUSTOM] = "80bit-custom",
-+	[TEST_CP2520] = "cp2520",
-+};
-+
-+/**
-+ * struct zynqmp_dp_test - Configuration for test mode
-+ * @pattern: The test pattern
-+ * @enhanced: Use enhanced framing
-+ * @downspread: Use SSC
-+ * @active: Whether test mode is active
-+ * @custom: Custom pattern for %TEST_80BIT_CUSTOM
-+ * @train_set: Voltage/preemphasis settings
-+ * @bw_code: Bandwidth code for the link
-+ * @link_cnt: Number of lanes
-+ */
-+struct zynqmp_dp_test {
-+	enum test_pattern pattern;
-+	bool enhanced, downspread, active;
-+	u8 custom[10];
-+	u8 train_set[ZYNQMP_DP_MAX_LANES];
-+	u8 bw_code;
-+	u8 link_cnt;
-+};
-+
-+/**
-+ * struct zynqmp_dp_train_set_priv - Private data for train_set debugfs files
-+ * @dp: DisplayPort IP core structure
-+ * @lane: The lane for this file
-+ */
-+struct zynqmp_dp_train_set_priv {
-+	struct zynqmp_dp *dp;
-+	int lane;
-+};
-+
- /**
-  * struct zynqmp_dp - Xilinx DisplayPort core
-  * @dev: device structure
-@@ -283,22 +353,28 @@ struct zynqmp_dp_config {
-  * @irq: irq
-  * @bridge: DRM bridge for the DP encoder
-  * @next_bridge: The downstream bridge
-+ * @test: Configuration for test mode
-  * @config: IP core configuration from DTS
-  * @aux: aux channel
-+ * @ignore_aux_errors: If set, AUX errors are suppressed
-  * @phy: PHY handles for DP lanes
-  * @num_lanes: number of enabled phy lanes
-  * @hpd_work: hot plug detection worker
-  * @hpd_irq_work: hot plug detection IRQ worker
-+ * @ignore_hpd: If set, HPD events and IRQs are ignored
-  * @status: connection status
-  * @enabled: flag to indicate if the device is enabled
-  * @dpcd: DP configuration data from currently connected sink device
-  * @link_config: common link configuration between IP core and sink device
-  * @mode: current mode between IP core and sink device
-  * @train_set: set of training data
-+ * @debugfs_train_set: Debugfs private data for @train_set
-  *
-  * @lock covers the link configuration in this struct and the device's
-- * registers. It does not cover @aux. It is not strictly required for any of
-- * the members which are only modified at probe/remove time (e.g. @dev).
-+ * registers. It does not cover @aux or @ignore_aux_errors. It is not strictly
-+ * required for any of the members which are only modified at probe/remove time
-+ * (e.g. @dev). @ignore_hpd is also not covered, since it is independent of the
-+ * rest of the configuration.
-  */
- struct zynqmp_dp {
- 	struct drm_dp_aux aux;
-@@ -317,9 +393,13 @@ struct zynqmp_dp {
- 	enum drm_connector_status status;
- 	int irq;
- 	bool enabled;
-+	bool ignore_aux_errors;
-+	bool ignore_hpd;
- 
-+	struct zynqmp_dp_train_set_priv debugfs_train_set[ZYNQMP_DP_MAX_LANES];
- 	struct zynqmp_dp_mode mode;
- 	struct zynqmp_dp_link_config link_config;
-+	struct zynqmp_dp_test test;
- 	struct zynqmp_dp_config config;
- 	u8 dpcd[DP_RECEIVER_CAP_SIZE];
- 	u8 train_set[ZYNQMP_DP_MAX_LANES];
-@@ -1032,6 +1112,8 @@ zynqmp_dp_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
- 
- 		if (dp->status == connector_status_disconnected) {
- 			dev_dbg(dp->dev, "no connected aux device\n");
-+			if (dp->ignore_aux_errors)
-+				goto fake_response;
- 			return -ENODEV;
- 		}
- 
-@@ -1040,7 +1122,13 @@ zynqmp_dp_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
- 
- 	dev_dbg(dp->dev, "failed to do aux transfer (%d)\n", ret);
- 
--	return ret;
-+	if (!dp->ignore_aux_errors)
-+		return ret;
-+
-+fake_response:
-+	msg->reply = DP_AUX_NATIVE_REPLY_ACK;
-+	memset(msg->buffer, 0, msg->size);
-+	return msg->size;
- }
- 
- /**
-@@ -1598,6 +1686,580 @@ static struct edid *zynqmp_dp_bridge_get_edid(struct drm_bridge *bridge,
- 	return drm_get_edid(connector, &dp->aux.ddc);
- }
- 
-+/* -----------------------------------------------------------------------------
-+ * debugfs
-+ */
-+
-+/**
-+ * zynqmp_dp_set_test_pattern() - Configure the link for a test pattern
-+ * @dp: DisplayPort IP core structure
-+ * @pattern: The test pattern to configure
-+ * @custom: The custom pattern to use if @pattern is %TEST_80BIT_CUSTOM
-+ *
-+ * Return: 0 on success, or negative errno on (DPCD) failure
-+ */
-+static int zynqmp_dp_set_test_pattern(struct zynqmp_dp *dp,
-+				      enum test_pattern pattern,
-+				      u8 *const custom)
-+{
-+	bool scramble = false;
-+	u32 train_pattern = 0;
-+	u32 link_pattern = 0;
-+	u8 dpcd_train = 0;
-+	u8 dpcd_link = 0;
-+	int ret;
-+
-+	switch (pattern) {
-+	case TEST_TPS1:
-+		train_pattern = 1;
-+		break;
-+	case TEST_TPS2:
-+		train_pattern = 2;
-+		break;
-+	case TEST_TPS3:
-+		train_pattern = 3;
-+		break;
-+	case TEST_SYMBOL_ERROR:
-+		scramble = true;
-+		link_pattern = DP_PHY_TEST_PATTERN_ERROR_COUNT;
-+		break;
-+	case TEST_PRBS7:
-+		/* We use a dedicated register to enable PRBS7 */
-+		dpcd_link = DP_LINK_QUAL_PATTERN_ERROR_RATE;
-+		break;
-+	case TEST_80BIT_CUSTOM: {
-+		const u8 *p = custom;
-+
-+		link_pattern = DP_LINK_QUAL_PATTERN_80BIT_CUSTOM;
-+
-+		zynqmp_dp_write(dp, ZYNQMP_DP_COMP_PATTERN_80BIT_1,
-+				(p[3] << 24) | (p[2] << 16) | (p[1] << 8) | p[0]);
-+		zynqmp_dp_write(dp, ZYNQMP_DP_COMP_PATTERN_80BIT_2,
-+				(p[7] << 24) | (p[6] << 16) | (p[5] << 8) | p[4]);
-+		zynqmp_dp_write(dp, ZYNQMP_DP_COMP_PATTERN_80BIT_3,
-+				(p[9] << 8) | p[8]);
-+		break;
-+	}
-+	case TEST_CP2520:
-+		link_pattern = DP_LINK_QUAL_PATTERN_CP2520_PAT_1;
-+		break;
-+	default:
-+		WARN_ON_ONCE(1);
-+		fallthrough;
-+	case TEST_VIDEO:
-+		scramble = true;
-+	}
-+
-+	zynqmp_dp_write(dp, ZYNQMP_DP_SCRAMBLING_DISABLE, !scramble);
-+	zynqmp_dp_write(dp, ZYNQMP_DP_TRAINING_PATTERN_SET, train_pattern);
-+	zynqmp_dp_write(dp, ZYNQMP_DP_LINK_QUAL_PATTERN_SET, link_pattern);
-+	zynqmp_dp_write(dp, ZYNQMP_DP_TRANSMIT_PRBS7, pattern == TEST_PRBS7);
-+
-+	dpcd_link = dpcd_link ?: link_pattern;
-+	dpcd_train = train_pattern;
-+	if (!scramble)
-+		dpcd_train |= DP_LINK_SCRAMBLING_DISABLE;
-+
-+	if (dp->dpcd[DP_DPCD_REV] < 0x12) {
-+		if (pattern == TEST_CP2520)
-+			dev_warn(dp->dev,
-+				"can't set sink link quality pattern to CP2520 for DPCD < r1.2; error counters will be invalid\n");
-+		else
-+			dpcd_train |= FIELD_PREP(DP_LINK_QUAL_PATTERN_11_MASK,
-+						 dpcd_link);
-+	} else {
-+		u8 dpcd_link_lane[ZYNQMP_DP_MAX_LANES];
-+
-+		memset(dpcd_link_lane, dpcd_link, ZYNQMP_DP_MAX_LANES);
-+		ret = drm_dp_dpcd_write(&dp->aux, DP_LINK_QUAL_LANE0_SET,
-+					dpcd_link_lane, ZYNQMP_DP_MAX_LANES);
-+		if (ret < 0)
-+			return ret;
-+	}
-+
-+	ret = drm_dp_dpcd_writeb(&dp->aux, DP_TRAINING_PATTERN_SET, dpcd_train);
-+	return ret < 0 ? ret : 0;
-+}
-+
-+static int zynqmp_dp_test_setup(struct zynqmp_dp *dp)
-+{
-+	return zynqmp_dp_setup(dp, dp->test.bw_code, dp->test.link_cnt,
-+			       dp->test.enhanced, dp->test.downspread);
-+}
-+
-+static ssize_t zynqmp_dp_pattern_read(struct file *file, char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct dentry *dentry = file->f_path.dentry;
-+	struct zynqmp_dp *dp = file->private_data;
-+	char buf[16];
-+	ssize_t ret;
-+
-+	ret = debugfs_file_get(dentry);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	mutex_lock(&dp->lock);
-+	ret = snprintf(buf, sizeof(buf), "%s\n",
-+		       test_pattern_str[dp->test.pattern]);
-+	mutex_unlock(&dp->lock);
-+
-+	debugfs_file_put(dentry);
-+	return simple_read_from_buffer(user_buf, count, ppos, buf, ret);
-+}
-+
-+static ssize_t zynqmp_dp_pattern_write(struct file *file,
-+				       const char __user *user_buf,
-+				       size_t count, loff_t *ppos)
-+{
-+
-+	struct dentry *dentry = file->f_path.dentry;
-+	struct zynqmp_dp *dp = file->private_data;
-+	char buf[16];
-+	ssize_t ret;
-+	int pattern;
-+
-+	ret = debugfs_file_get(dentry);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	ret = simple_write_to_buffer(buf, sizeof(buf) - 1, ppos, user_buf,
-+				     count);
-+	if (ret < 0)
-+		goto out;
-+	buf[ret] = '\0';
-+
-+	pattern = sysfs_match_string(test_pattern_str, buf);
-+	if (pattern < 0) {
-+		ret = -EINVAL;
-+		goto out;
-+	}
-+
-+	mutex_lock(&dp->lock);
-+	dp->test.pattern = pattern;
-+	if (dp->test.active)
-+		ret = zynqmp_dp_set_test_pattern(dp, dp->test.pattern,
-+						 dp->test.custom) ?: ret;
-+	mutex_unlock(&dp->lock);
-+
-+out:
-+	debugfs_file_put(dentry);
-+	return ret;
-+}
-+
-+static const struct file_operations fops_zynqmp_dp_pattern = {
-+	.read = zynqmp_dp_pattern_read,
-+	.write = zynqmp_dp_pattern_write,
-+	.open = simple_open,
-+	.llseek = noop_llseek,
-+};
-+
-+static int zynqmp_dp_enhanced_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	mutex_lock(&dp->lock);
-+	*val = dp->test.enhanced;
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_enhanced_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+	int ret = 0;
-+
-+	mutex_lock(&dp->lock);
-+	dp->test.enhanced = val;
-+	if (dp->test.active)
-+		ret = zynqmp_dp_test_setup(dp);
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_enhanced, zynqmp_dp_enhanced_get,
-+			 zynqmp_dp_enhanced_set, "%llu\n");
-+
-+static int zynqmp_dp_downspread_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	mutex_lock(&dp->lock);
-+	*val = dp->test.downspread;
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_downspread_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+	int ret = 0;
-+
-+	mutex_lock(&dp->lock);
-+	dp->test.downspread = val;
-+	if (dp->test.active)
-+		ret = zynqmp_dp_test_setup(dp);
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_downspread, zynqmp_dp_downspread_get,
-+			 zynqmp_dp_downspread_set, "%llu\n");
-+
-+static int zynqmp_dp_active_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	mutex_lock(&dp->lock);
-+	*val = dp->test.active;
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_active_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+	int ret = 0;
-+
-+	mutex_lock(&dp->lock);
-+	if (val) {
-+		if (val < 2) {
-+			ret = zynqmp_dp_test_setup(dp);
-+			if (ret)
-+				goto out;
-+		}
-+
-+		ret = zynqmp_dp_set_test_pattern(dp, dp->test.pattern,
-+						 dp->test.custom);
-+		if (ret)
-+			goto out;
-+
-+		ret = zynqmp_dp_update_vs_emph(dp, dp->test.train_set);
-+		if (ret)
-+			goto out;
-+
-+		dp->test.active = true;
-+	} else {
-+		int err;
-+
-+		dp->test.active = false;
-+		err = zynqmp_dp_set_test_pattern(dp, TEST_VIDEO, NULL);
-+		if (err)
-+			dev_warn(dp->dev, "could not clear test pattern: %d\n",
-+				 err);
-+		zynqmp_dp_train_loop(dp);
-+	}
-+out:
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_active, zynqmp_dp_active_get,
-+			 zynqmp_dp_active_set, "%llu\n");
-+
-+static ssize_t zynqmp_dp_custom_read(struct file *file, char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+	struct dentry *dentry = file->f_path.dentry;
-+	struct zynqmp_dp *dp = file->private_data;
-+	ssize_t ret;
-+
-+	ret = debugfs_file_get(dentry);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	mutex_lock(&dp->lock);
-+	ret = simple_read_from_buffer(user_buf, count, ppos, &dp->test.custom,
-+				      sizeof(dp->test.custom));
-+	mutex_unlock(&dp->lock);
-+
-+	debugfs_file_put(dentry);
-+	return ret;
-+}
-+
-+static ssize_t zynqmp_dp_custom_write(struct file *file,
-+				      const char __user *user_buf,
-+				      size_t count, loff_t *ppos)
-+{
-+
-+	struct dentry *dentry = file->f_path.dentry;
-+	struct zynqmp_dp *dp = file->private_data;
-+	ssize_t ret;
-+	char buf[sizeof(dp->test.custom)];
-+
-+	ret = debugfs_file_get(dentry);
-+	if (unlikely(ret))
-+		return ret;
-+
-+	ret = simple_write_to_buffer(buf, sizeof(buf), ppos, user_buf, count);
-+	if (ret < 0)
-+		goto out;
-+
-+	mutex_lock(&dp->lock);
-+	memcpy(dp->test.custom, buf, ret);
-+	if (dp->test.active)
-+		ret = zynqmp_dp_set_test_pattern(dp, dp->test.pattern,
-+						 dp->test.custom) ?: ret;
-+	mutex_unlock(&dp->lock);
-+
-+out:
-+	debugfs_file_put(dentry);
-+	return ret;
-+}
-+
-+static const struct file_operations fops_zynqmp_dp_custom = {
-+	.read = zynqmp_dp_custom_read,
-+	.write = zynqmp_dp_custom_write,
-+	.open = simple_open,
-+	.llseek = noop_llseek,
-+};
-+
-+static int zynqmp_dp_swing_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp_train_set_priv *priv = data;
-+	struct zynqmp_dp *dp = priv->dp;
-+
-+	mutex_lock(&dp->lock);
-+	*val = dp->test.train_set[priv->lane] & DP_TRAIN_VOLTAGE_SWING_MASK;
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_swing_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp_train_set_priv *priv = data;
-+	struct zynqmp_dp *dp = priv->dp;
-+	u8 *train_set = &dp->test.train_set[priv->lane];
-+	int ret = 0;
-+
-+	if (val > 3)
-+		return -EINVAL;
-+
-+	mutex_lock(&dp->lock);
-+	*train_set &= ~(DP_TRAIN_MAX_SWING_REACHED |
-+			DP_TRAIN_VOLTAGE_SWING_MASK);
-+	*train_set |= val;
-+	if (val == 3)
-+		*train_set |= DP_TRAIN_MAX_SWING_REACHED;
-+
-+	if (dp->test.active)
-+		ret = zynqmp_dp_update_vs_emph(dp, dp->test.train_set);
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_swing, zynqmp_dp_swing_get,
-+			 zynqmp_dp_swing_set, "%llu\n");
-+
-+static int zynqmp_dp_preemphasis_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp_train_set_priv *priv = data;
-+	struct zynqmp_dp *dp = priv->dp;
-+
-+	mutex_lock(&dp->lock);
-+	*val = FIELD_GET(DP_TRAIN_PRE_EMPHASIS_MASK,
-+			 dp->test.train_set[priv->lane]);
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_preemphasis_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp_train_set_priv *priv = data;
-+	struct zynqmp_dp *dp = priv->dp;
-+	u8 *train_set = &dp->test.train_set[priv->lane];
-+	int ret = 0;
-+
-+	if (val > 2)
-+		return -EINVAL;
-+
-+	mutex_lock(&dp->lock);
-+	*train_set &= ~(DP_TRAIN_MAX_PRE_EMPHASIS_REACHED |
-+			DP_TRAIN_PRE_EMPHASIS_MASK);
-+	*train_set |= val;
-+	if (val == 2)
-+		*train_set |= DP_TRAIN_MAX_PRE_EMPHASIS_REACHED;
-+
-+	if (dp->test.active)
-+		ret = zynqmp_dp_update_vs_emph(dp, dp->test.train_set);
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_preemphasis, zynqmp_dp_preemphasis_get,
-+			 zynqmp_dp_preemphasis_set, "%llu\n");
-+
-+static int zynqmp_dp_lanes_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	mutex_lock(&dp->lock);
-+	*val = dp->test.link_cnt;
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_lanes_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+	int ret = 0;
-+
-+	if (val > ZYNQMP_DP_MAX_LANES)
-+		return -EINVAL;
-+
-+	mutex_lock(&dp->lock);
-+	if (val > dp->num_lanes) {
-+		ret = -EINVAL;
-+	} else {
-+		dp->test.link_cnt = val;
-+		if (dp->test.active)
-+			ret = zynqmp_dp_test_setup(dp);
-+	}
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_lanes, zynqmp_dp_lanes_get,
-+			 zynqmp_dp_lanes_set, "%llu\n");
-+
-+static int zynqmp_dp_rate_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	mutex_lock(&dp->lock);
-+	*val = drm_dp_bw_code_to_link_rate(dp->test.bw_code) * 10000;
-+	mutex_unlock(&dp->lock);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_rate_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+	int link_rate;
-+	int ret = 0;
-+	u8 bw_code;
-+
-+	if (do_div(val, 10000))
-+		return -EINVAL;
-+
-+	bw_code = drm_dp_link_rate_to_bw_code(val);
-+	link_rate = drm_dp_bw_code_to_link_rate(bw_code);
-+	if (val != link_rate)
-+		return -EINVAL;
-+
-+	if (bw_code != DP_LINK_BW_1_62 && bw_code != DP_LINK_BW_2_7 &&
-+	    bw_code != DP_LINK_BW_5_4)
-+		return -EINVAL;
-+
-+	mutex_lock(&dp->lock);
-+	dp->test.bw_code = bw_code;
-+	if (dp->test.active)
-+		ret = zynqmp_dp_test_setup(dp);
-+	mutex_unlock(&dp->lock);
-+
-+	return ret;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_rate, zynqmp_dp_rate_get,
-+			 zynqmp_dp_rate_set, "%llu\n");
-+
-+static int zynqmp_dp_ignore_aux_errors_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	mutex_lock(&dp->aux.hw_mutex);
-+	*val = dp->ignore_aux_errors;
-+	mutex_unlock(&dp->aux.hw_mutex);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_ignore_aux_errors_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	if (val != !!val)
-+		return -EINVAL;
-+
-+	mutex_lock(&dp->aux.hw_mutex);
-+	dp->ignore_aux_errors = val;
-+	mutex_unlock(&dp->aux.hw_mutex);
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_ignore_aux_errors,
-+			 zynqmp_dp_ignore_aux_errors_get,
-+			 zynqmp_dp_ignore_aux_errors_set, "%llu\n");
-+
-+static int zynqmp_dp_ignore_hpd_get(void *data, u64 *val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	*val = READ_ONCE(dp->ignore_hpd);
-+	return 0;
-+}
-+
-+static int zynqmp_dp_ignore_hpd_set(void *data, u64 val)
-+{
-+	struct zynqmp_dp *dp = data;
-+
-+	if (val != !!val)
-+		return -EINVAL;
-+
-+	WRITE_ONCE(dp->ignore_hpd, val);
-+	return 0;
-+}
-+
-+DEFINE_DEBUGFS_ATTRIBUTE(fops_zynqmp_dp_ignore_hpd, zynqmp_dp_ignore_hpd_get,
-+			 zynqmp_dp_ignore_hpd_set, "%llu\n");
-+
-+static void zynqmp_dp_bridge_debugfs_init(struct drm_bridge *bridge,
-+					  struct dentry *root)
-+{
-+	struct zynqmp_dp *dp = bridge_to_dp(bridge);
-+	struct dentry *test;
-+	int i;
-+
-+	dp->test.bw_code = DP_LINK_BW_5_4;
-+	dp->test.link_cnt = dp->num_lanes;
-+
-+	test = debugfs_create_dir("test", root);
-+#define CREATE_FILE(name) \
-+	debugfs_create_file(#name, 0600, test, dp, &fops_zynqmp_dp_##name)
-+	CREATE_FILE(pattern);
-+	CREATE_FILE(enhanced);
-+	CREATE_FILE(downspread);
-+	CREATE_FILE(active);
-+	CREATE_FILE(custom);
-+	CREATE_FILE(rate);
-+	CREATE_FILE(lanes);
-+	CREATE_FILE(ignore_aux_errors);
-+	CREATE_FILE(ignore_hpd);
-+
-+	for (i = 0; i < dp->num_lanes; i++) {
-+		static const char fmt[] = "lane%d_preemphasis";
-+		char name[sizeof(fmt)];
-+
-+		dp->debugfs_train_set[i].dp = dp;
-+		dp->debugfs_train_set[i].lane = i;
-+
-+		snprintf(name, sizeof(name), fmt, i);
-+		debugfs_create_file(name, 0600, test,
-+				    &dp->debugfs_train_set[i],
-+				    &fops_zynqmp_dp_preemphasis);
-+
-+		snprintf(name, sizeof(name), "lane%d_swing", i);
-+		debugfs_create_file(name, 0600, test,
-+				    &dp->debugfs_train_set[i],
-+				    &fops_zynqmp_dp_swing);
-+	}
-+}
-+
- static const struct drm_bridge_funcs zynqmp_dp_bridge_funcs = {
- 	.attach = zynqmp_dp_bridge_attach,
- 	.detach = zynqmp_dp_bridge_detach,
-@@ -1610,6 +2272,7 @@ static const struct drm_bridge_funcs zynqmp_dp_bridge_funcs = {
- 	.atomic_check = zynqmp_dp_bridge_atomic_check,
- 	.detect = zynqmp_dp_bridge_detect,
- 	.get_edid = zynqmp_dp_bridge_get_edid,
-+	.debugfs_init = zynqmp_dp_bridge_debugfs_init,
- };
- 
- /* -----------------------------------------------------------------------------
-@@ -1644,6 +2307,9 @@ static void zynqmp_dp_hpd_work_func(struct work_struct *work)
- 					    hpd_work.work);
- 	enum drm_connector_status status;
- 
-+	if (READ_ONCE(dp->ignore_hpd))
-+		return;
-+
- 	status = zynqmp_dp_bridge_detect(&dp->bridge);
- 	drm_bridge_hpd_notify(&dp->bridge, status);
- }
-@@ -1655,6 +2321,9 @@ static void zynqmp_dp_hpd_irq_work_func(struct work_struct *work)
- 	u8 status[DP_LINK_STATUS_SIZE + 2];
- 	int err;
- 
-+	if (READ_ONCE(dp->ignore_hpd))
-+		return;
-+
- 	mutex_lock(&dp->lock);
- 	err = drm_dp_dpcd_read(&dp->aux, DP_SINK_COUNT, status,
- 			       DP_LINK_STATUS_SIZE + 2);
--- 
-2.35.1.1320.gc452695387.dirty
+Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
 
 
