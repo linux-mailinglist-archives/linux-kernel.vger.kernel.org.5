@@ -1,112 +1,78 @@
-Return-Path: <linux-kernel+bounces-107836-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107837-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id F082E880258
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:32:16 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4961288025A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:32:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 92C821F2494A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:32:16 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CE93F282830
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:32:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C20E8C120;
-	Tue, 19 Mar 2024 16:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id EE30711CA1;
+	Tue, 19 Mar 2024 16:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="aUR8ahsz"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="KqafG1FO"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F3626AC0;
-	Tue, 19 Mar 2024 16:32:11 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 331EA111B1;
+	Tue, 19 Mar 2024 16:32:15 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710865931; cv=none; b=aHjmLLHMrfyzbAIoAKJ5SqTtk6NDYSI8BR+R15978KnbOLIS3dKQsteXRV+xTL4iz+lBTNizXa6thj2tNjI12WZuIHOFvEfvfjJeCGimKZIlH+/7Rm1mqHCpc/0qBABdCoHX3anfiKs1RF94O5sjJrsxYwmVNXN7KMV2i1U4QXg=
+	t=1710865935; cv=none; b=gY6CXYlJWaxKdAtOcm/PkzRW7jgJPR5fpZvn4pLhRd9N06ugPMDjCBnnpH6IN1NtkTPacPxr3pmgwlymulI/ft18Iw3nlL75WT7zr74S93nzBsvPioae9PPEvnSzf+1PaHGz82bEZNegv3TlRzLq2ouKRsUnY0dMTAdlAdAPFp8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710865931; c=relaxed/simple;
-	bh=NhTjsDbeF+jZwB6UdNaz4xCZqScOCQU5gs19tO01lLs=;
-	h=From:Date:Subject:MIME-Version:Content-Type:Message-Id:To:Cc; b=dHSMbjlRmYDJ+9nv/sQiDdWVi59qzmVXLju4fKCfQCnkcJxZMSYLbnW5F5FjUhC5QW02ihR10Wo30LLg/Af8LcEDrkWx28YYpkX7/IU6mVALUUh/o1uYfMjkzkIjjMyj5SlAArOxSkBNgg3/VLDqxogvGiQ94MIcN6NlK94tWFM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=aUR8ahsz; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 7D0BAC433F1;
-	Tue, 19 Mar 2024 16:32:10 +0000 (UTC)
+	s=arc-20240116; t=1710865935; c=relaxed/simple;
+	bh=dlwS+ClYwtdCIhyRMHsdbtRf3zIzcBodhDuKwd+a6r4=;
+	h=Subject:From:In-Reply-To:References:Message-Id:Date:To:Cc; b=r7IxgF+Dkjbt773U4ZKBYABdLFEvZSX3mG7IUULFXhJaoGg9/Mejg00g8H7uR6HLMUhdrEMynLMOa4DaXoyBM92elM+k7zUbGUf9z5JAooqQJ8zdzrqrHzPfuGkbcnAFa0RCVnCK+tqJY/lJ9YqfiQZdSCT5Ys/YnSk479oM9VM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=KqafG1FO; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPS id 07641C433C7;
+	Tue, 19 Mar 2024 16:32:15 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710865930;
-	bh=NhTjsDbeF+jZwB6UdNaz4xCZqScOCQU5gs19tO01lLs=;
-	h=From:Date:Subject:To:Cc:From;
-	b=aUR8ahszlCpeKTzonzhIEs24YaCWhLKvufoK18jGUBjVQHpFAZeDSx9OtOqNNq4Oa
-	 0AHn5buoluaQ9q+Cto3nROALV9PW6XxNFl3l2nUyGKwY7NaG88vPw61fJ6frhYELHA
-	 VZDVEAiYJxkiE2lUbVoJcBfUjjrRgdPxOHqYdymUHSQd3mU5ji2FVI2wVMhilf1hOA
-	 t7srlgi8SmRsEUsHbABX8OXPEiius9h6KG8eUaoLMXa2lZhv51S+bqQt/DXUhtD7qq
-	 vveB16IbvyxFRRCt+7/w0RGjTfLsuB/Hd118shnw9JX9B7OwufWGmxOOk9CKnt4bPs
-	 XUZdvH8UrqOqA==
-From: Jeff Layton <jlayton@kernel.org>
-Date: Tue, 19 Mar 2024 12:32:04 -0400
-Subject: [PATCH] vboxsf: explicitly deny setlease attempts
+	s=k20201202; t=1710865935;
+	bh=dlwS+ClYwtdCIhyRMHsdbtRf3zIzcBodhDuKwd+a6r4=;
+	h=Subject:From:In-Reply-To:References:Date:To:Cc:From;
+	b=KqafG1FOkpQ1tdSHmOM60N3qo+kOfsYOfMeSna55txX+1i+AeJRYBB0RLCBBwOJdA
+	 P8Zl+dfevApg/fTIQzEwgyrWb/g2LivLHaHjVjnZFHXDxLpRR2hihs7OGrSZFFdDZu
+	 e5szhg4Z+P6J0PAnAVAfHnj08LTiNzpKMxgC3V17cKU2TMawKIrDohePcxHoPclan9
+	 sWVA46+AnWm6O7WR0Mlcw01n+EU7qeyguE34jiW1OrK+VUxpCQkbTmaph2xrv0bs8s
+	 Y6KXl7cKjswa3L4uxlA+jknT5YRY0Woznmtz8Ldre8Uh75/h0QYeGzPWtD9aVospJA
+	 P6DpI9lV8tBtA==
+Received: from aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (localhost.localdomain [127.0.0.1])
+	by aws-us-west-2-korg-oddjob-1.ci.codeaurora.org (Postfix) with ESMTP id F1E92D84BB3;
+	Tue, 19 Mar 2024 16:32:14 +0000 (UTC)
+Subject: Re: [GIT PULL] virtio: features, fixes
+From: pr-tracker-bot@kernel.org
+In-Reply-To: <20240319034143-mutt-send-email-mst@kernel.org>
+References: <20240319034143-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-List-Id: <kvm.vger.kernel.org>
+X-PR-Tracked-Message-Id: <20240319034143-mutt-send-email-mst@kernel.org>
+X-PR-Tracked-Remote: https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
+X-PR-Tracked-Commit-Id: 5da7137de79ca6ffae3ace77050588cdf5263d33
+X-PR-Merge-Tree: torvalds/linux.git
+X-PR-Merge-Refname: refs/heads/master
+X-PR-Merge-Commit-Id: d95fcdf4961d27a3d17e5c7728367197adc89b8d
+Message-Id: <171086593498.7768.14462757833782378841.pr-tracker-bot@kernel.org>
+Date: Tue, 19 Mar 2024 16:32:14 +0000
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>, kvm@vger.kernel.org, virtualization@lists.linux-foundation.org, netdev@vger.kernel.org, linux-kernel@vger.kernel.org, alex.williamson@redhat.com, andrew@daynix.com, david@redhat.com, dtatulea@nvidia.com, eperezma@redhat.com, feliu@nvidia.com, gregkh@linuxfoundation.org, jasowang@redhat.com, jean-philippe@linaro.org, jonah.palmer@oracle.com, leiyang@redhat.com, lingshan.zhu@intel.com, maxime.coquelin@redhat.com, mst@redhat.com, ricardo@marliere.net, shannon.nelson@amd.com, stable@kernel.org, steven.sistare@oracle.com, suzuki.poulose@arm.com, xuanzhuo@linux.alibaba.com, yishaih@nvidia.com
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Type: text/plain; charset="utf-8"
-Content-Transfer-Encoding: 7bit
-Message-Id: <20240319-setlease-v1-1-5997d67e04b3@kernel.org>
-X-B4-Tracking: v=1; b=H4sIAAO++WUC/6tWKk4tykwtVrJSqFYqSi3LLM7MzwNyDHUUlJIzE
- vPSU3UzU4B8JSMDIxMDY0NL3eLUkpzUxOJU3eRUY8O0JAtzc/MkAyWg8oKi1LTMCrBR0bG1tQA
- swUHSWgAAAA==
-To: Hans de Goede <hdegoede@redhat.com>
-Cc: linux-fsdevel@vger.kernel.org, linux-kernel@vger.kernel.org, 
- Jeff Layton <jlayton@kernel.org>
-X-Mailer: b4 0.12.3
-X-Developer-Signature: v=1; a=openpgp-sha256; l=1029; i=jlayton@kernel.org;
- h=from:subject:message-id; bh=NhTjsDbeF+jZwB6UdNaz4xCZqScOCQU5gs19tO01lLs=;
- b=owEBbQKS/ZANAwAIAQAOaEEZVoIVAcsmYgBl+b4KKnWSIRHwTvzyrK//St8r9MZW6K7Eccg6f
- rA4HdHKfNyJAjMEAAEIAB0WIQRLwNeyRHGyoYTq9dMADmhBGVaCFQUCZfm+CgAKCRAADmhBGVaC
- FVLSEAC80hdMN2Gs3KkTk1zwh2mUSpiCWOT1my1yQ6CfsDj481qJaUZMksSyj9DbiuZUiV4UG4s
- /FMd97NnXYBOk2IK3pHn0BRkvNAeeqFvgRPg+IYof/DqFRSyYIIgI3lWIcBc58l0ZOUwf87MTXG
- V15wW0UwUcOIZLh7QVbIHIxkQ0Z2ir0OQvxyo/q9TKpxli/nq3tj1tau3ns43YISbNxj3K7GdJv
- gJwoAZ59BDeD8Dgk+LEhci4mMLqRCz2OjQD80y0UUOXe0PGrsNWYDhK0IkIS2H+7O4nMpHaTsnK
- 8mDI8X+tlyHXPkTHIXJ4N7ZdgJxnKPupbKmtiUTvPsy6xRoB3EU3hTPBNpUck2cLItaSwWsAjDK
- 9ZY0LqrfV5GPgwW537wNHezTBOJHxSVly1FY3vf527BCDdi18QSItzzHMSfOxnpPIy8h6bQTT02
- I09Dr1p0DAPt5CN8ikIqP1pWOE0C3TjsxI1XwNhbj6Zi3ITebPQzZitHQbtm4IpbUFt2c7FXN1h
- AhBsjMPMX4b0944FzljExhViZpziAdsWST6Fc7x8QNkDBrkIUvgdB057DDE2R5j1O1Yn4PK6GvO
- NVcaDlWv6XAZhVweXNQo5ZCdyfSvAYjEhH/ZfkDFqIxJ94/pnjGPswTC7zmT3TvdwgnEZ70qLXp
- JM6ftqSdgl51sdA==
-X-Developer-Key: i=jlayton@kernel.org; a=openpgp;
- fpr=4BC0D7B24471B2A184EAF5D3000E684119568215
 
-vboxsf does not break leases on its own, so it can't properly handle the
-case where the hypervisor changes the data. Don't allow file leases on
-vboxsf.
+The pull request you sent on Tue, 19 Mar 2024 03:41:43 -0400:
 
-Signed-off-by: Jeff Layton <jlayton@kernel.org>
----
-Looking over the comments in the code around cache coherency, it seems
-like it ought to deny file locks as well? We could add a stub ->lock
-routine that just returns -ENOLCK or something.
----
- fs/vboxsf/file.c | 1 +
- 1 file changed, 1 insertion(+)
+> https://git.kernel.org/pub/scm/linux/kernel/git/mst/vhost.git tags/for_linus
 
-diff --git a/fs/vboxsf/file.c b/fs/vboxsf/file.c
-index 2307f8037efc..118dedef8ebe 100644
---- a/fs/vboxsf/file.c
-+++ b/fs/vboxsf/file.c
-@@ -218,6 +218,7 @@ const struct file_operations vboxsf_reg_fops = {
- 	.release = vboxsf_file_release,
- 	.fsync = noop_fsync,
- 	.splice_read = filemap_splice_read,
-+	.setlease = simple_nosetlease,
- };
- 
- const struct inode_operations vboxsf_reg_iops = {
+has been merged into torvalds/linux.git:
+https://git.kernel.org/torvalds/c/d95fcdf4961d27a3d17e5c7728367197adc89b8d
 
----
-base-commit: 0a7b0acecea273c8816f4f5b0e189989470404cf
-change-id: 20240319-setlease-ce31fb8777b0
+Thank you!
 
-Best regards,
 -- 
-Jeff Layton <jlayton@kernel.org>
-
+Deet-doot-dot, I am a bot.
+https://korg.docs.kernel.org/prtracker.html
 
