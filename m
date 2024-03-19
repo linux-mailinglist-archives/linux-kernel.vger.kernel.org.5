@@ -1,186 +1,163 @@
-Return-Path: <linux-kernel+bounces-106985-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106986-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id A013787F64D
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:13:41 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 34BFB87F652
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:19:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 808D1B220E9
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:13:37 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61BFC1C21AC2
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 04:19:17 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A2DA17C081;
-	Tue, 19 Mar 2024 04:13:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="IcjrwVnv"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7338B7C090;
+	Tue, 19 Mar 2024 04:19:05 +0000 (UTC)
+Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1B11556B6E
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 04:13:27 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7E7DA1D540;
+	Tue, 19 Mar 2024 04:19:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710821609; cv=none; b=Bt0LCimawDXp4cGZIinWK27rk2KrcIquIOyPCGHDG2J95enNoELcqE6/6kux/wCm4RrRbXnE2C9gNHzc3dqsZjAKw83YbZYh53yoXXkpsYe92W44jzpcL9p4qKYsZGQcKgJjcQBPNaoSB3qc592GaKuvp+3uGsYluNNIbBI1WYY=
+	t=1710821945; cv=none; b=WkOFD5zH5wUTpKtFpTKDIvF1djCTbIoeWSbBVgN5/p2zrKKA2jeFdDCdmVKImgih3N5qmrixflUQpao8wHEYh5o1Tca+hF9EmgmQ2uRLb8QwSUzAv3NPj8gcC1mXQdUxdMy/pIf5C0jxm78zxR1RmuNaW8tcp15j5BdgtFO9yIM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710821609; c=relaxed/simple;
-	bh=Ah4Ny8uUQBmfdpD/uzmJd5xYp4kcbIf+Duq2v3FNUAs=;
+	s=arc-20240116; t=1710821945; c=relaxed/simple;
+	bh=exHMqg7ickwwb5Rk29OIXejwQmnRJaOjOa7LfvyI65M=;
 	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=J2Zzy9FpLenpfFEy6BOH+XhdlWGBJYRWxXcklplyw9jXuYqEVUkkH2GFswfo7xM+Xt9Jj9cYILYCRQi9zfmjOluEO/PV/26MDsO3MWCsdgC3gkoH5wYCzDn8ETFtsrLt745PoX8HkPZQUYB3QTFHkoKtpZ5m5aWAVJAsHz6oRkY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=IcjrwVnv; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710821606;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=JWG74Dl5bTbuxCti86zPWOGnY2g2FNK26/oHUY3dQ8I=;
-	b=IcjrwVnvr7QPBqohWq1yMKF48oPMmPJecR50VrHIYWb0jIjfRcQvrkrtjYxYlsE5SRgGDj
-	YDj7P8CnY9d4TSSURPgXT3DJ/B8ilbHeeYsPoA9eJjLI8vaLngHWC+yFvj07NmWCe6Svru
-	fOQXJLSgH2/fDipyQG6H1Mm2uxm+EYM=
-Received: from mail-il1-f197.google.com (mail-il1-f197.google.com
- [209.85.166.197]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-84-Ox1hhmp4Po6ETsho4St6sw-1; Tue, 19 Mar 2024 00:13:25 -0400
-X-MC-Unique: Ox1hhmp4Po6ETsho4St6sw-1
-Received: by mail-il1-f197.google.com with SMTP id e9e14a558f8ab-3684d716b9eso41985ab.0
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 21:13:25 -0700 (PDT)
+	 To:Cc:Content-Type; b=SqomxxDPgU2JTT6jzBkb3wpZA/dsn+urdM6UrgeGjvdIYye8RUE4o4sTAttK0WPbHzAzjYHIY5nIX7Yg8lXMrMVlvDv7vYLTtPGZcLjSdukptb95QfH5OIp81h0fE9st90vKQx4QXGG81GtKMubtP+wpzlXmb10PcrSB3dhL3TU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.170
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e6ca2ac094so4629046b3a.0;
+        Mon, 18 Mar 2024 21:19:02 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710821604; x=1711426404;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=JWG74Dl5bTbuxCti86zPWOGnY2g2FNK26/oHUY3dQ8I=;
-        b=IQd545cn7IfFRwRLCFJrPFzFlBXbzdd0FUcJ0dRyW0OgCOmYNnxYDy6w0jemOmCN7V
-         wDTBgEtzjp1vT6QkcBdsy7qkSFfbUdcGN3bOiGgkNqdMd9IjNKhdX+6K4GD5clI79aIi
-         wg1kTzLqCu0JFgsFxL5lWWrB8+kpkPYlrsWZtmrWU9SpW87zN7bZdfSdDbLIeFomWEWY
-         SRvlMbdaM9S6oH2LfEk336Give+SdU9KQy0Nxyn91dOMiQ02GFRreN9oRYzMnaXn81A1
-         p+enAlnLdrW7VSfEBmTLfGpeXu1Bp3LOFR/PSM7qAA1GQcUz5h0sCdvB66okCA9s5Sma
-         2Fng==
-X-Forwarded-Encrypted: i=1; AJvYcCU0BsUWv9jEdbMj6ifYXemv4Xr6XVMNd7zVc2RLs6RF4gH6RpH5w2ZcixnE094sxa98gvBENW1nookMg3LtOwzYaxwo3ibWagYB9wNB
-X-Gm-Message-State: AOJu0Yxgh3gJwRboVGw5CEVxtICmjpy4tpndz1B5ueqxs9znLjG/1VCj
-	ShakIGRqjUC4l/t1q0dWlvOBVhuPxK8XjOAxVDdA4c53RKXHxmR93JtwFwHYXf6zqnujwSy8o1l
-	DRQXSW8IGFsjot9uV+zgUeCUMX3VJHuES+fHVYUcsRWIrE0FOEDNdj6w13RQdfpq8ZQzcx5H+gX
-	5/AfEI1DjrPA4+ry67Bzd+gPoZ8J3jZQiNkFp/
-X-Received: by 2002:a05:6e02:2197:b0:367:841f:4ea with SMTP id j23-20020a056e02219700b00367841f04eamr1703763ila.3.1710821604465;
-        Mon, 18 Mar 2024 21:13:24 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IGw2yGPDwNdTHpgshZtX42+6Fr/AzzNGxTbh290UoUCFi635TZEchb+9DVQ5qVrlww2086xuAqQekPrqvHq3lE=
-X-Received: by 2002:a05:6e02:2197:b0:367:841f:4ea with SMTP id
- j23-20020a056e02219700b00367841f04eamr1703755ila.3.1710821604229; Mon, 18 Mar
- 2024 21:13:24 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710821942; x=1711426742;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=jgW4DmXI0kNiY/rl9Qkr5feefQ8+Vq38v1bD2ufKIVI=;
+        b=kHSALl5bI+Qte9CJczvwjqepgT/l6/yA4iuqaGq4dx7QRvWcvjBTaTTp6MZCiHzZkf
+         EFhnjxZaTLp6M5lJClhFp28RRt+1IZuNlYYMBKiCTxB1tvPI+VR4YwLE56GFleXdJ9mA
+         t3EiFUw7O93NJIsRggqmI9sz/hfWtOWRasej5gv9EYRqSoq2hDy7ZMSZh/tlisD0cVkN
+         YPGlqy4jMpLVghRRLqGzDHfiICkcVCamWwsCbWzd+vBHdM5G4MKPu/N1wZav6FXcCjq0
+         o+X52mX9R5NfQiWR2vQ/6/YU4UHhAxyV7gLNHoNzZCWNtE6j1LvjdrbrujOIc97Nvd06
+         WKvw==
+X-Forwarded-Encrypted: i=1; AJvYcCUvx+pzIZJkYgiBDGjP6MXZV+/5rW8uTaxFWbOA2K/YkqHIKzqo/wr+5jXpZWWCGWJdNvpwXuz2pSEXUSkcgXTR3llftaXEWxR7IikjQitwdmCFfYPkSxvhGiwlcJlsIvNeVg/CYyv85SL/Pcb8ugU59GS0/tFRd0CtkE7iUaz2ttkzyw==
+X-Gm-Message-State: AOJu0YwROynF9mB7iZlfnoUJwFi/h5yzQBijbS1ocei/HGL33vs7UCTU
+	mO8E+OSB/M/aRSiWFYOZC1n3+OovSkntKDEqalqfp2W1ftq92uVB/1fwgpJi6ALfJVVyOB8mlG5
+	fpxYCCOlSDCIsnmCbpAKU0H2OuqI=
+X-Google-Smtp-Source: AGHT+IFXLjhVkx7WgKBhbzRCSxQWGWWgaBadHRVGM50RAHgFRsU1xXuP336jq2Ijh9SBYvYnOKxkauqh2VsoLKHG8yA=
+X-Received: by 2002:a05:6a21:3390:b0:1a3:5465:f98 with SMTP id
+ yy16-20020a056a21339000b001a354650f98mr1713631pzb.44.1710821941646; Mon, 18
+ Mar 2024 21:19:01 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <ZeZ2Kos-OOZNSrmO@darkstar.users.ipa.redhat.com>
-In-Reply-To: <ZeZ2Kos-OOZNSrmO@darkstar.users.ipa.redhat.com>
-From: Dave Young <dyoung@redhat.com>
-Date: Tue, 19 Mar 2024 12:13:36 +0800
-Message-ID: <CALu+AoQzrVBjkBjurv_3p9kCe9EfPszcf1Lzo1G5_QQGbv8B+Q@mail.gmail.com>
-Subject: Re: [PATCH] x86/kexec: do not update E820 kexec table for setup_data
-To: x86@kernel.org
-Cc: Thomas Gleixner <tglx@linutronix.de>, Ingo Molnar <mingo@redhat.com>, Borislav Petkov <bp@alien8.de>, 
-	Dave Hansen <dave.hansen@linux.intel.com>, "H. Peter Anvin" <hpa@zytor.com>, 
-	linux-kernel@vger.kernel.org, kexec@lists.infradead.org, 
-	Baoquan He <bhe@redhat.com>, Eric Biederman <ebiederm@xmission.com>
+References: <20240202234057.2085863-1-irogers@google.com> <CAP-5=fVjAHqAHHLqE=3v2bP6S6k98psiuZds7TUTFCT7RgMFdQ@mail.gmail.com>
+ <CAM9d7ciPYMd4zckrcgnPtradZ_bvaNOHji1tkkYQu_TTF5=eYw@mail.gmail.com>
+ <CAM9d7cgbxHZoaq4ZLCda-6TW5A+b+-8dSrRApk+AjcTVNC5hNA@mail.gmail.com> <Zfi0IJV-OKwyDK0r@x1>
+In-Reply-To: <Zfi0IJV-OKwyDK0r@x1>
+From: Namhyung Kim <namhyung@kernel.org>
+Date: Mon, 18 Mar 2024 21:18:50 -0700
+Message-ID: <CAM9d7cj+AzPwH8pjG+_HGfmMSMJm6XjkTgxRBWHNW4LF+XJomw@mail.gmail.com>
+Subject: Re: [PATCH v3 0/8] Clean up libperf cpumap's empty function
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, Adrian Hunter <adrian.hunter@intel.com>, 
+	James Clark <james.clark@arm.com>, Peter Zijlstra <peterz@infradead.org>, 
+	Ingo Molnar <mingo@redhat.com>, Mark Rutland <mark.rutland@arm.com>, 
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>, Jiri Olsa <jolsa@kernel.org>, 
+	Suzuki K Poulose <suzuki.poulose@arm.com>, Mike Leach <mike.leach@linaro.org>, 
+	John Garry <john.g.garry@oracle.com>, Will Deacon <will@kernel.org>, 
+	Thomas Gleixner <tglx@linutronix.de>, Darren Hart <dvhart@infradead.org>, 
+	Davidlohr Bueso <dave@stgolabs.net>, =?UTF-8?Q?Andr=C3=A9_Almeida?= <andrealmeid@igalia.com>, 
+	Kan Liang <kan.liang@linux.intel.com>, K Prateek Nayak <kprateek.nayak@amd.com>, 
+	Sean Christopherson <seanjc@google.com>, Paolo Bonzini <pbonzini@redhat.com>, 
+	Kajol Jain <kjain@linux.ibm.com>, Athira Rajeev <atrajeev@linux.vnet.ibm.com>, 
+	Andrew Jones <ajones@ventanamicro.com>, Alexandre Ghiti <alexghiti@rivosinc.com>, 
+	Atish Patra <atishp@rivosinc.com>, "Steinar H. Gunderson" <sesse@google.com>, 
+	Yang Jihong <yangjihong1@huawei.com>, Yang Li <yang.lee@linux.alibaba.com>, 
+	Changbin Du <changbin.du@huawei.com>, Sandipan Das <sandipan.das@amd.com>, 
+	Ravi Bangoria <ravi.bangoria@amd.com>, Paran Lee <p4ranlee@gmail.com>, 
+	Nick Desaulniers <ndesaulniers@google.com>, Huacai Chen <chenhuacai@kernel.org>, 
+	Yanteng Si <siyanteng@loongson.cn>, linux-perf-users@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, coresight@lists.linaro.org, 
+	linux-arm-kernel@lists.infradead.org, bpf@vger.kernel.org, 
+	Leo Yan <leo.yan@linux.dev>
 Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Tue, 5 Mar 2024 at 09:32, Dave Young <dyoung@redhat.com> wrote:
+On Mon, Mar 18, 2024 at 2:37=E2=80=AFPM Arnaldo Carvalho de Melo
+<acme@kernel.org> wrote:
 >
-> crashkernel reservation failed on a Thinkpad t440s laptop recently,
-> Actually the memblock reservation succeeded, but later insert_resource()
-> failed.
+> On Thu, Mar 07, 2024 at 03:47:00PM -0800, Namhyung Kim wrote:
+> > Hi Ian,
+> >
+> > Sorry for the late reply.
+> >
+> > On Fri, Feb 16, 2024 at 5:04=E2=80=AFPM Namhyung Kim <namhyung@kernel.o=
+rg> wrote:
+> > >
+> > > On Wed, Feb 14, 2024 at 2:03=E2=80=AFPM Ian Rogers <irogers@google.co=
+m> wrote:
+> > > >
+> > > > On Fri, Feb 2, 2024 at 3:41=E2=80=AFPM Ian Rogers <irogers@google.c=
+om> wrote:
+> > > > >
+> > > > > Rename and clean up the use of libperf CPU map functions particul=
+arly
+> > > > > focussing on perf_cpu_map__empty that may return true for maps
+> > > > > containing CPUs but also with an "any CPU"/dummy value.
+> > > > >
+> > > > > perf_cpu_map__nr is also troubling in that iterating an empty CPU=
+ map
+> > > > > will yield the "any CPU"/dummy value. Reduce the appearance of so=
+me
+> > > > > calls to this by using the perf_cpu_map__for_each_cpu macro.
+> > > > >
+> > > > > v3: Address handling of "any" is arm-spe/cs-etm patch.
+> > > > > v2: 6 patches were merged by Arnaldo. New patch added ensure empt=
+y
+> > > > >     maps are allocated as NULL (suggested by James Clark). Hopefu=
+lly a
+> > > > >     fix to "perf arm-spe/cs-etm: Directly iterate CPU maps".
+> > > > >
+> > > > > Ian Rogers (8):
+> > > > >   libperf cpumap: Add any, empty and min helpers
+> > > > >   libperf cpumap: Ensure empty cpumap is NULL from alloc
+> > > > >   perf arm-spe/cs-etm: Directly iterate CPU maps
+> > > > >   perf intel-pt/intel-bts: Switch perf_cpu_map__has_any_cpu_or_is=
+_empty
+> > > > >     use
+> > > > >   perf cpumap: Clean up use of perf_cpu_map__has_any_cpu_or_is_em=
+pty
+> > > > >   perf arm64 header: Remove unnecessary CPU map get and put
+> > > > >   perf stat: Remove duplicate cpus_map_matched function
+> > > > >   perf cpumap: Use perf_cpu_map__for_each_cpu when possible
+> > > >
+> > > > Ping. Thanks,
+> > > > Ian
 >
-> Test step:
-> kexec load ->
->         kexec reboot ->
->                 check the crashkernel memory
->                 dmesg|grep "crashkernel reserved"; saw reserved suceeeded:
->                 0x00000000d0000000 - 0x00000000da000000
->                 grep Crash /proc/iomem: got nothing
+> > > Adrian and James, are you ok with this now?
 >
-> The background story is like below:
-> Currently E820 code reserves setup_data regions for both the current kernel
-> and the kexec kernel, and it will also insert them into resources list.
-> Before the kexec kernel reboot nobody passes the old setup_data, kexec only
-> passes SETUP_EFI and SETUP_IMA if needed.  Thus the old setup data memory
-> are not used at all. But due to old kernel updated the kexec e820 table
-> as well so kexec kernel see them as E820_TYPE_RESERVED_KERN regions, later
-> the old setup_data regions will be inserted into resources list in kexec
-> kernel by e820__reserve_resources().
+> > I think James is fine now and the Intel-pt part seems straight-forward
+> > so I'd like to merge this change.  Please tell me if you have any conce=
+rns.
 >
-> Note, due to no setup_data passed in for those old regions they are not
-> early reserved (by function early_reserve_memory), crashkernel memblock
-> reservation will just regard them as usable memory and it could reserve
-> reserve crashkernel region overlaps with the old setup_data regions.
+> Namhyung,
 >
-> Just like the bug I noticed here, kdump insert_resource failed because
-> e820__reserve_resources added the overlapped chunks in /proc/iomem already.
->
-> Finally, looking at the code, the old setup_data regions are not used
-> at all as no setup_data passed in by the kexec boot loader. Although
-> something like SETUP_PCI etc could be needed, kexec should pass
-> the info as setup_data so that kexec kernel can take care of them.
-> This should be taken care of in other separate patches if needed.
->
-> Thus drop the useless buggy code here.
->
-> Signed-off-by: Dave Young <dyoung@redhat.com>
-> ---
->  arch/x86/kernel/e820.c |   16 +---------------
->  1 file changed, 1 insertion(+), 15 deletions(-)
->
-> Index: linux/arch/x86/kernel/e820.c
-> ===================================================================
-> --- linux.orig/arch/x86/kernel/e820.c
-> +++ linux/arch/x86/kernel/e820.c
-> @@ -1015,16 +1015,6 @@ void __init e820__reserve_setup_data(voi
->                 pa_next = data->next;
->
->                 e820__range_update(pa_data, sizeof(*data)+data->len, E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
-> -
-> -               /*
-> -                * SETUP_EFI and SETUP_IMA are supplied by kexec and do not need
-> -                * to be reserved.
-> -                */
-> -               if (data->type != SETUP_EFI && data->type != SETUP_IMA)
-> -                       e820__range_update_kexec(pa_data,
-> -                                                sizeof(*data) + data->len,
-> -                                                E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
-> -
->                 if (data->type == SETUP_INDIRECT) {
->                         len += data->len;
->                         early_memunmap(data, sizeof(*data));
-> @@ -1036,12 +1026,9 @@ void __init e820__reserve_setup_data(voi
->
->                         indirect = (struct setup_indirect *)data->data;
->
-> -                       if (indirect->type != SETUP_INDIRECT) {
-> +                       if (indirect->type != SETUP_INDIRECT)
->                                 e820__range_update(indirect->addr, indirect->len,
->                                                    E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
-> -                               e820__range_update_kexec(indirect->addr, indirect->len,
-> -                                                        E820_TYPE_RAM, E820_TYPE_RESERVED_KERN);
-> -                       }
->                 }
->
->                 pa_data = pa_next;
-> @@ -1049,7 +1036,6 @@ void __init e820__reserve_setup_data(voi
->         }
->
->         e820__update_table(e820_table);
-> -       e820__update_table(e820_table_kexec);
->
->         pr_info("extended physical RAM map:\n");
->         e820__print_table("reserve setup_data");
->
+>         I noticed this hasn't been merged and applies cleanly, so I'm
+> adding it to perf-tools-next, from your comment above can I take it as
+> an Acked-by or even Reviewed-by?
 
-Kindly ping for review.
+Oh, I thought I did it already, but I probably missed pushing it. :(
 
-Thanks!
-Dave
+Sure you can add it,  I'll do that for the sake of b4.
 
+Acked-by: Namhyung Kim <namhyung@kernel.org>
+
+Thanks,
+Namhyung
 
