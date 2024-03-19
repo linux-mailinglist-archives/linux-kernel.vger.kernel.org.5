@@ -1,348 +1,340 @@
-Return-Path: <linux-kernel+bounces-107901-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107902-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 577BC88034A
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:20:05 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B7D9788034C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:20:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4A0611C22799
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:20:04 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CBFD3B22074
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:20:54 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 11C811B812;
-	Tue, 19 Mar 2024 17:19:57 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DAF7B19BDC;
+	Tue, 19 Mar 2024 17:20:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="VegveruJ"
-Received: from fllv0015.ext.ti.com (fllv0015.ext.ti.com [198.47.19.141])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="i7E5y/Pr"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E60C721364;
-	Tue, 19 Mar 2024 17:19:53 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.19.141
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C49017C8B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:20:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710868796; cv=none; b=pfgZIHp/dyWUYbZX2OLERg5jsuCApm/o878MlbCsp12xtYYKemq/cc2IgSmoEvZv55UhXRhSDlkU7Bxea099FIAzTOaCk+7p37JEQ/AnC3eobS7uk8HX1BLRE7433JDZZmSnApPd+L1o5WOySQcUTw0tBTAaXkl+oc2a3MZmXU0=
+	t=1710868846; cv=none; b=qoHO+uD1u0RQg+/IjldAXdjnV+BhjN8LVnbng4ncB6dMy+mvSLVix+wYOIzW9iRbOlfznq7s7nPPW45bXz0SA9q6FJmxlXVVGLDpWj7mCJwD4vazsLeux07gh6SFixohuMI/dKJ1XTH0RYW0e4H8necWYLya/omdP0yyah6gHYc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710868796; c=relaxed/simple;
-	bh=HC9OjD7zg/k/bihYiIHNnTcfY6vCEvxX/PXqx6EPFlQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=sSAdSfhg1ORHonoEgrrG1whmK8yWWk78gLAZ+wbog3hkaKOfJXDvtH4u/xU+mr4nf6g2gEs/r4V3uga0Wr88khJC/JSqJxa6mT95krXvy3e5OMOblIrLjXdiUdDpa4xQ08ExPL8eT544WSRPXEBXMuAHhr5OJFL6Qd7PyaAnw+I=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=VegveruJ; arc=none smtp.client-ip=198.47.19.141
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from fllv0034.itg.ti.com ([10.64.40.246])
-	by fllv0015.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42JHJXtq068463;
-	Tue, 19 Mar 2024 12:19:33 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710868773;
-	bh=BH9qfxNyCsy/GWmWpNoowK/fBARVTuvdS6rh2Mpl9hs=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=VegveruJA/NSUHBNK3l+cByHBQDqY3KQZIfd0ZQuKBmvzjxqyNcNyk6fGNm2+Aowd
-	 cSob5VVolCFhjbWy9kuXL4kbzaX/zom4/DGIWbJONBWyJsqiq6LDr2apNN04J47Rn4
-	 ZNdW3/CKI0f8Z8raouRncqYgxvJVGgO2kcpJfS6c=
-Received: from DLEE113.ent.ti.com (dlee113.ent.ti.com [157.170.170.24])
-	by fllv0034.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42JHJXGI022515
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 19 Mar 2024 12:19:33 -0500
-Received: from DLEE101.ent.ti.com (157.170.170.31) by DLEE113.ent.ti.com
- (157.170.170.24) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
- Mar 2024 12:19:32 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE101.ent.ti.com
- (157.170.170.31) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 19 Mar 2024 12:19:32 -0500
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42JHJPwE048813;
-	Tue, 19 Mar 2024 12:19:25 -0500
-Message-ID: <2eec6437-dd11-408d-9bcb-92ba2bee4487@ti.com>
-Date: Tue, 19 Mar 2024 22:49:24 +0530
+	s=arc-20240116; t=1710868846; c=relaxed/simple;
+	bh=Vh9lCoaKMDmTBh3akSE8GiDLO339gYIbqJ18ntD/V64=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qTAvmrudiX0700Fgn2aoaidqL8u67dVjGZNSwUSYR6snrebCzgvSKn4o/+hgH/ScZUKiqLQuAg6aPZeYiaTVfeQH4P7sGUWK1I40GRvT337HIYF73f/cOx8J8vAceZMhw1912+J3tEGifFP/yRnfrGgTfvuihSdcsgSItA0RLwU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=i7E5y/Pr; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710868844;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:
+	 content-transfer-encoding:content-transfer-encoding;
+	bh=8ztau3JQ36amubeJuz0wWTtDljNmlC67km863EzzBpM=;
+	b=i7E5y/PrgFyQWjTSj1zwHOrTYwxa85LgunrISBwuCvMv5w5j77V+y+BAhc1G8lluRWyrGV
+	9F64VLgb+YyUpA7eHwum0Oew188+ScKWNDTvJLDvXvapsl5y2Pzl7Mel83zbutugead3eg
+	7/gGyjKsp/S3Qw3lFSrWzkFvdrWLG8k=
+Received: from mail-wr1-f70.google.com (mail-wr1-f70.google.com
+ [209.85.221.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-489-j4iA9mOENiqRIbXi8tbOnw-1; Tue, 19 Mar 2024 13:20:41 -0400
+X-MC-Unique: j4iA9mOENiqRIbXi8tbOnw-1
+Received: by mail-wr1-f70.google.com with SMTP id ffacd0b85a97d-33ec604d3b3so3927777f8f.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:20:41 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710868841; x=1711473641;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=8ztau3JQ36amubeJuz0wWTtDljNmlC67km863EzzBpM=;
+        b=RoT0Z0nwNcvoLo3Z6wu72HmHA2fTS5W8zKXSKVf2n5rwHaORrIWl3Kx+gHUp+24npd
+         tfZXg7pB2AAUfc6LLePHA01TKYQfJEW96nrVoaammXL33ntfz1AYHzobrryeqveIxcpH
+         VnGZ/CbqmV9kUoDPHZFxpA/87I6wszpkGXw7mo9SZv6OK+H7LtaCS5H3c5uKxz2SuY1Y
+         fEXVpyGHU91V19znUcJq90cZFdZ9U1QiZku2wixawUPEJxt3d723697Ab9JYhkAH318w
+         wjGbUOwk3OCzd9AW4dYXZpIdanOo34DObCIs/buyaghHSHgExJrrmi/d94fGKcFFRIgW
+         YNUw==
+X-Forwarded-Encrypted: i=1; AJvYcCWaV6bFvxhIPXaLE565DuSFPnkAhLSDjWBsJCUn8okeW7LwVoBxKDgU2yVI85+NBjLB5OaU7T65xWKJtm3vyq/U+lnEuPFzfYzYZ/1E
+X-Gm-Message-State: AOJu0Yzlcd0f4HQFRIORrMaYUsUdSWfFAH17Uuwh+3GkutTZHP8cg/v3
+	/Cj5QlG6nh5rYNVzVjpsvuFEE6SEeMkLWhw2o04l92m1Q6za6yAVIEkjluqrOBJWIRDV0aUagf1
+	xzctQXe1Tn9sDCcyNCg3A22z+1FlhjNBSVTxdGwz3oP4Bwb91BIL14Q9SumMu
+X-Received: by 2002:adf:f483:0:b0:33e:7f5c:a75c with SMTP id l3-20020adff483000000b0033e7f5ca75cmr10435300wro.47.1710868840693;
+        Tue, 19 Mar 2024 10:20:40 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFx2PQc7A0h2l5AD0StizMnjKmdjOFZhxuFssnLI/hnV0ZMoZOE2qNPVg/1en+Qbw0s7fX2rg==
+X-Received: by 2002:adf:f483:0:b0:33e:7f5c:a75c with SMTP id l3-20020adff483000000b0033e7f5ca75cmr10435275wro.47.1710868840241;
+        Tue, 19 Mar 2024 10:20:40 -0700 (PDT)
+Received: from klayman.redhat.com (net-2-34-30-89.cust.vodafonedsl.it. [2.34.30.89])
+        by smtp.gmail.com with ESMTPSA id g4-20020adfe404000000b0033dd2a7167fsm12804568wrm.29.2024.03.19.10.20.39
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 10:20:39 -0700 (PDT)
+From: Marco Pagani <marpagan@redhat.com>
+To: Moritz Fischer <mdf@kernel.org>,
+	Wu Hao <hao.wu@intel.com>,
+	Xu Yilun <yilun.xu@intel.com>,
+	Tom Rix <trix@redhat.com>,
+	Jonathan Corbet <corbet@lwn.net>,
+	Alan Tull <atull@opensource.altera.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Cc: Marco Pagani <marpagan@redhat.com>,
+	linux-fpga@vger.kernel.org,
+	linux-doc@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v2] fpga: bridge: add owner module and take its refcount
+Date: Tue, 19 Mar 2024 18:20:24 +0100
+Message-ID: <20240319172026.76142-1-marpagan@redhat.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 1/5] dt-bindings: misc: Add mikrobus-connector
-Content-Language: en-US
-To: Michael Walle <mwalle@kernel.org>, Ayush Singh <ayushdevel1325@gmail.com>,
-        Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
-        open list
-	<linux-kernel@vger.kernel.org>,
-        Andrew Lunn <andrew@lunn.ch>
-CC: <jkridner@beagleboard.org>, <robertcnelson@beagleboard.org>,
-        <lorforlinux@beagleboard.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Derek Kiernan
-	<derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
-	<arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown
-	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Alex Elder
-	<elder@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS" <devicetree@vger.kernel.org>,
-        "moderated list:ARM/TEXAS INSTRUMENTS
- K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SPI
- SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM"
-	<greybus-dev@lists.linaro.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-2-ayushdevel1325@gmail.com>
- <CZWVF90JJO98.2M7ARQ9WMGC94@kernel.org>
- <d4dc4d94-d323-4158-8c08-b7d37d8750d3@gmail.com>
- <0f3f56d4-3381-44f1-91bc-c126f3ced085@linaro.org>
- <c8031e17-5ae8-4794-8b8c-1736be6452d3@gmail.com>
- <CZXMK3W52AFO.1APK080GVJESK@kernel.org>
- <5a9b1cd9-05ec-4606-92b6-eadbc7af6202@gmail.com>
- <CZXPQZY8PUGE.QZM8XSOUNMT4@kernel.org>
- <81ec4156-8758-406e-876b-5acf13951d09@gmail.com>
- <CZXSKOLK6S1S.N86E2AZG2V90@kernel.org>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <CZXSKOLK6S1S.N86E2AZG2V90@kernel.org>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Transfer-Encoding: 8bit
 
-Hi Michael,
+The current implementation of the fpga bridge assumes that the low-level
+module registers a driver for the parent device and uses its owner pointer
+to take the module's refcount. This approach is problematic since it can
+lead to a null pointer dereference while attempting to get the bridge if
+the parent device does not have a driver.
 
-On 19/03/24 19:51, Michael Walle wrote:
-> On Tue Mar 19, 2024 at 2:03 PM CET, Ayush Singh wrote:
->>>>>> Regardless, this patch actually does not contain any code for EEPROM
->>>>>> support I have just mentioned it to give more context on why mikroBUS
->>>>>> manifest is the focus of this patch instead of DT overlay or something
->>>>>> else.
->>>>> Right, and I think this is the crux here. Why can't you use DT
->>>>> overlays? The manifest files, seem to be yet another hardware
->>>>> description (method) and we already have DT. Can't we have some kind
->>>>> of userspace helper that could translate them to DT overlays? That
->>>>> way, you could also handle the EEPROM vs non-EEPROM case, or have
->>>>> some other kind of method to load a DT overlay.
->>>>>
->>>>> Admittedly, I've never worked with in-kernel overlays, but AFAIK
->>>>> they work with some subsystems.
->>>>>
->>>>> -michael
->>>>
->>>> So let me 1st go over 3 cases that the driver needs to support:
->>>>
->>>> 1. Non EEPROM boards:
->>>>
->>>> Using overlays should be pretty similar to current solution. If the
->>>> manifest is converted to overlay in userspace, then we do not even need
->>>> to do manifest parsing, setting up spi, i2c etc in the kernel driver.
->>>>
->>>>
->>>> 2. EEPROM boards
->>>>
->>>> How do you propose handling these. If you are proposing storing dt
->>>> overlay in EEPROM, then this raises some questions regarding support
->>>> outside of Linux.
->>>>
->>>> The other option would be generating overlay from manifest in the kernel
->>>> driver, which I'm not sure is significantly better than registering the
->>>> i2c, spi, etc. interfaces separately using standard kernel APIs.
->>> You did answer that yourself in (1): you could use a user space
->>> helper to translate it to a DT overlay, I don't think this has to be
->>> done in the kernel.
->>
->> I do not understand what you mean. For EEPROM supported boards, user
->> space is not involved. The driver can directly read the manifest from
->> add-on board and setup everything, so it is plug and play.
-> 
-> A driver could call a user-space helper, which will read the EEPROM
-> content (or maybe the driver already passes the content to the
-> helper), translate it to a DT overlay, and load it. Wouldn't that
-> work?
-> 
-> I'm not saying that is the way to go, just evaluate some ideas.
-> 
+To address this problem, add a module owner pointer to the fpga_bridge
+struct and use it to take the module's refcount. Modify the function for
+registering a bridge to take an additional owner module parameter and
+rename it to avoid conflicts. Use the old function name for a helper macro
+that automatically sets the module that registers the bridge as the owner.
+This ensures compatibility with existing low-level control modules and
+reduces the chances of registering a bridge without setting the owner.
 
-This would work in most cases when we want to instantiate devices on a 
-physical mikroBUS port on the host running Linux, but another use case 
-we need to support is to instantiate devices on a virtual/greybus 
-mikroBUS port created through greybus, this is the case when a remote 
-microcontroller board (Example BeagleConnect Freedom) has mikroBUS ports 
-and through the magic of greybus these virtual ports (corresponding to 
-the physical remote ports) appear on the Linux host - now we cannot use 
-a device tree overlay to instantiate a Weather click (BME280) sensor on 
-this port, that is why the choice of extending greybus manifest was 
-chosen, another alternative here is to go and add device tree as a 
-description mechanism for greybus, please let know if that is the 
-recommended way forward?
+Also, update the documentation to keep it consistent with the new interface
+for registering an fpga bridge.
 
-The greybus manifest already is being used in the greybus susbystem for 
-describing an interface and there are already greybus controllers 
-(SPI/I2C .etc) being created according to the manifest contents, all 
-this driver does is to extend that format to be able to instantiate 
-devices on these buses. The primary goals for introducing the driver for 
-mikroBUS add-on boards are:
+Other changes: opportunistically move put_device() from __fpga_bridge_get()
+to fpga_bridge_get() and of_fpga_bridge_get() to improve code clarity since
+the bridge device is taken in these functions.
 
-1) A way to isolate platform specific information from add-on board 
-specific information - so that each permutation of connecting the add-on 
-board on different ports on different board does not require a new overlay.
-2) A way to instantiate add-on boards on greybus created virtual 
-mikroBUS ports.
-3) Both 1 and 2 should use the same add-on board description format.
+Fixes: 21aeda950c5f ("fpga: add fpga bridge framework")
+Suggested-by: Greg Kroah-Hartman <gregkh@linuxfoundation.org>
+Suggested-by: Xu Yilun <yilun.xu@intel.com>
+Signed-off-by: Marco Pagani <marpagan@redhat.com>
+---
 
-Standard device tree overlays did not help to achieve this and that is 
-why the standard interface discovery mechanism in greybus, the manifest 
-was extended even though it is not the most optimal way to describe 
-hardware.
+v2:
+- Split out protection against races while taking the mod's refcount
+---
+ Documentation/driver-api/fpga/fpga-bridge.rst |  7 ++-
+ drivers/fpga/fpga-bridge.c                    | 57 ++++++++++---------
+ include/linux/fpga/fpga-bridge.h              | 10 +++-
+ 3 files changed, 43 insertions(+), 31 deletions(-)
 
->> The manual involvement of user space is only for non EEPROM boards since
->> we do not have a way to identify the board without the user needing to
->> provide the manifest.
-> 
-> FWIW, I'm not talking about manual steps here. But more of
-> call_usermodehelper(). Or maybe udev can do it?
-> 
-> Btw, [1] mentions hot-plugging. Is that really hot-plugging while
-> the system is running? How would that work?
-> 
+diff --git a/Documentation/driver-api/fpga/fpga-bridge.rst b/Documentation/driver-api/fpga/fpga-bridge.rst
+index 604208534095..d831d5ab6b0d 100644
+--- a/Documentation/driver-api/fpga/fpga-bridge.rst
++++ b/Documentation/driver-api/fpga/fpga-bridge.rst
+@@ -6,9 +6,12 @@ API to implement a new FPGA bridge
+ 
+ * struct fpga_bridge - The FPGA Bridge structure
+ * struct fpga_bridge_ops - Low level Bridge driver ops
+-* fpga_bridge_register() - Create and register a bridge
++* __fpga_bridge_register() - Create and register a bridge
+ * fpga_bridge_unregister() - Unregister a bridge
+ 
++The helper macro ``fpga_bridge_register()`` automatically sets
++the module that registers the bridge as the owner.
++
+ .. kernel-doc:: include/linux/fpga/fpga-bridge.h
+    :functions: fpga_bridge
+ 
+@@ -16,7 +19,7 @@ API to implement a new FPGA bridge
+    :functions: fpga_bridge_ops
+ 
+ .. kernel-doc:: drivers/fpga/fpga-bridge.c
+-   :functions: fpga_bridge_register
++   :functions: __fpga_bridge_register
+ 
+ .. kernel-doc:: drivers/fpga/fpga-bridge.c
+    :functions: fpga_bridge_unregister
+diff --git a/drivers/fpga/fpga-bridge.c b/drivers/fpga/fpga-bridge.c
+index 79c473b3c7c3..8ef395b49bf8 100644
+--- a/drivers/fpga/fpga-bridge.c
++++ b/drivers/fpga/fpga-bridge.c
+@@ -55,33 +55,26 @@ int fpga_bridge_disable(struct fpga_bridge *bridge)
+ }
+ EXPORT_SYMBOL_GPL(fpga_bridge_disable);
+ 
+-static struct fpga_bridge *__fpga_bridge_get(struct device *dev,
++static struct fpga_bridge *__fpga_bridge_get(struct device *bridge_dev,
+ 					     struct fpga_image_info *info)
+ {
+ 	struct fpga_bridge *bridge;
+-	int ret = -ENODEV;
+ 
+-	bridge = to_fpga_bridge(dev);
++	bridge = to_fpga_bridge(bridge_dev);
+ 
+ 	bridge->info = info;
+ 
+-	if (!mutex_trylock(&bridge->mutex)) {
+-		ret = -EBUSY;
+-		goto err_dev;
+-	}
++	if (!mutex_trylock(&bridge->mutex))
++		return ERR_PTR(-EBUSY);
+ 
+-	if (!try_module_get(dev->parent->driver->owner))
+-		goto err_ll_mod;
++	if (!try_module_get(bridge->br_ops_owner)) {
++		mutex_unlock(&bridge->mutex);
++		return ERR_PTR(-ENODEV);
++	}
+ 
+ 	dev_dbg(&bridge->dev, "get\n");
+ 
+ 	return bridge;
+-
+-err_ll_mod:
+-	mutex_unlock(&bridge->mutex);
+-err_dev:
+-	put_device(dev);
+-	return ERR_PTR(ret);
+ }
+ 
+ /**
+@@ -98,13 +91,18 @@ static struct fpga_bridge *__fpga_bridge_get(struct device *dev,
+ struct fpga_bridge *of_fpga_bridge_get(struct device_node *np,
+ 				       struct fpga_image_info *info)
+ {
+-	struct device *dev;
++	struct fpga_bridge *bridge;
++	struct device *bridge_dev;
+ 
+-	dev = class_find_device_by_of_node(&fpga_bridge_class, np);
+-	if (!dev)
++	bridge_dev = class_find_device_by_of_node(&fpga_bridge_class, np);
++	if (!bridge_dev)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	return __fpga_bridge_get(dev, info);
++	bridge = __fpga_bridge_get(bridge_dev, info);
++	if (IS_ERR(bridge))
++		put_device(bridge_dev);
++
++	return bridge;
+ }
+ EXPORT_SYMBOL_GPL(of_fpga_bridge_get);
+ 
+@@ -125,6 +123,7 @@ static int fpga_bridge_dev_match(struct device *dev, const void *data)
+ struct fpga_bridge *fpga_bridge_get(struct device *dev,
+ 				    struct fpga_image_info *info)
+ {
++	struct fpga_bridge *bridge;
+ 	struct device *bridge_dev;
+ 
+ 	bridge_dev = class_find_device(&fpga_bridge_class, NULL, dev,
+@@ -132,7 +131,11 @@ struct fpga_bridge *fpga_bridge_get(struct device *dev,
+ 	if (!bridge_dev)
+ 		return ERR_PTR(-ENODEV);
+ 
+-	return __fpga_bridge_get(bridge_dev, info);
++	bridge = __fpga_bridge_get(bridge_dev, info);
++	if (IS_ERR(bridge))
++		put_device(bridge_dev);
++
++	return bridge;
+ }
+ EXPORT_SYMBOL_GPL(fpga_bridge_get);
+ 
+@@ -146,7 +149,7 @@ void fpga_bridge_put(struct fpga_bridge *bridge)
+ 	dev_dbg(&bridge->dev, "put\n");
+ 
+ 	bridge->info = NULL;
+-	module_put(bridge->dev.parent->driver->owner);
++	module_put(bridge->br_ops_owner);
+ 	mutex_unlock(&bridge->mutex);
+ 	put_device(&bridge->dev);
+ }
+@@ -316,18 +319,19 @@ static struct attribute *fpga_bridge_attrs[] = {
+ ATTRIBUTE_GROUPS(fpga_bridge);
+ 
+ /**
+- * fpga_bridge_register - create and register an FPGA Bridge device
++ * __fpga_bridge_register - create and register an FPGA Bridge device
+  * @parent:	FPGA bridge device from pdev
+  * @name:	FPGA bridge name
+  * @br_ops:	pointer to structure of fpga bridge ops
+  * @priv:	FPGA bridge private data
++ * @owner:	owner module containing the br_ops
+  *
+  * Return: struct fpga_bridge pointer or ERR_PTR()
+  */
+ struct fpga_bridge *
+-fpga_bridge_register(struct device *parent, const char *name,
+-		     const struct fpga_bridge_ops *br_ops,
+-		     void *priv)
++__fpga_bridge_register(struct device *parent, const char *name,
++		       const struct fpga_bridge_ops *br_ops,
++		       void *priv, struct module *owner)
+ {
+ 	struct fpga_bridge *bridge;
+ 	int id, ret;
+@@ -357,6 +361,7 @@ fpga_bridge_register(struct device *parent, const char *name,
+ 
+ 	bridge->name = name;
+ 	bridge->br_ops = br_ops;
++	bridge->br_ops_owner = owner;
+ 	bridge->priv = priv;
+ 
+ 	bridge->dev.groups = br_ops->groups;
+@@ -386,7 +391,7 @@ fpga_bridge_register(struct device *parent, const char *name,
+ 
+ 	return ERR_PTR(ret);
+ }
+-EXPORT_SYMBOL_GPL(fpga_bridge_register);
++EXPORT_SYMBOL_GPL(__fpga_bridge_register);
+ 
+ /**
+  * fpga_bridge_unregister - unregister an FPGA bridge
+diff --git a/include/linux/fpga/fpga-bridge.h b/include/linux/fpga/fpga-bridge.h
+index 223da48a6d18..94c4edd047e5 100644
+--- a/include/linux/fpga/fpga-bridge.h
++++ b/include/linux/fpga/fpga-bridge.h
+@@ -45,6 +45,7 @@ struct fpga_bridge_info {
+  * @dev: FPGA bridge device
+  * @mutex: enforces exclusive reference to bridge
+  * @br_ops: pointer to struct of FPGA bridge ops
++ * @br_ops_owner: module containing the br_ops
+  * @info: fpga image specific information
+  * @node: FPGA bridge list node
+  * @priv: low level driver private date
+@@ -54,6 +55,7 @@ struct fpga_bridge {
+ 	struct device dev;
+ 	struct mutex mutex; /* for exclusive reference to bridge */
+ 	const struct fpga_bridge_ops *br_ops;
++	struct module *br_ops_owner;
+ 	struct fpga_image_info *info;
+ 	struct list_head node;
+ 	void *priv;
+@@ -79,10 +81,12 @@ int of_fpga_bridge_get_to_list(struct device_node *np,
+ 			       struct fpga_image_info *info,
+ 			       struct list_head *bridge_list);
+ 
++#define fpga_bridge_register(parent, name, br_ops, priv) \
++	__fpga_bridge_register(parent, name, br_ops, priv, THIS_MODULE)
+ struct fpga_bridge *
+-fpga_bridge_register(struct device *parent, const char *name,
+-		     const struct fpga_bridge_ops *br_ops,
+-		     void *priv);
++__fpga_bridge_register(struct device *parent, const char *name,
++		       const struct fpga_bridge_ops *br_ops, void *priv,
++		       struct module *owner);
+ void fpga_bridge_unregister(struct fpga_bridge *br);
+ 
+ #endif /* _LINUX_FPGA_BRIDGE_H */
 
-This should be corrected, it is not recommended to hot-plug the board as 
-the connector standard does not ensure any power sequencing and can 
-cause damage.
+base-commit: b1a91ca25f15b6d7b311de4465854a5981dee3d3
+-- 
+2.44.0
 
->>> Also how do you know whether there is an EEPROM
->>> or not?
->>
->> Set RST GPIO to low. clickID supported board will enter ID MODE, Then
->> check if CS line has a w1 gpio bus.
-> 
-> Ok.
-> 
->>>> 3. Over Greybus
->>>>
->>>> It is quite important to have mikroBUS over greybus for BeagleConnect.
->>>> This is one of the major reasons why greybus manifest was chosen for the
->>>> manifest format.
->>>>
->>>> Also, it is important to note that mikroBUS manifest is being used since
->>>> 2020 now and thus manifests for a lot of boards (both supporting clickID
->>>> and not supporting it exist). So I would prefer using it, unless of
->>>> course there are strong reasons not to.
->>> And also here, I'm not really familiar with greybus. Could you give
->>> a more complex example? My concern is that some driver might need
->>> additional properties from DT (or software nodes) to function
->>> properly. It might not only be a node with a compatible string but
->>> also more advanced bindings. How would that play together with this?
->>> My gut feeling is that you can handle any missing properties
->>> easier/better (eg. for existing modules) in user space. But maybe
->>> that is already solved in/with greybus?
->>
->> Greybus is a communication protocol designed for modular electronic
->> devices. It allows different parts of a device to be hot plugged (added
->> or removed) while the device is still running. Greybus manifest is used
->> to describe the capabilities of a module in the greybus network. The
->> host then creates appropriate bidirectional unipro connections with the
->> module based on the cports described in the manifest. I have added a
->> link to lwn article that goes into more detail.
->>
->> BeagleConnect simply allows using greybus over any bidirectional
->> transport, instead of just Unipro.
->>
->> I cannot comment much about how greybus handles missing properties.
->> While greybus also works just in kernel space, greybus protocols are
->> inherently higher level than kernel driver, so it might have an easier
->> time with this.
->>
->> I have also added a link to eLInux page which provides rational for the
->> mikroBUS manifest. But the crux seems to be that dynamic overlays were
->> not well-supported back then. Also, the use of mikroBUS using greybus
->> subsystem was already used. Hence the mikroBUS driver.
-> 
-> I see this as an opportunity to improve the in-kernel overlays :)
-> 
->> Greybus is not a big blocker from my perspective, since it is always
->> possible to introduce a new protocol for mikroBUS in Greybus spec. I
->> think as long as both EEPROM and non EEPROM boards can be supported by
->> mikroBUS driver and dt-bindings, are can be used outside of Linux (eg:
->> ZephyrRTOS, nuttx, etc), it is fine.
->>
->>> Here's a random one: the manifest [1] just lists the compatible
->>> string apparently, but the actual DT binding has also reset-gpios,
->>> some -supply and interrupt properties.
->>>
->>> -michael
->>>
->>> [1] https://github.com/MikroElektronika/click_id/blob/main/manifests/WEATHER-CLICK.mnfs
->>
->>
->> Yes, the concern is valid. Support for validating the manifest is
->> nowhere near as good as devicetree overlays. But I think that would be a
->> problem with the device rather than the responsibility of the kernel. It
->> is up to the manufacturer to have valid manifests.
-> 
-> But does the manifest have the capabilities to express all that
-> information? To me it looks like just some kind of pinmux, some
-> vendor strings and a (DT) compatible string.
-> [coming back to this after seeing [2]: there are more properties,
-> but it seem just be a list of property=value]
-> 
-> What I'd like to avoid is some kind of in-kernel mapping list from
-> manifest to actual driver instantiation.
-
-The property descriptor is implemented to account the properties under 
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/include/linux/property.h#n22 
-
-
-There is no in-kernel mapping that needs to be updated per driver, but a 
-generic mapping and some specific mapping depending on the bus the 
-device is connected (I2C/SPI/.etc)
-
-> 
-> I guess you'll get much of that with DT overlays already and if you
-> have some kind of automatic translation from manifest to DT overlay,
-> it will still be plug-and-play. You could fix up any missing
-> properties, etc. manually loading some manifests/dt overlays for
-> modules without EEPROMs.
-> 
-> Again, a more complex manifest file would really be appreciated
-> here. Not just a simple "there is exactly one trivial SPI device on
-> the bus".
-> 
-> FWIW, here is a more complex example [2] which uses the ssd1306
-> display driver. Dunno if that is a good example, as it seems to use
-> the fb_ssd1306 driver (at least that's what I'm deducing by reading
-> the driver-string-id) in staging and there is also ssd1307fb.c in
-> drivers/video/fbdev. But how are the additional information like
-> width and height translate to the properties of the driver (device
-> tree properties, swnode properties, platform_data*)?
-> 
-
-The driver uses device_property_read_* helpers to fetch the infromation 
-and the mikroBUS driver populates the table of properties fetching the 
-information from manifest and combining with platform information.
-
-> On a side note, does the manifest files use the (linux) kernel
-> module name for the driver-string-id?
-> 
-
-The spi_device_id is used for the driver-string-id :
-https://git.kernel.org/pub/scm/linux/kernel/git/torvalds/linux.git/tree/drivers/staging/fbtft/fbtft.h#n361
-
-Thanks and Regards,
-Vaishnav
-
-> -michael
-> 
-> [1] https://github.com/MikroElektronika/click_id/blob/main/README.md
-> [2] https://github.com/MikroElektronika/click_id/blob/main/manifests/OLEDB-CLICK.mnfs
-> 
->> Link: https://lwn.net/Articles/715955/ Greybus
->> Link https://elinux.org/Mikrobus eLinux article
-> 
 
