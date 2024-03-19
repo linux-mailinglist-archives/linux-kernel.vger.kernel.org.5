@@ -1,206 +1,125 @@
-Return-Path: <linux-kernel+bounces-108039-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108042-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B9B15880522
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:52:58 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3505F880527
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:55:28 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EC79284B6F
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:52:57 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C86341F2466E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:55:27 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7A3223A1C7;
-	Tue, 19 Mar 2024 18:52:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 651383A1AA;
+	Tue, 19 Mar 2024 18:55:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b="NiAdxI3R"
-Received: from mail-qt1-f177.google.com (mail-qt1-f177.google.com [209.85.160.177])
+	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="b7gzV3Cb"
+Received: from mail-ed1-f47.google.com (mail-ed1-f47.google.com [209.85.208.47])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3895E3A1A0
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:52:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.177
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A4FFD39FC5
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:55:07 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.47
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710874370; cv=none; b=BSN7+8MwGoMMp1C/io7AvSJzW2c1WgRNW6hykd+Is7RVTa8cFkMSVk4c7SMpsE3he9yz+UNKvkYcWHYFjKLAxJDcrJqegWuwlBXUeM59IQuEUqJESxK1GbLLqZIJhHwDg440DScDCCLg9C+KZ2urth2iT/DPi6dHONtOX1PkfmQ=
+	t=1710874509; cv=none; b=YT+rNYbFMIzXG8uNDWOkLcOcnVdaXu6R7V9PqIdUxypBxlAVK+vl85MtqLeI5+iRKxAMQlEi60kZni2g8vHhAboXwxAXclmKGVp3J614E9IBDVl1r6UdvHAasku/JySSXnaH/RDUFB/mcYRv19djtsouDcVhTHxH1lvdeIdla28=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710874370; c=relaxed/simple;
-	bh=YMcf1Teo8N+R/9ZvYJv0wCzFSJ96kGfhKVa3+RWP2jU=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=qKEZz/01km5Y3jWTm5WwrVPO7i65akkL8xyWUdtrmKvpdsItTwYiZhIhxFn2xELVCS99TJ5omQ/CrTnrnD7WEwkndaG9h0WA/XlrjqeN3tsFQWwEu/f46SthjFAmjh5tMN7dKBa9FXLVwUv3sRLASJJLOXTYBtc+mVFo+XivF4Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org; spf=pass smtp.mailfrom=joelfernandes.org; dkim=pass (1024-bit key) header.d=joelfernandes.org header.i=@joelfernandes.org header.b=NiAdxI3R; arc=none smtp.client-ip=209.85.160.177
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=joelfernandes.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=joelfernandes.org
-Received: by mail-qt1-f177.google.com with SMTP id d75a77b69052e-42f4b66dc9eso33748981cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:52:47 -0700 (PDT)
+	s=arc-20240116; t=1710874509; c=relaxed/simple;
+	bh=cquyfRZ0VBetvG8+L3oqKgTGchO/YG/tGhNA+Cv+Co0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=iFny4A5O5LqCsnuaSCt95jenivyHQ95HEpwf/Ul+Yctmk8ZZeT0ThXZ5WTHzOQUIyaXHwGMb9zvhikmeAQ407y+IVhOhSPWC9Pr54tRelWcYk4ROlMPzyFUhmwMRy67fxCZyVS3TD3a1jPsHWgpON6w8C1UZwbSvx0seX9Z6bqk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=b7gzV3Cb; arc=none smtp.client-ip=209.85.208.47
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
+Received: by mail-ed1-f47.google.com with SMTP id 4fb4d7f45d1cf-56a2bb1d84eso291684a12.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:55:07 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=joelfernandes.org; s=google; t=1710874367; x=1711479167; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=1XUbhEyXj+LZKWhZV1EwZUqlvpAwRJXLMFfCduNSBoQ=;
-        b=NiAdxI3R+3Kkwz524Vw1H+1/F7ch7U9MtS1MtpjhEc9K00KecpRtFOcMtaQRhcKqHm
-         XDPin6DbTy5G3GwV/W0K/abG6fY1MsNtlBnXkIWel42FCU4pJFORz0U+9sKs2uPaDP8B
-         8AtLetiQ8uH0a4XQ+nQkIfPmAmptKbsX9MoFI=
+        d=linux-foundation.org; s=google; t=1710874506; x=1711479306; darn=vger.kernel.org;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:from:to:cc:subject:date:message-id:reply-to;
+        bh=u4KodDa0zT/HNzbAX2EO8nLcPy/wnsGHD7zCwXLN7BY=;
+        b=b7gzV3Cbtoo13O7zkMZsbBl0KrI+htHS+KyP8w5EUiEyjwvAbXFlqGMAA65pfARnkV
+         mHixlgRLdzQHXtXpWZQA9STVE6BVA2JNjaLOQgztT1CbX8gO6tCCWFGvl+Uxhg6/jd9C
+         SuN1HVOuPAStpUUhLYFwOk1hy6Gczc0oqVmEQ=
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710874367; x=1711479167;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=1XUbhEyXj+LZKWhZV1EwZUqlvpAwRJXLMFfCduNSBoQ=;
-        b=BCRBvX9GiKXyjH9SQoqOfOkgebyZo9marAqyogG7jn5yRvF2s/eTbkiCGzSWEo101P
-         AUivr/pfAoeQwRJzlz4ufn835O1Vpjgw9A68S0CMJuBNofC4Wnz1HNUlaVWywDQaHX9F
-         ycwxXBSejakDs1YbPKHHY1sxXwVsbkJXnOCqGFfCZ+Z5319Q9x7UfMAdCPmoBu/J4zxN
-         VwnQQfMf31HEN123dcqAaV5Dd6gHU7IMwTU4O5vI4YJy1Rga4DOEtRbBpkJd2zgirJ27
-         Q8Uv7flOdkaXIuCvK45lrzyNSTjtFZJrFcmgA0e2XoZjlHheF0SNuFP1+40+rdmxZ9qw
-         sKPQ==
-X-Gm-Message-State: AOJu0YxIbXppEvTalnuO46ndU2ucm825xAAjuZl6yv3iTAbrItqX7ZJA
-	F2Pd4EhEUuu6hbuPcEBLaFM0mPixP+uijqRl4bE/qPBbBoi4mcswznfwahObNEE=
-X-Google-Smtp-Source: AGHT+IH3roedALtUoDYZYwUKRo1yXZlB7D7+GpCtks4d7ueMNUsFAfMTp37hQ/KjfmjMwDBav4yU9g==
-X-Received: by 2002:ac8:5756:0:b0:42e:ef7c:29a2 with SMTP id 22-20020ac85756000000b0042eef7c29a2mr3580446qtx.29.1710874366920;
-        Tue, 19 Mar 2024 11:52:46 -0700 (PDT)
-Received: from [10.5.0.2] ([185.195.59.198])
-        by smtp.gmail.com with ESMTPSA id bq23-20020a05622a1c1700b00430d1c9bfebsm2676718qtb.43.2024.03.19.11.52.45
+        d=1e100.net; s=20230601; t=1710874506; x=1711479306;
+        h=cc:to:subject:message-id:date:from:in-reply-to:references
+         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=u4KodDa0zT/HNzbAX2EO8nLcPy/wnsGHD7zCwXLN7BY=;
+        b=Q/hbTYDmh89/8Zz9DOt7c35u9YYNXkzEfrf018etxBmPY5m8p+B8VWlj1xwfTfLccl
+         dP3nGbs0UHtHNVL6V3l9CoKHXOE3ZJiNhItWl+FCHLULgIFjA5cohT37ipOC/JVK3Lrg
+         H3nJIls7Q5dtu2rEb7yQE2Oo2wUlDP9rAdRR+I8es2BZVeM+syBAksf+Pxq8x8obpul5
+         RIVbKlnXSpc07YoyMm/NMDoq1XS4eyjoQ5jh6feVtjaP/dhN/WxdZQ6Hr28F6V5OG38d
+         wEB0OzBaASApIpseyUMVQqP9gEWUM/FjC4JRuZV/En/b/jw/8cJiXWnALdkr66cAag5X
+         TS4g==
+X-Forwarded-Encrypted: i=1; AJvYcCVZ2fUZ5C7KoZ2ezsq9UCmQZBBWJpeobtDmgR2fWow/2KA83JjGD+C/uNPalr1XQoFza8rHgYBV4VRISzH2b8tW7Y4YAoEd2sFtmdS9
+X-Gm-Message-State: AOJu0YyafaPRKBddvT4TwTxF7giGE+pPcA4ixzbSwrelNEQyWmMyDGV/
+	HTUPw2ap2ez+xwHbiu1PW0mXcTUUVqbJg7s+yNB6CgIdEwwPQjxN3E97Je6Srng1u4hFh76soZP
+	DSNkcmA==
+X-Google-Smtp-Source: AGHT+IG/pxV42cQEhsuKmNf+P+NycmYYZpQuMIjifVexMk0R5Hr46IoPf2fdrzE+vP+CD9fHPqb2Fg==
+X-Received: by 2002:a50:9e61:0:b0:568:a8f5:d47d with SMTP id z88-20020a509e61000000b00568a8f5d47dmr3177750ede.17.1710874505658;
+        Tue, 19 Mar 2024 11:55:05 -0700 (PDT)
+Received: from mail-ej1-f41.google.com (mail-ej1-f41.google.com. [209.85.218.41])
+        by smtp.gmail.com with ESMTPSA id ev19-20020a056402541300b005689c2c6508sm6024091edb.70.2024.03.19.11.55.04
+        for <linux-kernel@vger.kernel.org>
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 11:52:46 -0700 (PDT)
-Message-ID: <1f7821ce-c036-4824-bb22-6d171714babf@joelfernandes.org>
-Date: Tue, 19 Mar 2024 14:52:43 -0400
+        Tue, 19 Mar 2024 11:55:05 -0700 (PDT)
+Received: by mail-ej1-f41.google.com with SMTP id a640c23a62f3a-a3ddc13bbb3so31188266b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:55:04 -0700 (PDT)
+X-Forwarded-Encrypted: i=1; AJvYcCWpNCvS6ow1ldQtO6tKOfuVHW0eumtKmLl7s31b89CVKn8+oyx4oMNe5QYQnpGSQkG3yeLcdfV67pd+yWeKfIGAecA80SbbXNs3RsKH
+X-Received: by 2002:a17:906:c7d4:b0:a46:dd1f:7dc6 with SMTP id
+ dc20-20020a170906c7d400b00a46dd1f7dc6mr2839426ejb.24.1710874504637; Tue, 19
+ Mar 2024 11:55:04 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 rcu/dev 1/2] rcu/tree: Reduce wake up for
- synchronize_rcu() common case
-Content-Language: en-US
-To: Uladzislau Rezki <urezki@gmail.com>
-Cc: linux-kernel@vger.kernel.org, frederic@kernel.org, boqun.feng@gmail.com,
- neeraj.iitr10@gmail.com, rcu@vger.kernel.org, rostedt@goodmis.org,
- "Paul E. McKenney" <paulmck@kernel.org>,
- Neeraj Upadhyay <neeraj.upadhyay@kernel.org>,
- Josh Triplett <josh@joshtriplett.org>,
- Mathieu Desnoyers <mathieu.desnoyers@efficios.com>,
- Lai Jiangshan <jiangshanlai@gmail.com>, Zqiang <qiang.zhang1211@gmail.com>
-References: <ZflgfrjZSZdqrLLw@pc636>
- <0B372386-9546-492E-930E-DC6C883F3B2B@joelfernandes.org>
- <ZfmlziaLw1bl4IjX@pc636> <20240319160252.GA186534@joelbox2>
- <CAEXW_YTVNb_NpM8bY4KU60tvd0s-iVQ0AZs1s+LFk-Ux51++6Q@mail.gmail.com>
- <ZfnKv1K85Nkwy7p4@pc638.lan>
- <8f221ab6-6d34-4c3b-a6a7-6c1de405000a@joelfernandes.org>
- <851d8642-807c-481a-91e9-8b744c24913d@joelfernandes.org>
- <Zfnbc83lU6t8nIao@pc636>
-From: Joel Fernandes <joel@joelfernandes.org>
-In-Reply-To: <Zfnbc83lU6t8nIao@pc636>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
+References: <20240319141230.23303-F-hca@linux.ibm.com>
+In-Reply-To: <20240319141230.23303-F-hca@linux.ibm.com>
+From: Linus Torvalds <torvalds@linux-foundation.org>
+Date: Tue, 19 Mar 2024 11:54:47 -0700
+X-Gmail-Original-Message-ID: <CAHk-=wiGkerd+_ARB6bbSgAm02nkoOxRiy4LVsS_24ANQV-eZA@mail.gmail.com>
+Message-ID: <CAHk-=wiGkerd+_ARB6bbSgAm02nkoOxRiy4LVsS_24ANQV-eZA@mail.gmail.com>
+Subject: Re: [GIT PULL] more s390 updates for 6.9 merge window
+To: Heiko Carstens <hca@linux.ibm.com>
+Cc: Vasily Gorbik <gor@linux.ibm.com>, Alexander Gordeev <agordeev@linux.ibm.com>, 
+	linux-s390@vger.kernel.org, linux-kernel@vger.kernel.org
+Content-Type: text/plain; charset="UTF-8"
 
+On Tue, 19 Mar 2024 at 07:12, Heiko Carstens <hca@linux.ibm.com> wrote:
+>
+> - Add new bitwise types and helper functions and use them in s390 specific
+>   drivers and code to make it easier to find virtual vs physical address
+>   usage bugs.
 
+Hmm. Because you still want to be able to do arithmetic on them, this
+is really what "__nocast" should be used for rather than "__bitwise".
 
-On 3/19/2024 2:37 PM, Uladzislau Rezki wrote:
-> On Tue, Mar 19, 2024 at 01:33:11PM -0400, Joel Fernandes wrote:
+__bitwise was intended (as the name implies) for things that can only
+be mixed bitwise with similar types. It was _mainly_ for big-endian vs
+little-endian marking, where it's actually perfectly fine to do
+bitwise operations on two big-endian values without ever translation
+them to "cpu endianness", but you can't for example do normal
+arithmetic on them.
 
->>> On 3/19/2024 1:26 PM, Uladzislau Rezki wrote:
+So __bitwise has those very specific rules that seem odd until you
+realize what the reason for them are.
 
->>>>>>>>>>>> /*
->>>>>>>>>>>> @@ -1673,7 +1680,7 @@ static void rcu_sr_normal_gp_cleanup_work(struct work_struct *work)
->>>>>>>>>>>> */
->>>>>>>>>>>> static void rcu_sr_normal_gp_cleanup(void)
->>>>>>>>>>>> {
->>>>>>>>>>>> -    struct llist_node *wait_tail, *next, *rcu;
->>>>>>>>>>>> +    struct llist_node *wait_tail, *next = NULL, *rcu = NULL;
->>>>>>>>>>>>   int done = 0;
->>>>>>>>>>>>
->>>>>>>>>>>>   wait_tail = rcu_state.srs_wait_tail;
->>>>>>>>>>>> @@ -1699,16 +1706,35 @@ static void rcu_sr_normal_gp_cleanup(void)
->>>>>>>>>>>>           break;
->>>>>>>>>>>>   }
->>>>>>>>>>>>
->>>>>>>>>>>> -    // concurrent sr_normal_gp_cleanup work might observe this update.
->>>>>>>>>>>> -    smp_store_release(&rcu_state.srs_done_tail, wait_tail);
->>>>>>>>>>>> +    /*
->>>>>>>>>>>> +     * Fast path, no more users to process. Remove the last wait head
->>>>>>>>>>>> +     * if no inflight-workers. If there are in-flight workers, let them
->>>>>>>>>>>> +     * remove the last wait head.
->>>>>>>>>>>> +     */
->>>>>>>>>>>> +    WARN_ON_ONCE(!rcu);
->>>>>>>>>>>>
->>>>>>>>>>> This assumption is not correct. An "rcu" can be NULL in fact.
->>>>>>>>>>
->>>>>>>>>> Hmm I could never trigger that. Are you saying that is true after Neeraj recent patch or something else?
->>>>>>>>>> Note, after Neeraj patch to handle the lack of heads availability, it could be true so I requested
->>>>>>>>>> him to rebase his patch on top of this one.
->>>>>>>>>>
->>>>>>>>>> However I will revisit my patch and look for if it could occur but please let me know if you knew of a sequence of events to make it NULL.
->>>>>>>>>>>
->>>>>>>>> I think we should agree on your patch first otherwise it becomes a bit
->>>>>>>>> messy or go with a Neeraj as first step and then work on youth. So, i
->>>>>>>>> reviewed this patch based on latest Paul's dev branch. I see that Neeraj
->>>>>>>>> needs further work.
->>>>>>>>
->>>>>>>> You are right. So the only change is to drop the warning and those braces. Agreed?
->>>>>>>>
->>>>>>> Let me check a bit. Looks like correct but just in case.
->>>>>>>
->>>>>>
->>>>>> Thanks. I was also considering improving it for the rcu == NULL case, as
->>>>>> below. I will test it more before re-sending.
->>>>>>
->>>>>> On top of my patch:
->>>>>>
->>>>>> ---8<-----------------------
->>>>>>
->>>>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>>>>> index 0df659a878ee..a5ef844835d4 100644
->>>>>> --- a/kernel/rcu/tree.c
->>>>>> +++ b/kernel/rcu/tree.c
->>>>>> @@ -1706,15 +1706,18 @@ static void rcu_sr_normal_gp_cleanup(void)
->>>>>>                         break;
->>>>>>         }
->>>>>>
->>>>>> +
->>>>>> +       /* Last head stays. No more processing to do. */
->>>>>> +       if (!rcu)
->>>>>> +               return;
->>>>>> +
->>>>>
->>>>> Ugh, should be "if (!wait_head->next)"  instead of "if (!rcu)".  But
->>>>> in any case, the original patch except the warning should hold.
->>>>> Still, I am testing the above diff now.
->>>>>
->>>>>  - Joel
->>>>>
->>>> Just in case, it is based on your patch:
->>>>
->>>> <snip>
->>>> diff --git a/kernel/rcu/tree.c b/kernel/rcu/tree.c
->>>> index bd29fe3c76bf..98546afe7c21 100644
->>>> --- a/kernel/rcu/tree.c
->>>> +++ b/kernel/rcu/tree.c
->>>> @@ -1711,29 +1711,25 @@ static void rcu_sr_normal_gp_cleanup(void)
->>>>  	 * if no inflight-workers. If there are in-flight workers, let them
->>>>  	 * remove the last wait head.
->>>>  	 */
->>>> -	WARN_ON_ONCE(!rcu);
->>>> -	ASSERT_EXCLUSIVE_WRITER(rcu_state.srs_done_tail);
->>>> -
->>>> -	if (rcu && rcu_sr_is_wait_head(rcu) && rcu->next == NULL &&
->>>> -		/* Order atomic access with list manipulation. */
->>>> -		!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
->>>> +	if (wait_tail->next && rcu_sr_is_wait_head(wait_tail->next) && !wait_tail->next->next &&
->>>> +			!atomic_read_acquire(&rcu_state.srs_cleanups_pending)) {
->>>
->>>
->>> Yes this also works. But also if wait_tail->next == NULL, then you do not need
->>> to queue worker for that case as well. I sent this as v3.
->>>
->> Sorry, I see you did add that later in the patch ;-). I think we have converged
->> on the final patch then, give or take the use of 'rcu' versus 'wait_tail->next'.
->>
-> Just combine all parts into one place and resend :)
+In contrast, your types actually *would* be fine with arithmetic and
+logical operations being done on them, and that is what "__nocast"
+really was meant to be.
 
-Yes sir ;)
+But we basically never had much use for __nocast in the kernel, and
+largely as a result __nocast was never fleshed out to work very well
+(and it gets lost *much* too easily), so __bitwise it is.
 
- - Joel
+Oh well.
 
+It looks like it's not a lot of arithmetic you want to allow anyway,
+so I guess the fact that __bitwise forces you to do some silly helper
+functions for that isn't too much of an issue.
+
+              Linus
 
