@@ -1,60 +1,60 @@
-Return-Path: <linux-kernel+bounces-107932-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107933-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 826E58803B6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:42:21 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 2D4488803BC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:42:47 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A64661C22B37
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:42:20 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 8DEB61F22B4F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:42:46 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id AD63239FE4;
-	Tue, 19 Mar 2024 17:40:32 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 268E33B1AC;
+	Tue, 19 Mar 2024 17:40:35 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="Kq+1+gcL"
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="KCaZkzX0"
 Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86CD9374FA;
-	Tue, 19 Mar 2024 17:40:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 33E1739FCE;
+	Tue, 19 Mar 2024 17:40:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710870031; cv=none; b=n0T9xexI50Np2KBq3dLxe8Qv7eKmkxDhi8mPFLQ6+g0rFeUlog0wugO/+cOMUqvSECj+W2e+14yxQs5mK8ML0xhokGDlCjbXb6Ll5AWPFemCqVjAlMP1GEZmP3d32CVO+dcUlPCHMLotOEArFaFTmrm0F6RYLdNVxHBF15wtqnU=
+	t=1710870034; cv=none; b=kl36FIjIvHuPOXTv99oDJf38YZYjeEQUnyEyMpCeDv5+TSizYt6iLsfE3nSkItGaMXeJU+SbJye+aCvo2dO2NR8RAssX/kQPxxjFh/8Caa0dyMX8+lZujLHg1/VZentVO7QZIMoMrQxVi6BR36ZFSYuQy96e5mpR3bGL0Aa67OQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710870031; c=relaxed/simple;
-	bh=UCJOwiTaHGY52rKrDmLCg6FyZYK7q6i3NOUWuRHZFmM=;
+	s=arc-20240116; t=1710870034; c=relaxed/simple;
+	bh=JpoUtWpTmCwC3J5QP1df3LEOnYqrNcxZXF7Avd7cXtU=;
 	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=PPQJAtc9xD+mtnwlw6F3DIXVUKa1PenqZSmVkclNZvDxOlgnsk73wDXNozGTrCk9Txpw+FxyFhlSkt7XUNtdnHeO+ZLqTeGXHvZWg1sQEOVOzV7RRYtUWJ39qZG2oiCXPbagsH4mUS2t+v1EQj+DOYXDiVJaHeeNz/teUBzNt7A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=Kq+1+gcL; arc=none smtp.client-ip=205.220.180.131
+	 MIME-Version:Content-Type; b=ozsxkR8viBrwFX/6mbSuQ4Wo/+n3sG47Jbncug5Rj842XaxmsR3FRiJPlozHEwlsONFGGD4JA2zamczb+HyTIGBk6oyx8pPfSY/oGWsSU9pOZiVIOsbjQwtpyEl6aeZslP3iOy8ZqMAyX5pnTMsnlGNyZHTAsdL+ufmoC+FfrPA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=KCaZkzX0; arc=none smtp.client-ip=205.220.180.131
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
 Received: from pps.filterd (m0279869.ppops.net [127.0.0.1])
-	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JHGhoJ030124;
-	Tue, 19 Mar 2024 17:40:22 GMT
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JHGkQC030239;
+	Tue, 19 Mar 2024 17:40:26 GMT
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
 	from:to:cc:subject:date:message-id:in-reply-to:references
 	:mime-version:content-transfer-encoding:content-type; s=
-	qcppdkim1; bh=f6a3eetHvkHmoww30BMe6VjN3bbcNN4/E5AreBlPPBA=; b=Kq
-	+1+gcL1mRBj5McZkNegQWViP9D1CAP6RRmboQP2vKEQgDgHiIVlpEZw1gZzg2rq4
-	M+RW2NzJ6hdPaax3Bp93f3QOlO5R5BbCWYjj8USlgQJswh66f73/sF8VK+luqEJq
-	CPOkgrlLdVMg3TTBDxktfMJOMrNCOriuScXEofwUMWoYVeEpB1KKJq3alo991ZUD
-	IY8WELvlla7bPM88wDGh+puE+28uzjxlKZ/jHCWg0Cy+btvlmUAnIE2XNcfpnuf+
-	Etw8V0YRseXmfZVFFu70w97OAZrn0uwHo0r6j3nP2a/TgiqSOpRdmOs/aP6g4zoa
-	3EFR1JpVuGFkCDGN1lrg==
-Received: from nalasppmta01.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
-	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy94ts18f-1
+	qcppdkim1; bh=SJKmt5/kmTOQewCd8C45LJ8eD6XnIL/WY3b0sYExaM4=; b=KC
+	aZkzX0QIzUNyNXjnig1W7CvxAo0sTy0pjyRxLB/FoUM1lmq7aQ/sKWyEqqQjDUoD
+	DTq3sNXHUS2a3Hf2+piOASaeuT2JagdD9PCZs4wuKnFkurZPhepxNrUpcbQ83Doa
+	wUH6Uz6MhuxPGFaZTmolOaV5ugF4cu6ikNfM6NHOZlNy+KYpylSbMf/MxMFG86qy
+	Vb2447Y675gL45h3Wk93BAJJs0YEPc9aVChTQbz11x1iBSda0vwwErzKMNv0tlzP
+	7t376Y4Bn1dR7jbZcTCQZbWEAi79a8pupvlamDSWc/88BTpsFbnjccVc3iiDv7mR
+	6INJeCG087w65T6kkseA==
+Received: from nalasppmta05.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy94ts18j-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 17:40:22 +0000 (GMT)
+	Tue, 19 Mar 2024 17:40:25 +0000 (GMT)
 Received: from nalasex01c.na.qualcomm.com (nalasex01c.na.qualcomm.com [10.47.97.35])
-	by NALASPPMTA01.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JHeLOq021605
+	by NALASPPMTA05.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JHeOCB001071
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 17:40:21 GMT
+	Tue, 19 Mar 2024 17:40:24 GMT
 Received: from grosikop.eu.qualcomm.com (10.80.80.8) by
  nalasex01c.na.qualcomm.com (10.47.97.35) with Microsoft SMTP Server
  (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
- 15.2.1118.40; Tue, 19 Mar 2024 10:40:18 -0700
+ 15.2.1118.40; Tue, 19 Mar 2024 10:40:21 -0700
 From: Gjorgji Rosikopulos <quic_grosikop@quicinc.com>
 To: <rfoss@kernel.org>, <todor.too@gmail.com>, <bryan.odonoghue@linaro.org>,
         <andersson@kernel.org>, <konrad.dybcio@linaro.org>,
@@ -62,9 +62,9 @@ To: <rfoss@kernel.org>, <todor.too@gmail.com>, <bryan.odonoghue@linaro.org>,
 CC: <linux-media@vger.kernel.org>, <linux-arm-msm@vger.kernel.org>,
         <linux-kernel@vger.kernel.org>, <laurent.pinchart@ideasonboard.com>,
         <hverkuil-cisco@xs4all.nl>, <quic_hariramp@quicinc.com>
-Subject: [PATCH v2 6/8] media: qcom: camss: Split testgen, RDI and RX for CSID 170
-Date: Tue, 19 Mar 2024 19:39:33 +0200
-Message-ID: <20240319173935.481-7-quic_grosikop@quicinc.com>
+Subject: [PATCH v2 7/8] media: qcom: camss: Decompose register and link operations
+Date: Tue, 19 Mar 2024 19:39:34 +0200
+Message-ID: <20240319173935.481-8-quic_grosikop@quicinc.com>
 X-Mailer: git-send-email 2.34.1
 In-Reply-To: <20240319173935.481-1-quic_grosikop@quicinc.com>
 References: <20240319173935.481-1-quic_grosikop@quicinc.com>
@@ -80,8 +80,8 @@ X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
  nalasex01c.na.qualcomm.com (10.47.97.35)
 X-QCInternal: smtphost
 X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
-X-Proofpoint-GUID: XsK0SEMn_SXhUv_k9d1cF7LH36T-dHDZ
-X-Proofpoint-ORIG-GUID: XsK0SEMn_SXhUv_k9d1cF7LH36T-dHDZ
+X-Proofpoint-GUID: aF3lT1R3ZFJhNtmMTu-PupYtGuJVcXbs
+X-Proofpoint-ORIG-GUID: aF3lT1R3ZFJhNtmMTu-PupYtGuJVcXbs
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-19_07,2024-03-18_03,2023-05-22_02
@@ -91,312 +91,280 @@ X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 phishsc
  lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
  engine=8.19.0-2403140001 definitions=main-2403190131
 
-From: Milen Mitkov <quic_mmitkov@quicinc.com>
+From: Atanas Filipov <quic_afilipov@quicinc.com>
 
-Split the RAW interface (RDI), the CSID receiver (RX)
-and test pattern generator (testgen), configurations
-for CSID on Titan 170
+Split link and register operations.
+Add dedicated link callback according to SoC identifier.
 
-Signed-off-by: Milen Mitkov <quic_mmitkov@quicinc.com>
+Signed-off-by: Atanas Filipov <quic_afilipov@quicinc.com>
 Signed-off-by: Radoslav Tsvetkov <quic_rtsvetko@quicinc.com>
 ---
- .../platform/qcom/camss/camss-csid-gen2.c     | 252 ++++++++++--------
- 1 file changed, 139 insertions(+), 113 deletions(-)
+ drivers/media/platform/qcom/camss/camss.c | 141 ++++++++++++----------
+ drivers/media/platform/qcom/camss/camss.h |   1 +
+ 2 files changed, 81 insertions(+), 61 deletions(-)
 
-diff --git a/drivers/media/platform/qcom/camss/camss-csid-gen2.c b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-index eb5dabe2639a..2d8398a91fc2 100644
---- a/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-+++ b/drivers/media/platform/qcom/camss/camss-csid-gen2.c
-@@ -176,150 +176,176 @@
- #define		TPG_COLOR_BOX_CFG_MODE		0
- #define		TPG_COLOR_BOX_PATTERN_SEL	2
+diff --git a/drivers/media/platform/qcom/camss/camss.c b/drivers/media/platform/qcom/camss/camss.c
+index c2d21bfc52f5..fd5a42355d80 100644
+--- a/drivers/media/platform/qcom/camss/camss.c
++++ b/drivers/media/platform/qcom/camss/camss.c
+@@ -1795,72 +1795,30 @@ static int camss_init_subdevices(struct camss *camss)
+ }
  
--static void __csid_configure_stream(struct csid_device *csid, u8 enable, u8 vc)
-+static void __csid_configure_rx(struct csid_device *csid,
-+				struct csid_phy_config *phy, int vc)
+ /*
+- * camss_register_entities - Register subdev nodes and create links
++ * camss_link_entities - Register subdev nodes and create links
+  * @camss: CAMSS device
+  *
+  * Return 0 on success or a negative error code on failure
+  */
+-static int camss_register_entities(struct camss *camss)
++static int camss_link_entities(struct camss *camss)
  {
--	struct csid_testgen_config *tg = &csid->testgen;
--	u32 val;
--	u32 phy_sel = 0;
- 	u8 lane_cnt = csid->phy.lane_cnt;
--	/* Source pads matching RDI channels on hardware. Pad 1 -> RDI0, Pad 2 -> RDI1, etc. */
--	struct v4l2_mbus_framefmt *input_format = &csid->fmt[MSM_CSID_PAD_FIRST_SRC + vc];
--	const struct csid_format_info *format = csid_get_fmt_entry(csid->res->formats->formats,
--								   csid->res->formats->nformats,
--								   input_format->code);
-+	int val;
+ 	int i, j, k;
+ 	int ret;
  
- 	if (!lane_cnt)
- 		lane_cnt = 4;
- 
--	if (!tg->enabled)
--		phy_sel = csid->phy.csiphy_id;
-+	val = (lane_cnt - 1) << CSI2_RX_CFG0_NUM_ACTIVE_LANES;
-+	val |= phy->lane_assign << CSI2_RX_CFG0_DL0_INPUT_SEL;
-+	val |= phy->csiphy_id << CSI2_RX_CFG0_PHY_NUM_SEL;
-+	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG0);
- 
--	if (enable) {
--		/*
--		 * DT_ID is a two bit bitfield that is concatenated with
--		 * the four least significant bits of the five bit VC
--		 * bitfield to generate an internal CID value.
--		 *
--		 * CSID_RDI_CFG0(vc)
--		 * DT_ID : 28:27
--		 * VC    : 26:22
--		 * DT    : 21:16
--		 *
--		 * CID   : VC 3:0 << 2 | DT_ID 1:0
--		 */
--		u8 dt_id = vc & 0x03;
--
--		if (tg->enabled) {
--			/* configure one DT, infinite frames */
--			val = vc << TPG_VC_CFG0_VC_NUM;
--			val |= INTELEAVING_MODE_ONE_SHOT << TPG_VC_CFG0_LINE_INTERLEAVING_MODE;
--			val |= 0 << TPG_VC_CFG0_NUM_FRAMES;
--			writel_relaxed(val, csid->base + CSID_TPG_VC_CFG0);
--
--			val = 0x740 << TPG_VC_CFG1_H_BLANKING_COUNT;
--			val |= 0x3ff << TPG_VC_CFG1_V_BLANKING_COUNT;
--			writel_relaxed(val, csid->base + CSID_TPG_VC_CFG1);
--
--			writel_relaxed(0x12345678, csid->base + CSID_TPG_LFSR_SEED);
--
--			val = (input_format->height & 0x1fff) << TPG_DT_n_CFG_0_FRAME_HEIGHT;
--			val |= (input_format->width & 0x1fff) << TPG_DT_n_CFG_0_FRAME_WIDTH;
--			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
--
--			val = format->data_type << TPG_DT_n_CFG_1_DATA_TYPE;
--			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
--
--			val = (tg->mode - 1) << TPG_DT_n_CFG_2_PAYLOAD_MODE;
--			val |= 0xBE << TPG_DT_n_CFG_2_USER_SPECIFIED_PAYLOAD;
--			val |= format->decode_format << TPG_DT_n_CFG_2_ENCODE_FORMAT;
--			writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_2(0));
--
--			writel_relaxed(0, csid->base + CSID_TPG_COLOR_BARS_CFG);
--
--			writel_relaxed(0, csid->base + CSID_TPG_COLOR_BOX_CFG);
+-	for (i = 0; i < camss->res->csiphy_num; i++) {
+-		ret = msm_csiphy_register_entity(&camss->csiphy[i],
+-						 &camss->v4l2_dev);
+-		if (ret < 0) {
+-			dev_err(camss->dev,
+-				"Failed to register csiphy%d entity: %d\n",
+-				i, ret);
+-			goto err_reg_csiphy;
 -		}
-+	val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
-+	if (vc > 3)
-+		val |= 1 << CSI2_RX_CFG1_VC_MODE;
-+	val |= 1 << CSI2_RX_CFG1_MISR_EN;
-+	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1);
-+}
- 
--		val = 1 << RDI_CFG0_BYTE_CNTR_EN;
--		val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
--		val |= 1 << RDI_CFG0_TIMESTAMP_EN;
--		/* note: for non-RDI path, this should be format->decode_format */
--		val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
--		val |= format->data_type << RDI_CFG0_DATA_TYPE;
--		val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
--		val |= dt_id << RDI_CFG0_DT_ID;
--		writel_relaxed(val, csid->base + CSID_RDI_CFG0(vc));
-+static void __csid_ctrl_rdi(struct csid_device *csid, int enable, u8 rdi)
-+{
-+	int val;
- 
--		/* CSID_TIMESTAMP_STB_POST_IRQ */
--		val = 2 << RDI_CFG1_TIMESTAMP_STB_SEL;
--		writel_relaxed(val, csid->base + CSID_RDI_CFG1(vc));
-+	if (enable)
-+		val = HALT_CMD_RESUME_AT_FRAME_BOUNDARY << RDI_CTRL_HALT_CMD;
-+	else
-+		val = HALT_CMD_HALT_AT_FRAME_BOUNDARY << RDI_CTRL_HALT_CMD;
-+	writel_relaxed(val, csid->base + CSID_RDI_CTRL(rdi));
-+}
- 
--		val = 1;
--		writel_relaxed(val, csid->base + CSID_RDI_FRM_DROP_PERIOD(vc));
-+static void __csid_configure_testgen(struct csid_device *csid, u8 enable, u8 vc)
-+{
-+	struct csid_testgen_config *tg = &csid->testgen;
-+	struct v4l2_mbus_framefmt *input_format = &csid->fmt[MSM_CSID_PAD_FIRST_SRC + vc];
-+	const struct csid_format_info *format = csid_get_fmt_entry(csid->res->formats->formats,
-+								   csid->res->formats->nformats,
-+								   input_format->code);
-+	u8 lane_cnt = csid->phy.lane_cnt;
-+	u32 val;
- 
--		val = 0;
--		writel_relaxed(val, csid->base + CSID_RDI_FRM_DROP_PATTERN(vc));
-+	if (!lane_cnt)
-+		lane_cnt = 4;
- 
--		val = 1;
--		writel_relaxed(val, csid->base + CSID_RDI_IRQ_SUBSAMPLE_PERIOD(vc));
-+	/* configure one DT, infinite frames */
-+	val = vc << TPG_VC_CFG0_VC_NUM;
-+	val |= INTELEAVING_MODE_ONE_SHOT << TPG_VC_CFG0_LINE_INTERLEAVING_MODE;
-+	val |= 0 << TPG_VC_CFG0_NUM_FRAMES;
-+	writel_relaxed(val, csid->base + CSID_TPG_VC_CFG0);
- 
--		val = 0;
--		writel_relaxed(val, csid->base + CSID_RDI_IRQ_SUBSAMPLE_PATTERN(vc));
-+	val = 0x740 << TPG_VC_CFG1_H_BLANKING_COUNT;
-+	val |= 0x3ff << TPG_VC_CFG1_V_BLANKING_COUNT;
-+	writel_relaxed(val, csid->base + CSID_TPG_VC_CFG1);
- 
--		val = 1;
--		writel_relaxed(val, csid->base + CSID_RDI_RPP_PIX_DROP_PERIOD(vc));
-+	writel_relaxed(0x12345678, csid->base + CSID_TPG_LFSR_SEED);
- 
--		val = 0;
--		writel_relaxed(val, csid->base + CSID_RDI_RPP_PIX_DROP_PATTERN(vc));
-+	val = (input_format->height & 0x1fff) << TPG_DT_n_CFG_0_FRAME_HEIGHT;
-+	val |= (input_format->width & 0x1fff) << TPG_DT_n_CFG_0_FRAME_WIDTH;
-+	writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_0(0));
- 
--		val = 1;
--		writel_relaxed(val, csid->base + CSID_RDI_RPP_LINE_DROP_PERIOD(vc));
-+	val = format->data_type << TPG_DT_n_CFG_1_DATA_TYPE;
-+	writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_1(0));
- 
--		val = 0;
--		writel_relaxed(val, csid->base + CSID_RDI_RPP_LINE_DROP_PATTERN(vc));
-+	val = (tg->mode - 1) << TPG_DT_n_CFG_2_PAYLOAD_MODE;
-+	val |= 0xBE << TPG_DT_n_CFG_2_USER_SPECIFIED_PAYLOAD;
-+	val |= format->decode_format << TPG_DT_n_CFG_2_ENCODE_FORMAT;
-+	writel_relaxed(val, csid->base + CSID_TPG_DT_n_CFG_2(0));
- 
--		val = 0;
--		writel_relaxed(val, csid->base + CSID_RDI_CTRL(vc));
-+	writel_relaxed(0, csid->base + CSID_TPG_COLOR_BARS_CFG);
- 
--		val = readl_relaxed(csid->base + CSID_RDI_CFG0(vc));
--		val |=  1 << RDI_CFG0_ENABLE;
--		writel_relaxed(val, csid->base + CSID_RDI_CFG0(vc));
 -	}
-+	writel_relaxed(0, csid->base + CSID_TPG_COLOR_BOX_CFG);
- 
--	if (tg->enabled) {
--		val = enable << TPG_CTRL_TEST_EN;
--		val |= 1 << TPG_CTRL_FS_PKT_EN;
--		val |= 1 << TPG_CTRL_FE_PKT_EN;
--		val |= (lane_cnt - 1) << TPG_CTRL_NUM_ACTIVE_LANES;
--		val |= 0x64 << TPG_CTRL_CYCLES_BETWEEN_PKTS;
--		val |= 0xA << TPG_CTRL_NUM_TRAIL_BYTES;
--		writel_relaxed(val, csid->base + CSID_TPG_CTRL);
+-
+-	for (i = 0; i < camss->res->csid_num; i++) {
+-		ret = msm_csid_register_entity(&camss->csid[i],
+-					       &camss->v4l2_dev);
+-		if (ret < 0) {
+-			dev_err(camss->dev,
+-				"Failed to register csid%d entity: %d\n",
+-				i, ret);
+-			goto err_reg_csid;
+-		}
 -	}
-+	val = enable << TPG_CTRL_TEST_EN;
-+	val |= 1 << TPG_CTRL_FS_PKT_EN;
-+	val |= 1 << TPG_CTRL_FE_PKT_EN;
-+	val |= (lane_cnt - 1) << TPG_CTRL_NUM_ACTIVE_LANES;
-+	val |= 0x64 << TPG_CTRL_CYCLES_BETWEEN_PKTS;
-+	val |= 0xA << TPG_CTRL_NUM_TRAIL_BYTES;
-+	writel_relaxed(val, csid->base + CSID_TPG_CTRL);
+-
+-	ret = msm_ispif_register_entities(camss->ispif,
+-					  &camss->v4l2_dev);
+-	if (ret < 0) {
+-		dev_err(camss->dev, "Failed to register ispif entities: %d\n",
+-		ret);
+-		goto err_reg_ispif;
+-	}
+-
+-	for (i = 0; i < camss->res->vfe_num; i++) {
+-		ret = msm_vfe_register_entities(&camss->vfe[i],
+-						&camss->v4l2_dev);
+-		if (ret < 0) {
+-			dev_err(camss->dev,
+-				"Failed to register vfe%d entities: %d\n",
+-				i, ret);
+-			goto err_reg_vfe;
+-		}
+-	}
+-
+ 	for (i = 0; i < camss->res->csiphy_num; i++) {
+ 		for (j = 0; j < camss->res->csid_num; j++) {
+-			ret = media_create_pad_link(
+-				&camss->csiphy[i].subdev.entity,
+-				MSM_CSIPHY_PAD_SRC,
+-				&camss->csid[j].subdev.entity,
+-				MSM_CSID_PAD_SINK,
+-				0);
++			ret = media_create_pad_link(&camss->csiphy[i].subdev.entity,
++						    MSM_CSIPHY_PAD_SRC,
++						    &camss->csid[j].subdev.entity,
++						    MSM_CSID_PAD_SINK,
++						    0);
+ 			if (ret < 0) {
+ 				dev_err(camss->dev,
+ 					"Failed to link %s->%s entities: %d\n",
+ 					camss->csiphy[i].subdev.entity.name,
+ 					camss->csid[j].subdev.entity.name,
+ 					ret);
+-				goto err_link;
++				return ret;
+ 			}
+ 		}
+ 	}
+@@ -1868,19 +1826,18 @@ static int camss_register_entities(struct camss *camss)
+ 	if (camss->ispif) {
+ 		for (i = 0; i < camss->res->csid_num; i++) {
+ 			for (j = 0; j < camss->ispif->line_num; j++) {
+-				ret = media_create_pad_link(
+-					&camss->csid[i].subdev.entity,
+-					MSM_CSID_PAD_SRC,
+-					&camss->ispif->line[j].subdev.entity,
+-					MSM_ISPIF_PAD_SINK,
+-					0);
++				ret = media_create_pad_link(&camss->csid[i].subdev.entity,
++							    MSM_CSID_PAD_SRC,
++							    &camss->ispif->line[j].subdev.entity,
++							    MSM_ISPIF_PAD_SINK,
++							    0);
+ 				if (ret < 0) {
+ 					dev_err(camss->dev,
+ 						"Failed to link %s->%s entities: %d\n",
+ 						camss->csid[i].subdev.entity.name,
+ 						camss->ispif->line[j].subdev.entity.name,
+ 						ret);
+-					goto err_link;
++					return ret;
+ 				}
+ 			}
+ 		}
+@@ -1902,7 +1859,7 @@ static int camss_register_entities(struct camss *camss)
+ 							ispif->entity.name,
+ 							vfe->entity.name,
+ 							ret);
+-						goto err_link;
++						return ret;
+ 					}
+ 				}
+ 	} else {
+@@ -1923,15 +1880,67 @@ static int camss_register_entities(struct camss *camss)
+ 							csid->entity.name,
+ 							vfe->entity.name,
+ 							ret);
+-						goto err_link;
++						return ret;
+ 					}
+ 				}
+ 	}
+ 
++	return 0;
 +}
- 
--	val = (lane_cnt - 1) << CSI2_RX_CFG0_NUM_ACTIVE_LANES;
--	val |= csid->phy.lane_assign << CSI2_RX_CFG0_DL0_INPUT_SEL;
--	val |= phy_sel << CSI2_RX_CFG0_PHY_NUM_SEL;
--	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG0);
-+static void __csid_configure_rdi_stream(struct csid_device *csid, u8 enable, u8 vc)
++
++/*
++ * camss_register_entities - Register subdev nodes and create links
++ * @camss: CAMSS device
++ *
++ * Return 0 on success or a negative error code on failure
++ */
++static int camss_register_entities(struct camss *camss)
 +{
-+	struct csid_testgen_config *tg = &csid->testgen;
-+	u32 val;
-+	u32 phy_sel = 0;
-+	/* Source pads matching RDI channels on hardware. Pad 1 -> RDI0, Pad 2 -> RDI1, etc. */
-+	struct v4l2_mbus_framefmt *input_format = &csid->fmt[MSM_CSID_PAD_FIRST_SRC + vc];
-+	const struct csid_format_info *format = csid_get_fmt_entry(csid->res->formats->formats,
-+								   csid->res->formats->nformats,
-+								   input_format->code);
- 
--	val = 1 << CSI2_RX_CFG1_PACKET_ECC_CORRECTION_EN;
--	if (vc > 3)
--		val |= 1 << CSI2_RX_CFG1_VC_MODE;
--	val |= 1 << CSI2_RX_CFG1_MISR_EN;
--	writel_relaxed(val, csid->base + CSID_CSI2_RX_CFG1);
-+	if (!tg->enabled)
-+		phy_sel = csid->phy.csiphy_id;
- 
--	if (enable)
--		val = HALT_CMD_RESUME_AT_FRAME_BOUNDARY << RDI_CTRL_HALT_CMD;
--	else
--		val = HALT_CMD_HALT_AT_FRAME_BOUNDARY << RDI_CTRL_HALT_CMD;
-+	/*
-+	 * DT_ID is a two bit bitfield that is concatenated with
-+	 * the four least significant bits of the five bit VC
-+	 * bitfield to generate an internal CID value.
-+	 *
-+	 * CSID_RDI_CFG0(vc)
-+	 * DT_ID : 28:27
-+	 * VC    : 26:22
-+	 * DT    : 21:16
-+	 *
-+	 * CID   : VC 3:0 << 2 | DT_ID 1:0
-+	 */
-+	u8 dt_id = vc & 0x03;
++	int i;
++	int ret;
 +
-+	val = 1 << RDI_CFG0_BYTE_CNTR_EN;
-+	val |= 1 << RDI_CFG0_FORMAT_MEASURE_EN;
-+	val |= 1 << RDI_CFG0_TIMESTAMP_EN;
-+	/* note: for non-RDI path, this should be format->decode_format */
-+	val |= DECODE_FORMAT_PAYLOAD_ONLY << RDI_CFG0_DECODE_FORMAT;
-+	val |= format->data_type << RDI_CFG0_DATA_TYPE;
-+	val |= vc << RDI_CFG0_VIRTUAL_CHANNEL;
-+	val |= dt_id << RDI_CFG0_DT_ID;
-+	writel_relaxed(val, csid->base + CSID_RDI_CFG0(vc));
-+
-+	/* CSID_TIMESTAMP_STB_POST_IRQ */
-+	val = 2 << RDI_CFG1_TIMESTAMP_STB_SEL;
-+	writel_relaxed(val, csid->base + CSID_RDI_CFG1(vc));
-+
-+	val = 1;
-+	writel_relaxed(val, csid->base + CSID_RDI_FRM_DROP_PERIOD(vc));
-+
-+	val = 0;
-+	writel_relaxed(val, csid->base + CSID_RDI_FRM_DROP_PATTERN(vc));
-+
-+	val = 1;
-+	writel_relaxed(val, csid->base + CSID_RDI_IRQ_SUBSAMPLE_PERIOD(vc));
-+
-+	val = 0;
-+	writel_relaxed(val, csid->base + CSID_RDI_IRQ_SUBSAMPLE_PATTERN(vc));
-+
-+	val = 1;
-+	writel_relaxed(val, csid->base + CSID_RDI_RPP_PIX_DROP_PERIOD(vc));
-+
-+	val = 0;
-+	writel_relaxed(val, csid->base + CSID_RDI_RPP_PIX_DROP_PATTERN(vc));
-+
-+	val = 1;
-+	writel_relaxed(val, csid->base + CSID_RDI_RPP_LINE_DROP_PERIOD(vc));
-+
-+	val = 0;
-+	writel_relaxed(val, csid->base + CSID_RDI_RPP_LINE_DROP_PATTERN(vc));
-+
-+	val = 0;
- 	writel_relaxed(val, csid->base + CSID_RDI_CTRL(vc));
-+
-+	val = readl_relaxed(csid->base + CSID_RDI_CFG0(vc));
-+	val |=  enable << RDI_CFG0_ENABLE;
-+	writel_relaxed(val, csid->base + CSID_RDI_CFG0(vc));
- }
- 
- static void csid_configure_stream(struct csid_device *csid, u8 enable)
- {
-+	struct csid_testgen_config *tg = &csid->testgen;
- 	u8 i;
- 	/* Loop through all enabled VCs and configure stream for each */
- 	for (i = 0; i < MSM_CSID_MAX_SRC_STREAMS; i++)
--		if (csid->phy.en_vc & BIT(i))
--			__csid_configure_stream(csid, enable, i);
-+		if (csid->phy.en_vc & BIT(i)) {
-+			if (tg->enabled)
-+				__csid_configure_testgen(csid, enable, i);
-+
-+			__csid_configure_rdi_stream(csid, enable, i);
-+			__csid_configure_rx(csid, &csid->phy, i);
-+			__csid_ctrl_rdi(csid, enable, i);
++	for (i = 0; i < camss->res->csiphy_num; i++) {
++		ret = msm_csiphy_register_entity(&camss->csiphy[i],
++						 &camss->v4l2_dev);
++		if (ret < 0) {
++			dev_err(camss->dev,
++				"Failed to register csiphy%d entity: %d\n",
++				i, ret);
++			goto err_reg_csiphy;
 +		}
- }
++	}
++
++	for (i = 0; i < camss->res->csid_num; i++) {
++		ret = msm_csid_register_entity(&camss->csid[i],
++					       &camss->v4l2_dev);
++		if (ret < 0) {
++			dev_err(camss->dev,
++				"Failed to register csid%d entity: %d\n",
++				i, ret);
++			goto err_reg_csid;
++		}
++	}
++
++	ret = msm_ispif_register_entities(camss->ispif,
++					  &camss->v4l2_dev);
++	if (ret < 0) {
++		dev_err(camss->dev, "Failed to register ispif entities: %d\n", ret);
++		goto err_reg_ispif;
++	}
++
++	for (i = 0; i < camss->res->vfe_num; i++) {
++		ret = msm_vfe_register_entities(&camss->vfe[i],
++						&camss->v4l2_dev);
++		if (ret < 0) {
++			dev_err(camss->dev,
++				"Failed to register vfe%d entities: %d\n",
++				i, ret);
++			goto err_reg_vfe;
++		}
++	}
++
+ 	return 0;
  
- static int csid_configure_testgen_pattern(struct csid_device *csid, s32 val)
+-err_link:
+-	i = camss->res->vfe_num;
+ err_reg_vfe:
+ 	for (i--; i >= 0; i--)
+ 		msm_vfe_unregister_entities(&camss->vfe[i]);
+@@ -2251,6 +2260,10 @@ static int camss_probe(struct platform_device *pdev)
+ 	if (ret < 0)
+ 		goto err_v4l2_device_unregister;
+ 
++	ret = camss->res->link_entities(camss);
++	if (ret < 0)
++		goto err_register_subdevs;
++
+ 	if (num_subdevs) {
+ 		camss->notifier.ops = &camss_subdev_notifier_ops;
+ 
+@@ -2330,6 +2343,7 @@ static const struct camss_resources msm8916_resources = {
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_8x16),
+ 	.csid_num = ARRAY_SIZE(csid_res_8x16),
+ 	.vfe_num = ARRAY_SIZE(vfe_res_8x16),
++	.link_entities = camss_link_entities
+ };
+ 
+ static const struct camss_resources msm8996_resources = {
+@@ -2341,6 +2355,7 @@ static const struct camss_resources msm8996_resources = {
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_8x96),
+ 	.csid_num = ARRAY_SIZE(csid_res_8x96),
+ 	.vfe_num = ARRAY_SIZE(vfe_res_8x96),
++	.link_entities = camss_link_entities
+ };
+ 
+ static const struct camss_resources sdm660_resources = {
+@@ -2352,6 +2367,7 @@ static const struct camss_resources sdm660_resources = {
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_660),
+ 	.csid_num = ARRAY_SIZE(csid_res_660),
+ 	.vfe_num = ARRAY_SIZE(vfe_res_660),
++	.link_entities = camss_link_entities
+ };
+ 
+ static const struct camss_resources sdm845_resources = {
+@@ -2362,6 +2378,7 @@ static const struct camss_resources sdm845_resources = {
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_845),
+ 	.csid_num = ARRAY_SIZE(csid_res_845),
+ 	.vfe_num = ARRAY_SIZE(vfe_res_845),
++	.link_entities = camss_link_entities
+ };
+ 
+ static const struct camss_resources sm8250_resources = {
+@@ -2375,6 +2392,7 @@ static const struct camss_resources sm8250_resources = {
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_8250),
+ 	.csid_num = ARRAY_SIZE(csid_res_8250),
+ 	.vfe_num = ARRAY_SIZE(vfe_res_8250),
++	.link_entities = camss_link_entities
+ };
+ 
+ static const struct camss_resources sc8280xp_resources = {
+@@ -2389,6 +2407,7 @@ static const struct camss_resources sc8280xp_resources = {
+ 	.csiphy_num = ARRAY_SIZE(csiphy_res_sc8280xp),
+ 	.csid_num = ARRAY_SIZE(csid_res_sc8280xp),
+ 	.vfe_num = ARRAY_SIZE(vfe_res_sc8280xp),
++	.link_entities = camss_link_entities
+ };
+ 
+ static const struct of_device_id camss_dt_match[] = {
+diff --git a/drivers/media/platform/qcom/camss/camss.h b/drivers/media/platform/qcom/camss/camss.h
+index 4b13012940bf..a5be9e872992 100644
+--- a/drivers/media/platform/qcom/camss/camss.h
++++ b/drivers/media/platform/qcom/camss/camss.h
+@@ -106,6 +106,7 @@ struct camss_resources {
+ 	const unsigned int csiphy_num;
+ 	const unsigned int csid_num;
+ 	const unsigned int vfe_num;
++	int (*link_entities)(struct camss *camss);
+ };
+ 
+ struct camss {
 -- 
 2.17.1
 
