@@ -1,128 +1,100 @@
-Return-Path: <linux-kernel+bounces-107580-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107582-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id F092987FE85
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:19:47 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id D6F9987FE8E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:20:55 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id AB0D92852C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:19:46 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 782B2B24C5B
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:20:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C468E80036;
-	Tue, 19 Mar 2024 13:19:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 315758003F;
+	Tue, 19 Mar 2024 13:20:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b="ebQjNwzQ"
-Received: from dvalin.narfation.org (dvalin.narfation.org [213.160.73.56])
+	dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b="UKVanCcP"
+Received: from vps0.lunn.ch (vps0.lunn.ch [156.67.10.101])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E8D973FBB9;
-	Tue, 19 Mar 2024 13:19:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.160.73.56
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B8AA63FBB9;
+	Tue, 19 Mar 2024 13:20:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=156.67.10.101
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710854376; cv=none; b=E4ZyEl7pDrgfQp/JcQUFJBVejjc9mV5M0NEVUrgJpJ1sB7kvhGb5m5UBb5PdimUwyBO1r3hEzjLpm4KblkAfc7Vl87yJs7un9I3Y4MyVfinoqP/axud3eLj6N/YNDfxGyfCtxcYeGFNBCJaaOomV+uH3WkiNPIIMIYwq2SJdapU=
+	t=1710854443; cv=none; b=d+a5JXoRcFfZLeusUwT8ntX+mm+0r+56YpfSehI4gw/Ksmo/dQ8ys+uLn7iXxVptQ2kiRMVIRAK8gDJ9PyQJa27H6zsnafvyTLuAVd2drQasDBscZHjsR/oLjCJLmu1kUwXnCTsVIF+iJfUhpxHZ+ERvsmlojeFStJaB1mCyHx4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710854376; c=relaxed/simple;
-	bh=y5PFZZrOqJ9NtxbU4B1OWP5hKkoz13ncb5FkS6JbXw0=;
-	h=From:To:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=cj6PxbU/7GN6KPgw5PCM4XkQ1/Eu0LiB5bDqX9XLceMxxyJDmg6iIWv0R6Y45WHzM+YgqvkPBvBvTiQLDr0qihcPyLJlTYIWlMyAaTYvrNI0KLXqpumYge9Sqj6XHS1avTrqhh95eUzJLQz/A35SE04vp4NU8TiZyizxEuVD4y4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org; spf=pass smtp.mailfrom=narfation.org; dkim=pass (1024-bit key) header.d=narfation.org header.i=@narfation.org header.b=ebQjNwzQ; arc=none smtp.client-ip=213.160.73.56
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=narfation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=narfation.org
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=narfation.org;
-	s=20121; t=1710854364;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:mime-version:mime-version:content-type:content-type:
-	 in-reply-to:in-reply-to:references:references;
-	bh=qlMWgzCdIDDA3TfwtyMcSQvofdYr4JxDgv8/lzTuVSY=;
-	b=ebQjNwzQiC9YAQIOw5K3DJugtjjHnKCsOBqUZQHO8KmDFC6CaDWqsrzvDnWawN8KYIvZZJ
-	XbyOlyAJJtqqZAaLqXXGmzYogRHlo7EELioeF50I9zQKOShoFQZ+uFkka5OuOdcK4CNuFI
-	aDWZ+pU6Iwl84el0Fv8w7jzskZmX3xM=
-From: Sven Eckelmann <sven@narfation.org>
-To: akpm@linux-foundation.org, andrii@kernel.org, ast@kernel.org,
- b.a.t.m.a.n@lists.open-mesh.org, bpf@vger.kernel.org, christian@brauner.io,
- daniel@iogearbox.net, dvyukov@google.com, edumazet@google.com,
- elver@google.com, glider@google.com, hdanton@sina.com, jakub@cloudflare.com,
- jannh@google.com, john.fastabend@gmail.com, kasan-dev@googlegroups.com,
- kuba@kernel.org, linux-kernel@vger.kernel.org, linux-mm@kvack.org,
- mareklindner@neomailbox.ch, mark.rutland@arm.com, netdev@vger.kernel.org,
- pabeni@redhat.com, shakeelb@google.com, syzkaller-bugs@googlegroups.com,
- syzbot <syzbot+8983d6d4f7df556be565@syzkaller.appspotmail.com>
-Subject: Re: [syzbot] [batman?] [bpf?] possible deadlock in lock_timer_base
-Date: Tue, 19 Mar 2024 14:19:20 +0100
-Message-ID: <2615678.iZASKD2KPV@ripper>
-In-Reply-To: <000000000000901b1c0614010091@google.com>
-References: <000000000000901b1c0614010091@google.com>
+	s=arc-20240116; t=1710854443; c=relaxed/simple;
+	bh=FemAc31BQ+DmZdYMlelYJ4mSsfx8fmVsMXsdKwdnMz4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=jNzgIvLGtbj4jgdqcqiQDwoxW+AEkkNs/DKgWN0WlLEsoaucSWH5M0biz5KNw82X0Q2cPG3eEuZX8e6FwRWBVUEONFJ/WcW0Fy8WiVc0GYeiCdBpR1TyBJQW2xCjbNk4KqHw6OeC5I1G6ZW/XScvJHG7DhEpo3RhXtcIFBcG8IU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch; spf=pass smtp.mailfrom=lunn.ch; dkim=pass (1024-bit key) header.d=lunn.ch header.i=@lunn.ch header.b=UKVanCcP; arc=none smtp.client-ip=156.67.10.101
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=lunn.ch
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=lunn.ch
+DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=lunn.ch;
+	s=20171124; h=In-Reply-To:Content-Disposition:Content-Type:MIME-Version:
+	References:Message-ID:Subject:Cc:To:From:Date:From:Sender:Reply-To:Subject:
+	Date:Message-ID:To:Cc:MIME-Version:Content-Type:Content-Transfer-Encoding:
+	Content-ID:Content-Description:Content-Disposition:In-Reply-To:References;
+	bh=7cAXqVc8Nka7FmbxtID42guGYvW+jJ8a0zPwO5ce+Sg=; b=UKVanCcP0WPq++0fEsxSFuMwcy
+	Jzw404z7EM7LyIlX1opm+8q9cASch8QROkawDA3qIhNOjWKpRmReOdGE3rAOBoYEE/msAB2py70Zg
+	ZGaTy7yzsWTdsfmLDy+qv1Xqf8/I28DIEAmLn/x/v4TOUy4Ofsy/2XUo4nNKJ7cY3k2Y=;
+Received: from andrew by vps0.lunn.ch with local (Exim 4.94.2)
+	(envelope-from <andrew@lunn.ch>)
+	id 1rmZOH-00Ahp1-Cz; Tue, 19 Mar 2024 14:20:29 +0100
+Date: Tue, 19 Mar 2024 14:20:29 +0100
+From: Andrew Lunn <andrew@lunn.ch>
+To: Parthiban.Veerasooran@microchip.com
+Cc: davem@davemloft.net, edumazet@google.com, kuba@kernel.org,
+	pabeni@redhat.com, horms@kernel.org, saeedm@nvidia.com,
+	anthony.l.nguyen@intel.com, netdev@vger.kernel.org,
+	linux-kernel@vger.kernel.org, corbet@lwn.net,
+	linux-doc@vger.kernel.org, robh+dt@kernel.org,
+	krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+	devicetree@vger.kernel.org, Horatiu.Vultur@microchip.com,
+	ruanjinjie@huawei.com, Steen.Hegelund@microchip.com,
+	vladimir.oltean@nxp.com, UNGLinuxDriver@microchip.com,
+	Thorsten.Kummermehr@microchip.com, Pier.Beruto@onsemi.com,
+	Selvamani.Rajagopal@onsemi.com, Nicolas.Ferre@microchip.com,
+	benjamin.bigler@bernformulastudent.ch
+Subject: Re: [PATCH net-next v3 09/12] net: ethernet: oa_tc6: implement
+ receive path to receive rx ethernet frames
+Message-ID: <5b1e7439-a41f-426a-8bf1-9a5b20b44019@lunn.ch>
+References: <20240306085017.21731-1-Parthiban.Veerasooran@microchip.com>
+ <20240306085017.21731-10-Parthiban.Veerasooran@microchip.com>
+ <49f8b067-4e56-4e8f-97e0-bac314619b82@lunn.ch>
+ <cd971029-c1f3-40b0-b940-4d48e03b9f55@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="nextPart2316114.PYKUYFuaPT";
- micalg="pgp-sha512"; protocol="application/pgp-signature"
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <cd971029-c1f3-40b0-b940-4d48e03b9f55@microchip.com>
 
---nextPart2316114.PYKUYFuaPT
-Content-Transfer-Encoding: 7Bit
-Content-Type: text/plain; charset="us-ascii"; protected-headers="v1"
-From: Sven Eckelmann <sven@narfation.org>
-Date: Tue, 19 Mar 2024 14:19:20 +0100
-Message-ID: <2615678.iZASKD2KPV@ripper>
-In-Reply-To: <000000000000901b1c0614010091@google.com>
-References: <000000000000901b1c0614010091@google.com>
-MIME-Version: 1.0
-
-On Tuesday, 19 March 2024 11:33:17 CET syzbot wrote:
-> syzbot has found a reproducer for the following issue on:
+On Tue, Mar 19, 2024 at 12:54:34PM +0000, Parthiban.Veerasooran@microchip.com wrote:
+> Hi Andrew,
 > 
-> HEAD commit:    35c3e2791756 Revert "net: Re-use and set mono_delivery_tim..
-> git tree:       net
-> console output: https://syzkaller.appspot.com/x/log.txt?x=10569181180000
-> kernel config:  https://syzkaller.appspot.com/x/.config?x=6fb1be60a193d440
-> dashboard link: https://syzkaller.appspot.com/bug?extid=8983d6d4f7df556be565
-> compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
-> syz repro:      https://syzkaller.appspot.com/x/repro.syz?x=13d9fa4e180000
-> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=137afac9180000
-> 
-> Downloadable assets:
-> disk image: https://storage.googleapis.com/syzbot-assets/26b55a26fc12/disk-35c3e279.raw.xz
-> vmlinux: https://storage.googleapis.com/syzbot-assets/6f39fa55c828/vmlinux-35c3e279.xz
-> kernel image: https://storage.googleapis.com/syzbot-assets/e1e0501539e6/bzImage-35c3e279.xz
-> 
-> IMPORTANT: if you fix the issue, please add the following tag to the commit:
-> Reported-by: syzbot+8983d6d4f7df556be565@syzkaller.appspotmail.com
+> On 08/03/24 5:44 am, Andrew Lunn wrote:
+> > EXTERNAL EMAIL: Do not click links or open attachments unless you know the content is safe
+> > 
+> >> +static int oa_tc6_allocate_rx_skb(struct oa_tc6 *tc6)
+> >> +{
+> >> +     tc6->rx_skb = netdev_alloc_skb(tc6->netdev, tc6->netdev->mtu + ETH_HLEN +
+> >> +                                    ETH_FCS_LEN + NET_IP_ALIGN);
+> >> +     if (!tc6->rx_skb) {
+> >> +             tc6->netdev->stats.rx_dropped++;
+> >> +             netdev_err(tc6->netdev, "Out of memory for rx'd frame");
+> > 
+> > If that happens, it is not something which will fix itself quickly. So
+> > you are likely to spam the logs. The counter on its own is probably
+> > enough.
+> Ok, then don't we need to convey this info in the dmesg to the user. For 
+> that shall we use net_err_ratelimited() instead of netdev_err()? Or we 
+> don't need any print at all?
 
-Sorry, this is a little bit off-topic. But how does sysbot figure out the 
-subsystems (like "[batman?]"). Because neither the reproducer nor the 
-backtrace nor the console output mention anything batman-adv related.
+I would not print anything at all.
 
-Kind regards,
-	Sven
---nextPart2316114.PYKUYFuaPT
-Content-Type: application/pgp-signature; name="signature.asc"
-Content-Description: This is a digitally signed message part.
-Content-Transfer-Encoding: 7Bit
-
------BEGIN PGP SIGNATURE-----
-
-iQIzBAABCgAdFiEEF10rh2Elc9zjMuACXYcKB8Eme0YFAmX5kNgACgkQXYcKB8Em
-e0aRihAA0kDB39knEezz051yKh214KQyzCHU9DDVkDQEJKEhl9AMpB/1R4O5poka
-SiwAwoSoP5A5kkczS9gtZGmEcCTSCjPx+Zj5aGgGylhgnHsLoA67qxQhiXDu5EWx
-QSXqPtTmfNboRsZ8433zCQcUjN4tHc+r/mxFRkaBcRMWQh5tVXpeYjAB5rkOshVP
-/Gnp/V9b3rVqu7STsr2npZT3F0SDk6yj2Oi810d0pnNzR2y49DmabnqzWtPe7sX4
-d0/zPlX80F7FYrxjbi7LmjNYUoRrudHTXrb8FZaptsa+mIwVQ01UnK7sm/wWW6xF
-BVuEC4j3OyaL9HEHgp9o7lxMNMx7KqYwimrewgPqeMWNHOkYX9swwRGzHUkU5wuC
-TbbtgbAJaTtBroNZ4AqxwWO8LviRFhwwABtA6zb1VD/WOu8chQ7dgxAEJs3QdEUK
-zVXOaOZefHULjIoJzRoPqwcnE67cvYwlmfHZnEVEp9YPXvdcrjswghJ+TeNoBt3s
-+rrgbAsvbTxl/N5EF6Ke4OoVg4qDIY2djOubxk+l5r/Od0thLbHWaFq5vYg2G5Zq
-VCX52iuKimsHb9Uso3kCzkGjcE2a/UcZu+9pgD4njh1CS+5l7bO89eknX8+yY1Kw
-mOLKMD6oyYfDVWWIj7HNhlQxFZdR+mZoiG1FItjoJ7Pof8CRuZk=
-=B2hL
------END PGP SIGNATURE-----
-
---nextPart2316114.PYKUYFuaPT--
-
-
-
+	Andrew
 
