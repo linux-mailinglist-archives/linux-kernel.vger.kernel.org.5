@@ -1,176 +1,154 @@
-Return-Path: <linux-kernel+bounces-108177-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108178-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8454A880721
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:08:35 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 79AC8880724
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:11:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B62EC1C21011
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:08:34 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id AB85F1C21D85
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:11:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id F11E551C5B;
-	Tue, 19 Mar 2024 22:08:23 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A44574F894;
+	Tue, 19 Mar 2024 22:11:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="pjNvqjWu"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b="cu9OoAcZ"
+Received: from out-183.mta0.migadu.com (out-183.mta0.migadu.com [91.218.175.183])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2BD9B101D4;
-	Tue, 19 Mar 2024 22:08:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9DFA74F5ED
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:11:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=91.218.175.183
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710886103; cv=none; b=MkH+XCXF3Sbv+dcMXFqYsvkRt3ItPjAN+a0Yi/cn+3zpnTORXMBVriu2hcrwIf0gbgY0bkZ5M7V7ltlcQv8aZW19gQYkrJXCPbIcW1+VJM3rDE/sP9KJAd/9RNwKjhIFrfW+QyraWYItKAZNJxKUX0b1EqDhHzWBciIT6ahgI/U=
+	t=1710886285; cv=none; b=q7oA/aCD7M9BwGwQk2r6Lfi3hIEnI0DLCc9pFOvYsD76dZUD2d8OMNttcVdbF2qRiap4h8SYRZoE7mf35lgh4Ua9RWMTBfTqVOjsbtlpFJuH3jXtzNk/2iB3VYHWn1uPpnkGTeeubC82qSDIh8D7Fh5EiL4tMGEInlCREuniAO8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710886103; c=relaxed/simple;
-	bh=WcCaSmpe1k7crBhFeryrbsZ45VTv5HnczafsdmzvbAc=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=nE4+2budFzj4XWw3vLyZmWOYlwL8yR4KBlJqnOFqdD3/tFYkwNnli3c3TSjUWj8TJk08/n8PX1a2b/hTT12GQLuRkBthaupIgZoAuVGAIjhlGeC9/O/MBTh/5f3ng5cmPcrfgkcTqInUQte7PemEExCczN3UhS4htY5TklxF7ms=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=pjNvqjWu; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3622FC433C7;
-	Tue, 19 Mar 2024 22:08:22 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710886102;
-	bh=WcCaSmpe1k7crBhFeryrbsZ45VTv5HnczafsdmzvbAc=;
-	h=Date:From:To:Cc:Subject:Reply-To:References:In-Reply-To:From;
-	b=pjNvqjWu7SS1lVhwfopRltqQj2f2HQwzEpTwOzD/by69cdGPVzBWtYZ9zRVLlPLwo
-	 KBcwTfy2Csatl/iTFZR8GuqQVhlFfEvyXkLPmEXmu+8olSgr+54GNGpWqZpXS+DtIy
-	 FkVuAX2fEyAflnXW8s/zgI+CBoKbbQd4+zD1289I47d9NIoZ93DwvLf6RQYIOqzcP8
-	 S2erPo8Ui55ejoLYfP6PoqnjPlrBXQcMyqqSUGzTdJ4igufxDNYtGZt7ERkGLCRZBB
-	 E8kZ/TkCXfYTI25BiRCd8IpWGtvAq0eDjxl4mLIYf0SY9tjfI2a4bfkLkdIv6UH0k9
-	 fCKlpbs77LjQQ==
-Received: by paulmck-ThinkPad-P17-Gen-1.home (Postfix, from userid 1000)
-	id 5159ECE16D7; Tue, 19 Mar 2024 15:08:19 -0700 (PDT)
-Date: Tue, 19 Mar 2024 15:08:19 -0700
-From: "Paul E. McKenney" <paulmck@kernel.org>
-To: Yan Zhai <yan@cloudflare.com>
-Cc: netdev@vger.kernel.org, "David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
-	Jiri Pirko <jiri@resnulli.us>, Simon Horman <horms@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Lorenzo Bianconi <lorenzo@kernel.org>,
-	Coco Li <lixiaoyan@google.com>, Wei Wang <weiwan@google.com>,
-	Alexander Duyck <alexanderduyck@fb.com>,
-	linux-kernel@vger.kernel.org, rcu@vger.kernel.org,
-	bpf@vger.kernel.org, kernel-team@cloudflare.com,
-	Joel Fernandes <joel@joelfernandes.org>,
-	Toke =?iso-8859-1?Q?H=F8iland-J=F8rgensen?= <toke@redhat.com>,
-	Alexei Starovoitov <alexei.starovoitov@gmail.com>,
-	Steven Rostedt <rostedt@goodmis.org>, mark.rutland@arm.com,
-	Jesper Dangaard Brouer <hawk@kernel.org>,
-	Sebastian Andrzej Siewior <bigeasy@linutronix.de>
-Subject: Re: [PATCH v5 net 1/3] rcu: add a helper to report consolidated
- flavor QS
-Message-ID: <7d86bfd6-353f-425b-ab69-ae5e3309f5bb@paulmck-laptop>
-Reply-To: paulmck@kernel.org
-References: <cover.1710877680.git.yan@cloudflare.com>
- <90431d46ee112d2b0af04dbfe936faaca11810a5.1710877680.git.yan@cloudflare.com>
- <6149ecfc-2a3b-4bea-a79f-ef5be0a36cd7@paulmck-laptop>
- <CAO3-PbotP8pRFRC4jX+qgPjmVkRJCfSPGD3ipxa8+ph7vGVr6g@mail.gmail.com>
+	s=arc-20240116; t=1710886285; c=relaxed/simple;
+	bh=ISOhSDV7rsGKaoctsa473zJBnGTkZPKSqQr9JefmsnU=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=Pv65xFVmufdw9aMmldZ/FNr4KTAL/tpE2nVQKjcKByylqh4IUxCUudYxURgQ8gQKUBUf/NSV437a1yA83rHiBYEA9lj3iEYVsI+S5lQYOC3TFJHxOYE7YkmJ9wHyrbJwTNa7RzP9cX0a4vmeMFRA0SPkMCnAT9ErtfguIa+nakw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev; spf=pass smtp.mailfrom=linux.dev; dkim=pass (1024-bit key) header.d=linux.dev header.i=@linux.dev header.b=cu9OoAcZ; arc=none smtp.client-ip=91.218.175.183
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.dev
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.dev
+Date: Tue, 19 Mar 2024 18:11:15 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=linux.dev; s=key1;
+	t=1710886280;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type;
+	bh=QbdXFcsAVXRBojMy8+Pc1cBSvS+94IkHlxqp1mxqCDA=;
+	b=cu9OoAcZOnxyy0MzUqbeHKlUU+mVOtmwFz0r+pnrQlXkFdQSAIYGmYHkXLwIs4zW+At/dP
+	90C6qFzRIREg0qkm2hcW5ePIkrv1KIOs4b0LcsIEeCMDWvVeK+ds7lguhqtWLM3sIqWWTU
+	DLSYVXf65f906aEcgritGg4oSJKozhc=
+X-Report-Abuse: Please report any abuse attempt to abuse@migadu.com and include these headers.
+From: Kent Overstreet <kent.overstreet@linux.dev>
+To: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: linux-bcachefs@vger.kernel.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org
+Subject: [GIT PULL] bachefs fixes for 6.9-rc1
+Message-ID: <qhecenhgh5bnkjllimyvmqc6cv5bv4vposvh5hqtjjm7hx3q4u@r4gwjp6wl2k2>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=utf-8
+Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-Content-Transfer-Encoding: 8bit
-In-Reply-To: <CAO3-PbotP8pRFRC4jX+qgPjmVkRJCfSPGD3ipxa8+ph7vGVr6g@mail.gmail.com>
+X-Migadu-Flow: FLOW_OUT
 
-On Tue, Mar 19, 2024 at 05:00:24PM -0500, Yan Zhai wrote:
-> Hi Paul,
-> 
-> On Tue, Mar 19, 2024 at 4:31 PM Paul E. McKenney <paulmck@kernel.org> wrote:
-> >
-> > On Tue, Mar 19, 2024 at 01:44:34PM -0700, Yan Zhai wrote:
-> > > When under heavy load, network processing can run CPU-bound for many
-> > > tens of seconds. Even in preemptible kernels (non-RT kernel), this can
-> > > block RCU Tasks grace periods, which can cause trace-event removal to
-> > > take more than a minute, which is unacceptably long.
-> > >
-> > > This commit therefore creates a new helper function that passes through
-> > > both RCU and RCU-Tasks quiescent states every 100 milliseconds. This
-> > > hard-coded value suffices for current workloads.
-> > >
-> > > Suggested-by: Paul E. McKenney <paulmck@kernel.org>
-> > > Reviewed-by: Jesper Dangaard Brouer <hawk@kernel.org>
-> > > Signed-off-by: Yan Zhai <yan@cloudflare.com>
-> >
-> > If you would like me to take this one via -rcu, I would be happy to take
-> > it.  If it would be easier for you to push these as a group though
-> > networking:
-> >
-> > Reviewed-by: Paul E. McKenney <paulmck@kernel.org>
-> 
-> Since the whole series aims at fixing net problems, going through net
-> is probably more consistent.
+Hi Linus, small batch of bcachefs fixes for you.
 
-Very good!  I will let you push it along.
+Going to have a larger pull for you soon with some new repair code -
+some users got hit bad with the failure to downgrade bug (the fix for
+which is still not in 6.7) - that caused the splitbrain detection to
+attempt to kick out every device from the filesystem, and some users
+attempted to run in very_degraded mode got things very borked.
 
-> Also, thank you for your help through the series!
+For users:
+ - there's a no_splitbrain_check option which runs the splitbrain checks
+   in dry run mode, that should suffice to get most people going
+ - if your fs is very borked, 'scan entire device for btree nodes and
+   reconstruct' is almost done; it looks like that will be a pretty
+   bulletproof way to reconstruct.
 
-No, thank you!  I had just been asked to find this slowdown when you
-posted the patch.  So it worked out extremely well for me!  ;-)
+Some poeple may have their filesystems unavailable for a bit but I'm
+trying to make sure no one looses data, and no one should be forced to
+migrate either, we should always get back to a working functional rw fs.
 
-							Thanx, Paul
+Cheers,
+Kent
 
-> Yan
-> 
-> > > ---
-> > > v4->v5: adjusted kernel docs and commit message
-> > > v3->v4: kernel docs error
-> > >
-> > > ---
-> > >  include/linux/rcupdate.h | 31 +++++++++++++++++++++++++++++++
-> > >  1 file changed, 31 insertions(+)
-> > >
-> > > diff --git a/include/linux/rcupdate.h b/include/linux/rcupdate.h
-> > > index 16f519914415..17d7ed5f3ae6 100644
-> > > --- a/include/linux/rcupdate.h
-> > > +++ b/include/linux/rcupdate.h
-> > > @@ -247,6 +247,37 @@ do { \
-> > >       cond_resched(); \
-> > >  } while (0)
-> > >
-> > > +/**
-> > > + * rcu_softirq_qs_periodic - Report RCU and RCU-Tasks quiescent states
-> > > + * @old_ts: jiffies at start of processing.
-> > > + *
-> > > + * This helper is for long-running softirq handlers, such as NAPI threads in
-> > > + * networking. The caller should initialize the variable passed in as @old_ts
-> > > + * at the beginning of the softirq handler. When invoked frequently, this macro
-> > > + * will invoke rcu_softirq_qs() every 100 milliseconds thereafter, which will
-> > > + * provide both RCU and RCU-Tasks quiescent states. Note that this macro
-> > > + * modifies its old_ts argument.
-> > > + *
-> > > + * Because regions of code that have disabled softirq act as RCU read-side
-> > > + * critical sections, this macro should be invoked with softirq (and
-> > > + * preemption) enabled.
-> > > + *
-> > > + * The macro is not needed when CONFIG_PREEMPT_RT is defined. RT kernels would
-> > > + * have more chance to invoke schedule() calls and provide necessary quiescent
-> > > + * states. As a contrast, calling cond_resched() only won't achieve the same
-> > > + * effect because cond_resched() does not provide RCU-Tasks quiescent states.
-> > > + */
-> > > +#define rcu_softirq_qs_periodic(old_ts) \
-> > > +do { \
-> > > +     if (!IS_ENABLED(CONFIG_PREEMPT_RT) && \
-> > > +         time_after(jiffies, (old_ts) + HZ / 10)) { \
-> > > +             preempt_disable(); \
-> > > +             rcu_softirq_qs(); \
-> > > +             preempt_enable(); \
-> > > +             (old_ts) = jiffies; \
-> > > +     } \
-> > > +} while (0)
-> > > +
-> > >  /*
-> > >   * Infrastructure to implement the synchronize_() primitives in
-> > >   * TREE_RCU and rcu_barrier_() primitives in TINY_RCU.
-> > > --
-> > > 2.30.2
-> > >
-> > >
+The following changes since commit be28368b2ccb328b207c9f66c35bb088d91e6a03:
+
+  bcachefs: time_stats: shrink time_stat_buffer for better alignment (2024-03-13 21:38:03 -0400)
+
+are available in the Git repository at:
+
+  https://evilpiepirate.org/git/bcachefs.git tags/bcachefs-2024-03-19
+
+for you to fetch changes up to 2e92d26b25432ec3399cb517beb0a79a745ec60f:
+
+  bcachefs: Fix lost wakeup on journal shutdown (2024-03-18 23:35:42 -0400)
+
+----------------------------------------------------------------
+bcachefs fixes for 6.9-rc1
+
+Assorted bugfixes.
+
+Most are fixes for simple assertion pops; the most significant fix is
+for a deadlock in recovery when we have to rewrite large numbers of
+btree nodes to fix errors. This was incorrectly running out of the same
+workqueue as the core interior btree update path - we now give it its
+own single threaded workqueue.
+
+This was visible to users as "bch2_btree_update_start(): error:
+BCH_ERR_journal_reclaim_would_deadlock" - and then recovery hanging.
+
+----------------------------------------------------------------
+Kent Overstreet (17):
+      bcachefs: Change "accounting overran journal reservation" to a warning
+      bcachefs: Fix check_key_has_snapshot() call
+      bcachefs: Fix spurious -BCH_ERR_transaction_restart_nested
+      bcachefs: Avoid extent entry type assertions in .invalid()
+      bcachefs: Fix locking in bch2_alloc_write_key()
+      bcachefs: Split out btree_node_rewrite_worker
+      bcachefs: Improve sysfs internal/btree_updates
+      bcachefs: Fix nested transaction restart handling in bch2_bucket_gens_init()
+      bcachefs: bch2_snapshot_is_ancestor() now safe to call in early recovery
+      bcachefs: fix for building in userspace
+      bcachefs: Don't corrupt journal keys gap buffer when dropping alloc info
+      bcachefs: Fix lost transaction restart error
+      bcachefs: Improve bch2_fatal_error()
+      bcachefs: Run check_topology() first
+      bcachefs: ratelimit errors from async_btree_node_rewrite
+      bcachefs; Fix deadlock in bch2_btree_update_start()
+      bcachefs: Fix lost wakeup on journal shutdown
+
+ fs/bcachefs/alloc_background.c      | 15 +++++++------
+ fs/bcachefs/alloc_foreground.c      | 10 +++++----
+ fs/bcachefs/bcachefs.h              |  2 ++
+ fs/bcachefs/btree_gc.c              |  2 +-
+ fs/bcachefs/btree_io.c              | 12 +++++-----
+ fs/bcachefs/btree_key_cache.c       |  2 +-
+ fs/bcachefs/btree_update_interior.c | 44 ++++++++++++++++++++++++-------------
+ fs/bcachefs/btree_update_interior.h |  1 +
+ fs/bcachefs/btree_write_buffer.c    |  2 +-
+ fs/bcachefs/buckets.c               |  6 ++---
+ fs/bcachefs/debug.c                 |  2 +-
+ fs/bcachefs/ec.c                    |  6 ++---
+ fs/bcachefs/error.h                 |  4 ++--
+ fs/bcachefs/extents.h               |  6 ++---
+ fs/bcachefs/fs.c                    |  3 ++-
+ fs/bcachefs/fsck.c                  | 33 ++++++++++++++++++++--------
+ fs/bcachefs/journal.c               | 12 +++++-----
+ fs/bcachefs/journal_io.c            | 15 ++++++-------
+ fs/bcachefs/logged_ops.c            |  4 ++--
+ fs/bcachefs/movinggc.c              |  3 +--
+ fs/bcachefs/recovery.c              |  6 ++++-
+ fs/bcachefs/recovery_types.h        |  2 +-
+ fs/bcachefs/snapshot.c              | 32 +++++++++++++++------------
+ fs/bcachefs/super-io.c              |  8 +++----
+ fs/bcachefs/super.c                 | 33 ++++++++++++++--------------
+ fs/bcachefs/util.h                  |  3 +++
+ 26 files changed, 157 insertions(+), 111 deletions(-)
 
