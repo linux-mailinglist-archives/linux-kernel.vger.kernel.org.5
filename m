@@ -1,113 +1,54 @@
-Return-Path: <linux-kernel+bounces-107953-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107728-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 2576A8803FB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:54:51 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id F2C8E8800D7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:39:05 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 905E01F246B2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:54:50 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 5F3E72834DC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:39:04 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2F64C2C19B;
-	Tue, 19 Mar 2024 17:54:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b="fiSQBkCC"
-Received: from mail-ot1-f52.google.com (mail-ot1-f52.google.com [209.85.210.52])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 67B0125569
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 17:54:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0391765BA1;
+	Tue, 19 Mar 2024 15:38:56 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D5551F608;
+	Tue, 19 Mar 2024 15:38:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710870870; cv=none; b=s+lo/RXCzuoFCwP/UqN5vs9RNffHL73tK0VJmTDY/XXICl9bchLAjoqZkr3JGdRepNh/Piw2GSZrBrOBSkPKd/n+26XphCm2yDjcfYHrQuhB6KPnLVHec/H7H63ADHHyg1noPpYAis8RvGxA9Ou/jAiNemoaMPGNk3FSn/+rvao=
+	t=1710862735; cv=none; b=cILXwHRiOevBBWGgAAIYtdH5CZJW4qedFJjPiQrdiC6tTzWLnu9cOFMyigTmXepSHSGW1kjg/rYCupug4GcsZtx8sAtH5ra/7esGzS6jZ9ddgRW7D7jqODVvxrpLuMAzuGkF+/rD1Fh6lVxyasopsvkz6cUJaO1du0jTvvzPnyY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710870870; c=relaxed/simple;
-	bh=Ao9hwGJl4g/w2wap7dwa291kK0JPcDjzl89BAK46zVI=;
+	s=arc-20240116; t=1710862735; c=relaxed/simple;
+	bh=Ab+zULn2IP9jCO5eMIYobOnMG4LfbJA7u/jzgOg8EEc=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=rlcqCx4Z6NjIOcR2RdkzbZwJaLmG/XKopeq+Auo9ht3wIKFSh6zed9sX9iR9pUeftQG9bWCvXObaTMxQWCaREHPUt8+Sd/q5I8324fgtKu+LHSdfrBcnTPYzr7HeRIecDfVwWoEkmVjPPKt5xU6WHHNVc2w6w9DbnB3MND4jTDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca; spf=pass smtp.mailfrom=ziepe.ca; dkim=pass (2048-bit key) header.d=ziepe.ca header.i=@ziepe.ca header.b=fiSQBkCC; arc=none smtp.client-ip=209.85.210.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ziepe.ca
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ziepe.ca
-Received: by mail-ot1-f52.google.com with SMTP id 46e09a7af769-6e673ffbd79so3220302a34.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 10:54:28 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=ziepe.ca; s=google; t=1710870867; x=1711475667; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=D7H3WfkclcieHpBg89GTkZxaS3r7II1qq9xezXi0hVM=;
-        b=fiSQBkCCoYVMvJ7hKOIWrIUIQtWnudcxCwuRJ3SDAmfcoUJ3LKW/OSOt0XJv0ppBom
-         r1b7EUVzGEU34UNgXl0Xub2wg6VFMC2Ly8xIcAY78NHYVcXijpAahLq3KrnWiEfepI+P
-         K3bumXlIk6qPY69qQGjZxTur6D4Xb2RFW85NT0G9m4KZ2ko8G/knkqvxD72SooihwK+Z
-         WaMPr00ehDA2unHvbCRW9HCn68HsloTpQ5rMYa4Uyj9mIfkuCzQfSnPQejaSEhgNZfAo
-         vO51olQglynGFY2d82cFKRUtHCtTWvMs7dccTYup7df0Q48rdZL147340AdvneF3HcRw
-         D7dA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710870867; x=1711475667;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=D7H3WfkclcieHpBg89GTkZxaS3r7II1qq9xezXi0hVM=;
-        b=DGiY6DARn5G4xMIa/Ste3u/GqyEr+imhL2P4SvxOVjFdEEHcpNL1ySJ7RB1t9dX/OL
-         n7r29R/I/rK/4Dgtx5OXEKF3Qmx1ExkbARvIG6LmT32pJ5/EXoa3KH7XDvR/V7oU3Mpu
-         CohrGKM2b2hSEtm1bCPFEBijD3iPGaJD/qraYZtHkDYaSBzYgZUXvXnrNIIJ2EVmV54C
-         /FaHdOzCyi5TLrrh1FsvSv35C3D/7DWUONEziQgwynusO3H5BVdLDtSMAQJ8G03QIFru
-         1v3nrac8Qb2mUfRZefusiunUDqEiKvfg+kVISwGhXtHwkyZQHWyP89PKfUx7qU8mE1Py
-         ZW+Q==
-X-Forwarded-Encrypted: i=1; AJvYcCXSNwXuzULtKrNt0arha3ajW/8iyOdONf7xIHj+GdU3p1A/T3cPamIEj6/moRVMbPtQZKP4csenePK/ZcejugtO7+ckCxn9swaMACNp
-X-Gm-Message-State: AOJu0YyIPhJ2B/tAOCvXxeeSI1H1QD8UgqbqDUf7fF1+jfzgN2v+FbkA
-	X221VC+eJ6dNnWInHcTYHUIc52DWSt8oEgj7qIztpFfk4AWV5f1+4R+0+fRdcK0=
-X-Google-Smtp-Source: AGHT+IFEKHu8FJxVRb4YxsELWM46dNSxNuN3njm0tBeD+R+fEyp1j8c0yaDa2gTZMCaYT5fxKBzgBQ==
-X-Received: by 2002:a05:6870:d20e:b0:222:99cb:2215 with SMTP id g14-20020a056870d20e00b0022299cb2215mr3580439oac.28.1710870867581;
-        Tue, 19 Mar 2024 10:54:27 -0700 (PDT)
-Received: from ziepe.ca ([12.97.180.36])
-        by smtp.gmail.com with ESMTPSA id gh11-20020a056638698b00b00477716fcbb8sm2429986jab.40.2024.03.19.10.54.26
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Tue, 19 Mar 2024 10:54:26 -0700 (PDT)
-Received: from jgg by wakko with local (Exim 4.95)
-	(envelope-from <jgg@ziepe.ca>)
-	id 1rmbVk-001elO-4L;
-	Tue, 19 Mar 2024 12:36:20 -0300
-Date: Tue, 19 Mar 2024 12:36:20 -0300
-From: Jason Gunthorpe <jgg@ziepe.ca>
-To: Christoph Hellwig <hch@lst.de>
-Cc: Leon Romanovsky <leon@kernel.org>, Robin Murphy <robin.murphy@arm.com>,
-	Marek Szyprowski <m.szyprowski@samsung.com>,
-	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
-	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
-	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
-	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
-	Yishai Hadas <yishaih@nvidia.com>,
-	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
-	Kevin Tian <kevin.tian@intel.com>,
-	Alex Williamson <alex.williamson@redhat.com>,
-	=?utf-8?B?SsOpcsO0bWU=?= Glisse <jglisse@redhat.com>,
-	Andrew Morton <akpm@linux-foundation.org>,
-	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
-	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
-	kvm@vger.kernel.org, linux-mm@kvack.org,
-	Bart Van Assche <bvanassche@acm.org>,
-	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
-	Amir Goldstein <amir73il@gmail.com>,
-	"josef@toxicpanda.com" <josef@toxicpanda.com>,
-	"Martin K. Petersen" <martin.petersen@oracle.com>,
-	"daniel@iogearbox.net" <daniel@iogearbox.net>,
-	Dan Williams <dan.j.williams@intel.com>,
-	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
-Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
-Message-ID: <20240319153620.GB66976@ziepe.ca>
-References: <20240306154328.GM9225@ziepe.ca>
- <20240306162022.GB28427@lst.de>
- <20240306174456.GO9225@ziepe.ca>
- <20240306221400.GA8663@lst.de>
- <20240307000036.GP9225@ziepe.ca>
- <20240307150505.GA28978@lst.de>
- <20240307210116.GQ9225@ziepe.ca>
- <20240308164920.GA17991@lst.de>
- <20240308202342.GZ9225@ziepe.ca>
- <20240309161418.GA27113@lst.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=XIdgEBFHiTYVrOpammpTIUorQf0t/pbO7rAbAYuX7QIN67rRWXxEUOtF/Yz43BtfSNJNzajH7Qta22Vxw3q8ZNo8yF8YdbhENjPj0el/WQrgFBkonILene+ywpch6d1aeIPJSKkI/JAFhzXQLMx8bO63NVVJmdNLsA6biKRT6Xs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 86CBC106F;
+	Tue, 19 Mar 2024 08:39:27 -0700 (PDT)
+Received: from bogus (e103737-lin.cambridge.arm.com [10.1.197.49])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 6AED93F762;
+	Tue, 19 Mar 2024 08:38:49 -0700 (PDT)
+Date: Tue, 19 Mar 2024 15:38:46 +0000
+From: Sudeep Holla <sudeep.holla@arm.com>
+To: Sriram Dash <quic_sriramd@quicinc.com>
+Cc: <andersson@kernel.org>, <konrad.dybcio@linaro.org>, <vkoul@kernel.org>,
+	<kishon@kernel.org>, <robh@kernel.org>,
+	Sudeep Holla <sudeep.holla@arm.com>,
+	<krzysztof.kozlowski+dt@linaro.org>, <conor+dt@kernel.org>,
+	<gregkh@linuxfoundation.org>, <quic_wcheng@quicinc.com>,
+	<Thinh.Nguyen@synopsys.com>, <p.zabel@pengutronix.de>,
+	<linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+	<devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+	<linux-usb@vger.kernel.org>, <quic_psodagud@quicinc.com>,
+	<quic_nkela@quicinc.com>, <manivannan.sadhasivam@linaro.org>,
+	<ulf.hansson@linaro.org>, <quic_shazhuss@quicinc.com>
+Subject: Re: [RFC 0/3] Enable firmware-managed USB resources on Qcom targets
+Message-ID: <Zfmxhn9-uTo-6zyD@bogus>
+References: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -116,85 +57,53 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <20240309161418.GA27113@lst.de>
+In-Reply-To: <1709657858-8563-1-git-send-email-quic_sriramd@quicinc.com>
 
-On Sat, Mar 09, 2024 at 05:14:18PM +0100, Christoph Hellwig wrote:
-> On Fri, Mar 08, 2024 at 04:23:42PM -0400, Jason Gunthorpe wrote:
-> > > The DMA API callers really need to know what is P2P or not for
-> > > various reasons.  And they should generally have that information
-> > > available, either from pin_user_pages that needs to special case
-> > > it or from the in-kernel I/O submitter that build it from P2P and
-> > > normal memory.
-> > 
-> > I think that is a BIO thing. RDMA just calls with FOLL_PCI_P2PDMA and
-> > shoves the resulting page list into in a scattertable. It never checks
-> > if any returned page is P2P - it has no reason to care. dma_map_sg()
-> > does all the work.
-> 
-> Right now it does, but that's not really a good interface.  If we have
-> a pin_user_pages variant that only pins until the next relevant P2P
-> boundary and tells you about we can significantly simplify the overall
-> interface.
+On Tue, Mar 05, 2024 at 10:27:35PM +0530, Sriram Dash wrote:
+> Some target systems allow multiple resources to be managed by firmware.
+> On these targets, tasks related to clocks, regulators, resets, and
+> interconnects can be delegated to the firmware, while the remaining
+> responsibilities are handled by Linux.
+>
+> To support the management of partial resources in Linux and leave the rest
+> to firmware, multiple power domains are introduced. Each power domain can
+> manage one or more resources, depending on the specific use case.
+>
 
-Sorry for the delay, I was away..
+Currently it is just 2 IIUC. Better to be specific with more details and
+point to the exact binding.
 
-I kind of understand your thinking on the DMA side, but I don't see
-how this is good for users of the API beyond BIO.
+> These power domains handle SCMI calls to the firmware, enabling the
+> activation and deactivation of firmware-managed resources.
+>
+> The driver is responsible for managing multiple power domains and
+> linking them to consumers as needed. Incase there is only single
+> power domain, it is considered to be a standard GDSC hooked on to
+> the qcom dt node which is read and assigned to device structure
+> (by genpd framework) before the driver probe even begins.
+>
+> fw-managed dt property allows the driver to determine whether
+> device resources are managed by Linux or firmware, ensuring
+> backward compatibility.
+>
 
-How will this make RDMA better? We have one MR, the MR has pages, the
-HW doesn't care about the SW distinction of p2p, swiotlb, direct,
-encrypted, iommu, etc. It needs to create one HW page list for
-whatever user VA range was given.
+And provide the reason why this additional property is a must ? Why can't
+the implementation deal with absence of it on these systems ?
 
-Or worse, whatever thing is inside a DMABUF from a DRM
-driver. DMABUF's can have a (dynamic!) mixture of P2P and regular
-AFAIK based on the GPU's migration behavior.
+Not sure if you have seen/followed this[1] discussion before, but please
+do now if not already and contribute. It is definitely related to this
+patch set and all possible very similar patch sets Qcom might have in the
+future across various subsystems in the Linux kernel.
 
-Or triple worse, ODP can dynamically change on a page by page basis
-the type depending on what hmm_range_fault() returns.
+In general, Qcom must stop pushing such changes to individual drivers
+in isolation and confuse the reviewers to some extent without giving
+the complete view(or rather providing partial view) which may result in
+them agreeing with proposed solution without considering the overall
+impact on various subsystems and DT bindings.
 
-So I take it as a requirement that RDMA MUST make single MR's out of a
-hodgepodge of page types. RDMA MRs cannot be split. Multiple MR's are
-not a functional replacement for a single MR.
+--
+Regards,
+Sudeep
 
-Go back to the start of what are we trying to do here:
- 1) Make a DMA API that can support hmm_range_fault() users in a
-    sensible and performant way
- 2) Make a DMA API that can support RDMA MR's backed by DMABUF's, and
-    user VA's without restriction
- 3) Allow to remove scatterlist from BIO paths
- 4) Provide a DMABUF API that is not scatterlist that can feed into
-    the new DMA API - again supporting DMABUF's hodgepodge of types.
-
-I'd like to do all of these things. I know 3 is your highest priority,
-but it is my lowest :)
-
-So, if the new API can only do uniformity I immediately loose #1 -
-hmm_range_fault() can't guarentee anything, so it looses the IOVA
-optimization that Leon's patches illustrate.
-
-For uniformity #2 probably needs multiple DMA API "transactions". This
-is doable, but it is less performant than one "transaction".
-
-#3 is perfectly happy because BIO already creates uniformity
-
-#4 is like #2, there is not guarenteed uniformity inside DMABUF so
-every DMABUF importer needs to take some complexity to deal with
-it. There are many DMABUF importers so this feels like a poor API
-abstraction if we force everyone there to take on complexity.
-
-So I'm just not seeing why this would be better. I think Leon's series
-shows the cost of non-uniformity support is actually pretty
-small. Still, we could do better, if the caller can optionally
-indicate it knows it has uniformity then that can be optimized futher.
-
-I'd like to find something that works well for all of the above, and I
-think abstracting non-uniformity at the API level is important for the
-above reasons.
-
-Can we tweak what Leon has done to keep the hmm_range_fault support
-and non-uniformity for RDMA but add a uniformity optimized flow for
-BIO?
-
-Jason
+[1] https://lore.kernel.org/all/be31801e-bb21-426b-f7aa-2b52727de646@quicinc.com/
 
