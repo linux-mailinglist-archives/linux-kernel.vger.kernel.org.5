@@ -1,73 +1,65 @@
-Return-Path: <linux-kernel+bounces-107053-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107045-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8952F87F6FF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:58:21 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id CB50487F6F3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:56:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E53D6282876
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:58:19 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EBCBE1C219F0
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:56:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B35F7D3EC;
-	Tue, 19 Mar 2024 05:53:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B993A80BF0;
+	Tue, 19 Mar 2024 05:51:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Te6P2tL3"
-Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PEYDajNV"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3257C6CE;
-	Tue, 19 Mar 2024 05:53:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B51C80040;
+	Tue, 19 Mar 2024 05:51:29 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710827629; cv=none; b=q0mFVcFusxFBuTCOugQidZewdmcYncyFfTM+gXhKkxC8ykksVcGmSjYuUhOaPYTwBuU+wOLqH6cDQT6tRNqX+00ooMZucFrhmTX1AQ8xinYXxL4y8sAqMNbFAAUccLt6ywT/8P+5qzayyJKG/ZvworII3G+nRkDe2ugzYXWypM8=
+	t=1710827489; cv=none; b=GLH1CStxagl9kMn/27M3eVSD00iVzMQP+V8pJexzQwibn+w0OtRYSOVPP+S6ZyZlljEFlVNrUZPeGzGQOhbzW/+rzkvWfqk32QEWmuBsp50OZ5Uw+Y7t7rGEyu/L7c5dVVZ/KP0XVcYMJnP0Qt736cxEt+lZg/LmfVGwRA8bT2I=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710827629; c=relaxed/simple;
-	bh=PsieqNlg0izoRjsoe59ZVNJpX8rC5zYulh4OIjSqqjA=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=ocoI1/7a8V0fu0f8OpN0mB/R+YWKTP8pV9f5jJGYwfev1iH/mJdfA14b6fzjohvgon6qQ3gRKxVnpKOmWOmkEl6CZybNvgm4ry4hCluQQB10dIqQjoQoovBPUWzJHcxRi9Hfaxh6nzUQWxNvqPAzfo5XbkWoq3jF+BChM44Zf6s=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Te6P2tL3; arc=none smtp.client-ip=68.232.153.233
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
-  t=1710827627; x=1742363627;
-  h=from:to:cc:subject:date:message-id:in-reply-to:
-   references:mime-version:content-transfer-encoding;
-  bh=PsieqNlg0izoRjsoe59ZVNJpX8rC5zYulh4OIjSqqjA=;
-  b=Te6P2tL3f9mJP5kZI/uN5cG/3Q9pVTYhlnxM1ICiBF4MC0GnUX/MTV0B
-   6cS9Mm54fTcnng/QuRJEBf1r0HJgL6sl32JPEg93EVXn+Mlus/2N3/Cyu
-   gNgR/1AxCAuyAQR2eG3vczUKgvPu91HfXJ/8ExnEZp+yVc7WFGnJKACyq
-   kprb/4TPTKQrpNXA4lgzOplABDHn9FpoX6GgJz+6CljsYViuieb6cb0wJ
-   K0VbSUbfXxv4UXHUMqo109O+oI9K1Q5VVAJRWRSV3QysHvGzpUOcqRKVL
-   a2A5aQdJq4m16tZgvfFzRut0/LKawNHQW0Q53k1C0phOvFR1CEqzDKz/8
-   g==;
-X-CSE-ConnectionGUID: VmcjLmElSdeXl3on+0k91w==
-X-CSE-MsgGUID: 9Q9gbBK7RZu/13jyP3vR4g==
-X-IronPort-AV: E=Sophos;i="6.07,136,1708412400"; 
-   d="scan'208";a="19565333"
-X-Amp-Result: SKIPPED(no attachment in message)
-Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
-  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Mar 2024 22:53:44 -0700
-Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
- chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
- (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
- 15.1.2507.35; Mon, 18 Mar 2024 22:53:35 -0700
-Received: from HYD-DK-UNGSW21.microchip.com (10.10.85.11) by
- chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
- 15.1.2507.35 via Frontend Transport; Mon, 18 Mar 2024 22:53:32 -0700
-From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
-To: <netdev@vger.kernel.org>
-CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
-	<edumazet@google.com>, <linux-kernel@vger.kernel.org>,
-	<bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>
-Subject: [PATCH net V1 3/3] net: lan743x: Address problems with wake option flags configuration sequences
-Date: Tue, 19 Mar 2024 11:21:10 +0530
-Message-ID: <20240319055110.764002-4-Raju.Lakkaraju@microchip.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240319055110.764002-1-Raju.Lakkaraju@microchip.com>
-References: <20240319055110.764002-1-Raju.Lakkaraju@microchip.com>
+	s=arc-20240116; t=1710827489; c=relaxed/simple;
+	bh=mXS6jZaY9ZevJvSn0rjXLeTwQiYVcVb4HE7VvVhes5s=;
+	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version; b=h3FoVnjI+8kkDZdyY/ufL/sSQ5vMHfKk/53GvweOGQv2PrxE0rNtXp41nXMIl4gnDa2neEvhgGQ/S6zN9xaw5uftPRwQhvgLqx38gfX6IDqCL8A8CyjwzId1RilwMiyhlqSWQVx8hXPOPYyzvSH2dVp8qnPmc5U8T08KeJ6o6vE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PEYDajNV; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B14E0C43143;
+	Tue, 19 Mar 2024 05:51:28 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710827489;
+	bh=mXS6jZaY9ZevJvSn0rjXLeTwQiYVcVb4HE7VvVhes5s=;
+	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
+	b=PEYDajNVlF40m8sxwEojId+ch02VazFOjYamaxiFLrMuIHYwKNykx1Sih/vrmQ9zG
+	 LjOlfgmvxC/h/WOea7W5qsr4dOOW0/Vim/1cmNBjloqVPCGjpBuMWUi3cQ+X2+RF66
+	 Tvvm578PKMzXa3OGfd/zual8/NsrIcxTLHLvKgehCTiqMaPJYtk74JvX2TCla+72XY
+	 fYWXDnSAn8CF30sh6oglfusO5bCY40ClSE0XnYBMtliXHLHnGJDgV45P8Vf18T9aon
+	 ABlWI5eZeAVXRyet9YT9Khg3Vkq9u+UVzqidlQ4g1ga0KH/UbIyzlVTpl6+iM+CKuV
+	 DT7N2Twjr7Jig==
+From: Namhyung Kim <namhyung@kernel.org>
+To: Arnaldo Carvalho de Melo <acme@kernel.org>,
+	Ian Rogers <irogers@google.com>
+Cc: Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Ingo Molnar <mingo@kernel.org>,
+	LKML <linux-kernel@vger.kernel.org>,
+	linux-perf-users@vger.kernel.org,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Stephane Eranian <eranian@google.com>,
+	Masami Hiramatsu <mhiramat@kernel.org>,
+	linux-toolchains@vger.kernel.org,
+	linux-trace-devel@vger.kernel.org
+Subject: [PATCH 19/23] perf annotate-data: Support general per-cpu access
+Date: Mon, 18 Mar 2024 22:51:11 -0700
+Message-ID: <20240319055115.4063940-20-namhyung@kernel.org>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+In-Reply-To: <20240319055115.4063940-1-namhyung@kernel.org>
+References: <20240319055115.4063940-1-namhyung@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,71 +67,512 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
-Content-Type: text/plain
 
-WOL secure-on and magic packet configuration table:
---------------------------------------------------------------------------------
-| Ethtool Ops     | Send magic packet | Send magic packet | Send magic packet  |
-|                 |                   | with password     | with wrong password|
---------------------------------------------------------------------------------
-|WAKE_MAGIC (g)   |      wake         |     wake          |        wake        |
---------------------------------------------------------------------------------
-|WAKE_SECURE_MAGIC|    no wake        |     wake          |       no wake      |
-|     (s)         |                   |                   |                    |
---------------------------------------------------------------------------------
-| WAKE_MAGIC &    |                   |                   |                    |
-|WAKE_SECURE_MAGIC|      wake         |     wake          |        wake        |
-|     (gs)        |                   |                   |                    |
---------------------------------------------------------------------------------
+This is to support per-cpu variable access often without a matching
+DWARF entry.  For some reason, I cannot find debug info of per-cpu
+variables sometimes.  They have more complex pattern to calculate the
+address of per-cpu variables like below.
 
-Fixes: 6b3768ac8e2b3 ("net: lan743x: Add support to Secure-ON WOL")
-Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+  2b7d:  mov    -0x1e0(%rbp),%rax           ; rax = cpu
+  2b84:  mov    -0x7da0f7e0(,%rax,8),%rcx   ; rcx = __per_cpu_offset[cpu]
+* 2b8c:  mov    0x34870(%rcx),%rax          ; *(__per_cpu_offset[cpu] + 0x34870)
+
+Let's assume the rax register has a number for a CPU at 2b7d.  The next
+instruction is to get the per-cpu offset' for that cpu.  The offset
+-0x7da0f7e0 is 0xffffffff825f0820 in u64 which is the address of the
+'__per_cpu_offset' array in my system.  So it'd get the actual offset
+of that CPU's per-cpu region and save it to the rcx register.
+
+Then, at 2b8c, accesses using rcx can be handled same as the global
+variable access.  To handle this case, it should check if the offset
+of the instruction matches to the address of '__per_cpu_offset'.
+
+Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
-Change List:
-------------
-V0 -> V1:
-  - Fix the wake option flags configuration sequences
+ tools/perf/util/annotate-data.c | 213 +++++++++++++++++++++++++-------
+ 1 file changed, 169 insertions(+), 44 deletions(-)
 
- drivers/net/ethernet/microchip/lan743x_ethtool.c | 3 +--
- drivers/net/ethernet/microchip/lan743x_main.c    | 8 +++++++-
- 2 files changed, 8 insertions(+), 3 deletions(-)
-
-diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-index 4899582b3d1d..442c52aa0b0e 100644
---- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
-+++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
-@@ -1188,8 +1188,7 @@ static int lan743x_ethtool_set_wol(struct net_device *netdev,
- 		adapter->wolopts |= WAKE_PHY;
- 	if (wol->wolopts & WAKE_ARP)
- 		adapter->wolopts |= WAKE_ARP;
--	if (wol->wolopts & WAKE_MAGICSECURE &&
--	    wol->wolopts & WAKE_MAGIC) {
-+	if (wol->wolopts & WAKE_MAGICSECURE) {
- 		memcpy(adapter->sopass, wol->sopass, sizeof(wol->sopass));
- 		adapter->wolopts |= WAKE_MAGICSECURE;
- 	} else {
-diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
-index 5641b466d70d..43e8e35fe9d0 100644
---- a/drivers/net/ethernet/microchip/lan743x_main.c
-+++ b/drivers/net/ethernet/microchip/lan743x_main.c
-@@ -3639,9 +3639,15 @@ static void lan743x_pm_set_wol(struct lan743x_adapter *adapter)
- 		lan743x_csr_write(adapter, MAC_MP_SO_LO, sopass);
- 		sopass = *(u16 *)&adapter->sopass[4];
- 		lan743x_csr_write(adapter, MAC_MP_SO_HI, sopass);
--		wucsr |= MAC_MP_SO_EN_;
-+		wucsr |= MAC_MP_SO_EN_ | MAC_WUCSR_MPEN_;
-+		macrx |= MAC_RX_RXEN_;
-+		pmtctl |= PMT_CTL_WOL_EN_ | PMT_CTL_MAC_D3_RX_CLK_OVR_;
+diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
+index 48fea0c716ef..83b5aa00f01c 100644
+--- a/tools/perf/util/annotate-data.c
++++ b/tools/perf/util/annotate-data.c
+@@ -24,6 +24,12 @@
+ #include "symbol_conf.h"
+ #include "thread.h"
+ 
++enum type_state_kind {
++	TSR_KIND_INVALID = 0,
++	TSR_KIND_TYPE,
++	TSR_KIND_PERCPU_BASE,
++};
++
+ #define pr_debug_dtp(fmt, ...)					\
+ do {								\
+ 	if (debug_type_profile)					\
+@@ -32,7 +38,7 @@ do {								\
+ 		pr_debug3(fmt, ##__VA_ARGS__);			\
+ } while (0)
+ 
+-static void pr_debug_type_name(Dwarf_Die *die)
++static void pr_debug_type_name(Dwarf_Die *die, enum type_state_kind kind)
+ {
+ 	struct strbuf sb;
+ 	char *str;
+@@ -40,6 +46,18 @@ static void pr_debug_type_name(Dwarf_Die *die)
+ 	if (!debug_type_profile && verbose < 3)
+ 		return;
+ 
++	switch (kind) {
++	case TSR_KIND_INVALID:
++		pr_info("\n");
++		return;
++	case TSR_KIND_PERCPU_BASE:
++		pr_info(" percpu base\n");
++		return;
++	case TSR_KIND_TYPE:
++	default:
++		break;
++	}
++
+ 	strbuf_init(&sb, 32);
+ 	die_get_typename_from_type(die, &sb);
+ 	str = strbuf_detach(&sb, NULL);
+@@ -53,8 +71,10 @@ static void pr_debug_type_name(Dwarf_Die *die)
+  */
+ struct type_state_reg {
+ 	Dwarf_Die type;
++	u32 imm_value;
+ 	bool ok;
+ 	bool caller_saved;
++	u8 kind;
+ };
+ 
+ /* Type information in a stack location, dynamically allocated */
+@@ -64,6 +84,7 @@ struct type_state_stack {
+ 	int offset;
+ 	int size;
+ 	bool compound;
++	u8 kind;
+ };
+ 
+ /* FIXME: This should be arch-dependent */
+@@ -82,6 +103,8 @@ struct type_state {
+ 	struct list_head stack_vars;
+ 	/* return value register */
+ 	int ret_reg;
++	/* stack pointer register */
++	int stack_reg;
+ };
+ 
+ static bool has_reg_type(struct type_state *state, int reg)
+@@ -105,6 +128,7 @@ static void init_type_state(struct type_state *state, struct arch *arch)
+ 		state->regs[10].caller_saved = true;
+ 		state->regs[11].caller_saved = true;
+ 		state->ret_reg = 0;
++		state->stack_reg = 7;
+ 	}
+ }
+ 
+@@ -350,7 +374,7 @@ static struct type_state_stack *find_stack_state(struct type_state *state,
+ 	return NULL;
+ }
+ 
+-static void set_stack_state(struct type_state_stack *stack, int offset,
++static void set_stack_state(struct type_state_stack *stack, int offset, u8 kind,
+ 			    Dwarf_Die *type_die)
+ {
+ 	int tag;
+@@ -364,6 +388,7 @@ static void set_stack_state(struct type_state_stack *stack, int offset,
+ 	stack->type = *type_die;
+ 	stack->size = size;
+ 	stack->offset = offset;
++	stack->kind = kind;
+ 
+ 	switch (tag) {
+ 	case DW_TAG_structure_type:
+@@ -377,34 +402,60 @@ static void set_stack_state(struct type_state_stack *stack, int offset,
+ }
+ 
+ static struct type_state_stack *findnew_stack_state(struct type_state *state,
+-						    int offset, Dwarf_Die *type_die)
++						    int offset, u8 kind,
++						    Dwarf_Die *type_die)
+ {
+ 	struct type_state_stack *stack = find_stack_state(state, offset);
+ 
+ 	if (stack) {
+-		set_stack_state(stack, offset, type_die);
++		set_stack_state(stack, offset, kind, type_die);
+ 		return stack;
  	}
  
-+	if (adapter->wolopts & WAKE_MAGICSECURE &&
-+	    adapter->wolopts & WAKE_MAGIC)
-+		wucsr &= ~MAC_MP_SO_EN_;
+ 	stack = malloc(sizeof(*stack));
+ 	if (stack) {
+-		set_stack_state(stack, offset, type_die);
++		set_stack_state(stack, offset, kind, type_die);
+ 		list_add(&stack->list, &state->stack_vars);
+ 	}
+ 	return stack;
+ }
+ 
++static bool get_global_var_info(struct data_loc_info *dloc, u64 addr,
++				const char **var_name, int *var_offset)
++{
++	struct addr_location al;
++	struct symbol *sym;
++	u64 mem_addr;
 +
- 	lan743x_csr_write(adapter, MAC_WUCSR, wucsr);
- 	lan743x_csr_write(adapter, PMT_CTL, pmtctl);
- 	lan743x_csr_write(adapter, MAC_RX, macrx);
++	/* Kernel symbols might be relocated */
++	mem_addr = addr + map__reloc(dloc->ms->map);
++
++	addr_location__init(&al);
++	sym = thread__find_symbol_fb(dloc->thread, dloc->cpumode,
++				     mem_addr, &al);
++	if (sym) {
++		*var_name = sym->name;
++		/* Calculate type offset from the start of variable */
++		*var_offset = mem_addr - map__unmap_ip(al.map, sym->start);
++	} else {
++		*var_name = NULL;
++	}
++	addr_location__exit(&al);
++	if (*var_name == NULL)
++		return false;
++
++	return true;
++}
++
+ static bool get_global_var_type(Dwarf_Die *cu_die, struct data_loc_info *dloc,
+ 				u64 ip, u64 var_addr, int *var_offset,
+ 				Dwarf_Die *type_die)
+ {
+-	u64 pc, mem_addr;
++	u64 pc;
+ 	int offset;
+ 	bool is_pointer = false;
+-	const char *var_name = NULL;
++	const char *var_name;
+ 	Dwarf_Die var_die;
+-	struct addr_location al;
+-	struct symbol *sym;
+ 
+ 	/* Try to get the variable by address first */
+ 	if (die_find_variable_by_addr(cu_die, var_addr, &var_die, &offset) &&
+@@ -413,19 +464,7 @@ static bool get_global_var_type(Dwarf_Die *cu_die, struct data_loc_info *dloc,
+ 		return true;
+ 	}
+ 
+-	/* Kernel symbols might be relocated */
+-	mem_addr = var_addr + map__reloc(dloc->ms->map);
+-
+-	addr_location__init(&al);
+-	sym = thread__find_symbol_fb(dloc->thread, dloc->cpumode,
+-				     mem_addr, &al);
+-	if (sym) {
+-		var_name = sym->name;
+-		/* Calculate type offset from the start of variable */
+-		*var_offset = mem_addr - map__unmap_ip(al.map, sym->start);
+-	}
+-	addr_location__exit(&al);
+-	if (var_name == NULL)
++	if (!get_global_var_info(dloc, var_addr, &var_name, var_offset))
+ 		return false;
+ 
+ 	pc = map__rip_2objdump(dloc->ms->map, ip);
+@@ -470,27 +509,30 @@ static void update_var_state(struct type_state *state, struct data_loc_info *dlo
+ 			continue;
+ 
+ 		if (var->reg == DWARF_REG_FB) {
+-			findnew_stack_state(state, var->offset, &mem_die);
++			findnew_stack_state(state, var->offset, TSR_KIND_TYPE,
++					    &mem_die);
+ 
+ 			pr_debug_dtp("var [%"PRIx64"] -%#x(stack)",
+ 				     insn_offset, -var->offset);
+-			pr_debug_type_name(&mem_die);
++			pr_debug_type_name(&mem_die, TSR_KIND_TYPE);
+ 		} else if (var->reg == fbreg) {
+-			findnew_stack_state(state, var->offset - fb_offset, &mem_die);
++			findnew_stack_state(state, var->offset - fb_offset,
++					    TSR_KIND_TYPE, &mem_die);
+ 
+ 			pr_debug_dtp("var [%"PRIx64"] -%#x(stack)",
+ 				     insn_offset, -var->offset + fb_offset);
+-			pr_debug_type_name(&mem_die);
++			pr_debug_type_name(&mem_die, TSR_KIND_TYPE);
+ 		} else if (has_reg_type(state, var->reg) && var->offset == 0) {
+ 			struct type_state_reg *reg;
+ 
+ 			reg = &state->regs[var->reg];
+ 			reg->type = mem_die;
++			reg->kind = TSR_KIND_TYPE;
+ 			reg->ok = true;
+ 
+ 			pr_debug_dtp("var [%"PRIx64"] reg%d",
+ 				     insn_offset, var->reg);
+-			pr_debug_type_name(&mem_die);
++			pr_debug_type_name(&mem_die, TSR_KIND_TYPE);
+ 		}
+ 	}
+ }
+@@ -533,11 +575,12 @@ static void update_insn_state_x86(struct type_state *state,
+ 		if (die_find_func_rettype(cu_die, func->name, &type_die)) {
+ 			tsr = &state->regs[state->ret_reg];
+ 			tsr->type = type_die;
++			tsr->kind = TSR_KIND_TYPE;
+ 			tsr->ok = true;
+ 
+ 			pr_debug_dtp("call [%x] return -> reg%d",
+ 				     insn_offset, state->ret_reg);
+-			pr_debug_type_name(&type_die);
++			pr_debug_type_name(&type_die, tsr->kind);
+ 		}
+ 		return;
+ 	}
+@@ -580,11 +623,12 @@ static void update_insn_state_x86(struct type_state *state,
+ 			}
+ 
+ 			tsr->type = type_die;
++			tsr->kind = TSR_KIND_TYPE;
+ 			tsr->ok = true;
+ 
+ 			pr_debug_dtp("mov [%x] this-cpu addr=%#"PRIx64" -> reg%d",
+ 				     insn_offset, var_addr, dst->reg1);
+-			pr_debug_type_name(&tsr->type);
++			pr_debug_type_name(&tsr->type, tsr->kind);
+ 			return;
+ 		}
+ 
+@@ -595,11 +639,12 @@ static void update_insn_state_x86(struct type_state *state,
+ 		}
+ 
+ 		tsr->type = state->regs[src->reg1].type;
++		tsr->kind = state->regs[src->reg1].kind;
+ 		tsr->ok = true;
+ 
+ 		pr_debug_dtp("mov [%x] reg%d -> reg%d",
+ 			     insn_offset, src->reg1, dst->reg1);
+-		pr_debug_type_name(&tsr->type);
++		pr_debug_type_name(&tsr->type, tsr->kind);
+ 	}
+ 	/* Case 2. memory to register transers */
+ 	if (src->mem_ref && !dst->mem_ref) {
+@@ -622,11 +667,13 @@ static void update_insn_state_x86(struct type_state *state,
+ 				return;
+ 			} else if (!stack->compound) {
+ 				tsr->type = stack->type;
++				tsr->kind = stack->kind;
+ 				tsr->ok = true;
+ 			} else if (die_get_member_type(&stack->type,
+ 						       offset - stack->offset,
+ 						       &type_die)) {
+ 				tsr->type = type_die;
++				tsr->kind = TSR_KIND_TYPE;
+ 				tsr->ok = true;
+ 			} else {
+ 				tsr->ok = false;
+@@ -635,18 +682,20 @@ static void update_insn_state_x86(struct type_state *state,
+ 
+ 			pr_debug_dtp("mov [%x] -%#x(stack) -> reg%d",
+ 				     insn_offset, -offset, dst->reg1);
+-			pr_debug_type_name(&tsr->type);
++			pr_debug_type_name(&tsr->type, tsr->kind);
+ 		}
+ 		/* And then dereference the pointer if it has one */
+ 		else if (has_reg_type(state, sreg) && state->regs[sreg].ok &&
++			 state->regs[sreg].kind == TSR_KIND_TYPE &&
+ 			 die_deref_ptr_type(&state->regs[sreg].type,
+ 					    src->offset, &type_die)) {
+ 			tsr->type = type_die;
++			tsr->kind = TSR_KIND_TYPE;
+ 			tsr->ok = true;
+ 
+ 			pr_debug_dtp("mov [%x] %#x(reg%d) -> reg%d",
+ 				     insn_offset, src->offset, sreg, dst->reg1);
+-			pr_debug_type_name(&tsr->type);
++			pr_debug_type_name(&tsr->type, tsr->kind);
+ 		}
+ 		/* Or check if it's a global variable */
+ 		else if (sreg == DWARF_REG_PC) {
+@@ -665,11 +714,37 @@ static void update_insn_state_x86(struct type_state *state,
+ 			}
+ 
+ 			tsr->type = type_die;
++			tsr->kind = TSR_KIND_TYPE;
+ 			tsr->ok = true;
+ 
+ 			pr_debug_dtp("mov [%x] global addr=%"PRIx64" -> reg%d",
+ 				     insn_offset, addr, dst->reg1);
+-			pr_debug_type_name(&type_die);
++			pr_debug_type_name(&type_die, tsr->kind);
++		}
++		/* And check percpu access with base register */
++		else if (has_reg_type(state, sreg) &&
++			 state->regs[sreg].kind == TSR_KIND_PERCPU_BASE) {
++			u64 ip = dloc->ms->sym->start + dl->al.offset;
++			int offset;
++
++			/*
++			 * In kernel, %gs points to a per-cpu region for the
++			 * current CPU.  Access with a constant offset should
++			 * be treated as a global variable access.
++			 */
++			if (get_global_var_type(cu_die, dloc, ip, src->offset,
++						&offset, &type_die) &&
++			    die_get_member_type(&type_die, offset, &type_die)) {
++				tsr->type = type_die;
++				tsr->kind = TSR_KIND_TYPE;
++				tsr->ok = true;
++
++				pr_debug_dtp("mov [%x] percpu %#x(reg%d) -> reg%d type=",
++					     insn_offset, src->offset, sreg, dst->reg1);
++				pr_debug_type_name(&tsr->type, tsr->kind);
++			} else {
++				tsr->ok = false;
++			}
+ 		}
+ 		/* Or try another register if any */
+ 		else if (src->multi_regs && sreg == src->reg1 &&
+@@ -677,8 +752,22 @@ static void update_insn_state_x86(struct type_state *state,
+ 			sreg = src->reg2;
+ 			goto retry;
+ 		}
+-		/* It failed to get a type info, mark it as invalid */
+ 		else {
++			int offset;
++			const char *var_name = NULL;
++
++			/* it might be per-cpu variable (in kernel) access */
++			if (src->offset < 0) {
++				if (get_global_var_info(dloc, (s64)src->offset,
++							&var_name, &offset) &&
++				    !strcmp(var_name, "__per_cpu_offset")) {
++					tsr->kind = TSR_KIND_PERCPU_BASE;
++
++					pr_debug_dtp("mov [%x] percpu base reg%d\n",
++						     insn_offset, dst->reg1);
++				}
++			}
++
+ 			tsr->ok = false;
+ 		}
+ 	}
+@@ -693,6 +782,8 @@ static void update_insn_state_x86(struct type_state *state,
+ 			struct type_state_stack *stack;
+ 			int offset = dst->offset - fboff;
+ 
++			tsr = &state->regs[src->reg1];
++
+ 			stack = find_stack_state(state, offset);
+ 			if (stack) {
+ 				/*
+@@ -703,16 +794,16 @@ static void update_insn_state_x86(struct type_state *state,
+ 				 * die_get_member_type().
+ 				 */
+ 				if (!stack->compound)
+-					set_stack_state(stack, offset,
+-							&state->regs[src->reg1].type);
++					set_stack_state(stack, offset, tsr->kind,
++							&tsr->type);
+ 			} else {
+-				findnew_stack_state(state, offset,
+-						    &state->regs[src->reg1].type);
++				findnew_stack_state(state, offset, tsr->kind,
++						    &tsr->type);
+ 			}
+ 
+ 			pr_debug_dtp("mov [%x] reg%d -> -%#x(stack)",
+ 				     insn_offset, src->reg1, -offset);
+-			pr_debug_type_name(&state->regs[src->reg1].type);
++			pr_debug_type_name(&tsr->type, tsr->kind);
+ 		}
+ 		/*
+ 		 * Ignore other transfers since it'd set a value in a struct
+@@ -824,10 +915,11 @@ static bool check_matching_type(struct type_state *state,
+ 	Dwarf_Word size;
+ 	u32 insn_offset = dloc->ip - dloc->ms->sym->start;
+ 
+-	pr_debug_dtp("chk [%x] reg%d offset=%#x ok=%d",
+-		     insn_offset, reg, dloc->op->offset, state->regs[reg].ok);
++	pr_debug_dtp("chk [%x] reg%d offset=%#x ok=%d kind=%d",
++		     insn_offset, reg, dloc->op->offset,
++		     state->regs[reg].ok, state->regs[reg].kind);
+ 
+-	if (state->regs[reg].ok) {
++	if (state->regs[reg].ok && state->regs[reg].kind == TSR_KIND_TYPE) {
+ 		int tag = dwarf_tag(&state->regs[reg].type);
+ 
+ 		pr_debug_dtp("\n");
+@@ -893,10 +985,25 @@ static bool check_matching_type(struct type_state *state,
+ 		return true;
+ 	}
+ 
++	if (state->regs[reg].kind == TSR_KIND_PERCPU_BASE) {
++		u64 var_addr = dloc->op->offset;
++		int var_offset;
++
++		pr_debug_dtp(" percpu var\n");
++
++		if (get_global_var_type(cu_die, dloc, dloc->ip, var_addr,
++					&var_offset, type_die)) {
++			dloc->type_offset = var_offset;
++			return true;
++		}
++		return false;
++	}
++
+ 	if (map__dso(dloc->ms->map)->kernel && arch__is(dloc->arch, "x86")) {
+ 		u64 addr;
+ 		int offset;
+ 
++		/* Direct this-cpu access like "%gs:0x34740" */
+ 		if (dloc->op->segment == INSN_SEG_X86_GS && dloc->op->imm) {
+ 			pr_debug_dtp(" this-cpu var\n");
+ 
+@@ -907,6 +1014,24 @@ static bool check_matching_type(struct type_state *state,
+ 				dloc->type_offset = offset;
+ 				return true;
+ 			}
++			return false;
++		}
++
++		/* Access to per-cpu base like "-0x7dcf0500(,%rdx,8)" */
++		if (dloc->op->offset < 0 && reg != state->stack_reg) {
++			const char *var_name = NULL;
++
++			addr = (s64) dloc->op->offset;
++
++			if (get_global_var_info(dloc, addr, &var_name, &offset) &&
++			    !strcmp(var_name, "__per_cpu_offset") && offset == 0 &&
++			    get_global_var_type(cu_die, dloc, dloc->ip, addr,
++						&offset, type_die)) {
++				pr_debug_dtp(" percpu base\n");
++
++				dloc->type_offset = offset;
++				return true;
++			}
+ 		}
+ 	}
+ 
+@@ -1015,7 +1140,7 @@ static int find_data_type_block(struct data_loc_info *dloc, int reg,
+ 			ret = 0;
+ 			pr_debug_dtp("found by insn track: %#x(reg%d) type-offset=%#x",
+ 				     dloc->op->offset, reg, dloc->type_offset);
+-			pr_debug_type_name(type_die);
++			pr_debug_type_name(type_die, TSR_KIND_TYPE);
+ 			break;
+ 		}
+ 
+@@ -1147,7 +1272,7 @@ static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
+ 					     loc->offset, reg, fb_offset, offset);
+ 			else
+ 				pr_debug_dtp("%#x(reg%d)", loc->offset, reg);
+-			pr_debug_type_name(type_die);
++			pr_debug_type_name(type_die, TSR_KIND_TYPE);
+ 		}
+ 		dloc->type_offset = offset;
+ 		goto out;
 -- 
-2.34.1
+2.44.0.291.gc1ea87d7ee-goog
 
 
