@@ -1,135 +1,80 @@
-Return-Path: <linux-kernel+bounces-107717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107713-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 479AE8800B1
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:30:54 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 14271880093
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:29:43 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 0245A2830F4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:30:53 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 91E3DB21106
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:29:40 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9B93E82871;
-	Tue, 19 Mar 2024 15:29:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 68EEB657BF;
+	Tue, 19 Mar 2024 15:29:32 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="B1VSA08T"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="dGw6kJcR"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9B0EE657AE;
-	Tue, 19 Mar 2024 15:29:53 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A827624B33;
+	Tue, 19 Mar 2024 15:29:30 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710862193; cv=none; b=NQEFQq45W8OHk0U7sUCQ5hVSOURFKoAbakd6K9VNX+LIs0e098LD9W6zAaCyqCYaTpVhWnbfM00daGADOnBUjwv6/lifvAF9WbChHG7vpfjkBa0rfDMzXMYZQnVW7nKkJefvCoh/n95uOYTea0RMYL/thcboi+7er5d3ScBPkag=
+	t=1710862171; cv=none; b=LutWX6g1DX35NqBNieMkQVYgPKF9G4/GY6xlSNbuXxjh0NRQisncBCZ6iO3usC8uUA6FDmQ8xELt5W8O9fvZ2nE6E9AotqH6QV70tUM4W6YaeQINS0lUBAepNsf3pNmeaRJ0e+fZTAsp78EgEehWvSegn170+mDLPqOFI3ur+7Q=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710862193; c=relaxed/simple;
-	bh=VQl76OihFJ6MD7Q7CC4hfGfrDaQ2DcOqSN3Z7HUNPy4=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=WiFyHwyoRAUSh8dm4rKGO7Ucv+DJnpiZGklS+VLjYw75gl3pAtG+lVgBe7UYsSq54mwLIX4+bDgkV8d0JzWub+CVoNzJn2wHENP/MDmbzcz+K2TQDCg4U2zCrZ+bkdWhUtITaiggO0wYIYs87wb20JMQAhTT1hD/mzkoH5Eh/DQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=B1VSA08T; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 495B9C43399;
-	Tue, 19 Mar 2024 15:29:53 +0000 (UTC)
+	s=arc-20240116; t=1710862171; c=relaxed/simple;
+	bh=VgLcP2hyQd2I/2FSYrwfNZkMKXumyqi2w8XTycPbpnQ=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=CWbXXQ+fBJNKyHRL7jViiH3yV6A1t4wGztB/RN3wFGXHTQ7T6bAiPRIBl7pu43nIz2bZGNPyB/YINBbzeq7Zq7i9TicjgmFWZZ35K+uQtpuLCDNK1DK+fcRk7/whir9ymU5ZtUkfKLXJTs9jtbU318WvmaRWQxGYbDyBwszTwCo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=dGw6kJcR; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id BB880C433C7;
+	Tue, 19 Mar 2024 15:29:27 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710862193;
-	bh=VQl76OihFJ6MD7Q7CC4hfGfrDaQ2DcOqSN3Z7HUNPy4=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=B1VSA08Tfu9WZyqkrKPZ8x4B32TX6mqYbtpRrXFfwX4/3281/9JY7iMvLJ7hZK3c4
-	 ewIYzgkBng6RzuW1xf81tQkwDn3LOOd/8eTbnOLLC0QGbYCBkAzM/CK2pxCoIvGOep
-	 oLYDOsX6lrl1o50ULRR/trR+uvpiLPYTOolPgfP+/6YvXQdJXj+RGi+2q8zbHij4n4
-	 PAJ1sdLs9VIu04xX7mwRdqcmOdT2dFxaNuL+F/xOjmFoE5xrWeYcfH6EuXfqx8ediM
-	 EFArKKIZTpv7VFKR8EBdODoGyiXvrr5e1nA2H8bFKctlyFFBEAr+ZXVQQnmkly37Gz
-	 oALi4M7urPUKg==
-Received: from johan by xi.lan with local (Exim 4.97.1)
-	(envelope-from <johan+linaro@kernel.org>)
-	id 1rmbPb-000000000LK-3yLp;
-	Tue, 19 Mar 2024 16:29:59 +0100
-From: Johan Hovold <johan+linaro@kernel.org>
-To: Marcel Holtmann <marcel@holtmann.org>,
-	Luiz Augusto von Dentz <luiz.dentz@gmail.com>,
-	Bjorn Andersson <andersson@kernel.org>
-Cc: Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Conor Dooley <conor+dt@kernel.org>,
-	cros-qcom-dts-watchers@chromium.org,
-	Konrad Dybcio <konrad.dybcio@linaro.org>,
-	Johan Hedberg <johan.hedberg@gmail.com>,
-	Balakrishna Godavarthi <quic_bgodavar@quicinc.com>,
-	Matthias Kaehlcke <mka@chromium.org>,
-	Douglas Anderson <dianders@chromium.org>,
-	Rocky Liao <quic_rjliao@quicinc.com>,
-	Dmitry Baryshkov <dmitry.baryshkov@linaro.org>,
-	linux-bluetooth@vger.kernel.org,
-	netdev@vger.kernel.org,
-	devicetree@vger.kernel.org,
-	linux-arm-msm@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Johan Hovold <johan+linaro@kernel.org>,
-	stable@vger.kernel.org,
-	Nikita Travkin <nikita@trvn.ru>
-Subject: [PATCH v3 3/5] Bluetooth: qca: fix device-address endianness
+	s=k20201202; t=1710862170;
+	bh=VgLcP2hyQd2I/2FSYrwfNZkMKXumyqi2w8XTycPbpnQ=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=dGw6kJcRiQqyqHz8N1GAr4dPVuIhAWUJ5XRkb4JoyqvJ3XDGxNKCTAvmfXvOoVZ5J
+	 mQDeMHLHGgShzcwAslHrZLIR8E09XOJP2FLShfOa+KnfBnkk5TBznSfjQweQBoAZbG
+	 bqUkL3pQ97ybYLwsNzmfCUIx9BPeyyLfHlagqQytZ7QIjYvfBDuoTGnkt086Ke0rqw
+	 V0EhtrPvn1nEnb5WyuiWAk0LSR1oiJ6SewSu6/Y7Y9lsmAbGO7yZRtJVlAflRksmgf
+	 g94V2v0fKoQPxnAitc5FRmWjTGo3YpJvUVEyQnJ9suk2VbljPOSdPPZ1chc1ax5TQ7
+	 IW0FdVqlhXl2w==
 Date: Tue, 19 Mar 2024 16:29:24 +0100
-Message-ID: <20240319152926.1288-4-johan+linaro@kernel.org>
-X-Mailer: git-send-email 2.43.2
-In-Reply-To: <20240319152926.1288-1-johan+linaro@kernel.org>
-References: <20240319152926.1288-1-johan+linaro@kernel.org>
+From: Christian Brauner <brauner@kernel.org>
+To: Jeff Layton <jlayton@kernel.org>
+Cc: Konstantin Komarov <almaz.alexandrovich@paragon-software.com>, 
+	Alexander Viro <viro@zeniv.linux.org.uk>, ntfs3@lists.linux.dev, linux-kernel@vger.kernel.org, 
+	linux-fsdevel@vger.kernel.org
+Subject: Re: [PATCH RFC] ntfs3: remove atomic_open
+Message-ID: <20240319-hoffen-fasten-66e583a0d595@brauner>
+References: <20240318-ntfs3-atomic-open-v1-1-57afed48fe86@kernel.org>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
+In-Reply-To: <20240318-ntfs3-atomic-open-v1-1-57afed48fe86@kernel.org>
 
-The WCN6855 firmware on the Lenovo ThinkPad X13s expects the Bluetooth
-device address in big-endian order when setting it using the
-EDL_WRITE_BD_ADDR_OPCODE command.
+On Mon, Mar 18, 2024 at 02:28:50PM -0400, Jeff Layton wrote:
+> atomic_open is an optional VFS operation, and is primarily for network
+> filesystems. NFS (for instance) can just send an open call for the last
+> path component rather than doing a lookup and then having to follow that
+> up with an open when it doesn't have a dentry in cache.
+> 
+> ntfs3 is a local filesystem however, and its atomic_open just does a
+> typical lookup + open, but in a convoluted way. atomic_open will also
+> make directory leases more difficult to implement on the filesystem.
+> 
+> Remove ntfs_atomic_open.
+> 
+> Signed-off-by: Jeff Layton <jlayton@kernel.org>
+> ---
+> Am I missing something about why ntfs3 requires an atomic_open op? In
+> any case, this is only lightly tested, but it seems to work.
 
-Presumably, this is the case for all non-ROME devices which all use the
-EDL_WRITE_BD_ADDR_OPCODE command for this (unlike the ROME devices which
-use a different command and expect the address in little-endian order).
-
-Reverse the little-endian address before setting it to make sure that
-the address can be configured using tools like btmgmt or using the
-'local-bd-address' devicetree property.
-
-Note that this can potentially break systems with boot firmware which
-has started relying on the broken behaviour and is incorrectly passing
-the address via devicetree in big-endian order.
-
-Fixes: 5c0a1001c8be ("Bluetooth: hci_qca: Add helper to set device address")
-Cc: stable@vger.kernel.org      # 5.1
-Cc: Balakrishna Godavarthi <quic_bgodavar@quicinc.com>
-Cc: Matthias Kaehlcke <mka@chromium.org>
-Tested-by: Nikita Travkin <nikita@trvn.ru> # sc7180
-Signed-off-by: Johan Hovold <johan+linaro@kernel.org>
----
- drivers/bluetooth/btqca.c | 8 ++++++--
- 1 file changed, 6 insertions(+), 2 deletions(-)
-
-diff --git a/drivers/bluetooth/btqca.c b/drivers/bluetooth/btqca.c
-index b40b32fa7f1c..19cfc342fc7b 100644
---- a/drivers/bluetooth/btqca.c
-+++ b/drivers/bluetooth/btqca.c
-@@ -826,11 +826,15 @@ EXPORT_SYMBOL_GPL(qca_uart_setup);
- 
- int qca_set_bdaddr(struct hci_dev *hdev, const bdaddr_t *bdaddr)
- {
-+	bdaddr_t bdaddr_swapped;
- 	struct sk_buff *skb;
- 	int err;
- 
--	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6, bdaddr,
--				HCI_EV_VENDOR, HCI_INIT_TIMEOUT);
-+	baswap(&bdaddr_swapped, bdaddr);
-+
-+	skb = __hci_cmd_sync_ev(hdev, EDL_WRITE_BD_ADDR_OPCODE, 6,
-+				&bdaddr_swapped, HCI_EV_VENDOR,
-+				HCI_INIT_TIMEOUT);
- 	if (IS_ERR(skb)) {
- 		err = PTR_ERR(skb);
- 		bt_dev_err(hdev, "QCA Change address cmd failed (%d)", err);
--- 
-2.43.2
-
+Seems we should just remove it.
 
