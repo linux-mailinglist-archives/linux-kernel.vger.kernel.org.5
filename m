@@ -1,159 +1,148 @@
-Return-Path: <linux-kernel+bounces-107981-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107983-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id C5D4B880466
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:10:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 57388880470
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 19:11:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E998E1C231E3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:10:17 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id D3E1DB23E9A
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:11:48 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C44C82C1A3;
-	Tue, 19 Mar 2024 18:10:11 +0000 (UTC)
-Received: from mail-pf1-f170.google.com (mail-pf1-f170.google.com [209.85.210.170])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B46E22D638;
+	Tue, 19 Mar 2024 18:11:29 +0000 (UTC)
+Received: from mail-il1-f198.google.com (mail-il1-f198.google.com [209.85.166.198])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E80652E401;
-	Tue, 19 Mar 2024 18:10:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A87E62BAE9
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 18:11:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.198
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710871811; cv=none; b=rvh9x0zFR4PJmeT4piKzbT6av48b3TDy57OMPpj9dYf2UTLAi5kvkPsvbf3o9r4BC/v7LYsFx7D7NHjMs/iF85hA2zFRyr5Ivd2U6sN7CYBlIxydjAx4RC1vgCKl4qWtV/MSZSzSVFxLe2KPMqWo4HYoesDxHoEVoqCL7IHsN2E=
+	t=1710871889; cv=none; b=Y6WKtYEEnFfq99JMk1H/V+koi0KGJRjtGLXnk+x/tTcTiWrw3oX5l2l+T3zeXimoGUEF25u109YtfeuqmWen3fAyKQu7M6mTWnUO062QVnG9u1rIPCav2ag9xDH2EWA+Lw1HQdC/WHIV5ZA0GUHdKort7/FoECAxTavlcunP8YE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710871811; c=relaxed/simple;
-	bh=xD4aOHRhHuw1j3plQj9V4WOL6Uu7nCb+GdWr5HHMcyw=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=unvJmKqBCjr8f7hYcTRbwtZ6S3dc/uV/2Zp0LXMIyylku+8HVZSUd4D/9ebB/Dt+DnQymdpBbuM/KmPVnT1m0zR3l5nL15B1y9Ed6+mbRcjdMq6PXVN7nHYlJR8dQwT6Rkv5fJbjMTiyi/O6zg39VLRs/H/wgHquSmdquAaBn+A=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.210.170
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f170.google.com with SMTP id d2e1a72fcca58-6e6afb754fcso5585583b3a.3;
-        Tue, 19 Mar 2024 11:10:09 -0700 (PDT)
+	s=arc-20240116; t=1710871889; c=relaxed/simple;
+	bh=tiGL1NHxk39qgpzX58WM7MKSdnmnH6vTVN+JwmMZD6g=;
+	h=MIME-Version:Date:Message-ID:Subject:From:To:Content-Type; b=GbM07rAY4SBjs2//8xjvLVo5zUwZ0ywgkM0D6E7XtsS2F6F+h51CwtYtv0WugPGEXEL8MjjkeKrlehnb+kPEuwlmOYvwicJq6FiCEXHQQfqt8hses1XcrTXdafstEWxQTHZDyk4ty4hBbX3FGBprUMY96uv7DoUY2Hsk5cZu3Qo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com; arc=none smtp.client-ip=209.85.166.198
+Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=syzkaller.appspotmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=M3KW2WVRGUFZ5GODRSRYTGD7.apphosting.bounces.google.com
+Received: by mail-il1-f198.google.com with SMTP id e9e14a558f8ab-3657cf730a0so65040805ab.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 11:11:27 -0700 (PDT)
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710871809; x=1711476609;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=mIMLYVE6CyTm+xoNKJoABJx7QmXwGTxTuG4FdhVieQQ=;
-        b=xFaXjMd/WzhMpfORKoRpa7kG31lnXij+VtqdZRWTnZE/ETJ/HEvKo2ntrKBdJ4j40s
-         clWDfKZGgQeHcrlxul9YFxZotIpkp79XOzx80s8z7tg3EF1lwtV4H5Vk0C1VHIDFTmEo
-         FBhT3DVWsanv9NhbdL1G8DVOUxQs89chET8Jk2vao16xATayRgf9OPmOtpgB1vRb2SVG
-         4Ti5fiUF2V0xhdKppMQ7sBxo55oNAYTXs/uYDT2CBrQfUj0JosvDau44wViorEEvaERP
-         WmTGsaEdgHvoPfRKI9TuDHcjcwbltRbfYWfHMntMf3610orqHE22XV+hArKMU7z0KVdU
-         IShA==
-X-Forwarded-Encrypted: i=1; AJvYcCWp1j/XgZaF3ZEmM6rGf8/WpBxagVk4vdkUtbBq+9cqYXp0yLLHnGVz0R8Q9NDcGiUYhHPYKAM9hPiSaTSomIJDpIXazjS/TwbMCbJEKRZQpXt+23GooYRfukOxE676xENfySi4LSjztKx1gLjjnaz2Yj2XIkR3fV7uG1oIyOe6a4rr//kjPh+HBg1ZIUGuCNV6CLCGQib+VjYKGeIEYFkxNfMo3m2Se4bl9DK11aNZPkdwQw==
-X-Gm-Message-State: AOJu0YwL8d+pJFe4oDMwjEN598nEzREZpQcLRpBe/2yc5dZ29PNNRLTS
-	uCeq4m59AJfc59bXvc9DbcqbI+USOEBtCtscnq4mqOnj4jDi6PE2hx3mF/l7MGJiN89YBoZiMA4
-	XDL0DXnF8EpTh/mWA5vwP0Cg1hXZ/EW3U
-X-Google-Smtp-Source: AGHT+IHL4Xp6Ooj5iBTZpOU9C02JjUT6srW4+kSCgeFpNRNnAeeZozZal+8OtwFsxCQJqYtt9Snc02of3tWOCY5C5o4=
-X-Received: by 2002:a05:6a20:dd86:b0:1a3:4670:fbbf with SMTP id
- kw6-20020a056a20dd8600b001a34670fbbfmr15636738pzb.50.1710871809147; Tue, 19
- Mar 2024 11:10:09 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710871887; x=1711476687;
+        h=to:from:subject:message-id:date:mime-version:x-gm-message-state
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=4FGA3Q/Jsb5iylMpt4gm0U57kMlr8EgSfuZyJGPJfJk=;
+        b=CuLFRausT+JEgXKVWehNNx+0WQn+Xtaxg41Sp8b47Pv66tQabQbY3bn9C9ZwCKvnXb
+         k0yjF4B9tUH3/u/dMPl23cqyCDj+dG9TJsE2K26sr4JL0pIKTeYIAneblwJ1KFVzyXpc
+         BUmiZonkHL83gnIG0CM8e1N4rkHg6/aNzP9YihnhUYly4REVeKeohbH87vbOajgK6VHo
+         JrC1v+gXxnJ8lwLxX+Y+cRBWL4t5WtFHtBnKPzYO2DPjKCa62GaXLgBg9Rk5T+6rZ7uJ
+         ohaTrHHgTJJHYm9ZgE5d1EZeXEW5y7EEgWwcMezVNVJFZLXWfWRSRkyv3/zm6Vw9ydNm
+         fcqA==
+X-Forwarded-Encrypted: i=1; AJvYcCVNlfNETQR4rPQHPe9HYnW4n1MD881PGarlB/V3A/YgBc3QJaJ+dvXxW9dMJcaB01VnUA4hXVcBH1JepQOUbKy6YJdEPjLlOLOEQdlP
+X-Gm-Message-State: AOJu0YwMEf43FZp3E3T6R5u6utnowTJZCp2CRRMEl3m6l2pyWQ7zYQhM
+	t8KpBhyeosS1q8h8lyQA7M3SKf16ciRjajV4nQNb8HgeOeHubCezB00L4sgTUpuh7YGSNRIN7bo
+	G8qnVXQnyHWVgINEk5EmEt0wI9X+NM6SmXpKTTwQvBu6s5VP1bFAEaF8=
+X-Google-Smtp-Source: AGHT+IFmFGl290mOUiju8BeiMLuWxemiwm3OHI1KQCej6a3+CV9O/BljYHG38jI0cLAM186qzncQTYeAY5huH5cRFpHkhyemTZ+b
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319055115.4063940-1-namhyung@kernel.org> <20240319055115.4063940-23-namhyung@kernel.org>
- <CAM9d7cjhuxB_iWPPWgFxK1_oBaYqF=MgthV=EBG0HeyJ9-ONXg@mail.gmail.com> <ZfnUUqWozFf55eyx@x1>
-In-Reply-To: <ZfnUUqWozFf55eyx@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 19 Mar 2024 11:09:58 -0700
-Message-ID: <CAM9d7ci1dqph=4genU7m+L85oHtVaXj4FR=aFZYNyuVtC1eAVg@mail.gmail.com>
-Subject: Re: [PATCH 22/23] perf annotate-data: Add a cache for global variable types
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
+X-Received: by 2002:a92:360a:0:b0:366:9ead:645b with SMTP id
+ d10-20020a92360a000000b003669ead645bmr343659ila.1.1710871886800; Tue, 19 Mar
+ 2024 11:11:26 -0700 (PDT)
+Date: Tue, 19 Mar 2024 11:11:26 -0700
+X-Google-Appengine-App-Id: s~syzkaller
+X-Google-Appengine-App-Id-Alias: syzkaller
+Message-ID: <00000000000011b2f00614076749@google.com>
+Subject: [syzbot] [bpf?] KMSAN: uninit-value in __bpf_strtoull
+From: syzbot <syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com>
+To: andrii@kernel.org, ast@kernel.org, bpf@vger.kernel.org, 
+	daniel@iogearbox.net, eddyz87@gmail.com, haoluo@google.com, 
+	john.fastabend@gmail.com, jolsa@kernel.org, kpsingh@kernel.org, 
+	linux-kernel@vger.kernel.org, martin.lau@linux.dev, sdf@google.com, 
+	song@kernel.org, syzkaller-bugs@googlegroups.com, yonghong.song@linux.dev
 Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 11:07=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Tue, Mar 19, 2024 at 11:05:04AM -0700, Namhyung Kim wrote:
-> > On Mon, Mar 18, 2024 at 10:56=E2=80=AFPM Namhyung Kim <namhyung@kernel.=
-org> wrote:
-> > >
-> > > They are often searched by many different places.  Let's add a cache
-> > > for them to reduce the duplicate DWARF access.
-> > >
-> > > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > > ---
-> > >  tools/perf/util/annotate-data.c | 107 ++++++++++++++++++++++++++++++=
-+-
-> > >  tools/perf/util/annotate-data.h |   7 +++
-> > >  tools/perf/util/dso.c           |   2 +
-> > >  tools/perf/util/dso.h           |   6 +-
-> > >  4 files changed, 118 insertions(+), 4 deletions(-)
-> > >
-> > > diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annota=
-te-data.c
-> > > index 633fe125fcd8..4b3184b7c799 100644
-> > > --- a/tools/perf/util/annotate-data.c
-> > > +++ b/tools/perf/util/annotate-data.c
-> > > @@ -433,6 +433,91 @@ static struct type_state_stack *findnew_stack_st=
-ate(struct type_state *state,
-> > >         return stack;
-> > >  }
-> > >
-> > > +/* Maintain a cache for quick global variable lookup */
-> > > +struct global_var_entry {
-> > > +       struct rb_node node;
-> > > +       char *name;
-> > > +       u64 start;
-> > > +       u64 end;
-> > > +       u64 die_offset;
-> > > +};
-> > > +
-> > > +static int global_var_cmp(const void *_key, const struct rb_node *no=
-de)
-> > > +{
-> > > +       const u64 addr =3D (uintptr_t)_key;
-> > > +       struct global_var_entry *gvar;
-> > > +
-> > > +       gvar =3D rb_entry(node, struct global_var_entry, node);
-> > > +
-> > > +       if (gvar->start <=3D addr && addr < gvar->end)
-> > > +               return 0;
-> > > +       return gvar->start > addr ? -1 : 1;
-> > > +}
-> > > +
-> > > +static bool global_var_less(struct rb_node *node_a, const struct rb_=
-node *node_b)
-> > > +{
-> > > +       struct global_var_entry *gvar_a, *gvar_b;
-> > > +
-> > > +       gvar_a =3D rb_entry(node_a, struct global_var_entry, node);
-> > > +       gvar_b =3D rb_entry(node_b, struct global_var_entry, node);
-> > > +
-> > > +       return gvar_a->start < gvar_b->start;
-> > > +}
-> > > +
-> > > +static struct global_var_entry *global_var__find(struct data_loc_inf=
-o *dloc, u64 addr)
-> > > +{
-> > > +       struct dso *dso =3D map__dso(dloc->ms->map);
-> > > +       struct rb_node *node;
-> > > +
-> > > +       node =3D rb_find((void *)addr, &dso->global_vars, global_var_=
-cmp);
-> >
-> > It seems to cause a build error on 32-bit systems.  It needs one
-> > more cast to suppress the "pointer cast w/ different size" warning.
-> >
-> >     node =3D rb_find(void *)(uintptr_tr)addr, ...);
->
-> I can add that, to speed up the process, ok?
+Hello,
 
-That would be great!
+syzbot found the following issue on:
 
-Thanks,
-Namhyung
+HEAD commit:    741e9d668aa5 Merge tag 'scsi-misc' of git://git.kernel.org..
+git tree:       upstream
+console output: https://syzkaller.appspot.com/x/log.txt?x=113721f1180000
+kernel config:  https://syzkaller.appspot.com/x/.config?x=48bb382b96e7eda7
+dashboard link: https://syzkaller.appspot.com/bug?extid=8ac8b7b2292ea867a162
+compiler:       Debian clang version 15.0.6, GNU ld (GNU Binutils for Debian) 2.40
+userspace arch: i386
+
+Unfortunately, I don't have any reproducer for this issue yet.
+
+Downloadable assets:
+disk image: https://storage.googleapis.com/syzbot-assets/7e1776e6e382/disk-741e9d66.raw.xz
+vmlinux: https://storage.googleapis.com/syzbot-assets/69580881d554/vmlinux-741e9d66.xz
+kernel image: https://storage.googleapis.com/syzbot-assets/65e4047a1117/bzImage-741e9d66.xz
+
+IMPORTANT: if you fix the issue, please add the following tag to the commit:
+Reported-by: syzbot+8ac8b7b2292ea867a162@syzkaller.appspotmail.com
+
+=====================================================
+BUG: KMSAN: uninit-value in __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
+ __bpf_strtoull+0x245/0x5b0 kernel/bpf/helpers.c:465
+ __bpf_strtoll kernel/bpf/helpers.c:504 [inline]
+ ____bpf_strtol kernel/bpf/helpers.c:525 [inline]
+ bpf_strtol+0x7c/0x270 kernel/bpf/helpers.c:519
+ ___bpf_prog_run+0x13fe/0xe0f0 kernel/bpf/core.c:1997
+ __bpf_prog_run96+0xb5/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run_xdp include/net/xdp.h:514 [inline]
+ bpf_test_run+0x43e/0xc30 net/bpf/test_run.c:423
+ bpf_prog_test_run_xdp+0xeaa/0x1a40 net/bpf/test_run.c:1269
+ bpf_prog_test_run+0x6b7/0xad0 kernel/bpf/syscall.c:4240
+ __sys_bpf+0x6aa/0xd90 kernel/bpf/syscall.c:5649
+ __do_sys_bpf kernel/bpf/syscall.c:5738 [inline]
+ __se_sys_bpf kernel/bpf/syscall.c:5736 [inline]
+ __ia32_sys_bpf+0xa0/0xe0 kernel/bpf/syscall.c:5736
+ do_syscall_32_irqs_on arch/x86/entry/common.c:165 [inline]
+ __do_fast_syscall_32+0xba/0x120 arch/x86/entry/common.c:321
+ do_fast_syscall_32+0x38/0x80 arch/x86/entry/common.c:346
+ do_SYSENTER_32+0x1f/0x30 arch/x86/entry/common.c:384
+ entry_SYSENTER_compat_after_hwframe+0x7a/0x84
+
+Local variable stack created at:
+ __bpf_prog_run96+0x45/0xe0 kernel/bpf/core.c:2236
+ bpf_dispatcher_nop_func include/linux/bpf.h:1234 [inline]
+ __bpf_prog_run include/linux/filter.h:657 [inline]
+ bpf_prog_run_xdp include/net/xdp.h:514 [inline]
+ bpf_test_run+0x43e/0xc30 net/bpf/test_run.c:423
+
+CPU: 0 PID: 11097 Comm: syz-executor.0 Not tainted 6.8.0-syzkaller-11339-g741e9d668aa5 #0
+Hardware name: Google Google Compute Engine/Google Compute Engine, BIOS Google 02/29/2024
+=====================================================
+
+
+---
+This report is generated by a bot. It may contain errors.
+See https://goo.gl/tpsmEJ for more information about syzbot.
+syzbot engineers can be reached at syzkaller@googlegroups.com.
+
+syzbot will keep track of this issue. See:
+https://goo.gl/tpsmEJ#status for how to communicate with syzbot.
+
+If the report is already addressed, let syzbot know by replying with:
+#syz fix: exact-commit-title
+
+If you want to overwrite report's subsystems, reply with:
+#syz set subsystems: new-subsystem
+(See the list of subsystem names on the web dashboard)
+
+If the report is a duplicate of another one, reply with:
+#syz dup: exact-subject-of-another-report
+
+If you want to undo deduplication, reply with:
+#syz undup
 
