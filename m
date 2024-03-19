@@ -1,529 +1,136 @@
-Return-Path: <linux-kernel+bounces-108090-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108091-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 8F3C48805D6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:05:58 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 961DB8805D8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:07:52 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A7D151C22BAE
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:05:57 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4F310284B68
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 20:07:51 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7E8BC5FB91;
-	Tue, 19 Mar 2024 20:05:33 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 5D0375644E;
+	Tue, 19 Mar 2024 20:07:44 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=google.com header.i=@google.com header.b="Q8syK8wd"
-Received: from mail-pl1-f182.google.com (mail-pl1-f182.google.com [209.85.214.182])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="F8hSzFIJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.17])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3D56357339
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 20:05:30 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.182
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 26F4B5FB86;
+	Tue, 19 Mar 2024 20:07:40 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.17
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710878732; cv=none; b=TDCivoQcCYE0cMarDfj97COx8MVbjUgTaG7oFg2A/4Rme+K4yBqehkLfDeGc/MQV2UaqAnVOD9mLKLRUgbRbloDOUNudV061k10e/AMkN6+DETF9Cc1TaZsbuCR9k8LM+z/CyMdJkrm0xwKEwFr28g9UsnPuQF5NhQdyhmv10uc=
+	t=1710878863; cv=none; b=NG1GrTz8l/2/h8tf1AkWUFnnb2bSJrIE74Hjb+NmbwzUhl2H/+fL3FgobJHkjcxTDhaaBUE4lk9JIublHR6zq+mcWObATYDAfjUrp5QUIHkQ+UyJQAYWEq1EvYdf66fQbmoDolamMxFsCIyQ/VB3dKuo5aN57LaA5xQDNm9W36k=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710878732; c=relaxed/simple;
-	bh=+sxvRg+iAXJAwFaKJ7QmZof47Kzp/Vzw9UyBRCD8erY=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=cMgwfMMAtq1mHascovueFtB/9X2LYJcLNOW7ZKoMgyQughV6Ymndr9DMgxwUT3h3y6QZBFzne0+uXlk1SsHqFGyO1tj3CvMHhuN4dOyOvZKBwR/L64Hhd7MGZo5zHdjF2g7V13XMk4uNnXCgQRDMsCP0XMrT6u5tLhcHg34kUng=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=Q8syK8wd; arc=none smtp.client-ip=209.85.214.182
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=google.com
-Received: by mail-pl1-f182.google.com with SMTP id d9443c01a7336-1deddb82b43so44395ad.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 13:05:30 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710878730; x=1711483530; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=f6AuPwYdJnpQUaGBE7scdOkTz5WCCvNHQ3peDwcUGRM=;
-        b=Q8syK8wdQ+q8CvrwUyOSd8XauYa6c+lDWJXUhRQ1o/kikcc1E7/c3gS31n8a+lPl98
-         GkYMofKjEs0v/mZYf4bsLu6+xyBZzR6RQqpvbymyaH5pHnH7WVgPbC5sN0Ara7ozmxbI
-         WsxHs+mgSh84RPyOkp2cvZ8D0ysXHv5cj673PuO+DDGhWaD/0w1UxIjQiamk7G3f/8z7
-         ww1cBkrBDuvkIBFF1N/Zm6r21mpjQAJCJIOixTup2vs1sl+WgrN2y5oc1BdH2M0z8TBN
-         nuLlnywA0NbshED3+FfxNMDBnCfrpAgcjkqqYaNRDE14enTJ2QL2GkV7QlzblVM6N4x8
-         IzmQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710878730; x=1711483530;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=f6AuPwYdJnpQUaGBE7scdOkTz5WCCvNHQ3peDwcUGRM=;
-        b=Fj2aEqiQtT0toy/c6MyJqtiltb4AdG4K20mTCc09NdUB6EKyIscKwkRrhFcxg10LoR
-         uoAiZi0YcjJJMTD+epv/sKKa3JUAiGTxt3lENTvDpZIiDfcL612XwXVMpwFsEF9fb/BZ
-         2lgAM97lp9ayg6VtzjBBNU0xErQkp8kA+B1svEmbiRVIdtIGRP2rnF85rtnY3tvRiwHg
-         s8kdoO7qIeGEpI8di/m3yIucbdvSApJHCawctw6VOTsqHSEalRkh9ibd1H8Apog1eTc0
-         AW7RCTuRnACeFwDaTZdKzxoOSfuPpY3SkAOPd0pnXBL7gjl+rCvM/EP36J7WowZgk9Kw
-         gNCA==
-X-Forwarded-Encrypted: i=1; AJvYcCWEi08ifBtb2OvTwzTzL392crmXg6FYhSA+merYHcyDkTA6DY8ZoQr1tA7jlSehPLRdR8Plz53T6M/k2Ok0tRH/PYMK3HIjuwMWwHYR
-X-Gm-Message-State: AOJu0YzHbFcPFYBmzB2HtihLzqMffQMhopbJ5iMR2jVhdV4ApzUEiMkT
-	GR12+L3YB/UWM2XwqgbekZTkm+ZHUH/065OvrKhiNnBTBVtgoM+VIepmt1Fm+RwkDSIKqnZFEN0
-	Lq2tXE3/fjv9wIAr+QOslXEFM7faB3o8p7oQM
-X-Google-Smtp-Source: AGHT+IFJZ+v8VSh9y4t6Wiec0f+wIlnPU0U8jkyOVRgSrGMhBaJupqwPnL3OBBLgXeNJOAU2Ec+dWQq6DjlBm/yTA/Y=
-X-Received: by 2002:a17:902:e74d:b0:1dd:9e99:f6b2 with SMTP id
- p13-20020a170902e74d00b001dd9e99f6b2mr65316plf.20.1710878729203; Tue, 19 Mar
- 2024 13:05:29 -0700 (PDT)
+	s=arc-20240116; t=1710878863; c=relaxed/simple;
+	bh=CR6LOcX/INoY9Aw6zt9x/JGRV1GfCiWscRNG+bSuvRo=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=FGv5PIE2vEFrdUYy7eN+zp8ym13T6HDxLd5g6EEIy9hG2GOLi99H0sb8bnMYKm5zLx4khY9MvOppsoZFfFfLLciK4CncxZtxfN5eNJN3+vLbbFZtWdUCxTLGIa/hbo3EtyrXnplc/G6y/BWjame7H7A2cztD6hpNP7gsS1JqhzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=F8hSzFIJ; arc=none smtp.client-ip=192.198.163.17
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710878861; x=1742414861;
+  h=message-id:date:mime-version:subject:to:cc:references:
+   from:in-reply-to:content-transfer-encoding;
+  bh=CR6LOcX/INoY9Aw6zt9x/JGRV1GfCiWscRNG+bSuvRo=;
+  b=F8hSzFIJAMNEE3yF7njTCrDcVG4DRAfHA6nwDHFSpizFDC2fS50PDimW
+   anUw8+Gfus1hIubIjDzJsJIgym5uD95fb/DdWemaUOO4b/wXsdyTMhNJp
+   diNQ48efGmqAMIfLFoloz5iXyIeqRA+9gAVFIERHqjw3jku0Eostl+TDN
+   DWpg7uksBdaLVebU7OD9dLh/R6QhjwNl/IspeyQL5eTnpEe045cplJ0HK
+   xPOItKEhwmdM5Bg6mPw/yco7hgSBwN54SQjf+05ABkKX0/zQILXr01WBl
+   jyI4ZUMuSVr+1zugw5P0Ff8FDEQdX2VLDwRa3rDwF3ZyNkJ4wQhmiswzx
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="5638693"
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="5638693"
+Received: from orviesa002.jf.intel.com ([10.64.159.142])
+  by fmvoesa111.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 13:07:40 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,137,1708416000"; 
+   d="scan'208";a="44877439"
+Received: from ccantr1x-mobl.amr.corp.intel.com (HELO [10.255.229.75]) ([10.255.229.75])
+  by orviesa002-auth.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 13:07:40 -0700
+Message-ID: <56958bb8-1b4e-4691-8d81-d8e5846a3b06@intel.com>
+Date: Tue, 19 Mar 2024 13:07:39 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319180005.246930-1-visitorckw@gmail.com> <20240319180005.246930-9-visitorckw@gmail.com>
-In-Reply-To: <20240319180005.246930-9-visitorckw@gmail.com>
-From: Ian Rogers <irogers@google.com>
-Date: Tue, 19 Mar 2024 13:05:18 -0700
-Message-ID: <CAP-5=fUk12o7u-+0u0KeUbdRDYiGzeZU0vgOrTc_3BHEntjn_Q@mail.gmail.com>
-Subject: Re: [PATCH 08/13] lib min_heap: Add args for min_heap_callbacks
-To: Kuan-Wei Chiu <visitorckw@gmail.com>
-Cc: colyli@suse.de, kent.overstreet@linux.dev, msakai@redhat.com, 
-	peterz@infradead.org, mingo@redhat.com, acme@kernel.org, namhyung@kernel.org, 
-	akpm@linux-foundation.org, bfoster@redhat.com, mark.rutland@arm.com, 
-	alexander.shishkin@linux.intel.com, jolsa@kernel.org, adrian.hunter@intel.com, 
-	jserv@ccns.ncku.edu.tw, linux-bcache@vger.kernel.org, 
-	dm-devel@lists.linux.dev, linux-bcachefs@vger.kernel.org, 
-	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 09/15] KVM: SEV: sync FPU and AVX state at
+ LAUNCH_UPDATE_VMSA time
+Content-Language: en-US
+To: Paolo Bonzini <pbonzini@redhat.com>, linux-kernel@vger.kernel.org,
+ kvm@vger.kernel.org
+Cc: michael.roth@amd.com, isaku.yamahata@intel.com, seanjc@google.com,
+ Dave Hansen <dave.hansen@linux.intel.com>
+References: <20240318233352.2728327-1-pbonzini@redhat.com>
+ <20240318233352.2728327-10-pbonzini@redhat.com>
+From: Dave Hansen <dave.hansen@intel.com>
+Autocrypt: addr=dave.hansen@intel.com; keydata=
+ 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
+In-Reply-To: <20240318233352.2728327-10-pbonzini@redhat.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, Mar 19, 2024 at 11:00=E2=80=AFAM Kuan-Wei Chiu <visitorckw@gmail.co=
-m> wrote:
->
-> Add a third parameter 'args' for the 'less' and 'swp' functions in the
-> 'struct min_heap_callbacks'. This additional parameter allows these
-> comparison and swap functions to handle extra arguments when necessary.
->
-> Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
+On 3/18/24 16:33, Paolo Bonzini wrote:
+> Since the XSAVE state for AVX is the first, it does not need the
+> compacted-state handling of get_xsave_addr().  However, there are other
+> parts of XSAVE state in the VMSA that currently are not handled, and
+> the validation logic of get_xsave_addr() is pointless to duplicate
+> in KVM, so move get_xsave_addr() to public FPU API; it is really just
+> a facility to operate on XSAVE state and does not expose any internal
+> details of arch/x86/kernel/fpu.
 
-I've no objection to this but I don't see it used in your changes -
-that may be my fault :-). Perhaps hold off or add a test with args
-being non-null?
+We don't want to grow _too_ many users of get_xsave_addr() since it's
+hard to use it right.  But this seems to be a legitimate user.
 
-Thanks,
-Ian
+Acked-by: Dave Hansen <dave.hansen@linux.intel.com>
 
-> ---
->  drivers/md/dm-vdo/repair.c     | 10 +++----
->  drivers/md/dm-vdo/slab-depot.c |  8 +++---
->  include/linux/min_heap.h       | 51 +++++++++++++++++-----------------
->  kernel/events/core.c           | 10 +++----
->  lib/test_min_heap.c            | 26 ++++++++---------
->  5 files changed, 53 insertions(+), 52 deletions(-)
->
-> diff --git a/drivers/md/dm-vdo/repair.c b/drivers/md/dm-vdo/repair.c
-> index 7663fa2098f4..528fa100b410 100644
-> --- a/drivers/md/dm-vdo/repair.c
-> +++ b/drivers/md/dm-vdo/repair.c
-> @@ -137,7 +137,7 @@ struct repair_completion {
->   * to sort by slot while still ensuring we replay all entries with the s=
-ame slot in the exact order
->   * as they appeared in the journal.
->   */
-> -static bool mapping_is_less_than(const void *item1, const void *item2)
-> +static bool mapping_is_less_than(const void *item1, const void *item2, v=
-oid *args)
->  {
->         const struct numbered_block_mapping *mapping1 =3D
->                 (const struct numbered_block_mapping *) item1;
-> @@ -156,7 +156,7 @@ static bool mapping_is_less_than(const void *item1, c=
-onst void *item2)
->         return 0;
->  }
->
-> -static void swap_mappings(void *item1, void *item2)
-> +static void swap_mappings(void *item1, void *item2, void *args)
->  {
->         struct numbered_block_mapping *mapping1 =3D item1;
->         struct numbered_block_mapping *mapping2 =3D item2;
-> @@ -182,8 +182,8 @@ static struct numbered_block_mapping *sort_next_heap_=
-element(struct repair_compl
->          * restore the heap invariant, and return a pointer to the popped=
- element.
->          */
->         last =3D &repair->entries[--heap->heap.nr];
-> -       swap_mappings(heap->heap.data, last);
-> -       min_heapify(heap, 0, &repair_min_heap);
-> +       swap_mappings(heap->heap.data, last, NULL);
-> +       min_heapify(heap, 0, &repair_min_heap, NULL);
->         return last;
->  }
->
-> @@ -1121,7 +1121,7 @@ static void recover_block_map(struct vdo_completion=
- *completion)
->         repair->replay_heap.heap.data =3D repair->entries;
->         repair->replay_heap.heap.nr =3D repair->block_map_entry_count;
->         repair->replay_heap.heap.size =3D repair->block_map_entry_count;
-> -       min_heapify_all(&repair->replay_heap, &repair_min_heap);
-> +       min_heapify_all(&repair->replay_heap, &repair_min_heap, NULL);
->
->         vdo_log_info("Replaying %zu recovery entries into block map",
->                      repair->block_map_entry_count);
-> diff --git a/drivers/md/dm-vdo/slab-depot.c b/drivers/md/dm-vdo/slab-depo=
-t.c
-> index 3309480170c3..b8c41d7ccde0 100644
-> --- a/drivers/md/dm-vdo/slab-depot.c
-> +++ b/drivers/md/dm-vdo/slab-depot.c
-> @@ -3288,7 +3288,7 @@ int vdo_release_block_reference(struct block_alloca=
-tor *allocator,
->   * Thus, the ordering is reversed from the usual sense since min_heap re=
-turns smaller elements
->   * before larger ones.
->   */
-> -static bool slab_status_is_less_than(const void *item1, const void *item=
-2)
-> +static bool slab_status_is_less_than(const void *item1, const void *item=
-2, void *args)
->  {
->         const struct slab_status *info1 =3D item1;
->         const struct slab_status *info2 =3D item2;
-> @@ -3300,7 +3300,7 @@ static bool slab_status_is_less_than(const void *it=
-em1, const void *item2)
->         return info1->slab_number < info2->slab_number;
->  }
->
-> -static void swap_slab_statuses(void *item1, void *item2)
-> +static void swap_slab_statuses(void *item1, void *item2, void *args)
->  {
->         struct slab_status *info1 =3D item1;
->         struct slab_status *info2 =3D item2;
-> @@ -3523,7 +3523,7 @@ static int __must_check vdo_prepare_slabs_for_alloc=
-ation(struct block_allocator
->         heap.heap.data =3D slab_statuses;
->         heap.heap.nr =3D allocator->slab_count;
->         heap.heap.size =3D allocator->slab_count;
-> -       min_heapify_all(&heap, &slab_status_min_heap);
-> +       min_heapify_all(&heap, &slab_status_min_heap, NULL);
->
->         while (heap.heap.nr > 0) {
->                 bool high_priority;
-> @@ -3531,7 +3531,7 @@ static int __must_check vdo_prepare_slabs_for_alloc=
-ation(struct block_allocator
->                 struct slab_journal *journal;
->
->                 current_slab_status =3D slab_statuses[0];
-> -               min_heap_pop(&heap, &slab_status_min_heap);
-> +               min_heap_pop(&heap, &slab_status_min_heap, NULL);
->                 slab =3D depot->slabs[current_slab_status.slab_number];
->
->                 if ((depot->load_type =3D=3D VDO_SLAB_DEPOT_REBUILD_LOAD)=
- ||
-> diff --git a/include/linux/min_heap.h b/include/linux/min_heap.h
-> index b1d874f4d536..97d8ba5c32e6 100644
-> --- a/include/linux/min_heap.h
-> +++ b/include/linux/min_heap.h
-> @@ -40,8 +40,8 @@ struct _name {                                \
->   * @swp: Swap elements function.
->   */
->  struct min_heap_callbacks {
-> -       bool (*less)(const void *lhs, const void *rhs);
-> -       void (*swp)(void *lhs, void *rhs);
-> +       bool (*less)(const void *lhs, const void *rhs, void *args);
-> +       void (*swp)(void *lhs, void *rhs, void *args);
->  };
->
->  /* Initialize a min-heap. */
-> @@ -79,7 +79,7 @@ bool __min_heap_full(struct __min_heap *heap)
->  /* Sift the element at pos down the heap. */
->  static __always_inline
->  void __min_heapify(struct __min_heap *heap, int pos, size_t elem_size,
-> -               const struct min_heap_callbacks *func)
-> +               const struct min_heap_callbacks *func, void *args)
->  {
->         void *left, *right;
->         void *data =3D heap->data;
-> @@ -92,7 +92,7 @@ void __min_heapify(struct __min_heap *heap, int pos, si=
-ze_t elem_size,
->                         break;
->                 left =3D data + (i * 2 + 1) * elem_size;
->                 right =3D data + (i * 2 + 2) * elem_size;
-> -               i =3D func->less(left, right) ? i * 2 + 1 : i * 2 + 2;
-> +               i =3D func->less(left, right, args) ? i * 2 + 1 : i * 2 +=
- 2;
->         }
->
->         /* Special case for the last leaf with no sibling. */
-> @@ -100,38 +100,38 @@ void __min_heapify(struct __min_heap *heap, int pos=
-, size_t elem_size,
->                 i =3D i * 2 + 1;
->
->         /* Backtrack to the correct location. */
-> -       while (i !=3D pos && func->less(root, data + i * elem_size))
-> +       while (i !=3D pos && func->less(root, data + i * elem_size, args)=
-)
->                 i =3D (i - 1) / 2;
->
->         /* Shift the element into its correct place. */
->         j =3D i;
->         while (i !=3D pos) {
->                 i =3D (i - 1) / 2;
-> -               func->swp(data + i * elem_size, data + j * elem_size);
-> +               func->swp(data + i * elem_size, data + j * elem_size, arg=
-s);
->         }
->  }
->
-> -#define min_heapify(_heap, _pos, _func)        \
-> -       __min_heapify(&(_heap)->heap, _pos, __minheap_obj_size(_heap), _f=
-unc)
-> +#define min_heapify(_heap, _pos, _func, _args) \
-> +       __min_heapify(&(_heap)->heap, _pos, __minheap_obj_size(_heap), _f=
-unc, _args)
->
->  /* Floyd's approach to heapification that is O(nr). */
->  static __always_inline
->  void __min_heapify_all(struct __min_heap *heap, size_t elem_size,
-> -               const struct min_heap_callbacks *func)
-> +               const struct min_heap_callbacks *func, void *args)
->  {
->         int i;
->
->         for (i =3D heap->nr / 2 - 1; i >=3D 0; i--)
-> -               __min_heapify(heap, i, elem_size, func);
-> +               __min_heapify(heap, i, elem_size, func, args);
->  }
->
-> -#define min_heapify_all(_heap, _func)  \
-> -       __min_heapify_all(&(_heap)->heap, __minheap_obj_size(_heap), _fun=
-c)
-> +#define min_heapify_all(_heap, _func, _args)   \
-> +       __min_heapify_all(&(_heap)->heap, __minheap_obj_size(_heap), _fun=
-c, _args)
->
->  /* Remove minimum element from the heap, O(log2(nr)). */
->  static __always_inline
->  void __min_heap_pop(struct __min_heap *heap, size_t elem_size,
-> -               const struct min_heap_callbacks *func)
-> +               const struct min_heap_callbacks *func, void *args)
->  {
->         void *data =3D heap->data;
->
-> @@ -141,11 +141,11 @@ void __min_heap_pop(struct __min_heap *heap, size_t=
- elem_size,
->         /* Place last element at the root (position 0) and then sift down=
- */
->         heap->nr--;
->         memcpy(data, data + (heap->nr * elem_size), elem_size);
-> -       __min_heapify(heap, 0, elem_size, func);
-> +       __min_heapify(heap, 0, elem_size, func, args);
->  }
->
-> -#define min_heap_pop(_heap, _func)     \
-> -       __min_heap_pop(&(_heap)->heap, __minheap_obj_size(_heap), _func)
-> +#define min_heap_pop(_heap, _func, _args)      \
-> +       __min_heap_pop(&(_heap)->heap, __minheap_obj_size(_heap), _func, =
-_args)
->
->  /*
->   * Remove the minimum element and then push the given element. The
-> @@ -155,19 +155,20 @@ void __min_heap_pop(struct __min_heap *heap, size_t=
- elem_size,
->  static __always_inline
->  void __min_heap_pop_push(struct __min_heap *heap,
->                 const void *element, size_t elem_size,
-> -               const struct min_heap_callbacks *func)
-> +               const struct min_heap_callbacks *func,
-> +               void *args)
->  {
->         memcpy(heap->data, element, elem_size);
-> -       __min_heapify(heap, 0, elem_size, func);
-> +       __min_heapify(heap, 0, elem_size, func, args);
->  }
->
-> -#define min_heap_pop_push(_heap, _element, _func)      \
-> -       __min_heap_pop_push(&(_heap)->heap, _element, __minheap_obj_size(=
-_heap), _func)
-> +#define min_heap_pop_push(_heap, _element, _func, _args)       \
-> +       __min_heap_pop_push(&(_heap)->heap, _element, __minheap_obj_size(=
-_heap), _func, _args)
->
->  /* Push an element on to the heap, O(log2(nr)). */
->  static __always_inline
->  void __min_heap_push(struct __min_heap *heap, const void *element, size_=
-t elem_size,
-> -               const struct min_heap_callbacks *func)
-> +               const struct min_heap_callbacks *func, void *args)
->  {
->         void *data =3D heap->data;
->         void *child, *parent;
-> @@ -185,13 +186,13 @@ void __min_heap_push(struct __min_heap *heap, const=
- void *element, size_t elem_s
->         for (; pos > 0; pos =3D (pos - 1) / 2) {
->                 child =3D data + (pos * elem_size);
->                 parent =3D data + ((pos - 1) / 2) * elem_size;
-> -               if (func->less(parent, child))
-> +               if (func->less(parent, child, args))
->                         break;
-> -               func->swp(parent, child);
-> +               func->swp(parent, child, args);
->         }
->  }
->
-> -#define min_heap_push(_heap, _element, _func)  \
-> -       __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_hea=
-p), _func)
-> +#define min_heap_push(_heap, _element, _func, _args)   \
-> +       __min_heap_push(&(_heap)->heap, _element, __minheap_obj_size(_hea=
-p), _func, _args)
->
->  #endif /* _LINUX_MIN_HEAP_H */
-> diff --git a/kernel/events/core.c b/kernel/events/core.c
-> index 065dfaa8b009..f2a9044058ee 100644
-> --- a/kernel/events/core.c
-> +++ b/kernel/events/core.c
-> @@ -3683,7 +3683,7 @@ void __perf_event_task_sched_out(struct task_struct=
- *task,
->         perf_cgroup_switch(next);
->  }
->
-> -static bool perf_less_group_idx(const void *l, const void *r)
-> +static bool perf_less_group_idx(const void *l, const void *r, void *args=
-)
->  {
->         const struct perf_event *le =3D *(const struct perf_event **)l;
->         const struct perf_event *re =3D *(const struct perf_event **)r;
-> @@ -3691,7 +3691,7 @@ static bool perf_less_group_idx(const void *l, cons=
-t void *r)
->         return le->group_index < re->group_index;
->  }
->
-> -static void swap_ptr(void *l, void *r)
-> +static void swap_ptr(void *l, void *r, void *args)
->  {
->         void **lp =3D l, **rp =3D r;
->
-> @@ -3779,7 +3779,7 @@ static noinline int visit_groups_merge(struct perf_=
-event_context *ctx,
->                 perf_assert_pmu_disabled((*evt)->pmu_ctx->pmu);
->         }
->
-> -       min_heapify_all(&event_heap, &perf_min_heap);
-> +       min_heapify_all(&event_heap, &perf_min_heap, NULL);
->
->         while (event_heap.heap.nr) {
->                 ret =3D func(*evt, data);
-> @@ -3788,9 +3788,9 @@ static noinline int visit_groups_merge(struct perf_=
-event_context *ctx,
->
->                 *evt =3D perf_event_groups_next(*evt, pmu);
->                 if (*evt)
-> -                       min_heapify(&event_heap, 0, &perf_min_heap);
-> +                       min_heapify(&event_heap, 0, &perf_min_heap, NULL)=
-;
->                 else
-> -                       min_heap_pop(&event_heap, &perf_min_heap);
-> +                       min_heap_pop(&event_heap, &perf_min_heap, NULL);
->         }
->
->         return 0;
-> diff --git a/lib/test_min_heap.c b/lib/test_min_heap.c
-> index af2e446034d8..b8859d17a19c 100644
-> --- a/lib/test_min_heap.c
-> +++ b/lib/test_min_heap.c
-> @@ -13,17 +13,17 @@
->
->  MIN_HEAP(int, min_heap_test);
->
-> -static __init bool less_than(const void *lhs, const void *rhs)
-> +static __init bool less_than(const void *lhs, const void *rhs, void *arg=
-s)
->  {
->         return *(int *)lhs < *(int *)rhs;
->  }
->
-> -static __init bool greater_than(const void *lhs, const void *rhs)
-> +static __init bool greater_than(const void *lhs, const void *rhs, void *=
-args)
->  {
->         return *(int *)lhs > *(int *)rhs;
->  }
->
-> -static __init void swap_ints(void *lhs, void *rhs)
-> +static __init void swap_ints(void *lhs, void *rhs, void *argsss)
->  {
->         int temp =3D *(int *)lhs;
->
-> @@ -40,7 +40,7 @@ static __init int pop_verify_heap(bool min_heap,
->         int last;
->
->         last =3D values[0];
-> -       min_heap_pop(heap, funcs);
-> +       min_heap_pop(heap, funcs, NULL);
->         while (heap->heap.nr > 0) {
->                 if (min_heap) {
->                         if (last > values[0]) {
-> @@ -56,7 +56,7 @@ static __init int pop_verify_heap(bool min_heap,
->                         }
->                 }
->                 last =3D values[0];
-> -               min_heap_pop(heap, funcs);
-> +               min_heap_pop(heap, funcs, NULL);
->         }
->         return err;
->  }
-> @@ -77,7 +77,7 @@ static __init int test_heapify_all(bool min_heap)
->         int i, err;
->
->         /* Test with known set of values. */
-> -       min_heapify_all(&heap, &funcs);
-> +       min_heapify_all(&heap, &funcs, NULL);
->         err =3D pop_verify_heap(min_heap, &heap, &funcs);
->
->
-> @@ -86,7 +86,7 @@ static __init int test_heapify_all(bool min_heap)
->         for (i =3D 0; i < heap.heap.nr; i++)
->                 values[i] =3D get_random_u32();
->
-> -       min_heapify_all(&heap, &funcs);
-> +       min_heapify_all(&heap, &funcs, NULL);
->         err +=3D pop_verify_heap(min_heap, &heap, &funcs);
->
->         return err;
-> @@ -110,14 +110,14 @@ static __init int test_heap_push(bool min_heap)
->
->         /* Test with known set of values copied from data. */
->         for (i =3D 0; i < ARRAY_SIZE(data); i++)
-> -               min_heap_push(&heap, &data[i], &funcs);
-> +               min_heap_push(&heap, &data[i], &funcs, NULL);
->
->         err =3D pop_verify_heap(min_heap, &heap, &funcs);
->
->         /* Test with randomly generated values. */
->         while (heap.heap.nr < heap.heap.size) {
->                 temp =3D get_random_u32();
-> -               min_heap_push(&heap, &temp, &funcs);
-> +               min_heap_push(&heap, &temp, &funcs, NULL);
->         }
->         err +=3D pop_verify_heap(min_heap, &heap, &funcs);
->
-> @@ -143,22 +143,22 @@ static __init int test_heap_pop_push(bool min_heap)
->         /* Fill values with data to pop and replace. */
->         temp =3D min_heap ? 0x80000000 : 0x7FFFFFFF;
->         for (i =3D 0; i < ARRAY_SIZE(data); i++)
-> -               min_heap_push(&heap, &temp, &funcs);
-> +               min_heap_push(&heap, &temp, &funcs, NULL);
->
->         /* Test with known set of values copied from data. */
->         for (i =3D 0; i < ARRAY_SIZE(data); i++)
-> -               min_heap_pop_push(&heap, &data[i], &funcs);
-> +               min_heap_pop_push(&heap, &data[i], &funcs, NULL);
->
->         err =3D pop_verify_heap(min_heap, &heap, &funcs);
->
->         heap.heap.nr =3D 0;
->         for (i =3D 0; i < ARRAY_SIZE(data); i++)
-> -               min_heap_push(&heap, &temp, &funcs);
-> +               min_heap_push(&heap, &temp, &funcs, NULL);
->
->         /* Test with randomly generated values. */
->         for (i =3D 0; i < ARRAY_SIZE(data); i++) {
->                 temp =3D get_random_u32();
-> -               min_heap_pop_push(&heap, &temp, &funcs);
-> +               min_heap_pop_push(&heap, &temp, &funcs, NULL);
->         }
->         err +=3D pop_verify_heap(min_heap, &heap, &funcs);
->
-> --
-> 2.34.1
->
 
