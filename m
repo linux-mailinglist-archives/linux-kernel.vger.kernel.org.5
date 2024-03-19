@@ -1,55 +1,82 @@
-Return-Path: <linux-kernel+bounces-107468-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107472-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5540A87FCE4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:34:11 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 5933B87FCF3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:35:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 7AB63B227E7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:34:08 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BF2A91F2312E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 11:35:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2E12D80636;
-	Tue, 19 Mar 2024 11:32:24 +0000 (UTC)
-Received: from szxga07-in.huawei.com (szxga07-in.huawei.com [45.249.212.35])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B9C6440867;
+	Tue, 19 Mar 2024 11:33:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b="e6/y+tnM"
+Received: from NAM10-MW2-obe.outbound.protection.outlook.com (mail-mw2nam10on2078.outbound.protection.outlook.com [40.107.94.78])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B21207FBB7;
-	Tue, 19 Mar 2024 11:32:19 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=45.249.212.35
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710847943; cv=none; b=tY//35FP4DNxDkd3HLrMbd5IZ+zQDXYVNyEUNKF3WhFMNBfa23Pq3ospQhd2xxKue+xXoZchQ+R8LJ5yw5LNRDO8OvJe6RB1+U9NRFmlEch/lS/ppLv99k3vnQML1SYNy2e7euzOz4SkPoGqWplOQa2EIFRBFzVz2LPnr7aAGOE=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710847943; c=relaxed/simple;
-	bh=7ZenRpVmVeefzkxE5af4mBcDQV5/Oz/F+K8tVbtSbzc=;
-	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=Y0eAnhyfSSV06OIwLhReh4DplSEhgsWnCqC/zbNRk3H2HgdLemGJhGAB7MOx0ckVkdG1lYxrobNsbj5ZV6/4e91XiK7+O1WMR+0EiQbie16ahEEuf50eq4uklOvkPlUn8fyvZvRydWkX65bW7fJrskFIaRtRxSdBiXFko6P3C/Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com; spf=pass smtp.mailfrom=huawei.com; arc=none smtp.client-ip=45.249.212.35
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=huawei.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=huawei.com
-Received: from mail.maildlp.com (unknown [172.19.163.17])
-	by szxga07-in.huawei.com (SkyGuard) with ESMTP id 4TzTyp5lJdz1R7L6;
-	Tue, 19 Mar 2024 19:29:38 +0800 (CST)
-Received: from dggpeml500021.china.huawei.com (unknown [7.185.36.21])
-	by mail.maildlp.com (Postfix) with ESMTPS id B23E61A0187;
-	Tue, 19 Mar 2024 19:32:11 +0800 (CST)
-Received: from huawei.com (10.175.127.227) by dggpeml500021.china.huawei.com
- (7.185.36.21) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.1.2507.35; Tue, 19 Mar
- 2024 19:32:11 +0800
-From: Baokun Li <libaokun1@huawei.com>
-To: <linux-ext4@vger.kernel.org>
-CC: <tytso@mit.edu>, <adilger.kernel@dilger.ca>, <jack@suse.cz>,
-	<ritesh.list@gmail.com>, <ojaswin@linux.ibm.com>, <adobriyan@gmail.com>,
-	<linux-kernel@vger.kernel.org>, <yi.zhang@huawei.com>,
-	<yangerkun@huawei.com>, <libaokun1@huawei.com>, <stable@vger.kernel.org>
-Subject: [PATCH v4 4/9] ext4: fix slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists()
-Date: Tue, 19 Mar 2024 19:33:20 +0800
-Message-ID: <20240319113325.3110393-5-libaokun1@huawei.com>
-X-Mailer: git-send-email 2.31.1
-In-Reply-To: <20240319113325.3110393-1-libaokun1@huawei.com>
-References: <20240319113325.3110393-1-libaokun1@huawei.com>
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4B57E7EF06;
+	Tue, 19 Mar 2024 11:33:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.94.78
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710848017; cv=fail; b=rQCJFEDMN7G5IYiwhg0EkjTHe8oMI14g9HQqIIudnnF34sCoqJkk5oUZ9h3aNcGiMjZEX9mfm7RXJyIUYexsERVFLHT3EM4TC7pUP4tbJobYPPzhJA6+Nv7iKruMF/0bxtoZ+6ZcTz0MGSbcPph7vU84L/u7IcGcrail2gKS5+E=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710848017; c=relaxed/simple;
+	bh=Jmvtaflo+UqsNpkXG0GXhIIEc5jQJGTDn9fnhuyHfUM=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=dUkCftfj3R/lZnWXZ3kVq/n/40BOQ1cB5FSh3PtQCKdwhN1PgIqoXapEiEPVU01hIGlbgOvdzA2GJENH149M6xyxRXdKpHxeqjXqT4bCDE2qBbPoLE1+CxWAApWgTJwXL+8u1NqxtvM6YUQ+IN3Cwthjct7rxvv3tqwALHyZDhA=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com; spf=fail smtp.mailfrom=amd.com; dkim=pass (1024-bit key) header.d=amd.com header.i=@amd.com header.b=e6/y+tnM; arc=fail smtp.client-ip=40.107.94.78
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=amd.com
+Authentication-Results: smtp.subspace.kernel.org; spf=fail smtp.mailfrom=amd.com
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=BSFIkMToHT68UmghzzVK3sgzH5OVHPbBrCcH97Pxlc8lX6nTdQyaEKqwnTeLTUldKZig5zEBS9Nvr2mYqDWuNayILaAqTumA3iGzQuE/oSDd7kgWujspkanFhbGPE6D/OZuZxEKparM6Po9KDania9tRlb6HurkhP/PQhXIVDaU0T1pxNwDozX26pcl0A1Ru4vy1BwPVIf+U5Jx/wNqa9kv/gwrsRAdSc7O9Myvtnc3N6rnd1yxBK+54lWSW/ty3s7gXTxWKk8o3q/ffROhqo735Y0Pmtd3LS7IU1R9SgZGkgIXNbR6Y5/dDGHL5P6UlU9bcNVa1fHSyf6EYzkiK1w==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=VQhVmICdvrOW50Wlk98j4ECopkC6395VSHr/PhS0g3Y=;
+ b=Y2gChYEiqnQ/CAx9gzz7FS/HmL27lEc7uGgGMfYAFS+fBIYy82N8GxULi0dQEkn7NZ/s9GPY30RZZ6c5+86VKm1lB0gUtYqRMDtXi+Uro82PXhLQeNE2ISQ9RjmeBhQM75cPUQlkAz7iqWy+2u3rdd0YOkEBd4WYKQmadAN2S48KH4RJiuAcocHa1/0qQKCyS3S/er9MFWvofKdi8cS/QURPSQ28gShNxIyqYLZ6pW6OhjDTwDGeZRZRlcPFiEKnWvy6TIuKBvlA70Fir+Yo1MUigvmln26zNkvOdxns0Ov0YBRyulqWi6Sa+jqv+W+iM9AuCxeKDlKpCatdbH6v9w==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass (sender ip is
+ 165.204.84.17) smtp.rcpttodomain=alien8.de smtp.mailfrom=amd.com; dmarc=pass
+ (p=quarantine sp=quarantine pct=100) action=none header.from=amd.com;
+ dkim=none (message not signed); arc=none (0)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=amd.com; s=selector1;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
+ bh=VQhVmICdvrOW50Wlk98j4ECopkC6395VSHr/PhS0g3Y=;
+ b=e6/y+tnMJMwWkZ0KAHozMWqIoXR5XEZiHgIWHZ1nP1OVd/yRx8vZd0Kjyd1TIXNKlajWMMZt4bDXKgYe3gDD4TB5FCLJr753b0KSlIx8UKe/NSn54fTBKJwBA8kt4DFZtsCYb0I4WsI8QZzxUsc/RT+z1RhEG5ii1VlYOrObsZQ=
+Received: from MW3PR05CA0024.namprd05.prod.outlook.com (2603:10b6:303:2b::29)
+ by SJ1PR12MB6243.namprd12.prod.outlook.com (2603:10b6:a03:456::13) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Tue, 19 Mar
+ 2024 11:33:34 +0000
+Received: from CO1PEPF000066E6.namprd05.prod.outlook.com
+ (2603:10b6:303:2b:cafe::7c) by MW3PR05CA0024.outlook.office365.com
+ (2603:10b6:303:2b::29) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7409.12 via Frontend
+ Transport; Tue, 19 Mar 2024 11:33:33 +0000
+X-MS-Exchange-Authentication-Results: spf=pass (sender IP is 165.204.84.17)
+ smtp.mailfrom=amd.com; dkim=none (message not signed)
+ header.d=none;dmarc=pass action=none header.from=amd.com;
+Received-SPF: Pass (protection.outlook.com: domain of amd.com designates
+ 165.204.84.17 as permitted sender) receiver=protection.outlook.com;
+ client-ip=165.204.84.17; helo=SATLEXMB04.amd.com; pr=C
+Received: from SATLEXMB04.amd.com (165.204.84.17) by
+ CO1PEPF000066E6.mail.protection.outlook.com (10.167.249.4) with Microsoft
+ SMTP Server (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.20.7409.10 via Frontend Transport; Tue, 19 Mar 2024 11:33:33 +0000
+Received: from quartz-7b1chost.amd.com (10.180.168.240) by SATLEXMB04.amd.com
+ (10.181.40.145) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id 15.1.2507.35; Tue, 19 Mar
+ 2024 06:33:32 -0500
+From: Yazen Ghannam <yazen.ghannam@amd.com>
+To: <bp@alien8.de>, <tony.luck@intel.com>, <linux-edac@vger.kernel.org>
+CC: <linux-kernel@vger.kernel.org>, <avadhut.naik@amd.com>,
+	<john.allen@amd.com>, <naveenkrishna.chatradhi@amd.com>,
+	<muralidhara.mk@amd.com>, Yazen Ghannam <yazen.ghannam@amd.com>
+Subject: [PATCH 0/2] FMPM Fixes
+Date: Tue, 19 Mar 2024 06:33:20 -0500
+Message-ID: <20240319113322.280096-1-yazen.ghannam@amd.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -58,142 +85,59 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 Content-Type: text/plain
-X-ClientProxiedBy: dggems702-chm.china.huawei.com (10.3.19.179) To
- dggpeml500021.china.huawei.com (7.185.36.21)
+X-ClientProxiedBy: SATLEXMB03.amd.com (10.181.40.144) To SATLEXMB04.amd.com
+ (10.181.40.145)
+X-EOPAttributedMessage: 0
+X-MS-PublicTrafficType: Email
+X-MS-TrafficTypeDiagnostic: CO1PEPF000066E6:EE_|SJ1PR12MB6243:EE_
+X-MS-Office365-Filtering-Correlation-Id: d00a6de7-ea74-4083-6826-08dc480868c0
+X-MS-Exchange-SenderADCheck: 1
+X-MS-Exchange-AntiSpam-Relay: 0
+X-Microsoft-Antispam: BCL:0;
+X-Microsoft-Antispam-Message-Info:
+	TRezc3bzWF5Ge2SxdpsPe0pAZ1bmU2uZnOn7HWiUWNnOw5UmkRuuGsvFdeb3DRFjHrCgGXAZU7jm+vXnbvuI3Sq56vwHhtOaTav1GPpbFOMU4PhJTajN4ON18I+dEhblGiaXV5j1pJGdSteKXveEElrEOS1xoWYpGQLadaUWxv9A9yrWEsUC6uqp3KKvh2+7FvtoEb5dP1SRbjvJ7uwyaflrwEBHlfp1gWfB2ixHvCMqx7v/8HsqCjnK3VK0GCF7szPcKIxcKsmlWfKH6agDV1bp+mKnkSiatFRRxiM9JPVrK1l0tu3YYEu6zNJhY/iCH1s69fQ9CzzhLocqlr5zAaspXa4brRuX3JgpqE9ibYAdMfeFOZat9U6DJ3TTX/PlrlZEea7kbR0GeEQD7JC1jsC+Ykk/mi9/LDCwSHzepN7f+Il3Wqj2iQ1ZDvBB5WOBtZX2vxf9NeU+WLQ0ZZKCYzTaF0ivRJF+aBBN+DHbgl2PCG9yd3dGMuBG0q8+atcX5c9aMy43aYu8dhiuA8Q4952/tMbrevte+MPYgx6LCA+mbKxG/4vxefkmKeobEr7rBokM2OQcSTiHVzXIJ1cAuM/21nBMPo8ehVoqdqoq4Cl0sQXj73uIqvqRH4zuQV2Hyw2OazM7AQ2+aADxOwq/FgVICMKHO0BZpuQweq+GWizOeFpe/nrjhHnYMOLZQ719P2Wk6Ukndo7fWjSQ57MVSQ==
+X-Forefront-Antispam-Report:
+	CIP:165.204.84.17;CTRY:US;LANG:en;SCL:1;SRV:;IPV:CAL;SFV:NSPM;H:SATLEXMB04.amd.com;PTR:InfoDomainNonexistent;CAT:NONE;SFS:(13230031)(1800799015)(82310400014)(376005)(36860700004);DIR:OUT;SFP:1101;
+X-OriginatorOrg: amd.com
+X-MS-Exchange-CrossTenant-OriginalArrivalTime: 19 Mar 2024 11:33:33.1177
+ (UTC)
+X-MS-Exchange-CrossTenant-Network-Message-Id: d00a6de7-ea74-4083-6826-08dc480868c0
+X-MS-Exchange-CrossTenant-Id: 3dd8961f-e488-4e60-8e11-a82d994e183d
+X-MS-Exchange-CrossTenant-OriginalAttributedTenantConnectingIp: TenantId=3dd8961f-e488-4e60-8e11-a82d994e183d;Ip=[165.204.84.17];Helo=[SATLEXMB04.amd.com]
+X-MS-Exchange-CrossTenant-AuthSource:
+	CO1PEPF000066E6.namprd05.prod.outlook.com
+X-MS-Exchange-CrossTenant-AuthAs: Anonymous
+X-MS-Exchange-CrossTenant-FromEntityHeader: HybridOnPrem
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: SJ1PR12MB6243
 
-We can trigger a slab-out-of-bounds with the following commands:
+Hi all,
 
-    mkfs.ext4 -F /dev/$disk 10G
-    mount /dev/$disk /tmp/test
-    echo 2147483647 > /sys/fs/ext4/$disk/mb_group_prealloc
-    echo test > /tmp/test/file && sync
+This set includes two fixes for issues found during further testing of
+the FMPM module.
 
-==================================================================
-BUG: KASAN: slab-out-of-bounds in ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
-Read of size 8 at addr ffff888121b9d0f0 by task kworker/u2:0/11
-CPU: 0 PID: 11 Comm: kworker/u2:0 Tainted: GL 6.7.0-next-20240118 #521
-Call Trace:
- dump_stack_lvl+0x2c/0x50
- kasan_report+0xb6/0xf0
- ext4_mb_find_good_group_avg_frag_lists+0x8a/0x200 [ext4]
- ext4_mb_regular_allocator+0x19e9/0x2370 [ext4]
- ext4_mb_new_blocks+0x88a/0x1370 [ext4]
- ext4_ext_map_blocks+0x14f7/0x2390 [ext4]
- ext4_map_blocks+0x569/0xea0 [ext4]
- ext4_do_writepages+0x10f6/0x1bc0 [ext4]
-[...]
-==================================================================
+Patch 1 fixes a NULL pointer dereference. This is a resend.
 
-The flow of issue triggering is as follows:
+Link:
+https://lore.kernel.org/r/20240312154937.1102727-1-yazen.ghannam@amd.com
 
-// Set s_mb_group_prealloc to 2147483647 via sysfs
-ext4_mb_new_blocks
-  ext4_mb_normalize_request
-    ext4_mb_normalize_group_request
-      ac->ac_g_ex.fe_len = EXT4_SB(sb)->s_mb_group_prealloc
-  ext4_mb_regular_allocator
-    ext4_mb_choose_next_group
-      ext4_mb_choose_next_group_best_avail
-        mb_avg_fragment_size_order
-          order = fls(len) - 2 = 29
-        ext4_mb_find_good_group_avg_frag_lists
-          frag_list = &sbi->s_mb_avg_fragment_size[order]
-          if (list_empty(frag_list)) // Trigger SOOB!
+Patch 2 fixes a record restoration issue affecting a couple of
+scenarios.
 
-At 4k block size, the length of the s_mb_avg_fragment_size list is 14,
-but an oversized s_mb_group_prealloc is set, causing slab-out-of-bounds
-to be triggered by an attempt to access an element at index 29.
+Both include Murali's Tested-by tag.
 
-Add a new attr_id attr_clusters_in_group with values in the range
-[0, sbi->s_clusters_per_group] and declare mb_group_prealloc as
-that type to fix the issue. In addition avoid returning an order
-from mb_avg_fragment_size_order() greater than MB_NUM_ORDERS(sb)
-and reduce some useless loops.
+Thanks,
+Yazen
 
-Fixes: 7e170922f06b ("ext4: Add allocation criteria 1.5 (CR1_5)")
-CC: stable@vger.kernel.org
-Signed-off-by: Baokun Li <libaokun1@huawei.com>
-Reviewed-by: Jan Kara <jack@suse.cz>
-Reviewed-by: Ojaswin Mujoo <ojaswin@linux.ibm.com>
----
- fs/ext4/mballoc.c |  4 ++++
- fs/ext4/sysfs.c   | 13 ++++++++++++-
- 2 files changed, 16 insertions(+), 1 deletion(-)
+Yazen Ghannam (2):
+  RAS/AMD/FMPM: Avoid NULL ptr deref in get_saved_records()
+  RAS/AMD/FMPM: Safely handle saved records of various sizes
 
-diff --git a/fs/ext4/mballoc.c b/fs/ext4/mballoc.c
-index 12b3f196010b..dbf04f91516c 100644
---- a/fs/ext4/mballoc.c
-+++ b/fs/ext4/mballoc.c
-@@ -831,6 +831,8 @@ static int mb_avg_fragment_size_order(struct super_block *sb, ext4_grpblk_t len)
- 		return 0;
- 	if (order == MB_NUM_ORDERS(sb))
- 		order--;
-+	if (WARN_ON_ONCE(order > MB_NUM_ORDERS(sb)))
-+		order = MB_NUM_ORDERS(sb) - 1;
- 	return order;
- }
- 
-@@ -1008,6 +1010,8 @@ static void ext4_mb_choose_next_group_best_avail(struct ext4_allocation_context
- 	 * goal length.
- 	 */
- 	order = fls(ac->ac_g_ex.fe_len) - 1;
-+	if (WARN_ON_ONCE(order - 1 > MB_NUM_ORDERS(ac->ac_sb)))
-+		order = MB_NUM_ORDERS(ac->ac_sb);
- 	min_order = order - sbi->s_mb_best_avail_max_trim_order;
- 	if (min_order < 0)
- 		min_order = 0;
-diff --git a/fs/ext4/sysfs.c b/fs/ext4/sysfs.c
-index 7f455b5f22c0..ddd71673176c 100644
---- a/fs/ext4/sysfs.c
-+++ b/fs/ext4/sysfs.c
-@@ -29,6 +29,7 @@ typedef enum {
- 	attr_trigger_test_error,
- 	attr_first_error_time,
- 	attr_last_error_time,
-+	attr_clusters_in_group,
- 	attr_feature,
- 	attr_pointer_ui,
- 	attr_pointer_ul,
-@@ -207,13 +208,14 @@ EXT4_ATTR_FUNC(sra_exceeded_retry_limit, 0444);
- 
- EXT4_ATTR_OFFSET(inode_readahead_blks, 0644, inode_readahead,
- 		 ext4_sb_info, s_inode_readahead_blks);
-+EXT4_ATTR_OFFSET(mb_group_prealloc, 0644, clusters_in_group,
-+		 ext4_sb_info, s_mb_group_prealloc);
- EXT4_RW_ATTR_SBI_UI(inode_goal, s_inode_goal);
- EXT4_RW_ATTR_SBI_UI(mb_stats, s_mb_stats);
- EXT4_RW_ATTR_SBI_UI(mb_max_to_scan, s_mb_max_to_scan);
- EXT4_RW_ATTR_SBI_UI(mb_min_to_scan, s_mb_min_to_scan);
- EXT4_RW_ATTR_SBI_UI(mb_order2_req, s_mb_order2_reqs);
- EXT4_RW_ATTR_SBI_UI(mb_stream_req, s_mb_stream_request);
--EXT4_RW_ATTR_SBI_UI(mb_group_prealloc, s_mb_group_prealloc);
- EXT4_RW_ATTR_SBI_UI(mb_max_linear_groups, s_mb_max_linear_groups);
- EXT4_RW_ATTR_SBI_UI(extent_max_zeroout_kb, s_extent_max_zeroout_kb);
- EXT4_ATTR(trigger_fs_error, 0200, trigger_test_error);
-@@ -376,6 +378,7 @@ static ssize_t ext4_generic_attr_show(struct ext4_attr *a,
- 
- 	switch (a->attr_id) {
- 	case attr_inode_readahead:
-+	case attr_clusters_in_group:
- 	case attr_pointer_ui:
- 		if (a->attr_ptr == ptr_ext4_super_block_offset)
- 			return sysfs_emit(buf, "%u\n", le32_to_cpup(ptr));
-@@ -455,6 +458,14 @@ static ssize_t ext4_generic_attr_store(struct ext4_attr *a,
- 		else
- 			*((unsigned int *) ptr) = t;
- 		return len;
-+	case attr_clusters_in_group:
-+		ret = kstrtouint(skip_spaces(buf), 0, &t);
-+		if (ret)
-+			return ret;
-+		if (t > sbi->s_clusters_per_group)
-+			return -EINVAL;
-+		*((unsigned int *) ptr) = t;
-+		return len;
- 	case attr_pointer_ul:
- 		ret = kstrtoul(skip_spaces(buf), 0, &lt);
- 		if (ret)
+ drivers/ras/amd/fmpm.c | 57 +++++++++++++++++++++++++++++-------------
+ 1 file changed, 39 insertions(+), 18 deletions(-)
+
+
+base-commit: b3603fcb79b1036acae10602bffc4855a4b9af80
 -- 
-2.31.1
+2.34.1
 
 
