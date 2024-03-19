@@ -1,283 +1,243 @@
-Return-Path: <linux-kernel+bounces-107532-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107533-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id E7C3387FDBC
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:46:45 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 994B587FDC1
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 13:47:48 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 9D683282D4E
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:46:44 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 493602830A4
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 12:47:47 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 25A4A5A4D4;
-	Tue, 19 Mar 2024 12:46:39 +0000 (UTC)
-Received: from mail.loongson.cn (mail.loongson.cn [114.242.206.163])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 33E681E4BF;
-	Tue, 19 Mar 2024 12:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=114.242.206.163
-ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710852398; cv=none; b=CA42twbWp9t7bcrfsIH69D832AGNYqmL3KHadQgYnCtIrQ4b9eFz6neEHuEnr0pDIoKlyao7UV/OIUNoMqiIe0n1MQrtQwKZV6LSN7bOhigSIuhxgzk6zxlv2je8zdgdLjyscxebGJi+/OpTc09yekV9dDXbhUII12BtxWdCDaQ=
-ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710852398; c=relaxed/simple;
-	bh=xDJ9o0U/p8hNV7ctugo3aBUbHoyNSgcIOdZ4zET/yfc=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=Jw7zYOKh8Wtiho1UEnI7m0Kn+pacSEJOigdUozT7AsGy6C9uFzTP/WzKZoQtoCe5Qk4bJzRz0DhSLCc6hNUEUjTF2uKJxZ2ZTZjFixBMEUfMu1W0m6hXvwoxHca0QGC0nFG4XiAYlI+o9SdUpDEkO15rxvXeT5wHRudNo0tZJoo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn; spf=pass smtp.mailfrom=loongson.cn; arc=none smtp.client-ip=114.242.206.163
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=loongson.cn
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=loongson.cn
-Received: from loongson.cn (unknown [10.2.10.34])
-	by gateway (Coremail) with SMTP id _____8Ax++goifllWsEaAA--.44396S3;
-	Tue, 19 Mar 2024 20:46:32 +0800 (CST)
-Received: from localhost.localdomain (unknown [10.2.10.34])
-	by localhost.localdomain (Coremail) with SMTP id AQAAf8DxPBMnifllzHJdAA--.49319S2;
-	Tue, 19 Mar 2024 20:46:31 +0800 (CST)
-From: Tianyang Zhang <zhangtianyang@loongson.cn>
-To: chenhuacai@kernel.org,
-	jiaxun.yang@flygoat.com,
-	tglx@linutronix.de
-Cc: linux-mips@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	Baoqi Zhang <zhangbaoqi@loongson.cn>,
-	Biao Dong <dongbiao@loongson.cn>,
-	Tianyang Zhang <zhangtianyang@loongson.cn>
-Subject: [PATCH V3] irqchip/loongson-pch-pic: Update interrupt registration policy
-Date: Tue, 19 Mar 2024 20:46:29 +0800
-Message-Id: <20240319124629.23925-1-zhangtianyang@loongson.cn>
-X-Mailer: git-send-email 2.20.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 66E967E761;
+	Tue, 19 Mar 2024 12:47:38 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="eOFh4qc8"
+Received: from mx0b-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	(No client certificate requested)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9676E56742;
+	Tue, 19 Mar 2024 12:47:35 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=148.163.135.77
+ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710852457; cv=fail; b=UQwbLh99PqOa2jZ7zPlTWct5TWpu5/DnDI3p4VdudGoeNHRHPJABwtNyfWlRrj8i2yDPoeXo/yt9mC7Bn7+yEWNU0ElfLPDBjbMDvfJz4Ze8mQXIKLTBd1JFBQn2eaukSPk/sSkc0ZB3PVu67CM2IRAor5n33nYVPxrCoA5leKw=
+ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710852457; c=relaxed/simple;
+	bh=F1fTH/2od2kDeD09Q/SsJz7yn08qzLSlT9SWtEzSzRU=;
+	h=From:To:Subject:Date:Message-ID:References:In-Reply-To:
+	 Content-Type:MIME-Version; b=KOq1kMVTx6vHcXDsdODmhSA7/Sh9gm4hYo6R/Lz3OqrJAwAv6CwjV0XXy7bQWg3mopPpN9ZGlmLp7/TSRSH7lsyhYldEOKznEy0k8bTvJ+JjJubewHk1cnmciJKwa8Xk5uQ491phd2Hdpg5c1qzLe6rkPj2GlYcFOdI3GBoSf/w=
+ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=eOFh4qc8; arc=fail smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0375855.ppops.net [127.0.0.1])
+	by mx0b-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JCiJ9h014761;
+	Tue, 19 Mar 2024 08:47:18 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:subject:date:message-id:references:in-reply-to
+	:content-type:content-transfer-encoding:mime-version; s=DKIM;
+	 bh=F1fTH/2od2kDeD09Q/SsJz7yn08qzLSlT9SWtEzSzRU=; b=eOFh4qc88WRE
+	rvjTGiORF8PrYGG+/wxVpCPtzxwj0/0FygqAaahNTzXQIdc45aZD5usy+nG/BuHm
+	Fft1XuSfDFnf9NnfrX6a+puZ/+wLICUkn1XApJkqVMyZID3fUiLwXnYuogvKmEch
+	VTDpzTIEPbrgkLm1C99nHtR7T0PabydvJOE5Enq7hc6E4Ey6YjxAuc2DpnZcPKNZ
+	UvDd8sH0ioqNzSWENIFLLamr/zo84YALF6Hz0xL42bwJ/HBfL0/d0U97ic/I5TcQ
+	K2971uGfv604vv+BK8gtOHWwj5SF1qqA/4KpM1TC0xK/fD8sncOUMASHzYrNOuiC
+	9S0vyTuAgQ==
+Received: from nam12-dm6-obe.outbound.protection.outlook.com (mail-dm6nam12lp2169.outbound.protection.outlook.com [104.47.59.169])
+	by mx0b-00128a01.pphosted.com (PPS) with ESMTPS id 3wyayr80c2-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 08:47:18 -0400 (EDT)
+ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
+ b=Mtnb5wqVx5Qfo7d+lnHFLR/uKKgKL21v0ghm6pNTzTcXdjaozni3A88uQC4Y/2nrimp6CPRjpI7PEADXX7FpADr4aG1zKlfmJDNStrymnel+1IKya8KZ8eC0MvkU0QoMHmGTETCC5LNlMU7sArTuNeLM9I59BlHXAsDdhzwxVut46MqDNASMgud+zKh9bE0vSwJeR9lMCmOOFHGrIgaAIzccLw7wQJNBEjkHAtL1VEqzIQAa12zsLTx0+MVAFkxXI4QZT+ZhEAV5gxMZGvppKWEI4LvDHFi78KoAZ3TNg2BGAefKvjAxnQ6iq8JjztAk0pZpkrOiDLXFIgymGFmc7g==
+ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
+ s=arcselector9901;
+ h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
+ bh=F1fTH/2od2kDeD09Q/SsJz7yn08qzLSlT9SWtEzSzRU=;
+ b=YFx9FLwYDAMQtCmE6iCge1ZpyrWtOHBiyxb9DlKFeZc19YMgHsaT/Aqu7ezNsCH8Zur8wNyGN1Tefe5BAQZlt0lWUmC4wnOR9HN9rpOmNUSr8dBmOSTXJdQjmCTelyE5q6dZ8Vbe3r4r8LkQ5VZ8XAnVNbfIu1B3LBR6bj+RBrVeIC/gd9dAlUNbBFTSw+F31QZ33Rx7sPqCAWLH9wjyV53EWtUD7zU3keTCNAY59RdMtKkjsK1mS7knZ6sYnJeEMUTLwWe2LNt84HeUX38ZYVDEa1FFZdBNQPdcimedd5ssAyvfZhbWEATZ1P38c0i9UpilCTfSNvTQq7tcvng2cg==
+ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
+ smtp.mailfrom=analog.com; dmarc=pass action=none header.from=analog.com;
+ dkim=pass header.d=analog.com; arc=none
+Received: from SA1PR03MB6499.namprd03.prod.outlook.com (2603:10b6:806:1c6::8)
+ by CH0PR03MB6019.namprd03.prod.outlook.com (2603:10b6:610:be::5) with
+ Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.28; Tue, 19 Mar
+ 2024 12:47:16 +0000
+Received: from SA1PR03MB6499.namprd03.prod.outlook.com
+ ([fe80::44:7752:4ad:9382]) by SA1PR03MB6499.namprd03.prod.outlook.com
+ ([fe80::44:7752:4ad:9382%4]) with mapi id 15.20.7386.025; Tue, 19 Mar 2024
+ 12:47:16 +0000
+From: "Sabau, Radu bogdan" <Radu.Sabau@analog.com>
+To: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+        Jean Delvare
+	<jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        Rob Herring
+	<robh@kernel.org>,
+        Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Delphine CC Chiu <Delphine_CC_Chiu@Wiwynn.com>,
+        "linux-hwmon@vger.kernel.org"
+	<linux-hwmon@vger.kernel.org>,
+        "devicetree@vger.kernel.org"
+	<devicetree@vger.kernel.org>,
+        "linux-kernel@vger.kernel.org"
+	<linux-kernel@vger.kernel.org>,
+        "linux-doc@vger.kernel.org"
+	<linux-doc@vger.kernel.org>,
+        "linux-i2c@vger.kernel.org"
+	<linux-i2c@vger.kernel.org>
+Subject: RE: [PATCH v2 1/2] dt-bindings: hwmon: pmbus: adp1050 : add bindings
+Thread-Topic: [PATCH v2 1/2] dt-bindings: hwmon: pmbus: adp1050 : add bindings
+Thread-Index: AQHaefElPrkIMUXvjkiLIat9R3wUf7E++iCAgAAHnvA=
+Date: Tue, 19 Mar 2024 12:47:16 +0000
+Message-ID: 
+ <SA1PR03MB649924961A6062A30AA47A6CF72C2@SA1PR03MB6499.namprd03.prod.outlook.com>
+References: <20240319113213.19083-1-radu.sabau@analog.com>
+ <35acf78b-1a0d-49d4-b9a2-4b946508f32b@linaro.org>
+In-Reply-To: <35acf78b-1a0d-49d4-b9a2-4b946508f32b@linaro.org>
+Accept-Language: en-US
+Content-Language: en-US
+X-MS-Has-Attach: 
+X-MS-TNEF-Correlator: 
+x-dg-ref: 
+ =?utf-8?B?UEcxbGRHRStQR0YwSUc1dFBTSmliMlI1TG5SNGRDSWdjRDBpWXpwY2RYTmxj?=
+ =?utf-8?B?bk5jY25OaFluVXlYR0Z3Y0dSaGRHRmNjbTloYldsdVoxd3dPV1E0TkRsaU5p?=
+ =?utf-8?B?MHpNbVF6TFRSaE5EQXRPRFZsWlMwMllqZzBZbUV5T1dVek5XSmNiWE5uYzF4?=
+ =?utf-8?B?dGMyY3RZMlkyTURjMU5UVXRaVFZsWlMweE1XVmxMV0UxWVRBdE9HTXdOR0po?=
+ =?utf-8?B?T0RWa1pqRTJYR0Z0WlMxMFpYTjBYR05tTmpBM05UVTJMV1UxWldVdE1URmxa?=
+ =?utf-8?B?UzFoTldFd0xUaGpNRFJpWVRnMVpHWXhObUp2WkhrdWRIaDBJaUJ6ZWowaU16?=
+ =?utf-8?B?VTFOaUlnZEQwaU1UTXpOVFV6TWpZd016VXhNVGsxTURNNElpQm9QU0pTV2xG?=
+ =?utf-8?B?WVRUUlpSMk5tVFRZNVRIQkRZMFY0TUdSRGJsWnVUVFE5SWlCcFpEMGlJaUJp?=
+ =?utf-8?B?YkQwaU1DSWdZbTg5SWpFaUlHTnBQU0pqUVVGQlFVVlNTRlV4VWxOU1ZVWk9R?=
+ =?utf-8?B?MmRWUVVGRmIwTkJRVU5sUWpsVFVpc3pibUZCVm5KcGRIZFhOR0kxVmxwWGRV?=
+ =?utf-8?B?c3pRbUpvZG14V2EwUkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlNFRkJRVUZFWVVGUlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UlVGQlVVRkNRVUZCUVd4SFZFZFdaMEZCUVVGQlFVRkJRVUZCUVVGQlFVbzBR?=
+ =?utf-8?B?VUZCUW1oQlIxRkJZVkZDWmtGSVRVRmFVVUpxUVVoVlFXTm5RbXhCUmpoQlkw?=
+ =?utf-8?B?RkNlVUZIT0VGaFowSnNRVWROUVdSQlFucEJSamhCV21kQ2FFRkhkMEZqZDBK?=
+ =?utf-8?B?c1FVWTRRVnBuUW5aQlNFMUJZVkZDTUVGSGEwRmtaMEpzUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZGUVVGQlFVRkJRVUZCUVdk?=
+ =?utf-8?B?QlFVRkJRVUZ1WjBGQlFVZEZRVnBCUW5CQlJqaEJZM2RDYkVGSFRVRmtVVUo1?=
+ =?utf-8?B?UVVkVlFWaDNRbmRCU0VsQlluZENjVUZIVlVGWmQwSXdRVWhOUVZoM1FqQkJS?=
+ =?utf-8?B?MnRCV2xGQ2VVRkVSVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlVVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVTkJRVUZCUVVGRFpVRkJRVUZaVVVKclFVZHJRVmgzUW5wQlIx?=
+ =?utf-8?B?VkJXWGRDTVVGSVNVRmFVVUptUVVoQlFXTm5RblpCUjI5QldsRkNha0ZJVVVG?=
+ =?utf-8?B?amQwSm1RVWhSUVdGUlFteEJTRWxCVFdkQlFVRkJRVUZCUVVGQlFVRkJRVUZC?=
+ =?utf-8?B?UVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJR?=
+ =?utf-8?B?VUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFV?=
+ =?utf-8?B?RkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVGQlFVRkJRVUZCUVVG?=
+ =?utf-8?B?QlFVRkJRa0ZCUVVGQlFVRkJRVUZKUVVGQlFVRkJRVDA5SWk4K1BDOXRaWFJo?=
+ =?utf-8?B?UGc9PQ==?=
+x-dg-rorf: true
+x-ms-publictraffictype: Email
+x-ms-traffictypediagnostic: SA1PR03MB6499:EE_|CH0PR03MB6019:EE_
+x-ms-exchange-senderadcheck: 1
+x-ms-exchange-antispam-relay: 0
+x-microsoft-antispam: BCL:0;
+x-microsoft-antispam-message-info: 
+ 6R81zhiC/uYHwlv0AaL6r43wJGAh17nMaKGigfOmSxRtGIa0tbcAiBfsueEhriGI1Th96aXtVHZ2K/Vpbz/5MvuLKE+Uj8a8/8wt48obtKy2GomFJW7eeMV6Q8kdQONZh0ehOQd59YmphZD2VXe2ylV3g80d1/Y/BiQGnU5TFLwu3w/z8f7vwUnDy4YRN4ZaAf5b/3/JUuX28+SjL3NljYfUMm67BNkQ74xBBCYOfKb3Ql/RMUc8jqM+smCOWZF0tVTnOykZLXShbhAkXhY93KddzV8EkoOlk7Yb87O/KvvZw9zZiKnAiQ1Db8mkQ2yOrHrCJ5oah3/2Mv8K/18Qrr2hCicV7WYwFul4k+kkPPVpI/OI8KIIdNxLH3PBDRUZ8CmlYtHc/rJOQ6l4/UPRdtnCzFNaGgt7Dj83QOmbEb9bHaLtVp/+EhS0FR8nAkRmp44j+s8hjmh43MAC3m9TOmJWvKrfUkG/TqFXdP6ObYHBG53CpeAinCrbwfEKW9AgeAu+Odqv9+El3abYi/tkuNRX4IOaghjlgSk5ItsRpoyQq26WCAViMMBFSEjBNwrJyz45HU/pNOPr0aCXcCdLvBwDRC2fwUj7Q7KfKX8Pnj/xTUaurMOejEu+68XKZDMawRvJBHtAxpyUkjPunhmfh01Sddnwdp8IaVckLxZ9P7v5N+M0Jo45gO9wOrHnr24Pz5ofrag1xGH2QYnwfKG2qw==
+x-forefront-antispam-report: 
+ CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SA1PR03MB6499.namprd03.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(1800799015)(366007)(7416005)(376005)(921011);DIR:OUT;SFP:1102;
+x-ms-exchange-antispam-messagedata-chunkcount: 1
+x-ms-exchange-antispam-messagedata-0: 
+ =?utf-8?B?Yjk5WkhCMzQyUEhlQUJJWDBPcVlwaXpiVXpVcFc0VkRzNGkzbTlNYW1rdjhv?=
+ =?utf-8?B?aWNwUDJwM0RVRFRkL2tKRHZjWm02L3dhaVpNOEM0WFVVUGEyZEVFNVVQZklM?=
+ =?utf-8?B?T2lOVEpaUE96WjhJQWlSR3BBMlBKaUwvTEVTdWpIU09pRkRRNHJEUUFvRzdl?=
+ =?utf-8?B?N2JkUkZ4SFpoc2gxUjRQR1ZDTTk1SmpxaXd5TlIrdTVueFE1dC9HY29WakZs?=
+ =?utf-8?B?bUEwSTB5bEs2cWNFYkhXWlNsbXdQZmNGREVKMWJNTWhpVXF2WnIzSUZBcldw?=
+ =?utf-8?B?c0VXczRHTXRVN0l3TmFHT1JVcXZrRHR2bHp6dnFWVWRpSFR6bUxVaDVKdUhB?=
+ =?utf-8?B?YWFuZ2pZUFRkblk2ZW55c2NiRG91SWlkbDZucnJSZUVqOE83eWxZbGlaUE1U?=
+ =?utf-8?B?RFNkTzVSQjVpNUdKSDhqejRyWERzWXQrZ1dpSjROZGZaREhaSFlmMTlvRlJv?=
+ =?utf-8?B?WHEyZVhYbjBWYlZlUm9QbDdqc09jS29rSHpGaFJOUnA2ajNUcG90RjNVQndU?=
+ =?utf-8?B?NzMzeDljL1EzZTZuZU1QMGNsYlRZVllZNmNqZHp6TEh5YTZyMjE5empiTkFP?=
+ =?utf-8?B?cDFTNnVlY3V2a2NLMlV4MVZFVjFtc21pUGNQQ2VGd2ZnblZIYjBka01RTmpU?=
+ =?utf-8?B?RFAvWSthRmQ4bUVZMEg1L0tqc3o2cjV0UFhLNFlNYzF5Y1ZJTFhZTHN1SnRM?=
+ =?utf-8?B?S01GSmZsR2RXUS9CUUpyaWVEc09TVGNMN3BudTh0VE16bStWQ3piRnhBZHBF?=
+ =?utf-8?B?ZGxqKzMyOHJBeUsyUnU1bVZURG1mR2R0OHRaVWtvcFpnNWJzSGx5ZThneUVi?=
+ =?utf-8?B?dDc2eDlmUXYvNHhEdDdUdDRHRURCY3Qzc1JOdjExdzNwRm9Bb1pEL0VVcE54?=
+ =?utf-8?B?WENuM2tSRDdCNGVQYUJmYi8vc3M4L0pEbXhBS2FYMUlGdlI2ZWQ3TDZuWDVx?=
+ =?utf-8?B?L1ROdDJUS0dkdzRGNU5VK08yeG5KeHd3RlcrRVlaSFNvSmdnRnhrcmJIWGFL?=
+ =?utf-8?B?bnEwWUN0azlTVGlxOHpsMndWQnZOYU8xZkdvdEh1Wlcra1krRUJ0TEdjWlBN?=
+ =?utf-8?B?bENOVkY5WmdjL21LOHVXN0NESFlnQk4raGNjaHB0YzNGSjlhT1p3VzhBTlBk?=
+ =?utf-8?B?K1A3Ykh2UDU2L2VrSnYxSVB2UysrWVFjRjlZQmwwWkNrQW5DaUZrbUwycHF4?=
+ =?utf-8?B?SkZaeTZvZUNIMmpFMytaWDIveG9ZZ0JvRDVyalJtOUwwMnFqeXR4VnlCMFht?=
+ =?utf-8?B?NnF4cXV1Y243d2ljSEgzRUlJM1FFWjB6RldGbmJLd0ZTcm4vMHh4ZjlLZG1M?=
+ =?utf-8?B?ZzlSRjc4OGwySlVjdGFvcndSQnhrY093M1IzTVZmV3MzN3VLUWZtcllET3Mv?=
+ =?utf-8?B?S3psTEVZWVlzMzRVQXNsWkRmMjBjajhXQTF0RXJpOTBWUjhXK2N1UnlJY0tw?=
+ =?utf-8?B?T0pxZXlDYnFBZzlYMTBSc2hWck1CY3lvQ2czbWZnTTJFWnZzTEh5aFJVKzY1?=
+ =?utf-8?B?NHdncWtFVVFzY2hjK1h6VXcrc0o0VC9XM0RheXhwcGtmRHlOSG9xZUZwQlRY?=
+ =?utf-8?B?Ui9rbWRua3gvaEJGRGczQnVyTGd6ZnZKR29TdUF4ck5iYkJ0eWhyRkliWTFI?=
+ =?utf-8?B?VHhzMmtFa3hBbzBzbW5DOExYb29VTnNRZjc3eFZjWXRvak9XS0poVkRhQi9i?=
+ =?utf-8?B?MCtBVGNtcVNPWUZzNk5hUnZkT1hhajdzREYyMnJYZmlraEFwbm1tZld1OVph?=
+ =?utf-8?B?SHV6R2psWjRyMHZXdzF1M2lYVHpNZDNRc3FaL29YS3V4cyt5VXUveVZiUEhU?=
+ =?utf-8?B?NWwrM1NNSUxRcXp1WVBrTjRTUVBLTVlncEZadFBySXVtRmJldkY0Ynd1azlC?=
+ =?utf-8?B?bDIvQlZEU0NBb2xXYzVSQTBvWEtKeHM0YXNOUjQyby9RMGtMak12Q3BVMGdK?=
+ =?utf-8?B?bXFYeHZhaHJQeEg3RmpabnFrYmk0VldyRi9hVnF3VE9oclFONEx2bVYrcUFU?=
+ =?utf-8?B?Skxiam1OdW5PNzRhS1pGVHREbHhZZmRWM1BMT0VvRTlPMmJkU0hUNGFwaG1W?=
+ =?utf-8?B?YjNRckd1NUlVU0Y1SGtOQjhLVE5MaWxPUkZ3ekI1TmRDd3pybVpmY3RWeWdR?=
+ =?utf-8?Q?/03V2RCZEQRUvEoskL+Od0DAx?=
+Content-Type: text/plain; charset="utf-8"
+Content-Transfer-Encoding: base64
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-CM-TRANSID:AQAAf8DxPBMnifllzHJdAA--.49319S2
-X-CM-SenderInfo: x2kd0wxwld05hdqjqz5rrqw2lrqou0/
-X-Coremail-Antispam: 1Uk129KBj93XoW3JrWDXr1fKrW7uFyxJry3WrX_yoWxKr4kpF
-	WUArZxuF4UJr10q3y8C3WUZryfZF9Fvay0gaySyw1SqwnFvrykG3WxuF9rAa18JF95Zrsx
-	Zws0kFyF9a1UAagCm3ZEXasCq-sJn29KB7ZKAUJUUUU8529EdanIXcx71UUUUU7KY7ZEXa
-	sCq-sGcSsGvfJ3Ic02F40EFcxC0VAKzVAqx4xG6I80ebIjqfuFe4nvWSU5nxnvy29KBjDU
-	0xBIdaVrnRJUUUk2b4IE77IF4wAFF20E14v26r1j6r4UM7CY07I20VC2zVCF04k26cxKx2
-	IYs7xG6rWj6s0DM7CIcVAFz4kK6r106r15M28lY4IEw2IIxxk0rwA2F7IY1VAKz4vEj48v
-	e4kI8wA2z4x0Y4vE2Ix0cI8IcVAFwI0_Jr0_JF4l84ACjcxK6xIIjxv20xvEc7CjxVAFwI
-	0_Jr0_Gr1l84ACjcxK6I8E87Iv67AKxVW8Jr0_Cr1UM28EF7xvwVC2z280aVCY1x0267AK
-	xVW8Jr0_Cr1UM2AIxVAIcxkEcVAq07x20xvEncxIr21l57IF6xkI12xvs2x26I8E6xACxx
-	1l5I8CrVACY4xI64kE6c02F40Ex7xfMcIj6xIIjxv20xvE14v26r106r15McIj6I8E87Iv
-	67AKxVWUJVW8JwAm72CE4IkC6x0Yz7v_Jr0_Gr1lF7xvr2IYc2Ij64vIr41l42xK82IYc2
-	Ij64vIr41l4I8I3I0E4IkC6x0Yz7v_Jr0_Gr1lx2IqxVAqx4xG67AKxVWUJVWUGwC20s02
-	6x8GjcxK67AKxVWUGVWUWwC2zVAF1VAY17CE14v26r1q6r43MIIYrxkI7VAKI48JMIIF0x
-	vE2Ix0cI8IcVAFwI0_Jr0_JF4lIxAIcVC0I7IYx2IY6xkF7I0E14v26r1j6r4UMIIF0xvE
-	42xK8VAvwI8IcIk0rVWUJVWUCwCI42IY6I8E87Iv67AKxVW8JVWxJwCI42IY6I8E87Iv6x
-	kF7I0E14v26r4j6r4UJbIYCTnIWIevJa73UjIFyTuYvjxUzZ2-UUUUU
+X-OriginatorOrg: analog.com
+X-MS-Exchange-CrossTenant-AuthAs: Internal
+X-MS-Exchange-CrossTenant-AuthSource: SA1PR03MB6499.namprd03.prod.outlook.com
+X-MS-Exchange-CrossTenant-Network-Message-Id: c7e856ad-e70a-4639-d0c4-08dc4812b52c
+X-MS-Exchange-CrossTenant-originalarrivaltime: 19 Mar 2024 12:47:16.5759
+ (UTC)
+X-MS-Exchange-CrossTenant-fromentityheader: Hosted
+X-MS-Exchange-CrossTenant-id: eaa689b4-8f87-40e0-9c6f-7228de4d754a
+X-MS-Exchange-CrossTenant-mailboxtype: HOSTED
+X-MS-Exchange-CrossTenant-userprincipalname: sbMuHn8rVTgwO0YPzJhaKILG+D7WP6vSNc2tfD1d5Bm8po90YlKovmU9BNXz+oZeHUJBGyYmbiXV7iGzmLk/jQ==
+X-MS-Exchange-Transport-CrossTenantHeadersStamped: CH0PR03MB6019
+X-Proofpoint-GUID: 2mGaCdGVqmIn7l3YN31JxV_4YVue-yEG
+X-Proofpoint-ORIG-GUID: 2mGaCdGVqmIn7l3YN31JxV_4YVue-yEG
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-19_02,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ spamscore=0 clxscore=1011 impostorscore=0 bulkscore=0 lowpriorityscore=0
+ phishscore=0 adultscore=0 mlxlogscore=999 mlxscore=0 suspectscore=0
+ malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403190098
 
-From: Baoqi Zhang <zhangbaoqi@loongson.cn>
-
-This patch remove the fixed mapping between the LS7A interrupt source
-and the HT interrupt vector, and replaced it with a dynamically
-allocated approach.
-
-We introduce a mapping table in struct pch_pic, where each interrupt
-source will allocate an index as a 'hwirq' from the table in the order
-of application and set table value as interrupt source number. This hwirq
-will be configured as its vector in the HT interrupt controller. For an
-interrupt source, the validity period of the obtained hwirq will last until
-the system reset.
-
-This will be more conducive to fully utilizing existing vectors to
-support more devices.
-
-Signed-off-by: Baoqi Zhang <zhangbaoqi@loongson.cn>
-Signed-off-by: Biao Dong <dongbiao@loongson.cn>
-Signed-off-by: Tianyang Zhang <zhangtianyang@loongson.cn>
----
- drivers/irqchip/irq-loongson-pch-pic.c | 76 ++++++++++++++++++++------
- 1 file changed, 59 insertions(+), 17 deletions(-)
-
-diff --git a/drivers/irqchip/irq-loongson-pch-pic.c b/drivers/irqchip/irq-loongson-pch-pic.c
-index 63db8e2172e0..1ee63fcf4b5a 100644
---- a/drivers/irqchip/irq-loongson-pch-pic.c
-+++ b/drivers/irqchip/irq-loongson-pch-pic.c
-@@ -33,6 +33,7 @@
- #define PIC_COUNT		(PIC_COUNT_PER_REG * PIC_REG_COUNT)
- #define PIC_REG_IDX(irq_id)	((irq_id) / PIC_COUNT_PER_REG)
- #define PIC_REG_BIT(irq_id)	((irq_id) % PIC_COUNT_PER_REG)
-+#define PIC_UNDEF_VECTOR	255
- 
- static int nr_pics;
- 
-@@ -46,12 +47,19 @@ struct pch_pic {
- 	u32			saved_vec_en[PIC_REG_COUNT];
- 	u32			saved_vec_pol[PIC_REG_COUNT];
- 	u32			saved_vec_edge[PIC_REG_COUNT];
-+	u8			table[PIC_COUNT];
-+	int			inuse;
- };
- 
- static struct pch_pic *pch_pic_priv[MAX_IO_PICS];
- 
- struct fwnode_handle *pch_pic_handle[MAX_IO_PICS];
- 
-+static inline u8 hwirq_to_bit(struct pch_pic *priv, int hirq)
-+{
-+	return priv->table[hirq];
-+}
-+
- static void pch_pic_bitset(struct pch_pic *priv, int offset, int bit)
- {
- 	u32 reg;
-@@ -80,45 +88,47 @@ static void pch_pic_mask_irq(struct irq_data *d)
- {
- 	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
- 
--	pch_pic_bitset(priv, PCH_PIC_MASK, d->hwirq);
-+	pch_pic_bitset(priv, PCH_PIC_MASK, hwirq_to_bit(priv, d->hwirq));
- 	irq_chip_mask_parent(d);
- }
- 
- static void pch_pic_unmask_irq(struct irq_data *d)
- {
- 	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	int bit = hwirq_to_bit(priv, d->hwirq);
- 
--	writel(BIT(PIC_REG_BIT(d->hwirq)),
--			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
-+	writel(BIT(PIC_REG_BIT(bit)),
-+			priv->base + PCH_PIC_CLR + PIC_REG_IDX(bit) * 4);
- 
- 	irq_chip_unmask_parent(d);
--	pch_pic_bitclr(priv, PCH_PIC_MASK, d->hwirq);
-+	pch_pic_bitclr(priv, PCH_PIC_MASK, bit);
- }
- 
- static int pch_pic_set_type(struct irq_data *d, unsigned int type)
- {
- 	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	int bit = hwirq_to_bit(priv, d->hwirq);
- 	int ret = 0;
- 
- 	switch (type) {
- 	case IRQ_TYPE_EDGE_RISING:
--		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
--		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, bit);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, bit);
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
- 	case IRQ_TYPE_EDGE_FALLING:
--		pch_pic_bitset(priv, PCH_PIC_EDGE, d->hwirq);
--		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		pch_pic_bitset(priv, PCH_PIC_EDGE, bit);
-+		pch_pic_bitset(priv, PCH_PIC_POL, bit);
- 		irq_set_handler_locked(d, handle_edge_irq);
- 		break;
- 	case IRQ_TYPE_LEVEL_HIGH:
--		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
--		pch_pic_bitclr(priv, PCH_PIC_POL, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, bit);
-+		pch_pic_bitclr(priv, PCH_PIC_POL, bit);
- 		irq_set_handler_locked(d, handle_level_irq);
- 		break;
- 	case IRQ_TYPE_LEVEL_LOW:
--		pch_pic_bitclr(priv, PCH_PIC_EDGE, d->hwirq);
--		pch_pic_bitset(priv, PCH_PIC_POL, d->hwirq);
-+		pch_pic_bitclr(priv, PCH_PIC_EDGE, bit);
-+		pch_pic_bitset(priv, PCH_PIC_POL, bit);
- 		irq_set_handler_locked(d, handle_level_irq);
- 		break;
- 	default:
-@@ -133,11 +143,12 @@ static void pch_pic_ack_irq(struct irq_data *d)
- {
- 	unsigned int reg;
- 	struct pch_pic *priv = irq_data_get_irq_chip_data(d);
-+	int bit = hwirq_to_bit(priv, d->hwirq);
- 
--	reg = readl(priv->base + PCH_PIC_EDGE + PIC_REG_IDX(d->hwirq) * 4);
--	if (reg & BIT(PIC_REG_BIT(d->hwirq))) {
--		writel(BIT(PIC_REG_BIT(d->hwirq)),
--			priv->base + PCH_PIC_CLR + PIC_REG_IDX(d->hwirq) * 4);
-+	reg = readl(priv->base + PCH_PIC_EDGE + PIC_REG_IDX(bit) * 4);
-+	if (reg & BIT(PIC_REG_BIT(bit))) {
-+		writel(BIT(PIC_REG_BIT(bit)),
-+			priv->base + PCH_PIC_CLR + PIC_REG_IDX(bit) * 4);
- 	}
- 	irq_chip_ack_parent(d);
- }
-@@ -159,6 +170,8 @@ static int pch_pic_domain_translate(struct irq_domain *d,
- {
- 	struct pch_pic *priv = d->host_data;
- 	struct device_node *of_node = to_of_node(fwspec->fwnode);
-+	unsigned long flags;
-+	int i;
- 
- 	if (of_node) {
- 		if (fwspec->param_count < 2)
-@@ -171,6 +184,27 @@ static int pch_pic_domain_translate(struct irq_domain *d,
- 			return -EINVAL;
- 
- 		*hwirq = fwspec->param[0] - priv->gsi_base;
-+
-+		raw_spin_lock_irqsave(&priv->pic_lock, flags);
-+		/* Check pic-table to confirm if the hwirq has been assigned */
-+		for (i = 0; i < priv->inuse; i++) {
-+			if (priv->table[i] == *hwirq) {
-+				*hwirq = i;
-+				break;
-+			}
-+		}
-+		if (i == priv->inuse) {
-+			/* Assign a new hwirq in pic-table */
-+			if (priv->inuse >= PIC_COUNT) {
-+				pr_err("pch-pic domain has no free vectors\n");
-+				raw_spin_unlock_irqrestore(&priv->pic_lock, flags);
-+				return -EINVAL;
-+			}
-+			priv->table[priv->inuse] = *hwirq;
-+			*hwirq = priv->inuse++;
-+		}
-+		raw_spin_unlock_irqrestore(&priv->pic_lock, flags);
-+
- 		if (fwspec->param_count > 1)
- 			*type = fwspec->param[1] & IRQ_TYPE_SENSE_MASK;
- 		else
-@@ -194,6 +228,9 @@ static int pch_pic_alloc(struct irq_domain *domain, unsigned int virq,
- 	if (err)
- 		return err;
- 
-+	/* Write vector ID */
-+	writeb(priv->ht_vec_base + hwirq, priv->base + PCH_INT_HTVEC(hwirq_to_bit(priv, hwirq)));
-+
- 	parent_fwspec.fwnode = domain->parent->fwnode;
- 	parent_fwspec.param_count = 1;
- 	parent_fwspec.param[0] = hwirq + priv->ht_vec_base;
-@@ -222,7 +259,7 @@ static void pch_pic_reset(struct pch_pic *priv)
- 
- 	for (i = 0; i < PIC_COUNT; i++) {
- 		/* Write vector ID */
--		writeb(priv->ht_vec_base + i, priv->base + PCH_INT_HTVEC(i));
-+		writeb(priv->ht_vec_base + i, priv->base + PCH_INT_HTVEC(hwirq_to_bit(priv, i)));
- 		/* Hardcode route to HT0 Lo */
- 		writeb(1, priv->base + PCH_INT_ROUTE(i));
- 	}
-@@ -284,6 +321,7 @@ static int pch_pic_init(phys_addr_t addr, unsigned long size, int vec_base,
- 			u32 gsi_base)
- {
- 	struct pch_pic *priv;
-+	int i;
- 
- 	priv = kzalloc(sizeof(*priv), GFP_KERNEL);
- 	if (!priv)
-@@ -294,6 +332,10 @@ static int pch_pic_init(phys_addr_t addr, unsigned long size, int vec_base,
- 	if (!priv->base)
- 		goto free_priv;
- 
-+	priv->inuse = 0;
-+	for (i = 0; i < PIC_COUNT; i++)
-+		priv->table[i] = PIC_UNDEF_VECTOR;
-+
- 	priv->ht_vec_base = vec_base;
- 	priv->vec_count = ((readq(priv->base) >> 48) & 0xff) + 1;
- 	priv->gsi_base = gsi_base;
--- 
-2.20.1
-
+DQoNCj4gLS0tLS1PcmlnaW5hbCBNZXNzYWdlLS0tLS0NCj4gRnJvbTogS3J6eXN6dG9mIEtvemxv
+d3NraQ0KPiA8a3J6eXN6dG9mLmtvemxvd3NraUBsaW5hcm8uDQo+IG9yZz4NCj4gU2VudDogVHVl
+c2RheSwgTWFyY2ggMTksDQo+IDIwMjQgMjoxNSBQTQ0KPiBUbzogU2FiYXUsIFJhZHUgYm9nZGFu
+DQo+IDxSYWR1LlNhYmF1QGFuYWxvZy5jb20+Ow0KPiBKZWFuIERlbHZhcmUNCj4gPGpkZWx2YXJl
+QHN1c2UuY29tPjsNCj4gR3VlbnRlciBSb2VjayA8bGludXhAcm9lY2stDQo+IHVzLm5ldD47IFJv
+YiBIZXJyaW5nDQo+IDxyb2JoQGtlcm5lbC5vcmc+Ow0KPiBLcnp5c3p0b2YgS296bG93c2tpDQo+
+IDxrcnp5c3p0b2Yua296bG93c2tpK2R0QGxpbmENCj4gcm8ub3JnPjsgQ29ub3IgRG9vbGV5DQo+
+IDxjb25vcitkdEBrZXJuZWwub3JnPjsNCj4gSm9uYXRoYW4gQ29yYmV0DQo+IDxjb3JiZXRAbHdu
+Lm5ldD47IERlbHBoaW5lDQo+IENDIENoaXUNCj4gPERlbHBoaW5lX0NDX0NoaXVAV2l3eW4NCj4g
+bi5jb20+OyBsaW51eC0NCj4gaHdtb25Admdlci5rZXJuZWwub3JnOw0KPiBkZXZpY2V0cmVlQHZn
+ZXIua2VybmVsLm9yZzsNCj4gbGludXgta2VybmVsQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgt
+ZG9jQHZnZXIua2VybmVsLm9yZzsNCj4gbGludXgtaTJjQHZnZXIua2VybmVsLm9yZw0KPiBTdWJq
+ZWN0OiBSZTogW1BBVENIIHYyIDEvMl0NCj4gZHQtYmluZGluZ3M6IGh3bW9uOiBwbWJ1czoNCj4g
+YWRwMTA1MCA6IGFkZCBiaW5kaW5ncw0KPiANCj4gW0V4dGVybmFsXQ0KPiANCj4gT24gMTkvMDMv
+MjAyNCAxMjozMiwgUmFkdQ0KPiBTYWJhdSB3cm90ZToNCj4gPiBBZGQgZHQtYmluZGluZ3MgZm9y
+DQo+IGFkcDEwNTAgZGlnaXRhbCBjb250cm9sbGVyIGZvcg0KPiBpc29sYXRlZCBwb3dlciBzdXBw
+bHkNCj4gPiB3aXRoIHBtYnVzIGludGVyZmFjZQ0KPiB2b2x0YWdlLCBjdXJyZW50IGFuZA0KPiB0
+ZW1wZXJhdHVyZSBtb25pdG9yLg0KPiA+DQo+ID4gU2lnbmVkLW9mZi1ieTogUmFkdSBTYWJhdQ0K
+PiA8cmFkdS5zYWJhdUBhbmFsb2cuY29tPg0KPiANCj4gVGhpcyBpcyBhIGZyaWVuZGx5IHJlbWlu
+ZGVyDQo+IGR1cmluZyB0aGUgcmV2aWV3IHByb2Nlc3MuDQo+IA0KPiBOb3RoaW5nIGNoYW5nZWQs
+IGFic29sdXRlbHkNCj4gbm90aGluZy4NCj4gDQo+IEl0IHNlZW1zIG15IG9yIG90aGVyDQo+IHJl
+dmlld2VyJ3MgcHJldmlvdXMNCj4gY29tbWVudHMgd2VyZSBub3QgZnVsbHkNCj4gYWRkcmVzc2Vk
+LiBNYXliZSB0aGUNCj4gZmVlZGJhY2sgZ290IGxvc3QgYmV0d2Vlbg0KPiB0aGUgcXVvdGVzLCBt
+YXliZSB5b3UNCj4ganVzdCBmb3Jnb3QgdG8gYXBwbHkgaXQuIFBsZWFzZQ0KPiBnbyBiYWNrIHRv
+IHRoZSBwcmV2aW91cw0KPiBkaXNjdXNzaW9uIGFuZA0KPiBlaXRoZXIgaW1wbGVtZW50IGFsbA0K
+PiByZXF1ZXN0ZWQgY2hhbmdlcyBvciBrZWVwDQo+IGRpc2N1c3NpbmcgdGhlbS4NCj4gDQo+IFRo
+YW5rIHlvdS4NCg0KSW5kZWVkIEkgZm9yZ290IHRvIGFkZHJlc3MgZmV3IGNvbW1lbnRzIHJlZ2Fy
+ZGluZyBkdC1iaW5kaW5ncw0KYW5kIEkgYW0gdmVyeSBzb3JyeSBmb3IgdGhhdCwgd2lsbCBtYWtl
+IHN1cmUgdG8gYWRkcmVzcyB0aGVtDQppbiB0aGUgbmV4dCBwYXRjaC4NCg0KPiANCj4gQmVzdCBy
+ZWdhcmRzLA0KPiBLcnp5c3p0b2YNCg0K
 
