@@ -1,96 +1,177 @@
-Return-Path: <linux-kernel+bounces-107018-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107019-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id CEF3E87F6CD
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:45:20 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8CB0D87F6CE
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:46:00 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0A7A11C2197B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:45:20 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4397C282630
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:45:59 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 929C345946;
-	Tue, 19 Mar 2024 05:45:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 59D2B4594C;
+	Tue, 19 Mar 2024 05:45:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b="pRxxvGy3"
-Received: from gandalf.ozlabs.org (gandalf.ozlabs.org [150.107.74.76])
+	dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b="SDpGwL7V"
+Received: from esa2.hc1455-7.c3s2.iphmx.com (esa2.hc1455-7.c3s2.iphmx.com [207.54.90.48])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 9F61F446A4;
-	Tue, 19 Mar 2024 05:45:07 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=150.107.74.76
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E49383E493;
+	Tue, 19 Mar 2024 05:45:50 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=207.54.90.48
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710827113; cv=none; b=k8WkUTj2cRRZg6Mm41+JEA+iet4uNROpDFhCF2s33eKjg1s1pUbk+TYPh/mpXNdGXTBNa7Suh/2BVXs2dp8m0agY+/0SNsxOlWoZ58qu/lrXoLA47Sn7arD9opunfcFfI46SjP/tk+R3bXUPvE+G9HcRPQV23JcsMT/aLTK214Q=
+	t=1710827153; cv=none; b=ePiNLlZ1hdj47daxgkIZ34DGYGZIZiXYKXV4QbuEkqi+SrP6gk/a7I4UuZeG574WjqGF7ACx8W3Nr4HXMFRdB+dTHUQ3F0SvcSAAJP1gBl7J0WWK6+zrd0dTcTAOnJa/aU7uiznZjP+ZqUPd0cJkzqpZ8b7jnUshxTO/Hf2w1L4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710827113; c=relaxed/simple;
-	bh=/QXZy3g/RnjkA4vObPEa8Wuv5HDHAjgY2M3QtG3afVw=;
-	h=Date:From:To:Cc:Subject:Message-ID:In-Reply-To:References:
-	 MIME-Version:Content-Type; b=BlCereZejPWxHeij7PImWnAbI3x/t6A4CnodLEUh/W1lA1ntkOMHC4lSLtNDeO/ICNvrOHONFMY8gqKddDgB0UXVRMiPCmcSPmMROjbP30M9c4sPEOp3+gtTd2A5P9EbG5dUL9GkESeQzoayL/gVABkbuhjkmh7g5dcIFIthBzQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au; spf=pass smtp.mailfrom=canb.auug.org.au; dkim=pass (2048-bit key) header.d=canb.auug.org.au header.i=@canb.auug.org.au header.b=pRxxvGy3; arc=none smtp.client-ip=150.107.74.76
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=canb.auug.org.au
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=canb.auug.org.au
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=canb.auug.org.au;
-	s=201702; t=1710827106;
-	bh=/QXZy3g/RnjkA4vObPEa8Wuv5HDHAjgY2M3QtG3afVw=;
-	h=Date:From:To:Cc:Subject:In-Reply-To:References:From;
-	b=pRxxvGy3Mc86SlThwxv/t20z+ct9diaXD2/KpdFA3uFZ8JKSMdXv106Nn62ZYDwxy
-	 GpEumqwcTGr+jBSL9DpULkEMzwJ9pV5Vf/W3uSc1ZXwJI5yj54fnQGtpw65tKy2JJc
-	 HnI6BXnbboNJIhK/8jqWZ4MHwV5TE7i9sweTyHfBJVJCbWmdlLqi4/v52BoD4Pnzvf
-	 8V9FSqzFtJdwxpbZ3Wtq+UD9WmozByyYA/dzcVpxXzUFfRk+XzZTUla4osLeOrN+qi
-	 G9MgrCeqtwnZIsEbaqhWujiBn9OksNqkW/ZG9uXUNKGC5KgtDcKSo4+Rl/sMEI0b4M
-	 AqH70CC3VHDCg==
-Received: from authenticated.ozlabs.org (localhost [127.0.0.1])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	by mail.ozlabs.org (Postfix) with ESMTPSA id 4TzLKG1WkMz4wby;
-	Tue, 19 Mar 2024 16:45:06 +1100 (AEDT)
-Date: Tue, 19 Mar 2024 16:45:05 +1100
-From: Stephen Rothwell <sfr@canb.auug.org.au>
-To: Linux Next Mailing List <linux-next@vger.kernel.org>
-Cc: Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
-Subject: linus-next: Forgotten merge window reminder
-Message-ID: <20240319164505.485b3801@canb.auug.org.au>
-In-Reply-To: <20240319124925.71b43bf1@canb.auug.org.au>
-References: <20240319124925.71b43bf1@canb.auug.org.au>
+	s=arc-20240116; t=1710827153; c=relaxed/simple;
+	bh=1kxte2Fz6zJqoIdHYkcuPkCFWbf1eHIi5bpBXCxGdhM=;
+	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version:Content-Type; b=CcPXk+whyHH57Z0xU3wnpeazldMdme7o3m9Xsp8ie9Zb30TUoU95R9IOIsNZB2LnJHGl2+WyWltAqO6/kmxvR0GUMzDUiAih2FQBbgenYFjcvs9hPFslodumD6Lw/1nyQWb7idLoWa5kCtEEDjp4fw1C9cebZguJEMNOU1PlkAU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com; spf=pass smtp.mailfrom=fujitsu.com; dkim=pass (2048-bit key) header.d=fujitsu.com header.i=@fujitsu.com header.b=SDpGwL7V; arc=none smtp.client-ip=207.54.90.48
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=fujitsu.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=fujitsu.com
+DKIM-Signature: v=1; a=rsa-sha256; c=simple/simple;
+  d=fujitsu.com; i=@fujitsu.com; q=dns/txt; s=fj2;
+  t=1710827151; x=1742363151;
+  h=from:to:cc:subject:date:message-id:mime-version:
+   content-transfer-encoding;
+  bh=1kxte2Fz6zJqoIdHYkcuPkCFWbf1eHIi5bpBXCxGdhM=;
+  b=SDpGwL7VPPb2IDrZQ1fAh8+yMpN87xi1/obPoPx2PHnNZ8EZbXsEePKA
+   0+lo5uqeHDDGPwl2M2NS449L8iNvMjGgMPhAVsveejPQGPGUI3Tg9r9xI
+   M78o49cCMWrrCruAErWNyoaO1R+NeqE3pUE9H5uKSJ774Km237AA/66yb
+   Nr0c2E2tp1HFrJPT69W6gg3sTEWumaBHl0hDnLVBbm8diFNsmWWWJqeXG
+   Cu2/Os0/rA5UrDLGrOsaYLg5PAHuifeYHelTm6SfMK946HkMRApFPj8/i
+   bJZ5YElrXy7P7uzCSA4rlXcbS9fghwJIzX0tPJ1hQu2BYtcS08/Z6MHXs
+   Q==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11017"; a="152721768"
+X-IronPort-AV: E=Sophos;i="6.07,136,1708354800"; 
+   d="scan'208";a="152721768"
+Received: from unknown (HELO yto-r4.gw.nic.fujitsu.com) ([218.44.52.220])
+  by esa2.hc1455-7.c3s2.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 19 Mar 2024 14:45:42 +0900
+Received: from yto-m3.gw.nic.fujitsu.com (yto-nat-yto-m3.gw.nic.fujitsu.com [192.168.83.66])
+	by yto-r4.gw.nic.fujitsu.com (Postfix) with ESMTP id E2EC9D3EAF;
+	Tue, 19 Mar 2024 14:45:39 +0900 (JST)
+Received: from kws-ab3.gw.nic.fujitsu.com (kws-ab3.gw.nic.fujitsu.com [192.51.206.21])
+	by yto-m3.gw.nic.fujitsu.com (Postfix) with ESMTP id 245972014B;
+	Tue, 19 Mar 2024 14:45:39 +0900 (JST)
+Received: from edo.cn.fujitsu.com (edo.cn.fujitsu.com [10.167.33.5])
+	by kws-ab3.gw.nic.fujitsu.com (Postfix) with ESMTP id 770432009325C;
+	Tue, 19 Mar 2024 14:45:38 +0900 (JST)
+Received: from localhost.localdomain (unknown [10.167.226.45])
+	by edo.cn.fujitsu.com (Postfix) with ESMTP id 954771A006B;
+	Tue, 19 Mar 2024 13:45:37 +0800 (CST)
+From: Li Zhijian <lizhijian@fujitsu.com>
+To: linux-kernel@vger.kernel.org
+Cc: Li Zhijian <lizhijian@fujitsu.com>,
+	Christophe JAILLET <christophe.jaillet@wanadoo.fr>,
+	=?UTF-8?q?Bruno=20Pr=C3=A9mont?= <bonbons@linux-vserver.org>,
+	Jiri Kosina <jikos@kernel.org>,
+	Benjamin Tissoires <benjamin.tissoires@redhat.com>,
+	linux-input@vger.kernel.org
+Subject: [PATCH v4 1/4] HID: hid-picolcd*: Convert sprintf() family to sysfs_emit() family
+Date: Tue, 19 Mar 2024 13:45:24 +0800
+Message-Id: <20240319054527.1581299-1-lizhijian@fujitsu.com>
+X-Mailer: git-send-email 2.31.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; boundary="Sig_/VspUVTZ3PkHW_w9YRMnjoqG";
- protocol="application/pgp-signature"; micalg=pgp-sha256
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+X-TM-AS-GCONF: 00
+X-TM-AS-Product-Ver: IMSS-9.1.0.1417-9.0.0.1002-28260.005
+X-TM-AS-User-Approved-Sender: Yes
+X-TMASE-Version: IMSS-9.1.0.1417-9.0.1002-28260.005
+X-TMASE-Result: 10--7.130100-10.000000
+X-TMASE-MatchedRID: RKkR8WK0E1obO59FK9BdmJiHtCNYjckMjkDrBOJwwnQ8JmmJxjOaQXVX
+	Q3/qdw5yDiqGKKMcNgRhoUIS5GGeEs1HQN/TlJ3ZOIQ9GP2P2u/0swHSFcVJ6EekR3VSvOYVLhd
+	6ma7WE8uEkt/L8HtAJ785xNkZcrN2ePWEUnWb98FBDn6Fjq77jvioIsi7Sa0gOhR0VsdhRrC/BR
+	68O365bn9eOltIlLtrTAoJHN/wZk1+wAuSUWlj5HV7tdtvoibatMkiccRbz20GWfDd0b0zMaPFj
+	JEFr+olSXhbxZVQ5H+OhzOa6g8KrUBiheCzxlZpV4cJTWRQ7ka1Dnyes5pzd2pamyppvmPPfGL9
+	6pWTdQM=
+X-TMASE-SNAP-Result: 1.821001.0001-0-1-22:0,33:0,34:0-0
 
---Sig_/VspUVTZ3PkHW_w9YRMnjoqG
-Content-Type: text/plain; charset=US-ASCII
-Content-Transfer-Encoding: quoted-printable
+Per filesystems/sysfs.rst, show() should only use sysfs_emit()
+or sysfs_emit_at() when formatting the value to be returned to user space.
 
-Hi all,
+coccinelle complains that there are still a couple of functions that use
+snprintf(). Convert them to sysfs_emit().
 
-Please do not add any v6.10 material to your linux-next included branches
-until after v6.9-rc1 has been released.
+sprintf() and scnprintf() will be converted as well if they have.
 
---=20
-Cheers,
-Stephen Rothwell
+Generally, this patch is generated by
+make coccicheck M=<path/to/file> MODE=patch \
+COCCI=scripts/coccinelle/api/device_attr_show.cocci
 
---Sig_/VspUVTZ3PkHW_w9YRMnjoqG
-Content-Type: application/pgp-signature
-Content-Description: OpenPGP digital signature
+No functional change intended
 
------BEGIN PGP SIGNATURE-----
+CC: Christophe JAILLET <christophe.jaillet@wanadoo.fr>
+CC: "Bruno Prémont" <bonbons@linux-vserver.org>
+CC: Jiri Kosina <jikos@kernel.org>
+CC: Benjamin Tissoires <benjamin.tissoires@redhat.com>
+CC: linux-input@vger.kernel.org
+Signed-off-by: Li Zhijian <lizhijian@fujitsu.com>
+---
+V4:
+   Kill 'if (ret >= PAGE_SIZE)' which is always false in this context and sysfs_emit_at() is able to handle this case. # CJ
+V3:
+   Convert more file(drivers/hid/hid-picolcd_fb.c) as suggested by Bruno
 
-iQEzBAEBCAAdFiEENIC96giZ81tWdLgKAVBC80lX0GwFAmX5JmEACgkQAVBC80lX
-0Gwx3wf/Xk4qLKsURddXuY/Ji6XSOK75SRkF92CpBHH/JYxqbRW4AMIXhc7Ppm14
-I5eg4vU0M7dLDer+ESdvQvwJmGwy3QnAVkKobU4gLM3Ro7KQOmTaobGCmniwUnnG
-DdHBbV/p1Lg2Bvuw0GAG5cqT/rSLD4uEQ05nsPJMmQNr1f7yPlIdUUexHkTePcqe
-UT+6m4PhxpjT4dGY2VuEZu9oZL++JEI4o0y05FXj+KYJkjfVzlbCDKQwkr0Uy3HN
-vmx+ce/TXMlCBSIBgZ0dMmQtsugNKfHY1iKUQmrzH8208WAE54WKsTK+jqUmkT+m
-1J/k7ORw17m+lS7z0zpo+9qVVMh6Fw==
-=BLVx
------END PGP SIGNATURE-----
+This is a part of the work "Fix coccicheck device_attr_show warnings"[1]
+Split them per subsystem so that the maintainer can review it easily
+[1] https://lore.kernel.org/lkml/20240116041129.3937800-1-lizhijian@fujitsu.com/
+---
+ drivers/hid/hid-picolcd_core.c | 6 +++---
+ drivers/hid/hid-picolcd_fb.c   | 8 +++-----
+ 2 files changed, 6 insertions(+), 8 deletions(-)
 
---Sig_/VspUVTZ3PkHW_w9YRMnjoqG--
+diff --git a/drivers/hid/hid-picolcd_core.c b/drivers/hid/hid-picolcd_core.c
+index bbda231a7ce3..fa46fb6eab3f 100644
+--- a/drivers/hid/hid-picolcd_core.c
++++ b/drivers/hid/hid-picolcd_core.c
+@@ -256,9 +256,9 @@ static ssize_t picolcd_operation_mode_show(struct device *dev,
+ 	struct picolcd_data *data = dev_get_drvdata(dev);
+ 
+ 	if (data->status & PICOLCD_BOOTLOADER)
+-		return snprintf(buf, PAGE_SIZE, "[bootloader] lcd\n");
++		return sysfs_emit(buf, "[bootloader] lcd\n");
+ 	else
+-		return snprintf(buf, PAGE_SIZE, "bootloader [lcd]\n");
++		return sysfs_emit(buf, "bootloader [lcd]\n");
+ }
+ 
+ static ssize_t picolcd_operation_mode_store(struct device *dev,
+@@ -301,7 +301,7 @@ static ssize_t picolcd_operation_mode_delay_show(struct device *dev,
+ {
+ 	struct picolcd_data *data = dev_get_drvdata(dev);
+ 
+-	return snprintf(buf, PAGE_SIZE, "%hu\n", data->opmode_delay);
++	return sysfs_emit(buf, "%hu\n", data->opmode_delay);
+ }
+ 
+ static ssize_t picolcd_operation_mode_delay_store(struct device *dev,
+diff --git a/drivers/hid/hid-picolcd_fb.c b/drivers/hid/hid-picolcd_fb.c
+index d7dddd99d325..063f9c01d2f7 100644
+--- a/drivers/hid/hid-picolcd_fb.c
++++ b/drivers/hid/hid-picolcd_fb.c
+@@ -421,12 +421,10 @@ static ssize_t picolcd_fb_update_rate_show(struct device *dev,
+ 	size_t ret = 0;
+ 
+ 	for (i = 1; i <= PICOLCDFB_UPDATE_RATE_LIMIT; i++)
+-		if (ret >= PAGE_SIZE)
+-			break;
+-		else if (i == fb_update_rate)
+-			ret += scnprintf(buf+ret, PAGE_SIZE-ret, "[%u] ", i);
++		if (i == fb_update_rate)
++			ret += sysfs_emit_at(buf, ret, "[%u] ", i);
+ 		else
+-			ret += scnprintf(buf+ret, PAGE_SIZE-ret, "%u ", i);
++			ret += sysfs_emit_at(buf, ret, "%u ", i);
+ 	if (ret > 0)
+ 		buf[min(ret, (size_t)PAGE_SIZE)-1] = '\n';
+ 	return ret;
+-- 
+2.29.2
+
 
