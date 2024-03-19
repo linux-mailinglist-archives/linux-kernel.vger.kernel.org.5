@@ -1,177 +1,104 @@
-Return-Path: <linux-kernel+bounces-107939-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107940-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4C8648803CF
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:45:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 312808803D3
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 18:46:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id E01141F22B94
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:45:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id C6D451F2224F
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:46:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 094BD25776;
-	Tue, 19 Mar 2024 17:44:46 +0000 (UTC)
-Received: from mail-pg1-f171.google.com (mail-pg1-f171.google.com [209.85.215.171])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E17952375B;
+	Tue, 19 Mar 2024 17:46:13 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org;
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="SGjDF4XU"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0B7302B9CF;
-	Tue, 19 Mar 2024 17:44:43 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.171
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 284D91CAB2;
+	Tue, 19 Mar 2024 17:46:12 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710870285; cv=none; b=T19UgmrnTYlHZswjLUj2fJskbzKxBPwaRQ+y7fGRjGKF4eg2Qg4xNPD0+HCXVxU749rNitzasWmbckmP7KgxenaFWxgLWZf8IwlEtzrnEIxg5O/kuh/8lL/V2vPOzGQBdFsOlfhSNb45KWR6XubUNS0gIKFsyKyc+9VtVBDhM+s=
+	t=1710870373; cv=none; b=K7WL1uRU0XopQq8+S4PATy/6jndQhdcjDdWloR0nAJHmj9j3M+u17HJAvAGczPfHD/pCwSUYE5hBf5DTvpllduGwvqSEPqZlOv2Y92K4hYCbihL2W5zPWlYhnlNnRJ/NN46olRfOKP1+KHN3a3bM+xZbNIazrLNQg2exMqtWFRk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710870285; c=relaxed/simple;
-	bh=YNQG5gO9WlpU/AlVGMzkLhdH1gT/jgzXyquEnTHOZ+k=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=VShQO6oHLksBO9IUDcUqSPcKhLFyTnlMWoheHtW7KOKi0t2UWiYilb5XxI7dm7EQu9S/6VnUdwXJCTDrpwzWHn+78M0wiAvHZMJadLjAZXuwGki5DJvR0jSXwKc8YOxe3mvLMjO7azlRYb0//9azPMZwY3YXqEB32+N+qRaqsks=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; arc=none smtp.client-ip=209.85.215.171
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f171.google.com with SMTP id 41be03b00d2f7-517ab9a4a13so4723730a12.1;
-        Tue, 19 Mar 2024 10:44:43 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710870283; x=1711475083;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=LLidFdPPt+9QGX0eU+M4Nd/N7qIdu9ep3/M0iAS5xu8=;
-        b=cEWK4zAIUwliT+5wxQS3Z1UD6P4VM+fZd0H6tj4KfaPxtc/RVHUVZtE5SoSH1uoR5G
-         STHrut/XE+f2GfOuOdU7yMwRvL2Cg2PlAisv22XUpLxlJ1lytfO1I6FDF4n0V8yFI5zn
-         5XROr3DLVAVF6u6jq5artN4AmWQiCefWiyyItCDbUMErShMi7omQKXRgoJAd0tgZWTz4
-         pKblbxUbC3zbjPU2uYLMsi5QUXsCUmemaJNcCigvGyOV+1B/0iMEXkRiyKAt/2qnV8j7
-         ACdQtMrNe97CARH6tSbXhUxjEufXO46r/RMFpzN2oHlqAPxYmJ8tGVOJ5mjKO4wDD30M
-         hzlA==
-X-Forwarded-Encrypted: i=1; AJvYcCXpvTwIu0sAahrN0JWn9l2ygycNvikVgRmDWHKRH302434V/UMmIsfsJgVqogNqkdKENtss+Ectx72fCfnw8OF57ndRL/xSLX8lK2aLvLJAaiCNmMXMURVag6l5vj8zaoPEA+Q4s72Us/RNM6mymF+zYYB6fRhzmYNtfFBgQCqtTvbt/o48+xZlMghmjOiULhSUb0i6XZoxrBQQXUMUWAYud2L+DBEWokt7Ts5ACK/t7aIpUA==
-X-Gm-Message-State: AOJu0YyhumyqE3V+i9L4MK3YDrwv90TaRzBQmjyOreh97IhiR3K76q+l
-	GDrnp7kUp0hnN57KK8J4UMdSHl052XJQOm4WI6hc9W4dwbkh/F3/EGaDUqIpcngzzYo4eaZw9mc
-	HGrsjTXFCCmGK5U1Ng90dnrv1ClE=
-X-Google-Smtp-Source: AGHT+IEcwxRhZAINrFOhMoOKS6MDR9e+tjMHRVCgvgpferCGmN4fIMPxcMoI52RIPOXBxjAGEjlOyFbebnpE8YNdCn4=
-X-Received: by 2002:a17:90a:ce12:b0:29b:b485:f4f8 with SMTP id
- f18-20020a17090ace1200b0029bb485f4f8mr12573838pju.20.1710870283313; Tue, 19
- Mar 2024 10:44:43 -0700 (PDT)
+	s=arc-20240116; t=1710870373; c=relaxed/simple;
+	bh=fZ0QELwGTKD07yu3UczJUEharu+OHubpHxFZJAUTYUs=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=i0w4WYeHjGrBwpO0HsOgUKIhSccyRPO+1mqWdaYySTZ/KxqX4Y3MI/zTLJFzHCVTydHwCmhOPYsSe4PGg2o2q1KuHJrb9c8Boma47SbV/HlAWPlgZdCFo1MEY6008tZ3qeJoyxcp02EQBVBEL+n1L/2MP2Jx/h49pNGN0cjj5iQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=SGjDF4XU; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id B309CC433C7;
+	Tue, 19 Mar 2024 17:46:09 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710870372;
+	bh=fZ0QELwGTKD07yu3UczJUEharu+OHubpHxFZJAUTYUs=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=SGjDF4XUwEcd0DIpqubZHG1E9ca+QEbg+LZv+L1DruzpY8DkKAtPW+mx8gcqncrCK
+	 aGSMqnimyyF9opVvsrMVQUB6aaQNWJnWzxH0Dsg1IiKY3rUGL4zUo+Gp0mD1yR/lrF
+	 YUipTw5PgcvXtcuygqgyrPxTWZ22R0X+/dokUTmwau6naWroLE1CbWFFbyUOpZfSMd
+	 4omkwfypp0zLalklXI0rebBgm3alw9BTx3zv/vrlPVvIHCqEoJ6nhQTxCyRephB0sg
+	 ctYJrWX+aqsZe2jsPPA81mzFu3xeYXenYT0nHYgJJLWDRregqEYAKI9UMj8EzYA8Lf
+	 HTolcnmTMgKuw==
+Date: Tue, 19 Mar 2024 17:46:07 +0000
+From: Conor Dooley <conor@kernel.org>
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Daniel Lezcano <daniel.lezcano@linaro.org>,
+	Thomas Gleixner <tglx@linutronix.de>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Chris Brandt <chris.brandt@renesas.com>,
+	Magnus Damm <magnus.damm@gmail.com>, linux-kernel@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-arm-kernel@lists.infradead.org,
+	linux-renesas-soc@vger.kernel.org,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH 1/2] dt-bindings: timer: renesas: ostm: Document Renesas
+ RZ/V2H(P) SoC
+Message-ID: <20240319-value-nutmeg-f107f7ac2319@spud>
+References: <20240318160731.33960-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240318160731.33960-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240319055115.4063940-1-namhyung@kernel.org> <20240319055115.4063940-10-namhyung@kernel.org>
- <ZfmcN4YuvQpVgJQN@x1>
-In-Reply-To: <ZfmcN4YuvQpVgJQN@x1>
-From: Namhyung Kim <namhyung@kernel.org>
-Date: Tue, 19 Mar 2024 10:44:31 -0700
-Message-ID: <CAM9d7cjatKSH7hw_sC3MCmY1fYT+bDBgSpFWJg=RM2oqgL5X0A@mail.gmail.com>
-Subject: Re: [PATCH 09/23] perf annotate-data: Maintain variable type info
-To: Arnaldo Carvalho de Melo <acme@kernel.org>
-Cc: Ian Rogers <irogers@google.com>, Jiri Olsa <jolsa@kernel.org>, 
-	Adrian Hunter <adrian.hunter@intel.com>, Peter Zijlstra <peterz@infradead.org>, 
-	Ingo Molnar <mingo@kernel.org>, LKML <linux-kernel@vger.kernel.org>, 
-	linux-perf-users@vger.kernel.org, 
-	Linus Torvalds <torvalds@linux-foundation.org>, Stephane Eranian <eranian@google.com>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, linux-toolchains@vger.kernel.org, 
-	linux-trace-devel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
+Content-Type: multipart/signed; micalg=pgp-sha256;
+	protocol="application/pgp-signature"; boundary="Ic8LyRranNDuv8NG"
+Content-Disposition: inline
+In-Reply-To: <20240318160731.33960-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+
+
+--Ic8LyRranNDuv8NG
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
 Content-Transfer-Encoding: quoted-printable
 
-On Tue, Mar 19, 2024 at 7:07=E2=80=AFAM Arnaldo Carvalho de Melo
-<acme@kernel.org> wrote:
->
-> On Mon, Mar 18, 2024 at 10:51:01PM -0700, Namhyung Kim wrote:
-> > As it collected basic block and variable information in each scope, it
-> > now can build a state table to find matching variable at the location.
-> >
-> > The struct type_state is to keep the type info saved in each register
-> > and stack slot.  The update_var_state() updates the table when it finds
-> > variables in the current address.  It expects die_collect_vars() filled
-> > a list of variables with type info and starting address.
-> >
-> > Signed-off-by: Namhyung Kim <namhyung@kernel.org>
-> > ---
-> >  tools/perf/util/annotate-data.c | 173 ++++++++++++++++++++++++++++++++
-> >  tools/perf/util/dwarf-aux.c     |   4 +
-> >  2 files changed, 177 insertions(+)
-> >
-> > diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate=
--data.c
-> > index f482ccfdaa91..8eaa06f1cee5 100644
-> > --- a/tools/perf/util/annotate-data.c
-> > +++ b/tools/perf/util/annotate-data.c
-> > @@ -46,6 +46,62 @@ static void pr_debug_type_name(Dwarf_Die *die)
-> >       free(str);
-> >  }
-> >
-> > +/* Type information in a register, valid when ok is true */
-> > +struct type_state_reg {
-> > +     Dwarf_Die type;
-> > +     bool ok;
-> > +};
-> > +
-> > +/* Type information in a stack location, dynamically allocated */
-> > +struct type_state_stack {
-> > +     struct list_head list;
-> > +     Dwarf_Die type;
-> > +     int offset;
-> > +     int size;
-> > +     bool compound;
-> > +};
-> > +
-> > +/* FIXME: This should be arch-dependent */
-> > +#define TYPE_STATE_MAX_REGS  16
-> > +
-> > +/*
-> > + * State table to maintain type info in each register and stack locati=
-on.
-> > + * It'll be updated when new variable is allocated or type info is mov=
-ed
-> > + * to a new location (register or stack).  As it'd be used with the
-> > + * shortest path of basic blocks, it only maintains a single table.
-> > + */
-> > +struct type_state {
-> > +     struct type_state_reg regs[TYPE_STATE_MAX_REGS];
-> > +     struct list_head stack_vars;
-> > +};
-> > +
-> > +static bool has_reg_type(struct type_state *state, int reg)
-> > +{
-> > +     return (unsigned)reg < ARRAY_SIZE(state->regs);
-> > +}
-> > +
-> > +/* These declarations will be remove once they are changed to static *=
-/
-> > +void init_type_state(struct type_state *state, struct arch *arch __may=
-be_unused);
-> > +void exit_type_state(struct type_state *state);
-> > +void update_var_state(struct type_state *state, struct data_loc_info *=
-dloc,
-> > +                   u64 addr, u64 insn_offset, struct die_var_type *var=
-_types);
-> > +
-> > +void init_type_state(struct type_state *state, struct arch *arch __may=
-be_unused)
-> > +{
-> > +     memset(state, 0, sizeof(*state));
-> > +     INIT_LIST_HEAD(&state->stack_vars);
-> > +}
-> > +
-> > +void exit_type_state(struct type_state *state)
-> > +{
-> > +     struct type_state_stack *stack, *tmp;
-> > +
-> > +     list_for_each_entry_safe(stack, tmp, &state->stack_vars, list) {
-> > +             list_del(&stack->list);
->
-> list_del_init()?
+On Mon, Mar 18, 2024 at 04:07:30PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>=20
+> Document the General Timer Module (a.k.a OSTM) block on Renesas RZ/V2H(P)
+> ("R9A09G057") SoC, which is identical to the one found on the RZ/A1H and
+> RZ/G2L SoCs. Add the "renesas,r9a09g057-ostm" compatible string for the
+> RZ/V2H(P) SoC.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Maybe.. but I'm not sure how much value it'd have as we free it right after=
-.
+Acked-by: Conor Dooley <conor.dooley@microchip.com>
 
-Thanks,
-Namhyung
+--Ic8LyRranNDuv8NG
+Content-Type: application/pgp-signature; name="signature.asc"
 
->
-> > +             free(stack);
-> > +     }
-> > +}
-> > +
+-----BEGIN PGP SIGNATURE-----
+
+iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfnPXwAKCRB4tDGHoIJi
+0jWYAP9bu4Rs4V0ZMDUyuGoi71pY4Tx/K54RhA+b43wwtFiV8AD+NGtwyo/bwvqL
+yKy84MjX2ffs142Ks+bJXs0ChqKC/A0=
+=NvWw
+-----END PGP SIGNATURE-----
+
+--Ic8LyRranNDuv8NG--
 
