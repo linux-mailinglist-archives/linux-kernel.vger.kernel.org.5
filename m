@@ -1,117 +1,186 @@
-Return-Path: <linux-kernel+bounces-108148-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108149-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 991838806AB
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:22:53 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id D09B68806AC
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:23:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CAB231C22018
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:22:52 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 84F652842AB
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 21:23:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4AD493FBB3;
-	Tue, 19 Mar 2024 21:22:50 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0C6C94F606;
+	Tue, 19 Mar 2024 21:23:24 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b="OjARSyXE"
-Received: from mail-ed1-f45.google.com (mail-ed1-f45.google.com [209.85.208.45])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="LFWs7HQ+"
+Received: from mail-pl1-f176.google.com (mail-pl1-f176.google.com [209.85.214.176])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7FCD93FB9F
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:22:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.45
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DEB544F5E6
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:23:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.176
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710883369; cv=none; b=FfR/MvadFmP5UfGct6WAyRqKNGV/iKAS8oaS+QeJDDgGPh6fLaR+sr6iklP3GTem7UxOLHNTbqgUuiVyN4bxPJDo9eW9XjDR1ty0qhYtjHacWVGWDKmprcWJYR3GeW7SinUqSCNo4jzc+vJvUt4NYGXFflSu0QDqxX8CoVVIga0=
+	t=1710883403; cv=none; b=H5li/g+U41tjKPtq5l98SWkCjObWaTVyOmOSsWEybAnK5juseZ7CpMKWRfYSDKOphOxx3g/STUKrCxb4ljOx7D97xcqbWNID6D7qmatbo59SPFpk4eJ8DRa6drkZoE7MO7Kj4ga6PgDzhdkEfT21UV+qui7zb0d9E8cGYJb+etU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710883369; c=relaxed/simple;
-	bh=n2jzBsLQ0Wrm2lIftzl5WyhbTaPYcftIWZRzrou++fg=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=HS+4EqlS5mik5JFUxH1iccc13cIrDK/VyR6HUuAtcOg2LkVZ6c0PD5AtuIHHaXs7gM+84woIYSHewTR8wFhilmMe7jfHSju5apWH6YMfPfBFhdviSewAV/SgkJwbShDbS46WLQaw2saoJercVFO6ty5JRcjfy/ljmvou6CBIaDU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org; spf=pass smtp.mailfrom=linuxfoundation.org; dkim=pass (1024-bit key) header.d=linux-foundation.org header.i=@linux-foundation.org header.b=OjARSyXE; arc=none smtp.client-ip=209.85.208.45
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=linux-foundation.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linuxfoundation.org
-Received: by mail-ed1-f45.google.com with SMTP id 4fb4d7f45d1cf-56b0af675deso2827821a12.1
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:22:47 -0700 (PDT)
+	s=arc-20240116; t=1710883403; c=relaxed/simple;
+	bh=I30bldMoMsql+hzCHnhN/5IetJJd8PIn6Aa43/sDw8E=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=qxzjB4Fw1SACnk3sUNpkbJaYYLKMs2SJd1s7dMTOuAbSycenz9hyOyAgfmr49/jLapOs+px85e9x19bbcdizquhFS7Yrz7HuejpvyaLVMH6YsdgD/C1qffYOyq9Rnnr+hugQhntHpl3k5bjc2Faz7+vqI2DHf6o3HulzR0vvaTo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=LFWs7HQ+; arc=none smtp.client-ip=209.85.214.176
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f176.google.com with SMTP id d9443c01a7336-1dd955753edso49012975ad.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:23:21 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linux-foundation.org; s=google; t=1710883365; x=1711488165; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=A3mbW0Axndl0DdAfMvicFiRl5fwsj7RLVMqVJZ+vdSI=;
-        b=OjARSyXEodyQySvh+M4gMeMHgwoYph9ey/+t4OYJqY9VVb9bm4VxduxeFKFnM8VBiS
-         ElOKbtWsC3YwhZ09Wte5cAYe1Q6mNhtIQn9wMIFnt8BiFdxWCwpOznQ8IzJ6tCVMHr2v
-         WuoerfZRG5JK4wbxTCji55WX7g/5RDeBtJ3SA=
+        d=gmail.com; s=20230601; t=1710883401; x=1711488201; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=FbVTZraF0QJZsJx7Z45tBr7Rj39spiA67Pwo/WgWCSA=;
+        b=LFWs7HQ+9hpb/ndFR7SVSx+ApeQBBfaUqdzQi2x4751vMLjW96iM3sbtU0xnXi8jGU
+         jXq5vjfkXoWgrdyMVMYvxYzVpDD6ycFuthv3xD7PQ+QpUCKuNe639J3c9VNdiabInuey
+         w8IU1nrcr4soeqmY69LCpJZ29RPajeOTB93mBpGKA6Z46p1AeyFa63iJD6y0my6nr2Ri
+         57ABALGLPyO5z3Coa+7eHUMQQCUGrjWu63ug8q16WRjJIfvpo8XktceuParIUakFyRBU
+         TeDt18RlwdBzvO7Y2GZ6PEzVMiDij/ZkbTQzTnG1kKTTiay7y3spF+0jSUCNafBxaElR
+         KgdA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710883365; x=1711488165;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
+        d=1e100.net; s=20230601; t=1710883401; x=1711488201;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
          :reply-to;
-        bh=A3mbW0Axndl0DdAfMvicFiRl5fwsj7RLVMqVJZ+vdSI=;
-        b=B6AaxpvylP6yg8Yr8gVQDyqRPZ839LhQqRyUVSIHmqNwCBE0n5Nn/T3+zw4yTNAD0W
-         aJqHuZ1vVWIWkQlMtSgTGC2Ba6KUdN9CPe1VQsqqLeuF9Z488UKlABXi255u5k8mMUsu
-         KR0DiJHm84fY4+lm5d90S9np0D+JcDFjR+7Nwy6HUXuyDu1sQEnnivNfGiODM+z8f+bU
-         BoTJm4+/E85TSyXnH5/bwvUlmpdTK6BGP1GG5WIEg0otYrfbtfl0548/EY78m/BwVant
-         qVT/7209KISC4M429ugB84z08OQ1Q6WIgIaJJfDwZrWRZidM4TzD3IMO4o9jVEmOUBOG
-         zZLQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXj/HKbuJd/qJBk39q4l2LFhYNIyiui5JnSJqApbn22QpizXXrDsrWKER+EMeKNCT54JMKO4Bh2gKai7W3b7CfSnO4QJU4y1VTpofox
-X-Gm-Message-State: AOJu0YxLIffXVuUe/5n7tMgifMBvV0rB/kexhmtcJcdn3rZ/tWPFu6as
-	nuStRqjT9zr5Hs2nM4jjhHls7sRfDNfYumJKBtd74+K7QzUyZ7UeHJjq2UTfm1W52KajLTtwBQ8
-	h8yxGCw==
-X-Google-Smtp-Source: AGHT+IHzgy7iooZ5nZm03gaHqGQlvPeoFmMdD/Uc45CfajlzAgb4ROohEgScgty6x5EPFCh0fhnQ5w==
-X-Received: by 2002:a17:906:8417:b0:a46:be37:2685 with SMTP id n23-20020a170906841700b00a46be372685mr64105ejx.19.1710883365646;
-        Tue, 19 Mar 2024 14:22:45 -0700 (PDT)
-Received: from mail-ej1-f48.google.com (mail-ej1-f48.google.com. [209.85.218.48])
-        by smtp.gmail.com with ESMTPSA id d26-20020a1709067f1a00b00a46a643b6fbsm4415832ejr.15.2024.03.19.14.22.44
-        for <linux-kernel@vger.kernel.org>
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Tue, 19 Mar 2024 14:22:44 -0700 (PDT)
-Received: by mail-ej1-f48.google.com with SMTP id a640c23a62f3a-a45f257b81fso793946766b.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:22:44 -0700 (PDT)
-X-Forwarded-Encrypted: i=1; AJvYcCXIWA1P6RU17LmRFWTyC56kjiy9H9vDU19sk7p3Ew/W9ltHJGvZIGQ2y4ZpE22xoRuLX/YlqaiaT2Sfhp6tKG54GGZbziT7kAO0TaBA
-X-Received: by 2002:a17:906:f110:b0:a46:eab0:953b with SMTP id
- gv16-20020a170906f11000b00a46eab0953bmr60957ejb.23.1710883363785; Tue, 19 Mar
- 2024 14:22:43 -0700 (PDT)
+        bh=FbVTZraF0QJZsJx7Z45tBr7Rj39spiA67Pwo/WgWCSA=;
+        b=N9jxOpwqZWsQ743XLCulgPLcR9j7pNCU1jhwhrDF7my0fjuZEv5ps41MJpkvlPf9Iu
+         ZytpB8+I8B0c+rhUgGoL9rJwQ/IFFT+27jj20hMdTC59SEx5yEesV/cPPPf79vdpB4or
+         0he9XCcVW0dDciw7RLcrq1eBThwetMqLtIF0hdxdWZOx3a8J1zd2WsfYR/K5wrz+fahy
+         ev7P8yMz5jeGYGNCp0JZi9jK4woBLNwHVerdYwi+WIfRuXyAkVB+tJUgvFJr2dnqPLey
+         Wgt0lt6VWo70fA7YzXOv3wir9QySjOV+LmnPzn8otHgxyU3x2s9ilksfMVL+hc4U5LfK
+         IMVw==
+X-Gm-Message-State: AOJu0Yxp+S5e2gdQMRmjnKtPixoY79d0viAT8flInWJBncH02ty/VWzX
+	mGUadAf125EmmJoyVSnnGz6mo6ypBJEpikPT0xf0NSRbHX4j7wQHHEU0nuAU
+X-Google-Smtp-Source: AGHT+IHdjdv+4okA5Kq7qrqysZRqYyE5cosG4uacKotZlgLZ+KDOK+5X2eAlLu/RoJua4ZlsLFOqTQ==
+X-Received: by 2002:a17:903:11c8:b0:1dd:8ee9:62c0 with SMTP id q8-20020a17090311c800b001dd8ee962c0mr16359417plh.34.1710883400709;
+        Tue, 19 Mar 2024 14:23:20 -0700 (PDT)
+Received: from daehojeong-desktop.mtv.corp.google.com ([2620:0:1000:8411:ce48:f01a:1f52:5e0a])
+        by smtp.gmail.com with ESMTPSA id lh6-20020a170903290600b001d94678a76csm11893613plb.117.2024.03.19.14.23.20
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 14:23:20 -0700 (PDT)
+From: Daeho Jeong <daeho43@gmail.com>
+To: linux-kernel@vger.kernel.org,
+	linux-f2fs-devel@lists.sourceforge.net,
+	kernel-team@android.com
+Cc: Daeho Jeong <daehojeong@google.com>
+Subject: [PATCH v3] f2fs: prevent writing without fallocate() for pinned files
+Date: Tue, 19 Mar 2024 14:23:16 -0700
+Message-ID: <20240319212316.4193790-1-daeho43@gmail.com>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318113053.7f87ce7f@gandalf.local.home> <CAHk-=wjxX16kWd=uxG5wzqt=aXoYDf1BgWOKk+qVmAO0zh7sjA@mail.gmail.com>
- <20240319130653.0cfdaf6e@gandalf.local.home> <20240319131333.504c93fc@gandalf.local.home>
- <20240319210329.GA742040@dev-arch.thelio-3990X>
-In-Reply-To: <20240319210329.GA742040@dev-arch.thelio-3990X>
-From: Linus Torvalds <torvalds@linux-foundation.org>
-Date: Tue, 19 Mar 2024 14:22:27 -0700
-X-Gmail-Original-Message-ID: <CAHk-=wjJH_k5+h=3TOvLsGN-FOBNfLh_Ln_bZRLQV-oe9Gc5tw@mail.gmail.com>
-Message-ID: <CAHk-=wjJH_k5+h=3TOvLsGN-FOBNfLh_Ln_bZRLQV-oe9Gc5tw@mail.gmail.com>
-Subject: Re: [GIT PULL v2] tracing: Updates for v6.9
-To: Nathan Chancellor <nathan@kernel.org>
-Cc: Steven Rostedt <rostedt@goodmis.org>, LKML <linux-kernel@vger.kernel.org>, 
-	Masami Hiramatsu <mhiramat@kernel.org>, Mathieu Desnoyers <mathieu.desnoyers@efficios.com>, 
-	Alison Schofield <alison.schofield@intel.com>, Beau Belgrave <beaub@linux.microsoft.com>, 
-	Huang Yiwei <quic_hyiwei@quicinc.com>, John Garry <john.g.garry@oracle.com>, 
-	Randy Dunlap <rdunlap@infradead.org>, Thorsten Blum <thorsten.blum@toblux.com>, 
-	Vincent Donnefort <vdonnefort@google.com>, linke li <lilinke99@qq.com>, llvm@lists.linux.dev
-Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: 8bit
 
-On Tue, 19 Mar 2024 at 14:03, Nathan Chancellor <nathan@kernel.org> wrote:
->
-> For what it's worth, I applied that change and built ARCH=x86_64
-> defconfig with LLVM 18.1.1 from [1] but it does not appear to help the
-> instances of -Wstring-compare; in fact, it adds some additional warnings
-> that I have not seen before. I have attached the full build log.
+From: Daeho Jeong <daehojeong@google.com>
 
-Hmm. I'm no longer seeing any problems with commit 24f5bb9f24ad
-("tracing: Just use strcmp() for testing __string() and __assign_str()
-match").
+In a case writing without fallocate(), we can't guarantee it's allocated
+in the conventional area for zoned stroage.
 
-But that's clang 17.0.6.
+Signed-off-by: Daeho Jeong <daehojeong@google.com>
+---
+v2: covered the direct io case
+v3: covered the mkwrite case
+---
+ fs/f2fs/data.c | 14 ++++++++++++--
+ fs/f2fs/file.c | 16 ++++++++--------
+ 2 files changed, 20 insertions(+), 10 deletions(-)
 
-The patch that Steven sent out (and that I applied) is a bit different
-from his "I'll change it to this" email, though. A couple of casts and
-parentheses different.
+diff --git a/fs/f2fs/data.c b/fs/f2fs/data.c
+index c21b92f18463..d3e5ab2736a6 100644
+--- a/fs/f2fs/data.c
++++ b/fs/f2fs/data.c
+@@ -1584,8 +1584,11 @@ int f2fs_map_blocks(struct inode *inode, struct f2fs_map_blocks *map, int flag)
+ 
+ 	/* use out-place-update for direct IO under LFS mode */
+ 	if (map->m_may_create &&
+-	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO))) {
+-		if (unlikely(f2fs_cp_error(sbi))) {
++	    (is_hole || (f2fs_lfs_mode(sbi) && flag == F2FS_GET_BLOCK_DIO &&
++			 !f2fs_is_pinned_file(inode)))) {
++		if (unlikely(f2fs_cp_error(sbi)) ||
++		    (f2fs_is_pinned_file(inode) && is_hole &&
++		     flag != F2FS_GET_BLOCK_PRE_DIO)) {
+ 			err = -EIO;
+ 			goto sync_out;
+ 		}
+@@ -3378,6 +3381,8 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+ 		f2fs_map_lock(sbi, flag);
+ 		locked = true;
+ 	} else if ((pos & PAGE_MASK) >= i_size_read(inode)) {
++		if (f2fs_is_pinned_file(inode))
++			return -EIO;
+ 		f2fs_map_lock(sbi, flag);
+ 		locked = true;
+ 	}
+@@ -3407,6 +3412,11 @@ static int prepare_write_begin(struct f2fs_sb_info *sbi,
+ 
+ 	if (!f2fs_lookup_read_extent_cache_block(inode, index,
+ 						 &dn.data_blkaddr)) {
++		if (f2fs_is_pinned_file(inode)) {
++			err = -EIO;
++			goto out;
++		}
++
+ 		if (locked) {
+ 			err = f2fs_reserve_block(&dn, index);
+ 			goto out;
+diff --git a/fs/f2fs/file.c b/fs/f2fs/file.c
+index 82277e95c88f..4db3b21c804b 100644
+--- a/fs/f2fs/file.c
++++ b/fs/f2fs/file.c
+@@ -57,7 +57,7 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+ 	struct inode *inode = file_inode(vmf->vma->vm_file);
+ 	struct f2fs_sb_info *sbi = F2FS_I_SB(inode);
+ 	struct dnode_of_data dn;
+-	bool need_alloc = true;
++	bool need_alloc = !f2fs_is_pinned_file(inode);
+ 	int err = 0;
+ 	vm_fault_t ret;
+ 
+@@ -114,19 +114,15 @@ static vm_fault_t f2fs_vm_page_mkwrite(struct vm_fault *vmf)
+ 		goto out_sem;
+ 	}
+ 
++	set_new_dnode(&dn, inode, NULL, NULL, 0);
+ 	if (need_alloc) {
+ 		/* block allocation */
+-		set_new_dnode(&dn, inode, NULL, NULL, 0);
+ 		err = f2fs_get_block_locked(&dn, page->index);
+-	}
+-
+-#ifdef CONFIG_F2FS_FS_COMPRESSION
+-	if (!need_alloc) {
+-		set_new_dnode(&dn, inode, NULL, NULL, 0);
++	} else {
+ 		err = f2fs_get_dnode_of_data(&dn, page->index, LOOKUP_NODE);
+ 		f2fs_put_dnode(&dn);
+ 	}
+-#endif
++
+ 	if (err) {
+ 		unlock_page(page);
+ 		goto out_sem;
+@@ -4611,6 +4607,10 @@ static int f2fs_preallocate_blocks(struct kiocb *iocb, struct iov_iter *iter,
+ 			return ret;
+ 	}
+ 
++	/* For pinned files, it should be fallocate()-ed in advance. */
++	if (f2fs_is_pinned_file(inode))
++		return 0;
++
+ 	/* Do not preallocate blocks that will be written partially in 4KB. */
+ 	map.m_lblk = F2FS_BLK_ALIGN(pos);
+ 	map.m_len = F2FS_BYTES_TO_BLK(pos + count);
+-- 
+2.44.0.291.gc1ea87d7ee-goog
 
-So maybe current -git works for you?
-
-              Linus
 
