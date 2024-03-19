@@ -1,395 +1,453 @@
-Return-Path: <linux-kernel+bounces-107682-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107681-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id E608E880006
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:57:07 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 263A1880001
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:56:38 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7368B1F22A67
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:57:07 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D173B28485E
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 14:56:36 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4DDB2651B4;
-	Tue, 19 Mar 2024 14:56:58 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0068256776;
+	Tue, 19 Mar 2024 14:56:31 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b="k6VP0VIx"
-Received: from mail-qt1-f175.google.com (mail-qt1-f175.google.com [209.85.160.175])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="TEyOV+EW"
+Received: from mail-wr1-f42.google.com (mail-wr1-f42.google.com [209.85.221.42])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0F17A62818
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:56:54 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.160.175
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3DD3B62818
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 14:56:27 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.221.42
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710860217; cv=none; b=D756UhOhPqYO+4tLLgo25cCFcapFqzIldkjofkJjkkrssN/nXsfWrnoyGfprD8CM2sZ7UiUIhcdr/msiOQ9HBPYsrkCCfyVkg3x4dkjcorIaUrIuPuo/cGNrqzGSRMb2fJkNkbGx4I6tXOj949JolmH4PV8QXNk6S76SWxi+eyY=
+	t=1710860189; cv=none; b=RTPTpaFpkVpDcxLO9ua1N7BM3IRhMXMJh8U1CeTdUHvdyicT28ujsRbintCNDc9TsyDO9AMaumo/w6M3cmcXSue3zTuihPcbxzK/KzR/e/GxXUvDowLSeskACvIOWtBmfAvG2ZCr0cKXl/S6EpSxqUKEigJrCktiKOF/nhr1sSE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710860217; c=relaxed/simple;
-	bh=3Vicja8+l2q2Ij746Qe6FPMVqRvymBLXOTTFcVqrZRA=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=PvqVfwNYLho0+2s36gaHEWSXR8vTl3Z+eHkNhTza7UEivatdjTCOFSeTSQJ6w8Ac915fDOtazKTkYwGLCNO4BYiTH1gXRsiOHoImBYhDguHfbu1ZRUZy9WTC+0WrIL+M00IlDnMhWLur4fglqFgkutar7VIhPfdkwtAWs2A4QoA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com; spf=pass smtp.mailfrom=soleen.com; dkim=pass (2048-bit key) header.d=soleen-com.20230601.gappssmtp.com header.i=@soleen-com.20230601.gappssmtp.com header.b=k6VP0VIx; arc=none smtp.client-ip=209.85.160.175
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=soleen.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=soleen.com
-Received: by mail-qt1-f175.google.com with SMTP id d75a77b69052e-429f53f0b0bso34864611cf.2
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:56:54 -0700 (PDT)
+	s=arc-20240116; t=1710860189; c=relaxed/simple;
+	bh=dik/k5HK042p5OfCqw8HAAlio+gLneCdzRIGtqKSCag=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=m/zjkuXDdb5a8igYfIJW3znkBSke374pUrMRItEOno2aeJ7wxl6g81LZkypEkAnrJI8YRHeB0hjWYF539vtwhOa6HYYayv3STxq08TcBUz+8gXEic2Kw66pq78NS44zkb3vAI0yM7YIvQiSZRx9T9iSM2OadnPlmhQYjQpuXLfA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=TEyOV+EW; arc=none smtp.client-ip=209.85.221.42
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-wr1-f42.google.com with SMTP id ffacd0b85a97d-3417a3151c4so1569026f8f.3
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 07:56:27 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=soleen-com.20230601.gappssmtp.com; s=20230601; t=1710860214; x=1711465014; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=lKpalR5cw9CXmhQ6CEPMwqOfzi/hbbVFb5st3efxJjo=;
-        b=k6VP0VIxdvJWHvwTWPEdvPmh0Aw/IiHb8MHETomi0jRsszk0MwmbbinwZPsB+JJyeo
-         q/walsjH2p7yICzHn+K3RX+Y8i8W8yJ+QkeV4KapfKFtAzAyptDa0kyaYY4By13e6yOa
-         nLTFcRWf1iRpopjE/SEe/aiUUycjkwr6FtrN93/8GwobFudoIydGLo1ydgBHjxdIaHFY
-         zR+SifYHQz2Qw8M2c6d/Qnm8AzW8ZB2Df8+cxOn19JW68m4WamuKSe3c0LZeOYlW7MQr
-         w+llIgO320spbY76nSIUUKe6IbQi0Iv+4jSURQPQMMpz9mOIiLgEeny6uDnJt9ZH9V6L
-         i+Tw==
+        d=gmail.com; s=20230601; t=1710860185; x=1711464985; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=BfQPKp8XTVeFxo8rve5lY4XSXvKrGENVM3TuHTEMm2k=;
+        b=TEyOV+EWsSadfkRUl0S9c6boBTOP3eZvAL2sWQo38rYeH/hAZsmZm587HFjKLLGdGq
+         u5seX/qlrFZESCDSQF5f0PEtA8BKP+PSKk35DaT32is712OyAr3dkD5zHxrCWsWakG8R
+         Z6c23lfEOZLVh1FkByzIbWs6H93DTs3CpN+jjzKESxaBZK4D32efwxiYcx8rMTU1LPUZ
+         ih/fsji9Hx6CZRN6XewkynoOFm8Hcc+1+buwkbpnONnBnnM+v5JWnvN7gbQPgq3hc7k4
+         9bsdl2e5JsGoTgpNv2ZH0jCAVzvnJtzrI+6LbBBDMHLkSzHwmnkfHvwIvT4+BuUIsjWK
+         MxwQ==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710860214; x=1711465014;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=lKpalR5cw9CXmhQ6CEPMwqOfzi/hbbVFb5st3efxJjo=;
-        b=Lvs0b90fWawhkP489tlAMfVQKYJj2vRZkarEHlXnGyAgYzt/EwJETNQLhmkhIJ87UH
-         t5nGLHqTcNjV24OVnnM+VmybMiMI3xnclSczWKIJVXyLwkg+HxwaSAv6yNOkNAblfVeM
-         9ycw9nT+UwCKB26WYZIoZp9WOLPnB0D0W0xS3hp2puHFUnBVRnTurRHhYdQXdGBg9GYv
-         a5ObBp2+SaxT2pM/Ad1JqUNIruS1bT9OtDwPumCriWQn8JjPYuYLdbAUBg1jLtvJWP96
-         EjInawvgA2+Os/xxkKVuPWP6h2gTx8+GeOQQtY08iur+SvKa46J3707yd0wZstw2N34m
-         MXaQ==
-X-Forwarded-Encrypted: i=1; AJvYcCVVTA3T2KMfue62vh/AdjFJpxQG8WZry6MdAdci0eof6/Nsz2iz9DxSJCw9Zx64IudtjDnKNReo2tpJIodmTDiDdiHfvXfYpGZoEg67
-X-Gm-Message-State: AOJu0Yz+U7ol0Cc5cIAQr0dIrGFvPWRk7MsOFOP3OBUBIC+M4KI+VixT
-	AeqAi6hFtOO91W8OjH5b5dE+hxJ0GA2V8LXWvoHyRrEGVxHmv180u+r4GrzFTJE9+FuKSenM0q6
-	WXfHP5ZF43O4BTWY75pWC5qPOKpZGXBwuMpqjsQ==
-X-Google-Smtp-Source: AGHT+IHt2UGe10VsD0CiL4RMgWpq7Isv4MrWJZj3oEIRH84D189zTNzEiOdp0TjIx5SeiPdQawduKadS44XNQT9izDI=
-X-Received: by 2002:a05:622a:1aa4:b0:430:b697:a8c9 with SMTP id
- s36-20020a05622a1aa400b00430b697a8c9mr14972686qtc.12.1710860213900; Tue, 19
- Mar 2024 07:56:53 -0700 (PDT)
+        d=1e100.net; s=20230601; t=1710860185; x=1711464985;
+        h=content-transfer-encoding:in-reply-to:from:references:cc:to
+         :content-language:subject:user-agent:mime-version:date:message-id
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=BfQPKp8XTVeFxo8rve5lY4XSXvKrGENVM3TuHTEMm2k=;
+        b=DzBbenwYVyClwGaCldMlSjFPZ04ikhmPaCDRMlES3KPl261xl+mIgAfySj9xAivg4r
+         Px3YbHGDl268chUUDjn9iOCjuZDA8+EViR2C/q31ScLKXSEHCnvaRC5+eZ1Quw2TA3Rj
+         PgxpSGaawGDR5dtd3WurmjDpT27Q8Y5qmjtu0SiT3X35j6VuoftEqNz1zGAz/bI0mfKr
+         AgFIMsU7dq2JHM45E1wbioODxt/H8dX2mHz8708TdTy+xGr8p/Ow7WK1lFq+MMeMVOUM
+         X+g+96VDYrtn3FIsBSX6+q7JN8zUVWJDvLQeMIgbKY8yyQNZx/2tAbbPT1Hzu2xTgFRn
+         vvLg==
+X-Forwarded-Encrypted: i=1; AJvYcCVHCpm+pTOc7OqeAQDduWcCkk/acP8K0QnBjzjqQ1v4YtKSK3Ii6rcgq5TPReR7Bcagawc2SmTR/+03204jkB9rfYcJHqiGkRqrzl6p
+X-Gm-Message-State: AOJu0Yx3JbVebVeBo1/IMdTBcwovtkae+C0dpUAOn85GeoHsWOFGBYAK
+	zmk//sRiYOnbfHKr6xrteCSuzeBHZ8ySn14brrnPdJaY38PSFl6Y
+X-Google-Smtp-Source: AGHT+IEG4zLGa88C6iT149OgULBa2BRcyhmQUiQ7/+MjO16LcGp41bhLMNetrgRRzAWR0cvkxuHnBQ==
+X-Received: by 2002:adf:e259:0:b0:33e:3d2:1a97 with SMTP id bl25-20020adfe259000000b0033e03d21a97mr8016025wrb.27.1710860185418;
+        Tue, 19 Mar 2024 07:56:25 -0700 (PDT)
+Received: from [10.254.108.81] (munvpn.amd.com. [165.204.72.6])
+        by smtp.gmail.com with ESMTPSA id k4-20020adfe3c4000000b0033e48db23bdsm12537689wrm.100.2024.03.19.07.56.22
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Tue, 19 Mar 2024 07:56:24 -0700 (PDT)
+Message-ID: <8e36fae9-6501-435e-a01c-93990bef57f7@gmail.com>
+Date: Tue, 19 Mar 2024 15:56:22 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240311164638.2015063-1-pasha.tatashin@soleen.com>
- <2cb8f02d-f21e-45d2-afe2-d1c6225240f3@zytor.com> <ZfNTSjfE_w50Otnz@casper.infradead.org>
- <2qp4uegb4kqkryihqyo6v3fzoc2nysuhltc535kxnh6ozpo5ni@isilzw7nth42>
- <ZfNWojLB7qjjB0Zw@casper.infradead.org> <CA+CK2bAmOj2J10szVijNikexFZ1gmA913vvxnqW4DJKWQikwqQ@mail.gmail.com>
- <39F17EC4-7844-4111-BF7D-FFC97B05D9FA@zytor.com> <CA+CK2bDothmwdJ86K1LiKWDKdWdYDjg5WCwdbapL9c3Y_Sf+kg@mail.gmail.com>
- <CAMzpN2hZgEpJcyLqPhEqKSHy33j1G=FjzrOvnLPqiDeijanM=w@mail.gmail.com>
- <CA+CK2bBTrrJerZMdJrKhg683H4VmnqbgkGu2VG2UuirWNm1TnA@mail.gmail.com>
- <CAMzpN2jmQoG9Cw56JOh7t_Y21Fax3bA9iAEA2B7TLnYs5ycdJQ@mail.gmail.com>
- <CA+CK2bDO=LV8nEFn=q6w3Pyna3aqKAiFEzHMb-d7xzMOThOXSQ@mail.gmail.com> <CAMzpN2i8SRkgUZ+XSj7wJrtRn=-mB=7v7=C8auES=FAW_MFN-Q@mail.gmail.com>
-In-Reply-To: <CAMzpN2i8SRkgUZ+XSj7wJrtRn=-mB=7v7=C8auES=FAW_MFN-Q@mail.gmail.com>
-From: Pasha Tatashin <pasha.tatashin@soleen.com>
-Date: Tue, 19 Mar 2024 10:56:16 -0400
-Message-ID: <CA+CK2bBX6HtP_=-GhTN3uV8mARZ1vjCWW+3-t-HFLiBcEMzmqg@mail.gmail.com>
-Subject: Re: [RFC 00/14] Dynamic Kernel Stacks
-To: Brian Gerst <brgerst@gmail.com>
-Cc: "H. Peter Anvin" <hpa@zytor.com>, Matthew Wilcox <willy@infradead.org>, 
-	Kent Overstreet <kent.overstreet@linux.dev>, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, akpm@linux-foundation.org, x86@kernel.org, bp@alien8.de, 
-	brauner@kernel.org, bristot@redhat.com, bsegall@google.com, 
-	dave.hansen@linux.intel.com, dianders@chromium.org, dietmar.eggemann@arm.com, 
-	eric.devolder@oracle.com, hca@linux.ibm.com, hch@infradead.org, 
-	jacob.jun.pan@linux.intel.com, jgg@ziepe.ca, jpoimboe@kernel.org, 
-	jroedel@suse.de, juri.lelli@redhat.com, kinseyho@google.com, 
-	kirill.shutemov@linux.intel.com, lstoakes@gmail.com, luto@kernel.org, 
-	mgorman@suse.de, mic@digikod.net, michael.christie@oracle.com, 
-	mingo@redhat.com, mjguzik@gmail.com, mst@redhat.com, npiggin@gmail.com, 
-	peterz@infradead.org, pmladek@suse.com, rick.p.edgecombe@intel.com, 
-	rostedt@goodmis.org, surenb@google.com, tglx@linutronix.de, urezki@gmail.com, 
-	vincent.guittot@linaro.org, vschneid@redhat.com
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH] drm/amdgpu: refactor code to reuse system information
+Content-Language: en-US
+To: Alex Deucher <alexdeucher@gmail.com>, Sunil Khatri <sunil.khatri@amd.com>
+Cc: Alex Deucher <alexander.deucher@amd.com>,
+ =?UTF-8?Q?Christian_K=C3=B6nig?= <christian.koenig@amd.com>,
+ Shashank Sharma <shashank.sharma@amd.com>, amd-gfx@lists.freedesktop.org,
+ dri-devel@lists.freedesktop.org, linux-kernel@vger.kernel.org,
+ Hawking Zhang <Hawking.Zhang@amd.com>,
+ Felix Kuehling <Felix.Kuehling@amd.com>, Lijo Lazar <lijo.lazar@amd.com>
+References: <20240319123208.851901-1-sunil.khatri@amd.com>
+ <CADnq5_PW2ZQ8sP9NcX=f5QhHM-Ne=EQA7k9BKwwwZbgsRyV4-A@mail.gmail.com>
+From: =?UTF-8?Q?Christian_K=C3=B6nig?= <ckoenig.leichtzumerken@gmail.com>
+In-Reply-To: <CADnq5_PW2ZQ8sP9NcX=f5QhHM-Ne=EQA7k9BKwwwZbgsRyV4-A@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 5:02=E2=80=AFPM Brian Gerst <brgerst@gmail.com> wro=
-te:
->
-> On Mon, Mar 18, 2024 at 11:00=E2=80=AFAM Pasha Tatashin
-> <pasha.tatashin@soleen.com> wrote:
-> >
-> > On Sun, Mar 17, 2024 at 5:30=E2=80=AFPM Brian Gerst <brgerst@gmail.com>=
- wrote:
-> > >
-> > > On Sun, Mar 17, 2024 at 12:15=E2=80=AFPM Pasha Tatashin
-> > > <pasha.tatashin@soleen.com> wrote:
-> > > >
-> > > > On Sun, Mar 17, 2024 at 10:43=E2=80=AFAM Brian Gerst <brgerst@gmail=
-com> wrote:
-> > > > >
-> > > > > On Sat, Mar 16, 2024 at 3:18=E2=80=AFPM Pasha Tatashin
-> > > > > <pasha.tatashin@soleen.com> wrote:
-> > > > > >
-> > > > > > On Thu, Mar 14, 2024 at 11:40=E2=80=AFPM H. Peter Anvin <hpa@zy=
-tor.com> wrote:
-> > > > > > >
-> > > > > > > On March 14, 2024 8:13:56 PM PDT, Pasha Tatashin <pasha.tatas=
-hin@soleen.com> wrote:
-> > > > > > > >On Thu, Mar 14, 2024 at 3:57=E2=80=AFPM Matthew Wilcox <will=
-y@infradead.org> wrote:
-> > > > > > > >>
-> > > > > > > >> On Thu, Mar 14, 2024 at 03:53:39PM -0400, Kent Overstreet =
-wrote:
-> > > > > > > >> > On Thu, Mar 14, 2024 at 07:43:06PM +0000, Matthew Wilcox=
- wrote:
-> > > > > > > >> > > On Tue, Mar 12, 2024 at 10:18:10AM -0700, H. Peter Anv=
-in wrote:
-> > > > > > > >> > > > Second, non-dynamic kernel memory is one of the core=
- design decisions in
-> > > > > > > >> > > > Linux from early on. This means there are lot of dee=
-ply embedded assumptions
-> > > > > > > >> > > > which would have to be untangled.
-> > > > > > > >> > >
-> > > > > > > >> > > I think there are other ways of getting the benefit th=
-at Pasha is seeking
-> > > > > > > >> > > without moving to dynamically allocated kernel memory.=
-  One icky thing
-> > > > > > > >> > > that XFS does is punt work over to a kernel thread in =
-order to use more
-> > > > > > > >> > > stack!  That breaks a number of things including lockd=
-ep (because the
-> > > > > > > >> > > kernel thread doesn't own the lock, the thread waiting=
- for the kernel
-> > > > > > > >> > > thread owns the lock).
-> > > > > > > >> > >
-> > > > > > > >> > > If we had segmented stacks, XFS could say "I need at l=
-east 6kB of stack",
-> > > > > > > >> > > and if less than that was available, we could allocate=
- a temporary
-> > > > > > > >> > > stack and switch to it.  I suspect Google would also b=
-e able to use this
-> > > > > > > >> > > API for their rare cases when they need more than 8kB =
-of kernel stack.
-> > > > > > > >> > > Who knows, we might all be able to use such a thing.
-> > > > > > > >> > >
-> > > > > > > >> > > I'd been thinking about this from the point of view of=
- allocating more
-> > > > > > > >> > > stack elsewhere in kernel space, but combining what Pa=
-sha has done here
-> > > > > > > >> > > with this idea might lead to a hybrid approach that wo=
-rks better; allocate
-> > > > > > > >> > > 32kB of vmap space per kernel thread, put 12kB of memo=
-ry at the top of it,
-> > > > > > > >> > > rely on people using this "I need more stack" API corr=
-ectly, and free the
-> > > > > > > >> > > excess pages on return to userspace.  No complicated "=
-switch stacks" API
-> > > > > > > >> > > needed, just an "ensure we have at least N bytes of st=
-ack remaining" API.
-> > > > > > > >
-> > > > > > > >I like this approach! I think we could also consider having =
-permanent
-> > > > > > > >big stacks for some kernel only threads like kvm-vcpu. A coo=
-perative
-> > > > > > > >stack increase framework could work well and wouldn't negati=
-vely
-> > > > > > > >impact the performance of context switching. However, thorou=
-gh
-> > > > > > > >analysis would be necessary to proactively identify potentia=
-l stack
-> > > > > > > >overflow situations.
-> > > > > > > >
-> > > > > > > >> > Why would we need an "I need more stack" API? Pasha's ap=
-proach seems
-> > > > > > > >> > like everything we need for what you're talking about.
-> > > > > > > >>
-> > > > > > > >> Because double faults are hard, possibly impossible, and t=
-he FRED approach
-> > > > > > > >> Peter described has extra overhead?  This was all describe=
-d up-thread.
-> > > > > > > >
-> > > > > > > >Handling faults in #DF is possible. It requires code inspect=
-ion to
-> > > > > > > >handle race conditions such as what was shown by tglx. Howev=
-er, as
-> > > > > > > >Andy pointed out, this is not supported by SDM as it is an a=
-bort
-> > > > > > > >context (yet we return from it because of ESPFIX64, so retur=
-n is
-> > > > > > > >possible).
-> > > > > > > >
-> > > > > > > >My question, however, if we ignore memory savings and only c=
-onsider
-> > > > > > > >reliability aspect of this feature.  What is better uncondit=
-ionally
-> > > > > > > >crashing the machine because a guard page was reached, or pr=
-inting a
-> > > > > > > >huge warning with a backtracing information about the offend=
-ing stack,
-> > > > > > > >handling the fault, and survive? I know that historically Li=
-nus
-> > > > > > > >preferred WARN() to BUG() [1]. But, this is a somewhat diffe=
-rent
-> > > > > > > >scenario compared to simple BUG vs WARN.
-> > > > > > > >
-> > > > > > > >Pasha
-> > > > > > > >
-> > > > > > > >[1] https://lore.kernel.org/all/Pine.LNX.4.44.0209091832160.=
-1714-100000@home.transmeta.com
-> > > > > > > >
-> > > > > > >
-> > > > > > > The real issue with using #DF is that if the event that cause=
-d it was asynchronous, you could lose the event.
-> > > > > >
-> > > > > > Got it. So, using a #DF handler for stack page faults isn't fea=
-sible.
-> > > > > > I suppose the only way for this to work would be to use a dedic=
-ated
-> > > > > > Interrupt Stack Table (IST) entry for page faults (#PF), but I =
-suspect
-> > > > > > that might introduce other complications.
-> > > > > >
-> > > > > > Expanding on Mathew's idea of an interface for dynamic kernel s=
-tack
-> > > > > > sizes, here's what I'm thinking:
-> > > > > >
-> > > > > > - Kernel Threads: Create all kernel threads with a fully popula=
-ted
-> > > > > > THREAD_SIZE stack.  (i.e. 16K)
-> > > > > > - User Threads: Create all user threads with THREAD_SIZE kernel=
- stack
-> > > > > > but only the top page mapped. (i.e. 4K)
-> > > > > > - In enter_from_user_mode(): Expand the thread stack to 16K by =
-mapping
-> > > > > > three additional pages from the per-CPU stack cache. This funct=
-ion is
-> > > > > > called early in kernel entry points.
-> > > > > > - exit_to_user_mode(): Unmap the extra three pages and return t=
-hem to
-> > > > > > the per-CPU cache. This function is called late in the kernel e=
-xit
-> > > > > > path.
-> > > > > >
-> > > > > > Both of the above hooks are called with IRQ disabled on all ker=
-nel
-> > > > > > entries whether through interrupts and syscalls, and they are c=
-alled
-> > > > > > early/late enough that 4K is enough to handle the rest of entry=
-/exit.
-> > > >
-> > > > Hi Brian,
-> > > >
-> > > > > This proposal will not have the memory savings that you are looki=
-ng
-> > > > > for, since sleeping tasks would still have a fully allocated stac=
-k.
-> > > >
-> > > > The tasks that were descheduled while running in user mode should n=
-ot
-> > > > increase their stack. The potential saving is greater than the
-> > > > origianl proposal, because in the origianl proposal we never shrink
-> > > > stacks after faults.
-> > >
-> > > A task has to enter kernel mode in order to be rescheduled.  If it
-> > > doesn't make a syscall or hit an exception, then the timer interrupt
-> > > will eventually kick it out of user mode.  At some point schedule() i=
-s
-> > > called, the task is put to sleep and context is switched to the next
-> > > task.  A sleeping task will always be using some amount of kernel
-> > > stack.  How much depends a lot on what caused the task to sleep.  If
-> > > the timeslice expired it could switch right before the return to user
-> > > mode.  A page fault could go deep into filesystem and device code
-> > > waiting on an I/O operation.
-> > >
-> > > > > This also would add extra overhead to each entry and exit (includ=
-ing
-> > > > > syscalls) that can happen multiple times before a context switch.=
-  It
-> > > > > also doesn't make much sense because a task running in user mode =
-will
-> > > > > quickly need those stack pages back when it returns to kernel mod=
-e.
-> > > > > Even if it doesn't make a syscall, the timer interrupt will kick =
-it
-> > > > > out of user mode.
-> > > > >
-> > > > > What should happen is that the unused stack is reclaimed when a t=
-ask
-> > > > > goes to sleep.  The kernel does not use a red zone, so any stack =
-pages
-> > > > > below the saved stack pointer of a sleeping task (task->thread.sp=
-) can
-> > > > > be safely discarded.  Before context switching to a task, fully
-> > > >
-> > > > Excellent observation, this makes Andy Lutomirski per-map proposal =
-[1]
-> > > > usable without tracking dirty/accessed bits. More reliable, and als=
-o
-> > > > platform independent.
-> > >
-> > > This is x86-specific.  Other architectures will likely have differenc=
-es.
-> > >
-> > > > > populate its task stack.  After context switching from a task, re=
-claim
-> > > > > its unused stack.  This way, the task stack in use is always full=
-y
-> > > > > allocated and we don't have to deal with page faults.
-> > > > >
-> > > > > To make this happen, __switch_to() would have to be split into tw=
-o
-> > > > > parts, to cleanly separate what happens before and after the stac=
-k
-> > > > > switch.  The first part saves processor context for the previous =
-task,
-> > > > > and prepares the next task.
-> > > >
-> > > > By knowing the stack requirements of __switch_to(), can't we actual=
-ly
-> > > > do all that in the common code in context_switch() right before
-> > > > __switch_to()? We would do an arch specific call to get the
-> > > > __switch_to() stack requirement, and use that to change the value o=
-f
-> > > > task->thread.sp to know where the stack is going to be while sleepi=
-ng.
-> > > > At this time we can do the unmapping of the stack pages from the
-> > > > previous task, and mapping the pages to the next task.
-> > >
-> > > task->thread.sp is set in __switch_to_asm(), and is pretty much the
-> > > last thing done in the context of the previous task.  Trying to
-> > > predict that value ahead of time is way too fragile.
-> >
-> > We don't require an exact value, but rather an approximate upper
-> > limit. To illustrate, subtract 1K from the current .sp, then determine
-> > the corresponding page to decide the number of pages needing
-> > unmapping. The primary advantage is that we can avoid
-> > platform-specific ifdefs for DYNAMIC_STACKS within the arch-specific
-> > switch_to() function. Instead, each platform can provide an
-> > appropriate upper bound for switch_to() operations. We know the amount
-> > of information is going to be stored on the stack by the routines, and
-> > also since interrupts are disabled stacks are not used for anything
-> > else there, so I do not see a problem with determining a reasonable
-> > upper bound.
->
-> The stack usage will vary depending on compiler version and
-> optimization settings.  Making an educated guess is possible, but may
-> not be enough in the future.
->
-> What would be nice is to get some actual data on stack usage under
-> various workloads, both maximum depth and depth at context switch.
->
-> > >  Also, the key
-> > > point I was trying to make is that you cannot safely shrink the activ=
-e
-> > > stack.  It can only be done after the stack switch to the new task.
-> >
-> > Can you please elaborate why this is so? If the lowest pages are not
-> > used, and interrupts are disabled what is not safe about removing them
-> > from the page table?
-> >
-> > I am not against the idea of unmapping in __switch_to(), I just want
-> > to understand the reasons why more generic but perhaps not as precise
-> > approach would not  work.
->
-> As long as a wide buffer is given, it would probably be safe.  But it
-> would still be safer and more precise if done after the switch.
+Am 19.03.24 um 15:26 schrieb Alex Deucher:
+> On Tue, Mar 19, 2024 at 8:32 AM Sunil Khatri <sunil.khatri@amd.com> wrote:
+>> Refactor the code so debugfs and devcoredump can reuse
+>> the common information and avoid unnecessary copy of it.
+>>
+>> created a new file which would be the right place to
+>> hold functions which will be used between sysfs, debugfs
+>> and devcoredump.
+>>
+>> Cc: Christian König <christian.koenig@amd.com>
+>> Cc: Alex Deucher <alexander.deucher@amd.com>
+>> Signed-off-by: Sunil Khatri <sunil.khatri@amd.com>
+>> ---
+>>   drivers/gpu/drm/amd/amdgpu/Makefile         |   2 +-
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu.h         |   1 +
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c | 151 ++++++++++++++++++++
+>>   drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c     | 118 +--------------
+>>   4 files changed, 157 insertions(+), 115 deletions(-)
+>>   create mode 100644 drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/Makefile b/drivers/gpu/drm/amd/amdgpu/Makefile
+>> index 4536c8ad0e11..05d34f4b18f5 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/Makefile
+>> +++ b/drivers/gpu/drm/amd/amdgpu/Makefile
+>> @@ -80,7 +80,7 @@ amdgpu-y += amdgpu_device.o amdgpu_doorbell_mgr.o amdgpu_kms.o \
+>>          amdgpu_umc.o smu_v11_0_i2c.o amdgpu_fru_eeprom.o amdgpu_rap.o \
+>>          amdgpu_fw_attestation.o amdgpu_securedisplay.o \
+>>          amdgpu_eeprom.o amdgpu_mca.o amdgpu_psp_ta.o amdgpu_lsdma.o \
+>> -       amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o
+>> +       amdgpu_ring_mux.o amdgpu_xcp.o amdgpu_seq64.o amdgpu_aca.o amdgpu_devinfo.o
+>>
+>>   amdgpu-$(CONFIG_PROC_FS) += amdgpu_fdinfo.o
+>>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu.h b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>> index 9c62552bec34..0267870aa9b1 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu.h
+>> @@ -1609,4 +1609,5 @@ extern const struct attribute_group amdgpu_vram_mgr_attr_group;
+>>   extern const struct attribute_group amdgpu_gtt_mgr_attr_group;
+>>   extern const struct attribute_group amdgpu_flash_attr_group;
+>>
+>> +int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info);
+>>   #endif
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>> new file mode 100644
+>> index 000000000000..d2c15a1dcb0d
+>> --- /dev/null
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_devinfo.c
+>> @@ -0,0 +1,151 @@
+>> +// SPDX-License-Identifier: MIT
+>> +/*
+>> + * Copyright 2024 Advanced Micro Devices, Inc.
+>> + *
+>> + * Permission is hereby granted, free of charge, to any person obtaining a
+>> + * copy of this software and associated documentation files (the "Software"),
+>> + * to deal in the Software without restriction, including without limitation
+>> + * the rights to use, copy, modify, merge, publish, distribute, sublicense,
+>> + * and/or sell copies of the Software, and to permit persons to whom the
+>> + * Software is furnished to do so, subject to the following conditions:
+>> + *
+>> + * The above copyright notice and this permission notice shall be included in
+>> + * all copies or substantial portions of the Software.
+>> + *
+>> + * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+>> + * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+>> + * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT.  IN NO EVENT SHALL
+>> + * THE COPYRIGHT HOLDER(S) OR AUTHOR(S) BE LIABLE FOR ANY CLAIM, DAMAGES OR
+>> + * OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE,
+>> + * ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
+>> + * OTHER DEALINGS IN THE SOFTWARE.
+>> + *
+>> + */
+>> +
+>> +#include "amdgpu.h"
+>> +#include "amd_pcie.h"
+>> +
+>> +#include <drm/amdgpu_drm.h>
+>> +
+>> +int amdgpu_device_info(struct amdgpu_device *adev, struct drm_amdgpu_info_device *dev_info)
+> We can probably keep this in amdgpu_kms.c unless that file is getting
+> too big.  I don't think it warrants a new file at this point.  If you
+> do keep it in amdgpu_kms.c, I'd recommend renaming it to something
+> like amdgpu_kms_device_info() to keep the naming conventions.
 
-Makes sense. Looks like using task->thread.sp during context is not
-possible because the pages might have been shared with another CPU. We
-would need to do ipi tlb invalidation, which would be too expensive
-for the context switch. Therefore, using pte->accessed is more
-reliable to determine which pages can be unmapped. However, we could
-still use task->thread.sp in a garbage collector.
+We should not be using this for anything new in the first place.
 
-Pasha
+A whole bunch of the stuff inside the devinfo structure has been 
+deprecated because we found that putting everything into one structure 
+was a bad idea.
+
+Regards,
+Christian.
+
+>
+>> +{
+>> +       int ret;
+>> +       uint64_t vm_size;
+>> +       uint32_t pcie_gen_mask;
+>> +
+>> +       if (dev_info == NULL)
+>> +               return -EINVAL;
+>> +
+>> +       dev_info->device_id = adev->pdev->device;
+>> +       dev_info->chip_rev = adev->rev_id;
+>> +       dev_info->external_rev = adev->external_rev_id;
+>> +       dev_info->pci_rev = adev->pdev->revision;
+>> +       dev_info->family = adev->family;
+>> +       dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
+>> +       dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
+>> +       /* return all clocks in KHz */
+>> +       dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
+>> +       if (adev->pm.dpm_enabled) {
+>> +               dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
+>> +               dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
+>> +               dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
+>> +               dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
+>> +       } else {
+>> +               dev_info->max_engine_clock =
+>> +                       dev_info->min_engine_clock =
+>> +                               adev->clock.default_sclk * 10;
+>> +               dev_info->max_memory_clock =
+>> +                       dev_info->min_memory_clock =
+>> +                               adev->clock.default_mclk * 10;
+>> +               }
+>> +       dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
+>> +       dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
+>> +               adev->gfx.config.max_shader_engines;
+>> +       dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
+>> +       dev_info->ids_flags = 0;
+>> +       if (adev->flags & AMD_IS_APU)
+>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
+>> +       if (adev->gfx.mcbp)
+>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
+>> +       if (amdgpu_is_tmz(adev))
+>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
+>> +       if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
+>> +               dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
+>> +
+>> +       vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
+>> +       vm_size -= AMDGPU_VA_RESERVED_TOP;
+>> +
+>> +       /* Older VCE FW versions are buggy and can handle only 40bits */
+>> +       if (adev->vce.fw_version && adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
+>> +               vm_size = min(vm_size, 1ULL << 40);
+>> +
+>> +       dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
+>> +       dev_info->virtual_address_max = min(vm_size, AMDGPU_GMC_HOLE_START);
+>> +
+>> +       if (vm_size > AMDGPU_GMC_HOLE_START) {
+>> +               dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+>> +               dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
+>> +       }
+>> +       dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>> +       dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+>> +       dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>> +       dev_info->cu_active_number = adev->gfx.cu_info.number;
+>> +       dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+>> +       dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+>> +       memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
+>> +              sizeof(adev->gfx.cu_info.ao_cu_bitmap));
+>> +       memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
+>> +              sizeof(dev_info->cu_bitmap));
+>> +       dev_info->vram_type = adev->gmc.vram_type;
+>> +       dev_info->vram_bit_width = adev->gmc.vram_width;
+>> +       dev_info->vce_harvest_config = adev->vce.harvest_config;
+>> +       dev_info->gc_double_offchip_lds_buf =
+>> +               adev->gfx.config.double_offchip_lds_buf;
+>> +       dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
+>> +       dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
+>> +       dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
+>> +       dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
+>> +       dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
+>> +       dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
+>> +       dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
+>> +
+>> +       if (adev->family >= AMDGPU_FAMILY_NV)
+>> +               dev_info->pa_sc_tile_steering_override =
+>> +                       adev->gfx.config.pa_sc_tile_steering_override;
+>> +
+>> +       dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
+>> +
+>> +       /* Combine the chip gen mask with the platform (CPU/mobo) mask. */
+>> +       pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
+>> +       dev_info->pcie_gen = fls(pcie_gen_mask);
+>> +       dev_info->pcie_num_lanes =
+>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
+>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
+>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
+>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
+>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
+>> +               adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
+>> +
+>> +       dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
+>> +       dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
+>> +       dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
+>> +       dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
+>> +       dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
+>> +                                   adev->gfx.config.gc_gl1c_per_sa;
+>> +       dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
+>> +       dev_info->mall_size = adev->gmc.mall_size;
+>> +
+>> +
+>> +       if (adev->gfx.funcs->get_gfx_shadow_info) {
+>> +               struct amdgpu_gfx_shadow_info shadow_info;
+>> +
+>> +               ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
+>> +               if (!ret) {
+>> +                       dev_info->shadow_size = shadow_info.shadow_size;
+>> +                       dev_info->shadow_alignment = shadow_info.shadow_alignment;
+>> +                       dev_info->csa_size = shadow_info.csa_size;
+>> +                       dev_info->csa_alignment = shadow_info.csa_alignment;
+>> +               }
+>> +       }
+>> +       return ret;
+>> +}
+> As noted by Lijo, this should probably be a void function since we
+> want to populate as much information as we can and we can't break the
+> IOCTL interface.
+>
+> Alex
+>
+>> diff --git a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+>> index a66d47865e3b..24f775c68a51 100644
+>> --- a/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+>> +++ b/drivers/gpu/drm/amd/amdgpu/amdgpu_kms.c
+>> @@ -850,125 +850,15 @@ int amdgpu_info_ioctl(struct drm_device *dev, void *data, struct drm_file *filp)
+>>          }
+>>          case AMDGPU_INFO_DEV_INFO: {
+>>                  struct drm_amdgpu_info_device *dev_info;
+>> -               uint64_t vm_size;
+>> -               uint32_t pcie_gen_mask;
+>>
+>>                  dev_info = kzalloc(sizeof(*dev_info), GFP_KERNEL);
+>>                  if (!dev_info)
+>>                          return -ENOMEM;
+>>
+>> -               dev_info->device_id = adev->pdev->device;
+>> -               dev_info->chip_rev = adev->rev_id;
+>> -               dev_info->external_rev = adev->external_rev_id;
+>> -               dev_info->pci_rev = adev->pdev->revision;
+>> -               dev_info->family = adev->family;
+>> -               dev_info->num_shader_engines = adev->gfx.config.max_shader_engines;
+>> -               dev_info->num_shader_arrays_per_engine = adev->gfx.config.max_sh_per_se;
+>> -               /* return all clocks in KHz */
+>> -               dev_info->gpu_counter_freq = amdgpu_asic_get_xclk(adev) * 10;
+>> -               if (adev->pm.dpm_enabled) {
+>> -                       dev_info->max_engine_clock = amdgpu_dpm_get_sclk(adev, false) * 10;
+>> -                       dev_info->max_memory_clock = amdgpu_dpm_get_mclk(adev, false) * 10;
+>> -                       dev_info->min_engine_clock = amdgpu_dpm_get_sclk(adev, true) * 10;
+>> -                       dev_info->min_memory_clock = amdgpu_dpm_get_mclk(adev, true) * 10;
+>> -               } else {
+>> -                       dev_info->max_engine_clock =
+>> -                               dev_info->min_engine_clock =
+>> -                                       adev->clock.default_sclk * 10;
+>> -                       dev_info->max_memory_clock =
+>> -                               dev_info->min_memory_clock =
+>> -                                       adev->clock.default_mclk * 10;
+>> -               }
+>> -               dev_info->enabled_rb_pipes_mask = adev->gfx.config.backend_enable_mask;
+>> -               dev_info->num_rb_pipes = adev->gfx.config.max_backends_per_se *
+>> -                       adev->gfx.config.max_shader_engines;
+>> -               dev_info->num_hw_gfx_contexts = adev->gfx.config.max_hw_contexts;
+>> -               dev_info->ids_flags = 0;
+>> -               if (adev->flags & AMD_IS_APU)
+>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_FUSION;
+>> -               if (adev->gfx.mcbp)
+>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_PREEMPTION;
+>> -               if (amdgpu_is_tmz(adev))
+>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_TMZ;
+>> -               if (adev->gfx.config.ta_cntl2_truncate_coord_mode)
+>> -                       dev_info->ids_flags |= AMDGPU_IDS_FLAGS_CONFORMANT_TRUNC_COORD;
+>> -
+>> -               vm_size = adev->vm_manager.max_pfn * AMDGPU_GPU_PAGE_SIZE;
+>> -               vm_size -= AMDGPU_VA_RESERVED_TOP;
+>> -
+>> -               /* Older VCE FW versions are buggy and can handle only 40bits */
+>> -               if (adev->vce.fw_version &&
+>> -                   adev->vce.fw_version < AMDGPU_VCE_FW_53_45)
+>> -                       vm_size = min(vm_size, 1ULL << 40);
+>> -
+>> -               dev_info->virtual_address_offset = AMDGPU_VA_RESERVED_BOTTOM;
+>> -               dev_info->virtual_address_max =
+>> -                       min(vm_size, AMDGPU_GMC_HOLE_START);
+>> -
+>> -               if (vm_size > AMDGPU_GMC_HOLE_START) {
+>> -                       dev_info->high_va_offset = AMDGPU_GMC_HOLE_END;
+>> -                       dev_info->high_va_max = AMDGPU_GMC_HOLE_END | vm_size;
+>> -               }
+>> -               dev_info->virtual_address_alignment = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>> -               dev_info->pte_fragment_size = (1 << adev->vm_manager.fragment_size) * AMDGPU_GPU_PAGE_SIZE;
+>> -               dev_info->gart_page_size = max_t(u32, PAGE_SIZE, AMDGPU_GPU_PAGE_SIZE);
+>> -               dev_info->cu_active_number = adev->gfx.cu_info.number;
+>> -               dev_info->cu_ao_mask = adev->gfx.cu_info.ao_cu_mask;
+>> -               dev_info->ce_ram_size = adev->gfx.ce_ram_size;
+>> -               memcpy(&dev_info->cu_ao_bitmap[0], &adev->gfx.cu_info.ao_cu_bitmap[0],
+>> -                      sizeof(adev->gfx.cu_info.ao_cu_bitmap));
+>> -               memcpy(&dev_info->cu_bitmap[0], &adev->gfx.cu_info.bitmap[0],
+>> -                      sizeof(dev_info->cu_bitmap));
+>> -               dev_info->vram_type = adev->gmc.vram_type;
+>> -               dev_info->vram_bit_width = adev->gmc.vram_width;
+>> -               dev_info->vce_harvest_config = adev->vce.harvest_config;
+>> -               dev_info->gc_double_offchip_lds_buf =
+>> -                       adev->gfx.config.double_offchip_lds_buf;
+>> -               dev_info->wave_front_size = adev->gfx.cu_info.wave_front_size;
+>> -               dev_info->num_shader_visible_vgprs = adev->gfx.config.max_gprs;
+>> -               dev_info->num_cu_per_sh = adev->gfx.config.max_cu_per_sh;
+>> -               dev_info->num_tcc_blocks = adev->gfx.config.max_texture_channel_caches;
+>> -               dev_info->gs_vgt_table_depth = adev->gfx.config.gs_vgt_table_depth;
+>> -               dev_info->gs_prim_buffer_depth = adev->gfx.config.gs_prim_buffer_depth;
+>> -               dev_info->max_gs_waves_per_vgt = adev->gfx.config.max_gs_threads;
+>> -
+>> -               if (adev->family >= AMDGPU_FAMILY_NV)
+>> -                       dev_info->pa_sc_tile_steering_override =
+>> -                               adev->gfx.config.pa_sc_tile_steering_override;
+>> -
+>> -               dev_info->tcc_disabled_mask = adev->gfx.config.tcc_disabled_mask;
+>> -
+>> -               /* Combine the chip gen mask with the platform (CPU/mobo) mask. */
+>> -               pcie_gen_mask = adev->pm.pcie_gen_mask & (adev->pm.pcie_gen_mask >> 16);
+>> -               dev_info->pcie_gen = fls(pcie_gen_mask);
+>> -               dev_info->pcie_num_lanes =
+>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X32 ? 32 :
+>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X16 ? 16 :
+>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X12 ? 12 :
+>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X8 ? 8 :
+>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X4 ? 4 :
+>> -                       adev->pm.pcie_mlw_mask & CAIL_PCIE_LINK_WIDTH_SUPPORT_X2 ? 2 : 1;
+>> -
+>> -               dev_info->tcp_cache_size = adev->gfx.config.gc_tcp_l1_size;
+>> -               dev_info->num_sqc_per_wgp = adev->gfx.config.gc_num_sqc_per_wgp;
+>> -               dev_info->sqc_data_cache_size = adev->gfx.config.gc_l1_data_cache_size_per_sqc;
+>> -               dev_info->sqc_inst_cache_size = adev->gfx.config.gc_l1_instruction_cache_size_per_sqc;
+>> -               dev_info->gl1c_cache_size = adev->gfx.config.gc_gl1c_size_per_instance *
+>> -                                           adev->gfx.config.gc_gl1c_per_sa;
+>> -               dev_info->gl2c_cache_size = adev->gfx.config.gc_gl2c_per_gpu;
+>> -               dev_info->mall_size = adev->gmc.mall_size;
+>> -
+>> -
+>> -               if (adev->gfx.funcs->get_gfx_shadow_info) {
+>> -                       struct amdgpu_gfx_shadow_info shadow_info;
+>> -
+>> -                       ret = amdgpu_gfx_get_gfx_shadow_info(adev, &shadow_info);
+>> -                       if (!ret) {
+>> -                               dev_info->shadow_size = shadow_info.shadow_size;
+>> -                               dev_info->shadow_alignment = shadow_info.shadow_alignment;
+>> -                               dev_info->csa_size = shadow_info.csa_size;
+>> -                               dev_info->csa_alignment = shadow_info.csa_alignment;
+>> -                       }
+>> +               ret = amdgpu_device_info(adev, dev_info);
+>> +               if (!ret) {
+>> +                       kfree(dev_info);
+>> +                       return ret;
+>>                  }
+>>
+>>                  ret = copy_to_user(out, dev_info,
+>> --
+>> 2.34.1
+>>
+
 
