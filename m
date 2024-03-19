@@ -1,73 +1,73 @@
-Return-Path: <linux-kernel+bounces-107007-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107008-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 833C687F6A3
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:22:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6DE9B87F6A8
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:25:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A6A8F1C21771
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:22:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 91DDE1C21728
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:25:53 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 14FE24438A;
-	Tue, 19 Mar 2024 05:22:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4661E4438A;
+	Tue, 19 Mar 2024 05:25:46 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="p7bI3Drr"
-Received: from mail-ed1-f52.google.com (mail-ed1-f52.google.com [209.85.208.52])
+	dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b="sZoQUJLR"
+Received: from mail-ej1-f46.google.com (mail-ej1-f46.google.com [209.85.218.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7A99A40853
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:22:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8B8394085B
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 05:25:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.218.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710825755; cv=none; b=fqmqiWXbR6kQc9as+4VVfAyDxD03xrztig0v1x54Urd69fOGGBVEFYo8yRDOoOjaJm0oT1sxebv40QbT3DSiqVD75Dxx5h4AgCneZaElEhLfVBY6S+ViDsW2V3Hw+OuYuQUauszQdf3vDcCmHxrjKf2bAFJJIJ5M3NhOjvqYrUk=
+	t=1710825945; cv=none; b=i3PTB0rzWWpo0uP74dIo/R/OwnC+O607f/CpkK79oDae3IqDEB544MA/6dO8T+LsfZGy3Nk82ZY6PwP1Y2TEul4BgZeH5GS8DPZhBEMF6Jfsh63iFitZthrr1gwEk0kBQgJ+CaZAT8ZX+m9RL290U7hmEhEY3U7afuIyWnScKpw=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710825755; c=relaxed/simple;
-	bh=dakUAomHM3mI4Ar32yzINJG3dvyX3c/5nBdxwHWkLTI=;
+	s=arc-20240116; t=1710825945; c=relaxed/simple;
+	bh=xlJw5DDEno2UeELF7izcYnWagKR66XQtubOlkVabBik=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=NcESaiIGKxueJ2unE53JEp1P2IA4TbdUxDKA9wx0LcKHjxwKXu5jgr7k0YHC2nfto80tqUqbGEDiZLLQvhWJ6PIpBCj4kJG6mbGzYgNakSg2hH3M9RD3GYKk01BixKaODRt05CXiwhSGuYjWzRMGPrJuNt8ACmesBmPCX1pe+cs=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=p7bI3Drr; arc=none smtp.client-ip=209.85.208.52
+	 In-Reply-To:Content-Type; b=bN2T13G5nhBghTY5CKTAPWkfjPaO6qsv+kcbEPnTVFGbb7T9AxNKCX9JUGp9jOmIBkJPES6D5Wc4KO7ucJVwmc2kImwbIAswzHOlH0cRzv5yNs6qZhUs3+1hLBm5KlhGfz4k/Ia5xUi2DBRf9j9WtV4OqPS70xS+azf6B5fsODA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org; spf=pass smtp.mailfrom=linaro.org; dkim=pass (2048-bit key) header.d=linaro.org header.i=@linaro.org header.b=sZoQUJLR; arc=none smtp.client-ip=209.85.218.46
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linaro.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linaro.org
-Received: by mail-ed1-f52.google.com with SMTP id 4fb4d7f45d1cf-56b95eb687fso228981a12.3
-        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:22:33 -0700 (PDT)
+Received: by mail-ej1-f46.google.com with SMTP id a640c23a62f3a-a46dd7b4bcbso29543266b.3
+        for <linux-kernel@vger.kernel.org>; Mon, 18 Mar 2024 22:25:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=linaro.org; s=google; t=1710825752; x=1711430552; darn=vger.kernel.org;
+        d=linaro.org; s=google; t=1710825942; x=1711430742; darn=vger.kernel.org;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :from:to:cc:subject:date:message-id:reply-to;
-        bh=8X8XA8ugz+VoL9vJzAf5guKYiNdpgnUbOGlQvkOg63Q=;
-        b=p7bI3DrrG8wKg087V0jc8xj8IrrZcuIAMe0nyZYmCRXqHdFEwYstohb98ufGk4g7W9
-         SVS7IazHPV7ctLIGk1qK3I7oKRjkE7Tiy+DHex2Ztdwq6Xv3LjpS3tB30YlmdeeItM3J
-         0ofBVMFeL6kZhvBxgL7R6NfdIj11eqhM60QB/OGCStyVYvOT0B/60tLVAiO7aMkswGcM
-         lSdJ6BSo61TvOogXI4ykORG7Dqjf5sy0HC9lnwbBGExvqSzMzTty5qRWqQiCVLvBgGxC
-         AQFhc8DfTWm5T2SHeH89gINnPQPvpBoTo1208dhHN7QLrIh83qFWJxuAv7mbbzUA2Zcy
-         wywg==
+        bh=q6oinwYj2RW9QvL1NsB8w5LaSXSn9PMQMxOTGnro9J0=;
+        b=sZoQUJLRpYcPTy4r6fDe+jfD3IalurH0WOJA39tmwoCC0tU0+BAl8Y1sBhs8PZRndY
+         M/KbUAXm5e9lXVSJLQPNLz1zzoXZoFwD28T+ZG3NMAh9WyotXxilSnnj1abxRLpVuOSS
+         ZPMCvLaM3Ektfn4ec8LLJemNJGfBR16keH/19apakd62KQp7WkMUBAb6fItCHk9bXJq4
+         DhFuqJz1KMM3JrfA0OLNJ/+UfIy7c1UJsv22qLKGpv7phYwjCUHVawYSDRkrjVa4EMUv
+         y1HwDKpN4+97iPoU7ulcYnQQDjyeFzy8mGvuc1D2s+RMgXa2DfmlA8TE+vWeVST+Xvz/
+         Qalw==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710825752; x=1711430552;
+        d=1e100.net; s=20230601; t=1710825942; x=1711430742;
         h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
          :to:content-language:subject:user-agent:mime-version:date:message-id
          :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=8X8XA8ugz+VoL9vJzAf5guKYiNdpgnUbOGlQvkOg63Q=;
-        b=Cd2ZR+vnW9im6FUhfoYsWr5DQHFRBmHl1EfXHnNVRnswp5Fd49wzKyTw1gTabs0Aen
-         5SDWN+Ey77PMkcc1dkQq/uTvrZPBWyBEAEMPF6BW8/OnAeTN/aeQN4ySI36VjW9JTH7U
-         aO/eXlarEsXXWx2DoQv/kx0yFOIacTwtzbMjoeBLBOaSbXDSmiURXFfSz0GjAD4oTNmC
-         s112kh+DZJc8SGIlIn0hWMxHpzc0vdTosa6weqBVqVOFwws/7hr0/8ljz/+/ZiNfCmo9
-         OBPGl7JHUwijzbxuYJrA0emELRAFSs+KzRUdZD/IBh1nw43VEH/Vb9Olj53Ic6Ae7ke+
-         4cBw==
-X-Forwarded-Encrypted: i=1; AJvYcCW6LznEje5cRGo7B9SIqcy8BGjXfd//tYWPeDcdgScYCFEWRChJ69caKHvwz1IBYGhFqHGSeyDVFFD21hJ1vtBvycmdS7rlwflbm44L
-X-Gm-Message-State: AOJu0YwRAQ97eAzmqZaLZwa1/nnNBqVs+e7EOYyVOA0560t/4NAyCTuG
-	wtVkgYgi7JDGE8pzrZpUp29aVZKjAzUI+u4xqGAghifdw8gqj0dCPZTIGgc8Hy0=
-X-Google-Smtp-Source: AGHT+IFJpcINqeLcciVN4YPO+LjPsNJ7L2ktDfLEJgPktjH5qYsw5hy8zP0COUT4GcTgH8tfp6c6ig==
-X-Received: by 2002:a05:6402:b34:b0:568:32cc:f808 with SMTP id bo20-20020a0564020b3400b0056832ccf808mr7388204edb.15.1710825751985;
-        Mon, 18 Mar 2024 22:22:31 -0700 (PDT)
+        bh=q6oinwYj2RW9QvL1NsB8w5LaSXSn9PMQMxOTGnro9J0=;
+        b=DjHVT++E4aKYWEVsOqskumD0RN5yvWwL2rgb5i+ahpJp5G7VzR6GdXGEwIEgaCF3S7
+         co1varFFeYcEIl1K5b3diJHMCG6VFmeeXhfXcM3gOEE0ngVb/gVtfR0LeZWyTRwFwl5E
+         WOHFSMNiJR89dzYMK415eYAkOlUonxhZfadAmqLdxCucFUNVID6CjZg7XxOsMiPjaa0W
+         33V9hTKpiI85AO77lkF5/21vSt5AmOUZTX7iDKzK5QBgvQafyKdzSSfCmJY6MyqIDPnC
+         6moszzZ4fhd8g5+QMV81V5VWfZkczL9hfV2ahucvihh+hsDYPin8pmV1f72v3c/ledYD
+         d0dw==
+X-Forwarded-Encrypted: i=1; AJvYcCXr3h04Ivr79/lJZOIBiJpk8/GCzJLVKtOGSrl9n7HX4Qd23EZJgVaQj28Bn+lFtFDRzkM5o/RBF9948bGsX7wBhX35+WulsfrMwhSY
+X-Gm-Message-State: AOJu0YzsjqRLLG4/UQ0iSrVvhoC7vPhoBSe8zVy/tOmYDVIBcoYpPsD8
+	eA1xnEcIbmXD8SMfZC3fc46bo9Qmy/SAJGp1CVgMOOwhOohlb8pCtgIBkTEjSDY=
+X-Google-Smtp-Source: AGHT+IEWpgg1fSu64M/h3IwcVwL8gooNkA1Q+CBb/2WJmTMukjtW7WIz+iHtiCVrQv9GrWf/A5L76A==
+X-Received: by 2002:a17:906:6a19:b0:a46:af3e:dedc with SMTP id qw25-20020a1709066a1900b00a46af3ededcmr5170830ejc.40.1710825941870;
+        Mon, 18 Mar 2024 22:25:41 -0700 (PDT)
 Received: from [192.168.1.20] ([178.197.222.97])
-        by smtp.gmail.com with ESMTPSA id g19-20020aa7c593000000b005689a4b250fsm5471099edq.48.2024.03.18.22.22.30
+        by smtp.gmail.com with ESMTPSA id d10-20020a170907272a00b00a45ff890df0sm5616647ejl.35.2024.03.18.22.25.40
         (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Mon, 18 Mar 2024 22:22:31 -0700 (PDT)
-Message-ID: <d6a49d18-51cb-49ad-ba81-b162cb742fb0@linaro.org>
-Date: Tue, 19 Mar 2024 06:22:29 +0100
+        Mon, 18 Mar 2024 22:25:41 -0700 (PDT)
+Message-ID: <b9bcd0e2-634c-4441-b9ce-839b2f7bfd85@linaro.org>
+Date: Tue, 19 Mar 2024 06:25:39 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,20 +75,19 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH 2/5] dt-bindings: pinctrl: qcom,pmic-gpio: Add PMIH010x
- and PMD802x binding
+Subject: Re: [PATCH 3/3] drivers: remoteproc: add Versal and Versal-NET
+ support
 Content-Language: en-US
-To: Anjelique Melendez <quic_amelende@quicinc.com>, andersson@kernel.org,
- konrad.dybcio@linaro.org, linus.walleij@linaro.org, robh+dt@kernel.org,
- krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org
-Cc: linux-arm-msm@vger.kernel.org, linux-gpio@vger.kernel.org,
- devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
- quic_subbaram@quicinc.com, quic_collinsd@quicinc.com,
- quic_jprakash@quicinc.com
-References: <20240314200419.4733-2-quic_amelende@quicinc.com>
- <20240314200419.4733-6-quic_amelende@quicinc.com>
- <5e317ad1-d473-423a-b85e-2f64a37f7d0d@linaro.org>
- <72a066f9-864d-deb4-7880-781558d59d6f@quicinc.com>
+To: Tanmay Shah <tanmay.shah@amd.com>, andersson@kernel.org,
+ mathieu.poirier@linaro.org, robh+dt@kernel.org,
+ krzysztof.kozlowski+dt@linaro.org, conor+dt@kernel.org,
+ michal.simek@amd.com, ben.levinsky@amd.com
+Cc: linux-remoteproc@vger.kernel.org, devicetree@vger.kernel.org,
+ linux-arm-kernel@lists.infradead.org, linux-kernel@vger.kernel.org
+References: <20240315211533.1996543-1-tanmay.shah@amd.com>
+ <20240315211533.1996543-4-tanmay.shah@amd.com>
+ <db6f16af-e715-4ff5-84d6-2d85d62d7c0c@linaro.org>
+ <a0cdfa4c-9257-49e7-b519-54e7fd0fb230@amd.com>
 From: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>
 Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
@@ -134,43 +133,84 @@ Autocrypt: addr=krzysztof.kozlowski@linaro.org; keydata=
  KQ06ztUMRrj8eVtpImjsWCd0bDWRaaR4vqhCHvAG9iWXZu4qh3ipie2Y0oSJygcZT7H3UZxq
  fyYKiqEmRuqsvv6dcbblD8ZLkz1EVZL6djImH5zc5x8qpVxlA0A0i23v5QvN00m6G9NFF0Le
  D2GYIS41Kv4Isx2dEFh+/Q==
-In-Reply-To: <72a066f9-864d-deb4-7880-781558d59d6f@quicinc.com>
+In-Reply-To: <a0cdfa4c-9257-49e7-b519-54e7fd0fb230@amd.com>
 Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 7bit
 
-On 19/03/2024 04:57, Anjelique Melendez wrote:
+On 19/03/2024 02:06, Tanmay Shah wrote:
 > 
 > 
-> On 3/14/2024 2:20 PM, Krzysztof Kozlowski wrote:
->> On 14/03/2024 21:04, Anjelique Melendez wrote:
->>> Update the Qualcomm Technologies, Inc. PMIC GPIO binding documentation
->>> to include compatible strings for PMIH010x and PMD802x PMICs.
+> On 3/17/24 1:55 PM, Krzysztof Kozlowski wrote:
+>> On 15/03/2024 22:15, Tanmay Shah wrote:
+>>> AMD-Xilinx Versal and Versal-NET are successor of ZynqMP platform. ZynqMP
+>>> remoteproc driver is mostly compatible with new platforms except few
+>>> platform specific differences.
 >>>
->>> Signed-off-by: Anjelique Melendez <quic_amelende@quicinc.com>
+>>> Versal has same IP of cortex-R5 cores hence maintained compatible string
+>>> same as ZynqMP platform. However, hardcode TCM addresses are not
+>>> supported for new platforms and must be provided in device-tree as per
+>>> new bindings. This makes TCM representation data-driven and easy to
+>>> maintain. This check is provided in the driver.
+>>>
+>>> For Versal-NET platform, TCM doesn't need to be configured in lockstep
+>>> mode or split mode. Hence that call to PMC firmware is avoided in the
+>>> driver for Versal-NET platform.
+>>>
+>>> Signed-off-by: Tanmay Shah <tanmay.shah@amd.com>
 >>> ---
->>>  .../bindings/pinctrl/qcom,pmic-gpio.yaml      | 20 +++++++++++++++++++
->>>  1 file changed, 20 insertions(+)
+>>>  drivers/remoteproc/xlnx_r5_remoteproc.c | 19 +++++++++++++++----
+>>>  1 file changed, 15 insertions(+), 4 deletions(-)
 >>>
->>> diff --git a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
->>> index 2b17d244f051..5cc04c016b25 100644
->>> --- a/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
->>> +++ b/Documentation/devicetree/bindings/pinctrl/qcom,pmic-gpio.yaml
->>> @@ -57,10 +57,12 @@ properties:
->>>            - qcom,pma8084-gpio
->>>            - qcom,pmc8180-gpio
->>>            - qcom,pmc8180c-gpio
->>> +          - qcom,pmd802x-gpio
+>>> diff --git a/drivers/remoteproc/xlnx_r5_remoteproc.c b/drivers/remoteproc/xlnx_r5_remoteproc.c
+>>> index d4a22caebaad..193bc159d1b4 100644
+>>> --- a/drivers/remoteproc/xlnx_r5_remoteproc.c
+>>> +++ b/drivers/remoteproc/xlnx_r5_remoteproc.c
+>>> @@ -323,9 +323,12 @@ static int zynqmp_r5_set_mode(struct zynqmp_r5_core *r5_core,
+>>>  		return ret;
+>>>  	}
+>>>  
+>>> -	ret = zynqmp_pm_set_tcm_config(r5_core->pm_domain_id, tcm_mode);
+>>> -	if (ret < 0)
+>>> -		dev_err(r5_core->dev, "failed to configure TCM\n");
+>>> +	/* TCM configuration is not needed in versal-net */
+>>> +	if (device_is_compatible(r5_core->dev, "xlnx,zynqmp-r5f")) {
+>>> +		ret = zynqmp_pm_set_tcm_config(r5_core->pm_domain_id, tcm_mode);
+>>> +		if (ret < 0)
+>>> +			dev_err(r5_core->dev, "failed to configure TCM\n");
+>>> +	}
+>>>  
+>>>  	return ret;
+>>>  }
+>>> @@ -933,10 +936,17 @@ static int zynqmp_r5_core_init(struct zynqmp_r5_cluster *cluster,
+>>>  	int ret, i;
+>>>  
+>>>  	r5_core = cluster->r5_cores[0];
+>>> +
+>>> +	/*
+>>> +	 * New platforms must use device tree for TCM parsing.
+>>> +	 * Only ZynqMP uses hardcode TCM.
+>>> +	 */
+>>>  	if (of_find_property(r5_core->np, "reg", NULL))
+>>>  		ret = zynqmp_r5_get_tcm_node_from_dt(cluster);
+>>> -	else
+>>> +	else if (of_machine_is_compatible("xlnx,zynqmp"))
+>>>  		ret = zynqmp_r5_get_tcm_node(cluster);
 >>
->> Is the "x" some sort of wildcard or actual PMIC model/version name?
->> Wildcards are in general discouraged.
->>
+>> That's poor code. Your drivers should not depend on platform. I don't
+>> understand why you need to do this and how is even related to this patch.
 > 
-> "x" is being used as a wildcard here so can update with actual PMIC version
-> in next version.
+> You are correct, ideally this shouldn't be needed. However, this driver contains
+> hardcode TCM addresses that were used before TCM bindings were designed and available in
+> device-tree. This check is provided to maintain backward compatibility with device-tree
+> where TCM isn't expected.
 > 
+> For new platforms (Versal and Versal-NET) TCM must be provided in device-tree and for
+> ZynqMP if it's not in device-tree then to maintain backward compatibility hardcode
+> addresses are used.
 
-Then please drop it also in all future submissions, as asked by writing
-bindings.
+That does not work like this. You cannot bind to some sort of different
+compatible. If you disagree, please list the compatibles the driver
+binds to.
 
 Best regards,
 Krzysztof
