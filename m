@@ -1,1651 +1,310 @@
-Return-Path: <linux-kernel+bounces-107265-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107264-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 407C587FA24
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:50:24 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3207E87FA21
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:50:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 835C8B214F8
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:50:21 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id B83131F2207C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 08:50:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 3382C7BAEC;
-	Tue, 19 Mar 2024 08:50:06 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D5C997B3EB;
+	Tue, 19 Mar 2024 08:49:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b="tysJDqaE"
-Received: from lelv0143.ext.ti.com (lelv0143.ext.ti.com [198.47.23.248])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="c2JuozIZ"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.129.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 54AE456441;
-	Tue, 19 Mar 2024 08:50:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.47.23.248
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0611756441
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:49:52 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.129.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710838203; cv=none; b=WFwhKLbR+CDZESq+lqP0MR2InEoP2NZeaSmCg2OxSBvcl/9WMOqSodzI4PHeW9f/9/a7/c53ncela9Babhbyme3otYjWUPxMhCBYaFq91QyZak2HUmd/B0lgkbDvNogyK6kg/GzzKgC7KAfDWtoFbegEykKTvUAs0BI9/EGluFk=
+	t=1710838194; cv=none; b=fvaacG3DZZ3XS24VRmQ6eFMYVvIeoxO2m/wBHGqomYF1AGpqywoez+DW0RBnc2kF8Pxo8/cLWdEacQXOS9ruKDhtwy9WTnhOWzq+EtQaybNe7/6OE/m0ku2rxkvUmIEWtqccQ+HcJR2s+PoPJ+E5jCikB09cT6UbsIf6sFlkzZA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710838203; c=relaxed/simple;
-	bh=flX72SZrCYUlPB6W3FVrn879zmLrRAiV12rumGU+sPQ=;
-	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
-	 In-Reply-To:Content-Type; b=hohL7+sb4R6Qc25TuskRfMiph+tXxQUJdIEtzcD6+PoQcEi80M44+821sXtXDxxSGrz2JL/27wbujO26PdLDwx/Av1g5wPizAk8whWiuATX3ASgAFSU90byo7e+puKV4AK+VURqP9a5yF09iiLBH/w6hvfUxUl170kCLhdFAPPI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com; spf=pass smtp.mailfrom=ti.com; dkim=pass (1024-bit key) header.d=ti.com header.i=@ti.com header.b=tysJDqaE; arc=none smtp.client-ip=198.47.23.248
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=ti.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ti.com
-Received: from lelv0266.itg.ti.com ([10.180.67.225])
-	by lelv0143.ext.ti.com (8.15.2/8.15.2) with ESMTP id 42J8nhDg094798;
-	Tue, 19 Mar 2024 03:49:43 -0500
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ti.com;
-	s=ti-com-17Q1; t=1710838183;
-	bh=fSjCaPKCuWNhF/Pfs67RicCnA5JHE/LgZQReq1fgXZY=;
-	h=Date:Subject:To:CC:References:From:In-Reply-To;
-	b=tysJDqaEOzFFeU3jn9lTWTzv7iznOfTaj9XVlTVhazPgi1xAo35bdo6nZK+YnMyS9
-	 32p0Gi9rHzMcRs+A4sL0XvJtaxdKbOlZXPIHp3VoAUiDC16tx3YKgkY5j6+trjXKZi
-	 S8msZ8nnd4KNZvoKqj/c+NtvcrqgDpEUkQzyULds=
-Received: from DLEE105.ent.ti.com (dlee105.ent.ti.com [157.170.170.35])
-	by lelv0266.itg.ti.com (8.15.2/8.15.2) with ESMTPS id 42J8nhi8039542
-	(version=TLSv1.2 cipher=AES256-GCM-SHA384 bits=256 verify=FAIL);
-	Tue, 19 Mar 2024 03:49:43 -0500
-Received: from DLEE114.ent.ti.com (157.170.170.25) by DLEE105.ent.ti.com
- (157.170.170.35) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23; Tue, 19
- Mar 2024 03:49:42 -0500
-Received: from lelvsmtp5.itg.ti.com (10.180.75.250) by DLEE114.ent.ti.com
- (157.170.170.25) with Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_128_CBC_SHA256_P256) id 15.1.2507.23 via
- Frontend Transport; Tue, 19 Mar 2024 03:49:42 -0500
-Received: from [10.24.69.142] ([10.24.69.142])
-	by lelvsmtp5.itg.ti.com (8.15.2/8.15.2) with ESMTP id 42J8nZGg100660;
-	Tue, 19 Mar 2024 03:49:36 -0500
-Message-ID: <248f44cd-ef52-4267-ae00-03c175c54c1a@ti.com>
-Date: Tue, 19 Mar 2024 14:19:34 +0530
+	s=arc-20240116; t=1710838194; c=relaxed/simple;
+	bh=k20h/gra/8Yp7OXx8XlMFpX1tZP75XML8xy6RbIIqDc=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Tw+ojts9lpCqJOHzJrvEidVkMaCIM4wGqoKHlRikUQlzyL+eWvwFMKqRhB5hqmb/Q4TV/BR2k6YfjQN0NEGhXmVF9eZ8EWtR6z742msfnpXRUBPFDUG8gwKcPBoKqSq68XoQM0gF6kINu7EdtYdLfN9jW7eAorWmPSk6vFgH6eE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=c2JuozIZ; arc=none smtp.client-ip=170.10.129.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710838191;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=/WohdgPgBQLxOCq0Jnnwxvvgxi6wjhKyeRiLGXAYd2s=;
+	b=c2JuozIZoKvD2UppWKyQ7hh7j46R7ecHWeZzn8A45I4SAYPVadrt3RyaTkhLuWUpvOhXA8
+	i7+q7VnwPdOemTJPrZJQ4g++AZevHDkieHCP03jjrGMKbMONerXYuy96FfJF4IjFb/92bv
+	yUgDIyw2k1rBBdNNVec4/TqWhT94aP8=
+Received: from mail-wm1-f70.google.com (mail-wm1-f70.google.com
+ [209.85.128.70]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-363-9jKHFu40M7aSGXJyQe66Lw-1; Tue, 19 Mar 2024 04:49:50 -0400
+X-MC-Unique: 9jKHFu40M7aSGXJyQe66Lw-1
+Received: by mail-wm1-f70.google.com with SMTP id 5b1f17b1804b1-4140edcb197so11461605e9.1
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 01:49:50 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710838189; x=1711442989;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=/WohdgPgBQLxOCq0Jnnwxvvgxi6wjhKyeRiLGXAYd2s=;
+        b=lRmmlhGhRysrFo6UgAcTNQ9PykayAA162wSdbLDl7BWPENqHX1gIaU3jKQvj5CByDj
+         J+13QGre5K3EYpZVNv2AdQbdPEwxWln6/xpagNc6AFUVfip5hYZU82y128Q6fOwBV9qX
+         jSbFvtWTbhR8w7uGZMgtvSsa6xl9NQbsy9TofvU0kWtyiJi8sEqT5EHhAZzEgDYq/DlJ
+         y+lzO3UvHvkPlqNl4sZlRpXH/l5eiJgpKjGzDNbwYsSkUxiDUsKCNlqDls9sAPCnA+Kq
+         sDm7QvpvulCrHGVnZeZCqwYazRuwMS9oHRBFTDdwLU52veof5xl5ulXl3kuaR1ZvpsHo
+         XolA==
+X-Forwarded-Encrypted: i=1; AJvYcCW/yEOQ22GlmA5U+tTvFzv1abGJCrf0ADz0B7Vs10Yoxl9MrRbVkE9lGvocbzEuane4spiIKGKHMC2kTfHYE/mkAay3OjpZrprqE0na
+X-Gm-Message-State: AOJu0Yz8F+Ph5apGZfCKgLHFDn+OWiRCZcYPnZNG7PTmySLtOwM3Jpcj
+	vVjvADzHI9Tmq8i+sLdB+L/5D600Ki+Klkc/+R4YBzo4G4heVuTChiAtc3SF72u8t95nM0Ugpdx
+	Mv/HNLT+XL6bLw4f8bGl0FRdu9WG6W5t7Q8Sy26ubsvaUy/ca6mrOix+kOHGuxQ==
+X-Received: by 2002:a05:600c:4f0e:b0:414:1363:53a4 with SMTP id l14-20020a05600c4f0e00b00414136353a4mr2982555wmq.15.1710838189081;
+        Tue, 19 Mar 2024 01:49:49 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IH2vmirEEIpmgvouK03uixipQW7NF0Cv3jiRA56Jl0MaFtjCJ6YaTZjGRO7zI4YB0gF25PTYw==
+X-Received: by 2002:a05:600c:4f0e:b0:414:1363:53a4 with SMTP id l14-20020a05600c4f0e00b00414136353a4mr2982539wmq.15.1710838188518;
+        Tue, 19 Mar 2024 01:49:48 -0700 (PDT)
+Received: from redhat.com ([2.52.6.254])
+        by smtp.gmail.com with ESMTPSA id l12-20020a05600c4f0c00b0041409d4841dsm9292994wmq.33.2024.03.19.01.49.46
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 01:49:47 -0700 (PDT)
+Date: Tue, 19 Mar 2024 04:49:44 -0400
+From: "Michael S. Tsirkin" <mst@redhat.com>
+To: Gavin Shan <gshan@redhat.com>
+Cc: Will Deacon <will@kernel.org>, virtualization@lists.linux.dev,
+	linux-kernel@vger.kernel.org, jasowang@redhat.com,
+	xuanzhuo@linux.alibaba.com, yihyu@redhat.com, shan.gavin@gmail.com,
+	linux-arm-kernel@lists.infradead.org,
+	Catalin Marinas <catalin.marinas@arm.com>, mochs@nvidia.com
+Subject: Re: [PATCH] virtio_ring: Fix the stale index in available ring
+Message-ID: <20240319043045-mutt-send-email-mst@kernel.org>
+References: <20240314074923.426688-1-gshan@redhat.com>
+ <20240318165924.GA1824@willie-the-truck>
+ <35a6bcef-27cf-4626-a41d-9ec0a338fe28@redhat.com>
+ <20240319020905-mutt-send-email-mst@kernel.org>
+ <9b3030d1-cb2c-4ce0-8b24-1074b616fc84@redhat.com>
+ <20240319024025-mutt-send-email-mst@kernel.org>
+ <d8387677-7025-4daa-b8b5-5a8f24a671d5@redhat.com>
+ <20240319030505-mutt-send-email-mst@kernel.org>
+ <e582f248-28e9-4d0b-aa5d-26b82cd96a68@redhat.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v4 4/5] mikrobus: Add mikroBUS driver
-Content-Language: en-US
-To: Ayush Singh <ayushdevel1325@gmail.com>,
-        open list
-	<linux-kernel@vger.kernel.org>
-CC: <jkridner@beagleboard.org>, <robertcnelson@beagleboard.org>,
-        <lorforlinux@beagleboard.org>, Rob Herring <robh@kernel.org>,
-        Krzysztof
- Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-        Conor Dooley
-	<conor+dt@kernel.org>, Nishanth Menon <nm@ti.com>,
-        Vignesh Raghavendra
-	<vigneshr@ti.com>,
-        Tero Kristo <kristo@kernel.org>,
-        Derek Kiernan
-	<derek.kiernan@amd.com>,
-        Dragan Cvetic <dragan.cvetic@amd.com>, Arnd Bergmann
-	<arnd@arndb.de>,
-        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
-        Mark Brown
-	<broonie@kernel.org>, Johan Hovold <johan@kernel.org>,
-        Alex Elder
-	<elder@kernel.org>,
-        "open list:OPEN FIRMWARE AND FLATTENED DEVICE TREE
- BINDINGS" <devicetree@vger.kernel.org>,
-        "moderated list:ARM/TEXAS INSTRUMENTS
- K3 ARCHITECTURE" <linux-arm-kernel@lists.infradead.org>,
-        "open list:SPI
- SUBSYSTEM" <linux-spi@vger.kernel.org>,
-        "moderated list:GREYBUS SUBSYSTEM"
-	<greybus-dev@lists.linaro.org>,
-        Vaishnav M A <vaishnav@beagleboard.org>
-References: <20240317193714.403132-1-ayushdevel1325@gmail.com>
- <20240317193714.403132-5-ayushdevel1325@gmail.com>
-From: Vaishnav Achath <vaishnav.a@ti.com>
-In-Reply-To: <20240317193714.403132-5-ayushdevel1325@gmail.com>
-Content-Type: text/plain; charset="UTF-8"; format=flowed
-Content-Transfer-Encoding: 7bit
-X-EXCLAIMER-MD-CONFIG: e1e8a2fd-e40a-4ac6-ac9b-f7e9cc9ee180
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <e582f248-28e9-4d0b-aa5d-26b82cd96a68@redhat.com>
 
-Hi Ayush,
+On Tue, Mar 19, 2024 at 06:08:27PM +1000, Gavin Shan wrote:
+> On 3/19/24 17:09, Michael S. Tsirkin wrote:
+> > On Tue, Mar 19, 2024 at 04:49:50PM +1000, Gavin Shan wrote:
+> > > 
+> > > On 3/19/24 16:43, Michael S. Tsirkin wrote:
+> > > > On Tue, Mar 19, 2024 at 04:38:49PM +1000, Gavin Shan wrote:
+> > > > > On 3/19/24 16:09, Michael S. Tsirkin wrote:
+> > > > > 
+> > > > > > > > > diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+> > > > > > > > > index 49299b1f9ec7..7d852811c912 100644
+> > > > > > > > > --- a/drivers/virtio/virtio_ring.c
+> > > > > > > > > +++ b/drivers/virtio/virtio_ring.c
+> > > > > > > > > @@ -687,9 +687,15 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+> > > > > > > > >      	avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> > > > > > > > >      	vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+> > > > > > > > > -	/* Descriptors and available array need to be set before we expose the
+> > > > > > > > > -	 * new available array entries. */
+> > > > > > > > > -	virtio_wmb(vq->weak_barriers);
+> > > > > > > > > +	/*
+> > > > > > > > > +	 * Descriptors and available array need to be set before we expose
+> > > > > > > > > +	 * the new available array entries. virtio_wmb() should be enough
+> > > > > > > > > +	 * to ensuere the order theoretically. However, a stronger barrier
+> > > > > > > > > +	 * is needed by ARM64. Otherwise, the stale data can be observed
+> > > > > > > > > +	 * by the host (vhost). A stronger barrier should work for other
+> > > > > > > > > +	 * architectures, but performance loss is expected.
+> > > > > > > > > +	 */
+> > > > > > > > > +	virtio_mb(false);
+> > > > > > > > >      	vq->split.avail_idx_shadow++;
+> > > > > > > > >      	vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+> > > > > > > > >      						vq->split.avail_idx_shadow);
+> > > > > > > > 
+> > > > > > > > Replacing a DMB with a DSB is _very_ unlikely to be the correct solution
+> > > > > > > > here, especially when ordering accesses to coherent memory.
+> > > > > > > > 
+> > > > > > > > In practice, either the larger timing different from the DSB or the fact
+> > > > > > > > that you're going from a Store->Store barrier to a full barrier is what
+> > > > > > > > makes things "work" for you. Have you tried, for example, a DMB SY
+> > > > > > > > (e.g. via __smb_mb()).
+> > > > > > > > 
+> > > > > > > > We definitely shouldn't take changes like this without a proper
+> > > > > > > > explanation of what is going on.
+> > > > > > > > 
+> > > > > > > 
+> > > > > > > Thanks for your comments, Will.
+> > > > > > > 
+> > > > > > > Yes, DMB should work for us. However, it seems this instruction has issues on
+> > > > > > > NVidia's grace-hopper. It's hard for me to understand how DMB and DSB works
+> > > > > > > from hardware level. I agree it's not the solution to replace DMB with DSB
+> > > > > > > before we fully understand the root cause.
+> > > > > > > 
+> > > > > > > I tried the possible replacement like below. __smp_mb() can avoid the issue like
+> > > > > > > __mb() does. __ndelay(10) can avoid the issue, but __ndelay(9) doesn't.
+> > > > > > > 
+> > > > > > > static inline int virtqueue_add_split(struct virtqueue *_vq, ...)
+> > > > > > > {
+> > > > > > >        :
+> > > > > > >            /* Put entry in available array (but don't update avail->idx until they
+> > > > > > >             * do sync). */
+> > > > > > >            avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> > > > > > >            vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+> > > > > > > 
+> > > > > > >            /* Descriptors and available array need to be set before we expose the
+> > > > > > >             * new available array entries. */
+> > > > > > >            // Broken: virtio_wmb(vq->weak_barriers);
+> > > > > > >            // Broken: __dma_mb();
+> > > > > > >            // Work:   __mb();
+> > > > > > >            // Work:   __smp_mb();
+> > > > > > >            // Work:   __ndelay(100);
+> > > > > > >            // Work:   __ndelay(10);
+> > > > > > >            // Broken: __ndelay(9);
+> > > > > > > 
+> > > > > > >           vq->split.avail_idx_shadow++;
+> > > > > > >            vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+> > > > > > >                                                    vq->split.avail_idx_shadow);
+> > > > > > 
+> > > > > > What if you stick __ndelay here?
+> > > > > > 
+> > > > > 
+> > > > >          /* Put entry in available array (but don't update avail->idx until they
+> > > > >            * do sync). */
+> > > > >           avail = vq->split.avail_idx_shadow & (vq->split.vring.num - 1);
+> > > > >           vq->split.vring.avail->ring[avail] = cpu_to_virtio16(_vq->vdev, head);
+> > > > > 
+> > > > >           /* Descriptors and available array need to be set before we expose the
+> > > > >            * new available array entries. */
+> > > > >           virtio_wmb(vq->weak_barriers);
+> > > > >           vq->split.avail_idx_shadow++;
+> > > > >           vq->split.vring.avail->idx = cpu_to_virtio16(_vq->vdev,
+> > > > >                                                   vq->split.avail_idx_shadow);
+> > > > >           /* Try __ndelay(x) here as Michael suggested
+> > > > >            *
+> > > > >            * Work:      __ndelay(200);    possiblly make it hard to reproduce
+> > > > >            * Broken:    __ndelay(100);
+> > > > >            * Broken:    __ndelay(20);
+> > > > >            * Broken:    __ndelay(10);
+> > > > >            */
+> > > > >           __ndelay(200);
+> > > > 
+> > > > So we see that just changing the timing masks the race.
+> > > > What are you using on the host side? vhost or qemu?
+> > > > 
+> > > 
+> > > __ndelay(200) may make the issue harder to be reproduce as I understand.
+> > > More delays here will give vhost relief, reducing the race.
+> > > 
+> > > The issue is only reproducible when vhost is turned on. Otherwise, we
+> > > aren't able to hit the issue.
+> > > 
+> > >     -netdev tap,id=vnet0,vhost=true,script=/etc/qemu-ifup,downscript=/etc/qemu-ifdown \
+> > >     -device virtio-net-pci,bus=pcie.8,netdev=vnet0,mac=52:54:00:f1:26:b0
+> > 
+> > 
+> > Given it's vhost, it's also possible that the issue is host side.
+> > I wonder what happens if we stick a delay or a stronger barrier
+> > in vhost.c - either here:
+> > 
+> >          /* Make sure buffer is written before we update index. */
+> >          smp_wmb();
+> > 
+> > 
+> > or here:
+> > 
+> >                  /* Only get avail ring entries after they have been
+> >                   * exposed by guest.
+> >                   */
+> >                  smp_rmb();
+> > 
+> > ?
+> > 
+> 
+> It's possible. However, I still can hit the issue after both of them are
+> replaed with '__mb()'. So the issue seems on the guest side, where the
+> written data isn't observed in time by the CPU on far end (for vhost worker).
+> 
+> diff --git a/drivers/vhost/vhost.c b/drivers/vhost/vhost.c
+> index 045f666b4f12..327b68d21b02 100644
+> --- a/drivers/vhost/vhost.c
+> +++ b/drivers/vhost/vhost.c
+> @@ -2529,7 +2529,8 @@ int vhost_get_vq_desc(struct vhost_virtqueue *vq,
+>                 /* Only get avail ring entries after they have been
+>                  * exposed by guest.
+>                  */
+> -               smp_rmb();
+> +               // smp_rmb();
+> +               __mb();
+>         }
+>         /* Grab the next descriptor number they're advertising, and increment
+> @@ -2703,7 +2704,9 @@ int vhost_add_used_n(struct vhost_virtqueue *vq, struct vring_used_elem *heads,
+>         r = __vhost_add_used_n(vq, heads, count);
+>         /* Make sure buffer is written before we update index. */
+> -       smp_wmb();
+> +       // smp_wmb();
+> +       __mb();
+> +
+> 
+> From the guest:
+> 
+> [   14.102608] virtio_net virtio0: output.0:id 80 is not a head!
 
-On 18/03/24 01:07, Ayush Singh wrote:
-> DONOTMERGE
-> 
-> this patch depends on Patch 1, 2, 3
-> 
-> mikroBUS driver aims to split the platform aspects of mikroBUS (pinmux,
-> SPI/I2C/GPIO controller .etc) from the add-on board information, thus
-> requiring one device tree overlay per port and just a single manifest
-> describing the add-on board.
-> 
-> The driver exposes a sysfs entry that allows passing mikroBUS manifest of
-> add-on board to the driver. The driver then parses this manifest, sets up
-> the pins and protocols and allows using the appropriate Linux driver. Here
-> is an example:
 
-In v3 series, Krzysztof mentioned that you need to document the ABI, the 
-feedback was not considered in the series, see:
-https://www.kernel.org/doc/Documentation/ABI/README
+You realize however that for that to happen, first vhost has to
+use the wrong index?
+Again the fact tweaking code helps is suggestive but does
+not lead us to the root cause.
 
-Also he mentioned that the mechanism of adding devices from userspace 
-needs to be discussed first, that feedback also was not responded to.
+So you should be able to detect the bad index when vhost gets it.
+Here's a suggestion: stick a valid flag in desc.
+then vhost should notice if it gets a desc with that flag clear.
+Like this maybe?
 
-These add-on boards are not electrically hot-pluggable and this kind of 
-sysfs interface seems to give the idea that you can add an add-on board 
-on a running system (which is not recommended due to latchup/other 
-electrical failures), I will recommend you discuss the pending feedback 
-and discuss on acceptable solutions before spinning future revisions.
 
-> 
-> ```
-> cat /lib/firmware/mikrobus/AMBIENT-2-CLICK.mnfb > /sys/bus/mikrobus/devices/mikrobus-0/new_device
-> ```
-> 
-> Another sysfs entry is exposed that allows removing a previously
-> registered mikrobus add-on board:
-> 
-> ```
-> echo " " > /sys/bus/mikrobus/devices/mikrobus-0/delete_device
-> ```
-> 
-> 100s of mikroBUS addon board manifests can be found in the clickID
-> repository.
-> 
-> In the future the driver also aims to support plug and play support
-> using 1-wire EEPROM and mikroBUS over greybus.
-> 
-> Link: https://www.mikroe.com/clickid ClickID
-> 
-> Co-developed-by: Vaishnav M A <vaishnav@beagleboard.org>
-> Signed-off-by: Vaishnav M A <vaishnav@beagleboard.org>
-> Signed-off-by: Ayush Singh <ayushdevel1325@gmail.com>
-> ---
->   MAINTAINERS                               |   1 +
->   drivers/misc/Kconfig                      |   1 +
->   drivers/misc/Makefile                     |   1 +
->   drivers/misc/mikrobus/Kconfig             |  15 +
->   drivers/misc/mikrobus/Makefile            |   5 +
->   drivers/misc/mikrobus/mikrobus_core.c     | 696 ++++++++++++++++++++++
->   drivers/misc/mikrobus/mikrobus_core.h     | 151 +++++
->   drivers/misc/mikrobus/mikrobus_manifest.c | 503 ++++++++++++++++
->   drivers/misc/mikrobus/mikrobus_manifest.h |  29 +
->   9 files changed, 1402 insertions(+)
->   create mode 100644 drivers/misc/mikrobus/Kconfig
->   create mode 100644 drivers/misc/mikrobus/Makefile
->   create mode 100644 drivers/misc/mikrobus/mikrobus_core.c
->   create mode 100644 drivers/misc/mikrobus/mikrobus_core.h
->   create mode 100644 drivers/misc/mikrobus/mikrobus_manifest.c
->   create mode 100644 drivers/misc/mikrobus/mikrobus_manifest.h
-> 
-> diff --git a/MAINTAINERS b/MAINTAINERS
-> index 69418a058c6b..83bc5e48bef9 100644
-> --- a/MAINTAINERS
-> +++ b/MAINTAINERS
-> @@ -14772,6 +14772,7 @@ M:	Ayush Singh <ayushdevel1325@gmail.com>
->   M:	Vaishnav M A <vaishnav@beagleboard.org>
->   S:	Maintained
->   F:	Documentation/devicetree/bindings/misc/mikrobus-connector.yaml
-> +F:	drivers/misc/mikrobus/*
->   
->   MIKROTIK CRS3XX 98DX3236 BOARD SUPPORT
->   M:	Luka Kovacic <luka.kovacic@sartura.hr>
-> diff --git a/drivers/misc/Kconfig b/drivers/misc/Kconfig
-> index 4fb291f0bf7c..3d5c36205c6c 100644
-> --- a/drivers/misc/Kconfig
-> +++ b/drivers/misc/Kconfig
-> @@ -591,4 +591,5 @@ source "drivers/misc/cardreader/Kconfig"
->   source "drivers/misc/uacce/Kconfig"
->   source "drivers/misc/pvpanic/Kconfig"
->   source "drivers/misc/mchp_pci1xxxx/Kconfig"
-> +source "drivers/misc/mikrobus/Kconfig"
->   endmenu
-> diff --git a/drivers/misc/Makefile b/drivers/misc/Makefile
-> index ea6ea5bbbc9c..b9ac88055b87 100644
-> --- a/drivers/misc/Makefile
-> +++ b/drivers/misc/Makefile
-> @@ -68,3 +68,4 @@ obj-$(CONFIG_TMR_INJECT)	+= xilinx_tmr_inject.o
->   obj-$(CONFIG_TPS6594_ESM)	+= tps6594-esm.o
->   obj-$(CONFIG_TPS6594_PFSM)	+= tps6594-pfsm.o
->   obj-$(CONFIG_NSM)		+= nsm.o
-> +obj-y				+= mikrobus/
-> diff --git a/drivers/misc/mikrobus/Kconfig b/drivers/misc/mikrobus/Kconfig
-> new file mode 100644
-> index 000000000000..aa57b994dc66
-> --- /dev/null
-> +++ b/drivers/misc/mikrobus/Kconfig
-> @@ -0,0 +1,15 @@
-> +menuconfig MIKROBUS
-> +	tristate "Module for instantiating devices on mikroBUS ports"
-> +	depends on GPIOLIB
-> +	help
-> +	  This option enables the mikroBUS driver. mikroBUS is an add-on
-> +	  board socket standard that offers maximum expandability with
-> +	  the smallest number of pins. The mikroBUS driver instantiates
-> +	  devices on a mikroBUS port described mikroBUS manifest which is
-> +	  passed using a sysfs interface.
-> +
-> +
-> +	  Say Y here to enable support for this driver.
-> +
-> +	  To compile this code as a module, chose M here: the module
-> +	  will be called mikrobus.ko
-> diff --git a/drivers/misc/mikrobus/Makefile b/drivers/misc/mikrobus/Makefile
-> new file mode 100644
-> index 000000000000..0e51c5a7db4b
-> --- /dev/null
-> +++ b/drivers/misc/mikrobus/Makefile
-> @@ -0,0 +1,5 @@
-> +# SPDX-License-Identifier: GPL-2.0
-> +# mikroBUS Core
-> +
-> +obj-$(CONFIG_MIKROBUS) += mikrobus.o
-> +mikrobus-y :=	mikrobus_core.o	mikrobus_manifest.o
-> diff --git a/drivers/misc/mikrobus/mikrobus_core.c b/drivers/misc/mikrobus/mikrobus_core.c
-> new file mode 100644
-> index 000000000000..6aa20cef8e3b
-> --- /dev/null
-> +++ b/drivers/misc/mikrobus/mikrobus_core.c
-> @@ -0,0 +1,696 @@
-> +// SPDX-License-Identifier: GPL-2.0:
-> +/*
-> + * mikroBUS driver for instantiating add-on
-> + * board devices with an identifier EEPROM
-> + *
-> + * Copyright 2020 Vaishnav M A, BeagleBoard.org Foundation.
-> + * Copyright 2024 Ayush Singh <ayushdevel1325@gmail.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "mikrobus:%s: " fmt, __func__
-> +
-> +#include "linux/gpio/driver.h"
-> +#include "linux/gpio/machine.h"
-> +#include "linux/gpio/consumer.h"
-> +#include "linux/greybus/greybus_manifest.h"
-> +#include "linux/i2c.h"
-> +#include "linux/irq.h"
-> +#include "linux/pinctrl/consumer.h"
-> +#include "linux/platform_device.h"
-> +#include "linux/spi/spi.h"
-> +
-> +#include "mikrobus_core.h"
-> +#include "mikrobus_manifest.h"
-> +
-> +static struct class_compat *mikrobus_port_compat_class;
-> +
-> +static const struct bus_type mikrobus_bus_type = {
-> +	.name = "mikrobus",
-> +};
-> +
-> +static int mikrobus_board_register(struct mikrobus_port *port,
-> +				   struct addon_board_info *board);
-> +static void mikrobus_board_unregister(struct mikrobus_port *port,
-> +				      struct addon_board_info *board);
-> +
-> +/*
-> + * mikrobus_pinctrl_select: Select pinctrl state for mikrobus pin
-> + *
-> + * @port: mikrobus port
-> + * @pinctrl_selected: pinctrl state to be selected
-> + */
-> +static int mikrobus_pinctrl_select(struct mikrobus_port *port,
-> +				   const char *pinctrl_selected)
-> +{
-> +	struct pinctrl_state *state;
-> +	int ret;
-> +
-> +	state = pinctrl_lookup_state(port->pinctrl, pinctrl_selected);
-> +	if (IS_ERR(state)) {
-> +		return dev_err_probe(&port->dev, PTR_ERR(state),
-> +				     "failed to find state %s",
-> +				     pinctrl_selected);
-> +	}
-> +
-> +	ret = pinctrl_select_state(port->pinctrl, state);
-> +	if (ret) {
-> +		return dev_err_probe(&port->dev, ret,
-> +				     "failed to select state %s",
-> +				     pinctrl_selected);
-> +	}
-> +	dev_dbg(&port->dev, "setting pinctrl %s", pinctrl_selected);
-> +
-> +	return 0;
-> +}
-> +
-> +/*
-> + * mikrobus_pinctrl_setup: Setup mikrobus pins to either default of gpio
-> + *
-> + * @port: mikrobus port
-> + * @board: mikrobus board or NULL for default state
-> + *
-> + * returns 0 on success, negative error code on failure
-> + */
-> +static int mikrobus_pinctrl_setup(struct mikrobus_port *port,
-> +				  struct addon_board_info *board)
-> +{
-> +	int ret;
-> +
-> +	if (!board || board->pin_state[MIKROBUS_PIN_PWM] == MIKROBUS_STATE_PWM)
-> +		ret = mikrobus_pinctrl_select(port, "pwm_default");
-> +	else
-> +		ret = mikrobus_pinctrl_select(port, "pwm_gpio");
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!board || board->pin_state[MIKROBUS_PIN_RX] == MIKROBUS_STATE_UART)
-> +		ret = mikrobus_pinctrl_select(port, "uart_default");
-> +	else
-> +		ret = mikrobus_pinctrl_select(port, "uart_gpio");
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!board || board->pin_state[MIKROBUS_PIN_SCL] == MIKROBUS_STATE_I2C)
-> +		ret = mikrobus_pinctrl_select(port, "i2c_default");
-> +	else
-> +		ret = mikrobus_pinctrl_select(port, "i2c_gpio");
-> +	if (ret)
-> +		return ret;
-> +
-> +	if (!board || board->pin_state[MIKROBUS_PIN_MOSI] == MIKROBUS_STATE_SPI)
-> +		ret = mikrobus_pinctrl_select(port, "spi_default");
-> +	else
-> +		ret = mikrobus_pinctrl_select(port, "spi_gpio");
-> +
-> +	return ret;
-> +}
-> +
-> +/*
-> + * new_device_store: Expose sysfs entry for adding new board
-> + *
-> + * new_device_store: Allows userspace to add mikroBUS boards that lack 1-wire
-> + * EEPROM for board identification by manually passing mikroBUS manifest
-> + */
-> +static ssize_t new_device_store(struct device *dev,
-> +				struct device_attribute *attr, const char *buf,
-> +				size_t count)
-> +{
-> +	struct mikrobus_port *port = to_mikrobus_port(dev);
-> +	struct addon_board_info *board;
-> +	int ret;
-> +
-> +	if (port->board)
-> +		return dev_err_probe(dev, -EBUSY,
-> +				     "already has board registered");
-> +
-> +	board = devm_kzalloc(&port->dev, sizeof(*board), GFP_KERNEL);
-> +	if (!board)
-> +		return -ENOMEM;
-> +
-> +	INIT_LIST_HEAD(&board->manifest_descs);
-> +	INIT_LIST_HEAD(&board->devices);
-> +
-> +	ret = mikrobus_manifest_parse(board, (void *)buf, count);
-> +	if (ret < 0) {
-> +		ret = dev_err_probe(dev, -EINVAL, "failed to parse manifest");
-> +		goto err_free_board;
-> +	}
-> +
-> +	ret = mikrobus_board_register(port, board);
-> +	if (ret) {
-> +		ret = dev_err_probe(dev, -EINVAL, "failed to register board %s",
-> +				    board->name);
-> +		goto err_free_board;
-> +	}
-> +
-> +	return count;
-> +
-> +err_free_board:
-> +	devm_kfree(&port->dev, board);
-> +	return ret;
-> +}
-> +static DEVICE_ATTR_WO(new_device);
-> +
-> +/*
-> + * delete_device_store: Expose sysfs entry for deleting board
-> + */
-> +static ssize_t delete_device_store(struct device *dev,
-> +				   struct device_attribute *attr,
-> +				   const char *buf, size_t count)
-> +{
-> +	struct mikrobus_port *port = to_mikrobus_port(dev);
-> +
-> +	if (!port->board)
-> +		return dev_err_probe(dev, -ENODEV,
-> +				     "does not have registered boards");
-> +
-> +	mikrobus_board_unregister(port, port->board);
-> +	return count;
-> +}
-> +static DEVICE_ATTR_IGNORE_LOCKDEP(delete_device, 0200, NULL,
-> +				  delete_device_store);
-> +
-> +static struct attribute *mikrobus_port_attrs[] = { &dev_attr_new_device.attr,
-> +						   &dev_attr_delete_device.attr,
-> +						   NULL };
-> +ATTRIBUTE_GROUPS(mikrobus_port);
-> +
-> +static void mikrobus_port_release(struct device *dev)
-> +{
-> +}
-> +
-> +static const struct device_type mikrobus_port_type = {
-> +	.groups = mikrobus_port_groups,
-> +	.release = mikrobus_port_release,
-> +};
-> +
-> +static int mikrobus_irq_get(struct mikrobus_port *port, int irqno, int irq_type)
-> +{
-> +	int irq;
-> +
-> +	if (irqno > port->gpios->ndescs - 1)
-> +		return dev_err_probe(&port->dev, -ENODEV,
-> +				     "GPIO %d does not exist", irqno);
-> +
-> +	irq = gpiod_to_irq(port->gpios->desc[irqno]);
-> +	if (irq < 0)
-> +		return dev_err_probe(&port->dev, -EINVAL,
-> +				     "could not get irq %d", irqno);
-> +
-> +	irq_set_irq_type(irq, irq_type);
-> +
-> +	return irq;
-> +}
-> +
-> +static int mikrobus_gpio_setup(struct gpio_desc *gpio, int gpio_state)
-> +{
-> +	switch (gpio_state) {
-> +	case MIKROBUS_STATE_INPUT:
-> +		return gpiod_direction_input(gpio);
-> +	case MIKROBUS_STATE_OUTPUT_HIGH:
-> +		return gpiod_direction_output(gpio, 1);
-> +	case MIKROBUS_STATE_OUTPUT_LOW:
-> +		return gpiod_direction_output(gpio, 0);
-> +	case MIKROBUS_STATE_PWM:
-> +	case MIKROBUS_STATE_SPI:
-> +	case MIKROBUS_STATE_I2C:
-> +	default:
-> +		return 0;
-> +	}
-> +}
-> +
-> +static char *mikrobus_gpio_chip_name_get(struct mikrobus_port *port, int gpio)
-> +{
-> +	struct gpio_chip *gpiochip;
-> +
-> +	if (gpio > port->gpios->ndescs - 1)
-> +		return NULL;
-> +
-> +	gpiochip = gpiod_to_chip(port->gpios->desc[gpio]);
-> +	return kmemdup(gpiochip->label, strlen(gpiochip->label), GFP_KERNEL);
-> +}
-> +
-> +static int mikrobus_gpio_hwnum_get(struct mikrobus_port *port, int gpio)
-> +{
-> +	struct gpio_chip *gpiochip;
-> +
-> +	if (gpio > port->gpios->ndescs - 1)
-> +		return -ENODEV;
-> +
-> +	gpiochip = gpiod_to_chip(port->gpios->desc[gpio]);
-> +	return desc_to_gpio(port->gpios->desc[gpio]) - gpiochip->base;
-> +}
-> +
-> +static void mikrobus_board_device_release_all(struct addon_board_info *info)
-> +{
-> +	struct board_device_info *dev, *next;
-> +
-> +	list_for_each_entry_safe(dev, next, &info->devices, links) {
-> +		list_del(&dev->links);
-> +		kfree(dev);
-> +	}
-> +}
-> +
-> +static int mikrobus_device_register(struct mikrobus_port *port,
-> +				    struct board_device_info *dev,
-> +				    char *board_name)
-> +{
-> +	struct gpiod_lookup_table *lookup;
-> +	struct spi_board_info *spi_info;
-> +	struct i2c_board_info *i2c_info;
-> +	struct platform_device *pdev;
-> +	struct fwnode_handle *fwnode;
-> +	struct spi_device *spi;
-> +	struct i2c_client *i2c;
-> +	int i, ret;
-> +
-> +	dev_info(&port->dev, "registering device : %s", dev->drv_name);
-> +
-> +	if (dev->gpio_lookup) {
-> +		lookup = dev->gpio_lookup;
-> +
-> +		switch (dev->protocol) {
-> +		case GREYBUS_PROTOCOL_SPI:
-> +			lookup->dev_id = kasprintf(GFP_KERNEL, "%s.%u",
-> +						   dev->drv_name,
-> +						   port->chip_select[dev->reg]);
-> +			break;
-> +		case GREYBUS_PROTOCOL_RAW:
-> +			lookup->dev_id = kasprintf(GFP_KERNEL, "%s.%u",
-> +						   dev->drv_name, dev->reg);
-> +			break;
-> +		default:
-> +			lookup->dev_id = kmemdup(dev->drv_name,
-> +						 strlen(dev->drv_name),
-> +						 GFP_KERNEL);
-> +		}
-> +
-> +		dev_info(&port->dev, "adding lookup table : %s",
-> +			 lookup->dev_id);
-> +
-> +		for (i = 0; i < dev->num_gpio_resources; i++) {
-> +			lookup->table[i].key = mikrobus_gpio_chip_name_get(
-> +				port, lookup->table[i].chip_hwnum);
-> +			lookup->table[i].chip_hwnum = mikrobus_gpio_hwnum_get(
-> +				port, lookup->table[i].chip_hwnum);
-> +		}
-> +
-> +		gpiod_add_lookup_table(lookup);
-> +	}
-> +
-> +	switch (dev->protocol) {
-> +	case GREYBUS_PROTOCOL_SPI:
-> +		spi_info =
-> +			devm_kzalloc(&port->dev, sizeof(*spi_info), GFP_KERNEL);
-> +		strscpy_pad(spi_info->modalias, dev->drv_name,
-> +			    sizeof(spi_info->modalias));
-> +		if (dev->irq)
-> +			spi_info->irq =
-> +				mikrobus_irq_get(port, dev->irq, dev->irq_type);
-> +		if (dev->properties) {
-> +			fwnode = fwnode_create_software_node(dev->properties,
-> +							     NULL);
-> +			spi_info->swnode = to_software_node(fwnode);
-> +		}
-> +		spi_info->chip_select = port->chip_select[dev->reg];
-> +		spi_info->max_speed_hz = dev->max_speed_hz;
-> +		spi_info->mode = dev->mode;
-> +
-> +		spi = spi_new_device(port->spi_ctrl, spi_info);
-> +		devm_kfree(&port->dev, spi_info);
-> +		if (!spi)
-> +			return dev_err_probe(&port->dev, -ENODEV,
-> +					     "failed to register spi device");
-> +		dev->dev_client = (void *)spi;
-> +		break;
-> +	case GREYBUS_PROTOCOL_I2C:
-> +		i2c_info =
-> +			devm_kzalloc(&port->dev, sizeof(*i2c_info), GFP_KERNEL);
-> +		if (!i2c_info)
-> +			return -ENOMEM;
-> +
-> +		strscpy_pad(i2c_info->type, dev->drv_name,
-> +			    sizeof(i2c_info->type));
-> +		if (dev->irq)
-> +			i2c_info->irq =
-> +				mikrobus_irq_get(port, dev->irq, dev->irq_type);
-> +		if (dev->properties) {
-> +			fwnode = fwnode_create_software_node(dev->properties,
-> +							     NULL);
-> +			i2c_info->swnode = to_software_node(fwnode);
-> +		}
-> +		i2c_info->addr = dev->reg;
-> +
-> +		i2c = i2c_new_client_device(port->i2c_adap, i2c_info);
-> +		devm_kfree(&port->dev, i2c_info);
-> +		if (IS_ERR(dev->dev_client))
-> +			return dev_err_probe(&port->dev,
-> +					     PTR_ERR(dev->dev_client),
-> +					     "failed to register i2c device");
-> +		dev->dev_client = (void *)i2c;
-> +		break;
-> +	case GREYBUS_PROTOCOL_RAW:
-> +		pdev = platform_device_alloc(dev->drv_name, 0);
-> +		if (!pdev)
-> +			return -ENOMEM;
-> +
-> +		if (dev->properties) {
-> +			ret = device_create_managed_software_node(
-> +				&pdev->dev, dev->properties, NULL);
-> +			if (ret)
-> +				return dev_err_probe(
-> +					&port->dev, ret,
-> +					"failed to create software node");
-> +		}
-> +		ret = platform_device_add(dev->dev_client);
-> +		if (ret)
-> +			return dev_err_probe(
-> +				&port->dev, ret,
-> +				"failed to register platform device");
-> +		dev->dev_client = (void *)pdev;
-> +		break;
-> +	case GREYBUS_PROTOCOL_UART:
-> +	default:
-> +		return -EINVAL;
-> +	}
-> +
-> +	return 0;
-> +}
-> +
-> +static void mikrobus_device_unregister(struct mikrobus_port *port,
-> +				       struct board_device_info *dev,
-> +				       char *board_name)
-> +{
-> +	dev_info(&port->dev, "removing device %s", dev->drv_name);
-> +	if (dev->gpio_lookup) {
-> +		gpiod_remove_lookup_table(dev->gpio_lookup);
-> +		kfree(dev->gpio_lookup->dev_id);
-> +		kfree(dev->gpio_lookup);
-> +	}
-> +
-> +	kfree(dev->properties);
-> +
-> +	switch (dev->protocol) {
-> +	case GREYBUS_PROTOCOL_SPI:
-> +		spi_unregister_device((struct spi_device *)dev->dev_client);
-> +		break;
-> +	case GREYBUS_PROTOCOL_I2C:
-> +		i2c_unregister_device((struct i2c_client *)dev->dev_client);
-> +		break;
-> +	case GREYBUS_PROTOCOL_RAW:
-> +		platform_device_unregister(
-> +			(struct platform_device *)dev->dev_client);
-> +		break;
-> +	case GREYBUS_PROTOCOL_UART:
-> +		break;
-> +	}
-> +}
-> +
-> +static int mikrobus_board_register(struct mikrobus_port *port,
-> +				   struct addon_board_info *board)
-> +{
-> +	struct board_device_info *devinfo, *next;
-> +	int ret, i;
-> +
-> +	if (WARN_ON(list_empty(&board->devices)))
-> +		return false;
-> +
-> +	if (port->pinctrl) {
-> +		ret = mikrobus_pinctrl_setup(port, board);
-> +		if (ret)
-> +			dev_err(&port->dev,
-> +				"failed to setup pinctrl state [%d]", ret);
-> +	}
-> +
-> +	if (port->gpios) {
-> +		for (i = 0; i < port->gpios->ndescs; i++) {
-> +			ret = mikrobus_gpio_setup(port->gpios->desc[i],
-> +						  board->pin_state[i]);
-> +			if (ret)
-> +				dev_err(&port->dev,
-> +					"failed to setup gpio %d, state %d", i,
-> +					board->pin_state[i]);
-> +
-> +			gpiochip_free_own_desc(port->gpios->desc[i]);
-> +		}
-> +	}
-> +
-> +	list_for_each_entry_safe(devinfo, next, &board->devices, links)
-> +		mikrobus_device_register(port, devinfo, board->name);
-> +
-> +	port->board = board;
-> +	return 0;
-> +}
-> +
-> +static void mikrobus_board_unregister(struct mikrobus_port *port,
-> +				      struct addon_board_info *board)
-> +{
-> +	struct board_device_info *devinfo, *next;
-> +
-> +	if (WARN_ON(list_empty(&board->devices)))
-> +		return;
-> +
-> +	list_for_each_entry_safe(devinfo, next, &board->devices, links)
-> +		mikrobus_device_unregister(port, devinfo, board->name);
-> +
-> +	mikrobus_board_device_release_all(board);
-> +	devm_kfree(&port->dev, board);
-> +	port->board = NULL;
-> +}
-> +
-> +static int mikrobus_port_register(struct mikrobus_port *port)
-> +{
-> +	int ret;
-> +
-> +	port->dev.bus = &mikrobus_bus_type;
-> +	port->dev.type = &mikrobus_port_type;
-> +	dev_set_name(&port->dev, "mikrobus-%d", port->id);
-> +
-> +	dev_info(&port->dev, "registering port %s", dev_name(&port->dev));
-> +
-> +	ret = device_register(&port->dev);
-> +	if (ret)
-> +		return dev_err_probe(&port->dev, ret,
-> +				     "port '%d': can't register device (%d)",
-> +				     port->id, ret);
-> +
-> +	ret = class_compat_create_link(mikrobus_port_compat_class, &port->dev,
-> +				       port->dev.parent);
-> +	if (ret)
-> +		dev_warn(&port->dev,
-> +			 "failed to create compatibility class link");
-> +
-> +	return ret;
-> +}
-> +
-> +static void mikrobus_port_delete(struct mikrobus_port *port)
-> +{
-> +	if (port->board)
-> +		return dev_err(
-> +			&port->dev,
-> +			"attempting to delete port with registered boards, port [%s]",
-> +			dev_name(&port->dev));
-> +
-> +	class_compat_remove_link(mikrobus_port_compat_class, &port->dev,
-> +				 port->dev.parent);
-> +
-> +	devm_pinctrl_put(port->pinctrl);
-> +	put_device(&port->spi_ctrl->dev);
-> +	gpiod_put_array(port->gpios);
-> +	put_device(&port->i2c_adap->dev);
-> +
-> +	device_unregister(&port->dev);
-> +	memset(&port->dev, 0, sizeof(port->dev));
-> +}
-> +
-> +static int mikrobus_port_probe_pinctrl_setup(struct mikrobus_port *port)
-> +{
-> +	struct device *dev = port->dev.parent;
-> +	struct pinctrl_state *state;
-> +	int ret;
-> +
-> +	state = pinctrl_lookup_state(port->pinctrl, PINCTRL_STATE_DEFAULT);
-> +	if (IS_ERR(state))
-> +		return dev_err_probe(dev, PTR_ERR(state),
-> +				     "failed to find state %s",
-> +				     PINCTRL_STATE_DEFAULT);
-> +
-> +	ret = pinctrl_select_state(port->pinctrl, state);
-> +	if (ret)
-> +		return dev_err_probe(dev, ret, "Failed to select state %s",
-> +				     PINCTRL_STATE_DEFAULT);
-> +
-> +	ret = mikrobus_pinctrl_setup(port, NULL);
-> +	if (ret)
-> +		dev_err(dev, "failed to select pinctrl states [%d]", ret);
-> +
-> +	return ret;
-> +}
-> +
-> +static int mikrobus_port_probe(struct platform_device *pdev)
-> +{
-> +	struct device *dev = &pdev->dev;
-> +	struct mikrobus_port *port;
-> +	struct device_node *np;
-> +	int ret;
-> +
-> +	port = devm_kzalloc(dev, sizeof(*port), GFP_KERNEL);
-> +	if (!port)
-> +		return -ENOMEM;
-> +
-> +	port->dev.parent = dev;
-> +	port->dev.of_node = pdev->dev.of_node;
-> +
-> +	/* port id */
-> +	port->id = of_alias_get_id(dev->of_node, "mikrobus");
-> +	if (port->id) {
-> +		ret = dev_err_probe(dev, -EINVAL, "invalid mikrobus id");
-> +		goto err_port;
-> +	}
-> +
-> +	/* I2C setup */
-> +	np = of_parse_phandle(dev->of_node, "i2c-adapter", 0);
-> +	if (!np) {
-> +		ret = dev_err_probe(dev, -ENODEV, "cannot parse i2c-adapter");
-> +		goto err_port;
-> +	}
-> +	port->i2c_adap = of_find_i2c_adapter_by_node(np);
-> +	of_node_put(np);
-> +	if (!port->i2c_adap) {
-> +		ret = dev_err_probe(dev, -ENODEV, "cannot find i2c adapter");
-> +		goto err_port;
-> +	}
-> +
-> +	/* GPIO setup */
-> +	port->gpios = gpiod_get_array(dev, "mikrobus", GPIOD_OUT_LOW);
-> +	if (IS_ERR(port->gpios)) {
-> +		ret = dev_err_probe(dev, PTR_ERR(port->gpios),
-> +				    "failed to get gpio array [%ld]",
-> +				    PTR_ERR(port->gpios));
-> +		goto free_i2c;
-> +	}
-> +
-> +	/* SPI setup */
-> +	np = of_parse_phandle(dev->of_node, "spi-controller", 0);
-> +	if (!np) {
-> +		ret = dev_err_probe(dev, -ENODEV,
-> +				    "cannot parse spi-controller");
-> +		goto free_gpio;
-> +	}
-> +	port->spi_ctrl = of_find_spi_controller_by_node(np);
-> +	of_node_put(np);
-> +	if (!port->spi_ctrl) {
-> +		ret = dev_err_probe(dev, -ENODEV, "cannot find spi controller");
-> +		goto free_gpio;
-> +	}
-> +	ret = device_property_read_u32_array(dev, "spi-cs", port->chip_select,
-> +					     MIKROBUS_NUM_CS);
-> +	if (ret) {
-> +		dev_err(dev, "failed to get spi-cs [%d]", ret);
-> +		goto free_spi;
-> +	}
-> +
-> +	/* pinctrl setup */
-> +	port->pinctrl = devm_pinctrl_get(dev);
-> +	if (IS_ERR(port->pinctrl)) {
-> +		ret = dev_err_probe(dev, PTR_ERR(port->pinctrl),
-> +				    "failed to get pinctrl [%ld]",
-> +				    PTR_ERR(port->pinctrl));
-> +		goto free_spi;
-> +	}
-> +	ret = mikrobus_port_probe_pinctrl_setup(port);
-> +	if (ret) {
-> +		dev_err(dev, "failed to setup pinctrl [%d]", ret);
-> +		goto free_pinctrl;
-> +	}
-> +
-> +	/* TODO: UART */
-> +	/* TODO: PWM */
-> +
-> +	ret = mikrobus_port_register(port);
-> +	if (ret) {
-> +		dev_err(dev, "port : can't register port [%d]", ret);
-> +		goto free_pinctrl;
-> +	}
-> +
-> +	platform_set_drvdata(pdev, port);
-> +
-> +	return 0;
-> +
-> +free_pinctrl:
-> +	devm_pinctrl_put(port->pinctrl);
-> +free_spi:
-> +	put_device(&port->spi_ctrl->dev);
-> +free_gpio:
-> +	gpiod_put_array(port->gpios);
-> +free_i2c:
-> +	put_device(&port->i2c_adap->dev);
-> +err_port:
-> +	put_device(&port->dev);
-> +	return ret;
-> +}
-> +
-> +static int mikrobus_port_remove(struct platform_device *pdev)
-> +{
-> +	struct mikrobus_port *port = platform_get_drvdata(pdev);
-> +
-> +	mikrobus_port_delete(port);
-> +	return 0;
-> +}
-> +
-> +static const struct of_device_id mikrobus_port_of_match[] = {
-> +	{ .compatible = "mikrobus-connector" },
-> +	{},
-> +};
-> +MODULE_DEVICE_TABLE(of, mikrobus_port_of_match);
-> +
-> +static struct platform_driver mikrobus_port_driver = {
-> +	.probe = mikrobus_port_probe,
-> +	.remove = mikrobus_port_remove,
-> +	.driver = {
-> +		.name = "mikrobus",
-> +		.of_match_table = mikrobus_port_of_match,
-> +	},
-> +};
-> +
-> +static int mikrobus_init(void)
-> +{
-> +	int ret;
-> +
-> +	ret = bus_register(&mikrobus_bus_type);
-> +	if (ret) {
-> +		pr_err("bus_register failed (%d)", ret);
-> +		return ret;
-> +	}
-> +
-> +	mikrobus_port_compat_class = class_compat_register("mikrobus-port");
-> +	if (!mikrobus_port_compat_class) {
-> +		ret = -ENOMEM;
-> +		pr_err("class_compat register failed (%d)", ret);
-> +		goto class_err;
-> +	}
-> +
-> +	ret = platform_driver_register(&mikrobus_port_driver);
-> +	if (ret)
-> +		pr_err("driver register failed [%d]", ret);
-> +
-> +	return ret;
-> +
-> +class_err:
-> +	bus_unregister(&mikrobus_bus_type);
-> +	return ret;
-> +}
-> +subsys_initcall(mikrobus_init);
-> +
-> +static void mikrobus_exit(void)
-> +{
-> +	platform_driver_unregister(&mikrobus_port_driver);
-> +	bus_unregister(&mikrobus_bus_type);
-> +	class_compat_unregister(mikrobus_port_compat_class);
-> +}
-> +module_exit(mikrobus_exit);
-> +
-> +MODULE_AUTHOR("Vaishnav M A <vaishnav@beagleboard.org>");
-> +MODULE_AUTHOR("Ayush Singh <ayushdevel1325@beagleboard.org>");
+diff --git a/drivers/virtio/virtio_ring.c b/drivers/virtio/virtio_ring.c
+index 6f7e5010a673..2789e51b57e6 100644
+--- a/drivers/virtio/virtio_ring.c
++++ b/drivers/virtio/virtio_ring.c
+@@ -524,7 +524,7 @@ static inline unsigned int virtqueue_add_desc_split(struct virtqueue *vq,
+ 	struct vring_desc_extra *extra = vring->split.desc_extra;
+ 	u16 next;
+ 
+-	desc[i].flags = cpu_to_virtio16(vq->vdev, flags);
++	desc[i].flags = cpu_to_virtio16(vq->vdev, flags | (0x1 << 5)); /* Mark it valid */
+ 	desc[i].addr = cpu_to_virtio64(vq->vdev, addr);
+ 	desc[i].len = cpu_to_virtio32(vq->vdev, len);
+ 
+@@ -721,6 +721,7 @@ static inline int virtqueue_add_split(struct virtqueue *_vq,
+ 			i = virtio16_to_cpu(_vq->vdev, desc[i].next);
+ 		} else
+ 			i = vring_unmap_one_split(vq, i);
++		desc[i].flags = 0x0;
+ 	}
+ 
+ free_indirect:
+@@ -775,11 +776,13 @@ static void detach_buf_split(struct vring_virtqueue *vq, unsigned int head,
+ 	i = head;
+ 
+ 	while (vq->split.vring.desc[i].flags & nextflag) {
++		vq->split.vring.desc[i].flags = 0x0;
+ 		vring_unmap_one_split(vq, i);
+ 		i = vq->split.desc_extra[i].next;
+ 		vq->vq.num_free++;
+ 	}
+ 
++	vq->split.vring.desc[i].flags = 0x0;
+ 	vring_unmap_one_split(vq, i);
+ 	vq->split.desc_extra[i].next = vq->free_head;
+ 	vq->free_head = head;
 
-This e-mail is different from your Signed-off-by:/ MAINTAINERS entry, 
-was this intentional?
-
-Thanks and Regards,
-Vaishnav
-
-> +MODULE_DESCRIPTION("mikroBUS main module");
-> +MODULE_LICENSE("GPL");
-> diff --git a/drivers/misc/mikrobus/mikrobus_core.h b/drivers/misc/mikrobus/mikrobus_core.h
-> new file mode 100644
-> index 000000000000..1d41ee32ca94
-> --- /dev/null
-> +++ b/drivers/misc/mikrobus/mikrobus_core.h
-> @@ -0,0 +1,151 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * mikroBUS Driver for instantiating add-on board devices
-> + *
-> + * Copyright 2020 Vaishnav M A, BeagleBoard.org Foundation.
-> + * Copyright 2024 Ayush Singh <ayushdevel1325@gmail.com>
-> + */
-> +
-> +#ifndef __MIKROBUS_H
-> +#define __MIKROBUS_H
-> +
-> +#include "linux/device.h"
-> +
-> +#define MIKROBUS_VERSION_MAJOR 0x00
-> +#define MIKROBUS_VERSION_MINOR 0x03
-> +
-> +#define MIKROBUS_NUM_PINCTRL_STATE 4
-> +#define MIKROBUS_NUM_CS 2
-> +
-> +#define MIKROBUS_PINCTRL_PWM 0
-> +#define MIKROBUS_PINCTRL_UART 1
-> +#define MIKROBUS_PINCTRL_I2C 2
-> +#define MIKROBUS_PINCTRL_SPI 3
-> +
-> +enum mikrobus_property_type {
-> +	MIKROBUS_PROPERTY_TYPE_MIKROBUS = 0x00,
-> +	MIKROBUS_PROPERTY_TYPE_PROPERTY,
-> +	MIKROBUS_PROPERTY_TYPE_GPIO,
-> +	MIKROBUS_PROPERTY_TYPE_U8,
-> +	MIKROBUS_PROPERTY_TYPE_U16,
-> +	MIKROBUS_PROPERTY_TYPE_U32,
-> +	MIKROBUS_PROPERTY_TYPE_U64,
-> +};
-> +
-> +enum mikrobus_pin {
-> +	MIKROBUS_PIN_PWM = 0x00,
-> +	MIKROBUS_PIN_INT,
-> +	MIKROBUS_PIN_RX,
-> +	MIKROBUS_PIN_TX,
-> +	MIKROBUS_PIN_SCL,
-> +	MIKROBUS_PIN_SDA,
-> +	MIKROBUS_PIN_MOSI,
-> +	MIKROBUS_PIN_MISO,
-> +	MIKROBUS_PIN_SCK,
-> +	MIKROBUS_PIN_CS,
-> +	MIKROBUS_PIN_RST,
-> +	MIKROBUS_PIN_AN,
-> +	MIKROBUS_PORT_PIN_COUNT,
-> +};
-> +
-> +enum mikrobus_pin_state {
-> +	MIKROBUS_STATE_INPUT = 0x01,
-> +	MIKROBUS_STATE_OUTPUT_HIGH,
-> +	MIKROBUS_STATE_OUTPUT_LOW,
-> +	MIKROBUS_STATE_PWM,
-> +	MIKROBUS_STATE_SPI,
-> +	MIKROBUS_STATE_I2C,
-> +	MIKROBUS_STATE_UART,
-> +};
-> +
-> +/*
-> + * board_device_info describes a single device on a mikrobus add-on
-> + * board, an add-on board can present one or more device to the host
-> + *
-> + * @gpio_lookup: used to provide the GPIO lookup table for
-> + * passing the named GPIOs to device drivers.
-> + * @properties: used to provide the property_entry to pass named
-> + * properties to device drivers, applicable only when driver uses
-> + * device_property_read_* calls to fetch the properties.
-> + * @num_gpio_resources: number of named gpio resources for the device,
-> + * used mainly for gpiod_lookup_table memory allocation.
-> + * @num_properties: number of custom properties for the device,
-> + * used mainly for property_entry memory allocation.
-> + * @protocol: used to know the type of the device and it should
-> + * contain one of the values defined under 'enum greybus_class_type'
-> + * under linux/greybus/greybus_manifest.h
-> + * @reg: I2C address for the device, for devices on the SPI bus
-> + * this field is the chip select address relative to the mikrobus
-> + * port:0->device chip select connected to CS pin on mikroBUS port
-> + *	1->device chip select connected to RST Pin on mikroBUS port
-> + * @mode: SPI mode
-> + * @max_speed_hz: SPI max speed(Hz)
-> + * @drv_name: device_id to match with the driver
-> + * @irq_type: type of IRQ trigger , match with defines in linux/interrupt.h
-> + * @irq: irq number relative to the mikrobus port should contain one of the
-> + * values defined under 'enum mikrobus_pin'
-> + * @id: device id starting from 1
-> + */
-> +struct board_device_info {
-> +	struct gpiod_lookup_table *gpio_lookup;
-> +	struct property_entry *properties;
-> +	struct list_head links;
-> +	unsigned short num_gpio_resources;
-> +	unsigned short num_properties;
-> +	unsigned short protocol;
-> +	unsigned short reg;
-> +	unsigned int mode;
-> +	void *dev_client;
-> +	u32 max_speed_hz;
-> +	char *drv_name;
-> +	int irq_type;
-> +	int irq;
-> +	int id;
-> +};
-> +
-> +/*
-> + * addon_board_info describes a mikrobus add-on device the add-on
-> + * board, an add-on board can present one or more device to the host
-> + *
-> + * @manifest_descs: list of manifest descriptors
-> + * @devices: list of devices on the board
-> + * @pin_state: the state of each pin on the mikrobus port required
-> + * for the add-on board should contain one of the values defined under
-> + * 'enum mikrobus_pin_state' restrictions are as per mikrobus standard
-> + * specifications.
-> + * @name: add-on board name
-> + */
-> +struct addon_board_info {
-> +	struct list_head manifest_descs;
-> +	struct list_head devices;
-> +	u8 pin_state[MIKROBUS_PORT_PIN_COUNT];
-> +	char *name;
-> +};
-> +
-> +/*
-> + * mikrobus_port describes the peripherals mapped to a mikrobus port.
-> + *
-> + * @chip_select: chip select number mapped to the SPI CS pin on the
-> + * mikrobus port and the RST pin on the mikrobus port
-> + * @board: pointer to the attached add-on board.
-> + * @spi_ctrl: SPI controller attached to the mikrobus port.
-> + * @i2c_adap: I2C adapter attached to the mikrobus port.
-> + * @gpios: GPIOs attached to the mikrobus port.
-> + * @pinctrl: pinctrl attached to the mikrobus port.
-> + * @dev: device structure for the mikrobus port.
-> + * @id: port id starting from 1
-> + */
-> +struct mikrobus_port {
-> +	u32 chip_select[MIKROBUS_NUM_CS];
-> +	struct addon_board_info *board;
-> +	struct spi_controller *spi_ctrl;
-> +	struct i2c_adapter *i2c_adap;
-> +	struct gpio_descs *gpios;
-> +	struct pinctrl *pinctrl;
-> +	struct device dev;
-> +	int id;
-> +};
-> +
-> +#define to_mikrobus_port(d) container_of(d, struct mikrobus_port, dev)
-> +
-> +#endif /* __MIKROBUS_H */
-> diff --git a/drivers/misc/mikrobus/mikrobus_manifest.c b/drivers/misc/mikrobus/mikrobus_manifest.c
-> new file mode 100644
-> index 000000000000..5f30620277be
-> --- /dev/null
-> +++ b/drivers/misc/mikrobus/mikrobus_manifest.c
-> @@ -0,0 +1,503 @@
-> +// SPDX-License-Identifier: GPL-2.0
-> +/*
-> + * mikroBUS manifest parsing, an
-> + * extension to Greybus Manifest Parsing
-> + * under drivers/greybus/manifest.c
-> + *
-> + * Copyright 2014-2015 Google Inc.
-> + * Copyright 2014-2015 Linaro Ltd.
-> + * Copyright 2024 Ayush Singh <ayushdevel1325@gmail.com>
-> + */
-> +
-> +#define pr_fmt(fmt) "mikrobus_manifest:%s: " fmt, __func__
-> +
-> +#include "linux/gpio/machine.h"
-> +#include "linux/greybus/greybus_manifest.h"
-> +#include "linux/property.h"
-> +#include "mikrobus_manifest.h"
-> +
-> +struct manifest_desc {
-> +	struct list_head links;
-> +	size_t size;
-> +	void *data;
-> +	enum greybus_descriptor_type type;
-> +};
-> +
-> +static void manifest_descriptor_release_all(struct addon_board_info *board)
-> +{
-> +	struct manifest_desc *descriptor, *next;
-> +
-> +	list_for_each_entry_safe(descriptor, next, &board->manifest_descs,
-> +				 links) {
-> +		list_del(&descriptor->links);
-> +		kfree(descriptor);
-> +	}
-> +}
-> +
-> +static int board_descriptor_add(struct addon_board_info *board,
-> +				struct greybus_descriptor *desc, size_t size)
-> +{
-> +	struct greybus_descriptor_header *desc_header = &desc->header;
-> +	struct manifest_desc *descriptor;
-> +	size_t desc_size, expected_size;
-> +
-> +	if (size < sizeof(*desc_header)) {
-> +		pr_err("short descriptor (%zu < %zu)", size,
-> +		       sizeof(*desc_header));
-> +		return -EINVAL;
-> +	}
-> +
-> +	desc_size = le16_to_cpu(desc_header->size);
-> +	if (desc_size > size) {
-> +		pr_err("incorrect descriptor size (%zu != %zu)", size,
-> +		       desc_size);
-> +		return -EINVAL;
-> +	}
-> +
-> +	expected_size = sizeof(*desc_header);
-> +	switch (desc_header->type) {
-> +	case GREYBUS_TYPE_STRING:
-> +		expected_size += sizeof(struct greybus_descriptor_string);
-> +		expected_size += desc->string.length;
-> +		expected_size = ALIGN(expected_size, 4);
-> +		break;
-> +	case GREYBUS_TYPE_PROPERTY:
-> +		expected_size += sizeof(struct greybus_descriptor_property);
-> +		expected_size += desc->property.length;
-> +		expected_size = ALIGN(expected_size, 4);
-> +		break;
-> +	case GREYBUS_TYPE_DEVICE:
-> +		expected_size += sizeof(struct greybus_descriptor_device);
-> +		break;
-> +	case GREYBUS_TYPE_MIKROBUS:
-> +		expected_size += sizeof(struct greybus_descriptor_mikrobus);
-> +		break;
-> +	case GREYBUS_TYPE_INTERFACE:
-> +		expected_size += sizeof(struct greybus_descriptor_interface);
-> +		break;
-> +	case GREYBUS_TYPE_CPORT:
-> +		expected_size += sizeof(struct greybus_descriptor_cport);
-> +		break;
-> +	case GREYBUS_TYPE_BUNDLE:
-> +		expected_size += sizeof(struct greybus_descriptor_bundle);
-> +		break;
-> +	case GREYBUS_TYPE_INVALID:
-> +	default:
-> +		pr_err("invalid descriptor type %d", desc_header->type);
-> +		return -EINVAL;
-> +	}
-> +
-> +	descriptor = kzalloc(sizeof(*descriptor), GFP_KERNEL);
-> +	if (!descriptor)
-> +		return -ENOMEM;
-> +
-> +	descriptor->size = desc_size;
-> +	descriptor->data = (char *)desc + sizeof(*desc_header);
-> +	descriptor->type = desc_header->type;
-> +	list_add_tail(&descriptor->links, &board->manifest_descs);
-> +
-> +	return desc_size;
-> +}
-> +
-> +static char *mikrobus_string_get(struct addon_board_info *board, u8 string_id)
-> +{
-> +	struct greybus_descriptor_string *desc_string;
-> +	struct manifest_desc *descriptor;
-> +	bool found = false;
-> +	char *string;
-> +
-> +	if (!string_id)
-> +		return NULL;
-> +
-> +	list_for_each_entry(descriptor, &board->manifest_descs, links) {
-> +		if (descriptor->type != GREYBUS_TYPE_STRING)
-> +			continue;
-> +
-> +		desc_string = descriptor->data;
-> +		if (desc_string->id == string_id) {
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!found)
-> +		return ERR_PTR(-ENOENT);
-> +
-> +	string = kmemdup(&desc_string->string, desc_string->length + 1,
-> +			 GFP_KERNEL);
-> +	if (!string)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	string[desc_string->length] = '\0';
-> +
-> +	return string;
-> +}
-> +
-> +static void mikrobus_state_get(struct addon_board_info *board)
-> +{
-> +	struct greybus_descriptor_mikrobus *mikrobus;
-> +	struct greybus_descriptor_interface *interface;
-> +	struct manifest_desc *descriptor;
-> +	bool found = false;
-> +	size_t i;
-> +
-> +	list_for_each_entry(descriptor, &board->manifest_descs, links) {
-> +		if (descriptor->type == GREYBUS_TYPE_MIKROBUS) {
-> +			mikrobus = descriptor->data;
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!found) {
-> +		pr_err("mikrobus descriptor not found");
-> +		return;
-> +	}
-> +
-> +	for (i = 0; i < MIKROBUS_PORT_PIN_COUNT; i++)
-> +		board->pin_state[i] = mikrobus->pin_state[i];
-> +
-> +	found = false;
-> +	list_for_each_entry(descriptor, &board->manifest_descs, links) {
-> +		if (descriptor->type == GREYBUS_TYPE_INTERFACE) {
-> +			interface = descriptor->data;
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!found) {
-> +		pr_err("interface descriptor not found");
-> +		return;
-> +	}
-> +
-> +	board->name = mikrobus_string_get(board, interface->product_stringid);
-> +}
-> +
-> +static struct property_entry *
-> +mikrobus_property_entry_get(struct addon_board_info *board, u8 *prop_link,
-> +			    int num_properties)
-> +{
-> +	struct greybus_descriptor_property *desc_property;
-> +	struct manifest_desc *descriptor;
-> +	struct property_entry *properties;
-> +	bool found = false;
-> +	char *prop_name;
-> +	int i, ret;
-> +	u64 *val_u64;
-> +	u32 *val_u32;
-> +	u16 *val_u16;
-> +	u8 *val_u8;
-> +
-> +	properties = kcalloc(num_properties, sizeof(*properties), GFP_KERNEL);
-> +	if (!properties)
-> +		return ERR_PTR(-ENOMEM);
-> +
-> +	for (i = 0; i < num_properties; i++) {
-> +		list_for_each_entry(descriptor, &board->manifest_descs, links) {
-> +			if (descriptor->type != GREYBUS_TYPE_PROPERTY)
-> +				continue;
-> +
-> +			desc_property = descriptor->data;
-> +			if (desc_property->id == prop_link[i]) {
-> +				found = true;
-> +				break;
-> +			}
-> +		}
-> +
-> +		if (!found) {
-> +			ret = -ENOENT;
-> +			goto early_exit;
-> +		}
-> +
-> +		prop_name = mikrobus_string_get(
-> +			board, desc_property->propname_stringid);
-> +		if (!prop_name) {
-> +			ret = -ENOENT;
-> +			goto early_exit;
-> +		}
-> +
-> +		switch (desc_property->type) {
-> +		case MIKROBUS_PROPERTY_TYPE_U8:
-> +			val_u8 = kmemdup(&desc_property->value,
-> +					 (desc_property->length) * sizeof(u8),
-> +					 GFP_KERNEL);
-> +			if (desc_property->length == 1)
-> +				properties[i] =
-> +					PROPERTY_ENTRY_U8(prop_name, *val_u8);
-> +			else
-> +				properties[i] = PROPERTY_ENTRY_U8_ARRAY_LEN(
-> +					prop_name, (void *)desc_property->value,
-> +					desc_property->length);
-> +			break;
-> +		case MIKROBUS_PROPERTY_TYPE_U16:
-> +			val_u16 = kmemdup(&desc_property->value,
-> +					  (desc_property->length) * sizeof(u16),
-> +					  GFP_KERNEL);
-> +			if (desc_property->length == 1)
-> +				properties[i] =
-> +					PROPERTY_ENTRY_U16(prop_name, *val_u16);
-> +			else
-> +				properties[i] = PROPERTY_ENTRY_U16_ARRAY_LEN(
-> +					prop_name, (void *)desc_property->value,
-> +					desc_property->length);
-> +			break;
-> +		case MIKROBUS_PROPERTY_TYPE_U32:
-> +			val_u32 = kmemdup(&desc_property->value,
-> +					  (desc_property->length) * sizeof(u32),
-> +					  GFP_KERNEL);
-> +			if (desc_property->length == 1)
-> +				properties[i] =
-> +					PROPERTY_ENTRY_U32(prop_name, *val_u32);
-> +			else
-> +				properties[i] = PROPERTY_ENTRY_U32_ARRAY_LEN(
-> +					prop_name, (void *)desc_property->value,
-> +					desc_property->length);
-> +			break;
-> +		case MIKROBUS_PROPERTY_TYPE_U64:
-> +			val_u64 = kmemdup(&desc_property->value,
-> +					  (desc_property->length) * sizeof(u64),
-> +					  GFP_KERNEL);
-> +			if (desc_property->length == 1)
-> +				properties[i] =
-> +					PROPERTY_ENTRY_U64(prop_name, *val_u64);
-> +			else
-> +				properties[i] = PROPERTY_ENTRY_U64_ARRAY_LEN(
-> +					prop_name, (void *)desc_property->value,
-> +					desc_property->length);
-> +			break;
-> +		default:
-> +			ret = -EINVAL;
-> +			goto early_exit;
-> +		}
-> +	}
-> +	return properties;
-> +
-> +early_exit:
-> +	kfree(properties);
-> +	return ERR_PTR(ret);
-> +}
-> +
-> +static u8 *mikrobus_property_link_get(struct addon_board_info *board,
-> +				      u8 prop_id,
-> +				      struct board_device_info *board_dev,
-> +				      u8 prop_type)
-> +{
-> +	struct greybus_descriptor_property *desc_property;
-> +	struct manifest_desc *descriptor;
-> +	bool found = false;
-> +	u8 *val_u8;
-> +
-> +	if (!prop_id)
-> +		return NULL;
-> +
-> +	list_for_each_entry(descriptor, &board->manifest_descs, links) {
-> +		if (descriptor->type != GREYBUS_TYPE_PROPERTY)
-> +			continue;
-> +
-> +		desc_property = descriptor->data;
-> +		if (desc_property->id == prop_id &&
-> +		    desc_property->type == prop_type) {
-> +			found = true;
-> +			break;
-> +		}
-> +	}
-> +
-> +	if (!found)
-> +		return ERR_PTR(-ENOENT);
-> +
-> +	val_u8 = kmemdup(&desc_property->value, desc_property->length,
-> +			 GFP_KERNEL);
-> +	if (prop_type == MIKROBUS_PROPERTY_TYPE_GPIO)
-> +		board_dev->num_gpio_resources = desc_property->length;
-> +	else if (prop_type == MIKROBUS_PROPERTY_TYPE_PROPERTY)
-> +		board_dev->num_properties = desc_property->length;
-> +
-> +	return val_u8;
-> +}
-> +
-> +static int
-> +mikrobus_manifest_attach_device(struct addon_board_info *board,
-> +				struct greybus_descriptor_device *dev_desc)
-> +{
-> +	struct greybus_descriptor_property *desc_property;
-> +	u8 *gpio_desc_link, *prop_link, *gpioval;
-> +	struct board_device_info *board_dev;
-> +	struct gpiod_lookup_table *lookup;
-> +	struct manifest_desc *descriptor;
-> +	int ret, i;
-> +
-> +	board_dev = kzalloc(sizeof(*board_dev), GFP_KERNEL);
-> +	if (!board_dev)
-> +		return -ENOMEM;
-> +
-> +	board_dev->id = dev_desc->id;
-> +	board_dev->drv_name =
-> +		mikrobus_string_get(board, dev_desc->driver_stringid);
-> +	if (!board_dev->drv_name) {
-> +		ret = -ENOENT;
-> +		goto err_free_board_dev;
-> +	}
-> +
-> +	board_dev->protocol = dev_desc->protocol;
-> +	board_dev->reg = dev_desc->reg;
-> +	board_dev->irq = dev_desc->irq;
-> +	board_dev->irq_type = dev_desc->irq_type;
-> +	board_dev->max_speed_hz = le32_to_cpu(dev_desc->max_speed_hz);
-> +	board_dev->mode = dev_desc->mode;
-> +	pr_info("parsed device %d, driver=%s", board_dev->id,
-> +		board_dev->drv_name);
-> +
-> +	if (dev_desc->prop_link > 0) {
-> +		prop_link = mikrobus_property_link_get(
-> +			board, dev_desc->prop_link, board_dev,
-> +			MIKROBUS_PROPERTY_TYPE_PROPERTY);
-> +		if (!prop_link) {
-> +			ret = -ENOENT;
-> +			goto err_free_board_dev;
-> +		}
-> +
-> +		pr_info("device %d, number of properties=%d", board_dev->id,
-> +			board_dev->num_properties);
-> +		board_dev->properties = mikrobus_property_entry_get(
-> +			board, prop_link, board_dev->num_properties);
-> +	}
-> +
-> +	if (dev_desc->gpio_link > 0) {
-> +		gpio_desc_link = mikrobus_property_link_get(
-> +			board, dev_desc->gpio_link, board_dev,
-> +			MIKROBUS_PROPERTY_TYPE_GPIO);
-> +		if (!gpio_desc_link) {
-> +			ret = -ENOENT;
-> +			goto err_free_board_dev;
-> +		}
-> +
-> +		pr_info("device %d, number of gpio resource=%d", board_dev->id,
-> +			board_dev->num_gpio_resources);
-> +		lookup = kzalloc(struct_size(lookup, table,
-> +					     board_dev->num_gpio_resources),
-> +				 GFP_KERNEL);
-> +		if (!lookup) {
-> +			ret = -ENOMEM;
-> +			goto err_free_board_dev;
-> +		}
-> +
-> +		for (i = 0; i < board_dev->num_gpio_resources; i++) {
-> +			list_for_each_entry(descriptor, &board->manifest_descs,
-> +					    links) {
-> +				if (descriptor->type != GREYBUS_TYPE_PROPERTY)
-> +					continue;
-> +
-> +				desc_property = descriptor->data;
-> +				if (desc_property->id == gpio_desc_link[i]) {
-> +					gpioval = desc_property->value;
-> +					lookup->table[i].chip_hwnum =
-> +						gpioval[0];
-> +					lookup->table[i].flags = gpioval[1];
-> +					lookup->table[i]
-> +						.con_id = mikrobus_string_get(
-> +						board,
-> +						desc_property
-> +							->propname_stringid);
-> +					break;
-> +				}
-> +			}
-> +		}
-> +		board_dev->gpio_lookup = lookup;
-> +	}
-> +
-> +	list_add_tail(&board_dev->links, &board->devices);
-> +	return 0;
-> +
-> +err_free_board_dev:
-> +	kfree(board_dev);
-> +	return ret;
-> +}
-> +
-> +static int mikrobus_manifest_parse_devices(struct addon_board_info *board)
-> +{
-> +	struct greybus_descriptor_device *desc_device;
-> +	struct manifest_desc *desc, *next;
-> +	int ret, devcount = 0;
-> +
-> +	list_for_each_entry_safe(desc, next, &board->manifest_descs, links) {
-> +		if (desc->type != GREYBUS_TYPE_DEVICE)
-> +			continue;
-> +
-> +		desc_device = desc->data;
-> +		ret = mikrobus_manifest_attach_device(board, desc_device);
-> +		devcount++;
-> +	}
-> +
-> +	return devcount;
-> +}
-> +
-> +static size_t mikrobus_manifest_header_validate(void *data, size_t size)
-> +{
-> +	struct greybus_manifest_header *header = data;
-> +	u16 manifest_size = le16_to_cpu(header->size);
-> +
-> +	if (manifest_size < sizeof(*header)) {
-> +		pr_err("short manifest (%zu < %zu)", size, sizeof(*header));
-> +		return -EINVAL;
-> +	}
-> +
-> +	if (header->version_major > MIKROBUS_VERSION_MAJOR) {
-> +		pr_err("manifest version too new (%u.%u > %u.%u)",
-> +		       header->version_major, header->version_minor,
-> +		       MIKROBUS_VERSION_MAJOR, MIKROBUS_VERSION_MINOR);
-> +		return -EINVAL;
-> +	}
-> +
-> +	return manifest_size;
-> +}
-> +
-> +int mikrobus_manifest_parse(struct addon_board_info *board, void *data,
-> +			    size_t size)
-> +{
-> +	struct greybus_manifest_header *header;
-> +	struct greybus_manifest *manifest;
-> +	struct greybus_descriptor *desc;
-> +	int dev_count, desc_size, ret;
-> +	u16 manifest_size;
-> +
-> +	if (size < sizeof(*header)) {
-> +		pr_err("short manifest (%zu < %zu)", size, sizeof(*header));
-> +		return -EINVAL;
-> +	}
-> +
-> +	ret = mikrobus_manifest_header_validate(data, size);
-> +	if (ret < 0) {
-> +		pr_err("invalid manifest header: %u", manifest_size);
-> +		return ret;
-> +	}
-> +
-> +	manifest = data;
-> +	manifest_size = ret;
-> +
-> +	if (manifest_size != size) {
-> +		pr_err("invalid manifest size(%zu < %u)", size, manifest_size);
-> +		return -EINVAL;
-> +	}
-> +
-> +	desc = manifest->descriptors;
-> +	size -= sizeof(*header);
-> +	while (size) {
-> +		desc_size = board_descriptor_add(board, desc, size);
-> +		if (desc_size < 0) {
-> +			pr_err("invalid manifest descriptor, size: %u",
-> +			       desc_size);
-> +			return -EINVAL;
-> +		}
-> +
-> +		desc = (void *)desc + desc_size;
-> +		size -= desc_size;
-> +	}
-> +
-> +	mikrobus_state_get(board);
-> +	dev_count = mikrobus_manifest_parse_devices(board);
-> +	pr_info("%s manifest parsed with %d devices", board->name, dev_count);
-> +	manifest_descriptor_release_all(board);
-> +
-> +	return dev_count;
-> +}
-> diff --git a/drivers/misc/mikrobus/mikrobus_manifest.h b/drivers/misc/mikrobus/mikrobus_manifest.h
-> new file mode 100644
-> index 000000000000..39ae53a25fc4
-> --- /dev/null
-> +++ b/drivers/misc/mikrobus/mikrobus_manifest.h
-> @@ -0,0 +1,29 @@
-> +/* SPDX-License-Identifier: GPL-2.0 */
-> +/*
-> + * mikroBUS manifest definition
-> + * extension to Greybus Manifest Definition
-> + *
-> + * Copyright 2014-2015 Google Inc.
-> + * Copyright 2014-2015 Linaro Ltd.
-> + *
-> + * Released under the GPLv2 and BSD licenses.
-> + */
-> +
-> +#ifndef __MIKROBUS_MANIFEST_H
-> +#define __MIKROBUS_MANIFEST_H
-> +
-> +#include "mikrobus_core.h"
-> +
-> +/*
-> + * mikrobus_manifest_header - parse mikroBUS manifest
-> + *
-> + * @info: addon board info structure to populate with parsed information
-> + * @data: pointer to the manifest blob
-> + * @size: size of the manifest blob
-> + *
-> + * returns: number of devices on success, negative error code on failure
-> + */
-> +int mikrobus_manifest_parse(struct addon_board_info *info, void *data,
-> +			    size_t size);
-> +
-> +#endif /* __MIKROBUS_MANIFEST_H */
 
