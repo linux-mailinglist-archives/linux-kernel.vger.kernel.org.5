@@ -1,311 +1,208 @@
-Return-Path: <linux-kernel+bounces-106917-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-106919-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B80D87F564
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:25:14 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 6E35687F569
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 03:26:27 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 650B4282788
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:25:12 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id D8CE91F21D53
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 02:26:26 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 13B026518F;
-	Tue, 19 Mar 2024 02:25:05 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="htVMaUpC"
-Received: from mail-io1-f54.google.com (mail-io1-f54.google.com [209.85.166.54])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 10DC464CE1;
-	Tue, 19 Mar 2024 02:25:01 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.54
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B5B64CFF;
+	Tue, 19 Mar 2024 02:26:19 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 34DA964CE9;
+	Tue, 19 Mar 2024 02:26:15 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710815104; cv=none; b=fHaC8nu+mzjCev5C7WBME5t165DwnVyaPeK2hAgy0c9rJXvMgsVz9VActgq0RFtzjzRl4najRaFu1QqtL4O2U19gLgZMNriSlhbAPabGFAyBRtLVgBi4XR+qI+UktFYHld61aKtQXBwQgtM/cu87tY6FOeSpFeSHtoCTiRJ7DWM=
+	t=1710815179; cv=none; b=mAmqoI+0cJouvy00IxFIgoghU3YbqqVxehAUjuMXHUIGR8tF0zUN6zYvKKsckdrmItztncZXEzT/fuHPW6FPGtJSHe3Kb+4rjxTT2ZMQo/v2vk3yBZXTu/6ZTg/Jd3JUXKkI9vqTy3EM7liIunFzqVrklSsvyMmtJSv5PP6J87o=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710815104; c=relaxed/simple;
-	bh=FC6+/aI7BBUs6BF1uhfaUOKbhxkDFustrqUVR7+Fhf8=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=rjNFsoIRu0dsI3nrzWL11AGn1D2OPROEZXU1cgNnSLvNA6Vi4hHWESadpkPLx9bmFZ/fGKwQ3meZMgutziXBjHEHTl0yAId/+09MXbnOJ6dYSJMKGfYCjTubfn5O1qBCj+Kyf+jRWfjUe1RXsVL/UxQMpR13VwUKIME6Tb21zRM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=htVMaUpC; arc=none smtp.client-ip=209.85.166.54
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-io1-f54.google.com with SMTP id ca18e2360f4ac-7cc77e74b5cso64526139f.2;
-        Mon, 18 Mar 2024 19:25:01 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710815101; x=1711419901; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=3jXxbFRn7aUJ8vbwC+W7tuBl2ook1tIt1JLVdpl6uzA=;
-        b=htVMaUpCuCtfkhNCQI/ADf6QmutFJAv7FbLnuQQpq7j0EYCTtYY5/bKgiTFROMwl3L
-         9dYhCyuT0kbwwPMkyLNlAP82UMU6EPf10QZpRjaEt7xGuhxXaIe0bb9kUb2/rhwpzVlw
-         vw1Hwd5xW09rM33sQ8MwOBT0a+NVbggFncXA+eR/aI9lapf6ANIALO2tChCX78VU3FPq
-         wyz3JBMdP/rCbLKRPP9lmwXSffKhP5e/78egdlVDH4jYmGCy9wjY03LWlLrNVurGz5Yx
-         xFWEviDDbF2I5mm60+GXwEdK4JXmJhWkEBnGEBpswDVJiTTucGdHzyYBaVaO23DVXDH+
-         O8+w==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710815101; x=1711419901;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=3jXxbFRn7aUJ8vbwC+W7tuBl2ook1tIt1JLVdpl6uzA=;
-        b=Fp8QDJ/unDmNTj0MyNueJ0v5q5LSHRQg11EF89Fw+NfsxeBXH1fuZOxNu74kDmQ0SA
-         lxCUQ2wCA4fiYSB9CAzoWrJmWLUe0PTaCO+rccHWc/aJCRx7UoOgqAUHwYiAIP1irroA
-         45s5YeqVSNkzNlPwyoEZ5D/Z4BB3gB6R9H12l2aHR17Uq6e1GzVk2pM/k79DPiWKxa76
-         hR1vtzYOxuEVHVZHnD9veKngraRAUzMCxwu7yNh6z/VO0Xim+lxTmuunhiQ14ZI0ib1l
-         CkxtEcQZyhqQ0HF41c2EQD9fnMYKZgsIFTaIkx6FLO5Ye/wiDhmP/OSuTaqKd5P0Q95C
-         RJRQ==
-X-Forwarded-Encrypted: i=1; AJvYcCXK95OdDfn+XjpsdF0TIrQiI6BadlYzx6FfMtPZExWDD8o6NXYF/BQAXLmwtUSKS/iIbqmb6Ydka/ilepFma9BQu0QU3NrVcagpZ5DATatVLSQUDrZNHD/jU3MzM3iitsdykAO+3Kvuxj4=
-X-Gm-Message-State: AOJu0YwBiKD0DqVRdmtUhKZH4HPvnBm3Bm17cimD9bu+/VaaU9U+U3ry
-	Zl8XRJzEbnCAdQoURehWsDQNDY5WWx2tnp912serR7zlpRS0tTC2czx1P1FPJS/6GHT2LL3k3+J
-	yFmVdqCLdp1e5KoBhYJBi2i4DcuI=
-X-Google-Smtp-Source: AGHT+IGnWR3B9g/WoAwOtaoEM89k4iilEqv+3OCoq6B4OwhrLulsTXLE02G/egyZDtycYkHZLV95uXfPr1KhQx7ol+4=
-X-Received: by 2002:a05:6e02:1142:b0:366:a289:2fc6 with SMTP id
- o2-20020a056e02114200b00366a2892fc6mr10994035ill.7.1710815100818; Mon, 18 Mar
- 2024 19:25:00 -0700 (PDT)
+	s=arc-20240116; t=1710815179; c=relaxed/simple;
+	bh=KQzfakRcrbHa4iQaTVLI/sbWCXQ1mlHncl75EffgA64=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=WY2QzQwbXtVIO/MFMBmnnROGoFkDdFNLqJbQyxRG0tgAeLtRpFNocG+050E1inAh64banbty4xnp1rG0vo3py9zLpCYXq99iPqyACp+h3eP1i6hptskos2hPDVb/F4y0J3aNy7CyGSFPUhoRFQ+L8AeRUH+n+HgCmpfNqFIXwOI=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id 72621106F;
+	Mon, 18 Mar 2024 19:26:49 -0700 (PDT)
+Received: from [10.163.53.80] (unknown [10.163.53.80])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id EB44B3F762;
+	Mon, 18 Mar 2024 19:26:12 -0700 (PDT)
+Message-ID: <ad9bdae3-0eb2-4262-8412-ba42c27ee767@arm.com>
+Date: Tue, 19 Mar 2024 07:56:02 +0530
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <1710150841-26991-1-git-send-email-shengjiu.wang@nxp.com> <399da377-c2b6-4226-9108-8a1e776b6f3b@xs4all.nl>
-In-Reply-To: <399da377-c2b6-4226-9108-8a1e776b6f3b@xs4all.nl>
-From: Shengjiu Wang <shengjiu.wang@gmail.com>
-Date: Tue, 19 Mar 2024 10:24:49 +0800
-Message-ID: <CAA+D8APgFvATshUJCNxCynJsYr_6=A+V=xf5qFpimd4i4g1ygg@mail.gmail.com>
-Subject: Re: [PATCH v14 00/16] Add audio support in v4l2 framework
-To: Hans Verkuil <hverkuil@xs4all.nl>
-Cc: Shengjiu Wang <shengjiu.wang@nxp.com>, sakari.ailus@iki.fi, tfiga@chromium.org, 
-	m.szyprowski@samsung.com, mchehab@kernel.org, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, Xiubo.Lee@gmail.com, festevam@gmail.com, 
-	nicoleotsuka@gmail.com, lgirdwood@gmail.com, broonie@kernel.org, 
-	perex@perex.cz, tiwai@suse.com, alsa-devel@alsa-project.org, 
-	linuxppc-dev@lists.ozlabs.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 2/3] perf tools: Only treat files as map files when they
+ have the extension .map
+To: Arnaldo Carvalho de Melo <acme@kernel.org>
+Cc: Ian Rogers <irogers@google.com>, linux-perf-users@vger.kernel.org,
+ anshuman.khandual@arm.com,
+ Linux Kernel Mailing List <linux-kernel@vger.kernel.org>
+References: <20240220042957.2022391-1-ChaitanyaS.Prakash@arm.com>
+ <20240220042957.2022391-3-ChaitanyaS.Prakash@arm.com>
+ <CAP-5=fUFmeoTjLuZTgcaV23iGQU1AdddG+7Rw=d6buMU007+1Q@mail.gmail.com>
+ <ZdYPf3wMl35VemsL@x1> <0fa391c6-fd9e-42fe-b535-17e7725280e5@arm.com>
+ <ZfSw7AL8EgFoFQkM@x1>
+Content-Language: en-US
+From: Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com>
+In-Reply-To: <ZfSw7AL8EgFoFQkM@x1>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Mon, Mar 18, 2024 at 11:56=E2=80=AFPM Hans Verkuil <hverkuil@xs4all.nl> =
-wrote:
+On 3/16/24 02:04, Arnaldo Carvalho de Melo wrote:
+> On Fri, Feb 23, 2024 at 05:40:02PM +0530, Chaitanya S Prakash wrote:
+>> I'll make the changes, thanks for the review.
+> Have you submitted a new series?
 >
-> Hi Shengjiu,
+> Thanks,
 >
-> I was about to prepare a pull request for this when I realized that
-> entries for the new drivers need to be added to the MAINTAINERS file.
->
-> Can you post patches 'v14 17/16' and 'v14/18/16' adding entries for each
-> new driver?
-
-Ok,  How about the change below?
-
-VIRTUAL MEM2MEM DRIVER FOR AUDIO
-M:      Hans Verkuil <hverkuil@xs4all.nl>
-M:      Shengjiu Wang <shengjiu.wang@gmail.com>
-L:      linux-media@vger.kernel.org
-S:      Maintained
-W:      https://linuxtv.org
-T:      git git://linuxtv.org/media_tree.git
-F:      drivers/media/test-drivers/vim2m-audio.c
-
-NXP ASRC V4L2 MEM2MEM DRIVERS
-M:      Shengjiu Wang <shengjiu.wang@gmail.com>
-L:      linux-media@vger.kernel.org
-S:      Maintained
-W:      https://linuxtv.org
-T:      git git://linuxtv.org/media_tree.git
-F:      drivers/media/platform/nxp/imx-asrc.c
-
-best regards
-wang shengjiu
-
->
-> Thank you,
->
->         Hans
->
-> On 11/03/2024 10:53 am, Shengjiu Wang wrote:
-> > Audio signal processing also has the requirement for memory to
-> > memory similar as Video.
-> >
-> > This asrc memory to memory (memory ->asrc->memory) case is a non
-> > real time use case.
-> >
-> > User fills the input buffer to the asrc module, after conversion, then =
-asrc
-> > sends back the output buffer to user. So it is not a traditional ALSA p=
-layback
-> > and capture case.
-> >
-> > It is a specific use case,  there is no reference in current kernel.
-> > v4l2 memory to memory is the closed implementation,  v4l2 current
-> > support video, image, radio, tuner, touch devices, so it is not
-> > complicated to add support for this specific audio case.
-> >
-> > Because we had implemented the "memory -> asrc ->i2s device-> codec"
-> > use case in ALSA.  Now the "memory->asrc->memory" needs
-> > to reuse the code in asrc driver, so the first 3 patches is for refinin=
-g
-> > the code to make it can be shared by the "memory->asrc->memory"
-> > driver.
-> >
-> > The main change is in the v4l2 side, A /dev/vl4-audioX will be created,
-> > user applications only use the ioctl of v4l2 framework.
-> >
-> > Other change is to add memory to memory support for two kinds of i.MX A=
-SRC
-> > module.
-> >
-> > changes in v14:
-> > - document the reservation of 'AUXX' fourcc format.
-> > - add v4l2_audfmt_to_fourcc() definition.
-> >
-> > changes in v13
-> > - change 'pixelformat' to 'audioformat' in dev-audio-mem2mem.rst
-> > - add more description for clock drift in ext-ctrls-audio-m2m.rst
-> > - Add "media: v4l2-ctrls: add support for fraction_bits" from Hans
-> >   to avoid build issue for kernel test robot
-> >
-> > changes in v12
-> > - minor changes according to comments
-> > - drop min_buffers_needed =3D 1 and V4L2_CTRL_FLAG_UPDATE flag
-> > - drop bus_info
-> >
-> > changes in v11
-> > - add add-fixed-point-test-controls in vivid.
-> > - add v4l2_ctrl_fp_compose() helper function for min and max
-> >
-> > changes in v10
-> > - remove FIXED_POINT type
-> > - change code base on media: v4l2-ctrls: add support for fraction_bits
-> > - fix issue reported by kernel test robot
-> > - remove module_alias
-> >
-> > changes in v9:
-> > - add MEDIA_ENT_F_PROC_AUDIO_RESAMPLER.
-> > - add MEDIA_INTF_T_V4L_AUDIO
-> > - add media controller support
-> > - refine the vim2m-audio to support 8k<->16k conversion.
-> >
-> > changes in v8:
-> > - refine V4L2_CAP_AUDIO_M2M to be 0x00000008
-> > - update doc for FIXED_POINT
-> > - address comments for imx-asrc
-> >
-> > changes in v7:
-> > - add acked-by from Mark
-> > - separate commit for fixed point, m2m audio class, audio rate controls
-> > - use INTEGER_MENU for rate,  FIXED_POINT for rate offset
-> > - remove used fmts
-> > - address other comments for Hans
-> >
-> > changes in v6:
-> > - use m2m_prepare/m2m_unprepare/m2m_start/m2m_stop to replace
-> >   m2m_start_part_one/m2m_stop_part_one, m2m_start_part_two/m2m_stop_par=
-t_two.
-> > - change V4L2_CTRL_TYPE_ASRC_RATE to V4L2_CTRL_TYPE_FIXED_POINT
-> > - fix warning by kernel test rebot
-> > - remove some unused format V4L2_AUDIO_FMT_XX
-> > - Get SNDRV_PCM_FORMAT from V4L2_AUDIO_FMT in driver.
-> > - rename audm2m to viaudm2m.
-> >
-> > changes in v5:
-> > - remove V4L2_AUDIO_FMT_LPCM
-> > - define audio pixel format like V4L2_AUDIO_FMT_S8...
-> > - remove rate and format in struct v4l2_audio_format.
-> > - Add V4L2_CID_ASRC_SOURCE_RATE and V4L2_CID_ASRC_DEST_RATE controls
-> > - updata document accordingly.
-> >
-> > changes in v4:
-> > - update document style
-> > - separate V4L2_AUDIO_FMT_LPCM and V4L2_CAP_AUDIO_M2M in separate commi=
-t
-> >
-> > changes in v3:
-> > - Modify documents for adding audio m2m support
-> > - Add audio virtual m2m driver
-> > - Defined V4L2_AUDIO_FMT_LPCM format type for audio.
-> > - Defined V4L2_CAP_AUDIO_M2M capability type for audio m2m case.
-> > - with modification in v4l-utils, pass v4l2-compliance test.
-> >
-> > changes in v2:
-> > - decouple the implementation in v4l2 and ALSA
-> > - implement the memory to memory driver as a platfrom driver
-> >   and move it to driver/media
-> > - move fsl_asrc_common.h to include/sound folder
-> >
-> > Hans Verkuil (1):
-> >   media: v4l2-ctrls: add support for fraction_bits
-> >
-> > Shengjiu Wang (15):
-> >   ASoC: fsl_asrc: define functions for memory to memory usage
-> >   ASoC: fsl_easrc: define functions for memory to memory usage
-> >   ASoC: fsl_asrc: move fsl_asrc_common.h to include/sound
-> >   ASoC: fsl_asrc: register m2m platform device
-> >   ASoC: fsl_easrc: register m2m platform device
-> >   media: uapi: Add V4L2_CAP_AUDIO_M2M capability flag
-> >   media: v4l2: Add audio capture and output support
-> >   media: uapi: Define audio sample format fourcc type
-> >   media: uapi: Add V4L2_CTRL_CLASS_M2M_AUDIO
-> >   media: uapi: Add audio rate controls support
-> >   media: uapi: Declare interface types for Audio
-> >   media: uapi: Add an entity type for audio resampler
-> >   media: vivid: add fixed point test controls
-> >   media: imx-asrc: Add memory to memory driver
-> >   media: vim2m-audio: add virtual driver for audio memory to memory
-> >
-> >  .../media/mediactl/media-types.rst            |   11 +
-> >  .../userspace-api/media/v4l/buffer.rst        |    6 +
-> >  .../userspace-api/media/v4l/common.rst        |    1 +
-> >  .../media/v4l/dev-audio-mem2mem.rst           |   71 +
-> >  .../userspace-api/media/v4l/devices.rst       |    1 +
-> >  .../media/v4l/ext-ctrls-audio-m2m.rst         |   59 +
-> >  .../userspace-api/media/v4l/pixfmt-audio.rst  |  100 ++
-> >  .../userspace-api/media/v4l/pixfmt.rst        |    1 +
-> >  .../media/v4l/vidioc-enum-fmt.rst             |    2 +
-> >  .../media/v4l/vidioc-g-ext-ctrls.rst          |    4 +
-> >  .../userspace-api/media/v4l/vidioc-g-fmt.rst  |    4 +
-> >  .../media/v4l/vidioc-querycap.rst             |    3 +
-> >  .../media/v4l/vidioc-queryctrl.rst            |   11 +-
-> >  .../media/videodev2.h.rst.exceptions          |    3 +
-> >  .../media/common/videobuf2/videobuf2-v4l2.c   |    4 +
-> >  drivers/media/platform/nxp/Kconfig            |   13 +
-> >  drivers/media/platform/nxp/Makefile           |    1 +
-> >  drivers/media/platform/nxp/imx-asrc.c         | 1256 +++++++++++++++++
-> >  drivers/media/test-drivers/Kconfig            |   10 +
-> >  drivers/media/test-drivers/Makefile           |    1 +
-> >  drivers/media/test-drivers/vim2m-audio.c      |  793 +++++++++++
-> >  drivers/media/test-drivers/vivid/vivid-core.h |    2 +
-> >  .../media/test-drivers/vivid/vivid-ctrls.c    |   26 +
-> >  drivers/media/v4l2-core/v4l2-compat-ioctl32.c |    9 +
-> >  drivers/media/v4l2-core/v4l2-ctrls-api.c      |    1 +
-> >  drivers/media/v4l2-core/v4l2-ctrls-core.c     |   93 +-
-> >  drivers/media/v4l2-core/v4l2-ctrls-defs.c     |   10 +
-> >  drivers/media/v4l2-core/v4l2-dev.c            |   21 +
-> >  drivers/media/v4l2-core/v4l2-ioctl.c          |   66 +
-> >  drivers/media/v4l2-core/v4l2-mem2mem.c        |   13 +-
-> >  include/media/v4l2-ctrls.h                    |   13 +-
-> >  include/media/v4l2-dev.h                      |    2 +
-> >  include/media/v4l2-ioctl.h                    |   34 +
-> >  .../fsl =3D> include/sound}/fsl_asrc_common.h   |   60 +
-> >  include/uapi/linux/media.h                    |    2 +
-> >  include/uapi/linux/v4l2-controls.h            |    9 +
-> >  include/uapi/linux/videodev2.h                |   50 +-
-> >  sound/soc/fsl/fsl_asrc.c                      |  144 ++
-> >  sound/soc/fsl/fsl_asrc.h                      |    4 +-
-> >  sound/soc/fsl/fsl_asrc_dma.c                  |    2 +-
-> >  sound/soc/fsl/fsl_easrc.c                     |  233 +++
-> >  sound/soc/fsl/fsl_easrc.h                     |    6 +-
-> >  42 files changed, 3128 insertions(+), 27 deletions(-)
-> >  create mode 100644 Documentation/userspace-api/media/v4l/dev-audio-mem=
-2mem.rst
-> >  create mode 100644 Documentation/userspace-api/media/v4l/ext-ctrls-aud=
-io-m2m.rst
-> >  create mode 100644 Documentation/userspace-api/media/v4l/pixfmt-audio.=
-rst
-> >  create mode 100644 drivers/media/platform/nxp/imx-asrc.c
-> >  create mode 100644 drivers/media/test-drivers/vim2m-audio.c
-> >  rename {sound/soc/fsl =3D> include/sound}/fsl_asrc_common.h (60%)
-> >
->
+> - Arnaldo
+I will be posting it this week, extremely sorry for the delay!
+>   
+>> On 2/21/24 20:28, Arnaldo Carvalho de Melo wrote:
+>>> On Tue, Feb 20, 2024 at 06:40:47AM -0800, Ian Rogers wrote:
+>>>> On Mon, Feb 19, 2024 at 8:30 PM Chaitanya S Prakash <ChaitanyaS.Prakash@arm.com> wrote:
+>>>>> +++ b/tools/perf/util/string2.h
+>>>>> @@ -40,5 +40,6 @@ char *strdup_esc(const char *str);
+>>>>>
+>>>>>    unsigned int hex(char c);
+>>>>>    char *strreplace_chars(char needle, const char *haystack, const char *replace);
+>>>>> +const char *ends_with(const char *str, const char *suffix);
+>>>> nit: string2.h is an extension of linux's string.h. The tools copy of
+>>>> that is missing functions in the kernel version:
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/tools/include/linux/string.h?h=perf-tools-next
+>>>> https://git.kernel.org/pub/scm/linux/kernel/git/perf/perf-tools-next.git/tree/include/linux/string.h?h=perf-tools-next#n398
+>>>> specifically str_has_prefix.
+>>>>
+>>>> The naming ends_with makes sense but there is also strstarts and
+>>>> str_has_prefix, perhaps str_has_suffix would be the most consistent
+>>>> and intention revealing name?
+>>>>
+>>>> Also, we have strtailcmp which behaves like a reverse strcmp that
+>>>> doesn't compare the lengths of the strings. It seems all uses of
+>>>> strtailcmp are just for a "str_has_suffix". It would make sense to me
+>>>> to remove that function and switch to a common str_has_suffix function
+>>>> which I think is a more intention revealing way of naming what the
+>>>> code is doing.
+>>> So far in perf we try to just reuse whatever function the kernel has for
+>>> the purpose at hand, right now the kernel has:
+>>>
+>>> /**
+>>>    * strstarts - does @str start with @prefix?
+>>>    * @str: string to examine
+>>>    * @prefix: prefix to look for.
+>>>    */
+>>> static inline bool strstarts(const char *str, const char *prefix)
+>>> {
+>>>           return strncmp(str, prefix, strlen(prefix)) == 0;
+>>> }
+>>>
+>>> And:
+>>>
+>>> /**
+>>>    * str_has_prefix - Test if a string has a given prefix
+>>>    * @str: The string to test
+>>>    * @prefix: The string to see if @str starts with
+>>>    *
+>>>    * A common way to test a prefix of a string is to do:
+>>>    *  strncmp(str, prefix, sizeof(prefix) - 1)
+>>>    *
+>>>    * But this can lead to bugs due to typos, or if prefix is a pointer
+>>>    * and not a constant. Instead use str_has_prefix().
+>>>    *
+>>>    * Returns:
+>>>    * * strlen(@prefix) if @str starts with @prefix
+>>>    * * 0 if @str does not start with @prefix
+>>>    */
+>>> static __always_inline size_t str_has_prefix(const char *str, const char *prefix)
+>>> {
+>>>           size_t len = strlen(prefix);
+>>>           return strncmp(str, prefix, len) == 0 ? len : 0;
+>>> }
+>>>
+>>> The later seems to give more bang for the buck, so to say, returning the
+>>> prefix lenght.
+>>>
+>>> It is a new addition:
+>>>
+>>> 72921427d46bf9731 (Steven Rostedt (VMware) 2018-12-21 18:10:14 -0500 398) static __always_inline size_t str_has_prefix(const char *str, const char *prefix)
+>>>
+>>> While:
+>>>
+>>> 66f92cf9d415e96a5 (Rusty Russell           2009-03-31 13:05:36 -0600 249)  * strstarts - does @str start with @prefix?
+>>>
+>>> ⬢[acme@toolbox linux]$ git grep str_has_prefix| wc -l
+>>> 94
+>>> ⬢[acme@toolbox linux]$ git grep strstarts| wc -l
+>>> 177
+>>> ⬢[acme@toolbox linux]$
+>>>
+>>> Some places use it:
+>>>
+>>> kernel/printk/printk.c: len = str_has_prefix(str, "on");
+>>> kernel/printk/printk.c: len = str_has_prefix(str, "off");
+>>> kernel/printk/printk.c: len = str_has_prefix(str, "ratelimit");
+>>>
+>>>
+>>> static int __control_devkmsg(char *str)
+>>> {
+>>> 	size_t len;
+>>>
+>>> 	if (!str)
+>>> 		return -EINVAL;
+>>>
+>>> 	len = str_has_prefix(str, "on");
+>>> 	if (len) {
+>>> 		devkmsg_log = DEVKMSG_LOG_MASK_ON;
+>>> 		return len;
+>>> 	}
+>>>
+>>> 	len = str_has_prefix(str, "off");
+>>> 	if (len) {
+>>> 		devkmsg_log = DEVKMSG_LOG_MASK_OFF;
+>>> 		return len;
+>>> 	}
+>>>
+>>> 	len = str_has_prefix(str, "ratelimit");
+>>> 	if (len) {
+>>> 		devkmsg_log = DEVKMSG_LOG_MASK_DEFAULT;
+>>> 		return len;
+>>> 	}
+>>>
+>>> 	return -EINVAL;
+>>> }
+>>>
+>>>
+>>>                   err = __control_devkmsg(devkmsg_log_str);
+>>>                   /*
+>>>                    * Do not accept an unknown string OR a known string with
+>>>                    * trailing crap...
+>>>                    */
+>>>                   if (err < 0 || (err + 1 != *lenp)) {
+>>>
+>>>                           /* ... and restore old setting. */
+>>>                           devkmsg_log = old;
+>>>                           strncpy(devkmsg_log_str, old_str, DEVKMSG_STR_MAX_SIZE);
+>>>
+>>>                           return -EINVAL;
+>>>                   }
+>>>
+>>>
+>>> So yeah, I agree with Ian that it is more intention revealing, has this
+>>> bonus of returning the strlen for the above use cases, is in the kernel
+>>> sources, so I'm in favour of grabbing a copy of it and replacing the
+>>> strstarts() usage with it, drop strstarts(), then also introduce
+>>> str_has_suffix(), the kernel will get it when it needs, possibly from
+>>> tools/lib/ :-)
+>>>
+>>> - Arnaldo
 
