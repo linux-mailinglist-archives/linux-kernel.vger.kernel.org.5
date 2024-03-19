@@ -1,158 +1,121 @@
-Return-Path: <linux-kernel+bounces-107722-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107723-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id CCC2B8800C4
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:33:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 057548800C6
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:34:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id F033B1C21AE2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:33:32 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 379AF1C22062
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 15:34:35 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D59D1651BA;
-	Tue, 19 Mar 2024 15:33:22 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b="cwE2LFFu"
-Received: from mail-yw1-f174.google.com (mail-yw1-f174.google.com [209.85.128.174])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
-	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 988FB651AD
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:33:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.174
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AA242657BA;
+	Tue, 19 Mar 2024 15:34:29 +0000 (UTC)
+Received: from foss.arm.com (foss.arm.com [217.140.110.172])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id A815D62818
+	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 15:34:26 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.140.110.172
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710862402; cv=none; b=YZPjVuduT19EtNT8Zbgf6h5YQKfedXMHccuCUitEn4qpqjWUslBd7vOCyoAT0IGwJPxL7lKPWAQq1dzc4Tg2yZcq+YLpC8Ol1tp4ZJ4o9YL+ysuoVP77wiRjbZIXHYkRQUPlEQGsaZ4Ipj1Xxp5FkjdwdQWkuiQA4eLrO64Gc7E=
+	t=1710862469; cv=none; b=SfuAxiC2a7driJk8615wZV7URqgJKDl1zoNFEDL3VQM7i3Gy6V6baFjkt6+lnJIVwpF6Tj85mqCOSOXBOlfqm2fSuZvMSPyRm+R4Zwu1JVpVWYswKkt3FH+S1CwPVy7Z7Ke1FJDwQDtFwwFJ5oGl11h/BOKGn7T2R/gQUqrPU64=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710862402; c=relaxed/simple;
-	bh=ffYzVDG9o2d4Inux2RMjI5RcJfyUEQNu+VWdtawt5Ro=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=oFlP1SIudVdnMDrYO9gd3tioRmUxVbJbME1WSfnISSM3fzRpYtF2uEIgkpIsT941dOHxisNhor5o1C9+ams1LX/uY6VxRKRkA7GR13x+bSdFJop4g77HDfA0a+kI5QQTOLaI84QtX2VgUY7iWSIpjPzgzqepMSd4pE7cqP/mzAE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com; spf=pass smtp.mailfrom=raspberrypi.com; dkim=pass (2048-bit key) header.d=raspberrypi.com header.i=@raspberrypi.com header.b=cwE2LFFu; arc=none smtp.client-ip=209.85.128.174
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=raspberrypi.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=raspberrypi.com
-Received: by mail-yw1-f174.google.com with SMTP id 00721157ae682-610e272028aso6350637b3.0
-        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 08:33:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=raspberrypi.com; s=google; t=1710862399; x=1711467199; darn=vger.kernel.org;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:from:to:cc:subject:date:message-id:reply-to;
-        bh=/qkT1BSLXtm7Ui9psZT6c58sokU5nKf8DvB6owS3uMM=;
-        b=cwE2LFFuXNvZ5QL1hq1A7VcvwJ6/wX37CkQYjqd6rL9hsbDattRnkHPNbS9P9KY5AL
-         UGxR+fm9vUyOIPTL6JfF2qbVSlwfd04o6PxyJ/v+Lq3fAsoYTT1wfknk5u1YjCvoZDYE
-         2IJxeTgPuFAQ+VGN9qxurhPltLAVTqgP2K7Mo11qh/BcDIgBdVaINqk/T/3rXOB3YDyf
-         suhvJf2h+WoCoDoTMa4JB689lkgUYbypG3Hq3K8yGjf/H8yEkWTFhBZflVWdN6FZHrJ9
-         EvFh7x7o/fPp2Jz+ze+ck3rTjNnXjvioOPIPn6QVHbyCevYSAaB84S59knj8harDSF7V
-         bEDg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710862399; x=1711467199;
-        h=cc:to:subject:message-id:date:from:in-reply-to:references
-         :mime-version:x-gm-message-state:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=/qkT1BSLXtm7Ui9psZT6c58sokU5nKf8DvB6owS3uMM=;
-        b=r3ngqEnsu6McsRtOWDOhKQAa1OKMlq4lP5V2lQH8fqqX5mBgu1hNh1Ha/NFiefCtxO
-         JP4CfiFjLsNvGpw4GAUxGUzgJapdoJ9PqYXgPZig0qZJmJT1KO93ecTQTY8MnwtlTMAl
-         laCno+QiQXS0ukgDoaaQiLK2STGx7RO//Hi7xCxgUBcBr1cFyAkdRP4KcS6S/JF9rBEf
-         XBFYNa7PBbxCCuG+OL7twGKba9S3SAyVqFG4ymydQlvZg6n0WKcADJijjB0+KM/ssfPU
-         kmGE90STEpd8MvIABvI1QRkCAVp3NvRpYe+518Ik3QidLIuWK4abQ/56rBC/ILdvYTXj
-         46Ow==
-X-Forwarded-Encrypted: i=1; AJvYcCVIGb5TlFLzdckH1pVTuWrM8h9zeZfgDAzXnBhK0+eKPRW26esULq05G6UHLLqr+fNYr90dtOJpRGAOF6u5eCBLHY7HqXSkh2h2UCWa
-X-Gm-Message-State: AOJu0YzaD3tojywsWXXzA3W+xgdJLmVoq9zax+vgw8vNT2bgbkfHesf0
-	Ch+dEiC/lSR13ZphVvIddCND+itVVeRKt/M6RSgaXyFmRoe2Dhlxb4hETy+kaPX9sJwieXS+Y8Q
-	gRKQIx/Hx3dFf7zcw/DVEOYSKJYKUqC75GU4+KQ==
-X-Google-Smtp-Source: AGHT+IGdsKwjo27jf/mVHnJeZ38jf8S7PnKqAA6w6OF0EEszHnFiWyU5Y8GmCdeA8p3QsQboCoxoqiYTvaDFu7apWRU=
-X-Received: by 2002:a25:848c:0:b0:dcf:9aeb:73af with SMTP id
- v12-20020a25848c000000b00dcf9aeb73afmr1701785ybk.2.1710862399689; Tue, 19 Mar
- 2024 08:33:19 -0700 (PDT)
+	s=arc-20240116; t=1710862469; c=relaxed/simple;
+	bh=2zIx223pHdeo5JZhKCcDLIzNBieISMOnQ0KJcW4Y2rw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DBEjF9vDWL3MyY1oPbrcBodxLCqxxZig9xppGf4FmbGGnBaIRDEK5nkRXYK1BCsJHbOSulkEkMOdVaww5DaMn1JdabQsPuyNVQ5AI8Drbj5DsmBDfVQxnTRFOK3Xb9/krgAaMAneE3Mw+XBX270FEXnZcJs3Bo6197D9ZrQbn2A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com; spf=pass smtp.mailfrom=arm.com; arc=none smtp.client-ip=217.140.110.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=arm.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=arm.com
+Received: from usa-sjc-imap-foss1.foss.arm.com (unknown [10.121.207.14])
+	by usa-sjc-mx-foss1.foss.arm.com (Postfix) with ESMTP id B6B45106F;
+	Tue, 19 Mar 2024 08:35:00 -0700 (PDT)
+Received: from [192.168.178.6] (unknown [172.31.20.19])
+	by usa-sjc-imap-foss1.foss.arm.com (Postfix) with ESMTPSA id 5C1723F762;
+	Tue, 19 Mar 2024 08:34:22 -0700 (PDT)
+Message-ID: <37be0494-7e38-4275-b6eb-62a2eb2f6d46@arm.com>
+Date: Tue, 19 Mar 2024 16:34:16 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240318-rp1-cfe-v1-0-ac6d960ff22d@ideasonboard.com>
- <20240318-rp1-cfe-v1-2-ac6d960ff22d@ideasonboard.com> <eb854c43-1e92-4c19-bfd3-1bde94924319@linaro.org>
- <f97faeb9-8a6b-47c6-9317-daca88257802@ideasonboard.com> <30430e0e-70de-4831-97ad-974e350a2e54@ideasonboard.com>
- <5ca1d005-1beb-47ec-943a-9358ae3c6704@linaro.org> <CAEmqJPp7uGYe993L+ujth2mfRy66s8-S9FNxPY7vwkrboDq9yg@mail.gmail.com>
- <89d459dd-cc8c-4780-a56a-809e24343e69@linaro.org> <CAEmqJPrLP3j37Kcj0mX23x00p=gWuxZPNSUTRGNkcEqsUJ2MjQ@mail.gmail.com>
- <9d238cd6-0e11-4775-bc00-7df50f0a6638@linaro.org> <CAEmqJPoVFRUBRnuvRaeWg6vxDaNMzdFzgj2_Gi5bxh5nacdmDw@mail.gmail.com>
- <0401eb0f-0172-4371-9a16-f51b6b885b55@ideasonboard.com>
-In-Reply-To: <0401eb0f-0172-4371-9a16-f51b6b885b55@ideasonboard.com>
-From: Naushir Patuck <naush@raspberrypi.com>
-Date: Tue, 19 Mar 2024 15:32:43 +0000
-Message-ID: <CAEmqJPohq1Y11uwBWdGGX3B1vPLEK9_A7OQC=-k+bHcdk3n=mQ@mail.gmail.com>
-Subject: Re: [PATCH 2/4] dt-bindings: media: Add bindings for raspberrypi,rp1-cfe
-To: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>, linux-media@vger.kernel.org, 
-	linux-kernel@vger.kernel.org, devicetree@vger.kernel.org, 
-	linux-rpi-kernel@lists.infradead.org, linux-arm-kernel@lists.infradead.org, 
-	Laurent Pinchart <laurent.pinchart@ideasonboard.com>, 
-	Sakari Ailus <sakari.ailus@linux.intel.com>, Jacopo Mondi <jacopo.mondi@ideasonboard.com>, 
-	Kieran Bingham <kieran.bingham@ideasonboard.com>, 
-	Mauro Carvalho Chehab <mchehab@kernel.org>, 
-	Raspberry Pi Kernel Maintenance <kernel-list@raspberrypi.com>, Rob Herring <robh+dt@kernel.org>, 
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Conor Dooley <conor+dt@kernel.org>, 
-	Florian Fainelli <florian.fainelli@broadcom.com>, 
-	Broadcom internal kernel review list <bcm-kernel-feedback-list@broadcom.com>
-Content-Type: text/plain; charset="UTF-8"
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC PATCH v2 1/7] Revert "sched/uclamp: Set max_spare_cap_cpu
+ even if max_spare_cap is 0"
+Content-Language: en-US
+To: Hongyan Xia <hongyan.xia2@arm.com>, Ingo Molnar <mingo@redhat.com>,
+ Peter Zijlstra <peterz@infradead.org>,
+ Vincent Guittot <vincent.guittot@linaro.org>,
+ Juri Lelli <juri.lelli@redhat.com>, Steven Rostedt <rostedt@goodmis.org>,
+ Ben Segall <bsegall@google.com>, Mel Gorman <mgorman@suse.de>,
+ Daniel Bristot de Oliveira <bristot@redhat.com>,
+ Valentin Schneider <vschneid@redhat.com>
+Cc: Qais Yousef <qyousef@layalina.io>,
+ Morten Rasmussen <morten.rasmussen@arm.com>,
+ Lukasz Luba <lukasz.luba@arm.com>,
+ Christian Loehle <christian.loehle@arm.com>, linux-kernel@vger.kernel.org,
+ David Dai <davidai@google.com>, Saravana Kannan <saravanak@google.com>
+References: <cover.1706792708.git.hongyan.xia2@arm.com>
+ <b29e7df921ce07c2c2dbbde390e234d162756c42.1706792708.git.hongyan.xia2@arm.com>
+From: Dietmar Eggemann <dietmar.eggemann@arm.com>
+In-Reply-To: <b29e7df921ce07c2c2dbbde390e234d162756c42.1706792708.git.hongyan.xia2@arm.com>
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 7bit
 
-On Tue, 19 Mar 2024 at 14:03, Tomi Valkeinen
-<tomi.valkeinen@ideasonboard.com> wrote:
->
-> On 19/03/2024 15:05, Naushir Patuck wrote:
-> > On Tue, 19 Mar 2024 at 13:02, Krzysztof Kozlowski
-> > <krzysztof.kozlowski@linaro.org> wrote:
-> >>
-> >> On 19/03/2024 13:57, Naushir Patuck wrote:
-> >>>>>>
-> >>>>>> See writing bindings. Compatibles should be SoC specific. In some cases
-> >>>>>> generic fallbacks make sense, in some note. But don't just choose
-> >>>>>> "generic fallback" because you want. Provide rationale.
-> >>>>>
-> >>>>> If the compatible is SoC specific, I suppose "raspberrypi,rp1-cfe"
-> >>>>> would be the correct string.
-> >>>>
-> >>>> Sure, but then please think what if rp1 is on Rpi6, called exactly the
-> >>>> same (rp1), with some minor differences? Could it be?
-> >>>
-> >>> Yes, this is definitely possible.  In such cases, I would expect the
-> >>> hardware to have a version register that would be queried by the
-> >>> driver to adjust for minor differences, and the compatible string
-> >>> remains the same.  Does that seem reasonable?
-> >>
-> >> The "would expect" is concerning. The register(s) must be there already,
-> >> with proper value.
-> >>
-> >
-> > A version register already exists in the current hardware, so we will
-> > update it to identify future hardware revisions.
->
-> But that's a version register for the FE block, not for the whole
-> module, right? Are you suggesting that you'll make sure the FE version
-> will be changed every time anything in the bigger CFE block is changed,
-> and thus the FE version would also reflect the whole CFE version?
+On 01/02/2024 14:11, Hongyan Xia wrote:
+> From: Hongyan Xia <Hongyan.Xia2@arm.com>
+> 
+> That commit creates further problems because 0 spare capacity can be
+> either a real indication that the CPU is maxed out, or the CPU is
+> UCLAMP_MAX throttled, but we end up giving all of them a chance which
+> can results in bogus energy calculations. It also tends to schedule
+> tasks on the same CPU and requires load balancing patches. Sum
+> aggregation solves these problems and this patch is not needed.
+> 
+> This reverts commit 6b00a40147653c8ea748e8f4396510f252763364.
 
-Yes, we will update the FE versioning when either CSI2 / FE blocks are updated.
+I assume you did this revert especially for the 'Scenario 5: 8 tasks
+with UCLAMP_MAX of 120' testcase?
 
->
-> Can there be versions without the FE block, with just the CSI-2 parts?
+IMHO, the issue is especially visible in compute_energy()'s busy_time
+computation with a valid destination CPU (dst_cpu >= 0). I.e. when we
+have to add performance domain (pd) and task busy time.
 
-There is no version register just in the CSI2 block in isolation, so
-this is not possible.
+find_energy_efficient_cpu() (feec())
 
->
-> Also, I'm still wondering about the RP1 part there in the compatible
-> string. Is it necessary? The CFE is located in the RP1 co-processor, but
-> is that relevant?
->
-> Is there a versioning for the whole RP1 chip? Maybe it's going to the
-> wrong direction if we use the board/SoC for this compatible name, as
-> it's actually the RP1 where the CFE is located in, not the SoC.
->
+ for each pd
+  for each cpu in pd
 
-I don't really know the conversion required to answer this one.
-Logically CFE is on RP1, so it makes sense to me to have "rp1" in the
-string, but I will follow the judgment of the maintainers.
+   set {prev_,max}_spare_cap
 
-Regards,
-Naush
+ bail if prev_ and max_spare_cap < 0 (was == 0 before )
+
+ {base_,prev_,cur_}energy = compute_energy
+
+So with the patch we potentially compute energy for a saturated PD
+according:
+
+ compute_energy()
+
+  if (dst_cpu >= 0)
+   busy_time = min(eenv->pd_cap, eenv->busy_time + eenv->task_busy_time)
+                   <----(a)--->  <--------------(b)------------------->
+
+  energy = em_cpu_energy(pd->em_pd, max_util, busy_time, eenv->cpu_cap)
+
+If (b) > (a) then we're saturated and 'energy' is bogus.
+
+The way to fix this is up for discussion:
+
+(1) feec() returning prev_cpu
+(2) feec() returning -1 (forcing wakeup into sis() -> sic())
+(3) using uclamped values for task and rq utilization
+
+None of those have immediately given the desired task placement on
+mainline (2 tasks on each of the 4 little CPUs and no task on the 2 big
+CPUs on my [l B B l l l] w/ CPU capacities = [446 1024 1024 446 446 446]
+machine) you can achieve with uclamp sum aggregation.
+
+[...]
 
