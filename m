@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-107032-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D86C487F6E6
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:52:52 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id 057CB87F6E7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:53:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 890CA281788
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:52:51 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 7C7411F224BA
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:53:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D02337E0E5;
-	Tue, 19 Mar 2024 05:51:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 464B54CDEB;
+	Tue, 19 Mar 2024 05:51:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="bhtlHHFr"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="JE+qAQRk"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8FD7A7D083;
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 21F397D3E8;
 	Tue, 19 Mar 2024 05:51:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710827481; cv=none; b=d3fhtoS1+KDImLG2GN5RRRpY1dl6INH8NP36x6TIYiZVnkhvFhTfzmjfz5+ULEmDEgSyjHw913DeWie9H6pMrXNU/ZhSUe88PwSNAWX5mbfjQHYO30xa7E+MeszxcfnmVerIneDls56U5QfrZb39dv6FSU2g0hnNo9Gf4XD31D0=
+	t=1710827482; cv=none; b=ron7YJNsd7ZWknpq77UjI/IXbFEvPTWLRr/vzBUsDVN08mrUmnFRvjDSpHhMujY7N+e2fX5M5Dp/+nJervCHOp8e8obzEiagOlGc7l79vwlAxp6dTyBJ1L+s3jgNPdLRwwiRm2t3ngsnjyddozsf7/XpBFBMNB2Tr6AVziBHDpY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710827481; c=relaxed/simple;
-	bh=UX9mTUvbk7qwxvPah6fBFKMdKSmHpzJRI47a0N/qiEY=;
+	s=arc-20240116; t=1710827482; c=relaxed/simple;
+	bh=beUl6blEtLFpiy/dZzX6/DRoESkELbLAoD5QdQPI8fs=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=LEjVfzlAsO9IbMRqd2oFeZvOhjB4klFvP4w9upJLu4lowtiq6OfJMtqSqym8nCi2WQM+t/8zThKatKt84/XL5/tUwI3WwnfXkhoLekcZxGMT+KCY1CSbFBlEpebAf2QKnGaXIgcYzRx4dKMoCau8XaPeeaSjPyNOAqaUAqIzggU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=bhtlHHFr; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 9FE7EC43330;
-	Tue, 19 Mar 2024 05:51:20 +0000 (UTC)
+	 MIME-Version; b=Vkf0ZQhVguYysFwcq5Ee7evJVtDTyG0Zvilb58Q6BcjJQM6Len0PvG8YO96m3FDZwKh3H1rUBLReYstL/7wp5p9TXv4BOpTd8+yyvZzcnQ9RcKyqZddzpZMLoWRYhfkFiy84AH+UiShxVhjovB0aqtym3FVJyuExON9tptd/Buw=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=JE+qAQRk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 43926C433C7;
+	Tue, 19 Mar 2024 05:51:21 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
 	s=k20201202; t=1710827481;
-	bh=UX9mTUvbk7qwxvPah6fBFKMdKSmHpzJRI47a0N/qiEY=;
+	bh=beUl6blEtLFpiy/dZzX6/DRoESkELbLAoD5QdQPI8fs=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=bhtlHHFr1qOHAZRR7PsjBrdIUKeriX+xUVwAJKWC1SyNkAE7rQ10YXvMTGx2zTPxk
-	 Xug31p9k8w7EZj3a6bgLW8ytzmxNK43/aFhptbvMkN0wMAWTSwOuvgiU9BA5xFjE7F
-	 SBJH+SEf2D0lrlNcctZR3iH7c+23M/MGF5o22xWfxdGUPKyS25p/dBASja5BcgcaDS
-	 5yhv+TOLRMDqqyKEUnQ8mW71vqTH/EuFjp8rzHvYd8K8mpON7rXm+Q3a/i4bVrtZVy
-	 spvQ6Z04Zad49mwcBOs2RHLS7MvnxhFM7Bx14oJ9+4TULDrcPI2KSqzO94P5MWh3nu
-	 wbHCDoy5SGDhQ==
+	b=JE+qAQRk1t6zUqCpj9UupatFfd0/m40ZqYWI9u1EiGQT8BqQuKCYAJAtv8U5/WTSR
+	 hOLrlFq21tTQ3JnBdChH4PxNkJM4Fozxu/C+DzW1AbhiAqXROIHMI8ZEywMvboRO1N
+	 /encjUbnP7BM6yxjmnUdTOxyGxRkle0i0hUtfXeoLwYzqV3i4U/rC6/ZU1nd9R0S7I
+	 MUnjgPZrRaWufy791pbZVYAXExTvLLKsfic/SX5gKjZK2HArXZoofjyuCzMy49goB8
+	 +vs3yBPd4arX8dEzuffI73/QhcK9Wfq/ZaDbVPLvcJkZV2TKSZufC2gkhzwvzBGblf
+	 JWIJ8FzdgS9aQ==
 From: Namhyung Kim <namhyung@kernel.org>
 To: Arnaldo Carvalho de Melo <acme@kernel.org>,
 	Ian Rogers <irogers@google.com>
@@ -54,9 +54,9 @@ Cc: Jiri Olsa <jolsa@kernel.org>,
 	Masami Hiramatsu <mhiramat@kernel.org>,
 	linux-toolchains@vger.kernel.org,
 	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 06/23] perf annotate-data: Introduce struct data_loc_info
-Date: Mon, 18 Mar 2024 22:50:58 -0700
-Message-ID: <20240319055115.4063940-7-namhyung@kernel.org>
+Subject: [PATCH 07/23] perf annotate: Add annotate_get_basic_blocks()
+Date: Mon, 18 Mar 2024 22:50:59 -0700
+Message-ID: <20240319055115.4063940-8-namhyung@kernel.org>
 X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
 In-Reply-To: <20240319055115.4063940-1-namhyung@kernel.org>
 References: <20240319055115.4063940-1-namhyung@kernel.org>
@@ -68,337 +68,298 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-The find_data_type() needs many information to describe the location of
-the data.  Add the new struct data_loc_info to pass those information at
-once.
+The annotate_get_basic_blocks() is to find a list of basic blocks from
+the source instruction to the destination instruction in a function.
 
-No functional changes intended.
+It'll be used to find variables in a scope.  Use BFS (Breadth First
+Search) to find a shortest path to carry the variable/register state
+minimally.
+
+Also change find_disasm_line() to be used in annotate_get_basic_blocks()
+and add 'allow_update' argument to control if it can update the IP.
 
 Signed-off-by: Namhyung Kim <namhyung@kernel.org>
 ---
- tools/perf/util/annotate-data.c | 83 +++++++++++++++++----------------
- tools/perf/util/annotate-data.h | 38 ++++++++++++---
- tools/perf/util/annotate.c      | 30 ++++++------
- 3 files changed, 91 insertions(+), 60 deletions(-)
+ tools/perf/util/annotate.c | 222 ++++++++++++++++++++++++++++++++++++-
+ tools/perf/util/annotate.h |  16 +++
+ 2 files changed, 235 insertions(+), 3 deletions(-)
 
-diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index 59ce5f4f4a40..ff81d164aa57 100644
---- a/tools/perf/util/annotate-data.c
-+++ b/tools/perf/util/annotate-data.c
-@@ -239,21 +239,28 @@ static int check_variable(Dwarf_Die *var_die, Dwarf_Die *type_die, int offset,
- }
- 
- /* The result will be saved in @type_die */
--static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
--			      const char *var_name, struct annotated_op_loc *loc,
--			      Dwarf_Die *type_die)
-+static int find_data_type_die(struct data_loc_info *dloc, Dwarf_Die *type_die)
- {
-+	struct annotated_op_loc *loc = dloc->op;
- 	Dwarf_Die cu_die, var_die;
- 	Dwarf_Die *scopes = NULL;
- 	int reg, offset;
- 	int ret = -1;
- 	int i, nr_scopes;
- 	int fbreg = -1;
--	bool is_fbreg = false;
- 	int fb_offset = 0;
-+	bool is_fbreg = false;
-+	u64 pc;
-+
-+	/*
-+	 * IP is a relative instruction address from the start of the map, as
-+	 * it can be randomized/relocated, it needs to translate to PC which is
-+	 * a file address for DWARF processing.
-+	 */
-+	pc = map__rip_2objdump(dloc->ms->map, dloc->ip);
- 
- 	/* Get a compile_unit for this address */
--	if (!find_cu_die(di, pc, &cu_die)) {
-+	if (!find_cu_die(dloc->di, pc, &cu_die)) {
- 		pr_debug("cannot find CU for address %" PRIx64 "\n", pc);
- 		ann_data_stat.no_cuinfo++;
- 		return -1;
-@@ -263,18 +270,19 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
- 	offset = loc->offset;
- 
- 	if (reg == DWARF_REG_PC) {
--		if (die_find_variable_by_addr(&cu_die, addr, &var_die, &offset)) {
-+		if (die_find_variable_by_addr(&cu_die, dloc->var_addr, &var_die,
-+					      &offset)) {
- 			ret = check_variable(&var_die, type_die, offset,
- 					     /*is_pointer=*/false);
--			loc->offset = offset;
-+			dloc->type_offset = offset;
- 			goto out;
- 		}
- 
--		if (var_name && die_find_variable_at(&cu_die, var_name, pc,
--						     &var_die)) {
--			ret = check_variable(&var_die, type_die, 0,
-+		if (dloc->var_name &&
-+		    die_find_variable_at(&cu_die, dloc->var_name, pc, &var_die)) {
-+			ret = check_variable(&var_die, type_die, dloc->type_offset,
- 					     /*is_pointer=*/false);
--			/* loc->offset will be updated by the caller */
-+			/* dloc->type_offset was updated by the caller */
- 			goto out;
- 		}
- 	}
-@@ -291,10 +299,11 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
- 		    dwarf_formblock(&attr, &block) == 0 && block.length == 1) {
- 			switch (*block.data) {
- 			case DW_OP_reg0 ... DW_OP_reg31:
--				fbreg = *block.data - DW_OP_reg0;
-+				fbreg = dloc->fbreg = *block.data - DW_OP_reg0;
- 				break;
- 			case DW_OP_call_frame_cfa:
--				if (die_get_cfa(di->dbg, pc, &fbreg,
-+				dloc->fb_cfa = true;
-+				if (die_get_cfa(dloc->di->dbg, pc, &fbreg,
- 						&fb_offset) < 0)
- 					fbreg = -1;
- 				break;
-@@ -312,7 +321,7 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
- 	/* Search from the inner-most scope to the outer */
- 	for (i = nr_scopes - 1; i >= 0; i--) {
- 		if (reg == DWARF_REG_PC) {
--			if (!die_find_variable_by_addr(&scopes[i], addr,
-+			if (!die_find_variable_by_addr(&scopes[i], dloc->var_addr,
- 						       &var_die, &offset))
- 				continue;
- 		} else {
-@@ -325,7 +334,7 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
- 		/* Found a variable, see if it's correct */
- 		ret = check_variable(&var_die, type_die, offset,
- 				     reg != DWARF_REG_PC && !is_fbreg);
--		loc->offset = offset;
-+		dloc->type_offset = offset;
- 		goto out;
- 	}
- 
-@@ -344,50 +353,46 @@ static int find_data_type_die(struct debuginfo *di, u64 pc, u64 addr,
- 
- /**
-  * find_data_type - Return a data type at the location
-- * @ms: map and symbol at the location
-- * @ip: instruction address of the memory access
-- * @loc: instruction operand location
-- * @addr: data address of the memory access
-- * @var_name: global variable name
-+ * @dloc: data location
-  *
-  * This functions searches the debug information of the binary to get the data
-- * type it accesses.  The exact location is expressed by (@ip, reg, offset)
-- * for pointer variables or (@ip, @addr) for global variables.  Note that global
-- * variables might update the @loc->offset after finding the start of the variable.
-- * If it cannot find a global variable by address, it tried to fine a declaration
-- * of the variable using @var_name.  In that case, @loc->offset won't be updated.
-+ * type it accesses.  The exact location is expressed by (ip, reg, offset)
-+ * for pointer variables or (ip, addr) for global variables.  Note that global
-+ * variables might update the @dloc->type_offset after finding the start of the
-+ * variable.  If it cannot find a global variable by address, it tried to find
-+ * a declaration of the variable using var_name.  In that case, @dloc->offset
-+ * won't be updated.
-  *
-  * It return %NULL if not found.
-  */
--struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
--					   struct annotated_op_loc *loc, u64 addr,
--					   const char *var_name)
-+struct annotated_data_type *find_data_type(struct data_loc_info *dloc)
- {
- 	struct annotated_data_type *result = NULL;
--	struct dso *dso = map__dso(ms->map);
--	struct debuginfo *di;
-+	struct dso *dso = map__dso(dloc->ms->map);
- 	Dwarf_Die type_die;
--	u64 pc;
- 
--	di = debuginfo__new(dso->long_name);
--	if (di == NULL) {
-+	dloc->di = debuginfo__new(dso->long_name);
-+	if (dloc->di == NULL) {
- 		pr_debug("cannot get the debug info\n");
- 		return NULL;
- 	}
- 
- 	/*
--	 * IP is a relative instruction address from the start of the map, as
--	 * it can be randomized/relocated, it needs to translate to PC which is
--	 * a file address for DWARF processing.
-+	 * The type offset is the same as instruction offset by default.
-+	 * But when finding a global variable, the offset won't be valid.
- 	 */
--	pc = map__rip_2objdump(ms->map, ip);
--	if (find_data_type_die(di, pc, addr, var_name, loc, &type_die) < 0)
-+	if (dloc->var_name == NULL)
-+		dloc->type_offset = dloc->op->offset;
-+
-+	dloc->fbreg = -1;
-+
-+	if (find_data_type_die(dloc, &type_die) < 0)
- 		goto out;
- 
- 	result = dso__findnew_data_type(dso, &type_die);
- 
- out:
--	debuginfo__delete(di);
-+	debuginfo__delete(dloc->di);
- 	return result;
- }
- 
-diff --git a/tools/perf/util/annotate-data.h b/tools/perf/util/annotate-data.h
-index 1b0db8e8c40e..ad6493ea2c8e 100644
---- a/tools/perf/util/annotate-data.h
-+++ b/tools/perf/util/annotate-data.h
-@@ -8,6 +8,7 @@
- #include <linux/types.h>
- 
- struct annotated_op_loc;
-+struct debuginfo;
- struct evsel;
- struct map_symbol;
- 
-@@ -72,6 +73,35 @@ struct annotated_data_type {
- extern struct annotated_data_type unknown_type;
- extern struct annotated_data_type stackop_type;
- 
-+/**
-+ * struct data_loc_info - Data location information
-+ * @ms: Map and Symbol info
-+ * @ip: Instruction address
-+ * @var_addr: Data address (for global variables)
-+ * @var_name: Variable name (for global variables)
-+ * @op: Instruction operand location (regs and offset)
-+ * @di: Debug info
-+ * @fbreg: Frame base register
-+ * @fb_cfa: Whether the frame needs to check CFA
-+ * @type_offset: Final offset in the type
-+ */
-+struct data_loc_info {
-+	/* These are input field, should be filled by caller */
-+	struct map_symbol *ms;
-+	u64 ip;
-+	u64 var_addr;
-+	const char *var_name;
-+	struct annotated_op_loc *op;
-+
-+	/* These are used internally */
-+	struct debuginfo *di;
-+	int fbreg;
-+	bool fb_cfa;
-+
-+	/* This is for the result */
-+	int type_offset;
-+};
-+
- /**
-  * struct annotated_data_stat - Debug statistics
-  * @total: Total number of entry
-@@ -106,9 +136,7 @@ extern struct annotated_data_stat ann_data_stat;
- #ifdef HAVE_DWARF_SUPPORT
- 
- /* Returns data type at the location (ip, reg, offset) */
--struct annotated_data_type *find_data_type(struct map_symbol *ms, u64 ip,
--					   struct annotated_op_loc *loc, u64 addr,
--					   const char *var_name);
-+struct annotated_data_type *find_data_type(struct data_loc_info *dloc);
- 
- /* Update type access histogram at the given offset */
- int annotated_data_type__update_samples(struct annotated_data_type *adt,
-@@ -121,9 +149,7 @@ void annotated_data_type__tree_delete(struct rb_root *root);
- #else /* HAVE_DWARF_SUPPORT */
- 
- static inline struct annotated_data_type *
--find_data_type(struct map_symbol *ms __maybe_unused, u64 ip __maybe_unused,
--	       struct annotated_op_loc *loc __maybe_unused,
--	       u64 addr __maybe_unused, const char *var_name __maybe_unused)
-+find_data_type(struct data_loc_info *dloc __maybe_unused)
- {
- 	return NULL;
- }
 diff --git a/tools/perf/util/annotate.c b/tools/perf/util/annotate.c
-index ac002d907d81..a15ff6758210 100644
+index a15ff6758210..aa005c13ff67 100644
 --- a/tools/perf/util/annotate.c
 +++ b/tools/perf/util/annotate.c
-@@ -3816,9 +3816,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
- 	struct annotated_op_loc *op_loc;
- 	struct annotated_data_type *mem_type;
- 	struct annotated_item_stat *istat;
--	u64 ip = he->ip, addr = 0;
--	const char *var_name = NULL;
--	int var_offset;
-+	u64 ip = he->ip;
- 	int i;
- 
- 	ann_data_stat.total++;
-@@ -3871,51 +3869,53 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+@@ -3714,7 +3714,8 @@ static void symbol__ensure_annotate(struct map_symbol *ms, struct evsel *evsel)
  	}
+ }
  
- 	for_each_insn_op_loc(&loc, i, op_loc) {
-+		struct data_loc_info dloc = {
-+			.ms = ms,
-+			/* Recalculate IP for LOCK prefix or insn fusion */
-+			.ip = ms->sym->start + dl->al.offset,
-+			.op = op_loc,
-+		};
-+
- 		if (!op_loc->mem_ref)
- 			continue;
- 
- 		/* Recalculate IP because of LOCK prefix or insn fusion */
- 		ip = ms->sym->start + dl->al.offset;
- 
--		var_offset = op_loc->offset;
--
- 		/* PC-relative addressing */
- 		if (op_loc->reg1 == DWARF_REG_PC) {
- 			struct addr_location al;
- 			struct symbol *var;
- 			u64 map_addr;
- 
--			addr = annotate_calc_pcrel(ms, ip, op_loc->offset, dl);
-+			dloc.var_addr = annotate_calc_pcrel(ms, ip, op_loc->offset, dl);
- 			/* Kernel symbols might be relocated */
--			map_addr = addr + map__reloc(ms->map);
-+			map_addr = dloc.var_addr + map__reloc(ms->map);
- 
- 			addr_location__init(&al);
- 			var = thread__find_symbol_fb(he->thread, he->cpumode,
- 						     map_addr, &al);
- 			if (var) {
--				var_name = var->name;
-+				dloc.var_name = var->name;
- 				/* Calculate type offset from the start of variable */
--				var_offset = map_addr - map__unmap_ip(al.map, var->start);
-+				dloc.type_offset = map_addr - map__unmap_ip(al.map, var->start);
+-static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip)
++static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip,
++					    bool allow_update)
+ {
+ 	struct disasm_line *dl;
+ 	struct annotation *notes;
+@@ -3727,7 +3728,8 @@ static struct disasm_line *find_disasm_line(struct symbol *sym, u64 ip)
+ 			 * llvm-objdump places "lock" in a separate line and
+ 			 * in that case, we want to get the next line.
+ 			 */
+-			if (!strcmp(dl->ins.name, "lock") && *dl->ops.raw == '\0') {
++			if (!strcmp(dl->ins.name, "lock") &&
++			    *dl->ops.raw == '\0' && allow_update) {
+ 				ip++;
+ 				continue;
  			}
- 			addr_location__exit(&al);
- 		}
+@@ -3843,7 +3845,7 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 	 * Get a disasm to extract the location from the insn.
+ 	 * This is too slow...
+ 	 */
+-	dl = find_disasm_line(ms->sym, ip);
++	dl = find_disasm_line(ms->sym, ip, /*allow_update=*/true);
+ 	if (dl == NULL) {
+ 		ann_data_stat.no_insn++;
+ 		return NULL;
+@@ -3937,3 +3939,217 @@ struct annotated_data_type *hist_entry__get_data_type(struct hist_entry *he)
+ 	istat->bad++;
+ 	return NULL;
+ }
++
++/* Basic block traversal (BFS) data structure */
++struct basic_block_data {
++	struct list_head queue;
++	struct list_head visited;
++};
++
++/*
++ * During the traversal, it needs to know the parent block where the current
++ * block block started from.  Note that single basic block can be parent of
++ * two child basic blocks (in case of condition jump).
++ */
++struct basic_block_link {
++	struct list_head node;
++	struct basic_block_link *parent;
++	struct annotated_basic_block *bb;
++};
++
++/* Check any of basic block in the list already has the offset */
++static bool basic_block_has_offset(struct list_head *head, s64 offset)
++{
++	struct basic_block_link *link;
++
++	list_for_each_entry(link, head, node) {
++		s64 begin_offset = link->bb->begin->al.offset;
++		s64 end_offset = link->bb->end->al.offset;
++
++		if (begin_offset <= offset && offset <= end_offset)
++			return true;
++	}
++	return false;
++}
++
++static bool is_new_basic_block(struct basic_block_data *bb_data,
++			       struct disasm_line *dl)
++{
++	s64 offset = dl->al.offset;
++
++	if (basic_block_has_offset(&bb_data->visited, offset))
++		return false;
++	if (basic_block_has_offset(&bb_data->queue, offset))
++		return false;
++	return true;
++}
++
++/* Add a basic block starting from dl and link it to the parent */
++static int add_basic_block(struct basic_block_data *bb_data,
++			   struct basic_block_link *parent,
++			   struct disasm_line *dl)
++{
++	struct annotated_basic_block *bb;
++	struct basic_block_link *link;
++
++	if (dl == NULL)
++		return -1;
++
++	if (!is_new_basic_block(bb_data, dl))
++		return 0;
++
++	bb = zalloc(sizeof(*bb));
++	if (bb == NULL)
++		return -1;
++
++	bb->begin = dl;
++	bb->end = dl;
++	INIT_LIST_HEAD(&bb->list);
++
++	link = malloc(sizeof(*link));
++	if (link == NULL) {
++		free(bb);
++		return -1;
++	}
++
++	link->bb = bb;
++	link->parent = parent;
++	list_add_tail(&link->node, &bb_data->queue);
++	return 0;
++}
++
++/* Returns true when it finds the target in the current basic block */
++static bool process_basic_block(struct basic_block_data *bb_data,
++				struct basic_block_link *link,
++				struct symbol *sym, u64 target)
++{
++	struct disasm_line *dl, *next_dl, *last_dl;
++	struct annotation *notes = symbol__annotation(sym);
++	bool found = false;
++
++	dl = link->bb->begin;
++	/* Check if it's already visited */
++	if (basic_block_has_offset(&bb_data->visited, dl->al.offset))
++		return false;
++
++	last_dl = list_last_entry(&notes->src->source,
++				  struct disasm_line, al.node);
++
++	list_for_each_entry_from(dl, &notes->src->source, al.node) {
++		/* Found the target instruction */
++		if (sym->start + dl->al.offset == target) {
++			found = true;
++			break;
++		}
++		/* End of the function, finish the block */
++		if (dl == last_dl)
++			break;
++		/* 'return' instruction finishes the block */
++		if (dl->ins.ops == &ret_ops)
++			break;
++		/* normal instructions are part of the basic block */
++		if (dl->ins.ops != &jump_ops)
++			continue;
++		/* jump to a different function, tail call or return */
++		if (dl->ops.target.outside)
++			break;
++		/* jump instruction creates new basic block(s) */
++		next_dl = find_disasm_line(sym, sym->start + dl->ops.target.offset,
++					   /*allow_update=*/false);
++		add_basic_block(bb_data, link, next_dl);
++
++		/*
++		 * FIXME: determine conditional jumps properly.
++		 * Conditional jumps create another basic block with the
++		 * next disasm line.
++		 */
++		if (!strstr(dl->ins.name, "jmp")) {
++			next_dl = list_next_entry(dl, al.node);
++			add_basic_block(bb_data, link, next_dl);
++		}
++		break;
++
++	}
++	link->bb->end = dl;
++	return found;
++}
++
++/*
++ * It founds a target basic block, build a proper linked list of basic blocks
++ * by following the link recursively.
++ */
++static void link_found_basic_blocks(struct basic_block_link *link,
++				    struct list_head *head)
++{
++	while (link) {
++		struct basic_block_link *parent = link->parent;
++
++		list_move(&link->bb->list, head);
++		list_del(&link->node);
++		free(link);
++
++		link = parent;
++	}
++}
++
++static void delete_basic_blocks(struct basic_block_data *bb_data)
++{
++	struct basic_block_link *link, *tmp;
++
++	list_for_each_entry_safe(link, tmp, &bb_data->queue, node) {
++		list_del(&link->node);
++		free(link->bb);
++		free(link);
++	}
++
++	list_for_each_entry_safe(link, tmp, &bb_data->visited, node) {
++		list_del(&link->node);
++		free(link->bb);
++		free(link);
++	}
++}
++
++/**
++ * annotate_get_basic_blocks - Get basic blocks for given address range
++ * @sym: symbol to annotate
++ * @src: source address
++ * @dst: destination address
++ * @head: list head to save basic blocks
++ *
++ * This function traverses disasm_lines from @src to @dst and save them in a
++ * list of annotated_basic_block to @head.  It uses BFS to find the shortest
++ * path between two.  The basic_block_link is to maintain parent links so
++ * that it can build a list of blocks from the start.
++ */
++int annotate_get_basic_blocks(struct symbol *sym, s64 src, s64 dst,
++			      struct list_head *head)
++{
++	struct basic_block_data bb_data = {
++		.queue = LIST_HEAD_INIT(bb_data.queue),
++		.visited = LIST_HEAD_INIT(bb_data.visited),
++	};
++	struct basic_block_link *link;
++	struct disasm_line *dl;
++	int ret = -1;
++
++	dl = find_disasm_line(sym, src, /*allow_update=*/false);
++	if (dl == NULL)
++		return -1;
++
++	if (add_basic_block(&bb_data, /*parent=*/NULL, dl) < 0)
++		return -1;
++
++	/* Find shortest path from src to dst using BFS */
++	while (!list_empty(&bb_data.queue)) {
++		link = list_first_entry(&bb_data.queue, struct basic_block_link, node);
++
++		if (process_basic_block(&bb_data, link, sym, dst)) {
++			link_found_basic_blocks(link, head);
++			ret = 0;
++			break;
++		}
++		list_move(&link->node, &bb_data.visited);
++	}
++	delete_basic_blocks(&bb_data);
++	return ret;
++}
+diff --git a/tools/perf/util/annotate.h b/tools/perf/util/annotate.h
+index 13cc659e508c..0928663fddee 100644
+--- a/tools/perf/util/annotate.h
++++ b/tools/perf/util/annotate.h
+@@ -561,4 +561,20 @@ extern struct list_head ann_insn_stat;
+ u64 annotate_calc_pcrel(struct map_symbol *ms, u64 ip, int offset,
+ 			struct disasm_line *dl);
  
--		mem_type = find_data_type(ms, ip, op_loc, addr, var_name);
-+		mem_type = find_data_type(&dloc);
- 		if (mem_type)
- 			istat->good++;
- 		else
- 			istat->bad++;
- 
--		if (mem_type && var_name)
--			op_loc->offset = var_offset;
--
- 		if (symbol_conf.annotate_data_sample) {
- 			annotated_data_type__update_samples(mem_type, evsel,
--							    op_loc->offset,
-+							    dloc.type_offset,
- 							    he->stat.nr_events,
- 							    he->stat.period);
- 		}
--		he->mem_type_off = op_loc->offset;
-+		he->mem_type_off = dloc.type_offset;
- 		return mem_type;
- 	}
- 
++/**
++ * struct annotated_basic_block - Basic block of instructions
++ * @list: List node
++ * @begin: start instruction in the block
++ * @end: end instruction in the block
++ */
++struct annotated_basic_block {
++	struct list_head list;
++	struct disasm_line *begin;
++	struct disasm_line *end;
++};
++
++/* Get a list of basic blocks from src to dst addresses */
++int annotate_get_basic_blocks(struct symbol *sym, s64 src, s64 dst,
++			      struct list_head *head);
++
+ #endif	/* __PERF_ANNOTATE_H */
 -- 
 2.44.0.291.gc1ea87d7ee-goog
 
