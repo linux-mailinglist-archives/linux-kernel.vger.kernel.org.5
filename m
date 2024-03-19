@@ -1,65 +1,73 @@
-Return-Path: <linux-kernel+bounces-107044-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107053-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 17D5A87F6F2
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:55:38 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8952F87F6FF
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 06:58:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id C56752824A7
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:55:36 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E53D6282876
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 05:58:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 710C88004B;
-	Tue, 19 Mar 2024 05:51:29 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1B35F7D3EC;
+	Tue, 19 Mar 2024 05:53:50 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="PYZ2Wykl"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b="Te6P2tL3"
+Received: from esa.microchip.iphmx.com (esa.microchip.iphmx.com [68.232.153.233])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A5FB87FBDA;
-	Tue, 19 Mar 2024 05:51:28 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BE3257C6CE;
+	Tue, 19 Mar 2024 05:53:47 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=68.232.153.233
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710827488; cv=none; b=S06hQFiZOLqlYPAoJ/dfqXxEKrnAo2yCGbChRc7sbjiuSST2suJ4tDu0o79noAo97lZcDGvbCdoJqoqZ4NZ45hUp1+igxAFxI+vhTWX4chK6aQk8v0lHWbfkhhjW2XhJhGXtmeN2qxDHHYCZBm0KW8q1Dtj5hohkByRhI/nhOvU=
+	t=1710827629; cv=none; b=q0mFVcFusxFBuTCOugQidZewdmcYncyFfTM+gXhKkxC8ykksVcGmSjYuUhOaPYTwBuU+wOLqH6cDQT6tRNqX+00ooMZucFrhmTX1AQ8xinYXxL4y8sAqMNbFAAUccLt6ywT/8P+5qzayyJKG/ZvworII3G+nRkDe2ugzYXWypM8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710827488; c=relaxed/simple;
-	bh=QJ4b60uS7SiZLvE/zbDFsQPiZ25HBF3r++1i4MMpgTA=;
-	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=tZT+vrU+pPWOKZcIkctBxT+qFH3K5MoZ+hQzk/6y6DeirJzERi7AE2orKfMA6vMBr6gCYQDbGQeV3hrFhFKtmULC2w5h8C7l0j4Lg23jkPA8BGZ+KwnenAS4pHRmrmn51UE6TcxTiOGk5DSETwTOBj8Q2lM1vx19RnxU0jThwDI=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=PYZ2Wykl; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 16DEFC433B1;
-	Tue, 19 Mar 2024 05:51:28 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710827488;
-	bh=QJ4b60uS7SiZLvE/zbDFsQPiZ25HBF3r++1i4MMpgTA=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=PYZ2Wyklr7jGA4Sm0WPc83O20209o9s4aDfl3HgrXKIkf2MviUUypU4oFm0vVvDNo
-	 ROSF97my3G2XcFfXGrpEzSo7e5ZLYsqBjN6bPXVoFoWq5BdpkUL1xqCxuioDJRYLCZ
-	 b4++XkS9k+wo+hxW2pjPuVCj95K2pbZ8k5DgBhcLHpW9FdQtVLl4/kdpWmPqfk25Gt
-	 PTjxRV1VFHtMrJ10kNExh8Pce7Ke/loo+J3rDMWcKAjNtBuTzGOk0Q8mmLUl5KKHxJ
-	 nneWuQo9IPtlV5/eJZ7gkFHKLUKl4AhXthVrptZ/iA/WT3p75T53N1kogNdBdSe3XK
-	 kZQfH7bFL2wtA==
-From: Namhyung Kim <namhyung@kernel.org>
-To: Arnaldo Carvalho de Melo <acme@kernel.org>,
-	Ian Rogers <irogers@google.com>
-Cc: Jiri Olsa <jolsa@kernel.org>,
-	Adrian Hunter <adrian.hunter@intel.com>,
-	Peter Zijlstra <peterz@infradead.org>,
-	Ingo Molnar <mingo@kernel.org>,
-	LKML <linux-kernel@vger.kernel.org>,
-	linux-perf-users@vger.kernel.org,
-	Linus Torvalds <torvalds@linux-foundation.org>,
-	Stephane Eranian <eranian@google.com>,
-	Masami Hiramatsu <mhiramat@kernel.org>,
-	linux-toolchains@vger.kernel.org,
-	linux-trace-devel@vger.kernel.org
-Subject: [PATCH 18/23] perf annotate-data: Track instructions with a this-cpu variable
-Date: Mon, 18 Mar 2024 22:51:10 -0700
-Message-ID: <20240319055115.4063940-19-namhyung@kernel.org>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-In-Reply-To: <20240319055115.4063940-1-namhyung@kernel.org>
-References: <20240319055115.4063940-1-namhyung@kernel.org>
+	s=arc-20240116; t=1710827629; c=relaxed/simple;
+	bh=PsieqNlg0izoRjsoe59ZVNJpX8rC5zYulh4OIjSqqjA=;
+	h=From:To:CC:Subject:Date:Message-ID:In-Reply-To:References:
+	 MIME-Version:Content-Type; b=ocoI1/7a8V0fu0f8OpN0mB/R+YWKTP8pV9f5jJGYwfev1iH/mJdfA14b6fzjohvgon6qQ3gRKxVnpKOmWOmkEl6CZybNvgm4ry4hCluQQB10dIqQjoQoovBPUWzJHcxRi9Hfaxh6nzUQWxNvqPAzfo5XbkWoq3jF+BChM44Zf6s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com; spf=pass smtp.mailfrom=microchip.com; dkim=pass (2048-bit key) header.d=microchip.com header.i=@microchip.com header.b=Te6P2tL3; arc=none smtp.client-ip=68.232.153.233
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=microchip.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=microchip.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=microchip.com; i=@microchip.com; q=dns/txt; s=mchp;
+  t=1710827627; x=1742363627;
+  h=from:to:cc:subject:date:message-id:in-reply-to:
+   references:mime-version:content-transfer-encoding;
+  bh=PsieqNlg0izoRjsoe59ZVNJpX8rC5zYulh4OIjSqqjA=;
+  b=Te6P2tL3f9mJP5kZI/uN5cG/3Q9pVTYhlnxM1ICiBF4MC0GnUX/MTV0B
+   6cS9Mm54fTcnng/QuRJEBf1r0HJgL6sl32JPEg93EVXn+Mlus/2N3/Cyu
+   gNgR/1AxCAuyAQR2eG3vczUKgvPu91HfXJ/8ExnEZp+yVc7WFGnJKACyq
+   kprb/4TPTKQrpNXA4lgzOplABDHn9FpoX6GgJz+6CljsYViuieb6cb0wJ
+   K0VbSUbfXxv4UXHUMqo109O+oI9K1Q5VVAJRWRSV3QysHvGzpUOcqRKVL
+   a2A5aQdJq4m16tZgvfFzRut0/LKawNHQW0Q53k1C0phOvFR1CEqzDKz/8
+   g==;
+X-CSE-ConnectionGUID: VmcjLmElSdeXl3on+0k91w==
+X-CSE-MsgGUID: 9Q9gbBK7RZu/13jyP3vR4g==
+X-IronPort-AV: E=Sophos;i="6.07,136,1708412400"; 
+   d="scan'208";a="19565333"
+X-Amp-Result: SKIPPED(no attachment in message)
+Received: from unknown (HELO email.microchip.com) ([170.129.1.10])
+  by esa1.microchip.iphmx.com with ESMTP/TLS/ECDHE-RSA-AES128-GCM-SHA256; 18 Mar 2024 22:53:44 -0700
+Received: from chn-vm-ex04.mchp-main.com (10.10.85.152) by
+ chn-vm-ex03.mchp-main.com (10.10.85.151) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256) id
+ 15.1.2507.35; Mon, 18 Mar 2024 22:53:35 -0700
+Received: from HYD-DK-UNGSW21.microchip.com (10.10.85.11) by
+ chn-vm-ex04.mchp-main.com (10.10.85.152) with Microsoft SMTP Server id
+ 15.1.2507.35 via Frontend Transport; Mon, 18 Mar 2024 22:53:32 -0700
+From: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
+To: <netdev@vger.kernel.org>
+CC: <davem@davemloft.net>, <kuba@kernel.org>, <pabeni@redhat.com>,
+	<edumazet@google.com>, <linux-kernel@vger.kernel.org>,
+	<bryan.whitehead@microchip.com>, <UNGLinuxDriver@microchip.com>
+Subject: [PATCH net V1 3/3] net: lan743x: Address problems with wake option flags configuration sequences
+Date: Tue, 19 Mar 2024 11:21:10 +0530
+Message-ID: <20240319055110.764002-4-Raju.Lakkaraju@microchip.com>
+X-Mailer: git-send-email 2.34.1
+In-Reply-To: <20240319055110.764002-1-Raju.Lakkaraju@microchip.com>
+References: <20240319055110.764002-1-Raju.Lakkaraju@microchip.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -67,64 +75,71 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
 
-Like global variables, this per-cpu variables should be tracked
-correctly.  Factor our get_global_var_type() to handle both global
-and per-cpu (for this cpu) variables in the same manner.
+WOL secure-on and magic packet configuration table:
+--------------------------------------------------------------------------------
+| Ethtool Ops     | Send magic packet | Send magic packet | Send magic packet  |
+|                 |                   | with password     | with wrong password|
+--------------------------------------------------------------------------------
+|WAKE_MAGIC (g)   |      wake         |     wake          |        wake        |
+--------------------------------------------------------------------------------
+|WAKE_SECURE_MAGIC|    no wake        |     wake          |       no wake      |
+|     (s)         |                   |                   |                    |
+--------------------------------------------------------------------------------
+| WAKE_MAGIC &    |                   |                   |                    |
+|WAKE_SECURE_MAGIC|      wake         |     wake          |        wake        |
+|     (gs)        |                   |                   |                    |
+--------------------------------------------------------------------------------
 
-Signed-off-by: Namhyung Kim <namhyung@kernel.org>
+Fixes: 6b3768ac8e2b3 ("net: lan743x: Add support to Secure-ON WOL")
+Signed-off-by: Raju Lakkaraju <Raju.Lakkaraju@microchip.com>
 ---
- tools/perf/util/annotate-data.c | 31 ++++++++++++++++++++++++++++++-
- 1 file changed, 30 insertions(+), 1 deletion(-)
+Change List:
+------------
+V0 -> V1:
+  - Fix the wake option flags configuration sequences
 
-diff --git a/tools/perf/util/annotate-data.c b/tools/perf/util/annotate-data.c
-index d57622ddd5d3..48fea0c716ef 100644
---- a/tools/perf/util/annotate-data.c
-+++ b/tools/perf/util/annotate-data.c
-@@ -553,12 +553,41 @@ static void update_insn_state_x86(struct type_state *state,
- 			fbreg = -1;
+ drivers/net/ethernet/microchip/lan743x_ethtool.c | 3 +--
+ drivers/net/ethernet/microchip/lan743x_main.c    | 8 +++++++-
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/drivers/net/ethernet/microchip/lan743x_ethtool.c b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+index 4899582b3d1d..442c52aa0b0e 100644
+--- a/drivers/net/ethernet/microchip/lan743x_ethtool.c
++++ b/drivers/net/ethernet/microchip/lan743x_ethtool.c
+@@ -1188,8 +1188,7 @@ static int lan743x_ethtool_set_wol(struct net_device *netdev,
+ 		adapter->wolopts |= WAKE_PHY;
+ 	if (wol->wolopts & WAKE_ARP)
+ 		adapter->wolopts |= WAKE_ARP;
+-	if (wol->wolopts & WAKE_MAGICSECURE &&
+-	    wol->wolopts & WAKE_MAGIC) {
++	if (wol->wolopts & WAKE_MAGICSECURE) {
+ 		memcpy(adapter->sopass, wol->sopass, sizeof(wol->sopass));
+ 		adapter->wolopts |= WAKE_MAGICSECURE;
+ 	} else {
+diff --git a/drivers/net/ethernet/microchip/lan743x_main.c b/drivers/net/ethernet/microchip/lan743x_main.c
+index 5641b466d70d..43e8e35fe9d0 100644
+--- a/drivers/net/ethernet/microchip/lan743x_main.c
++++ b/drivers/net/ethernet/microchip/lan743x_main.c
+@@ -3639,9 +3639,15 @@ static void lan743x_pm_set_wol(struct lan743x_adapter *adapter)
+ 		lan743x_csr_write(adapter, MAC_MP_SO_LO, sopass);
+ 		sopass = *(u16 *)&adapter->sopass[4];
+ 		lan743x_csr_write(adapter, MAC_MP_SO_HI, sopass);
+-		wucsr |= MAC_MP_SO_EN_;
++		wucsr |= MAC_MP_SO_EN_ | MAC_WUCSR_MPEN_;
++		macrx |= MAC_RX_RXEN_;
++		pmtctl |= PMT_CTL_WOL_EN_ | PMT_CTL_MAC_D3_RX_CLK_OVR_;
  	}
  
--	/* Case 1. register to register transfers */
-+	/* Case 1. register to register or segment:offset to register transfers */
- 	if (!src->mem_ref && !dst->mem_ref) {
- 		if (!has_reg_type(state, dst->reg1))
- 			return;
- 
- 		tsr = &state->regs[dst->reg1];
-+		if (map__dso(dloc->ms->map)->kernel &&
-+		    src->segment == INSN_SEG_X86_GS && src->imm) {
-+			u64 ip = dloc->ms->sym->start + dl->al.offset;
-+			u64 var_addr;
-+			int offset;
++	if (adapter->wolopts & WAKE_MAGICSECURE &&
++	    adapter->wolopts & WAKE_MAGIC)
++		wucsr &= ~MAC_MP_SO_EN_;
 +
-+			/*
-+			 * In kernel, %gs points to a per-cpu region for the
-+			 * current CPU.  Access with a constant offset should
-+			 * be treated as a global variable access.
-+			 */
-+			var_addr = src->offset;
-+
-+			if (!get_global_var_type(cu_die, dloc, ip, var_addr,
-+						 &offset, &type_die) ||
-+			    !die_get_member_type(&type_die, offset, &type_die)) {
-+				tsr->ok = false;
-+				return;
-+			}
-+
-+			tsr->type = type_die;
-+			tsr->ok = true;
-+
-+			pr_debug_dtp("mov [%x] this-cpu addr=%#"PRIx64" -> reg%d",
-+				     insn_offset, var_addr, dst->reg1);
-+			pr_debug_type_name(&tsr->type);
-+			return;
-+		}
-+
- 		if (!has_reg_type(state, src->reg1) ||
- 		    !state->regs[src->reg1].ok) {
- 			tsr->ok = false;
+ 	lan743x_csr_write(adapter, MAC_WUCSR, wucsr);
+ 	lan743x_csr_write(adapter, PMT_CTL, pmtctl);
+ 	lan743x_csr_write(adapter, MAC_RX, macrx);
 -- 
-2.44.0.291.gc1ea87d7ee-goog
+2.34.1
 
 
