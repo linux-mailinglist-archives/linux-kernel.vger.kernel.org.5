@@ -1,98 +1,124 @@
-Return-Path: <linux-kernel+bounces-107278-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107279-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 37E9B87FA50
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:07:14 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 1307C87FA54
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 10:08:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id C81951F21FD5
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:07:13 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 4592C1C21BA7
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 09:08:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 691647CF27;
-	Tue, 19 Mar 2024 09:07:09 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2AF827C6CC;
+	Tue, 19 Mar 2024 09:08:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b="1dKghYCC"
-Received: from wp530.webpack.hosteurope.de (wp530.webpack.hosteurope.de [80.237.130.52])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="kGWFmmCO"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BC8147C6C0;
-	Tue, 19 Mar 2024 09:07:06 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=80.237.130.52
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 0DB3A54BE2;
+	Tue, 19 Mar 2024 09:08:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710839228; cv=none; b=LSs+1eAOcclWJ+WVSq+hw1Q18syLbwU9/hz451rfgdO54j83weuceM3Yc8uHRg1QRqJsEykJTMmHnuMf5SR8LMOCxLO6uUIdM272rQUMSjwjlVAfQDUsb+RWZAamxEgNfbETeKAKsL/Bgxkld+rpn1aR+HXHUQBkpixia3K2ENU=
+	t=1710839288; cv=none; b=R03coJ4jQFjUbaK1//GUXY0ge/cLnzuZNf/Wa58MQ4qLDEyEbv9VngIwjF11+YhNAl4AVuQMu0eMrrZqoTr9bm+3IHJgyUNIUV7CsNdsXUfphXfeSW5OeAljgxoDpRoscF/q4YDSqPoN/jmkkGDcGuUfUSrq181MO5D3vr237HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710839228; c=relaxed/simple;
-	bh=2Y/b4m71YtOxGVZHdyOIhqXQXwQS/87eE2O8y1ODX2I=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=bQZKOJZ9rZm6BJ0yugrWNHp5A4VWdY7LTp24L8cFMLO7xeNCOO0WNsc0GCYY6OOnHmGZWoUGDNFg4Sl9bJrfftTdq+D/oFYOzRwQf1e7Fu7uu4yYEKZFXIO3mkic8jQpV80GifKvs8Qdy/50HGoyQjH6vNHFDYx08JehxJnXpL8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info; spf=pass smtp.mailfrom=leemhuis.info; dkim=pass (2048-bit key) header.d=leemhuis.info header.i=@leemhuis.info header.b=1dKghYCC; arc=none smtp.client-ip=80.237.130.52
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=leemhuis.info
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=leemhuis.info
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed;
-	d=leemhuis.info; s=he214686; h=Content-Transfer-Encoding:Content-Type:
-	In-Reply-To:Reply-To:From:References:Cc:To:Subject:MIME-Version:Date:
-	Message-ID:From:Sender:Reply-To:Subject:Date:Message-ID:To:Cc:MIME-Version:
-	Content-Type:Content-Transfer-Encoding:Content-ID:Content-Description:
-	In-Reply-To:References; bh=1mmeAtxPsqXAAJIIP58R7GsVBAFDYCW1BxUcEz2Evog=;
-	t=1710839226; x=1711271226; b=1dKghYCCGSGFFVq+Mx7NmUHBze13jgZydGNPeoDjY9/vRsq
-	Zote2rnY9ZaUsdhC2rQHdh6p7g6NHYFoGaODe7TwVI7JPdUEymCX3PDc4kPV8cKRfjfWuyjJfhhmH
-	64GV7I2o9CeSsgdnLPfTIbUWmoENseUo05e3mLqWTvZbGZ5Jli52s+3yDhUiUb6tFwgJTUCSOA8LM
-	lWZGB6nQ4M7l4YK1Dr4rNzViC9O70SDj9BENPkxUkZigBy3/dprS3+MmPUuQglP5o5/lWOjpUnEey
-	rZS4sEBeDNnUODi1ZlgRCzeueKtanFwMq4GmHD8dDf7sh01m+Sqk0Ohj5a9eu4Gg==;
-Received: from [2a02:8108:8980:2478:8cde:aa2c:f324:937e]; authenticated
-	by wp530.webpack.hosteurope.de running ExIM with esmtpsa (TLS1.3:ECDHE_RSA_AES_128_GCM_SHA256:128)
-	id 1rmVR2-0004aI-9H; Tue, 19 Mar 2024 10:07:04 +0100
-Message-ID: <07b0c5f6-1fe2-474e-a312-5eb85a14a5c8@leemhuis.info>
-Date: Tue, 19 Mar 2024 10:07:03 +0100
+	s=arc-20240116; t=1710839288; c=relaxed/simple;
+	bh=1YarG7GbSGGH/lbImy8EevZHEMUEWi3oXQdaJmqDZDE=;
+	h=From:To:CC:Subject:Date:Message-ID:MIME-Version:Content-Type; b=FUWRUWuGtyYLEY8k9oTIAGK0bJU1jc/2b+pXZo7PbZPhDMfc3WkqMTJo+HC5Rbon0QIrxJVRgIaU/xZHsulnhP7GxKO8ctDqx2LbN46Fo/P/e57x6N+ql2XStGwo0aW69JyZhhzZcwQ3Q7n8iKYO0dWvyssUpZmGWbVM6YjGQqU=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=kGWFmmCO; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279871.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42J4Q8YM029011;
+	Tue, 19 Mar 2024 09:07:55 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	from:to:cc:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=qcppdkim1; bh=wwYFukg
+	eyuIky5uAAKxxD46KLlDXv5v6ZWiYYzTNLzw=; b=kGWFmmCO8DHqJ07PnHE1nwI
+	Grq9EeuzuGUdy+SbgqZYp/CTHsDh64GR7DxzDZosR++IVx1tm6aq+hrVSYYhJ83g
+	dUCQOvmwyaZDjVyrpp1rF21OdiDXVGEJ/0Oa7p6LU+4cVqhvYKWY6Ai+2Kv7zlYJ
+	E3ANOHI15vfgmPwriGFn5j/z2oVOcuBTtPhCsUFZF3OnxUh/mMUAVGsxBH/Eao5m
+	u1mkMHfSXNAt0L5tfFtFwE3VPPeB7Jxi4E5yQHoF7S1PRWTLip0K4DBFlcH1uhqN
+	zSrJTaYvjaLvJGd86Gj8LEBOUWIacxOjDzXE/QE1ayobjuUf1Ig5wGconDXkXvQ=
+	=
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wy2cjrnue-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 09:07:55 +0000 (GMT)
+Received: from nalasex01b.na.qualcomm.com (nalasex01b.na.qualcomm.com [10.47.209.197])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42J97sUA027195
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Tue, 19 Mar 2024 09:07:54 GMT
+Received: from hu-kbajaj-hyd.qualcomm.com (10.80.80.8) by
+ nalasex01b.na.qualcomm.com (10.47.209.197) with Microsoft SMTP Server
+ (version=TLS1_2, cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id
+ 15.2.1118.40; Tue, 19 Mar 2024 02:07:49 -0700
+From: Komal Bajaj <quic_kbajaj@quicinc.com>
+To: Bjorn Andersson <andersson@kernel.org>,
+        Konrad Dybcio
+	<konrad.dybcio@linaro.org>,
+        Vinod Koul <vkoul@kernel.org>,
+        "Kishon Vijay
+ Abraham I" <kishon@kernel.org>,
+        Rob Herring <robh+dt@kernel.org>,
+        "Krzysztof
+ Kozlowski" <krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley
+	<conor+dt@kernel.org>,
+        Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+        Wesley Cheng <quic_wcheng@quicinc.com>
+CC: <linux-arm-msm@vger.kernel.org>, <linux-phy@lists.infradead.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-usb@vger.kernel.org>, Komal Bajaj <quic_kbajaj@quicinc.com>
+Subject: [PATCH 0/4] Add USB Support on Qualcomm's QDU/QRU1000 Platform
+Date: Tue, 19 Mar 2024 14:37:24 +0530
+Message-ID: <20240319090729.14674-1-quic_kbajaj@quicinc.com>
+X-Mailer: git-send-email 2.42.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: dmaengine: CPU stalls while loading bluetooth module
-Content-Language: en-US, de-DE
-To: "bumyong.lee" <bumyong.lee@samsung.com>
-Cc: dmaengine@vger.kernel.org, linux-kernel@vger.kernel.org,
- parthiban@linumiz.com, saravanan@linumiz.com,
- 'karthikeyan' <karthikeyan@linumiz.com>, vkoul@kernel.org,
- 'Linux regressions mailing list' <regressions@lists.linux.dev>
-References: <CGME20240305062038epcas2p143c5e1e725d8a934b0208266a2f78ccb@epcas2p1.samsung.com>
- <1553a526-6f28-4a68-88a8-f35bd22d9894@linumiz.com>
- <000001da6ecc$adb25420$0916fc60$@samsung.com>
- <12de921e-ae42-4eb3-a61a-dadc6cd640b8@leemhuis.info>
- <000001da7140$6a0f1570$3e2d4050$@samsung.com>
-From: "Linux regression tracking (Thorsten Leemhuis)"
- <regressions@leemhuis.info>
-Reply-To: Linux regressions mailing list <regressions@lists.linux.dev>
-In-Reply-To: <000001da7140$6a0f1570$3e2d4050$@samsung.com>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
-X-bounce-key: webpack.hosteurope.de;regressions@leemhuis.info;1710839226;71d58032;
-X-HE-SMSGID: 1rmVR2-0004aI-9H
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ClientProxiedBy: nasanex01b.na.qualcomm.com (10.46.141.250) To
+ nalasex01b.na.qualcomm.com (10.47.209.197)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: BbcRD6RuQmQNMSU6OMuTTVs-P-h3R06-
+X-Proofpoint-GUID: BbcRD6RuQmQNMSU6OMuTTVs-P-h3R06-
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-18_12,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 adultscore=0
+ priorityscore=1501 malwarescore=0 bulkscore=0 clxscore=1015
+ impostorscore=0 lowpriorityscore=0 mlxlogscore=561 suspectscore=0
+ mlxscore=0 phishscore=0 spamscore=0 classifier=spam adjust=0 reason=mlx
+ scancount=1 engine=8.19.0-2403140001 definitions=main-2403190068
 
-On 08.03.24 11:07, bumyong.lee wrote:
-> 
->> Hmmm. 6.8 final is due. Is that something we can live with? Or would it be
->> a good idea to revert above commit for now and reapply it when something
->> better emerged? I doubt that the answer is "yes, let's do that", but I
->> have to ask.
-> 
-> I couldn't find better way now.
-> I think it's better to follow you mentioned
+This series adds support of USB3 PHY support for Qualcomm's QDU/QRU1000 Platform.
 
-6.8 is out, but that issue afaics was not resolved, so allow me to ask:
-did "submit a revert" fell through the cracks or is there some other
-solution in the works? Or am I missing something?
+---------
+Changes in v2:
+* Dropped extra lines
+* Sorted the tables alphabetically
+* Link to v1: https://lore.kernel.org/linux-arm-msm/20240311120215.16845-1-quic_kbajaj@quicinc.com/
 
-Ciao, Thorsten (wearing his 'the Linux kernel's regression tracker' hat)
+Komal Bajaj (4):
+  dt-bindings: phy: qcom,usb-snps-femto-v2: Add bindings for QDU1000
+  dt-bindings: phy: qcom,qmp-usb: Add QDU1000 USB3 PHY
+  dt-bindings: usb: dwc3: Add QDU1000 compatible
+  phy: qcpm-qmp-usb: Add support for QDU1000/QRU1000
+
+ .../phy/qcom,sc8280xp-qmp-usb3-uni-phy.yaml   |  2 +
+ .../bindings/phy/qcom,usb-snps-femto-v2.yaml  |  1 +
+ .../devicetree/bindings/usb/qcom,dwc3.yaml    |  3 ++
+ drivers/phy/qualcomm/phy-qcom-qmp-usb.c       | 49 +++++++++++++++++++
+ 4 files changed, 55 insertions(+)
+
 --
-Everything you wanna know about Linux kernel regression tracking:
-https://linux-regtracking.leemhuis.info/about/#tldr
-If I did something stupid, please tell me, as explained on that page.
+2.42.0
 
-#regzbot poke
 
