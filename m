@@ -1,119 +1,120 @@
-Return-Path: <linux-kernel+bounces-108212-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108215-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 1F52A880788
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:54:47 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 8F7B5880793
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 23:55:42 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 80E3F284321
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:54:45 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 4B68128452C
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 22:55:41 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id A3AF05FEF2;
-	Tue, 19 Mar 2024 22:53:54 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6E8855FDB4;
+	Tue, 19 Mar 2024 22:54:47 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="dDtHKf5q"
-Received: from mx0a-001b2d01.pphosted.com (mx0a-001b2d01.pphosted.com [148.163.156.1])
+	dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b="R1FSve7Q"
+Received: from mx0b-0031df01.pphosted.com (mx0b-0031df01.pphosted.com [205.220.180.131])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 4D6645FDAF;
-	Tue, 19 Mar 2024 22:53:52 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.156.1
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C402C604AA;
+	Tue, 19 Mar 2024 22:54:44 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=205.220.180.131
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710888834; cv=none; b=jrdaQYtVpdHuqMJcfgxCKvQ9rdZPhWzPL23k5GC6Uhi4u8MD8b5SOoi9mzvS6DcL7aRkQp1+m5/7V5m05UpS2MtBiIQ2m14pFqtLwzwO0xno+uk26rxx+zOMv+Zwx7NdyjdVUymHHZMawZLVKWV7w0Lf1wwM861pjF+bnbgOhSs=
+	t=1710888886; cv=none; b=MmECEHgey1B5iddYGnayNFn+j7v5guerb8LPwS+o/KXyRSI5wWlsNyaZx9AC4NHBgefoTThK9E8CkqteUIpjqQMtK5Kz2/YYd3XSazqLFUXvKmLHBfQBBR9PUbAg3/70ko9NMxCvVqoqt064ZgS+D4y0pPTVQ9VDWvTEbh2eCH0=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710888834; c=relaxed/simple;
-	bh=uViNWnjbyPnAgnJzoDJ4u3duiT3uN22DyjhH/94J8aQ=;
-	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
-	 Content-Type:Mime-Version; b=VYArueZIXA/SGN2Erb+M7dAnuYd8n3uAV8DMhVDjy9BqxypH0TcNInUPi2tvFH+ZgTDPzWwCIlUu6f1B0HNpyvvXmuTMvKz/xyJ8KvNfwMGsFv82z5DRsIidbKpxBmeYimxtLgz0SeNkEROVGvZcTvHupQFNIttG3ZGG+eyijO4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=dDtHKf5q; arc=none smtp.client-ip=148.163.156.1
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353727.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42JMp02R017804;
-	Tue, 19 Mar 2024 22:53:39 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : subject :
- from : to : cc : date : in-reply-to : references : content-type :
- mime-version : content-transfer-encoding; s=pp1;
- bh=8q3s4opcuHXJjrGLVS88W7yR/VK1WKBfpAMDhzeWnbk=;
- b=dDtHKf5qb/4FCOSeyK6xn3Pb993p8wIJ8fPn5sANoBZcev8mf14MWzsOmACxM4a8C7JG
- AdWg6zv305fXfWoY5CjY18QVJWBWGWKoB9yMhmPfVA/mqpyIzTvbt7WfRTComum6aDkz
- AVHSHoEVWFMzcKyZwkVuOHMbPN0FpNMkdERwhMbYN6mOm/720k9pQBkR0PxkjYO38v9J
- 19d5AZAhZHFn78p48Q58RdvXW1tXinPv3r38lQqIFZO+g7WhDgGogsOHi+JfQZnuArAj
- umphiXi326WMNT4GwAAW1k1rj6omXKo6fiXXpDyCykiVLmzXG0ET7om2K3KciZihwdQ3 4Q== 
-Received: from pps.reinject (localhost [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyh3hrahs-1
+	s=arc-20240116; t=1710888886; c=relaxed/simple;
+	bh=SApLnzf9V9paj7A27Dp2wAi/qBGP4wIFVkmJyrYbWmI=;
+	h=Message-ID:Date:MIME-Version:Subject:To:CC:References:From:
+	 In-Reply-To:Content-Type; b=BkbDTp6zBOUfBQ5fiCW40zF9I0ZftAYJCfaesdd81nP0UlkmMRA/QnxB4S/3CVt9uYvtvC4r+7Cu7tYqMmhnZWqsh29pCKHc8VcqeG9tfv1X1+h6WXFcHcGfsp5yhwB62oqFF8BXe0vypwPzxPps3ebL0C5pz57KHYJG1u8Th0s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com; spf=pass smtp.mailfrom=quicinc.com; dkim=pass (2048-bit key) header.d=quicinc.com header.i=@quicinc.com header.b=R1FSve7Q; arc=none smtp.client-ip=205.220.180.131
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=quicinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=quicinc.com
+Received: from pps.filterd (m0279872.ppops.net [127.0.0.1])
+	by mx0a-0031df01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42JMfsZR006654;
+	Tue, 19 Mar 2024 22:54:30 GMT
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=quicinc.com; h=
+	message-id:date:mime-version:subject:to:cc:references:from
+	:in-reply-to:content-type:content-transfer-encoding; s=
+	qcppdkim1; bh=ukAH7JGYlF+FVSLp4/U8HRgc2Qj8dfLCCawIfIhcZ9Q=; b=R1
+	FSve7Q7z0b0p4XD1BWSEcu7iFPCjdOZcC2x0oqLV+VD42AE1zyvmfmZVJVbUOGKZ
+	5H082+6YsLd4YCNxP95Vlf+VVeCgKrrdjl1PfdFfbwBU7yZv1dFg71SjR20s5A9q
+	NlOdpno8xeKn4wA8Cj8bfxYEZoczGD0L5YPLj/dyyJUSpMzbt84gcX70b5XhDSOn
+	aRJ/KueWd9DdFlPiozvX8Eq0bkhlq2swOXwdTruB05QKNA6qcbSISokOBtXKxBra
+	8aVQraQiEbAHyEde3IQxk1zCtsp3AcoplAIXYs3FaZP8DoBocMTyKdVkrWqEou9/
+	BoAmhOsHrxzxm8c+HDMQ==
+Received: from nalasppmta03.qualcomm.com (Global_NAT1.qualcomm.com [129.46.96.20])
+	by mx0a-0031df01.pphosted.com (PPS) with ESMTPS id 3wyh8e0acn-1
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 22:53:38 +0000
-Received: from m0353727.ppops.net (m0353727.ppops.net [127.0.0.1])
-	by pps.reinject (8.17.1.5/8.17.1.5) with ESMTP id 42JMrcb1022532;
-	Tue, 19 Mar 2024 22:53:38 GMT
-Received: from ppma11.dal12v.mail.ibm.com (db.9e.1632.ip4.static.sl-reverse.com [50.22.158.219])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyh3hrahr-1
+	Tue, 19 Mar 2024 22:54:30 +0000 (GMT)
+Received: from nalasex01a.na.qualcomm.com (nalasex01a.na.qualcomm.com [10.47.209.196])
+	by NALASPPMTA03.qualcomm.com (8.17.1.5/8.17.1.5) with ESMTPS id 42JMsThT018329
 	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 22:53:38 +0000
-Received: from pps.filterd (ppma11.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma11.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42JKYg7A002779;
-	Tue, 19 Mar 2024 22:53:37 GMT
-Received: from smtprelay02.wdc07v.mail.ibm.com ([172.16.1.69])
-	by ppma11.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwrf2j5ve-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Tue, 19 Mar 2024 22:53:37 +0000
-Received: from smtpav05.dal12v.mail.ibm.com (smtpav05.dal12v.mail.ibm.com [10.241.53.104])
-	by smtprelay02.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42JMrYP614615146
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Tue, 19 Mar 2024 22:53:36 GMT
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 75A1C58052;
-	Tue, 19 Mar 2024 22:53:34 +0000 (GMT)
-Received: from smtpav05.dal12v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id AAC7758068;
-	Tue, 19 Mar 2024 22:53:33 +0000 (GMT)
-Received: from li-5cd3c5cc-21f9-11b2-a85c-a4381f30c2f3.ibm.com (unknown [9.61.80.83])
-	by smtpav05.dal12v.mail.ibm.com (Postfix) with ESMTP;
-	Tue, 19 Mar 2024 22:53:33 +0000 (GMT)
-Message-ID: <5c3a94dfc6dad32824e25736ec816b8c805de898.camel@linux.ibm.com>
-Subject: Re: [PATCH v3 10/10] evm: Rename is_unsupported_fs to
- is_unsupported_hmac_fs
-From: Mimi Zohar <zohar@linux.ibm.com>
-To: Stefan Berger <stefanb@linux.ibm.com>, linux-integrity@vger.kernel.org,
-        linux-security-module@vger.kernel.org, linux-unionfs@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org, paul@paul-moore.com, jmorris@namei.org,
-        serge@hallyn.com, roberto.sassu@huawei.com, amir73il@gmail.com,
-        brauner@kernel.org, miklos@szeredi.hu
-Date: Tue, 19 Mar 2024 18:53:33 -0400
-In-Reply-To: <20240223172513.4049959-11-stefanb@linux.ibm.com>
-References: <20240223172513.4049959-1-stefanb@linux.ibm.com>
-	 <20240223172513.4049959-11-stefanb@linux.ibm.com>
-Content-Type: text/plain; charset="UTF-8"
-X-Mailer: Evolution 3.28.5 (3.28.5-23.el8_9) 
+	Tue, 19 Mar 2024 22:54:29 GMT
+Received: from [10.110.120.226] (10.80.80.8) by nalasex01a.na.qualcomm.com
+ (10.47.209.196) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.1118.40; Tue, 19 Mar
+ 2024 15:54:28 -0700
+Message-ID: <328306d9-953f-482b-bf9a-a753d7d4e2ed@quicinc.com>
+Date: Tue, 19 Mar 2024 15:54:27 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
+MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [RFC] wireless: ti: Can we just remove this flexible array?
+Content-Language: en-US
+To: "Gustavo A. R. Silva" <gustavo@embeddedor.com>,
+        Kalle Valo
+	<kvalo@kernel.org>
+CC: <linux-wireless@vger.kernel.org>, LKML <linux-kernel@vger.kernel.org>,
+        <linux-hardening@vger.kernel.org>
+References: <3a531d5b-9bf6-4e88-ba8c-a76cfa95be20@embeddedor.com>
+From: Jeff Johnson <quic_jjohnson@quicinc.com>
+In-Reply-To: <3a531d5b-9bf6-4e88-ba8c-a76cfa95be20@embeddedor.com>
+Content-Type: text/plain; charset="UTF-8"
 Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-ORIG-GUID: vncPtyxpUgFXwOH6Z2GyYeUZTaBwUfYv
-X-Proofpoint-GUID: U5jE3Rfse1LmHk6ycWIEI5laTVVYgzqj
+X-ClientProxiedBy: nasanex01a.na.qualcomm.com (10.52.223.231) To
+ nalasex01a.na.qualcomm.com (10.47.209.196)
+X-QCInternal: smtphost
+X-Proofpoint-Virus-Version: vendor=nai engine=6200 definitions=5800 signatures=585085
+X-Proofpoint-ORIG-GUID: aVjG2jj2h7EngEFGX_zsXtDYP-B3f0I2
+X-Proofpoint-GUID: aVjG2jj2h7EngEFGX_zsXtDYP-B3f0I2
 X-Proofpoint-Virus-Version: vendor=baseguard
  engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
  definitions=2024-03-19_09,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 lowpriorityscore=0
- adultscore=0 suspectscore=0 spamscore=0 clxscore=1015 phishscore=0
- mlxlogscore=724 mlxscore=0 malwarescore=0 impostorscore=0
- priorityscore=1501 bulkscore=0 classifier=spam adjust=0 reason=mlx
- scancount=1 engine=8.12.0-2403140000 definitions=main-2403190176
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 bulkscore=0 mlxscore=0
+ mlxlogscore=684 adultscore=0 suspectscore=0 lowpriorityscore=0 spamscore=0
+ priorityscore=1501 phishscore=0 malwarescore=0 impostorscore=0
+ clxscore=1011 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403190176
 
-On Fri, 2024-02-23 at 12:25 -0500, Stefan Berger wrote:
-> Rename is_unsupported_fs to is_unsupported_hmac_fs since now only HMAC is
-> unsupported.
+On 3/19/2024 2:59 PM, Gustavo A. R. Silva wrote:
+> Hi!
 > 
-> Co-developed-by: Mimi Zohar <zohar@linux.ibm.com>
-> Signed-off-by: Stefan Berger <stefanb@linux.ibm.com>
+> `struct wl1271_cmd_header` is currently embedded in multiple other
+> structs, and it's causing many `-Wflex-array-member-not-at-end` warnings.
+> 
+> Has this flexible-array member been used in the past or is it intended
+> for future use?
+> 
+> Otherwise, I think we could just remove it.
+> 
+> diff --git a/drivers/net/wireless/ti/wlcore/cmd.h b/drivers/net/wireless/ti/wlcore/cmd.h
+> index f2609d5b6bf7..4c2f2608ef3b 100644
+> --- a/drivers/net/wireless/ti/wlcore/cmd.h
+> +++ b/drivers/net/wireless/ti/wlcore/cmd.h
+> @@ -208,8 +208,6 @@ enum cmd_templ {
+>   struct wl1271_cmd_header {
+>          __le16 id;
+>          __le16 status;
+> -       /* payload */
+> -       u8 data[];
+>   } __packed;
 
-Signed-off-by: Mimi Zohar <zohar@linux.ibm.com>
+I'd think you should just remove it
+
 
 
