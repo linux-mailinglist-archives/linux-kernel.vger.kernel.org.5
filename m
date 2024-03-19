@@ -1,170 +1,135 @@
-Return-Path: <linux-kernel+bounces-107825-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-107826-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id EB94F880224
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:25:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 16235880228
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 17:26:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id A6BBD28339B
-	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:25:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 47D7E1C22FC9
+	for <lists+linux-kernel@lfdr.de>; Tue, 19 Mar 2024 16:26:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 7326E84A55;
-	Tue, 19 Mar 2024 16:18:14 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 998DE85268;
+	Tue, 19 Mar 2024 16:19:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Z1gFlxcw"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jehr51D2"
+Received: from mail-pl1-f174.google.com (mail-pl1-f174.google.com [209.85.214.174])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1A6881ADE
-	for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 16:18:13 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F56085265;
+	Tue, 19 Mar 2024 16:19:31 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.174
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710865093; cv=none; b=VGq/IErYg2faIwg92HNNZ/rQKxl7LRHn8mj1a+6Qgcso/V7Bp7lWqWSDBM0KczBH6AoafbgRCU5xeU0P0L+lkztSAkFpHgurshGYK0iWIUUeNGvSMdmjRP7GhCTcxDap8tn60Bj4j75XthLOhc8CmzbZOyFMRtg5j3E/GHThQk0=
+	t=1710865175; cv=none; b=FUMGnHXhrZrcKslYGUUO8sIGsOT6KSy8QTnbyfjKMxj4dE4eNvpeQ14jur/DNHlUkEB5qfplqFbY6KzisAJ0y/9uEEV8+Z0ZZnV40n1F9Ek+VC7p1frnZtGuhyYBVGOgx4q7kN5Hl3tXe4ZHuSmB3dOy6v/CpDfEV7XI7q1sWDQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710865093; c=relaxed/simple;
-	bh=d0rUTsfB2PCFWi1NwKDB0tLU9VzNlX5I7JRarfxcQ3g=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=kMzmr74e4JbCRP04vq6SqM7PsQNpcZ/dI5Elg38ZgRY32J8icktdblTZiNIu/RXFs+u8wbjjVDz5khx0ujzAbRA5YoWUi4z89W6TG+eAV2LsVX2yRBm7mnVO3XzbEff9JLFXcR2g0WBRa7J2D7/xKv0BKC8qitsuR8Lc0kBRP2w=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Z1gFlxcw; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 183B0C433F1;
-	Tue, 19 Mar 2024 16:18:10 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710865093;
-	bh=d0rUTsfB2PCFWi1NwKDB0tLU9VzNlX5I7JRarfxcQ3g=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=Z1gFlxcwZtWV6mPCa6DoyMtNy+ryKBDf7VvGjK1BHFSa7zvNqAfMh0onxw6Esp6QA
-	 PdtPaEq244NK/VR1baqWWmr8Jm5lRiiOFlxLy2BJ7+L/3dh8ky56lsuVQ8qPWv9USw
-	 Fwx2xeEIeFlW+EmLzc4lDe+1kcdZz9NegjmvJzwVdrcqyAomgfUR+EfajNg58N06A/
-	 pR9Q+uxTUj59w9eCDo3wfS4g4NZHs3j3oXAv+Xuzc/pGvsiAM6GhhJFfnju+oGBDou
-	 nnbyNOrGIxWsBdHElN/Q4Dk6etROiiRyPNGkSwzuM6j7bLC4/rAgVHGYdzoj9yHVFI
-	 BOLZTacLYrKLA==
-Date: Tue, 19 Mar 2024 18:17:07 +0200
-From: Mike Rapoport <rppt@kernel.org>
-To: Baoquan He <bhe@redhat.com>
-Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
-	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
-Subject: Re: [PATCH 4/6] mm/mm_init.c: remove meaningless calculation of
- zone->managed_pages in free_area_init_core()
-Message-ID: <Zfm6gzhKUehLwM5-@kernel.org>
-References: <20240318142138.783350-1-bhe@redhat.com>
- <20240318142138.783350-5-bhe@redhat.com>
+	s=arc-20240116; t=1710865175; c=relaxed/simple;
+	bh=VFaRQas0gSrfP0qC172CcOje6IBtZpzaLgn68X7typs=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=avnVmbZOoVzlTYA3F7z5fS3qoWCfd9uB6Kwr263wlKO4FHPU8iE7GL23Z4kf07dnCtSu30XmYKPWfK8iDuZlvsErHPjUK+9q9HyzsmlS6xNTTM6y/8AEs8/oAxroZpixib9jFqL/FVVk+DF/CZuGftkgzkQBmkyE3mu56Ql3WSM=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jehr51D2; arc=none smtp.client-ip=209.85.214.174
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f174.google.com with SMTP id d9443c01a7336-1def142ae7bso39071395ad.3;
+        Tue, 19 Mar 2024 09:19:31 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710865171; x=1711469971; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=Epr0Xv4Q3hfU6xbN2E2KtYBZZdf7JymwhQQwouieY7s=;
+        b=jehr51D2+XSPEUdph5sP1wCoe2sw8uZWkb9J0eQRrjyyKzveMA0oLS/w+JP/tX4Wi5
+         S7zc883Fg5Lr1LI8+Dq5aWTv3x1Q5xJC/XiO6rfvIjalmLOFK8Ll5qt2xumc76Hyp0D9
+         UciDCjCTsUV9gYDw8NOmWT+nOiuClhMjZKvRc30IQiuSr8D0W9oVbMImD7HF3jhstBHx
+         vjoJz4skasY2zMIsn3525jTYcB5JpGNvRI4HrYSv3fSeOnrHnCh3UGsQ1+bKboSPGtlA
+         K8Uwu247TDHxLzqUQKOOBp3ut4RCkIBogsSa5B2xARyApps9M/33v8nxDhKbHRhaHzZJ
+         VOqA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710865171; x=1711469971;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=Epr0Xv4Q3hfU6xbN2E2KtYBZZdf7JymwhQQwouieY7s=;
+        b=cRbNDCJKXENyv5l4MlI7uUsB4H1796ntuUn6Cqmc6RRpr4eGycQxwYq7ggx4U+3Wg8
+         JxEaSAcSeM7hWu0OdhZvV9ozR9FJzkpcUM0PZmyUeg/rSDRFmyJmzKr8OcxRrhlK7BW/
+         KR5voC6Xx9sdC1XcCoiP0oZLV7lYhuLhMdfoBLI0vF8SGUTVwxf/PZjS1/4pNImTP0PI
+         L8XjqHF3BVhG049MH0ds3FJKCzHTZoQak2KQPcrM/3o/cHw74coKnK8olyrHg0yqzxy9
+         1Pzh8h9BddseRAnW73eC8crpjkYG/ikrVxej5iV93dSmt4hqWoNCpDpDZcT5SCF2c6cI
+         kwxA==
+X-Forwarded-Encrypted: i=1; AJvYcCUYnUUi5Ze7gFWmPxXtfgQzjkVNjKtg+6i1yK4uNTJ6ByjbNPMndj5pYG22hVkBcjT5B7npRktATq/3GagtPhFLDMC076AjdKU0NDXIZNa35VuDm+L8Pewuzi6Y1YexuguOLHti2Oy3IoP0AjiOTnWQMDYnqAlF5/nHgJOsNYPE2pBXqL0v
+X-Gm-Message-State: AOJu0YzVb3YPk3vzH3myUM1RNAvDIV69JVvFagFf/nEpl22tS8OjU/mv
+	nI29m8/r/j3joQfx8MJbHN1T/wpEutAQejExYaz2LuLWUsUUxOMnqJuhM7HSiAI0sd3SXGrXNSl
+	k6tnmbH00FdAttsBwg9YWtBE85IF8lfCh
+X-Google-Smtp-Source: AGHT+IGFjpRbnCDyRCQ1z3277NWH9fPOrpACKz4p44EkTlkRUxbeqzQQ5mQ1iMoSUIughS59YHq7ZIPUJGj7zKNSrLA=
+X-Received: by 2002:a17:903:1c9:b0:1de:f32d:f5ba with SMTP id
+ e9-20020a17090301c900b001def32df5bamr15251700plh.42.1710865171367; Tue, 19
+ Mar 2024 09:19:31 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <20240318142138.783350-5-bhe@redhat.com>
+References: <20240318181728.2795838-1-andrii@kernel.org> <20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
+In-Reply-To: <20240319132057.78e60d15e4fd07dbef3b14a9@kernel.org>
+From: Andrii Nakryiko <andrii.nakryiko@gmail.com>
+Date: Tue, 19 Mar 2024 09:19:19 -0700
+Message-ID: <CAEf4BzaFfQeD8TY7pXEyX4h5UeAg0HZpx8psJF=Z6GJmr3VF5w@mail.gmail.com>
+Subject: Re: [PATCH v2 0/3] uprobes: two common case speed ups
+To: Masami Hiramatsu <mhiramat@kernel.org>
+Cc: Andrii Nakryiko <andrii@kernel.org>, linux-trace-kernel@vger.kernel.org, 
+	rostedt@goodmis.org, bpf@vger.kernel.org, mathieu.desnoyers@efficios.com, 
+	linux-kernel@vger.kernel.org, oleg@redhat.com, jolsa@kernel.org
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Mon, Mar 18, 2024 at 10:21:36PM +0800, Baoquan He wrote:
-> Currently, in free_area_init_core(), when initialize zone's field, a
-> rough value is set to zone->managed_pages. That value is calculated by
-> (zone->present_pages - memmap_pages).
-> 
-> In the meantime, add the value to nr_all_pages and nr_kernel_pages which
-> represent all free pages of system (only low memory or including HIGHMEM
-> memory separately). Both of them are gonna be used in
-> alloc_large_system_hash().
-> 
-> However, the rough calculation and setting of zone->managed_pages is
-> meaningless because
->   a) memmap pages are allocated on units of node in sparse_init() or
->      alloc_node_mem_map(pgdat); The simple (zone->present_pages -
->      memmap_pages) is too rough to make sense for zone;
->   b) the set zone->managed_pages will be zeroed out and reset with
->      acutal value in mem_init() via memblock_free_all(). Before the
->      resetting, no buddy allocation request is issued.
-> 
-> Here, remove the meaningless and complicated calculation of
-> (zone->present_pages - memmap_pages), directly set zone->present_pages to
-> zone->managed_pages. It will be adjusted in mem_init().
+On Mon, Mar 18, 2024 at 9:21=E2=80=AFPM Masami Hiramatsu <mhiramat@kernel.o=
+rg> wrote:
+>
+> Hi,
+>
+> On Mon, 18 Mar 2024 11:17:25 -0700
+> Andrii Nakryiko <andrii@kernel.org> wrote:
+>
+> > This patch set implements two speed ups for uprobe/uretprobe runtime ex=
+ecution
+> > path for some common scenarios: BPF-only uprobes (patches #1 and #2) an=
+d
+> > system-wide (non-PID-specific) uprobes (patch #3). Please see individua=
+l
+> > patches for details.
+>
+> This series looks good to me. Let me pick it on probes/for-next.
 
-Do you mean "set zone->managed_pages to zone->present_pages"?
+Great, at least I guessed the Git repo right, if not the branch.
+Thanks for pulling it in! I assume some other uprobe-related follow up
+patches should be based on probes/for-next as well, right?
 
-I think we can just set zone->managed_pages to 0 in free_area_init_core().
-Anyway it will be reset before the first use.
- 
-> And also remove the assignment of nr_all_pages and nr_kernel_pages in
-> free_area_init_core(). Instead, call the newly added calc_nr_kernel_pages()
-> to count up all free but not reserved memory in memblock and assign to
-> nr_all_pages and nr_kernel_pages. The counting excludes memmap_pages,
-> and other kernel used data, which is more accurate than old way and
-> simpler, and can also cover the ppc required arch_reserved_kernel_pages()
-> case.
-> 
-> Signed-off-by: Baoquan He <bhe@redhat.com>
-> ---
->  mm/mm_init.c | 38 ++++++--------------------------------
->  1 file changed, 6 insertions(+), 32 deletions(-)
-> 
-> diff --git a/mm/mm_init.c b/mm/mm_init.c
-> index c57a7fc97a16..55a2b886b7a6 100644
-> --- a/mm/mm_init.c
-> +++ b/mm/mm_init.c
-> @@ -1584,41 +1584,14 @@ static void __init free_area_init_core(struct pglist_data *pgdat)
->  
->  	for (j = 0; j < MAX_NR_ZONES; j++) {
->  		struct zone *zone = pgdat->node_zones + j;
-> -		unsigned long size, freesize, memmap_pages;
-> -
-> -		size = zone->spanned_pages;
-> -		freesize = zone->present_pages;
-> -
-> -		/*
-> -		 * Adjust freesize so that it accounts for how much memory
-> -		 * is used by this zone for memmap. This affects the watermark
-> -		 * and per-cpu initialisations
-> -		 */
-> -		memmap_pages = calc_memmap_size(size, freesize);
-> -		if (!is_highmem_idx(j)) {
-> -			if (freesize >= memmap_pages) {
-> -				freesize -= memmap_pages;
-> -				if (memmap_pages)
-> -					pr_debug("  %s zone: %lu pages used for memmap\n",
-> -						 zone_names[j], memmap_pages);
-> -			} else
-> -				pr_warn("  %s zone: %lu memmap pages exceeds freesize %lu\n",
-> -					zone_names[j], memmap_pages, freesize);
-> -		}
-> -
-> -		if (!is_highmem_idx(j))
-> -			nr_kernel_pages += freesize;
-> -		/* Charge for highmem memmap if there are enough kernel pages */
-> -		else if (nr_kernel_pages > memmap_pages * 2)
-> -			nr_kernel_pages -= memmap_pages;
-> -		nr_all_pages += freesize;
-> +		unsigned long size = zone->spanned_pages;
->  
->  		/*
-> -		 * Set an approximate value for lowmem here, it will be adjusted
-> -		 * when the bootmem allocator frees pages into the buddy system.
-> -		 * And all highmem pages will be managed by the buddy system.
-> +		 * Set the zone->managed_pages as zone->present_pages roughly, it
-> +		 * be zeroed out and reset when memblock allocator frees pages into
-> +		 * buddy system.
->  		 */
-> -		zone_init_internals(zone, j, nid, freesize);
-> +		zone_init_internals(zone, j, nid, zone->present_pages);
->  
->  		if (!size)
->  			continue;
-> @@ -1915,6 +1888,7 @@ void __init free_area_init(unsigned long *max_zone_pfn)
->  		check_for_memory(pgdat);
->  	}
->  
-> +	calc_nr_kernel_pages();
->  	memmap_init();
->  
->  	/* disable hash distribution for systems with a single node */
-> -- 
-> 2.41.0
-> 
-
--- 
-Sincerely yours,
-Mike.
+>
+> Thanks!
+>
+> >
+> > v1->v2:
+> >   - rebased onto trace/core branch of tracing tree, hopefully I guessed=
+ right;
+> >   - simplified user_cpu_buffer usage further (Oleg Nesterov);
+> >   - simplified patch #3, just moved speculative check outside of lock (=
+Oleg);
+> >   - added Reviewed-by from Jiri Olsa.
+> >
+> > Andrii Nakryiko (3):
+> >   uprobes: encapsulate preparation of uprobe args buffer
+> >   uprobes: prepare uprobe args buffer lazily
+> >   uprobes: add speculative lockless system-wide uprobe filter check
+> >
+> >  kernel/trace/trace_uprobe.c | 103 +++++++++++++++++++++---------------
+> >  1 file changed, 59 insertions(+), 44 deletions(-)
+> >
+> > --
+> > 2.43.0
+> >
+>
+>
+> --
+> Masami Hiramatsu (Google) <mhiramat@kernel.org>
 
