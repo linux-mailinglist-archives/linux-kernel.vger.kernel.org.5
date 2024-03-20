@@ -1,45 +1,45 @@
-Return-Path: <linux-kernel+bounces-108557-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108558-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 864FB880C29
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:39:17 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4F518880C2A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:39:29 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id B5D4D1C227E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:39:16 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id BB1141F23B4A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:39:28 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 488973C493;
-	Wed, 20 Mar 2024 07:38:04 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id ADC3F3D3BB;
+	Wed, 20 Mar 2024 07:38:06 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="P7kGTdOt"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QnyMHcy7"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 79A573C46B
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:38:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DF6803D0AD
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 07:38:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710920283; cv=none; b=LBP5AkoMxc7XCs2SfY7R2PVbZwfHCFl13LgBkDQJpM7Jeoo2nF5eM+TUjmoz9aCIh2dgnHfX0KxvDkHd8tGVfhmKnylk0YXCAh3CUgbV5o3XGIRSNKSu/xrXuX96+g0HXqKtNOMHl4QZk6RfaSFEJNtcfPUCJAG7mcdeHNMHQRQ=
+	t=1710920286; cv=none; b=lc8SSXU7Dtysu5Jh+d21NADqCKz6BZSOAlYOxKhgBsLC7Pwi3Gu1ZORlowPiqzEgCZbWWLBTIrgKM3FfCggqjxF04doS0ATRMp3uSh0K9R/9cZf7+8f6tnKS85NBUleesYcL6wMNYF8Pnb7LhHUPe464u/DaKxcIWb6UCe+b5HA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710920283; c=relaxed/simple;
-	bh=rdqHFbrLbUfNMTwK9NhbP/z7rMDrfdCWv7WBbuSbpoI=;
+	s=arc-20240116; t=1710920286; c=relaxed/simple;
+	bh=tjVPu2LfV6/oJL+/cGFCPeE7wstp4Ud62/5nB+tu7Fo=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=QRx7rbeuXqT9Pmib+YkWU0MroWz/VM5wYZZB/5PjFcf3JrkphE6UH9AVBtiqFaEJU0Iu+Qlm64oLC5yT18hf4MWjqLs2WUCaxbAmTcwlCEQ7WAD0h+QvuXvjWgo/hXtDaK2vLOKHo9JkiJIFkchujWpXsfwb5NDiO3L1UwhKoOE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=P7kGTdOt; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id C4B16C433F1;
-	Wed, 20 Mar 2024 07:37:59 +0000 (UTC)
+	 MIME-Version; b=ujnrxEeS0vTA/UMIe7QyHa6/vZGnN6NoCYHft7B26AtBiIOakwfKFTQRsec1eVOQRUaXU581diac2FK2xk+GnytJC4NekC0aKO91Yk1Pw2z9YPJ1y0x9PEcn2JPG3jGYBUpkcdNLD2TdvC1V5SFDheMolRhJ7epILyz10QIZN8s=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QnyMHcy7; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id F12D5C43390;
+	Wed, 20 Mar 2024 07:38:02 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710920282;
-	bh=rdqHFbrLbUfNMTwK9NhbP/z7rMDrfdCWv7WBbuSbpoI=;
+	s=k20201202; t=1710920285;
+	bh=tjVPu2LfV6/oJL+/cGFCPeE7wstp4Ud62/5nB+tu7Fo=;
 	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=P7kGTdOtJXwS+CqqQBmTtS71n3PQ18LbacGDQuh/lRh42lDg2iTEayH6tSB1h2bxN
-	 MrFoF+KbHSF2yqHtMdOX1qs+tosrFeLbpmemFHjLSVQmFpHa7XVRdgfCq44+BC2GQn
-	 hNlKEFkjh8KST5YownPLSNmyqo1XOoJhOYDcFNAsw+aE3GVFYVKTJ+/uLPlccUufPs
-	 X3wpNM1X8oqEebZhud/wtB3c2YdkoP9UUxDdszXnW+UBNIEJa9OhaeYN0j6V1EE/Nu
-	 zB9352SkNM7OKNTbg5EXBn8mtVsfJzr+hH2RNih4eLmYGeKuW/hUwDb+DbtupYZfg7
-	 x9DhUNWe+gMfg==
+	b=QnyMHcy70fzp8mjnSBi4o1+7TO69JWuiRoHjNyhFVoYTtNUcOygYYs1aYzSwHZ4tP
+	 B1BEQoxvGpCI5WgyIKpDPphqywUn0C0GwKZ9osVoCfI7FwSszybl7JM+X7kspzNj1U
+	 ZaUyDOXUqJMrYPlAP3tjgfC0glaUofbiUSDuv3ZHGJJXB3urIxTdY8dqSOJpLF7Q4J
+	 +0xpRLKV7XWf7OvDi6wMx13J5ewLV5vUggPB+1o1apGUrBvZIVUI7PM1LA3+YdCGy4
+	 16PM0s7aJeQoqB4eV7jgHGwGxedDMFcl/prNrGkefrYvjHT9OTNC9gi84ELn/jrimA
+	 l05LCkNlt1caA==
 From: alexs@kernel.org
 To: Izik Eidus <izik.eidus@ravellosystems.com>,
 	Matthew Wilcox <willy@infradead.org>,
@@ -52,9 +52,9 @@ To: Izik Eidus <izik.eidus@ravellosystems.com>,
 	linux-kernel@vger.kernel.org (open list)
 Cc: linux-kernel@vger.kernel.org,
 	"Alex Shi (tencent)" <alexs@kernel.org>
-Subject: [PATCH 08/11] mm/ksm: Convert stable_tree_insert to use folio
-Date: Wed, 20 Mar 2024 15:40:44 +0800
-Message-ID: <20240320074049.4130552-9-alexs@kernel.org>
+Subject: [PATCH 09/11] mm/ksm: Convert stable_tree_search to use folio
+Date: Wed, 20 Mar 2024 15:40:45 +0800
+Message-ID: <20240320074049.4130552-10-alexs@kernel.org>
 X-Mailer: git-send-email 2.43.0
 In-Reply-To: <20240320074049.4130552-1-alexs@kernel.org>
 References: <20240320074049.4130552-1-alexs@kernel.org>
@@ -68,8 +68,9 @@ Content-Transfer-Encoding: 8bit
 
 From: "Alex Shi (tencent)" <alexs@kernel.org>
 
-KSM stable tree only store single page, so convert the func users to use
-folio and save few compound_head calls.
+Although, the func may pass a tail page to check its contents, but only
+single page exist in KSM stable tree, so we still can use folio in
+stable_tree_search() to save a few compound_head calls.
 
 Signed-off-by: Alex Shi (tencent) <alexs@kernel.org>
 Cc: Izik Eidus <izik.eidus@ravellosystems.com>
@@ -78,33 +79,45 @@ Cc: Andrea Arcangeli <aarcange@redhat.com>
 Cc: Hugh Dickins <hughd@google.com>
 Cc: Chris Wright <chrisw@sous-sol.org>
 ---
- mm/ksm.c | 20 ++++++++++----------
- 1 file changed, 10 insertions(+), 10 deletions(-)
+ mm/ksm.c | 60 +++++++++++++++++++++++++++++---------------------------
+ 1 file changed, 31 insertions(+), 29 deletions(-)
 
 diff --git a/mm/ksm.c b/mm/ksm.c
-index 648fa695424b..71d1a52f344d 100644
+index 71d1a52f344d..75401b3bae5c 100644
 --- a/mm/ksm.c
 +++ b/mm/ksm.c
-@@ -2062,7 +2062,7 @@ static struct page *stable_tree_search(struct page *page)
-  * This function returns the stable tree node just allocated on success,
+@@ -1812,7 +1812,7 @@ static __always_inline void *chain(struct ksm_stable_node **s_n_d,
+  * This function returns the stable tree node of identical content if found,
   * NULL otherwise.
   */
--static struct ksm_stable_node *stable_tree_insert(struct page *kpage)
-+static struct ksm_stable_node *stable_tree_insert(struct folio *kfolio)
+-static struct page *stable_tree_search(struct page *page)
++static void *stable_tree_search(struct page *page)
  {
  	int nid;
- 	unsigned long kpfn;
-@@ -2072,7 +2072,7 @@ static struct ksm_stable_node *stable_tree_insert(struct page *kpage)
+ 	struct rb_root *root;
+@@ -1820,28 +1820,30 @@ static struct page *stable_tree_search(struct page *page)
+ 	struct rb_node *parent;
  	struct ksm_stable_node *stable_node, *stable_node_dup, *stable_node_any;
- 	bool need_chain = false;
+ 	struct ksm_stable_node *page_node;
++	struct folio *folio;
  
--	kpfn = page_to_pfn(kpage);
-+	kpfn = folio_pfn(kfolio);
- 	nid = get_kpfn_nid(kpfn);
+-	page_node = page_stable_node(page);
++	folio = (struct folio *)page;
++	page_node = folio_stable_node(folio);
+ 	if (page_node && page_node->head != &migrate_nodes) {
+ 		/* ksm page forked */
+-		get_page(page);
+-		return page;
++		folio_get(folio);
++		return folio;
+ 	}
+ 
+-	nid = get_kpfn_nid(page_to_pfn(page));
++	nid = get_kpfn_nid(folio_pfn(folio));
  	root = root_stable_tree + nid;
  again:
-@@ -2080,13 +2080,13 @@ static struct ksm_stable_node *stable_tree_insert(struct page *kpage)
  	new = &root->rb_node;
+ 	parent = NULL;
  
  	while (*new) {
 -		struct page *tree_page;
@@ -114,18 +127,19 @@ index 648fa695424b..71d1a52f344d 100644
  		cond_resched();
  		stable_node = rb_entry(*new, struct ksm_stable_node, node);
  		stable_node_any = NULL;
--		tree_page = chain(&stable_node_dup, stable_node, root);
-+		tree_folio = chain(&stable_node_dup, stable_node, root);
- 		if (!stable_node_dup) {
- 			/*
- 			 * Either all stable_node dups were full in
-@@ -2108,11 +2108,11 @@ static struct ksm_stable_node *stable_tree_insert(struct page *kpage)
+-		tree_page = chain_prune(&stable_node_dup, &stable_node,	root);
++		tree_folio = chain_prune(&stable_node_dup, &stable_node, root);
+ 		/*
+ 		 * NOTE: stable_node may have been freed by
+ 		 * chain_prune() if the returned stable_node_dup is
+@@ -1875,11 +1877,11 @@ static struct page *stable_tree_search(struct page *page)
  			 * write protected at all times. Any will work
  			 * fine to continue the walk.
  			 */
 -			tree_page = get_ksm_page(stable_node_any,
+-						 GET_KSM_PAGE_NOLOCK);
 +			tree_folio = get_ksm_page(stable_node_any,
- 						 GET_KSM_PAGE_NOLOCK);
++						  GET_KSM_PAGE_NOLOCK);
  		}
  		VM_BUG_ON(!stable_node_dup ^ !!stable_node_any);
 -		if (!tree_page) {
@@ -133,35 +147,108 @@ index 648fa695424b..71d1a52f344d 100644
  			/*
  			 * If we walked over a stale stable_node,
  			 * get_ksm_page() will call rb_erase() and it
-@@ -2125,8 +2125,8 @@ static struct ksm_stable_node *stable_tree_insert(struct page *kpage)
+@@ -1892,8 +1894,8 @@ static struct page *stable_tree_search(struct page *page)
  			goto again;
  		}
  
--		ret = memcmp_pages(kpage, tree_page);
+-		ret = memcmp_pages(page, tree_page);
 -		put_page(tree_page);
-+		ret = memcmp_pages(&kfolio->page, &tree_folio->page);
++		ret = memcmp_pages(&folio->page, &tree_folio->page);
 +		folio_put(tree_folio);
  
  		parent = *new;
  		if (ret < 0)
-@@ -2145,7 +2145,7 @@ static struct ksm_stable_node *stable_tree_insert(struct page *kpage)
- 
- 	INIT_HLIST_HEAD(&stable_node_dup->hlist);
- 	stable_node_dup->kpfn = kpfn;
--	set_page_stable_node(kpage, stable_node_dup);
-+	set_page_stable_node(&kfolio->page, stable_node_dup);
- 	stable_node_dup->rmap_hlist_len = 0;
- 	DO_NUMA(stable_node_dup->nid = nid);
- 	if (!need_chain) {
-@@ -2423,7 +2423,7 @@ static void cmp_and_merge_page(struct page *page, struct ksm_rmap_item *rmap_ite
- 			 * node in the stable tree and add both rmap_items.
+@@ -1936,26 +1938,26 @@ static struct page *stable_tree_search(struct page *page)
+ 			 * It would be more elegant to return stable_node
+ 			 * than kpage, but that involves more changes.
  			 */
- 			lock_page(kpage);
--			stable_node = stable_tree_insert(kpage);
-+			stable_node = stable_tree_insert(page_folio(kpage));
- 			if (stable_node) {
- 				stable_tree_append(tree_rmap_item, stable_node,
- 						   false);
+-			tree_page = get_ksm_page(stable_node_dup,
+-						 GET_KSM_PAGE_TRYLOCK);
++			tree_folio = get_ksm_page(stable_node_dup,
++						  GET_KSM_PAGE_TRYLOCK);
+ 
+-			if (PTR_ERR(tree_page) == -EBUSY)
++			if (PTR_ERR(tree_folio) == -EBUSY)
+ 				return ERR_PTR(-EBUSY);
+ 
+-			if (unlikely(!tree_page))
++			if (unlikely(!tree_folio))
+ 				/*
+ 				 * The tree may have been rebalanced,
+ 				 * so re-evaluate parent and new.
+ 				 */
+ 				goto again;
+-			unlock_page(tree_page);
++			folio_unlock(tree_folio);
+ 
+ 			if (get_kpfn_nid(stable_node_dup->kpfn) !=
+ 			    NUMA(stable_node_dup->nid)) {
+-				put_page(tree_page);
++				folio_put(tree_folio);
+ 				goto replace;
+ 			}
+-			return tree_page;
++			return tree_folio;
+ 		}
+ 	}
+ 
+@@ -1968,8 +1970,8 @@ static struct page *stable_tree_search(struct page *page)
+ 	rb_insert_color(&page_node->node, root);
+ out:
+ 	if (is_page_sharing_candidate(page_node)) {
+-		get_page(page);
+-		return page;
++		folio_get(folio);
++		return folio;
+ 	} else
+ 		return NULL;
+ 
+@@ -1994,12 +1996,12 @@ static struct page *stable_tree_search(struct page *page)
+ 					&page_node->node,
+ 					root);
+ 			if (is_page_sharing_candidate(page_node))
+-				get_page(page);
++				folio_get(folio);
+ 			else
+-				page = NULL;
++				folio = NULL;
+ 		} else {
+ 			rb_erase(&stable_node_dup->node, root);
+-			page = NULL;
++			folio = NULL;
+ 		}
+ 	} else {
+ 		VM_BUG_ON(!is_stable_node_chain(stable_node));
+@@ -2010,16 +2012,16 @@ static struct page *stable_tree_search(struct page *page)
+ 			DO_NUMA(page_node->nid = nid);
+ 			stable_node_chain_add_dup(page_node, stable_node);
+ 			if (is_page_sharing_candidate(page_node))
+-				get_page(page);
++				folio_get(folio);
+ 			else
+-				page = NULL;
++				folio = NULL;
+ 		} else {
+-			page = NULL;
++			folio = NULL;
+ 		}
+ 	}
+ 	stable_node_dup->head = &migrate_nodes;
+ 	list_add(&stable_node_dup->list, stable_node_dup->head);
+-	return page;
++	return folio;
+ 
+ chain_append:
+ 	/* stable_node_dup could be null if it reached the limit */
+@@ -2109,7 +2111,7 @@ static struct ksm_stable_node *stable_tree_insert(struct folio *kfolio)
+ 			 * fine to continue the walk.
+ 			 */
+ 			tree_folio = get_ksm_page(stable_node_any,
+-						 GET_KSM_PAGE_NOLOCK);
++						  GET_KSM_PAGE_NOLOCK);
+ 		}
+ 		VM_BUG_ON(!stable_node_dup ^ !!stable_node_any);
+ 		if (!tree_folio) {
 -- 
 2.43.0
 
