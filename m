@@ -1,126 +1,192 @@
-Return-Path: <linux-kernel+bounces-109306-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109307-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0FD1888176E
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:45:32 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3AC20881772
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:46:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A339C1F22748
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:45:31 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id A57E5B22D58
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:46:08 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 10C0B8529B;
-	Wed, 20 Mar 2024 18:45:24 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F06C28529D;
+	Wed, 20 Mar 2024 18:45:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="B4mRI5wQ"
-Received: from mail-lf1-f53.google.com (mail-lf1-f53.google.com [209.85.167.53])
+	dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b="f4tGR9zO"
+Received: from mail.tuxedocomputers.com (mail.tuxedocomputers.com [157.90.84.7])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BFE2652F78;
-	Wed, 20 Mar 2024 18:45:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.167.53
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 3F54052F78;
+	Wed, 20 Mar 2024 18:45:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=157.90.84.7
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710960323; cv=none; b=bUGrmOM4CkT3GsT0oiA2IVlivlJfo8tOFEQrKXBoynIk6TqzZM3xI0etoYpXDugjp991bjTfn3UVdSXqzNzjqI5Aar89MFSf3tfOg4UnAPtGBzP1/HByarF9tqGKNM+NUdauao2Jtp3ZmWV+/tdzyRruaFRv2JtlLzthEgzLBcY=
+	t=1710960357; cv=none; b=ONVs74+1CriBXIsnxUj2UL3GZNIdjWxf3KqzP2+DqUaNJPlmZfH4pASxrNwnMkgWaa5xibtUanBd4GTM20iGWKXJla3DpL7VQfOlbiwqNhexTo0wRt68rmFupkbSNhC06E8YHnjKx2n+7+hzMX0BYiLQH4FMsAh0Cv92A09MLQY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710960323; c=relaxed/simple;
-	bh=IIoFYLWjjgoGol2FMUHfgDpjuS9/7LVzzfTTe9iYYnY=;
-	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YJnf5VJkfFYQP/IdF8xxdIIefN+M+F6QOwuUnRsA43e7uDGAVo+giI75iPc1lh0OxxG3wZrS7ypw7TH50GpLpXLUXj54clM+GsjMybuE+hcQEuEoT1sxBkJPRJ4AxO43+Fj7Gbq44sBoO69B0MPh0X41+h9DpXuJIvtEom6teKY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=B4mRI5wQ; arc=none smtp.client-ip=209.85.167.53
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-lf1-f53.google.com with SMTP id 2adb3069b0e04-513a08f2263so204889e87.3;
-        Wed, 20 Mar 2024 11:45:21 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710960320; x=1711565120; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
-        bh=Afz0eCjmB5LW6m89O9fLaUrWwF2XDDN/YPKtH4GdqXE=;
-        b=B4mRI5wQ9GIGwSk6R5yg+055XA2+UfbWMS8TIedYWQVmoZdQP6A97nDRHbWhh3yDDJ
-         6I7hMXTAG1w1PpEykga8yDJwg1fb08ih1yZszGe7x0qDUzzty7FYtcQFzMVsFKKAiEuj
-         geTsj0W/C4AulYTHnRP+fhAgJ8YneLqT0sBLqm6PNmyHBS3+zm4nnsZXZEglHas22XrK
-         m1BCsJclnUHya+EghQasHYzh6extHWbBUihjfquUNpMQhGf/6i5sMuNccw15aTvvqhhY
-         cUidUcKewBgMNZbrIHPEJydlEXErOOwKs9o3am6q9zt381mJE/MDMqFRh0ZJTEWyK4bN
-         EGOg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710960320; x=1711565120;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=Afz0eCjmB5LW6m89O9fLaUrWwF2XDDN/YPKtH4GdqXE=;
-        b=ofgu+ROMaUhYKHojj+E56fwWL8UO0XdwC5XqubtaCf7t/ud44MkPa0gR9TDMGTgaMG
-         T4MAxcaGK/2krsB0IdVhPcxwnwoF90VEUpiipXOYzE5DzByQsu0eXXV2QU6FNuz6R66S
-         MKaVf41hWlGRjOkd1S48RvQsJolN0MMFIBMwQFn2hpdG45XMakts8Lz5ZdqqyBkOVR8K
-         8Ql2lrs64IWe//vf48YhhmBEJMqs2PFpOINH6U/4rQl2S4GUHTc970el0gsDQxd4oFHx
-         vekUYvlVdpcO6qNvvR4j7P/6btLIA33/ppUUd/VMi1dIB3KbMJcVmyQ+cFxHfPVj0iAF
-         gGQQ==
-X-Forwarded-Encrypted: i=1; AJvYcCUyZZayeFprHrWh8QpMVCnrvxgpSQZlVGgsBBeXeILp1MNlyWQfXcxC6IPDm5T5fRXVHdXZREqwFwrBcQW+wEZPqgDicBWUC8Jb+GDPIddzaev2pXKkxH4T9C2wYijdbnTMfDOyQ/gW
-X-Gm-Message-State: AOJu0YyXcBlkFisIawrqB+LhABYKuqjXDP5oBedxofKHXIb3uelju40h
-	STTugXeZx7dfkp9Jbk4J+qJIaXYJrH4EpKCwtMSZ0aYSU28lwH3/
-X-Google-Smtp-Source: AGHT+IGAzxTDRvMWWm8SlK54TTSL+cl6Rn4zD6aAd2YVvVB4w+OYGkDfhXBbRBVox1R2SW/YCddGxw==
-X-Received: by 2002:a05:6512:310c:b0:512:ee61:c32b with SMTP id n12-20020a056512310c00b00512ee61c32bmr4967422lfb.43.1710960319670;
-        Wed, 20 Mar 2024 11:45:19 -0700 (PDT)
-Received: from vamoiridPC ([2a04:ee41:82:7577:9be1:7bef:ff5c:57fc])
-        by smtp.gmail.com with ESMTPSA id jx25-20020a170907761900b00a4661f0f1e7sm7554317ejc.205.2024.03.20.11.45.18
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:45:19 -0700 (PDT)
-From: Vasileios Amoiridis <vassilisamir@gmail.com>
-X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
-Date: Wed, 20 Mar 2024 19:45:16 +0100
-To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
-Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
-	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
-	ak@it-klinger.de, petre.rodan@subdimension.ro, phil@raspberrypi.com,
-	579lpy@gmail.com, linus.walleij@linaro.org,
-	semen.protsenko@linaro.org, linux-iio@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v3 5/6] iio: pressure: Add timestamp and scan_masks for
- BMP280 driver
-Message-ID: <20240320184516.GB36450@vamoiridPC>
-References: <20240319002925.2121016-1-vassilisamir@gmail.com>
- <20240319002925.2121016-6-vassilisamir@gmail.com>
- <ZfrDW1ESxnFg__od@smile.fi.intel.com>
+	s=arc-20240116; t=1710960357; c=relaxed/simple;
+	bh=FdvAryhYuwV2hmzPVyBwo1j+eckI21gR/HiDPzPWTGg=;
+	h=Message-ID:Date:MIME-Version:Subject:From:To:Cc:References:
+	 In-Reply-To:Content-Type; b=Xj0G7NSw49STVx3jbjl/3LBjZf9w+qBn4Q5JQw30Y0yc3hnkJjzpeKIhFGZXbVTT6sVKOhRGUQfVtx3M8rMnMxIYmpdPwmE6WmVnTk4HJOFsdUKMPSvY8deWvM05E5MBFGv8ZCMmGM6g3In+8QHB16CXalOJzPtJ77xbHkVY6ec=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com; spf=pass smtp.mailfrom=tuxedocomputers.com; dkim=pass (1024-bit key) header.d=tuxedocomputers.com header.i=@tuxedocomputers.com header.b=f4tGR9zO; arc=none smtp.client-ip=157.90.84.7
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=tuxedocomputers.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=tuxedocomputers.com
+Received: from [192.168.42.20] (pd9e59c8a.dip0.t-ipconnect.de [217.229.156.138])
+	(Authenticated sender: wse@tuxedocomputers.com)
+	by mail.tuxedocomputers.com (Postfix) with ESMTPSA id 3E8C62FC0112;
+	Wed, 20 Mar 2024 19:45:44 +0100 (CET)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=tuxedocomputers.com;
+	s=default; t=1710960345;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=0aJ6WogG8TKIkMoo2xB1GRutijq0g65zd7DzWfQd0xo=;
+	b=f4tGR9zOeoNnuXaCPems0Yk3CHqLH8rQYPZgbz9KHVxqddiaqgtmuOTk2m89La8hZhIZJT
+	epbtVjyFfEncfkX1T/CeG3NNHemqwCgqnf9z7BwXtUvK7jAfsQcMcN0lPM3Xmjt0g+gphx
+	KmYoc49s+v9KutsRCGGpxN+vfnNZd0A=
+Authentication-Results: mail.tuxedocomputers.com;
+	auth=pass smtp.auth=wse@tuxedocomputers.com smtp.mailfrom=wse@tuxedocomputers.com
+Message-ID: <742f2564-96bd-4b4c-89d6-7ef4e6b641a5@tuxedocomputers.com>
+Date: Wed, 20 Mar 2024 19:45:43 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <ZfrDW1ESxnFg__od@smile.fi.intel.com>
+User-Agent: Mozilla Thunderbird
+Subject: Re: Future handling of complex RGB devices on Linux v3
+Content-Language: en-US
+From: Werner Sembach <wse@tuxedocomputers.com>
+To: Hans de Goede <hdegoede@redhat.com>
+Cc: Lee Jones <lee@kernel.org>, jikos@kernel.org,
+ linux-kernel@vger.kernel.org, Jelle van der Waa <jelle@vdwaa.nl>,
+ Miguel Ojeda <miguel.ojeda.sandonis@gmail.com>,
+ "dri-devel@lists.freedesktop.org" <dri-devel@lists.freedesktop.org>,
+ linux-input@vger.kernel.org, ojeda@kernel.org, linux-leds@vger.kernel.org,
+ Pavel Machek <pavel@ucw.cz>, Gregor Riepl <onitake@gmail.com>
+References: <0cdb78b1-7763-4bb6-9582-d70577781e61@tuxedocomputers.com>
+ <7228f2c6-fbdd-4e19-b703-103b8535d77d@redhat.com>
+ <730bead8-6e1d-4d21-90d2-4ee73155887a@tuxedocomputers.com>
+ <952409e1-2f0e-4d7a-a7a9-3b78f2eafec7@redhat.com>
+ <9851a06d-956e-4b57-be63-e10ff1fce8b4@tuxedocomputers.com>
+ <1bc6d6f0-a13d-4148-80cb-9c13dec7ed32@redhat.com>
+ <b70b2ea8-abfd-4d41-b336-3e34e5bdb8c6@tuxedocomputers.com>
+ <477d30ee-247e-47e6-bc74-515fd87fdc13@redhat.com>
+ <e21a7d87-3059-4a51-af04-1062dac977d2@tuxedocomputers.com>
+ <247b5dcd-fda8-45a7-9896-eabc46568281@tuxedocomputers.com>
+ <ZdZ2kMASawJ9wdZj@duo.ucw.cz>
+ <b6d79727-ae94-44b1-aa88-069416435c14@redhat.com>
+ <a21f6c49-2c05-4496-965c-a7524ed38634@gmail.com>
+ <825129ea-d389-4c6c-8a23-39f05572e4b4@redhat.com>
+ <adbfdf6c-fb59-4fae-a472-17b04dd8a3f6@tuxedocomputers.com>
+ <1fb08a74-62c7-4d0c-ba5d-648e23082dcb@tuxedocomputers.com>
+ <31bbac5f-a1fc-41dd-b614-f9039763084d@tuxedocomputers.com>
+In-Reply-To: <31bbac5f-a1fc-41dd-b614-f9039763084d@tuxedocomputers.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Wed, Mar 20, 2024 at 01:07:07PM +0200, Andy Shevchenko wrote:
-> On Tue, Mar 19, 2024 at 01:29:24AM +0100, Vasileios Amoiridis wrote:
-> > The scan mask for the BME280 supports humidity measurement and
-> > needs to be distinguished from the rest in order for the timestamp
-> > to be able to work.
-> 
-> ...
-> 
-> > +enum bmp280_scan {
-> > +	BMP280_TEMP,
-> > +	BMP280_PRESS,
-> > +	BME280_HUMID
-> 
-> The last is not a terminator, please leave trailing comma.
-> 
-> > +};
-> 
 
-What do you mean it is not a terminator? In general with the enum
-variables I would write:
-
-	enum var { a, b, c };
-
-Why in this case there is a comma needed after the BME280_HUMID element?
-
-Cheers,
-Vasilis
-> -- 
-> With Best Regards,
-> Andy Shevchenko
-> 
-> 
+Am 20.03.24 um 12:33 schrieb Werner Sembach:
+>
+> Am 20.03.24 um 12:16 schrieb Werner Sembach:
+>> Hi Hans and the others,
+>>
+>> Am 22.02.24 um 14:14 schrieb Werner Sembach:
+>>> Hi,
+>>>
+>>> Thanks everyone for the exhaustive feedback. And at least this thread is a 
+>>> good comprehesive reference for the future ^^.
+>>>
+>>> To recap the hopefully final UAPI for complex RGB lighting devices:
+>>>
+>>> - By default there is a singular /sys/class/leds/* entry that treats the 
+>>> device as if it was a single zone RGB keyboard backlight with no special 
+>>> effects.
+>>>
+>>> - There is an accompanying misc device with the sysfs attributes "name", 
+>>> "device_type",  "firmware_version_string", "serial_number" for device 
+>>> identification and "use_leds_uapi" that defaults to 1.
+>>>
+>>>     - If set to 0 the /sys/class/leds/* entry disappears. The driver should 
+>>> keep the last state the backlight was in active if possible.
+>>>
+>>>     - If set 1 it appears again. The driver should bring it back to a static 
+>>> 1 zone setting while avoiding flicker if possible.
+>>>
+>>> - If the device is not controllable by for example hidraw, the misc device 
+>>> might also implement additional ioctls or sysfs attributes to allow a more 
+>>> complex low level control for the keyboard backlight. This is will be a 
+>>> highly vendor specific UAPI.
+>> So in the OpenRGB issue thread 
+>> https://learn.microsoft.com/en-us/windows-hardware/design/component-guidelines/dynamic-lighting-devices 
+>> aka HID LampArray was mentioned. I did dismiss it because I thought that is 
+>> only relevant for firmware, but I now stumbled upon the Virtual HID Framework 
+>> (VHF) 
+>> https://learn.microsoft.com/en-us/windows-hardware/drivers/hid/virtual-hid-framework--vhf- 
+>> and now I wonder if an equivalent exists for Linux? A quick search did not 
+>> yield any results for me.
+> Is this what I have been searching for? 
+> https://docs.kernel.org/usb/gadget_hid.html
+Nope is something different: http://www.linux-usb.org/gadget/
+>>
+>> If a virtual HID device is possible and the WMI interface can reasonably be 
+>> mapped to the LampArray API this might be the best starting point:
+>>
+>> - Implement a Virtual HID device with LampArray
+>>
+>> - Implement LampArray in OpenRGB
+>>
+>> - (Optional) Implement a generic LampArray leds subsystem driver that maps to 
+>> the single zone control and ads the use_leds_uapi sysfs switch to the virtual 
+>> HID device
+>>
+>> - (Optional) Implement vendor specific controls for 
+>> AutonomousMode/built-in-firmware-effects via custom HID commands
+>>
+>> - (Optional) Implement Virtual HID devices for actual HID devices that don't 
+>> support LampArray in firmware (Open question: How to prevent 
+>> userspace/OpenRGB from interacting with original HID when the virtual HID 
+>> device is not in AutonomousMode? How to associate the original and virtual 
+>> HID device to each other that userspace can easily recognize this relation? 
+>> Or is it possible to add virtual HID commands on top of a real HID device, 
+>> making it look exactly like the pure virtual devices for userspace?)
+>>
+>> The LampArray API hereby is made with the intention to be used for multi leds 
+>> devices, like per-key-backlight keyboards, unlike the leds UAPI. And it is 
+>> coming anyway with new RGB devices soon. So it would not conflict with a 
+>> "don't introduce unnecessary UAPI interfaces" principle. Are there any plans 
+>> already of Wrapping LampArray in some kind ioctl/sysfs API? Or just have it 
+>> used via hidraw? Or was there no discussion about it till now?
+>>
+>> Regards,
+>>
+>> Werner
+>>
+>>>
+>>>     - The actual logic interacting with this low level UAPI is implemented 
+>>> by a userspace driver
+>>>
+>>> Implementation wise: For the creation of the misc device with the 
+>>> use_leds_uapi switch a helper function/macro might be useful? Wonder if it 
+>>> should go into leds.h, led-class-multicolor.h, or a new header file?
+>>>
+>>> - Out of my head it would look something like this:
+>>>
+>>> led_classdev_add_optional_misc_control(
+>>>     struct led_classdev *led_cdev,
+>>>     char* name,
+>>>     char* device_type,
+>>>     char* firmware_version_string,
+>>>     char* serial_number,
+>>>     void (*deregister_led)(struct led_classdev *led_cdev),
+>>>     void (*reregister_led)(struct led_classdev *led_cdev))
+>>>
+>>> Let me know your thoughts and hopefully I can start implementing it soon for 
+>>> one of our devices.
+>>>
+>>> Kind regards,
+>>>
+>>> Werner Sembach
+>>>
 
