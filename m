@@ -1,71 +1,71 @@
-Return-Path: <linux-kernel+bounces-109280-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109281-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 38EA788171D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:06:13 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 5FC3488171C
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:06:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E2FD12833F9
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 15DF5281B7F
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:06:11 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C987870CAE;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B3FA26D1B1;
 	Wed, 20 Mar 2024 18:05:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="xAULWF/1"
-Received: from mail-qk1-f170.google.com (mail-qk1-f170.google.com [209.85.222.170])
+	dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b="ur0JuruC"
+Received: from mail-qv1-f52.google.com (mail-qv1-f52.google.com [209.85.219.52])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 20BC26E604
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:05:00 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.170
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 94EB66E5EC
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:05:02 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.52
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710957904; cv=none; b=OQa+2GVuf6NpgSItYBoYq/BTOtQi4F5ubRUmvOklcAfWVj0/EIOH10ELz7lgZ2VuIBOICSIBu12KC6XNwYHJRIjMr9kmXx8m96E5ivwdA4wwryTLi2P3Df+F6FsMf1UoAMPXpnrgARjsCbxWRLQOPEcKR1jBXOFfiMHc27Bhwrw=
+	t=1710957904; cv=none; b=Ih/CoQtxaLWgyICLeMJTM5KXj5p9HABvqQufYxvUIRrF1zOI60FSa6UwC6nCWhy+0grnoe0TjYQK+NBmNERm4MVb4A6gL+NOMzRfl9d+Z1K6SGkHvvjy/gsm+VEoWZwusLth2y6X96Yqmdp2fvhe5zMzQpfJOGNCtolmPt6/Nj8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710957904; c=relaxed/simple;
-	bh=/4JfYrAj8jwERUcgHqmsfmQPrUFzZlvxNNZCH278JIQ=;
+	bh=vgs1fSn63PW51Wej021f8rVcPq+RIeHb4BdM8Eq5vK0=;
 	h=From:To:Cc:Subject:Date:Message-ID:In-Reply-To:References:
-	 MIME-Version; b=Vifs7JCyXmRB1+RZO0jnlIh7eFUZg56P3NG34pppT9hmNGAFDHqpdNvczYDMlGXqrJIM10VLKQUKKQA/LE9CFZMn0ZU2MucGgWQP0RoyArVhqX27/FnGKO94WzHKHOOiCbB5aSNRgp1fItlahf+GLAe21EMBHSu+PsOOPLkt754=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=xAULWF/1; arc=none smtp.client-ip=209.85.222.170
+	 MIME-Version; b=RCZZPxXxYGT+Iogzm+HU3j89TpBcVhs/A1TQuarCJ0NHN2q/NF4kXVDuzIHCM5kI4H4bmyY8U2QQOglbeOMynlrDmT6g9dsZRkVxPs891v9Q+TeP9hPlhx/vSISu4DCl7n38cqqGzv6M3digm+vs+5vj8Io6kwgBR6BUn5v/w0o=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org; spf=pass smtp.mailfrom=cmpxchg.org; dkim=pass (2048-bit key) header.d=cmpxchg-org.20230601.gappssmtp.com header.i=@cmpxchg-org.20230601.gappssmtp.com header.b=ur0JuruC; arc=none smtp.client-ip=209.85.219.52
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=cmpxchg.org
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=cmpxchg.org
-Received: by mail-qk1-f170.google.com with SMTP id af79cd13be357-789f3bbe3d6so11609685a.0
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:05:00 -0700 (PDT)
+Received: by mail-qv1-f52.google.com with SMTP id 6a1803df08f44-690fed6816fso1159286d6.1
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:05:02 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710957900; x=1711562700; darn=vger.kernel.org;
+        d=cmpxchg-org.20230601.gappssmtp.com; s=20230601; t=1710957901; x=1711562701; darn=vger.kernel.org;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=iJbaxS39OzzydjfBWSZV5WP7n3+u6yMfmgUYLy2xips=;
-        b=xAULWF/12CtWP+nkbkdWUjh2t+3c+hUM9r1oIhgbiaLOXK7TO70qNCuXr0wrgtTVoq
-         M68FH3ICtGh+fLBszmS7lKQ/5a9SR0e3mIW6m7uAztos00flU44cMssXsN/OJMN507Oi
-         ScDc9rGX5oNVtWJL4hiSTyQ6Knr0Iz/m+FgFfz1mjnlQodSirDoyEaQpYTdrMCKJME53
-         uK29wuYSgudQKE2FOANWcnJerYlvHvAXouQ7gq6WXGCTYyd3Fh4v/jdXqfHcvN/3Bw5V
-         PdHBOcT77792K1JJEe8WuUXAAfY8RiFsC42tmHlgDJyxyj6D6os8HqviLnfcNjos+WnJ
-         f0jg==
+        bh=flNXTtbOi6l1opPzPulo8MxPNWZbuYfRY5TPRoxN0V8=;
+        b=ur0JuruChaxtUELNnIfd3d+MPEKilCPRR6KJuAuaOTjFBN5nn2mUpJGSFztvBKo4kE
+         g+WGn8pASnhKWnbaE9ghiETm/D7xDZ/n1Mym8pcWXJNxooP24znJGlYwGvqLQjDhYm3m
+         FjRIGJJd6RIDZ4mL9ZH6gMZaLcDq93it6MY8MBlu/1RBqxpOSlkvfb2mHmCFMHdnJaLw
+         u2tuKdsbYFEidOEYw3srx/VfgzXjXQAOcEYasCpewVVM9d1bOnLbd2+sfau9xw8bF/sP
+         tcXpRf06VP3rkcPknrf9FiseUGNxcd31epDe7mvD/zVWmxMhyO05R39y1EPKsQ9/aXgw
+         1U7Q==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710957900; x=1711562700;
+        d=1e100.net; s=20230601; t=1710957901; x=1711562701;
         h=content-transfer-encoding:mime-version:references:in-reply-to
          :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=iJbaxS39OzzydjfBWSZV5WP7n3+u6yMfmgUYLy2xips=;
-        b=wFobVYo4xlMzufuXygdqIdL150dXJjWaUnk56x/JUtZhnQl6PNrU5poKS6AJZ2N5Fx
-         MnVVviY5TpWGG4Dt4HCdrwR2PgSrp74bq8M/iwOqXkaOthpEVcgJ2yfQFH8aouchSlbf
-         YuLtNHwLwi2qoGuzdiPbMSEiKoKyZRtaMGsOQImmzQdQg+VTYUNRMpz6SVeHX1r/j1Jb
-         GR5rlf8ZpgfnQ4Puk3y/e3Z4hyUF4Gxjwsxx0krrybsE3t6rlAZ4quQaBgKTzpo+W84L
-         T7PNd9AHkRAKbOEiajEas1HHdMwAAxkFEgwEuU7J7L8bvoBIhjVHRZ3zssW4nrE9NFAq
-         Vwhg==
-X-Forwarded-Encrypted: i=1; AJvYcCVornPAIw8WvNYJXg1KOumGe6FhY0JsUrG44X4s/8A4S10N4a2nj2OZjdMV/cWHhTqDgnPXIx2LrFuLXDGaBgeGIsMhw4IcMGfLTI/X
-X-Gm-Message-State: AOJu0Ywr7dBEhrvyJ4i0aSD3sLwWNBbFj5K6YOKi+JVWQ0ZUwpKFDRio
-	XrYUgu5Ae7zN5dovCLzsOelYAXZEXBB36+DHh067+RvwXiKhFjBlvPDrE0BGbwE=
-X-Google-Smtp-Source: AGHT+IHY92ihNoxl1b7Kg9oFTjtJdyFLlDJ0yqmrH20Oav015jwylu4HFY1NbgI8MfcFHM3ggIHTBw==
-X-Received: by 2002:a05:620a:5587:b0:789:f9b1:e2e3 with SMTP id vq7-20020a05620a558700b00789f9b1e2e3mr2849191qkn.20.1710957899960;
-        Wed, 20 Mar 2024 11:04:59 -0700 (PDT)
+        bh=flNXTtbOi6l1opPzPulo8MxPNWZbuYfRY5TPRoxN0V8=;
+        b=oPNVutagaIoR59Ew/59J+udteqOqfFcjD1jitzQXhYI1baupcHvkFCr6zXtiHTypMj
+         7qA4CwOlKzPKuUSVkgOmq43C9z8yrFSizj6NuqJoOSXDuTo3/3XkgsvgP5mvgkyA5DZq
+         cb0NW8W2/SXjxoxgu9bE9tah00YQ+lZkZ60inVv1axIym0AwYUrHly1CRb7ZGvYFygRW
+         0eg43bvzObATIV1ax1p+J0O36pG26KyAUTUJWUxc8rNHdtZ/3ZZEUz4IWXu4WL01b13X
+         UXCTY2qIlD91tYzxlgEG4FmsaGIqyXKqfeoM+UyXWWI+EMUWfI4rH33XFFjRNhZJ/LHf
+         AiXQ==
+X-Forwarded-Encrypted: i=1; AJvYcCWWO6by3kG6fzALeycmiBNsDIbT2UjfVA799L0rh+mOpxwsvZ6qt/ul5dAJHe8A/mErYYR8vAsPhydGXkB1oIHuRrGpLnipZd1TjclI
+X-Gm-Message-State: AOJu0YzsJqPLohqyp/ZXWAiMZdt00OXSQX0TcspfsWKStEXIeOAKFfQQ
+	cI1Ro/CaakBTYfg3EHuh/TGz/GruSuUIv4Hm8lmtGoOIoR3Mgluw5aj8OTLE7NY=
+X-Google-Smtp-Source: AGHT+IFZ8dHGGlrLtFAYw7pJUEMpCiD9DvUpZzuKYVnmjN5J3RADhgWs7NKoZjpYmw1YXPj55rjIPA==
+X-Received: by 2002:ad4:55d1:0:b0:696:48ca:99ad with SMTP id bt17-20020ad455d1000000b0069648ca99admr1661910qvb.14.1710957901465;
+        Wed, 20 Mar 2024 11:05:01 -0700 (PDT)
 Received: from localhost (2603-7000-0c01-2716-da5e-d3ff-fee7-26e7.res6.spectrum.com. [2603:7000:c01:2716:da5e:d3ff:fee7:26e7])
-        by smtp.gmail.com with ESMTPSA id m6-20020ae9e706000000b0078a2b5faab7sm104240qka.50.2024.03.20.11.04.59
+        by smtp.gmail.com with ESMTPSA id jm14-20020ad45ece000000b00690c5cc0ff6sm8102285qvb.124.2024.03.20.11.05.00
         (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 11:04:59 -0700 (PDT)
+        Wed, 20 Mar 2024 11:05:00 -0700 (PDT)
 From: Johannes Weiner <hannes@cmpxchg.org>
 To: Andrew Morton <akpm@linux-foundation.org>
 Cc: Vlastimil Babka <vbabka@suse.cz>,
@@ -75,9 +75,9 @@ Cc: Vlastimil Babka <vbabka@suse.cz>,
 	David Hildenbrand <david@redhat.com>,
 	linux-mm@kvack.org,
 	linux-kernel@vger.kernel.org
-Subject: [PATCH 06/10] mm: page_alloc: fix freelist movement during block conversion
-Date: Wed, 20 Mar 2024 14:02:11 -0400
-Message-ID: <20240320180429.678181-7-hannes@cmpxchg.org>
+Subject: [PATCH 07/10] mm: page_alloc: close migratetype race between freeing and stealing
+Date: Wed, 20 Mar 2024 14:02:12 -0400
+Message-ID: <20240320180429.678181-8-hannes@cmpxchg.org>
 X-Mailer: git-send-email 2.44.0
 In-Reply-To: <20240320180429.678181-1-hannes@cmpxchg.org>
 References: <20240320180429.678181-1-hannes@cmpxchg.org>
@@ -89,421 +89,175 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Currently, page block type conversion during fallbacks, atomic
-reservations and isolation can strand various amounts of free pages on
-incorrect freelists.
+There are three freeing paths that read the page's migratetype
+optimistically before grabbing the zone lock. When this races with
+block stealing, those pages go on the wrong freelist.
 
-For example, fallback stealing moves free pages in the block to the
-new type's freelists, but then may not actually claim the block for
-that type if there aren't enough compatible pages already allocated.
+The paths in question are:
+- when freeing >costly orders that aren't THP
+- when freeing pages to the buddy upon pcp lock contention
+- when freeing pages that are isolated
+- when freeing pages initially during boot
+- when freeing the remainder in alloc_pages_exact()
+- when "accepting" unaccepted VM host memory before first use
+- when freeing pages during unpoisoning
 
-In all cases, free page moving might fail if the block straddles more
-than one zone, in which case no free pages are moved at all, but the
-block type is changed anyway.
+None of these are so hot that they would need this optimization at the
+cost of hampering defrag efforts. Especially when contrasted with the
+fact that the most common buddy freeing path - free_pcppages_bulk - is
+checking the migratetype under the zone->lock just fine.
 
-This is detrimental to type hygiene on the freelists. It encourages
-incompatible page mixing down the line (ask for one type, get another)
-and thus contributes to long-term fragmentation.
+In addition, isolated pages need to look up the migratetype under the
+lock anyway, which adds branches to the locked section, and results in
+a double lookup when the pages are in fact isolated.
 
-Split the process into a proper transaction: check first if conversion
-will happen, then try to move the free pages, and only if that was
-successful convert the block to the new type.
+Move the lookups into the lock.
 
-Tested-by: "Huang, Ying" <ying.huang@intel.com>
+Reported-by: Vlastimil Babka <vbabka@suse.cz>
 Signed-off-by: Johannes Weiner <hannes@cmpxchg.org>
 ---
- include/linux/page-isolation.h |   3 +-
- mm/page_alloc.c                | 175 ++++++++++++++++++++-------------
- mm/page_isolation.c            |  22 +++--
- 3 files changed, 121 insertions(+), 79 deletions(-)
+ mm/page_alloc.c | 52 ++++++++++++++++++-------------------------------
+ 1 file changed, 19 insertions(+), 33 deletions(-)
 
-diff --git a/include/linux/page-isolation.h b/include/linux/page-isolation.h
-index 4ac34392823a..8550b3c91480 100644
---- a/include/linux/page-isolation.h
-+++ b/include/linux/page-isolation.h
-@@ -34,8 +34,7 @@ static inline bool is_migrate_isolate(int migratetype)
- #define REPORT_FAILURE	0x2
- 
- void set_pageblock_migratetype(struct page *page, int migratetype);
--int move_freepages_block(struct zone *zone, struct page *page,
--				int migratetype, int *num_movable);
-+int move_freepages_block(struct zone *zone, struct page *page, int migratetype);
- 
- int start_isolate_page_range(unsigned long start_pfn, unsigned long end_pfn,
- 			     int migratetype, int flags, gfp_t gfp_flags);
 diff --git a/mm/page_alloc.c b/mm/page_alloc.c
-index 7373329763e6..e7d0d4711bdd 100644
+index e7d0d4711bdd..3f65b565eaad 100644
 --- a/mm/page_alloc.c
 +++ b/mm/page_alloc.c
-@@ -1596,9 +1596,8 @@ static inline struct page *__rmqueue_cma_fallback(struct zone *zone,
-  * Note that start_page and end_pages are not aligned on a pageblock
-  * boundary. If alignment is required, use move_freepages_block()
-  */
--static int move_freepages(struct zone *zone,
--			  unsigned long start_pfn, unsigned long end_pfn,
--			  int migratetype, int *num_movable)
-+static int move_freepages(struct zone *zone, unsigned long start_pfn,
-+			  unsigned long end_pfn, int migratetype)
+@@ -1227,18 +1227,15 @@ static void free_pcppages_bulk(struct zone *zone, int count,
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ }
+ 
+-static void free_one_page(struct zone *zone,
+-				struct page *page, unsigned long pfn,
+-				unsigned int order,
+-				int migratetype, fpi_t fpi_flags)
++static void free_one_page(struct zone *zone, struct page *page,
++			  unsigned long pfn, unsigned int order,
++			  fpi_t fpi_flags)
  {
- 	struct page *page;
- 	unsigned long pfn;
-@@ -1608,14 +1607,6 @@ static int move_freepages(struct zone *zone,
- 	for (pfn = start_pfn; pfn <= end_pfn;) {
- 		page = pfn_to_page(pfn);
- 		if (!PageBuddy(page)) {
--			/*
--			 * We assume that pages that could be isolated for
--			 * migration are movable. But we don't actually try
--			 * isolating, as that would be expensive.
--			 */
--			if (num_movable &&
--					(PageLRU(page) || __PageMovable(page)))
--				(*num_movable)++;
- 			pfn++;
+ 	unsigned long flags;
++	int migratetype;
+ 
+ 	spin_lock_irqsave(&zone->lock, flags);
+-	if (unlikely(has_isolate_pageblock(zone) ||
+-		is_migrate_isolate(migratetype))) {
+-		migratetype = get_pfnblock_migratetype(page, pfn);
+-	}
++	migratetype = get_pfnblock_migratetype(page, pfn);
+ 	__free_one_page(page, pfn, zone, order, migratetype, fpi_flags);
+ 	spin_unlock_irqrestore(&zone->lock, flags);
+ }
+@@ -1246,21 +1243,13 @@ static void free_one_page(struct zone *zone,
+ static void __free_pages_ok(struct page *page, unsigned int order,
+ 			    fpi_t fpi_flags)
+ {
+-	int migratetype;
+ 	unsigned long pfn = page_to_pfn(page);
+ 	struct zone *zone = page_zone(page);
+ 
+ 	if (!free_pages_prepare(page, order))
+ 		return;
+ 
+-	/*
+-	 * Calling get_pfnblock_migratetype() without spin_lock_irqsave() here
+-	 * is used to avoid calling get_pfnblock_migratetype() under the lock.
+-	 * This will reduce the lock holding time.
+-	 */
+-	migratetype = get_pfnblock_migratetype(page, pfn);
+-
+-	free_one_page(zone, page, pfn, order, migratetype, fpi_flags);
++	free_one_page(zone, page, pfn, order, fpi_flags);
+ 
+ 	__count_vm_events(PGFREE, 1 << order);
+ }
+@@ -2533,7 +2522,7 @@ void free_unref_page(struct page *page, unsigned int order)
+ 	struct per_cpu_pages *pcp;
+ 	struct zone *zone;
+ 	unsigned long pfn = page_to_pfn(page);
+-	int migratetype, pcpmigratetype;
++	int migratetype;
+ 
+ 	if (!free_pages_prepare(page, order))
+ 		return;
+@@ -2545,23 +2534,23 @@ void free_unref_page(struct page *page, unsigned int order)
+ 	 * get those areas back if necessary. Otherwise, we may have to free
+ 	 * excessively into the page allocator
+ 	 */
+-	migratetype = pcpmigratetype = get_pfnblock_migratetype(page, pfn);
++	migratetype = get_pfnblock_migratetype(page, pfn);
+ 	if (unlikely(migratetype >= MIGRATE_PCPTYPES)) {
+ 		if (unlikely(is_migrate_isolate(migratetype))) {
+-			free_one_page(page_zone(page), page, pfn, order, migratetype, FPI_NONE);
++			free_one_page(page_zone(page), page, pfn, order, FPI_NONE);
+ 			return;
+ 		}
+-		pcpmigratetype = MIGRATE_MOVABLE;
++		migratetype = MIGRATE_MOVABLE;
+ 	}
+ 
+ 	zone = page_zone(page);
+ 	pcp_trylock_prepare(UP_flags);
+ 	pcp = pcp_spin_trylock(zone->per_cpu_pageset);
+ 	if (pcp) {
+-		free_unref_page_commit(zone, pcp, page, pcpmigratetype, order);
++		free_unref_page_commit(zone, pcp, page, migratetype, order);
+ 		pcp_spin_unlock(pcp);
+ 	} else {
+-		free_one_page(zone, page, pfn, order, migratetype, FPI_NONE);
++		free_one_page(zone, page, pfn, order, FPI_NONE);
+ 	}
+ 	pcp_trylock_finish(UP_flags);
+ }
+@@ -2591,12 +2580,8 @@ void free_unref_folios(struct folio_batch *folios)
+ 		 * allocator.
+ 		 */
+ 		if (!pcp_allowed_order(order)) {
+-			int migratetype;
+-
+-			migratetype = get_pfnblock_migratetype(&folio->page,
+-							       pfn);
+-			free_one_page(folio_zone(folio), &folio->page, pfn,
+-					order, migratetype, FPI_NONE);
++			free_one_page(folio_zone(folio), &folio->page,
++				      pfn, order, FPI_NONE);
  			continue;
  		}
-@@ -1633,17 +1624,16 @@ static int move_freepages(struct zone *zone,
- 	return pages_moved;
- }
- 
--int move_freepages_block(struct zone *zone, struct page *page,
--				int migratetype, int *num_movable)
-+static bool prep_move_freepages_block(struct zone *zone, struct page *page,
-+				      unsigned long *start_pfn,
-+				      unsigned long *end_pfn,
-+				      int *num_free, int *num_movable)
- {
--	unsigned long start_pfn, end_pfn, pfn;
--
--	if (num_movable)
--		*num_movable = 0;
-+	unsigned long pfn, start, end;
- 
- 	pfn = page_to_pfn(page);
--	start_pfn = pageblock_start_pfn(pfn);
--	end_pfn = pageblock_end_pfn(pfn) - 1;
-+	start = pageblock_start_pfn(pfn);
-+	end = pageblock_end_pfn(pfn) - 1;
- 
- 	/*
- 	 * The caller only has the lock for @zone, don't touch ranges
-@@ -1652,13 +1642,50 @@ int move_freepages_block(struct zone *zone, struct page *page,
- 	 * accompanied by other operations such as migratetype updates
- 	 * which also should be locked.
- 	 */
--	if (!zone_spans_pfn(zone, start_pfn))
--		return 0;
--	if (!zone_spans_pfn(zone, end_pfn))
--		return 0;
-+	if (!zone_spans_pfn(zone, start))
-+		return false;
-+	if (!zone_spans_pfn(zone, end))
-+		return false;
-+
-+	*start_pfn = start;
-+	*end_pfn = end;
-+
-+	if (num_free) {
-+		*num_free = 0;
-+		*num_movable = 0;
-+		for (pfn = start; pfn <= end;) {
-+			page = pfn_to_page(pfn);
-+			if (PageBuddy(page)) {
-+				int nr = 1 << buddy_order(page);
-+
-+				*num_free += nr;
-+				pfn += nr;
-+				continue;
-+			}
-+			/*
-+			 * We assume that pages that could be isolated for
-+			 * migration are movable. But we don't actually try
-+			 * isolating, as that would be expensive.
-+			 */
-+			if (PageLRU(page) || __PageMovable(page))
-+				(*num_movable)++;
-+			pfn++;
-+		}
-+	}
-+
-+	return true;
-+}
-+
-+int move_freepages_block(struct zone *zone, struct page *page,
-+			 int migratetype)
-+{
-+	unsigned long start_pfn, end_pfn;
-+
-+	if (!prep_move_freepages_block(zone, page, &start_pfn, &end_pfn,
-+				       NULL, NULL))
-+		return -1;
- 
--	return move_freepages(zone, start_pfn, end_pfn, migratetype,
--								num_movable);
-+	return move_freepages(zone, start_pfn, end_pfn, migratetype);
- }
- 
- static void change_pageblock_range(struct page *pageblock_page,
-@@ -1743,33 +1770,37 @@ static inline bool boost_watermark(struct zone *zone)
- }
- 
- /*
-- * This function implements actual steal behaviour. If order is large enough,
-- * we can steal whole pageblock. If not, we first move freepages in this
-- * pageblock to our migratetype and determine how many already-allocated pages
-- * are there in the pageblock with a compatible migratetype. If at least half
-- * of pages are free or compatible, we can change migratetype of the pageblock
-- * itself, so pages freed in the future will be put on the correct free list.
-+ * This function implements actual steal behaviour. If order is large enough, we
-+ * can claim the whole pageblock for the requested migratetype. If not, we check
-+ * the pageblock for constituent pages; if at least half of the pages are free
-+ * or compatible, we can still claim the whole block, so pages freed in the
-+ * future will be put on the correct free list. Otherwise, we isolate exactly
-+ * the order we need from the fallback block and leave its migratetype alone.
-  */
--static void steal_suitable_fallback(struct zone *zone, struct page *page,
--		unsigned int alloc_flags, int start_type, bool whole_block)
-+static struct page *
-+steal_suitable_fallback(struct zone *zone, struct page *page,
-+			int current_order, int order, int start_type,
-+			unsigned int alloc_flags, bool whole_block)
- {
--	unsigned int current_order = buddy_order(page);
- 	int free_pages, movable_pages, alike_pages;
--	int old_block_type;
-+	unsigned long start_pfn, end_pfn;
-+	int block_type;
- 
--	old_block_type = get_pageblock_migratetype(page);
-+	block_type = get_pageblock_migratetype(page);
- 
- 	/*
- 	 * This can happen due to races and we want to prevent broken
- 	 * highatomic accounting.
- 	 */
--	if (is_migrate_highatomic(old_block_type))
-+	if (is_migrate_highatomic(block_type))
- 		goto single_page;
- 
- 	/* Take ownership for orders >= pageblock_order */
- 	if (current_order >= pageblock_order) {
-+		del_page_from_free_list(page, zone, current_order);
- 		change_pageblock_range(page, current_order, start_type);
--		goto single_page;
-+		expand(zone, page, order, current_order, start_type);
-+		return page;
- 	}
- 
- 	/*
-@@ -1784,10 +1815,9 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
- 	if (!whole_block)
- 		goto single_page;
- 
--	free_pages = move_freepages_block(zone, page, start_type,
--						&movable_pages);
- 	/* moving whole block can fail due to zone boundary conditions */
--	if (!free_pages)
-+	if (!prep_move_freepages_block(zone, page, &start_pfn, &end_pfn,
-+				       &free_pages, &movable_pages))
- 		goto single_page;
- 
- 	/*
-@@ -1805,7 +1835,7 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
- 		 * vice versa, be conservative since we can't distinguish the
- 		 * exact migratetype of non-movable pages.
- 		 */
--		if (old_block_type == MIGRATE_MOVABLE)
-+		if (block_type == MIGRATE_MOVABLE)
- 			alike_pages = pageblock_nr_pages
- 						- (free_pages + movable_pages);
- 		else
-@@ -1816,13 +1846,16 @@ static void steal_suitable_fallback(struct zone *zone, struct page *page,
- 	 * compatible migratability as our allocation, claim the whole block.
- 	 */
- 	if (free_pages + alike_pages >= (1 << (pageblock_order-1)) ||
--			page_group_by_mobility_disabled)
-+			page_group_by_mobility_disabled) {
-+		move_freepages(zone, start_pfn, end_pfn, start_type);
- 		set_pageblock_migratetype(page, start_type);
--
--	return;
-+		return __rmqueue_smallest(zone, order, start_type);
-+	}
- 
- single_page:
--	move_to_free_list(page, zone, current_order, start_type);
-+	del_page_from_free_list(page, zone, current_order);
-+	expand(zone, page, order, current_order, block_type);
-+	return page;
- }
- 
- /*
-@@ -1890,9 +1923,10 @@ static void reserve_highatomic_pageblock(struct page *page, struct zone *zone)
- 	mt = get_pageblock_migratetype(page);
- 	/* Only reserve normal pageblocks (i.e., they can merge with others) */
- 	if (migratetype_is_mergeable(mt)) {
--		zone->nr_reserved_highatomic += pageblock_nr_pages;
--		set_pageblock_migratetype(page, MIGRATE_HIGHATOMIC);
--		move_freepages_block(zone, page, MIGRATE_HIGHATOMIC, NULL);
-+		if (move_freepages_block(zone, page, MIGRATE_HIGHATOMIC) != -1) {
-+			set_pageblock_migratetype(page, MIGRATE_HIGHATOMIC);
-+			zone->nr_reserved_highatomic += pageblock_nr_pages;
-+		}
- 	}
- 
- out_unlock:
-@@ -1917,7 +1951,7 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
- 	struct zone *zone;
- 	struct page *page;
- 	int order;
--	bool ret;
-+	int ret;
- 
- 	for_each_zone_zonelist_nodemask(zone, z, zonelist, ac->highest_zoneidx,
- 								ac->nodemask) {
-@@ -1966,10 +2000,14 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
- 			 * of pageblocks that cannot be completely freed
- 			 * may increase.
+ 		folio->private = (void *)(unsigned long)order;
+@@ -2632,7 +2617,7 @@ void free_unref_folios(struct folio_batch *folios)
  			 */
-+			ret = move_freepages_block(zone, page, ac->migratetype);
-+			/*
-+			 * Reserving this block already succeeded, so this should
-+			 * not fail on zone boundaries.
-+			 */
-+			WARN_ON_ONCE(ret == -1);
- 			set_pageblock_migratetype(page, ac->migratetype);
--			ret = move_freepages_block(zone, page, ac->migratetype,
--									NULL);
--			if (ret) {
-+			if (ret > 0) {
- 				spin_unlock_irqrestore(&zone->lock, flags);
- 				return ret;
+ 			if (is_migrate_isolate(migratetype)) {
+ 				free_one_page(zone, &folio->page, pfn,
+-					      order, migratetype, FPI_NONE);
++					      order, FPI_NONE);
+ 				continue;
  			}
-@@ -1990,7 +2028,7 @@ static bool unreserve_highatomic_pageblock(const struct alloc_context *ac,
-  * deviation from the rest of this file, to make the for loop
-  * condition simpler.
-  */
--static __always_inline bool
-+static __always_inline struct page *
- __rmqueue_fallback(struct zone *zone, int order, int start_migratetype,
- 						unsigned int alloc_flags)
+ 
+@@ -2645,7 +2630,7 @@ void free_unref_folios(struct folio_batch *folios)
+ 			if (unlikely(!pcp)) {
+ 				pcp_trylock_finish(UP_flags);
+ 				free_one_page(zone, &folio->page, pfn,
+-					      order, migratetype, FPI_NONE);
++					      order, FPI_NONE);
+ 				continue;
+ 			}
+ 			locked_zone = zone;
+@@ -6823,13 +6808,14 @@ bool take_page_off_buddy(struct page *page)
+ bool put_page_back_buddy(struct page *page)
  {
-@@ -2037,7 +2075,7 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype,
- 		goto do_steal;
- 	}
+ 	struct zone *zone = page_zone(page);
+-	unsigned long pfn = page_to_pfn(page);
+ 	unsigned long flags;
+-	int migratetype = get_pfnblock_migratetype(page, pfn);
+ 	bool ret = false;
  
--	return false;
-+	return NULL;
- 
- find_smallest:
- 	for (current_order = order; current_order < NR_PAGE_ORDERS; current_order++) {
-@@ -2057,14 +2095,14 @@ __rmqueue_fallback(struct zone *zone, int order, int start_migratetype,
- do_steal:
- 	page = get_page_from_free_area(area, fallback_mt);
- 
--	steal_suitable_fallback(zone, page, alloc_flags, start_migratetype,
--								can_steal);
-+	/* take off list, maybe claim block, expand remainder */
-+	page = steal_suitable_fallback(zone, page, current_order, order,
-+				       start_migratetype, alloc_flags, can_steal);
- 
- 	trace_mm_page_alloc_extfrag(page, order, current_order,
- 		start_migratetype, fallback_mt);
- 
--	return true;
--
-+	return page;
- }
- 
- #ifdef CONFIG_CMA
-@@ -2127,15 +2165,14 @@ __rmqueue(struct zone *zone, unsigned int order, int migratetype,
- 				return page;
- 		}
- 	}
--retry:
+ 	spin_lock_irqsave(&zone->lock, flags);
+ 	if (put_page_testzero(page)) {
++		unsigned long pfn = page_to_pfn(page);
++		int migratetype = get_pfnblock_migratetype(page, pfn);
 +
- 	page = __rmqueue_smallest(zone, order, migratetype);
- 	if (unlikely(!page)) {
- 		if (alloc_flags & ALLOC_CMA)
- 			page = __rmqueue_cma_fallback(zone, order);
--
--		if (!page && __rmqueue_fallback(zone, order, migratetype,
--								alloc_flags))
--			goto retry;
-+		else
-+			page = __rmqueue_fallback(zone, order, migratetype,
-+						  alloc_flags);
- 	}
- 	return page;
- }
-@@ -2689,12 +2726,10 @@ int __isolate_free_page(struct page *page, unsigned int order)
- 			 * Only change normal pageblocks (i.e., they can merge
- 			 * with others)
- 			 */
--			if (migratetype_is_mergeable(mt)) {
--				set_pageblock_migratetype(page,
--							  MIGRATE_MOVABLE);
--				move_freepages_block(zone, page,
--						     MIGRATE_MOVABLE, NULL);
--			}
-+			if (migratetype_is_mergeable(mt) &&
-+			    move_freepages_block(zone, page,
-+						 MIGRATE_MOVABLE) != -1)
-+				set_pageblock_migratetype(page, MIGRATE_MOVABLE);
- 		}
- 	}
- 
-diff --git a/mm/page_isolation.c b/mm/page_isolation.c
-index a5c8fa4c2a75..71539d7b96cf 100644
---- a/mm/page_isolation.c
-+++ b/mm/page_isolation.c
-@@ -178,15 +178,18 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
- 	unmovable = has_unmovable_pages(check_unmovable_start, check_unmovable_end,
- 			migratetype, isol_flags);
- 	if (!unmovable) {
--		unsigned long nr_pages;
-+		int nr_pages;
- 		int mt = get_pageblock_migratetype(page);
- 
-+		nr_pages = move_freepages_block(zone, page, MIGRATE_ISOLATE);
-+		/* Block spans zone boundaries? */
-+		if (nr_pages == -1) {
-+			spin_unlock_irqrestore(&zone->lock, flags);
-+			return -EBUSY;
-+		}
-+		__mod_zone_freepage_state(zone, -nr_pages, mt);
- 		set_pageblock_migratetype(page, MIGRATE_ISOLATE);
- 		zone->nr_isolate_pageblock++;
--		nr_pages = move_freepages_block(zone, page, MIGRATE_ISOLATE,
--									NULL);
--
--		__mod_zone_freepage_state(zone, -nr_pages, mt);
- 		spin_unlock_irqrestore(&zone->lock, flags);
- 		return 0;
- 	}
-@@ -206,7 +209,7 @@ static int set_migratetype_isolate(struct page *page, int migratetype, int isol_
- static void unset_migratetype_isolate(struct page *page, int migratetype)
- {
- 	struct zone *zone;
--	unsigned long flags, nr_pages;
-+	unsigned long flags;
- 	bool isolated_page = false;
- 	unsigned int order;
- 	struct page *buddy;
-@@ -252,7 +255,12 @@ static void unset_migratetype_isolate(struct page *page, int migratetype)
- 	 * allocation.
- 	 */
- 	if (!isolated_page) {
--		nr_pages = move_freepages_block(zone, page, migratetype, NULL);
-+		int nr_pages = move_freepages_block(zone, page, migratetype);
-+		/*
-+		 * Isolating this block already succeeded, so this
-+		 * should not fail on zone boundaries.
-+		 */
-+		WARN_ON_ONCE(nr_pages == -1);
- 		__mod_zone_freepage_state(zone, nr_pages, migratetype);
- 	}
- 	set_pageblock_migratetype(page, migratetype);
+ 		ClearPageHWPoisonTakenOff(page);
+ 		__free_one_page(page, pfn, zone, 0, migratetype, FPI_NONE);
+ 		if (TestClearPageHWPoison(page)) {
 -- 
 2.44.0
 
