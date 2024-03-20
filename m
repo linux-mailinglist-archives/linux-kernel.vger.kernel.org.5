@@ -1,99 +1,169 @@
-Return-Path: <linux-kernel+bounces-108717-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108702-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id B7347880F11
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:51:40 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id D35D7880ED9
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:41:14 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id E64191C20299
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:51:39 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 3E69E1F229E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:41:14 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 347A43BBE3;
-	Wed, 20 Mar 2024 09:51:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 05B133BB2A;
+	Wed, 20 Mar 2024 09:41:05 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b="l04TrEHs"
-Received: from out162-62-57-210.mail.qq.com (out162-62-57-210.mail.qq.com [162.62.57.210])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="BodeFmTi"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E674B3BBC6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 09:51:21 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=162.62.57.210
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 206293A267;
+	Wed, 20 Mar 2024 09:41:03 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710928284; cv=none; b=ENhhMZZRbPzC6xStQ+xoT7IBmm/aGUJoyyaV+2TzRmRwoLI7nCdHrO33b/sB+dObxDihz839yyBJU9+X3zRRREc19TARYokPk84xeOpEsWYLENGXz5EfrzoMTcDTDTamS1TrEbu8prYQARPXPIdfxfOIwqoSB3TaOQaEb6qxLFc=
+	t=1710927664; cv=none; b=EkShCCDNSFAmmbHCQnfdiQSQeht2WjccuseGh3Qp7whRjvwrfjTAGCzW7ZHge7+cFG8WobBPVZ0iP7Iy01CmXoyjWQau2Wmblcvoy1r5XojVD8FWmMutr45/vA/2Z0Gfs4myIO4SU0k3qIziUK14xZUZy61YDYGc44bdItkN4K8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710928284; c=relaxed/simple;
-	bh=kmLizDXHgs/iBotX2XWt0DRN99WHQUwnu+ZiSdLsfi4=;
-	h=Message-ID:From:To:Cc:Subject:Date:In-Reply-To:References:
-	 MIME-Version; b=e8Yh3QvFohLbrK+QPvPtOAnbRwzq+B6ST9Ii9Uf3c9GJ74Xo6nRigB9BuZWDQpoFDPxZdfOtleAkvUZ59hpGz/Sqip4LI6U78YfDR5q+QZg7FeXcymGJlBYvP2httXP2CwTrCZl89RpA1bfUuyolTA/wOinNLVYlkg/dzMeXqv8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com; spf=pass smtp.mailfrom=qq.com; dkim=pass (1024-bit key) header.d=qq.com header.i=@qq.com header.b=l04TrEHs; arc=none smtp.client-ip=162.62.57.210
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=qq.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=qq.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=qq.com; s=s201512;
-	t=1710927977; bh=cc72wCrojgeL0grxxVuvtCMAT1zZo13OV+rd4PAMkik=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References;
-	b=l04TrEHsvfA1zXAO1a0sSn6sN0TeKrchpH8f94uX8Jmd9kVL3/4YyseSuSjhXxFiV
-	 rctGkm/GY8sNl06LscZXvDOejbA0VNIu0N5WLG7n58Hic7gT2aK10mA/gpkzcdW8p1
-	 mQrBL/ydYoX2k2zdCl7tSAnAOgC42mT/XOiBrhI4=
-Received: from pek-lxu-l1.wrs.com ([111.198.228.140])
-	by newxmesmtplogicsvrszc5-0.qq.com (NewEsmtp) with SMTP
-	id A0511E1D; Wed, 20 Mar 2024 17:40:05 +0800
-X-QQ-mid: xmsmtpt1710927605tzis4koew
-Message-ID: <tencent_03A5CF0DA11232DDE15D9699184F920DD007@qq.com>
-X-QQ-XMAILINFO: OQhZ3T0tjf0ae1WvG5xAKJG6BAAIIU3xaJtk/pya7jjYQzKR7IMr5EjfVeYMr1
-	 ana2mqkJx4p+twGCdDiQnhqDOeb26Pq8EM0QjrrlCJeQQD4GaG4hMsKPhlm2wQEfiUOol6/mGB0h
-	 vC4ZWqI/ddc8clq8Vx6vuJnbsIIH43oSzIGv6/IOUgul7qMeRn3lJ9RoLBjMrwsZakhYTX0cgmh6
-	 oX/LOE0Z5wtqMSc7C0yoN3c3TEjk3Si7m70Hyi+vC3AAEOQij/bApoxarB7GW0vh3bVx7BMSRana
-	 MEWyKzP+vBbZTQCwSrHa3cunlFNokno/P8v1+OLCqxwoIwzrduOqs+iHeADtE/s+Hr2d7AxlN2RP
-	 3Y3mssstfuOMDQgnxBArcLthGxb0Uz/kDMBKaZynHsxlgeOfpZtV8RtvGhzAOaXY5aCT3EvQx2iz
-	 vOX0Hv32MPf3HwSVJ/KZnvxwmG2qLY/1AnyFkvLa73b2XESsixFpIhsb0fuVVZ4vTW72y4pmqFxO
-	 MNRioC3adFxW79yVRXe+6iuhWk/5G2SHvyh2Y4ZDGJ+XliVZXLyDnYMCQCRIzi0d3D87BHH0Xxoe
-	 tpgyNihGdb4vszeXdbrlV+HxeuFPe0wP7sA7bUCIJC0juqbawVKGXgW4VVF8g7MDV1b+I86ow0/z
-	 yKGXObRkDSBor9PGHnUtpbq8yFTzcRzbBkwFQMm2SC0/2u4SmUb3CiRR1XGCy44iQx4LRG6Eru/L
-	 UUz/cMXkoHZxNmqJCk5UVA15JvaujDLvOADSyoij4rFAHHquw6op56tp1OwPgWyzI8s3zWdbUif+
-	 xZFt2aQuG5pyN2YFBlYyQobZDTEV1LO+EOhtrbe+07rpMZDBkWxuykfvzaUpabHMuxeZJe4ZxNsq
-	 h/dl91F5swWQMaMMTA5ZZg4qozngiK7tE2HHAiRHPaLbyYq4IaUY85nm8/V4tVFC1zaNpMvGMHkR
-	 Jg651+T0U=
-X-QQ-XMRINFO: MPJ6Tf5t3I/ycC2BItcBVIA=
-From: Edward Adam Davis <eadavis@qq.com>
-To: syzbot+33f4297b5f927648741a@syzkaller.appspotmail.com
-Cc: linux-kernel@vger.kernel.org,
-	syzkaller-bugs@googlegroups.com
-Subject: Re: [syzbot] [bpf?] UBSAN: array-index-out-of-bounds in check_stack_range_initialized
-Date: Wed, 20 Mar 2024 17:40:06 +0800
-X-OQ-MSGID: <20240320094005.1244716-2-eadavis@qq.com>
-X-Mailer: git-send-email 2.43.0
-In-Reply-To: <0000000000003dc8e00614076ab6@google.com>
-References: <0000000000003dc8e00614076ab6@google.com>
+	s=arc-20240116; t=1710927664; c=relaxed/simple;
+	bh=PJh0W/6IWgzjeRlxP5q/GDxrE0ImAbXuBWIYneIpSqc=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=DHmjb8tx3t7N3RMft/yM7DkZO3pUgHV74wYLlseVo99yZWixCVv5pNpvJ8kEAlLlkcZXvGNZD08k78Sm31beL5jPSQ0/jsIidzsMIQWU/SdK9MV/KpXBwWtT4vtCgtGUNRRuBO5scC0njjw5GF07M5oVPNzZm2Jkvztcs7RfvqY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=BodeFmTi; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 678EFC433C7;
+	Wed, 20 Mar 2024 09:40:58 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710927663;
+	bh=PJh0W/6IWgzjeRlxP5q/GDxrE0ImAbXuBWIYneIpSqc=;
+	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
+	b=BodeFmTiNO/U0LF9kw3yT7SljIHsw22BHc+LG2KGnb1lkxq3yw0JBOJ6G36wYA3vZ
+	 PDAZJOTIaZpetKTGbz5nYy59hjIpph8bLm0eBic51Dns0CND7LzX1Sq1cMsRZCsoU4
+	 vTXk9dV+gzj/6tQ7kvq57YPcxZ+B/hHVuUvLzRXtdI0TenH3zktbGkR8GUBzijkSoI
+	 WlLrM65hfhq0a4PNll88h2JLHcD/FM+NKYX9QdnhfT+qeteXylX6IJFjVADst+Y699
+	 TK8mToBNjeuKDohfbbsYFoj39eO1yANzUlhySUVzg2lMbogepQVUH9rdfgvK0ny/WO
+	 tRUSiG+GdrEmA==
+Message-ID: <1a9fc75e-2556-4f48-89ab-7c1c6016a01d@kernel.org>
+Date: Wed, 20 Mar 2024 10:40:55 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH 1/5] dt-bindings: i2c: renesas,riic: Update comment for
+ fallback string
+To: Andi Shyti <andi.shyti@kernel.org>,
+ "Lad, Prabhakar" <prabhakar.csengg@gmail.com>
+Cc: Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
+ Geert Uytterhoeven <geert+renesas@glider.be>,
+ Chris Brandt <chris.brandt@renesas.com>, Rob Herring <robh+dt@kernel.org>,
+ Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+ Conor Dooley <conor+dt@kernel.org>, Magnus Damm <magnus.damm@gmail.com>,
+ Wolfram Sang <wsa+renesas@sang-engineering.com>,
+ linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+ Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240308172726.225357-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240308172726.225357-2-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <aee88f81-0b8a-4f57-9dab-b4d13db47abe@linaro.org>
+ <CA+V-a8s9OaZ7_RXGjkZYpNS7879ku-aXJ+AvsfgvuTZshyWd5A@mail.gmail.com>
+ <eqtj4hpmdqhtftdtpvt7r7iwrkzga365p4ao5kuteovb2behxz@frmyzxemkfwm>
+Content-Language: en-US
+From: Krzysztof Kozlowski <krzk@kernel.org>
+Autocrypt: addr=krzk@kernel.org; keydata=
+ xsFNBFVDQq4BEAC6KeLOfFsAvFMBsrCrJ2bCalhPv5+KQF2PS2+iwZI8BpRZoV+Bd5kWvN79
+ cFgcqTTuNHjAvxtUG8pQgGTHAObYs6xeYJtjUH0ZX6ndJ33FJYf5V3yXqqjcZ30FgHzJCFUu
+ JMp7PSyMPzpUXfU12yfcRYVEMQrmplNZssmYhiTeVicuOOypWugZKVLGNm0IweVCaZ/DJDIH
+ gNbpvVwjcKYrx85m9cBVEBUGaQP6AT7qlVCkrf50v8bofSIyVa2xmubbAwwFA1oxoOusjPIE
+ J3iadrwpFvsZjF5uHAKS+7wHLoW9hVzOnLbX6ajk5Hf8Pb1m+VH/E8bPBNNYKkfTtypTDUCj
+ NYcd27tjnXfG+SDs/EXNUAIRefCyvaRG7oRYF3Ec+2RgQDRnmmjCjoQNbFrJvJkFHlPeHaeS
+ BosGY+XWKydnmsfY7SSnjAzLUGAFhLd/XDVpb1Een2XucPpKvt9ORF+48gy12FA5GduRLhQU
+ vK4tU7ojoem/G23PcowM1CwPurC8sAVsQb9KmwTGh7rVz3ks3w/zfGBy3+WmLg++C2Wct6nM
+ Pd8/6CBVjEWqD06/RjI2AnjIq5fSEH/BIfXXfC68nMp9BZoy3So4ZsbOlBmtAPvMYX6U8VwD
+ TNeBxJu5Ex0Izf1NV9CzC3nNaFUYOY8KfN01X5SExAoVTr09ewARAQABzSVLcnp5c3p0b2Yg
+ S296bG93c2tpIDxrcnprQGtlcm5lbC5vcmc+wsGVBBMBCgA/AhsDBgsJCAcDAgYVCAIJCgsE
+ FgIDAQIeAQIXgBYhBJvQfg4MUfjVlne3VBuTQ307QWKbBQJgPO8PBQkUX63hAAoJEBuTQ307
+ QWKbBn8P+QFxwl7pDsAKR1InemMAmuykCHl+XgC0LDqrsWhAH5TYeTVXGSyDsuZjHvj+FRP+
+ gZaEIYSw2Yf0e91U9HXo3RYhEwSmxUQ4Fjhc9qAwGKVPQf6YuQ5yy6pzI8brcKmHHOGrB3tP
+ /MODPt81M1zpograAC2WTDzkICfHKj8LpXp45PylD99J9q0Y+gb04CG5/wXs+1hJy/dz0tYy
+ iua4nCuSRbxnSHKBS5vvjosWWjWQXsRKd+zzXp6kfRHHpzJkhRwF6ArXi4XnQ+REnoTfM5Fk
+ VmVmSQ3yFKKePEzoIriT1b2sXO0g5QXOAvFqB65LZjXG9jGJoVG6ZJrUV1MVK8vamKoVbUEe
+ 0NlLl/tX96HLowHHoKhxEsbFzGzKiFLh7hyboTpy2whdonkDxpnv/H8wE9M3VW/fPgnL2nPe
+ xaBLqyHxy9hA9JrZvxg3IQ61x7rtBWBUQPmEaK0azW+l3ysiNpBhISkZrsW3ZUdknWu87nh6
+ eTB7mR7xBcVxnomxWwJI4B0wuMwCPdgbV6YDUKCuSgRMUEiVry10xd9KLypR9Vfyn1AhROrq
+ AubRPVeJBf9zR5UW1trJNfwVt3XmbHX50HCcHdEdCKiT9O+FiEcahIaWh9lihvO0ci0TtVGZ
+ MCEtaCE80Q3Ma9RdHYB3uVF930jwquplFLNF+IBCn5JRzsFNBFVDXDQBEADNkrQYSREUL4D3
+ Gws46JEoZ9HEQOKtkrwjrzlw/tCmqVzERRPvz2Xg8n7+HRCrgqnodIYoUh5WsU84N03KlLue
+ MNsWLJBvBaubYN4JuJIdRr4dS4oyF1/fQAQPHh8Thpiz0SAZFx6iWKB7Qrz3OrGCjTPcW6ei
+ OMheesVS5hxietSmlin+SilmIAPZHx7n242u6kdHOh+/SyLImKn/dh9RzatVpUKbv34eP1wA
+ GldWsRxbf3WP9pFNObSzI/Bo3kA89Xx2rO2roC+Gq4LeHvo7ptzcLcrqaHUAcZ3CgFG88CnA
+ 6z6lBZn0WyewEcPOPdcUB2Q7D/NiUY+HDiV99rAYPJztjeTrBSTnHeSBPb+qn5ZZGQwIdUW9
+ YegxWKvXXHTwB5eMzo/RB6vffwqcnHDoe0q7VgzRRZJwpi6aMIXLfeWZ5Wrwaw2zldFuO4Dt
+ 91pFzBSOIpeMtfgb/Pfe/a1WJ/GgaIRIBE+NUqckM+3zJHGmVPqJP/h2Iwv6nw8U+7Yyl6gU
+ BLHFTg2hYnLFJI4Xjg+AX1hHFVKmvl3VBHIsBv0oDcsQWXqY+NaFahT0lRPjYtrTa1v3tem/
+ JoFzZ4B0p27K+qQCF2R96hVvuEyjzBmdq2esyE6zIqftdo4MOJho8uctOiWbwNNq2U9pPWmu
+ 4vXVFBYIGmpyNPYzRm0QPwARAQABwsF8BBgBCgAmAhsMFiEEm9B+DgxR+NWWd7dUG5NDfTtB
+ YpsFAmA872oFCRRflLYACgkQG5NDfTtBYpvScw/9GrqBrVLuJoJ52qBBKUBDo4E+5fU1bjt0
+ Gv0nh/hNJuecuRY6aemU6HOPNc2t8QHMSvwbSF+Vp9ZkOvrM36yUOufctoqON+wXrliEY0J4
+ ksR89ZILRRAold9Mh0YDqEJc1HmuxYLJ7lnbLYH1oui8bLbMBM8S2Uo9RKqV2GROLi44enVt
+ vdrDvo+CxKj2K+d4cleCNiz5qbTxPUW/cgkwG0lJc4I4sso7l4XMDKn95c7JtNsuzqKvhEVS
+ oic5by3fbUnuI0cemeizF4QdtX2uQxrP7RwHFBd+YUia7zCcz0//rv6FZmAxWZGy5arNl6Vm
+ lQqNo7/Poh8WWfRS+xegBxc6hBXahpyUKphAKYkah+m+I0QToCfnGKnPqyYIMDEHCS/RfqA5
+ t8F+O56+oyLBAeWX7XcmyM6TGeVfb+OZVMJnZzK0s2VYAuI0Rl87FBFYgULdgqKV7R7WHzwD
+ uZwJCLykjad45hsWcOGk3OcaAGQS6NDlfhM6O9aYNwGL6tGt/6BkRikNOs7VDEa4/HlbaSJo
+ 7FgndGw1kWmkeL6oQh7wBvYll2buKod4qYntmNKEicoHGU+x91Gcan8mCoqhJkbqrL7+nXG2
+ 5Q/GS5M9RFWS+nYyJh+c3OcfKqVcZQNANItt7+ULzdNJuhvTRRdC3g9hmCEuNSr+CLMdnRBY fv0=
+In-Reply-To: <eqtj4hpmdqhtftdtpvt7r7iwrkzga365p4ao5kuteovb2behxz@frmyzxemkfwm>
+Content-Type: text/plain; charset=UTF-8
 Content-Transfer-Encoding: 8bit
 
-please test oob in check_stack_range_initialized
+On 19/03/2024 22:19, Andi Shyti wrote:
+> Hi Prabhakar,
+> 
+> On Sat, Mar 09, 2024 at 11:05:40PM +0000, Lad, Prabhakar wrote:
+>> On Sat, Mar 9, 2024 at 11:58 AM Krzysztof Kozlowski
+>>> On 08/03/2024 18:27, Prabhakar wrote:
+>>>> With the fallback string being utilized by multiple other SoCs, this
+>>>> patch updates the comment for the generic compatible string.
+>>>>
+>>>> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>>>> Reviewed-by: Fabrizio Castro <fabrizio.castro.jz@renesas.com>
+>>>
+>>> Really, you review a comment change? Internally?
+>>>
+>>> Is this some sort of company policy? Are these even true reviews?
+>>>
+>> Yes this patch was reviewed internally and it's "real". Unfortunately
+>> I cannot share the repo externally where this review was done but I
+>> can assure it was reviewed. As this is not a single patch all the
+>> patches in this series were internally reviewed. Is it bad to review a
+>> comment change?
+>> BTW what makes you think I have added fake review tags?
+> 
+> I don't believe Krzysztof is questioning the validity of your
+> offline reviews, but the community is unaware of what happens
+> in your closed environment.
+> 
+> If you submit a patch with the r-b tag, it holds little
+> significance for me since I haven't witnessed the review process
+> myself. However, you are, of course, free to include it; I have
+> no objections to that.
+> 
+> My suggestion is for Fabrizio to publicly express his review on
+> this mailing list, which would add more value to the time he
+> spent reviewing your patch.
+> 
+> By the way, there are other companies that do this.
+> 
 
-#syz test https://git.kernel.org/pub/scm/linux/kernel/git/bpf/bpf.git master
+To me seeing such reviews of a trivial comment patch means reviews are
+fake, just to fulfill the process. Especially done internally. Kind of
+"patchset looks good, so +1 in Gerrit" (it does not matter if you use
+Gerrit or not...). I don't consider them reviews, but useless company
+policies. Provide real review or do not provide one at all. And provide
+it public, so work with the community, not your inside systems.
 
-
-diff --git a/kernel/bpf/verifier.c b/kernel/bpf/verifier.c
-index 1dd3b99d1bb9..ed0878f4373a 100644
---- a/kernel/bpf/verifier.c
-+++ b/kernel/bpf/verifier.c
-@@ -7177,6 +7177,11 @@ static int check_stack_range_initialized(
- 		return 0;
- 	}
- 
-+	if (INT_MIN - access_size > max_off) {
-+		verbose(env, "invalid access size\n");
-+		return -EACCES;
-+	}
-+
- 	for (i = min_off; i < max_off + access_size; i++) {
- 		u8 *stype;
- 
+Best regards,
+Krzysztof
 
 
