@@ -1,149 +1,172 @@
-Return-Path: <linux-kernel+bounces-108457-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108459-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 0B008880AC7
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:46:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id A6C63880ACA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:48:32 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DDCD1F22A46
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:46:44 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id C28241C20FDD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:48:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397BD14A8F;
-	Wed, 20 Mar 2024 05:46:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id AFF1814F75;
+	Wed, 20 Mar 2024 05:48:25 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="ogLMFnDZ"
-Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="SW3937wM"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF983EA4
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:46:33 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1DA381428E
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:48:22 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710913595; cv=none; b=HPMuZQxwFZENDGp+LmG1djwg5tiN9pTYr6HnbxKSNEv+eOhshrzOH75jmcE+gy1W0jbaNBQxoA+lTcbO2Q5DyN+Ui25b0uOjZIr95qWOQoivyHNd7vdpLA7HogOYWmB4FsiAiVMYe2/zxJhcCGwz9528is+wGka+eHgAMaTRW58=
+	t=1710913705; cv=none; b=eIydhe6JgWEkmQoVSldh7obqaWn//BkeWFwm56rsSHt+xz1VHolsDfgW3Gy1CRtCYWTRrLGkjPgt73NycJdRF+zVWylphFkfWBvVdhH6kkwyMwZZkvYHm26H9PFaNCIdImxpkukDVsMOkgA14Ei0Onw41dTOnOsISJnWG0O2yUg=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710913595; c=relaxed/simple;
-	bh=WRTVyf9ccaMf/4dPPhuHF8JX+pHX7WqNgtBe7Ij4T/o=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=N3lmjQhes9862QTG7PUSLvpD7SWCnb0Q8EiqQETPs6J2s2M8EBi0UHL4ptApIkjPgJwBL0iTarseRA7xAGzrq+o72ShkmGDVWbqQlpMKTKpxgC4LxKisegyiX/taI0a7ppB90dfW1o5CwZUP+Jantws9KdiD5gFqt6jZbrDTWn0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=ogLMFnDZ; arc=none smtp.client-ip=213.167.242.64
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
-Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1FB0BB1;
-	Wed, 20 Mar 2024 06:46:04 +0100 (CET)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710913564;
-	bh=WRTVyf9ccaMf/4dPPhuHF8JX+pHX7WqNgtBe7Ij4T/o=;
-	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=ogLMFnDZxEygUC2583PLOfYB4hwZz+GKUElV1NhpJbRf7PlYDBv/brUj7Q6G16qMB
-	 H6LwlWFx2HWxSNxQKkFLFCcNLxFBnV1YTBClLjpSulHXxDkYGlhqCJPhFY62omuX0x
-	 dOnSQ4LBpS5fBNaX9gHJLPErJFA9td6vXlcTkJHk=
-Message-ID: <65a040af-180d-45d0-a60b-1930e12d15bd@ideasonboard.com>
-Date: Wed, 20 Mar 2024 07:46:28 +0200
+	s=arc-20240116; t=1710913705; c=relaxed/simple;
+	bh=Wg7eZqUCttbPXDGjG8P5xiogz9p5l7a7HMCJzv2vC04=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=YEuysEKMW7uaoukcf0P5kWwvwgqr1WH+/y8JhLsOexEr+sS4x8nZ/0cKixzINEDoxlbEaibCrO2rMOR2iYTC7qicW0cxmVNGNbbGGLX6hxFOg6T2IbsKJniUWpUfB2yWjiyfyj03h6wgAVFd5OkeWVvLyBtCjzxMZ8qDmZZB/ZE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=SW3937wM; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710913702;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 content-transfer-encoding:content-transfer-encoding:
+	 in-reply-to:in-reply-to:references:references;
+	bh=+sQo95PVqbqVJP4YCXp26jFqxDf+OOM168/95yqj4+o=;
+	b=SW3937wMz/wzFXU/J/gwsKVt6HA8id4n7pyI0OSe3oGk26Kn3VOs+NIT5PSxQkm3VhpPLI
+	807371K7foxqfkcy6BbBPPIxC2zzbKLuY59BmhxmOAWaH3mHQoIvRNQz4jVg/1cMx6ayaB
+	P7BantLEjzMye+4/38TDVpj5Qrm5W+Q=
+Received: from mail-ej1-f71.google.com (mail-ej1-f71.google.com
+ [209.85.218.71]) by relay.mimecast.com with ESMTP with STARTTLS
+ (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
+ us-mta-292-ZTBjCpRbPcKA8M7QhHj92Q-1; Wed, 20 Mar 2024 01:48:20 -0400
+X-MC-Unique: ZTBjCpRbPcKA8M7QhHj92Q-1
+Received: by mail-ej1-f71.google.com with SMTP id a640c23a62f3a-a468895a00dso326523466b.0
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 22:48:20 -0700 (PDT)
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710913699; x=1711518499;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=+sQo95PVqbqVJP4YCXp26jFqxDf+OOM168/95yqj4+o=;
+        b=feP+EWjDln83PFSM+llIGR86Jc5ha2MMUoPMo0T7zt3BokeD3Z5XyUUTWnSi78vPwR
+         QFpFmksEFbrlcK4Hwcl4NGFPHI1xLiB+CXXS5RXJKuC7knHcS88fJ9DuPBDx3tdArxWI
+         t9amO0CCA4HAqlSFljUpZFM5GhnIYPoL7CLdcQ0FUC8OzXsQNqcOjjSLmmu6fuZj5teN
+         1sqAi1f86RMwyv+aVO9CnvS5l0DTK4bcSqJgGIuOuEmZjNjPacdXojwZky0+Dzs1Vauc
+         fEkGMYKt6LoXu0YVpZk0C33NFhz6UWJAOW4tsBRc9XwcY5jozxChzgXM6AE4EnV19Aia
+         SlcA==
+X-Forwarded-Encrypted: i=1; AJvYcCU4eXjOjlXIo9yPCU3bG2yuBCKAcUQM7ZhYGbBNF+ajoujLUOYyK6Fb+37u4H90tGhCZr+N7LZ/jJ/u4CLNl2hq7+MM1+jdlvs68zw+
+X-Gm-Message-State: AOJu0Yyr+zfwdbS0Zw9pZJ20AQBdV7M3EuZIh+OxaVp2zqKRZ1MveOoH
+	+a5JRNxwbG4OWFwKdfi0r8PWKnpghEspQ0uuVFzkUNzkk/0+Cdzzwa24po4KK8M5JkoDuMLY3bB
+	Bm5M7EYdTFocpZA7UrtQSeU8mUbcxG+kkzoUnPU4Dbi+324HQGGD5CWMfz3jprK9PmU2Bu/5VPp
+	uhYPau/0IZXb8JVhspAFAYNWOnYPqKz7OLvfoI
+X-Received: by 2002:a17:906:c298:b0:a46:e9fb:e3db with SMTP id r24-20020a170906c29800b00a46e9fbe3dbmr1686440ejz.65.1710913699507;
+        Tue, 19 Mar 2024 22:48:19 -0700 (PDT)
+X-Google-Smtp-Source: AGHT+IFPqSYqkSna5IL4SsSknX595OrRR8NbTz0OLrhob/YUlhlhxn9jlKX+jun6ZecKrQ9mZVjdvbpFgTxtKEs8hB8=
+X-Received: by 2002:a17:906:c298:b0:a46:e9fb:e3db with SMTP id
+ r24-20020a170906c29800b00a46e9fbe3dbmr1686430ejz.65.1710913699152; Tue, 19
+ Mar 2024 22:48:19 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 2/8] drm: zynqmp_dp: Downgrade log level for aux
- retries message
-Content-Language: en-US
-To: Sean Anderson <sean.anderson@linux.dev>
-Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
- linux-kernel@vger.kernel.org, Daniel Vetter <daniel@ffwll.ch>,
- linux-arm-kernel@lists.infradead.org,
- Laurent Pinchart <laurent.pinchart@ideasonboard.com>,
- Maarten Lankhorst <maarten.lankhorst@linux.intel.com>,
- Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
- dri-devel@lists.freedesktop.org
-References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-3-sean.anderson@linux.dev>
-From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
- 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
-In-Reply-To: <20240319225122.3048400-3-sean.anderson@linux.dev>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+References: <20240207054701.616094-1-lulu@redhat.com> <20240222141559-mutt-send-email-mst@kernel.org>
+ <CACLfguXQ3c91-Xpb3rzpoF9kxwnah=CJa_igk5j5p93_0JnRAQ@mail.gmail.com> <20240319023636-mutt-send-email-mst@kernel.org>
+In-Reply-To: <20240319023636-mutt-send-email-mst@kernel.org>
+From: Cindy Lu <lulu@redhat.com>
+Date: Wed, 20 Mar 2024 13:47:41 +0800
+Message-ID: <CACLfguW+ipYvLi5TbiRb7==EqSOA9DoaNXG9CpLZgTQ-_VVwwg@mail.gmail.com>
+Subject: Re: [PATCH v4 0/5] vduse: Add support for reconnection
+To: "Michael S. Tsirkin" <mst@redhat.com>
+Cc: jasowang@redhat.com, xieyongji@bytedance.com, linux-kernel@vger.kernel.org, 
+	maxime.coquelin@redhat.com
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On 20/03/2024 00:51, Sean Anderson wrote:
-> Enable this message for verbose debugging only as it is otherwise
-> printed after every AUX message, quickly filling the log buffer.
-> 
-> Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
-> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
-> ---
-> 
-> (no changes since v1)
-> 
->   drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
->   1 file changed, 1 insertion(+), 1 deletion(-)
-> 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> index a0606fab0e22..98a32e6a0459 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
-> @@ -1006,7 +1006,7 @@ zynqmp_dp_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
->   					       msg->buffer, msg->size,
->   					       &msg->reply);
->   		if (!ret) {
-> -			dev_dbg(dp->dev, "aux %d retries\n", i);
-> +			dev_vdbg(dp->dev, "aux %d retries\n", i);
->   			return msg->size;
->   		}
->   
-
-Yes, these are annoying... In my work branch I had added "if (i)" there, 
-so that this is only printed if there actually are retries.
-
-But this is fine too (or even dropping the print totally), so:
-
-Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
-
-  Tomi
+On Tue, Mar 19, 2024 at 2:37=E2=80=AFPM Michael S. Tsirkin <mst@redhat.com>=
+ wrote:
+>
+> On Fri, Mar 08, 2024 at 03:29:50PM +0800, Cindy Lu wrote:
+> > On Fri, Feb 23, 2024 at 3:18=E2=80=AFAM Michael S. Tsirkin <mst@redhat.=
+com> wrote:
+> > >
+> > > On Wed, Feb 07, 2024 at 01:43:27PM +0800, Cindy Lu wrote:
+> > > > Here is the reconnect support in vduse,
+> > > >
+> > > > Kernel will allocate pages for reconnection.
+> > > > Userspace needs to use mmap to map the memory to userspace and use =
+these pages to
+> > > > save the reconnect information.
+> > >
+> > > What is "reconnect"? Not really clear from documentation - it seems t=
+o
+> > > be assumed that reader has an idea but most don't.
+> > >
+> > > Also what's with all the typos? reconnect with 3 nnn s, sutiable and =
+so
+> > > on. Can you pls run a speller?
+> > >
+> > Thanks a lot, Micheal. I will fix these and also update the speller
+> > thanks
+> > Cindy
+>
+> Didn't get an updated version, dropped the patch from the pull for this
+> merge window.
+>
+Hi Micheal
+Really apologize for the delay, I was working in an emergency bug, I
+will provide the updated version soon
+apologize again for this mistake
+Thanks
+Cindy
+> > > > test passd in vduse+dpdk-testpmd
+> > > >
+> > > > change in V2
+> > > > 1. Address the comments from v1
+> > > > 2. Add the document for reconnect process
+> > > >
+> > > > change in V3
+> > > > 1. Move the vdpa_vq_state to the uAPI.  vduse will use this to sync=
+hronize the vq info between the kernel and userspace app.
+> > > > 2. Add a new ioctl VDUSE_DEV_GET_CONFIG. userspace app use this to =
+get config space
+> > > > 3. Rewrite the commit message.
+> > > > 4. Only save the address for the page address and remove the index.
+> > > > 5. remove the ioctl VDUSE_GET_RECONNECT_INFO, userspace app will us=
+e uAPI VDUSE_RECONNCT_MMAP_SIZE to mmap
+> > > > 6. Rewrite the document for the reconnect process to make it cleare=
+r.
+> > > >
+> > > > change in v4
+> > > > 1. Change the number of map pages to VQ numbers. UserSpace APP can =
+define and maintain the structure for saving reconnection information in us=
+erspace. The kernel will not maintain this information.
+> > > > 2. Rewrite the document for the reconnect process to make it cleare=
+r.
+> > > > 3. add the new ioctl for VDUSE_DEV_GET_CONFIG/VDUSE_DEV_GET_STATUS
+> > > >
+> > > > Cindy Lu (5):
+> > > >   vduse: Add new ioctl VDUSE_DEV_GET_CONFIG
+> > > >   vduse: Add new ioctl VDUSE_DEV_GET_STATUS
+> > > >   vduse: Add function to get/free the pages for reconnection
+> > > >   vduse: Add file operation for mmap
+> > > >   Documentation: Add reconnect process for VDUSE
+> > > >
+> > > >  Documentation/userspace-api/vduse.rst |  32 +++++++
+> > > >  drivers/vdpa/vdpa_user/vduse_dev.c    | 125 ++++++++++++++++++++++=
+++++
+> > > >  include/uapi/linux/vduse.h            |   5 ++
+> > > >  3 files changed, 162 insertions(+)
+> > > >
+> > > > --
+> > > > 2.43.0
+> > >
+>
 
 
