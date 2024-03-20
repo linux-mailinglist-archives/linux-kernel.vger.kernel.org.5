@@ -1,155 +1,248 @@
-Return-Path: <linux-kernel+bounces-108359-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108358-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id DC3F2880996
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:28:20 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id E6886880992
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 03:28:06 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0B6BB1C21CE8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:28:20 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0BC581C21EF7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 02:28:06 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0161BF512;
-	Wed, 20 Mar 2024 02:28:02 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6F1308494;
+	Wed, 20 Mar 2024 02:27:58 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jWsnwBvu"
-Received: from mail-ed1-f48.google.com (mail-ed1-f48.google.com [209.85.208.48])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="F2ndfG3c"
+Received: from mail-qk1-f179.google.com (mail-qk1-f179.google.com [209.85.222.179])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8872E8C0B;
-	Wed, 20 Mar 2024 02:27:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.48
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id EFCF37489;
+	Wed, 20 Mar 2024 02:27:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.222.179
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710901681; cv=none; b=k4p6PSDktVMvCqLITyf1n5/Ap3NYXddxqKfI/GFlTRQ1Re9M3/lZ0CToYI3BeQFlY/Io6u7BvAFZlB32VD40bXfbVxPVLDiGQJ0a/Njb4BVlF4WpQhoRdo+v3uf4pggpLtdmuB0sIqOSY+qUO4JPkMh+YdxDSc6XNM7ooBTiqO4=
+	t=1710901677; cv=none; b=f44dXxfESXyoAdpC0gpFcb0jS4tQofw4tsNVMFCHkrnOn4SIds2GkvaKg0JcpMGu/WIuzAj7BeP4kx9dHqxwJzp9a5xQiJ0ZVlAwvQdiCJ64AjIoA8wUKHeFYucS6xsDBfnq4iOUPy2CgeZiHzTUdUbDwqMiNvOfzuxXXhxipAI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710901681; c=relaxed/simple;
-	bh=CrEDZNktWLaecr9rY/RqMJilDdld6VN4fBZu4A2CU4A=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=I2pHXomeFIvk/LTinQ3G41/8VbyVgJskimDdBz7F6jWJSXSVRAyUKCOiy6WCy+Mg7k9WNSpnKwWvx8BLcfCwqV84Ji4Q8yXHWgisJeGs0/lMRwOZdsJW5WVHgHsFeK8kHIP+jmY1KOYEq4ctFC5h6rZ+OFCHCES6TDmAqq6no3Y=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jWsnwBvu; arc=none smtp.client-ip=209.85.208.48
+	s=arc-20240116; t=1710901677; c=relaxed/simple;
+	bh=6CJWoFb4kvUK4ntLfUsptms1BUN5l+ymtlBqPsp9uoA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=DDGlHiDvv//MCa9igrUe5zQjtGewVZWcaLLgxDboloEM3ZlARiJxHIob0duLmkUazme086Iaxy/6ZpDR1HHWblFpHTAwxwIir22ezkcV0PAQtW9p6DchVpFMHXCOInOKj6BlGtmNDfSN1Qs8yXyFpe+Jd90kfSCuilSHjsfqP8A=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=F2ndfG3c; arc=none smtp.client-ip=209.85.222.179
 Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f48.google.com with SMTP id 4fb4d7f45d1cf-56a2bb1d84eso797699a12.1;
-        Tue, 19 Mar 2024 19:27:59 -0700 (PDT)
+Received: by mail-qk1-f179.google.com with SMTP id af79cd13be357-789e4a4d3a5so302130185a.1;
+        Tue, 19 Mar 2024 19:27:55 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710901678; x=1711506478; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
+        d=gmail.com; s=20230601; t=1710901675; x=1711506475; darn=vger.kernel.org;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=CrEDZNktWLaecr9rY/RqMJilDdld6VN4fBZu4A2CU4A=;
-        b=jWsnwBvuUoWHGHVnDfaNmIDjd7pxM6Hv1OsVRUoo3Ghp7lLlvaQvF0r+rpTaSYgezO
-         vqfRRas+vt+z7YnK272XaFKLgk72RRA99gsokPAvMu6b55ihsoeUDE37vPDNx810puDq
-         IjsSPC0+cnkBxu9RzQd/NBc9jAqTpYcLxsv2/Py/LAi7l8mXpeJ5tCdiCI/dp9DhPHZU
-         2jnDhIX3AQX8uctCgufkk35YgUYo/a9Rbs7e3FdlfC8sH5xsi67KtDwW1B/rydi1vFR6
-         DsE07RIEcENBA/UBMaj0I3sftbIxUrrR2Jh0AQgh5+RQzS0PEiktKUQeL3CMFqRMDTDM
-         f7tA==
+        bh=BoYH80sJnhdliON/wfQAq4dWt7OAKJu6XRvbeyVwYo0=;
+        b=F2ndfG3calznTzI4/X6AkGWT7gD4WyYCuOMOlAZEsURNRsemM2OQ+STQuUrLd13FtD
+         jXJeltP+cJAzHjkazP95GQ/ECEaK076uXk5AF3ffDx/y3ZVTgb2pRqRCFt+VlV3duXS7
+         lVoBxxKEAuFstgdJDJn8FyBgKgecUGxK8q2jRDa5hgHD+kIU9/TlokrmD9Bkz8Fi6akR
+         K74vRdgKcQYEfixmM8vZOfPs0sICTJ5OhWm68G4XK2fe8Lsr8RxA7rczgpemoDESmCMe
+         pechVgiGdcm+sN/7S1TXx6m+RB0m1VDFX4q5bpIWMeobqksQ9SmA0f5GmsPnyGfo4Pvu
+         UHOA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710901678; x=1711506478;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+        d=1e100.net; s=20230601; t=1710901675; x=1711506475;
+        h=in-reply-to:content-disposition:mime-version:references:message-id
+         :subject:cc:to:from:date:feedback-id:x-gm-message-state:from:to:cc
          :subject:date:message-id:reply-to;
-        bh=CrEDZNktWLaecr9rY/RqMJilDdld6VN4fBZu4A2CU4A=;
-        b=XPoobr/fu/jhLsQqrT2hku2wqD2kaNsLeggnjy6y1vk6ZrK3P0D4x+dnfKSagq5cTk
-         9O4WCOEMhO1Z8zqwWNx7SVw2TCNqaf1KiXqBb8hxQjYq9h6q6aryNOyKSEWNXtC1wp07
-         uu0ihCa+naayZcAeJAnN6t1/6EBEiVMcLaJxg/uvw1jYn7iQA3n+AdZm+hXbOHrP1qwD
-         HHoRlFcXjc28lm+xeIohw1rl65X9rycTshd5k+X0qrdo+SH0sTOkxUIX01Vf+ILxgzuL
-         4DThtyc2oXoAZ5+2bJ/Ns8n77NeBZQIGz2wf+9EULMgruOHO+Q6GxsNPrZG+VB/FD4al
-         nkhw==
-X-Forwarded-Encrypted: i=1; AJvYcCVnUAKtmtEiS+4RQ9TzFa/RELa+CfoM9HCH0jkM5uUoh5ikj5+vIiYwxknfGyZXzMTBgNExmaVPL43bBvfibc3+LsaPUR5HKVDGWf4TKuGTnCL7ze/kZq1KYpn9rQuEwSZ5nS6eQldFkPIOwca4aFsaVyJGFVi2hX/hmNyXABYlOz5t/CXLlOGuVBarns8+iPFbd0wYoc16Wx0/c8vq9Ao=
-X-Gm-Message-State: AOJu0YwYrjLTy9IWFY7tjftP7KARVI4UwfiqeECIc03Y3L2qSqQ/0sHt
-	LI1HSLBFt7xzEkz7Pn7WIqeVCC8xtTmPSRj9NtXwk120ywSupjzdcPTRjBoMuyPYp4YqCKsNDow
-	5/q6PJmfz94it1kFyM15oIYteATM=
-X-Google-Smtp-Source: AGHT+IFt/7I86CbjlI0gZQSF/qcTE6qkqcQl29FokubkU6RSRoHeUOxDw6UA1S3xokrCdi4OqK1Tz8KHuh8CHwiixEY=
-X-Received: by 2002:a50:9e61:0:b0:568:a8f5:d47d with SMTP id
- z88-20020a509e61000000b00568a8f5d47dmr3899542ede.17.1710901677672; Tue, 19
- Mar 2024 19:27:57 -0700 (PDT)
+        bh=BoYH80sJnhdliON/wfQAq4dWt7OAKJu6XRvbeyVwYo0=;
+        b=vvegdtu8woptZQrvurhrF4J9i11oWSAGtEPGut4J9uBOq8Kh7QM5HjN5CnkY/q6Mi3
+         JcquKPvvWRzLutkh6OUtcD4JFAot4MBowFcqha3l/hqAQGPlTorAD4e6y/HDM8VcKDAR
+         0MU2Z4TzBZSdTx0mnh79N+RwUneD8jFduDa2Zjf3/tiP8ZGIjZkiXhqQLSssf91nHW1W
+         pYD9vef14r8bUf7vikRGnQT16144AoOmWkhwk665JBBTPXHWr4uv1NSiK2kSmXSPlygm
+         Z2GJO+/kHbiWeQD7U7PF/7q6lw3yLWDLMOtshSE0wDpR4E1Ce7yuO++AjxMv4ijHhveR
+         d2Zg==
+X-Forwarded-Encrypted: i=1; AJvYcCU/kVe8/J+LitZmZF53eQ8JyV0n3LsF0kxEM5mkCSQYy8liIAV6TKil3KoUDfYNHNd3kmyltB7YcYV/4/XmLuR5nJkYINnJ2NJySxXpkGMQ2K1PdpEgxfz4nZL9jPRTjowxLY+qASxVNA/00qs=
+X-Gm-Message-State: AOJu0YzEKuVXmpJt9o+1WSs8wKcWFB68bOnCw33nNrnlvcJtPFlG2q2D
+	JD1mhG/3X6Ei+KqlqQlAekBN7rQeGZK3Vm9zORs9D5/G4VSS/4yv
+X-Google-Smtp-Source: AGHT+IHkAo9eiqZEBwRiPx6Er0DVaobmgBZ9GU8BbZoe5uwTFIH5mrJndnxU84N5b4b+Ka9j6hodbw==
+X-Received: by 2002:a05:6214:5188:b0:690:bdd5:f25e with SMTP id kl8-20020a056214518800b00690bdd5f25emr618855qvb.59.1710901674843;
+        Tue, 19 Mar 2024 19:27:54 -0700 (PDT)
+Received: from fauth1-smtp.messagingengine.com (fauth1-smtp.messagingengine.com. [103.168.172.200])
+        by smtp.gmail.com with ESMTPSA id j10-20020a0cf30a000000b006915cc2f655sm7167436qvl.30.2024.03.19.19.27.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Tue, 19 Mar 2024 19:27:54 -0700 (PDT)
+Received: from compute7.internal (compute7.nyi.internal [10.202.2.48])
+	by mailfauth.nyi.internal (Postfix) with ESMTP id A9CAF1200032;
+	Tue, 19 Mar 2024 22:27:53 -0400 (EDT)
+Received: from mailfrontend1 ([10.202.2.162])
+  by compute7.internal (MEProxy); Tue, 19 Mar 2024 22:27:53 -0400
+X-ME-Sender: <xms:qUn6ZZusapBKdG8mib9oUwmKQcnjaqz7jBvHqEEWkk9Cs5CjOpqJkA>
+    <xme:qUn6ZSfcWCVnKoBJVQigrM5uMEth7blFIFn6pJqzA73sDcGvZ9SwJ-6r80w2QMQo4
+    Mu5I0Momtt_8nPY9g>
+X-ME-Received: <xmr:qUn6Zcwe9XmQw1XNJ2fOCI3WJjW9nQQr6fwck-Syfl1NBxma9lPL0OEhXU31IQ>
+X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrledvgddujecutefuodetggdotefrodftvf
+    curfhrohhfihhlvgemucfhrghsthforghilhdpqfgfvfdpuffrtefokffrpgfnqfghnecu
+    uegrihhlohhuthemuceftddtnecusecvtfgvtghiphhivghnthhsucdlqddutddtmdenuc
+    fjughrpeffhffvvefukfhfgggtuggjsehttdertddttddvnecuhfhrohhmpeeuohhquhhn
+    ucfhvghnghcuoegsohhquhhnrdhfvghnghesghhmrghilhdrtghomheqnecuggftrfgrth
+    htvghrnhepvefhueduudehhedtffehffdutddugefgteeihfdvvddvhfdufefggefgfefg
+    vdelnecuffhomhgrihhnpehrvggrshhonhdrthhopdduqddvtddtuddrshhonecuvehluh
+    hsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomhepsghoqhhunhdomhgv
+    shhmthhprghuthhhphgvrhhsohhnrghlihhthidqieelvdeghedtieegqddujeejkeehhe
+    ehvddqsghoqhhunhdrfhgvnhhgpeepghhmrghilhdrtghomhesfhhigihmvgdrnhgrmhgv
+X-ME-Proxy: <xmx:qUn6ZQPR_Lf5Y75aF5eYaCwaKfOihzuNyMLk04eiZOrJYaq4ocVhNQ>
+    <xmx:qUn6ZZ90df_frOZRY8I8YvX3Kl8FwAL-9pK5w7FifxEGy8LzFP4nNQ>
+    <xmx:qUn6ZQUeRDGu4gQd8f7pn-TXeFGni2QBy63EQAWYNPa7SwRxMAV85Q>
+    <xmx:qUn6ZafXMqIrzwu8_ERu4cE8_c8DM6gsdAO2ZySMinCFIQgiheioxA>
+    <xmx:qUn6ZXEU4IIpQn_FyLvxltU7RZTQwslvH9GxisGWZvXtUELgmMp3uD9UJKI>
+Feedback-ID: iad51458e:Fastmail
+Received: by mail.messagingengine.com (Postfix) with ESMTPA; Tue,
+ 19 Mar 2024 22:27:52 -0400 (EDT)
+Date: Tue, 19 Mar 2024 19:27:38 -0700
+From: Boqun Feng <boqun.feng@gmail.com>
+To: Alice Ryhl <aliceryhl@google.com>
+Cc: Miguel Ojeda <ojeda@kernel.org>, Matthew Wilcox <willy@infradead.org>,
+	Al Viro <viro@zeniv.linux.org.uk>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	Kees Cook <keescook@chromium.org>,
+	Alex Gaynor <alex.gaynor@gmail.com>,
+	Wedson Almeida Filho <wedsonaf@gmail.com>,
+	Gary Guo <gary@garyguo.net>,
+	=?iso-8859-1?Q?Bj=F6rn?= Roy Baron <bjorn3_gh@protonmail.com>,
+	Benno Lossin <benno.lossin@proton.me>,
+	Andreas Hindborg <a.hindborg@samsung.com>,
+	Greg Kroah-Hartman <gregkh@linuxfoundation.org>,
+	Arve =?iso-8859-1?B?SGr4bm5lduVn?= <arve@android.com>,
+	Todd Kjos <tkjos@android.com>, Martijn Coenen <maco@android.com>,
+	Joel Fernandes <joel@joelfernandes.org>,
+	Carlos Llamas <cmllamas@google.com>,
+	Suren Baghdasaryan <surenb@google.com>,
+	Arnd Bergmann <arnd@arndb.de>, linux-mm@kvack.org,
+	linux-kernel@vger.kernel.org, rust-for-linux@vger.kernel.org,
+	Christian Brauner <brauner@kernel.org>
+Subject: Re: [PATCH v3 1/4] rust: uaccess: add userspace pointers
+Message-ID: <ZfpJmmO2h4PxGshH@boqun-archlinux>
+References: <20240311-alice-mm-v3-0-cdf7b3a2049c@google.com>
+ <20240311-alice-mm-v3-1-cdf7b3a2049c@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240316-loongson1-dma-v6-0-90de2c3cc928@gmail.com>
- <CAAhV-H6aGS6VXGzkqWTyxL7bGw=KdjmnRZj7SpwrV5hT6XQcpg@mail.gmail.com>
- <CAJhJPsVSM-8VA604p2Vr58QJEp+Tg72YTTntnip64Ejz=0aQng@mail.gmail.com>
- <CAAhV-H5TR=y_AmbF6QMJmoS0BhfB=K7forMg0-b2YWm7trktjA@mail.gmail.com>
- <20240318-average-likely-6a55c18db7bb@spud> <CAAhV-H4oMoPt7WwWc7wbxy-ShNQ8dPkuTAuvSEGAPBKvkkn24w@mail.gmail.com>
- <20240318-saxophone-sudden-ce0df3a953a8@spud> <CAJhJPsXKZr7XDC-i1O_tpcgGE9c0yk7S9Qjnpk7hrU0evAJ+FQ@mail.gmail.com>
- <CAAhV-H5Gm6mACV4smxDB=BJvLr8C1AmgY=mMqfNYOOxEUBhqFA@mail.gmail.com> <20240319-trimester-manhole-3bd092f3343f@spud>
-In-Reply-To: <20240319-trimester-manhole-3bd092f3343f@spud>
-From: Keguang Zhang <keguang.zhang@gmail.com>
-Date: Wed, 20 Mar 2024 10:27:21 +0800
-Message-ID: <CAJhJPsWN24p8VcLeeB8v_JU6KXTVBzWWcE-Aj4Tc2urqx6sYrw@mail.gmail.com>
-Subject: Re: [PATCH v6 0/2] Add support for Loongson1 DMA
-To: Conor Dooley <conor@kernel.org>
-Cc: Huacai Chen <chenhuacai@kernel.org>, Vinod Koul <vkoul@kernel.org>, 
-	Rob Herring <robh@kernel.org>, Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, 
-	Conor Dooley <conor+dt@kernel.org>, linux-mips@vger.kernel.org, dmaengine@vger.kernel.org, 
-	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <20240311-alice-mm-v3-1-cdf7b3a2049c@google.com>
 
-On Wed, Mar 20, 2024 at 1:41=E2=80=AFAM Conor Dooley <conor@kernel.org> wro=
-te:
->
-> On Tue, Mar 19, 2024 at 10:40:54AM +0800, Huacai Chen wrote:
-> > On Tue, Mar 19, 2024 at 10:32=E2=80=AFAM Keguang Zhang <keguang.zhang@g=
-mail.com> wrote:
-> > >
-> > > On Mon, Mar 18, 2024 at 11:42=E2=80=AFPM Conor Dooley <conor@kernel.o=
-rg> wrote:
-> > > >
-> > > > On Mon, Mar 18, 2024 at 10:26:51PM +0800, Huacai Chen wrote:
-> > > > > Hi, Conor,
-> > > > >
-> > > > > On Mon, Mar 18, 2024 at 7:28=E2=80=AFPM Conor Dooley <conor@kerne=
-l.org> wrote:
-> > > > > >
-> > > > > > On Mon, Mar 18, 2024 at 03:31:59PM +0800, Huacai Chen wrote:
-> > > > > > > On Mon, Mar 18, 2024 at 10:08=E2=80=AFAM Keguang Zhang <kegua=
-ng.zhang@gmail.com> wrote:
-> > > > > > > >
-> > > > > > > > Hi Huacai,
-> > > > > > > >
-> > > > > > > > > Hi, Keguang,
-> > > > > > > > >
-> > > > > > > > > Sorry for the late reply, there is already a ls2x-apb-dma=
- driver, I'm
-> > > > > > > > > not sure but can they share the same code base? If not, c=
-an rename
-> > > > > > > > > this driver to ls1x-apb-dma for consistency?
-> > > > > > > >
-> > > > > > > > There are some differences between ls1x DMA and ls2x DMA, s=
-uch as
-> > > > > > > > registers and DMA descriptors.
-> > > > > > > > I will rename it to ls1x-apb-dma.
-> > > > > > > OK, please also rename the yaml file to keep consistency.
-> > > > > >
-> > > > > > No, the yaml file needs to match the (one of the) compatible st=
-rings.
-> > > > > OK, then I think we can also rename the compatible strings, if po=
-ssible.
-> > > >
-> > > > If there are no other types of dma controller on this device, I do =
-not
-> > > > see why would we add "apb" into the compatible as there is nothing =
-to
-> > > > differentiate this controller from.
-> > >
-> > > That's true. 1A/1B/1C only have one APB DMA.
-> > > Should I keep the compatible "ls1b-dma" and "ls1c-dma"?
-> > The name "apbdma" comes from the user manual, "exchange data between
-> > memory and apb devices", at present there are two drivers using this
-> > naming: tegra20-apb-dma.c and ls2x-apb-dma.c.
->
-> I think it's unnessesary but I won't stand in your way.
+Hi Alice,
 
-Then I will follow Huacai's suggestion.
-Thanks for your review, Conor and Huacai.
+I was trying to work on a patch for UserSlice::read_slice(), and I found
+a few place that may need some documentation improvements. Please see
+below:
 
---=20
-Best regards,
+On Mon, Mar 11, 2024 at 10:47:13AM +0000, Alice Ryhl wrote:
+[...]
+> diff --git a/rust/kernel/uaccess.rs b/rust/kernel/uaccess.rs
+> new file mode 100644
+> index 000000000000..020f3847683f
+> --- /dev/null
+> +++ b/rust/kernel/uaccess.rs
+> @@ -0,0 +1,315 @@
+> +// SPDX-License-Identifier: GPL-2.0
+> +
+> +//! User pointers.
 
-Keguang Zhang
+Since the type is renamed as UserSlice, maybe:
+
+//! Slices to user space memory regions.
+
+?
+
+> +//!
+> +//! C header: [`include/linux/uaccess.h`](srctree/include/linux/uaccess.h)
+> +
+> +use crate::{bindings, error::code::*, error::Result};
+> +use alloc::vec::Vec;
+> +use core::ffi::{c_ulong, c_void};
+> +
+> +/// A pointer to an area in userspace memory, which can be either read-only or
+> +/// read-write.
+> +///
+> +/// All methods on this struct are safe: attempting to read or write invalid
+> +/// pointers will return `EFAULT`. Concurrent access, *including data races
+
+Probably reword this a little bit:
+
+"All methods on this struct are safe: attempting to read or write on bad
+addresses (either out of the bound of the slice or unmapped addresses)
+will return `EFAULT`."
+
+, please see below for the reason.
+
+> +/// to/from userspace memory*, is permitted, because fundamentally another
+> +/// userspace thread/process could always be modifying memory at the same time
+> +/// (in the same way that userspace Rust's [`std::io`] permits data races with
+> +/// the contents of files on disk). In the presence of a race, the exact byte
+> +/// values read/written are unspecified but the operation is well-defined.
+> +/// Kernelspace code should validate its copy of data after completing a read,
+> +/// and not expect that multiple reads of the same address will return the same
+> +/// value.
+> +///
+> +/// These APIs are designed to make it difficult to accidentally write TOCTOU
+> +/// (time-of-check to time-of-use) bugs. Every time a memory location is read,
+> +/// the reader's position is advanced by the read length and the next read will
+> +/// start from there. This helps prevent accidentally reading the same location
+> +/// twice and causing a TOCTOU bug.
+> +///
+> +/// Creating a [`UserSliceReader`] and/or [`UserSliceWriter`] consumes the
+> +/// `UserSlice`, helping ensure that there aren't multiple readers or writers to
+> +/// the same location.
+> +///
+> +/// If double-fetching a memory location is necessary for some reason, then that
+> +/// is done by creating multiple readers to the same memory location, e.g. using
+> +/// [`clone_reader`].
+> +///
+
+[...]
+
+> +    /// Reads raw data from the user slice into a raw kernel buffer.
+> +    ///
+> +    /// Fails with `EFAULT` if the read encounters a page fault.
+
+Technically, this is not correct, since normal page faults can happen
+during copy_from_user() (for example, userspace memory gets swapped). So
+returning `EFAULT` really means the read happens on a bad address, which
+also matches `EFAULT`'s definition:
+
+	EFAULT          Bad address (POSIX.1-2001).
+
+so maybe reword this and the similar ones below into something like:
+
+	/// Fails with `EFAULT` if the read happens on a bad address.
+
+Otherwise, people may think that this function just abort whenever there
+is a page fault. Thoughts?
+
+Regards,
+Boqun
+
+> +    ///
+> +    /// # Safety
+> +    ///
+> +    /// The `out` pointer must be valid for writing `len` bytes.
+> +    pub unsafe fn read_raw(&mut self, out: *mut u8, len: usize) -> Result {
+> +        if len > self.length {
+> +            return Err(EFAULT);
+> +        }
+> +        let Ok(len_ulong) = c_ulong::try_from(len) else {
+> +            return Err(EFAULT);
+> +        };
+> +        // SAFETY: The caller promises that `out` is valid for writing `len` bytes.
+> +        let res = unsafe { bindings::copy_from_user(out.cast::<c_void>(), self.ptr, len_ulong) };
+> +        if res != 0 {
+> +            return Err(EFAULT);
+> +        }
+> +        // Userspace pointers are not directly dereferencable by the kernel, so
+> +        // we cannot use `add`, which has C-style rules for defined behavior.
+> +        self.ptr = self.ptr.wrapping_byte_add(len);
+> +        self.length -= len;
+> +        Ok(())
+> +    }
+> +
+[...]
 
