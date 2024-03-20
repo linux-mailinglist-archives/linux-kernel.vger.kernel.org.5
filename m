@@ -1,183 +1,143 @@
-Return-Path: <linux-kernel+bounces-108909-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108910-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id B3F2E8811CD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:45:21 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4D7008811D0
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:46:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 6A2F5285A42
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:45:20 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id E2238B23039
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:46:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 878C44084D;
-	Wed, 20 Mar 2024 12:45:13 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id DE9FC3FE36;
+	Wed, 20 Mar 2024 12:46:10 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b="bL2hD6Ds"
-Received: from mx0b-001b2d01.pphosted.com (mx0b-001b2d01.pphosted.com [148.163.158.5])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="nQqnRjO/"
+Received: from mail-ed1-f54.google.com (mail-ed1-f54.google.com [209.85.208.54])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1739B405C1;
-	Wed, 20 Mar 2024 12:45:09 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.158.5
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7DD3E36AF9
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:46:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.54
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710938712; cv=none; b=XSHrsHPvatnloPPebBa6b6Y14GLKCnDIaBh+BMd72sl25Pyi3tzM+y81G2amfmR2JLw6ny4J7i5Pj9eLT+omKRTgrNKcNnSVfpFGb939zKH1Mr0gnH1d0ueFFC5CvC6I9H29lMKiOJ8LiV0BVwWolWAakoxZiyusXgd1Oh8xg0M=
+	t=1710938770; cv=none; b=FB0q9unvQ9cBMNRMMniTxy2B00vKbfK0hCZxqUNVzqhjh8VdM4n01Q1Et2QCGb66Fta9ZOUc+CVMgazl5NlgxcOVz5YLu3UV5/PS4HOgxs27rLhfCk0p6vuBspnA6I3JTymns6B7aHChoc5pU5a2bbHr8lZo7y9cEjuUsWANrtM=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710938712; c=relaxed/simple;
-	bh=M+jLpqNCSTThaV/XD30izZdx/tur/4DdP2zwdLgTgus=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=tcGFAQ5VckTM4BKJRQDWiBzFYhTxBwJTBnyDEv1OzSThW4zhd2JJIU7X99i5oIBqLAM4cvehUJZBxxWUK04eRVDghJaC8xhyom1DLKdIgCNhRpl5Y2EaWHVnp5dgZ3oId9D0uHgbSFB+jGeeGNLoRpJlq3gsg1gq2x4twWRtEas=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com; spf=pass smtp.mailfrom=linux.ibm.com; dkim=pass (2048-bit key) header.d=ibm.com header.i=@ibm.com header.b=bL2hD6Ds; arc=none smtp.client-ip=148.163.158.5
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.ibm.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=linux.ibm.com
-Received: from pps.filterd (m0353724.ppops.net [127.0.0.1])
-	by mx0a-001b2d01.pphosted.com (8.17.1.19/8.17.1.19) with ESMTP id 42KBsES1003699;
-	Wed, 20 Mar 2024 12:44:58 GMT
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ibm.com; h=message-id : date :
- mime-version : subject : to : cc : references : from : in-reply-to :
- content-type : content-transfer-encoding; s=pp1;
- bh=u7sRbJZWvIiDpX8J1X/tK1ktvVul+hbxljtVvQ3NwD4=;
- b=bL2hD6DsXLphExTBMtop8z2xa2OztYFPu1UX2/6kJdtCtPAXry7rowS7K2X4LJGfQp2o
- Ak7VtfdWry3TQCEWZaS3clYrlZbqqWTaHqCP0yFC9ejueoM5EipauCWHZbkSGKBAsvFf
- rOpW+niuPF8GWdJw/vx/5ZezHPr/BaqKlF+UCulbprczbjQ0lqZJ6ShQH9RWGCVooINa
- TGbaVcv5UBKO1o9NKyWCrP7ghN2ua0vCcGMkSaK1JILQQuCUzIDhT2Y4qkIiyjokbDaU
- 3YmHiPWhqvBvlbCcdGYgXBci4P9CuugYZUrV9Q9b2yjxAOAWOImXLUjXi3+/dLlQ4caZ 0w== 
-Received: from ppma12.dal12v.mail.ibm.com (dc.9e.1632.ip4.static.sl-reverse.com [50.22.158.220])
-	by mx0a-001b2d01.pphosted.com (PPS) with ESMTPS id 3wyxxr04kw-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 12:44:57 +0000
-Received: from pps.filterd (ppma12.dal12v.mail.ibm.com [127.0.0.1])
-	by ppma12.dal12v.mail.ibm.com (8.17.1.19/8.17.1.19) with ESMTP id 42KAvaU9017231;
-	Wed, 20 Mar 2024 12:44:56 GMT
-Received: from smtprelay05.wdc07v.mail.ibm.com ([172.16.1.72])
-	by ppma12.dal12v.mail.ibm.com (PPS) with ESMTPS id 3wwnrteh5f-1
-	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
-	Wed, 20 Mar 2024 12:44:56 +0000
-Received: from smtpav01.wdc07v.mail.ibm.com (smtpav01.wdc07v.mail.ibm.com [10.39.53.228])
-	by smtprelay05.wdc07v.mail.ibm.com (8.14.9/8.14.9/NCO v10.0) with ESMTP id 42KCisqA14484034
-	(version=TLSv1/SSLv3 cipher=DHE-RSA-AES256-GCM-SHA384 bits=256 verify=OK);
-	Wed, 20 Mar 2024 12:44:56 GMT
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 306CF58067;
-	Wed, 20 Mar 2024 12:44:54 +0000 (GMT)
-Received: from smtpav01.wdc07v.mail.ibm.com (unknown [127.0.0.1])
-	by IMSVA (Postfix) with ESMTP id 34DE558063;
-	Wed, 20 Mar 2024 12:44:53 +0000 (GMT)
-Received: from [9.47.158.152] (unknown [9.47.158.152])
-	by smtpav01.wdc07v.mail.ibm.com (Postfix) with ESMTP;
-	Wed, 20 Mar 2024 12:44:53 +0000 (GMT)
-Message-ID: <5c6c5f51-125b-4cc7-ac27-5a5358d514c7@linux.ibm.com>
-Date: Wed, 20 Mar 2024 08:44:52 -0400
+	s=arc-20240116; t=1710938770; c=relaxed/simple;
+	bh=ikYClmhkpcH/do1oMlaDvQ89lEcvUS8Ek8KBHY/2EfM=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=kvzEJaBq06FNPcO4Z/FGIelDqykYjTfLPl8bbI/GoWvcgaQi+kbSL6G1Mlcb9e6lMwkFmNppsjdbhWrLEUB5qJn+uQxnP47P/9aeSireZySNH4wepvGtynMHzQ9yLodkIhYqnPP6pFxJN3yOs54afoZC0XuZqSlxW2WhAo57U90=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=nQqnRjO/; arc=none smtp.client-ip=209.85.208.54
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f54.google.com with SMTP id 4fb4d7f45d1cf-563c403719cso8181910a12.2
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:46:08 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710938767; x=1711543567; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=0SDAogGPuygwh29NPxgC639xPo+ijeYfHL0ce3uVTXM=;
+        b=nQqnRjO/64mQTxkVZqBxGVp33+HCg0p4VN3Z8WWo0AScHMHv1pH/s/mW38k/2DHAIQ
+         ukRN3OwNMml4KyFganjUYflMpbPj2/cdRrI1FMFu2WPSy5qCtupY+ntgn6M3p0BQKmoZ
+         DiLFn3FGFpMFEjYqzY7NG6pr95SHF09VSSEN/7pKDDaYiyxGD1eQ6iNi47kL522/Wcx9
+         mwzvFaj6ErfIJwXr+7CnBHCBNaCgr9ovxkff27GkQkhzToffYJ7qmA9LLBWoIQNbPKpv
+         f0BQ+zqIHNk1eNXECzITqJ8GhTdKIQ/lFN5DXUNFmiInjQKzGZbIPk5dBCXooBW0rLZw
+         KYEQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710938767; x=1711543567;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=0SDAogGPuygwh29NPxgC639xPo+ijeYfHL0ce3uVTXM=;
+        b=bnmPhYyiffiCq8yRoTELZNFD4kC/lG9ZOZytmFFX7d2PaQq3JX95lGTaPka8Z1TOmW
+         JI3hImKAFlQ+mMR1+y4/9xcfcgUV+FuamR17HmpR1NioSliWUiEnyXoZvW7gsbD8fsG2
+         B7NBD3ZVthnm9RHo06yZ9lMEI2H43fJdHVbv048URHENs/76tpTAaV8zSaCvn7N0sU4Z
+         fAkLSq2OxyZQMLBQqU1aPw2E4AepRUVFTeEZNz7yiVQV3kR29nXYQIEcdhWt2NqLDCeb
+         BihNwqKjKu3i/fnJR11AG1Mbfu0Gn70iGG6G+NLu7Mw21IF3xiUOIWfie+ARBpVItjyz
+         Elgg==
+X-Forwarded-Encrypted: i=1; AJvYcCUoYfLn/oZP42uGvaedfx9nBqy156AzR5Q73E/f54nzZvMrH7cTcq6hmg+iwgPEDxREX+vtS+ErFVhnWO2ne5M4VBwGqDQrC4GLCc+A
+X-Gm-Message-State: AOJu0YxXD+fB9UPjxKBsgh6uhQ43+TajOyCwwQNtqmobmHtMugd55EQE
+	vvhy6sR0dj+Oee3FHn6CdjfX/oNHXVKbNMyD3Gc62VlhbCfZAogw
+X-Google-Smtp-Source: AGHT+IGziFkEH50a6+b0uyCgxj7Ak3Kq5dp5DCRjJnl/FxDx+CFAjRJcOuUP7Wt3pjBL0rIPrgYrLw==
+X-Received: by 2002:a05:6402:4348:b0:566:d27a:2ab5 with SMTP id n8-20020a056402434800b00566d27a2ab5mr11995634edc.10.1710938766558;
+        Wed, 20 Mar 2024 05:46:06 -0700 (PDT)
+Received: from 123000256IE.iskraemeco.si ([193.77.86.250])
+        by smtp.gmail.com with ESMTPSA id u25-20020aa7db99000000b00568d67e50c3sm3731936edt.89.2024.03.20.05.46.05
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 05:46:06 -0700 (PDT)
+From: Uros Bizjak <ubizjak@gmail.com>
+To: x86@kernel.org,
+	linux-kernel@vger.kernel.org
+Cc: Uros Bizjak <ubizjak@gmail.com>,
+	Ingo Molnar <mingo@kernel.org>,
+	Andy Lutomirski <luto@kernel.org>,
+	Brian Gerst <brgerst@gmail.com>,
+	Denys Vlasenko <dvlasenk@redhat.com>,
+	"H . Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>,
+	Peter Zijlstra <peterz@infradead.org>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: [PATCH] x86/percpu: Re-enable named address spaces with KASAN for GCC 13.3+
+Date: Wed, 20 Mar 2024 13:45:49 +0100
+Message-ID: <20240320124603.566923-1-ubizjak@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v7 00/13] Add support for NIST P521 to ecdsa
-Content-Language: en-US
-To: keyrings@vger.kernel.org, linux-crypto@vger.kernel.org,
-        herbert@gondor.apana.org.au, davem@davemloft.net
-Cc: linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, lukas@wunner.de,
-        bbhushan2@marvell.com, jarkko@kernel.org
-References: <20240320114725.1644921-1-stefanb@linux.ibm.com>
-From: Stefan Berger <stefanb@linux.ibm.com>
-In-Reply-To: <20240320114725.1644921-1-stefanb@linux.ibm.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
-X-TM-AS-GCONF: 00
-X-Proofpoint-GUID: 5BTVYp90osdRIhdfm98Jz0sOqXNgYyOQ
-X-Proofpoint-ORIG-GUID: 5BTVYp90osdRIhdfm98Jz0sOqXNgYyOQ
-X-Proofpoint-Virus-Version: vendor=baseguard
- engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
- definitions=2024-03-20_08,2024-03-18_03,2023-05-22_02
-X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 mlxlogscore=999 spamscore=0
- bulkscore=0 clxscore=1015 mlxscore=0 suspectscore=0 priorityscore=1501
- adultscore=0 phishscore=0 lowpriorityscore=0 impostorscore=0
- malwarescore=0 classifier=spam adjust=0 reason=mlx scancount=1
- engine=8.12.0-2403140000 definitions=main-2403200100
+Content-Transfer-Encoding: 8bit
 
-I apologize for the missing part in the title.
+Commit 68fb3ca0e408 ("x86/percpu: Disable named address spaces for
+KASAN") disabled support for named address spaces with KASAN due to
+the incompatibility issue between named AS and KASAN.
 
-    Stefan
+GCC 13.3 has fixed this issue (GCC PR sanitizer/111736) so the
+support for named address spaces can be re-enabled with KASAN
+for GCC compiler version >= 13.3.
 
-On 3/20/24 07:47, Stefan Berger wrote:
-> This series adds support for the NIST P521 curve to the ecdsa module
-> to enable signature verification with it.
-> 
-> An issue with the current code in ecdsa is that it assumes that input
-> arrays providing key coordinates for example, are arrays of digits
-> (a 'digit' is a 'u64'). This works well for all currently supported
-> curves, such as NIST P192/256/384, but does not work for NIST P521 where
-> coordinates are 8 digits + 2 bytes long. So some of the changes deal with
-> converting byte arrays to digits and adjusting tests on input byte
-> array lengths to tolerate arrays not providing multiples of 8 bytes.
-> 
-> Regards,
->     Stefan
-> 
-> v7:
->   - Applied T-b tag from Christian to all patches
->   - Applied R-b tag from Jarkko to some patches
->   - Rephrased some patch descriptions per Jarkko's request
-> 
-> v6:
->   - Use existing #defines for number of digits rather than plain numbers
->     (1/13, 6/13) following Bharat's suggestion
->   - Initialize result from lowest 521 bits of product rather than going
->     through tmp variable (6/13)
-> 
-> v5:
->   - Simplified ecc_digits_from_bytes as suggested by Lukas (1/12)
->   - Using nbits == 521 to detect NIST P521 curve rather than strcmp()
->     (5,6/12)
->   - Nits in patch description and comments (11/12)
-> 
-> v4:
->   - Followed suggestions by Lukas Wummer (1,5,8/12)
->   - Use nbits rather than ndigits where needed (8/12)
->   - Renaming 'keylen' variablest to bufsize where necessary (9/12)
->   - Adjust signature size calculation for NIST P521 (11/12)
-> 
-> v3:
->   - Dropped ecdh support
->   - Use ecc_get_curve_nbits for getting number of bits in NIST P521 curve
->     in ecc_point_mult (7/10)
-> 
-> v2:
->   - Reformulated some patch descriptions
->   - Fixed issue detected by krobot
->   - Some other small changes to the code
-> 
-> Stefan Berger (13):
->    crypto: ecc - Use ECC_CURVE_NIST_P192/256/384_DIGITS where possible
->    crypto: ecdsa - Convert byte arrays with key coordinates to digits
->    crypto: ecdsa - Adjust tests on length of key parameters
->    crypto: ecdsa - Extend res.x mod n calculation for NIST P521
->    crypto: ecc - Add nbits field to ecc_curve structure
->    crypto: ecc - Implement vli_mmod_fast_521 for NIST p521
->    crypto: ecc - Add special case for NIST P521 in ecc_point_mult
->    crypto: ecc - Add NIST P521 curve parameters
->    crypto: ecdsa - Replace ndigits with nbits where precision is needed
->    crypto: ecdsa - Rename keylen to bufsize where necessary
->    crypto: ecdsa - Register NIST P521 and extend test suite
->    crypto: asymmetric_keys - Adjust signature size calculation for NIST
->      P521
->    crypto: x509 - Add OID for NIST P521 and extend parser for it
-> 
->   crypto/asymmetric_keys/public_key.c       |  14 ++-
->   crypto/asymmetric_keys/x509_cert_parser.c |   3 +
->   crypto/ecc.c                              |  44 +++++--
->   crypto/ecc_curve_defs.h                   |  49 ++++++++
->   crypto/ecdsa.c                            |  62 ++++++---
->   crypto/ecrdsa_defs.h                      |   5 +
->   crypto/testmgr.c                          |   7 ++
->   crypto/testmgr.h                          | 146 ++++++++++++++++++++++
->   include/crypto/ecc_curve.h                |   2 +
->   include/crypto/ecdh.h                     |   1 +
->   include/crypto/internal/ecc.h             |  24 +++-
->   include/linux/oid_registry.h              |   1 +
->   12 files changed, 335 insertions(+), 23 deletions(-)
-> 
+Note that the patch considers GCC 14 to be fixed - if somebody is
+using snapshots of the GCC 14 before the fix, they should upgrade.
+
+Signed-off-by: Uros Bizjak <ubizjak@gmail.com>
+Cc: Ingo Molnar <mingo@kernel.org>
+Cc: Andy Lutomirski <luto@kernel.org>
+Cc: Brian Gerst <brgerst@gmail.com>
+Cc: Denys Vlasenko <dvlasenk@redhat.com>
+Cc: H. Peter Anvin <hpa@zytor.com>
+Cc: Linus Torvalds <torvalds@linux-foundation.org>
+Cc: Peter Zijlstra <peterz@infradead.org>
+Cc: Josh Poimboeuf <jpoimboe@redhat.com>
+---
+ arch/x86/Kconfig | 9 ++++++---
+ 1 file changed, 6 insertions(+), 3 deletions(-)
+
+diff --git a/arch/x86/Kconfig b/arch/x86/Kconfig
+index 7aed87cbf386..09455d93b947 100644
+--- a/arch/x86/Kconfig
++++ b/arch/x86/Kconfig
+@@ -2435,14 +2435,17 @@ endmenu
+ config CC_HAS_NAMED_AS
+ 	def_bool CC_IS_GCC && GCC_VERSION >= 120100
+ 
++config CC_HAS_NAMED_AS_FIXED_ASAN
++	def_bool CC_IS_GCC && GCC_VERSION >= 130300
++
+ config USE_X86_SEG_SUPPORT
+ 	def_bool y
+ 	depends on CC_HAS_NAMED_AS
+ 	#
+-	# -fsanitize=kernel-address (KASAN) is at the moment incompatible
+-	# with named address spaces - see GCC PR sanitizer/111736.
++	# -fsanitize=kernel-address (KASAN) is incompatible with named
++	# address spaces with GCC < 13.3 - see GCC PR sanitizer/111736.
+ 	#
+-	depends on !KASAN
++	depends on !KASAN || CC_HAS_NAMED_AS_FIXED_ASAN
+ 
+ config CC_HAS_SLS
+ 	def_bool $(cc-option,-mharden-sls=all)
+-- 
+2.44.0
+
 
