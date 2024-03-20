@@ -1,191 +1,338 @@
-Return-Path: <linux-kernel+bounces-108427-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108428-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 270D1880A65
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:39:57 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
+	by mail.lfdr.de (Postfix) with ESMTPS id D9EC8880A68
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:40:12 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id D250628371D
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:39:55 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 66E4B1F22B03
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 04:40:12 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 56AED12E40;
-	Wed, 20 Mar 2024 04:39:49 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 60E2012B97;
+	Wed, 20 Mar 2024 04:40:08 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b="W1TmzBhz"
-Received: from NAM11-CO1-obe.outbound.protection.outlook.com (mail-co1nam11on2116.outbound.protection.outlook.com [40.107.220.116])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b="KXq+jk2h"
+Received: from mail-yb1-f172.google.com (mail-yb1-f172.google.com [209.85.219.172])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CEE97846D;
-	Wed, 20 Mar 2024 04:39:46 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=fail smtp.client-ip=40.107.220.116
-ARC-Seal:i=2; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710909588; cv=fail; b=t8340w3L5Q7nyweDZj0ilMm6yXZYo+l8SNWtjtPAuiv3PAbsrkFg4qInJhdZUx/E2IWlklJTK+jCqt0AXcneh3RHdUsnL2XlYt9MrY2PlJl1FPn2laHIGPDgu3T2PEW0oSmCUGTJUGtC/qjHhI0P2tbnwxyr3NSbXRKZVTDSJ4o=
-ARC-Message-Signature:i=2; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710909588; c=relaxed/simple;
-	bh=uFgEgkVL+aYSPxFHTVrxkvteEMYj3d5M6g10WPeU5Ks=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:Content-Type:
-	 Content-Disposition:In-Reply-To:MIME-Version; b=PG5i4VN1SGhCbcUerw1QjFGpkcLDrqtKUq4wodzcMyu4g+ZhR5QJm/u+uNQfsr4rn8AaCiIChywgRdUgiABelLPKLTR5hXsSWrfO9hwi8Kt5omghEu8f8M9ltHmvJ5vao3Dhl2MeNgBUIngCJ3czP0qzXZnqtp5eav3NCvTuZ28=
-ARC-Authentication-Results:i=2; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com; spf=pass smtp.mailfrom=memverge.com; dkim=pass (1024-bit key) header.d=memverge.com header.i=@memverge.com header.b=W1TmzBhz; arc=fail smtp.client-ip=40.107.220.116
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=memverge.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=memverge.com
-ARC-Seal: i=1; a=rsa-sha256; s=arcselector9901; d=microsoft.com; cv=none;
- b=BZYS95MrkNVHENNf5PBDd90HuIK6bHQRVZFmtdWfgkB+aEIGNU4GGEeru2K+NVOEExLBkJYz3RQcUxwBhgXloGMeRxKez6bbw/4VADDevF72CB6oT1wnhVzUyZeSgsI/VcXq+7zAWcEF1VyomzXqQBT1b0/X9ezRfHVRuLCYinuxNuDCJ35CuiLz6bWySIB6mx8fpGlbhF6/bgRe7ipRRbbxh/glqri/nKk1QHgzB1316wn2fCr1HTzJYtteptmFcKQLCWMekQQu8wjHI3NV5Y/Lm/y95F5j3YRi4VQZumdY+fZ+rbucIA4FYUo7PcDbmA/yAVEqf/PJa6S1v0A9bg==
-ARC-Message-Signature: i=1; a=rsa-sha256; c=relaxed/relaxed; d=microsoft.com;
- s=arcselector9901;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-AntiSpam-MessageData-ChunkCount:X-MS-Exchange-AntiSpam-MessageData-0:X-MS-Exchange-AntiSpam-MessageData-1;
- bh=AjT6yKaI+naNSBoHcSjiShYf8qPvy3PkMr+TKm3am2Y=;
- b=YF8AgdU5TMOTNQrz9sH+huodTRqWBp8rm41+ncnrZmCI9JcdrgkmkO9YMVdMTpuUV6JpWS4M8KT9y9S//qWLuw+a4X+rpxdaq5aYMh/5+pfrMtRJlBXLpvADhGDwO1h3BSqSM7be13lbl+xdD8zgzvX6p/+jUyhRKwFre9b3vXXXbd/1EaPcI/qolXWHw6xrcEXP0I3xsIcwFcVDrLcLY59EVgmKXeyCKDP5ewsL5mmOaoioQ6XFC4lTIgRdkc6xr+dfUk59YVrF/t+dRWwsToVPj/IRpb7x3EJypAxno+wg8WFxiGHodqLwqaS0PLHJz0eI0WZj3hULWGUAkiowpA==
-ARC-Authentication-Results: i=1; mx.microsoft.com 1; spf=pass
- smtp.mailfrom=memverge.com; dmarc=pass action=none header.from=memverge.com;
- dkim=pass header.d=memverge.com; arc=none
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=memverge.com;
- s=selector2;
- h=From:Date:Subject:Message-ID:Content-Type:MIME-Version:X-MS-Exchange-SenderADCheck;
- bh=AjT6yKaI+naNSBoHcSjiShYf8qPvy3PkMr+TKm3am2Y=;
- b=W1TmzBhzHQ1bk9MpNvFTRALDFVNOG8+KSJ0PiWciqyf3vPaMHyvowYTv3/WZHi9k9SjDh9UO6X1WmrgTSTCnYQRkgn0mxIQ8UWuKphEYjkfAn5ZNwNKPbChkFAX316luLqkpHkKz4TDzwi4y6Hn1QKgUMxvniV9XJJGiDONILRo=
-Authentication-Results: dkim=none (message not signed)
- header.d=none;dmarc=none action=none header.from=memverge.com;
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com (2603:10b6:a03:394::19)
- by MW3PR17MB4201.namprd17.prod.outlook.com (2603:10b6:303:44::24) with
- Microsoft SMTP Server (version=TLS1_2,
- cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.20.7386.30; Wed, 20 Mar
- 2024 04:39:43 +0000
-Received: from SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b]) by SJ0PR17MB5512.namprd17.prod.outlook.com
- ([fe80::6657:814f:5df0:bb5b%5]) with mapi id 15.20.7386.025; Wed, 20 Mar 2024
- 04:39:43 +0000
-Date: Wed, 20 Mar 2024 00:39:34 -0400
-From: Gregory Price <gregory.price@memverge.com>
-To: "Huang, Ying" <ying.huang@intel.com>
-Cc: Gregory Price <gourry.memverge@gmail.com>, linux-mm@kvack.org,
-	linux-api@vger.kernel.org, linux-arch@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, linux-kernel@vger.kernel.org,
-	dan.j.williams@intel.com, honggyu.kim@sk.com, corbet@lwn.net,
-	arnd@arndb.de, luto@kernel.org, akpm@linux-foundation.org,
-	shuah@kernel.org
-Subject: Re: [RFC v3 0/3] move_phys_pages syscall - migrate page contents
- given
-Message-ID: <Zfpohg3EGxxOEcWg@memverge.com>
-References: <20240319172609.332900-1-gregory.price@memverge.com>
- <87v85hsjn7.fsf@yhuang6-desk2.ccr.corp.intel.com>
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <87v85hsjn7.fsf@yhuang6-desk2.ccr.corp.intel.com>
-X-ClientProxiedBy: SJ0PR05CA0142.namprd05.prod.outlook.com
- (2603:10b6:a03:33d::27) To SJ0PR17MB5512.namprd17.prod.outlook.com
- (2603:10b6:a03:394::19)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id B1EF61427A
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 04:40:04 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.172
+ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
+	t=1710909607; cv=none; b=PPlby4mrM1QKPQE6NImCoZpnYZXdZK3f4+bZk4R5jYhKEiQIDgniboA7cQH9OdvMeMRHe7jt7aSYubeKQb8HbmArjl32xHYIIHKuoItrHG9+rDMhg5ZrLfPbEOckyeIrX1L7O/bceEhFU/Hba6ITX7atKQYUJRGENhTr3f9rA50=
+ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
+	s=arc-20240116; t=1710909607; c=relaxed/simple;
+	bh=wIMtGfVll/5PVHjMPpijDZTY31O36QHFM7YWE0N+6s0=;
+	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
+	 To:Cc:Content-Type; b=VNkwWH8xuSu9IaGA7+4WPbUr5rkUWzdIUJbg+4SsQOAxC5/pe1KcNJq/eRNQDKwjfJclXB3yqDKt6l6+cIYXmgL6dS+NgAFcFw1VqDAb9Nm7dC0I1hajT0D2sbCPDIxbNfRdSGpvUK46cHF3vFSfvVTnyS5siLInD8EtIHLKHvY=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com; spf=pass smtp.mailfrom=rivosinc.com; dkim=pass (2048-bit key) header.d=rivosinc-com.20230601.gappssmtp.com header.i=@rivosinc-com.20230601.gappssmtp.com header.b=KXq+jk2h; arc=none smtp.client-ip=209.85.219.172
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=rivosinc.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=rivosinc.com
+Received: by mail-yb1-f172.google.com with SMTP id 3f1490d57ef6-dd14d8e7026so5182342276.2
+        for <linux-kernel@vger.kernel.org>; Tue, 19 Mar 2024 21:40:04 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=rivosinc-com.20230601.gappssmtp.com; s=20230601; t=1710909603; x=1711514403; darn=vger.kernel.org;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:from:to:cc:subject:date
+         :message-id:reply-to;
+        bh=HOcEqvOqLiRgD+vxwVroLkV65fGdVjagF231/Ug6vZ0=;
+        b=KXq+jk2hxfFAyyOH7s3bexJYVW7JiR0TcjDrb9dF889eb6G95zir8mIKTklutXSvtw
+         KBKheD8PJJT4TmqpvvKXlc40kV1xdvlNWoxs0Z4Xpp1VsLfcZ4tZk38XroilPywh0RwM
+         vC/fMTFrzCYsJxe72KEAmyKCRfeNvQpGDdYS7y0h3juV0SWqMB1lq+Zm6W+oCklUPd/o
+         VD37okA3SALVa9D+kX2WwGmi05P8M7xXmEGdSC3rmgDng0PyH4dsXg4JUG7G/Seaf1BJ
+         iQRcR1KYv9TqYbmzp5dwulEVxZzR0Hr0PSRLYmeHuF8wCUcO9F35/TT+TojxIuyHGx7e
+         YU8w==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710909603; x=1711514403;
+        h=content-transfer-encoding:cc:to:subject:message-id:date:from
+         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
+         :subject:date:message-id:reply-to;
+        bh=HOcEqvOqLiRgD+vxwVroLkV65fGdVjagF231/Ug6vZ0=;
+        b=TyG7OigAg9Jfb79AlWk9Z1LMpoqEncpYUJkGFlK8BEspr9OT5Qdskno4AP5iAOt+zW
+         i2PpPpYG/rp3TvTA5U4Ygizt6tuIgguWxjxIDuG23VxpBJPPOCU2PyQgQnn0FMFxE/ea
+         QthCViCSQCOJLVH+5STE6TwWJrGFHqUB39eSOV2lA5BTbNJ7GqhE4ARx4pTu+MqOP35q
+         XahGtD3cobA8Uk6Zn/u1KIVdqw5yfpJRBmVchMI4vAC6B2BHlyJlgFAsQEyt1XTFtcFh
+         n7rqMY8GXMizb2fnr7R40mo3ouKea6k3emxzmZuoy0RhaRjkOcySoCxddBsgl/098vYM
+         e7Xw==
+X-Forwarded-Encrypted: i=1; AJvYcCVlv6ovlyzN6QBRNVcLOgQOrnt81X8NW5XSTySpZq0wIc87M7UFFDtZG09hcOpZmVtzztqTnhtO/NH2Ne+LEuRIlYlqc6oD10OMGqcJ
+X-Gm-Message-State: AOJu0YxD0btf+w+J31EeuN6F/qxMsklOTjWMAa0oGD+Iv2t7ncAVdWKy
+	NqzgG82/+NwNYU5WhzSNW+Co2WlaZHb9hMamqiNGp3kOmvNk1mTzhpASY00a4tuo4hQESf24rGc
+	N7WcVl4xvtac38yK74adYL3qXzm03RXlf8RY64A==
+X-Google-Smtp-Source: AGHT+IFi8oiVX5pjKC9ntqVOdhWO3c/z5P7ohNgAfHf1bUqmybc/0rIf4kuJ8sH9/5U2MG51vTiOLcXZ5b5tjWWx5eA=
+X-Received: by 2002:a25:ad46:0:b0:dc2:2f4f:757 with SMTP id
+ l6-20020a25ad46000000b00dc22f4f0757mr14257691ybe.7.1710909603558; Tue, 19 Mar
+ 2024 21:40:03 -0700 (PDT)
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-X-MS-PublicTrafficType: Email
-X-MS-TrafficTypeDiagnostic: SJ0PR17MB5512:EE_|MW3PR17MB4201:EE_
-X-MS-Office365-Filtering-Correlation-Id: c5be5050-a02e-4e1d-070c-08dc4897c306
-X-MS-Exchange-SenderADCheck: 1
-X-MS-Exchange-AntiSpam-Relay: 0
-X-Microsoft-Antispam: BCL:0;
-X-Microsoft-Antispam-Message-Info:
-	xWwBlQ2kj6+7ToBxiG3uuAzx5nSmwo6SlG4X/6LLdaC0RaLkvGo/4kQWsjEd4bKzHOS0zQNGE2wN44Ftp3x89ZDM9nKFhFJGNq7sb1Ni++BZzMnkRgdH6VbLMxSLtNd/61EHJllRMm6FA1SDpPAP/GLj3ikAiDR3E5eUMduIm01wZ7JhE4uEsUT/v3Ve+2d7pxOgfy3kti+lfrXV1k8ogq0KBvhOzoHB3N/QjfzuIPhS2HeQ2x2jbufVB7ewcwioCaQQLCg5eLhRN0aBPYapE64n0BzH7nlRlb3cGllN2hYawAMSo11oDa3XU28DInwCF/vNXdH4PDg9ihTzBFyM1IZhHwaZFnDIyjW9u85koZLCA2gQgO7uUaCR/XyxHnhUrfOBcmr8nweszuKqRZtNXjJ1H3B7mf8VpXp78qXBXULUFvCPi/AzGRIIJmsytGYTGbvVfOu0VTY0T/oMTLu0WonAN6nAtRtOduDDujs/68nEdibGgBYDZiB/Mq44objGxovShdlrBpOImUYtNSsxl79u8ov4eQ8WkdRtHkTziaFTlufuX/cCHxOh5ZQCHlEo+IOgxk1nmUxtmIIxzRTi/R77BgnIZAlL/oR2UcXj2+xHiGfF9W9AdQXCAKpMhWF7pqjJNRd4x575CeTZlZO+j73X0F5rS2Xh4kl+Q43D4O8=
-X-Forefront-Antispam-Report:
-	CIP:255.255.255.255;CTRY:;LANG:en;SCL:1;SRV:;IPV:NLI;SFV:NSPM;H:SJ0PR17MB5512.namprd17.prod.outlook.com;PTR:;CAT:NONE;SFS:(13230031)(366007)(376005)(7416005)(1800799015);DIR:OUT;SFP:1102;
-X-MS-Exchange-AntiSpam-MessageData-ChunkCount: 1
-X-MS-Exchange-AntiSpam-MessageData-0:
-	=?us-ascii?Q?xyptoRBv+AO6Pa8tmCxyiw60L7kt6GkKNCzS/MbQFsGRvdWQjXKGUHMQYq2B?=
- =?us-ascii?Q?38+edWjd+2W40otCn80lcy2G2A761ab6PwD2BvEAXm6sBakGOPSgmW5VliAo?=
- =?us-ascii?Q?tUnUiqIh8kmjbMO8481Lgsk0abniMXzdkjRsWvYlXKcIGaLdi30HqTtvUJh6?=
- =?us-ascii?Q?gn8cv7Z/bMA7iklfmVCi6D3GYCAOBAMBR1Ssg5xF4+IEv6R0RisXgiiRTb1F?=
- =?us-ascii?Q?lXibAABWMJQNkOYySX80RNNHKYNOGaaz0qxtZXKv6PonYzC84yEdMVFZy1Ys?=
- =?us-ascii?Q?VzOV5Ks1VKP3tU4zKQz60J8IweHVN+OUZvhKSWvUWrVa/2mhF3qinF9WVMu7?=
- =?us-ascii?Q?7Mxotii8jgZNM6Uy/ZPtRi61DivW9nm3suP9BnqnNT03GggeNU5USRpxj26G?=
- =?us-ascii?Q?q3moUcVJckZML+gPwqlvoBCX4Hs9eBeiF16ouMI1yxBqdtiz3CHtv2Xj4ArZ?=
- =?us-ascii?Q?O4ijTbA66dWU4HpXZanfZ7XgjF4JTcG54j9dYnZFaWeBl9NVXIlnuYUBtT3k?=
- =?us-ascii?Q?u4PBLx2xsIFdQIRJPM1SlgCu1hrI+XOypL17id3Hclg7j0WDeWXcw/vN/rnz?=
- =?us-ascii?Q?jYijcJ0EHdCbbPHZLDeOiG9jUydNowkQEqBTrVDTW1uweezrx+/yEkpmaP+j?=
- =?us-ascii?Q?VSQpdjH42TtfSWL1JDGIZjSpCzQjtZW/ylnCOmXQoDuOulXaxIjQsqqQycbo?=
- =?us-ascii?Q?D1zoZuGnC3jYqedy2gNBx41uPe9lJgicxC52q3CnkSVXvdSAwfmuyhr/xEbT?=
- =?us-ascii?Q?dgeoWO4OHmbD1adnNqLBHA7E4l49PiHzjaoZTqiBWiXdDhsHiEn/Cj3PU0NW?=
- =?us-ascii?Q?1eL7aLj//ZK1HLZCgu6zKJ3igq0qqPK7KYLId4e1lDeFT+ccUZTiaYrkzEhg?=
- =?us-ascii?Q?ect/pdNk0J+iN/M+QFbOtX+X+5lhduhkj6ibIOk8rx7TtDjC73SaEtBSuaXi?=
- =?us-ascii?Q?6OtyC041jEViwKdtT5y1h5EEUj0xHl6EBb91jUK4mdYRygOa3autSUs8gBkj?=
- =?us-ascii?Q?q2ThzvPVR5UDuHbEteQClWbQ6yjJwuCb0aIXhlfatDj35Snkqo5LiWqyXSh4?=
- =?us-ascii?Q?/3mG/0rbH9qfZoSKy4TiIeqcl7NxbNk1TNK+Qs0o8dlVbCI79K3+HiUH8X70?=
- =?us-ascii?Q?JzKETs40W0f0RIV5SEN3++QFWhuF8QzwdlvZIn2u2nI2fhw7gUp+j5ZjKbLy?=
- =?us-ascii?Q?fZ7RpkvGZs1idq795QKrtpLGMxv2cU/ki82oaobgyWIYwsxbi35P9LH46rS6?=
- =?us-ascii?Q?G2U/SoXJhBzvDli/S2i4SqlQ5x6G69CjMLlZBW+wQVKujnAAGBOvt0AOVaci?=
- =?us-ascii?Q?NStI4J68oGlG+41luefZepzWn/evF7Uk3mEuKiMbJCxQOPVsOEJ4MLQalJ0l?=
- =?us-ascii?Q?hNNn4JCvhuhLI7obiindiZE4/J9XgLBUXNmHY6w+DAV4DUOKOIzkYyaQfdwf?=
- =?us-ascii?Q?zAL4jH7dF6PP0ujzOIW4cvEtWUGw8fSoh+fDiBQ0XF0VSFwTmFhqnilPpxoc?=
- =?us-ascii?Q?eJ2e3L8lgQvIa0nYDaLyGqZddlxWwN2+mtn9r4MmfVlFqkOdQzYM/++S4adn?=
- =?us-ascii?Q?ZPnVUZQxDuCeFTvavSp4FTO3xdhsulpf90hYTJqHFUJMz7ntZYCPHNVum8kC?=
- =?us-ascii?Q?Ug=3D=3D?=
-X-OriginatorOrg: memverge.com
-X-MS-Exchange-CrossTenant-Network-Message-Id: c5be5050-a02e-4e1d-070c-08dc4897c306
-X-MS-Exchange-CrossTenant-AuthSource: SJ0PR17MB5512.namprd17.prod.outlook.com
-X-MS-Exchange-CrossTenant-AuthAs: Internal
-X-MS-Exchange-CrossTenant-OriginalArrivalTime: 20 Mar 2024 04:39:43.0732
- (UTC)
-X-MS-Exchange-CrossTenant-FromEntityHeader: Hosted
-X-MS-Exchange-CrossTenant-Id: 5c90cb59-37e7-4c81-9c07-00473d5fb682
-X-MS-Exchange-CrossTenant-MailboxType: HOSTED
-X-MS-Exchange-CrossTenant-UserPrincipalName: m6D9eP/ToaZQ49E0B4SjCbS9x7nVltHt9Bv/5PW63YUltpQl1OCsg8GYcaMfnWpJc1WeTitYlT/QVoxp8+5XXkeVvfuJsoTbQvLmomtE/Sk=
-X-MS-Exchange-Transport-CrossTenantHeadersStamped: MW3PR17MB4201
+References: <20240319215915.832127-1-samuel.holland@sifive.com>
+ <20240319215915.832127-6-samuel.holland@sifive.com> <CAKC1njSg9-hJo6hibcM9a-=FUmMWyR39QUYqQ1uwiWhpBZQb9A@mail.gmail.com>
+ <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
+In-Reply-To: <40ab1ce5-8700-4a63-b182-1e864f6c9225@sifive.com>
+From: Deepak Gupta <debug@rivosinc.com>
+Date: Tue, 19 Mar 2024 21:39:52 -0700
+Message-ID: <CAKC1njQYZHbQJ71mapeG1DEw=A+aGx77xsuQGecsNFpoJ=tzGQ@mail.gmail.com>
+Subject: Re: [RISC-V] [tech-j-ext] [RFC PATCH 5/9] riscv: Split per-CPU and
+ per-thread envcfg bits
+To: Samuel Holland <samuel.holland@sifive.com>
+Cc: Palmer Dabbelt <palmer@dabbelt.com>, linux-riscv@lists.infradead.org, 
+	devicetree@vger.kernel.org, Catalin Marinas <catalin.marinas@arm.com>, 
+	linux-kernel@vger.kernel.org, tech-j-ext@lists.risc-v.org, 
+	Conor Dooley <conor@kernel.org>, kasan-dev@googlegroups.com, 
+	Evgenii Stepanov <eugenis@google.com>, 
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>, Rob Herring <robh+dt@kernel.org>, 
+	Andrew Jones <ajones@ventanamicro.com>, Guo Ren <guoren@kernel.org>, 
+	Heiko Stuebner <heiko@sntech.de>, Paul Walmsley <paul.walmsley@sifive.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
 
-On Wed, Mar 20, 2024 at 10:48:44AM +0800, Huang, Ying wrote:
-> Gregory Price <gourry.memverge@gmail.com> writes:
-> 
-> > Doing this reverse-translation outside of the kernel requires considerable
-> > space and compute, and it will have to be performed again by the existing
-> > system calls.  Much of this work can be avoided if the pages can be
-> > migrated directly with physical memory addressing.
-> 
-> One difficulty of the idea of the physical address is that we lacks some
-> user space specified policy information to make decision.  For example,
-> users may want to pin some pages in DRAM to improve latency, or pin some
-> pages in CXL memory to do some best effort work.  To make the correct
-> decision, we need PID and virtual address.
-> 
+Hi Samuel,
 
-I think of this as a second or third order problem.  The core problem
-right now isn't the practicality of how userland would actually use this
-interface - the core problem is whether the data generated by offloaded
-monitoring is even worth collecting and operating on in the first place.  
+Thanks for your response.
 
-So this is a quick hack to do some research about whether it's even
-worth developing the whole abstraction described by Willy.
+On Tue, Mar 19, 2024 at 7:21=E2=80=AFPM Samuel Holland
+<samuel.holland@sifive.com> wrote:
+>
+> Hi Deepak,
+>
+> On 2024-03-19 6:55 PM, Deepak Gupta wrote:
+> > On Tue, Mar 19, 2024 at 2:59=E2=80=AFPM Samuel Holland via lists.riscv.=
+org
+> > <samuel.holland=3Dsifive.com@lists.riscv.org> wrote:
+> >>
+> >> Some envcfg bits need to be controlled on a per-thread basis, such as
+> >> the pointer masking mode. However, the envcfg CSR value cannot simply =
+be
+> >> stored in struct thread_struct, because some hardware may implement a
+> >> different subset of envcfg CSR bits is across CPUs. As a result, we ne=
+ed
+> >> to combine the per-CPU and per-thread bits whenever we switch threads.
+> >>
+> >
+> > Why not do something like this
+> >
+> > diff --git a/arch/riscv/include/asm/csr.h b/arch/riscv/include/asm/csr.=
+h
+> > index b3400517b0a9..01ba87954da2 100644
+> > --- a/arch/riscv/include/asm/csr.h
+> > +++ b/arch/riscv/include/asm/csr.h
+> > @@ -202,6 +202,8 @@
+> >  #define ENVCFG_CBIE_FLUSH              _AC(0x1, UL)
+> >  #define ENVCFG_CBIE_INV                        _AC(0x3, UL)
+> >  #define ENVCFG_FIOM                    _AC(0x1, UL)
+> > +/* by default all threads should be able to zero cache */
+> > +#define ENVCFG_BASE                    ENVCFG_CBZE
+>
+> Linux does not assume Sstrict, so without Zicboz being present in DT/ACPI=
+, we
+> have no idea what the CBZE bit does--there's no guarantee it has the stan=
+dard
+> meaning--so it's not safe to set the bit unconditionally. If that policy
+> changes, we could definitely simplify the code.
+>
 
-This is why it's labeled RFC.  I upped a v3 because I know of two groups
-actively looking at using it for research, and because the folio updates
-broke the old version.  It's also easier for me to engage through the
-list than via private channels for this particular work.
+Yeah, it makes sense.
 
+> >  /* Smstateen bits */
+> >  #define SMSTATEEN0_AIA_IMSIC_SHIFT     58
+> > diff --git a/arch/riscv/kernel/process.c b/arch/riscv/kernel/process.c
+> > index 4f21d970a129..2420123444c4 100644
+> > --- a/arch/riscv/kernel/process.c
+> > +++ b/arch/riscv/kernel/process.c
+> > @@ -152,6 +152,7 @@ void start_thread(struct pt_regs *regs, unsigned lo=
+ng pc,
+> >         else
+> >                 regs->status |=3D SR_UXL_64;
+> >  #endif
+> > +       current->thread_info.envcfg =3D ENVCFG_BASE;
+> >  }
+> >
+> > And instead of context switching in `_switch_to`,
+> > In `entry.S` pick up `envcfg` from `thread_info` and write it into CSR.
+>
+> The immediate reason is that writing envcfg in ret_from_exception() adds =
+cycles
+> to every IRQ and system call exit, even though most of them will not chan=
+ge the
+> envcfg value. This is especially the case when returning from an IRQ/exce=
+ption
+> back to S-mode, since envcfg has zero effect there.
+>
+> The CSRs that are read/written in entry.S are generally those where the v=
+alue
+> can be updated by hardware, as part of taking an exception. But envcfg ne=
+ver
+> changes on its own. The kernel knows exactly when its value will change, =
+and
+> those places are:
+>
+>  1) Task switch, i.e. switch_to()
+>  2) execve(), i.e. start_thread() or flush_thread()
+>  3) A system call that specifically affects a feature controlled by envcf=
+g
 
-Do I suggest we merge this interface as-is? No, too many concerns about
-side channels.  However, it's a clean reuse of move_pages code to
-bootstrap the investigation, and it at least gets the gears turning.
+Yeah I was optimizing for a single place to write instead of
+sprinkling at multiple places.
+But I see your argument. That's fine.
 
-Example notes from a sidebar earlier today:
+>
+> So that's where this series writes it. There are a couple of minor tradeo=
+ffs
+> about when exactly to do the write:
+>
+> - We could drop the sync_envcfg() calls outside of switch_to() by reading=
+ the
+>   current CSR value when scheduling out a thread, but again that adds ove=
+rhead
+>   to the fast path to remove a tiny bit of code in the prctl() handlers.
+> - We don't need to write envcfg when switching to a kernel thread, only w=
+hen
+>   switching to a user thread, because kernel threads never leave S-mode, =
+so
+>   envcfg doesn't affect them. But checking the thread type takes many mor=
+e
+>   instructions than just writing the CSR.
+>
+> Overall, the optimal implementation will approximate the rule of only wri=
+ting
+> envcfg when its value changes.
+>
+> > This construction avoids
+> > - declaring per cpu riscv_cpu_envcfg
+>
+> This is really a separate concern than when we write envcfg. The per-CPU
+> variable is only necessary to support hardware where a subset of harts su=
+pport
+> Zicboz. Since the riscv_cpu_has_extension_[un]likely() helpers were added
+> specifically for Zicboz, I assume this is an important use case, and drop=
+ping
+> support for this hardware would be a regression. After all, hwprobe() all=
+ows
+> userspace to see that Zicboz is implemented at a per-CPU level. Maybe And=
+rew can
+> weigh in on that.
 
-* An interesting proposal from Dan Williams would be to provide some
-  sort of `/sys/.../memory_tiering/tierN/promote_hot` interface, with
-  a callback mechanism into the relevant hardware drivers that allows
-  for this to be abstracted.  This could be done on some interval and
-  some threshhold (# pages, hotness threshhold, etc).
+I am not sure of the practicality of this heterogeneity for Zicboz and
+for that matter any of the upcoming
+features that'll be enabled via senvcfg (control flow integrity,
+pointer masking, etc).
 
+As an example if cache zeroing instructions are used by app binary, I
+expect it to be used in following
+manner
 
-The code to execute promotions ends up looking like what I have now
+ - Explicitly inserting cbo.zero by application developer
+ - Some compiler flag which ensures that structures larger than cache
+line gets zeroed by cbo.zero
 
-1) Validate the page is elgibile to be promoted by walking the vmas
-2) invoking the existing move_pages code
+In either of the cases, the developer is not expecting to target it to
+a specific hart on SoC and instead expect it to work.
+There might be libraries (installed via sudo apt get) with cache zero
+support in them which may run in different address spaces.
+Should the library be aware of the CPU on which it's running. Now
+whoever is running these binaries should be aware which CPUs
+they get assigned to in order to avoid faults?
 
-The above idea can be implemented trivially in userland without
-having to plumb through a whole brand new callback system.
+That seems excessive, doesn't it?
 
+>
+> If we decide to enable Zicboz only when all harts support it, or we decid=
+e it's
+> safe to attempt to set the envcfg.CBZE bit on harts that do not declare s=
+upport
+> for Zicboz, then we could drop the percpu variable.
+>
+> > - syncing up
+> > - collection of *envcfg bits.
+> >
+> >
+> >> Signed-off-by: Samuel Holland <samuel.holland@sifive.com>
+> >> ---
+> >>
+> >>  arch/riscv/include/asm/cpufeature.h |  2 ++
+> >>  arch/riscv/include/asm/processor.h  |  1 +
+> >>  arch/riscv/include/asm/switch_to.h  | 12 ++++++++++++
+> >>  arch/riscv/kernel/cpufeature.c      |  4 +++-
+> >>  4 files changed, 18 insertions(+), 1 deletion(-)
+> >>
+> >> diff --git a/arch/riscv/include/asm/cpufeature.h b/arch/riscv/include/=
+asm/cpufeature.h
+> >> index 0bd11862b760..b1ad8d0b4599 100644
+> >> --- a/arch/riscv/include/asm/cpufeature.h
+> >> +++ b/arch/riscv/include/asm/cpufeature.h
+> >> @@ -33,6 +33,8 @@ DECLARE_PER_CPU(long, misaligned_access_speed);
+> >>  /* Per-cpu ISA extensions. */
+> >>  extern struct riscv_isainfo hart_isa[NR_CPUS];
+> >>
+> >> +DECLARE_PER_CPU(unsigned long, riscv_cpu_envcfg);
+> >> +
+> >>  void riscv_user_isa_enable(void);
+> >>
+> >>  #ifdef CONFIG_RISCV_MISALIGNED
+> >> diff --git a/arch/riscv/include/asm/processor.h b/arch/riscv/include/a=
+sm/processor.h
+> >> index a8509cc31ab2..06b87402a4d8 100644
+> >> --- a/arch/riscv/include/asm/processor.h
+> >> +++ b/arch/riscv/include/asm/processor.h
+> >> @@ -118,6 +118,7 @@ struct thread_struct {
+> >>         unsigned long s[12];    /* s[0]: frame pointer */
+> >>         struct __riscv_d_ext_state fstate;
+> >>         unsigned long bad_cause;
+> >> +       unsigned long envcfg;
+> >>         u32 riscv_v_flags;
+> >>         u32 vstate_ctrl;
+> >>         struct __riscv_v_ext_state vstate;
+> >> diff --git a/arch/riscv/include/asm/switch_to.h b/arch/riscv/include/a=
+sm/switch_to.h
+> >> index 7efdb0584d47..256a354a5c4a 100644
+> >> --- a/arch/riscv/include/asm/switch_to.h
+> >> +++ b/arch/riscv/include/asm/switch_to.h
+> >> @@ -69,6 +69,17 @@ static __always_inline bool has_fpu(void) { return =
+false; }
+> >>  #define __switch_to_fpu(__prev, __next) do { } while (0)
+> >>  #endif
+> >>
+> >> +static inline void sync_envcfg(struct task_struct *task)
+> >> +{
+> >> +       csr_write(CSR_ENVCFG, this_cpu_read(riscv_cpu_envcfg) | task->=
+thread.envcfg);
+> >> +}
+> >> +
+> >> +static inline void __switch_to_envcfg(struct task_struct *next)
+> >> +{
+> >> +       if (riscv_cpu_has_extension_unlikely(smp_processor_id(), RISCV=
+_ISA_EXT_XLINUXENVCFG))
+> >
+> > I've seen `riscv_cpu_has_extension_unlikely` generating branchy code
+> > even if ALTERNATIVES was turned on.
+> > Can you check disasm on your end as well.  IMHO, `entry.S` is a better
+> > place to pick up *envcfg.
+>
+> The branchiness is sort of expected, since that function is implemented b=
+y
+> switching on/off a branch instruction, so the alternate code is necessari=
+ly a
+> separate basic block. It's a tradeoff so we don't have to write assembly =
+code
+> for every bit of code that depends on an extension. However, the cost sho=
+uld be
+> somewhat lowered since the branch is unconditional and so entirely predic=
+table.
+>
+> If the branch turns out to be problematic for performance, then we could =
+use
+> ALTERNATIVE directly in sync_envcfg() to NOP out the CSR write.
 
-Sometimes you have to post stupid ideas to get to the good ones :]
+Yeah I lean towards using alternatives directly.
 
-~Gregory
+>
+> >> +               sync_envcfg(next);
+> >> +}
+
+>
 
