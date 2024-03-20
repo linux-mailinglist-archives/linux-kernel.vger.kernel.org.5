@@ -1,134 +1,205 @@
-Return-Path: <linux-kernel+bounces-109239-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109240-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 43BC88816A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:36:33 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id D24348816A5
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:38:08 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id CCCDF283153
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:36:31 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 87CBF282AE8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:38:07 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E49326A340;
-	Wed, 20 Mar 2024 17:36:25 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 84F346A341;
+	Wed, 20 Mar 2024 17:38:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="K5tuHYZY"
-Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.13])
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="QF7cVlUQ"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 51618524B7
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:36:23 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.13
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8C67A1DFC6;
+	Wed, 20 Mar 2024 17:38:01 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956185; cv=none; b=sC3KrmEzJyRlAY7QPrT8D8XbR1wMlpotz77dBB+Krgk5WR2L4aCQLkreuip0V3/PbjJJ/BmRr+BCCA4V37pc3nnnm5OSKzSoTVLf7paiPoI53DGZnjmz0w2/eYq0DLndrzbFTlP7Z1VWXGmgNPEtAKS3l6RNjehUdwKR3X9pOeE=
+	t=1710956281; cv=none; b=QdX5zNX+63P07ufyKopght5QYRIROsCrNBxyawaKNQFsJn45WVeW8o99g9I879c0N7sM0XiF6Gc4C4hthViNN0PuM0Qyh2vmAdvwzRSXYXQy9nDccuXg8BdWyNe+K23aWMt3doxuIHb9eCGCDn3Er8G3JfMsS49n/ogISjtSfuY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956185; c=relaxed/simple;
-	bh=614TyGgZR8YUe7ivLVIdx/2LjYPVT1YP379tVWiMKOI=;
+	s=arc-20240116; t=1710956281; c=relaxed/simple;
+	bh=eGsTs/M0MZ1gL7Z17waNl7v25/yUG8QyR7jEDqlU/xg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=YwlOqLgDW6TZHhuXvjrALegOSzMrIzlcxJWrDuw+z4aT2xoOMCW1stVEbwuXhJIXB0s5XglCXcdnf50FDHt28KEEMBsxODt/TbI/0iyelSFRhLs54hdDJJvCbzOWCL6IDCY6mo8ZW53yqP3xrscjkNNSTPtYeU2OhtSNg1uFNJ4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=K5tuHYZY; arc=none smtp.client-ip=192.198.163.13
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710956183; x=1742492183;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=614TyGgZR8YUe7ivLVIdx/2LjYPVT1YP379tVWiMKOI=;
-  b=K5tuHYZYRslRKZwIJs20rW49fhjpkxjdP+iYTbzncHhdL0CFL8VeTxVs
-   i6nFND3rGzhPi713t8VT/rG5lpUfbz6fVxGrcgZ/xfoqr7hLeeqQY8kZ4
-   iUSx0mAXFja4ixu7uRpVuGimy1Tqp+i2rdFIPSWJy+buPT2Qd5wJAwigU
-   YwWhd7M/a3K1ZrGsmIszazJbHSgOfdxwcFWjk/i7behJWZQ4j++w+ykMu
-   2GNIRtc3ex75cBf0+2y41YRgWhuayxtKf2AthFN6A8ynnznfPl9NbY64U
-   WERI6/XAxF8M7qmLp5Ocazc4xxcYnpatE220SZwWDP4XHt5SF8+SfAZ9q
-   w==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="8851141"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="8851141"
-Received: from fmviesa006.fm.intel.com ([10.60.135.146])
-  by fmvoesa107.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:36:22 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="14303809"
-Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
-  by fmviesa006.fm.intel.com with ESMTP; 20 Mar 2024 10:36:19 -0700
-Received: from kbuild by b21307750695 with local (Exim 4.96)
-	(envelope-from <lkp@intel.com>)
-	id 1rmzrN-000Ip9-0i;
-	Wed, 20 Mar 2024 17:36:17 +0000
-Date: Thu, 21 Mar 2024 01:35:55 +0800
-From: kernel test robot <lkp@intel.com>
-To: Oscar Salvador <osalvador@suse.de>,
-	Andrew Morton <akpm@linux-foundation.org>
-Cc: llvm@lists.linux.dev, oe-kbuild-all@lists.linux.dev,
-	Linux Memory Management List <linux-mm@kvack.org>,
-	linux-kernel@vger.kernel.org, Michal Hocko <mhocko@suse.com>,
-	Vlastimil Babka <vbabka@suse.cz>, Marco Elver <elver@google.com>,
-	Andrey Konovalov <andreyknvl@gmail.com>,
-	Alexander Potapenko <glider@google.com>,
-	Tetsuo Handa <penguin-kernel@i-love.sakura.ne.jp>,
-	Oscar Salvador <osalvador@suse.de>,
-	syzbot+41bbfdb8d41003d12c0f@syzkaller.appspotmail.com
-Subject: Re: [PATCH v2 1/2] mm,page_owner: Fix refcount imbalance
-Message-ID: <202403210131.YLR6USxm-lkp@intel.com>
-References: <20240319183212.17156-2-osalvador@suse.de>
+	 Content-Type:Content-Disposition:In-Reply-To; b=r8ZgMtGD1zZ1kV/yClr4tKga46ImjFT5NqOePgbyio1GkYjOAc6CWw8FHOIbw3eRl9aspD6koPk5QezHcvCbWD7bg/8lZkhu72EZOL1PqumbrSbOAoicDcj3wdBO/Js+39FwjHWvidaAl0+jITE9ZWEr9ug+QWlpdty5M3YpaUE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=QF7cVlUQ; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 85ADEC43390;
+	Wed, 20 Mar 2024 17:38:00 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710956281;
+	bh=eGsTs/M0MZ1gL7Z17waNl7v25/yUG8QyR7jEDqlU/xg=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=QF7cVlUQU5HBfd1GgzNN+vS4TX49eeRAhrxROKDRHGjBHt5roIBulvIFVETxHw8qs
+	 3grk6Aife8CxoPVT9ZeZm9cCpI3aBbIfKQKIki+4NVJ/ps1PZddwGgCN2RcNrwkmyB
+	 hvfhAhbQ0XgbvLyfaEaetZBzGI2j8ZeZAdPbI4bnFR6eXxEOn2UnNgAdXqJhtA93PK
+	 plH5vyk+FToyCoq1/5xEqKc+jOVXmr++SSKlCKff7cxsCDv1Uhp2+Nb3DCIQBK8lXD
+	 qfI3hjgHYGo7Qv2dTzD7G6ToNnnSGnA8EaabVjfwT1uDyYEyzbgTF7SoiibrL+IKf6
+	 827d32BNq6uAQ==
+Date: Wed, 20 Mar 2024 10:37:58 -0700
+From: Nathan Chancellor <nathan@kernel.org>
+To: Uros Bizjak <ubizjak@gmail.com>
+Cc: Ingo Molnar <mingo@kernel.org>, linux-kernel@vger.kernel.org,
+	linux-tip-commits@vger.kernel.org, "H. Peter Anvin" <hpa@zytor.com>,
+	Linus Torvalds <torvalds@linux-foundation.org>, x86@kernel.org,
+	Kees Cook <keescook@chromium.org>,
+	Josh Poimboeuf <jpoimboe@redhat.com>
+Subject: Re: [tip: x86/percpu] x86/percpu: Convert this_percpu_xchg_op() from
+ asm() to C code, to generate better code
+Message-ID: <20240320173758.GA3017166@dev-arch.thelio-3990X>
+References: <20240320083127.493250-1-ubizjak@gmail.com>
+ <171093476000.10875.14076471223590027773.tip-bot2@tip-bot2>
+ <ZfrMcyZXCBQD/sE8@gmail.com>
+ <CAFULd4bNETbtP3VTGao4o3mtfpw6d=rhcWp5N+pnzp-f3fjXAw@mail.gmail.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240319183212.17156-2-osalvador@suse.de>
+Content-Transfer-Encoding: 8bit
+In-Reply-To: <CAFULd4bNETbtP3VTGao4o3mtfpw6d=rhcWp5N+pnzp-f3fjXAw@mail.gmail.com>
 
-Hi Oscar,
+On Wed, Mar 20, 2024 at 02:12:14PM +0100, Uros Bizjak wrote:
+> On Wed, Mar 20, 2024 at 12:45 PM Ingo Molnar <mingo@kernel.org> wrote:
+> > Clang claims to be compatible:
+> >
+> >   https://releases.llvm.org/9.0.0/tools/clang/docs/LanguageExtensions.html
+> >
+> >   "You can also use the GCC compatibility macros __seg_fs and __seg_gs for the
+> >    same purpose. The preprocessor symbols __SEG_FS and __SEG_GS indicate their
+> >    support."
+> >
+> > I haven't tried it yet though.
+> 
+> In the RFC submission, the support was determined by the functional
+> check [2]. Perhaps we should re-introduce this instead of checking for
+> known compiler versions:
+> 
+> +config CC_HAS_NAMED_AS
+> + def_bool $(success,echo 'int __seg_fs fs; int __seg_gs gs;' | $(CC)
+> -x c - -c -o /dev/null)
+> 
+> [2] https://lore.kernel.org/lkml/20231001131620.112484-3-ubizjak@gmail.com/
 
-kernel test robot noticed the following build warnings:
+I applied this change on top of current mainline (a4145ce1e7bc) and
+built ARCH=x86_64 defconfig with LLVM 17.0.6 from [1] but it doesn't get
+too far :)
 
-[auto build test WARNING on akpm-mm/mm-everything]
-[also build test WARNING on linus/master next-20240320]
-[cannot apply to v6.8]
-[If your patch is applied to the wrong git tree, kindly drop us a note.
-And when submitting patch, we suggest to use '--base' as documented in
-https://git-scm.com/docs/git-format-patch#_base_tree_information]
+  In file included from arch/x86/kernel/asm-offsets.c:9:
+  In file included from include/linux/crypto.h:15:
+  In file included from include/linux/completion.h:12:
+  In file included from include/linux/swait.h:7:
+  In file included from include/linux/spinlock.h:56:
+  In file included from include/linux/preempt.h:79:
+  In file included from arch/x86/include/asm/preempt.h:7:
+  arch/x86/include/asm/current.h:47:10: error: multiple identical address spaces specified for type [-Werror,-Wduplicate-decl-specifier]
+     47 |                 return this_cpu_read_const(const_pcpu_hot.current_task);
+        |                        ^
+  arch/x86/include/asm/percpu.h:471:34: note: expanded from macro 'this_cpu_read_const'
+    471 | #define this_cpu_read_const(pcp)        __raw_cpu_read(, pcp)
+        |                                         ^
+  arch/x86/include/asm/percpu.h:441:30: note: expanded from macro '__raw_cpu_read'
+    441 |         *(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));               \
+        |                                     ^
+  arch/x86/include/asm/percpu.h:105:28: note: expanded from macro '__my_cpu_ptr'
+    105 | #define __my_cpu_ptr(ptr)       (__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
+        |                                  ^
+  arch/x86/include/asm/percpu.h:104:40: note: expanded from macro '__my_cpu_type'
+    104 | #define __my_cpu_type(var)      typeof(var) __percpu_seg_override
+        |                                             ^
+  arch/x86/include/asm/percpu.h:45:31: note: expanded from macro '__percpu_seg_override'
+     45 | #define __percpu_seg_override   __seg_gs
+        |                                 ^
+  <built-in>:338:33: note: expanded from macro '__seg_gs'
+    338 | #define __seg_gs __attribute__((address_space(256)))
+        |                                 ^
+  In file included from arch/x86/kernel/asm-offsets.c:9:
+  In file included from include/linux/crypto.h:15:
+  In file included from include/linux/completion.h:12:
+  In file included from include/linux/swait.h:7:
+  In file included from include/linux/spinlock.h:56:
+  In file included from include/linux/preempt.h:79:
+  In file included from arch/x86/include/asm/preempt.h:7:
+  arch/x86/include/asm/current.h:47:10: error: multiple identical address spaces specified for type [-Werror,-Wduplicate-decl-specifier]
+  arch/x86/include/asm/percpu.h:471:34: note: expanded from macro 'this_cpu_read_const'
+    471 | #define this_cpu_read_const(pcp)        __raw_cpu_read(, pcp)
+        |                                         ^
+  arch/x86/include/asm/percpu.h:441:9: note: expanded from macro '__raw_cpu_read'
+    441 |         *(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));               \
+        |                ^
+  arch/x86/include/asm/percpu.h:104:40: note: expanded from macro '__my_cpu_type'
+    104 | #define __my_cpu_type(var)      typeof(var) __percpu_seg_override
+        |                                             ^
+  arch/x86/include/asm/percpu.h:45:31: note: expanded from macro '__percpu_seg_override'
+     45 | #define __percpu_seg_override   __seg_gs
+        |                                 ^
+  <built-in>:338:33: note: expanded from macro '__seg_gs'
+    338 | #define __seg_gs __attribute__((address_space(256)))
+        |                                 ^
+  In file included from arch/x86/kernel/asm-offsets.c:9:
+  In file included from include/linux/crypto.h:15:
+  In file included from include/linux/completion.h:12:
+  In file included from include/linux/swait.h:7:
+  In file included from include/linux/spinlock.h:60:
+  In file included from include/linux/thread_info.h:60:
+  In file included from arch/x86/include/asm/thread_info.h:59:
+  In file included from arch/x86/include/asm/cpufeature.h:5:
+  arch/x86/include/asm/processor.h:530:10: error: multiple identical address spaces specified for type [-Werror,-Wduplicate-decl-specifier]
+    530 |                 return this_cpu_read_const(const_pcpu_hot.top_of_stack);
+        |                        ^
+  arch/x86/include/asm/percpu.h:471:34: note: expanded from macro 'this_cpu_read_const'
+    471 | #define this_cpu_read_const(pcp)        __raw_cpu_read(, pcp)
+        |                                         ^
+  arch/x86/include/asm/percpu.h:441:30: note: expanded from macro '__raw_cpu_read'
+    441 |         *(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));               \
+        |                                     ^
+  arch/x86/include/asm/percpu.h:105:28: note: expanded from macro '__my_cpu_ptr'
+    105 | #define __my_cpu_ptr(ptr)       (__my_cpu_type(*ptr) *)(uintptr_t)(ptr)
+        |                                  ^
+  arch/x86/include/asm/percpu.h:104:40: note: expanded from macro '__my_cpu_type'
+    104 | #define __my_cpu_type(var)      typeof(var) __percpu_seg_override
+        |                                             ^
+  arch/x86/include/asm/percpu.h:45:31: note: expanded from macro '__percpu_seg_override'
+     45 | #define __percpu_seg_override   __seg_gs
+        |                                 ^
+  <built-in>:338:33: note: expanded from macro '__seg_gs'
+    338 | #define __seg_gs __attribute__((address_space(256)))
+        |                                 ^
+  In file included from arch/x86/kernel/asm-offsets.c:9:
+  In file included from include/linux/crypto.h:15:
+  In file included from include/linux/completion.h:12:
+  In file included from include/linux/swait.h:7:
+  In file included from include/linux/spinlock.h:60:
+  In file included from include/linux/thread_info.h:60:
+  In file included from arch/x86/include/asm/thread_info.h:59:
+  In file included from arch/x86/include/asm/cpufeature.h:5:
+  arch/x86/include/asm/processor.h:530:10: error: multiple identical address spaces specified for type [-Werror,-Wduplicate-decl-specifier]
+  arch/x86/include/asm/percpu.h:471:34: note: expanded from macro 'this_cpu_read_const'
+    471 | #define this_cpu_read_const(pcp)        __raw_cpu_read(, pcp)
+        |                                         ^
+  arch/x86/include/asm/percpu.h:441:9: note: expanded from macro '__raw_cpu_read'
+    441 |         *(qual __my_cpu_type(pcp) *)__my_cpu_ptr(&(pcp));               \
+        |                ^
+  arch/x86/include/asm/percpu.h:104:40: note: expanded from macro '__my_cpu_type'
+    104 | #define __my_cpu_type(var)      typeof(var) __percpu_seg_override
+        |                                             ^
+  arch/x86/include/asm/percpu.h:45:31: note: expanded from macro '__percpu_seg_override'
+     45 | #define __percpu_seg_override   __seg_gs
+        |                                 ^
+  <built-in>:338:33: note: expanded from macro '__seg_gs'
+    338 | #define __seg_gs __attribute__((address_space(256)))
+        |                                 ^
+  4 errors generated.
 
-url:    https://github.com/intel-lab-lkp/linux/commits/Oscar-Salvador/mm-page_owner-Fix-refcount-imbalance/20240320-023302
-base:   https://git.kernel.org/pub/scm/linux/kernel/git/akpm/mm.git mm-everything
-patch link:    https://lore.kernel.org/r/20240319183212.17156-2-osalvador%40suse.de
-patch subject: [PATCH v2 1/2] mm,page_owner: Fix refcount imbalance
-config: x86_64-buildonly-randconfig-004-20240320 (https://download.01.org/0day-ci/archive/20240321/202403210131.YLR6USxm-lkp@intel.com/config)
-compiler: clang version 17.0.6 (https://github.com/llvm/llvm-project 6009708b4367171ccdbf4b5905cb6a803753fe18)
-reproduce (this is a W=1 build): (https://download.01.org/0day-ci/archive/20240321/202403210131.YLR6USxm-lkp@intel.com/reproduce)
+[1]: https://mirrors.edge.kernel.org/pub/tools/llvm/
 
-If you fix the issue in a separate patch/commit (i.e. not just a new version of
-the same patch/commit), kindly add following tags
-| Reported-by: kernel test robot <lkp@intel.com>
-| Closes: https://lore.kernel.org/oe-kbuild-all/202403210131.YLR6USxm-lkp@intel.com/
-
-All warnings (new ones prefixed by >>):
-
->> mm/page_owner.c:213:3: warning: ignoring return value of function declared with 'warn_unused_result' attribute [-Wunused-result]
-     213 |                 refcount_sub_and_test(nr_base_pages, &stack_record->count);
-         |                 ^~~~~~~~~~~~~~~~~~~~~ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-   1 warning generated.
-
-
-vim +/warn_unused_result +213 mm/page_owner.c
-
-   206	
-   207	static void dec_stack_record_count(depot_stack_handle_t handle,
-   208					   int nr_base_pages)
-   209	{
-   210		struct stack_record *stack_record = __stack_depot_get_stack_record(handle);
-   211	
-   212		if (stack_record)
- > 213			refcount_sub_and_test(nr_base_pages, &stack_record->count);
-   214	}
-   215	
-
--- 
-0-DAY CI Kernel Test Service
-https://github.com/intel/lkp-tests/wiki
+Cheers,
+Nathan
 
