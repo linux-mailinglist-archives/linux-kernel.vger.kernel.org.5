@@ -1,162 +1,76 @@
-Return-Path: <linux-kernel+bounces-109022-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109023-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3E19A881382
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:41:31 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 581A9881385
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:41:51 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 61CE21C22A91
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:41:30 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id EBBAF1F22418
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:41:49 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DD316482C3;
-	Wed, 20 Mar 2024 14:41:22 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D0B05482C2;
+	Wed, 20 Mar 2024 14:41:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="Odv2kcKM"
-Received: from mail-yw1-f181.google.com (mail-yw1-f181.google.com [209.85.128.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b="2jYMzfDk"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A3BD41A291;
-	Wed, 20 Mar 2024 14:41:20 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id DD77A47A63;
+	Wed, 20 Mar 2024 14:41:41 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710945682; cv=none; b=rdw9CQbq4lYoai0VtJD45xJCOy/kuurFAhBIqVadJQbgUon3bhOuLnPBeKST+CPVhg4/RUHa8V6e2xa7I2vwDfYBcw8CGYIIq0J635QqnNupvrwIpY49xpbefjPSATMJjaSBtxAZnbtDD9e8AG2Pyjwr2ElM0+/Z2lIS/atzLwQ=
+	t=1710945702; cv=none; b=QpIhGeJbuFF3nupcWKi7kG/dWg+6ZSKKlXflx0VdOOKvKsvDvm+INnIQuDqVkCWrdGef0QXCkknVN1UbXTwhCkmYlMDFmd8XnXmyPH9fKkKEsm9jAXTa/R82FHj+FBBC4fADzkZe4X5JUE1BUYHaU31aijk7k0iZfvqvCrRmaHk=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710945682; c=relaxed/simple;
-	bh=fgOCc2Xhdclblgsu6udDHoN+Tmr1BWbG4hJb0qImDyY=;
+	s=arc-20240116; t=1710945702; c=relaxed/simple;
+	bh=c+qydTcdDiWEhegPfInrY2m5GA2Px0fsvspdRaHkQyI=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=t6RpN4k1dYf4djI4RZqf5nzZSr2SyeceDUhMn/wOjx5i8QxM2LjMyGsOHK9nDDa72f7sfPaHNLMjBUKZ9PAh6I5CUMdMRCKFBbOQ6LL7oawqOf3ibSgc2spKzpEtnGkiDdo43cShzrPOyZOnugUm1qptLnnxhQNGfH8iEk2C6Uk=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=Odv2kcKM; arc=none smtp.client-ip=209.85.128.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=fail (p=none dis=none) header.from=kernel.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yw1-f181.google.com with SMTP id 00721157ae682-609f1f97864so74037977b3.0;
-        Wed, 20 Mar 2024 07:41:20 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710945679; x=1711550479; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:from:to:cc:subject:date:message-id
-         :reply-to;
-        bh=0J7VKp53yijpgZI901ch7zhYg0qj6RwRSqJUmVcaUBY=;
-        b=Odv2kcKMLdpyMCQ/htHyH5Db8kb/9FHQ/CSu9Uy9iH01vRiFlXASKlwj2pSzbvon40
-         q8/6htmf4rDX3mDrsH1z463V3W1PKF/en/urt5GklCSaWgfl7ZlFaupcL2kbAlfL6nlY
-         mYNT2oKjbUumqe3P66SyJa8eFZAFe70fg8jNDPXi4nzfE/Uhn43nEKG8xyTNp6dychx9
-         wYlW9aBw7UUYXN9tVYaKQaAEdFzaTiUplIooAzaua0Q7tSbG4DxJ+NxBUHrdXFn1YjIK
-         Z8vMUGEK7x2aJ7sd9Jy7H2TFe6elMM26QR7S/SzjfMqu8mtb1YKB1r/RVH1E6C2cF5MM
-         AH1g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710945679; x=1711550479;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:sender:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=0J7VKp53yijpgZI901ch7zhYg0qj6RwRSqJUmVcaUBY=;
-        b=AEH6nEgviz/I7M1ciPs26mU9NuNWc3sQJG/4Lcqmcfey+gCcae8o9QlfCLNWOqFhKP
-         e4cYYYcclpBHYK2JMJSFajZr807XnhmXQ8+l2e3Fb/TCkF6t2aSI5+P24r2FTqr7hfUq
-         5bUnbj/KPIcqCPkKZ+1ifRQH1w+0AkcTTsqGBVw+alXC6WO4KQ5LlhjbrrPlLyJAhNhB
-         +zUvaksiD0g7xZKAHCT7yLhnde1Fet/DLyIIRob5MWUtX3YLvPmkMau6D2mrKTHB4VL7
-         i/57ROathn8+Ezi4an7riESbgDSJFcwsGcC1iZU30rqQXFTO/SLfqSQrEY1dVnNNpLlD
-         GV+w==
-X-Forwarded-Encrypted: i=1; AJvYcCVhBJpEQiAbVTNECARYznP7kfKfLfMB1eEyjyvwmbMEExrNRWGjxdwMlK/4XSCltuFmx99g0rzcRQRPUOaira+zooZYcRQX0flkBFrVRPf/Nr7huSSEQJA97cknSjWDF9mpOKwhSewrrcD+tGAKGXbEpKtxs5cJOJ3gBGftcyRtjdNP
-X-Gm-Message-State: AOJu0YwU/nufNerVNjnbf9CiTeIndwmHCpAqbSi/zPO5/sz5FyHzK3ed
-	vCjBc2WA9jDRCgw3rmj9+V+MwqYlF4dMQWWujFxCkDB3V1cZeiLVQf93MQ7y
-X-Google-Smtp-Source: AGHT+IEknFVM/pV9erRySbDktQRCKez9PunzGmtN0+wjAn+6XPp749HSD1dx4X4Y2QVu6RNWqWxGZw==
-X-Received: by 2002:a81:6284:0:b0:610:b930:816a with SMTP id w126-20020a816284000000b00610b930816amr6662455ywb.49.1710945679527;
-        Wed, 20 Mar 2024 07:41:19 -0700 (PDT)
-Received: from localhost ([2600:1700:2ec0:58c0::44])
-        by smtp.gmail.com with ESMTPSA id et13-20020a05690c2e0d00b00609f45c6b89sm2778205ywb.88.2024.03.20.07.41.19
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 07:41:19 -0700 (PDT)
-Sender: Tejun Heo <htejun@gmail.com>
-Date: Wed, 20 Mar 2024 07:41:17 -0700
-From: Tejun Heo <tj@kernel.org>
-To: Jose Fernandez <josef@netflix.com>
-Cc: Alexei Starovoitov <ast@kernel.org>,
-	Daniel Borkmann <daniel@iogearbox.net>,
-	Andrii Nakryiko <andrii@kernel.org>,
-	Martin KaFai Lau <martin.lau@linux.dev>,
-	Eduard Zingerman <eddyz87@gmail.com>, Song Liu <song@kernel.org>,
-	Yonghong Song <yonghong.song@linux.dev>,
-	John Fastabend <john.fastabend@gmail.com>,
-	KP Singh <kpsingh@kernel.org>, Stanislav Fomichev <sdf@google.com>,
-	Hao Luo <haoluo@google.com>, Jiri Olsa <jolsa@kernel.org>,
-	bpf@vger.kernel.org, linux-kernel@vger.kernel.org,
-	linux-kselftest@vger.kernel.org, Tycho Andersen <tycho@tycho.pizza>
-Subject: Re: [PATCH V3 bpf-next 1/2] bpf: add bpf_task_get_cgroup kfunc
-Message-ID: <Zfr1jQ6W6yaLsHID@mtj.duckdns.org>
-References: <20240319050302.1085006-1-josef@netflix.com>
+	 Content-Type:Content-Disposition:In-Reply-To; b=fVOqOA4ljtfagn0pPlXeXb2izNaAlsHj6NANJxr47sFIasHgvorYspLkwmeuCj8YAtKQaPrpgqWNB4Yk9btl5sUws3fqS2iJO3U8m53t3EWFwwlVPDzZlpTIzxbdRJsHN1hO3ty8e81YV6YakjvzTb9vY7jBkcy638fkFF3cqaQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (1024-bit key) header.d=linuxfoundation.org header.i=@linuxfoundation.org header.b=2jYMzfDk; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3EBA5C433F1;
+	Wed, 20 Mar 2024 14:41:41 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=linuxfoundation.org;
+	s=korg; t=1710945701;
+	bh=c+qydTcdDiWEhegPfInrY2m5GA2Px0fsvspdRaHkQyI=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=2jYMzfDkRc+gf59Adey/UTyHmlLE5SqFEUZlkADmUHgxfFE7gZ6vwcgH+2Jae8gzm
+	 6AFT2ZqeLKyRk4bH8BcwKkwlcusb3U2ssdH2vNGLwpz31eebasj5DkWDPXGS1BrP9q
+	 STOtmjnMrZn5UP1ibhRt0CC4jAy42Xe+o+uVJqAE=
+Date: Wed, 20 Mar 2024 10:41:40 -0400
+From: Konstantin Ryabitsev <konstantin@linuxfoundation.org>
+To: Lukas Wunner <lukas@wunner.de>
+Cc: Jarkko Sakkinen <jarkko@kernel.org>, 
+	Stefan Berger <stefanb@linux.ibm.com>, Stefan Berger <stefanb@linux.vnet.ibm.com>, 
+	keyrings@vger.kernel.org, linux-crypto@vger.kernel.org, herbert@gondor.apana.org.au, 
+	davem@davemloft.net, linux-kernel@vger.kernel.org, saulo.alessandre@tse.jus.br, 
+	bbhushan2@marvell.com
+Subject: Re: [PATCH v6 00/13] Add support for NIST P521 to ecdsa
+Message-ID: <20240320-quirky-truthful-manul-da6eb9@lemur>
+References: <20240312183618.1211745-1-stefanb@linux.vnet.ibm.com>
+ <ZfiMhi9D2Rhh89BI@wunner.de>
+ <d02eda40-2d3a-43a2-a3a9-cb79055acda7@linux.ibm.com>
+ <CZXXPKTAUUM9.35VZUFITJWF6A@kernel.org>
+ <Zfp20bLB0onXo7FV@wunner.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
+Content-Type: text/plain; charset=utf-8
 Content-Disposition: inline
-In-Reply-To: <20240319050302.1085006-1-josef@netflix.com>
+In-Reply-To: <Zfp20bLB0onXo7FV@wunner.de>
 
-On Mon, Mar 18, 2024 at 11:03:01PM -0600, Jose Fernandez wrote:
-> This patch enhances the BPF helpers by adding a kfunc to retrieve the
-> cgroup v2 of a task, addressing a previous limitation where only
-> bpf_task_get_cgroup1 was available for cgroup v1. The new kfunc is
-> particularly useful for scenarios where obtaining the cgroup ID of a
-> task other than the "current" one is necessary, which the existing
-> bpf_get_current_cgroup_id helper cannot accommodate. A specific use
-> case at Netflix involved the sched_switch tracepoint, where we had to
-> get the cgroup IDs of both the prev and next tasks.
-> 
-> The bpf_task_get_cgroup kfunc acquires and returns a reference to a
-> task's default cgroup, ensuring thread-safe access by correctly
-> implementing RCU read locking and unlocking. It leverages the existing
-> cgroup.h helper, and cgroup_tryget to safely acquire a reference to it.
-> 
-> Signed-off-by: Jose Fernandez <josef@netflix.com>
-> Reviewed-by: Tycho Andersen <tycho@tycho.pizza>
-> Acked-by: Yonghong Song <yonghong.song@linux.dev>
-> Acked-by: Stanislav Fomichev <sdf@google.com>
+On Wed, Mar 20, 2024 at 06:40:33AM +0100, Lukas Wunner wrote:
+> If Herbert applies patches with "b4 am --apply-cover-trailers" or
+> "b4 shazam --apply-cover-trailers" (I don't know if he does),
+> it is completely irrelevant whether Stefan strips my Tested-by from
+> individual patches:  It will automatically be re-added when the
+> series gets applied.
 
-Acked-by: Tejun Heo <tj@kernel.org>
+Applying trailers sent to the cover letter is now the default behaviour in
+0.13, so this flag is no longer required (it does nothing).
 
-but some questions below
-
-> +__bpf_kfunc struct cgroup *bpf_task_get_cgroup(struct task_struct *task)
-> +{
-> +	struct cgroup *cgrp;
-> +
-> +	rcu_read_lock();
-> +	cgrp = task_dfl_cgroup(task);
-> +	if (!cgroup_tryget(cgrp))
-> +		cgrp = NULL;
-> +	rcu_read_unlock();
-> +	return cgrp;
-> +}
-
-So, as this is a lot easier in cgroup2, the above can probably be written
-directly in BPF (untested and not sure the necessary annotations are in
-place, so please take it with a big grain of salt):
-
-	bpf_rcu_read_lock();
-	cgrp = task->cgroups->dfl_cgrp;
-	cgrp = bpf_cgroup_from_id(cgrp->kn.id);
-	bpf_rcu_read_unlock();
-
-If all you need is ID, it's even simpler:
-
-	bpf_rcu_read_lock();
-	cgrp_id = task->cgroups->dfl_cgrp->kn.id;
-	bpf_rcu_read_unlock();
-
-In the first example, it's not great that we go from task pointer to cgroup
-pointer to ID and then back to acquired cgroup pointer. I wonder whether
-what we really want is to support something like the following:
-
-	bpf_rcu_read_lock();
-	cgrp = bpf_cgroup_tryget(task->cgroups->dfl_cgrp);
-	bpf_rcu_read_unlock();
-
-What do you think?
-
-Thanks.
-
--- 
-tejun
+-K
 
