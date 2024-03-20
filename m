@@ -1,74 +1,86 @@
-Return-Path: <linux-kernel+bounces-108638-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108642-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 7F147880D99
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:48:56 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 4C6B6880DAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:50:16 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A833281983
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:48:55 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 02BE5281DBE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:50:15 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id C5F4A405FE;
-	Wed, 20 Mar 2024 08:46:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9FCE138DC0;
+	Wed, 20 Mar 2024 08:47:21 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b="IkkfhwIe"
-Received: from madrid.collaboradmins.com (madrid.collaboradmins.com [46.235.227.194])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="buZaTYKI"
+Received: from mail-pl1-f178.google.com (mail-pl1-f178.google.com [209.85.214.178])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A7B063FBAC;
-	Wed, 20 Mar 2024 08:46:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.235.227.194
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6BAF6481A0;
+	Wed, 20 Mar 2024 08:47:19 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.178
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710924411; cv=none; b=pixk0gyg4KWj3FV1jp5/7KmeK3/L67LPMoppDnaloxUe3lqr/eZsiYR9kL7KjRiEWsza3NgBtedlsAPcCG+WqzqzxiKf4zvfPDuAFyQVPztjoysjYtKedfGrE7DKX/SaCLL7Abaftfm0SjG68eDx7wzknVH/noPsGj2Oqy4UBiU=
+	t=1710924440; cv=none; b=BEyGJNSsjw703Uiso3/TtAXqDdp/3n/+QqB3Kfb/BJIWtmfmNfuqvnHyYV1mNSNn0T5cj19Eur0JKBC/Ceo5rc8+fZqniITPNLt/IBc1p6JGqfy6idPyIkIYFKDSom/jQFXAH5KVB01jTWt4FWyhh42OEq28AaX8AM8LOUsZlqI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710924411; c=relaxed/simple;
-	bh=3qqbmy6OIcOoO07cO28FmCqjE206p+74Pkl9CCe0L8Q=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=KjJhseK9G54z+G/cAfg5wJNiTSP2yVIOcT8R+C1lV1jSXoWhq5T9Fa3vU990D+WB3IDf8fIUDtYuKxamu3b0Ur2DwUow3lot7XTqhUNa2IHfgHVJwyvMLUqf917wgQd91smG9WQJJZDatKHwID7hKqfUs9xQXbIl/tDiczw7jL4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com; spf=pass smtp.mailfrom=collabora.com; dkim=pass (2048-bit key) header.d=collabora.com header.i=@collabora.com header.b=IkkfhwIe; arc=none smtp.client-ip=46.235.227.194
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=collabora.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=collabora.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=collabora.com;
-	s=mail; t=1710924408;
-	bh=3qqbmy6OIcOoO07cO28FmCqjE206p+74Pkl9CCe0L8Q=;
-	h=From:To:Cc:Subject:Date:In-Reply-To:References:From;
-	b=IkkfhwIeSaNG/P79So6eYu9Puo24dBKVe3t707OodSS65lR0wEVnqdVXdj0oRRKfD
-	 gLoVSBT8nKKqBAEH/o5ps7vhhgU9p5wxWroVsA37UgN9QRCoYnljzimLhUfEY7AYUw
-	 PO9HQw8PjKRwNCqXA5gsYz25lmTIMzr9Z79mTJnGSbA5ntynZxuQgSzcRc/Vdug8B1
-	 8mEHMQafqWZUXdtOGKl890JB2nG3bCd23x33g7jkf4WInrU7HTo2qed8F3WAOE4KvC
-	 eLKmS6TMfGKGaoTP2huPQ4nXHZpQl3GabtT4oGHpSWNrgEBPU/MvbFFMRP3Qs6YM9Y
-	 5uKCOejh6xHFA==
-Received: from eugen-station.. (cola.collaboradmins.com [195.201.22.229])
-	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
-	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
-	(No client certificate requested)
-	(Authenticated sender: ehristev)
-	by madrid.collaboradmins.com (Postfix) with ESMTPSA id 90BED37813C4;
-	Wed, 20 Mar 2024 08:46:45 +0000 (UTC)
-From: Eugen Hristev <eugen.hristev@collabora.com>
-To: tytso@mit.edu,
-	adilger.kernel@dilger.ca,
-	linux-ext4@vger.kernel.org,
-	jaegeuk@kernel.org,
-	chao@kernel.org,
-	linux-f2fs-devel@lists.sourceforge.net,
-	linux-fsdevel@vger.kernel.org
-Cc: linux-kernel@vger.kernel.org,
-	kernel@collabora.com,
-	eugen.hristev@collabora.com,
-	viro@zeniv.linux.org.uk,
-	brauner@kernel.org,
-	jack@suse.cz,
-	krisman@suse.de,
-	Gabriel Krisman Bertazi <krisman@collabora.com>
-Subject: [PATCH v14 6/9] ext4: Log error when lookup of encoded dentry fails
-Date: Wed, 20 Mar 2024 10:46:19 +0200
-Message-Id: <20240320084622.46643-7-eugen.hristev@collabora.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240320084622.46643-1-eugen.hristev@collabora.com>
-References: <20240320084622.46643-1-eugen.hristev@collabora.com>
+	s=arc-20240116; t=1710924440; c=relaxed/simple;
+	bh=0YKEkgypwgch25SP6MvI0cxNHNU2GFwhWtjZ1AP0+fs=;
+	h=From:To:Cc:Subject:Date:Message-ID:MIME-Version; b=rK6TtFdZQk4+RtU9qOstOcwUb1/2YlhHMU/1F6rHK6k/u1FTlWTGgt4RCsqiLEp06EZQvkHZEMet4ORY/L0ZCHt0er0gYESyDdUnFvxRiZQYg1WXaD1xvD7bAYpJA2OSKcUkI24v1L4igW4qFJ23QA/EMlXVrXgLKm//vu+NEhE=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=buZaTYKI; arc=none smtp.client-ip=209.85.214.178
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f178.google.com with SMTP id d9443c01a7336-1dee5ef2a7bso45764415ad.1;
+        Wed, 20 Mar 2024 01:47:19 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710924439; x=1711529239; darn=vger.kernel.org;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=KmEZR0TZIkomRjFeSaPJAkhIKg2H/Yce/rgiIixVy2k=;
+        b=buZaTYKIQOouIBhPKCvNVj62BjrLCjjsxRXrosamb/XML2+ka1GCdrFcflAXQG2VnH
+         AXBR92FYWIEVcEApET/rYb5jJAwYeX88nnbcAvqx9iop1zGrMewYBLr/Kr9rivckt2AS
+         T3QG63EcdTuTLrkFLt/r61pYP8JpyBChQqmDZ0E4bU9i/xiEz+OpVsrJlliGY4pOwqnx
+         MrgCUhlYN/+L/98YPj6K35Of1lQRMSRLPALHyTEoo2UsGX/q26vWk+YlQ7kO3XsXaaWQ
+         xRaPMyjPX+1fp4mtz6APQ6CD17RR1680WiwHTv/+jpb+Iq4cH2/ZrX2F0/otwEHXXs5O
+         KasQ==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710924439; x=1711529239;
+        h=content-transfer-encoding:mime-version:message-id:date:subject:cc
+         :to:from:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=KmEZR0TZIkomRjFeSaPJAkhIKg2H/Yce/rgiIixVy2k=;
+        b=KAtCbN8TfY+OOZiECXazBF2T3slfPX5OMzZ4U/WefA6xr8ngqbNHzZucT3Rxo9dR+9
+         u+oLqmyKBfiNzu05ajIRSB8cE1rc+rpiV8txUKkZhyrpo2OpW1ehVU3eMmYYl5SWz9pB
+         N5Zp7LQQciOyF+QGTdyCYrCHNgYNkAzAeT4npBBUhlVe5Wiz/uANg11TBDti6e+/auEF
+         8DFxnvUKCjk5kWb32UnBPhPS9c/UQlRLSuIXHp7hF2o7hKO3AHvkAGUQP3mj54c1NnEr
+         Q0FgrY6qtqh+QgEs/k6d47J79gD/IlSNntGDvcUpACz6ScYvCbUlMyf/SWO+14VifXEX
+         D/uA==
+X-Forwarded-Encrypted: i=1; AJvYcCWOezXwoUayUuBMq5UMUedIkTsruoFgxcAQgT67YUgH8iL6jk4J4trEnoowsccU6bAhu1wSUzRr/rA90800PvLMyIen7z6FirWb96Dqm6B2QcBndvlFjD4x6tqkSA1ttBTHVUru7E40qFWefzz2OytFMDV/0qtvcg/k/fMIQ6ABpA0ToQ==
+X-Gm-Message-State: AOJu0YyqId/NiHCupAKx9P8UuAhvoWjDEsJnD32rODSRFYgK2ui6EJUD
+	xp59T5c8ESdSa5SOWS0GKhbO+TDHDgFgRYHpozyd8jSaLJfI1Y7a
+X-Google-Smtp-Source: AGHT+IGlcuR5ZnxZUBeNvUcBhE0/p/PPIX2gmZEeCtKUIaJ7LbM8JSisiCYiBT45KMUL11ck+H0/PQ==
+X-Received: by 2002:a17:902:ec89:b0:1e0:73d:9196 with SMTP id x9-20020a170902ec8900b001e0073d9196mr12960958plg.46.1710924438602;
+        Wed, 20 Mar 2024 01:47:18 -0700 (PDT)
+Received: from localhost.localdomain ([2409:40f4:a4:a590:2a15:ea77:7177:18e3])
+        by smtp.gmail.com with ESMTPSA id x7-20020a170902a38700b001dee4bd73e0sm11768854pla.59.2024.03.20.01.47.13
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 01:47:18 -0700 (PDT)
+From: Animesh Agarwal <animeshagarwal28@gmail.com>
+To: 
+Cc: animeshagarwal28@gmail.com,
+	Conor Dooley <conor.dooley@microchip.com>,
+	Vladimir Zapolskiy <vz@mleia.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	linux-arm-kernel@lists.infradead.org,
+	linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: [PATCH v3] dt-bindings: i2c: nxp,pnx-i2c: Convert to dtschema
+Date: Wed, 20 Mar 2024 14:16:20 +0530
+Message-ID: <20240320084623.82248-1-animeshagarwal28@gmail.com>
+X-Mailer: git-send-email 2.44.0
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -77,33 +89,121 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-From: Gabriel Krisman Bertazi <krisman@collabora.com>
+Convert the NXP PNX I2C Controller bindings to DT schema.
+Keep only one example in DT schema to remove redundancy.
 
-If the volume is in strict mode, ext4_ci_compare can report a broken
-encoding name.  This will not trigger on a bad lookup, which is caught
-earlier, only if the actual disk name is bad.
+Reviewed-by: Conor Dooley <conor.dooley@microchip.com>
+Signed-off-by: Animesh Agarwal <animeshagarwal28@gmail.com>
 
-Signed-off-by: Gabriel Krisman Bertazi <krisman@collabora.com>
-Signed-off-by: Eugen Hristev <eugen.hristev@collabora.com>
 ---
- fs/ext4/namei.c | 3 +++
- 1 file changed, 3 insertions(+)
+Changes in v3:
+- Added a missing whitespace character in maintainers.
+- Added parent directory in subject prefix.
 
-diff --git a/fs/ext4/namei.c b/fs/ext4/namei.c
-index 2d0ee232fbe7..3268cf45d9db 100644
---- a/fs/ext4/namei.c
-+++ b/fs/ext4/namei.c
-@@ -1477,6 +1477,9 @@ static bool ext4_match(struct inode *parent,
- 			 * only case where it happens is on a disk
- 			 * corruption or ENOMEM.
- 			 */
-+			if (ret == -EINVAL)
-+				EXT4_ERROR_INODE(parent,
-+					"Directory contains filename that is invalid UTF-8");
- 			return false;
- 		}
- 		return ret;
+Changes in v2:
+- Changed the file name from nxp,i2c-pnx.yaml to nxp,pnx-i2c.yaml.
+- Dropped properties which were already defined in the top level $ref.
+- Dropped unused labels in example.
+---
+ .../devicetree/bindings/i2c/i2c-pnx.txt       | 34 --------------
+ .../devicetree/bindings/i2c/nxp,pnx-i2c.yaml  | 46 +++++++++++++++++++
+ 2 files changed, 46 insertions(+), 34 deletions(-)
+ delete mode 100644 Documentation/devicetree/bindings/i2c/i2c-pnx.txt
+ create mode 100644 Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
+
+diff --git a/Documentation/devicetree/bindings/i2c/i2c-pnx.txt b/Documentation/devicetree/bindings/i2c/i2c-pnx.txt
+deleted file mode 100644
+index 2a59006cf79e..000000000000
+--- a/Documentation/devicetree/bindings/i2c/i2c-pnx.txt
++++ /dev/null
+@@ -1,34 +0,0 @@
+-* NXP PNX I2C Controller
+-
+-Required properties:
+-
+- - reg: Offset and length of the register set for the device
+- - compatible: should be "nxp,pnx-i2c"
+- - interrupts: configure one interrupt line
+- - #address-cells: always 1 (for i2c addresses)
+- - #size-cells: always 0
+-
+-Optional properties:
+-
+- - clock-frequency: desired I2C bus clock frequency in Hz, Default: 100000 Hz
+-
+-Examples:
+-
+-	i2c1: i2c@400a0000 {
+-		compatible = "nxp,pnx-i2c";
+-		reg = <0x400a0000 0x100>;
+-		interrupt-parent = <&mic>;
+-		interrupts = <51 0>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-	};
+-
+-	i2c2: i2c@400a8000 {
+-		compatible = "nxp,pnx-i2c";
+-		reg = <0x400a8000 0x100>;
+-		interrupt-parent = <&mic>;
+-		interrupts = <50 0>;
+-		#address-cells = <1>;
+-		#size-cells = <0>;
+-		clock-frequency = <100000>;
+-	};
+diff --git a/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml b/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
+new file mode 100644
+index 000000000000..798a6939b894
+--- /dev/null
++++ b/Documentation/devicetree/bindings/i2c/nxp,pnx-i2c.yaml
+@@ -0,0 +1,46 @@
++# SPDX-License-Identifier: (GPL-2.0-only OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: http://devicetree.org/schemas/i2c/nxp,pnx-i2c.yaml#
++$schema: http://devicetree.org/meta-schemas/core.yaml#
++
++title: NXP PNX I2C Controller
++
++maintainers:
++  - Animesh Agarwal <animeshagarwal28@gmail.com>
++
++allOf:
++  - $ref: /schemas/i2c/i2c-controller.yaml#
++
++properties:
++  compatible:
++    const: nxp,pnx-i2c
++
++  reg:
++    maxItems: 1
++
++  interrupts:
++    maxItems: 1
++
++  clock-frequency:
++    default: 100000
++
++required:
++  - compatible
++  - reg
++  - interrupts
++  - "#address-cells"
++  - "#size-cells"
++
++unevaluatedProperties: false
++
++examples:
++  - |
++    i2c@400a0000 {
++        compatible = "nxp,pnx-i2c";
++        reg = <0x400a0000 0x100>;
++        interrupt-parent = <&mic>;
++        interrupts = <51 0>;
++        #address-cells = <1>;
++        #size-cells = <0>;
++    };
 -- 
-2.34.1
+2.44.0
 
 
