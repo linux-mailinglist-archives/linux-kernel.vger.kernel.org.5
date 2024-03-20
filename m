@@ -1,121 +1,119 @@
-Return-Path: <linux-kernel+bounces-108916-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108917-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id BF4898811E4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:51:45 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 35B788811E6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:52:30 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0EE77B23178
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:51:43 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 64DBF1C224F7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:52:29 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id DF1DD405CE;
-	Wed, 20 Mar 2024 12:51:36 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 72B25405EC;
+	Wed, 20 Mar 2024 12:52:23 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="U4ooAwvC"
-Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.15])
+	dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b="SW6BUJls"
+Received: from xry111.site (xry111.site [89.208.246.23])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CB6751DFD9
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:51:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.15
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 31976224F2;
+	Wed, 20 Mar 2024 12:52:21 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=89.208.246.23
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710939096; cv=none; b=rFATDPu4yVun9YKziwBL+cpBIswzk0Q4gxph+S+O+zvtzIO42iTQonBKOk4LURvsINchspIxcR7mhFtySOLlkTbgnVJ4lr6XqhEF4op/3PfpXwJfdgzJmUumXkxlWywm2pxWUy+QD01zxlQf7VUW9JA/UB1wPVMohzavQYHE7/U=
+	t=1710939142; cv=none; b=pK+2Pdk6p2+CAudHnm5TkTj/Ih8HBcsrj3dyBWsHIwLBDFkICbceYKqgVz2Rf9kkO+BTGuJbGTQSmV+x2b2m2sdFV8DrHtEpKm8HAnjkeslmn6SCaEeKUmEoPPHnJWtc84k1lD6vZvSpNaQfG0BYAhiDkVRvk77o6xAuPamc7x8=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710939096; c=relaxed/simple;
-	bh=lfAURvC2+3B1iC4qgdZoOJvGeLgWzRIEZBM013TmXTE=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=j49uMvrDc68WzyMCuv7/D06gtsapsn7CnvXB4FABTBUvd6leYfSRUEvaXw06G7a5Ycutmcq2M/YHe6t8iHfuJJhWdq054BUUUR97BhV18E+sAKvftSxB1ukKBgxRRwReiL2q0x994P+GFfSfWp/Ubqx9A5k0C536JiooQmHH4mo=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=U4ooAwvC; arc=none smtp.client-ip=198.175.65.15
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
-  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
-  t=1710939095; x=1742475095;
-  h=date:from:to:cc:subject:message-id:references:
-   mime-version:in-reply-to;
-  bh=lfAURvC2+3B1iC4qgdZoOJvGeLgWzRIEZBM013TmXTE=;
-  b=U4ooAwvCyqFtDyipW6PBPoaMVfneUidQLjhWyLu+XYb4PRjwsVagw03v
-   pyI+tgDDrSx0OoysYPt026f4071qdn71WF9EGw5NzS+GZ6Ql8rRIUs/Vf
-   EQVpa7HPG6FeG/xH4GHm9kzh6qO7h6WBtclBBoCqqEkBh2vwJK9m3Ngdh
-   cml20nfZ9Nv0eYxKaUyLz8g3knNa+G1OQF1bOhj6WPi2eRygfHpK1nbDi
-   8wddG/ev1emZk56T2mtEbDY8untAKTbvhhc/nCrlOCmyfYfwCOaDtyZhD
-   eFt30O0gyL+4bvrFFYV/90wKwnd3yK9rk4pylB/dT/7lG0x54nTR1MEjr
-   A==;
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="9655587"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="9655587"
-Received: from fmsmga001.fm.intel.com ([10.253.24.23])
-  by orvoesa107.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 05:51:34 -0700
-X-ExtLoop1: 1
-X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="937063579"
-X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
-   d="scan'208";a="937063579"
-Received: from black.fi.intel.com ([10.237.72.28])
-  by fmsmga001.fm.intel.com with ESMTP; 20 Mar 2024 05:51:29 -0700
-Received: by black.fi.intel.com (Postfix, from userid 1000)
-	id BCBC730D; Wed, 20 Mar 2024 14:51:28 +0200 (EET)
-Date: Wed, 20 Mar 2024 14:51:28 +0200
-From: "Kirill A. Shutemov" <kirill.shutemov@linux.intel.com>
-To: "Huang, Kai" <kai.huang@intel.com>
-Cc: Tom Lendacky <thomas.lendacky@amd.com>, linux-kernel@vger.kernel.org, 
-	x86@kernel.org, dave.hansen@intel.com, bp@alien8.de, tglx@linutronix.de, 
-	mingo@redhat.com, hpa@zytor.com, luto@kernel.org, peterz@infradead.org, 
-	rick.p.edgecombe@intel.com, ashish.kalra@amd.com, chao.gao@intel.com, bhe@redhat.com, 
-	nik.borisov@suse.com, pbonzini@redhat.com, seanjc@google.com
-Subject: Re: [PATCH v2 2/5] x86/kexec: do unconditional WBINVD in
- relocate_kernel()
-Message-ID: <fn3ikztlp6qphsb5lohnjvhianbf2nh5f7ch53a3px5g5wloo5@rhbxjcllwauq>
-References: <cover.1710811610.git.kai.huang@intel.com>
- <e1d37efb8951eb1d38493687b10a21b23353e35a.1710811610.git.kai.huang@intel.com>
- <tvembdwwh4immxytlfzlhpvd42dlfsz7sddb7msk23kdduhu3t@ogpc66hklorv>
- <38fca2fa-11b2-4eb7-9e59-dc5d524d172e@amd.com>
- <689bbd29-aaf0-452e-a97f-41b8e3aa6224@intel.com>
- <i3nxazyv2dlauias4jmoqwpjixviuduaw6bgtfv4claxtimlm3@54xmat6zqud4>
- <256052ee-4e7b-45c5-8399-515fbb529a01@intel.com>
+	s=arc-20240116; t=1710939142; c=relaxed/simple;
+	bh=nQsfUBwMPXVe4K5gt0eAIEFG0mAVL84r5St9i8+wxIk=;
+	h=Message-ID:Subject:From:To:Cc:Date:In-Reply-To:References:
+	 Content-Type:MIME-Version; b=AbiTg6zXxDmIg/wnvdRBoqXIhC11h8UN7Wr/wZmqmkyS/JxROMNQguy696uqbals65weYE5es032Bar+vSO5R1QPmWjSHjxyAUXZ7f8fUhPwNyP0nGnRGpXd1tIrpljTeihLyNqmakm4PyMPZi+fOpFirmM6kB0V1+/dTRDjrLs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site; spf=pass smtp.mailfrom=xry111.site; dkim=pass (1024-bit key) header.d=xry111.site header.i=@xry111.site header.b=SW6BUJls; arc=none smtp.client-ip=89.208.246.23
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=xry111.site
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=xry111.site
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=xry111.site;
+	s=default; t=1710939138;
+	bh=nQsfUBwMPXVe4K5gt0eAIEFG0mAVL84r5St9i8+wxIk=;
+	h=Subject:From:To:Cc:Date:In-Reply-To:References:From;
+	b=SW6BUJlsDX/vH6gjWlpT+cbGApubryaDyEF8qDyDRffiR8F8JyIwyHOJ+GRsIFzBo
+	 uDfOMHVc+690RVFFaVnT6KvRq57AOMDFG8hGl66yVb4i18Af+br29PzGSi8oUQXTc8
+	 sLEEsQ/2rahhL4NQYDVDANRz/3xsfoNC8uxbwzWc=
+Received: from [127.0.0.1] (unknown [IPv6:2001:470:683e::1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange ECDHE (P-256) server-signature ECDSA (P-384) server-digest SHA384)
+	(Client did not present a certificate)
+	(Authenticated sender: xry111@xry111.site)
+	by xry111.site (Postfix) with ESMTPSA id 1B11B6776E;
+	Wed, 20 Mar 2024 08:52:14 -0400 (EDT)
+Message-ID: <2d3d529e006a6fbef6fe4a8a20b3eb23fa476ff7.camel@xry111.site>
+Subject: Re: [PATCH v8 4/4] riscv: dts: thead: Enable LicheePi 4A eMMC and
+ microSD
+From: Xi Ruoyao <xry111@xry111.site>
+To: Maxim Kiselev <bigunclemax@gmail.com>
+Cc: Albert Ou <aou@eecs.berkeley.edu>, Conor Dooley <conor@kernel.org>, 
+ devicetree@vger.kernel.org, dfustini@baylibre.com, guoren@kernel.org, 
+ jkridner@beagleboard.org, jszhang@kernel.org, Krzysztof Kozlowski
+ <krzysztof.kozlowski+dt@linaro.org>, open list
+ <linux-kernel@vger.kernel.org>,  linux-riscv@lists.infradead.org, Palmer
+ Dabbelt <palmer@dabbelt.com>, Paul Walmsley <paul.walmsley@sifive.com>,
+ robertcnelson@beagleboard.org, Rob Herring <robh+dt@kernel.org>, 
+ wefu@redhat.com
+Date: Wed, 20 Mar 2024 20:52:13 +0800
+In-Reply-To: <CALHCpMhc1F5Ue7U_gsDXREHUZRVQJNYRCJxYxoNqbN=-39jf7A@mail.gmail.com>
+References: 
+	<CALHCpMhc1F5Ue7U_gsDXREHUZRVQJNYRCJxYxoNqbN=-39jf7A@mail.gmail.com>
+Content-Type: text/plain; charset="UTF-8"
+Content-Transfer-Encoding: quoted-printable
+User-Agent: Evolution 3.52.0 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: text/plain; charset=us-ascii
-Content-Disposition: inline
-In-Reply-To: <256052ee-4e7b-45c5-8399-515fbb529a01@intel.com>
 
-On Wed, Mar 20, 2024 at 01:45:32PM +1300, Huang, Kai wrote:
-> Anyway, regardless whether patch 1 will break TDX/SEV-ES/SEV-SNP guests, I
-> think to resolve this, we can simply adjust our mindset from ...
-> 
-> 	"do unconditional WBINVD"
-> 
-> to ...
-> 
-> 	"do unconditional WBINVD when it can be done safely"
-> 
-> For now, AFAICT, only TDX guests and SEV-ES/SEV-SNP guests are such guests.
-> 
-> And they all report the CC_ATTR_GUEST_MEM_ENCRYPT flag as true, so we can
-> change to only do WBINVD when the kernel sees that flag.
-> 
-> 	if (!cc_platform_has(CC_ATTR_GUEST_MEM_ENCRYPT))
-> 		native_wbinvd();
-> 
-> Alternatively, we can have a dedicated X86_FEATURE_NO_WBINVD and get it set
-> for TDX/SEV-ES/SEV-SNP guests (and any guests if this is true), and do:
-> 
-> 	if (!boot_cpu_has(X86_FEATURE_NO_WBINVD))
-> 		native_wbinvd();
-> 
-> It seems the first one is too generic (for any CoCo VMs), and the second one
-> is better.
-> 
-> Any comments?
+On Wed, 2024-03-20 at 15:28 +0300, Maxim Kiselev wrote:
+> Hi Xi, Drew
+>=20
+> I have the same problem with SD on my LicheePi 4A.
+>=20
+> After some investigations I found how to fix this tuning error.
+> Here is the patch that increases tuning loop count from
+> 40(MAX_TUNING_LOOP at sdhci.c) to 128.
+>=20
+> diff --git a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> index 8d6cfb648096..da8f5820fb69 100644
+> --- a/drivers/mmc/host/sdhci-of-dwcmshc.c
+> +++ b/drivers/mmc/host/sdhci-of-dwcmshc.c
+> @@ -706,6 +706,7 @@ static int th1520_execute_tuning(struct sdhci_host
+> *host, u32 opcode)
+>=20
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 /* perform tuning */
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 sdhci_start_tuning(host);
+> +=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->tuning_loop_count =3D 128:
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 host->tuning_err =3D __sdhci_e=
+xecute_tuning(host, opcode);
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0 if (host->tuning_err) {
+> =C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=C2=A0=
+=C2=A0=C2=A0=C2=A0 /* disable auto-tuning upon tuning error */
+>=20
+> After that change tuning works fine. The same value of loop count is
+> used in RevyOS BSP
+> https://github.com/revyos/thead-kernel/blob/c6d4e5df18a17903d012ffd89e67d=
+0ee5ce6cf2d/drivers/mmc/host/sdhci-of-dwcmshc.c#L185
+>=20
+> Honestly, it looks a little bit strange for me.
+>=20
+> It seems that the tuning algorithm requires to move through
+> all the taps of delay line(128 taps?) even if we use THRESHOLD_MODE
+> instend LARGEST_WIN_MODE (I mean bit 2 in AT_CTRL_R(0x540) register).
+>=20
+> Xi, could you also test my fix on your board?
 
-I like cc_platform_has() variant better. There's no good reason to invent
-X86_FEATURE if we don't cases outside of CC.
+I'll try it this weekend.  Now having some work with "real time
+priority" to do :(.
 
--- 
-  Kiryl Shutsemau / Kirill A. Shutemov
+--=20
+Xi Ruoyao <xry111@xry111.site>
+School of Aerospace Science and Technology, Xidian University
 
