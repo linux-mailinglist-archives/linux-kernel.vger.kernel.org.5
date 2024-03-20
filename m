@@ -1,231 +1,130 @@
-Return-Path: <linux-kernel+bounces-108633-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108643-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id D0BD9880D81
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:47:11 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0AF02880DAC
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:50:36 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EE91D1C209E8
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:47:10 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BADB22834F8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:50:34 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 35FF63B791;
-	Wed, 20 Mar 2024 08:46:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 908443C064;
+	Wed, 20 Mar 2024 08:47:37 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="4vaqqdUZ"
-Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="aLZJSJL/"
+Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 86D2039AFE
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:46:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 5F3683BBF2
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 08:47:34 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710924396; cv=none; b=Z/DB4uG/7fJ1jwdQm0yHTacGrMcL5r9IC8qonFfOpkGXMyWGHgYyOwNS0p0CmrXvY9CljIO2OvbBcEijLu/T2N72mH8HS0ErOyvmmyhA9uHNFe8/k0d32nyJ+NnyWwuJWpBo33Zprj93MAHNVy73ojfKAaSQxqXg8+p3iVMssz0=
+	t=1710924456; cv=none; b=SV6O87u+V5vjEAqyU+pR0jUoB6UZp5GGvTHcybapjgPAj+qKKABcEW+VguU2xJZwiv/xMBizKIcEpcnWkpX66d1e8TQps4Q6uOXRJllFTcI+N3CspU0SpkhMgMqB7CCQ6/dXTcoytZYL9bjH2vYOlxbBrj8KKGCP82+1ufrYFNc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710924396; c=relaxed/simple;
-	bh=Q4ONw+59Vbz8TiQ9wHPgnNATdK0mtXhgpFJ6lJ0jOhM=;
-	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
-	 To:Cc:Content-Type; b=iam70jvSEaYT+4Ym2yeq2u4YD+IUQTuOhqNZ2rU9I3GJh3w1/4HUiGxAp7oP0PTC3hBjfl6yq3Lhji+w6UECtBB6z9ZBu0BjDgY47p5EMFufn0jucL7sCha65X1CM8j42wQib/62lviE5OUoRtV+/61GVfP/t13h7hVdeL0ZptE=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=4vaqqdUZ; arc=none smtp.client-ip=209.85.128.201
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
-Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60cbba6f571so123837637b3.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 01:46:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=google.com; s=20230601; t=1710924393; x=1711529193; darn=vger.kernel.org;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:from:to:cc:subject:date:message-id:reply-to;
-        bh=UK1n2ZUFasdNJS4tL/dUBZ9HzwBNAKoJUXbp2GIlPGA=;
-        b=4vaqqdUZnGKFg+6XPkgEheNFHBlx5J/Q2SqcMubHub38gB9tO+l9OyOs6Q2uUtEYI+
-         v4Xer7mgjPGEUWNw+q7AcfufydzBRIdPNgQ53z+Pofx3QFniRWIQpg5RehVdBT0tOrqM
-         4LMESATryICogY53F6aY/oayfQmhOFAj9XqgidE1EMFoLAQV0NLfa4l6CqNAGtH8e3yx
-         M3KW/SNsA+HTRVAPS8nIO18veKNf9SPpYiMmUCd/OKk3/HY6qCeklkqqaOXcLh9KBmCR
-         vB1MgAlBaDO3zwIzP7jFM1APIcnRLzM+uDa+Oao1fZUsEvTECFkSP9JOrhQkU50VLDwX
-         SG/g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710924393; x=1711529193;
-        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
-         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=UK1n2ZUFasdNJS4tL/dUBZ9HzwBNAKoJUXbp2GIlPGA=;
-        b=Aj1HWbNqUrXcH+iHjxbh63E+jNtios2cPyMdc3R5WqiR1VjW0YoT6phxB7BHI+WWy5
-         SsCwD4EoPxgmFBna3DNx2O17tTOfD9VKCeEvR2XqXiBuDuVGz1WtB6yZtFRWJdh80Bp8
-         tbLEydpIbuphiufQAZI03AqOXV7mWwYbeJ/JUEIHVymP/l3gEMyRVoGBaScoXhsE0YCE
-         JJxHQg2xD/46MF+coWoGxtbtJODQEim4l0/seZnSD1YiAn9DAxZdEJ3g4JXI8O6HwPhd
-         KurtX3UuuUMTqVBfljW1fPV0sDdGHbAwCdA4E51IYw8/8dYO+cZQbWYvr4RTFfsHdH8n
-         mkjg==
-X-Forwarded-Encrypted: i=1; AJvYcCU2kJkDFBbIowuodW+NQkKk9D1u+qyh7HgzceM4v2s3v5aaFh0qui6Nov5kiiJU+bKa9HefZUz64Meu4vOAG5Ezb4bcTp1p/BHpzPmn
-X-Gm-Message-State: AOJu0YzP2nymTuAPf1thjtbkonM6xRg3kz0xiRX5dvk4qvB+HuW6f7PM
-	mZoZkQQ9Do28CwvLqKdMhTMTrzACdSqiEbY+dI7HAvkJGkbLDa3H51pWXomCz8C+aKZWNHkG0nh
-	50nhjryUgfUEktw==
-X-Google-Smtp-Source: AGHT+IHhO69PTaN4boKOvVHCOJk+p5noJ7sGfzArQ8mOhKPuKZfczEJL2sh4BtJrZ5uOiOp76ApjmtaKNMUWfnM=
-X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
- (user=aliceryhl job=sendgmr) by 2002:a05:6902:124b:b0:dc2:398d:a671 with SMTP
- id t11-20020a056902124b00b00dc2398da671mr4614173ybu.10.1710924393527; Wed, 20
- Mar 2024 01:46:33 -0700 (PDT)
-Date: Wed, 20 Mar 2024 08:46:30 +0000
-In-Reply-To: <baee63d9-273a-48aa-b3cc-f15e3782156b@proton.me>
+	s=arc-20240116; t=1710924456; c=relaxed/simple;
+	bh=YBVrj3LlbmgFn+2nUmXC60swRuScJqKfxHTTV6P9sDA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=OlPKQs+Frec7ZX+o7471SoGf7bjnmBk0g+ysWlQbgrnS3aOXb6sAo8x/87OrYMz9ocrrtszVesI0Vf4baNNQ2s6HG+OuMLUdvSfdz5QErlC5KOf57n0uwTR1tKhZFheQ8lifc97+Wvs4xg00FpBBYMqFoEkUnIDitFfvGV71PR8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=aLZJSJL/; arc=none smtp.client-ip=170.10.133.124
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
+	s=mimecast20190719; t=1710924454;
+	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
+	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=rFk7i7r/Rth0uc1ovX1/w3IsN+7Z5+mbDrMRpvOVhNM=;
+	b=aLZJSJL/+MqwPyu3Lmi2IhilGxKPkVXp4xOmgmjsEQnELPYq2ufbDm/xqVh+/BdVvxKcQt
+	RZhLQzYeBJQNaKZICG8qThr4eRDHV8nTfDtMz+ypZoV/+GPzAdTwlZ0J5corqiZwo5tjs+
+	LnueiNCt+OoMrMyCk5sCj5qAmFSDYvg=
+Received: from mimecast-mx02.redhat.com (mx-ext.redhat.com [66.187.233.73])
+ by relay.mimecast.com with ESMTP with STARTTLS (version=TLSv1.3,
+ cipher=TLS_AES_256_GCM_SHA384) id us-mta-628-iyzdhYmPMSuJGahHdL-Mxg-1; Wed,
+ 20 Mar 2024 04:47:30 -0400
+X-MC-Unique: iyzdhYmPMSuJGahHdL-Mxg-1
+Received: from smtp.corp.redhat.com (int-mx05.intmail.prod.int.rdu2.redhat.com [10.11.54.5])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (2048 bits) server-digest SHA256)
+	(No client certificate requested)
+	by mimecast-mx02.redhat.com (Postfix) with ESMTPS id 409D02806044;
+	Wed, 20 Mar 2024 08:47:30 +0000 (UTC)
+Received: from localhost (unknown [10.72.116.12])
+	by smtp.corp.redhat.com (Postfix) with ESMTPS id 5AFA810E47;
+	Wed, 20 Mar 2024 08:47:29 +0000 (UTC)
+Date: Wed, 20 Mar 2024 16:47:22 +0800
+From: Baoquan He <bhe@redhat.com>
+To: Mike Rapoport <rppt@kernel.org>
+Cc: linux-mm@kvack.org, linux-kernel@vger.kernel.org, x86@kernel.org,
+	linuxppc-dev@lists.ozlabs.org, akpm@linux-foundation.org
+Subject: Re: [PATCH 4/6] mm/mm_init.c: remove meaningless calculation of
+ zone->managed_pages in free_area_init_core()
+Message-ID: <ZfqimkC+L3M/3AYf@MiWiFi-R3L-srv>
+References: <20240318142138.783350-1-bhe@redhat.com>
+ <20240318142138.783350-5-bhe@redhat.com>
+ <Zfm6gzhKUehLwM5-@kernel.org>
+ <ZfqbygfNmFKpBCfR@MiWiFi-R3L-srv>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-Mime-Version: 1.0
-References: <baee63d9-273a-48aa-b3cc-f15e3782156b@proton.me>
-X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
-Message-ID: <20240320084630.2727355-1-aliceryhl@google.com>
-Subject: Re: [PATCH v3 4/4] rust: add abstraction for `struct page`
-From: Alice Ryhl <aliceryhl@google.com>
-To: benno.lossin@proton.me
-Cc: a.hindborg@samsung.com, akpm@linux-foundation.org, alex.gaynor@gmail.com, 
-	aliceryhl@google.com, arnd@arndb.de, arve@android.com, 
-	bjorn3_gh@protonmail.com, boqun.feng@gmail.com, brauner@kernel.org, 
-	cmllamas@google.com, gary@garyguo.net, gregkh@linuxfoundation.org, 
-	joel@joelfernandes.org, keescook@chromium.org, linux-kernel@vger.kernel.org, 
-	linux-mm@kvack.org, maco@android.com, ojeda@kernel.org, 
-	rust-for-linux@vger.kernel.org, surenb@google.com, tkjos@android.com, 
-	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org
-Content-Type: text/plain; charset="utf-8"
+MIME-Version: 1.0
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <ZfqbygfNmFKpBCfR@MiWiFi-R3L-srv>
+X-Scanned-By: MIMEDefang 3.4.1 on 10.11.54.5
 
-> On 3/11/24 11:47, Alice Ryhl wrote:
-> > +/// A pointer to a page that owns the page allocation.
-> > +///
-> > +/// # Invariants
-> > +///
-> > +/// The pointer points at a page, and has ownership over the page.
+On 03/20/24 at 04:18pm, Baoquan He wrote:
+> On 03/19/24 at 06:17pm, Mike Rapoport wrote:
+> > On Mon, Mar 18, 2024 at 10:21:36PM +0800, Baoquan He wrote:
+> > > Currently, in free_area_init_core(), when initialize zone's field, a
+> > > rough value is set to zone->managed_pages. That value is calculated by
+> > > (zone->present_pages - memmap_pages).
+> > > 
+> > > In the meantime, add the value to nr_all_pages and nr_kernel_pages which
+> > > represent all free pages of system (only low memory or including HIGHMEM
+> > > memory separately). Both of them are gonna be used in
+> > > alloc_large_system_hash().
+> > > 
+> > > However, the rough calculation and setting of zone->managed_pages is
+> > > meaningless because
+> > >   a) memmap pages are allocated on units of node in sparse_init() or
+> > >      alloc_node_mem_map(pgdat); The simple (zone->present_pages -
+> > >      memmap_pages) is too rough to make sense for zone;
+> > >   b) the set zone->managed_pages will be zeroed out and reset with
+> > >      acutal value in mem_init() via memblock_free_all(). Before the
+> > >      resetting, no buddy allocation request is issued.
+> > > 
+> > > Here, remove the meaningless and complicated calculation of
+> > > (zone->present_pages - memmap_pages), directly set zone->present_pages to
+> > > zone->managed_pages. It will be adjusted in mem_init().
+> > 
+> > Do you mean "set zone->managed_pages to zone->present_pages"?
 > 
-> Why not "`page` is valid"?
-> Do you mean by ownership of the page that `page` has ownership of the
-> allocation, or does that entail any other property/privilege?
-
-I can add "at a valid page".
-
-By ownership I mean that we are allowed to pass it to __free_page and
-that until we do, we can access the page. If you want me to reword this,
-please tell me what you want it to say.
-
-> > +// SAFETY: It is safe to transfer page allocations between threads.
+> Hmm, maybe 'set zone->managed_pages as zone->present_pages'
+>             or 
+>            'assign zone->present_pages to zone->managed_pages'
+> which is more precise.
 > 
-> Why?
+> Wwill update.
 > 
-> > +unsafe impl Send for Page {}
+> > 
+> > I think we can just set zone->managed_pages to 0 in free_area_init_core().
+> > Anyway it will be reset before the first use.
 
-How about:
+Rethink about this, it's better to set zone->managed_pages to 0 because
+there isn't any page added to buddy. Will update.
 
-// SAFETY: Pages have no logic that relies on them staying on a given
-// thread, so moving them across threads is safe.
-
-> > +// SAFETY: As long as the safety requirements for `&self` methods on this type
-> > +// are followed, there is no problem with calling them in parallel.
 > 
-> Why?
+> Yeah, setting to 0 is also fine. I thougt of 0 ever. Considering
+> zone->present_pages is closer value to actual zone->managed_pages
+> than 0, and it may be needed in the future in some way before
+> mem_init(). If no strong objection, I will keep the assigning
+> 'zone->present_pages' to 'zone->managed_pages'.
 > 
-> > +unsafe impl Sync for Page {}
-
-How about:
-
-// SAFETY: Pages have no logic that relies on them not being accessed
-// concurrently, so accessing them concurrently is safe.
-
-> > +        // SAFETY: The specified order is zero and we want one page.
+> Thanks again for careful reviewing.
 > 
-> This doesn't explain why it is sound to call the function. I expect that
-> it is always sound to call this function with valid arguments.
-> 
-> > +        let page = unsafe { bindings::alloc_pages(gfp_flags, 0) };
 
-How about:
-
-// SAFETY: Depending on the value of `gfp_flags`, this call may sleep.
-// Other than that, it is always safe to call this method.
-
-> > +        // INVARIANT: We checked that the allocation succeeded.
-> 
-> Doesn't mention ownership.
-> 
-> > +        Ok(Self { page })
-
-How about:
-
-// INVARIANT: We just successfully allocated a page, so we now have
-// ownership of the newly allocated page. We transfer that ownership to
-// the new `Page` object.
-
-> > +    /// Runs a piece of code with this page mapped to an address.
-> > +    ///
-> > +    /// The page is unmapped when this call returns.
-> > +    ///
-> > +    /// It is up to the caller to use the provided raw pointer correctly.
-> 
-> This says nothing about what 'correctly' means. What I gathered from the
-> implementation is that the supplied pointer is valid for the execution
-> of `f` for `PAGE_SIZE` bytes.
-> What other things are you allowed to rely upon?
-> 
-> Is it really OK for this function to be called from multiple threads?
-> Could that not result in the same page being mapped multiple times? If
-> that is fine, what about potential data races when two threads write to
-> the pointer given to `f`?
-> 
-> > +    pub fn with_page_mapped<T>(&self, f: impl FnOnce(*mut u8) -> T) -> T {
-
-I will say:
-
-/// It is up to the caller to use the provided raw pointer correctly.
-/// The pointer is valid for `PAGE_SIZE` bytes and for the duration in
-/// which the closure is called. Depending on the gfp flags and kernel
-/// configuration, the pointer may only be mapped on the current thread,
-/// and in those cases, dereferencing it on other threads is UB. Other
-/// than that, the usual rules for dereferencing a raw pointer apply.
-/// (E.g., don't cause data races, the memory may be uninitialized, and
-/// so on.)
-
-It's okay to map it multiple times from different threads.
-
-> > +        // SAFETY: This unmaps the page mapped above.
-> 
-> This doesn't explain why it is sound.
-> 
-> > +        //
-> > +        // Since this API takes the user code as a closure, it can only be used
-> > +        // in a manner where the pages are unmapped in reverse order. This is as
-> > +        // required by `kunmap_local`.
-> > +        //
-> > +        // In other words, if this call to `kunmap_local` happens when a
-> > +        // different page should be unmapped first, then there must necessarily
-> > +        // be a call to `kmap_local_page` other than the call just above in
-> > +        // `with_page_mapped` that made that possible. In this case, it is the
-> > +        // unsafe block that wraps that other call that is incorrect.
-> > +        unsafe { bindings::kunmap_local(mapped_addr) };
-
-Why do you say that? The kunmap_local method requires that the address
-being unmapped is currently mapped, and that pages are unmapped in
-reverse order. The safety comment explains that the page is currently
-mapped and that this method cannot be used to unmap them in anything
-other than reverse order.
-
-> > +    /// Runs a piece of code with a raw pointer to a slice of this page, with
-> > +    /// bounds checking.
-> > +    ///
-> > +    /// If `f` is called, then it will be called with a pointer that points at
-> > +    /// `off` bytes into the page, and the pointer will be valid for at least
-> > +    /// `len` bytes. The pointer is only valid on this task, as this method uses
-> > +    /// a local mapping.
-> 
-> This information about the pointer only being valid on this task should
-> also apply to `with_page_mapped`, right?
-> 
-> > +    ///
-> > +    /// If `off` and `len` refers to a region outside of this page, then this
-> > +    /// method returns `EINVAL` and does not call `f`.
-> > +    ///
-> > +    /// It is up to the caller to use the provided raw pointer correctly.
-> 
-> Again, please specify what 'correctly' means.
-
-I will remove the "The pointer is only valid on this task, as this
-method uses a local mapping." sentence and copy the same paragraph as
-previously (without the `PAGE_SIZE` remark).
-
-Alice
 
