@@ -1,77 +1,78 @@
-Return-Path: <linux-kernel+bounces-109433-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109434-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id ED01A881904
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:25:20 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id CA79D881906
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:26:07 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id EC6831C20F2A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:25:19 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 5ABE1B22AAA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:26:05 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id BF1888595A;
-	Wed, 20 Mar 2024 21:25:12 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F36628595F;
+	Wed, 20 Mar 2024 21:25:55 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="mULEKCkm"
-Received: from mail-pf1-f179.google.com (mail-pf1-f179.google.com [209.85.210.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=fail reason="signature verification failed" (2048-bit key) header.d=intel.com header.i=@intel.com header.b="QWoiFCHY"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.15])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id C2A701DFC6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:25:10 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8AD5A1DFC6;
+	Wed, 20 Mar 2024 21:25:53 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.15
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710969912; cv=none; b=HMLHBAeY4FoMna/01eCyM1NlkpqBX/wXLjopY5YnS7RPx3RtsumNqEpJkQid5KPcV9MR24QHkgNxwZFIttM8z0+ds1BS6lvt2f+DKZafhyDXvqAAiF0h0Pa1A0JpOFSW52lg5/rDafgA8/yGZUXNj1KuvB9E5sgggZCX8N0RXG0=
+	t=1710969955; cv=none; b=IhCcfsBhz2SUflpUiMchVS4jZXT8LLWTof9pOMneF1iw2PHXNLSLOAUecfZ5qQRTxyb4xlhDITRjYKHa7cjAzqWDqvlEjPZ1PaCte09q5j2S2gctQ01M02/n29PhnKQvzn/0ZfqW3MKtfuE5v4wp05fWpfN0lF/mBOUV7sdMdIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710969912; c=relaxed/simple;
-	bh=wd1nYr8m1KR2n3urOxGOjtHYYjJVJHI4iyGiHvDBp6c=;
-	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
-	 Content-Disposition; b=PMVCZsDfV/W5N+7FCey+bo35eO9NcmdIGMqLId6c/QKY5wlth3cifkkhP2TO7T9IIExKQIQzArvpszz+RtbxENfIyJVqzuaPDnpW40qzreBsnmCudCfLFArSspAK9PCM9g8uzuYO5XEIi21atipouZsjlbYR8Xkg2695GQQ7ag0=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=mULEKCkm; arc=none smtp.client-ip=209.85.210.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pf1-f179.google.com with SMTP id d2e1a72fcca58-6e6b729669bso336944b3a.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:25:10 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710969910; x=1711574710; darn=vger.kernel.org;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=f7fFGAwFervR59ppe1kqtK+ZKXlEJIswmFJJz9qkT1I=;
-        b=mULEKCkmdvz44Yatcyh2LtPkSjllXB9R+FiyEKs45uyEMYprE0SZ8uwG1JlRygdP8T
-         sw7rbjdniqWM+muSh+dz8saSzcnJBdTo5CydunxPKFJ1cF4n1+fHhgAJjH/jSGz4e+5a
-         kxEQKKRHw6slx5hWItbPjbvfk/1cgM484WxGM1DxupwiFDA6ocGWmChCbvHTXp7XZj9J
-         9iZRwGwc0U9EKBwJ9kbFjX7OvlMdCfJOv5vItMyhHC/X2oE3Ovx+y/cD7QIIbMGWQSRS
-         8WP/em6nNrFxL3wygm1W0U8K/tHJV2DHFdnL2Fpc2uBJH8CL++1zU0Oy6vwNil9t2KuV
-         iPKA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710969910; x=1711574710;
-        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=f7fFGAwFervR59ppe1kqtK+ZKXlEJIswmFJJz9qkT1I=;
-        b=PxOIwxkCZ3QskBbSeMinBLebEoEosCC63zGeqSSROtNFh4EOp/CqJrwRWbNSYY/G6D
-         tjBIOdX3KfoR9FVNCnSlcXGucbJTD451GyH6qjGkO2+RJFvDejB5JOwajbB2UHN19unL
-         krdaeU3zIrsW7HIl0uUEQCx7ybblJdEhdinyD02zpd9nlaTPGMU2FxXPFqPc9t3jHBgU
-         qmu+iOeDNh2U77zAAXhaTPaPTdD898XQl0jqnQIhxukJt81EqxLMhtK/dEjhlp1xcIHM
-         Uu4MIB+erYxzSPMYw8aQ/elKGBZ6DqieTM3QHwxrGH6WRrCZ+z+0c7FGzPUDwdvo7RDs
-         GgbQ==
-X-Forwarded-Encrypted: i=1; AJvYcCWJnDWBPP7NySJDvyC8ygMijEGEgnyKcBAk5VAge8kaFBi5q7tC/0eFqNjXTBHdJUcDSvBTs9UEZz9jXUaNR0NH9YyfSbyl+sa9Q8Fd
-X-Gm-Message-State: AOJu0YxvmD5whMX07CQjtgQAXGmOrNZUAGlkLRBC6lo64aoOrjmvdVVp
-	ZKvcK4c7PiMJTy6y7lxWk71yqP66QKHmCu8SGN2oInMeNOORjuIW
-X-Google-Smtp-Source: AGHT+IH2iUmTzhbDC2TmnDtaOhfOaTiy54ieMvi2ChxgK6MlFkCA1hhh283Kt/vMNF7Bll4ocq00jA==
-X-Received: by 2002:a05:6a20:72a4:b0:1a3:72a8:b7ea with SMTP id o36-20020a056a2072a400b001a372a8b7eamr7697543pzk.39.1710969910002;
-        Wed, 20 Mar 2024 14:25:10 -0700 (PDT)
-Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
-        by smtp.gmail.com with ESMTPSA id f5-20020a056a000b0500b006e67edb113fsm12116691pfu.219.2024.03.20.14.25.09
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 14:25:09 -0700 (PDT)
-Date: Thu, 21 Mar 2024 02:55:07 +0530
-From: Ayush Tiwari <ayushtiw0110@gmail.com>
-To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
-	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
-	linux-staging@lists.linux.dev
-Cc: outreachy@lists.linux.dev
-Subject: [PATCH v3 0/3] Trivial code cleanup patches
-Message-ID: <cover.1710965653.git.ayushtiw0110@gmail.com>
+	s=arc-20240116; t=1710969955; c=relaxed/simple;
+	bh=e/nDT9NnHBdr5T4GvpQRoq6C1PbdgRzno2+D3yXYPNo=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=Y3Q6pfoKWVHDZbhBUIxDWIokYQ4RBP2zkBxOlXG6rJU7jxw1Pn/tscz6cz1cz9wFucdJTMWFHwOkBSXMpO8nqGkkdar2bmJqkgoETWe29xCc6p45kfPSjaB3x5IMuDccHKz93UAFquDRV/600FTEj8E1JHRnLkQZOEBWLvWYeF8=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com; spf=none smtp.mailfrom=linux.intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=QWoiFCHY; arc=none smtp.client-ip=192.198.163.15
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=linux.intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=linux.intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710969954; x=1742505954;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=e/nDT9NnHBdr5T4GvpQRoq6C1PbdgRzno2+D3yXYPNo=;
+  b=QWoiFCHY/osw8En516tO5xxR1MHrD+mXNI2b30XjDNAqLv2bt/E1jEzT
+   Drc5IlKLqdO02oOPUJDFE9J5Za0tNfwwPxgQU38QtFXs3a+pvw4fcVrsI
+   8HdRn79aAr/pEwypm67Ep8Nw7cslFRMJQjLLsCVXq2zj3vbWhYqlWM2m+
+   BvwN+/Ufa1dZ+78QpfPq+pDoL1wMJaIi3s5q0auwf2BemTlJCl7iNtPSM
+   8lva7VsKRm2IaVIL5EPe/HOHP2MNTK7idMEqsbcauzjk/7Tfywm669kaj
+   BwB1OFLPooL4XcqTU3E2OWnhHi3u2ABDhs4trAniNvAy4MLgi5TtwjSKC
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="6106093"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="6106093"
+Received: from fmsmga002.fm.intel.com ([10.253.24.26])
+  by fmvoesa109.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:25:53 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="914679509"
+X-IronPort-AV: E=Sophos;i="6.07,141,1708416000"; 
+   d="scan'208";a="914679509"
+Received: from smile.fi.intel.com ([10.237.72.54])
+  by fmsmga002.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 14:25:49 -0700
+Received: from andy by smile.fi.intel.com with local (Exim 4.97)
+	(envelope-from <andriy.shevchenko@linux.intel.com>)
+	id 1rn3RS-0000000Eh68-3cjG;
+	Wed, 20 Mar 2024 23:25:46 +0200
+Date: Wed, 20 Mar 2024 23:25:46 +0200
+From: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+To: Vasileios Amoiridis <vassilisamir@gmail.com>
+Cc: jic23@kernel.org, lars@metafoo.de, ang.iglesiasg@gmail.com,
+	mazziesaccount@gmail.com, ak@it-klinger.de,
+	petre.rodan@subdimension.ro, phil@raspberrypi.com, 579lpy@gmail.com,
+	linus.walleij@linaro.org, semen.protsenko@linaro.org,
+	linux-iio@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 6/6] iio: pressure: Add triggered buffer support for
+ BMP280 driver
+Message-ID: <ZftUWg31QvA99syr@smile.fi.intel.com>
+References: <20240319002925.2121016-1-vassilisamir@gmail.com>
+ <20240319002925.2121016-7-vassilisamir@gmail.com>
+ <ZfrFc9GF0_Jix5YT@smile.fi.intel.com>
+ <20240320174602.GA36450@vamoiridPC>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -80,27 +81,35 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
+In-Reply-To: <20240320174602.GA36450@vamoiridPC>
+Organization: Intel Finland Oy - BIC 0357606-4 - Westendinkatu 7, 02160 Espoo
 
-Address different kinds of checkpatch complains for the rtl8712 module
-to ensure adherence to coding style guidelines.
+On Wed, Mar 20, 2024 at 06:46:02PM +0100, Vasileios Amoiridis wrote:
+> On Wed, Mar 20, 2024 at 01:16:03PM +0200, Andy Shevchenko wrote:
+> > On Tue, Mar 19, 2024 at 01:29:25AM +0100, Vasileios Amoiridis wrote:
 
-Changes in v3: Fixed issues about backupPMKIDList and verified with
-CONFIG_WERROR set and built the kernel.
+..
 
-Changes in v2: Checked any possible reuse of backup_PMKID_list
-manually and rebuilt, rebooted the kernel and loaded the driver
-with modprobe.
+> > >  	/*
+> > > -	 * Maximum number of consecutive bytes read for a temperature or
+> > > -	 * pressure measurement is 3.
+> > > +	 * Maximum number of a burst read for temperature, pressure, humidity
+> > > +	 * is 8 bytes.
+> > >  	 */
+> > > -	if (val_size > 3)
+> > > +	if (val_size > 8)
+> > 
+> > sizeof() / new definition for the buf[] size?
+> 
+> In a previous commit that I was fixing this SPI driver, Jonathan had mentioned
+> that there is no need for a specific definition since it will only be used
+> here so that's why I kept it as is.
 
-Ayush Tiwari (3):
-  staging: rtl8712: rename backupPMKIDList to backup_PMKID_list
-  staging: rtl8712: rename backupPMKIDIndex to backup_PMKID_index
-  staging: rtl8712: rename backupTKIPCountermeasure to
-    backup_TKIP_countermeasure
-
- drivers/staging/rtl8712/mlme_linux.c | 18 +++++++++---------
- 1 file changed, 9 insertions(+), 9 deletions(-)
+It seems not only here, but also in the buf[] definition in the struct.
 
 -- 
-2.40.1
+With Best Regards,
+Andy Shevchenko
+
 
 
