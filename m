@@ -1,115 +1,237 @@
-Return-Path: <linux-kernel+bounces-108790-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108791-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 77D57880FFD
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:35:16 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 76571881001
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:36:19 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 21913282555
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:35:15 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CAFB9B24FD3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:36:16 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 51C442207A;
-	Wed, 20 Mar 2024 10:34:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id D21452D78A;
+	Wed, 20 Mar 2024 10:36:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="gzsNQH2w"
-Received: from mail-ed1-f41.google.com (mail-ed1-f41.google.com [209.85.208.41])
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p3MjtqRG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E+TEKYlL";
+	dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b="p3MjtqRG";
+	dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b="E+TEKYlL"
+Received: from smtp-out1.suse.de (smtp-out1.suse.de [195.135.223.130])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id F0A9079D1;
-	Wed, 20 Mar 2024 10:34:31 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.41
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id AAA3525740
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:36:05 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=195.135.223.130
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710930873; cv=none; b=ksNzFRLLyO72lnWkQjqsOf6HfhufN+Ow/AUERqtmc0vfLqefvK70pZ6qL2OkrEnyOhaF4b//0CpPSXaMrzgBwYgGtUur4Rm9ZhhqUe4cgkLW5tJnkvwRk44FXT3VHrQV+8aWH2BlJ+KkSMhoAVUm6dYcDcd5rozB+GuGNeC11TY=
+	t=1710930969; cv=none; b=Z/qsEbPrUAKzb7lsPYeip/Vs7kNgl1iE7gXo4zJNJWHmaxdxQmnRbaTrTmSA3EuAg6HmZ2sWiDQbg+Ebqg2F42chA7emd/ND5JphYOzsFDUHLWFxqW5feF2E3cMrq4VJcEOQM3peGxNq9dWs9vuL1UVWx4H8ggn5myyNPrDZxo4=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710930873; c=relaxed/simple;
-	bh=c2qwBaEAkvbEUyY0YDnRtDFz4GLo9+HrEfmU9+SQqM4=;
-	h=MIME-Version:References:In-Reply-To:From:Date:Message-ID:Subject:
-	 To:Cc:Content-Type; b=duCegQmk1Q4R9ZS+0LqF4XGRSNrM3Fh+ghhoGoxuE8YfyZBRcWhRS6I7z6NA0ro1s/2rad96rFag06suluHDeCPuKnDcXvb1DqQzoP4aUH5hO9RX84FrQv8lBz3g2N0A2c/+2nY35oyz1RudGAUDt/hLaKqKvv311auOpgjkRWA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=gzsNQH2w; arc=none smtp.client-ip=209.85.208.41
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-ed1-f41.google.com with SMTP id 4fb4d7f45d1cf-56b93b45779so2373280a12.1;
-        Wed, 20 Mar 2024 03:34:31 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710930870; x=1711535670; darn=vger.kernel.org;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=hkpqB38okF0AS/joA9j11d3DqIdtmpnIBh1u8NLndE0=;
-        b=gzsNQH2wpo/92QmfvqjpKwnLGGdXDy46WCYYzPopi0srGe0jV8RYsYapc0aNQx75bh
-         ldn4tcbI2sx0TcraR1CgH6B8dVcG2kg84UwhSEZZ5JMs7YCegAPBBHjcAdKiA01egmEH
-         rauzTozzRY3D9vzmsBDvGM8nxTDvB1NPxaUXWUB29Norni/sortGwDcLPQwAkyTJX11v
-         XmmVpYiOsYk7EJT9Wcq48rRmrjLr31U5vnltosuexyqwehycr1VdIoOS5InZCCFmCETB
-         lHEAZQf6LwVkoBdGEN9vur9MCP495mIyNALIMxtlYGy61NvmuzVdZgYTMDWYdaHat+hl
-         eWxQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710930870; x=1711535670;
-        h=content-transfer-encoding:cc:to:subject:message-id:date:from
-         :in-reply-to:references:mime-version:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=hkpqB38okF0AS/joA9j11d3DqIdtmpnIBh1u8NLndE0=;
-        b=Tz5WJDPspNVVJUscIY3M89+LqeZABtpr5BerfS+pjWHHWDGdIByOuxdNvD9BoNIXfq
-         ARXTMrhEJKB3Y2Bbr75iEeG/AWKfW1jaEacZ5/5unrwg0TL3XFEJrBCA4oc3ICZL0kJc
-         wP7S3b3vJhOqH9DoLdgg2mrlUJSzDGUYigIpgRo8lyTgLC10GjIgdYKKQOhKLRmEpjie
-         orjcD2aD2f8vPV+KY9KvgnkyQH88+ZV5qHjC3/h5NgVr+KJKUi8GP1o5QH7IRqiYHjPP
-         sWZduk3YZJjAoE0sZKf7ZzdZhM4C2DP2iE97gqqBPvWINucxXRKxLcpotZ4GVh29NlYg
-         qrtA==
-X-Forwarded-Encrypted: i=1; AJvYcCUtQ848aVu3C8YclW0heu2UvN3RvKNMM/QfslzRCaNjEA7JDYrSmHidkMNF5p3Vj3kiB00yngt/caCSuPvWLry0CjOrwtX9ruFjyRzGwYL2K+vWG4Ltqr99m5hQclJJt4cCDKAkkhscsA==
-X-Gm-Message-State: AOJu0Yw5mp4Cl7P72zVkw8WsITfkdAXZz/0USypbFJFOIjegD17yUxvH
-	rV0fLH77YPg4syMLljmPyyYog7Edq9P6ge2uzTlc5dkrBulGURgciEesb6TXQi2mO1X6IHMD2sB
-	Psn5rq0TjMacAws13VcUc6GDV6Pzx83MY6/Q=
-X-Google-Smtp-Source: AGHT+IFXqVQ4u+NZd5Tof4gd+xKd3yOdecnFDWzX35wyiS18HrSZBTCyGE9DH0BfxP91KX7qkZTxBOniydTH8aMyfRA=
-X-Received: by 2002:a17:906:6582:b0:a44:277c:1683 with SMTP id
- x2-20020a170906658200b00a44277c1683mr11849267ejn.53.1710930870036; Wed, 20
- Mar 2024 03:34:30 -0700 (PDT)
+	s=arc-20240116; t=1710930969; c=relaxed/simple;
+	bh=ny0HBFPV+ZJ5AHgVVMJJTquhsUdlKtJ5BSUIVnIQgMA=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=h+CZt8x6jvb1fPwSVISeqqmHYIm5hDYZ7cqXn4LqyH/iN/t5d88uNIifA6T+AaVm/8X9Yt0ohxAECZv3CoCeRvp/A96/ah/54Vl9XQ2yNnKnm+xY336aO20FAnmAu1FoJKBKsYz+JMGDtwRiDWUHNKEcP8fpUj9/XkuiLU57FUA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz; spf=pass smtp.mailfrom=suse.cz; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p3MjtqRG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E+TEKYlL; dkim=pass (1024-bit key) header.d=suse.cz header.i=@suse.cz header.b=p3MjtqRG; dkim=permerror (0-bit key) header.d=suse.cz header.i=@suse.cz header.b=E+TEKYlL; arc=none smtp.client-ip=195.135.223.130
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=suse.cz
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=suse.cz
+Received: from imap1.dmz-prg2.suse.org (imap1.dmz-prg2.suse.org [IPv6:2a07:de40:b281:104:10:150:64:97])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by smtp-out1.suse.de (Postfix) with ESMTPS id 815CE341F0;
+	Wed, 20 Mar 2024 10:36:03 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710930963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1z2ILPVgNiO8LB9zQ5hh2M+8G/r9fgx618Pwk8og4Tc=;
+	b=p3MjtqRGuU+fhjB/D8AVPZRKVpH97A5I0TqWfOlNg5KWGH+5zC2fRqxLPjBovXu/37sKeD
+	qbOhDO7GwJdOZcQ6dRPpEca5OFi+NOfiehDoSYEfuF/vq9nz5GiCHNuDl/ioCD6aB5X/8m
+	CU5+iuCjinxB4acylUIQ6/aM8Risskw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710930963;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1z2ILPVgNiO8LB9zQ5hh2M+8G/r9fgx618Pwk8og4Tc=;
+	b=E+TEKYlLUHXZiorSNAkGMbJwhOEDCoVdygmllffcoU8ukcA8dsZ+cQIMWp2UXbeNI3PuCW
+	mBVB914H+/Vbp0AQ==
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=suse.cz; s=susede2_rsa;
+	t=1710930963; h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1z2ILPVgNiO8LB9zQ5hh2M+8G/r9fgx618Pwk8og4Tc=;
+	b=p3MjtqRGuU+fhjB/D8AVPZRKVpH97A5I0TqWfOlNg5KWGH+5zC2fRqxLPjBovXu/37sKeD
+	qbOhDO7GwJdOZcQ6dRPpEca5OFi+NOfiehDoSYEfuF/vq9nz5GiCHNuDl/ioCD6aB5X/8m
+	CU5+iuCjinxB4acylUIQ6/aM8Risskw=
+DKIM-Signature: v=1; a=ed25519-sha256; c=relaxed/relaxed; d=suse.cz;
+	s=susede2_ed25519; t=1710930963;
+	h=from:from:reply-to:date:date:message-id:message-id:to:to:cc:cc:
+	 mime-version:mime-version:content-type:content-type:
+	 in-reply-to:in-reply-to:references:references;
+	bh=1z2ILPVgNiO8LB9zQ5hh2M+8G/r9fgx618Pwk8og4Tc=;
+	b=E+TEKYlLUHXZiorSNAkGMbJwhOEDCoVdygmllffcoU8ukcA8dsZ+cQIMWp2UXbeNI3PuCW
+	mBVB914H+/Vbp0AQ==
+Received: from imap1.dmz-prg2.suse.org (localhost [127.0.0.1])
+	(using TLSv1.3 with cipher TLS_AES_256_GCM_SHA384 (256/256 bits)
+	 key-exchange X25519 server-signature RSA-PSS (4096 bits) server-digest SHA256)
+	(No client certificate requested)
+	by imap1.dmz-prg2.suse.org (Postfix) with ESMTPS id 75D49136D6;
+	Wed, 20 Mar 2024 10:36:03 +0000 (UTC)
+Received: from dovecot-director2.suse.de ([2a07:de40:b281:106:10:150:64:167])
+	by imap1.dmz-prg2.suse.org with ESMTPSA
+	id /Ru8HBO8+mV+bQAAD6G6ig
+	(envelope-from <jack@suse.cz>); Wed, 20 Mar 2024 10:36:03 +0000
+Received: by quack3.suse.cz (Postfix, from userid 1000)
+	id 21248A07D6; Wed, 20 Mar 2024 11:36:03 +0100 (CET)
+Date: Wed, 20 Mar 2024 11:36:03 +0100
+From: Jan Kara <jack@suse.cz>
+To: wenyang.linux@foxmail.com
+Cc: "Eric W . Biederman" <ebiederm@xmission.com>,
+	Luis Chamberlain <mcgrof@kernel.org>,
+	Kees Cook <keescook@chromium.org>,
+	Joel Granados <j.granados@samsung.com>,
+	Christian Brauner <brauner@kernel.org>,
+	Dave Young <dyoung@redhat.com>, Jan Kara <jack@suse.cz>,
+	"Darrick J. Wong" <djwong@kernel.org>, linux-kernel@vger.kernel.org
+Subject: Re: [RESEND PATCH v2 8/9] fs: inotify: delete these unnecessary
+ static variables it_zero and it_int_max
+Message-ID: <20240320103603.u6uqhk6viu4qkaht@quack3>
+References: <26c450f6467b4cbaf94cdb10f047abc6ab0c2a5d.1710863674.git.wenyang.linux@foxmail.com>
+ <tencent_3066A7AB308FF9F53E3B5639514306914D0A@qq.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-References: <20240320073344.1563102-1-peng.fan@oss.nxp.com>
-In-Reply-To: <20240320073344.1563102-1-peng.fan@oss.nxp.com>
-From: Andy Shevchenko <andy.shevchenko@gmail.com>
-Date: Wed, 20 Mar 2024 12:33:53 +0200
-Message-ID: <CAHp75Vf1K8c+7O5Cga3t+WiiSkk-yk_gATGJrMZ8rnPPtWLkWQ@mail.gmail.com>
-Subject: Re: [PATCH V2] gpiolib: use dev_err() when gpiod_configure_flags failed
-To: "Peng Fan (OSS)" <peng.fan@oss.nxp.com>
-Cc: linus.walleij@linaro.org, brgl@bgdev.pl, andy@kernel.org, 
-	linux-gpio@vger.kernel.org, linux-kernel@vger.kernel.org, 
-	Peng Fan <peng.fan@nxp.com>
-Content-Type: text/plain; charset="UTF-8"
-Content-Transfer-Encoding: quoted-printable
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+In-Reply-To: <tencent_3066A7AB308FF9F53E3B5639514306914D0A@qq.com>
+X-Spam-Level: 
+Authentication-Results: smtp-out1.suse.de;
+	dkim=pass header.d=suse.cz header.s=susede2_rsa header.b=p3MjtqRG;
+	dkim=pass header.d=suse.cz header.s=susede2_ed25519 header.b=E+TEKYlL
+X-Rspamd-Server: rspamd2.dmz-prg2.suse.org
+X-Spamd-Result: default: False [-2.75 / 50.00];
+	 ARC_NA(0.00)[];
+	 RCVD_VIA_SMTP_AUTH(0.00)[];
+	 R_DKIM_ALLOW(-0.20)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 SPAMHAUS_XBL(0.00)[2a07:de40:b281:104:10:150:64:97:from];
+	 FROM_HAS_DN(0.00)[];
+	 TO_DN_SOME(0.00)[];
+	 FREEMAIL_ENVRCPT(0.00)[foxmail.com];
+	 TO_MATCH_ENVRCPT_ALL(0.00)[];
+	 MIME_GOOD(-0.10)[text/plain];
+	 NEURAL_HAM_LONG(-1.00)[-1.000];
+	 NEURAL_HAM_SHORT(-0.20)[-1.000];
+	 RCVD_COUNT_THREE(0.00)[3];
+	 DKIM_SIGNED(0.00)[suse.cz:s=susede2_rsa,suse.cz:s=susede2_ed25519];
+	 DKIM_TRACE(0.00)[suse.cz:+];
+	 MX_GOOD(-0.01)[];
+	 RCPT_COUNT_SEVEN(0.00)[10];
+	 DBL_BLOCKED_OPENRESOLVER(0.00)[suse.cz:dkim,suse.cz:email,suse.com:email,chromium.org:email];
+	 FREEMAIL_TO(0.00)[foxmail.com];
+	 FUZZY_BLOCKED(0.00)[rspamd.com];
+	 FROM_EQ_ENVFROM(0.00)[];
+	 MIME_TRACE(0.00)[0:+];
+	 MID_RHS_NOT_FQDN(0.50)[];
+	 RCVD_TLS_ALL(0.00)[];
+	 BAYES_HAM(-1.74)[93.42%]
+X-Spam-Score: -2.75
+X-Rspamd-Queue-Id: 815CE341F0
+X-Spam-Flag: NO
 
-On Wed, Mar 20, 2024 at 9:25=E2=80=AFAM Peng Fan (OSS) <peng.fan@oss.nxp.co=
-m> wrote:
->
-> From: Peng Fan <peng.fan@nxp.com>
->
-> When gpio-ranges property was missed to be added in the gpio node,
-> using dev_err() to show an error message will helping to locate issues
-> easier.
+On Tue 19-03-24 23:57:49, wenyang.linux@foxmail.com wrote:
+> From: Wen Yang <wenyang.linux@foxmail.com>
+> 
+> Delete unnecessary static variables (it_zero and it_int_max)
+> and encode them directly in the table entry.
+> 
+> Signed-off-by: Wen Yang <wenyang.linux@foxmail.com>
+> Cc: Eric W. Biederman <ebiederm@xmission.com>
+> Cc: Luis Chamberlain <mcgrof@kernel.org>
+> Cc: Kees Cook <keescook@chromium.org>
+> Cc: Joel Granados <j.granados@samsung.com>
+> Cc: Christian Brauner <brauner@kernel.org>
+> Cc: Jan Kara <jack@suse.cz>
+> Cc: "Darrick J. Wong" <djwong@kernel.org>
+> Cc: linux-kernel@vger.kernel.org
 
-I'm not convinced, so not my call to approve / reject, but see a remark bel=
-ow.
+This looks as a sensible cleanup but I don't see the first patch in the
+series (and neither it is archived at lore.kernel.org) so I cannot really
+verify whether your conversion is correct...
 
-..
+								Honza
 
->         ret =3D gpiod_configure_flags(desc, con_id, lookupflags, flags);
->         if (ret < 0) {
-> -               dev_dbg(consumer, "setup of GPIO %s failed\n", con_id);
-> +               dev_err(consumer, "setup of GPIO %s failed: %d\n", con_id=
-, ret);
->                 gpiod_put(desc);
->                 return ERR_PTR(ret);
-
-While at it, can you move it to be after the gpiod_put()?
-
->         }
-
---=20
-With Best Regards,
-Andy Shevchenko
+> ---
+>  fs/notify/inotify/inotify_user.c | 49 +++++++++++++-------------------
+>  1 file changed, 20 insertions(+), 29 deletions(-)
+> 
+> diff --git a/fs/notify/inotify/inotify_user.c b/fs/notify/inotify/inotify_user.c
+> index 85d8fdd55329..b346d61179ea 100644
+> --- a/fs/notify/inotify/inotify_user.c
+> +++ b/fs/notify/inotify/inotify_user.c
+> @@ -55,36 +55,27 @@ struct kmem_cache *inotify_inode_mark_cachep __ro_after_init;
+>  
+>  #include <linux/sysctl.h>
+>  
+> -static long it_zero = 0;
+> -static long it_int_max = INT_MAX;
+> -
+>  static struct ctl_table inotify_table[] = {
+> -	{
+> -		.procname	= "max_user_instances",
+> -		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES],
+> -		.maxlen		= sizeof(long),
+> -		.mode		= 0644,
+> -		.proc_handler	= proc_doulongvec_minmax,
+> -		.extra1		= &it_zero,
+> -		.extra2		= &it_int_max,
+> -	},
+> -	{
+> -		.procname	= "max_user_watches",
+> -		.data		= &init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES],
+> -		.maxlen		= sizeof(long),
+> -		.mode		= 0644,
+> -		.proc_handler	= proc_doulongvec_minmax,
+> -		.extra1		= &it_zero,
+> -		.extra2		= &it_int_max,
+> -	},
+> -	{
+> -		.procname	= "max_queued_events",
+> -		.data		= &inotify_max_queued_events,
+> -		.maxlen		= sizeof(int),
+> -		.mode		= 0644,
+> -		.proc_handler	= proc_dointvec_minmax,
+> -		.extra1		= SYSCTL_ZERO
+> -	},
+> +	CTL_TABLE_ENTRY_MINMAX("max_user_instances",
+> +			       &init_user_ns.ucount_max[UCOUNT_INOTIFY_INSTANCES],
+> +			       sizeof(long),
+> +			       0644,
+> +			       proc_doulongvec_minmax,
+> +			       SYSCTL_NUMERIC_ZERO,
+> +			       SYSCTL_NUMERIC_INT_MAX),
+> +	CTL_TABLE_ENTRY_MINMAX("max_user_watches",
+> +			       &init_user_ns.ucount_max[UCOUNT_INOTIFY_WATCHES],
+> +			       sizeof(long),
+> +			       0644,
+> +			       proc_doulongvec_minmax,
+> +			       SYSCTL_NUMERIC_ZERO,
+> +			       SYSCTL_NUMERIC_INT_MAX),
+> +	CTL_TABLE_ENTRY_MIN("max_queued_events",
+> +			    &inotify_max_queued_events,
+> +			    sizeof(int),
+> +			    0644,
+> +			    proc_dointvec_minmax,
+> +			    SYSCTL_NUMERIC_ZERO),
+>  };
+>  
+>  static void __init inotify_sysctls_init(void)
+> -- 
+> 2.25.1
+> 
+-- 
+Jan Kara <jack@suse.com>
+SUSE Labs, CR
 
