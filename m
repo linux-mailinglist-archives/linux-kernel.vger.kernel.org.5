@@ -1,109 +1,108 @@
-Return-Path: <linux-kernel+bounces-109321-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109322-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
-	by mail.lfdr.de (Postfix) with ESMTPS id 64CFF881790
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:52:12 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id C0948881791
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:54:04 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 0F459B234BA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:52:10 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id ED3F81C216C1
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:54:03 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id EDB6E8563C;
-	Wed, 20 Mar 2024 18:51:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 69AD985282;
+	Wed, 20 Mar 2024 18:53:57 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="tJgEulWZ"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="PGemrQyk"
+Received: from mail-pl1-f169.google.com (mail-pl1-f169.google.com [209.85.214.169])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 1D0EB8529D;
-	Wed, 20 Mar 2024 18:51:58 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 6706585266
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:53:55 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.169
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710960719; cv=none; b=htLVzJFNe4nBh6z4oAtYOXrCoI5KtKaO4ZiEALFEqwPhy/lkmnNEjMeejp2R/z2+OOzelGGx69c9WYdoZgUPabpIs4628ew9Wrl6Zp1wRQerNVPoSImIW22Z1It2/cBq++5XdfVrTi4rUu5T7sYBNMkeDR9ZGo4L6OorM9p+U3o=
+	t=1710960836; cv=none; b=Qd5p7tr6G41b6M/r9VfQdeSSVCOFETs/bked9KrqeRgZQl/RyZm8pycToPG/gtd1CDo4yfhsIK7cEeY8L/nR5xnWp4jRoAMds2Xp/Y6fAyGCr3BDJixUs2cnem8JVIoK/XzEVHG5fu7fkvEu+QEScm54sS8/lyYpcSeQVwohr0A=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710960719; c=relaxed/simple;
-	bh=d6TEWqNHGarTNFqrsWL72liC44WwQujen/XgSqv+mE4=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=Gnrb5RmmeEJer5LCms291FlMmjd4weFHBEA9kTrZuqnj60mwytw7mci172ceq4aPnl1fp23cQXgx6GpD5yoa99tFKRExIlR2Ue8tQUx92IiJqMDFBAJ1SDe1vIpOUWSrHwqGOa912Kc4+kLzGnmS2wJjdHAOw4A5CkySU6bMFgM=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=tJgEulWZ; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 3383AC433C7;
-	Wed, 20 Mar 2024 18:51:56 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710960718;
-	bh=d6TEWqNHGarTNFqrsWL72liC44WwQujen/XgSqv+mE4=;
-	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=tJgEulWZb6a9Mxsm87VZj70L5vi/qsM07l8UWwwHVxy601XWOo1CL64DxxjXBM8eS
-	 iRHp+MgvuzrIojxYqpRWJorzS2mkyGPklEIQNbir5ZfwMiEXpUqvwF7+sMS5jukW+J
-	 WXA6qqWF2f6gloX+W6AgF2BSf4StcZeg50qhA9ruELpijdc7QmVFngiCIlQBrgoX/l
-	 n6oqoLsQQsPa1ulDvjIDDz09b5xV5x8ap+d5+t+GsdNajB/eDvjjOo04zLcORmFBP7
-	 0GHbvASk59MiKYEiBAP8PSI0+DRQIkyV6waMfPGVrRNAm0lIeq8cuOsx+y1sqfN27l
-	 bgSpcDiCedT4w==
-Date: Wed, 20 Mar 2024 18:51:54 +0000
-From: Conor Dooley <conor@kernel.org>
-To: Yangyu Chen <cyy@cyyself.name>
-Cc: Conor Dooley <conor.dooley@microchip.com>, Guo Ren <guoren@kernel.org>,
-	linux-riscv@lists.infradead.org,
-	Damien Le Moal <dlemoal@kernel.org>,
-	Rob Herring <robh+dt@kernel.org>,
-	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
-	Paul Walmsley <paul.walmsley@sifive.com>,
-	Palmer Dabbelt <palmer@dabbelt.com>,
-	Albert Ou <aou@eecs.berkeley.edu>, devicetree@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: Re: [PATCH v5 5/7] riscv: Kconfig.socs: Split ARCH_CANAAN and
- SOC_CANAAN_K210
-Message-ID: <20240320-harmful-carpenter-40a7de0f273e@spud>
-References: <tencent_FC10B3C630BE27412FED2547245CBE18D807@qq.com>
- <tencent_6F35FEF31908DE6AEB385AE30AC658863C0A@qq.com>
- <CAJF2gTS1-VQP=gQBx=SoUWsdap153EGOObKVn+2L7=kbP2CqFg@mail.gmail.com>
- <20240306-scowling-mortify-9b427c80e8ab@wendy>
- <tencent_91E604E3B4D51DA37045625242A81B07F909@qq.com>
- <20240320-ideology-pasty-d3aea07cc519@spud>
+	s=arc-20240116; t=1710960836; c=relaxed/simple;
+	bh=kw71mCENFfkusz3NYvP2M2wcfPXvnkvuAeHbdxEATAo=;
+	h=Date:From:To:Cc:Subject:Message-ID:MIME-Version:Content-Type:
+	 Content-Disposition; b=jKZGaeZU6ladwZiBrRHuhwSgdalxZkTrSID7LBT3srrcFhzMUpp8P/gOG4gkykwL17RfBuyn1MJ96gv0LpaSWdfZW5P4tODJ8yzQzKCXUGc3xsuPzh8L2Y7KJSentEcUDtxbTI3rt+FcGq5WZ98vFsuEJ9WS9zHQSxCf/wNk5ek=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=PGemrQyk; arc=none smtp.client-ip=209.85.214.169
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-pl1-f169.google.com with SMTP id d9443c01a7336-1dedb92e540so1748835ad.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:53:55 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710960834; x=1711565634; darn=vger.kernel.org;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :from:to:cc:subject:date:message-id:reply-to;
+        bh=hHo/UtzvItXgAnni/T063+9rKoFbdcxo9Fv9o/bsTdo=;
+        b=PGemrQykUNRWK3o3XlMij/Qk2vx2edqoCl8vsjQqLkGrObk99r5VqSmd85ZjGLnh5+
+         RDVtONXG2nYnB8uDjsx+kKTRExOfVPDbbBXo+G6dDTTe5FQAoGUaSaUZRJclEsBeIkPV
+         0g8YddU+kNYFPne4mYQE8seuY6g2rOdCmhj1ukYq8nkasaoTdyt8cWx/N0Vau950QFuz
+         QA9JRBPu6qafXkRMaZtAgjW/oc98nTuEXIKv9DS4qMBRwl0k38nxpMmHtnHJDTCPvDx2
+         2AVfef6TXcf936Gad0uwF12XSCzKOuLkWHS0stqmcEpJVm3+wOZ/N4we8sliBhacksPF
+         RlOA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710960834; x=1711565634;
+        h=content-disposition:mime-version:message-id:subject:cc:to:from:date
+         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=hHo/UtzvItXgAnni/T063+9rKoFbdcxo9Fv9o/bsTdo=;
+        b=gYiNP7GvCSKjb8C4UeXo4gM2r51nT82RYAEX3MvWpySm20ovFefNzMYb6htyRmNoHF
+         dNz6AdnaTjZF9YTij4U7k3EAIdMQotOuUHiWl8ZXdQYrZzc9TU0vHgRMGsLk7AhmOAe+
+         Is0BWLzQiY2Y/df/CT2U9gbK6S5ePQG6JW9z4g+xxH0sZ0zcAXCfAF+gsUafREWkqdJs
+         eseHSRm2cAqffa90qTP41H1tGoSEFXZiE0tS9AQEa1HmzIITtkmAFjubI00hCifktaON
+         TtJtHBWnspSCEOXCKigno4zIwG0RzFiI+b8uchDyWC5YsABXLZVQFzn7/QXkRCyELMdA
+         0WeQ==
+X-Forwarded-Encrypted: i=1; AJvYcCUbz6hlJo7655llOHsDRMBg4e5EoVLTBKNnf0PihGfWKgkZOITx2eWSY/eE5FBHuJnXqks5P6nA1MQqXbFC6+1c2p5/z0b7zRr4c9sJ
+X-Gm-Message-State: AOJu0YysYPDAQplbgT7d9R6Gme2WXSYzB7iOlB0lkEls4CEu/y4Fohue
+	Sm49F5RMvvg6HW8IK5IeW8cYfRuH8DcJo654ZlVwd3l9NOZnv9YH
+X-Google-Smtp-Source: AGHT+IE58EF9+Se+w6BvmnOU4rIe52sGQR9jSmwBLL+Nawk6f/WI8phqZOSc0KVO39scQH2DD9odxA==
+X-Received: by 2002:a17:902:a3c4:b0:1df:f859:91b6 with SMTP id q4-20020a170902a3c400b001dff85991b6mr511149plb.34.1710960834450;
+        Wed, 20 Mar 2024 11:53:54 -0700 (PDT)
+Received: from ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx ([103.6.158.67])
+        by smtp.gmail.com with ESMTPSA id y17-20020a170903011100b001db5b39635dsm13901559plc.277.2024.03.20.11.53.53
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 11:53:54 -0700 (PDT)
+Date: Thu, 21 Mar 2024 00:23:50 +0530
+From: Ayush Tiwari <ayushtiw0110@gmail.com>
+To: Larry.Finger@lwfinger.net, florian.c.schilhabel@googlemail.com,
+	gregkh@linuxfoundation.org, linux-kernel@vger.kernel.org,
+	linux-staging@lists.linux.dev
+Cc: outreachy@lists.linux.dev
+Subject: [PATCH] staging: rtl8712: Change type of local variable
+Message-ID: <Zfnt4pIljgM21/BA@ayush-HP-Pavilion-Gaming-Laptop-15-ec0xxx>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Type: multipart/signed; micalg=pgp-sha256;
-	protocol="application/pgp-signature"; boundary="yFaj5iez9WvDhwVq"
-Content-Disposition: inline
-In-Reply-To: <20240320-ideology-pasty-d3aea07cc519@spud>
-
-
---yFaj5iez9WvDhwVq
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
 
-On Wed, Mar 20, 2024 at 05:39:14PM +0000, Conor Dooley wrote:
+Change data type of local variable blnPending from u8 to bool since it
+only assumes 0 or 1 values.
 
-> I got a k230 board (the canmv one) so I should be able to test this
-> myself before picking stuff up.
+Signed-off-by: Ayush Tiwari <ayushtiw0110@gmail.com>
+---
+ drivers/staging/rtl8712/rtl8712_cmd.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
 
-I've taken a bit of a look at the "sdk" and appears to be a complete
-mess to a non-chinese speaker like me.
-I know you linked a copy of opensbi to use with this, but do you also
-have a version of U-Boot to use with this that is not riddled with
-crap and will compile with a normal toolchain?
+diff --git a/drivers/staging/rtl8712/rtl8712_cmd.c b/drivers/staging/rtl8712/rtl8712_cmd.c
+index bb7db96ed821..32d9927981aa 100644
+--- a/drivers/staging/rtl8712/rtl8712_cmd.c
++++ b/drivers/staging/rtl8712/rtl8712_cmd.c
+@@ -284,7 +284,7 @@ int r8712_cmd_thread(void *context)
+ 		pcmd = cmd_hdl_filter(padapter, pcmd);
+ 		if (pcmd) { /* if pcmd != NULL, cmd will be handled by f/w */
+ 			struct dvobj_priv *pdvobj = &padapter->dvobjpriv;
+-			u8 blnPending = 0;
++			bool blnPending = 0;
+ 			u16 cmdcode = pcmd->cmdcode;
+ 
+ 			pcmdpriv->cmd_issued_cnt++;
+-- 
+2.40.1
 
-I have chanced upon Courmisch's repo that looks significantly more
-usable than whatever Canaan have so I guess I will use that:
-https://code.videolan.org/Courmisch/k230-boot
-
-:)
-
---yFaj5iez9WvDhwVq
-Content-Type: application/pgp-signature; name="signature.asc"
-
------BEGIN PGP SIGNATURE-----
-
-iHUEABYIAB0WIQRh246EGq/8RLhDjO14tDGHoIJi0gUCZfswSQAKCRB4tDGHoIJi
-0qlkAQC7FRjew00zC3r7BNoqFE00Z9wOqBZuIoF6dxLOsByqkwD+K9VLMOVa85Yz
-5lMzqwe7/O9GkMdlnk6wso/HM0S7Kw8=
-=jLB8
------END PGP SIGNATURE-----
-
---yFaj5iez9WvDhwVq--
 
