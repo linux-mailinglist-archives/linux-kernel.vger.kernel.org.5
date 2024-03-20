@@ -1,32 +1,33 @@
 Return-Path: <linux-kernel+bounces-108570-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6309A880C59
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:48:52 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
+	by mail.lfdr.de (Postfix) with ESMTPS id 730D6880C5A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:48:53 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 023951F212F8
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A24AE1C21FC4
 	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 07:48:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 2D6802C698;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 30F0D2C6B2;
 	Wed, 20 Mar 2024 07:48:39 +0000 (UTC)
 Received: from cae.in-ulm.de (cae.in-ulm.de [217.10.14.231])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E310E2231C;
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id E30D41EB44;
 	Wed, 20 Mar 2024 07:48:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=217.10.14.231
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710920918; cv=none; b=JhSuh/VrFFrtsP5QBJZiXyj7tW9u3EbwSw72SKlM5X8IPktHymibfIIH3ZBDHe9K9Do5WFLlNRGF9Ro3ldPWEl1Hf6GbPbK+ugDoUVXFKsgTQ87TughLLVzux8HsusUa9gnSnDqnOw50DsCXYIwbRb1SICv73OHDSjwfmVY8wI4=
+	t=1710920918; cv=none; b=evtcBuri8uK3XC/t6QiNLdmHAWwNNo/d1XP+OW5DXC0XfK3k6wQlI/ycSQAF9tkmQvzsTAUtahY+DC+q1GSAk0FgLQcaRSd7Yhztdhss9Lmced9ZlEszxxO709MaQfHlc/87HGlipby9wb07UCzFOEqMTTaD4fdQBRCcU9GuUIE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
 	s=arc-20240116; t=1710920918; c=relaxed/simple;
-	bh=6v51l2BaV+t4HJloO9qBHphewQnPu0qnDnrMTLpEHjk=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=g9+s4TYPJCI9lPEyEGZfLBrmWbgKAV7/FEB5EYkzKhVuSuNqZ8tQDf+A/DeAh+h//VnXBrItehVIFc8Tjgdu5wGYbj2vTx8zXlkSYNQhEH4BTohhzYl1a2HeM4+LnGMOpKnSoGQjdQNpBwd1OfkCsGssUE6j7o0TpiIYJMVxQ/M=
+	bh=/KZAiC6JOq0ybeDq5lNdxzeP0cezbAGpHMCtN60ZSCE=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=hO5rXVXqi/IWtxdh4V+a4rjj86MDsqpv+CGwH449QVLg9EONZZG0pRM2iguIMTx9ZJmHS57iQPyCNAIsuxBrb3aRC1/PzoafhqwD9tgfxzwCTVtmijhqBEhDNusMBQxMLeEpwnjscqWpULHM6AdtbSlHYf73ExQqgS3gXKmhNFg=
 ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de; spf=pass smtp.mailfrom=c--e.de; arc=none smtp.client-ip=217.10.14.231
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=c--e.de
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=c--e.de
 Received: by cae.in-ulm.de (Postfix, from userid 1000)
-	id EBA5E140551; Wed, 20 Mar 2024 08:40:01 +0100 (CET)
+	id 89B9E14055A; Wed, 20 Mar 2024 08:40:03 +0100 (CET)
 From: "Christian A. Ehrhardt" <lk@c--e.de>
 To: linux-kernel@vger.kernel.org
 Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
@@ -40,10 +41,12 @@ Cc: "Christian A. Ehrhardt" <lk@c--e.de>,
 	=?UTF-8?q?Samuel=20=C4=8Cavoj?= <samuel@cavoj.net>,
 	linux-usb@vger.kernel.org,
 	Kenneth Crudup <kenny@panix.com>
-Subject: [PATCH 0/5] Fix various races in UCSI
-Date: Wed, 20 Mar 2024 08:39:21 +0100
-Message-Id: <20240320073927.1641788-1-lk@c--e.de>
+Subject: [PATCH 1/5] usb: typec: ucsi: Clear EVENT_PENDING under PPM lock
+Date: Wed, 20 Mar 2024 08:39:22 +0100
+Message-Id: <20240320073927.1641788-2-lk@c--e.de>
 X-Mailer: git-send-email 2.30.2
+In-Reply-To: <20240320073927.1641788-1-lk@c--e.de>
+References: <20240320073927.1641788-1-lk@c--e.de>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -52,45 +55,38 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Transfer-Encoding: 8bit
 
-Fix various races in UCSI code:
-- The EVENT_PENDING bit should be cleared under the PPM lock to
-  avoid spurious re-checking of the connector status.
-- The initial connector change notification during init may be
-  lost which can cause a stuck UCSI controller. Observed by me
-  and others during resume or after module reload.
-- Unsupported commands must be ACKed. This was uncovered by the
-  recent change from Jameson Thies that did sent unsupported commands.
-- The DELL quirk still isn't quite complete and I've found a more
-  elegant way to handle this. A connector change ack _is_ accepted
-  on affected systems if it is bundled with a command ack.
-- If we do two consecutive resets or the controller is already
-  reset at boog the second reset might complete early because the
-  reset complete bit is already set. ucsi_ccg.c has a work around
-  for this but it looks like an more general issue to me.
+Suppose we sleep on the PPM lock after clearing the EVENT_PENDING
+bit because the thread for another connector is executing a command.
+In this case the command completion of the other command will still
+report the connector change for our connector.
 
-NOTE:
-As a result of these individual fixes we could think about the
-question if there are additional cases where we send some type
-of command to the PPM while the bit that indicates its completion
-is already set in CCI. And in fact there is one more case where
-this can happen: The ack command that clears the connector change
-is sent directly after the ack command for the previous command.
-It might be possible to simply ack the connector change along with
-the first command ucsi_handle_connector_change() and not at the
-end. AFAICS the connector lock should protect us from races that
-might arise out of this.
+Clear the EVENT_PENDING bit under the PPM lock to avoid another
+useless call to ucsi_handle_connector_change() in this case.
 
-Christian A. Ehrhardt (5):
-  usb: typec: ucsi: Clear EVENT_PENDING under PPM lock
-  usb: typec: ucsi: Check for notifications after init
-  usb: typec: ucsi: Ack unsupported commands
-  usb: typec: ucsi_acpi: Refactor and fix DELL quirk
-  usb: typec: ucsi: Clear UCSI_CCI_RESET_COMPLETE before reset
+Fixes: c9aed03a0a68 ("usb: ucsi: Add missing ppm_lock")
+Signed-off-by: Christian A. Ehrhardt <lk@c--e.de>
+---
+ drivers/usb/typec/ucsi/ucsi.c | 4 ++--
+ 1 file changed, 2 insertions(+), 2 deletions(-)
 
- drivers/usb/typec/ucsi/ucsi.c      | 56 ++++++++++++++++++++--
- drivers/usb/typec/ucsi/ucsi_acpi.c | 75 +++++++++++++-----------------
- 2 files changed, 84 insertions(+), 47 deletions(-)
-
+diff --git a/drivers/usb/typec/ucsi/ucsi.c b/drivers/usb/typec/ucsi/ucsi.c
+index cf52cb34d285..8a6645ffd938 100644
+--- a/drivers/usb/typec/ucsi/ucsi.c
++++ b/drivers/usb/typec/ucsi/ucsi.c
+@@ -1215,11 +1215,11 @@ static void ucsi_handle_connector_change(struct work_struct *work)
+ 	if (con->status.change & UCSI_CONSTAT_CAM_CHANGE)
+ 		ucsi_partner_task(con, ucsi_check_altmodes, 1, 0);
+ 
+-	clear_bit(EVENT_PENDING, &con->ucsi->flags);
+-
+ 	mutex_lock(&ucsi->ppm_lock);
++	clear_bit(EVENT_PENDING, &con->ucsi->flags);
+ 	ret = ucsi_acknowledge_connector_change(ucsi);
+ 	mutex_unlock(&ucsi->ppm_lock);
++
+ 	if (ret)
+ 		dev_err(ucsi->dev, "%s: ACK failed (%d)", __func__, ret);
+ 
 -- 
 2.40.1
 
