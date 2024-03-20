@@ -1,128 +1,133 @@
-Return-Path: <linux-kernel+bounces-108798-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108727-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 6549888101A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:41:07 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id 4BE15880F41
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 11:05:21 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1EE33283B09
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:41:06 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id CE807B219DB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 10:05:18 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E3FD83BBF7;
-	Wed, 20 Mar 2024 10:40:35 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 264763C099;
+	Wed, 20 Mar 2024 10:05:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=fail reason="signature verification failed" (2048-bit key) header.d=norik.com header.i=@norik.com header.b="QwZCousJ"
-Received: from cpanel.siel.si (cpanel.siel.si [46.19.9.99])
+	dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b="GC8jJ4z5"
+Received: from mail.zeus03.de (www.zeus03.de [194.117.254.33])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id E1A763BB4F;
-	Wed, 20 Mar 2024 10:40:32 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=46.19.9.99
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A587338F82
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:05:06 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=194.117.254.33
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710931235; cv=none; b=JfvcZIMx/R0Gt1kcDRPdS5dt1XP8tC6axGwoyI3GLmfhu3H47mzL/PIGB5waj72IDGPQ2Q/BD8MHVYkOtrNatbKV2YqFt2/8iffUAdlDAhfHWsu7tVNlU8yFzq38q+gtDrvSTatTzk7NsWFMiYtvU/UdLkArLwFWejmm/Kke0jY=
+	t=1710929108; cv=none; b=XIWzyk040/QWqBow8AcXxqLtbbXex4xyT5pjI+bgOUg2pICtjuH8QE6Tcta+2XjNdy65JgO1rN6hKz20cXmQ8Z9ymLNbcDVVJeYDa18zNIht113IMUiAw0L35oup5WI/E/GvFJ88+y1ICt+6ttYW0b61Z1sVZ4drIPkEg/GIq6w=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710931235; c=relaxed/simple;
-	bh=R8fTGH9OWGPMs9dIN2Cm0WFP0y0lgeZLVmVYPrCVwSY=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=uY6EZVKBELxJcxZTE6vcMa6Ig/03/Eaui/JqLGxYZADIPzhy5Ia23dUGEOCqTxJ7SeP9Rqgajo59ES5R57SEjOyxyxis2K7kOsmBAVigmWq0omxxnwmU0pLjMHKTpMxMN0mBXzFPQnMHl9updPv4J8tKb6gbPl08OSC+DWDv5UU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com; spf=pass smtp.mailfrom=norik.com; dkim=pass (2048-bit key) header.d=norik.com header.i=@norik.com header.b=QwZCousJ; arc=none smtp.client-ip=46.19.9.99
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=norik.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=norik.com
-DKIM-Signature: v=1; a=rsa-sha256; q=dns/txt; c=relaxed/relaxed; d=norik.com;
-	s=default; h=Content-Transfer-Encoding:MIME-Version:References:In-Reply-To:
-	Message-Id:Date:Subject:Cc:To:From:Sender:Reply-To:Content-Type:Content-ID:
-	Content-Description:Resent-Date:Resent-From:Resent-Sender:Resent-To:Resent-Cc
-	:Resent-Message-ID:List-Id:List-Help:List-Unsubscribe:List-Subscribe:
-	List-Post:List-Owner:List-Archive;
-	bh=brVvifDkJB4+mWvFeTvzWiEvVdd6+g5oyJp8fuUKCZc=; b=QwZCousJRw5qU30TISjc8Lk19f
-	818/2S46S5WaeIs8rpvdGZZCe0/0kk8CyHKr5lDkyhlXUwnsAacbxuJElzuvN8bBDcCLI94ghTJWs
-	05A1VCZVddNtAqRMjoNAtdvOa4pG9xDeLelO3vm0sSx3dtlDwxXIt3nvmja81jk3VT04uWWmeBfT4
-	ANyB3I8cib3eKMmQm2rJtfTm43rwCJwzSpq1kKOwt4a+W4ypXpf6sLq3CN3/q/X6hLf+TdVZcay6s
-	Wgs8twucDjT+Qc4zWcIJTd8yNydrVEIjSMPRTYybRisNdAiCMQ7vzKCUckbDwuKwtLAwpKjt+FgbN
-	HaSygMWA==;
-Received: from [89.212.21.243] (port=57750 helo=localhost.localdomain)
-	by cpanel.siel.si with esmtpsa  (TLS1.2) tls TLS_ECDHE_RSA_WITH_AES_128_GCM_SHA256
-	(Exim 4.96.2)
-	(envelope-from <andrej.picej@norik.com>)
-	id 1rmsnx-005Tm8-1J;
-	Wed, 20 Mar 2024 11:04:17 +0100
-From: Andrej Picej <andrej.picej@norik.com>
-To: haibo.chen@nxp.com,
-	linux-iio@vger.kernel.org,
-	devicetree@vger.kernel.org
-Cc: jic23@kernel.org,
-	lars@metafoo.de,
-	shawnguo@kernel.org,
-	s.hauer@pengutronix.de,
-	kernel@pengutronix.de,
-	festevam@gmail.com,
-	imx@lists.linux.dev,
-	linux-arm-kernel@lists.infradead.org,
-	linux-kernel@vger.kernel.org,
-	robh@kernel.org,
-	krzysztof.kozlowski+dt@linaro.org,
-	conor+dt@kernel.org,
-	upstream@lists.phytec.de
-Subject: [PATCH 2/2] dt-bindings: iio: adc: nxp,imx93-adc.yaml: Add calibration properties
-Date: Wed, 20 Mar 2024 11:04:06 +0100
-Message-Id: <20240320100407.1639082-3-andrej.picej@norik.com>
-X-Mailer: git-send-email 2.25.1
-In-Reply-To: <20240320100407.1639082-1-andrej.picej@norik.com>
-References: <20240320100407.1639082-1-andrej.picej@norik.com>
+	s=arc-20240116; t=1710929108; c=relaxed/simple;
+	bh=fwXyQZW6DDDve0eAASIUzDQwVftP1zi7BR49hnbI7g4=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=J26TffckJU/uYyW9AVNCN+ngtfXIVy6S3l4qMzqAujzzg8XhhOLzumiO/50kvcBww248FxjUfAFeOwcbND0UG/+wIw/FDH1iLRRb/uL4ghDQ+oXMQosq3cvsUcuNM4Pycjg45zX3uM0ZHBFFBOOSsF11SgY3DqC2gmPi98dgWdo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com; spf=pass smtp.mailfrom=sang-engineering.com; dkim=pass (2048-bit key) header.d=sang-engineering.com header.i=@sang-engineering.com header.b=GC8jJ4z5; arc=none smtp.client-ip=194.117.254.33
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sang-engineering.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sang-engineering.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
+	sang-engineering.com; h=date:from:to:cc:subject:message-id
+	:references:mime-version:content-type:in-reply-to; s=k1; bh=fwXy
+	QZW6DDDve0eAASIUzDQwVftP1zi7BR49hnbI7g4=; b=GC8jJ4z5BA7FBcdmKmxB
+	nOh38H1A/elGSij6LDvExtCQWpXYuaze2shxI/oOVjXgrvWwWqmizbEJa3srsUyd
+	tmqm3oeq5qvQ7Wnu1KqcET74+MRspbmRkp3gLJb6OfArWZtdIStl3kxGo3wWGILd
+	+vsU7A/KUdAXd3ymwLA9zndvh3fAoVCXKYqxba12TQhmClVQiKlptJ3G8TqUB7jf
+	KHO1rFlrBFupoYDW6PlqqfZ8PQlqf8vqnXsRw5yYwHseuQOzwA8k81dPlrkfteZk
+	fdXF22fk/2lUnd7pEWBkZUBjys4cqtYPzEY68DVcavtvmk6XjG/mRE0564fGujkn
+	Lw==
+Received: (qmail 3167443 invoked from network); 20 Mar 2024 11:05:04 +0100
+Received: by mail.zeus03.de with ESMTPSA (TLS_AES_256_GCM_SHA384 encrypted, authenticated); 20 Mar 2024 11:05:04 +0100
+X-UD-Smtp-Session: l3s3148p1@c+yBuRQU8J5ehhYE
+Date: Wed, 20 Mar 2024 11:05:04 +0100
+From: Wolfram Sang <wsa+renesas@sang-engineering.com>
+To: Prabhakar <prabhakar.csengg@gmail.com>
+Cc: Geert Uytterhoeven <geert+renesas@glider.be>,
+	Chris Brandt <chris.brandt@renesas.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+Subject: Re: [PATCH v3 3/4] i2c: riic: Pass register offsets and chip details
+ as OF data
+Message-ID: <Zfq00MQP_cjqbNAK@shikoro>
+Mail-Followup-To: Wolfram Sang <wsa+renesas@sang-engineering.com>,
+	Prabhakar <prabhakar.csengg@gmail.com>,
+	Geert Uytterhoeven <geert+renesas@glider.be>,
+	Chris Brandt <chris.brandt@renesas.com>,
+	Andi Shyti <andi.shyti@kernel.org>,
+	Rob Herring <robh+dt@kernel.org>,
+	Krzysztof Kozlowski <krzysztof.kozlowski+dt@linaro.org>,
+	Conor Dooley <conor+dt@kernel.org>,
+	Magnus Damm <magnus.damm@gmail.com>,
+	linux-renesas-soc@vger.kernel.org, linux-i2c@vger.kernel.org,
+	devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+	Fabrizio Castro <fabrizio.castro.jz@renesas.com>,
+	Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+References: <20240319132503.80628-1-prabhakar.mahadev-lad.rj@bp.renesas.com>
+ <20240319132503.80628-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
-X-AntiAbuse: This header was added to track abuse, please include it with any abuse report
-X-AntiAbuse: Primary Hostname - cpanel.siel.si
-X-AntiAbuse: Original Domain - vger.kernel.org
-X-AntiAbuse: Originator/Caller UID/GID - [47 12] / [47 12]
-X-AntiAbuse: Sender Address Domain - norik.com
-X-Get-Message-Sender-Via: cpanel.siel.si: authenticated_id: andrej.picej@norik.com
-X-Authenticated-Sender: cpanel.siel.si: andrej.picej@norik.com
-X-Source: 
-X-Source-Args: 
-X-Source-Dir: 
+Content-Type: multipart/signed; micalg=pgp-sha512;
+	protocol="application/pgp-signature"; boundary="n6zfj2G8jOBGA4iY"
+Content-Disposition: inline
+In-Reply-To: <20240319132503.80628-4-prabhakar.mahadev-lad.rj@bp.renesas.com>
 
-Document calibration properties and how to set them.
 
-Signed-off-by: Andrej Picej <andrej.picej@norik.com>
----
- .../bindings/iio/adc/nxp,imx93-adc.yaml           | 15 +++++++++++++++
- 1 file changed, 15 insertions(+)
+--n6zfj2G8jOBGA4iY
+Content-Type: text/plain; charset=us-ascii
+Content-Disposition: inline
+Content-Transfer-Encoding: quoted-printable
 
-diff --git a/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml b/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
-index dacc526dc695..64958be62a6a 100644
---- a/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
-+++ b/Documentation/devicetree/bindings/iio/adc/nxp,imx93-adc.yaml
-@@ -46,6 +46,21 @@ properties:
-   "#io-channel-cells":
-     const: 1
- 
-+  nxp,calib-avg-en:
-+    description:
-+      Enable or disable averaging of calibration time.
-+    enum: [ 0, 1 ]
-+
-+  nxp,calib-nr-samples:
-+    description:
-+      Selects the number of averaging samples to be used during calibration.
-+    enum: [ 16, 32, 128, 512 ]
-+
-+  nxp,calib-t-samples:
-+    description:
-+      Specifies the sample time of calibration conversions.
-+    enum: [ 8, 16, 22, 32 ]
-+
- required:
-   - compatible
-   - reg
--- 
-2.25.1
+On Tue, Mar 19, 2024 at 01:25:02PM +0000, Prabhakar wrote:
+> From: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+>=20
+> With an increasing number of SoCs reusing this driver, each with slight
+> variations in the RIIC IP, it becomes necessary to support passing these
+> details as OF data. This approach simplifies the extension of the driver
+> for other SoCs.
+>=20
+> This patch lays the groundwork for adding support for the Renesas RZ/V2H
+> SoC.
+>=20
+> Signed-off-by: Lad Prabhakar <prabhakar.mahadev-lad.rj@bp.renesas.com>
+> Reviewed-by: Geert Uytterhoeven <geert+renesas@glider.be>
 
+Reviewed-by: Wolfram Sang <wsa+renesas@sang-engineering.com>
+
+
+--n6zfj2G8jOBGA4iY
+Content-Type: application/pgp-signature; name="signature.asc"
+
+-----BEGIN PGP SIGNATURE-----
+
+iQIzBAABCgAdFiEEOZGx6rniZ1Gk92RdFA3kzBSgKbYFAmX6tNAACgkQFA3kzBSg
+KbbFuw/+KFO4nELzzu0Fb2pFk7a5jucVMYggeaB3KmWNr+LF/8ZzMIESpfihpzgF
+JXN8BECy1qXTXulumL28PADzTsvjjMJbKHpQf7L/OVBOC3Fj0TRrdw0W8Ned2a7Y
+sb3tSWBtZBbz+44W6S3XnzT8UAVATCk1Wmufo4EaC0V+y8RdQ9ygnlWyri14hZ/c
+U0+MVZv7zyJZ1bJdqpCd68lUYiT/aLrgyx3T626CWPyFhFP7hL/oMpmTi/1RUmYy
+7f9o47mlT8njgPvrYK0m9ZynOqOLSK1TpE0gBOPNSgZGEZI5PPKxLUTn3fUzuymm
+QTZwOzoM9yUGVyqHCWQFW2s8xJUCdMRF4deSuUFPOZE78/CXOQgy6zd4tB2TaJud
+NUbzjbowbxkZgtJs0PPOgyImHUZ4J+fX3sDwLjyl0iZg8uzubTWQoRGOEDlwi5kC
+sssWJoIsP1CKuWkOQ/Q1eECsoMkLdCXZWZvh3YUIWnlxw+auRtTFY6Wz7RHi4vuw
+Y/6+4gUZX7XlsQB0ozi3lldRDd4b5Uiv14kGq2PO1D4fVR+f4BeLfTMccG2/GVYp
+1HszCrCOqnyJ7UYMZOnB4TIJqckCNQCWAz2SLxA6vJqADZLgg3Czo7LtTxImuD23
+JFYp5I5kt3KcsHSOL/2tqFth5sBevXRV0P4cIBN+cmgATZs+K/Y=
+=R51m
+-----END PGP SIGNATURE-----
+
+--n6zfj2G8jOBGA4iY--
 
