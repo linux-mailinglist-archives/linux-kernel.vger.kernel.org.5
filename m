@@ -1,80 +1,88 @@
-Return-Path: <linux-kernel+bounces-109435-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109436-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 98F0388191C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:28:49 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
+	by mail.lfdr.de (Postfix) with ESMTPS id 3A18588191F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:31:54 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id CA8A91C20EB4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:28:48 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id E7E8F286A3E
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:31:52 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D077085C43;
-	Wed, 20 Mar 2024 21:28:38 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B06AC8595F;
+	Wed, 20 Mar 2024 21:31:45 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b="KCocj90j"
-Received: from mail-pf1-f169.google.com (mail-pf1-f169.google.com [209.85.210.169])
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="aHDL3pog"
+Received: from mail-ed1-f46.google.com (mail-ed1-f46.google.com [209.85.208.46])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CD5DC36B08
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 21:28:36 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.210.169
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 7356B1DFC6;
+	Wed, 20 Mar 2024 21:31:43 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.208.46
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710970118; cv=none; b=nDvUo3EGskXAyQrC7NjVaMHhIHm6M5OQOHh77mD8eOJQlv3/qHr+aR6G/WYboPAYhX5eDWP2CltGPLzCgsPZdM9utQzTuS9EviAIVL/9jTedaZoCqICXMwi920l3OkBw60nTnTPRx9bUdVr24hXWNM7Q6yf4GRquk73GmJHqmrw=
+	t=1710970305; cv=none; b=ED0F3SkjTX+0RBrsdVm3ZAHqX6muZSRDkztIJSBpayMblsEdCtsAI9HkHyd63g495DgNFDqxYUt80LvhWuQfI7WQALCEmfV0W6EZNAwRcb9ZteHdhqWiO8oa8tX/4W+wp7MfCNAWzj/lLJmu5VN+DkVwd58JjA42RmxrFOxj1kU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710970118; c=relaxed/simple;
-	bh=mh/HxhPp9i97mC1VuDIbHEVd91dhaAEp1Bjk44jT5fY=;
-	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=cBIJD0lP1KqEwN+UIA4NuIusyVEjV3OrSdTuAvNNaO97gQmjmQE93bHjncaXo1xCvdoRy+KOBhDfVdKh7sSa6YTI9hVfG2y24rQDnncADZVSDRr5FDZcsdOZ8CWqqAZN3itMf0QOn6EKcNmDt6nWnMsS6N+Vyec9fEqDG1w9+CA=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org; spf=pass smtp.mailfrom=chromium.org; dkim=pass (1024-bit key) header.d=chromium.org header.i=@chromium.org header.b=KCocj90j; arc=none smtp.client-ip=209.85.210.169
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=chromium.org
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=chromium.org
-Received: by mail-pf1-f169.google.com with SMTP id d2e1a72fcca58-6e6082eab17so356287b3a.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 14:28:36 -0700 (PDT)
+	s=arc-20240116; t=1710970305; c=relaxed/simple;
+	bh=zZkPNzov1U+2g3d3e8PS0S63IwHAgOpyM3LsJwAUW4M=;
+	h=From:Date:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=o+AkXQK/f0PFOSQDuH31sNn9szpIaQNGCtLEoA2qj5or5bwe/zqtKSCoJ0QHqAMPofL718CnLvHNjXzn+IiyR+372SncaHBbkAKj9YGnVyFfdhJWn3X4ApiCthLk4ZVJgDWgICRa95qegvSudqsLZFuxh3uR41U9dOGYcblDYvo=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=aHDL3pog; arc=none smtp.client-ip=209.85.208.46
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-ed1-f46.google.com with SMTP id 4fb4d7f45d1cf-56b85146589so620043a12.0;
+        Wed, 20 Mar 2024 14:31:43 -0700 (PDT)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=chromium.org; s=google; t=1710970116; x=1711574916; darn=vger.kernel.org;
+        d=gmail.com; s=20230601; t=1710970301; x=1711575101; darn=vger.kernel.org;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=5XI3QkOwZqtEGEx+OWmx4gtkRygEIOYcGFpQlI1fX2Y=;
-        b=KCocj90jQis1pOqu1ZN11y0IC7K8y8XORNbbE2/0h3/Pb6ukKgfih23fzpZo5Kwr5f
-         U8tl3PDApsKLzgw9DSHSP/xP1dIzxMTueJ5BqiI51tgOOHuqe5lxWvHjFI5koThf1qnJ
-         gwbh5Xj+609nZxyluh6HLAHYZfTjcXEQ468y8=
+         :subject:cc:to:date:from:from:to:cc:subject:date:message-id:reply-to;
+        bh=YkXNsWFyS9IroqdDegvv78No9qBhWM69YWkvvWKZWwc=;
+        b=aHDL3pogjfF7PHFtc/yEuyJKnhugPFOSWNXh3099/AVbrfoBX8QV0/UMdwjxaDqU+9
+         mX9MStVHal+HXK6pX2uUwdo/knwAdKC1EB9qs0Xnx4VT0MrHeourB3Tg28rxOaLI/6yB
+         1GqFBP6Fzb6TTCLbm9uPpuETkES6gXpHuRkaPvVTxGQF6liC/c7Ogix4QkvgIEhVp3xx
+         7+wpEEsxa3Qegc8RgW5xzuUa5zbLEy7ZDNYDa2DYSGusvTGYUgH8XSfoShi4QQSPKDMX
+         2rfbmM7kv3nHfpwk4Di9YSQGp6UfDvXuchlYL0vTk0lLxB6OPSDy9xOA9x2QT7eLLg1h
+         LPnA==
 X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710970116; x=1711574916;
+        d=1e100.net; s=20230601; t=1710970301; x=1711575101;
         h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
+         :subject:cc:to:date:from:x-gm-message-state:from:to:cc:subject:date
          :message-id:reply-to;
-        bh=5XI3QkOwZqtEGEx+OWmx4gtkRygEIOYcGFpQlI1fX2Y=;
-        b=ThS1plQRUkYNMIEpGEEcWNfS0zKlR+DJeOjnA7CMDZ5NYCtpMUWpJKaIOdJrBXdpnl
-         BxrFOMC3SuaePifuApNSBaR6NWyjhJk2AqmSpGWOLB4I+Yo9dKhsHONDfF5Wd9c6Ri7m
-         8YdwonzzUm9xkEv6L1HWLX8jGWFGoDUnlz89+ALp4VtPW5C848JC0rUn29DEpEmIm9ux
-         fK8nCQRYlgnv0eBhJt3gEtuP16QncDp5dBZu3cxlhIK4sLxx8vEm623fIzn6g1xmDi3l
-         RUWLRPglLNCWHqgKOiHRk1wJ8q5LF0A49QBmYQucA18uy3XquCDD00zyiW4C3mBWWwLi
-         SaWA==
-X-Forwarded-Encrypted: i=1; AJvYcCVYhiVY+K/ea5TOANn9EUrQeN1TklGzVnAbw7dH7RM+82WZFRr6vmx56MMn/VpTDt2fBDmS/kDVErVku2xeNhrzdXXrG3+vrFqJLXCR
-X-Gm-Message-State: AOJu0Yzv1IXgOuqeagdhHvgcaw2bjvi7lVs54PpICzLNIQam3F3Mqo6B
-	socNNV8sfGzcQIbNqUYSgn2mRUx49wN0ZO0FYLFVpI24gB/8BEhE6Io6bU0oTg==
-X-Google-Smtp-Source: AGHT+IHCN2B0PBhcokBRVUeOlwIbTQPKdL42LmiNEd5VobsohfR0Z18dPC60k+Vl60uyEaFsjxaPOg==
-X-Received: by 2002:a05:6a00:b84:b0:6e6:f9e1:fd07 with SMTP id g4-20020a056a000b8400b006e6f9e1fd07mr19878333pfj.10.1710970116076;
-        Wed, 20 Mar 2024 14:28:36 -0700 (PDT)
-Received: from localhost ([2620:15c:9d:2:8598:2b3d:6e11:4163])
-        by smtp.gmail.com with UTF8SMTPSA id b19-20020aa78713000000b006e6c3753786sm12080255pfo.41.2024.03.20.14.28.35
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 14:28:35 -0700 (PDT)
-Date: Wed, 20 Mar 2024 14:28:34 -0700
-From: Brian Norris <briannorris@chromium.org>
-To: Kalle Valo <kvalo@kernel.org>
-Cc: Francesco Dolcini <francesco@dolcini.it>,
-	linux-wireless@vger.kernel.org, linux-kernel@vger.kernel.org,
-	David Lin <yu-hao.lin@nxp.com>, tsung-hsien.hsieh@nxp.com,
-	rafael.beims@toradex.com,
-	Francesco Dolcini <francesco.dolcini@toradex.com>
-Subject: Re: [PATCH v9 0/2] wifi: mwifiex: add code to support host mlme
-Message-ID: <ZftVAiArz_qu1jur@google.com>
-References: <20240306020053.18054-1-yu-hao.lin@nxp.com>
- <20240315094927.GA6624@francesco-nb>
- <878r2fevu5.fsf@kernel.org>
+        bh=YkXNsWFyS9IroqdDegvv78No9qBhWM69YWkvvWKZWwc=;
+        b=UoH000rFJuGcoDWDv+muQahJZL64odn9C1uEeq/pDEsqydVNeMQe9suWn5XdanvNQV
+         1IQDVPZddGXDLie0vmABvrn2EhKxaV+iOP4wL6pI9P5rcK8U/4hmP8uUm8dbTSBlyGXk
+         anReYzPNdSfXOWTvftNE5ROMwjCuAiRA48AzYH89lRKz6bYWtM7KVwlGHu01TbYaX0Pq
+         M/VhJtJOaOVS2kX3zPydlkKBwJJbd2AV/XoMh/vimIiMzR/Xy/qg1Ez+S1PVd95O5sWY
+         FhB4IUY4UePkjrhYQoOc/U862lUljN928/PwwxgMXv1k7uT6sTFwqzN8+k9uBPlXjEVf
+         v20w==
+X-Forwarded-Encrypted: i=1; AJvYcCUKXkqJ+bRXxj+SlrV+NTkhSk11XhdRi2hbq2fUj03lcp2h9jUsUCv1ju23LCwVF8msT6LnamCybsAazVNeZCG/AzlAN37EA79/mMYqztVwvN8SFxxLPH1sdkMEnW8zFT7hvY1hjGK1
+X-Gm-Message-State: AOJu0Yyj9CqVKjpLhuz4aJ/XRPmQ9t38hKVEgyAebByaGDHZcx3Dg4sK
+	DxTwgWNeZGD9K7PFYaf0V1KNTn6pczD1+cNgrzvOBCMOpv7rzMl+
+X-Google-Smtp-Source: AGHT+IGJARAIaj/QFlDOhPInMMiZr7TxIYCf173dV4SXkMAh9bXCeF5fke/WV0h4Cqs55mY9jawm0w==
+X-Received: by 2002:a50:d5d3:0:b0:568:d6a2:716 with SMTP id g19-20020a50d5d3000000b00568d6a20716mr772925edj.7.1710970301353;
+        Wed, 20 Mar 2024 14:31:41 -0700 (PDT)
+Received: from vamoiridPC ([2a04:ee41:82:7577:9be1:7bef:ff5c:57fc])
+        by smtp.gmail.com with ESMTPSA id l8-20020aa7c308000000b0056b7ed75a46sm3263658edq.27.2024.03.20.14.31.40
+        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
+        Wed, 20 Mar 2024 14:31:40 -0700 (PDT)
+From: Vasileios Amoiridis <vassilisamir@gmail.com>
+X-Google-Original-From: Vasileios Amoiridis <vamoirid@vamoiridPC>
+Date: Wed, 20 Mar 2024 22:31:39 +0100
+To: Andy Shevchenko <andriy.shevchenko@linux.intel.com>
+Cc: Vasileios Amoiridis <vassilisamir@gmail.com>, jic23@kernel.org,
+	lars@metafoo.de, ang.iglesiasg@gmail.com, mazziesaccount@gmail.com,
+	ak@it-klinger.de, petre.rodan@subdimension.ro, phil@raspberrypi.com,
+	579lpy@gmail.com, linus.walleij@linaro.org,
+	semen.protsenko@linaro.org, linux-iio@vger.kernel.org,
+	linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v3 5/6] iio: pressure: Add timestamp and scan_masks for
+ BMP280 driver
+Message-ID: <20240320213139.GA52721@vamoiridPC>
+References: <20240319002925.2121016-1-vassilisamir@gmail.com>
+ <20240319002925.2121016-6-vassilisamir@gmail.com>
+ <ZfrDW1ESxnFg__od@smile.fi.intel.com>
+ <20240320184516.GB36450@vamoiridPC>
+ <ZftJK3cqFNU9-dCG@smile.fi.intel.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -83,33 +91,43 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <878r2fevu5.fsf@kernel.org>
+In-Reply-To: <ZftJK3cqFNU9-dCG@smile.fi.intel.com>
 
-On Mon, Mar 18, 2024 at 11:24:34AM +0200, Kalle Valo wrote:
-> Francesco Dolcini <francesco@dolcini.it> writes:
+On Wed, Mar 20, 2024 at 10:38:03PM +0200, Andy Shevchenko wrote:
+> On Wed, Mar 20, 2024 at 07:45:16PM +0100, Vasileios Amoiridis wrote:
+> > On Wed, Mar 20, 2024 at 01:07:07PM +0200, Andy Shevchenko wrote:
+> > > On Tue, Mar 19, 2024 at 01:29:24AM +0100, Vasileios Amoiridis wrote:
 > 
-> > Hello Brian (and Kalle),
-> >
-> > On Wed, Mar 06, 2024 at 10:00:51AM +0800, David Lin wrote:
-> >> This series add host based MLME support to the mwifiex driver, this
-> >> enables WPA3 support in both client and AP mode.
-> >
-> > What's your plan for this series? I know you raised some concern when
-> > this started months ago and I'd love to know if there is something that
-> > would need to be addressed to move forward here.
+> ...
 > 
-> Based on the history of this patchset I am a bit concerned if these
-> patches break existing setups. I'm sure Brian will look at that in
-> detail but more test results from different setups we have the better.
+> > > > +enum bmp280_scan {
+> > > > +	BMP280_TEMP,
+> > > > +	BMP280_PRESS,
+> > > > +	BME280_HUMID
+> > > 
+> > > The last is not a terminator, please leave trailing comma.
+> > > 
+> > > > +};
+> > 
+> > What do you mean it is not a terminator? In general with the enum
+> > variables I would write:
+> > 
+> > 	enum var { a, b, c };
+> 
+> This example is different to what you used. I.o.w. _this_ example is okay.
+> 
+> > Why in this case there is a comma needed after the BME280_HUMID element?
+> 
+> It's pure style issue that helps to avoid the unneeded churn in the future in
+> case the list is getting expanded. You can easily imagine what I mean.
+> 
 
-It looks like the latest patches generally avoid touching behavior for
-devices without this feature-set. And I've given it a bit of a whirl
-myself, although I have a pretty blind eye to AP-mode as my systems tend
-to be clients.
+Ok, that definitely makes sense, thank you! In general, should this be applied
+to structs as well?
 
-Yes, testing is always a concern for invasive changes, but I think we're
-in OK shape at least w.r.t. regressing existing setups. Or, I won't
-provide an Acked-by until I'm happy.
-
-Brian
+> -- 
+> With Best Regards,
+> Andy Shevchenko
+> 
+> 
 
