@@ -1,79 +1,70 @@
-Return-Path: <linux-kernel+bounces-109250-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109251-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id 5294D8816CA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:47:05 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 477F88816CD
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:48:02 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 76DC01C2380A
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:47:04 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 6A9B91C212D6
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 17:48:01 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 867AE6A33C;
-	Wed, 20 Mar 2024 17:46:59 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 9F0246A353;
+	Wed, 20 Mar 2024 17:47:54 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="N/m0XY6I"
-Received: from mail-yb1-f173.google.com (mail-yb1-f173.google.com [209.85.219.173])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="UDZdxhVJ"
+Received: from mgamail.intel.com (mgamail.intel.com [192.198.163.11])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 688951E516
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 17:46:57 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.219.173
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 290F21E516;
+	Wed, 20 Mar 2024 17:47:51 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=192.198.163.11
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710956818; cv=none; b=j0ZDLSNEgvMi1ZhnxFYdpBIin+HtkcP+lRmnMvDhyLVq8u9ssHzaM32bTWc1VDO+cPSToSr7ks+l+nq1yhALsZHrJGBHtuLOjKDNmKHEJsokM7t9c5OK8oQRjpVZ8Pr0fnHT60s0IvaQJofIj+afowAQQwTns/kEilPE+Wb+ALc=
+	t=1710956873; cv=none; b=K8WNIE9s1tv5ZCAvnivAXR3m5zZTkqwohRZf0fYwR4xOuQttIDy1Xe8kkIF8am4j/oHYjhDFVu9FmqrrbObVg06P+BK9WoOO8HBQV/kHXENyLGMhxROe5YilXh7suOwtVHXsga5we+Z8v03wKBekESMfbSZJ6MZaMBS0DoPzRCY=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710956818; c=relaxed/simple;
-	bh=B368G/aSuup6KMLAq/ltvruGfUzolEoBXSk9TLIMxRQ=;
+	s=arc-20240116; t=1710956873; c=relaxed/simple;
+	bh=CMBlbJgjppACUd333kEyt8jk0aVlQl5rJKnSNrUS5Hg=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=eMTPC0BFFaOy9O5n81uZ+Qk5gykuLf6YcIopVWhxL8/u50ZhxqWqL9ViEAiOJDBcZaNwZit0FFVHzhxh1Z0GNP9VozhKk03T3k2xbMRBe4MOTxWi6cEZnE11rlOjduJmJdIF5HeHQjgc7/N5tqGng9EL0t+U8Qkm4ehBzcxxXA4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=N/m0XY6I; arc=none smtp.client-ip=209.85.219.173
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-yb1-f173.google.com with SMTP id 3f1490d57ef6-dcbcea9c261so37986276.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 10:46:57 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710956816; x=1711561616; darn=vger.kernel.org;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:from:to:cc:subject:date:message-id:reply-to;
-        bh=32FiX/03woyx1MQPLt98zuuoGWjttuDbK7QooonETTg=;
-        b=N/m0XY6I1wc4aYh9QUKA6RbyJM0DVWtieaulK6yy5h87cA4sebUD1m8149SRp0IEyB
-         O+mcIxtV3EaXx5cErw8LeOtzs4JzpGfyCiydPhWSA6cVE0xEM33beU3KKtgxlU+zoWf0
-         eLlcAPLU6AzR1TdUs+w38Wy0jYl+L1myHjgwg5WGM7jqQVGG2H/gz1njRjTqBKk516is
-         mAhNJjrfSTWATRGvngZ50FCI5Q2sTM4Gq7dRaT3skcKIYoYB9bTZG6lBqArFppVxFLA3
-         hZ3gsyQZH9YBoHnjH+9+4kp9eyUxKENXXxHA6WJxSDE37+/3nAwN6JWlHYdRTQieHY8b
-         UvWQ==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710956816; x=1711561616;
-        h=in-reply-to:content-disposition:mime-version:references:message-id
-         :subject:cc:to:from:date:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=32FiX/03woyx1MQPLt98zuuoGWjttuDbK7QooonETTg=;
-        b=PL7S+aQbtwcOsStRKvWge+zpv/2UOycfoXFwzz9pPSoWQJqaSPo7ccu2ThanRpdVAN
-         Kyd3g4yceOC9yQWZZ2e2KMnIPcmkIACsl43VyQPHNDXiPRlOW9QIly2TEXmVEc0c19Gq
-         O6xwONo5zZ/rlaOMe6Cd1AetWLfrgeYqpJ331SLAPy5fxW9JjyFjZjFF4PXv719navOA
-         KxHoLJsiTvGZSn2F5Zmxbbhs+VYSzbUgT3H6O5Hr9AV0yHFtaC23kUZdzOQWz5pNjn4d
-         ACbPGyzGFK1NNnLaSpBuZJ/U/dzCX97WbZKEQPYYLBx9IJQkvYK4+9d+gUhGtA/SCIU8
-         E7Sg==
-X-Forwarded-Encrypted: i=1; AJvYcCWa4reiFcFtn75ELnyZhXECpi18tbOPPyBqq8Mae+o13q5mx5vO+NrteKwpYYNiby2JxPARdq0KduZdbDrdv6ELZZj/obheeeWB59kr
-X-Gm-Message-State: AOJu0YyWgKilNcXb02AplfkjV/JJtV65Lkdo6N9hQLAJ32lGcKKYHWAc
-	0KG/Q71t9GH7OdXSti8OAQozFH8Z52PAtH0a0dxdxkf1nwJWX9t2
-X-Google-Smtp-Source: AGHT+IGRLxk/UosGsO9ECz2fz4qrLawBVwi5tDcNLfKn6EFRGCfu1HKk/TcEqeAI9780rkObJJX4+w==
-X-Received: by 2002:a25:c78b:0:b0:dcf:c299:2467 with SMTP id w133-20020a25c78b000000b00dcfc2992467mr15358037ybe.5.1710956816247;
-        Wed, 20 Mar 2024 10:46:56 -0700 (PDT)
-Received: from localhost ([2601:344:8301:57f0:a6a6:49c0:6a02:df54])
-        by smtp.gmail.com with ESMTPSA id c15-20020a5b0bcf000000b00dc254858399sm2632978ybr.2.2024.03.20.10.46.54
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 10:46:55 -0700 (PDT)
-Date: Wed, 20 Mar 2024 10:46:54 -0700
-From: Yury Norov <yury.norov@gmail.com>
-To: Rasmus Villemoes <linux@rasmusvillemoes.dk>
-Cc: Dawei Li <dawei.li@shingroup.cn>, andriy.shevchenko@linux.intel.com,
-	akpm@linux-foundation.org, linux-kernel@vger.kernel.org
-Subject: Re: [PATCH] cpumask: Create dedicated kmem cache for cpumask var
-Message-ID: <ZfshDg9Vyfl6hqVG@yury-ThinkPad>
-References: <20240319122400.399516-1-dawei.li@shingroup.cn>
- <5a6f58c5-40f3-4c89-8988-a9fee932e3ca@rasmusvillemoes.dk>
+	 Content-Type:Content-Disposition:In-Reply-To; b=GmHoCuE4MwdHW628uJYoSVNULHZ5iihXuo0s/n1BWidP6loSKlivVZR51cvx3NG6Zepjvah79IJpwY2nEVhXE5himqaZYzK/SW4PkKsfY9deVpoG1uz3xGMeYhTOB/H7YN636VQl0h1k3Iu5Wlm/0yI2TryqaHGPk9GtNSsrCE0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=UDZdxhVJ; arc=none smtp.client-ip=192.198.163.11
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710956872; x=1742492872;
+  h=date:from:to:cc:subject:message-id:references:
+   mime-version:in-reply-to;
+  bh=CMBlbJgjppACUd333kEyt8jk0aVlQl5rJKnSNrUS5Hg=;
+  b=UDZdxhVJI6XfagxHeOQxFAzTGkEjWXDWpLgyonVYsxv0YdNSFnDpv9bp
+   LGDON681D7h/18YkkzblXV2Mj7/P4/7u0mdFJpktKmRGc6A2lj+I+dsNg
+   hDT3REKop2jOPOpz3FXknoBZS74cd+4e7SRfdz2qo1hfZYM35hPVE+Hvr
+   HraW0wAqPOohG+v0N/Pg2JxCKW/d0Z66xUbX6HzKvjEL+G8cVuQpk6+wA
+   JkGVCrf/N7sA+ahJq2/IlUxatw1uXCnvJHhSa9DtfiwGMpn9xdNX9Uh91
+   a7qBUgcyg9jEPBUBRZP2MdvQ62r0HhXruoHPAYuYit2ppsfOFJZ3j1aqE
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11019"; a="16540592"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="16540592"
+Received: from fmviesa007.fm.intel.com ([10.60.135.147])
+  by fmvoesa105.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:47:50 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="14207930"
+Received: from aschofie-mobl2.amr.corp.intel.com (HELO aschofie-mobl2) ([10.209.72.188])
+  by fmviesa007-auth.fm.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 10:47:50 -0700
+Date: Wed, 20 Mar 2024 10:47:48 -0700
+From: Alison Schofield <alison.schofield@intel.com>
+To: Robert Richter <rrichter@amd.com>
+Cc: "Rafael J. Wysocki" <rafael@kernel.org>,
+	Dave Hansen <dave.hansen@linux.intel.com>,
+	Dan Williams <dan.j.williams@intel.com>, linux-acpi@vger.kernel.org,
+	linux-kernel@vger.kernel.org, linux-cxl@vger.kernel.org,
+	Len Brown <lenb@kernel.org>
+Subject: Re: [PATCH v2 2/3] ACPI/NUMA: Print CXL Early Discovery Table (CEDT)
+Message-ID: <ZfshRI/xAbSLJDQT@aschofie-mobl2>
+References: <20240319120026.2246389-1-rrichter@amd.com>
+ <20240319120026.2246389-3-rrichter@amd.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -82,64 +73,179 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <5a6f58c5-40f3-4c89-8988-a9fee932e3ca@rasmusvillemoes.dk>
+In-Reply-To: <20240319120026.2246389-3-rrichter@amd.com>
 
-On Wed, Mar 20, 2024 at 10:03:02AM +0100, Rasmus Villemoes wrote:
-> On 19/03/2024 13.24, Dawei Li wrote:
-> > alloc_cpumask_var_node() and friends allocate cpumask var dynamically
-> > for CONFIG_CPUMASK_OFFSTACK=y kernel. The allocated size of cpumask var
-> > is cpumask_size(), which is runtime constant after nr_cpu_ids is
-> > freezed.
-> > 
-> > Create a dedicated kmem cache for dynamic allocation of cpumask var.
+On Tue, Mar 19, 2024 at 01:00:24PM +0100, Robert Richter wrote:
+> The CEDT contains similar entries as the SRAT. For diagnostic reasons
+> print the CEDT same style as the SRAT.
+
+Richard,
+
+Acpitools is not properly handling the CFMWS at the moment. When
+that gets fixed up, might you be good using acpidump/extract.
+
+If you're going to dump, how about dumping it all? Add the fields
+interleave arithmetic, qtg_id, xormap_list[].
+
+While debugging issues in this space I have wished for more info
+like this:
+
+1) acpi_parse_cfmws()  pr_warn's upon failure to add a node but is 
+quiet on success. A pr_info on success, showing that a new memblk
+and node was added would be useful.
+
+2) numa_add_memblks() if memblk was extended pr_info the info.
+
+If you can incorporate here, great!
+
+Thanks,
+Alison
+
+
 > 
-> Why?
-
-Hi Dawei,
-
-Agree with Rasmus. CPUMASK_OFFSTACK=y is quite a rare configuration,
-normally disabled. Can you show the architecture that you're working
-with and how the cache you're adding affects performance.
- 
-> > The window for creation of cache is somewhat narrow:
-> > - After last update of nr_cpu_ids(via set_nr_cpu_ids())
-> > - After kmem cache is available.
-> > - Before any alloc_cpumask_var_node() invocations(sched_init() e.g).
-
-Not only narrow but also not uniform across platforms. For example,
-on XEN xen_smp_count_cpus() may adjust nr_cpu_ids. I don't think that
-people runn XEN with CPUMASK_OFFSTACK=y, but you have to make sure
-that your cache is always created before the 1st allocation.
- 
-> OK, so this sounds somewhat fragile. It's maybe correct, but I fail to
-> see what is gained by this, and the commit message does not provide any
-> hints.
-
-Agree. To make it less vulnerable, you have to enforce something like:
-
-  bool cpumask_cache_used = false;
-
-  static inline void set_nr_cpu_ids(unsigned int nr)
-  {
-          if (WARN_ON(cpumask_cache_used))
-                  return;
-  
-          nr_cpu_ids = nr;
-          cpumask_cache_destroy();
-          cpumask_cache_init()
-  }
-
-  bool alloc_cpumask_var_node()
-  {
-         cpumask_cache_used = true;
-         *mask = kmalloc_node(cpumask_size(), flags, node);
-         ...
-  }
-
-But at the very first, we need to understand under which scenarios the
-new cache would benefit performance?
-
-Thnaks,
-Yury
-benefits performance 
+> Signed-off-by: Robert Richter <rrichter@amd.com>
+> ---
+>  drivers/acpi/numa/srat.c | 112 +++++++++++++++++++++++++++++++++++++++
+>  1 file changed, 112 insertions(+)
+> 
+> diff --git a/drivers/acpi/numa/srat.c b/drivers/acpi/numa/srat.c
+> index e45e64993c50..50ae8557e8d1 100644
+> --- a/drivers/acpi/numa/srat.c
+> +++ b/drivers/acpi/numa/srat.c
+> @@ -300,6 +300,114 @@ acpi_numa_memory_affinity_init(struct acpi_srat_mem_affinity *ma)
+>  	return -EINVAL;
+>  }
+>  
+> +static int __init
+> +__acpi_table_print_cedt_entry(union acpi_subtable_headers *__header,
+> +			      void *arg, const unsigned long table_end)
+> +{
+> +	struct acpi_cedt_header *header = (struct acpi_cedt_header *)__header;
+> +
+> +	switch (header->type) {
+> +	case ACPI_CEDT_TYPE_CHBS:
+> +		{
+> +			struct acpi_cedt_chbs *p =
+> +				(struct acpi_cedt_chbs *)header;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_chbs)) {
+> +				pr_warn("CEDT: unsupported CHBS entry: size %d\n",
+> +					 header->length);
+> +				break;
+> +			}
+> +
+> +			pr_info("CEDT: CHBS (0x%llx length 0x%llx uid %lu) %s (%d)\n",
+> +				 (unsigned long long)p->base,
+> +				 (unsigned long long)p->length,
+> +				 (unsigned long)p->uid,
+> +				 (p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL11) ?
+> +				 "cxl11" :
+> +				 (p->cxl_version == ACPI_CEDT_CHBS_VERSION_CXL20) ?
+> +				 "cxl20" :
+> +				 "unsupported version",
+> +				 p->cxl_version);
+> +		}
+> +		break;
+> +	case ACPI_CEDT_TYPE_CFMWS:
+> +		{
+> +			struct acpi_cedt_cfmws *p =
+> +				(struct acpi_cedt_cfmws *)header;
+> +			int eiw_to_ways[] = {1, 2, 4, 8, 16, 3, 6, 12};
+> +			int targets = -1;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_cfmws)) {
+> +				pr_warn("CEDT: unsupported CFMWS entry: size %d\n",
+> +					header->length);
+> +				break;
+> +			}
+> +
+> +			if (p->interleave_ways < ARRAY_SIZE(eiw_to_ways))
+> +				targets = eiw_to_ways[p->interleave_ways];
+> +			if (header->length < struct_size(
+> +					p, interleave_targets, targets))
+> +				targets = -1;
+> +
+> +			pr_info("CEDT: CFMWS (0x%llx length 0x%llx) with %d target%s",
+> +				(unsigned long long)p->base_hpa,
+> +				(unsigned long long)p->window_size,
+> +				targets, targets > 1 ? "s" : "");
+> +			for (int i = 0; i < targets; i++)
+> +				pr_cont("%s%lu", i ? ", " : " (",
+> +					(unsigned long)p->interleave_targets[i]);
+> +			pr_cont("%s%s%s%s%s%s\n",
+> +				targets > 0 ? ")" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE2) ?
+> +				" type2" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_TYPE3) ?
+> +				" type3" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_VOLATILE) ?
+> +				" volatile" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_PMEM) ?
+> +				" pmem" : "",
+> +				(p->restrictions & ACPI_CEDT_CFMWS_RESTRICT_FIXED) ?
+> +				" fixed" : "");
+> +		}
+> +		break;
+> +	case ACPI_CEDT_TYPE_CXIMS:
+> +		{
+> +			struct acpi_cedt_cxims *p =
+> +				(struct acpi_cedt_cxims *)header;
+> +
+> +			if (header->length < sizeof(struct acpi_cedt_cxims)) {
+> +				pr_warn("CEDT: unsupported CXIMS entry: size %d\n",
+> +					header->length);
+> +				break;
+> +			}
+> +
+> +			pr_info("CEDT: CXIMS (hbig %u nr_xormaps %u)\n",
+> +				 (unsigned int)p->hbig,
+> +				 (unsigned int)p->nr_xormaps);
+> +		}
+> +		break;
+> +	default:
+> +		pr_warn("CEDT: Found unsupported entry (type = 0x%x)\n",
+> +			header->type);
+> +		break;
+> +	}
+> +
+> +	return 0;
+> +}
+> +
+> +static void __init acpi_table_print_cedt_entry(enum acpi_cedt_type id)
+> +{
+> +	acpi_table_parse_cedt(id, __acpi_table_print_cedt_entry, NULL);
+> +}
+> +
+> +static void __init acpi_table_print_cedt(void)
+> +{
+> +	/* Print only implemented CEDT types */
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CHBS);
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CFMWS);
+> +	acpi_table_print_cedt_entry(ACPI_CEDT_TYPE_CXIMS);
+> +}
+> +
+>  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  				   void *arg, const unsigned long table_end)
+>  {
+> @@ -341,6 +449,7 @@ static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  	return 0;
+>  }
+>  #else
+> +static inline void acpi_table_print_cedt(void) {}
+>  static int __init acpi_parse_cfmws(union acpi_subtable_headers *header,
+>  				   void *arg, const unsigned long table_end)
+>  {
+> @@ -526,6 +635,9 @@ int __init acpi_numa_init(void)
+>  	/* SLIT: System Locality Information Table */
+>  	acpi_table_parse(ACPI_SIG_SLIT, acpi_parse_slit);
+>  
+> +	/* CEDT: CXL Early Discovery Table */
+> +	acpi_table_print_cedt();
+> +
+>  	/*
+>  	 * CXL Fixed Memory Window Structures (CFMWS) must be parsed
+>  	 * after the SRAT. Create NUMA Nodes for CXL memory ranges that
+> -- 
+> 2.39.2
+> 
 
