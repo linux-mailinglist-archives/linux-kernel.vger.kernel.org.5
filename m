@@ -1,241 +1,268 @@
-Return-Path: <linux-kernel+bounces-108947-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108950-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id 3151D88125C
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:32:00 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 73C5D881262
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:34:23 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id A627C1F21E72
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:31:59 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id A34D21C2105D
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:34:22 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id D78664176B;
-	Wed, 20 Mar 2024 13:31:52 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4404744370;
+	Wed, 20 Mar 2024 13:34:02 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b="mcB9V1iq"
-Received: from mail-io1-f50.google.com (mail-io1-f50.google.com [209.85.166.50])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b="gXm+aFka"
+Received: from mgamail.intel.com (mgamail.intel.com [198.175.65.10])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 29C6240C09
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:31:49 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.50
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 054F442067
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 13:33:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=198.175.65.10
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710941511; cv=none; b=Xl+JUDhNd5Aeobl2FsEySMwEbZkYttcg9I0Ri5TAXLZwcktgd9HA9OoLFK0N/U+0XPyLJRMQ5xnG3p1lxr4Wexxh2zdpI+x6VhDaYqac7ewclp8GfafjYgNGHuM3jM0TzqCszV8D+8vvv8GtKF4JtWRHTCEFGzSAmZm8z/DTH1c=
+	t=1710941641; cv=none; b=HIny5DFZhLYpu4/TtK2ZzmwTLoiGumtj7wKtk95SAdyQQJq6dUPQa3sKgUfmYQQGqXBe3d+6FCCAVy+Y9lx/A8ejKf8ZScTxayxlBS9Oab+C6t6nB+uBFhQMqSwgHoFoVodCholsq4TQyvMXMKXbpH7t83Qgi/q7XsAGpMhZLeA=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710941511; c=relaxed/simple;
-	bh=+o+Bd1ShI+PitQDick+IeNp1ApGzuHlNLLUqmXPTAt4=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=EN4EoILm0SlyMn/LBG6MuIdIfKe5roB5Shq63nlpF9wv/49EkqEiLf8MiyeocGt3d7djMnqt4GsrzSqPlXxFrrTMyhRR/RzbmE2054qPjvb0IyntD7RCRrg/1TGP80B8bZV80THnNbpB9H0aKl/9vbPHsbSF1zP4tWcdy/qhW08=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com; spf=pass smtp.mailfrom=sifive.com; dkim=pass (2048-bit key) header.d=sifive.com header.i=@sifive.com header.b=mcB9V1iq; arc=none smtp.client-ip=209.85.166.50
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=sifive.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sifive.com
-Received: by mail-io1-f50.google.com with SMTP id ca18e2360f4ac-7cc5fdb0148so145159539f.3
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 06:31:49 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=sifive.com; s=google; t=1710941509; x=1711546309; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=IYdYatrCiN+ZNudG0itP80RnPg8bYH9YQGS/b3nlFcg=;
-        b=mcB9V1iqtvTFKEbyWCgR9G8hQqrrOwIqcy7qjWTOU6ALM3FvgQkE4Q99m6cMN0B32l
-         KaWN7ykzhxiI2CndJETcvGzDb4O8IrbYgFi1Za/pRtefu9EqvVHKMHfNFXQHfw7LiQFW
-         ycqnLK1ezsYQ5u4ZjkOSLnFFaPIvYMwvhdFVFfUjmvHdnyC4SeRaALKfBHIlteIA5dJA
-         RqFBvcxF0Y0je80bsU/D5DdxYZ1UVQ95kFMxRq7uKQ4pX0iCYbxjI0Yb1dKyOBnvRU5P
-         +LycJ/BFuHxCtD1RoRB0vdNIrheVC5gs2Wr9UYoX4Vdriwi3Z+eYUOSIOGyOU5sX9qPe
-         zc0g==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710941509; x=1711546309;
-        h=content-transfer-encoding:in-reply-to:from:references:cc:to
-         :content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=IYdYatrCiN+ZNudG0itP80RnPg8bYH9YQGS/b3nlFcg=;
-        b=hU00Wx/oTGTjOZmVizyL3PAh2/kw5SKaNIuzpH2TpvOkApLnRCiwrpeFXRJJu7IVNe
-         gmiYGUGVbmUG2kI69MSmI9O/1Br+ijEjG/6938SlOp91LY9tGOgpRx7wr/WVhRXU6TIV
-         6qlj5sWHum4VxFwerXw7QyUw9Kd39ILmqe9feD7cd6NNLkxHvlhIgPBKZ6T4nDmYbgLc
-         WOZRY5ZAvdONXC+mtzLK7fyxCQE6CL3Q7KJdVkA2fv0IroVpmsOgG8r3TWTNVk0uLwXg
-         emXlL29MS4P/MsovfxDgsHOuyzhDZZkRkdoSl1rx+fuKYNoAE/TZRbKQ8c5ZZGZFYr0F
-         JQzA==
-X-Forwarded-Encrypted: i=1; AJvYcCX5bsL4yEHdOGGMnktASqQFMc/VmJ0JM9hFdJpcWWxSr7srORO57q3lqoECUut5Y2XuANFbOnV/aDwOtOCDSQ1/yB2S5DGcJGd/kMsr
-X-Gm-Message-State: AOJu0YyV3dPzHNPEteTS4h+M8b1dcuQnumDFQeC4oADO9N/cP4F4Ak5m
-	kZDtxkDLhxbxUxSyw81zBOkepxy3Owhr2MhBsNzMR7IozJwFaWC24zJT2bozsaM=
-X-Google-Smtp-Source: AGHT+IGoPCXNA3HRY8p2GtYz/53SBRtoENZxvjYaojzumY8ha+biNeqbSMxKdf8JSNNfmYOzAKSjBA==
-X-Received: by 2002:a05:6602:1d18:b0:7cc:652d:ce60 with SMTP id hh24-20020a0566021d1800b007cc652dce60mr11299708iob.20.1710941509203;
-        Wed, 20 Mar 2024 06:31:49 -0700 (PDT)
-Received: from [100.64.0.1] ([136.226.86.189])
-        by smtp.gmail.com with ESMTPSA id u11-20020a6be30b000000b007cf25fe77efsm18631ioc.15.2024.03.20.06.31.48
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 06:31:48 -0700 (PDT)
-Message-ID: <47bddec7-953d-4ea4-84f1-b0dcf0641baa@sifive.com>
-Date: Wed, 20 Mar 2024 08:31:47 -0500
+	s=arc-20240116; t=1710941641; c=relaxed/simple;
+	bh=hSKTlPhRg47+D8pqtRT94nWWyBvg0cktU+5oR2P4CJY=;
+	h=Date:From:To:Cc:Subject:Message-ID; b=q1tnnxED1Eg1jrf7BTLl+SIj6AhCl5+y6r5RIWm4JguMyZLSwciFKxwdVCv4m4XaUz0T80UVRhhoe5hWhnFLsuqQ6dAjHEsDyFlvy/GWdjjFqNknOb+9TNEAH/iG8eTk2B4aY9XbEl3MLNkqqrZcPOfT95qxagUvTeAh3Iaw5NA=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com; spf=pass smtp.mailfrom=intel.com; dkim=pass (2048-bit key) header.d=intel.com header.i=@intel.com header.b=gXm+aFka; arc=none smtp.client-ip=198.175.65.10
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=intel.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=intel.com
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple;
+  d=intel.com; i=@intel.com; q=dns/txt; s=Intel;
+  t=1710941638; x=1742477638;
+  h=date:from:to:cc:subject:message-id;
+  bh=hSKTlPhRg47+D8pqtRT94nWWyBvg0cktU+5oR2P4CJY=;
+  b=gXm+aFkabjcgPRFoMvr4nO/+lgL0B/S4yiXMLI7Lia8nA6NOxRkKOiof
+   MbxiP4z94swSIfMZh3dk8j20RAYMTzaXDI9uS2rUQwdE/EG4tx/IEbN8K
+   Mv5KpXNeeCiamsCrXQyEjY3EZ0mz6KrvzNFlESP2pcXVcXsRftn9Pv6F9
+   3kJDiSAdIBySX+JL0Ncrx9+8lOKIlAuTIeMhPC1lMh33hK2nLyl2XZcMl
+   plNvoTvBL6iUqVzdOCgbONfvQl0exoL+Zoqx1cvpO/RQlVaZkiQeqGDnC
+   MLC9vlmcddXdiFO76TxXttsFFVtM+GmcqrPmErvkcE6aCtS3M/gEVzorG
+   A==;
+X-IronPort-AV: E=McAfee;i="6600,9927,11018"; a="23321750"
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="23321750"
+Received: from orviesa008.jf.intel.com ([10.64.159.148])
+  by orvoesa102.jf.intel.com with ESMTP/TLS/ECDHE-RSA-AES256-GCM-SHA384; 20 Mar 2024 06:33:12 -0700
+X-ExtLoop1: 1
+X-IronPort-AV: E=Sophos;i="6.07,140,1708416000"; 
+   d="scan'208";a="14799743"
+Received: from lkp-server01.sh.intel.com (HELO b21307750695) ([10.239.97.150])
+  by orviesa008.jf.intel.com with ESMTP; 20 Mar 2024 06:33:11 -0700
+Received: from kbuild by b21307750695 with local (Exim 4.96)
+	(envelope-from <lkp@intel.com>)
+	id 1rmw44-000Idn-23;
+	Wed, 20 Mar 2024 13:33:08 +0000
+Date: Wed, 20 Mar 2024 21:32:39 +0800
+From: kernel test robot <lkp@intel.com>
+To: "Gustavo A. R. Silva" <gustavoars@kernel.org>
+Cc: LKML <linux-kernel@vger.kernel.org>
+Subject: [gustavoars:testing/WFAMNAE-next20240318-commit-by-commit]
+ BUILD SUCCESS 9b232d3c29109ce6b2370d4fef8dd1d47d301559
+Message-ID: <202403202134.fzgfPo2i-lkp@intel.com>
+User-Agent: s-nail v14.9.24
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2] clk: starfive: jh7100: Use clk_hw for external input
- clocks
-Content-Language: en-US
-To: Geert Uytterhoeven <geert@linux-m68k.org>
-Cc: linux-clk@vger.kernel.org, linux-riscv@lists.infradead.org,
- linux-kernel@vger.kernel.org, Emil Renner Berthing <kernel@esmil.dk>,
- Hal Feng <hal.feng@starfivetech.com>,
- Michael Turquette <mturquette@baylibre.com>, Stephen Boyd
- <sboyd@kernel.org>, Paul Walmsley <paul.walmsley@sifive.com>,
- Palmer Dabbelt <palmer@dabbelt.com>, Albert Ou <aou@eecs.berkeley.edu>,
- Conor Dooley <conor.dooley@microchip.com>,
- Krzysztof Kozlowski <krzysztof.kozlowski@linaro.org>,
- Andy Shevchenko <andy.shevchenko@gmail.com>
-References: <beb746c7538a4ff720a25fd8f309da20d8d854ef.1710933713.git.geert@linux-m68k.org>
-From: Samuel Holland <samuel.holland@sifive.com>
-In-Reply-To: <beb746c7538a4ff720a25fd8f309da20d8d854ef.1710933713.git.geert@linux-m68k.org>
-Content-Type: text/plain; charset=UTF-8
-Content-Transfer-Encoding: 7bit
 
-On 2024-03-20 6:24 AM, Geert Uytterhoeven wrote:
-> The Starfive JH7100 clock driver does not use the DT "clocks" property
-> to find the external main input clock, but instead relies on the name of
-> the actual clock provider ("osc_sys").  This is fragile, and caused
-> breakage when sanitizing clock node names in DTS.
-> 
-> Fix this by obtaining the external main input clock using
-> devm_clk_get(), and passing the returned clk_hw object to
-> devm_clk_hw_register_fixed_factor_parent_hw().
-> 
-> While name-based look-up of the other external input clocks works as-is,
-> convert them to a similar clk_hw-based scheme to increase uniformity,
-> and to decrease the number of name-based look-ups.
-> 
-> Fixes: f03606470886 ("riscv: dts: starfive: replace underscores in node names")
-> Fixes: 4210be668a09ee20 ("clk: starfive: Add JH7100 clock generator driver")
-> Signed-off-by: Geert Uytterhoeven <geert@linux-m68k.org>
-> ---
-> After this is applied, the workaround in commit 7921e231f85a349d
-> ("riscv: dts: starfive: jh7100: fix root clock names") can be reverted.
-> 
-> This is v2 of "[PATCH] clk: starfive: jh7100: Use provided clocks
-> instead of hardcoded names"
-> https://lore.kernel.org/r/898aa0925a9598d44721d00145015b215434cb3b.1710414195.git.geert@linux-m68k.org/
-> 
-> v2:
->   - Use devm_clk_hw_register_fixed_factor_parent_hw(),
->   - Drop no longer needed local osc_sys name.
-> ---
->  drivers/clk/starfive/clk-starfive-jh7100.c | 48 ++++++++++++++--------
->  drivers/clk/starfive/clk-starfive-jh71x0.h |  1 +
->  2 files changed, 32 insertions(+), 17 deletions(-)
-> 
-> diff --git a/drivers/clk/starfive/clk-starfive-jh7100.c b/drivers/clk/starfive/clk-starfive-jh7100.c
-> index 0342db24c27e10df..ead5a7b14bab9045 100644
-> --- a/drivers/clk/starfive/clk-starfive-jh7100.c
-> +++ b/drivers/clk/starfive/clk-starfive-jh7100.c
-> @@ -7,6 +7,7 @@
->   * Copyright (C) 2021 Emil Renner Berthing <kernel@esmil.dk>
->   */
->  
-> +#include <linux/clk.h>
->  #include <linux/clk-provider.h>
->  #include <linux/device.h>
->  #include <linux/init.h>
-> @@ -18,10 +19,18 @@
->  #include "clk-starfive-jh71x0.h"
->  
->  /* external clocks */
-> -#define JH7100_CLK_OSC_SYS		(JH7100_CLK_END + 0)
-> -#define JH7100_CLK_OSC_AUD		(JH7100_CLK_END + 1)
-> -#define JH7100_CLK_GMAC_RMII_REF	(JH7100_CLK_END + 2)
-> -#define JH7100_CLK_GMAC_GR_MII_RX	(JH7100_CLK_END + 3)
-> +enum {
-> +	EXT_CLK_OSC_SYS,
-> +	EXT_CLK_OSC_AUD,
-> +	EXT_CLK_GMAC_RMII_REF,
-> +	EXT_CLK_GMAC_GR_MII_RX,
-> +	EXT_NUM_CLKS
-> +};
-> +
-> +#define JH7100_CLK_OSC_SYS		(JH7100_CLK_END + EXT_CLK_OSC_SYS)
-> +#define JH7100_CLK_OSC_AUD		(JH7100_CLK_END + EXT_CLK_OSC_AUD)
-> +#define JH7100_CLK_GMAC_RMII_REF	(JH7100_CLK_END + EXT_CLK_GMAC_RMII_REF)
-> +#define JH7100_CLK_GMAC_GR_MII_RX	(JH7100_CLK_END + EXT_CLK_GMAC_GR_MII_RX)
->  
->  static const struct jh71x0_clk_data jh7100_clk_data[] __initconst = {
->  	JH71X0__MUX(JH7100_CLK_CPUNDBUS_ROOT, "cpundbus_root", 0, 4,
-> @@ -284,8 +293,11 @@ static struct clk_hw *jh7100_clk_get(struct of_phandle_args *clkspec, void *data
->  
->  static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
->  {
-> +	static const char *jh7100_ext_clk[EXT_NUM_CLKS] =
-> +		{ "osc_sys", "osc_aud", "gmac_rmii_ref", "gmac_gr_mii_rxclk" };
+tree/branch: https://git.kernel.org/pub/scm/linux/kernel/git/gustavoars/linux.git testing/WFAMNAE-next20240318-commit-by-commit
+branch HEAD: 9b232d3c29109ce6b2370d4fef8dd1d47d301559  cgroup: Avoid -Wflex-array-member-not-at-end warnings
 
-This should be __initconst. Otherwise:
+elapsed time: 727m
 
-Reviewed-by: Samuel Holland <samuel.holland@sifive.com>
+configs tested: 180
+configs skipped: 3
 
->  	struct jh71x0_clk_priv *priv;
->  	unsigned int idx;
-> +	struct clk *clk;
->  	int ret;
->  
->  	priv = devm_kzalloc(&pdev->dev, struct_size(priv, reg, JH7100_CLK_PLL0_OUT), GFP_KERNEL);
-> @@ -298,13 +310,21 @@ static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
->  	if (IS_ERR(priv->base))
->  		return PTR_ERR(priv->base);
->  
-> -	priv->pll[0] = devm_clk_hw_register_fixed_factor(priv->dev, "pll0_out",
-> -							 "osc_sys", 0, 40, 1);
-> +	for (idx = 0; idx < EXT_NUM_CLKS; idx++) {
-> +		clk = devm_clk_get(&pdev->dev, jh7100_ext_clk[idx]);
-> +		if (IS_ERR(clk))
-> +			return PTR_ERR(clk);
-> +
-> +		priv->ext[idx] = __clk_get_hw(clk);
-> +	}
-> +
-> +	priv->pll[0] = devm_clk_hw_register_fixed_factor_parent_hw(priv->dev,
-> +			"pll0_out", priv->ext[EXT_CLK_OSC_SYS], 0, 40, 1);
->  	if (IS_ERR(priv->pll[0]))
->  		return PTR_ERR(priv->pll[0]);
->  
-> -	priv->pll[1] = devm_clk_hw_register_fixed_factor(priv->dev, "pll1_out",
-> -							 "osc_sys", 0, 64, 1);
-> +	priv->pll[1] = devm_clk_hw_register_fixed_factor_parent_hw(priv->dev,
-> +			"pll1_out", priv->ext[EXT_CLK_OSC_SYS], 0, 64, 1);
->  	if (IS_ERR(priv->pll[1]))
->  		return PTR_ERR(priv->pll[1]);
->  
-> @@ -331,16 +351,10 @@ static int __init clk_starfive_jh7100_probe(struct platform_device *pdev)
->  
->  			if (pidx < JH7100_CLK_PLL0_OUT)
->  				parents[i].hw = &priv->reg[pidx].hw;
-> -			else if (pidx < JH7100_CLK_END)
-> +			else if (pidx < JH7100_CLK_OSC_SYS)
->  				parents[i].hw = priv->pll[pidx - JH7100_CLK_PLL0_OUT];
-> -			else if (pidx == JH7100_CLK_OSC_SYS)
-> -				parents[i].fw_name = "osc_sys";
-> -			else if (pidx == JH7100_CLK_OSC_AUD)
-> -				parents[i].fw_name = "osc_aud";
-> -			else if (pidx == JH7100_CLK_GMAC_RMII_REF)
-> -				parents[i].fw_name = "gmac_rmii_ref";
-> -			else if (pidx == JH7100_CLK_GMAC_GR_MII_RX)
-> -				parents[i].fw_name = "gmac_gr_mii_rxclk";
-> +			else if (pidx <= JH7100_CLK_GMAC_GR_MII_RX)
-> +				parents[i].hw = priv->ext[pidx - JH7100_CLK_OSC_SYS];
->  		}
->  
->  		clk->hw.init = &init;
-> diff --git a/drivers/clk/starfive/clk-starfive-jh71x0.h b/drivers/clk/starfive/clk-starfive-jh71x0.h
-> index 23e052fc15495c41..4f46939179cd7418 100644
-> --- a/drivers/clk/starfive/clk-starfive-jh71x0.h
-> +++ b/drivers/clk/starfive/clk-starfive-jh71x0.h
-> @@ -115,6 +115,7 @@ struct jh71x0_clk_priv {
->  	struct device *dev;
->  	void __iomem *base;
->  	struct clk_hw *pll[3];
-> +	struct clk_hw *ext[4];
->  	struct jh71x0_clk reg[];
->  };
->  
+The following configs have been built successfully.
+More configs may be tested in the coming days.
 
+tested configs:
+alpha                             allnoconfig   gcc  
+alpha                            allyesconfig   gcc  
+alpha                               defconfig   gcc  
+arc                              allmodconfig   gcc  
+arc                               allnoconfig   gcc  
+arc                              allyesconfig   gcc  
+arc                                 defconfig   gcc  
+arc                   randconfig-001-20240320   gcc  
+arc                   randconfig-002-20240320   gcc  
+arc                    vdk_hs38_smp_defconfig   gcc  
+arm                              allmodconfig   gcc  
+arm                               allnoconfig   clang
+arm                              allyesconfig   gcc  
+arm                                 defconfig   clang
+arm                         lpc18xx_defconfig   clang
+arm                         mv78xx0_defconfig   clang
+arm                          pxa910_defconfig   gcc  
+arm                   randconfig-001-20240320   gcc  
+arm                   randconfig-002-20240320   gcc  
+arm                   randconfig-003-20240320   gcc  
+arm                   randconfig-004-20240320   gcc  
+arm                         vf610m4_defconfig   gcc  
+arm64                            allmodconfig   clang
+arm64                             allnoconfig   gcc  
+arm64                               defconfig   gcc  
+arm64                 randconfig-001-20240320   clang
+arm64                 randconfig-002-20240320   gcc  
+arm64                 randconfig-003-20240320   clang
+arm64                 randconfig-004-20240320   clang
+csky                             allmodconfig   gcc  
+csky                              allnoconfig   gcc  
+csky                             allyesconfig   gcc  
+csky                                defconfig   gcc  
+csky                  randconfig-001-20240320   gcc  
+csky                  randconfig-002-20240320   gcc  
+hexagon                          allmodconfig   clang
+hexagon                           allnoconfig   clang
+hexagon                          allyesconfig   clang
+hexagon                             defconfig   clang
+hexagon               randconfig-001-20240320   clang
+hexagon               randconfig-002-20240320   clang
+i386                             allmodconfig   gcc  
+i386                              allnoconfig   gcc  
+i386                             allyesconfig   gcc  
+i386         buildonly-randconfig-001-20240320   clang
+i386         buildonly-randconfig-002-20240320   gcc  
+i386         buildonly-randconfig-003-20240320   gcc  
+i386         buildonly-randconfig-004-20240320   clang
+i386         buildonly-randconfig-005-20240320   gcc  
+i386         buildonly-randconfig-006-20240320   gcc  
+i386                                defconfig   clang
+i386                  randconfig-001-20240320   clang
+i386                  randconfig-002-20240320   clang
+i386                  randconfig-003-20240320   clang
+i386                  randconfig-004-20240320   clang
+i386                  randconfig-005-20240320   clang
+i386                  randconfig-006-20240320   gcc  
+i386                  randconfig-011-20240320   clang
+i386                  randconfig-012-20240320   clang
+i386                  randconfig-013-20240320   clang
+i386                  randconfig-014-20240320   clang
+i386                  randconfig-015-20240320   gcc  
+i386                  randconfig-016-20240320   clang
+loongarch                        allmodconfig   gcc  
+loongarch                         allnoconfig   gcc  
+loongarch                           defconfig   gcc  
+loongarch             randconfig-001-20240320   gcc  
+loongarch             randconfig-002-20240320   gcc  
+m68k                             allmodconfig   gcc  
+m68k                              allnoconfig   gcc  
+m68k                             allyesconfig   gcc  
+m68k                                defconfig   gcc  
+m68k                       m5275evb_defconfig   gcc  
+microblaze                       allmodconfig   gcc  
+microblaze                        allnoconfig   gcc  
+microblaze                       allyesconfig   gcc  
+microblaze                          defconfig   gcc  
+microblaze                      mmu_defconfig   gcc  
+mips                              allnoconfig   gcc  
+mips                             allyesconfig   gcc  
+mips                      maltasmvp_defconfig   gcc  
+nios2                         3c120_defconfig   gcc  
+nios2                            allmodconfig   gcc  
+nios2                             allnoconfig   gcc  
+nios2                            allyesconfig   gcc  
+nios2                               defconfig   gcc  
+nios2                 randconfig-001-20240320   gcc  
+nios2                 randconfig-002-20240320   gcc  
+openrisc                          allnoconfig   gcc  
+openrisc                         allyesconfig   gcc  
+openrisc                            defconfig   gcc  
+parisc                           allmodconfig   gcc  
+parisc                            allnoconfig   gcc  
+parisc                           allyesconfig   gcc  
+parisc                              defconfig   gcc  
+parisc                randconfig-001-20240320   gcc  
+parisc                randconfig-002-20240320   gcc  
+parisc64                            defconfig   gcc  
+powerpc                          allmodconfig   gcc  
+powerpc                           allnoconfig   gcc  
+powerpc                          allyesconfig   clang
+powerpc                      chrp32_defconfig   clang
+powerpc                  iss476-smp_defconfig   gcc  
+powerpc               randconfig-001-20240320   gcc  
+powerpc               randconfig-002-20240320   clang
+powerpc               randconfig-003-20240320   gcc  
+powerpc                    sam440ep_defconfig   gcc  
+powerpc                      walnut_defconfig   gcc  
+powerpc64             randconfig-001-20240320   gcc  
+powerpc64             randconfig-002-20240320   gcc  
+powerpc64             randconfig-003-20240320   gcc  
+riscv                            allmodconfig   clang
+riscv                             allnoconfig   gcc  
+riscv                            allyesconfig   clang
+riscv                               defconfig   clang
+riscv                 randconfig-001-20240320   clang
+riscv                 randconfig-002-20240320   gcc  
+s390                             allmodconfig   clang
+s390                              allnoconfig   clang
+s390                             allyesconfig   gcc  
+s390                                defconfig   clang
+s390                  randconfig-001-20240320   clang
+s390                  randconfig-002-20240320   clang
+sh                               allmodconfig   gcc  
+sh                                allnoconfig   gcc  
+sh                               allyesconfig   gcc  
+sh                                  defconfig   gcc  
+sh                               j2_defconfig   gcc  
+sh                    randconfig-001-20240320   gcc  
+sh                    randconfig-002-20240320   gcc  
+sh                          rsk7201_defconfig   gcc  
+sh                        sh7757lcr_defconfig   gcc  
+sparc                            allmodconfig   gcc  
+sparc                             allnoconfig   gcc  
+sparc                               defconfig   gcc  
+sparc64                          allmodconfig   gcc  
+sparc64                          allyesconfig   gcc  
+sparc64                             defconfig   gcc  
+sparc64               randconfig-001-20240320   gcc  
+sparc64               randconfig-002-20240320   gcc  
+um                               allmodconfig   clang
+um                                allnoconfig   clang
+um                               allyesconfig   gcc  
+um                                  defconfig   clang
+um                             i386_defconfig   gcc  
+um                    randconfig-001-20240320   gcc  
+um                    randconfig-002-20240320   gcc  
+um                           x86_64_defconfig   clang
+x86_64                            allnoconfig   clang
+x86_64                           allyesconfig   clang
+x86_64       buildonly-randconfig-001-20240320   gcc  
+x86_64       buildonly-randconfig-002-20240320   clang
+x86_64       buildonly-randconfig-003-20240320   clang
+x86_64       buildonly-randconfig-004-20240320   clang
+x86_64       buildonly-randconfig-005-20240320   gcc  
+x86_64       buildonly-randconfig-006-20240320   clang
+x86_64                              defconfig   gcc  
+x86_64                randconfig-001-20240320   clang
+x86_64                randconfig-002-20240320   clang
+x86_64                randconfig-003-20240320   gcc  
+x86_64                randconfig-004-20240320   clang
+x86_64                randconfig-005-20240320   clang
+x86_64                randconfig-006-20240320   clang
+x86_64                randconfig-011-20240320   gcc  
+x86_64                randconfig-012-20240320   gcc  
+x86_64                randconfig-013-20240320   gcc  
+x86_64                randconfig-014-20240320   gcc  
+x86_64                randconfig-015-20240320   clang
+x86_64                randconfig-016-20240320   gcc  
+x86_64                randconfig-071-20240320   clang
+x86_64                randconfig-072-20240320   gcc  
+x86_64                randconfig-073-20240320   clang
+x86_64                randconfig-074-20240320   gcc  
+x86_64                randconfig-075-20240320   gcc  
+x86_64                randconfig-076-20240320   clang
+x86_64                          rhel-8.3-rust   clang
+xtensa                            allnoconfig   gcc  
+xtensa                       common_defconfig   gcc  
+xtensa                randconfig-001-20240320   gcc  
+xtensa                randconfig-002-20240320   gcc  
+
+-- 
+0-DAY CI Kernel Test Service
+https://github.com/intel/lkp-tests/wiki
 
