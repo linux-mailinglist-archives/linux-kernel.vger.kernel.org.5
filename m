@@ -1,128 +1,281 @@
-Return-Path: <linux-kernel+bounces-109036-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109033-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
 Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 661358813C4
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:55:22 +0100 (CET)
+	by mail.lfdr.de (Postfix) with ESMTPS id 0E2F18813B8
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:54:24 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 97D871C22999
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:55:21 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 318251C2226F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 14:54:23 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 1D5D951C52;
-	Wed, 20 Mar 2024 14:54:37 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id B45774C61C;
+	Wed, 20 Mar 2024 14:54:09 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="GfAu5X43"
-Received: from mail-pl1-f179.google.com (mail-pl1-f179.google.com [209.85.214.179])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="utU2qiEf"
+Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 138B051C50;
-	Wed, 20 Mar 2024 14:54:34 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.214.179
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id CC84B4AECF;
+	Wed, 20 Mar 2024 14:54:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710946476; cv=none; b=EDuV7L9fJna4VNPcPfHPdZjbfG/FRJsuDDA/ppIse6qYLDigy28uOM5AfEhyk/b/LDCFBQlEiwbUe1WziGcsCjSX30MsKyteIYZc2hCva016C1eBety5z6c7fsClTswQ2xBdjaB72y4nvhzz1hBqIMmMs3s9jJVXrvNxCbPqKYs=
+	t=1710946448; cv=none; b=mbg67HbYoTzRtmuvGobZeHmAIDVi0f4ioohRpJyYjJgvaA0Oeix+mD9vhXu5u+P2E+4GHyy9QM/6qeaxDwVmBVaMibdnDP4rCDoAjUxrWUuxGHyq+xunRZ4JDSzg69ATfdmqelKY6QOytzOdRxayyAWRROw1708knnBAn7/BpmU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710946476; c=relaxed/simple;
-	bh=ccFsqSUbNmoZfjXj/UyIC9+OiMIUuYR/yY6H+xsWda4=;
-	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
-	 MIME-Version; b=MCl4J82Lw+nuqDaRHdHk5Ys5PfMVL7O8/UrTnhnke5t+WluDFOjHpVPH8LLMEn1y3YZczjlkERjjuqL6hiPRgc8/DUxbLAQU9473Cio8BDn//A54TuMwqHBRNmkiYFb0ZeNoEnQD7ciADoWFQGHULgWtGDQGJngZghgHgiAXZrg=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=GfAu5X43; arc=none smtp.client-ip=209.85.214.179
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pl1-f179.google.com with SMTP id d9443c01a7336-1e0678265b3so617515ad.0;
-        Wed, 20 Mar 2024 07:54:34 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710946474; x=1711551274; darn=vger.kernel.org;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=vCMluLf0OPIP5MvhSlBnewMLss6iSf4B08EHRoBbLMI=;
-        b=GfAu5X43mJ7Y1Rl4AlGJdKu9keWS5qNXHfXwdZsd6jrUyqFRz62I78y8BgIkVEM3xL
-         4Ilf8tfIdSLx7wTtXxAa/IazxRNPMUAIMnoQnsiYLykxw2DG5poELK4VTRTnqC1KEVnJ
-         hUh+Nhgvziy3ktM+D7KHG4Je0PfNjXUsKuj2wlngC7CdL2fDfIm0S5+8fSDhlWLmWOQQ
-         xtaY05mLxaD5LVFaUFvGS6c5wNp2w/CmtjroIsha1UB6ea1TadG0kmvGloLYUIqmFA1D
-         Av8WVw/eH2ajhSXJ82nOMsKkd4OeYqPdms+ZQO+XE6KGPMcuM0YLxGtkULFVA/Bj4Rod
-         sKJA==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710946474; x=1711551274;
-        h=content-transfer-encoding:mime-version:references:in-reply-to
-         :message-id:date:subject:cc:to:from:x-gm-message-state:from:to:cc
-         :subject:date:message-id:reply-to;
-        bh=vCMluLf0OPIP5MvhSlBnewMLss6iSf4B08EHRoBbLMI=;
-        b=Ef+yhBE31ePjF9l2Ur0m723jPoB5+UV6mwTDvrCW9pPCBy6kdIenOT4qpi425ScD1g
-         scBItUNSH9uei0wGD4vE7IGcQZu0PyHZVLBgcFzoGboYMLxInAmOIdKlbFPa17InS5lO
-         BSLKjNPworz4vYDV3wOXh+KhKoIATJLbzEkBip6Wsn4/QfnGD34+FaGB2yz9L/Gyx9QI
-         J6iINV2cilmfJ1+VHVZ45dw9n/gl7ijNAl7TZn6sZCw+2u/QV0+vcg4YG5Py6+PFGdK9
-         b9nc5cnmoHIObGdmilJR8XWRq3vLqO8U4z7p7LYIBppCUIvmd2n3iCbPeiuLDEkQV0Ox
-         hBdA==
-X-Forwarded-Encrypted: i=1; AJvYcCW9k2AAfoMPvFwp486GcktfpjV4qFLoJqyegfqMejs1gRq2QHHTtP9zQ0UEogdCnSLKcE5gReSlFG+sDAiZ8EeZLwYVYeupiZ+30JIp3u3qmmFjj0ZENprXzBOaBm8Q+JYI7QjemQRpE1X1NHUWBgZV+aBuFCRtBrntpR/0jY2EHNbxsQ7B1ciEi6djpsmlb3QAKmiK9gC2GSmaGY4wB9wAWsbfoSOFcSmR4jhk
-X-Gm-Message-State: AOJu0Yzs2+os9HGvAcUzviFJ16Fhnk37p+TeGiufLgMGbwT3rA0Xt5jr
-	vWSe3qF0rNHwpyj2hHMPBN+ZOHLPC/ARbiKOfOFQXeDH4zo3kW+jeJE+501l67w3tQ==
-X-Google-Smtp-Source: AGHT+IEnN4HYZbE2rHcsFmRm8DkhdOasT2m/ZrfFc02i9m2gwbsINOw3gtS3SpqFPr7j1X9xPow9nw==
-X-Received: by 2002:a17:902:ce91:b0:1dc:df03:ad86 with SMTP id f17-20020a170902ce9100b001dcdf03ad86mr20347085plg.2.1710946474388;
-        Wed, 20 Mar 2024 07:54:34 -0700 (PDT)
-Received: from visitorckw-System-Product-Name.. ([140.113.216.168])
-        by smtp.gmail.com with ESMTPSA id la11-20020a170902fa0b00b001dc30f13e6asm13719989plb.137.2024.03.20.07.54.30
-        (version=TLS1_3 cipher=TLS_AES_256_GCM_SHA384 bits=256/256);
-        Wed, 20 Mar 2024 07:54:33 -0700 (PDT)
-From: Kuan-Wei Chiu <visitorckw@gmail.com>
-To: colyli@suse.de,
-	kent.overstreet@linux.dev,
-	msakai@redhat.com,
-	peterz@infradead.org,
-	mingo@redhat.com,
-	acme@kernel.org,
-	namhyung@kernel.org,
-	akpm@linux-foundation.org
-Cc: bfoster@redhat.com,
-	mark.rutland@arm.com,
-	alexander.shishkin@linux.intel.com,
-	jolsa@kernel.org,
-	irogers@google.com,
-	adrian.hunter@intel.com,
-	jserv@ccns.ncku.edu.tw,
-	dm-devel@lists.linux.dev,
-	linux-bcache@vger.kernel.org,
-	linux-kernel@vger.kernel.org,
-	linux-bcachefs@vger.kernel.org,
-	linux-perf-users@vger.kernel.org,
-	Kuan-Wei Chiu <visitorckw@gmail.com>
-Subject: [PATCH v2 02/15] bcache: Fix typo
-Date: Wed, 20 Mar 2024 22:54:04 +0800
-Message-Id: <20240320145417.336208-3-visitorckw@gmail.com>
-X-Mailer: git-send-email 2.34.1
-In-Reply-To: <20240320145417.336208-1-visitorckw@gmail.com>
-References: <20240320145417.336208-1-visitorckw@gmail.com>
+	s=arc-20240116; t=1710946448; c=relaxed/simple;
+	bh=6xGklQNGbFkNZFhkj91Z7jnuhVtnP2riuP9QNjlSbko=;
+	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
+	 Content-Type:Content-Disposition:In-Reply-To; b=cSbRqivmA0f/I8U51qa32fHS4eXaOfdJ+pczH8b3gajHmlvq++lEG3iuPpSVrcmQsHmzupv+6QQMw9QU31o9CW9W2QIl5ZjDgvgJuPINcDEm3w3FwWtTC4Pkn+eFZA58DQ7VNoSfHgEdKFflk71xeMtTeLH0yK8n1FunYLT00Uk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=utU2qiEf; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 552A6C433C7;
+	Wed, 20 Mar 2024 14:54:08 +0000 (UTC)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
+	s=k20201202; t=1710946448;
+	bh=6xGklQNGbFkNZFhkj91Z7jnuhVtnP2riuP9QNjlSbko=;
+	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
+	b=utU2qiEfaChUDz67ams9qMH9uEXZKmngT+A7+9ymNRyj6cPi2QRs061blBCfEdkWC
+	 CiNDbhQgLNp5nPe/q+kL3w/X3Dwf8cZm9SIggQgy4bQiSmCgICyQHMxqfCaykDzP5Q
+	 aykqNFdjuaUGAp1LzOiHvgKViFVHKg9VB75/86WkxriAiKek/RVHh2kOagPfOTIcel
+	 Vt3B878OsnxJ5xco+zPf68DpFjBaEjFEXF2JfpxAQA2BP15gtemuE0UaaPu7+24XwL
+	 fXsleQCwQH6mEOO0MwbISJhT/0r8n4O0sihOhptXFH6xUJ1/UO7y3W5y/1fSawTBh1
+	 9n2neKq/ztrXQ==
+Date: Wed, 20 Mar 2024 11:54:05 -0300
+From: Arnaldo Carvalho de Melo <acme@kernel.org>
+To: Ian Rogers <irogers@google.com>
+Cc: Peter Zijlstra <peterz@infradead.org>, Ingo Molnar <mingo@redhat.com>,
+	Namhyung Kim <namhyung@kernel.org>,
+	Mark Rutland <mark.rutland@arm.com>,
+	Alexander Shishkin <alexander.shishkin@linux.intel.com>,
+	Jiri Olsa <jolsa@kernel.org>,
+	Adrian Hunter <adrian.hunter@intel.com>,
+	linux-perf-users@vger.kernel.org, linux-kernel@vger.kernel.org
+Subject: Re: [PATCH v2 1/2] perf: Suggest inbuilt commands for unknown command
+Message-ID: <Zfr4jX_b8FCOG_x_@x1>
+References: <20240301201306.2680986-1-irogers@google.com>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
+Content-Type: text/plain; charset=utf-8
+Content-Disposition: inline
 Content-Transfer-Encoding: 8bit
+In-Reply-To: <20240301201306.2680986-1-irogers@google.com>
 
-Replace 'utiility' with 'utility'.
+On Fri, Mar 01, 2024 at 12:13:05PM -0800, Ian Rogers wrote:
+> The existing unknown command code looks for perf scripts like
+> perf-archive.sh and perf-iostat.sh, however, inbuilt commands aren't
+> suggested. Add the inbuilt commands so they may be suggested too.
+> 
+> Before:
+> ```
+> $ perf reccord
+> perf: 'reccord' is not a perf-command. See 'perf --help'.
+> ```
+> 
+> After:
+> ```
+> $ perf reccord
+> perf: 'reccord' is not a perf-command. See 'perf --help'.
+> 
+> Did you mean this?
+>         record
+> ```
+> 
+> Signed-off-by: Ian Rogers <irogers@google.com>
+> ---
+> v2. Drops a merged patch and rebases. No functional change. Arnaldo
+>     reported the patch not working for him, but I've not found a
 
-Signed-off-by: Kuan-Wei Chiu <visitorckw@gmail.com>
-Reviewed-by: Ian Rogers <irogers@google.com>
----
- drivers/md/bcache/util.c | 2 +-
- 1 file changed, 1 insertion(+), 1 deletion(-)
+Not working:
 
-diff --git a/drivers/md/bcache/util.c b/drivers/md/bcache/util.c
-index ae380bc3992e..410d8cb49e50 100644
---- a/drivers/md/bcache/util.c
-+++ b/drivers/md/bcache/util.c
-@@ -1,6 +1,6 @@
- // SPDX-License-Identifier: GPL-2.0
- /*
-- * random utiility code, for bcache but in theory not specific to bcache
-+ * random utility code, for bcache but in theory not specific to bcache
-  *
-  * Copyright 2010, 2011 Kent Overstreet <kent.overstreet@gmail.com>
-  * Copyright 2012 Google, Inc.
--- 
-2.34.1
+root@number:~# perf reccord
+Failed to run command 'reccord': No such file or directory
+root@number:~# 
 
+⬢[acme@toolbox perf-tools-next]$ git log --oneline -1
+a65ef8052854ba75 (HEAD) perf: Suggest inbuilt commands for unknown command
+⬢[acme@toolbox perf-tools-next]$
+
+I use O= with install-bin, trying:
+
+⬢[acme@toolbox perf-tools-next]$ make -C  tools/perf install-bin
+⬢[acme@toolbox perf-tools-next]$ perf raccord
+Failed to run command 'raccord': No such file or directory
+⬢[acme@toolbox perf-tools-next]$
+
+Also didn't work
+
+Trying to figure this out...
+
+- Arnaldo
+
+>     reproduction and it works for me:
+>     https://lore.kernel.org/lkml/ZZcdDyyADG8dP8LM@kernel.org/
+> ---
+>  tools/perf/builtin.h               |  4 ++-
+>  tools/perf/perf.c                  | 21 +++++++++++---
+>  tools/perf/util/help-unknown-cmd.c | 45 ++++++++++++++----------------
+>  3 files changed, 41 insertions(+), 29 deletions(-)
+> 
+> diff --git a/tools/perf/builtin.h b/tools/perf/builtin.h
+> index f2ab5bae2150..f4375deabfa3 100644
+> --- a/tools/perf/builtin.h
+> +++ b/tools/perf/builtin.h
+> @@ -2,8 +2,10 @@
+>  #ifndef BUILTIN_H
+>  #define BUILTIN_H
+>  
+> +struct cmdnames;
+> +
+>  void list_common_cmds_help(void);
+> -const char *help_unknown_cmd(const char *cmd);
+> +const char *help_unknown_cmd(const char *cmd, struct cmdnames *main_cmds);
+>  
+>  int cmd_annotate(int argc, const char **argv);
+>  int cmd_bench(int argc, const char **argv);
+> diff --git a/tools/perf/perf.c b/tools/perf/perf.c
+> index 921bee0a6437..c719e6ccd9e2 100644
+> --- a/tools/perf/perf.c
+> +++ b/tools/perf/perf.c
+> @@ -18,6 +18,7 @@
+>  #include <subcmd/run-command.h>
+>  #include "util/parse-events.h"
+>  #include <subcmd/parse-options.h>
+> +#include <subcmd/help.h>
+>  #include "util/debug.h"
+>  #include "util/event.h"
+>  #include "util/util.h" // usage()
+> @@ -557,7 +558,7 @@ int main(int argc, const char **argv)
+>  	pthread__block_sigwinch();
+>  
+>  	while (1) {
+> -		static int done_help;
+> +		int done_help;
+>  
+>  		run_argv(&argc, &argv);
+>  
+> @@ -565,14 +566,26 @@ int main(int argc, const char **argv)
+>  			break;
+>  
+>  		if (!done_help) {
+> -			cmd = argv[0] = help_unknown_cmd(cmd);
+> +			struct cmdnames main_cmds;
+> +
+> +			for (unsigned int i = 0; i < ARRAY_SIZE(commands); i++) {
+> +				add_cmdname(&main_cmds,
+> +					    commands[i].cmd,
+> +					    strlen(commands[i].cmd));
+> +			}
+> +			cmd = argv[0] = help_unknown_cmd(cmd, &main_cmds);
+> +			clean_cmdnames(&main_cmds);
+>  			done_help = 1;
+> +			if (!cmd)
+> +				break;
+>  		} else
+>  			break;
+>  	}
+>  
+> -	fprintf(stderr, "Failed to run command '%s': %s\n",
+> -		cmd, str_error_r(errno, sbuf, sizeof(sbuf)));
+> +	if (cmd) {
+> +		fprintf(stderr, "Failed to run command '%s': %s\n",
+> +			cmd, str_error_r(errno, sbuf, sizeof(sbuf)));
+> +	}
+>  out:
+>  	if (debug_fp)
+>  		fclose(debug_fp);
+> diff --git a/tools/perf/util/help-unknown-cmd.c b/tools/perf/util/help-unknown-cmd.c
+> index eab99ea6ac01..2ba3369f1620 100644
+> --- a/tools/perf/util/help-unknown-cmd.c
+> +++ b/tools/perf/util/help-unknown-cmd.c
+> @@ -52,46 +52,44 @@ static int add_cmd_list(struct cmdnames *cmds, struct cmdnames *old)
+>  	return 0;
+>  }
+>  
+> -const char *help_unknown_cmd(const char *cmd)
+> +const char *help_unknown_cmd(const char *cmd, struct cmdnames *main_cmds)
+>  {
+>  	unsigned int i, n = 0, best_similarity = 0;
+> -	struct cmdnames main_cmds, other_cmds;
+> +	struct cmdnames other_cmds;
+>  
+> -	memset(&main_cmds, 0, sizeof(main_cmds));
+> -	memset(&other_cmds, 0, sizeof(main_cmds));
+> +	memset(&other_cmds, 0, sizeof(other_cmds));
+>  
+>  	perf_config(perf_unknown_cmd_config, NULL);
+>  
+> -	load_command_list("perf-", &main_cmds, &other_cmds);
+> +	load_command_list("perf-", main_cmds, &other_cmds);
+>  
+> -	if (add_cmd_list(&main_cmds, &other_cmds) < 0) {
+> +	if (add_cmd_list(main_cmds, &other_cmds) < 0) {
+>  		fprintf(stderr, "ERROR: Failed to allocate command list for unknown command.\n");
+>  		goto end;
+>  	}
+> -	qsort(main_cmds.names, main_cmds.cnt,
+> -	      sizeof(main_cmds.names), cmdname_compare);
+> -	uniq(&main_cmds);
+> +	qsort(main_cmds->names, main_cmds->cnt,
+> +	      sizeof(main_cmds->names), cmdname_compare);
+> +	uniq(main_cmds);
+>  
+> -	if (main_cmds.cnt) {
+> +	if (main_cmds->cnt) {
+>  		/* This reuses cmdname->len for similarity index */
+> -		for (i = 0; i < main_cmds.cnt; ++i)
+> -			main_cmds.names[i]->len =
+> -				levenshtein(cmd, main_cmds.names[i]->name, 0, 2, 1, 4);
+> +		for (i = 0; i < main_cmds->cnt; ++i)
+> +			main_cmds->names[i]->len =
+> +				levenshtein(cmd, main_cmds->names[i]->name, 0, 2, 1, 4);
+>  
+> -		qsort(main_cmds.names, main_cmds.cnt,
+> -		      sizeof(*main_cmds.names), levenshtein_compare);
+> +		qsort(main_cmds->names, main_cmds->cnt,
+> +		      sizeof(*main_cmds->names), levenshtein_compare);
+>  
+> -		best_similarity = main_cmds.names[0]->len;
+> +		best_similarity = main_cmds->names[0]->len;
+>  		n = 1;
+> -		while (n < main_cmds.cnt && best_similarity == main_cmds.names[n]->len)
+> +		while (n < main_cmds->cnt && best_similarity == main_cmds->names[n]->len)
+>  			++n;
+>  	}
+>  
+>  	if (autocorrect && n == 1) {
+> -		const char *assumed = main_cmds.names[0]->name;
+> +		const char *assumed = main_cmds->names[0]->name;
+>  
+> -		main_cmds.names[0] = NULL;
+> -		clean_cmdnames(&main_cmds);
+> +		main_cmds->names[0] = NULL;
+>  		clean_cmdnames(&other_cmds);
+>  		fprintf(stderr, "WARNING: You called a perf program named '%s', "
+>  			"which does not exist.\n"
+> @@ -107,15 +105,14 @@ const char *help_unknown_cmd(const char *cmd)
+>  
+>  	fprintf(stderr, "perf: '%s' is not a perf-command. See 'perf --help'.\n", cmd);
+>  
+> -	if (main_cmds.cnt && best_similarity < 6) {
+> +	if (main_cmds->cnt && best_similarity < 6) {
+>  		fprintf(stderr, "\nDid you mean %s?\n",
+>  			n < 2 ? "this": "one of these");
+>  
+>  		for (i = 0; i < n; i++)
+> -			fprintf(stderr, "\t%s\n", main_cmds.names[i]->name);
+> +			fprintf(stderr, "\t%s\n", main_cmds->names[i]->name);
+>  	}
+>  end:
+> -	clean_cmdnames(&main_cmds);
+>  	clean_cmdnames(&other_cmds);
+> -	exit(1);
+> +	return NULL;
+>  }
+> -- 
+> 2.44.0.278.ge034bb2e1d-goog
+> 
 
