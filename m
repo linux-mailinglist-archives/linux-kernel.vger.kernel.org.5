@@ -1,200 +1,118 @@
-Return-Path: <linux-kernel+bounces-109472-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109473-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [147.75.80.249])
-	by mail.lfdr.de (Postfix) with ESMTPS id A1C238819A2
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:49:18 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 7A34C8819A3
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 23:50:13 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by am.mirrors.kernel.org (Postfix) with ESMTPS id 2DD5B1F22E7F
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:49:18 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 3AFCAB21D30
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 22:50:10 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id E500E8595C;
-	Wed, 20 Mar 2024 22:49:03 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b="QSEhV8ON"
-Received: from mout.gmx.net (mout.gmx.net [212.227.17.20])
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 74D9F8595C;
+	Wed, 20 Mar 2024 22:50:03 +0000 (UTC)
+Received: from mail115-171.sinamail.sina.com.cn (mail115-171.sinamail.sina.com.cn [218.30.115.171])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2C23D3FBBC;
-	Wed, 20 Mar 2024 22:48:59 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.20
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D0F3F32C88
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 22:49:57 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=218.30.115.171
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710974943; cv=none; b=faos45oRE4wqnvPlHElX2a+uIH6S37OyRL+ek1VdUMjcSn8oesb/r/QnUemZ3QWLuT1ATcCS6ZXSYh5ni6LDePMC6yMmFTTu+TyUTi1b3DVdS/+JPxQ55eX5bRyz6TxPTnty9mqvTLxnRzIpkNmwivH0y5PaHAc5/XFwP6Bhs/0=
+	t=1710975003; cv=none; b=iwHMmB2kC5UzI2kwPa6FSCYTAhmeBYjc4Qt7sHLje+bRmFDzYdG747LonRXwizNn3DvTAs1VA+9bjjHlr9HiCARh2KFMRzhpWKljOlVyuYTqfz20wQs8RFTzUfkAFM/zRIQV+N3vgyFDrrr1+JRcNtTRDAYJ2hcxnFw1tfyZADQ=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710974943; c=relaxed/simple;
-	bh=bRuqgbXXWWglFMZPwdFOauwbKGXzNnFHTWL8jKD0JRA=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=fRh6Uhd368Q3dvYmo0K5sdiLaw86xN0XTno2amezLGTWI7hnxBn1pL4ZaDu+HTWE3wTpR5jbuaz4hPPBpf6suGicT67Cx/5Hr4bnOgZuKwZ4AWBtHvt4AiHUleMmP7nENjyOqdL5gpyMghsYkNHotGhTHGuNDuT1k6fUiPLL9LU=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=deller@gmx.de header.b=QSEhV8ON; arc=none smtp.client-ip=212.227.17.20
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
-	s=s31663417; t=1710974933; x=1711579733; i=deller@gmx.de;
-	bh=3CJUGRiLft1RVnawiUIsuSDglEUpPDsyNzOM15MSS5k=;
-	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
-	 In-Reply-To;
-	b=QSEhV8ONaS6oHkRsdkAQipk66hTrN3gbB6ms3YBI8o8UbUHWsGujy7pQ+mA6pPtv
-	 FPSBf3inOKgo4FixtoYVW/6l05bqRP3ONHW3sPMGkufSwGV8Y2K/1OeKZ51xLPxo5
-	 PfYSnHOYoi3fpNTkepdVjThpBzU8mnGG/1tR0pRSSMkmza+s79Lk71JAwIgWF0yjd
-	 zbLW1vcUud3kNCRAU4kAZHgdgpuhRLLTAFRWHditiH1N998TKtm/bPWRupcAjsRoY
-	 iHB88YDdE8dW3DFb/xYxFapd0uvXm4jK8BpIlaOIB3wNOVv4QmBk/htffytKDSnj1
-	 uquhl3njbkxB3v0DKw==
-X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
-Received: from [192.168.20.55] ([94.134.145.175]) by mail.gmx.net (mrgmx104
- [212.227.17.168]) with ESMTPSA (Nemesis) id 1MuUjC-1qvnKY3QUk-00rZeL; Wed, 20
- Mar 2024 23:48:52 +0100
-Message-ID: <49ba1e7d-d256-4644-beb9-c84b9feb0052@gmx.de>
-Date: Wed, 20 Mar 2024 23:48:52 +0100
+	s=arc-20240116; t=1710975003; c=relaxed/simple;
+	bh=On2AzfDeN4B3k/XnwmCN1N/+9YLkMTOakIN/VPeRG1Q=;
+	h=From:To:Cc:Subject:Date:Message-Id:In-Reply-To:References:
+	 MIME-Version; b=JsArnh5oiA470+QUXw7ZEvnDRCPnfkpUSB+lRQ1mytjIVwk2l8eqQDo92c1Zg0bRXUR0gNEePnM7SPjjeEsF49cQ4jnzMxpxPN82nrhGk8ZnG59Yg+J0/pl1ZwO9Z1zoT6kahNQrWM+khS+pYfwL6mY4rS6MxwE3fcN29PhqZD4=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com; spf=pass smtp.mailfrom=sina.com; arc=none smtp.client-ip=218.30.115.171
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=sina.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=sina.com
+X-SMAIL-HELO: localhost.localdomain
+Received: from unknown (HELO localhost.localdomain)([113.118.67.196])
+	by sina.com (172.16.235.25) with ESMTP
+	id 65FB68100000637A; Wed, 21 Mar 2024 06:49:54 +0800 (CST)
+X-Sender: hdanton@sina.com
+X-Auth-ID: hdanton@sina.com
+Authentication-Results: sina.com;
+	 spf=none smtp.mailfrom=hdanton@sina.com;
+	 dkim=none header.i=none;
+	 dmarc=none action=none header.from=hdanton@sina.com
+X-SMAIL-MID: 69503634210382
+X-SMAIL-UIID: 740C06F9A10E49C688B1BCE877755D81-20240321-064954-1
+From: Hillf Danton <hdanton@sina.com>
+To: syzbot <syzbot+f311e026553fee3459a0@syzkaller.appspotmail.com>
+Cc: linux-kernel@vger.kernel.org,
+	syzkaller-bugs@googlegroups.com
+Subject: Re: [syzbot] [bpf?] [net?] possible deadlock in hrtimer_run_queues
+Date: Thu, 21 Mar 2024 06:49:46 +0800
+Message-Id: <20240320224946.2298-1-hdanton@sina.com>
+In-Reply-To: <0000000000004b02a206140b016b@google.com>
+References: 
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] video: fbdev: au1200fb: replace deprecated strncpy with
- strscpy
-Content-Language: en-US
-To: Justin Stitt <justinstitt@google.com>
-Cc: linux-fbdev@vger.kernel.org, dri-devel@lists.freedesktop.org,
- linux-kernel@vger.kernel.org, linux-hardening@vger.kernel.org,
- Kees Cook <keescook@chromium.org>
-References: <20240318-strncpy-drivers-video-fbdev-au1200fb-c-v1-1-680802a9f10a@google.com>
- <53670007-edbc-4762-9e57-0b3c29220d9e@gmx.de>
- <CAFhGd8ppVq9aGbfFLeL30jQ15KHS=FoLh0c1udXo=Z+pCfXL1g@mail.gmail.com>
-From: Helge Deller <deller@gmx.de>
-Autocrypt: addr=deller@gmx.de; keydata=
- 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
-In-Reply-To: <CAFhGd8ppVq9aGbfFLeL30jQ15KHS=FoLh0c1udXo=Z+pCfXL1g@mail.gmail.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: quoted-printable
-X-Provags-ID: V03:K1:kgmHypMzAwAtxFRQDJkQB7kMzEJKysT3Hkiuf/eetUOw6R7ltDd
- AwnC1b2e0nWV6oNg6Nxy/Mc85oQ+/mP2Y+mvN0Wyr+7c9Q+HraJDTpo+tI77NSHj4NkjvCt
- V7RUujZdyQGJUOTKNwRdInqIgQ1+RsTSy5Xa+aq4JLTA7jfN83cl37Z/uQh4WBKWRVri8Kp
- YzRlC1K74W0ksW3aDAm7g==
-X-Spam-Flag: NO
-UI-OutboundReport: notjunk:1;M01:P0:l9UZQg9+1oI=;bHwAX/wZyhzG8DIIHq3sQE952kW
- 1OLjVe+KK6/eNIMKIRwSpdheF4LRdgEmMJDFJljgKzT69usgD0Cq/Lf93B3rVnOmw+0lTJj+3
- RYpJF0klvCjcAezX0aFqF5PSw0NudVWHaqa6rTeP3lwhWuxDW04R8L4SbOTXTO729QByj7eo/
- VVrxYwoeX0jKvoyMBVC22WlvLXcJzqXZ0VsrbI5rDQk7MvPoy1OhLI2pxFzSx0OVMJtxWRcmC
- ElgqwteYzBm9Nfe4NIvGG6f7LI+fhdA29clS+lvW3KUPYNa7M8zOCOObIjI5+XBzlejS6u8Pv
- PXFCYb+cOSrPhasADdWJLPCLJeq5AGwpwuIrVjLCph6ai/izWf/ghyx7jF4i8+tBDYj2+RqPn
- PhCpSWHwJEoLnFzFXn1F4DtnoIUVMtvqCbCMZuGrvDwMihNMg5/skGF7AD3Kprt+jdxpCeQ2p
- +ZDyFbXtmboMvdH+7/BKoh+cVkbcCH6MUJ8v4okQOKIJHj2n9i0D6iaDQaCY9rTOxZxkaXnNL
- GKFG88pTKaP88hrQXoD5FNGjmEJkQAQiuXlJpFUKbP7+FBI8X/INwQYONE3pEYG9/vMH13nTA
- jgCfk6PQxX3OqJxGktzfd0ycou20sw/j0R3fg3nUY4BUeSGl1U4aSYvajHR+5ibi8O+6XCQpc
- e+4IVSw+QmoZDzmEi6B1p0H5FwliKYNejubpfp1yJhXC9paGrHJgJosAGF1VD0ZBCxwPwZNk7
- AogzoBhgzPZ/1WpMi/VZEukhlJiruCg6eBCxXDvXPMyiig20Xnx6yfAcHGyGBongjl8JOazW1
- BA/0HGVS8qldlPoxKSj4G6i9Bdu+5zoe2iXqIOBfM27lU=
+Content-Transfer-Encoding: 8bit
 
-On 3/20/24 23:35, Justin Stitt wrote:
-> Hi,
->
-> On Wed, Mar 20, 2024 at 12:56=E2=80=AFAM Helge Deller <deller@gmx.de> wr=
-ote:
->>
->> On 3/19/24 00:46, Justin Stitt wrote:
->>> strncpy() is deprecated for use on NUL-terminated destination strings
->>> [1] and as such we should prefer more robust and less ambiguous string
->>> interfaces.
->>>
->>> Let's use the new 2-argument strscpy() which guarantees NUL-terminatio=
-n
->>> on the destination buffer while also simplifying the syntax. Note that
->>> strscpy() will not NUL-pad the destination buffer like strncpy() does.
->>>
->>> However, the NUL-padding behavior of strncpy() is not required since
->>> fbdev is already NUL-allocated from au1200fb_drv_probe() ->
->>> frameuffer_alloc(), rendering any additional NUL-padding redundant.
->>> |     p =3D kzalloc(fb_info_size + size, GFP_KERNEL);
->>>
->>> Link: https://www.kernel.org/doc/html/latest/process/deprecated.html#s=
-trncpy-on-nul-terminated-strings [1]
->>> Link: https://manpages.debian.org/testing/linux-manual-4.8/strscpy.9.e=
-n.html [2]
->>> Link: https://github.com/KSPP/linux/issues/90
->>> Cc: linux-hardening@vger.kernel.org
->>> Signed-off-by: Justin Stitt <justinstitt@google.com>
->>> ---
->>> Note: build-tested only.
->>>
->>> Found with: $ rg "strncpy\("
->>> ---
->>>    drivers/video/fbdev/au1200fb.c | 2 +-
->>>    1 file changed, 1 insertion(+), 1 deletion(-)
->>>
->>> diff --git a/drivers/video/fbdev/au1200fb.c b/drivers/video/fbdev/au12=
-00fb.c
->>> index 6f20efc663d7..e718fea63662 100644
->>> --- a/drivers/video/fbdev/au1200fb.c
->>> +++ b/drivers/video/fbdev/au1200fb.c
->>> @@ -1557,7 +1557,7 @@ static int au1200fb_init_fbinfo(struct au1200fb_=
-device *fbdev)
->>>                return ret;
->>>        }
->>>
->>> -     strncpy(fbi->fix.id, "AU1200", sizeof(fbi->fix.id));
->>> +     strscpy(fbi->fix.id, "AU1200");
->>
->> I wonder if you really build-tested this, as this driver is for the mip=
-s architecture...
->> And I don't see a strscpy() function which takes just 2 arguments.
->> But I might be wrong....
->
-> I did build successfully :thumbs_up:
->
-> Commit e6584c3964f2f ("string: Allow 2-argument strscpy()") introduced
-> this new strscpy() form; it is present in string.h on Linus' tree.
+On Tue, 19 Mar 2024 15:29:19 -0700
+> syzbot found the following issue on:
+> 
+> HEAD commit:    ea80e3ed09ab net: ethernet: mtk_eth_soc: fix PPE hanging i..
+> git tree:       net
+> C reproducer:   https://syzkaller.appspot.com/x/repro.c?x=11c64e31180000
 
-Interesting patch.
-Might give compile problems if patches like yours gets automatically
-picked up to stable series as long as Kees patch hasn't been backported ye=
-t...
-Anyway, thanks for the pointer!
-I'll apply your patch in the next round for fbdev.
+#syz test https://git.kernel.org/pub/scm/linux/kernel/git/netdev/net.git  ea80e3ed09ab
 
-Helge
+--- x/net/core/sock_map.c
++++ y/net/core/sock_map.c
+@@ -932,11 +932,12 @@ static long sock_hash_delete_elem(struct
+ 	struct bpf_shtab_bucket *bucket;
+ 	struct bpf_shtab_elem *elem;
+ 	int ret = -ENOENT;
++	unsigned long flags;
+ 
+ 	hash = sock_hash_bucket_hash(key, key_size);
+ 	bucket = sock_hash_select_bucket(htab, hash);
+ 
+-	spin_lock_bh(&bucket->lock);
++	spin_lock_irqsave(&bucket->lock, flags);
+ 	elem = sock_hash_lookup_elem_raw(&bucket->head, hash, key, key_size);
+ 	if (elem) {
+ 		hlist_del_rcu(&elem->node);
+@@ -944,7 +945,7 @@ static long sock_hash_delete_elem(struct
+ 		sock_hash_free_elem(htab, elem);
+ 		ret = 0;
+ 	}
+-	spin_unlock_bh(&bucket->lock);
++	spin_unlock_irqrestore(&bucket->lock, flags);
+ 	return ret;
+ }
+ 
+@@ -1143,6 +1144,8 @@ static void sock_hash_free(struct bpf_ma
+ 	 */
+ 	synchronize_rcu();
+ 	for (i = 0; i < htab->buckets_num; i++) {
++		unsigned long flags;
++
+ 		bucket = sock_hash_select_bucket(htab, i);
+ 
+ 		/* We are racing with sock_hash_delete_from_link to
+@@ -1151,11 +1154,11 @@ static void sock_hash_free(struct bpf_ma
+ 		 * exists, psock exists and holds a ref to socket. That
+ 		 * lets us to grab a socket ref too.
+ 		 */
+-		spin_lock_bh(&bucket->lock);
++		spin_lock_irqsave(&bucket->lock, flags);
+ 		hlist_for_each_entry(elem, &bucket->head, node)
+ 			sock_hold(elem->sk);
+ 		hlist_move_list(&bucket->head, &unlink_list);
+-		spin_unlock_bh(&bucket->lock);
++		spin_unlock_irqrestore(&bucket->lock, flags);
+ 
+ 		/* Process removed entries out of atomic context to
+ 		 * block for socket lock before deleting the psock's
+--
 
