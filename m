@@ -1,205 +1,220 @@
-Return-Path: <linux-kernel+bounces-109378-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109379-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id DE440881841
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:05:51 +0100 (CET)
+Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [147.75.48.161])
+	by mail.lfdr.de (Postfix) with ESMTPS id B9B90881844
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 21:06:11 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 0570F1C23085
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:05:51 +0000 (UTC)
+	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 30C85B217E2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 20:06:09 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0ED198592C;
-	Wed, 20 Mar 2024 20:05:46 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 22F3D85937;
+	Wed, 20 Mar 2024 20:06:03 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b="JIs94X+j";
-	dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b="XcHANk71"
-Received: from fhigh1-smtp.messagingengine.com (fhigh1-smtp.messagingengine.com [103.168.172.152])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="jTcnpGiR"
+Received: from mail-io1-f41.google.com (mail-io1-f41.google.com [209.85.166.41])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 2D13710FF;
-	Wed, 20 Mar 2024 20:05:42 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=103.168.172.152
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 70BEB8592B;
+	Wed, 20 Mar 2024 20:06:00 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.166.41
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710965144; cv=none; b=tFxNOLk0dO13ngcziu7akjVVujWCNqRryIlRanqHC8WyO+aTjU25jHINUTdrwQ8GY17QAWZGEvj6MnHLBbyE8MUEwJdO3Fniwmpd3xzn56TXUY5iyuzsBY6FROe0Xicaa/h2gDMor8LzJlK7CC0HTV9YDpZa1u1neQCgjx69jiQ=
+	t=1710965162; cv=none; b=ACgletDBjdd89W/vpWI+vXB2onEVQDrr86w0Ydc+C1OzOdC0osuMK+BrukyOWzan4srAA5DRAcct2iaMxU2Lqt4lXxVPtbv0bIwwacj1hcAJ7pRJZ5iSowTjC/2RFNx9N6MaHwAOebwsOoeheNeYhtrtQdBJNjEquXIOkt+9JdU=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710965144; c=relaxed/simple;
-	bh=MQBGGEOhgnc3mj+xCcQEezogIg6iT5/F4/Re4F02QaY=;
-	h=MIME-Version:Message-Id:In-Reply-To:References:Date:From:To:Cc:
-	 Subject:Content-Type; b=VFp4+xzze6XCC6FJwh6WmDEhl5IroHmyKJCJG3qJi+qYbkTsVbHmcHZVhUPdROCL8IyDDe8mj5WhzIxgp5CFplUd6DRtIPp9ZXBb3RkI2UFbmYmVUEBPZifOHdRVWbUywcSBjmeHns1/vAKYemjIIJMsuL9iXqe1OMtsgX2FNao=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev; spf=none smtp.mailfrom=ljones.dev; dkim=pass (2048-bit key) header.d=ljones.dev header.i=@ljones.dev header.b=JIs94X+j; dkim=pass (2048-bit key) header.d=messagingengine.com header.i=@messagingengine.com header.b=XcHANk71; arc=none smtp.client-ip=103.168.172.152
-Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ljones.dev
-Authentication-Results: smtp.subspace.kernel.org; spf=none smtp.mailfrom=ljones.dev
-Received: from compute2.internal (compute2.nyi.internal [10.202.2.46])
-	by mailfhigh.nyi.internal (Postfix) with ESMTP id 2DDD81140106;
-	Wed, 20 Mar 2024 16:05:42 -0400 (EDT)
-Received: from imap41 ([10.202.2.91])
-  by compute2.internal (MEProxy); Wed, 20 Mar 2024 16:05:42 -0400
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=ljones.dev; h=cc
-	:cc:content-transfer-encoding:content-type:content-type:date
-	:date:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to; s=fm3; t=1710965142;
-	 x=1711051542; bh=/Oc8U1y8l14/c0pXhzQh6BvDXRT/PDyn/rl7kM5uOLU=; b=
-	JIs94X+jZHLj8blU41Mg23upZY9nf+JFZuByQKIF4C5mlFa0ElRj1x9o14sgCgNy
-	hj8QQ+XZTV0INvI481qS9USaOUva3jYJUYqcK92efkLc5ElExeuxwDzofADvCzRx
-	SI7BIjjNFikiePBNGcmLZOuOnsOPNld/MeDmqF05djs5iV7OLSgqlNvRBx98Ncy4
-	ZBVI31wACeT8JkXt0w4/C/hQa8Yizl78FiKxnpj1UB+OVCjXug7LFdnA5zDYjcjP
-	hyODe/aTjMZwY7Z+9bLLn67M3mZi3GH3umiF8YdC4Lqa9m6mGVXi5ML3LLVxHcZn
-	13ONeldhh53DGicpXs9lhw==
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=
-	messagingengine.com; h=cc:cc:content-transfer-encoding
-	:content-type:content-type:date:date:feedback-id:feedback-id
-	:from:from:in-reply-to:in-reply-to:message-id:mime-version
-	:references:reply-to:subject:subject:to:to:x-me-proxy:x-me-proxy
-	:x-me-sender:x-me-sender:x-sasl-enc; s=fm2; t=1710965142; x=
-	1711051542; bh=/Oc8U1y8l14/c0pXhzQh6BvDXRT/PDyn/rl7kM5uOLU=; b=X
-	cHANk71GcUI90QEzHbxNuvnfSy2yL3yZL9ZvWAMG6YmDbvrC8Wz7DyD8h413RkgU
-	Or4AUr9GV1kOpLeqqof8Vpw9Szx1Uh+6Ief+EAteT/WHGVQFKXcqITVPKJxR/Ka0
-	M8ey4EBhy9egKv8vZTTFvaDKgP0ezzrZUearDx1lmftwrSHoNKNxvDpx6hwhDpsx
-	QVnG0AEKUPAiv3QqAayXNcItmpS9gtPoac1rOy5IieeGamos55spHXfuROQ6SS1q
-	2yE6xq/O9rURc6vtfYd6wjz20LPXIoUo8un25BhiW7qsN01D036sqaEhKqHKaf7W
-	wii0l1VV+gNR/C+b5Mi4w==
-X-ME-Sender: <xms:lUH7ZRPRc4Q4OCfsjNblHHCfuz35awEZ66DbgQLbbg8NdHil3t7O-w>
-    <xme:lUH7ZT8zofKJodaYRRKmREgp_ExdluavO8pexEqpvq5wbqlMZ_ndQUHRP6-8wMGw7
-    JQhALNvRaB_zmxNUSs>
-X-ME-Proxy-Cause: gggruggvucftvghtrhhoucdtuddrgedvledrleeggddufedvucetufdoteggodetrfdotf
-    fvucfrrhhofhhilhgvmecuhfgrshhtofgrihhlpdfqfgfvpdfurfetoffkrfgpnffqhgen
-    uceurghilhhouhhtmecufedttdenucesvcftvggtihhpihgvnhhtshculddquddttddmne
-    cujfgurhepofgfggfkjghffffhvfevufgtgfesthhqredtreerjeenucfhrhhomhepfdfn
-    uhhkvgculfhonhgvshdfuceolhhukhgvsehljhhonhgvshdruggvvheqnecuggftrfgrth
-    htvghrnhepfeeugffhvdeufeehieelvdegfeffveegleehtddvheegkeetueegtdegueeh
-    vdelnecuvehluhhsthgvrhfuihiivgeptdenucfrrghrrghmpehmrghilhhfrhhomheplh
-    hukhgvsehljhhonhgvshdruggvvh
-X-ME-Proxy: <xmx:lUH7ZQTEIfpVfGw1Q_FJbJeaP_SCaKvh3j6OuBaIofved_MX-vPt4Q>
-    <xmx:lUH7Zdt5D0cW9V0VyJ7JFV9D8ylDkl1Or97r74fCTdLSWz79qCQsfA>
-    <xmx:lUH7ZZdoOaXY8P2r2FsijEmfs2pjjdoGXRwwEVQIso1GXz6nwNhZxA>
-    <xmx:lUH7ZZ3Og8uXCPDPTO3HNS4gZHhe7uPXCl03TlIrJiTEZljprit_SQ>
-    <xmx:lkH7Zd6Kql7RNbLWi_4wcUCTUvvwPhuYkezYbLifWuhoiRDGWNsgDA>
-Feedback-ID: i5ec1447f:Fastmail
-Received: by mailuser.nyi.internal (Postfix, from userid 501)
-	id BB04B2340080; Wed, 20 Mar 2024 16:05:41 -0400 (EDT)
-X-Mailer: MessagingEngine.com Webmail Interface
-User-Agent: Cyrus-JMAP/3.11.0-alpha0-332-gdeb4194079-fm-20240319.002-gdeb41940
+	s=arc-20240116; t=1710965162; c=relaxed/simple;
+	bh=XPLYZCzSFf0t6yZ/0SxEIeG4AB/bcA2XHYuZVAsKjBw=;
+	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
+	 In-Reply-To:Content-Type; b=itwsKPe+bkN4lMcqE7CfvnKF4vSbL4yBog8kwFvhNv4CqvtKi6QCsS+j0AyDtRHJBC9wlLkSirZ/OfYQBBUnh4eDoQt9Y+Ti5T+kufXKAu70pm29dCY3O1wetrx0uIeMtmMRToxBE+UxpvAbvCn5kFdt3fZocsqLJ0yLvoGtrJk=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=jTcnpGiR; arc=none smtp.client-ip=209.85.166.41
+Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=roeck-us.net
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
+Received: by mail-io1-f41.google.com with SMTP id ca18e2360f4ac-7cf25c1ee7aso7515439f.2;
+        Wed, 20 Mar 2024 13:06:00 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=gmail.com; s=20230601; t=1710965159; x=1711569959; darn=vger.kernel.org;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:from:to:cc:subject:date:message-id:reply-to;
+        bh=mq9ESJC3fyCYMk10qgz1yahhrfxVx2rHNgbEzwMj/Ak=;
+        b=jTcnpGiRp8Zy9D32GyEKVAHdY0L9bcMeoSdVNWzDPUhP3O9rJinVgcvJf4Wtvnr6KO
+         9CGsZvhhf2kYZTXYKVVvxShsjA46rlFtlTAtxclt+HMfk6MfBZGRaXGncDdRJfAORsVw
+         jTq06Vfmy8HasK/ArRzKXqRi26CDCmByh6LWNHmKMIYwurO/GKnPSTIkZGL3GVxbP1/z
+         JWrS12RF+y8LhrlxntjBOgCeYNIQYwztlzUqvPn+KrJwG6Aho30znZzHguuBTic+z8ii
+         ecMsLDyMk3lA4E0vL737eSxk1V6Tv9txWeIZoflAsVJWK9RYvh+ngIl2aM3ePvmqMZt2
+         Z7CA==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710965159; x=1711569959;
+        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
+         :to:content-language:subject:user-agent:mime-version:date:message-id
+         :sender:x-gm-message-state:from:to:cc:subject:date:message-id
+         :reply-to;
+        bh=mq9ESJC3fyCYMk10qgz1yahhrfxVx2rHNgbEzwMj/Ak=;
+        b=DdCga/XKrly21Z0Gzwy9Ak8L7gUR4p+Y369lP8XnOns+1XdVvVg7nYoGJ9pPy22lDA
+         Uc6I9fedb4avb1eG6Z2hDca8ZPINa3qSu3DN6O5Wrtpc1k1+puMIAg5Naik/PmqLMNST
+         0QpTrK8hh27i7LGg53mf9I7Yd//PFD2HUi14+esQPuzavhrKBsY/ZzVIaQeyrDnehKlC
+         Ah3AzbhyTDoJuF7mPeKKujz3sJxHgGdHLZb+GgAGxImP32DlJMl7I0xAAmb8jvqKOeL2
+         x2BziMoDdxLv64iSeFyrv6b5C/sB8XftL3zvYR8hsMlFwZmHrY6r+xwVVmiSTkPffDRp
+         +tvw==
+X-Forwarded-Encrypted: i=1; AJvYcCWTfXNpusGPWuu5f3sA79Dl8r4n3xSuqg2eujS0p/PGGPxs0Ia1RMngzSJf244qI2zkPdtf8kHA0P2TxXadNK3Kx5U8E/r6CIzhTt+Y/AayGCYD3FISRljfRJ6S8d/78bYA8tNtT8542Q==
+X-Gm-Message-State: AOJu0YyX4AnBr6hbwFnXYaVmdRF2vbbZSCierQ4bF32HMtCAWj+24jSq
+	vtUDvmKeeSBIzFksYaZGjqwUErMweURsG9T7SI+V0NcU22OYRSb8gwS4CsR7
+X-Google-Smtp-Source: AGHT+IEb+EAgNc8Se4L2RIZ6+xnzWsuM/sAiI8clA2WhDD2Hh5VBPI8Wfwor4JXFh/r3abjXc1Zbdw==
+X-Received: by 2002:a05:6602:8cc:b0:7cb:e510:c289 with SMTP id h12-20020a05660208cc00b007cbe510c289mr17388640ioz.9.1710965159645;
+        Wed, 20 Mar 2024 13:05:59 -0700 (PDT)
+Received: from ?IPV6:2600:1700:e321:62f0:329c:23ff:fee3:9d7c? ([2600:1700:e321:62f0:329c:23ff:fee3:9d7c])
+        by smtp.gmail.com with ESMTPSA id c36-20020a634e24000000b005db034d1514sm11215955pgb.82.2024.03.20.13.05.57
+        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
+        Wed, 20 Mar 2024 13:05:58 -0700 (PDT)
+Sender: Guenter Roeck <groeck7@gmail.com>
+Message-ID: <23ed5bbb-7616-424b-96ee-3fe1c6d8ca89@roeck-us.net>
+Date: Wed, 20 Mar 2024 13:05:57 -0700
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-Message-Id: <e04bf262-e024-488a-ade4-698844af20e3@app.fastmail.com>
-In-Reply-To: <bdcc3052-1403-8c2f-f703-66180394c461@linux.intel.com>
-References: <20240310061715.16531-1-luke@ljones.dev>
- <5f853562-cbe0-32d7-2644-d42d2bb9e060@linux.intel.com>
- <7276ec7b-9b00-4241-a4eb-a8997daeba5c@app.fastmail.com>
- <bdcc3052-1403-8c2f-f703-66180394c461@linux.intel.com>
-Date: Thu, 21 Mar 2024 09:05:21 +1300
-From: "Luke Jones" <luke@ljones.dev>
-To: =?UTF-8?Q?Ilpo_J=C3=A4rvinen?= <ilpo.jarvinen@linux.intel.com>
-Cc: platform-driver-x86@vger.kernel.org,
- "Hans de Goede" <hdegoede@redhat.com>, LKML <linux-kernel@vger.kernel.org>
-Subject: Re: [PATCH] platform/x86: asus-wmi: support toggling POST sound
-Content-Type: text/plain;charset=utf-8
-Content-Transfer-Encoding: quoted-printable
+User-Agent: Mozilla Thunderbird
+Subject: Re: [PATCH v4 1/2] of: create of_root if no dtb provided
+Content-Language: en-US
+To: Rob Herring <robh+dt@kernel.org>
+Cc: Stephen Boyd <sboyd@kernel.org>, Frank Rowand <frowand.list@gmail.com>,
+ =?UTF-8?B?Q2zDqW1lbnQgTMOpZ2Vy?= <clement.leger@bootlin.com>,
+ devicetree@vger.kernel.org, linux-kernel@vger.kernel.org,
+ Lizhi Hou <lizhi.hou@xilinx.com>, Allan Nielsen
+ <allan.nielsen@microchip.com>, Horatiu Vultur
+ <horatiu.vultur@microchip.com>, Steen Hegelund
+ <steen.hegelund@microchip.com>,
+ Thomas Petazzoni <thomas.petazzoni@bootlin.com>
+References: <20230317053415.2254616-1-frowand.list@gmail.com>
+ <20230317053415.2254616-2-frowand.list@gmail.com>
+ <886049ed-4f5f-4e17-86f4-1245024ade3a@roeck-us.net>
+ <CAL_JsqKsF53v7d7uZ3XT4kPFy-2FBWHfvKNSFdTx2oZhmSZkDA@mail.gmail.com>
+ <66409df9-6f5f-4fbe-ae7f-47b86665c113@roeck-us.net>
+ <CAL_Jsq+0JHTDmBPr94ZZF_5rtQg14q8OmWH6WpRspjHMX-MZmg@mail.gmail.com>
+From: Guenter Roeck <linux@roeck-us.net>
+Autocrypt: addr=linux@roeck-us.net; keydata=
+ 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
+ mDW4+i+XlNFUPUYMrIKi9joBhu18ssf5i5Q=
+In-Reply-To: <CAL_Jsq+0JHTDmBPr94ZZF_5rtQg14q8OmWH6WpRspjHMX-MZmg@mail.gmail.com>
+Content-Type: text/plain; charset=UTF-8; format=flowed
+Content-Transfer-Encoding: 8bit
 
-On Thu, 21 Mar 2024, at 12:55 AM, Ilpo J=C3=A4rvinen wrote:
-> On Wed, 20 Mar 2024, Luke Jones wrote:
-> > On Wed, 20 Mar 2024, at 6:48 AM, Ilpo J=C3=A4rvinen wrote:
-> > > On Sun, 10 Mar 2024, Luke D. Jones wrote:
-> > >=20
-> > > > Add support for toggling the BIOS POST sound on some ASUS laptop=
-s.
-> > > >=20
-> > > > Signed-off-by: Luke D. Jones <luke@ljones.dev>
-> > > > ---
-> > > >  .../ABI/testing/sysfs-platform-asus-wmi       |  7 +++
-> > > >  drivers/platform/x86/asus-wmi.c               | 54 ++++++++++++=
-+++++++
-> > > >  include/linux/platform_data/x86/asus-wmi.h    |  3 ++
-> > > >  3 files changed, 64 insertions(+)
-> > > >=20
-> > > > diff --git a/Documentation/ABI/testing/sysfs-platform-asus-wmi b=
-/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> > > > index e32b4f0ae15f..f3c53b7453f0 100644
-> > > > --- a/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> > > > +++ b/Documentation/ABI/testing/sysfs-platform-asus-wmi
-> > > > @@ -194,3 +194,10 @@ Contact: "Luke Jones" <luke@ljones.dev>
-> > > >  Description:
-> > > >  Set the target temperature limit of the Nvidia dGPU:
-> > > >  * min=3D75, max=3D87
-> > > > +
-> > > > +What: /sys/devices/platform/<platform>/boot_sound
-> > > > +Date: Jun 2023
-> > > > +KernelVersion: 6.9
-> > > > +Contact: "Luke Jones" <luke@ljones.dev>
-> > > > +Description:
-> > > > + Set if the BIOS POST sound is played on boot.
->=20
-> > > > @@ -2106,6 +2107,55 @@ static ssize_t panel_od_store(struct devi=
-ce *dev,
-> > > >  }
-> > > >  static DEVICE_ATTR_RW(panel_od);
-> > > > =20
-> > > > +/* Bootup sound ***********************************************=
-****************/
-> > > > +
-> > > > +static ssize_t boot_sound_show(struct device *dev,
-> > > > +      struct device_attribute *attr, char *buf)
-> > > > +{
-> > > > + struct asus_wmi *asus =3D dev_get_drvdata(dev);
-> > > > + int result;
-> > > > +
-> > > > + result =3D asus_wmi_get_devstate_simple(asus, ASUS_WMI_DEVID_B=
-OOT_SOUND);
-> > > > + if (result < 0)
-> > > > + return result;
-> > > > +
-> > > > + return sysfs_emit(buf, "%d\n", result);
-> > > > +}
-> > > > +
-> > > > +static ssize_t boot_sound_store(struct device *dev,
-> > > > +       struct device_attribute *attr,
-> > > > +       const char *buf, size_t count)
-> > > > +{
-> > > > + int result, err;
-> > > > + u32 snd;
-> > > > +
-> > > > + struct asus_wmi *asus =3D dev_get_drvdata(dev);
-> > > > +
-> > > > + result =3D kstrtou32(buf, 10, &snd);
-> > > > + if (result)
-> > > > + return result;
-> > > > +
-> > > > + if (snd > 1)
-> > > > + return -EINVAL;
-> > >=20
-> > > Why not just use kstrtobool()?
-> >=20
-> > Consistency with other methods mostly. Plus the possibility that asu=
-s=20
-> > might do something like add different sounds. I'll change it if a re=
-vert=20
-> > back to kstrtou32 later doesn't break things.
->=20
-> Hi Luke,
->=20
-> I'd tend to think it's not the most likely scenario. But if they still=
- do=20
-> something like that, the code could do both kstrtou32() and kstrtobool=
-()=20
-> to keep the sysfs interface backwards compatible.
->=20
-> But it isn't end of the world for me if you want to keep it as=20
-> kstrtou32().
->=20
-> Annoyingly the other kstrtou32()s may not be easily converted over to=20
-> kstrtobool() because u32 formatting accepts 16-based values too such as
-> 0x0. Perhaps hex format wouldn't be used by anyone but the risk is sti=
-ll=20
-> there and the benefits are not that high.
+On 3/20/24 12:14, Rob Herring wrote:
+> On Mon, Mar 18, 2024 at 4:31 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>
+>> On 3/18/24 12:26, Rob Herring wrote:
+>>> +Stephen
+>>>
+>>> On Mon, Mar 18, 2024 at 12:09 PM Guenter Roeck <linux@roeck-us.net> wrote:
+>>>>
+>>>> Hi,
+>>>>
+>>>> On Fri, Mar 17, 2023 at 12:34:14AM -0500, Frank Rowand wrote:
+>>>>> When enabling CONFIG_OF on a platform where of_root is not populated by
+>>>>> firmware, we end up without a root node. In order to apply overlays and
+>>>>> create subnodes of the root node, we need one. Create this root node
+>>>>> by unflattening an empty builtin dtb.
+>>>>>
+>>>>> If firmware provides a flattened device tree (FDT) then the FDT is
+>>>>> unflattened via setup_arch().  Otherwise setup_of(), which is called
+>>>>> immediately after setup_arch(), will create the default root node
+>>>>> if it does not exist.
+>>>>>
+>>>>> Signed-off-by: Frank Rowand <frowand.list@gmail.com>
+>>>>
+>>>> This patch results in a crash on nios2.
+>>>
+>>> This patch was never applied. I assume you meant a later version of it
+>>> that did get applied.
+>>>
+>>>>
+>>>> Building nios2:10m50-ghrd:10m50_defconfig:10m50_devboard.dts ... running ...R failed (crashed)
+>>>
+>>> Booting with DT?
+>>>
+>>>> ------------
+>>>> qemu log:
+>>>> earlycon: uart8250 at MMIO32 0x18001600 (options '')
+>>>> printk: legacy bootconsole [uart8250] enabled
+>>>> Linux version 6.8.0-11409-gf6cef5f8c37f (groeck@desktop) (nios2-linux-gcc (GCC) 11.4.0, GNU ld (GNU Binutils) 2.40) #1 Sun Mar 17 23:38:59 PDT 2024
+>>>> Kernel panic - not syncing: early_init_dt_alloc_memory_arch: Failed to allocate 72 bytes align=0x40
+>>>> ---[ end Kernel panic - not syncing: early_init_dt_alloc_memory_arch: Failed to allocate 72 bytes align=0x40 ]---
+>>>
+>>> nios2 looks utterly broken to me. This change should be a nop unless
+>>> initial_boot_params is NULL. It looks like it is possible for r6 (dtb
+>>> address) to be 0 depending on kconfig options, but that would have
+>>> skipped copying and unflattening which would then panic in
+>>> setup_cpuinfo(). If initial_boot_params is not NULL, then the same
+>>> early_init_dt_alloc_memory_arch() calls should fail when copying the
+>>> DT. So I don't see how nios2 booting with DT ever worked.
+>>>
+>>
+>> For nios2, in early_init_devtree():
+>>
+>> void __init early_init_devtree(void *params)
+>> {
+>>           __be32 *dtb = (u32 *)__dtb_start;
+>>          ...
+>>           if (be32_to_cpu((__be32) *dtb) == OF_DT_HEADER)
+>>                   params = (void *)__dtb_start;
+>>
+>> That worked fine until this patch. Starting with this patch, __dtb_start
+>> always points to a valid empty devicetree blob, which overrides the
+>> devicetree blob passed to early_init_devtree(). This causes the problem.
+> 
+> With an external DTB, it doesn't boot with or without this patch. It
+> just dies in different spots. Before it just skipped any memory
 
-Understood, yeah. I suppose one of the reasons I preferred using kstrtou=
-32 in the first place was no need for casting when making the WMI call. =
-Plus all the other code I've written here is similar to this (you might =
-notice that a large chunk of what is in asus-wmi now is from me).
+No, that is incorrect. Up to this patch it booted just fine with an
+external dtb using the "-initrd" command line argument, and I explained
+to you above why this is the case.
+
+I guess you are saying I should stop boot testing nios2. I'll do just that.
+Saves me resources and avoids discussions like this.
+
+Guenter
+
 
