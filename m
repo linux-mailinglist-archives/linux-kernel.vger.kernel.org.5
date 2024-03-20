@@ -1,58 +1,84 @@
-Return-Path: <linux-kernel+bounces-108650-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108651-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 4109D880DEA
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:54:28 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 10337880DFB
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 09:55:57 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 720161C21F64
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:54:27 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id BC58E283DA2
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 08:55:55 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 6D4ED39FEF;
-	Wed, 20 Mar 2024 08:53:21 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 93B9F39FF2;
+	Wed, 20 Mar 2024 08:55:42 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="svykZRpU"
+	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="k/LiyTzX"
 Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id A1A0D38F87;
-	Wed, 20 Mar 2024 08:53:20 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CF7838DED;
+	Wed, 20 Mar 2024 08:55:41 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710924800; cv=none; b=XORFvZ5W4slC1/rsu3cCr1U20PsZ1loYLuH6JeRUgWfBFX9frucv39NftOgmbtUMJ9NgERL/HPAos2UL9NfkQLK4a6G/8gsjY75l4J/zIxxwT/B4H8ckF0LCbDpt5Mg/zd92AVuQN9bkQeNOiNtlUJXx8m1K2ltwYN14De7fBXk=
+	t=1710924941; cv=none; b=UHdM1Hg8r1muRhWJkYOF3F2Dex7naIiCUMny0+Nu8k4vZ+gbYU6DEHZUQ4ra8hx8y5mk8O0pDC3gUJTsbj+NtZMeIoB9DvWxqkWc7QZQ6iI51NTfy0NHJwQ6EnTLmpxnPLC8jfK5l4h8MQxPd4P1dVlXBekNSasw6jONQ1D7gkc=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710924800; c=relaxed/simple;
-	bh=Hm2riJtd650UaySoI5zk2/Fz4N5cO62JP24YUJdeUFo=;
+	s=arc-20240116; t=1710924941; c=relaxed/simple;
+	bh=gdJJxHO47QTHX7IJIQn/yNoS/qXqccMa+6/0bsPpjEQ=;
 	h=Date:From:To:Cc:Subject:Message-ID:References:MIME-Version:
-	 Content-Type:Content-Disposition:In-Reply-To; b=ov1M2vhL6dzLThrz7HI/iLzzqqUgtzC+qWLjPHZDncVUfxtkT5uMHi2MKrqpLyny1Ei4jGsXXEIM96wL9nAh3gxEgG0+r9vSO2HZQ6ib74GTW82g7sifukGZLB+Tw8DYZRsl3otoqUMm3/nn1yhRuosUmXag/u6odpG0wwy3BG4=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=svykZRpU; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 61CE8C433C7;
-	Wed, 20 Mar 2024 08:53:17 +0000 (UTC)
+	 Content-Type:Content-Disposition:In-Reply-To; b=BYL9g3lml6ieP4sXRl2bvE2Za2nD+nGZDMxw5YERMPe9wGS+63JyLTVqK1R9wfq4DMIbLxdZ/MzYetllVDTFe/nRcDNc4s+BNj+HFsyZcW7fvkqlsl7i1/Y1Uzj9nj64r7HfRZmCMjKdsMgynY7dQsXxUVRSnXrG29huU0w3wBg=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=k/LiyTzX; arc=none smtp.client-ip=10.30.226.201
+Received: by smtp.kernel.org (Postfix) with ESMTPSA id 66867C433C7;
+	Wed, 20 Mar 2024 08:55:40 +0000 (UTC)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710924800;
-	bh=Hm2riJtd650UaySoI5zk2/Fz4N5cO62JP24YUJdeUFo=;
+	s=k20201202; t=1710924941;
+	bh=gdJJxHO47QTHX7IJIQn/yNoS/qXqccMa+6/0bsPpjEQ=;
 	h=Date:From:To:Cc:Subject:References:In-Reply-To:From;
-	b=svykZRpU4KKqc2BI9hhjROoJQvQX+adJEzBEJQogM9CzMFfwi51Lb3qN7cM+l0Yq9
-	 uO8W+G8fURfyMf0bqCQ9jtdwcVTCuaRiEgWb+LMb507VXhi9si6HPAuENby7dNd7Nn
-	 E6ruFi0wK0ahIxkVK+fbLrm8k0/47aMz4/KKlypzdGGUhapz6CbaBGAvQckzVjwZdo
-	 lKW7RoTePwUyUTYl8qoxdMvV/Z5B+ffK+dHR7tnswe3/5svHtaDOH9+QIUmzhPblgf
-	 LbfDovXAU15Vp5yr/tqWsqjFAhkf/3tx+2HF5EN5DXuaUpMx37z7XFYfxICRbl60aq
-	 bonsoz3/1HMqg==
-Date: Wed, 20 Mar 2024 09:53:14 +0100
-From: Niklas Cassel <cassel@kernel.org>
-To: mani@kernel.org, kw@linux.com
-Cc: niklas.cassel@wdc.com, bhelgaas@google.com,
-	gustavo.pimentel@synopsys.com, imx@lists.linux.dev,
-	jdmason@kudzu.us, jingoohan1@gmail.com,
-	linux-kernel@vger.kernel.org, linux-pci@vger.kernel.org,
-	lpieralisi@kernel.org, robh@kernel.org, Frank Li <Frank.Li@nxp.com>
-Subject: Re: [PATCH v2 1/1] PCI: dwc: Fix index 0 incorrectly being
- interpreted as a free ATU slot
-Message-ID: <Zfqj-mvpG442eyt2@ryzen>
-References: <20240304224616.1238966-1-Frank.Li@nxp.com>
- <ZfGJUDoGnFXKBoG0@ryzen>
+	b=k/LiyTzXOZm/bpwg/R7K7z83777XKyGQEoOkmI0+JirTc+A3Irgqqlo/MTqIaHAuT
+	 LaDz5/N89UQYLdibXxPlCFj22TikvtLMQmCsrzfiu9c8ExWvxD7lgnlxbCUAnPTxSu
+	 ovGWRjpBoZtNhTrQF2nDJYdWAWTZvyEET/dz7cc/V7Of5+KdYPv3eTw24b9yYI6Vth
+	 LvOmZtFkDBkj+IBOqsu96vPj5qqCbR/FSCbJ8WT6U9SUo/vlTPTqZ2qWSWdndiAJJg
+	 HA55nQnMV03il6CwCvqo9aY5LSDVcJcESBRt/qQPtJTao2MeNigIFRqvGlKDldCtwy
+	 dX0egkjrYM2eg==
+Date: Wed, 20 Mar 2024 10:55:36 +0200
+From: Leon Romanovsky <leon@kernel.org>
+To: Jason Gunthorpe <jgg@ziepe.ca>, Christoph Hellwig <hch@lst.de>
+Cc: Robin Murphy <robin.murphy@arm.com>,
+	Marek Szyprowski <m.szyprowski@samsung.com>,
+	Joerg Roedel <joro@8bytes.org>, Will Deacon <will@kernel.org>,
+	Chaitanya Kulkarni <chaitanyak@nvidia.com>,
+	Jonathan Corbet <corbet@lwn.net>, Jens Axboe <axboe@kernel.dk>,
+	Keith Busch <kbusch@kernel.org>, Sagi Grimberg <sagi@grimberg.me>,
+	Yishai Hadas <yishaih@nvidia.com>,
+	Shameer Kolothum <shameerali.kolothum.thodi@huawei.com>,
+	Kevin Tian <kevin.tian@intel.com>,
+	Alex Williamson <alex.williamson@redhat.com>,
+	=?iso-8859-1?B?Suly9G1l?= Glisse <jglisse@redhat.com>,
+	Andrew Morton <akpm@linux-foundation.org>,
+	linux-doc@vger.kernel.org, linux-kernel@vger.kernel.org,
+	linux-block@vger.kernel.org, linux-rdma@vger.kernel.org,
+	iommu@lists.linux.dev, linux-nvme@lists.infradead.org,
+	kvm@vger.kernel.org, linux-mm@kvack.org,
+	Bart Van Assche <bvanassche@acm.org>,
+	Damien Le Moal <damien.lemoal@opensource.wdc.com>,
+	Amir Goldstein <amir73il@gmail.com>,
+	"josef@toxicpanda.com" <josef@toxicpanda.com>,
+	"Martin K. Petersen" <martin.petersen@oracle.com>,
+	"daniel@iogearbox.net" <daniel@iogearbox.net>,
+	Dan Williams <dan.j.williams@intel.com>,
+	"jack@suse.com" <jack@suse.com>, Zhu Yanjun <zyjzyj2000@gmail.com>
+Subject: Re: [RFC RESEND 00/16] Split IOMMU DMA mapping operation to two steps
+Message-ID: <20240320085536.GA14887@unreal>
+References: <20240306162022.GB28427@lst.de>
+ <20240306174456.GO9225@ziepe.ca>
+ <20240306221400.GA8663@lst.de>
+ <20240307000036.GP9225@ziepe.ca>
+ <20240307150505.GA28978@lst.de>
+ <20240307210116.GQ9225@ziepe.ca>
+ <20240308164920.GA17991@lst.de>
+ <20240308202342.GZ9225@ziepe.ca>
+ <20240309161418.GA27113@lst.de>
+ <20240319153620.GB66976@ziepe.ca>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -61,39 +87,169 @@ List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 Content-Type: text/plain; charset=us-ascii
 Content-Disposition: inline
-In-Reply-To: <ZfGJUDoGnFXKBoG0@ryzen>
+In-Reply-To: <20240319153620.GB66976@ziepe.ca>
 
-On Wed, Mar 13, 2024 at 12:09:04PM +0100, Niklas Cassel wrote:
-> On Mon, Mar 04, 2024 at 05:46:16PM -0500, Frank Li wrote:
-> > dw_pcie_ep_inbound_atu()
-> > {
-> > 	...
-> > 	if (!ep->bar_to_atu[bar])
-> > 		free_win = find_first_zero_bit(ep->ib_window_map, pci->num_ib_windows);
-> > 	else
-> > 		free_win = ep->bar_to_atu[bar];
-> > 	...
-> > }
+On Tue, Mar 19, 2024 at 12:36:20PM -0300, Jason Gunthorpe wrote:
+> On Sat, Mar 09, 2024 at 05:14:18PM +0100, Christoph Hellwig wrote:
+> > On Fri, Mar 08, 2024 at 04:23:42PM -0400, Jason Gunthorpe wrote:
+> > > > The DMA API callers really need to know what is P2P or not for
+> > > > various reasons.  And they should generally have that information
+> > > > available, either from pin_user_pages that needs to special case
+> > > > it or from the in-kernel I/O submitter that build it from P2P and
+> > > > normal memory.
+> > > 
+> > > I think that is a BIO thing. RDMA just calls with FOLL_PCI_P2PDMA and
+> > > shoves the resulting page list into in a scattertable. It never checks
+> > > if any returned page is P2P - it has no reason to care. dma_map_sg()
+> > > does all the work.
 > > 
-> > The atu index 0 is valid case for atu number. The find_first_zero_bit()
-> > will return 6 when second time call into this function if atu is 0. Suppose
-> > it should use branch 'free_win = ep->bar_to_atu[bar]'.
-> > 
-> > Change 'bar_to_atu' to free_win + 1. Initialize bar_to_atu as 0 to indicate
-> > it have not allocate atu to the bar.
-> > 
-> > Reported-by: Niklas Cassel <Niklas.Cassel@wdc.com>
-> > Closes: https://lore.kernel.org/linux-pci/ZXt2A+Fusfz3luQV@x1-carbon/T/#u
-> > Fixes: 4284c88fff0e ("PCI: designware-ep: Allow pci_epc_set_bar() update inbound map address")
-> > Reviewed-by: Niklas Cassel <niklas.cassel@wdc.com>
-> > Signed-off-by: Frank Li <Frank.Li@nxp.com>
-> > ---
+> > Right now it does, but that's not really a good interface.  If we have
+> > a pin_user_pages variant that only pins until the next relevant P2P
+> > boundary and tells you about we can significantly simplify the overall
+> > interface.
 > 
-> Any chance of this fix being picked up?
+> Sorry for the delay, I was away..
 
-Gentle ping.
+<...>
 
+> Can we tweak what Leon has done to keep the hmm_range_fault support
+> and non-uniformity for RDMA but add a uniformity optimized flow for
+> BIO?
 
-Kind regards,
-Niklas
+Something like this will do the trick.
+
+From 45e739e7073fb04bc168624f77320130bb3f9267 Mon Sep 17 00:00:00 2001
+Message-ID: <45e739e7073fb04bc168624f77320130bb3f9267.1710924764.git.leonro@nvidia.com>
+From: Leon Romanovsky <leonro@nvidia.com>
+Date: Mon, 18 Mar 2024 11:16:41 +0200
+Subject: [PATCH] mm/gup: add strict interface to pin user pages according to
+ FOLL flag
+
+All pin_user_pages*() and get_user_pages*() callbacks allocate user
+pages by partially taking into account their p2p vs. non-p2p properties.
+
+In case, user sets FOLL_PCI_P2PDMA flag, the allocated pages will include
+both p2p and "regular" pages, while if FOLL_PCI_P2PDMA flag is not provided,
+only regular pages are returned.
+
+In order to make sure that with FOLL_PCI_P2PDMA flag, only p2p pages are
+returned, let's introduce new internal FOLL_STRICT flag and provide special
+pin_user_pages_fast_strict() API call.
+
+Signed-off-by: Leon Romanovsky <leonro@nvidia.com>
+---
+ include/linux/mm.h |  3 +++
+ mm/gup.c           | 36 +++++++++++++++++++++++++++++++++++-
+ mm/internal.h      |  4 +++-
+ 3 files changed, 41 insertions(+), 2 deletions(-)
+
+diff --git a/include/linux/mm.h b/include/linux/mm.h
+index f5a97dec5169..910b65dde24a 100644
+--- a/include/linux/mm.h
++++ b/include/linux/mm.h
+@@ -2491,6 +2491,9 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
+ 			unsigned int gup_flags, struct page **pages);
+ void folio_add_pin(struct folio *folio);
+ 
++int pin_user_pages_fast_strict(unsigned long start, int nr_pages,
++			       unsigned int gup_flags, struct page **pages);
++
+ int account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc);
+ int __account_locked_vm(struct mm_struct *mm, unsigned long pages, bool inc,
+ 			struct task_struct *task, bool bypass_rlim);
+diff --git a/mm/gup.c b/mm/gup.c
+index df83182ec72d..11b5c626a4ab 100644
+--- a/mm/gup.c
++++ b/mm/gup.c
+@@ -133,6 +133,10 @@ struct folio *try_grab_folio(struct page *page, int refs, unsigned int flags)
+ 	if (unlikely(!(flags & FOLL_PCI_P2PDMA) && is_pci_p2pdma_page(page)))
+ 		return NULL;
+ 
++	if (flags & FOLL_STRICT)
++		if (flags & FOLL_PCI_P2PDMA && !is_pci_p2pdma_page(page))
++			return NULL;
++
+ 	if (flags & FOLL_GET)
+ 		return try_get_folio(page, refs);
+ 
+@@ -232,6 +236,10 @@ int __must_check try_grab_page(struct page *page, unsigned int flags)
+ 	if (unlikely(!(flags & FOLL_PCI_P2PDMA) && is_pci_p2pdma_page(page)))
+ 		return -EREMOTEIO;
+ 
++	if (flags & FOLL_STRICT)
++		if (flags & FOLL_PCI_P2PDMA && !is_pci_p2pdma_page(page))
++			return -EREMOTEIO;
++
+ 	if (flags & FOLL_GET)
+ 		folio_ref_inc(folio);
+ 	else if (flags & FOLL_PIN) {
+@@ -2243,6 +2251,8 @@ static bool is_valid_gup_args(struct page **pages, int *locked,
+ 	 * - FOLL_TOUCH/FOLL_PIN/FOLL_TRIED/FOLL_FAST_ONLY are internal only
+ 	 * - FOLL_REMOTE is internal only and used on follow_page()
+ 	 * - FOLL_UNLOCKABLE is internal only and used if locked is !NULL
++	 * - FOLL_STRICT is internal only and used to distinguish between p2p
++	 *   and "regular" pages.
+ 	 */
+ 	if (WARN_ON_ONCE(gup_flags & INTERNAL_GUP_FLAGS))
+ 		return false;
+@@ -3187,7 +3197,8 @@ static int internal_get_user_pages_fast(unsigned long start,
+ 	if (WARN_ON_ONCE(gup_flags & ~(FOLL_WRITE | FOLL_LONGTERM |
+ 				       FOLL_FORCE | FOLL_PIN | FOLL_GET |
+ 				       FOLL_FAST_ONLY | FOLL_NOFAULT |
+-				       FOLL_PCI_P2PDMA | FOLL_HONOR_NUMA_FAULT)))
++				       FOLL_PCI_P2PDMA | FOLL_HONOR_NUMA_FAULT |
++				       FOLL_STRICT)))
+ 		return -EINVAL;
+ 
+ 	if (gup_flags & FOLL_PIN)
+@@ -3322,6 +3333,29 @@ int pin_user_pages_fast(unsigned long start, int nr_pages,
+ }
+ EXPORT_SYMBOL_GPL(pin_user_pages_fast);
+ 
++/**
++ * pin_user_pages_fast_strict() - this is pin_user_pages_fast() variant, which
++ * makes sure that only pages with same properties are pinned.
++ *
++ * @start:      starting user address
++ * @nr_pages:   number of pages from start to pin
++ * @gup_flags:  flags modifying pin behaviour
++ * @pages:      array that receives pointers to the pages pinned.
++ *              Should be at least nr_pages long.
++ *
++ * Nearly the same as pin_user_pages_fastt(), except that FOLL_STRICT is set.
++ *
++ * FOLL_STRICT means that the pages are allocated with specific FOLL_* properties.
++ */
++int pin_user_pages_fast_strict(unsigned long start, int nr_pages,
++			       unsigned int gup_flags, struct page **pages)
++{
++	if (!is_valid_gup_args(pages, NULL, &gup_flags, FOLL_PIN | FOLL_STRICT))
++		return -EINVAL;
++	return internal_get_user_pages_fast(start, nr_pages, gup_flags, pages);
++}
++EXPORT_SYMBOL_GPL(pin_user_pages_fast_strict);
++
+ /**
+  * pin_user_pages_remote() - pin pages of a remote process
+  *
+diff --git a/mm/internal.h b/mm/internal.h
+index f309a010d50f..7578837a0444 100644
+--- a/mm/internal.h
++++ b/mm/internal.h
+@@ -1031,10 +1031,12 @@ enum {
+ 	FOLL_FAST_ONLY = 1 << 20,
+ 	/* allow unlocking the mmap lock */
+ 	FOLL_UNLOCKABLE = 1 << 21,
++	/* don't mix pages with different properties, e.g. p2p with "regular" ones */
++	FOLL_STRICT = 1 << 22,
+ };
+ 
+ #define INTERNAL_GUP_FLAGS (FOLL_TOUCH | FOLL_TRIED | FOLL_REMOTE | FOLL_PIN | \
+-			    FOLL_FAST_ONLY | FOLL_UNLOCKABLE)
++			    FOLL_FAST_ONLY | FOLL_UNLOCKABLE | FOLL_STRICT)
+ 
+ /*
+  * Indicates for which pages that are write-protected in the page table,
+-- 
+2.44.0
 
