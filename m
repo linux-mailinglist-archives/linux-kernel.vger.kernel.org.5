@@ -1,405 +1,288 @@
-Return-Path: <linux-kernel+bounces-109288-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109289-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [139.178.88.99])
-	by mail.lfdr.de (Postfix) with ESMTPS id 66B53881730
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:08:50 +0100 (CET)
+Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 77F9F881734
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 19:09:22 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 1AA96281918
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:08:49 +0000 (UTC)
+	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 2EA8728180A
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 18:09:21 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 8E8806BFB6;
-	Wed, 20 Mar 2024 18:08:39 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 468926A8C5;
+	Wed, 20 Mar 2024 18:09:12 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b="Q4glrX9D"
-Received: from smtp.kernel.org (aws-us-west-2-korg-mail-1.web.codeaurora.org [10.30.226.201])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
+	dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b="TkGY8Y9p"
+Received: from mail-yw1-f201.google.com (mail-yw1-f201.google.com [209.85.128.201])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 760FF6A33E;
-	Wed, 20 Mar 2024 18:08:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=10.30.226.201
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 745AF1DFC6
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 18:09:09 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.128.201
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710958118; cv=none; b=R2QlYkDTWcnqj9xgZcGVWe+51hGE7ArEdwMYxUEBJ8I1zBHxzyiz7LUyFm2a6D812QpJDg/wEUMRo7yTMbjw0R6z8Av1jxxHko1KWDUUrfExbj/Iz9yUBot/OLBhYK3KD37cKuZ6gi5GesNSHomaEjYWxzmvtlrMZtWNbARa2yg=
+	t=1710958151; cv=none; b=esunLfmpqUEfIMOJ4w+iAQK9Rrfga48d2+OJ+Hlmq1hSmU5mUHLoiYW9qFkcr20NTl8FFnWt2JFRVBb08JmsftdVnyoJ+ddXS15kM2LSSkDP7aIivNsbwIMneQRJbB/k/5ZT/EBuPSWgyDVrfiqzJuuYJwTDbWH51K68BcSWgaE=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710958118; c=relaxed/simple;
-	bh=s8hh5ibfmoqAlMKecBCXc82EDZUFeDU9i99TMxqttOw=;
-	h=From:To:Cc:Subject:Date:Message-Id:MIME-Version; b=WMtdvDg3tn6qrufwrejszD6oqZMb9KUiw2+iYFxUeyvsxmdvxRniJZ1jREqxOH/m84QP9ZyiMqN2W1iEEHVFvsnzgC69kVqY7/6HmnxrvUvj6J3VPRbawi3U4t48Q5bboxocPQJJIgJt1nrKOzaGlLFcH1e6FUwiwcwL5MOQflQ=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dkim=pass (2048-bit key) header.d=kernel.org header.i=@kernel.org header.b=Q4glrX9D; arc=none smtp.client-ip=10.30.226.201
-Received: by smtp.kernel.org (Postfix) with ESMTPSA id 8FD5FC433B1;
-	Wed, 20 Mar 2024 18:08:34 +0000 (UTC)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=kernel.org;
-	s=k20201202; t=1710958118;
-	bh=s8hh5ibfmoqAlMKecBCXc82EDZUFeDU9i99TMxqttOw=;
-	h=From:To:Cc:Subject:Date:From;
-	b=Q4glrX9DQ+6EEuXw8ushrXysECS5j5nMhmSfRKrXH3wx/ne+0beyx7JFv5DgWPao6
-	 GQ+Vr223mLFVwqzUXq+mbI3eMCkkNuW52/+xBFh7L8LEHtdF+sEb12UXkjUayvHVKx
-	 WdYDxHvmgh/AWDVAxEPmxLfL4xdixjtI1afcmy76zIxm+5LNism5FHdvsaC/deCfcG
-	 vi+jdr1Iz0ygXbfX4MiRxlI5CwcktEYOpWmBHO2CQ9rbaJOPlQIOnnr8TvFUCMKoya
-	 8ir+LDcBs8QfVS9kKeWYZ04hvPQaraSVob2DGjZatjOJM3JjOFqxjvD9lE1ivGD0vr
-	 lhcRvHGSIPuCg==
-From: Arnd Bergmann <arnd@kernel.org>
-To: Saeed Mahameed <saeedm@nvidia.com>,
-	Leon Romanovsky <leon@kernel.org>
-Cc: Arnd Bergmann <arnd@arndb.de>,
-	Simon Horman <horms@kernel.org>,
-	"David S. Miller" <davem@davemloft.net>,
-	Eric Dumazet <edumazet@google.com>,
-	Jakub Kicinski <kuba@kernel.org>,
-	Paolo Abeni <pabeni@redhat.com>,
-	Yevgeny Kliteynik <kliteyn@nvidia.com>,
-	Alex Vesker <valex@nvidia.com>,
-	Erez Shitrit <erezsh@nvidia.com>,
-	Hamdan Igbaria <hamdani@nvidia.com>,
-	netdev@vger.kernel.org,
-	linux-rdma@vger.kernel.org,
-	linux-kernel@vger.kernel.org
-Subject: [PATCH] [v3] net/mlx5: fix possible stack overflows
-Date: Wed, 20 Mar 2024 19:08:09 +0100
-Message-Id: <20240320180831.185128-1-arnd@kernel.org>
-X-Mailer: git-send-email 2.39.2
+	s=arc-20240116; t=1710958151; c=relaxed/simple;
+	bh=YJwn0EHmN4p0C1O8WY5aZR1nYAKu4era8MiJ7mxANe0=;
+	h=Date:In-Reply-To:Mime-Version:References:Message-ID:Subject:From:
+	 To:Cc:Content-Type; b=CfmEaqsLGlAf1K7fXW9oIbdbLYqLB1jK6x/DG99CAeOfK66CepOt67y2RfhpeM1nA0KQtxUihAKlY02Xee/PgWwRyNsjGW6wKnm4TecLp9F22u3YKP/zoSpFlk/Nd6iBI3I7cxJ+gujBphZVelwF4gEsnXNHIdXbeS7SfOafyzQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com; dkim=pass (2048-bit key) header.d=google.com header.i=@google.com header.b=TkGY8Y9p; arc=none smtp.client-ip=209.85.128.201
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=reject dis=none) header.from=google.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=flex--aliceryhl.bounces.google.com
+Received: by mail-yw1-f201.google.com with SMTP id 00721157ae682-60ab69a9e6fso15866167b3.0
+        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 11:09:09 -0700 (PDT)
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=google.com; s=20230601; t=1710958148; x=1711562948; darn=vger.kernel.org;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ysil0RDXkCVtzkTohmRbeyotl8h5MD3ps9kD7n3YY/k=;
+        b=TkGY8Y9phbftfHMOkeiOTQO8zgdXhNP1xZDqUTkLUxrgqg0ovJHnfVWKTYA4vktd5f
+         KtgJtlhx+iYAJADqp1QgeZeupiEFZHGtOFoJeD+5rBWYmxcdS3FlAJ3L7Ven44+evw3m
+         wh3zdBDZ51IqDxZ3VQBnodJO1Kii94pQ4t1VNCuR2aW8UsWND1ShJ37uwsQXoiw8qgtk
+         V17vvbWWMVQEk56fomjK/kVhCOa3K2JMEI3Q7KqtCNxbev0UfdoJa7xG/EzIOD1wvAOB
+         /FZVIH7FxeIB2T7DLVwdPF+wmEiNWcA41E+4+8u7FSbPvJp2YtyCcT9KSEFMa7lpmvYz
+         vYzw==
+X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
+        d=1e100.net; s=20230601; t=1710958148; x=1711562948;
+        h=cc:to:from:subject:message-id:references:mime-version:in-reply-to
+         :date:x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
+        bh=Ysil0RDXkCVtzkTohmRbeyotl8h5MD3ps9kD7n3YY/k=;
+        b=l25fxslljWA/nb08T0QyoSomWTlUZ5bgq2Igbg4l+0bWMoMXXaIaDBOaCE52/pH/o4
+         1OAfbw9TSFkYc3stbhWKHOCN5+VkNnCv7Fz6fKDKIkOK6BF1iRy1tsJ7Knj2OjFdTasD
+         7WSYY4aPEzzizkiNZdf2pSt8oBGUqhj0CDznnzwYP4DNio0ob+I4UjHRYAcHMGgo47t9
+         AVzqGlbc1JqNdkD3uCuDe1j6GBhlsek7z5wxQwvEJJfFNmabtJWlYMxy3NTYT6d1crtH
+         OqBTPXzxvHB13FqN/8krIrMDM3vIAkhOiq3E+wpP2zhOoJnZr/NjDn2Wzq8bPygXGfSf
+         CHcg==
+X-Forwarded-Encrypted: i=1; AJvYcCU4dDU24+Kdmyra7x6V/tL7+7vOe2YVor7w0vU8LiOdkdpABFAeajQ9VgXB49UETO0xEKaKnw/r/326w3rjN0oMBfN76unV7S7Ne8+G
+X-Gm-Message-State: AOJu0Yxp8CPDnC6+QS+fDiNIXJae4dWj3NGakJjCfYaul+NpENJz16p/
+	HDVMA15miAWpe3KlBroFhPopPrXKPq4WybCd94fd5gR3yCZoEPXTS3c7EjzRazgRcUvEpyRyuzs
+	CC8CaIlTx7kCsGw==
+X-Google-Smtp-Source: AGHT+IEIqn8S4bMIHC0aZaRRtDTwe38e01l0HkJ0Kk9R3YvZ5oW6uSg2Ip131RboSd66P7a916XUCWkVV/+A0wE=
+X-Received: from aliceryhl2.c.googlers.com ([fda3:e722:ac3:cc00:68:949d:c0a8:572])
+ (user=aliceryhl job=sendgmr) by 2002:a81:494f:0:b0:611:537:2c0f with SMTP id
+ w76-20020a81494f000000b0061105372c0fmr9291ywa.2.1710958148515; Wed, 20 Mar
+ 2024 11:09:08 -0700 (PDT)
+Date: Wed, 20 Mar 2024 18:09:05 +0000
+In-Reply-To: <20240320-wegziehen-teilhaben-86e071fa163c@brauner>
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
-MIME-Version: 1.0
-Content-Transfer-Encoding: 8bit
+Mime-Version: 1.0
+References: <20240320-wegziehen-teilhaben-86e071fa163c@brauner>
+X-Mailer: git-send-email 2.44.0.291.gc1ea87d7ee-goog
+Message-ID: <20240320180905.3858535-1-aliceryhl@google.com>
+Subject: Re: [PATCH v5 3/9] rust: file: add Rust abstraction for `struct file`
+From: Alice Ryhl <aliceryhl@google.com>
+To: brauner@kernel.org
+Cc: a.hindborg@samsung.com, alex.gaynor@gmail.com, aliceryhl@google.com, 
+	arve@android.com, benno.lossin@proton.me, bjorn3_gh@protonmail.com, 
+	boqun.feng@gmail.com, cmllamas@google.com, dan.j.williams@intel.com, 
+	dxu@dxuuu.xyz, gary@garyguo.net, gregkh@linuxfoundation.org, 
+	joel@joelfernandes.org, keescook@chromium.org, linux-fsdevel@vger.kernel.org, 
+	linux-kernel@vger.kernel.org, maco@android.com, ojeda@kernel.org, 
+	peterz@infradead.org, rust-for-linux@vger.kernel.org, surenb@google.com, 
+	tglx@linutronix.de, tkjos@android.com, tmgross@umich.edu, 
+	viro@zeniv.linux.org.uk, wedsonaf@gmail.com, willy@infradead.org, 
+	yakoyoku@gmail.com
+Content-Type: text/plain; charset="utf-8"
 
-From: Arnd Bergmann <arnd@arndb.de>
+Christian Brauner <brauner@kernel.org> wrote:
+> On Fri, Feb 09, 2024 at 11:18:16AM +0000, Alice Ryhl wrote:
+>> From: Wedson Almeida Filho <wedsonaf@gmail.com>
+>> 
+>> This abstraction makes it possible to manipulate the open files for a
+>> process. The new `File` struct wraps the C `struct file`. When accessing
+>> it using the smart pointer `ARef<File>`, the pointer will own a
+>> reference count to the file. When accessing it as `&File`, then the
+>> reference does not own a refcount, but the borrow checker will ensure
+>> that the reference count does not hit zero while the `&File` is live.
+>> 
+>> Since this is intended to manipulate the open files of a process, we
+>> introduce an `fget` constructor that corresponds to the C `fget`
+>> method. In future patches, it will become possible to create a new fd in
+>> a process and bind it to a `File`. Rust Binder will use these to send
+>> fds from one process to another.
+>> 
+>> We also provide a method for accessing the file's flags. Rust Binder
+>> will use this to access the flags of the Binder fd to check whether the
+>> non-blocking flag is set, which affects what the Binder ioctl does.
+>> 
+>> This introduces a struct for the EBADF error type, rather than just
+>> using the Error type directly. This has two advantages:
+>> * `File::from_fd` returns a `Result<ARef<File>, BadFdError>`, which the
+> 
+> Sorry, where's that method?
 
-A couple of debug functions use a 512 byte temporary buffer and call another
-function that has another buffer of the same size, which in turn exceeds the
-usual warning limit for excessive stack usage:
+Sorry, this is supposed to say `File::fget`.
 
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1073:1: error: stack frame size (1448) exceeds limit (1024) in 'dr_dump_start' [-Werror,-Wframe-larger-than]
-dr_dump_start(struct seq_file *file, loff_t *pos)
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:1009:1: error: stack frame size (1120) exceeds limit (1024) in 'dr_dump_domain' [-Werror,-Wframe-larger-than]
-dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
-drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c:705:1: error: stack frame size (1104) exceeds limit (1024) in 'dr_dump_matcher_rx_tx' [-Werror,-Wframe-larger-than]
-dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
+>> +/// Wraps the kernel's `struct file`.
+>> +///
+>> +/// This represents an open file rather than a file on a filesystem. Processes generally reference
+>> +/// open files using file descriptors. However, file descriptors are not the same as files. A file
+>> +/// descriptor is just an integer that corresponds to a file, and a single file may be referenced
+>> +/// by multiple file descriptors.
+>> +///
+>> +/// # Refcounting
+>> +///
+>> +/// Instances of this type are reference-counted. The reference count is incremented by the
+>> +/// `fget`/`get_file` functions and decremented by `fput`. The Rust type `ARef<File>` represents a
+>> +/// pointer that owns a reference count on the file.
+>> +///
+>> +/// Whenever a process opens a file descriptor (fd), it stores a pointer to the file in its `struct
+>> +/// files_struct`. This pointer owns a reference count to the file, ensuring the file isn't
+>> +/// prematurely deleted while the file descriptor is open. In Rust terminology, the pointers in
+>> +/// `struct files_struct` are `ARef<File>` pointers.
+>> +///
+>> +/// ## Light refcounts
+>> +///
+>> +/// Whenever a process has an fd to a file, it may use something called a "light refcount" as a
+>> +/// performance optimization. Light refcounts are acquired by calling `fdget` and released with
+>> +/// `fdput`. The idea behind light refcounts is that if the fd is not closed between the calls to
+>> +/// `fdget` and `fdput`, then the refcount cannot hit zero during that time, as the `struct
+>> +/// files_struct` holds a reference until the fd is closed. This means that it's safe to access the
+>> +/// file even if `fdget` does not increment the refcount.
+>> +///
+>> +/// The requirement that the fd is not closed during a light refcount applies globally across all
+>> +/// threads - not just on the thread using the light refcount. For this reason, light refcounts are
+>> +/// only used when the `struct files_struct` is not shared with other threads, since this ensures
+>> +/// that other unrelated threads cannot suddenly start using the fd and close it. Therefore,
+>> +/// calling `fdget` on a shared `struct files_struct` creates a normal refcount instead of a light
+>> +/// refcount.
+> 
+> When the fdget() calling task doesn't have a shared file descriptor
+> table fdget() will not increment the reference count, yes. This
+> also implies that you cannot have task A use fdget() and then pass
+> f.file to task B that holds on to it while A returns to userspace. It's
+> irrelevant that task A won't drop the reference count or that task B
+> won't drop the reference count. Because task A could return back to
+> userspace and immediately close the fd via a regular close() system call
+> at which point task B has a UAF. In other words a file that has been
+> gotten via fdget() can't be Send to another task without the Send
+> implying taking a reference to it.
 
-Rework these so that each of the various code paths only ever has one of
-these buffers in it, and exactly the functions that declare one have
-the 'noinline_for_stack' annotation that prevents them from all being
-inlined into the same caller.
+That matches my understanding.
 
-Fixes: 917d1e799ddf ("net/mlx5: DR, Change SWS usage to debug fs seq_file interface")
-Reviewed-by: Simon Horman <horms@kernel.org>
-Link: https://lore.kernel.org/all/20240219100506.648089-1-arnd@kernel.org/
-Signed-off-by: Arnd Bergmann <arnd@arndb.de>
----
-[v3] no changes, sending again without a second patch
-[v2] no changes, just based on patch 1/2 but can still be applied independently
----
- .../mellanox/mlx5/core/steering/dr_dbg.c      | 82 +++++++++----------
- 1 file changed, 41 insertions(+), 41 deletions(-)
+I suppose that technically you can still send it to another thread *if* you
+ensure that the current thread waits until that other thread stops using the
+file before returning to userspace.
 
-diff --git a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-index 64f4cc284aea..030a5776c937 100644
---- a/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-+++ b/drivers/net/ethernet/mellanox/mlx5/core/steering/dr_dbg.c
-@@ -205,12 +205,11 @@ dr_dump_hex_print(char hex[DR_HEX_SIZE], char *src, u32 size)
- }
- 
- static int
--dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
-+dr_dump_rule_action_mem(struct seq_file *file, char *buff, const u64 rule_id,
- 			struct mlx5dr_rule_action_member *action_mem)
- {
- 	struct mlx5dr_action *action = action_mem->action;
- 	const u64 action_id = DR_DBG_PTR_TO_ID(action);
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	u64 hit_tbl_ptr, miss_tbl_ptr;
- 	u32 hit_tbl_id, miss_tbl_id;
- 	int ret;
-@@ -488,10 +487,9 @@ dr_dump_rule_action_mem(struct seq_file *file, const u64 rule_id,
- }
- 
- static int
--dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
-+dr_dump_rule_mem(struct seq_file *file, char *buff, struct mlx5dr_ste *ste,
- 		 bool is_rx, const u64 rule_id, u8 format_ver)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	char hw_ste_dump[DR_HEX_SIZE];
- 	u32 mem_rec_type;
- 	int ret;
-@@ -522,7 +520,8 @@ dr_dump_rule_mem(struct seq_file *file, struct mlx5dr_ste *ste,
- }
- 
- static int
--dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
-+dr_dump_rule_rx_tx(struct seq_file *file, char *buff,
-+		   struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 		   bool is_rx, const u64 rule_id, u8 format_ver)
- {
- 	struct mlx5dr_ste *ste_arr[DR_RULE_MAX_STES + DR_ACTION_MAX_STES];
-@@ -533,7 +532,7 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 		return 0;
- 
- 	while (i--) {
--		ret = dr_dump_rule_mem(file, ste_arr[i], is_rx, rule_id,
-+		ret = dr_dump_rule_mem(file, buff, ste_arr[i], is_rx, rule_id,
- 				       format_ver);
- 		if (ret < 0)
- 			return ret;
-@@ -542,7 +541,8 @@ dr_dump_rule_rx_tx(struct seq_file *file, struct mlx5dr_rule_rx_tx *rule_rx_tx,
- 	return 0;
- }
- 
--static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
-+static noinline_for_stack int
-+dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- {
- 	struct mlx5dr_rule_action_member *action_mem;
- 	const u64 rule_id = DR_DBG_PTR_TO_ID(rule);
-@@ -565,19 +565,19 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- 		return ret;
- 
- 	if (rx->nic_matcher) {
--		ret = dr_dump_rule_rx_tx(file, rx, true, rule_id, format_ver);
-+		ret = dr_dump_rule_rx_tx(file, buff, rx, true, rule_id, format_ver);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_matcher) {
--		ret = dr_dump_rule_rx_tx(file, tx, false, rule_id, format_ver);
-+		ret = dr_dump_rule_rx_tx(file, buff, tx, false, rule_id, format_ver);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	list_for_each_entry(action_mem, &rule->rule_actions_list, list) {
--		ret = dr_dump_rule_action_mem(file, rule_id, action_mem);
-+		ret = dr_dump_rule_action_mem(file, buff, rule_id, action_mem);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -586,10 +586,10 @@ static int dr_dump_rule(struct seq_file *file, struct mlx5dr_rule *rule)
- }
- 
- static int
--dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
-+dr_dump_matcher_mask(struct seq_file *file, char *buff,
-+		     struct mlx5dr_match_param *mask,
- 		     u8 criteria, const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	char dump[DR_HEX_SIZE];
- 	int ret;
- 
-@@ -681,10 +681,10 @@ dr_dump_matcher_mask(struct seq_file *file, struct mlx5dr_match_param *mask,
- }
- 
- static int
--dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
-+dr_dump_matcher_builder(struct seq_file *file, char *buff,
-+			struct mlx5dr_ste_build *builder,
- 			u32 index, bool is_rx, const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-@@ -702,11 +702,10 @@ dr_dump_matcher_builder(struct seq_file *file, struct mlx5dr_ste_build *builder,
- }
- 
- static int
--dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
-+dr_dump_matcher_rx_tx(struct seq_file *file, char *buff, bool is_rx,
- 		      struct mlx5dr_matcher_rx_tx *matcher_rx_tx,
- 		      const u64 matcher_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	enum dr_dump_rec_type rec_type;
- 	u64 s_icm_addr, e_icm_addr;
- 	int i, ret;
-@@ -731,7 +730,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
- 		return ret;
- 
- 	for (i = 0; i < matcher_rx_tx->num_of_builders; i++) {
--		ret = dr_dump_matcher_builder(file,
-+		ret = dr_dump_matcher_builder(file, buff,
- 					      &matcher_rx_tx->ste_builder[i],
- 					      i, is_rx, matcher_id);
- 		if (ret < 0)
-@@ -741,7 +740,7 @@ dr_dump_matcher_rx_tx(struct seq_file *file, bool is_rx,
- 	return 0;
- }
- 
--static int
-+static noinline_for_stack int
- dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
- {
- 	struct mlx5dr_matcher_rx_tx *rx = &matcher->rx;
-@@ -763,19 +762,19 @@ dr_dump_matcher(struct seq_file *file, struct mlx5dr_matcher *matcher)
- 	if (ret)
- 		return ret;
- 
--	ret = dr_dump_matcher_mask(file, &matcher->mask,
-+	ret = dr_dump_matcher_mask(file, buff, &matcher->mask,
- 				   matcher->match_criteria, matcher_id);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (rx->nic_tbl) {
--		ret = dr_dump_matcher_rx_tx(file, true, rx, matcher_id);
-+		ret = dr_dump_matcher_rx_tx(file, buff, true, rx, matcher_id);
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_tbl) {
--		ret = dr_dump_matcher_rx_tx(file, false, tx, matcher_id);
-+		ret = dr_dump_matcher_rx_tx(file, buff, false, tx, matcher_id);
- 		if (ret < 0)
- 			return ret;
- 	}
-@@ -803,11 +802,10 @@ dr_dump_matcher_all(struct seq_file *file, struct mlx5dr_matcher *matcher)
- }
- 
- static int
--dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
-+dr_dump_table_rx_tx(struct seq_file *file, char *buff, bool is_rx,
- 		    struct mlx5dr_table_rx_tx *table_rx_tx,
- 		    const u64 table_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	enum dr_dump_rec_type rec_type;
- 	u64 s_icm_addr;
- 	int ret;
-@@ -829,7 +827,8 @@ dr_dump_table_rx_tx(struct seq_file *file, bool is_rx,
- 	return 0;
- }
- 
--static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
-+static noinline_for_stack int
-+dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
- {
- 	struct mlx5dr_table_rx_tx *rx = &table->rx;
- 	struct mlx5dr_table_rx_tx *tx = &table->tx;
-@@ -848,14 +847,14 @@ static int dr_dump_table(struct seq_file *file, struct mlx5dr_table *table)
- 		return ret;
- 
- 	if (rx->nic_dmn) {
--		ret = dr_dump_table_rx_tx(file, true, rx,
-+		ret = dr_dump_table_rx_tx(file, buff, true, rx,
- 					  DR_DBG_PTR_TO_ID(table));
- 		if (ret < 0)
- 			return ret;
- 	}
- 
- 	if (tx->nic_dmn) {
--		ret = dr_dump_table_rx_tx(file, false, tx,
-+		ret = dr_dump_table_rx_tx(file, buff, false, tx,
- 					  DR_DBG_PTR_TO_ID(table));
- 		if (ret < 0)
- 			return ret;
-@@ -881,10 +880,10 @@ static int dr_dump_table_all(struct seq_file *file, struct mlx5dr_table *tbl)
- }
- 
- static int
--dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
-+dr_dump_send_ring(struct seq_file *file, char *buff,
-+		  struct mlx5dr_send_ring *ring,
- 		  const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-@@ -902,13 +901,13 @@ dr_dump_send_ring(struct seq_file *file, struct mlx5dr_send_ring *ring,
- 	return 0;
- }
- 
--static noinline_for_stack int
-+static int
- dr_dump_domain_info_flex_parser(struct seq_file *file,
-+				char *buff,
- 				const char *flex_parser_name,
- 				const u8 flex_parser_value,
- 				const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	int ret;
- 
- 	ret = snprintf(buff, MLX5DR_DEBUG_DUMP_BUFF_LENGTH,
-@@ -925,11 +924,11 @@ dr_dump_domain_info_flex_parser(struct seq_file *file,
- 	return 0;
- }
- 
--static noinline_for_stack int
--dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
-+static int
-+dr_dump_domain_info_caps(struct seq_file *file, char *buff,
-+			 struct mlx5dr_cmd_caps *caps,
- 			 const u64 domain_id)
- {
--	char buff[MLX5DR_DEBUG_DUMP_BUFF_LENGTH];
- 	struct mlx5dr_cmd_vport_cap *vport_caps;
- 	unsigned long i, vports_num;
- 	int ret;
-@@ -969,34 +968,35 @@ dr_dump_domain_info_caps(struct seq_file *file, struct mlx5dr_cmd_caps *caps,
- }
- 
- static int
--dr_dump_domain_info(struct seq_file *file, struct mlx5dr_domain_info *info,
-+dr_dump_domain_info(struct seq_file *file, char *buff,
-+		    struct mlx5dr_domain_info *info,
- 		    const u64 domain_id)
- {
- 	int ret;
- 
--	ret = dr_dump_domain_info_caps(file, &info->caps, domain_id);
-+	ret = dr_dump_domain_info_caps(file, buff, &info->caps, domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw0",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw0",
- 					      info->caps.flex_parser_id_icmp_dw0,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmp_dw1",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmp_dw1",
- 					      info->caps.flex_parser_id_icmp_dw1,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw0",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw0",
- 					      info->caps.flex_parser_id_icmpv6_dw0,
- 					      domain_id);
- 	if (ret < 0)
- 		return ret;
- 
--	ret = dr_dump_domain_info_flex_parser(file, "icmpv6_dw1",
-+	ret = dr_dump_domain_info_flex_parser(file, buff, "icmpv6_dw1",
- 					      info->caps.flex_parser_id_icmpv6_dw1,
- 					      domain_id);
- 	if (ret < 0)
-@@ -1032,12 +1032,12 @@ dr_dump_domain(struct seq_file *file, struct mlx5dr_domain *dmn)
- 	if (ret)
- 		return ret;
- 
--	ret = dr_dump_domain_info(file, &dmn->info, domain_id);
-+	ret = dr_dump_domain_info(file, buff, &dmn->info, domain_id);
- 	if (ret < 0)
- 		return ret;
- 
- 	if (dmn->info.supp_sw_steering) {
--		ret = dr_dump_send_ring(file, dmn->send_ring, domain_id);
-+		ret = dr_dump_send_ring(file, buff, dmn->send_ring, domain_id);
- 		if (ret < 0)
- 			return ret;
- 	}
--- 
-2.39.2
+>> +///
+>> +/// Light reference counts must be released with `fdput` before the system call returns to
+>> +/// userspace. This means that if you wait until the current system call returns to userspace, then
+>> +/// all light refcounts that existed at the time have gone away.
+>> +///
+>> +/// ## Rust references
+>> +///
+>> +/// The reference type `&File` is similar to light refcounts:
+>> +///
+>> +/// * `&File` references don't own a reference count. They can only exist as long as the reference
+>> +///   count stays positive, and can only be created when there is some mechanism in place to ensure
+>> +///   this.
+>> +///
+>> +/// * The Rust borrow-checker normally ensures this by enforcing that the `ARef<File>` from which
+>> +///   a `&File` is created outlives the `&File`.
+> 
+> The section confuses me a little: Does the borrow-checker always ensure
+> that a &File stays valid or are there circumstances where it doesn't or
+> are you saying it doesn't enforce it?
 
+The borrow-checker always ensures it.
+
+A &File is actually short-hand for &'a File, where 'a is some
+unspecified lifetime. We say that &'a File is annotated with 'a. The
+borrow-checker rejects any code that tries to use a reference after the
+end of the lifetime annotated on it.
+
+So as long as you annotate the reference with a sufficiently short
+lifetime, the borrow checker will prevent UAF. And outside of cases like
+from_ptr, the borrow-checker also takes care of ensuring that the
+lifetimes are sufficiently short.
+
+(Technically &'a File and &'b File are two completely different types,
+so &File is technically a class of types and not a single type. Rust
+will automatically convert &'long File to &'short File.)
+
+>> +///
+>> +/// * Using the unsafe [`File::from_ptr`] means that it is up to the caller to ensure that the
+>> +///   `&File` only exists while the reference count is positive.
+> 
+> What is this used for in binder? If it's not used don't add it.
+
+This is used on the boundary between the Rust part of Binder and the
+binderfs component that is implemented in C. For example:
+
+	unsafe extern "C" fn rust_binder_open(
+	    inode: *mut bindings::inode,
+	    file_ptr: *mut bindings::file,
+	) -> core::ffi::c_int {
+	    // SAFETY: The `rust_binderfs.c` file ensures that `i_private` is set to the return value of a
+	    // successful call to `rust_binder_new_device`.
+	    let ctx = unsafe { Arc::<Context>::borrow((*inode).i_private) };
+	
+	    // SAFETY: The caller provides a valid file pointer to a new `struct file`.
+	    let file = unsafe { File::from_ptr(file_ptr) };
+	    let process = match Process::open(ctx, file) {
+	        Ok(process) => process,
+	        Err(err) => return err.to_errno(),
+	    };
+	    // SAFETY: This file is associated with Rust binder, so we own the `private_data` field.
+	    unsafe {
+	        (*file_ptr).private_data = process.into_foreign().cast_mut();
+	    }
+	    0
+	}
+
+Here, rust_binder_open is the open function in a struct file_operations
+vtable. In this case, file_ptr is guaranteed by the caller to be valid
+for the duration of the call to rust_binder_open. Binder uses from_ptr
+to get a &File from the raw pointer.
+
+As far as I understand, the caller of rust_binder_open uses fdget to
+ensure that file_ptr is valid for the duration of the call, but the Rust
+code doesn't assume that it does this with fdget. As long as file_ptr is
+valid for the duration of the rust_binder_open call, this use of
+from_ptr is okay. It will continue to work even if the caller is changed
+to use fget.
+
+As for how this code ensures that `file` ends up annotated with a
+sufficiently short lifetime, well, that has to do with the signature of
+Process::open. Here it is:
+
+	impl Process {
+	    pub(crate) fn open(ctx: ArcBorrow<'_, Context>, file: &File) -> Result<Arc<Process>> {
+	        Self::new(ctx.into(), ARef::from(file.cred()))
+	    }
+	}
+
+In this case, &File is used without specifying a lifetime. It's a
+function argument, so this means that the lifetime annotated on the
+`file` argument will be exactly the duration in which Process::open is
+called. So any attempt to use `file` after the end of the call to
+Process::open will be rejected by the borrow-checker. (E.g., if
+Process::open tried to schedule something on the workqueue using `file`,
+then that would not compile. Storing it in a global variable would not
+compile either.)
+
+This means that the borrow-checker will not catch mistakes in
+rust_binder_open, but it *will* catch mistakes in Process::open, and
+anything called by Process::open.
+
+These examples come from patch 2 of the Binder RFC:
+https://lore.kernel.org/rust-for-linux/20231101-rust-binder-v1-2-08ba9197f637@google.com/
+
+>> +///
+>> +/// * You can think of `fdget` as using an fd to look up an `ARef<File>` in the `struct
+> 
+> Could you explain why there isn't an explicit fdget() then and you have
+> that from_ptr() method?
+
+I don't provide an fdget implementation because Binder never calls it.
+However, if you would like, I would be happy to add one to the patchset.
+
+As for from_ptr, see above.
+
+Alice
 
