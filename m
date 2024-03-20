@@ -1,73 +1,52 @@
-Return-Path: <linux-kernel+bounces-109071-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-109073-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sv.mirrors.kernel.org (sv.mirrors.kernel.org [IPv6:2604:1380:45e3:2400::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 85588881448
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:13:58 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id E74D488144F
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 16:14:31 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sv.mirrors.kernel.org (Postfix) with ESMTPS id 3A884281EDE
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:13:57 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 1658E1C217EE
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 15:14:31 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 4F82D50A64;
-	Wed, 20 Mar 2024 15:13:41 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id F231F524AA;
+	Wed, 20 Mar 2024 15:14:19 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b="BfbTrSDJ"
-Received: from mail-pg1-f181.google.com (mail-pg1-f181.google.com [209.85.215.181])
-	(using TLSv1.2 with cipher ECDHE-RSA-AES128-GCM-SHA256 (128/128 bits))
+	dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b="Kr4yXVly"
+Received: from mout.gmx.net (mout.gmx.net [212.227.17.21])
+	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id D12154AEE0;
-	Wed, 20 Mar 2024 15:13:38 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=209.85.215.181
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 8CAE04DA1A;
+	Wed, 20 Mar 2024 15:14:16 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=212.227.17.21
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710947620; cv=none; b=MrEn5JKa9OapHPwKZ/iy/7EyEVzMWDoXlD/R7GSsDiOD+vgkSVtzOmYq2zMwYln+fCJFOEE2DeZojuHq5gpQgKQLuOzvhneHbZ/tD/ML9SQ+MmpheUb630cUUM09YK2fQ9k261vEiEvdifo+kBKfqdcYQ78ODFUCoDk/+Z9/FXE=
+	t=1710947659; cv=none; b=FgtLWvRsVg7yitrnZw2x0UyIdsEv5QuSzuNRT/hw0VdbUCN+ZtFbU8UNRfRWD5OwE/y8ZmC8wF2fguHyghv904sRCCdnmZ23y+f2BP6e1hDBspr853YPigHreaO6/7/mlIk8E//s34NzAfJ/avg2ptopCNJNvfVxhoPL37DLlog=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710947620; c=relaxed/simple;
-	bh=oy82jAS+K4od7iotYUGirBmOwTU3OjjkQ24oDK3Gggo=;
+	s=arc-20240116; t=1710947659; c=relaxed/simple;
+	bh=kIAdFEj/7Z2kfL6RjSJnLwd4QaBMoZ7xnoSrhhA6bQQ=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=U3jEW8Cz3h9BlLliD8kWyzhfiA9IUGTbHANa8vEoOUwx0qx/pcDvJgz5g76/b48O3wDci/DjRH27U7fe58uaVMrqq1udU7tiW1yEqZCujx8g+0k7CGwbGUYCEMMMbcZ2djJv10YnDxU7q/Ya6eSJmAe7ax4SiWOcra3qiNYx0WY=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com; spf=pass smtp.mailfrom=gmail.com; dkim=pass (2048-bit key) header.d=gmail.com header.i=@gmail.com header.b=BfbTrSDJ; arc=none smtp.client-ip=209.85.215.181
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=gmail.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmail.com
-Received: by mail-pg1-f181.google.com with SMTP id 41be03b00d2f7-5dbf7b74402so4810724a12.0;
-        Wed, 20 Mar 2024 08:13:38 -0700 (PDT)
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=gmail.com; s=20230601; t=1710947618; x=1711552418; darn=vger.kernel.org;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :from:to:cc:subject:date:message-id:reply-to;
-        bh=3Zk229qIBmp/wvP5+MV0xaelmWuyFuEIb+JQ53jj9Us=;
-        b=BfbTrSDJE33iHub1tX1W9kuQ8kuXv+PDpBg2JFMthTwb+rBrQ7Zn04wPYcc7YSOSeW
-         n3e41+2AiunQknG0V7OSTjp9gtDjeMDOinEw5Xp3IcVZlnpXFpNtZIDbl5KlJv8CVxL8
-         jWo8NEOxkfMc0mr21u6wQ2f9v/OtIhgM3nuFDbsLRiLi4CYk0dRF5ODH116CvjxwHv1J
-         r+Z8HSNl671M30el7dlr+/QE3tY+i3Q4I4o6wpqBK4AgD/lG5eeAPfZvcmVtxRkT4Yo5
-         cGmJ4CJyYbZkQRrkfYYGhEPxciSujjZdi97qWMklQsmjzr4OrmhYKHViJUPtVnLFVgKj
-         KAPg==
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710947618; x=1711552418;
-        h=content-transfer-encoding:in-reply-to:autocrypt:from:references:cc
-         :to:content-language:subject:user-agent:mime-version:date:message-id
-         :x-gm-message-state:from:to:cc:subject:date:message-id:reply-to;
-        bh=3Zk229qIBmp/wvP5+MV0xaelmWuyFuEIb+JQ53jj9Us=;
-        b=QSwmjbPcKSZB+yfXe7JEoUrQ2xNgneE7l35dZMpNo3q8kXNoU/nQ83U5IaZYodHjkN
-         a0FrhzZRUTvsseQGKk9P8SuUOmcgkwswwgq1qBRrLCNhqhofjmNgFfd1syXS7AdtdDk7
-         6atqvX7V0z00XncFWIthaZ0wSAa17TlJ8lw6FzZShhVk5quL5qz2lViQZCJe7AxAmOPU
-         5lKFm4f3WpLgcXSi6MbogaDof3jPMHOYb/UUdDT9Tk2mdF2SGItCd1dCNov82FA9AVXR
-         GcuuQTs6PzN7tJJhqmqZMpp8BxrrDji0Pqj508DUDEzonUmpE5d9s1vrl+bbVvA+vzS1
-         ZLTg==
-X-Forwarded-Encrypted: i=1; AJvYcCXKDp27edH3akmO25vlGq6p6pnAHgziricYgCivdJDfAJG/D2g4bpQQQP4P0LysAAvJ4fo108JW4GvQddC7pvg9eFEuecxZEdTR4EimXV2r6PUdz90ZE8LiqDf2Q4as6tJD0yc2
-X-Gm-Message-State: AOJu0YydzfCoQUpgvA9uXWZhUJSz14/im+wbrM1BKMPKCVsEnSPxjc2F
-	JnmtAn9uHez95NfVIxzu337P5iPXcDJ/zf1vZMbHAkDSX4st2uAs
-X-Google-Smtp-Source: AGHT+IGrD0aXXfZpU9oVG+P0sZtycKsNubS2M4dRG+WlicIxDnYTj8+aj0jMHU7/7dvZyFIM4UdfEg==
-X-Received: by 2002:a17:902:fc84:b0:1de:f74c:2e08 with SMTP id mf4-20020a170902fc8400b001def74c2e08mr17502347plb.29.1710947617815;
-        Wed, 20 Mar 2024 08:13:37 -0700 (PDT)
-Received: from [192.168.1.3] (ip68-4-215-93.oc.oc.cox.net. [68.4.215.93])
-        by smtp.gmail.com with ESMTPSA id u3-20020a170902e20300b001dcb654d1a5sm13758815plb.21.2024.03.20.08.13.36
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 08:13:37 -0700 (PDT)
-Message-ID: <a5b2d1df-cf6e-42b6-8ccf-122be672db24@gmail.com>
-Date: Wed, 20 Mar 2024 08:13:35 -0700
+	 In-Reply-To:Content-Type; b=Hp/PU7HkNMO4cGY/ZKsP8i1nRQ6fOXVzkkDQenrOp9pPLmqwo/8In9A/bLtcLeU/OqH02YgX62Z6FHF1HK7iR1Teubx5WQM7BDng3J3Zrqjl7q/mac6QwrdZ2V3SuwKKzdZBqF1s0feHH2ARj4f2yz2llWL/67eCGB/oE/onmMs=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de; spf=pass smtp.mailfrom=gmx.de; dkim=pass (2048-bit key) header.d=gmx.de header.i=w_armin@gmx.de header.b=Kr4yXVly; arc=none smtp.client-ip=212.227.17.21
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=quarantine dis=none) header.from=gmx.de
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=gmx.de
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=gmx.de;
+	s=s31663417; t=1710947640; x=1711552440; i=w_armin@gmx.de;
+	bh=uddcCf+JvdQyj1QNEp4ag2EgQVjb12SVz6FKDooCSiQ=;
+	h=X-UI-Sender-Class:Date:Subject:To:Cc:References:From:
+	 In-Reply-To;
+	b=Kr4yXVlyuQy2l8PRdNtnygu5KLrObF11Gco1sXLGXSq1JIwu0FNIHUSHawqQd0GU
+	 WkLy5SJB1qpqdLdmV8HgVwaK4WXvHU4ogCreKHaoBeI+/6O4xn1ahBrtcxLDQcyT8
+	 htVHix6PFlr8LdkTOI8sXJnEIHQFEL4lzoTR74NIfZ8XrEymyvadIG2h6sYFkd4OI
+	 AmsQt64i7db4oPevPvFNwoFWDFJOMIDDgDWatsrBASg9Zj4aaQlIpu+BfKRv206iG
+	 Ao7ywxv3MbYFpU4uFG8BIvJD9d9yUy+9vismoY+6tgW4u9uAJ5ZddbDTCThBVU1Wd
+	 yL7D953tvZQFiE7hjA==
+X-UI-Sender-Class: 724b4f7f-cbec-4199-ad4e-598c01a50d3a
+Received: from [141.30.226.129] ([141.30.226.129]) by mail.gmx.net (mrgmx105
+ [212.227.17.168]) with ESMTPSA (Nemesis) id 1N95eJ-1qjWu71J71-0169MD; Wed, 20
+ Mar 2024 16:14:00 +0100
+Message-ID: <600844b1-0d62-4b74-89b7-f185a793038b@gmx.de>
+Date: Wed, 20 Mar 2024 16:13:59 +0100
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -75,132 +54,143 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH] net: dsa: mv88e6xxx: add warning for truncated mdio bus
- id
-Content-Language: en-US
-To: Josua Mayer <josua@solid-run.com>, Jiri Pirko <jiri@resnulli.us>
-Cc: Andrew Lunn <andrew@lunn.ch>, Vladimir Oltean <olteanv@gmail.com>,
- "David S. Miller" <davem@davemloft.net>, Eric Dumazet <edumazet@google.com>,
- Jakub Kicinski <kuba@kernel.org>, Paolo Abeni <pabeni@redhat.com>,
- "netdev@vger.kernel.org" <netdev@vger.kernel.org>,
- "linux-kernel@vger.kernel.org" <linux-kernel@vger.kernel.org>
-References: <20240320-mv88e6xxx-truncate-busid-v1-1-cface50b2efb@solid-run.com>
- <Zfrt_dlYvBzlxull@nanopsycho>
- <c76c95af-71cb-4eb6-b3af-846ae318d18d@solid-run.com>
-From: Florian Fainelli <f.fainelli@gmail.com>
-Autocrypt: addr=f.fainelli@gmail.com; keydata=
- xsDiBEjPuBIRBACW9MxSJU9fvEOCTnRNqG/13rAGsj+vJqontvoDSNxRgmafP8d3nesnqPyR
- xGlkaOSDuu09rxuW+69Y2f1TzjFuGpBk4ysWOR85O2Nx8AJ6fYGCoeTbovrNlGT1M9obSFGQ
- X3IzRnWoqlfudjTO5TKoqkbOgpYqIo5n1QbEjCCwCwCg3DOH/4ug2AUUlcIT9/l3pGvoRJ0E
- AICDzi3l7pmC5IWn2n1mvP5247urtHFs/uusE827DDj3K8Upn2vYiOFMBhGsxAk6YKV6IP0d
- ZdWX6fqkJJlu9cSDvWtO1hXeHIfQIE/xcqvlRH783KrihLcsmnBqOiS6rJDO2x1eAgC8meAX
- SAgsrBhcgGl2Rl5gh/jkeA5ykwbxA/9u1eEuL70Qzt5APJmqVXR+kWvrqdBVPoUNy/tQ8mYc
- nzJJ63ng3tHhnwHXZOu8hL4nqwlYHRa9eeglXYhBqja4ZvIvCEqSmEukfivk+DlIgVoOAJbh
- qIWgvr3SIEuR6ayY3f5j0f2ejUMYlYYnKdiHXFlF9uXm1ELrb0YX4GMHz80nRmxvcmlhbiBG
- YWluZWxsaSA8Zi5mYWluZWxsaUBnbWFpbC5jb20+wmYEExECACYCGyMGCwkIBwMCBBUCCAME
- FgIDAQIeAQIXgAUCVF/S8QUJHlwd3wAKCRBhV5kVtWN2DvCVAJ4u4/bPF4P3jxb4qEY8I2gS
- 6hG0gACffNWlqJ2T4wSSn+3o7CCZNd7SLSDOw00ESM+4EhAQAL/o09boR9D3Vk1Tt7+gpYr3
- WQ6hgYVON905q2ndEoA2J0dQxJNRw3snabHDDzQBAcqOvdi7YidfBVdKi0wxHhSuRBfuOppu
- pdXkb7zxuPQuSveCLqqZWRQ+Cc2QgF7SBqgznbe6Ngout5qXY5Dcagk9LqFNGhJQzUGHAsIs
- hap1f0B1PoUyUNeEInV98D8Xd/edM3mhO9nRpUXRK9Bvt4iEZUXGuVtZLT52nK6Wv2EZ1TiT
- OiqZlf1P+vxYLBx9eKmabPdm3yjalhY8yr1S1vL0gSA/C6W1o/TowdieF1rWN/MYHlkpyj9c
- Rpc281gAO0AP3V1G00YzBEdYyi0gaJbCEQnq8Vz1vDXFxHzyhgGz7umBsVKmYwZgA8DrrB0M
- oaP35wuGR3RJcaG30AnJpEDkBYHznI2apxdcuTPOHZyEilIRrBGzDwGtAhldzlBoBwE3Z3MY
- 31TOpACu1ZpNOMysZ6xiE35pWkwc0KYm4hJA5GFfmWSN6DniimW3pmdDIiw4Ifcx8b3mFrRO
- BbDIW13E51j9RjbO/nAaK9ndZ5LRO1B/8Fwat7bLzmsCiEXOJY7NNpIEpkoNoEUfCcZwmLrU
- +eOTPzaF6drw6ayewEi5yzPg3TAT6FV3oBsNg3xlwU0gPK3v6gYPX5w9+ovPZ1/qqNfOrbsE
- FRuiSVsZQ5s3AAMFD/9XjlnnVDh9GX/r/6hjmr4U9tEsM+VQXaVXqZuHKaSmojOLUCP/YVQo
- 7IiYaNssCS4FCPe4yrL4FJJfJAsbeyDykMN7wAnBcOkbZ9BPJPNCbqU6dowLOiy8AuTYQ48m
- vIyQ4Ijnb6GTrtxIUDQeOBNuQC/gyyx3nbL/lVlHbxr4tb6YkhkO6shjXhQh7nQb33FjGO4P
- WU11Nr9i/qoV8QCo12MQEo244RRA6VMud06y/E449rWZFSTwGqb0FS0seTcYNvxt8PB2izX+
- HZA8SL54j479ubxhfuoTu5nXdtFYFj5Lj5x34LKPx7MpgAmj0H7SDhpFWF2FzcC1bjiW9mjW
- HaKaX23Awt97AqQZXegbfkJwX2Y53ufq8Np3e1542lh3/mpiGSilCsaTahEGrHK+lIusl6mz
- Joil+u3k01ofvJMK0ZdzGUZ/aPMZ16LofjFA+MNxWrZFrkYmiGdv+LG45zSlZyIvzSiG2lKy
- kuVag+IijCIom78P9jRtB1q1Q5lwZp2TLAJlz92DmFwBg1hyFzwDADjZ2nrDxKUiybXIgZp9
- aU2d++ptEGCVJOfEW4qpWCCLPbOT7XBr+g/4H3qWbs3j/cDDq7LuVYIe+wchy/iXEJaQVeTC
- y5arMQorqTFWlEOgRA8OP47L9knl9i4xuR0euV6DChDrguup2aJVU8JPBBgRAgAPAhsMBQJU
- X9LxBQkeXB3fAAoJEGFXmRW1Y3YOj4UAn3nrFLPZekMeqX5aD/aq/dsbXSfyAKC45Go0YyxV
- HGuUuzv+GKZ6nsysJw==
-In-Reply-To: <c76c95af-71cb-4eb6-b3af-846ae318d18d@solid-run.com>
+Subject: Re: [RFC 0/1] hwmon: (hp-wmi-sensors) Support autoloading
+To: James Seo <james@equiv.tech>
+Cc: jdelvare@suse.com, linux@roeck-us.net, linux-hwmon@vger.kernel.org,
+ linux-kernel@vger.kernel.org
+References: <20240318215732.322798-1-W_Armin@gmx.de>
+ <Zfkm71dmnRsdmYJz@equiv.tech> <a2c2ef97-3830-4277-8560-b97cfb8eb78e@gmx.de>
+ <ZfowhGaCWffQ2N1K@equiv.tech>
+Content-Language: de-DE, en-US
+From: Armin Wolf <W_Armin@gmx.de>
+In-Reply-To: <ZfowhGaCWffQ2N1K@equiv.tech>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
+X-Provags-ID: V03:K1:b4BdwK0mk935Kxx3xFT3KI515rjvMWHEUmrXT9womQkh9/smjvG
+ SNoFM1HTpBv/6qk/nVKJ8J59fQg5TdESGQrUI9/OP7fz/QjU4asHyNe/IaUkA42y01mnb7d
+ WfAcYn6xGCNLNP8XjcxG6ZqIa1kmE+g+V2DSL11O6D0dmlenBn3Bw10OMVy8NqZtpr0Yk0P
+ cxGpKBx3BV8RaIIRNzKAg==
+X-Spam-Flag: NO
+UI-OutboundReport: notjunk:1;M01:P0:jx2zD26ey5s=;Pb+FSuA/qpDCchvNwUWwb1PaCHl
+ j9Xl5uoZHMszQoA0NV+SGRiXcbVy4dX0k5zgFI6l9GfXFn8idDbzXZsbwSChEXfi4une73QSy
+ 5CMP7AahtUP4cXY2tPobH95zQOvfbq4N8xZKOrM8ew3ONNd8Dl7gevUEq+rFfMAFBiB+qCIn/
+ 8rZD1JTQReVj40VeVSXhx+qFGbREojvVsg2wSeW0aerzqwMad7rXvgaZG4ryw4Vt02ngWCSeK
+ zvfDqTXuNbA6RZngOCqCKe9uTbMo+K+H7IY9o+iEWw1dxHoPJZ9truQ6ABcY1+YaVBv4BvdQH
+ h0SDIfGK1GQevZXHcBR/fi1arrbbRn8HeQgUjBZIErPogmCqCDAmhq6z1mz6kDB0ZT2tuhtr/
+ Yxv91SdXM9hz/0MoWI01kiYFXREihAn4qTVyozuV7D/2+ck43K/q66LmLaWzDGrFz7KyY881y
+ aBW3OfvuJlUmDVveAPQeamdu4hIjifCP+k2De/8eIOpK9LX7tQwn3a8CR62ktPRz0eovpppvT
+ D60n5NzzrVogkjrDWXlPdXj1BUzveLpD+0Dxlb9xLGXHZAp1nyEj5lUyt2l0J+qm89LRG3jYv
+ BfI1crxpn+revm0iXZgAZiuKvwpuC/pl22pRJvFJSUUouTnWhy9UtWe6h7VNcih/9dnGEgznL
+ 9y9nhFkT+C7XUQY9/RzqVNVmxy4GgoW62ZA3zaYq77+vl5Joonoy9xqbtED777gipDPx3zlCu
+ NgkAvYE7tJEJX1WUjuq28bG7RdnvGTDAwF1v7QVchrIUr8Q3GCvkBgFvqfhEeXkmADoVSkxyr
+ IHO0JuL0uRSNh+ZTQ2ey407HyNeiezfav/X+mgeFjJwns=
 
+Am 20.03.24 um 01:40 schrieb James Seo:
 
-
-On 3/20/2024 7:33 AM, Josua Mayer wrote:
-> Am 20.03.24 um 15:09 schrieb Jiri Pirko:
->> Wed, Mar 20, 2024 at 02:48:55PM CET, josua@solid-run.com wrote:
->>> mv88e6xxx supports multiple mdio buses as children, e.g. to model both
->>> internal and external phys. If the child buses mdio ids are truncated,
->>> they might collide which each other leading to an obscure error from
->>> kobject_add.
->>>
->>> The maximum length of bus id is currently defined as 61
->>> (MII_BUS_ID_SIZE). Truncation can occur on platforms with long node
->>> names and multiple levels before the parent bus on whiich the dsa switch
->> s/whiich/which/
+> On Tue, Mar 19, 2024 at 02:00:06PM +0100, Armin Wolf wrote:
+>> Am 19.03.24 um 06:47 schrieb James Seo:
 >>
+>>> On Mon, Mar 18, 2024 at 10:57:31PM +0100, Armin Wolf wrote:
+>>>> Currently, the hp-wmi-sensors driver needs to be loaded manually
+>>>> on supported machines. This however is unnecessary since the WMI
+>>>> id table can be used to support autoloading.
+>>>>
+>>>> However the driver might conflict with the hp-wmi driver since both
+>>>> seem to use the same WMI GUID for registering notify handler.
+>>>>
+>>>> I am thus submitting this patch as an RFC for now.
+>>>>
+>>>> Armin Wolf (1):
+>>>>     hwmon: (hp-wmi-sensors) Add missing MODULE_DEVICE_TABLE()
+>>>>
+>>>>    drivers/hwmon/hp-wmi-sensors.c | 2 ++
+>>>>    1 file changed, 2 insertions(+)
+>>>>
+>>>> --
+>>>> 2.39.2
+>>>>
+>>> Autoloading was deliberately left out for now because of the GUID
+>>> conflict with hp-wmi's WMI notify handler.
+>>>
+>>> HP's GUID reuse across product lines for different types of WMI
+>>> objects with different names and shapes means that with a patch like
+>>> this, many systems that should only load hp-wmi-sensors but not
+>>> hp-wmi will try to autoload both. (Perhaps all of them; I want to say
+>>> that the GUID 5FB7F034-2C63-45e9-BE91-3D44E2C707E4, which is the
+>>> second of the two GUIDs that hp-wmi uses to autoload, exists on every
+>>> HP system I've examined.)
+>>>
+>>> Meanwhile, hp-wmi does various other platform things, and there's so
+>>> much hardware out there that who knows, maybe there are some systems
+>>> that really should load both. I don't think so but I can't rule it
+>>> out.
+>>>
+>>> Unlike hp-wmi-sensors, hp-wmi doesn't survive failure to install its
+>>> notify handler, which sets up a potential race condition depending on
+>>> when hp-wmi and hp-wmi-sensors loads on a given system.
+>>>
+>>> Therefore, I intended to add autoloading at the same time as
+>>> converting hp-wmi-sensors to use the bus-based WMI interface once
+>>> aggregate WMI devices are better supported.
+>>>
+>>> As you mentioned [1], I ran into issues when I tried to do the
+>>> conversion by simply adding the GUID to struct wmi_driver.id_table.
+>>> That resulted in two separate independent instances of hp_wmi_sensors
+>>> being loaded, which isn't what I wanted.
+>> After taking a look at a ACPI table dump of a HP machine, i noticed that
+>> HPBIOS_BIOSEvent has the GUID 2B814318-4BE8-4707-9D84-A190A859B5D0, which is
+>> different than the event GUID used by hp-wmi.
 >>
->>> sits such as on CN9130 [1].
->>>
->>> Test whether the return value of snprintf exceeds the maximum bus id
->>> length and print a warning.
->>>
->>> [1]
->>> [    8.324631] mv88e6085 f212a200.mdio-mii:04: switch 0x1760 detected: Marvell 88E6176, revision 1
->>> [    8.389516] mv88e6085 f212a200.mdio-mii:04: Truncated bus-id may collide.
->>> [    8.592367] mv88e6085 f212a200.mdio-mii:04: Truncated bus-id may collide.
->>> [    8.623593] sysfs: cannot create duplicate filename '/devices/platform/cp0/cp0:config-space@f2000000/f212a200.mdio/mdio_bus/f212a200.mdio-mii/f212a200.mdio-mii:04/mdio_bus/!cp0!config-space@f2000000!mdio@12a200!ethernet-switch@4!mdi'
->>> [    8.785480] kobject: kobject_add_internal failed for !cp0!config-space@f2000000!mdio@12a200!ethernet-switch@4!mdi with -EEXIST, don't try to register things with the same name in the same directory.
->>> [    8.936514] libphy: mii_bus /cp0/config-space@f2000000/mdio@12a200/ethernet-switch@4/mdi failed to register
->>> [    8.946300] mdio_bus !cp0!config-space@f2000000!mdio@12a200!ethernet-switch@4!mdi: __mdiobus_register: -22
->>> [    8.956003] mv88e6085 f212a200.mdio-mii:04: Cannot register MDIO bus (-22)
->>> [    8.965329] mv88e6085: probe of f212a200.mdio-mii:04 failed with error -22
->>>
->>> Signed-off-by: Josua Mayer <josua@solid-run.com>
->> This is not bug fix, assume you target net-next. Please:
->> 1) Next time, indicate that in the patch subject like this:
->>     [patch net-next] xxx
->> 2) net-next is currently closed, repost next week.
-> Correct, thanks - will do.
-> Just for future reference for those occasional contributors -
-> is there such a thing as an lkml calendar?
+>> According your comment in hp_wmi_notify(), i assume that some machines have
+>> mixed-up event GUIDs.
+> I investigated further. Every HP machine in the Linux Hardware Database that
+> has \\.\root\WMI\hpqBEvnt at 95F24279-4D7B-4334-9387-ACCDC67EF61C also has
+> \\.\root\WMI\HPBIOS_BIOSEvent at 2B814318-4BE8-4707-9D84-A190A859B5D0.
 
-There is this: https://patchwork.hopto.org/net-next.html
+Could it be that using 95F24279-4D7B-4334-9387-ACCDC67EF61C is a mistake?
+Or do you know of a machine which indeed uses this GUID to deliver sensor events?
+Because it not, then we can just avoid this GUID conflict entirely by using the
+other GUID.
 
+>> I thing it would be best to create a separate WMI driver for the event and
+>> use a notifier chain (see include/linux/notifier.h) to distribute the event data.
 >>
->>> ---
->>> drivers/net/dsa/mv88e6xxx/chip.c | 6 ++++--
->>> 1 file changed, 4 insertions(+), 2 deletions(-)
->>>
->>> diff --git a/drivers/net/dsa/mv88e6xxx/chip.c b/drivers/net/dsa/mv88e6xxx/chip.c
->>> index 614cabb5c1b0..1c40f7631ab1 100644
->>> --- a/drivers/net/dsa/mv88e6xxx/chip.c
->>> +++ b/drivers/net/dsa/mv88e6xxx/chip.c
->>> @@ -3731,10 +3731,12 @@ static int mv88e6xxx_mdio_register(struct mv88e6xxx_chip *chip,
->>>
->>> 	if (np) {
->>> 		bus->name = np->full_name;
->>> -		snprintf(bus->id, MII_BUS_ID_SIZE, "%pOF", np);
->>> +		if (snprintf(bus->id, MII_BUS_ID_SIZE, "%pOF", np) >= MII_BUS_ID_SIZE)
->>> +			dev_warn(chip->dev, "Truncated bus-id may collide.\n");
->> How about instead of warn&fail fallback to some different name in this
->> case?
-> Duplicate could be avoided by truncating from the start,
-> however I don't know if that is a good idea.
-> It affects naming of paths in sysfs, and the root cause is
-> difficult to spot.
->>> 	} else {
->>> 		bus->name = "mv88e6xxx SMI";
->>> -		snprintf(bus->id, MII_BUS_ID_SIZE, "mv88e6xxx-%d", index++);
->>> +		if (snprintf(bus->id, MII_BUS_ID_SIZE, "mv88e6xxx-%d", index++) >= MII_BUS_ID_SIZE)
->> How exactly this may happen?
-> It can happen on switch nodes at deep levels in the device-tree,
-> while describing both internal and external mdio buses of a switch.
-> E.g. Documentation/devicetree/bindings/net/dsa/marvell,mv88e6xxx.yaml
+>> In case of event GUID 95F24279-4D7B-4334-9387-ACCDC67EF61C, both hp-wmi and
+>> hp-wmi-sensors can subscribe on this notifier and receive event data without
+>> stepping on each other's toes.
+>>
+>> The same can be done for the event GUID 2B814318-4BE8-4707-9D84-A190A859B5D0,
+>> with a separate notifier chain.
+>>
+>> This would decouple the event handling from the event data consumers, allowing
+>> both hp-wmi and hp-wmi-sensors to coexist.
+> No objections from me for this specific use case to work around the GUID conflict.
+> hp-wmi-sensors should indeed subscribe on 2B814318-4BE8-4707-9D84-A190A859B5D0
+> for some of those machines.
+>
+> Any ideas for getting rid of wmi_query_block() for fetching
+> \\.\root\HP\InstrumentedBIOS\HPBIOS_PlatformEvents? I know other drivers are
+> also using it for getting blocks other than their "main" GUID.
 
-We should consider moving these types of checks into the MDIO bus core, 
-or at least introduce a helper function such that it embeds the check in it.
--- 
-Florian
+Good question, it seems that HPBIOS_PlatformEvents is optional, so using the component
+framework will not work.
+
+If those WMI data blocks are always associated with the same ACPI device used by the
+sensors GUID, then maybe i could create some sort of API for checking if a given GUID
+exists the ACPI device associated with a WMI device.
+
+However i thing the event GUID issue is more important right now.
+
+Thanks,
+Armin Wolf
+
+>> I can provide a prototype implementation, but unfortunately i have no HP machine
+>> myself for testing. But i might be able to find one to test my changes.
+> Happy to test. (Also happy to try it myself, but I'd need some help.)
+>
+>> Thanks,
+>> Armin Wolf
+>>
+>>> [1] https://lore.kernel.org/linux-hwmon/cd81a7d6-4b81-f074-1f28-6d1b5300b937@gmx.de/
+>>>
 
