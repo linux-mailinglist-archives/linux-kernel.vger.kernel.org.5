@@ -1,47 +1,47 @@
-Return-Path: <linux-kernel+bounces-108456-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108457-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from sy.mirrors.kernel.org (sy.mirrors.kernel.org [IPv6:2604:1380:40f1:3f00::1])
-	by mail.lfdr.de (Postfix) with ESMTPS id 21A73880AC3
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:42:44 +0100 (CET)
+Received: from am.mirrors.kernel.org (am.mirrors.kernel.org [IPv6:2604:1380:4601:e00::3])
+	by mail.lfdr.de (Postfix) with ESMTPS id 0B008880AC7
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 06:46:45 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by sy.mirrors.kernel.org (Postfix) with ESMTPS id 937E0B21F97
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:42:41 +0000 (UTC)
+	by am.mirrors.kernel.org (Postfix) with ESMTPS id 9DDCD1F22A46
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 05:46:44 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id B789B1DFEA;
-	Wed, 20 Mar 2024 05:42:34 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 397BD14A8F;
+	Wed, 20 Mar 2024 05:46:36 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="V+okU14l"
+	dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b="ogLMFnDZ"
 Received: from perceval.ideasonboard.com (perceval.ideasonboard.com [213.167.242.64])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 634D91DFC6
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:42:30 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id BF983EA4
+	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:46:33 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=213.167.242.64
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710913354; cv=none; b=BpvoR31X4p4MCgU2nKchnsOZQdiSqB/qexYsxh3+rqI3wTVlh4Z8DjZ1Sntt89stmt/zLXSX3Djwq+HfqVdstYJ2RMYr9XeUEnYV7DCgcryGnY0VbQ3eGaCr2xBaj6mnhGLXHRjHjw/3nwmgIuCTs41nmElhOrdhVMwNSguW/Xc=
+	t=1710913595; cv=none; b=HPMuZQxwFZENDGp+LmG1djwg5tiN9pTYr6HnbxKSNEv+eOhshrzOH75jmcE+gy1W0jbaNBQxoA+lTcbO2Q5DyN+Ui25b0uOjZIr95qWOQoivyHNd7vdpLA7HogOYWmB4FsiAiVMYe2/zxJhcCGwz9528is+wGka+eHgAMaTRW58=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710913354; c=relaxed/simple;
-	bh=51vi06yWFwTUJ+4mBY35zFuVwgBAdNBiOvCC4v9PTlc=;
+	s=arc-20240116; t=1710913595; c=relaxed/simple;
+	bh=WRTVyf9ccaMf/4dPPhuHF8JX+pHX7WqNgtBe7Ij4T/o=;
 	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=lpiqBkekU+lpRjaazy1WfZ2mjVltHD9a9Gx0Um4VSrCvuKc+5dpqm+oHQyZ1FNjTr6TijEKMAZY1kQR/4uKVkoGkMQQlyd47U+ksTNmG9xDLzyZDdTCmQMt3hpyBWyD4JG3K6pAFEWxhHVfFlnHcoRReSzH5IE8Nnu5dw/jnt44=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=V+okU14l; arc=none smtp.client-ip=213.167.242.64
+	 In-Reply-To:Content-Type; b=N3lmjQhes9862QTG7PUSLvpD7SWCnb0Q8EiqQETPs6J2s2M8EBi0UHL4ptApIkjPgJwBL0iTarseRA7xAGzrq+o72ShkmGDVWbqQlpMKTKpxgC4LxKisegyiX/taI0a7ppB90dfW1o5CwZUP+Jantws9KdiD5gFqt6jZbrDTWn0=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com; spf=pass smtp.mailfrom=ideasonboard.com; dkim=pass (1024-bit key) header.d=ideasonboard.com header.i=@ideasonboard.com header.b=ogLMFnDZ; arc=none smtp.client-ip=213.167.242.64
 Authentication-Results: smtp.subspace.kernel.org; dmarc=none (p=none dis=none) header.from=ideasonboard.com
 Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=ideasonboard.com
 Received: from [192.168.88.20] (91-154-34-181.elisa-laajakaista.fi [91.154.34.181])
-	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 09C8CB1;
-	Wed, 20 Mar 2024 06:41:59 +0100 (CET)
+	by perceval.ideasonboard.com (Postfix) with ESMTPSA id 1FB0BB1;
+	Wed, 20 Mar 2024 06:46:04 +0100 (CET)
 DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/simple; d=ideasonboard.com;
-	s=mail; t=1710913320;
-	bh=51vi06yWFwTUJ+4mBY35zFuVwgBAdNBiOvCC4v9PTlc=;
+	s=mail; t=1710913564;
+	bh=WRTVyf9ccaMf/4dPPhuHF8JX+pHX7WqNgtBe7Ij4T/o=;
 	h=Date:Subject:To:Cc:References:From:In-Reply-To:From;
-	b=V+okU14lq6nhv+JDNxCDWIaXpvHOrrIQFQpyz/RL8kIEU9YiAGgloagUZHs3Tpx/O
-	 0Fqxq30V8quCKP5Mr83gGHt61kjAuNL4jvqM6jUzaNxpB1PKJ9URpFbz+3CM09ewK1
-	 3CvoXoX1LD9YNx/PV4zJNc4i465dmRkIu7eNEbSo=
-Message-ID: <e2eba421-cba1-4dd5-837c-6be5f07ed402@ideasonboard.com>
-Date: Wed, 20 Mar 2024 07:42:23 +0200
+	b=ogLMFnDZxEygUC2583PLOfYB4hwZz+GKUElV1NhpJbRf7PlYDBv/brUj7Q6G16qMB
+	 H6LwlWFx2HWxSNxQKkFLFCcNLxFBnV1YTBClLjpSulHXxDkYGlhqCJPhFY62omuX0x
+	 dOnSQ4LBpS5fBNaX9gHJLPErJFA9td6vXlcTkJHk=
+Message-ID: <65a040af-180d-45d0-a60b-1930e12d15bd@ideasonboard.com>
+Date: Wed, 20 Mar 2024 07:46:28 +0200
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
@@ -49,7 +49,8 @@ List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
 User-Agent: Mozilla Thunderbird
-Subject: Re: [PATCH v2 1/8] drm: xlnx: Fix kerneldoc
+Subject: Re: [PATCH v2 2/8] drm: zynqmp_dp: Downgrade log level for aux
+ retries message
 Content-Language: en-US
 To: Sean Anderson <sean.anderson@linux.dev>
 Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
@@ -60,7 +61,7 @@ Cc: Michal Simek <michal.simek@amd.com>, David Airlie <airlied@gmail.com>,
  Maxime Ripard <mripard@kernel.org>, Thomas Zimmermann <tzimmermann@suse.de>,
  dri-devel@lists.freedesktop.org
 References: <20240319225122.3048400-1-sean.anderson@linux.dev>
- <20240319225122.3048400-2-sean.anderson@linux.dev>
+ <20240319225122.3048400-3-sean.anderson@linux.dev>
 From: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
  xsFNBE6ms0cBEACyizowecZqXfMZtnBniOieTuFdErHAUyxVgtmr0f5ZfIi9Z4l+uUN4Zdw2
@@ -105,46 +106,43 @@ Autocrypt: addr=tomi.valkeinen@ideasonboard.com; keydata=
  ueeIlwJl5CpT5l8RpoZXEOVtXYn8zzOJ7oGZYINRV9Pf8qKGLf3Dft7zKBP832I3PQjeok7F
  yjt+9S+KgSFSHP3Pa4E7lsSdWhSlHYNdG/czhoUkSCN09C0rEK93wxACx3vtxPLjXu6RptBw
  3dRq7n+mQChEB1am0BueV1JZaBboIL0AGlSJkm23kw==
-In-Reply-To: <20240319225122.3048400-2-sean.anderson@linux.dev>
+In-Reply-To: <20240319225122.3048400-3-sean.anderson@linux.dev>
 Content-Type: text/plain; charset=UTF-8; format=flowed
 Content-Transfer-Encoding: 7bit
 
 On 20/03/2024 00:51, Sean Anderson wrote:
-> Fix a few errors in the kerneldoc. Mostly this addresses missing/renamed
-> members.
+> Enable this message for verbose debugging only as it is otherwise
+> printed after every AUX message, quickly filling the log buffer.
 > 
 > Signed-off-by: Sean Anderson <sean.anderson@linux.dev>
+> Reviewed-by: Laurent Pinchart <laurent.pinchart@ideasonboard.com>
 > ---
 > 
-> Changes in v2:
-> - New
+> (no changes since v1)
 > 
->   drivers/gpu/drm/xlnx/zynqmp_disp.c  | 6 +++---
->   drivers/gpu/drm/xlnx/zynqmp_dpsub.h | 1 +
->   drivers/gpu/drm/xlnx/zynqmp_kms.h   | 4 ++--
->   3 files changed, 6 insertions(+), 5 deletions(-)
+>   drivers/gpu/drm/xlnx/zynqmp_dp.c | 2 +-
+>   1 file changed, 1 insertion(+), 1 deletion(-)
 > 
-> diff --git a/drivers/gpu/drm/xlnx/zynqmp_disp.c b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> index 407bc07cec69..f79bf3fb8110 100644
-> --- a/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> +++ b/drivers/gpu/drm/xlnx/zynqmp_disp.c
-> @@ -128,9 +128,9 @@ struct zynqmp_disp_layer {
->    * struct zynqmp_disp - Display controller
->    * @dev: Device structure
->    * @dpsub: Display subsystem
-> - * @blend.base: Register I/O base address for the blender
-> - * @avbuf.base: Register I/O base address for the audio/video buffer manager
-> - * @audio.base: Registers I/O base address for the audio mixer
-> + * @blend: Register I/O base address for the blender
-> + * @avbuf: Register I/O base address for the audio/video buffer manager
-> + * @audio: Registers I/O base address for the audio mixer
+> diff --git a/drivers/gpu/drm/xlnx/zynqmp_dp.c b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> index a0606fab0e22..98a32e6a0459 100644
+> --- a/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> +++ b/drivers/gpu/drm/xlnx/zynqmp_dp.c
+> @@ -1006,7 +1006,7 @@ zynqmp_dp_aux_transfer(struct drm_dp_aux *aux, struct drm_dp_aux_msg *msg)
+>   					       msg->buffer, msg->size,
+>   					       &msg->reply);
+>   		if (!ret) {
+> -			dev_dbg(dp->dev, "aux %d retries\n", i);
+> +			dev_vdbg(dp->dev, "aux %d retries\n", i);
+>   			return msg->size;
+>   		}
+>   
 
-Afaics, the kernel doc guide:
+Yes, these are annoying... In my work branch I had added "if (i)" there, 
+so that this is only printed if there actually are retries.
 
-https://docs.kernel.org/doc-guide/kernel-doc.html#nested-structs-unions
+But this is fine too (or even dropping the print totally), so:
 
-says that the current version is correct. Or is the issue that while, 
-say, 'base' is documented, 'blend' was not?
+Reviewed-by: Tomi Valkeinen <tomi.valkeinen@ideasonboard.com>
 
   Tomi
 
