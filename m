@@ -1,308 +1,197 @@
-Return-Path: <linux-kernel+bounces-108920-lists+linux-kernel=lfdr.de@vger.kernel.org>
+Return-Path: <linux-kernel+bounces-108922-lists+linux-kernel=lfdr.de@vger.kernel.org>
 X-Original-To: lists+linux-kernel@lfdr.de
 Delivered-To: lists+linux-kernel@lfdr.de
-Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [147.75.199.223])
-	by mail.lfdr.de (Postfix) with ESMTPS id BA1D08811EC
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:57:01 +0100 (CET)
+Received: from ny.mirrors.kernel.org (ny.mirrors.kernel.org [IPv6:2604:1380:45d1:ec00::1])
+	by mail.lfdr.de (Postfix) with ESMTPS id 38E438811F4
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 13:59:20 +0100 (CET)
 Received: from smtp.subspace.kernel.org (wormhole.subspace.kernel.org [52.25.139.140])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by ny.mirrors.kernel.org (Postfix) with ESMTPS id BE09F1C226ED
-	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:57:00 +0000 (UTC)
+	by ny.mirrors.kernel.org (Postfix) with ESMTPS id 3C3531C227CA
+	for <lists+linux-kernel@lfdr.de>; Wed, 20 Mar 2024 12:59:19 +0000 (UTC)
 Received: from localhost.localdomain (localhost.localdomain [127.0.0.1])
-	by smtp.subspace.kernel.org (Postfix) with ESMTP id 049E640863;
-	Wed, 20 Mar 2024 12:56:51 +0000 (UTC)
+	by smtp.subspace.kernel.org (Postfix) with ESMTP id 0421B40873;
+	Wed, 20 Mar 2024 12:59:11 +0000 (UTC)
 Authentication-Results: smtp.subspace.kernel.org;
-	dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b="da5gRGpL"
-Received: from us-smtp-delivery-124.mimecast.com (us-smtp-delivery-124.mimecast.com [170.10.133.124])
+	dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b="FQoGkTpY"
+Received: from mx0a-00128a01.pphosted.com (mx0a-00128a01.pphosted.com [148.163.135.77])
 	(using TLSv1.2 with cipher ECDHE-RSA-AES256-GCM-SHA384 (256/256 bits))
 	(No client certificate requested)
-	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 151CB405CE
-	for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 12:56:47 +0000 (UTC)
-Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=170.10.133.124
+	by smtp.subspace.kernel.org (Postfix) with ESMTPS id 88E3C3FB95;
+	Wed, 20 Mar 2024 12:59:08 +0000 (UTC)
+Authentication-Results: smtp.subspace.kernel.org; arc=none smtp.client-ip=148.163.135.77
 ARC-Seal:i=1; a=rsa-sha256; d=subspace.kernel.org; s=arc-20240116;
-	t=1710939409; cv=none; b=M0f67xoxJ7+PAOITfNOZObf1jesrf2RZxTjOInQEvKOcPZa1MSe8+JQjrvh4zTQqUfldMT9hxykRpuX0PgCnqTSOvzGf1jLw+CzSkwXEqNCaBWuq1AjLyVc0e3LdCDj15A1FQkq0sVo2pXYBZN4EQiyRZfwzuZlfnxvMFO5uFGY=
+	t=1710939550; cv=none; b=fTgA7PfdVaiZ9KpKOHtMx9lp1DkHGvi9CpPObUKoIGpGoSISPurZuOuhf+0CMdj2h1o2i7AHU4tvBCEcw74BOqM40RyaxGPohqv8qfz+CZLDeBSsLXmx2dPVj/+6szQhKqD5JLyziFOe4CvxR6plpIQvaulCNfTN/anPjlkRDEI=
 ARC-Message-Signature:i=1; a=rsa-sha256; d=subspace.kernel.org;
-	s=arc-20240116; t=1710939409; c=relaxed/simple;
-	bh=7WP3NZz8W6CSQJs6grw4TUgcjKkadfqoNi0otcPZi/s=;
-	h=Message-ID:Date:MIME-Version:Subject:To:Cc:References:From:
-	 In-Reply-To:Content-Type; b=nQpwO5favTH57Di9+w4bTPJoZh3vsWcM1+V7wiVG5gyJWjSfDzXCidPPy3DyvRtuC66M0wwlEJaWD08iDMoyv4GSNbwWPB0Zc3SZKqaFZ997r91Qx4wlvcl/SNOKJvtZsB7nH9xe8wy+vZRW+1CA/ANYHeM4QZ0Z/f/ksnb0wg8=
-ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com; spf=pass smtp.mailfrom=redhat.com; dkim=pass (1024-bit key) header.d=redhat.com header.i=@redhat.com header.b=da5gRGpL; arc=none smtp.client-ip=170.10.133.124
-Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=redhat.com
-Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=redhat.com
-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=redhat.com;
-	s=mimecast20190719; t=1710939406;
-	h=from:from:reply-to:subject:subject:date:date:message-id:message-id:
-	 to:to:cc:cc:mime-version:mime-version:content-type:content-type:
-	 content-transfer-encoding:content-transfer-encoding:
-	 in-reply-to:in-reply-to:references:references:autocrypt:autocrypt;
-	bh=sOwLWwmW+09zjoUctb0Q1gWWyhKm3u3MXRqyHpzNzbs=;
-	b=da5gRGpLCcQ2EPIJ8s39G87VKG+QxIh6ihjvp+01wFXh3dZwPKdeilaUMKU5T/LE++Tke5
-	tRgbgFT5aVbmxs/sOO4PX1d5tyTu94wU/P68JzCLzlhUgnbrMr1gjBzihonCZaBAeYY9WE
-	hAfrKB33IZB4pYJsT/OLNoiJYW0PBjQ=
-Received: from mail-lj1-f200.google.com (mail-lj1-f200.google.com
- [209.85.208.200]) by relay.mimecast.com with ESMTP with STARTTLS
- (version=TLSv1.3, cipher=TLS_AES_256_GCM_SHA384) id
- us-mta-556-C-J3k09fMWGtG_6elS0BKw-1; Wed, 20 Mar 2024 08:56:45 -0400
-X-MC-Unique: C-J3k09fMWGtG_6elS0BKw-1
-Received: by mail-lj1-f200.google.com with SMTP id 38308e7fff4ca-2d5e1c37a1cso21123711fa.1
-        for <linux-kernel@vger.kernel.org>; Wed, 20 Mar 2024 05:56:45 -0700 (PDT)
-X-Google-DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed;
-        d=1e100.net; s=20230601; t=1710939404; x=1711544204;
-        h=content-transfer-encoding:in-reply-to:organization:autocrypt:from
-         :references:cc:to:content-language:subject:user-agent:mime-version
-         :date:message-id:x-gm-message-state:from:to:cc:subject:date
-         :message-id:reply-to;
-        bh=sOwLWwmW+09zjoUctb0Q1gWWyhKm3u3MXRqyHpzNzbs=;
-        b=JxSFuKXir3gKPC981vlGQyXu0/4Ydg+zWJT9r4esOOgguIVzqP/R7eVmw+zJrU/NU1
-         YI+3BXL/d0KU9Ro11Ze90k6U0+Z2KgRUvO/SqlZaotNPk0OgYmRWZcpBz3uE4at8xQSg
-         oJxZtWmDruJjoLp5bRaoVI1RgzmnTBmBoZcqXfMJPKb9jnJWGOFNFWxtPqRY5NNE+aI3
-         jxLLRoD2ty7iRUDJnLCEJ00GOFUblrsmmsT+conjoKM46GQu9Xusb/9J5d7gGxJmK+9h
-         VXe3A+8aBX2rniNzXfQ/cLCTLy7PQTuJmo1+21ObnLNTzNET+qlq+OYIp1C0mHAKZimU
-         +yIg==
-X-Forwarded-Encrypted: i=1; AJvYcCVRvDKHuDIFnj9Gi69riA6qrukglW/BIVZm4DpoUXXSmqyGprncs70zsh31bP5U2JFLHFYXJzpbCKc8XDobuZOM26FaJlqgHJdpq0Qg
-X-Gm-Message-State: AOJu0YwiJn1201zqj+KwFdgWdX8GtEasWWyx1oulKTOlZRklHi92Fp0w
-	kiQY9q0aVV3fOUlHlPW9ean75puTHMmqD/MFZp3LuF7Jg+Q2vzZ1b4wOmYuVAKYOZ9hxneEJ8fG
-	6hLfChxnK19dOIKNTowRkAWnkStYDDKK0UXJh1d34kHn2y5PxUDiQqPK5hWN7eA==
-X-Received: by 2002:a2e:b8cb:0:b0:2d3:f81b:7f9 with SMTP id s11-20020a2eb8cb000000b002d3f81b07f9mr1667771ljp.21.1710939403771;
-        Wed, 20 Mar 2024 05:56:43 -0700 (PDT)
-X-Google-Smtp-Source: AGHT+IE1AakMEqzqn7RrrEePI/PeRoZn/DKMttlKGHpvkcB4m4BTSecu9Be0929CsuBDHTm60DhzCQ==
-X-Received: by 2002:a2e:b8cb:0:b0:2d3:f81b:7f9 with SMTP id s11-20020a2eb8cb000000b002d3f81b07f9mr1667749ljp.21.1710939403238;
-        Wed, 20 Mar 2024 05:56:43 -0700 (PDT)
-Received: from ?IPV6:2003:cb:c709:c400:9a2:3872:9372:fbc? (p200300cbc709c40009a2387293720fbc.dip0.t-ipconnect.de. [2003:cb:c709:c400:9a2:3872:9372:fbc])
-        by smtp.gmail.com with ESMTPSA id p5-20020a05600c468500b004132ae838absm2186167wmo.43.2024.03.20.05.56.42
-        (version=TLS1_3 cipher=TLS_AES_128_GCM_SHA256 bits=128/128);
-        Wed, 20 Mar 2024 05:56:42 -0700 (PDT)
-Message-ID: <4d04b010-98f3-4eae-b320-a7dd6104b0bf@redhat.com>
-Date: Wed, 20 Mar 2024 13:56:41 +0100
+	s=arc-20240116; t=1710939550; c=relaxed/simple;
+	bh=3szIjYTN3iM0DfCCx1AY9klbxfdcTvCQ+thfnuGGKYU=;
+	h=From:To:Subject:Date:Message-ID:MIME-Version:Content-Type; b=OL3Mzti9f/YFcCWT9dHMW3Qzf2ccI4sbqhSOwbwFka2BH41kOZZK+XLQdZN3klMY5TvkQQG0DmTIiup9tZpZ9tM9R2mdrt1VJU3OeQvUUmfTmRjt1/3rbUkbXCx0O/I9tFVmgXchJyRFI+HCdZOTEKNC6wadvqQzrbzNAhhvgWQ=
+ARC-Authentication-Results:i=1; smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com; spf=pass smtp.mailfrom=analog.com; dkim=pass (2048-bit key) header.d=analog.com header.i=@analog.com header.b=FQoGkTpY; arc=none smtp.client-ip=148.163.135.77
+Authentication-Results: smtp.subspace.kernel.org; dmarc=pass (p=none dis=none) header.from=analog.com
+Authentication-Results: smtp.subspace.kernel.org; spf=pass smtp.mailfrom=analog.com
+Received: from pps.filterd (m0167088.ppops.net [127.0.0.1])
+	by mx0a-00128a01.pphosted.com (8.17.1.24/8.17.1.24) with ESMTP id 42KAAnTU026429;
+	Wed, 20 Mar 2024 08:58:40 -0400
+DKIM-Signature: v=1; a=rsa-sha256; c=relaxed/relaxed; d=analog.com; h=
+	from:to:subject:date:message-id:mime-version
+	:content-transfer-encoding:content-type; s=DKIM; bh=qtT3QihMz75U
+	y3fqSwuYAon0fY2IFz2DuKRKO/YS//A=; b=FQoGkTpYnLS8SeSYcLs3uR91UsDm
+	iUr4XR7sDzIWzvaat8krBiO4PSEh3Dbixdv6A+PcQjK14O6Gh79UCepxyau6fWf0
+	63rJqvZEqAxM/IDRwlkM9GzSmxSmjTGl2AjhTAQzIfsabR3uVKIjpuMLCZ6B+F1g
+	ZaHZRLx5vP6oKxeypSNbGqNw+QkoxinxKnbmmGcc4bengH7s0araBB8ZVnFzVFkt
+	t/mKnWMv0kuoogdAL1SPTT+5kMdKUq+7gh+CdLqJY3eNCCrcQic+++mDRf+3xAZu
+	hBu89meK4y9SzVSa20J9DM1ImbwpbJJ1+wyX9LCZvQcfEHhB2NghyJnsVQ==
+Received: from nwd2mta3.analog.com ([137.71.173.56])
+	by mx0a-00128a01.pphosted.com (PPS) with ESMTPS id 3wwragnfju-1
+	(version=TLSv1.2 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=NOT);
+	Wed, 20 Mar 2024 08:58:40 -0400 (EDT)
+Received: from ASHBMBX9.ad.analog.com (ASHBMBX9.ad.analog.com [10.64.17.10])
+	by nwd2mta3.analog.com (8.14.7/8.14.7) with ESMTP id 42KCwcKm003388
+	(version=TLSv1/SSLv3 cipher=ECDHE-RSA-AES256-GCM-SHA384 bits=256 verify=FAIL);
+	Wed, 20 Mar 2024 08:58:38 -0400
+Received: from ASHBMBX8.ad.analog.com (10.64.17.5) by ASHBMBX9.ad.analog.com
+ (10.64.17.10) with Microsoft SMTP Server (version=TLS1_2,
+ cipher=TLS_ECDHE_RSA_WITH_AES_256_GCM_SHA384) id 15.2.986.14; Wed, 20 Mar
+ 2024 08:58:37 -0400
+Received: from zeus.spd.analog.com (10.66.68.11) by ashbmbx8.ad.analog.com
+ (10.64.17.5) with Microsoft SMTP Server id 15.2.986.14 via Frontend
+ Transport; Wed, 20 Mar 2024 08:58:37 -0400
+Received: from radu.ad.analog.com ([10.48.65.243])
+	by zeus.spd.analog.com (8.15.1/8.15.1) with ESMTP id 42KCwLBw020197;
+	Wed, 20 Mar 2024 08:58:24 -0400
+From: Radu Sabau <radu.sabau@analog.com>
+To: Jean Delvare <jdelvare@suse.com>, Guenter Roeck <linux@roeck-us.net>,
+        Rob
+ Herring <robh@kernel.org>,
+        Krzysztof Kozlowski
+	<krzysztof.kozlowski+dt@linaro.org>,
+        Conor Dooley <conor+dt@kernel.org>, Jonathan Corbet <corbet@lwn.net>,
+        Delphine CC Chiu
+	<Delphine_CC_Chiu@Wiwynn.com>,
+        Radu Sabau <radu.sabau@analog.com>, <linux-hwmon@vger.kernel.org>,
+        <devicetree@vger.kernel.org>, <linux-kernel@vger.kernel.org>,
+        <linux-doc@vger.kernel.org>, <linux-i2c@vger.kernel.org>
+Subject: [PATCH v3 1/2] dt-bindings: hwmon: pmbus: adp1050: add bindings
+Date: Wed, 20 Mar 2024 14:57:11 +0200
+Message-ID: <20240320125727.5615-1-radu.sabau@analog.com>
+X-Mailer: git-send-email 2.34.1
 Precedence: bulk
 X-Mailing-List: linux-kernel@vger.kernel.org
 List-Id: <linux-kernel.vger.kernel.org>
 List-Subscribe: <mailto:linux-kernel+subscribe@vger.kernel.org>
 List-Unsubscribe: <mailto:linux-kernel+unsubscribe@vger.kernel.org>
 MIME-Version: 1.0
-User-Agent: Mozilla Thunderbird
-Subject: Re: [RFC PATCH 0/4] KVM: x86/mmu: Rework marking folios
- dirty/accessed
-Content-Language: en-US
-To: Sean Christopherson <seanjc@google.com>,
- Paolo Bonzini <pbonzini@redhat.com>
-Cc: kvm@vger.kernel.org, linux-kernel@vger.kernel.org,
- David Matlack <dmatlack@google.com>, David Stevens <stevensd@chromium.org>,
- Matthew Wilcox <willy@infradead.org>
-References: <20240320005024.3216282-1-seanjc@google.com>
-From: David Hildenbrand <david@redhat.com>
-Autocrypt: addr=david@redhat.com; keydata=
- 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
- WNyWQQ==
-Organization: Red Hat
-In-Reply-To: <20240320005024.3216282-1-seanjc@google.com>
-Content-Type: text/plain; charset=UTF-8; format=flowed
-Content-Transfer-Encoding: 7bit
+Content-Transfer-Encoding: 8bit
+Content-Type: text/plain
+X-ADIRuleOP-NewSCL: Rule Triggered
+X-Proofpoint-GUID: 3OJN21agpgRyfoxjEGvN-yxk5VZZD0-u
+X-Proofpoint-ORIG-GUID: 3OJN21agpgRyfoxjEGvN-yxk5VZZD0-u
+X-Proofpoint-Virus-Version: vendor=baseguard
+ engine=ICAP:2.0.272,Aquarius:18.0.1011,Hydra:6.0.619,FMLib:17.11.176.26
+ definitions=2024-03-20_08,2024-03-18_03,2023-05-22_02
+X-Proofpoint-Spam-Details: rule=outbound_notspam policy=outbound score=0 priorityscore=1501
+ impostorscore=0 mlxscore=0 clxscore=1015 mlxlogscore=999 malwarescore=0
+ suspectscore=0 spamscore=0 adultscore=0 phishscore=0 bulkscore=0
+ lowpriorityscore=0 classifier=spam adjust=0 reason=mlx scancount=1
+ engine=8.19.0-2403140001 definitions=main-2403200102
 
-On 20.03.24 01:50, Sean Christopherson wrote:
-> Rework KVM to mark folios dirty when creating shadow/secondary PTEs (SPTEs),
-> i.e. when creating mappings for KVM guests, instead of when zapping or
-> modifying SPTEs, e.g. when dropping mappings.
-> 
-> The motivation is twofold:
-> 
->    1. Marking folios dirty and accessed when zapping can be extremely
->       expensive and wasteful, e.g. if KVM shattered a 1GiB hugepage into
->       512*512 4KiB SPTEs for dirty logging, then KVM marks the huge folio
->       dirty and accessed for all 512*512 SPTEs.
-> 
->    2. x86 diverges from literally every other architecture, which updates
->       folios when mappings are created.  AFAIK, x86 is unique in that it's
->       the only KVM arch that prefetches PTEs, so it's not quite an apples-
->       to-apples comparison, but I don't see any reason for the dirty logic
->       in particular to be different.
-> 
+Add dt-bindings for adp1050 digital controller for isolated power supply
+with pmbus interface voltage, current and temperature monitor.
 
-Already sorry for the lengthy reply.
+Signed-off-by: Radu Sabau <radu.sabau@analog.com>
+---
+v3:
+ *Remove extra line before '$id'.
+ *Remove 'address-cells' and 'size-cells' from adp1050 node.
+ *Rename adp1050 node to generic name.
+ *Fix typo from 'adress-cells' to 'address-cells' causing errors in the
+  dt-bindings build.
+v2:
+ *Fix identation for example.
+ *Remove 'adi,vin-scale-monitor' and 'iin-scale-monitor' since they are not used
+  anymore.
+ *Fix typo for 'compatbile' to 'compatible'.
+ *Add blank line under datasheet link.
+---
+ .../bindings/hwmon/pmbus/adi,adp1050.yaml     | 49 +++++++++++++++++++
+ MAINTAINERS                                   |  7 +++
+ 2 files changed, 56 insertions(+)
+ create mode 100644 Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
 
-
-On "ordinary" process page tables on x86, it behaves as follows:
-
-1) A page might be mapped writable but the PTE might not be dirty. Once
-    written to, HW will set the PTE dirty bit.
-
-2) A page might be mapped but the PTE might not be young. Once accessed,
-    HW will set the PTE young bit.
-
-3) When zapping a page (zap_present_folio_ptes), we transfer the dirty
-    PTE bit to the folio (folio_mark_dirty()), and the young PTE bit to
-    the folio (folio_mark_accessed()). The latter is done conditionally
-    only (vma_has_recency()).
-
-BUT, when zapping an anon folio, we don't do that, because there zapping 
-implies "gone for good" and not "content must go to a file".
-
-4) When temporarily unmapping a folio for migration/swapout, we
-    primarily only move the dirty PTE bit to the folio.
-
-
-GUP is different, because the PTEs might change after we pinned the page 
-and wrote to it. We don't modify the PTEs and expect the GUP user to do 
-the right thing (set dirty/accessed). For example, 
-unpin_user_pages_dirty_lock() would mark the page dirty when unpinning, 
-where the PTE might long be gone.
-
-So GUP does not really behave like HW access.
-
-
-Secondary page tables are different to ordinary GUP, and KVM ends up 
-using GUP to some degree to simulate HW access; regarding NUMA-hinting, 
-KVM already revealed to be very different to all other GUP users. [1]
-
-And I recall that at some point I raised that we might want to have a 
-dedicate interface for these "mmu-notifier" based page table 
-synchonization mechanism.
-
-But KVM ends up setting folio dirty/access flags itself, like other GUP 
-users. I do wonder if secondary page tables should be messing with folio 
-flags *at all*, and if there would be ways to to it differently using PTEs.
-
-We make sure to synchronize the secondary page tables to the process 
-page tables using MMU notifiers: when we write-protect/unmap a PTE, we 
-write-protect/unmap the SPTE. Yet, we handle accessed/dirty completely 
-different.
-
-
-I once had the following idea, but I am not sure about all implications, 
-just wanted to raise it because it matches the topic here:
-
-Secondary page tables kind-of behave like "HW" access. If there is a 
-write access, we would expect the original PTE to become dirty, not the 
-mapped folio.
-
-1) When KVM wants to map a page into the secondary page table, we
-    require the PTE to be young (like a HW access). The SPTE can remain
-    old.
-
-2) When KVM wants to map a page writable into the secondary page table,
-    we require the PTE to be dirty (like a HW access). The SPTE can
-    remain old.
-
-3) When core MM clears the PTE dirty/young bit, we notify the secondary
-    page  table to adjust: for example, if the dirty bit gets cleared,
-    the page cannot be writable in the secondary MMU.
-
-4) GUP-fast cannot set the pte dirty/young, so we would fallback to slow
-    GUP, wehre we hold the PTL, and simply modify the PTE to have the
-    accessed/dirty bit set.
-
-5) Prefetching would similarly be limited to that (only prefetch if PTE
-    is already dirty etc.).
-
-6) Dirty/accessed bits not longer have to be synced from the secondary
-    page table to the process page table. Because an SPTE being dirty
-    implies that the PTE is dirty.
-
-
-One tricky bit, why ordinary GUP modifies the folio and not the PTE, is 
-concurrent HW access. For example, when we want to mark a PTE accessed, 
-it could happen that HW concurrently tries marking the PTE dirty. We 
-must not lose that update, so we have to guarantee an atomic update 
-(maybe avoidable in some cases).
-
-What would be the implications? We'd leave setting folio flags to the MM 
-core. That also implies, that if you shutdown a VM an zap all anon 
-folios, you wouldn't have to mark any folio dirty: the pte is dirty, and 
-MM core can decide to ignore that flag since it will discard the page 
-either way.
-
-Downsides? Likely many I have not yet thought about (TLB flushes etc). 
-Just mentioning it because in context of [1] I was wondering if 
-something that uses MMU notifiers should really be messing with 
-dirty/young flags :)
-
-
-> I tagged this RFC as it is barely tested, and because I'm not 100% positive
-> there isn't some weird edge case I'm missing, which is why I Cc'd David H.
-> and Matthew.
-
-We'd be in trouble if someone would detect that all PTEs are clean, so 
-it can clear the folio dirty flag (for example, after writeback). Then, 
-we would write using the SPTE and the folio+PTE would be clean. If we 
-then evict the "clean" folio that is actually dirty, we would be in trouble.
-
-Well, we would set the SPTE dirty flag I guess. But I cannot immediately 
-tell if that one would be synced back to the folio? Would we have a 
-mechanism in place to prevent that?
-
-> 
-> Note, I'm going to be offline from ~now until April 1st.  I rushed this out
-> as it could impact David S.'s kvm_follow_pfn series[*], which is imminent.
-> E.g. if KVM stops marking pages dirty and accessed everywhere, adding
-> SPTE_MMU_PAGE_REFCOUNTED just to sanity check that the refcount is elevated
-> seems like a poor tradeoff (medium complexity and annoying to maintain, for
-> not much benefit).
-> 
-> Regarding David S.'s series, I wouldn't be at all opposed to going even
-> further and having x86 follow all architectures by marking pages accessed
-> _only_ at map time, at which point I think KVM could simply pass in FOLL_TOUCH
-> as appropriate, and thus dedup a fair bit of arch code.
-
-FOLL_TOUCH is weird (excluding weird devmap stuff):
-
-1) For PTEs (follow_page_pte), we set the page dirty and accessed, and
-    do not modify the PTE. For THP (follow_trans_huge_pmd), we set the
-    PMD young/dirty and don't mess with the folio.
-
-2) FOLL_TOUCH is not implemented for hugetlb.
-
-3) FOLL_TOUCH is not implemented for GUP-fast.
-
-I'd leave that alone :)
-
-
-[1] 
-https://lore.kernel.org/lkml/20230727212845.135673-1-david@redhat.com/T/#u
+diff --git a/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+new file mode 100644
+index 000000000000..42cafd8fec25
+--- /dev/null
++++ b/Documentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
+@@ -0,0 +1,49 @@
++# SPDX-License-Identifier: (GPL-2.0 OR BSD-2-Clause)
++%YAML 1.2
++---
++$id: https://devicetree.org/schemas/hwmon/pmbus/adi,adp1050.yaml#
++$schema: https://devicetree.org/meta-schemes/core.yaml#
++
++title: Analog Devices ADP1050 digital controller with PMBus interface
++
++maintainers:
++  - Radu Sabau <radu.sabau@analog.com>
++
++description: |
++   The ADP1050 is used to monitor system voltages, currents and temperatures.
++   Through the PMBus interface, the ADP1050 targets isolated power supplies
++   and has four individual monitors for input/output voltage, input current
++   and temperature.
++   Datasheet:
++     https://www.analog.com/en/products/adp1050.html
++
++properties:
++  compatible:
++    const: adi,adp1050
++
++  reg:
++    maxItems: 1
++
++  vcc-supply: true
++
++required:
++  - compatible
++  - reg
++  - vcc-supply
++
++additionalProperties: false
++
++examples:
++  - |
++    i2c {
++        #address-cells = <1>;
++        #size-cells = <0>;
++        clock-frequency = <100000>;
++
++        hwmon@70 {
++            compatible = "adi,adp1050";
++            reg = <0x70>;
++            vcc-supply = <&vcc>;
++        };
++    };
++...
+diff --git a/MAINTAINERS b/MAINTAINERS
+index 43b39956694a..b45753e94756 100644
+--- a/MAINTAINERS
++++ b/MAINTAINERS
+@@ -479,6 +479,13 @@ L:	linux-wireless@vger.kernel.org
+ S:	Orphan
+ F:	drivers/net/wireless/admtek/adm8211.*
+ 
++ADP1050 HARDWARE MONITOR DRIVER
++M:	Radu Sabau <radu.sabau@analog.com>
++L:	linux-hwmon@vger.kernel.org
++S:	Supported
++W:	https://ez.analog.com/linux-software-drivers
++F:	Dcumentation/devicetree/bindings/hwmon/pmbus/adi,adp1050.yaml
++
+ ADP1653 FLASH CONTROLLER DRIVER
+ M:	Sakari Ailus <sakari.ailus@iki.fi>
+ L:	linux-media@vger.kernel.org
 -- 
-Cheers,
-
-David / dhildenb
+2.34.1
 
 
